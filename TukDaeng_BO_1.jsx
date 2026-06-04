@@ -37,10 +37,16 @@ const ASSETS = [
 ];
 
 const ARTICLES = [
-  { id:"AR001", title:"The Perpetual Calendar: A Century of Mastery",              category:"Watch 101",   author:"Tuk Daeng", date:"Oct 28, 2024", status:"Published", views:4820, likes:312 },
-  { id:"AR002", title:"5 Things You Should Know Before You Buy a Grand Seiko",     category:"Watch Brands",author:"Admin",     date:"Nov 1, 2024",  status:"Published", views:2100, likes:178 },
-  { id:"AR003", title:"Rolex Steel vs. Gold: Key Differences Explained",           category:"Watch Brands",author:"Admin",     date:"Nov 5, 2024",  status:"Draft",     views:0,    likes:0   },
-  { id:"AR004", title:"Daytona Prices Stabilize in Q3",                            category:"Watch Market",author:"Tuk Daeng", date:"Nov 10, 2024", status:"Scheduled", views:0,    likes:0   },
+  { id:"AR001", title:"The Perpetual Calendar: A Century of Mastery", slug:"perpetual-calendar-century", category:"Watch 101", author:"Tuk Daeng", date:"Oct 28, 2024", publishAt:"Published", status:"Published", featured:true, order:1, readTime:"6 min", views:4820, likes:312, shares:86 },
+  { id:"AR002", title:"5 Things You Should Know Before You Buy a Grand Seiko", slug:"grand-seiko-buying-guide", category:"Watch Brands", author:"Admin", date:"Nov 1, 2024", publishAt:"Published", status:"Published", featured:false, order:"-", readTime:"4 min", views:2100, likes:178, shares:42 },
+  { id:"AR003", title:"Rolex Steel vs. Gold: Key Differences Explained", slug:"rolex-steel-vs-gold", category:"Watch Brands", author:"Admin", date:"Nov 5, 2024", publishAt:"Draft", status:"Draft", featured:false, order:"-", readTime:"5 min", views:0, likes:0, shares:0 },
+  { id:"AR004", title:"Daytona Prices Stabilize in Q3", slug:"daytona-prices-q3", category:"Watch Market", author:"Tuk Daeng", date:"Nov 10, 2024", publishAt:"Jun 7, 2026 10:00", status:"Scheduled", featured:true, order:2, readTime:"3 min", views:0, likes:0, shares:0 },
+];
+
+const BOARD_BANNERS = [
+  { id:"BN001", title:"Watch Price Index Update", position:"Top Banner", status:"Active", start:"Jun 1, 2026", end:"Jun 30, 2026", ctr:"8.4%" },
+  { id:"BN002", title:"Consignment Partner Highlight", position:"Mid Banner", status:"Active", start:"Jun 4, 2026", end:"Jun 20, 2026", ctr:"5.1%" },
+  { id:"BN003", title:"Authentication Center Guide", position:"Board Detail", status:"Inactive", start:"-", end:"-", ctr:"-" },
 ];
 
 const METRICS = [
@@ -424,6 +430,7 @@ function AssetsPage() {
 // ── Articles ───────────────────────────────────────────────
 function ArticlesPage() {
   const [showEditor, setShowEditor] = useState(false);
+  const [contentTab, setContentTab] = useState("articles");
   const [statusFilter, setStatusFilter] = useState("All");
   const [title, setTitle]   = useState("");
   const [content, setContent] = useState("");
@@ -444,6 +451,10 @@ function ArticlesPage() {
             <SectionCard style={{ padding:16, marginBottom:16 }}>
               <input placeholder="Article title..." value={title} onChange={e=>setTitle(e.target.value)}
                 style={{ width:"100%", background:"transparent", border:"none", fontSize:20, fontWeight:600, color:C.text, outline:"none", padding:"4px 0", boxSizing:"border-box" }} />
+              <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:10, marginTop:12 }}>
+                <Input placeholder="Slug เช่น rolex-steel-vs-gold" />
+                <Input placeholder="Excerpt สำหรับ Board card" />
+              </div>
             </SectionCard>
             <SectionCard style={{ padding:16 }}>
               <div style={{ display:"flex", gap:6, marginBottom:12, flexWrap:"wrap" }}>
@@ -453,6 +464,16 @@ function ArticlesPage() {
               </div>
               <textarea placeholder="เขียนเนื้อหาบทความที่นี่..." value={content} onChange={e=>setContent(e.target.value)}
                 style={{ width:"100%", minHeight:320, background:"transparent", border:"none", color:C.text, fontSize:14, outline:"none", resize:"vertical", lineHeight:1.7, boxSizing:"border-box" }} />
+            </SectionCard>
+            <SectionCard style={{ padding:16, marginTop:16 }}>
+              <h3 style={{ color:C.text, fontSize:14, fontWeight:600, margin:"0 0 12px" }}>Board Detail Enhancements</h3>
+              <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:10 }}>
+                <Input placeholder="Quote Highlight" />
+                <Input placeholder="Read Time เช่น 5 min" />
+                <Input placeholder="SEO Title" />
+                <Input placeholder="SEO Description" />
+                <Input placeholder="Related Articles IDs เช่น AR001, AR002" style={{ gridColumn:"1 / -1" }} />
+              </div>
             </SectionCard>
           </div>
           {/* Sidebar */}
@@ -482,6 +503,7 @@ function ArticlesPage() {
               <div style={{ border:`2px dashed ${C.border}`, borderRadius:6, padding:"20px 12px", textAlign:"center", color:C.textDim, fontSize:12, cursor:"pointer" }}>
                 Drop image here<br/>or click to upload
               </div>
+              <Input placeholder="Cover image alt text" style={{ width:"100%", minWidth:0, marginTop:8 }} />
             </SectionCard>
             <SectionCard style={{ padding:14 }}>
               <div style={{ fontSize:12, color:C.textMuted, marginBottom:8, fontWeight:600 }}>AUTHOR</div>
@@ -503,9 +525,17 @@ function ArticlesPage() {
                 </div>
               </div>
             </SectionCard>
+            {featured && (
+              <SectionCard style={{ padding:14 }}>
+                <div style={{ fontSize:12, color:C.textMuted, marginBottom:8, fontWeight:600 }}>FEATURED ORDER</div>
+                <input type="number" min="1" placeholder="1"
+                  style={{ width:"100%", background:C.bg, border:`1px solid ${C.border}`, borderRadius:6, padding:"7px 10px", color:C.text, fontSize:13, boxSizing:"border-box" }} />
+              </SectionCard>
+            )}
             <button style={{ ...btnStyle(C.accent,"#fff"), padding:"10px", fontSize:14, width:"100%", borderRadius:6 }}>Publish Article</button>
+            <button style={{ ...btnStyle("#713f12","#fbbf24"), padding:"8px", fontSize:13, width:"100%", borderRadius:6 }}>Schedule Publish</button>
             <button style={{ ...btnStyle(C.border,C.textMuted), padding:"8px", fontSize:13, width:"100%", borderRadius:6 }}>Save as Draft</button>
-            <button style={{ ...btnStyle("#1e3a5f","#60a5fa"), padding:"8px", fontSize:13, width:"100%", borderRadius:6 }}>Preview Mobile</button>
+            <button style={{ ...btnStyle("#1e3a5f","#60a5fa"), padding:"8px", fontSize:13, width:"100%", borderRadius:6 }}>Preview as FO</button>
           </div>
         </div>
       </div>
@@ -519,7 +549,22 @@ function ArticlesPage() {
       <PageHeader title="Articles" subtitle="Content ที่แสดงบนหน้า Board ใน FO — Admin เท่านั้นที่สร้างได้"
         actions={<button onClick={()=>setShowEditor(true)} style={{ ...btnStyle(C.accent,"#fff"), padding:"8px 16px", fontSize:13, borderRadius:6 }}>+ New Article</button>}
       />
-      <div style={{ display:"flex", gap:8, marginBottom:16 }}>
+      <div style={{ display:"flex", gap:8, marginBottom:16, flexWrap:"wrap" }}>
+        {[
+          { id:"articles", label:"Articles" },
+          { id:"categories", label:"Categories" },
+          { id:"banners", label:"Board Banners" },
+          { id:"analytics", label:"Board Analytics" },
+        ].map(t => (
+          <button key={t.id} onClick={()=>setContentTab(t.id)} style={{
+            ...btnStyle(contentTab===t.id?C.accent:C.card, contentTab===t.id?"#fff":C.textMuted),
+            padding:"6px 14px", fontSize:13, borderRadius:6, border:`1px solid ${contentTab===t.id?C.accent:C.border}`
+          }}>{t.label}</button>
+        ))}
+      </div>
+
+      {contentTab === "articles" && <>
+      <div style={{ display:"flex", gap:8, marginBottom:16, flexWrap:"wrap" }}>
         {["All","Published","Draft","Scheduled","Archived"].map(s => (
           <button key={s} onClick={()=>setStatusFilter(s)} style={{
             ...btnStyle(statusFilter===s?C.accent:C.card, statusFilter===s?"#fff":C.textMuted),
@@ -532,16 +577,21 @@ function ArticlesPage() {
           columns={[
             { key:"id",     label:"ID" },
             { key:"title",  label:"Title" },
+            { key:"slug",  label:"Slug" },
             { key:"category", label:"Category" },
             { key:"author", label:"Author" },
-            { key:"date",   label:"Date" },
+            { key:"publishAt",   label:"Publish" },
+            { key:"readTime", label:"Read" },
+            { key:"featured", label:"Featured", render:v=>v ? <Badge>Published</Badge> : <span style={{color:C.textDim}}>—</span> },
             { key:"views",  label:"Views",  render:v=>v.toLocaleString() },
             { key:"likes",  label:"Likes",  render:v=>v.toLocaleString() },
+            { key:"shares",  label:"Shares",  render:v=>v.toLocaleString() },
             { key:"status", label:"Status", render:v=><Badge>{v}</Badge> },
           ]}
           data={filtered}
           actionButtons={row => <>
             <button style={btnStyle("#1e3a5f","#60a5fa")}>Edit</button>
+            <button style={btnStyle("#2a2a2a","#ddd")}>Preview FO</button>
             {row.status==="Published"
               ? <button style={btnStyle("#713f12","#fbbf24")}>Unpublish</button>
               : <button style={btnStyle("#1a3322","#4ade80")}>Publish</button>}
@@ -549,6 +599,69 @@ function ArticlesPage() {
           </>}
         />
       </SectionCard>
+      </>}
+
+      {contentTab === "categories" && (
+        <SectionCard style={{ overflow:"hidden" }}>
+          <Table
+            columns={[
+              { key:"name", label:"Category" },
+              { key:"slug", label:"Slug" },
+              { key:"order", label:"Display Order" },
+              { key:"articles", label:"Articles" },
+              { key:"status", label:"Status", render:v=><Badge>{v}</Badge> },
+            ]}
+            data={[
+              { name:"Watch 101", slug:"watch-101", order:1, articles:14, status:"Active" },
+              { name:"Watch Brands", slug:"watch-brands", order:2, articles:18, status:"Active" },
+              { name:"Watch Market", slug:"watch-market", order:3, articles:9, status:"Active" },
+              { name:"Watch Events", slug:"watch-events", order:4, articles:3, status:"Active" },
+            ]}
+            actionButtons={() => <>
+              <button style={btnStyle("#1e3a5f","#60a5fa")}>Edit</button>
+              <button style={btnStyle("#713f12","#fbbf24")}>Inactive</button>
+            </>}
+          />
+        </SectionCard>
+      )}
+
+      {contentTab === "banners" && (
+        <SectionCard style={{ overflow:"hidden" }}>
+          <Table
+            columns={[
+              { key:"id", label:"ID" },
+              { key:"title", label:"Title" },
+              { key:"position", label:"Position" },
+              { key:"start", label:"Start" },
+              { key:"end", label:"End" },
+              { key:"ctr", label:"CTR" },
+              { key:"status", label:"Status", render:v=><Badge>{v}</Badge> },
+            ]}
+            data={BOARD_BANNERS}
+            actionButtons={() => <>
+              <button style={btnStyle("#1e3a5f","#60a5fa")}>Preview</button>
+              <button style={btnStyle("#1a3322","#4ade80")}>Edit</button>
+            </>}
+          />
+        </SectionCard>
+      )}
+
+      {contentTab === "analytics" && (
+        <div style={{ display:"grid", gridTemplateColumns:"repeat(4,1fr)", gap:12 }}>
+          {[
+            { label:"Article Views", value:"82,400", change:"+22%" },
+            { label:"Unique Readers", value:"28,910", change:"+11%" },
+            { label:"Avg Read Time", value:"4.2 min", change:"+0.4 min" },
+            { label:"Banner CTR", value:"8.4%", change:"+1.1pp" },
+          ].map((m,i) => (
+            <SectionCard key={i} style={{ padding:"14px 16px" }}>
+              <div style={{ fontSize:12, color:C.textMuted, marginBottom:8 }}>{m.label}</div>
+              <div style={{ fontSize:22, fontWeight:700, color:C.text }}>{m.value}</div>
+              <div style={{ fontSize:12, color:C.green, marginTop:4 }}>{m.change}</div>
+            </SectionCard>
+          ))}
+        </div>
+      )}
     </div>
   );
 }

@@ -18,10 +18,11 @@ Addendum นี้เสนอให้เพิ่ม module และ business
 4. Account Deletion & Data Archive
 5. Help & Support Ticket Management
 6. System Notification Trigger Management
-7. Asset Detail Field Completion
-8. Expanded Reports & Analytics
-9. Expanded BO/FO Action Mapping
-10. Additional Audit Log Events
+7. Content / Board Management Completion
+8. Asset Detail Field Completion
+9. Expanded Reports & Analytics
+10. Expanded BO/FO Action Mapping
+11. Additional Audit Log Events
 
 ---
 
@@ -410,11 +411,192 @@ BO_Spec v1.1 ระบุว่า Support Admin ตอบ Help ได้ แต
 
 ---
 
-## 9. Asset Detail Field Completion
+## 9. Content / Board Management Completion
+
+### 9.1 Purpose
+
+ใช้สำหรับจัดการบทความและข้อมูล editorial ที่แสดงในเมนู Board ของ FO โดย Admin เป็นผู้สร้างและจัดการข้อมูลทั้งหมดจาก BO ส่วนผู้ใช้ FO สามารถอ่าน, ค้นหา, กรองหมวดหมู่, Like และ Share ได้ตาม Use Cases
+
+### 9.2 Board Display Areas in FO
+
+| FO Area | Data Source in BO | Rule |
+|---|---|---|
+| Featured Article | Article ที่ Featured = On | แสดงบทความ featured ล่าสุดหรือเรียงตาม Featured Order |
+| Trending Now | Article ที่มี views/likes สูง หรือ manual section | แสดงเฉพาะ Published |
+| Journal Board | Article list ปกติ | เรียงตาม Publish Date ล่าสุด |
+| Category Sidebar | Article Categories | แสดง category ที่ Active เท่านั้น |
+| Article Detail | Article content | เปิดอ่านได้ทั้ง guest และ logged-in user |
+| Board Search | Article title, excerpt, tags, content index | แสดงเฉพาะ Published |
+
+### 9.3 Article Fields
+
+| Field | Type | Required | FO Usage |
+|---|---|---|---|
+| Article ID | ID | Yes | ใช้อ้างอิงบทความ |
+| Title | Text | Yes | แสดงบน Board list/detail |
+| Slug | Text, unique | Yes | URL/deep link ของบทความ |
+| Excerpt | Textarea | Optional | สรุปใน card/list |
+| Cover Image | Image Upload | Yes | รูปปกบน Board และ Detail |
+| Cover Image Alt Text | Text | Recommended | Accessibility / SEO |
+| Category | FK Category | Yes | Filter และ Sidebar |
+| Tags | Multi-select | Optional | Search และ Related Articles |
+| Author Name | Text / FK Admin Profile | Yes | แสดงใน Article Detail |
+| Author Avatar | Image Upload | Optional | แสดงใน Article Detail |
+| Read Time | Number / Auto calculate | Optional | แสดงเวลาอ่าน |
+| Quote Highlight | Text | Optional | แสดง quote section ใน Article Detail |
+| Body Content | Rich Text | Yes | เนื้อหาหลักของบทความ |
+| Related Articles | Multi-select Article | Optional | แสดงบทความแนะนำ |
+| Status | Draft / Published / Scheduled / Archived | Yes | ควบคุมการแสดงบน FO |
+| Featured | Boolean | Yes | แสดงเป็น Feature Article |
+| Featured Order | Number | Optional | ใช้เรียง featured |
+| Publish Date-Time | DateTime | Required when Published/Scheduled | เงื่อนไขแสดงบน FO |
+| Unpublish Date-Time | DateTime | Optional | ซ่อนอัตโนมัติเมื่อครบเวลา |
+| SEO Title | Text | Optional | Metadata |
+| SEO Description | Textarea | Optional | Metadata |
+| View Count | Number, system generated | No | Analytics |
+| Like Count | Number, system generated | No | แสดงยอด Like |
+| Share Count | Number, system generated | No | Analytics |
+| Created By | Admin ID | System | Audit |
+| Updated By | Admin ID | System | Audit |
+| Created At | DateTime | System | Audit |
+| Updated At | DateTime | System | Audit |
+
+### 9.4 Article Status Rules
+
+| Status | BO Meaning | FO Impact |
+|---|---|---|
+| Draft | ยังไม่เผยแพร่ | ไม่แสดงใน FO |
+| Scheduled | ตั้งเวลาเผยแพร่ | แสดงเมื่อ Publish Date-Time <= current time |
+| Published | เผยแพร่แล้ว | แสดงใน Board, Search, Category และ Detail |
+| Archived | เก็บเข้าคลัง | ไม่แสดงใน list/search แต่ direct link ควรแสดง unavailable หรือ redirect ตาม UX policy |
+
+**Rules**
+- FO Board ดึงเฉพาะบทความที่ `Status = Published` และ `Publish Date-Time <= current time`
+- บทความ Scheduled ต้องเปลี่ยนเป็น Published อัตโนมัติเมื่อถึงเวลา หรือให้ query layer ตีความว่าแสดงได้เมื่อถึงเวลา
+- บทความ Archived/Unpublished ต้องหายจาก Board ทันที
+- ถ้าผู้ใช้เปิดบทความที่ถูก Unpublish/Archive แล้ว ให้แสดง "This article is no longer available"
+- Slug ต้อง unique และไม่ควรเปลี่ยนหลัง Published หากเปลี่ยนต้องมี redirect rule
+
+### 9.5 Create / Edit Article Workflow
+
+1. Admin เข้า BO > Content Management > Articles
+2. กด Create Article
+3. กรอก Title, Slug, Excerpt, Category, Cover Image, Body Content
+4. ใส่ Tags, Quote Highlight, Related Articles, SEO fields ตามต้องการ
+5. เลือก Status:
+   - Save as Draft
+   - Publish Now
+   - Schedule Publish
+6. Admin กด Preview as FO เพื่อตรวจหน้าตาบทความก่อนเผยแพร่
+7. เมื่อ Publish แล้ว FO Board ดึงข้อมูลไปแสดงตาม display rules
+
+### 9.6 Preview as FO
+
+**Purpose:** ให้ Admin เห็นบทความใน layout ใกล้เคียง FO ก่อนเผยแพร่
+
+**Preview must show**
+- Board card preview
+- Article detail preview
+- Mobile preview
+- Cover image crop
+- Title, excerpt, author, publish date, read time
+- Quote highlight
+- Body content formatting
+- Related articles
+
+**Rules**
+- Preview ไม่เพิ่ม view count
+- Preview ไม่ต้องเป็น Published
+- Preview URL ต้องเข้าถึงได้เฉพาะ Admin ที่มีสิทธิ์
+
+### 9.7 Category Management
+
+| Field | Type | Required |
+|---|---|---|
+| Category ID | ID | Yes |
+| Category Name | Text | Yes |
+| Slug | Text, unique | Yes |
+| Description | Textarea | Optional |
+| Display Order | Number | Optional |
+| Status | Active / Inactive | Yes |
+
+**Rules**
+- FO แสดงเฉพาะ Category ที่ Active
+- ถ้า Category ถูก Inactive บทความในหมวดนั้นยังอยู่ในระบบ แต่ไม่ควรแสดงใน category sidebar
+- Admin ต้องไม่ลบ Category ที่มี Article ใช้งานอยู่ ยกเว้นย้าย Article ไป Category อื่นก่อน
+
+### 9.8 Banner Management for Board
+
+| Field | Type | Required |
+|---|---|---|
+| Banner ID | ID | Yes |
+| Title | Text | Yes |
+| Image | Image Upload | Yes |
+| Alt Text | Text | Recommended |
+| Target URL / Deep Link | URL / FO Path | Optional |
+| Position | Top Banner / Mid Banner / Board Detail | Yes |
+| Start Date-Time | DateTime | Optional |
+| End Date-Time | DateTime | Optional |
+| Status | Active / Inactive | Yes |
+| Display Order | Number | Optional |
+
+**Rules**
+- FO แสดงเฉพาะ Banner ที่ Active และอยู่ในช่วงเวลาแสดงผล
+- Banner ต้องมี Preview ก่อน Activate
+- Banner click ต้องเก็บ analytics ได้
+
+### 9.9 Content Permissions
+
+| Action | Super Admin | Content Admin | Moderator | Support Admin | Market Admin |
+|---|---|---|---|---|---|
+| View Articles | Yes | Yes | View Only | - | - |
+| Create Draft | Yes | Yes | - | - | - |
+| Edit Draft | Yes | Yes | - | - | - |
+| Publish Article | Yes | Yes | - | - | - |
+| Schedule Article | Yes | Yes | - | - | - |
+| Archive Article | Yes | Yes | - | - | - |
+| Delete Article | Yes | - | - | - | - |
+| Manage Categories | Yes | Yes | - | - | - |
+| Manage Banners | Yes | Yes | - | - | - |
+| Preview as FO | Yes | Yes | View Only | - | - |
+
+### 9.10 Board Analytics
+
+| Metric | Description |
+|---|---|
+| Article Views | จำนวนครั้งที่เปิดอ่าน |
+| Unique Readers | จำนวน user/device ที่อ่าน |
+| Likes | จำนวน Like |
+| Shares | จำนวน Share |
+| Avg Read Time | เวลาอ่านเฉลี่ย |
+| Completion Rate | อ่านถึงท้ายบทความกี่เปอร์เซ็นต์ |
+| Category Performance | performance แยกตาม category |
+| Search Keywords | keyword ที่นำไปสู่ article |
+| Banner CTR | อัตราคลิก banner |
+
+### 9.11 BO/FO Mapping for Board
+
+| BO Action | FO Result |
+|---|---|
+| Create Draft | ยังไม่แสดงใน FO |
+| Publish Article | บทความปรากฏบน Board ทันที |
+| Schedule Article | บทความปรากฏเมื่อถึง Publish Date-Time |
+| Archive Article | บทความหายจาก Board/Search/Category |
+| Set Featured = On | บทความแสดงใน Featured Article area |
+| Change Featured Order | ลำดับ featured ใน FO เปลี่ยน |
+| Update Cover Image | รูปปกใน Board และ Article Detail เปลี่ยน |
+| Update Category | บทความย้ายไป category ใหม่ |
+| Inactive Category | Category หายจาก sidebar |
+| Activate Banner | Banner แสดงในตำแหน่งที่กำหนด |
+| Deactivate Banner | Banner หายจาก FO |
+
+---
+
+## 10. Asset Detail Field Completion
 
 เพื่อให้ BO รองรับข้อมูลที่ FO ต้องแสดงใน Feed, Search, Detail, Profile และ Asset Value Dashboard ให้ระบุ field ของ asset ให้ชัดเจนดังนี้
 
-### 9.1 Asset Core Fields
+### 10.1 Asset Core Fields
 
 | Field | Type | Required |
 |---|---|---|
@@ -435,7 +617,7 @@ BO_Spec v1.1 ระบุว่า Support Admin ตอบ Help ได้ แต
 | Created At | DateTime | Yes |
 | Updated At | DateTime | Yes |
 
-### 9.2 Provenance Fields
+### 10.2 Provenance Fields
 
 | Field | Type | Required |
 |---|---|---|
@@ -447,7 +629,7 @@ BO_Spec v1.1 ระบุว่า Support Admin ตอบ Help ได้ แต
 
 **Privacy Rule:** Provenance และ Proof of Payment เป็นข้อมูลส่วนตัว เห็นเฉพาะ Owner ใน FO และ Super Admin ใน BO
 
-### 9.3 Consignment Fields
+### 10.3 Consignment Fields
 
 | Field | Type | Required |
 |---|---|---|
@@ -457,7 +639,7 @@ BO_Spec v1.1 ระบุว่า Support Admin ตอบ Help ได้ แต
 | Contact Person | Text | Optional |
 | Notes | Textarea | Optional |
 
-### 9.4 Sale History Fields
+### 10.4 Sale History Fields
 
 | Field | Type | Required |
 |---|---|---|
@@ -477,12 +659,13 @@ BO_Spec v1.1 ระบุว่า Support Admin ตอบ Help ได้ แต
 
 ---
 
-## 10. Expanded Reports & Analytics
+## 11. Expanded Reports & Analytics
 
 เพิ่ม report ต่อไปนี้จาก BO_Spec v1.1
 
 | Report | Data |
 |---|---|
+| Board Report | Article Views, Unique Readers, Likes, Shares, Avg Read Time, Completion Rate |
 | Offer Report | Offers Made, Pending, Accepted, Declined, Expired, Avg Offer Price, Avg Response Time |
 | Chat Report | Active Chat Rooms, Messages Sent, Attachments Sent, Reported Chats |
 | Comment Report | Total Comments, Reported Comments, Hidden Comments, Top Commented Assets |
@@ -493,7 +676,7 @@ BO_Spec v1.1 ระบุว่า Support Admin ตอบ Help ได้ แต
 
 ---
 
-## 11. Expanded BO/FO Action Mapping
+## 12. Expanded BO/FO Action Mapping
 
 | Action in BO | Result in FO |
 |---|---|
@@ -512,10 +695,13 @@ BO_Spec v1.1 ระบุว่า Support Admin ตอบ Help ได้ แต
 
 ---
 
-## 12. Expanded Audit Log Events
+## 13. Expanded Audit Log Events
 
 เพิ่ม Target Entity Type ใน Audit Log:
 
+- Article
+- ArticleCategory
+- BoardBanner
 - Offer
 - ChatRoom
 - ChatMessage
@@ -530,6 +716,13 @@ BO_Spec v1.1 ระบุว่า Support Admin ตอบ Help ได้ แต
 
 เพิ่ม Action Type:
 
+- PreviewArticle
+- PublishArticle
+- ScheduleArticle
+- ArchiveArticle
+- SetFeaturedArticle
+- ActivateBanner
+- DeactivateBanner
 - ForceExpireOffer
 - InvalidateOffer
 - HideComment
@@ -546,7 +739,7 @@ BO_Spec v1.1 ระบุว่า Support Admin ตอบ Help ได้ แต
 
 ---
 
-## 13. Updated Admin Role & Permissions
+## 14. Updated Admin Role & Permissions
 
 | Module | Super Admin | Content Admin | Moderator | Support Admin | Market Admin |
 |---|---|---|---|---|---|
@@ -560,7 +753,7 @@ BO_Spec v1.1 ระบุว่า Support Admin ตอบ Help ได้ แต
 
 ---
 
-## 14. Recommended Acceptance Criteria
+## 15. Recommended Acceptance Criteria
 
 BO จะถือว่ารองรับ FO ครบถ้วนเมื่อผ่านเงื่อนไขต่อไปนี้:
 
@@ -572,4 +765,6 @@ BO จะถือว่ารองรับ FO ครบถ้วนเมื�
 6. Provenance, Consignment และ Proof of Payment ถูกจำกัดสิทธิ์ตาม privacy rule
 7. Support Admin สามารถรับ ticket จาก Help และตอบกลับผู้ใช้ได้
 8. Audit Log บันทึกทุก action สำคัญของ admin ครบ target entity และ before/after value
-
+9. Admin สามารถสร้างบทความพร้อมรูปปก เนื้อหา หมวดหมู่ และ publish/schedule จาก BO ได้
+10. FO Board แสดงเฉพาะบทความ Published ที่ถึงเวลาเผยแพร่แล้ว
+11. Preview as FO แสดงบทความได้โดยไม่เพิ่ม view count และเข้าได้เฉพาะ Admin
