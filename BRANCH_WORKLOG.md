@@ -7,6 +7,7 @@
 | Date | Branch | Start | End | Duration | Task | Commit | Status | Notes |
 |---|---|---:|---:|---:|---|---|---|---|
 |  |  |  |  |  |  |  |  |  |
+| 2026-06-04 | `prototype-bo-dashboard-ux-review` | 17:30 | 17:41 | 11m | ตรวจ UX เมนูแดชบอร์ดให้ตรงกับ requirement | `feat: align dashboard UX with BO requirements` | done | ปรับ Dashboard UX, เพิ่มปุ่ม drill-down, เพิ่ม dashboard UX test cases |
 
 ## Example
 

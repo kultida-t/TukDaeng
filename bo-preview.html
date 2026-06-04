@@ -869,32 +869,53 @@
 
     const pages = {
       dashboard: () => `
-        ${header("แดชบอร์ด", "ภาพรวมระบบหลังบ้านและสถานะการทำงานที่เชื่อมกับหน้าบ้าน")}
+        ${header("แดชบอร์ด", "ภาพรวมระบบหลังบ้านที่ใช้ติดตามผู้ใช้ สินทรัพย์ ข้อเสนอ บทความ และงานที่ต้องตรวจ", `<button class="action green">ส่งออกรายงาน</button>`)}
+        <div class="toolbar">
+          <button class="action">วันนี้</button>
+          <button class="action gray">7 วัน</button>
+          <button class="action gray">30 วัน</button>
+          <button class="action gray">กำหนดเอง</button>
+        </div>
         <div class="grid metrics">
-          ${metric("ผู้ใช้งานทั้งหมด", "12,480", "+8.2%")}
-          ${metric("ประกาศที่ใช้งานอยู่", "3,847", "+12.4%")}
-          ${metric("ข้อเสนอวันนี้", "246", "+3.1%")}
+          ${metric("ผู้ใช้ใหม่วันนี้", "48", "+12%")}
+          ${metric("ผู้ใช้ใหม่สัปดาห์นี้", "326", "+8.1%")}
+          ${metric("DAU / MAU", "3,241 / 8,920", "+5.2%")}
           ${metric("รายการรอตรวจสอบ", "7", "+2", true)}
         </div>
+        <div class="grid metrics">
+          ${metric("ข้อเสนอทั้งหมดวันนี้", "246", "+3.1%")}
+          ${metric("รับข้อเสนอแล้ว", "89", "+8%")}
+          ${metric("ปฏิเสธข้อเสนอ", "112", "-2%", true)}
+          ${metric("Watch Alert Active", "5,240", "+340")}
+        </div>
         <div class="grid two">
           <section class="card pad">
-            <h3 class="section-title">สถานะสินทรัพย์</h3>
-            ${bar("ขาย", "2,410", 82, "#f87171")}
-            ${bar("โชว์ในคอลเลกชัน", "890", 48, "#60a5fa")}
-            ${bar("ซ่อนส่วนตัว", "340", 24, "#9ca3af")}
-            ${bar("ขายแล้ว", "207", 16, "#4ade80")}
+            <div class="header" style="margin:0 0 12px">
+              <h2 style="font-size:15px">สินทรัพย์ใหม่แยกตามสถานะ</h2>
+              <button class="action secondary">ดูสินทรัพย์</button>
+            </div>
+            ${bar("Sale", "126 รายการ", 76, "#f87171")}
+            ${bar("Collection Show", "42 รายการ", 42, "#60a5fa")}
+            ${bar("Collection Hide", "18 รายการ", 18, "#9ca3af")}
+            ${bar("Sold", "9 รายการ", 9, "#4ade80")}
           </section>
           <section class="card pad">
-            <h3 class="section-title">ความครบถ้วนของ Flow หน้าบ้าน</h3>
-            ${bar("สินทรัพย์ / โปรไฟล์", "รองรับแล้ว", 96, "#22c55e")}
-            ${bar("บทความ / กระดานข่าว", "รองรับแล้ว", 92, "#22c55e")}
-            ${bar("ข้อเสนอ / แชท", "เพิ่มแล้ว", 78, "#f59e0b")}
-            ${bar("โซเชียล / แจ้งเตือน", "เพิ่มแล้ว", 74, "#f59e0b")}
+            <div class="header" style="margin:0 0 12px">
+              <h2 style="font-size:15px">งานที่ต้องติดตาม</h2>
+              <button class="action secondary">เปิดคิวตรวจ</button>
+            </div>
+            ${bar("Asset Reports", "7 pending", 70, "#f59e0b")}
+            ${bar("Reported Comments", "14 pending", 55, "#f59e0b")}
+            ${bar("Reported Chats", "3 pending", 24, "#f87171")}
+            ${bar("Support Tickets", "21 open", 62, "#60a5fa")}
           </section>
         </div>
         <div class="grid two">
           <section class="card pad">
-            <h3 class="section-title">กิจกรรมล่าสุด</h3>
+            <div class="header" style="margin:0 0 12px">
+              <h2 style="font-size:15px">กิจกรรมล่าสุด</h2>
+              <button class="action gray">ดูทั้งหมด</button>
+            </div>
             ${activity("ผู้ใช้สมัครใหม่ผ่าน Apple", "marcus_bkk", "2 นาที", "#3b82f6")}
             ${activity("มีข้อเสนอใหม่รอตอบ", "Patek Nautilus deal", "12 นาที", "#f59e0b")}
             ${activity("สินทรัพย์ถูก Flag รอตรวจ", "Rolex Sub 116610LN", "15 นาที", "#f59e0b")}
@@ -902,12 +923,36 @@
             ${activity("คอมเมนต์ถูกรายงาน", "ราคาน่าสงสัย", "3 ชม.", "#f87171")}
           </section>
           <section class="card pad">
-            <h3 class="section-title">แบรนด์ที่ค้นหามากที่สุด</h3>
+            <div class="header" style="margin:0 0 12px">
+              <h2 style="font-size:15px">แบรนด์ที่ค้นหามากที่สุด</h2>
+              <button class="action gray">รายงาน Search</button>
+            </div>
             ${bar("Rolex", "4,820", 100)}
             ${bar("Patek Philippe", "3,240", 67)}
             ${bar("Audemars Piguet", "2,180", 45)}
             ${bar("Omega", "1,950", 40)}
             ${bar("IWC", "980", 20)}
+          </section>
+        </div>
+        <div class="grid two">
+          <section class="card pad">
+            <div class="header" style="margin:0 0 12px">
+              <h2 style="font-size:15px">บทความล่าสุดบน Board</h2>
+              <button class="action secondary">จัดการ Board</button>
+            </div>
+            ${activity("Daytona Prices Stabilize in Q3", "Scheduled · 7 มิ.ย. 2026 10:00", "AR004", "#f59e0b")}
+            ${activity("Rolex Steel vs. Gold", "Draft · รอเผยแพร่", "AR003", "#60a5fa")}
+            ${activity("Grand Seiko Buying Guide", "Published · 2,100 views", "AR002", "#22c55e")}
+          </section>
+          <section class="card pad">
+            <div class="header" style="margin:0 0 12px">
+              <h2 style="font-size:15px">ลิงก์ไปยังรายงานที่เกี่ยวข้อง</h2>
+              <button class="action green">เปิด Reports</button>
+            </div>
+            ${bar("User Report", "DAU / MAU / Auth Method", 86, "#60a5fa")}
+            ${bar("Asset Report", "Status / Brand / Avg Price", 78, "#22c55e")}
+            ${bar("Offer Report", "Made / Accepted / Declined", 62, "#f59e0b")}
+            ${bar("Board Report", "Views / Likes / Read Time", 48, "#a855f7")}
           </section>
         </div>`,
 
@@ -1293,6 +1338,29 @@
     function handleAction(button) {
       const label = button.textContent.trim();
       const page = window.currentPage || "dashboard";
+
+      if (page === "dashboard") {
+        const dashboardRoutes = {
+          "ดูสินทรัพย์": "assets",
+          "เปิดคิวตรวจ": "assets",
+          "ดูทั้งหมด": "audit",
+          "รายงาน Search": "reports",
+          "จัดการ Board": "articles",
+          "เปิด Reports": "reports"
+        };
+        if (dashboardRoutes[label]) {
+          render(dashboardRoutes[label]);
+          return true;
+        }
+        if (["วันนี้", "7 วัน", "30 วัน", "กำหนดเอง"].includes(label)) {
+          showToast(`เปลี่ยนช่วงข้อมูลเป็น ${label}`);
+          return true;
+        }
+        if (label.includes("ส่งออก")) {
+          openModal("ส่งออกรายงาน Dashboard", reportDetail(), `<button class="action gray" data-close-modal>ปิด</button><button class="action green" data-save-modal>ส่งออก Excel</button>`);
+          return true;
+        }
+      }
 
       if (label.includes("+ New Article") || label.includes("+ เพิ่มบทความ")) {
         openModal("เพิ่มบทความใหม่", articleForm("Create"), `<button class="action gray" data-close-modal>ยกเลิก</button><button class="action gray" data-save-modal>บันทึกร่าง</button><button class="action warn" data-save-modal>ตั้งเวลาเผยแพร่</button><button class="action" data-save-modal>เผยแพร่บทความ</button>`);
