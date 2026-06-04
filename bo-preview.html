@@ -1,0 +1,592 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Tuk Daeng Back Office Preview</title>
+  <style>
+    :root {
+      --bg: #0f0f0f;
+      --sidebar: #181818;
+      --card: #1e1e1e;
+      --card-2: #242424;
+      --border: #2f2f2f;
+      --accent: #dc2626;
+      --text: #f5f5f5;
+      --muted: #9ca3af;
+      --dim: #666;
+      --green: #22c55e;
+      --amber: #f59e0b;
+      --blue: #3b82f6;
+      --red-soft: #450a0a;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: Inter, "Segoe UI", Arial, sans-serif;
+      overflow: hidden;
+    }
+
+    .app {
+      display: grid;
+      grid-template-columns: 224px 1fr;
+      height: 100vh;
+    }
+
+    .sidebar {
+      background: var(--sidebar);
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+    }
+
+    .brand {
+      padding: 18px 18px 14px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .brand h1 {
+      margin: 0;
+      font-size: 18px;
+      line-height: 1.1;
+      color: var(--accent);
+      font-weight: 800;
+    }
+
+    .brand span {
+      display: block;
+      color: var(--muted);
+      font-size: 11px;
+      margin-top: 5px;
+    }
+
+    nav {
+      padding: 8px 0;
+      overflow-y: auto;
+      flex: 1;
+    }
+
+    .nav-btn {
+      width: 100%;
+      border: 0;
+      background: transparent;
+      color: var(--muted);
+      text-align: left;
+      padding: 10px 16px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 13px;
+      cursor: pointer;
+      border-left: 3px solid transparent;
+    }
+
+    .nav-btn.active {
+      color: #fff;
+      background: #2a0a0a;
+      border-left-color: var(--accent);
+      font-weight: 650;
+    }
+
+    .nav-icon {
+      width: 19px;
+      text-align: center;
+      color: inherit;
+      font-size: 14px;
+    }
+
+    .admin {
+      border-top: 1px solid var(--border);
+      padding: 12px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: var(--accent);
+      display: grid;
+      place-items: center;
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .admin strong {
+      display: block;
+      font-size: 12px;
+    }
+
+    .admin small {
+      color: var(--muted);
+      font-size: 10px;
+    }
+
+    main {
+      overflow: auto;
+      padding: 24px 28px 36px;
+    }
+
+    .header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+
+    h2 {
+      margin: 0;
+      font-size: 21px;
+      line-height: 1.2;
+    }
+
+    .sub {
+      margin-top: 5px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .grid {
+      display: grid;
+      gap: 14px;
+    }
+
+    .metrics {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      margin-bottom: 18px;
+    }
+
+    .two {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      margin-bottom: 16px;
+    }
+
+    .three {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    .card.pad { padding: 16px; }
+
+    .metric-label {
+      color: var(--muted);
+      font-size: 12px;
+      margin-bottom: 8px;
+    }
+
+    .metric-value {
+      font-size: 23px;
+      font-weight: 760;
+    }
+
+    .metric-change {
+      margin-top: 5px;
+      font-size: 12px;
+      color: var(--green);
+    }
+
+    .metric-change.down { color: #f87171; }
+
+    .section-title {
+      margin: 0 0 14px;
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .bar-row {
+      margin-bottom: 12px;
+    }
+
+    .bar-label {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      font-size: 13px;
+      margin-bottom: 5px;
+    }
+
+    .bar-label span:last-child { color: var(--muted); }
+
+    .bar {
+      height: 5px;
+      background: #333;
+      border-radius: 99px;
+      overflow: hidden;
+    }
+
+    .bar i {
+      display: block;
+      height: 100%;
+      border-radius: inherit;
+      background: var(--accent);
+    }
+
+    .activity {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 9px 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .activity:last-child { border-bottom: 0; }
+
+    .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      flex: 0 0 auto;
+    }
+
+    .activity-text {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .activity-text strong {
+      display: block;
+      font-size: 13px;
+      font-weight: 520;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .activity-text small {
+      display: block;
+      color: var(--muted);
+      font-size: 11px;
+      margin-top: 2px;
+    }
+
+    .time {
+      color: var(--dim);
+      font-size: 11px;
+      flex: 0 0 auto;
+    }
+
+    .toolbar {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 16px;
+      padding: 12px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+    }
+
+    input, select, textarea {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      color: var(--text);
+      padding: 8px 11px;
+      font-size: 13px;
+      outline: none;
+    }
+
+    input { min-width: 240px; flex: 1; }
+
+    button.action {
+      border: 0;
+      border-radius: 6px;
+      padding: 8px 13px;
+      color: #fff;
+      background: var(--accent);
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 650;
+    }
+
+    button.secondary { background: #1e3a5f; color: #60a5fa; }
+    button.green { background: #12391f; color: #4ade80; }
+    button.gray { background: #2a2a2a; color: #bbb; }
+    button.warn { background: #7c2d12; color: #fb923c; }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+
+    th, td {
+      text-align: left;
+      padding: 11px 13px;
+      border-bottom: 1px solid var(--border);
+      white-space: nowrap;
+    }
+
+    th {
+      color: var(--muted);
+      font-weight: 600;
+      font-size: 12px;
+    }
+
+    tbody tr:hover { background: #252525; }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      border-radius: 4px;
+      padding: 3px 8px;
+      font-size: 11px;
+      font-weight: 700;
+    }
+
+    .b-active, .b-published, .b-sold { background: #14532d; color: #4ade80; }
+    .b-sale, .b-banned { background: #450a0a; color: #f87171; }
+    .b-suspended, .b-flagged, .b-scheduled { background: #713f12; color: #fbbf24; }
+    .b-show, .b-draft, .b-email { background: #1e3a5f; color: #60a5fa; }
+    .b-hide, .b-apple, .b-google { background: #2a2a2a; color: #d1d5db; }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    label {
+      display: block;
+      color: var(--muted);
+      font-size: 12px;
+      margin: 0 0 5px;
+    }
+
+    .field { margin-bottom: 12px; }
+    .field input, .field select, .field textarea { width: 100%; min-width: 0; }
+    textarea { resize: vertical; min-height: 82px; }
+
+    .empty {
+      display: grid;
+      place-items: center;
+      min-height: 360px;
+      color: var(--muted);
+      text-align: center;
+    }
+
+    .empty strong {
+      display: block;
+      color: var(--text);
+      font-size: 18px;
+      margin-bottom: 7px;
+    }
+
+    @media (max-width: 920px) {
+      .app { grid-template-columns: 70px 1fr; }
+      .brand h1, .brand span, .nav-label, .admin div:not(.avatar) { display: none; }
+      .brand { padding: 16px 0; text-align: center; }
+      .nav-btn { justify-content: center; padding: 11px 0; }
+      .metrics, .two, .three, .form-grid { grid-template-columns: 1fr; }
+      main { padding: 18px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar">
+      <div class="brand">
+        <h1>Tuk Daeng</h1>
+        <span>Back Office v1.2 Preview</span>
+      </div>
+      <nav id="nav"></nav>
+      <div class="admin">
+        <div class="avatar">S</div>
+        <div>
+          <strong>Super Admin</strong>
+          <small>admin@tukdaeng.com</small>
+        </div>
+      </div>
+    </aside>
+    <main id="main"></main>
+  </div>
+
+  <script>
+    const nav = [
+      ["dashboard", "Dashboard", "▦"],
+      ["users", "Users", "◎"],
+      ["assets", "Assets", "⌚"],
+      ["offers", "Offers & Chat", "⇄"],
+      ["social", "Social", "♡"],
+      ["articles", "Articles", "▤"],
+      ["market", "Market Data", "↗"],
+      ["alerts", "Watch Alerts", "🔔"],
+      ["directory", "Directory", "⌂"],
+      ["support", "Help & Support", "?"],
+      ["notifications", "Notifications", "✉"],
+      ["reports", "Reports", "≡"],
+      ["audit", "Audit Log", "⌕"],
+      ["settings", "Settings", "⚙"]
+    ];
+
+    const users = [
+      ["U001", "Vintage Vault BKK", "info@vintagevault.com", "Email", "14", "Active", "2h ago"],
+      ["U002", "The Collector", "collector@mail.com", "Google", "6", "Active", "5h ago"],
+      ["U003", "horology.king", "hking@mail.com", "Email", "22", "Suspended", "3d ago"],
+      ["U004", "Marcus V", "marcus@mail.com", "Apple", "0", "Active", "1d ago"],
+      ["U005", "Sophie Patek", "sophie@mail.com", "Email", "8", "Active", "30m ago"]
+    ];
+
+    const assets = [
+      ["A001", "Patek Philippe", "Nautilus 5711/1A", "5711/1A-010", "Vintage Vault BKK", "THB 1,200,000", "Sale", "No"],
+      ["A002", "Rolex", "Submariner Date", "116610LN", "horology.king", "THB 350,000", "Sale", "Yes"],
+      ["A003", "Audemars Piguet", "Royal Oak Day-Date", "26330OR", "Vintage Vault BKK", "THB 3,080,000", "Collection Show", "No"],
+      ["A004", "Omega", "Speedmaster Pro", "310.30.42.50", "Sophie Patek", "THB 145,000", "Collection Hide", "No"],
+      ["A005", "IWC", "Pilot's Watch XVI", "IW325501", "The Collector", "THB 120,000", "Sold", "No"]
+    ];
+
+    const offers = [
+      ["OF001", "A001", "Marcus V", "Vintage Vault BKK", "THB 1,100,000", "Pending", "12m ago"],
+      ["OF002", "A002", "The Collector", "horology.king", "THB 320,000", "Accepted", "1h ago"],
+      ["OF003", "A005", "Sophie Patek", "The Collector", "THB 112,000", "Declined", "4h ago"],
+      ["OF004", "A003", "Marcus V", "Vintage Vault BKK", "THB 2,950,000", "Expired", "1d ago"]
+    ];
+
+    const comments = [
+      ["CM001", "A002", "watchfan88", "Is box and papers included?", "Visible", "0"],
+      ["CM002", "A001", "collector_bkk", "Can inspect in Bangkok?", "Visible", "0"],
+      ["CM003", "A004", "newuser", "Suspicious price", "Reported", "2"],
+      ["CM004", "A003", "modnote", "Removed spam link", "Hidden", "1"]
+    ];
+
+    function badge(value) {
+      const key = String(value).toLowerCase().replace(/\s+/g, "-");
+      let cls = "b-hide";
+      if (["active", "published", "sold", "accepted", "visible", "resolved"].includes(key)) cls = "b-active";
+      if (["sale", "banned", "declined", "failed"].includes(key)) cls = "b-sale";
+      if (["suspended", "flagged", "scheduled", "pending", "reported", "expired"].includes(key)) cls = "b-suspended";
+      if (["collection-show", "draft", "email", "open"].includes(key)) cls = "b-show";
+      return `<span class="badge ${cls}">${value}</span>`;
+    }
+
+    function header(title, sub, action) {
+      return `<div class="header"><div><h2>${title}</h2>${sub ? `<div class="sub">${sub}</div>` : ""}</div>${action || ""}</div>`;
+    }
+
+    function toolbar(search, filters = []) {
+      return `<div class="toolbar"><input placeholder="${search}">${filters.map(f => `<select><option>${f}</option></select>`).join("")}<button class="action green">Export CSV</button></div>`;
+    }
+
+    function table(cols, rows, actions) {
+      return `<div class="card" style="overflow:auto"><table><thead><tr>${cols.map(c => `<th>${c}</th>`).join("")}${actions ? "<th>Actions</th>" : ""}</tr></thead><tbody>${rows.map(row => `<tr>${row.map(cell => `<td>${["Active","Suspended","Sale","Collection Show","Collection Hide","Sold","Pending","Accepted","Declined","Expired","Visible","Reported","Hidden","Email","Apple","Google","Open","Resolved"].includes(cell) ? badge(cell) : cell}</td>`).join("")}${actions ? `<td>${actions}</td>` : ""}</tr>`).join("")}</tbody></table></div>`;
+    }
+
+    function bar(label, value, pct, color = "var(--accent)") {
+      return `<div class="bar-row"><div class="bar-label"><span>${label}</span><span>${value}</span></div><div class="bar"><i style="width:${pct}%;background:${color}"></i></div></div>`;
+    }
+
+    const pages = {
+      dashboard: () => `
+        ${header("Dashboard", "System overview - Back Office coverage for FO flows")}
+        <div class="grid metrics">
+          ${metric("Total Users", "12,480", "+8.2%")}
+          ${metric("Active Listings", "3,847", "+12.4%")}
+          ${metric("Offers Today", "246", "+3.1%")}
+          ${metric("Pending Reports", "7", "+2", true)}
+        </div>
+        <div class="grid two">
+          <section class="card pad">
+            <h3 class="section-title">Asset Status Breakdown</h3>
+            ${bar("Sale", "2,410", 82, "#f87171")}
+            ${bar("Collection Show", "890", 48, "#60a5fa")}
+            ${bar("Collection Hide", "340", 24, "#9ca3af")}
+            ${bar("Sold", "207", 16, "#4ade80")}
+          </section>
+          <section class="card pad">
+            <h3 class="section-title">FO Flow Coverage</h3>
+            ${bar("Asset / Profile", "Covered", 96, "#22c55e")}
+            ${bar("Content / Board", "Covered", 92, "#22c55e")}
+            ${bar("Offer / Chat", "Added", 78, "#f59e0b")}
+            ${bar("Social / Alerts", "Added", 74, "#f59e0b")}
+          </section>
+        </div>
+        <div class="grid two">
+          <section class="card pad">
+            <h3 class="section-title">Recent Activity</h3>
+            ${activity("New user registered (Apple)", "marcus_bkk", "2m ago", "#3b82f6")}
+            ${activity("New offer pending", "Patek Nautilus deal", "12m ago", "#f59e0b")}
+            ${activity("Asset flagged for review", "Rolex Sub 116610LN", "15m ago", "#f59e0b")}
+            ${activity("Article published", "Daytona Q3 Price Update", "1h ago", "#22c55e")}
+            ${activity("Comment reported", "Suspicious price", "3h ago", "#f87171")}
+          </section>
+          <section class="card pad">
+            <h3 class="section-title">Top Searched Brands</h3>
+            ${bar("Rolex", "4,820", 100)}
+            ${bar("Patek Philippe", "3,240", 67)}
+            ${bar("Audemars Piguet", "2,180", 45)}
+            ${bar("Omega", "1,950", 40)}
+            ${bar("IWC", "980", 20)}
+          </section>
+        </div>`,
+
+      users: () => `${header("User Management", "All FO users use one role. Auth methods: Email, Apple, Google.", `<button class="action">+ Invite Admin</button>`)}${toolbar("Search username / email...", ["All Status", "All Auth Methods"])}${table(["User ID","Username","Email","Auth","Assets","Status","Last Active"], users, `<button class="action secondary">View</button> <button class="action warn">Suspend</button>`)}`,
+
+      assets: () => `${header("Asset Management", "Moderate Sale, Collection Show, Collection Hide and Sold assets.", `<button class="action">+ Force Review</button>`)}${toolbar("Search brand / model / owner...", ["All Status", "All Brands", "Flagged"])}${table(["Asset ID","Brand","Model","Reference","Owner","Price","Status","Flagged"], assets, `<button class="action secondary">View</button> <button class="action gray">Change Status</button>`)}`,
+
+      offers: () => `${header("Offer & Chat Management", "New addendum module for Make Offer, Incoming Offers and Chat moderation.", `<button class="action">Review Pending</button>`)}${toolbar("Search offer / asset / user...", ["All Offer Status", "All Brands", "Reported Chats"])}${table(["Offer ID","Asset","Buyer","Owner","Offer Price","Status","Updated"], offers, `<button class="action secondary">View</button> <button class="action warn">Force Expire</button>`)}`,
+
+      social: () => `${header("Social Interaction Management", "Moderate comments, likes/favorites and follows from FO.", `<button class="action">Reported Only</button>`)}${toolbar("Search comment / asset / user...", ["All Comment Status", "All Reports"])}${table(["Comment ID","Asset","User","Content Preview","Status","Reports"], comments, `<button class="action secondary">View</button> <button class="action warn">Hide</button>`)}`,
+
+      articles: () => `${header("Content Management - Articles", "Manage Board articles, categories and banners.", `<button class="action">+ New Article</button>`)}${toolbar("Search article title...", ["All Status", "All Categories"])}${table(["Article ID","Title","Category","Author","Status","Views","Likes"], [["AR001","Perpetual Calendar: A Century of Mastery","Watch 101","Tuk Daeng","Published","4,820","312"],["AR002","5 Things Before You Buy Grand Seiko","Watch Brands","Admin","Published","2,100","178"],["AR003","Rolex Steel vs. Gold","Watch Brands","Admin","Draft","0","0"],["AR004","Daytona Prices Stabilize in Q3","Watch Market","Tuk Daeng","Scheduled","0","0"]], `<button class="action secondary">Edit</button>`)}`,
+
+      market: () => `${header("Market Data", "Watch Brands, Models and Price Index used by FO autocomplete and Asset Value.", `<button class="action">+ Add Brand</button>`)}<div class="grid three">${mini("Brands","128","Active brand master data")}${mini("Models","1,284","Autocomplete and filters")}${mini("Price Index","8,420","Historical price rows")}</div><br>${table(["Brand","Model","Reference","Min THB","Max THB","Updated"], [["Patek Philippe","Nautilus","5711/1A","1,100,000","1,350,000","Today"],["Rolex","Submariner","116610LN","320,000","390,000","Today"],["Omega","Speedmaster","310.30.42.50","130,000","170,000","Yesterday"]], `<button class="action secondary">Edit</button>`)}`,
+
+      alerts: () => `${header("Watch Alert Management", "View saved search criteria, trigger history and notification toggles.", `<button class="action">Trigger Logs</button>`)}${toolbar("Search user / alert / brand...", ["Active Alerts", "Notification On", "All Brands"])}${table(["Alert ID","User","Name","Criteria","Notification","Status","Last Triggered"], [["WA001","Marcus V","Rolex under 400k","Rolex + THB 0-400k","On","Active","10m ago"],["WA002","The Collector","Patek Nautilus","Patek + Nautilus","On","Active","2h ago"],["WA003","Sophie Patek","Omega Speedy","Omega + Speedmaster","Off","Active","Never"]], `<button class="action secondary">View</button> <button class="action warn">Disable</button>`)}`,
+
+      directory: () => `${header("Directory Management", "Manage FO menu directory: shops, repair, auction, consignment, authentication and community.", `<button class="action">+ Add Directory</button>`)}${toolbar("Search directory item...", ["All Categories", "All Status", "All Provinces"])}${table(["Name","Category","Province","Phone","Status"], [["Siam Watch Gallery","Watch Shops","Bangkok","02-123-4567","Active"],["Watch Tools Pro","Repair Shops","Bangkok","081-234-5678","Active"],["Thai Watch Auction","Auction Centers","Chiang Mai","053-111-222","Active"],["The Consign House","Consignment Centers","Bangkok","089-999-0000","Suspended"]], `<button class="action secondary">View</button>`)}`,
+
+      support: () => `${header("Help & Support", "New addendum module for Settings > Help tickets.", `<button class="action">Assign Ticket</button>`)}${toolbar("Search ticket / user / entity...", ["All Status", "All Types", "Priority"])}${table(["Ticket ID","User","Type","Subject","Priority","Status","Updated"], [["TK001","Marcus V","Offer","Cannot decline incoming offer","High","Open","8m ago"],["TK002","Sophie Patek","Asset","Proof of payment upload failed","Medium","Open","1h ago"],["TK003","The Collector","Account","Delete account blocked","High","Resolved","1d ago"]], `<button class="action secondary">Open</button>`)}`,
+
+      notifications: () => `${header("Notification Management", "Broadcast plus system notification triggers/templates.", `<button class="action">+ New Broadcast</button>`)}<div class="form-grid"><section class="card pad"><h3 class="section-title">Create Broadcast</h3><div class="field"><label>Title</label><input value="Rolex Price Update Q4"></div><div class="field"><label>Body</label><textarea>New market data is available in Watch Price Index.</textarea></div><div class="field"><label>Target Audience</label><select><option>Users with Watch Alert (Brand)</option></select></div><button class="action" style="width:100%">Send Notification</button></section><section class="card pad"><h3 class="section-title">System Triggers</h3>${bar("New Offer", "Enabled", 100, "#22c55e")}${bar("Comment", "Enabled", 100, "#22c55e")}${bar("Watch Alert", "Enabled", 100, "#22c55e")}${bar("Sale Success", "Enabled", 100, "#22c55e")}</section></div>`,
+
+      reports: () => `${header("Reports & Analytics", "Expanded reports include offer, chat, social, deletion, support and notification reports.", `<button class="action green">Export Excel</button>`)}<div class="grid three">${mini("Offers Accepted","89","+8% today")}${mini("Reported Comments","14","+3 today")}${mini("Open Tickets","21","SLA 92%")}${mini("Active Watch Alerts","5,240","+340")}${mini("Notification CTR","8.2%","+0.5pp")}${mini("Deletion Requests","6","2 blocked")}</div>`,
+
+      audit: () => `${header("Audit Log", "All admin actions are recorded with before/after values.", `<button class="action green">Export CSV</button>`)}${toolbar("Search admin / action / entity...", ["All Roles", "All Actions"])}${table(["Log ID","Admin","Role","Action","Entity","Time"], [["AL001","superadmin","Super Admin","ForceExpireOffer","Offer / OF001","10m ago"],["AL002","moderator1","Moderator","HideComment","Comment / CM003","28m ago"],["AL003","support.admin","Support Admin","ResolveTicket","Ticket / TK003","1h ago"],["AL004","market.admin","Market Admin","Update Price Index","Model / Nautilus","3h ago"]], `<button class="action secondary">Details</button>`)}`,
+
+      settings: () => `${header("Admin Settings", "Role, permission and security settings.")}<div class="empty card"><div><strong>Admin Settings</strong><span>2FA, session policy, IP whitelist and admin account controls.</span></div></div>`
+    };
+
+    function metric(label, value, change, down) {
+      return `<section class="card pad"><div class="metric-label">${label}</div><div class="metric-value">${value}</div><div class="metric-change ${down ? "down" : ""}">${change} vs last period</div></section>`;
+    }
+
+    function mini(label, value, note) {
+      return `<section class="card pad"><div class="metric-label">${label}</div><div class="metric-value">${value}</div><div class="metric-change">${note}</div></section>`;
+    }
+
+    function activity(title, sub, time, color) {
+      return `<div class="activity"><span class="dot" style="background:${color}"></span><div class="activity-text"><strong>${title}</strong><small>${sub}</small></div><span class="time">${time}</span></div>`;
+    }
+
+    function render(page = "dashboard") {
+      document.querySelectorAll(".nav-btn").forEach(btn => btn.classList.toggle("active", btn.dataset.page === page));
+      document.getElementById("main").innerHTML = (pages[page] || pages.dashboard)();
+    }
+
+    document.getElementById("nav").innerHTML = nav.map(([id, label, icon]) =>
+      `<button class="nav-btn" data-page="${id}"><span class="nav-icon">${icon}</span><span class="nav-label">${label}</span></button>`
+    ).join("");
+
+    document.getElementById("nav").addEventListener("click", event => {
+      const btn = event.target.closest(".nav-btn");
+      if (btn) render(btn.dataset.page);
+    });
+
+    render();
+  </script>
+</body>
+</html>
