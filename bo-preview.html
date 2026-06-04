@@ -860,7 +860,7 @@
 
       return `${subHeader("รายการบทความ", "ค้นหา ตรวจสอบสถานะ และจัดการบทความทั้งหมดที่ส่งไปแสดงใน FO Board", `<button class="action">+ เพิ่มบทความ</button>`)}
         ${toolbar("ค้นหาชื่อบทความ / slug / tag...", ["ทุกสถานะ", "ทุกหมวดหมู่", "บทความเด่น"])}
-        ${table(["ID","ชื่อบทความ","Slug","หมวดหมู่","ผู้เขียน","เผยแพร่","เวลาอ่าน","เด่น","Views","Likes","Shares","สถานะ"], [["AR001","Perpetual Calendar: A Century of Mastery","perpetual-calendar-century","Watch 101","Tuk Daeng","เผยแพร่แล้ว","6 นาที","ใช่","4,820","312","86","Published"],["AR002","5 Things Before You Buy Grand Seiko","grand-seiko-buying-guide","Watch Brands","Admin","เผยแพร่แล้ว","4 นาที","ไม่","2,100","178","42","Published"],["AR003","Rolex Steel vs. Gold","rolex-steel-vs-gold","Watch Brands","Admin","ฉบับร่าง","5 นาที","ไม่","0","0","0","Draft"],["AR004","Daytona Prices Stabilize in Q3","daytona-prices-q3","Watch Market","Tuk Daeng","7 มิ.ย. 2026 10:00","3 นาที","ใช่","0","0","0","Scheduled"]], `<button class="action secondary">แก้ไข</button> <button class="action gray">พรีวิว FO</button>`)}`;
+        ${table(["ID","ชื่อบทความ","Slug","หมวดหมู่","ผู้เขียน","สถานะ","วันเวลาเผยแพร่","เวลาอ่าน","Views","เด่น"], [["AR001","Perpetual Calendar: A Century of Mastery","perpetual-calendar-century","Watch 101","Tuk Daeng","Published","3 มิ.ย. 2026 09:00","6 นาที","4,820","✓"],["AR002","5 Things Before You Buy Grand Seiko","grand-seiko-buying-guide","Watch Brands","Admin","Published","1 มิ.ย. 2026 10:30","4 นาที","2,100","✗"],["AR003","Rolex Steel vs. Gold","rolex-steel-vs-gold","Watch Brands","Admin","Draft","-","5 นาที","0","✗"],["AR004","Daytona Prices Stabilize in Q3","daytona-prices-q3","Watch Market","Tuk Daeng","Scheduled","7 มิ.ย. 2026 10:00","3 นาที","0","✓"]], `<button class="action secondary">แก้ไข</button> <button class="action gray">พรีวิว FO</button>`)}`;
     }
 
     function bar(label, value, pct, color = "var(--accent)") {
@@ -868,6 +868,24 @@
     }
 
     const pages = {
+      login: () => `
+        <div style="display:grid;place-items:center;min-height:100vh;padding:20px">
+          <section class="card pad" style="width:100%;max-width:400px">
+            <div style="text-align:center;margin-bottom:24px">
+              <h1 style="margin:0;font-size:28px;color:var(--accent);font-weight:800">ตึกแดง</h1>
+              <div style="color:var(--muted);font-size:12px;margin-top:4px">Back Office System v1.2</div>
+            </div>
+            <div class="field"><label>อีเมล</label><input value="admin@tukdaeng.com" placeholder="admin@email.com"></div>
+            <div class="field"><label>รหัสผ่าน</label><input type="password" value="•••••••• " placeholder="Password"></div>
+            <div class="field"><label style="display:flex;align-items:center;gap:8px;margin-bottom:12px;font-weight:400"><input type="checkbox" style="min-width:16px;width:16px;height:16px"> จำรหัสผ่านไว้</label></div>
+            <button class="action" style="width:100%;margin-bottom:12px" onclick="render('dashboard')">เข้าสู่ระบบ</button>
+            <div style="text-align:center;color:var(--muted);font-size:12px">ลืมรหัสผ่าน? <a href="#" style="color:var(--accent);text-decoration:none">รีเซ็ตรหัสผ่าน</a></div>
+          </section>
+          <div style="text-align:center;margin-top:24px;color:var(--muted);font-size:11px">
+            <div>© 2026 Tuk Daeng Co., Ltd. All rights reserved.</div>
+          </div>
+        </div>
+      `,
       dashboard: () => `
         ${header("แดชบอร์ด", "ภาพรวมระบบหลังบ้านที่ใช้ติดตามผู้ใช้ สินทรัพย์ ข้อเสนอ บทความ และงานที่ต้องตรวจ", `<button class="action green">ส่งออกรายงาน</button>`)}
         <div class="toolbar">
@@ -956,11 +974,11 @@
           </section>
         </div>`,
 
-      users: () => `${header("จัดการผู้ใช้งาน", "ผู้ใช้หน้าบ้านทุกคนใช้ role เดียวกัน รองรับ Email, Apple และ Google", `<button class="action">+ เพิ่มแอดมิน</button>`)}${toolbar("ค้นหาชื่อผู้ใช้ / อีเมล...", ["ทุกสถานะ", "ทุกวิธีล็อกอิน"])}${table(["รหัสผู้ใช้","ชื่อผู้ใช้","อีเมล","วิธีล็อกอิน","จำนวนสินทรัพย์","สถานะ","ใช้งานล่าสุด"], users, `<button class="action secondary">ดู</button> <button class="action warn">ระงับ</button>`)}`,
+      users: () => `${header("จัดการผู้ใช้งาน", "ผู้ใช้หน้าบ้านทุกคนใช้ role เดียวกัน รองรับ Email, Apple และ Google", `<button class="action">+ เพิ่มแอดมิน</button>`)}${toolbar("ค้นหาชื่อผู้ใช้ / อีเมล...", ["ทุกสถานะ", "ทุกวิธีล็อกอิน"])}${table(["รหัสผู้ใช้","ชื่อผู้ใช้","อีเมล","วิธีล็อกอิน","จำนวนสินทรัพย์","สถานะ","ใช้งานล่าสุด"], users, `<button class="action secondary">ดู</button><button class="action gray">ระงับ</button><button class="action warn">แบน</button>`)}`,
 
       assets: () => `${header("จัดการสินทรัพย์", "ตรวจสอบและควบคุมสินทรัพย์ทุกสถานะจากหน้าบ้าน", `<button class="action">+ ส่งตรวจสอบ</button>`)}${toolbar("ค้นหาแบรนด์ / รุ่น / เจ้าของ...", ["ทุกสถานะ", "ทุกแบรนด์", "ถูก Flag"])}${table(["รหัสสินทรัพย์","แบรนด์","รุ่น","Ref.","เจ้าของ","ราคา","สถานะ","Flag"], assets, `<button class="action secondary">ดู</button> <button class="action gray">เปลี่ยนสถานะ</button>`)}`,
 
-      offers: () => `${header("จัดการข้อเสนอและแชท", "ตรวจสอบ Make Offer, Incoming Offers และห้องแชทที่ถูกรายงาน", `<button class="action">ตรวจรายการค้าง</button>`)}${toolbar("ค้นหาข้อเสนอ / สินทรัพย์ / ผู้ใช้...", ["ทุกสถานะข้อเสนอ", "ทุกแบรนด์", "แชทถูกรายงาน"])}${table(["รหัสข้อเสนอ","สินทรัพย์","ผู้เสนอ","เจ้าของ","ราคาที่เสนอ","สถานะ","อัปเดต"], offers, `<button class="action secondary">ดู</button> <button class="action warn">หมดอายุทันที</button>`)}`,
+      offers: () => `${header("จัดการข้อเสนอและแชท", "ตรวจสอบ Make Offer, Incoming Offers และห้องแชทที่ถูกรายงาน", `<button class="action">ตรวจรายการค้าง</button>`)}${toolbar("ค้นหาข้อเสนอ / สินทรัพย์ / ผู้ใช้...", ["ทุกสถานะข้อเสนอ", "ทุกแบรนด์", "แชทถูกรายงาน"])}${table(["รหัสข้อเสนอ","สินทรัพย์","ผู้เสนอ","เจ้าของ","ราคาที่เสนอ","สถานะ","อัปเดต"], offers, `<button class="action secondary">ดู</button><button class="action warn" title="เฉพาะ Super Admin">Force Expire</button>`)}`,
 
       social: () => `${header("จัดการโซเชียล", "ดูแลคอมเมนต์ ไลก์ รายการโปรด และการติดตามจากหน้าบ้าน", `<button class="action">เฉพาะที่ถูกรายงาน</button>`)}${toolbar("ค้นหาคอมเมนต์ / สินทรัพย์ / ผู้ใช้...", ["ทุกสถานะคอมเมนต์", "ทุกรายงาน"])}${table(["รหัสคอมเมนต์","สินทรัพย์","ผู้ใช้","ตัวอย่างข้อความ","สถานะ","รายงาน"], comments, `<button class="action secondary">ดู</button> <button class="action warn">ซ่อน</button>`)}`,
 
@@ -993,7 +1011,8 @@
           ${mini("Session","Idle 8 ชม.","Max 24 ชม.")}
           ${mini("IP Whitelist","เปิดใช้ใน Production","3 IP")}
         </div>
-        ${table(["Role","สิทธิ์หลัก","2FA","จำนวนบัญชี"], [["Super Admin","ทุกสิทธิ์","บังคับ","2"],["Content Admin","บทความ / หมวดหมู่ / แบนเนอร์","แนะนำ","3"],["Moderator","ตรวจสินทรัพย์ / คอมเมนต์ / รายงาน","แนะนำ","5"],["Support Admin","ผู้ใช้ / Ticket / Reset Password","แนะนำ","4"],["Market Admin","แบรนด์ / รุ่น / ราคา / Directory","แนะนำ","2"]], `<button class="action secondary">รายละเอียด</button> <button class="action gray">แก้ไข</button>`)}`
+        <h3 class="section-title">Permission Matrix by Role</h3>
+        ${table(["Role","Dashboard","User Mgmt","Asset Mgmt","Offer & Chat","Social","Content","Market Data","Support","Reports","Audit Log","2FA"], [["Super Admin","✓","✓","✓","✓","✓","✓","✓","✓","✓","✓","บังคับ"],["Content Admin","✓","✗","✗","✗","✗","✓","✗","✗","✗","✗","แนะนำ"],["Moderator","✓","✗","✓","✓","✓","✗","✗","✗","✓","✗","แนะนำ"],["Support Admin","✓","✓","✗","✗","✗","✗","✗","✓","✓","✗","แนะนำ"],["Market Admin","✓","✗","✗","✗","✗","✗","✓","✗","✗","✗","แนะนำ"]], `<button class="action secondary">รายละเอียด</button>`)}`
     };
 
     function metric(label, value, change, down) {
@@ -1008,9 +1027,15 @@
       return `<div class="activity"><span class="dot" style="background:${color}"></span><div class="activity-text"><strong>${title}</strong><small>${sub}</small></div><span class="time">${time}</span></div>`;
     }
 
-    function render(page = "dashboard") {
+    function render(page = "login") {
+      const sidebar = document.querySelector(".sidebar");
+      if (page === "login") {
+        sidebar.style.display = "none";
+      } else {
+        sidebar.style.display = "flex";
+      }
       document.querySelectorAll(".nav-btn").forEach(btn => btn.classList.toggle("active", btn.dataset.page === page));
-      document.getElementById("main").innerHTML = (pages[page] || pages.dashboard)();
+      document.getElementById("main").innerHTML = (pages[page] || pages.login)();
       window.currentPage = page;
     }
 
@@ -1106,12 +1131,24 @@
             </div>
           </section>
           <section class="card pad">
-            <h3 class="section-title">การแสดงผลบน FO</h3>
-            ${bar("Feed / Marketplace","แสดงเพราะสถานะ = Sale",100,"#22c55e")}
-            ${bar("โปรไฟล์เจ้าของ","แสดง",100,"#22c55e")}
-            ${bar("โปรไฟล์คนอื่น","แสดงในแท็บ For Sale",86,"#60a5fa")}
-            ${bar("เจ้าของแก้ไขได้","อนุญาตจนกว่าจะเป็น Sold",74,"#f59e0b")}
-            <div class="field" style="margin-top:16px"><label>รายละเอียด</label><textarea>Rolex Submariner Date with box and papers. User generated content from FO.</textarea></div>
+            <h3 class="section-title">Asset Status & FO Visibility Rules</h3>
+            <div style="margin-bottom:16px;overflow:auto">
+              <table style="width:100%;font-size:12px;margin:0">
+                <thead><tr style="background:var(--card-2)"><th style="padding:8px;text-align:left">Status</th><th style="padding:8px;text-align:left">FO Visibility</th><th style="padding:8px;text-align:left">Current</th></tr></thead>
+                <tbody>
+                  <tr><td style="padding:8px">Sale</td><td style="padding:8px">Feed, Marketplace, Owner Profile, Viewer Profile</td><td style="padding:8px"><span class="badge b-sale">Sale</span></td></tr>
+                  <tr><td style="padding:8px">Collection Show</td><td style="padding:8px">Owner Profile, Viewer Profile (not for sale)</td><td style="padding:8px"><span class="badge b-show">Collection Show</span></td></tr>
+                  <tr><td style="padding:8px">Collection Hide</td><td style="padding:8px">Owner only (hidden)</td><td style="padding:8px"><span class="badge b-hide">Collection Hide</span></td></tr>
+                  <tr><td style="padding:8px">Sold</td><td style="padding:8px">Owner Sold tab only (no edit)</td><td style="padding:8px"><span class="badge b-sold">Sold</span></td></tr>
+                </tbody>
+              </table>
+            </div>
+            <div style="padding:10px;background:var(--card-2);border-radius:6px;border-left:3px solid var(--accent);font-size:12px;color:var(--muted)">
+              <strong>Current Status: Sale</strong> - Asset แสดงบน Feed, Marketplace, และโปรไฟล์ทั้ง owner และ viewer ได้ คลิก Force Change Status เพื่อเปลี่ยน
+            </div>
+            <div class="field" style="margin-top:16px"><label>Force Change Status</label><select><option>Sale</option><option>Collection Show</option><option>Collection Hide</option><option>Sold</option></select></div>
+            <button class="action" style="width:100%;margin-bottom:12px">เปลี่ยนสถานะ</button>
+            <div class="field"><label>รายละเอียด</label><textarea>Rolex Submariner Date with box and papers. User generated content from FO.</textarea></div>
             <div class="field"><label>สเปกทางเทคนิค</label><textarea>Case size 40mm, automatic movement, black dial, oyster bracelet.</textarea></div>
           </section>
         </div>
@@ -1200,12 +1237,21 @@
           </section>
         </div>
         <br>
-        <section class="card" style="overflow:auto">
-          <table><thead><tr><th>เวลา</th><th>ผู้ส่ง</th><th>ข้อความ</th><th>ประเภท</th></tr></thead><tbody>
-            <tr><td>12 นาที</td><td>Marcus V</td><td>Offer THB 1,100,000</td><td>Offer Card</td></tr>
-            <tr><td>11 นาที</td><td>Vintage Vault BKK</td><td>Can inspect this weekend?</td><td>Text</td></tr>
-            <tr><td>10 นาที</td><td>Marcus V</td><td>Yes, Bangkok only.</td><td>Text</td></tr>
-          </tbody></table>
+        <section class="card">
+          <div style="padding:16px;background:var(--card-2);border-bottom:1px solid var(--border)">
+            <h3 class="section-title">ห้องแชท (CH001) - เลขที่ 12 ข้อความ</h3>
+          </div>
+          <div style="padding:16px;max-height:300px;overflow-y:auto">
+            ${activity("Marcus V", "Offer THB 1,100,000", "12 นาที", "#3b82f6")}
+            ${activity("Vintage Vault BKK", "Can inspect this weekend?", "11 นาที", "#60a5fa")}
+            ${activity("Marcus V", "Yes, Bangkok only.", "10 นาที", "#3b82f6")}
+            ${activity("Vintage Vault BKK", "Suspicious price, declined.", "8 นาที", "#60a5fa")}
+          </div>
+          <div style="padding:12px;background:var(--card-2);border-top:1px solid var(--border);display:flex;gap:8px">
+            <button class="action secondary">✓ อนุมัติข้อความ</button>
+            <button class="action warn">✕ ซ่อนข้อความ</button>
+            <button class="action gray">🔍 ดูรายงาน (0)</button>
+          </div>
         </section>`;
     }
 
