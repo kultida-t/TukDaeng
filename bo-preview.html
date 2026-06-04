@@ -809,30 +809,41 @@
       </div>`;
     }
 
+    function subHeader(title, description, actionHtml = "") {
+      return `<div class="header" style="margin:0 0 12px">
+        <div>
+          <h2 style="font-size:16px">${title}</h2>
+          <div class="sub">${description}</div>
+        </div>
+        ${actionHtml}
+      </div>`;
+    }
+
     function boardContent() {
       if (boardTab === "categories") {
-        return `${toolbar("ค้นหาหมวดหมู่ / slug...", ["ทุกสถานะ"])}
+        return `${subHeader("หมวดหมู่บทความ", "จัดกลุ่มบทความที่แสดงในเมนู Board ของหน้าบ้าน", `<button class="action">+ เพิ่มหมวดหมู่</button>`)}
+          ${toolbar("ค้นหาชื่อหมวดหมู่หรือ slug...", ["ทุกสถานะ"])}
           ${table(["รหัส","ชื่อหมวดหมู่","Slug","ลำดับแสดงผล","จำนวนบทความ","สถานะ"], [
             ["CAT001","Watch 101","watch-101","1","14","Active"],
             ["CAT002","Watch Brands","watch-brands","2","18","Active"],
             ["CAT003","Watch Market","watch-market","3","9","Active"],
             ["CAT004","Watch Events","watch-events","4","3","Active"]
-          ], `<button class="action secondary">แก้ไข</button> <button class="action warn">ปิดใช้งาน</button>`)}
-          <br><button class="action">+ เพิ่มหมวดหมู่</button>`;
+          ], `<button class="action secondary">แก้ไข</button> <button class="action warn">ปิดใช้งาน</button>`)}`;
       }
 
       if (boardTab === "banners") {
-        return `${toolbar("ค้นหาแบนเนอร์...", ["ทุกตำแหน่ง", "ทุกสถานะ"])}
+        return `${subHeader("แบนเนอร์ Board", "จัดการแบนเนอร์ที่แสดงในหน้า Board และหน้ารายละเอียดบทความ", `<button class="action">+ เพิ่มแบนเนอร์</button>`)}
+          ${toolbar("ค้นหาชื่อแบนเนอร์...", ["ทุกตำแหน่ง", "ทุกสถานะ"])}
           ${table(["รหัส","ชื่อแบนเนอร์","ตำแหน่ง","วันที่เริ่ม","วันที่สิ้นสุด","CTR","สถานะ"], [
             ["BN001","Watch Price Index Update","Top Banner","1 มิ.ย. 2026","30 มิ.ย. 2026","8.4%","Active"],
             ["BN002","Consignment Partner Highlight","Mid Banner","4 มิ.ย. 2026","20 มิ.ย. 2026","5.1%","Active"],
             ["BN003","Authentication Center Guide","Board Detail","-","-","-","Inactive"]
-          ], `<button class="action secondary">แก้ไข</button> <button class="action gray">พรีวิว</button>`)}
-          <br><button class="action">+ เพิ่มแบนเนอร์</button>`;
+          ], `<button class="action secondary">แก้ไข</button> <button class="action gray">พรีวิว</button>`)}`;
       }
 
       if (boardTab === "analytics") {
-        return `<div class="grid three">
+        return `${subHeader("สถิติ Board", "ดู performance ของบทความ หมวดหมู่ และแบนเนอร์", `<button class="action green">ส่งออก Excel</button>`)}
+        <div class="grid three">
           ${mini("ยอดอ่านบทความ","82,400","+22%")}
           ${mini("ผู้อ่านไม่ซ้ำ","28,910","+11%")}
           ${mini("เวลาอ่านเฉลี่ย","4.2 นาที","+0.4 นาที")}
@@ -844,10 +855,11 @@
           ["Top Article","Perpetual Calendar","4,820 views","30 วัน"],
           ["Top Category","Watch Brands","31% ของยอดอ่าน","30 วัน"],
           ["Top Search Keyword","Rolex","1,240 searches","30 วัน"]
-        ], `<button class="action green">ส่งออก Excel</button>`)}`;
+        ], `<button class="action secondary">รายละเอียด</button>`)}`;
       }
 
-      return `${toolbar("ค้นหาชื่อบทความ / slug / tag...", ["ทุกสถานะ", "ทุกหมวดหมู่", "บทความเด่น"])}
+      return `${subHeader("รายการบทความ", "ค้นหา ตรวจสอบสถานะ และจัดการบทความทั้งหมดที่ส่งไปแสดงใน FO Board", `<button class="action">+ เพิ่มบทความ</button>`)}
+        ${toolbar("ค้นหาชื่อบทความ / slug / tag...", ["ทุกสถานะ", "ทุกหมวดหมู่", "บทความเด่น"])}
         ${table(["ID","ชื่อบทความ","Slug","หมวดหมู่","ผู้เขียน","เผยแพร่","เวลาอ่าน","เด่น","Views","Likes","Shares","สถานะ"], [["AR001","Perpetual Calendar: A Century of Mastery","perpetual-calendar-century","Watch 101","Tuk Daeng","เผยแพร่แล้ว","6 นาที","ใช่","4,820","312","86","Published"],["AR002","5 Things Before You Buy Grand Seiko","grand-seiko-buying-guide","Watch Brands","Admin","เผยแพร่แล้ว","4 นาที","ไม่","2,100","178","42","Published"],["AR003","Rolex Steel vs. Gold","rolex-steel-vs-gold","Watch Brands","Admin","ฉบับร่าง","5 นาที","ไม่","0","0","0","Draft"],["AR004","Daytona Prices Stabilize in Q3","daytona-prices-q3","Watch Market","Tuk Daeng","7 มิ.ย. 2026 10:00","3 นาที","ใช่","0","0","0","Scheduled"]], `<button class="action secondary">แก้ไข</button> <button class="action gray">พรีวิว FO</button>`)}`;
     }
 
@@ -907,7 +919,7 @@
 
       social: () => `${header("จัดการโซเชียล", "ดูแลคอมเมนต์ ไลก์ รายการโปรด และการติดตามจากหน้าบ้าน", `<button class="action">เฉพาะที่ถูกรายงาน</button>`)}${toolbar("ค้นหาคอมเมนต์ / สินทรัพย์ / ผู้ใช้...", ["ทุกสถานะคอมเมนต์", "ทุกรายงาน"])}${table(["รหัสคอมเมนต์","สินทรัพย์","ผู้ใช้","ตัวอย่างข้อความ","สถานะ","รายงาน"], comments, `<button class="action secondary">ดู</button> <button class="action warn">ซ่อน</button>`)}`,
 
-      articles: () => `${header("จัดการกระดานข่าว", "แอดมินสร้างบทความ ใส่รูปปก และจัดเนื้อหาจาก BO โดย FO Board แสดงเฉพาะบทความที่เผยแพร่แล้วและถึงเวลาเผยแพร่", `<button class="action">+ เพิ่มบทความ</button>`)}
+      articles: () => `${header("จัดการกระดานข่าว", "จัดการบทความ หมวดหมู่ แบนเนอร์ และสถิติที่แสดงในเมนู Board ของหน้าบ้าน")}
         <div class="grid three" style="margin-bottom:16px">
           ${mini("บทความเผยแพร่", "32", "แสดงบน FO Board")}
           ${mini("ตั้งเวลาไว้", "4", "รอเวลาเผยแพร่")}
@@ -1294,6 +1306,26 @@
 
       if (label.includes("+ เพิ่มแบนเนอร์")) {
         openModal("เพิ่มแบนเนอร์ Board", genericForm("Banner", [["ชื่อแบนเนอร์", ""], ["ตำแหน่ง", "Top Banner"], ["Target URL / Deep Link", ""], ["วันที่เริ่ม", ""], ["วันที่สิ้นสุด", ""], ["Alt Text", ""]]));
+        return true;
+      }
+
+      if (page === "articles" && boardTab === "categories" && label === "แก้ไข") {
+        openModal("แก้ไขหมวดหมู่ Board", genericForm("Category", [["ชื่อหมวดหมู่", "Watch Brands"], ["Slug", "watch-brands"], ["คำอธิบาย", "บทความเกี่ยวกับแบรนด์นาฬิกา", "textarea"], ["ลำดับแสดงผล", "2"], ["สถานะ", "Active"]]));
+        return true;
+      }
+
+      if (page === "articles" && boardTab === "banners" && label === "แก้ไข") {
+        openModal("แก้ไขแบนเนอร์ Board", genericForm("Banner", [["ชื่อแบนเนอร์", "Watch Price Index Update"], ["ตำแหน่ง", "Top Banner"], ["Target URL / Deep Link", "/price-index"], ["วันที่เริ่ม", "2026-06-01"], ["วันที่สิ้นสุด", "2026-06-30"], ["Alt Text", "อัปเดตราคานาฬิกา"]]));
+        return true;
+      }
+
+      if (page === "articles" && boardTab === "banners" && label === "พรีวิว") {
+        openModal("พรีวิวแบนเนอร์ Board", `<div class="card" style="background:#111;border-color:#333"><div style="height:220px;background:linear-gradient(135deg,#2a2a2a,#511);display:grid;place-items:center;color:#ddd">Watch Price Index Update</div><div style="padding:14px"><h2 style="font-size:18px">แบนเนอร์ตัวอย่างบน FO Board</h2><div class="sub">ตำแหน่ง Top Banner · คลิกไปที่ /price-index</div></div></div>`, `<button class="action gray" data-close-modal>ปิด</button>`);
+        return true;
+      }
+
+      if (page === "articles" && boardTab === "analytics" && (label.includes("ส่งออก") || label === "รายละเอียด")) {
+        openModal("รายละเอียดสถิติ Board", reportDetail(), `<button class="action gray" data-close-modal>ปิด</button><button class="action green" data-save-modal>ส่งออก Excel</button>`);
         return true;
       }
 
