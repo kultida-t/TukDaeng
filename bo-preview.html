@@ -35,6 +35,8 @@
       display: grid;
       grid-template-columns: 224px 1fr;
       height: 100vh;
+      height: 100dvh;
+      min-width: 0;
     }
 
     .sidebar {
@@ -43,6 +45,7 @@
       display: flex;
       flex-direction: column;
       min-width: 0;
+      min-height: 0;
     }
 
     .brand {
@@ -69,6 +72,7 @@
       padding: 8px 0;
       overflow-y: auto;
       flex: 1;
+      min-height: 0;
     }
 
     .nav-btn {
@@ -132,6 +136,7 @@
     main {
       overflow: auto;
       padding: 24px 28px 36px;
+      min-width: 0;
     }
 
     .header {
@@ -140,6 +145,7 @@
       justify-content: space-between;
       gap: 16px;
       margin-bottom: 20px;
+      min-width: 0;
     }
 
     h2 {
@@ -157,6 +163,7 @@
     .grid {
       display: grid;
       gap: 14px;
+      min-width: 0;
     }
 
     .metrics {
@@ -178,6 +185,7 @@
       border: 1px solid var(--border);
       border-radius: 8px;
       overflow: hidden;
+      min-width: 0;
     }
 
     .card.pad { padding: 16px; }
@@ -311,6 +319,8 @@
       cursor: pointer;
       font-size: 13px;
       font-weight: 650;
+      min-height: 34px;
+      white-space: nowrap;
     }
 
     button.secondary { background: #1e3a5f; color: #60a5fa; }
@@ -320,8 +330,23 @@
 
     table {
       width: 100%;
+      min-width: 760px;
       border-collapse: collapse;
       font-size: 13px;
+    }
+
+    .table-wrap {
+      overflow: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .table-hint {
+      display: none;
+      color: var(--muted);
+      font-size: 11px;
+      padding: 8px 10px;
+      border-bottom: 1px solid var(--border);
+      background: #171717;
     }
 
     th, td {
@@ -402,6 +427,7 @@
     .modal {
       width: min(760px, 100%);
       max-height: min(780px, 92vh);
+      max-height: min(780px, 92dvh);
       overflow: auto;
       background: var(--card);
       border: 1px solid var(--border);
@@ -465,8 +491,207 @@
       .brand h1, .brand span, .nav-label, .admin div:not(.avatar) { display: none; }
       .brand { padding: 16px 0; text-align: center; }
       .nav-btn { justify-content: center; padding: 11px 0; }
-      .metrics, .two, .three, .form-grid { grid-template-columns: 1fr; }
+      .metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .two, .three, .form-grid { grid-template-columns: 1fr; }
       main { padding: 18px; }
+      .modal { width: min(720px, 96vw); }
+    }
+
+    @media (max-width: 640px) {
+      body { overflow: hidden; }
+
+      .app {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto 1fr;
+      }
+
+      .sidebar {
+        border-right: 0;
+        border-bottom: 1px solid var(--border);
+        min-height: 0;
+        max-height: 132px;
+      }
+
+      .brand {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 10px 12px 8px;
+        text-align: left;
+      }
+
+      .brand h1 {
+        display: block;
+        font-size: 16px;
+      }
+
+      .brand span {
+        display: block;
+        font-size: 10px;
+        margin-top: 2px;
+      }
+
+      nav {
+        display: flex;
+        gap: 4px;
+        overflow-x: auto;
+        overflow-y: hidden;
+        padding: 6px 8px 10px;
+        flex: 0 0 auto;
+        scrollbar-width: thin;
+      }
+
+      .nav-btn {
+        width: auto;
+        min-width: 76px;
+        flex: 0 0 auto;
+        flex-direction: column;
+        justify-content: center;
+        gap: 4px;
+        padding: 8px 8px;
+        border-left: 0;
+        border-bottom: 2px solid transparent;
+        border-radius: 6px;
+        text-align: center;
+        font-size: 11px;
+      }
+
+      .nav-btn.active {
+        border-left-color: transparent;
+        border-bottom-color: var(--accent);
+      }
+
+      .nav-label {
+        display: block;
+        max-width: 70px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      .nav-icon {
+        width: auto;
+        font-size: 14px;
+      }
+
+      .admin { display: none; }
+
+      main {
+        padding: 14px 12px 22px;
+      }
+
+      .header {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 10px;
+        margin-bottom: 14px;
+      }
+
+      h2 { font-size: 18px; }
+      .sub { font-size: 12px; }
+
+      .header > button,
+      .header > .action {
+        width: 100%;
+      }
+
+      .metrics, .two, .three, .form-grid {
+        grid-template-columns: 1fr;
+        gap: 10px;
+      }
+
+      .card.pad { padding: 12px; }
+
+      .metric-value {
+        font-size: 20px;
+      }
+
+      .toolbar {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 8px;
+        padding: 10px;
+      }
+
+      input, select, textarea {
+        width: 100%;
+        min-width: 0;
+        font-size: 16px;
+      }
+
+      button.action {
+        width: 100%;
+        white-space: normal;
+      }
+
+      table {
+        min-width: 720px;
+        font-size: 12px;
+      }
+
+      .table-hint { display: block; }
+
+      th, td {
+        padding: 10px;
+      }
+
+      td .action,
+      td button.action {
+        width: auto;
+        margin: 2px;
+      }
+
+      .modal-backdrop {
+        padding: 0;
+        align-items: stretch;
+      }
+
+      .modal {
+        width: 100vw;
+        height: 100dvh;
+        max-height: 100dvh;
+        border-radius: 0;
+        border-left: 0;
+        border-right: 0;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .modal-head {
+        padding: 12px 14px;
+        flex: 0 0 auto;
+      }
+
+      .modal-body {
+        padding: 14px 12px;
+        overflow: auto;
+        flex: 1;
+      }
+
+      .modal-foot {
+        padding: 10px 12px;
+        display: grid;
+        grid-template-columns: 1fr;
+        flex: 0 0 auto;
+      }
+
+      .toast {
+        left: 12px;
+        right: 12px;
+        bottom: 12px;
+        text-align: center;
+      }
+    }
+
+    @media (max-width: 380px) {
+      .nav-btn {
+        min-width: 68px;
+        font-size: 10px;
+      }
+
+      .brand span { display: none; }
+      main { padding: 12px 10px 18px; }
+      h2 { font-size: 17px; }
     }
   </style>
 </head>
@@ -568,7 +793,7 @@
     }
 
     function table(cols, rows, actions) {
-      return `<div class="card" style="overflow:auto"><table><thead><tr>${cols.map(c => `<th>${c}</th>`).join("")}${actions ? "<th>การทำงาน</th>" : ""}</tr></thead><tbody>${rows.map(row => `<tr>${row.map(cell => `<td>${["Active","Suspended","Sale","Collection Show","Collection Hide","Sold","Pending","Accepted","Declined","Expired","Visible","Reported","Hidden","Email","Apple","Google","Open","Resolved"].includes(cell) ? badge(cell) : cell}</td>`).join("")}${actions ? `<td>${actions}</td>` : ""}</tr>`).join("")}</tbody></table></div>`;
+      return `<div class="table-wrap card"><div class="table-hint">เลื่อนซ้าย/ขวาเพื่อดูข้อมูลทั้งหมด</div><table><thead><tr>${cols.map(c => `<th>${c}</th>`).join("")}${actions ? "<th>การทำงาน</th>" : ""}</tr></thead><tbody>${rows.map(row => `<tr>${row.map(cell => `<td>${["Active","Suspended","Sale","Collection Show","Collection Hide","Sold","Pending","Accepted","Declined","Expired","Visible","Reported","Hidden","Email","Apple","Google","Open","Resolved"].includes(cell) ? badge(cell) : cell}</td>`).join("")}${actions ? `<td>${actions}</td>` : ""}</tr>`).join("")}</tbody></table></div>`;
     }
 
     function bar(label, value, pct, color = "var(--accent)") {
