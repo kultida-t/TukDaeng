@@ -112,6 +112,11 @@
       gap: 10px;
     }
 
+    .admin-info {
+      flex: 1;
+      min-width: 0;
+    }
+
     .avatar {
       width: 32px;
       height: 32px;
@@ -131,6 +136,125 @@
     .admin small {
       color: var(--muted);
       font-size: 10px;
+    }
+
+    .logout-btn {
+      width: 34px;
+      height: 34px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      background: var(--card);
+      color: var(--muted);
+      cursor: pointer;
+      font-size: 14px;
+      flex: 0 0 auto;
+    }
+
+    .logout-btn:hover {
+      color: #fff;
+      border-color: #5a1a1a;
+      background: #2a0a0a;
+    }
+
+    .app.login-mode {
+      grid-template-columns: 1fr;
+    }
+
+    .app.login-mode main {
+      padding: 0;
+    }
+
+    .login-screen {
+      min-height: 100vh;
+      min-height: 100dvh;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(360px, 420px);
+      background:
+        radial-gradient(circle at 18% 20%, rgba(220, 38, 38, 0.18), transparent 30%),
+        linear-gradient(135deg, #111 0%, #171717 54%, #210707 100%);
+    }
+
+    .login-panel {
+      padding: 48px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      border-right: 1px solid var(--border);
+      min-width: 0;
+    }
+
+    .login-copy h1 {
+      margin: 0;
+      font-size: 32px;
+      line-height: 1.12;
+      color: var(--accent);
+      font-weight: 800;
+    }
+
+    .login-copy p {
+      max-width: 560px;
+      color: var(--muted);
+      line-height: 1.7;
+      margin: 14px 0 0;
+      font-size: 14px;
+    }
+
+    .login-checklist {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 28px;
+      max-width: 620px;
+    }
+
+    .login-check {
+      background: rgba(30, 30, 30, 0.76);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 13px;
+    }
+
+    .login-check strong {
+      display: block;
+      font-size: 13px;
+      margin-bottom: 5px;
+    }
+
+    .login-check span {
+      display: block;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.45;
+    }
+
+    .login-card-wrap {
+      display: grid;
+      place-items: center;
+      padding: 28px;
+      background: rgba(15, 15, 15, 0.72);
+      min-width: 0;
+    }
+
+    .login-card {
+      width: 100%;
+      max-width: 380px;
+    }
+
+    .login-meta {
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.65;
+      margin-top: 12px;
+    }
+
+    .link-button {
+      border: 0;
+      background: transparent;
+      color: var(--accent);
+      cursor: pointer;
+      padding: 0;
+      font: inherit;
+      font-weight: 650;
     }
 
     main {
@@ -495,6 +619,9 @@
       .two, .three, .form-grid { grid-template-columns: 1fr; }
       main { padding: 18px; }
       .modal { width: min(720px, 96vw); }
+      .login-screen { grid-template-columns: 1fr; }
+      .login-panel { padding: 32px; border-right: 0; border-bottom: 1px solid var(--border); }
+      .login-card-wrap { padding: 24px; }
     }
 
     @media (max-width: 640px) {
@@ -574,7 +701,24 @@
         font-size: 14px;
       }
 
-      .admin { display: none; }
+      .admin {
+        display: flex;
+        position: absolute;
+        top: 8px;
+        right: 10px;
+        padding: 0;
+        border: 0;
+      }
+
+      .admin .avatar,
+      .admin .admin-info {
+        display: none;
+      }
+
+      .logout-btn {
+        width: 32px;
+        height: 32px;
+      }
 
       main {
         padding: 14px 12px 22px;
@@ -681,6 +825,24 @@
         bottom: 12px;
         text-align: center;
       }
+
+      .login-panel {
+        padding: 24px 18px;
+      }
+
+      .login-copy h1 {
+        font-size: 24px;
+      }
+
+      .login-checklist {
+        grid-template-columns: 1fr;
+        margin-top: 18px;
+      }
+
+      .login-card-wrap {
+        padding: 18px 12px 24px;
+        place-items: start center;
+      }
     }
 
     @media (max-width: 380px) {
@@ -705,10 +867,11 @@
       <nav id="nav"></nav>
       <div class="admin">
         <div class="avatar">S</div>
-        <div>
+        <div class="admin-info">
           <strong>ผู้ดูแลสูงสุด</strong>
           <small>admin@tukdaeng.com</small>
         </div>
+        <button class="logout-btn" type="button" data-logout title="ออกจากระบบ" aria-label="ออกจากระบบ">↩</button>
       </div>
     </aside>
     <main id="main"></main>
@@ -869,20 +1032,36 @@
 
     const pages = {
       login: () => `
-        <div style="display:grid;place-items:center;min-height:100vh;padding:20px">
-          <section class="card pad" style="width:100%;max-width:400px">
-            <div style="text-align:center;margin-bottom:24px">
-              <h1 style="margin:0;font-size:28px;color:var(--accent);font-weight:800">ตึกแดง</h1>
-              <div style="color:var(--muted);font-size:12px;margin-top:4px">Back Office System v1.2</div>
+        <div class="login-screen">
+          <section class="login-panel">
+            <div class="login-copy">
+              <h1>ตึกแดง Back Office</h1>
+              <p>ระบบหลังบ้านสำหรับ Super Admin, Content Admin, Moderator, Support Admin และ Market Admin เพื่อจัดการผู้ใช้ สินทรัพย์ ข้อเสนอ บทความ ข้อมูลตลาด Support และ Audit Log ตาม BO PRD v1.0</p>
+              <div class="login-checklist">
+                <div class="login-check"><strong>Email/Password เท่านั้น</strong><span>แยกบัญชี BO ออกจาก FO และบันทึกทุก login attempt</span></div>
+                <div class="login-check"><strong>2FA สำหรับ role สำคัญ</strong><span>Super Admin และ Content Admin ต้องยืนยัน 2FA</span></div>
+                <div class="login-check"><strong>Session Security</strong><span>Idle 8 ชั่วโมง / Max 24 ชั่วโมง พร้อม lock 15 นาทีเมื่อ fail เกิน 5 ครั้ง</span></div>
+                <div class="login-check"><strong>Role Permission</strong><span>หลังเข้าสู่ระบบจะแสดง module ตามสิทธิ์ของแอดมิน</span></div>
+              </div>
             </div>
-            <div class="field"><label>อีเมล</label><input value="admin@tukdaeng.com" placeholder="admin@email.com"></div>
-            <div class="field"><label>รหัสผ่าน</label><input type="password" value="•••••••• " placeholder="Password"></div>
-            <div class="field"><label style="display:flex;align-items:center;gap:8px;margin-bottom:12px;font-weight:400"><input type="checkbox" style="min-width:16px;width:16px;height:16px"> จำรหัสผ่านไว้</label></div>
-            <button class="action" style="width:100%;margin-bottom:12px" onclick="render('dashboard')">เข้าสู่ระบบ</button>
-            <div style="text-align:center;color:var(--muted);font-size:12px">ลืมรหัสผ่าน? <a href="#" style="color:var(--accent);text-decoration:none">รีเซ็ตรหัสผ่าน</a></div>
+            <div style="color:var(--muted);font-size:11px">© 2026 Tuk Daeng Co., Ltd. · Asia/Bangkok</div>
           </section>
-          <div style="text-align:center;margin-top:24px;color:var(--muted);font-size:11px">
-            <div>© 2026 Tuk Daeng Co., Ltd. All rights reserved.</div>
+          <div class="login-card-wrap">
+            <section class="card pad login-card">
+              <div style="margin-bottom:22px">
+                <h2>เข้าสู่ระบบ BO</h2>
+                <div class="sub">ใช้บัญชีแอดมินเท่านั้น</div>
+              </div>
+              <div class="field"><label>อีเมลแอดมิน</label><input id="loginEmail" type="email" value="admin@tukdaeng.com" placeholder="admin@tukdaeng.com" autocomplete="username"></div>
+              <div class="field"><label>รหัสผ่าน</label><input id="loginPassword" type="password" value="password" placeholder="Password" autocomplete="current-password"></div>
+              <div class="field"><label>รหัส 2FA</label><input id="loginOtp" inputmode="numeric" value="123456" placeholder="123456"></div>
+              <button class="action" style="width:100%;margin:4px 0 12px" data-login>เข้าสู่ระบบ</button>
+              <div style="text-align:center;color:var(--muted);font-size:12px">ลืมรหัสผ่าน? <button class="link-button" type="button" data-reset-password>รีเซ็ตรหัสผ่าน BO</button></div>
+              <div class="login-meta">
+                <div>ตัวอย่าง: admin@tukdaeng.com / password / 123456</div>
+                <div>ระบบจริงต้องบันทึก login, logout และ failed login ลง Audit Log</div>
+              </div>
+            </section>
           </div>
         </div>
       `,
@@ -1028,15 +1207,29 @@
     }
 
     function render(page = "login") {
+      const app = document.querySelector(".app");
       const sidebar = document.querySelector(".sidebar");
       if (page === "login") {
         sidebar.style.display = "none";
+        app.classList.add("login-mode");
       } else {
         sidebar.style.display = "flex";
+        app.classList.remove("login-mode");
       }
       document.querySelectorAll(".nav-btn").forEach(btn => btn.classList.toggle("active", btn.dataset.page === page));
       document.getElementById("main").innerHTML = (pages[page] || pages.login)();
       window.currentPage = page;
+    }
+
+    function login() {
+      render("dashboard");
+      showToast("เข้าสู่ระบบสำเร็จและบันทึก Audit Log แล้ว");
+    }
+
+    function logout() {
+      closeModal();
+      render("login");
+      showToast("ออกจากระบบแล้วและบันทึก Audit Log แล้ว");
     }
 
     document.getElementById("nav").innerHTML = nav.map(([id, label, icon]) =>
@@ -1385,10 +1578,15 @@
       const label = button.textContent.trim();
       const page = window.currentPage || "dashboard";
 
+      if (label === "รีเซ็ตรหัสผ่าน BO") {
+        openModal("รีเซ็ตรหัสผ่าน BO", `<p class="sub" style="margin-top:0">ระบบจริงจะส่งลิงก์รีเซ็ตรหัสผ่านสำหรับบัญชี BO เท่านั้น และไม่ใช้ร่วมกับบัญชี FO</p>${genericForm("Reset Password", [["อีเมลแอดมิน", "admin@tukdaeng.com"], ["เหตุผล", "ผู้ใช้กดลืมรหัสผ่านจากหน้า login", "textarea"]])}`, `<button class="action gray" data-close-modal>ยกเลิก</button><button class="action" data-save-modal>ส่งลิงก์รีเซ็ต</button>`);
+        return true;
+      }
+
       if (page === "dashboard") {
         const dashboardRoutes = {
           "ดูสินทรัพย์": "assets",
-          "เปิดคิวตรวจ": "assets",
+          "เปิดคิวตรวจ": "social",
           "ดูทั้งหมด": "audit",
           "รายงาน Search": "reports",
           "จัดการ Board": "articles",
@@ -1399,7 +1597,11 @@
           return true;
         }
         if (["วันนี้", "7 วัน", "30 วัน", "กำหนดเอง"].includes(label)) {
-          showToast(`เปลี่ยนช่วงข้อมูลเป็น ${label}`);
+          if (label === "กำหนดเอง") {
+            openModal("กำหนดช่วงวันที่ Dashboard", genericForm("Date Range", [["วันที่เริ่มต้น", "2026-06-01"], ["วันที่สิ้นสุด", "2026-06-05"], ["Timezone", "Asia/Bangkok"]]), `<button class="action gray" data-close-modal>ยกเลิก</button><button class="action" data-save-modal>ใช้ช่วงวันที่</button>`);
+          } else {
+            showToast(`เปลี่ยนช่วงข้อมูลเป็น ${label}`);
+          }
           return true;
         }
         if (label.includes("ส่งออก")) {
@@ -1468,7 +1670,7 @@
         return true;
       }
 
-      if (label.startsWith("+ Add") || label.startsWith("+ Invite") || label.startsWith("+ New") || label.startsWith("+ เพิ่ม") || label === "Assign Ticket" || label === "มอบหมาย Ticket") {
+      if (label.startsWith("+ Add") || label.startsWith("+ Invite") || label.startsWith("+ New") || label.startsWith("+ เพิ่ม") || label === "+ ส่งตรวจสอบ" || label === "Assign Ticket" || label === "มอบหมาย Ticket") {
         const title = label.replace("+ ", "");
         openModal(title, genericForm(title, [["ชื่อ / หัวข้อ", ""], ["หมวดหมู่ / ประเภท", ""], ["สถานะ", "Active"], ["รายละเอียด", "", "textarea"]]));
         return true;
@@ -1524,7 +1726,7 @@
         return true;
       }
 
-      if (["Publish", "Unpublish", "Delete", "Suspend", "Force Expire", "Disable", "Inactive", "Change Status", "Send Notification", "Publish Article", "Schedule Publish", "Save Draft", "Save", "Export CSV", "Export Excel", "เผยแพร่", "ยกเลิกเผยแพร่", "ลบ", "ระงับ", "หมดอายุทันที", "ปิดใช้งาน", "เปลี่ยนสถานะ", "ส่งแจ้งเตือน", "เผยแพร่บทความ", "ตั้งเวลาเผยแพร่", "บันทึกร่าง", "บันทึก", "ส่งตรวจสอบ", "ส่งออก CSV", "ส่งออก Excel"].includes(label)) {
+      if (["Publish", "Unpublish", "Delete", "Suspend", "Force Expire", "Disable", "Inactive", "Change Status", "Send Notification", "Publish Article", "Schedule Publish", "Save Draft", "Save", "Export CSV", "Export Excel", "เผยแพร่", "ยกเลิกเผยแพร่", "ลบ", "ระงับ", "แบน", "หมดอายุทันที", "ปิดใช้งาน", "เปลี่ยนสถานะ", "ส่งแจ้งเตือน", "เผยแพร่บทความ", "ตั้งเวลาเผยแพร่", "บันทึกร่าง", "บันทึก", "ส่งตรวจสอบ", "ส่งออก CSV", "ส่งออก Excel"].includes(label)) {
         openModal(`ยืนยันการดำเนินการ`, `<p class="sub" style="margin-top:0">นี่คือ preview flow สำหรับ action <strong style="color:var(--text)">${label}</strong> ในระบบจริง action นี้จะบันทึก Audit Log และอัปเดตผลบน FO ตาม BO/FO mapping</p>`, `<button class="action gray" data-close-modal>ยกเลิก</button><button class="action" data-save-modal>ยืนยัน</button>`);
         return true;
       }
@@ -1533,6 +1735,16 @@
     }
 
     document.addEventListener("click", event => {
+      if (event.target.closest("[data-login]")) {
+        login();
+        return;
+      }
+
+      if (event.target.closest("[data-logout]")) {
+        logout();
+        return;
+      }
+
       if (event.target.closest("[data-close-modal]")) {
         closeModal();
         return;
@@ -1551,7 +1763,11 @@
       }
 
       const button = event.target.closest("button");
-      if (!button || button.closest("#nav") || backdrop) return;
+      if (!button || button.closest("#nav")) return;
+      if (backdrop) {
+        handleAction(button);
+        return;
+      }
 
       if (button.dataset.boardTab) {
         boardTab = button.dataset.boardTab;
