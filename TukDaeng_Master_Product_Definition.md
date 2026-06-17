@@ -155,6 +155,8 @@ Admin รับผิดชอบ:
 
 - Sale แสดงใน Owner Profile, Public Profile, Feed, Search และ Watch Alert
 - Show แสดงใน Owner Profile และ Public Profile เท่านั้น
+- Show ไม่แสดงใน Feed, Search และ Watch Alert แต่สามารถเปิด Asset Detail แบบ Public ได้
+- Show สามารถ Make Offer, Contact Seller และ Chat ได้จาก Asset Detail หรือ Public Profile detail entry
 - Hide เห็นเฉพาะเจ้าของใน Owner Profile เท่านั้น
 - Sold เห็นเฉพาะเจ้าของใน Owner Profile เท่านั้น
 - Hide และ Sold ไม่ Public, ไม่ขึ้น Feed, ไม่ขึ้น Search และไม่เข้า Watch Alert
@@ -316,6 +318,21 @@ Asset Detail ต้องรองรับ:
 - Make Offer
 - Contact Seller
 
+Asset Detail Action Rules:
+
+- Asset สถานะ Sale สามารถ Make Offer, Contact Seller และ Chat ได้
+- Asset สถานะ Show สามารถ Make Offer, Contact Seller และ Chat ได้
+- Asset สถานะ Show ต้องไม่ขึ้น Feed, Search หรือ Watch Alert
+- Asset สถานะ Hide และ Sold ไม่สามารถ Make Offer หรือ Contact Seller ใน public viewer context ได้
+
+Asset Detail Price Analytics:
+
+- Market Comparison แสดงได้เมื่อมี Asking Price และ Watch Price API Market Price
+- Market Comparison ใช้ Asking Price เทียบกับ Watch Price API Market Price เท่านั้น
+- Market Comparison ไม่ใช้ Owner Estimated Value หรือ Purchase Price fallback เพื่อแสดง Above/At/Below
+- Expected Profit แสดงเฉพาะ Owner view เพราะใช้ Purchase Price
+- Expected Profit ต้องไม่แสดงใน Viewer/Public mode
+
 Owner ไม่เห็นปุ่ม Follow ตัวเอง
 
 ### Asset Management
@@ -367,6 +384,9 @@ Rules:
 - Search Chat รองรับ
 - Block User รองรับ
 - Report User รองรับ
+- หลัง Block แล้ว Chat history เดิมยังอ่านได้แบบ read-only
+- หลัง Block แล้วไม่สามารถส่งข้อความใหม่ระหว่างคู่ที่ Block กัน
+- หลัง Block แล้วไม่สามารถสร้าง Chat หรือ Offer ใหม่ระหว่างคู่ที่ Block กัน
 
 Chat Room รองรับ:
 
@@ -382,6 +402,10 @@ Chat Room รองรับ:
 Rules:
 
 - Make Offer ทำผ่าน Asset Detail เท่านั้น
+- Make Offer รองรับ Asset สถานะ Sale และ Show
+- Asset สถานะ Show สร้าง Offer ได้จาก Asset Detail หรือ Public Profile detail entry เท่านั้น
+- Asset สถานะ Show ยังไม่ขึ้น Feed, Search หรือ Watch Alert
+- Asset สถานะ Hide, Sold และ Deleted ไม่สามารถสร้าง Offer ใหม่ได้
 - Accepted Offer เปิด Chat Room
 - Rejected Offer เปิด Asset Detail
 - Asset Deleted ทำให้ Offer เป็น Cancelled
@@ -451,6 +475,14 @@ Notification รองรับ:
 - Offer
 - Watch Alert
 
+Notification ไม่รองรับใน Front Office V1:
+
+- Chat / New Message ไม่เป็น Notification Center type และแจ้งเตือนเฉพาะในเมนู Chat ด้วย unread badge/count
+- Moderation / Account Action
+- Market Update
+- Price / Valuation
+- Sale Success
+
 Destination:
 
 | Notification | Destination |
@@ -458,8 +490,10 @@ Destination:
 | Watch Alert | Watch Alert Result List |
 | Like | Asset Detail |
 | Comment | Asset Detail และ Focus Comment |
+| New Offer | Chat Room และ Focus Offer Card |
 | Offer Accepted | Chat Room |
 | Offer Rejected | Asset Detail |
+| Offer Cancelled | Chat Room และ Focus Offer Card |
 
 ### Profile
 
@@ -510,6 +544,31 @@ Portfolio ไม่รวม:
 
 - Sold
 
+Portfolio valuation baseline:
+
+- Total Asset Value = ผลรวม Current Value ของ Asset สถานะ Sale, Show, Hide ที่ยังไม่ถูกลบ
+- Current Value ใช้ลำดับแหล่งข้อมูล: Watch Price API market price -> Owner Estimated Value -> Purchase Price fallback -> No Valuation
+- หากใช้ Purchase Price fallback ต้องแสดง label ว่าใช้ราคาซื้อเป็นค่าประมาณ เพราะไม่มีราคาตลาด
+- หากไม่มี market price, owner estimate หรือ purchase price ให้แสดง `ไม่มีราคาตลาด` / `No market price` และไม่รวม Asset นั้นใน Total Asset Value
+- Unrealized Gain/Loss คำนวณเฉพาะ Asset ที่มี Current Value จาก Watch Price API หรือ Owner Estimated Value และมี Purchase Price
+- Unrealized Gain/Loss = Current Value - Purchase Price
+- Unrealized Gain/Loss % = Unrealized Gain/Loss / Purchase Price * 100
+- Expected Profit คำนวณเฉพาะ Owner view เมื่อมี Asking Price และ Purchase Price
+- Expected Profit = Asking Price - Purchase Price
+- Expected Profit % = Expected Profit / Purchase Price * 100
+- Market Comparison ใช้ Asking Price เทียบกับ Watch Price API Market Price เท่านั้น
+- Market Comparison % = (Asking Price - Market Price) / Market Price * 100
+- Above Market เมื่อ Market Comparison % > 1%
+- At Market เมื่อ Market Comparison % อยู่ระหว่าง -1% ถึง +1%
+- Below Market เมื่อ Market Comparison % < -1%
+- หากไม่มี Market Price ให้แสดง `ไม่มีราคาตลาด` / `No market price` และไม่แสดง Above/At/Below
+- Holding Period สำหรับ Asset ที่ยังไม่ขาย = Today - Purchase Date
+- Holding Period สำหรับ Sold Asset = Sale Date - Purchase Date
+- Top Brand Holdings = Top 3 brand จากจำนวน Asset สถานะ Sale, Show, Hide โดยเรียง count มากไปน้อย
+- YTD Performance V1 ใช้วิธี A: (Portfolio Value Today - Portfolio Value Start Of Year) / Portfolio Value Start Of Year * 100
+- YTD Performance V1 ไม่รวม Realized Gain จาก Sold Asset ในสูตรหลัก แต่แสดง Realized Gain แยกใน Sold History
+- Sold ไม่รวม Total Asset Value และ Unrealized Gain/Loss แต่แสดงใน Sold History
+
 Sold History เก็บ:
 
 - Sale Date
@@ -518,6 +577,12 @@ Sold History เก็บ:
 - Sale Price
 - Payment Method
 - Attachment
+
+Sold History calculation:
+
+- Realized Gain/Loss = Sale Price - Purchase Price
+- Realized Gain % = Realized Gain/Loss / Purchase Price * 100
+- หากไม่มี Sale Price หรือ Purchase Price ให้แสดง Realized Gain/Loss เป็น `—`
 
 ### Board
 
@@ -544,6 +609,8 @@ Rules:
 - บทความสร้างและจัดการโดย Admin ผ่าน Back Office
 - User ทั่วไปอ่าน, Like และ Share บทความได้ใน Phase 1
 - User ทั่วไปไม่สามารถสร้างหรือแก้ไขบทความได้ใน Phase 1
+- Guest อ่านและ Share บทความได้โดยไม่ต้อง Login เพราะ Article Share เป็น public share action
+- Article Like ต้อง Login ตาม Global Login Required baseline
 
 ### Settings
 
@@ -556,6 +623,8 @@ Settings รองรับ:
 - Email Display
 - Language: English / Thai
 - Theme Mode: Dark Mode / Light Mode
+- Notification Settings สำหรับ Notification Center type ที่อยู่ใน V1 baseline
+- Change Password เป็น Auth-linked entry สำหรับบัญชี Email / Password เท่านั้น
 - Help
 - About
 - Privacy Policy
@@ -589,6 +658,13 @@ Feature ที่ต้อง Login:
 - Following
 - Watch Alert
 - Add Asset
+- Article Like
+
+Feature ที่ Guest ใช้ได้โดยไม่ต้อง Login:
+
+- Read Feed / Search / Public Asset Detail / Public Profile / Board Article
+- Share public Asset deep link
+- Share public Article deep link
 
 ### Deleted Asset
 
@@ -674,6 +750,9 @@ Feature ที่ต้อง Login:
 - Asset ของผู้ถูก Block ต้องหายจาก Search ทันที
 - Asset ของผู้ถูก Block ต้องหายจาก Watch Alert Result ทันที
 - ความสัมพันธ์ Follow ระหว่างกันต้องไม่ถูกใช้ในการแสดง Following Feed
+- Chat history เดิมระหว่างคู่ที่ Block กันยังอ่านได้แบบ read-only
+- ผู้ใช้ที่ Block กันไม่สามารถส่งข้อความใหม่หากันได้
+- ผู้ใช้ที่ Block กันไม่สามารถสร้าง Chat หรือ Offer ใหม่ระหว่างกันได้
 
 ### Report
 
@@ -760,6 +839,12 @@ Asset หรือ Content จะหายเมื่อ Admin ดำเนิ�
 - Video Upload
 - Live Streaming
 - Watch Authentication Service ในแอป
+- Watch Shops
+- Accessories Shop
+- Repair Shop
+- Auction Center
+- Consignment Center
+- Authentication Center
 - Nested Comment
 - Edit Comment
 - Verified Badge
