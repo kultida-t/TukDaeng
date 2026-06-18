@@ -1,4 +1,4 @@
-# TukDaeng Dev Implementation Checklist
+﻿# TukDaeng Dev Implementation Checklist
 
 Reference:
 
@@ -29,7 +29,7 @@ Purpose:
 # 1. Authentication
 
 - [ ] รองรับ Email / Password Sign Up
-- [ ] บังคับ Terms of Service และ Privacy Policy ก่อนสมัครทุก auth method
+- [ ] บังคับ Terms of Use และ Privacy Policy ก่อนสมัครทุก auth method
 - [ ] Email / Password ต้อง verify OTP
 - [ ] OTP หมดอายุภายใน 30 นาที
 - [ ] Password อย่างน้อย 8 ตัวอักษร และต้องมีตัวเลขหรือสัญลักษณ์
@@ -55,6 +55,12 @@ Purpose:
 - [ ] Feed ไม่แสดง `Show`, `Hide`, `Sold`, `Deleted`
 - [ ] Feed Card ไม่แสดง Location ใน V1
 - [ ] Feed Card แสดง required fields: image, brand, model, price, posted time, owner, like count, comment count
+- [ ] Feed more menu สำหรับ Asset ของผู้อื่นรองรับ Hide this asset, Report Asset, Block User
+- [ ] Hide this asset เป็น user-level preference และไม่ใช่ asset status `Hide`
+- [ ] Hide this asset ซ่อน Asset เฉพาะ Feed ของผู้กดและไม่กระทบ Owner/ผู้ใช้อื่น/Public Profile/Offer/Chat
+- [ ] Hide this asset มี undo ชั่วคราว และถ้าไม่ undo ต้องไม่กลับมาใน Feed หลัง refresh/reload
+- [ ] Report Asset จาก Feed เปิด Trust & Safety Report Asset flow และไม่ทำให้ Asset หายทันที
+- [ ] Block User จาก Feed ต้องมี confirmation และใช้ block filtering rule หลัง block สำเร็จ
 - [ ] Like ต้อง sync Favorites ทันที
 - [ ] Unlike ต้อง remove Favorites ทันที
 - [ ] Comment และ Share จาก Feed ต้อง route ไป Asset Detail
@@ -153,7 +159,9 @@ Purpose:
 - [ ] หลัง block แล้วส่งข้อความใหม่ไม่ได้
 - [ ] หลัง block แล้วสร้าง Chat/Offer ใหม่ระหว่างคู่ที่ block กันไม่ได้
 - [ ] Delete Chat รองรับ confirmation ตาม baseline
-- [ ] รายละเอียด Delete Chat เชิงลึกยังเป็น product decision log
+- [ ] Delete Chat ซ่อนห้องจาก Chat List เฉพาะฝั่งผู้กด
+- [ ] Delete Chat ไม่ลบ message/archive ฝั่ง server และไม่กระทบคู่สนทนา
+- [ ] Delete Chat ไม่ลบหลักฐาน offer/chat history และไม่มี restore UI ใน V1
 
 ---
 
@@ -234,7 +242,10 @@ Purpose:
 - [ ] Following Feed ใช้ follow relation ที่ไม่ถูก block
 - [ ] Share Asset ต้องทำผ่าน Asset Detail
 - [ ] Share public deep link ได้โดยไม่ต้อง Login ตาม public share rule
-- [ ] Share channel implementation ยังเป็น product decision log
+- [ ] Share ใช้ system share sheet เมื่อ platform รองรับ
+- [ ] Share fallback เป็น copy public deep link
+- [ ] Share ไม่สร้าง Notification Center item
+- [ ] Public deep link ต้อง validate status, permission, deleted state และ block state เมื่อเปิด
 
 ---
 
@@ -253,7 +264,8 @@ Purpose:
 - [ ] Article Share เป็น public share action และ Guest ใช้ได้
 - [ ] Article Share ไม่สร้าง notification
 - [ ] Article Comment ไม่อยู่ใน V1 baseline
-- [ ] Report Article ไม่อยู่ใน V1 baseline
+- [ ] Article-specific Report Article ไม่อยู่ใน V1 baseline
+- [ ] หากต้อง report article ให้ใช้ Trust & Safety `Report Board Content` และไม่ทำให้ article หายทันที
 - [ ] Article not found/deleted แสดง unavailable state
 
 ---
@@ -272,11 +284,14 @@ Purpose:
 - [ ] Change Password แสดงเฉพาะ Email / Password account
 - [ ] SSO-only account ไม่เห็น active Change Password action
 - [ ] Help และ About เข้าถึงได้
-- [ ] Privacy Policy และ Terms of Service เข้าถึงได้
+- [ ] Privacy Policy และ Terms of Use เข้าถึงได้
 - [ ] Sign Out ต้องมี confirmation และ clear session
 - [ ] Delete Account อยู่ใน V1 baseline
 - [ ] Delete Account ต้องมี warning/confirmation
-- [ ] Delete Account retention/grace period ยังเป็น product decision log
+- [ ] Delete Account ต้อง soft delete account หลัง confirm
+- [ ] Delete Account ต้อง revoke session และ sign out user
+- [ ] Delete Account ใช้ grace period 30 วันก่อน hard delete/anonymization ตาม policy
+- [ ] Deleted account ระหว่าง grace period ต้อง login ไม่ได้หรือเห็น account-deleted support state
 
 ---
 
@@ -366,7 +381,7 @@ Purpose:
 - [ ] Front Office ต้องส่ง report/moderation handoff data ให้ Back Office ได้
 - [ ] Admin Review, Moderation, Audit Trail อยู่ใน Back Office scope
 - [ ] Mobile V1 ใช้ `18_ADMIN_SCOPE_NOTE.md` เป็น boundary
-- [ ] Full Back Office PRD ทำแยกเมื่อเริ่ม Back Office sprint
+- [ ] Full Back Office PRD เริ่มหลัง FO baseline, Figma cleanup, Dev checklist และ QA checklist ครบ/นิ่งแล้วเท่านั้น
 
 ---
 

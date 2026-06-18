@@ -1,4 +1,4 @@
-# 18 Admin Scope Note
+﻿# 18 Admin Scope Note
 
 อ้างอิงหลักจาก [TukDaeng_Master_Product_Definition.md](TukDaeng_Master_Product_Definition.md)
 
@@ -68,6 +68,12 @@ Admin Scope Note ระบุขอบเขต Admin / Back Office ที่ ma
 - Admin dashboard metrics
 - Internal operations tooling implementation
 
+Full Back Office PRD timing:
+
+- ยังไม่เริ่ม Full Back Office PRD ระหว่าง FO cleanup
+- ให้จัดการ FO baseline, Figma cleanup, Dev checklist, QA checklist และ FO sign-off ให้ครบ/นิ่งก่อน
+- หลัง FO complete แล้วค่อยเปิด Back Office sprint แยกและทำ Full BO PRD แยกจาก FO mobile scope
+
 # 6. Admin Responsibilities
 
 Admin รับผิดชอบ:
@@ -86,7 +92,7 @@ Mobile app ต้องรองรับ:
 
 - User ส่ง Report จาก Asset, User, Comment, Board Content
 - User ใช้ Block ได้ตาม Trust & Safety rule
-- Terms of Service และ Privacy Policy เข้าถึงได้
+- Terms of Use และ Privacy Policy เข้าถึงได้
 - Content ที่ถูก moderation แล้วต้องถูกซ่อน/จัดการตามผลจาก Back Office
 - Public surfaces ต้องไม่แสดง content ที่ Admin action ทำให้ unavailable
 
@@ -160,7 +166,7 @@ Admin Action ต้องมี Audit Trail ใน Back Office
 
 # 13. Future Enhancement
 
-- Full Admin Back Office PRD
+- Full Admin Back Office PRD หลัง FO baseline, Figma cleanup, Dev checklist และ QA checklist ครบ/นิ่งแล้ว
 - Admin role hierarchy
 - Moderation policy matrix
 - Report queue dashboard

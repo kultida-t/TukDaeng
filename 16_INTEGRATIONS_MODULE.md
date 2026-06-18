@@ -1,4 +1,4 @@
-# 16 Integrations Module
+﻿# 16 Integrations Module
 
 อ้างอิงหลักจาก [TukDaeng_Master_Product_Definition.md](TukDaeng_Master_Product_Definition.md)
 
@@ -88,7 +88,7 @@ Integrations Module กำหนดขอบเขต integration ภายน�
 ## Apple Sign In
 
 - ใช้สำหรับ Sign In / Sign Up ด้วย Apple ID
-- ต้องรองรับ Apple compliance ที่เกี่ยวกับ Report, Block, Terms of Service, Privacy Policy และ Moderation Flow
+- ต้องรองรับ Apple compliance ที่เกี่ยวกับ Report, Block, Terms of Use, Privacy Policy และ Moderation Flow
 - SSO Email ไม่ต้องยืนยัน OTP
 - บัญชี Apple Sign In ต้องไม่ Sign In ด้วย Email / Password ใน V1
 

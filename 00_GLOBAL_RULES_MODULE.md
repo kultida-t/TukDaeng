@@ -202,6 +202,15 @@ Feature ที่ต้อง Login:
 
 Report ไม่ทำให้ Asset หรือ Content หายจาก public surfaces ทันที การซ่อนต้องเกิดจาก Admin moderation
 
+## Hide Feed Item
+
+- Hide Feed Item เป็น user-level preference ของ viewer
+- Hide Feed Item ไม่ใช่ asset status `Hide`
+- Hide Feed Item ไม่ใช่ moderation action และไม่ใช่ Report
+- Hide Feed Item ซ่อนเฉพาะ Asset นั้นจาก Feed ของผู้กด
+- Hide Feed Item ไม่กระทบ Owner, ผู้ใช้อื่น, Public Profile, Search, Watch Alert Result, Offer หรือ Chat ใน V1
+- Hide Feed Item ต้องมี undo ชั่วคราวหลัง action สำเร็จ
+
 # 13. Data Privacy Rules
 
 ข้อมูลต่อไปนี้เป็น Private และเห็นเฉพาะ Owner หรือ Admin ตามสิทธิ์:

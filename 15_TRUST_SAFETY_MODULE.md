@@ -1,4 +1,4 @@
-# 15 Trust & Safety Module
+﻿# 15 Trust & Safety Module
 
 อ้างอิงหลักจาก [TukDaeng_Master_Product_Definition.md](TukDaeng_Master_Product_Definition.md)
 
@@ -34,7 +34,7 @@ Trust & Safety Module ใช้สำหรับรองรับ Block, Repor
 | Chat.png | Block User / Report User entry ใน Chat |
 | Board.png | Report Board Content entry |
 | Notification.png | blocked/unavailable destination handling |
-| Auth Sign up Update.png | Terms of Service / Privacy Policy consent |
+| Auth Sign up Update.png | Terms of Use / Privacy Policy consent |
 | Menu & Profile Setting.png | Legal document access |
 
 ---
@@ -50,9 +50,9 @@ Trust & Safety Module ใช้สำหรับรองรับ Block, Repor
 | Report Types | Asset, User, Comment, Board Content | Figma/PRD ต้องใช้ type ชุดนี้ |
 | Report Impact | Report ไม่ทำให้ Asset หายจาก Feed ทันที | ห้ามออกแบบ report submit แล้ว content หายทันที |
 | Moderation Impact | Asset หรือ Content จะหายเมื่อ Admin ดำเนินการตาม Moderation เท่านั้น | Content removal เป็น Admin action |
-| Apple Compliance | Report, Block, Terms of Service, Privacy Policy, Moderation Flow | ต้องมีครบใน app/Figma |
-| Legal Consent | ทุกช่องทางสมัครต้องยอมรับ Terms of Service และ Privacy Policy ก่อนสมัคร | Sign Up ทุกช่องทางต้องมี consent |
-| Legal Access | Settings รองรับ Privacy Policy และ Terms of Service | Legal docs ต้องเข้าถึงได้จาก Settings |
+| Apple Compliance | Report, Block, Terms of Use, Privacy Policy, Moderation Flow | ต้องมีครบใน app/Figma |
+| Legal Consent | ทุกช่องทางสมัครต้องยอมรับ Terms of Use และ Privacy Policy ก่อนสมัคร | Sign Up ทุกช่องทางต้องมี consent |
+| Legal Access | Settings รองรับ Privacy Policy และ Terms of Use | Legal docs ต้องเข้าถึงได้จาก Settings |
 
 ---
 
@@ -66,9 +66,9 @@ Trust & Safety Module ใช้สำหรับรองรับ Block, Repor
 | High | Report type ต้อง lock ให้ตรง master | Report รองรับ Asset, User, Comment, Board Content | ตรวจ Figma report forms/type labels ให้ตรง |
 | High | Report submit อาจสื่อว่า content หายทันที | Report ไม่ทำให้ Asset/Content หายทันที | เพิ่ม success state ที่ไม่ remove content จนกว่า Admin moderation |
 | High | Moderation flow / Admin review SLA ยังไม่ชัด | Admin ดำเนินการภายใน 24 ชั่วโมงสำหรับ Report ที่เข้ามา | เพิ่ม Back Office handoff note และ 24h SLA |
-| High | Apple compliance coverage ต้องครบ | ต้องรองรับ Report, Block, Terms of Service, Privacy Policy, Moderation Flow | ตรวจครบทุก entry/state |
-| Medium | Terms label อาจใช้ `Terms Of Use` | Master ใช้ `Terms of Service` | normalize label เป็น Terms of Service |
-| Medium | Legal consent ทุก sign up channel ยังต้องตรวจ | ทุกช่องทางสมัครต้องยอมรับ Terms of Service และ Privacy Policy ก่อนสมัคร | ตรวจ Email/Google/Apple sign up consent |
+| High | Apple compliance coverage ต้องครบ | ต้องรองรับ Report, Block, Terms of Use, Privacy Policy, Moderation Flow | ตรวจครบทุก entry/state |
+| Medium | Terms label อาจใช้ capitalization ไม่ตรง | Master ใช้ `Terms of Use` | normalize label เป็น `Terms of Use` |
+| Medium | Legal consent ทุก sign up channel ยังต้องตรวจ | ทุกช่องทางสมัครต้องยอมรับ Terms of Use และ Privacy Policy ก่อนสมัคร | ตรวจ Email/Google/Apple sign up consent |
 | Medium | Blocked/unavailable profile state ยังไม่ชัด | Blocked content/user ต้องไม่เข้าถึงตาม Trust & Safety rule | เพิ่ม blocked/unavailable state |
 | High | Block แล้ว chat history / new message behavior ยังไม่ถูกระบุครบใน Figma | Product review แนะนำให้เก็บ chat history เดิมให้อ่านได้ แต่ปิดการส่งข้อความใหม่หลัง block | เพิ่ม blocked chat read-only state และ update master/Chat PRD |
 | Medium | Moderation notification หลัง report/action ยังไม่อยู่ใน Notification baseline | Product review แนะนำให้ moderation/account/system notification ไม่อยู่ใน FO V1 | ย้ายเป็น future หรือ Back Office scope |
@@ -84,11 +84,12 @@ Trust & Safety Module ใช้สำหรับรองรับ Block, Repor
 - Report Asset
 - Report Comment
 - Report Board Content
+- Block User จาก Feed
 - Report success state
 - Blocked/unavailable user/content state
-- Terms of Service access
+- Terms of Use access
 - Privacy Policy access
-- Sign Up consent for Terms of Service and Privacy Policy
+- Sign Up consent for Terms of Use and Privacy Policy
 - Back Office moderation handoff
 - 24-hour report review SLA
 - Apple compliance coverage
@@ -111,12 +112,13 @@ Trust & Safety Module ใช้สำหรับรองรับ Block, Repor
 | Screen / Component | Description |
 | --- | --- |
 | Block User Dialog | ยืนยันก่อน block user |
+| Block User Dialog | ยืนยันก่อน Block User จาก Feed |
 | Report User Form | ส่ง report user |
 | Report Asset Form | ส่ง report asset |
 | Report Comment Form | ส่ง report comment |
 | Report Board Content Form | ส่ง report board content |
 | Report Success State | แสดงส่ง report สำเร็จ |
-| Terms of Service | เอกสาร Terms of Service |
+| Terms of Use | เอกสาร Terms of Use |
 | Privacy Policy | เอกสาร Privacy Policy |
 | Blocked / Unavailable State | state เมื่อ content/user เข้าไม่ได้ |
 
@@ -126,7 +128,7 @@ Trust & Safety Module ใช้สำหรับรองรับ Block, Repor
 
 ## Guest
 
-- ดู Terms of Service และ Privacy Policy ได้
+- ดู Terms of Use และ Privacy Policy ได้
 - ใช้ Report หรือ Block ไม่ได้
 - ถ้ากด action ที่ต้อง login ต้องแสดง Global Login Required Dialog ตาม global rule
 
@@ -134,7 +136,8 @@ Trust & Safety Module ใช้สำหรับรองรับ Block, Repor
 
 - Block User ได้
 - Report User / Asset / Comment / Board Content ได้
-- เปิด Terms of Service และ Privacy Policy ได้
+- Block User จาก Feed ได้ โดยใช้ Block User rule เดียวกัน
+- เปิด Terms of Use และ Privacy Policy ได้
 
 ## Reported User
 
@@ -211,7 +214,7 @@ Board Content
 
 ```text
 Sign Up
--> Accept Terms of Service and Privacy Policy
+-> Accept Terms of Use and Privacy Policy
 -> Continue registration
 ```
 
@@ -259,15 +262,15 @@ Report รองรับ type ต่อไปนี้ตาม master:
 
 - Report
 - Block
-- Terms of Service
+- Terms of Use
 - Privacy Policy
 - Moderation Flow
 
 ## Legal Consent Rule
 
-- ทุกช่องทาง Sign Up ต้องยอมรับ Terms of Service และ Privacy Policy ก่อนสมัคร
-- ใช้ label `Terms of Service` ไม่ใช่ `Terms Of Use` เป็น canonical label
-- Privacy Policy และ Terms of Service ต้องเข้าถึงได้จาก Settings
+- ทุกช่องทาง Sign Up ต้องยอมรับ Terms of Use และ Privacy Policy ก่อนสมัคร
+- ใช้ label `Terms of Use` เป็น canonical label
+- Privacy Policy และ Terms of Use ต้องเข้าถึงได้จาก Settings
 
 ## Chat Block Rule
 
@@ -368,7 +371,7 @@ Trust & Safety ไม่อยู่ใน Notification baseline ของ maste
 - `comment_report_submitted`
 - `board_content_report_started`
 - `board_content_report_submitted`
-- `terms_of_service_opened`
+- `terms_of_use_opened`
 - `privacy_policy_opened`
 - `signup_legal_consent_accepted`
 
@@ -387,6 +390,13 @@ Then ระบบต้อง block user สำเร็จ
 Given Member block user รายหนึ่ง  
 When Member เปิด Feed  
 Then Asset ของผู้ถูก block ต้องไม่แสดงใน Feed
+
+## AC-TS-002A: Block User From Feed
+
+Given Member เห็น Feed Card ของ Asset คนอื่น  
+When Member เลือก Block User จาก Feed more menu และ Confirm  
+Then ระบบต้องใช้ Block User rule เดียวกัน  
+And Asset/content ของ user นั้นต้องไม่แสดงใน Feed หลัง block สำเร็จ
 
 ## AC-TS-003: Block Removes Assets From Search
 
@@ -451,20 +461,20 @@ Then Report ต้องอยู่ภายใต้ SLA ดำเนินก
 ## AC-TS-013: Legal Consent Before Sign Up
 
 Given user สมัครผ่าน Email, Google หรือ Apple  
-When user ยังไม่ยอมรับ Terms of Service และ Privacy Policy  
+When user ยังไม่ยอมรับ Terms of Use และ Privacy Policy  
 Then ระบบต้องไม่ให้สมัครต่อจนกว่าจะยอมรับ
 
 ## AC-TS-014: Legal Access From Settings
 
 Given Member เปิด Settings  
-When Member กด Privacy Policy หรือ Terms of Service  
+When Member กด Privacy Policy หรือ Terms of Use  
 Then ระบบต้องเปิดเอกสารที่เกี่ยวข้อง
 
 ## AC-TS-015: Apple Compliance Coverage
 
 Given app ถูกตรวจ Apple compliance  
 When ตรวจ feature ด้าน safety  
-Then app ต้องมี Report, Block, Terms of Service, Privacy Policy และ Moderation Flow
+Then app ต้องมี Report, Block, Terms of Use, Privacy Policy และ Moderation Flow
 
 ---
 

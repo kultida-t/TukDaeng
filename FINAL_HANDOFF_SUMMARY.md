@@ -11,6 +11,7 @@
 - Master source of truth: [TukDaeng_Master_Product_Definition.md](TukDaeng_Master_Product_Definition.md)
 - Module index: [README_MODULE_INDEX.md](README_MODULE_INDEX.md)
 - Figma checklist: [Figma_Gap_Checklist_Against_Master.md](Figma_Gap_Checklist_Against_Master.md)
+- Figma cleanup task breakdown: [FIGMA_UX_CLEANUP_TASK_BREAKDOWN.md](FIGMA_UX_CLEANUP_TASK_BREAKDOWN.md)
 - Global rules: [00_GLOBAL_RULES_MODULE.md](00_GLOBAL_RULES_MODULE.md)
 - Navigation rules: [00_NAVIGATION_AND_CROSS_MODULE_FLOW.md](00_NAVIGATION_AND_CROSS_MODULE_FLOW.md)
 - Module PRD: `01-18`
@@ -40,11 +41,11 @@
 
 ยังมีรายการที่ไม่ block handoff แต่ควรเก็บใน product decision log:
 
-- Delete Chat behavior แบบละเอียด เช่น ลบเฉพาะฝั่งตัวเอง, ซ่อนจาก list, หรือกู้ history ได้หรือไม่ได้
-- Share channel implementation เช่น system share sheet, copy link, หรือ native deep link preview
-- Article Comment / Report Article จะเพิ่มใน Board V1 หรือคงเป็น future/back-office moderation scope
-- Delete Account retention / grace period policy
-- Full Back Office PRD เมื่อเริ่ม Back Office sprint จริง
+- Delete Chat behavior แบบละเอียด: recommendation คือซ่อนจาก Chat List เฉพาะฝั่งผู้กด ไม่ลบ server history และไม่มี restore UI ใน V1
+- Share channel implementation: recommendation คือ system share sheet พร้อม fallback copy public deep link และไม่สร้าง notification
+- Article Comment / Report Article: recommendation คือไม่เปิด Article Comment ใน FO V1; Report Board Content เปิดได้เฉพาะถ้าใช้ Trust & Safety moderation handoff
+- Delete Account retention / grace period policy: recommendation คือ soft delete พร้อม revoke session และใช้ grace period 30 วันก่อน hard delete/anonymization ตาม policy
+- Full Back Office PRD: เริ่มหลัง FO baseline, Figma cleanup, Dev checklist และ QA checklist ครบ/นิ่งแล้วเท่านั้น
 
 
 # 5. Handoff Readiness Checklist
@@ -54,6 +55,7 @@
 | Master updated with approved decisions | Done |
 | Module PRD `00-18` created | Done |
 | Figma checklist cleanup to module-level format | Done |
+| Figma UX cleanup task breakdown created | Done |
 | README module index created | Done |
 | Dev implementation checklist created | Done |
 | QA test scenario checklist created | Done |
@@ -63,4 +65,4 @@
 
 # 6. Recommended Next Step
 
-ให้ทีม UX/Figma เริ่มแก้ตาม [Figma_Gap_Checklist_Against_Master.md](Figma_Gap_Checklist_Against_Master.md) โดยเริ่มจาก `Must Fix` และ `High` จากนั้น Dev/QA ใช้ [README_MODULE_INDEX.md](README_MODULE_INDEX.md) เป็น entry point สำหรับอ่านเอกสารทั้งหมด
+ให้ทีม UX/Figma เริ่มแก้ตาม [Figma_Gap_Checklist_Against_Master.md](Figma_Gap_Checklist_Against_Master.md) โดยเริ่มจาก `Must Fix` และ `High` และใช้ [FIGMA_UX_CLEANUP_TASK_BREAKDOWN.md](FIGMA_UX_CLEANUP_TASK_BREAKDOWN.md) เพื่อแบ่งงานเป็น wave/owner จากนั้น Dev/QA ใช้ [README_MODULE_INDEX.md](README_MODULE_INDEX.md) เป็น entry point สำหรับอ่านเอกสารทั้งหมด

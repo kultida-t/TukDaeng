@@ -1,4 +1,4 @@
-# Use Cases — แอปพลิเคชัน ตึกแดง (Tuk Daeng)
+﻿# Use Cases — แอปพลิเคชัน ตึกแดง (Tuk Daeng)
 **เวอร์ชัน:** 1.0  
 **วันที่:** พฤษภาคม 2568  
 **ครอบคลุม:** FO (Front Office) ทุก Flow พร้อม Happy Path และ Error Cases
@@ -43,7 +43,7 @@
 
 #### Happy Path
 1. ผู้ใช้กรอก Email, Password, Confirm Password
-2. ผู้ใช้ติ๊ก "I agree to Terms of Service and Privacy Policy"
+2. ผู้ใช้ติ๊ก "I agree to Terms of Use and Privacy Policy"
 3. กด "Sign up"
 4. ระบบส่ง OTP 6 หลักไปยัง Email
 5. ผู้ใช้กรอก OTP บนหน้า Verify Email
@@ -75,7 +75,7 @@
 2. ระบบแสดง Native Apple Sign In Dialog
 3. ผู้ใช้เลือกว่าจะแชร์ Email จริง หรือใช้ Private Relay Email ของ Apple
 4. ยืนยันด้วย Face ID / Touch ID / Passcode
-5. ผู้ใช้ติ๊ก "I agree to Terms of Service and Privacy Policy"
+5. ผู้ใช้ติ๊ก "I agree to Terms of Use and Privacy Policy"
 6. ระบบสร้างบัญชีอัตโนมัติ → เข้าสู่แอป (ไม่ต้องยืนยัน OTP)
 
 #### Error Cases
@@ -95,7 +95,7 @@
 #### Happy Path
 1. กด "Sign up with Google"
 2. เลือก Google Account
-3. ผู้ใช้ติ๊ก "I agree to Terms of Service and Privacy Policy"
+3. ผู้ใช้ติ๊ก "I agree to Terms of Use and Privacy Policy"
 4. ระบบสร้างบัญชีอัตโนมัติ → เข้าสู่แอป (ไม่ต้องยืนยัน OTP)
 
 #### Error Cases

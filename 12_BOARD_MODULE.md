@@ -61,7 +61,7 @@ Phase 1 บทความสร้างและจัดการโดย Ad
 | Medium | Guest behavior ของ Article Like ยังต้องตัดสินตาม login baseline | Master ระบุ user ทั่วไป Like/Share ได้ แต่ global login rule ระบุ Like ต้อง login | ใช้ Member สำหรับ Article Like จนกว่า master แยก Article Like สำหรับ Guest |
 | Medium | Menu label `Community` อาจไม่ตรงกับ master module name | Master module คือ Board | normalize label หรือ map `Community` เป็น Board ให้ชัด |
 | Medium | Article Share สำหรับ Guest ต้องชัด | Master lock ให้ Article Share เป็น public share action | เพิ่ม Guest share state โดยไม่ต้อง Login |
-| Needs Decision | Article Comment / Report Article ไม่อยู่ใน master Board baseline | Master ระบุ Article Like / Share เท่านั้น | ซ่อนหรือย้ายเป็น future/master decision |
+| High | Article Comment / Report Article ต้องไม่ขยายเป็น Board V1 interaction | Master ระบุ Article Like / Share เท่านั้น; Report Board Content ใช้ Trust & Safety moderation handoff หากต้องรองรับ compliance | ซ่อน Article Comment และใช้ minimal `Report content` เฉพาะเมื่อผูกกับ Trust & Safety |
 
 ---
 
@@ -93,10 +93,18 @@ Phase 1 บทความสร้างและจัดการโดย Ad
 - User Delete Post
 - User-generated discussion thread
 - Article Comment
-- Report Article from Front Office
+- Report Article as article-specific interaction
 - Poll Post
 - Rich text editor in Front Office
 - Back Office article authoring UI detail
+
+## Report Board Content Boundary
+
+- Article Comment ไม่อยู่ใน FO V1 baseline
+- Article-specific Report Article interaction ไม่อยู่ใน Board V1 baseline
+- หากต้องรองรับ compliance ให้ใช้ Trust & Safety `Report Board Content` เป็น generic report action บน Article Detail
+- Report Board Content ต้องส่งเข้า moderation handoff และไม่ทำให้ article หายทันที
+- Front Office user ยังสร้าง แก้ไข ลบ หรือ comment article ไม่ได้
 
 ---
 
@@ -436,6 +444,12 @@ Given user เปิด Article Detail
 When Article Detail แสดง action  
 Then ระบบต้องไม่แสดง Article Comment เป็น V1 baseline เว้นแต่ master เพิ่ม scope
 
+## AC-BOARD-011A: Report Board Content Boundary
+
+Given user เปิด Article Detail  
+When user เห็น report action  
+Then action ต้องเป็น `Report content` ที่ส่งเข้า Trust & Safety moderation handoff และต้องไม่เปิด Article Comment หรือ article-specific moderation flow
+
 ## AC-BOARD-012: Article Not Found
 
 Given article ถูกลบหรือไม่พร้อมใช้งาน  
@@ -456,7 +470,7 @@ Then ระบบต้องแสดง `บทความนี้ไม่�
 # 19. Future Enhancement
 
 - Article Comment
-- Report Article
+- Article-specific Report Article
 - Admin publish notification
 - Personalized article recommendation
 - Saved Article

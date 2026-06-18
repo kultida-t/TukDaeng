@@ -28,8 +28,9 @@
 | 3 | [00_NAVIGATION_AND_CROSS_MODULE_FLOW.md](00_NAVIGATION_AND_CROSS_MODULE_FLOW.md) | Cross-module routing, deep link, notification destination |
 | 4 | Module PRD `01-18` | Functional and QA detail by module |
 | 5 | [Figma_Gap_Checklist_Against_Master.md](Figma_Gap_Checklist_Against_Master.md) | Figma cleanup and design QA checklist |
-| 6 | [DEV_IMPLEMENTATION_CHECKLIST.md](DEV_IMPLEMENTATION_CHECKLIST.md) | Dev implementation checklist by module |
-| 7 | [QA_TEST_SCENARIO_CHECKLIST.md](QA_TEST_SCENARIO_CHECKLIST.md) | QA scenario checklist and regression sign-off |
+| 6 | [FIGMA_UX_CLEANUP_TASK_BREAKDOWN.md](FIGMA_UX_CLEANUP_TASK_BREAKDOWN.md) | Figma cleanup task grouping and assignment plan |
+| 7 | [DEV_IMPLEMENTATION_CHECKLIST.md](DEV_IMPLEMENTATION_CHECKLIST.md) | Dev implementation checklist by module |
+| 8 | [QA_TEST_SCENARIO_CHECKLIST.md](QA_TEST_SCENARIO_CHECKLIST.md) | QA scenario checklist and regression sign-off |
 
 # 4. Module Index
 
@@ -63,6 +64,7 @@
 3. แก้ `High` ก่อนส่ง Dev / QA
 4. ใช้ `Medium` เป็น checklist ก่อน design sign-off
 5. รายการ `Needs Decision` ต้องกลับไปตัดสินใน master หรือ product decision log ก่อน implement
+6. ใช้ [FIGMA_UX_CLEANUP_TASK_BREAKDOWN.md](FIGMA_UX_CLEANUP_TASK_BREAKDOWN.md) เพื่อแบ่งงานเป็น wave และ assign owner
 
 # 6. Handoff Readiness
 
@@ -87,14 +89,14 @@
 | Post-block chat behavior | เก็บ chat history เดิมให้อ่านได้ แต่ปิดการส่งข้อความใหม่และปิดการสร้าง offer/chat ใหม่ระหว่างคู่ที่ block กัน | Block ต้องซ่อน asset จาก public surfaces; การเก็บ history ช่วย preserve record ส่วนการปิดข้อความใหม่ลด abuse risk | Master และ Chat / Trust Safety PRD อัปเดตแล้ว; Figma ต้องเพิ่ม blocked chat read-only state |
 | Notification type นอก baseline เช่น chat/new message/moderation/account/system/market/price | ไม่อยู่ใน Front Office V1 Notification Center; supported types ยังคงเป็น Like, Comment, Follow, Offer, Watch Alert เท่านั้น | Master lock notification baseline ไว้ชัด และ Chat/New Message แจ้งเตือนเฉพาะในเมนู Chat ด้วย unread badge/count | ซ่อน type นอก baseline ใน Figma หรือย้ายเป็น Chat badge / Future / Back Office / master decision |
 | Future menu items เช่น Watch Shops, Repair Shop, Auction Center, Consignment Center, Authentication Center | ไม่เปิดเป็น active menu ใน production V1; ถ้าต้องแสดงใน prototype ให้ mark เป็น Future / Placeholder ชัดเจน | Master ยังไม่สรุปเป็น functional scope หลัก และบางรายการอยู่ใน Phase 1 exclusions เช่น Auction / Live Selling / Watch Authentication | ปรับ Figma menu taxonomy และห้าม Dev implement เป็น active route จนกว่า master เพิ่ม scope |
-| Full Back Office PRD | ยังไม่ต้อง block mobile V1; ใช้ `18_ADMIN_SCOPE_NOTE.md` เป็น boundary ก่อน และทำ Full Back Office PRD แยกเมื่อเริ่ม Back Office sprint | Master ระบุ Admin ผ่าน Web Back Office เท่านั้น แต่ mobile app ต้องรู้ handoff เช่น Report, Moderation, Audit Trail; ไม่ควรปนกับ FO mobile PRD | Review เอกสาร Back Office เดิมใน repo แล้วทำ PRD แยก/ปรับปรุงเมื่อ scope BO เริ่มจริง |
+| Full Back Office PRD | ยังไม่เริ่มจนกว่า FO baseline จะครบและ sign-off พร้อม; ตอนนี้ใช้ `18_ADMIN_SCOPE_NOTE.md` เป็น boundary ก่อน | Master ระบุ Admin ผ่าน Web Back Office เท่านั้น แต่ mobile app ต้องรู้ handoff เช่น Report, Moderation, Audit Trail; ไม่ควรปนกับ FO mobile PRD | หลัง FO master/module PRD, Figma cleanup, Dev checklist และ QA checklist นิ่งแล้ว ค่อยเปิด Back Office sprint และจัดทำ Full BO PRD แยก |
 
 # 8. Remaining Decision Items
 
 รายการที่ยังควรเก็บใน product decision log หลัง review รอบนี้:
 
-- Delete Chat behavior แบบละเอียด เช่น ลบเฉพาะฝั่งตัวเอง, ซ่อนจาก list, หรือกู้ history ได้หรือไม่ได้
-- Share channel implementation เช่น system share sheet, copy link, หรือ native deep link preview
-- Article Comment / Report Article จะเพิ่มใน Board V1 หรือคงเป็น future/back-office moderation scope
-- Delete Account retention / grace period policy
-- Full Back Office PRD เมื่อเริ่ม Back Office sprint จริง
+- Delete Chat behavior แบบละเอียด: recommendation คือซ่อนจาก Chat List เฉพาะฝั่งผู้กด ไม่ลบ server history และไม่มี restore UI ใน V1
+- Share channel implementation: recommendation คือ system share sheet พร้อม fallback copy public deep link และไม่สร้าง notification
+- Article Comment / Report Article: recommendation คือไม่เปิด Article Comment ใน FO V1; Report Board Content เปิดได้เฉพาะถ้าใช้ Trust & Safety moderation handoff
+- Delete Account retention / grace period policy: recommendation คือ soft delete พร้อม revoke session และใช้ grace period 30 วันก่อน hard delete/anonymization ตาม policy
+- Full Back Office PRD: เริ่มหลัง FO baseline, Figma cleanup, Dev checklist และ QA checklist ครบ/นิ่งแล้วเท่านั้น

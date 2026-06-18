@@ -1,4 +1,4 @@
-# 02 Feed Module
+﻿# 02 Feed Module
 
 อ้างอิงหลักจาก [TukDaeng_Master_Product_Definition.md](TukDaeng_Master_Product_Definition.md)
 
@@ -41,6 +41,7 @@ Feed Module เป็น marketplace หลักของ TukDaeng สำหร
 | Card required fields | Asset Images, Brand, Model, Price, Posted Time, Owner Name, Like Count, Comment Count |
 | Card exclusions in V1 | ไม่แสดง Location, Verified Badge, Status Badge |
 | Supported actions | Like / Unlike, Swipe image, เปิด Asset Detail, เปิด Public Profile, เปิด Full Screen Image Viewer |
+| More menu actions | Hide this asset, Report Asset, Block User สำหรับ Asset ของผู้อื่น |
 | Unsupported actions | ไม่รองรับ Comment หรือ Share จาก Feed โดยตรง |
 | Guest access | Guest ดู Feed ได้ แต่ action ที่ต้อง Login ต้องแสดง Global Login Required Dialog |
 | Performance | Feed โหลดภายใน 2 วินาที, รูปภาพ Lazy Load, รองรับ Infinite Scroll |
@@ -57,6 +58,7 @@ Feed Module เป็น marketplace หลักของ TukDaeng สำหร
 | Must Fix | Feed อาจแสดง Asset ที่ไม่ใช่ `Sale` | Feed, Search และ Watch Alert ใช้เฉพาะ Asset สถานะ `Sale` | ระบุ filter/status rule ว่า Feed render เฉพาะ `Sale` เท่านั้น |
 | High | ยังไม่เห็น behavior ของแท็บ `All`, `Following`, `Favorites` ครบ | `All` = Sale ทั้งหมดที่มองเห็น, `Following` = Sale ของคนที่ Follow, `Favorites` = Sale ที่กด Like | เพิ่ม annotation หรือ state ของแต่ละแท็บให้ชัด |
 | High | ยังไม่เห็น Block filtering ใน Feed | Asset ของผู้ถูก Block ต้องหายจาก Feed ทันที และ Following Feed ต้องไม่ใช้ความสัมพันธ์ Follow ระหว่างผู้ที่ Block กัน | เพิ่ม blocked/hidden asset state หรือ rule note ใน Feed |
+| High | ยังไม่เห็นเมนูสามจุดสำหรับจัดการ Asset ของผู้อื่น | Feed more menu ควรรองรับ Hide this asset, Report Asset, Block User โดยไม่ชนกับ asset status `Hide` | เพิ่ม overflow menu, hide success + undo, report entry และ Block User confirmation |
 | High | ยังไม่เห็น Guest restriction state | Guest กด Like, Follow, Chat, Offer, Favorites, Following ต้องเจอ Global Login Required Dialog | เพิ่ม dialog/state สำหรับ guest interaction |
 | High | ยังไม่เห็น Feed load more / Infinite Scroll state | Feed ต้องรองรับ Infinite Scroll | เพิ่ม loading state ระหว่างโหลดรายการถัดไป |
 | High | ยังไม่เห็น End-of-list state | เมื่อ Scroll ถึงท้ายรายการต้องแสดง `คุณดูรายการทั้งหมดแล้ว` | เพิ่ม state ท้ายรายการ |
@@ -78,6 +80,10 @@ Feed Module เป็น marketplace หลักของ TukDaeng สำหร
 - Image swipe บน Feed Card
 - Full Screen Image Viewer
 - Like / Unlike
+- More menu สำหรับ Asset ของผู้อื่น
+- Hide this asset / ไม่ต้องการเห็นรายการนี้
+- Report Asset
+- Block User
 - เปิด Asset Detail
 - เปิด Public Profile
 - Infinite Scroll และ load-more state
@@ -113,6 +119,10 @@ Feed Module เป็น marketplace หลักของ TukDaeng สำหร
 | Feed Offline Cached | แสดงข้อมูลล่าสุดที่โหลดไว้พร้อมสถานะ offline/cached |
 | Global Login Required Dialog | แสดงเมื่อ Guest ใช้ feature ที่ต้อง Login |
 | Full Screen Image Viewer | เปิดรูป Asset แบบเต็มจอจาก Feed Card |
+| Feed More Menu | เมนูสามจุดบน Asset ของผู้อื่น |
+| Hide Feed Item Undo | Snackbar หลังซ่อนรายการ พร้อม action Undo |
+| Report Asset Entry | เปิด Report Asset flow จาก Feed more menu |
+| Block User Confirmation | ยืนยันก่อน Block User จาก Feed more menu |
 
 # 8. User States
 
@@ -138,12 +148,17 @@ Guest ไม่สามารถ:
 - Make Offer
 - ตั้ง Watch Alert
 - Add / Edit / Delete Asset
+- Hide this asset
+- Report Asset
+- Block User
 
 เมื่อ Guest ใช้ feature ที่ต้อง Login ระบบต้องแสดง Global Login Required Dialog
 
 ## Member
 
 Member สามารถใช้ Feed ได้ตามสิทธิ์และ visibility rule ของระบบ รวมถึง Like / Unlike, เปิด Following, เปิด Favorites, เปิด Asset Detail, เปิด Public Profile และเปิด Full Screen Image Viewer
+
+Member สามารถใช้เมนูสามจุดบน Asset ของผู้อื่นเพื่อ Hide this asset, Report Asset หรือ Block User ได้ตาม Trust & Safety rule
 
 ## Blocked Relationship
 
@@ -195,6 +210,29 @@ Member สามารถใช้ Feed ได้ตามสิทธิ์แ�
 2. ระบบเปลี่ยนรูปตาม gallery ของ Asset
 3. User กดรูปเพื่อเปิด Full Screen Image Viewer
 
+## Hide Feed Item
+
+1. Member กดเมนูสามจุดบน Feed Card ของ Asset ผู้อื่น
+2. Member เลือก `Hide this asset` / `ไม่ต้องการเห็นรายการนี้`
+3. ระบบซ่อน Asset นั้นจาก Feed ของ Member ทันที
+4. ระบบแสดง snackbar พร้อม `Undo`
+5. หาก Member กด Undo ระบบนำ Asset กลับมาใน Feed ตามตำแหน่งหรือ refresh state ที่เหมาะสม
+6. หากไม่ Undo ระบบบันทึก user-level hidden asset preference และ Asset นั้นไม่กลับมาใน Feed เมื่อ refresh/reload
+
+## Report Asset From Feed
+
+1. Member กดเมนูสามจุดบน Feed Card ของ Asset ผู้อื่น
+2. Member เลือก `Report Asset` / `รายงานรายการนี้`
+3. ระบบเปิด Report Asset flow ของ Trust & Safety
+4. เมื่อ report สำเร็จ Asset ต้องไม่หายทันทีจาก public surfaces เว้นแต่ Member เลือก Hide this asset แยกต่างหาก
+
+## Block User From Feed
+
+1. Member กดเมนูสามจุดบน Feed Card ของ Asset ผู้อื่น
+2. Member เลือก `Block User` / `บล็อกผู้ใช้งาน`
+3. ระบบแสดง confirmation ก่อน block
+4. เมื่อ block สำเร็จ Asset/content ของ user นั้นต้องหายจาก Feed ตาม Trust & Safety rule
+
 # 10. Business Rules
 
 ## Feed Visibility
@@ -245,11 +283,26 @@ Feed รองรับ:
 - เปิด Asset Detail
 - เปิด Public Profile
 - เปิด Full Screen Image Viewer
+- เมนูสามจุดสำหรับ Asset ของผู้อื่น:
+  - Hide this asset / ไม่ต้องการเห็นรายการนี้
+  - Report Asset / รายงานรายการนี้
+  - Block User / บล็อกผู้ใช้งาน
 
 Feed ไม่รองรับ:
 
 - Comment จาก Feed โดยตรง
 - Share จาก Feed โดยตรง
+
+## Hide Feed Item Rule
+
+- Hide Feed Item เป็น user-level preference ของ viewer เท่านั้น
+- Hide Feed Item ไม่ใช่ asset status `Hide`
+- Hide Feed Item ไม่กระทบ Owner, ผู้ใช้อื่น, Public Profile, Offer หรือ Chat
+- Hide Feed Item ต้องซ่อนเฉพาะ Asset นั้นจาก Feed ของผู้กด
+- Hide Feed Item ไม่ทำให้ Asset หายจาก Search, Watch Alert Result หรือ Public Profile ใน V1 เว้นแต่มี block/moderation/status rule อื่น
+- หลัง Hide สำเร็จต้องมี undo ชั่วคราว
+- หากไม่ Undo ระบบต้องไม่แสดง Asset นั้นใน Feed ของผู้กดเมื่อ refresh/reload
+- Hide Feed Item ไม่สร้าง Notification Center item
 
 ## Like And Favorites Sync
 
@@ -270,6 +323,7 @@ Feed ไม่รองรับ:
 | `Sale` -> `Show` | หายจาก Feed |
 | Deleted Asset | หายจาก Feed และ public surfaces |
 | Reported Asset | ไม่หายจาก Feed ทันที จนกว่า Admin ดำเนินการ moderation |
+| Hidden Feed Item | หายจาก Feed เฉพาะผู้กด hide และไม่กระทบผู้ใช้อื่น |
 
 ## Performance And Loading
 
@@ -285,8 +339,9 @@ Feed ไม่รองรับ:
 | Actor | Permission |
 | --- | --- |
 | Guest | ดู Feed `All`, Asset Detail public, Public Profile, Like Count, Comment Count, Full Screen Image |
-| Guest | ห้าม Like, Follow, Favorites, Following, Comment, Chat, Make Offer, Watch Alert, Add/Edit/Delete Asset |
+| Guest | ห้าม Like, Follow, Favorites, Following, Comment, Chat, Make Offer, Watch Alert, Add/Edit/Delete Asset, Hide this asset, Report Asset, Block User |
 | Member | ใช้ Feed และ action ที่เกี่ยวข้องตาม visibility rule |
+| Member | Hide this asset, Report Asset และ Block User ได้จากเมนูสามจุดของ Asset ผู้อื่น |
 | Blocked User | ไม่เห็น Asset ของอีกฝ่ายใน Feed |
 | Admin | ไม่ใช่ primary actor ของ Feed V1 |
 
@@ -295,7 +350,9 @@ Feed ไม่รองรับ:
 - Asset ที่จะแสดงใน Feed ต้องมี status = `Sale`
 - Asset ต้องผ่าน permission filtering
 - Asset ต้องไม่อยู่ใน block relationship กับผู้ใช้ปัจจุบัน
+- Asset ต้องไม่อยู่ใน user-level hidden feed item preference ของผู้ใช้ปัจจุบัน
 - Like / Unlike ต้องตรวจสอบ authentication
+- Hide this asset, Report Asset และ Block User ต้องตรวจสอบ authentication
 - Following และ Favorites ต้องตรวจสอบ authentication
 - Full Screen Image Viewer เปิดได้เฉพาะรูปของ Asset ที่ผู้ใช้มีสิทธิ์มองเห็น
 
@@ -308,6 +365,9 @@ Feed ไม่รองรับ:
 | Offline และไม่มี cache | แสดง empty/error state ที่สื่อว่าไม่มีข้อมูลพร้อม retry |
 | Asset ถูกเปลี่ยนสถานะระหว่างดู Feed | ถ้าไม่ใช่ `Sale` ให้หายจาก Feed เมื่อ refresh หรือ sync |
 | Asset owner ถูก Block | Asset ต้องหายจาก Feed ทันทีเมื่อข้อมูล sync |
+| Asset ถูก Hide Feed Item โดยผู้ใช้ | Asset ต้องหายจาก Feed ของผู้ใช้นั้น แต่ไม่กระทบผู้ใช้อื่น |
+| Hide Feed Item ล้มเหลว | คืน Asset กลับใน Feed และแสดง error ที่เหมาะสม |
+| User กด Undo หลัง Hide Feed Item | นำ Asset กลับมาใน Feed ตาม state ที่เหมาะสม |
 | Guest ใช้ action ที่ต้อง Login | แสดง Global Login Required Dialog |
 | Like / Unlike ล้มเหลว | คืนค่า UI เป็นสถานะก่อนหน้าและแสดง error ที่เหมาะสม |
 
@@ -339,6 +399,11 @@ Feed ไม่รองรับ:
 | `feed_asset_unliked` | Member Unlike Asset จาก Feed |
 | `feed_image_swiped` | User swipe รูปใน Feed Card |
 | `feed_fullscreen_image_opened` | User เปิด Full Screen Image Viewer |
+| `feed_more_menu_opened` | Member เปิดเมนูสามจุดบน Feed Card |
+| `feed_asset_hidden` | Member เลือก Hide this asset |
+| `feed_asset_hide_undone` | Member กด Undo หลัง Hide this asset |
+| `feed_asset_report_tapped` | Member เลือก Report Asset จาก Feed |
+| `feed_user_block_tapped` | Member เลือก Block User จาก Feed |
 | `feed_load_more_triggered` | Infinite Scroll โหลดรายการถัดไป |
 | `feed_retry_tapped` | User กด `ลองใหม่` ใน Error State |
 | `feed_guest_login_required_shown` | Guest ใช้ action ที่ต้อง Login |
@@ -364,6 +429,11 @@ Feed ไม่รองรับ:
 | AC-FEED-015 | Owner Name หรือ Profile area เปิด Public Profile ได้ |
 | AC-FEED-016 | Feed รองรับ Swipe image และ Full Screen Image Viewer |
 | AC-FEED-017 | Feed ไม่อนุญาต Comment หรือ Share จาก Feed โดยตรง |
+| AC-FEED-017A | Feed more menu สำหรับ Asset ของผู้อื่นต้องมี Hide this asset, Report Asset และ Block User |
+| AC-FEED-017B | Hide this asset ต้องซ่อน Asset เฉพาะ Feed ของผู้กด และไม่กระทบ Owner, ผู้ใช้อื่น, Public Profile, Offer หรือ Chat |
+| AC-FEED-017C | Hide this asset ต้องมี Undo ชั่วคราว และถ้าไม่ Undo ต้องไม่กลับมาใน Feed หลัง refresh/reload |
+| AC-FEED-017D | Report Asset จาก Feed ต้องเปิด Trust & Safety Report Asset flow และไม่ทำให้ Asset หายทันที |
+| AC-FEED-017E | Block User จาก Feed ต้องมี confirmation และเมื่อ block สำเร็จ Asset/content ของ user นั้นต้องหายจาก Feed ตาม Trust & Safety rule |
 | AC-FEED-018 | Feed รองรับ Infinite Scroll และมี load-more state |
 | AC-FEED-019 | เมื่อ Scroll ถึงท้ายรายการต้องแสดง `คุณดูรายการทั้งหมดแล้ว` |
 | AC-FEED-020 | โหลด Feed ไม่สำเร็จต้องแสดง Error State และปุ่ม `ลองใหม่` |

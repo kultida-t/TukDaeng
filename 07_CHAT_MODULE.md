@@ -71,9 +71,9 @@ Chat Module ต้องยึด master baseline ต่อไปนี้เป
 | High | Offer Accepted / Rejected destination ยังไม่ครบ | Accepted Offer เปิด Chat Room; Rejected Offer เปิด Asset Detail | เพิ่ม destination states จาก notification และ offer cards |
 | Medium | Room creation อาจสื่อว่าสร้างเมื่อกด Chat | Chat Room ต้องสร้างเมื่อส่งข้อความแรก | ปรับ empty/pre-chat state ให้ชัดว่า room created หลังส่งข้อความแรก |
 | Medium | Different Asset same user rule ยังไม่ชัด | Different Asset ใช้ห้องเดิม แต่ Reference Asset เปลี่ยนเป็น Asset ล่าสุด | เพิ่ม flow/state ที่ reference asset เปลี่ยนตาม asset ล่าสุด |
-| Medium | Delete Chat behavior ยังไม่ผูก confirmation ชัดเจน | Chat Room รองรับ Delete Chat พร้อม Confirmation | เพิ่ม delete confirmation state |
+| Medium | Delete Chat behavior ยังไม่ผูก confirmation ชัดเจน | Delete Chat ซ่อนห้องจาก Chat List เฉพาะฝั่งผู้กด ไม่ลบ server history และไม่กระทบคู่สนทนา | เพิ่ม delete confirmation state พร้อม copy ว่าเป็นการซ่อนจากรายการของผู้ใช้คนนี้เท่านั้น |
 | Medium | Attachment type ยังไม่ล็อกใน Figma | Master รองรับ Text, Image, File, Asset Card, Offer Card | ระบุ allowed attachment/content types ตาม master |
-| Needs Decision | Delete Chat แบบ LINE / ไม่กู้ history เดิมยังเป็นรายละเอียดนอก master | Master ระบุแค่ Delete Chat พร้อม Confirmation | ตัดสินใจใน Chat PRD หรือ master ก่อนให้ Figma เป็น source of truth |
+| Medium | Delete Chat restore UI ต้องไม่อยู่ใน V1 | V1 ไม่มี restore UI และยังคง message/archive ฝั่ง server ตาม retention policy | ห้ามเพิ่ม restore UI ใน Figma V1 |
 
 ---
 
@@ -371,8 +371,12 @@ Unread Count ต้องอัปเดตเมื่อ:
 ## Delete Chat Rule
 
 - Delete Chat ต้องมี Confirmation
-- Master ระบุรองรับ Delete Chat พร้อม Confirmation
-- Behavior รายละเอียด เช่น delete เฉพาะฝั่งผู้ลบ / ไม่กู้ history เดิม ต้องตัดสินใจให้ชัดก่อนใช้ Figma เป็น source of truth
+- Delete Chat V1 = ซ่อนห้องแชทจาก Chat List เฉพาะฝั่งผู้กด
+- Delete Chat ไม่ลบ message/archive ฝั่ง server
+- Delete Chat ไม่กระทบคู่สนทนา
+- Delete Chat ไม่ลบหลักฐาน offer/chat history
+- ไม่มี restore UI ใน V1
+- Confirmation copy ต้องสื่อว่าเป็นการซ่อนจากรายการของผู้ใช้คนนี้เท่านั้น ไม่ใช่การลบประวัติของอีกฝ่าย
 
 ## Block User Rule
 
@@ -594,7 +598,9 @@ Notification destination:
 | AC ID | Criteria |
 |---|---|
 | AC-CHAT-027 | Delete Chat ต้องมี Confirmation |
-| AC-CHAT-028 | รายละเอียด Delete Chat แบบลบเฉพาะฝั่ง / ไม่กู้ history ต้องไม่ถือเป็น final จนกว่าจะมี master หรือ Chat decision |
+| AC-CHAT-028 | Delete Chat ต้องซ่อนห้องแชทจาก Chat List เฉพาะฝั่งผู้กด |
+| AC-CHAT-029 | Delete Chat ต้องไม่ลบ message/archive ฝั่ง server และไม่กระทบคู่สนทนา |
+| AC-CHAT-030 | Delete Chat ต้องไม่ลบหลักฐาน offer/chat history และไม่มี restore UI ใน V1 |
 
 ---
 

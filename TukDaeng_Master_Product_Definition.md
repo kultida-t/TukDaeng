@@ -1,4 +1,4 @@
-# Tuk Daeng Master Product Definition
+﻿# Tuk Daeng Master Product Definition
 
 **Document Type:** Master Product Definition / PRD Baseline  
 **Source Documents:** `PRD.md`, `FO_Functional_PRD.md`  
@@ -109,6 +109,8 @@ Admin รับผิดชอบ:
 - จัดการ Board Content
 - จัดการ User / Asset ตาม policy
 - ดำเนินการภายใน 24 ชั่วโมงสำหรับ Report ที่เข้ามา
+
+Full Back Office PRD ยังไม่เริ่มระหว่าง FO cleanup รอบนี้ ให้ใช้ `18_ADMIN_SCOPE_NOTE.md` เป็น boundary ก่อน และเริ่ม Full Back Office PRD หลัง FO baseline, Figma cleanup, Dev checklist, QA checklist และ FO sign-off ครบ/นิ่งแล้วเท่านั้น
 
 ## 4. Canonical Terminology
 
@@ -221,7 +223,7 @@ Rules:
 - Email ไม่สามารถเปลี่ยนได้หลังยืนยันแล้ว
 - บัญชี SSO ไม่สามารถ Sign In ด้วย Email / Password ได้ และกลับกัน
 - บัญชี Suspended ต้องเห็น error พร้อมเหตุผลและช่องทางติดต่อ Support
-- ทุกช่องทางต้องยอมรับ Terms of Service และ Privacy Policy ก่อนสมัคร
+- ทุกช่องทางต้องยอมรับ Terms of Use และ Privacy Policy ก่อนสมัคร
 
 ### Feed
 
@@ -255,6 +257,20 @@ Feed Actions:
 - เปิด Asset Detail
 - เปิด Public Profile
 - เปิด Full Screen Image Viewer
+- เมนูสามจุดสำหรับ Asset ของผู้อื่น:
+  - Hide this asset / ไม่ต้องการเห็นรายการนี้
+  - Report Asset / รายงานรายการนี้
+  - Block User / บล็อกผู้ใช้งาน
+
+Hide Feed Item:
+
+- เป็น user-level preference ของ viewer เท่านั้น
+- ไม่ใช่ asset status `Hide`
+- ไม่กระทบ Owner, ผู้ใช้อื่น, Public Profile, Offer หรือ Chat
+- หลัง Hide ต้องซ่อน Asset นั้นจาก Feed ของผู้กด
+- ต้องมี undo ชั่วคราวหลัง hide สำเร็จ
+- หากไม่ undo ระบบต้องไม่แสดง Asset นั้นใน Feed ของผู้กดเมื่อ refresh/reload
+- ไม่สร้าง Notification Center item
 
 Feed ไม่รองรับ:
 
@@ -262,6 +278,15 @@ Feed ไม่รองรับ:
 - Share จาก Feed โดยตรง
 
 Comment และ Share ต้องทำผ่าน Asset Detail เท่านั้น
+
+Share V1:
+
+- Share เป็น public share action สำหรับ public Asset และ public Article
+- Guest สามารถ Share public content ได้โดยไม่ต้อง Login
+- Primary channel คือ system share sheet เมื่อ platform รองรับ
+- Fallback คือ copy public deep link
+- Share ไม่สร้าง Notification Center item
+- Public deep link ต้อง validate status, deleted state, permission และ block state เมื่อเปิด
 
 ### Search & Filter
 
@@ -396,6 +421,14 @@ Chat Room รองรับ:
 - Asset Card
 - Offer Card
 - Delete Chat พร้อม Confirmation
+
+Delete Chat V1:
+
+- Delete Chat ต้องซ่อนห้องแชทจาก Chat List เฉพาะฝั่งผู้กด
+- Delete Chat ไม่ลบ message/archive ฝั่ง server
+- Delete Chat ไม่กระทบคู่สนทนา
+- Delete Chat ไม่ลบหลักฐาน offer/chat history
+- ไม่มี restore UI ใน V1
 
 ### Offer
 
@@ -611,6 +644,10 @@ Rules:
 - User ทั่วไปไม่สามารถสร้างหรือแก้ไขบทความได้ใน Phase 1
 - Guest อ่านและ Share บทความได้โดยไม่ต้อง Login เพราะ Article Share เป็น public share action
 - Article Like ต้อง Login ตาม Global Login Required baseline
+- Article Comment ไม่อยู่ใน FO V1 baseline
+- Article-specific Report Article ไม่อยู่ใน Board V1 baseline
+- หากต้องรองรับ report สำหรับบทความ ให้ใช้ Trust & Safety `Report Board Content` เป็น generic report action และส่งเข้า moderation handoff
+- Report Board Content ไม่ทำให้บทความหายทันทีจนกว่า Admin moderation
 
 ### Settings
 
@@ -628,9 +665,17 @@ Settings รองรับ:
 - Help
 - About
 - Privacy Policy
-- Terms of Service
+- Terms of Use
 - Sign Out
 - Delete Account
+
+Delete Account V1:
+
+- Delete Account ต้องเป็น soft delete หลัง user confirm
+- หลัง Delete Account สำเร็จต้อง sign out และ revoke session
+- ใช้ grace period 30 วันก่อน hard delete/anonymization ตาม policy
+- ระหว่าง grace period user login ไม่ได้ หรือเห็น account-deleted support state
+- Transaction, offer, chat, report และ audit record ที่จำเป็นยังเก็บตาม legal/safety policy
 
 ## 8. Global State & Error Rules
 
@@ -773,7 +818,7 @@ Asset หรือ Content จะหายเมื่อ Admin ดำเนิ�
 
 - Report
 - Block
-- Terms of Service
+- Terms of Use
 - Privacy Policy
 - Moderation Flow
 

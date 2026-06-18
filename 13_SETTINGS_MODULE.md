@@ -1,4 +1,4 @@
-# 13 Settings Module
+﻿# 13 Settings Module
 
 อ้างอิงหลักจาก [TukDaeng_Master_Product_Definition.md](TukDaeng_Master_Product_Definition.md)
 
@@ -21,7 +21,7 @@
 
 Settings Module ใช้สำหรับให้ Member จัดการข้อมูลโปรไฟล์ การแสดงผล ภาษา เอกสารช่วยเหลือ/กฎหมาย การออกจากระบบ และการลบบัญชี ตาม baseline ของ master
 
-Settings V1 ต้องรองรับรายการที่ master ระบุครบ ได้แก่ Edit Profile, Username, Phone, Line, Email Display, Language, Theme Mode, Notification Settings, Change Password แบบ Auth-linked entry, Help, About, Privacy Policy, Terms of Service, Sign Out และ Delete Account
+Settings V1 ต้องรองรับรายการที่ master ระบุครบ ได้แก่ Edit Profile, Username, Phone, Line, Email Display, Language, Theme Mode, Notification Settings, Change Password แบบ Auth-linked entry, Help, About, Privacy Policy, Terms of Use, Sign Out และ Delete Account
 
 ---
 
@@ -44,7 +44,7 @@ Settings V1 ต้องรองรับรายการที่ master ร
 | Notification Settings | Baseline notification type preferences | ตั้งค่าเปิด/ปิดเฉพาะ Like, Comment, Follow, Offer, Watch Alert; ไม่รวม Chat/New Message |
 | Change Password | Auth-linked entry | แสดงเฉพาะบัญชี Email / Password และส่งไป Auth flow |
 | Help / About | Help, About | ต้องมีเมนูทั้งสองรายการ |
-| Legal | Privacy Policy, Terms of Service | ต้องเข้าถึง legal docs ได้ |
+| Legal | Privacy Policy, Terms of Use | ต้องเข้าถึง legal docs ได้ |
 | Session | Sign Out | ต้อง Sign Out พร้อม confirmation |
 | Account | Delete Account | ต้องมี Delete Account flow/state ใน V1 baseline |
 | Source of Truth Conflict | เอกสารเดิมบอก Language/Dark Mode/Delete Account ยังไม่มี | ให้ยึด master ล่าสุดเป็นหลัก |
@@ -59,9 +59,9 @@ Settings V1 ต้องรองรับรายการที่ master ร
 | Must Fix | Settings เดิมอาจระบุ Delete Account เป็น future | Master ระบุ Delete Account อยู่ใน Settings baseline | เพิ่ม Delete Account entry และ confirmation/risk state |
 | High | Language setting ยังไม่ชัด | Settings ต้องมี Language: English / Thai | เพิ่ม language selector และ selected state |
 | High | Email field ต้อง lock หลัง verification | Auth rule ระบุ Email ไม่สามารถเปลี่ยนได้หลังยืนยันแล้ว | แสดง Email Display เป็น read-only หรือ disabled edit |
-| High | Settings menu ต้องครบ master list | Master รองรับ Edit Profile, Username, Phone, Line, Email Display, Language, Theme Mode, Help, About, Privacy Policy, Terms of Service, Sign Out, Delete Account | ตรวจ Figma menu ให้ครบและตัดเมนูนอก baseline |
+| High | Settings menu ต้องครบ master list | Master รองรับ Edit Profile, Username, Phone, Line, Email Display, Language, Theme Mode, Help, About, Privacy Policy, Terms of Use, Sign Out, Delete Account | ตรวจ Figma menu ให้ครบและตัดเมนูนอก baseline |
 | Medium | Help / About entry ยังต้องตรวจ | Master ระบุ Help และ About | เพิ่มหรือยืนยัน screen/link |
-| Medium | Legal labels ต้องตรง master | Master ใช้ Privacy Policy และ Terms of Service | ใช้ label ให้ตรง ไม่ใช้ Terms of Use เป็น source of truth |
+| Medium | Legal labels ต้องตรง master | Master ใช้ Privacy Policy และ Terms of Use | ใช้ label `Terms of Use` เป็น source of truth |
 | Medium | Sign Out confirmation ต้องชัด | Sign Out ต้อง clear session และกลับ Sign In | เพิ่ม confirmation และ signed-out destination |
 | Medium | Change Password ต้องไม่กลายเป็น Settings-owned flow | Master อนุญาตเป็น Auth-linked entry สำหรับบัญชี Email / Password | แสดง entry เฉพาะ account type ที่รองรับและ route ไป Auth flow |
 | Medium | Notification Settings ต้องไม่รวม type นอก baseline | รองรับเฉพาะ Like, Comment, Follow, Offer, Watch Alert | เพิ่ม toggle เฉพาะ baseline type และไม่รวม Chat/New Message |
@@ -85,7 +85,7 @@ Settings V1 ต้องรองรับรายการที่ master ร
 - Help
 - About
 - Privacy Policy
-- Terms of Service
+- Terms of Use
 - Sign Out
 - Delete Account
 - Confirmation states สำหรับ Sign Out และ Delete Account
@@ -113,7 +113,7 @@ Settings V1 ต้องรองรับรายการที่ master ร
 | Help | หน้าช่วยเหลือ |
 | About | ข้อมูลแอป |
 | Privacy Policy | เอกสาร Privacy Policy |
-| Terms of Service | เอกสาร Terms of Service |
+| Terms of Use | เอกสาร Terms of Use |
 | Sign Out Confirmation | ยืนยันก่อนออกจากระบบ |
 | Delete Account Confirmation | ยืนยันก่อนลบบัญชี |
 
@@ -132,7 +132,7 @@ Settings V1 ต้องรองรับรายการที่ master ร
 - แก้ profile/contact fields ที่รองรับได้
 - เห็น Email Display
 - เปลี่ยน Language และ Theme Mode ได้
-- เปิด Help, About, Privacy Policy, Terms of Service ได้
+- เปิด Help, About, Privacy Policy, Terms of Use ได้
 - Sign Out ได้
 - เริ่ม Delete Account flow ได้
 
@@ -186,7 +186,7 @@ Settings
 
 ```text
 Settings
--> Privacy Policy or Terms of Service
+-> Privacy Policy or Terms of Use
 -> Open document
 ```
 
@@ -229,7 +229,7 @@ Settings must include:
 - Help
 - About
 - Privacy Policy
-- Terms of Service
+- Terms of Use
 - Sign Out
 - Delete Account
 
@@ -256,8 +256,8 @@ Settings must include:
 
 ## Legal Rule
 
-- Privacy Policy และ Terms of Service ต้องเข้าถึงได้จาก Settings
-- Label ต้องใช้ `Privacy Policy` และ `Terms of Service` ตาม master
+- Privacy Policy และ Terms of Use ต้องเข้าถึงได้จาก Settings
+- Label ต้องใช้ `Privacy Policy` และ `Terms of Use` ตาม master
 - เอกสาร legal ควรเข้าถึงได้หลัง login และควรมี path จาก auth/consent flow ด้วย
 
 ## Sign Out Rule
@@ -271,7 +271,11 @@ Settings must include:
 - Delete Account อยู่ใน V1 master baseline
 - ต้องมี warning/confirmation ก่อนดำเนินการ
 - ต้องป้องกัน accidental deletion
-- รายละเอียด retention/grace period เป็น Needs Decision หากยังไม่กำหนด
+- Delete Account V1 เป็น soft delete หลัง user confirm
+- หลัง Delete Account สำเร็จต้อง sign out และ revoke session
+- ใช้ grace period 30 วันก่อน hard delete/anonymization ตาม policy
+- ระหว่าง grace period user login ไม่ได้ หรือเห็น account-deleted support state
+- ต้องแจ้งผลกระทบต่อ profile, assets, chat, offers และข้อมูลที่ต้อง retain ตาม legal/safety policy
 
 ## Change Password Rule
 
@@ -370,7 +374,7 @@ Security alert, password changed notification หรือ delete account notifi
 - `help_opened`
 - `about_opened`
 - `privacy_policy_opened`
-- `terms_of_service_opened`
+- `terms_of_use_opened`
 - `sign_out_started`
 - `sign_out_confirmed`
 - `delete_account_started`
@@ -390,7 +394,7 @@ Then ระบบต้องแสดง Settings Home
 
 Given Member เปิด Settings Home  
 When รายการเมนูแสดง  
-Then ต้องมี Edit Profile, Username, Phone, Line, Email Display, Language, Theme Mode, Help, About, Privacy Policy, Terms of Service, Sign Out และ Delete Account
+Then ต้องมี Edit Profile, Username, Phone, Line, Email Display, Language, Theme Mode, Help, About, Privacy Policy, Terms of Use, Sign Out และ Delete Account
 
 ## AC-SETTING-003: Email Display Is Read-Only
 
@@ -416,7 +420,7 @@ And UI ต้องสะท้อน theme ที่เลือก
 ## AC-SETTING-006: Legal Documents
 
 Given Member เปิด Settings  
-When Member กด Privacy Policy หรือ Terms of Service  
+When Member กด Privacy Policy หรือ Terms of Use  
 Then ระบบต้องเปิดเอกสารที่เกี่ยวข้อง
 
 ## AC-SETTING-007: Help And About
@@ -443,6 +447,18 @@ Then ต้องมี Delete Account entry
 Given Member กด Delete Account  
 When Delete Account flow เริ่ม  
 Then ระบบต้องแสดง warning/confirmation ก่อนดำเนินการ
+
+## AC-SETTING-010A: Delete Account Retention
+
+Given Member confirm Delete Account สำเร็จ  
+When ระบบดำเนินการลบบัญชี  
+Then ระบบต้อง soft delete account, revoke session, sign out user และใช้ grace period 30 วันก่อน hard delete/anonymization ตาม policy
+
+## AC-SETTING-010B: Deleted Account Login State
+
+Given account อยู่ใน grace period หลัง Delete Account  
+When user พยายาม login  
+Then ระบบต้องไม่ให้เข้าใช้งานบัญชีปกติ และต้องแสดง account-deleted support state
 
 ## AC-SETTING-011: Guest Cannot Access Settings
 

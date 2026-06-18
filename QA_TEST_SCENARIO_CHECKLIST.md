@@ -1,4 +1,4 @@
-# TukDaeng QA Test Scenario Checklist
+﻿# TukDaeng QA Test Scenario Checklist
 
 Reference:
 
@@ -50,6 +50,22 @@ Then user ต้องดู public content ได้โดยไม่ต้อ
 Given user เป็น Guest  
 When user Share public Asset deep link หรือ Article deep link  
 Then ระบบต้องเริ่ม share behavior ได้โดยไม่บังคับ Login
+
+## QA-GLOBAL-003A: Share Channel Fallback
+
+Given platform รองรับ system share sheet  
+When user กด Share public Asset หรือ Article  
+Then ระบบต้องเปิด system share sheet
+
+Given platform ไม่รองรับ system share sheet  
+When user กด Share public Asset หรือ Article  
+Then ระบบต้อง fallback เป็น copy public deep link และแสดง copy success state
+
+## QA-GLOBAL-003B: Shared Deep Link Validation
+
+Given user เปิด public deep link  
+When linked content เป็น Deleted, Hide, Sold หรือ user ไม่มี permission / ถูก block  
+Then ระบบต้องไม่แสดง private content และต้องแสดง unavailable / permission state ตาม baseline
 
 ## QA-GLOBAL-004: Private Data Not Public
 
@@ -194,6 +210,46 @@ Then ต้องแสดง Error State พร้อมปุ่ม retry
 Given user เคยโหลด Feed แล้ว  
 When network offline  
 Then Feed ต้องแสดง cached data ล่าสุดพร้อม offline indicator
+
+## QA-FEED-007: Feed More Menu Actions
+
+Given Member เห็น Feed Card ของ Asset คนอื่น  
+When Member เปิดเมนูสามจุด  
+Then ต้องเห็น Hide this asset, Report Asset และ Block User  
+And ต้องไม่เห็น Comment หรือ Share direct action จาก Feed
+
+## QA-FEED-008: Hide This Asset From Feed
+
+Given Member เห็น Feed Card ของ Asset คนอื่น  
+When Member เลือก Hide this asset  
+Then Asset ต้องหายจาก Feed ของ Member คนนั้นทันที  
+And ต้องแสดง undo ชั่วคราว  
+And Asset ต้องไม่หายจาก Feed ของ user คนอื่น
+
+## QA-FEED-009: Hide This Asset Persists After Reload
+
+Given Member เลือก Hide this asset และไม่กด Undo  
+When Member refresh หรือ reload Feed  
+Then Asset เดิมต้องไม่กลับมาใน Feed ของ Member คนนั้น
+
+## QA-FEED-010: Hide This Asset Undo
+
+Given Member เลือก Hide this asset  
+When Member กด Undo ใน snackbar  
+Then Asset ต้องกลับมาใน Feed ตาม state ที่เหมาะสม
+
+## QA-FEED-011: Report Asset From Feed
+
+Given Member เห็น Feed Card ของ Asset คนอื่น  
+When Member เลือก Report Asset จากเมนูสามจุดและ submit report  
+Then report ต้องส่งเข้า Trust & Safety Report Asset flow  
+And Asset ต้องไม่หายจาก public surfaces ทันที
+
+## QA-FEED-012: Block User From Feed
+
+Given Member เห็น Feed Card ของ Asset คนอื่น  
+When Member เลือก Block User และ confirm  
+Then Asset/content ของ user นั้นต้องหายจาก Feed ตาม block filtering rule
 
 ---
 
@@ -403,6 +459,20 @@ Given Member A และ B block กัน
 When A หรือ B พยายามสร้าง Chat หรือ Offer ใหม่  
 Then ระบบต้อง reject
 
+## QA-CHAT-005: Delete Chat Hides Only For Actor
+
+Given Member A และ Member B มี Chat Room เดียวกัน  
+When Member A กด Delete Chat และ confirm  
+Then Chat Room ต้องหายจาก Chat List ของ Member A  
+And Chat Room ต้องยังอยู่ใน Chat List ของ Member B  
+And message/archive และ offer/chat history ต้องไม่ถูกลบจาก server
+
+## QA-CHAT-006: Delete Chat Has No Restore UI
+
+Given Member กด Delete Chat สำเร็จ  
+When Member เปิด Chat surfaces ใน V1  
+Then ต้องไม่มี Restore Chat UI
+
 ---
 
 # 10. Notification
@@ -542,7 +612,7 @@ Then ต้องแสดง Login Required หรือไม่ให้เ�
 
 Given Member เปิด Settings  
 When menu แสดง  
-Then ต้องมี Edit Profile, Username, Phone, Line, Email Display, Language, Theme Mode, Notification Settings, Change Password entry ตาม account type, Help, About, Privacy Policy, Terms of Service, Sign Out, Delete Account
+Then ต้องมี Edit Profile, Username, Phone, Line, Email Display, Language, Theme Mode, Notification Settings, Change Password entry ตาม account type, Help, About, Privacy Policy, Terms of Use, Sign Out, Delete Account
 
 ## QA-SETTING-003: Notification Settings Baseline
 
@@ -569,6 +639,20 @@ Then Change Password ต้องไม่เป็น active action
 Given Member กด Delete Account  
 When flow เริ่ม  
 Then ต้องแสดง warning/confirmation ก่อนดำเนินการ
+
+## QA-SETTING-007: Delete Account Soft Delete And Session Revoke
+
+Given Member confirm Delete Account สำเร็จ  
+When ระบบดำเนินการลบบัญชี  
+Then ระบบต้อง soft delete account  
+And ต้อง revoke session และ sign out user
+
+## QA-SETTING-008: Deleted Account Grace Period Login
+
+Given account อยู่ใน grace period 30 วันหลัง Delete Account  
+When user พยายาม login  
+Then ระบบต้องไม่ให้เข้าใช้งานบัญชีปกติ  
+And ต้องแสดง account-deleted support state
 
 ---
 
@@ -598,6 +682,14 @@ Then ต้องแสดง Global Login Required Dialog
 Given user เปิด Article Detail  
 When action list แสดง  
 Then Article Comment ต้องไม่แสดงใน V1 baseline
+
+## QA-BOARD-005: Report Board Content Boundary
+
+Given user เปิด Article Detail  
+When user กด Report content  
+Then report ต้องส่งเข้า Trust & Safety moderation handoff  
+And article ต้องไม่หายทันที  
+And ระบบต้องไม่เปิด Article Comment หรือ article-specific moderation flow
 
 ---
 

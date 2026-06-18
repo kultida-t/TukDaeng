@@ -69,7 +69,7 @@ V1 ไม่ใช่ full social network และไม่รองรับ R
 | Medium | Delete Comment confirmation ยังไม่ชัด | Comment รองรับ Delete Comment | เพิ่ม delete confirmation และ permission state |
 | Medium | Comment notification destination ยังไม่เห็น focus state | Comment notification เปิด Asset Detail และ Focus Comment | เพิ่ม state ที่ focus comment เป้าหมาย |
 | Medium | Follow notification destination ยังไม่ชัด | Follow notification ควรเปิด Public Profile | เพิ่ม destination state ไป Public Profile |
-| Needs Decision | Share detail behavior ต้องกำหนดระดับ implementation | Master ระบุ Share ต้องทำผ่าน Asset Detail แต่ยังไม่ลงรายละเอียด channel | ระบุ share sheet/copy link เป็น implementation detail หรือรอ decision |
+| Medium | Share detail behavior ต้องมี channel/fallback state | Master ระบุ system share sheet เป็น primary และ copy public deep link เป็น fallback | เพิ่ม share sheet, copy link success และ unavailable/deleted link state |
 
 ---
 
@@ -266,7 +266,12 @@ Asset Detail
 
 - Share Asset ทำผ่าน Asset Detail เท่านั้น
 - Feed ไม่รองรับ Share โดยตรง
-- รายละเอียด share channel เช่น system share sheet หรือ copy link เป็น implementation detail / Needs Decision ถ้ายังไม่สรุปใน master
+- Share เป็น public share action สำหรับ public content
+- Guest สามารถ Share public content ได้โดยไม่ต้อง Login
+- Share ไม่สร้าง Notification Center item
+- Primary share channel คือ system share sheet เมื่อ platform รองรับ
+- Fallback share channel คือ copy public deep link
+- Public deep link ต้อง validate asset status, deleted state, permission และ block state เมื่อเปิด
 
 ## Guest Rules
 

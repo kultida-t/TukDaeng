@@ -49,7 +49,7 @@ Figma มี coverage ของ flow หลักค่อนข้างมา�
 | Priority | Figma Gap | Master Baseline | Action |
 | --- | --- | --- | --- |
 | Must Fix | ยังไม่เห็น Suspended Account state ชัดเจน | บัญชี Suspended ต้องเห็น error พร้อมเหตุผลและช่องทางติดต่อ Support | เพิ่ม suspended account screen/state ใน Sign In |
-| Must Fix | Sign Up ทุกช่องทางอาจยังไม่บังคับ Terms / Privacy ชัดเจน | ทุกช่องทางต้องยอมรับ Terms of Service และ Privacy Policy ก่อนสมัคร | ตรวจให้ Email, Google และ Apple flow มี consent ครบก่อน submit |
+| Must Fix | Sign Up ทุกช่องทางอาจยังไม่บังคับ Terms / Privacy ชัดเจน | ทุกช่องทางต้องยอมรับ Terms of Use และ Privacy Policy ก่อนสมัคร | ตรวจให้ Email, Google และ Apple flow มี consent ครบก่อน submit |
 | High | ยังไม่เห็น OTP expiration state | OTP หมดอายุภายใน 30 นาที | เพิ่ม expired OTP state และ action ขอ OTP ใหม่ |
 | High | ยังไม่เห็น password policy ชัดเจน | Password อย่างน้อย 8 ตัวอักษร และต้องมีตัวเลขหรือสัญลักษณ์ | เพิ่ม validation copy ใน Sign Up, Reset Password, Change Password |
 | High | ยังไม่เห็น duplicate email error | 1 Email สมัครได้ 1 บัญชีเท่านั้น | เพิ่ม existing email state และ copy ที่พาไป Sign In |
@@ -67,6 +67,7 @@ Figma มี coverage ของ flow หลักค่อนข้างมา�
 | Must Fix | Feed อาจแสดง Asset ที่ไม่ใช่ `Sale` | Feed, Search และ Watch Alert ใช้เฉพาะ Asset สถานะ `Sale` | ระบุ filter/status rule ว่า Feed render เฉพาะ `Sale` เท่านั้น |
 | High | ยังไม่เห็น behavior ของแท็บ `All`, `Following`, `Favorites` ครบ | `All` = Sale ทั้งหมดที่มองเห็น, `Following` = Sale ของคนที่ Follow, `Favorites` = Sale ที่กด Like | เพิ่ม annotation หรือ state ของแต่ละแท็บให้ชัด |
 | High | ยังไม่เห็น Block filtering ใน Feed | Asset ของผู้ถูก Block ต้องหายจาก Feed ทันที และ Following Feed ต้องไม่ใช้ความสัมพันธ์ Follow ระหว่างผู้ที่ Block กัน | เพิ่ม blocked/hidden asset state หรือ rule note ใน Feed |
+| High | ยังไม่เห็น Feed more menu สำหรับ Asset ของผู้อื่น | Feed more menu ต้องมี Hide this asset, Report Asset, Block User | เพิ่มเมนูสามจุด, hide success + undo, Report Asset entry และ Block User confirmation |
 | High | ยังไม่เห็น Guest restriction state | Guest กด Like, Follow, Chat, Offer, Favorites, Following ต้องเจอ Global Login Required Dialog | เพิ่ม dialog/state สำหรับ guest interaction |
 | High | ยังไม่เห็น Feed load more / Infinite Scroll state | Feed ต้องรองรับ Infinite Scroll | เพิ่ม loading state ระหว่างโหลดรายการถัดไป |
 | High | ยังไม่เห็น End-of-list state | เมื่อ Scroll ถึงท้ายรายการต้องแสดง `คุณดูรายการทั้งหมดแล้ว` | เพิ่ม state ท้ายรายการ |
@@ -145,9 +146,9 @@ Figma มี coverage ของ flow หลักค่อนข้างมา�
 | High | Offer Accepted / Rejected destination ยังไม่ครบ | Accepted Offer เปิด Chat Room; Rejected Offer เปิด Asset Detail | เพิ่ม destination states จาก notification และ offer cards |
 | Medium | Room creation อาจสื่อว่าสร้างเมื่อกด Chat | Chat Room ต้องสร้างเมื่อส่งข้อความแรก | ปรับ empty/pre-chat state ให้ชัดว่า room created หลังส่งข้อความแรก |
 | Medium | Different Asset same user rule ยังไม่ชัด | Different Asset ใช้ห้องเดิม แต่ Reference Asset เปลี่ยนเป็น Asset ล่าสุด | เพิ่ม flow/state ที่ reference asset เปลี่ยนตาม asset ล่าสุด |
-| Medium | Delete Chat behavior ยังไม่ผูก confirmation ชัดเจน | Chat Room รองรับ Delete Chat พร้อม Confirmation | เพิ่ม delete confirmation state |
+| Medium | Delete Chat behavior ยังไม่ผูก confirmation ชัดเจน | Delete Chat V1 ซ่อนห้องแชทจาก Chat List เฉพาะฝั่งผู้กด ไม่ลบ server history และไม่กระทบคู่สนทนา | เพิ่ม confirmation state พร้อม copy ว่าเป็นการซ่อนจากรายการของผู้ใช้คนนี้เท่านั้น |
 | Medium | Attachment type ยังไม่ล็อกใน Figma | Master รองรับ Text, Image, File, Asset Card, Offer Card | ระบุ allowed attachment/content types ตาม master |
-| Needs Decision | Delete Chat แบบ LINE / ไม่กู้ history เดิมยังเป็นรายละเอียดนอก master | Master ระบุแค่ Delete Chat พร้อม Confirmation | ตัดสินใจใน Chat PRD หรือ master ก่อนให้ Figma เป็น source of truth |
+| Medium | Delete Chat restore ไม่อยู่ใน V1 | V1 ไม่มี restore UI และยังคง message/archive ฝั่ง server ตาม retention policy | ห้ามเพิ่ม restore UI ใน Figma V1 |
 
 ### 08 Offer Module
 
@@ -210,7 +211,7 @@ Figma มี coverage ของ flow หลักค่อนข้างมา�
 | Medium | Delete Comment confirmation ยังไม่ชัด | Comment รองรับ Delete Comment | เพิ่ม delete confirmation และ permission state |
 | Medium | Comment notification destination ยังไม่เห็น focus state | Comment notification เปิด Asset Detail และ Focus Comment | เพิ่ม state ที่ focus comment เป้าหมาย |
 | Medium | Follow notification destination ยังไม่ชัด | Follow notification ควรเปิด Public Profile | เพิ่ม destination state ไป Public Profile |
-| Needs Decision | Share detail behavior ต้องกำหนดระดับ implementation | Master ระบุ Share ต้องทำผ่าน Asset Detail แต่ยังไม่ลงรายละเอียด channel | ระบุ share sheet/copy link เป็น implementation detail หรือรอ decision |
+| Medium | Share detail behavior ต้องมี channel/fallback state | Master ระบุ system share sheet เป็น primary และ copy public deep link เป็น fallback | เพิ่ม share sheet, copy link success และ unavailable/deleted link state |
 
 ### 12 Board Module
 
@@ -225,7 +226,7 @@ Figma มี coverage ของ flow หลักค่อนข้างมา�
 | Medium | Guest behavior ของ Article Like ยังต้องตัดสินตาม login baseline | Master ระบุ user ทั่วไป Like/Share ได้ แต่ global login rule ระบุ Like ต้อง login | ใช้ Member สำหรับ Article Like จนกว่า master แยก Article Like สำหรับ Guest |
 | Medium | Menu label `Community` อาจไม่ตรงกับ master module name | Master module คือ Board | normalize label หรือ map `Community` เป็น Board ให้ชัด |
 | Medium | Article Share สำหรับ Guest ต้องชัด | Master lock ให้ Article Share เป็น public share action | เพิ่ม Guest share state โดยไม่ต้อง Login |
-| Needs Decision | Article Comment / Report Article ไม่อยู่ใน master Board baseline | Master ระบุ Article Like / Share เท่านั้น | ซ่อนหรือย้ายเป็น future/master decision |
+| High | Article Comment / Report Article ต้องไม่ขยายเป็น Board V1 interaction | Master ระบุ Article Like / Share; ถ้าต้อง report ให้ใช้ Trust & Safety `Report Board Content` | ซ่อน Article Comment และใช้ minimal `Report content` เฉพาะเมื่อผูกกับ moderation handoff |
 
 ### 13 Settings Module
 
@@ -235,9 +236,9 @@ Figma มี coverage ของ flow หลักค่อนข้างมา�
 | Must Fix | Settings เดิมอาจระบุ Delete Account เป็น future | Master ระบุ Delete Account อยู่ใน Settings baseline | เพิ่ม Delete Account entry และ confirmation/risk state |
 | High | Language setting ยังไม่ชัด | Settings ต้องมี Language: English / Thai | เพิ่ม language selector และ selected state |
 | High | Email field ต้อง lock หลัง verification | Auth rule ระบุ Email ไม่สามารถเปลี่ยนได้หลังยืนยันแล้ว | แสดง Email Display เป็น read-only หรือ disabled edit |
-| High | Settings menu ต้องครบ master list | Master รองรับ Edit Profile, Username, Phone, Line, Email Display, Language, Theme Mode, Help, About, Privacy Policy, Terms of Service, Sign Out, Delete Account | ตรวจ Figma menu ให้ครบและตัดเมนูนอก baseline |
+| High | Settings menu ต้องครบ master list | Master รองรับ Edit Profile, Username, Phone, Line, Email Display, Language, Theme Mode, Help, About, Privacy Policy, Terms of Use, Sign Out, Delete Account | ตรวจ Figma menu ให้ครบและตัดเมนูนอก baseline |
 | Medium | Help / About entry ยังต้องตรวจ | Master ระบุ Help และ About | เพิ่มหรือยืนยัน screen/link |
-| Medium | Legal labels ต้องตรง master | Master ใช้ Privacy Policy และ Terms of Service | ใช้ label ให้ตรง ไม่ใช้ Terms of Use เป็น source of truth |
+| Medium | Legal labels ต้องตรง master | Master ใช้ Privacy Policy และ Terms of Use | ใช้ label `Terms of Use` เป็น source of truth |
 | Medium | Sign Out confirmation ต้องชัด | Sign Out ต้อง clear session และกลับ Sign In | เพิ่ม confirmation และ signed-out destination |
 | Medium | Change Password ต้องไม่กลายเป็น Settings-owned flow | Master อนุญาตเป็น Auth-linked entry สำหรับบัญชี Email / Password | แสดง entry เฉพาะ account type ที่รองรับและ route ไป Auth flow |
 | Medium | Notification Settings ต้องไม่รวม type นอก baseline | รองรับเฉพาะ Like, Comment, Follow, Offer, Watch Alert | เพิ่ม toggle เฉพาะ baseline type และไม่รวม Chat/New Message |
@@ -271,9 +272,9 @@ Figma มี coverage ของ flow หลักค่อนข้างมา�
 | High | Report type ต้อง lock ให้ตรง master | Report รองรับ Asset, User, Comment, Board Content | ตรวจ Figma report forms/type labels ให้ตรง |
 | High | Report submit อาจสื่อว่า content หายทันที | Report ไม่ทำให้ Asset/Content หายทันที | เพิ่ม success state ที่ไม่ remove content จนกว่า Admin moderation |
 | High | Moderation flow / Admin review SLA ยังไม่ชัด | Admin ดำเนินการภายใน 24 ชั่วโมงสำหรับ Report ที่เข้ามา | เพิ่ม Back Office handoff note และ 24h SLA |
-| High | Apple compliance coverage ต้องครบ | ต้องรองรับ Report, Block, Terms of Service, Privacy Policy, Moderation Flow | ตรวจครบทุก entry/state |
-| Medium | Terms label อาจใช้ `Terms Of Use` | Master ใช้ `Terms of Service` | normalize label เป็น Terms of Service |
-| Medium | Legal consent ทุก sign up channel ยังต้องตรวจ | ทุกช่องทางสมัครต้องยอมรับ Terms of Service และ Privacy Policy ก่อนสมัคร | ตรวจ Email/Google/Apple sign up consent |
+| High | Apple compliance coverage ต้องครบ | ต้องรองรับ Report, Block, Terms of Use, Privacy Policy, Moderation Flow | ตรวจครบทุก entry/state |
+| Medium | Terms label อาจใช้ capitalization ไม่ตรง | Master ใช้ `Terms of Use` | normalize label เป็น `Terms of Use` |
+| Medium | Legal consent ทุก sign up channel ยังต้องตรวจ | ทุกช่องทางสมัครต้องยอมรับ Terms of Use และ Privacy Policy ก่อนสมัคร | ตรวจ Email/Google/Apple sign up consent |
 | Medium | Blocked/unavailable profile state ยังไม่ชัด | Blocked content/user ต้องไม่เข้าถึงตาม Trust & Safety rule | เพิ่ม blocked/unavailable state |
 | High | Block แล้ว chat history / new message behavior ยังไม่ถูกระบุครบใน Figma | Master ระบุให้เก็บ chat history เดิมแบบ read-only และปิดการส่งข้อความใหม่หลัง block | เพิ่ม blocked chat read-only state ใน Figma |
 | Medium | Moderation notification หลัง report/action ยังไม่อยู่ใน Notification baseline | Product review แนะนำให้ moderation/account/system notification ไม่อยู่ใน FO V1 | ย้ายเป็น future หรือ Back Office scope |

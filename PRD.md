@@ -1,4 +1,4 @@
-# PRD — แอปพลิเคชัน ตึกแดง (Tuk Daeng)
+﻿# PRD — แอปพลิเคชัน ตึกแดง (Tuk Daeng)
 **เวอร์ชัน:** 1.0  
 **วันที่:** พฤษภาคม 2568  
 **เจ้าของเอกสาร:** Business Analyst Team  
@@ -60,7 +60,7 @@
 - ต้องยืนยัน Email ด้วย OTP 6 หลักที่ส่งไปยัง Email
 - OTP หมดอายุภายใน 30 นาที
 - Password ต้องมีความยาวอย่างน้อย 8 ตัวอักษร พร้อมตัวเลขหรือสัญลักษณ์
-- ผู้ใช้ต้องติ๊ก "I agree to Terms of Service and Privacy Policy" ก่อนสมัคร (ทุกช่องทาง)
+- ผู้ใช้ต้องติ๊ก "I agree to Terms of Use and Privacy Policy" ก่อนสมัคร (ทุกช่องทาง)
 
 **Business Rules:**
 - 1 Email สามารถสมัครได้เพียง 1 บัญชีเท่านั้น ไม่ว่าจะมาจากช่องทางใด
@@ -339,7 +339,7 @@
 - Edit Profile (Username, Phone, Line, Email)
 - Language (English / ภาษาไทย)
 - Help (ช่องทางติดต่อ)
-- About (Account info, Privacy Policy, Terms of Service)
+- About (Account info, Privacy Policy, Terms of Use)
 - Sign Out / Delete Account
 
 ---

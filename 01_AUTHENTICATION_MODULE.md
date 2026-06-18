@@ -1,4 +1,4 @@
-# 01 Authentication Module
+﻿# 01 Authentication Module
 
 อ้างอิงหลักจาก [TukDaeng_Master_Product_Definition.md](TukDaeng_Master_Product_Definition.md)
 
@@ -19,7 +19,7 @@
 
 Authentication Module ใช้สำหรับสมัครสมาชิก เข้าสู่ระบบ ยืนยัน OTP กู้รหัสผ่าน เปลี่ยนรหัสผ่าน และออกจากระบบ โดยต้องรองรับ Email / Password, Sign in / Sign up with Apple และ Sign in / Sign up with Google ตาม master baseline
 
-โมดูลนี้ต้องทำให้ Guest เปลี่ยนเป็น Member ได้อย่างถูกต้อง ป้องกัน account duplication, บังคับยอมรับ Terms of Service และ Privacy Policy ก่อนสมัคร และจัดการบัญชี Suspended ให้เห็นเหตุผลพร้อมช่องทางติดต่อ Support
+โมดูลนี้ต้องทำให้ Guest เปลี่ยนเป็น Member ได้อย่างถูกต้อง ป้องกัน account duplication, บังคับยอมรับ Terms of Use และ Privacy Policy ก่อนสมัคร และจัดการบัญชี Suspended ให้เห็นเหตุผลพร้อมช่องทางติดต่อ Support
 
 # 3. Prototype Reference
 
@@ -40,7 +40,7 @@ Authentication Module ใช้สำหรับสมัครสมาชิ�
 | Email immutability | Email ไม่สามารถเปลี่ยนได้หลังยืนยันแล้ว |
 | Auth method separation | บัญชี SSO ไม่สามารถ Sign In ด้วย Email / Password ได้ และกลับกัน |
 | Suspended account | บัญชี Suspended ต้องเห็น error พร้อมเหตุผลและช่องทางติดต่อ Support |
-| Terms / Privacy | ทุกช่องทางต้องยอมรับ Terms of Service และ Privacy Policy ก่อนสมัคร |
+| Terms / Privacy | ทุกช่องทางต้องยอมรับ Terms of Use และ Privacy Policy ก่อนสมัคร |
 | Login required | Guest ใช้ feature ที่ต้อง Login ต้องเห็น Global Login Required Dialog |
 | Security | ทุก API ใช้ HTTPS และใช้ Token-based Authentication |
 
@@ -51,7 +51,7 @@ Authentication Module ใช้สำหรับสมัครสมาชิ�
 | Priority | Gap | Master Baseline | Figma Action |
 | --- | --- | --- | --- |
 | Must Fix | ยังไม่เห็น Suspended Account state ชัดเจน | บัญชี Suspended ต้องเห็น error พร้อมเหตุผลและช่องทางติดต่อ Support | เพิ่ม suspended account screen/state ใน Sign In |
-| Must Fix | Sign Up ทุกช่องทางอาจยังไม่บังคับ Terms / Privacy ชัดเจน | ทุกช่องทางต้องยอมรับ Terms of Service และ Privacy Policy ก่อนสมัคร | ตรวจให้ Email, Google และ Apple flow มี consent ครบก่อน submit |
+| Must Fix | Sign Up ทุกช่องทางอาจยังไม่บังคับ Terms / Privacy ชัดเจน | ทุกช่องทางต้องยอมรับ Terms of Use และ Privacy Policy ก่อนสมัคร | ตรวจให้ Email, Google และ Apple flow มี consent ครบก่อน submit |
 | High | ยังไม่เห็น OTP expiration state | OTP หมดอายุภายใน 30 นาที | เพิ่ม expired OTP state และ action ขอ OTP ใหม่ |
 | High | ยังไม่เห็น password policy ชัดเจน | Password อย่างน้อย 8 ตัวอักษร และต้องมีตัวเลขหรือสัญลักษณ์ | เพิ่ม validation copy ใน Sign Up, Reset Password, Change Password |
 | High | ยังไม่เห็น duplicate email error | 1 Email สมัครได้ 1 บัญชีเท่านั้น | เพิ่ม existing email state และ copy ที่พาไป Sign In |
@@ -76,7 +76,7 @@ Authentication Module ใช้สำหรับสมัครสมาชิ�
 - Sign Out
 - Suspended Account handling
 - Global Login Required Dialog
-- Terms of Service และ Privacy Policy consent ก่อนสมัคร
+- Terms of Use และ Privacy Policy consent ก่อนสมัคร
 
 ## Out Of Scope
 
@@ -119,7 +119,7 @@ Guest สามารถ:
 - เปิด Sign In
 - เปิด Sign Up
 - เปิด Forgot Password
-- เปิด Terms of Service
+- เปิด Terms of Use
 - เปิด Privacy Policy
 - ดู public surfaces ตามสิทธิ์ของ Guest
 
@@ -152,7 +152,7 @@ Guest ไม่สามารถใช้ feature ที่ต้อง Login �
 บัญชีที่สมัครด้วย Apple หรือ Google:
 
 - ไม่ต้องยืนยัน OTP
-- ต้องยอมรับ Terms of Service และ Privacy Policy ก่อนสมัคร
+- ต้องยอมรับ Terms of Use และ Privacy Policy ก่อนสมัคร
 - ต้องใช้ SSO provider เดิมในการ Sign In
 - ไม่สามารถ Sign In ด้วย Email / Password ได้
 
@@ -162,7 +162,7 @@ Guest ไม่สามารถใช้ feature ที่ต้อง Login �
 
 1. User เปิด Sign Up
 2. User กรอก Email, Password, Confirm Password
-3. User ยอมรับ Terms of Service และ Privacy Policy
+3. User ยอมรับ Terms of Use และ Privacy Policy
 4. ระบบตรวจ email uniqueness และ password policy
 5. ระบบสร้าง Pending Verification account
 6. ระบบส่ง OTP
@@ -174,7 +174,7 @@ Guest ไม่สามารถใช้ feature ที่ต้อง Login �
 1. User เลือก Apple หรือ Google
 2. Provider ส่ง email กลับมา
 3. ระบบตรวจว่า email ยังไม่ผูกกับบัญชีแบบอื่น
-4. User ยอมรับ Terms of Service และ Privacy Policy
+4. User ยอมรับ Terms of Use และ Privacy Policy
 5. ระบบสร้างหรือเข้าสู่บัญชี SSO โดยไม่ต้อง OTP
 
 ## Sign In
@@ -237,9 +237,9 @@ Guest ไม่สามารถใช้ feature ที่ต้อง Login �
 
 ## Terms And Privacy Rules
 
-- ทุกช่องทางต้องยอมรับ Terms of Service และ Privacy Policy ก่อนสมัคร
+- ทุกช่องทางต้องยอมรับ Terms of Use และ Privacy Policy ก่อนสมัคร
 - หากยังไม่ยอมรับ ต้องไม่สามารถ submit registration ได้
-- Terms of Service และ Privacy Policy ต้องเปิดอ่านได้จาก Sign Up และ Settings
+- Terms of Use และ Privacy Policy ต้องเปิดอ่านได้จาก Sign Up และ Settings
 
 ## Suspended Account Rules
 
@@ -319,7 +319,7 @@ Authentication Module ไม่มี empty list state โดยตรง แต
 | Event | Trigger |
 | --- | --- |
 | `auth_sign_up_started` | User เปิด Sign Up |
-| `auth_terms_opened` | User เปิด Terms of Service |
+| `auth_terms_opened` | User เปิด Terms of Use |
 | `auth_privacy_opened` | User เปิด Privacy Policy |
 | `auth_sign_up_submitted` | User submit Sign Up |
 | `auth_otp_submitted` | User submit OTP |
@@ -351,7 +351,7 @@ Authentication Module ไม่มี empty list state โดยตรง แต
 | AC-AUTH-011 | SSO Email ไม่ต้องยืนยัน OTP |
 | AC-AUTH-012 | บัญชี SSO ไม่สามารถ Sign In ด้วย Email / Password ได้ |
 | AC-AUTH-013 | บัญชี Email / Password ไม่สามารถ Sign In ด้วย SSO provider ได้ใน V1 |
-| AC-AUTH-014 | ทุกช่องทางการสมัครต้องยอมรับ Terms of Service และ Privacy Policy ก่อนสมัคร |
+| AC-AUTH-014 | ทุกช่องทางการสมัครต้องยอมรับ Terms of Use และ Privacy Policy ก่อนสมัคร |
 | AC-AUTH-015 | Suspended account ต้อง Sign In ไม่ได้ |
 | AC-AUTH-016 | Suspended account ต้องเห็น error พร้อมเหตุผลและช่องทางติดต่อ Support |
 | AC-AUTH-017 | Forgot Password ต้องส่ง reset link สำหรับบัญชี Email / Password |

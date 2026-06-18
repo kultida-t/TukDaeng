@@ -1,4 +1,4 @@
-# Tuk Daeng App
+﻿# Tuk Daeng App
 
 **FO Functional PRD v2.0**  
 **Document:** Project Vision & Confirmed Requirements Summary
@@ -362,6 +362,6 @@ Portfolio เป็น Private และเห็นเฉพาะ Owner
 
 - Report
 - Block
-- Terms of Service
+- Terms of Use
 - Privacy Policy
 - Moderation Flow
