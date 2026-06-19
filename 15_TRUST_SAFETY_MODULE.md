@@ -114,7 +114,7 @@ Trust & Safety Module ใช้สำหรับรองรับ Block, Repor
 | Block User Dialog | ยืนยันก่อน block user |
 | Block User Dialog | ยืนยันก่อน Block User จาก Feed |
 | Report User Form | ส่ง report user |
-| Report Asset Form | ส่ง report asset |
+| Report Asset Form | ส่ง report asset; mobile ใช้ bottom sheet pattern ได้ |
 | Report Comment Form | ส่ง report comment |
 | Report Board Content Form | ส่ง report board content |
 | Report Success State | แสดงส่ง report สำเร็จ |
@@ -171,9 +171,10 @@ Profile / Asset Detail / Chat
 ## Report Asset Flow
 
 ```text
-Asset Detail
+Asset Detail / Feed
 -> More menu
 -> Report
+-> Report Asset bottom sheet
 -> Select reason
 -> Submit
 -> Report submitted successfully
@@ -248,6 +249,18 @@ Report รองรับ type ต่อไปนี้ตาม master:
 - Report ไม่ทำให้ Asset หรือ Content หายทันที
 - ผู้ถูก report ไม่เห็นตัวตนของ reporter
 - Asset หรือ Content จะหายเมื่อ Admin ดำเนินการตาม Moderation เท่านั้น
+- Report Submitted ไม่สร้าง Notification Center item ใน Front Office V1
+
+## Report Bottom Sheet Rule
+
+- Mobile Report Asset สามารถใช้ bottom sheet
+- Bottom sheet ต้องมี drag handle
+- ไม่จำเป็นต้องมีปุ่ม Cancel / ยกเลิก
+- ต้องปิดได้ด้วย drag down, tap backdrop หรือ system back
+- Dismiss โดยไม่ submit ต้องไม่สร้าง report
+- Unsaved input สามารถ discard ได้เมื่อปิด bottom sheet
+- Primary action คือ Submit report / ส่งรายงาน
+- Primary action ต้อง disabled จนกว่า Member จะเลือก reason
 
 ## Moderation Rule
 
@@ -305,7 +318,9 @@ Report รองรับ type ต่อไปนี้ตาม master:
 | --- | --- |
 | Report Type | ต้องเป็น Asset, User, Comment หรือ Board Content |
 | Report Reason | Required |
+| Report Submit Button | Disabled until report reason is selected |
 | Report Detail | Optional unless implementation requires |
+| Report Dismiss | Dismiss without submit must not create report |
 | Terms Consent | Required before Sign Up |
 | Privacy Consent | Required before Sign Up |
 | Block Confirmation | Required before block |
@@ -321,8 +336,8 @@ Report รองรับ type ต่อไปนี้ตาม master:
 
 ## Report Failed
 
-- TH: `ไม่สามารถส่งรายงานได้`
-- EN: `Unable to submit report.`
+- TH: `ส่งรายงานไม่สำเร็จ กรุณาลองใหม่`
+- EN: `Couldn’t submit report. Please try again.`
 
 ## Permission Denied
 
@@ -421,6 +436,21 @@ Then ความสัมพันธ์ Follow ระหว่างกัน�
 Given Member เปิด Asset Detail  
 When Member ส่ง Report Asset พร้อม reason  
 Then ระบบต้องแสดง report submitted success
+
+## AC-TS-006A: Report Asset Bottom Sheet Dismiss
+
+Given Member เปิด Report Asset bottom sheet
+When Member dismiss ด้วย drag down, tap backdrop หรือ system back โดยไม่กด submit
+Then ระบบต้องไม่สร้าง report
+And unsaved input สามารถถูก discard ได้
+
+## AC-TS-006B: Report Asset Reason Required
+
+Given Member เปิด Report Asset bottom sheet
+When Member ยังไม่เลือก reason
+Then Submit report button ต้อง disabled
+When Member เลือก reason แล้ว
+Then Submit report button ต้อง enabled
 
 ## AC-TS-007: Report User
 

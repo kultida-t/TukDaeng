@@ -41,7 +41,7 @@ Feed Module เป็น marketplace หลักของ TukDaeng สำหร
 | Card required fields | Asset Images, Brand, Model, Price, Posted Time, Owner Name, Like Count, Comment Count |
 | Card exclusions in V1 | ไม่แสดง Location, Verified Badge, Status Badge |
 | Supported actions | Like / Unlike, Swipe image, เปิด Asset Detail, เปิด Public Profile, เปิด Full Screen Image Viewer |
-| More menu actions | Hide this asset, Report Asset, Block User สำหรับ Asset ของผู้อื่น |
+| More menu actions | Asset ของผู้อื่นรองรับ Hide this asset, Report Asset, Block User; Asset ของ Owner รองรับ Edit asset, Mark as sold, Delete asset |
 | Unsupported actions | ไม่รองรับ Comment หรือ Share จาก Feed โดยตรง |
 | Guest access | Guest ดู Feed ได้ แต่ action ที่ต้อง Login ต้องแสดง Global Login Required Dialog |
 | Performance | Feed โหลดภายใน 2 วินาที, รูปภาพ Lazy Load, รองรับ Infinite Scroll |
@@ -59,6 +59,7 @@ Feed Module เป็น marketplace หลักของ TukDaeng สำหร
 | High | ยังไม่เห็น behavior ของแท็บ `All`, `Following`, `Favorites` ครบ | `All` = Sale ทั้งหมดที่มองเห็น, `Following` = Sale ของคนที่ Follow, `Favorites` = Sale ที่กด Like | เพิ่ม annotation หรือ state ของแต่ละแท็บให้ชัด |
 | High | ยังไม่เห็น Block filtering ใน Feed | Asset ของผู้ถูก Block ต้องหายจาก Feed ทันที และ Following Feed ต้องไม่ใช้ความสัมพันธ์ Follow ระหว่างผู้ที่ Block กัน | เพิ่ม blocked/hidden asset state หรือ rule note ใน Feed |
 | High | ยังไม่เห็นเมนูสามจุดสำหรับจัดการ Asset ของผู้อื่น | Feed more menu ควรรองรับ Hide this asset, Report Asset, Block User โดยไม่ชนกับ asset status `Hide` | เพิ่ม overflow menu, hide success + undo, report entry และ Block User confirmation |
+| High | ยังไม่เห็นเมนูสามจุดสำหรับ Asset ของ Owner | Owner Feed more menu ควรรองรับ Edit asset, Mark as sold, Delete asset โดยใช้ rule เดียวกับ Asset Management | เพิ่ม owner overflow menu, Mark as sold shortcut ไป Sale Record Form, Delete confirmation และ success/error state |
 | High | ยังไม่เห็น Guest restriction state | Guest กด Like, Follow, Chat, Offer, Favorites, Following ต้องเจอ Global Login Required Dialog | เพิ่ม dialog/state สำหรับ guest interaction |
 | High | ยังไม่เห็น Feed load more / Infinite Scroll state | Feed ต้องรองรับ Infinite Scroll | เพิ่ม loading state ระหว่างโหลดรายการถัดไป |
 | High | ยังไม่เห็น End-of-list state | เมื่อ Scroll ถึงท้ายรายการต้องแสดง `คุณดูรายการทั้งหมดแล้ว` | เพิ่ม state ท้ายรายการ |
@@ -81,9 +82,13 @@ Feed Module เป็น marketplace หลักของ TukDaeng สำหร
 - Full Screen Image Viewer
 - Like / Unlike
 - More menu สำหรับ Asset ของผู้อื่น
+- More menu สำหรับ Asset ของ Owner
 - Hide this asset / ไม่ต้องการเห็นรายการนี้
 - Report Asset
 - Block User
+- Edit asset
+- Mark as sold / บันทึกว่าขายแล้ว
+- Delete asset
 - เปิด Asset Detail
 - เปิด Public Profile
 - Infinite Scroll และ load-more state
@@ -120,9 +125,13 @@ Feed Module เป็น marketplace หลักของ TukDaeng สำหร
 | Global Login Required Dialog | แสดงเมื่อ Guest ใช้ feature ที่ต้อง Login |
 | Full Screen Image Viewer | เปิดรูป Asset แบบเต็มจอจาก Feed Card |
 | Feed More Menu | เมนูสามจุดบน Asset ของผู้อื่น |
+| Owner Feed More Menu | เมนูสามจุดบน Asset ของ Owner |
 | Hide Feed Item Undo | Snackbar หลังซ่อนรายการ พร้อม action Undo |
 | Report Asset Entry | เปิด Report Asset flow จาก Feed more menu |
+| Report Asset Bottom Sheet | Bottom sheet สำหรับส่ง Report Asset จาก Feed |
 | Block User Confirmation | ยืนยันก่อน Block User จาก Feed more menu |
+| Mark As Sold From Feed | เปิด Sale Record Form จาก Feed owner menu |
+| Delete Asset From Feed Confirmation | ยืนยันก่อน Delete Asset จาก Feed owner menu |
 
 # 8. User States
 
@@ -159,6 +168,16 @@ Guest ไม่สามารถ:
 Member สามารถใช้ Feed ได้ตามสิทธิ์และ visibility rule ของระบบ รวมถึง Like / Unlike, เปิด Following, เปิด Favorites, เปิด Asset Detail, เปิด Public Profile และเปิด Full Screen Image Viewer
 
 Member สามารถใช้เมนูสามจุดบน Asset ของผู้อื่นเพื่อ Hide this asset, Report Asset หรือ Block User ได้ตาม Trust & Safety rule
+
+## Owner
+
+เมื่อ Feed แสดง Asset ของ Owner เอง Owner สามารถใช้เมนูสามจุดบน Feed Card เพื่อ:
+
+- Edit asset / แก้ไขรายการ
+- Mark as sold / บันทึกว่าขายแล้ว
+- Delete asset / ลบรายการ
+
+Owner ต้องไม่เห็น Hide this asset, Report Asset หรือ Block User บน Asset ของตัวเอง
 
 ## Blocked Relationship
 
@@ -219,12 +238,75 @@ Member สามารถใช้เมนูสามจุดบน Asset ข
 5. หาก Member กด Undo ระบบนำ Asset กลับมาใน Feed ตามตำแหน่งหรือ refresh state ที่เหมาะสม
 6. หากไม่ Undo ระบบบันทึก user-level hidden asset preference และ Asset นั้นไม่กลับมาใน Feed เมื่อ refresh/reload
 
+Snackbar copy:
+
+| Language | Message | Action |
+| --- | --- | --- |
+| TH | ซ่อนรายการนี้จากฟีดของคุณแล้ว | เลิกทำ |
+| EN | This asset has been hidden from your feed | Undo |
+
+Error snackbar:
+
+| Language | Message |
+| --- | --- |
+| TH | ซ่อนรายการไม่สำเร็จ กรุณาลองใหม่ |
+| EN | Couldn’t hide this asset. Please try again. |
+
+หาก Hide this asset ล้มเหลว ระบบต้องคืน Feed Card กลับมา, ไม่บันทึก hidden preference และไม่แสดง Undo เพราะ action ไม่สำเร็จ
+
 ## Report Asset From Feed
 
 1. Member กดเมนูสามจุดบน Feed Card ของ Asset ผู้อื่น
 2. Member เลือก `Report Asset` / `รายงานรายการนี้`
-3. ระบบเปิด Report Asset flow ของ Trust & Safety
+3. ระบบเปิด Report Asset bottom sheet ของ Trust & Safety
 4. เมื่อ report สำเร็จ Asset ต้องไม่หายทันทีจาก public surfaces เว้นแต่ Member เลือก Hide this asset แยกต่างหาก
+
+Report Asset bottom sheet:
+
+- มี drag handle
+- ไม่มีปุ่ม Cancel / ยกเลิก
+- ปิดได้ด้วย drag down, tap backdrop หรือ system back
+- Dismiss โดยไม่ submit ต้องไม่สร้าง report
+- Unsaved input สามารถ discard ได้เมื่อปิด bottom sheet
+- Primary button เดียวคือ `ส่งรายงาน` / `Submit report`
+- Primary button ต้อง disabled จนกว่า Member จะเลือก Reason
+
+Report Asset copy:
+
+| Language | Title | Body | Primary |
+| --- | --- | --- | --- |
+| TH | รายงานรายการนี้ | เลือกเหตุผลที่ต้องการรายงาน ทีมงานจะตรวจสอบตามขั้นตอน | ส่งรายงาน |
+| EN | Report this asset | Select a reason for reporting this asset. Our team will review it. | Submit report |
+
+Report Asset fields:
+
+| Field | Requirement |
+| --- | --- |
+| Reason / เหตุผล | Required |
+| Additional details / รายละเอียดเพิ่มเติม | Optional |
+
+Reason validation:
+
+| Language | Message |
+| --- | --- |
+| TH | กรุณาเลือกเหตุผล |
+| EN | Please select a reason. |
+
+ถ้ายังไม่ได้เลือก Reason ให้แสดงปุ่ม `ส่งรายงาน` / `Submit report` เป็น disabled state และไม่อนุญาตให้ submit
+
+Success state:
+
+| Language | Title | Body | Button |
+| --- | --- | --- | --- |
+| TH | ส่งรายงานแล้ว | ทีมงานจะตรวจสอบภายใน 24 ชั่วโมง รายการนี้จะยังแสดงอยู่จนกว่าจะมีการตรวจสอบ | ตกลง |
+| EN | Report submitted | Our team will review this within 24 hours. This asset will remain visible until moderation is complete. | Done |
+
+Error snackbar:
+
+| Language | Message |
+| --- | --- |
+| TH | ส่งรายงานไม่สำเร็จ กรุณาลองใหม่ |
+| EN | Couldn’t submit report. Please try again. |
 
 ## Block User From Feed
 
@@ -232,6 +314,47 @@ Member สามารถใช้เมนูสามจุดบน Asset ข
 2. Member เลือก `Block User` / `บล็อกผู้ใช้งาน`
 3. ระบบแสดง confirmation ก่อน block
 4. เมื่อ block สำเร็จ Asset/content ของ user นั้นต้องหายจาก Feed ตาม Trust & Safety rule
+
+Confirmation copy:
+
+| Language | Title | Body | Primary | Secondary |
+| --- | --- | --- | --- | --- |
+| TH | บล็อกผู้ใช้งานนี้? | คุณจะไม่เห็นรายการของผู้ใช้งานนี้ในฟีด ค้นหา และผลลัพธ์ Watch Alert อีก ผู้ใช้งานนี้จะไม่สามารถเริ่มแชทหรือส่งข้อเสนอใหม่กับคุณได้ | บล็อก | ยกเลิก |
+| EN | Block this user? | You will no longer see this user's assets in Feed, Search, or Watch Alert results. This user will not be able to start a new chat or send you new offers. | Block | Cancel |
+
+Success / error snackbar:
+
+| State | TH | EN |
+| --- | --- | --- |
+| Success | บล็อกผู้ใช้งานแล้ว | User blocked |
+| Error | บล็อกไม่สำเร็จ กรุณาลองใหม่ | Couldn’t block user. Please try again. |
+
+## Edit Asset From Feed
+
+1. Owner กดเมนูสามจุดบน Feed Card ของ Asset ตัวเอง
+2. Owner เลือก `Edit asset` / `แก้ไขรายการ`
+3. ระบบเปิด Edit Asset flow ของ Asset Management
+4. Edit Asset ต้องเลือก status ได้เฉพาะ `Sale`, `Show`, `Hide` และต้องไม่ให้เลือก `Sold`
+
+## Mark As Sold From Feed
+
+1. Owner กดเมนูสามจุดบน Feed Card ของ Asset ตัวเอง
+2. Owner เลือก `Mark as sold` / `บันทึกว่าขายแล้ว`
+3. ระบบเปิด Sale Record Form โดยตรง
+4. Owner กรอก Sale Date, Buyer, Contact, Sale Price, Payment Method และ Attachment ตาม Asset Management rule
+5. เมื่อ Confirm สำเร็จ ระบบเปลี่ยน Asset status เป็น `Sold`
+6. Asset หายจาก Feed, Following, Favorites, Search และ Watch Alert ทันที
+7. Offer อื่นที่เกี่ยวข้องต้องถูก Auto Reject ตาม Offer / Asset Management rule
+
+## Delete Asset From Feed
+
+1. Owner กดเมนูสามจุดบน Feed Card ของ Asset ตัวเอง
+2. Owner เลือก `Delete asset` / `ลบรายการ`
+3. ระบบแสดง Delete Asset confirmation ก่อนลบ
+4. หาก Owner ยืนยัน ระบบลบ Asset ตาม Asset Management rule
+5. เมื่อ Delete สำเร็จ Asset ต้องหายจาก Feed, Search, Watch Alert และ Public Profile
+6. Chat ที่เกี่ยวข้องยังอยู่ แต่ Reference Asset ต้องใช้ deleted asset state
+7. Offer ที่เกี่ยวข้องต้องเป็น `Cancelled`
 
 # 10. Business Rules
 
@@ -287,6 +410,10 @@ Feed รองรับ:
   - Hide this asset / ไม่ต้องการเห็นรายการนี้
   - Report Asset / รายงานรายการนี้
   - Block User / บล็อกผู้ใช้งาน
+- เมนูสามจุดสำหรับ Asset ของ Owner:
+  - Edit asset / แก้ไขรายการ
+  - Mark as sold / บันทึกว่าขายแล้ว
+  - Delete asset / ลบรายการ
 
 Feed ไม่รองรับ:
 
@@ -303,6 +430,16 @@ Feed ไม่รองรับ:
 - หลัง Hide สำเร็จต้องมี undo ชั่วคราว
 - หากไม่ Undo ระบบต้องไม่แสดง Asset นั้นใน Feed ของผู้กดเมื่อ refresh/reload
 - Hide Feed Item ไม่สร้าง Notification Center item
+
+## Owner Feed Action Rule
+
+- Owner Feed more menu ต้องแยกจาก more menu ของ Asset ผู้อื่น
+- Owner Feed more menu รองรับ Edit asset, Mark as sold และ Delete asset
+- Mark as sold จาก Feed เป็น shortcut ไป Sale Record Form โดยตรง ไม่ต้องผ่าน Edit Asset
+- Edit Asset ต้องไม่ให้เลือก `Sold` เป็น status ปกติ
+- Delete asset จาก Feed ต้องใช้ Delete Asset confirmation เสมอ
+- Delete asset ไม่มี Undo เพราะกระทบ public surfaces, Chat reference และ Offer status
+- Sold Asset ไม่ควรถูก Delete ผ่าน Asset Management V1
 
 ## Like And Favorites Sync
 
@@ -324,6 +461,8 @@ Feed ไม่รองรับ:
 | Deleted Asset | หายจาก Feed และ public surfaces |
 | Reported Asset | ไม่หายจาก Feed ทันที จนกว่า Admin ดำเนินการ moderation |
 | Hidden Feed Item | หายจาก Feed เฉพาะผู้กด hide และไม่กระทบผู้ใช้อื่น |
+| Owner Mark as sold from Feed | เปิด Sale Record Form และเมื่อ confirm สำเร็จ Asset หายจาก Feed |
+| Owner Delete asset from Feed | ต้องมี confirmation และเมื่อสำเร็จ Asset หายจาก Feed |
 
 ## Performance And Loading
 
@@ -342,6 +481,7 @@ Feed ไม่รองรับ:
 | Guest | ห้าม Like, Follow, Favorites, Following, Comment, Chat, Make Offer, Watch Alert, Add/Edit/Delete Asset, Hide this asset, Report Asset, Block User |
 | Member | ใช้ Feed และ action ที่เกี่ยวข้องตาม visibility rule |
 | Member | Hide this asset, Report Asset และ Block User ได้จากเมนูสามจุดของ Asset ผู้อื่น |
+| Owner | Edit asset, Mark as sold และ Delete asset ได้จากเมนูสามจุดของ Asset ตัวเองตาม Asset Management rule |
 | Blocked User | ไม่เห็น Asset ของอีกฝ่ายใน Feed |
 | Admin | ไม่ใช่ primary actor ของ Feed V1 |
 
@@ -353,6 +493,13 @@ Feed ไม่รองรับ:
 - Asset ต้องไม่อยู่ใน user-level hidden feed item preference ของผู้ใช้ปัจจุบัน
 - Like / Unlike ต้องตรวจสอบ authentication
 - Hide this asset, Report Asset และ Block User ต้องตรวจสอบ authentication
+- Report Asset จาก Feed ต้องใช้ Report type = `Asset`
+- Report reason ต้องเป็น required
+- Submit report ต้อง disabled จนกว่าจะเลือก reason
+- Report Asset bottom sheet ที่ถูก dismiss โดยไม่ submit ต้องไม่สร้าง report
+- Edit asset, Mark as sold และ Delete asset จาก Feed ต้องตรวจสอบ ownership
+- Mark as sold จาก Feed ต้องเปิด Sale Record Form ก่อนเปลี่ยน status เป็น `Sold`
+- Delete asset จาก Feed ต้องมี confirmation และห้ามทำแบบ Undo
 - Following และ Favorites ต้องตรวจสอบ authentication
 - Full Screen Image Viewer เปิดได้เฉพาะรูปของ Asset ที่ผู้ใช้มีสิทธิ์มองเห็น
 
@@ -368,6 +515,13 @@ Feed ไม่รองรับ:
 | Asset ถูก Hide Feed Item โดยผู้ใช้ | Asset ต้องหายจาก Feed ของผู้ใช้นั้น แต่ไม่กระทบผู้ใช้อื่น |
 | Hide Feed Item ล้มเหลว | คืน Asset กลับใน Feed และแสดง error ที่เหมาะสม |
 | User กด Undo หลัง Hide Feed Item | นำ Asset กลับมาใน Feed ตาม state ที่เหมาะสม |
+| Mark as sold สำเร็จจาก Feed | แสดง success state และนำ Asset ออกจาก Feed ทันที |
+| Mark as sold ล้มเหลวจาก Feed | คง Asset ใน Feed และแสดง error ที่เหมาะสม |
+| Delete Asset สำเร็จจาก Feed | แสดง success state และนำ Asset ออกจาก Feed ทันที |
+| Delete Asset ล้มเหลวจาก Feed | คง Asset ใน Feed และแสดง error ที่เหมาะสม |
+| Report Asset สำเร็จจาก Feed | แสดง success state แต่ไม่ทำให้ Asset หายจาก Feed ทันที |
+| Report Asset ล้มเหลวจาก Feed | คง Asset ใน Feed และแสดง error ที่เหมาะสม |
+| Report Asset bottom sheet ถูก dismiss | ไม่สร้าง report และ discard unsaved input ได้ |
 | Guest ใช้ action ที่ต้อง Login | แสดง Global Login Required Dialog |
 | Like / Unlike ล้มเหลว | คืนค่า UI เป็นสถานะก่อนหน้าและแสดง error ที่เหมาะสม |
 
@@ -404,6 +558,9 @@ Feed ไม่รองรับ:
 | `feed_asset_hide_undone` | Member กด Undo หลัง Hide this asset |
 | `feed_asset_report_tapped` | Member เลือก Report Asset จาก Feed |
 | `feed_user_block_tapped` | Member เลือก Block User จาก Feed |
+| `feed_owner_edit_asset_tapped` | Owner เลือก Edit asset จาก Feed |
+| `feed_owner_mark_as_sold_tapped` | Owner เลือก Mark as sold จาก Feed |
+| `feed_owner_delete_asset_tapped` | Owner เลือก Delete asset จาก Feed |
 | `feed_load_more_triggered` | Infinite Scroll โหลดรายการถัดไป |
 | `feed_retry_tapped` | User กด `ลองใหม่` ใน Error State |
 | `feed_guest_login_required_shown` | Guest ใช้ action ที่ต้อง Login |
@@ -432,8 +589,14 @@ Feed ไม่รองรับ:
 | AC-FEED-017A | Feed more menu สำหรับ Asset ของผู้อื่นต้องมี Hide this asset, Report Asset และ Block User |
 | AC-FEED-017B | Hide this asset ต้องซ่อน Asset เฉพาะ Feed ของผู้กด และไม่กระทบ Owner, ผู้ใช้อื่น, Public Profile, Offer หรือ Chat |
 | AC-FEED-017C | Hide this asset ต้องมี Undo ชั่วคราว และถ้าไม่ Undo ต้องไม่กลับมาใน Feed หลัง refresh/reload |
-| AC-FEED-017D | Report Asset จาก Feed ต้องเปิด Trust & Safety Report Asset flow และไม่ทำให้ Asset หายทันที |
+| AC-FEED-017D | Report Asset จาก Feed ต้องเปิด Trust & Safety Report Asset bottom sheet และไม่ทำให้ Asset หายทันที |
+| AC-FEED-017D-1 | Report Asset bottom sheet ต้องไม่มี Cancel button และต้องปิดได้ด้วย drag down, tap backdrop หรือ system back |
+| AC-FEED-017D-2 | Report Asset bottom sheet ที่ถูก dismiss โดยไม่ submit ต้องไม่สร้าง report |
+| AC-FEED-017D-3 | Submit report button ต้อง disabled จนกว่า Member จะเลือก reason |
 | AC-FEED-017E | Block User จาก Feed ต้องมี confirmation และเมื่อ block สำเร็จ Asset/content ของ user นั้นต้องหายจาก Feed ตาม Trust & Safety rule |
+| AC-FEED-017F | Owner Feed more menu ต้องมี Edit asset, Mark as sold และ Delete asset |
+| AC-FEED-017G | Mark as sold จาก Feed ต้องเปิด Sale Record Form โดยตรง และไม่ต้องผ่าน Edit Asset |
+| AC-FEED-017H | Delete asset จาก Feed ต้องมี confirmation, ไม่มี Undo และเมื่อสำเร็จ Asset ต้องหายจาก Feed |
 | AC-FEED-018 | Feed รองรับ Infinite Scroll และมี load-more state |
 | AC-FEED-019 | เมื่อ Scroll ถึงท้ายรายการต้องแสดง `คุณดูรายการทั้งหมดแล้ว` |
 | AC-FEED-020 | โหลด Feed ไม่สำเร็จต้องแสดง Error State และปุ่ม `ลองใหม่` |

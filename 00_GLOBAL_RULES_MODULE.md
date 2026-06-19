@@ -135,6 +135,15 @@ User เดียวกันสามารถเป็น Owner ใน asset �
 
 Guest ใช้ feature ที่ต้อง Login ต้องแสดง Global Login Required Dialog
 
+Global Login Required Dialog copy:
+
+| Language | Title | Body | Primary | Secondary | Tertiary |
+| --- | --- | --- | --- | --- | --- |
+| TH | เข้าสู่ระบบเพื่อใช้งานฟีเจอร์นี้ | คุณต้องเข้าสู่ระบบหรือสมัครสมาชิกก่อนจึงจะใช้งานฟีเจอร์นี้ได้ | เข้าสู่ระบบ | สมัครสมาชิก | ไว้ภายหลัง |
+| EN | Sign in to use this feature | You need to sign in or create an account before using this feature. | Sign in | Create account | Not now |
+
+Global Login Required Dialog ใช้ `Create account` เป็น secondary action ในภาษาอังกฤษเพื่ออธิบายทางเลือกให้ Guest ชัดเจน แต่หน้า Authentication จริงยังใช้ label `Sign up`
+
 Feature ที่ต้อง Login:
 
 - Like
@@ -148,6 +157,9 @@ Feature ที่ต้อง Login:
 - Add Asset
 - Edit Asset
 - Delete Asset
+- Hide this asset
+- Report Asset
+- Block User
 
 ## Deleted Asset
 

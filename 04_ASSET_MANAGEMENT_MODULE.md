@@ -190,7 +190,7 @@ Owner Asset Detail / Edit Asset
 ## Mark as Sold
 
 ```text
-Owner Asset Detail
+Owner Asset Detail / Owner Feed Card
 → Mark as Sold
 → Sale Record Form
 → Enter Sale Record
@@ -199,15 +199,19 @@ Owner Asset Detail
 → Other Offers Auto Rejected
 ```
 
+Mark as Sold สามารถเริ่มจาก Owner Asset Detail หรือ Owner Feed more menu ได้ โดยทั้งสอง entry point ต้องเปิด Sale Record Form โดยตรง ไม่ต้องผ่าน Edit Asset
+
 ## Delete Asset
 
 ```text
-Owner Asset Detail
+Owner Asset Detail / Owner Feed Card
 → Delete
 → Confirmation
 → Asset Deleted
 → Asset Removed From Public Surfaces
 ```
+
+Delete Asset สามารถเริ่มจาก Owner Asset Detail หรือ Owner Feed more menu ได้ แต่ต้องใช้ confirmation เดียวกัน และไม่มี Undo
 
 ## Non Owner Attempts Edit
 
@@ -289,6 +293,8 @@ Owner สามารถแก้ไข status ผ่าน Add/Edit ระห�
 
 `Sold` ต้องเกิดจาก Mark as Sold flow พร้อม Sale Record Form
 
+Mark as Sold จาก Feed หรือ Asset Detail เป็น shortcut ไป Sale Record Form โดยตรง ไม่ใช่การเลือก `Sold` จาก Edit Asset
+
 ## Visibility Matrix
 
 | Status | Owner Profile | Public Profile | Feed | Search | Watch Alert |
@@ -364,6 +370,8 @@ Owner สามารถแก้ไข status ผ่าน Add/Edit ระห�
 
 ก่อนเปลี่ยนเป็น Sold ต้องกรอก Sale Record Form
 
+Sale Record Form ต้องถูกเปิดก่อนเสมอเมื่อ Owner เลือก Mark as Sold ไม่ว่าจะเริ่มจาก Owner Asset Detail หรือ Owner Feed more menu
+
 Sale Record Form เก็บ:
 
 - Sale Date
@@ -378,6 +386,8 @@ Sale Record Form เก็บ:
 Owner สามารถ Delete ได้สำหรับ Asset ที่ไม่ใช่ Sold ตาม policy ของ V1
 
 Delete Asset ต้องมี Confirmation
+
+Delete Asset จาก Owner Feed more menu ต้องใช้ rule เดียวกับ Delete Asset ใน Asset Management: ต้องมี Confirmation, ไม่มี Undo และ Sold Asset ไม่ควรลบผ่าน V1
 
 เมื่อ Asset ถูกลบ:
 
@@ -609,6 +619,7 @@ Owner Profile และ Sold History ใช้ Global Empty State:
 | AC ID | Criteria |
 |---|---|
 | AC-ASSET-MGMT-016 | Mark as Sold ต้องเปิด Sale Record Form ก่อนเปลี่ยนสถานะเป็น Sold |
+| AC-ASSET-MGMT-016A | Mark as Sold จาก Owner Feed more menu ต้องเปิด Sale Record Form โดยตรง และไม่ต้องผ่าน Edit Asset |
 | AC-ASSET-MGMT-017 | Sale Record Form ต้องเก็บ Sale Date, Buyer, Contact, Sale Price, Payment Method และ Attachment |
 | AC-ASSET-MGMT-018 | เมื่อ Mark as Sold สำเร็จ Asset ต้องหายจาก Feed, Following, Favorites, Search และ Watch Alert ทันที |
 | AC-ASSET-MGMT-019 | เมื่อ Mark as Sold สำเร็จ Offer อื่นต้องถูก Auto Reject |
@@ -620,6 +631,7 @@ Owner Profile และ Sold History ใช้ Global Empty State:
 | AC ID | Criteria |
 |---|---|
 | AC-ASSET-MGMT-022 | Delete Asset ต้องมี Confirmation |
+| AC-ASSET-MGMT-022A | Delete Asset จาก Owner Feed more menu ต้องใช้ Confirmation เดียวกับ Asset Management และไม่มี Undo |
 | AC-ASSET-MGMT-023 | Owner ต้องสามารถ Delete Asset ที่ไม่ใช่ Sold ตาม policy ของ V1 ได้ |
 | AC-ASSET-MGMT-024 | Sold Asset ต้องไม่สามารถ Delete ผ่าน Asset Management ได้ |
 | AC-ASSET-MGMT-025 | เมื่อ Delete Asset สำเร็จ Asset ต้องหายจาก Feed, Search, Watch Alert และ Public Profile |

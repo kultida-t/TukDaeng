@@ -127,6 +127,15 @@ Guest ไม่สามารถใช้ feature ที่ต้อง Login �
 
 เมื่อ Guest ใช้ feature ที่ต้อง Login ต้องแสดง Global Login Required Dialog
 
+Global Login Required Dialog ใช้ copy ต่อไปนี้:
+
+| Language | Title | Body | Primary | Secondary | Tertiary |
+| --- | --- | --- | --- | --- | --- |
+| TH | เข้าสู่ระบบเพื่อใช้งานฟีเจอร์นี้ | คุณต้องเข้าสู่ระบบหรือสมัครสมาชิกก่อนจึงจะใช้งานฟีเจอร์นี้ได้ | เข้าสู่ระบบ | สมัครสมาชิก | ไว้ภายหลัง |
+| EN | Sign in to use this feature | You need to sign in or create an account before using this feature. | Sign in | Create account | Not now |
+
+Auth page และปุ่มใน flow สมัครสมาชิกยังใช้ label `Sign up` ตามปกติ เช่น `Sign up`, `Sign up with Apple`, `Sign up with Google`; เฉพาะ Global Login Required Dialog ใช้ `Create account` เป็น secondary action
+
 ## Pending Verification
 
 ผู้ใช้ที่สมัครด้วย Email / Password แล้วแต่ยังไม่ยืนยัน OTP:

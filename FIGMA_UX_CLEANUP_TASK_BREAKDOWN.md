@@ -19,7 +19,59 @@
 
 ---
 
-## 2. Wave 1: Global Foundation
+## 2. Must Fix Ticket Matrix
+
+ตารางนี้ใช้แตกงาน `Must Fix` เป็น ticket สำหรับ UX/Figma cleanup รอบแรก ก่อนเริ่ม Dev / QA sign-off จริง
+
+| Ticket ID | Module / Surface | Owner | Figma Action | Acceptance Gate | Dependency |
+| --- | --- | --- | --- | --- | --- |
+| UX-MF-001 | Global status model | UX Lead + Product | Normalize status ทุกหน้าจอให้เหลือ `Sale`, `Show`, `Hide`, `Sold` และลบ status model ซ้ำ | ไม่มี label/status นอก canonical set ใน mobile flow | `TukDaeng_Master_Product_Definition.md`, `00_GLOBAL_RULES_MODULE.md` |
+| UX-MF-002 | Public / private visibility | UX Lead + UX Marketplace | แยก Owner-only/private data ออกจาก Viewer/Public state ให้ชัดใน Asset Detail, Profile, Portfolio และ related surfaces | Viewer/Public ไม่เห็น purchase data, provenance, consignment, sold history หรือ portfolio value detail | `00_GLOBAL_RULES_MODULE.md`, `05_ASSET_DETAIL_MODULE.md`, `14_PORTFOLIO_MODULE.md` |
+| UX-MF-003 | Future / out-of-scope navigation | UX Lead | จัด Watch Shops, Accessories Shop, Repair Shop, Auction Center, Consignment Center, Authentication Center และ Community เป็น hidden, disabled หรือ placeholder | ไม่มี active route ที่สื่อว่า feature นอก V1 ใช้งานได้จริง | `00_NAVIGATION_AND_CROSS_MODULE_FLOW.md` |
+| UX-MF-004 | Feed card baseline | UX Marketplace | เอา Location ออกจาก Feed Card และคง Posted Time เป็น metadata หลัก | Feed Card ไม่แสดง location เช่น district/province ใน V1 | `02_FEED_MODULE.md` |
+| UX-MF-005 | Feed/Search/Watch Alert status filter | UX Marketplace | Annotate ว่า Feed, Search Result และ Watch Alert Result render เฉพาะ `Sale` | ไม่มี `Show`, `Hide`, `Sold`, `Deleted` ใน public list surfaces | `02_FEED_MODULE.md`, `03_SEARCH_FILTER_MODULE.md`, `10_WATCH_ALERT_MODULE.md` |
+| UX-MF-006 | Asset add/edit status model | UX Marketplace | ปรับ Add/Edit Asset ให้เลือกได้เฉพาะ `Sale`, `Show`, `Hide`; แยก `Sold` ไป Mark as Sold / Sale Record flow | `Sold` ไม่ปรากฏเป็นตัวเลือก status ปกติใน Edit Asset | `04_ASSET_MANAGEMENT_MODULE.md` |
+| UX-MF-007 | Gallery upload limit | UX Marketplace | ปรับ Add/Edit gallery limit เป็นสูงสุด 10 รูป พร้อม state เมื่อเกิน limit | Upload UI และ validation copy ระบุ 10 รูป | `04_ASSET_MANAGEMENT_MODULE.md` |
+| UX-MF-008 | Comment model | UX Marketplace + UX Transaction | ปรับ comment UI ใน Asset/Social ให้เป็น single level และตัด nested reply/reply chain | ไม่มี `View replies`, nested indentation หรือ reply thread ใน V1 | `05_ASSET_DETAIL_MODULE.md`, `11_SOCIAL_MODULE.md` |
+| UX-MF-009 | Public Profile tabs | UX Marketplace | เพิ่ม Public Profile tabs `All`, `Sale`, `Show`; `All` แสดง `Sale` + `Show` เท่านั้น | Public Profile ไม่มี `Hide` หรือ `Sold`; Owner profile แยกอีก state | `06_PROFILE_MODULE.md` |
+| UX-MF-010 | Notification Center baseline | UX Transaction | เหลือ notification type เฉพาะ Like, Comment, Follow, Offer, Watch Alert | ไม่มี Chat/New Message, Moderation, Account Action, Market Update, Price/Valuation หรือ Sale Success ใน FO Notification Center | `09_NOTIFICATION_MODULE.md` |
+| UX-MF-011 | Chat unread routing | UX Transaction | ย้าย Chat/New Message ออกจาก Notification Center และแสดงผ่าน Chat menu unread badge/count | New message ไม่สร้าง Notification Center item ใน prototype | `07_CHAT_MODULE.md`, `09_NOTIFICATION_MODULE.md` |
+| UX-MF-012 | Board scope | UX Platform | ปรับ Board ให้เป็น Article Area และตัด Create/Edit/Delete Post สำหรับ Front Office user | FO user อ่าน/like/share article ได้ แต่สร้างหรือจัดการ article ไม่ได้ | `12_BOARD_MODULE.md` |
+| UX-MF-013 | Settings baseline | UX Platform | เพิ่ม Theme Mode และ Delete Account พร้อม warning/confirmation/risk state | Settings มี Dark/Light Mode และ Delete Account ไม่ถูก mark เป็น future | `13_SETTINGS_MODULE.md` |
+| UX-MF-014 | Admin boundary | UX Platform + Product | แยก Admin ออกจาก mobile role และ annotate ว่าอยู่ใน Web Back Office | Mobile app ไม่มี Admin role/flow ที่ทำงานจริง | `18_ADMIN_SCOPE_NOTE.md` |
+| UX-MF-015 | Payment scope | UX Platform + Product | ซ่อนหรือติดป้าย future ให้ payment/payment gateway UI ทั้งหมด | Payment Gateway ไม่ถูกสื่อว่าเป็น functional V1 | `16_INTEGRATIONS_MODULE.md` |
+| UX-MF-016 | Auth consent and suspended state | UX Lead | เพิ่ม Suspended Account state และบังคับ Terms of Use / Privacy Policy ก่อน sign up ทุกช่องทาง | Email, Google, Apple sign up มี consent ก่อน submit และ Sign In มี suspended error/support path | `01_AUTHENTICATION_MODULE.md`, `15_TRUST_SAFETY_MODULE.md` |
+
+### Must Fix Working Order
+
+1. ปิด `UX-MF-001` ถึง `UX-MF-003` ก่อน เพราะเป็น global terminology, visibility และ navigation boundary
+2. ทำ `UX-MF-004` ถึง `UX-MF-009` เพื่อให้ marketplace surfaces ตรง visibility matrix
+3. ทำ `UX-MF-010` ถึง `UX-MF-011` ก่อน notification prototype review
+4. ทำ `UX-MF-012` ถึง `UX-MF-016` เพื่อปิด scope, compliance และ integration boundary
+
+### Must Fix Sign-off Rule
+
+แต่ละ ticket ควรมีสถานะใน Figma เป็น `Done`, `Not Applicable` พร้อมเหตุผล หรือ `Needs Product Decision` เท่านั้นก่อนส่ง Dev / QA review ห้ามปล่อยเป็น implicit behavior ที่ต้องเดาจากหน้าจอ
+
+### Figma Progress Update: 2026-06-19
+
+รายการนี้เป็น progress ที่ทำใน Figma แล้ววันนี้ แต่ยังควร review กับ acceptance gate ก่อน mark ticket เป็น Done ทั้งก้อน
+
+| Area | Figma Update | Related Ticket / Priority | Review Note |
+| --- | --- | --- | --- |
+| Feed guest flow | ทำ Feed แบบ Guest และลาก prototype ให้ login-required action เปิด Global Login Required Dialog | `UX-MF-016`, Feed High guest restriction | ตรวจทุก entry point เช่น Following, Favorites, Like, Report, Block, Hide |
+| Global Login Required Dialog | สร้าง reusable dialog พร้อม Sign in, Create account, Not now และ close behavior | `UX-MF-016`, Global High | ต้องใช้ dialog เดียวกันทุก module |
+| Feed Viewer more menu | ทำ Hide this asset, Report Asset และ Block User flow | Feed High / Trust & Safety High | Report ต้องไม่ทำให้ asset หายทันที; Hide เป็น user-level preference |
+| Feed Owner more menu | ทำ Edit asset, Mark as sold และ Delete asset flow | `UX-MF-006`, Feed Owner action update | Mark as sold ต้องเข้า Sale Record Form โดยตรง; Delete ต้องไม่มี Undo |
+| Report Asset bottom sheet | ทำ bottom sheet มี drag handle, no Cancel button, submit disabled จนเลือก reason | Trust & Safety High | Dismiss โดยไม่ submit ต้องไม่สร้าง report |
+| Search & Filter guest | ทำ Search & Filter สำหรับ Guest | Search High / Medium | ต้องตรวจ Create Watch Alert guest restriction เพิ่ม |
+| Pre-auth entry | ทำหน้าก่อนเข้าใช้งานสำหรับ Sign in, Sign up และ Guest explore | Auth / Navigation | ตรวจ Terms / Privacy และ guest path |
+| Terms acceptance bottom sheet | ทำ bottom sheet แจ้งเงื่อนไขให้กดยอมรับก่อนเข้าใช้งาน | Auth / Legal consent | ต้องไม่ขัดกับ Terms of Use / Privacy Policy consent ใน Sign Up |
+| Sign in remembered device | เพิ่ม Remember this device for 30 days ในหน้า Sign in | Auth update | ต้องรอ product/security confirm implementation rule หากยังไม่อยู่ใน V1 baseline |
+
+---
+
+## 3. Wave 1: Global Foundation
 
 **Goal:** ปิด conflict ระดับระบบก่อน เพราะกระทบหลาย screen
 
@@ -56,7 +108,7 @@
 
 ---
 
-## 3. Wave 2: Core Marketplace Surfaces
+## 4. Wave 2: Core Marketplace Surfaces
 
 **Goal:** ทำให้ Feed, Search, Asset Management, Asset Detail และ Profile ตรงกับ visibility matrix
 
@@ -99,7 +151,7 @@
 
 ---
 
-## 4. Wave 3: Communication, Offer, Notification
+## 5. Wave 3: Communication, Offer, Notification
 
 **Goal:** แก้ routing และ state ที่เชื่อม Chat, Offer และ Notification ให้ตรง master
 
@@ -139,7 +191,7 @@
 
 ---
 
-## 5. Wave 4: Content, Settings, Portfolio, Trust
+## 6. Wave 4: Content, Settings, Portfolio, Trust
 
 **Goal:** ปิด flow เสริมที่กระทบ compliance, privacy และ product boundary
 
@@ -177,7 +229,7 @@
 
 ---
 
-## 6. Wave 5: Dev / QA Handoff Review
+## 7. Wave 5: Dev / QA Handoff Review
 
 **Goal:** ตรวจว่า Figma cleanup พร้อมให้ Dev และ QA ใช้ต่อ
 
@@ -205,7 +257,7 @@
 
 ---
 
-## 7. Suggested Assignment
+## 8. Suggested Assignment
 
 | Task Group | Owner | Primary Files |
 | --- | --- | --- |
@@ -217,7 +269,7 @@
 
 ---
 
-## 8. Open Decision Items
+## 9. Open Decision Items
 
 รายการนี้ยังไม่ควร implement เป็น behavior final จนกว่าจะมี decision ใน master หรือ product decision log แต่สามารถเตรียม Figma เป็น placeholder / annotated state ได้ตาม recommendation ด้านล่าง
 
