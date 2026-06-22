@@ -326,9 +326,17 @@ And Asset ต้องไม่ขึ้น Feed, Search หรือ Watch Aler
 ## QA-ASSET-002C: Hide Required Fields
 
 Given Owner เลือก Status = `Hide`
-When Owner submit โดยมี Photos และ Brand ครบ แต่ไม่กรอก Model / Series, Condition, Price หรือ Description
+When Owner submit โดยมี Photos และ Brand ครบ แต่ไม่กรอก Model / Series, Condition หรือ Description
 Then ระบบต้อง save ได้
 And Asset ต้องเห็นเฉพาะ Owner
+And form ต้องไม่ใช้ listing price สำหรับ `Hide`
+
+## QA-ASSET-002D: Private Owner Estimated Value
+
+Given Owner กรอก `Owner Estimated Value (Private)` ใน Asset status ใดก็ได้
+When user อื่นเปิด Public Profile, Feed, Search หรือ Viewer Asset Detail
+Then user อื่นต้องไม่เห็น `Owner Estimated Value (Private)`
+And ค่านี้ต้องไม่ถูกใช้เป็น Asking Price หรือ Market Comparison
 
 ## QA-ASSET-003: Mark As Sold
 
@@ -349,6 +357,38 @@ When deletion สำเร็จ
 Then Asset ต้องหายจาก Feed/Search/Watch Alert/Public Profile  
 And related Offer ต้องเป็น `Cancelled`  
 And related Chat ต้องยังอยู่
+
+## QA-ASSET-006: Status Switch Sale To Show
+
+Given Owner มี Asset status `Sale`
+When Owner เปลี่ยน status เป็น `Show` และ save สำเร็จ
+Then Asset ต้องหายจาก Feed, Search และ Watch Alert
+And Asset ต้องยังแสดงใน Public Profile
+And ระบบต้องไม่ require Asking Price สำหรับ `Show`
+
+## QA-ASSET-007: Status Switch Show To Sale
+
+Given Owner มี Asset status `Show`
+When Owner เปลี่ยน status เป็น `Sale`
+Then ระบบต้อง require Condition, Asking Price และ Description ตาม Sale validation
+When save สำเร็จ
+Then Asset ต้องแสดงใน Feed, Search และสามารถ match Watch Alert ได้
+
+## QA-ASSET-008: Status Switch Sale To Hide
+
+Given Owner มี Asset status `Sale`
+When Owner เปลี่ยน status เป็น `Hide` และ save สำเร็จ
+Then Asset ต้องหายจาก Feed, Search, Watch Alert และ Public Profile
+And Asset ต้องเห็นเฉพาะ Owner
+And ระบบต้องไม่ใช้ Asking Price เป็น public/listing field อีกต่อไป
+
+## QA-ASSET-009: Status Switch Hide To Sale
+
+Given Owner มี Asset status `Hide`
+When Owner เปลี่ยน status เป็น `Sale`
+Then ระบบต้อง require Model / Series, Condition, Asking Price และ Description ตาม Sale validation
+When save สำเร็จ
+Then Asset ต้องกลับเข้า Feed, Search และ Watch Alert หากตรงเงื่อนไข visibility/filter
 
 ---
 

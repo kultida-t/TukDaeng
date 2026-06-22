@@ -59,6 +59,7 @@ Figma references remain useful for visual alignment, but if Figma conflicts with
 - `Sale` requires Photos, Brand, Model / Series, Condition, Price and Description
 - `Show` requires Photos, Brand and Model / Series; Price is not required
 - `Hide` requires Photos and Brand only
+- `Hide` must not use listing price; optional private valuation must be labeled `Owner Estimated Value (Private)`
 - Provenance, purchase data, proof of payment, consignment data, sold history and portfolio value detail are private
 - Mark as Sold opens Sale Record Form before status becomes `Sold`
 - Delete Asset must remove public visibility and cancel related offers while chat remains
@@ -117,7 +118,6 @@ Recommended sequence:
 
 These items do not block Dev baseline review but should be clarified before final production sign-off:
 
-- Optional private price label/treatment for `Hide`
 - Consignment-specific workflow and validation beyond Add/Edit baseline
 - Full Back Office PRD, which remains separate from Front Office mobile baseline
 - Final Figma status after screens are updated from this baseline

@@ -391,11 +391,12 @@ Required Field Matrix:
 | Brand Name | Required | Required | Required |
 | Model / Series | Required | Required | Optional |
 | Condition | Required | Optional | Optional |
-| Price (THB) | Required, must be greater than 0 | Not required for public collection display | Optional private/owner value only |
+| Asking Price (THB) | Required, must be greater than 0 | Not required for public collection display | Not applicable |
+| Owner Estimated Value (Private) | Optional private valuation | Optional private valuation | Optional private valuation |
 | Description | Required | Optional | Optional |
 | Status | Required: Sale | Required: Show | Required: Hide |
 
-Sale is the only marketplace listing status. Show is a public collection status and must not require listing price. Hide is a private collection status and must keep optional price/description values owner-only.
+Sale is the only marketplace listing status and uses `Asking Price (THB)`. Show is a public collection status and must not require listing price. Hide is a private collection status and must not use listing price; if the owner wants to record an internal value, use `Owner Estimated Value (Private)` and keep it owner-only.
 
 Owner สามารถแก้ไข Status ระหว่าง:
 

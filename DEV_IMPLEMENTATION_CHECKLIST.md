@@ -96,7 +96,8 @@ Purpose:
 - [ ] Add/Edit ต้อง require อย่างน้อย 1 รูปสำหรับ `Sale`, `Show`, `Hide`
 - [ ] Status `Sale` ต้อง require Photos, Brand, Model / Series, Condition, Price, Description
 - [ ] Status `Show` ต้อง require Photos, Brand, Model / Series และไม่บังคับ Price
-- [ ] Status `Hide` ต้อง require Photos, Brand เท่านั้น โดย Model / Series, Condition, Price, Description เป็น optional
+- [ ] Status `Hide` ต้อง require Photos, Brand เท่านั้น โดย Model / Series, Condition, Description เป็น optional และไม่ใช้ listing price
+- [ ] Optional private valuation ต้องใช้ label `Owner Estimated Value (Private)` และห้ามแสดงใน public/viewer surfaces
 - [ ] Add/Edit ใช้ status model เดียว: `Sale`, `Show`, `Hide`
 - [ ] `Sold` ต้องเข้าผ่าน Mark as Sold / Sale Record flow เท่านั้น
 - [ ] Sold Asset lock main editable fields

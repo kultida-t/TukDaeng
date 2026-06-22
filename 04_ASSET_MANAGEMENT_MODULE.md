@@ -264,7 +264,8 @@ Add / Edit Asset ต้องรองรับข้อมูลต่อไป
 | Brand Name | Required | Required | Required |
 | Model / Series | Required | Required | Optional |
 | Condition | Required | Optional | Optional |
-| Price (THB) | Required, must be greater than 0 | Not required for public collection display | Optional private/owner value only |
+| Asking Price (THB) | Required, must be greater than 0 | Not required for public collection display | Not applicable |
+| Owner Estimated Value (Private) | Optional private valuation | Optional private valuation | Optional private valuation |
 | Description | Required | Optional | Optional |
 | Status | Required: `Sale` | Required: `Show` | Required: `Hide` |
 
@@ -272,7 +273,8 @@ Add / Edit Asset ต้องรองรับข้อมูลต่อไป
 
 - `Sale` เป็น marketplace listing จึงต้องมีข้อมูลขั้นต่ำให้ buyer ประเมินและเสนอซื้อได้
 - `Show` เป็น public collection / public vault ไม่ใช่ marketplace listing จึงไม่บังคับ Price
-- `Hide` เป็น private collection จึงต้องการข้อมูลขั้นต่ำที่สุดสำหรับ owner cataloging
+- `Hide` เป็น private collection จึงต้องการข้อมูลขั้นต่ำที่สุดสำหรับ owner cataloging และไม่ใช้ listing price
+- หาก Owner ต้องการเก็บมูลค่าส่วนตัวสำหรับ `Show` หรือ `Hide` ให้ใช้ label `Owner Estimated Value (Private)` ไม่ใช่ `Price` หรือ `Asking Price`
 - Reference No., Year, Original Box, Original Paper, Specifications, Provenance, Purchase Information, Documentation และ Consignment optional ตาม policy ของ MVP
 - หาก asset เป็น consignment item ให้ Full Name, Phone Number และ Asking Price เป็น recommended required fields ของ consignment workflow แยกจาก Add/Edit asset baseline
 
@@ -497,10 +499,19 @@ Condition:
 
 Price:
 
+- Label ใน marketplace listing ต้องใช้ `Asking Price (THB)`
 - Required เมื่อ Status = Sale
 - ต้องมากกว่า 0 เมื่อกรอก
 - ไม่บังคับสำหรับ Status = Show เพราะ Show ไม่ใช่ marketplace listing
-- Optional และต้องเป็น private/owner value เมื่อ Status = Hide
+- ไม่ใช้กับ Status = Hide
+
+Owner Estimated Value:
+
+- Optional เมื่อ Status = Sale, Show หรือ Hide
+- ต้องมากกว่า 0 เมื่อกรอก
+- ต้องใช้ label `Owner Estimated Value (Private)`
+- เป็น private owner value สำหรับ Portfolio / owner valuation เท่านั้น
+- ห้ามแสดงใน Public Profile, Feed, Search, Watch Alert หรือ Viewer Asset Detail
 
 Description:
 
@@ -639,7 +650,8 @@ Owner Profile และ Sold History ใช้ Global Empty State:
 | AC-ASSET-MGMT-007 | Add / Edit Asset ต้องรองรับ Brand, Model / Series, Reference No., Year, Condition, Scope of Delivery, Case Size, Thickness, Case Material, Movement, Dial Color, Strap / Bracelet Type, Price และ Description |
 | AC-ASSET-MGMT-007A | Status = Sale ต้อง require Photos, Brand Name, Model / Series, Condition, Price และ Description |
 | AC-ASSET-MGMT-007B | Status = Show ต้อง require Photos, Brand Name และ Model / Series โดยไม่บังคับ Price |
-| AC-ASSET-MGMT-007C | Status = Hide ต้อง require Photos และ Brand Name เท่านั้น ส่วน Model / Series, Condition, Price และ Description เป็น optional |
+| AC-ASSET-MGMT-007C | Status = Hide ต้อง require Photos และ Brand Name เท่านั้น ส่วน Model / Series, Condition และ Description เป็น optional และต้องไม่ใช้ listing price |
+| AC-ASSET-MGMT-007D | Optional private value ของ Sale, Show หรือ Hide ต้องใช้ label `Owner Estimated Value (Private)` และห้ามแสดงใน public/viewer surfaces |
 | AC-ASSET-MGMT-008 | Add / Edit Asset ต้องรองรับ Provenance และ Consignment เป็นข้อมูล private |
 | AC-ASSET-MGMT-009 | Add / Edit Asset ต้องให้เลือก status ได้เฉพาะ Sale, Show และ Hide |
 | AC-ASSET-MGMT-010 | Add / Edit Asset ต้องไม่ให้เลือก Sold เป็น status ปกติ |
