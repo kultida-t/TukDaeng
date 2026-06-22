@@ -2,6 +2,9 @@
 
 อ้างอิงหลักจาก [TukDaeng_Master_Product_Definition.md](TukDaeng_Master_Product_Definition.md)
 
+**Current Baseline Version:** `FO-PRD-v1.0`
+**Version Registry:** [DOCUMENT_VERSION.md](DOCUMENT_VERSION.md)
+
 ---
 
 # 1. Handoff Status
@@ -9,6 +12,7 @@
 ชุดเอกสาร PRD สำหรับ TukDaeng App พร้อมใช้เป็น baseline สำหรับ Product / UX / Dev / QA ในระดับ module-level แล้ว โดยมีเอกสารหลักดังนี้:
 
 - Dev baseline handoff: [DEV_BASELINE_HANDOFF_2026-06-22.md](DEV_BASELINE_HANDOFF_2026-06-22.md)
+- Document version: [DOCUMENT_VERSION.md](DOCUMENT_VERSION.md)
 - Master source of truth: [TukDaeng_Master_Product_Definition.md](TukDaeng_Master_Product_Definition.md)
 - Module index: [README_MODULE_INDEX.md](README_MODULE_INDEX.md)
 - Figma checklist: [Figma_Gap_Checklist_Against_Master.md](Figma_Gap_Checklist_Against_Master.md)
@@ -17,7 +21,7 @@
 - Navigation rules: [00_NAVIGATION_AND_CROSS_MODULE_FLOW.md](00_NAVIGATION_AND_CROSS_MODULE_FLOW.md)
 - Module PRD: `01-18`
 
-หมายเหตุสำหรับรอบ 2026-06-22: ชุดนี้เป็น baseline ล่าสุดทั้งชุดสำหรับส่ง Dev ใช้แทนเอกสารเก่าที่เคยอ้างอิงก่อนหน้า ไม่ใช่ delta เฉพาะงานที่เพิ่มในวันนี้ หาก implementation ปัจจุบันหรือ Figma เดิม conflict กับชุดนี้ ให้ยึดเอกสาร baseline นี้ก่อน
+หมายเหตุสำหรับรอบ 2026-06-22: ชุดนี้เป็น baseline ล่าสุดทั้งชุดสำหรับส่ง Dev ใช้แทนเอกสารเก่าที่เคยอ้างอิงก่อนหน้า ไม่ใช่ delta เฉพาะงานที่เพิ่มในวันนี้ หาก implementation ปัจจุบันหรือ Figma เดิม conflict กับชุดนี้ ให้ยึดเอกสาร baseline นี้ก่อน โดยอ้างอิง version `FO-PRD-v1.0`
 
 # 2. Approved Product Decisions
 

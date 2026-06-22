@@ -80,6 +80,12 @@
 - แยก checklist ตาม room creation, message, asset reference, offer integration, unread/notification, guest permission, block/report, delete chat, routing/deep link และ QA handoff
 - อัปเดต `README_MODULE_INDEX.md` ให้มี entry สำหรับ Chat-focused Dev checklist
 
+### 2.8 Add document versioning
+
+- เพิ่ม `DOCUMENT_VERSION.md` เป็น version registry กลางของเอกสาร Front Office baseline
+- กำหนด baseline version ปัจจุบันเป็น `FO-PRD-v1.0`
+- อัปเดต handoff/index/summary/chat checklist ให้ Dev อ้างอิง version เดียวกัน
+
 ---
 
 ## 3. Dev / QA handoff impact

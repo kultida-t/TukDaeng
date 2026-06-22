@@ -2,6 +2,9 @@
 
 อ้างอิงหลักจาก [TukDaeng_Master_Product_Definition.md](TukDaeng_Master_Product_Definition.md)
 
+**Current Baseline Version:** `FO-PRD-v1.0`
+**Version Registry:** [DOCUMENT_VERSION.md](DOCUMENT_VERSION.md)
+
 ---
 
 # 1. Purpose
@@ -9,6 +12,8 @@
 ไฟล์นี้เป็น index สำหรับชุดเอกสาร PRD ของ TukDaeng App หลังแตก master เป็นรายโมดูลแล้ว ใช้บอกทีม Product, UX, Dev และ QA ว่าแต่ละไฟล์ควรใช้เมื่อไร และควรอ่านลำดับไหนก่อนส่งต่อ implementation หรือ design sign-off
 
 สำหรับรอบส่งต่อ Dev วันที่ 2026-06-22 ให้ถือว่าชุดเอกสารนี้เป็น baseline ใหม่ทั้งชุดสำหรับแทนเอกสารเก่าที่ Dev เคยใช้ก่อนหน้า ไม่ใช่เฉพาะรายการที่เพิ่งเพิ่มในวันเดียวกัน
+
+เมื่อส่งต่อ Dev / QA / Figma ให้อ้างอิง version `FO-PRD-v1.0` คู่กับ branch `docs-frontoffice-spec-updates`
 
 # 2. Source Of Truth Order
 
@@ -25,16 +30,17 @@
 
 | Step | File | Use For |
 | --- | --- | --- |
-| 1 | [TukDaeng_Master_Product_Definition.md](TukDaeng_Master_Product_Definition.md) | Product source of truth |
-| 2 | [00_GLOBAL_RULES_MODULE.md](00_GLOBAL_RULES_MODULE.md) | Global visibility, status, lifecycle, privacy, state rules |
-| 3 | [00_NAVIGATION_AND_CROSS_MODULE_FLOW.md](00_NAVIGATION_AND_CROSS_MODULE_FLOW.md) | Cross-module routing, deep link, notification destination |
-| 4 | Module PRD `01-18` | Functional and QA detail by module |
-| 5 | [Figma_Gap_Checklist_Against_Master.md](Figma_Gap_Checklist_Against_Master.md) | Figma cleanup and design QA checklist |
-| 6 | [FIGMA_UX_CLEANUP_TASK_BREAKDOWN.md](FIGMA_UX_CLEANUP_TASK_BREAKDOWN.md) | Figma cleanup task grouping and assignment plan |
-| 7 | [DEV_BASELINE_HANDOFF_2026-06-22.md](DEV_BASELINE_HANDOFF_2026-06-22.md) | Dev baseline package for replacing old implementation reference |
-| 8 | [DEV_IMPLEMENTATION_CHECKLIST.md](DEV_IMPLEMENTATION_CHECKLIST.md) | Dev implementation checklist by module |
-| 9 | [DEV_CHAT_IMPLEMENTATION_CHECKLIST.md](DEV_CHAT_IMPLEMENTATION_CHECKLIST.md) | Focused checklist for Dev working only on Chat |
-| 10 | [QA_TEST_SCENARIO_CHECKLIST.md](QA_TEST_SCENARIO_CHECKLIST.md) | QA scenario checklist and regression sign-off |
+| 1 | [DOCUMENT_VERSION.md](DOCUMENT_VERSION.md) | Baseline version and version history |
+| 2 | [TukDaeng_Master_Product_Definition.md](TukDaeng_Master_Product_Definition.md) | Product source of truth |
+| 3 | [00_GLOBAL_RULES_MODULE.md](00_GLOBAL_RULES_MODULE.md) | Global visibility, status, lifecycle, privacy, state rules |
+| 4 | [00_NAVIGATION_AND_CROSS_MODULE_FLOW.md](00_NAVIGATION_AND_CROSS_MODULE_FLOW.md) | Cross-module routing, deep link, notification destination |
+| 5 | Module PRD `01-18` | Functional and QA detail by module |
+| 6 | [Figma_Gap_Checklist_Against_Master.md](Figma_Gap_Checklist_Against_Master.md) | Figma cleanup and design QA checklist |
+| 7 | [FIGMA_UX_CLEANUP_TASK_BREAKDOWN.md](FIGMA_UX_CLEANUP_TASK_BREAKDOWN.md) | Figma cleanup task grouping and assignment plan |
+| 8 | [DEV_BASELINE_HANDOFF_2026-06-22.md](DEV_BASELINE_HANDOFF_2026-06-22.md) | Dev baseline package for replacing old implementation reference |
+| 9 | [DEV_IMPLEMENTATION_CHECKLIST.md](DEV_IMPLEMENTATION_CHECKLIST.md) | Dev implementation checklist by module |
+| 10 | [DEV_CHAT_IMPLEMENTATION_CHECKLIST.md](DEV_CHAT_IMPLEMENTATION_CHECKLIST.md) | Focused checklist for Dev working only on Chat |
+| 11 | [QA_TEST_SCENARIO_CHECKLIST.md](QA_TEST_SCENARIO_CHECKLIST.md) | QA scenario checklist and regression sign-off |
 
 # 4. Module Index
 

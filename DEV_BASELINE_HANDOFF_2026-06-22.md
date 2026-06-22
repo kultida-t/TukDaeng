@@ -1,9 +1,11 @@
 # TukDaeng Dev Baseline Handoff
 
 **Date:** 2026-06-22  
+**Baseline Version:** `FO-PRD-v1.0`
 **Purpose:** ส่ง baseline เอกสารล่าสุดทั้งชุดให้ Dev ใช้แทนเอกสารเก่าที่เคย implement ก่อนหน้า  
 **Status:** Product-reviewed and approved as Dev baseline  
 **Primary Source of Truth:** [TukDaeng_Master_Product_Definition.md](TukDaeng_Master_Product_Definition.md)
+**Version Registry:** [DOCUMENT_VERSION.md](DOCUMENT_VERSION.md)
 
 ---
 
@@ -12,6 +14,8 @@
 เอกสารชุดนี้ไม่ใช่ change list เฉพาะรายการที่เพิ่มวันที่ 2026-06-22 แต่เป็น baseline ล่าสุดของ TukDaeng Front Office ทั้งชุด หลังจากรีวิวและจัดระเบียบ requirement ใหม่ตั้งแต่เริ่มรอบ PRD cleanup
 
 Dev ควรใช้เอกสารชุดนี้เป็น source of truth ใหม่สำหรับการแก้ app ที่ทำไปก่อนหน้าแล้ว เพราะ implementation เดิมอ้างอิงข้อมูลชุดเก่าที่ไม่ตรงกับ decision ล่าสุดหลายจุด
+
+Baseline version สำหรับรอบนี้คือ `FO-PRD-v1.0` หาก Dev ส่ง gap list หรือ status กลับมา ให้ระบุ version นี้เพื่อให้ trace กลับมาได้ถูกต้อง
 
 หาก implementation ปัจจุบัน, Figma เดิม หรือเอกสารเก่า conflict กับชุดนี้ ให้ยึดชุดนี้ก่อน
 
