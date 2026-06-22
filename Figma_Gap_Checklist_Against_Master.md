@@ -100,6 +100,8 @@ Figma มี coverage ของ flow หลักค่อนข้างมา�
 | Must Fix | Edit Asset ใช้ status 2 ชั้น: `Status` และ `Sale Status` | Canonical status มีชุดเดียว: `Sale / Show / Hide / Sold` | ปรับ Figma ให้เหลือ status model เดียว |
 | Must Fix | Add/Edit อาจเปิดให้เลือก `Sold` เหมือน status ปกติ | Owner แก้ status ได้ระหว่าง `Sale / Show / Hide`; `Sold` ต้องผ่าน Mark as Sold / Sale Record | แยก Mark as Sold flow ออกจาก Edit Asset |
 | Must Fix | จำนวนรูปใน Add/Edit ยังเป็น 3 รูป | Master รองรับ Gallery สูงสุด 10 รูป | ปรับ upload/gallery limit เป็น 10 รูป |
+| Must Fix | Required fields ใน Add/Edit ยังไม่แยกตาม `Sale / Show / Hide` | Sale require Photos/Brand/Model/Condition/Asking Price/Description; Show require Photos/Brand/Model; Hide require Photos/Brand | ทำ required indicator, validation state และ status switching note ตาม matrix |
+| Must Fix | `Hide` อาจยังใช้ label `Price` หรือ `Asking Price` | `Hide` ไม่ใช้ listing price; optional private value ใช้ `Owner Estimated Value (Private)` | เปลี่ยน label และ annotate ว่าเป็น Owner-only private valuation |
 | High | ยังไม่เห็น Sold Asset read-only state ชัดเจน | Sold Asset ไม่สามารถ Edit ข้อมูลหลักได้ | เพิ่ม owner detail/edit state ที่ lock main fields ของ Sold Asset |
 | High | ยังไม่เห็น Sale Record / Sold History ครบ | Sold History ต้องเก็บ Sale Date, Buyer, Contact, Sale Price, Payment Method, Attachment | เพิ่ม Sale Record Form และ Sold History display |
 | High | ยังไม่เห็น privacy treatment ของ Provenance / Consignment / purchase data | ข้อมูลเหล่านี้เป็น private เห็นเฉพาะ Owner หรือ Admin | ระบุ private section/state และห้ามแสดงใน Public Profile |

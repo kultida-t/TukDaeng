@@ -67,6 +67,13 @@
 - ตัดสินใจ label ของ private value สำหรับ `Hide` แล้วว่าไม่ใช้ listing price
 - หาก Owner ต้องการเก็บมูลค่าส่วนตัว ให้ใช้ `Owner Estimated Value (Private)` และต้องไม่แสดงใน public/viewer surfaces
 
+### 2.6 Prepare Figma Add/Edit Asset cleanup pack
+
+- เพิ่ม `Next Figma Work Pack: Add / Edit Asset` ใน `FIGMA_UX_CLEANUP_TASK_BREAKDOWN.md`
+- แตก checklist สำหรับ screens/components, required Figma changes, status switching prototype notes และ acceptance gate
+- อัปเดต `Figma_Gap_Checklist_Against_Master.md` ให้ระบุ required fields แยกตาม `Sale / Show / Hide`
+- เพิ่ม gap เรื่อง `Hide` ต้องไม่ใช้ `Price` / `Asking Price` และต้องใช้ `Owner Estimated Value (Private)` สำหรับ private valuation
+
 ---
 
 ## 3. Dev / QA handoff impact
@@ -91,7 +98,7 @@
 
 ## 5. Recommended work sequence ต่อจากนี้
 
-1. Review Add/Edit Asset Figma เทียบ `04_ASSET_MANAGEMENT_MODULE.md`
+1. Review Add/Edit Asset Figma ตาม work pack ใน `FIGMA_UX_CLEANUP_TASK_BREAKDOWN.md`
 2. ตรวจ Asset Detail / Public Profile ว่า `Show` ไม่ถูกสื่อเป็น Sale listing
 3. ตรวจ Figma ให้ใช้ `Owner Estimated Value (Private)` สำหรับ private valuation และไม่ใช้ Price/Asking Price กับ `Hide`
 4. ส่ง Dev baseline handoff ให้ Dev review app ปัจจุบันเทียบ checklist

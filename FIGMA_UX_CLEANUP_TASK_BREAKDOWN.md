@@ -71,6 +71,61 @@
 
 ---
 
+## 2.1 Next Figma Work Pack: Add / Edit Asset
+
+**Goal:** ปรับ Add/Edit Asset ให้ตรงกับ baseline ล่าสุดก่อนส่ง Dev เทียบ implementation
+
+**Reference:** [04_ASSET_MANAGEMENT_MODULE.md](04_ASSET_MANAGEMENT_MODULE.md)
+
+### Screens / Components To Review
+
+- Add Asset
+- Edit Asset
+- Status selector / segmented control
+- Gallery uploader
+- Required field indicators
+- Inline validation error state
+- Save disabled / save error state
+- Status switching state: Sale -> Show, Show -> Sale, Sale -> Hide, Hide -> Sale
+- Owner-only/private valuation field
+- Mark as Sold entry point / Sale Record Form entry
+
+### Required Figma Changes
+
+- Status selector ต้องมีเฉพาะ `Sale`, `Show`, `Hide`
+- ห้ามมี `Sold` เป็นตัวเลือกใน Add/Edit Asset
+- ห้ามมี status model ซ้ำ เช่น `Status` + `Sale Status`
+- Gallery ต้องสื่อว่า required อย่างน้อย 1 รูป และรองรับสูงสุด 10 รูป
+- `Sale` ต้อง mark required: Photos, Brand, Model / Series, Condition, Asking Price, Description
+- `Show` ต้อง mark required: Photos, Brand, Model / Series
+- `Hide` ต้อง mark required: Photos, Brand
+- `Show` ต้องไม่สื่อว่า Price เป็น required marketplace listing field
+- `Hide` ต้องไม่ใช้ label `Price` หรือ `Asking Price`
+- Optional private valuation ต้องใช้ label `Owner Estimated Value (Private)`
+- `Owner Estimated Value (Private)` ต้องถูก annotate ว่า Owner-only และไม่แสดงใน Public Profile, Feed, Search, Watch Alert หรือ Viewer Asset Detail
+- Field `Location` ต้องไม่เป็น V1 required/display field หลักใน Add/Edit
+- Mark as Sold จาก Owner flow ต้องพาไป Sale Record Form โดยตรง ไม่ใช่เลือก `Sold` จาก Edit Asset
+
+### Status Switching Prototype Notes
+
+| Transition | Figma Behavior / Annotation |
+| --- | --- |
+| Sale -> Show | Asset หายจาก Feed/Search/Watch Alert แต่ยังอยู่ Public Profile; Asking Price ไม่ required หลังเปลี่ยนเป็น Show |
+| Show -> Sale | ต้อง require Condition, Asking Price และ Description ก่อน save เป็น Sale |
+| Sale -> Hide | Asset หายจาก Feed/Search/Watch Alert/Public Profile; owner ยังเห็นใน Owner Profile |
+| Hide -> Sale | ต้อง require Model / Series, Condition, Asking Price และ Description ก่อน save เป็น Sale |
+
+### Acceptance Gate
+
+- เปิด Add/Edit Asset แล้วไม่เห็น `Sold` ใน status selector
+- Required indicator เปลี่ยนตาม status ที่เลือก
+- Save validation error ตรงกับ required field matrix
+- ไม่มีคำว่า `Price` / `Asking Price` บน `Hide` ในฐานะ listing field
+- มี annotation ชัดว่า `Owner Estimated Value (Private)` เป็น private owner value
+- Prototype หรือ note ระบุ lifecycle impact หลังเปลี่ยน status
+
+---
+
 ## 3. Wave 1: Global Foundation
 
 **Goal:** ปิด conflict ระดับระบบก่อน เพราะกระทบหลาย screen
