@@ -296,12 +296,39 @@ Given Owner เพิ่มรูป Asset
 When Owner upload รูป  
 Then ระบบต้องรองรับสูงสุด 10 รูปและป้องกันเกิน limit
 
+## QA-ASSET-001A: Minimum Photo Required
+
+Given Owner สร้าง Asset status `Sale`, `Show` หรือ `Hide`
+When Owner submit โดยไม่มีรูป
+Then ระบบต้องแสดง validation error และไม่ save
+
 ## QA-ASSET-002: Sold Not Normal Edit Status
 
 Given Owner เปิด Edit Asset  
 When status selector แสดง  
 Then ต้องมีเฉพาะ `Sale`, `Show`, `Hide`  
 And `Sold` ต้องเข้าผ่าน Mark as Sold / Sale Record flow
+
+## QA-ASSET-002A: Sale Required Fields
+
+Given Owner เลือก Status = `Sale`
+When Owner submit โดยขาด Brand, Model / Series, Condition, Price หรือ Description
+Then ระบบต้องแสดง validation error
+And Price ต้องมากกว่า 0 เมื่อกรอก
+
+## QA-ASSET-002B: Show Required Fields
+
+Given Owner เลือก Status = `Show`
+When Owner submit โดยมี Photos, Brand และ Model / Series ครบ แต่ไม่กรอก Price
+Then ระบบต้อง save ได้
+And Asset ต้องไม่ขึ้น Feed, Search หรือ Watch Alert
+
+## QA-ASSET-002C: Hide Required Fields
+
+Given Owner เลือก Status = `Hide`
+When Owner submit โดยมี Photos และ Brand ครบ แต่ไม่กรอก Model / Series, Condition, Price หรือ Description
+Then ระบบต้อง save ได้
+And Asset ต้องเห็นเฉพาะ Owner
 
 ## QA-ASSET-003: Mark As Sold
 

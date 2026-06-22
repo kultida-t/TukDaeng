@@ -93,6 +93,10 @@ Purpose:
 # 4. Asset Management
 
 - [ ] Add Asset รองรับ Gallery สูงสุด 10 รูป
+- [ ] Add/Edit ต้อง require อย่างน้อย 1 รูปสำหรับ `Sale`, `Show`, `Hide`
+- [ ] Status `Sale` ต้อง require Photos, Brand, Model / Series, Condition, Price, Description
+- [ ] Status `Show` ต้อง require Photos, Brand, Model / Series และไม่บังคับ Price
+- [ ] Status `Hide` ต้อง require Photos, Brand เท่านั้น โดย Model / Series, Condition, Price, Description เป็น optional
 - [ ] Add/Edit ใช้ status model เดียว: `Sale`, `Show`, `Hide`
 - [ ] `Sold` ต้องเข้าผ่าน Mark as Sold / Sale Record flow เท่านั้น
 - [ ] Sold Asset lock main editable fields

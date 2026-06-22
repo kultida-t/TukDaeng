@@ -383,6 +383,20 @@ Add / Edit Asset รองรับข้อมูล:
 - Provenance
 - Consignment
 
+Required Field Matrix:
+
+| Field | Sale | Show | Hide |
+| --- | --- | --- | --- |
+| Photos | Required, minimum 1 and maximum 10 | Required, minimum 1 and maximum 10 | Required, minimum 1 and maximum 10 |
+| Brand Name | Required | Required | Required |
+| Model / Series | Required | Required | Optional |
+| Condition | Required | Optional | Optional |
+| Price (THB) | Required, must be greater than 0 | Not required for public collection display | Optional private/owner value only |
+| Description | Required | Optional | Optional |
+| Status | Required: Sale | Required: Show | Required: Hide |
+
+Sale is the only marketplace listing status. Show is a public collection status and must not require listing price. Hide is a private collection status and must keep optional price/description values owner-only.
+
 Owner สามารถแก้ไข Status ระหว่าง:
 
 - Sale

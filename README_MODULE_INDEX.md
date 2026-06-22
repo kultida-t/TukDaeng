@@ -8,6 +8,8 @@
 
 ไฟล์นี้เป็น index สำหรับชุดเอกสาร PRD ของ TukDaeng App หลังแตก master เป็นรายโมดูลแล้ว ใช้บอกทีม Product, UX, Dev และ QA ว่าแต่ละไฟล์ควรใช้เมื่อไร และควรอ่านลำดับไหนก่อนส่งต่อ implementation หรือ design sign-off
 
+สำหรับรอบส่งต่อ Dev วันที่ 2026-06-22 ให้ถือว่าชุดเอกสารนี้เป็น baseline ใหม่ทั้งชุดสำหรับแทนเอกสารเก่าที่ Dev เคยใช้ก่อนหน้า ไม่ใช่เฉพาะรายการที่เพิ่งเพิ่มในวันเดียวกัน
+
 # 2. Source Of Truth Order
 
 หากเอกสารหรือ Figma มีเงื่อนไขไม่ตรงกัน ให้ตัดสินตามลำดับนี้:
@@ -29,8 +31,9 @@
 | 4 | Module PRD `01-18` | Functional and QA detail by module |
 | 5 | [Figma_Gap_Checklist_Against_Master.md](Figma_Gap_Checklist_Against_Master.md) | Figma cleanup and design QA checklist |
 | 6 | [FIGMA_UX_CLEANUP_TASK_BREAKDOWN.md](FIGMA_UX_CLEANUP_TASK_BREAKDOWN.md) | Figma cleanup task grouping and assignment plan |
-| 7 | [DEV_IMPLEMENTATION_CHECKLIST.md](DEV_IMPLEMENTATION_CHECKLIST.md) | Dev implementation checklist by module |
-| 8 | [QA_TEST_SCENARIO_CHECKLIST.md](QA_TEST_SCENARIO_CHECKLIST.md) | QA scenario checklist and regression sign-off |
+| 7 | [DEV_BASELINE_HANDOFF_2026-06-22.md](DEV_BASELINE_HANDOFF_2026-06-22.md) | Dev baseline package for replacing old implementation reference |
+| 8 | [DEV_IMPLEMENTATION_CHECKLIST.md](DEV_IMPLEMENTATION_CHECKLIST.md) | Dev implementation checklist by module |
+| 9 | [QA_TEST_SCENARIO_CHECKLIST.md](QA_TEST_SCENARIO_CHECKLIST.md) | QA scenario checklist and regression sign-off |
 
 # 4. Module Index
 

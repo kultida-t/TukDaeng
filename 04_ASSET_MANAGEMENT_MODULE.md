@@ -254,6 +254,28 @@ Add / Edit Asset ต้องรองรับข้อมูลต่อไป
 - Provenance
 - Consignment
 
+## Required Field Matrix
+
+ฟอร์ม Add / Edit Asset ต้อง validate required fields ตาม status ที่ Owner เลือก:
+
+| Field | Sale | Show | Hide |
+|---|---|---|---|
+| Photos | Required, minimum 1 and maximum 10 | Required, minimum 1 and maximum 10 | Required, minimum 1 and maximum 10 |
+| Brand Name | Required | Required | Required |
+| Model / Series | Required | Required | Optional |
+| Condition | Required | Optional | Optional |
+| Price (THB) | Required, must be greater than 0 | Not required for public collection display | Optional private/owner value only |
+| Description | Required | Optional | Optional |
+| Status | Required: `Sale` | Required: `Show` | Required: `Hide` |
+
+หลักการของ V1:
+
+- `Sale` เป็น marketplace listing จึงต้องมีข้อมูลขั้นต่ำให้ buyer ประเมินและเสนอซื้อได้
+- `Show` เป็น public collection / public vault ไม่ใช่ marketplace listing จึงไม่บังคับ Price
+- `Hide` เป็น private collection จึงต้องการข้อมูลขั้นต่ำที่สุดสำหรับ owner cataloging
+- Reference No., Year, Original Box, Original Paper, Specifications, Provenance, Purchase Information, Documentation และ Consignment optional ตาม policy ของ MVP
+- หาก asset เป็น consignment item ให้ Full Name, Phone Number และ Asking Price เป็น recommended required fields ของ consignment workflow แยกจาก Add/Edit asset baseline
+
 ## Private Data Rule
 
 ข้อมูลต่อไปนี้เป็น private และเห็นเฉพาะ Owner หรือ Admin ตามสิทธิ์:
@@ -456,6 +478,7 @@ Payment Method ใน Sale Record เป็นข้อมูลบันทึ�
 
 Gallery:
 
+- Required อย่างน้อย 1 รูป
 - Maximum 10 Images
 
 Brand:
@@ -464,12 +487,25 @@ Brand:
 
 Model / Series:
 
-- Required
+- Required เมื่อ Status = Sale หรือ Show
+- Optional เมื่อ Status = Hide
+
+Condition:
+
+- Required เมื่อ Status = Sale
+- Optional เมื่อ Status = Show หรือ Hide
 
 Price:
 
 - Required เมื่อ Status = Sale
 - ต้องมากกว่า 0 เมื่อกรอก
+- ไม่บังคับสำหรับ Status = Show เพราะ Show ไม่ใช่ marketplace listing
+- Optional และต้องเป็น private/owner value เมื่อ Status = Hide
+
+Description:
+
+- Required เมื่อ Status = Sale
+- Optional เมื่อ Status = Show หรือ Hide
 
 Status:
 
@@ -599,7 +635,11 @@ Owner Profile และ Sold History ใช้ Global Empty State:
 | AC ID | Criteria |
 |---|---|
 | AC-ASSET-MGMT-006 | Add / Edit Asset ต้องรองรับ Gallery สูงสุด 10 รูป |
+| AC-ASSET-MGMT-006A | Add / Edit Asset ต้อง require อย่างน้อย 1 รูปสำหรับ Sale, Show และ Hide |
 | AC-ASSET-MGMT-007 | Add / Edit Asset ต้องรองรับ Brand, Model / Series, Reference No., Year, Condition, Scope of Delivery, Case Size, Thickness, Case Material, Movement, Dial Color, Strap / Bracelet Type, Price และ Description |
+| AC-ASSET-MGMT-007A | Status = Sale ต้อง require Photos, Brand Name, Model / Series, Condition, Price และ Description |
+| AC-ASSET-MGMT-007B | Status = Show ต้อง require Photos, Brand Name และ Model / Series โดยไม่บังคับ Price |
+| AC-ASSET-MGMT-007C | Status = Hide ต้อง require Photos และ Brand Name เท่านั้น ส่วน Model / Series, Condition, Price และ Description เป็น optional |
 | AC-ASSET-MGMT-008 | Add / Edit Asset ต้องรองรับ Provenance และ Consignment เป็นข้อมูล private |
 | AC-ASSET-MGMT-009 | Add / Edit Asset ต้องให้เลือก status ได้เฉพาะ Sale, Show และ Hide |
 | AC-ASSET-MGMT-010 | Add / Edit Asset ต้องไม่ให้เลือก Sold เป็น status ปกติ |

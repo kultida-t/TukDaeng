@@ -8,6 +8,7 @@
 
 ชุดเอกสาร PRD สำหรับ TukDaeng App พร้อมใช้เป็น baseline สำหรับ Product / UX / Dev / QA ในระดับ module-level แล้ว โดยมีเอกสารหลักดังนี้:
 
+- Dev baseline handoff: [DEV_BASELINE_HANDOFF_2026-06-22.md](DEV_BASELINE_HANDOFF_2026-06-22.md)
 - Master source of truth: [TukDaeng_Master_Product_Definition.md](TukDaeng_Master_Product_Definition.md)
 - Module index: [README_MODULE_INDEX.md](README_MODULE_INDEX.md)
 - Figma checklist: [Figma_Gap_Checklist_Against_Master.md](Figma_Gap_Checklist_Against_Master.md)
@@ -15,6 +16,8 @@
 - Global rules: [00_GLOBAL_RULES_MODULE.md](00_GLOBAL_RULES_MODULE.md)
 - Navigation rules: [00_NAVIGATION_AND_CROSS_MODULE_FLOW.md](00_NAVIGATION_AND_CROSS_MODULE_FLOW.md)
 - Module PRD: `01-18`
+
+หมายเหตุสำหรับรอบ 2026-06-22: ชุดนี้เป็น baseline ล่าสุดทั้งชุดสำหรับส่ง Dev ใช้แทนเอกสารเก่าที่เคยอ้างอิงก่อนหน้า ไม่ใช่ delta เฉพาะงานที่เพิ่มในวันนี้ หาก implementation ปัจจุบันหรือ Figma เดิม conflict กับชุดนี้ ให้ยึดเอกสาร baseline นี้ก่อน
 
 # 2. Approved Product Decisions
 
@@ -60,9 +63,10 @@
 | Dev implementation checklist created | Done |
 | QA test scenario checklist created | Done |
 | Final handoff summary created | Done |
+| Dev baseline handoff reviewed by Product | Done |
 | Figma visual updates completed | Pending Figma team |
 | Dev / QA sign-off | Pending team review |
 
 # 6. Recommended Next Step
 
-ให้ทีม UX/Figma เริ่มแก้ตาม [Figma_Gap_Checklist_Against_Master.md](Figma_Gap_Checklist_Against_Master.md) โดยเริ่มจาก `Must Fix` และ `High` และใช้ [FIGMA_UX_CLEANUP_TASK_BREAKDOWN.md](FIGMA_UX_CLEANUP_TASK_BREAKDOWN.md) เพื่อแบ่งงานเป็น wave/owner จากนั้น Dev/QA ใช้ [README_MODULE_INDEX.md](README_MODULE_INDEX.md) เป็น entry point สำหรับอ่านเอกสารทั้งหมด
+ให้ Product lock เอกสาร baseline ชุดนี้ก่อน แล้วส่ง [DEV_BASELINE_HANDOFF_2026-06-22.md](DEV_BASELINE_HANDOFF_2026-06-22.md) ให้ Dev review app ที่ทำไปแล้วเทียบกับ baseline ล่าสุด จากนั้น UX/Figma ค่อยอัปเดตหน้าจอตาม baseline เดียวกัน โดยใช้ [Figma_Gap_Checklist_Against_Master.md](Figma_Gap_Checklist_Against_Master.md) และ [FIGMA_UX_CLEANUP_TASK_BREAKDOWN.md](FIGMA_UX_CLEANUP_TASK_BREAKDOWN.md) เป็น checklist งานออกแบบ
