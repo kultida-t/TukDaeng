@@ -33,7 +33,8 @@
 | 6 | [FIGMA_UX_CLEANUP_TASK_BREAKDOWN.md](FIGMA_UX_CLEANUP_TASK_BREAKDOWN.md) | Figma cleanup task grouping and assignment plan |
 | 7 | [DEV_BASELINE_HANDOFF_2026-06-22.md](DEV_BASELINE_HANDOFF_2026-06-22.md) | Dev baseline package for replacing old implementation reference |
 | 8 | [DEV_IMPLEMENTATION_CHECKLIST.md](DEV_IMPLEMENTATION_CHECKLIST.md) | Dev implementation checklist by module |
-| 9 | [QA_TEST_SCENARIO_CHECKLIST.md](QA_TEST_SCENARIO_CHECKLIST.md) | QA scenario checklist and regression sign-off |
+| 9 | [DEV_CHAT_IMPLEMENTATION_CHECKLIST.md](DEV_CHAT_IMPLEMENTATION_CHECKLIST.md) | Focused checklist for Dev working only on Chat |
+| 10 | [QA_TEST_SCENARIO_CHECKLIST.md](QA_TEST_SCENARIO_CHECKLIST.md) | QA scenario checklist and regression sign-off |
 
 # 4. Module Index
 

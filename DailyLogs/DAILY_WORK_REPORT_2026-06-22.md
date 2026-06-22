@@ -74,6 +74,12 @@
 - อัปเดต `Figma_Gap_Checklist_Against_Master.md` ให้ระบุ required fields แยกตาม `Sale / Show / Hide`
 - เพิ่ม gap เรื่อง `Hide` ต้องไม่ใช้ `Price` / `Asking Price` และต้องใช้ `Owner Estimated Value (Private)` สำหรับ private valuation
 
+### 2.7 Add Chat-specific Dev checklist
+
+- เพิ่ม `DEV_CHAT_IMPLEMENTATION_CHECKLIST.md` สำหรับ Dev ที่ทำเฉพาะ Chat
+- แยก checklist ตาม room creation, message, asset reference, offer integration, unread/notification, guest permission, block/report, delete chat, routing/deep link และ QA handoff
+- อัปเดต `README_MODULE_INDEX.md` ให้มี entry สำหรับ Chat-focused Dev checklist
+
 ---
 
 ## 3. Dev / QA handoff impact
