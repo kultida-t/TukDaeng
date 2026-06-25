@@ -66,6 +66,9 @@ Then ระบบต้อง fallback เป็น copy public deep link แล
 Given user เปิด public deep link  
 When linked content เป็น Deleted, Hide, Sold หรือ user ไม่มี permission / ถูก block  
 Then ระบบต้องไม่แสดง private content และต้องแสดง unavailable / permission state ตาม baseline
+And primary CTA ต้องเป็น `Go back`
+And ถ้ามี navigation history ต้องกลับไปหน้าก่อนหน้า
+And ถ้าไม่มี navigation history ต้อง fallback ไป Feed
 
 ## QA-GLOBAL-004: Private Data Not Public
 
@@ -338,6 +341,22 @@ When user อื่นเปิด Public Profile, Feed, Search หรือ Vie
 Then user อื่นต้องไม่เห็น `Owner Estimated Value (Private)`
 And ค่านี้ต้องไม่ถูกใช้เป็น Asking Price หรือ Market Comparison
 
+## QA-ASSET-002E: Uploading State After Save
+
+Given Owner กรอก Add/Edit Asset ครบตาม required fields และมีรูปที่ต้อง upload
+When Owner กด `Save`
+Then ระบบต้องแสดง loading popup/overlay หรือ persistent toast ว่า `กำลังอัปโหลด...`
+And ปุ่ม `Save` ต้อง disabled ระหว่าง upload/save
+And ระบบต้องป้องกัน duplicate submit
+And เมื่อ upload/save สำเร็จต้องไปยัง Asset Created หรือ Asset Updated flow
+
+## QA-ASSET-002F: Uploading State Failure
+
+Given Owner กรอก Add/Edit Asset ครบตาม required fields และมีรูปที่ต้อง upload
+When Owner กด `Save` แล้ว upload/save ล้มเหลว
+Then ระบบต้องแสดง error state
+And ต้องมี action ให้ retry หรือกลับไปแก้ไขรูป/ข้อมูลได้
+
 ## QA-ASSET-003: Mark As Sold
 
 Given Owner mark Asset as Sold  
@@ -357,6 +376,7 @@ When deletion สำเร็จ
 Then Asset ต้องหายจาก Feed/Search/Watch Alert/Public Profile  
 And related Offer ต้องเป็น `Cancelled`  
 And related Chat ต้องยังอยู่
+And ต้องไม่มี Undo / restore action
 
 ## QA-ASSET-006: Status Switch Sale To Show
 
@@ -406,11 +426,12 @@ Given user เป็น Owner
 When Owner เปิด Asset Detail ของตัวเอง  
 Then Owner เปิดได้ทุก status: `Sale`, `Show`, `Hide`, `Sold`
 
-## QA-DETAIL-003: Single Level Comment
+## QA-DETAIL-003: IG-Style One-Level Comment Replies
 
 Given user เปิด Comments  
 When comments แสดง  
-Then ต้องไม่มี nested reply, reply chain หรือ view replies
+Then ระบบต้องรองรับ reply ใต้ comment หลักได้ 1 ชั้นแบบ IG-style  
+And ต้องไม่รองรับ reply ซ้อนต่อจาก reply หรือ thread หลายระดับ
 
 ## QA-DETAIL-004: Delete Comment Permission
 
@@ -419,6 +440,38 @@ When Member B พยายาม delete comment ของ Member A
 Then ระบบต้อง reject  
 When Member A delete comment ตัวเอง  
 Then ระบบต้องลบได้
+And ต้องไม่มี Undo / restore action
+
+## QA-DETAIL-004B: Delete Root Comment With Replies
+
+Given Member มี root comment ที่มี replies ทั้งที่แสดงอยู่และ collapsed อยู่
+When Member delete root comment ของตัวเองและ confirm
+Then root comment ต้องหาย
+And replies ใต้ root comment นั้นต้องหายทั้งหมด
+And ต้องแสดง feedback `This comment was removed.`
+
+## QA-DETAIL-004C: Delete Reply Only
+
+Given Member มี reply ของตัวเองใต้ root comment
+When Member delete reply และ confirm
+Then reply นั้นต้องหาย
+And root comment และ replies อื่นต้องยังอยู่
+
+## QA-DETAIL-004A: Report Comment From Asset Detail
+
+Given Member เห็น Comment ใน Asset Detail
+When Member เลือก Report Comment และ submit reason
+Then report ต้องส่งเข้า Trust & Safety Report Comment flow
+And Comment ต้องไม่หายทันที
+And success ต้องแสดง `Report submitted`
+And success copy ต้องระบุว่า comment remains visible until moderation is complete
+
+## QA-DETAIL-004D: Nested Comment Action Sheet
+
+Given Member เปิด `View all comments` เป็น Comments bottom sheet
+When Member กด `...` บน comment
+Then comment action sheet ต้องเปิดเป็นชั้นบนสุด
+And เมื่อปิด comment action sheet ต้องไม่ปิด Comments bottom sheet
 
 ## QA-DETAIL-005: Market Comparison
 
@@ -434,6 +487,41 @@ When Owner เปิด Detail
 Then Owner เห็น Expected Profit  
 When Viewer เปิด Detail  
 Then Viewer ต้องไม่เห็น Expected Profit หรือ Purchase Price
+
+---
+
+# 7A. Profile
+
+## QA-PROFILE-001: Public Profile More Menu
+
+Given Member เปิด Public Profile ของ user อื่น
+When Member กด `...`
+Then menu ต้องแสดง `Share profile`, `Report user`, `Block user`
+And ต้องไม่แสดง owner-only หรือ asset-level actions
+
+## QA-PROFILE-002: Owner Profile More Menu
+
+Given Owner เปิด Owner Profile ของตัวเอง
+When Owner กด `...`
+Then menu ต้องแสดง `Share profile` และ `Settings`
+And ต้องไม่แสดง `Report user` หรือ `Block user`
+And label ต้องใช้ `Settings`
+
+## QA-PROFILE-003: Share Profile Sheet
+
+Given user กด `Share profile`
+When share sheet เปิด
+Then ต้องแสดง profile preview card
+And ต้องมี `Copy Link` fallback
+And เมื่อกด `Copy Link` ต้องแสดง feedback ว่า link ถูก copy แล้ว
+
+## QA-PROFILE-004: Report User Success
+
+Given Member report user จาก Public Profile
+When report submit สำเร็จ
+Then success ต้องแสดง `Report submitted`
+And copy ต้องระบุว่า profile remains visible until moderation is complete
+And profile ต้องไม่หายทันที
 
 ---
 
@@ -768,6 +856,20 @@ Given Member report Asset/User/Comment
 When report submit สำเร็จ  
 Then content ต้องไม่หายทันทีเพราะต้องรอ Admin moderation
 
+## QA-TRUST-001A: Report User Entry Points
+
+Given Member เปิด Public Profile หรือ Chat Room ของ user อื่น
+When Member เลือก Report User และ submit reason
+Then report ต้องส่งเข้า Trust & Safety Report User flow
+And profile/chat/content ต้องไม่หายทันทีเพราะ report เพียงอย่างเดียว
+
+## QA-TRUST-001B: Block User Entry Points
+
+Given Member เปิด Public Profile หรือ Chat Room ของ user อื่น
+When Member เลือก Block User และ confirm
+Then ระบบต้องใช้ Block User rule เดียวกัน
+And content ของ user นั้นต้องถูก filter จาก Feed/Search/Watch Alert Result ตาม baseline
+
 ## QA-TRUST-002: Block Hides Public Content
 
 Given Member A block Member B  
@@ -820,7 +922,7 @@ QA sign-off ก่อนส่ง Dev complete ต้องครอบคลุ
 - [ ] Guest / Member / Owner / Other User
 - [ ] Sale / Show / Hide / Sold / Deleted
 - [ ] Like / Unlike / Favorites sync
-- [ ] Comment single level
+- [ ] Comment IG-style one-level replies และไม่มี multi-level nested thread
 - [ ] Offer Pending / Accepted / Rejected / Cancelled
 - [ ] Chat unread badge and block read-only
 - [ ] Notification routing ทุก supported type

@@ -164,6 +164,7 @@ Owner Profile / Add Asset Entry
 → Enter Optional Private Information
 → Select Status: Sale / Show / Hide
 → Save
+→ Uploading / Saving State
 → Asset Created
 ```
 
@@ -174,6 +175,7 @@ Owner Asset Detail
 → Edit
 → Update Information
 → Save
+→ Uploading / Saving State
 → Asset Updated
 ```
 
@@ -584,12 +586,30 @@ Payment Method:
 
 ต้องแสดง confirmation ก่อนลบ Asset
 
+Confirmation copy ต้องแจ้งชัดว่า delete ไม่มี Undo:
+
+- Title: `Delete this asset?`
+- Body: `This action cannot be undone. This asset will be removed from Feed, Search, Watch Alert results, and your public profile. Related chats will remain, but related offers will be cancelled.`
+- Secondary action: `Cancel`
+- Destructive action: `Delete`
+
 ## Save Error
 
 | Language | Message |
 |---|---|
 | TH | เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้ง |
 | EN | Something went wrong. Please try again. |
+
+## Uploading / Saving State
+
+เมื่อ Owner กรอกข้อมูลครบและกด `Save` ใน Add / Edit Asset ระบบต้องแสดงสถานะกำลังอัปโหลด/กำลังบันทึกทันที หากมีรูปหรือไฟล์ที่ต้อง upload ให้ใช้ข้อความ `กำลังอัปโหลด...` / `Uploading...`
+
+ระหว่างสถานะนี้:
+
+- ต้อง disable ปุ่ม `Save` เพื่อป้องกันการ submit ซ้ำ
+- ต้องป้องกันการแก้ไขข้อมูลที่อาจทำให้ payload เปลี่ยนระหว่าง upload
+- ถ้า upload/save สำเร็จ ให้แสดง success state และไปยัง Asset Created / Asset Updated flow
+- ถ้า upload/save ล้มเหลว ให้แสดง error พร้อม action สำหรับ retry หรือกลับไปแก้ไขรูป/ข้อมูล
 
 ---
 
@@ -647,6 +667,7 @@ Owner Profile และ Sold History ใช้ Global Empty State:
 |---|---|
 | AC-ASSET-MGMT-006 | Add / Edit Asset ต้องรองรับ Gallery สูงสุด 10 รูป |
 | AC-ASSET-MGMT-006A | Add / Edit Asset ต้อง require อย่างน้อย 1 รูปสำหรับ Sale, Show และ Hide |
+| AC-ASSET-MGMT-006B | หลังกรอกข้อมูลครบและกด Save ต้องแสดง uploading/saving state พร้อมข้อความ `กำลังอัปโหลด...` / `Uploading...` เมื่อมีไฟล์ upload และต้อง disable ปุ่ม Save เพื่อป้องกัน duplicate submit |
 | AC-ASSET-MGMT-007 | Add / Edit Asset ต้องรองรับ Brand, Model / Series, Reference No., Year, Condition, Scope of Delivery, Case Size, Thickness, Case Material, Movement, Dial Color, Strap / Bracelet Type, Price และ Description |
 | AC-ASSET-MGMT-007A | Status = Sale ต้อง require Photos, Brand Name, Model / Series, Condition, Price และ Description |
 | AC-ASSET-MGMT-007B | Status = Show ต้อง require Photos, Brand Name และ Model / Series โดยไม่บังคับ Price |
@@ -682,7 +703,7 @@ Owner Profile และ Sold History ใช้ Global Empty State:
 
 | AC ID | Criteria |
 |---|---|
-| AC-ASSET-MGMT-022 | Delete Asset ต้องมี Confirmation |
+| AC-ASSET-MGMT-022 | Delete Asset ต้องมี Confirmation และ copy ต้องระบุ `This action cannot be undone.` |
 | AC-ASSET-MGMT-022A | Delete Asset จาก Owner Feed more menu ต้องใช้ Confirmation เดียวกับ Asset Management และไม่มี Undo |
 | AC-ASSET-MGMT-023 | Owner ต้องสามารถ Delete Asset ที่ไม่ใช่ Sold ตาม policy ของ V1 ได้ |
 | AC-ASSET-MGMT-024 | Sold Asset ต้องไม่สามารถ Delete ผ่าน Asset Management ได้ |

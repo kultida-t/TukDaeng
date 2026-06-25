@@ -43,8 +43,8 @@ Asset Detail Module ต้องยึด master baseline ต่อไปนี�
 - Asset Detail ต้องรองรับ Gallery รูปภาพ, Swipe รูป และ Full Screen Image Viewer
 - Asset Detail ต้องแสดง Brand, Model, Reference No., Description, Price, Owner Information, Technical Specifications และ Comments Section
 - Owner ต้องไม่เห็นปุ่ม Follow ตัวเอง
-- Comment เป็น Single Level เท่านั้น
-- ไม่มี Nested Comment
+- Comment รองรับ IG-style one-level replies ใต้ comment หลัก
+- ไม่รองรับ multi-level nested thread หรือ reply ซ้อนเกิน 1 ชั้น
 - ไม่มี Edit Comment ใน V1
 - รองรับ Delete Comment
 - Make Offer ทำผ่าน Asset Detail เท่านั้น
@@ -62,7 +62,7 @@ Asset Detail Module ต้องยึด master baseline ต่อไปนี�
 
 | Priority | Gap | Master Baseline | Figma Action |
 |---|---|---|---|
-| Must Fix | Comment UI ยังเป็น nested thread หรือมี reply chain | Comment เป็น Single Level และไม่มี Nested Comment ใน V1 | ปรับ comment UI เป็น single-level only และตัด `View replies` / nested indentation |
+| Must Fix | Comment UI ต้องรองรับการตอบโต้แบบ IG โดยไม่กลายเป็น forum thread | Comment รองรับ one-level replies ใต้ comment หลักเท่านั้น และไม่รองรับ reply ซ้อนหลายระดับ | ปรับ comment UI ให้แสดง reply ได้ 1 ชั้นใต้ comment หลัก และป้องกัน reply ต่อจาก reply |
 | High | ยังไม่เห็น Deleted Asset state ชัดเจน | Asset Detail ของ Asset ที่ถูกลบต้องแสดง `รายการนี้ไม่พร้อมใช้งานแล้ว` | เพิ่ม deleted/unavailable asset state |
 | High | Detail อาจแสดงข้อมูล private ให้ Viewer | Provenance, Consignment, purchase data, Sold History และ Portfolio Value Detail เป็น private | แยก Owner-only private sections และห้ามแสดงใน Viewer/Public mode |
 | High | ยังไม่เห็น state ของ Hide / Sold ที่เป็น Owner-only ชัดเจน | Viewer เห็นเฉพาะ Sale/Show; Owner เห็น Sale/Show/Hide/Sold | เพิ่ม Owner-only detail states สำหรับ Hide และ Sold |
@@ -91,6 +91,7 @@ Asset Detail Module ใน V1 ครอบคลุม:
 - Like / Unlike
 - Comment
 - Delete Comment
+- Report Comment
 - Make Offer
 - Open Chat
 - Share Asset Deep Link
@@ -99,7 +100,7 @@ Asset Detail Module ใน V1 ครอบคลุม:
 
 ไม่รวมใน V1:
 
-- Nested Comment
+- Multi-level Nested Comment เกิน 1 reply level
 - Edit Comment
 - Asset View Count
 - Asset Share Count
@@ -121,9 +122,10 @@ Asset Detail Module ใน V1 ครอบคลุม:
 6. Full Screen Image Viewer
 7. Comment Section
 8. Report Asset
-9. Block User
-10. Global Login Required Dialog
-11. Permission Denied State
+9. Report Comment
+10. Block User
+11. Global Login Required Dialog
+12. Permission Denied State
 
 ---
 
@@ -248,6 +250,58 @@ Asset Detail
 → Confirm
 → Comment Deleted
 ```
+
+## Report Comment
+
+```text
+Asset Detail
+→ Comment more menu
+→ Report Comment
+→ Select reason
+→ Submit
+→ Report submitted successfully
+```
+
+## Comment Action Behavior
+
+- Comment action ใช้ปุ่ม `...` แนวนอนข้างเวลาของแต่ละ comment / reply
+- Comment ของตัวเองต้องแสดง action `Delete comment`
+- Comment ของคนอื่นต้องแสดง action `Report comment`
+- ไม่ใช้ `Hide comment` ใน V1
+
+Delete Comment:
+
+- User ลบได้เฉพาะ comment หรือ reply ของตัวเอง
+- `Delete comment` ต้องเปิด confirmation ก่อนลบ
+- Confirmation title: `Delete this comment?`
+- Confirmation body สำหรับ root comment ที่มี replies: `This action cannot be undone. This comment and its replies will be removed.`
+- Confirmation body สำหรับ reply หรือ root comment ที่ไม่มี replies: `This action cannot be undone. This comment will be removed.`
+- Actions: `Cancel`, `Delete`
+- ไม่มี Undo
+- ลบ root comment แล้วต้องลบ replies ใต้ root comment ทั้งที่แสดงอยู่และที่ collapsed อยู่
+- ลบ reply แล้วลบเฉพาะ reply นั้น
+- เมื่อลบสำเร็จให้แสดง feedback `This comment was removed.`
+
+Report Comment:
+
+- `Report comment` ต้องเปิด report reason sheet หัวข้อ `Report this comment`
+- Description: `Select a reason for reporting this comment. Our team will review it.`
+- Reasons: `Harassment or hate`, `Spam or scam`, `Inappropriate content`, `False or misleading information`, `Other`
+- Additional details เป็น optional
+- `Submit report` disabled จนกว่าจะเลือก reason
+- Report สำเร็จต้องไม่ทำให้ comment หายทันที
+- Success title: `Report submitted`
+- Success copy: `Our team will review this comment. It will remain visible until moderation is complete.`
+- Success action ใช้ปุ่ม `Done` และปิด modal กลับ Asset Detail หรือ Comments sheet เดิม
+
+## Comments Bottom Sheet Behavior
+
+- `View all comments` เปิด Comments bottom sheet
+- หากกด `...` บน comment ภายใน Comments bottom sheet ให้เปิด comment action sheet เป็นชั้นบนสุด
+- กดนอก action sheet หรือ swipe down ต้องปิดเฉพาะ action sheet ไม่ปิด Comments sheet
+- หากเลือก `Report comment` ให้เปิด report form เป็น sheet/modal ชั้นบนสุด
+- หลัง report/delete สำเร็จ ให้กลับมาที่ Comments sheet เดิมและคง scroll context เท่าที่ทำได้
+- Comment action sheet แบบ nested ใช้ได้ แต่ต้อง dim Comments sheet ด้านหลังเล็กน้อยเพื่อสื่อ modal layering
 
 ## Make Offer
 
@@ -452,11 +506,17 @@ Rules:
 ## Comment Rule
 
 - Comment ทำใน Asset Detail เท่านั้น
-- Comment เป็น Single Level เท่านั้น
-- ไม่มี Nested Comment
+- Comment รองรับ IG-style one-level replies ใต้ comment หลัก
+- ไม่รองรับ multi-level nested thread หรือ reply ซ้อนเกิน 1 ชั้น
 - ไม่มี Edit Comment ใน V1
 - รองรับ Delete Comment
 - User ลบได้เฉพาะ Comment ของตัวเองตามสิทธิ์
+- Comment action menu ใช้ปุ่ม `...` แนวนอน
+- Comment ของตัวเองแสดง `Delete comment`
+- Comment ของคนอื่นแสดง `Report comment`
+- ไม่รองรับ `Hide comment` ใน V1
+- Root comment deletion ลบ root comment และ replies ใต้ comment นั้น
+- Reply deletion ลบเฉพาะ reply นั้น
 
 ## Share Rule
 
@@ -505,6 +565,13 @@ Product review สำหรับ V1:
 - Report Asset ทำจาก Asset Detail ได้
 - Report ไม่ทำให้ Asset หายจาก Feed หรือ Search ทันที
 - Asset จะหายเมื่อ Admin ดำเนินการตาม Moderation เท่านั้น
+
+## Report Comment Rule
+
+- Report Comment ทำจาก Comment action ใน Asset Detail ได้
+- Report Comment ต้องเปิด Trust & Safety Report Comment flow
+- Report ไม่ทำให้ Comment หายทันที
+- Comment จะหายเมื่อ Admin ดำเนินการตาม Moderation เท่านั้น
 
 ## Block User Rule
 
@@ -604,7 +671,13 @@ Product review สำหรับ V1:
 
 ปุ่ม:
 
-- กลับ
+- `Go back`
+
+CTA behavior:
+
+- ถ้ามี navigation history ให้กลับไปหน้าก่อนหน้าที่ user เข้ามา เช่น Feed, Public Profile, Chat หรือ Watch Alert Result
+- ถ้าไม่มี navigation history เช่นเปิดจาก external deep link โดยตรง ให้ fallback ไป Feed
+- shared unavailable / permission state ไม่ควรใช้ label `Back to feed` เว้นแต่รู้แน่นอนว่า entry point มาจาก Feed เท่านั้น
 
 ## Permission Denied
 
@@ -612,6 +685,12 @@ Product review สำหรับ V1:
 |---|---|
 | TH | คุณไม่มีสิทธิ์ดำเนินการ |
 | EN | Permission denied |
+
+ปุ่ม:
+
+- `Go back`
+
+CTA behavior ใช้ rule เดียวกับ Asset Deleted / Unavailable state: กลับไปหน้าก่อนหน้าถ้ามี navigation history; ถ้าไม่มี history ให้ fallback ไป Feed
 
 ## Asset Not Found
 
@@ -660,6 +739,7 @@ Product review สำหรับ V1:
 - Unlike Asset
 - Comment Asset
 - Delete Comment
+- Report Comment
 - Open Chat
 - Make Offer
 - Share Asset
@@ -709,8 +789,8 @@ Product review สำหรับ V1:
 | AC-DETAIL-015 | Owner ต้อง Like Asset ตัวเองได้ |
 | AC-DETAIL-016 | Like สำเร็จต้อง Update Like Count และเพิ่ม Asset เข้า Favorites |
 | AC-DETAIL-017 | Unlike สำเร็จต้อง Update Like Count และลบ Asset ออกจาก Favorites |
-| AC-DETAIL-018 | Comment ต้องเป็น Single Level เท่านั้น |
-| AC-DETAIL-019 | Asset Detail ต้องไม่มี Nested Comment |
+| AC-DETAIL-018 | Comment ต้องรองรับ IG-style one-level replies ใต้ comment หลัก |
+| AC-DETAIL-019 | Asset Detail ต้องไม่รองรับ multi-level nested thread หรือ reply ซ้อนเกิน 1 ชั้น |
 | AC-DETAIL-020 | Asset Detail ต้องไม่มี Edit Comment ใน V1 |
 | AC-DETAIL-021 | User ต้องลบ Comment ของตัวเองได้ตามสิทธิ์ |
 
@@ -744,6 +824,8 @@ Product review สำหรับ V1:
 | AC-DETAIL-035 | Report Asset ต้องไม่ทำให้ Asset หายทันทีจนกว่า Admin จะดำเนินการ |
 | AC-DETAIL-036 | User ต้อง Block User จาก Asset Detail ได้ |
 | AC-DETAIL-037 | เมื่อ Block User แล้ว Asset ของผู้ถูก Block ต้องหายจาก Feed, Search และ Watch Alert Result |
+| AC-DETAIL-038 | User ต้อง Report Comment จาก Comment action ใน Asset Detail ได้ |
+| AC-DETAIL-039 | Report Comment ต้องไม่ทำให้ Comment หายทันทีจนกว่า Admin จะดำเนินการ |
 
 ---
 

@@ -79,6 +79,8 @@ Profile Module ใน V1 ครอบคลุม:
 - Public Profile
 - Edit Profile entry point
 - Follow / Unfollow
+- Report User from Public Profile
+- Block User from Public Profile
 - Followers Count
 - Following Count
 - Owner Asset Tabs
@@ -119,6 +121,8 @@ Profile Module ใน V1 ครอบคลุม:
 13. User Not Found State
 14. Blocked / Unavailable Profile State
 15. Global Login Required Dialog
+16. Report User
+17. Block User Confirmation
 
 ---
 
@@ -229,6 +233,38 @@ Public Profile
 → Global Login Required Dialog
 ```
 
+## Report User From Profile
+
+```text
+Public Profile
+→ More Menu
+→ Report User
+→ Select reason
+→ Submit
+→ Report submitted successfully
+```
+
+## Share Profile
+
+```text
+Owner Profile / Public Profile
+→ More Menu
+→ Share Profile
+→ Profile Share Sheet
+→ System Share or Copy Link
+```
+
+## Block User From Profile
+
+```text
+Public Profile
+→ More Menu
+→ Block User
+→ Confirm
+→ Block Applied
+→ Profile becomes unavailable according to Trust & Safety rule
+```
+
 ## Edit Profile
 
 ```text
@@ -283,9 +319,20 @@ Owner Profile ต้องแสดง:
 - Following
 - Total Asset Value
 - Edit Profile
+- Add Asset button
+- More menu
 - Asset Tabs: `All`, `Sale`, `Show`, `Hide`, `Sold`
 
 Total Asset Value เป็น entry point สำหรับกดเข้า Portfolio
+
+Owner Profile more menu:
+
+- ต้องใช้ปุ่ม `...` มุมขวาบน ไม่ใช้ gear หากเมนูมี action มากกว่า Settings
+- รายการในเมนู: `Share profile`, `Settings`
+- `Share profile` เปิด Profile Share Sheet ของตัวเอง
+- `Settings` ไปหน้า Settings
+- ปุ่ม `+` มุมซ้ายบนเป็น Add Asset
+- ปุ่ม `Edit Profile` คงเป็น primary owner action บนหน้า profile
 
 ## Public Profile Display
 
@@ -296,6 +343,7 @@ Public Profile ต้องแสดง:
 - Followers
 - Following
 - Follow / Unfollow
+- More menu
 - Asset Tabs: `All`, `Sale`, `Show`
 
 Public Profile ต้องไม่แสดง:
@@ -335,6 +383,42 @@ Public Profile ไม่มี tab:
 
 - Hide
 - Sold
+
+## Profile More Menu Rules
+
+Public Profile ของ user อื่นต้องใช้ more menu `...` มุมขวาบน และมีรายการ:
+
+- `Share profile`
+- `Report user`
+- `Block user`
+
+Rules:
+
+- `Share profile` เปิด Profile Share Sheet
+- `Report user` เปิด Trust & Safety Report User flow
+- `Block user` ต้องเปิด confirmation ก่อน block
+- ไม่แสดง `Edit profile`, `Settings`, `Delete asset`, `Report asset`, `Hide asset`, `Edit asset` หรือ `Mark as sold` บน Public Profile more menu
+
+Owner Profile ต้องใช้ more menu `...` มุมขวาบน และมีรายการ:
+
+- `Share profile`
+- `Settings`
+
+Rules:
+
+- ไม่แสดง `Report user` หรือ `Block user` ให้ owner report/block ตัวเอง
+- ใช้ label `Settings` ไม่ใช่ `Setting`
+
+## Profile Share Sheet Rule
+
+Profile Share Sheet ใช้ได้ทั้ง Owner Profile และ Public Profile:
+
+- เปิดเป็น bottom sheet
+- แสดง profile preview card พร้อม profile image และ display name
+- รองรับ system share channels ตาม platform เช่น LINE, Instagram, Facebook เมื่อ available
+- ต้องมี `Copy Link` fallback
+- `Copy Link` ต้องแสดง feedback เช่น `Profile link copied`
+- Link ที่แชร์ต้องเป็น public profile deep link และต้อง validate blocked/unavailable profile เมื่อเปิด
 
 ## Asset Visibility Rule
 
@@ -389,10 +473,22 @@ Email ที่ยืนยันแล้วต้องไม่แก้ไ�
 
 ## Block User Rule
 
+Member ต้องสามารถ Block User จาก Public Profile ได้ตาม Trust & Safety rule
+
 เมื่อ User ถูก Block:
 
 - Public Profile ต้องไม่สามารถเข้าถึงได้ตาม rule
 - Asset ของผู้ถูก Block ต้องหายจาก Feed, Search และ Watch Alert Result ทันที
+
+## Report User Rule
+
+- Member ต้องสามารถ Report User จาก Public Profile ได้
+- Report User ต้องเปิด Trust & Safety Report User flow
+- Report submit ต้องไม่ทำให้ profile/content หายทันที
+- ผู้ถูก report ไม่เห็นตัวตนของ reporter
+- Report success ต้องแสดง `Report submitted`
+- Success copy: `Our team will review this user. This profile will remain visible until moderation is complete.`
+- Success action ใช้ปุ่ม `Done` และปิด modal กลับ Public Profile
 
 ---
 
@@ -409,6 +505,8 @@ Email ที่ยืนยันแล้วต้องไม่แก้ไ�
 ไม่สามารถ:
 
 - Follow
+- Report User
+- Block User
 - Chat
 - Make Offer
 - View Portfolio
@@ -420,6 +518,8 @@ Email ที่ยืนยันแล้วต้องไม่แก้ไ�
 
 - View Public Profile
 - Follow / Unfollow
+- Report User
+- Block User
 - Open public Asset Detail
 
 ไม่สามารถ:
@@ -523,6 +623,8 @@ Profile Module ต้องรับผลหลัง Save สำเร็จ�
 - Profile Tab Change
 - Follow User
 - Unfollow User
+- Report User From Profile
+- Block User From Profile
 - Edit Profile Open
 - Portfolio Open
 - Public Profile Asset Click
@@ -568,6 +670,8 @@ Profile Module ต้องรับผลหลัง Save สำเร็จ�
 | AC-PROFILE-018 | เมื่อ Guest กด Follow ต้องแสดง Global Login Required Dialog |
 | AC-PROFILE-019 | Member ต้อง Follow / Unfollow User อื่นได้ |
 | AC-PROFILE-020 | User ต้องไม่สามารถ Follow ตัวเองได้ |
+| AC-PROFILE-020A | Member ต้อง Report User จาก Public Profile ได้ |
+| AC-PROFILE-020B | Member ต้อง Block User จาก Public Profile ได้ |
 
 ## Portfolio / Sold History
 
@@ -587,6 +691,10 @@ Profile Module ต้องรับผลหลัง Save สำเร็จ�
 | AC-PROFILE-027 | เมื่อเปิด Profile ของ User ที่ไม่มีอยู่ ต้องแสดง User Not Found State |
 | AC-PROFILE-028 | เมื่อเปิด Profile ที่ถูก Block / unavailable ต้องแสดง Profile Unavailable State |
 | AC-PROFILE-029 | เมื่อ User ถูก Block Asset ของผู้ถูก Block ต้องไม่ถูกใช้ใน Feed, Search และ Watch Alert Result |
+| AC-PROFILE-030 | Owner Profile more menu ต้องใช้ `...` และมี `Share profile`, `Settings` |
+| AC-PROFILE-031 | Public Profile more menu ของ user อื่นต้องมี `Share profile`, `Report user`, `Block user` |
+| AC-PROFILE-032 | Profile Share Sheet ต้องมี profile preview และ `Copy Link` fallback |
+| AC-PROFILE-033 | Report User success ต้องใช้ `Report submitted` และ profile ต้อง remain visible until moderation is complete |
 
 ---
 

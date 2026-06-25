@@ -191,6 +191,17 @@ Profile / Chat
 -> Report submitted successfully
 ```
 
+Report User form:
+
+- Title: `Report this user`
+- Description: `Select a reason for reporting this user. Our team will review it.`
+- Reasons: `Fraud or scam`, `Impersonation`, `Harassment or hate`, `Inappropriate content`, `Spam`, `Other`
+- Additional details เป็น optional
+- Submit button disabled จนกว่าจะเลือก reason
+- Success title: `Report submitted`
+- Success copy: `Our team will review this user. This profile will remain visible until moderation is complete.`
+- Success action: `Done`
+
 ## Report Comment Flow
 
 ```text
@@ -200,6 +211,17 @@ Comment
 -> Submit
 -> Report submitted successfully
 ```
+
+Report Comment form:
+
+- Title: `Report this comment`
+- Description: `Select a reason for reporting this comment. Our team will review it.`
+- Reasons: `Harassment or hate`, `Spam or scam`, `Inappropriate content`, `False or misleading information`, `Other`
+- Additional details เป็น optional
+- Submit button disabled จนกว่าจะเลือก reason
+- Success title: `Report submitted`
+- Success copy: `Our team will review this comment. It will remain visible until moderation is complete.`
+- Success action: `Done`
 
 ## Report Board Content Flow
 
@@ -247,6 +269,8 @@ Report รองรับ type ต่อไปนี้ตาม master:
 
 - Submit Report แล้วต้องแสดง success state
 - Report ไม่ทำให้ Asset หรือ Content หายทันที
+- Report User ไม่ทำให้ profile/content หายทันที
+- Report Comment ไม่ทำให้ comment หายทันที
 - ผู้ถูก report ไม่เห็นตัวตนของ reporter
 - Asset หรือ Content จะหายเมื่อ Admin ดำเนินการตาม Moderation เท่านั้น
 - Report Submitted ไม่สร้าง Notification Center item ใน Front Office V1

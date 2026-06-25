@@ -32,7 +32,7 @@
 | UX-MF-005 | Feed/Search/Watch Alert status filter | UX Marketplace | Annotate ว่า Feed, Search Result และ Watch Alert Result render เฉพาะ `Sale` | ไม่มี `Show`, `Hide`, `Sold`, `Deleted` ใน public list surfaces | `02_FEED_MODULE.md`, `03_SEARCH_FILTER_MODULE.md`, `10_WATCH_ALERT_MODULE.md` |
 | UX-MF-006 | Asset add/edit status model and required fields | UX Marketplace | ปรับ Add/Edit Asset ให้เลือกได้เฉพาะ `Sale`, `Show`, `Hide`; แยก `Sold` ไป Mark as Sold / Sale Record flow; ทำ required field state ตาม Sale/Show/Hide matrix; แยก `Asking Price` ออกจาก `Owner Estimated Value (Private)` | `Sold` ไม่ปรากฏเป็นตัวเลือก status ปกติใน Edit Asset; Sale require Photo/Brand/Model/Condition/Asking Price/Description; Show require Photo/Brand/Model; Hide require Photo/Brand และไม่ใช้ listing price | `04_ASSET_MANAGEMENT_MODULE.md` |
 | UX-MF-007 | Gallery upload limit | UX Marketplace | ปรับ Add/Edit gallery limit เป็นสูงสุด 10 รูป พร้อม state เมื่อเกิน limit | Upload UI และ validation copy ระบุ 10 รูป | `04_ASSET_MANAGEMENT_MODULE.md` |
-| UX-MF-008 | Comment model | UX Marketplace + UX Transaction | ปรับ comment UI ใน Asset/Social ให้เป็น single level และตัด nested reply/reply chain | ไม่มี `View replies`, nested indentation หรือ reply thread ใน V1 | `05_ASSET_DETAIL_MODULE.md`, `11_SOCIAL_MODULE.md` |
+| UX-MF-008 | Comment model | UX Marketplace + UX Transaction | ปรับ comment UI ใน Asset/Social ให้รองรับ IG-style one-level replies | Reply แสดงได้ 1 ชั้นใต้ comment หลัก แต่ไม่มี reply ซ้อนหลายระดับหรือ thread แบบ forum | `05_ASSET_DETAIL_MODULE.md`, `11_SOCIAL_MODULE.md` |
 | UX-MF-009 | Public Profile tabs | UX Marketplace | เพิ่ม Public Profile tabs `All`, `Sale`, `Show`; `All` แสดง `Sale` + `Show` เท่านั้น | Public Profile ไม่มี `Hide` หรือ `Sold`; Owner profile แยกอีก state | `06_PROFILE_MODULE.md` |
 | UX-MF-010 | Notification Center baseline | UX Transaction | เหลือ notification type เฉพาะ Like, Comment, Follow, Offer, Watch Alert | ไม่มี Chat/New Message, Moderation, Account Action, Market Update, Price/Valuation หรือ Sale Success ใน FO Notification Center | `09_NOTIFICATION_MODULE.md` |
 | UX-MF-011 | Chat unread routing | UX Transaction | ย้าย Chat/New Message ออกจาก Notification Center และแสดงผ่าน Chat menu unread badge/count | New message ไม่สร้าง Notification Center item ใน prototype | `07_CHAT_MODULE.md`, `09_NOTIFICATION_MODULE.md` |
@@ -85,7 +85,7 @@
 - Gallery uploader
 - Required field indicators
 - Inline validation error state
-- Save disabled / save error state
+- Save disabled / uploading / saving / save error state
 - Status switching state: Sale -> Show, Show -> Sale, Sale -> Hide, Hide -> Sale
 - Owner-only/private valuation field
 - Mark as Sold entry point / Sale Record Form entry
@@ -103,6 +103,8 @@
 - `Hide` ต้องไม่ใช้ label `Price` หรือ `Asking Price`
 - Optional private valuation ต้องใช้ label `Owner Estimated Value (Private)`
 - `Owner Estimated Value (Private)` ต้องถูก annotate ว่า Owner-only และไม่แสดงใน Public Profile, Feed, Search, Watch Alert หรือ Viewer Asset Detail
+- หลังกรอกข้อมูลครบและกด Save ต้องมี loading popup/overlay หรือ persistent toast แสดง `กำลังอัปโหลด...` / `Uploading...` เมื่อมีไฟล์ upload
+- ระหว่าง uploading/saving ต้องแสดง Save disabled state เพื่อป้องกันการกดซ้ำ
 - Field `Location` ต้องไม่เป็น V1 required/display field หลักใน Add/Edit
 - Mark as Sold จาก Owner flow ต้องพาไป Sale Record Form โดยตรง ไม่ใช่เลือก `Sold` จาก Edit Asset
 
@@ -120,9 +122,127 @@
 - เปิด Add/Edit Asset แล้วไม่เห็น `Sold` ใน status selector
 - Required indicator เปลี่ยนตาม status ที่เลือก
 - Save validation error ตรงกับ required field matrix
+- Save success path มี uploading/saving state ก่อน Asset Created / Asset Updated
+- ระหว่าง uploading/saving ปุ่ม Save ต้อง disabled และสื่อว่ากำลังทำงาน
 - ไม่มีคำว่า `Price` / `Asking Price` บน `Hide` ในฐานะ listing field
 - มี annotation ชัดว่า `Owner Estimated Value (Private)` เป็น private owner value
 - Prototype หรือ note ระบุ lifecycle impact หลังเปลี่ยน status
+
+## 2.2 Next Figma Work Pack: Asset Detail / Public Profile
+
+**Goal:** ตรวจและปรับ Asset Detail กับ Public Profile ให้ไม่สื่อว่า `Show` เป็น marketplace listing และไม่เปิดเผยข้อมูล private/valuation ให้ Viewer
+
+**Reference:** [05_ASSET_DETAIL_MODULE.md](05_ASSET_DETAIL_MODULE.md), [06_PROFILE_MODULE.md](06_PROFILE_MODULE.md)
+
+### Screens / Components To Review
+
+- [x] Asset Detail - Viewer Mode
+- [x] Asset Detail - Guest Mode
+- [x] Asset Detail - Owner Mode
+- [x] Asset Detail - Show Mode
+- [x] Asset Detail - Hide / Sold owner-only state
+- [x] Public Profile
+- [x] Public Profile tabs: `All`, `Sale`, `Show`
+- [x] Owner Profile tabs: `All`, `Sale`, `Show`, `Hide`, `Sold`
+- [x] Public Profile asset card / detail entry
+- [x] Share sheet / copy link fallback
+- [x] Permission denied / unavailable state
+
+Current review status: Asset Detail / Profile coverage is complete, including Share sheet / copy link fallback and Permission denied / unavailable state.
+
+### Required Figma Changes
+
+- Viewer/Guest Asset Detail ต้องเปิดได้เฉพาะ `Sale` และ `Show`
+- Owner Asset Detail ต้องเปิดได้ทุก status: `Sale`, `Show`, `Hide`, `Sold`
+- Owner Asset Detail more menu ต้องมี Delete asset สำหรับ asset ที่ลบได้ และต้องเปิด confirmation ก่อนลบ
+- Delete asset confirmation ต้องระบุ `This action cannot be undone.` และไม่มี Undo state หลังลบสำเร็จ
+- `Show` ต้องเป็น public collection/detail ไม่ใช่ marketplace listing
+- `Show` ต้องไม่ปรากฏใน Feed, Search หรือ Watch Alert Result
+- `Show` เปิด Make Offer / Contact Seller / Chat ได้จาก Asset Detail หรือ Public Profile detail entry เท่านั้น
+- Public Profile ต้องมี tabs `All`, `Sale`, `Show`
+- Public Profile tab `All` ต้องรวมเฉพาะ `Sale` + `Show`
+- Public Profile ต้องไม่มี `Hide`, `Sold`, Sold History, purchase data, provenance, consignment หรือ Portfolio Value Detail
+- Public Profile more menu ต้องมี `Share profile`, `Report user`, `Block user`
+- Owner Profile more menu ต้องใช้ `...` มุมขวาบน และมี `Share profile`, `Settings`
+- Profile share sheet ต้องมี profile preview card, share channel options และ `Copy Link`
+- Report User flow ต้องใช้ title `Report this user`, reason list ตาม Trust & Safety และ success copy ว่า profile remains visible until moderation is complete
+- Comment action menu ต้องใช้ `...` แนวนอน; own comment = `Delete comment`, other user's comment = `Report comment`
+- Delete comment confirmation ต้องใช้ copy เฉพาะ comment และไม่มี Undo
+- Report Comment flow ต้องใช้ title `Report this comment`; success copy ว่า comment remains visible until moderation is complete
+- Comments sheet สามารถเปิด comment action sheet ซ้อนเป็นชั้นบนสุดได้ โดยปิด action sheet แล้วต้องไม่ปิด Comments sheet
+- `Owner Estimated Value (Private)` ต้องไม่แสดงใน Public Profile, Viewer Asset Detail, Feed, Search หรือ Watch Alert
+- `Owner Estimated Value (Private)` ต้องไม่ถูกใช้เป็น Asking Price หรือ Market Comparison
+- Asset Detail Market Comparison ต้องใช้ `Asking Price` เทียบ Watch Price API Market Price เท่านั้น
+- Expected Profit ต้องเป็น Owner-only เพราะใช้ purchase/private data
+- Shared deep link ของ `Hide`, `Sold`, Deleted หรือ blocked asset ต้องไป unavailable / permission state ไม่ใช่เปิด private detail
+- Permission denied / unavailable state ต้องใช้ CTA `Go back` และไม่ใช้ `Back to feed` บน shared fallback screen
+
+### Status / Entry Point Notes
+
+| Case | Figma Behavior / Annotation |
+| --- | --- |
+| `Sale` from Feed/Search | เปิด Asset Detail ได้และเป็น marketplace listing |
+| `Show` from Public Profile | เปิด Asset Detail ได้ แต่ต้อง annotate ว่าไม่มาจาก Feed/Search/Watch Alert |
+| `Hide` deep link by Viewer | แสดง permission denied / unavailable state |
+| `Sold` deep link by Viewer | แสดง permission denied / unavailable state |
+| Deleted asset deep link | แสดง `รายการนี้ไม่พร้อมใช้งานแล้ว` / `This item is no longer available.` |
+| Permission / unavailable CTA | ใช้ primary CTA `Go back`; ถ้ามี navigation history ให้กลับหน้าก่อนหน้า ถ้าไม่มี history ให้ fallback ไป Feed |
+| Owner opens own `Hide` | แสดง owner-only detail และ private valuation ได้ถ้ามี |
+| Owner opens own `Sold` | แสดง sold owner-only detail, Sold History และ lock main edit action |
+
+### Acceptance Gate
+
+- Public Profile ไม่มี tab `Hide` หรือ `Sold`
+- Public Profile `All` แสดงเฉพาะ `Sale` + `Show`
+- `Show` มี action จาก Detail/Public Profile แต่ไม่ถูกสื่อเป็น Feed/Search listing
+- Viewer/Public ไม่เห็น `Owner Estimated Value (Private)` หรือ private financial fields
+- Market Comparison ไม่ใช้ Owner Estimate หรือ Purchase Price fallback
+- Deep link ของ non-public asset ไม่เปิด private detail
+- Permission denied / unavailable screen ใช้ CTA `Go back` พร้อม fallback ไป Feed เมื่อไม่มี navigation history
+
+### Visual Review Evidence: Owner Asset Detail - Sale
+
+**Input:** `Owner asset detail.png`, `Owner asset detail1.png`, `Owner asset detail 2.png`, `Owner asset detail 3.png`  
+**Review date:** 2026-06-23
+
+Observed alignment:
+
+- Owner Sale detail แสดง status `SALE`
+- มี Owner actions `Edit` และ `Mark as Sold`
+- ไม่มี Follow button ของตัวเอง
+- มี gallery, title, reference, owner info, description, technical fields, comments และ bottom price/action bar
+
+Observed update:
+
+- Product decision ล่าสุดต้องการตอบโต้แบบ IG; comment UI ที่มี reply indent ใต้ comment หลักถือว่าใช้ได้ หากเป็น one-level replies เท่านั้นและไม่มี reply ซ้อนต่อจาก reply
+- ภาพ `Owner asset detail 2.png` แสดง replies ใต้ comment หลักของ Marcus หลายรายการในระดับเดียวกัน และไม่เห็น reply ซ้อนใต้ reply; ถือว่าตรง direction ของ IG-style one-level replies
+- ภาพ `Owner asset detail 3.png` แสดง collapsed replies ด้วย `View 2 more replies`; ถือว่าใช้ได้หากกดแล้วกาง replies ใต้ comment หลักเดิมเท่านั้น และไม่เปิด thread ซ้อนหลายระดับ
+
+Observed gaps / notes:
+
+- Gallery count `1 / 3` บน Detail เป็นจำนวนรูปของ asset นี้ ไม่ใช่ upload limit; ไม่เป็น gap หาก Add/Edit gallery รองรับสูงสุด 10 รูป
+- Owner Sale detail ไม่จำเป็นต้องแสดง private fields บน detail หลัก หาก owner เข้าผ่าน `Edit asset` -> `Provenance`; ต้อง annotate ว่า route นี้เป็น Owner-only และห้าม Viewer/Public เข้าถึง
+- Bottom price ใช้ได้กับ `Sale` แต่ต้องยืนยันว่า state `Hide` ไม่ใช้ price/asking price และใช้ `Owner Estimated Value (Private)` เท่านั้น
+- Prototype / Dev note ยังควรระบุว่าปุ่ม `Reply` บน reply item ต้องไม่สร้าง reply ชั้นที่ 2; หากกดจาก reply ให้ตอบกลับเข้าใต้ comment หลักเดิม หรือ prefill mention เท่านั้น
+- `View more replies` ต้องนับและกางเฉพาะ replies ชั้นเดียวใต้ comment หลัก ไม่ใช่จำนวน comment รวมทั้งหมดหรือ thread ซ้อน
+
+### Visual Review Evidence: Edit Asset / Provenance
+
+**Input:** `edit asset.png`, `provenance.png`  
+**Review date:** 2026-06-23
+
+Observed alignment:
+
+- Edit Asset แสดง gallery เป็น `4 / 10 Photos` ตรงกับ baseline สูงสุด 10 รูป
+- มี entry `Provenance` จากหน้า Edit Asset สำหรับข้อมูล private
+- Provenance แสดง Purchase Price, Purchase Date, Purchase From, Equipment & Accessories, Proof of Payment และ Note ซึ่งเป็น owner/private data ตาม baseline
+- Price field ใน Edit Asset มี note `Only visible when the status is set to "Sale".` ซึ่งช่วยกันไม่ให้ `Show`/`Hide` ถูกตีความเป็น marketplace listing price
+
+Required annotation:
+
+- `Provenance` route ต้องเป็น Owner-only เสมอ
+- Viewer/Public Asset Detail และ Public Profile ต้องไม่มีทางเห็น Purchase Price, Purchase Date, Purchase From, Proof of Payment หรือ Provenance note
+- เมื่อ status เป็น `Hide` ต้องไม่ใช้ Price เป็น listing field; ถ้าต้องเก็บมูลค่าส่วนตัวให้ใช้ `Owner Estimated Value (Private)` แยกจาก Price
 
 ---
 
@@ -177,7 +297,7 @@
 - Add/Edit Asset เลือกได้เฉพาะ `Sale`, `Show`, `Hide`
 - `Sold` ต้องเข้าผ่าน Mark as Sold / Sale Record flow
 - Gallery Add/Edit รองรับสูงสุด 10 รูป
-- Comment UI เป็น single level เท่านั้น ไม่มี nested reply
+- Comment UI รองรับ IG-style one-level replies เท่านั้น ไม่มี multi-level nested thread
 - Public Profile ต้องมี tabs `All`, `Sale`, `Show`
 - Public Profile `All` ต้องแสดง `Sale` + `Show`
 
@@ -218,7 +338,7 @@
 - Chat unread ต้องแสดงผ่าน Chat menu badge/count
 - Notification Center รองรับเฉพาะ Like, Comment, Follow, Offer, Watch Alert
 - Feed Comment / Share ต้องพาไป Asset Detail ไม่ทำ action โดยตรงจาก Feed
-- Social comment UI ต้อง single level และไม่มี nested comment
+- Social comment UI ต้องรองรับ IG-style one-level replies เท่านั้น และไม่มี multi-level nested thread
 
 ### High
 

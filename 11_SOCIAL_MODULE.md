@@ -21,7 +21,7 @@
 
 Social Module ใช้สำหรับ engagement พื้นฐานใน Front Office Mobile App ได้แก่ Like, Comment, Follow และ Share ผ่าน Asset Detail
 
-V1 ไม่ใช่ full social network และไม่รองรับ Repost, Story, Nested Comment หรือ Edit Comment
+V1 ไม่ใช่ full social network และไม่รองรับ Repost, Story, multi-level nested comment หรือ Edit Comment
 
 ---
 
@@ -46,9 +46,10 @@ V1 ไม่ใช่ full social network และไม่รองรับ R
 | Owner Like | Owner สามารถ Like Asset ตัวเองได้ | ห้าม block owner-like เว้นแต่ master เปลี่ยน |
 | Feed Comment / Share | Feed ไม่รองรับ Comment หรือ Share โดยตรง | Feed แสดง Comment Count ได้ แต่ action ต้องเปิด Asset Detail |
 | Comment Entry | Comment ต้องทำใน Asset Detail | ห้าม comment จาก Feed |
-| Comment Structure | Single Level, ไม่มี Nested Comment | Figma ต้องไม่มี reply thread / nested indentation |
+| Comment Structure | IG-style one-level replies | Figma รองรับ reply ได้ 1 ชั้นใต้ comment หลัก แต่ไม่มี reply ซ้อนหลายระดับ |
 | Comment Edit | ไม่มี Edit Comment ใน V1 | ห้ามแสดง edit comment action |
 | Comment Delete | รองรับ Delete Comment | ต้องมี delete + confirmation ตามสิทธิ์ |
+| Comment Report | รองรับ Report Comment | ต้องเปิด Trust & Safety Report Comment flow และไม่ทำให้ comment หายทันที |
 | Follow Entry | Public Profile และ Asset Detail owner info | Owner ไม่เห็นปุ่ม Follow ตัวเอง |
 | Following Feed | แสดง Asset Sale ของ User ที่กำลัง Follow | Following Feed ต้องไม่แสดง Show, Hide, Sold |
 | Guest Restriction | Guest ใช้ Like, Follow, Comment ไม่ได้ | ต้องแสดง Global Login Required Dialog |
@@ -59,7 +60,7 @@ V1 ไม่ใช่ full social network และไม่รองรับ R
 
 | Priority | Figma Gap | Master Baseline | Action |
 | --- | --- | --- | --- |
-| Must Fix | Comment UI ยังเป็น nested thread หรือมี reply chain | Comment เป็น Single Level และไม่มี Nested Comment ใน V1 | ปรับ comment UI เป็น single-level only และตัด `View replies` / nested indentation |
+| Must Fix | Comment UI ต้องรองรับการตอบโต้แบบ IG โดยไม่กลายเป็น forum thread | Comment รองรับ one-level replies ใต้ comment หลักเท่านั้น และไม่รองรับ reply ซ้อนหลายระดับ | ปรับ comment UI ให้แสดง reply ได้ 1 ชั้นใต้ comment หลัก และป้องกัน reply ต่อจาก reply |
 | Must Fix | Feed อาจสื่อว่า Comment / Share ทำจาก Feed ได้ | Comment และ Share ต้องทำผ่าน Asset Detail เท่านั้น | ตัด direct comment/share action จาก Feed หรือให้กดแล้วเปิด Asset Detail |
 | High | Guest state สำหรับ Like / Comment / Follow ยังไม่ครบ | Guest กด action ที่ต้อง Login ต้องเห็น Global Login Required Dialog | เพิ่ม guest dialog/state ทุก action |
 | High | Like / Unlike ต้อง sync Favorites | Like สำเร็จต้องเพิ่ม Favorites, Unlike ต้องลบออก | เพิ่ม state note หรือ interaction mapping กับ Favorites |
@@ -84,6 +85,7 @@ V1 ไม่ใช่ full social network และไม่รองรับ R
 - Comment Asset จาก Asset Detail
 - Comment Count
 - Delete Comment
+- Report Comment
 - Follow User
 - Unfollow User
 - Followers / Following count
@@ -94,8 +96,7 @@ V1 ไม่ใช่ full social network และไม่รองรับ R
 
 ## Out of Scope For V1
 
-- Nested Comment
-- Reply Comment
+- Multi-level Nested Comment เกิน 1 reply level
 - Edit Comment
 - Comment Attachment
 - Comment Reaction
@@ -112,7 +113,7 @@ V1 ไม่ใช่ full social network และไม่รองรับ R
 | Screen / Component | Description |
 | --- | --- |
 | Feed Card | Like/Unlike, Like Count, Comment Count, เปิด Asset Detail |
-| Asset Detail | Like, Comment, Share, Comment Section, Follow owner |
+| Asset Detail | Like, Comment, Share, Comment Section, Report Comment, Follow owner |
 | Public Profile | Follow / Unfollow |
 | Following Feed | Asset Sale ของ user ที่กำลัง Follow |
 | Notification | Like, Comment, Follow destination |
@@ -135,6 +136,7 @@ V1 ไม่ใช่ full social network และไม่รองรับ R
 - Like / Unlike Asset ได้
 - Comment บน Asset Detail ได้
 - Delete comment ของตัวเองได้
+- Report Comment ได้
 - Follow / Unfollow user อื่นได้
 - Share Asset จาก Asset Detail ได้
 
@@ -177,7 +179,7 @@ Feed or Asset Detail
 Asset Detail
 -> Enter Comment
 -> Submit
--> Add single-level comment
+-> Add comment or one-level reply
 -> Update Comment Count
 ```
 
@@ -190,6 +192,36 @@ Comment
 -> Remove comment
 -> Update Comment Count
 ```
+
+Delete Comment behavior:
+
+- Comment action ใช้ปุ่ม `...` แนวนอน
+- User ลบได้เฉพาะ comment หรือ reply ของตัวเอง
+- Confirmation title: `Delete this comment?`
+- Root comment ที่มี replies ใช้ body: `This action cannot be undone. This comment and its replies will be removed.`
+- Reply หรือ root comment ที่ไม่มี replies ใช้ body: `This action cannot be undone. This comment will be removed.`
+- ไม่มี Undo
+- ลบ root comment แล้วลบ replies ใต้ root comment ทั้งที่แสดงและ collapsed
+- ลบ reply แล้วลบเฉพาะ reply นั้น
+- Success feedback: `This comment was removed.`
+
+## Report Comment Flow
+
+```text
+Comment
+-> More menu
+-> Report comment
+-> Select reason
+-> Submit report
+-> Report submitted
+```
+
+Report Comment behavior:
+
+- Comment ของคนอื่นแสดง `Report comment`
+- ไม่ใช้ `Hide comment` ใน V1
+- Report สำเร็จต้องไม่ทำให้ comment หายทันที
+- Success copy: `Our team will review this comment. It will remain visible until moderation is complete.`
 
 ## Follow Flow
 
@@ -242,10 +274,15 @@ Asset Detail
 ## Comment Rules
 
 - Comment ทำได้จาก Asset Detail เท่านั้น
-- Comment เป็น Single Level เท่านั้น
-- ไม่มี Nested Comment ใน V1
+- Comment รองรับ IG-style one-level replies ใต้ comment หลัก
+- ไม่รองรับ multi-level nested thread หรือ reply ซ้อนเกิน 1 ชั้น
 - ไม่มี Edit Comment ใน V1
 - รองรับ Delete Comment
+- รองรับ Report Comment ผ่าน Trust & Safety flow
+- Comment action menu ใช้ปุ่ม `...` แนวนอน
+- Comment ของตัวเองแสดง `Delete comment`
+- Comment ของคนอื่นแสดง `Report comment`
+- ไม่รองรับ `Hide comment` ใน V1
 - Comment content เป็น text ใน V1
 - Comment Count ต้องสะท้อนจำนวน comment ที่ user มีสิทธิ์เห็น
 
@@ -297,7 +334,7 @@ Asset Detail
 | Actor | Permission |
 | --- | --- |
 | Guest | Read-only ตาม visibility, ใช้ social action ไม่ได้ |
-| Member | Like, Unlike, Comment, Delete own comment, Follow, Unfollow, Share |
+| Member | Like, Unlike, Comment, Delete own comment, Report Comment, Follow, Unfollow, Share |
 | Owner | Like asset ตัวเองได้, ไม่ follow ตัวเอง |
 | Other User | ไม่มีสิทธิ์ delete comment ของคนอื่น เว้นแต่ policy กำหนด |
 | Admin | Moderation ผ่าน Back Office ไม่ใช่ Social Module FO |
@@ -377,6 +414,8 @@ Notification ต้องไม่เปิด content ที่ถูกลบ 
 - `asset_comment_started`
 - `asset_comment_submitted`
 - `asset_comment_deleted`
+- `asset_comment_report_started`
+- `asset_comment_report_submitted`
 - `asset_share_started`
 - `asset_shared`
 - `user_followed`
@@ -423,12 +462,12 @@ Then ระบบต้องไม่เปิด comment composer บน Feed
 And เมื่อ Member เปิด Asset Detail  
 Then ระบบต้องอนุญาตให้ Comment ได้
 
-## AC-SOCIAL-006: Comment Is Single Level
+## AC-SOCIAL-006: Comment Supports IG-Style One-Level Replies
 
 Given Asset Detail แสดง Comments Section  
 When มี comment หลายรายการ  
-Then comments ต้องแสดงเป็น single-level list  
-And ต้องไม่มี nested reply หรือ `View replies`
+Then comments ต้องรองรับ reply ใต้ comment หลักได้ 1 ชั้น  
+And ต้องไม่รองรับ reply ซ้อนต่อจาก reply หรือ thread หลายระดับ
 
 ## AC-SOCIAL-007: No Edit Comment In V1
 
@@ -442,6 +481,22 @@ Given Member มีสิทธิ์ delete comment
 When Member กด Delete และ Confirm  
 Then comment ต้องถูกลบ  
 And Comment Count ต้อง update
+And ต้องไม่มี Undo / restore action
+
+## AC-SOCIAL-008B: Delete Root Comment With Replies
+
+Given Member delete root comment ของตัวเองที่มี replies
+When delete สำเร็จ
+Then root comment และ replies ใต้ root comment ต้องถูกลบทั้งหมด
+And ต้องแสดง feedback `This comment was removed.`
+
+## AC-SOCIAL-008A: Report Comment
+
+Given Member เห็น Comment ใน Asset Detail
+When Member เลือก Report Comment และ submit reason
+Then ระบบต้องส่งเข้า Trust & Safety Report Comment flow
+And Comment ต้องไม่หายทันทีจนกว่า Admin moderation จะดำเนินการ
+And success copy ต้องระบุว่า comment remains visible until moderation is complete
 
 ## AC-SOCIAL-009: Follow From Profile Or Detail
 
@@ -501,7 +556,7 @@ Then ระบบสามารถเริ่ม Share flow ได้
 # 19. Future Enhancement
 
 - Edit Comment
-- Nested Comment / Reply
+- Multi-level Nested Comment เกิน 1 reply level
 - Comment Mention
 - Comment Attachment
 - Comment Reaction

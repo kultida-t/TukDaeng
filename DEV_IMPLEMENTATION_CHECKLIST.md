@@ -98,10 +98,14 @@ Purpose:
 - [ ] Status `Show` ต้อง require Photos, Brand, Model / Series และไม่บังคับ Price
 - [ ] Status `Hide` ต้อง require Photos, Brand เท่านั้น โดย Model / Series, Condition, Description เป็น optional และไม่ใช้ listing price
 - [ ] Optional private valuation ต้องใช้ label `Owner Estimated Value (Private)` และห้ามแสดงใน public/viewer surfaces
+- [ ] หลังกรอก Add/Edit Asset ครบและกด Save ต้องแสดง uploading/saving state พร้อมข้อความ `กำลังอัปโหลด...` เมื่อมีไฟล์ upload
+- [ ] ระหว่าง uploading/saving ต้อง disable ปุ่ม Save และป้องกัน duplicate submit
 - [ ] Add/Edit ใช้ status model เดียว: `Sale`, `Show`, `Hide`
 - [ ] `Sold` ต้องเข้าผ่าน Mark as Sold / Sale Record flow เท่านั้น
 - [ ] Sold Asset lock main editable fields
 - [ ] Sale Record เก็บ Sale Date, Buyer, Contact, Sale Price, Payment Method, Attachment
+- [ ] Delete Asset ต้องมี confirmation ที่ระบุ `This action cannot be undone.`
+- [ ] Delete Asset สำเร็จแล้วต้องไม่มี Undo / restore UI ใน V1
 - [ ] Asset Deleted ต้องหายจาก Feed, Search, Watch Alert, Public Profile
 - [ ] Asset Deleted ทำให้ Offer ที่เกี่ยวข้องเป็น `Cancelled`
 - [ ] Chat ที่เกี่ยวข้องกับ Deleted Asset ยังอยู่
@@ -120,9 +124,15 @@ Purpose:
 - [ ] Deleted Asset Detail แสดง `รายการนี้ไม่พร้อมใช้งานแล้ว`
 - [ ] Gallery รองรับ swipe และ full screen viewer
 - [ ] Detail รองรับรูปสูงสุด 10 รูป
-- [ ] Comment เป็น single level เท่านั้น
-- [ ] ไม่มี nested comment
+- [ ] Comment รองรับ IG-style one-level replies ใต้ comment หลักเท่านั้น
+- [ ] Comment ต้องไม่รองรับ multi-level nested thread หรือ reply ซ้อนเกิน 1 ชั้น
 - [ ] ไม่มี Edit Comment ใน V1
+- [ ] Comment action menu ใช้ `...` แนวนอน
+- [ ] Own comment action แสดง `Delete comment` พร้อม confirmation และไม่มี Undo
+- [ ] Delete root comment ต้องลบ replies ใต้ root comment ทั้งที่แสดงและ collapsed
+- [ ] Other user's comment action แสดง `Report comment`
+- [ ] Report Comment success ต้องไม่ซ่อน comment ทันที
+- [ ] Comments sheet เปิด comment action sheet ซ้อนแล้วปิด action sheet ต้องไม่ปิด Comments sheet
 - [ ] Show Asset เปิด Public Detail ได้แต่ไม่ขึ้น Feed/Search/Watch Alert
 - [ ] Show Asset สามารถ Make Offer / Contact Seller / Chat จาก Detail ได้
 - [ ] Market Comparison ใช้ Asking Price เทียบ Watch Price API Market Price เท่านั้น
@@ -138,6 +148,11 @@ Purpose:
 - [ ] Owner Profile แสดง Asset ของตัวเองทุก status: `Sale`, `Show`, `Hide`, `Sold`
 - [ ] Public Profile แสดงเฉพาะ `Sale` และ `Show`
 - [ ] Public Profile ห้ามแสดง `Hide`, `Sold`, purchase data, provenance, consignment, sold history, portfolio value detail
+- [ ] Public Profile ต้องมี Report User และ Block User entry สำหรับ profile ของ user อื่น
+- [ ] Public Profile more menu ต้องมี `Share profile`, `Report user`, `Block user`
+- [ ] Owner Profile more menu ต้องมี `Share profile`, `Settings` และใช้ label `Settings`
+- [ ] Profile Share Sheet ต้องมี preview และ `Copy Link` fallback
+- [ ] Report User success ต้องไม่ซ่อน profile ทันที
 - [ ] Owner Profile tabs รองรับ `All`, `Sale`, `Show`, `Hide`, `Sold`
 - [ ] Public Profile tabs รองรับเฉพาะ public status
 - [ ] Total Asset Value เป็น entry point เข้า Portfolio เฉพาะ Owner
@@ -240,8 +255,10 @@ Purpose:
 - [ ] Unlike ต้องลบ Favorites
 - [ ] Like Count update ทันที
 - [ ] Comment ทำใน Asset Detail เท่านั้น
-- [ ] Comment เป็น single level
+- [ ] Comment รองรับ IG-style one-level replies ใต้ comment หลักเท่านั้น
+- [ ] Comment ต้องไม่รองรับ multi-level nested thread หรือ reply ซ้อนเกิน 1 ชั้น
 - [ ] Delete Comment รองรับเฉพาะเจ้าของ comment ตาม permission
+- [ ] Report Comment ได้จาก Comment action ใน Asset Detail และต้องไม่ทำให้ comment หายทันที
 - [ ] ไม่มี Edit Comment ใน V1
 - [ ] Follow/Unfollow user ได้
 - [ ] Following Feed ใช้ follow relation ที่ไม่ถูก block

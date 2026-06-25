@@ -136,7 +136,7 @@ Menu items outside this scope must be marked as future, placeholder, or needs ma
 | Notification Type | Destination | Notes |
 | --- | --- | --- |
 | Like | Asset Detail | Like notification opens Asset context |
-| Comment | Asset Detail | Comment is single-level and handled in Asset Detail |
+| Comment | Asset Detail | Comment supports IG-style one-level replies and is handled in Asset Detail |
 | Follow | Public Profile | Opens follower profile if accessible |
 | Offer | Offer Detail or Chat context | Must preserve related Asset / Offer context |
 | Watch Alert | Watch Alert Result List | Does not open Asset Detail directly |
@@ -178,6 +178,13 @@ Dialog actions:
 | Blocked Asset owner | Asset hidden from Feed, Search, Watch Alert Result |
 | Cancelled Offer | Offer Detail shows Cancelled state |
 | Deleted Asset from Chat | Chat remains, Asset preview opens unavailable state |
+
+Unavailable / permission fallback screen CTA:
+
+- Primary CTA label ต้องใช้ `Go back`
+- Behavior: ถ้ามี navigation history ให้กลับไปหน้าก่อนหน้าที่ user เข้ามา เช่น Feed, Public Profile, Chat หรือ Watch Alert Result
+- ถ้าไม่มี navigation history เช่น เปิดจาก external deep link โดยตรง ให้ fallback ไป Feed
+- ห้ามใช้ label เฉพาะทาง เช่น `Back to feed` บน shared fallback screen เว้นแต่ entry point นั้นรู้แน่นอนว่ามาจาก Feed เท่านั้น
 
 # 12. Menu Scope Rules
 
