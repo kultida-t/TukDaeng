@@ -152,6 +152,7 @@ Purpose:
 - [ ] Public Profile more menu ต้องมี `Share profile`, `Report user`, `Block user`
 - [ ] Owner Profile more menu ต้องมี `Share profile`, `Settings` และใช้ label `Settings`
 - [ ] Profile Share Sheet ต้องมี preview และ `Copy Link` fallback
+- [ ] Guest ต้อง Share Public Profile ได้โดยไม่ต้อง Login และ share link ต้อง validate blocked/unavailable profile เมื่อเปิด
 - [ ] Report User success ต้องไม่ซ่อน profile ทันที
 - [ ] Block User จาก Public Profile ต้องเปิด confirmation `Block this user?` และ cancel/dismiss ต้องไม่ apply block
 - [ ] Owner Profile tabs รองรับ `All`, `Sale`, `Show`, `Hide`, `Sold`

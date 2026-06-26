@@ -48,17 +48,17 @@ Then user ต้องดู public content ได้โดยไม่ต้อ
 ## QA-GLOBAL-003: Guest Public Share
 
 Given user เป็น Guest  
-When user Share public Asset deep link หรือ Article deep link  
+When user Share public Asset deep link, Public Profile deep link หรือ Article deep link  
 Then ระบบต้องเริ่ม share behavior ได้โดยไม่บังคับ Login
 
 ## QA-GLOBAL-003A: Share Channel Fallback
 
 Given platform รองรับ system share sheet  
-When user กด Share public Asset หรือ Article  
+When user กด Share public Asset, Public Profile หรือ Article  
 Then ระบบต้องเปิด system share sheet
 
 Given platform ไม่รองรับ system share sheet  
-When user กด Share public Asset หรือ Article  
+When user กด Share public Asset, Public Profile หรือ Article  
 Then ระบบต้อง fallback เป็น copy public deep link และแสดง copy success state
 
 ## QA-GLOBAL-003B: Shared Deep Link Validation
@@ -514,6 +514,14 @@ When share sheet เปิด
 Then ต้องแสดง profile preview card
 And ต้องมี `Copy Link` fallback
 And เมื่อกด `Copy Link` ต้องแสดง feedback ว่า link ถูก copy แล้ว
+
+## QA-PROFILE-003A: Guest Share Public Profile
+
+Given user เป็น Guest และเปิด Public Profile
+When user กด `Share profile`
+Then ระบบต้องเปิด Profile Share Sheet โดยไม่บังคับ Login
+And ต้องรองรับ system share หรือ `Copy Link` fallback
+And shared profile link ต้องไม่เปิด private profile data, Portfolio, Hide asset หรือ Sold asset
 
 ## QA-PROFILE-004: Report User Success
 

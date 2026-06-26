@@ -139,6 +139,7 @@ Figma มี coverage ของ flow หลักค่อนข้างมา�
 | High | Public Profile อาจแสดงข้อมูล private | Public Profile ต้องไม่แสดง Provenance, Consignment, Hide, Sold | ตรวจ Public Profile และ asset card/detail entry ไม่ให้มี private data |
 | Medium | ยังใช้ label legacy `Collection Show` ในหลายจุด | Canonical term คือ `Show` | ตัดสินใจว่าจะ normalize เป็น `Show` หรือเก็บ legacy label พร้อม mapping |
 | Medium | Guest Follow restriction ยังไม่ชัด | Guest กด Follow ต้องเห็น Global Login Required Dialog | เพิ่ม guest dialog/state เมื่อกด Follow |
+| Medium | Guest Share Public Profile ยังต้องตรวจ | Share Public Profile เป็น public share action และ Guest ใช้ได้โดยไม่ต้อง Login | เพิ่ม Profile Share Sheet / Copy Link fallback สำหรับ Guest และห้ามเปิด private/profile action อื่น |
 | Medium | Blocked / unavailable profile state ยังไม่ชัด | Blocked profile ต้องไม่สามารถเข้าถึงได้ตาม Trust & Safety rule | เพิ่ม blocked/unavailable profile state |
 | Medium | Report / Block entry ใน Public Profile ยังต้องตรวจ | Public Profile ของ user อื่นต้องมี Report User และ Block User entry ตาม Trust & Safety | เพิ่ม more menu / action state สำหรับ Report User และ Block User |
 

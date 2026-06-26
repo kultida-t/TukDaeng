@@ -137,10 +137,13 @@ Profile Module ใน V1 ครอบคลุม:
 - View Public Profile Asset Tab `Sale`
 - View Public Profile Asset Tab `Show`
 - Open public Asset Detail
+- Share Public Profile public deep link
 
 ไม่สามารถ:
 
 - Follow
+- Report User
+- Block User
 - Chat
 - Make Offer
 - View Owner-only Asset
@@ -249,6 +252,16 @@ Public Profile
 ```text
 Owner Profile / Public Profile
 → More Menu
+→ Share Profile
+→ Profile Share Sheet
+→ System Share or Copy Link
+```
+
+## Guest Share Public Profile
+
+```text
+Guest
+→ Public Profile
 → Share Profile
 → Profile Share Sheet
 → System Share or Copy Link
@@ -419,6 +432,8 @@ Profile Share Sheet ใช้ได้ทั้ง Owner Profile และ Publi
 - ต้องมี `Copy Link` fallback
 - `Copy Link` ต้องแสดง feedback เช่น `Profile link copied`
 - Link ที่แชร์ต้องเป็น public profile deep link และต้อง validate blocked/unavailable profile เมื่อเปิด
+- Guest สามารถ Share Public Profile ได้โดยไม่ต้อง Login เพราะเป็น public share action
+- Guest share ต้องไม่เปิดสิทธิ์ Follow, Report User, Block User, Chat, Make Offer หรือ private profile/portfolio data
 
 ## Asset Visibility Rule
 
@@ -509,6 +524,7 @@ Block User จาก Public Profile:
 - View Public Profile
 - View Sale / Show Asset
 - Open public Asset Detail
+- Share Public Profile
 
 ไม่สามารถ:
 
@@ -676,6 +692,7 @@ Profile Module ต้องรับผลหลัง Save สำเร็จ�
 | AC-PROFILE-016 | Guest ต้องดู Sale และ Show Asset ใน Public Profile ได้ |
 | AC-PROFILE-017 | Guest ต้องไม่สามารถ Follow ได้ |
 | AC-PROFILE-018 | เมื่อ Guest กด Follow ต้องแสดง Global Login Required Dialog |
+| AC-PROFILE-018A | Guest ต้อง Share Public Profile ได้โดยไม่ต้อง Login ผ่าน system share หรือ `Copy Link` fallback |
 | AC-PROFILE-019 | Member ต้อง Follow / Unfollow User อื่นได้ |
 | AC-PROFILE-020 | User ต้องไม่สามารถ Follow ตัวเองได้ |
 | AC-PROFILE-020A | Member ต้อง Report User จาก Public Profile ได้ |

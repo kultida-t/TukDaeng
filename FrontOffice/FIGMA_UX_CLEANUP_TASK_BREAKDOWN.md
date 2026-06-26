@@ -21,9 +21,10 @@
 | 1 | Add / Edit Asset required fields | In progress | ตรวจ status selector, required fields, save/uploading state และ `Owner Estimated Value (Private)` ตาม work pack 2.1 | `04_ASSET_MANAGEMENT_MODULE.md` |
 | 2 | Feed / Search / Watch Alert visibility | Pending review | ยืนยันว่า list surfaces แสดงเฉพาะ `Sale`, ไม่มี Location บน cards และ Watch Alert notification ไป Result List | `02_FEED_MODULE.md`, `03_SEARCH_FILTER_MODULE.md`, `10_WATCH_ALERT_MODULE.md` |
 | 3 | Notification / Chat unread | Pending review | ยืนยันว่า Chat/New Message ไม่อยู่ Notification Center และ unread แสดงเฉพาะ Chat menu/list | `07_CHAT_MODULE.md`, `09_NOTIFICATION_MODULE.md` |
-| 4 | Board / Settings / Auth compliance | Pending review | ตรวจ Board เป็น Article Area, Settings มี Theme/Delete Account, Sign Up มี Terms/Privacy และ Suspended state | `01_AUTHENTICATION_MODULE.md`, `12_BOARD_MODULE.md`, `13_SETTINGS_MODULE.md` |
-| 5 | Portfolio / valuation private states | Pending review | ตรวจ Owner-only Portfolio, Sold excluded, valuation fallback, Market Comparison และ Expected Profit owner-only | `14_PORTFOLIO_MODULE.md` |
-| 6 | Final Figma sign-off | Not ready | หลังทุก `Must Fix` และ `High` เป็น Done / Not Applicable / Needs Product Decision ค่อยทำ handoff package | `README_MODULE_INDEX.md` |
+| 4 | Public Profile guest share | Pending review | ยืนยันว่า Guest กด `Share profile` ได้โดยไม่ต้อง Login และมี system share / `Copy Link` fallback แต่ยังทำ Follow / Report / Block / Chat / Offer ไม่ได้ | `06_PROFILE_MODULE.md` |
+| 5 | Board / Settings / Auth compliance | Pending review | ตรวจ Board เป็น Article Area, Settings มี Theme/Delete Account, Sign Up มี Terms/Privacy และ Suspended state | `01_AUTHENTICATION_MODULE.md`, `12_BOARD_MODULE.md`, `13_SETTINGS_MODULE.md` |
+| 6 | Portfolio / valuation private states | Pending review | ตรวจ Owner-only Portfolio, Sold excluded, valuation fallback, Market Comparison และ Expected Profit owner-only | `14_PORTFOLIO_MODULE.md` |
+| 7 | Final Figma sign-off | Not ready | หลังทุก `Must Fix` และ `High` เป็น Done / Not Applicable / Needs Product Decision ค่อยทำ handoff package | `README_MODULE_INDEX.md` |
 
 ### Already Reviewed In Current Round
 
@@ -195,6 +196,7 @@ Current review status: Asset Detail / Profile coverage is complete, including Sh
 - Public Profile more menu ต้องมี `Share profile`, `Report user`, `Block user`
 - Owner Profile more menu ต้องใช้ `...` มุมขวาบน และมี `Share profile`, `Settings`
 - Profile share sheet ต้องมี profile preview card, share channel options และ `Copy Link`
+- Guest ต้อง Share Public Profile ได้โดยไม่ต้อง Login ผ่าน Profile Share Sheet แต่ Guest ยังต้องถูก block จาก Follow, Report User, Block User, Chat และ Make Offer
 - Report User flow ต้องใช้ title `Report this user`, reason list ตาม Trust & Safety และ success copy ว่า profile remains visible until moderation is complete
 - Block User confirmation ต้องใช้ title `Block this user?`, actions `Cancel` / `Block`, และ body ต้องบอกว่า assets/content ของ user นั้นจะถูก filter จาก Feed/Search/Watch Alert/profile surfaces, existing chat history ยังอ่านได้แบบ read-only, และไม่สามารถส่งข้อความหรือสร้าง offer ใหม่กับ user นั้นได้
 - Cancel/dismiss บน Block User confirmation ต้องไม่ apply block state
