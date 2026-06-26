@@ -21,7 +21,7 @@
 
 Settings Module ใช้สำหรับให้ Member จัดการข้อมูลโปรไฟล์ การแสดงผล ภาษา เอกสารช่วยเหลือ/กฎหมาย การออกจากระบบ และการลบบัญชี ตาม baseline ของ master
 
-Settings V1 ต้องรองรับรายการที่ master ระบุครบ ได้แก่ Edit Profile, Username, Phone, Line, Email Display, Language, Theme Mode, Notification Settings, Change Password แบบ Auth-linked entry, Help, About, Privacy Policy, Terms of Use, Sign Out และ Delete Account
+Settings V1 ต้องรองรับรายการที่ master ระบุครบ ได้แก่ Edit Profile, Username, Phone, Line, Email Display, Language, Theme Mode, Notification Settings, Change Password แบบ Auth-linked entry, Help, About app, Privacy Policy, Terms of Use, Sign Out และ Delete Account โดย Delete Account ต้องอยู่ใน `About your account` ไม่ใช่เป็น action บน Settings Home โดยตรง
 
 ---
 
@@ -43,10 +43,10 @@ Settings V1 ต้องรองรับรายการที่ master ร
 | Theme | Dark Mode / Light Mode | ต้องมี Theme Mode setting |
 | Notification Settings | Baseline notification type preferences | ตั้งค่าเปิด/ปิดเฉพาะ Like, Comment, Follow, Offer, Watch Alert; ไม่รวม Chat/New Message |
 | Change Password | Auth-linked entry | แสดงเฉพาะบัญชี Email / Password และส่งไป Auth flow |
-| Help / About | Help, About | ต้องมีเมนูทั้งสองรายการ |
+| Help / About | Help, About app | ต้องมีเมนูทั้งสองรายการ และ About ต้องเป็นข้อมูลแอป ไม่ใช่ข้อมูลบัญชี |
 | Legal | Privacy Policy, Terms of Use | ต้องเข้าถึง legal docs ได้ |
 | Session | Sign Out | ต้อง Sign Out พร้อม confirmation |
-| Account | Delete Account | ต้องมี Delete Account flow/state ใน V1 baseline |
+| Account | About your account, Delete Account | ต้องมี Delete Account flow/state ใน V1 baseline โดยวางใน About your account |
 | Source of Truth Conflict | เอกสารเดิมบอก Language/Dark Mode/Delete Account ยังไม่มี | ให้ยึด master ล่าสุดเป็นหลัก |
 
 ---
@@ -56,11 +56,11 @@ Settings V1 ต้องรองรับรายการที่ master ร
 | Priority | Figma Gap | Master Baseline | Action |
 | --- | --- | --- | --- |
 | Must Fix | Settings ยังไม่มี Theme Mode | Settings ต้องมี Theme Mode: Dark Mode / Light Mode | เพิ่ม setting สำหรับ Theme Mode |
-| Must Fix | Settings เดิมอาจระบุ Delete Account เป็น future หรือยังไม่มี state หลังลบสำเร็จ | Master ระบุ Delete Account อยู่ใน Settings baseline | เพิ่ม Delete Account entry, confirmation/risk state, `Account deletion started` success modal, Sign In destination และ API failure/retry state |
+| Must Fix | Settings เดิมอาจระบุ Delete Account เป็น future หรือยังไม่มี state หลังลบสำเร็จ | Master ระบุ Delete Account อยู่ใน Settings baseline | เพิ่ม Delete Account ใน `About your account`, confirmation/risk state, `Account deletion started` success modal, Sign In destination และ API failure/retry state |
 | High | Language setting ยังไม่ชัด | Settings ต้องมี Language: English / Thai | เพิ่ม language selector และ selected state |
 | High | Email field ต้อง lock หลัง verification | Auth rule ระบุ Email ไม่สามารถเปลี่ยนได้หลังยืนยันแล้ว | แสดง Email Display เป็น read-only หรือ disabled edit |
-| High | Settings menu ต้องครบ master list | Master รองรับ Edit Profile, Username, Phone, Line, Email Display, Language, Theme Mode, Help, About, Privacy Policy, Terms of Use, Sign Out, Delete Account | ตรวจ Figma menu ให้ครบและตัดเมนูนอก baseline |
-| Medium | Help / About entry ยังต้องตรวจ | Master ระบุ Help และ About | เพิ่มหรือยืนยัน screen/link |
+| High | Settings menu ต้องครบ master list | Master รองรับ Account section, Language, Theme Mode, Notification Settings, Help, Privacy Policy, Terms of Use, About app และ Sign Out | ใช้ locked section order และตัดเมนูนอก baseline; Delete Account อยู่ใน `About your account` |
+| Medium | Help / About content ต้องล็อกตาม Figma ล่าสุด | Master ระบุ Help และ About app | ใช้ Help contact copy และ About app copy ตาม Business Rules |
 | Medium | Legal labels ต้องตรง master | Master ใช้ Privacy Policy และ Terms of Use | ใช้ label `Terms of Use` เป็น source of truth |
 | Medium | Sign Out confirmation ต้องชัด | Sign Out ต้อง clear session และกลับ Sign In | เพิ่ม confirmation และ signed-out destination |
 | Medium | Change Password ต้องไม่กลายเป็น Settings-owned flow | Master อนุญาตเป็น Auth-linked entry สำหรับบัญชี Email / Password | แสดง entry เฉพาะ account type ที่รองรับและ route ไป Auth flow |
@@ -78,12 +78,13 @@ Settings V1 ต้องรองรับรายการที่ master ร
 - Phone
 - Line
 - Email Display
+- About your account
 - Language: English / Thai
 - Theme Mode: Dark Mode / Light Mode
 - Notification Settings สำหรับ Like, Comment, Follow, Offer, Watch Alert
 - Change Password Auth-linked entry สำหรับ Email / Password account
 - Help
-- About
+- About app
 - Privacy Policy
 - Terms of Use
 - Sign Out
@@ -108,10 +109,11 @@ Settings V1 ต้องรองรับรายการที่ master ร
 | Settings Home | รวมเมนู Settings ทั้งหมด |
 | Edit Profile | แก้ profile fields ที่ master รองรับ |
 | Account Information | แสดง Username, Phone, Line, Email Display |
+| About your account | แสดงข้อมูลบัญชี เช่น Date joined และเป็นตำแหน่งของ Delete Account |
 | Language Setting | เลือก English / Thai |
 | Theme Mode Setting | เลือก Dark Mode / Light Mode |
-| Help | หน้าช่วยเหลือ |
-| About | ข้อมูลแอป |
+| Help | หน้าช่วยเหลือและช่องทางติดต่อ support |
+| About | ข้อมูลแอปและบริษัท |
 | Privacy Policy | เอกสาร Privacy Policy |
 | Terms of Use | เอกสาร Terms of Use |
 | Sign Out Confirmation | ยืนยันก่อนออกจากระบบ |
@@ -234,21 +236,34 @@ Delete Account Confirmation
 
 ## Settings Menu Rule
 
-Settings must include:
+Settings Home must use this section order:
 
-- Edit Profile
-- Username
-- Phone
-- Line
-- Email Display
-- Language: English / Thai
-- Theme Mode: Dark Mode / Light Mode
-- Help
-- About
-- Privacy Policy
-- Terms of Use
-- Sign Out
-- Delete Account
+1. Account
+2. Your app and media
+3. Notifications
+4. More info and support
+5. Sign Out button
+
+Settings Home must include:
+
+- Account
+  - Edit profile
+  - Change password
+  - About your account
+- Your app and media
+  - Language
+  - Theme mode
+- Notifications
+  - Notification settings
+- More info and support
+  - Help
+  - Privacy Policy
+  - Terms of Use
+  - About
+- Bottom action
+  - Sign out
+
+Delete Account must not appear as a direct Settings Home action. It must be inside `About your account`.
 
 ## Profile / Contact Rule
 
@@ -268,8 +283,49 @@ Settings must include:
 
 ## Help / About Rule
 
-- Help ต้องเปิดข้อมูลช่วยเหลือหรือช่องทาง support ตาม implementation
-- About ต้องแสดงข้อมูลเกี่ยวกับแอป เช่น version/app info ตาม implementation
+- Help ต้องแสดงช่องทางติดต่อ support ตาม locked copy ด้านล่าง
+- About ต้องเป็นข้อมูลแอปและบริษัท ไม่ใช่ข้อมูลบัญชี
+- `Contact support` จาก About ต้อง route ไป Help screen เดิม ไม่ต้องสร้างหน้าใหม่
+
+Help screen copy:
+
+- Title: `Help`
+- Heading: `Contact support`
+- Availability:
+  - `Available daily`
+  - `09:00 - 22:00 (GMT+7)`
+- Contact rows:
+  - LINE: `@mrfoxthailand`
+  - Phone: `(+66) 80-008-8088`
+  - Email: `service@mrfox.com`
+
+Help screen interaction:
+
+- LINE row เปิด LINE หรือ external link ตาม implementation
+- Phone row เปิด dialer
+- Email row เปิด mail composer
+
+About app screen copy:
+
+- Title: `About`
+- Brand: `TUK DAENG`
+- Tagline: `The digital curator for watch collectors`
+- Version: `Version 0.0.1`
+- Company:
+  - `Mister Fox Co., Ltd.`
+  - `Est. 2026`
+- Links:
+  - `Privacy Policy`
+  - `Terms of Use`
+  - `Contact support`
+
+About app must not include:
+
+- Delete Account
+- Change Password
+- Edit Profile
+- Date joined
+- User profile/contact fields
 
 ## Legal Rule
 
@@ -280,12 +336,17 @@ Settings must include:
 ## Sign Out Rule
 
 - Sign Out ต้องมี confirmation
+- Confirmation title ใช้ `Sign out?`
+- Confirmation body ใช้ `You will need to sign in again to access your account.`
+- Confirmation actions ใช้ `Cancel` และ `Sign out`
 - เมื่อ Sign Out สำเร็จต้อง clear session
-- หลัง Sign Out ต้องกลับไป Sign In หรือ logged-out state
+- หลัง Sign Out ต้องกลับไป Sign In / pre-auth ที่มีอยู่แล้ว และ user ต้องกด back กลับเข้า Settings ไม่ได้
 
 ## Delete Account Rule
 
 - Delete Account อยู่ใน V1 master baseline
+- Delete Account ต้องอยู่ใน `About your account`
+- `About your account` ต้องแสดง profile image, display name, `Date joined` และปุ่ม `Delete account`
 - ต้องมี warning/confirmation ก่อนดำเนินการ
 - ต้องป้องกัน accidental deletion
 - Delete Account V1 เป็น soft delete หลัง user confirm
@@ -337,6 +398,8 @@ Deleted account login copy:
 
 - Notification Settings อยู่ใน V1 เฉพาะระดับ baseline notification type
 - รองรับ toggle สำหรับ Like, Comment, Follow, Offer, Watch Alert
+- Toggle default state สำหรับ Member ใหม่เป็น ON ทุกประเภท
+- Toggle ต้อง auto-save เมื่อเปิด/ปิด โดยไม่ต้องมี Save button
 - ไม่รวม Chat / New Message เพราะ Chat ใช้ unread badge/count ในเมนู Chat
 - ไม่รวม Moderation, Account Action, Market Update, Price / Valuation หรือ Sale Success ใน Front Office V1
 - ถ้าปิด type ใด ต้องไม่สร้าง Front Office Notification Center item สำหรับ type นั้น แต่ backend/admin audit ยังทำงานตามระบบที่เกี่ยวข้องได้
@@ -447,7 +510,12 @@ Then ระบบต้องแสดง Settings Home
 
 Given Member เปิด Settings Home  
 When รายการเมนูแสดง  
-Then ต้องมี Edit Profile, Username, Phone, Line, Email Display, Language, Theme Mode, Help, About, Privacy Policy, Terms of Use, Sign Out และ Delete Account
+Then ต้องมี Account section พร้อม Edit profile, Change password และ About your account  
+And ต้องมี Your app and media section พร้อม Language และ Theme mode  
+And ต้องมี Notifications section พร้อม Notification settings  
+And ต้องมี More info and support section พร้อม Help, Privacy Policy, Terms of Use และ About  
+And ต้องมี Sign out เป็น bottom action  
+And ต้องไม่แสดง Delete Account เป็น direct action บน Settings Home
 
 ## AC-SETTING-003: Email Display Is Read-Only
 
@@ -481,19 +549,28 @@ Then ระบบต้องเปิดเอกสารที่เกี่
 Given Member เปิด Settings  
 When Member กด Help หรือ About  
 Then ระบบต้องเปิดหน้าที่เกี่ยวข้อง
+And Help ต้องแสดง `Contact support`, เวลาทำการ `09:00 - 22:00 (GMT+7)` และช่องทาง LINE, Phone, Email ตาม locked copy
+And About ต้องแสดง `TUK DAENG`, tagline, `Version 0.0.1`, company, Privacy Policy, Terms of Use และ Contact support
+And About ต้องไม่แสดงข้อมูลบัญชีหรือ Delete Account
 
 ## AC-SETTING-008: Sign Out
 
-Given Member อยู่ใน Settings  
-When Member กด Sign Out และ Confirm  
+Given Member อยู่ใน Settings
+When Member กด Sign out
+Then ต้องแสดง confirmation title `Sign out?`
+And body ต้องเป็น `You will need to sign in again to access your account.`
+And actions ต้องเป็น `Cancel` และ `Sign out`
+When Member confirm Sign out
 Then ระบบต้อง clear session  
-And กลับไป Sign In หรือ logged-out state
+And กลับไป Sign In / pre-auth  
+And user ต้องกด back กลับเข้า Settings ไม่ได้
 
 ## AC-SETTING-009: Delete Account Entry
 
-Given Member เปิด Settings  
-When รายการเมนูแสดง  
-Then ต้องมี Delete Account entry
+Given Member เปิด Settings
+When Member เปิด About your account
+Then ต้องแสดง Date joined และปุ่ม Delete account
+And Delete Account ต้องไม่อยู่บน Settings Home โดยตรง
 
 ## AC-SETTING-010: Delete Account Confirmation
 
@@ -544,6 +621,8 @@ Given Member เปิด Settings
 When Member เปิด Notification Settings  
 Then ต้องเห็น toggle เฉพาะ Like, Comment, Follow, Offer และ Watch Alert  
 And ต้องไม่เห็น Chat/New Message, Market Update, Price / Valuation, Sale Success, Moderation หรือ Account Action เป็น Front Office V1 notification setting
+And default state ของ Member ใหม่ต้องเป็น ON ทุก type
+And การเปิด/ปิด toggle ต้อง auto-save โดยไม่มี Save button
 
 ## AC-SETTING-013: Change Password Auth Linked Entry
 

@@ -241,11 +241,11 @@ Figma มี coverage ของ flow หลักค่อนข้างมา�
 | Priority | Figma Gap | Master Baseline | Action |
 | --- | --- | --- | --- |
 | Must Fix | Settings ยังไม่มี Theme Mode | Settings ต้องมี Theme Mode: Dark Mode / Light Mode | เพิ่ม setting สำหรับ Theme Mode |
-| Must Fix | Settings เดิมอาจระบุ Delete Account เป็น future หรือยังไม่มี state หลังลบสำเร็จ | Master ระบุ Delete Account อยู่ใน Settings baseline | เพิ่ม Delete Account entry, confirmation/risk state, `Account deletion started` success modal, Sign In destination และ API failure/retry state |
+| Must Fix | Settings เดิมอาจระบุ Delete Account เป็น future หรือยังไม่มี state หลังลบสำเร็จ | Master ระบุ Delete Account อยู่ใน Settings baseline | เพิ่ม Delete Account ภายใน `About your account`, confirmation/risk state, `Account deletion started` success modal, Sign In destination และ API failure/retry state |
 | High | Language setting ยังไม่ชัด | Settings ต้องมี Language: English / Thai | เพิ่ม language selector และ selected state |
 | High | Email field ต้อง lock หลัง verification | Auth rule ระบุ Email ไม่สามารถเปลี่ยนได้หลังยืนยันแล้ว | แสดง Email Display เป็น read-only หรือ disabled edit |
-| High | Settings menu ต้องครบ master list | Master รองรับ Edit Profile, Username, Phone, Line, Email Display, Language, Theme Mode, Help, About, Privacy Policy, Terms of Use, Sign Out, Delete Account | ตรวจ Figma menu ให้ครบและตัดเมนูนอก baseline |
-| Medium | Help / About entry ยังต้องตรวจ | Master ระบุ Help และ About | เพิ่มหรือยืนยัน screen/link |
+| High | Settings menu ต้องครบ master list | Master รองรับ Account, Your app and media, Notifications, More info and support และ Sign Out | ใช้ locked order และตัดเมนูนอก baseline |
+| Medium | Help / About content ต้องล็อกตาม Figma ล่าสุด | Master ระบุ Help และ About app | ใช้ Help contact content และ About app content ตาม Settings Module |
 | Medium | Legal labels ต้องตรง master | Master ใช้ Privacy Policy และ Terms of Use | ใช้ label `Terms of Use` เป็น source of truth |
 | Medium | Sign Out confirmation ต้องชัด | Sign Out ต้อง clear session และกลับ Sign In | เพิ่ม confirmation และ signed-out destination |
 | Medium | Change Password ต้องไม่กลายเป็น Settings-owned flow และยังต้องมี validation states ครบ | Master อนุญาตเป็น Auth-linked entry สำหรับบัญชี Email / Password | แสดง entry เฉพาะ account type ที่รองรับและ route ไป Auth flow; เพิ่ม Current/New/Confirm fields, field-level errors, success และ API error state |

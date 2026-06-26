@@ -303,20 +303,27 @@ Purpose:
 # 13. Settings
 
 - [ ] Settings เข้าได้เฉพาะ Member
-- [ ] Settings ต้องมี Edit Profile
+- [ ] Settings Home ต้องเรียง section: Account, Your app and media, Notifications, More info and support, bottom Sign out
+- [ ] Account section ต้องมี Edit profile, Change password, About your account
 - [ ] Username, Phone, Line แก้ได้ตาม profile validation
 - [ ] Email Display เป็น read-only หลัง verify
 - [ ] Language รองรับ English / Thai
 - [ ] Theme Mode รองรับ Dark Mode / Light Mode
 - [ ] Notification Settings รองรับเฉพาะ Like, Comment, Follow, Offer, Watch Alert
 - [ ] Notification Settings ไม่รวม Chat/New Message
+- [ ] Notification Settings default ON และ auto-save toggle โดยไม่มี Save button
 - [ ] Change Password เป็น Auth-linked entry
 - [ ] Change Password แสดงเฉพาะ Email / Password account
 - [ ] SSO-only account ไม่เห็น active Change Password action
-- [ ] Help และ About เข้าถึงได้
+- [ ] Help แสดง Contact support, Available daily, 09:00 - 22:00 (GMT+7), LINE `@mrfoxthailand`, Phone `(+66) 80-008-8088`, Email `service@mrfox.com`
+- [ ] Help contact rows เปิด LINE, dialer และ mail composer ตาม type
+- [ ] About app แสดง `TUK DAENG`, tagline, `Version 0.0.1`, `Mister Fox Co., Ltd.`, `Est. 2026`, Privacy Policy, Terms of Use และ Contact support
+- [ ] About app ต้องไม่แสดงข้อมูลบัญชี, Date joined, Change Password หรือ Delete Account
 - [ ] Privacy Policy และ Terms of Use เข้าถึงได้
-- [ ] Sign Out ต้องมี confirmation และ clear session
-- [ ] Delete Account อยู่ใน V1 baseline
+- [ ] Sign Out ต้องมี confirmation copy `Sign out?`, `You will need to sign in again to access your account.`, actions `Cancel` / `Sign out`
+- [ ] Sign Out สำเร็จต้อง clear session, ไป Sign In / pre-auth และกด back กลับ Settings ไม่ได้
+- [ ] Delete Account อยู่ใน V1 baseline ภายใน About your account ไม่ใช่ Settings Home direct action
+- [ ] About your account ต้องแสดง Date joined และปุ่ม Delete account
 - [ ] Delete Account ต้องมี warning/confirmation
 - [ ] Delete Account ต้อง soft delete account หลัง confirm
 - [ ] Delete Account ต้อง revoke session และ sign out user

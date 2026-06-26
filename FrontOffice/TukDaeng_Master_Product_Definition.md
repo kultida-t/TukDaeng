@@ -678,14 +678,22 @@ Settings รองรับ:
 - Notification Settings สำหรับ Notification Center type ที่อยู่ใน V1 baseline
 - Change Password เป็น Auth-linked entry สำหรับบัญชี Email / Password เท่านั้น
 - Help
-- About
+- About app
+- About your account
 - Privacy Policy
 - Terms of Use
 - Sign Out
 - Delete Account
 
+Settings Home ต้องเรียง section เป็น Account, Your app and media, Notifications, More info and support และ bottom Sign out
+
+About app ต้องแสดงข้อมูลแอปและบริษัท ได้แก่ `TUK DAENG`, tagline, version, `Mister Fox Co., Ltd.`, `Est. 2026`, Privacy Policy, Terms of Use และ Contact support
+
+Help ต้องแสดงช่องทางติดต่อ support ได้แก่ LINE `@mrfoxthailand`, Phone `(+66) 80-008-8088`, Email `service@mrfox.com` และเวลาทำการ `09:00 - 22:00 (GMT+7)`
+
 Delete Account V1:
 
+- Delete Account ต้องอยู่ใน About your account ไม่ใช่ Settings Home direct action
 - Delete Account ต้องเป็น soft delete หลัง user confirm
 - หลัง Delete Account สำเร็จต้อง deactivate account, revoke session และ clear local token
 - หลัง Delete Account สำเร็จต้องแสดง `Account deletion started` แล้วให้ user กด `Back to sign in`

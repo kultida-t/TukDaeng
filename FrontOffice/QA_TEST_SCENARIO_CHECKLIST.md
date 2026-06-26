@@ -793,7 +793,12 @@ Then ต้องแสดง Login Required หรือไม่ให้เ�
 
 Given Member เปิด Settings  
 When menu แสดง  
-Then ต้องมี Edit Profile, Username, Phone, Line, Email Display, Language, Theme Mode, Notification Settings, Change Password entry ตาม account type, Help, About, Privacy Policy, Terms of Use, Sign Out, Delete Account
+Then ต้องมี Account section พร้อม Edit profile, Change password และ About your account  
+And ต้องมี Your app and media section พร้อม Language และ Theme mode  
+And ต้องมี Notifications section พร้อม Notification settings  
+And ต้องมี More info and support section พร้อม Help, Privacy Policy, Terms of Use และ About  
+And ต้องมี Sign out เป็น bottom action  
+And ต้องไม่มี Delete Account เป็น direct action บน Settings Home
 
 ## QA-SETTING-003: Notification Settings Baseline
 
@@ -801,6 +806,30 @@ Given Member เปิด Notification Settings
 When toggle list แสดง  
 Then ต้องมีเฉพาะ Like, Comment, Follow, Offer, Watch Alert  
 And ต้องไม่มี Chat/New Message, Market Update, Price/Valuation, Sale Success, Moderation หรือ Account Action
+And default state ของ Member ใหม่ต้องเป็น ON ทุก type
+And การเปิด/ปิด toggle ต้อง auto-save โดยไม่มี Save button
+
+## QA-SETTING-003A: Help Screen Content
+
+Given Member เปิด Settings
+When Member กด Help
+Then ต้องแสดง title `Help`
+And ต้องแสดง heading `Contact support`
+And ต้องแสดง `Available daily` และ `09:00 - 22:00 (GMT+7)`
+And ต้องแสดง LINE `@mrfoxthailand`, Phone `(+66) 80-008-8088`, Email `service@mrfox.com`
+And contact rows ต้องเปิด LINE, dialer หรือ mail composer ตาม type
+
+## QA-SETTING-003B: About App Content
+
+Given Member เปิด Settings
+When Member กด About
+Then ต้องแสดง title `About`
+And ต้องแสดง `TUK DAENG`
+And ต้องแสดง `The digital curator for watch collectors`
+And ต้องแสดง `Version 0.0.1`
+And ต้องแสดง `Mister Fox Co., Ltd.` และ `Est. 2026`
+And ต้องมี Privacy Policy, Terms of Use และ Contact support
+And ต้องไม่แสดง Delete Account, Change Password, Edit Profile, Date joined หรือ profile/contact fields
 
 ## QA-SETTING-004: Change Password Email Account
 
@@ -842,7 +871,7 @@ And user ต้องยังอยู่ signed in
 
 ## QA-SETTING-006: Delete Account Confirmation
 
-Given Member กด Delete Account  
+Given Member เปิด About your account และกด Delete Account  
 When flow เริ่ม  
 Then ต้องแสดง warning/confirmation ก่อนดำเนินการ
 And title ต้องเป็น `Delete account?`
@@ -859,6 +888,17 @@ And ต้องแสดง success modal `Account deletion started`
 When user กด `Back to sign in`
 Then ต้องไปหน้า Sign In / pre-auth
 And user ต้องกด back กลับเข้า About Account, Profile หรือ Settings ไม่ได้
+
+## QA-SETTING-007A: Sign Out Confirmation
+
+Given Member อยู่ใน Settings
+When Member กด Sign out
+Then ต้องแสดง confirmation title `Sign out?`
+And body ต้องเป็น `You will need to sign in again to access your account.`
+And actions ต้องเป็น `Cancel` และ `Sign out`
+When Member confirm Sign out
+Then ระบบต้อง clear session และไป Sign In / pre-auth
+And user ต้องกด back กลับเข้า Settings ไม่ได้
 
 ## QA-SETTING-008: Deleted Account Grace Period Login
 

@@ -411,7 +411,7 @@ Required annotation:
 - Board เป็น Article Area ไม่ใช่ forum หรือ user-generated post board
 - ตัด Create/Edit/Delete Post ของ Front Office user
 - Settings ต้องมี Theme Mode: Dark Mode / Light Mode
-- Settings ต้องมี Delete Account confirmation/risk state, success modal `Account deletion started`, destination ไป Sign In / pre-auth และ API failure/retry state
+- Settings ต้องมี Delete Account ภายใน `About your account` พร้อม confirmation/risk state, success modal `Account deletion started`, destination ไป Sign In / pre-auth และ API failure/retry state
 
 ### High
 
@@ -419,7 +419,9 @@ Required annotation:
 - Article Detail รองรับ Like / Share
 - Settings ต้องมี Language: English / Thai
 - Email Display ต้อง read-only หลัง verify
-- Settings menu ต้องครบตาม master และไม่รวม type นอก baseline
+- Settings menu ต้องครบตาม locked order: Account, Your app and media, Notifications, More info and support, bottom Sign out
+- About app ต้องแสดง `TUK DAENG`, tagline, `Version 0.0.1`, `Mister Fox Co., Ltd.`, `Est. 2026`, Privacy Policy, Terms of Use และ Contact support
+- Help ต้องแสดง Contact support, Available daily, `09:00 - 22:00 (GMT+7)`, LINE `@mrfoxthailand`, Phone `(+66) 80-008-8088`, Email `service@mrfox.com`
 - Change Password ต้องมี Current password, New password, Confirm new password, password helper text, field-level validation states และ API error state แยกจาก field error
 - Portfolio เป็น Owner-only
 - Portfolio คำนวณจาก `Sale`, `Show`, `Hide` และไม่รวม `Sold`
@@ -436,6 +438,7 @@ Required annotation:
 - Portfolio/private financial data ไม่โผล่ใน public mode
 - Report success state ไม่ซ่อน content ทันที
 - Settings ไม่มี notification type นอก Like, Comment, Follow, Offer, Watch Alert
+- Notification Settings toggles ต้อง default ON และ auto-save โดยไม่มี Save button
 
 ---
 

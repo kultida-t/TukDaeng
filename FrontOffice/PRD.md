@@ -339,8 +339,9 @@
 - Edit Profile (Username, Phone, Line, Email)
 - Language (English / ภาษาไทย)
 - Help (ช่องทางติดต่อ)
-- About (Account info, Privacy Policy, Terms of Use)
-- Sign Out / Delete Account
+- About app (Version, company info, Privacy Policy, Terms of Use, Contact support)
+- About your account (Date joined, Delete Account)
+- Sign Out
 
 ---
 
