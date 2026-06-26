@@ -107,6 +107,8 @@ Authentication Module ใช้สำหรับสมัครสมาชิ�
 | Reset Link Invalid / Expired | reset link ใช้ไม่ได้หรือหมดอายุ |
 | Password Updated Success | เปลี่ยนรหัสผ่านสำเร็จ |
 | Change Password | เปลี่ยนรหัสผ่านจากสถานะ Login แล้ว |
+| Change Password Validation Error | current password ผิด, new password ไม่ผ่าน policy, new password ซ้ำ current password หรือ confirm ไม่ตรง |
+| Change Password API Error | เปลี่ยน password ไม่สำเร็จจาก network/server error |
 | Sign Out Confirmation | ยืนยันออกจากระบบ |
 | Global Login Required Dialog | แจ้ง Guest ให้ Login เมื่อต้องใช้ feature ที่ต้อง Login |
 
@@ -211,6 +213,27 @@ Auth page และปุ่มใน flow สมัครสมาชิกย�
 4. ระบบ validate current password และ password policy
 5. ระบบเปลี่ยน password สำเร็จ
 
+Change Password form fields:
+
+- `Current password`
+- `New password`
+- `Confirm new password`
+
+Helper text under `New password`:
+
+- `At least 8 characters, with a number or symbol.`
+
+Submit button:
+
+- Label: `Change password`
+- Disabled until all required fields are filled and client-side validation passes
+
+Change Password success:
+
+- Show `Password changed`
+- User may stay signed in
+- After success, route back to Settings or show success feedback and allow user to return to Settings
+
 ## Sign Out
 
 1. Authenticated Member กด Sign Out
@@ -289,6 +312,9 @@ Auth page และปุ่มใน flow สมัครสมาชิกย�
 | Suspended status | ต้อง block sign in |
 | Reset password link | ต้องถูกต้องและยังไม่หมดอายุ |
 | Current password | ต้องถูกต้องก่อน Change Password |
+| Change Password current password | Required และต้องตรงกับรหัสปัจจุบัน |
+| Change Password new password | Required, อย่างน้อย 8 ตัวอักษร, ต้องมีตัวเลขหรือสัญลักษณ์ และต้องต่างจาก current password |
+| Change Password confirm new password | Required และต้องตรงกับ new password |
 
 # 13. Exception Handling
 
@@ -303,6 +329,10 @@ Auth page และปุ่มใน flow สมัครสมาชิกย�
 | ใช้ auth method ผิด | แจ้งว่าบัญชีนี้ต้อง Sign In ด้วย method เดิม |
 | SSO provider error | แสดง error และให้ลองใหม่ |
 | Reset link ใช้ไม่ได้หรือหมดอายุ | แสดง invalid/expired reset link state และให้ขอ link ใหม่ |
+| Change Password current password ผิด | แสดง field error `Current password is incorrect.` |
+| Change Password new password ซ้ำ current password | แสดง field error `New password must be different from current password.` |
+| Change Password confirm ไม่ตรง | แสดง field error `Passwords do not match.` |
+| Change Password API/network error | ไม่ mark field ใด field หนึ่งเป็น error; แสดง banner/toast `Unable to change password. Please try again.` |
 | Suspended account | แสดงเหตุผลและช่องทาง Support |
 | Network error | แสดง error พร้อม retry |
 
@@ -367,6 +397,11 @@ Authentication Module ไม่มี empty list state โดยตรง แต
 | AC-AUTH-018 | Reset Password ต้อง validate password policy |
 | AC-AUTH-019 | Invalid หรือ expired reset link ต้องมี state แยกและทางขอ link ใหม่ |
 | AC-AUTH-020 | Authenticated Member สามารถ Change Password ได้เมื่อ current password ถูกต้อง |
+| AC-AUTH-020A | Change Password ต้องมี Current password, New password และ Confirm new password |
+| AC-AUTH-020B | Change Password ต้อง reject current password ที่ไม่ถูกต้องด้วย `Current password is incorrect.` |
+| AC-AUTH-020C | Change Password ต้อง reject new password ที่ซ้ำ current password ด้วย `New password must be different from current password.` |
+| AC-AUTH-020D | Change Password ต้อง reject confirm password ที่ไม่ตรงด้วย `Passwords do not match.` |
+| AC-AUTH-020E | Change Password API/network error ต้องแสดง `Unable to change password. Please try again.` โดยไม่ผูก error กับ field เฉพาะ |
 | AC-AUTH-021 | Sign Out ต้อง clear local token/session |
 | AC-AUTH-022 | Guest ใช้ feature ที่ต้อง Login ต้องเห็น Global Login Required Dialog |
 | AC-AUTH-023 | ทุก API ที่เกี่ยวกับ Authentication ต้องใช้ HTTPS และ Token-based Authentication |

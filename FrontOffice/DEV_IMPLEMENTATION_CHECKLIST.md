@@ -42,6 +42,11 @@ Purpose:
 - [ ] Email หลัง verify แล้วแก้ไขไม่ได้
 - [ ] Forgot / Reset Password รองรับ invalid/expired token
 - [ ] Change Password รองรับเฉพาะ authenticated Email / Password account
+- [ ] Change Password ต้องมี Current password, New password และ Confirm new password
+- [ ] Change Password ต้อง validate current password, password policy, new password ต้องต่างจาก current password และ confirm ต้องตรงกับ new password
+- [ ] Change Password field errors ต้องรองรับ `Current password is incorrect.`, `New password must be different from current password.`, `Passwords do not match.`
+- [ ] Change Password API/network error ต้องแสดง `Unable to change password. Please try again.` โดยไม่ผูก error กับ field เฉพาะ
+- [ ] Change Password success ต้องแสดง `Password changed` และไม่จำเป็นต้อง sign out
 - [ ] Suspended Account ต้อง block login พร้อม reason/support path
 - [ ] Sign Out ต้อง clear local session/token
 

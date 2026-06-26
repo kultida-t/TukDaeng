@@ -808,12 +808,37 @@ Given Member ใช้ Email / Password account
 When Member เปิด Settings  
 Then ต้องเห็น Change Password entry  
 And route ไป Authentication Change Password flow
+And Change Password screen ต้องมี Current password, New password และ Confirm new password
 
 ## QA-SETTING-005: Change Password SSO Account
 
 Given Member ใช้ SSO-only account  
 When Member เปิด Settings  
 Then Change Password ต้องไม่เป็น active action
+
+## QA-SETTING-005A: Change Password Validation Errors
+
+Given Member ใช้ Email / Password account และเปิด Change Password
+When Member submit ด้วย current password ที่ไม่ถูกต้อง
+Then ต้องแสดง field error `Current password is incorrect.`
+When Member กรอก new password ซ้ำกับ current password
+Then ต้องแสดง field error `New password must be different from current password.`
+When Member กรอก confirm password ไม่ตรงกับ new password
+Then ต้องแสดง field error `Passwords do not match.`
+
+## QA-SETTING-005B: Change Password API Error
+
+Given Member ใช้ Email / Password account และกรอก Change Password ถูกต้อง
+When API เปลี่ยน password ล้มเหลวจาก network/server error
+Then ต้องแสดง `Unable to change password. Please try again.`
+And ต้องไม่ mark field ใด field หนึ่งเป็น error เฉพาะ
+
+## QA-SETTING-005C: Change Password Success
+
+Given Member ใช้ Email / Password account และกรอก Change Password ถูกต้อง
+When API เปลี่ยน password สำเร็จ
+Then ต้องแสดง `Password changed`
+And user ต้องยังอยู่ signed in
 
 ## QA-SETTING-006: Delete Account Confirmation
 

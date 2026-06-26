@@ -420,6 +420,7 @@ Required annotation:
 - Settings ต้องมี Language: English / Thai
 - Email Display ต้อง read-only หลัง verify
 - Settings menu ต้องครบตาม master และไม่รวม type นอก baseline
+- Change Password ต้องมี Current password, New password, Confirm new password, password helper text, field-level validation states และ API error state แยกจาก field error
 - Portfolio เป็น Owner-only
 - Portfolio คำนวณจาก `Sale`, `Show`, `Hide` และไม่รวม `Sold`
 - เพิ่ม valuation source label: Watch Price API -> Owner Estimated Value -> Purchase Price fallback -> No Valuation

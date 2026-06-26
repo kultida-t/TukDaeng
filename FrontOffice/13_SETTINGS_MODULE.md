@@ -118,6 +118,7 @@ Settings V1 ต้องรองรับรายการที่ master ร
 | Delete Account Confirmation | ยืนยันก่อนลบบัญชี |
 | Account Deletion Started | แจ้งว่าบัญชีถูก deactivate และ session ถูก revoke แล้ว |
 | Account Deleted Support State | state เมื่อ user พยายาม login ระหว่าง grace period |
+| Change Password | Auth-linked screen with current password, new password and confirm new password fields |
 
 ---
 
@@ -327,7 +328,10 @@ Deleted account login copy:
 - Settings แสดง Change Password เป็น Auth-linked entry ได้
 - ต้องแสดงเฉพาะบัญชี Email / Password
 - SSO-only account ต้องไม่เห็น Change Password หรือเห็น disabled state พร้อมอธิบายว่าใช้บัญชีจาก provider
+- Change Password screen ต้องมี `Current password`, `New password`, `Confirm new password`
+- `New password` helper text ใช้ `At least 8 characters, with a number or symbol.`
 - Change Password validation และ success/error state อ้างอิง Authentication Module
+- Change Password สำเร็จไม่จำเป็นต้อง sign out; ให้แสดง `Password changed` แล้วกลับ Settings หรือให้ user กลับ Settings ได้
 
 ## Notification Settings Rule
 
