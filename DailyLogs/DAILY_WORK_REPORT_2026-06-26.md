@@ -1,5 +1,49 @@
 # Daily Work Report: Tuk Daeng
 
+## Latest Update - End of Day 2026-06-26
+
+This section records the final work completed after the earlier Block User update in this file.
+
+### Completed today
+
+- Locked Settings information architecture: Account, Your app and media, Notifications, More info and support, bottom Sign out.
+- Locked Settings subflows and copy: About app, Help / Contact support, Notification settings, Sign out confirmation, Delete account inside About your account, and Change password validation states.
+- Locked Chat Room overflow menu: View profile, Mute notifications / Unmute notifications, Delete chat, Report user, Block user.
+- Locked Mute notifications behavior: auto-save, `Notifications muted`, `Notifications unmuted`.
+- Locked Delete chat behavior: `Delete chat?`, delete only from actor inbox/list, other person may still see conversation, records may be retained, success `Chat deleted`, API error `Unable to delete chat. Please try again.`
+- Locked Report article flow: `Report article`, reason sheet, `Additional details (optional)`, disabled submit until reason selected, success `Report submitted`, duplicate/API error states, and Trust & Safety mapping to report type `Board Content` with target type `Article`.
+
+### Documents updated
+
+- `FrontOffice/13_SETTINGS_MODULE.md`
+- `FrontOffice/07_CHAT_MODULE.md`
+- `FrontOffice/12_BOARD_MODULE.md`
+- `FrontOffice/TukDaeng_Master_Product_Definition.md`
+- `FrontOffice/PRD.md`
+- `FrontOffice/DEV_IMPLEMENTATION_CHECKLIST.md`
+- `FrontOffice/DEV_CHAT_IMPLEMENTATION_CHECKLIST.md`
+- `FrontOffice/QA_TEST_SCENARIO_CHECKLIST.md`
+- `FrontOffice/FIGMA_UX_CLEANUP_TASK_BREAKDOWN.md`
+- `FrontOffice/Figma_Gap_Checklist_Against_Master.md`
+- `FrontOffice/README_MODULE_INDEX.md`
+- `FrontOffice/FINAL_HANDOFF_SUMMARY.md`
+
+### Commits completed
+
+- `c65ed6e docs: lock settings help about content`
+- `d1253cb docs: lock chat and article report flows`
+
+### Verification
+
+- Markdown local link check passed.
+- Removed old conflicting wording for report article in active docs.
+- Repository was clean after commit `d1253cb` before this daily log update.
+
+### Next recommended work
+
+- Continue Figma cleanup from remaining screens not yet reviewed.
+- Keep using existing module docs as source of truth instead of creating a new handoff package while Figma is still changing.
+
 **วันที่:** 2026-06-26  
 **ผู้ทำงาน:** Codex handoff continuation  
 **โปรเจกต์:** Tuk Daeng  
