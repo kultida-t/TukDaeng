@@ -9,13 +9,25 @@
 
 ---
 
+# 0. Superseded Version Note
+
+`FO-PRD-v1.0` ถูก supersede โดย `FO-PRD-v1.1` วันที่ 2026-06-23 เฉพาะ product decision update เรื่อง Asset Detail / Social comment model:
+
+- รองรับ IG-style one-level replies ใต้ comment หลัก
+- `View more replies` ใช้สำหรับกาง replies ชั้นเดียวใต้ comment หลัก
+- ไม่รองรับ multi-level nested thread หรือ reply ซ้อนเกิน 1 ชั้น
+
+Dev / QA / Figma ควรอ้างอิง [DOCUMENT_VERSION.md](DOCUMENT_VERSION.md) และใช้ `FO-PRD-v1.1` เป็น baseline ล่าสุด
+
+---
+
 # 1. Handoff Position
 
 เอกสารชุดนี้ไม่ใช่ change list เฉพาะรายการที่เพิ่มวันที่ 2026-06-22 แต่เป็น baseline ล่าสุดของ TukDaeng Front Office ทั้งชุด หลังจากรีวิวและจัดระเบียบ requirement ใหม่ตั้งแต่เริ่มรอบ PRD cleanup
 
 Dev ควรใช้เอกสารชุดนี้เป็น source of truth ใหม่สำหรับการแก้ app ที่ทำไปก่อนหน้าแล้ว เพราะ implementation เดิมอ้างอิงข้อมูลชุดเก่าที่ไม่ตรงกับ decision ล่าสุดหลายจุด
 
-Baseline version สำหรับรอบนี้คือ `FO-PRD-v1.0` หาก Dev ส่ง gap list หรือ status กลับมา ให้ระบุ version นี้เพื่อให้ trace กลับมาได้ถูกต้อง
+Baseline version เดิมสำหรับรอบ 2026-06-22 คือ `FO-PRD-v1.0` แต่หลัง decision update วันที่ 2026-06-23 ให้ Dev / QA / Figma ใช้ baseline ล่าสุด `FO-PRD-v1.1` หาก Dev ส่ง gap list หรือ status กลับมา ให้ระบุ version ที่ใช้อ้างอิงเพื่อให้ trace กลับมาได้ถูกต้อง
 
 หาก implementation ปัจจุบัน, Figma เดิม หรือเอกสารเก่า conflict กับชุดนี้ ให้ยึดชุดนี้ก่อน
 

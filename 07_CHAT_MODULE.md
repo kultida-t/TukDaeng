@@ -246,7 +246,7 @@ Chat Room / Chat List
 Chat Room
 → More Menu
 → Block User
-→ Confirmation
+→ Confirmation `Block this user?`
 → Block Applied
 ```
 
@@ -387,6 +387,10 @@ Product review สำหรับ V1:
 - Chat history เดิมยังอ่านได้แบบ read-only
 - การส่งข้อความใหม่ต้องถูกปิดหลัง block
 - การสร้าง Chat / Offer ใหม่ระหว่างคู่ที่ block กันต้องถูกปิด
+- Block User จาก Chat ต้องเปิด confirmation ก่อน block
+- Confirmation ใช้ title `Block this user?` และ actions `Cancel`, `Block`
+- หากกด `Cancel` หรือ dismiss confirmation ต้องไม่เปลี่ยน block state และต้องยังส่งข้อความได้ตาม permission เดิม
+- Body และ success feedback ให้ใช้ copy กลางจาก Trust & Safety Module
 
 เมื่อ Block แล้ว:
 
@@ -592,6 +596,7 @@ Notification destination:
 | AC-CHAT-025 | Chat ต้องมี entry สำหรับ Block User |
 | AC-CHAT-026 | Chat ต้องมี entry สำหรับ Report User |
 | AC-CHAT-026A | หลัง Block แล้ว chat history เดิมยังอ่านได้แบบ read-only และไม่สามารถสร้าง Chat / Offer ใหม่ระหว่างคู่ที่ block กัน |
+| AC-CHAT-026B | Block User จาก Chat ต้องเปิด confirmation `Block this user?`; cancel/dismiss ต้องไม่ block user |
 
 ## Delete Chat
 

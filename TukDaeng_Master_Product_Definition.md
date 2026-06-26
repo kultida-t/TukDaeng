@@ -484,8 +484,8 @@ Like:
 
 Comment:
 
-- Single Level เท่านั้น
-- ไม่มี Nested Comment
+- รองรับ IG-style one-level replies ใต้ comment หลัก
+- ไม่รองรับ multi-level nested thread หรือ reply ซ้อนเกิน 1 ชั้น
 - ไม่มี Edit Comment ใน V1
 - รองรับ Delete Comment
 - Comment ต้องทำใน Asset Detail
@@ -905,7 +905,7 @@ Asset หรือ Content จะหายเมื่อ Admin ดำเนิ�
 - Auction Center
 - Consignment Center
 - Authentication Center
-- Nested Comment
+- Multi-level Nested Comment เกิน 1 reply level
 - Edit Comment
 - Verified Badge
 - Status Badge บน Feed Card

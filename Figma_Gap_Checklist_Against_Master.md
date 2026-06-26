@@ -113,7 +113,7 @@ Figma มี coverage ของ flow หลักค่อนข้างมา�
 
 | Priority | Figma Gap | Master Baseline | Action |
 | --- | --- | --- | --- |
-| Must Fix | Comment UI ยังเป็น nested thread หรือมี reply chain | Comment เป็น Single Level และไม่มี Nested Comment ใน V1 | ปรับ comment UI เป็น single-level only และตัด `View replies` / nested indentation |
+| Must Fix | Comment UI ต้องรองรับการตอบโต้แบบ IG โดยไม่กลายเป็น forum thread | Comment รองรับ one-level replies ใต้ comment หลักเท่านั้น และไม่รองรับ reply ซ้อนหลายระดับ | ปรับ comment UI ให้แสดง reply ได้ 1 ชั้นใต้ comment หลัก และป้องกัน reply ต่อจาก reply |
 | High | ยังไม่เห็น Deleted Asset state ชัดเจน | Asset Detail ของ Asset ที่ถูกลบต้องแสดง `รายการนี้ไม่พร้อมใช้งานแล้ว` | เพิ่ม deleted/unavailable asset state |
 | High | Detail อาจแสดงข้อมูล private ให้ Viewer | Provenance, Consignment, purchase data, Sold History และ Portfolio Value Detail เป็น private | แยก Owner-only private sections และห้ามแสดงใน Viewer/Public mode |
 | High | ยังไม่เห็น state ของ Hide / Sold ที่เป็น Owner-only ชัดเจน | Viewer เห็นเฉพาะ Sale/Show; Owner เห็น Sale/Show/Hide/Sold | เพิ่ม Owner-only detail states สำหรับ Hide และ Sold |
@@ -137,6 +137,7 @@ Figma มี coverage ของ flow หลักค่อนข้างมา�
 | Medium | ยังใช้ label legacy `Collection Show` ในหลายจุด | Canonical term คือ `Show` | ตัดสินใจว่าจะ normalize เป็น `Show` หรือเก็บ legacy label พร้อม mapping |
 | Medium | Guest Follow restriction ยังไม่ชัด | Guest กด Follow ต้องเห็น Global Login Required Dialog | เพิ่ม guest dialog/state เมื่อกด Follow |
 | Medium | Blocked / unavailable profile state ยังไม่ชัด | Blocked profile ต้องไม่สามารถเข้าถึงได้ตาม Trust & Safety rule | เพิ่ม blocked/unavailable profile state |
+| Medium | Report / Block entry ใน Public Profile ยังต้องตรวจ | Public Profile ของ user อื่นต้องมี Report User และ Block User entry ตาม Trust & Safety | เพิ่ม more menu / action state สำหรับ Report User และ Block User |
 
 ### 07 Chat Module
 
@@ -203,7 +204,7 @@ Figma มี coverage ของ flow หลักค่อนข้างมา�
 
 | Priority | Figma Gap | Master Baseline | Action |
 | --- | --- | --- | --- |
-| Must Fix | Comment UI ยังเป็น nested thread หรือมี reply chain | Comment เป็น Single Level และไม่มี Nested Comment ใน V1 | ปรับ comment UI เป็น single-level only และตัด `View replies` / nested indentation |
+| Must Fix | Comment UI ต้องรองรับการตอบโต้แบบ IG โดยไม่กลายเป็น forum thread | Comment รองรับ one-level replies ใต้ comment หลักเท่านั้น และไม่รองรับ reply ซ้อนหลายระดับ | ปรับ comment UI ให้แสดง reply ได้ 1 ชั้นใต้ comment หลัก และป้องกัน reply ต่อจาก reply |
 | Must Fix | Feed อาจสื่อว่า Comment / Share ทำจาก Feed ได้ | Comment และ Share ต้องทำผ่าน Asset Detail เท่านั้น | ตัด direct comment/share action จาก Feed หรือให้กดแล้วเปิด Asset Detail |
 | High | Guest state สำหรับ Like / Comment / Follow ยังไม่ครบ | Guest กด action ที่ต้อง Login ต้องเห็น Global Login Required Dialog | เพิ่ม guest dialog/state ทุก social action |
 | High | Like / Unlike ต้อง sync Favorites | Like สำเร็จต้องเพิ่ม Favorites, Unlike ต้องลบออก | เพิ่ม state note หรือ interaction mapping กับ Favorites |
@@ -211,6 +212,7 @@ Figma มี coverage ของ flow หลักค่อนข้างมา�
 | Medium | Owner Like Asset ตัวเองอาจถูก block ใน UI | Owner สามารถ Like Asset ตัวเองได้ | ตรวจ owner detail/feed state |
 | Medium | Edit Comment อาจยังโผล่ใน action menu | V1 ไม่มี Edit Comment | ซ่อน edit action หรือย้ายเป็น future |
 | Medium | Delete Comment confirmation ยังไม่ชัด | Comment รองรับ Delete Comment | เพิ่ม delete confirmation และ permission state |
+| Medium | Report Comment entry ยังต้องตรวจ | Comment ใน Asset Detail ต้องรองรับ Report Comment ตาม Trust & Safety | เพิ่ม comment action menu และ Report Comment flow |
 | Medium | Comment notification destination ยังไม่เห็น focus state | Comment notification เปิด Asset Detail และ Focus Comment | เพิ่ม state ที่ focus comment เป้าหมาย |
 | Medium | Follow notification destination ยังไม่ชัด | Follow notification ควรเปิด Public Profile | เพิ่ม destination state ไป Public Profile |
 | Medium | Share detail behavior ต้องมี channel/fallback state | Master ระบุ system share sheet เป็น primary และ copy public deep link เป็น fallback | เพิ่ม share sheet, copy link success และ unavailable/deleted link state |

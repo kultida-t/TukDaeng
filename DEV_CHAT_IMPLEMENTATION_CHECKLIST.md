@@ -1,7 +1,7 @@
 # TukDaeng Dev Chat Implementation Checklist
 
 **Purpose:** Checklist สำหรับ Dev ที่รับผิดชอบเฉพาะ Chat  
-**Baseline Version:** `FO-PRD-v1.0`
+**Baseline Version:** `FO-PRD-v1.1`
 **Baseline branch:** `docs-frontoffice-spec-updates`  
 **Main PRD:** [07_CHAT_MODULE.md](07_CHAT_MODULE.md)  
 **Use with:** [DEV_BASELINE_HANDOFF_2026-06-22.md](DEV_BASELINE_HANDOFF_2026-06-22.md)
@@ -246,4 +246,4 @@ Return gap list grouped by:
 - Delete chat
 - Routing / deep link
 
-Please cite baseline version `FO-PRD-v1.0` in the returned gap list.
+Please cite baseline version `FO-PRD-v1.1` in the returned gap list.

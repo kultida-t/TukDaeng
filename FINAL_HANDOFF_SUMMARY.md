@@ -2,7 +2,7 @@
 
 อ้างอิงหลักจาก [TukDaeng_Master_Product_Definition.md](TukDaeng_Master_Product_Definition.md)
 
-**Current Baseline Version:** `FO-PRD-v1.0`
+**Current Baseline Version:** `FO-PRD-v1.1`
 **Version Registry:** [DOCUMENT_VERSION.md](DOCUMENT_VERSION.md)
 
 ---
@@ -21,7 +21,7 @@
 - Navigation rules: [00_NAVIGATION_AND_CROSS_MODULE_FLOW.md](00_NAVIGATION_AND_CROSS_MODULE_FLOW.md)
 - Module PRD: `01-18`
 
-หมายเหตุสำหรับรอบ 2026-06-22: ชุดนี้เป็น baseline ล่าสุดทั้งชุดสำหรับส่ง Dev ใช้แทนเอกสารเก่าที่เคยอ้างอิงก่อนหน้า ไม่ใช่ delta เฉพาะงานที่เพิ่มในวันนี้ หาก implementation ปัจจุบันหรือ Figma เดิม conflict กับชุดนี้ ให้ยึดเอกสาร baseline นี้ก่อน โดยอ้างอิง version `FO-PRD-v1.0`
+หมายเหตุสำหรับรอบ 2026-06-23: `FO-PRD-v1.1` supersede `FO-PRD-v1.0` สำหรับ Dev / QA / Figma โดยเพิ่ม product decision เรื่อง Asset Detail / Social comment model ให้รองรับ IG-style one-level replies ใต้ comment หลัก, ใช้ `View more replies` สำหรับ collapsed replies ชั้นเดียว และไม่รองรับ multi-level nested thread
 
 # 2. Approved Product Decisions
 
@@ -31,6 +31,7 @@
 | `Hide` private value label | `Hide` ไม่ใช้ listing price; optional private valuation ต้องใช้ label `Owner Estimated Value (Private)` และห้ามแสดงใน public/viewer surfaces |
 | Chat notification | Chat / New Message ไม่เข้า Notification Center; แจ้งเตือนเฉพาะในเมนู Chat ด้วย unread badge/count |
 | Notification Center types | รองรับเฉพาะ Like, Comment, Follow, Offer, Watch Alert |
+| Comment replies | รองรับ IG-style one-level replies ใต้ comment หลัก; ใช้ `View more replies` สำหรับ collapsed replies ชั้นเดียว; ไม่รองรับ multi-level nested thread |
 | Post-block chat | Chat history เดิมอ่านได้แบบ read-only; ส่งข้อความใหม่ไม่ได้; สร้าง Chat/Offer ใหม่ไม่ได้ |
 | Future menu items | Watch Shops, Accessories Shop, Repair Shop, Auction Center, Consignment Center, Authentication Center ไม่เป็น active route ใน production V1 |
 | Back Office | Mobile V1 ใช้ [18_ADMIN_SCOPE_NOTE.md](18_ADMIN_SCOPE_NOTE.md) เป็น boundary; Full BO PRD ทำแยกเมื่อเริ่ม Back Office sprint |

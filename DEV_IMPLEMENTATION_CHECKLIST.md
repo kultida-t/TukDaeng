@@ -153,6 +153,7 @@ Purpose:
 - [ ] Owner Profile more menu ต้องมี `Share profile`, `Settings` และใช้ label `Settings`
 - [ ] Profile Share Sheet ต้องมี preview และ `Copy Link` fallback
 - [ ] Report User success ต้องไม่ซ่อน profile ทันที
+- [ ] Block User จาก Public Profile ต้องเปิด confirmation `Block this user?` และ cancel/dismiss ต้องไม่ apply block
 - [ ] Owner Profile tabs รองรับ `All`, `Sale`, `Show`, `Hide`, `Sold`
 - [ ] Public Profile tabs รองรับเฉพาะ public status
 - [ ] Total Asset Value เป็น entry point เข้า Portfolio เฉพาะ Owner
@@ -175,6 +176,7 @@ Purpose:
 - [ ] Asset Sold แล้ว Chat ยังใช้งานได้
 - [ ] Block User จาก Chat ได้
 - [ ] Report User จาก Chat ได้
+- [ ] Block User จาก Chat ต้องเปิด confirmation `Block this user?` และ cancel/dismiss ต้องไม่ apply block
 - [ ] หลัง block แล้ว chat history เดิมอ่านได้แบบ read-only
 - [ ] หลัง block แล้วส่งข้อความใหม่ไม่ได้
 - [ ] หลัง block แล้วสร้าง Chat/Offer ใหม่ระหว่างคู่ที่ block กันไม่ได้
@@ -354,6 +356,7 @@ Purpose:
 - [ ] Report ไม่ทำให้ content หายทันที
 - [ ] Content หายเมื่อ Admin moderation action
 - [ ] Block User ได้จาก Profile/Asset Detail/Chat ตาม module
+- [ ] Block User ทุก entry point ต้องใช้ confirmation กลางจาก Trust & Safety ก่อน apply block
 - [ ] Block ต้องซ่อน asset/content จาก Feed, Search, Watch Alert Result
 - [ ] Block ต้องหยุด Following Feed relation ระหว่างคู่ที่ block กัน
 - [ ] Block ต้องทำให้ Chat read-only

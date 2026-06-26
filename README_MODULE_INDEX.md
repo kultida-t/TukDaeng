@@ -2,7 +2,7 @@
 
 อ้างอิงหลักจาก [TukDaeng_Master_Product_Definition.md](TukDaeng_Master_Product_Definition.md)
 
-**Current Baseline Version:** `FO-PRD-v1.0`
+**Current Baseline Version:** `FO-PRD-v1.1`
 **Version Registry:** [DOCUMENT_VERSION.md](DOCUMENT_VERSION.md)
 
 ---
@@ -13,7 +13,9 @@
 
 สำหรับรอบส่งต่อ Dev วันที่ 2026-06-22 ให้ถือว่าชุดเอกสารนี้เป็น baseline ใหม่ทั้งชุดสำหรับแทนเอกสารเก่าที่ Dev เคยใช้ก่อนหน้า ไม่ใช่เฉพาะรายการที่เพิ่งเพิ่มในวันเดียวกัน
 
-เมื่อส่งต่อ Dev / QA / Figma ให้อ้างอิง version `FO-PRD-v1.0` คู่กับ branch `docs-frontoffice-spec-updates`
+เมื่อส่งต่อ Dev / QA / Figma ให้อ้างอิง version `FO-PRD-v1.1` คู่กับ branch `docs-frontoffice-spec-updates`
+
+หมายเหตุรอบ 2026-06-23: `FO-PRD-v1.1` supersede `FO-PRD-v1.0` เฉพาะ decision update เรื่อง Asset Detail / Social comment model โดยให้รองรับ IG-style one-level replies ใต้ comment หลัก, ใช้ `View more replies` สำหรับ collapsed replies ชั้นเดียว และไม่รองรับ multi-level nested thread
 
 # 2. Source Of Truth Order
 

@@ -111,7 +111,7 @@ Trust & Safety Module ใช้สำหรับรองรับ Block, Repor
 
 | Screen / Component | Description |
 | --- | --- |
-| Block User Dialog | ยืนยันก่อน block user |
+| Block User Dialog | ยืนยันก่อน block user จาก Profile / Asset Detail / Chat |
 | Block User Dialog | ยืนยันก่อน Block User จาก Feed |
 | Report User Form | ส่ง report user |
 | Report Asset Form | ส่ง report asset; mobile ใช้ bottom sheet pattern ได้ |
@@ -167,6 +167,15 @@ Profile / Asset Detail / Chat
 -> Block success
 -> Block impact applies to Feed, Search, Watch Alert Result, Following Feed
 ```
+
+Block User confirmation:
+
+- Title: `Block this user?`
+- Body: `You will no longer see this user's assets in Feed, Search, Watch Alert results, or related profile surfaces. Existing chat history will remain read-only, but you will not be able to send new messages or create new offers with this user.`
+- Actions: `Cancel`, `Block`
+- `Cancel` closes the confirmation without changing block state
+- `Block` applies the block rule immediately after success
+- Success feedback: `User blocked`
 
 ## Report Asset Flow
 
@@ -249,6 +258,8 @@ Sign Up
 
 - Member สามารถ Block User ได้
 - Block entry ควรมีใน Profile, Asset Detail และ Chat ตาม context ที่เกี่ยวข้อง
+- Block User ต้องเปิด confirmation ก่อนเสมอ และต้องไม่ apply block หาก user กด `Cancel` หรือ dismiss confirmation
+- Confirmation ต้องระบุผลกระทบหลัก: asset/content ของ user นั้นจะถูก filter จาก public discovery surfaces, existing chat history จะอ่านได้แบบ read-only, และไม่สามารถส่งข้อความหรือสร้าง offer ใหม่ระหว่างคู่ที่ block กันได้
 - เมื่อ block แล้ว Asset ของผู้ถูก Block ต้องหายจาก:
   - Feed
   - Search
@@ -347,7 +358,7 @@ Report รองรับ type ต่อไปนี้ตาม master:
 | Report Dismiss | Dismiss without submit must not create report |
 | Terms Consent | Required before Sign Up |
 | Privacy Consent | Required before Sign Up |
-| Block Confirmation | Required before block |
+| Block Confirmation | Required before block; cancel/dismiss must not apply block |
 
 ---
 
@@ -357,6 +368,14 @@ Report รองรับ type ต่อไปนี้ตาม master:
 
 - TH: `คุณได้บล็อกผู้ใช้งานนี้แล้ว`
 - EN: `This user has already been blocked.`
+
+## Block User Confirmation
+
+- TH title: `บล็อกผู้ใช้งานนี้?`
+- EN title: `Block this user?`
+- EN body: `You will no longer see this user's assets in Feed, Search, Watch Alert results, or related profile surfaces. Existing chat history will remain read-only, but you will not be able to send new messages or create new offers with this user.`
+- EN actions: `Cancel`, `Block`
+- EN success: `User blocked`
 
 ## Report Failed
 
@@ -423,6 +442,14 @@ Trust & Safety ไม่อยู่ใน Notification baseline ของ maste
 Given Member เห็น user ที่ต้องการ block  
 When Member กด Block และ Confirm  
 Then ระบบต้อง block user สำเร็จ
+
+## AC-TS-001A: Block User Requires Confirmation
+
+Given Member เลือก Block User จาก Profile, Asset Detail, Feed หรือ Chat  
+When confirmation แสดง  
+Then ต้องเห็น title `Block this user?` และ actions `Cancel`, `Block`  
+When Member กด `Cancel` หรือ dismiss confirmation  
+Then ระบบต้องไม่ block user และ visibility/chat/offer state ต้องไม่เปลี่ยน
 
 ## AC-TS-002: Block Removes Assets From Feed
 

@@ -523,6 +523,15 @@ Then success ต้องแสดง `Report submitted`
 And copy ต้องระบุว่า profile remains visible until moderation is complete
 And profile ต้องไม่หายทันที
 
+## QA-PROFILE-005: Block User Confirmation From Profile
+
+Given Member เปิด Public Profile ของ user อื่น
+When Member เลือก `Block user`
+Then ต้องเห็น confirmation title `Block this user?`
+And ต้องมี actions `Cancel` และ `Block`
+When Member กด `Cancel` หรือ dismiss confirmation
+Then user ต้องยังไม่ถูก block และ Public Profile ต้องยังแสดงตาม permission เดิม
+
 ---
 
 # 8. Offer
@@ -613,6 +622,15 @@ And message input ต้อง disabled/read-only
 Given Member A และ B block กัน  
 When A หรือ B พยายามสร้าง Chat หรือ Offer ใหม่  
 Then ระบบต้อง reject
+
+## QA-CHAT-004A: Block User Confirmation From Chat
+
+Given Member A เปิด Chat Room กับ Member B
+When Member A เลือก Block User
+Then ต้องเห็น confirmation title `Block this user?`
+And ต้องมี actions `Cancel` และ `Block`
+When Member A กด `Cancel` หรือ dismiss confirmation
+Then chat ต้องไม่เปลี่ยนเป็น read-only และ block state ต้องไม่ถูก apply
 
 ## QA-CHAT-005: Delete Chat Hides Only For Actor
 
@@ -869,6 +887,14 @@ Given Member เปิด Public Profile หรือ Chat Room ของ user �
 When Member เลือก Block User และ confirm
 Then ระบบต้องใช้ Block User rule เดียวกัน
 And content ของ user นั้นต้องถูก filter จาก Feed/Search/Watch Alert Result ตาม baseline
+
+## QA-TRUST-001C: Block User Confirmation Copy
+
+Given Member เลือก Block User จาก Profile, Asset Detail, Feed หรือ Chat
+When confirmation แสดง
+Then title ต้องเป็น `Block this user?`
+And body ต้องอธิบายว่า asset/content ของ user นั้นจะถูก filter, chat history เดิมยังอ่านได้แบบ read-only, และไม่สามารถส่งข้อความหรือสร้าง offer ใหม่กับ user นั้นได้
+And actions ต้องเป็น `Cancel` และ `Block`
 
 ## QA-TRUST-002: Block Hides Public Content
 

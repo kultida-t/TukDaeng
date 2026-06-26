@@ -260,7 +260,7 @@ Owner Profile / Public Profile
 Public Profile
 → More Menu
 → Block User
-→ Confirm
+→ Confirm `Block this user?`
 → Block Applied
 → Profile becomes unavailable according to Trust & Safety rule
 ```
@@ -474,6 +474,14 @@ Email ที่ยืนยันแล้วต้องไม่แก้ไ�
 ## Block User Rule
 
 Member ต้องสามารถ Block User จาก Public Profile ได้ตาม Trust & Safety rule
+
+Block User จาก Public Profile:
+
+- ต้องเปิด confirmation ก่อน block
+- ใช้ title `Block this user?`
+- ใช้ actions `Cancel`, `Block`
+- หากกด `Cancel` หรือ dismiss confirmation ต้องไม่เปลี่ยน block state
+- Body และ success feedback ให้ใช้ copy กลางจาก Trust & Safety Module
 
 เมื่อ User ถูก Block:
 
@@ -695,6 +703,7 @@ Profile Module ต้องรับผลหลัง Save สำเร็จ�
 | AC-PROFILE-031 | Public Profile more menu ของ user อื่นต้องมี `Share profile`, `Report user`, `Block user` |
 | AC-PROFILE-032 | Profile Share Sheet ต้องมี profile preview และ `Copy Link` fallback |
 | AC-PROFILE-033 | Report User success ต้องใช้ `Report submitted` และ profile ต้อง remain visible until moderation is complete |
+| AC-PROFILE-034 | Block User จาก Public Profile ต้องเปิด confirmation `Block this user?`; cancel/dismiss ต้องไม่ block user |
 
 ---
 

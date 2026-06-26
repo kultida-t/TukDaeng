@@ -292,8 +292,8 @@ Notification รองรับ:
 
 ### Comment
 
-- Single Level
-- ไม่มี Nested
+- รองรับ IG-style one-level replies ใต้ comment หลัก
+- ไม่รองรับ multi-level nested thread หรือ reply ซ้อนเกิน 1 ชั้น
 - ไม่มี Edit Comment ใน V1
 - รองรับ Delete Comment
 

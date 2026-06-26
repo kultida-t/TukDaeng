@@ -166,6 +166,8 @@ Current review status: Asset Detail / Profile coverage is complete, including Sh
 - Owner Profile more menu ต้องใช้ `...` มุมขวาบน และมี `Share profile`, `Settings`
 - Profile share sheet ต้องมี profile preview card, share channel options และ `Copy Link`
 - Report User flow ต้องใช้ title `Report this user`, reason list ตาม Trust & Safety และ success copy ว่า profile remains visible until moderation is complete
+- Block User confirmation ต้องใช้ title `Block this user?`, actions `Cancel` / `Block`, และ body ต้องบอกว่า assets/content ของ user นั้นจะถูก filter จาก Feed/Search/Watch Alert/profile surfaces, existing chat history ยังอ่านได้แบบ read-only, และไม่สามารถส่งข้อความหรือสร้าง offer ใหม่กับ user นั้นได้
+- Cancel/dismiss บน Block User confirmation ต้องไม่ apply block state
 - Comment action menu ต้องใช้ `...` แนวนอน; own comment = `Delete comment`, other user's comment = `Report comment`
 - Delete comment confirmation ต้องใช้ copy เฉพาะ comment และไม่มี Undo
 - Report Comment flow ต้องใช้ title `Report this comment`; success copy ว่า comment remains visible until moderation is complete
