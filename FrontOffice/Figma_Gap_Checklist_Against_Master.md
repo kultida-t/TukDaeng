@@ -1,6 +1,6 @@
 ﻿# Figma Gap Checklist Against Master
 
-**Reference:** [TukDaeng_Master_Product_Definition.md](c:/Users/Admin/Desktop/TukDaeng/TukDaeng_Master_Product_Definition.md)  
+**Reference:** [TukDaeng_Master_Product_Definition.md](TukDaeng_Master_Product_Definition.md)  
 **Review Scope:** เทียบภาพรวมหน้าจอ Figma ที่แนบมากับ master baseline ล่าสุด  
 **Purpose:** ใช้เป็น checklist สำหรับปรับ Figma ให้ตรงกับ source of truth ก่อนแตกเป็น Functional PRD รายโมดูล
 
