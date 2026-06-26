@@ -687,7 +687,11 @@ Settings รองรับ:
 Delete Account V1:
 
 - Delete Account ต้องเป็น soft delete หลัง user confirm
-- หลัง Delete Account สำเร็จต้อง sign out และ revoke session
+- หลัง Delete Account สำเร็จต้อง deactivate account, revoke session และ clear local token
+- หลัง Delete Account สำเร็จต้องแสดง `Account deletion started` แล้วให้ user กด `Back to sign in`
+- `Back to sign in` ต้องพาไปหน้า Sign In / pre-auth ที่มีอยู่แล้ว
+- หลัง session ถูก revoke แล้ว user ต้องกด back กลับเข้า account/profile/settings ไม่ได้
+- ถ้า Delete Account API fail ต้องไม่ sign out, ไม่ clear session และต้องแสดง error/retry จาก context เดิม
 - ใช้ grace period 30 วันก่อน hard delete/anonymization ตาม policy
 - ระหว่าง grace period user login ไม่ได้ หรือเห็น account-deleted support state
 - Transaction, offer, chat, report และ audit record ที่จำเป็นยังเก็บตาม legal/safety policy

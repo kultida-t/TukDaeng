@@ -820,6 +820,9 @@ Then Change Password ต้องไม่เป็น active action
 Given Member กด Delete Account  
 When flow เริ่ม  
 Then ต้องแสดง warning/confirmation ก่อนดำเนินการ
+And title ต้องเป็น `Delete account?`
+And actions ต้องเป็น `Cancel` และ `Delete account`
+And copy ต้องแจ้งว่าจะ deactivate account, remove public profile, ซ่อน listed assets จาก public surfaces, retain records บางส่วน, sign out ทันที และ complete หลัง 30-day grace period
 
 ## QA-SETTING-007: Delete Account Soft Delete And Session Revoke
 
@@ -827,6 +830,10 @@ Given Member confirm Delete Account สำเร็จ
 When ระบบดำเนินการลบบัญชี  
 Then ระบบต้อง soft delete account  
 And ต้อง revoke session และ sign out user
+And ต้องแสดง success modal `Account deletion started`
+When user กด `Back to sign in`
+Then ต้องไปหน้า Sign In / pre-auth
+And user ต้องกด back กลับเข้า About Account, Profile หรือ Settings ไม่ได้
 
 ## QA-SETTING-008: Deleted Account Grace Period Login
 
@@ -834,6 +841,14 @@ Given account อยู่ใน grace period 30 วันหลัง Delete Ac
 When user พยายาม login  
 Then ระบบต้องไม่ให้เข้าใช้งานบัญชีปกติ  
 And ต้องแสดง account-deleted support state
+
+## QA-SETTING-009: Delete Account Failure
+
+Given Member confirm Delete Account
+When API delete account ล้มเหลว
+Then ระบบต้องไม่ revoke session
+And ต้องไม่พาออกจาก account context
+And ต้องแสดง error/retry state
 
 ---
 

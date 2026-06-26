@@ -241,7 +241,7 @@ Figma มี coverage ของ flow หลักค่อนข้างมา�
 | Priority | Figma Gap | Master Baseline | Action |
 | --- | --- | --- | --- |
 | Must Fix | Settings ยังไม่มี Theme Mode | Settings ต้องมี Theme Mode: Dark Mode / Light Mode | เพิ่ม setting สำหรับ Theme Mode |
-| Must Fix | Settings เดิมอาจระบุ Delete Account เป็น future | Master ระบุ Delete Account อยู่ใน Settings baseline | เพิ่ม Delete Account entry และ confirmation/risk state |
+| Must Fix | Settings เดิมอาจระบุ Delete Account เป็น future หรือยังไม่มี state หลังลบสำเร็จ | Master ระบุ Delete Account อยู่ใน Settings baseline | เพิ่ม Delete Account entry, confirmation/risk state, `Account deletion started` success modal, Sign In destination และ API failure/retry state |
 | High | Language setting ยังไม่ชัด | Settings ต้องมี Language: English / Thai | เพิ่ม language selector และ selected state |
 | High | Email field ต้อง lock หลัง verification | Auth rule ระบุ Email ไม่สามารถเปลี่ยนได้หลังยืนยันแล้ว | แสดง Email Display เป็น read-only หรือ disabled edit |
 | High | Settings menu ต้องครบ master list | Master รองรับ Edit Profile, Username, Phone, Line, Email Display, Language, Theme Mode, Help, About, Privacy Policy, Terms of Use, Sign Out, Delete Account | ตรวจ Figma menu ให้ครบและตัดเมนูนอก baseline |

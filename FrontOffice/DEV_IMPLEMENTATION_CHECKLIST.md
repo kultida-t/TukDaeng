@@ -315,6 +315,9 @@ Purpose:
 - [ ] Delete Account ต้องมี warning/confirmation
 - [ ] Delete Account ต้อง soft delete account หลัง confirm
 - [ ] Delete Account ต้อง revoke session และ sign out user
+- [ ] Delete Account success ต้องแสดง `Account deletion started` modal พร้อมปุ่ม `Back to sign in`
+- [ ] `Back to sign in` ต้องพาไปหน้า Sign In / pre-auth และกด back กลับเข้า account/profile/settings ไม่ได้
+- [ ] Delete Account API fail ต้องไม่ revoke session และต้องแสดง error/retry state
 - [ ] Delete Account ใช้ grace period 30 วันก่อน hard delete/anonymization ตาม policy
 - [ ] Deleted account ระหว่าง grace period ต้อง login ไม่ได้หรือเห็น account-deleted support state
 

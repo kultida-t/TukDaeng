@@ -56,7 +56,7 @@ Settings V1 ต้องรองรับรายการที่ master ร
 | Priority | Figma Gap | Master Baseline | Action |
 | --- | --- | --- | --- |
 | Must Fix | Settings ยังไม่มี Theme Mode | Settings ต้องมี Theme Mode: Dark Mode / Light Mode | เพิ่ม setting สำหรับ Theme Mode |
-| Must Fix | Settings เดิมอาจระบุ Delete Account เป็น future | Master ระบุ Delete Account อยู่ใน Settings baseline | เพิ่ม Delete Account entry และ confirmation/risk state |
+| Must Fix | Settings เดิมอาจระบุ Delete Account เป็น future หรือยังไม่มี state หลังลบสำเร็จ | Master ระบุ Delete Account อยู่ใน Settings baseline | เพิ่ม Delete Account entry, confirmation/risk state, `Account deletion started` success modal, Sign In destination และ API failure/retry state |
 | High | Language setting ยังไม่ชัด | Settings ต้องมี Language: English / Thai | เพิ่ม language selector และ selected state |
 | High | Email field ต้อง lock หลัง verification | Auth rule ระบุ Email ไม่สามารถเปลี่ยนได้หลังยืนยันแล้ว | แสดง Email Display เป็น read-only หรือ disabled edit |
 | High | Settings menu ต้องครบ master list | Master รองรับ Edit Profile, Username, Phone, Line, Email Display, Language, Theme Mode, Help, About, Privacy Policy, Terms of Use, Sign Out, Delete Account | ตรวจ Figma menu ให้ครบและตัดเมนูนอก baseline |
@@ -116,6 +116,8 @@ Settings V1 ต้องรองรับรายการที่ master ร
 | Terms of Use | เอกสาร Terms of Use |
 | Sign Out Confirmation | ยืนยันก่อนออกจากระบบ |
 | Delete Account Confirmation | ยืนยันก่อนลบบัญชี |
+| Account Deletion Started | แจ้งว่าบัญชีถูก deactivate และ session ถูก revoke แล้ว |
+| Account Deleted Support State | state เมื่อ user พยายาม login ระหว่าง grace period |
 
 ---
 
@@ -205,10 +207,24 @@ Settings
 ```text
 Settings
 -> Delete Account
--> Show warning / confirmation
+-> Show Delete Account Confirmation
 -> Confirm
 -> Submit delete account request
--> Session ended or account state updated per implementation
+-> Soft delete / deactivate account
+-> Revoke session and clear token
+-> Account Deletion Started modal
+-> Back to sign in
+-> Sign In screen
+```
+
+If delete account request fails:
+
+```text
+Delete Account Confirmation
+-> Confirm
+-> API error
+-> Stay on current account context
+-> Show retry/error state
 ```
 
 ---
@@ -272,10 +288,38 @@ Settings must include:
 - ต้องมี warning/confirmation ก่อนดำเนินการ
 - ต้องป้องกัน accidental deletion
 - Delete Account V1 เป็น soft delete หลัง user confirm
-- หลัง Delete Account สำเร็จต้อง sign out และ revoke session
+- หลัง Delete Account สำเร็จต้อง deactivate account, revoke session และ clear local token
+- หลัง Delete Account สำเร็จต้องแสดง `Account deletion started` success modal ก่อนพาไป Sign In
+- ปุ่ม success modal ใช้ `Back to sign in`
+- `Back to sign in` ต้องพาไปหน้า Sign In / pre-auth ที่มีอยู่แล้ว ไม่ต้องสร้าง signed-out screen ใหม่
+- หลัง session ถูก revoke แล้ว user ต้องกด back กลับเข้า About Account / Profile / Settings ไม่ได้
+- ถ้า Delete Account API fail ต้องไม่ sign out, ไม่ clear session และต้องแสดง error/retry จาก context เดิม
 - ใช้ grace period 30 วันก่อน hard delete/anonymization ตาม policy
 - ระหว่าง grace period user login ไม่ได้ หรือเห็น account-deleted support state
 - ต้องแจ้งผลกระทบต่อ profile, assets, chat, offers และข้อมูลที่ต้อง retain ตาม legal/safety policy
+
+Delete Account confirmation copy:
+
+- Title: `Delete account?`
+- Body:
+  - `Your account will be deactivated and your public profile will be removed from TukDaeng.`
+  - `Your listed assets will no longer appear in Feed, Search, Watch Alert results, or Public Profile.`
+  - `Some records such as chats, offers, reports, and transaction history may be retained for safety, legal, or audit purposes.`
+  - `You will be signed out immediately. Deletion will be completed after a 30-day grace period.`
+- Actions: `Cancel`, `Delete account`
+
+Account deletion started copy:
+
+- Title: `Account deletion started`
+- Body:
+  - `Your account has been deactivated and you have been signed out.`
+  - `Deletion will be completed after the 30-day grace period. Some records may be retained for safety, legal, or audit purposes.`
+- Action: `Back to sign in`
+
+Deleted account login copy:
+
+- Title: `Account scheduled for deletion`
+- Body: `This account is scheduled for deletion. Please contact support if this was a mistake.`
 
 ## Change Password Rule
 
@@ -338,6 +382,11 @@ Settings must include:
 
 - TH: `ไม่สามารถลบบัญชีได้`
 - EN: `Unable to delete account.`
+
+## Account Scheduled For Deletion
+
+- TH: `บัญชีนี้อยู่ระหว่างดำเนินการลบ กรุณาติดต่อ Support หากเป็นความผิดพลาด`
+- EN: `This account is scheduled for deletion. Please contact support if this was a mistake.`
 
 ## Permission Denied
 
@@ -447,6 +496,9 @@ Then ต้องมี Delete Account entry
 Given Member กด Delete Account  
 When Delete Account flow เริ่ม  
 Then ระบบต้องแสดง warning/confirmation ก่อนดำเนินการ
+And confirmation ต้องใช้ title `Delete account?`
+And ต้องมี actions `Cancel` และ `Delete account`
+And copy ต้องแจ้งผลต่อ public profile, listed assets, retained records, sign out ทันที และ 30-day grace period
 
 ## AC-SETTING-010A: Delete Account Retention
 
@@ -459,6 +511,22 @@ Then ระบบต้อง soft delete account, revoke session, sign out user
 Given account อยู่ใน grace period หลัง Delete Account  
 When user พยายาม login  
 Then ระบบต้องไม่ให้เข้าใช้งานบัญชีปกติ และต้องแสดง account-deleted support state
+
+## AC-SETTING-010C: Delete Account Success Destination
+
+Given Member confirm Delete Account สำเร็จ  
+When API delete account สำเร็จ  
+Then ระบบต้องแสดง `Account deletion started` success modal  
+And ปุ่ม `Back to sign in` ต้องพาไปหน้า Sign In / pre-auth  
+And user ต้องกด back กลับเข้า About Account, Profile หรือ Settings ไม่ได้
+
+## AC-SETTING-010D: Delete Account Failure
+
+Given Member confirm Delete Account  
+When API delete account ล้มเหลว  
+Then ระบบต้องไม่ revoke session  
+And ต้องไม่พาออกจาก account context  
+And ต้องแสดง error/retry state
 
 ## AC-SETTING-011: Guest Cannot Access Settings
 

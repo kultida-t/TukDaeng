@@ -53,7 +53,7 @@
 - Delete Chat behavior แบบละเอียด: recommendation คือซ่อนจาก Chat List เฉพาะฝั่งผู้กด ไม่ลบ server history และไม่มี restore UI ใน V1
 - Share channel implementation: recommendation คือ system share sheet พร้อม fallback copy public deep link และไม่สร้าง notification
 - Article Comment / Report Article: recommendation คือไม่เปิด Article Comment ใน FO V1; Report Board Content เปิดได้เฉพาะถ้าใช้ Trust & Safety moderation handoff
-- Delete Account retention / grace period policy: recommendation คือ soft delete พร้อม revoke session และใช้ grace period 30 วันก่อน hard delete/anonymization ตาม policy
+- Delete Account retention / grace period policy: locked V1 rule คือ soft delete/deactivate หลัง confirm, revoke session ทันที, แสดง `Account deletion started`, กลับไป Sign In / pre-auth และใช้ grace period 30 วันก่อน hard delete/anonymization ตาม policy
 - Full Back Office PRD: เริ่มหลัง FO baseline, Figma cleanup, Dev checklist และ QA checklist ครบ/นิ่งแล้วเท่านั้น
 
 
