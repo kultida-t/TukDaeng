@@ -182,14 +182,19 @@ Purpose:
 - [ ] Asset Sold แล้ว Chat ยังใช้งานได้
 - [ ] Block User จาก Chat ได้
 - [ ] Report User จาก Chat ได้
+- [ ] Chat Room overflow menu ต้องเรียง `View profile`, `Mute notifications`/`Unmute notifications`, `Delete chat`, `Report user`, `Block user`
+- [ ] Header search icon เป็น search entry แล้ว ไม่ต้องซ้ำ `Search in chat` ใน overflow menu
+- [ ] Mute notifications ต้อง auto-save และแสดง `Notifications muted`; unmute แสดง `Notifications unmuted`
 - [ ] Block User จาก Chat ต้องเปิด confirmation `Block this user?` และ cancel/dismiss ต้องไม่ apply block
 - [ ] หลัง block แล้ว chat history เดิมอ่านได้แบบ read-only
 - [ ] หลัง block แล้วส่งข้อความใหม่ไม่ได้
 - [ ] หลัง block แล้วสร้าง Chat/Offer ใหม่ระหว่างคู่ที่ block กันไม่ได้
 - [ ] Delete Chat รองรับ confirmation ตาม baseline
+- [ ] Delete Chat confirmation ใช้ title `Delete chat?`, body ว่า chat ถูกลบจาก inbox ฝั่งเราและอีกฝ่ายยังอาจเห็น conversation, actions `Cancel` / `Delete chat`
 - [ ] Delete Chat ซ่อนห้องจาก Chat List เฉพาะฝั่งผู้กด
 - [ ] Delete Chat ไม่ลบ message/archive ฝั่ง server และไม่กระทบคู่สนทนา
 - [ ] Delete Chat ไม่ลบหลักฐาน offer/chat history และไม่มี restore UI ใน V1
+- [ ] Delete Chat success แสดง `Chat deleted`; API fail แสดง `Unable to delete chat. Please try again.`
 
 ---
 
@@ -294,8 +299,14 @@ Purpose:
 - [ ] Article Share เป็น public share action และ Guest ใช้ได้
 - [ ] Article Share ไม่สร้าง notification
 - [ ] Article Comment ไม่อยู่ใน V1 baseline
-- [ ] Article-specific Report Article ไม่อยู่ใน V1 baseline
-- [ ] หากต้อง report article ให้ใช้ Trust & Safety `Report Board Content` และไม่ทำให้ article หายทันที
+- [ ] Article Detail overflow menu มี `Report article`
+- [ ] Report article ใช้ Trust & Safety report type `Board Content` และ target type `Article`
+- [ ] Report article reason sheet มี reasons ตาม Settings/Board spec และ `Additional details (optional)`
+- [ ] `Submit report` disabled จนกว่าเลือก reason
+- [ ] Report article success แสดง `Report submitted` และ `Our team will review it. This article will remain visible until moderation is complete.`
+- [ ] Report article ต้องไม่แสดง `Hide article` หรือ `Hide this asset from feed?`
+- [ ] Report article duplicate แสดง `You already reported this article.`
+- [ ] Report article API fail แสดง `Unable to submit report. Please try again.`
 - [ ] Article not found/deleted แสดง unavailable state
 
 ---

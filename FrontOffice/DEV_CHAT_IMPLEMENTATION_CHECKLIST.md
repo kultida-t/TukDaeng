@@ -167,13 +167,21 @@ Out of scope for V1:
 
 # 11. Delete Chat Rules
 
+- [ ] Chat Room overflow menu shows `View profile`, `Mute notifications` / `Unmute notifications`, `Delete chat`, `Report user`, `Block user`
+- [ ] Header search icon is the only search entry; do not duplicate `Search in chat` in overflow menu
+- [ ] Mute notifications auto-saves and shows `Notifications muted`
+- [ ] Unmute notifications auto-saves and shows `Notifications unmuted`
 - [ ] Delete Chat has confirmation
+- [ ] Delete Chat confirmation uses title `Delete chat?` and actions `Cancel` / `Delete chat`
+- [ ] Delete Chat copy says the chat is removed from the actor inbox and the other person may still see the conversation
 - [ ] Delete Chat hides room from Chat List only for the actor
 - [ ] Delete Chat does not delete server message/archive history
 - [ ] Delete Chat does not affect the other user
 - [ ] Delete Chat does not remove offer/chat evidence
 - [ ] Delete Chat has no restore UI in V1
 - [ ] Confirmation copy must clearly say it hides the room only from this user's list
+- [ ] Delete Chat success shows `Chat deleted`
+- [ ] Delete Chat API fail shows `Unable to delete chat. Please try again.`
 
 ---
 

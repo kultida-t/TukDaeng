@@ -234,7 +234,7 @@ Figma มี coverage ของ flow หลักค่อนข้างมา�
 | Medium | Guest behavior ของ Article Like ยังต้องตัดสินตาม login baseline | Master ระบุ user ทั่วไป Like/Share ได้ แต่ global login rule ระบุ Like ต้อง login | ใช้ Member สำหรับ Article Like จนกว่า master แยก Article Like สำหรับ Guest |
 | Medium | Menu label `Community` อาจไม่ตรงกับ master module name | Master module คือ Board | normalize label หรือ map `Community` เป็น Board ให้ชัด |
 | Medium | Article Share สำหรับ Guest ต้องชัด | Master lock ให้ Article Share เป็น public share action | เพิ่ม Guest share state โดยไม่ต้อง Login |
-| High | Article Comment / Report Article ต้องไม่ขยายเป็น Board V1 interaction | Master ระบุ Article Like / Share; ถ้าต้อง report ให้ใช้ Trust & Safety `Report Board Content` | ซ่อน Article Comment และใช้ minimal `Report content` เฉพาะเมื่อผูกกับ moderation handoff |
+| High | Article Comment / Report Article ต้องไม่ขยายเป็น Board V1 interaction | Master ระบุ Article Like / Share และ `Report article` ที่ map เข้า Trust & Safety `Report Board Content` | ซ่อน Article Comment; ใช้ Article Detail overflow menu label `Report article`, reason sheet, success state และ error states ตาม Board Module |
 
 ### 13 Settings Module
 

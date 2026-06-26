@@ -231,6 +231,8 @@
   - ส่ง Text, รูปภาพ, ไฟล์
   - Long Press ข้อความ → ลบแชท (Confirm ก่อนลบ)
 - Delete Chat: ยืนยัน dialog ก่อนลบ
+- Delete Chat ซ่อนห้องจาก inbox ฝั่งผู้กดเท่านั้น ไม่ลบประวัติฝั่ง server หรือคู่สนทนา
+- Chat room menu มี View profile, Mute notifications, Delete chat, Report user, Block user
 
 ---
 
@@ -253,7 +255,10 @@
 
 **Business Rules:**
 - บทความถูกสร้างและจัดการโดย Admin ผ่าน Back Office
-- ผู้ใช้ทั่วไปอ่านได้อย่างเดียว
+- ผู้ใช้ทั่วไปอ่าน, Share, Like และ Report article ได้ตาม permission
+- Article Comment ไม่อยู่ใน FO V1
+- Report article ส่งเข้า Trust & Safety เป็น report type `Board Content` และ target type `Article`
+- Report article สำเร็จต้องไม่ทำให้บทความหายทันที
 
 ---
 

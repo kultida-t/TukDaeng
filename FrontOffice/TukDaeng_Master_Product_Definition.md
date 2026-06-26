@@ -660,9 +660,26 @@ Rules:
 - Guest อ่านและ Share บทความได้โดยไม่ต้อง Login เพราะ Article Share เป็น public share action
 - Article Like ต้อง Login ตาม Global Login Required baseline
 - Article Comment ไม่อยู่ใน FO V1 baseline
-- Article-specific Report Article ไม่อยู่ใน Board V1 baseline
-- หากต้องรองรับ report สำหรับบทความ ให้ใช้ Trust & Safety `Report Board Content` เป็น generic report action และส่งเข้า moderation handoff
+- Article Detail รองรับ report action ด้วย UI label `Report article`
+- `Report article` ต้องส่งเข้า Trust & Safety ด้วย report type `Board Content` และ target type `Article`
 - Report Board Content ไม่ทำให้บทความหายทันทีจนกว่า Admin moderation
+- Report article success ใช้ `Report submitted` และแจ้งว่า article ยัง visible จน moderation complete
+
+### Chat Room Actions
+
+Chat Room overflow menu ต้องมี:
+
+- `View profile`
+- `Mute notifications` / `Unmute notifications`
+- `Delete chat`
+- `Report user`
+- `Block user`
+
+Chat room action rules:
+
+- `Mute notifications` auto-save และแสดง `Notifications muted`; unmute แสดง `Notifications unmuted`
+- `Delete chat` ซ่อนห้องจาก inbox/list เฉพาะฝั่งผู้กด ไม่ลบ message/archive ฝั่ง server และไม่กระทบคู่สนทนา
+- Delete chat confirmation ใช้ title `Delete chat?` และ actions `Cancel`, `Delete chat`
 
 ### Settings
 

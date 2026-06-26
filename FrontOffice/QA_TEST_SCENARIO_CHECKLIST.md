@@ -648,6 +648,36 @@ Then Chat Room ต้องหายจาก Chat List ของ Member A
 And Chat Room ต้องยังอยู่ใน Chat List ของ Member B  
 And message/archive และ offer/chat history ต้องไม่ถูกลบจาก server
 
+## QA-CHAT-005A: Chat Room Overflow Menu
+
+Given Member เปิด Chat Room
+When Member กดปุ่ม `...`
+Then menu ต้องเรียง `View profile`, `Mute notifications`, `Delete chat`, `Report user`, `Block user`
+And ต้องไม่มี `Search in chat` ซ้ำเมื่อ header มี search icon แล้ว
+
+## QA-CHAT-005B: Mute Chat Notifications
+
+Given Member เปิด Chat Room overflow menu
+When Member กด `Mute notifications`
+Then setting ต้อง auto-save
+And ต้องแสดง `Notifications muted`
+When Member เปิด menu อีกครั้ง
+Then label ต้องเปลี่ยนเป็น `Unmute notifications`
+When Member กด `Unmute notifications`
+Then ต้องแสดง `Notifications unmuted`
+
+## QA-CHAT-005C: Delete Chat Confirmation Copy
+
+Given Member เปิด Chat Room overflow menu
+When Member กด `Delete chat`
+Then confirmation title ต้องเป็น `Delete chat?`
+And actions ต้องเป็น `Cancel` และ `Delete chat`
+And copy ต้องแจ้งว่า chat จะถูกลบจาก inbox ฝั่งผู้กด แต่อีกฝ่ายอาจยังเห็น conversation และ records บางส่วนอาจถูก retain
+When delete สำเร็จ
+Then ต้องกลับ Chat List และแสดง `Chat deleted`
+When API fail
+Then ต้องแสดง `Unable to delete chat. Please try again.`
+
 ## QA-CHAT-006: Delete Chat Has No Restore UI
 
 Given Member กด Delete Chat สำเร็จ  
@@ -947,10 +977,42 @@ Then Article Comment ต้องไม่แสดงใน V1 baseline
 ## QA-BOARD-005: Report Board Content Boundary
 
 Given user เปิด Article Detail  
-When user กด Report content  
+When user กด Report article  
 Then report ต้องส่งเข้า Trust & Safety moderation handoff  
 And article ต้องไม่หายทันที  
 And ระบบต้องไม่เปิด Article Comment หรือ article-specific moderation flow
+
+## QA-BOARD-005A: Report Article Reason Sheet
+
+Given Member เปิด Article Detail
+When Member กด `Report article`
+Then sheet ต้องแสดง title `Report article`
+And prompt `Why are you reporting this article?`
+And reasons ต้องมี `Spam or misleading`, `Harassment or hate`, `Scam or fraud`, `Illegal or restricted item`, `Inappropriate content`, `Other`
+And optional field ต้องใช้ label `Additional details (optional)`
+And `Submit report` ต้อง disabled จนกว่าเลือก reason
+
+## QA-BOARD-005B: Report Article Submitted
+
+Given Member เลือก report reason
+When Member กด `Submit report` และ API สำเร็จ
+Then ต้องแสดง `Report submitted`
+And ต้องแสดง `Our team will review it. This article will remain visible until moderation is complete.`
+And action ต้องเป็น `Done`
+And article ต้องยัง visible
+And success state ต้องไม่มี `Hide article` หรือ `Hide this asset from feed?`
+
+## QA-BOARD-005C: Report Article Error States
+
+Given Member report article เดิมซ้ำ
+When ระบบตรวจพบ duplicate
+Then ต้องแสดง `You already reported this article.`
+Given API submit report fail
+When Member submit report
+Then ต้องแสดง `Unable to submit report. Please try again.`
+Given Guest เปิด Article Detail
+When Guest กด `Report article`
+Then ต้องแสดง Global Login Required Dialog
 
 ---
 

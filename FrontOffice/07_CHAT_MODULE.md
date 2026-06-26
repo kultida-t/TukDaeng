@@ -353,6 +353,25 @@ Search Chat ต้องรองรับการค้นหาห้อง�
 
 รายละเอียด search field / searchable content ให้กำหนดใน implementation หรือ Chat sub-spec หากต้องการเพิ่มความละเอียด
 
+## Chat Room Action Menu Rule
+
+Chat Room overflow menu (`...`) must show only room-level and user-safety actions in this order:
+
+1. `View profile`
+2. `Mute notifications` or `Unmute notifications`
+3. `Delete chat`
+4. `Report user`
+5. `Block user`
+
+Menu behavior:
+
+- `View profile` opens the other user's Public Profile.
+- `Search in chat` must not be duplicated in this menu when the header already has a search icon.
+- `Mute notifications` toggles room-level chat notifications immediately and auto-saves.
+- After mute succeeds, show toast `Notifications muted` and change the menu label to `Unmute notifications`.
+- After unmute succeeds, show toast `Notifications unmuted` and change the menu label back to `Mute notifications`.
+- `Delete chat`, `Report user`, and `Block user` are destructive/safety actions and must be visually separated or styled as destructive actions according to design system.
+
 ## Chat Sorting Rule
 
 Chat List เรียงตาม:
@@ -377,6 +396,21 @@ Unread Count ต้องอัปเดตเมื่อ:
 - Delete Chat ไม่ลบหลักฐาน offer/chat history
 - ไม่มี restore UI ใน V1
 - Confirmation copy ต้องสื่อว่าเป็นการซ่อนจากรายการของผู้ใช้คนนี้เท่านั้น ไม่ใช่การลบประวัติของอีกฝ่าย
+
+Delete Chat confirmation copy:
+
+- Title: `Delete chat?`
+- Body:
+  - `This chat will be removed from your inbox.`
+  - `The other person may still see the conversation.`
+  - `Some records may be retained for safety, fraud prevention, legal, or audit purposes.`
+- Actions: `Cancel`, `Delete chat`
+
+Delete Chat result:
+
+- Success toast: `Chat deleted`
+- API error: `Unable to delete chat. Please try again.`
+- On success, return to Chat List and remove the room from the actor's Chat List only.
 
 ## Block User Rule
 
@@ -534,6 +568,7 @@ Notification destination:
 - Receive Message
 - Search Chat
 - Delete Chat
+- Mute Chat Notifications
 - Block User From Chat
 - Report User From Chat
 - Open Asset Reference
@@ -606,6 +641,18 @@ Notification destination:
 | AC-CHAT-028 | Delete Chat ต้องซ่อนห้องแชทจาก Chat List เฉพาะฝั่งผู้กด |
 | AC-CHAT-029 | Delete Chat ต้องไม่ลบ message/archive ฝั่ง server และไม่กระทบคู่สนทนา |
 | AC-CHAT-030 | Delete Chat ต้องไม่ลบหลักฐาน offer/chat history และไม่มี restore UI ใน V1 |
+
+---
+
+## Chat Room Menu / Mute / Delete Locked Criteria
+
+| AC ID | Criteria |
+|---|---|
+| AC-CHAT-031 | Chat Room overflow menu must show `View profile`, `Mute notifications` or `Unmute notifications`, `Delete chat`, `Report user`, and `Block user` in this order |
+| AC-CHAT-032 | Header search icon is the search entry; `Search in chat` must not be duplicated in the overflow menu |
+| AC-CHAT-033 | Mute notifications must auto-save, show `Notifications muted`, and change the menu label to `Unmute notifications`; unmute must show `Notifications unmuted` |
+| AC-CHAT-034 | Delete Chat confirmation must use title `Delete chat?`, actions `Cancel` / `Delete chat`, and copy that the chat is removed only from the actor's inbox while records may be retained |
+| AC-CHAT-035 | Delete Chat success must return to Chat List and show `Chat deleted`; API failure must show `Unable to delete chat. Please try again.` |
 
 ---
 

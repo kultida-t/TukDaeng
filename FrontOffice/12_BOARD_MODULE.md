@@ -61,7 +61,7 @@ Phase 1 บทความสร้างและจัดการโดย Ad
 | Medium | Guest behavior ของ Article Like ยังต้องตัดสินตาม login baseline | Master ระบุ user ทั่วไป Like/Share ได้ แต่ global login rule ระบุ Like ต้อง login | ใช้ Member สำหรับ Article Like จนกว่า master แยก Article Like สำหรับ Guest |
 | Medium | Menu label `Community` อาจไม่ตรงกับ master module name | Master module คือ Board | normalize label หรือ map `Community` เป็น Board ให้ชัด |
 | Medium | Article Share สำหรับ Guest ต้องชัด | Master lock ให้ Article Share เป็น public share action | เพิ่ม Guest share state โดยไม่ต้อง Login |
-| High | Article Comment / Report Article ต้องไม่ขยายเป็น Board V1 interaction | Master ระบุ Article Like / Share เท่านั้น; Report Board Content ใช้ Trust & Safety moderation handoff หากต้องรองรับ compliance | ซ่อน Article Comment และใช้ minimal `Report content` เฉพาะเมื่อผูกกับ Trust & Safety |
+| High | Article Comment / Report Article ต้องไม่ขยายเป็น Board V1 interaction | Master ระบุ Article Like / Share และอนุญาต `Report article` ที่ map เข้า Trust & Safety `Report Board Content` | ซ่อน Article Comment และใช้ `Report article` เฉพาะเมื่อผูกกับ Trust & Safety moderation handoff |
 
 ---
 
@@ -101,7 +101,7 @@ Phase 1 บทความสร้างและจัดการโดย Ad
 ## Report Board Content Boundary
 
 - Article Comment ไม่อยู่ใน FO V1 baseline
-- Article-specific Report Article interaction ไม่อยู่ใน Board V1 baseline
+- Article-specific moderation tooling is not in Board V1 baseline; use UI label `Report article` mapped to Trust & Safety `Report Board Content`
 - หากต้องรองรับ compliance ให้ใช้ Trust & Safety `Report Board Content` เป็น generic report action บน Article Detail
 - Report Board Content ต้องส่งเข้า moderation handoff และไม่ทำให้ article หายทันที
 - Front Office user ยังสร้าง แก้ไข ลบ หรือ comment article ไม่ได้
@@ -275,6 +275,42 @@ Board ต้องรองรับ section/category ต่อไปนี้:
 - Guest Article Share ใช้ได้โดยไม่ต้อง Login
 - Article Share ไม่สร้าง notification และไม่เปลี่ยน permission ของบทความ
 
+## Report Article Rule
+
+Report article is allowed as the Front Office entry label for Trust & Safety `Report Board Content`.
+
+Article Detail overflow menu:
+
+- `Report article`
+
+Report article reason sheet:
+
+- Title: `Report article`
+- Prompt: `Why are you reporting this article?`
+- Reasons:
+  - `Spam or misleading`
+  - `Harassment or hate`
+  - `Scam or fraud`
+  - `Illegal or restricted item`
+  - `Inappropriate content`
+  - `Other`
+- Optional field label: `Additional details (optional)`
+- Primary action: `Submit report`
+
+Report article behavior:
+
+- `Submit report` must be disabled until a reason is selected.
+- Report submit sends Trust & Safety report type `Board Content` with target type `Article`.
+- On success, close the reason sheet and show success modal or system-consistent confirmation.
+- Success title: `Report submitted`
+- Success body: `Our team will review it. This article will remain visible until moderation is complete.`
+- Success action: `Done`
+- Article must remain visible after report submit until Admin moderation is complete.
+- Do not show `Hide article` or `Hide this asset from feed?` in the article report success state.
+- Duplicate report state: `You already reported this article.`
+- API error state: `Unable to submit report. Please try again.`
+- Guest report entry must show Global Login Required Dialog.
+
 ## Sorting / Ranking Rule
 
 - Trending Now ใช้ ranking logic ตาม content/admin configuration หรือ analytics implementation
@@ -369,6 +405,9 @@ Master ยังไม่ได้ระบุ Board notification type ใน No
 - `article_unliked`
 - `article_share_started`
 - `article_shared`
+- `article_report_started`
+- `article_report_submitted`
+- `article_report_failed`
 - `article_list_load_more`
 
 ---
@@ -448,7 +487,39 @@ Then ระบบต้องไม่แสดง Article Comment เป็น 
 
 Given user เปิด Article Detail  
 When user เห็น report action  
-Then action ต้องเป็น `Report content` ที่ส่งเข้า Trust & Safety moderation handoff และต้องไม่เปิด Article Comment หรือ article-specific moderation flow
+Then action label must be `Report article` and submit to Trust & Safety moderation handoff without opening Article Comment or Front Office moderation tooling
+
+## AC-BOARD-011B: Report Article Locked Flow
+
+Given Member opens Article Detail
+When Member taps `Report article`
+Then the sheet must show title `Report article`
+And prompt `Why are you reporting this article?`
+And reasons `Spam or misleading`, `Harassment or hate`, `Scam or fraud`, `Illegal or restricted item`, `Inappropriate content`, and `Other`
+And optional field label must be `Additional details (optional)`
+And `Submit report` must be disabled until a reason is selected
+And report must submit Trust & Safety report type `Board Content` with target type `Article`
+
+## AC-BOARD-011C: Report Article Submitted
+
+Given Member selected a report reason
+When Member taps `Submit report` and API succeeds
+Then the article must remain visible
+And success must show title `Report submitted`
+And body `Our team will review it. This article will remain visible until moderation is complete.`
+And action `Done`
+And the success state must not show `Hide article` or `Hide this asset from feed?`
+
+## AC-BOARD-011D: Report Article Error States
+
+Given Member submits report article
+When the user already reported this article
+Then show `You already reported this article.`
+When API fails
+Then show `Unable to submit report. Please try again.`
+Given Guest opens Article Detail
+When Guest taps `Report article`
+Then show Global Login Required Dialog
 
 ## AC-BOARD-012: Article Not Found
 
@@ -470,7 +541,7 @@ Then ระบบต้องแสดง `บทความนี้ไม่�
 # 19. Future Enhancement
 
 - Article Comment
-- Article-specific Report Article
+- Article-specific moderation tooling beyond Trust & Safety `Report Board Content`
 - Admin publish notification
 - Personalized article recommendation
 - Saved Article
