@@ -4,6 +4,9 @@
 **Review Scope:** เทียบภาพรวมหน้าจอ Figma ที่แนบมากับ master baseline ล่าสุด  
 **Purpose:** ใช้เป็น checklist สำหรับปรับ Figma ให้ตรงกับ source of truth ก่อนแตกเป็น Functional PRD รายโมดูล
 
+**Current Cleanup Tracker:** [FIGMA_UX_CLEANUP_TASK_BREAKDOWN.md](FIGMA_UX_CLEANUP_TASK_BREAKDOWN.md)  
+**Document rule:** ระหว่าง Figma cleanup ยังไม่เสร็จ ให้ update checklist/tracker เดิมเท่านั้น ไม่สร้าง handoff หรือ checklist ชุดใหม่ เว้นแต่มี product decision ใหม่ที่ต้อง bump version ใน [DOCUMENT_VERSION.md](DOCUMENT_VERSION.md)
+
 ## Review Summary
 
 Figma มี coverage ของ flow หลักค่อนข้างมากแล้ว แต่ยังมีทั้ง:

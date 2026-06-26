@@ -6,6 +6,36 @@
 
 ---
 
+## 0. Current Figma Cleanup Status
+
+**Status:** Figma cleanup in progress  
+**Handoff rule:** ยังไม่สร้าง Dev / QA / Figma handoff package ใหม่จนกว่า Figma cleanup รอบนี้จะนิ่ง  
+**Version rule:** ถ้า Figma แก้ให้ตรง baseline เดิม ไม่ต้อง bump version; ถ้ามี product decision ใหม่จริง ให้ update `DOCUMENT_VERSION.md` และไฟล์เดิมที่เกี่ยวข้องเท่านั้น
+
+ใช้ไฟล์นี้เป็น tracker กลางสำหรับงาน Figma ระหว่าง cleanup ห้ามสร้าง checklist หรือ handoff ชุดใหม่ซ้ำ เพราะจะทำให้ทีมสับสนว่า version ไหนเป็น source of truth
+
+### Current Working Queue
+
+| Order | Area | Current Status | Next Figma Action | Source |
+| --- | --- | --- | --- | --- |
+| 1 | Add / Edit Asset required fields | In progress | ตรวจ status selector, required fields, save/uploading state และ `Owner Estimated Value (Private)` ตาม work pack 2.1 | `04_ASSET_MANAGEMENT_MODULE.md` |
+| 2 | Feed / Search / Watch Alert visibility | Pending review | ยืนยันว่า list surfaces แสดงเฉพาะ `Sale`, ไม่มี Location บน cards และ Watch Alert notification ไป Result List | `02_FEED_MODULE.md`, `03_SEARCH_FILTER_MODULE.md`, `10_WATCH_ALERT_MODULE.md` |
+| 3 | Notification / Chat unread | Pending review | ยืนยันว่า Chat/New Message ไม่อยู่ Notification Center และ unread แสดงเฉพาะ Chat menu/list | `07_CHAT_MODULE.md`, `09_NOTIFICATION_MODULE.md` |
+| 4 | Board / Settings / Auth compliance | Pending review | ตรวจ Board เป็น Article Area, Settings มี Theme/Delete Account, Sign Up มี Terms/Privacy และ Suspended state | `01_AUTHENTICATION_MODULE.md`, `12_BOARD_MODULE.md`, `13_SETTINGS_MODULE.md` |
+| 5 | Portfolio / valuation private states | Pending review | ตรวจ Owner-only Portfolio, Sold excluded, valuation fallback, Market Comparison และ Expected Profit owner-only | `14_PORTFOLIO_MODULE.md` |
+| 6 | Final Figma sign-off | Not ready | หลังทุก `Must Fix` และ `High` เป็น Done / Not Applicable / Needs Product Decision ค่อยทำ handoff package | `README_MODULE_INDEX.md` |
+
+### Already Reviewed In Current Round
+
+| Area | Status | Note |
+| --- | --- | --- |
+| Asset Detail / Public Profile | Reviewed | Coverage marked complete in work pack 2.2 |
+| Share sheet / copy link fallback | Reviewed | Keep as system share sheet with Copy Link fallback |
+| Permission denied / unavailable state | Reviewed | Use minimal header, message by case, and primary CTA `Go back` |
+| Report / Delete / Block core copy | Reviewed | Copy and confirmation behavior are synced into PRD, Dev checklist and QA checklist |
+
+---
+
 ## 1. Cleanup Rule
 
 ให้แก้ตามลำดับนี้:
