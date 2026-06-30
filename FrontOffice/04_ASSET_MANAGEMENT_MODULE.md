@@ -705,6 +705,69 @@ Payment Method:
 
 - Required
 
+## Sale Record Confirmation
+
+หลัง Owner กรอก Sale Record / Sale History และกด `Save` ระบบต้องแสดง confirmation ก่อนเปลี่ยน Asset เป็น `Sold`
+
+Confirmation copy:
+
+| Language | Title | Body | Secondary | Primary |
+|---|---|---|---|---|
+| TH | บันทึกการขาย? | เมื่อยืนยัน ระบบจะบันทึกประวัติการขาย เปลี่ยนสถานะรายการเป็นขายแล้ว และนำรายการนี้ออกจากฟีด ค้นหา และ Watch Alert | ยกเลิก | บันทึกการขาย |
+| EN | Save sale history? | This will save the sale history, mark this asset as sold, and remove it from Feed, Search, and Watch Alert results. | Cancel | Save sale |
+
+Confirmation behavior:
+
+- ห้ามใช้ copy `Confirm sold out?` เพราะ `sold out` เหมาะกับสินค้าหลายชิ้น ไม่ใช่ Asset รายการเดียว
+- กด `Cancel` ต้องปิด popup และคงข้อมูลใน Sale Record Form ไว้
+- กด `Save sale` / `บันทึกการขาย` แล้วจึงเปลี่ยน Asset status เป็น `Sold`
+- หลัง confirm สำเร็จ Offer อื่นต้องถูก Auto Reject ตาม Offer Impact Rule
+- หาก save ล้มเหลว ต้องคง Asset status เดิม, คงข้อมูลใน form และแสดง retry/error state
+
+## Edit Asset Confirmation
+
+หลัง Owner แก้ไขข้อมูล Asset และกด `Save` ใน Edit Asset ระบบควรแสดง confirmation ก่อนบันทึกการแก้ไข
+
+Confirmation copy:
+
+| Language | Title | Body | Secondary | Primary |
+|---|---|---|---|---|
+| TH | บันทึกการแก้ไข? | ระบบจะบันทึกข้อมูลที่แก้ไขและอัปเดตรายการนี้ตามสถานะปัจจุบัน | ยกเลิก | บันทึก |
+| EN | Save changes? | This will save your changes and update this asset based on its current status. | Cancel | Save |
+
+Confirmation behavior:
+
+- ห้ามใช้ copy `Save edit asset?` เพราะเป็นภาษาอังกฤษที่ไม่เป็นธรรมชาติ
+- กด `Cancel` ต้องปิด popup และคงข้อมูลที่แก้ไว้ใน Edit Asset Form
+- กด `Save` แล้วจึงเริ่ม saving / uploading state
+- หากมีรูปหรือไฟล์ใหม่ต้องใช้ uploading/saving state ตาม rule เดียวกับ Add Asset
+- หาก save สำเร็จ ให้กลับ Owner Asset Detail หรือ state ที่เหมาะสม และแสดงข้อมูลล่าสุด
+- หาก save ล้มเหลว ต้องคงข้อมูลที่แก้ไว้ใน form, ไม่เปลี่ยนข้อมูลเดิมของ Asset และแสดง retry/error state
+- หากการแก้ไขเปลี่ยน status แล้วกระทบ visibility เช่น Sale -> Show / Hide ต้อง apply lifecycle rule หลัง save สำเร็จเท่านั้น
+
+## Edit Provenance Confirmation
+
+หลัง Owner แก้ไข Provenance / Purchase History หรือ Consignment details และกด `Save` ระบบควรแสดง confirmation ก่อนบันทึก private record
+
+Confirmation copy:
+
+| Context | Language | Title | Body | Secondary | Primary |
+|---|---|---|---|---|---|
+| Owner (Asset) purchase history | TH | บันทึกประวัติการซื้อ? | ระบบจะบันทึกการแก้ไขประวัติการซื้อของรายการนี้ | ยกเลิก | บันทึก |
+| Owner (Asset) purchase history | EN | Save purchase history? | This will save your changes to this asset's purchase history. | Cancel | Save |
+| Consignment details | TH | บันทึกข้อมูลฝากขาย? | ระบบจะบันทึกการแก้ไขข้อมูลฝากขายของรายการนี้ | ยกเลิก | บันทึก |
+| Consignment details | EN | Save consignment details? | This will save your changes to this asset's consignment details. | Cancel | Save |
+
+Confirmation behavior:
+
+- ห้ามใช้ body ของ Edit Asset เช่น `This will save your changes and update this asset based on its current status.` สำหรับ Provenance เพราะการแก้ประวัติการซื้อเป็น private data และไม่ควรกระทบ public visibility
+- กด `Cancel` ต้องปิด popup และคงข้อมูลที่แก้ไว้ใน Provenance form
+- กด `Save` แล้วจึงเริ่ม saving / uploading state
+- หากมีการแก้รูปเอกสารหรือแนบไฟล์ใหม่ ต้องใช้ uploading/saving state ตาม file upload rule
+- หาก save สำเร็จ ให้กลับ Owner Asset Detail / Provenance detail และแสดง private data ล่าสุด
+- หาก save ล้มเหลว ต้องคงข้อมูลที่แก้ไว้ใน form, ไม่ overwrite provenance เดิม และแสดง retry/error state
+- Sold Asset ต้องไม่ให้แก้ Provenance ผ่าน Edit Provenance ปกติ; ต้องใช้ correction/audit flow ตาม Sold Asset rule
+
 ---
 
 # 13. Exception Handling
@@ -816,6 +879,7 @@ Owner Profile และ Sold History ใช้ Global Empty State:
 | AC-ASSET-MGMT-006 | Add / Edit Asset ต้องรองรับ Gallery สูงสุด 10 รูป |
 | AC-ASSET-MGMT-006A | Add / Edit Asset ต้อง require อย่างน้อย 1 รูปสำหรับ Sale, Show และ Hide |
 | AC-ASSET-MGMT-006B | หลังกรอกข้อมูลครบและกด Save ต้องแสดง uploading/saving state พร้อมข้อความ `กำลังอัปโหลด...` / `Uploading...` เมื่อมีไฟล์ upload และต้อง disable ปุ่ม Save เพื่อป้องกัน duplicate submit |
+| AC-ASSET-MGMT-006C | หลัง Owner กด Save ใน Edit Asset ต้องแสดง confirmation copy `Save changes?` / `บันทึกการแก้ไข?` และห้ามใช้คำว่า `Save edit asset?` |
 | AC-ASSET-MGMT-007 | Add / Edit Asset ต้องรองรับ Brand, Model / Series, Reference No., Year, Condition, Scope of Delivery, Case Size, Thickness, Case Material, Movement, Dial Color, Strap / Bracelet Type, Price และ Description |
 | AC-ASSET-MGMT-007A | Status = Sale ต้อง require Photos, Brand Name, Model / Series, Condition, Price และ Description |
 | AC-ASSET-MGMT-007B | Status = Show ต้อง require Photos, Brand Name และ Model / Series โดยไม่บังคับ Price |
@@ -830,6 +894,7 @@ Owner Profile และ Sold History ใช้ Global Empty State:
 | AC-ASSET-MGMT-008F | Consignment Asking Price ต้องใช้ source เดียวกับ Commerce / listing Asking Price และต้อง sync กันหาก user แก้ใน step ใด step หนึ่ง |
 | AC-ASSET-MGMT-008G | `Consignment` ต้องเลือกได้เฉพาะ Asset status = Sale เท่านั้น; Status = Show หรือ Hide ต้องแสดงเฉพาะ `Owner (Asset)` provenance form |
 | AC-ASSET-MGMT-008H | หาก Asset ที่มี `Consignment` ถูกเปลี่ยนจาก Sale เป็น Show หรือ Hide ต้องบังคับเปลี่ยน provenance type เป็น `Owner (Asset)` หรือปิด consignment data ก่อนบันทึก |
+| AC-ASSET-MGMT-008I | หลัง Owner กด Save ใน Edit Provenance ต้องแสดง confirmation เฉพาะ context: `Save purchase history?` สำหรับ Owner (Asset) หรือ `Save consignment details?` สำหรับ Consignment และห้ามใช้ Edit Asset body ที่อ้างถึง current status |
 | AC-ASSET-MGMT-009 | Add / Edit Asset ต้องให้เลือก status ได้เฉพาะ Sale, Show และ Hide |
 | AC-ASSET-MGMT-010 | Add / Edit Asset ต้องไม่ให้เลือก Sold เป็น status ปกติ |
 
@@ -849,6 +914,7 @@ Owner Profile และ Sold History ใช้ Global Empty State:
 |---|---|
 | AC-ASSET-MGMT-016 | Mark as Sold ต้องเปิด Sale Record Form ก่อนเปลี่ยนสถานะเป็น Sold |
 | AC-ASSET-MGMT-016A | Mark as Sold จาก Owner Feed more menu ต้องเปิด Sale Record Form โดยตรง และไม่ต้องผ่าน Edit Asset |
+| AC-ASSET-MGMT-016B | หลังกรอก Sale Record และกด Save ต้องแสดง confirmation copy `Save sale history?` / `บันทึกการขาย?` และห้ามใช้คำว่า `Confirm sold out?` |
 | AC-ASSET-MGMT-017 | Sale Record Form ต้องเก็บ Sale Date, Buyer, Contact, Sale Price, Payment Method และ Attachment |
 | AC-ASSET-MGMT-018 | เมื่อ Mark as Sold สำเร็จ Asset ต้องหายจาก Feed, Following, Favorites, Search และ Watch Alert ทันที |
 | AC-ASSET-MGMT-019 | เมื่อ Mark as Sold สำเร็จ Offer อื่นต้องถูก Auto Reject |

@@ -455,11 +455,51 @@ When Owner กด `Save` แล้ว upload/save ล้มเหลว
 Then ระบบต้องแสดง error state
 And ต้องมี action ให้ retry หรือกลับไปแก้ไขรูป/ข้อมูลได้
 
+## QA-ASSET-002Q: Edit Asset Confirmation Copy
+
+Given Owner แก้ไขข้อมูล Asset
+When Owner กด `Save`
+Then ระบบต้องแสดง confirmation title `Save changes?` / `บันทึกการแก้ไข?`
+And body ต้องแจ้งว่าจะบันทึกข้อมูลที่แก้ไขและอัปเดตรายการตามสถานะปัจจุบัน
+And ต้องไม่ใช้คำว่า `Save edit asset?`
+And action ต้องเป็น `Cancel` และ `Save` / `บันทึก`
+When Owner กด `Cancel`
+Then popup ต้องปิดและข้อมูลที่แก้ไว้ใน form ต้องยังคงอยู่
+
+## QA-ASSET-002R: Edit Purchase History Confirmation Copy
+
+Given Owner แก้ไข Owner (Asset) purchase history
+When Owner กด `Save`
+Then ระบบต้องแสดง confirmation title `Save purchase history?` / `บันทึกประวัติการซื้อ?`
+And body ต้องแจ้งว่าจะบันทึกการแก้ไขประวัติการซื้อของรายการนี้
+And ต้องไม่ใช้ body ของ Edit Asset ที่อ้างถึง current status
+And action ต้องเป็น `Cancel` และ `Save` / `ยกเลิก` และ `บันทึก`
+When Owner กด `Cancel`
+Then popup ต้องปิดและข้อมูลที่แก้ไว้ใน Provenance form ต้องยังคงอยู่
+
+## QA-ASSET-002S: Edit Consignment Confirmation Copy
+
+Given Owner แก้ไข Consignment details
+When Owner กด `Save`
+Then ระบบต้องแสดง confirmation title `Save consignment details?` / `บันทึกข้อมูลฝากขาย?`
+And body ต้องแจ้งว่าจะบันทึกการแก้ไขข้อมูลฝากขายของรายการนี้
+And ต้องไม่ใช้ body ของ Edit Asset ที่อ้างถึง current status
+And action ต้องเป็น `Cancel` และ `Save` / `ยกเลิก` และ `บันทึก`
+
 ## QA-ASSET-003: Mark As Sold
 
 Given Owner mark Asset as Sold  
 When Owner submit Sale Record  
 Then ระบบต้องเก็บ Sale Date, Buyer, Contact, Sale Price, Payment Method, Attachment
+
+## QA-ASSET-003A: Sale Record Confirmation Copy
+
+Given Owner กรอก Sale Record / Sale History ครบ
+When Owner กด `Save`
+Then ระบบต้องแสดง confirmation title `Save sale history?` / `บันทึกการขาย?`
+And body ต้องแจ้งว่าจะบันทึกประวัติการขาย เปลี่ยนสถานะเป็น Sold และนำรายการออกจาก Feed, Search และ Watch Alert
+And ต้องไม่ใช้คำว่า `Confirm sold out?`
+And action ต้องเป็น `Cancel` และ `Save sale` / `บันทึกการขาย`
 
 ## QA-ASSET-004: Sold Locks Main Fields
 
