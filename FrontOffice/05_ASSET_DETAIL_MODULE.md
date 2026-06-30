@@ -445,6 +445,42 @@ Owner ต้องไม่เห็นปุ่ม Follow ตัวเอง
 
 ข้อมูลเหล่านี้เห็นเฉพาะ Owner หรือ Admin ตามสิทธิ์
 
+## Owner Private Provenance Display Rule
+
+Owner Asset Detail ต้องแยก private provenance เป็น section เฉพาะ Owner และต้องไม่ปนกับข้อมูล public listing:
+
+| Section | Visible To | Display Rule |
+| --- | --- | --- |
+| Purchase Information / Owner (Asset) | Owner, Admin | แสดงเฉพาะ field ที่มีค่า เช่น Purchase Price, Purchase Date, Purchase From |
+| Consignment Information | Owner, Admin | แสดงเฉพาะ field ที่มีค่า เช่น Consignor name, contact, payout, consignment date, duration |
+| Price & Terms | Owner, Admin | แสดงเฉพาะ field ที่มีค่า เช่น Asking Price, Commission, Minimum Acceptable Price, Price Negotiable |
+| Documentation | Owner, Admin | แสดงเฉพาะเอกสารหรือรูปที่ upload แล้ว |
+| Note | Owner, Admin | แสดงเฉพาะเมื่อมีข้อความ |
+
+Post-save display behavior:
+
+- Public / Viewer mode แสดงเฉพาะ Gallery, Brand, Model, Reference No. ที่มีค่า, Description ที่มีค่า, Price เฉพาะ Sale, Owner Information, Technical Specifications ที่มีค่า และ Comments / Like Count
+- Public / Viewer mode ต้องไม่แสดง Purchase Price, Purchase Date, Purchase From, Proof of Payment, Consignment Owner Contact, Payout Method, Commission, Minimum Acceptable Price, Consignment Terms, Portfolio Value Detail หรือ Sold History
+- Owner mode แสดง public data ทั้งหมด และแสดง private provenance section ตาม type ที่บันทึกไว้
+- Owner mode สำหรับ `Owner (Asset)` ต้องแสดง Purchase Information โดยมี Purchase Price เสมอ และแสดง Purchase Date / Purchase From เฉพาะเมื่อมีค่า
+- Owner mode สำหรับ `Consignment` ต้องแสดง Consignment Information และ Price & Terms เฉพาะ field ที่มีค่า
+
+Empty private field behavior:
+
+- ถ้ามี `Owner (Asset)` provenance record แล้ว Purchase Price ต้องมีค่าเสมอ เพราะเป็น required field ของ record นั้น
+- ถ้า optional field ไม่ได้กรอก ห้ามแสดงชื่อ field นั้นใน Viewer/Public mode
+- ใน Owner mode ให้ซ่อน field ที่ว่าง เพื่อให้หน้ารายละเอียดอ่านง่าย
+- ถ้า private section ไม่มีข้อมูลเลย ให้แสดง owner-only action prompt เช่น `Add provenance` หรือซ่อน section ตาม layout
+- ห้ามแสดง placeholder เช่น `N/A`, `-`, `Not provided` สำหรับ optional descriptive fields ที่ว่าง
+- Price analytics ที่ต้องคง layout เช่น Expected Profit สามารถใช้ `—` ได้ตาม Price Analytics Rule
+
+Provenance edit behavior:
+
+- Asset สถานะ `Sale`: Owner สามารถแก้ `Owner (Asset)` หรือ `Consignment` provenance ได้ตาม type ที่เลือก
+- Asset สถานะ `Show` หรือ `Hide`: Owner แก้ได้เฉพาะ `Owner (Asset)` provenance และต้องไม่เห็น `Consignment` option
+- Asset สถานะ `Sold` ต้องแสดง Provenance / Consignment แบบ read-only และไม่ให้แก้ผ่าน Edit Asset ปกติ
+- การแก้ข้อมูลที่มีผลต่อ portfolio หรือ consignment settlement หลังขายต้องใช้ correction/audit flow ไม่ใช่แก้ทับประวัติเดิม
+
 ## Price Analytics Rule
 
 Asset Detail สามารถแสดง price analytics ได้ตามสิทธิ์และข้อมูลที่มี:
@@ -772,6 +808,12 @@ CTA behavior ใช้ rule เดียวกับ Asset Deleted / Unavailable
 | AC-DETAIL-010 | Asset Detail V1 ต้องไม่ใช้ Location เป็น field หลัก เว้นแต่ master จะตัดสินใจเพิ่มภายหลัง |
 | AC-DETAIL-010A | Market Comparison ต้องใช้ Asking Price เทียบกับ Watch Price API Market Price เท่านั้น และต้องไม่ใช้ Owner Estimated Value หรือ Purchase Price fallback เพื่อแสดง Above/At/Below |
 | AC-DETAIL-010B | Expected Profit ต้องแสดงเฉพาะ Owner view และต้องไม่แสดง Purchase Price หรือ expected profit ให้ Viewer/Public mode |
+| AC-DETAIL-010C | Owner Asset Detail ต้องแยก Purchase Information / Owner Provenance ออกจาก Consignment Information และแสดงเฉพาะ Owner หรือ Admin |
+| AC-DETAIL-010D | Optional private fields ที่ไม่ได้กรอกต้องไม่แสดง label หรือ placeholder ใน Viewer/Public mode และ Owner private section ควรซ่อน field ว่าง |
+| AC-DETAIL-010E | Sold Asset ต้องแสดง Provenance / Consignment เป็น read-only และไม่ให้แก้ผ่าน Edit Asset ปกติ |
+| AC-DETAIL-010F | Public / Viewer Asset Detail ต้องไม่แสดง Purchase Price, Purchase Date, Purchase From, Proof of Payment, Consignment Owner Contact, Payout Method, Commission, Minimum Acceptable Price, Portfolio Value Detail หรือ Sold History |
+| AC-DETAIL-010G | Owner Asset Detail ของ Status = Show หรือ Hide ต้องแสดง/แก้ได้เฉพาะ `Owner (Asset)` provenance และต้องไม่มี `Consignment` option |
+| AC-DETAIL-010H | Owner Asset Detail ของ Consignment ต้องแสดง Consignment Information และ Price & Terms เฉพาะ field ที่มีค่า |
 
 ## Guest User
 

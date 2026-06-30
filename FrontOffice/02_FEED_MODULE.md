@@ -473,6 +473,48 @@ Feed ไม่รองรับ:
 - เมื่อ Scroll ถึงรายการสุดท้ายต้องแสดง `คุณดูรายการทั้งหมดแล้ว`
 - V1 ไม่รองรับ Real-time Feed Refresh สำหรับ Asset ใหม่, Like จากอุปกรณ์อื่น หรือ Comment จากอุปกรณ์อื่น
 
+## Feed Network States
+
+หน้าฟีดต้องแยกสถานะ network ให้ชัดเจน เพื่อไม่ให้ผู้ใช้เห็นหน้าว่างหรือ loading ค้างเมื่อสัญญาณไม่ดี
+
+| State | Trigger | UI Behavior | TH Copy | EN Copy |
+| --- | --- | --- | --- | --- |
+| Initial loading | ผู้ใช้เปิด Feed และยังไม่มีข้อมูลบนหน้าจอ | แสดง skeleton ของ Feed Card ในตำแหน่งรายการ ห้ามแสดงหน้าว่าง | ไม่ต้องมีข้อความ | No copy |
+| Slow network | โหลดนานเกิน 2 วินาที แต่ request ยังไม่ fail | คง skeleton/loading ไว้ และแสดงข้อความเล็กใต้ search หรือเหนือ list | `กำลังโหลดข้อมูล อาจใช้เวลาสักครู่` | `Loading data. This may take a moment.` |
+| Initial load failed, no cache | API fail หรือ timeout และไม่มี cached Feed | แสดง full-page error state กลางพื้นที่ list พร้อมปุ่ม `ลองใหม่` | Title: `โหลดฟีดไม่สำเร็จ` Body: `สัญญาณอินเทอร์เน็ตอาจไม่เสถียร กรุณาตรวจสอบการเชื่อมต่อแล้วลองอีกครั้ง` Button: `ลองใหม่` | Title: `Unable to load feed` Body: `Your internet connection may be unstable. Check your connection and try again.` Button: `Try again` |
+| Offline, no cache | อุปกรณ์ offline ตั้งแต่เปิด Feed และไม่มี cached Feed | แสดง full-page offline state กลางพื้นที่ list พร้อมปุ่ม `ลองใหม่` | Title: `ไม่มีการเชื่อมต่ออินเทอร์เน็ต` Body: `เชื่อมต่ออินเทอร์เน็ตแล้วลองโหลดฟีดอีกครั้ง` Button: `ลองใหม่` | Title: `No internet connection` Body: `Connect to the internet and try loading the feed again.` Button: `Try again` |
+| Offline with cache | อุปกรณ์ offline แต่เคยโหลด Feed สำเร็จมาก่อน | แสดง Feed Card จาก cache ต่อไป และมี offline banner ด้านบน list | `คุณกำลังออฟไลน์ ข้อมูลอาจไม่ใช่ข้อมูลล่าสุด` | `You are offline. This information may not be up to date.` |
+| Refresh failed with existing data | ผู้ใช้ pull-to-refresh หรือ retry แล้ว fail แต่ยังมีข้อมูลเดิมบนหน้าจอ | คงข้อมูลเดิมไว้ ห้ามล้าง list และแสดง snackbar/banner สั้น ๆ พร้อม retry ได้ | `อัปเดตฟีดไม่สำเร็จ กรุณาลองใหม่` | `Unable to update feed. Please try again.` |
+| Load more failed | Infinite Scroll โหลดหน้าถัดไปไม่สำเร็จ | คงรายการเดิมไว้ และแสดง inline retry ที่ท้าย list | `โหลดรายการเพิ่มเติมไม่สำเร็จ` + `ลองใหม่` | `Unable to load more items` + `Try again` |
+
+Network state rules:
+
+- ห้ามแสดง loading spinner ค้างเกิน timeout โดยไม่มีข้อความหรือ action
+- ปุ่ม `ลองใหม่` ต้องเรียกโหลด Feed tab ปัจจุบันซ้ำ และต้อง track event `feed_retry_tapped`
+- หากมี cache ต้องให้ cache สำคัญกว่า full-page error เพื่อให้ผู้ใช้ยังดู Feed ล่าสุดได้
+- Offline/cached indicator ต้องไม่บัง tab, search, card action หรือ bottom navigation
+- เมื่อ reconnect สำเร็จ ให้ refresh Feed แบบเงียบหรือผ่าน user action ตาม platform behavior และเอา offline banner ออกเมื่อข้อมูลใหม่โหลดสำเร็จ
+
+## Feed Image Load States
+
+กรณี Feed API โหลดข้อมูลสำเร็จ แต่รูป Asset โหลดไม่สำเร็จ ต้องถือเป็น image-level failure ไม่ใช่ Feed error
+
+| State | Trigger | UI Behavior | TH Copy | EN Copy |
+| --- | --- | --- | --- | --- |
+| Image loading | Card data มาแล้ว แต่รูปยังโหลดอยู่ | แสดง image skeleton หรือ blurred placeholder ในพื้นที่รูป โดยพื้นที่ card ต้องไม่กระโดดหรือเปลี่ยนขนาด | ไม่ต้องมีข้อความ | No copy |
+| Image failed | รูปหลักของ Feed Card โหลดไม่สำเร็จ | แสดง placeholder สี neutral ในพื้นที่รูป พร้อม icon รูปภาพ/แจ้งเตือน และให้ข้อมูล text ของ card แสดงต่อได้ครบ | `โหลดรูปไม่สำเร็จ` | `Unable to load image` |
+| Retry image | ผู้ใช้กดพื้นที่ placeholder หรือปุ่ม retry เฉพาะรูป | โหลดรูปของ card นั้นใหม่เท่านั้น ห้าม reload ทั้ง Feed | `ลองโหลดรูปใหม่` | `Try loading image again` |
+| Partial gallery failed | Asset มีหลายรูปและบางรูปโหลดไม่สำเร็จ | แสดงรูปที่โหลดได้ก่อน ถ้ารูปปัจจุบัน fail ให้แสดง placeholder เฉพาะ slide นั้น | `โหลดรูปไม่สำเร็จ` | `Unable to load image` |
+
+Image failure rules:
+
+- ห้ามซ่อน Feed Card เพียงเพราะรูปโหลดไม่สำเร็จ หากข้อมูล Asset โหลดสำเร็จแล้ว
+- Brand, Model, Price, Owner Name, Posted Time, Like Count และ Comment Count ต้องยังแสดงและกด action ได้ตามสิทธิ์
+- Placeholder ต้องใช้ขนาดเท่าพื้นที่รูปจริง เพื่อไม่ให้ layout กระโดด
+- การ retry รูปต้อง retry เฉพาะ image request ของ card/slide นั้น ไม่ใช่ reload Feed ทั้งหน้า
+- หากรูปโหลดไม่สำเร็จเพราะ offline และมี cached thumbnail ให้แสดง cached thumbnail ก่อน placeholder
+- หากไม่มีรูปที่โหลดได้เลย ให้ยังเปิด Asset Detail ได้ แต่ Full Screen Image Viewer ต้องแสดง image unavailable state เฉพาะรูป
+
 # 11. Permission Rules
 
 | Actor | Permission |
@@ -508,8 +550,12 @@ Feed ไม่รองรับ:
 | Case | Expected Handling |
 | --- | --- |
 | โหลด Feed ไม่สำเร็จ | แสดง Error State และปุ่ม `ลองใหม่` |
+| เน็ตช้าและ Feed ยังไม่ fail | แสดง loading/skeleton ต่อพร้อมข้อความ `กำลังโหลดข้อมูล อาจใช้เวลาสักครู่` |
 | Offline แต่มี cache | แสดงข้อมูลล่าสุดที่โหลดไว้ พร้อม offline/cached indicator |
 | Offline และไม่มี cache | แสดง empty/error state ที่สื่อว่าไม่มีข้อมูลพร้อม retry |
+| Refresh fail แต่มีข้อมูลเดิม | คงข้อมูลเดิมไว้และแสดง snackbar/banner `อัปเดตฟีดไม่สำเร็จ กรุณาลองใหม่` |
+| Load more fail | คงรายการเดิมไว้และแสดง inline retry ท้าย list |
+| Feed data โหลดสำเร็จแต่รูปโหลดไม่ขึ้น | คง Feed Card ไว้ แสดง placeholder ในพื้นที่รูปพร้อม `โหลดรูปไม่สำเร็จ` และ retry เฉพาะรูป |
 | Asset ถูกเปลี่ยนสถานะระหว่างดู Feed | ถ้าไม่ใช่ `Sale` ให้หายจาก Feed เมื่อ refresh หรือ sync |
 | Asset owner ถูก Block | Asset ต้องหายจาก Feed ทันทีเมื่อข้อมูล sync |
 | Asset ถูก Hide Feed Item โดยผู้ใช้ | Asset ต้องหายจาก Feed ของผู้ใช้นั้น แต่ไม่กระทบผู้ใช้อื่น |
@@ -601,6 +647,10 @@ Feed ไม่รองรับ:
 | AC-FEED-019 | เมื่อ Scroll ถึงท้ายรายการต้องแสดง `คุณดูรายการทั้งหมดแล้ว` |
 | AC-FEED-020 | โหลด Feed ไม่สำเร็จต้องแสดง Error State และปุ่ม `ลองใหม่` |
 | AC-FEED-021 | Offline ต้องแสดงข้อมูลล่าสุดที่โหลดไว้ได้อย่างน้อยสำหรับ Feed |
+| AC-FEED-021A | หากเน็ตช้าเกิน 2 วินาทีแต่ request ยังไม่ fail ต้องแสดง loading/skeleton พร้อมข้อความ `กำลังโหลดข้อมูล อาจใช้เวลาสักครู่` |
+| AC-FEED-021B | หาก Offline และไม่มี cache ต้องแสดง full-page offline state พร้อมปุ่ม `ลองใหม่` และต้องไม่แสดง Feed ว่าง |
+| AC-FEED-021C | หาก refresh หรือ load more fail แต่มีข้อมูลเดิม ต้องคงข้อมูลเดิมไว้และแสดง retry state เฉพาะจุดที่ fail |
+| AC-FEED-021D | หาก Feed data โหลดสำเร็จแต่รูปโหลดไม่สำเร็จ ต้องคง Feed Card และข้อมูล text ไว้ พร้อม image placeholder และ retry เฉพาะรูป |
 | AC-FEED-022 | เมื่อ Asset เปลี่ยนจาก `Sale` เป็น `Sold`, `Hide` หรือ `Show` ต้องหายจาก Feed ตาม lifecycle rule |
 | AC-FEED-023 | Feed ต้อง Lazy Load รูปภาพ และควรโหลดภายใน 2 วินาที |
 | AC-FEED-024 | V1 ไม่รองรับ Real-time Feed Refresh สำหรับ Asset ใหม่, Like จากอุปกรณ์อื่น หรือ Comment จากอุปกรณ์อื่น |

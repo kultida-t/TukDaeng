@@ -208,20 +208,60 @@ Given Feed API fail
 When user เปิด Feed  
 Then ต้องแสดง Error State พร้อมปุ่ม retry
 
-## QA-FEED-006: Feed Offline Cache
+## QA-FEED-006: Feed Slow Network
+
+Given Feed API ยังไม่ตอบกลับเกิน 2 วินาที
+When user เปิด Feed
+Then ต้องแสดง skeleton/loading ต่อ
+And ต้องแสดงข้อความ `กำลังโหลดข้อมูล อาจใช้เวลาสักครู่`
+And ต้องไม่แสดงหน้าว่าง
+
+## QA-FEED-007: Feed Offline Cache
 
 Given user เคยโหลด Feed แล้ว  
 When network offline  
 Then Feed ต้องแสดง cached data ล่าสุดพร้อม offline indicator
 
-## QA-FEED-007: Feed More Menu Actions
+## QA-FEED-008: Feed Offline No Cache
+
+Given user ยังไม่เคยโหลด Feed สำเร็จ
+When network offline
+Then ต้องแสดง full-page offline state
+And ต้องมีปุ่ม `ลองใหม่`
+And ต้องไม่แสดง list ว่างเหมือน empty state ปกติ
+
+## QA-FEED-009: Feed Refresh Failed With Existing Data
+
+Given Feed มีข้อมูลแสดงอยู่แล้ว
+When user refresh แล้ว API fail
+Then ต้องคง Feed Card เดิมไว้
+And ต้องแสดงข้อความ `อัปเดตฟีดไม่สำเร็จ กรุณาลองใหม่`
+
+## QA-FEED-010: Feed Load More Failed
+
+Given Feed มีข้อมูลแสดงอยู่แล้ว
+When user scroll ถึงท้าย list และ load more fail
+Then ต้องคงรายการเดิมไว้
+And ต้องแสดง inline retry ท้าย list
+
+## QA-FEED-011: Feed More Menu Actions
 
 Given Member เห็น Feed Card ของ Asset คนอื่น  
 When Member เปิดเมนูสามจุด  
 Then ต้องเห็น Hide this asset, Report Asset และ Block User  
 And ต้องไม่เห็น Comment หรือ Share direct action จาก Feed
 
-## QA-FEED-008: Hide This Asset From Feed
+## QA-FEED-012: Feed Image Load Failed
+
+Given Feed API โหลดข้อมูล Asset สำเร็จ
+And image request ของ Feed Card fail
+When user เห็น Feed
+Then ต้องแสดง Feed Card เดิมพร้อม Brand, Model, Price, Owner Name, Posted Time, Like Count และ Comment Count
+And พื้นที่รูปต้องแสดง placeholder พร้อมข้อความ `โหลดรูปไม่สำเร็จ`
+And ต้องมี retry เฉพาะรูป
+And ต้องไม่ reload Feed ทั้งหน้า
+
+## QA-FEED-013: Hide This Asset From Feed
 
 Given Member เห็น Feed Card ของ Asset คนอื่น  
 When Member เลือก Hide this asset  
@@ -229,26 +269,26 @@ Then Asset ต้องหายจาก Feed ของ Member คนนั้�
 And ต้องแสดง undo ชั่วคราว  
 And Asset ต้องไม่หายจาก Feed ของ user คนอื่น
 
-## QA-FEED-009: Hide This Asset Persists After Reload
+## QA-FEED-014: Hide This Asset Persists After Reload
 
 Given Member เลือก Hide this asset และไม่กด Undo  
 When Member refresh หรือ reload Feed  
 Then Asset เดิมต้องไม่กลับมาใน Feed ของ Member คนนั้น
 
-## QA-FEED-010: Hide This Asset Undo
+## QA-FEED-015: Hide This Asset Undo
 
 Given Member เลือก Hide this asset  
 When Member กด Undo ใน snackbar  
 Then Asset ต้องกลับมาใน Feed ตาม state ที่เหมาะสม
 
-## QA-FEED-011: Report Asset From Feed
+## QA-FEED-016: Report Asset From Feed
 
 Given Member เห็น Feed Card ของ Asset คนอื่น  
 When Member เลือก Report Asset จากเมนูสามจุดและ submit report  
 Then report ต้องส่งเข้า Trust & Safety Report Asset flow  
 And Asset ต้องไม่หายจาก public surfaces ทันที
 
-## QA-FEED-012: Block User From Feed
+## QA-FEED-017: Block User From Feed
 
 Given Member เห็น Feed Card ของ Asset คนอื่น  
 When Member เลือก Block User และ confirm  
@@ -341,7 +381,65 @@ When user อื่นเปิด Public Profile, Feed, Search หรือ Vie
 Then user อื่นต้องไม่เห็น `Owner Estimated Value (Private)`
 And ค่านี้ต้องไม่ถูกใช้เป็น Asking Price หรือ Market Comparison
 
-## QA-ASSET-002E: Uploading State After Save
+## QA-ASSET-002G: Add Asset Requires Provenance Step
+
+Given Owner กรอก Add Asset detail ครบตาม required fields
+When Owner กด `Next`
+Then ระบบต้องเปิด Provenance step ก่อน final Save / Upload
+And ระบบต้องยังไม่สร้าง Asset จนกว่า Provenance step จะ Save สำเร็จ
+
+## QA-ASSET-002H: Sale Provenance Type Options
+
+Given Owner เลือก Status = `Sale`
+When Owner เข้าหน้า Provenance step
+Then ระบบต้องให้เลือก `Owner (Asset)` หรือ `Consignment`
+
+## QA-ASSET-002I: Show Hide Owner Provenance Only
+
+Given Owner เลือก Status = `Show` หรือ `Hide`
+When Owner เข้าหน้า Provenance step
+Then ระบบต้องแสดงเฉพาะ `Owner (Asset)` provenance form
+And ต้องไม่แสดงตัวเลือกหรือ tab `Consignment`
+
+## QA-ASSET-002J: Owner Provenance Purchase Price Required
+
+Given Owner อยู่ใน `Owner (Asset)` provenance form
+When Owner กด Save โดยไม่กรอก Purchase Price
+Then ระบบต้องแสดง validation `กรุณากรอกราคาซื้อ`
+And ต้องไม่ Save / Upload Asset
+
+## QA-ASSET-002K: Consignment Required Fields
+
+Given Owner เลือก Status = `Sale`
+And Owner เลือก provenance type = `Consignment`
+When Owner กด Save โดยไม่กรอก Full Name, Phone Number หรือ Asking Price
+Then ระบบต้องแสดง validation ตาม field ที่ขาด
+And ต้องไม่ Save / Upload Asset
+
+## QA-ASSET-002L: Consignment Asking Price Sync
+
+Given Owner กรอก Commerce / listing Asking Price ใน Asset detail step
+When Owner เลือก provenance type = `Consignment`
+Then Consignment Asking Price ต้อง prefill จาก listing Asking Price
+When Owner แก้ Consignment Asking Price
+Then listing Asking Price ต้อง sync เป็นค่าเดียวกัน
+
+## QA-ASSET-002M: Optional Empty Fields Hidden After Save
+
+Given Owner Save Asset สำเร็จโดยเว้น optional fields ว่าง
+When Viewer เปิด Public Asset Detail
+Then Viewer ต้องไม่เห็น label หรือ placeholder ของ optional/private fields ที่ไม่ได้กรอก
+And ต้องไม่เห็น `N/A`, `-` หรือ `Not provided`
+
+## QA-ASSET-002N: Owner Private Fields Visibility
+
+Given Owner Save Asset พร้อม Provenance หรือ Consignment
+When Viewer เปิด Public Asset Detail
+Then Viewer ต้องไม่เห็น Purchase Price, Purchase Date, Purchase From, Proof of Payment, Consignment Owner Contact, Payout Method, Commission หรือ Minimum Acceptable Price
+When Owner เปิด Owner Asset Detail
+Then Owner ต้องเห็น private provenance section ตามข้อมูลที่บันทึกไว้
+
+## QA-ASSET-002O: Uploading State After Save
 
 Given Owner กรอก Add/Edit Asset ครบตาม required fields และมีรูปที่ต้อง upload
 When Owner กด `Save`
@@ -350,7 +448,7 @@ And ปุ่ม `Save` ต้อง disabled ระหว่าง upload/save
 And ระบบต้องป้องกัน duplicate submit
 And เมื่อ upload/save สำเร็จต้องไปยัง Asset Created หรือ Asset Updated flow
 
-## QA-ASSET-002F: Uploading State Failure
+## QA-ASSET-002P: Uploading State Failure
 
 Given Owner กรอก Add/Edit Asset ครบตาม required fields และมีรูปที่ต้อง upload
 When Owner กด `Save` แล้ว upload/save ล้มเหลว
@@ -386,6 +484,14 @@ Then Asset ต้องหายจาก Feed, Search และ Watch Alert
 And Asset ต้องยังแสดงใน Public Profile
 And ระบบต้องไม่ require Asking Price สำหรับ `Show`
 
+## QA-ASSET-006A: Consignment Sale Cannot Switch To Show Without Provenance Conversion
+
+Given Owner มี Asset status `Sale`
+And Asset provenance type เป็น `Consignment`
+When Owner เปลี่ยน status เป็น `Show`
+Then ระบบต้องบังคับเปลี่ยน provenance type เป็น `Owner (Asset)` หรือปิด consignment data ก่อนบันทึก
+And ต้องไม่อนุญาตให้ Asset status `Show` เก็บ provenance type เป็น `Consignment`
+
 ## QA-ASSET-007: Status Switch Show To Sale
 
 Given Owner มี Asset status `Show`
@@ -401,6 +507,14 @@ When Owner เปลี่ยน status เป็น `Hide` และ save ส�
 Then Asset ต้องหายจาก Feed, Search, Watch Alert และ Public Profile
 And Asset ต้องเห็นเฉพาะ Owner
 And ระบบต้องไม่ใช้ Asking Price เป็น public/listing field อีกต่อไป
+
+## QA-ASSET-008A: Consignment Sale Cannot Switch To Hide Without Provenance Conversion
+
+Given Owner มี Asset status `Sale`
+And Asset provenance type เป็น `Consignment`
+When Owner เปลี่ยน status เป็น `Hide`
+Then ระบบต้องบังคับเปลี่ยน provenance type เป็น `Owner (Asset)` หรือปิด consignment data ก่อนบันทึก
+And ต้องไม่อนุญาตให้ Asset status `Hide` เก็บ provenance type เป็น `Consignment`
 
 ## QA-ASSET-009: Status Switch Hide To Sale
 

@@ -398,6 +398,28 @@ Required Field Matrix:
 
 Sale is the only marketplace listing status and uses `Asking Price (THB)`. Show is a public collection status and must not require listing price. Hide is a private collection status and must not use listing price; if the owner wants to record an internal value, use `Owner Estimated Value (Private)` and keep it owner-only.
 
+Add Asset flow:
+
+- Step 1: กรอก Asset Detail และเลือก Status: Sale / Show / Hide
+- Step 2: กรอก Provenance ก่อน final Save / Upload Asset
+- หาก Status = Sale ให้เลือก Provenance Type ได้เป็น `Owner (Asset)` หรือ `Consignment`
+- หาก Status = Show หรือ Hide ต้องใช้ `Owner (Asset)` เท่านั้น และต้องไม่แสดง `Consignment`
+
+Provenance required fields:
+
+| Provenance Type | Available Status | Required Fields |
+| --- | --- | --- |
+| Owner (Asset) | Sale, Show, Hide | Purchase Price (THB), must be greater than 0 |
+| Consignment | Sale only | Full Name, Phone Number, Asking Price (THB), must be greater than 0 |
+
+Provenance display and edit rules:
+
+- Provenance, Purchase Information, Consignment Information, Proof of Payment และ Consignment Terms เป็น private เห็นเฉพาะ Owner หรือ Admin
+- Optional fields ที่ไม่ได้กรอกต้องไม่แสดง label หรือ placeholder ใน Viewer/Public mode
+- Consignment Asking Price ต้องใช้ source เดียวกับ Commerce / listing Asking Price
+- หาก Asset ที่เป็น Consignment ถูกเปลี่ยนจาก Sale เป็น Show หรือ Hide ต้องเปลี่ยน provenance type เป็น Owner (Asset) หรือปิด consignment data ก่อนบันทึก
+- Sold Asset ต้องแสดง Provenance / Consignment เป็น read-only และไม่ให้แก้ผ่าน Edit Asset ปกติ
+
 Owner สามารถแก้ไข Status ระหว่าง:
 
 - Sale

@@ -161,8 +161,10 @@ Owner Profile / Add Asset Entry
 → Add Asset
 → Upload Images
 → Enter Asset Information
-→ Enter Optional Private Information
 → Select Status: Sale / Show / Hide
+→ Next
+→ Select Provenance Type based on Status
+→ Enter required provenance or consignment fields
 → Save
 → Uploading / Saving State
 → Asset Created
@@ -277,8 +279,129 @@ Add / Edit Asset ต้องรองรับข้อมูลต่อไป
 - `Show` เป็น public collection / public vault ไม่ใช่ marketplace listing จึงไม่บังคับ Price
 - `Hide` เป็น private collection จึงต้องการข้อมูลขั้นต่ำที่สุดสำหรับ owner cataloging และไม่ใช้ listing price
 - หาก Owner ต้องการเก็บมูลค่าส่วนตัวสำหรับ `Show` หรือ `Hide` ให้ใช้ label `Owner Estimated Value (Private)` ไม่ใช่ `Price` หรือ `Asking Price`
-- Reference No., Year, Original Box, Original Paper, Specifications, Provenance, Purchase Information, Documentation และ Consignment optional ตาม policy ของ MVP
-- หาก asset เป็น consignment item ให้ Full Name, Phone Number และ Asking Price เป็น recommended required fields ของ consignment workflow แยกจาก Add/Edit asset baseline
+- Reference No., Year, Original Box, Original Paper, Specifications, Purchase Date, Purchase From, Documentation และ Note optional ตาม policy ของ MVP
+- Add Asset flow ต้องมี provenance step ก่อน final save โดยให้เลือก `Owner (Asset)` หรือ `Consignment`
+- หากเลือก `Owner (Asset)` ต้องกรอก Purchase Price
+- หากเลือก `Consignment` ต้องกรอก Full Name, Phone Number และ Asking Price
+- Consignment Asking Price ต้องใช้ source เดียวกับ Commerce / listing Asking Price ของ Asset เพื่อไม่ให้ราคา public listing กับ consignment terms ขัดกัน
+- `Consignment` เลือกได้เฉพาะเมื่อ Asset status = `Sale`
+- หาก Asset status = `Show` หรือ `Hide` provenance step ต้องเป็น `Owner (Asset)` เท่านั้น และไม่แสดงตัวเลือก / tab `Consignment`
+
+### Provenance Type Availability
+
+| Asset Status | Available Provenance Type | UI Behavior |
+| --- | --- | --- |
+| Sale | `Owner (Asset)` หรือ `Consignment` | แสดง segmented control / tab ให้เลือกสองแบบ |
+| Show | `Owner (Asset)` เท่านั้น | ข้ามตัวเลือกประเภทหรือแสดงเฉพาะ Owner (Asset) form |
+| Hide | `Owner (Asset)` เท่านั้น | ข้ามตัวเลือกประเภทหรือแสดงเฉพาะ Owner (Asset) form |
+
+## Add Asset Validation Messages
+
+ฟอร์ม Add Asset ต้องแสดง validation ใกล้ field ที่ผิดพลาด และต้องไม่ไปขั้นตอนถัดไปหรือ Save จนกว่า required fields ครบ
+
+| Field / Case | Message |
+| --- | --- |
+| Photos ว่าง | `กรุณาเพิ่มรูปอย่างน้อย 1 รูป` |
+| Photos เกิน 10 รูป | `อัปโหลดรูปได้สูงสุด 10 รูป` |
+| Brand Name ว่าง | `กรุณากรอกชื่อแบรนด์` |
+| Model / Series ว่างเมื่อ required | `กรุณากรอกรุ่น / ซีรีส์` |
+| Condition ว่างเมื่อ required | `กรุณาเลือกสภาพสินค้า` |
+| Asking Price ว่างเมื่อ required | `กรุณากรอกราคาเสนอขาย` |
+| Asking Price <= 0 | `ราคาเสนอขายต้องมากกว่า 0` |
+| Description ว่างเมื่อ required | `กรุณากรอกรายละเอียดสินค้า` |
+| Status ว่าง | `กรุณาเลือกสถานะ` |
+| Year เป็นปีในอนาคต | `ปีต้องไม่เป็นปีในอนาคต` |
+| Owner Estimated Value <= 0 | `มูลค่าประมาณต้องมากกว่า 0` |
+
+Provenance validation messages:
+
+| Field / Case | Message |
+| --- | --- |
+| Owner (Asset) Purchase Price ว่าง | `กรุณากรอกราคาซื้อ` |
+| Owner (Asset) Purchase Price <= 0 | `ราคาซื้อต้องมากกว่า 0` |
+| Purchase Date เป็นวันที่ในอนาคต | `วันที่ซื้อต้องไม่เป็นวันที่ในอนาคต` |
+| Consignment Full Name ว่าง | `กรุณากรอกชื่อผู้ฝากขาย` |
+| Consignment Phone Number ว่าง | `กรุณากรอกเบอร์โทรผู้ฝากขาย` |
+| Consignment Asking Price ว่าง | `กรุณากรอกราคาเสนอขาย` |
+| Consignment Asking Price <= 0 | `ราคาเสนอขายต้องมากกว่า 0` |
+| Consignment Email รูปแบบไม่ถูกต้อง | `กรุณากรอกอีเมลให้ถูกต้อง` |
+| Consignment Date เป็นวันที่ในอนาคต | `วันที่ฝากขายต้องไม่เป็นวันที่ในอนาคต` |
+| Commission ไม่อยู่ในช่วง 0-100 | `ค่าคอมมิชชันต้องอยู่ระหว่าง 0-100%` |
+| Minimum Acceptable Price <= 0 | `ราคาขั้นต่ำต้องมากกว่า 0` |
+| Minimum Acceptable Price > Asking Price | `ราคาขั้นต่ำต้องไม่มากกว่าราคาเสนอขาย` |
+
+## Provenance / Consignment Field Matrix
+
+Provenance ต้องแยกข้อมูลการเป็นเจ้าของ Asset กับข้อมูลฝากขายให้ชัดเจน:
+
+- `Owner (Asset)` ใช้เมื่อ Owner เป็นเจ้าของ Asset เอง และต้องการบันทึกประวัติการซื้อ/เอกสารส่วนตัว
+- `Consignment` ใช้เมื่อ Owner รับฝากขาย Asset ของผู้อื่น และต้องการบันทึกข้อมูลผู้ฝากขาย เงื่อนไขราคา และเอกสารประกอบ
+- ข้อมูลทั้งสองกลุ่มเป็น private เห็นเฉพาะ Owner หรือ Admin ตามสิทธิ์ และห้ามแสดงใน Viewer/Public mode
+- ใน Add Asset flow ผู้ใช้ต้องเลือก provenance type ก่อน final Save / Upload Asset
+- `Consignment` ใช้ได้เฉพาะ Asset status = `Sale` เพราะเป็นรายการฝากขายบน marketplace
+
+### Owner (Asset) Provenance
+
+| Field | Requirement | Validation / Note |
+| --- | --- | --- |
+| Purchase Price (THB) | Required when saving Owner (Asset) provenance record | ต้องมากกว่า 0; ใช้เป็น asset cost basis, portfolio fallback และ expected profit |
+| Purchase Date | Optional | หากกรอกต้องไม่เป็นวันที่ในอนาคต |
+| Purchase From | Optional | ชื่อร้าน บุคคล แหล่งซื้อ หรือช่องทางที่ซื้อ |
+| All Equipment & Accessories | Optional | Upload รูปกล่อง tag คู่มือ หรืออุปกรณ์ประกอบ |
+| Proof of Payment | Optional | Upload ใบเสร็จ invoice certificate หรือเอกสารส่วนตัว |
+| Note | Optional | ข้อความส่วนตัวของ Owner |
+
+### Consignment Provenance
+
+| Field | Requirement | Validation / Note |
+| --- | --- | --- |
+| Full Name | Required when saving Consignment provenance record | ชื่อผู้ฝากขาย ใช้ใน owner/admin private view เท่านั้น |
+| Phone Number | Required when saving Consignment provenance record | เบอร์ผู้ฝากขาย ใช้ใน owner/admin private view เท่านั้น |
+| Line / IG / Facebook | Optional | ช่องทางติดต่อเสริม |
+| Email | Optional | หากกรอกควร validate รูปแบบ email |
+| Payout Method | Optional | วิธีจ่ายเงินคืนผู้ฝากขาย |
+| Consignment Date | Optional | หากกรอกต้องไม่เป็นวันที่ในอนาคต |
+| Consignment Duration | Optional | ระยะเวลาฝากขาย |
+| Asking Price (THB) | Required when saving Consignment provenance record | ราคาเสนอขายของ consignment item; ต้องมากกว่า 0 |
+| Commission (%) | Optional | หากกรอกต้องอยู่ในช่วง 0-100 |
+| Minimum Acceptable Price | Optional | หากกรอกต้องมากกว่า 0 และไม่ควรมากกว่า Asking Price |
+| Price Negotiable | Optional, default `false` unless user turns on | เปิดให้ buyer counter-offer ได้ |
+| All Equipment & Accessories | Optional | Upload รูปกล่อง tag คู่มือ หรืออุปกรณ์ประกอบ |
+| Proof of Payment | Optional | Upload เอกสารรับฝาก ใบเสร็จ หรือ certificate |
+| Note | Optional | ข้อความส่วนตัวของ Owner |
+
+Provenance save rules:
+
+- Add Asset ต้องเลือก provenance type ก่อน final Save / Upload Asset
+- ถ้า status = `Sale` ต้องให้เลือก `Owner (Asset)` หรือ `Consignment`
+- ถ้า status = `Show` หรือ `Hide` ต้องใช้ `Owner (Asset)` เท่านั้น และต้องไม่ให้เลือก `Consignment`
+- ถ้าเลือก `Owner (Asset)` ต้อง validate Purchase Price ก่อน Save
+- ถ้าเลือก `Consignment` ต้อง validate Full Name, Phone Number และ Asking Price ก่อน Save
+- Consignment Asking Price ต้อง prefill จาก Commerce / listing Asking Price ที่กรอกใน Asset detail step และหากแก้ใน Consignment step ต้อง sync กลับเป็น listing Asking Price เดียวกัน
+- หากผู้ใช้ย้อนกลับจาก provenance step ไป asset detail ได้ ข้อมูลที่กรอกไว้ต้องคงอยู่
+- Optional field ที่เว้นว่างต้องบันทึกเป็น empty/null และต้องไม่สร้าง placeholder text เช่น `N/A` ในข้อมูลจริง
+- ถ้า Owner สลับจาก `Owner (Asset)` เป็น `Consignment` ต้องไม่ merge field กัน ให้เก็บเป็นคนละ section หรือให้ user confirm ก่อนแทนที่ข้อมูล provenance type เดิม
+
+## Empty Optional Field Display Rule
+
+หลังบันทึกข้อมูลแล้ว ฟิลด์ optional ที่ไม่ได้กรอกต้องไม่แสดงในหน้าบ้านและ public surfaces:
+
+- Viewer/Public Asset Detail, Feed, Search และ Public Profile ต้องไม่เห็น field name ของ private/optional fields ที่ว่าง
+- Owner Asset Detail สามารถซ่อน field ที่ว่างใน private section ได้เช่นกัน เพื่อไม่ให้หน้าเต็มด้วย label เปล่า
+- ถ้า section ทั้ง section ไม่มีข้อมูล เช่นไม่มี Purchase Information หรือไม่มี Documentation ให้ซ่อน section นั้น หรือแสดง owner-only empty prompt แบบ action-oriented เช่น `Add provenance` เฉพาะ Owner
+- ห้ามแสดง label เปล่าเช่น `Purchase From: -`, `Proof of Payment: -` ใน Viewer/Public mode
+- ค่า `—` ใช้ได้เฉพาะ owner-only analytic field ที่ระบบต้องคงตำแหน่งไว้ เช่น Expected Profit หรือ Valuation ไม่ใช่ optional descriptive field ทั่วไป
+
+## Provenance Edit Rule
+
+Owner สามารถแก้ไข Provenance / Consignment ได้เมื่อ Asset ยังไม่ใช่ `Sold`:
+
+- Asset สถานะ `Sale`: Owner แก้ไข `Owner (Asset)` หรือ `Consignment` provenance ได้ตาม type ที่เลือก
+- Asset สถานะ `Show`, `Hide`: Owner แก้ไขได้เฉพาะ `Owner (Asset)` provenance เท่านั้น
+- หาก Asset ที่เคยเป็น `Consignment` ถูกเปลี่ยนจาก `Sale` เป็น `Show` หรือ `Hide` ระบบต้อง require ให้เปลี่ยน provenance type เป็น `Owner (Asset)` หรือยืนยันยกเลิก/ปิด consignment data ก่อนบันทึก status ใหม่
+- Asset สถานะ `Sold`: ห้ามแก้ข้อมูลหลักของ Asset และ Provenance เดิมแบบทับประวัติ แต่ Owner เปิดดูได้แบบ read-only
+- หากต้องแก้ข้อมูลส่วนตัวหลังขาย เช่น note หรือเอกสารหลังการขาย ควรใช้ Sold History / Sale Record correction flow ที่มี audit trail ไม่ใช่ Edit Asset ปกติ
+- การแก้ Provenance / Consignment ควร update `last updated` และเก็บ audit log ฝั่ง backend/admin สำหรับข้อมูลส่วนตัวที่มีผลต่อ portfolio, consignment settlement หรือ realized gain/loss
 
 ## Private Data Rule
 
@@ -529,6 +652,31 @@ Year:
 
 - ต้องไม่เป็นปีในอนาคต เมื่อกรอก
 
+Status / Provenance:
+
+- Add Asset ต้องผ่าน provenance step ก่อน final Save / Upload
+- Status = Sale ต้องให้เลือก `Owner (Asset)` หรือ `Consignment`
+- Status = Show หรือ Hide ต้องใช้ `Owner (Asset)` เท่านั้น และห้ามเลือก `Consignment`
+
+Owner (Asset) Provenance:
+
+- Purchase Price Required
+- Purchase Price ต้องมากกว่า 0
+- Purchase Date ต้องไม่เป็นวันที่ในอนาคต เมื่อกรอก
+
+Consignment Provenance:
+
+- ใช้ได้เฉพาะ Status = Sale
+- Full Name Required
+- Phone Number Required
+- Asking Price Required และต้องมากกว่า 0
+- Email ต้องเป็นรูปแบบ email เมื่อกรอก
+- Consignment Date ต้องไม่เป็นวันที่ในอนาคต เมื่อกรอก
+- Commission ต้องอยู่ระหว่าง 0-100 เมื่อกรอก
+- Minimum Acceptable Price ต้องมากกว่า 0 เมื่อกรอก
+- Minimum Acceptable Price ต้องไม่มากกว่า Asking Price เมื่อกรอกทั้งสองค่า
+- Consignment Asking Price ต้อง sync กับ Commerce / listing Asking Price
+
 Purchase Date:
 
 - ต้องไม่เป็นวันที่ในอนาคต เมื่อกรอก
@@ -673,7 +821,15 @@ Owner Profile และ Sold History ใช้ Global Empty State:
 | AC-ASSET-MGMT-007B | Status = Show ต้อง require Photos, Brand Name และ Model / Series โดยไม่บังคับ Price |
 | AC-ASSET-MGMT-007C | Status = Hide ต้อง require Photos และ Brand Name เท่านั้น ส่วน Model / Series, Condition และ Description เป็น optional และต้องไม่ใช้ listing price |
 | AC-ASSET-MGMT-007D | Optional private value ของ Sale, Show หรือ Hide ต้องใช้ label `Owner Estimated Value (Private)` และห้ามแสดงใน public/viewer surfaces |
-| AC-ASSET-MGMT-008 | Add / Edit Asset ต้องรองรับ Provenance และ Consignment เป็นข้อมูล private |
+| AC-ASSET-MGMT-008 | Add Asset ต้องมี provenance step ก่อน final Save / Upload โดยให้เลือก `Owner (Asset)` หรือ `Consignment` และข้อมูลทั้งสองแบบต้องเป็น private |
+| AC-ASSET-MGMT-008A | Provenance ต้องแยก `Owner (Asset)` purchase information ออกจาก `Consignment` consignor/terms information |
+| AC-ASSET-MGMT-008B | หากเลือก `Owner (Asset)` ต้อง require Purchase Price ก่อน Save และ optional field ที่ว่างต้องบันทึกเป็น empty/null โดยไม่สร้าง `N/A` |
+| AC-ASSET-MGMT-008C | Optional private fields ที่ว่างต้องไม่แสดงใน Viewer/Public surfaces และ Owner private section ควรซ่อน field ว่างหรือแสดง owner-only prompt เฉพาะ section ที่ไม่มีข้อมูล |
+| AC-ASSET-MGMT-008D | Asset สถานะ Sale ต้องให้ Owner แก้ `Owner (Asset)` หรือ `Consignment` provenance ได้ตาม type ที่เลือก; Status = Show หรือ Hide แก้ได้เฉพาะ `Owner (Asset)` provenance; Sold Asset ต้องเป็น read-only |
+| AC-ASSET-MGMT-008E | หากเลือก `Consignment` ต้อง require Full Name, Phone Number และ Asking Price ก่อน Save |
+| AC-ASSET-MGMT-008F | Consignment Asking Price ต้องใช้ source เดียวกับ Commerce / listing Asking Price และต้อง sync กันหาก user แก้ใน step ใด step หนึ่ง |
+| AC-ASSET-MGMT-008G | `Consignment` ต้องเลือกได้เฉพาะ Asset status = Sale เท่านั้น; Status = Show หรือ Hide ต้องแสดงเฉพาะ `Owner (Asset)` provenance form |
+| AC-ASSET-MGMT-008H | หาก Asset ที่มี `Consignment` ถูกเปลี่ยนจาก Sale เป็น Show หรือ Hide ต้องบังคับเปลี่ยน provenance type เป็น `Owner (Asset)` หรือปิด consignment data ก่อนบันทึก |
 | AC-ASSET-MGMT-009 | Add / Edit Asset ต้องให้เลือก status ได้เฉพาะ Sale, Show และ Hide |
 | AC-ASSET-MGMT-010 | Add / Edit Asset ต้องไม่ให้เลือก Sold เป็น status ปกติ |
 
