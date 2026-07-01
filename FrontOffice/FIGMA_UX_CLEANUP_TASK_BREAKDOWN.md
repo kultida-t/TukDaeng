@@ -35,6 +35,18 @@
 | Permission denied / unavailable state | Reviewed | Use minimal header, message by case, and primary CTA `Go back` |
 | Report / Delete / Block core copy | Reviewed | Copy and confirmation behavior are synced into PRD, Dev checklist and QA checklist |
 
+### Today Working Focus: 2026-06-29
+
+วันนี้ให้เริ่มต่อจาก baseline เดิมโดยโฟกัส Figma coverage ไม่ใช่ product decision ใหม่ ดังนั้นไม่ต้อง bump `DOCUMENT_VERSION.md`
+
+| Focus | Current Status | Figma / UX Action | Done When |
+| --- | --- | --- | --- |
+| Guest access coverage | In progress | ไล่ทุก public entry point ว่า Guest เข้า Feed, Search, Asset Detail, Public Profile, Board Article และ Share ได้ตามสิทธิ์ และ login-required action เปิด Global Login Required Dialog เดียวกัน | Guest path ไม่มี action ที่ bypass login rule และไม่มี dialog copy หลายแบบ |
+| Report flows | In progress | ตรวจ Report Asset, Report User, Report Comment และ Report article/Board Content ว่ามี reason sheet, disabled submit, success state และไม่ซ่อน content ทันที | ทุก report type ใช้ Trust & Safety baseline และ success copy ระบุว่ายัง visible จน moderation complete |
+| Delete flows | In progress | ตรวจ Delete asset, Delete comment, Delete chat และ Delete Account ว่าใช้ confirmation, success/error state และผลกระทบหลังลบตรง module owner | Delete แต่ละชนิดไม่ปน behavior กัน เช่น Delete asset ไม่มี Undo, Delete chat ซ่อนเฉพาะฝั่งผู้กด, Delete Account revoke session |
+| Block flows | In progress | ตรวจ Block User entry จาก Feed, Public Profile, Asset Detail และ Chat รวมถึง blocked chat read-only, discovery filtering และ cancel/dismiss behavior | ทุก entry ใช้ confirmation copy เดียวกัน และหลัง block แล้ว Feed/Search/Watch Alert/Profile surfaces filter ตาม rule |
+| Figma sign-off readiness | Pending | หลังตรวจครบ ให้ mark แต่ละ flow เป็น Done / Not Applicable / Needs Product Decision พร้อม note ใน Figma | ไม่เหลือ Must Fix/High ที่ต้องเดาจาก prototype |
+
 ---
 
 ## 1. Cleanup Rule
