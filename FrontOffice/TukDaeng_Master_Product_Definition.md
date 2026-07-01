@@ -196,6 +196,14 @@ Full Back Office PRD ยังไม่เริ่มระหว่าง FO c
 
 - Owner Profile เห็น Asset ของตัวเองทุกสถานะ
 - Owner Profile มีแท็บสำหรับ All, Sale, Show, Hide, Sold และ Asset Value
+- Owner Profile asset card แสดงปุ่ม `...` เฉพาะ Owner view เพื่อเปิด quick actions
+- Public Profile / Visitor view ไม่แสดงปุ่ม `...` บน asset card
+- Tap asset card เปิด Asset Detail; tap `...` เปิด quick action menu และต้องไม่เปิด Asset Detail
+- Quick actions:
+  - Sale: Edit asset, Edit provenance, Mark as sold, Change status, Delete asset
+  - Show: Edit asset, Edit purchase history, Change status, Delete asset
+  - Hide: Edit asset, Edit purchase history, Change status, Delete asset
+  - Sold: View sale history, View provenance แบบ read-only
 
 ## 7. Functional Scope
 
@@ -261,6 +269,12 @@ Feed Actions:
   - Hide this asset / ไม่ต้องการเห็นรายการนี้
   - Report Asset / รายงานรายการนี้
   - Block User / บล็อกผู้ใช้งาน
+- เมนูสามจุดสำหรับ Asset ของ Owner:
+  - Edit asset
+  - Edit provenance
+  - Mark as sold
+  - Change status
+  - Delete asset
 
 Hide Feed Item:
 
@@ -404,6 +418,8 @@ Add Asset flow:
 - Step 2: กรอก Provenance ก่อน final Save / Upload Asset
 - หาก Status = Sale ให้เลือก Provenance Type ได้เป็น `Owner (Asset)` หรือ `Consignment`
 - หาก Status = Show หรือ Hide ต้องใช้ `Owner (Asset)` เท่านั้น และต้องไม่แสดง `Consignment`
+- ก่อนสร้าง asset จริงต้องแสดง confirmation `Add this asset?` พร้อม primary action `Add asset`
+- หลังสร้างสำเร็จให้แสดง `Asset added.` และ default ไป Owner Asset Detail ของ asset ที่เพิ่งสร้าง
 
 Provenance required fields:
 
@@ -426,10 +442,21 @@ Owner สามารถแก้ไข Status ระหว่าง:
 - Show
 - Hide
 
+Change Status:
+
+- ใช้ bottom sheet / modal sheet ชื่อ `Change status`
+- ตัวเลือกมีเฉพาะ Sale, Show, Hide
+- ไม่มี Sold option
+- Success toast ใช้ข้อความกลาง `Asset status updated.`
+- Error toast ใช้ `Unable to update asset status. Please try again.`
+- หากเปลี่ยน status จาก Feed แล้วสถานะใหม่ไม่ใช่ Sale card ต้องหายจาก Feed ทันที
+- หาก Consignment เปลี่ยนจาก Sale เป็น Show หรือ Hide ต้อง confirm และแปลง active provenance เป็น `Owner (Asset)` โดย require Purchase Price
+
 Sold Asset:
 
 - ไม่สามารถ Edit ข้อมูลหลัก
 - เปิดดู Sale History ได้
+- ไม่สามารถ Delete จาก Owner quick actions ปกติ
 
 ### Chat
 
@@ -499,10 +526,13 @@ Like:
 
 - User สามารถ Like Asset ได้
 - Owner สามารถ Like Asset ตัวเองได้
+- ปุ่มหัวใจด้านบน Asset Detail เป็น Like / Unlike action
+- Heart icon ใน metadata row ใต้ชื่อ Asset / Reference No. เป็น like count และเปิด `Liked by` list เท่านั้น
 - Like สำเร็จต้อง Update Like Count ทันที
 - Like สำเร็จต้องเพิ่ม Asset เข้า Favorites
 - Unlike สำเร็จต้อง Update Like Count ทันที
 - Unlike สำเร็จต้องลบ Asset ออกจาก Favorites
+- หาก like count หรือ comment count = 0 สามารถแสดง icon อย่างเดียวโดยไม่แสดงเลข 0 ได้
 
 Comment:
 
@@ -511,6 +541,7 @@ Comment:
 - ไม่มี Edit Comment ใน V1
 - รองรับ Delete Comment
 - Comment ต้องทำใน Asset Detail
+- หากยังไม่มี comment ให้แสดง `No comments yet.` และ `Be the first to comment.` พร้อม input placeholder `Write a comment...`
 
 Follow:
 

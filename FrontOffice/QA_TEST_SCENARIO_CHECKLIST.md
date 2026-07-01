@@ -251,6 +251,21 @@ When Member เปิดเมนูสามจุด
 Then ต้องเห็น Hide this asset, Report Asset และ Block User  
 And ต้องไม่เห็น Comment หรือ Share direct action จาก Feed
 
+## QA-FEED-011A: Owner Feed More Menu Actions
+
+Given Owner เห็น Feed Card ของ Asset ตัวเอง status `Sale`
+When Owner เปิดเมนูสามจุด
+Then ต้องเห็น `Edit asset`, `Edit provenance`, `Mark as sold`, `Change status`, `Delete asset`
+And ต้องไม่เห็น `Hide this asset`, `Report Asset` หรือ `Block User`
+
+## QA-FEED-011B: Owner Feed Change Status Removes Card
+
+Given Owner เห็น Feed Card ของ Asset ตัวเอง status `Sale`
+When Owner เลือก `Change status` และเปลี่ยนเป็น `Show` หรือ `Hide` สำเร็จ
+Then ระบบต้องแสดง `Asset status updated.`
+And Feed Card ต้องหายจาก Feed ทันที
+And ต้องไม่ใช้ `Mark as sold` flow
+
 ## QA-FEED-012: Feed Image Load Failed
 
 Given Feed API โหลดข้อมูล Asset สำเร็จ
@@ -486,6 +501,25 @@ And body ต้องแจ้งว่าจะบันทึกการแ�
 And ต้องไม่ใช้ body ของ Edit Asset ที่อ้างถึง current status
 And action ต้องเป็น `Cancel` และ `Save` / `ยกเลิก` และ `บันทึก`
 
+## QA-ASSET-002T: Add Asset Confirmation Copy
+
+Given Owner กรอก Asset Detail และ Provenance ครบตาม required fields
+When Owner กด final action เพื่อสร้าง Asset
+Then ระบบต้องแสดง confirmation title `Add this asset?` / `เพิ่มรายการนี้?`
+And body ต้องแจ้งว่าจะบันทึก asset ลง collection ตาม selected status
+And action ต้องเป็น `Cancel` และ `Add asset` / `ยกเลิก` และ `เพิ่มรายการ`
+When Owner กด `Add asset`
+Then ปุ่มต้องเปลี่ยนเป็น `Adding...` และป้องกัน duplicate submit
+And หาก save สำเร็จต้องแสดง `Asset added.` และไป Owner Asset Detail ของ asset ที่เพิ่งสร้าง
+
+## QA-ASSET-002U: Add Asset Failure Keeps Form
+
+Given Owner กด `Add asset` จาก Add Asset confirmation
+When save/upload ล้มเหลว
+Then ระบบต้องแสดง `Unable to add asset. Please try again.`
+And ต้องคงข้อมูลทั้งหมดใน Asset Detail และ Provenance form
+And ต้องไม่สร้าง asset ซ้ำ
+
 ## QA-ASSET-003: Mark As Sold
 
 Given Owner mark Asset as Sold  
@@ -523,6 +557,42 @@ When Owner เปลี่ยน status เป็น `Show` และ save ส�
 Then Asset ต้องหายจาก Feed, Search และ Watch Alert
 And Asset ต้องยังแสดงใน Public Profile
 And ระบบต้องไม่ require Asking Price สำหรับ `Show`
+
+## QA-ASSET-006E: Change Status Sheet Behavior
+
+Given Owner เปิด Change Status จาก Owner Profile, Feed หรือ Asset Detail
+When sheet เปิด
+Then title ต้องเป็น `Change status`
+And ต้องแสดงเฉพาะตัวเลือก `Sale`, `Show`, `Hide`
+And ต้องไม่แสดง `Sold`
+And สถานะปัจจุบันต้อง selected
+And ถ้าเลือกสถานะเดิม ปุ่ม `Save` ต้อง disabled
+
+## QA-ASSET-006F: Change Status Success Feedback
+
+Given Owner เปลี่ยนสถานะ Asset ที่ยังไม่ใช่ Sold
+When save สำเร็จ
+Then ระบบต้องปิด sheet
+And แสดง toast `Asset status updated.`
+And update card/detail/feed ตาม visibility ของสถานะใหม่ทันที
+
+## QA-ASSET-006G: Change Status Failure Feedback
+
+Given Owner เปลี่ยนสถานะ Asset
+When save ล้มเหลว
+Then ระบบต้องแสดง `Unable to update asset status. Please try again.`
+And ต้องคง selection ใน sheet
+And ต้องไม่เปลี่ยนสถานะจริงของ Asset
+
+## QA-ASSET-006H: Consignment Change Status Requires Owner Provenance
+
+Given Asset เป็น `Consignment` และ status `Sale`
+When Owner เปลี่ยน status เป็น `Show` หรือ `Hide`
+Then ระบบต้องแสดง warning title `Change to owner asset?`
+And body ต้องแจ้งว่า Consignment details ใช้ได้เฉพาะ assets listed for sale
+When Owner กด `Continue`
+Then ระบบต้องพาไป Provenance และบังคับใช้ `Owner (Asset)`
+And ต้อง require `Purchase Price` ก่อนบันทึก status ใหม่
 
 ## QA-ASSET-006A: Consignment Sale Cannot Switch To Show Without Provenance Conversion
 
@@ -579,6 +649,31 @@ Then user เปิดได้เฉพาะ `Sale` และ `Show`
 Given user เป็น Owner  
 When Owner เปิด Asset Detail ของตัวเอง  
 Then Owner เปิดได้ทุก status: `Sale`, `Show`, `Hide`, `Sold`
+
+## QA-DETAIL-002A: Asset Detail Like Count Versus Like Action
+
+Given user เปิด Asset Detail ของ Asset ที่ publish
+When user กดหัวใจด้านบนของรูป/detail header
+Then ระบบต้องทำ Like / Unlike action
+When user กด heart icon หรือ like count ใต้ชื่อ Asset / Reference No.
+Then ระบบต้องเปิด `Liked by` list
+And ต้องไม่ toggle Like / Unlike จาก metadata row
+
+## QA-DETAIL-002B: Asset Detail Comment Count Navigation
+
+Given user เปิด Asset Detail
+When user กด comment icon หรือ comment count ใต้ชื่อ Asset / Reference No.
+Then ระบบต้อง scroll ไป Comments section
+And หาก comment count = 0 สามารถแสดง icon อย่างเดียวโดยไม่แสดงตัวเลข 0 ได้
+
+## QA-DETAIL-002C: Empty Comments Section
+
+Given Asset ยังไม่มี comment
+When user เปิด Asset Detail
+Then Comments section ต้องแสดง `No comments yet.`
+And ต้องแสดง `Be the first to comment.`
+And ต้องแสดง input placeholder `Write a comment...`
+And ต้องไม่แสดง `View all`
 
 ## QA-DETAIL-003: IG-Style One-Level Comment Replies
 
@@ -660,6 +755,29 @@ When Owner กด `...`
 Then menu ต้องแสดง `Share profile` และ `Settings`
 And ต้องไม่แสดง `Report user` หรือ `Block user`
 And label ต้องใช้ `Settings`
+
+## QA-PROFILE-002A: Owner Profile Asset Card Quick Actions
+
+Given Owner เปิด Owner Profile asset grid
+When Asset card แสดง
+Then แต่ละ asset card ต้องแสดงปุ่ม `...` บนรูปเฉพาะ Owner view
+And Public / Visitor Profile ต้องไม่แสดงปุ่ม `...` บน asset card
+When Owner tap ที่ card หรือรูป asset
+Then ระบบต้องเปิด Asset Detail
+When Owner tap ปุ่ม `...`
+Then ระบบต้องเปิด quick action menu และต้องไม่เปิด Asset Detail
+
+## QA-PROFILE-002B: Owner Profile Quick Actions By Status
+
+Given Owner เปิด quick action menu ของ asset card
+When Asset status เป็น `Sale`
+Then menu ต้องแสดง `Edit asset`, `Edit provenance`, `Mark as sold`, `Change status`, `Delete asset`
+When Asset status เป็น `Show` หรือ `Hide`
+Then menu ต้องแสดง `Edit asset`, `Edit purchase history`, `Change status`, `Delete asset`
+And ต้องไม่แสดง `Mark as sold`
+When Asset status เป็น `Sold`
+Then menu ต้องแสดงเฉพาะ `View sale history` และ `View provenance`
+And ต้องไม่แสดง `Delete asset`, `Edit asset`, `Change status` หรือ `Mark as sold`
 
 ## QA-PROFILE-003: Share Profile Sheet
 

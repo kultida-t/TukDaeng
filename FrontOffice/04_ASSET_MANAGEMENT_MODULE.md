@@ -705,6 +705,71 @@ Payment Method:
 
 - Required
 
+## Add Asset Confirmation
+
+หลัง Owner กรอก Asset Detail และ Provenance ครบตาม required fields แล้วกด final action เพื่อสร้าง Asset ระบบต้องแสดง confirmation ก่อนเริ่ม save/upload
+
+Confirmation copy:
+
+| Language | Title | Body | Secondary | Primary |
+|---|---|---|---|---|
+| TH | เพิ่มรายการนี้? | ระบบจะบันทึกรายการนี้ลงในคอลเลกชันของคุณตามสถานะที่เลือก | ยกเลิก | เพิ่มรายการ |
+| EN | Add this asset? | This will save this asset to your collection based on the selected status. | Cancel | Add asset |
+
+Confirmation behavior:
+
+- ใช้กับ Add Asset final step หลัง Provenance ไม่ใช่ Edit Asset
+- กด `Cancel` ต้องปิด popup และคงข้อมูลที่กรอกไว้ทั้งหมด
+- กด `Add asset` แล้วต้อง disable action เพื่อกัน duplicate submit
+- ระหว่างบันทึกให้ใช้ button loading `Adding...`
+- หากมีรูปหรือไฟล์เอกสารที่ต้อง upload ให้แสดง loading message `Uploading files...`
+- หากไม่มีไฟล์ upload หรือ upload เสร็จแล้ว ให้แสดง loading message `Adding asset...`
+- หากสำเร็จให้แสดง toast/snackbar `Asset added.` และ default ไป Owner Asset Detail ของ asset ที่เพิ่งสร้าง
+- หากล้มเหลวต้องคงข้อมูลทั้งหมดใน form, ไม่สร้าง asset ซ้ำ และแสดง `Unable to add asset. Please try again.`
+
+## Change Status Sheet
+
+Owner สามารถเปลี่ยนสถานะ Asset ที่ยังไม่ใช่ `Sold` จาก quick action หรือ Edit Asset ได้ โดย Change Status ควรเป็น bottom sheet / modal sheet สั้น ๆ ไม่ต้องพาเข้า Edit Asset เต็ม
+
+Sheet copy:
+
+- Title: `Change status`
+- Subtitle: `Choose where this asset should appear.`
+- Secondary action: `Cancel`
+- Primary action: `Save`
+- Primary loading: `Saving...`
+- Success toast: `Asset status updated.`
+- Error toast: `Unable to update asset status. Please try again.`
+
+Status options:
+
+| Option | Description | Available From |
+|---|---|---|
+| Sale | `List on Marketplace Feed for buyers` | Show, Hide |
+| Show | `Display in your public profile vault` | Sale, Hide |
+| Hide | `Keep hidden in private collection` | Sale, Show |
+
+Rules:
+
+- สถานะปัจจุบันต้องแสดงเป็น selected
+- หากเลือกสถานะเดิม ปุ่ม `Save` ต้อง disabled
+- `Sold` ต้องไม่อยู่ใน Change Status
+- Asset สถานะ `Sold` ต้องไม่เห็นเมนู `Change status`
+- `Sale -> Sold` ต้องทำผ่าน `Mark as sold` และ Sale Record Form เท่านั้น
+- หลัง save สำเร็จให้ปิด sheet และอัปเดต UI ใน context เดิมทันที
+- หากทำจาก Feed แล้วเปลี่ยน `Sale -> Show` หรือ `Sale -> Hide` card ต้องหายจาก Feed ทันที
+- หากทำจาก Owner Profile และสถานะใหม่ไม่อยู่ใน tab ปัจจุบัน card ต้องหายจาก tab นั้น และ tab count ต้อง update
+- หาก save ล้มเหลวต้องคง selection ใน sheet และไม่เปลี่ยนสถานะจริง
+
+Consignment status conversion:
+
+- หาก Asset เป็น `Consignment` และ Owner เปลี่ยนจาก `Sale` เป็น `Show` หรือ `Hide` ต้องแสดง warning ก่อน เพราะ `Consignment` ใช้ได้เฉพาะ `Sale`
+- Warning title: `Change to owner asset?`
+- Warning body: `Consignment details are only available for assets listed for sale. To change this status, this asset must use owner purchase history instead.`
+- Warning actions: `Cancel` / `Continue`
+- หลัง `Continue` ต้องพาไป Provenance และบังคับใช้ `Owner (Asset)` โดย require `Purchase Price`
+- Consignment data เดิมต้องไม่ถูก merge กับ Owner purchase history; ให้เก็บเป็น historical/private หรือปิด active consignment ตาม backend policy
+
 ## Sale Record Confirmation
 
 หลัง Owner กรอก Sale Record / Sale History และกด `Save` ระบบต้องแสดง confirmation ก่อนเปลี่ยน Asset เป็น `Sold`
@@ -880,6 +945,8 @@ Owner Profile และ Sold History ใช้ Global Empty State:
 | AC-ASSET-MGMT-006A | Add / Edit Asset ต้อง require อย่างน้อย 1 รูปสำหรับ Sale, Show และ Hide |
 | AC-ASSET-MGMT-006B | หลังกรอกข้อมูลครบและกด Save ต้องแสดง uploading/saving state พร้อมข้อความ `กำลังอัปโหลด...` / `Uploading...` เมื่อมีไฟล์ upload และต้อง disable ปุ่ม Save เพื่อป้องกัน duplicate submit |
 | AC-ASSET-MGMT-006C | หลัง Owner กด Save ใน Edit Asset ต้องแสดง confirmation copy `Save changes?` / `บันทึกการแก้ไข?` และห้ามใช้คำว่า `Save edit asset?` |
+| AC-ASSET-MGMT-006D | หลัง Owner กด final action ใน Add Asset Provenance step ต้องแสดง confirmation `Add this asset?` และ primary action `Add asset` ก่อนสร้าง asset จริง |
+| AC-ASSET-MGMT-006E | ระหว่าง Add Asset save/upload ต้อง disable action, แสดง `Adding...` และหากสำเร็จต้องแสดง `Asset added.` ก่อนพาไป Owner Asset Detail ของ asset ที่เพิ่งสร้าง |
 | AC-ASSET-MGMT-007 | Add / Edit Asset ต้องรองรับ Brand, Model / Series, Reference No., Year, Condition, Scope of Delivery, Case Size, Thickness, Case Material, Movement, Dial Color, Strap / Bracelet Type, Price และ Description |
 | AC-ASSET-MGMT-007A | Status = Sale ต้อง require Photos, Brand Name, Model / Series, Condition, Price และ Description |
 | AC-ASSET-MGMT-007B | Status = Show ต้อง require Photos, Brand Name และ Model / Series โดยไม่บังคับ Price |
@@ -897,6 +964,10 @@ Owner Profile และ Sold History ใช้ Global Empty State:
 | AC-ASSET-MGMT-008I | หลัง Owner กด Save ใน Edit Provenance ต้องแสดง confirmation เฉพาะ context: `Save purchase history?` สำหรับ Owner (Asset) หรือ `Save consignment details?` สำหรับ Consignment และห้ามใช้ Edit Asset body ที่อ้างถึง current status |
 | AC-ASSET-MGMT-009 | Add / Edit Asset ต้องให้เลือก status ได้เฉพาะ Sale, Show และ Hide |
 | AC-ASSET-MGMT-010 | Add / Edit Asset ต้องไม่ให้เลือก Sold เป็น status ปกติ |
+| AC-ASSET-MGMT-010A | Change Status sheet ต้องให้เลือกเฉพาะ Sale, Show และ Hide โดยไม่มี Sold option และต้อง disable Save เมื่อเลือกสถานะเดิม |
+| AC-ASSET-MGMT-010B | Change Status สำเร็จต้องแสดง toast `Asset status updated.` และอัปเดต card/detail/feed ตาม visibility ของสถานะใหม่ทันที |
+| AC-ASSET-MGMT-010C | Change Status ล้มเหลวต้องแสดง `Unable to update asset status. Please try again.` และต้องไม่เปลี่ยนสถานะจริง |
+| AC-ASSET-MGMT-010D | Asset ที่เป็น Consignment หากเปลี่ยนจาก Sale เป็น Show หรือ Hide ต้องแสดง warning `Change to owner asset?` และบังคับแปลงเป็น `Owner (Asset)` provenance โดย require Purchase Price ก่อนบันทึก |
 
 ## Status & Visibility
 

@@ -412,7 +412,9 @@ Feed รองรับ:
   - Block User / บล็อกผู้ใช้งาน
 - เมนูสามจุดสำหรับ Asset ของ Owner:
   - Edit asset / แก้ไขรายการ
+  - Edit provenance / แก้ไขประวัติหรือข้อมูลฝากขาย
   - Mark as sold / บันทึกว่าขายแล้ว
+  - Change status / เปลี่ยนสถานะ
   - Delete asset / ลบรายการ
 
 Feed ไม่รองรับ:
@@ -434,8 +436,12 @@ Feed ไม่รองรับ:
 ## Owner Feed Action Rule
 
 - Owner Feed more menu ต้องแยกจาก more menu ของ Asset ผู้อื่น
-- Owner Feed more menu รองรับ Edit asset, Mark as sold และ Delete asset
+- Owner Feed more menu รองรับ Edit asset, Edit provenance, Mark as sold, Change status และ Delete asset
+- Owner Feed more menu แสดงเฉพาะ Asset status `Sale` เพราะ Feed แสดงเฉพาะรายการที่ขายอยู่
+- Edit provenance ต้อง route ตาม active provenance type: `Owner (Asset)` ไป purchase history และ `Consignment` ไป consignment details
 - Mark as sold จาก Feed เป็น shortcut ไป Sale Record Form โดยตรง ไม่ต้องผ่าน Edit Asset
+- Change status จาก Feed เปิด Change Status sheet โดยตรง ไม่ต้องผ่าน Edit Asset
+- หาก Change status จาก Feed สำเร็จเป็น `Show` หรือ `Hide` ต้องแสดง toast `Asset status updated.` และเอา card ออกจาก Feed ทันที
 - Edit Asset ต้องไม่ให้เลือก `Sold` เป็น status ปกติ
 - Delete asset จาก Feed ต้องใช้ Delete Asset confirmation เสมอ
 - Delete asset ไม่มี Undo เพราะกระทบ public surfaces, Chat reference และ Offer status
@@ -640,9 +646,10 @@ Image failure rules:
 | AC-FEED-017D-2 | Report Asset bottom sheet ที่ถูก dismiss โดยไม่ submit ต้องไม่สร้าง report |
 | AC-FEED-017D-3 | Submit report button ต้อง disabled จนกว่า Member จะเลือก reason |
 | AC-FEED-017E | Block User จาก Feed ต้องมี confirmation และเมื่อ block สำเร็จ Asset/content ของ user นั้นต้องหายจาก Feed ตาม Trust & Safety rule |
-| AC-FEED-017F | Owner Feed more menu ต้องมี Edit asset, Mark as sold และ Delete asset |
+| AC-FEED-017F | Owner Feed more menu ต้องมี Edit asset, Edit provenance, Mark as sold, Change status และ Delete asset |
 | AC-FEED-017G | Mark as sold จาก Feed ต้องเปิด Sale Record Form โดยตรง และไม่ต้องผ่าน Edit Asset |
 | AC-FEED-017H | Delete asset จาก Feed ต้องมี confirmation, ไม่มี Undo และเมื่อสำเร็จ Asset ต้องหายจาก Feed |
+| AC-FEED-017I | Change status จาก Feed ต้องเปิด Change Status sheet และหากเปลี่ยนเป็น Show หรือ Hide สำเร็จต้องแสดง `Asset status updated.` พร้อมเอา card ออกจาก Feed ทันที |
 | AC-FEED-018 | Feed รองรับ Infinite Scroll และมี load-more state |
 | AC-FEED-019 | เมื่อ Scroll ถึงท้ายรายการต้องแสดง `คุณดูรายการทั้งหมดแล้ว` |
 | AC-FEED-020 | โหลด Feed ไม่สำเร็จต้องแสดง Error State และปุ่ม `ลองใหม่` |

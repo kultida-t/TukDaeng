@@ -422,6 +422,46 @@ Rules:
 - ไม่แสดง `Report user` หรือ `Block user` ให้ owner report/block ตัวเอง
 - ใช้ label `Settings` ไม่ใช่ `Setting`
 
+## Owner Profile Asset Card Quick Actions
+
+Owner Profile asset grid ต้องให้ Owner จัดการ Asset จาก card ได้โดยไม่ต้องเปิด Asset Detail ก่อน
+
+Entry point:
+
+- แสดงปุ่ม `...` บนรูป asset card เฉพาะ Owner view
+- Public Profile / Visitor view ต้องไม่แสดง `...` บน asset card
+- Tap card หรือรูป asset ต้องเปิด Asset Detail
+- Tap `...` ต้องเปิด quick action menu เท่านั้น และต้องไม่ trigger Asset Detail
+- ปุ่ม `...` ควรอยู่มุมขวาบนของรูป asset, hit area อย่างน้อย `32x32px`, พื้นหลังดำ/เทาเข้มโปร่งเพื่ออ่านได้บนรูปทุกแบบ
+
+Quick actions by status:
+
+| Asset Status | Owner Quick Actions |
+|---|---|
+| Sale | Edit asset, Edit provenance, Mark as sold, Change status, Delete asset |
+| Show | Edit asset, Edit purchase history, Change status, Delete asset |
+| Hide | Edit asset, Edit purchase history, Change status, Delete asset |
+| Sold | View sale history, View provenance |
+
+Rules:
+
+- `Sold` ต้องไม่มี `Delete asset`, `Edit asset`, `Change status` หรือ `Mark as sold`
+- `Sold` quick actions เป็น read-only entry เท่านั้น
+- `Mark as sold` แสดงเฉพาะ `Sale`
+- `Consignment` provenance ใช้ได้เฉพาะ `Sale`
+- `Show` และ `Hide` ต้องแก้ได้เฉพาะ `Owner (Asset)` / Purchase History
+- `Delete asset` ต้องอยู่ท้ายเมนูและใช้ destructive color
+- `Change status` ต้องเปิด Change Status sheet ตาม Asset Management Module
+
+Status badge on asset card:
+
+| Status | Badge Treatment |
+|---|---|
+| Sale | Red badge |
+| Show | Blue badge |
+| Hide | Neutral / outline badge |
+| Sold | Muted gray or dark red badge, not the same style as Sale |
+
 ## Profile Share Sheet Rule
 
 Profile Share Sheet ใช้ได้ทั้ง Owner Profile และ Public Profile:
@@ -671,6 +711,9 @@ Profile Module ต้องรับผลหลัง Save สำเร็จ�
 | AC-PROFILE-005 | Owner Profile Tab Show ต้องแสดงเฉพาะ Asset สถานะ Show |
 | AC-PROFILE-006 | Owner Profile Tab Hide ต้องแสดงเฉพาะ Asset สถานะ Hide |
 | AC-PROFILE-007 | Owner Profile Tab Sold ต้องแสดงเฉพาะ Asset สถานะ Sold |
+| AC-PROFILE-007A | Owner Profile asset card ต้องแสดงปุ่ม `...` เฉพาะ Owner view เพื่อเปิด quick action menu โดยไม่ trigger Asset Detail |
+| AC-PROFILE-007B | Owner Profile quick action menu ต้องแสดง action ตาม status: Sale มี Edit asset, Edit provenance, Mark as sold, Change status, Delete asset; Show/Hide มี Edit asset, Edit purchase history, Change status, Delete asset; Sold มีเฉพาะ View sale history และ View provenance |
+| AC-PROFILE-007C | Public Profile / Visitor view ต้องไม่แสดง asset-card quick action `...` |
 
 ## Public Profile
 

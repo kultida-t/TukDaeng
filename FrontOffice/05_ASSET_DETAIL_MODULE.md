@@ -534,10 +534,17 @@ Rules:
 
 - User สามารถ Like Asset ได้
 - Owner สามารถ Like Asset ตัวเองได้
+- ปุ่มหัวใจด้านบนของ Asset Detail เป็น action สำหรับ Like / Unlike จริง
+- Heart icon ใน metadata row ใต้ชื่อ Asset / Reference No. เป็น like count และ entry ไป `Liked by` list เท่านั้น ไม่ใช่ปุ่ม Like ซ้ำ
 - Like สำเร็จต้อง Update Like Count ทันที
 - Like สำเร็จต้องเพิ่ม Asset เข้า Favorites
 - Unlike สำเร็จต้อง Update Like Count ทันที
 - Unlike สำเร็จต้องลบ Asset ออกจาก Favorites
+- Like count และ Comment count ควรแสดงใต้ชื่อ Asset / Reference No. ก่อน Owner block
+- กด like count ต้องเปิดรายชื่อคนที่กด Like
+- กด comment count ต้อง scroll ไป Comments section
+- หาก count = 0 สามารถซ่อนตัวเลขและแสดง icon อย่างเดียวได้ แต่ icon ต้องยังทำหน้าที่เป็น entry ตามสิทธิ์
+- Public / Viewer และ Owner view ใช้ตำแหน่ง like/comment metadata เดียวกัน
 
 ## Comment Rule
 
@@ -553,6 +560,25 @@ Rules:
 - ไม่รองรับ `Hide comment` ใน V1
 - Root comment deletion ลบ root comment และ replies ใต้ comment นั้น
 - Reply deletion ลบเฉพาะ reply นั้น
+
+## Comment Empty State
+
+หาก Asset ยังไม่มี comment เลย Comments section ต้องไม่ปล่อยว่างเปล่า
+
+UI copy:
+
+- Title section: `Comments`
+- Empty title: `No comments yet.`
+- Empty body: `Be the first to comment.`
+- Input placeholder: `Write a comment...`
+
+Rules:
+
+- หากไม่มี comment ให้ซ่อนหรือ disable `View all`
+- แสดง empty state แบบเบา ๆ ในพื้นที่ Comments section ไม่ต้องใช้การ์ดใหญ่
+- หากมี comment input ให้แสดง input ต่อใต้ empty state เพื่อให้ user เริ่ม comment ได้ทันที
+- Guest เห็น empty state ได้ แต่เมื่อกด input/comment action ต้องเจอ Global Login Required Dialog
+- Owner และ Member ใช้ empty state เดียวกัน
 
 ## Share Rule
 
@@ -743,12 +769,18 @@ CTA behavior ใช้ rule เดียวกับ Asset Deleted / Unavailable
 
 # 14. Empty State
 
-## Comment Empty State
+## Comment Empty State Copy
 
 | Language | Message |
 |---|---|
-| TH | ไม่พบข้อมูล |
-| EN | No data found |
+| TH | ยังไม่มีความคิดเห็น |
+| EN | No comments yet. |
+
+Comment empty state ต้องใช้ copy และ behavior ตาม `Comment Empty State` ใน Comment Rule:
+
+- `No comments yet.`
+- `Be the first to comment.`
+- `Write a comment...`
 
 ---
 
@@ -835,6 +867,15 @@ CTA behavior ใช้ rule เดียวกับ Asset Deleted / Unavailable
 | AC-DETAIL-019 | Asset Detail ต้องไม่รองรับ multi-level nested thread หรือ reply ซ้อนเกิน 1 ชั้น |
 | AC-DETAIL-020 | Asset Detail ต้องไม่มี Edit Comment ใน V1 |
 | AC-DETAIL-021 | User ต้องลบ Comment ของตัวเองได้ตามสิทธิ์ |
+
+Additional Like & Comment display criteria:
+
+| AC ID | Criteria |
+|---|---|
+| AC-DETAIL-017A | ปุ่มหัวใจด้านบนของ Asset Detail ต้องเป็น Like / Unlike action ส่วน heart icon ใน metadata row ต้องเป็น like count และเปิด `Liked by` list เท่านั้น |
+| AC-DETAIL-017B | Like count และ Comment count ต้องแสดงใต้ชื่อ Asset / Reference No.; หาก count = 0 สามารถซ่อนตัวเลขและแสดง icon อย่างเดียวได้ |
+| AC-DETAIL-017C | กด Comment count ต้อง scroll ไป Comments section |
+| AC-DETAIL-017D | หากยังไม่มี comment ต้องแสดง `No comments yet.` และ `Be the first to comment.` พร้อม input placeholder `Write a comment...` |
 
 ## Offer / Chat / Share
 
