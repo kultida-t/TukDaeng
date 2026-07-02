@@ -440,6 +440,7 @@ Purpose:
 # 19. Implementation Handoff Gates
 
 - [ ] Dev อ่าน source-of-truth order ใน `README_MODULE_INDEX.md`
+- [ ] Dev อ่าน `ERROR_STATE_UI_COPY_CATALOG.md` ก่อน implement error/loading/empty/retry states
 - [ ] Dev ใช้ master เป็น source สูงสุดเมื่อ Figma/PRD ขัดกัน
 - [ ] Figma `Must Fix` ต้องแก้ก่อนเริ่ม implementation จริง
 - [ ] Figma `High` ต้องมี owner/decision ก่อน QA sign-off
@@ -447,3 +448,5 @@ Purpose:
 - [ ] QA ต้องมี test cases ครอบคลุม Guest, Member, Owner, Other User, Admin boundary
 - [ ] QA ต้อง test Sale/Show/Hide/Sold/Deleted lifecycle ครบ
 - [ ] QA ต้อง test Block, Report, Notification routing, Portfolio fallback และ No market price
+- [ ] Retry scope ต้องตรง catalog: image-only, pagination-only, refresh-only, section-only หรือ screen reload ตาม state
+- [ ] Existing data ต้องไม่ถูก clear เมื่อ refresh/load-more/image/section retry fail

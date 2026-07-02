@@ -453,7 +453,7 @@ Owner Asset Detail ต้องแยก private provenance เป็น section
 | --- | --- | --- |
 | Purchase Information / Owner (Asset) | Owner, Admin | แสดงเฉพาะ field ที่มีค่า เช่น Purchase Price, Purchase Date, Purchase From |
 | Consignment Information | Owner, Admin | แสดงเฉพาะ field ที่มีค่า เช่น Consignor name, contact, payout, consignment date, duration |
-| Price & Terms | Owner, Admin | แสดงเฉพาะ field ที่มีค่า เช่น Asking Price, Commission, Minimum Acceptable Price, Price Negotiable |
+| Price & Terms | Owner, Admin | แสดงเฉพาะ field ที่มีค่า เช่น Asking Price, Commission, Minimum Acceptable Price |
 | Documentation | Owner, Admin | แสดงเฉพาะเอกสารหรือรูปที่ upload แล้ว |
 | Note | Owner, Admin | แสดงเฉพาะเมื่อมีข้อความ |
 

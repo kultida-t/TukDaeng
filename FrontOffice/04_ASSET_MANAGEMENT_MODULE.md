@@ -365,7 +365,6 @@ Provenance ต้องแยกข้อมูลการเป็นเจ้
 | Asking Price (THB) | Required when saving Consignment provenance record | ราคาเสนอขายของ consignment item; ต้องมากกว่า 0 |
 | Commission (%) | Optional | หากกรอกต้องอยู่ในช่วง 0-100 |
 | Minimum Acceptable Price | Optional | หากกรอกต้องมากกว่า 0 และไม่ควรมากกว่า Asking Price |
-| Price Negotiable | Optional, default `false` unless user turns on | เปิดให้ buyer counter-offer ได้ |
 | All Equipment & Accessories | Optional | Upload รูปกล่อง tag คู่มือ หรืออุปกรณ์ประกอบ |
 | Proof of Payment | Optional | Upload เอกสารรับฝาก ใบเสร็จ หรือ certificate |
 | Note | Optional | ข้อความส่วนตัวของ Owner |

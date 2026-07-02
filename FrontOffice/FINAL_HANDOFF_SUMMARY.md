@@ -2,7 +2,7 @@
 
 อ้างอิงหลักจาก [TukDaeng_Master_Product_Definition.md](TukDaeng_Master_Product_Definition.md)
 
-**Current Baseline Version:** `FO-PRD-v1.1`
+**Current Baseline Version:** `FO-PRD-v1.2`
 **Version Registry:** [DOCUMENT_VERSION.md](DOCUMENT_VERSION.md)
 
 ---
@@ -20,8 +20,11 @@
 - Global rules: [00_GLOBAL_RULES_MODULE.md](00_GLOBAL_RULES_MODULE.md)
 - Navigation rules: [00_NAVIGATION_AND_CROSS_MODULE_FLOW.md](00_NAVIGATION_AND_CROSS_MODULE_FLOW.md)
 - Module PRD: `01-18`
+- Error-state copy catalog: [ERROR_STATE_UI_COPY_CATALOG.md](ERROR_STATE_UI_COPY_CATALOG.md)
 
 หมายเหตุสำหรับรอบ 2026-06-23: `FO-PRD-v1.1` supersede `FO-PRD-v1.0` สำหรับ Dev / QA / Figma โดยเพิ่ม product decision เรื่อง Asset Detail / Social comment model ให้รองรับ IG-style one-level replies ใต้ comment หลัก, ใช้ `View more replies` สำหรับ collapsed replies ชั้นเดียว และไม่รองรับ multi-level nested thread
+
+หมายเหตุสำหรับรอบ 2026-07-02: `FO-PRD-v1.2` supersede `FO-PRD-v1.1` สำหรับ Dev / QA / Figma เฉพาะ error-state handoff โดยเพิ่ม [ERROR_STATE_UI_COPY_CATALOG.md](ERROR_STATE_UI_COPY_CATALOG.md), lock copy/retry scope ของ Feed refresh failure, Feed load-more failure, image failure, owner fallback และอัปเดต Feed/QA checklist ให้ตรงกับ Figma ล่าสุด
 
 # 2. Approved Product Decisions
 
@@ -70,7 +73,10 @@
 | QA test scenario checklist created | Done |
 | Final handoff summary created | Done |
 | Dev baseline handoff reviewed by Product | Done |
-| Figma visual updates completed | Pending Figma team |
+| Figma error-state visual updates completed | Done |
+| Error-state copy catalog created | Done |
+| Feed error-state QA checklist updated | Done |
+| Remaining non-error Figma visual updates | Pending team review |
 | Dev / QA sign-off | Pending team review |
 
 # 6. Recommended Next Step

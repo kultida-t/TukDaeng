@@ -236,6 +236,9 @@ Given Feed มีข้อมูลแสดงอยู่แล้ว
 When user refresh แล้ว API fail
 Then ต้องคง Feed Card เดิมไว้
 And ต้องแสดงข้อความ `อัปเดตฟีดไม่สำเร็จ กรุณาลองใหม่`
+And EN copy ต้องเป็น `Unable to update feed. Please try again.`
+And action ต้องเป็น `Retry`
+And Retry ต้อง retry เฉพาะ refresh current Feed tab ไม่ใช่ load more
 
 ## QA-FEED-010: Feed Load More Failed
 
@@ -243,6 +246,10 @@ Given Feed มีข้อมูลแสดงอยู่แล้ว
 When user scroll ถึงท้าย list และ load more fail
 Then ต้องคงรายการเดิมไว้
 And ต้องแสดง inline retry ท้าย list
+And EN title ต้องเป็น `Unable to load more feed items`
+And EN body ต้องเป็น `Check your connection and try again.`
+And button ต้องเป็น `Try again`
+And retry ต้องโหลด next page เท่านั้น ไม่ refresh หรือล้าง Feed ทั้งหน้า
 
 ## QA-FEED-011: Feed More Menu Actions
 
@@ -273,8 +280,27 @@ And image request ของ Feed Card fail
 When user เห็น Feed
 Then ต้องแสดง Feed Card เดิมพร้อม Brand, Model, Price, Owner Name, Posted Time, Like Count และ Comment Count
 And พื้นที่รูปต้องแสดง placeholder พร้อมข้อความ `โหลดรูปไม่สำเร็จ`
+And EN copy ต้องเป็น `Image failed to load`
+And button ต้องเป็น `Retry image`
 And ต้องมี retry เฉพาะรูป
 And ต้องไม่ reload Feed ทั้งหน้า
+
+## QA-FEED-012A: Feed Owner Fallback
+
+Given Feed API โหลดข้อมูล Asset สำเร็จ
+And owner/profile request fail
+When user เห็น Feed Card
+Then card ต้องยังแสดง asset data เดิม
+And owner row ต้องแสดง default avatar และ `Unknown seller`
+And ต้องไม่แสดงปุ่ม `Follow` ถ้า owner id หรือ follow state ไม่ชัด
+And owner-dependent more menu ต้องซ่อน หรือแสดงเฉพาะ listing-level action ที่ยัง valid
+
+Given owner/profile data โหลดสำเร็จ
+And profile image request fail
+When user เห็น Feed Card
+Then ต้องแสดง default avatar หรือ initials
+And ต้องยังแสดง seller display name จริง
+And action ที่มี owner id และ permission ชัดเจนต้องยังใช้งานได้
 
 ## QA-FEED-013: Hide This Asset From Feed
 

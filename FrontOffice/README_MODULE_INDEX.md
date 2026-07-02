@@ -2,7 +2,7 @@
 
 อ้างอิงหลักจาก [TukDaeng_Master_Product_Definition.md](TukDaeng_Master_Product_Definition.md)
 
-**Current Baseline Version:** `FO-PRD-v1.1`
+**Current Baseline Version:** `FO-PRD-v1.2`
 **Version Registry:** [DOCUMENT_VERSION.md](DOCUMENT_VERSION.md)
 
 ---
@@ -13,7 +13,9 @@
 
 สำหรับรอบส่งต่อ Dev วันที่ 2026-06-22 ให้ถือว่าชุดเอกสารนี้เป็น baseline ใหม่ทั้งชุดสำหรับแทนเอกสารเก่าที่ Dev เคยใช้ก่อนหน้า ไม่ใช่เฉพาะรายการที่เพิ่งเพิ่มในวันเดียวกัน
 
-เมื่อส่งต่อ Dev / QA / Figma ให้อ้างอิง version `FO-PRD-v1.1` คู่กับ branch `docs-frontoffice-spec-updates`
+เมื่อส่งต่อ Dev / QA / Figma ให้อ้างอิง version `FO-PRD-v1.2` คู่กับ branch `docs-frontoffice-spec-updates`
+
+หมายเหตุรอบ 2026-07-02: `FO-PRD-v1.2` เพิ่ม error-state UI copy catalog สำหรับ final Figma-to-Dev handoff โดย lock copy และ retry scope ของ Feed refresh failure, Feed load-more failure, Feed image failure, owner fallback, section error, unavailable state และ empty/error pattern หลัก
 
 หมายเหตุรอบ 2026-06-23: `FO-PRD-v1.1` supersede `FO-PRD-v1.0` เฉพาะ decision update เรื่อง Asset Detail / Social comment model โดยให้รองรับ IG-style one-level replies ใต้ comment หลัก, ใช้ `View more replies` สำหรับ collapsed replies ชั้นเดียว และไม่รองรับ multi-level nested thread
 
@@ -42,7 +44,8 @@
 | 8 | [DEV_BASELINE_HANDOFF_2026-06-22.md](DEV_BASELINE_HANDOFF_2026-06-22.md) | Dev baseline package for replacing old implementation reference |
 | 9 | [DEV_IMPLEMENTATION_CHECKLIST.md](DEV_IMPLEMENTATION_CHECKLIST.md) | Dev implementation checklist by module |
 | 10 | [DEV_CHAT_IMPLEMENTATION_CHECKLIST.md](DEV_CHAT_IMPLEMENTATION_CHECKLIST.md) | Focused checklist for Dev working only on Chat |
-| 11 | [QA_TEST_SCENARIO_CHECKLIST.md](QA_TEST_SCENARIO_CHECKLIST.md) | QA scenario checklist and regression sign-off |
+| 11 | [ERROR_STATE_UI_COPY_CATALOG.md](ERROR_STATE_UI_COPY_CATALOG.md) | Final error-state copy, fallback behavior, and retry scope for Figma-to-Dev handoff |
+| 12 | [QA_TEST_SCENARIO_CHECKLIST.md](QA_TEST_SCENARIO_CHECKLIST.md) | QA scenario checklist and regression sign-off |
 
 # 4. Module Index
 

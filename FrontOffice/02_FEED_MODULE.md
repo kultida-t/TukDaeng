@@ -490,8 +490,8 @@ Feed ไม่รองรับ:
 | Initial load failed, no cache | API fail หรือ timeout และไม่มี cached Feed | แสดง full-page error state กลางพื้นที่ list พร้อมปุ่ม `ลองใหม่` | Title: `โหลดฟีดไม่สำเร็จ` Body: `สัญญาณอินเทอร์เน็ตอาจไม่เสถียร กรุณาตรวจสอบการเชื่อมต่อแล้วลองอีกครั้ง` Button: `ลองใหม่` | Title: `Unable to load feed` Body: `Your internet connection may be unstable. Check your connection and try again.` Button: `Try again` |
 | Offline, no cache | อุปกรณ์ offline ตั้งแต่เปิด Feed และไม่มี cached Feed | แสดง full-page offline state กลางพื้นที่ list พร้อมปุ่ม `ลองใหม่` | Title: `ไม่มีการเชื่อมต่ออินเทอร์เน็ต` Body: `เชื่อมต่ออินเทอร์เน็ตแล้วลองโหลดฟีดอีกครั้ง` Button: `ลองใหม่` | Title: `No internet connection` Body: `Connect to the internet and try loading the feed again.` Button: `Try again` |
 | Offline with cache | อุปกรณ์ offline แต่เคยโหลด Feed สำเร็จมาก่อน | แสดง Feed Card จาก cache ต่อไป และมี offline banner ด้านบน list | `คุณกำลังออฟไลน์ ข้อมูลอาจไม่ใช่ข้อมูลล่าสุด` | `You are offline. This information may not be up to date.` |
-| Refresh failed with existing data | ผู้ใช้ pull-to-refresh หรือ retry แล้ว fail แต่ยังมีข้อมูลเดิมบนหน้าจอ | คงข้อมูลเดิมไว้ ห้ามล้าง list และแสดง snackbar/banner สั้น ๆ พร้อม retry ได้ | `อัปเดตฟีดไม่สำเร็จ กรุณาลองใหม่` | `Unable to update feed. Please try again.` |
-| Load more failed | Infinite Scroll โหลดหน้าถัดไปไม่สำเร็จ | คงรายการเดิมไว้ และแสดง inline retry ที่ท้าย list | `โหลดรายการเพิ่มเติมไม่สำเร็จ` + `ลองใหม่` | `Unable to load more items` + `Try again` |
+| Refresh failed with existing data | ผู้ใช้ pull-to-refresh หรือ retry แล้ว fail แต่ยังมีข้อมูลเดิมบนหน้าจอ | คงข้อมูลเดิมไว้ ห้ามล้าง list และแสดง snackbar/banner สั้น ๆ พร้อม retry ได้ | `อัปเดตฟีดไม่สำเร็จ กรุณาลองใหม่` + `ลองใหม่` | `Unable to update feed. Please try again.` + `Retry` |
+| Load more failed | Infinite Scroll โหลดหน้าถัดไปไม่สำเร็จ | คงรายการเดิมไว้ และแสดง inline retry ที่ท้าย list หลัง card สุดท้ายที่โหลดสำเร็จ | Title: `โหลดรายการฟีดเพิ่มเติมไม่สำเร็จ` Body: `ตรวจสอบการเชื่อมต่อแล้วลองอีกครั้ง` Button: `ลองใหม่` | Title: `Unable to load more feed items` Body: `Check your connection and try again.` Button: `Try again` |
 
 Network state rules:
 
@@ -508,9 +508,9 @@ Network state rules:
 | State | Trigger | UI Behavior | TH Copy | EN Copy |
 | --- | --- | --- | --- | --- |
 | Image loading | Card data มาแล้ว แต่รูปยังโหลดอยู่ | แสดง image skeleton หรือ blurred placeholder ในพื้นที่รูป โดยพื้นที่ card ต้องไม่กระโดดหรือเปลี่ยนขนาด | ไม่ต้องมีข้อความ | No copy |
-| Image failed | รูปหลักของ Feed Card โหลดไม่สำเร็จ | แสดง placeholder สี neutral ในพื้นที่รูป พร้อม icon รูปภาพ/แจ้งเตือน และให้ข้อมูล text ของ card แสดงต่อได้ครบ | `โหลดรูปไม่สำเร็จ` | `Unable to load image` |
-| Retry image | ผู้ใช้กดพื้นที่ placeholder หรือปุ่ม retry เฉพาะรูป | โหลดรูปของ card นั้นใหม่เท่านั้น ห้าม reload ทั้ง Feed | `ลองโหลดรูปใหม่` | `Try loading image again` |
-| Partial gallery failed | Asset มีหลายรูปและบางรูปโหลดไม่สำเร็จ | แสดงรูปที่โหลดได้ก่อน ถ้ารูปปัจจุบัน fail ให้แสดง placeholder เฉพาะ slide นั้น | `โหลดรูปไม่สำเร็จ` | `Unable to load image` |
+| Image failed | รูปหลักของ Feed Card โหลดไม่สำเร็จ | แสดง placeholder สี neutral ในพื้นที่รูป พร้อม icon รูปภาพ/แจ้งเตือน และให้ข้อมูล text ของ card แสดงต่อได้ครบ | `โหลดรูปไม่สำเร็จ` | `Image failed to load` |
+| Retry image | ผู้ใช้กดพื้นที่ placeholder หรือปุ่ม retry เฉพาะรูป | โหลดรูปของ card นั้นใหม่เท่านั้น ห้าม reload ทั้ง Feed | `ลองโหลดรูปใหม่` | `Retry image` |
+| Partial gallery failed | Asset มีหลายรูปและบางรูปโหลดไม่สำเร็จ | แสดงรูปที่โหลดได้ก่อน ถ้ารูปปัจจุบัน fail ให้แสดง placeholder เฉพาะ slide นั้น | `โหลดรูปไม่สำเร็จ` | `Image failed to load` |
 
 Image failure rules:
 
@@ -520,6 +520,24 @@ Image failure rules:
 - การ retry รูปต้อง retry เฉพาะ image request ของ card/slide นั้น ไม่ใช่ reload Feed ทั้งหน้า
 - หากรูปโหลดไม่สำเร็จเพราะ offline และมี cached thumbnail ให้แสดง cached thumbnail ก่อน placeholder
 - หากไม่มีรูปที่โหลดได้เลย ให้ยังเปิด Asset Detail ได้ แต่ Full Screen Image Viewer ต้องแสดง image unavailable state เฉพาะรูป
+
+## Feed Owner Fallback States
+
+กรณีข้อมูล Asset โหลดสำเร็จ แต่ข้อมูล Owner/Profile บางส่วนโหลดไม่สำเร็จ ต้อง fallback เฉพาะ owner row และห้ามซ่อนทั้ง Feed Card
+
+| State | Trigger | UI Behavior | EN Copy / UI |
+| --- | --- | --- | --- |
+| Profile image failed, owner data loaded | รูปโปรไฟล์โหลดไม่สำเร็จ แต่ owner id และ display name มาแล้ว | ใช้ default avatar หรือ initials; ชื่อจริง, เวลา, Follow และ action ที่มี permission ชัดเจนยังแสดงได้ | Avatar fallback; keep actual seller name |
+| Owner data loading | Owner/profile request ยัง pending | แสดง avatar/name/time skeleton; ซ่อนหรือ disable Follow และ more menu จนรู้ owner id/action permission | Skeleton only |
+| Owner data failed, asset data loaded | Asset data มาแล้ว แต่ owner/profile resolve ไม่สำเร็จ | ใช้ default avatar, แสดง `Unknown seller`, ซ่อน Follow, ซ่อน owner-dependent menu | `Unknown seller` |
+| Seller unavailable | Owner ถูกลบ unavailable หรือ blocked ตาม Trust & Safety | ใช้ default avatar, แสดง `Seller unavailable`, ซ่อน Follow และ owner actions | `Seller unavailable` |
+
+Owner fallback rules:
+
+- `Unknown seller` ใช้เฉพาะเมื่อ owner/profile request fail หลัง asset data โหลดสำเร็จแล้ว ไม่ใช้ระหว่าง loading
+- ถ้า owner id หรือ follow state ไม่ชัด ห้ามแสดงปุ่ม `Follow`
+- ถ้า more menu ต้องพึ่ง owner id ให้ซ่อนเมนู; ถ้ายังมี listing-level action ที่ valid เช่น report listing อาจแสดงเฉพาะ action นั้นได้
+- ถ้าแค่รูปโปรไฟล์โหลดไม่สำเร็จ แต่ owner data มาแล้ว ให้ใช้ชื่อจริงของ seller และเปิด owner/profile action ได้ตาม permission
 
 # 11. Permission Rules
 

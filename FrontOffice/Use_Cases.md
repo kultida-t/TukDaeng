@@ -545,9 +545,8 @@
 3. เลือก Consignment Date (Date Picker)
 4. กรอก Asking Price
 5. ตั้ง Commission % (0–100)
-6. Toggle "Price Negotiable"
-7. อัปโหลด Documentation
-8. กด "Save" → Confirm
+6. อัปโหลด Documentation
+7. กด "Save" → Confirm
 
 #### Error Cases
 | ID | เงื่อนไข | ผลลัพธ์ |

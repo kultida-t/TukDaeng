@@ -206,7 +206,7 @@
 - Consignment (ฝากขาย):
   - ข้อมูลเจ้าของฝาก: ชื่อ, โทรศัพท์, Line/IG/Facebook
   - Consignment Date
-  - Price & Terms: Asking Price, Commission %, Commission Negotiable Toggle
+  - Price & Terms: Asking Price, Commission %
   - Documentation
 - Save: แสดง Confirmation Dialog ก่อน Save
 
