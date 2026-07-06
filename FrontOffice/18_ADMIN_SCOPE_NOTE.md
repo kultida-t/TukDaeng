@@ -21,6 +21,8 @@ Admin Scope Note ระบุขอบเขต Admin / Back Office ที่ ma
 
 เอกสารนี้ใช้กันความสับสนว่า Admin เป็น role ใน mobile app หรือไม่ และใช้กำหนด minimum requirement ที่ module user-facing ต้องเชื่อมกับ Admin moderation, report handling และ audit trail
 
+แผนที่การเชื่อมงานระหว่าง FO และ BO อยู่ที่ [../ProjectAdmin/FO_BO_INTEGRATION_MAP.md](../ProjectAdmin/FO_BO_INTEGRATION_MAP.md)
+
 # 3. Master Alignment Summary
 
 | Area | Master Baseline |

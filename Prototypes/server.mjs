@@ -1,8 +1,9 @@
 import { createServer } from "node:http";
 import { readFile } from "node:fs/promises";
 import { extname, join } from "node:path";
+import { fileURLToPath } from "node:url";
 
-const root = new URL(".", import.meta.url).pathname;
+const root = fileURLToPath(new URL(".", import.meta.url));
 const port = Number(process.env.PORT || 4173);
 
 const types = {
@@ -15,7 +16,7 @@ const types = {
 const server = createServer(async (req, res) => {
   try {
     const url = new URL(req.url || "/", `http://localhost:${port}`);
-    const file = url.pathname === "/" ? "bo-preview.html" : url.pathname.slice(1);
+    const file = url.pathname === "/" ? "bo-prototype.html" : url.pathname.slice(1);
     const body = await readFile(join(root, file));
     res.writeHead(200, { "Content-Type": types[extname(file)] || "application/octet-stream" });
     res.end(body);

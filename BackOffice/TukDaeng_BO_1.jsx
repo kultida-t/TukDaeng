@@ -31,8 +31,8 @@ const USERS = [
 const ASSETS = [
   { id:"A001", brand:"Patek Philippe",  model:"Nautilus 5711/1A",       ref:"5711/1A-010",   owner:"Vintage Vault BKK", price:"฿1,200,000", status:"Sale",             condition:"Used (Very Good)", flagged:false },
   { id:"A002", brand:"Rolex",           model:"Submariner Date",        ref:"116610LN",      owner:"horology.king",     price:"฿350,000",   status:"Sale",             condition:"Used (Good)",      flagged:true  },
-  { id:"A003", brand:"Audemars Piguet", model:"Royal Oak Day-Date",     ref:"26330OR",       owner:"Vintage Vault BKK", price:"฿3,080,000", status:"Collection Show",  condition:"New",              flagged:false },
-  { id:"A004", brand:"Omega",           model:"Speedmaster Pro",        ref:"310.30.42.50",  owner:"Sophie Patek",      price:"฿145,000",   status:"Collection Hide",  condition:"Used (Very Good)", flagged:false },
+  { id:"A003", brand:"Audemars Piguet", model:"Royal Oak Day-Date",     ref:"26330OR",       owner:"Vintage Vault BKK", price:"฿3,080,000", status:"Show",  condition:"New",              flagged:false },
+  { id:"A004", brand:"Omega",           model:"Speedmaster Pro",        ref:"310.30.42.50",  owner:"Sophie Patek",      price:"฿145,000",   status:"Hide",  condition:"Used (Very Good)", flagged:false },
   { id:"A005", brand:"IWC",             model:"Pilot's Watch XVI",      ref:"IW325501",      owner:"The Collector",     price:"฿120,000",   status:"Sold",             condition:"Used (Good)",      flagged:false },
 ];
 
@@ -64,8 +64,8 @@ const AUTH_BREAKDOWN = [
 
 const ASSET_STATUS_BREAKDOWN = [
   { status:"Sale",             count:2410, color: "#f87171" },
-  { status:"Collection Show",  count:890,  color: "#60a5fa" },
-  { status:"Collection Hide",  count:340,  color: "#9ca3af" },
+  { status:"Show",  count:890,  color: "#60a5fa" },
+  { status:"Hide",  count:340,  color: "#9ca3af" },
   { status:"Sold",             count:207,  color: "#4ade80" },
 ];
 
@@ -92,8 +92,8 @@ function Badge({ children }) {
     Scheduled:          { bg:"#713f12", fg:"#fbbf24" },
     Archived:           { bg:"#374151", fg:"#9ca3af" },
     Sale:               { bg:"#450a0a", fg:"#f87171" },
-    "Collection Show":  { bg:"#1e3a5f", fg:"#60a5fa" },
-    "Collection Hide":  { bg:"#1f2937", fg:"#9ca3af" },
+    "Show":  { bg:"#1e3a5f", fg:"#60a5fa" },
+    "Hide":  { bg:"#1f2937", fg:"#9ca3af" },
     Sold:               { bg:"#14532d", fg:"#4ade80" },
     Flagged:            { bg:"#7c2d12", fg:"#fb923c" },
     Email:              { bg:"#1e3a5f", fg:"#60a5fa" },
@@ -376,7 +376,7 @@ function AssetsPage() {
 
       {/* Status filter tabs */}
       <div style={{ display:"flex", gap:8, marginBottom:16, flexWrap:"wrap" }}>
-        {["All","Sale","Collection Show","Collection Hide","Sold"].map(s => (
+        {["All","Sale","Show","Hide","Sold"].map(s => (
           <button key={s} onClick={()=>setStatusFilter(s)} style={{
             ...btnStyle(statusFilter===s?C.accent:C.card, statusFilter===s?"#fff":C.textMuted),
             padding:"6px 14px", fontSize:13, borderRadius:6, border:`1px solid ${statusFilter===s?C.accent:C.border}`
@@ -820,7 +820,7 @@ function NotificationsPage() {
               <option>Users with Watch Alert (Brand)</option>
               <option>Users Active in last 7 days</option>
               <option>Users with For Sale Assets</option>
-              <option>Users with Collection Show</option>
+              <option>Users with Show</option>
             </select>
           </div>
           <div style={{ marginBottom:12 }}>
@@ -890,15 +890,15 @@ function ReportsPage() {
     asset: [
       { metric:"Total Assets",          value:"3,847",  change:"+12.4%", up:true  },
       { metric:"Status: Sale",          value:"2,410",  change:"+9%",    up:true  },
-      { metric:"Status: Collection Show",value:"890",   change:"+3%",    up:true  },
-      { metric:"Status: Collection Hide",value:"340",   change:"+1%",    up:true  },
+      { metric:"Status: Show",value:"890",   change:"+3%",    up:true  },
+      { metric:"Status: Hide",value:"340",   change:"+1%",    up:true  },
       { metric:"Status: Sold",          value:"207",    change:"+18%",   up:true  },
       { metric:"Avg. Asset Price",      value:"฿842K",  change:"-1.2%",  up:false },
     ],
     txn: [
       { metric:"Offers Made (Today)",   value:"246",   change:"+3.1%",  up:true  },
       { metric:"Offers Accepted",       value:"89",    change:"+8%",    up:true  },
-      { metric:"Offers Declined",       value:"112",   change:"-2%",    up:true  },
+      { metric:"Offers Rejected",       value:"112",   change:"-2%",    up:true  },
       { metric:"Acceptance Rate",       value:"36.2%", change:"+1.4pp", up:true  },
       { metric:"Avg. Deal Value",       value:"฿520K", change:"+2.1%",  up:true  },
     ],

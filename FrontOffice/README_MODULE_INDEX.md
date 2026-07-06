@@ -47,6 +47,8 @@
 | 11 | [ERROR_STATE_UI_COPY_CATALOG.md](ERROR_STATE_UI_COPY_CATALOG.md) | Final error-state copy, fallback behavior, and retry scope for Figma-to-Dev handoff |
 | 12 | [QA_TEST_SCENARIO_CHECKLIST.md](QA_TEST_SCENARIO_CHECKLIST.md) | QA scenario checklist and regression sign-off |
 
+พฤติกรรมที่เชื่อมระหว่าง FO และ BO แยก trace ไว้ใน [../ProjectAdmin/FO_BO_INTEGRATION_MAP.md](../ProjectAdmin/FO_BO_INTEGRATION_MAP.md) ให้ใช้ไฟล์นั้นสำหรับ handoff mapping และคงรายละเอียด screen behavior / copy ไว้ใน Front Office module PRDs
+
 # 4. Module Index
 
 | No. | File | Scope |

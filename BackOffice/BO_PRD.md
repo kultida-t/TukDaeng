@@ -119,7 +119,7 @@ Dashboard ต้องแสดง:
 - จำนวนผู้ใช้ใหม่ วันนี้ / สัปดาห์นี้ / เดือนนี้
 - DAU / MAU
 - จำนวน asset ใหม่ แยกตามสถานะ
-- Offer made / accepted / declined
+- Offer made / accepted / rejected
 - Pending reports
 - Watch alerts ที่ active
 - บทความล่าสุด
@@ -165,7 +165,7 @@ Admin ต้องสามารถ:
 
 Admin ต้องสามารถ:
 
-- ดู asset ทุกสถานะ: Sale, Collection Show, Collection Hide, Sold
+- ดู asset ทุกสถานะ: Sale, Show, Hide, Sold
 - Search/filter ตาม status, brand, owner, price, flagged
 - ดู asset detail ครบทุก field
 - ดู visibility บน FO ตาม status
@@ -180,8 +180,8 @@ Admin ต้องสามารถ:
 | Status | FO Visibility |
 |---|---|
 | Sale | เห็นใน Feed / Marketplace / Owner Profile / Viewer Profile |
-| Collection Show | เห็นใน Owner Profile และ Viewer Profile แต่ไม่ขาย |
-| Collection Hide | เห็นเฉพาะเจ้าของ |
+| Show | เห็นใน Owner Profile และ Viewer Profile แต่ไม่ขาย |
+| Hide | เห็นเฉพาะเจ้าของ |
 | Sold | เห็นเฉพาะเจ้าของใน Sold tab และแก้ไขไม่ได้ |
 
 ### Acceptance Criteria
@@ -200,7 +200,7 @@ Admin ต้องสามารถ:
 Admin ต้องสามารถ:
 
 - ดูรายการ offer ทั้งหมด
-- Filter ตาม status: Pending, Accepted, Declined, Cancelled, Expired, Invalidated
+- Filter ตาม status: Pending, Accepted, Rejected, Cancelled, Expired, Invalidated
 - ดู offer detail
 - ดู chat room ที่เกี่ยวข้องกับ offer
 - ดู notification delivery ของ offer
@@ -394,7 +394,7 @@ System Trigger ต้องรองรับ:
 
 - New Offer
 - Offer Accepted
-- Offer Declined
+- Offer Rejected
 - Comment
 - New Follower
 - Market Update
@@ -485,7 +485,7 @@ Reports ที่ต้องมี:
 
 ### 5.3 Usability
 
-- Desktop-first รองรับหน้าจอ 1280px ขึ้นไป
+- Responsive web app รองรับ desktop, tablet และ mobile-width browser โดย optimize workflow หลักสำหรับหน้าจอใหญ่
 - UI ภาษาไทยเป็นหลัก
 - Label และ action ต้องชัดเจนสำหรับทีมปฏิบัติการ
 - ทุก destructive action ต้องมี confirmation
@@ -549,4 +549,3 @@ Reports ที่ต้องมี:
 3. Account deletion ต้อง anonymize ทันทีหรือหลัง retention period
 4. Board article ต้องมี SEO public web หรือใช้เฉพาะใน mobile app
 5. Moderator สามารถ remove asset ได้ทันทีหรือควรต้อง approval จาก Super Admin
-

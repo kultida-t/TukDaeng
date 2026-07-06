@@ -74,7 +74,7 @@ BO Dashboard
 |---|---|---|
 | Pending | ผู้ซื้อส่ง offer แล้ว รอเจ้าของตอบ | แสดงใน Chat และ Incoming Offers |
 | Accepted | เจ้าของรับ offer | แจ้งเตือนผู้ซื้อ, แสดง Offer Accepted |
-| Declined | เจ้าของปฏิเสธ offer | แจ้งเตือนผู้ซื้อ, ย้ายออกจาก Incoming Offers |
+| Rejected | เจ้าของปฏิเสธ offer | แจ้งเตือนผู้ซื้อ, ย้ายออกจาก Incoming Offers |
 | Cancelled | ผู้เสนอราคายกเลิกก่อนเจ้าของตอบ | ไม่แสดงเป็น pending |
 | Expired | offer หมดอายุอัตโนมัติ | ไม่สามารถ accept/decline ได้ |
 | Invalidated | asset ถูกลบ/ซ่อน/sold ทำให้ offer ใช้ไม่ได้ | แสดงสถานะ unavailable |
@@ -99,7 +99,7 @@ BO Dashboard
 | Owner | เจ้าของสินทรัพย์ |
 | Offer Price | ราคาที่เสนอ |
 | Asset Asking Price | ราคาประกาศขาย หรือ Price on Request |
-| Status | Pending / Accepted / Declined / Cancelled / Expired / Invalidated |
+| Status | Pending / Accepted / Rejected / Cancelled / Expired / Invalidated |
 | Created At | วันที่ส่ง offer |
 | Updated At | วันที่เปลี่ยนสถานะล่าสุด |
 
@@ -379,14 +379,14 @@ BO_Spec v1.1 ระบุว่า Support Admin ตอบ Help ได้ แต
 |---|---|---|---|
 | New Offer | Buyer sends offer | Asset Owner | Chat Room / Offer |
 | Offer Accepted | Owner accepts offer | Buyer | Chat Room |
-| Offer Declined | Owner declines offer | Buyer | Chat Room |
+| Offer Rejected | Owner declines offer | Buyer | Chat Room |
 | Comment | User comments on asset | Asset Owner | Asset Detail |
 | New Follower | User follows another user | Followed User | Follower Profile |
 | Group Follow | Multiple follows in short window | Followed User | Followers List |
 | Like Valuation | User likes valuation/content | Owner | Asset/Valuation |
 | Market Update | Price Index changed | Interested Users | Price Index / Asset Value |
 | Sale Success | Asset marked Sold | Owner / Buyer | Sale History |
-| Watch Alert | Asset matches alert criteria | Alert Owner | Asset Detail |
+| Watch Alert | Asset matches alert criteria | Alert Owner | Watch Alert Result List |
 
 ### 8.3 Admin Features
 
@@ -607,7 +607,7 @@ BO_Spec v1.1 ระบุว่า Support Admin ตอบ Help ได้ แต
 | Reference No. | Text | Optional |
 | Price | Number | Optional |
 | Price on Request | Boolean | Yes |
-| Status | Sale / Collection Show / Collection Hide / Sold | Yes |
+| Status | Sale / Show / Hide / Sold | Yes |
 | Condition | Dropdown | Yes |
 | Description | Textarea | Optional |
 | Technical Specs | Structured JSON | Optional |
@@ -666,7 +666,7 @@ BO_Spec v1.1 ระบุว่า Support Admin ตอบ Help ได้ แต
 | Report | Data |
 |---|---|
 | Board Report | Article Views, Unique Readers, Likes, Shares, Avg Read Time, Completion Rate |
-| Offer Report | Offers Made, Pending, Accepted, Declined, Expired, Avg Offer Price, Avg Response Time |
+| Offer Report | Offers Made, Pending, Accepted, Rejected, Expired, Avg Offer Price, Avg Response Time |
 | Chat Report | Active Chat Rooms, Messages Sent, Attachments Sent, Reported Chats |
 | Comment Report | Total Comments, Reported Comments, Hidden Comments, Top Commented Assets |
 | Social Report | Likes, Favorites, Follows, Unfollows, Top Favorited Assets |

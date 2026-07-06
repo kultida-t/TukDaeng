@@ -92,7 +92,7 @@ Out of scope for V1:
 - [ ] If asset is Deleted, related Offer becomes `Cancelled`
 - [ ] If asset is Sold, Chat remains usable
 - [ ] Sold asset reference must not imply normal active sale availability
-- [ ] If asset is Sold, other pending offers auto reject according to Offer Module
+- [ ] If asset is Sold, other pending offers become `Rejected` automatically according to Offer Module
 
 ---
 
@@ -107,7 +107,7 @@ Out of scope for V1:
 - [ ] Accepted/rejected offer remains visible in Chat Room / All Chat history
 - [ ] Read but not actioned pending offer remains in Incoming Offers
 - [ ] Asset Deleted changes related offer to `Cancelled`
-- [ ] Asset Sold auto rejects other pending offers
+- [ ] Asset Sold changes other pending offers to `Rejected` automatically
 - [ ] Offer Accepted notification opens Chat Room
 - [ ] Offer Rejected notification opens Asset Detail
 - [ ] Offer Cancelled notification opens Chat Room and focuses Offer Card when available

@@ -211,11 +211,11 @@ Purpose:
 - [ ] Offer Card ต้องแสดงใน Chat Room
 - [ ] Seller Accept แล้ว status = `Accepted`
 - [ ] Offer Accepted notification ไป Chat Room
-- [ ] Seller Reject แล้ว status = `Rejected`
+- [ ] Seller กด `Decline` แล้ว status = `Rejected`
 - [ ] Offer Rejected notification ไป Asset Detail
 - [ ] Asset Deleted ทำให้ Offer เป็น `Cancelled`
 - [ ] Offer Cancelled notification ไป Chat Room + Focus Offer Card
-- [ ] Asset Sold ต้อง Auto Reject pending offers อื่น
+- [ ] Asset Sold ต้องเปลี่ยน pending offers อื่นเป็น `Rejected` โดยอัตโนมัติ
 - [ ] ไม่มี Counter Offer ใน V1
 - [ ] ไม่มี Withdraw Offer ใน V1
 - [ ] ไม่มี Payment Gateway ใน V1

@@ -19,7 +19,7 @@
 
 # 2. Objective
 
-Offer Module ใช้สำหรับให้ Buyer เสนอราคาซื้อ Asset จากหน้า Asset Detail และให้ Seller พิจารณา Accept หรือ Reject Offer โดยเชื่อมกับ Chat และ Notification
+Offer Module ใช้สำหรับให้ Buyer เสนอราคาซื้อ Asset จากหน้า Asset Detail และให้ Seller พิจารณา Accept หรือ Decline Offer โดยเชื่อมกับ Chat และ Notification
 
 Phase 1 ไม่มีระบบชำระเงินในแอป ไม่มี Counter Offer และไม่มี Withdraw Offer
 
@@ -44,7 +44,7 @@ Phase 1 ไม่มีระบบชำระเงินในแอป ไ�
 | Accepted Offer | เปิด Chat Room | Accepted state ต้องพาผู้ใช้กลับไปคุยต่อใน Chat |
 | Rejected Offer | เปิด Asset Detail | Rejected notification ต้องเปิด Asset Detail |
 | Asset Deleted | Offer ที่เกี่ยวข้องต้องเป็น Cancelled | Offer ทั้งหมดของ Asset ที่ถูกลบต้องเปลี่ยนเป็น Cancelled |
-| Asset Sold | Offer อื่นถูก Auto Reject | เมื่อ Owner mark as Sold ต้อง reject pending offers อื่นโดยอัตโนมัติ |
+| Asset Sold | Offer อื่นถูก Auto Rejected | เมื่อ Owner mark as Sold ต้องเปลี่ยน pending offers อื่นเป็น `Rejected` โดยอัตโนมัติ |
 | Chat | Chat Room รองรับ Offer Card | Offer ต้องแสดงใน Chat เป็น Offer Card |
 | Notification | New Offer -> Chat Room + Focus Offer Card, Offer Accepted -> Chat Room, Offer Rejected -> Asset Detail, Offer Cancelled -> Chat Room + Focus Offer Card | Destination ต้องตรง master |
 
@@ -57,8 +57,8 @@ Phase 1 ไม่มีระบบชำระเงินในแอป ไ�
 | High | Make Offer entry point อาจกระจายหลายหน้า | Make Offer ทำผ่าน Asset Detail เท่านั้น | จำกัด entry point ใน Figma ให้เริ่มจาก Asset Detail |
 | High | Accepted / Rejected destination ยังต้องตรวจให้ครบ | Accepted เปิด Chat Room, Rejected เปิด Asset Detail | เพิ่มหรือ annotate destination state ให้ตรง master |
 | High | ยังไม่เห็น Asset Deleted -> Offer Cancelled state ชัดเจน | Asset Deleted ทำให้ Offer เป็น Cancelled | เพิ่ม cancelled offer state |
-| High | ยังไม่เห็น Asset Sold -> Auto Reject other offers ชัดเจน | Asset Sold ต้อง Auto Reject Offer อื่น | เพิ่ม sold impact state และ auto rejected offer state |
-| Medium | Incoming Offers ต้องแยก Pending ที่รอ action | Pending Offer ที่ยังไม่ Accept/Reject ต้องอยู่ใน Incoming Offers | ตรวจ list/filter และ empty state |
+| High | ยังไม่เห็น Asset Sold -> Auto Rejected other offers ชัดเจน | Asset Sold ต้องเปลี่ยน Offer อื่นเป็น `Rejected` อัตโนมัติ | เพิ่ม sold impact state และ auto rejected offer state |
+| Medium | Incoming Offers ต้องแยก Pending ที่รอ action | Pending Offer ที่ยังไม่ Accept/Decline ต้องอยู่ใน Incoming Offers | ตรวจ list/filter และ empty state |
 | Medium | Offer Card ใน Chat ต้องรองรับ status | Chat Room รองรับ Offer Card | เพิ่ม card state: Pending, Accepted, Rejected, Cancelled |
 | Medium | Guest action state ยังไม่ชัด | Guest กด Offer ต้องเห็น Global Login Required Dialog | เพิ่ม guest dialog state |
 | Medium | Asset สถานะ Show ต้องรองรับ Make Offer / Contact Seller จาก Detail | Master อนุญาตให้ Offer/Contact บน `Show` เพื่อรองรับผู้สนใจเสนอราคาหรือสอบถาม | ระบุว่า `Show` สร้าง Offer ได้จาก Asset Detail เท่านั้น แต่ไม่ปรากฏใน Feed/Search/Watch Alert |
@@ -77,7 +77,7 @@ Phase 1 ไม่มีระบบชำระเงินในแอป ไ�
 - Go to Chat หลังส่ง Offer สำเร็จ
 - Offer Card ใน Chat Room
 - Seller Accept Offer
-- Seller Reject Offer
+- Seller Decline Offer
 - Incoming Offers สำหรับ Offer ที่รอการตัดสินใจ
 - Offer status: Pending, Accepted, Rejected, Cancelled
 - Notification สำหรับ New Offer, Offer Accepted, Offer Rejected และ Offer Cancelled
@@ -129,7 +129,7 @@ Phase 1 ไม่มีระบบชำระเงินในแอป ไ�
 ## Seller
 
 - เห็น Offer ที่ส่งมาหา Asset ของตัวเอง
-- Accept หรือ Reject Offer ได้
+- Accept หรือ Decline Offer ได้
 - เห็น Incoming Offers เฉพาะ Offer ที่ยังต้องตัดสินใจ
 
 ## Owner Viewing Own Asset
@@ -165,12 +165,12 @@ Incoming Offers or Chat Room
 -> Destination = Chat Room
 ```
 
-## Reject Offer Flow
+## Decline Offer Flow
 
 ```text
 Incoming Offers or Chat Room
 -> Open Pending Offer
--> Reject
+-> Decline
 -> Confirm
 -> Offer status = Rejected
 -> Buyer receives Offer Rejected notification
@@ -182,7 +182,7 @@ Incoming Offers or Chat Room
 ```text
 Owner marks Asset as Sold
 -> Sold state is recorded
--> Other pending offers are Auto Rejected
+-> Other pending offers become Rejected automatically
 -> Existing Chat Rooms remain usable
 ```
 
@@ -216,11 +216,17 @@ Owner deletes Asset
 
 ## Offer Status
 
+FO ต้องแยกคำว่า `Decline` กับ `Rejected` ให้ชัด:
+
+- `Decline` คือ action/copy บนหน้าจอที่ Seller กด เช่น ปุ่ม `Decline`
+- `Rejected` คือ status หลังจาก Seller กด `Decline` แล้ว
+- DB/API/state enum ควรใช้ `Rejected` หรือ `REJECTED` ไม่ใช้ `Declined`
+
 | Status | Meaning |
 | --- | --- |
 | Pending | Offer ถูกส่งแล้วและรอ Seller ตัดสินใจ |
 | Accepted | Seller ยอมรับ Offer |
-| Rejected | Seller ปฏิเสธ Offer |
+| Rejected | Seller กด `Decline` และ Offer ถูกปฏิเสธแล้ว |
 | Cancelled | Offer ถูกยกเลิกจาก system impact เช่น Asset Deleted |
 
 ## Offer Ownership
@@ -239,7 +245,7 @@ Owner deletes Asset
 
 ## Sold Impact
 
-- เมื่อ Asset เปลี่ยนเป็น Sold ต้อง Auto Reject pending offers อื่น
+- เมื่อ Asset เปลี่ยนเป็น Sold ต้องเปลี่ยน pending offers อื่นเป็น `Rejected` โดยอัตโนมัติ
 - Chat ที่เกี่ยวข้องยังใช้งานได้
 - Sold Asset หายจาก public surfaces ตาม master
 
@@ -252,7 +258,7 @@ Owner deletes Asset
 ## Incoming Offers
 
 - Incoming Offers แสดงเฉพาะ Pending Offer ที่ Seller ยังต้องตัดสินใจ
-- Offer ที่อ่านแล้วแต่ยังไม่ Accept/Reject ต้องยังอยู่ใน Incoming Offers
+- Offer ที่อ่านแล้วแต่ยังไม่ Accept/Decline ต้องยังอยู่ใน Incoming Offers
 - Offer ที่ Accepted, Rejected หรือ Cancelled ต้องไม่อยู่ใน Incoming Offers
 
 ## Offer Card In Chat
@@ -260,7 +266,7 @@ Owner deletes Asset
 - Chat Room ต้องรองรับ Offer Card
 - Offer Card ต้องแสดงอย่างน้อย: Asset reference, Offer Price, Message, Status, Timestamp
 - Seller action บน Offer Card แสดงเฉพาะ Pending Offer ที่ตนมีสิทธิ์ตัดสินใจ
-- Buyer เห็น status ของ Offer แต่กด Accept/Reject ไม่ได้
+- Buyer เห็น status ของ Offer แต่กด Accept/Decline ไม่ได้
 
 ---
 
@@ -270,7 +276,7 @@ Owner deletes Asset
 | --- | --- |
 | Guest | ดู public detail ได้ แต่ใช้ Offer ไม่ได้ |
 | Buyer | Make Offer, ดู Offer ของตัวเอง, เปิด Chat ที่เกี่ยวข้อง |
-| Seller | ดู Incoming Offers, Accept Offer, Reject Offer |
+| Seller | ดู Incoming Offers, Accept Offer, Decline Offer |
 | Asset Owner | ไม่สามารถ Make Offer กับ Asset ตัวเอง |
 | Other User | ไม่มีสิทธิ์เห็นหรือจัดการ Offer |
 
@@ -296,7 +302,7 @@ Owner deletes Asset
 
 - TH: `รายการนี้ขายแล้ว`
 - EN: `This item has been sold.`
-- Result: ไม่สามารถสร้าง Offer ใหม่ และ pending offers อื่นถูก Auto Rejected
+- Result: ไม่สามารถสร้าง Offer ใหม่ และ pending offers อื่นถูกเปลี่ยนเป็น `Rejected` โดยอัตโนมัติ
 
 ## Asset Deleted
 
@@ -392,10 +398,10 @@ Then Offer ต้องเปลี่ยนเป็น Accepted
 And Buyer ต้องได้รับ Offer Accepted notification  
 And notification destination ต้องเป็น Chat Room
 
-## AC-OFFER-006: Seller Rejects Offer
+## AC-OFFER-006: Seller Declines Offer
 
 Given Seller เห็น Pending Offer ของ Asset ตัวเอง  
-When Seller Reject Offer และ Confirm  
+When Seller Decline Offer และ Confirm  
 Then Offer ต้องเปลี่ยนเป็น Rejected  
 And Buyer ต้องได้รับ Offer Rejected notification  
 And notification destination ต้องเป็น Asset Detail
@@ -403,21 +409,21 @@ And notification destination ต้องเป็น Asset Detail
 ## AC-OFFER-007: Incoming Offers Pending Rule
 
 Given Offer ยังเป็น Pending  
-When Seller อ่าน Offer แต่ยังไม่ Accept หรือ Reject  
+When Seller อ่าน Offer แต่ยังไม่ Accept หรือ Decline  
 Then Offer ต้องยังอยู่ใน Incoming Offers
 
 ## AC-OFFER-008: Accepted / Rejected Removed From Incoming
 
-Given Offer ถูก Accept หรือ Reject แล้ว  
+Given Offer ถูก Accept หรือ Decline แล้ว  
 When Seller กลับไป Incoming Offers  
 Then Offer นั้นต้องไม่อยู่ใน Incoming Offers  
 And Offer Card ยังอยู่ใน Chat history
 
-## AC-OFFER-009: Sold Auto Rejects Other Offers
+## AC-OFFER-009: Sold Auto-Rejects Other Offers
 
 Given Asset มีหลาย Pending Offers  
 When Owner mark Asset as Sold  
-Then pending offers อื่นต้องถูก Auto Rejected  
+Then pending offers อื่นต้องถูกเปลี่ยนเป็น `Rejected` โดยอัตโนมัติ  
 And Chat ที่เกี่ยวข้องยังใช้งานได้
 
 ## AC-OFFER-010: Deleted Asset Cancels Offers

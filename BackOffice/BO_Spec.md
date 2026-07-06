@@ -10,7 +10,7 @@
 
 Back Office ของตึกแดงเป็น Web Application สำหรับทีมงาน Admin ในการจัดการทุกด้านของแพลตฟอร์ม ครอบคลุม:
 - จัดการผู้ใช้ (ไม่มีการแบ่ง Role ระหว่าง Buyer/Seller — ทุก User มี Role เดียวกัน)
-- จัดการและ Moderate สินทรัพย์ทุกสถานะ (Sale / Collection Show / Collection Hide / Sold)
+- จัดการและ Moderate สินทรัพย์ทุกสถานะ (Sale / Show / Hide / Sold)
 - จัดการ Content บทความที่แสดงบนหน้า Board ใน FO
 - จัดการ Watch Brands, Models และ Price Index
 - จัดการ Directory ร้านค้า/บริการ ที่แสดงในเมนู FO
@@ -59,7 +59,7 @@ BO Dashboard
 **ข้อมูลที่แสดง:**
 - จำนวนผู้ใช้ใหม่วันนี้ / สัปดาห์นี้ / เดือนนี้ (พร้อม % เทียบช่วงก่อน)
 - จำนวน Active Users (DAU / MAU)
-- จำนวนสินทรัพย์ที่เพิ่มใหม่วันนี้ แยกตามสถานะ (Sale / Collection Show / Collection Hide)
+- จำนวนสินทรัพย์ที่เพิ่มใหม่วันนี้ แยกตามสถานะ (Sale / Show / Hide)
 - จำนวน Transactions (Offer Accepted) วันนี้
 - จำนวน Pending Reports (สินทรัพย์ที่ถูก Flag รอ Review)
 - บทความที่เผยแพร่ล่าสุด 3 รายการ
@@ -79,7 +79,7 @@ BO Dashboard
 | ฟีเจอร์ | คำอธิบาย |
 |---|---|
 | ดูรายชื่อผู้ใช้ | ตาราง + Search + Filter ตาม Status, Auth Method, Date Joined |
-| ดูโปรไฟล์ผู้ใช้ | ข้อมูลทั้งหมด, สินทรัพย์ทุกสถานะ (Sale/Collection Show/Collection Hide/Sold), ประวัติ Activity |
+| ดูโปรไฟล์ผู้ใช้ | ข้อมูลทั้งหมด, สินทรัพย์ทุกสถานะ (Sale/Show/Hide/Sold), ประวัติ Activity |
 | Suspend User | ระงับบัญชีชั่วคราว + บังคับระบุเหตุผล |
 | Ban User | ระงับบัญชีถาวร + บังคับระบุเหตุผล |
 | Unsuspend / Unban | คืนสถานะปกติ |
@@ -110,14 +110,14 @@ BO Dashboard
 | สถานะ | ใครเห็นใน FO | คำอธิบาย |
 |---|---|---|
 | **Sale** | เจ้าของ + ผู้ใช้ทั่วไป | แสดงใน Feed / Marketplace ให้ซื้อได้ |
-| **Collection Show** | เจ้าของ + ผู้ใช้ทั่วไป | แสดงในโปรไฟล์เจ้าของ ไม่ขาย |
-| **Collection Hide** | เจ้าของเท่านั้น | ซ่อนจากสาธารณะ |
+| **Show** | เจ้าของ + ผู้ใช้ทั่วไป | แสดงในโปรไฟล์เจ้าของ ไม่ขาย |
+| **Hide** | เจ้าของเท่านั้น | ซ่อนจากสาธารณะ |
 | **Sold** | เจ้าของเท่านั้น | ขายไปแล้ว ไม่สามารถ Edit ได้ |
 
 **ฟีเจอร์ Admin:**
 | ฟีเจอร์ | คำอธิบาย |
 |---|---|
-| ดูรายการสินทรัพย์ทั้งหมด | Filter ตาม Status (Sale/Collection Show/Collection Hide/Sold/Flagged), Brand, ราคา, Owner |
+| ดูรายการสินทรัพย์ทั้งหมด | Filter ตาม Status (Sale/Show/Hide/Sold/Flagged), Brand, ราคา, Owner |
 | ดูรายละเอียดสินทรัพย์ | ข้อมูลครบทุกฟิลด์ รวม Provenance, Consignment Info, Sale History |
 | Force Change Status | เปลี่ยนสถานะสินทรัพย์ได้ทุกสถานะ (เฉพาะ Super Admin / Moderator) |
 | Remove Asset | ลบสินทรัพย์ที่ละเมิด Policy (Soft Delete) |
@@ -136,7 +136,7 @@ BO Dashboard
 | Reference No. | รหัสอ้างอิง |
 | Owner | ชื่อผู้ใช้เจ้าของ |
 | Price | ราคา (THB) |
-| Status | Sale / Collection Show / Collection Hide / Sold |
+| Status | Sale / Show / Hide / Sold |
 | Condition | สภาพ |
 | Date Added | วันที่เพิ่ม |
 | Flagged | Flag / — |
@@ -319,8 +319,8 @@ Watch Shops, Accessories Shops, Repair Shops, Auction Centers, Consignment Cente
 | Report | ข้อมูลที่แสดง |
 |---|---|
 | User Report | User Growth (รายวัน/สัปดาห์/เดือน), Active Users (DAU/MAU), Auth Method Breakdown (Email/Apple/Google), Retention Rate |
-| Asset Report | Assets by Status (Sale/Collection Show/Collection Hide/Sold), Assets by Brand, Avg Price, New Assets per Day |
-| Transaction Report | Offers Made, Offers Accepted, Offers Declined, Acceptance Rate, Avg Deal Value |
+| Asset Report | Assets by Status (Sale/Show/Hide/Sold), Assets by Brand, Avg Price, New Assets per Day |
+| Transaction Report | Offers Made, Offers Accepted, Offers Rejected, Acceptance Rate, Avg Deal Value |
 | Content Report | Article Views, Top 10 Articles, Category Performance, Avg Read Time |
 | Search Report | Top Search Keywords, Top Filter Combinations, Watch Alert Volume by Brand |
 | Watch Alert Report | Total Active Alerts, Trigger Rate (Alert → Click), Top Alert Brands |
@@ -344,7 +344,7 @@ Watch Shops, Accessories Shops, Repair Shops, Auction Centers, Consignment Cente
 | Users with Watch Alert (Brand) | ผู้ใช้ที่มี Watch Alert เฉพาะ Brand |
 | Users Active in last N days | ผู้ใช้ที่ใช้งานใน N วันล่าสุด |
 | Users with For Sale Assets | ผู้ใช้ที่มีสินทรัพย์สถานะ Sale อยู่ |
-| Users with Collection Show | ผู้ใช้ที่มีสินทรัพย์สถานะ Collection Show |
+| Users with Show | ผู้ใช้ที่มีสินทรัพย์สถานะ Show |
 
 **ฟิลด์:**
 | ฟิลด์ | ประเภท | บังคับ |
@@ -407,7 +407,7 @@ Watch Shops, Accessories Shops, Repair Shops, Auction Centers, Consignment Cente
 ## 5. BO Technical Requirements
 
 - **Framework:** React / Next.js
-- **Responsive:** รองรับหน้าจอ 1280px ขึ้นไป (Desktop-first)
+- **Responsive:** รองรับ desktop, tablet และ mobile-width browser โดย optimize workflow หลักสำหรับหน้าจอใหญ่
 - **Authentication:** JWT + Refresh Token + 2FA (TOTP)
 - **API:** REST API ชุดเดียวกับ FO แต่ใช้ Admin-only Endpoints (Bearer Token + Role Check)
 - **Rich Text Editor:** TipTap หรือ Quill
@@ -451,6 +451,5 @@ Watch Shops, Accessories Shops, Repair Shops, Auction Centers, Consignment Cente
 | Add Directory Item (Active) | ร้านค้า/บริการปรากฏในเมนู FO |
 | Suspend User | User Login ไม่ได้, เห็น Error Message |
 | Remove Asset | สินทรัพย์หายจาก Feed / Profile ของเจ้าของ |
-| Force Status → Collection Hide | สินทรัพย์หายจาก Feed แต่เจ้าของยังเห็นใน Profile ตัวเอง |
+| Force Status → Hide | สินทรัพย์หายจาก Feed แต่เจ้าของยังเห็นใน Profile ตัวเอง |
 | Force Status → Sold | สินทรัพย์ย้ายไปแท็บ Sold ในโปรไฟล์เจ้าของ, ปุ่ม Edit หายไป เหลือแค่ Sale History |
-

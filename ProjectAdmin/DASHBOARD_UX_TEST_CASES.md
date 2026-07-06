@@ -10,8 +10,8 @@
 |---|---|---|
 | แสดงผู้ใช้ใหม่ today / week / month | มี metric ผู้ใช้ใหม่วันนี้และผู้ใช้ใหม่สัปดาห์นี้ พร้อมตัวเลขเปรียบเทียบ | Pass |
 | แสดง DAU / MAU | มี metric `DAU / MAU` บน Dashboard | Pass |
-| แสดงสินทรัพย์ใหม่แยก status | มีกราฟสรุป `Sale`, `Collection Show`, `Collection Hide`, `Sold` | Pass |
-| แสดง Offer made / accepted / declined | มี metric ข้อเสนอทั้งหมดวันนี้, รับข้อเสนอแล้ว, ปฏิเสธข้อเสนอ | Pass |
+| แสดงสินทรัพย์ใหม่แยก status | มีกราฟสรุป `Sale`, `Show`, `Hide`, `Sold` | Pass |
+| แสดง Offer made / accepted / rejected | มี metric ข้อเสนอทั้งหมดวันนี้, รับข้อเสนอแล้ว, ปฏิเสธข้อเสนอ | Pass |
 | แสดง reported content | มี section งานที่ต้องติดตาม แสดง Asset Reports, Reported Comments, Reported Chats, Support Tickets | Pass |
 | แสดง Watch Alert active | มี metric `Watch Alert Active` | Pass |
 | แสดงบทความล่าสุด | มี section `บทความล่าสุดบน Board` พร้อม status published / draft / scheduled | Pass |
