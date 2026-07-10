@@ -93,3 +93,4 @@ Current Back Office baseline: `BO-PRD-v0.1`
 - Requirement ที่ข้าม Front Office และ Back Office ให้ใช้ [ProjectAdmin/FO_BO_INTEGRATION_MAP.md](ProjectAdmin/FO_BO_INTEGRATION_MAP.md) เพื่อ trace ทั้งสองฝั่งโดยไม่ปน scope
 - Source input `.docx` เก็บไว้ใน [SourceInputs](SourceInputs) เพื่อ trace requirement กลับไปยังต้นทาง
 - Daily logs เป็นประวัติงาน ไม่ใช่ source of truth
+- edit test
