@@ -35,18 +35,18 @@ Audit Log ต้องเป็น source สำหรับ traceability, dispu
 - Manual edit/delete audit record จาก BO UI
 - Full legal hold workflow เว้นแต่มี compliance decision เพิ่ม
 
-## 3. Roles And Permissions
+## 3. Admin Access And Permissions
 
-| Role | Permission |
+BO uses a single Admin account type only. Admin access is controlled by module access, action policy, sensitive-data policy, confirmation, reason, and audit requirements instead of separate BO admin account types.
+
+
+| Access Area | Rule |
 | --- | --- |
-| Super Admin | View full audit log, export audit, view sensitive audit payload ตาม policy |
-| Support Admin | View limited audit related to assigned support cases |
-| Moderator | View audit related to moderation target ที่มี permission |
-| Content Admin | View own content action history หรือ content-related audit ตาม permission |
-| Market Admin | View market data/directory/provider sync audit ตาม permission |
-
-Default: full audit log และ full export เปิดให้ Super Admin เท่านั้น
-
+| Module access | Admin can use list/detail/search/filter when module access is granted. |
+| Write action | Create, update, status change, remove, restore, publish, archive, retry, and similar actions require permission check, confirmation for high-risk actions, reason when FO/user impact exists, and audit log. |
+| Sensitive data | Mask by default; reveal only with business reason, policy approval, and audit log. |
+| Export | Requires permission check, scope control, expiry/background job where needed, and audit export event. |
+| Direct URL/API | Enforce access at route, API, and service layers; never rely only on hidden UI. |
 ## 4. Audit Event Schema
 
 ทุก audit event ต้องมี field ขั้นต่ำ:
@@ -57,7 +57,7 @@ Default: full audit log และ full export เปิดให้ Super Admin 
 | Timestamp | Required, store UTC, display Asia/Bangkok |
 | Actor Type | Admin, System, ProviderJob |
 | Actor ID | Admin ID หรือ system job ID |
-| Actor Role | Role ณ เวลาที่ทำ action |
+| actor access context | Admin access ณ เวลาที่ทำ action |
 | Action Type | Required enum/string |
 | Target Entity Type | User, Asset, Article, Brand, Model, PriceIndex, Directory, etc. |
 | Target Entity ID | Required เมื่อมี target |
@@ -72,7 +72,7 @@ Default: full audit log และ full export เปิดให้ Super Admin 
 | FO Impact | Optional summary เมื่อ action กระทบ FO |
 | Correlation ID | ใช้เชื่อมหลาย event ใน workflow/job เดียวกัน |
 
-Sensitive values ใน before/after ต้อง mask ตาม policy ถ้าไม่จำเป็นต่อ audit detail หรือ role ไม่มีสิทธิ์ดู
+Sensitive values ใน before/after ต้อง mask ตาม policy ถ้าไม่จำเป็นต่อ audit detail หรือ admin access ไม่มีสิทธิ์ดู
 
 ## 5. Target Entity Types
 
@@ -155,7 +155,7 @@ Baseline entity types:
 - Account deletion approve/reject/archive
 - Notification template update
 - Broadcast send/retry/cancel
-- Permission/role update
+- Permission/access update
 - System setting update
 
 ### Export / Import
@@ -181,7 +181,7 @@ Audit Log UI ต้องรองรับ:
 - Search by actor/admin
 - Search by target entity ID
 - Filter by date range
-- Filter by actor role
+- Filter by actor access context
 - Filter by action type
 - Filter by target entity type
 - Filter by result status
@@ -205,7 +205,7 @@ Detail view ต้องแสดง:
 - Request/session metadata
 - Export/download metadata ถ้าเป็น export event
 
-Role ที่ไม่มีสิทธิ์ต้องเห็น masked payload หรือ permission denied section
+Admin access ที่ไม่มีสิทธิ์ต้องเห็น masked payload หรือ permission denied section
 
 ## 10. Retention
 
@@ -218,11 +218,11 @@ Baseline retention:
 
 ## 11. Export Rules
 
-- Full audit export เฉพาะ Super Admin
+- Full audit export เฉพาะ Admin
 - Export ต้อง audit-log ตัวเอง
 - Export ขนาดใหญ่ใช้ background job
 - Export file ต้องมี expiry หรือ controlled access
-- Sensitive fields ใน export ต้อง respect role permission และ masking policy
+- Sensitive fields ใน export ต้อง respect Admin Permission และ masking policy
 - Export ควรระบุ filter ที่ใช้, admin ที่ export, timestamp และ file checksum ถ้ามี
 
 ## 12. Responsive Layout
@@ -270,7 +270,7 @@ Before/after JSON diff ต้อง wrap และ scroll ภายใน contai
 | AC-BO-AUDIT-002 | Destructive/public-impact action ต้องมี before/after, reason และ actor context |
 | AC-BO-AUDIT-003 | Sensitive data reveal/export ต้องถูก audit |
 | AC-BO-AUDIT-004 | Provider sync/import/export/background job ต้องถูก audit |
-| AC-BO-AUDIT-005 | Audit log read ได้ตาม role permission และ full access เฉพาะ Super Admin |
+| AC-BO-AUDIT-005 | Audit log read ได้ตาม Admin Permission และ full access เฉพาะ Admin |
 | AC-BO-AUDIT-006 | Audit record ต้อง immutable จาก admin UI ปกติ |
 | AC-BO-AUDIT-007 | Search/filter/sort/pagination ทำงานแบบ server-side |
 | AC-BO-AUDIT-008 | Export audit log ต้อง audit ตัวเองและควบคุมสิทธิ์ |

@@ -1,4 +1,4 @@
-﻿# Figma Gap Checklist Against Master
+# Figma Gap Checklist Against Master
 
 **Reference:** [TukDaeng_Master_Product_Definition.md](TukDaeng_Master_Product_Definition.md)  
 **Review Scope:** เทียบภาพรวมหน้าจอ Figma ที่แนบมากับ master baseline ล่าสุด  
@@ -315,7 +315,7 @@ Figma มี coverage ของ flow หลักค่อนข้างมา�
 
 | Priority | Figma Gap | Master Baseline | Action |
 | --- | --- | --- | --- |
-| Must Fix | Figma อาจสื่อว่า Admin เป็น mobile role | Admin ใช้งานผ่าน Web Back Office เท่านั้น | แยก Admin flow ออกจาก mobile app หรือ annotate ว่าเป็น Back Office |
+| Must Fix | Figma อาจสื่อว่า Admin เป็น mobile app user type | Admin ใช้งานผ่าน Web Back Office เท่านั้น | แยก Admin flow ออกจาก mobile app หรือ annotate ว่าเป็น Back Office |
 | High | Report flow ยังไม่แสดงผลต่อ Admin moderation | Report ต้องถูกตรวจโดย Admin และ content หายหลัง moderation เท่านั้น | เพิ่ม report submitted state และ admin review note |
 | High | Board content management ยังไม่แยก owner ชัด | บทความสร้างและจัดการโดย Admin ผ่าน Back Office | Annotate Board content as Admin-managed |
 | High | Audit Trail ยังไม่ถูกระบุ | Admin Action ต้องมี Audit Trail ใน Back Office | เพิ่ม audit trail requirement ใน Back Office scope |

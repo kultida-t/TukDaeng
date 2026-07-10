@@ -2,7 +2,7 @@
 
 **Version:** 1.0  
 **Product:** Tuk Daeng Back Office (BO)  
-**Audience:** Super Admin, Content Admin, Moderator, Support Admin, Market Admin  
+**Audience:** Admin  
 **Related Documents:** BO_Spec v1.1, BO_Spec_Completion_Addendum v1.2, FO PRD v1.0, Use Cases v1.0
 
 ---
@@ -34,35 +34,30 @@ FO มีหลาย flow ที่สร้างข้อมูลและ i
 | Operational Control | ให้ Admin จัดการข้อมูลหลักและข้อมูลที่เกิดจาก FO ได้ครบ |
 | Trust & Safety | รองรับ moderation, report handling, suspend/ban, audit |
 | Content Publishing | ให้ Admin จัดการบทความ Board และ Banner ได้จาก BO |
-| Support Efficiency | ให้ Support Admin ติดตามและตอบ ticket ได้ |
+| Support Efficiency | ให้ Admin ติดตามและตอบ ticket ได้ |
 | Market Data Quality | ให้ทีม Market จัดการ Brand, Model, Price Index และ Directory |
 | Traceability | ทุก action สำคัญต้องมี audit log และตรวจสอบย้อนหลังได้ |
 
 ---
 
-## 2. Users & Roles
+## 2. Users & Admin Access
 
 ### 2.1 BO Users
 
-| Role | Primary Responsibility |
+BO has exactly one admin account type: `Admin`. There are no BO sub-types for content, support, market, moderation, or highest-privilege responsibilities. Access is controlled by module/action policy, sensitive-data policy, export policy, confirmation, reason, and audit requirements.
+
+| Admin Account Type | Primary Responsibility |
 |---|---|
-| Super Admin | สิทธิ์สูงสุด จัดการทุก module, admin account, sensitive data, audit |
-| Content Admin | จัดการ Articles, Categories, Board Banners |
-| Moderator | ตรวจสินทรัพย์ คอมเมนต์ แชท report และ moderate content |
-| Support Admin | ดู user profile, login history, reset password, support ticket |
-| Market Admin | จัดการ Watch Brands, Models, Price Index และ Directory |
+| Admin | Manage all BO operational areas allowed by product scope and policy: users, assets, content, market data, directory, offers, chat, social, watch alerts, support, account deletion, notifications, reports, audit, and settings. |
 
 ### 2.2 FO Users
 
-ผู้ใช้ FO ทุกคนเป็น role เดียวกันคือ `User` ไม่มีการแยก Buyer/Seller/Collector โดย BO ต้องรองรับข้อมูลที่เกิดจาก user คนเดียวที่สามารถลงขาย ซื้อ เสนอราคา แสดงคอลเลกชัน หรือซ่อนคอลเลกชันได้
-
----
-
+FO users have a single account type: `User`. BO must support activity from the same user account across selling, buying, offers, public collection, and private collection states.
 ## 3. Scope
 
 ### 3.1 In Scope
 
-- BO Authentication และ Admin Role Permission
+- BO Authentication และ Admin Access Permission
 - Dashboard
 - User Management
 - Asset Management
@@ -95,8 +90,8 @@ FO มีหลาย flow ที่สร้างข้อมูลและ i
 ### Requirements
 
 - Admin login ด้วย Email/Password เท่านั้น
-- Super Admin และ Content Admin ต้องใช้ 2FA
-- Role อื่นแนะนำให้ใช้ 2FA
+- Admin must use mandatory 2FA
+- admin access อื่นแนะนำให้ใช้ 2FA
 - Session หมดอายุเมื่อ idle 8 ชั่วโมง หรือ max 24 ชั่วโมง
 - Failed login เกิน 5 ครั้ง lock account 15 นาที
 - Production รองรับ IP whitelist
@@ -106,7 +101,7 @@ FO มีหลาย flow ที่สร้างข้อมูลและ i
 
 - Admin ที่ไม่มีสิทธิ์เข้าถึง module ต้องไม่เห็นหรือเข้าหน้านั้นได้
 - Reset password ของ BO แยกจาก FO
-- ทุก action ที่เปลี่ยนข้อมูลต้องตรวจ role permission ก่อนเสมอ
+- ทุก action ที่เปลี่ยนข้อมูลต้องตรวจ Admin Permission ก่อนเสมอ
 
 ---
 
@@ -154,8 +149,15 @@ Admin ต้องสามารถ:
 
 - บัญชี Apple/Google reset password จาก BO ไม่ได้
 - Suspended user login FO ไม่ได้
-- Banned user ต้องถูก block ถาวรจนกว่า Super Admin จะปลด
+- Banned user ต้องถูก block ถาวรจนกว่า Admin จะปลด
 - Delete user เป็น soft delete และต้องเก็บ audit
+- User reports 1-2 ครั้งต้องเข้าคิว review ก่อน ไม่ควรเปลี่ยนสถานะบัญชีอัตโนมัติ
+- User reports ตั้งแต่ 3 ครั้งขึ้นไปภายในช่วงเวลาสั้น หรือมีหลาย reporter ต้องถูกยกระดับเป็น high-risk review
+- User reports ตั้งแต่ 5 ครั้งขึ้นไป หรือมี evidence เสี่ยงสูง เช่น scam, impersonation, spam offer, duplicate fraud pattern สามารถเข้าสู่ `Suspended` ชั่วคราวตาม policy เพื่อรอ Admin review
+- `Banned` ต้องเกิดหลัง Admin review แล้วพบว่าผิดจริงหรือมีความเสี่ยงสูง พร้อม reason และ audit
+- Account deletion ต้องมี lifecycle อย่างน้อย `Deletion Requested` -> `Deactivated` -> `Deleted/Archived` -> `Anonymized`
+- Deleted user ต้องไม่แสดงใน default User List แต่ต้องดูย้อนหลังได้ใน Account Deletion / Reports / Audit ตาม permission และต้อง mask/anonymize personal data ตาม retention policy
+- Restore หลัง deletion ทำได้เฉพาะก่อน anonymization และควรจำกัดใน grace period เช่น 30 วัน พร้อม reason และ audit
 
 ---
 
@@ -188,7 +190,7 @@ Admin ต้องสามารถ:
 
 - กด View asset ต้องเห็นข้อมูลที่ใช้ตรวจสอบได้ครบ
 - Force status ต้องเปลี่ยนผลการแสดงบน FO ทันที
-- Sensitive fields ต้องเห็นเฉพาะ Super Admin
+- Sensitive fields ต้องเห็นเฉพาะ Admin
 - ทุก action ต้องบันทึก before/after ใน audit log
 
 ---
@@ -204,7 +206,7 @@ Admin ต้องสามารถ:
 - ดู offer detail
 - ดู chat room ที่เกี่ยวข้องกับ offer
 - ดู notification delivery ของ offer
-- Force expire offer เฉพาะ Super Admin
+- Force expire offer เฉพาะ Admin
 - ดู reported chat
 - Remove/hide chat message ที่ผิด policy
 
@@ -249,7 +251,7 @@ Admin ต้องสามารถ:
 
 ### Requirements
 
-Content Admin ต้องสามารถ:
+Admin ต้องสามารถ:
 
 - สร้าง/แก้ไขบทความ Board
 - ใส่ Title, Slug, Excerpt, Cover Image, Alt Text, Body Content
@@ -283,7 +285,7 @@ Content Admin ต้องสามารถ:
 
 ### Requirements
 
-Market Admin ต้องสามารถ:
+Admin ต้องสามารถ:
 
 - เพิ่ม/แก้ไข/ปิดใช้งาน Watch Brand
 - เพิ่ม/แก้ไข/ปิดใช้งาน Watch Model
@@ -324,7 +326,7 @@ Admin ต้องสามารถ:
 
 ### Requirements
 
-Market Admin ต้องสามารถจัดการ directory ที่แสดงใน FO:
+Admin ต้องสามารถจัดการ directory ที่แสดงใน FO:
 
 - Watch Shops
 - Accessories Shops
@@ -354,7 +356,7 @@ Fields ที่ต้องรองรับ:
 
 ### Requirements
 
-Support Admin ต้องสามารถ:
+Admin ต้องสามารถ:
 
 - ดู ticket จาก FO Help
 - Filter ตาม status, type, priority
@@ -424,7 +426,7 @@ Reports ที่ต้องมี:
 - Date range
 - CSV export
 - Excel export
-- Role-based visibility
+- policy-based visibility
 
 ---
 
@@ -435,7 +437,7 @@ Reports ที่ต้องมี:
 ทุก action สำคัญของ Admin ต้องบันทึก:
 
 - Admin ID
-- Admin Role
+- Admin Access
 - Action Type
 - Target Entity Type
 - Target Entity ID
@@ -478,8 +480,8 @@ Reports ที่ต้องมี:
 
 - HTTPS ทุก endpoint
 - JWT + Refresh Token
-- 2FA สำหรับ role สำคัญ
-- Role-based access control
+- 2FA สำหรับ admin access สำคัญ
+- policy-based access control
 - Sensitive data masking
 - Audit log retention อย่างน้อย 1 ปี
 
@@ -507,7 +509,7 @@ Reports ที่ต้องมี:
 | Article publish success | 100% แสดงบน FO ตาม schedule |
 | Asset moderation audit completeness | 100% มี audit log |
 | Notification delivery tracking | > 95% มี delivery status |
-| Admin role violation | 0 case |
+| Admin Access violation | 0 case |
 
 ---
 
@@ -515,7 +517,7 @@ Reports ที่ต้องมี:
 
 ### Phase 1
 
-- Auth / Role Permission
+- Auth / Admin Permission
 - Dashboard
 - User Management
 - Asset Management
@@ -548,4 +550,4 @@ Reports ที่ต้องมี:
 2. Retention policy ของ chat และ offer ต้องเก็บกี่ปี
 3. Account deletion ต้อง anonymize ทันทีหรือหลัง retention period
 4. Board article ต้องมี SEO public web หรือใช้เฉพาะใน mobile app
-5. Moderator สามารถ remove asset ได้ทันทีหรือควรต้อง approval จาก Super Admin
+5. Admin สามารถ remove asset ได้ทันทีหรือควรต้อง approval จาก Admin

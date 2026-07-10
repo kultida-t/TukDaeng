@@ -51,18 +51,18 @@ BO Watch Alert Module คือหน้าจอสำหรับ Admin ใช
 
 หาก legacy BO source ระบุว่า Watch Alert notification เปิด Asset Detail ให้ถือว่า outdated และให้ยึด FO rule คือ `Watch Alert Result List`
 
-## 4. Roles And Permissions
+## 4. Admin Access And Permissions
 
-| Role | Permission |
+BO uses a single Admin account type only. Admin access is controlled by module access, action policy, sensitive-data policy, confirmation, reason, and audit requirements instead of separate BO admin account types.
+
+
+| Access Area | Rule |
 | --- | --- |
-| Super Admin | ดู alert ครบ, disable/enable alert, export, reveal sensitive context, override abuse handling |
-| Moderator | ดู alert ที่เกี่ยวกับ abuse/report context และ disable abusive alert ตาม policy |
-| Support Admin | ดู alert ของ user เพื่อช่วย troubleshooting แบบ read-only เป็นหลัก |
-| Market Admin | ดู alert criteria ที่เกี่ยวกับ brand/model/reference และ market data dependency |
-| Content Admin | ไม่มี permission หลักใน module นี้ |
-
-ทุก write action ต้องตรวจ permission ที่ UI, route/API และ service layer
-
+| Module access | Admin can use list/detail/search/filter when module access is granted. |
+| Write action | Create, update, status change, remove, restore, publish, archive, retry, and similar actions require permission check, confirmation for high-risk actions, reason when FO/user impact exists, and audit log. |
+| Sensitive data | Mask by default; reveal only with business reason, policy approval, and audit log. |
+| Export | Requires permission check, scope control, expiry/background job where needed, and audit export event. |
+| Direct URL/API | Enforce access at route, API, and service layers; never rely only on hidden UI. |
 ## 5. Responsive Layout
 
 | Width | Layout Requirement |
@@ -213,12 +213,12 @@ Delivery fields ขั้นต่ำ:
 
 | Action | Allowed Roles | Requirement |
 | --- | --- | --- |
-| View alert | Super Admin, Moderator, Support Admin, Market Admin | Module permission required |
-| View trigger history | Super Admin, Moderator, Support Admin, Market Admin | Role-based visibility |
-| Disable alert | Super Admin, Moderator ตาม policy | Confirmation, reason, audit, stop new triggers |
-| Enable alert | Super Admin | Reason, audit, criteria revalidation |
-| Export alerts/history | Super Admin | Audit export event และ controlled access |
-| View delivery status | Super Admin, Support Admin | Read-only; retry อยู่ใน Notification module |
+| View alert | Admin | Module permission required |
+| View trigger history | Admin | policy-based visibility |
+| Disable alert | Admin ตาม policy | Confirmation, reason, audit, stop new triggers |
+| Enable alert | Admin | Reason, audit, criteria revalidation |
+| Export alerts/history | Admin | Audit export event และ controlled access |
+| View delivery status | Admin | Read-only; retry อยู่ใน Notification module |
 
 Bulk disable ต้องเปิดเฉพาะกรณี abuse/risk policy ชัดเจน และต้องมี confirmation + reason
 
@@ -245,7 +245,7 @@ Analytics ขั้นต่ำ:
 - Disabled by admin count
 - Inactive market data dependency count
 
-Analytics ต้องไม่ expose sensitive user data ให้ role ที่ไม่มี permission
+Analytics ต้องไม่ expose sensitive user data ให้ admin access ที่ไม่มี permission
 
 ## 15. Audit Requirements
 
@@ -260,7 +260,7 @@ Audit action ขั้นต่ำ:
 ทุก event ต้องมี:
 
 - Admin ID หรือ system actor
-- Admin role
+- Admin Access
 - Action type
 - Target alert ID
 - Before value

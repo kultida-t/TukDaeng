@@ -1,4 +1,4 @@
-﻿# 18 Admin Scope Note
+# 18 Admin Scope Note
 
 อ้างอิงหลักจาก [TukDaeng_Master_Product_Definition.md](TukDaeng_Master_Product_Definition.md)
 
@@ -19,7 +19,7 @@
 
 Admin Scope Note ระบุขอบเขต Admin / Back Office ที่ master กล่าวถึง แต่ยังไม่ได้แตกเป็น Functional PRD เต็มสำหรับ mobile user-facing app
 
-เอกสารนี้ใช้กันความสับสนว่า Admin เป็น role ใน mobile app หรือไม่ และใช้กำหนด minimum requirement ที่ module user-facing ต้องเชื่อมกับ Admin moderation, report handling และ audit trail
+This document clarifies that Admin is a Web Back Office account type, not a mobile app user type, and defines the user-facing handoff required for moderation, report handling, and audit trail.
 
 แผนที่การเชื่อมงานระหว่าง FO และ BO อยู่ที่ [../ProjectAdmin/FO_BO_INTEGRATION_MAP.md](../ProjectAdmin/FO_BO_INTEGRATION_MAP.md)
 
@@ -40,7 +40,7 @@ Admin Scope Note ระบุขอบเขต Admin / Back Office ที่ ma
 
 | Priority | Gap | Master Baseline | Figma Action |
 | --- | --- | --- | --- |
-| Must Fix | Figma อาจสื่อว่า Admin เป็น mobile role | Admin ใช้งานผ่าน Web Back Office เท่านั้น | แยก Admin flow ออกจาก mobile app หรือ annotate ว่าเป็น Back Office |
+| Must Fix | Figma may imply Admin belongs in the mobile app | Admin operates through Web Back Office only | Separate Admin flow from the mobile app and annotate it as Back Office |
 | High | Report flow ยังไม่แสดงผลต่อ Admin moderation | Report ต้องถูกตรวจโดย Admin และ content หายหลัง moderation เท่านั้น | เพิ่ม report submitted state และ admin review note |
 | High | Board content management ยังไม่แยก owner ชัด | บทความสร้างและจัดการโดย Admin ผ่าน Back Office | Annotate Board content as Admin-managed |
 | High | Audit Trail ยังไม่ถูกระบุ | Admin Action ต้องมี Audit Trail ใน Back Office | เพิ่ม audit trail requirement ใน Back Office scope |
@@ -64,7 +64,7 @@ Admin Scope Note ระบุขอบเขต Admin / Back Office ที่ ma
 
 - Full Back Office screen-by-screen PRD
 - Admin authentication details
-- Admin role hierarchy
+- Admin access policy
 - Moderation policy content
 - Audit log schema
 - Admin dashboard metrics
@@ -88,7 +88,7 @@ Admin รับผิดชอบ:
 
 # 7. Mobile App Boundary
 
-Admin ไม่ใช่ role ใน mobile app V1
+Admin is not a mobile app user type in V1
 
 Mobile app ต้องรองรับ:
 
@@ -147,7 +147,7 @@ Admin Action ต้องมี Audit Trail ใน Back Office
 | ID | Criteria |
 | --- | --- |
 | AC-ADMIN-001 | Admin ใช้งานผ่าน Web Back Office เท่านั้น |
-| AC-ADMIN-002 | Mobile app V1 ไม่แสดง Admin role หรือ Admin controls |
+| AC-ADMIN-002 | Mobile app V1 does not show Admin account type or Admin controls |
 | AC-ADMIN-003 | Report รองรับ Asset, User, Comment และ Board Content |
 | AC-ADMIN-004 | Report ไม่ทำให้ Asset หรือ Content หายทันทีโดยไม่มี Admin moderation |
 | AC-ADMIN-005 | Admin ต้องสามารถตรวจสอบ Report ผ่าน Back Office ตาม scope master |
@@ -169,7 +169,7 @@ Admin Action ต้องมี Audit Trail ใน Back Office
 # 13. Future Enhancement
 
 - Full Admin Back Office PRD หลัง FO baseline, Figma cleanup, Dev checklist และ QA checklist ครบ/นิ่งแล้ว
-- Admin role hierarchy
+- Admin access policy
 - Moderation policy matrix
 - Report queue dashboard
 - Audit log search and export

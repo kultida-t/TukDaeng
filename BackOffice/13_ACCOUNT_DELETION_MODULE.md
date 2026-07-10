@@ -21,7 +21,7 @@ FO ทำหน้าที่รับ confirmation, soft delete/deactivate acc
 - Request detail พร้อม user, offer, asset, chat และ retention context
 - Validation pending offer ก่อน archive/anonymize
 - Recheck blocking conditions
-- Approve archive โดย Super Admin
+- Approve archive โดย Admin
 - Track 30-day grace period
 - Archive/anonymization status tracking
 - Cancel request ตาม policy
@@ -55,21 +55,18 @@ FO Settings module กำหนด behavior หลักดังนี้:
 
 BO ต้องไม่เปลี่ยน copy หรือ flow ของ FO แต่ต้องรับข้อมูลคำขอและประมวลผลต่อหลัง FO ส่ง request สำเร็จ
 
-## 4. Roles & Permissions
+## 4. Admin Access & Permissions
 
-| Action | Super Admin | Support Admin | Moderator | Content Admin | Market Admin |
-| --- | --- | --- | --- | --- | --- |
-| View request queue | Yes | Yes | No | No | No |
-| View request detail | Yes | Yes | No | No | No |
-| Recheck blocking conditions | Yes | Yes | No | No | No |
-| Approve archive | Yes | No | No | No | No |
-| Cancel request | Yes | No | No | No | No |
-| Export archive report | Yes | No | No | No | No |
-| View sensitive archive data | Yes | Limited masked | No | No | No |
-| Trigger anonymization job | Yes | No | No | No | No |
+BO uses a single Admin account type only. Admin access is controlled by module access, action policy, sensitive-data policy, confirmation, reason, and audit requirements instead of separate BO admin account types.
 
-Support Admin ดูและ recheck ได้เพื่อช่วยตอบผู้ใช้ แต่ action ที่เปลี่ยนสถานะสุดท้าย เช่น approve archive, cancel request หรือ trigger anonymization ต้องเป็น Super Admin
 
+| Access Area | Rule |
+| --- | --- |
+| Module access | Admin can use list/detail/search/filter when module access is granted. |
+| Write action | Create, update, status change, remove, restore, publish, archive, retry, and similar actions require permission check, confirmation for high-risk actions, reason when FO/user impact exists, and audit log. |
+| Sensitive data | Mask by default; reveal only with business reason, policy approval, and audit log. |
+| Export | Requires permission check, scope control, expiry/background job where needed, and audit export event. |
+| Direct URL/API | Enforce access at route, API, and service layers; never rely only on hidden UI. |
 ## 5. Responsive Layout
 
 | Breakpoint | Layout |
@@ -127,7 +124,7 @@ Request list ต้องแสดงข้อมูลขั้นต่ำ:
 หมายเหตุ:
 
 - FO V1 ระบุ soft delete/deactivate หลัง confirm สำเร็จ ดังนั้น `Requested` ไม่ได้แปลว่ายังใช้งานบัญชีได้
-- `Cancelled` ไม่ใช่ action ปกติสำหรับผู้ใช้เอง เว้นแต่ Product/Policy เปิด restore flow หรือ Super Admin ยกเลิกตามเคสผิดพลาด
+- `Cancelled` ไม่ใช่ action ปกติสำหรับผู้ใช้เอง เว้นแต่ Product/Policy เปิด restore flow หรือ Admin ยกเลิกตามเคสผิดพลาด
 
 ## 9. Account Status Contract
 
@@ -143,6 +140,30 @@ BO ต้องแยก request status ออกจาก account status:
 
 ใน flow ปกติหลัง FO confirm สำเร็จ account ควรเข้าสู่ `Deactivated` ทันที
 
+## 9.1 Deleted / Restore / Retention Policy
+
+ตาม pattern ทั่วไปของเว็บที่ต้องรองรับ audit, dispute และ compliance ไม่ควร hard delete ทุก record ทันทีหลังผู้ใช้กดลบบัญชี
+
+Recommended lifecycle:
+
+| Account State | When It Happens | Data Handling | Can Restore? |
+| --- | --- | --- | --- |
+| `Deletion Requested` | User confirm delete account จาก FO และ request ถูกสร้าง | เก็บข้อมูลเดิมไว้เพื่อ validation และ dependency check | ยกเลิกได้ตาม policy ถ้ายังไม่ archive/anonymize |
+| `Deactivated` | session ถูก revoke และ login ถูก block ระหว่าง grace period | ซ่อน public profile/assets; retain data สำหรับ dependency, support และ audit | กู้คืนได้ภายใน grace period ถ้า Admin/Support policy อนุญาต |
+| `Deleted` | ใช้เป็น user-facing BO label เมื่อ deletion สำเร็จแล้ว | ไม่แสดง public surfaces; record ถูก archive และ personal fields เริ่มถูก mask ตาม policy | โดยปกติไม่กู้คืนเป็นบัญชีเดิม |
+| `Archived` | Internal storage state หลังจัดเก็บ record เพื่อ audit/retention | เก็บเฉพาะข้อมูลที่จำเป็น เช่น transaction, offer, chat, report, audit reference | ไม่ควร restore ตรงเป็นบัญชีใช้งาน |
+| `Anonymized` | หลัง retention/anonymization job ทำงานครบ | ลบหรือแทนที่ personal fields เช่น email, phone, display name, profile image ด้วย anonymous value | กู้คืนไม่ได้ |
+
+UI / Reporting rules:
+
+- ใน Account Deletion module สามารถแสดง `Deleted` เป็น label ที่อ่านง่ายสำหรับ deletion สำเร็จ
+- ใน backend/audit ควรเก็บสถานะละเอียดเป็น `Archived` และ `Anonymized` เพื่อรู้ว่าข้อมูลถูกจัดการถึงขั้นไหนแล้ว
+- Deleted users ต้องไม่แสดงใน default User List แต่ต้องค้นย้อนหลังได้ใน Account Deletion, Reports และ Audit ตาม permission
+- ข้อมูลย้อนหลังที่เรียกดูได้ต้องเป็นข้อมูลที่จำเป็น เช่น user ID, deletion request ID, dates, processed by, blocking reason, retained offer/chat/report references และ audit event
+- Personal data หลัง deletion ต้องถูก mask/anonymize ตาม retention policy และ Admin Permission
+- Restore ควรเปิดได้เฉพาะก่อน anonymization และควรอยู่ในช่วง grace period เช่น 30 วัน พร้อม reason และ audit
+- หลัง anonymization แล้วไม่ควร restore เพราะข้อมูลส่วนตัวที่ใช้สร้าง account กลับมาอย่างถูกต้องไม่ควรมีอยู่แล้ว
+
 ## 10. Validation Rules
 
 ก่อน approve archive/anonymization BO ต้องตรวจ:
@@ -156,9 +177,11 @@ BO ต้องแยก request status ออกจาก account status:
 | Show/Hide/Sold asset | ต้องไม่เปิด public surface ที่ขัดกับ account deletion state |
 | Chat history | เก็บตาม retention policy แต่ต้อง mask personal profile fields เมื่อถึงขั้น anonymization |
 | Reports/safety records | เก็บตาม legal/safety/audit policy |
-| Support tickets | Link ไว้เพื่อให้ Support Admin ตอบ account-deleted support state ได้ |
+| Support tickets | Link ไว้เพื่อให้ Admin ตอบ account-deleted support state ได้ |
 
 Pending offer dependency ต้องใช้ source เดียวกับ `BackOffice/09_OFFER_CHAT_MODULE.md` และต้อง audit ทุกครั้งที่ใช้เป็นเหตุผล block
+
+Pending user report หรือ offer/chat dispute ต้อง block deletion เช่นเดียวกันจนกว่า Admin จะตรวจ source report และ dependency ให้จบก่อน การลบบัญชีไม่ควร cancel offer หรือปิด dispute อัตโนมัติ; ต้องให้ module ต้นทาง เช่น Offer / Chat หรือ Asset Management เป็นตัวบันทึกผลการตรวจ แล้ว Account Deletion จึงค่อย approve, keep blocked, หรือ cancel request ตาม policy
 
 ## 11. Request Detail
 
@@ -219,14 +242,14 @@ Request detail ต้องมีส่วนข้อมูล:
 
 | Action | Permission | Requirement | Audit |
 | --- | --- | --- | --- |
-| View Request | Super Admin, Support Admin | Sensitive fields masked ตาม role | Required for sensitive reveal |
-| Recheck Blocking Conditions | Super Admin, Support Admin | Query pending offers/assets/chat/report dependencies ใหม่ | Required |
-| Approve Archive | Super Admin | ต้องไม่มี blocking condition และต้อง confirm | Required |
-| Mark Blocked | System, Super Admin | ต้องมี reason และ linked dependency | Required |
-| Cancel Request | Super Admin | ต้องมี reason และ policy basis | Required |
-| Trigger Archive Job | Super Admin, System | ต้องผ่าน approval หรือ scheduled job policy | Required |
-| Trigger Anonymization Job | Super Admin, System | ต้องถึง grace period/retention condition | Required |
-| Export Archive Report | Super Admin | ต้องมี reason และ export scope | Required |
+| View Request | Admin | Sensitive fields masked ตาม Admin access | Required for sensitive reveal |
+| Recheck Blocking Conditions | Admin | Query pending offers/assets/chat/report dependencies ใหม่ | Required |
+| Approve Archive | Admin | ต้องไม่มี blocking condition และต้อง confirm | Required |
+| Mark Blocked | System, Admin | ต้องมี reason และ linked dependency | Required |
+| Cancel Request | Admin | ต้องมี reason และ policy basis | Required |
+| Trigger Archive Job | Admin, System | ต้องผ่าน approval หรือ scheduled job policy | Required |
+| Trigger Anonymization Job | Admin, System | ต้องถึง grace period/retention condition | Required |
+| Export Archive Report | Admin | ต้องมี reason และ export scope | Required |
 
 ## 13. Grace Period Rules
 
@@ -313,7 +336,7 @@ Audit payload ต้องมี:
 | AC-BO-DEL-002 | Request detail แสดง user context, timeline, pending offers, assets, chats, reports และ support tickets ได้ |
 | AC-BO-DEL-003 | Pending incoming/outgoing offer ต้อง block archive/anonymization ได้จริง |
 | AC-BO-DEL-004 | Recheck blocking conditions ต้อง query dependency ล่าสุดและบันทึก audit |
-| AC-BO-DEL-005 | Super Admin เท่านั้นที่ approve archive, cancel request, trigger anonymization หรือ export archive report ได้ |
+| AC-BO-DEL-005 | Approve archive, cancel request, trigger anonymization, and export archive report require Admin access policy, confirmation, reason, and audit |
 | AC-BO-DEL-006 | หลัง FO delete สำเร็จ account ต้อง login ไม่ได้และ public profile/assets ต้องถูกซ่อนตาม contract |
 | AC-BO-DEL-007 | Grace period 30 วันต้องแสดงใน queue/detail และมี state active/ending soon/expired |
 | AC-BO-DEL-008 | Sensitive reveal, status change, archive/anonymization และ export ต้องมี audit log |
@@ -326,4 +349,4 @@ Audit payload ต้องมี:
 | DEL-DEC-001 | Account restore/cancel request เปิดให้ผู้ใช้ขอผ่าน support ได้หรือไม่ | กระทบ `Cancelled` behavior และ Help / Support workflow |
 | DEL-DEC-002 | Retention period ของ chat, offer, report และ audit log ต้องเก็บกี่ปี | กระทบ archive/anonymization job |
 | DEL-DEC-003 | Anonymization ทำทันทีหลัง 30 วันหรือรอตาม retention policy ของแต่ละ entity | กระทบ data model และ compliance |
-| DEL-DEC-004 | Support Admin เห็นข้อมูล unmasked ระดับใดเมื่อช่วย account-deleted user | กระทบ privacy permission |
+| DEL-DEC-004 | Admin เห็นข้อมูล unmasked ระดับใดเมื่อช่วย account-deleted user | กระทบ privacy permission |

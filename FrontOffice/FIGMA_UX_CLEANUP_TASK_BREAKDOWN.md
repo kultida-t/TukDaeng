@@ -1,4 +1,4 @@
-﻿# TukDaeng Figma UX Cleanup Task Breakdown
+# TukDaeng Figma UX Cleanup Task Breakdown
 
 **Reference:** [Figma_Gap_Checklist_Against_Master.md](Figma_Gap_Checklist_Against_Master.md)  
 **Source of truth:** [TukDaeng_Master_Product_Definition.md](TukDaeng_Master_Product_Definition.md)  
@@ -81,7 +81,7 @@
 | UX-MF-011 | Chat unread routing | UX Transaction | ย้าย Chat/New Message ออกจาก Notification Center และแสดงผ่าน Chat menu unread badge/count | New message ไม่สร้าง Notification Center item ใน prototype | `07_CHAT_MODULE.md`, `09_NOTIFICATION_MODULE.md` |
 | UX-MF-012 | Board scope | UX Platform | ปรับ Board ให้เป็น Article Area และตัด Create/Edit/Delete Post สำหรับ Front Office user | FO user อ่าน/like/share article ได้ แต่สร้างหรือจัดการ article ไม่ได้ | `12_BOARD_MODULE.md` |
 | UX-MF-013 | Settings baseline | UX Platform | เพิ่ม Theme Mode และ Delete Account พร้อม warning/confirmation/risk state | Settings มี Dark/Light Mode และ Delete Account ไม่ถูก mark เป็น future | `13_SETTINGS_MODULE.md` |
-| UX-MF-014 | Admin boundary | UX Platform + Product | แยก Admin ออกจาก mobile role และ annotate ว่าอยู่ใน Web Back Office | Mobile app ไม่มี Admin role/flow ที่ทำงานจริง | `18_ADMIN_SCOPE_NOTE.md` |
+| UX-MF-014 | Admin boundary | UX Platform + Product | Separate Admin from mobile app user types and annotate it as Web Back Office | Mobile app has no Admin account type or working Admin flow | `18_ADMIN_SCOPE_NOTE.md` |
 | UX-MF-015 | Payment scope | UX Platform + Product | ซ่อนหรือติดป้าย future ให้ payment/payment gateway UI ทั้งหมด | Payment Gateway ไม่ถูกสื่อว่าเป็น functional V1 | `16_INTEGRATIONS_MODULE.md` |
 | UX-MF-016 | Auth consent and suspended state | UX Lead | เพิ่ม Suspended Account state และบังคับ Terms of Use / Privacy Policy ก่อน sign up ทุกช่องทาง | Email, Google, Apple sign up มี consent ก่อน submit และ Sign In มี suspended error/support path | `01_AUTHENTICATION_MODULE.md`, `15_TRUST_SAFETY_MODULE.md` |
 
@@ -304,7 +304,7 @@ Required annotation:
 - ลบ status model ซ้ำ เช่น `Status` + `Sale Status`
 - แยก public state และ Owner-only/private state ให้ชัด
 - จัด future menu items เป็น hidden, disabled หรือ placeholder
-- ยืนยันว่า Admin ไม่ใช่ mobile role และอยู่ใน Web Back Office เท่านั้น
+- Confirm Admin is not a mobile app user type and belongs only in Web Back Office
 - ซ่อนหรือติดป้าย future ให้ payment/payment gateway UI
 - บังคับ Terms of Use และ Privacy Policy ก่อน sign up ทุกช่องทาง
 - เพิ่ม Suspended Account state ใน Sign In

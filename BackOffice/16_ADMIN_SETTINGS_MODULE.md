@@ -9,9 +9,9 @@
 
 ## 1. วัตถุประสงค์
 
-Admin Settings Module ใช้สำหรับตั้งค่าและตรวจสอบ configuration ระดับ Back Office ได้แก่ admin account settings, role permission matrix, security settings, system defaults, retention/export policy และ operational settings ที่มีผลต่อการทำงานของ BO
+Admin Settings Module ใช้สำหรับตั้งค่าและตรวจสอบ configuration ระดับ Back Office ได้แก่ admin account settings, Admin Access Matrix, security settings, system defaults, retention/export policy และ operational settings ที่มีผลต่อการทำงานของ BO
 
-Module นี้ต้องไม่เป็นทางลัดเพื่อข้าม RBAC, audit, privacy หรือ FO sync rule ที่ระบุใน Global Rules และแต่ละ module
+Module นี้ต้องไม่เป็นทางลัดเพื่อข้าม admin access control, audit, privacy หรือ FO sync rule ที่ระบุใน Global Rules และแต่ละ module
 
 ## 2. ขอบเขต
 
@@ -19,7 +19,7 @@ Module นี้ต้องไม่เป็นทางลัดเพื่�
 
 - Admin profile และ own security settings
 - Admin account management shortcut / settings view
-- Role permission matrix
+- Admin Access Matrix
 - Permission change request / review workflow baseline
 - Security policy settings ที่แก้ได้ใน BO
 - Session / 2FA / lockout policy display
@@ -42,32 +42,28 @@ Module นี้ต้องไม่เป็นทางลัดเพื่�
 - Secret management UI สำหรับ production credentials
 - Manual audit log deletion
 
-## 3. Roles & Permissions
+## 3. Admin Access & Permissions
 
-| Action | Super Admin | Support Admin | Moderator | Content Admin | Market Admin |
-| --- | --- | --- | --- | --- | --- |
-| View own profile/settings | Yes | Yes | Yes | Yes | Yes |
-| Change own password | Yes | Yes | Yes | Yes | Yes |
-| Enable own 2FA | Yes | Yes | Yes | Yes | Yes |
-| View admin account list | Yes | No | No | No | No |
-| Invite/update/suspend admin | Yes | No | No | No | No |
-| Reset admin 2FA | Yes | No | No | No | No |
-| View role permission matrix | Yes | Read-only own role summary | Read-only own role summary | Read-only own role summary | Read-only own role summary |
-| Change role permissions | Super Admin only, high-risk | No | No | No | No |
-| Change security/system settings | Super Admin only | No | No | No | No |
-| View export/retention settings | Yes | Read-only scoped | Read-only scoped | Read-only scoped | Read-only scoped |
-| Export settings/audit summary | Yes | No | No | No | No |
+BO uses exactly one admin account type: `Admin`. Admin Settings must not define or display sub-Admin access matrices. It controls account lifecycle, security policy, module/action policy, retention/export settings, feature flags, and integration metadata through policy-based access rules.
 
-Super Admin คนสุดท้ายที่ active อยู่ต้องไม่สามารถถูก suspend, archive, role downgrade หรือ disable 2FA requirement ได้ถ้าไม่มี Super Admin active คนอื่นรองรับ
+| Action | Admin access rule |
+| --- | --- |
+| View own profile/settings | Allowed for Admin. |
+| Change own password / enable 2FA | Allowed for Admin with audit where required. |
+| Manage admin accounts | Requires high-risk action policy, confirmation, reason where applicable, and audit. |
+| Change module/action policy | Requires confirmation, reason, before/after diff, and audit. |
+| Change security/system/retention/export settings | Requires confirmation, reason, re-auth for high-risk security changes, and audit. |
+| Export settings/audit summary | Requires export policy, scope control, and audit. |
 
+The last active Admin account must be protected from suspension/archive or access downgrade unless another active Admin account can maintain BO access.
 ## 4. Responsive Layout
 
 | Breakpoint | Layout |
 | --- | --- |
-| Mobile <= 767px | Settings sections เป็น stacked list, detail/editor เปิด full screen, permission matrix เป็น grouped cards |
+| Mobile <= 767px | Settings sections เป็น stacked list, detail/editor เปิด full screen, Admin Access Matrix เป็น grouped cards |
 | Tablet 768px - 1199px | Section list + detail แบบ single column หรือ split view ตามพื้นที่ |
 | Desktop >= 1200px | Left settings navigation + detail panel + audit/context sidebar |
-| Wide Desktop >= 1440px | รองรับ permission matrix table แบบ dense พร้อม sticky header/columns |
+| Wide Desktop >= 1440px | รองรับ Admin Access Matrix table แบบ dense พร้อม sticky header/columns |
 
 High-risk action ต้องใช้ confirmation modal ที่อ่านง่ายบน mobile และต้องไม่ใช้ hover-only action
 
@@ -76,8 +72,8 @@ High-risk action ต้องใช้ confirmation modal ที่อ่าน�
 | Section | Purpose |
 | --- | --- |
 | My Account | ดู profile, เปลี่ยน password, เปิด/ตั้งค่า 2FA ของตัวเอง |
-| Admin Accounts | Invite, update role, suspend, unlock, reset 2FA, archive admin |
-| Role Permissions | Matrix สิทธิ์ตาม role/module/action |
+| Admin Accounts | Invite, update admin access policy, suspend, unlock, reset 2FA, archive admin |
+| Admin Permissions | Matrix สิทธิ์ตาม module/action policy |
 | Security Policy | 2FA requirement, session timeout, lockout, IP whitelist |
 | System Defaults | Timezone, currency, language mode, pagination/export defaults |
 | Retention Policy | Audit, chat/offer, report, export file, notification log retention |
@@ -88,13 +84,13 @@ High-risk action ต้องใช้ confirmation modal ที่อ่าน�
 
 ## 6. My Account
 
-Admin ทุก role ต้องเข้าถึง own settings ได้:
+Admin ทุก admin access ต้องเข้าถึง own settings ได้:
 
 | Field / Action | Requirement |
 | --- | --- |
 | Full name | แสดงชื่อ admin |
 | Email | Login identifier; เปลี่ยนไม่ได้จาก self-service ถ้า policy ไม่เปิด |
-| Role | Read-only |
+| Admin access | Read-only |
 | Status | Read-only |
 | 2FA status | Not Enabled, Setup Required, Enabled, Reset Required |
 | Last login | Read-only |
@@ -102,7 +98,7 @@ Admin ทุก role ต้องเข้าถึง own settings ได้:
 | Enable / reset own 2FA | ตาม Auth module rule |
 | Active sessions | View / revoke own session ถ้า implementation รองรับ |
 
-Super Admin และ Content Admin ต้องใช้ 2FA ตาม Auth baseline ส่วน role อื่นแนะนำให้ใช้ 2FA และสามารถเปิดเองได้
+Admin must use mandatory 2FA according to Auth baseline
 
 ## 7. Admin Accounts
 
@@ -113,70 +109,62 @@ Admin Accounts section ต้อง reuse contract จาก `01_AUTHENTICATION_
 | Status | Meaning |
 | --- | --- |
 | `Invited` | สร้าง account แล้ว แต่ยังไม่ได้ตั้ง password |
-| `Active` | Login ได้ตาม role/2FA rule |
+| `Active` | Login ได้ตาม admin access/2FA rule |
 | `Locked` | ถูก lock จาก failed attempts หรือ security action |
-| `Suspended` | ถูก disable โดย Super Admin |
+| `Suspended` | ถูก disable โดย Admin |
 | `Archived` | เอาออกจาก active use แต่ยังเก็บ audit history |
 
 ### 7.2 Admin Account Actions
 
 | Action | Requirement |
 | --- | --- |
-| Invite Admin | Super Admin only, email unique |
-| Change Role | Super Admin only, confirmation required |
-| Suspend / Reactivate | Super Admin only, reason required |
-| Unlock Admin | Super Admin only |
-| Reset 2FA | Super Admin only, reason required |
-| Archive Admin | Super Admin only, reason required |
-| Export Admin List | Super Admin only, audit required |
+| Invite Admin | Admin access required, email unique |
+| Change Admin access | Admin access required, confirmation required |
+| Suspend / Reactivate | Admin access required, reason required |
+| Unlock Admin | Admin access required |
+| Reset 2FA | Admin access required, reason required |
+| Archive Admin | Admin access required, reason required |
+| Export Admin List | Admin access required, audit required |
 
-ต้องป้องกันการเปลี่ยนแปลง Super Admin คนสุดท้ายตาม rule ใน section 3
+ต้องป้องกันการเปลี่ยนแปลง Admin คนสุดท้ายตาม rule ใน section 3
 
-## 8. Role Permission Matrix
+## 8. Admin Access Policy Catalog
 
-Role permission matrix ต้องแสดงสิทธิ์อย่างน้อยตาม module:
+The previous multi-Admin access policy catalog is replaced by a single Admin account type with module/action policy. The UI may show a policy catalog, but it must not show separate BO admin account types.
 
-| Module | Super Admin | Content Admin | Moderator | Support Admin | Market Admin |
-| --- | --- | --- | --- | --- | --- |
-| Dashboard | Full | Scoped | Scoped | Scoped | Scoped |
-| User Management | Full | No | Limited reported-user context | Support view/reset password | No |
-| Asset Management | Full | No | Moderate/review | Ticket-related view | Market aggregate/context |
-| Content / Board | Full | Full | Reported content view | No | No |
-| Market Data | Full | No | No | No | Full |
-| Directory | Full | No | No | No | Full |
-| Audit Log | Full | No | No | No | No |
-| Offer / Chat | Full | No | Reported/moderation view | Ticket/dispute view | No |
-| Social Interaction | Full | No | Moderate | Ticket-related view | Aggregate view |
-| Watch Alert | Full | No | View | User alert support view | Aggregate/full market view |
-| Help / Support | Full | No | Reported cases only | Full | No |
-| Account Deletion | Full | No | No | View/recheck | No |
-| Notifications | Full | Content broadcast draft if approved | Scoped logs | Ticket-related logs | Watch alert/market logs |
-| Reports & Analytics | Full | Content reports | Moderation reports | Support reports | Market reports |
-| Admin Settings | Full | Own settings only | Own settings only | Own settings only | Own settings only |
+| Module | Admin access rule |
+| --- | --- |
+| Dashboard | Admin sees metrics and queues allowed by module/action policy. |
+| User Management | Admin can manage users subject to sensitive-data, account-status, export, confirmation, reason, and audit rules. |
+| Asset Management | Admin can review and change assets subject to FO-impact, sensitive-data, confirmation, reason, and audit rules. |
+| Content / Board | Admin can create, edit, preview, publish, schedule, archive, and audit content actions. |
+| Market Data / Directory | Admin can manage brand/model/reference/price/directory data with provider-source, inactive/restore, and audit controls. |
+| Audit Log | Admin can view/export audit data according to audit visibility and sensitive-payload policy. |
+| Offer / Chat / Social / Watch Alert | Admin can review and moderate by policy with privacy masking and audit. |
+| Help / Support / Account Deletion | Admin can process support and deletion workflows with dependency checks, confirmation, reason, and audit. |
+| Notifications / Reports | Admin can manage templates, broadcasts, reports, and exports according to approval/export/sensitive-data policy. |
+| Admin Settings | Admin can manage BO settings through high-risk policy controls and audit. |
 
 ### 8.1 Permission Change Rules
 
-- Permission change ต้องเป็น Super Admin only
-- ต้องมี confirmation และ reason
-- ต้องแสดง before/after diff
-- ต้อง audit-log
-- ถ้าเปลี่ยน role ของ admin ที่กำลัง login อยู่ permission check ต้องสะท้อน role ล่าสุดใน request ถัดไปหรือ token refresh ถัดไป
-- ไม่ควรเปิด fine-grained permission editor เกิน baseline role model ใน V1 เว้นแต่ Product ตัดสินใจเพิ่ม scope
-
+- Permission changes are policy changes for the single Admin account type.
+- Require confirmation, reason, before/after diff, and audit.
+- Direct API/service enforcement is required for every changed policy.
+- Changes affecting the current session must be reflected on the next request or token/session refresh.
 ## 9. Security Policy Settings
 
 | Setting | Baseline | Editable In BO |
 | --- | --- | --- |
 | Admin login method | Email/password only | No |
 | BO SSO | Not supported in V1 | No |
-| Mandatory 2FA roles | Super Admin, Content Admin | Super Admin can view; edit requires policy decision |
-| Optional 2FA roles | Moderator, Support Admin, Market Admin | View / encourage |
-| Idle timeout | 8 hours | Super Admin edit only if policy allows |
-| Max session | 24 hours | Super Admin edit only if policy allows |
-| Failed login limit | 5 attempts | Super Admin edit only if policy allows |
-| Lockout duration | 15 minutes | Super Admin edit only if policy allows |
-| IP whitelist | Production supported | Super Admin only |
-| Password policy | Minimum secure baseline per auth implementation | Super Admin view/edit if supported |
+| Mandatory 2FA policy | Admin | Required for all BO Admin accounts |
+| Optional 2FA policy | Admin | View / encourage |
+| Idle timeout | 8 hours | Admin edit only if policy allows |
+| Max session | 24 hours | Admin edit only if policy allows |
+| Failed login limit | 5 attempts | Admin edit only if policy allows |
+| Lockout duration | 15 minutes | Admin edit only if policy allows |
+| IP whitelist | Production supported | Admin access required |
+| Password policy | Minimum secure baseline per auth implementation | Admin view/edit if supported |
 
 Security policy change ต้อง audit และควร require re-authentication
 
@@ -219,7 +207,7 @@ Retention cleanup ต้องเป็น system job ที่ audit ตัว�
 | Sensitive export | ต้องมี permission, confirmation, reason และ audit |
 | Export expiry | ต้องกำหนดจำนวนวันตาม policy |
 | Export download | ต้อง audit download event |
-| Export scope | จำกัดตาม role และ report/module permission |
+| Export scope | จำกัดตาม admin access และ report/module permission |
 
 Export policy ต้อง sync กับ `15_REPORTS_ANALYTICS_MODULE.md` และ `08_AUDIT_LOG_MODULE.md`
 
@@ -257,7 +245,7 @@ Secret เช่น API key, provider token, database credentials ต้อง�
 Admin Settings ต้องมี change history สำหรับ:
 
 - Admin account changes
-- Role changes
+- Admin access changes
 - Permission changes
 - Security policy changes
 - System default changes
@@ -273,15 +261,15 @@ Change history ต้อง link ไป Audit Log detail ตาม permission
 | --- | --- | --- | --- | --- |
 | Change own password | All admins | Yes | No | Yes |
 | Enable own 2FA | All admins | Yes | No | Yes |
-| Invite admin | Super Admin | Yes | Optional | Yes |
-| Change admin role | Super Admin | Yes | Required | Yes |
-| Suspend/reactivate admin | Super Admin | Yes | Required | Yes |
-| Reset admin 2FA | Super Admin | Yes | Required | Yes |
-| Update permission matrix | Super Admin | Yes | Required | Yes |
-| Update security policy | Super Admin | Yes + re-auth | Required | Yes |
-| Update retention/export policy | Super Admin | Yes | Required | Yes |
-| Update feature flag | Super Admin | Yes | Required | Yes |
-| Export settings | Super Admin | Yes | Required if sensitive | Yes |
+| Invite admin | Admin | Yes | Optional | Yes |
+| Change Admin Access | Admin | Yes | Required | Yes |
+| Suspend/reactivate admin | Admin | Yes | Required | Yes |
+| Reset admin 2FA | Admin | Yes | Required | Yes |
+| Update Admin Access Matrix | Admin | Yes | Required | Yes |
+| Update security policy | Admin | Yes + re-auth | Required | Yes |
+| Update retention/export policy | Admin | Yes | Required | Yes |
+| Update feature flag | Admin | Yes | Required | Yes |
+| Export settings | Admin | Yes | Required if sensitive | Yes |
 
 ## 17. Audit Requirements
 
@@ -325,10 +313,10 @@ Sensitive settings value ต้อง mask ใน audit payload ถ้าเป�
 | --- | --- |
 | Permission denied | ไม่แสดง setting/action ที่ไม่มีสิทธิ์ และ direct URL ต้อง block |
 | Loading | Skeleton สำหรับ section/detail/matrix |
-| Empty admin list | แสดง empty state พร้อม invite action สำหรับ Super Admin |
+| Empty admin list | แสดง empty state พร้อม invite action สำหรับ Admin |
 | Save failed | แสดง error และไม่เปลี่ยนค่า optimistic ถ้า backend fail |
 | Validation failed | แสดง field-level error |
-| Last Super Admin protected | แสดงเหตุผลว่าทำ action ไม่ได้ |
+| Last Admin protected | แสดงเหตุผลว่าทำ action ไม่ได้ |
 | Audit write failed | Block high-risk settings change หรือเข้าคิว reliable retry ตาม risk policy |
 | Feature flag impact warning | แสดง impacted modules ก่อน confirm |
 
@@ -336,13 +324,13 @@ Sensitive settings value ต้อง mask ใน audit payload ถ้าเป�
 
 | ID | Criteria |
 | --- | --- |
-| AC-BO-SET-001 | Admin ทุก role เข้าดู own profile/settings และเปลี่ยน password/ตั้งค่า 2FA ตาม rule ได้ |
-| AC-BO-SET-002 | Super Admin จัดการ admin account lifecycle ได้โดยไม่กระทบ Super Admin คนสุดท้าย |
-| AC-BO-SET-003 | Role permission matrix แสดงสิทธิ์ตาม module/role และ enforce ทั้ง UI/API level |
+| AC-BO-SET-001 | Admin ทุก admin access เข้าดู own profile/settings และเปลี่ยน password/ตั้งค่า 2FA ตาม rule ได้ |
+| AC-BO-SET-002 | Admin จัดการ admin account lifecycle ได้โดยไม่กระทบ Admin คนสุดท้าย |
+| AC-BO-SET-003 | Admin Access Matrix แสดงสิทธิ์ตาม module/action และ enforce ทั้ง UI/API level |
 | AC-BO-SET-004 | Permission/security/system/retention/export setting changes ต้องมี confirmation, reason และ audit |
-| AC-BO-SET-005 | Security policy ต้องสอดคล้องกับ Auth baseline: email/password only, 2FA mandatory สำหรับ Super Admin/Content Admin, idle 8h, max 24h, failed login 5 ครั้ง, lockout 15 นาที |
+| AC-BO-SET-005 | Security policy ต้องสอดคล้องกับ Auth baseline: email/password only, 2FA mandatory สำหรับ Admin, idle 8h, max 24h, failed login 5 ครั้ง, lockout 15 นาที |
 | AC-BO-SET-006 | Retention settings ต้องไม่อนุญาต manual delete audit logs จาก UI ปกติ |
-| AC-BO-SET-007 | Export policy ต้องรองรับ background job, expiry, sensitive export audit และ role-based scope |
+| AC-BO-SET-007 | Export policy ต้องรองรับ background job, expiry, sensitive export audit และ policy-based scope |
 | AC-BO-SET-008 | Feature flags ต้องแสดง FO/BO impact และ audit ทุกครั้ง |
 | AC-BO-SET-009 | Integration settings ต้องไม่เปิดเผย secrets ใน BO UI |
 | AC-BO-SET-010 | Admin Settings UI ต้อง responsive ที่ 375px, 768px, 1280px และ 1440px |
@@ -351,7 +339,7 @@ Sensitive settings value ต้อง mask ใน audit payload ถ้าเป�
 
 | ID | Decision Needed | Impact |
 | --- | --- | --- |
-| SET-DEC-001 | Fine-grained permission editor จะเปิดใน V1 หรือใช้ fixed role matrix | กระทบ data model และ QA scope |
-| SET-DEC-002 | Security policy fields ใดให้ Super Admin แก้ได้จริงใน production | กระทบ compliance และ operation |
+| SET-DEC-001 | Fine-grained permission editor จะเปิดใน V1 หรือใช้ fixed admin access matrix | กระทบ data model และ QA scope |
+| SET-DEC-002 | Security policy fields ใดให้ Admin แก้ได้จริงใน production | กระทบ compliance และ operation |
 | SET-DEC-003 | Retention period ราย entity เช่น chat, offer, support ticket, export file ต้องเก็บกี่วัน/ปี | กระทบ archive/export/report jobs |
 | SET-DEC-004 | ต้องมี approval workflow สำหรับ high-risk setting change หรือไม่ | กระทบ admin operation และ audit |

@@ -21,7 +21,7 @@ Dashboard ใช้สำหรับภาพรวมและ queue ที่
 - Date range, filter, sort และ drill-down
 - CSV / Excel export ตาม permission
 - Background export job สำหรับข้อมูลขนาดใหญ่
-- Role-based visibility
+- policy-based visibility
 - Sensitive data masking
 - SLA reports สำหรับ moderation และ support
 - Delivery / trigger / operation metrics
@@ -44,35 +44,23 @@ Dashboard ใช้สำหรับภาพรวมและ queue ที่
 | Purpose | เห็นสถานะเร็วและกดไปจัดการงาน | วิเคราะห์เชิงลึกและ export |
 | Time sensitivity | Near real-time / operational | อาจ delay ได้แต่ต้องระบุ last updated |
 | UI | Metric cards, queues, activity feed | Report list, tables, charts, export |
-| Data scope | Summary เฉพาะที่ role เห็น | Detailed filtered dataset ตาม permission |
+| Data scope | Summary เฉพาะที่ admin access เห็น | Detailed filtered dataset ตาม permission |
 | Action | Drill-in ไป module | Export, save view, drill-down |
 
 Reports summary อาจมี delay ได้ แต่ต้องแสดง `Last updated` ชัดเจน
 
-## 4. Roles & Permissions
+## 4. Admin Access & Permissions
 
-| Report Area | Super Admin | Support Admin | Moderator | Content Admin | Market Admin |
-| --- | --- | --- | --- | --- | --- |
-| User Report | Full | Support-scoped | Limited reported-user context | No | No |
-| Asset Report | Full | View related to ticket | Moderation-scoped | No | Market aggregate only |
-| Offer Report | Full | Related to ticket/dispute | Moderation-scoped | No | No |
-| Chat Report | Full with export permission | Related to ticket/dispute | Reported chat only | No | No |
-| Content / Board Report | Full | No | Reported content only | Full | No |
-| Social Report | Full | Related to ticket | Moderation-scoped | No | Aggregate only |
-| Search Report | Full | No | No | No | Full aggregate |
-| Watch Alert Report | Full | Related user alerts | View aggregate | No | Full aggregate |
-| Support Report | Full | Full | No | No | No |
-| Notification Report | Full | Ticket-related delivery context | Moderation-related context | Content broadcast context | Watch alert/market context |
-| Account Deletion Report | Full | View / recheck summary | No | No | No |
-| Audit / Export History | Full | Own scoped exports | Own scoped exports | Own scoped exports | Own scoped exports |
+BO uses a single Admin account type only. Admin access is controlled by module access, action policy, sensitive-data policy, confirmation, reason, and audit requirements instead of separate BO admin account types.
 
-กฎหลัก:
 
-- Role ที่ไม่มีสิทธิ์ต้องไม่เห็น report นั้นในเมนู
-- Sensitive field ต้อง mask เป็น default
-- Export ข้อมูล sensitive ต้อง audit-log
-- Report screen ต้องไม่ bypass permission ของ module ต้นทาง
-
+| Access Area | Rule |
+| --- | --- |
+| Module access | Admin can use list/detail/search/filter when module access is granted. |
+| Write action | Create, update, status change, remove, restore, publish, archive, retry, and similar actions require permission check, confirmation for high-risk actions, reason when FO/user impact exists, and audit log. |
+| Sensitive data | Mask by default; reveal only with business reason, policy approval, and audit log. |
+| Export | Requires permission check, scope control, expiry/background job where needed, and audit export event. |
+| Direct URL/API | Enforce access at route, API, and service layers; never rely only on hidden UI. |
 ## 5. Responsive Layout
 
 | Breakpoint | Layout |
@@ -95,7 +83,7 @@ Reports summary อาจมี delay ได้ แต่ต้องแสด�
 | Sort | Table columns ที่เหมาะสม |
 | Columns | Column visibility ถ้า report มี field จำนวนมาก |
 | Refresh | Manual refresh พร้อม last updated |
-| Export | CSV / Excel ตาม permission |
+| Export | Requires permission check, scope control, expiry/background job where needed, and audit export event. |
 | Drill-down | เปิด module ต้นทางพร้อม filter |
 
 Timezone ต้องแสดงเป็น `Asia/Bangkok` และราคาแสดงเป็น THB
@@ -138,7 +126,7 @@ Filters:
 - Has report
 - Has support ticket
 
-Export sensitive fields เช่น email/phone ต้องจำกัดเฉพาะ Super Admin หรือ policy ที่อนุญาต
+Export sensitive fields เช่น email/phone ต้องจำกัดเฉพาะ Admin หรือ policy ที่อนุญาต
 
 ## 9. Asset Report
 
@@ -270,7 +258,7 @@ Filters:
 - Date range
 - User segment where allowed
 
-Search report ต้องช่วย Market Admin ตรวจ gap ของ brand/model/reference/price index ได้
+Search report ต้องช่วย Admin ตรวจ gap ของ brand/model/reference/price index ได้
 
 ## 15. Watch Alert Report
 
@@ -314,7 +302,7 @@ Filters:
 - Contact channel
 - Date range
 
-Internal notes ต้องไม่ export ใน report ทั่วไป เว้นแต่ Super Admin export แบบ sensitive พร้อม audit
+Internal notes ต้องไม่ export ใน report ทั่วไป เว้นแต่ Admin export แบบ sensitive พร้อม audit
 
 ## 17. Notification Report
 
@@ -357,7 +345,7 @@ Filters:
 - Grace period state
 - Date range
 
-Sensitive personal data ต้อง mask และ export จำกัดเฉพาะ Super Admin
+Sensitive personal data ต้อง mask และ export จำกัดเฉพาะ Admin
 
 ## 19. Export Requirements
 
@@ -365,9 +353,9 @@ Sensitive personal data ต้อง mask และ export จำกัดเฉ
 | --- | --- |
 | File types | CSV และ Excel |
 | Large export | ใช้ background job |
-| Export permission | ตรวจตาม role และ report scope |
+| Export permission | ตรวจตาม admin access และ report scope |
 | Sensitive export | ต้อง confirm, reason, audit และอาจต้อง mask/omit fields |
-| Export history | Admin ดู export ของตนเอง; Super Admin ดูทั้งหมด |
+| Export history | Admin ดู export ของตนเอง; Admin ดูทั้งหมด |
 | Expiry | Export file ควรมี expiry ตาม policy |
 | Re-run | Re-run ต้องสร้าง job ใหม่และ audit ใหม่ |
 
@@ -396,7 +384,7 @@ Audit payload:
 
 - `report_type`
 - `admin_id`
-- `role`
+- `Admin access`
 - `filters`
 - `date_range`
 - `export_format`
@@ -436,7 +424,7 @@ Audit payload:
 | ID | Criteria |
 | --- | --- |
 | AC-BO-REPORT-001 | Reports & Analytics มี report catalog ครบ 11 report หลักและ export history |
-| AC-BO-REPORT-002 | ทุก report รองรับ date range, filter, role visibility และ last updated |
+| AC-BO-REPORT-002 | ทุก report รองรับ date range, filter, access visibility และ last updated |
 | AC-BO-REPORT-003 | ทุก report ที่ export ได้ต้องรองรับ CSV และ Excel ตาม permission |
 | AC-BO-REPORT-004 | Large export ต้องใช้ background job และมี status tracking |
 | AC-BO-REPORT-005 | Sensitive report view/export ต้อง mask เป็น default และ audit-log |

@@ -9,7 +9,7 @@
 
 ## 1. วัตถุประสงค์
 
-BO Directory Module คือเครื่องมือสำหรับ Market Admin ใช้จัดการรายชื่อร้านค้าและบริการที่เกี่ยวข้องกับนาฬิกา เช่น ร้านนาฬิกา ร้านซ่อม ศูนย์รับฝากขาย ศูนย์ตรวจแท้ และบริการอื่นที่อาจแสดงใน FO Directory หรือเมนูที่เกี่ยวข้อง
+BO Directory Module คือเครื่องมือสำหรับ Admin ใช้จัดการรายชื่อร้านค้าและบริการที่เกี่ยวข้องกับนาฬิกา เช่น ร้านนาฬิกา ร้านซ่อม ศูนย์รับฝากขาย ศูนย์ตรวจแท้ และบริการอื่นที่อาจแสดงใน FO Directory หรือเมนูที่เกี่ยวข้อง
 
 ข้อควรระวัง: FO documents ปัจจุบันยังจัด Directory menu หลายรายการเป็น future/placeholder สำหรับ production V1 ดังนั้น BO ต้องรองรับข้อมูลและ publication control ไว้ก่อน แต่การเปิด FO route จริงต้องอิง Product decision
 
@@ -36,18 +36,18 @@ BO Directory Module คือเครื่องมือสำหรับ Ma
 - Public SEO web listing เว้นแต่มี decision เพิ่ม
 - เปิด FO Directory route อัตโนมัติ โดยไม่มี Product decision
 
-## 3. Roles And Permissions
+## 3. Admin Access And Permissions
 
-| Role | Permission |
+BO uses a single Admin account type only. Admin access is controlled by module access, action policy, sensitive-data policy, confirmation, reason, and audit requirements instead of separate BO admin account types.
+
+
+| Access Area | Rule |
 | --- | --- |
-| Super Admin | Full access, activate/inactivate, delete/restore, export |
-| Market Admin | Create/edit/activate/inactivate directory item และ category |
-| Support Admin | View directory item เพื่อช่วยตอบ support |
-| Moderator | View/report context ถ้ามีการ report directory ในอนาคต |
-| Content Admin | No default access unless permission added |
-
-ทุก write action ต้องมี permission check และ audit log
-
+| Module access | Admin can use list/detail/search/filter when module access is granted. |
+| Write action | Create, update, status change, remove, restore, publish, archive, retry, and similar actions require permission check, confirmation for high-risk actions, reason when FO/user impact exists, and audit log. |
+| Sensitive data | Mask by default; reveal only with business reason, policy approval, and audit log. |
+| Export | Requires permission check, scope control, expiry/background job where needed, and audit export event. |
+| Direct URL/API | Enforce access at route, API, and service layers; never rely only on hidden UI. |
 ## 4. Responsive Layout
 
 | Width | Requirement |
@@ -208,14 +208,14 @@ Warning บางรายการไม่จำเป็นต้อง block
 - Image upload/delete
 - Bulk update
 
-Audit event ต้องมี admin ID, role, target type, target ID, before/after value, reason ถ้ามี, timestamp และ session/IP context ถ้ามี
+Audit event ต้องมี admin ID, admin access, target type, target ID, before/after value, reason ถ้ามี, timestamp และ session/IP context ถ้ามี
 
 ## 15. Integration With Other Modules
 
 | Module | Integration |
 | --- | --- |
 | Asset Management | Consignment center อาจใช้ FK ไป Directory item ในอนาคต |
-| Market Data | Market Admin ownership และ shared data quality patterns |
+| Market Data | Admin ownership และ shared data quality patterns |
 | Dashboard | Directory activated/inactivated activity และ data quality warnings |
 | Audit Log | ทุก mutation ต้อง searchable |
 | Reports | Export directory list และ status summary |
@@ -225,7 +225,7 @@ Audit event ต้องมี admin ID, role, target type, target ID, before/af
 
 | ID | Criteria |
 | --- | --- |
-| AC-BO-DIR-001 | Market Admin สร้าง แก้ไข activate/inactivate/archive directory item ได้ตาม permission |
+| AC-BO-DIR-001 | Admin สร้าง แก้ไข activate/inactivate/archive directory item ได้ตาม permission |
 | AC-BO-DIR-002 | Directory item รองรับ category, contact, social, image, map, opening hours และ tags |
 | AC-BO-DIR-003 | Active item แสดงใน FO เฉพาะเมื่อ FO Directory route/scope เปิดใช้งาน |
 | AC-BO-DIR-004 | Inactive/Archived item ต้องไม่แสดงใน FO surfaces |

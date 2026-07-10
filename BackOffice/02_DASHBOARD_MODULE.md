@@ -36,7 +36,7 @@ Dashboard ต้องช่วยให้ Admin เห็นภาพรวม
 - Operational alerts
 - Recent activity feed
 - Date range filter
-- Role-based dashboard view
+- policy-based dashboard view
 - Responsive dashboard layout
 - Drill-in links ไป module ที่เกี่ยวข้อง
 - Empty/loading/error states
@@ -51,14 +51,11 @@ Dashboard ต้องช่วยให้ Admin เห็นภาพรวม
 
 # 4. Dashboard Users
 
-| Role | Dashboard Focus |
-| --- | --- |
-| Super Admin | System overview, pending reports, user/asset activity, audit/security signal, all queues |
-| Content Admin | Article status, scheduled/published content, Board analytics, banner status |
-| Moderator | Pending reports, flagged assets/comments/chats, SLA risk |
-| Support Admin | Open tickets, waiting user, account issues, deletion requests |
-| Market Admin | Brand/model/price index changes, directory status, watch alert/search signal |
+Dashboard is used by the single BO account type `Admin`. The dashboard must not expose a admin access switcher or separate admin views.
 
+| Admin Account Type | Dashboard Focus |
+| --- | --- |
+| Admin | System overview, pending queues, activity, support, content, market, notification, report, audit, and security signals according to module/action policy. |
 # 5. Responsive Layout
 
 | Breakpoint | Layout |
@@ -81,26 +78,26 @@ Dashboard ต้องช่วยให้ Admin เห็นภาพรวม
 | --- | --- |
 | Date Range | Today, 7 days, 30 days, Custom |
 | Refresh | Manual refresh พร้อม last updated timestamp |
-| Role View | แสดงเฉพาะ metric/queue ที่ role มีสิทธิ์ |
+| Admin View | Product capability สำหรับ policy-based visibility; current prototype ใช้ admin access เดียว `Admin` และไม่แสดง admin access switcher |
 | Drill-in | Metric/queue card ต้องคลิกไป module ที่เกี่ยวข้องพร้อม filter ที่เหมาะสม |
-| Export | Dashboard overview export เฉพาะ role ที่มีสิทธิ์ และต้อง audit-log เมื่อ export sensitive data |
+| Export | Requires permission check, scope control, expiry/background job where needed, and audit export event. |
 
 Default date range: `Today` สำหรับ operational queue และ `7 days` สำหรับ trend metric ที่ต้องเห็นแนวโน้ม
 
 # 7. Metric Cards
 
-| Metric | Description | Drill-in | Role Visibility | Phase |
+| Metric | Description | Drill-in | access visibility | Phase |
 | --- | --- | --- | --- | --- |
-| New Users | จำนวน user ใหม่ตาม date range | User Management filtered by joined date | Super Admin, Support Admin | 1 |
-| DAU / MAU | Active users daily/monthly | Reports / User Report | Super Admin | 2 |
-| New Assets | จำนวน asset ใหม่แยก Sale / Show / Hide / Sold | Asset Management filtered by created date/status | Super Admin, Moderator | 1 |
-| Pending Reports | จำนวน report ที่ยังรอ review | Moderation queue / Asset/User/Comment report filters | Super Admin, Moderator | 1/2 |
-| Flagged Assets | Asset ที่ถูก flag หรือรอ moderation | Asset Management filtered flagged | Super Admin, Moderator | 1 |
-| Published Articles | Article published/scheduled/archived ตาม date range | Content / Board Management | Super Admin, Content Admin | 1 |
-| Active Watch Alerts | จำนวน watch alert active | Watch Alert Management | Super Admin, Market Admin | 2 |
-| Open Support Tickets | Ticket ที่ยัง open/in progress/waiting user | Help & Support | Super Admin, Support Admin | 2 |
-| Offer Activity | Offer made/accepted/rejected/expired | `09_OFFER_CHAT_MODULE.md` | Super Admin, Moderator | 2 |
-| Notification Delivery | Sent/delivered/opened/failed | Notifications | Super Admin | 2 |
+| New Users | จำนวน user ใหม่ตาม date range | User Management filtered by joined date | Admin | 1 |
+| DAU / MAU | Active users daily/monthly | Reports / User Report | Admin | 2 |
+| New Assets | จำนวน asset ใหม่แยก Sale / Show / Hide / Sold | Asset Management filtered by created date/status | Admin | 1 |
+| Pending Reports | จำนวน report ที่ยังรอ review | Moderation queue / Asset/User/Comment report filters | Admin | 1/2 |
+| Flagged Assets | Asset ที่ถูก flag หรือรอ moderation | Asset Management filtered flagged | Admin | 1 |
+| Published Articles | Article published/scheduled/archived ตาม date range | Content / Board Management | Admin | 1 |
+| Active Watch Alerts | จำนวน watch alert active | Watch Alert Management | Admin | 2 |
+| Open Support Tickets | Ticket ที่ยัง open/in progress/waiting user | Help & Support | Admin | 2 |
+| Offer Activity | Offer made/accepted/rejected/expired | `09_OFFER_CHAT_MODULE.md` | Admin | 2 |
+| Notification Delivery | Sent/delivered/opened/failed | Notifications | Admin | 2 |
 
 # 8. Pending Queue Summary
 
@@ -140,7 +137,7 @@ Activity feed แสดงเหตุการณ์ล่าสุดของ
 - Article published/scheduled/archived
 - Brand/model/price index updated
 - Directory item activated/inactivated
-- Admin login/security event เฉพาะ Super Admin
+- Admin login/security event เฉพาะ Admin
 - Admin action ที่เป็น public-impact
 
 Fields:
@@ -154,22 +151,16 @@ Fields:
 | Summary | ข้อความสั้น อธิบาย event |
 | Link | ไป detail หรือ audit record ตาม permission |
 
-# 10. Role-Based Dashboard Rules
+# 10. Admin Dashboard Access Rules
 
-| Role | Visible Sections |
-| --- | --- |
-| Super Admin | ทุก metric/queue/activity รวม security/audit signal |
-| Content Admin | Content/Board metrics, scheduled articles, article activity, banner status |
-| Moderator | Pending reports, flagged assets, reported comments/chats, moderation activity |
-| Support Admin | Open tickets, user support signals, account deletion requests, user login history shortcut |
-| Market Admin | Brand/model/price index activity, directory status, watch alert aggregate/search signal |
+Dashboard visibility is policy-based, not Admin access-based. The current BO baseline has one `Admin` account type and no View-as control.
 
-กฎ:
+Rules:
 
-- Metric ที่ role ไม่มีสิทธิ์ต้องไม่แสดง
-- Drill-in ต้องไม่พาไปหน้า unauthorized
-- ถ้า role ไม่มี queue ใด ๆ ให้แสดง empty state ที่เหมาะสม ไม่ใช่หน้าโล่ง
-
+- Show dashboard cards by module/action policy and data sensitivity.
+- Hide or mask sensitive values when policy does not allow full detail.
+- Direct drill-in links must enforce access again at the destination module/API.
+- If no queue is available for a policy scope, show a useful empty state rather than a blank panel.
 # 11. Dashboard Data Freshness
 
 | Data Type | Freshness Expectation |
@@ -223,16 +214,16 @@ Dashboard ต้อง reflect integration map หลัก:
 
 | ID | Criteria |
 | --- | --- |
-| AC-BO-DASH-001 | Dashboard แสดง overview metric และ pending queue ตาม role permission |
+| AC-BO-DASH-001 | Dashboard แสดง overview metric และ pending queue ตาม Admin Permission |
 | AC-BO-DASH-002 | Dashboard responsive ใช้งานได้ที่ 375px, 768px, 1280px และ 1440px |
 | AC-BO-DASH-003 | Metric/queue card ที่คลิกได้ต้องพาไป module ที่เกี่ยวข้องพร้อม filter ที่เหมาะสม |
 | AC-BO-DASH-004 | Pending report queue ต้องรองรับ SLA 24 ชั่วโมง |
 | AC-BO-DASH-005 | Support ticket queue ต้องรองรับ first response target 8 ชั่วโมงเมื่อ Phase 2 เปิดใช้ |
-| AC-BO-DASH-006 | Role ที่ไม่มีสิทธิ์ต้องไม่เห็น metric หรือ queue ของ module นั้น |
+| AC-BO-DASH-006 | Admin access ที่ไม่มีสิทธิ์ต้องไม่เห็น metric หรือ queue ของ module นั้น |
 | AC-BO-DASH-007 | Dashboard แสดง last updated timestamp |
 | AC-BO-DASH-008 | Partial data failure ต้องไม่ทำให้ทั้ง dashboard ใช้งานไม่ได้ |
 | AC-BO-DASH-009 | Activity feed แสดง event สำคัญและ link ไป detail/audit ตาม permission |
-| AC-BO-DASH-010 | Dashboard ไม่แสดง sensitive data ให้ role ที่ไม่มีสิทธิ์ |
+| AC-BO-DASH-010 | Dashboard ไม่แสดง sensitive data ให้ admin access ที่ไม่มีสิทธิ์ |
 
 # 16. Related Modules
 
@@ -248,3 +239,198 @@ Dashboard ต้อง reflect integration map หลัก:
 - `12_HELP_SUPPORT_MODULE.md`
 - `14_NOTIFICATIONS_MODULE.md`
 - `15_REPORTS_ANALYTICS_MODULE.md`
+
+# 17. Prototype Alignment Notes
+
+These notes capture confirmed UX decisions from the BO prototype review and must be kept in sync with `Prototypes/bo-prototype.html`.
+
+## 17.1 Admin Access Simplification
+
+- Current prototype uses a single `Admin` admin access for the main Back Office flow.
+- The previous admin access selector / View as control is removed from the header to keep the screen clean.
+- policy-based visibility remains documented as a product capability, but the current prototype does not expose separate Admin Views.
+
+## 17.2 Dashboard KPI Cards
+
+Current primary Dashboard KPI cards are:
+
+| Card | Purpose | Drill-in |
+| --- | --- | --- |
+| New Users | New user registrations by selected date range and signup channel | User Management |
+| New Assets | New or updated assets by Sale / Show / Hide / Sold | Asset Management |
+| Pending Reports | User reports waiting for admin/moderation review, including deadline risk | Asset / report queue |
+| Offer Activity | Offer movement by accepted / rejected / pending or expired status | Offer / Chat |
+| Articles | Published or scheduled Board content | Content Management |
+| Watch Alert | Active watch alert volume and matching signal | Watch Alert / Market signal |
+| Support Cases | Open support cases and first-response deadline risk | Help & Support |
+
+Card detail text should be shown as short chips/labels, not as one long sentence. Example:
+
+| รายการ | จำนวนรายการ | การเปลี่ยนแปลง | รายละเอียด |
+| --- | --- | --- | --- |
+| New Users | 128 | เพิ่มขึ้น 8.2% จากช่วงก่อนหน้า | Email 68 ราย / Google 37 ราย / Apple 23 ราย |
+
+KPI card trend copy must be a complete phrase. Do not show shorthand values that force the user to infer the meaning.
+
+| Avoid | Use |
+| --- | --- |
+| `+8.2%` | `เพิ่มขึ้น 8.2% จากช่วงก่อนหน้า` |
+| `+340` | `เพิ่มขึ้น 340 รายการจากช่วงก่อนหน้า` |
+| `9 ใกล้ครบกำหนด` | `มี 9 รายงานใกล้ครบกำหนด` |
+| `+4 รอเผยแพร่` | `มี 4 บทความรอเผยแพร่` |
+
+UI copy rule:
+
+- Do not show the technical term `SLA` in Dashboard cards, queue labels, notification popup copy, or export section titles.
+- Use user-friendly wording instead:
+  - `ใกล้ครบกำหนด`
+  - `ครบกำหนดตอบ`
+  - `กำหนดตอบครั้งแรก`
+  - `ติดตามกำหนดงาน`
+- The technical term `SLA` can remain in internal requirement notes, implementation comments, and backend/report field naming where needed.
+
+## 17.3 Notification Delivery Placement
+
+- `Notification Delivery` is not shown as a primary KPI card in the current prototype.
+- It is not duplicated as an `Admin Overview` row on Dashboard.
+- Notification health remains available via the Notifications module, Recent Activity when there is a meaningful event, and export/report contexts where relevant.
+
+## 17.3.1 Dashboard Status Panels
+
+Bottom Dashboard panels must remain operational and clickable:
+
+| Panel | Purpose | Interaction |
+| --- | --- | --- |
+| Asset Status | Show asset status distribution for the selected range with clear status meaning | Each row opens Asset Management |
+| Offer Status | Show offer status distribution for the selected range with clear status meaning | Each row opens Offer / Chat |
+
+Copy rules:
+
+- Do not show `Admin Overview` on Dashboard because it duplicates information already covered by KPI cards, Work Queue, Recent Activity, Refresh, and Export.
+- Do not use prototype-only copy such as `Back Office prototype` or `Next action`.
+- Keep panel titles in English to match Dashboard section titles.
+- Use Thai descriptions for operational meaning and next action.
+- Avoid unexplained abbreviations and raw backend labels.
+
+## 17.4 Dashboard Export
+
+- Dashboard export downloads an Excel-readable `.xls` file generated from the prototype.
+- The exported file is formatted as separate tables with borders, section headers, and grouped detail rows for readability.
+- Exported Dashboard sections currently include:
+  - Dashboard summary
+  - KPI cards / primary metrics
+  - Work queue and deadline items
+  - Offer status
+
+## 17.5 Work Queue Copy And Display
+
+Work Queue cards should be written for operational action, not as raw system labels.
+
+Current prototype queue labels:
+
+| Queue Card | Meaning |
+| --- | --- |
+| รายงานสินทรัพย์ | Asset reports submitted from FO and waiting for review |
+| รายงานผู้ใช้ | User/profile reports submitted from FO and waiting for review |
+| สินทรัพย์ที่ต้องตรวจเพิ่ม | Assets marked by system/admin/report and waiting for additional review |
+| บทความรอเผยแพร่ | Scheduled Board content that needs final monitoring |
+| ข้อมูลตลาดรอตรวจ | Brand/model/price/directory data waiting for admin review |
+| งานช่วยเหลือที่เปิดอยู่ | Support cases that are open/in progress/waiting user |
+| คำขอลบบัญชี | Account deletion requests, including blocked requests |
+| แจ้งเตือนส่งไม่สำเร็จ | Failed notification jobs that may need retry or cleanup |
+
+Queue copy rule:
+
+- Do not use raw labels like `Reported Assets`, `Open Tickets`, `Oldest 22h`, or `blocked by pending offer` in the UI.
+- Do not use `flag` as the primary UI label. Use `ต้องตรวจเพิ่ม` or a clearer reason-based label instead.
+- Each queue detail should explain:
+  - what the queue is,
+  - why it needs attention,
+  - whether anything is close to the response deadline,
+  - what admin should prioritize.
+- Queue detail should be displayed as short chips/labels, similar to KPI cards.
+- Current prototype displays Work Queue as an Action Center style list, not grid cards:
+  - left priority color bar,
+  - queue title,
+  - concise Thai detail,
+  - count on the right,
+  - chevron to indicate click-through.
+- Queue ordering must match the UI copy:
+  1. Items close to deadline first.
+  2. Within the same urgency level, sort by user impact / operational priority.
+  3. Current priority order: รายงานสินทรัพย์, รายงานผู้ใช้, งานช่วยเหลือที่เปิดอยู่, คำขอลบบัญชี, สินทรัพย์ที่ต้องตรวจเพิ่ม, บทความรอเผยแพร่, ข้อมูลตลาดรอตรวจ, แจ้งเตือนส่งไม่สำเร็จ.
+
+Examples:
+
+| Avoid | Use |
+| --- | --- |
+| `Oldest 22h · fake photo, duplicate listing` | `รายการเก่าสุดรอตรวจ 22 ชม. / เหตุผลหลัก: รูปซ้ำ/ข้อมูลประกาศซ้ำ / ควรตรวจวันนี้` |
+| `3 near 8h first response` | `มี 3 เคสใกล้ครบกำหนดตอบครั้งแรก 8 ชม. / ควรตอบเคสเร่งด่วนก่อน` |
+| `2 blocked by pending offer` | `มี 2 คำขอที่ยังลบไม่ได้ เพราะมีข้อเสนอซื้อค้างอยู่` |
+
+## 17.6 Typography
+
+- Current BO prototype uses bundled local fonts from `Prototypes/assets/fonts/google`.
+- Primary body/UI font: `IBM Plex Sans Thai Local`.
+- Heading font: `Bebas Neue Local` for page titles, section titles, and KPI labels.
+- Bundled IBM Plex Sans Thai weights: Regular 400, Medium 500, SemiBold 600, Bold 700.
+- Bundled Bebas Neue weight: Regular 400.
+- Fallback stack remains `IBM Plex Sans Thai`, `Segoe UI`, `Tahoma`, `Arial`, `sans-serif` if bundled files cannot be loaded.
+- Exported Excel-readable `.xls` files use IBM Plex Sans Thai family naming; final rendering can still depend on the spreadsheet app's font support.
+- Font source: Google Fonts packages for IBM Plex Sans Thai and Bebas Neue.
+
+## 17.7 Recent Activity Feed Copy And Behavior
+
+Recent Activity Feed in the prototype is displayed as `Recent Activity` to match other English dashboard section titles.
+
+Purpose:
+
+- Show the latest operational events that may require admin awareness or follow-up.
+- Do not duplicate KPI card counts unless the event represents a meaningful change or action.
+- Keep security/audit events visible only when relevant, and do not let them dominate operational events.
+- The card header should stay clean. Do not show helper copy such as `รายการเหตุการณ์สำคัญที่เพิ่งเกิดขึ้น พร้อมลิงก์ไปจัดการต่อ` or prototype badges such as `เปิดรายละเอียดได้`.
+
+Each activity item must include:
+
+| Field | Prototype Display |
+| --- | --- |
+| Event type | Clear Thai label, for example `มีรายงานสินทรัพย์ใหม่` |
+| Summary | One-sentence explanation of what happened and which entity is affected |
+| Timestamp | Relative time in Thai, for example `15 นาทีที่แล้ว` |
+| Next action / impact | What admin should check next |
+| Linked module | The Back Office screen that should open from the activity |
+
+Copy rules:
+
+- Do not use raw event labels such as `Report submitted`, `Offer status changed`, `Security event`, or `Delivery health` in the UI.
+- Do not show random audit IDs in the prototype. If audit linkage is needed, show the linked module/action instead.
+- Use explicit words: `ข้อเสนอซื้อถูกปฏิเสธ`, `ตั้งเวลาเผยแพร่บทความแล้ว`, `ข้อมูลตลาดอัปเดตแล้ว`.
+- Avoid unexplained abbreviations in the activity card. If an operational term is required, explain it in the summary or next action.
+
+Interaction rules:
+
+- The activity card uses a compact table-like list, not oversized timeline cards. Each row shows left accent, event title, one-line summary, relative time, and a chevron.
+- Activity filters must be clickable and functional: `ทั้งหมด`, `Report`, `Offer`, `Content`, `System`.
+- Filter categories are based on linked modules. Asset/user report events map to `Report`; offer events map to `Offer`; content publishing maps to `Content`; watch alert, market data, notification, and audit/system events map to `System`.
+- Clicking an activity opens a compact modal with event summary, next action, timestamp, event type, and linked module.
+- The modal primary close action uses the standard `ตกลง` button.
+- The detail action should use a formal, explicit label such as `เปิดหน้าที่เกี่ยวข้อง` and must navigate to the related module, not a fixed generic report page.
+- Do not show prototype/status badges such as `linked`, `ติดตามต่อ`, or random audit IDs in the activity detail modal.
+
+## 17.8 Dashboard Card Visual Style
+
+Dashboard follows a control-center layout inspired by the referenced Prakan Go dashboard, while keeping Tuk Daeng colors and BO requirements.
+
+- Shell layout uses a dark navy sidebar, white topbar, light blue-gray workspace background, and Tuk Daeng red for active/accent states.
+- Sidebar uses the referenced menu pattern: compact logo block, section labels, line icons, and chevrons only on expandable menu groups.
+- Admin profile belongs in the sidebar footer under the icon-based logout row, not in the header, to avoid duplicate identity display.
+- Topbar includes breadcrumb only in the current Dashboard prototype to keep the page focused.
+- Current Dashboard topbar does not show global search or notification popup because Dashboard already focuses on overview, queue, activity, date range, refresh, and export. Add search or header notification only when cross-module behavior is defined.
+- Notifications remain available from the sidebar `Notifications` module instead of a header popup.
+- Page title uses a left vertical accent bar and a thin horizontal divider instead of a heavy framed header card.
+- Dashboard header should not show summary tags for reports/offers/urgent work because the same information is already represented in KPI cards and queue details.
+- KPI cards use a left accent border, compact icon tile, clear label, large value, trend phrase, and detail chips.
+- Dashboard panels use a separated header row and padded body, similar to table/action-center cards.
+- Card corners and shadows should be light, not oversized or decorative.
+- Accent colors are used for grouping and priority only; they must not replace real status text.
+- The visual style must not remove required Dashboard data, links, queue priority, or activity modal behavior.

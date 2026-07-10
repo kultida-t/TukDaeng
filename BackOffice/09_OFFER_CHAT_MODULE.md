@@ -20,8 +20,8 @@ BO Offer / Chat Module คือหน้าจอสำหรับทีม Ad
 - Offer list พร้อม search, filter, sort, pagination และ export ตาม permission
 - Offer detail พร้อม asset summary, buyer/owner summary, status timeline, related chat และ notification delivery
 - Offer lifecycle status review: `Pending`, `Accepted`, `Rejected`, `Cancelled`, `Expired`, `Invalidated`
-- Force expire offer สำหรับ Super Admin
-- Mark invalidated สำหรับ system/Super Admin เมื่อ asset หรือ user state ทำให้ offer ใช้งานต่อไม่ได้
+- Force expire offer สำหรับ Admin
+- Mark invalidated สำหรับ system/Admin เมื่อ asset หรือ user state ทำให้ offer ใช้งานต่อไม่ได้
 - Chat room list และ chat detail สำหรับ review/report/support
 - Reported chat handling และ message moderation ตาม policy
 - Attachment/file scan status และ unsafe attachment handling
@@ -56,18 +56,18 @@ Offer action/copy ต้องแยกจาก status:
 
 เอกสาร legacy ที่ยังมีคำเก่าให้ถือเป็น historical source เท่านั้น ห้ามสร้าง enum ใหม่ซ้ำกับ canonical term
 
-## 4. Roles And Permissions
+## 4. Admin Access And Permissions
 
-| Role | Permission |
+BO uses a single Admin account type only. Admin access is controlled by module access, action policy, sensitive-data policy, confirmation, reason, and audit requirements instead of separate BO admin account types.
+
+
+| Access Area | Rule |
 | --- | --- |
-| Super Admin | ดู offer/chat ครบ, force expire, mark invalidated, hide/remove message ตาม policy, export conversation/offer history, reveal sensitive context |
-| Moderator | ดู reported chat, review message/attachment, hide/remove policy-violating message ตาม permission, resolve report |
-| Support Admin | ดู offer/chat context เพื่อช่วย ticket/dispute, ดูข้อมูลเท่าที่จำเป็น, export ไม่ได้เว้นแต่ได้รับ permission |
-| Market Admin | ดู offer/asset market context แบบ read-only เมื่อเกี่ยวกับ price/brand/model data |
-| Content Admin | ไม่มี permission หลักใน module นี้ เว้นแต่ได้รับ permission เฉพาะ |
-
-ทุก write action ต้องตรวจ permission ที่ UI, route/API และ service layer
-
+| Module access | Admin can use list/detail/search/filter when module access is granted. |
+| Write action | Create, update, status change, remove, restore, publish, archive, retry, and similar actions require permission check, confirmation for high-risk actions, reason when FO/user impact exists, and audit log. |
+| Sensitive data | Mask by default; reveal only with business reason, policy approval, and audit log. |
+| Export | Requires permission check, scope control, expiry/background job where needed, and audit export event. |
+| Direct URL/API | Enforce access at route, API, and service layers; never rely only on hidden UI. |
 ## 5. Responsive Layout
 
 | Width | Layout Requirement |
@@ -157,7 +157,7 @@ FO สร้าง offer ได้จาก Asset Detail เท่านั้�
 | User creates offer | สร้าง offer record, status `Pending`, ผูก asset/buyer/owner/chat context | แสดง pending offer และ offer card ใน chat ตาม FO rule |
 | Owner accepts offer | บันทึก status `Accepted`, timeline, notification delivery | Buyer ได้ notification เปิด Chat Room |
 | Owner declines offer | บันทึก status `Rejected`, timeline, notification delivery | Buyer ได้ notification เปิด Asset Detail; incoming pending หาย |
-| Super Admin force expires offer | เปลี่ยนเป็น `Expired`, reason required, audit | Offer accept/decline ไม่ได้และออกจาก active pending flow |
+| Admin force expires offer | เปลี่ยนเป็น `Expired`, reason required, audit | Offer accept/decline ไม่ได้และออกจาก active pending flow |
 | Asset removed/sold while pending | เปลี่ยน impacted offers เป็น `Invalidated` ตาม system policy | FO แสดง unavailable/invalidated และไม่ให้ action ต่อ |
 | User/account state blocks transaction | เปลี่ยนหรือ block offer ตาม policy พร้อม reason | FO ต้องไม่เปิด action ที่ทำไม่ได้ |
 
@@ -188,12 +188,12 @@ Admin ห้ามแก้ offer price, buyer, owner หรือ message conte
 
 | Action | Allowed Roles | Requirement |
 | --- | --- | --- |
-| View offer | Super Admin, Moderator, Support Admin | Module permission required |
-| View related chat | Super Admin, Moderator, Support Admin | ต้อง respect privacy/sensitive masking |
-| Force expire offer | Super Admin | Confirmation, reason, status timeline, audit |
-| Mark invalidated | System, Super Admin | Reason, impacted asset/user reference, audit |
-| Export offer history | Super Admin | Audit export event และ controlled access |
-| View notification delivery | Super Admin, Support Admin | Read-only; retry อยู่ใน Notification module |
+| View offer | Admin | Module permission required |
+| View related chat | Admin | ต้อง respect privacy/sensitive masking |
+| Force expire offer | Admin | Confirmation, reason, status timeline, audit |
+| Mark invalidated | System, Admin | Reason, impacted asset/user reference, audit |
+| Export offer history | Admin | Audit export event และ controlled access |
+| View notification delivery | Admin | Read-only; retry อยู่ใน Notification module |
 
 Bulk action สำหรับ offer ต้องจำกัดมาก เพราะอาจกระทบ FO pending flow หลายรายการพร้อมกัน ค่าเริ่มต้นให้ไม่เปิด bulk force expire/invalidate จนกว่าจะมี approval flow ชัดเจน
 
@@ -218,7 +218,7 @@ Chat room list ต้องแสดงข้อมูลขั้นต่ำ:
 - Chat Room ID
 - User ID / username / display name
 - Asset ID / asset name
-- Keyword เฉพาะ role ที่มี permission และตาม privacy policy
+- Keyword เฉพาะ admin access ที่มี permission และตาม privacy policy
 
 Filter ขั้นต่ำ:
 
@@ -256,7 +256,7 @@ FO chat rules ที่ BO ต้องเคารพ:
 
 - Report ต้องเข้า BO moderation queue
 - Chat/message ไม่ควรถูกลบทันที เว้นแต่มี policy/system rule ชัดเจน
-- Moderator ต้องเห็น context เพียงพอ: reporter, reported user, related asset, messages around report, attachments, previous reports
+- Admin ต้องเห็น context เพียงพอ: reporter, reported user, related asset, messages around report, attachments, previous reports
 - ผลการ review ต้องมี status, reason, admin actor และ audit
 
 ผลลัพธ์ที่เป็นไปได้:
@@ -264,7 +264,7 @@ FO chat rules ที่ BO ต้องเคารพ:
 - Resolve / no action
 - Hide/remove policy-violating message
 - Restrict attachment access
-- Escalate to Support/Super Admin
+- Escalate to Support/Admin
 - Suspend/ban user ผ่าน User Management เมื่อเข้าเกณฑ์
 
 ## 14. Message And Attachment Moderation
@@ -327,7 +327,7 @@ Audit action ขั้นต่ำ:
 ทุก event ต้องมี:
 
 - Admin ID
-- Admin role
+- Admin Access
 - Action type
 - Target entity type และ ID
 - Before value
@@ -368,7 +368,7 @@ Audit action ขั้นต่ำ:
 | --- | --- |
 | AC-BO-OFFER-001 | Offer list แสดง search/filter/status ครบและใช้ `Rejected` ไม่ใช้ `Declined` ใน UI ใหม่ |
 | AC-BO-OFFER-002 | Offer detail แสดง asset, buyer, owner, timeline, related chat และ notification delivery ครบ |
-| AC-BO-OFFER-003 | Super Admin force expire ได้โดยมี confirmation, reason และ audit |
+| AC-BO-OFFER-003 | Admin force expire ได้โดยมี confirmation, reason และ audit |
 | AC-BO-OFFER-004 | Asset removed/sold ขณะมี pending offer ต้อง map เป็น `Invalidated` หรือ policy state ที่ระบุชัด และ FO active pending flow ต้องหยุด |
 | AC-BO-OFFER-005 | Chat list/detail รองรับ reported chat, attachment scan status และ related offer/asset context |
 | AC-BO-OFFER-006 | Admin ไม่สามารถ edit user message หรือ offer price โดยตรง |
@@ -384,4 +384,4 @@ Audit action ขั้นต่ำ:
 | BO-OFFER-DEC-001 | Chat/offer retention period | ต้องสรุปร่วมกับ legal/compliance ก่อน build Phase 2 |
 | BO-OFFER-DEC-002 | Pending offer เมื่อ asset sold โดย owner ใช้ `Rejected` auto หรือ `Invalidated` | ใช้ `Invalidated` สำหรับ system-caused state; ถ้า owner reject เองใช้ `Rejected` |
 | BO-OFFER-DEC-003 | จะเปิด FO-visible notification สำหรับ `Expired`/`Invalidated` หรือไม่ | ให้ Notification module กำหนด template/destination เพิ่มก่อนเปิด |
-| BO-OFFER-DEC-004 | Keyword search ใน chat transcript เปิดให้ role ใด | เริ่มจาก Super Admin/Moderator เฉพาะ reported/dispute context |
+| BO-OFFER-DEC-004 | Keyword search ใน chat transcript เปิดให้ admin access ใด | เริ่มจาก Admin เฉพาะ reported/dispute context |

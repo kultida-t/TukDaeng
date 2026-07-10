@@ -70,11 +70,11 @@ const ASSET_STATUS_BREAKDOWN = [
 ];
 
 const AUDIT_LOGS = [
-  { id:"AL001", admin:"superadmin",   role:"Super Admin",    action:"Suspend User",     entity:"User / U003",  time:"10m ago" },
-  { id:"AL002", admin:"content.admin",role:"Content Admin",  action:"Publish Article",  entity:"Article / AR004", time:"1h ago" },
-  { id:"AL003", admin:"moderator1",   role:"Moderator",      action:"Flag Asset",       entity:"Asset / A002", time:"2h ago" },
-  { id:"AL004", admin:"superadmin",   role:"Super Admin",    action:"Update Price Index",entity:"Model / Nautilus", time:"3h ago" },
-  { id:"AL005", admin:"market.admin", role:"Market Admin",   action:"Add Watch Brand",  entity:"Brand / Zenith", time:"5h ago" },
+  { id:"AL001", admin:"superadmin",   Admin access:"Admin",    action:"Suspend User",     entity:"User / U003",  time:"10m ago" },
+  { id:"AL002", admin:"content.admin",Admin access:"Admin",  action:"Publish Article",  entity:"Article / AR004", time:"1h ago" },
+  { id:"AL003", admin:"Admin1",   Admin access:"Admin",      action:"Flag Asset",       entity:"Asset / A002", time:"2h ago" },
+  { id:"AL004", admin:"superadmin",   Admin access:"Admin",    action:"Update Price Index",entity:"Model / Nautilus", time:"3h ago" },
+  { id:"AL005", admin:"market.admin", admin access:"Admin",   action:"Add Watch Brand",  entity:"Brand / Zenith", time:"5h ago" },
 ];
 
 // ── Shared UI ──────────────────────────────────────────────
@@ -105,6 +105,26 @@ function Badge({ children }) {
     <span style={{ background:s.bg, color:s.fg, padding:"2px 8px", borderRadius:4, fontSize:11, fontWeight:600, letterSpacing:"0.03em", whiteSpace:"nowrap" }}>
       {children}
     </span>
+  );
+}
+
+function UserAvatar({ user, size = 34 }) {
+  const src = `https://i.pravatar.cc/${size * 2}?u=${encodeURIComponent(user.id)}`;
+  return (
+    <img
+      src={src}
+      alt={`${user.name} display image`}
+      referrerPolicy="no-referrer"
+      style={{
+        width: size,
+        height: size,
+        borderRadius: "50%",
+        objectFit: "cover",
+        flexShrink: 0,
+        border: `1px solid ${C.border}`,
+        background: "#1f2937",
+      }}
+    />
   );
 }
 
@@ -298,7 +318,7 @@ function UsersPage() {
   return (
     <div>
       <PageHeader title="User Management"
-        subtitle={`${USERS.length} total users — ทุก User มี Role เดียวกัน (ไม่แบ่ง Buyer/Seller)`}
+        subtitle={`${USERS.length} total users — ทุก User เป็น account type เดียวกัน (ไม่แบ่ง Buyer/Seller)`}
         actions={<button style={{ ...btnStyle(C.accent,"#fff"), padding:"8px 16px", fontSize:13 }}>+ Invite Admin</button>}
       />
 
@@ -323,7 +343,12 @@ function UsersPage() {
         <Table
           columns={[
             { key:"id",         label:"User ID" },
-            { key:"name",       label:"Username" },
+            { key:"name",       label:"Username", render:(v,row)=>
+              <div style={{ display:"flex", alignItems:"center", gap:10 }}>
+                <UserAvatar user={row} />
+                <span>{v}</span>
+              </div>
+            },
             { key:"email",      label:"Email" },
             { key:"authMethod", label:"Auth Method", render:v=><Badge>{v}</Badge> },
             { key:"phone",      label:"Phone" },
@@ -546,7 +571,7 @@ function ArticlesPage() {
 
   return (
     <div>
-      <PageHeader title="Articles" subtitle="Content ที่แสดงบนหน้า Board ใน FO — Admin เท่านั้นที่สร้างได้"
+      <PageHeader title="Articles" subtitle="Content ที่แสดงบนหน้า Board ใน FO - Admin access required"
         actions={<button onClick={()=>setShowEditor(true)} style={{ ...btnStyle(C.accent,"#fff"), padding:"8px 16px", fontSize:13, borderRadius:6 }}>+ New Article</button>}
       />
       <div style={{ display:"flex", gap:8, marginBottom:16, flexWrap:"wrap" }}>
@@ -962,11 +987,11 @@ function ReportsPage() {
 function AuditLogPage() {
   return (
     <div>
-      <PageHeader title="Audit Log" subtitle="บันทึกทุก Action ของ Admin — Super Admin เท่านั้นที่เข้าถึงได้"
+      <PageHeader title="Audit Log" subtitle="บันทึกทุก Action ของ Admin - access policy required"
         actions={<button style={{ ...btnStyle("#1a3322","#4ade80"), padding:"8px 14px", fontSize:13 }}>Export CSV</button>}
       />
       <FilterBar>
-        <Select><option>All Roles</option><option>Super Admin</option><option>Content Admin</option><option>Moderator</option><option>Support Admin</option><option>Market Admin</option></Select>
+        <Select><option>All Admin Actions</option><option>Admin</option><option>Admin</option><option>Admin</option><option>Admin</option><option>Admin</option></Select>
         <Select><option>All Actions</option><option>Create</option><option>Update</option><option>Delete</option><option>Suspend</option><option>Publish</option></Select>
         <Input placeholder="ค้นหา Admin / Entity..." style={{ flex:1 }} />
       </FilterBar>
@@ -975,7 +1000,7 @@ function AuditLogPage() {
           columns={[
             { key:"id",     label:"Log ID" },
             { key:"admin",  label:"Admin" },
-            { key:"role",   label:"Role",   render:v=><span style={{ fontSize:12, color:C.textMuted }}>{v}</span> },
+            { key:"Admin access",   label:"Admin access",   render:v=><span style={{ fontSize:12, color:C.textMuted }}>{v}</span> },
             { key:"action", label:"Action", render:v=><span style={{ color:C.amber, fontSize:12, fontWeight:500 }}>{v}</span> },
             { key:"entity", label:"Entity" },
             { key:"time",   label:"Time" },
@@ -1062,7 +1087,7 @@ export default function TukDaengBO() {
           <div style={{ width:30, height:30, borderRadius:"50%", background:C.accent, display:"flex", alignItems:"center", justifyContent:"center", fontSize:12, fontWeight:700, color:"#fff", flexShrink:0 }}>S</div>
           {!collapsed && (
             <div style={{ overflow:"hidden" }}>
-              <div style={{ fontSize:12, color:C.text, fontWeight:500, whiteSpace:"nowrap", overflow:"hidden", textOverflow:"ellipsis" }}>Super Admin</div>
+              <div style={{ fontSize:12, color:C.text, fontWeight:500, whiteSpace:"nowrap", overflow:"hidden", textOverflow:"ellipsis" }}>Admin</div>
               <div style={{ fontSize:10, color:C.textMuted }}>admin@tukdaeng.com</div>
             </div>
           )}

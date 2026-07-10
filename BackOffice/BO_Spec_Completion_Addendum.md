@@ -117,10 +117,10 @@ BO Dashboard
 
 | Action | Permission | Rule |
 |---|---|---|
-| View Offer | Super Admin, Moderator, Support Admin | ดูข้อมูลเพื่อ support และตรวจสอบ |
-| Force Expire Offer | Super Admin | ใช้กรณีผิด policy หรือ asset unavailable |
-| Mark Invalidated | System / Super Admin | ใช้เมื่อ asset ถูก remove หรือ sold |
-| Export Offer History | Super Admin | สำหรับ audit/dispute |
+| View Offer | Admin | ดูข้อมูลเพื่อ support และตรวจสอบ |
+| Force Expire Offer | Admin | ใช้กรณีผิด policy หรือ asset unavailable |
+| Mark Invalidated | System / Admin | ใช้เมื่อ asset ถูก remove หรือ sold |
+| Export Offer History | Admin | สำหรับ audit/dispute |
 
 ### 3.5 Chat Rooms
 
@@ -129,7 +129,7 @@ BO Dashboard
 - Search ด้วย user, asset, keyword
 - Filter ด้วย asset, unread report, file attached, date range
 - ดูเฉพาะ chat ที่ถูก report
-- Export conversation เฉพาะ Super Admin
+- Export conversation เฉพาะ Admin
 
 **Columns**
 
@@ -148,8 +148,8 @@ BO Dashboard
 
 - Admin ไม่ควรแก้ไขข้อความผู้ใช้โดยตรง
 - การลบ chat ของผู้ใช้ใน FO เป็น user-level deletion ไม่ใช่ hard delete จากระบบ
-- Super Admin สามารถ export conversation เพื่อ audit/dispute ได้
-- Moderator สามารถ hide/remove ข้อความที่ผิด policy ได้
+- Admin สามารถ export conversation เพื่อ audit/dispute ได้
+- Admin สามารถ hide/remove ข้อความที่ผิด policy ได้
 - ไฟล์แนบต้องมี virus/malware scan status
 - Chat ที่เกี่ยวข้องกับ accepted offer ต้องถูกเก็บตาม retention policy
 
@@ -178,7 +178,7 @@ BO Dashboard
 | Visible | แสดงปกติ | ผู้ใช้เห็น comment |
 | Hidden | ซ่อนโดย admin | FO ไม่แสดง comment |
 | Deleted | ลบแบบ soft delete | FO แสดงเป็น deleted หรือไม่แสดงตาม policy |
-| Reported | ถูกผู้ใช้ report | รอ moderator review |
+| Reported | ถูกผู้ใช้ report | รอ Admin review |
 
 **Columns**
 
@@ -199,7 +199,7 @@ BO Dashboard
 **Rules**
 - Like asset ใน FO ทำให้ asset ปรากฏใน Favorites tab
 - Unlike ต้องนำ asset ออกจาก Favorites tab
-- BO ควรดู aggregate ได้ แต่ไม่จำเป็นต้องแก้ไขราย record ยกเว้น Super Admin
+- BO ควรดู aggregate ได้ แต่ไม่จำเป็นต้องแก้ไขราย record ยกเว้น Admin
 
 **Data**
 
@@ -313,11 +313,11 @@ BO_Spec v1.1 มี Watch Alert report แล้ว แต่ FO ต้องม
 
 | Action | Permission |
 |---|---|
-| View Request | Super Admin, Support Admin |
-| Recheck Blocking Conditions | Super Admin, Support Admin |
-| Approve Archive | Super Admin |
-| Cancel Request | Super Admin |
-| Export Archive Report | Super Admin |
+| View Request | Admin |
+| Recheck Blocking Conditions | Admin |
+| Approve Archive | Admin |
+| Cancel Request | Admin |
+| Export Archive Report | Admin |
 
 ---
 
@@ -325,7 +325,7 @@ BO_Spec v1.1 มี Watch Alert report แล้ว แต่ FO ต้องม
 
 ### 7.1 Purpose
 
-BO_Spec v1.1 ระบุว่า Support Admin ตอบ Help ได้ แต่ยังไม่มี module รายละเอียด จึงเพิ่ม Help & Support เพื่อรองรับ Settings > Help ใน FO
+BO_Spec v1.1 ระบุว่า Admin ตอบ Help ได้ แต่ยังไม่มี module รายละเอียด จึงเพิ่ม Help & Support เพื่อรองรับ Settings > Help ใน FO
 
 ### 7.2 Ticket Types
 
@@ -547,19 +547,16 @@ BO_Spec v1.1 ระบุว่า Support Admin ตอบ Help ได้ แต
 
 ### 9.9 Content Permissions
 
-| Action | Super Admin | Content Admin | Moderator | Support Admin | Market Admin |
-|---|---|---|---|---|---|
-| View Articles | Yes | Yes | View Only | - | - |
-| Create Draft | Yes | Yes | - | - | - |
-| Edit Draft | Yes | Yes | - | - | - |
-| Publish Article | Yes | Yes | - | - | - |
-| Schedule Article | Yes | Yes | - | - | - |
-| Archive Article | Yes | Yes | - | - | - |
-| Delete Article | Yes | - | - | - | - |
-| Manage Categories | Yes | Yes | - | - | - |
-| Manage Banners | Yes | Yes | - | - | - |
-| Preview as FO | Yes | Yes | View Only | - | - |
+Content permissions use the single BO account type `Admin`. There are no BO sub-types.
 
+| Action | Admin access rule |
+|---|---|
+| View Articles | Allowed when Content / Board module access is granted. |
+| Create / Edit Draft | Allowed; must write audit for saved changes. |
+| Publish / Schedule / Archive Article | Requires confirmation when public visibility changes and must write audit. |
+| Delete Article | Not a default action; use archive unless policy explicitly allows delete with reason and audit. |
+| Manage Categories / Banners | Allowed with before/after audit and FO-impact awareness. |
+| Preview as FO | Allowed and must respect canonical FO display rules. |
 ### 9.10 Board Analytics
 
 | Metric | Description |
@@ -627,7 +624,7 @@ BO_Spec v1.1 ระบุว่า Support Admin ตอบ Help ได้ แต
 | Proof of Payment | Image Upload, max 3 | Optional |
 | Notes | Textarea | Optional |
 
-**Privacy Rule:** Provenance และ Proof of Payment เป็นข้อมูลส่วนตัว เห็นเฉพาะ Owner ใน FO และ Super Admin ใน BO
+**Privacy Rule:** Provenance และ Proof of Payment เป็นข้อมูลส่วนตัว เห็นเฉพาะ Owner ใน FO และ Admin ใน BO
 
 ### 10.3 Consignment Fields
 
@@ -655,7 +652,7 @@ BO_Spec v1.1 ระบุว่า Support Admin ตอบ Help ได้ แต
 - Asset สถานะ Sold แก้ไขจาก FO ไม่ได้
 - Owner เห็น Sale History ได้
 - Viewer ไม่เห็น Sale History และ API ต้อง return 403
-- Super Admin เห็น Sale History ได้ใน BO
+- Admin เห็น Sale History ได้ใน BO
 
 ---
 
@@ -739,20 +736,18 @@ BO_Spec v1.1 ระบุว่า Support Admin ตอบ Help ได้ แต
 
 ---
 
-## 14. Updated Admin Role & Permissions
+## 14. Updated Admin Access & Permissions
 
-| Module | Super Admin | Content Admin | Moderator | Support Admin | Market Admin |
-|---|---|---|---|---|---|
-| Offer & Chat Management | Full | - | View / Moderate Reported | View Related to Ticket | - |
-| Social Interaction Management | Full | - | Moderate | View Related to Ticket | - |
-| Watch Alert Management | Full | - | View | View User Alerts | View Aggregate |
-| Help & Support | Full | - | View Reported Cases | Full | - |
-| Account Deletion Requests | Full | - | - | View / Recheck | - |
-| System Notification Triggers | Full | - | - | - | - |
-| Notification Templates | Full | - | - | - | - |
+BO uses a single `Admin` account type. Module behavior is controlled by module/action policy instead of separate BO admin account types.
 
----
-
+| Module | Admin access rule |
+|---|---|
+| Offer & Chat Management | Admin can view/review/moderate by policy with privacy masking and audit. |
+| Social Interaction Management | Admin can view aggregate data and moderate reported content by policy. |
+| Watch Alert Management | Admin can view, disable/enable by policy, and audit changes. |
+| Help & Support | Admin can manage tickets, internal notes, linked entities, SLA status, and replies by policy. |
+| Account Deletion Requests | Admin can view/recheck/approve/cancel/archive by policy with dependency checks, confirmation, reason, and audit. |
+| System Notification Triggers / Templates | Admin can manage templates and broadcasts with approval, preview, and audit policy. |
 ## 15. Recommended Acceptance Criteria
 
 BO จะถือว่ารองรับ FO ครบถ้วนเมื่อผ่านเงื่อนไขต่อไปนี้:
@@ -763,7 +758,7 @@ BO จะถือว่ารองรับ FO ครบถ้วนเมื�
 4. Watch Alert ที่ผู้ใช้สร้างจาก Search สามารถดู criteria และ trigger history ใน BO ได้
 5. System notification ทุกประเภทใน PRD มี template, trigger log และ delivery status
 6. Provenance, Consignment และ Proof of Payment ถูกจำกัดสิทธิ์ตาม privacy rule
-7. Support Admin สามารถรับ ticket จาก Help และตอบกลับผู้ใช้ได้
+7. Admin สามารถรับ ticket จาก Help และตอบกลับผู้ใช้ได้
 8. Audit Log บันทึกทุก action สำคัญของ admin ครบ target entity และ before/after value
 9. Admin สามารถสร้างบทความพร้อมรูปปก เนื้อหา หมวดหมู่ และ publish/schedule จาก BO ได้
 10. FO Board แสดงเฉพาะบทความ Published ที่ถึงเวลาเผยแพร่แล้ว

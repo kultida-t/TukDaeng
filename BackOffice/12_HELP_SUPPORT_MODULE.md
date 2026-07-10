@@ -30,7 +30,7 @@ BO ต้องเป็นศูนย์กลางของ support ticket �
 ### 2.2 Out of Scope
 
 - External CRM integration แบบเต็ม
-- Live chat ระหว่าง Support Admin กับผู้ใช้
+- Live chat ระหว่าง Admin กับผู้ใช้
 - ระบบโทรศัพท์ call center
 - AI chatbot
 - Payment dispute workflow
@@ -58,26 +58,21 @@ FO interaction:
 
 | Mode | FO Behavior | BO Behavior |
 | --- | --- | --- |
-| Contact-only V1 | ผู้ใช้ติดต่อผ่าน LINE / Phone / Email | Support Admin สร้างหรือรับ ticket ใน BO และบันทึก source channel |
+| Contact-only V1 | ผู้ใช้ติดต่อผ่าน LINE / Phone / Email | Admin สร้างหรือรับ ticket ใน BO และบันทึก source channel |
 | In-app ticket future | ผู้ใช้ submit ticket หรือเห็น ticket history ใน FO | Ticket, reply และ status sync กลับ FO ตาม API contract |
 
-## 4. Roles & Permissions
+## 4. Admin Access & Permissions
 
-| Action | Super Admin | Support Admin | Moderator | Content Admin | Market Admin |
-| --- | --- | --- | --- | --- | --- |
-| View ticket queue | Yes | Yes | Related reported cases only | No | Related market data cases only |
-| View ticket detail | Yes | Yes | Related reported cases only | No | Related market data cases only |
-| Create manual ticket | Yes | Yes | No | No | No |
-| Assign ticket | Yes | Yes | No | No | No |
-| Reply to user | Yes | Yes | No | No | No |
-| Add internal note | Yes | Yes | Related reported cases only | No | Related market data cases only |
-| Change priority/status | Yes | Yes | No | No | No |
-| Link related entity | Yes | Yes | No | No | Related market data only |
-| Export ticket | Yes | Yes with scope limit | No | No | No |
-| Delete ticket | No by default | No | No | No | No |
+BO uses a single Admin account type only. Admin access is controlled by module access, action policy, sensitive-data policy, confirmation, reason, and audit requirements instead of separate BO admin account types.
 
-Ticket deletion ไม่อยู่ใน normal operation ให้ใช้ `Closed`, `Spam / Invalid` หรือ retention policy แทน เพื่อรักษาประวัติ support และ audit
 
+| Access Area | Rule |
+| --- | --- |
+| Module access | Admin can use list/detail/search/filter when module access is granted. |
+| Write action | Create, update, status change, remove, restore, publish, archive, retry, and similar actions require permission check, confirmation for high-risk actions, reason when FO/user impact exists, and audit log. |
+| Sensitive data | Mask by default; reveal only with business reason, policy approval, and audit log. |
+| Export | Requires permission check, scope control, expiry/background job where needed, and audit export event. |
+| Direct URL/API | Enforce access at route, API, and service layers; never rely only on hidden UI. |
 ## 5. Responsive Layout
 
 | Breakpoint | Layout |
@@ -223,11 +218,11 @@ SLA baseline:
 
 | Item | Rule |
 | --- | --- |
-| Reply to user | Support Admin / Super Admin เท่านั้น |
+| Reply to user | Admin access policy required |
 | Internal note | เห็นเฉพาะ admin ตาม permission และไม่ส่งให้ผู้ใช้ |
 | FO contact-only mode | Reply ออกผ่าน channel ต้นทาง เช่น LINE / Phone / Email และบันทึก summary ใน BO |
 | FO in-app ticket mode | Reply และ status sync กลับ FO ticket history |
-| Sensitive data | ต้อง mask หรือ require permission reveal ตาม Global Rules |
+| Sensitive data | Mask by default; reveal only with business reason, policy approval, and audit log. |
 | Attachment | ต้องแสดง scan status ถ้ามี file upload |
 
 ## 13. Admin Actions
@@ -238,7 +233,7 @@ SLA baseline:
 | Assign ticket | ต้องเลือก assignee และ optional note | Required |
 | Change priority | ต้องบันทึก old/new priority | Required |
 | Change status | ต้องบันทึก old/new status และ reason เมื่อปิด ticket | Required |
-| Reply to user | ต้องบันทึก message metadata และ channel | Required |
+| Reply to user | Admin access policy required |
 | Add internal note | ต้องบันทึก admin, timestamp, visibility | Required |
 | Link entity | ต้องบันทึก entity type/id | Required |
 | Export ticket | ต้องบันทึก filter, scope, file metadata | Required |
@@ -300,7 +295,7 @@ Audit payload ต้องมี:
 
 | ID | Criteria |
 | --- | --- |
-| AC-BO-SUPPORT-001 | Support Admin และ Super Admin เห็น ticket queue พร้อม search/filter/status/priority/SLA ครบ |
+| AC-BO-SUPPORT-001 | Admin sees ticket queue with complete search/filter/status/priority/SLA controls according to action policy |
 | AC-BO-SUPPORT-002 | BO รองรับ manual ticket จาก LINE / Phone / Email ตาม FO Help contact-only baseline |
 | AC-BO-SUPPORT-003 | Ticket detail แสดง requester context, conversation, internal note, related entity และ audit context ได้ |
 | AC-BO-SUPPORT-004 | Admin assign, reply, add note, change priority และ change status ได้ตาม permission |
@@ -316,5 +311,5 @@ Audit payload ต้องมี:
 | --- | --- | --- |
 | SUP-DEC-001 | FO จะมี support ticket submit/history ใน V1 หรือใช้ contact-only ตาม Help screen ปัจจุบัน | กระทบ API, FO UI และ BO reply sync |
 | SUP-DEC-002 | SLA 8 ชั่วโมงนับตาม business hours `09:00 - 22:00 (GMT+7)` หรือ calendar hours | กระทบ SLA timer และ dashboard |
-| SUP-DEC-003 | LINE / Email จะ integrate เข้า BO อัตโนมัติหรือให้ Support Admin create manual ticket | กระทบ implementation และ operation workload |
+| SUP-DEC-003 | LINE / Email จะ integrate เข้า BO อัตโนมัติหรือให้ Admin create manual ticket | กระทบ implementation และ operation workload |
 | SUP-DEC-004 | Support reply จะส่ง notification ใน FO หรือส่งผ่าน channel ต้นทางเท่านั้น | กระทบ Notification module และ FO notification center |

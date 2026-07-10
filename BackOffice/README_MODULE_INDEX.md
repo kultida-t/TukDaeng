@@ -15,8 +15,8 @@ BO docs แยกจาก FO docs แต่เชื่อมโยงการ
 | Step | File | Use For |
 | --- | --- | --- |
 | 1 | `DOCUMENT_VERSION.md` | Current BO baseline และ source-of-truth rules |
-| 2 | `BO_MASTER_BASELINE.md` | Scope รวม, roles, modules, phase plan และ open decisions |
-| 3 | `00_GLOBAL_RULES_MODULE.md` | Responsive layout, RBAC, status, audit, privacy, FO sync และ pattern กลาง |
+| 2 | `BO_MASTER_BASELINE.md` | Scope รวม, admin accesss, modules, phase plan และ open decisions |
+| 3 | `00_GLOBAL_RULES_MODULE.md` | Responsive layout, admin access control, status, audit, privacy, FO sync และ pattern กลาง |
 | 4 | `../ProjectAdmin/FO_BO_INTEGRATION_MAP.md` | แผนที่ trigger/result ระหว่าง FO และ BO |
 | 5 | `BO_DEV_IMPLEMENTATION_CHECKLIST.md` | Checklist สำหรับแตก ticket dev |
 | 6 | `BO_PRD.md` | Existing product requirement source |
@@ -28,9 +28,9 @@ BO docs แยกจาก FO docs แต่เชื่อมโยงการ
 
 | No. | Module | Primary Purpose | Phase |
 | --- | --- | --- | --- |
-| 00 | `00_GLOBAL_RULES_MODULE.md` | Responsive layout, role, audit, status, privacy, timezone, FO sync และ destructive-action rules | 1 |
+| 00 | `00_GLOBAL_RULES_MODULE.md` | Responsive layout, admin access, audit, status, privacy, timezone, FO sync และ destructive-action rules | 1 |
 | 01 | `01_AUTHENTICATION_MODULE.md` | Email/password login, 2FA, sessions, admin account lifecycle | 1 |
-| 02 | `02_DASHBOARD_MODULE.md` | Dashboard metrics, pending queues, SLA signals, activity feed และ role-based overview | 1 |
+| 02 | `02_DASHBOARD_MODULE.md` | Dashboard metrics, pending queues, SLA signals, activity feed และ policy-based overview | 1 |
 | 03 | `03_USER_MANAGEMENT_MODULE.md` | User list/detail, auth method, login history, report context, suspend/ban, reset password, FO impact | 1 |
 | 04 | `04_ASSET_MANAGEMENT_MODULE.md` | Asset list/detail, status visibility, reported assets, moderation, sensitive fields, FO sync | 1 |
 | 05 | `05_CONTENT_BOARD_MODULE.md` | Board articles, editor, publish/schedule/archive, categories, banners, reported Board Content, FO sync | 1 |
@@ -44,7 +44,7 @@ BO docs แยกจาก FO docs แต่เชื่อมโยงการ
 | 13 | `13_ACCOUNT_DELETION_MODULE.md` | Delete-account request queue, pending offer validation, 30-day grace period, archive/anonymization workflow | 2 |
 | 14 | `14_NOTIFICATIONS_MODULE.md` | Broadcast notification และ system trigger templates/logs | 2 |
 | 15 | `15_REPORTS_ANALYTICS_MODULE.md` | Exportable reports across user, asset, offer, chat, content, social, search, watch alert, support, notifications, account deletion | 2 |
-| 16 | `16_ADMIN_SETTINGS_MODULE.md` | Admin own settings, admin account lifecycle, role permission config, security/system settings, retention/export policy | 3 |
+| 16 | `16_ADMIN_SETTINGS_MODULE.md` | Admin own settings, admin account lifecycle, Admin Permission config, security/system settings, retention/export policy | 3 |
 
 ## Final Handoff
 
@@ -57,7 +57,7 @@ BO docs แยกจาก FO docs แต่เชื่อมโยงการ
 Phase 1 ต้องส่งมอบ BO foundation ที่ใช้งานได้จริง:
 
 - Global BO Rules
-- BO auth และ role permission
+- BO auth และ Admin Permission
 - Dashboard shell พร้อม metrics contract หรือ mocked API contract
 - User Management
 - Asset Management

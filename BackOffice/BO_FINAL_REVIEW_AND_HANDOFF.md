@@ -15,7 +15,7 @@
 | FO/BO separation | Complete; FO และ BO อยู่คนละ folder และเชื่อมผ่าน integration map |
 | Thai-primary documentation | Complete; ใช้ภาษาไทยเป็นหลักและใช้ English technical term เมื่อจำเป็น |
 | Responsive web requirement | Covered in every BO module |
-| RBAC / role permission | Covered in Global Rules, Auth, module specs, Admin Settings |
+| admin access control / Admin Permission | Covered in Global Rules, Auth, module specs, Admin Settings |
 | Audit requirement | Covered in Global Rules, Audit Log และทุก module ที่มี mutation/export/sensitive access |
 | Phase 1 scope | Covered |
 | Phase 2 scope | Covered |
@@ -62,11 +62,11 @@
 ### 4.1 Foundation Sprint
 
 1. Auth / Admin Accounts
-2. Global layout shell, navigation, RBAC guard
+2. Global layout shell, navigation, admin access control guard
 3. Shared table/filter/export components
 4. Shared confirmation modal with reason input
 5. Audit helper / audit event contract
-6. Dashboard skeleton with role-based cards
+6. Dashboard skeleton with policy-based cards
 
 ### 4.2 Phase 1 Build
 
@@ -122,30 +122,30 @@
 | P1 | Broadcast แสดงใน FO Notification Center หรือ push-only | `NOTI-DEC-001` | กระทบ FO notification type list และ payload |
 | P1 | Sensitive export ต้องมี approval เพิ่มหรือไม่ | `REP-DEC-004`, `SET-DEC-004` | กระทบ Admin Settings, Reports, Audit |
 | P2 | Board public SEO web requirement | `BO-DEC-005`, `BO-CONTENT-DEC-001` | กระทบ Board content delivery และ routing |
-| P2 | Fine-grained permission editor หรือ fixed role matrix | `SET-DEC-001` | กระทบ Admin Settings data model และ QA scope |
+| P2 | Fine-grained permission editor หรือ fixed admin access matrix | `SET-DEC-001` | กระทบ Admin Settings data model และ QA scope |
 
 ## 7. QA Focus Areas
 
 | Area | QA Focus |
 | --- | --- |
 | Responsive | ทดสอบ 375px, 768px, 1280px, 1440px ทุก module |
-| RBAC | ตรวจ route guard, action/API guard, field masking, menu visibility |
+| admin access control | ตรวจ route guard, action/API guard, field masking, menu visibility |
 | Audit | ตรวจ before/after, reason, actor, target, IP/user agent, correlation ID |
 | FO sync | ตรวจ BO action ที่กระทบ FO visibility/login/notification/destination |
-| Export | ตรวจ CSV/Excel, background job, permission, sensitive field masking, audit |
+| Export | Requires permission check, scope control, expiry/background job where needed, and audit export event. |
 | Status contracts | ตรวจ canonical statuses เช่น Show/Hide, Rejected, Watch Alert enabled/disabled, account deletion status |
 | Error states | Loading, empty, permission denied, not found, partial load, retry |
-| Sensitive data | Proof of payment, consignment, contact fields, chat transcript, support/internal notes, audit payload |
+| Sensitive data | Mask by default; reveal only with business reason, policy approval, and audit log. |
 
 ## 8. Dev Handoff Notes
 
-- เริ่ม implement จาก shared foundation ก่อน module หนัก เพื่อไม่สร้าง RBAC/audit/export ซ้ำหลายแบบ
+- เริ่ม implement จาก shared foundation ก่อน module หนัก เพื่อไม่สร้าง admin access control/audit/export ซ้ำหลายแบบ
 - ทุก list ที่ใหญ่ต้องใช้ server-side pagination/filter/sort
 - ทุก export ใหญ่ต้องเป็น background job
 - ทุก module ต้องใช้ timezone `Asia/Bangkok`
 - ราคาแสดงเป็น THB
 - Admin UI ใช้ภาษาไทยเป็นหลัก
-- BO role ไม่สร้าง role แยกให้ FO users
+- BO Admin Access ไม่สร้าง admin access แยกให้ FO users
 - FO user login เข้า BO ไม่ได้ และ BO admin ไม่ใช้ Apple/Google SSO ใน V1
 - Permission ใน API/action level เป็นตัวตัดสินสุดท้าย ไม่ใช่แค่ซ่อน UI
 

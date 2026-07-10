@@ -9,7 +9,7 @@
 
 ## 1. วัตถุประสงค์
 
-BO Content / Board Module คือเครื่องมือสำหรับ Content Admin ใช้สร้าง แก้ไข เผยแพร่ ตั้งเวลา และจัดการบทความที่แสดงใน FO Board
+BO Content / Board Module คือเครื่องมือสำหรับ Admin ใช้สร้าง แก้ไข เผยแพร่ ตั้งเวลา และจัดการบทความที่แสดงใน FO Board
 
 FO Board เป็น Article Area ไม่ใช่ user-generated forum ใน V1 ดังนั้นผู้ใช้ FO อ่าน ค้นหา กรองหมวด กด Like, Share และ Report article ได้ แต่สร้าง/แก้ไข/ลบบทความไม่ได้ งาน authoring ทั้งหมดต้องอยู่ใน BO เท่านั้น
 
@@ -41,18 +41,18 @@ FO Board เป็น Article Area ไม่ใช่ user-generated forum ใ�
 - Public SEO web scope นอกเหนือจาก FO Board เว้นแต่มี decision เพิ่ม
 - Broadcast notification เมื่อ publish article ยังเป็น future/needs decision
 
-## 3. Roles And Permissions
+## 3. Admin Access And Permissions
 
-| Role | Permission |
+BO uses a single Admin account type only. Admin access is controlled by module access, action policy, sensitive-data policy, confirmation, reason, and audit requirements instead of separate BO admin account types.
+
+
+| Access Area | Rule |
 | --- | --- |
-| Super Admin | Full access, publish/archive, manage categories/banners, override content status, export analytics |
-| Content Admin | Create/edit/publish/schedule/archive articles, manage categories/banners, preview as FO |
-| Moderator | Review reported Board Content, recommend archive/remove, view moderation context |
-| Support Admin | View article/report context เฉพาะที่จำเป็นต่อ support |
-| Market Admin | No default write access |
-
-ทุก write action ต้อง enforce permission ทั้ง UI, route/API และ service layer
-
+| Module access | Admin can use list/detail/search/filter when module access is granted. |
+| Write action | Create, update, status change, remove, restore, publish, archive, retry, and similar actions require permission check, confirmation for high-risk actions, reason when FO/user impact exists, and audit log. |
+| Sensitive data | Mask by default; reveal only with business reason, policy approval, and audit log. |
+| Export | Requires permission check, scope control, expiry/background job where needed, and audit export event. |
+| Direct URL/API | Enforce access at route, API, and service layers; never rely only on hidden UI. |
 ## 4. Responsive Layout
 
 | Width | Requirement |
@@ -222,7 +222,7 @@ Inactive category:
 
 ### Featured Article
 
-- Content Admin ตั้ง Featured ได้
+- Admin ตั้ง Featured ได้
 - ต้องมี featured order
 - FO Board hero/featured area ใช้เฉพาะ Published article
 - ถ้า Featured article ถูก archive ต้องหลุดจาก featured area
@@ -265,8 +265,8 @@ FO `Report article` ต้องส่ง report type `Board Content` target typ
 Rules:
 
 - Article ไม่หายจาก FO ทันทีหลังถูก report
-- Moderator/Content Admin review report ได้ตาม permission
-- Action ที่เป็นไปได้: resolve/no action, edit article, archive article, escalate to Super Admin
+- Admin review report ได้ตาม permission
+- Action ที่เป็นไปได้: resolve/no action, edit article, archive article, escalate to Admin
 - ถ้า archive จาก report ต้องมี reason และ audit
 - Report history ต้องผูกกับ article detail
 
@@ -327,13 +327,13 @@ BO analytics ต้องไม่รวม preview as FO เป็น user view
 - Export analytics
 - Report moderation result
 
-Audit event ต้องมี admin ID, role, target type, target ID, before/after value, timestamp, reason เมื่อเกี่ยวข้อง และ IP/session context ถ้ามี
+Audit event ต้องมี admin ID, admin access, target type, target ID, before/after value, timestamp, reason เมื่อเกี่ยวข้อง และ IP/session context ถ้ามี
 
 ## 18. Acceptance Criteria
 
 | ID | Criteria |
 | --- | --- |
-| AC-BO-CONTENT-001 | Content Admin สร้าง แก้ไข save draft publish schedule archive article ได้ตาม permission |
+| AC-BO-CONTENT-001 | Admin สร้าง แก้ไข save draft publish schedule archive article ได้ตาม permission |
 | AC-BO-CONTENT-002 | FO แสดงเฉพาะ Published article หรือ Scheduled article ที่ถึงเวลาแล้ว |
 | AC-BO-CONTENT-003 | Archived article หายจาก Board/Search/Category และ direct link แสดง unavailable behavior |
 | AC-BO-CONTENT-004 | Preview as FO ไม่เพิ่ม view count และเปิดได้เฉพาะ Admin |
@@ -350,6 +350,6 @@ Audit event ต้องมี admin ID, role, target type, target ID, before/af
 | --- | --- | --- |
 | BO-CONTENT-DEC-001 | Board ต้องมี public SEO web page แยกจาก FO mobile หรือไม่ | Phase 1 ถือว่าเป็น FO Board ก่อน |
 | BO-CONTENT-DEC-002 | Trending Now ใช้ manual curated หรือ algorithm | ใช้ manual curated ใน Phase 1 |
-| BO-CONTENT-DEC-003 | Published article update ต้อง require re-approval หรือไม่ | Content Admin update ได้ แต่ต้อง audit และ version history |
+| BO-CONTENT-DEC-003 | Published article update ต้อง require re-approval หรือไม่ | Admin update ได้ แต่ต้อง audit และ version history |
 | BO-CONTENT-DEC-004 | Inactive category ส่งผลต่อ article เดิมอย่างไร | ต้องตัดสินก่อน implementation; default คือไม่ให้ publish ใหม่กับ inactive category |
 

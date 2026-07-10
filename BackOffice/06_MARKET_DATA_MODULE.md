@@ -41,18 +41,18 @@ BO ต้องไม่เรียก external API ตรงจาก FO clien
 - Portfolio benchmark/advanced analytics
 - Payment, transaction, escrow หรือ settlement data
 
-## 3. Roles And Permissions
+## 3. Admin Access And Permissions
 
-| Role | Permission |
+BO uses a single Admin account type only. Admin access is controlled by module access, action policy, sensitive-data policy, confirmation, reason, and audit requirements instead of separate BO admin account types.
+
+
+| Access Area | Rule |
 | --- | --- |
-| Super Admin | Full access, approve destructive changes, export, override inactive/reactivate |
-| Market Admin | Create/edit/activate/inactivate brand, model, reference, price index |
-| Moderator | View market data for review context only |
-| Support Admin | View market data for support context only |
-| Content Admin | No default access unless permission added |
-
-ทุก write action ต้องมี permission check และ audit log
-
+| Module access | Admin can use list/detail/search/filter when module access is granted. |
+| Write action | Create, update, status change, remove, restore, publish, archive, retry, and similar actions require permission check, confirmation for high-risk actions, reason when FO/user impact exists, and audit log. |
+| Sensitive data | Mask by default; reveal only with business reason, policy approval, and audit log. |
+| Export | Requires permission check, scope control, expiry/background job where needed, and audit export event. |
+| Direct URL/API | Enforce access at route, API, and service layers; never rely only on hidden UI. |
 ## 4. Responsive Layout
 
 | Width | Requirement |
@@ -127,7 +127,7 @@ CRUD rules:
 
 | Action | Rule |
 | --- | --- |
-| Create | Market Admin/Super Admin เพิ่ม brand/model/reference/price index เองได้ โดยต้องระบุ source เป็น `Manual` หรือ `Internal` |
+| Create | Admin เพิ่ม brand/model/reference/price index เองได้ โดยต้องระบุ source เป็น `Manual` หรือ `Internal` |
 | Update | แก้ข้อมูลได้ตาม permission และต้อง audit before/after value |
 | Delete | ห้าม hard delete ถ้าข้อมูลเคยถูกใช้กับ asset, alert, price history หรือ audit แล้ว |
 | Inactivate | ใช้แทน delete เป็น default เพื่อซ่อนจาก new selection ใน FO แต่ยังรักษา historical relation |
@@ -335,7 +335,7 @@ Data quality warning ไม่จำเป็นต้อง block ทุกก�
 - Import/export
 - Bulk update
 
-Audit event ต้องมี admin ID, role, target type, target ID, before/after value, reason ถ้ามี, timestamp และ session/IP context ถ้ามี
+Audit event ต้องมี admin ID, admin access, target type, target ID, before/after value, reason ถ้ามี, timestamp และ session/IP context ถ้ามี
 
 ## 12. FO Sync And Cache
 
@@ -384,7 +384,7 @@ FO ต้องอ่านข้อมูลจาก internal API/cache ขอ
 
 | ID | Criteria |
 | --- | --- |
-| AC-BO-MARKET-001 | Market Admin จัดการ brand/model/reference/price index ได้ตาม permission |
+| AC-BO-MARKET-001 | Admin จัดการ brand/model/reference/price index ได้ตาม permission |
 | AC-BO-MARKET-002 | Brand -> Model dependent relation ต้องถูกต้องใน BO และส่งผลถึง FO |
 | AC-BO-MARKET-003 | Inactive brand/model/reference ไม่แสดงเป็น option ใหม่ใน FO autocomplete/filter |
 | AC-BO-MARKET-004 | Existing asset ยังเก็บ historical brand/model/reference ได้แม้ master data ถูก inactive |

@@ -35,7 +35,7 @@ BO Social Interaction Module คือหน้าจอสำหรับ Admin
 - Multi-level nested comment เกิน 1 reply level
 - Comment attachment, mention, reaction, repost, story
 - Automated moderation หรือ AI moderation
-- Individual like/follow mutation โดย Admin ทั่วไป ยกเว้น Super Admin มี policy/incident workflow ชัดเจน
+- Individual like/follow mutation โดย Admin ทั่วไป ยกเว้น Admin มี policy/incident workflow ชัดเจน
 
 ## 3. FO Social Rules ที่ BO ต้องยึด
 
@@ -50,18 +50,18 @@ BO Social Interaction Module คือหน้าจอสำหรับ Admin
 | Follow | Following Feed ใช้เฉพาะ Sale asset ของ user ที่ follow | BO ต้องไม่สรุปว่า Show/Hide/Sold เข้า Following Feed |
 | Block | Block ทำให้ content ของอีกฝ่ายถูก filter จาก Feed/Search/Watch Alert และ relation ไม่ใช้ใน Following Feed | BO ต้องแสดง block context เมื่อ review social relation |
 
-## 4. Roles And Permissions
+## 4. Admin Access And Permissions
 
-| Role | Permission |
+BO uses a single Admin account type only. Admin access is controlled by module access, action policy, sensitive-data policy, confirmation, reason, and audit requirements instead of separate BO admin account types.
+
+
+| Access Area | Rule |
 | --- | --- |
-| Super Admin | ดู social interaction ครบ, hide/unhide/remove comment, export, reveal sensitive context, override moderation result |
-| Moderator | ดู reported comment queue, hide/remove policy-violating comment, resolve report |
-| Support Admin | ดู social context ที่เกี่ยวกับ ticket/user case แบบ read-only เป็นหลัก |
-| Content Admin | ดู Board/social aggregate เฉพาะเมื่อเกี่ยวกับ content report ที่ได้รับ permission |
-| Market Admin | ไม่มี permission หลัก ยกเว้น read-only aggregate ที่เกี่ยวกับ asset/brand analytics |
-
-ทุก write action ต้องตรวจ permission ที่ UI, route/API และ service layer
-
+| Module access | Admin can use list/detail/search/filter when module access is granted. |
+| Write action | Create, update, status change, remove, restore, publish, archive, retry, and similar actions require permission check, confirmation for high-risk actions, reason when FO/user impact exists, and audit log. |
+| Sensitive data | Mask by default; reveal only with business reason, policy approval, and audit log. |
+| Export | Requires permission check, scope control, expiry/background job where needed, and audit export event. |
+| Direct URL/API | Enforce access at route, API, and service layers; never rely only on hidden UI. |
 ## 5. Responsive Layout
 
 | Width | Layout Requirement |
@@ -95,7 +95,7 @@ Comment text ต้อง wrap ได้ อ่านง่าย และไ�
 - Comment ID
 - Asset ID / asset name
 - Author user ID / username / display name
-- Keyword ใน comment เฉพาะ role ที่มี permission และตาม privacy policy
+- Keyword ใน comment เฉพาะ admin access ที่มี permission และตาม privacy policy
 
 ### Filters
 
@@ -127,7 +127,7 @@ BO ต้องแยก `User Deleted` ออกจาก `Removed` เพร�
 - Report ต้องเข้า BO queue
 - Comment ต้องไม่หายจาก FO ทันทีเพราะ report เพียงอย่างเดียว
 - SLA baseline คือ review ภายใน 24 ชั่วโมง
-- Moderator ต้องเห็น context รอบ comment เพียงพอ เช่น asset, author, reporter, parent/replies, previous reports
+- Admin ต้องเห็น context รอบ comment เพียงพอ เช่น asset, author, reporter, parent/replies, previous reports
 
 ข้อมูล report ขั้นต่ำ:
 
@@ -162,12 +162,12 @@ Admin ห้ามแก้ comment text โดยตรง ถ้าต้อ�
 
 | Action | Allowed Roles | Requirement |
 | --- | --- | --- |
-| View comment | Super Admin, Moderator, Support Admin | Module permission required |
-| Hide comment | Super Admin, Moderator | Confirmation, reason, audit, FO sync |
-| Unhide comment | Super Admin, Moderator | Reason, audit, FO sync |
-| Remove comment | Super Admin, Moderator ตาม policy | Confirmation, reason, audit, FO sync |
-| Resolve report / no action | Super Admin, Moderator | Reason/note, report status update |
-| Export comments/reports | Super Admin | Audit export event และ controlled access |
+| View comment | Admin | Module permission required |
+| Hide comment | Admin | Confirmation, reason, audit, FO sync |
+| Unhide comment | Admin | Reason, audit, FO sync |
+| Remove comment | Admin ตาม policy | Confirmation, reason, audit, FO sync |
+| Resolve report / no action | Admin | Reason/note, report status update |
+| Export comments/reports | Admin | Audit export event และ controlled access |
 
 Bulk moderation ต้องจำกัดเฉพาะ queue ที่มี policy ชัดเจน และต้องมี confirmation + reason เสมอ
 
@@ -258,7 +258,7 @@ Audit action ขั้นต่ำ:
 ทุก event ต้องมี:
 
 - Admin ID
-- Admin role
+- Admin Access
 - Action type
 - Target entity type และ ID
 - Before value
@@ -298,7 +298,7 @@ Audit action ขั้นต่ำ:
 | --- | --- |
 | AC-BO-SOCIAL-001 | Comment list แสดง search/filter/status ครบ และรองรับ root/reply relation 1 level |
 | AC-BO-SOCIAL-002 | Reported comment เข้า BO queue โดยไม่ทำให้ comment หายจาก FO ทันที |
-| AC-BO-SOCIAL-003 | Moderator/Super Admin hide/remove/unhide comment ได้ตาม permission พร้อม reason และ audit |
+| AC-BO-SOCIAL-003 | Admin hide/remove/unhide comment ได้ตาม permission พร้อม reason และ audit |
 | AC-BO-SOCIAL-004 | BO ห้าม edit user comment text โดยตรง |
 | AC-BO-SOCIAL-005 | Comment count และ FO visibility ต้อง sync หลัง hide/remove/unhide |
 | AC-BO-SOCIAL-006 | Like/Favorite analytics ต้องสะท้อน rule ที่ Like sync Favorites และ Unlike remove Favorites |
@@ -312,5 +312,5 @@ Audit action ขั้นต่ำ:
 | ID | Decision Needed | Current Recommendation |
 | --- | --- | --- |
 | BO-SOCIAL-DEC-001 | FO จะแสดง placeholder สำหรับ hidden/removed comment หรือซ่อนทั้งหมด | ให้ BO ส่ง state ชัดเจน และให้ FO UX ตัดสิน copy/placeholder |
-| BO-SOCIAL-DEC-002 | เปิด keyword search ใน comment text ให้ role ใด | เริ่มจาก Super Admin/Moderator เฉพาะ moderation context |
-| BO-SOCIAL-DEC-003 | Super Admin จะสามารถ remove individual like/follow relation ได้หรือไม่ | ยังไม่เปิดเป็น default; ถ้าต้องเปิดให้ใช้ incident workflow พร้อม audit |
+| BO-SOCIAL-DEC-002 | เปิด keyword search ใน comment text ให้ admin access ใด | เริ่มจาก Admin เฉพาะ moderation context |
+| BO-SOCIAL-DEC-003 | Admin จะสามารถ remove individual like/follow relation ได้หรือไม่ | ยังไม่เปิดเป็น default; ถ้าต้องเปิดให้ใช้ incident workflow พร้อม audit |

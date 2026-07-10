@@ -31,7 +31,7 @@ BO เป็น responsive web application สำหรับทีมภาย�
 ## In Scope
 
 - กฎ responsive web layout
-- BO role และ permission model
+- BO Admin Access และ permission model
 - Navigation และ page structure กลาง
 - Pattern กลางของ table, filter, form, detail, modal, export, empty/error state
 - Canonical status ที่ BO ต้องใช้ร่วมกับ FO
@@ -52,7 +52,7 @@ BO เป็น responsive web application สำหรับทีมภาย�
 
 | Area | Rule |
 | --- | --- |
-| Platform | BO เป็น Web Back Office เท่านั้น Admin ไม่ใช่ role ใน FO mobile app |
+| Platform | BO เป็น Web Back Office เท่านั้น Admin ไม่ใช่ admin access ใน FO mobile app |
 | Device support | Responsive web app รองรับ desktop, tablet และ mobile-width browser |
 | Primary usage | งาน operation หลักควรเหมาะกับ desktop/tablet |
 | Mobile usage | ต้องใช้ค้นหา ดู detail review approve/resolve และ emergency moderation ได้ในหน้าจอเล็ก งาน bulk ที่ซับซ้อนสามารถ optimize สำหรับ desktop/tablet ได้ |
@@ -78,29 +78,41 @@ BO เป็น responsive web application สำหรับทีมภาย�
 - Modal ต้องพอดีกับ viewport และ scroll ภายในได้เมื่อเนื้อหายาว
 - Search/filter ต้องใช้งานได้ด้วย touch device
 - Bulk selection ซ่อนบน mobile ได้ถ้า individual action ยังทำได้
+- Mobile-width navigation ใช้ hamburger button เปิด side drawer พร้อม backdrop, ปุ่มปิดใน drawer, และต้องไม่ทำให้ content/table/modal ซ้อนหรือ overflow จนใช้งานไม่ได้
+- Side navigation สามารถ scroll ได้เมื่อรายการยาว แต่ไม่ควรแสดง scrollbar และต้อง contain scroll ไม่ให้ wheel/touch scroll เลื่อนไปกระทบ content ด้านหลัง
 
 # 6. Navigation Rules
 
-Navigation ของ BO ต้องขึ้นกับ role และ permission ของ Admin
+Navigation ของ BO ต้องขึ้นกับ admin access และ permission ของ Admin
 
 Baseline navigation:
 
 ```text
-Dashboard
-User Management
-Asset Management
-Content / Board Management
-Market Data
-Directory
-Audit Log
-Offer & Chat Management
-Social Interaction Management
-Watch Alert Management
-Help & Support
-Account Deletion Requests
-Notifications
-Reports & Analytics
-Admin Settings
+การดำเนินงาน
+- Dashboard
+- User Management
+  - User List
+  - Reported Users
+- Asset Management
+  - Asset Details
+  - Asset List
+  - Offer / Chat
+- Content Management
+  - Content Board
+  - Directory
+  - Watch Alert
+- Market Data
+- Help / Support
+- Account Deletion
+
+เครื่องมือ & รายงาน
+- Notifications
+- Reports
+
+ระบบ
+- Settings
+  - Admin Settings
+  - Audit Log
 ```
 
 กฎ navigation:
@@ -108,25 +120,25 @@ Admin Settings
 - Module ที่ไม่มีสิทธิ์ต้องไม่แสดงใน navigation
 - หากเข้าผ่าน direct URL แต่ไม่มีสิทธิ์ ต้องแสดง access denied state
 - Browser back ควรรักษา context เช่น active filter, list/detail state ตามความเหมาะสม
+- เมนูต้องเรียงตามลำดับการใช้งานจริง: งานปฏิบัติการที่ต้องจัดการบ่อยก่อน, งานสนับสนุน/คำขอเฉพาะทางถัดมา, รายงานและเครื่องมือระบบท้ายสุด
+- เมนูแม่ที่มีเมนูย่อยใช้สำหรับเปิด/ปิดกลุ่มเท่านั้น และไม่ควรเปลี่ยนหน้าเองจนกว่า Admin จะเลือกเมนูย่อย
 - Mobile navigation ใช้ drawer หรือ collapsed menu
+- Parent menu ที่มี sub menu ต้องทำหน้าที่ expand/collapse เท่านั้น ไม่ควรเปลี่ยนหน้าเป็น child/default page เอง ผู้ใช้ต้องเลือก sub menu ก่อนจึงเปลี่ยนหน้า
 
-# 7. Role Model
+# 7. Admin Access Model
 
-| Role | Global Access Intent |
+BO has exactly one admin account type: `Admin`. There are no BO sub-types such as content, support, market, moderation, or highest-privilege admin concept. Access differences are defined by module access, action policy, sensitive-data policy, confirmation, reason, and audit requirements.
+
+| Admin Account Type | Global Access Intent |
 | --- | --- |
-| Super Admin | สิทธิ์สูงสุดทุก module, sensitive fields, destructive actions, admin accounts, audit log, exports |
-| Content Admin | Board articles, categories, banners, preview/publish/archive, content analytics |
-| Moderator | Report queue, asset/comment/chat moderation, flagged content review, limited user/asset visibility |
-| Support Admin | User support view, login history, reset password เฉพาะ email account, help ticket, account deletion recheck |
-| Market Admin | Brand/model/reference/price index/directory management และ market reports |
+| Admin | Operates every BO module allowed by product scope. High-risk actions require explicit permission checks, confirmation, reason when needed, and audit logging. |
 
 Permission rules:
 
-- ต้อง enforce permission ทั้ง route level และ action/API level
-- การซ่อน UI อย่างเดียวไม่ถือว่าเพียงพอ
-- ทุก mutation ต้องตรวจ permission ก่อน write data
-- Role ใน BO ไม่สร้าง role ใด ๆ ใน FO
-
+- Enforce access at route level and action/API/service level.
+- Hidden UI is not enough; every mutation must check access before write.
+- BO Admin access never creates a separate account type in FO.
+- Sensitive fields, exports, destructive actions, public-impact actions, and admin account changes must follow policy-based controls and audit requirements.
 # 8. Shared Page Patterns
 
 ## 8.1 List Page
@@ -138,7 +150,7 @@ List page ควรรองรับตามความเหมาะสม:
 - Sort
 - Pagination
 - Saved filter state
-- Export เฉพาะ role ที่มีสิทธิ์
+- Export เฉพาะ admin access ที่มีสิทธิ์
 - Empty state
 - Error state
 - Row action menu
@@ -154,7 +166,7 @@ Detail page ควรมี:
 - Key metadata
 - ผลกระทบต่อ FO surface ที่เกี่ยวข้อง
 - Activity/timeline เมื่อจำเป็น
-- Audit summary หรือ link ไป audit log สำหรับ role ที่มีสิทธิ์
+- Audit summary หรือ link ไป audit log สำหรับ admin access ที่มีสิทธิ์
 - Action panel ตาม permission
 - Sensitive section ที่ mask ถ้าไม่มีสิทธิ์
 
@@ -189,7 +201,7 @@ Form ต้องรองรับ:
 | Loading | แสดง skeleton หรือ loading state ที่ชัดเจน |
 | Empty | แสดง empty message ตาม module และมี reset filter เมื่อเกิดจาก filter |
 | Error | อธิบาย failure และมี retry เมื่อทำได้ |
-| Access denied | แจ้งว่า role นี้ไม่มีสิทธิ์เข้า module/action |
+| Access denied | แจ้งว่า admin access นี้ไม่มีสิทธิ์เข้า module/action |
 | Session expired | กลับไป login พร้อม message ชัดเจน |
 | Unsaved changes | เตือนก่อนออกจาก create/edit form |
 | Export processing | แสดง queued/in-progress สำหรับ export ใหญ่ |
@@ -205,7 +217,7 @@ BO ต้องใช้ state contract เดียวกับ `FO_BO_INTEGRAT
 | --- | --- | --- |
 | Active | User ใช้ FO ได้ปกติ | Login และ action ปกติทำได้ |
 | Suspended | ถูกจำกัดชั่วคราวโดย Admin | Login blocked หรือ session revoked ตาม auth implementation |
-| Banned | ถูก block ถาวรจนกว่า Super Admin จะปลด | Login blocked และสร้าง activity ใหม่ใน FO ไม่ได้ |
+| Banned | ถูก block ถาวรจนกว่า Admin จะปลด | Login blocked และสร้าง activity ใหม่ใน FO ไม่ได้ |
 | Soft Deleted / Archived | ผ่าน account deletion/archive workflow | Login blocked; profile/assets ถูกซ่อนหรือ anonymized ตาม policy |
 
 ## 10.2 Asset Status
@@ -296,7 +308,7 @@ BO action ที่ create, update, remove, export, publish, archive, resolve, r
 Minimum audit fields:
 
 - Admin ID
-- Admin role
+- Admin Access
 - Action type
 - Target entity type
 - Target entity ID
@@ -308,13 +320,13 @@ Minimum audit fields:
 
 Audit access:
 
-- Full audit log view/export เฉพาะ Super Admin
-- Module-level audit snippet แสดงให้ role ที่มีสิทธิ์ได้
+- Full audit log view/export เฉพาะ Admin
+- Module-level audit snippet แสดงให้ admin access ที่มีสิทธิ์ได้
 - Audit record ห้ามแก้ไขผ่าน BO UI ปกติ
 
 # 14. Sensitive Data Rules
 
-Sensitive data ต้องถูก mask เป็น default ยกเว้น role และ permission อนุญาต
+Sensitive data ต้องถูก mask เป็น default ยกเว้น admin access และ permission อนุญาต
 
 ตัวอย่าง sensitive data:
 
@@ -360,7 +372,7 @@ Action ที่กระทบ FO visibility, user access หรือ public c
 - Sensitive export ต้อง audit-log
 - Export ขนาดใหญ่ต้องใช้ background job
 - Export file ควรมี expiry หรือ controlled access
-- Data ที่ export ต้อง respect role-based field masking
+- Data ที่ export ต้อง respect policy-based field masking
 
 # 17. Responsive QA Requirements
 
@@ -386,14 +398,14 @@ Responsive QA ต้องตรวจ:
 
 | ID | Criteria |
 | --- | --- |
-| AC-BO-GLOBAL-001 | BO ถูกนิยามเป็น responsive web Back Office ไม่ใช่ FO mobile role |
-| AC-BO-GLOBAL-002 | ทุก BO route และ action enforce role permission |
-| AC-BO-GLOBAL-003 | BO navigation เป็น role-aware และ responsive |
+| AC-BO-GLOBAL-001 | BO ถูกนิยามเป็น responsive web Back Office ไม่ใช่ FO mobile Admin access |
+| AC-BO-GLOBAL-002 | ทุก BO route และ action enforce Admin Permission |
+| AC-BO-GLOBAL-003 | BO navigation เป็น access-aware และ responsive |
 | AC-BO-GLOBAL-004 | List/detail/form pattern ใช้สม่ำเสมอข้าม module |
 | AC-BO-GLOBAL-005 | Canonical user, asset, content, offer status ตรงกับ FO/BO integration map |
 | AC-BO-GLOBAL-006 | ทุก FO function ที่ต้องมี admin support ถูก map ไป BO module, backlog หรือ no-action decision |
 | AC-BO-GLOBAL-007 | BO action ที่กระทบ FO visibility/access ต้องระบุ FO sync impact |
-| AC-BO-GLOBAL-008 | Sensitive fields ถูก mask ถ้า role ไม่มีสิทธิ์ |
+| AC-BO-GLOBAL-008 | Sensitive fields ถูก mask ถ้า admin access ไม่มีสิทธิ์ |
 | AC-BO-GLOBAL-009 | Destructive และ public-impact actions ต้องมี confirmation และ audit |
 | AC-BO-GLOBAL-010 | Large export ใช้ background job และควบคุมด้วย permission |
 | AC-BO-GLOBAL-011 | Responsive QA ครอบคลุม mobile, tablet, desktop, wide desktop |

@@ -1,15 +1,15 @@
 # BO Specification — ตึกแดง Back Office System
 **เวอร์ชัน:** 1.1  
 **วันที่:** พฤษภาคม 2568  
-**ผู้ใช้งาน:** Admin และ Super Admin ของระบบตึกแดง  
-**อัปเดตจาก:** v1.0 → สอดคล้องกับ FO ล่าสุด (Role ผู้ใช้, Asset Status, Auth SSO, Profile Tabs)
+**ผู้ใช้งาน:** Admin ของระบบตึกแดง
+**อัปเดตจาก:** v1.0 → สอดคล้องกับ FO ล่าสุด (Admin access ผู้ใช้, Asset Status, Auth SSO, Profile Tabs)
 
 ---
 
 ## 1. ภาพรวม Back Office
 
 Back Office ของตึกแดงเป็น Web Application สำหรับทีมงาน Admin ในการจัดการทุกด้านของแพลตฟอร์ม ครอบคลุม:
-- จัดการผู้ใช้ (ไม่มีการแบ่ง Role ระหว่าง Buyer/Seller — ทุก User มี Role เดียวกัน)
+- จัดการผู้ใช้ (ไม่มีการแบ่ง FO user เป็น Buyer/Seller — ทุก User เป็น account type เดียวกัน)
 - จัดการและ Moderate สินทรัพย์ทุกสถานะ (Sale / Show / Hide / Sold)
 - จัดการ Content บทความที่แสดงบนหน้า Board ใน FO
 - จัดการ Watch Brands, Models และ Price Index
@@ -72,8 +72,8 @@ BO Dashboard
 
 ### 3.2 User Management
 
-> **สำคัญ:** ผู้ใช้ใน FO ทุกคนมี Role เดียวกัน (User) ไม่มี Buyer / Seller / Collector แยกกัน  
-> Admin ใน BO เท่านั้นที่มี Role แตกต่างกัน
+> **สำคัญ:** ผู้ใช้ใน FO ทุกคนเป็น account type เดียวกัน (`User`) ไม่มี Buyer / Seller / Collector แยกกัน  
+> Admin ใน BO เท่านั้นที่มี admin access แตกต่างกัน
 
 **ฟีเจอร์:**
 | ฟีเจอร์ | คำอธิบาย |
@@ -87,7 +87,7 @@ BO Dashboard
 | Reset Password | ส่งลิงก์ Reset ให้ผู้ใช้ทาง Email — ใช้ได้เฉพาะบัญชี Email/Password เท่านั้น (ไม่ใช้กับ Apple/Google SSO) |
 | ดู Login History | ประวัติการเข้าสู่ระบบ (Auth Method, Device, IP, Timestamp) |
 | ดู Auth Method | ระบุว่าบัญชีนี้สมัครด้วยวิธีใด: Email/Password, Apple Sign In, Google Sign In |
-| Export | Export รายชื่อผู้ใช้เป็น CSV |
+| Export | Requires permission check, scope control, expiry/background job where needed, and audit export event. |
 
 **Columns ตารางผู้ใช้:**
 | Column | คำอธิบาย |
@@ -119,12 +119,12 @@ BO Dashboard
 |---|---|
 | ดูรายการสินทรัพย์ทั้งหมด | Filter ตาม Status (Sale/Show/Hide/Sold/Flagged), Brand, ราคา, Owner |
 | ดูรายละเอียดสินทรัพย์ | ข้อมูลครบทุกฟิลด์ รวม Provenance, Consignment Info, Sale History |
-| Force Change Status | เปลี่ยนสถานะสินทรัพย์ได้ทุกสถานะ (เฉพาะ Super Admin / Moderator) |
+| Force Change Status | เปลี่ยนสถานะสินทรัพย์ได้ทุกสถานะ (เฉพาะ Admin) |
 | Remove Asset | ลบสินทรัพย์ที่ละเมิด Policy (Soft Delete) |
-| Edit Asset Info | แก้ไขข้อมูลสินทรัพย์ได้ (เฉพาะ Super Admin) รวมถึงสถานะ Sold |
+| Edit Asset Info | แก้ไขข้อมูลสินทรัพย์ได้ (เฉพาะ Admin) รวมถึงสถานะ Sold |
 | Flag / Unflag Asset | ทำ Flag เพื่อ Review หรือยกเลิก Flag |
 | ดู User Reports | ดูรายงานที่ถูก Report โดยผู้ใช้ FO พร้อมเหตุผล |
-| ดู Provenance | ดูข้อมูล Provenance และ Proof of Payment (เฉพาะ Super Admin) |
+| ดู Provenance | ดูข้อมูล Provenance และ Proof of Payment (เฉพาะ Admin) |
 | ดู Sale History | ดูประวัติการขายของสินทรัพย์ที่มีสถานะ Sold |
 
 **Columns ตารางสินทรัพย์:**
@@ -146,7 +146,7 @@ BO Dashboard
 ### 3.4 Content Management — Articles
 
 นี่คือ Module หลักสำหรับสร้าง Content ที่แสดงบนหน้า **Board** ใน FO  
-ผู้ใช้ FO อ่านได้อย่างเดียว — Admin เท่านั้นที่สร้างและจัดการบทความได้
+ผู้ใช้ FO อ่านได้อย่างเดียว; Admin ที่มีสิทธิ์ตาม policy เป็นผู้สร้างและจัดการบทความใน BO
 
 #### 3.4.1 Article List
 **ฟีเจอร์:**
@@ -359,44 +359,23 @@ Watch Shops, Accessories Shops, Repair Shops, Auction Centers, Consignment Cente
 
 ---
 
-### 3.12 Admin Role & Permissions
+### 3.12 Admin Access & Permissions
 
-> **หมายเหตุ:** Role ใน BO ไม่เกี่ยวข้องกับ Role ใน FO  
-> ผู้ใช้ FO ทุกคนมี Role เดียวกัน (User) — Role ที่ระบุด้านล่างนี้ใช้เฉพาะ Admin ใน BO เท่านั้น
+BO uses exactly one admin account type: `Admin`. There are no BO sub-types. The former multi-column policy catalog is replaced by module/action policy.
 
-| Role | สิทธิ์ที่มี |
+| Module | Admin access rule |
 |---|---|
-| **Super Admin** | ทุกสิทธิ์ รวมถึงลบ User, Edit/Delete Asset ทุกสถานะ (รวม Sold), ดู Provenance, จัดการ Admin Accounts |
-| **Content Admin** | จัดการ Articles, Categories, Banners |
-| **Moderator** | ดู / Flag / Unflag / Remove Assets, ดู User Reports, ดู Reports |
-| **Support Admin** | ดู User Profiles, ดู Login History, Reset Password (เฉพาะ Email/Password Account), ตอบ Help |
-| **Market Admin** | จัดการ Watch Brands, Watch Models, Price Index, Directory |
-
-**ตารางสรุปสิทธิ์:**
-| Module | Super Admin | Content Admin | Moderator | Support Admin | Market Admin |
-|---|---|---|---|---|---|
-| Dashboard | ✓ | ✓ | ✓ | ✓ | ✓ |
-| User Management | Full | View Only | View Only | Partial* | — |
-| Asset Management | Full | — | Moderate** | — | — |
-| Articles | Full | Full | — | — | — |
-| Banners | Full | Full | — | — | — |
-| Market Data | Full | — | — | — | Full |
-| Directory | Full | — | — | — | Full |
-| Reports | Full | Content Only | Asset/User | — | Market Only |
-| Notifications | Full | — | — | — | — |
-| Admin Settings | Full | — | — | — | — |
-| Audit Log | Full | — | — | — | — |
-
-*Support Admin: ดูได้, Reset Password (Email เท่านั้น), ไม่ Suspend/Ban  
-**Moderator: Flag/Unflag/Remove เท่านั้น ไม่ Edit
-
----
-
+| Dashboard | Admin can view operational overview according to data sensitivity policy. |
+| User Management | Admin can view/manage users with confirmation, reason, sensitive-data masking, and audit for high-risk actions. |
+| Asset Management | Admin can review and change assets with FO-impact, sensitive-data, confirmation, reason, and audit controls. |
+| Articles / Banners | Admin can create, edit, preview, publish, schedule, archive, and audit content actions. |
+| Market Data / Directory | Admin can manage watch data and directory entries with source, inactive/restore, and audit controls. |
+| Reports / Notifications / Audit / Settings | Admin can operate these modules according to export, approval, sensitive-data, and high-risk setting policies. |
 ## 4. BO Authentication
 
 - Login ด้วย Email/Password เท่านั้น (ไม่รองรับ Apple หรือ Google SSO — เฉพาะ Internal Use)
-- **Two-Factor Authentication (2FA) บังคับ** สำหรับ Super Admin และ Content Admin
-- 2FA แนะนำสำหรับ Role อื่น (ไม่บังคับ)
+- **Two-Factor Authentication (2FA) บังคับ** สำหรับ Admin
+- 2FA แนะนำสำหรับ admin access อื่น (ไม่บังคับ)
 - Session หมดอายุใน **8 ชั่วโมง** (Idle) หรือ **24 ชั่วโมง** (Max)
 - IP Whitelist: ตัวเลือกสำหรับ Production Environment
 - Failed Login เกิน 5 ครั้ง → Lock Account 15 นาที
@@ -409,7 +388,7 @@ Watch Shops, Accessories Shops, Repair Shops, Auction Centers, Consignment Cente
 - **Framework:** React / Next.js
 - **Responsive:** รองรับ desktop, tablet และ mobile-width browser โดย optimize workflow หลักสำหรับหน้าจอใหญ่
 - **Authentication:** JWT + Refresh Token + 2FA (TOTP)
-- **API:** REST API ชุดเดียวกับ FO แต่ใช้ Admin-only Endpoints (Bearer Token + Role Check)
+- **API:** REST API ชุดเดียวกับ FO แต่ใช้ Admin-only Endpoints (Bearer Token + Admin Access Check)
 - **Rich Text Editor:** TipTap หรือ Quill
 - **File Upload:** รองรับ Drag & Drop, Preview ก่อน Upload
 - **Data Table:** Sortable, Paginated, Searchable, Export
@@ -424,7 +403,7 @@ Watch Shops, Accessories Shops, Repair Shops, Auction Centers, Consignment Cente
 | ฟิลด์ | คำอธิบาย |
 |---|---|
 | Admin ID | รหัส Admin ที่ทำ Action |
-| Admin Role | Role ของ Admin ขณะนั้น |
+| Admin Access | Admin access ของ Admin ขณะนั้น |
 | Action Type | Create / Update / Delete / Approve / Reject / Suspend / Ban / Flag / Send Notification / etc. |
 | Target Entity Type | User / Asset / Article / Brand / Model / Price / Directory / Notification |
 | Target Entity ID | ID ของ Entity ที่ถูกกระทำ |
@@ -433,7 +412,7 @@ Watch Shops, Accessories Shops, Repair Shops, Auction Centers, Consignment Cente
 | IP Address | IP ของ Admin |
 | Timestamp | วันเวลาที่ทำ Action (UTC+7) |
 
-**การเข้าถึง Audit Log:** Super Admin เท่านั้น  
+**การเข้าถึง Audit Log:** Admin access policy, sensitive-payload policy และ export policy เป็นตัวกำหนด
 **Retention:** เก็บ Audit Log อย่างน้อย 1 ปี
 
 ---

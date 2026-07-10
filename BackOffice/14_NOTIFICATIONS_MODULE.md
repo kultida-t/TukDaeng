@@ -77,22 +77,18 @@ New Message ใช้เป็น unread badge/count ในเมนู Chat ไ
 | Retry | ตาม delivery job policy | Retry failed system notification ได้ |
 | FO V1 Constraint | In-app list ต้องรอ decision ถ้าใช้ type `Broadcast` | ต้อง map เป็น supported FO type เท่านั้น |
 
-## 5. Roles & Permissions
+## 5. Admin Access & Permissions
 
-| Action | Super Admin | Support Admin | Moderator | Content Admin | Market Admin |
-| --- | --- | --- | --- | --- | --- |
-| View notification dashboard | Yes | View delivery related to ticket | View moderation-related logs | View content-related broadcast | View market/watch-alert logs |
-| Create broadcast draft | Yes | No | No | Yes with approval | No |
-| Approve/send broadcast | Yes | No | No | No | No |
-| Cancel scheduled broadcast | Yes | No | No | Own draft before approval only | No |
-| Edit system template | Yes | No | No | No | No |
-| Enable/disable system type | Yes | No | No | No | No |
-| View delivery logs | Yes | Scoped | Scoped | Scoped | Scoped |
-| Retry failed notification | Yes | No | No | No | No |
-| Export notification report | Yes | No | No | No | No |
+BO uses a single Admin account type only. Admin access is controlled by module access, action policy, sensitive-data policy, confirmation, reason, and audit requirements instead of separate BO admin account types.
 
-Broadcast ที่ส่งถึงผู้ใช้จริงต้องผ่าน Super Admin approval เสมอ เว้นแต่ Product กำหนด workflow เพิ่ม
 
+| Access Area | Rule |
+| --- | --- |
+| Module access | Admin can use list/detail/search/filter when module access is granted. |
+| Write action | Create, update, status change, remove, restore, publish, archive, retry, and similar actions require permission check, confirmation for high-risk actions, reason when FO/user impact exists, and audit log. |
+| Sensitive data | Mask by default; reveal only with business reason, policy approval, and audit log. |
+| Export | Requires permission check, scope control, expiry/background job where needed, and audit export event. |
+| Direct URL/API | Enforce access at route, API, and service layers; never rely only on hidden UI. |
 ## 6. Responsive Layout
 
 | Breakpoint | Layout |
@@ -118,7 +114,7 @@ Editor ต้องมี preview และ validation ที่ใช้งา�
 | Deep Link | Destination ที่ validate แล้ว |
 | Scheduled At | เวลาส่งถ้ามี |
 | Created By | Admin ผู้สร้าง |
-| Approved By | Super Admin ผู้อนุมัติ |
+| Approved By | Admin ผู้อนุมัติ |
 | Delivery Stats | Sent, delivered, opened, failed |
 | Created At / Updated At | วันที่สร้างและแก้ไขล่าสุด |
 
@@ -127,7 +123,7 @@ Editor ต้องมี preview และ validation ที่ใช้งา�
 | Status | Meaning |
 | --- | --- |
 | `Draft` | ยังแก้ไขได้ ยังไม่พร้อมส่ง |
-| `Pending Approval` | รอ Super Admin อนุมัติ |
+| `Pending Approval` | รอ Admin อนุมัติ |
 | `Scheduled` | อนุมัติแล้วและรอเวลาส่ง |
 | `Sending` | job กำลังส่ง |
 | `Sent` | ส่งเสร็จแล้ว |
@@ -159,7 +155,7 @@ Target audience baseline:
 | Segment by activity | เช่น active in last N days |
 | Segment by asset ownership | เช่น user ที่มี Sale asset |
 | Segment by Watch Alert | เช่น user ที่มี active Watch Alert |
-| Manual user IDs | จำกัดเฉพาะ Super Admin |
+| Manual user IDs | จำกัดเฉพาะ Admin |
 
 ห้ามส่งไปยัง account ที่ `Banned`, `Archived`, `Anonymized` หรืออยู่ใน deletion state
 
@@ -279,7 +275,7 @@ Retry action ต้องมี audit log และต้องไม่สร�
 | --- | --- | --- |
 | Create broadcast draft | Title/body/audience/channel required | Required |
 | Submit broadcast approval | ต้อง validate audience/destination | Required |
-| Approve broadcast | Super Admin only | Required |
+| Approve broadcast | Admin access required | Required |
 | Send now | Confirmation required | Required |
 | Schedule broadcast | Date-time required | Required |
 | Cancel scheduled broadcast | Reason required | Required |

@@ -39,7 +39,7 @@
 
 ### Activities
 - แยก Module ของ BO
-- ระบุ User Role ที่เกี่ยวข้อง
+- ระบุ User account type ที่เกี่ยวข้อง
 - ระบุ CRUD Operation ของแต่ละส่วน
 - ระบุ Validation Rule
 - ระบุ Permission & Access Control
@@ -51,7 +51,7 @@
 - BO Functional Checklist
 - BO Question Checklist
 - BO Validation Checklist
-- BO Permission Matrix
+- BO Admin Access Matrix
 
 ---
 

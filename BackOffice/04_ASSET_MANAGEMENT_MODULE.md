@@ -31,8 +31,8 @@ BO Asset Management คือหน้าจอสำหรับ Admin ใช�
 - Reported asset queue และ moderation workflow
 - Flag/unflag asset
 - Soft remove / hide from public surfaces
-- Force status change ตาม role permission
-- Sensitive-field masking และ reveal ตาม role
+- Force status change ตาม Admin Permission
+- Sensitive-field masking และ reveal ตาม Admin access
 - Audit trail พร้อม before/after state และ reason
 - Responsive layout สำหรับ desktop, tablet และ mobile-width browser
 
@@ -44,18 +44,18 @@ BO Asset Management คือหน้าจอสำหรับ Admin ใช�
 - AI moderation
 - Offer/chat dispute workflow แบบเต็มรูปแบบ อยู่ใน Phase 2 module
 
-## 3. Roles And Permissions
+## 3. Admin Access And Permissions
 
-| Role | Permission |
+BO uses a single Admin account type only. Admin access is controlled by module access, action policy, sensitive-data policy, confirmation, reason, and audit requirements instead of separate BO admin account types.
+
+
+| Access Area | Rule |
 | --- | --- |
-| Super Admin | ดูทุก asset, ดู sensitive fields, force status, remove, export, override moderation result |
-| Moderator | ดู asset/report queue, flag/unflag, soft remove, force status ตาม policy ที่อนุญาต |
-| Support Admin | ดู asset context เพื่อ support user แต่ sensitive fields ต้อง mask เป็น default |
-| Market Admin | ดู asset เพื่อประกอบ market data แต่ไม่ควรเปลี่ยน moderation state |
-| Content Admin | ไม่มีสิทธิ์หลักใน asset management ยกเว้นได้รับ permission เพิ่ม |
-
-ทุก write action ต้องตรวจ permission ทั้ง UI, route/API และ service layer
-
+| Module access | Admin can use list/detail/search/filter when module access is granted. |
+| Write action | Create, update, status change, remove, restore, publish, archive, retry, and similar actions require permission check, confirmation for high-risk actions, reason when FO/user impact exists, and audit log. |
+| Sensitive data | Mask by default; reveal only with business reason, policy approval, and audit log. |
+| Export | Requires permission check, scope control, expiry/background job where needed, and audit export event. |
+| Direct URL/API | Enforce access at route, API, and service layers; never rely only on hidden UI. |
 ## 4. Responsive Layout
 
 BO Asset Management ต้องเป็น responsive web application:
@@ -169,7 +169,7 @@ Asset detail ต้องรวมข้อมูลสำหรับ review:
 - Consignment terms
 - Consignment asking price
 
-BO ต้องแสดงข้อมูลกลุ่มนี้ตาม role permission เท่านั้น และควร mask เป็น default สำหรับ role ที่ไม่ได้รับสิทธิ์
+BO ต้องแสดงข้อมูลกลุ่มนี้ตาม Admin Permission เท่านั้น และควร mask เป็น default สำหรับ admin access ที่ไม่ได้รับสิทธิ์
 
 ## 7. Status And FO Visibility Matrix
 
@@ -213,7 +213,7 @@ Admin force status change ต้องมี:
 
 - Asset ต้องเข้า BO reported asset queue
 - Asset ไม่ควรถูกซ่อนจาก FO ทันที เว้นแต่มี policy/system rule ชัดเจน
-- Moderator หรือ Super Admin ต้อง review report แล้วเลือก action
+- Admin หรือ Admin ต้อง review report แล้วเลือก action
 - Action ที่เป็นไปได้: resolve/no action, flag, unflag, force status, soft remove
 - ทุกผลลัพธ์ต้อง audit-log และผูกกลับ report record
 
@@ -225,20 +225,20 @@ Reported asset detail ควรแสดง:
 - Report timestamp
 - Previous report history
 - Asset current status
-- Related comments/offers ถ้ามีและ role มีสิทธิ์
+- Related comments/offers ถ้ามีและ admin access มีสิทธิ์
 
 ## 10. Sensitive Data Rules
 
-Sensitive fields ต้องไม่แสดงแบบเปิดโล่งกับทุก role:
+Sensitive fields ต้องไม่แสดงแบบเปิดโล่งกับทุก Admin access:
 
 | Data | Default Behavior | Allowed Roles |
 | --- | --- | --- |
-| Purchase Price | Masked | Super Admin, role ที่ได้รับ permission เฉพาะ |
-| Purchase Date / Purchase From | Masked หรือ partial | Super Admin, Moderator ตาม policy |
-| Proof of Payment | Hidden/preview blocked | Super Admin หรือ permission เฉพาะ |
-| Consignment Owner Contact | Masked | Super Admin, Support Admin ตาม case |
-| Consignment Terms | Masked | Super Admin, permission เฉพาะ |
-| Sold History | Limited summary | Super Admin, Moderator, Support Admin ตาม case |
+| Purchase Price | Masked | Admin, admin access ที่ได้รับ permission เฉพาะ |
+| Purchase Date / Purchase From | Masked หรือ partial | Admin ตาม policy |
+| Proof of Payment | Hidden/preview blocked | Admin หรือ permission เฉพาะ |
+| Consignment Owner Contact | Masked | Admin ตาม case |
+| Consignment Terms | Masked | Admin, permission เฉพาะ |
+| Sold History | Limited summary | Admin ตาม case |
 
 การ reveal sensitive field ควรถูก audit เมื่อข้อมูลมีความเสี่ยงสูง เช่น proof of payment หรือ consignment contact
 
@@ -246,7 +246,7 @@ Sensitive fields ต้องไม่แสดงแบบเปิดโล่
 
 | Action | Requirement |
 | --- | --- |
-| View detail | Role must have module access |
+| View detail | Admin access must have module access |
 | Reveal sensitive data | Permission required; audit when high-risk |
 | Flag asset | Reason required; audit |
 | Unflag asset | Reason required; audit |
@@ -263,7 +263,7 @@ Bulk action ใน Phase 1 ควรจำกัดเฉพาะ low-risk acti
 - Empty list เมื่อไม่มี asset ตาม filter
 - Empty reported queue
 - Partial load error สำหรับ sensitive section โดยไม่ทำให้ detail ทั้งหน้าล่ม
-- Permission denied state สำหรับ action หรือ field ที่ role ไม่มีสิทธิ์
+- Permission denied state สำหรับ action หรือ field ที่ admin access ไม่มีสิทธิ์
 - Asset unavailable state เมื่อ asset ถูก remove/archive ระหว่างเปิดหน้า
 - Stale status warning เมื่อมี concurrent update
 
@@ -272,7 +272,7 @@ Bulk action ใน Phase 1 ควรจำกัดเฉพาะ low-risk acti
 ทุก write action ต้องบันทึก:
 
 - Admin ID
-- Admin role
+- Admin Access
 - Action type
 - Target asset ID
 - Before value
@@ -316,9 +316,9 @@ Action types ขั้นต่ำ:
 
 | ID | Criteria |
 | --- | --- |
-| AC-BO-ASSET-001 | Admin เห็น asset list พร้อม search/filter/sort/pagination ตาม role |
+| AC-BO-ASSET-001 | Admin เห็น asset list พร้อม search/filter/sort/pagination ตาม Admin access |
 | AC-BO-ASSET-002 | Asset detail แสดง core fields, gallery, status, owner และ moderation context ครบ |
-| AC-BO-ASSET-003 | Sensitive fields ถูก mask เป็น default และเปิดได้เฉพาะ role ที่มี permission |
+| AC-BO-ASSET-003 | Sensitive fields ถูก mask เป็น default และเปิดได้เฉพาะ admin access ที่มี permission |
 | AC-BO-ASSET-004 | Reported asset เข้า queue โดยไม่หายจาก FO ทันที เว้นแต่มี rule ชัดเจน |
 | AC-BO-ASSET-005 | Flag/unflag/remove/force status ต้องมี confirmation, reason และ audit |
 | AC-BO-ASSET-006 | BO status change sync ผลไป FO surfaces ตาม visibility matrix |
@@ -331,7 +331,7 @@ Action types ขั้นต่ำ:
 
 | ID | Decision Needed | Current Recommendation |
 | --- | --- | --- |
-| BO-ASSET-DEC-001 | จะเปิด `restore removed asset` ใน Phase 1 หรือไม่ | ยังไม่เปิดเป็น default; ถ้าต้องเปิดต้องมี Super Admin permission และ audit |
+| BO-ASSET-DEC-001 | จะเปิด `restore removed asset` ใน Phase 1 หรือไม่ | ยังไม่เปิดเป็น default; ถ้าต้องเปิดต้องมี Admin permission และ audit |
 | BO-ASSET-DEC-002 | Sensitive-field reveal ต้อง audit ทุกครั้งหรือเฉพาะ high-risk fields | Audit อย่างน้อย proof of payment, consignment contact และ export |
 | BO-ASSET-DEC-003 | Pending offer เมื่อ asset ถูก BO remove/sold ใช้ status `Cancelled` หรือ `Invalidated` | ใช้ `Invalidated` เป็น system-caused state และ map UX ใน Offer module |
 | BO-ASSET-DEC-004 | Direct-link unavailable copy ใน FO | ให้ FO UX กำหนด copy แต่ BO ต้องส่ง state ที่ชัดเจน |
