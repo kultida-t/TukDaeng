@@ -4,6 +4,30 @@
 **Date:** 2026-07-06  
 **Purpose:** Checklist ตั้งต้นสำหรับแตก ticket implementation ของ BO
 
+## Prototype Handoff Notes Capture
+
+Use this section while BA/UX is completing the BO prototype. Capture only notes that Dev will need later; do not create the full Dev Handoff Sheet until all prototype modules are stable.
+
+Guidelines:
+
+- Keep notes short and implementation-facing.
+- Put module-specific notes under the related module section in this checklist.
+- After all prototype modules are complete, consolidate these notes into `BO_DEV_HANDOFF.md` or separate module handoff files.
+- Each note should cover at least one of: data/API, route/filter, permission, loading/empty/error state, responsive QA, or FO sync impact.
+
+Recommended note format:
+
+| Field | Detail |
+| --- | --- |
+| Prototype Reference | File, screen, or section in the prototype |
+| Spec Reference | Related PRD/spec/checklist source |
+| Data Needed | API fields, aggregate fields, or mock-data mapping Dev must replace |
+| Route / Drill-in | Target module/route and filter context |
+| State Handling | Loading, empty, error, partial error, stale, unauthorized |
+| Permission / Privacy | Permission enforcement, masked fields, hidden sections |
+| FO Sync Impact | Feed, Search, Profile, Notification, Watch Alert, or other FO impact |
+| Open Question | Product/Dev decision still needed |
+
 ## 0. Foundation
 
 - [ ] ใช้ `../ProjectAdmin/FO_BO_INTEGRATION_MAP.md` ตรวจทุก BO action ที่เปลี่ยน behavior บน FO
@@ -18,17 +42,17 @@
 ## 1. Auth And Permission
 
 - [ ] Admin login รองรับ email/password เท่านั้น
-- [ ] Admin must use mandatory 2FA
+- [ ] Admin must pass mandatory Email OTP verification after email/password
 - [ ] Failed login ครบ 5 ครั้ง lock account 15 นาที
 - [ ] Idle session หมดอายุหลัง 8 ชั่วโมง และ max session หลัง 24 ชั่วโมง
 - [ ] Permission guard มีทั้ง route level และ action/API level
 - [ ] BO reset password flow แยกจาก FO user reset password
-- [ ] Login, logout, failed login, 2FA setup/change และ lockout events ต้อง audit-log
+- [ ] Login, logout, failed login, Email OTP sent/verified/failed/resend และ lockout events ต้อง audit-log
 
 ## 2. Dashboard
 
 - [ ] แสดง new users วันนี้/สัปดาห์นี้/เดือนนี้
-- [ ] แสดง DAU/MAU
+- [ ] แสดง Active Users Today เป็น primary Dashboard KPI
 - [ ] แสดง asset count แยกตาม status
 - [ ] แสดง offer made/accepted/rejected counts
 - [ ] แสดง pending report count
@@ -36,11 +60,26 @@
 - [ ] แสดง policy-based dashboard view ตาม permission ของ admin
 - [ ] Metric/queue card ต้อง drill-in ไป module ที่เกี่ยวข้องพร้อม filter
 - [ ] Dashboard ต้องรองรับ partial load error โดยไม่ล้มทั้งหน้า
+- [ ] Dashboard responsive order ตรง prototype: Header -> KPI Summary -> Work Queue -> Recent Activity -> Dashboard Panels
 - [ ] แสดง active watch alert count
 - [ ] แสดง latest articles
 - [ ] แสดง top searched brands
 - [ ] แสดง recent activity feed
-- [ ] Date range change ต้อง update dashboard metrics สม่ำเสมอ
+- [ ] Dashboard header แสดง `Last updated` และไม่ต้องมี Date Range / Refresh / Export controls ตาม prototype ปัจจุบัน
+
+### Dashboard Prototype Handoff Notes
+
+| Field | Detail |
+| --- | --- |
+| Prototype Reference | `Prototypes/bo-prototype.html` > Dashboard default screen |
+| Spec Reference | `02_DASHBOARD_MODULE.md`, `BO_PRD.md` section 4.2, `PRD/DASHBOARD_UX_TEST_CASES.md` |
+| Data Needed | Dashboard snapshot API should provide `lastUpdated`, KPI metrics, KPI chips, work queues, recent activities, status panels, top searched brands, and drill-in metadata. |
+| Route / Drill-in | KPI cards, metric chips, Work Queue rows, Recent Activity rows, and Dashboard Panel rows must navigate to the related BO module/submodule with the equivalent filter context. |
+| State Handling | Dev must implement section-level loading, empty, partial error, full error, stale data warning, and unauthorized section hiding. Prototype currently uses mock data only. |
+| Permission / Privacy | Dashboard visibility must be policy-based. Hide module metrics/queues/activities if the Admin has no permission, and enforce permission again at destination routes/APIs. |
+| Responsive QA | Verify 375px, 768px, 1280px, and 1440px. Mobile/tablet navigation uses hamburger drawer; Dashboard order must remain Header -> KPI Summary -> Work Queue -> Recent Activity -> Dashboard Panels. |
+| FO Sync Impact | Dashboard signals come from FO-triggered data: reports, assets, offers, support, watch alerts, content, notifications, market/search activity, and account deletion. |
+| Open Question | Final API shape, cache/freshness interval, and exact route/filter parameter names should be confirmed when Dev starts BO implementation. |
 
 ## 3. User Management
 
@@ -260,12 +299,12 @@
 
 ## 16. Admin Settings
 
-- [ ] Admin ทุก admin access ต้องเข้าดู own profile/settings และเปลี่ยน password/ตั้งค่า 2FA ตาม rule ได้
-- [ ] Admin ต้องจัดการ admin account lifecycle: invite, change admin access policy, suspend/reactivate, unlock, reset 2FA, archive
+- [ ] Admin ทุก admin access ต้องเข้าดู own profile/settings และเปลี่ยน password ตาม rule ได้
+- [ ] Admin ต้องจัดการ admin account lifecycle: invite, change admin access policy, suspend/reactivate, unlock, archive
 - [ ] ระบบต้องป้องกันการ suspend/archive/change admin access policy ของ Admin active คนสุดท้าย
 - [ ] Admin Access Matrix ต้องแสดงสิทธิ์ตาม module/action และ enforce ทั้ง UI/API level
 - [ ] Permission change ต้องมี confirmation, reason, before/after diff และ audit log
-- [ ] Security policy ต้องสอดคล้องกับ Auth baseline: email/password only, mandatory 2FA สำหรับ Admin, idle 8h, max 24h, failed login 5 ครั้ง, lockout 15 นาที
+- [ ] Security policy ต้องสอดคล้องกับ Auth baseline: email/password only, mandatory Email OTP สำหรับ Admin, idle 8h, max 24h, failed login 5 ครั้ง, lockout 15 นาที
 - [ ] Retention settings ต้องไม่อนุญาต manual delete audit logs จาก UI ปกติ
 - [ ] Export policy ต้องรองรับ CSV/Excel, background job, expiry, sensitive export reason และ audit
 - [ ] Feature flags ต้องแสดง FO/BO impact ก่อนบันทึก และ audit ทุกครั้ง

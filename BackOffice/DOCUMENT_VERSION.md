@@ -17,7 +17,7 @@
 | `BO-PRD-v0.1` | 2026-07-06 | เริ่มชุดเอกสาร Back Office baseline หลัง FO cleanup เพิ่ม reading order, source-of-truth rules, module map, sprint plan และ dev checklist |
 | `INT-MAP-v0.1` | 2026-07-06 | เพิ่ม shared FO/BO integration map ที่ `ProjectAdmin/FO_BO_INTEGRATION_MAP.md` เพื่อให้ FO/BO แยกเอกสารแต่ trace งานข้ามระบบได้ |
 | `BO-00-v0.1` | 2026-07-06 | เพิ่ม Back Office Global Rules module ครอบคลุม responsive web, admin access control, shared patterns, canonical statuses, FO sync, audit, privacy, exports และ responsive QA |
-| `BO-01-v0.1` | 2026-07-06 | เพิ่ม BO Authentication and Admin Accounts module ครอบคลุม login, 2FA, session, lockout, admin lifecycle, permission enforcement, security audit และ responsive auth screens |
+| `BO-01-v0.1` | 2026-07-06 | เพิ่ม BO Authentication and Admin Accounts module ครอบคลุม login, Email OTP, session, lockout, admin lifecycle, permission enforcement, security audit และ responsive auth screens |
 | `BO-02-v0.1` | 2026-07-06 | เพิ่ม BO Dashboard module ครอบคลุม responsive dashboard, metric cards, pending queues, SLA signals, activity feed, policy-based views และ drill-in ไป module ที่เกี่ยวข้อง |
 | `BO-03-v0.1` | 2026-07-06 | เพิ่ม BO User Management module ครอบคลุม user list/detail, auth method, login history, reported user context, reset password, suspend/ban, soft delete/archive, FO impact และ audit |
 | `BO-04-v0.1` | 2026-07-06 | เพิ่ม BO Asset Management module ครอบคลุม asset list/detail, status visibility, reported assets, moderation actions, sensitive fields, FO sync และ audit |

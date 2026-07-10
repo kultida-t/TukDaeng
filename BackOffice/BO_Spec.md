@@ -58,7 +58,7 @@ BO Dashboard
 
 **ข้อมูลที่แสดง:**
 - จำนวนผู้ใช้ใหม่วันนี้ / สัปดาห์นี้ / เดือนนี้ (พร้อม % เทียบช่วงก่อน)
-- จำนวน Active Users (DAU / MAU)
+- จำนวน Active Users Today
 - จำนวนสินทรัพย์ที่เพิ่มใหม่วันนี้ แยกตามสถานะ (Sale / Show / Hide)
 - จำนวน Transactions (Offer Accepted) วันนี้
 - จำนวน Pending Reports (สินทรัพย์ที่ถูก Flag รอ Review)
@@ -374,8 +374,8 @@ BO uses exactly one admin account type: `Admin`. There are no BO sub-types. The 
 ## 4. BO Authentication
 
 - Login ด้วย Email/Password เท่านั้น (ไม่รองรับ Apple หรือ Google SSO — เฉพาะ Internal Use)
-- **Two-Factor Authentication (2FA) บังคับ** สำหรับ Admin
-- 2FA แนะนำสำหรับ admin access อื่น (ไม่บังคับ)
+- **Email OTP verification บังคับ** สำหรับ Admin หลังผ่าน email/password
+- ไม่ใช้แอปยืนยันตัวตนภายนอกสำหรับ BO V1
 - Session หมดอายุใน **8 ชั่วโมง** (Idle) หรือ **24 ชั่วโมง** (Max)
 - IP Whitelist: ตัวเลือกสำหรับ Production Environment
 - Failed Login เกิน 5 ครั้ง → Lock Account 15 นาที
@@ -387,7 +387,7 @@ BO uses exactly one admin account type: `Admin`. There are no BO sub-types. The 
 
 - **Framework:** React / Next.js
 - **Responsive:** รองรับ desktop, tablet และ mobile-width browser โดย optimize workflow หลักสำหรับหน้าจอใหญ่
-- **Authentication:** JWT + Refresh Token + 2FA (TOTP)
+- **Authentication:** JWT + Refresh Token + Email OTP verification
 - **API:** REST API ชุดเดียวกับ FO แต่ใช้ Admin-only Endpoints (Bearer Token + Admin Access Check)
 - **Rich Text Editor:** TipTap หรือ Quill
 - **File Upload:** รองรับ Drag & Drop, Preview ก่อน Upload

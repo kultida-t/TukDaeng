@@ -112,7 +112,7 @@ FO users have a single account type: `User`. BO must support activity from the s
 Dashboard ต้องแสดง:
 
 - จำนวนผู้ใช้ใหม่ วันนี้ / สัปดาห์นี้ / เดือนนี้
-- DAU / MAU
+- Active Users Today
 - จำนวน asset ใหม่ แยกตามสถานะ
 - Offer made / accepted / rejected
 - Pending reports
@@ -124,7 +124,7 @@ Dashboard ต้องแสดง:
 ### Acceptance Criteria
 
 - Admin เห็นภาพรวมระบบภายในหน้าเดียว
-- Metrics ต้องรองรับ date range
+- Metrics แสดง snapshot ล่าสุดพร้อม `Last updated`; Dashboard ไม่ต้องมี Date Range control ใน prototype ปัจจุบัน
 - ข้อมูลบน Dashboard ต้องเชื่อมกับ report module ได้
 
 ---

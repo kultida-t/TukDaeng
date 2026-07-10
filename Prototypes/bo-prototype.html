@@ -3,796 +3,2366 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>TukDaeng Back Office Prototype</title>
+  <title>Tuk Daeng Back Office Prototype</title>
   <style>
+    @font-face {
+      font-family: "IBM Plex Sans Thai";
+      font-style: normal;
+      font-weight: 400;
+      font-display: swap;
+      src: url("./assets/fonts/google/IBMPlexSansThai-Regular.ttf") format("truetype");
+    }
+    @font-face {
+      font-family: "IBM Plex Sans Thai";
+      font-style: normal;
+      font-weight: 500;
+      font-display: swap;
+      src: url("./assets/fonts/google/IBMPlexSansThai-Medium.ttf") format("truetype");
+    }
+    @font-face {
+      font-family: "IBM Plex Sans Thai";
+      font-style: normal;
+      font-weight: 600;
+      font-display: swap;
+      src: url("./assets/fonts/google/IBMPlexSansThai-SemiBold.ttf") format("truetype");
+    }
+    @font-face {
+      font-family: "IBM Plex Sans Thai";
+      font-style: normal;
+      font-weight: 700;
+      font-display: swap;
+      src: url("./assets/fonts/google/IBMPlexSansThai-Bold.ttf") format("truetype");
+    }
+    @font-face {
+      font-family: "Bebas Neue";
+      font-style: normal;
+      font-weight: 400;
+      font-display: swap;
+      src: url("./assets/fonts/google/BebasNeue-Regular.ttf") format("truetype");
+    }
+
     :root {
-      --bg: #f3f7fc;
+      --page: #f4f7fb;
       --panel: #ffffff;
-      --line: #d6e1ee;
-      --line-strong: #c2d2e4;
-      --text: #06142e;
-      --muted: #516684;
-      --brand: #a00000;
-      --brand-soft: #fff1f1;
-      --blue: #0a91de;
-      --blue-soft: #e9f5ff;
-      --green: #059669;
-      --green-soft: #dff8ee;
-      --red: #dc2626;
-      --red-soft: #ffe6e6;
-      --amber: #b7791f;
-      --amber-soft: #fff3c4;
-      --purple: #6d38d4;
-      --purple-soft: #eee7ff;
-      --cyan: #0f9f8f;
-      --cyan-soft: #ccfbf1;
-      --shadow: 0 1px 2px rgba(11, 31, 64, .08), 0 10px 30px rgba(11, 31, 64, .06);
+      --ink: #08152a;
+      --muted: #66758d;
+      --line: #dce5f0;
+      --line-strong: #c5d2e4;
+      --nav: #061426;
+      --nav-2: #0a1b31;
+      --nav-text: #dce7f4;
+      --nav-muted: #7188a8;
+      --active: #1a365f;
+      --brand: #d60012;
+      --brand-dark: #a80000;
+      --blue: #1463d9;
+      --green: #08875d;
+      --amber: #a96500;
+      --red: #c8212b;
+      --purple: #6b46c1;
       --radius: 8px;
-      --font: "IBM Plex Sans Thai", "LINE Seed Sans TH", "Segoe UI", Tahoma, Arial, sans-serif;
+      --shadow: 0 16px 35px rgba(19, 36, 62, .08), 0 1px 2px rgba(19, 36, 62, .08);
+      --font-main: "IBM Plex Sans Thai", "Segoe UI", Tahoma, Arial, sans-serif;
+      --font-heading: "Bebas Neue", "IBM Plex Sans Thai", sans-serif;
     }
 
     * { box-sizing: border-box; }
-    html, body { margin: 0; min-height: 100%; }
+    html, body { margin: 0; width: 100%; height: 100%; }
+    html { overflow: hidden; }
     body {
-      background: var(--bg);
-      color: var(--text);
-      font-family: var(--font);
+      background: var(--page);
+      color: var(--ink);
+      font-family: var(--font-main);
       letter-spacing: 0;
-      overflow-x: hidden;
+      overflow: hidden;
     }
     button, input, select, textarea { font: inherit; }
     button { cursor: pointer; }
+    h1, h2, h3, p { margin-top: 0; }
+    h1, h2, h3, .brand-name, .stat-value {
+      font-family: var(--font-heading);
+      letter-spacing: .04em;
+      font-weight: 400;
+    }
 
     .app {
+      height: 100vh;
+      display: grid;
+      grid-template-columns: 268px minmax(0, 1fr);
+      overflow: hidden;
+    }
+    body.logged-out .app { display: none; }
+    body:not(.logged-out) .login-screen { display: none; }
+
+    .login-screen {
       min-height: 100vh;
       display: grid;
-      grid-template-columns: 270px minmax(0, 1fr);
+      grid-template-columns: minmax(0, 1fr) minmax(390px, 500px);
+      background: #061426;
+      color: #fff;
     }
-
-    .sidebar {
-      background: #071426;
-      color: #f8fbff;
-      border-right: 1px solid rgba(255, 255, 255, .12);
-      min-height: 100vh;
+    .login-panel {
+      padding: 42px;
       display: flex;
       flex-direction: column;
-      position: sticky;
-      top: 0;
-      z-index: 4;
+      justify-content: center;
+      border-left: 1px solid rgba(255, 255, 255, .1);
+      background: #07172a;
+      order: 2;
     }
-
-    .brand {
-      min-height: 88px;
-      padding: 18px 16px 17px;
-      border-bottom: 1px solid rgba(180, 199, 224, .16);
+    .login-visual {
+      position: relative;
+      overflow: hidden;
+      order: 1;
+      background:
+        linear-gradient(120deg, rgba(6, 20, 38, .82), rgba(6, 20, 38, .35)),
+        url("./assets/login-watch-hero.png") center / cover no-repeat;
+    }
+    .login-visual::after {
+      content: "BACK OFFICE";
+      position: absolute;
+      right: 36px;
+      bottom: 26px;
+      font-family: var(--font-heading);
+      font-size: clamp(56px, 9vw, 130px);
+      letter-spacing: .05em;
+      color: rgba(255, 255, 255, .16);
+    }
+    .login-brand {
       display: flex;
       align-items: center;
       gap: 12px;
+      margin-bottom: 42px;
+    }
+    .login-title {
+      margin: 0 0 10px;
+      font-size: 56px;
+      line-height: .9;
+      color: #fff;
+    }
+    .login-copy {
+      max-width: 340px;
+      color: #9fb2cc;
+      font-size: 14px;
+      line-height: 1.65;
+      margin-bottom: 28px;
+    }
+    .prototype-tools {
+      max-width: 360px;
+      margin-top: 18px;
+      padding-top: 18px;
+      border-top: 1px solid rgba(173, 193, 221, .16);
+    }
+    .prototype-tools summary {
+      color: #7890ae;
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: 700;
+      min-height: 28px;
+    }
+    .prototype-tools label {
+      display: grid;
+      gap: 6px;
+      color: #8fa4c0;
+      font-size: 12px;
+      font-weight: 600;
+      margin-top: 8px;
+    }
+    .prototype-tools select {
+      min-height: 40px;
+      border: 1px solid rgba(173, 193, 221, .24);
+      border-radius: 7px;
+      background: #0c213a;
+      color: #fff;
+      padding: 9px 10px;
+    }
+    .login-form {
+      display: grid;
+      gap: 12px;
+      max-width: 360px;
+    }
+    .login-form.hidden { display: none; }
+    .login-form label {
+      display: grid;
+      gap: 6px;
+      color: #cbd8e9;
+      font-size: 12px;
+      font-weight: 600;
+    }
+    .login-form input {
+      min-height: 44px;
+      border: 1px solid rgba(173, 193, 221, .24);
+      border-radius: 7px;
+      background: #0c213a;
+      color: #fff;
+      padding: 10px 12px;
+    }
+    .login-form select {
+      min-height: 44px;
+      border: 1px solid rgba(173, 193, 221, .24);
+      border-radius: 7px;
+      background: #0c213a;
+      color: #fff;
+      padding: 10px 12px;
+    }
+    .login-form input:focus {
+      outline: 2px solid rgba(214, 0, 18, .45);
+      border-color: rgba(214, 0, 18, .72);
+    }
+    .password-field {
+      position: relative;
+    }
+    .password-field input {
+      width: 100%;
+      padding-right: 44px;
+    }
+    .password-toggle {
+      position: absolute;
+      right: 8px;
+      top: 50%;
+      width: 32px;
+      height: 32px;
+      transform: translateY(-50%);
+      border: 0;
+      border-radius: 6px;
+      background: transparent;
+      color: #8fa4c0;
+      display: grid;
+      place-items: center;
+      padding: 0;
+    }
+    .password-toggle:hover {
+      color: #fff;
+      background: rgba(255, 255, 255, .08);
+    }
+    .password-toggle svg {
+      width: 18px;
+      height: 18px;
+    }
+    .login-meta {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: center;
+      color: #8fa4c0;
+      font-size: 12px;
+      margin: 2px 0 10px;
+    }
+    .login-meta label {
+      display: inline-flex;
+      grid-template-columns: none;
+      align-items: center;
+      gap: 7px;
+    }
+    .login-meta input { min-height: auto; }
+    .forgot-link {
+      border: 0;
+      background: transparent;
+      color: #8fd4ff;
+      padding: 0;
+      font-size: 12px;
+      font-weight: 700;
+      text-align: left;
+      width: max-content;
+    }
+    .forgot-link:hover { color: #fff; }
+    .login-form .btn.primary {
+      width: 100%;
+      justify-content: center;
+      text-align: center;
+    }
+    .login-footnote {
+      display: none;
+      margin-top: 18px;
+      color: #7890ae;
+      font-size: 12px;
+      line-height: 1.55;
+    }
+    .auth-state {
+      display: none;
+      max-width: 360px;
+      margin: 12px 0 0;
+      padding: 10px 12px;
+      border: 1px solid rgba(173, 193, 221, .22);
+      border-radius: 7px;
+      background: rgba(12, 33, 58, .72);
+      color: #cbd8e9;
+      font-size: 12px;
+      line-height: 1.55;
+    }
+    .auth-state strong { color: #fff; }
+    .auth-error {
+      display: none;
+      max-width: 360px;
+      margin: 12px 0 0;
+      padding: 10px 12px;
+      border: 1px solid rgba(255, 139, 149, .42);
+      border-radius: 7px;
+      background: rgba(168, 0, 0, .22);
+      color: #ffd7db;
+      font-size: 12px;
+      line-height: 1.5;
+    }
+    .auth-error.show { display: block; }
+    .otp-actions {
+      display: grid;
+      grid-template-columns: 1.05fr 1fr 1fr;
+      gap: 8px;
+    }
+    .otp-actions .btn {
+      justify-content: center;
+      text-align: center;
+      min-width: 0;
+      white-space: nowrap;
+    }
+    .otp-actions .btn.ghost {
+      color: #dbe8ff;
+      border-color: rgba(219, 232, 255, .78);
+      background: transparent;
+    }
+    .otp-actions .btn.ghost:hover {
+      color: #fff;
+      border-color: #fff;
+      background: rgba(255, 255, 255, .08);
+    }
+    .btn:disabled {
+      cursor: not-allowed;
+      opacity: .55;
+    }
+
+    .sidebar {
+      position: sticky;
+      top: 0;
+      z-index: 5;
+      height: 100vh;
+      background: var(--nav);
+      color: var(--nav-text);
+      border-right: 1px solid rgba(255, 255, 255, .08);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+    .sidebar-backdrop {
+      display: none;
+    }
+    .mobile-header {
+      display: none;
+    }
+    .brand {
+      min-height: 84px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 18px 14px 17px;
+      border-bottom: 1px solid rgba(147, 169, 199, .16);
     }
     .brand-mark {
       width: 44px;
       height: 44px;
-      border-radius: 11px;
-      background: #c4000b;
-      color: #fff;
-      display: grid;
-      place-items: center;
-      font-weight: 900;
-      font-size: 17px;
-      border: 1px solid rgba(255, 255, 255, .18);
-      box-shadow: 0 0 0 4px rgba(196, 0, 11, .18);
-    }
-    .brand strong {
+      border-radius: 10px;
       display: block;
-      font-size: 21px;
-      line-height: 1;
-      letter-spacing: .12em;
-      font-weight: 900;
+      object-fit: cover;
+      box-shadow: 0 0 0 1px rgba(255, 255, 255, .12), 0 8px 22px rgba(214, 0, 18, .38);
+      flex: 0 0 auto;
+    }
+    .brand-name {
+      display: block;
+      color: #fff;
+      font-size: 25px;
+      line-height: .95;
+      letter-spacing: .13em;
     }
     .brand small {
-      color: #86a1c0;
-      font-size: 11px;
+      display: block;
+      margin-top: 7px;
+      color: #8198b7;
+      font-size: 10px;
+      font-weight: 600;
       letter-spacing: .28em;
       text-transform: uppercase;
-      font-weight: 800;
     }
 
     .nav {
-      padding: 28px 10px 14px;
       display: grid;
-      gap: 8px;
-      flex: 1;
-      align-content: start;
+      gap: 4px;
+      padding: 28px 7px 18px;
+      flex: 1 1 auto;
+      overflow-y: auto;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
     }
+    .nav::-webkit-scrollbar { display: none; }
     .nav-section {
-      padding: 6px 8px 2px;
-      color: #607a9e;
+      padding: 10px 9px 5px;
+      color: #6d82a2;
       font-size: 11px;
-      letter-spacing: .22em;
-      font-weight: 900;
+      font-weight: 700;
+      letter-spacing: .18em;
     }
-    .nav button {
-      position: relative;
+    .nav-item {
+      width: 100%;
+      min-height: 44px;
       border: 0;
+      border-radius: 6px;
       background: transparent;
-      color: #eef5ff;
-      border-radius: 7px;
-      min-height: 47px;
+      color: var(--nav-text);
       display: grid;
       grid-template-columns: 24px minmax(0, 1fr) 18px;
       align-items: center;
       gap: 10px;
-      padding: 11px 14px;
+      padding: 10px 12px;
       text-align: left;
-      font-weight: 800;
-      font-size: 15px;
+      font-size: 14px;
+      font-weight: 500;
     }
-    .nav button:hover { background: rgba(35, 59, 95, .72); }
-    .nav button.active {
-      background: #19315a;
+    .nav-item > span:nth-child(2) {
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .nav-item:hover { background: rgba(36, 61, 96, .58); }
+    .nav-item.active {
+      background: var(--active);
       color: #fff;
-      box-shadow: inset 4px 0 0 #e60012;
+      box-shadow: inset 4px 0 0 var(--brand), 0 7px 16px rgba(0, 0, 0, .18);
     }
-    .nav i {
-      width: 22px;
-      height: 22px;
-      display: inline-grid;
-      place-items: center;
-      font-style: normal;
-      color: #a8bdd9;
-      font-size: 17px;
+    .nav-icon {
+      width: 20px;
+      height: 20px;
+      color: #a8b8ce;
+      display: inline-flex;
     }
-    .nav button.active i { color: #fff; }
-    .nav .chev {
-      justify-self: end;
-      color: #8aa2c1;
-      font-weight: 900;
+    .nav-item.active .nav-icon { color: #fff; }
+    .chevron {
+      width: 18px;
+      height: 18px;
+      color: #8fa2bd;
+      transition: transform .18s ease;
     }
-    .nav .spacer { height: 210px; }
-
-    .logout-box {
-      margin: 0 12px 14px;
-      min-height: 58px;
-      width: calc(100% - 24px);
-      border: 1px solid rgba(180, 199, 224, .16);
-      background: #081a30;
-      color: #eef5ff;
+    .nav-item.expanded .chevron { transform: rotate(90deg); }
+    .submenu {
+      display: none;
+      padding: 4px 26px 10px 42px;
+    }
+    .submenu.open { display: grid; gap: 4px; }
+    .submenu button {
+      border: 0;
+      background: transparent;
+      color: #9db0ca;
+      min-height: 34px;
+      padding: 7px 12px;
       border-radius: 8px;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      padding: 13px 15px;
-      font-weight: 900;
       text-align: left;
+      font-size: 13px;
+      font-weight: 500;
+      transition: background .16s ease, color .16s ease;
     }
-    .logout-box i { color: #9db4d0; font-style: normal; font-size: 21px; }
-
+    .submenu button:hover {
+      color: #fff;
+      background: rgba(255, 255, 255, .08);
+    }
+    .submenu button.active {
+      color: #fff;
+      background: rgba(45, 72, 108, .78);
+    }
+    .sidebar-footer {
+      flex: 0 0 auto;
+      padding: 12px 7px 14px;
+      border-top: 1px solid rgba(147, 169, 199, .16);
+    }
     .admin-box {
-      border-top: 1px solid rgba(255, 255, 255, .2);
-      padding: 13px 12px;
-      display: flex;
+      margin: 8px 0 0;
+      padding: 8px 12px;
+      display: grid;
+      grid-template-columns: 24px minmax(0, 1fr) 18px;
       gap: 10px;
       align-items: center;
-      background: #071426;
     }
     .avatar {
-      width: 39px;
-      height: 39px;
-      border-radius: 50%;
+      width: 24px;
+      height: 24px;
+      border-radius: 999px;
       display: grid;
       place-items: center;
-      background: #c4000b;
+      background: #b9000e;
       color: #fff;
-      font-weight: 900;
+      font-size: 11px;
+      font-weight: 700;
       flex: 0 0 auto;
     }
-    .admin-box strong { display: block; line-height: 1.1; }
-    .admin-box small { color: #85a2c2; font-size: 12px; }
+    .admin-box strong { display: block; font-size: 13px; }
+    .admin-box small { display: block; color: #88a0bf; font-size: 11px; }
+    .logout-box {
+      width: 100%;
+      min-height: 44px;
+      margin: 0;
+      border: 0;
+      border-radius: 6px;
+      background: transparent;
+      color: #dce7f4;
+      display: grid;
+      grid-template-columns: 24px minmax(0, 1fr) 18px;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 12px;
+      text-align: left;
+      font-size: 14px;
+      font-weight: 500;
+    }
+    .logout-box:hover { color: #fff; background: rgba(36, 61, 96, .58); }
+    .logout-box svg {
+      width: 20px;
+      height: 20px;
+      color: #a8b8ce;
+    }
+    .hamburger-btn {
+      width: 42px;
+      height: 42px;
+      border: 1px solid var(--line-strong);
+      border-radius: 7px;
+      background: #fff;
+      color: var(--ink);
+      display: inline-grid;
+      place-items: center;
+      flex: 0 0 auto;
+    }
+    .hamburger-btn svg {
+      width: 21px;
+      height: 21px;
+    }
+    .hamburger-btn:hover {
+      border-color: #9eb0c8;
+    }
 
     .main {
       min-width: 0;
-      padding: 22px 18px 36px;
+      min-height: 0;
+      height: 100vh;
+      overflow-y: auto;
+      overscroll-behavior: contain;
+      padding: 22px 22px 34px;
     }
-
-    .top {
-      display: flex;
-      align-items: flex-start;
-      justify-content: space-between;
-      gap: 18px;
-      padding-bottom: 18px;
-      margin-bottom: 22px;
-      border-bottom: 3px solid #d40000;
+    .topbar {
+      position: relative;
+      min-height: 96px;
+      display: block;
+      padding: 3px 0 21px;
+      margin-bottom: 24px;
     }
-    .title-lockup {
-      border-left: 4px solid #d40000;
-      padding-left: 14px;
+    .topbar::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      bottom: 0;
+      width: min(52vw, 780px);
+      height: 3px;
+      background: linear-gradient(90deg, rgba(214, 0, 18, .8) 0%, rgba(214, 0, 18, .42) 46%, rgba(214, 0, 18, 0) 100%);
     }
-    h1, h2, h3, p { margin-top: 0; }
-    h1 {
-      margin-bottom: 6px;
-      font-size: 28px;
-      line-height: 1.15;
-      text-transform: uppercase;
-      letter-spacing: .03em;
+    .topbar > div {
+      width: 100%;
     }
-    .subtitle { color: var(--muted); margin: 0 0 8px; }
-    .fresh {
-      display: inline-flex;
-      align-items: center;
-      gap: 7px;
-      color: #32506f;
+    .crumb {
+      color: var(--muted);
       font-size: 13px;
+      font-weight: 600;
+      margin: 0 0 24px;
     }
-    .fresh::before {
+    .page-title {
+      margin: 0;
+      font-size: 46px;
+      line-height: .95;
+      color: var(--ink);
+    }
+    .page-meta {
+      margin: 12px 0 0;
+      color: #728299;
+      font-size: 14px;
+      font-weight: 400;
+      line-height: 1.4;
+    }
+    .page-meta:empty { display: none; }
+    .page-meta::before {
       content: "";
       width: 9px;
       height: 9px;
+      margin-right: 9px;
       border-radius: 999px;
-      background: #22c55e;
-      box-shadow: 0 0 0 4px #dcfce7;
+      display: inline-block;
+      background: #8fe7d2;
+      box-shadow: 0 0 0 4px rgba(143, 231, 210, .18);
+      vertical-align: 1px;
     }
-
-    .actions { display: flex; gap: 8px; flex-wrap: wrap; justify-content: flex-end; }
+    .tools { display: flex; gap: 8px; flex-wrap: wrap; justify-content: flex-end; }
     .btn {
+      min-height: 38px;
       border: 1px solid var(--line-strong);
       background: #fff;
-      color: var(--text);
-      border-radius: 8px;
-      min-height: 42px;
-      padding: 9px 14px;
-      font-weight: 800;
+      color: var(--ink);
+      border-radius: 7px;
+      padding: 8px 12px;
       display: inline-flex;
       align-items: center;
-      gap: 8px;
+      gap: 7px;
+      font-size: 13px;
+      font-weight: 600;
     }
-    .btn:hover { border-color: #9fb5d0; }
-    .btn.primary { background: var(--brand); border-color: var(--brand); color: #fff; }
-    .btn.blue { background: var(--blue); border-color: var(--blue); color: #fff; }
-    .btn.active { background: #fff4f4; color: var(--brand); border-color: #ffb8b8; }
-    .btn.icon { width: 42px; padding: 0; justify-content: center; }
+    .btn:hover { border-color: #9eb0c8; }
+    .btn.primary { border-color: var(--brand-dark); background: var(--brand-dark); color: #fff; }
+    .btn.ghost { background: transparent; }
+    .btn.icon { width: 38px; padding: 0; justify-content: center; }
+    .btn svg, .panel-action svg { width: 16px; height: 16px; }
 
-    .grid { display: grid; gap: 14px; }
-    .metrics { grid-template-columns: repeat(4, minmax(0, 1fr)); }
-    .two { grid-template-columns: minmax(0, 1fr) minmax(0, .6fr); }
-    .profile-layout { grid-template-columns: 368px minmax(0, 1fr); align-items: start; }
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+    .stat {
+      min-width: 0;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 15px;
+      position: relative;
+      overflow: hidden;
+    }
+    .stat::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 3px;
+      background: var(--brand);
+    }
+    .stat-label { color: var(--muted); font-size: 12px; font-weight: 600; margin-bottom: 12px; }
+    .stat-value { font-size: 39px; line-height: .9; margin-bottom: 8px; }
+    .stat-note { color: var(--muted); font-size: 12px; line-height: 1.45; }
 
-    .card {
+    .layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 360px;
+      gap: 14px;
+      align-items: start;
+    }
+    .panel {
       background: var(--panel);
       border: 1px solid var(--line);
       border-radius: var(--radius);
       box-shadow: var(--shadow);
       min-width: 0;
     }
-    .card.pad { padding: 18px; }
-    .metric-card {
-      padding: 16px;
-      min-height: 182px;
-      position: relative;
-      border-left: 3px solid #71d39a;
-    }
-    .metric-card.blue { border-left-color: #7aa7e8; }
-    .metric-card.red { border-left-color: #b40000; }
-    .metric-card.purple { border-left-color: #8176c7; }
-    .metric-card h3 {
-      margin: 0 0 24px;
-      font-size: 14px;
-      text-transform: uppercase;
-      letter-spacing: .05em;
-    }
-    .metric-card .value {
-      font-size: 32px;
-      line-height: 1;
-      font-weight: 900;
-      margin-bottom: 8px;
-    }
-    .metric-card .delta { color: var(--green); font-size: 13px; margin-bottom: 14px; }
-    .metric-card .delta.bad { color: var(--red); }
-    .mini-icon {
-      position: absolute;
-      top: 18px;
-      right: 18px;
-      width: 42px;
-      height: 42px;
-      border-radius: 8px;
-      border: 1px solid var(--line);
-      display: grid;
-      place-items: center;
-      font-weight: 900;
-      color: #52719b;
-      background: #f8fbff;
-    }
-
-    .chips { display: flex; gap: 7px; flex-wrap: wrap; }
-    .chip {
-      display: inline-flex;
-      align-items: center;
-      min-height: 26px;
-      border-radius: 999px;
-      border: 1px solid #ead6d6;
-      background: #fffafa;
-      color: #4a5872;
-      padding: 4px 10px;
-      font-size: 12px;
-      white-space: nowrap;
-    }
-
-    .section-head {
+    .panel-head {
+      min-height: 58px;
+      border-bottom: 1px solid var(--line);
+      padding: 14px 16px;
       display: flex;
       align-items: center;
       justify-content: space-between;
       gap: 12px;
-      padding: 18px 20px;
-      border-bottom: 1px solid var(--line);
     }
-    .section-head h2 { margin: 0; font-size: 16px; }
-    .section-head small { color: var(--muted); font-size: 12px; margin-left: 8px; font-weight: 500; }
-
-    .queue-list { display: grid; }
-    .queue-row {
-      display: grid;
-      grid-template-columns: 1.1fr 1.7fr 1.1fr 120px 120px 150px 118px;
-      gap: 18px;
-      align-items: center;
-      padding: 18px 20px;
-      border-bottom: 1px solid var(--line);
-      background: #fff;
+    .panel-head h2 {
+      margin: 0;
+      font-size: 26px;
+      line-height: 1;
     }
-    .queue-row.head {
-      min-height: 44px;
-      padding-top: 12px;
-      padding-bottom: 12px;
-      background: #f4f8fd;
-      color: #314866;
+    .panel-head p {
+      margin: 3px 0 0;
+      color: var(--muted);
       font-size: 12px;
-      font-weight: 800;
     }
-    .queue-row:last-child { border-bottom: 0; }
-    .main-text { font-weight: 900; margin-bottom: 4px; }
-    .muted { color: var(--muted); font-size: 12px; line-height: 1.55; }
+    .filters {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--line);
+      background: #f8fbff;
+    }
+    .filters:empty { display: none; }
+    .field {
+      min-height: 36px;
+      border: 1px solid var(--line);
+      border-radius: 7px;
+      background: #fff;
+      padding: 7px 10px;
+      color: var(--ink);
+      font-size: 13px;
+    }
+    .search { min-width: 240px; flex: 1; }
 
+    .table { display: grid; }
+    .row {
+      display: grid;
+      grid-template-columns: 1.25fr .95fr .9fr .8fr 96px;
+      gap: 14px;
+      align-items: center;
+      min-height: 70px;
+      padding: 13px 16px;
+      border-bottom: 1px solid var(--line);
+    }
+    .row:last-child { border-bottom: 0; }
+    .row.head {
+      min-height: 40px;
+      background: #f1f5fb;
+      color: #485b75;
+      font-size: 12px;
+      font-weight: 700;
+    }
+    .main-text { font-weight: 700; margin-bottom: 3px; }
+    .muted { color: var(--muted); font-size: 12px; line-height: 1.5; }
     .pill {
+      width: max-content;
+      min-height: 25px;
       display: inline-flex;
       align-items: center;
-      justify-content: center;
-      width: max-content;
-      min-height: 26px;
-      padding: 4px 10px;
       border-radius: 999px;
-      border: 1px solid transparent;
-      font-weight: 900;
+      padding: 3px 9px;
       font-size: 12px;
+      font-weight: 700;
+      border: 1px solid transparent;
       white-space: nowrap;
     }
-    .urgent { color: #b91c1c; background: var(--red-soft); border-color: #fecaca; }
-    .medium { color: #a05a00; background: var(--amber-soft); border-color: #facc15; }
-    .normal { color: #00796b; background: var(--cyan-soft); border-color: #7debdc; }
-    .waiting { color: #0b50c5; background: #dbeafe; border-color: #bfdbfe; }
-    .reviewing { color: var(--purple); background: var(--purple-soft); border-color: #ddd2fe; }
-
-    .work-item {
-      display: grid;
-      grid-template-columns: minmax(0, 1fr) auto auto;
-      gap: 12px;
-      align-items: center;
-      padding: 16px 2px;
-      border-bottom: 1px solid var(--line);
-    }
-    .work-item:last-child { border-bottom: 0; }
-    .work-item strong { display: block; }
-    .work-item::before {
-      content: "";
-      width: 4px;
-      height: 38px;
-      background: #ef4444;
-      border-radius: 99px;
-      grid-row: 1;
-    }
-
-    .activity {
-      display: grid;
-      grid-template-columns: 18px minmax(0, 1fr) auto;
-      gap: 10px;
-      padding: 14px 16px;
-      border-bottom: 1px solid var(--line);
-      align-items: start;
-    }
-    .activity:last-child { border-bottom: 0; }
-    .dot {
-      width: 10px;
-      height: 10px;
+    .pill.red { color: #a71420; background: #ffe8ea; border-color: #ffc8ce; }
+    .pill.blue { color: #0f52b8; background: #e8f1ff; border-color: #c6ddff; }
+    .pill.green { color: #07734f; background: #e4f8f0; border-color: #bcebd7; }
+    .pill.amber { color: #925500; background: #fff3d8; border-color: #f3d493; }
+    .pill.purple { color: #6035ae; background: #efe9ff; border-color: #d8ccff; }
+    .chips { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 7px; }
+    .chip {
+      border: 1px solid #e1e9f3;
+      background: #f8fbff;
+      color: #53647b;
       border-radius: 999px;
-      background: var(--brand);
-      box-shadow: 0 0 0 5px #f9e2e2;
-      margin-top: 4px;
-    }
-
-    .tabs {
-      display: flex;
-      gap: 4px;
-      border-bottom: 1px solid var(--line);
-      margin-bottom: 24px;
-      overflow-x: auto;
-    }
-    .tab {
-      border: 0;
-      background: transparent;
-      min-height: 46px;
-      padding: 0 18px;
-      color: #314866;
-      font-weight: 800;
-      border-bottom: 2px solid transparent;
+      padding: 3px 8px;
+      font-size: 11px;
       white-space: nowrap;
     }
-    .tab.active { color: var(--blue); border-bottom-color: var(--blue); background: #eef7ff; }
-
-    .backline {
-      display: flex;
-      gap: 12px;
-      align-items: center;
-      margin-bottom: 28px;
+    button.chip:hover {
+      border-color: #b9c9dd;
+      color: var(--active);
+      background: #eef5ff;
     }
-    .back {
+
+    .detail {
+      position: sticky;
+      top: 20px;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+    body.dashboard-mode .detail {
+      position: static;
+      top: auto;
+      border-color: #d7e2f0;
+      box-shadow: none;
+    }
+    body.dashboard-mode .layout {
+      grid-template-columns: minmax(0, 1fr) minmax(430px, 46%);
+    }
+    body.dashboard-mode .layout > .panel {
+      border-color: #d7e2f0;
+      box-shadow: none;
+      overflow: hidden;
+    }
+    body.dashboard-mode .layout > .panel .panel-head {
+      min-height: 58px;
+      padding: 17px 20px;
+      background: #fff;
+    }
+    body.dashboard-mode .layout > .panel .panel-head > div {
+      min-width: 0;
+      display: flex;
+      align-items: baseline;
+      gap: 10px;
+    }
+    body.dashboard-mode .layout > .panel .panel-head h2 {
+      color: #071b36;
+      font-size: 24px;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+    body.dashboard-mode .layout > .panel .panel-head p {
+      margin: 0;
+      overflow: hidden;
+      color: #6d7f98;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    body.dashboard-mode #primary-action {
+      display: none;
+    }
+    .activity-panel-head {
+      align-items: center;
+    }
+    body.dashboard-mode .detail .panel-head {
+      min-height: 58px;
+      padding: 17px 20px;
+      background: #fff;
+    }
+    body.dashboard-mode .activity-panel-head {
+      gap: 10px;
+    }
+    .activity-panel-head h2 {
+      flex: 0 0 auto;
+    }
+    body.dashboard-mode .activity-panel-head h2 {
+      color: #071b36;
+      font-size: 24px;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+    .detail-empty {
+      padding: 28px 18px;
+      color: var(--muted);
+      text-align: center;
+    }
+    .detail-body { padding: 16px; }
+    .detail-title {
+      margin: 0 0 5px;
+      font-size: 30px;
+      line-height: 1;
+    }
+    .kv {
+      display: grid;
+      grid-template-columns: 116px minmax(0, 1fr);
+      gap: 8px;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--line);
+      font-size: 13px;
+    }
+    .kv:last-child { border-bottom: 0; }
+    .kv span:first-child { color: var(--muted); }
+    .timeline {
+      display: grid;
+      gap: 10px;
+      margin-top: 12px;
+    }
+    .event {
+      border-left: 3px solid var(--brand);
+      background: #f8fbff;
+      border-radius: 0 7px 7px 0;
+      padding: 10px 11px;
+      font-size: 12px;
+      line-height: 1.55;
+    }
+    .panel-action {
+      border: 0;
+      color: var(--blue);
+      background: transparent;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 0;
+      font-size: 12px;
+      font-weight: 700;
+    }
+    .module-note {
+      margin-top: 14px;
+      padding: 12px 14px;
+      background: #fff8e8;
+      border: 1px solid #f0d49a;
+      border-radius: 8px;
+      color: #714600;
+      font-size: 12px;
+      line-height: 1.55;
+    }
+
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 14px;
+    }
+    body.dashboard-mode .cards {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+    .mini-card {
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 14px;
+      min-height: 112px;
+    }
+    .dashboard-status-card {
+      border-color: #d7e2f0;
+      padding: 0;
+      overflow: hidden;
+    }
+    .mini-card h3 {
+      margin: 0 0 8px;
+      font-size: 22px;
+      line-height: 1;
+    }
+    .dashboard-card-head {
+      min-height: 58px;
+      margin: 0;
+      padding: 17px 20px;
+      border-bottom: 1px solid var(--line);
+      display: flex;
+      align-items: baseline;
+      gap: 10px;
+    }
+    .dashboard-status-card h3 {
+      flex: 0 0 auto;
+      margin: 0;
+      color: #071b36;
+      font-size: 24px;
+      letter-spacing: .08em;
+      line-height: 1;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+    .dashboard-card-meta {
+      min-width: 0;
+      margin: 0;
+      overflow: hidden;
+      color: #6d7f98;
+      font-size: 12px;
+      font-weight: 400;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .stat-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+    .stat-icon {
       width: 34px;
       height: 34px;
-      border-radius: 999px;
-      border: 1px solid var(--line);
-      background: #fff;
+      border-radius: 8px;
       display: grid;
       place-items: center;
-      font-weight: 900;
-      box-shadow: var(--shadow);
+      color: #fff;
+      background: var(--active);
+      flex: 0 0 auto;
     }
-    .profile-card {
-      text-align: center;
-      padding: 24px;
+    .stat-icon svg {
+      width: 18px;
+      height: 18px;
     }
-    .avatar-xl {
-      width: 64px;
-      height: 64px;
-      border-radius: 999px;
-      margin: 0 auto 14px;
+    .stat .chips { margin-top: 10px; }
+    .dashboard-work-list,
+    .activity-list,
+    .status-list {
       display: grid;
-      place-items: center;
-      background: #dff2fb;
-      color: var(--blue);
-      font-weight: 900;
-      font-size: 20px;
     }
-    .contact-row {
-      display: grid;
-      grid-template-columns: 18px minmax(0, 1fr);
-      gap: 12px;
-      text-align: left;
-      padding: 12px 0;
-      border-top: 1px solid var(--line);
-    }
-    .contact-row:first-of-type { margin-top: 20px; }
-    .contact-row i { font-style: normal; color: #6b82a3; }
-
-    .quick-card {
-      padding: 20px;
-      margin-bottom: 22px;
-    }
-    .channel-row {
-      display: flex;
-      gap: 10px;
-      margin: 12px 0 16px;
-      flex-wrap: wrap;
-    }
-    .channel {
-      width: 44px;
-      height: 44px;
-      border: 1px solid var(--line);
-      background: #fff;
-      border-radius: 10px;
-      display: grid;
-      place-items: center;
-      color: #315174;
-      font-weight: 900;
-      box-shadow: var(--shadow);
-    }
-    .channel.active { border-color: var(--blue); color: var(--blue); background: #eef8ff; }
-    textarea {
+    .work-row,
+    .activity-row,
+    .status-row {
       width: 100%;
-      min-height: 64px;
-      resize: vertical;
-      border: 1px solid #e3ebf5;
-      border-radius: 8px;
-      background: #f2f6fb;
-      padding: 12px;
-      color: var(--text);
-    }
-    .timeline { display: grid; gap: 14px; position: relative; padding-left: 38px; }
-    .timeline::before {
-      content: "";
-      position: absolute;
-      left: 15px;
-      top: 0;
-      bottom: 0;
-      width: 1px;
-      background: var(--line);
-    }
-    .timeline-card {
-      position: relative;
-      padding: 16px 18px;
+      border: 0;
+      border-bottom: 1px solid var(--line);
       background: #fff;
-      border: 1px solid var(--line);
-      border-radius: 8px;
-      box-shadow: var(--shadow);
+      color: var(--ink);
+      text-align: left;
+      display: grid;
+      gap: 10px;
+      align-items: center;
     }
-    .timeline-card::before {
-      content: attr(data-icon);
-      position: absolute;
-      left: -38px;
-      top: 10px;
-      width: 24px;
-      height: 24px;
+    .work-row {
+      grid-template-columns: 4px minmax(0, 1fr) auto 18px;
+      padding: 14px 16px 14px 0;
+    }
+    body.dashboard-mode .work-row {
+      grid-template-columns: 3px minmax(0, 1fr) minmax(58px, auto) 18px;
+      gap: 12px;
+      min-height: 66px;
+      padding: 13px 20px;
+      border-bottom: 0;
+    }
+    .work-row:last-child,
+    .activity-row:last-child,
+    .status-row:last-child { border-bottom: 0; }
+    .work-row:hover,
+    .activity-row:hover,
+    .status-row:hover { background: #f8fbff; }
+    .priority-bar {
+      width: 4px;
+      align-self: stretch;
+      background: var(--green);
+    }
+    .priority-high .priority-bar { background: var(--red); }
+    .priority-medium .priority-bar { background: var(--amber); }
+    body.dashboard-mode .priority-bar {
+      width: 3px;
+      min-height: 38px;
+      align-self: center;
+      border-radius: 999px;
+      background: var(--blue);
+    }
+    body.dashboard-mode .priority-high .priority-bar { background: var(--red); }
+    body.dashboard-mode .priority-medium .priority-bar { background: var(--amber); }
+    .work-title,
+    .activity-title {
+      display: block;
+      font-weight: 800;
+      margin-bottom: 4px;
+    }
+    .work-title + .muted,
+    .activity-title + .muted {
+      display: block;
+    }
+    body.dashboard-mode .work-title {
+      color: #071b36;
+      font-size: 13px;
+      line-height: 1.35;
+    }
+    body.dashboard-mode .work-title + .muted {
+      color: #43546d;
+      font-size: 12px;
+      line-height: 1.45;
+    }
+    .work-count {
+      min-width: 54px;
+      text-align: right;
+      font-family: var(--font-heading);
+      font-size: 30px;
+      line-height: 1;
+    }
+    body.dashboard-mode .work-count {
+      min-width: 58px;
+      color: var(--blue);
+      font-family: var(--font-heading);
+      font-size: 30px;
+      font-weight: 400;
+      letter-spacing: .04em;
+    }
+    body.dashboard-mode .priority-high .work-count { color: var(--red); }
+    body.dashboard-mode .priority-medium .work-count { color: var(--amber); }
+    .activity-toolbar {
+      display: flex;
+      gap: 6px;
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--line);
+      background: #f8fbff;
+      overflow-x: auto;
+    }
+    .activity-panel-head .activity-toolbar {
+      flex: 1 1 auto;
+      min-width: 0;
+      justify-content: flex-end;
+      padding: 0;
+      border-bottom: 0;
+      background: transparent;
+    }
+    body.dashboard-mode .activity-panel-head .activity-toolbar {
+      gap: 5px;
+    }
+    .segmented {
+      min-height: 32px;
+      border: 1px solid var(--line-strong);
       border-radius: 999px;
       background: #fff;
-      border: 1px solid var(--line);
-      display: grid;
-      place-items: center;
+      padding: 5px 10px;
+      color: var(--muted);
       font-size: 12px;
+      font-weight: 700;
+      white-space: nowrap;
     }
-
-    .hidden { display: none !important; }
+    .segmented.active {
+      color: #fff;
+      border-color: var(--active);
+      background: var(--active);
+    }
+    body.dashboard-mode .segmented {
+      min-height: 28px;
+      padding: 4px 9px;
+      border-color: #d7e2f0;
+      font-size: 11px;
+    }
+    .activity-row {
+      grid-template-columns: 3px minmax(0, 1fr) auto 18px;
+      padding: 12px 16px 12px 0;
+    }
+    body.dashboard-mode .activity-row {
+      grid-template-columns: 3px minmax(0, 1fr) minmax(72px, auto) 18px;
+      gap: 12px;
+      min-height: 66px;
+      padding: 13px 20px;
+      border-bottom: 0;
+    }
+    .activity-row::before {
+      content: "";
+      width: 3px;
+      align-self: stretch;
+      background: var(--blue);
+    }
+    body.dashboard-mode .activity-row::before {
+      min-height: 38px;
+      align-self: center;
+      border-radius: 999px;
+    }
+    body.dashboard-mode .activity-title {
+      color: #071b36;
+      font-size: 13px;
+      line-height: 1.35;
+    }
+    body.dashboard-mode .activity-title + .muted {
+      color: #43546d;
+      font-size: 12px;
+      line-height: 1.45;
+    }
+    .activity-time {
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+    body.dashboard-mode .activity-time {
+      color: #6d7f98;
+      font-size: 11px;
+      text-align: right;
+    }
+    .status-row {
+      grid-template-columns: minmax(0, 1fr) auto;
+      padding: 10px 0;
+    }
+    .dashboard-status-card .status-row {
+      grid-template-columns: minmax(0, 1fr) minmax(64px, auto);
+      gap: 12px;
+      min-height: 62px;
+      padding: 12px 20px;
+      border-bottom: 0;
+    }
+    .dashboard-status-card .main-text {
+      display: block;
+      color: #071b36;
+      font-size: 13px;
+      font-weight: 800;
+      line-height: 1.35;
+    }
+    .dashboard-status-card .main-text + .muted {
+      display: block;
+      color: #43546d;
+      font-size: 12px;
+      line-height: 1.45;
+    }
+    .status-value {
+      font-family: var(--font-heading);
+      font-size: 24px;
+      line-height: 1;
+    }
+    .dashboard-status-card .status-value {
+      min-width: 64px;
+      color: #071b36;
+      font-size: 24px;
+      font-weight: 400;
+      letter-spacing: .04em;
+      text-align: right;
+      white-space: nowrap;
+    }
+    .brand-ranking-list {
+      display: grid;
+      padding: 8px 20px 14px;
+      gap: 9px;
+    }
+    .brand-ranking-row {
+      width: 100%;
+      min-height: 42px;
+      padding: 0;
+      border: 0;
+      background: transparent;
+      color: var(--ink);
+      text-align: left;
+      display: grid;
+      gap: 5px;
+    }
+    .brand-ranking-row:hover .brand-bar-fill {
+      background: var(--brand-dark);
+    }
+    .brand-ranking-top {
+      display: grid;
+      grid-template-columns: minmax(74px, 1fr) auto auto;
+      gap: 8px;
+      align-items: baseline;
+    }
+    .ranking-brand-name {
+      overflow: hidden;
+      color: #071b36;
+      font-family: var(--font-main);
+      font-size: 13px;
+      font-weight: 800;
+      line-height: 1.25;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .brand-searches {
+      color: #071b36;
+      font-family: var(--font-heading);
+      font-size: 21px;
+      line-height: 1;
+      letter-spacing: .04em;
+      white-space: nowrap;
+    }
+    .brand-trend {
+      color: var(--green);
+      font-size: 11px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+    .brand-bar-line {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 34px;
+      gap: 8px;
+      align-items: center;
+    }
+    .brand-bar-track {
+      height: 7px;
+      overflow: hidden;
+      border-radius: 999px;
+      background: #e8eef6;
+    }
+    .brand-bar-fill {
+      display: block;
+      height: 100%;
+      border-radius: inherit;
+      background: var(--brand);
+    }
+    .brand-share {
+      color: #43546d;
+      font-size: 11px;
+      font-weight: 700;
+      text-align: right;
+      white-space: nowrap;
+    }
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      z-index: 20;
+      display: none;
+      place-items: center;
+      padding: 18px;
+      background: rgba(6, 20, 38, .46);
+    }
+    .modal-backdrop.show { display: grid; }
+    .modal {
+      width: min(560px, 100%);
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      box-shadow: 0 24px 70px rgba(6, 20, 38, .24);
+      overflow: hidden;
+    }
+    .modal-body { padding: 16px; }
+    .modal-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 8px;
+      padding: 14px 16px;
+      border-top: 1px solid var(--line);
+      background: #f8fbff;
+    }
 
     @media (max-width: 1180px) {
-      .app { grid-template-columns: 1fr; }
-      .sidebar { position: static; min-height: auto; }
-      .nav { grid-template-columns: 1fr; }
-      .nav .spacer { height: 24px; }
-      .metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-      .two, .profile-layout { grid-template-columns: 1fr; }
-      .queue-row { grid-template-columns: 1fr; gap: 8px; }
-      .queue-row.head { display: none; }
+      .app {
+        grid-template-columns: 1fr;
+      }
+      .login-screen { grid-template-columns: 1fr; }
+      .login-visual { min-height: 220px; }
+      body.nav-open {
+        overflow: hidden;
+      }
+      .sidebar {
+        position: fixed;
+        inset: 0 auto 0 0;
+        z-index: 30;
+        width: min(86vw, 320px);
+        height: 100vh;
+        transform: translateX(-105%);
+        transition: transform .22s ease;
+        box-shadow: 18px 0 42px rgba(6, 20, 38, .24);
+      }
+      body.nav-open .sidebar {
+        transform: translateX(0);
+      }
+      .sidebar-backdrop {
+        position: fixed;
+        inset: 0;
+        z-index: 25;
+        display: block;
+        border: 0;
+        background: rgba(6, 20, 38, .48);
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity .18s ease;
+      }
+      body.nav-open .sidebar-backdrop {
+        opacity: 1;
+        pointer-events: auto;
+      }
+      .mobile-header {
+        position: sticky;
+        top: 0;
+        z-index: 12;
+        min-height: 62px;
+        margin: -22px -22px 20px;
+        padding: 10px 22px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 14px;
+        border-bottom: 1px solid var(--line);
+        background: rgba(244, 247, 251, .94);
+        backdrop-filter: blur(12px);
+      }
+      .mobile-header .brand {
+        min-height: 0;
+        padding: 0;
+        border: 0;
+        min-width: 0;
+      }
+      .mobile-header .brand-mark {
+        width: 36px;
+        height: 36px;
+        border-radius: 8px;
+      }
+      .mobile-header .brand-name {
+        color: var(--ink);
+        font-size: 21px;
+      }
+      .mobile-header small {
+        color: var(--muted);
+        letter-spacing: .22em;
+      }
+      .main { height: 100vh; }
+      .layout { grid-template-columns: 1fr; }
+      body.dashboard-mode .layout { grid-template-columns: 1fr; }
+      .detail { position: static; }
+      .summary-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      body.dashboard-mode .cards { grid-template-columns: repeat(2, minmax(0, 1fr)); }
     }
-    @media (max-width: 700px) {
-      .main { padding: 14px 10px 28px; }
-      .top { display: grid; }
-      .actions { justify-content: flex-start; }
-      .metrics { grid-template-columns: 1fr; }
-      .nav { grid-template-columns: 1fr; }
+    @media (max-width: 760px) {
+      .main { padding: 16px 10px 26px; }
+      .mobile-header {
+        margin: -16px -10px 18px;
+        padding: 9px 10px;
+      }
+      .mobile-header .brand-name { font-size: 19px; }
+      .mobile-header small { font-size: 9px; }
+      .login-panel { padding: 28px 18px; }
+      .login-title { font-size: 44px; }
+      .otp-actions { grid-template-columns: 1fr; }
+      .topbar { display: grid; }
+      .page-title {
+        font-size: 38px;
+        overflow-wrap: anywhere;
+      }
+      .tools { justify-content: flex-start; }
+      .summary-grid, .cards, .nav { grid-template-columns: 1fr; }
+      .panel-head {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+      #primary-action {
+        width: 100%;
+        justify-content: center;
+      }
+      .filters .field {
+        width: 100%;
+        min-width: 0;
+      }
+      .activity-panel-head {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+      .activity-panel-head .activity-toolbar {
+        width: 100%;
+        justify-content: flex-start;
+      }
+      .work-row { grid-template-columns: 4px minmax(0, 1fr) auto; }
+      .work-row > .chevron { display: none; }
+      .activity-row { grid-template-columns: 3px minmax(0, 1fr); }
+      .activity-time { margin-top: 4px; }
+      .row { grid-template-columns: 1fr; gap: 7px; }
+      .row.head { display: none; }
+      .search { min-width: 100%; }
     }
   </style>
 </head>
-<body>
-  <div class="app">
-    <aside class="sidebar">
-      <div class="brand">
-        <div class="brand-mark">TD</div>
-        <div><strong>Tuk Daeng</strong><small>Back Office</small></div>
+<body class="logged-out">
+  <section class="login-screen" id="login-screen" aria-label="Back Office login">
+    <div class="login-panel">
+      <div class="login-brand">
+        <img class="brand-mark" src="./assets/tukdaeng-app-icon.png" alt="Tuk Daeng" />
+        <div>
+          <strong class="brand-name">Tuk Daeng</strong>
+          <small>Back Office</small>
+        </div>
       </div>
-      <nav class="nav">
-        <div class="nav-section">การดำเนินงาน</div>
-        <button class="active" data-view="dashboard"><i>▦</i><span>Dashboard</span><span></span></button>
-        <button data-view="users"><i>♧</i><span>User Management</span><span class="chev">›</span></button>
-        <button data-view="assets"><i>◉</i><span>Asset Management</span><span class="chev">›</span></button>
-        <button data-view="content"><i>☑</i><span>Content Management</span><span class="chev">›</span></button>
-        <button data-view="market"><i>↗</i><span>Market Data</span><span class="chev">›</span></button>
-        <div class="nav-section">เครื่องมือ & รายงาน</div>
-        <button data-view="reports"><i>▥</i><span>Reports</span><span></span></button>
-        <button data-view="notifications"><i>▤</i><span>Notifications</span><span></span></button>
-        <button data-view="settings"><i>⚙</i><span>Settings</span><span class="chev">›</span></button>
-        <div class="spacer"></div>
-      </nav>
-      <button class="logout-box" type="button"><i>↳</i><span>Logout</span></button>
+      <h1 class="login-title" id="auth-title">Admin Login</h1>
+      <p class="login-copy">เข้าสู่ระบบ Back Office สำหรับทีม Admin</p>
+      <form class="login-form" id="login-form">
+        <label>
+          Email
+          <input id="login-email" type="email" value="admin@tukdaeng.example" autocomplete="username" />
+        </label>
+        <label>
+          Password
+          <span class="password-field">
+            <input id="login-password" type="password" value="tukdaeng-admin" autocomplete="current-password" />
+            <button class="password-toggle" type="button" id="password-toggle" aria-label="Show password" title="Show password"></button>
+          </span>
+        </label>
+        <div class="login-meta">
+          <button class="forgot-link" type="button" id="forgot-password-btn">ลืมรหัสผ่าน?</button>
+        </div>
+        <button class="btn primary" type="submit">Send Email OTP</button>
+      </form>
+      <form class="login-form hidden" id="otp-form">
+        <label>
+          Email OTP
+          <input id="otp-code" type="text" value="123456" inputmode="numeric" maxlength="6" autocomplete="one-time-code" />
+        </label>
+        <div class="login-meta">
+          <span id="otp-destination">Sent to admin@tukdaeng.example</span>
+          <span id="otp-expiry">Expires in 05:00</span>
+        </div>
+        <div class="otp-actions">
+          <button class="btn ghost" type="button" id="back-login-btn">← Back to login</button>
+          <button class="btn" type="button" id="resend-otp-btn" disabled>Resend in 60s</button>
+          <button class="btn primary" type="submit" id="verify-otp-btn">Verify OTP</button>
+        </div>
+      </form>
+      <div class="auth-state" id="auth-state"></div>
+      <div class="auth-error" id="auth-error" role="alert"></div>
+      <details class="prototype-tools">
+        <summary>Prototype scenario</summary>
+        <label>
+          Test flow
+          <select id="auth-scenario">
+            <option value="success">Email OTP success</option>
+            <option value="invalid">Invalid OTP then retry</option>
+            <option value="expired">Expired OTP then resend</option>
+            <option value="delivery">Email delivery failed then retry</option>
+            <option value="bad-password">Invalid credentials</option>
+          </select>
+        </label>
+      </details>
+    </div>
+    <div class="login-visual" aria-hidden="true"></div>
+  </section>
+
+  <div class="app">
+    <button class="sidebar-backdrop" type="button" id="sidebar-backdrop" aria-label="Close navigation"></button>
+    <aside class="sidebar" aria-label="Back Office navigation">
+      <div class="brand">
+        <img class="brand-mark" src="./assets/tukdaeng-app-icon.png" alt="Tuk Daeng" />
+        <div>
+          <strong class="brand-name">Tuk Daeng</strong>
+          <small>Back Office</small>
+        </div>
+      </div>
+      <nav class="nav" id="nav"></nav>
+      <div class="sidebar-footer">
+      <button class="logout-box" type="button" id="logout-btn">
+        <span id="logout-icon"></span>
+        <span>Logout</span>
+      </button>
       <div class="admin-box">
-        <div class="avatar">AD</div>
-        <div><strong>Somchai Admin</strong><small>Admin · Active session</small></div>
+        <div class="avatar">SA</div>
+        <div><strong>Super Admin</strong><small>Admin</small></div>
+      </div>
       </div>
     </aside>
 
     <main class="main">
-      <section id="view-dashboard" class="view">
-        <div class="top">
-          <div class="title-lockup">
-            <h1>Operational Dashboard</h1>
-            <p class="subtitle">สรุปสถานะงานสำคัญตามช่วงเวลา วันนี้</p>
-            <span class="fresh">อัปเดตล่าสุด 7 Jul 2026, 14:31</span>
-          </div>
-          <div class="actions">
-            <button class="btn active">Today</button>
-            <button class="btn">7 days</button>
-            <button class="btn">30 days</button>
-            <button class="btn">เลือกช่วงเวลา</button>
-            <button class="btn icon">↻</button>
-            <button class="btn primary">Export</button>
+      <div class="mobile-header">
+        <div class="brand">
+          <img class="brand-mark" src="./assets/tukdaeng-app-icon.png" alt="Tuk Daeng" />
+          <div>
+            <strong class="brand-name">Tuk Daeng</strong>
+            <small>Back Office</small>
           </div>
         </div>
+        <button class="hamburger-btn" type="button" id="menu-toggle" aria-label="Open navigation" aria-controls="nav" aria-expanded="false"></button>
+      </div>
+      <div class="topbar">
+        <div>
+          <p class="crumb" id="crumb">การดำเนินงาน / Dashboard</p>
+          <h1 class="page-title" id="page-title">Dashboard</h1>
+          <p class="page-meta" id="page-meta"></p>
+        </div>
+      </div>
 
-        <div class="grid metrics">
-          <article class="card metric-card">
-            <h3><mark>New Users</mark></h3>
-            <div class="mini-icon">U</div>
-            <div class="value">128</div>
-            <div class="delta">เพิ่มขึ้น 8.2% จากช่วงก่อนหน้า</div>
-            <div class="chips"><span class="chip">Email 68 ราย</span><span class="chip">Google 37 ราย</span><span class="chip">Apple 23 ราย</span></div>
-          </article>
-          <article class="card metric-card blue">
-            <h3>New Assets</h3>
-            <div class="mini-icon">A</div>
-            <div class="value">94</div>
-            <div class="delta">เพิ่มขึ้น 12.4% จากช่วงก่อนหน้า</div>
-            <div class="chips"><span class="chip">Sale 64 รายการ</span><span class="chip">Show 17 รายการ</span><span class="chip">Hide 9 รายการ</span><span class="chip">Sold 4 รายการ</span></div>
-          </article>
-          <article class="card metric-card red">
-            <h3>Pending Reports</h3>
-            <div class="mini-icon" style="color:#9f1239;background:#fff1f2">!</div>
-            <div class="value">31</div>
-            <div class="delta bad">มี 9 รายงานใกล้ครบกำหนด</div>
-            <div class="chips"><span class="chip">Asset 7 รายงาน</span><span class="chip">User 5 รายงาน</span><span class="chip">Comment 13 รายงาน</span><span class="chip">Chat 6 รายงาน</span></div>
-          </article>
-          <article class="card metric-card">
-            <h3>Offer Activity</h3>
-            <div class="mini-icon">O</div>
-            <div class="value">246</div>
-            <div class="delta">เพิ่มขึ้น 3.1% จากช่วงก่อนหน้า</div>
-            <div class="chips"><span class="chip">ตอบรับ 89 รายการ</span><span class="chip">ปฏิเสธ 112 รายการ</span><span class="chip">รอดำเนินการ 45 รายการ</span></div>
-          </article>
-          <article class="card metric-card purple">
-            <h3>Articles</h3>
-            <div class="mini-icon">B</div>
-            <div class="value">18</div>
-            <div class="delta">มี 4 บทความรอเผยแพร่</div>
-            <div class="chips"><span class="chip">Rolex guide อ่าน 4,820 ครั้ง</span></div>
-          </article>
-          <article class="card metric-card blue">
-            <h3>Watch Alert</h3>
-            <div class="mini-icon">W</div>
-            <div class="value">5,240</div>
-            <div class="delta">เพิ่มขึ้น 340 รายการจากช่วงก่อนหน้า</div>
-            <div class="chips"><span class="chip">Match กับสินทรัพย์ Sale วันนี้ 6 ครั้ง</span></div>
-          </article>
-          <article class="card metric-card red">
-            <h3>Support Cases</h3>
-            <div class="mini-icon" style="color:#9f1239;background:#fff7f7">S</div>
-            <div class="value">18</div>
-            <div class="delta bad">มี 3 เคสใกล้ครบกำหนดตอบ</div>
-            <div class="chips"><span class="chip">LINE 6 เคส</span><span class="chip">Email 8 เคส</span><span class="chip">Phone 4 เคส</span></div>
-          </article>
+      <section class="summary-grid" id="summary-grid"></section>
+
+      <section class="layout">
+        <div class="panel">
+          <div class="panel-head">
+            <div>
+              <h2 id="panel-title">Operational Queue</h2>
+              <p id="panel-subtitle">คลิกแถวเพื่อกางข้อมูลรายละเอียดของรายการ</p>
+            </div>
+            <button class="btn" type="button" id="primary-action"></button>
+          </div>
+          <div class="filters">
+            <input class="field search" id="search" type="search" placeholder="ค้นหาจากชื่อ, รหัส, สถานะ หรือเหตุผล" />
+            <select class="field" id="status-filter" aria-label="Filter status">
+              <option value="">ทุกสถานะ</option>
+            </select>
+            <select class="field" id="priority-filter" aria-label="Filter priority">
+              <option value="">ทุก priority</option>
+              <option value="สูง">สูง</option>
+              <option value="กลาง">กลาง</option>
+              <option value="ปกติ">ปกติ</option>
+            </select>
+          </div>
+          <div class="table" id="table"></div>
         </div>
 
-        <div class="grid two" style="margin-top:22px">
-          <section class="card">
-            <div class="section-head">
-              <div><h2><mark>Work Queue Today</mark></h2><p class="subtitle">งานค้างที่ทีมต้องจัดการวันนี้ เรียงจากงานใกล้ครบกำหนด และผลกระทบต่อผู้ใช้</p></div>
-              <span class="pill urgent">ติดตามกำหนดงาน</span>
-            </div>
-            <div style="padding:0 18px">
-              <div class="work-item"><div><strong>รายงานสินทรัพย์</strong><span class="muted">รายการเก่าสุดรอตรวจ 22 ชม. · เหตุผลหลัก: รูปซ้ำ / ข้อมูลประกาศซ้ำ</span></div><strong style="color:#ef4444;font-size:22px">7</strong><span class="muted">รายการ ›</span></div>
-              <div class="work-item"><div><strong>รายงานผู้ใช้</strong><span class="muted">รายการเก่าสุดรอตรวจ 18 ชม. · พบโปรไฟล์ผู้ขายน่าสงสัย</span></div><strong style="color:#ef4444;font-size:22px">5</strong><span class="muted">รายการ ›</span></div>
-              <div class="work-item"><div><strong>ข้อเสนอ / แชท</strong><span class="muted">มีห้องแชทถูกรายงาน 6 รายการ และข้อเสนอรอประเมิน policy</span></div><strong style="color:#ef4444;font-size:22px">6</strong><span class="muted">รายการ ›</span></div>
-            </div>
-          </section>
-          <section class="card">
-            <div class="section-head"><h2>Recent Activity</h2></div>
-            <div class="activity"><span class="dot"></span><div><strong>มีรายงานสินทรัพย์ใหม่</strong><p class="muted">A-2002 Rolex Submariner 116610LN ถูกผู้ใช้รายงานเรื่องรูปซ้ำ</p></div><span class="muted">15 นาทีที่แล้ว</span></div>
-            <div class="activity" style="background:#fff6f6"><span class="dot"></span><div><strong>ข้อเสนอซื้อถูกปฏิเสธ</strong><p class="muted">OF-302 ข้อเสนอ 330,000 THB ถูกผู้ขายปฏิเสธ</p></div><span class="muted">1 ชม.ที่แล้ว</span></div>
-            <div class="activity"><span class="dot"></span><div><strong>บัญชีถูกแขวนพร้อมความเสี่ยง</strong><p class="muted">U-1002 ถูกเปลี่ยนเป็น Suspended หลังตรวจสอบ report queue</p></div><span class="muted">1 ชม. 35 นาทีที่แล้ว</span></div>
-          </section>
-        </div>
+        <aside class="detail" id="detail">
+          <div class="detail-empty">เลือกรายการจากตารางเพื่อดูรายละเอียด, timeline, FO impact และ action ที่ Admin ทำได้</div>
+        </aside>
       </section>
 
-      <section id="view-reports" class="view hidden">
-        <div class="card">
-          <div class="section-head">
-            <div><h2>Report Queue <small>แสดง 16 / 16 รายการ</small></h2></div>
-            <div class="actions"><button class="btn">☷ เปิดตัวกรอง</button><button class="btn">↻ รีเซ็ตค่าทั้งหมด</button></div>
-          </div>
-          <div class="queue-list">
-            <div class="queue-row head"><span>Report</span><span>User</span><span>Reason</span><span>Priority</span><span>Status</span><span>Waiting time</span><span>Action</span></div>
-          </div>
-        </div>
-      </section>
-
-      <section id="view-users" class="view hidden">
-        <div class="backline">
-          <button class="back" data-view="reports">‹</button>
-          <div><h1 style="margin:0;text-transform:none">บริษัท ไทยอุตสาหกรรม จำกัด <span class="pill" style="background:var(--green-soft);color:var(--green)">นิติบุคคล</span></h1><p class="muted">เลขประจำตัวผู้เสียภาษี: <strong>0105560000001</strong></p></div>
-          <div class="actions" style="margin-left:auto"><button class="btn">▱ บันทึก CRM เต็มรูปแบบ</button><button class="btn blue">+ บันทึกการขายผู้เอาเข้า</button></div>
-        </div>
-        <div class="grid profile-layout">
-          <aside>
-            <section class="card profile-card">
-              <div class="avatar-xl">U</div>
-              <h2 style="font-size:16px;margin-bottom:3px">บริษัท ไทยอุตสาหกรรม จำกัด</h2>
-              <p class="muted">cust-001</p>
-              <div class="contact-row"><i>♧</i><div><span class="muted">เบอร์โทรศัพท์</span><strong>02-123-4567</strong></div></div>
-              <div class="contact-row"><i>✉</i><div><span class="muted">อีเมล</span><strong>contact@thai-industry.co.th</strong></div></div>
-              <div class="contact-row"><i>⌖</i><div><span class="muted">ที่อยู่การจัดส่งเอกสาร</span><strong>123 ถนนวิภาวดีรังสิต แขวงจตุจักร เขตจตุจักร กรุงเทพฯ 10900</strong></div></div>
-              <div class="contact-row"><i>□</i><div><span class="muted">วันที่บันทึกเข้าสู่ระบบ</span><strong>1 พฤษภาคม 2569</strong></div></div>
-              <div class="contact-row"><i>◷</i><div><span class="muted">วันเวลาการติดต่อล่าสุด</span><strong>27 พ.ค. 2569 15:30</strong></div></div>
-            </section>
-            <section class="card pad" style="margin-top:22px">
-              <h3>ข้อมูลสรุปกรมธรรม์และการเงิน</h3>
-              <div class="grid" style="grid-template-columns:1fr 1fr">
-                <div class="card pad" style="text-align:center;box-shadow:none"><span class="muted">กรมธรรม์</span><h2>1</h2></div>
-                <div class="card pad" style="text-align:center;box-shadow:none"><span class="muted">แจ้งเคลม</span><h2>1</h2></div>
-              </div>
-              <div class="card pad" style="text-align:center;box-shadow:none;margin-top:12px"><span class="muted">ยอดเบี้ยประกันภัยรวม (บาท)</span><h2 style="color:var(--blue)">248,500</h2></div>
-            </section>
-          </aside>
-          <section>
-            <div class="tabs">
-              <button class="tab active">🔮 ประวัติ CRM & บันทึก <small>2</small></button>
-              <button class="tab">🛡 กรมธรรม์ <small>1</small></button>
-              <button class="tab">🧾 ประวัติการเคลม <small>1</small></button>
-              <button class="tab">💵 เบี้ยและใบแจ้งหนี้ <small>1</small></button>
-            </div>
-            <section class="card quick-card">
-              <h3>▢ บันทึกกิจกรรมลูกค้าด่วน</h3>
-              <p class="main-text">ช่องทางการติดต่อ:</p>
-              <div class="channel-row"><button class="channel active">☎</button><button class="channel">✉</button><button class="channel">♧</button><button class="channel">▤</button><button class="channel">□</button></div>
-              <p class="main-text">รายละเอียดกิจกรรม / บันทึกการสนทนา:</p>
-              <textarea placeholder="กรอกรายละเอียดการสนทนา ความคืบหน้า หรือข้อตกลงเพิ่มเติม..."></textarea>
-              <div style="display:flex;justify-content:flex-end;margin-top:14px"><button class="btn blue">✈ เพิ่มบันทึกกิจกรรม</button></div>
-            </section>
-            <h3>ประวัติการติดต่อและการดูแล</h3>
-            <div class="timeline">
-              <article class="timeline-card" data-icon="🏆"><strong>นัดหมายพบปะ <span class="muted">โดย อรวรรณดี สุขเจริญ</span></strong><p>เข้าพบเพื่อนำเสนอแผนประกัน TIP Factory Shield และตกลงรับแผนประกันภัย</p><span class="muted" style="position:absolute;right:18px;top:18px">27 พ.ค. 2569 21:00</span></article>
-              <article class="timeline-card" data-icon="☎"><strong>โทรศัพท์ <span class="muted">โดย อรวรรณดี สุขเจริญ</span></strong><p>โทรติดต่อแจ้งแผนประกันภัยโรงงานเบื้องต้น ลูกค้าสนใจรายละเอียดเพิ่มเติม</p><span class="muted" style="position:absolute;right:18px;top:18px">15 พ.ค. 2569 17:30</span></article>
-            </div>
-          </section>
-        </div>
-      </section>
-
-      <section id="view-assets" class="view hidden"><div class="top"><div class="title-lockup"><h1>Asset Management</h1><p class="subtitle">Sale / Show / Hide / Sold operational list</p></div></div><div class="card pad"><h2>Asset module placeholder</h2><p class="muted">ใช้สไตล์ตารางและคิวเดียวกับ dashboard/report queue</p></div></section>
-      <section id="view-content" class="view hidden"><div class="top"><div class="title-lockup"><h1>Content Management</h1><p class="subtitle">Article, guide, announcement, and content review operations</p></div></div><div class="card pad"><h2>Content module placeholder</h2><p class="muted">Uses the same operational queue layout and single Admin policy model.</p></div></section>
-      <section id="view-market" class="view hidden"><div class="top"><div class="title-lockup"><h1>Market Data</h1><p class="subtitle">Reference prices, watch market signals, and benchmark data</p></div></div><div class="card pad"><h2>Market data placeholder</h2><p class="muted">Market data actions remain governed by Admin policy, not separate BO roles.</p></div></section>
-      <section id="view-notifications" class="view hidden"><div class="top"><div class="title-lockup"><h1>Notifications</h1><p class="subtitle">Admin alerts, queue reminders, and system messages</p></div></div><div class="card pad"><h2>Notifications placeholder</h2><p class="muted">Operational notification center for the BO workspace.</p></div></section>
-      <section id="view-offers" class="view hidden"><div class="top"><div class="title-lockup"><h1>Offer / Chat</h1><p class="subtitle">Offer lifecycle, rejected status, reported chat context</p></div></div><div class="card pad"><h2>Offer module placeholder</h2></div></section>
-      <section id="view-settings" class="view hidden"><div class="top"><div class="title-lockup"><h1>Admin Settings</h1><p class="subtitle">Single Admin account type with policy-based access</p></div></div><div class="card pad"><h2>Admin Access Policy Matrix</h2><p class="muted">BO uses exactly one Admin account type. Module/action policies control access.</p></div></section>
+      <section class="cards" id="cards"></section>
     </main>
   </div>
 
   <script>
-    const reports = [
-      ["RPU-505", "Duplicate Content", "Crown Time BKK", "U-1017 · ระงับชั่วคราว", "รูปประกาศซ้ำหลายรายการ", "มี 5 รายงานจากผู้ใช้ต่างคนและรูปซ้ำกับประกาศอื่น", ["5 ผู้รายงาน", "เกี่ยวข้องกับ asset 4 รายการ"], "urgent", "waiting", "22 ชม.", "ใกล้ครบกำหนดตรวจ"],
-      ["RPU-501", "Profile Risk", "horology.king", "U-1002 · ระงับชั่วคราว", "โปรไฟล์ผู้ขายน่าสงสัย", "ผู้รายงาน 5 คนระบุว่าข้อมูลโปรไฟล์และรูปสินค้าซ้ำกับบัญชีอื่น", ["5 ผู้รายงาน", "เกี่ยวข้องกับ 2 asset และ 1 offer chat"], "urgent", "waiting", "18 ชม.", "เหลือ 6 ชม. ก่อนครบกำหนดตรวจ"],
-      ["RPU-514", "Deletion Dependency", "Archive Collector", "U-1020 · มีคำขอลบบัญชี", "รายงานเข้ามาระหว่างรอลบบัญชี", "มีรายงานเข้าจากผู้ใช้ต่างคน ต้องตรวจว่ามี dispute หรือ offer ค้างหรือไม่", ["1 ผู้รายงาน", "เกี่ยวข้องกับ account deletion request และ offer dependency"], "medium", "reviewing", "16 ชม.", "ต้องตรวจรวมกับ deletion workflow"],
-      ["RPU-508", "Chat Conduct", "BKK Watch Exchange", "U-1022 · ระงับชั่วคราว", "ถูกรายงานซ้ำเรื่องพฤติกรรมในแชท", "มีรายงานเข้าจากผู้ใช้ 5 คนใน 7 วัน", ["5 ผู้รายงาน", "เกี่ยวข้องกับ chat 5 เคส"], "urgent", "reviewing", "14 ชม.", "กำลังตรวจ transcript"],
-      ["RPU-502", "Impersonation", "The Collector", "U-1004 · มีคำขอลบบัญชี", "แอบอ้างตัวตน / โปรไฟล์ซ้ำ", "ชื่อร้านและข้อความแนะนำตัวใกล้เคียงกับผู้ขายที่ถูกยืนยันแล้ว", ["2 ผู้รายงาน", "มีคำขอลบบัญชีที่ยังติด pending offer"], "urgent", "reviewing", "11 ชม.", "กำลังตรวจโดย Admin"],
-      ["RPU-510", "Listing Context", "Vintage Vault BKK", "U-1001 · ใช้งานปกติ", "ข้อมูลประกาศราคาสูงผิดปกติ", "มีผู้รายงาน 3 คนระบุว่าราคาประกาศสูงผิดปกติเมื่อเทียบกับรุ่นเดียวกัน", ["3 ผู้รายงาน", "เกี่ยวข้องกับ asset 2 รายการ"], "medium", "waiting", "9 ชม.", "ควรตรวจภายในวันนี้"],
-      ["RPU-503", "Offer / Chat", "watch.dealer.th", "U-1007 · ระงับชั่วคราว", "ส่งข้อเสนอหรือข้อความรบกวน", "มีรายงาน spam offer จากผู้ใช้ 5 คนในช่วง 7 วัน", ["5 ผู้รายงาน", "เกี่ยวข้องกับ offer chat 3 รายการ"], "urgent", "waiting", "6 ชม.", "ควรตรวจภายในวันนี้"],
-      ["RPU-512", "Listing Context", "Omega Club TH", "U-1009 · ใช้งานปกติ", "คำอธิบายสภาพสินค้าไม่ชัดเจน", "ผู้ใช้ขอให้ตรวจคำอธิบายและรูปสินค้าเพิ่มเติม", ["2 ผู้รายงาน"], "normal", "waiting", "4 ชม.", "รอคิวตรวจ"]
+    const iconSvg = {
+      dashboard: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="7" height="7" rx="1.3"/><rect x="14" y="3" width="7" height="7" rx="1.3"/><rect x="3" y="14" width="7" height="7" rx="1.3"/><rect x="14" y="14" width="7" height="7" rx="1.3"/></svg>',
+      users: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M16 21v-2a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v2"/><circle cx="9.5" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>',
+      asset: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="7"/><path d="M9 2h6"/><path d="M9 22h6"/><path d="M9.5 2v3.4M14.5 2v3.4M9.5 18.6V22M14.5 18.6V22"/><path d="M12 8v4l2.7 1.8"/></svg>',
+      content: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><path d="M14 2v6h6"/><path d="M8 13h8M8 17h6"/></svg>',
+      market: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 17 9 11l4 4 8-8"/><path d="M14 7h7v7"/></svg>',
+      directory: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 21h18"/><path d="M5 21V7l7-4 7 4v14"/><path d="M9 21v-6h6v6"/><path d="M9 10h.01M15 10h.01"/></svg>',
+      audit: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 11h6M9 15h6"/><path d="M8 3h8l3 3v15H5V6l3-3Z"/><path d="M8 3v4h8V3"/></svg>',
+      offer: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 15a4 4 0 0 1-4 4H8l-5 3V7a4 4 0 0 1 4-4h10a4 4 0 0 1 4 4Z"/><path d="M8 9h8M8 13h5"/></svg>',
+      social: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 1 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8Z"/></svg>',
+      alert: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M10 21h4"/><path d="M18 8a6 6 0 1 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"/></svg>',
+      support: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 14a8 8 0 1 1 16 0"/><path d="M4 14v3a2 2 0 0 0 2 2h2v-7H6a2 2 0 0 0-2 2Z"/><path d="M20 14v3a2 2 0 0 1-2 2h-2v-7h2a2 2 0 0 1 2 2Z"/><path d="M16 19a4 4 0 0 1-4 2"/></svg>',
+      delete: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 6h18"/><path d="M8 6V4h8v2"/><path d="M19 6l-1 15H6L5 6"/><path d="M10 11v6M14 11v6"/></svg>',
+      reports: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 19V5"/><path d="M4 19h17"/><path d="M8 16V9M13 16V6M18 16v-4"/></svg>',
+      notifications: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 7 3 9H3c0-2 3-2 3-9"/><path d="M10 21h4"/></svg>',
+      settings: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 15.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Z"/><path d="M19.4 15a1.7 1.7 0 0 0 .34 1.88l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06A1.7 1.7 0 0 0 15 19.4a1.7 1.7 0 0 0-1 .6 1.7 1.7 0 0 0-.42 1.1V21a2 2 0 1 1-4 0v-.09A1.7 1.7 0 0 0 8 19.4a1.7 1.7 0 0 0-1.88.34l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.7 1.7 0 0 0 3.6 15a1.7 1.7 0 0 0-.6-1H3a2 2 0 1 1 0-4h.09A1.7 1.7 0 0 0 4.6 8a1.7 1.7 0 0 0-.34-1.88l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.7 1.7 0 0 0 9 3.6c.4-.17.72-.38 1-.6V3a2 2 0 1 1 4 0v.09c.28.22.6.43 1 .6a1.7 1.7 0 0 0 1.88-.34l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.7 1.7 0 0 0 19.4 9c.17.4.38.72.6 1H21a2 2 0 1 1 0 4h-.09c-.22.28-.43.6-.6 1Z"/></svg>',
+      refresh: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><path d="M21 12a9 9 0 0 1-15.2 6.5"/><path d="M3 12A9 9 0 0 1 18.2 5.5"/><path d="M18 2v4h4"/><path d="M6 22v-4H2"/></svg>',
+      eye: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/></svg>',
+      eyeOff: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="m3 3 18 18"/><path d="M10.6 10.6a2 2 0 0 0 2.8 2.8"/><path d="M9.9 5.2A10.7 10.7 0 0 1 12 5c6.5 0 10 7 10 7a16 16 0 0 1-3 4.1"/><path d="M6.6 6.8C3.6 8.8 2 12 2 12s3.5 7 10 7a10.4 10.4 0 0 0 5.4-1.5"/></svg>',
+      logout: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M10 17l5-5-5-5"/><path d="M15 12H3"/><path d="M21 3v18h-8"/></svg>',
+      menu: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M4 12h16M4 17h16"/></svg>',
+      close: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6l12 12M18 6 6 18"/></svg>',
+      chevron: '<svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>'
+    };
+
+    const navGroups = [
+      { section: "การดำเนินงาน", items: [
+        { id: "dashboard", label: "Dashboard", icon: "dashboard" },
+        { id: "users", label: "User Management", icon: "users", subs: ["User List", "Reports", "Suspension"] },
+        { id: "assets", label: "Asset Management", icon: "asset", subs: ["Asset List", "Reported Assets", "Status Review"] },
+        { id: "content", label: "Content Management", icon: "content", subs: ["Articles", "Categories", "Banners", "Reported Board", { label: "Directory", module: "directory" }] },
+        { id: "market", label: "Market Data", icon: "market", subs: ["Brands", "Models", "Price Index", "Import"] },
+      ]},
+      { section: "งานตรวจสอบและบริการ", items: [
+        { id: "offers", label: "Offer / Chat", icon: "offer", subs: ["Offer Queue", "Reported Chat", "Dispute Export"] },
+        { id: "social", label: "Social Interaction", icon: "social", subs: ["Comments", "Likes", "Follows", "Reported Social"] },
+        { id: "watch-alerts", label: "Watch Alert", icon: "alert", subs: ["Alert Criteria", "Trigger History", "Disabled Alerts"] },
+        { id: "support", label: "Help & Support", icon: "support", subs: ["Tickets", "Assignment", "SLA"] },
+        { id: "deletions", label: "Account Deletion", icon: "delete", subs: ["Requests", "Grace Period", "Anonymization"] }
+      ]},
+      { section: "เครื่องมือ & รายงาน", items: [
+        { id: "reports", label: "Reports", icon: "reports", subs: ["User", "Asset", "Offer", "Search", "Export Jobs"] },
+        { id: "notifications", label: "Notifications", icon: "notifications", subs: ["Broadcast", "System Templates", "Delivery Logs"] },
+        { id: "settings", label: "Settings", icon: "settings", subs: ["Admin Accounts", "Permissions", "Security", "Retention", "Terms of Use", "Privacy Policy", "Version History", "Support Center", "Contact Support", { label: "Audit Log", module: "audit" }] }
+      ]}
     ];
 
-    function pill(type, label) {
-      const map = { urgent: "เร่งด่วน", medium: "ปานกลาง", normal: "ปกติ", waiting: "รอตรวจ", reviewing: "กำลังตรวจ" };
-      return `<span class="pill ${type}">${label || map[type]}</span>`;
+    const navParentByModule = navGroups.reduce((parents, group) => {
+      group.items.forEach(entry => {
+        parents[entry.id] = entry.id;
+        (entry.subs || []).forEach(sub => {
+          if (typeof sub === "object" && sub.module) parents[sub.module] = entry.id;
+        });
+      });
+      return parents;
+    }, {});
+    const defaultSubByModule = navGroups.reduce((defaults, group) => {
+      group.items.forEach(entry => {
+        const firstSub = entry.subs?.[0];
+        if (typeof firstSub === "string") defaults[entry.id] = firstSub;
+      });
+      return defaults;
+    }, {});
+
+    function scrollMainToTop() {
+      const main = document.querySelector(".main");
+      if (main) main.scrollTo({ top: 0, behavior: "instant" });
     }
 
-    function renderReports() {
-      const list = document.querySelector("#view-reports .queue-list");
-      list.insertAdjacentHTML("beforeend", reports.map(r => `
-        <div class="queue-row">
-          <div><div class="main-text">${r[0]}</div><div class="muted">${r[1]}</div></div>
-          <div><div class="main-text">${r[2]}</div><div class="muted">${r[3]}</div></div>
-          <div><div class="main-text">${r[4]}</div><div class="muted">${r[5]}</div><div class="chips">${r[6].map(x => `<span class="chip">${x}</span>`).join("")}</div></div>
-          <div>${pill(r[7])}</div>
-          <div>${pill(r[8])}</div>
-          <div><div class="main-text">${r[9]}</div><div class="muted">${r[10]}</div></div>
-          <div><button class="btn" data-view="users">ดูรายละเอียด</button></div>
+    function setNavOpen(isOpen) {
+      document.body.classList.toggle("nav-open", isOpen);
+      const toggle = document.querySelector("#menu-toggle");
+      if (!toggle) return;
+      toggle.innerHTML = isOpen ? iconSvg.close : iconSvg.menu;
+      toggle.setAttribute("aria-expanded", isOpen ? "true" : "false");
+      toggle.setAttribute("aria-label", isOpen ? "Close navigation" : "Open navigation");
+    }
+
+    const moduleData = {
+      dashboard: {
+        title: "Dashboard",
+        crumb: "การดำเนินงาน / Dashboard",
+        panel: "Operational Queue",
+        subtitle: "งานเร่งด่วนจากทุก module ที่ต้องตรวจในวันนี้",
+        action: "เปิดคิวทั้งหมด",
+        stats: [["Pending Reports", "31", "มี 9 รายการใกล้ครบกำหนดตรวจ"], ["New Assets", "94", "Sale 64 · Show 17 · Hide 9 · Sold 4"], ["Support Tickets", "18", "รอตอบกลับ 7 รายการ"], ["Broadcast Ready", "3", "พร้อมส่งหลัง approval"]],
+        cards: [["FO Sync", "การเปลี่ยนสถานะสินทรัพย์และคอมเมนต์ต้องสะท้อนกลับ Feed, Search, Profile และ Board"], ["Audit Required", "Suspend, remove, publish, export และ permission update ต้องบันทึก audit"], ["Admin Model", "BO ใช้ account type เดียวคือ Admin และควบคุมสิทธิ์ด้วย policy ต่อ action"]],
+        rows: [
+          item("RPU-505", "Duplicate Content", "Crown Time BKK", "Asset Report", "สูง", "รอตรวจ", "มีผู้ใช้ 5 คน report รูปประกาศซ้ำกับสินทรัพย์อื่น", ["Asset 4 รายการ", "รอตรวจ 22 ชม."], "ตรวจรูป, เทียบ provenance และซ่อนรายการซ้ำจาก FO หากยืนยัน"),
+          item("SUP-188", "Payment proof question", "Nattapol P.", "Support", "กลาง", "Assigned", "ลูกค้าถามเรื่อง proof of payment และ visibility ใน FO", ["Email", "Owner-only"], "ตอบกลับพร้อมอธิบาย privacy rule และแนบ link policy"),
+          item("ART-044", "Board Article Scheduled", "Editorial", "Content", "ปกติ", "Ready", "บทความนาฬิกา vintage ตั้งเวลา publish วันนี้ 19:00", ["Board", "Scheduled"], "ตรวจ preview as FO ก่อน publish")
+        ]
+      },
+      users: mod("User Management", "การดำเนินงาน / User Management", "User List & Risk Queue", "ดูข้อมูลผู้ใช้, auth method, login history, report context และ action เสี่ยง", "เพิ่ม filter", [["Active Users", "12,847", "Google 42% · Email 39% · Apple 19%"], ["Suspended", "17", "ต้องมี reason และ audit"], ["Deletion Pending", "8", "มี pending offer 3 ราย"], ["Exports", "2", "รอ background job"]], [
+        item("U-1002", "horology.king", "Google", "Seller", "สูง", "Suspended", "ถูกรายงาน profile ซ้ำและมี asset คล้ายผู้ขายอื่น", ["Reports 5", "Assets 2"], "ดู login history, mask PII เป็น default และบันทึก reason หาก ban"),
+        item("U-1017", "Crown Time BKK", "Email", "Seller", "สูง", "Active", "มี duplicate content report เชื่อมกับ asset 4 รายการ", ["Email OTP", "High value"], "ตรวจ ownership และยืนยันว่า login ต้องผ่าน Email OTP"),
+        item("U-1042", "Nattapol P.", "Apple", "Buyer", "ปกติ", "Active", "มี support ticket เรื่อง proof of payment", ["Ticket 1"], "เปิด ticket และดูประวัติ offer ที่เกี่ยวข้อง")
+      ]),
+      assets: mod("Asset Management", "การดำเนินงาน / Asset Management", "Asset List & Moderation", "จัดการสถานะ Sale, Show, Hide, Sold และ reported assets", "สร้าง asset note", [["Sale", "2,816", "แสดงใน Feed/Search"], ["Show", "428", "แสดงใน collection"], ["Hidden", "76", "owner-only"], ["Reported", "22", "รอตรวจ 9 รายการ"]], [
+        item("AST-8831", "Rolex Submariner 16610", "Crown Time BKK", "Sale", "สูง", "Reported", "รูปประกาศซ้ำและราคาเบี่ยงจาก market index", ["THB 318,000", "Reports 5"], "เทียบรูป, proof of payment, provenance และ Market Price Index"),
+        item("AST-8802", "Omega Speedmaster", "Vintage Vault BKK", "Sale", "กลาง", "Active", "ราคาสูงกว่าค่ากลาง 18% จากรุ่นเดียวกัน", ["Watch Alert match 12"], "ส่ง warning หรือ force Hide หากข้อมูลหลอกลวง"),
+        item("AST-8791", "Seiko 6139", "Archive Collector", "Hide", "ปกติ", "Owner-only", "รอ account deletion dependency check", ["Deletion linked"], "คงข้อมูล transaction/audit ตาม retention")
+      ]),
+      content: mod("Content Management", "การดำเนินงาน / Content Management", "Board Articles & Banners", "สร้างบทความ, category, banner, schedule และจัดการ reported board content", "สร้างบทความ", [["Published", "126", "อยู่ใน Board"], ["Scheduled", "5", "รอ publish"], ["Draft", "14", "ยังไม่แสดงบน FO"], ["Reported", "3", "ต้อง review"]], [
+        item("ART-044", "Vintage Watch Buying Guide", "Editorial", "Article", "ปกติ", "Scheduled", "ตั้งเวลาเผยแพร่ 10 Jul 2026 19:00", ["Board", "Buying Guide"], "Preview as FO และตรวจ cover image ก่อน publish"),
+        item("BAN-012", "Auction Week Banner", "Marketing", "Banner", "กลาง", "Ready", "รอ approval เพื่อขึ้นหน้า Board", ["Desktop/Mobile"], "ตรวจ destination และ start/end date"),
+        item("BRD-R02", "Reported article image", "User report", "Board Report", "สูง", "Reviewing", "รูปประกอบบทความถูก report ว่าละเมิดสิทธิ์", ["Reports 2"], "ซ่อนรูปหรือ archive article หากยืนยัน")
+      ]),
+      market: mod("Market Data", "การดำเนินงาน / Market Data", "Watch Master Data", "ดูแล brand, model, reference และ price index ที่ใช้กับ Search, Asset และ Watch Alert", "Import CSV", [["Brands", "482", "Active 461"], ["Models", "8,924", "Inactive 31"], ["Price Index", "17,200", "อัปเดตสัปดาห์นี้"], ["Import Errors", "6", "ต้องแก้ reference"]], [
+        item("BRD-ROLEX", "Rolex", "Brand", "Master", "ปกติ", "Active", "ใช้ใน autocomplete และ asset form", ["Models 1,240"], "Inactive จะหยุด trigger Watch Alert ใหม่"),
+        item("MDL-16610", "Submariner 16610", "Model", "Reference", "กลาง", "Active", "ราคา index มี outlier จาก listing ล่าสุด", ["Median 305,000"], "ตรวจ source และ mark abnormal หากจำเป็น"),
+        item("IDX-202607", "Speedmaster Reduced", "Price Index", "Index", "กลาง", "Reviewing", "ข้อมูลนำเข้าซ้ำ 3 แถว", ["Import batch"], "แก้ duplicate ก่อน publish index")
+      ]),
+      directory: mod("Directory", "การดำเนินงาน / Directory", "Directory Publication", "จัดการร้าน, service, category, map/contact และสถานะเผยแพร่", "เพิ่ม directory", [["Published", "84", "แสดงบน FO"], ["Draft", "9", "รอข้อมูลติดต่อ"], ["Inactive", "6", "ไม่แสดงบน FO"], ["Missing Map", "4", "ต้องเติมพิกัด"]], [
+        item("DIR-021", "Tuk Daeng Watch Service", "Service", "Repair", "ปกติ", "Published", "มีเบอร์โทร, LINE และ map ครบ", ["Bangkok"], "อัปเดต opening hours"),
+        item("DIR-034", "Vintage Strap House", "Shop", "Accessory", "กลาง", "Draft", "ขาดรูป cover และพิกัด", ["Missing map"], "เติมข้อมูลก่อน publish"),
+        item("DIR-041", "Collector Lounge", "Venue", "Community", "กลาง", "Inactive", "ร้านย้ายที่ตั้ง รอข้อมูลใหม่", ["FO hidden"], "Restore เมื่อข้อมูลติดต่อยืนยันแล้ว")
+      ]),
+      audit: mod("Audit Log", "การดำเนินงาน / Audit Log", "Immutable Admin Events", "ค้นหา action สำคัญ, export และตรวจ before/after value", "Export audit", [["Events Today", "386", "Login 74 · Update 221"], ["High Risk", "18", "ต้องมี reason"], ["Exports", "5", "background jobs"], ["Retention", "365d", "baseline ขั้นต่ำ"]], [
+        item("AUD-88201", "Force Hide Asset", "Somchai Admin", "Asset", "สูง", "Recorded", "AST-8831 ถูกเปลี่ยน Sale → Hide พร้อม reason", ["Before/After"], "ตรวจ reason และ FO sync event"),
+        item("AUD-88172", "Publish Article", "Orn Admin", "Content", "กลาง", "Recorded", "ART-044 schedule ถูกแก้เวลา publish", ["Board"], "ตรวจ timestamp Asia/Bangkok"),
+        item("AUD-88120", "Export User CSV", "Somchai Admin", "Users", "สูง", "Recorded", "Export มี sensitive-data masking", ["CSV", "Policy"], "ตรวจ permission และ download expiry")
+      ]),
+      offers: mod("Offer / Chat", "งานตรวจสอบและบริการ / Offer / Chat", "Offer Lifecycle & Chat Review", "ตรวจ offer, rejected status, reported chat และ dispute export", "เปิด dispute export", [["Pending Offers", "44", "รอ buyer/seller"], ["Rejected", "19", "เก็บประวัติ"], ["Reported Chat", "7", "SLA 24 ชม."], ["Disputes", "3", "ต้อง export"]], [
+        item("OFR-501", "Offer THB 285,000", "AST-8831", "Offer", "กลาง", "Pending", "ผู้ซื้อขอลดราคาและถาม proof เพิ่ม", ["Buyer U-1042"], "ดู chat context ก่อน force expire"),
+        item("CHT-090", "Reported abusive chat", "watch.dealer.th", "Chat", "สูง", "Reviewing", "มี report spam offer จากผู้ใช้ 5 คน", ["Reports 5"], "อ่าน transcript และ hide/ban ตาม policy"),
+        item("DSP-014", "Condition mismatch", "Omega Club TH", "Dispute", "สูง", "Open", "คู่ค้าร้องเรียนสภาพสินค้าไม่ตรงรูป", ["Export needed"], "Export offer/chat bundle เพื่อ support")
+      ]),
+      social: mod("Social Interaction", "งานตรวจสอบและบริการ / Social Interaction", "Comments, Likes & Follows", "จัดการ comment/reply moderation และ analytics ของ like/favorite/follow", "ดู reported social", [["Comments", "8,420", "วันนี้ 184"], ["Reported", "11", "รอตรวจ 4"], ["Follows", "26,100", "เพิ่ม 2.4%"], ["Favorites", "41,900", "ใช้ใน analytics"]], [
+        item("COM-711", "Spam comment", "AST-8802", "Comment", "สูง", "Reported", "คอมเมนต์ซ้ำหลาย asset พร้อม link นอกระบบ", ["Reports 3"], "Hide comment จาก Asset Detail และ audit"),
+        item("FOL-209", "Follow spike", "Crown Time BKK", "Follow", "กลาง", "Monitoring", "follow เพิ่มผิดปกติใน 1 ชม.", ["+240"], "ตรวจพฤติกรรมบัญชีใหม่"),
+        item("LIK-882", "Favorite trend", "Speedmaster", "Favorite", "ปกติ", "Active", "ใช้สำหรับ reports ไม่ต้องแก้ราย record", ["Analytics"], "ดู aggregate เท่านั้น")
+      ]),
+      "watch-alerts": mod("Watch Alert", "งานตรวจสอบและบริการ / Watch Alert", "Alert Criteria & Trigger History", "ดู criteria, trigger history, notification on/off และ disable alert ที่ abuse", "Disable selected", [["Active Alerts", "3,218", "Sale-only match"], ["Triggered Today", "146", "ส่ง notification 139"], ["Disabled", "12", "โดย Admin"], ["Failed Delivery", "7", "retry pending"]], [
+        item("WAL-1440", "Rolex Submariner <= 320k", "U-1042", "Criteria", "ปกติ", "Active", "Sale-only match และแจ้งเตือนเมื่อราคาเข้าเกณฑ์", ["Push on"], "ดู trigger history และ related listing"),
+        item("WAL-1228", "Omega Speedmaster Bangkok", "Omega Club TH", "Criteria", "กลาง", "Active", "trigger บ่อยจาก listing ซ้ำ", ["12 triggers"], "ปรับ source หรือ disable หาก abuse"),
+        item("WAL-1199", "Inactive model alert", "Archive Collector", "Criteria", "กลาง", "Disabled", "model ถูก inactive ใน Market Data", ["No new trigger"], "คง history แต่หยุด notification ใหม่")
+      ]),
+      support: mod("Help & Support", "งานตรวจสอบและบริการ / Help & Support", "Ticket Queue", "คิว ticket, assignment, reply history, priority และ SLA", "สร้าง ticket", [["Open", "18", "รอตอบกลับ 7"], ["Assigned", "9", "มีเจ้าของงาน"], ["SLA Risk", "4", "เหลือ < 4 ชม."], ["Resolved", "126", "เดือนนี้"]], [
+        item("SUP-188", "Proof of payment visibility", "Nattapol P.", "Email", "กลาง", "Assigned", "ถามว่าหลักฐานการชำระเงินแสดงให้ใครเห็น", ["Owner/Admin"], "ตอบว่าเป็น private data เห็นเฉพาะ owner และ Admin"),
+        item("SUP-182", "Cannot reset password", "Apple user", "App", "ปกติ", "Open", "บัญชี Apple reset password จาก BO ไม่ได้", ["Auth method Apple"], "แจ้งให้จัดการผ่าน Apple ID"),
+        item("SUP-177", "Report follow-up", "Crown Time BKK", "LINE", "สูง", "SLA Risk", "ผู้ใช้ถามผลการ report duplicate asset", ["RPU-505"], "ตอบสถานะโดยไม่เปิดเผยข้อมูล reporter")
+      ]),
+      deletions: mod("Account Deletion", "งานตรวจสอบและบริการ / Account Deletion", "Deletion Requests", "ตรวจคำขอลบบัญชี, pending dependency, 30-day grace period และ anonymization", "ตรวจ dependency", [["Requests", "8", "รอ validation"], ["Blocked", "3", "มี pending offer"], ["Grace Period", "11", "นับ 30 วัน"], ["Anonymized", "42", "เดือนนี้"]], [
+        item("DEL-033", "Delete account request", "Archive Collector", "Account", "กลาง", "Blocked", "มี pending offer และ report context ค้างอยู่", ["Offer 1", "Report 1"], "ห้าม hard delete จนกว่า dependency ปิด"),
+        item("DEL-029", "Grace period day 12", "The Collector", "Account", "ปกติ", "Grace", "session revoked แล้ว profile public unavailable", ["30-day"], "รอครบกำหนด anonymization"),
+        item("DEL-020", "Ready to anonymize", "old.user", "Account", "สูง", "Ready", "ครบ grace period และไม่มี legal hold", ["PII mask"], "ทำ anonymization พร้อม audit")
+      ]),
+      reports: mod("Reports", "เครื่องมือ & รายงาน / Reports", "Reports & Analytics", "รายงาน user, asset, offer, chat, board, social, search, support, notification และ deletion", "สร้าง export", [["Dashboards", "12", "พร้อมใช้งาน"], ["Scheduled", "6", "ส่งประจำสัปดาห์"], ["Export Jobs", "5", "background"], ["Failed", "1", "retry needed"]], [
+        item("RPT-USER", "User Risk Report", "Trust & Safety", "User", "สูง", "Ready", "รวม suspended, report count และ deletion state", ["CSV/PDF"], "Export ต้อง mask sensitive data"),
+        item("RPT-ASSET", "Asset Moderation Report", "Operations", "Asset", "สูง", "Ready", "รวม reported assets และ force status change", ["Audit linked"], "ใช้ตรวจ SLA"),
+        item("RPT-SEARCH", "Search & Watch Alert", "Market", "Search", "กลาง", "Scheduled", "คำค้นยอดนิยมและ alert trigger", ["Weekly"], "ใช้ปรับ Market Data")
+      ]),
+      notifications: mod("Notifications", "เครื่องมือ & รายงาน / Notifications", "Broadcast & System Templates", "สร้าง broadcast, system trigger template, delivery logs และ retry", "สร้าง broadcast", [["Draft", "3", "รอ approval"], ["Sent Today", "14,280", "Push 91%"], ["Failed", "92", "retry pending"], ["Templates", "18", "active"]], [
+        item("NTF-201", "Auction Week Broadcast", "Marketing", "Broadcast", "กลาง", "Draft", "ส่งให้ผู้ใช้ที่ follow brand Rolex/Omega", ["Segment 4,200"], "ต้อง approval ก่อนส่ง"),
+        item("TPL-044", "Watch Alert Matched", "System", "Template", "ปกติ", "Active", "ใช้เมื่อมี Sale listing ตรง criteria", ["Push"], "แก้ template ต้อง audit"),
+        item("DLV-882", "Failed delivery batch", "FCM", "Delivery", "กลาง", "Retry", "token expired 92 รายการ", ["Retry queue"], "retry และ cleanup invalid token")
+      ]),
+      settings: mod("Settings", "เครื่องมือ & รายงาน / Settings", "Admin Settings", "ตั้งค่า admin account, permission policy, security, retention/export และ feature flags", "บันทึก policy", [["Admin Accounts", "6", "ใช้ account type Admin"], ["Email OTP", "Required", "mandatory"], ["Policies", "34", "module/action"], ["Feature Flags", "7", "2 enabled"]], [
+        item("POL-USER-EXPORT", "User CSV Export", "Permission", "Policy", "สูง", "Enabled", "ต้อง mask PII และมี audit event", ["Sensitive"], "เปลี่ยน policy ต้องมี reason"),
+        item("SEC-EMAIL-OTP", "Mandatory Email OTP", "Security", "Auth", "สูง", "Enabled", "Admin ทุกบัญชีต้อง verify Email OTP หลังผ่าน password", ["No bypass"], "ล็อกตาม baseline"),
+        item("RET-AUDIT", "Audit retention", "Retention", "System", "กลาง", "365 days", "เก็บ audit อย่างน้อย 1 ปี", ["Export policy"], "แก้ค่าต้อง approval")
+      ])
+    };
+
+    const dashboardData = {
+      lastUpdated: "10 Jul 2026, 15:20 GMT+7",
+      metrics: [
+        { label: "New Users", value: "128", trend: "วันนี้เพิ่มขึ้น 8.2% เทียบกับเมื่อวาน", chips: ["Today 128", "This Week 642", "This Month 2,840"], module: "users", sub: "User List", icon: "users" },
+        { label: "Active Users Today", value: "8.4K", trend: "ผู้ใช้งานรายวันเฉลี่ย 7 วันเพิ่มขึ้น 4.1% เทียบกับ 7 วันก่อน", chips: ["Today 8,420", "This Week 24,700", "This Month 38,900"], module: "users", sub: "User List", icon: "users" },
+        { label: "New Assets", value: "94", trend: "สร้างวันนี้ 94 รายการ เทียบกับเมื่อวาน 340 รายการ", chips: ["Sale 64", "Show 17", "Hide 9", "Sold 4"], module: "assets", sub: "Asset List", icon: "asset" },
+        { label: "Reported Items", value: "31", trend: "มี 9 รายงานใกล้ครบกำหนดตรวจ", chips: [
+          { label: "Assets 22", module: "assets", sub: "Reported Assets" },
+          { label: "Users 6", module: "users", sub: "Reports" },
+          { label: "Comments 3", module: "social", sub: "Reported Social" }
+        ], icon: "audit" },
+        { label: "Offer Activity", value: "184", trend: "ข้อเสนอซื้อวันนี้เพิ่มขึ้น 12.6% เทียบกับเมื่อวาน", chips: ["Made 184", "Accepted 41", "Rejected 19", "Expired 12"], module: "offers", sub: "Offer Queue", icon: "offer" },
+        { label: "Articles", value: "12", trend: "มี 4 บทความรอเผยแพร่", chips: ["Published 8", "Scheduled 4"], module: "content", sub: "Articles", icon: "content" },
+        { label: "Watch Alert", value: "3.2K", trend: "มีการจับคู่รายการขาย 146 ครั้งวันนี้", chips: ["Active 3,218", "Triggered 146"], module: "watch-alerts", sub: "Alert Criteria", icon: "alert" },
+        { label: "Support Cases", value: "18", trend: "มี 3 เคสใกล้ครบกำหนดตอบครั้งแรก", chips: ["Open 18", "Assigned 9", "Urgent 3"], module: "support", sub: "Tickets", icon: "support" }
+      ],
+      queues: [
+        { title: "รายงานสินทรัพย์", count: 22, priority: "high", detail: "รายการเก่าสุดรอตรวจ 22 ชม. / เหตุผลหลัก: รูปซ้ำและข้อมูลประกาศซ้ำ / ควรตรวจวันนี้", chips: ["ใกล้ครบกำหนด 6", "ผู้ใช้กระทบสูง"], module: "assets", sub: "Reported Assets" },
+        { title: "รายงานผู้ใช้", count: 6, priority: "high", detail: "มีรายงานโปรไฟล์ซ้ำและพฤติกรรมขายซ้ำ / ควรตรวจบัญชีที่ถูก report หลายครั้งก่อน", chips: ["ใกล้ครบกำหนด 3", "ตรวจประวัติ login"], module: "users", sub: "Reports" },
+        { title: "งานช่วยเหลือที่เปิดอยู่", count: 18, priority: "high", detail: "มี 3 เคสใกล้ครบกำหนดตอบครั้งแรก 8 ชม. / ควรตอบเคสเร่งด่วนก่อน", chips: ["Open 18", "เร่งด่วน 3"], module: "support", sub: "Tickets" },
+        { title: "คำขอลบบัญชี", count: 8, priority: "medium", detail: "มี 2 คำขอที่ยังลบไม่ได้ เพราะมีข้อเสนอซื้อค้างอยู่", chips: ["Blocked 2", "Grace period 4"], module: "deletions", sub: "Requests" },
+        { title: "สินทรัพย์ที่ต้องตรวจเพิ่ม", count: 14, priority: "medium", detail: "รายการถูกทำเครื่องหมายจากระบบหรือ Admin / ตรวจราคา รูป และสถานะก่อนปล่อยกลับสู่ FO", chips: ["ราคาเบี่ยง 5", "รูปซ้ำ 4"], module: "assets", sub: "Status Review" },
+        { title: "บทความรอเผยแพร่", count: 4, priority: "normal", detail: "บทความ Board ตั้งเวลาเผยแพร่แล้ว / ตรวจ preview และรูป cover ก่อนถึงเวลา", chips: ["เผยแพร่วันนี้ 2", "ต้อง preview"], module: "content", sub: "Articles" },
+        { title: "ข้อมูลตลาดรอตรวจ", count: 6, priority: "normal", detail: "brand, model และ price index จาก import มีข้อมูลซ้ำ / ควรแก้ก่อนใช้กับ Search และ Watch Alert", chips: ["Import error 6", "Price index"], module: "market", sub: "Import" },
+        { title: "แจ้งเตือนส่งไม่สำเร็จ", count: 92, priority: "normal", detail: "มี token หมดอายุและงานส่งซ้ำได้ / ตรวจ retry queue และ cleanup invalid token", chips: ["Retryable 81", "Cleanup 11"], module: "notifications", sub: "Delivery Logs" }
+      ],
+      activities: [
+        { category: "Report", title: "มีรายงานสินทรัพย์ใหม่", summary: "Rolex Submariner 16610 ถูกรายงานเรื่องรูปซ้ำและราคาเบี่ยงจากข้อมูลตลาด", time: "15 นาทีที่แล้ว", action: "ตรวจรูปและข้อมูลประกาศก่อนซ่อนรายการจาก FO", module: "assets", sub: "Reported Assets" },
+        { category: "Offer", title: "ข้อเสนอซื้อถูกปฏิเสธ", summary: "ข้อเสนอซื้อ Omega Speedmaster ถูกปฏิเสธและยังมี chat ที่ผู้ใช้ถามต่อ", time: "32 นาทีที่แล้ว", action: "ตรวจบริบท chat หากมีการรายงานหรือข้อพิพาทตามมา", module: "offers", sub: "Offer Queue" },
+        { category: "Content", title: "ตั้งเวลาเผยแพร่บทความแล้ว", summary: "บทความ Vintage Watch Buying Guide ตั้งเวลาเผยแพร่วันนี้ 19:00", time: "1 ชม.ที่แล้ว", action: "เปิดหน้า Content เพื่อตรวจ preview และ cover image", module: "content", sub: "Articles" },
+        { category: "System", title: "ข้อมูลตลาดอัปเดตแล้ว", summary: "Price index ของ Speedmaster Reduced พบข้อมูลนำเข้าซ้ำ 3 แถว", time: "2 ชม.ที่แล้ว", action: "ตรวจ batch import ก่อน publish index", module: "market", sub: "Import" },
+        { category: "System", title: "แจ้งเตือนบางรายการส่งไม่สำเร็จ", summary: "ระบบพบ invalid token ใน delivery batch ล่าสุดและแยกงาน retry แล้ว", time: "3 ชม.ที่แล้ว", action: "เปิด Delivery Logs เพื่อตรวจรายการ retry และ cleanup", module: "notifications", sub: "Delivery Logs" }
+      ],
+      panels: [
+        { title: "Asset Status", meta: "จาก Asset List ทั้งหมด", rows: [
+          { label: "Sale", value: "2,816", detail: "ยอดทั้งหมดที่แสดงใน Feed และ Search", module: "assets", sub: "Asset List" },
+          { label: "Show", value: "428", detail: "ยอดทั้งหมดที่แสดงใน collection และ profile", module: "assets", sub: "Asset List" },
+          { label: "Hide", value: "76", detail: "ยอดทั้งหมดที่ owner/Admin เห็นตามสิทธิ์", module: "assets", sub: "Status Review" },
+          { label: "Sold", value: "214", detail: "ยอดทั้งหมดที่คงประวัติและปิดรับ offer", module: "assets", sub: "Asset List" }
+        ]},
+        { title: "Offer Status", meta: "จาก Offer Queue วันนี้", rows: [
+          { label: "Made", value: "184", detail: "ข้อเสนอซื้อที่ถูกสร้างวันนี้", module: "offers", sub: "Offer Queue" },
+          { label: "Accepted", value: "41", detail: "ข้อเสนอที่ผู้ขายยอมรับวันนี้", module: "offers", sub: "Offer Queue" },
+          { label: "Rejected", value: "19", detail: "ข้อเสนอที่ถูกปฏิเสธวันนี้และเก็บประวัติ", module: "offers", sub: "Offer Queue" },
+          { label: "Expired", value: "12", detail: "ข้อเสนอที่หมดเวลาวันนี้โดยไม่มีการตอบรับ", module: "offers", sub: "Offer Queue" }
+        ]},
+        { title: "Latest Articles", meta: "จาก Articles ล่าสุด", rows: [
+          { label: "Vintage Watch Buying Guide", value: "Scheduled", detail: "ตั้งเวลาเผยแพร่ 10 Jul 2026 19:00", module: "content", sub: "Articles" },
+          { label: "How to Check Provenance", value: "Published", detail: "เผยแพร่แล้วและแสดงบน Board", module: "content", sub: "Articles" },
+          { label: "Market Notes July", value: "Draft", detail: "ยังไม่แสดงบน FO / รอรูป cover", module: "content", sub: "Articles" }
+        ]},
+        { title: "Top Searched Brands", meta: "จาก Search Report สัปดาห์นี้", type: "brand-ranking", rows: [
+          { label: "Rolex", value: "12.4K", share: 32, trend: "+6%", module: "reports", sub: "Search" },
+          { label: "Omega", value: "8.7K", share: 22, trend: "+3%", module: "reports", sub: "Search" },
+          { label: "Seiko", value: "6.1K", share: 16, trend: "+9%", module: "reports", sub: "Search" },
+          { label: "Cartier", value: "4.2K", share: 11, trend: "+14%", module: "reports", sub: "Search" },
+          { label: "Tudor", value: "3.6K", share: 9, trend: "+5%", module: "reports", sub: "Search" }
+        ]}
+      ]
+    };
+
+    function item(id, name, owner, type, priority, status, detail, tags, action) {
+      return { id, name, owner, type, priority, status, detail, tags, action };
+    }
+
+    function mod(title, crumb, panel, subtitle, action, stats, rows) {
+      return {
+        title,
+        crumb,
+        panel,
+        subtitle,
+        action,
+        stats,
+        rows,
+        cards: [["Requirement Coverage", "รองรับ list, filter, detail, status, FO impact และ audit/action note ตาม baseline"], ["Sensitive Data", "ข้อมูลส่วนตัวต้อง mask เป็นค่าเริ่มต้นและเปิดตาม permission เท่านั้น"], ["FO Impact", "action สำคัญต้อง sync ไปยัง Feed, Search, Profile, Board, Notification หรือ Watch Alert ตามกรณี"]]
+      };
+    }
+
+    let activeModule = "dashboard";
+    let activeSub = "";
+    const expandedMenus = new Set();
+    let activeRow = null;
+    let activeActivityFilter = "ทั้งหมด";
+
+    function renderNav() {
+      const nav = document.querySelector("#nav");
+      nav.innerHTML = navGroups.map(group => `
+        <div class="nav-section">${group.section}</div>
+        ${group.items.map(entry => `
+          <button class="nav-item" type="button" data-module="${entry.id}" ${entry.subs ? `data-toggle-menu="${entry.id}"` : ""} aria-expanded="false">
+            <span class="nav-icon">${iconSvg[entry.icon]}</span>
+            <span>${entry.label}</span>
+            ${entry.subs ? iconSvg.chevron : "<span></span>"}
+          </button>
+          ${entry.subs ? `<div class="submenu" data-submenu="${entry.id}">
+            ${entry.subs.map(sub => {
+              const label = typeof sub === "object" ? sub.label : sub;
+              const module = typeof sub === "object" ? sub.module : entry.id;
+              return `<button type="button" data-module="${module}" data-parent="${entry.id}" data-sub="${label}">${label}</button>`;
+            }).join("")}
+          </div>` : ""}
+        `).join("")}
+      `).join("");
+    }
+
+    function renderModule(id, subLabel = "", displaySubLabel = subLabel) {
+      activeModule = id;
+      activeSub = subLabel;
+      const data = moduleData[id];
+      document.body.classList.toggle("dashboard-mode", id === "dashboard");
+      if (id === "dashboard") {
+        renderDashboard();
+        updateActiveNav();
+        return;
+      }
+      activeRow = data.rows[0];
+      const title = displaySubLabel || data.title;
+      document.querySelector("#crumb").textContent = displaySubLabel ? `${data.crumb} / ${displaySubLabel}` : data.crumb;
+      document.querySelector("#page-title").textContent = title;
+      document.querySelector("#page-meta").textContent = "";
+      document.querySelector("#panel-title").textContent = displaySubLabel ? `${displaySubLabel} Queue` : data.panel;
+      document.querySelector("#panel-subtitle").textContent = displaySubLabel ? `${data.title}: ${displaySubLabel}` : data.subtitle;
+      document.querySelector("#primary-action").textContent = data.action;
+      document.querySelector(".filters").innerHTML = `
+        <input class="field search" id="search" type="search" placeholder="ค้นหาจากชื่อ, รหัส, สถานะ หรือเหตุผล" />
+        <select class="field" id="status-filter" aria-label="Filter status">
+          <option value="">ทุกสถานะ</option>
+        </select>
+        <select class="field" id="priority-filter" aria-label="Filter priority">
+          <option value="">ทุก priority</option>
+          <option value="สูง">สูง</option>
+          <option value="กลาง">กลาง</option>
+          <option value="ปกติ">ปกติ</option>
+        </select>
+      `;
+      document.querySelector("#summary-grid").innerHTML = data.stats.map(stat => `
+        <article class="stat">
+          <div class="stat-label">${stat[0]}</div>
+          <div class="stat-value">${stat[1]}</div>
+          <div class="stat-note">${stat[2]}</div>
+        </article>
+      `).join("");
+      document.querySelector("#cards").innerHTML = data.cards.map(card => `
+        <article class="mini-card"><h3>${card[0]}</h3><p class="muted">${card[1]}</p></article>
+      `).join("");
+      updateFilters(data);
+      renderRows();
+      renderDetail(activeRow);
+      updateActiveNav();
+    }
+
+    function renderDashboard() {
+      activeRow = null;
+      const renderMetricChip = chip => {
+        if (typeof chip === "string") return `<span class="chip">${chip}</span>`;
+        return `<button class="chip" type="button" data-module-jump="${chip.module}" data-sub-jump="${chip.sub || ""}">${chip.label}</button>`;
+      };
+      document.querySelector("#crumb").textContent = "การดำเนินงาน / Dashboard";
+      document.querySelector("#page-title").textContent = "Dashboard";
+      document.querySelector("#page-meta").textContent = `Last updated: ${dashboardData.lastUpdated}`;
+      document.querySelector("#panel-title").textContent = "Work Queue";
+      document.querySelector("#panel-subtitle").textContent = "งานที่ต้องจัดการก่อน โดยเรียงจากกำหนดงานและผลกระทบผู้ใช้";
+      document.querySelector("#primary-action").textContent = "เปิด Reports";
+      document.querySelector(".filters").innerHTML = "";
+      document.querySelector("#summary-grid").innerHTML = dashboardData.metrics.map(metric => `
+        <article class="stat"${metric.module ? ` data-jump="${metric.module}" data-sub-jump="${metric.sub || ""}"` : ""}>
+          <div class="stat-top">
+            <div>
+              <div class="stat-label">${metric.label}</div>
+              <div class="stat-value">${metric.value}</div>
+            </div>
+            <span class="stat-icon">${iconSvg[metric.icon]}</span>
+          </div>
+          <div class="stat-note">${metric.trend}</div>
+          <div class="chips">${metric.chips.map(renderMetricChip).join("")}</div>
+        </article>
+      `).join("");
+      document.querySelector("#table").innerHTML = `
+        <div class="dashboard-work-list">
+          ${dashboardData.queues.map(queue => `
+            <button class="work-row priority-${queue.priority}" type="button" data-module-jump="${queue.module}" data-sub-jump="${queue.sub || ""}">
+              <span class="priority-bar"></span>
+              <span>
+                <span class="work-title">${queue.title}</span>
+                <span class="muted">${queue.detail}</span>
+              </span>
+              <span class="work-count">${queue.count}</span>
+              ${iconSvg.chevron}
+            </button>
+          `).join("")}
         </div>
-      `).join(""));
+      `;
+      renderActivityPanel();
+      renderDashboardPanels();
     }
 
-    function showView(id) {
-      const nextView = document.querySelector(`#view-${id}`);
-      if (!nextView) return;
-      document.querySelectorAll(".view").forEach(v => v.classList.add("hidden"));
-      nextView.classList.remove("hidden");
-      document.querySelectorAll("[data-view]").forEach(b => b.classList.toggle("active", b.dataset.view === id));
-      window.scrollTo({ top: 0, behavior: "instant" });
+    function renderActivityPanel() {
+      const filters = ["ทั้งหมด", "Report", "Offer", "Content", "System"];
+      const activities = activeActivityFilter === "ทั้งหมด"
+        ? dashboardData.activities
+        : dashboardData.activities.filter(activity => activity.category === activeActivityFilter);
+      document.querySelector("#detail").innerHTML = `
+        <div class="panel-head activity-panel-head">
+          <div>
+            <h2>Recent Activity</h2>
+          </div>
+          <div class="activity-toolbar">
+            ${filters.map(filter => `<button class="segmented ${filter === activeActivityFilter ? "active" : ""}" type="button" data-activity-filter="${filter}">${filter}</button>`).join("")}
+          </div>
+        </div>
+        <div class="activity-list">
+          ${activities.map(activity => `
+            <button class="activity-row" type="button" data-module-jump="${activity.module}" data-sub-jump="${activity.sub || ""}">
+              <span>
+                <span class="activity-title">${activity.title}</span>
+                <span class="muted">${activity.summary}</span>
+              </span>
+              <span class="activity-time">${activity.time}</span>
+              ${iconSvg.chevron}
+            </button>
+          `).join("")}
+        </div>
+      `;
     }
 
-    document.addEventListener("click", (event) => {
-      const target = event.target.closest("[data-view]");
-      if (target) showView(target.dataset.view);
+    function renderDashboardPanels() {
+      const renderPanelRows = panel => {
+        if (panel.type === "brand-ranking") {
+          const maxShare = Math.max(...panel.rows.map(row => row.share));
+          return `
+            <div class="brand-ranking-list">
+              ${panel.rows.map(row => `
+                <button class="brand-ranking-row" type="button" data-module-jump="${row.module}" data-sub-jump="${row.sub || ""}">
+                  <span class="brand-ranking-top">
+                    <span class="ranking-brand-name">${row.label}</span>
+                    <span class="brand-searches">${row.value}</span>
+                    <span class="brand-trend">${row.trend}</span>
+                  </span>
+                  <span class="brand-bar-line">
+                    <span class="brand-bar-track"><span class="brand-bar-fill" style="width: ${Math.round((row.share / maxShare) * 100)}%"></span></span>
+                    <span class="brand-share">${row.share}%</span>
+                  </span>
+                </button>
+              `).join("")}
+            </div>
+          `;
+        }
+        return `
+          <div class="status-list">
+            ${panel.rows.map(row => `
+              <button class="status-row" type="button" data-module-jump="${row.module}" data-sub-jump="${row.sub || ""}">
+                <span>
+                  <span class="main-text">${row.label}</span>
+                  <span class="muted">${row.detail}</span>
+                </span>
+                <span class="status-value">${row.value}</span>
+              </button>
+            `).join("")}
+          </div>
+        `;
+      };
+      document.querySelector("#cards").innerHTML = dashboardData.panels.map(panel => `
+        <article class="mini-card dashboard-status-card">
+          <div class="dashboard-card-head">
+            <h3>${panel.title}</h3>
+            ${panel.meta ? `<div class="dashboard-card-meta">${panel.meta}</div>` : ""}
+          </div>
+          ${renderPanelRows(panel)}
+        </article>
+      `).join("");
+    }
+
+    function jumpToModule(moduleId, subLabel = "") {
+      if (!moduleId) return;
+      const parentId = navParentByModule[moduleId] || moduleId;
+      const targetSubLabel = subLabel || (moduleId !== "dashboard" ? defaultSubByModule[moduleId] || "" : "");
+      expandedMenus.clear();
+      if (parentId !== moduleId || targetSubLabel) expandedMenus.add(parentId);
+      renderModule(moduleId, targetSubLabel, targetSubLabel);
+      scrollMainToTop();
+    }
+
+    function updateFilters(data) {
+      const statuses = Array.from(new Set(data.rows.map(row => row.status)));
+      document.querySelector("#status-filter").innerHTML = `<option value="">ทุกสถานะ</option>${statuses.map(status => `<option value="${status}">${status}</option>`).join("")}`;
+      document.querySelector("#search").value = "";
+      document.querySelector("#priority-filter").value = "";
+    }
+
+    function renderRows() {
+      const data = moduleData[activeModule];
+      const q = document.querySelector("#search").value.trim().toLowerCase();
+      const status = document.querySelector("#status-filter").value;
+      const priority = document.querySelector("#priority-filter").value;
+      const filtered = data.rows.filter(row => {
+        const text = Object.values(row).flat().join(" ").toLowerCase();
+        return (!q || text.includes(q)) && (!status || row.status === status) && (!priority || row.priority === priority);
+      });
+      const table = document.querySelector("#table");
+      table.innerHTML = `
+        <div class="row head"><div>รายการ</div><div>เจ้าของ/แหล่งที่มา</div><div>ประเภท</div><div>สถานะ</div><div>Action</div></div>
+        ${filtered.map(row => `
+          <div class="row" data-row="${row.id}">
+            <div><div class="main-text">${row.name}</div><div class="muted">${row.id} · ${row.detail}</div><div class="chips">${row.tags.map(tag => `<span class="chip">${tag}</span>`).join("")}</div></div>
+            <div><div class="main-text">${row.owner}</div><div class="muted">Priority: ${row.priority}</div></div>
+            <div><span class="pill blue">${row.type}</span></div>
+            <div>${statusPill(row.status, row.priority)}</div>
+            <div><button class="panel-action" type="button" data-row-action="${row.id}">${iconSvg.eye}ดูรายละเอียด</button></div>
+          </div>
+        `).join("") || `<div class="detail-empty">ไม่พบรายการตาม filter ที่เลือก</div>`}
+      `;
+    }
+
+    function statusPill(status, priority) {
+      const color = priority === "สูง" ? "red" : priority === "กลาง" ? "amber" : status === "Active" || status === "Ready" || status === "Published" ? "green" : "purple";
+      return `<span class="pill ${color}">${status}</span>`;
+    }
+
+    function renderDetail(row) {
+      const detail = document.querySelector("#detail");
+      if (!row) {
+        detail.innerHTML = `<div class="detail-empty">เลือกรายการจากตารางเพื่อดูรายละเอียด</div>`;
+        return;
+      }
+      detail.innerHTML = `
+        <div class="panel-head">
+          <div>
+            <h2>รายละเอียด</h2>
+            <p>${moduleData[activeModule].title}</p>
+          </div>
+        </div>
+        <div class="detail-body">
+          <h3 class="detail-title">${row.name}</h3>
+          <p class="muted">${row.id} · ${row.detail}</p>
+          <div class="kv"><span>เจ้าของ</span><strong>${row.owner}</strong></div>
+          <div class="kv"><span>ประเภท</span><strong>${row.type}</strong></div>
+          <div class="kv"><span>Priority</span><strong>${row.priority}</strong></div>
+          <div class="kv"><span>สถานะ</span><strong>${row.status}</strong></div>
+          <div class="kv"><span>Tags</span><div class="chips">${row.tags.map(tag => `<span class="chip">${tag}</span>`).join("")}</div></div>
+          <div class="module-note"><strong>Admin action:</strong> ${row.action}</div>
+          <div class="timeline">
+            <div class="event"><strong>Created</strong><br>รับข้อมูลจาก FO หรือ Admin import และผูกกับ module policy</div>
+            <div class="event"><strong>Reviewed</strong><br>Admin ตรวจ context, sensitive data และ related entity ก่อน action</div>
+            <div class="event"><strong>FO impact</strong><br>ผลลัพธ์ต้อง sync กลับไปยัง surface ที่เกี่ยวข้อง และบันทึก audit เมื่อเป็น action เสี่ยง</div>
+          </div>
+        </div>
+      `;
+    }
+
+    function updateActiveNav() {
+      const activeParent = navParentByModule[activeModule] || activeModule;
+      document.querySelectorAll(".nav-item").forEach(button => {
+        const isActive = !activeSub && button.dataset.module === activeParent;
+        const isExpanded = expandedMenus.has(button.dataset.module);
+        button.classList.toggle("active", isActive);
+        button.classList.toggle("expanded", isExpanded);
+        button.setAttribute("aria-expanded", isExpanded ? "true" : "false");
+      });
+      document.querySelectorAll(".submenu").forEach(menu => {
+        menu.classList.toggle("open", expandedMenus.has(menu.dataset.submenu));
+      });
+      document.querySelectorAll(".submenu button").forEach(button => {
+        const isActiveSub = button.dataset.module === activeModule && button.dataset.sub === activeSub;
+        button.classList.toggle("active", isActiveSub);
+      });
+    }
+
+    document.addEventListener("click", event => {
+      const activityFilter = event.target.closest("[data-activity-filter]");
+      if (activityFilter) {
+        activeActivityFilter = activityFilter.dataset.activityFilter;
+        renderActivityPanel();
+        return;
+      }
+      const moduleJump = event.target.closest("[data-module-jump], [data-jump]");
+      if (moduleJump) {
+        jumpToModule(moduleJump.dataset.moduleJump || moduleJump.dataset.jump, moduleJump.dataset.subJump || "");
+        return;
+      }
+      const navButton = event.target.closest("[data-module]");
+      if (navButton) {
+        if (navButton.dataset.toggleMenu && !navButton.dataset.sub) {
+          const menuId = navButton.dataset.toggleMenu;
+          if (expandedMenus.has(menuId)) {
+            expandedMenus.delete(menuId);
+          } else {
+            expandedMenus.clear();
+            expandedMenus.add(menuId);
+          }
+          updateActiveNav();
+          return;
+        }
+        const parentId = navButton.dataset.parent;
+        if (parentId) {
+          expandedMenus.clear();
+          expandedMenus.add(parentId);
+        } else {
+          expandedMenus.clear();
+        }
+        const subLabel = navButton.dataset.sub || "";
+        const displaySubLabel = navButton.dataset.module === parentId ? subLabel : "";
+        renderModule(navButton.dataset.module, subLabel, displaySubLabel);
+        scrollMainToTop();
+        if (window.matchMedia("(max-width: 1180px)").matches) setNavOpen(false);
+        return;
+      }
+      const rowButton = event.target.closest("[data-row-action], .row[data-row]");
+      if (rowButton) {
+        const id = rowButton.dataset.rowAction || rowButton.dataset.row;
+        const row = moduleData[activeModule].rows.find(entry => entry.id === id);
+        activeRow = row;
+        renderDetail(row);
+      }
     });
 
-    renderReports();
+    const auth = {
+      email: "admin@tukdaeng.example",
+      scenario: "success",
+      expectedOtp: "123456",
+      attempts: 0,
+      deliveryRetried: false,
+      expiredResent: false,
+      resendCooldown: 60,
+      resendReady: false,
+      resendTimer: null,
+      otpRemaining: 300,
+      otpTimer: null,
+      otpExpired: false
+    };
+
+    function showAuthError(message) {
+      const error = document.querySelector("#auth-error");
+      error.textContent = message;
+      error.classList.toggle("show", Boolean(message));
+    }
+
+    function setAuthState(message) {
+      document.querySelector("#auth-state").innerHTML = message;
+    }
+
+    function showLoginForm() {
+      document.querySelector("#login-form").classList.remove("hidden");
+      document.querySelector("#otp-form").classList.add("hidden");
+      document.querySelector("#auth-title").textContent = "Admin Login";
+      if (auth.resendTimer) window.clearInterval(auth.resendTimer);
+      if (auth.otpTimer) window.clearInterval(auth.otpTimer);
+      setAuthState("");
+      showAuthError("");
+    }
+
+    function showOtpForm(message) {
+      document.querySelector("#login-form").classList.add("hidden");
+      document.querySelector("#otp-form").classList.remove("hidden");
+      document.querySelector("#auth-title").textContent = "Email OTP Verification";
+      document.querySelector("#otp-destination").textContent = `Sent to ${auth.email}`;
+      document.querySelector("#verify-otp-btn").disabled = false;
+      auth.otpExpired = false;
+      startOtpTimer();
+      setResendCooldown();
+      setAuthState(message || "");
+      showAuthError("");
+      document.querySelector("#otp-code").focus();
+    }
+
+    function formatOtpTime(seconds) {
+      const minutes = Math.floor(seconds / 60).toString().padStart(2, "0");
+      const remainingSeconds = (seconds % 60).toString().padStart(2, "0");
+      return `${minutes}:${remainingSeconds}`;
+    }
+
+    function startOtpTimer() {
+      if (auth.otpTimer) window.clearInterval(auth.otpTimer);
+      auth.otpRemaining = 300;
+      document.querySelector("#otp-expiry").textContent = `Expires in ${formatOtpTime(auth.otpRemaining)}`;
+      auth.otpTimer = window.setInterval(() => {
+        auth.otpRemaining -= 1;
+        if (auth.otpRemaining <= 0) {
+          expireOtp();
+          return;
+        }
+        document.querySelector("#otp-expiry").textContent = `Expires in ${formatOtpTime(auth.otpRemaining)}`;
+      }, 1000);
+    }
+
+    function expireOtp() {
+      if (auth.otpTimer) window.clearInterval(auth.otpTimer);
+      auth.otpTimer = null;
+      auth.otpRemaining = 0;
+      auth.otpExpired = true;
+      document.querySelector("#otp-expiry").textContent = "Expired";
+      document.querySelector("#verify-otp-btn").disabled = true;
+      enableResend();
+      showAuthError("Code expired. Request a new Email OTP before verifying.");
+    }
+
+    function setResendCooldown() {
+      if (auth.resendTimer) window.clearInterval(auth.resendTimer);
+      auth.resendReady = false;
+      auth.resendCooldown = 60;
+      const resendButton = document.querySelector("#resend-otp-btn");
+      resendButton.disabled = true;
+      resendButton.textContent = "Resend in 60s";
+      auth.resendTimer = window.setInterval(() => {
+        auth.resendCooldown -= 1;
+        if (auth.resendCooldown <= 0) {
+          window.clearInterval(auth.resendTimer);
+          auth.resendTimer = null;
+          enableResend();
+          return;
+        }
+        resendButton.textContent = `Resend in ${auth.resendCooldown}s`;
+      }, 1000);
+    }
+
+    function enableResend() {
+      if (auth.resendTimer) window.clearInterval(auth.resendTimer);
+      auth.resendTimer = null;
+      auth.resendReady = true;
+      auth.resendCooldown = 0;
+      const resendButton = document.querySelector("#resend-otp-btn");
+      resendButton.disabled = false;
+      resendButton.textContent = "Resend OTP";
+    }
+
+    function sendOtpChallenge() {
+      auth.email = document.querySelector("#login-email").value.trim() || "admin@tukdaeng.example";
+      auth.scenario = document.querySelector("#auth-scenario").value;
+      auth.attempts = 0;
+      auth.deliveryRetried = false;
+      auth.expiredResent = false;
+      auth.expectedOtp = "123456";
+
+      if (auth.scenario === "bad-password") {
+        showAuthError("Invalid credentials. The system does not reveal whether email or password is incorrect.");
+        setAuthState("");
+        return;
+      }
+
+      if (auth.scenario === "delivery") {
+        document.querySelector("#login-form").classList.add("hidden");
+        document.querySelector("#otp-form").classList.remove("hidden");
+        document.querySelector("#auth-title").textContent = "Email Delivery Failed";
+        document.querySelector("#otp-code").value = "";
+        document.querySelector("#otp-destination").textContent = `Could not send to ${auth.email}`;
+        document.querySelector("#otp-expiry").textContent = "Retry required";
+        document.querySelector("#verify-otp-btn").disabled = true;
+        if (auth.otpTimer) window.clearInterval(auth.otpTimer);
+        auth.otpTimer = null;
+        enableResend();
+        setAuthState("");
+        showAuthError("Email OTP could not be delivered. Retry send or contact another Admin if the problem continues.");
+        return;
+      }
+
+      document.querySelector("#otp-code").value = auth.scenario === "invalid" ? "000000" : "123456";
+      showOtpForm("");
+    }
+
+    function completeLogin() {
+      if (auth.resendTimer) window.clearInterval(auth.resendTimer);
+      if (auth.otpTimer) window.clearInterval(auth.otpTimer);
+      auth.resendTimer = null;
+      auth.otpTimer = null;
+      document.body.classList.remove("logged-out");
+      showAuthError("");
+      setAuthState("");
+      renderModule(activeModule);
+      scrollMainToTop();
+    }
+
+    function verifyOtp() {
+      const code = document.querySelector("#otp-code").value.trim();
+      auth.attempts += 1;
+
+      if (auth.otpExpired) {
+        showAuthError("Code expired. Request a new Email OTP before verifying.");
+        return;
+      }
+
+      if (auth.scenario === "expired" && !auth.expiredResent) {
+        setAuthState("");
+        expireOtp();
+        return;
+      }
+
+      if (code !== auth.expectedOtp) {
+        showAuthError(auth.attempts >= 5 ? "Too many incorrect OTP attempts. Start login again." : "Invalid OTP code. Try again or resend a new code.");
+        setAuthState("");
+        return;
+      }
+
+      completeLogin();
+    }
+
+    function resendOtp() {
+      auth.expectedOtp = auth.scenario === "expired" ? "654321" : "123456";
+      auth.expiredResent = true;
+      auth.deliveryRetried = true;
+      auth.attempts = 0;
+      document.querySelector("#otp-code").value = auth.expectedOtp;
+      showOtpForm("");
+    }
+
+    document.addEventListener("input", event => {
+      if (event.target.matches("#search")) renderRows();
+    });
+    document.addEventListener("change", event => {
+      if (event.target.matches("#status-filter, #priority-filter")) renderRows();
+    });
+    document.querySelector("#logout-icon").innerHTML = iconSvg.logout;
+    setNavOpen(false);
+    document.querySelector("#menu-toggle").addEventListener("click", () => {
+      setNavOpen(!document.body.classList.contains("nav-open"));
+    });
+    document.querySelector("#sidebar-backdrop").addEventListener("click", () => setNavOpen(false));
+    document.addEventListener("keydown", event => {
+      if (event.key === "Escape") setNavOpen(false);
+    });
+    window.matchMedia("(min-width: 1181px)").addEventListener("change", event => {
+      if (event.matches) setNavOpen(false);
+    });
+    document.querySelector("#password-toggle").innerHTML = iconSvg.eye;
+    document.querySelector("#password-toggle").addEventListener("click", () => {
+      const passwordInput = document.querySelector("#login-password");
+      const toggle = document.querySelector("#password-toggle");
+      const willShow = passwordInput.type === "password";
+      passwordInput.type = willShow ? "text" : "password";
+      toggle.innerHTML = willShow ? iconSvg.eyeOff : iconSvg.eye;
+      toggle.setAttribute("aria-label", willShow ? "Hide password" : "Show password");
+      toggle.setAttribute("title", willShow ? "Hide password" : "Show password");
+    });
+    document.querySelector("#primary-action").addEventListener("click", () => {
+      if (activeModule === "dashboard") {
+        jumpToModule("reports", "Search");
+      }
+    });
+    document.querySelector("#logout-btn").addEventListener("click", () => {
+      setNavOpen(false);
+      document.body.classList.add("logged-out");
+      showLoginForm();
+      document.querySelector("#login-email").focus();
+      scrollMainToTop();
+    });
+    document.querySelector("#login-form").addEventListener("submit", event => {
+      event.preventDefault();
+      sendOtpChallenge();
+    });
+    document.querySelector("#otp-form").addEventListener("submit", event => {
+      event.preventDefault();
+      verifyOtp();
+    });
+    document.querySelector("#back-login-btn").addEventListener("click", showLoginForm);
+    document.querySelector("#resend-otp-btn").addEventListener("click", resendOtp);
+    document.querySelector("#forgot-password-btn").addEventListener("click", () => {
+      showAuthError("");
+      setAuthState("");
+    });
+    document.querySelector("#auth-scenario").addEventListener("change", () => {
+      const scenario = document.querySelector("#auth-scenario").value;
+      document.querySelector("#login-password").value = scenario === "bad-password" ? "wrong-password" : "tukdaeng-admin";
+      setAuthState("");
+      showAuthError("");
+    });
+
+    renderNav();
+    renderModule("dashboard");
+    showLoginForm();
   </script>
 </body>
 </html>

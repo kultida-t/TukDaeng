@@ -35,7 +35,6 @@ Dashboard ต้องช่วยให้ Admin เห็นภาพรวม
 - Pending queue summary
 - Operational alerts
 - Recent activity feed
-- Date range filter
 - policy-based dashboard view
 - Responsive dashboard layout
 - Drill-in links ไป module ที่เกี่ยวข้อง
@@ -60,40 +59,42 @@ Dashboard is used by the single BO account type `Admin`. The dashboard must not 
 
 | Breakpoint | Layout |
 | --- | --- |
-| Mobile `< 768px` | Metric cards 1 column, queue summary เป็น stacked cards, activity feed อยู่ท้ายหน้า, filter ใช้ drawer หรือ compact controls |
-| Tablet `768px - 1199px` | Metric cards 2 columns, queue cards 2 columns, activity feed full width |
-| Desktop `>= 1200px` | Metric cards 4 columns, queue/activity แบ่ง 2-3 columns ตาม priority |
-| Wide Desktop `>= 1440px` | รองรับ expanded overview, side-by-side queue และ activity feed |
+| Mobile `< 768px` | ใช้ลำดับเดียวกับ prototype: Header -> KPI Summary 1 column -> Work Queue -> Recent Activity -> Dashboard Panels; Work Queue เป็น stacked action list |
+| Tablet `768px - 1199px` | Header -> KPI Summary 2 columns -> Work Queue -> Recent Activity -> Dashboard Panels; layout stack เป็น 1 column เมื่อพื้นที่ไม่พอ |
+| Desktop `>= 1200px` | Header -> KPI Summary 4 columns -> Work Queue และ Recent Activity แบบ side-by-side -> Dashboard Panels |
+| Wide Desktop `>= 1440px` | รองรับ expanded overview, side-by-side Work Queue / Recent Activity และ Dashboard Panels ด้านล่าง |
 
 ข้อกำหนด:
 
-- Critical queue ต้องเห็นใน first viewport บน desktop
-- บน mobile ต้องเห็น top priority queue ก่อน metric รอง
+- Dashboard ใช้ overview-first sequence ให้เหมือนกันทุก breakpoint เพื่อให้ prototype อ่านง่ายและไม่ต้อง reorder DOM ระหว่าง desktop/mobile
+- Work Queue ต้องอยู่ถัดจาก KPI Summary ทันที และรายการ priority สูงต้องอยู่บนสุดใน Work Queue
+- Dashboard Panels ด้านล่างใช้ 4 columns บน desktop เพื่อให้ 4 panels สมดุล, 2x2 บน tablet/จอแคบ และ 1 column บน mobile
 - Card/action ต้องไม่ overlap และต้อง tap/click ได้ชัดเจน
 - Dashboard ต้องใช้งานได้แม้ chart library load fail โดย fallback เป็นตัวเลข/table summary
 
-# 6. Global Controls
+# 6. Dashboard Header And Controls
 
 | Control | Requirement |
 | --- | --- |
-| Date Range | Today, 7 days, 30 days, Custom |
-| Refresh | Manual refresh พร้อม last updated timestamp |
+| Header | Dashboard header stays focused on breadcrumb, page title, and `Last updated`; it does not show Date Range, Refresh, Export, global search, notification popup, or summary tags. |
+| Data Freshness | `Last updated` is the visible freshness indicator for the current prototype. Manual refresh is not required on the Dashboard screen. |
+| Date Scope | Dashboard uses fixed operational snapshot data in the prototype. Date Range controls are not required on Dashboard; date-range analysis belongs in Reports where needed. |
 | Admin View | Product capability สำหรับ policy-based visibility; current prototype ใช้ admin access เดียว `Admin` และไม่แสดง admin access switcher |
 | Drill-in | Metric/queue card ต้องคลิกไป module ที่เกี่ยวข้องพร้อม filter ที่เหมาะสม |
-| Export | Requires permission check, scope control, expiry/background job where needed, and audit export event. |
+| Export | Dashboard does not expose a direct Export control in the current prototype. Exportable analytics and jobs remain in the Reports module. |
 
-Default date range: `Today` สำหรับ operational queue และ `7 days` สำหรับ trend metric ที่ต้องเห็นแนวโน้ม
+Dashboard must not add header controls unless a future prototype explicitly defines the workflow and placement.
 
 # 7. Metric Cards
 
 | Metric | Description | Drill-in | access visibility | Phase |
 | --- | --- | --- | --- | --- |
-| New Users | จำนวน user ใหม่ตาม date range | User Management filtered by joined date | Admin | 1 |
-| DAU / MAU | Active users daily/monthly | Reports / User Report | Admin | 2 |
+| New Users | จำนวน user ใหม่ตาม snapshot/card chips ที่แสดงใน Dashboard | User Management filtered by joined date | Admin | 1 |
+| Active Users Today | ผู้ใช้งาน active วันนี้ พร้อม weekly/monthly chips และ trend copy | User Management / User Report | Admin | 1 |
 | New Assets | จำนวน asset ใหม่แยก Sale / Show / Hide / Sold | Asset Management filtered by created date/status | Admin | 1 |
 | Pending Reports | จำนวน report ที่ยังรอ review | Moderation queue / Asset/User/Comment report filters | Admin | 1/2 |
 | Flagged Assets | Asset ที่ถูก flag หรือรอ moderation | Asset Management filtered flagged | Admin | 1 |
-| Published Articles | Article published/scheduled/archived ตาม date range | Content / Board Management | Admin | 1 |
+| Published Articles | Article published/scheduled/archived ตาม Dashboard snapshot | Content / Board Management | Admin | 1 |
 | Active Watch Alerts | จำนวน watch alert active | Watch Alert Management | Admin | 2 |
 | Open Support Tickets | Ticket ที่ยัง open/in progress/waiting user | Help & Support | Admin | 2 |
 | Offer Activity | Offer made/accepted/rejected/expired | `09_OFFER_CHAT_MODULE.md` | Admin | 2 |
@@ -166,7 +167,7 @@ Rules:
 | Data Type | Freshness Expectation |
 | --- | --- |
 | Pending queues | ใกล้ real-time หรือ refresh ทุก 1-5 นาทีตาม backend capability |
-| Dashboard metrics | Refresh เมื่อเปลี่ยน date range หรือ manual refresh |
+| Dashboard metrics | แสดง snapshot ล่าสุดของระบบพร้อม `Last updated`; Dashboard ไม่ต้องมี Date Range หรือ Manual Refresh control ใน prototype ปัจจุบัน |
 | Activity feed | แสดงล่าสุดเท่าที่ระบบมี พร้อม last updated |
 | Reports summary | อาจมี delay ได้ แต่ต้องระบุ last updated |
 
@@ -209,6 +210,7 @@ Dashboard ต้อง reflect integration map หลัก:
 - Section ที่หนัก เช่น trend/report summary สามารถ lazy load ได้
 - Mobile ต้องโหลดข้อมูลสำคัญก่อน chart/visual เสริม
 - Query dashboard ต้องไม่ block งาน operational queue สำคัญ
+- Responsive rendering must preserve the prototype sequence: Header -> KPI Summary -> Work Queue -> Recent Activity -> Dashboard Panels.
 
 # 15. Acceptance Criteria
 
@@ -256,7 +258,8 @@ Current primary Dashboard KPI cards are:
 
 | Card | Purpose | Drill-in |
 | --- | --- | --- |
-| New Users | New user registrations by selected date range and signup channel | User Management |
+| New Users | New user registrations shown as Dashboard snapshot with Today / This Week / This Month chips | User Management |
+| Active Users Today | Daily active usage health signal with Today / This Week / This Month chips and trend copy | User Management / Reports |
 | New Assets | New or updated assets by Sale / Show / Hide / Sold | Asset Management |
 | Pending Reports | User reports waiting for admin/moderation review, including deadline risk | Asset / report queue |
 | Offer Activity | Offer movement by accepted / rejected / pending or expired status | Offer / Chat |
@@ -269,6 +272,9 @@ Card detail text should be shown as short chips/labels, not as one long sentence
 | รายการ | จำนวนรายการ | การเปลี่ยนแปลง | รายละเอียด |
 | --- | --- | --- | --- |
 | New Users | 128 | เพิ่มขึ้น 8.2% จากช่วงก่อนหน้า | Email 68 ราย / Google 37 ราย / Apple 23 ราย |
+| Active Users Today | 8.4K | ผู้ใช้งานรายวันเฉลี่ย 7 วันเพิ่มขึ้น 4.1% เทียบกับ 7 วันก่อน | Today 8,420 / This Week 24,700 / This Month 38,900 |
+
+Reports remains the place for deeper user growth, retention, DAU/MAU trend, cohort, and export analysis. The Dashboard keeps `Active Users Today` as a primary health signal only.
 
 KPI card trend copy must be a complete phrase. Do not show shorthand values that force the user to infer the meaning.
 
@@ -306,21 +312,17 @@ Bottom Dashboard panels must remain operational and clickable:
 
 Copy rules:
 
-- Do not show `Admin Overview` on Dashboard because it duplicates information already covered by KPI cards, Work Queue, Recent Activity, Refresh, and Export.
+- Do not show `Admin Overview` on Dashboard because it duplicates information already covered by KPI cards, Work Queue, Recent Activity, and `Last updated`.
 - Do not use prototype-only copy such as `Back Office prototype` or `Next action`.
 - Keep panel titles in English to match Dashboard section titles.
 - Use Thai descriptions for operational meaning and next action.
 - Avoid unexplained abbreviations and raw backend labels.
 
-## 17.4 Dashboard Export
+## 17.4 Dashboard Header And Export Placement
 
-- Dashboard export downloads an Excel-readable `.xls` file generated from the prototype.
-- The exported file is formatted as separate tables with borders, section headers, and grouped detail rows for readability.
-- Exported Dashboard sections currently include:
-  - Dashboard summary
-  - KPI cards / primary metrics
-  - Work queue and deadline items
-  - Offer status
+- Current Dashboard prototype does not show Date Range, Refresh, or Export controls in the header.
+- The header shows only breadcrumb, page title, and `Last updated` to keep the operational view focused.
+- Dashboard export is not required in the current prototype. Exportable analytics and generated files should live in the Reports module or report/export job workflows when needed.
 
 ## 17.5 Work Queue Copy And Display
 
@@ -359,6 +361,7 @@ Queue copy rule:
   1. Items close to deadline first.
   2. Within the same urgency level, sort by user impact / operational priority.
   3. Current priority order: รายงานสินทรัพย์, รายงานผู้ใช้, งานช่วยเหลือที่เปิดอยู่, คำขอลบบัญชี, สินทรัพย์ที่ต้องตรวจเพิ่ม, บทความรอเผยแพร่, ข้อมูลตลาดรอตรวจ, แจ้งเตือนส่งไม่สำเร็จ.
+- On mobile, Work Queue remains after the KPI Summary instead of being moved above the metrics. This matches the current overview-first Dashboard prototype.
 
 Examples:
 
@@ -376,7 +379,7 @@ Examples:
 - Bundled IBM Plex Sans Thai weights: Regular 400, Medium 500, SemiBold 600, Bold 700.
 - Bundled Bebas Neue weight: Regular 400.
 - Fallback stack remains `IBM Plex Sans Thai`, `Segoe UI`, `Tahoma`, `Arial`, `sans-serif` if bundled files cannot be loaded.
-- Exported Excel-readable `.xls` files use IBM Plex Sans Thai family naming; final rendering can still depend on the spreadsheet app's font support.
+- Exported Excel-readable `.xls` files, when generated from Reports/export workflows, use IBM Plex Sans Thai family naming; final rendering can still depend on the spreadsheet app's font support.
 - Font source: Google Fonts packages for IBM Plex Sans Thai and Bebas Neue.
 
 ## 17.7 Recent Activity Feed Copy And Behavior
@@ -397,8 +400,7 @@ Each activity item must include:
 | Event type | Clear Thai label, for example `มีรายงานสินทรัพย์ใหม่` |
 | Summary | One-sentence explanation of what happened and which entity is affected |
 | Timestamp | Relative time in Thai, for example `15 นาทีที่แล้ว` |
-| Next action / impact | What admin should check next |
-| Linked module | The Back Office screen that should open from the activity |
+| Linked module | The Back Office screen/submodule that opens when the activity row is clicked |
 
 Copy rules:
 
@@ -412,10 +414,11 @@ Interaction rules:
 - The activity card uses a compact table-like list, not oversized timeline cards. Each row shows left accent, event title, one-line summary, relative time, and a chevron.
 - Activity filters must be clickable and functional: `ทั้งหมด`, `Report`, `Offer`, `Content`, `System`.
 - Filter categories are based on linked modules. Asset/user report events map to `Report`; offer events map to `Offer`; content publishing maps to `Content`; watch alert, market data, notification, and audit/system events map to `System`.
-- Clicking an activity opens a compact modal with event summary, next action, timestamp, event type, and linked module.
-- The modal primary close action uses the standard `ตกลง` button.
-- The detail action should use a formal, explicit label such as `เปิดหน้าที่เกี่ยวข้อง` and must navigate to the related module, not a fixed generic report page.
-- Do not show prototype/status badges such as `linked`, `ติดตามต่อ`, or random audit IDs in the activity detail modal.
+- Clicking an activity navigates directly to the related module/submodule. Do not open an intermediate modal in the current Dashboard prototype.
+- The row content must be sufficient for the Admin to decide whether to follow the link: clear event title, concise summary, relative timestamp, category filter context, and chevron.
+- Activity navigation must target the real related destination, not a fixed generic report page. Examples: Report -> `Reported Assets`, Offer -> `Offer Queue`, Content -> `Articles`, System notification -> `Delivery Logs`.
+- Activity `action` text in mock data may remain as implementation metadata or future enhancement input, but it is not required to render in a Dashboard modal.
+- Do not show prototype/status badges such as `linked`, `ติดตามต่อ`, or random audit IDs in the activity row.
 
 ## 17.8 Dashboard Card Visual Style
 
@@ -425,7 +428,7 @@ Dashboard follows a control-center layout inspired by the referenced Prakan Go d
 - Sidebar uses the referenced menu pattern: compact logo block, section labels, line icons, and chevrons only on expandable menu groups.
 - Admin profile belongs in the sidebar footer under the icon-based logout row, not in the header, to avoid duplicate identity display.
 - Topbar includes breadcrumb only in the current Dashboard prototype to keep the page focused.
-- Current Dashboard topbar does not show global search or notification popup because Dashboard already focuses on overview, queue, activity, date range, refresh, and export. Add search or header notification only when cross-module behavior is defined.
+- Current Dashboard topbar does not show Date Range, Refresh, Export, global search, or notification popup because Dashboard focuses on overview, queue, activity, and data freshness via `Last updated`. Add extra header controls only when cross-module behavior is defined.
 - Notifications remain available from the sidebar `Notifications` module instead of a header popup.
 - Page title uses a left vertical accent bar and a thin horizontal divider instead of a heavy framed header card.
 - Dashboard header should not show summary tags for reports/offers/urgent work because the same information is already represented in KPI cards and queue details.
@@ -433,4 +436,4 @@ Dashboard follows a control-center layout inspired by the referenced Prakan Go d
 - Dashboard panels use a separated header row and padded body, similar to table/action-center cards.
 - Card corners and shadows should be light, not oversized or decorative.
 - Accent colors are used for grouping and priority only; they must not replace real status text.
-- The visual style must not remove required Dashboard data, links, queue priority, or activity modal behavior.
+- The visual style must not remove required Dashboard data, links, queue priority, or direct Recent Activity navigation.

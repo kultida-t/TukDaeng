@@ -22,7 +22,7 @@ Module นี้ต้องไม่เป็นทางลัดเพื่�
 - Admin Access Matrix
 - Permission change request / review workflow baseline
 - Security policy settings ที่แก้ได้ใน BO
-- Session / 2FA / lockout policy display
+- Session / Email OTP / lockout policy display
 - IP whitelist configuration สำหรับ production
 - Export policy settings
 - Retention policy display/config baseline
@@ -49,7 +49,7 @@ BO uses exactly one admin account type: `Admin`. Admin Settings must not define 
 | Action | Admin access rule |
 | --- | --- |
 | View own profile/settings | Allowed for Admin. |
-| Change own password / enable 2FA | Allowed for Admin with audit where required. |
+| Change own password | Allowed for Admin with audit where required. |
 | Manage admin accounts | Requires high-risk action policy, confirmation, reason where applicable, and audit. |
 | Change module/action policy | Requires confirmation, reason, before/after diff, and audit. |
 | Change security/system/retention/export settings | Requires confirmation, reason, re-auth for high-risk security changes, and audit. |
@@ -71,10 +71,10 @@ High-risk action ต้องใช้ confirmation modal ที่อ่าน�
 
 | Section | Purpose |
 | --- | --- |
-| My Account | ดู profile, เปลี่ยน password, เปิด/ตั้งค่า 2FA ของตัวเอง |
-| Admin Accounts | Invite, update admin access policy, suspend, unlock, reset 2FA, archive admin |
+| My Account | ดู profile และเปลี่ยน password ของตัวเอง |
+| Admin Accounts | Invite, update admin access policy, suspend, unlock, archive admin |
 | Admin Permissions | Matrix สิทธิ์ตาม module/action policy |
-| Security Policy | 2FA requirement, session timeout, lockout, IP whitelist |
+| Security Policy | Email OTP requirement, session timeout, lockout, IP whitelist |
 | System Defaults | Timezone, currency, language mode, pagination/export defaults |
 | Retention Policy | Audit, chat/offer, report, export file, notification log retention |
 | Export Policy | CSV/Excel, background job, file expiry, sensitive export controls |
@@ -92,13 +92,12 @@ Admin ทุก admin access ต้องเข้าถึง own settings ไ�
 | Email | Login identifier; เปลี่ยนไม่ได้จาก self-service ถ้า policy ไม่เปิด |
 | Admin access | Read-only |
 | Status | Read-only |
-| 2FA status | Not Enabled, Setup Required, Enabled, Reset Required |
+| Email OTP requirement | Required for BO Admin login |
 | Last login | Read-only |
 | Change password | ต้อง re-auth และ audit |
-| Enable / reset own 2FA | ตาม Auth module rule |
 | Active sessions | View / revoke own session ถ้า implementation รองรับ |
 
-Admin must use mandatory 2FA according to Auth baseline
+Admin must pass mandatory Email OTP verification according to Auth baseline
 
 ## 7. Admin Accounts
 
@@ -109,7 +108,7 @@ Admin Accounts section ต้อง reuse contract จาก `01_AUTHENTICATION_
 | Status | Meaning |
 | --- | --- |
 | `Invited` | สร้าง account แล้ว แต่ยังไม่ได้ตั้ง password |
-| `Active` | Login ได้ตาม admin access/2FA rule |
+| `Active` | Login ได้ตาม admin access/Email OTP rule |
 | `Locked` | ถูก lock จาก failed attempts หรือ security action |
 | `Suspended` | ถูก disable โดย Admin |
 | `Archived` | เอาออกจาก active use แต่ยังเก็บ audit history |
@@ -122,7 +121,6 @@ Admin Accounts section ต้อง reuse contract จาก `01_AUTHENTICATION_
 | Change Admin access | Admin access required, confirmation required |
 | Suspend / Reactivate | Admin access required, reason required |
 | Unlock Admin | Admin access required |
-| Reset 2FA | Admin access required, reason required |
 | Archive Admin | Admin access required, reason required |
 | Export Admin List | Admin access required, audit required |
 
@@ -157,8 +155,10 @@ The previous multi-Admin access policy catalog is replaced by a single Admin acc
 | --- | --- | --- |
 | Admin login method | Email/password only | No |
 | BO SSO | Not supported in V1 | No |
-| Mandatory 2FA policy | Admin | Required for all BO Admin accounts |
-| Optional 2FA policy | Admin | View / encourage |
+| Mandatory Email OTP policy | Admin | Required for every BO Admin login after password validation |
+| OTP expiration | 5 minutes | Admin edit only if policy allows |
+| OTP resend cooldown | 60 seconds | Admin edit only if policy allows |
+| OTP attempt limit | 5 attempts | Admin edit only if policy allows |
 | Idle timeout | 8 hours | Admin edit only if policy allows |
 | Max session | 24 hours | Admin edit only if policy allows |
 | Failed login limit | 5 attempts | Admin edit only if policy allows |
@@ -175,7 +175,7 @@ Security policy change ต้อง audit และควร require re-authenti
 | Timezone | `Asia/Bangkok` |
 | Currency | THB |
 | BO Language | Thai primary; English technical terms allowed |
-| Default date range | Today for operational queues, 7 days for trend metrics |
+| Default date range | Applies to Reports/trend views when a screen exposes date controls; Dashboard prototype uses a fixed snapshot with `Last updated` and no Date Range control |
 | Table pagination | Server-side pagination for large lists |
 | Large export | Background job |
 | Sensitive data display | Mask by default |
@@ -260,11 +260,9 @@ Change history ต้อง link ไป Audit Log detail ตาม permission
 | Action | Permission | Confirmation | Reason | Audit |
 | --- | --- | --- | --- | --- |
 | Change own password | All admins | Yes | No | Yes |
-| Enable own 2FA | All admins | Yes | No | Yes |
 | Invite admin | Admin | Yes | Optional | Yes |
 | Change Admin Access | Admin | Yes | Required | Yes |
 | Suspend/reactivate admin | Admin | Yes | Required | Yes |
-| Reset admin 2FA | Admin | Yes | Required | Yes |
 | Update Admin Access Matrix | Admin | Yes | Required | Yes |
 | Update security policy | Admin | Yes + re-auth | Required | Yes |
 | Update retention/export policy | Admin | Yes | Required | Yes |
@@ -282,7 +280,7 @@ Audit log ต้องบันทึกอย่างน้อย:
 - `ADMIN_ACCOUNT_REACTIVATE`
 - `ADMIN_ACCOUNT_ARCHIVE`
 - `ADMIN_ACCOUNT_UNLOCK`
-- `ADMIN_2FA_RESET`
+- `ADMIN_EMAIL_OTP_POLICY_UPDATE`
 - `ROLE_PERMISSION_UPDATE`
 - `SECURITY_POLICY_UPDATE`
 - `SYSTEM_SETTING_UPDATE`
@@ -324,11 +322,11 @@ Sensitive settings value ต้อง mask ใน audit payload ถ้าเป�
 
 | ID | Criteria |
 | --- | --- |
-| AC-BO-SET-001 | Admin ทุก admin access เข้าดู own profile/settings และเปลี่ยน password/ตั้งค่า 2FA ตาม rule ได้ |
+| AC-BO-SET-001 | Admin ทุก admin access เข้าดู own profile/settings และเปลี่ยน password ตาม rule ได้ |
 | AC-BO-SET-002 | Admin จัดการ admin account lifecycle ได้โดยไม่กระทบ Admin คนสุดท้าย |
 | AC-BO-SET-003 | Admin Access Matrix แสดงสิทธิ์ตาม module/action และ enforce ทั้ง UI/API level |
 | AC-BO-SET-004 | Permission/security/system/retention/export setting changes ต้องมี confirmation, reason และ audit |
-| AC-BO-SET-005 | Security policy ต้องสอดคล้องกับ Auth baseline: email/password only, 2FA mandatory สำหรับ Admin, idle 8h, max 24h, failed login 5 ครั้ง, lockout 15 นาที |
+| AC-BO-SET-005 | Security policy ต้องสอดคล้องกับ Auth baseline: email/password only, Email OTP mandatory สำหรับ Admin, idle 8h, max 24h, failed login 5 ครั้ง, lockout 15 นาที |
 | AC-BO-SET-006 | Retention settings ต้องไม่อนุญาต manual delete audit logs จาก UI ปกติ |
 | AC-BO-SET-007 | Export policy ต้องรองรับ background job, expiry, sensitive export audit และ policy-based scope |
 | AC-BO-SET-008 | Feature flags ต้องแสดง FO/BO impact และ audit ทุกครั้ง |

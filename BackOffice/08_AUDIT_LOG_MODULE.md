@@ -109,7 +109,7 @@ Baseline entity types:
 
 - Admin login/logout
 - Failed login
-- 2FA setup/change/disable
+- Email OTP sent/verified/failed/resend
 - Account lockout
 - Admin create/update/disable
 - User suspend/unsuspend
@@ -252,7 +252,7 @@ Before/after JSON diff ต้อง wrap และ scroll ภายใน contai
 
 | Module | Integration |
 | --- | --- |
-| Auth / Admin Accounts | Login, 2FA, session, admin lifecycle audit |
+| Auth / Admin Accounts | Login, Email OTP, session, admin lifecycle audit |
 | User Management | Suspend/ban/reset/archive audit |
 | Asset Management | Flag/remove/status/sensitive reveal audit |
 | Content / Board | Publish/archive/category/banner audit |
@@ -285,4 +285,3 @@ Before/after JSON diff ต้อง wrap และ scroll ภายใน contai
 | BO-AUDIT-DEC-002 | Audit write fail ต้อง block action หรือ queue retry | Block high-risk action; queue retry สำหรับ low-risk read/report events |
 | BO-AUDIT-DEC-003 | Redaction policy สำหรับข้อมูลส่วนบุคคลใน audit payload | ใช้ masked payload เป็น default และ redaction event แยกเมื่อจำเป็น |
 | BO-AUDIT-DEC-004 | ส่ง audit log เข้า external SIEM หรือไม่ | Future phase |
-
