@@ -4,6 +4,30 @@
 **Date:** 2026-07-06  
 **Purpose:** Checklist ตั้งต้นสำหรับแตก ticket implementation ของ BO
 
+## Prototype Handoff Notes Capture
+
+Use this section while BA/UX is completing the BO prototype. Capture only notes that Dev will need later; do not create the full Dev Handoff Sheet until all prototype modules are stable.
+
+Guidelines:
+
+- Keep notes short and implementation-facing.
+- Put module-specific notes under the related module section in this checklist.
+- After all prototype modules are complete, consolidate these notes into `BO_DEV_HANDOFF.md` or separate module handoff files.
+- Each note should cover at least one of: data/API, route/filter, permission, loading/empty/error state, responsive QA, or FO sync impact.
+
+Recommended note format:
+
+| Field | Detail |
+| --- | --- |
+| Prototype Reference | File, screen, or section in the prototype |
+| Spec Reference | Related PRD/spec/checklist source |
+| Data Needed | API fields, aggregate fields, or mock-data mapping Dev must replace |
+| Route / Drill-in | Target module/route and filter context |
+| State Handling | Loading, empty, error, partial error, stale, unauthorized |
+| Permission / Privacy | Permission enforcement, masked fields, hidden sections |
+| FO Sync Impact | Feed, Search, Profile, Notification, Watch Alert, or other FO impact |
+| Open Question | Product/Dev decision still needed |
+
 ## 0. Foundation
 
 - [ ] ใช้ `../ProjectAdmin/FO_BO_INTEGRATION_MAP.md` ตรวจทุก BO action ที่เปลี่ยน behavior บน FO
@@ -42,6 +66,20 @@
 - [ ] แสดง top searched brands
 - [ ] แสดง recent activity feed
 - [ ] Dashboard header แสดง `Last updated` และไม่ต้องมี Date Range / Refresh / Export controls ตาม prototype ปัจจุบัน
+
+### Dashboard Prototype Handoff Notes
+
+| Field | Detail |
+| --- | --- |
+| Prototype Reference | `Prototypes/bo-prototype.html` > Dashboard default screen |
+| Spec Reference | `02_DASHBOARD_MODULE.md`, `BO_PRD.md` section 4.2, `PRD/DASHBOARD_UX_TEST_CASES.md` |
+| Data Needed | Dashboard snapshot API should provide `lastUpdated`, KPI metrics, KPI chips, work queues, recent activities, status panels, top searched brands, and drill-in metadata. |
+| Route / Drill-in | KPI cards, metric chips, Work Queue rows, Recent Activity rows, and Dashboard Panel rows must navigate to the related BO module/submodule with the equivalent filter context. |
+| State Handling | Dev must implement section-level loading, empty, partial error, full error, stale data warning, and unauthorized section hiding. Prototype currently uses mock data only. |
+| Permission / Privacy | Dashboard visibility must be policy-based. Hide module metrics/queues/activities if the Admin has no permission, and enforce permission again at destination routes/APIs. |
+| Responsive QA | Verify 375px, 768px, 1280px, and 1440px. Mobile/tablet navigation uses hamburger drawer; Dashboard order must remain Header -> KPI Summary -> Work Queue -> Recent Activity -> Dashboard Panels. |
+| FO Sync Impact | Dashboard signals come from FO-triggered data: reports, assets, offers, support, watch alerts, content, notifications, market/search activity, and account deletion. |
+| Open Question | Final API shape, cache/freshness interval, and exact route/filter parameter names should be confirmed when Dev starts BO implementation. |
 
 ## 3. User Management
 
