@@ -175,7 +175,7 @@ Security policy change ต้อง audit และควร require re-authenti
 | Timezone | `Asia/Bangkok` |
 | Currency | THB |
 | BO Language | Thai primary; English technical terms allowed |
-| Default date range | Today for operational queues, 7 days for trend metrics |
+| Default date range | Applies to Reports/trend views when a screen exposes date controls; Dashboard prototype uses a fixed snapshot with `Last updated` and no Date Range control |
 | Table pagination | Server-side pagination for large lists |
 | Large export | Background job |
 | Sensitive data display | Mask by default |

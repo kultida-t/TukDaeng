@@ -43,7 +43,7 @@ Phase 1 คือ BO foundation ขั้นต่ำที่จำเป็น
 | Global BO Rules | Responsive layout, admin access control, shared patterns, status, audit, privacy, FO sync |
 | Auth / Admin Accounts | Email/password login, mandatory Email OTP for Admin, session timeout, failed login lockout |
 | Admin Permission | Module visibility และ action-level permission enforcement |
-| Dashboard | Key metrics, pending queues, recent activity, date range |
+| Dashboard | Key metrics, pending queues, recent activity, last updated snapshot |
 | User Management | User list, filters, profile view, login history, suspend/ban, reset password, soft delete, CSV export |
 | Asset Management | `04_ASSET_MANAGEMENT_MODULE.md` - Asset list/detail, status visibility, reports, flag/unflag, soft remove, force status change, sensitive-field control |
 | Content / Board | `05_CONTENT_BOARD_MODULE.md` - Article/category/banner CRUD, preview as FO, draft/publish/schedule/archive, featured ordering |

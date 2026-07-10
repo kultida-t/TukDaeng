@@ -28,7 +28,7 @@
 ## 2. Dashboard
 
 - [ ] แสดง new users วันนี้/สัปดาห์นี้/เดือนนี้
-- [ ] แสดง DAU/MAU
+- [ ] แสดง Active Users Today เป็น primary Dashboard KPI
 - [ ] แสดง asset count แยกตาม status
 - [ ] แสดง offer made/accepted/rejected counts
 - [ ] แสดง pending report count
@@ -36,11 +36,12 @@
 - [ ] แสดง policy-based dashboard view ตาม permission ของ admin
 - [ ] Metric/queue card ต้อง drill-in ไป module ที่เกี่ยวข้องพร้อม filter
 - [ ] Dashboard ต้องรองรับ partial load error โดยไม่ล้มทั้งหน้า
+- [ ] Dashboard responsive order ตรง prototype: Header -> KPI Summary -> Work Queue -> Recent Activity -> Dashboard Panels
 - [ ] แสดง active watch alert count
 - [ ] แสดง latest articles
 - [ ] แสดง top searched brands
 - [ ] แสดง recent activity feed
-- [ ] Date range change ต้อง update dashboard metrics สม่ำเสมอ
+- [ ] Dashboard header แสดง `Last updated` และไม่ต้องมี Date Range / Refresh / Export controls ตาม prototype ปัจจุบัน
 
 ## 3. User Management
 

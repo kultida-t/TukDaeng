@@ -58,7 +58,7 @@ BO Dashboard
 
 **ข้อมูลที่แสดง:**
 - จำนวนผู้ใช้ใหม่วันนี้ / สัปดาห์นี้ / เดือนนี้ (พร้อม % เทียบช่วงก่อน)
-- จำนวน Active Users (DAU / MAU)
+- จำนวน Active Users Today
 - จำนวนสินทรัพย์ที่เพิ่มใหม่วันนี้ แยกตามสถานะ (Sale / Show / Hide)
 - จำนวน Transactions (Offer Accepted) วันนี้
 - จำนวน Pending Reports (สินทรัพย์ที่ถูก Flag รอ Review)

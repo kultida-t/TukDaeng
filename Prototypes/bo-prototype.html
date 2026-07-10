@@ -732,6 +732,69 @@
       box-shadow: var(--shadow);
       overflow: hidden;
     }
+    body.dashboard-mode .detail {
+      position: static;
+      top: auto;
+      border-color: #d7e2f0;
+      box-shadow: none;
+    }
+    body.dashboard-mode .layout {
+      grid-template-columns: minmax(0, 1fr) minmax(430px, 46%);
+    }
+    body.dashboard-mode .layout > .panel {
+      border-color: #d7e2f0;
+      box-shadow: none;
+      overflow: hidden;
+    }
+    body.dashboard-mode .layout > .panel .panel-head {
+      min-height: 58px;
+      padding: 17px 20px;
+      background: #fff;
+    }
+    body.dashboard-mode .layout > .panel .panel-head > div {
+      min-width: 0;
+      display: flex;
+      align-items: baseline;
+      gap: 10px;
+    }
+    body.dashboard-mode .layout > .panel .panel-head h2 {
+      color: #071b36;
+      font-size: 24px;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+    body.dashboard-mode .layout > .panel .panel-head p {
+      margin: 0;
+      overflow: hidden;
+      color: #6d7f98;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    body.dashboard-mode #primary-action {
+      display: none;
+    }
+    .activity-panel-head {
+      align-items: center;
+    }
+    body.dashboard-mode .detail .panel-head {
+      min-height: 58px;
+      padding: 17px 20px;
+      background: #fff;
+    }
+    body.dashboard-mode .activity-panel-head {
+      gap: 10px;
+    }
+    .activity-panel-head h2 {
+      flex: 0 0 auto;
+    }
+    body.dashboard-mode .activity-panel-head h2 {
+      color: #071b36;
+      font-size: 24px;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
     .detail-empty {
       padding: 28px 18px;
       color: var(--muted);
@@ -794,6 +857,9 @@
       gap: 12px;
       margin-top: 14px;
     }
+    body.dashboard-mode .cards {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
     .mini-card {
       background: #fff;
       border: 1px solid var(--line);
@@ -801,10 +867,44 @@
       padding: 14px;
       min-height: 112px;
     }
+    .dashboard-status-card {
+      border-color: #d7e2f0;
+      padding: 0;
+      overflow: hidden;
+    }
     .mini-card h3 {
       margin: 0 0 8px;
       font-size: 22px;
       line-height: 1;
+    }
+    .dashboard-card-head {
+      min-height: 58px;
+      margin: 0;
+      padding: 17px 20px;
+      border-bottom: 1px solid var(--line);
+      display: flex;
+      align-items: baseline;
+      gap: 10px;
+    }
+    .dashboard-status-card h3 {
+      flex: 0 0 auto;
+      margin: 0;
+      color: #071b36;
+      font-size: 24px;
+      letter-spacing: .08em;
+      line-height: 1;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+    .dashboard-card-meta {
+      min-width: 0;
+      margin: 0;
+      overflow: hidden;
+      color: #6d7f98;
+      font-size: 12px;
+      font-weight: 400;
+      text-overflow: ellipsis;
+      white-space: nowrap;
     }
     .stat-top {
       display: flex;
@@ -850,6 +950,13 @@
       grid-template-columns: 4px minmax(0, 1fr) auto 18px;
       padding: 14px 16px 14px 0;
     }
+    body.dashboard-mode .work-row {
+      grid-template-columns: 3px minmax(0, 1fr) minmax(58px, auto) 18px;
+      gap: 12px;
+      min-height: 66px;
+      padding: 13px 20px;
+      border-bottom: 0;
+    }
     .work-row:last-child,
     .activity-row:last-child,
     .status-row:last-child { border-bottom: 0; }
@@ -863,10 +970,34 @@
     }
     .priority-high .priority-bar { background: var(--red); }
     .priority-medium .priority-bar { background: var(--amber); }
+    body.dashboard-mode .priority-bar {
+      width: 3px;
+      min-height: 38px;
+      align-self: center;
+      border-radius: 999px;
+      background: var(--blue);
+    }
+    body.dashboard-mode .priority-high .priority-bar { background: var(--red); }
+    body.dashboard-mode .priority-medium .priority-bar { background: var(--amber); }
     .work-title,
     .activity-title {
+      display: block;
       font-weight: 800;
       margin-bottom: 4px;
+    }
+    .work-title + .muted,
+    .activity-title + .muted {
+      display: block;
+    }
+    body.dashboard-mode .work-title {
+      color: #071b36;
+      font-size: 13px;
+      line-height: 1.35;
+    }
+    body.dashboard-mode .work-title + .muted {
+      color: #43546d;
+      font-size: 12px;
+      line-height: 1.45;
     }
     .work-count {
       min-width: 54px;
@@ -875,6 +1006,16 @@
       font-size: 30px;
       line-height: 1;
     }
+    body.dashboard-mode .work-count {
+      min-width: 58px;
+      color: var(--blue);
+      font-family: var(--font-heading);
+      font-size: 30px;
+      font-weight: 400;
+      letter-spacing: .04em;
+    }
+    body.dashboard-mode .priority-high .work-count { color: var(--red); }
+    body.dashboard-mode .priority-medium .work-count { color: var(--amber); }
     .activity-toolbar {
       display: flex;
       gap: 6px;
@@ -882,6 +1023,17 @@
       border-bottom: 1px solid var(--line);
       background: #f8fbff;
       overflow-x: auto;
+    }
+    .activity-panel-head .activity-toolbar {
+      flex: 1 1 auto;
+      min-width: 0;
+      justify-content: flex-end;
+      padding: 0;
+      border-bottom: 0;
+      background: transparent;
+    }
+    body.dashboard-mode .activity-panel-head .activity-toolbar {
+      gap: 5px;
     }
     .segmented {
       min-height: 32px;
@@ -899,9 +1051,22 @@
       border-color: var(--active);
       background: var(--active);
     }
+    body.dashboard-mode .segmented {
+      min-height: 28px;
+      padding: 4px 9px;
+      border-color: #d7e2f0;
+      font-size: 11px;
+    }
     .activity-row {
       grid-template-columns: 3px minmax(0, 1fr) auto 18px;
       padding: 12px 16px 12px 0;
+    }
+    body.dashboard-mode .activity-row {
+      grid-template-columns: 3px minmax(0, 1fr) minmax(72px, auto) 18px;
+      gap: 12px;
+      min-height: 66px;
+      padding: 13px 20px;
+      border-bottom: 0;
     }
     .activity-row::before {
       content: "";
@@ -909,20 +1074,143 @@
       align-self: stretch;
       background: var(--blue);
     }
+    body.dashboard-mode .activity-row::before {
+      min-height: 38px;
+      align-self: center;
+      border-radius: 999px;
+    }
+    body.dashboard-mode .activity-title {
+      color: #071b36;
+      font-size: 13px;
+      line-height: 1.35;
+    }
+    body.dashboard-mode .activity-title + .muted {
+      color: #43546d;
+      font-size: 12px;
+      line-height: 1.45;
+    }
     .activity-time {
       color: var(--muted);
       font-size: 11px;
       font-weight: 700;
       white-space: nowrap;
     }
+    body.dashboard-mode .activity-time {
+      color: #6d7f98;
+      font-size: 11px;
+      text-align: right;
+    }
     .status-row {
       grid-template-columns: minmax(0, 1fr) auto;
       padding: 10px 0;
+    }
+    .dashboard-status-card .status-row {
+      grid-template-columns: minmax(0, 1fr) minmax(64px, auto);
+      gap: 12px;
+      min-height: 62px;
+      padding: 12px 20px;
+      border-bottom: 0;
+    }
+    .dashboard-status-card .main-text {
+      display: block;
+      color: #071b36;
+      font-size: 13px;
+      font-weight: 800;
+      line-height: 1.35;
+    }
+    .dashboard-status-card .main-text + .muted {
+      display: block;
+      color: #43546d;
+      font-size: 12px;
+      line-height: 1.45;
     }
     .status-value {
       font-family: var(--font-heading);
       font-size: 24px;
       line-height: 1;
+    }
+    .dashboard-status-card .status-value {
+      min-width: 64px;
+      color: #071b36;
+      font-size: 24px;
+      font-weight: 400;
+      letter-spacing: .04em;
+      text-align: right;
+      white-space: nowrap;
+    }
+    .brand-ranking-list {
+      display: grid;
+      padding: 8px 20px 14px;
+      gap: 9px;
+    }
+    .brand-ranking-row {
+      width: 100%;
+      min-height: 42px;
+      padding: 0;
+      border: 0;
+      background: transparent;
+      color: var(--ink);
+      text-align: left;
+      display: grid;
+      gap: 5px;
+    }
+    .brand-ranking-row:hover .brand-bar-fill {
+      background: var(--brand-dark);
+    }
+    .brand-ranking-top {
+      display: grid;
+      grid-template-columns: minmax(74px, 1fr) auto auto;
+      gap: 8px;
+      align-items: baseline;
+    }
+    .ranking-brand-name {
+      overflow: hidden;
+      color: #071b36;
+      font-family: var(--font-main);
+      font-size: 13px;
+      font-weight: 800;
+      line-height: 1.25;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .brand-searches {
+      color: #071b36;
+      font-family: var(--font-heading);
+      font-size: 21px;
+      line-height: 1;
+      letter-spacing: .04em;
+      white-space: nowrap;
+    }
+    .brand-trend {
+      color: var(--green);
+      font-size: 11px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+    .brand-bar-line {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 34px;
+      gap: 8px;
+      align-items: center;
+    }
+    .brand-bar-track {
+      height: 7px;
+      overflow: hidden;
+      border-radius: 999px;
+      background: #e8eef6;
+    }
+    .brand-bar-fill {
+      display: block;
+      height: 100%;
+      border-radius: inherit;
+      background: var(--brand);
+    }
+    .brand-share {
+      color: #43546d;
+      font-size: 11px;
+      font-weight: 700;
+      text-align: right;
+      white-space: nowrap;
     }
     .modal-backdrop {
       position: fixed;
@@ -968,8 +1256,10 @@
       .nav-section, .admin-box, .logout-box { grid-column: 1 / -1; }
       .main { height: auto; }
       .layout { grid-template-columns: 1fr; }
+      body.dashboard-mode .layout { grid-template-columns: 1fr; }
       .detail { position: static; }
       .summary-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      body.dashboard-mode .cards { grid-template-columns: repeat(2, minmax(0, 1fr)); }
     }
     @media (max-width: 760px) {
       .main { padding: 16px 10px 26px; }
@@ -979,6 +1269,14 @@
       .topbar { display: grid; }
       .tools { justify-content: flex-start; }
       .summary-grid, .cards, .nav { grid-template-columns: 1fr; }
+      .activity-panel-head {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+      .activity-panel-head .activity-toolbar {
+        width: 100%;
+        justify-content: flex-start;
+      }
       .work-row { grid-template-columns: 4px minmax(0, 1fr) auto; }
       .work-row > .chevron { display: none; }
       .activity-row { grid-template-columns: 3px minmax(0, 1fr); }
@@ -1117,7 +1415,6 @@
       <section class="cards" id="cards"></section>
     </main>
   </div>
-  <div class="modal-backdrop" id="activity-modal" aria-hidden="true"></div>
 
   <script>
     const iconSvg = {
@@ -1173,6 +1470,13 @@
         });
       });
       return parents;
+    }, {});
+    const defaultSubByModule = navGroups.reduce((defaults, group) => {
+      group.items.forEach(entry => {
+        const firstSub = entry.subs?.[0];
+        if (typeof firstSub === "string") defaults[entry.id] = firstSub;
+      });
+      return defaults;
     }, {});
 
     function scrollMainToTop() {
@@ -1270,58 +1574,60 @@
     const dashboardData = {
       lastUpdated: "10 Jul 2026, 15:20 GMT+7",
       metrics: [
-        { label: "New Users", value: "128", trend: "วันนี้เพิ่มขึ้น 8.2% เทียบกับเมื่อวาน", chips: ["วันนี้ 128", "สัปดาห์นี้ 642", "เดือนนี้ 2,840"], module: "users", sub: "User List", icon: "users" },
-        { label: "Active Users Today", value: "8.4K", trend: "ผู้ใช้งานรายวันเฉลี่ย 7 วันเพิ่มขึ้น 4.1% เทียบกับ 7 วันก่อน", chips: ["Today 8,420"], module: "users", sub: "User List", icon: "users" },
-        { label: "New Assets", value: "94", trend: "วันนี้เพิ่มขึ้น 340 รายการเทียบกับเมื่อวาน", chips: ["Sale 64", "Show 17", "Hide 9", "Sold 4"], module: "assets", sub: "Asset List", icon: "asset" },
+        { label: "New Users", value: "128", trend: "วันนี้เพิ่มขึ้น 8.2% เทียบกับเมื่อวาน", chips: ["Today 128", "This Week 642", "This Month 2,840"], module: "users", sub: "User List", icon: "users" },
+        { label: "Active Users Today", value: "8.4K", trend: "ผู้ใช้งานรายวันเฉลี่ย 7 วันเพิ่มขึ้น 4.1% เทียบกับ 7 วันก่อน", chips: ["Today 8,420", "This Week 24,700", "This Month 38,900"], module: "users", sub: "User List", icon: "users" },
+        { label: "New Assets", value: "94", trend: "สร้างวันนี้ 94 รายการ เทียบกับเมื่อวาน 340 รายการ", chips: ["Sale 64", "Show 17", "Hide 9", "Sold 4"], module: "assets", sub: "Asset List", icon: "asset" },
         { label: "Reported Items", value: "31", trend: "มี 9 รายงานใกล้ครบกำหนดตรวจ", chips: [
-          { label: "สินทรัพย์ 22", module: "assets", sub: "Reported Assets" },
-          { label: "ผู้ใช้ 6", module: "users", sub: "Reports" },
-          { label: "คอมเมนต์ 3", module: "social", sub: "Reported Social" }
+          { label: "Assets 22", module: "assets", sub: "Reported Assets" },
+          { label: "Users 6", module: "users", sub: "Reports" },
+          { label: "Comments 3", module: "social", sub: "Reported Social" }
         ], icon: "audit" },
-        { label: "Offer Activity", value: "184", trend: "ข้อเสนอซื้อวันนี้เพิ่มขึ้น 12.6% เทียบกับเมื่อวาน", chips: ["Made 184", "Accepted 41", "Rejected 19"], module: "offers", sub: "Offer Queue", icon: "offer" },
+        { label: "Offer Activity", value: "184", trend: "ข้อเสนอซื้อวันนี้เพิ่มขึ้น 12.6% เทียบกับเมื่อวาน", chips: ["Made 184", "Accepted 41", "Rejected 19", "Expired 12"], module: "offers", sub: "Offer Queue", icon: "offer" },
         { label: "Articles", value: "12", trend: "มี 4 บทความรอเผยแพร่", chips: ["Published 8", "Scheduled 4"], module: "content", sub: "Articles", icon: "content" },
-        { label: "Watch Alert", value: "3,218", trend: "มีการจับคู่รายการขาย 146 ครั้งวันนี้", chips: ["Active 3,218", "Triggered 146"], module: "watch-alerts", sub: "Alert Criteria", icon: "alert" },
-        { label: "Support Cases", value: "18", trend: "มี 3 เคสใกล้ครบกำหนดตอบครั้งแรก", chips: ["Open 18", "Assigned 9", "เร่งด่วน 3"], module: "support", sub: "Tickets", icon: "support" }
+        { label: "Watch Alert", value: "3.2K", trend: "มีการจับคู่รายการขาย 146 ครั้งวันนี้", chips: ["Active 3,218", "Triggered 146"], module: "watch-alerts", sub: "Alert Criteria", icon: "alert" },
+        { label: "Support Cases", value: "18", trend: "มี 3 เคสใกล้ครบกำหนดตอบครั้งแรก", chips: ["Open 18", "Assigned 9", "Urgent 3"], module: "support", sub: "Tickets", icon: "support" }
       ],
       queues: [
-        { title: "รายงานสินทรัพย์", count: 22, priority: "high", detail: "รายการเก่าสุดรอตรวจ 22 ชม. / เหตุผลหลัก: รูปซ้ำและข้อมูลประกาศซ้ำ / ควรตรวจวันนี้", chips: ["ใกล้ครบกำหนด 6", "ผู้ใช้กระทบสูง"], module: "assets" },
-        { title: "รายงานผู้ใช้", count: 6, priority: "high", detail: "มีรายงานโปรไฟล์ซ้ำและพฤติกรรมขายซ้ำ / ควรตรวจบัญชีที่ถูก report หลายครั้งก่อน", chips: ["ใกล้ครบกำหนด 3", "ตรวจประวัติ login"], module: "users" },
-        { title: "งานช่วยเหลือที่เปิดอยู่", count: 18, priority: "high", detail: "มี 3 เคสใกล้ครบกำหนดตอบครั้งแรก 8 ชม. / ควรตอบเคสเร่งด่วนก่อน", chips: ["Open 18", "เร่งด่วน 3"], module: "support" },
-        { title: "คำขอลบบัญชี", count: 8, priority: "medium", detail: "มี 2 คำขอที่ยังลบไม่ได้ เพราะมีข้อเสนอซื้อค้างอยู่", chips: ["Blocked 2", "Grace period 4"], module: "deletions" },
-        { title: "สินทรัพย์ที่ต้องตรวจเพิ่ม", count: 14, priority: "medium", detail: "รายการถูกทำเครื่องหมายจากระบบหรือ Admin / ตรวจราคา รูป และสถานะก่อนปล่อยกลับสู่ FO", chips: ["ราคาเบี่ยง 5", "รูปซ้ำ 4"], module: "assets" },
-        { title: "บทความรอเผยแพร่", count: 4, priority: "normal", detail: "บทความ Board ตั้งเวลาเผยแพร่แล้ว / ตรวจ preview และรูป cover ก่อนถึงเวลา", chips: ["เผยแพร่วันนี้ 2", "ต้อง preview"], module: "content" },
-        { title: "ข้อมูลตลาดรอตรวจ", count: 6, priority: "normal", detail: "brand, model และ price index จาก import มีข้อมูลซ้ำ / ควรแก้ก่อนใช้กับ Search และ Watch Alert", chips: ["Import error 6", "Price index"], module: "market" },
-        { title: "แจ้งเตือนส่งไม่สำเร็จ", count: 92, priority: "normal", detail: "มี token หมดอายุและงานส่งซ้ำได้ / ตรวจ retry queue และ cleanup invalid token", chips: ["Retryable 81", "Cleanup 11"], module: "notifications" }
+        { title: "รายงานสินทรัพย์", count: 22, priority: "high", detail: "รายการเก่าสุดรอตรวจ 22 ชม. / เหตุผลหลัก: รูปซ้ำและข้อมูลประกาศซ้ำ / ควรตรวจวันนี้", chips: ["ใกล้ครบกำหนด 6", "ผู้ใช้กระทบสูง"], module: "assets", sub: "Reported Assets" },
+        { title: "รายงานผู้ใช้", count: 6, priority: "high", detail: "มีรายงานโปรไฟล์ซ้ำและพฤติกรรมขายซ้ำ / ควรตรวจบัญชีที่ถูก report หลายครั้งก่อน", chips: ["ใกล้ครบกำหนด 3", "ตรวจประวัติ login"], module: "users", sub: "Reports" },
+        { title: "งานช่วยเหลือที่เปิดอยู่", count: 18, priority: "high", detail: "มี 3 เคสใกล้ครบกำหนดตอบครั้งแรก 8 ชม. / ควรตอบเคสเร่งด่วนก่อน", chips: ["Open 18", "เร่งด่วน 3"], module: "support", sub: "Tickets" },
+        { title: "คำขอลบบัญชี", count: 8, priority: "medium", detail: "มี 2 คำขอที่ยังลบไม่ได้ เพราะมีข้อเสนอซื้อค้างอยู่", chips: ["Blocked 2", "Grace period 4"], module: "deletions", sub: "Requests" },
+        { title: "สินทรัพย์ที่ต้องตรวจเพิ่ม", count: 14, priority: "medium", detail: "รายการถูกทำเครื่องหมายจากระบบหรือ Admin / ตรวจราคา รูป และสถานะก่อนปล่อยกลับสู่ FO", chips: ["ราคาเบี่ยง 5", "รูปซ้ำ 4"], module: "assets", sub: "Status Review" },
+        { title: "บทความรอเผยแพร่", count: 4, priority: "normal", detail: "บทความ Board ตั้งเวลาเผยแพร่แล้ว / ตรวจ preview และรูป cover ก่อนถึงเวลา", chips: ["เผยแพร่วันนี้ 2", "ต้อง preview"], module: "content", sub: "Articles" },
+        { title: "ข้อมูลตลาดรอตรวจ", count: 6, priority: "normal", detail: "brand, model และ price index จาก import มีข้อมูลซ้ำ / ควรแก้ก่อนใช้กับ Search และ Watch Alert", chips: ["Import error 6", "Price index"], module: "market", sub: "Import" },
+        { title: "แจ้งเตือนส่งไม่สำเร็จ", count: 92, priority: "normal", detail: "มี token หมดอายุและงานส่งซ้ำได้ / ตรวจ retry queue และ cleanup invalid token", chips: ["Retryable 81", "Cleanup 11"], module: "notifications", sub: "Delivery Logs" }
       ],
       activities: [
-        { category: "Report", title: "มีรายงานสินทรัพย์ใหม่", summary: "Rolex Submariner 16610 ถูกรายงานเรื่องรูปซ้ำและราคาเบี่ยงจากข้อมูลตลาด", time: "15 นาทีที่แล้ว", action: "ตรวจรูปและข้อมูลประกาศก่อนซ่อนรายการจาก FO", module: "assets" },
-        { category: "Offer", title: "ข้อเสนอซื้อถูกปฏิเสธ", summary: "ข้อเสนอซื้อ Omega Speedmaster ถูกปฏิเสธและยังมี chat ที่ผู้ใช้ถามต่อ", time: "32 นาทีที่แล้ว", action: "ตรวจบริบท chat หากมีการรายงานหรือข้อพิพาทตามมา", module: "offers" },
-        { category: "Content", title: "ตั้งเวลาเผยแพร่บทความแล้ว", summary: "บทความ Vintage Watch Buying Guide ตั้งเวลาเผยแพร่วันนี้ 19:00", time: "1 ชม.ที่แล้ว", action: "เปิดหน้า Content เพื่อตรวจ preview และ cover image", module: "content" },
-        { category: "System", title: "ข้อมูลตลาดอัปเดตแล้ว", summary: "Price index ของ Speedmaster Reduced พบข้อมูลนำเข้าซ้ำ 3 แถว", time: "2 ชม.ที่แล้ว", action: "ตรวจ batch import ก่อน publish index", module: "market" },
-        { category: "System", title: "แจ้งเตือนบางรายการส่งไม่สำเร็จ", summary: "ระบบพบ invalid token ใน delivery batch ล่าสุดและแยกงาน retry แล้ว", time: "3 ชม.ที่แล้ว", action: "เปิด Delivery Logs เพื่อตรวจรายการ retry และ cleanup", module: "notifications" }
+        { category: "Report", title: "มีรายงานสินทรัพย์ใหม่", summary: "Rolex Submariner 16610 ถูกรายงานเรื่องรูปซ้ำและราคาเบี่ยงจากข้อมูลตลาด", time: "15 นาทีที่แล้ว", action: "ตรวจรูปและข้อมูลประกาศก่อนซ่อนรายการจาก FO", module: "assets", sub: "Reported Assets" },
+        { category: "Offer", title: "ข้อเสนอซื้อถูกปฏิเสธ", summary: "ข้อเสนอซื้อ Omega Speedmaster ถูกปฏิเสธและยังมี chat ที่ผู้ใช้ถามต่อ", time: "32 นาทีที่แล้ว", action: "ตรวจบริบท chat หากมีการรายงานหรือข้อพิพาทตามมา", module: "offers", sub: "Offer Queue" },
+        { category: "Content", title: "ตั้งเวลาเผยแพร่บทความแล้ว", summary: "บทความ Vintage Watch Buying Guide ตั้งเวลาเผยแพร่วันนี้ 19:00", time: "1 ชม.ที่แล้ว", action: "เปิดหน้า Content เพื่อตรวจ preview และ cover image", module: "content", sub: "Articles" },
+        { category: "System", title: "ข้อมูลตลาดอัปเดตแล้ว", summary: "Price index ของ Speedmaster Reduced พบข้อมูลนำเข้าซ้ำ 3 แถว", time: "2 ชม.ที่แล้ว", action: "ตรวจ batch import ก่อน publish index", module: "market", sub: "Import" },
+        { category: "System", title: "แจ้งเตือนบางรายการส่งไม่สำเร็จ", summary: "ระบบพบ invalid token ใน delivery batch ล่าสุดและแยกงาน retry แล้ว", time: "3 ชม.ที่แล้ว", action: "เปิด Delivery Logs เพื่อตรวจรายการ retry และ cleanup", module: "notifications", sub: "Delivery Logs" }
       ],
       panels: [
-        { title: "Asset Status", rows: [
-          { label: "Sale", value: "2,816", detail: "แสดงใน Feed และ Search ให้ผู้ซื้อเห็น", module: "assets" },
-          { label: "Show", value: "428", detail: "แสดงใน collection และ profile ของเจ้าของ", module: "assets" },
-          { label: "Hide", value: "76", detail: "เจ้าของและ Admin เห็นตามสิทธิ์", module: "assets" },
-          { label: "Sold", value: "214", detail: "คงประวัติและไม่รับข้อเสนอซื้อใหม่", module: "assets" }
+        { title: "Asset Status", meta: "จาก Asset List ทั้งหมด", rows: [
+          { label: "Sale", value: "2,816", detail: "ยอดทั้งหมดที่แสดงใน Feed และ Search", module: "assets", sub: "Asset List" },
+          { label: "Show", value: "428", detail: "ยอดทั้งหมดที่แสดงใน collection และ profile", module: "assets", sub: "Asset List" },
+          { label: "Hide", value: "76", detail: "ยอดทั้งหมดที่ owner/Admin เห็นตามสิทธิ์", module: "assets", sub: "Status Review" },
+          { label: "Sold", value: "214", detail: "ยอดทั้งหมดที่คงประวัติและปิดรับ offer", module: "assets", sub: "Asset List" }
         ]},
-        { title: "Offer Status", rows: [
-          { label: "Made", value: "184", detail: "ข้อเสนอซื้อที่ถูกสร้างในช่วงที่เลือก", module: "offers" },
-          { label: "Accepted", value: "41", detail: "ข้อเสนอที่ผู้ขายยอมรับแล้ว", module: "offers" },
-          { label: "Rejected", value: "19", detail: "ข้อเสนอที่ถูกปฏิเสธและยังเก็บประวัติ", module: "offers" },
-          { label: "Expired", value: "12", detail: "ข้อเสนอที่หมดเวลาโดยไม่มีการตอบรับ", module: "offers" }
+        { title: "Offer Status", meta: "จาก Offer Queue วันนี้", rows: [
+          { label: "Made", value: "184", detail: "ข้อเสนอซื้อที่ถูกสร้างวันนี้", module: "offers", sub: "Offer Queue" },
+          { label: "Accepted", value: "41", detail: "ข้อเสนอที่ผู้ขายยอมรับวันนี้", module: "offers", sub: "Offer Queue" },
+          { label: "Rejected", value: "19", detail: "ข้อเสนอที่ถูกปฏิเสธวันนี้และเก็บประวัติ", module: "offers", sub: "Offer Queue" },
+          { label: "Expired", value: "12", detail: "ข้อเสนอที่หมดเวลาวันนี้โดยไม่มีการตอบรับ", module: "offers", sub: "Offer Queue" }
         ]},
-        { title: "Latest Articles", rows: [
-          { label: "Vintage Watch Buying Guide", value: "Scheduled", detail: "เผยแพร่วันนี้ 19:00", module: "content" },
-          { label: "How to Check Provenance", value: "Published", detail: "เผยแพร่แล้วบน Board", module: "content" },
-          { label: "Market Notes July", value: "Draft", detail: "รอรูป cover", module: "content" }
+        { title: "Latest Articles", meta: "จาก Articles ล่าสุด", rows: [
+          { label: "Vintage Watch Buying Guide", value: "Scheduled", detail: "ตั้งเวลาเผยแพร่ 10 Jul 2026 19:00", module: "content", sub: "Articles" },
+          { label: "How to Check Provenance", value: "Published", detail: "เผยแพร่แล้วและแสดงบน Board", module: "content", sub: "Articles" },
+          { label: "Market Notes July", value: "Draft", detail: "ยังไม่แสดงบน FO / รอรูป cover", module: "content", sub: "Articles" }
         ]},
-        { title: "Top Searched Brands", rows: [
-          { label: "Rolex", value: "12.4K", detail: "ค้นหาสูงสุดและมี Watch Alert ใหม่ 48 รายการ", module: "reports" },
-          { label: "Omega", value: "8.7K", detail: "คำค้นเพิ่มขึ้นจากบทความล่าสุด", module: "reports" },
-          { label: "Seiko", value: "6.1K", detail: "รุ่น vintage ถูกค้นหามากขึ้น", module: "reports" }
+        { title: "Top Searched Brands", meta: "จาก Search Report สัปดาห์นี้", type: "brand-ranking", rows: [
+          { label: "Rolex", value: "12.4K", share: 32, trend: "+6%", module: "reports", sub: "Search" },
+          { label: "Omega", value: "8.7K", share: 22, trend: "+3%", module: "reports", sub: "Search" },
+          { label: "Seiko", value: "6.1K", share: 16, trend: "+9%", module: "reports", sub: "Search" },
+          { label: "Cartier", value: "4.2K", share: 11, trend: "+14%", module: "reports", sub: "Search" },
+          { label: "Tudor", value: "3.6K", share: 9, trend: "+5%", module: "reports", sub: "Search" }
         ]}
       ]
     };
@@ -1450,7 +1756,6 @@
               <span>
                 <span class="work-title">${queue.title}</span>
                 <span class="muted">${queue.detail}</span>
-                <span class="chips">${queue.chips.map(chip => `<span class="chip">${chip}</span>`).join("")}</span>
               </span>
               <span class="work-count">${queue.count}</span>
               ${iconSvg.chevron}
@@ -1468,17 +1773,17 @@
         ? dashboardData.activities
         : dashboardData.activities.filter(activity => activity.category === activeActivityFilter);
       document.querySelector("#detail").innerHTML = `
-        <div class="panel-head">
+        <div class="panel-head activity-panel-head">
           <div>
             <h2>Recent Activity</h2>
           </div>
-        </div>
-        <div class="activity-toolbar">
-          ${filters.map(filter => `<button class="segmented ${filter === activeActivityFilter ? "active" : ""}" type="button" data-activity-filter="${filter}">${filter}</button>`).join("")}
+          <div class="activity-toolbar">
+            ${filters.map(filter => `<button class="segmented ${filter === activeActivityFilter ? "active" : ""}" type="button" data-activity-filter="${filter}">${filter}</button>`).join("")}
+          </div>
         </div>
         <div class="activity-list">
-          ${activities.map((activity, index) => `
-            <button class="activity-row" type="button" data-activity-index="${dashboardData.activities.indexOf(activity)}">
+          ${activities.map(activity => `
+            <button class="activity-row" type="button" data-module-jump="${activity.module}" data-sub-jump="${activity.sub || ""}">
               <span>
                 <span class="activity-title">${activity.title}</span>
                 <span class="muted">${activity.summary}</span>
@@ -1492,12 +1797,31 @@
     }
 
     function renderDashboardPanels() {
-      document.querySelector("#cards").innerHTML = dashboardData.panels.map(panel => `
-        <article class="mini-card">
-          <h3>${panel.title}</h3>
+      const renderPanelRows = panel => {
+        if (panel.type === "brand-ranking") {
+          const maxShare = Math.max(...panel.rows.map(row => row.share));
+          return `
+            <div class="brand-ranking-list">
+              ${panel.rows.map(row => `
+                <button class="brand-ranking-row" type="button" data-module-jump="${row.module}" data-sub-jump="${row.sub || ""}">
+                  <span class="brand-ranking-top">
+                    <span class="ranking-brand-name">${row.label}</span>
+                    <span class="brand-searches">${row.value}</span>
+                    <span class="brand-trend">${row.trend}</span>
+                  </span>
+                  <span class="brand-bar-line">
+                    <span class="brand-bar-track"><span class="brand-bar-fill" style="width: ${Math.round((row.share / maxShare) * 100)}%"></span></span>
+                    <span class="brand-share">${row.share}%</span>
+                  </span>
+                </button>
+              `).join("")}
+            </div>
+          `;
+        }
+        return `
           <div class="status-list">
             ${panel.rows.map(row => `
-              <button class="status-row" type="button" data-module-jump="${row.module}">
+              <button class="status-row" type="button" data-module-jump="${row.module}" data-sub-jump="${row.sub || ""}">
                 <span>
                   <span class="main-text">${row.label}</span>
                   <span class="muted">${row.detail}</span>
@@ -1506,50 +1830,26 @@
               </button>
             `).join("")}
           </div>
+        `;
+      };
+      document.querySelector("#cards").innerHTML = dashboardData.panels.map(panel => `
+        <article class="mini-card dashboard-status-card">
+          <div class="dashboard-card-head">
+            <h3>${panel.title}</h3>
+            ${panel.meta ? `<div class="dashboard-card-meta">${panel.meta}</div>` : ""}
+          </div>
+          ${renderPanelRows(panel)}
         </article>
       `).join("");
-    }
-
-    function openActivityModal(index) {
-      const activity = dashboardData.activities[index];
-      if (!activity) return;
-      const modal = document.querySelector("#activity-modal");
-      modal.innerHTML = `
-        <div class="modal" role="dialog" aria-modal="true" aria-labelledby="activity-modal-title">
-          <div class="panel-head">
-            <div>
-              <h2 id="activity-modal-title">${activity.title}</h2>
-              <p>${activity.time} / ${activity.category}</p>
-            </div>
-          </div>
-          <div class="modal-body">
-            <p class="muted">${activity.summary}</p>
-            <div class="kv"><span>สิ่งที่ควรทำ</span><strong>${activity.action}</strong></div>
-            <div class="kv"><span>หน้าที่เกี่ยวข้อง</span><strong>${moduleData[activity.module].title}</strong></div>
-          </div>
-          <div class="modal-actions">
-            <button class="btn" type="button" data-modal-close>ตกลง</button>
-            <button class="btn primary" type="button" data-module-jump="${activity.module}" data-sub-jump="${activity.sub || ""}">เปิดหน้าที่เกี่ยวข้อง</button>
-          </div>
-        </div>
-      `;
-      modal.classList.add("show");
-      modal.setAttribute("aria-hidden", "false");
-    }
-
-    function closeActivityModal() {
-      const modal = document.querySelector("#activity-modal");
-      modal.classList.remove("show");
-      modal.setAttribute("aria-hidden", "true");
-      modal.innerHTML = "";
     }
 
     function jumpToModule(moduleId, subLabel = "") {
       if (!moduleId) return;
       const parentId = navParentByModule[moduleId] || moduleId;
+      const targetSubLabel = subLabel || (moduleId !== "dashboard" ? defaultSubByModule[moduleId] || "" : "");
       expandedMenus.clear();
-      if (parentId !== moduleId || subLabel) expandedMenus.add(parentId);
-      renderModule(moduleId, subLabel, subLabel);
+      if (parentId !== moduleId || targetSubLabel) expandedMenus.add(parentId);
+      renderModule(moduleId, targetSubLabel, targetSubLabel);
       scrollMainToTop();
     }
 
@@ -1639,25 +1939,14 @@
     }
 
     document.addEventListener("click", event => {
-      const modalClose = event.target.closest("[data-modal-close]");
-      if (modalClose || event.target.id === "activity-modal") {
-        closeActivityModal();
-        return;
-      }
       const activityFilter = event.target.closest("[data-activity-filter]");
       if (activityFilter) {
         activeActivityFilter = activityFilter.dataset.activityFilter;
         renderActivityPanel();
         return;
       }
-      const activityRow = event.target.closest("[data-activity-index]");
-      if (activityRow) {
-        openActivityModal(Number(activityRow.dataset.activityIndex));
-        return;
-      }
       const moduleJump = event.target.closest("[data-module-jump], [data-jump]");
       if (moduleJump) {
-        closeActivityModal();
         jumpToModule(moduleJump.dataset.moduleJump || moduleJump.dataset.jump, moduleJump.dataset.subJump || "");
         return;
       }
@@ -1903,7 +2192,7 @@
     });
     document.querySelector("#primary-action").addEventListener("click", () => {
       if (activeModule === "dashboard") {
-        jumpToModule("reports");
+        jumpToModule("reports", "Search");
       }
     });
     document.querySelector("#logout-btn").addEventListener("click", () => {
