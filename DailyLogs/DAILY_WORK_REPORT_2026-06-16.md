@@ -1,4 +1,4 @@
-# Daily Work Report: Tuk Daeng
+﻿# Daily Work Report: Tuk Daeng
 
 **วันที่:** 2026-06-16  
 **ผู้ทำงาน:** เต็ม / Consolidated with ChatGPT review inputs  
@@ -113,7 +113,7 @@
   - ปรับจาก `Reset OTP` เป็น `Reset Link`
   - ปรับ `OTP Expiry` เป็น `30 Minutes`
   - ปรับ password policy ให้ตรงหลักยึด
-  - เพิ่ม `Terms of Service`, `Privacy Policy`, `Check Email`, `Password Updated`, `Suspended Account State`
+  - เพิ่ม `Terms of Use`, `Privacy Policy`, `Check Email`, `Password Updated`, `Suspended Account State`
   - ตัด `Account Linking / Account Merge / Auto-Link` ออกจาก V1
   - ปรับ `Duplicate Registration Rule` ให้แนะนำแค่ `Sign In` โดยไม่เปิดเผยว่าบัญชีนั้นสมัครด้วยวิธีใด เพื่อป้องกันความเสี่ยงด้านความปลอดภัยของบัญชี
 - **ไฟล์ที่เกี่ยวข้อง:** `01_AUTHENTICATION_MODULE.md`

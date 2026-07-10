@@ -45,7 +45,7 @@
 - **Changes:**
   1. ✅ เพิ่ม Login page (email/password, remember-me, reset link)
   2. ✅ อัปเดต Article list - publish date/time แสดง (3 มิ.ย. 2026 09:00)
-  3. ✅ เพิ่ม Permission Matrix ใน Settings (5 roles × 11 modules)
+  3. ✅ เพิ่ม Admin Access Matrix ใน Settings (single Admin account type × 11 modules)
   4. ✅ แก้ render() function - เริ่มจาก login page
   5. ✅ เพิ่ม Asset Visibility Rules (Sale/Collection Show/Hide/Sold)
   6. ✅ เพิ่ม Chat moderation UI (hide/unhide buttons)
@@ -157,7 +157,7 @@ Coverage: All 14 modules
    
 ✅ Offers Module
    - Offer list with status (Pending, Accepted, Declined, Expired)
-   - Force Expire button (Super Admin only)
+   - Force Expire button (Admin only)
    - Chat integration visible
    
 ✅ Social Module
@@ -204,18 +204,18 @@ Coverage: All 14 modules
    
 ✅ Audit Log Module
    - Admin action logging
-   - Role-based actions
+   - policy-based actions
    - Entity tracking (Offer, Comment, Ticket, Model)
    
 ✅ Settings Module
-   - 2FA requirements (Mandatory: Super Admin, Recommended: Others)
+   - 2FA requirements (Mandatory: Admin, Recommended: Others)
    - Session timeout (Idle 8h, Max 24h)
-   - Permission Matrix (5 roles × 11 modules)
-     - Super Admin: All ✓
-     - Content Admin: Dashboard + Content only
-     - Moderator: Dashboard + Asset + Offer + Social + Reports
-     - Support Admin: Dashboard + User + Support + Reports
-     - Market Admin: Dashboard + Market Data
+   - Admin Access Matrix (single Admin account type × 11 modules)
+     - Admin: All ✓
+     - Admin: Dashboard + Content only
+     - Admin: Dashboard + Asset + Offer + Social + Reports
+     - Admin: Dashboard + User + Support + Reports
+     - Admin: Dashboard + Market Data
 ```
 
 **Result:** ✅ 14/14 modules working correctly, 100% requirement compliance
@@ -240,8 +240,8 @@ Coverage: All 14 modules
 | 10 | Support | 4.12 Support tickets | ✅ Ticket status, priority, resolution | ✅ |
 | 11 | Notifications | 4.13 Notifications | ✅ Broadcast, auto-triggers | ✅ |
 | 12 | Reports | 4.14 Reports | ✅ Statistics, metrics, SLA tracking | ✅ |
-| 13 | Audit Log | 4.15 Audit logging | ✅ Admin action logs, role tracking | ✅ |
-| 14 | Settings | 4.16 Admin settings | ✅ 2FA, Session, Permission matrix | ✅ |
+| 13 | Audit Log | 4.15 Audit logging | ✅ Admin action logs, admin access tracking | ✅ |
+| 14 | Settings | 4.16 Admin settings | ✅ 2FA, Session, Admin Access Matrix | ✅ |
 
 **Overall:** ✅ 100% PRD compliance confirmed
 
@@ -251,7 +251,7 @@ Coverage: All 14 modules
 
 1. ✅ **100% Feature Parity** - All 14 BO modules matching PRD requirements
 2. ✅ **Complete Testing** - Manual verification of all modules
-3. ✅ **Production-Ready** - Login flow, role-based permissions, admin functions
+3. ✅ **Production-Ready** - Login flow, policy-based permissions, admin functions
 4. ✅ **Documentation** - Test cases, worklog, daily report
 5. ✅ **Clean Merge** - Fast-forward merge to master without conflicts
 
@@ -321,20 +321,20 @@ No merge conflicts
    - ✅ Self-contained
    - ⚠️ Not suitable for production (refactor needed)
 
-3. **Role-Based Access:** Permission matrix implementation clearly shows:
-   - Super Admin: Full system access
-   - Content Admin: Articles/categories/banners management
-   - Moderator: Content moderation & reporting
-   - Support Admin: User support & ticket resolution
-   - Market Admin: Market data management (brands/models/pricing)
+3. **policy-based Access:** Admin Access Matrix implementation clearly shows:
+   - Admin: Full system access
+   - Admin: Articles/categories/banners management
+   - Admin: Content moderation & reporting
+   - Admin: User support & ticket resolution
+   - Admin: Market data management (brands/models/pricing)
 
 4. **2FA Policy:** Implementation reflects security best practices:
-   - Mandatory for Super Admin & Content Admin
-   - Recommended for Moderator, Support Admin, Market Admin
+   - Mandatory for Admin & Admin
+   - Recommended for Admin
 
 5. **User Context:** System correctly differentiates:
-   - Users (FO): Single role, can perform all actions
-   - Admins (BO): Role-specific permissions
+   - Users (FO): Single account type, can perform all actions
+   - Admins (BO): Policy-based Admin access
 
 ---
 

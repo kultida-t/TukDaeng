@@ -1,0 +1,798 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>TukDaeng Back Office Prototype</title>
+  <style>
+    :root {
+      --bg: #f3f7fc;
+      --panel: #ffffff;
+      --line: #d6e1ee;
+      --line-strong: #c2d2e4;
+      --text: #06142e;
+      --muted: #516684;
+      --brand: #a00000;
+      --brand-soft: #fff1f1;
+      --blue: #0a91de;
+      --blue-soft: #e9f5ff;
+      --green: #059669;
+      --green-soft: #dff8ee;
+      --red: #dc2626;
+      --red-soft: #ffe6e6;
+      --amber: #b7791f;
+      --amber-soft: #fff3c4;
+      --purple: #6d38d4;
+      --purple-soft: #eee7ff;
+      --cyan: #0f9f8f;
+      --cyan-soft: #ccfbf1;
+      --shadow: 0 1px 2px rgba(11, 31, 64, .08), 0 10px 30px rgba(11, 31, 64, .06);
+      --radius: 8px;
+      --font: "IBM Plex Sans Thai", "LINE Seed Sans TH", "Segoe UI", Tahoma, Arial, sans-serif;
+    }
+
+    * { box-sizing: border-box; }
+    html, body { margin: 0; min-height: 100%; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font);
+      letter-spacing: 0;
+      overflow-x: hidden;
+    }
+    button, input, select, textarea { font: inherit; }
+    button { cursor: pointer; }
+
+    .app {
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: 270px minmax(0, 1fr);
+    }
+
+    .sidebar {
+      background: #071426;
+      color: #f8fbff;
+      border-right: 1px solid rgba(255, 255, 255, .12);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      position: sticky;
+      top: 0;
+      z-index: 4;
+    }
+
+    .brand {
+      min-height: 88px;
+      padding: 18px 16px 17px;
+      border-bottom: 1px solid rgba(180, 199, 224, .16);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .brand-mark {
+      width: 44px;
+      height: 44px;
+      border-radius: 11px;
+      background: #c4000b;
+      color: #fff;
+      display: grid;
+      place-items: center;
+      font-weight: 900;
+      font-size: 17px;
+      border: 1px solid rgba(255, 255, 255, .18);
+      box-shadow: 0 0 0 4px rgba(196, 0, 11, .18);
+    }
+    .brand strong {
+      display: block;
+      font-size: 21px;
+      line-height: 1;
+      letter-spacing: .12em;
+      font-weight: 900;
+    }
+    .brand small {
+      color: #86a1c0;
+      font-size: 11px;
+      letter-spacing: .28em;
+      text-transform: uppercase;
+      font-weight: 800;
+    }
+
+    .nav {
+      padding: 28px 10px 14px;
+      display: grid;
+      gap: 8px;
+      flex: 1;
+      align-content: start;
+    }
+    .nav-section {
+      padding: 6px 8px 2px;
+      color: #607a9e;
+      font-size: 11px;
+      letter-spacing: .22em;
+      font-weight: 900;
+    }
+    .nav button {
+      position: relative;
+      border: 0;
+      background: transparent;
+      color: #eef5ff;
+      border-radius: 7px;
+      min-height: 47px;
+      display: grid;
+      grid-template-columns: 24px minmax(0, 1fr) 18px;
+      align-items: center;
+      gap: 10px;
+      padding: 11px 14px;
+      text-align: left;
+      font-weight: 800;
+      font-size: 15px;
+    }
+    .nav button:hover { background: rgba(35, 59, 95, .72); }
+    .nav button.active {
+      background: #19315a;
+      color: #fff;
+      box-shadow: inset 4px 0 0 #e60012;
+    }
+    .nav i {
+      width: 22px;
+      height: 22px;
+      display: inline-grid;
+      place-items: center;
+      font-style: normal;
+      color: #a8bdd9;
+      font-size: 17px;
+    }
+    .nav button.active i { color: #fff; }
+    .nav .chev {
+      justify-self: end;
+      color: #8aa2c1;
+      font-weight: 900;
+    }
+    .nav .spacer { height: 210px; }
+
+    .logout-box {
+      margin: 0 12px 14px;
+      min-height: 58px;
+      width: calc(100% - 24px);
+      border: 1px solid rgba(180, 199, 224, .16);
+      background: #081a30;
+      color: #eef5ff;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 13px 15px;
+      font-weight: 900;
+      text-align: left;
+    }
+    .logout-box i { color: #9db4d0; font-style: normal; font-size: 21px; }
+
+    .admin-box {
+      border-top: 1px solid rgba(255, 255, 255, .2);
+      padding: 13px 12px;
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      background: #071426;
+    }
+    .avatar {
+      width: 39px;
+      height: 39px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      background: #c4000b;
+      color: #fff;
+      font-weight: 900;
+      flex: 0 0 auto;
+    }
+    .admin-box strong { display: block; line-height: 1.1; }
+    .admin-box small { color: #85a2c2; font-size: 12px; }
+
+    .main {
+      min-width: 0;
+      padding: 22px 18px 36px;
+    }
+
+    .top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 18px;
+      padding-bottom: 18px;
+      margin-bottom: 22px;
+      border-bottom: 3px solid #d40000;
+    }
+    .title-lockup {
+      border-left: 4px solid #d40000;
+      padding-left: 14px;
+    }
+    h1, h2, h3, p { margin-top: 0; }
+    h1 {
+      margin-bottom: 6px;
+      font-size: 28px;
+      line-height: 1.15;
+      text-transform: uppercase;
+      letter-spacing: .03em;
+    }
+    .subtitle { color: var(--muted); margin: 0 0 8px; }
+    .fresh {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      color: #32506f;
+      font-size: 13px;
+    }
+    .fresh::before {
+      content: "";
+      width: 9px;
+      height: 9px;
+      border-radius: 999px;
+      background: #22c55e;
+      box-shadow: 0 0 0 4px #dcfce7;
+    }
+
+    .actions { display: flex; gap: 8px; flex-wrap: wrap; justify-content: flex-end; }
+    .btn {
+      border: 1px solid var(--line-strong);
+      background: #fff;
+      color: var(--text);
+      border-radius: 8px;
+      min-height: 42px;
+      padding: 9px 14px;
+      font-weight: 800;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .btn:hover { border-color: #9fb5d0; }
+    .btn.primary { background: var(--brand); border-color: var(--brand); color: #fff; }
+    .btn.blue { background: var(--blue); border-color: var(--blue); color: #fff; }
+    .btn.active { background: #fff4f4; color: var(--brand); border-color: #ffb8b8; }
+    .btn.icon { width: 42px; padding: 0; justify-content: center; }
+
+    .grid { display: grid; gap: 14px; }
+    .metrics { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+    .two { grid-template-columns: minmax(0, 1fr) minmax(0, .6fr); }
+    .profile-layout { grid-template-columns: 368px minmax(0, 1fr); align-items: start; }
+
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      min-width: 0;
+    }
+    .card.pad { padding: 18px; }
+    .metric-card {
+      padding: 16px;
+      min-height: 182px;
+      position: relative;
+      border-left: 3px solid #71d39a;
+    }
+    .metric-card.blue { border-left-color: #7aa7e8; }
+    .metric-card.red { border-left-color: #b40000; }
+    .metric-card.purple { border-left-color: #8176c7; }
+    .metric-card h3 {
+      margin: 0 0 24px;
+      font-size: 14px;
+      text-transform: uppercase;
+      letter-spacing: .05em;
+    }
+    .metric-card .value {
+      font-size: 32px;
+      line-height: 1;
+      font-weight: 900;
+      margin-bottom: 8px;
+    }
+    .metric-card .delta { color: var(--green); font-size: 13px; margin-bottom: 14px; }
+    .metric-card .delta.bad { color: var(--red); }
+    .mini-icon {
+      position: absolute;
+      top: 18px;
+      right: 18px;
+      width: 42px;
+      height: 42px;
+      border-radius: 8px;
+      border: 1px solid var(--line);
+      display: grid;
+      place-items: center;
+      font-weight: 900;
+      color: #52719b;
+      background: #f8fbff;
+    }
+
+    .chips { display: flex; gap: 7px; flex-wrap: wrap; }
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      min-height: 26px;
+      border-radius: 999px;
+      border: 1px solid #ead6d6;
+      background: #fffafa;
+      color: #4a5872;
+      padding: 4px 10px;
+      font-size: 12px;
+      white-space: nowrap;
+    }
+
+    .section-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 18px 20px;
+      border-bottom: 1px solid var(--line);
+    }
+    .section-head h2 { margin: 0; font-size: 16px; }
+    .section-head small { color: var(--muted); font-size: 12px; margin-left: 8px; font-weight: 500; }
+
+    .queue-list { display: grid; }
+    .queue-row {
+      display: grid;
+      grid-template-columns: 1.1fr 1.7fr 1.1fr 120px 120px 150px 118px;
+      gap: 18px;
+      align-items: center;
+      padding: 18px 20px;
+      border-bottom: 1px solid var(--line);
+      background: #fff;
+    }
+    .queue-row.head {
+      min-height: 44px;
+      padding-top: 12px;
+      padding-bottom: 12px;
+      background: #f4f8fd;
+      color: #314866;
+      font-size: 12px;
+      font-weight: 800;
+    }
+    .queue-row:last-child { border-bottom: 0; }
+    .main-text { font-weight: 900; margin-bottom: 4px; }
+    .muted { color: var(--muted); font-size: 12px; line-height: 1.55; }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: max-content;
+      min-height: 26px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      border: 1px solid transparent;
+      font-weight: 900;
+      font-size: 12px;
+      white-space: nowrap;
+    }
+    .urgent { color: #b91c1c; background: var(--red-soft); border-color: #fecaca; }
+    .medium { color: #a05a00; background: var(--amber-soft); border-color: #facc15; }
+    .normal { color: #00796b; background: var(--cyan-soft); border-color: #7debdc; }
+    .waiting { color: #0b50c5; background: #dbeafe; border-color: #bfdbfe; }
+    .reviewing { color: var(--purple); background: var(--purple-soft); border-color: #ddd2fe; }
+
+    .work-item {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto auto;
+      gap: 12px;
+      align-items: center;
+      padding: 16px 2px;
+      border-bottom: 1px solid var(--line);
+    }
+    .work-item:last-child { border-bottom: 0; }
+    .work-item strong { display: block; }
+    .work-item::before {
+      content: "";
+      width: 4px;
+      height: 38px;
+      background: #ef4444;
+      border-radius: 99px;
+      grid-row: 1;
+    }
+
+    .activity {
+      display: grid;
+      grid-template-columns: 18px minmax(0, 1fr) auto;
+      gap: 10px;
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--line);
+      align-items: start;
+    }
+    .activity:last-child { border-bottom: 0; }
+    .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 999px;
+      background: var(--brand);
+      box-shadow: 0 0 0 5px #f9e2e2;
+      margin-top: 4px;
+    }
+
+    .tabs {
+      display: flex;
+      gap: 4px;
+      border-bottom: 1px solid var(--line);
+      margin-bottom: 24px;
+      overflow-x: auto;
+    }
+    .tab {
+      border: 0;
+      background: transparent;
+      min-height: 46px;
+      padding: 0 18px;
+      color: #314866;
+      font-weight: 800;
+      border-bottom: 2px solid transparent;
+      white-space: nowrap;
+    }
+    .tab.active { color: var(--blue); border-bottom-color: var(--blue); background: #eef7ff; }
+
+    .backline {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      margin-bottom: 28px;
+    }
+    .back {
+      width: 34px;
+      height: 34px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      background: #fff;
+      display: grid;
+      place-items: center;
+      font-weight: 900;
+      box-shadow: var(--shadow);
+    }
+    .profile-card {
+      text-align: center;
+      padding: 24px;
+    }
+    .avatar-xl {
+      width: 64px;
+      height: 64px;
+      border-radius: 999px;
+      margin: 0 auto 14px;
+      display: grid;
+      place-items: center;
+      background: #dff2fb;
+      color: var(--blue);
+      font-weight: 900;
+      font-size: 20px;
+    }
+    .contact-row {
+      display: grid;
+      grid-template-columns: 18px minmax(0, 1fr);
+      gap: 12px;
+      text-align: left;
+      padding: 12px 0;
+      border-top: 1px solid var(--line);
+    }
+    .contact-row:first-of-type { margin-top: 20px; }
+    .contact-row i { font-style: normal; color: #6b82a3; }
+
+    .quick-card {
+      padding: 20px;
+      margin-bottom: 22px;
+    }
+    .channel-row {
+      display: flex;
+      gap: 10px;
+      margin: 12px 0 16px;
+      flex-wrap: wrap;
+    }
+    .channel {
+      width: 44px;
+      height: 44px;
+      border: 1px solid var(--line);
+      background: #fff;
+      border-radius: 10px;
+      display: grid;
+      place-items: center;
+      color: #315174;
+      font-weight: 900;
+      box-shadow: var(--shadow);
+    }
+    .channel.active { border-color: var(--blue); color: var(--blue); background: #eef8ff; }
+    textarea {
+      width: 100%;
+      min-height: 64px;
+      resize: vertical;
+      border: 1px solid #e3ebf5;
+      border-radius: 8px;
+      background: #f2f6fb;
+      padding: 12px;
+      color: var(--text);
+    }
+    .timeline { display: grid; gap: 14px; position: relative; padding-left: 38px; }
+    .timeline::before {
+      content: "";
+      position: absolute;
+      left: 15px;
+      top: 0;
+      bottom: 0;
+      width: 1px;
+      background: var(--line);
+    }
+    .timeline-card {
+      position: relative;
+      padding: 16px 18px;
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      box-shadow: var(--shadow);
+    }
+    .timeline-card::before {
+      content: attr(data-icon);
+      position: absolute;
+      left: -38px;
+      top: 10px;
+      width: 24px;
+      height: 24px;
+      border-radius: 999px;
+      background: #fff;
+      border: 1px solid var(--line);
+      display: grid;
+      place-items: center;
+      font-size: 12px;
+    }
+
+    .hidden { display: none !important; }
+
+    @media (max-width: 1180px) {
+      .app { grid-template-columns: 1fr; }
+      .sidebar { position: static; min-height: auto; }
+      .nav { grid-template-columns: 1fr; }
+      .nav .spacer { height: 24px; }
+      .metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .two, .profile-layout { grid-template-columns: 1fr; }
+      .queue-row { grid-template-columns: 1fr; gap: 8px; }
+      .queue-row.head { display: none; }
+    }
+    @media (max-width: 700px) {
+      .main { padding: 14px 10px 28px; }
+      .top { display: grid; }
+      .actions { justify-content: flex-start; }
+      .metrics { grid-template-columns: 1fr; }
+      .nav { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="brand-mark">TD</div>
+        <div><strong>Tuk Daeng</strong><small>Back Office</small></div>
+      </div>
+      <nav class="nav">
+        <div class="nav-section">การดำเนินงาน</div>
+        <button class="active" data-view="dashboard"><i>▦</i><span>Dashboard</span><span></span></button>
+        <button data-view="users"><i>♧</i><span>User Management</span><span class="chev">›</span></button>
+        <button data-view="assets"><i>◉</i><span>Asset Management</span><span class="chev">›</span></button>
+        <button data-view="content"><i>☑</i><span>Content Management</span><span class="chev">›</span></button>
+        <button data-view="market"><i>↗</i><span>Market Data</span><span class="chev">›</span></button>
+        <div class="nav-section">เครื่องมือ & รายงาน</div>
+        <button data-view="reports"><i>▥</i><span>Reports</span><span></span></button>
+        <button data-view="notifications"><i>▤</i><span>Notifications</span><span></span></button>
+        <button data-view="settings"><i>⚙</i><span>Settings</span><span class="chev">›</span></button>
+        <div class="spacer"></div>
+      </nav>
+      <button class="logout-box" type="button"><i>↳</i><span>Logout</span></button>
+      <div class="admin-box">
+        <div class="avatar">AD</div>
+        <div><strong>Somchai Admin</strong><small>Admin · Active session</small></div>
+      </div>
+    </aside>
+
+    <main class="main">
+      <section id="view-dashboard" class="view">
+        <div class="top">
+          <div class="title-lockup">
+            <h1>Operational Dashboard</h1>
+            <p class="subtitle">สรุปสถานะงานสำคัญตามช่วงเวลา วันนี้</p>
+            <span class="fresh">อัปเดตล่าสุด 7 Jul 2026, 14:31</span>
+          </div>
+          <div class="actions">
+            <button class="btn active">Today</button>
+            <button class="btn">7 days</button>
+            <button class="btn">30 days</button>
+            <button class="btn">เลือกช่วงเวลา</button>
+            <button class="btn icon">↻</button>
+            <button class="btn primary">Export</button>
+          </div>
+        </div>
+
+        <div class="grid metrics">
+          <article class="card metric-card">
+            <h3><mark>New Users</mark></h3>
+            <div class="mini-icon">U</div>
+            <div class="value">128</div>
+            <div class="delta">เพิ่มขึ้น 8.2% จากช่วงก่อนหน้า</div>
+            <div class="chips"><span class="chip">Email 68 ราย</span><span class="chip">Google 37 ราย</span><span class="chip">Apple 23 ราย</span></div>
+          </article>
+          <article class="card metric-card blue">
+            <h3>New Assets</h3>
+            <div class="mini-icon">A</div>
+            <div class="value">94</div>
+            <div class="delta">เพิ่มขึ้น 12.4% จากช่วงก่อนหน้า</div>
+            <div class="chips"><span class="chip">Sale 64 รายการ</span><span class="chip">Show 17 รายการ</span><span class="chip">Hide 9 รายการ</span><span class="chip">Sold 4 รายการ</span></div>
+          </article>
+          <article class="card metric-card red">
+            <h3>Pending Reports</h3>
+            <div class="mini-icon" style="color:#9f1239;background:#fff1f2">!</div>
+            <div class="value">31</div>
+            <div class="delta bad">มี 9 รายงานใกล้ครบกำหนด</div>
+            <div class="chips"><span class="chip">Asset 7 รายงาน</span><span class="chip">User 5 รายงาน</span><span class="chip">Comment 13 รายงาน</span><span class="chip">Chat 6 รายงาน</span></div>
+          </article>
+          <article class="card metric-card">
+            <h3>Offer Activity</h3>
+            <div class="mini-icon">O</div>
+            <div class="value">246</div>
+            <div class="delta">เพิ่มขึ้น 3.1% จากช่วงก่อนหน้า</div>
+            <div class="chips"><span class="chip">ตอบรับ 89 รายการ</span><span class="chip">ปฏิเสธ 112 รายการ</span><span class="chip">รอดำเนินการ 45 รายการ</span></div>
+          </article>
+          <article class="card metric-card purple">
+            <h3>Articles</h3>
+            <div class="mini-icon">B</div>
+            <div class="value">18</div>
+            <div class="delta">มี 4 บทความรอเผยแพร่</div>
+            <div class="chips"><span class="chip">Rolex guide อ่าน 4,820 ครั้ง</span></div>
+          </article>
+          <article class="card metric-card blue">
+            <h3>Watch Alert</h3>
+            <div class="mini-icon">W</div>
+            <div class="value">5,240</div>
+            <div class="delta">เพิ่มขึ้น 340 รายการจากช่วงก่อนหน้า</div>
+            <div class="chips"><span class="chip">Match กับสินทรัพย์ Sale วันนี้ 6 ครั้ง</span></div>
+          </article>
+          <article class="card metric-card red">
+            <h3>Support Cases</h3>
+            <div class="mini-icon" style="color:#9f1239;background:#fff7f7">S</div>
+            <div class="value">18</div>
+            <div class="delta bad">มี 3 เคสใกล้ครบกำหนดตอบ</div>
+            <div class="chips"><span class="chip">LINE 6 เคส</span><span class="chip">Email 8 เคส</span><span class="chip">Phone 4 เคส</span></div>
+          </article>
+        </div>
+
+        <div class="grid two" style="margin-top:22px">
+          <section class="card">
+            <div class="section-head">
+              <div><h2><mark>Work Queue Today</mark></h2><p class="subtitle">งานค้างที่ทีมต้องจัดการวันนี้ เรียงจากงานใกล้ครบกำหนด และผลกระทบต่อผู้ใช้</p></div>
+              <span class="pill urgent">ติดตามกำหนดงาน</span>
+            </div>
+            <div style="padding:0 18px">
+              <div class="work-item"><div><strong>รายงานสินทรัพย์</strong><span class="muted">รายการเก่าสุดรอตรวจ 22 ชม. · เหตุผลหลัก: รูปซ้ำ / ข้อมูลประกาศซ้ำ</span></div><strong style="color:#ef4444;font-size:22px">7</strong><span class="muted">รายการ ›</span></div>
+              <div class="work-item"><div><strong>รายงานผู้ใช้</strong><span class="muted">รายการเก่าสุดรอตรวจ 18 ชม. · พบโปรไฟล์ผู้ขายน่าสงสัย</span></div><strong style="color:#ef4444;font-size:22px">5</strong><span class="muted">รายการ ›</span></div>
+              <div class="work-item"><div><strong>ข้อเสนอ / แชท</strong><span class="muted">มีห้องแชทถูกรายงาน 6 รายการ และข้อเสนอรอประเมิน policy</span></div><strong style="color:#ef4444;font-size:22px">6</strong><span class="muted">รายการ ›</span></div>
+            </div>
+          </section>
+          <section class="card">
+            <div class="section-head"><h2>Recent Activity</h2></div>
+            <div class="activity"><span class="dot"></span><div><strong>มีรายงานสินทรัพย์ใหม่</strong><p class="muted">A-2002 Rolex Submariner 116610LN ถูกผู้ใช้รายงานเรื่องรูปซ้ำ</p></div><span class="muted">15 นาทีที่แล้ว</span></div>
+            <div class="activity" style="background:#fff6f6"><span class="dot"></span><div><strong>ข้อเสนอซื้อถูกปฏิเสธ</strong><p class="muted">OF-302 ข้อเสนอ 330,000 THB ถูกผู้ขายปฏิเสธ</p></div><span class="muted">1 ชม.ที่แล้ว</span></div>
+            <div class="activity"><span class="dot"></span><div><strong>บัญชีถูกแขวนพร้อมความเสี่ยง</strong><p class="muted">U-1002 ถูกเปลี่ยนเป็น Suspended หลังตรวจสอบ report queue</p></div><span class="muted">1 ชม. 35 นาทีที่แล้ว</span></div>
+          </section>
+        </div>
+      </section>
+
+      <section id="view-reports" class="view hidden">
+        <div class="card">
+          <div class="section-head">
+            <div><h2>Report Queue <small>แสดง 16 / 16 รายการ</small></h2></div>
+            <div class="actions"><button class="btn">☷ เปิดตัวกรอง</button><button class="btn">↻ รีเซ็ตค่าทั้งหมด</button></div>
+          </div>
+          <div class="queue-list">
+            <div class="queue-row head"><span>Report</span><span>User</span><span>Reason</span><span>Priority</span><span>Status</span><span>Waiting time</span><span>Action</span></div>
+          </div>
+        </div>
+      </section>
+
+      <section id="view-users" class="view hidden">
+        <div class="backline">
+          <button class="back" data-view="reports">‹</button>
+          <div><h1 style="margin:0;text-transform:none">บริษัท ไทยอุตสาหกรรม จำกัด <span class="pill" style="background:var(--green-soft);color:var(--green)">นิติบุคคล</span></h1><p class="muted">เลขประจำตัวผู้เสียภาษี: <strong>0105560000001</strong></p></div>
+          <div class="actions" style="margin-left:auto"><button class="btn">▱ บันทึก CRM เต็มรูปแบบ</button><button class="btn blue">+ บันทึกการขายผู้เอาเข้า</button></div>
+        </div>
+        <div class="grid profile-layout">
+          <aside>
+            <section class="card profile-card">
+              <div class="avatar-xl">U</div>
+              <h2 style="font-size:16px;margin-bottom:3px">บริษัท ไทยอุตสาหกรรม จำกัด</h2>
+              <p class="muted">cust-001</p>
+              <div class="contact-row"><i>♧</i><div><span class="muted">เบอร์โทรศัพท์</span><strong>02-123-4567</strong></div></div>
+              <div class="contact-row"><i>✉</i><div><span class="muted">อีเมล</span><strong>contact@thai-industry.co.th</strong></div></div>
+              <div class="contact-row"><i>⌖</i><div><span class="muted">ที่อยู่การจัดส่งเอกสาร</span><strong>123 ถนนวิภาวดีรังสิต แขวงจตุจักร เขตจตุจักร กรุงเทพฯ 10900</strong></div></div>
+              <div class="contact-row"><i>□</i><div><span class="muted">วันที่บันทึกเข้าสู่ระบบ</span><strong>1 พฤษภาคม 2569</strong></div></div>
+              <div class="contact-row"><i>◷</i><div><span class="muted">วันเวลาการติดต่อล่าสุด</span><strong>27 พ.ค. 2569 15:30</strong></div></div>
+            </section>
+            <section class="card pad" style="margin-top:22px">
+              <h3>ข้อมูลสรุปกรมธรรม์และการเงิน</h3>
+              <div class="grid" style="grid-template-columns:1fr 1fr">
+                <div class="card pad" style="text-align:center;box-shadow:none"><span class="muted">กรมธรรม์</span><h2>1</h2></div>
+                <div class="card pad" style="text-align:center;box-shadow:none"><span class="muted">แจ้งเคลม</span><h2>1</h2></div>
+              </div>
+              <div class="card pad" style="text-align:center;box-shadow:none;margin-top:12px"><span class="muted">ยอดเบี้ยประกันภัยรวม (บาท)</span><h2 style="color:var(--blue)">248,500</h2></div>
+            </section>
+          </aside>
+          <section>
+            <div class="tabs">
+              <button class="tab active">🔮 ประวัติ CRM & บันทึก <small>2</small></button>
+              <button class="tab">🛡 กรมธรรม์ <small>1</small></button>
+              <button class="tab">🧾 ประวัติการเคลม <small>1</small></button>
+              <button class="tab">💵 เบี้ยและใบแจ้งหนี้ <small>1</small></button>
+            </div>
+            <section class="card quick-card">
+              <h3>▢ บันทึกกิจกรรมลูกค้าด่วน</h3>
+              <p class="main-text">ช่องทางการติดต่อ:</p>
+              <div class="channel-row"><button class="channel active">☎</button><button class="channel">✉</button><button class="channel">♧</button><button class="channel">▤</button><button class="channel">□</button></div>
+              <p class="main-text">รายละเอียดกิจกรรม / บันทึกการสนทนา:</p>
+              <textarea placeholder="กรอกรายละเอียดการสนทนา ความคืบหน้า หรือข้อตกลงเพิ่มเติม..."></textarea>
+              <div style="display:flex;justify-content:flex-end;margin-top:14px"><button class="btn blue">✈ เพิ่มบันทึกกิจกรรม</button></div>
+            </section>
+            <h3>ประวัติการติดต่อและการดูแล</h3>
+            <div class="timeline">
+              <article class="timeline-card" data-icon="🏆"><strong>นัดหมายพบปะ <span class="muted">โดย อรวรรณดี สุขเจริญ</span></strong><p>เข้าพบเพื่อนำเสนอแผนประกัน TIP Factory Shield และตกลงรับแผนประกันภัย</p><span class="muted" style="position:absolute;right:18px;top:18px">27 พ.ค. 2569 21:00</span></article>
+              <article class="timeline-card" data-icon="☎"><strong>โทรศัพท์ <span class="muted">โดย อรวรรณดี สุขเจริญ</span></strong><p>โทรติดต่อแจ้งแผนประกันภัยโรงงานเบื้องต้น ลูกค้าสนใจรายละเอียดเพิ่มเติม</p><span class="muted" style="position:absolute;right:18px;top:18px">15 พ.ค. 2569 17:30</span></article>
+            </div>
+          </section>
+        </div>
+      </section>
+
+      <section id="view-assets" class="view hidden"><div class="top"><div class="title-lockup"><h1>Asset Management</h1><p class="subtitle">Sale / Show / Hide / Sold operational list</p></div></div><div class="card pad"><h2>Asset module placeholder</h2><p class="muted">ใช้สไตล์ตารางและคิวเดียวกับ dashboard/report queue</p></div></section>
+      <section id="view-content" class="view hidden"><div class="top"><div class="title-lockup"><h1>Content Management</h1><p class="subtitle">Article, guide, announcement, and content review operations</p></div></div><div class="card pad"><h2>Content module placeholder</h2><p class="muted">Uses the same operational queue layout and single Admin policy model.</p></div></section>
+      <section id="view-market" class="view hidden"><div class="top"><div class="title-lockup"><h1>Market Data</h1><p class="subtitle">Reference prices, watch market signals, and benchmark data</p></div></div><div class="card pad"><h2>Market data placeholder</h2><p class="muted">Market data actions remain governed by Admin policy, not separate BO roles.</p></div></section>
+      <section id="view-notifications" class="view hidden"><div class="top"><div class="title-lockup"><h1>Notifications</h1><p class="subtitle">Admin alerts, queue reminders, and system messages</p></div></div><div class="card pad"><h2>Notifications placeholder</h2><p class="muted">Operational notification center for the BO workspace.</p></div></section>
+      <section id="view-offers" class="view hidden"><div class="top"><div class="title-lockup"><h1>Offer / Chat</h1><p class="subtitle">Offer lifecycle, rejected status, reported chat context</p></div></div><div class="card pad"><h2>Offer module placeholder</h2></div></section>
+      <section id="view-settings" class="view hidden"><div class="top"><div class="title-lockup"><h1>Admin Settings</h1><p class="subtitle">Single Admin account type with policy-based access</p></div></div><div class="card pad"><h2>Admin Access Policy Matrix</h2><p class="muted">BO uses exactly one Admin account type. Module/action policies control access.</p></div></section>
+    </main>
+  </div>
+
+  <script>
+    const reports = [
+      ["RPU-505", "Duplicate Content", "Crown Time BKK", "U-1017 · ระงับชั่วคราว", "รูปประกาศซ้ำหลายรายการ", "มี 5 รายงานจากผู้ใช้ต่างคนและรูปซ้ำกับประกาศอื่น", ["5 ผู้รายงาน", "เกี่ยวข้องกับ asset 4 รายการ"], "urgent", "waiting", "22 ชม.", "ใกล้ครบกำหนดตรวจ"],
+      ["RPU-501", "Profile Risk", "horology.king", "U-1002 · ระงับชั่วคราว", "โปรไฟล์ผู้ขายน่าสงสัย", "ผู้รายงาน 5 คนระบุว่าข้อมูลโปรไฟล์และรูปสินค้าซ้ำกับบัญชีอื่น", ["5 ผู้รายงาน", "เกี่ยวข้องกับ 2 asset และ 1 offer chat"], "urgent", "waiting", "18 ชม.", "เหลือ 6 ชม. ก่อนครบกำหนดตรวจ"],
+      ["RPU-514", "Deletion Dependency", "Archive Collector", "U-1020 · มีคำขอลบบัญชี", "รายงานเข้ามาระหว่างรอลบบัญชี", "มีรายงานเข้าจากผู้ใช้ต่างคน ต้องตรวจว่ามี dispute หรือ offer ค้างหรือไม่", ["1 ผู้รายงาน", "เกี่ยวข้องกับ account deletion request และ offer dependency"], "medium", "reviewing", "16 ชม.", "ต้องตรวจรวมกับ deletion workflow"],
+      ["RPU-508", "Chat Conduct", "BKK Watch Exchange", "U-1022 · ระงับชั่วคราว", "ถูกรายงานซ้ำเรื่องพฤติกรรมในแชท", "มีรายงานเข้าจากผู้ใช้ 5 คนใน 7 วัน", ["5 ผู้รายงาน", "เกี่ยวข้องกับ chat 5 เคส"], "urgent", "reviewing", "14 ชม.", "กำลังตรวจ transcript"],
+      ["RPU-502", "Impersonation", "The Collector", "U-1004 · มีคำขอลบบัญชี", "แอบอ้างตัวตน / โปรไฟล์ซ้ำ", "ชื่อร้านและข้อความแนะนำตัวใกล้เคียงกับผู้ขายที่ถูกยืนยันแล้ว", ["2 ผู้รายงาน", "มีคำขอลบบัญชีที่ยังติด pending offer"], "urgent", "reviewing", "11 ชม.", "กำลังตรวจโดย Admin"],
+      ["RPU-510", "Listing Context", "Vintage Vault BKK", "U-1001 · ใช้งานปกติ", "ข้อมูลประกาศราคาสูงผิดปกติ", "มีผู้รายงาน 3 คนระบุว่าราคาประกาศสูงผิดปกติเมื่อเทียบกับรุ่นเดียวกัน", ["3 ผู้รายงาน", "เกี่ยวข้องกับ asset 2 รายการ"], "medium", "waiting", "9 ชม.", "ควรตรวจภายในวันนี้"],
+      ["RPU-503", "Offer / Chat", "watch.dealer.th", "U-1007 · ระงับชั่วคราว", "ส่งข้อเสนอหรือข้อความรบกวน", "มีรายงาน spam offer จากผู้ใช้ 5 คนในช่วง 7 วัน", ["5 ผู้รายงาน", "เกี่ยวข้องกับ offer chat 3 รายการ"], "urgent", "waiting", "6 ชม.", "ควรตรวจภายในวันนี้"],
+      ["RPU-512", "Listing Context", "Omega Club TH", "U-1009 · ใช้งานปกติ", "คำอธิบายสภาพสินค้าไม่ชัดเจน", "ผู้ใช้ขอให้ตรวจคำอธิบายและรูปสินค้าเพิ่มเติม", ["2 ผู้รายงาน"], "normal", "waiting", "4 ชม.", "รอคิวตรวจ"]
+    ];
+
+    function pill(type, label) {
+      const map = { urgent: "เร่งด่วน", medium: "ปานกลาง", normal: "ปกติ", waiting: "รอตรวจ", reviewing: "กำลังตรวจ" };
+      return `<span class="pill ${type}">${label || map[type]}</span>`;
+    }
+
+    function renderReports() {
+      const list = document.querySelector("#view-reports .queue-list");
+      list.insertAdjacentHTML("beforeend", reports.map(r => `
+        <div class="queue-row">
+          <div><div class="main-text">${r[0]}</div><div class="muted">${r[1]}</div></div>
+          <div><div class="main-text">${r[2]}</div><div class="muted">${r[3]}</div></div>
+          <div><div class="main-text">${r[4]}</div><div class="muted">${r[5]}</div><div class="chips">${r[6].map(x => `<span class="chip">${x}</span>`).join("")}</div></div>
+          <div>${pill(r[7])}</div>
+          <div>${pill(r[8])}</div>
+          <div><div class="main-text">${r[9]}</div><div class="muted">${r[10]}</div></div>
+          <div><button class="btn" data-view="users">ดูรายละเอียด</button></div>
+        </div>
+      `).join(""));
+    }
+
+    function showView(id) {
+      const nextView = document.querySelector(`#view-${id}`);
+      if (!nextView) return;
+      document.querySelectorAll(".view").forEach(v => v.classList.add("hidden"));
+      nextView.classList.remove("hidden");
+      document.querySelectorAll("[data-view]").forEach(b => b.classList.toggle("active", b.dataset.view === id));
+      window.scrollTo({ top: 0, behavior: "instant" });
+    }
+
+    document.addEventListener("click", (event) => {
+      const target = event.target.closest("[data-view]");
+      if (target) showView(target.dataset.view);
+    });
+
+    renderReports();
+  </script>
+</body>
+</html>
