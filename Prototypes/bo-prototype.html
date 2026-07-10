@@ -67,13 +67,14 @@
     }
 
     * { box-sizing: border-box; }
-    html, body { margin: 0; min-height: 100%; }
+    html, body { margin: 0; width: 100%; height: 100%; }
+    html { overflow: hidden; }
     body {
       background: var(--page);
       color: var(--ink);
       font-family: var(--font-main);
       letter-spacing: 0;
-      overflow-x: hidden;
+      overflow: hidden;
     }
     button, input, select, textarea { font: inherit; }
     button { cursor: pointer; }
@@ -85,9 +86,10 @@
     }
 
     .app {
-      min-height: 100vh;
+      height: 100vh;
       display: grid;
       grid-template-columns: 268px minmax(0, 1fr);
+      overflow: hidden;
     }
     body.logged-out .app { display: none; }
     body:not(.logged-out) .login-screen { display: none; }
@@ -511,6 +513,10 @@
 
     .main {
       min-width: 0;
+      min-height: 0;
+      height: 100vh;
+      overflow-y: auto;
+      overscroll-behavior: contain;
       padding: 22px 22px 34px;
     }
     .topbar {
@@ -608,9 +614,6 @@
       width: 3px;
       background: var(--brand);
     }
-    .stat:nth-child(2)::before { background: var(--blue); }
-    .stat:nth-child(3)::before { background: var(--green); }
-    .stat:nth-child(4)::before { background: var(--amber); }
     .stat-label { color: var(--muted); font-size: 12px; font-weight: 600; margin-bottom: 12px; }
     .stat-value { font-size: 39px; line-height: .9; margin-bottom: 8px; }
     .stat-note { color: var(--muted); font-size: 12px; line-height: 1.45; }
@@ -713,6 +716,11 @@
       padding: 3px 8px;
       font-size: 11px;
       white-space: nowrap;
+    }
+    button.chip:hover {
+      border-color: #b9c9dd;
+      color: var(--active);
+      background: #eef5ff;
     }
 
     .detail {
@@ -945,12 +953,20 @@
     }
 
     @media (max-width: 1180px) {
-      .app { grid-template-columns: 1fr; }
+      .app {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto minmax(0, 1fr);
+      }
       .login-screen { grid-template-columns: 1fr; }
       .login-visual { min-height: 220px; }
-      .sidebar { position: static; height: auto; }
+      .sidebar {
+        position: relative;
+        height: min(42vh, 360px);
+        min-height: 230px;
+      }
       .nav { grid-template-columns: repeat(2, minmax(0, 1fr)); }
       .nav-section, .admin-box, .logout-box { grid-column: 1 / -1; }
+      .main { height: auto; }
       .layout { grid-template-columns: 1fr; }
       .detail { position: static; }
       .summary-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
@@ -1159,6 +1175,11 @@
       return parents;
     }, {});
 
+    function scrollMainToTop() {
+      const main = document.querySelector(".main");
+      if (main) main.scrollTo({ top: 0, behavior: "instant" });
+    }
+
     const moduleData = {
       dashboard: {
         title: "Dashboard",
@@ -1249,14 +1270,18 @@
     const dashboardData = {
       lastUpdated: "10 Jul 2026, 15:20 GMT+7",
       metrics: [
-        { label: "New Users", value: "128", trend: "วันนี้เพิ่มขึ้น 8.2% เทียบกับเมื่อวาน", chips: ["วันนี้ 128", "สัปดาห์นี้ 642", "เดือนนี้ 2,840"], module: "users", icon: "users" },
-        { label: "DAU / MAU", value: "8.4K / 38.9K", trend: "DAU เฉลี่ย 7 วันเพิ่มขึ้น 4.1% เทียบกับ 7 วันก่อน", chips: ["DAU 8,420", "MAU 38,900"], module: "reports", icon: "reports" },
-        { label: "New Assets", value: "94", trend: "วันนี้เพิ่มขึ้น 340 รายการเทียบกับเมื่อวาน", chips: ["Sale 64", "Show 17", "Hide 9", "Sold 4"], module: "assets", icon: "asset" },
-        { label: "Pending Reports", value: "31", trend: "มี 9 รายงานใกล้ครบกำหนดตรวจ", chips: ["สินทรัพย์ 22", "ผู้ใช้ 6", "คอมเมนต์ 3"], module: "assets", icon: "audit" },
-        { label: "Offer Activity", value: "184", trend: "ข้อเสนอซื้อวันนี้เพิ่มขึ้น 12.6% เทียบกับเมื่อวาน", chips: ["Made 184", "Accepted 41", "Rejected 19"], module: "offers", icon: "offer" },
-        { label: "Articles", value: "12", trend: "มี 4 บทความรอเผยแพร่", chips: ["Published 8", "Scheduled 4"], module: "content", icon: "content" },
-        { label: "Watch Alert", value: "3,218", trend: "มีการจับคู่รายการขาย 146 ครั้งวันนี้", chips: ["Active 3,218", "Triggered 146"], module: "watch-alerts", icon: "alert" },
-        { label: "Support Cases", value: "18", trend: "มี 3 เคสใกล้ครบกำหนดตอบครั้งแรก", chips: ["Open 18", "Assigned 9", "เร่งด่วน 3"], module: "support", icon: "support" }
+        { label: "New Users", value: "128", trend: "วันนี้เพิ่มขึ้น 8.2% เทียบกับเมื่อวาน", chips: ["วันนี้ 128", "สัปดาห์นี้ 642", "เดือนนี้ 2,840"], module: "users", sub: "User List", icon: "users" },
+        { label: "Active Users Today", value: "8.4K", trend: "ผู้ใช้งานรายวันเฉลี่ย 7 วันเพิ่มขึ้น 4.1% เทียบกับ 7 วันก่อน", chips: ["Today 8,420"], module: "users", sub: "User List", icon: "users" },
+        { label: "New Assets", value: "94", trend: "วันนี้เพิ่มขึ้น 340 รายการเทียบกับเมื่อวาน", chips: ["Sale 64", "Show 17", "Hide 9", "Sold 4"], module: "assets", sub: "Asset List", icon: "asset" },
+        { label: "Reported Items", value: "31", trend: "มี 9 รายงานใกล้ครบกำหนดตรวจ", chips: [
+          { label: "สินทรัพย์ 22", module: "assets", sub: "Reported Assets" },
+          { label: "ผู้ใช้ 6", module: "users", sub: "Reports" },
+          { label: "คอมเมนต์ 3", module: "social", sub: "Reported Social" }
+        ], icon: "audit" },
+        { label: "Offer Activity", value: "184", trend: "ข้อเสนอซื้อวันนี้เพิ่มขึ้น 12.6% เทียบกับเมื่อวาน", chips: ["Made 184", "Accepted 41", "Rejected 19"], module: "offers", sub: "Offer Queue", icon: "offer" },
+        { label: "Articles", value: "12", trend: "มี 4 บทความรอเผยแพร่", chips: ["Published 8", "Scheduled 4"], module: "content", sub: "Articles", icon: "content" },
+        { label: "Watch Alert", value: "3,218", trend: "มีการจับคู่รายการขาย 146 ครั้งวันนี้", chips: ["Active 3,218", "Triggered 146"], module: "watch-alerts", sub: "Alert Criteria", icon: "alert" },
+        { label: "Support Cases", value: "18", trend: "มี 3 เคสใกล้ครบกำหนดตอบครั้งแรก", chips: ["Open 18", "Assigned 9", "เร่งด่วน 3"], module: "support", sub: "Tickets", icon: "support" }
       ],
       queues: [
         { title: "รายงานสินทรัพย์", count: 22, priority: "high", detail: "รายการเก่าสุดรอตรวจ 22 ชม. / เหตุผลหลัก: รูปซ้ำและข้อมูลประกาศซ้ำ / ควรตรวจวันนี้", chips: ["ใกล้ครบกำหนด 6", "ผู้ใช้กระทบสูง"], module: "assets" },
@@ -1393,6 +1418,10 @@
 
     function renderDashboard() {
       activeRow = null;
+      const renderMetricChip = chip => {
+        if (typeof chip === "string") return `<span class="chip">${chip}</span>`;
+        return `<button class="chip" type="button" data-module-jump="${chip.module}" data-sub-jump="${chip.sub || ""}">${chip.label}</button>`;
+      };
       document.querySelector("#crumb").textContent = "การดำเนินงาน / Dashboard";
       document.querySelector("#page-title").textContent = "Dashboard";
       document.querySelector("#page-meta").textContent = `Last updated: ${dashboardData.lastUpdated}`;
@@ -1401,7 +1430,7 @@
       document.querySelector("#primary-action").textContent = "เปิด Reports";
       document.querySelector(".filters").innerHTML = "";
       document.querySelector("#summary-grid").innerHTML = dashboardData.metrics.map(metric => `
-        <article class="stat" data-jump="${metric.module}">
+        <article class="stat"${metric.module ? ` data-jump="${metric.module}" data-sub-jump="${metric.sub || ""}"` : ""}>
           <div class="stat-top">
             <div>
               <div class="stat-label">${metric.label}</div>
@@ -1410,7 +1439,7 @@
             <span class="stat-icon">${iconSvg[metric.icon]}</span>
           </div>
           <div class="stat-note">${metric.trend}</div>
-          <div class="chips">${metric.chips.map(chip => `<span class="chip">${chip}</span>`).join("")}</div>
+          <div class="chips">${metric.chips.map(renderMetricChip).join("")}</div>
         </article>
       `).join("");
       document.querySelector("#table").innerHTML = `
@@ -1521,7 +1550,7 @@
       expandedMenus.clear();
       if (parentId !== moduleId || subLabel) expandedMenus.add(parentId);
       renderModule(moduleId, subLabel, subLabel);
-      window.scrollTo({ top: 0, behavior: "instant" });
+      scrollMainToTop();
     }
 
     function updateFilters(data) {
@@ -1655,7 +1684,7 @@
         const subLabel = navButton.dataset.sub || "";
         const displaySubLabel = navButton.dataset.module === parentId ? subLabel : "";
         renderModule(navButton.dataset.module, subLabel, displaySubLabel);
-        window.scrollTo({ top: 0, behavior: "instant" });
+        scrollMainToTop();
         return;
       }
       const rowButton = event.target.closest("[data-row-action], .row[data-row]");
@@ -1819,7 +1848,7 @@
       showAuthError("");
       setAuthState("");
       renderModule(activeModule);
-      window.scrollTo({ top: 0, behavior: "instant" });
+      scrollMainToTop();
     }
 
     function verifyOtp() {
@@ -1881,7 +1910,7 @@
       document.body.classList.add("logged-out");
       showLoginForm();
       document.querySelector("#login-email").focus();
-      window.scrollTo({ top: 0, behavior: "instant" });
+      scrollMainToTop();
     });
     document.querySelector("#login-form").addEventListener("submit", event => {
       event.preventDefault();
