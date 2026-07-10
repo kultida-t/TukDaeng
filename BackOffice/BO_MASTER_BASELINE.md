@@ -41,7 +41,7 @@ Phase 1 คือ BO foundation ขั้นต่ำที่จำเป็น
 | Module | Phase 1 Scope |
 | --- | --- |
 | Global BO Rules | Responsive layout, admin access control, shared patterns, status, audit, privacy, FO sync |
-| Auth / Admin Accounts | Email/password login, mandatory 2FA for Admin, session timeout, failed login lockout |
+| Auth / Admin Accounts | Email/password login, mandatory Email OTP for Admin, session timeout, failed login lockout |
 | Admin Permission | Module visibility และ action-level permission enforcement |
 | Dashboard | Key metrics, pending queues, recent activity, date range |
 | User Management | User list, filters, profile view, login history, suspend/ban, reset password, soft delete, CSV export |
@@ -104,7 +104,7 @@ Phase 1 คือ BO foundation ขั้นต่ำที่จำเป็น
 | --- | --- |
 | Platform | Responsive web app รองรับ desktop, tablet และ mobile-width browsers |
 | Language | ภาษาไทยเป็นหลัก ใช้ English technical term ได้เมื่อจำเป็น |
-| Auth | JWT + refresh token หรือ secure session model ที่เทียบเท่า; 2FA via TOTP สำหรับ admin access สำคัญ |
+| Auth | JWT + refresh token หรือ secure session model ที่เทียบเท่า; mandatory Email OTP สำหรับ BO Admin login |
 | Security | HTTPS, admin access control, IP whitelist option สำหรับ production, audit log retention อย่างน้อย 1 ปี |
 | Performance | Dashboard target load ภายใน 3 วินาทีหลัง auth; table ขนาดใหญ่ต้อง server-side paginate |
 | Accessibility | Label ชัดเจน keyboard reachable controls และ visible focus states |

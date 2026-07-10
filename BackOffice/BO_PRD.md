@@ -90,8 +90,8 @@ FO users have a single account type: `User`. BO must support activity from the s
 ### Requirements
 
 - Admin login ด้วย Email/Password เท่านั้น
-- Admin must use mandatory 2FA
-- admin access อื่นแนะนำให้ใช้ 2FA
+- Admin must pass mandatory Email OTP verification after email/password
+- BO V1 does not use an external verification app for Admin login
 - Session หมดอายุเมื่อ idle 8 ชั่วโมง หรือ max 24 ชั่วโมง
 - Failed login เกิน 5 ครั้ง lock account 15 นาที
 - Production รองรับ IP whitelist
@@ -480,7 +480,7 @@ Reports ที่ต้องมี:
 
 - HTTPS ทุก endpoint
 - JWT + Refresh Token
-- 2FA สำหรับ admin access สำคัญ
+- Email OTP verification สำหรับ BO Admin login
 - policy-based access control
 - Sensitive data masking
 - Audit log retention อย่างน้อย 1 ปี

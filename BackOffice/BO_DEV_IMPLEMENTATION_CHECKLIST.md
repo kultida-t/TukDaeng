@@ -18,12 +18,12 @@
 ## 1. Auth And Permission
 
 - [ ] Admin login รองรับ email/password เท่านั้น
-- [ ] Admin must use mandatory 2FA
+- [ ] Admin must pass mandatory Email OTP verification after email/password
 - [ ] Failed login ครบ 5 ครั้ง lock account 15 นาที
 - [ ] Idle session หมดอายุหลัง 8 ชั่วโมง และ max session หลัง 24 ชั่วโมง
 - [ ] Permission guard มีทั้ง route level และ action/API level
 - [ ] BO reset password flow แยกจาก FO user reset password
-- [ ] Login, logout, failed login, 2FA setup/change และ lockout events ต้อง audit-log
+- [ ] Login, logout, failed login, Email OTP sent/verified/failed/resend และ lockout events ต้อง audit-log
 
 ## 2. Dashboard
 
@@ -260,12 +260,12 @@
 
 ## 16. Admin Settings
 
-- [ ] Admin ทุก admin access ต้องเข้าดู own profile/settings และเปลี่ยน password/ตั้งค่า 2FA ตาม rule ได้
-- [ ] Admin ต้องจัดการ admin account lifecycle: invite, change admin access policy, suspend/reactivate, unlock, reset 2FA, archive
+- [ ] Admin ทุก admin access ต้องเข้าดู own profile/settings และเปลี่ยน password ตาม rule ได้
+- [ ] Admin ต้องจัดการ admin account lifecycle: invite, change admin access policy, suspend/reactivate, unlock, archive
 - [ ] ระบบต้องป้องกันการ suspend/archive/change admin access policy ของ Admin active คนสุดท้าย
 - [ ] Admin Access Matrix ต้องแสดงสิทธิ์ตาม module/action และ enforce ทั้ง UI/API level
 - [ ] Permission change ต้องมี confirmation, reason, before/after diff และ audit log
-- [ ] Security policy ต้องสอดคล้องกับ Auth baseline: email/password only, mandatory 2FA สำหรับ Admin, idle 8h, max 24h, failed login 5 ครั้ง, lockout 15 นาที
+- [ ] Security policy ต้องสอดคล้องกับ Auth baseline: email/password only, mandatory Email OTP สำหรับ Admin, idle 8h, max 24h, failed login 5 ครั้ง, lockout 15 นาที
 - [ ] Retention settings ต้องไม่อนุญาต manual delete audit logs จาก UI ปกติ
 - [ ] Export policy ต้องรองรับ CSV/Excel, background job, expiry, sensitive export reason และ audit
 - [ ] Feature flags ต้องแสดง FO/BO impact ก่อนบันทึก และ audit ทุกครั้ง
