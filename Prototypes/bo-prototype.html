@@ -445,7 +445,8 @@
       display: none;
       padding: 4px 26px 10px 42px;
     }
-    .submenu.open { display: grid; gap: 4px; }
+    .submenu.open,
+    .nav-item.expanded + .submenu { display: grid; gap: 4px; }
     .submenu button {
       border: 0;
       background: transparent;
@@ -692,6 +693,35 @@
       color: var(--ink);
       font-size: 13px;
     }
+    .field:focus,
+    .field:focus-visible {
+      outline: 0;
+      border-color: #b8c6d8;
+      box-shadow: 0 0 0 3px rgba(118, 135, 158, .10);
+    }
+    select.field {
+      appearance: none;
+      -webkit-appearance: none;
+      padding-right: 40px;
+      background-color: #fff;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M5.5 7.5 10 12l4.5-4.5' fill='none' stroke='%233b4d66' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 14px center;
+      background-size: 14px 14px;
+    }
+    select.field::-ms-expand {
+      display: none;
+    }
+    select.field option {
+      color: #061426;
+      background: #fff;
+      font-weight: 400;
+    }
+    select.field option:hover,
+    select.field option:checked {
+      color: #061426;
+      background: #f2f5f9;
+    }
     .search { min-width: 240px; flex: 1; }
 
     .table { display: grid; }
@@ -873,6 +903,289 @@
       color: #714600;
       font-size: 12px;
       line-height: 1.55;
+    }
+
+    body.user-management-mode .layout {
+      grid-template-columns: minmax(0, 1fr) minmax(360px, 38%);
+    }
+    body.user-management-mode .layout > .panel,
+    body.user-management-mode .detail,
+    body.user-management-mode .mini-card {
+      border-color: #d7e2f0;
+      box-shadow: none;
+    }
+    body.user-management-mode #primary-action {
+      display: none;
+    }
+    body.user-list-mode .layout,
+    body.user-detail-mode .layout {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    body.user-list-mode .detail,
+    body.user-detail-mode .detail {
+      display: none;
+    }
+    .user-filter-bar {
+      display: grid;
+      grid-template-columns: minmax(240px, 1.35fr) repeat(4, minmax(126px, .68fr)) 42px;
+      gap: 8px;
+      width: 100%;
+    }
+    .user-filter-bar .field {
+      min-height: 48px;
+      border-color: #cfdbea;
+      border-radius: 7px;
+      padding: 10px 14px;
+      color: #061426;
+      font-size: 13px;
+      font-weight: 400;
+    }
+    .user-filter-bar input.field {
+      font-weight: 400;
+    }
+    .user-filter-bar select.field {
+      padding-right: 42px;
+      background-position: right 14px center;
+    }
+    .user-filter-bar .field:hover {
+      border-color: #c3cfdd;
+      background-color: #fbfcfe;
+    }
+    .user-filter-bar .field:focus,
+    .user-filter-bar .field:focus-visible {
+      border-color: #b8c6d8;
+      box-shadow: 0 0 0 3px rgba(118, 135, 158, .10);
+    }
+    .user-filter-bar.report-mode {
+      grid-template-columns: minmax(220px, 1.3fr) repeat(3, minmax(132px, .7fr)) 42px;
+    }
+    .user-table {
+      display: grid;
+    }
+    .user-row {
+      display: grid;
+      grid-template-columns: minmax(190px, 1.2fr) minmax(96px, .52fr) minmax(124px, .62fr) minmax(118px, .62fr) minmax(118px, .62fr) minmax(130px, .68fr) minmax(136px, .72fr);
+      gap: 14px;
+      align-items: center;
+      min-height: 82px;
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--line);
+      background: #fff;
+    }
+    .user-row.report-row {
+      grid-template-columns: minmax(220px, 1.35fr) minmax(190px, 1fr) minmax(108px, .55fr) minmax(112px, .55fr) minmax(104px, .55fr) minmax(118px, .62fr);
+    }
+    .user-row:last-child { border-bottom: 0; }
+    .user-row.head {
+      min-height: 44px;
+      background: #f1f5fb;
+      color: #485b75;
+      font-size: 12px;
+      font-weight: 700;
+      padding-top: 12px;
+      padding-bottom: 12px;
+    }
+    .user-row.head > div:last-child {
+      display: flex;
+      justify-content: flex-end;
+      text-align: right;
+    }
+    .user-row:not(.head):hover { background: #f8fbff; }
+    .user-identity {
+      display: grid;
+      grid-template-columns: 38px minmax(0, 1fr);
+      gap: 10px;
+      align-items: center;
+      min-width: 0;
+    }
+    .user-avatar {
+      width: 38px;
+      height: 38px;
+      border-radius: 8px;
+      display: grid;
+      place-items: center;
+      background: #e8eef7;
+      color: #1a365f;
+      font-weight: 800;
+      font-size: 13px;
+    }
+    .user-row-actions {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      justify-content: flex-end;
+      min-width: 0;
+      white-space: nowrap;
+    }
+    .user-row .main-text {
+      color: #061426;
+      font-size: 14px;
+      font-weight: 800;
+    }
+    .user-table .user-row:not(.head) > div:not(:first-child) .main-text {
+      font-weight: 400;
+    }
+    .user-row .muted {
+      color: #516683;
+      font-size: 12px;
+    }
+    .user-row .panel-action {
+      min-height: 38px;
+      padding: 8px 13px;
+      border: 1px solid var(--line-strong);
+      border-radius: 7px;
+      background: #fff;
+      color: #061426;
+      font-size: 13px;
+      font-weight: 400;
+    }
+    .user-row .panel-action:hover {
+      border-color: #9eb0c8;
+      background: #f8fbff;
+    }
+    .row-menu {
+      position: relative;
+    }
+    .row-menu summary {
+      width: 32px;
+      height: 32px;
+      border: 1px solid var(--line-strong);
+      border-radius: 7px;
+      display: grid;
+      place-items: center;
+      background: #fff;
+      color: var(--ink);
+      cursor: pointer;
+      list-style: none;
+      font-weight: 800;
+      line-height: 1;
+    }
+    .row-menu summary::-webkit-details-marker { display: none; }
+    .row-menu[open] summary {
+      border-color: #9eb0c8;
+      background: #f8fbff;
+    }
+    .row-menu-list {
+      position: absolute;
+      right: 0;
+      top: 38px;
+      z-index: 10;
+      min-width: 224px;
+      padding: 6px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fff;
+      box-shadow: var(--shadow);
+      display: grid;
+      gap: 4px;
+    }
+    .row-menu-list button {
+      min-height: 34px;
+      border: 0;
+      border-radius: 6px;
+      background: transparent;
+      color: var(--ink);
+      padding: 7px 9px;
+      text-align: left;
+      font-size: 12px;
+      font-weight: 700;
+    }
+    .row-menu-list button:hover:not(:disabled) {
+      background: #f1f5fb;
+    }
+    .row-menu-list button:disabled {
+      cursor: not-allowed;
+      color: #93a3b8;
+      background: #f8fafc;
+    }
+    .detail-section {
+      padding: 14px 0;
+      border-top: 1px solid var(--line);
+    }
+    .detail-section:first-of-type { border-top: 0; padding-top: 0; }
+    .detail-section h4 {
+      margin: 0 0 10px;
+      color: #071b36;
+      font-size: 13px;
+      font-weight: 800;
+    }
+    .detail-grid {
+      display: grid;
+      gap: 8px;
+    }
+    .detail-grid.two {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    .detail-tile {
+      min-width: 0;
+      border: 1px solid #e1e9f3;
+      border-radius: 8px;
+      background: #f8fbff;
+      padding: 10px;
+      font-size: 12px;
+      line-height: 1.45;
+    }
+    .detail-tile span {
+      display: block;
+      margin-bottom: 4px;
+      color: var(--muted);
+      font-weight: 700;
+    }
+    .warning-note {
+      margin-top: 10px;
+      padding: 10px 11px;
+      border: 1px solid #ffc8ce;
+      border-radius: 8px;
+      background: #fff1f2;
+      color: #9f1722;
+      font-size: 12px;
+      line-height: 1.5;
+    }
+    .footer-range {
+      min-height: 46px;
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: center;
+      padding: 11px 16px;
+      border-top: 1px solid var(--line);
+      color: var(--muted);
+      font-size: 12px;
+    }
+    .pager {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+    .pager .btn {
+      min-height: 30px;
+      padding: 5px 9px;
+      font-size: 12px;
+    }
+    .pager .btn.active {
+      border-color: var(--active);
+      background: var(--active);
+      color: #fff;
+    }
+    .user-detail-page {
+      padding: 18px;
+    }
+    .user-detail-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 14px;
+      margin-bottom: 14px;
+    }
+    .user-detail-head h2 {
+      margin: 0 0 5px;
+      font-size: 32px;
+      line-height: 1;
+    }
+    body.user-management-mode .cards {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
     }
 
     .cards {
@@ -1339,9 +1652,25 @@
       .main { height: 100vh; }
       .layout { grid-template-columns: 1fr; }
       body.dashboard-mode .layout { grid-template-columns: 1fr; }
+      body.user-management-mode .layout { grid-template-columns: 1fr; }
       .detail { position: static; }
       .summary-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
       body.dashboard-mode .cards { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .user-filter-bar,
+      .user-filter-bar.report-mode {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+      .user-filter-bar .search {
+        grid-column: 1 / -1;
+      }
+      .user-row {
+        grid-template-columns: minmax(190px, 1.2fr) minmax(96px, .52fr) minmax(124px, .62fr) minmax(118px, .62fr) minmax(118px, .62fr) minmax(130px, .68fr) minmax(112px, .64fr);
+        overflow-x: auto;
+      }
+      .user-row.report-row {
+        grid-template-columns: minmax(220px, 1.3fr) minmax(110px, .6fr) minmax(122px, .7fr) minmax(110px, .6fr) minmax(92px, .45fr) minmax(112px, .6fr);
+        overflow-x: auto;
+      }
     }
     @media (max-width: 760px) {
       .main { padding: 16px 10px 26px; }
@@ -1361,6 +1690,7 @@
       }
       .tools { justify-content: flex-start; }
       .summary-grid, .cards, .nav { grid-template-columns: 1fr; }
+      body.user-management-mode .cards { grid-template-columns: 1fr; }
       .panel-head {
         align-items: flex-start;
         flex-direction: column;
@@ -1387,6 +1717,30 @@
       .activity-time { margin-top: 4px; }
       .row { grid-template-columns: 1fr; gap: 7px; }
       .row.head { display: none; }
+      .user-filter-bar,
+      .user-filter-bar.report-mode {
+        grid-template-columns: 1fr;
+      }
+      .user-filter-bar .field:not(.search) {
+        grid-column: auto;
+      }
+      .user-row,
+      .user-row.report-row {
+        grid-template-columns: 1fr;
+        gap: 8px;
+        align-items: start;
+      }
+      .user-row.head { display: none; }
+      .user-row-actions {
+        justify-content: space-between;
+      }
+      .row-menu-list {
+        left: 0;
+        right: auto;
+      }
+      .detail-grid.two {
+        grid-template-columns: 1fr;
+      }
       .search { min-width: 100%; }
     }
   </style>
@@ -1560,7 +1914,7 @@
     const navGroups = [
       { section: "การดำเนินงาน", items: [
         { id: "dashboard", label: "Dashboard", icon: "dashboard" },
-        { id: "users", label: "User Management", icon: "users", subs: ["User List", "Reports", "Suspension"] },
+        { id: "users", label: "User Management", icon: "users", subs: ["User List", "Reported Users"] },
         { id: "assets", label: "Asset Management", icon: "asset", subs: ["Asset List", "Reported Assets", "Status Review"] },
         { id: "content", label: "Content Management", icon: "content", subs: ["Articles", "Categories", "Banners", "Reported Board", { label: "Directory", module: "directory" }] },
         { id: "market", label: "Market Data", icon: "market", subs: ["Brands", "Models", "Price Index", "Import"] },
@@ -1697,6 +2051,36 @@
       ])
     };
 
+    const userManagementData = {
+      stats: [
+        ["Active Users", "12,847", "Google 42% · Email 39% · Apple 19%"],
+        ["Suspended", "17", "ต้องมี reason และ audit"],
+        ["Deletion Requested", "8", "ตรวจ dependency ใน Account Deletion"],
+        ["Reported", "31", "User List แสดง badge; queue อยู่ใน Reported Users"]
+      ],
+      users: [
+        { id: "U-1002", displayName: "horology.king", username: "@horology.king", email: "ho***@gmail.com", auth: "Google", status: "Suspended", joined: "03 Jul 2026", joinedBucket: "7d", joinedRank: 20260703, lastActive: "10 Jul 2026 18:10", lastActiveBucket: "24h", lastActiveRank: 202607101810, assets: 2, assetBucket: "1-5", reports: 5, verification: "Google verified", contact: ["Line: ho***"], support: "SUP-177", latest: "Report follow-up", reportState: "5 reporters · status action completed", statusLabel: "Login blocked", allowed: ["View detail", "Audit summary"], blocked: ["Reset password", "Deletion from list"], foImpact: "Suspended blocks FO login/session until restored.", actionNote: "Status action must require reason, FO impact preview, and audit log." },
+        { id: "U-1017", displayName: "Crown Time BKK", username: "@crowntimebkk", email: "cr***@tukdaeng.example", auth: "Email", status: "Active", joined: "29 Jun 2026", joinedBucket: "30d", joinedRank: 20260629, lastActive: "10 Jul 2026 20:44", lastActiveBucket: "24h", lastActiveRank: 202607102044, assets: 18, assetBucket: "11+", reports: 4, verification: "Email verified", contact: ["Phone: 08*-***-2210", "Line: cr***"], support: "SUP-177", latest: "Duplicate asset context", reportState: "Open report context; not suspended", statusLabel: "Normal FO access", allowed: ["Reset password", "Suspend", "Ban"], blocked: ["Archive from list"], foImpact: "Active account keeps normal FO access until Admin confirms a status action.", actionNote: "Reset password is available because auth method is Email." },
+        { id: "U-1042", displayName: "Nattapol P.", username: "@nattapol", email: "na***@privaterelay.appleid.com", auth: "Apple", status: "Active", joined: "08 Jul 2026", joinedBucket: "7d", joinedRank: 20260708, lastActive: "10 Jul 2026 16:02", lastActiveBucket: "24h", lastActiveRank: 202607101602, assets: 0, assetBucket: "0", reports: 0, verification: "Apple SSO", contact: ["Phone: not provided"], support: "SUP-188", latest: "Proof of payment visibility", reportState: "No user reports", statusLabel: "Normal FO access", allowed: ["Suspend", "Ban"], blocked: ["Reset password"], foImpact: "Apple SSO password reset must be handled outside BO.", actionNote: "Sensitive contact rows display only when data exists." },
+        { id: "U-1055", displayName: "Vintage Vault BKK", username: "@vintagevault", email: "vv***@gmail.com", auth: "Google", status: "Pending Verification", joined: "10 Jul 2026", joinedBucket: "7d", joinedRank: 20260710, lastActive: "10 Jul 2026 11:20", lastActiveBucket: "24h", lastActiveRank: 202607101120, assets: 3, assetBucket: "1-5", reports: 1, verification: "Email pending", contact: ["Line: vv***"], support: "None", latest: "Signup review", reportState: "1 report · monitor only", statusLabel: "Limited until verification", allowed: ["View detail", "Suspend"], blocked: ["Reset password", "Archive from list"], foImpact: "Pending Verification may limit FO actions depending on auth implementation.", actionNote: "Admin should review auth log before account action." },
+        { id: "U-1088", displayName: "Omega Club TH", username: "@omegaclubth", email: "om***@mail.com", auth: "Email", status: "Active", joined: "22 Jun 2026", joinedBucket: "30d", joinedRank: 20260622, lastActive: "09 Jul 2026 22:48", lastActiveBucket: "7d", lastActiveRank: 202607092248, assets: 9, assetBucket: "6-10", reports: 3, verification: "Email verified", contact: ["Phone: 09*-***-8820"], support: "DSP-014", latest: "Condition mismatch dispute", reportState: "3 reports · priority review", statusLabel: "Normal FO access", allowed: ["Reset password", "Suspend", "Ban"], blocked: ["Deletion from list"], foImpact: "Report count raises review priority but does not change FO access automatically.", actionNote: "3 reports alone must not show as suspended without evidence." },
+        { id: "U-1104", displayName: "Archive Collector", username: "@archivecollector", email: "ar***@mail.com", auth: "Email", status: "Deletion Requested", joined: "15 May 2026", joinedBucket: "older", joinedRank: 20260515, lastActive: "08 Jul 2026 09:15", lastActiveBucket: "7d", lastActiveRank: 202607080915, assets: 6, assetBucket: "6-10", reports: 1, verification: "Email verified", contact: ["Line: ar***"], support: "DEL-033", latest: "Deletion dependency check", reportState: "Linked report context pending", statusLabel: "Deletion workflow", allowed: ["Open Account Deletion", "View detail"], blocked: ["Archive from User List", "Reset after deletion starts"], foImpact: "Deletion handling belongs in Account Deletion module after dependency review.", actionNote: "User List must not directly delete/archive this account." },
+        { id: "U-1120", displayName: "The Collector", username: "@thecollector", email: "tc***@icloud.com", auth: "Apple", status: "Banned", joined: "02 Apr 2026", joinedBucket: "older", joinedRank: 20260402, lastActive: "24 Jun 2026 13:12", lastActiveBucket: "30d", lastActiveRank: 202606241312, assets: 11, assetBucket: "11+", reports: 8, verification: "Apple SSO", contact: ["Phone: 08*-***-0090"], support: "None", latest: "Abuse confirmed", reportState: "Resolved with ban", statusLabel: "Login blocked", allowed: ["Unban user", "Audit summary"], blocked: ["Reset password"], foImpact: "Banned blocks login and new FO activity until Admin unbans.", actionNote: "Unban requires confirmation, reason, before/after audit." },
+        { id: "U-1144", displayName: "Seiko Corner", username: "@seikocorner", email: "se***@watchmail.com", auth: "Email", status: "Active", joined: "01 Jul 2026", joinedBucket: "30d", joinedRank: 20260701, lastActive: "07 Jul 2026 18:30", lastActiveBucket: "7d", lastActiveRank: 202607071830, assets: 5, assetBucket: "1-5", reports: 0, verification: "Email verified", contact: ["Line: se***"], support: "None", latest: "No support context", reportState: "No user reports", statusLabel: "Normal FO access", allowed: ["Reset password", "Suspend", "Ban"], blocked: ["Archive from list"], foImpact: "Active account has normal Feed/Search/Profile visibility.", actionNote: "Sensitive fields remain masked in list and detail." },
+        { id: "U-1161", displayName: "Daily Watch Hunter", username: "@dailyhunter", email: "da***@gmail.com", auth: "Google", status: "Active", joined: "09 Jul 2026", joinedBucket: "7d", joinedRank: 20260709, lastActive: "09 Jul 2026 08:04", lastActiveBucket: "7d", lastActiveRank: 202607090804, assets: 1, assetBucket: "1-5", reports: 0, verification: "Google verified", contact: [], support: "None", latest: "New account", reportState: "No user reports", statusLabel: "Normal FO access", allowed: ["Suspend", "Ban"], blocked: ["Reset password"], foImpact: "Google account cannot receive BO password reset link.", actionNote: "Do not render empty contact rows in detail." },
+        { id: "U-1186", displayName: "Rolex Rama9", username: "@rolexrama9", email: "rr***@mail.com", auth: "Email", status: "Suspended", joined: "18 Jun 2026", joinedBucket: "30d", joinedRank: 20260618, lastActive: "05 Jul 2026 21:10", lastActiveBucket: "7d", lastActiveRank: 202607052110, assets: 14, assetBucket: "11+", reports: 6, verification: "Email verified", contact: ["Phone: 08*-***-4444"], support: "CHT-090", latest: "Reported chat context", reportState: "6 reports · suspended after evidence", statusLabel: "Login blocked", allowed: ["Restore", "Ban", "Audit summary"], blocked: ["Reset while suspended"], foImpact: "Session revoked; public surfaces follow account policy.", actionNote: "Suspension restore must show status before action and after confirmation." },
+        { id: "U-1207", displayName: "Minimal Dial", username: "@minimaldial", email: "mi***@mail.com", auth: "Email", status: "Pending Verification", joined: "11 Jun 2026", joinedBucket: "30d", joinedRank: 20260611, lastActive: "30 Jun 2026 10:25", lastActiveBucket: "30d", lastActiveRank: 202606301025, assets: 0, assetBucket: "0", reports: 0, verification: "Email OTP pending", contact: [], support: "SUP-182", latest: "Cannot reset password question", reportState: "No user reports", statusLabel: "Verification pending", allowed: ["Resend verification context", "Suspend"], blocked: ["Reset password until verified"], foImpact: "Verification state should be reviewed before support action.", actionNote: "Use auth/support context before sending account instructions." },
+        { id: "U-1222", displayName: "old.user", username: "@olduser", email: "ol***@mail.com", auth: "Email", status: "Deleted / Archived", joined: "17 Jan 2026", joinedBucket: "older", joinedRank: 20260117, lastActive: "15 May 2026 07:44", lastActiveBucket: "older", lastActiveRank: 202605150744, assets: 0, assetBucket: "0", reports: 0, verification: "Archived", contact: [], support: "DEL-020", latest: "Anonymized", reportState: "Closed", statusLabel: "Archived", allowed: ["View archived summary"], blocked: ["Reset password", "Status mutation"], foImpact: "Archived account login blocked; profile/assets hidden or anonymized.", actionNote: "Archive details remain sensitive and audited." }
+      ],
+      reports: [
+        { id: "RPU-505", category: "Profile", user: "horology.king", userId: "U-1002", accountStatus: "Suspended", reason: "Duplicate profile and seller behavior", reporters: 5, priority: "สูง", status: "In Review", reference: "Profile ID PRF-1002", source: "User Detail", waiting: "22 ชม.", evidence: ["Similar avatar", "Repeated seller bio"], recommendation: "Review source references before additional account action.", actionHistory: "Started review by Somchai Admin; no new status change yet." },
+        { id: "RPU-518", category: "Offer / Chat", user: "Omega Club TH", userId: "U-1088", accountStatus: "Active", reason: "Condition mismatch dispute", reporters: 3, priority: "สูง", status: "Open", reference: "Offer OFR-501", source: "Offer / Chat", waiting: "18 ชม.", evidence: ["Chat transcript", "Offer dispute"], recommendation: "Open offer/chat context before closing report.", actionHistory: "New report; waiting for source review." },
+        { id: "RPU-522", category: "Profile", user: "Vintage Vault BKK", userId: "U-1055", accountStatus: "Pending Verification", reason: "New account impersonation concern", reporters: 1, priority: "กลาง", status: "Open", reference: "Signup AUTH-772", source: "Authentication", waiting: "6 ชม.", evidence: ["Reporter note"], recommendation: "Check auth log and public profile.", actionHistory: "No admin action yet." },
+        { id: "RPU-530", category: "Account Deletion", user: "Archive Collector", userId: "U-1104", accountStatus: "Deletion Requested", reason: "Deletion request with unresolved report", reporters: 1, priority: "กลาง", status: "In Review", reference: "DEL-033", source: "Account Deletion", waiting: "10 ชม.", evidence: ["Pending offer", "Linked profile report"], recommendation: "Resolve source reference before archive/anonymize.", actionHistory: "Dependency check opened; deletion not approved." },
+        { id: "RPU-541", category: "Chat", user: "Rolex Rama9", userId: "U-1186", accountStatus: "Suspended", reason: "Abusive chat after repeated reports", reporters: 6, priority: "สูง", status: "Cleared", reference: "CHT-090", source: "Offer / Chat", waiting: "0 ชม.", evidence: ["Chat transcript"], recommendation: "Account action already applied; keep audit trail.", actionHistory: "Report cleared after suspension action and audit note." }
+      ]
+    };
+
     const dashboardData = {
       metrics: [
         { label: "New Users", value: "128", trend: "วันนี้เพิ่มขึ้น 8.2% เทียบกับเมื่อวาน", chips: ["Today 128", "This Week 642", "This Month 2,840"], module: "users", sub: "User List", icon: "users" },
@@ -1704,7 +2088,7 @@
         { label: "New Assets", value: "94", trend: "สร้างวันนี้ 94 รายการ เทียบกับเมื่อวาน 340 รายการ", chips: ["Sale 64", "Show 17", "Hide 9", "Sold 4"], module: "assets", sub: "Asset List", icon: "asset" },
         { label: "Reported Items", value: "31", trend: "มี 9 รายงานใกล้ครบกำหนดตรวจ", chips: [
           { label: "Assets 22", module: "assets", sub: "Reported Assets" },
-          { label: "Users 6", module: "users", sub: "Reports" },
+          { label: "Users 6", module: "users", sub: "Reported Users" },
           { label: "Comments 3", module: "social", sub: "Reported Social" }
         ], icon: "audit" },
         { label: "Offer Activity", value: "184", trend: "ข้อเสนอซื้อวันนี้เพิ่มขึ้น 12.6% เทียบกับเมื่อวาน", chips: ["Made 184", "Accepted 41", "Rejected 19", "Expired 12"], module: "offers", sub: "Offer Queue", icon: "offer" },
@@ -1714,7 +2098,7 @@
       ],
       queues: [
         { title: "รายงานสินทรัพย์", count: 22, priority: "high", detail: "รายการเก่าสุดรอตรวจ 22 ชม. / เหตุผลหลัก: รูปซ้ำและข้อมูลประกาศซ้ำ / ควรตรวจวันนี้", chips: ["ใกล้ครบกำหนด 6", "ผู้ใช้กระทบสูง"], module: "assets", sub: "Reported Assets" },
-        { title: "รายงานผู้ใช้", count: 6, priority: "high", detail: "มีรายงานโปรไฟล์ซ้ำและพฤติกรรมขายซ้ำ / ควรตรวจบัญชีที่ถูก report หลายครั้งก่อน", chips: ["ใกล้ครบกำหนด 3", "ตรวจประวัติ login"], module: "users", sub: "Reports" },
+        { title: "รายงานผู้ใช้", count: 6, priority: "high", detail: "มีรายงานโปรไฟล์ซ้ำและพฤติกรรมขายซ้ำ / ควรตรวจบัญชีที่ถูก report หลายครั้งก่อน", chips: ["ใกล้ครบกำหนด 3", "ตรวจประวัติ login"], module: "users", sub: "Reported Users" },
         { title: "งานช่วยเหลือที่เปิดอยู่", count: 18, priority: "high", detail: "มี 3 เคสใกล้ครบกำหนดตอบครั้งแรก 8 ชม. / ควรตอบเคสเร่งด่วนก่อน", chips: ["Open 18", "เร่งด่วน 3"], module: "support", sub: "Tickets" },
         { title: "คำขอลบบัญชี", count: 8, priority: "medium", detail: "มี 2 คำขอที่ยังลบไม่ได้ เพราะมีข้อเสนอซื้อค้างอยู่", chips: ["Blocked 2", "Grace period 4"], module: "deletions", sub: "Requests" },
         { title: "สินทรัพย์ที่ต้องตรวจเพิ่ม", count: 14, priority: "medium", detail: "รายการถูกทำเครื่องหมายจากระบบหรือ Admin / ตรวจราคา รูป และสถานะก่อนปล่อยกลับสู่ FO", chips: ["ราคาเบี่ยง 5", "รูปซ้ำ 4"], module: "assets", sub: "Status Review" },
@@ -1798,6 +2182,8 @@
     const expandedMenus = new Set();
     let activeRow = null;
     let activeActivityFilter = "ทั้งหมด";
+    let userListPage = 1;
+    const userListPageSize = 10;
 
     function renderNav() {
       const nav = document.querySelector("#nav");
@@ -1820,13 +2206,395 @@
       `).join("");
     }
 
+    function userStatusPill(status) {
+      const map = {
+        "Active": "green",
+        "Pending Verification": "amber",
+        "Suspended": "red",
+        "Banned": "red",
+        "Deletion Requested": "purple",
+        "Deleted / Archived": "purple",
+        "Open": "red",
+        "In Review": "amber",
+        "Cleared": "green"
+      };
+      return `<span class="pill ${map[status] || "blue"}">${status}</span>`;
+    }
+
+    function renderUserManagement(subLabel = "User List") {
+      const mode = subLabel === "Report User" || subLabel === "Reported Users" ? "reports" : "list";
+      const isReports = mode === "reports";
+      const title = isReports ? "Reported Users" : "User List";
+      document.body.classList.toggle("user-list-mode", !isReports);
+      document.body.classList.remove("user-detail-mode");
+      activeRow = isReports ? userManagementData.reports[0] : userManagementData.users[0];
+      document.querySelector("#crumb").textContent = `การดำเนินงาน / User Management / ${title}`;
+      document.querySelector("#page-title").textContent = title;
+      document.querySelector("#page-meta").textContent = isReports
+        ? "Operational queue สำหรับตรวจ report ของ FO user/profile ภายใน SLA 24 ชั่วโมง"
+        : "จัดการบัญชีผู้ใช้ FO, auth method, sensitive data masking, status และ action policy";
+      document.querySelector("#panel-title").textContent = isReports ? "Reported Users Queue" : "User Accounts";
+      document.querySelector("#panel-subtitle").textContent = isReports
+        ? "ตรวจ source reference ก่อน clear report หรือเปลี่ยนสถานะบัญชี"
+        : "";
+      document.querySelector("#summary-grid").innerHTML = userManagementData.stats.map(stat => `
+        <article class="stat">
+          <div class="stat-label">${stat[0]}</div>
+          <div class="stat-value">${stat[1]}</div>
+          <div class="stat-note">${stat[2]}</div>
+        </article>
+      `).join("");
+      document.querySelector(".filters").innerHTML = isReports ? `
+        <div class="user-filter-bar report-mode">
+          <input class="field search" id="user-search" type="search" placeholder="ค้นหา report ID, user ID, display name, reason หรือ reference" />
+          <select class="field" id="report-status-filter" aria-label="Filter report status">
+            <option value="">ทุก report status</option>
+            <option value="Open">Open</option>
+            <option value="In Review">In Review</option>
+            <option value="Cleared">Cleared</option>
+          </select>
+          <select class="field" id="report-priority-filter" aria-label="Filter priority">
+            <option value="">ทุก priority</option>
+            <option value="สูง">สูง</option>
+            <option value="กลาง">กลาง</option>
+            <option value="ปกติ">ปกติ</option>
+          </select>
+          <select class="field" id="report-sort" aria-label="Sort reports">
+            <option value="oldest">รอนานสุดก่อน</option>
+            <option value="urgent">Urgent ก่อน</option>
+            <option value="reporters">จำนวน reporter</option>
+            <option value="status">สถานะ</option>
+          </select>
+          <button class="btn icon" type="button" id="user-reset" title="รีเซ็ตค่าทั้งหมด" aria-label="รีเซ็ตค่าทั้งหมด">${iconSvg.refresh}</button>
+        </div>
+      ` : `
+        <div class="user-filter-bar">
+          <input class="field search" id="user-search" type="search" placeholder="ค้นหา User ID, ชื่อ, email, phone" />
+          <select class="field" id="user-status-filter" aria-label="Filter account status">
+            <option value="">ทุกสถานะ</option>
+            <option value="Pending Verification">Pending Verification</option>
+            <option value="Active">Active</option>
+            <option value="Suspended">Suspended</option>
+            <option value="Banned">Banned</option>
+            <option value="Deletion Requested">Deletion Requested</option>
+            <option value="Deleted / Archived">Deleted / Archived</option>
+          </select>
+          <select class="field" id="user-auth-filter" aria-label="Filter auth method">
+            <option value="">ทุกวิธีเข้าสู่ระบบ</option>
+            <option value="Email">Email</option>
+            <option value="Apple">Apple</option>
+            <option value="Google">Google</option>
+          </select>
+          <select class="field" id="user-report-filter" aria-label="Filter report status">
+            <option value="">ทุกสถานะรายงาน</option>
+            <option value="reported">มีรายงาน</option>
+            <option value="none">ไม่มีรายงาน</option>
+          </select>          <select class="field" id="user-sort" aria-label="Sort users">
+            <option value="lastActive">เรียงตามใช้งานล่าสุด</option>
+            <option value="joined">เรียงตามวันที่สมัครล่าสุด</option>
+            <option value="reports">จำนวน report</option>
+            <option value="assets">จำนวน asset</option>
+          </select>
+          <button class="btn icon" type="button" id="user-reset" title="รีเซ็ตค่าทั้งหมด" aria-label="รีเซ็ตค่าทั้งหมด">${iconSvg.refresh}</button>
+        </div>
+      `;
+      document.querySelector("#cards").innerHTML = "";
+      if (isReports) {
+        renderReportedUserRows();
+        renderReportedUserDetail(activeRow);
+      } else {
+        renderUserRows();
+        document.querySelector("#detail").innerHTML = "";
+      }
+    }
+
+    function getUserSearchText(record) {
+      return Object.values(record).flat().join(" ").toLowerCase();
+    }
+
+    function renderUserRows() {
+      const q = (document.querySelector("#user-search")?.value || "").trim().toLowerCase();
+      const status = document.querySelector("#user-status-filter")?.value || "";
+      const auth = document.querySelector("#user-auth-filter")?.value || "";
+      const reportFilter = document.querySelector("#user-report-filter")?.value || "";
+      const sort = document.querySelector("#user-sort")?.value || "lastActive";
+      const sorted = [...userManagementData.users].filter(user => {
+        const reportMatch = !reportFilter || (reportFilter === "reported" ? user.reports > 0 : user.reports === 0);
+        return (!q || getUserSearchText(user).includes(q))
+          && (!status || user.status === status)
+          && (!auth || user.auth === auth)
+          && reportMatch;
+      }).sort((a, b) => {
+        if (sort === "reports") return b.reports - a.reports;
+        if (sort === "assets") return b.assets - a.assets;
+        if (sort === "lastActive") return b.lastActiveRank - a.lastActiveRank;
+        return b.joinedRank - a.joinedRank;
+      });
+      const pageCount = Math.max(1, Math.ceil(sorted.length / userListPageSize));
+      userListPage = Math.min(userListPage, pageCount);
+      const start = (userListPage - 1) * userListPageSize;
+      const pageRows = sorted.slice(start, start + userListPageSize);
+      document.querySelector("#panel-subtitle").textContent = `แสดง ${sorted.length} / ${userManagementData.users.length} รายการ`;
+      document.querySelector("#table").innerHTML = `
+        <div class="user-table">
+          <div class="user-row head"><div>User</div><div>Auth</div><div>Status</div><div>Date Joined</div><div>Last Active</div><div>Assets / Reports</div><div>Action</div></div>
+          ${pageRows.map(user => `
+            <div class="user-row">
+              <div><div class="main-text">${user.displayName}</div><div class="muted">${user.email}</div></div>
+              <div><div class="main-text">${user.auth}</div></div>
+              <div>${userStatusPill(user.status)}</div>
+              <div><div class="main-text">${user.joined}</div></div>
+              <div><div class="main-text">${user.lastActive}</div></div>
+              <div><div class="main-text">${user.assets} สินทรัพย์</div><div class="muted">${user.reports} รายงาน</div></div>
+              <div class="user-row-actions">
+                <button class="panel-action" type="button" data-user-open="${user.id}">${iconSvg.eye}ดูรายละเอียด</button>
+                <details class="row-menu">
+                  <summary title="Account actions">...</summary>
+                  <div class="row-menu-list">
+                    ${user.auth === "Email" && user.status === "Active" ? `<button type="button">ส่ง reset password link</button>` : `<button type="button" disabled>Reset password ไม่รองรับ</button>`}
+                    ${user.status === "Active" ? `<button type="button">ระงับบัญชี</button><button type="button">Ban user</button>` : ""}
+                    ${user.status === "Suspended" ? `<button type="button">กู้คืนสิทธิ์</button><button type="button">Ban user</button>` : ""}
+                    ${user.status === "Banned" ? `<button type="button">Unban user</button>` : ""}
+                    ${user.status === "Deletion Requested" ? `<button type="button">เปิด Account Deletion</button>` : ""}
+                    <button type="button">ดู Audit Summary</button>
+                  </div>
+                </details>
+              </div>
+            </div>
+          `).join("") || `<div class="detail-empty">ไม่พบผู้ใช้ตาม filter ที่เลือก</div>`}
+        </div>
+        <div class="footer-range">
+          <span>แสดง ${sorted.length ? `${start + 1}-${Math.min(start + userListPageSize, sorted.length)}` : "0"} จาก ${sorted.length}</span>
+          <div class="pager">
+            <button class="btn" type="button" data-user-page="prev" ${userListPage <= 1 ? "disabled" : ""}>ก่อนหน้า</button>
+            ${Array.from({ length: pageCount }, (_, index) => `<button class="btn ${index + 1 === userListPage ? "active" : ""}" type="button" data-user-page="${index + 1}">${index + 1}</button>`).join("")}
+            <button class="btn" type="button" data-user-page="next" ${userListPage >= pageCount ? "disabled" : ""}>ถัดไป</button>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderReportedUserRows() {
+      const q = (document.querySelector("#user-search")?.value || "").trim().toLowerCase();
+      const status = document.querySelector("#report-status-filter")?.value || "";
+      const priority = document.querySelector("#report-priority-filter")?.value || "";
+      const sort = document.querySelector("#report-sort")?.value || "oldest";
+      const priorityRank = { "สูง": 3, "กลาง": 2, "ปกติ": 1 };
+      const sorted = [...userManagementData.reports].filter(report => {
+        return (!q || getUserSearchText(report).includes(q)) && (!status || report.status === status) && (!priority || report.priority === priority);
+      }).sort((a, b) => {
+        if (sort === "urgent") return priorityRank[b.priority] - priorityRank[a.priority];
+        if (sort === "reporters") return b.reporters - a.reporters;
+        if (sort === "status") return a.status.localeCompare(b.status);
+        return parseInt(b.waiting, 10) - parseInt(a.waiting, 10);
+      });
+      document.querySelector("#table").innerHTML = `
+        <div class="user-table">
+          <div class="user-row report-row head"><div>Report</div><div>Reported User</div><div>Reporters</div><div>Priority</div><div>Status</div><div>Action</div></div>
+          ${sorted.map(report => `
+            <div class="user-row report-row" data-report-id="${report.id}">
+              <div><div class="main-text">${report.id} · ${report.category}</div><div class="muted">${report.reason}</div><div class="chips"><span class="chip">${report.reference}</span><span class="chip">รอ ${report.waiting}</span></div></div>
+              <div><div class="main-text">${report.user}</div><div class="muted">${report.userId} · ${report.accountStatus}</div></div>
+              <div><div class="main-text">${report.reporters}</div><div class="muted">masked identities</div></div>
+              <div>${statusPill(report.priority, report.priority)}</div>
+              <div>${userStatusPill(report.status)}</div>
+              <div><button class="panel-action" type="button" data-report-action="${report.id}">${iconSvg.eye}ดูรายละเอียด</button></div>
+            </div>
+          `).join("") || `<div class="detail-empty">ไม่พบ report ตาม filter ที่เลือก</div>`}
+        </div>
+        <div class="footer-range"><span>แสดง ${sorted.length} reports หลัง filter</span><span>SLA 24 ชั่วโมง</span></div>
+      `;
+    }
+
+    function renderUserDetail(user) {
+      const detail = document.querySelector("#detail");
+      if (!user) {
+        detail.innerHTML = `<div class="detail-empty">เลือกรายการผู้ใช้เพื่อดู User Detail</div>`;
+        return;
+      }
+      detail.innerHTML = `
+        <div class="panel-head">
+          <div>
+            <h2>User Detail</h2>
+            <p>${user.id} · sensitive data masked</p>
+          </div>
+        </div>
+        <div class="detail-body">
+          <h3 class="detail-title">${user.displayName}</h3>
+          <p class="muted">${user.username} · ${user.email}</p>
+          <div class="chips">
+            ${userStatusPill(user.status)}
+            <span class="pill blue">${user.auth}</span>
+            <span class="chip">${user.verification}</span>
+          </div>
+
+          <div class="detail-section">
+            <h4>Account Summary</h4>
+            <div class="detail-grid two">
+              <div class="detail-tile"><span>User ID</span><strong>${user.id}</strong></div>
+              <div class="detail-tile"><span>Date Joined</span><strong>${user.joined}</strong></div>
+              <div class="detail-tile"><span>Last Active</span><strong>${user.lastActive}</strong></div>
+              <div class="detail-tile"><span>Total Assets</span><strong>${user.assets}</strong></div>
+            </div>
+          </div>
+
+          <div class="detail-section">
+            <h4>Contact / Auth</h4>
+            <div class="detail-grid">
+              <div class="kv"><span>Email</span><strong>${user.email}</strong></div>
+              <div class="kv"><span>Auth Method</span><strong>${user.auth}</strong></div>
+              ${user.contact.length ? `<div class="kv"><span>Contact</span><div class="chips">${user.contact.map(item => `<span class="chip">${item}</span>`).join("")}</div></div>` : ""}
+            </div>
+          </div>
+
+          <div class="detail-section">
+            <h4>Reports / Support Context</h4>
+            <div class="detail-grid two">
+              <div class="detail-tile"><span>Reports</span><strong>${user.reports}</strong><br>${user.reportState}</div>
+              <div class="detail-tile"><span>Support</span><strong>${user.support}</strong><br>${user.latest}</div>
+            </div>
+          </div>
+
+          <div class="detail-section">
+            <h4>Action Availability</h4>
+            <div class="detail-grid">
+              <div class="detail-tile"><span>Allowed</span><div class="chips">${user.allowed.map(item => `<span class="chip">${item}</span>`).join("")}</div></div>
+              <div class="detail-tile"><span>Blocked / Notes</span><div class="chips">${user.blocked.map(item => `<span class="chip">${item}</span>`).join("")}</div></div>
+            </div>
+          </div>
+
+          <div class="module-note"><strong>FO impact:</strong> ${user.foImpact}</div>
+          <div class="warning-note"><strong>Audit note:</strong> ${user.actionNote}</div>
+        </div>
+      `;
+    }
+
+    function renderUserDetailPage(user) {
+      if (!user) return;
+      document.body.classList.add("user-detail-mode");
+      document.body.classList.remove("user-list-mode");
+      activeSub = "User Detail";
+      activeRow = user;
+      document.querySelector("#crumb").textContent = `การดำเนินงาน / User Management / User Detail / ${user.id}`;
+      document.querySelector("#page-title").textContent = "User Detail";
+      document.querySelector("#page-meta").textContent = "รายละเอียดบัญชีผู้ใช้ แสดงข้อมูล sensitive แบบ masked และแยก action ตาม current account status";
+      document.querySelector("#panel-title").textContent = user.displayName;
+      document.querySelector("#panel-subtitle").textContent = `${user.id} · ${user.username} · ${user.email}`;
+      document.querySelector(".filters").innerHTML = "";
+      document.querySelector("#cards").innerHTML = `
+        <article class="mini-card"><h3>Status</h3><p class="muted">${user.status} · ${user.statusLabel}</p></article>
+        <article class="mini-card"><h3>FO Impact</h3><p class="muted">${user.foImpact}</p></article>
+        <article class="mini-card"><h3>Audit</h3><p class="muted">${user.actionNote}</p></article>
+      `;
+      document.querySelector("#table").innerHTML = `
+        <div class="user-detail-page">
+          <div class="user-detail-head">
+            <div>
+              <h2>${user.displayName}</h2>
+              <p class="muted">${user.id} · ${user.username} · ${user.email}</p>
+              <div class="chips">${userStatusPill(user.status)}<span class="pill blue">${user.auth}</span><span class="chip">${user.verification}</span></div>
+            </div>
+            <button class="btn" type="button" data-back-user-list>กลับไป User List</button>
+          </div>
+          <div class="detail-section">
+            <h4>Account Summary</h4>
+            <div class="detail-grid two">
+              <div class="detail-tile"><span>User ID</span><strong>${user.id}</strong></div>
+              <div class="detail-tile"><span>Date Joined</span><strong>${user.joined}</strong></div>
+              <div class="detail-tile"><span>Last Active</span><strong>${user.lastActive}</strong></div>
+              <div class="detail-tile"><span>Total Assets</span><strong>${user.assets}</strong></div>
+            </div>
+          </div>
+          <div class="detail-section">
+            <h4>Contact / Auth</h4>
+            <div class="detail-grid two">
+              <div class="detail-tile"><span>Email</span><strong>${user.email}</strong></div>
+              <div class="detail-tile"><span>Auth Method</span><strong>${user.auth}</strong><br>${user.verification}</div>
+              ${user.contact.length ? `<div class="detail-tile"><span>Contact</span><div class="chips">${user.contact.map(item => `<span class="chip">${item}</span>`).join("")}</div></div>` : ""}
+              <div class="detail-tile"><span>Support</span><strong>${user.support}</strong><br>${user.latest}</div>
+            </div>
+          </div>
+          <div class="detail-section">
+            <h4>Reports / Action Availability</h4>
+            <div class="detail-grid two">
+              <div class="detail-tile"><span>Reports</span><strong>${user.reports}</strong><br>${user.reportState}</div>
+              <div class="detail-tile"><span>Allowed</span><div class="chips">${user.allowed.map(item => `<span class="chip">${item}</span>`).join("")}</div></div>
+              <div class="detail-tile"><span>Blocked / Notes</span><div class="chips">${user.blocked.map(item => `<span class="chip">${item}</span>`).join("")}</div></div>
+              <div class="detail-tile"><span>FO Impact</span>${user.foImpact}</div>
+            </div>
+          </div>
+          <div class="warning-note"><strong>Audit note:</strong> ${user.actionNote}</div>
+        </div>
+      `;
+      document.querySelector("#detail").innerHTML = "";
+      updateActiveNav();
+    }
+
+    function renderReportedUserDetail(report) {
+      const detail = document.querySelector("#detail");
+      if (!report) {
+        detail.innerHTML = `<div class="detail-empty">เลือก report เพื่อดูรายละเอียดการตรวจ</div>`;
+        return;
+      }
+      detail.innerHTML = `
+        <div class="panel-head">
+          <div>
+            <h2>Report Detail</h2>
+            <p>${report.id} · reporter identity masked</p>
+          </div>
+        </div>
+        <div class="detail-body">
+          <h3 class="detail-title">${report.reason}</h3>
+          <p class="muted">${report.category} · ${report.user} · ${report.userId}</p>
+          <div class="chips">
+            ${userStatusPill(report.status)}
+            ${statusPill(report.priority, report.priority)}
+            <span class="chip">${report.reporters} reporters</span>
+          </div>
+
+          <div class="detail-section">
+            <h4>Reported Reference</h4>
+            <div class="detail-grid">
+              <div class="kv"><span>Reference</span><strong>${report.reference}</strong></div>
+              <div class="kv"><span>Source Module</span><strong>${report.source}</strong></div>
+              <div class="kv"><span>Account Status</span><strong>${report.accountStatus}</strong></div>
+            </div>
+          </div>
+
+          <div class="detail-section">
+            <h4>Evidence / Context</h4>
+            <div class="detail-tile"><span>FO reporter note</span><div class="chips">${report.evidence.map(item => `<span class="chip">${item}</span>`).join("")}</div></div>
+            <div class="detail-tile"><span>Recommendation</span>${report.recommendation}</div>
+          </div>
+
+          <div class="detail-section">
+            <h4>Admin Action History</h4>
+            <div class="event"><strong>Current state</strong><br>${report.actionHistory}</div>
+            <div class="event"><strong>Review flow</strong><br>เปิด reported reference -> ตรวจ source evidence -> กลับมา clear report หรือ manage account status ตาม policy</div>
+          </div>
+
+          <div class="module-note"><strong>FO impact:</strong> Report ไม่ซ่อน profile หรือจำกัดบัญชี จนกว่า Admin จะทำ moderation/action ตาม policy</div>
+          ${report.accountStatus === "Deletion Requested" ? `<div class="warning-note"><strong>Deletion dependency:</strong> ต้องตรวจ source report ก่อน แล้วจึง route ไป Account Deletion ห้าม delete/archive ทันทีจากคิวนี้</div>` : ""}
+        </div>
+      `;
+    }
+
     function renderModule(id, subLabel = "", displaySubLabel = subLabel) {
       activeModule = id;
       activeSub = subLabel;
       const data = moduleData[id];
       document.body.classList.toggle("dashboard-mode", id === "dashboard");
+      document.body.classList.toggle("user-management-mode", id === "users");
+      if (id !== "users") {
+        document.body.classList.remove("user-list-mode", "user-detail-mode");
+      }
       if (id === "dashboard") {
         renderDashboard();
+        updateActiveNav();
+        return;
+      }
+      if (id === "users") {
+        renderUserManagement(subLabel || "User List");
         updateActiveNav();
         return;
       }
@@ -2098,12 +2866,9 @@
       if (navButton) {
         if (navButton.dataset.toggleMenu && !navButton.dataset.sub) {
           const menuId = navButton.dataset.toggleMenu;
-          if (expandedMenus.has(menuId)) {
-            expandedMenus.delete(menuId);
-          } else {
-            expandedMenus.clear();
-            expandedMenus.add(menuId);
-          }
+          const wasExpanded = expandedMenus.has(menuId);
+          expandedMenus.clear();
+          if (!wasExpanded) expandedMenus.add(menuId);
           updateActiveNav();
           return;
         }
@@ -2127,6 +2892,41 @@
         const row = moduleData[activeModule].rows.find(entry => entry.id === id);
         activeRow = row;
         renderDetail(row);
+      }
+      const userOpenButton = event.target.closest("[data-user-open]");
+      if (userOpenButton) {
+        const id = userOpenButton.dataset.userOpen;
+        const user = userManagementData.users.find(entry => entry.id === id);
+        renderUserDetailPage(user);
+        return;
+      }
+      const reportButton = event.target.closest("[data-report-action], .user-row[data-report-id]");
+      if (reportButton) {
+        const id = reportButton.dataset.reportAction || reportButton.dataset.reportId;
+        const report = userManagementData.reports.find(entry => entry.id === id);
+        activeRow = report;
+        renderReportedUserDetail(report);
+        return;
+      }
+      const userReset = event.target.closest("#user-reset");
+      if (userReset) {
+        userListPage = 1;
+        renderUserManagement(activeSub || "User List");
+        return;
+      }
+      const userPageButton = event.target.closest("[data-user-page]");
+      if (userPageButton) {
+        const target = userPageButton.dataset.userPage;
+        if (target === "prev") userListPage = Math.max(1, userListPage - 1);
+        else if (target === "next") userListPage += 1;
+        else userListPage = Number(target) || 1;
+        renderUserRows();
+        return;
+      }
+      const backUserList = event.target.closest("[data-back-user-list]");
+      if (backUserList) {
+        renderModule("users", "User List", "User List");
+        return;
       }
     });
 
@@ -2319,9 +3119,24 @@
     }
 
     document.addEventListener("input", event => {
+      if (event.target.matches("#user-search")) {
+        userListPage = 1;
+        if (activeModule === "users" && (activeSub === "Report User" || activeSub === "Reported Users")) renderReportedUserRows();
+        else if (activeModule === "users") renderUserRows();
+        return;
+      }
       if (event.target.matches("#search")) renderRows();
     });
     document.addEventListener("change", event => {
+      if (event.target.matches("#user-status-filter, #user-auth-filter, #user-report-filter, #user-sort")) {
+        userListPage = 1;
+        renderUserRows();
+        return;
+      }
+      if (event.target.matches("#report-status-filter, #report-priority-filter, #report-sort")) {
+        renderReportedUserRows();
+        return;
+      }
       if (event.target.matches("#status-filter, #priority-filter")) renderRows();
     });
     document.querySelector("#logout-icon").innerHTML = iconSvg.logout;

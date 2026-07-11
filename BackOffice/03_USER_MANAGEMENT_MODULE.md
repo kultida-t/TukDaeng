@@ -39,12 +39,12 @@ Module นี้ต้องไม่สร้างสิทธิ์หรื�
 - User profile detail
 - Auth method visibility: Email, Apple, Google
 - Login history
-- User status: Pending Verification, Active, Suspended, Banned, Soft Deleted / Archived
+- User status: Pending Verification, Active, Suspended, Banned, Deletion Requested, Deleted / Archived
 - Reported user review context
 - Suspend / Ban / Unsuspend / Unban
 - Reset password เฉพาะ Email/Password account
 - Soft delete / archive user โดย Admin ตามสิทธิ์
-- Export CSV/Excel ตาม permission
+- Export policy/permission สำหรับ user data โดยไม่เพิ่มปุ่ม export ใน User List ใน Phase 1
 - Audit log สำหรับทุก mutation และ sensitive access
 - FO impact mapping
 - Responsive list/detail/action layout
@@ -60,16 +60,21 @@ Module นี้ต้องไม่สร้างสิทธิ์หรื�
 
 # 4. Admin Access And Permissions
 
-BO uses exactly one admin account type: `Admin`. User Management access is controlled by action policy and sensitive-data policy, not by separate BO admin sub-types.
+BO มีประเภทบัญชีผู้ดูแลเพียงประเภทเดียวคือ `Admin` ไม่มีการแยกเป็น admin ย่อยหลายระดับใน module นี้ การเข้าถึงและการกระทำใน User Management ต้องควบคุมด้วย policy ของแต่ละ action และ policy สำหรับข้อมูล sensitive แทน
 
-| Access Area | Rule |
+หลักการสำคัญคือ Admin เห็นหรือทำ action ได้เฉพาะเมื่อได้รับสิทธิ์ใน module นั้นแล้ว และ action ที่มีผลต่อผู้ใช้ FO หรือเกี่ยวข้องกับข้อมูลส่วนตัวต้องมี confirmation, reason และ audit log ตามระดับความเสี่ยง
+
+| พื้นที่การเข้าถึง | กฎการใช้งาน |
 | --- | --- |
-| View users | Admin can view user list/detail when module access is granted. |
-| Reset password | Admin can trigger reset only for Email/Password accounts and must audit the action. |
-| Suspend / ban / unban | Requires confirmation, reason, FO-impact awareness, and audit log. |
-| Soft delete / archive | Requires confirmation, reason, retention/dependency validation, and audit log. |
-| Sensitive fields | Mask by default; reveal only with policy basis and audit. |
-| Export user data | Requires export policy, scope control, reason when sensitive, and audit event. |
+| ดูข้อมูลผู้ใช้ | Admin ดู User List และ User Detail ได้เมื่อได้รับสิทธิ์เข้าใช้งาน User Management module |
+| Reset password | ทำได้เฉพาะบัญชีที่สมัครด้วย Email/Password เท่านั้น และต้องบันทึก audit log ทุกครั้ง |
+| Suspend / ban / unban | ต้องมีหน้าจอยืนยัน action, ระบุ reason, แสดงผลกระทบต่อ FO ให้ Admin เห็นก่อนยืนยัน และบันทึก audit log |
+| Soft delete / archive | ต้องมีหน้าจอยืนยัน action, ระบุ reason, ตรวจสอบ retention/dependency ที่เกี่ยวข้อง และบันทึก audit log |
+| ข้อมูล sensitive | ต้อง mask เป็นค่าเริ่มต้น เช่น email, phone, IP หรือ device detail การกดดูข้อมูลเต็มต้องมี policy รองรับและต้องถูกบันทึก audit |
+| Export user data | ต้องอยู่ภายใต้ export policy, จำกัด scope ของข้อมูลที่ export, ระบุ reason เมื่อมีข้อมูล sensitive และบันทึก audit event |
+
+หมายเหตุ: สิทธิ์ในตารางนี้เป็น baseline สำหรับ Phase 1 หากอนาคตต้องมี role หรือ permission level ที่ละเอียดขึ้น ให้เพิ่มผ่าน policy กลางของ BO ไม่ควรเพิ่ม account type ใหม่ใน FO user model
+
 # 5. Responsive Layout
 
 | Breakpoint | Layout |
@@ -89,16 +94,16 @@ BO uses exactly one admin account type: `Admin`. User Management access is contr
 
 User list ต้องรองรับ:
 
-- Search by display name, email, and internal User ID/reference when support receives the ID from report/audit log
-- Filter by status
-- Filter by auth method
-- Filter by date joined
-- Filter by last active
-- Filter by reported status
-- Filter by asset count range หรือ has assets
-- Sort by created date, last active, report count, asset count
-- Pagination
-- Export is not required in User List for current BO scope; system-level exports should live in Reports when needed later
+- ค้นหาจาก display name, email และ internal User ID/reference ในกรณีที่ support ได้ ID มาจาก report หรือ audit log
+- Filter ตาม account status
+- Filter ตาม auth method
+- Filter ตามวันที่สมัคร
+- Filter ตามวันที่ใช้งานล่าสุด
+- Filter ตาม reported status
+- Filter ตามช่วงจำนวน asset หรือบัญชีที่มี asset
+- Sort ตามวันที่สร้างบัญชี, วันที่ใช้งานล่าสุด, จำนวน report และจำนวน asset
+- Pagination แบบ server-side
+- User List ใน Phase 1 ไม่ต้องมีปุ่ม export โดยตรง หากต้อง export ข้อมูลผู้ใช้ให้ใช้ workflow ที่ควบคุม permission ใน Reports/export หรือ system-level export แยกต่างหาก
 
 ## Columns / Priority Fields
 
@@ -156,20 +161,24 @@ Contact / Auth display rule:
 
 | Status | BO Meaning | FO Impact |
 | --- | --- | --- |
+| Pending Verification | ผู้ใช้สมัครด้วย Email/Password แล้ว แต่ยังไม่ยืนยัน OTP/email | ยังไม่ถือเป็น authenticated member; ใช้ได้เฉพาะ flow ยืนยันตัวตนหรือ resend OTP ตาม FO Auth rule |
 | Active | User ใช้ FO ได้ปกติ | Login และ action ปกติทำได้ |
 | Suspended | จำกัดชั่วคราวตาม policy | Login blocked หรือ session revoked; ต้องเห็น suspension state ตาม FO Auth rule |
 | Banned | จำกัดถาวรจนกว่า Admin จะปลด | Login blocked และ user ไม่สามารถสร้าง activity ใหม่ |
-| Soft Deleted / Archived | Account ถูกลบ/archived ตาม workflow | Login blocked; public profile/assets ถูกซ่อนหรือ anonymized ตาม retention policy |
+| Deletion Requested | User ขอปิด/ลบบัญชีแล้ว และกำลังอยู่ใน workflow ตรวจ dependency | Login/session และ public visibility ต้องเป็นไปตาม Account Deletion policy |
+| Deleted / Archived | Account ถูกลบหรือ archive ตาม workflow สำเร็จแล้ว | Login blocked; public profile/assets ถูกซ่อนหรือ anonymized ตาม retention policy |
 
 Status transition:
 
 | Transition | Permission | Required Inputs | FO Impact | Audit |
 | --- | --- | --- | --- | --- |
+| Pending Verification -> Active | System | OTP/email verified | User เริ่มใช้งาน authenticated FO features ได้ | Yes |
 | Active -> Suspended | Admin | Reason, optional duration | Login/action blocked | Yes |
 | Suspended -> Active | Admin | Reason | Login/action restored | Yes |
 | Active/Suspended -> Banned | Admin | Reason | Login/action blocked permanently until unban | Yes |
 | Banned -> Active | Admin | Reason | Login/action restored | Yes |
-| Active/Suspended/Banned -> Soft Deleted / Archived | Admin | Reason, retention/validation note | Login blocked, public profile/assets hidden/anonymized | Yes |
+| Active/Suspended/Banned -> Deletion Requested | System / Account Deletion | Deletion request created | เข้าสู่ deletion workflow และต้องตรวจ dependency ก่อนลบจริง | Yes |
+| Deletion Requested -> Deleted / Archived | Admin / Account Deletion | Reason, retention/validation note, dependency cleared | Login blocked, public profile/assets hidden/anonymized | Yes |
 
 ## 8.1 Suspension / Ban Policy
 
@@ -232,6 +241,17 @@ Recommended UI rule:
 | Unban User | Admin | Yes | Yes | User access restored |
 | Soft Delete / Archive User | Admin | Yes | Yes | User/profile/assets hidden or anonymized by policy |
 | Export User Data | Admin | Yes for sensitive export | Optional/required by policy | No FO UI change |
+
+Action availability ตามสถานะบัญชี:
+
+| Current Status | Allowed Primary Actions | Blocked / Notes |
+| --- | --- | --- |
+| Pending Verification | View detail และดู verification context ที่มาจาก Auth module | Reset password ต้องยังไม่แสดงจนกว่าจะ verify สำเร็จ; suspend/ban ทำได้เฉพาะผ่าน policy กรณี abuse ชัดเจน |
+| Active | Reset password สำหรับ Email/Password, suspend, ban, start deletion/archive workflow ตาม policy | Apple/Google reset password ต้อง block ด้วย rule-based message |
+| Suspended | Unsuspend, ban, view report context, continue deletion/archive workflow ตาม policy | Reset password ไม่ควร restore access เอง ต้องแก้ status แยกต่างหาก |
+| Banned | Unban, view audit/report context, continue deletion/archive workflow ตาม policy | Reset password ไม่ควรเปิดให้ใช้เป็นทางกลับเข้า FO |
+| Deletion Requested | View detail, review dependency, open Account Deletion, resolve related report/dispute | ห้าม archive/delete ทันทีจาก User List ถ้ายังมี offer/chat/asset/report dependency |
+| Deleted / Archived | View historical detail ตาม permission, audit/report lookup | ห้าม reset password, suspend, ban, unban หรือ restore เป็น active account โดยตรง |
 
 # 10. Reset Password Rules
 
@@ -314,7 +334,7 @@ Navigation clarification:
 | User not found | แสดง data unavailable พร้อมกลับไป list |
 | Access denied | แสดงว่า admin access ไม่มีสิทธิ์เข้า user management/action |
 | Partial detail error | Section ที่ load fail ต้อง retry ได้ โดย detail หลักยังแสดงถ้าเป็นไปได้ |
-| Export processing | แสดง queued/in-progress และ download เมื่อสำเร็จ |
+| Export processing | สำหรับ export workflow แยก ต้องแสดง queued/in-progress และ download เมื่อสำเร็จ |
 
 # 15. Audit Requirements
 
@@ -327,7 +347,7 @@ Navigation clarification:
 - Status change
 - Report review decision
 - Permission denied on sensitive action
-- Export user list/data
+- Export user data ผ่าน permitted export workflow
 
 Audit fields ใช้ตาม `00_GLOBAL_RULES_MODULE.md`
 
@@ -336,7 +356,7 @@ Audit fields ใช้ตาม `00_GLOBAL_RULES_MODULE.md`
 - User list ต้องใช้ server-side pagination/search/filter
 - Search ควรตอบสนองเร็วพอสำหรับ operation workflow
 - Detail page สามารถ lazy load sections หนัก เช่น login history/activity ได้
-- Export ขนาดใหญ่ต้องใช้ background job
+- Export ขนาดใหญ่ใน workflow แยกต้องใช้ background job
 
 # 17. Acceptance Criteria
 
@@ -351,9 +371,12 @@ Audit fields ใช้ตาม `00_GLOBAL_RULES_MODULE.md`
 | AC-BO-USER-007 | Report User ไม่ทำให้ profile/content หายทันทีจนกว่า Admin moderation action |
 | AC-BO-USER-008 | Reported user queue/detail ต้องรองรับ SLA 24 ชั่วโมง |
 | AC-BO-USER-009 | Sensitive user fields ต้อง mask สำหรับ admin access ที่ไม่มีสิทธิ์ |
-| AC-BO-USER-010 | Export user data ต้องควบคุมด้วย permission และ audit-log |
+| AC-BO-USER-010 | Export user data ต้องควบคุมด้วย permission และ audit-log และไม่ต้องมีปุ่ม export ใน User List ใน Phase 1 |
 | AC-BO-USER-011 | User status mutation ทุกครั้งต้องมี audit log พร้อม before/after state |
 | AC-BO-USER-012 | Module ใช้งานได้ที่ mobile, tablet, desktop และ wide desktop widths |
+| AC-BO-USER-013 | Pending Verification account ต้องไม่แสดงเป็น Active และต้องไม่เปิด reset password action จนกว่า verify สำเร็จ |
+| AC-BO-USER-014 | Deletion Requested account ต้อง route ไป Account Deletion/dependency review ก่อน archive/delete จริง |
+| AC-BO-USER-015 | UI และ API ต้อง block action ที่ไม่อนุญาตตาม current account status |
 
 # 18. Related Modules
 
