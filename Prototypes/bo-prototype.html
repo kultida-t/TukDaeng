@@ -1056,7 +1056,7 @@
       background: #fff;
     }
     .user-row:not(.report-row) {
-      grid-template-columns: minmax(150px, 1.05fr) minmax(86px, .48fr) minmax(136px, .72fr) minmax(118px, .62fr) minmax(148px, .78fr) minmax(76px, .38fr) minmax(176px, .88fr);
+      grid-template-columns: minmax(150px, 1.05fr) minmax(136px, .72fr) minmax(148px, .78fr) minmax(76px, .38fr) minmax(86px, .48fr) minmax(118px, .62fr) minmax(176px, .88fr);
       gap: 16px;
     }
     .user-row:not(.report-row) > div {
@@ -1067,8 +1067,8 @@
       text-overflow: ellipsis;
       white-space: nowrap;
     }
+    .user-row:not(.report-row) > div:nth-child(3) .main-text,
     .user-row:not(.report-row) > div:nth-child(4) .main-text,
-    .user-row:not(.report-row) > div:nth-child(5) .main-text,
     .user-row:not(.report-row) > div:nth-child(6) .main-text {
       white-space: nowrap;
     }
@@ -1764,7 +1764,7 @@
         grid-column: 1 / -1;
       }
       .user-row {
-        grid-template-columns: minmax(150px, 1.05fr) minmax(86px, .48fr) minmax(136px, .72fr) minmax(118px, .62fr) minmax(148px, .78fr) minmax(76px, .38fr) minmax(176px, .88fr);
+        grid-template-columns: minmax(150px, 1.05fr) minmax(136px, .72fr) minmax(148px, .78fr) minmax(76px, .38fr) minmax(86px, .48fr) minmax(118px, .62fr) minmax(176px, .88fr);
         overflow-x: auto;
       }
       .user-row.report-row {
@@ -2485,15 +2485,15 @@
       document.querySelector("#panel-subtitle").textContent = "";
       document.querySelector("#table").innerHTML = `
         <div class="user-table">
-          <div class="user-row head"><div>User</div><div>Auth</div><div>Status</div><div>Date Joined</div><div>Last Active</div><div>Assets</div><div>Action</div></div>
+          <div class="user-row head"><div>User</div><div>Status</div><div>Last Active</div><div>Assets</div><div>Auth</div><div>Date Joined</div><div>Action</div></div>
           ${pageRows.map(user => `
             <div class="user-row">
               <div><div class="main-text">${user.displayName}</div></div>
-              <div>${userAuthPill(user.auth)}</div>
               <div>${userStatusPill(user.status)}</div>
-              <div><div class="main-text">${user.joined}</div></div>
               <div><div class="main-text">${user.lastActive}</div></div>
               <div><div class="main-text">${user.assets}</div></div>
+              <div>${userAuthPill(user.auth)}</div>
+              <div><div class="main-text">${user.joined}</div></div>
               <div class="user-row-actions">
                 <button class="panel-action" type="button" data-user-open="${user.id}">${iconSvg.eye}ดูรายละเอียด</button>
                 <details class="row-menu">
