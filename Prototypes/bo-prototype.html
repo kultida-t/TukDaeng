@@ -2112,12 +2112,6 @@
     };
 
     const userManagementData = {
-      stats: [
-        ["Active Users", "12,847", "Google 42% · Email 39% · Apple 19%"],
-        ["Suspended", "17", "ต้องมี reason และ audit"],
-        ["Deletion Requested", "8", "ตรวจ dependency ใน Account Deletion"],
-        ["Reported", "31", "User List แสดง badge; queue อยู่ใน Reported Users"]
-      ],
       users: [
         { id: "U-1002", displayName: "horology.king", username: "@horology.king", email: "ho***@gmail.com", auth: "Google", status: "Suspended", joined: "03 Jul 2026", joinedBucket: "7d", joinedRank: 20260703, lastActive: "10 Jul 2026 18:10", lastActiveBucket: "24h", lastActiveRank: 202607101810, assets: 2, assetBucket: "1-5", reports: 5, verification: "Google verified", contact: ["Line: ho***"], support: "SUP-177", latest: "Report follow-up", reportState: "5 reporters · status action completed", statusLabel: "Login blocked", allowed: ["View detail", "Audit summary"], blocked: ["Reset password", "Deletion from list"], foImpact: "Suspended blocks FO login/session until restored.", actionNote: "Status action must require reason, FO impact preview, and audit log." },
         { id: "U-1017", displayName: "Crown Time BKK", username: "@crowntimebkk", email: "cr***@tukdaeng.example", auth: "Email", status: "Active", joined: "29 Jun 2026", joinedBucket: "30d", joinedRank: 20260629, lastActive: "10 Jul 2026 20:44", lastActiveBucket: "24h", lastActiveRank: 202607102044, assets: 18, assetBucket: "11+", reports: 4, verification: "Email verified", contact: ["Phone: 08*-***-2210", "Line: cr***"], support: "SUP-177", latest: "Duplicate asset context", reportState: "Open report context; not suspended", statusLabel: "Normal FO access", allowed: ["Reset password", "Suspend", "Ban"], blocked: ["Archive from list"], foImpact: "Active account keeps normal FO access until Admin confirms a status action.", actionNote: "Reset password is available because auth method is Email." },
@@ -2278,6 +2272,24 @@
       "Cleared": "ปิดแล้ว"
     };
 
+    function getUserSummaryStats() {
+      const users = userManagementData.users;
+      const countStatus = status => users.filter(user => user.status === status).length;
+      const activeUsers = users.filter(user => user.status === "Active");
+      const activeByAuth = ["Email", "Google", "Apple"]
+        .map(auth => `${auth} ${activeUsers.filter(user => user.auth === auth).length}`)
+        .join(" · ");
+      const reportedUsers = users.filter(user => user.reports > 0);
+      const totalReports = reportedUsers.reduce((sum, user) => sum + user.reports, 0);
+
+      return [
+        ["Active Users", activeUsers.length, activeByAuth],
+        ["Suspended", countStatus("Suspended"), "ต้องมีเหตุผลและ audit log"],
+        ["Deletion Requested", countStatus("Deletion Requested"), "ตรวจ dependency ใน Account Deletion"],
+        ["Reported", reportedUsers.length, `รวม ${totalReports} รายงานในข้อมูลตัวอย่าง`]
+      ];
+    }
+
     function userStatusPill(status) {
       const map = {
         "Active": "green",
@@ -2326,7 +2338,7 @@
       document.querySelector("#panel-subtitle").textContent = isReports
         ? "ตรวจ source reference ก่อน clear report หรือเปลี่ยนสถานะบัญชี"
         : "";
-      document.querySelector("#summary-grid").innerHTML = userManagementData.stats.map(stat => `
+      document.querySelector("#summary-grid").innerHTML = getUserSummaryStats().map(stat => `
         <article class="stat">
           <div class="stat-label">${stat[0]}</div>
           <div class="stat-value">${stat[1]}</div>
