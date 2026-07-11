@@ -720,7 +720,9 @@
     select.field option:hover,
     select.field option:checked {
       color: #061426;
-      background: #f2f5f9;
+      background-color: #eef2f6;
+      background-image: linear-gradient(#eef2f6, #eef2f6);
+      box-shadow: 0 0 0 100vmax #eef2f6 inset;
     }
     .search { min-width: 240px; flex: 1; }
 
@@ -951,6 +953,59 @@
     .user-filter-bar select.field {
       padding-right: 42px;
       background-position: right 14px center;
+    }
+    .custom-select {
+      position: relative;
+      min-width: 0;
+    }
+    .custom-select-trigger {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      cursor: pointer;
+      text-align: left;
+    }
+    .custom-select-trigger::after {
+      content: "";
+      width: 14px;
+      height: 14px;
+      flex: 0 0 auto;
+      background: url("data:image/svg+xml,%3Csvg viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M5.5 7.5 10 12l4.5-4.5' fill='none' stroke='%233b4d66' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center / 14px 14px no-repeat;
+    }
+    .custom-select-menu {
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: calc(100% + 4px);
+      z-index: 30;
+      display: none;
+      padding: 6px;
+      border: 1px solid #aeb8c6;
+      border-radius: 7px;
+      background: #fff;
+      box-shadow: 0 14px 28px rgba(15, 23, 42, .12);
+    }
+    .custom-select.open .custom-select-menu {
+      display: grid;
+      gap: 2px;
+    }
+    .custom-select-option {
+      min-height: 30px;
+      border: 0;
+      background: #fff;
+      color: #061426;
+      padding: 7px 9px;
+      text-align: left;
+      font-size: 13px;
+      font-weight: 400;
+      cursor: pointer;
+    }
+    .custom-select-option:hover,
+    .custom-select-option.selected {
+      background: #eef2f6;
+      color: #061426;
     }
     .user-filter-bar .field:hover {
       border-color: #c3cfdd;
@@ -2226,6 +2281,23 @@
       return `<span class="pill ${map[status] || "blue"}">${status}</span>`;
     }
 
+    function customSelect(id, label, options, selectedValue = "") {
+      const selected = options.find(option => option.value === selectedValue) || options[0];
+      return `
+        <div class="custom-select" data-custom-select>
+          <input type="hidden" id="${id}" value="${selected.value}" />
+          <button class="field custom-select-trigger" type="button" data-custom-select-trigger aria-haspopup="listbox" aria-expanded="false">
+            <span data-custom-select-label>${selected.label}</span>
+          </button>
+          <div class="custom-select-menu" role="listbox" aria-label="${label}">
+            ${options.map(option => `
+              <button class="custom-select-option ${option.value === selected.value ? "selected" : ""}" type="button" role="option" aria-selected="${option.value === selected.value}" data-custom-select-option data-value="${option.value}">${option.label}</button>
+            `).join("")}
+          </div>
+        </div>
+      `;
+    }
+
     function renderUserManagement(subLabel = "User List") {
       const mode = subLabel === "Report User" || subLabel === "Reported Users" ? "reports" : "list";
       const isReports = mode === "reports";
@@ -2275,31 +2347,32 @@
       ` : `
         <div class="user-filter-bar">
           <input class="field search" id="user-search" type="search" placeholder="ค้นหา User ID, ชื่อ, email, phone" />
-          <select class="field" id="user-status-filter" aria-label="Filter account status">
-            <option value="">ทุกสถานะ</option>
-            <option value="Pending Verification">Pending Verification</option>
-            <option value="Active">Active</option>
-            <option value="Suspended">Suspended</option>
-            <option value="Banned">Banned</option>
-            <option value="Deletion Requested">Deletion Requested</option>
-            <option value="Deleted / Archived">Deleted / Archived</option>
-          </select>
-          <select class="field" id="user-auth-filter" aria-label="Filter auth method">
-            <option value="">ทุกวิธีเข้าสู่ระบบ</option>
-            <option value="Email">Email</option>
-            <option value="Apple">Apple</option>
-            <option value="Google">Google</option>
-          </select>
-          <select class="field" id="user-report-filter" aria-label="Filter report status">
-            <option value="">ทุกสถานะรายงาน</option>
-            <option value="reported">มีรายงาน</option>
-            <option value="none">ไม่มีรายงาน</option>
-          </select>          <select class="field" id="user-sort" aria-label="Sort users">
-            <option value="lastActive">เรียงตามใช้งานล่าสุด</option>
-            <option value="joined">เรียงตามวันที่สมัครล่าสุด</option>
-            <option value="reports">จำนวน report</option>
-            <option value="assets">จำนวน asset</option>
-          </select>
+          ${customSelect("user-status-filter", "Filter account status", [
+            { value: "", label: "ทุกสถานะ" },
+            { value: "Pending Verification", label: "Pending Verification" },
+            { value: "Active", label: "Active" },
+            { value: "Suspended", label: "Suspended" },
+            { value: "Banned", label: "Banned" },
+            { value: "Deletion Requested", label: "Deletion Requested" },
+            { value: "Deleted / Archived", label: "Deleted / Archived" }
+          ])}
+          ${customSelect("user-auth-filter", "Filter auth method", [
+            { value: "", label: "ทุกวิธีเข้าสู่ระบบ" },
+            { value: "Email", label: "Email" },
+            { value: "Apple", label: "Apple" },
+            { value: "Google", label: "Google" }
+          ])}
+          ${customSelect("user-report-filter", "Filter report status", [
+            { value: "", label: "ทุกสถานะรายงาน" },
+            { value: "reported", label: "มีรายงาน" },
+            { value: "none", label: "ไม่มีรายงาน" }
+          ])}
+          ${customSelect("user-sort", "Sort users", [
+            { value: "lastActive", label: "เรียงตามใช้งานล่าสุด" },
+            { value: "joined", label: "เรียงตามวันที่สมัครล่าสุด" },
+            { value: "reports", label: "จำนวน report" },
+            { value: "assets", label: "จำนวน asset" }
+          ], "lastActive")}
           <button class="btn icon" type="button" id="user-reset" title="รีเซ็ตค่าทั้งหมด" aria-label="รีเซ็ตค่าทั้งหมด">${iconSvg.refresh}</button>
         </div>
       `;
@@ -2856,6 +2929,43 @@
     }
 
     document.addEventListener("click", event => {
+      const customOption = event.target.closest("[data-custom-select-option]");
+      if (customOption) {
+        const select = customOption.closest("[data-custom-select]");
+        const hiddenInput = select.querySelector("input[type='hidden']");
+        const label = select.querySelector("[data-custom-select-label]");
+        const value = customOption.dataset.value || "";
+        hiddenInput.value = value;
+        label.textContent = customOption.textContent;
+        select.querySelectorAll("[data-custom-select-option]").forEach(option => {
+          const isSelected = option === customOption;
+          option.classList.toggle("selected", isSelected);
+          option.setAttribute("aria-selected", isSelected ? "true" : "false");
+        });
+        select.classList.remove("open");
+        select.querySelector("[data-custom-select-trigger]").setAttribute("aria-expanded", "false");
+        userListPage = 1;
+        renderUserRows();
+        return;
+      }
+      const customTrigger = event.target.closest("[data-custom-select-trigger]");
+      if (customTrigger) {
+        const select = customTrigger.closest("[data-custom-select]");
+        const willOpen = !select.classList.contains("open");
+        document.querySelectorAll("[data-custom-select]").forEach(item => {
+          item.classList.remove("open");
+          item.querySelector("[data-custom-select-trigger]")?.setAttribute("aria-expanded", "false");
+        });
+        select.classList.toggle("open", willOpen);
+        customTrigger.setAttribute("aria-expanded", willOpen ? "true" : "false");
+        return;
+      }
+      if (!event.target.closest("[data-custom-select]")) {
+        document.querySelectorAll("[data-custom-select]").forEach(item => {
+          item.classList.remove("open");
+          item.querySelector("[data-custom-select-trigger]")?.setAttribute("aria-expanded", "false");
+        });
+      }
       const activityFilter = event.target.closest("[data-activity-filter]");
       if (activityFilter) {
         activeActivityFilter = activityFilter.dataset.activityFilter;
