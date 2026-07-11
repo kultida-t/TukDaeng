@@ -2266,6 +2266,18 @@
       `).join("");
     }
 
+    const userStatusLabels = {
+      "Active": "ใช้งานได้",
+      "Pending Verification": "รอยืนยันตัวตน",
+      "Suspended": "ระงับชั่วคราว",
+      "Banned": "ระงับถาวร",
+      "Deletion Requested": "รอลบบัญชี",
+      "Deleted / Archived": "ลบ/เก็บถาวร",
+      "Open": "รอตรวจ",
+      "In Review": "กำลังตรวจ",
+      "Cleared": "ปิดแล้ว"
+    };
+
     function userStatusPill(status) {
       const map = {
         "Active": "green",
@@ -2278,7 +2290,7 @@
         "In Review": "amber",
         "Cleared": "green"
       };
-      return `<span class="pill ${map[status] || "blue"}">${status}</span>`;
+      return `<span class="pill ${map[status] || "blue"}">${userStatusLabels[status] || status}</span>`;
     }
 
     function customSelect(id, label, options, selectedValue = "") {
@@ -2326,9 +2338,9 @@
           <input class="field search" id="user-search" type="search" placeholder="ค้นหา report ID, user ID, display name, reason หรือ reference" />
           <select class="field" id="report-status-filter" aria-label="Filter report status">
             <option value="">ทุก report status</option>
-            <option value="Open">Open</option>
-            <option value="In Review">In Review</option>
-            <option value="Cleared">Cleared</option>
+            <option value="Open">รอตรวจ</option>
+            <option value="In Review">กำลังตรวจ</option>
+            <option value="Cleared">ปิดแล้ว</option>
           </select>
           <select class="field" id="report-priority-filter" aria-label="Filter priority">
             <option value="">ทุก priority</option>
@@ -2349,12 +2361,12 @@
           <input class="field search" id="user-search" type="search" placeholder="ค้นหา User ID, ชื่อ, email, phone" />
           ${customSelect("user-status-filter", "Filter account status", [
             { value: "", label: "ทุกสถานะ" },
-            { value: "Pending Verification", label: "Pending Verification" },
-            { value: "Active", label: "Active" },
-            { value: "Suspended", label: "Suspended" },
-            { value: "Banned", label: "Banned" },
-            { value: "Deletion Requested", label: "Deletion Requested" },
-            { value: "Deleted / Archived", label: "Deleted / Archived" }
+            { value: "Active", label: "ใช้งานได้" },
+            { value: "Pending Verification", label: "รอยืนยันตัวตน" },
+            { value: "Suspended", label: "ระงับชั่วคราว" },
+            { value: "Banned", label: "ระงับถาวร" },
+            { value: "Deletion Requested", label: "รอลบบัญชี" },
+            { value: "Deleted / Archived", label: "ลบ/เก็บถาวร" }
           ])}
           ${customSelect("user-auth-filter", "Filter auth method", [
             { value: "", label: "ทุกวิธีเข้าสู่ระบบ" },
@@ -2415,7 +2427,7 @@
       document.querySelector("#panel-subtitle").textContent = "";
       document.querySelector("#table").innerHTML = `
         <div class="user-table">
-          <div class="user-row head"><div>User</div><div>Auth</div><div>Status</div><div>Date Joined</div><div>Last Active</div><div>Assets / Reports</div><div>Action</div></div>
+          <div class="user-row head"><div>User</div><div>Auth</div><div>สถานะ</div><div>Date Joined</div><div>Last Active</div><div>Assets / Reports</div><div>Action</div></div>
           ${pageRows.map(user => `
             <div class="user-row">
               <div><div class="main-text">${user.displayName}</div><div class="muted">${user.email}</div></div>
@@ -2468,7 +2480,7 @@
       });
       document.querySelector("#table").innerHTML = `
         <div class="user-table">
-          <div class="user-row report-row head"><div>Report</div><div>Reported User</div><div>Reporters</div><div>Priority</div><div>Status</div><div>Action</div></div>
+          <div class="user-row report-row head"><div>Report</div><div>Reported User</div><div>Reporters</div><div>Priority</div><div>สถานะ</div><div>Action</div></div>
           ${sorted.map(report => `
             <div class="user-row report-row" data-report-id="${report.id}">
               <div><div class="main-text">${report.id} · ${report.category}</div><div class="muted">${report.reason}</div><div class="chips"><span class="chip">${report.reference}</span><span class="chip">รอ ${report.waiting}</span></div></div>
