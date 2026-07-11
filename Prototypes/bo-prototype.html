@@ -854,6 +854,11 @@
       color: var(--muted);
       text-align: center;
     }
+    .user-table .user-empty {
+      font-size: 13px;
+      font-weight: 400;
+      line-height: 1.45;
+    }
     .detail-body { padding: 16px; }
     .detail-title {
       margin: 0 0 5px;
@@ -2361,7 +2366,7 @@
                 </details>
               </div>
             </div>
-          `).join("") || `<div class="detail-empty">ไม่พบผู้ใช้ตาม filter ที่เลือก</div>`}
+          `).join("") || `<div class="detail-empty user-empty">ไม่พบผู้ใช้</div>`}
         </div>
         <div class="footer-range">
           <span>แสดง ${sorted.length ? `${start + 1}-${Math.min(start + userListPageSize, sorted.length)}` : "0"} จาก ${sorted.length}</span>
