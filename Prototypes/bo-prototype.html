@@ -2328,6 +2328,15 @@
       return `<span class="pill ${map[status] || "blue"}">${userStatusLabels[status] || status}</span>`;
     }
 
+    function userAuthPill(auth) {
+      const map = {
+        "Email": "blue",
+        "Google": "green",
+        "Apple": "purple"
+      };
+      return `<span class="pill ${map[auth] || "blue"}">${auth}</span>`;
+    }
+
     function customSelect(id, label, options, selectedValue = "") {
       const selected = options.find(option => option.value === selectedValue) || options[0];
       return `
@@ -2454,11 +2463,11 @@
       document.querySelector("#panel-subtitle").textContent = "";
       document.querySelector("#table").innerHTML = `
         <div class="user-table">
-          <div class="user-row head"><div>User</div><div>Auth</div><div>สถานะ</div><div>Date Joined</div><div>Last Active</div><div>Assets</div><div>Action</div></div>
+          <div class="user-row head"><div>User</div><div>Auth</div><div>Status</div><div>Date Joined</div><div>Last Active</div><div>Assets</div><div>Action</div></div>
           ${pageRows.map(user => `
             <div class="user-row">
               <div><div class="main-text">${user.displayName}</div></div>
-              <div><div class="main-text">${user.auth}</div></div>
+              <div>${userAuthPill(user.auth)}</div>
               <div>${userStatusPill(user.status)}</div>
               <div><div class="main-text">${user.joined}</div></div>
               <div><div class="main-text">${user.lastActive}</div></div>
@@ -2507,7 +2516,7 @@
       });
       document.querySelector("#table").innerHTML = `
         <div class="user-table">
-          <div class="user-row report-row head"><div>Report</div><div>Reported User</div><div>Reporters</div><div>Priority</div><div>สถานะ</div><div>Action</div></div>
+          <div class="user-row report-row head"><div>Report</div><div>Reported User</div><div>Reporters</div><div>Priority</div><div>Status</div><div>Action</div></div>
           ${sorted.map(report => `
             <div class="user-row report-row" data-report-id="${report.id}">
               <div><div class="main-text">${report.id} · ${report.category}</div><div class="muted">${report.reason}</div><div class="chips"><span class="chip">${report.reference}</span><span class="chip">รอ ${report.waiting}</span></div></div>
