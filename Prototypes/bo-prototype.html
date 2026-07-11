@@ -665,6 +665,7 @@
     }
     .stat-value { font-size: 39px; line-height: .9; margin-bottom: 8px; }
     .stat-note { color: var(--muted); font-size: 12px; line-height: 1.45; }
+    .stat-note.chips { margin-top: 7px; }
 
     .layout {
       display: grid;
@@ -2160,7 +2161,7 @@
       users: [
         { id: "U-1002", displayName: "horology.king", username: "@horology.king", email: "ho***@gmail.com", auth: "Google", status: "Suspended", joined: "03 Jul 2026", joinedBucket: "7d", joinedRank: 20260703, lastActive: "10 Jul 2026 18:10", lastActiveBucket: "24h", lastActiveRank: 202607101810, assets: 2, assetBucket: "1-5", reports: 5, verification: "Google verified", contact: ["Line: ho***"], support: "SUP-177", latest: "Report follow-up", reportState: "5 reporters · status action completed", statusLabel: "Login blocked", allowed: ["Restore", "Ban", "Audit summary"], blocked: ["Reset password", "Deletion from list"], foImpact: "Suspended blocks FO login/session until restored.", actionNote: "Status action must require reason, FO impact preview, and audit log." },
         { id: "U-1017", displayName: "Crown Time BKK", username: "@crowntimebkk", email: "cr***@tukdaeng.example", auth: "Email", status: "Active", joined: "29 Jun 2026", joinedBucket: "30d", joinedRank: 20260629, lastActive: "10 Jul 2026 20:44", lastActiveBucket: "24h", lastActiveRank: 202607102044, assets: 18, assetBucket: "11+", reports: 4, verification: "Email verified", contact: ["Phone: 08*-***-2210", "Line: cr***"], support: "SUP-177", latest: "Duplicate asset context", reportState: "Open report context; not suspended", statusLabel: "Normal FO access", allowed: ["Reset password", "Suspend", "Ban"], blocked: ["Archive from list"], foImpact: "Active account keeps normal FO access until Admin confirms a status action.", actionNote: "Reset password is available because auth method is Email." },
-        { id: "U-1042", displayName: "Nattapol P.", username: "@nattapol", email: "na***@privaterelay.appleid.com", auth: "Apple", status: "Active", joined: "08 Jul 2026", joinedBucket: "7d", joinedRank: 20260708, lastActive: "10 Jul 2026 16:02", lastActiveBucket: "24h", lastActiveRank: 202607101602, assets: 0, assetBucket: "0", reports: 0, verification: "Apple SSO", contact: ["Phone: not provided"], support: "SUP-188", latest: "Proof of payment visibility", reportState: "No user reports", statusLabel: "Normal FO access", allowed: ["Suspend", "Ban"], blocked: ["Reset password"], foImpact: "Apple SSO password reset must be handled outside BO.", actionNote: "Sensitive contact rows display only when data exists." },
+        { id: "U-1042", displayName: "Nattapol P.", username: "@nattapol", email: "na***@privaterelay.appleid.com", auth: "Apple", status: "Active", joined: "08 Jul 2026", joinedBucket: "7d", joinedRank: 20260708, lastActive: "10 Jul 2026 16:02", lastActiveBucket: "24h", lastActiveRank: 202607101602, assets: 0, assetBucket: "0", reports: 0, verification: "Apple SSO", contact: [], support: "SUP-188", latest: "Proof of payment visibility", reportState: "No user reports", statusLabel: "Normal FO access", allowed: ["Suspend", "Ban"], blocked: ["Reset password"], foImpact: "Apple SSO password reset must be handled outside BO.", actionNote: "Sensitive contact rows display only when data exists." },
         { id: "U-1055", displayName: "Vintage Vault BKK", username: "@vintagevault", email: "vv***@gmail.com", auth: "Google", status: "Pending Verification", joined: "10 Jul 2026", joinedBucket: "7d", joinedRank: 20260710, lastActive: "10 Jul 2026 11:20", lastActiveBucket: "24h", lastActiveRank: 202607101120, assets: 3, assetBucket: "1-5", reports: 1, verification: "Email pending", contact: ["Line: vv***"], support: "None", latest: "Signup review", reportState: "1 report · monitor only", statusLabel: "Limited until verification", allowed: ["View detail", "Suspend"], blocked: ["Reset password", "Archive from list"], foImpact: "Pending Verification may limit FO actions depending on auth implementation.", actionNote: "Admin should review auth log before account action." },
         { id: "U-1088", displayName: "Omega Club TH", username: "@omegaclubth", email: "om***@mail.com", auth: "Email", status: "Active", joined: "22 Jun 2026", joinedBucket: "30d", joinedRank: 20260622, lastActive: "09 Jul 2026 22:48", lastActiveBucket: "7d", lastActiveRank: 202607092248, assets: 9, assetBucket: "6-10", reports: 3, verification: "Email verified", contact: ["Phone: 09*-***-8820"], support: "DSP-014", latest: "Condition mismatch dispute", reportState: "3 reports · priority review", statusLabel: "Normal FO access", allowed: ["Reset password", "Suspend", "Ban"], blocked: ["Deletion from list"], foImpact: "Report count raises review priority but does not change FO access automatically.", actionNote: "3 reports alone must not show as suspended without evidence." },
         { id: "U-1104", displayName: "Archive Collector", username: "@archivecollector", email: "ar***@mail.com", auth: "Email", status: "Deletion Requested", joined: "15 May 2026", joinedBucket: "older", joinedRank: 20260515, lastActive: "08 Jul 2026 09:15", lastActiveBucket: "7d", lastActiveRank: 202607080915, assets: 6, assetBucket: "6-10", reports: 1, verification: "Email verified", contact: ["Line: ar***"], support: "DEL-033", latest: "Deletion dependency check", reportState: "Linked report context pending", statusLabel: "Deletion workflow", allowed: ["Open Account Deletion", "View detail"], blocked: ["Archive from User List", "Reset after deletion starts"], foImpact: "Deletion handling belongs in Account Deletion module after dependency review.", actionNote: "User List must not directly delete/archive this account." },
@@ -2322,16 +2323,22 @@
       const countStatus = status => users.filter(user => user.status === status).length;
       const activeUsers = users.filter(user => user.status === "Active");
       const activeByAuth = ["Email", "Google", "Apple"]
-        .map(auth => `${auth} ${activeUsers.filter(user => user.auth === auth).length}`)
-        .join(" · ");
+        .map(auth => userAuthPill(auth, `${auth} ${activeUsers.filter(user => user.auth === auth).length}`))
+        .join("");
+      const suspendedUsers = users.filter(user => user.status === "Suspended");
+      const suspendedReports = suspendedUsers.reduce((sum, user) => sum + user.reports, 0);
+      const suspendedWithTicket = suspendedUsers.filter(user => user.support !== "None").length;
+      const deletionUsers = users.filter(user => user.status === "Deletion Requested");
+      const deletionWithReports = deletionUsers.filter(user => user.reports > 0).length;
       const reportedUsers = users.filter(user => user.reports > 0);
       const totalReports = reportedUsers.reduce((sum, user) => sum + user.reports, 0);
+      const highReportUsers = reportedUsers.filter(user => user.reports >= 3).length;
 
       return [
-        ["Active Users", activeUsers.length, activeByAuth],
-        ["Suspended", countStatus("Suspended"), "ต้องมีเหตุผลและ audit log"],
-        ["Deletion Requested", countStatus("Deletion Requested"), "ตรวจ dependency ใน Account Deletion"],
-        ["Reported", reportedUsers.length, `รวม ${totalReports} รายงานในข้อมูลตัวอย่าง`]
+        ["Active Users", activeUsers.length, activeByAuth, "chips"],
+        ["Suspended", suspendedUsers.length, `${suspendedReports} reports · ${suspendedWithTicket} linked ticket`],
+        ["Deletion Requested", deletionUsers.length, `${deletionWithReports} linked report · dependency review`],
+        ["Reported", reportedUsers.length, `${totalReports} total reports · ${highReportUsers} priority users`]
       ];
     }
 
@@ -2350,13 +2357,13 @@
       return `<span class="pill ${map[status] || "blue"}">${userStatusLabels[status] || status}</span>`;
     }
 
-    function userAuthPill(auth) {
+    function userAuthPill(auth, label = auth) {
       const map = {
         "Email": "blue",
         "Google": "green",
         "Apple": "purple"
       };
-      return `<span class="pill ${map[auth] || "blue"}">${auth}</span>`;
+      return `<span class="pill ${map[auth] || "blue"}">${label}</span>`;
     }
 
     function customSelect(id, label, options, selectedValue = "") {
@@ -2396,7 +2403,7 @@
         <article class="stat">
           <div class="stat-label">${stat[0]}</div>
           <div class="stat-value">${stat[1]}</div>
-          <div class="stat-note">${stat[2]}</div>
+          <div class="stat-note ${stat[3] || ""}">${stat[2]}</div>
         </article>
       `).join("");
       document.querySelector(".filters").innerHTML = isReports ? `
@@ -2461,6 +2468,85 @@
 
     function getUserSearchText(record) {
       return Object.values(record).flat().join(" ").toLowerCase();
+    }
+
+    function getUserFullEmail(user) {
+      const domain = user.email.includes("privaterelay.appleid.com")
+        ? "privaterelay.appleid.com"
+        : user.email.includes("icloud.com")
+          ? "icloud.com"
+          : user.email.includes("tukdaeng.example")
+            ? "tukdaeng.example"
+            : user.email.includes("watchmail.com")
+              ? "watchmail.com"
+              : user.email.includes("gmail.com")
+                ? "gmail.com"
+                : "mail.com";
+      return `${user.username.replace("@", "").replace(/[^a-z0-9.]/gi, ".")}@${domain}`.toLowerCase();
+    }
+
+    function getUserContactItems(user) {
+      return (user.contact || []).filter(item => !/not provided|none|n\/a/i.test(item));
+    }
+
+    function getAssetSummary(user) {
+      if (user.status === "Deleted / Archived") return { Sale: 0, Show: 0, Hide: 0, Sold: 0, "Removed / Hidden": user.assets };
+      const sale = Math.max(0, Math.ceil(user.assets * 0.45));
+      const show = Math.max(0, Math.floor(user.assets * 0.25));
+      const hide = Math.max(0, Math.floor(user.assets * 0.15));
+      const sold = Math.max(0, user.assets - sale - show - hide);
+      const removed = user.status === "Suspended" || user.status === "Banned" ? Math.min(2, user.assets) : 0;
+      return { Sale: sale, Show: show, Hide: hide, Sold: sold, "Removed / Hidden": removed };
+    }
+
+    function getProfilePreview(user) {
+      if (user.status === "Deleted / Archived") return "Public profile hidden or anonymized by retention policy";
+      if (user.status === "Banned") return "Public profile blocked from new FO activity";
+      return `Public profile /profile/${user.username.replace("@", "")}`;
+    }
+
+    function getProfileVisibility(user) {
+      if (user.status === "Deleted / Archived") return "Hidden from public profile and asset surfaces";
+      if (user.status === "Deletion Requested") return "Visible until deletion workflow applies hiding/anonymization policy";
+      if (user.status === "Pending Verification") return "Profile exists, authenticated FO features remain limited";
+      if (user.status === "Suspended" || user.status === "Banned") return "Login/action blocked; public visibility follows account policy";
+      return "Public profile available according to normal FO visibility rules";
+    }
+
+    function getSupportContext(user) {
+      if (user.support === "None") return "No linked support ticket";
+      if (user.support.startsWith("DEL-")) return `${user.support} / Account deletion workflow`;
+      return `${user.support} / ${user.latest}`;
+    }
+
+    function getDeletionContext(user) {
+      if (user.status === "Deletion Requested") return "Deletion request open; review pending offers, assets, chats, and reports in Account Deletion module";
+      if (user.status === "Deleted / Archived") return "Archived account; login blocked and public profile/assets hidden or anonymized";
+      return "No active account deletion request";
+    }
+
+    function getLoginHistory(user) {
+      const provider = user.auth === "Email" ? "Email / password" : `${user.auth} SSO`;
+      return `${user.lastActive} via ${provider}; device and IP shown only when policy permits`;
+    }
+
+    function getActivityTimeline(user) {
+      if (user.latest === "New account") return `Account created ${user.joined}; no assets, offers, reports, or support activity yet`;
+      if (user.reports > 0) return `${user.latest}; ${user.reportState}`;
+      return `${user.latest}; last active ${user.lastActive}`;
+    }
+
+    function renderAssetSummary(user) {
+      return Object.entries(getAssetSummary(user))
+        .map(([label, value]) => `<div class="detail-tile"><span>${label}</span><strong>${value}</strong></div>`)
+        .join("");
+    }
+
+    function renderContactRows(user, tileClass = "detail-tile") {
+      const contacts = getUserContactItems(user);
+      return contacts.length
+        ? `<div class="${tileClass}"><span>Contact details</span><div class="chips">${contacts.map(item => `<span class="chip">${item}</span>`).join("")}</div></div>`
+        : "";
     }
 
     const userActionLabels = {
@@ -2633,7 +2719,99 @@
       `;
     }
 
+    function renderUserDetailPageSpec(user) {
+      if (!user) return;
+      const fullEmail = getUserFullEmail(user);
+      document.body.classList.add("user-detail-mode");
+      document.body.classList.remove("user-list-mode");
+      activeSub = "User Detail";
+      activeRow = user;
+      document.querySelector("#crumb").textContent = `การดำเนินงาน / User Management / User Detail / ${user.id}`;
+      document.querySelector("#page-title").textContent = "User Detail";
+      document.querySelector("#page-meta").textContent = "รายละเอียดผู้ใช้ตาม User Management spec: account, contact/auth, profile, assets, reports, login, support, deletion, activity และ audit";
+      document.querySelector("#panel-title").textContent = user.displayName;
+      document.querySelector("#panel-subtitle").textContent = `${user.id} · ${user.username} · ${fullEmail}`;
+      document.querySelector(".filters").innerHTML = "";
+      document.querySelector("#cards").innerHTML = `
+        <article class="mini-card"><h3>Status</h3><p class="muted">${user.status} · ${user.statusLabel}</p></article>
+        <article class="mini-card"><h3>Assets</h3><p class="muted">${user.assets} total · Sale / Show / Hide / Sold / Removed</p></article>
+        <article class="mini-card"><h3>Reports</h3><p class="muted">${user.reports} reports · ${user.reportState}</p></article>
+      `;
+      document.querySelector("#table").innerHTML = `
+        <div class="user-detail-page">
+          <div class="user-detail-head">
+            <div>
+              <h2>${user.displayName}</h2>
+              <p class="muted">${user.id} · ${user.username} · ${fullEmail}</p>
+              <div class="chips">${userStatusPill(user.status)}<span class="pill blue">${user.auth}</span><span class="chip">${user.verification}</span></div>
+            </div>
+            <button class="btn" type="button" data-back-user-list>กลับไป User List</button>
+          </div>
+          <div class="detail-section">
+            <h4>Account Summary</h4>
+            <div class="detail-grid two">
+              <div class="detail-tile"><span>User ID</span><strong>${user.id}</strong></div>
+              <div class="detail-tile"><span>Display Name</span><strong>${user.displayName}</strong></div>
+              <div class="detail-tile"><span>Profile Image</span><strong>Avatar on FO profile</strong></div>
+              <div class="detail-tile"><span>Status</span><strong>${user.status}</strong><br>${user.statusLabel}</div>
+              <div class="detail-tile"><span>Date Joined</span><strong>${user.joined}</strong></div>
+              <div class="detail-tile"><span>Last Active</span><strong>${user.lastActive}</strong></div>
+            </div>
+          </div>
+          <div class="detail-section">
+            <h4>Contact / Auth</h4>
+            <div class="detail-grid two">
+              <div class="detail-tile"><span>Email</span><strong>${fullEmail}</strong></div>
+              <div class="detail-tile"><span>Login Method</span><strong>${user.auth}</strong><br>${user.verification}</div>
+              ${renderContactRows(user)}
+            </div>
+          </div>
+          <div class="detail-section">
+            <h4>FO Profile Preview</h4>
+            <div class="detail-grid two">
+              <div class="detail-tile"><span>Public Profile</span>${getProfilePreview(user)}</div>
+              <div class="detail-tile"><span>Visibility</span>${getProfileVisibility(user)}</div>
+            </div>
+          </div>
+          <div class="detail-section">
+            <h4>Assets Summary</h4>
+            <div class="detail-grid two">${renderAssetSummary(user)}</div>
+          </div>
+          <div class="detail-section">
+            <h4>Reports</h4>
+            <div class="detail-grid two">
+              <div class="detail-tile"><span>Report Count</span><strong>${user.reports}</strong></div>
+              <div class="detail-tile"><span>Latest Report</span>${user.reportState}</div>
+            </div>
+          </div>
+          <div class="detail-section">
+            <h4>Login History</h4>
+            <div class="detail-tile"><span>Latest Login Attempt</span>${getLoginHistory(user)}</div>
+          </div>
+          <div class="detail-section">
+            <h4>Support Context</h4>
+            <div class="detail-tile"><span>Linked Ticket / Account Issue</span>${getSupportContext(user)}</div>
+          </div>
+          <div class="detail-section">
+            <h4>Account Deletion Context</h4>
+            <div class="detail-tile"><span>Deletion Workflow</span>${getDeletionContext(user)}</div>
+          </div>
+          <div class="detail-section">
+            <h4>Activity Timeline</h4>
+            <div class="event"><strong>Latest event</strong><br>${getActivityTimeline(user)}</div>
+          </div>
+          <div class="detail-section">
+            <h4>Audit Summary</h4>
+            <div class="warning-note"><strong>Latest admin rule:</strong> ${user.actionNote}</div>
+          </div>
+        </div>
+      `;
+      document.querySelector("#detail").innerHTML = "";
+      updateActiveNav();
+    }
+
     function renderUserDetailPage(user) {
+      return renderUserDetailPageSpec(user);
       if (!user) return;
       document.body.classList.add("user-detail-mode");
       document.body.classList.remove("user-list-mode");
