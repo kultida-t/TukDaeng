@@ -2412,7 +2412,7 @@
       userListPage = Math.min(userListPage, pageCount);
       const start = (userListPage - 1) * userListPageSize;
       const pageRows = sorted.slice(start, start + userListPageSize);
-      document.querySelector("#panel-subtitle").textContent = `แสดง ${sorted.length} / ${userManagementData.users.length} รายการ`;
+      document.querySelector("#panel-subtitle").textContent = "";
       document.querySelector("#table").innerHTML = `
         <div class="user-table">
           <div class="user-row head"><div>User</div><div>Auth</div><div>Status</div><div>Date Joined</div><div>Last Active</div><div>Assets / Reports</div><div>Action</div></div>
