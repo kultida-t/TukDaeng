@@ -902,13 +902,15 @@
       line-height: 1;
     }
     .dashboard-card-head {
-      min-height: 58px;
+      min-height: 74px;
       margin: 0;
-      padding: 17px 20px;
+      padding: 16px 20px 14px;
       border-bottom: 1px solid var(--line);
       display: flex;
-      align-items: baseline;
-      gap: 10px;
+      flex-direction: column;
+      align-items: flex-start;
+      justify-content: center;
+      gap: 6px;
     }
     .dashboard-status-card h3 {
       flex: 0 0 auto;
@@ -923,12 +925,11 @@
     .dashboard-card-meta {
       min-width: 0;
       margin: 0;
-      overflow: hidden;
       color: #6d7f98;
       font-size: 12px;
       font-weight: 400;
-      text-overflow: ellipsis;
-      white-space: nowrap;
+      line-height: 1.45;
+      white-space: normal;
     }
     .stat-top {
       display: flex;
@@ -1697,7 +1698,6 @@
     };
 
     const dashboardData = {
-      lastUpdated: "10 Jul 2026, 15:20 GMT+7",
       metrics: [
         { label: "New Users", value: "128", trend: "วันนี้เพิ่มขึ้น 8.2% เทียบกับเมื่อวาน", chips: ["Today 128", "This Week 642", "This Month 2,840"], module: "users", sub: "User List", icon: "users" },
         { label: "Active Users Today", value: "8.4K", trend: "ผู้ใช้งานรายวันเฉลี่ย 7 วันเพิ่มขึ้น 4.1% เทียบกับ 7 วันก่อน", chips: ["Today 8,420", "This Week 24,700", "This Month 38,900"], module: "users", sub: "User List", icon: "users" },
@@ -1756,6 +1756,25 @@
         ]}
       ]
     };
+
+    function formatBangkokTimestamp(date = new Date()) {
+      const formatter = new Intl.DateTimeFormat("en-GB", {
+        timeZone: "Asia/Bangkok",
+        day: "2-digit",
+        month: "short",
+        year: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+        hourCycle: "h23"
+      });
+      return `${formatter.format(date)} GMT+7`;
+    }
+
+    function updateDashboardMeta() {
+      const pageMeta = document.querySelector("#page-meta");
+      if (!pageMeta || activeModule !== "dashboard") return;
+      pageMeta.textContent = `Last updated: ${formatBangkokTimestamp()}`;
+    }
 
     function item(id, name, owner, type, priority, status, detail, tags, action) {
       return { id, name, owner, type, priority, status, detail, tags, action };
@@ -1855,7 +1874,7 @@
       };
       document.querySelector("#crumb").textContent = "การดำเนินงาน / Dashboard";
       document.querySelector("#page-title").textContent = "Dashboard";
-      document.querySelector("#page-meta").textContent = `Last updated: ${dashboardData.lastUpdated}`;
+      updateDashboardMeta();
       document.querySelector("#panel-title").textContent = "Work Queue";
       document.querySelector("#panel-subtitle").textContent = "งานที่ต้องจัดการก่อน โดยเรียงจากกำหนดงานและผลกระทบผู้ใช้";
       document.querySelector("#primary-action").textContent = "เปิด Reports";
@@ -2362,6 +2381,7 @@
 
     renderNav();
     renderModule("dashboard");
+    window.setInterval(updateDashboardMeta, 60000);
     showLoginForm();
   </script>
 </body>
