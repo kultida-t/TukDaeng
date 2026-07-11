@@ -2945,7 +2945,7 @@
     function updateActiveNav() {
       const activeParent = navParentByModule[activeModule] || activeModule;
       document.querySelectorAll(".nav-item").forEach(button => {
-        const isActive = !activeSub && button.dataset.module === activeParent;
+        const isActive = button.dataset.module === activeParent;
         const isExpanded = expandedMenus.has(button.dataset.module);
         button.classList.toggle("active", isActive);
         button.classList.toggle("expanded", isExpanded);
