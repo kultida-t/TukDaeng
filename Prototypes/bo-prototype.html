@@ -2463,6 +2463,24 @@
       return Object.values(record).flat().join(" ").toLowerCase();
     }
 
+    const userActionLabels = {
+      "Reset password": "ส่ง reset password link",
+      Suspend: "ระงับบัญชี",
+      Ban: "Ban user",
+      Restore: "กู้คืนสิทธิ์",
+      "Unban user": "Unban user",
+      "Open Account Deletion": "เปิด Account Deletion",
+      "Resend verification context": "ส่งข้อมูลยืนยันตัวตนอีกครั้ง",
+      "Audit summary": "ดู Audit Summary",
+      "View archived summary": "ดู Archived Summary"
+    };
+
+    function getUserRowActions(user) {
+      return (user.allowed || [])
+        .filter(action => action !== "View detail")
+        .map(action => ({ action, label: userActionLabels[action] || action }));
+    }
+
     function renderUserRows() {
       const q = (document.querySelector("#user-search")?.value || "").trim().toLowerCase();
       const status = document.querySelector("#user-status-filter")?.value || "";
@@ -2486,7 +2504,9 @@
       document.querySelector("#table").innerHTML = `
         <div class="user-table">
           <div class="user-row head"><div>User</div><div>Status</div><div>Last Active</div><div>Assets</div><div>Auth</div><div>Date Joined</div><div>Action</div></div>
-          ${pageRows.map(user => `
+          ${pageRows.map(user => {
+            const rowActions = getUserRowActions(user);
+            return `
             <div class="user-row">
               <div><div class="main-text">${user.displayName}</div></div>
               <div>${userStatusPill(user.status)}</div>
@@ -2499,17 +2519,13 @@
                 <details class="row-menu">
                   <summary title="Account actions">...</summary>
                   <div class="row-menu-list">
-                    ${user.auth === "Email" && user.status === "Active" ? `<button type="button">ส่ง reset password link</button>` : `<button type="button" disabled>Reset password ไม่รองรับ</button>`}
-                    ${user.status === "Active" ? `<button type="button">ระงับบัญชี</button><button type="button">Ban user</button>` : ""}
-                    ${user.status === "Suspended" ? `<button type="button">กู้คืนสิทธิ์</button><button type="button">Ban user</button>` : ""}
-                    ${user.status === "Banned" ? `<button type="button">Unban user</button>` : ""}
-                    ${user.status === "Deletion Requested" ? `<button type="button">เปิด Account Deletion</button>` : ""}
-                    <button type="button">ดู Audit Summary</button>
+                    ${rowActions.map(({ action, label }) => `<button type="button" data-user-action="${action}" data-user-id="${user.id}">${label}</button>`).join("") || `<button type="button" data-user-open="${user.id}">ดูรายละเอียด</button>`}
                   </div>
                 </details>
               </div>
             </div>
-          `).join("") || `<div class="detail-empty user-empty">ไม่พบผู้ใช้</div>`}
+          `;
+          }).join("") || `<div class="detail-empty user-empty">ไม่พบผู้ใช้</div>`}
         </div>
         <div class="footer-range">
           <span>แสดง ${sorted.length ? `${start + 1}-${Math.min(start + userListPageSize, sorted.length)}` : "0"} จาก ${sorted.length}</span>
@@ -2998,7 +3014,20 @@
       });
     }
 
+    function closeRowMenus(exceptMenu = null) {
+      document.querySelectorAll(".row-menu[open]").forEach(menu => {
+        if (menu !== exceptMenu) menu.open = false;
+      });
+    }
+
     document.addEventListener("click", event => {
+      const rowMenu = event.target.closest(".row-menu");
+      if (rowMenu) {
+        if (event.target.closest(".row-menu summary")) closeRowMenus(rowMenu);
+      } else {
+        closeRowMenus();
+      }
+
       const customOption = event.target.closest("[data-custom-select-option]");
       if (customOption) {
         const select = customOption.closest("[data-custom-select]");
