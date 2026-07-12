@@ -1122,6 +1122,13 @@
       font-weight: 800;
       font-size: 13px;
     }
+    .profile-image img,
+    .profile-image-small img {
+      width: 100%;
+      height: 100%;
+      display: block;
+      object-fit: cover;
+    }
     .user-row-actions {
       display: flex;
       align-items: center;
@@ -1299,6 +1306,40 @@
       margin: 0 0 5px;
       font-size: 32px;
       line-height: 1;
+    }
+    .user-detail-title {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      min-width: 0;
+    }
+    .profile-image {
+      width: 76px;
+      height: 76px;
+      border-radius: 18px;
+      overflow: hidden;
+      flex: 0 0 auto;
+      background: #e8eef7;
+      border: 1px solid #d7e0ef;
+      box-shadow: 0 10px 24px rgba(15, 23, 42, .08);
+    }
+    .profile-image-small {
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      overflow: hidden;
+      flex: 0 0 auto;
+      background: #e8eef7;
+      border: 1px solid #d7e0ef;
+    }
+    .profile-image-tile {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .profile-image-tile strong {
+      display: block;
+      line-height: 1.3;
     }
     body.user-management-mode .cards {
       grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -1842,6 +1883,21 @@
       }
     }
     @media (max-width: 760px) {
+      .user-detail-head {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      .user-detail-title {
+        align-items: center;
+      }
+      .user-detail-title h2 {
+        overflow-wrap: anywhere;
+      }
+      .profile-image {
+        width: 64px;
+        height: 64px;
+        border-radius: 16px;
+      }
       .main { padding: 16px 10px 26px; }
       .mobile-header {
         margin: -16px -10px 18px;
@@ -2947,6 +3003,50 @@
       return `${user.lastActive} via ${provider}; device and IP shown only when policy permits`;
     }
 
+    function createProfileImage(user) {
+      const palettes = [
+        { bg: "#f4dfcf", skin: "#b87656", hair: "#221713", shirt: "#b9000e", accent: "#f6c85f" },
+        { bg: "#dbeafe", skin: "#c98663", hair: "#2f221f", shirt: "#1d4ed8", accent: "#93c5fd" },
+        { bg: "#dcfce7", skin: "#8f5c3f", hair: "#3b281f", shirt: "#047857", accent: "#86efac" },
+        { bg: "#fef3c7", skin: "#d19973", hair: "#1f2937", shirt: "#7c2d12", accent: "#fbbf24" },
+        { bg: "#e0e7ff", skin: "#a16d4f", hair: "#111827", shirt: "#4338ca", accent: "#a5b4fc" },
+        { bg: "#fce7f3", skin: "#c47a5a", hair: "#4a2d22", shirt: "#be123c", accent: "#f9a8d4" }
+      ];
+      const paletteIndex = Math.abs([...user.id].reduce((sum, char) => sum + char.charCodeAt(0), 0)) % palettes.length;
+      const palette = palettes[paletteIndex];
+      const hairVariant = paletteIndex % 3;
+      const hair = hairVariant === 0
+        ? `<path d="M47 70c2-28 24-45 52-39 21 4 34 19 36 42-13-12-29-14-47-10-15 3-27 2-41 7z" fill="${palette.hair}"/>`
+        : hairVariant === 1
+          ? `<path d="M43 77c-2-31 20-51 50-50 26 1 42 19 43 48-14-8-25-15-49-11-15 3-30 4-44 13z" fill="${palette.hair}"/>`
+          : `<path d="M42 74c5-34 31-50 62-43 20 5 30 19 32 44-18-11-38-17-56-9-11 5-24 7-38 8z" fill="${palette.hair}"/>`;
+      const svg = `
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160">
+          <rect width="160" height="160" rx="30" fill="${palette.bg}"/>
+          <circle cx="126" cy="30" r="43" fill="${palette.accent}" opacity=".7"/>
+          <circle cx="30" cy="128" r="52" fill="#fff" opacity=".36"/>
+          <path d="M31 160c5-34 25-54 49-54s44 20 49 54H31z" fill="${palette.shirt}"/>
+          <path d="M58 108c5 10 13 15 22 15s17-5 22-15v-16H58v16z" fill="${palette.skin}"/>
+          <circle cx="80" cy="74" r="34" fill="${palette.skin}"/>
+          ${hair}
+          <path d="M52 68c5-19 20-31 41-30 19 1 32 12 36 29-15-8-29-10-45-6-14 4-22 4-32 7z" fill="${palette.hair}" opacity=".92"/>
+          <circle cx="68" cy="79" r="3.2" fill="#1f2937"/>
+          <circle cx="93" cy="79" r="3.2" fill="#1f2937"/>
+          <path d="M72 93c6 5 13 5 19 0" fill="none" stroke="#7f4332" stroke-width="4" stroke-linecap="round"/>
+          <path d="M58 111c11 11 32 14 44 0 0 12-8 22-22 22s-22-10-22-22z" fill="#fff" opacity=".18"/>
+        </svg>`;
+      return `data:image/svg+xml,${encodeURIComponent(svg)}`;
+    }
+
+    function getUserProfileImage(user) {
+      if (!user.profileImage) user.profileImage = createProfileImage(user);
+      return user.profileImage;
+    }
+
+    function renderUserProfileImage(user, className = "profile-image") {
+      return `<div class="${className}"><img src="${getUserProfileImage(user)}" alt="${user.displayName} profile image"></div>`;
+    }
+
     function getActivityTimeline(user) {
       if (user.latest === "New account") return `Account created ${user.joined}; no assets, offers, reports, or support activity yet`;
       if (user.reports > 0) return `${user.latest}; ${user.reportState}`;
@@ -3096,7 +3196,10 @@
           </div>
         </div>
         <div class="detail-body">
-          <h3 class="detail-title">${user.displayName}</h3>
+          <div class="user-detail-title">
+            ${renderUserProfileImage(user, "profile-image-small")}
+            <h3 class="detail-title">${user.displayName}</h3>
+          </div>
           <div class="chips">
             ${userStatusPill(user.status)}
             <span class="pill blue">${user.auth}</span>
@@ -3106,6 +3209,7 @@
             <h4>Account Summary</h4>
             <div class="detail-grid two">
               <div class="detail-tile"><span>User ID</span><strong>${user.id}</strong></div>
+              <div class="detail-tile profile-image-tile"><span>Profile Image</span>${renderUserProfileImage(user, "profile-image-small")}<strong>FO profile avatar</strong></div>
               <div class="detail-tile"><span>Date Joined</span><strong>${user.joined}</strong></div>
               <div class="detail-tile"><span>Last Active</span><strong>${user.lastActive}</strong></div>
               <div class="detail-tile"><span>Total Assets</span><strong>${user.assets}</strong></div>
@@ -3161,9 +3265,12 @@
       document.querySelector("#table").innerHTML = `
         <div class="user-detail-page">
           <div class="user-detail-head">
-            <div>
-              <h2>${user.displayName}</h2>
-              <div class="chips">${userStatusPill(user.status)}<span class="pill blue">${user.auth}</span></div>
+            <div class="user-detail-title">
+              ${renderUserProfileImage(user)}
+              <div>
+                <h2>${user.displayName}</h2>
+                <div class="chips">${userStatusPill(user.status)}<span class="pill blue">${user.auth}</span></div>
+              </div>
             </div>
             <button class="btn" type="button" data-back-user-list>กลับไป User List</button>
           </div>
@@ -3172,7 +3279,7 @@
             <div class="detail-grid two">
               <div class="detail-tile"><span>User ID</span><strong>${user.id}</strong></div>
               <div class="detail-tile"><span>Display Name</span><strong>${user.displayName}</strong></div>
-              <div class="detail-tile"><span>Profile Image</span><strong>Avatar on FO profile</strong></div>
+              <div class="detail-tile profile-image-tile"><span>Profile Image</span>${renderUserProfileImage(user, "profile-image-small")}<strong>Avatar on FO profile</strong></div>
               <div class="detail-tile"><span>Status</span><strong>${user.status}</strong><br>${user.statusLabel}</div>
               <div class="detail-tile"><span>Date Joined</span><strong>${user.joined}</strong></div>
               <div class="detail-tile"><span>Last Active</span><strong>${user.lastActive}</strong></div>
