@@ -2327,7 +2327,6 @@
         .join("");
       const suspendedUsers = users.filter(user => user.status === "Suspended");
       const suspendedReports = suspendedUsers.reduce((sum, user) => sum + user.reports, 0);
-      const suspendedWithTicket = suspendedUsers.filter(user => user.support !== "None").length;
       const deletionUsers = users.filter(user => user.status === "Deletion Requested");
       const deletionWithReports = deletionUsers.filter(user => user.reports > 0).length;
       const reportedUsers = users.filter(user => user.reports > 0);
@@ -2336,10 +2335,19 @@
 
       return [
         ["Active Users", activeUsers.length, activeByAuth, "chips"],
-        ["Suspended", suspendedUsers.length, `${suspendedReports} reports · ${suspendedWithTicket} linked ticket`],
-        ["Deletion Requested", deletionUsers.length, `${deletionWithReports} linked report · dependency review`],
+        ["Suspended", suspendedUsers.length, `${suspendedReports} total reports · audit required`],
+        ["Deletion Requested", deletionUsers.length, `${deletionWithReports} รายงานที่เกี่ยวข้อง · ตรวจเงื่อนไขก่อนลบ`],
         ["Reported", reportedUsers.length, `${totalReports} total reports · ${highReportUsers} priority users`]
       ];
+    }
+
+    function renderUserSummaryNote(stat) {
+      const [, , detail, mode] = stat;
+      if (mode === "chips") return detail;
+      return detail
+        .split(/\s+·\s+/)
+        .map(item => `<span class="chip">${item}</span>`)
+        .join("");
     }
 
     function userStatusPill(status) {
@@ -2403,7 +2411,7 @@
         <article class="stat">
           <div class="stat-label">${stat[0]}</div>
           <div class="stat-value">${stat[1]}</div>
-          <div class="stat-note ${stat[3] || ""}">${stat[2]}</div>
+          <div class="stat-note chips">${renderUserSummaryNote(stat)}</div>
         </article>
       `).join("");
       document.querySelector(".filters").innerHTML = isReports ? `
