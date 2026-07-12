@@ -2042,7 +2042,8 @@
         gap: 10px;
       }
       body.user-list-mode .user-table {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
+        grid-template-columns: 1fr;
+        gap: 12px;
       }
       .user-row,
       .user-row.report-row {
@@ -2089,9 +2090,12 @@
       }
       .user-row:not(.head):not(.report-row) {
         grid-template-columns: minmax(0, 1fr) 34px;
-        column-gap: 10px;
-        row-gap: 8px;
-        padding: 13px 12px;
+        column-gap: 14px;
+        row-gap: 14px;
+        padding: 18px 18px 16px;
+        border-color: #cfdbd2;
+        border-radius: 10px;
+        box-shadow: 0 1px 2px rgba(15, 23, 42, .05);
         cursor: pointer;
       }
       .user-row:not(.head):not(.report-row) > div.user-cell-primary[data-label],
@@ -2109,7 +2113,7 @@
         align-self: center;
       }
       .user-row:not(.head):not(.report-row) > div.user-cell-primary[data-label] {
-        min-height: 28px;
+        min-height: 30px;
         display: flex;
         align-items: center;
         border-bottom: 0;
@@ -2120,7 +2124,8 @@
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
-        line-height: 1.2;
+        font-size: 18px;
+        line-height: 1.15;
       }
       .user-row:not(.head):not(.report-row) > div[data-label]:not(.user-cell-primary) {
         display: none;
@@ -2130,15 +2135,15 @@
         grid-row: 2;
         display: flex;
         flex-wrap: wrap;
-        gap: 7px;
-        padding-top: 2px;
+        gap: 9px;
+        padding-top: 0;
       }
       .user-card-meta {
         flex: 1 0 100%;
         display: grid;
-        gap: 5px;
-        margin-top: 1px;
-        padding-top: 7px;
+        gap: 3px;
+        margin-top: 8px;
+        padding-top: 11px;
         border-top: 1px solid #edf2f7;
       }
       .user-card-meta-item {
@@ -2146,36 +2151,43 @@
         align-items: baseline;
         justify-content: space-between;
         gap: 8px;
-        color: #061426;
-        font-size: 12px;
+        color: #34445b;
+        font-size: 13px;
         line-height: 1.35;
       }
       .user-card-meta-item span {
-        color: #60748d;
-        font-size: 10px;
-        font-weight: 800;
+        color: #5f6f83;
+        font-size: 13px;
+        font-weight: 600;
+      }
+      .user-card-meta-item strong {
+        font-weight: 400;
       }
       .user-card-tag {
-        min-height: 27px;
+        min-height: 30px;
         display: inline-flex;
         align-items: center;
         gap: 5px;
         max-width: 100%;
-        padding: 5px 8px;
+        padding: 6px 11px;
         border: 1px solid #dce6f2;
         border-radius: 999px;
-        background: #fbfdff;
-        color: #263b56;
-        font-size: 12px;
-        font-weight: 500;
+        background: #f8fbff;
+        color: #4c5c70;
+        font-size: 13px;
+        font-weight: 700;
         line-height: 1.2;
         overflow-wrap: anywhere;
       }
       .user-card-tag.asset-tag {
-        background: #fff;
+        background: #f7fafc;
+        color: #4a5b6e;
       }
       .user-card-tags > .pill {
         align-self: center;
+        min-height: 30px;
+        padding: 6px 11px;
+        font-size: 13px;
       }
       .user-card-tag .tag-label {
         color: #60748d;
@@ -2187,7 +2199,7 @@
       }
       .user-row-actions {
         width: auto;
-        min-height: 28px;
+        min-height: 30px;
         padding-top: 0;
         justify-content: flex-end;
         align-self: center;
@@ -2198,14 +2210,14 @@
         justify-content: center;
       }
       body.user-list-mode .row-menu summary {
-        width: 28px;
-        height: 28px;
+        width: 30px;
+        height: 30px;
         border: 0;
         border-radius: 999px;
         background: transparent;
         color: #061426;
-        font-size: 17px;
-        transform: translateY(-1.5px);
+        font-size: 18px;
+        transform: translateY(-1px);
       }
       body.user-list-mode .row-menu[open] summary {
         border-color: transparent;
