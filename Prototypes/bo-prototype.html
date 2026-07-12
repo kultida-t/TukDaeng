@@ -2641,6 +2641,25 @@
       ]
     };
 
+    const userProfileImages = {
+      "U-1002": "./assets/user-avatars/u-1002.png",
+      "U-1017": "./assets/user-avatars/u-1017.png",
+      "U-1042": "./assets/user-avatars/u-1042.png",
+      "U-1055": "./assets/user-avatars/u-1055.png",
+      "U-1088": "./assets/user-avatars/u-1088.png",
+      "U-1104": "./assets/user-avatars/u-1104.png",
+      "U-1120": "./assets/user-avatars/u-1120.png",
+      "U-1144": "./assets/user-avatars/u-1144.png",
+      "U-1161": "./assets/user-avatars/u-1161.png",
+      "U-1186": "./assets/user-avatars/u-1186.png",
+      "U-1207": "./assets/user-avatars/u-1207.png",
+      "U-1222": "./assets/user-avatars/u-1222.png"
+    };
+
+    userManagementData.users.forEach(user => {
+      user.profileImage = userProfileImages[user.id] || user.profileImage;
+    });
+
     const dashboardData = {
       metrics: [
         { label: "New Users", value: "128", trend: "วันนี้เพิ่มขึ้น 8.2% เทียบกับเมื่อวาน", chips: ["Today 128", "This Week 642", "This Month 2,840"], module: "users", sub: "User List", icon: "users" },
