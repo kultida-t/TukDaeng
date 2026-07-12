@@ -2104,6 +2104,7 @@
         border-radius: 10px;
         box-shadow: 0 1px 2px rgba(15, 23, 42, .05);
         cursor: pointer;
+        overflow: visible;
       }
       .user-row:not(.head):not(.report-row) > div.user-cell-primary[data-label],
       .user-row:not(.head):not(.report-row) > .user-row-actions {
@@ -2231,19 +2232,16 @@
         background: transparent;
         color: var(--blue);
       }
-      .row-menu-list {
+      body.user-list-mode .row-menu-list {
         left: auto;
         right: 0;
-        min-width: 196px;
-        max-width: calc(100vw - 32px);
+        width: min(196px, calc(100vw - 64px));
+        min-width: 0;
+        max-width: calc(100vw - 64px);
       }
-      body.user-list-mode .user-table .user-row:not(.head):nth-child(even) .row-menu-list {
-        left: 0;
-        right: auto;
-      }
-      body.user-list-mode .user-table .user-row:not(.head):nth-child(odd) .row-menu-list {
-        left: auto;
-        right: 0;
+      body.user-list-mode .row-menu-list button {
+        white-space: normal;
+        overflow-wrap: anywhere;
       }
       .detail-grid.two {
         grid-template-columns: 1fr;
