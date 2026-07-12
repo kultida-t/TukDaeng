@@ -1852,6 +1852,10 @@
         justify-content: flex-start;
       }
       .work-row { grid-template-columns: 4px minmax(0, 1fr) auto; }
+      body.dashboard-mode .work-row {
+        grid-template-columns: 3px minmax(0, 1fr) minmax(44px, max-content);
+        padding-right: 16px;
+      }
       .work-row > .chevron { display: none; }
       .activity-row { grid-template-columns: 3px minmax(0, 1fr); }
       .activity-time { margin-top: 4px; }
