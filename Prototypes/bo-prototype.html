@@ -1824,6 +1824,7 @@
       }
       .tools { justify-content: flex-start; }
       .summary-grid, .cards, .nav { grid-template-columns: 1fr; }
+      body.dashboard-mode .cards { grid-template-columns: 1fr; }
       body.user-management-mode .cards { grid-template-columns: 1fr; }
       .panel-head {
         align-items: flex-start;
@@ -1858,6 +1859,24 @@
       }
       .work-row > .chevron { display: none; }
       .activity-row { grid-template-columns: 3px minmax(0, 1fr); }
+      body.dashboard-mode .activity-row {
+        grid-template-columns: 3px minmax(0, 1fr) minmax(64px, max-content);
+        padding-right: 16px;
+      }
+      body.dashboard-mode .activity-row > .chevron { display: none; }
+      .dashboard-card-head {
+        padding-right: 16px;
+        padding-left: 16px;
+      }
+      .dashboard-status-card .status-row {
+        grid-template-columns: minmax(0, 1fr) minmax(64px, max-content);
+        padding-right: 16px;
+        padding-left: 16px;
+      }
+      .brand-ranking-list {
+        padding-right: 16px;
+        padding-left: 16px;
+      }
       .activity-time { margin-top: 4px; }
       .row { grid-template-columns: 1fr; gap: 7px; }
       .row.head { display: none; }
