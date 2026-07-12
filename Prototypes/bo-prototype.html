@@ -802,7 +802,6 @@
       color: var(--active);
       background: #eef5ff;
     }
-
     .detail {
       position: sticky;
       top: 20px;
@@ -1331,15 +1330,6 @@
       flex: 0 0 auto;
       background: #e8eef7;
       border: 1px solid #d7e0ef;
-    }
-    .profile-image-tile {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-    .profile-image-tile strong {
-      display: block;
-      line-height: 1.3;
     }
     body.user-management-mode .cards {
       grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -2619,16 +2609,16 @@
 
     const userManagementData = {
       users: [
-        { id: "U-1002", displayName: "horology.king", username: "@horology.king", email: "ho***@gmail.com", auth: "Google", status: "Suspended", joined: "03 Jul 2026", joinedBucket: "7d", joinedRank: 20260703, lastActive: "10 Jul 2026 18:10", lastActiveBucket: "24h", lastActiveRank: 202607101810, assets: 2, assetBucket: "1-5", reports: 5, verification: "Google verified", contact: ["Line: ho***"], support: "SUP-177", latest: "Report follow-up", reportState: "5 reporters · status action completed", statusLabel: "Login blocked", allowed: ["Restore", "Ban", "Audit summary"], blocked: ["Reset password", "Deletion from list"], foImpact: "Suspended blocks FO login/session until restored.", actionNote: "Status action must require reason, FO impact preview, and audit log." },
-        { id: "U-1017", displayName: "Crown Time BKK", username: "@crowntimebkk", email: "cr***@tukdaeng.example", auth: "Email", status: "Active", joined: "29 Jun 2026", joinedBucket: "30d", joinedRank: 20260629, lastActive: "10 Jul 2026 20:44", lastActiveBucket: "24h", lastActiveRank: 202607102044, assets: 18, assetBucket: "11+", reports: 4, verification: "Email verified", contact: ["Phone: 08*-***-2210", "Line: cr***"], support: "SUP-177", latest: "Duplicate asset context", reportState: "Open report context; not suspended", statusLabel: "Normal FO access", allowed: ["Reset password", "Suspend", "Ban"], blocked: ["Archive from list"], foImpact: "Active account keeps normal FO access until Admin confirms a status action.", actionNote: "Reset password is available because auth method is Email." },
+        { id: "U-1002", displayName: "horology.king", username: "@horology.king", email: "ho***@gmail.com", auth: "Google", status: "Suspended", joined: "03 Jul 2026", joinedBucket: "7d", joinedRank: 20260703, lastActive: "10 Jul 2026 18:10", lastActiveBucket: "24h", lastActiveRank: 202607101810, assets: 2, assetBucket: "1-5", reports: 5, verification: "Google verified", contact: ["Line: horology.king"], support: "SUP-177", latest: "Report follow-up", reportState: "5 reporters · status action completed", statusLabel: "Login blocked", allowed: ["Restore", "Ban", "Audit summary"], blocked: ["Reset password", "Deletion from list"], foImpact: "Suspended blocks FO login/session until restored.", actionNote: "Status action must require reason, FO impact preview, and audit log." },
+        { id: "U-1017", displayName: "Crown Time BKK", username: "@crowntimebkk", email: "cr***@tukdaeng.example", auth: "Email", status: "Active", joined: "29 Jun 2026", joinedBucket: "30d", joinedRank: 20260629, lastActive: "10 Jul 2026 20:44", lastActiveBucket: "24h", lastActiveRank: 202607102044, assets: 18, assetBucket: "11+", reports: 4, verification: "Email verified", contact: ["Phone: 081-234-2210", "Line: crowntimebkk"], support: "SUP-177", latest: "Duplicate asset context", reportState: "Open report context; not suspended", statusLabel: "Normal FO access", allowed: ["Reset password", "Suspend", "Ban"], blocked: ["Archive from list"], foImpact: "Active account keeps normal FO access until Admin confirms a status action.", actionNote: "Reset password is available because auth method is Email." },
         { id: "U-1042", displayName: "Nattapol P.", username: "@nattapol", email: "na***@privaterelay.appleid.com", auth: "Apple", status: "Active", joined: "08 Jul 2026", joinedBucket: "7d", joinedRank: 20260708, lastActive: "10 Jul 2026 16:02", lastActiveBucket: "24h", lastActiveRank: 202607101602, assets: 0, assetBucket: "0", reports: 0, verification: "Apple SSO", contact: [], support: "SUP-188", latest: "Proof of payment visibility", reportState: "No user reports", statusLabel: "Normal FO access", allowed: ["Suspend", "Ban"], blocked: ["Reset password"], foImpact: "Apple SSO password reset must be handled outside BO.", actionNote: "Sensitive contact rows display only when data exists." },
-        { id: "U-1055", displayName: "Vintage Vault BKK", username: "@vintagevault", email: "vv***@gmail.com", auth: "Google", status: "Pending Verification", joined: "10 Jul 2026", joinedBucket: "7d", joinedRank: 20260710, lastActive: "10 Jul 2026 11:20", lastActiveBucket: "24h", lastActiveRank: 202607101120, assets: 3, assetBucket: "1-5", reports: 1, verification: "Email pending", contact: ["Line: vv***"], support: "None", latest: "Signup review", reportState: "1 report · monitor only", statusLabel: "Limited until verification", allowed: ["View detail", "Suspend"], blocked: ["Reset password", "Archive from list"], foImpact: "Pending Verification may limit FO actions depending on auth implementation.", actionNote: "Admin should review auth log before account action." },
-        { id: "U-1088", displayName: "Omega Club TH", username: "@omegaclubth", email: "om***@mail.com", auth: "Email", status: "Active", joined: "22 Jun 2026", joinedBucket: "30d", joinedRank: 20260622, lastActive: "09 Jul 2026 22:48", lastActiveBucket: "7d", lastActiveRank: 202607092248, assets: 9, assetBucket: "6-10", reports: 3, verification: "Email verified", contact: ["Phone: 09*-***-8820"], support: "DSP-014", latest: "Condition mismatch dispute", reportState: "3 reports · priority review", statusLabel: "Normal FO access", allowed: ["Reset password", "Suspend", "Ban"], blocked: ["Deletion from list"], foImpact: "Report count raises review priority but does not change FO access automatically.", actionNote: "3 reports alone must not show as suspended without evidence." },
-        { id: "U-1104", displayName: "Archive Collector", username: "@archivecollector", email: "ar***@mail.com", auth: "Email", status: "Deletion Requested", joined: "15 May 2026", joinedBucket: "older", joinedRank: 20260515, lastActive: "08 Jul 2026 09:15", lastActiveBucket: "7d", lastActiveRank: 202607080915, assets: 6, assetBucket: "6-10", reports: 1, verification: "Email verified", contact: ["Line: ar***"], support: "DEL-033", latest: "Deletion dependency check", reportState: "Linked report context pending", statusLabel: "Deletion workflow", allowed: ["Open Account Deletion", "View detail"], blocked: ["Archive from User List", "Reset after deletion starts"], foImpact: "Deletion handling belongs in Account Deletion module after dependency review.", actionNote: "User List must not directly delete/archive this account." },
-        { id: "U-1120", displayName: "The Collector", username: "@thecollector", email: "tc***@icloud.com", auth: "Apple", status: "Banned", joined: "02 Apr 2026", joinedBucket: "older", joinedRank: 20260402, lastActive: "24 Jun 2026 13:12", lastActiveBucket: "30d", lastActiveRank: 202606241312, assets: 11, assetBucket: "11+", reports: 8, verification: "Apple SSO", contact: ["Phone: 08*-***-0090"], support: "None", latest: "Abuse confirmed", reportState: "Resolved with ban", statusLabel: "Login blocked", allowed: ["Unban user", "Audit summary"], blocked: ["Reset password"], foImpact: "Banned blocks login and new FO activity until Admin unbans.", actionNote: "Unban requires confirmation, reason, before/after audit." },
-        { id: "U-1144", displayName: "Seiko Corner", username: "@seikocorner", email: "se***@watchmail.com", auth: "Email", status: "Active", joined: "01 Jul 2026", joinedBucket: "30d", joinedRank: 20260701, lastActive: "07 Jul 2026 18:30", lastActiveBucket: "7d", lastActiveRank: 202607071830, assets: 5, assetBucket: "1-5", reports: 0, verification: "Email verified", contact: ["Line: se***"], support: "None", latest: "No support context", reportState: "No user reports", statusLabel: "Normal FO access", allowed: ["Reset password", "Suspend", "Ban"], blocked: ["Archive from list"], foImpact: "Active account has normal Feed/Search/Profile visibility.", actionNote: "Sensitive fields remain masked in list and detail." },
+        { id: "U-1055", displayName: "Vintage Vault BKK", username: "@vintagevault", email: "vv***@gmail.com", auth: "Google", status: "Pending Verification", joined: "10 Jul 2026", joinedBucket: "7d", joinedRank: 20260710, lastActive: "10 Jul 2026 11:20", lastActiveBucket: "24h", lastActiveRank: 202607101120, assets: 3, assetBucket: "1-5", reports: 1, verification: "Email pending", contact: ["Line: vintagevault"], support: "None", latest: "Signup review", reportState: "1 report · monitor only", statusLabel: "Limited until verification", allowed: ["View detail", "Suspend"], blocked: ["Reset password", "Archive from list"], foImpact: "Pending Verification may limit FO actions depending on auth implementation.", actionNote: "Admin should review auth log before account action." },
+        { id: "U-1088", displayName: "Omega Club TH", username: "@omegaclubth", email: "om***@mail.com", auth: "Email", status: "Active", joined: "22 Jun 2026", joinedBucket: "30d", joinedRank: 20260622, lastActive: "09 Jul 2026 22:48", lastActiveBucket: "7d", lastActiveRank: 202607092248, assets: 9, assetBucket: "6-10", reports: 3, verification: "Email verified", contact: ["Phone: 092-345-8820"], support: "DSP-014", latest: "Condition mismatch dispute", reportState: "3 reports · priority review", statusLabel: "Normal FO access", allowed: ["Reset password", "Suspend", "Ban"], blocked: ["Deletion from list"], foImpact: "Report count raises review priority but does not change FO access automatically.", actionNote: "3 reports alone must not show as suspended without evidence." },
+        { id: "U-1104", displayName: "Archive Collector", username: "@archivecollector", email: "ar***@mail.com", auth: "Email", status: "Deletion Requested", joined: "15 May 2026", joinedBucket: "older", joinedRank: 20260515, lastActive: "08 Jul 2026 09:15", lastActiveBucket: "7d", lastActiveRank: 202607080915, assets: 6, assetBucket: "6-10", reports: 1, verification: "Email verified", contact: ["Line: archivecollector"], support: "DEL-033", latest: "Deletion dependency check", reportState: "Linked report context pending", statusLabel: "Deletion workflow", allowed: ["Open Account Deletion", "View detail"], blocked: ["Archive from User List", "Reset after deletion starts"], foImpact: "Deletion handling belongs in Account Deletion module after dependency review.", actionNote: "User List must not directly delete/archive this account." },
+        { id: "U-1120", displayName: "The Collector", username: "@thecollector", email: "tc***@icloud.com", auth: "Apple", status: "Banned", joined: "02 Apr 2026", joinedBucket: "older", joinedRank: 20260402, lastActive: "24 Jun 2026 13:12", lastActiveBucket: "30d", lastActiveRank: 202606241312, assets: 11, assetBucket: "11+", reports: 8, verification: "Apple SSO", contact: ["Phone: 081-777-0090"], support: "None", latest: "Abuse confirmed", reportState: "Resolved with ban", statusLabel: "Login blocked", allowed: ["Unban user", "Audit summary"], blocked: ["Reset password"], foImpact: "Banned blocks login and new FO activity until Admin unbans.", actionNote: "Unban requires confirmation, reason, before/after audit." },
+        { id: "U-1144", displayName: "Seiko Corner", username: "@seikocorner", email: "se***@watchmail.com", auth: "Email", status: "Active", joined: "01 Jul 2026", joinedBucket: "30d", joinedRank: 20260701, lastActive: "07 Jul 2026 18:30", lastActiveBucket: "7d", lastActiveRank: 202607071830, assets: 5, assetBucket: "1-5", reports: 0, verification: "Email verified", contact: ["Line: seikocorner"], support: "None", latest: "No support context", reportState: "No user reports", statusLabel: "Normal FO access", allowed: ["Reset password", "Suspend", "Ban"], blocked: ["Archive from list"], foImpact: "Active account has normal Feed/Search/Profile visibility.", actionNote: "Contact fields display full FO profile values when present." },
         { id: "U-1161", displayName: "Daily Watch Hunter", username: "@dailyhunter", email: "da***@gmail.com", auth: "Google", status: "Active", joined: "09 Jul 2026", joinedBucket: "7d", joinedRank: 20260709, lastActive: "09 Jul 2026 08:04", lastActiveBucket: "7d", lastActiveRank: 202607090804, assets: 1, assetBucket: "1-5", reports: 0, verification: "Google verified", contact: [], support: "None", latest: "New account", reportState: "No user reports", statusLabel: "Normal FO access", allowed: ["Suspend", "Ban"], blocked: ["Reset password"], foImpact: "Google account cannot receive BO password reset link.", actionNote: "Do not render empty contact rows in detail." },
-        { id: "U-1186", displayName: "Rolex Rama9", username: "@rolexrama9", email: "rr***@mail.com", auth: "Email", status: "Suspended", joined: "18 Jun 2026", joinedBucket: "30d", joinedRank: 20260618, lastActive: "05 Jul 2026 21:10", lastActiveBucket: "7d", lastActiveRank: 202607052110, assets: 14, assetBucket: "11+", reports: 6, verification: "Email verified", contact: ["Phone: 08*-***-4444"], support: "CHT-090", latest: "Reported chat context", reportState: "6 reports · suspended after evidence", statusLabel: "Login blocked", allowed: ["Restore", "Ban", "Audit summary"], blocked: ["Reset while suspended"], foImpact: "Session revoked; public surfaces follow account policy.", actionNote: "Suspension restore must show status before action and after confirmation." },
+        { id: "U-1186", displayName: "Rolex Rama9", username: "@rolexrama9", email: "rr***@mail.com", auth: "Email", status: "Suspended", joined: "18 Jun 2026", joinedBucket: "30d", joinedRank: 20260618, lastActive: "05 Jul 2026 21:10", lastActiveBucket: "7d", lastActiveRank: 202607052110, assets: 14, assetBucket: "11+", reports: 6, verification: "Email verified", contact: ["Phone: 086-555-4444"], support: "CHT-090", latest: "Reported chat context", reportState: "6 reports · suspended after evidence", statusLabel: "Login blocked", allowed: ["Restore", "Ban", "Audit summary"], blocked: ["Reset while suspended"], foImpact: "Session revoked; public surfaces follow account policy.", actionNote: "Suspension restore must show status before action and after confirmation." },
         { id: "U-1207", displayName: "Minimal Dial", username: "@minimaldial", email: "mi***@mail.com", auth: "Email", status: "Pending Verification", joined: "11 Jun 2026", joinedBucket: "30d", joinedRank: 20260611, lastActive: "30 Jun 2026 10:25", lastActiveBucket: "30d", lastActiveRank: 202606301025, assets: 0, assetBucket: "0", reports: 0, verification: "Email OTP pending", contact: [], support: "SUP-182", latest: "Cannot reset password question", reportState: "No user reports", statusLabel: "Verification pending", allowed: ["Resend verification context", "Suspend"], blocked: ["Reset password until verified"], foImpact: "Verification state should be reviewed before support action.", actionNote: "Use auth/support context before sending account instructions." },
         { id: "U-1222", displayName: "old.user", username: "@olduser", email: "ol***@mail.com", auth: "Email", status: "Deleted / Archived", joined: "17 Jan 2026", joinedBucket: "older", joinedRank: 20260117, lastActive: "15 May 2026 07:44", lastActiveBucket: "older", lastActiveRank: 202605150744, assets: 0, assetBucket: "0", reports: 0, verification: "Archived", contact: [], support: "DEL-020", latest: "Anonymized", reportState: "Closed", statusLabel: "Archived", allowed: ["View archived summary"], blocked: ["Reset password", "Status mutation"], foImpact: "Archived account login blocked; profile/assets hidden or anonymized.", actionNote: "Archive details remain sensitive and audited." }
       ],
@@ -2981,6 +2971,17 @@
       return (user.contact || []).filter(item => !/not provided|none|n\/a/i.test(item));
     }
 
+    function getUserContactDisplayItems(user) {
+      return getUserContactItems(user).map(item => {
+        const separatorIndex = item.indexOf(":");
+        if (separatorIndex < 0) return { type: "contact", label: "Contact", value: item.trim() };
+        const rawLabel = item.slice(0, separatorIndex).trim();
+        const type = rawLabel.toLowerCase();
+        const label = type === "phone" ? "Phone number" : rawLabel;
+        return { type, label, value: item.slice(separatorIndex + 1).trim() };
+      });
+    }
+
     function getAssetSummary(user) {
       if (user.status === "Deleted / Archived") return { Sale: 0, Show: 0, Hide: 0, Sold: 0, "Removed / Hidden": user.assets };
       const sale = Math.max(0, Math.ceil(user.assets * 0.45));
@@ -3079,9 +3080,9 @@
     }
 
     function renderContactRows(user, tileClass = "detail-tile") {
-      const contacts = getUserContactItems(user);
+      const contacts = getUserContactDisplayItems(user);
       return contacts.length
-        ? `<div class="${tileClass}"><span>Contact details</span><div class="chips">${contacts.map(item => `<span class="chip">${item}</span>`).join("")}</div></div>`
+        ? contacts.map(item => `<div class="${tileClass}"><span>${item.label}</span><strong>${item.value}</strong></div>`).join("")
         : "";
     }
 
@@ -3207,11 +3208,12 @@
         detail.innerHTML = `<div class="detail-empty">เลือกรายการผู้ใช้เพื่อดู User Detail</div>`;
         return;
       }
+      const fullEmail = getUserFullEmail(user);
       detail.innerHTML = `
         <div class="panel-head">
           <div>
             <h2>User Detail</h2>
-            <p>${user.id} · sensitive data masked</p>
+            <p>${user.id} · contact data visible</p>
           </div>
         </div>
         <div class="detail-body">
@@ -3228,7 +3230,7 @@
             <h4>Account Summary</h4>
             <div class="detail-grid two">
               <div class="detail-tile"><span>User ID</span><strong>${user.id}</strong></div>
-              <div class="detail-tile profile-image-tile"><span>Profile Image</span>${renderUserProfileImage(user, "profile-image-small")}<strong>FO profile avatar</strong></div>
+              <div class="detail-tile"><span>Username</span><strong>${user.displayName}</strong></div>
               <div class="detail-tile"><span>Date Joined</span><strong>${user.joined}</strong></div>
               <div class="detail-tile"><span>Last Active</span><strong>${user.lastActive}</strong></div>
               <div class="detail-tile"><span>Total Assets</span><strong>${user.assets}</strong></div>
@@ -3236,11 +3238,11 @@
           </div>
 
           <div class="detail-section">
-            <h4>Contact / Auth</h4>
+            <h4>Contact / Register</h4>
             <div class="detail-grid">
-              <div class="kv"><span>Email</span><strong>${user.email}</strong></div>
-              <div class="kv"><span>Auth Method</span><strong>${user.auth}</strong></div>
-              ${user.contact.length ? `<div class="kv"><span>Contact</span><div class="chips">${user.contact.map(item => `<span class="chip">${item}</span>`).join("")}</div></div>` : ""}
+              <div class="kv"><span>Email</span><strong>${fullEmail}</strong></div>
+              <div class="kv"><span>Register Method</span><strong>${user.verification}</strong></div>
+              ${renderContactRows(user, "kv")}
             </div>
           </div>
 
@@ -3297,18 +3299,16 @@
             <h4>Account Summary</h4>
             <div class="detail-grid two">
               <div class="detail-tile"><span>User ID</span><strong>${user.id}</strong></div>
-              <div class="detail-tile"><span>Display Name</span><strong>${user.displayName}</strong></div>
-              <div class="detail-tile profile-image-tile"><span>Profile Image</span>${renderUserProfileImage(user, "profile-image-small")}<strong>Avatar on FO profile</strong></div>
-              <div class="detail-tile"><span>Status</span><strong>${user.status}</strong><br>${user.statusLabel}</div>
+              <div class="detail-tile"><span>Username</span><strong>${user.displayName}</strong></div>
               <div class="detail-tile"><span>Date Joined</span><strong>${user.joined}</strong></div>
               <div class="detail-tile"><span>Last Active</span><strong>${user.lastActive}</strong></div>
             </div>
           </div>
           <div class="detail-section">
-            <h4>Contact / Auth</h4>
+            <h4>Contact / Register</h4>
             <div class="detail-grid two">
               <div class="detail-tile"><span>Email</span><strong>${fullEmail}</strong></div>
-              <div class="detail-tile"><span>Login Method</span><strong>${user.auth}</strong><br>${user.verification}</div>
+              <div class="detail-tile"><span>Register Method</span><strong>${user.verification}</strong></div>
               ${renderContactRows(user)}
             </div>
           </div>
@@ -3358,60 +3358,6 @@
 
     function renderUserDetailPage(user) {
       return renderUserDetailPageSpec(user);
-      if (!user) return;
-      document.body.classList.add("user-detail-mode");
-      document.body.classList.remove("user-list-mode");
-      activeSub = "User List";
-      activeRow = user;
-      document.querySelector("#crumb").textContent = `การดำเนินงาน / User Management / User Detail / ${user.id}`;
-      document.querySelector("#page-title").textContent = "User Detail";
-      document.querySelector("#page-meta").textContent = "";
-      document.querySelector("#panel-title").textContent = user.displayName;
-      document.querySelector("#panel-subtitle").textContent = `${user.id} · ${user.username} · ${user.email}`;
-      document.querySelector(".filters").innerHTML = "";
-      document.querySelector("#summary-grid").innerHTML = "";
-      document.querySelector("#cards").innerHTML = "";
-      document.querySelector("#table").innerHTML = `
-        <div class="user-detail-page">
-          <div class="user-detail-head">
-            <div>
-              <h2>${user.displayName}</h2>
-              <div class="chips">${userStatusPill(user.status)}<span class="pill blue">${user.auth}</span></div>
-            </div>
-            <button class="btn" type="button" data-back-user-list>กลับไป User List</button>
-          </div>
-          <div class="detail-section">
-            <h4>Account Summary</h4>
-            <div class="detail-grid two">
-              <div class="detail-tile"><span>User ID</span><strong>${user.id}</strong></div>
-              <div class="detail-tile"><span>Date Joined</span><strong>${user.joined}</strong></div>
-              <div class="detail-tile"><span>Last Active</span><strong>${user.lastActive}</strong></div>
-              <div class="detail-tile"><span>Total Assets</span><strong>${user.assets}</strong></div>
-            </div>
-          </div>
-          <div class="detail-section">
-            <h4>Contact / Auth</h4>
-            <div class="detail-grid two">
-              <div class="detail-tile"><span>Email</span><strong>${user.email}</strong></div>
-              <div class="detail-tile"><span>Auth Method</span><strong>${user.auth}</strong><br>${user.verification}</div>
-              ${user.contact.length ? `<div class="detail-tile"><span>Contact</span><div class="chips">${user.contact.map(item => `<span class="chip">${item}</span>`).join("")}</div></div>` : ""}
-              <div class="detail-tile"><span>Support</span><strong>${user.support}</strong><br>${user.latest}</div>
-            </div>
-          </div>
-          <div class="detail-section">
-            <h4>Reports / Action Availability</h4>
-            <div class="detail-grid two">
-              <div class="detail-tile"><span>Reports</span><strong>${user.reports}</strong><br>${user.reportState}</div>
-              <div class="detail-tile"><span>Allowed</span><div class="chips">${user.allowed.map(item => `<span class="chip">${item}</span>`).join("")}</div></div>
-              <div class="detail-tile"><span>Blocked / Notes</span><div class="chips">${user.blocked.map(item => `<span class="chip">${item}</span>`).join("")}</div></div>
-              <div class="detail-tile"><span>FO Impact</span>${user.foImpact}</div>
-            </div>
-          </div>
-          <div class="warning-note"><strong>Audit note:</strong> ${user.actionNote}</div>
-        </div>
-      `;
-      document.querySelector("#detail").innerHTML = "";
-      updateActiveNav();
     }
 
     function renderReportedUserDetail(report) {
