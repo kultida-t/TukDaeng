@@ -1694,7 +1694,7 @@
       body.dashboard-mode .layout > .panel .panel-head > div {
         flex-direction: column;
         align-items: flex-start;
-        gap: 4px;
+        gap: 9.5px;
       }
       body.dashboard-mode .layout > .panel .panel-head p {
         overflow: visible;
@@ -1843,6 +1843,12 @@
       }
       .activity-panel-head .activity-toolbar {
         width: 100%;
+        flex: 0 0 auto;
+        align-items: center;
+        flex-wrap: wrap;
+        justify-content: flex-start;
+      }
+      body.dashboard-mode .activity-panel-head .activity-toolbar {
         justify-content: flex-start;
       }
       .work-row { grid-template-columns: 4px minmax(0, 1fr) auto; }
