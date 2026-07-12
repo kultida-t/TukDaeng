@@ -3097,11 +3097,9 @@
         </div>
         <div class="detail-body">
           <h3 class="detail-title">${user.displayName}</h3>
-          <p class="muted">${user.username} · ${user.email}</p>
           <div class="chips">
             ${userStatusPill(user.status)}
             <span class="pill blue">${user.auth}</span>
-            <span class="chip">${user.verification}</span>
           </div>
 
           <div class="detail-section">
@@ -3165,8 +3163,7 @@
           <div class="user-detail-head">
             <div>
               <h2>${user.displayName}</h2>
-              <p class="muted">${user.id} · ${user.username} · ${fullEmail}</p>
-              <div class="chips">${userStatusPill(user.status)}<span class="pill blue">${user.auth}</span><span class="chip">${user.verification}</span></div>
+              <div class="chips">${userStatusPill(user.status)}<span class="pill blue">${user.auth}</span></div>
             </div>
             <button class="btn" type="button" data-back-user-list>กลับไป User List</button>
           </div>
@@ -3253,8 +3250,7 @@
           <div class="user-detail-head">
             <div>
               <h2>${user.displayName}</h2>
-              <p class="muted">${user.id} · ${user.username} · ${user.email}</p>
-              <div class="chips">${userStatusPill(user.status)}<span class="pill blue">${user.auth}</span><span class="chip">${user.verification}</span></div>
+              <div class="chips">${userStatusPill(user.status)}<span class="pill blue">${user.auth}</span></div>
             </div>
             <button class="btn" type="button" data-back-user-list>กลับไป User List</button>
           </div>
