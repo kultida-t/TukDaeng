@@ -1139,6 +1139,9 @@
       color: #516683;
       font-size: 12px;
     }
+    .user-card-tags {
+      display: none;
+    }
     .user-row .panel-action {
       min-height: 38px;
       padding: 8px 13px;
@@ -2038,6 +2041,9 @@
       .user-table {
         gap: 10px;
       }
+      body.user-list-mode .user-table {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
       .user-row,
       .user-row.report-row {
         grid-template-columns: 1fr;
@@ -2081,21 +2087,144 @@
       .user-row:not(.head) > div.user-cell-primary[data-label]::before {
         content: none;
       }
+      .user-row:not(.head):not(.report-row) {
+        grid-template-columns: minmax(0, 1fr) 34px;
+        column-gap: 10px;
+        row-gap: 8px;
+        padding: 13px 12px;
+        cursor: pointer;
+      }
+      .user-row:not(.head):not(.report-row) > div.user-cell-primary[data-label],
+      .user-row:not(.head):not(.report-row) > .user-row-actions {
+        grid-column: auto;
+      }
+      .user-row:not(.head):not(.report-row) > div.user-cell-primary[data-label] {
+        grid-column: 1;
+        grid-row: 1;
+        align-self: center;
+      }
+      .user-row:not(.head):not(.report-row) > .user-row-actions {
+        grid-column: 2;
+        grid-row: 1;
+        align-self: center;
+      }
+      .user-row:not(.head):not(.report-row) > div.user-cell-primary[data-label] {
+        min-height: 28px;
+        display: flex;
+        align-items: center;
+        border-bottom: 0;
+        padding-bottom: 0;
+      }
+      .user-row:not(.head):not(.report-row) > div.user-cell-primary[data-label] .main-text {
+        max-width: 100%;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        line-height: 1.2;
+      }
+      .user-row:not(.head):not(.report-row) > div[data-label]:not(.user-cell-primary) {
+        display: none;
+      }
+      .user-card-tags {
+        grid-column: 1 / -1;
+        grid-row: 2;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 7px;
+        padding-top: 2px;
+      }
+      .user-card-meta {
+        flex: 1 0 100%;
+        display: grid;
+        gap: 5px;
+        margin-top: 1px;
+        padding-top: 7px;
+        border-top: 1px solid #edf2f7;
+      }
+      .user-card-meta-item {
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        gap: 8px;
+        color: #061426;
+        font-size: 12px;
+        line-height: 1.35;
+      }
+      .user-card-meta-item span {
+        color: #60748d;
+        font-size: 10px;
+        font-weight: 800;
+      }
+      .user-card-tag {
+        min-height: 27px;
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        max-width: 100%;
+        padding: 5px 8px;
+        border: 1px solid #dce6f2;
+        border-radius: 999px;
+        background: #fbfdff;
+        color: #263b56;
+        font-size: 12px;
+        font-weight: 500;
+        line-height: 1.2;
+        overflow-wrap: anywhere;
+      }
+      .user-card-tag.asset-tag {
+        background: #fff;
+      }
+      .user-card-tags > .pill {
+        align-self: center;
+      }
+      .user-card-tag .tag-label {
+        color: #60748d;
+        font-size: 10px;
+        font-weight: 800;
+      }
       .user-row .main-text {
         overflow-wrap: anywhere;
       }
       .user-row-actions {
-        width: 100%;
-        padding-top: 12px;
-        justify-content: space-between;
+        width: auto;
+        min-height: 28px;
+        padding-top: 0;
+        justify-content: flex-end;
+        align-self: center;
       }
+      body.user-list-mode .user-row-actions .panel-action { display: none; }
       .user-row-actions .panel-action {
         min-width: 78px;
         justify-content: center;
       }
+      body.user-list-mode .row-menu summary {
+        width: 28px;
+        height: 28px;
+        border: 0;
+        border-radius: 999px;
+        background: transparent;
+        color: #061426;
+        font-size: 17px;
+        transform: translateY(-1.5px);
+      }
+      body.user-list-mode .row-menu[open] summary {
+        border-color: transparent;
+        background: transparent;
+        color: var(--blue);
+      }
       .row-menu-list {
+        left: auto;
+        right: 0;
+        min-width: 196px;
+        max-width: calc(100vw - 32px);
+      }
+      body.user-list-mode .user-table .user-row:not(.head):nth-child(even) .row-menu-list {
         left: 0;
         right: auto;
+      }
+      body.user-list-mode .user-table .user-row:not(.head):nth-child(odd) .row-menu-list {
+        left: auto;
+        right: 0;
       }
       .detail-grid.two {
         grid-template-columns: 1fr;
@@ -2861,8 +2990,17 @@
           ${pageRows.map(user => {
             const rowActions = getUserRowActions(user);
             return `
-            <div class="user-row">
+            <div class="user-row" data-user-card="${user.id}">
               <div class="user-cell-primary" data-label="User"><div class="main-text">${user.displayName}</div></div>
+              <div class="user-card-tags">
+                ${userStatusPill(user.status)}
+                <span class="user-card-tag asset-tag">${user.assets} assets</span>
+                ${userAuthPill(user.auth)}
+                <div class="user-card-meta">
+                  <div class="user-card-meta-item"><span>Last active</span><strong>${user.lastActive}</strong></div>
+                  <div class="user-card-meta-item"><span>Date joined</span><strong>${user.joined}</strong></div>
+                </div>
+              </div>
               <div data-label="Status">${userStatusPill(user.status)}</div>
               <div data-label="Last Active"><div class="main-text">${user.lastActive}</div></div>
               <div data-label="Assets"><div class="main-text">${user.assets}</div></div>
@@ -3557,6 +3695,12 @@
       if (userOpenButton) {
         const id = userOpenButton.dataset.userOpen;
         const user = userManagementData.users.find(entry => entry.id === id);
+        renderUserDetailPage(user);
+        return;
+      }
+      const userCard = event.target.closest("[data-user-card]");
+      if (userCard && window.matchMedia("(max-width: 760px)").matches && !event.target.closest(".row-menu, button, a, input, select, [data-custom-select]")) {
+        const user = userManagementData.users.find(entry => entry.id === userCard.dataset.userCard);
         renderUserDetailPage(user);
         return;
       }
