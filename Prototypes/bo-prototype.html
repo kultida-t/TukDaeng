@@ -965,6 +965,9 @@
       gap: 8px;
       width: 100%;
     }
+    .user-filter-actions {
+      display: none;
+    }
     .user-filter-bar .field {
       min-height: 48px;
       border-color: #cfdbea;
@@ -1898,6 +1901,28 @@
       }
       .tools { justify-content: flex-start; }
       .summary-grid, .cards, .nav { grid-template-columns: 1fr; }
+      body.user-management-mode .summary-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+      }
+      body.user-management-mode .stat {
+        min-height: 112px;
+        padding: 12px 11px;
+      }
+      body.user-management-mode .stat-label {
+        font-size: 16px;
+        line-height: 1.05;
+        margin-bottom: 9px;
+        white-space: normal;
+      }
+      body.user-management-mode .stat-value {
+        font-size: 30px;
+        margin-bottom: 7px;
+      }
+      body.user-management-mode .stat-note {
+        font-size: 11px;
+        line-height: 1.35;
+      }
       body.dashboard-mode .cards { grid-template-columns: 1fr; }
       body.user-management-mode .cards { grid-template-columns: 1fr; }
       .panel-head {
@@ -1960,6 +1985,35 @@
       }
       .user-filter-bar .field:not(.search) {
         grid-column: auto;
+      }
+      .user-filter-actions {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+      }
+      .user-filter-actions .btn {
+        min-height: 36px;
+        padding: 7px 0;
+        border: 0;
+        background: transparent;
+        box-shadow: none;
+        color: #061426;
+        font-weight: 700;
+      }
+      .user-filter-actions .btn:hover {
+        background: transparent;
+        color: var(--blue);
+      }
+      .user-filter-actions svg {
+        width: 16px;
+        height: 16px;
+      }
+      .user-filter-bar[data-filter-open="false"] .user-advanced-filter {
+        display: none;
+      }
+      .user-filter-bar .btn.user-advanced-filter {
+        display: none;
       }
       .user-table {
         gap: 10px;
@@ -2188,6 +2242,7 @@
       notifications: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 7 3 9H3c0-2 3-2 3-9"/><path d="M10 21h4"/></svg>',
       settings: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 15.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Z"/><path d="M19.4 15a1.7 1.7 0 0 0 .34 1.88l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06A1.7 1.7 0 0 0 15 19.4a1.7 1.7 0 0 0-1 .6 1.7 1.7 0 0 0-.42 1.1V21a2 2 0 1 1-4 0v-.09A1.7 1.7 0 0 0 8 19.4a1.7 1.7 0 0 0-1.88.34l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.7 1.7 0 0 0 3.6 15a1.7 1.7 0 0 0-.6-1H3a2 2 0 1 1 0-4h.09A1.7 1.7 0 0 0 4.6 8a1.7 1.7 0 0 0-.34-1.88l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.7 1.7 0 0 0 9 3.6c.4-.17.72-.38 1-.6V3a2 2 0 1 1 4 0v.09c.28.22.6.43 1 .6a1.7 1.7 0 0 0 1.88-.34l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.7 1.7 0 0 0 19.4 9c.17.4.38.72.6 1H21a2 2 0 1 1 0 4h-.09c-.22.28-.43.6-.6 1Z"/></svg>',
       refresh: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><path d="M21 2v6h-6"/><path d="M20.5 12.5a8.5 8.5 0 1 1-2.5-6L21 8"/></svg>',
+      filter: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><path d="M4 7h10"/><path d="M18 7h2"/><circle cx="16" cy="7" r="2"/><path d="M4 17h2"/><path d="M10 17h10"/><circle cx="8" cy="17" r="2"/></svg>',
       eye: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/></svg>',
       eyeOff: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="m3 3 18 18"/><path d="M10.6 10.6a2 2 0 0 0 2.8 2.8"/><path d="M9.9 5.2A10.7 10.7 0 0 1 12 5c6.5 0 10 7 10 7a16 16 0 0 1-3 4.1"/><path d="M6.6 6.8C3.6 8.8 2 12 2 12s3.5 7 10 7a10.4 10.4 0 0 0 5.4-1.5"/></svg>',
       logout: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M10 17l5-5-5-5"/><path d="M15 12H3"/><path d="M21 3v18h-8"/></svg>',
@@ -2462,6 +2517,7 @@
     let activeRow = null;
     let activeActivityFilter = "ทั้งหมด";
     let userListPage = 1;
+    let userFilterOpen = false;
     const userListPageSize = 10;
 
     function renderNav() {
@@ -2594,32 +2650,40 @@
         </article>
       `).join("");
       document.querySelector(".filters").innerHTML = isReports ? `
-        <div class="user-filter-bar report-mode">
+        <div class="user-filter-bar report-mode" data-filter-open="${userFilterOpen}">
           <input class="field search" id="user-search" type="search" placeholder="ค้นหา report ID, user ID, display name, reason หรือ reference" />
-          <select class="field" id="report-status-filter" aria-label="Filter report status">
+          <div class="user-filter-actions">
+            <button class="btn user-filter-toggle" type="button" data-user-filter-toggle aria-expanded="${userFilterOpen}">${iconSvg.filter}<span>${userFilterOpen ? "ปิดตัวกรอง" : "เปิดตัวกรอง"}</span></button>
+            <button class="btn" type="button" data-user-reset title="รีเซ็ตค่าทั้งหมด" aria-label="รีเซ็ตค่าทั้งหมด">${iconSvg.refresh}<span>รีเซ็ตค่าทั้งหมด</span></button>
+          </div>
+          <select class="field user-advanced-filter" id="report-status-filter" aria-label="Filter report status">
             <option value="">ทุก report status</option>
             <option value="Open">รอตรวจ</option>
             <option value="In Review">กำลังตรวจ</option>
             <option value="Cleared">ปิดแล้ว</option>
           </select>
-          <select class="field" id="report-priority-filter" aria-label="Filter priority">
+          <select class="field user-advanced-filter" id="report-priority-filter" aria-label="Filter priority">
             <option value="">ทุก priority</option>
             <option value="สูง">สูง</option>
             <option value="กลาง">กลาง</option>
             <option value="ปกติ">ปกติ</option>
           </select>
-          <select class="field" id="report-sort" aria-label="Sort reports">
+          <select class="field user-advanced-filter" id="report-sort" aria-label="Sort reports">
             <option value="oldest">รอนานสุดก่อน</option>
             <option value="urgent">Urgent ก่อน</option>
             <option value="reporters">จำนวน reporter</option>
             <option value="status">สถานะ</option>
           </select>
-          <button class="btn icon" type="button" id="user-reset" title="รีเซ็ตค่าทั้งหมด" aria-label="รีเซ็ตค่าทั้งหมด">${iconSvg.refresh}</button>
+          <button class="btn icon user-advanced-filter" type="button" id="user-reset" title="รีเซ็ตค่าทั้งหมด" aria-label="รีเซ็ตค่าทั้งหมด">${iconSvg.refresh}</button>
         </div>
       ` : `
-        <div class="user-filter-bar">
+        <div class="user-filter-bar" data-filter-open="${userFilterOpen}">
           <input class="field search" id="user-search" type="search" placeholder="ค้นหา User ID, ชื่อ, email, phone" />
-          ${customSelect("user-status-filter", "Filter account status", [
+          <div class="user-filter-actions">
+            <button class="btn user-filter-toggle" type="button" data-user-filter-toggle aria-expanded="${userFilterOpen}">${iconSvg.filter}<span>${userFilterOpen ? "ปิดตัวกรอง" : "เปิดตัวกรอง"}</span></button>
+            <button class="btn" type="button" data-user-reset title="รีเซ็ตค่าทั้งหมด" aria-label="รีเซ็ตค่าทั้งหมด">${iconSvg.refresh}<span>รีเซ็ตค่าทั้งหมด</span></button>
+          </div>
+          <div class="user-advanced-filter">${customSelect("user-status-filter", "Filter account status", [
             { value: "", label: "ทุกสถานะ" },
             { value: "Active", label: "ใช้งานได้" },
             { value: "Pending Verification", label: "รอยืนยันตัวตน" },
@@ -2627,20 +2691,20 @@
             { value: "Banned", label: "ระงับถาวร" },
             { value: "Deletion Requested", label: "รอลบบัญชี" },
             { value: "Deleted / Archived", label: "ลบ/เก็บถาวร" }
-          ])}
-          ${customSelect("user-auth-filter", "Filter auth method", [
+          ])}</div>
+          <div class="user-advanced-filter">${customSelect("user-auth-filter", "Filter auth method", [
             { value: "", label: "ทุกวิธีเข้าสู่ระบบ" },
             { value: "Email", label: "Email" },
             { value: "Apple", label: "Apple" },
             { value: "Google", label: "Google" }
-          ])}
-          ${customSelect("user-sort", "Sort users", [
+          ])}</div>
+          <div class="user-advanced-filter">${customSelect("user-sort", "Sort users", [
             { value: "lastActive", label: "เรียงตามใช้งานล่าสุด" },
             { value: "joined", label: "เรียงตามวันที่สมัครล่าสุด" },
             { value: "reports", label: "จำนวน report" },
             { value: "assets", label: "จำนวน asset" }
-          ], "lastActive")}
-          <button class="btn filter-reset" type="button" id="user-reset" title="รีเซ็ตค่าทั้งหมด" aria-label="รีเซ็ตค่าทั้งหมด">${iconSvg.refresh}<span>รีเซ็ตค่าทั้งหมด</span></button>
+          ], "lastActive")}</div>
+          <button class="btn filter-reset user-advanced-filter" type="button" id="user-reset" title="รีเซ็ตค่าทั้งหมด" aria-label="รีเซ็ตค่าทั้งหมด">${iconSvg.refresh}<span>รีเซ็ตค่าทั้งหมด</span></button>
         </div>
       `;
       document.querySelector("#cards").innerHTML = "";
@@ -3487,10 +3551,21 @@
         renderReportedUserDetail(report);
         return;
       }
-      const userReset = event.target.closest("#user-reset");
+      const userReset = event.target.closest("#user-reset, [data-user-reset]");
       if (userReset) {
         userListPage = 1;
+        userFilterOpen = false;
         renderUserManagement(activeSub || "User List");
+        return;
+      }
+      const userFilterToggle = event.target.closest("[data-user-filter-toggle]");
+      if (userFilterToggle) {
+        userFilterOpen = !userFilterOpen;
+        const filterBar = userFilterToggle.closest(".user-filter-bar");
+        filterBar.dataset.filterOpen = String(userFilterOpen);
+        userFilterToggle.setAttribute("aria-expanded", String(userFilterOpen));
+        const label = userFilterToggle.querySelector("span");
+        if (label) label.textContent = userFilterOpen ? "ปิดตัวกรอง" : "เปิดตัวกรอง";
         return;
       }
       const userPageButton = event.target.closest("[data-user-page]");
