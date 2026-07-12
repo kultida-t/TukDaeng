@@ -2335,9 +2335,9 @@
 
       return [
         ["Active Users", activeUsers.length, activeByAuth, "chips"],
-        ["Suspended", suspendedUsers.length, `${suspendedReports} total reports · audit required`],
+        ["Suspended", suspendedUsers.length, `${suspendedReports} รายงานทั้งหมด · ต้องมีบันทึกการดำเนินการ`],
         ["Deletion Requested", deletionUsers.length, `${deletionWithReports} รายงานที่เกี่ยวข้อง · ตรวจเงื่อนไขก่อนลบ`],
-        ["Reported", reportedUsers.length, `${totalReports} total reports · ${highReportUsers} priority users`]
+        ["Reported", reportedUsers.length, `${totalReports} รายงานทั้งหมด · ${highReportUsers} ผู้ใช้เร่งด่วน`]
       ];
     }
 
