@@ -968,6 +968,9 @@
     .user-filter-actions {
       display: none;
     }
+    .user-panel-filter-actions {
+      display: none;
+    }
     .user-filter-bar .field {
       min-height: 48px;
       border-color: #cfdbea;
@@ -1929,6 +1932,18 @@
         align-items: flex-start;
         flex-direction: column;
       }
+      body.user-management-mode .panel-head {
+        align-items: center;
+        flex-direction: row;
+        justify-content: space-between;
+        gap: 10px;
+      }
+      body.user-management-mode .panel-head h2 {
+        font-size: 24px;
+      }
+      body.user-management-mode .panel-head p {
+        display: none;
+      }
       #primary-action {
         width: 100%;
         justify-content: center;
@@ -1987,25 +2002,30 @@
         grid-column: auto;
       }
       .user-filter-actions {
+        display: none;
+      }
+      body.user-management-mode .user-panel-filter-actions {
         display: flex;
         align-items: center;
-        justify-content: space-between;
-        gap: 10px;
+        justify-content: flex-end;
+        gap: 12px;
+        flex: 0 0 auto;
       }
-      .user-filter-actions .btn {
-        min-height: 36px;
+      .user-panel-filter-actions .btn {
+        min-height: 32px;
         padding: 7px 0;
         border: 0;
         background: transparent;
         box-shadow: none;
         color: #061426;
-        font-weight: 700;
+        font-size: 12px;
+        font-weight: 500;
       }
-      .user-filter-actions .btn:hover {
+      .user-panel-filter-actions .btn:hover {
         background: transparent;
         color: var(--blue);
       }
-      .user-filter-actions svg {
+      .user-panel-filter-actions svg {
         width: 16px;
         height: 16px;
       }
@@ -2198,6 +2218,7 @@
               <h2 id="panel-title">Operational Queue</h2>
               <p id="panel-subtitle">คลิกแถวเพื่อกางข้อมูลรายละเอียดของรายการ</p>
             </div>
+            <div class="user-panel-filter-actions" id="user-panel-filter-actions"></div>
             <button class="btn" type="button" id="primary-action"></button>
           </div>
           <div class="filters">
@@ -2642,6 +2663,10 @@
       document.querySelector("#panel-subtitle").textContent = isReports
         ? "ตรวจ source reference ก่อน clear report หรือเปลี่ยนสถานะบัญชี"
         : "";
+      document.querySelector("#user-panel-filter-actions").innerHTML = `
+        <button class="btn user-filter-toggle" type="button" data-user-filter-toggle aria-expanded="${userFilterOpen}">${iconSvg.filter}<span>${userFilterOpen ? "ปิดตัวกรอง" : "เปิดตัวกรอง"}</span></button>
+        <button class="btn" type="button" data-user-reset title="รีเซ็ตค่าทั้งหมด" aria-label="รีเซ็ตค่าทั้งหมด">${iconSvg.refresh}<span>รีเซ็ตค่าทั้งหมด</span></button>
+      `;
       document.querySelector("#summary-grid").innerHTML = getUserSummaryStats().map(stat => `
         <article class="stat">
           <div class="stat-label">${stat[0]}</div>
@@ -2652,10 +2677,6 @@
       document.querySelector(".filters").innerHTML = isReports ? `
         <div class="user-filter-bar report-mode" data-filter-open="${userFilterOpen}">
           <input class="field search" id="user-search" type="search" placeholder="ค้นหา report ID, user ID, display name, reason หรือ reference" />
-          <div class="user-filter-actions">
-            <button class="btn user-filter-toggle" type="button" data-user-filter-toggle aria-expanded="${userFilterOpen}">${iconSvg.filter}<span>${userFilterOpen ? "ปิดตัวกรอง" : "เปิดตัวกรอง"}</span></button>
-            <button class="btn" type="button" data-user-reset title="รีเซ็ตค่าทั้งหมด" aria-label="รีเซ็ตค่าทั้งหมด">${iconSvg.refresh}<span>รีเซ็ตค่าทั้งหมด</span></button>
-          </div>
           <select class="field user-advanced-filter" id="report-status-filter" aria-label="Filter report status">
             <option value="">ทุก report status</option>
             <option value="Open">รอตรวจ</option>
@@ -2679,10 +2700,6 @@
       ` : `
         <div class="user-filter-bar" data-filter-open="${userFilterOpen}">
           <input class="field search" id="user-search" type="search" placeholder="ค้นหา User ID, ชื่อ, email, phone" />
-          <div class="user-filter-actions">
-            <button class="btn user-filter-toggle" type="button" data-user-filter-toggle aria-expanded="${userFilterOpen}">${iconSvg.filter}<span>${userFilterOpen ? "ปิดตัวกรอง" : "เปิดตัวกรอง"}</span></button>
-            <button class="btn" type="button" data-user-reset title="รีเซ็ตค่าทั้งหมด" aria-label="รีเซ็ตค่าทั้งหมด">${iconSvg.refresh}<span>รีเซ็ตค่าทั้งหมด</span></button>
-          </div>
           <div class="user-advanced-filter">${customSelect("user-status-filter", "Filter account status", [
             { value: "", label: "ทุกสถานะ" },
             { value: "Active", label: "ใช้งานได้" },
@@ -3561,8 +3578,8 @@
       const userFilterToggle = event.target.closest("[data-user-filter-toggle]");
       if (userFilterToggle) {
         userFilterOpen = !userFilterOpen;
-        const filterBar = userFilterToggle.closest(".user-filter-bar");
-        filterBar.dataset.filterOpen = String(userFilterOpen);
+        const filterBar = document.querySelector(".user-filter-bar");
+        if (filterBar) filterBar.dataset.filterOpen = String(userFilterOpen);
         userFilterToggle.setAttribute("aria-expanded", String(userFilterOpen));
         const label = userFilterToggle.querySelector("span");
         if (label) label.textContent = userFilterOpen ? "ปิดตัวกรอง" : "เปิดตัวกรอง";
