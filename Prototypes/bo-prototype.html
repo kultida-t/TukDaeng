@@ -1961,20 +1961,63 @@
       .user-filter-bar .field:not(.search) {
         grid-column: auto;
       }
+      .user-table {
+        gap: 10px;
+      }
       .user-row,
       .user-row.report-row {
         grid-template-columns: 1fr;
-        gap: 8px;
+        gap: 0;
         align-items: start;
       }
       .user-row:not(.report-row) {
         grid-template-columns: 1fr;
-        gap: 8px;
+        gap: 0;
         align-items: start;
       }
       .user-row.head { display: none; }
+      .user-row:not(.head) {
+        min-height: 0;
+        padding: 14px 16px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: #fff;
+      }
+      .user-row:not(.head) > div[data-label] {
+        display: grid;
+        grid-template-columns: 108px minmax(0, 1fr);
+        gap: 12px;
+        align-items: center;
+        width: 100%;
+        padding: 8px 0;
+        border-bottom: 1px solid #edf2f7;
+      }
+      .user-row:not(.head) > div[data-label]::before {
+        content: attr(data-label);
+        color: #5d718b;
+        font-size: 11px;
+        font-weight: 800;
+        line-height: 1.25;
+      }
+      .user-row:not(.head) > div.user-cell-primary[data-label] {
+        display: block;
+        padding-top: 0;
+        padding-bottom: 12px;
+      }
+      .user-row:not(.head) > div.user-cell-primary[data-label]::before {
+        content: none;
+      }
+      .user-row .main-text {
+        overflow-wrap: anywhere;
+      }
       .user-row-actions {
+        width: 100%;
+        padding-top: 12px;
         justify-content: space-between;
+      }
+      .user-row-actions .panel-action {
+        min-width: 78px;
+        justify-content: center;
       }
       .row-menu-list {
         left: 0;
@@ -2738,12 +2781,12 @@
             const rowActions = getUserRowActions(user);
             return `
             <div class="user-row">
-              <div><div class="main-text">${user.displayName}</div></div>
-              <div>${userStatusPill(user.status)}</div>
-              <div><div class="main-text">${user.lastActive}</div></div>
-              <div><div class="main-text">${user.assets}</div></div>
-              <div>${userAuthPill(user.auth)}</div>
-              <div><div class="main-text">${user.joined}</div></div>
+              <div class="user-cell-primary" data-label="User"><div class="main-text">${user.displayName}</div><div class="muted">${user.id} · ${user.username}</div></div>
+              <div data-label="Status">${userStatusPill(user.status)}</div>
+              <div data-label="Last Active"><div class="main-text">${user.lastActive}</div></div>
+              <div data-label="Assets"><div class="main-text">${user.assets}</div></div>
+              <div data-label="Auth">${userAuthPill(user.auth)}</div>
+              <div data-label="Date Joined"><div class="main-text">${user.joined}</div></div>
               <div class="user-row-actions">
                 <button class="panel-action" type="button" data-user-open="${user.id}">${iconSvg.eye}View</button>
                 <details class="row-menu">
@@ -2787,11 +2830,11 @@
           <div class="user-row report-row head"><div>Report</div><div>Reported User</div><div>Reporters</div><div>Priority</div><div>Status</div><div>Action</div></div>
           ${sorted.map(report => `
             <div class="user-row report-row" data-report-id="${report.id}">
-              <div><div class="main-text">${report.id} · ${report.category}</div><div class="muted">${report.reason}</div><div class="chips"><span class="chip">${report.reference}</span><span class="chip">รอ ${report.waiting}</span></div></div>
-              <div><div class="main-text">${report.user}</div><div class="muted">${report.userId} · ${report.accountStatus}</div></div>
-              <div><div class="main-text">${report.reporters}</div><div class="muted">masked identities</div></div>
-              <div>${statusPill(report.priority, report.priority)}</div>
-              <div>${userStatusPill(report.status)}</div>
+              <div class="user-cell-primary" data-label="Report"><div class="main-text">${report.id} · ${report.category}</div><div class="muted">${report.reason}</div><div class="chips"><span class="chip">${report.reference}</span><span class="chip">รอ ${report.waiting}</span></div></div>
+              <div data-label="Reported User"><div class="main-text">${report.user}</div><div class="muted">${report.userId} · ${report.accountStatus}</div></div>
+              <div data-label="Reporters"><div class="main-text">${report.reporters}</div><div class="muted">masked identities</div></div>
+              <div data-label="Priority">${statusPill(report.priority, report.priority)}</div>
+              <div data-label="Status">${userStatusPill(report.status)}</div>
               <div><button class="panel-action" type="button" data-report-action="${report.id}">${iconSvg.eye}ดูรายละเอียด</button></div>
             </div>
           `).join("") || `<div class="detail-empty">ไม่พบ report ตาม filter ที่เลือก</div>`}
