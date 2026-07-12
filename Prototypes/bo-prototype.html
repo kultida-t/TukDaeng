@@ -1892,16 +1892,47 @@
         flex-direction: column;
         align-items: stretch;
       }
+      body.user-detail-mode .user-detail-page {
+        padding: 14px 10px 18px;
+      }
+      body.user-detail-mode .user-detail-head {
+        flex-direction: row;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 12px;
+      }
       .user-detail-title {
         align-items: center;
       }
+      body.user-detail-mode .user-detail-title {
+        flex: 1 1 auto;
+        gap: 10px;
+        min-width: 0;
+      }
       .user-detail-title h2 {
         overflow-wrap: anywhere;
+      }
+      body.user-detail-mode .user-detail-title h2 {
+        margin-bottom: 4px;
+        font-size: 21px;
+        line-height: 1.08;
+      }
+      body.user-detail-mode .user-detail-head .btn {
+        flex: 0 0 auto;
+        min-height: 34px;
+        padding: 7px 9px;
+        font-size: 12px;
+        white-space: nowrap;
       }
       .profile-image {
         width: 64px;
         height: 64px;
         border-radius: 16px;
+      }
+      body.user-detail-mode .profile-image {
+        width: 52px;
+        height: 52px;
+        border-radius: 14px;
       }
       .main { padding: 16px 10px 26px; }
       .mobile-header {
@@ -2309,6 +2340,15 @@
       }
       .detail-grid.two {
         grid-template-columns: 1fr;
+      }
+      body.user-detail-mode .detail-grid.two {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+      body.user-detail-mode .detail-grid {
+        gap: 8px;
+      }
+      body.user-detail-mode .detail-tile {
+        padding: 9px 8px;
       }
       .search { min-width: 100%; }
     }
