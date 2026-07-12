@@ -1716,8 +1716,31 @@
       .app {
         grid-template-columns: 1fr;
       }
-      .login-screen { grid-template-columns: 1fr; }
-      .login-visual { min-height: 220px; }
+      .login-screen {
+        grid-template-columns: 1fr;
+        min-height: 100svh;
+        overflow-y: auto;
+      }
+      .login-panel {
+        order: 2;
+        align-items: center;
+        justify-content: flex-start;
+        padding: 48px 28px 56px;
+        border-left: 0;
+      }
+      .login-panel > * {
+        width: min(100%, 390px);
+      }
+      .login-visual {
+        order: 1;
+        min-height: clamp(170px, 34svh, 250px);
+        background-position: center 48%;
+      }
+      .login-visual::after {
+        right: max(24px, calc((100vw - 390px) / 2));
+        bottom: 18px;
+        font-size: clamp(42px, 12vw, 72px);
+      }
       body.nav-open {
         overflow: hidden;
       }
@@ -1814,9 +1837,60 @@
       }
       .mobile-header .brand-name { font-size: 19px; }
       .mobile-header small { font-size: 9px; }
-      .login-panel { padding: 28px 18px; }
-      .login-title { font-size: 44px; }
+      .login-visual {
+        min-height: clamp(150px, 32svh, 210px);
+      }
+      .login-visual::after {
+        right: 18px;
+        bottom: 14px;
+        font-size: clamp(38px, 13vw, 58px);
+      }
+      .login-panel {
+        min-height: calc(100svh - clamp(150px, 32svh, 210px));
+        padding: 34px 18px 44px;
+      }
+      .login-brand {
+        gap: 11px;
+        margin-bottom: 34px;
+      }
+      .login-brand .brand-mark {
+        width: 42px;
+        height: 42px;
+        border-radius: 9px;
+      }
+      .login-brand .brand-name { font-size: 24px; }
+      .login-brand small {
+        margin-top: 6px;
+        letter-spacing: .2em;
+      }
+      .login-title {
+        margin-bottom: 8px;
+        font-size: 42px;
+        line-height: .92;
+      }
+      .login-copy {
+        margin-bottom: 30px;
+        max-width: none;
+      }
+      .login-form {
+        max-width: none;
+        gap: 13px;
+      }
+      .login-form input,
+      .login-form select {
+        min-height: 46px;
+      }
+      .login-meta {
+        margin: 0 0 12px;
+      }
+      .prototype-tools {
+        max-width: none;
+        margin-top: 18px;
+      }
       .otp-actions { grid-template-columns: 1fr; }
+      #verify-otp-btn { order: 1; }
+      #resend-otp-btn { order: 2; }
+      #back-login-btn { order: 3; }
       .topbar { display: grid; }
       .page-title {
         font-size: 38px;
