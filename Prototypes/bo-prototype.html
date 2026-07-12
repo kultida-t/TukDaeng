@@ -3147,7 +3147,7 @@
       const fullEmail = getUserFullEmail(user);
       document.body.classList.add("user-detail-mode");
       document.body.classList.remove("user-list-mode");
-      activeSub = "User Detail";
+      activeSub = "User List";
       activeRow = user;
       document.querySelector("#crumb").textContent = `การดำเนินงาน / User Management / User Detail / ${user.id}`;
       document.querySelector("#page-title").textContent = "User Detail";
@@ -3238,7 +3238,7 @@
       if (!user) return;
       document.body.classList.add("user-detail-mode");
       document.body.classList.remove("user-list-mode");
-      activeSub = "User Detail";
+      activeSub = "User List";
       activeRow = user;
       document.querySelector("#crumb").textContent = `การดำเนินงาน / User Management / User Detail / ${user.id}`;
       document.querySelector("#page-title").textContent = "User Detail";
