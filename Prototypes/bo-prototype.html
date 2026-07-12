@@ -1457,6 +1457,47 @@
       gap: 14px;
       min-width: 0;
     }
+    .user-detail-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .user-detail-action-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 34px;
+      border: 1px solid var(--line-strong);
+      border-radius: 7px;
+      background: #fff;
+      color: #061426;
+      cursor: pointer;
+      padding: 7px 11px;
+      font-size: 12px;
+      font-weight: 800;
+    }
+    .user-detail-action-btn:hover {
+      border-color: #9eb0c8;
+      background: #f8fbff;
+    }
+    .user-detail-action-btn.primary {
+      border-color: var(--active);
+      background: var(--active);
+      color: #fff;
+    }
+    .user-detail-action-btn.danger {
+      border-color: #fecdd3;
+      background: #fff1f2;
+      color: #9f1722;
+    }
+    .action-feedback {
+      display: none;
+      margin-top: 10px;
+    }
+    .action-feedback.show {
+      display: block;
+    }
     .profile-image {
       width: 76px;
       height: 76px;
@@ -2485,6 +2526,13 @@
       body.user-detail-mode .detail-tile {
         padding: 9px 8px;
       }
+      .user-detail-actions,
+      .user-detail-action-btn {
+        width: 100%;
+      }
+      .user-detail-action-btn {
+        justify-content: center;
+      }
       .report-meta {
         grid-template-columns: 1fr;
       }
@@ -3345,6 +3393,43 @@
         .map(action => ({ action, label: userActionLabels[action] || action }));
     }
 
+    function getUserActionClass(action, index) {
+      if (["Ban", "Suspend"].includes(action)) return "danger";
+      if (index === 0) return "primary";
+      return "";
+    }
+
+    function renderUserDetailActions(user) {
+      const actions = getUserRowActions(user);
+      return `
+        <div class="detail-section user-detail-action-section">
+          <div class="user-detail-actions">
+            ${actions.map(({ action, label }, index) => `<button class="user-detail-action-btn ${getUserActionClass(action, index)}" type="button" data-user-action="${action}" data-user-id="${user.id}" data-user-action-surface="detail">${label}</button>`).join("") || `<span class="chip">No available action</span>`}
+          </div>
+          <div class="warning-note action-feedback" id="user-action-feedback"></div>
+        </div>
+      `;
+    }
+
+    function renderUserActionFeedback(user, action) {
+      const feedback = document.querySelector("#user-action-feedback");
+      if (!feedback) return;
+      const label = userActionLabels[action] || action;
+      feedback.innerHTML = `<strong>${label}</strong><br>${user.actionNote}<br><span>FO impact: ${user.foImpact}</span>`;
+      feedback.classList.add("show");
+    }
+
+    function handleUserAction(user, action) {
+      if (!user || !action) return;
+      if (document.body.classList.contains("user-detail-mode")) {
+        renderUserActionFeedback(user, action);
+        return;
+      }
+      activeRow = user;
+      renderUserDetail(user);
+      renderUserActionFeedback(user, action);
+    }
+
     function renderUserRows() {
       const q = (document.querySelector("#user-search")?.value || "").trim().toLowerCase();
       const status = document.querySelector("#user-status-filter")?.value || "";
@@ -3494,16 +3579,9 @@
             </div>
           </div>
 
-          <div class="detail-section">
-            <h4>Action Availability</h4>
-            <div class="detail-grid">
-              <div class="detail-tile"><span>Allowed</span><div class="chips">${user.allowed.map(item => `<span class="chip">${item}</span>`).join("")}</div></div>
-              <div class="detail-tile"><span>Blocked / Notes</span><div class="chips">${user.blocked.map(item => `<span class="chip">${item}</span>`).join("")}</div></div>
-            </div>
-          </div>
-
           <div class="module-note"><strong>FO impact:</strong> ${user.foImpact}</div>
           <div class="warning-note"><strong>Audit note:</strong> ${user.actionNote}</div>
+          ${renderUserDetailActions(user)}
         </div>
       `;
     }
@@ -3562,6 +3640,7 @@
               <div class="detail-tile report-detail-tile"><span>${getReportContextLabel(user)}</span>${renderLatestReportBrief(user)}</div>
             </div>
           </div>
+          ${renderUserDetailActions(user)}
         </div>
       `;
       document.querySelector("#detail").innerHTML = "";
@@ -3984,6 +4063,14 @@
         const row = moduleData[activeModule].rows.find(entry => entry.id === id);
         activeRow = row;
         renderDetail(row);
+      }
+      const userActionButton = event.target.closest("[data-user-action]");
+      if (userActionButton) {
+        const id = userActionButton.dataset.userId;
+        const user = userManagementData.users.find(entry => entry.id === id);
+        handleUserAction(user, userActionButton.dataset.userAction);
+        closeRowMenus();
+        return;
       }
       const userOpenButton = event.target.closest("[data-user-open]");
       if (userOpenButton) {
