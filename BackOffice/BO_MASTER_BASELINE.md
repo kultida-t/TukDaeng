@@ -44,7 +44,7 @@ Phase 1 คือ BO foundation ขั้นต่ำที่จำเป็น
 | Auth / Admin Accounts | Email/password login, mandatory Email OTP for Admin, session timeout, failed login lockout |
 | Admin Permission | Module visibility และ action-level permission enforcement |
 | Dashboard | Key metrics, pending queues, recent activity, last updated snapshot |
-| User Management | User list, filters, profile view, login history, suspend/ban, reset password, soft delete, CSV export |
+| User Management | User list, search/filter/sort, profile/detail view, login history, suspend/ban/restore, reset password, Account Deletion handoff, no direct User List export |
 | Asset Management | `04_ASSET_MANAGEMENT_MODULE.md` - Asset list/detail, status visibility, reports, flag/unflag, soft remove, force status change, sensitive-field control |
 | Content / Board | `05_CONTENT_BOARD_MODULE.md` - Article/category/banner CRUD, preview as FO, draft/publish/schedule/archive, featured ordering |
 | Market Data | `06_MARKET_DATA_MODULE.md` - Brand/model/reference/price index management และ active/inactive status |

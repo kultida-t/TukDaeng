@@ -134,6 +134,23 @@
       gap: 12px;
       margin-bottom: 42px;
     }
+    .login-brand > div {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: flex-start;
+      gap: 6px;
+      min-height: 44px;
+    }
+    .login-brand small {
+      display: block;
+      color: #8198b7;
+      font-size: 10px;
+      font-weight: 600;
+      line-height: 1;
+      letter-spacing: .28em;
+      text-transform: uppercase;
+    }
     .login-title {
       margin: 0 0 10px;
       font-size: 56px;
@@ -175,6 +192,20 @@
       background: #0c213a;
       color: #fff;
       padding: 9px 10px;
+    }
+    .user-action-prototype-tools {
+      max-width: none;
+      margin-top: 4px;
+      padding-top: 12px;
+      border-top: 1px dashed var(--line);
+    }
+    .user-action-prototype-tools summary {
+      color: #7890ae;
+    }
+    .user-action-prototype-tools select {
+      background: #f8fbff;
+      color: var(--ink);
+      border-color: var(--line-strong);
     }
     .login-form {
       display: grid;
@@ -356,6 +387,15 @@
       padding: 18px 14px 17px;
       border-bottom: 1px solid rgba(147, 169, 199, .16);
     }
+    .brand > div {
+      min-width: 0;
+      min-height: 44px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: flex-start;
+      gap: 6px;
+    }
     .brand-mark {
       width: 44px;
       height: 44px;
@@ -369,15 +409,15 @@
       display: block;
       color: #fff;
       font-size: 25px;
-      line-height: .95;
+      line-height: 1;
       letter-spacing: .13em;
     }
     .brand small {
       display: block;
-      margin-top: 7px;
       color: #8198b7;
       font-size: 10px;
       font-weight: 600;
+      line-height: 1;
       letter-spacing: .28em;
       text-transform: uppercase;
     }
@@ -445,7 +485,8 @@
       display: none;
       padding: 4px 26px 10px 42px;
     }
-    .submenu.open { display: grid; gap: 4px; }
+    .submenu.open,
+    .nav-item.expanded + .submenu { display: grid; gap: 4px; }
     .submenu button {
       border: 0;
       background: transparent;
@@ -611,6 +652,21 @@
     .btn.primary { border-color: var(--brand-dark); background: var(--brand-dark); color: #fff; }
     .btn.ghost { background: transparent; }
     .btn.icon { width: 38px; padding: 0; justify-content: center; }
+    .btn.filter-reset {
+      min-height: 48px;
+      border-color: transparent;
+      background: transparent;
+      color: #0a2342;
+      padding: 0 8px;
+      font-weight: 500;
+      white-space: nowrap;
+    }
+    .btn.filter-reset:hover {
+      border-color: #1f9cf0;
+      background: #f6fbff;
+      color: #008be8;
+    }
+    .btn.filter-reset svg { stroke-width: 2.15; }
     .btn svg, .panel-action svg { width: 16px; height: 16px; }
 
     .summary-grid {
@@ -638,9 +694,18 @@
       width: 3px;
       background: var(--brand);
     }
-    .stat-label { color: var(--muted); font-size: 12px; font-weight: 600; margin-bottom: 12px; }
+    .stat-label {
+      color: var(--muted);
+      font-family: var(--font-heading);
+      font-size: 22px;
+      font-weight: 400;
+      letter-spacing: .04em;
+      line-height: .95;
+      margin-bottom: 12px;
+    }
     .stat-value { font-size: 39px; line-height: .9; margin-bottom: 8px; }
     .stat-note { color: var(--muted); font-size: 12px; line-height: 1.45; }
+    .stat-note.chips { margin-top: 7px; }
 
     .layout {
       display: grid;
@@ -691,6 +756,37 @@
       padding: 7px 10px;
       color: var(--ink);
       font-size: 13px;
+    }
+    .field:focus,
+    .field:focus-visible {
+      outline: 0;
+      border-color: #b8c6d8;
+      box-shadow: 0 0 0 3px rgba(118, 135, 158, .10);
+    }
+    select.field {
+      appearance: none;
+      -webkit-appearance: none;
+      padding-right: 40px;
+      background-color: #fff;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M5.5 7.5 10 12l4.5-4.5' fill='none' stroke='%233b4d66' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 14px center;
+      background-size: 14px 14px;
+    }
+    select.field::-ms-expand {
+      display: none;
+    }
+    select.field option {
+      color: #061426;
+      background: #fff;
+      font-weight: 400;
+    }
+    select.field option:hover,
+    select.field option:checked {
+      color: #061426;
+      background-color: #eef2f6;
+      background-image: linear-gradient(#eef2f6, #eef2f6);
+      box-shadow: 0 0 0 100vmax #eef2f6 inset;
     }
     .search { min-width: 240px; flex: 1; }
 
@@ -746,7 +842,6 @@
       color: var(--active);
       background: #eef5ff;
     }
-
     .detail {
       position: sticky;
       top: 20px;
@@ -800,14 +895,17 @@
     }
     .activity-panel-head {
       align-items: center;
+      flex-wrap: wrap;
     }
     body.dashboard-mode .detail .panel-head {
       min-height: 58px;
       padding: 17px 20px;
       background: #fff;
     }
-    body.dashboard-mode .activity-panel-head {
+    body.dashboard-mode .detail .activity-panel-head {
       gap: 10px;
+      padding-top: 16.5px;
+      padding-bottom: 16.5px;
     }
     .activity-panel-head h2 {
       flex: 0 0 auto;
@@ -823,6 +921,11 @@
       padding: 28px 18px;
       color: var(--muted);
       text-align: center;
+    }
+    .user-table .user-empty {
+      font-size: 13px;
+      font-weight: 400;
+      line-height: 1.45;
     }
     .detail-body { padding: 16px; }
     .detail-title {
@@ -875,6 +978,763 @@
       line-height: 1.55;
     }
 
+    body.user-management-mode .layout {
+      grid-template-columns: minmax(0, 1fr) minmax(360px, 38%);
+    }
+    body.user-management-mode .layout > .panel,
+    body.user-management-mode .detail,
+    body.user-management-mode .mini-card {
+      border-color: #d7e2f0;
+      box-shadow: none;
+    }
+    body.user-management-mode #primary-action {
+      display: none;
+    }
+    body.user-list-mode .layout,
+    body.user-detail-mode .layout {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    body.user-list-mode .detail,
+    body.user-detail-mode .detail {
+      display: none;
+    }
+    body.user-detail-mode .panel > .panel-head {
+      display: none;
+    }
+    .user-filter-bar {
+      display: grid;
+      grid-template-columns: minmax(240px, 1.35fr) repeat(3, minmax(126px, .68fr)) max-content;
+      gap: 8px;
+      width: 100%;
+    }
+    .user-filter-actions {
+      display: none;
+    }
+    .user-panel-filter-actions {
+      display: none;
+    }
+    .user-filter-bar .field {
+      min-height: 48px;
+      border-color: #cfdbea;
+      border-radius: 7px;
+      padding: 10px 14px;
+      color: #061426;
+      font-size: 13px;
+      font-weight: 400;
+    }
+    .user-filter-bar input.field {
+      font-weight: 400;
+    }
+    .user-filter-bar select.field {
+      padding-right: 42px;
+      background-position: right 14px center;
+    }
+    .custom-select {
+      position: relative;
+      min-width: 0;
+    }
+    .custom-select-trigger {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      cursor: pointer;
+      text-align: left;
+    }
+    .custom-select-trigger::after {
+      content: "";
+      width: 14px;
+      height: 14px;
+      flex: 0 0 auto;
+      background: url("data:image/svg+xml,%3Csvg viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M5.5 7.5 10 12l4.5-4.5' fill='none' stroke='%233b4d66' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center / 14px 14px no-repeat;
+    }
+    .custom-select-menu {
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: calc(100% + 4px);
+      z-index: 30;
+      display: none;
+      padding: 6px;
+      border: 1px solid #aeb8c6;
+      border-radius: 7px;
+      background: #fff;
+      box-shadow: 0 14px 28px rgba(15, 23, 42, .12);
+    }
+    .custom-select.open .custom-select-menu {
+      display: grid;
+      gap: 2px;
+    }
+    .custom-select-option {
+      min-height: 30px;
+      border: 0;
+      background: #fff;
+      color: #061426;
+      padding: 7px 9px;
+      text-align: left;
+      font-size: 13px;
+      font-weight: 400;
+      cursor: pointer;
+    }
+    .custom-select-option:hover,
+    .custom-select-option.selected {
+      background: #eef2f6;
+      color: #061426;
+    }
+    .user-filter-bar .field:hover {
+      border-color: #c3cfdd;
+      background-color: #fbfcfe;
+    }
+    .user-filter-bar .field:focus,
+    .user-filter-bar .field:focus-visible {
+      border-color: #b8c6d8;
+      box-shadow: 0 0 0 3px rgba(118, 135, 158, .10);
+    }
+    .user-filter-bar.report-mode {
+      grid-template-columns: minmax(220px, 1.3fr) repeat(3, minmax(132px, .7fr)) 42px;
+    }
+    .user-table {
+      display: grid;
+    }
+    .user-row {
+      display: grid;
+      grid-template-columns: minmax(190px, 1.2fr) minmax(96px, .52fr) minmax(124px, .62fr) minmax(118px, .62fr) minmax(118px, .62fr) minmax(130px, .68fr) minmax(136px, .72fr);
+      gap: 14px;
+      align-items: center;
+      min-height: 82px;
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--line);
+      background: #fff;
+    }
+    .user-row:not(.report-row) {
+      grid-template-columns: minmax(150px, 1.08fr) minmax(136px, .74fr) minmax(148px, .8fr) minmax(76px, .4fr) minmax(86px, .5fr) minmax(118px, .64fr) minmax(124px, .58fr);
+      gap: 16px;
+    }
+    .user-row:not(.report-row) > div {
+      min-width: 0;
+    }
+    .user-row:not(.report-row) > div:first-child .main-text {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .user-row:not(.report-row) > div:nth-child(3) .main-text,
+    .user-row:not(.report-row) > div:nth-child(4) .main-text,
+    .user-row:not(.report-row) > div:nth-child(6) .main-text {
+      white-space: nowrap;
+    }
+    .user-row.report-row {
+      grid-template-columns: minmax(220px, 1.35fr) minmax(190px, 1fr) minmax(108px, .55fr) minmax(112px, .55fr) minmax(104px, .55fr) minmax(118px, .62fr);
+    }
+    .user-row:last-child { border-bottom: 0; }
+    .user-row.head {
+      min-height: 44px;
+      background: #f1f5fb;
+      color: #485b75;
+      font-size: 12px;
+      font-weight: 700;
+      padding-top: 12px;
+      padding-bottom: 12px;
+    }
+    .user-row.head > div:last-child {
+      display: flex;
+      justify-content: flex-end;
+      text-align: right;
+    }
+    .user-row:not(.head):hover { background: #f8fbff; }
+    .user-identity {
+      display: grid;
+      grid-template-columns: 38px minmax(0, 1fr);
+      gap: 10px;
+      align-items: center;
+      min-width: 0;
+    }
+    .user-avatar {
+      width: 38px;
+      height: 38px;
+      border-radius: 8px;
+      display: grid;
+      place-items: center;
+      background: #e8eef7;
+      color: #1a365f;
+      font-weight: 800;
+      font-size: 13px;
+    }
+    .profile-image img,
+    .profile-image-small img {
+      width: 100%;
+      height: 100%;
+      display: block;
+      object-fit: cover;
+    }
+    .user-row-actions {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      justify-content: flex-end;
+      min-width: 0;
+      white-space: nowrap;
+    }
+    .user-row .main-text {
+      color: #061426;
+      font-size: 14px;
+      font-weight: 800;
+    }
+    .user-table .user-row:not(.head) > div:not(:first-child) .main-text {
+      font-weight: 400;
+    }
+    .user-row .muted {
+      color: #516683;
+      font-size: 12px;
+    }
+    .user-card-tags {
+      display: none;
+    }
+    .user-row .panel-action {
+      min-height: 38px;
+      padding: 8px 13px;
+      border: 1px solid var(--line-strong);
+      border-radius: 7px;
+      background: #fff;
+      color: #061426;
+      font-size: 13px;
+      font-weight: 400;
+    }
+    .user-row .panel-action:hover {
+      border-color: #9eb0c8;
+      background: #f8fbff;
+    }
+    .row-menu {
+      position: relative;
+    }
+    .row-menu summary {
+      width: 38px;
+      height: 38px;
+      border: 1px solid var(--line-strong);
+      border-radius: 7px;
+      display: grid;
+      place-items: center;
+      background: #fff;
+      color: var(--ink);
+      cursor: pointer;
+      list-style: none;
+      font-weight: 800;
+      line-height: 1;
+    }
+    .row-menu summary::-webkit-details-marker { display: none; }
+    .row-menu[open] summary {
+      border-color: #9eb0c8;
+      background: #f8fbff;
+    }
+    .row-menu-list {
+      position: absolute;
+      right: 0;
+      top: 38px;
+      z-index: 10;
+      min-width: 224px;
+      padding: 6px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fff;
+      box-shadow: var(--shadow);
+      display: grid;
+      gap: 4px;
+    }
+    .row-menu-list button {
+      min-height: 34px;
+      border: 0;
+      border-radius: 6px;
+      background: transparent;
+      color: var(--ink);
+      padding: 7px 9px;
+      text-align: left;
+      font-size: 12px;
+      font-weight: 400;
+    }
+    .row-menu-list button:hover:not(:disabled) {
+      background: #f1f5fb;
+    }
+    .row-menu-list button:disabled {
+      cursor: not-allowed;
+      color: #93a3b8;
+      background: #f8fafc;
+    }
+    .detail-section {
+      padding: 14px 0;
+      border-top: 1px solid var(--line);
+    }
+    .detail-section:first-of-type { border-top: 0; padding-top: 0; }
+    .detail-section h4 {
+      margin: 0 0 10px;
+      color: #071b36;
+      font-size: 13px;
+      font-weight: 800;
+    }
+    .detail-grid {
+      display: grid;
+      gap: 8px;
+    }
+    .detail-grid.two {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    .detail-tile {
+      min-width: 0;
+      border: 1px solid #e1e9f3;
+      border-radius: 8px;
+      background: #f8fbff;
+      padding: 10px;
+      font-size: 12px;
+      line-height: 1.45;
+    }
+    .detail-tile span {
+      display: block;
+      margin-bottom: 4px;
+      color: var(--muted);
+      font-weight: 700;
+    }
+    .detail-tile strong,
+    .kv strong {
+      font-weight: 400;
+    }
+    .profile-link-code {
+      display: block;
+      overflow-wrap: anywhere;
+      color: #071b36;
+      font-family: "Segoe UI", Tahoma, Arial, sans-serif;
+      font-size: 12px;
+      line-height: 1.45;
+    }
+    .report-brief {
+      display: grid;
+      gap: 8px;
+    }
+    .report-brief-head {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      flex-wrap: wrap;
+    }
+    .detail-tile .report-case {
+      display: inline-flex;
+      width: max-content;
+      min-height: 23px;
+      align-items: center;
+      margin: 0;
+      border: 1px solid #c6ddff;
+      border-radius: 999px;
+      background: #e8f1ff;
+      color: #071b36;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 400;
+      line-height: 1.2;
+      padding: 2px 8px;
+      white-space: nowrap;
+    }
+    .detail-tile .report-case:hover {
+      border-color: #8fbaf5;
+      background: #dcebff;
+      color: #0f52b8;
+    }
+    .report-reason {
+      margin: 0;
+      color: #10223d;
+      font-size: 13px;
+      line-height: 1.45;
+    }
+    .report-meta {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 6px;
+    }
+    .report-meta-item {
+      min-width: 0;
+      border: 1px solid #e1e9f3;
+      border-radius: 7px;
+      background: #fff;
+      padding: 7px 8px;
+    }
+    .detail-tile .report-meta-item span {
+      display: block;
+      margin: 0 0 2px;
+      color: #66758d;
+      font-size: 10px;
+      font-weight: 800;
+      text-transform: uppercase;
+    }
+    .report-meta-item strong {
+      display: block;
+      overflow: hidden;
+      color: #071b36;
+      font-size: 12px;
+      font-weight: 400;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    body.user-detail-mode .report-detail-tile {
+      padding: 14px 12px;
+      line-height: 1.65;
+    }
+    body.user-detail-mode .report-detail-tile > span {
+      margin-bottom: 10px;
+    }
+    body.user-detail-mode .report-detail-tile .report-brief {
+      gap: 12px;
+    }
+    body.user-detail-mode .report-detail-tile .report-brief-head {
+      gap: 8px;
+      margin-bottom: 2px;
+    }
+    body.user-detail-mode .report-detail-tile .report-reason {
+      line-height: 1.75;
+    }
+    body.user-detail-mode .report-detail-tile .report-meta {
+      gap: 8px;
+      margin-top: 2px;
+    }
+    body.user-detail-mode .report-detail-tile .report-meta-item {
+      padding: 9px 10px;
+    }
+    .warning-note {
+      margin-top: 10px;
+      padding: 10px 11px;
+      border: 1px solid #ffc8ce;
+      border-radius: 8px;
+      background: #fff1f2;
+      color: #9f1722;
+      font-size: 12px;
+      line-height: 1.5;
+    }
+    .footer-range {
+      min-height: 46px;
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: center;
+      padding: 11px 16px;
+      border-top: 1px solid var(--line);
+      color: var(--muted);
+      font-size: 12px;
+    }
+    .pager {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+    .pager .btn {
+      min-height: 30px;
+      padding: 5px 9px;
+      font-size: 12px;
+    }
+    .pager .btn.active {
+      border-color: var(--active);
+      background: var(--active);
+      color: #fff;
+    }
+    .user-detail-page {
+      padding: 18px;
+    }
+    .user-detail-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 14px;
+      margin-bottom: 14px;
+    }
+    .user-detail-head h2 {
+      margin: 0 0 5px;
+      font-size: 32px;
+      line-height: 1;
+    }
+    .user-detail-title {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      min-width: 0;
+    }
+    .user-detail-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .user-detail-action-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 34px;
+      border: 1px solid var(--line-strong);
+      border-radius: 7px;
+      background: #fff;
+      color: #061426;
+      cursor: pointer;
+      padding: 7px 11px;
+      font-size: 12px;
+      font-weight: 800;
+    }
+    .user-detail-action-btn:hover {
+      border-color: #9eb0c8;
+      background: #f8fbff;
+    }
+    .user-detail-action-btn.primary {
+      border-color: var(--active);
+      background: var(--active);
+      color: #fff;
+    }
+    .user-detail-action-btn.danger {
+      border-color: #fecdd3;
+      background: #fff1f2;
+      color: #9f1722;
+    }
+    .user-detail-action-btn.warning {
+      border-color: #f3d493;
+      background: #fff7e6;
+      color: #925500;
+    }
+    .action-feedback {
+      display: none;
+      margin-top: 10px;
+    }
+    .action-feedback.show {
+      display: block;
+    }
+    .user-action-page {
+      display: grid;
+      gap: 16px;
+    }
+    .user-action-head {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 38px;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 14px;
+      padding-bottom: 14px;
+      border-bottom: 1px solid var(--line);
+    }
+    .user-action-head > div {
+      min-width: 0;
+    }
+    .user-action-head h2 {
+      margin: 0 0 6px;
+      font-family: var(--font-main);
+      font-size: 24px;
+      font-weight: 600;
+      letter-spacing: 0;
+      line-height: 1.2;
+    }
+    .user-action-head p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 400;
+      line-height: 1.45;
+    }
+    .user-action-close {
+      width: 38px;
+      height: 38px;
+      min-height: 38px;
+      padding: 0;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex: 0 0 auto;
+      line-height: 0;
+    }
+    .user-action-close svg {
+      width: 18px;
+      height: 18px;
+      display: block;
+    }
+    .user-action-layout {
+      display: block;
+    }
+    .user-action-layout > .detail-section {
+      margin: 0;
+      padding: 0;
+      border: 0;
+      background: transparent;
+    }
+    .user-action-target {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 10px 12px;
+      border: 1px solid var(--line);
+      border-radius: 7px;
+      background: #f8fbff;
+      color: #43546d;
+      font-size: 12px;
+      font-weight: 400;
+    }
+    .user-action-target strong {
+      display: block;
+      margin-bottom: 2px;
+      color: #061426;
+      font-size: 14px;
+      font-weight: 600;
+    }
+    .user-action-target span {
+      font-weight: 400;
+    }
+    .user-action-target .pill {
+      flex: 0 0 auto;
+    }
+    .user-action-form {
+      display: grid;
+      gap: 12px;
+    }
+    .user-action-form label {
+      display: grid;
+      gap: 6px;
+      color: #43546d;
+      font-size: 12px;
+      font-weight: 800;
+    }
+    .user-action-form select,
+    .user-action-form textarea {
+      width: 100%;
+      border: 1px solid var(--line-strong);
+      border-radius: 7px;
+      background: #fff;
+      color: #061426;
+      font: inherit;
+      font-size: 13px;
+      font-weight: 400;
+      padding: 9px 10px;
+    }
+    .user-action-form .custom-select-trigger {
+      min-height: 44px;
+      border-color: var(--line-strong);
+      padding: 9px 12px;
+      color: #061426;
+      font-size: 13px;
+      font-weight: 400;
+    }
+    .user-action-form .custom-select-menu {
+      z-index: 40;
+    }
+    .user-action-form textarea {
+      min-height: 86px;
+      resize: vertical;
+      line-height: 1.45;
+    }
+    .user-action-form textarea:hover {
+      border-color: #c3cfdd;
+      background-color: #fbfcfe;
+    }
+    .user-action-form textarea:focus,
+    .user-action-form textarea:focus-visible {
+      outline: 0;
+      border-color: #b8c6d8;
+      box-shadow: 0 0 0 3px rgba(118, 135, 158, .10);
+    }
+    .user-action-impact {
+      margin: 0;
+    }
+    .user-action-form > .user-detail-actions {
+      justify-content: flex-end;
+      padding-top: 2px;
+    }
+    .user-action-result {
+      display: none;
+    }
+    .user-action-result.show {
+      display: block;
+    }
+    .user-action-result strong {
+      display: block;
+      margin-bottom: 6px;
+      line-height: 1.35;
+    }
+    .user-action-result br {
+      display: none;
+    }
+    .user-action-result span {
+      display: block;
+      line-height: 1.65;
+    }
+    .user-action-result.error {
+      border-color: #fecaca;
+      background: #fef2f2;
+      color: #7f1d1d;
+    }
+    .toast-stack {
+      position: fixed;
+      top: 18px;
+      right: 18px;
+      z-index: 35;
+      display: grid;
+      gap: 10px;
+      width: min(360px, calc(100vw - 36px));
+      pointer-events: none;
+    }
+    .toast {
+      display: none;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 12px 14px;
+      border: 1px solid #b7ebc8;
+      border-radius: 8px;
+      background: #f0fdf4;
+      color: #14532d;
+      box-shadow: 0 18px 40px rgba(15, 23, 42, .16);
+      font-size: 13px;
+      line-height: 1.45;
+      pointer-events: auto;
+    }
+    .toast.show {
+      display: flex;
+    }
+    .toast strong {
+      display: block;
+      margin-bottom: 2px;
+      color: #166534;
+      font-size: 13px;
+      font-weight: 700;
+    }
+    .toast svg {
+      width: 18px;
+      height: 18px;
+      flex: 0 0 auto;
+      margin-top: 1px;
+    }
+    .user-action-confirm.danger {
+      border-color: #b91c1c;
+      background: #b91c1c;
+      color: #fff;
+    }
+    .user-action-confirm.warning {
+      border-color: var(--amber);
+      background: var(--amber);
+      color: #fff;
+    }
+    .profile-image {
+      width: 76px;
+      height: 76px;
+      border-radius: 18px;
+      overflow: hidden;
+      flex: 0 0 auto;
+      background: #e8eef7;
+      border: 1px solid #d7e0ef;
+      box-shadow: 0 10px 24px rgba(15, 23, 42, .08);
+    }
+    .profile-image-small {
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      overflow: hidden;
+      flex: 0 0 auto;
+      background: #e8eef7;
+      border: 1px solid #d7e0ef;
+    }
+    body.user-management-mode .cards {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
     .cards {
       display: grid;
       grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -902,13 +1762,15 @@
       line-height: 1;
     }
     .dashboard-card-head {
-      min-height: 58px;
+      min-height: 74px;
       margin: 0;
-      padding: 17px 20px;
+      padding: 16px 20px 14px;
       border-bottom: 1px solid var(--line);
       display: flex;
-      align-items: baseline;
-      gap: 10px;
+      flex-direction: column;
+      align-items: flex-start;
+      justify-content: center;
+      gap: 6px;
     }
     .dashboard-status-card h3 {
       flex: 0 0 auto;
@@ -923,12 +1785,11 @@
     .dashboard-card-meta {
       min-width: 0;
       margin: 0;
-      overflow: hidden;
       color: #6d7f98;
       font-size: 12px;
       font-weight: 400;
-      text-overflow: ellipsis;
-      white-space: nowrap;
+      line-height: 1.45;
+      white-space: normal;
     }
     .stat-top {
       display: flex;
@@ -1049,15 +1910,18 @@
       overflow-x: auto;
     }
     .activity-panel-head .activity-toolbar {
-      flex: 1 1 auto;
+      flex: 1 1 260px;
       min-width: 0;
+      flex-wrap: wrap;
       justify-content: flex-end;
       padding: 0;
       border-bottom: 0;
       background: transparent;
+      overflow-x: visible;
     }
     body.dashboard-mode .activity-panel-head .activity-toolbar {
-      gap: 5px;
+      gap: 4px;
+      justify-content: flex-end;
     }
     .segmented {
       min-height: 32px;
@@ -1076,10 +1940,10 @@
       background: var(--active);
     }
     body.dashboard-mode .segmented {
-      min-height: 28px;
-      padding: 4px 9px;
+      min-height: 25px;
+      padding: 3px 6px;
       border-color: #d7e2f0;
-      font-size: 11px;
+      font-size: 10.5px;
     }
     .activity-row {
       grid-template-columns: 3px minmax(0, 1fr) auto 18px;
@@ -1255,6 +2119,15 @@
       overflow: hidden;
     }
     .modal-body { padding: 16px; }
+    .modal.user-action-modal {
+      width: min(720px, 100%);
+      max-height: calc(100vh - 36px);
+      display: grid;
+      grid-template-rows: minmax(0, 1fr);
+    }
+    .user-action-modal .modal-body {
+      overflow: auto;
+    }
     .modal-actions {
       display: flex;
       justify-content: flex-end;
@@ -1264,12 +2137,62 @@
       background: #f8fbff;
     }
 
+    @media (max-width: 1365px) and (min-width: 761px) {
+      body.dashboard-mode .layout > .panel .panel-head,
+      body.dashboard-mode .detail .activity-panel-head {
+        min-height: 94px;
+        align-items: flex-start;
+      }
+      body.dashboard-mode .layout > .panel .panel-head > div {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 9.5px;
+      }
+      body.dashboard-mode .layout > .panel .panel-head p {
+        overflow: visible;
+        text-overflow: clip;
+        white-space: normal;
+      }
+      body.dashboard-mode .detail .activity-panel-head {
+        flex-direction: column;
+        justify-content: center;
+      }
+      body.dashboard-mode .activity-panel-head .activity-toolbar {
+        width: 100%;
+        flex: 0 0 auto;
+        justify-content: flex-start;
+      }
+    }
+
     @media (max-width: 1180px) {
       .app {
         grid-template-columns: 1fr;
       }
-      .login-screen { grid-template-columns: 1fr; }
-      .login-visual { min-height: 220px; }
+      .login-screen {
+        grid-template-columns: 1fr;
+        min-height: 100svh;
+        overflow-y: auto;
+      }
+      .login-panel {
+        order: 2;
+        align-items: center;
+        justify-content: flex-start;
+        padding: 48px 28px 56px;
+        border-left: 0;
+      }
+      .login-panel > * {
+        width: min(100%, 390px);
+      }
+      .login-visual {
+        order: 1;
+        min-height: clamp(170px, 34svh, 250px);
+        background-position: center 48%;
+      }
+      .login-visual::after {
+        right: max(24px, calc((100vw - 390px) / 2));
+        bottom: 18px;
+        font-size: clamp(42px, 12vw, 72px);
+      }
       body.nav-open {
         overflow: hidden;
       }
@@ -1321,6 +2244,11 @@
         padding: 0;
         border: 0;
         min-width: 0;
+        gap: 10px;
+      }
+      .mobile-header .brand > div {
+        min-height: 36px;
+        gap: 5px;
       }
       .mobile-header .brand-mark {
         width: 36px;
@@ -1338,11 +2266,80 @@
       .main { height: 100vh; }
       .layout { grid-template-columns: 1fr; }
       body.dashboard-mode .layout { grid-template-columns: 1fr; }
+      body.user-management-mode .layout { grid-template-columns: 1fr; }
       .detail { position: static; }
       .summary-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
       body.dashboard-mode .cards { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .user-filter-bar,
+      .user-filter-bar.report-mode {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+      .user-filter-bar .search {
+        grid-column: 1 / -1;
+      }
+      .user-row {
+        grid-template-columns: minmax(150px, 1.08fr) minmax(136px, .74fr) minmax(148px, .8fr) minmax(76px, .4fr) minmax(86px, .5fr) minmax(118px, .64fr) minmax(124px, .58fr);
+        overflow-x: auto;
+      }
+      .user-row.report-row {
+        grid-template-columns: minmax(220px, 1.3fr) minmax(110px, .6fr) minmax(122px, .7fr) minmax(110px, .6fr) minmax(92px, .45fr) minmax(112px, .6fr);
+        overflow-x: auto;
+      }
     }
     @media (max-width: 760px) {
+      .user-action-head {
+        grid-template-columns: minmax(0, 1fr) 38px;
+        align-items: flex-start;
+      }
+      .user-action-layout {
+        grid-template-columns: 1fr;
+      }
+      .user-detail-head {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      body.user-detail-mode .user-detail-page {
+        padding: 14px 10px 18px;
+      }
+      body.user-detail-mode .user-detail-head {
+        flex-direction: row;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 12px;
+      }
+      .user-detail-title {
+        align-items: center;
+      }
+      body.user-detail-mode .user-detail-title {
+        flex: 1 1 auto;
+        gap: 10px;
+        min-width: 0;
+      }
+      .user-detail-title h2 {
+        overflow-wrap: anywhere;
+      }
+      body.user-detail-mode .user-detail-title h2 {
+        margin-bottom: 4px;
+        font-size: 21px;
+        line-height: 1.08;
+      }
+      body.user-detail-mode .user-detail-head .btn {
+        flex: 0 0 auto;
+        min-height: 34px;
+        padding: 7px 9px;
+        font-size: 12px;
+        white-space: nowrap;
+      }
+      .profile-image {
+        width: 64px;
+        height: 64px;
+        border-radius: 16px;
+      }
+      body.user-detail-mode .profile-image {
+        width: 52px;
+        height: 52px;
+        border-radius: 14px;
+      }
       .main { padding: 16px 10px 26px; }
       .mobile-header {
         margin: -16px -10px 18px;
@@ -1350,9 +2347,60 @@
       }
       .mobile-header .brand-name { font-size: 19px; }
       .mobile-header small { font-size: 9px; }
-      .login-panel { padding: 28px 18px; }
-      .login-title { font-size: 44px; }
+      .login-visual {
+        min-height: clamp(150px, 32svh, 210px);
+      }
+      .login-visual::after {
+        right: 18px;
+        bottom: 14px;
+        font-size: clamp(38px, 13vw, 58px);
+      }
+      .login-panel {
+        min-height: calc(100svh - clamp(150px, 32svh, 210px));
+        padding: 34px 18px 44px;
+      }
+      .login-brand {
+        gap: 11px;
+        margin-bottom: 34px;
+      }
+      .login-brand .brand-mark {
+        width: 42px;
+        height: 42px;
+        border-radius: 9px;
+      }
+      .login-brand .brand-name { font-size: 24px; }
+      .login-brand small {
+        margin-top: 0;
+        letter-spacing: .2em;
+      }
+      .login-title {
+        margin-bottom: 8px;
+        font-size: 42px;
+        line-height: .92;
+      }
+      .login-copy {
+        margin-bottom: 30px;
+        max-width: none;
+      }
+      .login-form {
+        max-width: none;
+        gap: 13px;
+      }
+      .login-form input,
+      .login-form select {
+        min-height: 46px;
+      }
+      .login-meta {
+        margin: 0 0 12px;
+      }
+      .prototype-tools {
+        max-width: none;
+        margin-top: 18px;
+      }
       .otp-actions { grid-template-columns: 1fr; }
+      #verify-otp-btn { order: 1; }
+      #resend-otp-btn { order: 2; }
+      #back-login-btn { order: 3; }
       .topbar { display: grid; }
       .page-title {
         font-size: 38px;
@@ -1360,9 +2408,45 @@
       }
       .tools { justify-content: flex-start; }
       .summary-grid, .cards, .nav { grid-template-columns: 1fr; }
+      body.user-management-mode .summary-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+      }
+      body.user-management-mode .stat {
+        min-height: 112px;
+        padding: 12px 11px;
+      }
+      body.user-management-mode .stat-label {
+        font-size: 16px;
+        line-height: 1.05;
+        margin-bottom: 9px;
+        white-space: normal;
+      }
+      body.user-management-mode .stat-value {
+        font-size: 30px;
+        margin-bottom: 7px;
+      }
+      body.user-management-mode .stat-note {
+        font-size: 11px;
+        line-height: 1.35;
+      }
+      body.dashboard-mode .cards { grid-template-columns: 1fr; }
+      body.user-management-mode .cards { grid-template-columns: 1fr; }
       .panel-head {
         align-items: flex-start;
         flex-direction: column;
+      }
+      body.user-management-mode .panel-head {
+        align-items: center;
+        flex-direction: row;
+        justify-content: space-between;
+        gap: 10px;
+      }
+      body.user-management-mode .panel-head h2 {
+        font-size: 24px;
+      }
+      body.user-management-mode .panel-head p {
+        display: none;
       }
       #primary-action {
         width: 100%;
@@ -1378,14 +2462,319 @@
       }
       .activity-panel-head .activity-toolbar {
         width: 100%;
+        flex: 0 0 auto;
+        align-items: center;
+        flex-wrap: wrap;
+        justify-content: flex-start;
+      }
+      body.dashboard-mode .activity-panel-head .activity-toolbar {
         justify-content: flex-start;
       }
       .work-row { grid-template-columns: 4px minmax(0, 1fr) auto; }
+      body.dashboard-mode .work-row {
+        grid-template-columns: 3px minmax(0, 1fr) minmax(44px, max-content);
+        padding-right: 16px;
+      }
       .work-row > .chevron { display: none; }
       .activity-row { grid-template-columns: 3px minmax(0, 1fr); }
+      body.dashboard-mode .activity-row {
+        grid-template-columns: 3px minmax(0, 1fr) minmax(64px, max-content);
+        padding-right: 16px;
+      }
+      body.dashboard-mode .activity-row > .chevron { display: none; }
+      .dashboard-card-head {
+        padding-right: 16px;
+        padding-left: 16px;
+      }
+      .dashboard-status-card .status-row {
+        grid-template-columns: minmax(0, 1fr) minmax(64px, max-content);
+        padding-right: 16px;
+        padding-left: 16px;
+      }
+      .brand-ranking-list {
+        padding-right: 16px;
+        padding-left: 16px;
+      }
       .activity-time { margin-top: 4px; }
       .row { grid-template-columns: 1fr; gap: 7px; }
       .row.head { display: none; }
+      .user-filter-bar,
+      .user-filter-bar.report-mode {
+        grid-template-columns: 1fr;
+      }
+      .user-filter-bar .field:not(.search) {
+        grid-column: auto;
+      }
+      .user-filter-actions {
+        display: none;
+      }
+      body.user-management-mode .user-panel-filter-actions {
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        gap: 12px;
+        flex: 0 0 auto;
+      }
+      .user-panel-filter-actions .btn {
+        min-height: 32px;
+        padding: 7px 0;
+        border: 0;
+        background: transparent;
+        box-shadow: none;
+        color: #061426;
+        font-size: 12px;
+        font-weight: 500;
+      }
+      .user-panel-filter-actions .btn:hover {
+        background: transparent;
+        color: var(--blue);
+      }
+      .user-panel-filter-actions svg {
+        width: 16px;
+        height: 16px;
+      }
+      .user-filter-bar[data-filter-open="false"] .user-advanced-filter {
+        display: none;
+      }
+      .user-filter-bar .btn.user-advanced-filter {
+        display: none;
+      }
+      .user-table {
+        gap: 10px;
+      }
+      body.user-list-mode .user-table {
+        grid-template-columns: 1fr;
+        gap: 12px;
+      }
+      body.user-list-mode #table {
+        padding: 12px 14px 16px;
+        background: #f8fbff;
+      }
+      body.user-list-mode #table .user-table {
+        gap: 12px;
+      }
+      .user-row,
+      .user-row.report-row {
+        grid-template-columns: 1fr;
+        gap: 0;
+        align-items: start;
+      }
+      .user-row:not(.report-row) {
+        grid-template-columns: 1fr;
+        gap: 0;
+        align-items: start;
+      }
+      .user-row.head { display: none; }
+      .user-row:not(.head) {
+        min-height: 0;
+        padding: 14px 16px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: #fff;
+      }
+      .user-row:not(.head) > div[data-label] {
+        display: grid;
+        grid-template-columns: 108px minmax(0, 1fr);
+        gap: 12px;
+        align-items: center;
+        width: 100%;
+        padding: 8px 0;
+        border-bottom: 1px solid #edf2f7;
+      }
+      .user-row:not(.head) > div[data-label]::before {
+        content: attr(data-label);
+        color: #5d718b;
+        font-size: 11px;
+        font-weight: 800;
+        line-height: 1.25;
+      }
+      .user-row:not(.head) > div.user-cell-primary[data-label] {
+        display: block;
+        padding-top: 0;
+        padding-bottom: 12px;
+      }
+      .user-row:not(.head) > div.user-cell-primary[data-label]::before {
+        content: none;
+      }
+      .user-row:not(.head):not(.report-row) {
+        grid-template-columns: minmax(0, 1fr) 34px;
+        column-gap: 14px;
+        row-gap: 14px;
+        padding: 18px 18px 16px;
+        border-color: #cfdbd2;
+        border-radius: 10px;
+        box-shadow: 0 1px 2px rgba(15, 23, 42, .05);
+        cursor: pointer;
+        overflow: visible;
+      }
+      .user-row:not(.head):not(.report-row) > div.user-cell-primary[data-label],
+      .user-row:not(.head):not(.report-row) > .user-row-actions {
+        grid-column: auto;
+      }
+      .user-row:not(.head):not(.report-row) > div.user-cell-primary[data-label] {
+        grid-column: 1;
+        grid-row: 1;
+        align-self: center;
+      }
+      .user-row:not(.head):not(.report-row) > .user-row-actions {
+        grid-column: 2;
+        grid-row: 1;
+        align-self: center;
+      }
+      .user-row:not(.head):not(.report-row) > div.user-cell-primary[data-label] {
+        min-height: 30px;
+        display: flex;
+        align-items: center;
+        border-bottom: 0;
+        padding-bottom: 0;
+      }
+      .user-row:not(.head):not(.report-row) > div.user-cell-primary[data-label] .main-text {
+        max-width: 100%;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        font-size: 18px;
+        line-height: 1.15;
+      }
+      .user-row:not(.head):not(.report-row) > div[data-label]:not(.user-cell-primary) {
+        display: none;
+      }
+      .user-card-tags {
+        grid-column: 1 / -1;
+        grid-row: 2;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 9px;
+        padding-top: 0;
+      }
+      .user-card-meta {
+        flex: 1 0 100%;
+        display: grid;
+        gap: 3px;
+        margin-top: 8px;
+        padding-top: 11px;
+        border-top: 1px solid #edf2f7;
+      }
+      .user-card-meta-item {
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        gap: 8px;
+        color: #34445b;
+        font-size: 13px;
+        line-height: 1.35;
+      }
+      .user-card-meta-item span {
+        color: #5f6f83;
+        font-size: 13px;
+        font-weight: 600;
+      }
+      .user-card-meta-item strong {
+        font-weight: 400;
+      }
+      .user-card-tag {
+        min-height: 30px;
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        max-width: 100%;
+        padding: 6px 11px;
+        border: 1px solid #dce6f2;
+        border-radius: 999px;
+        background: #f8fbff;
+        color: #4c5c70;
+        font-size: 13px;
+        font-weight: 700;
+        line-height: 1.2;
+        overflow-wrap: anywhere;
+      }
+      .user-card-tag.asset-tag {
+        background: #f7fafc;
+        color: #4a5b6e;
+      }
+      .user-card-tags > .pill {
+        align-self: center;
+        min-height: 30px;
+        padding: 6px 11px;
+        font-size: 13px;
+      }
+      .user-card-tag .tag-label {
+        color: #60748d;
+        font-size: 10px;
+        font-weight: 800;
+      }
+      .user-row .main-text {
+        overflow-wrap: anywhere;
+      }
+      .user-row-actions {
+        width: auto;
+        min-height: 30px;
+        padding-top: 0;
+        justify-content: flex-end;
+        align-self: center;
+      }
+      body.user-list-mode .user-row-actions .panel-action { display: none; }
+      .user-row-actions .panel-action {
+        min-width: 78px;
+        justify-content: center;
+      }
+      body.user-list-mode .row-menu summary {
+        width: 30px;
+        height: 30px;
+        border: 0;
+        border-radius: 999px;
+        background: transparent;
+        color: #061426;
+        font-size: 18px;
+        transform: translateY(-1px);
+      }
+      body.user-list-mode .row-menu[open] summary {
+        border-color: transparent;
+        background: transparent;
+        color: var(--blue);
+      }
+      body.user-list-mode .row-menu-list {
+        left: auto;
+        right: 0;
+        width: min(196px, calc(100vw - 64px));
+        min-width: 0;
+        max-width: calc(100vw - 64px);
+      }
+      body.user-list-mode .row-menu-list button {
+        white-space: normal;
+        overflow-wrap: anywhere;
+      }
+      .detail-grid.two {
+        grid-template-columns: 1fr;
+      }
+      body.user-detail-mode .detail-grid.two {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+      body.user-detail-mode .detail-grid {
+        gap: 8px;
+      }
+      body.user-detail-mode .detail-tile {
+        padding: 9px 8px;
+      }
+      .user-detail-action-section .user-detail-actions {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        width: 100%;
+        gap: 8px;
+      }
+      .user-detail-action-section .user-detail-action-btn {
+        width: 100%;
+        min-width: 0;
+        min-height: 38px;
+        justify-content: center;
+        padding: 7px 6px;
+        font-size: 11px;
+        line-height: 1.25;
+        white-space: normal;
+      }
+      .report-meta {
+        grid-template-columns: 1fr;
+      }
       .search { min-width: 100%; }
     }
   </style>
@@ -1504,6 +2893,7 @@
               <h2 id="panel-title">Operational Queue</h2>
               <p id="panel-subtitle">คลิกแถวเพื่อกางข้อมูลรายละเอียดของรายการ</p>
             </div>
+            <div class="user-panel-filter-actions" id="user-panel-filter-actions"></div>
             <button class="btn" type="button" id="primary-action"></button>
           </div>
           <div class="filters">
@@ -1522,12 +2912,21 @@
         </div>
 
         <aside class="detail" id="detail">
-          <div class="detail-empty">เลือกรายการจากตารางเพื่อดูรายละเอียด, timeline, FO impact และ action ที่ Admin ทำได้</div>
+          <div class="detail-empty">เลือกรายการจากตารางเพื่อดูรายละเอียด, timeline, ผลกระทบต่อแอปพลิเคชัน และ action ที่ Admin ทำได้</div>
         </aside>
       </section>
 
       <section class="cards" id="cards"></section>
     </main>
+  </div>
+
+  <div class="modal-backdrop" id="user-action-modal" role="dialog" aria-modal="true" aria-labelledby="user-action-modal-title">
+    <div class="modal user-action-modal">
+      <div class="modal-body" id="user-action-modal-body"></div>
+    </div>
+  </div>
+  <div class="toast-stack" aria-live="polite" aria-atomic="true">
+    <div class="toast" id="success-toast"></div>
   </div>
 
   <script>
@@ -1547,7 +2946,8 @@
       reports: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 19V5"/><path d="M4 19h17"/><path d="M8 16V9M13 16V6M18 16v-4"/></svg>',
       notifications: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 7 3 9H3c0-2 3-2 3-9"/><path d="M10 21h4"/></svg>',
       settings: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 15.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Z"/><path d="M19.4 15a1.7 1.7 0 0 0 .34 1.88l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06A1.7 1.7 0 0 0 15 19.4a1.7 1.7 0 0 0-1 .6 1.7 1.7 0 0 0-.42 1.1V21a2 2 0 1 1-4 0v-.09A1.7 1.7 0 0 0 8 19.4a1.7 1.7 0 0 0-1.88.34l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.7 1.7 0 0 0 3.6 15a1.7 1.7 0 0 0-.6-1H3a2 2 0 1 1 0-4h.09A1.7 1.7 0 0 0 4.6 8a1.7 1.7 0 0 0-.34-1.88l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.7 1.7 0 0 0 9 3.6c.4-.17.72-.38 1-.6V3a2 2 0 1 1 4 0v.09c.28.22.6.43 1 .6a1.7 1.7 0 0 0 1.88-.34l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.7 1.7 0 0 0 19.4 9c.17.4.38.72.6 1H21a2 2 0 1 1 0 4h-.09c-.22.28-.43.6-.6 1Z"/></svg>',
-      refresh: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><path d="M21 12a9 9 0 0 1-15.2 6.5"/><path d="M3 12A9 9 0 0 1 18.2 5.5"/><path d="M18 2v4h4"/><path d="M6 22v-4H2"/></svg>',
+      refresh: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><path d="M21 2v6h-6"/><path d="M20.5 12.5a8.5 8.5 0 1 1-2.5-6L21 8"/></svg>',
+      filter: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><path d="M4 7h10"/><path d="M18 7h2"/><circle cx="16" cy="7" r="2"/><path d="M4 17h2"/><path d="M10 17h10"/><circle cx="8" cy="17" r="2"/></svg>',
       eye: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/></svg>',
       eyeOff: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="m3 3 18 18"/><path d="M10.6 10.6a2 2 0 0 0 2.8 2.8"/><path d="M9.9 5.2A10.7 10.7 0 0 1 12 5c6.5 0 10 7 10 7a16 16 0 0 1-3 4.1"/><path d="M6.6 6.8C3.6 8.8 2 12 2 12s3.5 7 10 7a10.4 10.4 0 0 0 5.4-1.5"/></svg>',
       logout: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M10 17l5-5-5-5"/><path d="M15 12H3"/><path d="M21 3v18h-8"/></svg>',
@@ -1559,7 +2959,7 @@
     const navGroups = [
       { section: "การดำเนินงาน", items: [
         { id: "dashboard", label: "Dashboard", icon: "dashboard" },
-        { id: "users", label: "User Management", icon: "users", subs: ["User List", "Reports", "Suspension"] },
+        { id: "users", label: "User Management", icon: "users", subs: ["User List", "Reported Users"] },
         { id: "assets", label: "Asset Management", icon: "asset", subs: ["Asset List", "Reported Assets", "Status Review"] },
         { id: "content", label: "Content Management", icon: "content", subs: ["Articles", "Categories", "Banners", "Reported Board", { label: "Directory", module: "directory" }] },
         { id: "market", label: "Market Data", icon: "market", subs: ["Brands", "Models", "Price Index", "Import"] },
@@ -1677,7 +3077,7 @@
       deletions: mod("Account Deletion", "งานตรวจสอบและบริการ / Account Deletion", "Deletion Requests", "ตรวจคำขอลบบัญชี, pending dependency, 30-day grace period และ anonymization", "ตรวจ dependency", [["Requests", "8", "รอ validation"], ["Blocked", "3", "มี pending offer"], ["Grace Period", "11", "นับ 30 วัน"], ["Anonymized", "42", "เดือนนี้"]], [
         item("DEL-033", "Delete account request", "Archive Collector", "Account", "กลาง", "Blocked", "มี pending offer และ report context ค้างอยู่", ["Offer 1", "Report 1"], "ห้าม hard delete จนกว่า dependency ปิด"),
         item("DEL-029", "Grace period day 12", "The Collector", "Account", "ปกติ", "Grace", "session revoked แล้ว profile public unavailable", ["30-day"], "รอครบกำหนด anonymization"),
-        item("DEL-020", "Ready to anonymize", "old.user", "Account", "สูง", "Ready", "ครบ grace period และไม่มี legal hold", ["PII mask"], "ทำ anonymization พร้อม audit")
+        item("DEL-020", "Archived summary", "old.user", "Account", "สูง", "Anonymized", "ครบ grace period และทำ anonymization แล้ว", ["PII masked"], "ดู audit summary และข้อมูลที่ถูกเก็บถาวร")
       ]),
       reports: mod("Reports", "เครื่องมือ & รายงาน / Reports", "Reports & Analytics", "รายงาน user, asset, offer, chat, board, social, search, support, notification และ deletion", "สร้าง export", [["Dashboards", "12", "พร้อมใช้งาน"], ["Scheduled", "6", "ส่งประจำสัปดาห์"], ["Export Jobs", "5", "background"], ["Failed", "1", "retry needed"]], [
         item("RPT-USER", "User Risk Report", "Trust & Safety", "User", "สูง", "Ready", "รวม suspended, report count และ deletion state", ["CSV/PDF"], "Export ต้อง mask sensitive data"),
@@ -1696,15 +3096,72 @@
       ])
     };
 
+    const userManagementData = {
+      users: [
+        { id: "U-1002", displayName: "horology.king", username: "@horology.king", email: "ho***@gmail.com", auth: "Google", status: "Suspended", joined: "03 Jul 2026", joinedBucket: "7d", joinedRank: 20260703, lastActive: "10 Jul 2026 18:10", lastActiveBucket: "24h", lastActiveRank: 202607101810, assets: 2, assetBucket: "1-5", reports: 5, verification: "Google verified", contact: ["Line: horology.king"], support: "SUP-177", latest: "Report follow-up", reportState: "ตรวจแล้ว 5 รายงาน - บัญชีถูกระงับอยู่", statusLabel: "เข้าสู่ระบบไม่ได้", allowed: ["Restore", "Ban"], blocked: ["Reset password", "Deletion from list"], foImpact: "ผู้ใช้เข้าสู่ระบบไม่ได้ระหว่างถูกระงับบัญชีชั่วคราว", actionNote: "การเปลี่ยนสถานะต้องระบุเหตุผล แสดงผลกระทบ และบันทึกการดำเนินการ" },
+        { id: "U-1017", displayName: "Crown Time BKK", username: "@crowntimebkk", email: "cr***@tukdaeng.example", auth: "Email", status: "Active", joined: "29 Jun 2026", joinedBucket: "30d", joinedRank: 20260629, lastActive: "10 Jul 2026 20:44", lastActiveBucket: "24h", lastActiveRank: 202607102044, assets: 18, assetBucket: "11+", reports: 4, verification: "Email verified", contact: ["Phone: 081-234-2210", "Line: crowntimebkk"], support: "SUP-177", latest: "Duplicate asset context", reportState: "มี 4 รายงานรอตรวจสอบ - บัญชียังใช้งานได้ตามปกติ", statusLabel: "Normal FO access", allowed: ["Reset password", "Suspend", "Ban"], blocked: ["Archive from list"], foImpact: "Active account keeps normal FO access until Admin confirms a status action.", actionNote: "Reset password is available because auth method is Email." },
+        { id: "U-1042", displayName: "Nattapol P.", username: "@nattapol", email: "na***@privaterelay.appleid.com", auth: "Apple", status: "Active", joined: "08 Jul 2026", joinedBucket: "7d", joinedRank: 20260708, lastActive: "10 Jul 2026 16:02", lastActiveBucket: "24h", lastActiveRank: 202607101602, assets: 0, assetBucket: "0", reports: 0, verification: "Apple SSO", contact: [], support: "SUP-188", latest: "Proof of payment visibility", reportState: "ไม่มีรายงานผู้ใช้", statusLabel: "Normal FO access", allowed: ["Suspend", "Ban"], blocked: ["Reset password"], foImpact: "Apple SSO password reset must be handled outside BO.", actionNote: "Sensitive contact rows display only when data exists." },
+        { id: "U-1055", displayName: "Vintage Vault BKK", username: "@vintagevault", email: "vv***@gmail.com", auth: "Email", status: "Pending Verification", joined: "Not joined yet", joinedBucket: "pending", joinedRank: 20260710, lastActive: "No app session", lastActiveBucket: "pending", lastActiveRank: 0, assets: 0, assetBucket: "0", reports: 0, verification: "Email pending", contact: [], support: "None", latest: "รอยืนยันอีเมล", reportState: "ไม่มีรายงานผู้ใช้", statusLabel: "Email not verified", allowed: ["Resend verification context", "Suspend"], blocked: ["Reset password until verified", "Archive from list"], foImpact: "Account cannot enter FO app or create profile/assets until email verification is completed.", actionNote: "Pending verification accounts should use default avatar and contain no in-app profile/contact values." },
+        { id: "U-1088", displayName: "Omega Club TH", username: "@omegaclubth", email: "om***@mail.com", auth: "Email", status: "Active", joined: "22 Jun 2026", joinedBucket: "30d", joinedRank: 20260622, lastActive: "09 Jul 2026 22:48", lastActiveBucket: "7d", lastActiveRank: 202607092248, assets: 9, assetBucket: "6-10", reports: 3, verification: "Email verified", contact: ["Phone: 092-345-8820"], support: "DSP-014", latest: "ข้อพิพาทเรื่องสภาพสินทรัพย์ไม่ตรงตามตกลง", reportState: "มี 3 รายงานที่ถูกจัดเป็นความสำคัญสูง", statusLabel: "Normal FO access", allowed: ["Reset password", "Suspend", "Ban"], blocked: ["Deletion from list"], foImpact: "Report count raises review priority but does not change FO access automatically.", actionNote: "3 reports alone must not show as suspended without evidence." },
+        { id: "U-1104", displayName: "Archive Collector", username: "@archivecollector", email: "ar***@mail.com", auth: "Email", status: "Deletion Requested", joined: "15 May 2026", joinedBucket: "older", joinedRank: 20260515, lastActive: "08 Jul 2026 09:15", lastActiveBucket: "7d", lastActiveRank: 202607080915, assets: 6, assetBucket: "6-10", reports: 1, verification: "Email verified", contact: ["Line: archivecollector"], support: "DEL-033", latest: "Deletion dependency check", reportState: "มี 1 รายงานที่ต้องตรวจสอบก่อนลบบัญชี", statusLabel: "Deletion workflow", allowed: ["Open Account Deletion", "View detail"], blocked: ["Archive from User List", "Reset after deletion starts"], foImpact: "Deletion handling belongs in Account Deletion module after dependency review.", actionNote: "User List must not directly delete/archive this account." },
+        { id: "U-1120", displayName: "The Collector", username: "@thecollector", email: "tc***@icloud.com", auth: "Apple", status: "Banned", joined: "02 Apr 2026", joinedBucket: "older", joinedRank: 20260402, lastActive: "24 Jun 2026 13:12", lastActiveBucket: "30d", lastActiveRank: 202606241312, assets: 11, assetBucket: "11+", reports: 8, verification: "Apple SSO", contact: ["Phone: 081-777-0090"], support: "None", latest: "Abuse confirmed", reportState: "รายงานถูกปิดแล้ว - บัญชีถูกแบน", statusLabel: "เข้าสู่ระบบไม่ได้", allowed: ["Unban user"], blocked: ["Reset password"], foImpact: "ผู้ใช้เข้าสู่ระบบไม่ได้และไม่สามารถทำรายการใหม่จนกว่าผู้ดูแลระบบจะยกเลิกระงับบัญชีถาวร", actionNote: "การยกเลิกระงับบัญชีถาวรต้องยืนยัน ระบุเหตุผล และบันทึกสถานะก่อน/หลัง" },
+        { id: "U-1144", displayName: "Seiko Corner", username: "@seikocorner", email: "se***@watchmail.com", auth: "Email", status: "Active", joined: "01 Jul 2026", joinedBucket: "30d", joinedRank: 20260701, lastActive: "07 Jul 2026 18:30", lastActiveBucket: "7d", lastActiveRank: 202607071830, assets: 5, assetBucket: "1-5", reports: 0, verification: "Email verified", contact: ["Line: seikocorner"], support: "None", latest: "No support context", reportState: "ไม่มีรายงานผู้ใช้", statusLabel: "Normal FO access", allowed: ["Reset password", "Suspend", "Ban"], blocked: ["Archive from list"], foImpact: "Active account has normal Feed/Search/Profile visibility.", actionNote: "Contact fields display full FO profile values when present." },
+        { id: "U-1161", displayName: "Daily Watch Hunter", username: "@dailyhunter", email: "da***@gmail.com", auth: "Google", status: "Active", joined: "09 Jul 2026", joinedBucket: "7d", joinedRank: 20260709, lastActive: "09 Jul 2026 08:04", lastActiveBucket: "7d", lastActiveRank: 202607090804, assets: 1, assetBucket: "1-5", reports: 0, verification: "Google verified", contact: [], support: "None", latest: "New account", reportState: "ไม่มีรายงานผู้ใช้", statusLabel: "Normal FO access", allowed: ["Suspend", "Ban"], blocked: ["Reset password"], foImpact: "Google account cannot receive BO password reset link.", actionNote: "Do not render empty contact rows in detail." },
+        { id: "U-1186", displayName: "Rolex Rama9", username: "@rolexrama9", email: "rr***@mail.com", auth: "Email", status: "Suspended", joined: "18 Jun 2026", joinedBucket: "30d", joinedRank: 20260618, lastActive: "05 Jul 2026 21:10", lastActiveBucket: "7d", lastActiveRank: 202607052110, assets: 14, assetBucket: "11+", reports: 6, verification: "Email verified", contact: ["Phone: 086-555-4444"], support: "CHT-090", latest: "Reported chat context", reportState: "ตรวจแล้ว 6 รายงาน - บัญชีถูกระงับอยู่", statusLabel: "เข้าสู่ระบบไม่ได้", allowed: ["Restore", "Ban"], blocked: ["Reset while suspended"], foImpact: "ผู้ใช้เข้าสู่ระบบไม่ได้ระหว่างถูกระงับบัญชีชั่วคราว", actionNote: "การยกเลิกระงับต้องแสดงสถานะก่อนดำเนินการและหลังยืนยัน" },
+        { id: "U-1207", displayName: "Minimal Dial", username: "@minimaldial", email: "mi***@mail.com", auth: "Email", status: "Pending Verification", joined: "Not joined yet", joinedBucket: "pending", joinedRank: 20260611, lastActive: "No app session", lastActiveBucket: "pending", lastActiveRank: 0, assets: 0, assetBucket: "0", reports: 0, verification: "Email OTP pending", contact: [], support: "SUP-182", latest: "Cannot reset password question", reportState: "ไม่มีรายงานผู้ใช้", statusLabel: "Email not verified", allowed: ["Resend verification context", "Suspend"], blocked: ["Reset password until verified"], foImpact: "Account cannot enter FO app or create profile/assets until email verification is completed.", actionNote: "Use auth/support context before sending account instructions." },
+        { id: "U-1222", displayName: "old.user", username: "@olduser", email: "ol***@mail.com", auth: "Email", status: "Deleted / Archived", joined: "17 Jan 2026", joinedBucket: "older", joinedRank: 20260117, lastActive: "15 May 2026 07:44", lastActiveBucket: "older", lastActiveRank: 202605150744, assets: 0, assetBucket: "0", reports: 0, verification: "Archived", contact: [], support: "DEL-020", latest: "Anonymized", reportState: "ปิดเคสแล้ว", statusLabel: "Archived", allowed: ["View archived summary"], blocked: ["Reset password", "Status mutation"], foImpact: "Archived account login blocked; profile/assets hidden or anonymized.", actionNote: "Archive details remain sensitive and audited." }
+      ],
+      reports: [
+        { id: "RPU-505", category: "Profile", user: "horology.king", userId: "U-1002", accountStatus: "Suspended", reason: "พบโปรไฟล์ซ้ำและพฤติกรรมผู้ขายที่ต้องตรวจสอบ", reporters: 5, priority: "สูง", status: "In Review", reference: "Profile ID PRF-1002", source: "User Detail", waiting: "22 ชม.", evidence: ["รูปโปรไฟล์คล้ายบัญชีอื่น", "ข้อความแนะนำตัวผู้ขายซ้ำหลายจุด"], recommendation: "ตรวจ reference ต้นทางก่อนทำ action เพิ่มกับบัญชี", actionHistory: "เริ่มตรวจสอบโดย Somchai Admin และยังไม่มีการเปลี่ยนสถานะล่าสุด" },
+        { id: "RPU-512", category: "Asset", user: "Crown Time BKK", userId: "U-1017", accountStatus: "Active", reason: "มีรายงานสินทรัพย์ซ้ำและข้อมูลประกาศคล้ายรายการอื่น", reporters: 4, priority: "สูง", status: "Open", reference: "Asset Group AST-DUP-1017", source: "Asset Detail", waiting: "20 ชม.", evidence: ["รูปสินทรัพย์ซ้ำกับรายการอื่น", "ข้อความประกาศถูกใช้ซ้ำ"], recommendation: "เทียบรูปสินค้าและหลักฐาน provenance ก่อนทำ action กับบัญชี", actionHistory: "เปิด report ใหม่ และยังไม่มีการเปลี่ยนสถานะบัญชี" },
+        { id: "RPU-518", category: "Offer / Chat", user: "Omega Club TH", userId: "U-1088", accountStatus: "Active", reason: "มีข้อพิพาทว่าสภาพสินทรัพย์ไม่ตรงกับที่ตกลงในข้อเสนอซื้อ", reporters: 3, priority: "สูง", status: "Open", reference: "Offer OFR-501", source: "Offer / Chat", waiting: "18 ชม.", evidence: ["ประวัติแชท", "ข้อพิพาทจากข้อเสนอซื้อ"], recommendation: "เปิดบริบท Offer / Chat ก่อนปิด report", actionHistory: "เปิด report ใหม่ และรอตรวจสอบ reference ต้นทาง" },
+        { id: "RPU-522", category: "Authentication", user: "Vintage Vault BKK", userId: "U-1055", accountStatus: "Pending Verification", reason: "บัญชียังยืนยันอีเมลไม่สำเร็จ", reporters: 1, priority: "กลาง", status: "Open", reference: "Signup AUTH-772", source: "Authentication", waiting: "6 ชม.", evidence: ["ยังไม่ได้ยืนยัน Email OTP"], recommendation: "ตรวจ signup/auth log เพราะยังไม่มี public profile ในระบบ", actionHistory: "ยังไม่มี admin action" },
+        { id: "RPU-530", category: "Account Deletion", user: "Archive Collector", userId: "U-1104", accountStatus: "Deletion Requested", reason: "มีคำขอลบบัญชีแต่ยังมี report ที่ต้องตรวจสอบก่อน", reporters: 1, priority: "กลาง", status: "In Review", reference: "DEL-033", source: "Account Deletion", waiting: "10 ชม.", evidence: ["มีข้อเสนอซื้อค้างอยู่", "มี report ผูกกับโปรไฟล์"], recommendation: "เคลียร์ reference ต้นทางก่อน archive หรือ anonymize บัญชี", actionHistory: "เปิด dependency check แล้ว และยังไม่อนุมัติการลบบัญชี" },
+        { id: "RPU-541", category: "Chat", user: "Rolex Rama9", userId: "U-1186", accountStatus: "Suspended", reason: "มีรายงานซ้ำเรื่องข้อความแชทที่ไม่เหมาะสม", reporters: 6, priority: "สูง", status: "Cleared", reference: "CHT-090", source: "Offer / Chat", waiting: "0 ชม.", evidence: ["ประวัติแชท"], recommendation: "ดำเนินการกับบัญชีแล้ว ให้เก็บ audit trail ไว้", actionHistory: "ปิด report แล้วหลังระงับบัญชีและบันทึก audit note" },
+        { id: "RPU-560", category: "Profile", user: "The Collector", userId: "U-1120", accountStatus: "Banned", reason: "ยืนยันพฤติกรรมละเมิดซ้ำและปิดเคสหลังแบนบัญชี", reporters: 8, priority: "สูง", status: "Cleared", reference: "Profile ID PRF-1120", source: "Reported Users", waiting: "0 ชม.", evidence: ["รายงานพฤติกรรมละเมิดซ้ำ", "มี admin action แบนบัญชีแล้ว"], recommendation: "คงสถานะ report เป็นปิดแล้ว และเก็บบันทึกการดำเนินการสำหรับกรณีขอยกเลิกระงับบัญชีถาวร", actionHistory: "ปิด report แล้วหลังแบนบัญชี และบัญชียังคงถูกแบนอยู่" }
+      ]
+    };
+
+    const userProfileImages = {
+      "U-1002": "./assets/user-avatars/u-1002.png",
+      "U-1017": "./assets/user-avatars/u-1017.png",
+      "U-1042": "./assets/user-avatars/u-1042.png",
+      "U-1088": "./assets/user-avatars/u-1088.png",
+      "U-1104": "./assets/user-avatars/u-1104.png",
+      "U-1120": "./assets/user-avatars/u-1120.png",
+      "U-1144": "./assets/user-avatars/u-1144.png",
+      "U-1161": "./assets/user-avatars/u-1161.png",
+      "U-1186": "./assets/user-avatars/u-1186.png",
+      "U-1222": "./assets/user-avatars/u-1222.png"
+    };
+
+    const userSocialStats = {
+      "U-1002": { followers: 1240, following: 86 },
+      "U-1017": { followers: 8420, following: 214 },
+      "U-1042": { followers: 64, following: 143 },
+      "U-1055": { followers: 0, following: 0 },
+      "U-1088": { followers: 3210, following: 178 },
+      "U-1104": { followers: 940, following: 129 },
+      "U-1120": { followers: 2100, following: 73 },
+      "U-1144": { followers: 680, following: 91 },
+      "U-1161": { followers: 32, following: 58 },
+      "U-1186": { followers: 4750, following: 166 },
+      "U-1207": { followers: 0, following: 0 },
+      "U-1222": { followers: 0, following: 0 }
+    };
+
+    userManagementData.users.forEach(user => {
+      user.profileImage = userProfileImages[user.id] || user.profileImage;
+    });
+
     const dashboardData = {
-      lastUpdated: "10 Jul 2026, 15:20 GMT+7",
       metrics: [
         { label: "New Users", value: "128", trend: "วันนี้เพิ่มขึ้น 8.2% เทียบกับเมื่อวาน", chips: ["Today 128", "This Week 642", "This Month 2,840"], module: "users", sub: "User List", icon: "users" },
         { label: "Active Users Today", value: "8.4K", trend: "ผู้ใช้งานรายวันเฉลี่ย 7 วันเพิ่มขึ้น 4.1% เทียบกับ 7 วันก่อน", chips: ["Today 8,420", "This Week 24,700", "This Month 38,900"], module: "users", sub: "User List", icon: "users" },
         { label: "New Assets", value: "94", trend: "สร้างวันนี้ 94 รายการ เทียบกับเมื่อวาน 340 รายการ", chips: ["Sale 64", "Show 17", "Hide 9", "Sold 4"], module: "assets", sub: "Asset List", icon: "asset" },
         { label: "Reported Items", value: "31", trend: "มี 9 รายงานใกล้ครบกำหนดตรวจ", chips: [
           { label: "Assets 22", module: "assets", sub: "Reported Assets" },
-          { label: "Users 6", module: "users", sub: "Reports" },
+          { label: "Users 6", module: "users", sub: "Reported Users" },
           { label: "Comments 3", module: "social", sub: "Reported Social" }
         ], icon: "audit" },
         { label: "Offer Activity", value: "184", trend: "ข้อเสนอซื้อวันนี้เพิ่มขึ้น 12.6% เทียบกับเมื่อวาน", chips: ["Made 184", "Accepted 41", "Rejected 19", "Expired 12"], module: "offers", sub: "Offer Queue", icon: "offer" },
@@ -1714,7 +3171,7 @@
       ],
       queues: [
         { title: "รายงานสินทรัพย์", count: 22, priority: "high", detail: "รายการเก่าสุดรอตรวจ 22 ชม. / เหตุผลหลัก: รูปซ้ำและข้อมูลประกาศซ้ำ / ควรตรวจวันนี้", chips: ["ใกล้ครบกำหนด 6", "ผู้ใช้กระทบสูง"], module: "assets", sub: "Reported Assets" },
-        { title: "รายงานผู้ใช้", count: 6, priority: "high", detail: "มีรายงานโปรไฟล์ซ้ำและพฤติกรรมขายซ้ำ / ควรตรวจบัญชีที่ถูก report หลายครั้งก่อน", chips: ["ใกล้ครบกำหนด 3", "ตรวจประวัติ login"], module: "users", sub: "Reports" },
+        { title: "รายงานผู้ใช้", count: 6, priority: "high", detail: "มีรายงานโปรไฟล์ซ้ำและพฤติกรรมขายซ้ำ / ควรตรวจบัญชีที่ถูก report หลายครั้งก่อน", chips: ["ใกล้ครบกำหนด 3", "ตรวจประวัติ login"], module: "users", sub: "Reported Users" },
         { title: "งานช่วยเหลือที่เปิดอยู่", count: 18, priority: "high", detail: "มี 3 เคสใกล้ครบกำหนดตอบครั้งแรก 8 ชม. / ควรตอบเคสเร่งด่วนก่อน", chips: ["Open 18", "เร่งด่วน 3"], module: "support", sub: "Tickets" },
         { title: "คำขอลบบัญชี", count: 8, priority: "medium", detail: "มี 2 คำขอที่ยังลบไม่ได้ เพราะมีข้อเสนอซื้อค้างอยู่", chips: ["Blocked 2", "Grace period 4"], module: "deletions", sub: "Requests" },
         { title: "สินทรัพย์ที่ต้องตรวจเพิ่ม", count: 14, priority: "medium", detail: "รายการถูกทำเครื่องหมายจากระบบหรือ Admin / ตรวจราคา รูป และสถานะก่อนปล่อยกลับสู่ FO", chips: ["ราคาเบี่ยง 5", "รูปซ้ำ 4"], module: "assets", sub: "Status Review" },
@@ -1757,6 +3214,25 @@
       ]
     };
 
+    function formatBangkokTimestamp(date = new Date()) {
+      const formatter = new Intl.DateTimeFormat("en-GB", {
+        timeZone: "Asia/Bangkok",
+        day: "2-digit",
+        month: "short",
+        year: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+        hourCycle: "h23"
+      });
+      return `${formatter.format(date)} GMT+7`;
+    }
+
+    function updateDashboardMeta() {
+      const pageMeta = document.querySelector("#page-meta");
+      if (!pageMeta || activeModule !== "dashboard") return;
+      pageMeta.textContent = `Last updated: ${formatBangkokTimestamp()}`;
+    }
+
     function item(id, name, owner, type, priority, status, detail, tags, action) {
       return { id, name, owner, type, priority, status, detail, tags, action };
     }
@@ -1770,7 +3246,7 @@
         action,
         stats,
         rows,
-        cards: [["Requirement Coverage", "รองรับ list, filter, detail, status, FO impact และ audit/action note ตาม baseline"], ["Sensitive Data", "ข้อมูลส่วนตัวต้อง mask เป็นค่าเริ่มต้นและเปิดตาม permission เท่านั้น"], ["FO Impact", "action สำคัญต้อง sync ไปยัง Feed, Search, Profile, Board, Notification หรือ Watch Alert ตามกรณี"]]
+        cards: [["Requirement Coverage", "รองรับ list, filter, detail, status, ผลกระทบต่อแอปพลิเคชัน และ audit/action note ตาม baseline"], ["Sensitive Data", "ข้อมูลส่วนตัวต้อง mask เป็นค่าเริ่มต้นและเปิดตาม permission เท่านั้น"], ["ผลกระทบต่อแอปพลิเคชัน", "action สำคัญต้อง sync ไปยัง Feed, Search, Profile, Board, Notification หรือ Watch Alert ตามกรณี"]]
       };
     }
 
@@ -1779,6 +3255,23 @@
     const expandedMenus = new Set();
     let activeRow = null;
     let activeActivityFilter = "ทั้งหมด";
+    let userListPage = 1;
+    let userFilterOpen = false;
+    const userListPageSize = 10;
+
+    function resetSessionViewState() {
+      expandedMenus.clear();
+      activeSub = "";
+      activeRow = null;
+      activeActivityFilter = "ทั้งหมด";
+      userListPage = 1;
+      userFilterOpen = false;
+      closeRowMenus();
+      document.querySelectorAll("[data-custom-select]").forEach(select => {
+        select.classList.remove("open");
+        select.querySelector("[data-custom-select-trigger]")?.setAttribute("aria-expanded", "false");
+      });
+    }
 
     function renderNav() {
       const nav = document.querySelector("#nav");
@@ -1801,13 +3294,1131 @@
       `).join("");
     }
 
+    const userStatusLabels = {
+      "Active": "ใช้งานได้",
+      "Pending Verification": "รอยืนยันตัวตน",
+      "Suspended": "ระงับชั่วคราว",
+      "Banned": "ระงับบัญชีถาวร",
+      "Deletion Requested": "รอลบบัญชี",
+      "Deleted / Archived": "ลบ/เก็บถาวร",
+      "Open": "รอตรวจ",
+      "In Review": "กำลังตรวจ",
+      "Cleared": "ปิดแล้ว"
+    };
+
+    function getUserSummaryStats() {
+      const users = userManagementData.users;
+      const countStatus = status => users.filter(user => user.status === status).length;
+      const activeUsers = users.filter(user => user.status === "Active");
+      const activeByAuth = ["Email", "Google", "Apple"]
+        .map(auth => userAuthPill(auth, `${auth} ${activeUsers.filter(user => user.auth === auth).length}`))
+        .join("");
+      const suspendedUsers = users.filter(user => user.status === "Suspended");
+      const suspendedReports = suspendedUsers.reduce((sum, user) => sum + user.reports, 0);
+      const deletionUsers = users.filter(user => user.status === "Deletion Requested");
+      const deletionWithReports = deletionUsers.filter(user => user.reports > 0).length;
+      const reportedUsers = users.filter(user => user.reports > 0);
+      const totalReports = reportedUsers.reduce((sum, user) => sum + user.reports, 0);
+      const highReportUsers = reportedUsers.filter(user => user.reports >= 3).length;
+
+      return [
+        ["Active Users", activeUsers.length, activeByAuth, "chips"],
+        ["Suspended", suspendedUsers.length, `${suspendedReports} รายงานทั้งหมด · ต้องมีบันทึกการดำเนินการ`],
+        ["Deletion Requested", deletionUsers.length, `${deletionWithReports} รายงานที่เกี่ยวข้อง · ตรวจเงื่อนไขก่อนลบ`],
+        ["Reported", reportedUsers.length, `${totalReports} รายงานทั้งหมด · ${highReportUsers} ผู้ใช้เร่งด่วน`]
+      ];
+    }
+
+    function renderUserSummaryNote(stat) {
+      const [, , detail, mode] = stat;
+      if (mode === "chips") return detail;
+      return detail
+        .split(/\s+·\s+/)
+        .map(item => `<span class="chip">${item}</span>`)
+        .join("");
+    }
+
+    function userStatusPill(status) {
+      const map = {
+        "Active": "green",
+        "Pending Verification": "amber",
+        "Suspended": "red",
+        "Banned": "red",
+        "Deletion Requested": "purple",
+        "Deleted / Archived": "purple",
+        "Open": "red",
+        "In Review": "amber",
+        "Cleared": "green"
+      };
+      return `<span class="pill ${map[status] || "blue"}">${userStatusLabels[status] || status}</span>`;
+    }
+
+    function userAuthPill(auth, label = auth) {
+      const map = {
+        "Email": "blue",
+        "Google": "green",
+        "Apple": "purple"
+      };
+      return `<span class="pill ${map[auth] || "blue"}">${label}</span>`;
+    }
+
+    function customSelect(id, label, options, selectedValue = "", attrs = "", disabled = false) {
+      const selected = options.find(option => option.value === selectedValue) || options[0];
+      return `
+        <div class="custom-select" data-custom-select ${attrs}>
+          <input type="hidden" id="${id}" value="${selected.value}" />
+          <button class="field custom-select-trigger" type="button" data-custom-select-trigger aria-haspopup="listbox" aria-expanded="false" ${disabled ? "disabled" : ""}>
+            <span data-custom-select-label>${selected.label}</span>
+          </button>
+          <div class="custom-select-menu" role="listbox" aria-label="${label}">
+            ${options.map(option => `
+              <button class="custom-select-option ${option.value === selected.value ? "selected" : ""}" type="button" role="option" aria-selected="${option.value === selected.value}" data-custom-select-option data-value="${option.value}">${option.label}</button>
+            `).join("")}
+          </div>
+        </div>
+      `;
+    }
+
+    function renderUserManagement(subLabel = "User List") {
+      const mode = subLabel === "Report User" || subLabel === "Reported Users" ? "reports" : "list";
+      const isReports = mode === "reports";
+      const title = isReports ? "Reported Users" : "User List";
+      document.body.classList.toggle("user-list-mode", !isReports);
+      document.body.classList.remove("user-detail-mode");
+      activeRow = isReports ? userManagementData.reports[0] : userManagementData.users[0];
+      document.querySelector("#crumb").textContent = `การดำเนินงาน / User Management / ${title}`;
+      document.querySelector("#page-title").textContent = title;
+      document.querySelector("#page-meta").textContent = isReports
+        ? "Operational queue สำหรับตรวจ report ของ FO user/profile ภายใน SLA 24 ชั่วโมง"
+        : "";
+      document.querySelector("#panel-title").textContent = isReports ? "Reported Users Queue" : "User Accounts";
+      document.querySelector("#panel-subtitle").textContent = isReports
+        ? "ตรวจ source reference ก่อน clear report หรือเปลี่ยนสถานะบัญชี"
+        : "";
+      document.querySelector("#user-panel-filter-actions").innerHTML = `
+        <button class="btn user-filter-toggle" type="button" data-user-filter-toggle aria-expanded="${userFilterOpen}">${iconSvg.filter}<span>${userFilterOpen ? "ปิดตัวกรอง" : "เปิดตัวกรอง"}</span></button>
+        <button class="btn" type="button" data-user-reset title="รีเซ็ตค่าทั้งหมด" aria-label="รีเซ็ตค่าทั้งหมด">${iconSvg.refresh}<span>รีเซ็ตค่าทั้งหมด</span></button>
+      `;
+      document.querySelector("#summary-grid").innerHTML = getUserSummaryStats().map(stat => `
+        <article class="stat">
+          <div class="stat-label">${stat[0]}</div>
+          <div class="stat-value">${stat[1]}</div>
+          <div class="stat-note chips">${renderUserSummaryNote(stat)}</div>
+        </article>
+      `).join("");
+      document.querySelector(".filters").innerHTML = isReports ? `
+        <div class="user-filter-bar report-mode" data-filter-open="${userFilterOpen}">
+          <input class="field search" id="user-search" type="search" placeholder="ค้นหา report ID, user ID, display name, reason หรือ reference" />
+          <select class="field user-advanced-filter" id="report-status-filter" aria-label="Filter report status">
+            <option value="">ทุก report status</option>
+            <option value="Open">รอตรวจ</option>
+            <option value="In Review">กำลังตรวจ</option>
+            <option value="Cleared">ปิดแล้ว</option>
+          </select>
+          <select class="field user-advanced-filter" id="report-priority-filter" aria-label="Filter priority">
+            <option value="">ทุก priority</option>
+            <option value="สูง">สูง</option>
+            <option value="กลาง">กลาง</option>
+            <option value="ปกติ">ปกติ</option>
+          </select>
+          <select class="field user-advanced-filter" id="report-sort" aria-label="Sort reports">
+            <option value="oldest">รอนานสุดก่อน</option>
+            <option value="urgent">Urgent ก่อน</option>
+            <option value="reporters">จำนวน reporter</option>
+            <option value="status">สถานะ</option>
+          </select>
+          <button class="btn icon user-advanced-filter" type="button" id="user-reset" title="รีเซ็ตค่าทั้งหมด" aria-label="รีเซ็ตค่าทั้งหมด">${iconSvg.refresh}</button>
+        </div>
+      ` : `
+        <div class="user-filter-bar" data-filter-open="${userFilterOpen}">
+          <input class="field search" id="user-search" type="search" placeholder="ค้นหา User ID, ชื่อ, email" />
+          <div class="user-advanced-filter">${customSelect("user-status-filter", "Filter account status", [
+            { value: "", label: "ทุกสถานะ" },
+            { value: "Active", label: "ใช้งานได้" },
+            { value: "Pending Verification", label: "รอยืนยันตัวตน" },
+            { value: "Suspended", label: "ระงับชั่วคราว" },
+            { value: "Banned", label: "ระงับบัญชีถาวร" },
+            { value: "Deletion Requested", label: "รอลบบัญชี" },
+            { value: "Deleted / Archived", label: "ลบ/เก็บถาวร" }
+          ])}</div>
+          <div class="user-advanced-filter">${customSelect("user-auth-filter", "Filter auth method", [
+            { value: "", label: "ทุกวิธีเข้าสู่ระบบ" },
+            { value: "Email", label: "Email" },
+            { value: "Apple", label: "Apple" },
+            { value: "Google", label: "Google" }
+          ])}</div>
+          <div class="user-advanced-filter">${customSelect("user-sort", "Sort users", [
+            { value: "lastActive", label: "เรียงตามใช้งานล่าสุด" },
+            { value: "joined", label: "เรียงตามวันที่สมัครล่าสุด" },
+            { value: "reports", label: "จำนวน report" },
+            { value: "assets", label: "จำนวน asset" }
+          ], "lastActive")}</div>
+          <button class="btn filter-reset user-advanced-filter" type="button" id="user-reset" title="รีเซ็ตค่าทั้งหมด" aria-label="รีเซ็ตค่าทั้งหมด">${iconSvg.refresh}<span>รีเซ็ตค่าทั้งหมด</span></button>
+        </div>
+      `;
+      document.querySelector("#cards").innerHTML = "";
+      if (isReports) {
+        renderReportedUserRows();
+        renderReportedUserDetail(activeRow);
+      } else {
+        renderUserRows();
+        document.querySelector("#detail").innerHTML = "";
+      }
+    }
+
+    function getUserSearchText(record) {
+      return Object.values(record).flat().join(" ").toLowerCase();
+    }
+
+    function getUserListSearchText(user) {
+      const searchable = { ...user, contact: getUserContactItems(user).filter(item => !/^phone\s*:/i.test(item)) };
+      return Object.values(searchable).flat().join(" ").toLowerCase();
+    }
+
+    function getUserFullEmail(user) {
+      const domain = user.email.includes("privaterelay.appleid.com")
+        ? "privaterelay.appleid.com"
+        : user.email.includes("icloud.com")
+          ? "icloud.com"
+          : user.email.includes("tukdaeng.example")
+            ? "tukdaeng.example"
+            : user.email.includes("watchmail.com")
+              ? "watchmail.com"
+              : user.email.includes("gmail.com")
+                ? "gmail.com"
+                : "mail.com";
+      return `${user.username.replace("@", "").replace(/[^a-z0-9.]/gi, ".")}@${domain}`.toLowerCase();
+    }
+
+    function getUserContactItems(user) {
+      return (user.contact || []).filter(item => !/not provided|none|n\/a/i.test(item));
+    }
+
+    function getUserContactDisplayItems(user) {
+      return getUserContactItems(user).map(item => {
+        const separatorIndex = item.indexOf(":");
+        if (separatorIndex < 0) return { type: "contact", label: "Contact", value: item.trim() };
+        const rawLabel = item.slice(0, separatorIndex).trim();
+        const type = rawLabel.toLowerCase();
+        const label = type === "phone" ? "Phone number" : rawLabel;
+        return { type, label, value: item.slice(separatorIndex + 1).trim() };
+      });
+    }
+
+    function getUserAuthDetailRows(user, fullEmail) {
+      const isEmailAuth = user.auth === "Email";
+      const verification = user.status === "Pending Verification"
+        ? "Pending OTP / Email verification"
+        : isEmailAuth
+          ? "Verified by Email OTP"
+          : `Verified by ${user.auth} SSO`;
+
+      return [
+        { label: "Email", value: fullEmail },
+        { label: "Auth Method", value: isEmailAuth ? "Email / Password" : "SSO" },
+        { label: "SSO Provider", value: isEmailAuth ? "-" : user.auth },
+        { label: "Email Verification", value: verification }
+      ];
+    }
+
+    function renderContactAuthRows(user, fullEmail, tileClass = "detail-tile") {
+      const authRows = getUserAuthDetailRows(user, fullEmail)
+        .map(item => `<div class="${tileClass}"><span>${item.label}</span><strong>${item.value}</strong></div>`)
+        .join("");
+      return `${authRows}${renderContactRows(user, tileClass)}`;
+    }
+
+    function getAssetSummary(user) {
+      if (user.status === "Deleted / Archived") return { Sale: 0, Show: 0, Hide: 0, Sold: 0, "Removed / Hidden": user.assets };
+      const sale = Math.max(0, Math.ceil(user.assets * 0.45));
+      const show = Math.max(0, Math.floor(user.assets * 0.25));
+      const hide = Math.max(0, Math.floor(user.assets * 0.15));
+      const sold = Math.max(0, user.assets - sale - show - hide);
+      const removed = user.status === "Suspended" || user.status === "Banned" ? Math.min(2, user.assets) : 0;
+      return { Sale: sale, Show: show, Hide: hide, Sold: sold, "Removed / Hidden": removed };
+    }
+
+    function getSupportContext(user) {
+      if (user.support === "None") return "No linked support ticket";
+      if (user.support.startsWith("DEL-")) return `${user.support} / Account deletion workflow`;
+      return `${user.support} / ${user.latest}`;
+    }
+
+    function getDeletionContext(user) {
+      if (user.status === "Deletion Requested") return "Deletion request open; review pending offers, assets, chats, and reports in Account Deletion module";
+      if (user.status === "Deleted / Archived") return "Archived account; login blocked and public profile/assets hidden or anonymized";
+      return "No active account deletion request";
+    }
+
+    function getLoginHistory(user) {
+      if (user.status === "Pending Verification") return "No app login/session yet; account is waiting for email verification";
+      const provider = user.auth === "Email" ? "Email / password" : `${user.auth} SSO`;
+      return `${user.lastActive} via ${provider}; device and IP shown only when policy permits`;
+    }
+
+    function createProfileImage(user) {
+      const palettes = [
+        { bg: "#f4dfcf", skin: "#b87656", hair: "#221713", shirt: "#b9000e", accent: "#f6c85f" },
+        { bg: "#dbeafe", skin: "#c98663", hair: "#2f221f", shirt: "#1d4ed8", accent: "#93c5fd" },
+        { bg: "#dcfce7", skin: "#8f5c3f", hair: "#3b281f", shirt: "#047857", accent: "#86efac" },
+        { bg: "#fef3c7", skin: "#d19973", hair: "#1f2937", shirt: "#7c2d12", accent: "#fbbf24" },
+        { bg: "#e0e7ff", skin: "#a16d4f", hair: "#111827", shirt: "#4338ca", accent: "#a5b4fc" },
+        { bg: "#fce7f3", skin: "#c47a5a", hair: "#4a2d22", shirt: "#be123c", accent: "#f9a8d4" }
+      ];
+      const paletteIndex = Math.abs([...user.id].reduce((sum, char) => sum + char.charCodeAt(0), 0)) % palettes.length;
+      const palette = palettes[paletteIndex];
+      const hairVariant = paletteIndex % 3;
+      const hair = hairVariant === 0
+        ? `<path d="M47 70c2-28 24-45 52-39 21 4 34 19 36 42-13-12-29-14-47-10-15 3-27 2-41 7z" fill="${palette.hair}"/>`
+        : hairVariant === 1
+          ? `<path d="M43 77c-2-31 20-51 50-50 26 1 42 19 43 48-14-8-25-15-49-11-15 3-30 4-44 13z" fill="${palette.hair}"/>`
+          : `<path d="M42 74c5-34 31-50 62-43 20 5 30 19 32 44-18-11-38-17-56-9-11 5-24 7-38 8z" fill="${palette.hair}"/>`;
+      const svg = `
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160">
+          <rect width="160" height="160" rx="30" fill="${palette.bg}"/>
+          <circle cx="126" cy="30" r="43" fill="${palette.accent}" opacity=".7"/>
+          <circle cx="30" cy="128" r="52" fill="#fff" opacity=".36"/>
+          <path d="M31 160c5-34 25-54 49-54s44 20 49 54H31z" fill="${palette.shirt}"/>
+          <path d="M58 108c5 10 13 15 22 15s17-5 22-15v-16H58v16z" fill="${palette.skin}"/>
+          <circle cx="80" cy="74" r="34" fill="${palette.skin}"/>
+          ${hair}
+          <path d="M52 68c5-19 20-31 41-30 19 1 32 12 36 29-15-8-29-10-45-6-14 4-22 4-32 7z" fill="${palette.hair}" opacity=".92"/>
+          <circle cx="68" cy="79" r="3.2" fill="#1f2937"/>
+          <circle cx="93" cy="79" r="3.2" fill="#1f2937"/>
+          <path d="M72 93c6 5 13 5 19 0" fill="none" stroke="#7f4332" stroke-width="4" stroke-linecap="round"/>
+          <path d="M58 111c11 11 32 14 44 0 0 12-8 22-22 22s-22-10-22-22z" fill="#fff" opacity=".18"/>
+        </svg>`;
+      return `data:image/svg+xml,${encodeURIComponent(svg)}`;
+    }
+
+    function createDefaultProfileImage() {
+      const svg = `
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160">
+          <rect width="160" height="160" rx="30" fill="#eef2f7"/>
+          <circle cx="80" cy="62" r="30" fill="#c8d2df"/>
+          <path d="M30 160c6-37 25-58 50-58s44 21 50 58H30z" fill="#c8d2df"/>
+          <circle cx="126" cy="30" r="36" fill="#ffffff" opacity=".5"/>
+          <path d="M54 128c11-10 41-10 52 0" fill="none" stroke="#94a3b8" stroke-width="6" stroke-linecap="round" opacity=".8"/>
+        </svg>`;
+      return `data:image/svg+xml,${encodeURIComponent(svg)}`;
+    }
+
+    function getUserProfileImage(user) {
+      if (user.status === "Pending Verification") return createDefaultProfileImage();
+      if (!user.profileImage) user.profileImage = createProfileImage(user);
+      return user.profileImage;
+    }
+
+    function renderUserProfileImage(user, className = "profile-image") {
+      return `<div class="${className}"><img src="${getUserProfileImage(user)}" alt="${user.displayName} profile image"></div>`;
+    }
+
+    function getActivityTimeline(user) {
+      if (user.latest === "New account") return `Account created ${user.joined}; no assets, offers, reports, or support activity yet`;
+      if (user.reports > 0) return `${user.latest}; ${user.reportState}`;
+      return `${user.latest}; last active ${user.lastActive}`;
+    }
+
+    function getReportsForUser(user) {
+      return userManagementData.reports
+        .filter(report => report.userId === user.id)
+        .sort((a, b) => b.id.localeCompare(a.id));
+    }
+
+    function getLatestReportForUser(user) {
+      return getReportsForUser(user)[0];
+    }
+
+    function renderLatestReport(user) {
+      const report = getLatestReportForUser(user);
+      if (report) {
+        return `
+          <strong>${report.id} · ${report.category}</strong><br>
+          ${report.reason}<br>
+          <span>${report.status} · ${report.reporters} reporters · ${report.waiting}</span>
+        `;
+      }
+      if (user.reports > 0) return `<strong>${user.reportState}</strong>`;
+      return `<strong>ไม่มีรายงานผู้ใช้</strong>`;
+    }
+
+    function getReportContextLabel(user) {
+      return "Report Summary";
+    }
+
+    function renderLatestReportBrief(user) {
+      const reports = getReportsForUser(user);
+      const report = reports[0];
+      if (report) {
+        return `
+          <div class="report-brief">
+            <div class="report-brief-head">
+              ${reports.map(item => `<button class="report-case" type="button" data-report-action="${item.id}" title="Open ${item.id}">${item.id}</button>`).join("")}
+            </div>
+            <p class="report-reason">${report.reason}</p>
+            <div class="report-meta">
+              <div class="report-meta-item"><span>Reporters</span><strong>${report.reporters}</strong></div>
+              <div class="report-meta-item"><span>Waiting</span><strong>${report.waiting}</strong></div>
+              <div class="report-meta-item"><span>Source</span><strong>${report.source}</strong></div>
+            </div>
+          </div>
+        `;
+      }
+      return `
+        <div class="report-brief">
+          <p class="report-reason">${user.reports > 0 ? user.reportState : "ไม่มีรายงานผู้ใช้"}</p>
+        </div>
+      `;
+    }
+
+    function renderAssetSummary(user) {
+      return Object.entries(getAssetSummary(user))
+        .map(([label, value]) => `<div class="detail-tile"><span>${label}</span><strong>${value}</strong></div>`)
+        .join("");
+    }
+
+    function getUserSocialStats(user) {
+      return userSocialStats[user.id] || { followers: 0, following: 0 };
+    }
+
+    function formatSocialCount(value) {
+      return Number(value || 0).toLocaleString("en-US");
+    }
+
+    function renderSocialSummary(user, tileClass = "detail-tile") {
+      const social = getUserSocialStats(user);
+      return `
+        <div class="${tileClass}"><span>Follower</span><strong>${formatSocialCount(social.followers)}</strong></div>
+        <div class="${tileClass}"><span>Following</span><strong>${formatSocialCount(social.following)}</strong></div>
+      `;
+    }
+
+    function getProfileSlug(user) {
+      const source = (user.username || user.displayName || user.id).replace(/^@/, "").trim().toLowerCase();
+      const asciiSlug = source
+        .normalize("NFKD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .replace(/[^a-z0-9]+/g, "-")
+        .replace(/^-+|-+$/g, "")
+        .replace(/-{2,}/g, "-");
+      return asciiSlug || `user-${user.id.replace(/[^0-9a-z]/gi, "").toLowerCase()}`;
+    }
+
+    function getProfileLink(user) {
+      return `https://app.tukdaeng.example/u/${getProfileSlug(user)}`;
+    }
+
+    function renderProfileLinkSection(user) {
+      const slug = getProfileSlug(user);
+      return `
+        <div class="detail-section">
+          <h4>Link Profile</h4>
+          <div class="detail-grid">
+            <div class="detail-tile">
+              <span>Profile URL Name</span>
+              <strong>${slug}</strong>
+            </div>
+            <div class="detail-tile">
+              <span>Public Profile URL</span>
+              <strong class="profile-link-code">${getProfileLink(user)}</strong>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderContactRows(user, tileClass = "detail-tile") {
+      const contacts = getUserContactDisplayItems(user);
+      return contacts.length
+        ? contacts.map(item => `<div class="${tileClass}"><span>${item.label}</span><strong>${item.value}</strong></div>`).join("")
+        : "";
+    }
+
+    const userActionLabels = {
+      "Reset password": "Reset password",
+      Suspend: "ระงับบัญชีชั่วคราว",
+      Ban: "ระงับบัญชีถาวร",
+      Restore: "ยกเลิกระงับบัญชีชั่วคราว",
+      "Unban user": "ยกเลิกระงับบัญชีถาวร",
+      "Open Account Deletion": "ดูคำขอลบบัญชี",
+      "Resend verification context": "ส่งข้อมูลยืนยันตัวตนอีกครั้ง",
+      "View archived summary": "ดูสรุปบัญชีที่เก็บถาวร"
+    };
+
+    const USER_ACTION_CONFIRM_LABEL = "ยืนยัน";
+
+    const userActionFlowScenarios = [
+      { value: "success", label: "สำเร็จ" },
+      { value: "invalid_state", label: "สถานะบัญชีไม่ตรงเงื่อนไข" },
+      { value: "stale_data", label: "ข้อมูลเปลี่ยนระหว่างดำเนินการ" },
+      { value: "policy_blocked", label: "ยังไม่ผ่านเงื่อนไขที่ระบบกำหนด" },
+      { value: "delivery_failed", label: "ส่งข้อมูลไม่สำเร็จ" },
+      { value: "session_expired", label: "เซสชันหมดอายุ" }
+    ];
+
+    const userActionErrorSamples = {
+      invalid_state: {
+        title: "ไม่สามารถดำเนินการได้",
+        detail: "สถานะบัญชีปัจจุบันไม่ตรงกับเงื่อนไขของการทำงานนี้ กรุณาตรวจสถานะล่าสุดก่อนยืนยันอีกครั้ง"
+      },
+      stale_data: {
+        title: "ข้อมูลมีการเปลี่ยนแปลงแล้ว",
+        detail: "มีการอัปเดตบัญชีนี้ระหว่างที่เปิดหน้าต่างยืนยัน กรุณารีเฟรชข้อมูลแล้วลองอีกครั้ง"
+      },
+      policy_blocked: {
+        title: "ยังไม่ผ่านเงื่อนไขที่ระบบกำหนด",
+        detail: "รายการนี้ยังมีเงื่อนไขที่ต้องตรวจสอบก่อนดำเนินการ เช่น รายงานที่ค้างอยู่ ข้อเสนอซื้อที่ยังไม่ปิด หรือข้อมูลอ้างอิงที่ยังไม่ครบ"
+      },
+      delivery_failed: {
+        title: "ส่งข้อมูลไม่สำเร็จ",
+        detail: "ระบบส่งข้อมูลให้ผู้ใช้ไม่สำเร็จ กรุณาลองอีกครั้ง หรือบันทึกเคสให้ทีมช่วยเหลือตรวจสอบต่อ"
+      },
+      session_expired: {
+        title: "เซสชันหมดอายุ",
+        detail: "กรุณาเข้าสู่ระบบใหม่ก่อนดำเนินการ เพื่อให้การยืนยันและบันทึกการดำเนินการถูกต้อง"
+      }
+    };
+
+    const userActionConfig = {
+      "Reset password": {
+        title: "Reset Password Link",
+        crumb: "Reset Password",
+        type: "reset",
+        tone: "primary",
+        summary: "ส่งลิงก์ตั้งรหัสผ่านใหม่ไปยังอีเมลที่ลงทะเบียนไว้ เฉพาะบัญชี Email ที่ verified และยังใช้งานได้",
+        reasonLabel: "เหตุผลการส่งลิงก์",
+        reasons: ["ผู้ใช้แจ้งว่าลืมรหัสผ่าน", "Support ยืนยันตัวตนผู้ใช้แล้ว", "ติดตามเคสด้านความปลอดภัย"],
+        notePlaceholder: "ระบุหมายเหตุ เหตุผล หรือข้อมูลอ้างอิงที่เกี่ยวข้อง",
+        success: user => `ส่งลิงก์ตั้งรหัสผ่านใหม่ไปยัง ${getUserFullEmail(user)} แล้ว`,
+        checklist: [
+          "ไม่เปลี่ยนสถานะบัญชี และไม่ logout session ที่ยัง active",
+          "ลิงก์หมดอายุตาม policy และใช้ได้ครั้งเดียว",
+          "บันทึก audit พร้อม admin, reason และ support context"
+        ]
+      },
+      Suspend: {
+        title: "ระงับบัญชีชั่วคราว",
+        crumb: "Suspend Account",
+        type: "status",
+        targetStatus: "Suspended",
+        tone: "warning",
+        summary: "ใช้เมื่อยังต้องตรวจสอบต่อหรือรอหลักฐานเพิ่มเติม เป็นสถานะชั่วคราวและกู้คืนได้",
+        reasonLabel: "เหตุผลการระงับบัญชีชั่วคราว",
+        reasons: ["มีรายงานความเสี่ยงสูง รอตรวจสอบ", "สงสัยว่าเป็นบัญชีหรือโปรไฟล์ซ้ำ", "มีข้อพิพาทจากฝ่าย Support", "พักบัญชีไว้ระหว่างตรวจนโยบาย"],
+        notePlaceholder: "ระบุหมายเหตุ เหตุผล หรือข้อมูลอ้างอิงที่เกี่ยวข้อง",
+        success: user => `${user.displayName} ถูกระงับบัญชีชั่วคราวแล้ว`,
+        checklist: [
+          "บล็อกการเข้าสู่ระบบระหว่างถูกระงับ",
+          "ใช้สำหรับพักบัญชีชั่วคราว และยกเลิกการระงับได้หลังตรวจสอบเรียบร้อย",
+          "ต้องมีเหตุผลและบันทึกการดำเนินการก่อนยืนยัน"
+        ]
+      },
+      Ban: {
+        title: "ระงับบัญชีถาวร",
+        crumb: "Ban User",
+        type: "status",
+        targetStatus: "Banned",
+        tone: "danger",
+        summary: "ใช้เมื่อยืนยันแล้วว่าบัญชีทำผิดรุนแรงหรือไม่ควรให้ใช้งานต่อ บัญชีจะถูกบล็อกจนกว่า Admin จะปลดระงับ และต้องระบุเหตุผลให้ชัดเจน",
+        reasonLabel: "เหตุผลการระงับบัญชีถาวร",
+        reasons: ["ยืนยันแล้วว่ามีพฤติกรรมหลอกลวง", "ยืนยันแล้วว่าแอบอ้างตัวตนหรือใช้ข้อมูลเท็จ", "ทำผิดนโยบายรุนแรงซ้ำหลายครั้ง", "ได้รับอนุมัติให้ระงับจากทีมที่รับผิดชอบ"],
+        notePlaceholder: "ระบุหลักฐานที่ยืนยันแล้ว, report/support ID และ approval ที่เกี่ยวข้อง",
+        success: user => `${user.displayName} ถูกระงับบัญชีถาวรแล้ว`,
+        checklist: [
+          "บล็อกการเข้าสู่ระบบและการทำรายการใหม่",
+          "ใช้หลังยืนยันการละเมิด ไม่ใช่แค่รอตรวจสอบ",
+          "การยกเลิกระงับบัญชีถาวรต้องมีเหตุผลและบันทึกสถานะก่อน/หลัง"
+        ]
+      },
+      Restore: {
+        title: "ยกเลิกระงับบัญชีชั่วคราว",
+        crumb: "ยกเลิกระงับบัญชีชั่วคราว",
+        type: "status",
+        targetStatus: "Active",
+        tone: "primary",
+        summary: "ใช้เมื่อทีมตรวจสอบแล้วว่าผู้ใช้สามารถกลับมาใช้งานบัญชีได้ตามปกติ",
+        reasonLabel: "เหตุผลการยกเลิกระงับบัญชีชั่วคราว",
+        reasons: ["ตรวจสอบแล้วไม่พบความเสี่ยงเพิ่มเติม", "หลักฐานหรือข้อร้องเรียนได้รับการแก้ไขแล้ว", "ทีมช่วยเหลืออนุมัติให้กลับมาใช้งานได้"],
+        notePlaceholder: "สรุปผลการตรวจสอบ เหตุผลที่ยกเลิกระงับ และข้อมูลอ้างอิงที่เกี่ยวข้อง",
+        success: user => `${user.displayName} กลับมาใช้งานได้แล้ว`,
+        checklist: [
+          "ผู้ใช้จะกลับมาเข้าสู่ระบบและใช้งานบัญชีได้",
+          "ไม่ลบบันทึกเดิมของการระงับบัญชีชั่วคราว",
+          "บันทึกสถานะก่อนและหลังการดำเนินการ"
+        ]
+      },
+      "Unban user": {
+        title: "ยกเลิกระงับบัญชีถาวร",
+        crumb: "ยกเลิกระงับบัญชีถาวร",
+        type: "status",
+        targetStatus: "Active",
+        tone: "primary",
+        summary: "ใช้เมื่อทีมตรวจสอบและอนุมัติแล้วว่าผู้ใช้สามารถกลับมาใช้งานบัญชีได้ หลังจากเคยถูกระงับบัญชีถาวร",
+        reasonLabel: "เหตุผลการยกเลิกระงับบัญชีถาวร",
+        reasons: ["คำขออุทธรณ์ได้รับอนุมัติ", "พบว่าการระงับบัญชีถาวรเกิดจากความผิดพลาด", "ทีมที่รับผิดชอบอนุมัติให้กลับมาใช้งานได้"],
+        notePlaceholder: "สรุปผลการตรวจสอบ เหตุผลที่ยกเลิกระงับ และข้อมูลอนุมัติที่เกี่ยวข้อง",
+        success: user => `${user.displayName} กลับมาใช้งานได้แล้ว`,
+        checklist: [
+          "ตรวจบันทึกเดิมของการระงับบัญชีถาวรก่อนยืนยัน",
+          "ผู้ใช้จะกลับมาเข้าสู่ระบบและใช้งานบัญชีได้",
+          "บันทึกสถานะก่อนและหลังการดำเนินการ"
+        ]
+      },
+      "Resend verification context": {
+        title: "ส่งข้อมูลยืนยันตัวตนอีกครั้ง",
+        crumb: "ส่งข้อมูลยืนยันตัวตนอีกครั้ง",
+        type: "notice",
+        tone: "primary",
+        summary: "ส่งข้อมูลให้ผู้ใช้ยืนยันอีเมลอีกครั้ง โดยไม่เปลี่ยนสถานะบัญชี",
+        reasonLabel: "เหตุผลการส่งซ้ำ",
+        reasons: ["ผู้ใช้แจ้งว่าต้องการอีเมลยืนยันอีกครั้ง", "ติดตามเคสจากทีมช่วยเหลือ"],
+        notePlaceholder: "บันทึกช่องทางช่วยเหลือหรือเลขเคสที่เกี่ยวข้อง",
+        success: user => `ส่งข้อมูลยืนยันตัวตนให้ ${user.displayName} แล้ว`,
+        checklist: [
+          "บัญชียังอยู่ในสถานะรอยืนยันตัวตน จนกว่าจะยืนยันสำเร็จ",
+          "ไม่เปิดสิทธิ์เข้าใช้งานแอปโดยอัตโนมัติ",
+          "บันทึกการส่งซ้ำพร้อมเหตุผล"
+        ]
+      }
+    };
+
+    function getUserRowActions(user) {
+      return (user.allowed || [])
+        .filter(action => action !== "View detail")
+        .map(action => ({ action, label: userActionLabels[action] || action }));
+    }
+
+    function getUserActionClass(action, index) {
+      if (action === "Ban") return "danger";
+      if (action === "Suspend") return "warning";
+      if (index === 0) return "primary";
+      return "";
+    }
+
+    function renderUserDetailActions(user) {
+      const actions = getUserRowActions(user);
+      return `
+        <div class="detail-section user-detail-action-section">
+          <div class="user-detail-actions">
+            ${actions.map(({ action, label }, index) => `<button class="user-detail-action-btn ${getUserActionClass(action, index)}" type="button" data-user-action="${action}" data-user-id="${user.id}" data-user-action-surface="detail">${label}</button>`).join("") || `<span class="chip">No available action</span>`}
+          </div>
+          <div class="warning-note action-feedback" id="user-action-feedback"></div>
+        </div>
+      `;
+    }
+
+    function renderUserActionFeedback(user, action) {
+      const feedback = document.querySelector("#user-action-feedback");
+      if (!feedback) return;
+      const label = userActionLabels[action] || action;
+      feedback.innerHTML = `<strong>${label}</strong><br>${user.actionNote}<br><span>ผลกระทบต่อแอปพลิเคชัน: ${user.foImpact}</span>`;
+      feedback.classList.add("show");
+    }
+
+    function getUserActionFoImpact(user, action) {
+      if (action === "Reset password") return "ไม่มีผลกับสถานะบัญชีหรือโปรไฟล์สาธารณะ ระบบจะส่งเฉพาะลิงก์ตั้งรหัสผ่านใหม่ไปยังอีเมลที่ลงทะเบียนไว้";
+      if (action === "Suspend") return "ผู้ใช้จะเข้าสู่ระบบไม่ได้ชั่วคราวจนกว่าผู้ดูแลระบบจะยกเลิกการระงับ เหมาะกับเคสที่ยังรอตรวจสอบ";
+      if (action === "Ban") return "ผู้ใช้จะเข้าสู่ระบบไม่ได้ และไม่สามารถทำรายการใหม่ในแอปได้ จนกว่าผู้ดูแลระบบจะยกเลิกระงับบัญชีถาวร เหมาะสำหรับกรณีที่ตรวจสอบแล้วว่ามีการละเมิดจริง";
+      if (action === "Restore") return "ผู้ใช้จะกลับมาเข้าสู่ระบบและใช้งานบัญชีได้หลังยืนยัน";
+      if (action === "Unban user") return "ผู้ใช้จะกลับมาเข้าสู่ระบบและใช้งานบัญชีได้หลังยืนยันยกเลิกระงับบัญชีถาวร";
+      if (action === "Resend verification context") return "ผู้ใช้ยังเข้าแอป สร้างโปรไฟล์ หรือเพิ่มสินทรัพย์ไม่ได้จนกว่าจะยืนยันอีเมลสำเร็จ การส่งครั้งนี้เป็นเพียงการส่งข้อมูลยืนยันซ้ำและไม่เปลี่ยนสถานะบัญชี";
+      return user.foImpact;
+    }
+
+    function updateUserActionsForStatus(user) {
+      if (user.status === "Active") {
+        user.statusLabel = "ใช้งานได้ตามปกติ";
+        user.allowed = user.auth === "Email" ? ["Reset password", "Suspend", "Ban"] : ["Suspend", "Ban"];
+        user.blocked = user.auth === "Email" ? ["Archive from list"] : ["Reset password"];
+        user.foImpact = "บัญชียังใช้งานได้ตามปกติจนกว่าผู้ดูแลระบบจะยืนยันการเปลี่ยนสถานะ";
+        user.actionNote = user.auth === "Email"
+          ? "ส่งลิงก์ตั้งรหัสผ่านใหม่ได้ เพราะผู้ใช้สมัครด้วยอีเมล"
+          : `บัญชี ${user.auth} ไม่สามารถรับลิงก์ตั้งรหัสผ่านใหม่จากระบบหลังบ้านได้`;
+        return;
+      }
+      if (user.status === "Suspended") {
+        user.statusLabel = "เข้าสู่ระบบไม่ได้";
+        user.allowed = ["Restore", "Ban"];
+        user.blocked = ["Reset while suspended"];
+        user.foImpact = "ผู้ใช้เข้าสู่ระบบไม่ได้ระหว่างถูกระงับบัญชีชั่วคราว";
+        user.actionNote = "การยกเลิกระงับต้องแสดงสถานะก่อนดำเนินการและหลังยืนยัน";
+        return;
+      }
+      if (user.status === "Banned") {
+        user.statusLabel = "เข้าสู่ระบบไม่ได้";
+        user.allowed = ["Unban user"];
+        user.blocked = ["Reset password"];
+        user.foImpact = "ผู้ใช้เข้าสู่ระบบไม่ได้และไม่สามารถทำรายการใหม่จนกว่าผู้ดูแลระบบจะยกเลิกระงับบัญชีถาวร";
+        user.actionNote = "การยกเลิกระงับบัญชีถาวรต้องยืนยัน ระบุเหตุผล และบันทึกสถานะก่อน/หลัง";
+      }
+    }
+
+    function closeUserActionModal() {
+      const modal = document.querySelector("#user-action-modal");
+      if (!modal) return;
+      modal.classList.remove("show");
+      document.querySelector("#user-action-modal-body").innerHTML = "";
+    }
+
+    let successToastTimer = null;
+    function showSuccessToast(message) {
+      const toast = document.querySelector("#success-toast");
+      if (!toast) return;
+      if (successToastTimer) window.clearTimeout(successToastTimer);
+      toast.innerHTML = `
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M20 6 9 17l-5-5"></path>
+        </svg>
+        <div>
+          <strong>สำเร็จ</strong>
+          <span>${message}</span>
+        </div>
+      `;
+      toast.classList.add("show");
+      successToastTimer = window.setTimeout(() => {
+        toast.classList.remove("show");
+      }, 3200);
+    }
+
+    function refreshUserActionSurface(user) {
+      if (!user || activeModule !== "users") return;
+      if (document.body.classList.contains("user-detail-mode")) {
+        renderUserDetailPageSpec(user);
+        return;
+      }
+      if (activeSub === "Report User" || activeSub === "Reported Users") {
+        renderReportedUserRows();
+        return;
+      }
+      renderUserRows();
+      renderUserDetail(user);
+    }
+
+    function getUserActionConfirmClass(config) {
+      if (config.tone === "danger") return "danger user-action-confirm";
+      if (config.tone === "warning") return "warning user-action-confirm";
+      return "primary user-action-confirm";
+    }
+
+    function getUserActionErrorSample(action, scenario) {
+      if (scenario === "delivery_failed" && action === "Resend verification context") {
+        return {
+          title: "ส่งอีเมลยืนยันไม่สำเร็จ",
+          detail: "ระบบยังไม่สามารถส่งข้อมูลยืนยันอีเมลให้ผู้ใช้ได้ กรุณาลองส่งอีกครั้ง หรือบันทึกเลขเคสให้ทีมช่วยเหลือตรวจสอบต่อ"
+        };
+      }
+      return userActionErrorSamples[scenario] || null;
+    }
+
+    function renderUserActionPage(user, action, completed = false, resultMessage = "", statusBefore = user?.status, resultDetail = "", resultType = "", selectedScenario = "success") {
+      const config = userActionConfig[action];
+      if (!user || !config) return;
+      const beforeStatus = statusBefore || user.status;
+      const hasResult = Boolean(resultMessage);
+      activeRow = user;
+      const modal = document.querySelector("#user-action-modal");
+      const modalBody = document.querySelector("#user-action-modal-body");
+      modalBody.innerHTML = `
+        <div class="user-action-page">
+          <div class="user-action-head">
+            <div>
+              <h2 id="user-action-modal-title">${config.title}</h2>
+              <p>${config.summary}</p>
+            </div>
+            <button class="btn user-action-close" type="button" data-user-action-modal-close aria-label="Close modal" title="Close">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M18 6 6 18"></path>
+                <path d="m6 6 12 12"></path>
+              </svg>
+            </button>
+          </div>
+          <div class="user-action-target">
+            <div>
+              <strong>${user.displayName}</strong>
+              <span>${user.id}</span>
+            </div>
+            ${userStatusPill(user.status)}
+          </div>
+          <div class="user-action-layout">
+            <div class="detail-section">
+              <div class="user-action-form">
+                <label>
+                  ${config.reasonLabel}
+                  ${customSelect("user-action-reason", config.reasonLabel, config.reasons.map(reason => ({ value: reason, label: reason })), "", "data-custom-select-silent", completed)}
+                </label>
+                <label>
+                  Note / หมายเหตุ
+                  <textarea id="user-action-note" placeholder="${config.notePlaceholder}" ${completed ? "disabled" : ""}></textarea>
+                </label>
+                <div class="module-note user-action-impact"><strong>ผลกระทบต่อแอปพลิเคชัน:</strong> ${getUserActionFoImpact(user, action)}</div>
+                <div class="user-detail-actions">
+                  <button class="user-detail-action-btn ${getUserActionConfirmClass(config)}" type="button" data-user-action-confirm="${action}" data-user-id="${user.id}" ${completed ? "disabled" : ""}>${USER_ACTION_CONFIRM_LABEL}</button>
+                  <button class="user-detail-action-btn" type="button" data-user-action-modal-close>${completed ? "ปิด" : "ยกเลิก"}</button>
+                </div>
+                <div class="warning-note action-feedback user-action-result ${hasResult ? "show" : ""} ${resultType}">
+                  <strong>${resultMessage}</strong><br>
+                  <span>${resultDetail || `บันทึกการดำเนินการ: ${formatBangkokTimestamp()} · ${userStatusLabels[beforeStatus] || beforeStatus} → ${userStatusLabels[user.status] || user.status}`}</span>
+                </div>
+                <details class="prototype-tools user-action-prototype-tools">
+                  <summary>Prototype scenario</summary>
+                  <label>
+                    Test flow
+                    ${customSelect("user-action-scenario", "Test flow", userActionFlowScenarios, selectedScenario, "data-custom-select-silent", completed)}
+                  </label>
+                </details>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+      modal.classList.add("show");
+    }
+
+    function syncExpandedNavForModule(moduleId, subLabel = "") {
+      const parentId = navParentByModule[moduleId] || moduleId;
+      expandedMenus.clear();
+      if (parentId !== moduleId || subLabel || defaultSubByModule[moduleId]) {
+        expandedMenus.add(parentId);
+      }
+    }
+
+    function confirmUserAction(user, action) {
+      const config = userActionConfig[action];
+      if (!user || !config) return;
+      const scenario = document.querySelector("#user-action-scenario")?.value || "success";
+      const errorSample = getUserActionErrorSample(action, scenario);
+      if (errorSample) {
+        renderUserActionPage(user, action, false, errorSample.title, user.status, errorSample.detail, "error", scenario);
+        return;
+      }
+      if (config.type === "status") {
+        user.status = config.targetStatus;
+        updateUserActionsForStatus(user);
+      }
+      refreshUserActionSurface(user);
+      closeUserActionModal();
+      showSuccessToast(config.success(user));
+    }
+
+    function openAccountDeletionRequest(user, subLabel = "Requests") {
+      const deletionId = user?.support?.startsWith("DEL-") ? user.support : "";
+      renderModule("deletions", subLabel, subLabel);
+      if (deletionId) {
+        document.querySelector("#search").value = deletionId;
+        const deletionRow = moduleData.deletions.rows.find(row => row.id === deletionId);
+        activeRow = deletionRow || moduleData.deletions.rows[0];
+        renderRows();
+        renderDetail(activeRow);
+      }
+      scrollMainToTop();
+    }
+
+    function handleUserAction(user, action) {
+      if (!user || !action) return;
+      if (action === "Open Account Deletion") {
+        openAccountDeletionRequest(user);
+        return;
+      }
+      if (action === "View archived summary") {
+        openAccountDeletionRequest(user, "Anonymization");
+        return;
+      }
+      if (userActionConfig[action]) {
+        renderUserActionPage(user, action);
+        return;
+      }
+      renderUserDetailPage(user);
+    }
+
+    function renderUserRows() {
+      const q = (document.querySelector("#user-search")?.value || "").trim().toLowerCase();
+      const status = document.querySelector("#user-status-filter")?.value || "";
+      const auth = document.querySelector("#user-auth-filter")?.value || "";
+      const sort = document.querySelector("#user-sort")?.value || "lastActive";
+      const sorted = [...userManagementData.users].filter(user => {
+        return (!q || getUserListSearchText(user).includes(q))
+          && (!status || user.status === status)
+          && (!auth || user.auth === auth);
+      }).sort((a, b) => {
+        if (sort === "reports") return b.reports - a.reports;
+        if (sort === "assets") return b.assets - a.assets;
+        if (sort === "lastActive") return b.lastActiveRank - a.lastActiveRank;
+        return b.joinedRank - a.joinedRank;
+      });
+      const pageCount = Math.max(1, Math.ceil(sorted.length / userListPageSize));
+      userListPage = Math.min(userListPage, pageCount);
+      const start = (userListPage - 1) * userListPageSize;
+      const pageRows = sorted.slice(start, start + userListPageSize);
+      document.querySelector("#panel-subtitle").textContent = "";
+      document.querySelector("#table").innerHTML = `
+        <div class="user-table">
+          <div class="user-row head"><div>User</div><div>Status</div><div>Last Active</div><div>Assets</div><div>Auth</div><div>Date Joined</div><div>Action</div></div>
+          ${pageRows.map(user => {
+            const rowActions = getUserRowActions(user);
+            return `
+            <div class="user-row" data-user-card="${user.id}">
+              <div class="user-cell-primary" data-label="User"><div class="main-text">${user.displayName}</div></div>
+              <div class="user-card-tags">
+                ${userStatusPill(user.status)}
+                <span class="user-card-tag asset-tag">${user.assets} assets</span>
+                ${userAuthPill(user.auth)}
+                <div class="user-card-meta">
+                  <div class="user-card-meta-item"><span>Last active</span><strong>${user.lastActive}</strong></div>
+                  <div class="user-card-meta-item"><span>Date joined</span><strong>${user.joined}</strong></div>
+                </div>
+              </div>
+              <div data-label="Status">${userStatusPill(user.status)}</div>
+              <div data-label="Last Active"><div class="main-text">${user.lastActive}</div></div>
+              <div data-label="Assets"><div class="main-text">${user.assets}</div></div>
+              <div data-label="Auth">${userAuthPill(user.auth)}</div>
+              <div data-label="Date Joined"><div class="main-text">${user.joined}</div></div>
+              <div class="user-row-actions">
+                <button class="panel-action" type="button" data-user-open="${user.id}">${iconSvg.eye}View</button>
+                <details class="row-menu">
+                  <summary title="Account actions">...</summary>
+                  <div class="row-menu-list">
+                    ${rowActions.map(({ action, label }) => `<button type="button" data-user-action="${action}" data-user-id="${user.id}">${label}</button>`).join("") || `<button type="button" data-user-open="${user.id}">ดูรายละเอียด</button>`}
+                  </div>
+                </details>
+              </div>
+            </div>
+          `;
+          }).join("") || `<div class="detail-empty user-empty">ไม่พบผู้ใช้</div>`}
+        </div>
+        <div class="footer-range">
+          <span>แสดง ${sorted.length ? `${start + 1}-${Math.min(start + userListPageSize, sorted.length)}` : "0"} จาก ${sorted.length}</span>
+          <div class="pager">
+            <button class="btn" type="button" data-user-page="prev" ${userListPage <= 1 ? "disabled" : ""}>ก่อนหน้า</button>
+            ${Array.from({ length: pageCount }, (_, index) => `<button class="btn ${index + 1 === userListPage ? "active" : ""}" type="button" data-user-page="${index + 1}">${index + 1}</button>`).join("")}
+            <button class="btn" type="button" data-user-page="next" ${userListPage >= pageCount ? "disabled" : ""}>ถัดไป</button>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderReportedUserRows() {
+      const q = (document.querySelector("#user-search")?.value || "").trim().toLowerCase();
+      const status = document.querySelector("#report-status-filter")?.value || "";
+      const priority = document.querySelector("#report-priority-filter")?.value || "";
+      const sort = document.querySelector("#report-sort")?.value || "oldest";
+      const priorityRank = { "สูง": 3, "กลาง": 2, "ปกติ": 1 };
+      const sorted = [...userManagementData.reports].filter(report => {
+        return (!q || getUserSearchText(report).includes(q)) && (!status || report.status === status) && (!priority || report.priority === priority);
+      }).sort((a, b) => {
+        if (sort === "urgent") return priorityRank[b.priority] - priorityRank[a.priority];
+        if (sort === "reporters") return b.reporters - a.reporters;
+        if (sort === "status") return a.status.localeCompare(b.status);
+        return parseInt(b.waiting, 10) - parseInt(a.waiting, 10);
+      });
+      document.querySelector("#table").innerHTML = `
+        <div class="user-table">
+          <div class="user-row report-row head"><div>Report</div><div>Reported User</div><div>Reporters</div><div>Priority</div><div>Status</div><div>Action</div></div>
+          ${sorted.map(report => `
+            <div class="user-row report-row" data-report-id="${report.id}">
+              <div class="user-cell-primary" data-label="Report"><div class="main-text">${report.id} · ${report.category}</div><div class="muted">${report.reason}</div><div class="chips"><span class="chip">${report.reference}</span><span class="chip">รอ ${report.waiting}</span></div></div>
+              <div data-label="Reported User"><div class="main-text">${report.user}</div><div class="muted">${report.userId} · ${report.accountStatus}</div></div>
+              <div data-label="Reporters"><div class="main-text">${report.reporters}</div><div class="muted">masked identities</div></div>
+              <div data-label="Priority">${statusPill(report.priority, report.priority)}</div>
+              <div data-label="Status">${userStatusPill(report.status)}</div>
+              <div><button class="panel-action" type="button" data-report-action="${report.id}">${iconSvg.eye}ดูรายละเอียด</button></div>
+            </div>
+          `).join("") || `<div class="detail-empty">ไม่พบ report ตาม filter ที่เลือก</div>`}
+        </div>
+        <div class="footer-range"><span>แสดง ${sorted.length} reports หลัง filter</span><span>SLA 24 ชั่วโมง</span></div>
+      `;
+    }
+
+    function renderUserDetail(user) {
+      const detail = document.querySelector("#detail");
+      if (!user) {
+        detail.innerHTML = `<div class="detail-empty">เลือกรายการผู้ใช้เพื่อดู User Detail</div>`;
+        return;
+      }
+      const fullEmail = getUserFullEmail(user);
+      detail.innerHTML = `
+        <div class="panel-head">
+          <div>
+            <h2>User Detail</h2>
+            <p>${user.id} · contact data visible</p>
+          </div>
+        </div>
+        <div class="detail-body">
+          <div class="user-detail-title">
+            ${renderUserProfileImage(user, "profile-image-small")}
+            <h3 class="detail-title">${user.displayName}</h3>
+          </div>
+          <div class="chips">
+            ${userStatusPill(user.status)}
+            <span class="pill blue">${user.auth}</span>
+          </div>
+
+          <div class="detail-section">
+            <h4>Account Summary</h4>
+            <div class="detail-grid two">
+              <div class="detail-tile"><span>User ID</span><strong>${user.id}</strong></div>
+              <div class="detail-tile"><span>Username</span><strong>${user.displayName}</strong></div>
+              ${renderSocialSummary(user)}
+              <div class="detail-tile"><span>Date Joined</span><strong>${user.joined}</strong></div>
+              <div class="detail-tile"><span>Last Active</span><strong>${user.lastActive}</strong></div>
+              <div class="detail-tile"><span>Total Assets</span><strong>${user.assets}</strong></div>
+            </div>
+          </div>
+
+          ${renderProfileLinkSection(user)}
+
+          <div class="detail-section">
+            <h4>Contact / Auth</h4>
+            <div class="detail-grid">
+              ${renderContactAuthRows(user, fullEmail, "kv")}
+            </div>
+          </div>
+
+          <div class="detail-section">
+            <h4>Reports</h4>
+            <div class="detail-grid">
+              <div class="detail-tile"><span>Reports</span><strong>${user.reports}</strong><br>${user.reportState}</div>
+            </div>
+          </div>
+
+          <div class="module-note"><strong>ผลกระทบต่อแอปพลิเคชัน:</strong> ${user.foImpact}</div>
+          <div class="warning-note"><strong>หมายเหตุการดำเนินการ:</strong> ${user.actionNote}</div>
+          ${renderUserDetailActions(user)}
+        </div>
+      `;
+    }
+
+    function renderUserDetailPageSpec(user) {
+      if (!user) return;
+      const fullEmail = getUserFullEmail(user);
+      document.body.classList.add("user-detail-mode");
+      document.body.classList.remove("user-list-mode");
+      activeSub = "User List";
+      activeRow = user;
+      document.querySelector("#crumb").textContent = `การดำเนินงาน / User Management / User Detail / ${user.id}`;
+      document.querySelector("#page-title").textContent = "User Detail";
+      document.querySelector("#page-meta").textContent = "";
+      document.querySelector("#panel-title").textContent = user.displayName;
+      document.querySelector("#panel-subtitle").textContent = `${user.id} · ${user.username} · ${fullEmail}`;
+      document.querySelector(".filters").innerHTML = "";
+      document.querySelector("#summary-grid").innerHTML = "";
+      document.querySelector("#cards").innerHTML = "";
+      document.querySelector("#table").innerHTML = `
+        <div class="user-detail-page">
+          <div class="user-detail-head">
+            <div class="user-detail-title">
+              ${renderUserProfileImage(user)}
+              <div>
+                <h2>${user.displayName}</h2>
+                <div class="chips">${userStatusPill(user.status)}<span class="pill blue">${user.auth}</span></div>
+              </div>
+            </div>
+            <button class="btn" type="button" data-back-user-list>กลับไป User List</button>
+          </div>
+          <div class="detail-section">
+            <h4>Account Summary</h4>
+            <div class="detail-grid two">
+              <div class="detail-tile"><span>User ID</span><strong>${user.id}</strong></div>
+              <div class="detail-tile"><span>Username</span><strong>${user.displayName}</strong></div>
+              ${renderSocialSummary(user)}
+              <div class="detail-tile"><span>Date Joined</span><strong>${user.joined}</strong></div>
+              <div class="detail-tile"><span>Last Active</span><strong>${user.lastActive}</strong></div>
+            </div>
+          </div>
+          ${renderProfileLinkSection(user)}
+          <div class="detail-section">
+            <h4>Contact / Auth</h4>
+            <div class="detail-grid two">
+              ${renderContactAuthRows(user, fullEmail)}
+            </div>
+          </div>
+          <div class="detail-section">
+            <h4>Assets Summary</h4>
+            <div class="detail-grid two">${renderAssetSummary(user)}</div>
+          </div>
+          <div class="detail-section">
+            <h4>Reports</h4>
+            <div class="detail-grid">
+              <div class="detail-tile report-detail-tile"><span>${getReportContextLabel(user)}</span>${renderLatestReportBrief(user)}</div>
+            </div>
+          </div>
+          ${renderUserDetailActions(user)}
+        </div>
+      `;
+      document.querySelector("#detail").innerHTML = "";
+      updateActiveNav();
+    }
+
+    function renderUserDetailPage(user) {
+      return renderUserDetailPageSpec(user);
+    }
+
+    function renderReportedUserDetail(report) {
+      const detail = document.querySelector("#detail");
+      if (!report) {
+        detail.innerHTML = `<div class="detail-empty">เลือก report เพื่อดูรายละเอียดการตรวจ</div>`;
+        return;
+      }
+      detail.innerHTML = `
+        <div class="panel-head">
+          <div>
+            <h2>Report Detail</h2>
+            <p>${report.id} · reporter identity masked</p>
+          </div>
+        </div>
+        <div class="detail-body">
+          <h3 class="detail-title">${report.reason}</h3>
+          <p class="muted">${report.category} · ${report.user} · ${report.userId}</p>
+          <div class="chips">
+            ${userStatusPill(report.status)}
+            ${statusPill(report.priority, report.priority)}
+            <span class="chip">${report.reporters} reporters</span>
+          </div>
+
+          <div class="detail-section">
+            <h4>Reported Reference</h4>
+            <div class="detail-grid">
+              <div class="kv"><span>Reference</span><strong>${report.reference}</strong></div>
+              <div class="kv"><span>Source Module</span><strong>${report.source}</strong></div>
+              <div class="kv"><span>Account Status</span><strong>${report.accountStatus}</strong></div>
+            </div>
+          </div>
+
+          <div class="detail-section">
+            <h4>Evidence / Context</h4>
+            <div class="detail-tile"><span>FO reporter note</span><div class="chips">${report.evidence.map(item => `<span class="chip">${item}</span>`).join("")}</div></div>
+            <div class="detail-tile"><span>Recommendation</span>${report.recommendation}</div>
+          </div>
+
+          <div class="detail-section">
+            <h4>Admin Action History</h4>
+            <div class="event"><strong>Current state</strong><br>${report.actionHistory}</div>
+            <div class="event"><strong>Review flow</strong><br>เปิด reported reference -> ตรวจ source evidence -> กลับมา clear report หรือ manage account status ตาม policy</div>
+          </div>
+
+          <div class="module-note"><strong>ผลกระทบต่อแอปพลิเคชัน:</strong> Report ไม่ซ่อน profile หรือจำกัดบัญชี จนกว่า Admin จะทำ moderation/action ตาม policy</div>
+          ${report.accountStatus === "Deletion Requested" ? `<div class="warning-note"><strong>Deletion dependency:</strong> ต้องตรวจ source report ก่อน แล้วจึง route ไป Account Deletion ห้าม delete/archive ทันทีจากคิวนี้</div>` : ""}
+        </div>
+      `;
+    }
+
     function renderModule(id, subLabel = "", displaySubLabel = subLabel) {
       activeModule = id;
       activeSub = subLabel;
+      syncExpandedNavForModule(id, subLabel);
       const data = moduleData[id];
       document.body.classList.toggle("dashboard-mode", id === "dashboard");
+      document.body.classList.toggle("user-management-mode", id === "users");
+      if (id !== "users") {
+        document.body.classList.remove("user-list-mode", "user-detail-mode");
+        document.querySelector("#user-panel-filter-actions").innerHTML = "";
+      }
       if (id === "dashboard") {
         renderDashboard();
+        updateActiveNav();
+        return;
+      }
+      if (id === "users") {
+        renderUserManagement(subLabel || "User List");
         updateActiveNav();
         return;
       }
@@ -1855,8 +4466,9 @@
       };
       document.querySelector("#crumb").textContent = "การดำเนินงาน / Dashboard";
       document.querySelector("#page-title").textContent = "Dashboard";
-      document.querySelector("#page-meta").textContent = `Last updated: ${dashboardData.lastUpdated}`;
+      updateDashboardMeta();
       document.querySelector("#panel-title").textContent = "Work Queue";
+      document.querySelector("#user-panel-filter-actions").innerHTML = "";
       document.querySelector("#panel-subtitle").textContent = "งานที่ต้องจัดการก่อน โดยเรียงจากกำหนดงานและผลกระทบผู้ใช้";
       document.querySelector("#primary-action").textContent = "เปิด Reports";
       document.querySelector(".filters").innerHTML = "";
@@ -1970,10 +4582,7 @@
 
     function jumpToModule(moduleId, subLabel = "") {
       if (!moduleId) return;
-      const parentId = navParentByModule[moduleId] || moduleId;
       const targetSubLabel = subLabel || (moduleId !== "dashboard" ? defaultSubByModule[moduleId] || "" : "");
-      expandedMenus.clear();
-      if (parentId !== moduleId || targetSubLabel) expandedMenus.add(parentId);
       renderModule(moduleId, targetSubLabel, targetSubLabel);
       scrollMainToTop();
     }
@@ -2039,7 +4648,7 @@
           <div class="timeline">
             <div class="event"><strong>Created</strong><br>รับข้อมูลจาก FO หรือ Admin import และผูกกับ module policy</div>
             <div class="event"><strong>Reviewed</strong><br>Admin ตรวจ context, sensitive data และ related entity ก่อน action</div>
-            <div class="event"><strong>FO impact</strong><br>ผลลัพธ์ต้อง sync กลับไปยัง surface ที่เกี่ยวข้อง และบันทึก audit เมื่อเป็น action เสี่ยง</div>
+            <div class="event"><strong>ผลกระทบต่อแอปพลิเคชัน</strong><br>ผลลัพธ์ต้อง sync กลับไปยัง surface ที่เกี่ยวข้อง และบันทึก audit เมื่อเป็น action เสี่ยง</div>
           </div>
         </div>
       `;
@@ -2048,7 +4657,7 @@
     function updateActiveNav() {
       const activeParent = navParentByModule[activeModule] || activeModule;
       document.querySelectorAll(".nav-item").forEach(button => {
-        const isActive = !activeSub && button.dataset.module === activeParent;
+        const isActive = button.dataset.module === activeParent;
         const isExpanded = expandedMenus.has(button.dataset.module);
         button.classList.toggle("active", isActive);
         button.classList.toggle("expanded", isExpanded);
@@ -2063,7 +4672,63 @@
       });
     }
 
+    function closeRowMenus(exceptMenu = null) {
+      document.querySelectorAll(".row-menu[open]").forEach(menu => {
+        if (menu !== exceptMenu) menu.open = false;
+      });
+    }
+
     document.addEventListener("click", event => {
+      const rowMenu = event.target.closest(".row-menu");
+      if (rowMenu) {
+        if (event.target.closest(".row-menu summary")) closeRowMenus(rowMenu);
+      } else {
+        closeRowMenus();
+      }
+
+      if (event.target.closest("[data-user-action-modal-close]") || event.target.matches("#user-action-modal")) {
+        closeUserActionModal();
+        return;
+      }
+
+      const customOption = event.target.closest("[data-custom-select-option]");
+      if (customOption) {
+        const select = customOption.closest("[data-custom-select]");
+        const hiddenInput = select.querySelector("input[type='hidden']");
+        const label = select.querySelector("[data-custom-select-label]");
+        const value = customOption.dataset.value || "";
+        hiddenInput.value = value;
+        label.textContent = customOption.textContent;
+        select.querySelectorAll("[data-custom-select-option]").forEach(option => {
+          const isSelected = option === customOption;
+          option.classList.toggle("selected", isSelected);
+          option.setAttribute("aria-selected", isSelected ? "true" : "false");
+        });
+        select.classList.remove("open");
+        select.querySelector("[data-custom-select-trigger]").setAttribute("aria-expanded", "false");
+        if (select.hasAttribute("data-custom-select-silent")) return;
+        userListPage = 1;
+        renderUserRows();
+        return;
+      }
+      const customTrigger = event.target.closest("[data-custom-select-trigger]");
+      if (customTrigger) {
+        const select = customTrigger.closest("[data-custom-select]");
+        const willOpen = !select.classList.contains("open");
+        document.querySelectorAll("[data-custom-select]").forEach(item => {
+          item.classList.remove("open");
+          item.querySelector("[data-custom-select-trigger]")?.setAttribute("aria-expanded", "false");
+        });
+        select.classList.toggle("open", willOpen);
+        customTrigger.setAttribute("aria-expanded", willOpen ? "true" : "false");
+        return;
+      }
+      if (!event.target.closest("[data-custom-select]")) {
+        document.querySelectorAll("[data-custom-select]").forEach(item => {
+          item.classList.remove("open");
+          item.querySelector("[data-custom-select-trigger]")?.setAttribute("aria-expanded", "false");
+        });
+      }
       const activityFilter = event.target.closest("[data-activity-filter]");
       if (activityFilter) {
         activeActivityFilter = activityFilter.dataset.activityFilter;
@@ -2079,12 +4744,9 @@
       if (navButton) {
         if (navButton.dataset.toggleMenu && !navButton.dataset.sub) {
           const menuId = navButton.dataset.toggleMenu;
-          if (expandedMenus.has(menuId)) {
-            expandedMenus.delete(menuId);
-          } else {
-            expandedMenus.clear();
-            expandedMenus.add(menuId);
-          }
+          const wasExpanded = expandedMenus.has(menuId);
+          expandedMenus.clear();
+          if (!wasExpanded) expandedMenus.add(menuId);
           updateActiveNav();
           return;
         }
@@ -2108,6 +4770,76 @@
         const row = moduleData[activeModule].rows.find(entry => entry.id === id);
         activeRow = row;
         renderDetail(row);
+      }
+      const userActionConfirmButton = event.target.closest("[data-user-action-confirm]");
+      if (userActionConfirmButton) {
+        const id = userActionConfirmButton.dataset.userId;
+        const user = userManagementData.users.find(entry => entry.id === id);
+        confirmUserAction(user, userActionConfirmButton.dataset.userActionConfirm);
+        return;
+      }
+      const userActionButton = event.target.closest("[data-user-action]");
+      if (userActionButton) {
+        const id = userActionButton.dataset.userId;
+        const user = userManagementData.users.find(entry => entry.id === id);
+        handleUserAction(user, userActionButton.dataset.userAction);
+        closeRowMenus();
+        return;
+      }
+      const userOpenButton = event.target.closest("[data-user-open]");
+      if (userOpenButton) {
+        const id = userOpenButton.dataset.userOpen;
+        const user = userManagementData.users.find(entry => entry.id === id);
+        renderUserDetailPage(user);
+        return;
+      }
+      const userCard = event.target.closest("[data-user-card]");
+      if (userCard && window.matchMedia("(max-width: 760px)").matches && !event.target.closest(".row-menu, button, a, input, select, [data-custom-select]")) {
+        const user = userManagementData.users.find(entry => entry.id === userCard.dataset.userCard);
+        renderUserDetailPage(user);
+        return;
+      }
+      const reportButton = event.target.closest("[data-report-action], .user-row[data-report-id]");
+      if (reportButton) {
+        const id = reportButton.dataset.reportAction || reportButton.dataset.reportId;
+        const report = userManagementData.reports.find(entry => entry.id === id);
+        if (document.body.classList.contains("user-detail-mode")) {
+          renderModule("users", "Reported Users");
+        }
+        activeRow = report;
+        renderReportedUserDetail(report);
+        return;
+      }
+      const userReset = event.target.closest("#user-reset, [data-user-reset]");
+      if (userReset) {
+        userListPage = 1;
+        userFilterOpen = false;
+        renderUserManagement(activeSub || "User List");
+        return;
+      }
+      const userFilterToggle = event.target.closest("[data-user-filter-toggle]");
+      if (userFilterToggle) {
+        userFilterOpen = !userFilterOpen;
+        const filterBar = document.querySelector(".user-filter-bar");
+        if (filterBar) filterBar.dataset.filterOpen = String(userFilterOpen);
+        userFilterToggle.setAttribute("aria-expanded", String(userFilterOpen));
+        const label = userFilterToggle.querySelector("span");
+        if (label) label.textContent = userFilterOpen ? "ปิดตัวกรอง" : "เปิดตัวกรอง";
+        return;
+      }
+      const userPageButton = event.target.closest("[data-user-page]");
+      if (userPageButton) {
+        const target = userPageButton.dataset.userPage;
+        if (target === "prev") userListPage = Math.max(1, userListPage - 1);
+        else if (target === "next") userListPage += 1;
+        else userListPage = Number(target) || 1;
+        renderUserRows();
+        return;
+      }
+      const backUserList = event.target.closest("[data-back-user-list]");
+      if (backUserList) {
+        renderModule("users", "User List", "User List");
+        return;
       }
     });
 
@@ -2262,7 +4994,8 @@
       document.body.classList.remove("logged-out");
       showAuthError("");
       setAuthState("");
-      renderModule(activeModule);
+      resetSessionViewState();
+      renderModule("dashboard");
       scrollMainToTop();
     }
 
@@ -2300,9 +5033,24 @@
     }
 
     document.addEventListener("input", event => {
+      if (event.target.matches("#user-search")) {
+        userListPage = 1;
+        if (activeModule === "users" && (activeSub === "Report User" || activeSub === "Reported Users")) renderReportedUserRows();
+        else if (activeModule === "users") renderUserRows();
+        return;
+      }
       if (event.target.matches("#search")) renderRows();
     });
     document.addEventListener("change", event => {
+      if (event.target.matches("#user-status-filter, #user-auth-filter, #user-sort")) {
+        userListPage = 1;
+        renderUserRows();
+        return;
+      }
+      if (event.target.matches("#report-status-filter, #report-priority-filter, #report-sort")) {
+        renderReportedUserRows();
+        return;
+      }
       if (event.target.matches("#status-filter, #priority-filter")) renderRows();
     });
     document.querySelector("#logout-icon").innerHTML = iconSvg.logout;
@@ -2312,7 +5060,14 @@
     });
     document.querySelector("#sidebar-backdrop").addEventListener("click", () => setNavOpen(false));
     document.addEventListener("keydown", event => {
-      if (event.key === "Escape") setNavOpen(false);
+      if (event.key === "Escape") {
+        const userActionModal = document.querySelector("#user-action-modal");
+        if (userActionModal?.classList.contains("show")) {
+          closeUserActionModal();
+          return;
+        }
+        setNavOpen(false);
+      }
     });
     window.matchMedia("(min-width: 1181px)").addEventListener("change", event => {
       if (event.matches) setNavOpen(false);
@@ -2362,6 +5117,7 @@
 
     renderNav();
     renderModule("dashboard");
+    window.setInterval(updateDashboardMeta, 60000);
     showLoginForm();
   </script>
 </body>

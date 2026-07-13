@@ -14,6 +14,7 @@
 
 | Version | Date | Change Summary |
 | --- | --- | --- |
+| `BO-03-v0.2` | 2026-07-13 | Lock User List prototype as display/interaction source of truth. Align responsive layout, route/filter behavior, Account Deletion handoff, no direct User List export, `Deleted / Archived` historical review visibility, and Prototype Handoff Notes. |
 | `BO-PRD-v0.1` | 2026-07-06 | เริ่มชุดเอกสาร Back Office baseline หลัง FO cleanup เพิ่ม reading order, source-of-truth rules, module map, sprint plan และ dev checklist |
 | `INT-MAP-v0.1` | 2026-07-06 | เพิ่ม shared FO/BO integration map ที่ `ProjectAdmin/FO_BO_INTEGRATION_MAP.md` เพื่อให้ FO/BO แยกเอกสารแต่ trace งานข้ามระบบได้ |
 | `BO-00-v0.1` | 2026-07-06 | เพิ่ม Back Office Global Rules module ครอบคลุม responsive web, admin access control, shared patterns, canonical statuses, FO sync, audit, privacy, exports และ responsive QA |
@@ -37,6 +38,8 @@
 | `BO-HANDOFF-v0.1` | 2026-07-06 | เพิ่ม BO Final Review And Dev Handoff สรุป module completeness, implementation order, locked decisions, priority open decisions, QA focus และ dev handoff notes |
 
 ## Source Of Truth Order
+
+Exception: for completed prototype screens, `Prototypes/bo-prototype.html` is the source of truth for visual layout, responsive behavior, route/filter interaction, and on-screen state. Older PRD/spec wording must be aligned to the prototype before implementation handoff.
 
 หากเอกสาร BO ขัดกัน ให้ตัดสินตามลำดับนี้:
 
