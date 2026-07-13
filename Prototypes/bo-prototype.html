@@ -193,6 +193,20 @@
       color: #fff;
       padding: 9px 10px;
     }
+    .user-action-prototype-tools {
+      max-width: none;
+      margin-top: 4px;
+      padding-top: 12px;
+      border-top: 1px dashed var(--line);
+    }
+    .user-action-prototype-tools summary {
+      color: #7890ae;
+    }
+    .user-action-prototype-tools select {
+      background: #f8fbff;
+      color: var(--ink);
+      border-color: var(--line-strong);
+    }
     .login-form {
       display: grid;
       gap: 12px;
@@ -1620,6 +1634,11 @@
     }
     .user-action-result.show {
       display: block;
+    }
+    .user-action-result.error {
+      border-color: #fecaca;
+      background: #fef2f2;
+      color: #7f1d1d;
     }
     .toast-stack {
       position: fixed;
@@ -3706,6 +3725,38 @@
 
     const USER_ACTION_CONFIRM_LABEL = "ยืนยัน";
 
+    const userActionFlowScenarios = [
+      { value: "success", label: "สำเร็จ" },
+      { value: "invalid_state", label: "สถานะบัญชีไม่ตรงเงื่อนไข" },
+      { value: "stale_data", label: "ข้อมูลเปลี่ยนระหว่างดำเนินการ" },
+      { value: "policy_blocked", label: "ยังไม่ผ่านเงื่อนไขที่ระบบกำหนด" },
+      { value: "delivery_failed", label: "ส่งข้อมูลไม่สำเร็จ" },
+      { value: "session_expired", label: "เซสชันหมดอายุ" }
+    ];
+
+    const userActionErrorSamples = {
+      invalid_state: {
+        title: "ไม่สามารถดำเนินการได้",
+        detail: "สถานะบัญชีปัจจุบันไม่ตรงกับเงื่อนไขของการทำงานนี้ กรุณาตรวจสถานะล่าสุดก่อนยืนยันอีกครั้ง"
+      },
+      stale_data: {
+        title: "ข้อมูลมีการเปลี่ยนแปลงแล้ว",
+        detail: "มีการอัปเดตบัญชีนี้ระหว่างที่เปิดหน้าต่างยืนยัน กรุณารีเฟรชข้อมูลแล้วลองอีกครั้ง"
+      },
+      policy_blocked: {
+        title: "ยังไม่ผ่านเงื่อนไขที่ระบบกำหนด",
+        detail: "รายการนี้ยังมีเงื่อนไขที่ต้องตรวจสอบก่อนดำเนินการ เช่น รายงานที่ค้างอยู่ ข้อเสนอซื้อที่ยังไม่ปิด หรือข้อมูลอ้างอิงที่ยังไม่ครบ"
+      },
+      delivery_failed: {
+        title: "ส่งข้อมูลไม่สำเร็จ",
+        detail: "ระบบส่งข้อมูลให้ผู้ใช้ไม่สำเร็จ กรุณาลองอีกครั้ง หรือบันทึกเคสให้ทีมช่วยเหลือตรวจสอบต่อ"
+      },
+      session_expired: {
+        title: "เซสชันหมดอายุ",
+        detail: "กรุณาเข้าสู่ระบบใหม่ก่อนดำเนินการ เพื่อให้การยืนยันและบันทึกการดำเนินการถูกต้อง"
+      }
+    };
+
     const userActionConfig = {
       "Reset password": {
         title: "Reset Password Link",
@@ -3927,10 +3978,21 @@
       return "primary user-action-confirm";
     }
 
-    function renderUserActionPage(user, action, completed = false, resultMessage = "", statusBefore = user?.status) {
+    function getUserActionErrorSample(action, scenario) {
+      if (scenario === "delivery_failed" && action === "Resend verification context") {
+        return {
+          title: "ส่งอีเมลยืนยันไม่สำเร็จ",
+          detail: "ระบบยังไม่สามารถส่งข้อมูลยืนยันอีเมลให้ผู้ใช้ได้ กรุณาลองส่งอีกครั้ง หรือบันทึกเลขเคสให้ทีมช่วยเหลือตรวจสอบต่อ"
+        };
+      }
+      return userActionErrorSamples[scenario] || null;
+    }
+
+    function renderUserActionPage(user, action, completed = false, resultMessage = "", statusBefore = user?.status, resultDetail = "", resultType = "", selectedScenario = "success") {
       const config = userActionConfig[action];
       if (!user || !config) return;
       const beforeStatus = statusBefore || user.status;
+      const hasResult = Boolean(resultMessage);
       activeRow = user;
       const modal = document.querySelector("#user-action-modal");
       const modalBody = document.querySelector("#user-action-modal-body");
@@ -3971,9 +4033,18 @@
                   <button class="user-detail-action-btn ${getUserActionConfirmClass(config)}" type="button" data-user-action-confirm="${action}" data-user-id="${user.id}" ${completed ? "disabled" : ""}>${USER_ACTION_CONFIRM_LABEL}</button>
                   <button class="user-detail-action-btn" type="button" data-user-action-modal-close>${completed ? "ปิด" : "ยกเลิก"}</button>
                 </div>
-                <div class="warning-note action-feedback user-action-result ${completed ? "show" : ""}">
+                <details class="prototype-tools user-action-prototype-tools">
+                  <summary>Prototype scenario</summary>
+                  <label>
+                    Test flow
+                    <select id="user-action-scenario" ${completed ? "disabled" : ""}>
+                      ${userActionFlowScenarios.map(option => `<option value="${option.value}" ${option.value === selectedScenario ? "selected" : ""}>${option.label}</option>`).join("")}
+                    </select>
+                  </label>
+                </details>
+                <div class="warning-note action-feedback user-action-result ${hasResult ? "show" : ""} ${resultType}">
                   <strong>${resultMessage}</strong><br>
-                  <span>บันทึกการดำเนินการ: ${formatBangkokTimestamp()} · ${userStatusLabels[beforeStatus] || beforeStatus} → ${userStatusLabels[user.status] || user.status}</span>
+                  <span>${resultDetail || `บันทึกการดำเนินการ: ${formatBangkokTimestamp()} · ${userStatusLabels[beforeStatus] || beforeStatus} → ${userStatusLabels[user.status] || user.status}`}</span>
                 </div>
               </div>
             </div>
@@ -3994,6 +4065,12 @@
     function confirmUserAction(user, action) {
       const config = userActionConfig[action];
       if (!user || !config) return;
+      const scenario = document.querySelector("#user-action-scenario")?.value || "success";
+      const errorSample = getUserActionErrorSample(action, scenario);
+      if (errorSample) {
+        renderUserActionPage(user, action, false, errorSample.title, user.status, errorSample.detail, "error", scenario);
+        return;
+      }
       if (config.type === "status") {
         user.status = config.targetStatus;
         updateUserActionsForStatus(user);
