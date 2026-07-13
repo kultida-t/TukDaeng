@@ -4033,6 +4033,10 @@
                   <button class="user-detail-action-btn ${getUserActionConfirmClass(config)}" type="button" data-user-action-confirm="${action}" data-user-id="${user.id}" ${completed ? "disabled" : ""}>${USER_ACTION_CONFIRM_LABEL}</button>
                   <button class="user-detail-action-btn" type="button" data-user-action-modal-close>${completed ? "ปิด" : "ยกเลิก"}</button>
                 </div>
+                <div class="warning-note action-feedback user-action-result ${hasResult ? "show" : ""} ${resultType}">
+                  <strong>${resultMessage}</strong><br>
+                  <span>${resultDetail || `บันทึกการดำเนินการ: ${formatBangkokTimestamp()} · ${userStatusLabels[beforeStatus] || beforeStatus} → ${userStatusLabels[user.status] || user.status}`}</span>
+                </div>
                 <details class="prototype-tools user-action-prototype-tools">
                   <summary>Prototype scenario</summary>
                   <label>
@@ -4042,10 +4046,6 @@
                     </select>
                   </label>
                 </details>
-                <div class="warning-note action-feedback user-action-result ${hasResult ? "show" : ""} ${resultType}">
-                  <strong>${resultMessage}</strong><br>
-                  <span>${resultDetail || `บันทึกการดำเนินการ: ${formatBangkokTimestamp()} · ${userStatusLabels[beforeStatus] || beforeStatus} → ${userStatusLabels[user.status] || user.status}`}</span>
-                </div>
               </div>
             </div>
           </div>
