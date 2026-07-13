@@ -3391,18 +3391,14 @@
       activeRow = isReports ? userManagementData.reports[0] : userManagementData.users[0];
       document.querySelector("#crumb").textContent = `การดำเนินงาน / User Management / ${title}`;
       document.querySelector("#page-title").textContent = title;
-      document.querySelector("#page-meta").textContent = isReports
-        ? "Operational queue สำหรับตรวจ report ของ FO user/profile ภายใน SLA 24 ชั่วโมง"
-        : "";
-      document.querySelector("#panel-title").textContent = isReports ? "Reported Users Queue" : "User Accounts";
-      document.querySelector("#panel-subtitle").textContent = isReports
-        ? "ตรวจ source reference ก่อน clear report หรือเปลี่ยนสถานะบัญชี"
-        : "";
+      document.querySelector("#page-meta").textContent = "";
+      document.querySelector("#panel-title").textContent = isReports ? "Reported Users" : "User Accounts";
+      document.querySelector("#panel-subtitle").textContent = "";
       document.querySelector("#user-panel-filter-actions").innerHTML = `
         <button class="btn user-filter-toggle" type="button" data-user-filter-toggle aria-expanded="${userFilterOpen}">${iconSvg.filter}<span>${userFilterOpen ? "ปิดตัวกรอง" : "เปิดตัวกรอง"}</span></button>
         <button class="btn" type="button" data-user-reset title="รีเซ็ตค่าทั้งหมด" aria-label="รีเซ็ตค่าทั้งหมด">${iconSvg.refresh}<span>รีเซ็ตค่าทั้งหมด</span></button>
       `;
-      document.querySelector("#summary-grid").innerHTML = getUserSummaryStats().map(stat => `
+      document.querySelector("#summary-grid").innerHTML = isReports ? "" : getUserSummaryStats().map(stat => `
         <article class="stat">
           <div class="stat-label">${stat[0]}</div>
           <div class="stat-value">${stat[1]}</div>
