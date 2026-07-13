@@ -3057,7 +3057,7 @@
 
     const userManagementData = {
       users: [
-        { id: "U-1002", displayName: "horology.king", username: "@horology.king", email: "ho***@gmail.com", auth: "Google", status: "Suspended", joined: "03 Jul 2026", joinedBucket: "7d", joinedRank: 20260703, lastActive: "10 Jul 2026 18:10", lastActiveBucket: "24h", lastActiveRank: 202607101810, assets: 2, assetBucket: "1-5", reports: 5, verification: "Google verified", contact: ["Line: horology.king"], support: "SUP-177", latest: "Report follow-up", reportState: "ตรวจแล้ว 5 รายงาน - บัญชีถูกระงับอยู่", statusLabel: "Login blocked", allowed: ["Restore", "Ban"], blocked: ["Reset password", "Deletion from list"], foImpact: "Suspended blocks FO login/session until restored.", actionNote: "Status action must require reason, FO impact preview, and audit log." },
+        { id: "U-1002", displayName: "horology.king", username: "@horology.king", email: "ho***@gmail.com", auth: "Google", status: "Suspended", joined: "03 Jul 2026", joinedBucket: "7d", joinedRank: 20260703, lastActive: "10 Jul 2026 18:10", lastActiveBucket: "24h", lastActiveRank: 202607101810, assets: 2, assetBucket: "1-5", reports: 5, verification: "Google verified", contact: ["Line: horology.king"], support: "SUP-177", latest: "Report follow-up", reportState: "ตรวจแล้ว 5 รายงาน - บัญชีถูกระงับอยู่", statusLabel: "เข้าสู่ระบบไม่ได้", allowed: ["Restore", "Ban"], blocked: ["Reset password", "Deletion from list"], foImpact: "ผู้ใช้เข้าสู่ระบบไม่ได้ระหว่างถูกระงับบัญชีชั่วคราว", actionNote: "การเปลี่ยนสถานะต้องระบุเหตุผล แสดงผลกระทบ และบันทึกการดำเนินการ" },
         { id: "U-1017", displayName: "Crown Time BKK", username: "@crowntimebkk", email: "cr***@tukdaeng.example", auth: "Email", status: "Active", joined: "29 Jun 2026", joinedBucket: "30d", joinedRank: 20260629, lastActive: "10 Jul 2026 20:44", lastActiveBucket: "24h", lastActiveRank: 202607102044, assets: 18, assetBucket: "11+", reports: 4, verification: "Email verified", contact: ["Phone: 081-234-2210", "Line: crowntimebkk"], support: "SUP-177", latest: "Duplicate asset context", reportState: "มี 4 รายงานรอตรวจสอบ - บัญชียังใช้งานได้ตามปกติ", statusLabel: "Normal FO access", allowed: ["Reset password", "Suspend", "Ban"], blocked: ["Archive from list"], foImpact: "Active account keeps normal FO access until Admin confirms a status action.", actionNote: "Reset password is available because auth method is Email." },
         { id: "U-1042", displayName: "Nattapol P.", username: "@nattapol", email: "na***@privaterelay.appleid.com", auth: "Apple", status: "Active", joined: "08 Jul 2026", joinedBucket: "7d", joinedRank: 20260708, lastActive: "10 Jul 2026 16:02", lastActiveBucket: "24h", lastActiveRank: 202607101602, assets: 0, assetBucket: "0", reports: 0, verification: "Apple SSO", contact: [], support: "SUP-188", latest: "Proof of payment visibility", reportState: "ไม่มีรายงานผู้ใช้", statusLabel: "Normal FO access", allowed: ["Suspend", "Ban"], blocked: ["Reset password"], foImpact: "Apple SSO password reset must be handled outside BO.", actionNote: "Sensitive contact rows display only when data exists." },
         { id: "U-1055", displayName: "Vintage Vault BKK", username: "@vintagevault", email: "vv***@gmail.com", auth: "Email", status: "Pending Verification", joined: "Not joined yet", joinedBucket: "pending", joinedRank: 20260710, lastActive: "No app session", lastActiveBucket: "pending", lastActiveRank: 0, assets: 0, assetBucket: "0", reports: 0, verification: "Email pending", contact: [], support: "None", latest: "รอยืนยันอีเมล", reportState: "ไม่มีรายงานผู้ใช้", statusLabel: "Email not verified", allowed: ["Resend verification context", "Suspend"], blocked: ["Reset password until verified", "Archive from list"], foImpact: "Account cannot enter FO app or create profile/assets until email verification is completed.", actionNote: "Pending verification accounts should use default avatar and contain no in-app profile/contact values." },
@@ -3066,7 +3066,7 @@
         { id: "U-1120", displayName: "The Collector", username: "@thecollector", email: "tc***@icloud.com", auth: "Apple", status: "Banned", joined: "02 Apr 2026", joinedBucket: "older", joinedRank: 20260402, lastActive: "24 Jun 2026 13:12", lastActiveBucket: "30d", lastActiveRank: 202606241312, assets: 11, assetBucket: "11+", reports: 8, verification: "Apple SSO", contact: ["Phone: 081-777-0090"], support: "None", latest: "Abuse confirmed", reportState: "รายงานถูกปิดแล้ว - บัญชีถูกแบน", statusLabel: "Login blocked", allowed: ["Unban user"], blocked: ["Reset password"], foImpact: "Banned blocks login and new FO activity until Admin unbans.", actionNote: "Unban requires confirmation, reason, before/after audit." },
         { id: "U-1144", displayName: "Seiko Corner", username: "@seikocorner", email: "se***@watchmail.com", auth: "Email", status: "Active", joined: "01 Jul 2026", joinedBucket: "30d", joinedRank: 20260701, lastActive: "07 Jul 2026 18:30", lastActiveBucket: "7d", lastActiveRank: 202607071830, assets: 5, assetBucket: "1-5", reports: 0, verification: "Email verified", contact: ["Line: seikocorner"], support: "None", latest: "No support context", reportState: "ไม่มีรายงานผู้ใช้", statusLabel: "Normal FO access", allowed: ["Reset password", "Suspend", "Ban"], blocked: ["Archive from list"], foImpact: "Active account has normal Feed/Search/Profile visibility.", actionNote: "Contact fields display full FO profile values when present." },
         { id: "U-1161", displayName: "Daily Watch Hunter", username: "@dailyhunter", email: "da***@gmail.com", auth: "Google", status: "Active", joined: "09 Jul 2026", joinedBucket: "7d", joinedRank: 20260709, lastActive: "09 Jul 2026 08:04", lastActiveBucket: "7d", lastActiveRank: 202607090804, assets: 1, assetBucket: "1-5", reports: 0, verification: "Google verified", contact: [], support: "None", latest: "New account", reportState: "ไม่มีรายงานผู้ใช้", statusLabel: "Normal FO access", allowed: ["Suspend", "Ban"], blocked: ["Reset password"], foImpact: "Google account cannot receive BO password reset link.", actionNote: "Do not render empty contact rows in detail." },
-        { id: "U-1186", displayName: "Rolex Rama9", username: "@rolexrama9", email: "rr***@mail.com", auth: "Email", status: "Suspended", joined: "18 Jun 2026", joinedBucket: "30d", joinedRank: 20260618, lastActive: "05 Jul 2026 21:10", lastActiveBucket: "7d", lastActiveRank: 202607052110, assets: 14, assetBucket: "11+", reports: 6, verification: "Email verified", contact: ["Phone: 086-555-4444"], support: "CHT-090", latest: "Reported chat context", reportState: "ตรวจแล้ว 6 รายงาน - บัญชีถูกระงับอยู่", statusLabel: "Login blocked", allowed: ["Restore", "Ban"], blocked: ["Reset while suspended"], foImpact: "Session revoked; public surfaces follow account policy.", actionNote: "Suspension restore must show status before action and after confirmation." },
+        { id: "U-1186", displayName: "Rolex Rama9", username: "@rolexrama9", email: "rr***@mail.com", auth: "Email", status: "Suspended", joined: "18 Jun 2026", joinedBucket: "30d", joinedRank: 20260618, lastActive: "05 Jul 2026 21:10", lastActiveBucket: "7d", lastActiveRank: 202607052110, assets: 14, assetBucket: "11+", reports: 6, verification: "Email verified", contact: ["Phone: 086-555-4444"], support: "CHT-090", latest: "Reported chat context", reportState: "ตรวจแล้ว 6 รายงาน - บัญชีถูกระงับอยู่", statusLabel: "เข้าสู่ระบบไม่ได้", allowed: ["Restore", "Ban"], blocked: ["Reset while suspended"], foImpact: "ผู้ใช้เข้าสู่ระบบไม่ได้ระหว่างถูกระงับบัญชีชั่วคราว", actionNote: "การยกเลิกระงับต้องแสดงสถานะก่อนดำเนินการและหลังยืนยัน" },
         { id: "U-1207", displayName: "Minimal Dial", username: "@minimaldial", email: "mi***@mail.com", auth: "Email", status: "Pending Verification", joined: "Not joined yet", joinedBucket: "pending", joinedRank: 20260611, lastActive: "No app session", lastActiveBucket: "pending", lastActiveRank: 0, assets: 0, assetBucket: "0", reports: 0, verification: "Email OTP pending", contact: [], support: "SUP-182", latest: "Cannot reset password question", reportState: "ไม่มีรายงานผู้ใช้", statusLabel: "Email not verified", allowed: ["Resend verification context", "Suspend"], blocked: ["Reset password until verified"], foImpact: "Account cannot enter FO app or create profile/assets until email verification is completed.", actionNote: "Use auth/support context before sending account instructions." },
         { id: "U-1222", displayName: "old.user", username: "@olduser", email: "ol***@mail.com", auth: "Email", status: "Deleted / Archived", joined: "17 Jan 2026", joinedBucket: "older", joinedRank: 20260117, lastActive: "15 May 2026 07:44", lastActiveBucket: "older", lastActiveRank: 202605150744, assets: 0, assetBucket: "0", reports: 0, verification: "Archived", contact: [], support: "DEL-020", latest: "Anonymized", reportState: "ปิดเคสแล้ว", statusLabel: "Archived", allowed: ["View archived summary"], blocked: ["Reset password", "Status mutation"], foImpact: "Archived account login blocked; profile/assets hidden or anonymized.", actionNote: "Archive details remain sensitive and audited." }
       ],
@@ -3735,9 +3735,9 @@
         confirmLabel: "ยืนยันระงับบัญชีชั่วคราว",
         success: user => `${user.displayName} ถูกระงับบัญชีชั่วคราวแล้ว`,
         checklist: [
-          "บล็อก FO login/session ระหว่างถูกระงับ",
-          "ใช้สำหรับ hold ชั่วคราวและสามารถ Restore ได้หลังตรวจสอบ",
-          "ต้องมี reason และ audit trail ก่อนยืนยัน"
+          "บล็อกการเข้าสู่ระบบระหว่างถูกระงับ",
+          "ใช้สำหรับพักบัญชีชั่วคราว และยกเลิกการระงับได้หลังตรวจสอบเรียบร้อย",
+          "ต้องมีเหตุผลและบันทึกการดำเนินการก่อนยืนยัน"
         ]
       },
       Ban: {
@@ -3760,20 +3760,20 @@
       },
       Restore: {
         title: "ยกเลิกระงับบัญชีชั่วคราว",
-        crumb: "Restore Account",
+        crumb: "ยกเลิกระงับบัญชีชั่วคราว",
         type: "status",
         targetStatus: "Active",
         tone: "primary",
-        summary: "คืนสถานะจาก Suspended เป็น Active หลังตรวจสอบแล้วว่ากลับมาใช้งานได้",
+        summary: "ใช้เมื่อทีมตรวจสอบแล้วว่าผู้ใช้สามารถกลับมาใช้งานบัญชีได้ตามปกติ",
         reasonLabel: "เหตุผลการยกเลิกระงับบัญชีชั่วคราว",
-        reasons: ["Review cleared", "Evidence resolved", "Support approved restore"],
-        notePlaceholder: "สรุปผลการตรวจสอบและเงื่อนไขที่เคลียร์แล้ว",
+        reasons: ["ตรวจสอบแล้วไม่พบความเสี่ยงเพิ่มเติม", "หลักฐานหรือข้อร้องเรียนได้รับการแก้ไขแล้ว", "ทีมช่วยเหลืออนุมัติให้กลับมาใช้งานได้"],
+        notePlaceholder: "สรุปผลการตรวจสอบ เหตุผลที่ยกเลิกระงับ และข้อมูลอ้างอิงที่เกี่ยวข้อง",
         confirmLabel: "ยืนยันยกเลิกระงับบัญชีชั่วคราว",
         success: user => `${user.displayName} กลับมาใช้งานได้แล้ว`,
         checklist: [
-          "ปลดบล็อก FO login/session ตาม policy",
-          "ไม่ลบ audit เดิมของการ suspend",
-          "บันทึก before/after status"
+          "ผู้ใช้จะกลับมาเข้าสู่ระบบและใช้งานบัญชีได้",
+          "ไม่ลบบันทึกเดิมของการระงับบัญชีชั่วคราว",
+          "บันทึกสถานะก่อนและหลังการดำเนินการ"
         ]
       },
       "Unban user": {
@@ -3848,37 +3848,38 @@
 
     function getUserActionFoImpact(user, action) {
       if (action === "Reset password") return "ไม่มีผลกับสถานะบัญชีหรือโปรไฟล์สาธารณะ ระบบจะส่งเฉพาะลิงก์ตั้งรหัสผ่านใหม่ไปยังอีเมลที่ลงทะเบียนไว้";
-      if (action === "Suspend") return "การเข้าสู่ระบบและเซสชันของผู้ใช้ถูกบล็อกชั่วคราวจนกว่า Admin จะ Restore เหมาะกับเคสที่ยังรอตรวจสอบ";
+      if (action === "Suspend") return "ผู้ใช้จะเข้าสู่ระบบไม่ได้ชั่วคราวจนกว่าผู้ดูแลระบบจะยกเลิกการระงับ เหมาะกับเคสที่ยังรอตรวจสอบ";
       if (action === "Ban") return "ผู้ใช้จะเข้าสู่ระบบไม่ได้ และไม่สามารถทำรายการใหม่ในแอปได้ จนกว่า Admin จะปลดระงับบัญชี เหมาะสำหรับกรณีที่ตรวจสอบแล้วว่ามีการละเมิดจริง";
-      if (action === "Restore" || action === "Unban user") return "FO access กลับมาใช้งานได้ตาม policy หลังยืนยัน action";
+      if (action === "Restore") return "ผู้ใช้จะกลับมาเข้าสู่ระบบและใช้งานบัญชีได้หลังยืนยัน";
+      if (action === "Unban user") return "ผู้ใช้จะกลับมาเข้าสู่ระบบและใช้งานบัญชีได้หลังยืนยัน";
       return user.foImpact;
     }
 
     function updateUserActionsForStatus(user) {
       if (user.status === "Active") {
-        user.statusLabel = "Normal FO access";
+        user.statusLabel = "ใช้งานได้ตามปกติ";
         user.allowed = user.auth === "Email" ? ["Reset password", "Suspend", "Ban"] : ["Suspend", "Ban"];
         user.blocked = user.auth === "Email" ? ["Archive from list"] : ["Reset password"];
-        user.foImpact = "Active account keeps normal FO access until Admin confirms a status action.";
+        user.foImpact = "บัญชียังใช้งานได้ตามปกติจนกว่าผู้ดูแลระบบจะยืนยันการเปลี่ยนสถานะ";
         user.actionNote = user.auth === "Email"
-          ? "Reset password is available because auth method is Email."
-          : `${user.auth} account cannot receive BO password reset link.`;
+          ? "ส่งลิงก์ตั้งรหัสผ่านใหม่ได้ เพราะผู้ใช้สมัครด้วยอีเมล"
+          : `บัญชี ${user.auth} ไม่สามารถรับลิงก์ตั้งรหัสผ่านใหม่จากระบบหลังบ้านได้`;
         return;
       }
       if (user.status === "Suspended") {
-        user.statusLabel = "Login blocked";
+        user.statusLabel = "เข้าสู่ระบบไม่ได้";
         user.allowed = ["Restore", "Ban"];
         user.blocked = ["Reset while suspended"];
-        user.foImpact = "Suspended blocks FO login/session until restored.";
-        user.actionNote = "Suspension restore must show status before action and after confirmation.";
+        user.foImpact = "ผู้ใช้เข้าสู่ระบบไม่ได้ระหว่างถูกระงับบัญชีชั่วคราว";
+        user.actionNote = "การยกเลิกระงับต้องแสดงสถานะก่อนดำเนินการและหลังยืนยัน";
         return;
       }
       if (user.status === "Banned") {
-        user.statusLabel = "Login blocked";
+        user.statusLabel = "เข้าสู่ระบบไม่ได้";
         user.allowed = ["Unban user"];
         user.blocked = ["Reset password"];
-        user.foImpact = "Banned blocks login and new FO activity until Admin unbans.";
-        user.actionNote = "Unban requires confirmation, reason, before/after audit.";
+        user.foImpact = "ผู้ใช้เข้าสู่ระบบไม่ได้และไม่สามารถทำรายการใหม่จนกว่าผู้ดูแลระบบจะปลดระงับ";
+        user.actionNote = "การปลดระงับต้องยืนยัน ระบุเหตุผล และบันทึกสถานะก่อน/หลัง";
       }
     }
 
@@ -3965,17 +3966,17 @@
                   ${customSelect("user-action-reason", config.reasonLabel, config.reasons.map(reason => ({ value: reason, label: reason })), "", "data-custom-select-silent", completed)}
                 </label>
                 <label>
-                  Audit note
+                  หมายเหตุสำหรับบันทึกการดำเนินการ
                   <textarea id="user-action-note" placeholder="${config.notePlaceholder}" ${completed ? "disabled" : ""}></textarea>
                 </label>
                 <div class="module-note user-action-impact"><strong>ผลกระทบต่อแอปพลิเคชัน:</strong> ${getUserActionFoImpact(user, action)}</div>
                 <div class="user-detail-actions">
                   <button class="user-detail-action-btn ${getUserActionConfirmClass(config)}" type="button" data-user-action-confirm="${action}" data-user-id="${user.id}" ${completed ? "disabled" : ""}>${config.confirmLabel}</button>
-                  <button class="user-detail-action-btn" type="button" data-user-action-modal-close>${completed ? "Close" : "ยกเลิก"}</button>
+                  <button class="user-detail-action-btn" type="button" data-user-action-modal-close>${completed ? "ปิด" : "ยกเลิก"}</button>
                 </div>
                 <div class="warning-note action-feedback user-action-result ${completed ? "show" : ""}">
                   <strong>${resultMessage}</strong><br>
-                  <span>Audit: ${formatBangkokTimestamp()} · ${beforeStatus} → ${user.status}</span>
+                  <span>บันทึกการดำเนินการ: ${formatBangkokTimestamp()} · ${userStatusLabels[beforeStatus] || beforeStatus} → ${userStatusLabels[user.status] || user.status}</span>
                 </div>
               </div>
             </div>
@@ -4157,7 +4158,7 @@
           </div>
 
           <div class="module-note"><strong>ผลกระทบต่อแอปพลิเคชัน:</strong> ${user.foImpact}</div>
-          <div class="warning-note"><strong>Audit note:</strong> ${user.actionNote}</div>
+          <div class="warning-note"><strong>หมายเหตุการดำเนินการ:</strong> ${user.actionNote}</div>
           ${renderUserDetailActions(user)}
         </div>
       `;
