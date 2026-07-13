@@ -3036,7 +3036,7 @@
       deletions: mod("Account Deletion", "งานตรวจสอบและบริการ / Account Deletion", "Deletion Requests", "ตรวจคำขอลบบัญชี, pending dependency, 30-day grace period และ anonymization", "ตรวจ dependency", [["Requests", "8", "รอ validation"], ["Blocked", "3", "มี pending offer"], ["Grace Period", "11", "นับ 30 วัน"], ["Anonymized", "42", "เดือนนี้"]], [
         item("DEL-033", "Delete account request", "Archive Collector", "Account", "กลาง", "Blocked", "มี pending offer และ report context ค้างอยู่", ["Offer 1", "Report 1"], "ห้าม hard delete จนกว่า dependency ปิด"),
         item("DEL-029", "Grace period day 12", "The Collector", "Account", "ปกติ", "Grace", "session revoked แล้ว profile public unavailable", ["30-day"], "รอครบกำหนด anonymization"),
-        item("DEL-020", "Ready to anonymize", "old.user", "Account", "สูง", "Ready", "ครบ grace period และไม่มี legal hold", ["PII mask"], "ทำ anonymization พร้อม audit")
+        item("DEL-020", "Archived summary", "old.user", "Account", "สูง", "Anonymized", "ครบ grace period และทำ anonymization แล้ว", ["PII masked"], "ดู audit summary และข้อมูลที่ถูกเก็บถาวร")
       ]),
       reports: mod("Reports", "เครื่องมือ & รายงาน / Reports", "Reports & Analytics", "รายงาน user, asset, offer, chat, board, social, search, support, notification และ deletion", "สร้าง export", [["Dashboards", "12", "พร้อมใช้งาน"], ["Scheduled", "6", "ส่งประจำสัปดาห์"], ["Export Jobs", "5", "background"], ["Failed", "1", "retry needed"]], [
         item("RPT-USER", "User Risk Report", "Trust & Safety", "User", "สูง", "Ready", "รวม suspended, report count และ deletion state", ["CSV/PDF"], "Export ต้อง mask sensitive data"),
@@ -3701,7 +3701,7 @@
       "Unban user": "ยกเลิกระงับบัญชีถาวร",
       "Open Account Deletion": "ดูคำขอลบบัญชี",
       "Resend verification context": "ส่งข้อมูลยืนยันตัวตนอีกครั้ง",
-      "View archived summary": "ดู Archived Summary"
+      "View archived summary": "ดูสรุปบัญชีที่เก็บถาวร"
     };
 
     const USER_ACTION_CONFIRM_LABEL = "ยืนยัน";
@@ -3982,6 +3982,14 @@
       modal.classList.add("show");
     }
 
+    function syncExpandedNavForModule(moduleId, subLabel = "") {
+      const parentId = navParentByModule[moduleId] || moduleId;
+      expandedMenus.clear();
+      if (parentId !== moduleId || subLabel || defaultSubByModule[moduleId]) {
+        expandedMenus.add(parentId);
+      }
+    }
+
     function confirmUserAction(user, action) {
       const config = userActionConfig[action];
       if (!user || !config) return;
@@ -3994,9 +4002,9 @@
       showSuccessToast(config.success(user));
     }
 
-    function openAccountDeletionRequest(user) {
+    function openAccountDeletionRequest(user, subLabel = "Requests") {
       const deletionId = user?.support?.startsWith("DEL-") ? user.support : "";
-      renderModule("deletions", "Requests", "Requests");
+      renderModule("deletions", subLabel, subLabel);
       if (deletionId) {
         document.querySelector("#search").value = deletionId;
         const deletionRow = moduleData.deletions.rows.find(row => row.id === deletionId);
@@ -4011,6 +4019,10 @@
       if (!user || !action) return;
       if (action === "Open Account Deletion") {
         openAccountDeletionRequest(user);
+        return;
+      }
+      if (action === "View archived summary") {
+        openAccountDeletionRequest(user, "Anonymization");
         return;
       }
       if (userActionConfig[action]) {
@@ -4294,6 +4306,7 @@
     function renderModule(id, subLabel = "", displaySubLabel = subLabel) {
       activeModule = id;
       activeSub = subLabel;
+      syncExpandedNavForModule(id, subLabel);
       const data = moduleData[id];
       document.body.classList.toggle("dashboard-mode", id === "dashboard");
       document.body.classList.toggle("user-management-mode", id === "users");
@@ -4471,10 +4484,7 @@
 
     function jumpToModule(moduleId, subLabel = "") {
       if (!moduleId) return;
-      const parentId = navParentByModule[moduleId] || moduleId;
       const targetSubLabel = subLabel || (moduleId !== "dashboard" ? defaultSubByModule[moduleId] || "" : "");
-      expandedMenus.clear();
-      if (parentId !== moduleId || targetSubLabel) expandedMenus.add(parentId);
       renderModule(moduleId, targetSubLabel, targetSubLabel);
       scrollMainToTop();
     }
