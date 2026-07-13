@@ -1614,6 +1614,46 @@
     .user-action-result.show {
       display: block;
     }
+    .toast-stack {
+      position: fixed;
+      top: 18px;
+      right: 18px;
+      z-index: 35;
+      display: grid;
+      gap: 10px;
+      width: min(360px, calc(100vw - 36px));
+      pointer-events: none;
+    }
+    .toast {
+      display: none;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 12px 14px;
+      border: 1px solid #b7ebc8;
+      border-radius: 8px;
+      background: #f0fdf4;
+      color: #14532d;
+      box-shadow: 0 18px 40px rgba(15, 23, 42, .16);
+      font-size: 13px;
+      line-height: 1.45;
+      pointer-events: auto;
+    }
+    .toast.show {
+      display: flex;
+    }
+    .toast strong {
+      display: block;
+      margin-bottom: 2px;
+      color: #166534;
+      font-size: 13px;
+      font-weight: 700;
+    }
+    .toast svg {
+      width: 18px;
+      height: 18px;
+      flex: 0 0 auto;
+      margin-top: 1px;
+    }
     .user-action-confirm.danger {
       border-color: #b91c1c;
       background: #b91c1c;
@@ -2837,6 +2877,9 @@
       <div class="modal-body" id="user-action-modal-body"></div>
     </div>
   </div>
+  <div class="toast-stack" aria-live="polite" aria-atomic="true">
+    <div class="toast" id="success-toast"></div>
+  </div>
 
   <script>
     const iconSvg = {
@@ -3665,7 +3708,7 @@
         reasons: ["User requested password reset", "Support verified identity", "Security follow-up"],
         notePlaceholder: "ระบุหมายเหตุ เหตุผล หรือข้อมูลอ้างอิงที่เกี่ยวข้อง",
         confirmLabel: "Send link",
-        success: user => `ส่ง reset password link ไปที่ ${getUserFullEmail(user)} แล้ว`,
+        success: user => `ส่งลิงก์ตั้งรหัสผ่านใหม่ไปยัง ${getUserFullEmail(user)} แล้ว`,
         checklist: [
           "ไม่เปลี่ยนสถานะบัญชี และไม่ logout session ที่ยัง active",
           "ลิงก์หมดอายุตาม policy และใช้ได้ครั้งเดียว",
@@ -3839,6 +3882,26 @@
       document.querySelector("#user-action-modal-body").innerHTML = "";
     }
 
+    let successToastTimer = null;
+    function showSuccessToast(message) {
+      const toast = document.querySelector("#success-toast");
+      if (!toast) return;
+      if (successToastTimer) window.clearTimeout(successToastTimer);
+      toast.innerHTML = `
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M20 6 9 17l-5-5"></path>
+        </svg>
+        <div>
+          <strong>สำเร็จ</strong>
+          <span>${message}</span>
+        </div>
+      `;
+      toast.classList.add("show");
+      successToastTimer = window.setTimeout(() => {
+        toast.classList.remove("show");
+      }, 3200);
+    }
+
     function refreshUserActionSurface(user) {
       if (!user || activeModule !== "users") return;
       if (document.body.classList.contains("user-detail-mode")) {
@@ -3918,13 +3981,13 @@
     function confirmUserAction(user, action) {
       const config = userActionConfig[action];
       if (!user || !config) return;
-      const beforeStatus = user.status;
       if (config.type === "status") {
         user.status = config.targetStatus;
         updateUserActionsForStatus(user);
       }
       refreshUserActionSurface(user);
-      renderUserActionPage(user, action, true, config.success(user), beforeStatus);
+      closeUserActionModal();
+      showSuccessToast(config.success(user));
     }
 
     function handleUserAction(user, action) {
