@@ -1323,30 +1323,6 @@
       background: #dcebff;
       color: #0f52b8;
     }
-    .detail-tile .report-type,
-    .detail-tile .report-status {
-      display: inline-flex;
-      width: max-content;
-      min-height: 23px;
-      align-items: center;
-      margin: 0;
-      border-radius: 999px;
-      padding: 2px 8px;
-      font-size: 11px;
-      font-weight: 800;
-      line-height: 1;
-      white-space: nowrap;
-    }
-    .detail-tile .report-type {
-      color: #0f52b8;
-      background: #e8f1ff;
-      border: 1px solid #c6ddff;
-    }
-    .detail-tile .report-status {
-      color: #925500;
-      background: #fff3d8;
-      border: 1px solid #f3d493;
-    }
     .report-reason {
       margin: 0;
       color: #10223d;
@@ -1499,6 +1475,11 @@
       background: #fff1f2;
       color: #9f1722;
     }
+    .user-detail-action-btn.warning {
+      border-color: #f3d493;
+      background: #fff7e6;
+      color: #925500;
+    }
     .action-feedback {
       display: none;
       margin-top: 10px;
@@ -1597,6 +1578,11 @@
     .user-action-confirm.danger {
       border-color: #b91c1c;
       background: #b91c1c;
+      color: #fff;
+    }
+    .user-action-confirm.warning {
+      border-color: var(--amber);
+      background: var(--amber);
       color: #fff;
     }
     .profile-image {
@@ -2634,12 +2620,21 @@
       body.user-detail-mode .detail-tile {
         padding: 9px 8px;
       }
-      .user-detail-actions,
-      .user-detail-action-btn {
+      .user-detail-action-section .user-detail-actions {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
         width: 100%;
+        gap: 8px;
       }
-      .user-detail-action-btn {
+      .user-detail-action-section .user-detail-action-btn {
+        width: 100%;
+        min-width: 0;
+        min-height: 38px;
         justify-content: center;
+        padding: 7px 6px;
+        font-size: 11px;
+        line-height: 1.25;
+        white-space: normal;
       }
       .report-meta {
         grid-template-columns: 1fr;
@@ -3442,10 +3437,14 @@
       return `${user.latest}; last active ${user.lastActive}`;
     }
 
-    function getLatestReportForUser(user) {
+    function getReportsForUser(user) {
       return userManagementData.reports
         .filter(report => report.userId === user.id)
-        .sort((a, b) => b.id.localeCompare(a.id))[0];
+        .sort((a, b) => b.id.localeCompare(a.id));
+    }
+
+    function getLatestReportForUser(user) {
+      return getReportsForUser(user)[0];
     }
 
     function renderLatestReport(user) {
@@ -3466,14 +3465,13 @@
     }
 
     function renderLatestReportBrief(user) {
-      const report = getLatestReportForUser(user);
+      const reports = getReportsForUser(user);
+      const report = reports[0];
       if (report) {
         return `
           <div class="report-brief">
             <div class="report-brief-head">
-              <button class="report-case" type="button" data-report-action="${report.id}" title="Open ${report.id}">${report.id}</button>
-              <span class="report-type">${report.category}</span>
-              <span class="report-status">${report.status}</span>
+              ${reports.map(item => `<button class="report-case" type="button" data-report-action="${item.id}" title="Open ${item.id}">${item.id}</button>`).join("")}
             </div>
             <p class="report-reason">${report.reason}</p>
             <div class="report-meta">
@@ -3556,8 +3554,8 @@
 
     const userActionLabels = {
       "Reset password": "ส่ง reset password link",
-      Suspend: "ระงับบัญชี",
-      Ban: "Ban user",
+      Suspend: "ระงับบัญชีชั่วคราว",
+      Ban: "ระงับถาวร",
       Restore: "กู้คืนสิทธิ์",
       "Unban user": "Unban user",
       "Open Account Deletion": "เปิด Account Deletion",
@@ -3588,12 +3586,12 @@
         crumb: "Suspend Account",
         type: "status",
         targetStatus: "Suspended",
-        tone: "danger",
+        tone: "warning",
         summary: "ใช้เมื่อยังต้องตรวจสอบต่อหรือรอหลักฐานเพิ่มเติม เป็นสถานะชั่วคราวและกู้คืนได้",
-        reasonLabel: "เหตุผลการระงับบัญชี",
+        reasonLabel: "เหตุผลการระงับบัญชีชั่วคราว",
         reasons: ["High risk report under review", "Duplicate profile investigation", "Support dispute escalation", "Policy review hold"],
         notePlaceholder: "ระบุ evidence, report ID, ระยะเวลาที่ต้อง review และเงื่อนไขการ restore",
-        confirmLabel: "ยืนยันระงับบัญชี",
+        confirmLabel: "ยืนยันระงับบัญชีชั่วคราว",
         success: user => `${user.displayName} ถูกระงับบัญชีชั่วคราวแล้ว`,
         checklist: [
           "บล็อก FO login/session ระหว่างถูกระงับ",
@@ -3602,17 +3600,17 @@
         ]
       },
       Ban: {
-        title: "Ban user",
+        title: "ระงับถาวร",
         crumb: "Ban User",
         type: "status",
         targetStatus: "Banned",
         tone: "danger",
         summary: "ใช้เมื่อยืนยันการละเมิดรุนแรงหรือไม่ควรให้กลับมาใช้งาน เป็นสถานะถาวรกว่า Suspend และต้องใช้เหตุผลชัดเจน",
-        reasonLabel: "เหตุผลการ ban",
+        reasonLabel: "เหตุผลการระงับถาวร",
         reasons: ["Confirmed abuse", "Fraud or impersonation confirmed", "Repeated severe policy violation", "Safety escalation approved"],
         notePlaceholder: "ระบุหลักฐานที่ยืนยันแล้ว, report/support ID และ approval ที่เกี่ยวข้อง",
-        confirmLabel: "ยืนยัน Ban user",
-        success: user => `${user.displayName} ถูก ban แล้ว`,
+        confirmLabel: "ยืนยันระงับถาวร",
+        success: user => `${user.displayName} ถูกระงับถาวรแล้ว`,
         checklist: [
           "บล็อก FO login และ activity ใหม่",
           "ใช้หลังยืนยันการละเมิด ไม่ใช่แค่รอตรวจสอบ",
@@ -3681,7 +3679,8 @@
     }
 
     function getUserActionClass(action, index) {
-      if (["Ban", "Suspend"].includes(action)) return "danger";
+      if (action === "Ban") return "danger";
+      if (action === "Suspend") return "warning";
       if (index === 0) return "primary";
       return "";
     }
@@ -3786,7 +3785,7 @@
                 <div class="module-note"><strong>FO impact:</strong> ${getUserActionFoImpact(user, action)}</div>
                 <div class="warning-note"><strong>Suspend vs Ban:</strong> Suspend คือระงับชั่วคราวเพื่อ hold ระหว่างตรวจสอบและ Restore ได้ง่ายกว่า ส่วน Ban คือระงับถาวรกว่า ใช้เมื่อยืนยัน abuse/fraud แล้ว และการ Unban ต้องมี approval ชัดเจน</div>
                 <div class="user-detail-actions">
-                  <button class="user-detail-action-btn ${config.tone === "danger" ? "danger user-action-confirm" : "primary user-action-confirm"}" type="button" data-user-action-confirm="${action}" data-user-id="${user.id}" ${completed ? "disabled" : ""}>${config.confirmLabel}</button>
+                  <button class="user-detail-action-btn ${config.tone === "danger" ? "danger user-action-confirm" : config.tone === "warning" ? "warning user-action-confirm" : "primary user-action-confirm"}" type="button" data-user-action-confirm="${action}" data-user-id="${user.id}" ${completed ? "disabled" : ""}>${config.confirmLabel}</button>
                   <button class="user-detail-action-btn" type="button" data-user-open="${user.id}">ยกเลิก</button>
                 </div>
                 <div class="warning-note action-feedback user-action-result ${completed ? "show" : ""}">
