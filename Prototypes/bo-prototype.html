@@ -1501,8 +1501,11 @@
     }
     .user-action-head h2 {
       margin: 0 0 6px;
+      font-family: var(--font-main);
       font-size: 24px;
-      line-height: 1.1;
+      font-weight: 600;
+      letter-spacing: 0;
+      line-height: 1.2;
     }
     .user-action-head p {
       margin: 0;
@@ -3723,8 +3726,8 @@
         tone: "warning",
         summary: "ใช้เมื่อยังต้องตรวจสอบต่อหรือรอหลักฐานเพิ่มเติม เป็นสถานะชั่วคราวและกู้คืนได้",
         reasonLabel: "เหตุผลการระงับบัญชีชั่วคราว",
-        reasons: ["High risk report under review", "Duplicate profile investigation", "Support dispute escalation", "Policy review hold"],
-        notePlaceholder: "ระบุ evidence, report ID, ระยะเวลาที่ต้อง review และเงื่อนไขการ restore",
+        reasons: ["มีรายงานความเสี่ยงสูง รอตรวจสอบ", "สงสัยว่าเป็นบัญชีหรือโปรไฟล์ซ้ำ", "มีข้อพิพาทจากฝ่าย Support", "พักบัญชีไว้ระหว่างตรวจนโยบาย"],
+        notePlaceholder: "ระบุหมายเหตุ เหตุผล หรือข้อมูลอ้างอิงที่เกี่ยวข้อง",
         confirmLabel: "ยืนยันระงับบัญชีชั่วคราว",
         success: user => `${user.displayName} ถูกระงับบัญชีชั่วคราวแล้ว`,
         checklist: [
@@ -3841,8 +3844,8 @@
 
     function getUserActionFoImpact(user, action) {
       if (action === "Reset password") return "ไม่มีผลกับสถานะบัญชีหรือโปรไฟล์สาธารณะ ระบบจะส่งเฉพาะลิงก์ตั้งรหัสผ่านใหม่ไปยังอีเมลที่ลงทะเบียนไว้";
-      if (action === "Suspend") return "FO login/session ถูกบล็อกชั่วคราวจนกว่า Admin จะ Restore; เหมาะกับเคสที่ยังรอตรวจสอบ";
-      if (action === "Ban") return "FO login และ activity ใหม่ถูกบล็อกแบบถาวรกว่า Suspend; ใช้กับเคสที่ยืนยันการละเมิดแล้ว";
+      if (action === "Suspend") return "การเข้าสู่ระบบและเซสชันของผู้ใช้ถูกบล็อกชั่วคราวจนกว่า Admin จะ Restore เหมาะกับเคสที่ยังรอตรวจสอบ";
+      if (action === "Ban") return "FO login และ activity ใหม่ถูกบล็อกแบบถาวรกว่า Suspend ใช้กับเคสที่ยืนยันการละเมิดแล้ว";
       if (action === "Restore" || action === "Unban user") return "FO access กลับมาใช้งานได้ตาม policy หลังยืนยัน action";
       return user.foImpact;
     }
