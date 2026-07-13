@@ -1506,6 +1506,99 @@
     .action-feedback.show {
       display: block;
     }
+    .user-action-page {
+      display: grid;
+      gap: 14px;
+    }
+    .user-action-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 14px;
+      padding-bottom: 14px;
+      border-bottom: 1px solid var(--line);
+    }
+    .user-action-head h2 {
+      margin: 0 0 6px;
+      font-size: 26px;
+      line-height: 1.1;
+    }
+    .user-action-head p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 700;
+    }
+    .user-action-layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 320px;
+      gap: 14px;
+      align-items: start;
+    }
+    .user-action-form {
+      display: grid;
+      gap: 12px;
+    }
+    .user-action-form label {
+      display: grid;
+      gap: 6px;
+      color: #43546d;
+      font-size: 12px;
+      font-weight: 800;
+    }
+    .user-action-form select,
+    .user-action-form textarea {
+      width: 100%;
+      border: 1px solid var(--line-strong);
+      border-radius: 7px;
+      background: #fff;
+      color: #061426;
+      font: inherit;
+      font-size: 13px;
+      font-weight: 700;
+      padding: 9px 10px;
+    }
+    .user-action-form textarea {
+      min-height: 98px;
+      resize: vertical;
+      line-height: 1.45;
+    }
+    .user-action-checklist {
+      display: grid;
+      gap: 8px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+    .user-action-checklist li {
+      display: flex;
+      gap: 8px;
+      align-items: flex-start;
+      color: #43546d;
+      font-size: 12px;
+      font-weight: 700;
+      line-height: 1.45;
+    }
+    .user-action-checklist li::before {
+      content: "";
+      width: 7px;
+      height: 7px;
+      margin-top: 5px;
+      border-radius: 999px;
+      background: var(--active);
+      flex: 0 0 auto;
+    }
+    .user-action-result {
+      display: none;
+    }
+    .user-action-result.show {
+      display: block;
+    }
+    .user-action-confirm.danger {
+      border-color: #b91c1c;
+      background: #b91c1c;
+      color: #fff;
+    }
     .profile-image {
       width: 76px;
       height: 76px;
@@ -2072,6 +2165,13 @@
       }
     }
     @media (max-width: 760px) {
+      .user-action-head {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      .user-action-layout {
+        grid-template-columns: 1fr;
+      }
       .user-detail-head {
         flex-direction: column;
         align-items: stretch;
@@ -3465,6 +3565,115 @@
       "View archived summary": "ดู Archived Summary"
     };
 
+    const userActionConfig = {
+      "Reset password": {
+        title: "ส่ง Reset Password Link",
+        crumb: "Reset Password",
+        type: "reset",
+        tone: "primary",
+        summary: "ส่งลิงก์ตั้งรหัสผ่านใหม่ไปยังอีเมลที่ลงทะเบียนไว้ เฉพาะบัญชี Email ที่ verified และยังใช้งานได้",
+        reasonLabel: "เหตุผลการส่งลิงก์",
+        reasons: ["User requested password reset", "Support verified identity", "Security follow-up"],
+        notePlaceholder: "บันทึก ticket, วิธี verify identity หรือ context จาก support",
+        confirmLabel: "ส่ง reset password link",
+        success: user => `ส่ง reset password link ไปที่ ${getUserFullEmail(user)} แล้ว`,
+        checklist: [
+          "ไม่เปลี่ยนสถานะบัญชี และไม่ logout session ที่ยัง active",
+          "ลิงก์หมดอายุตาม policy และใช้ได้ครั้งเดียว",
+          "บันทึก audit พร้อม admin, reason และ support context"
+        ]
+      },
+      Suspend: {
+        title: "ระงับบัญชีชั่วคราว",
+        crumb: "Suspend Account",
+        type: "status",
+        targetStatus: "Suspended",
+        tone: "danger",
+        summary: "ใช้เมื่อยังต้องตรวจสอบต่อหรือรอหลักฐานเพิ่มเติม เป็นสถานะชั่วคราวและกู้คืนได้",
+        reasonLabel: "เหตุผลการระงับบัญชี",
+        reasons: ["High risk report under review", "Duplicate profile investigation", "Support dispute escalation", "Policy review hold"],
+        notePlaceholder: "ระบุ evidence, report ID, ระยะเวลาที่ต้อง review และเงื่อนไขการ restore",
+        confirmLabel: "ยืนยันระงับบัญชี",
+        success: user => `${user.displayName} ถูกระงับบัญชีชั่วคราวแล้ว`,
+        checklist: [
+          "บล็อก FO login/session ระหว่างถูกระงับ",
+          "ใช้สำหรับ hold ชั่วคราวและสามารถ Restore ได้หลังตรวจสอบ",
+          "ต้องมี reason และ audit trail ก่อนยืนยัน"
+        ]
+      },
+      Ban: {
+        title: "Ban user",
+        crumb: "Ban User",
+        type: "status",
+        targetStatus: "Banned",
+        tone: "danger",
+        summary: "ใช้เมื่อยืนยันการละเมิดรุนแรงหรือไม่ควรให้กลับมาใช้งาน เป็นสถานะถาวรกว่า Suspend และต้องใช้เหตุผลชัดเจน",
+        reasonLabel: "เหตุผลการ ban",
+        reasons: ["Confirmed abuse", "Fraud or impersonation confirmed", "Repeated severe policy violation", "Safety escalation approved"],
+        notePlaceholder: "ระบุหลักฐานที่ยืนยันแล้ว, report/support ID และ approval ที่เกี่ยวข้อง",
+        confirmLabel: "ยืนยัน Ban user",
+        success: user => `${user.displayName} ถูก ban แล้ว`,
+        checklist: [
+          "บล็อก FO login และ activity ใหม่",
+          "ใช้หลังยืนยันการละเมิด ไม่ใช่แค่รอตรวจสอบ",
+          "การ Unban ต้องมี confirmation, reason และ before/after audit"
+        ]
+      },
+      Restore: {
+        title: "กู้คืนสิทธิ์บัญชี",
+        crumb: "Restore Account",
+        type: "status",
+        targetStatus: "Active",
+        tone: "primary",
+        summary: "คืนสถานะจาก Suspended เป็น Active หลังตรวจสอบแล้วว่ากลับมาใช้งานได้",
+        reasonLabel: "เหตุผลการกู้คืน",
+        reasons: ["Review cleared", "Evidence resolved", "Support approved restore"],
+        notePlaceholder: "สรุปผลการตรวจสอบและเงื่อนไขที่เคลียร์แล้ว",
+        confirmLabel: "ยืนยันกู้คืนสิทธิ์",
+        success: user => `${user.displayName} กลับมาใช้งานได้แล้ว`,
+        checklist: [
+          "ปลดบล็อก FO login/session ตาม policy",
+          "ไม่ลบ audit เดิมของการ suspend",
+          "บันทึก before/after status"
+        ]
+      },
+      "Unban user": {
+        title: "Unban user",
+        crumb: "Unban User",
+        type: "status",
+        targetStatus: "Active",
+        tone: "primary",
+        summary: "ยกเลิกสถานะ Banned หลังมี approval และเหตุผลชัดเจน",
+        reasonLabel: "เหตุผลการ unban",
+        reasons: ["Appeal approved", "Ban applied incorrectly", "Admin approval"],
+        notePlaceholder: "ระบุ approval, evidence และเงื่อนไขการกลับมาใช้งาน",
+        confirmLabel: "ยืนยัน Unban user",
+        success: user => `${user.displayName} ถูก unban และกลับมา Active แล้ว`,
+        checklist: [
+          "ต้องตรวจ audit เดิมก่อนยืนยัน",
+          "ปลดบล็อก FO login หลัง confirm",
+          "บันทึก before/after status"
+        ]
+      },
+      "Resend verification context": {
+        title: "ส่งข้อมูลยืนยันตัวตนอีกครั้ง",
+        crumb: "Resend Verification",
+        type: "notice",
+        tone: "primary",
+        summary: "ส่ง context ให้ผู้ใช้ดำเนินการยืนยันอีเมลอีกครั้ง โดยไม่เปลี่ยนสถานะบัญชี",
+        reasonLabel: "เหตุผลการส่งซ้ำ",
+        reasons: ["User requested verification email", "Support follow-up"],
+        notePlaceholder: "บันทึกช่องทาง support หรือ ticket ที่เกี่ยวข้อง",
+        confirmLabel: "ส่งข้อมูลยืนยันตัวตน",
+        success: user => `ส่งข้อมูลยืนยันตัวตนให้ ${user.displayName} แล้ว`,
+        checklist: [
+          "บัญชียังเป็น Pending Verification จนกว่าจะยืนยันสำเร็จ",
+          "ไม่เปิด FO access อัตโนมัติ",
+          "บันทึก audit การส่งซ้ำ"
+        ]
+      }
+    };
+
     function getUserRowActions(user) {
       return (user.allowed || [])
         .filter(action => action !== "View detail")
@@ -3497,15 +3706,132 @@
       feedback.classList.add("show");
     }
 
-    function handleUserAction(user, action) {
-      if (!user || !action) return;
-      if (document.body.classList.contains("user-detail-mode")) {
-        renderUserActionFeedback(user, action);
+    function getUserActionFoImpact(user, action) {
+      if (action === "Reset password") return "ไม่มีผลกับสถานะบัญชีหรือ public profile; ส่งเฉพาะ reset link ไปยัง email ที่ลงทะเบียน";
+      if (action === "Suspend") return "FO login/session ถูกบล็อกชั่วคราวจนกว่า Admin จะ Restore; เหมาะกับเคสที่ยังรอตรวจสอบ";
+      if (action === "Ban") return "FO login และ activity ใหม่ถูกบล็อกแบบถาวรกว่า Suspend; ใช้กับเคสที่ยืนยันการละเมิดแล้ว";
+      if (action === "Restore" || action === "Unban user") return "FO access กลับมาใช้งานได้ตาม policy หลังยืนยัน action";
+      return user.foImpact;
+    }
+
+    function updateUserActionsForStatus(user) {
+      if (user.status === "Active") {
+        user.statusLabel = "Normal FO access";
+        user.allowed = user.auth === "Email" ? ["Reset password", "Suspend", "Ban"] : ["Suspend", "Ban"];
+        user.blocked = user.auth === "Email" ? ["Archive from list"] : ["Reset password"];
+        user.foImpact = "Active account keeps normal FO access until Admin confirms a status action.";
+        user.actionNote = user.auth === "Email"
+          ? "Reset password is available because auth method is Email."
+          : `${user.auth} account cannot receive BO password reset link.`;
         return;
       }
+      if (user.status === "Suspended") {
+        user.statusLabel = "Login blocked";
+        user.allowed = ["Restore", "Ban"];
+        user.blocked = ["Reset while suspended"];
+        user.foImpact = "Suspended blocks FO login/session until restored.";
+        user.actionNote = "Suspension restore must show status before action and after confirmation.";
+        return;
+      }
+      if (user.status === "Banned") {
+        user.statusLabel = "Login blocked";
+        user.allowed = ["Unban user"];
+        user.blocked = ["Reset password"];
+        user.foImpact = "Banned blocks login and new FO activity until Admin unbans.";
+        user.actionNote = "Unban requires confirmation, reason, before/after audit.";
+      }
+    }
+
+    function renderUserActionPage(user, action, completed = false, resultMessage = "", statusBefore = user?.status) {
+      const config = userActionConfig[action];
+      if (!user || !config) return;
+      const fullEmail = getUserFullEmail(user);
+      const beforeStatus = statusBefore || user.status;
+      document.body.classList.add("user-detail-mode");
+      document.body.classList.remove("user-list-mode");
+      activeSub = "User List";
       activeRow = user;
-      renderUserDetail(user);
-      renderUserActionFeedback(user, action);
+      document.querySelector("#crumb").textContent = `การดำเนินงาน / User Management / User Detail / ${user.id} / ${config.crumb}`;
+      document.querySelector("#page-title").textContent = config.title;
+      document.querySelector("#page-meta").textContent = "";
+      document.querySelector("#panel-title").textContent = config.title;
+      document.querySelector("#panel-subtitle").textContent = `${user.id} · ${user.displayName} · ${fullEmail}`;
+      document.querySelector(".filters").innerHTML = "";
+      document.querySelector("#summary-grid").innerHTML = "";
+      document.querySelector("#cards").innerHTML = "";
+      document.querySelector("#detail").innerHTML = "";
+      document.querySelector("#table").innerHTML = `
+        <div class="user-action-page">
+          <div class="user-action-head">
+            <div>
+              <h2>${config.title}</h2>
+              <p>${config.summary}</p>
+            </div>
+            <button class="btn" type="button" data-user-open="${user.id}">กลับไป User Detail</button>
+          </div>
+          <div class="user-action-layout">
+            <div class="detail-section">
+              <h4>Action Form</h4>
+              <div class="user-action-form">
+                <label>
+                  ${config.reasonLabel}
+                  <select id="user-action-reason" ${completed ? "disabled" : ""}>
+                    ${config.reasons.map(reason => `<option value="${reason}">${reason}</option>`).join("")}
+                  </select>
+                </label>
+                <label>
+                  Audit note
+                  <textarea id="user-action-note" placeholder="${config.notePlaceholder}" ${completed ? "disabled" : ""}></textarea>
+                </label>
+                <div class="module-note"><strong>FO impact:</strong> ${getUserActionFoImpact(user, action)}</div>
+                <div class="warning-note"><strong>Suspend vs Ban:</strong> Suspend คือระงับชั่วคราวเพื่อ hold ระหว่างตรวจสอบและ Restore ได้ง่ายกว่า ส่วน Ban คือระงับถาวรกว่า ใช้เมื่อยืนยัน abuse/fraud แล้ว และการ Unban ต้องมี approval ชัดเจน</div>
+                <div class="user-detail-actions">
+                  <button class="user-detail-action-btn ${config.tone === "danger" ? "danger user-action-confirm" : "primary user-action-confirm"}" type="button" data-user-action-confirm="${action}" data-user-id="${user.id}" ${completed ? "disabled" : ""}>${config.confirmLabel}</button>
+                  <button class="user-detail-action-btn" type="button" data-user-open="${user.id}">ยกเลิก</button>
+                </div>
+                <div class="warning-note action-feedback user-action-result ${completed ? "show" : ""}">
+                  <strong>${resultMessage}</strong><br>
+                  <span>Audit: ${formatBangkokTimestamp()} · ${beforeStatus} → ${user.status}</span>
+                </div>
+              </div>
+            </div>
+            <aside class="detail-section">
+              <h4>User Snapshot</h4>
+              <div class="detail-grid">
+                <div class="detail-tile"><span>User ID</span><strong>${user.id}</strong></div>
+                <div class="detail-tile"><span>Status</span><strong>${userStatusLabels[user.status] || user.status}</strong></div>
+                <div class="detail-tile"><span>Auth</span><strong>${user.auth}</strong></div>
+                <div class="detail-tile"><span>Reports</span><strong>${user.reports}</strong></div>
+              </div>
+              <h4>Required Checks</h4>
+              <ul class="user-action-checklist">
+                ${config.checklist.map(item => `<li>${item}</li>`).join("")}
+              </ul>
+            </aside>
+          </div>
+        </div>
+      `;
+      updateActiveNav();
+    }
+
+    function confirmUserAction(user, action) {
+      const config = userActionConfig[action];
+      if (!user || !config) return;
+      const beforeStatus = user.status;
+      if (config.type === "status") {
+        user.status = config.targetStatus;
+        updateUserActionsForStatus(user);
+      }
+      renderUserActionPage(user, action, true, config.success(user), beforeStatus);
+    }
+
+    function handleUserAction(user, action) {
+      if (!user || !action) return;
+      if (userActionConfig[action]) {
+        renderUserActionPage(user, action);
+        return;
+      }
+      renderUserDetailPage(user);
     }
 
     function renderUserRows() {
@@ -4148,6 +4474,13 @@
         const row = moduleData[activeModule].rows.find(entry => entry.id === id);
         activeRow = row;
         renderDetail(row);
+      }
+      const userActionConfirmButton = event.target.closest("[data-user-action-confirm]");
+      if (userActionConfirmButton) {
+        const id = userActionConfirmButton.dataset.userId;
+        const user = userManagementData.users.find(entry => entry.id === id);
+        confirmUserAction(user, userActionConfirmButton.dataset.userActionConfirm);
+        return;
       }
       const userActionButton = event.target.closest("[data-user-action]");
       if (userActionButton) {
