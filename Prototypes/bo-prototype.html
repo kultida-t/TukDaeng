@@ -3114,6 +3114,20 @@
     let userFilterOpen = false;
     const userListPageSize = 10;
 
+    function resetSessionViewState() {
+      expandedMenus.clear();
+      activeSub = "";
+      activeRow = null;
+      activeActivityFilter = "ทั้งหมด";
+      userListPage = 1;
+      userFilterOpen = false;
+      closeRowMenus();
+      document.querySelectorAll("[data-custom-select]").forEach(select => {
+        select.classList.remove("open");
+        select.querySelector("[data-custom-select-trigger]")?.setAttribute("aria-expanded", "false");
+      });
+    }
+
     function renderNav() {
       const nav = document.querySelector("#nav");
       nav.innerHTML = navGroups.map(group => `
@@ -4697,7 +4711,8 @@
       document.body.classList.remove("logged-out");
       showAuthError("");
       setAuthState("");
-      renderModule(activeModule);
+      resetSessionViewState();
+      renderModule("dashboard");
       scrollMainToTop();
     }
 
