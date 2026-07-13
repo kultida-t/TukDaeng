@@ -3697,7 +3697,7 @@
       "Reset password": "Reset password",
       Suspend: "ระงับบัญชีชั่วคราว",
       Ban: "ระงับบัญชีถาวร",
-      Restore: "กู้คืนสิทธิ์",
+      Restore: "ยกเลิกระงับบัญชีชั่วคราว",
       "Unban user": "Unban user",
       "Open Account Deletion": "เปิด Account Deletion",
       "Resend verification context": "ส่งข้อมูลยืนยันตัวตนอีกครั้ง",
@@ -3759,16 +3759,16 @@
         ]
       },
       Restore: {
-        title: "กู้คืนสิทธิ์บัญชี",
+        title: "ยกเลิกระงับบัญชีชั่วคราว",
         crumb: "Restore Account",
         type: "status",
         targetStatus: "Active",
         tone: "primary",
         summary: "คืนสถานะจาก Suspended เป็น Active หลังตรวจสอบแล้วว่ากลับมาใช้งานได้",
-        reasonLabel: "เหตุผลการกู้คืน",
+        reasonLabel: "เหตุผลการยกเลิกระงับบัญชีชั่วคราว",
         reasons: ["Review cleared", "Evidence resolved", "Support approved restore"],
         notePlaceholder: "สรุปผลการตรวจสอบและเงื่อนไขที่เคลียร์แล้ว",
-        confirmLabel: "ยืนยันกู้คืนสิทธิ์",
+        confirmLabel: "ยืนยันยกเลิกระงับบัญชีชั่วคราว",
         success: user => `${user.displayName} กลับมาใช้งานได้แล้ว`,
         checklist: [
           "ปลดบล็อก FO login/session ตาม policy",
