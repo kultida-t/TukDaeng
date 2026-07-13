@@ -1547,13 +1547,17 @@
       background: #f8fbff;
       color: #43546d;
       font-size: 12px;
-      font-weight: 800;
+      font-weight: 400;
     }
     .user-action-target strong {
       display: block;
       margin-bottom: 2px;
       color: #061426;
       font-size: 14px;
+      font-weight: 600;
+    }
+    .user-action-target span {
+      font-weight: 400;
     }
     .user-action-target .pill {
       flex: 0 0 auto;
@@ -3868,7 +3872,7 @@
           <div class="user-action-target">
             <div>
               <strong>${user.displayName}</strong>
-              <span>${user.id} · ${user.username} · ${getUserFullEmail(user)}</span>
+              <span>${user.id}</span>
             </div>
             ${userStatusPill(user.status)}
           </div>
