@@ -1283,6 +1283,14 @@
     .kv strong {
       font-weight: 400;
     }
+    .profile-link-code {
+      display: block;
+      overflow-wrap: anywhere;
+      color: #071b36;
+      font-family: "Segoe UI", Tahoma, Arial, sans-serif;
+      font-size: 12px;
+      line-height: 1.45;
+    }
     .report-brief {
       display: grid;
       gap: 8px;
@@ -3405,6 +3413,40 @@
       `;
     }
 
+    function getProfileSlug(user) {
+      const source = (user.username || user.displayName || user.id).replace(/^@/, "").trim().toLowerCase();
+      const asciiSlug = source
+        .normalize("NFKD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .replace(/[^a-z0-9]+/g, "-")
+        .replace(/^-+|-+$/g, "")
+        .replace(/-{2,}/g, "-");
+      return asciiSlug || `user-${user.id.replace(/[^0-9a-z]/gi, "").toLowerCase()}`;
+    }
+
+    function getProfileLink(user) {
+      return `https://app.tukdaeng.example/u/${getProfileSlug(user)}`;
+    }
+
+    function renderProfileLinkSection(user) {
+      const slug = getProfileSlug(user);
+      return `
+        <div class="detail-section">
+          <h4>Link Profile</h4>
+          <div class="detail-grid">
+            <div class="detail-tile">
+              <span>Public Profile URL</span>
+              <strong class="profile-link-code">${getProfileLink(user)}</strong>
+            </div>
+            <div class="detail-tile">
+              <span>Profile URL Name</span>
+              <strong>${slug}</strong>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
     function renderContactRows(user, tileClass = "detail-tile") {
       const contacts = getUserContactDisplayItems(user);
       return contacts.length
@@ -3600,6 +3642,8 @@
             </div>
           </div>
 
+          ${renderProfileLinkSection(user)}
+
           <div class="detail-section">
             <h4>Contact / Register</h4>
             <div class="detail-grid">
@@ -3660,6 +3704,7 @@
               <div class="detail-tile"><span>Last Active</span><strong>${user.lastActive}</strong></div>
             </div>
           </div>
+          ${renderProfileLinkSection(user)}
           <div class="detail-section">
             <h4>Contact / Register</h4>
             <div class="detail-grid two">
