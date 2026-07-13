@@ -1489,7 +1489,7 @@
     }
     .user-action-page {
       display: grid;
-      gap: 14px;
+      gap: 16px;
     }
     .user-action-head {
       display: flex;
@@ -1501,20 +1501,62 @@
     }
     .user-action-head h2 {
       margin: 0 0 6px;
-      font-size: 26px;
+      font-size: 24px;
       line-height: 1.1;
     }
     .user-action-head p {
       margin: 0;
       color: var(--muted);
       font-size: 13px;
-      font-weight: 700;
+      font-weight: 400;
+      line-height: 1.45;
+    }
+    .user-action-close {
+      width: 38px;
+      height: 38px;
+      min-height: 38px;
+      padding: 0;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex: 0 0 auto;
+      line-height: 0;
+    }
+    .user-action-close svg {
+      width: 18px;
+      height: 18px;
+      display: block;
     }
     .user-action-layout {
-      display: grid;
-      grid-template-columns: minmax(0, 1fr) 320px;
-      gap: 14px;
-      align-items: start;
+      display: block;
+    }
+    .user-action-layout > .detail-section {
+      margin: 0;
+      padding: 0;
+      border: 0;
+      background: transparent;
+    }
+    .user-action-target {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 10px 12px;
+      border: 1px solid var(--line);
+      border-radius: 7px;
+      background: #f8fbff;
+      color: #43546d;
+      font-size: 12px;
+      font-weight: 800;
+    }
+    .user-action-target strong {
+      display: block;
+      margin-bottom: 2px;
+      color: #061426;
+      font-size: 14px;
+    }
+    .user-action-target .pill {
+      flex: 0 0 auto;
     }
     .user-action-form {
       display: grid;
@@ -1540,34 +1582,16 @@
       padding: 9px 10px;
     }
     .user-action-form textarea {
-      min-height: 98px;
+      min-height: 86px;
       resize: vertical;
       line-height: 1.45;
     }
-    .user-action-checklist {
-      display: grid;
-      gap: 8px;
+    .user-action-impact {
       margin: 0;
-      padding: 0;
-      list-style: none;
     }
-    .user-action-checklist li {
-      display: flex;
-      gap: 8px;
-      align-items: flex-start;
-      color: #43546d;
-      font-size: 12px;
-      font-weight: 700;
-      line-height: 1.45;
-    }
-    .user-action-checklist li::before {
-      content: "";
-      width: 7px;
-      height: 7px;
-      margin-top: 5px;
-      border-radius: 999px;
-      background: var(--active);
-      flex: 0 0 auto;
+    .user-action-form > .user-detail-actions {
+      justify-content: flex-end;
+      padding-top: 2px;
     }
     .user-action-result {
       display: none;
@@ -1993,7 +2017,7 @@
     }
     .modal-body { padding: 16px; }
     .modal.user-action-modal {
-      width: min(920px, 100%);
+      width: min(720px, 100%);
       max-height: calc(100vh - 36px);
       display: grid;
       grid-template-rows: minmax(0, 1fr);
@@ -3617,7 +3641,7 @@
 
     const userActionConfig = {
       "Reset password": {
-        title: "ส่ง Reset Password Link",
+        title: "Reset Password Link",
         crumb: "Reset Password",
         type: "reset",
         tone: "primary",
@@ -3834,11 +3858,22 @@
               <h2 id="user-action-modal-title">${config.title}</h2>
               <p>${config.summary}</p>
             </div>
-            <button class="btn" type="button" data-user-action-modal-close>Close</button>
+            <button class="btn user-action-close" type="button" data-user-action-modal-close aria-label="Close modal" title="Close">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M18 6 6 18"></path>
+                <path d="m6 6 12 12"></path>
+              </svg>
+            </button>
+          </div>
+          <div class="user-action-target">
+            <div>
+              <strong>${user.displayName}</strong>
+              <span>${user.id} · ${user.username} · ${getUserFullEmail(user)}</span>
+            </div>
+            ${userStatusPill(user.status)}
           </div>
           <div class="user-action-layout">
             <div class="detail-section">
-              <h4>Action Form</h4>
               <div class="user-action-form">
                 <label>
                   ${config.reasonLabel}
@@ -3850,8 +3885,7 @@
                   Audit note
                   <textarea id="user-action-note" placeholder="${config.notePlaceholder}" ${completed ? "disabled" : ""}></textarea>
                 </label>
-                <div class="module-note"><strong>FO impact:</strong> ${getUserActionFoImpact(user, action)}</div>
-                <div class="warning-note"><strong>Suspend vs Ban:</strong> Suspend คือระงับชั่วคราวเพื่อ hold ระหว่างตรวจสอบและ Restore ได้ง่ายกว่า ส่วน Ban คือระงับถาวรกว่า ใช้เมื่อยืนยัน abuse/fraud แล้ว และการ Unban ต้องมี approval ชัดเจน</div>
+                <div class="module-note user-action-impact"><strong>FO impact:</strong> ${getUserActionFoImpact(user, action)}</div>
                 <div class="user-detail-actions">
                   <button class="user-detail-action-btn ${getUserActionConfirmClass(config)}" type="button" data-user-action-confirm="${action}" data-user-id="${user.id}" ${completed ? "disabled" : ""}>${config.confirmLabel}</button>
                   <button class="user-detail-action-btn" type="button" data-user-action-modal-close>${completed ? "Close" : "ยกเลิก"}</button>
@@ -3862,19 +3896,6 @@
                 </div>
               </div>
             </div>
-            <aside class="detail-section">
-              <h4>User Snapshot</h4>
-              <div class="detail-grid">
-                <div class="detail-tile"><span>User ID</span><strong>${user.id}</strong></div>
-                <div class="detail-tile"><span>Status</span><strong>${userStatusLabels[user.status] || user.status}</strong></div>
-                <div class="detail-tile"><span>Auth</span><strong>${user.auth}</strong></div>
-                <div class="detail-tile"><span>Reports</span><strong>${user.reports}</strong></div>
-              </div>
-              <h4>Required Checks</h4>
-              <ul class="user-action-checklist">
-                ${config.checklist.map(item => `<li>${item}</li>`).join("")}
-              </ul>
-            </aside>
           </div>
         </div>
       `;
