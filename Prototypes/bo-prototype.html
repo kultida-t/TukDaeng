@@ -3360,6 +3360,29 @@
       });
     }
 
+    function getUserAuthDetailRows(user, fullEmail) {
+      const isEmailAuth = user.auth === "Email";
+      const verification = user.status === "Pending Verification"
+        ? "Pending OTP / Email verification"
+        : isEmailAuth
+          ? "Verified by Email OTP"
+          : `Verified by ${user.auth} SSO`;
+
+      return [
+        { label: "Email", value: fullEmail },
+        { label: "Auth Method", value: isEmailAuth ? "Email / Password" : "SSO" },
+        { label: "SSO Provider", value: isEmailAuth ? "-" : user.auth },
+        { label: "Email Verification", value: verification }
+      ];
+    }
+
+    function renderContactAuthRows(user, fullEmail, tileClass = "detail-tile") {
+      const authRows = getUserAuthDetailRows(user, fullEmail)
+        .map(item => `<div class="${tileClass}"><span>${item.label}</span><strong>${item.value}</strong></div>`)
+        .join("");
+      return `${authRows}${renderContactRows(user, tileClass)}`;
+    }
+
     function getAssetSummary(user) {
       if (user.status === "Deleted / Archived") return { Sale: 0, Show: 0, Hide: 0, Sold: 0, "Removed / Hidden": user.assets };
       const sale = Math.max(0, Math.ceil(user.assets * 0.45));
@@ -3984,11 +4007,9 @@
           ${renderProfileLinkSection(user)}
 
           <div class="detail-section">
-            <h4>Contact / Register</h4>
+            <h4>Contact / Auth</h4>
             <div class="detail-grid">
-              <div class="kv"><span>Register Method</span><strong>${user.verification}</strong></div>
-              <div class="kv"><span>Email</span><strong>${fullEmail}</strong></div>
-              ${renderContactRows(user, "kv")}
+              ${renderContactAuthRows(user, fullEmail, "kv")}
             </div>
           </div>
 
@@ -4045,11 +4066,9 @@
           </div>
           ${renderProfileLinkSection(user)}
           <div class="detail-section">
-            <h4>Contact / Register</h4>
+            <h4>Contact / Auth</h4>
             <div class="detail-grid two">
-              <div class="detail-tile"><span>Register Method</span><strong>${user.verification}</strong></div>
-              <div class="detail-tile"><span>Email</span><strong>${fullEmail}</strong></div>
-              ${renderContactRows(user)}
+              ${renderContactAuthRows(user, fullEmail)}
             </div>
           </div>
           <div class="detail-section">
