@@ -3118,7 +3118,6 @@
         { id: "RPU-505", category: "Profile", user: "horology.king", userId: "U-1002", accountStatus: "Suspended", reason: "พบโปรไฟล์ซ้ำและพฤติกรรมผู้ขายที่ต้องตรวจสอบ", reporters: 5, priority: "สูง", status: "In Review", reference: "Profile ID PRF-1002", source: "User Detail", waiting: "22 ชม.", evidence: ["รูปโปรไฟล์คล้ายบัญชีอื่น", "ข้อความแนะนำตัวผู้ขายซ้ำหลายจุด"], recommendation: "ตรวจ reference ต้นทางก่อนทำ action เพิ่มกับบัญชี", actionHistory: "เริ่มตรวจสอบโดย Somchai Admin และยังไม่มีการเปลี่ยนสถานะล่าสุด" },
         { id: "RPU-512", category: "Asset", user: "Crown Time BKK", userId: "U-1017", accountStatus: "Active", reason: "มีรายงานสินทรัพย์ซ้ำและข้อมูลประกาศคล้ายรายการอื่น", reporters: 4, priority: "สูง", status: "Open", reference: "Asset Group AST-DUP-1017", source: "Asset Detail", waiting: "20 ชม.", evidence: ["รูปสินทรัพย์ซ้ำกับรายการอื่น", "ข้อความประกาศถูกใช้ซ้ำ"], recommendation: "เทียบรูปสินค้าและหลักฐาน provenance ก่อนทำ action กับบัญชี", actionHistory: "เปิด report ใหม่ และยังไม่มีการเปลี่ยนสถานะบัญชี" },
         { id: "RPU-518", category: "Offer / Chat", user: "Omega Club TH", userId: "U-1088", accountStatus: "Active", reason: "มีข้อพิพาทว่าสภาพสินทรัพย์ไม่ตรงกับที่ตกลงในข้อเสนอซื้อ", reporters: 3, priority: "สูง", status: "Open", reference: "Offer OFR-501", source: "Offer / Chat", waiting: "18 ชม.", evidence: ["ประวัติแชท", "ข้อพิพาทจากข้อเสนอซื้อ"], recommendation: "เปิดบริบท Offer / Chat ก่อนปิด report", actionHistory: "เปิด report ใหม่ และรอตรวจสอบ reference ต้นทาง" },
-        { id: "RPU-522", category: "Authentication", user: "Vintage Vault BKK", userId: "U-1055", accountStatus: "Pending Verification", reason: "บัญชียังยืนยันอีเมลไม่สำเร็จ", reporters: 1, priority: "กลาง", status: "Open", reference: "Signup AUTH-772", source: "Authentication", waiting: "6 ชม.", evidence: ["ยังไม่ได้ยืนยัน Email OTP"], recommendation: "ตรวจ signup/auth log เพราะยังไม่มี public profile ในระบบ", actionHistory: "ยังไม่มี admin action" },
         { id: "RPU-530", category: "Account Deletion", user: "Archive Collector", userId: "U-1104", accountStatus: "Deletion Requested", reason: "มีคำขอลบบัญชีแต่ยังมี report ที่ต้องตรวจสอบก่อน", reporters: 1, priority: "กลาง", status: "In Review", reference: "DEL-033", source: "Account Deletion", waiting: "10 ชม.", evidence: ["มีข้อเสนอซื้อค้างอยู่", "มี report ผูกกับโปรไฟล์"], recommendation: "เคลียร์ reference ต้นทางก่อน archive หรือ anonymize บัญชี", actionHistory: "เปิด dependency check แล้ว และยังไม่อนุมัติการลบบัญชี" },
         { id: "RPU-541", category: "Chat", user: "Rolex Rama9", userId: "U-1186", accountStatus: "Suspended", reason: "มีรายงานซ้ำเรื่องข้อความแชทที่ไม่เหมาะสม", reporters: 6, priority: "สูง", status: "Cleared", reference: "CHT-090", source: "Offer / Chat", waiting: "0 ชม.", evidence: ["ประวัติแชท"], recommendation: "ดำเนินการกับบัญชีแล้ว ให้เก็บ audit trail ไว้", actionHistory: "ปิด report แล้วหลังระงับบัญชีและบันทึก audit note" },
         { id: "RPU-560", category: "Profile", user: "The Collector", userId: "U-1120", accountStatus: "Banned", reason: "ยืนยันพฤติกรรมละเมิดซ้ำและปิดเคสหลังแบนบัญชี", reporters: 8, priority: "สูง", status: "Cleared", reference: "Profile ID PRF-1120", source: "Reported Users", waiting: "0 ชม.", evidence: ["รายงานพฤติกรรมละเมิดซ้ำ", "มี admin action แบนบัญชีแล้ว"], recommendation: "คงสถานะ report เป็นปิดแล้ว และเก็บบันทึกการดำเนินการสำหรับกรณีขอยกเลิกระงับบัญชีถาวร", actionHistory: "ปิด report แล้วหลังแบนบัญชี และบัญชียังคงถูกแบนอยู่" }
@@ -3309,6 +3308,21 @@
       "Cleared": "ปิดแล้ว"
     };
 
+    const reportPriorityLabels = {
+      "สูง": "High",
+      "กลาง": "Medium",
+      "ปกติ": "Low"
+    };
+
+    function getReportPriorityLabel(priority) {
+      return reportPriorityLabels[priority] || priority;
+    }
+
+    function getReportPriorityRank(priority) {
+      const priorityRank = { "สูง": 3, "กลาง": 2, "ปกติ": 1 };
+      return priorityRank[priority] || 0;
+    }
+
     function getUserSummaryStats() {
       const users = userManagementData.users;
       const countStatus = status => users.filter(user => user.status === status).length;
@@ -3416,9 +3430,9 @@
           ])}</div>
           <div class="user-advanced-filter">${customSelect("report-priority-filter", "Filter priority", [
             { value: "", label: "ทุก priority" },
-            { value: "สูง", label: "สูง" },
-            { value: "กลาง", label: "กลาง" },
-            { value: "ปกติ", label: "ปกติ" }
+            { value: "สูง", label: "High" },
+            { value: "กลาง", label: "Medium" },
+            { value: "ปกติ", label: "Low" }
           ])}</div>
           <div class="user-advanced-filter">${customSelect("report-sort", "Sort reports", [
             { value: "oldest", label: "รอนานสุดก่อน" },
@@ -4200,11 +4214,10 @@
       const status = document.querySelector("#report-status-filter")?.value || "";
       const priority = document.querySelector("#report-priority-filter")?.value || "";
       const sort = document.querySelector("#report-sort")?.value || "oldest";
-      const priorityRank = { "สูง": 3, "กลาง": 2, "ปกติ": 1 };
       const sorted = [...userManagementData.reports].filter(report => {
         return (!q || getUserSearchText(report).includes(q)) && (!status || report.status === status) && (!priority || report.priority === priority);
       }).sort((a, b) => {
-        if (sort === "urgent") return priorityRank[b.priority] - priorityRank[a.priority];
+        if (sort === "urgent") return getReportPriorityRank(b.priority) - getReportPriorityRank(a.priority);
         if (sort === "reporters") return b.reporters - a.reporters;
         if (sort === "status") return a.status.localeCompare(b.status);
         return parseInt(b.waiting, 10) - parseInt(a.waiting, 10);
@@ -4222,7 +4235,7 @@
               <div class="user-card-tags">
                 ${userStatusPill(report.status)}
                 <span class="user-card-tag asset-tag">${report.reporters} reporters</span>
-                ${statusPill(report.priority, report.priority)}
+                ${statusPill(getReportPriorityLabel(report.priority), report.priority)}
                 <div class="user-card-meta">
                   <div class="user-card-meta-item"><span>User</span><strong>${report.user}</strong></div>
                   <div class="user-card-meta-item"><span>Waiting</span><strong>${report.waiting}</strong></div>
@@ -4232,7 +4245,7 @@
               <div data-label="Status">${userStatusPill(report.status)}</div>
               <div data-label="Report Detail"><div class="main-text">${report.category}</div><div class="muted">${report.reason}</div></div>
               <div data-label="Reporters"><div class="main-text">${report.reporters}</div></div>
-              <div data-label="Priority">${statusPill(report.priority, report.priority)}</div>
+              <div data-label="Priority">${statusPill(getReportPriorityLabel(report.priority), report.priority)}</div>
               <div data-label="Source"><div class="main-text">${report.source}</div></div>
               <div class="user-row-actions">
                 <button class="panel-action" type="button" data-report-action="${report.id}">${iconSvg.eye}View</button>
@@ -4406,7 +4419,7 @@
                 <h2>${report.user}</h2>
                 <div class="chips">
                   ${userStatusPill(report.status)}
-                  ${statusPill(report.priority, report.priority)}
+                  ${statusPill(getReportPriorityLabel(report.priority), report.priority)}
                   <span class="chip">${report.reporters} reporters</span>
                 </div>
               </div>
