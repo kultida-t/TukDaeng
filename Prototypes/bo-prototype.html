@@ -3386,7 +3386,7 @@
       const mode = subLabel === "Report User" || subLabel === "Reported Users" ? "reports" : "list";
       const isReports = mode === "reports";
       const title = isReports ? "Reported Users" : "User List";
-      document.body.classList.toggle("user-list-mode", !isReports);
+      document.body.classList.add("user-list-mode");
       document.body.classList.remove("user-detail-mode");
       activeRow = isReports ? userManagementData.reports[0] : userManagementData.users[0];
       document.querySelector("#crumb").textContent = `การดำเนินงาน / User Management / ${title}`;
@@ -3410,27 +3410,27 @@
         </article>
       `).join("");
       document.querySelector(".filters").innerHTML = isReports ? `
-        <div class="user-filter-bar report-mode" data-filter-open="${userFilterOpen}">
+        <div class="user-filter-bar" data-filter-open="${userFilterOpen}">
           <input class="field search" id="user-search" type="search" placeholder="ค้นหา report ID, user ID, display name, reason หรือ reference" />
-          <select class="field user-advanced-filter" id="report-status-filter" aria-label="Filter report status">
-            <option value="">ทุก report status</option>
-            <option value="Open">รอตรวจ</option>
-            <option value="In Review">กำลังตรวจ</option>
-            <option value="Cleared">ปิดแล้ว</option>
-          </select>
-          <select class="field user-advanced-filter" id="report-priority-filter" aria-label="Filter priority">
-            <option value="">ทุก priority</option>
-            <option value="สูง">สูง</option>
-            <option value="กลาง">กลาง</option>
-            <option value="ปกติ">ปกติ</option>
-          </select>
-          <select class="field user-advanced-filter" id="report-sort" aria-label="Sort reports">
-            <option value="oldest">รอนานสุดก่อน</option>
-            <option value="urgent">Urgent ก่อน</option>
-            <option value="reporters">จำนวน reporter</option>
-            <option value="status">สถานะ</option>
-          </select>
-          <button class="btn icon user-advanced-filter" type="button" id="user-reset" title="รีเซ็ตค่าทั้งหมด" aria-label="รีเซ็ตค่าทั้งหมด">${iconSvg.refresh}</button>
+          <div class="user-advanced-filter">${customSelect("report-status-filter", "Filter report status", [
+            { value: "", label: "ทุก report status" },
+            { value: "Open", label: "รอตรวจ" },
+            { value: "In Review", label: "กำลังตรวจ" },
+            { value: "Cleared", label: "ปิดแล้ว" }
+          ])}</div>
+          <div class="user-advanced-filter">${customSelect("report-priority-filter", "Filter priority", [
+            { value: "", label: "ทุก priority" },
+            { value: "สูง", label: "สูง" },
+            { value: "กลาง", label: "กลาง" },
+            { value: "ปกติ", label: "ปกติ" }
+          ])}</div>
+          <div class="user-advanced-filter">${customSelect("report-sort", "Sort reports", [
+            { value: "oldest", label: "รอนานสุดก่อน" },
+            { value: "urgent", label: "Urgent ก่อน" },
+            { value: "reporters", label: "จำนวน reporter" },
+            { value: "status", label: "สถานะ" }
+          ], "oldest")}</div>
+          <button class="btn filter-reset user-advanced-filter" type="button" id="user-reset" title="รีเซ็ตค่าทั้งหมด" aria-label="รีเซ็ตค่าทั้งหมด">${iconSvg.refresh}<span>รีเซ็ตค่าทั้งหมด</span></button>
         </div>
       ` : `
         <div class="user-filter-bar" data-filter-open="${userFilterOpen}">
@@ -3462,7 +3462,7 @@
       document.querySelector("#cards").innerHTML = "";
       if (isReports) {
         renderReportedUserRows();
-        renderReportedUserDetail(activeRow);
+        document.querySelector("#detail").innerHTML = "";
       } else {
         renderUserRows();
         document.querySelector("#detail").innerHTML = "";
@@ -4213,21 +4213,50 @@
         if (sort === "status") return a.status.localeCompare(b.status);
         return parseInt(b.waiting, 10) - parseInt(a.waiting, 10);
       });
+      const pageCount = Math.max(1, Math.ceil(sorted.length / userListPageSize));
+      userListPage = Math.min(userListPage, pageCount);
+      const start = (userListPage - 1) * userListPageSize;
+      const pageRows = sorted.slice(start, start + userListPageSize);
       document.querySelector("#table").innerHTML = `
         <div class="user-table">
-          <div class="user-row report-row head"><div>Report</div><div>Reported User</div><div>Reporters</div><div>Priority</div><div>Status</div><div>Action</div></div>
-          ${sorted.map(report => `
-            <div class="user-row report-row" data-report-id="${report.id}">
-              <div class="user-cell-primary" data-label="Report"><div class="main-text">${report.id} · ${report.category}</div><div class="muted">${report.reason}</div><div class="chips"><span class="chip">${report.reference}</span><span class="chip">รอ ${report.waiting}</span></div></div>
-              <div data-label="Reported User"><div class="main-text">${report.user}</div><div class="muted">${report.userId} · ${report.accountStatus}</div></div>
-              <div data-label="Reporters"><div class="main-text">${report.reporters}</div><div class="muted">masked identities</div></div>
-              <div data-label="Priority">${statusPill(report.priority, report.priority)}</div>
+          <div class="user-row head"><div>User</div><div>Status</div><div>Report</div><div>Reporters</div><div>Priority</div><div>Source</div><div>Action</div></div>
+          ${pageRows.map(report => `
+            <div class="user-row" data-report-id="${report.id}">
+              <div class="user-cell-primary" data-label="User"><div class="main-text">${report.user}</div></div>
+              <div class="user-card-tags">
+                ${userStatusPill(report.status)}
+                <span class="user-card-tag asset-tag">${report.reporters} reporters</span>
+                ${statusPill(report.priority, report.priority)}
+                <div class="user-card-meta">
+                  <div class="user-card-meta-item"><span>Report</span><strong>${report.id} · ${report.category}</strong></div>
+                  <div class="user-card-meta-item"><span>Waiting</span><strong>${report.waiting}</strong></div>
+                </div>
+              </div>
               <div data-label="Status">${userStatusPill(report.status)}</div>
-              <div><button class="panel-action" type="button" data-report-action="${report.id}">${iconSvg.eye}ดูรายละเอียด</button></div>
+              <div data-label="Report"><div class="main-text">${report.id} · ${report.category}</div><div class="muted">${report.reason}</div></div>
+              <div data-label="Reporters"><div class="main-text">${report.reporters}</div></div>
+              <div data-label="Priority">${statusPill(report.priority, report.priority)}</div>
+              <div data-label="Source"><div class="main-text">${report.source}</div></div>
+              <div class="user-row-actions">
+                <button class="panel-action" type="button" data-report-action="${report.id}">${iconSvg.eye}View</button>
+                <details class="row-menu">
+                  <summary title="Report actions">...</summary>
+                  <div class="row-menu-list">
+                    <button type="button" data-report-action="${report.id}">ดูรายละเอียด</button>
+                  </div>
+                </details>
+              </div>
             </div>
-          `).join("") || `<div class="detail-empty">ไม่พบ report ตาม filter ที่เลือก</div>`}
+          `).join("") || `<div class="detail-empty user-empty">ไม่พบ report ตาม filter ที่เลือก</div>`}
         </div>
-        <div class="footer-range"><span>แสดง ${sorted.length} reports หลัง filter</span><span>SLA 24 ชั่วโมง</span></div>
+        <div class="footer-range">
+          <span>แสดง ${sorted.length ? `${start + 1}-${Math.min(start + userListPageSize, sorted.length)}` : "0"} จาก ${sorted.length}</span>
+          <div class="pager">
+            <button class="btn" type="button" data-user-page="prev" ${userListPage <= 1 ? "disabled" : ""}>ก่อนหน้า</button>
+            ${Array.from({ length: pageCount }, (_, index) => `<button class="btn ${index + 1 === userListPage ? "active" : ""}" type="button" data-user-page="${index + 1}">${index + 1}</button>`).join("")}
+            <button class="btn" type="button" data-user-page="next" ${userListPage >= pageCount ? "disabled" : ""}>ถัดไป</button>
+          </div>
+        </div>
       `;
     }
 
@@ -4356,40 +4385,57 @@
     }
 
     function renderReportedUserDetail(report) {
-      const detail = document.querySelector("#detail");
       if (!report) {
-        detail.innerHTML = `<div class="detail-empty">เลือก report เพื่อดูรายละเอียดการตรวจ</div>`;
+        renderUserManagement("Reported Users");
         return;
       }
-      detail.innerHTML = `
-        <div class="panel-head">
-          <div>
-            <h2>Report Detail</h2>
-            <p>${report.id} · reporter identity masked</p>
-          </div>
-        </div>
-        <div class="detail-body">
-          <h3 class="detail-title">${report.reason}</h3>
-          <p class="muted">${report.category} · ${report.user} · ${report.userId}</p>
-          <div class="chips">
-            ${userStatusPill(report.status)}
-            ${statusPill(report.priority, report.priority)}
-            <span class="chip">${report.reporters} reporters</span>
+      document.body.classList.add("user-detail-mode");
+      document.body.classList.remove("user-list-mode");
+      activeSub = "Reported Users";
+      activeRow = report;
+      document.querySelector("#crumb").textContent = `การดำเนินงาน / User Management / Report Detail / ${report.id}`;
+      document.querySelector("#page-title").textContent = "Report Detail";
+      document.querySelector("#page-meta").textContent = "";
+      document.querySelector("#panel-title").textContent = report.user;
+      document.querySelector("#panel-subtitle").textContent = `${report.id} · ${report.category} · reporter identity masked`;
+      document.querySelector(".filters").innerHTML = "";
+      document.querySelector("#summary-grid").innerHTML = "";
+      document.querySelector("#cards").innerHTML = "";
+      document.querySelector("#table").innerHTML = `
+        <div class="user-detail-page">
+          <div class="user-detail-head">
+            <div class="user-detail-title">
+              <div>
+                <h2>${report.user}</h2>
+                <div class="chips">
+                  ${userStatusPill(report.status)}
+                  ${statusPill(report.priority, report.priority)}
+                  <span class="chip">${report.reporters} reporters</span>
+                </div>
+              </div>
+            </div>
+            <button class="btn" type="button" data-back-reported-users>กลับไป Reported Users</button>
           </div>
 
           <div class="detail-section">
             <h4>Reported Reference</h4>
-            <div class="detail-grid">
-              <div class="kv"><span>Reference</span><strong>${report.reference}</strong></div>
-              <div class="kv"><span>Source Module</span><strong>${report.source}</strong></div>
-              <div class="kv"><span>Account Status</span><strong>${report.accountStatus}</strong></div>
+            <div class="detail-grid two">
+              <div class="detail-tile"><span>Report ID</span><strong>${report.id}</strong></div>
+              <div class="detail-tile"><span>User ID</span><strong>${report.userId}</strong></div>
+              <div class="detail-tile"><span>Reference</span><strong>${report.reference}</strong></div>
+              <div class="detail-tile"><span>Source Module</span><strong>${report.source}</strong></div>
+              <div class="detail-tile"><span>Account Status</span><strong>${report.accountStatus}</strong></div>
+              <div class="detail-tile"><span>Waiting</span><strong>${report.waiting}</strong></div>
             </div>
           </div>
 
           <div class="detail-section">
             <h4>Evidence / Context</h4>
-            <div class="detail-tile"><span>FO reporter note</span><div class="chips">${report.evidence.map(item => `<span class="chip">${item}</span>`).join("")}</div></div>
-            <div class="detail-tile"><span>Recommendation</span>${report.recommendation}</div>
+            <div class="detail-grid">
+              <div class="detail-tile"><span>Reason</span><strong>${report.reason}</strong></div>
+              <div class="detail-tile"><span>FO reporter note</span><div class="chips">${report.evidence.map(item => `<span class="chip">${item}</span>`).join("")}</div></div>
+              <div class="detail-tile"><span>Recommendation</span>${report.recommendation}</div>
+            </div>
           </div>
 
           <div class="detail-section">
@@ -4402,6 +4448,8 @@
           ${report.accountStatus === "Deletion Requested" ? `<div class="warning-note"><strong>Deletion dependency:</strong> ต้องตรวจ source report ก่อน แล้วจึง route ไป Account Deletion ห้าม delete/archive ทันทีจากคิวนี้</div>` : ""}
         </div>
       `;
+      document.querySelector("#detail").innerHTML = "";
+      updateActiveNav();
     }
 
     function renderModule(id, subLabel = "", displaySubLabel = subLabel) {
@@ -4711,7 +4759,8 @@
         select.querySelector("[data-custom-select-trigger]").setAttribute("aria-expanded", "false");
         if (select.hasAttribute("data-custom-select-silent")) return;
         userListPage = 1;
-        renderUserRows();
+        if (activeModule === "users" && (activeSub === "Report User" || activeSub === "Reported Users")) renderReportedUserRows();
+        else renderUserRows();
         return;
       }
       const customTrigger = event.target.closest("[data-custom-select-trigger]");
@@ -4802,9 +4851,10 @@
         renderUserDetailPage(user);
         return;
       }
-      const reportButton = event.target.closest("[data-report-action], .user-row[data-report-id]");
-      if (reportButton) {
-        const id = reportButton.dataset.reportAction || reportButton.dataset.reportId;
+      const reportActionButton = event.target.closest("[data-report-action]");
+      const reportRow = event.target.closest(".user-row[data-report-id]");
+      if (reportActionButton || (reportRow && !event.target.closest(".row-menu, button, a, input, select, [data-custom-select]"))) {
+        const id = reportActionButton?.dataset.reportAction || reportRow.dataset.reportId;
         const report = userManagementData.reports.find(entry => entry.id === id);
         if (document.body.classList.contains("user-detail-mode")) {
           renderModule("users", "Reported Users");
@@ -4836,7 +4886,13 @@
         if (target === "prev") userListPage = Math.max(1, userListPage - 1);
         else if (target === "next") userListPage += 1;
         else userListPage = Number(target) || 1;
-        renderUserRows();
+        if (activeModule === "users" && (activeSub === "Report User" || activeSub === "Reported Users")) renderReportedUserRows();
+        else renderUserRows();
+        return;
+      }
+      const backReportedUsers = event.target.closest("[data-back-reported-users]");
+      if (backReportedUsers) {
+        renderModule("users", "Reported Users", "Reported Users");
         return;
       }
       const backUserList = event.target.closest("[data-back-user-list]");
