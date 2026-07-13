@@ -3699,7 +3699,7 @@
       Ban: "ระงับบัญชีถาวร",
       Restore: "ยกเลิกระงับบัญชีชั่วคราว",
       "Unban user": "ยกเลิกระงับบัญชีถาวร",
-      "Open Account Deletion": "เปิด Account Deletion",
+      "Open Account Deletion": "ดูคำขอลบบัญชี",
       "Resend verification context": "ส่งข้อมูลยืนยันตัวตนอีกครั้ง",
       "View archived summary": "ดู Archived Summary"
     };
@@ -3994,8 +3994,25 @@
       showSuccessToast(config.success(user));
     }
 
+    function openAccountDeletionRequest(user) {
+      const deletionId = user?.support?.startsWith("DEL-") ? user.support : "";
+      renderModule("deletions", "Requests", "Requests");
+      if (deletionId) {
+        document.querySelector("#search").value = deletionId;
+        const deletionRow = moduleData.deletions.rows.find(row => row.id === deletionId);
+        activeRow = deletionRow || moduleData.deletions.rows[0];
+        renderRows();
+        renderDetail(activeRow);
+      }
+      scrollMainToTop();
+    }
+
     function handleUserAction(user, action) {
       if (!user || !action) return;
+      if (action === "Open Account Deletion") {
+        openAccountDeletionRequest(user);
+        return;
+      }
       if (userActionConfig[action]) {
         renderUserActionPage(user, action);
         return;
