@@ -26,7 +26,7 @@
 
 # 2. วัตถุประสงค์
 
-User Management ใช้ให้ Admin ตรวจสอบและจัดการบัญชีผู้ใช้ FO ในมุมงานปฏิบัติการ งานช่วยเหลือ และความปลอดภัย/ความน่าเชื่อถือ โดยต้องรองรับการค้นหาผู้ใช้ การตรวจโปรไฟล์ ประวัติการเข้าสู่ระบบ วิธีล็อกอิน สถานะรายงาน การระงับ/แบนบัญชี การรีเซ็ตรหัสผ่านเฉพาะบัญชี Email/Password การ route งานลบ/เก็บถาวรไป Account Deletion workflow และการ export ตามสิทธิ์ผ่าน workflow ที่ควบคุม permission
+User Management ใช้ให้ Admin ตรวจสอบและจัดการบัญชีผู้ใช้ FO ในมุมงานปฏิบัติการ งานช่วยเหลือ และความปลอดภัย/ความน่าเชื่อถือ โดยยึด Prototype ปัจจุบันเป็น baseline ของ Phase 1 ได้แก่ การค้นหา/filter/sort/pagination ผู้ใช้ การตรวจโปรไฟล์ วิธีล็อกอิน สถานะรายงาน การระงับ/แบน/กู้คืนบัญชี การรีเซ็ตรหัสผ่านเฉพาะบัญชี Email/Password การ route งานลบ/เก็บถาวรไป Account Deletion workflow และการ export ตามสิทธิ์ผ่าน workflow ที่ควบคุม permission แยกจาก User List
 
 โมดูลนี้ต้องไม่สร้างสิทธิ์หรือประเภทผู้ใช้แบบ Admin ใน FO ผู้ใช้ FO ทุกคนยังเป็นประเภทบัญชีเดียวคือ `User` แต่ BO สามารถเปลี่ยนสถานะบัญชีเพื่อควบคุมการเข้าสู่ระบบและการแสดงผลสาธารณะตาม policy
 
@@ -38,14 +38,14 @@ User Management ใช้ให้ Admin ตรวจสอบและจัด
 - การค้นหา/filter/sort/pagination
 - รายละเอียดโปรไฟล์ผู้ใช้
 - การแสดงวิธีล็อกอิน: Email, Apple, Google
-- ประวัติการเข้าสู่ระบบ
+- บริบท login/activity ล่าสุดใน mock data และ FO impact note ตามที่ Prototype ปัจจุบันแสดง
 - สถานะผู้ใช้: `Pending Verification`, `Active`, `Suspended`, `Banned`, `Deletion Requested`, `Deleted / Archived`
 - บริบทสำหรับ review ผู้ใช้ที่ถูกรายงาน
 - การ `Suspend` / `Ban` / `Unsuspend` / `Unban`
 - การรีเซ็ตรหัสผ่านเฉพาะบัญชี Email/Password
 - การ route งาน soft delete / archive ไป Account Deletion workflow ตามสิทธิ์ โดย User List ไม่ archive/delete โดยตรง
 - Policy/permission สำหรับ export user data โดยไม่เพิ่มปุ่ม export ใน User List ใน Phase 1
-- Audit log สำหรับทุก mutation และการเข้าถึงข้อมูล sensitive
+- Audit note สำหรับ action สำคัญใน Prototype และ audit log จริงสำหรับ production/API
 - การ map ผลกระทบต่อ FO
 - Layout รายการ/รายละเอียด/action ที่รองรับ responsive
 
@@ -68,9 +68,9 @@ BO มีประเภทบัญชีผู้ดูแลเพียง�
 | --- | --- |
 | ดูข้อมูลผู้ใช้ | Admin ดู User List และ User Detail ได้เมื่อได้รับสิทธิ์เข้าใช้งาน User Management module |
 | Reset password | ทำได้เฉพาะบัญชีที่สมัครด้วย Email/Password เท่านั้น และต้องบันทึก audit log ทุกครั้ง |
-| Suspend / ban / unban | ต้องมีหน้าจอยืนยัน action, ระบุ reason, แสดงผลกระทบต่อ FO ให้ Admin เห็นก่อนยืนยัน และบันทึก audit log |
+| Suspend / ban / unban | Prototype มี action modal พร้อม reason control, note, FO impact และ confirmation; production/API ต้อง enforce reason และบันทึก audit log |
 | Soft delete / archive | ต้องมีหน้าจอยืนยัน action, ระบุ reason, ตรวจสอบ retention/dependency ที่เกี่ยวข้อง และบันทึก audit log |
-| ข้อมูล sensitive | ต้อง mask เป็นค่าเริ่มต้น เช่น email, phone, IP หรือ device detail การกดดูข้อมูลเต็มต้องมี policy รองรับและต้องถูกบันทึก audit |
+| ข้อมูล sensitive | Prototype ปัจจุบันแสดง email เต็มใน User Detail และ contact ที่ผู้ใช้กรอกไว้จริงเพื่อ review UX; production/API ต้อง mask ตาม permission เช่น email, phone, IP หรือ device detail และการกดดูข้อมูลเต็มต้องมี policy รองรับและต้องถูกบันทึก audit |
 | Export user data | ต้องอยู่ภายใต้ export policy, จำกัด scope ของข้อมูลที่ export, ระบุ reason เมื่อมีข้อมูล sensitive และบันทึก audit event |
 
 หมายเหตุ: สิทธิ์ในตารางนี้เป็น baseline สำหรับ Phase 1 หากอนาคตต้องมี role หรือ permission level ที่ละเอียดขึ้น ให้เพิ่มผ่าน policy กลางของ BO ไม่ควรเพิ่ม account type ใหม่ใน FO user model
@@ -88,40 +88,42 @@ BO มีประเภทบัญชีผู้ดูแลเพียง�
 
 ข้อกำหนด:
 
-- Action สำคัญ เช่น reset password, suspend/ban/restore ต้องอยู่ใน row action menu หรือ structured detail/action view และต้องมี confirmation/reason/audit ชัดเจน
+- Action สำคัญ เช่น reset password, suspend/ban/restore ต้องอยู่ใน row action menu หรือ structured detail/action view และ Prototype ต้องมี confirmation UI, reason control, FO impact และ audit/action note ชัดเจน
 - Mobile/tablet ต้องไม่ใช้ bottom sheet เป็น requirement ของ Prototype ปัจจุบัน ให้ตรวจ row action menu และ structured action view ว่าใช้งานได้และข้อความไม่ล้น
 - Filter บน mobile/tablet ใช้ toggle ซ่อน/แสดง advanced filter ใน list panel ตาม Prototype ไม่ใช่ drawer แยก
-- ประวัติการเข้าสู่ระบบและรายการ activity ต้องอ่านได้บนจอเล็กโดยข้อมูลสำคัญไม่ล้นหน้าจอ
-- การ mask ข้อมูล sensitive ต้องชัดเจนและไม่ทำให้ layout พัง
+- บริบท login/activity ล่าสุดที่ Prototype แสดงใน row/detail ต้องอ่านได้บนจอเล็กโดยข้อมูลสำคัญไม่ล้นหน้าจอ
+- การแสดงข้อมูล sensitive ใน production ต้องมี masked/unmasked state ที่ไม่ทำให้ layout พัง; Prototype ปัจจุบันล็อกไว้ที่ state เห็นข้อมูลสำหรับ review
 
 # 6. รายการผู้ใช้
 
 รายการผู้ใช้ต้องรองรับตาม Prototype ปัจจุบัน:
 
-- ค้นหาจาก display name, username, email แบบ masked, auth method, verification state, account status และ internal User ID/reference ในกรณีที่ทีม support ได้ ID มาจาก report หรือ audit log
+- ค้นหาจาก display name, username, email แบบ masked, auth method, verification state, account status, support/latest context และ internal User ID/reference ในกรณีที่ทีม support ได้ ID มาจาก report หรือ audit log
 - Filter ตามสถานะบัญชีผ่าน custom dropdown
 - Filter ตามวิธีล็อกอินผ่าน custom dropdown
 - Sort mode ผ่าน custom dropdown ได้แก่ last active, date joined, report count และ asset count
 - Pagination แบบ server-side โดยแสดง 10 user ต่อหน้าหลัง apply search/filter/sort
 - Reset utility ใน list header ต้องล้าง search/filter/sort/page และคืน list เป็นค่าเริ่มต้น
 - Date joined, last active, report count และ asset count ใช้เป็น sort mode ตาม Prototype ปัจจุบัน ไม่ใช่ filter แยกบนหน้าจอ User List
-- Reported context แสดงผ่าน report count, detail และ `Reported Users` submenu; User List ปัจจุบันไม่มี reported-status filter แยก
+- Reported context อยู่ใน mock data และเห็นชัดใน User Detail/Reported Users; User List table ปัจจุบันไม่แสดง report count column และไม่มี reported-status filter แยก
 - User List ใน Phase 1 ไม่ต้องมีปุ่ม export โดยตรง หากต้อง export ข้อมูลผู้ใช้ให้ใช้ workflow ที่ควบคุม permission ใน Reports/export หรือ system-level export แยกต่างหาก
 
 ## Column / Field สำคัญ
 
 | Field | ตารางบน Desktop | Card บน Mobile |
 | --- | --- | --- |
-| User ID | ไม่แสดงใน list; ใช้ได้ในหน้ารายละเอียดและการค้นหาสำหรับ support | แสดงเฉพาะในรายละเอียด |
+| User ID | ไม่แสดงใน list; ใช้ได้ในการค้นหาและแสดงใน User Detail | แสดงเฉพาะในรายละเอียด |
 | Display Name | แสดง | ข้อมูลหลัก |
-| Email | แสดงแบบ masked ตาม permission | ข้อมูลรอง / masked |
+| Username | ไม่แสดงเป็น column แยกใน list; ใช้ค้นหาและแสดงใน User Detail | แสดงในรายละเอียด |
+| Email | ไม่แสดงใน list ปัจจุบัน; ใช้ค้นหาแบบ masked และแสดงเต็มใน User Detail prototype | ไม่แสดงบน card list ปัจจุบัน |
+| Verification State | ไม่แสดงเป็น column แยก; สื่อผ่าน status/auth และ Contact/Auth ใน detail | ไม่แสดงเป็น field แยก |
 | Auth Method | แสดง | แสดง |
 | Status | แสดง | badge หลัก |
 | Date Joined | แสดง | ข้อมูลรอง |
 | Last Active | แสดง | ข้อมูลรอง |
 | Total Assets | แสดง | ข้อมูลรอง |
-| Report Count | แสดง | badge เมื่อมากกว่า 0 |
-| Actions | แสดง | เมนู More |
+| Report Count | ไม่แสดงเป็น column ใน list ปัจจุบัน; ใช้ sort/search และแสดงใน User Detail/Reported Users | ไม่แสดงบน card list ปัจจุบัน |
+| Actions | ปุ่ม `View` และเมนู More `...` | เมนู More / แตะ card เพื่อเปิด detail |
 
 # 7. รายละเอียดผู้ใช้
 
@@ -129,16 +131,14 @@ BO มีประเภทบัญชีผู้ดูแลเพียง�
 
 | Section | เนื้อหา |
 | --- | --- |
-| Account Summary | User ID, display name, รูปโปรไฟล์, สถานะ, วันที่สมัคร, การใช้งานล่าสุด |
+| Account Summary | User ID, display name, รูปโปรไฟล์, สถานะ, วันที่สมัคร, การใช้งานล่าสุด, follower/following; username/reference แสดงใน header/subtitle และใช้ค้นหาได้ |
 | Contact / Auth | Email, วิธีล็อกอิน, SSO provider, สถานะการยืนยัน email; contact field ที่เป็น optional เช่น phone/Line/Facebook/Instagram แสดงเฉพาะเมื่อผู้ใช้กรอกไว้ภายหลังใน profile/contact details |
-| FO Profile Preview | สรุป public profile และ link/deep link reference |
+| Link Profile | Profile URL name และ public profile URL ตาม prototype |
 | Assets Summary | จำนวน asset แยกตาม Sale, Show, Hide, Sold, Removed/Hidden |
 | Reports | ประวัติผู้ใช้ที่ถูกรายงาน, เหตุผล report, สถานะ, report ล่าสุด |
-| Login History | ความพยายามเข้าสู่ระบบล่าสุด, วิธีล็อกอิน, device/IP เมื่อ policy อนุญาต |
-| Support Context | Ticket ที่เชื่อมโยง, ปัญหาบัญชี, ประวัติ reset password |
-| Account Deletion Context | สรุป offers/assets/chats ที่ยัง pending เมื่อเกี่ยวข้อง |
-| Activity Timeline | Event ล่าสุดที่เกี่ยวกับ FO และ BO |
-| Audit Summary | Action ล่าสุดของ admin ตาม role ที่ได้รับอนุญาต |
+| Account Actions | ปุ่ม action ที่อนุญาตตามสถานะ เช่น reset password, suspend, ban, restore, unban, open Account Deletion หรือ view archived summary |
+
+หมายเหตุ: Prototype ปัจจุบันยังไม่ render section แยกสำหรับ `Login History`, `Support Context`, `Account Deletion Context`, `Activity Timeline` และ `Audit Summary` ใน User Detail แม้ mock data จะมีบริบทบางส่วน เช่น `latest`, `support`, `foImpact` และ `actionNote`; production/API ยังต้องเก็บและ audit ข้อมูลเหล่านี้ตาม module ที่เกี่ยวข้อง
 
 ข้อมูล sensitive:
 
@@ -155,10 +155,10 @@ BO มีประเภทบัญชีผู้ดูแลเพียง�
 - Field หลักจาก FO Settings / Edit Profile ได้แก่ `Username`, `Phone`, `Line`, และ `Email Display`
 - Email แสดงจาก auth/provider ตาม rule ของ FO และโดยทั่วไปเปลี่ยนไม่ได้เมื่อ verify แล้ว
 - Social/contact เพิ่มเติม เช่น `Facebook` หรือ `Instagram` แสดงได้เฉพาะเมื่อมีข้อมูลจาก flow ที่รองรับ เช่น consignment/contact context หรือ future profile field ที่ Product อนุมัติ
-- Contact fields ต้อง mask ตาม permission และ audit เมื่อต้องดูข้อมูล sensitive แบบ unmasked
-- User Detail prototype แสดง email แบบเต็ม และแสดง phone/Line/Facebook/Instagram เฉพาะกรณีที่ผู้ใช้กรอกไว้ภายหลังใน profile/contact details; ระบบจริงยังต้องควบคุม permission และ audit การเข้าถึงข้อมูล sensitive ตาม global security rule
+- Contact fields ใน Prototype แสดงค่าจริงเฉพาะ field ที่ผู้ใช้กรอกไว้และไม่ render row ว่าง
+- User Detail prototype แสดง email แบบเต็ม และแสดง phone/Line/Facebook/Instagram เฉพาะกรณีที่ผู้ใช้กรอกไว้ภายหลังใน profile/contact details; ระบบจริงยังต้องควบคุม permission, masking และ audit การเข้าถึงข้อมูล sensitive ตาม global security rule
 
-ต้อง mask ตาม admin access และ audit-log เมื่อ access/export เป็น high-risk
+Production ต้อง mask ตาม admin access และ audit-log เมื่อ access/export เป็น high-risk
 
 # 8. โมเดลสถานะผู้ใช้
 
@@ -249,12 +249,20 @@ Action ที่ทำได้ตามสถานะบัญชี:
 
 | Current Status | Action หลักที่อนุญาต | Action ที่ถูก block / หมายเหตุ |
 | --- | --- | --- |
-| Pending Verification | View detail และดู verification context ที่มาจาก Auth module | Reset password ต้องยังไม่แสดงจนกว่าจะ verify สำเร็จ; suspend/ban ทำได้เฉพาะผ่าน policy ในกรณี abuse ชัดเจน |
-| Active | Reset password สำหรับ Email/Password, suspend, ban, start deletion/archive workflow ตาม policy | Apple/Google reset password ต้อง block ด้วย rule-based message |
-| Suspended | Unsuspend, ban, view report context, continue deletion/archive workflow ตาม policy | Reset password ไม่ควร restore access เอง ต้องแก้ status แยกต่างหาก |
-| Banned | Unban, view audit/report context, continue deletion/archive workflow ตาม policy | Reset password ไม่ควรเปิดให้ใช้เป็นทางกลับเข้า FO |
-| Deletion Requested | View detail, review dependency, open Account Deletion, resolve related report/dispute | ห้าม archive/delete ทันทีจาก User List ถ้ายังมี offer/chat/asset/report dependency |
-| Deleted / Archived | View historical detail ตาม permission, audit/report lookup | ห้าม reset password, suspend, ban, unban หรือ restore เป็น active account โดยตรง |
+| Pending Verification | View detail, Resend verification context, Suspend ตาม policy | Reset password ต้องยังไม่แสดงจนกว่า verify สำเร็จ; Prototype ปัจจุบันยังไม่แสดง Ban สำหรับสถานะนี้ |
+| Active | Reset password สำหรับ Email/Password, Suspend, Ban | Apple/Google ไม่มีปุ่ม reset password ใน Prototype และต้องจัดการผ่าน provider ของตนเอง |
+| Suspended | Restore, Ban, view report context | Reset password ไม่ควร restore access เอง ต้องแก้ status แยกต่างหาก |
+| Banned | Unban user, view report context | Reset password ไม่ควรเปิดให้ใช้เป็นทางกลับเข้า FO |
+| Deletion Requested | View detail, Open Account Deletion | ห้าม archive/delete ทันทีจาก User List ถ้ายังมี offer/chat/asset/report dependency |
+| Deleted / Archived | View archived summary ผ่าน Account Deletion/Anonymization | ห้าม reset password, suspend, ban, unban หรือ restore เป็น active account โดยตรง |
+
+กฎของ Prototype ปัจจุบัน:
+
+- Row action แสดงปุ่ม `View` แยก และรวม secondary account action ไว้ใน dropdown `...`
+- Action modal ใช้ structured action view กลางสำหรับ reset password, suspend, ban, restore, unban และ resend verification context
+- Action modal แสดง target user, current status, reason dropdown, note textarea, FO impact, ปุ่ม confirm และ cancel
+- Prototype ยังไม่ validate ว่าต้องเลือก/กรอก reason ก่อนกด confirm และยังไม่มี confirmation ชั้นที่สองสำหรับ suspend; production/API ต้อง enforce rule นี้ก่อนบันทึก mutation
+- เมื่อ confirm status action แล้ว mock data จะเปลี่ยน status, refresh row/detail และแสดง toast สำเร็จ โดย audit จริงยังเป็น production/API responsibility
 
 # 10. กฎการ Reset Password
 
@@ -264,6 +272,7 @@ Action ที่ทำได้ตามสถานะบัญชี:
 - BO ควรส่ง reset link หรือ trigger กระบวนการ reset ตาม auth system
 - Reset action ต้อง audit-log
 - ถ้า account suspended/banned อยู่ การ reset password ไม่ควร restore access เอง ต้องแก้ status แยกต่างหาก
+- Prototype ปัจจุบันซ่อน reset password action สำหรับ Apple/Google, Pending Verification, Suspended, Banned, Deletion Requested และ Deleted / Archived แทนการแสดงปุ่ม disabled
 
 # 11. การจัดการผู้ใช้ที่ถูกรายงาน
 
@@ -358,7 +367,7 @@ Audit fields ใช้ตาม `00_GLOBAL_RULES_MODULE.md`
 
 - รายการผู้ใช้ต้องใช้ server-side pagination/search/filter
 - Search ควรตอบสนองเร็วพอสำหรับ operation workflow
-- หน้ารายละเอียดสามารถ lazy load section หนัก เช่น login history/activity ได้
+- หน้ารายละเอียด production สามารถ lazy load section หนัก เช่น login history/activity/audit ได้; Prototype ปัจจุบันยังไม่ render section เหล่านี้แยก
 - Export ขนาดใหญ่ใน workflow แยกต้องใช้ background job
 
 # 17. เกณฑ์การยอมรับ
@@ -366,20 +375,20 @@ Audit fields ใช้ตาม `00_GLOBAL_RULES_MODULE.md`
 | ID | เกณฑ์ |
 | --- | --- |
 | AC-BO-USER-001 | รายการผู้ใช้รองรับ search/filter/sort/pagination |
-| AC-BO-USER-002 | หน้ารายละเอียดผู้ใช้แสดง account summary, auth method, profile, assets summary, reports, login history และ activity ตาม permission |
+| AC-BO-USER-002 | หน้ารายละเอียดผู้ใช้ตาม Prototype ปัจจุบันแสดง account summary, link profile, contact/auth, assets summary, reports และ account actions; login history/activity/audit เป็น production extension ที่ต้องควบคุม permission |
 | AC-BO-USER-003 | Admin reset password ได้เฉพาะบัญชี Email/Password |
-| AC-BO-USER-004 | บัญชี Apple/Google reset password จาก BO ไม่ได้ |
-| AC-BO-USER-005 | Admin suspend/ban/unsuspend/unban ได้พร้อม confirmation และ reason |
+| AC-BO-USER-004 | บัญชี Apple/Google reset password จาก BO ไม่ได้ และ Prototype ปัจจุบันไม่แสดง reset action สำหรับบัญชี SSO |
+| AC-BO-USER-005 | Admin เปิด action view สำหรับ suspend/ban/restore/unban ได้พร้อม reason control, note และ FO impact; production/API ต้อง enforce required reason ก่อน mutation |
 | AC-BO-USER-006 | ผู้ใช้ที่เป็น Suspended/Banned login FO ไม่ได้ |
 | AC-BO-USER-007 | การ Report User ไม่ทำให้ profile/content หายทันทีจนกว่า Admin จะทำ moderation action |
 | AC-BO-USER-008 | Queue/detail ของผู้ใช้ที่ถูกรายงานต้องรองรับ SLA 24 ชั่วโมง |
-| AC-BO-USER-009 | Field sensitive ของผู้ใช้ต้องถูก mask สำหรับ admin access ที่ไม่มีสิทธิ์ |
+| AC-BO-USER-009 | Prototype แสดง sensitive contact/email ใน state ที่มีสิทธิ์เพื่อ review UX; production ต้อง mask field sensitive สำหรับ admin access ที่ไม่มีสิทธิ์ |
 | AC-BO-USER-010 | การ export user data ต้องควบคุมด้วย permission และ audit-log และไม่ต้องมีปุ่ม export ใน User List ใน Phase 1 |
-| AC-BO-USER-011 | User status mutation ทุกครั้งต้องมี audit log พร้อม before/after state |
+| AC-BO-USER-011 | Prototype แสดง audit/action note และ toast หลัง mutation; production/API ต้องมี audit log พร้อม before/after state ทุกครั้ง |
 | AC-BO-USER-012 | Module ใช้งานได้ที่ mobile, tablet, desktop และ wide desktop widths |
 | AC-BO-USER-013 | บัญชี Pending Verification ต้องไม่แสดงเป็น Active และต้องไม่เปิด reset password action จนกว่า verify สำเร็จ |
 | AC-BO-USER-014 | บัญชี Deletion Requested ต้อง route ไป Account Deletion/dependency review ก่อน archive/delete จริง |
-| AC-BO-USER-015 | UI และ API ต้อง block action ที่ไม่อนุญาตตาม current account status |
+| AC-BO-USER-015 | UI ปัจจุบันซ่อน action ที่ไม่อนุญาตตาม current account status และ production/API ต้อง block ซ้ำใน backend |
 
 # 18. Module ที่เกี่ยวข้อง
 
@@ -402,27 +411,27 @@ Prototype BO ปัจจุบัน align User List กับ visual system �
 - User Accounts ใช้ pattern list-table ร่วมของ BO ได้แก่ panel สีขาวมุมมน, header ชื่อ/จำนวนแบบ compact, table utility ชิดขวา, row header สีอ่อน และ row แยกจากกัน
 - Header ต้องสะอาดและไม่เพิ่ม search/notification/profile control
 - Label สถานะบัญชีที่ผู้ใช้เห็นแสดงเป็นภาษาไทยเพื่อให้สอดคล้องกันใน filter, table badge และ detail modal ส่วนค่า backend/API ยังเป็น enum ภาษาอังกฤษ เช่น `Active`, `Suspended`, `Banned`, และ `Deletion Requested`
-- Action เปลี่ยนสถานะบัญชีต้องใช้ label ที่ชัดเจน เช่น `ระงับบัญชี` หรือ `กู้คืนสิทธิ์` แทนคำกว้าง ๆ อย่าง `ตกลง`; การระงับบัญชีซึ่งเป็น destructive action ต้องมี modal ยืนยันชั้นที่สองก่อน apply
+- Action เปลี่ยนสถานะบัญชีใน Prototype ใช้ label ปุ่ม action ที่ชัดเจน เช่น `ระงับบัญชีชั่วคราว`, `ระงับบัญชีถาวร`, `ยกเลิกระงับบัญชีชั่วคราว` และ `ยกเลิกระงับบัญชีถาวร`; ปุ่ม confirm ใน modal ปัจจุบันใช้ label กลาง `ยืนยัน` และ production/API ต้อง enforce confirmation/reason ก่อน apply
 
 ข้อมูลและ interaction ของ User List prototype ปัจจุบัน:
 
-- แสดง mock user ของ FO ที่สมจริง พร้อม display name/username, email แบบ masked, auth method, verification state, account status, joined date, last active, จำนวน asset, จำนวน report และบริบท login/activity ล่าสุด Internal User ID ไม่แสดงใน main list แต่ยังอยู่ใน detail view และใช้ค้นหาเพื่ออ้างอิง report/audit/support ได้
+- Mock user ของ FO มี display name/username, email แบบ masked, auth method, verification state, account status, joined date, last active, จำนวน asset, จำนวน report, support/latest context และบริบท FO impact/action note; main table แสดง display name, status, last active, asset count, auth method, joined date และ action ส่วน username/email/verification/report context อยู่ใน search data และ User Detail/Reported Users
 - Table หลักของ User List ไม่แสดง column `FO impact` แยก เพราะสถานะการเข้าถึงบัญชีสื่อสารผ่าน `Status` อยู่แล้ว ส่วน FO impact ยังอยู่ใน detail และ account-action modal เพื่อให้ Admin เข้าใจผลลัพธ์ก่อนเปลี่ยนสถานะบัญชี
 - ผู้ใช้ Email ที่ยังทำ OTP ไม่เสร็จแสดงเป็น `Pending Verification` / `รอยืนยันอีเมล` ไม่ใช่ `Active` ผู้ใช้กลุ่มนี้ยังใช้ authenticated FO features ไม่ได้ และไม่ควรเห็น action reset password จนกว่าจะยืนยันสำเร็จ
 - ใช้ mock dataset ขนาดใหญ่ขึ้น เพื่อให้ review behavior ของ list ได้สมจริงข้ามหลายหน้า
 - รองรับการค้นหาจากชื่อ, email แบบ masked, auth, verification state, account status และ internal User ID/reference ส่วน location และ phone ของผู้ใช้ไม่ถูกเก็บหรือแสดงเป็น column หลักของ User List
 - มี mock ผู้ใช้ FO ที่เพิ่งสมัครใหม่โดยยังไม่มี profile details, assets, offers, reports และ activity เพื่อ review สถานะ empty/new-account
-- รองรับ filter ตาม account status, auth method และ sort mode โดยใช้ custom dropdown แบบ compact เพื่อให้ option list เข้ากับ visual system ของ BO; reported context อยู่ใน report count/detail และ `Reported Users` submenu ไม่ใช่ filter แยกบน User List ปัจจุบัน
+- รองรับ filter ตาม account status, auth method และ sort mode โดยใช้ custom dropdown แบบ compact เพื่อให้ option list เข้ากับ visual system ของ BO; reported context อยู่ใน mock/search data, User Detail และ `Reported Users` submenu ไม่ใช่ column/filter แยกบน User List ปัจจุบัน
 - การ sort ตามวันที่สมัครเรียงใหม่สุดก่อน (`เรียงตามวันที่สมัครล่าสุด`) เพื่อให้บัญชีที่เพิ่งสมัคร รวมถึงบัญชีใหม่ที่ยังไม่มี profile อยู่ก่อนบัญชีเก่าเมื่อเลือก sort นี้
-- User Detail เปิดเป็น structured detail view ใน main content ที่มี profile/contact card, account summary, auth/access context, profile/trust context และ recent activity โดย contact row แสดงเฉพาะเมื่อผู้ใช้กรอก field นั้นแล้ว
-- Confirmation สำหรับ reset password ใช้ structured action view style เดียวกับ User Detail และแสดง destination email, auth method, security note และ FO impact ชัดเจน บัญชี Apple/Google แสดงสถานะ unsupported ตาม rule แทนการมีปุ่มส่ง
-- Account status action ใช้ structured action view style เดียวกับ reset password แสดง status before action, intended action, current FO access, after-action impact และ audit note จากนั้นขอ confirmation เพิ่มก่อน suspend บัญชี active ข้อความ confirmation ต้องคง label `Status before action` และ label ผลลัพธ์เป็น `After confirmation` เพื่อไม่ให้ Admin สับสนระหว่างการเข้าถึงปัจจุบันกับผลของ action ที่กำลังจะทำ
-- Confirmation สุดท้ายสำหรับการ suspension ต้อง label สถานะปัจจุบันเป็น `Status before action` และแสดง warning note สีแดง เพื่อให้ Admin เข้าใจชัดเจนว่าบัญชียังไม่ถูก suspend ตอนนี้ แต่จะถูก suspend หลังยืนยัน
+- User Detail เปิดเป็น structured detail view ใน main content ที่มี profile image, account summary, link profile, contact/auth, assets summary, reports และ account actions โดย contact row แสดงเฉพาะเมื่อผู้ใช้กรอก field นั้นแล้ว
+- Confirmation สำหรับ reset password ใช้ structured action modal เดียวกับ account action และแสดง target user, destination email ผ่าน full email, reason, note, checklist/impact copy และ FO impact ชัดเจน บัญชี Apple/Google ไม่แสดง reset action ใน Prototype ปัจจุบัน
+- Account status action ใช้ structured action modal เดียวกับ reset password แสดง target user, current status, reason dropdown, note textarea, FO impact, confirm/cancel และ success toast หลังยืนยัน
+- Prototype ปัจจุบันยังไม่มี label `Status before action` / `After confirmation` และยังไม่มี confirmation ชั้นที่สองสำหรับ suspension; ถ้าต้อง enforce ใน production ให้ทำที่ API/implementation โดยไม่เปลี่ยน baseline หน้าจอ Prototype ปัจจุบัน
 - Pagination แสดง 10 user ต่อหน้าหลัง apply search/filter/sort แล้ว Footer แสดงช่วงรายการที่มองเห็น จำนวน row ทั้งหมดหลัง filter และ page navigation
 - `รีเซ็ตค่าทั้งหมด` อยู่ใน list header เป็น icon utility เพราะใช้ล้างเฉพาะ search/filter/sort state และคืน list เป็นค่าเริ่มต้น
 - `Reported Users` ยังคงเข้าถึงได้จาก left navigation แทนการมีปุ่มซ้ำใน User List เพื่อให้หน้านี้โฟกัสที่การ browse บัญชีและ direct account action
-- Row action ต้องแสดง `ดูรายละเอียด` ในแต่ละ row ส่วน secondary account action เช่นการส่ง password reset link ให้บัญชี Email หรือการ suspend/restore บัญชี ให้รวมไว้ใน dropdown `...` ขนาด compact พร้อม action icon เพื่อให้ table สะอาด
-- Action reset password อนุญาตเฉพาะบัญชี Email; บัญชี Apple/Google แสดงสถานะ blocked ตาม rule
+- Row action แสดงปุ่ม `View` ในแต่ละ row ส่วน secondary account action เช่นการส่ง password reset link ให้บัญชี Email หรือการ suspend/restore บัญชี รวมไว้ใน dropdown `...` ขนาด compact เพื่อให้ table สะอาด
+- Action reset password อนุญาตเฉพาะบัญชี Email ที่ Active; บัญชี Apple/Google และสถานะที่ไม่อนุญาตจะไม่เห็น reset action ใน Prototype ปัจจุบัน
 - Account deletion ไม่จัดการจาก User List งานที่เกี่ยวกับ deletion อยู่ใน Account Deletion module
 - User List ไม่แสดง Export ใน prototype ปัจจุบัน หากภายหลังต้อง export user data ให้เพิ่มผ่าน Reports/export workflow ที่ควบคุมด้วย permission
 - `Reported Users` ยังเป็น operational queue ภายใต้ User Management ส่วน aggregate report analytics อยู่ภายใต้ Reports
