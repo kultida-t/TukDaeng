@@ -111,11 +111,20 @@ Reports ที่ต้องมี:
 | --- | --- |
 | New users | Today / week / month / custom range |
 | DAU / MAU | Active users daily/monthly |
+| Guest visitors | Anonymous public viewers/share users must be tracked separately from registered users when tracking exists |
+| Guest public share | Public share events from unauthenticated users must be separated from logged-in share/member activity when tracking exists |
 | Auth method | Email, Apple, Google |
 | Account status | Active, Suspended, Banned, Deactivated, Archived |
 | Retention / activity | Last active, active users by period |
 | Support/account issues | Open tickets, deletion state |
 | Moderation signal | Reported users, ban/suspend trend |
+
+User Report rules:
+
+- `Guest / Unauthenticated` is not a user account status and must not appear in account status filters or registered-user breakdowns.
+- `New users`, `DAU`, `MAU`, auth method breakdown, account status breakdown, retention, and support/deletion signals count registered account records only.
+- Guest public view/share analytics can appear as separate metrics only when tracking exists, and must be labeled separately from registered-user activity.
+- Guest public view/share events do not create User Management records and do not create BO account actions.
 
 Filters:
 
@@ -429,6 +438,7 @@ Audit payload:
 | AC-BO-REPORT-004 | Large export ต้องใช้ background job และมี status tracking |
 | AC-BO-REPORT-005 | Sensitive report view/export ต้อง mask เป็น default และ audit-log |
 | AC-BO-REPORT-006 | User Report แสดง new users, DAU/MAU, auth method และ account status ได้ |
+| AC-BO-REPORT-006A | User Report ต้องแยก Guest public view/share analytics ออกจาก registered-user metrics และไม่ใช้ Guest เป็น account status |
 | AC-BO-REPORT-007 | Asset Report ใช้ status `Show` / `Hide` ตาม FO และไม่ใช้ legacy collection wording |
 | AC-BO-REPORT-008 | Offer Report ใช้ status `Rejected` ไม่ใช้ `Declined` |
 | AC-BO-REPORT-009 | Watch Alert Report ต้องยืนยัน Sale-only match และ destination `Watch Alert Result List` |

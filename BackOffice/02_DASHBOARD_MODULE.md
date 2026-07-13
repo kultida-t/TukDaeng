@@ -100,6 +100,12 @@ Dashboard must not add header controls unless a future prototype explicitly defi
 | Offer Activity | Offer made/accepted/rejected/expired | `09_OFFER_CHAT_MODULE.md` | Admin | 2 |
 | Notification Delivery | Sent/delivered/opened/failed | Notifications | Admin | 2 |
 
+Dashboard user metric rules:
+
+- `New Users` and `Active Users Today` count registered account records/member activity only.
+- Guest public view/share traffic must not be included in `New Users` or registered-user DAU/MAU style metrics.
+- If guest traffic is shown in the future, it must be a separate Dashboard/Reports signal such as `Guest visitors` or `Public shares`, and it must drill into Reports rather than User Management.
+
 # 8. Pending Queue Summary
 
 Dashboard ต้องมี queue summary ที่ชี้งานต้องทำ ไม่ใช่แค่ metric
@@ -226,6 +232,7 @@ Dashboard ต้อง reflect integration map หลัก:
 | AC-BO-DASH-008 | Partial data failure ต้องไม่ทำให้ทั้ง dashboard ใช้งานไม่ได้ |
 | AC-BO-DASH-009 | Activity feed แสดง event สำคัญและ link ไป detail/audit ตาม permission |
 | AC-BO-DASH-010 | Dashboard ไม่แสดง sensitive data ให้ admin access ที่ไม่มีสิทธิ์ |
+| AC-BO-DASH-011 | Dashboard user metrics ต้องไม่ปน Guest public traffic กับ registered-user metrics |
 
 # 16. Related Modules
 
@@ -275,6 +282,8 @@ Card detail text should be shown as short chips/labels, not as one long sentence
 | Active Users Today | 8.4K | ผู้ใช้งานรายวันเฉลี่ย 7 วันเพิ่มขึ้น 4.1% เทียบกับ 7 วันก่อน | Today 8,420 / This Week 24,700 / This Month 38,900 |
 
 Reports remains the place for deeper user growth, retention, DAU/MAU trend, cohort, and export analysis. The Dashboard keeps `Active Users Today` as a primary health signal only.
+
+`New Users` and `Active Users Today` represent registered account/member activity. Guest public view/share analytics, if enabled, must be shown separately in Reports and must not create drill-in rows in User Management.
 
 KPI card trend copy must be a complete phrase. Do not show shorthand values that force the user to infer the meaning.
 

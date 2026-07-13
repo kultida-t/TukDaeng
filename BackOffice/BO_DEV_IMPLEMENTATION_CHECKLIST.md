@@ -34,6 +34,7 @@ Recommended note format:
 - [ ] ใช้ `00_GLOBAL_RULES_MODULE.md` เป็น baseline กลางเรื่อง responsive layout, admin access control, audit, status, privacy และ FO sync
 - [ ] สร้าง BO web app shell พร้อม authenticated layout, left navigation, top bar และ access-aware menu visibility
 - [ ] กำหนด shared status constants สำหรับ users, assets, articles, offers, comments, tickets, alerts, notifications และ audit actions
+- [ ] ห้ามเพิ่ม `Guest / Unauthenticated` เป็น user status constant ของ BO; ให้ถือเป็น FO access state และใช้เฉพาะ public access/analytics context
 - [ ] ทำ shared table pattern: server pagination, search, filters, sort, column visibility ตามความเหมาะสม และ CSV/Excel export hook
 - [ ] ทำ shared confirmation modal สำหรับ destructive actions พร้อม reason input เมื่อจำเป็น
 - [ ] ทำ shared audit helper เพื่อกันไม่ให้ write action ข้าม audit logging
@@ -66,6 +67,7 @@ Recommended note format:
 - [ ] แสดง top searched brands
 - [ ] แสดง recent activity feed
 - [ ] Dashboard header แสดง `Last updated` และไม่ต้องมี Date Range / Refresh / Export controls ตาม prototype ปัจจุบัน
+- [ ] Dashboard `New Users` และ `Active Users Today` ต้องนับเฉพาะ registered account/member activity และไม่รวม Guest public traffic
 
 ### Dashboard Prototype Handoff Notes
 
@@ -92,6 +94,7 @@ Recommended note format:
 - [ ] Suspend/ban/status action และ Account Deletion handoff ต้องมี confirmation, reason และ audit before/after ตาม policy
 - [ ] User status changes ต้องส่งผลต่อ FO login/public behavior
 - [ ] User List ไม่แสดง Export โดยตรงใน Phase 1; export user data ต้องไปผ่าน Reports/export หรือ system-level export ที่ควบคุม permission
+- [ ] User List, User Detail, status filter และ account action flow ต้องไม่แสดง Guest/Unauthenticated visitor
 - [ ] Mutation ทุกครั้งต้องเขียน audit log พร้อม before/after state
 
 ### User Management Prototype Handoff Notes
@@ -100,9 +103,9 @@ Recommended note format:
 | --- | --- |
 | Prototype Reference | `Prototypes/bo-prototype.html` > `User Management` > `User List` and `Reported Users` submenu. |
 | Spec Reference | `03_USER_MANAGEMENT_MODULE.md` sections 4, 5, 8, 10, 12, 15, 16, 17, and 19; `08_AUDIT_LOG_MODULE.md`; `13_ACCOUNT_DELETION_MODULE.md`; `../ProjectAdmin/FO_BO_INTEGRATION_MAP.md`. |
-| Data Needed | Replace mock users with server-paginated API data: user id, display name, username, masked email, auth method, verification state, account status, joined date/rank, last active/rank, asset count, report count, support/deletion reference, latest activity, allowed actions, blocked actions, action note, and FO impact copy. |
+| Data Needed | Replace mock users with server-paginated API data: user id, display name, username, masked email, auth method, verification state, account status, joined date/rank, last active/rank, asset count, report count, support/deletion reference, latest activity, allowed actions, blocked actions, action note, and FO impact copy. Do not include Guest/Unauthenticated visitor rows because they are not account records. |
 | Route / Drill-in | Left nav route should support `User Management / User List` and `User Management / Reported Users`. Dashboard `New Users` and `Active Users Today` cards drill into `User List` with joined/active-date filter context. User row actions open User Detail view, reset-password action view, status-action view, or Account Deletion route when status is `Deletion Requested`. Reported Users remains a sibling submenu, not a duplicate button inside User List. |
-| Route / Filter | User List filters must map to query params/API fields for search, account status, auth method, sort mode, and page. Search covers display name, username, masked email, auth, verification state, account status, and internal user id/reference; phone/location are not primary searchable columns. Report context is represented by report count/detail and the `Reported Users` submenu, not a separate User List filter in the current prototype. Reset clears search/filter/sort/page to defaults. Logout/login must reset view state to Dashboard and must not keep expanded User Management submenu, active subroute, filter toggle state, custom select, or pagination state. |
+| Route / Filter | User List filters must map to query params/API fields for search, account status, auth method, sort mode, and page. Search covers display name, username, masked email, auth, verification state, account status, and internal user id/reference; phone/location are not primary searchable columns. Account status filters must not include Guest/Unauthenticated. Report context is represented by report count/detail and the `Reported Users` submenu, not a separate User List filter in the current prototype. Reset clears search/filter/sort/page to defaults. Logout/login must reset view state to Dashboard and must not keep expanded User Management submenu, active subroute, filter toggle state, custom select, or pagination state. |
 | State Handling | Implement loading, empty, no-result, partial-error, unauthorized, stale, and API failure states for summary cards, table, user detail view, reset-password action view, status-action view, and reported-user detail. Pagination is 10 users per page after search/filter/sort. New or sparse accounts must render without broken layout when profile/assets/offers/reports/activity are empty. |
 | Permission / Privacy | BO has one `Admin` account type; enforce module/action permission at route, UI, and API level. Sensitive data is masked by default. Reveal/export/reset/status actions require policy check and audit. Reset password is available only for Email accounts and blocked for Apple/Google/Pending Verification/archived cases as specified. User List does not expose Export in Phase 1; export must route through Reports/export or system export with permission and audit. |
 | Account Status Actions | Suspend/ban/restore/unban must use confirmation with reason, `Status before action`, `After confirmation`, FO impact preview, and audit note before mutation. `Deletion Requested` users can be viewed and routed to Account Deletion/dependency review, but User List must not archive/delete directly. `Deleted / Archived` appears in the current prototype list/filter for historical review, but actions are limited to permitted historical detail and sensitive fields must stay masked/anonymized. |
@@ -303,6 +306,7 @@ Recommended note format:
 - [ ] Large export ต้องใช้ background job พร้อม status Queued / Processing / Completed / Failed / Expired / Cancelled
 - [ ] Sensitive data ต้อง mask เป็น default และ sensitive view/export ต้อง audit-log
 - [ ] User Report ต้องแสดง new users, DAU/MAU, auth method, account status และ support/deletion signals
+- [ ] User Report ต้องแยก Guest public view/share analytics ออกจาก registered-user metrics และต้องไม่ใช้ Guest เป็น account status/filter
 - [ ] Asset Report ต้องใช้ status `Show` / `Hide` ตาม FO และไม่ใช้ legacy collection wording
 - [ ] Offer Report ต้องใช้ status `Rejected` ไม่ใช้ `Declined`
 - [ ] Chat Report ต้องจำกัด transcript export ตาม permission และ audit ทุกครั้ง

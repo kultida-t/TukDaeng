@@ -57,6 +57,7 @@ User Management ใช้ให้ Admin ตรวจสอบและจัด
 - การให้คะแนนความเสี่ยงอัตโนมัติ
 - การเชื่อมต่อ CRM
 - การแบ่งกลุ่มบัญชีผู้ใช้แบบ Buyer/Seller/Collector
+- การจัดการ Guest/Unauthenticated visitor ที่ยังไม่ได้สร้างบัญชี เพราะ Guest เป็น FO access state ไม่ใช่ user account ใน BO
 
 # 4. การเข้าถึงและสิทธิ์ของ Admin
 
@@ -107,6 +108,8 @@ BO มีประเภทบัญชีผู้ดูแลเพียง�
 - Date joined, last active, report count และ asset count ใช้เป็น sort mode ตาม Prototype ปัจจุบัน ไม่ใช่ filter แยกบนหน้าจอ User List
 - Reported context อยู่ใน mock data และเห็นชัดใน User Detail/Reported Users; User List table ปัจจุบันไม่แสดง report count column และไม่มี reported-status filter แยก
 - User List ใน Phase 1 ไม่ต้องมีปุ่ม export โดยตรง หากต้อง export ข้อมูลผู้ใช้ให้ใช้ workflow ที่ควบคุม permission ใน Reports/export หรือ system-level export แยกต่างหาก
+- User List ต้องไม่แสดง Guest/Unauthenticated visitor และไม่ต้องมี Guest filter เพราะ Guest ยังไม่มี account record ให้ Admin จัดการ
+- ถ้าผู้ใช้เริ่มสมัคร Email/Password แล้วระบบสร้าง account record เพื่อรอ OTP ให้แสดงเป็น `Pending Verification`; กรณีนี้ไม่ใช่ Guest แล้ว แต่ยังไม่ถือเป็น authenticated member
 
 ## Column / Field สำคัญ
 
@@ -161,6 +164,8 @@ BO มีประเภทบัญชีผู้ดูแลเพียง�
 Production ต้อง mask ตาม admin access และ audit-log เมื่อ access/export เป็น high-risk
 
 # 8. โมเดลสถานะผู้ใช้
+
+`Guest / Unauthenticated` ไม่อยู่ในตารางสถานะผู้ใช้ของ BO เพราะเป็นสถานะการเข้าถึง FO ก่อนสมัครหรือก่อน login เท่านั้น. Guest สามารถดู/แชร์ public surface ตาม FO rule ได้ แต่ไม่สามารถทำ action ที่สร้างข้อมูลหรือเปลี่ยน state ของระบบ เช่น like, follow, comment, report, offer, chat, watch alert หรือ asset action ได้จนกว่าจะ login/register สำเร็จ.
 
 | Status | ความหมายใน BO | ผลกระทบต่อ FO |
 | --- | --- | --- |
@@ -227,6 +232,7 @@ Lifecycle ที่ควรใช้:
 
 - User List filter หลักตาม Prototype ปัจจุบันแสดง `Pending Verification`, `Active`, `Suspended`, `Banned`, `Deletion Requested` และ `Deleted / Archived`
 - `Pending Verification` ใช้เฉพาะบัญชี Email/Password ที่กรอก signup แล้วระบบสร้าง record เพื่อรอ OTP / resend OTP ได้ แต่ยังไม่ถือเป็น authenticated member และยังไม่ควรถูกนับเป็น Active user
+- `Guest / Unauthenticated` ต้องไม่ถูกเพิ่มเป็น account status, ไม่ต้องอยู่ใน status filter และไม่ควรถูกนับเป็น user account ใน User Management
 - Apple / Google sign-up ข้าม OTP ตาม FO Auth requirement ดังนั้น BO ไม่ควรแสดง Apple/Google เป็น `Unverified`
 - บัญชีที่ลบสำเร็จแล้วควรใช้ label `Deleted` ใน report/detail สำหรับผู้ใช้ทั่วไปของ BO แต่ backend/audit สามารถแยก `Archived` และ `Anonymized` ได้
 - ข้อมูลหลังลบต้องเก็บเท่าที่จำเป็นต่อ audit, legal, dispute, safety และ reporting โดยต้อง mask/anonymize personal fields ตาม policy
@@ -389,6 +395,7 @@ Audit fields ใช้ตาม `00_GLOBAL_RULES_MODULE.md`
 | AC-BO-USER-013 | บัญชี Pending Verification ต้องไม่แสดงเป็น Active และต้องไม่เปิด reset password action จนกว่า verify สำเร็จ |
 | AC-BO-USER-014 | บัญชี Deletion Requested ต้อง route ไป Account Deletion/dependency review ก่อน archive/delete จริง |
 | AC-BO-USER-015 | UI ปัจจุบันซ่อน action ที่ไม่อนุญาตตาม current account status และ production/API ต้อง block ซ้ำใน backend |
+| AC-BO-USER-016 | Guest / Unauthenticated visitor ต้องไม่แสดงใน User List, User Detail, User status filter หรือ account action flow |
 
 # 18. Module ที่เกี่ยวข้อง
 
@@ -418,6 +425,7 @@ Prototype BO ปัจจุบัน align User List กับ visual system �
 - Mock user ของ FO มี display name/username, email แบบ masked, auth method, verification state, account status, joined date, last active, จำนวน asset, จำนวน report, support/latest context และบริบท FO impact/action note; main table แสดง display name, status, last active, asset count, auth method, joined date และ action ส่วน username/email/verification/report context อยู่ใน search data และ User Detail/Reported Users
 - Table หลักของ User List ไม่แสดง column `FO impact` แยก เพราะสถานะการเข้าถึงบัญชีสื่อสารผ่าน `Status` อยู่แล้ว ส่วน FO impact ยังอยู่ใน detail และ account-action modal เพื่อให้ Admin เข้าใจผลลัพธ์ก่อนเปลี่ยนสถานะบัญชี
 - ผู้ใช้ Email ที่ยังทำ OTP ไม่เสร็จแสดงเป็น `Pending Verification` / `รอยืนยันอีเมล` ไม่ใช่ `Active` ผู้ใช้กลุ่มนี้ยังใช้ authenticated FO features ไม่ได้ และไม่ควรเห็น action reset password จนกว่าจะยืนยันสำเร็จ
+- Guest ที่เข้าดูหรือแชร์ public surface ยังไม่อยู่ใน mock user dataset และไม่ควรเพิ่มเข้า User List; หากต้องวิเคราะห์ traffic/share ให้ดูใน Reports & Analytics แยกจาก registered-user metrics
 - ใช้ mock dataset ขนาดใหญ่ขึ้น เพื่อให้ review behavior ของ list ได้สมจริงข้ามหลายหน้า
 - รองรับการค้นหาจากชื่อ, email แบบ masked, auth, verification state, account status และ internal User ID/reference ส่วน location และ phone ของผู้ใช้ไม่ถูกเก็บหรือแสดงเป็น column หลักของ User List
 - มี mock ผู้ใช้ FO ที่เพิ่งสมัครใหม่โดยยังไม่มี profile details, assets, offers, reports และ activity เพื่อ review สถานะ empty/new-account
