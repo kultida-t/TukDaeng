@@ -136,27 +136,27 @@ Dashboard ต้องแสดง:
 Admin ต้องสามารถ:
 
 - ดูรายชื่อผู้ใช้ทั้งหมด
-- Search/filter ตาม status, auth method, date joined
+- Search/filter ตาม status และ auth method พร้อม sort ตาม last active, date joined, report count และ asset count ตาม Prototype
 - ดู user profile
 - ดู login history
 - ดู auth method: Email, Apple, Google
 - Suspend / Ban / Unsuspend / Unban
-- Soft delete user โดย Admin
+- Route งาน deletion ไป Account Deletion workflow; User List ไม่ archive/delete โดยตรง
 - Reset password เฉพาะบัญชี Email/Password
-- Export CSV
+- ไม่มีปุ่ม Export CSV โดยตรงใน User List; export user data ต้องผ่าน Reports/export หรือ system-level export ตาม permission
 
 ### Business Rules
 
 - บัญชี Apple/Google reset password จาก BO ไม่ได้
 - Suspended user login FO ไม่ได้
 - Banned user ต้องถูก block ถาวรจนกว่า Admin จะปลด
-- Delete user เป็น soft delete และต้องเก็บ audit
+- Delete/archive user ต้องจัดการผ่าน Account Deletion workflow และต้องเก็บ audit
 - User reports 1-2 ครั้งต้องเข้าคิว review ก่อน ไม่ควรเปลี่ยนสถานะบัญชีอัตโนมัติ
 - User reports ตั้งแต่ 3 ครั้งขึ้นไปภายในช่วงเวลาสั้น หรือมีหลาย reporter ต้องถูกยกระดับเป็น high-risk review
 - User reports ตั้งแต่ 5 ครั้งขึ้นไป หรือมี evidence เสี่ยงสูง เช่น scam, impersonation, spam offer, duplicate fraud pattern สามารถเข้าสู่ `Suspended` ชั่วคราวตาม policy เพื่อรอ Admin review
 - `Banned` ต้องเกิดหลัง Admin review แล้วพบว่าผิดจริงหรือมีความเสี่ยงสูง พร้อม reason และ audit
 - Account deletion ต้องมี lifecycle อย่างน้อย `Deletion Requested` -> `Deactivated` -> `Deleted/Archived` -> `Anonymized`
-- Deleted user ต้องไม่แสดงใน default User List แต่ต้องดูย้อนหลังได้ใน Account Deletion / Reports / Audit ตาม permission และต้อง mask/anonymize personal data ตาม retention policy
+- Prototype ปัจจุบันแสดง `Deleted / Archived` ได้ใน User List/filter เพื่อ review historical summary ตาม permission; production ต้อง mask/anonymize personal data, จำกัด action และยังต้องดูย้อนหลังได้ใน Account Deletion / Reports / Audit ตาม retention policy
 - Restore หลัง deletion ทำได้เฉพาะก่อน anonymization และควรจำกัดใน grace period เช่น 30 วัน พร้อม reason และ audit
 
 ---

@@ -158,7 +158,7 @@ UI / Reporting rules:
 
 - ใน Account Deletion module สามารถแสดง `Deleted` เป็น label ที่อ่านง่ายสำหรับ deletion สำเร็จ
 - ใน backend/audit ควรเก็บสถานะละเอียดเป็น `Archived` และ `Anonymized` เพื่อรู้ว่าข้อมูลถูกจัดการถึงขั้นไหนแล้ว
-- Deleted users ต้องไม่แสดงใน default User List แต่ต้องค้นย้อนหลังได้ใน Account Deletion, Reports และ Audit ตาม permission
+- Prototype ปัจจุบันแสดง `Deleted / Archived` ได้ใน User List/filter เพื่อ historical review ตาม permission; production ต้อง mask/anonymize personal data, จำกัด action และยังต้องค้นย้อนหลังได้ใน Account Deletion, Reports และ Audit ตาม permission
 - ข้อมูลย้อนหลังที่เรียกดูได้ต้องเป็นข้อมูลที่จำเป็น เช่น user ID, deletion request ID, dates, processed by, blocking reason, retained offer/chat/report references และ audit event
 - Personal data หลัง deletion ต้องถูก mask/anonymize ตาม retention policy และ Admin Permission
 - Restore ควรเปิดได้เฉพาะก่อน anonymization และควรอยู่ในช่วง grace period เช่น 30 วัน พร้อม reason และ audit

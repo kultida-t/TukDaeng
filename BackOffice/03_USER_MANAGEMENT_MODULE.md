@@ -26,7 +26,7 @@
 
 # 2. วัตถุประสงค์
 
-User Management ใช้ให้ Admin ตรวจสอบและจัดการบัญชีผู้ใช้ FO ในมุมงานปฏิบัติการ งานช่วยเหลือ และความปลอดภัย/ความน่าเชื่อถือ โดยต้องรองรับการค้นหาผู้ใช้ การตรวจโปรไฟล์ ประวัติการเข้าสู่ระบบ วิธีล็อกอิน สถานะรายงาน การระงับ/แบนบัญชี การรีเซ็ตรหัสผ่านเฉพาะบัญชี Email/Password การลบแบบ soft delete/archive และการ export ตามสิทธิ์
+User Management ใช้ให้ Admin ตรวจสอบและจัดการบัญชีผู้ใช้ FO ในมุมงานปฏิบัติการ งานช่วยเหลือ และความปลอดภัย/ความน่าเชื่อถือ โดยต้องรองรับการค้นหาผู้ใช้ การตรวจโปรไฟล์ ประวัติการเข้าสู่ระบบ วิธีล็อกอิน สถานะรายงาน การระงับ/แบนบัญชี การรีเซ็ตรหัสผ่านเฉพาะบัญชี Email/Password การ route งานลบ/เก็บถาวรไป Account Deletion workflow และการ export ตามสิทธิ์ผ่าน workflow ที่ควบคุม permission
 
 โมดูลนี้ต้องไม่สร้างสิทธิ์หรือประเภทผู้ใช้แบบ Admin ใน FO ผู้ใช้ FO ทุกคนยังเป็นประเภทบัญชีเดียวคือ `User` แต่ BO สามารถเปลี่ยนสถานะบัญชีเพื่อควบคุมการเข้าสู่ระบบและการแสดงผลสาธารณะตาม policy
 
@@ -43,7 +43,7 @@ User Management ใช้ให้ Admin ตรวจสอบและจัด
 - บริบทสำหรับ review ผู้ใช้ที่ถูกรายงาน
 - การ `Suspend` / `Ban` / `Unsuspend` / `Unban`
 - การรีเซ็ตรหัสผ่านเฉพาะบัญชี Email/Password
-- การ soft delete / archive ผู้ใช้โดย Admin ตามสิทธิ์
+- การ route งาน soft delete / archive ไป Account Deletion workflow ตามสิทธิ์ โดย User List ไม่ archive/delete โดยตรง
 - Policy/permission สำหรับ export user data โดยไม่เพิ่มปุ่ม export ใน User List ใน Phase 1
 - Audit log สำหรับทุก mutation และการเข้าถึงข้อมูล sensitive
 - การ map ผลกระทบต่อ FO
@@ -77,32 +77,35 @@ BO มีประเภทบัญชีผู้ดูแลเพียง�
 
 # 5. Layout แบบ Responsive
 
-| ขนาดหน้าจอ | รูปแบบ Layout |
+ให้ยึดหน้าจอ Prototype ปัจจุบันเป็น baseline การแสดงผลของ User List:
+
+| ขนาดหน้าจอ | รูปแบบ Layout ตาม Prototype |
 | --- | --- |
-| Mobile `< 768px` | รายการผู้ใช้เป็น card list พร้อม drawer สำหรับค้นหา/filter; หน้ารายละเอียดเรียงเป็น section ซ้อนลงมา; action menu ใช้ bottom sheet |
-| Tablet `768px - 1199px` | ใช้ table หรือ card list ตามพื้นที่; หน้ารายละเอียดใช้ 2 column ได้; filter อยู่ใน drawer |
-| Desktop `>= 1200px` | ใช้ dense table, filter ด้านข้าง และหน้ารายละเอียดพร้อม action panel |
-| Wide Desktop `>= 1440px` | รองรับ split list/detail หรือหน้ารายละเอียดพร้อม audit/activity side panel |
+| Mobile `< 768px` | รายการผู้ใช้แสดงเป็น stacked card/list, ซ่อน row header, ใช้ hamburger navigation, filter หลักอยู่ใน panel header เป็น filter toggle และ advanced filter ถูกซ่อน/เปิดในพื้นที่ list เดิม ไม่ใช่ drawer แยก |
+| Tablet `768px - 1199px` | ใช้ layout ที่ย่อจาก desktop โดยคง panel, summary card, filter bar/toggle และ row action menu ให้ใช้งานได้ในพื้นที่จำกัด |
+| Desktop `>= 1200px` | ใช้ control-center layout: page header, summary card compact, panel มีเส้นขอบ, filter bar ด้านบนของ table, dense table/list row และ row action menu `...` |
+| Wide Desktop `>= 1440px` | คง control-center layout ของ desktop เป็นหลัก ไม่ใช้ split list/detail ถาวร; User Detail และ account action เปิดเป็น structured detail/action view ใน main content |
 
 ข้อกำหนด:
 
-- Action สำคัญ เช่น suspend/ban ต้องใช้งานได้บน mobile แต่ต้องมี confirmation ชัดเจน
+- Action สำคัญ เช่น reset password, suspend/ban/restore ต้องอยู่ใน row action menu หรือ structured detail/action view และต้องมี confirmation/reason/audit ชัดเจน
+- Mobile/tablet ต้องไม่ใช้ bottom sheet เป็น requirement ของ Prototype ปัจจุบัน ให้ตรวจ row action menu และ structured action view ว่าใช้งานได้และข้อความไม่ล้น
+- Filter บน mobile/tablet ใช้ toggle ซ่อน/แสดง advanced filter ใน list panel ตาม Prototype ไม่ใช่ drawer แยก
 - ประวัติการเข้าสู่ระบบและรายการ activity ต้องอ่านได้บนจอเล็กโดยข้อมูลสำคัญไม่ล้นหน้าจอ
 - การ mask ข้อมูล sensitive ต้องชัดเจนและไม่ทำให้ layout พัง
 
 # 6. รายการผู้ใช้
 
-รายการผู้ใช้ต้องรองรับ:
+รายการผู้ใช้ต้องรองรับตาม Prototype ปัจจุบัน:
 
-- ค้นหาจาก display name, email และ internal User ID/reference ในกรณีที่ทีม support ได้ ID มาจาก report หรือ audit log
-- Filter ตามสถานะบัญชี
-- Filter ตามวิธีล็อกอิน
-- Filter ตามวันที่สมัคร
-- Filter ตามวันที่ใช้งานล่าสุด
-- Filter ตามสถานะการถูกรายงาน
-- Filter ตามช่วงจำนวน asset หรือบัญชีที่มี asset
-- Sort ตามวันที่สร้างบัญชี, วันที่ใช้งานล่าสุด, จำนวน report และจำนวน asset
-- Pagination แบบ server-side
+- ค้นหาจาก display name, username, email แบบ masked, auth method, verification state, account status และ internal User ID/reference ในกรณีที่ทีม support ได้ ID มาจาก report หรือ audit log
+- Filter ตามสถานะบัญชีผ่าน custom dropdown
+- Filter ตามวิธีล็อกอินผ่าน custom dropdown
+- Sort mode ผ่าน custom dropdown ได้แก่ last active, date joined, report count และ asset count
+- Pagination แบบ server-side โดยแสดง 10 user ต่อหน้าหลัง apply search/filter/sort
+- Reset utility ใน list header ต้องล้าง search/filter/sort/page และคืน list เป็นค่าเริ่มต้น
+- Date joined, last active, report count และ asset count ใช้เป็น sort mode ตาม Prototype ปัจจุบัน ไม่ใช่ filter แยกบนหน้าจอ User List
+- Reported context แสดงผ่าน report count, detail และ `Reported Users` submenu; User List ปัจจุบันไม่มี reported-status filter แยก
 - User List ใน Phase 1 ไม่ต้องมีปุ่ม export โดยตรง หากต้อง export ข้อมูลผู้ใช้ให้ใช้ workflow ที่ควบคุม permission ใน Reports/export หรือ system-level export แยกต่างหาก
 
 ## Column / Field สำคัญ
@@ -217,12 +220,12 @@ Lifecycle ที่ควรใช้:
 | --- | --- | --- | --- |
 | `Deletion Requested` | ผู้ใช้กดขอลบบัญชีแล้ว request ถูกสร้าง | แสดงได้ใน User List เพื่อให้ทีมเห็นว่าอยู่ระหว่าง process | ยกเลิกได้เฉพาะตาม policy / support escalation |
 | `Deactivated` | session ถูก revoke และ login ถูก block ระหว่าง grace period | ไม่ควรอยู่ใน default User List แต่ค้นเจอได้ตาม permission หรือผ่าน Account Deletion | กู้คืนได้ภายใน grace period ถ้า policy อนุญาต |
-| `Deleted` / `Archived` | ครบ grace period หรือ Admin approve แล้ว public profile/assets ถูกซ่อนและ record ถูก archive | ไม่แสดงใน default User List; ดูย้อนหลังผ่าน Account Deletion / Reports / Audit | โดยปกติไม่ควรกู้คืนเป็นบัญชีใช้งานจริง |
+| `Deleted` / `Archived` | ครบ grace period หรือ Admin approve แล้ว public profile/assets ถูกซ่อนและ record ถูก archive | Prototype ปัจจุบันแสดงได้ใน User List/filter เพื่อให้ Admin ตรวจ historical summary ตาม permission; production ต้อง mask/anonymize personal data และจำกัด action | โดยปกติไม่ควรกู้คืนเป็นบัญชีใช้งานจริง |
 | `Anonymized` | personal data ถูก mask/anonymize ตาม retention/privacy policy | ดูได้เฉพาะ record ที่จำเป็นต่อ audit/legal โดยข้อมูลส่วนตัวถูก mask | กู้คืนไม่ได้ |
 
 กฎ UI ที่แนะนำ:
 
-- User List filter หลักควรแสดงบัญชีที่ใช้งานหรือยังต้องปฏิบัติการ ได้แก่ `Pending Verification`, `Active`, `Suspended`, `Banned`, `Deletion Requested`
+- User List filter หลักตาม Prototype ปัจจุบันแสดง `Pending Verification`, `Active`, `Suspended`, `Banned`, `Deletion Requested` และ `Deleted / Archived`
 - `Pending Verification` ใช้เฉพาะบัญชี Email/Password ที่กรอก signup แล้วระบบสร้าง record เพื่อรอ OTP / resend OTP ได้ แต่ยังไม่ถือเป็น authenticated member และยังไม่ควรถูกนับเป็น Active user
 - Apple / Google sign-up ข้าม OTP ตาม FO Auth requirement ดังนั้น BO ไม่ควรแสดง Apple/Google เป็น `Unverified`
 - บัญชีที่ลบสำเร็จแล้วควรใช้ label `Deleted` ใน report/detail สำหรับผู้ใช้ทั่วไปของ BO แต่ backend/audit สามารถแยก `Archived` และ `Anonymized` ได้
@@ -394,7 +397,7 @@ Audit fields ใช้ตาม `00_GLOBAL_RULES_MODULE.md`
 Prototype BO ปัจจุบัน align User List กับ visual system ของ Dashboard ที่ finalize แล้ว:
 
 - Font หลักของ UI ยังคงใช้ IBM Plex Sans Thai; heading ของ section/page ใช้ Bebas Neue เมื่อเหมาะสม
-- User List ใช้ layout แบบ control-center ที่สะอาดเหมือนกัน ได้แก่ page header, summary card ขนาด compact, panel มีเส้นขอบ, filter bar, dense table, modal มาตรฐาน และ pattern ปุ่มมาตรฐาน
+- User List ใช้ layout แบบ control-center ที่สะอาดเหมือนกัน ได้แก่ page header, summary card ขนาด compact, panel มีเส้นขอบ, filter bar, dense table/list row, structured detail/action view และ pattern ปุ่มมาตรฐาน
 - Summary card ของ User List ใช้ title ภาษาอังกฤษและค่าหลักเป็นตัวเลขเท่านั้นให้สอดคล้องกับ KPI card ของ Dashboard ส่วน unit และคำอธิบายให้อยู่ใน helper text ใต้ตัวเลข
 - User Accounts ใช้ pattern list-table ร่วมของ BO ได้แก่ panel สีขาวมุมมน, header ชื่อ/จำนวนแบบ compact, table utility ชิดขวา, row header สีอ่อน และ row แยกจากกัน
 - Header ต้องสะอาดและไม่เพิ่ม search/notification/profile control
@@ -409,11 +412,11 @@ Prototype BO ปัจจุบัน align User List กับ visual system �
 - ใช้ mock dataset ขนาดใหญ่ขึ้น เพื่อให้ review behavior ของ list ได้สมจริงข้ามหลายหน้า
 - รองรับการค้นหาจากชื่อ, email แบบ masked, auth, verification state, account status และ internal User ID/reference ส่วน location และ phone ของผู้ใช้ไม่ถูกเก็บหรือแสดงเป็น column หลักของ User List
 - มี mock ผู้ใช้ FO ที่เพิ่งสมัครใหม่โดยยังไม่มี profile details, assets, offers, reports และ activity เพื่อ review สถานะ empty/new-account
-- รองรับ filter ตาม account status, auth method, reported status และ sort mode โดยใช้ custom dropdown แบบ compact เพื่อให้ option list เข้ากับ visual system ของ BO
+- รองรับ filter ตาม account status, auth method และ sort mode โดยใช้ custom dropdown แบบ compact เพื่อให้ option list เข้ากับ visual system ของ BO; reported context อยู่ใน report count/detail และ `Reported Users` submenu ไม่ใช่ filter แยกบน User List ปัจจุบัน
 - การ sort ตามวันที่สมัครเรียงใหม่สุดก่อน (`เรียงตามวันที่สมัครล่าสุด`) เพื่อให้บัญชีที่เพิ่งสมัคร รวมถึงบัญชีใหม่ที่ยังไม่มี profile อยู่ก่อนบัญชีเก่าเมื่อเลือก sort นี้
-- User Detail เปิดเป็น modal แบบ structured ที่มี profile/contact card, account summary, auth/access context, profile/trust context และ recent activity โดย contact row แสดงเฉพาะเมื่อผู้ใช้กรอก field นั้นแล้ว
-- Confirmation สำหรับ reset password ใช้ structured modal style เดียวกับ User Detail และแสดง destination email, auth method, security note และ FO impact ชัดเจน บัญชี Apple/Google แสดงสถานะ unsupported ตาม rule แทนการมีปุ่มส่ง
-- Account status modal ใช้ structured modal style เดียวกับ reset password แสดง status before action, intended action, current FO access, after-action impact และ audit note จากนั้นขอ confirmation เพิ่มก่อน suspend บัญชี active ข้อความ confirmation ต้องคง label `Status before action` และ label ผลลัพธ์เป็น `After confirmation` เพื่อไม่ให้ Admin สับสนระหว่างการเข้าถึงปัจจุบันกับผลของ action ที่กำลังจะทำ
+- User Detail เปิดเป็น structured detail view ใน main content ที่มี profile/contact card, account summary, auth/access context, profile/trust context และ recent activity โดย contact row แสดงเฉพาะเมื่อผู้ใช้กรอก field นั้นแล้ว
+- Confirmation สำหรับ reset password ใช้ structured action view style เดียวกับ User Detail และแสดง destination email, auth method, security note และ FO impact ชัดเจน บัญชี Apple/Google แสดงสถานะ unsupported ตาม rule แทนการมีปุ่มส่ง
+- Account status action ใช้ structured action view style เดียวกับ reset password แสดง status before action, intended action, current FO access, after-action impact และ audit note จากนั้นขอ confirmation เพิ่มก่อน suspend บัญชี active ข้อความ confirmation ต้องคง label `Status before action` และ label ผลลัพธ์เป็น `After confirmation` เพื่อไม่ให้ Admin สับสนระหว่างการเข้าถึงปัจจุบันกับผลของ action ที่กำลังจะทำ
 - Confirmation สุดท้ายสำหรับการ suspension ต้อง label สถานะปัจจุบันเป็น `Status before action` และแสดง warning note สีแดง เพื่อให้ Admin เข้าใจชัดเจนว่าบัญชียังไม่ถูก suspend ตอนนี้ แต่จะถูก suspend หลังยืนยัน
 - Pagination แสดง 10 user ต่อหน้าหลัง apply search/filter/sort แล้ว Footer แสดงช่วงรายการที่มองเห็น จำนวน row ทั้งหมดหลัง filter และ page navigation
 - `รีเซ็ตค่าทั้งหมด` อยู่ใน list header เป็น icon utility เพราะใช้ล้างเฉพาะ search/filter/sort state และคืน list เป็นค่าเริ่มต้น
@@ -426,7 +429,7 @@ Prototype BO ปัจจุบัน align User List กับ visual system �
 
 ข้อมูลและ interaction ของ Reported Users prototype ปัจจุบัน:
 
-- ใช้ visual system เดียวกับ Dashboard และ User List ได้แก่ module header, summary card 4 ใบ, list utility แบบ compact, filter bar, table พร้อม pagination, modal มาตรฐาน และ pattern ปุ่มมาตรฐาน
+- ใช้ visual system เดียวกับ Dashboard และ User List ได้แก่ module header, summary card 4 ใบ, list utility แบบ compact, filter bar, table พร้อม pagination, structured detail view และ pattern ปุ่มมาตรฐาน
 - Reported Users เป็น operational queue สำหรับ report ผู้ใช้/โปรไฟล์จาก FO ไม่ใช่หน้า analytics และไม่ควรซ้ำกับ Reports & Analytics
 - ตัวอย่าง Suspended ใน prototype ต้อง align กับ policy: ใช้ `>= 5 reports/reporters` หรือมี high-risk evidence ชัดเจนก่อนแสดง `Suspended`; `>= 3 reports` เพิ่มเฉพาะ review priority เว้นแต่เข้า risk rule
 - Mock report queue ครอบคลุม account-status context ทั้งหมดที่ใช้ใน Phase 1 ได้แก่ `Active`, `Pending Verification`, `Suspended`, `Banned`, และ `Deletion Requested`
