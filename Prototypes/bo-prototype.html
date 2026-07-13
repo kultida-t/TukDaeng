@@ -1622,6 +1622,16 @@
       resize: vertical;
       line-height: 1.45;
     }
+    .user-action-form textarea:hover {
+      border-color: #c3cfdd;
+      background-color: #fbfcfe;
+    }
+    .user-action-form textarea:focus,
+    .user-action-form textarea:focus-visible {
+      outline: 0;
+      border-color: #b8c6d8;
+      box-shadow: 0 0 0 3px rgba(118, 135, 158, .10);
+    }
     .user-action-impact {
       margin: 0;
     }
@@ -4025,7 +4035,7 @@
                   ${customSelect("user-action-reason", config.reasonLabel, config.reasons.map(reason => ({ value: reason, label: reason })), "", "data-custom-select-silent", completed)}
                 </label>
                 <label>
-                  หมายเหตุสำหรับบันทึกการดำเนินการ
+                  Note / หมายเหตุ
                   <textarea id="user-action-note" placeholder="${config.notePlaceholder}" ${completed ? "disabled" : ""}></textarea>
                 </label>
                 <div class="module-note user-action-impact"><strong>ผลกระทบต่อแอปพลิเคชัน:</strong> ${getUserActionFoImpact(user, action)}</div>
@@ -4041,9 +4051,7 @@
                   <summary>Prototype scenario</summary>
                   <label>
                     Test flow
-                    <select id="user-action-scenario" ${completed ? "disabled" : ""}>
-                      ${userActionFlowScenarios.map(option => `<option value="${option.value}" ${option.value === selectedScenario ? "selected" : ""}>${option.label}</option>`).join("")}
-                    </select>
+                    ${customSelect("user-action-scenario", "Test flow", userActionFlowScenarios, selectedScenario, "data-custom-select-silent", completed)}
                   </label>
                 </details>
               </div>
