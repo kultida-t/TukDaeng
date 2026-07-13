@@ -1195,8 +1195,8 @@
       position: relative;
     }
     .row-menu summary {
-      width: 32px;
-      height: 32px;
+      width: 38px;
+      height: 38px;
       border: 1px solid var(--line-strong);
       border-radius: 7px;
       display: grid;
@@ -3253,7 +3253,7 @@
       "Active": "ใช้งานได้",
       "Pending Verification": "รอยืนยันตัวตน",
       "Suspended": "ระงับชั่วคราว",
-      "Banned": "ระงับถาวร",
+      "Banned": "ระงับบัญชีถาวร",
       "Deletion Requested": "รอลบบัญชี",
       "Deleted / Archived": "ลบ/เก็บถาวร",
       "Open": "รอตรวจ",
@@ -3392,7 +3392,7 @@
             { value: "Active", label: "ใช้งานได้" },
             { value: "Pending Verification", label: "รอยืนยันตัวตน" },
             { value: "Suspended", label: "ระงับชั่วคราว" },
-            { value: "Banned", label: "ระงับถาวร" },
+            { value: "Banned", label: "ระงับบัญชีถาวร" },
             { value: "Deletion Requested", label: "รอลบบัญชี" },
             { value: "Deleted / Archived", label: "ลบ/เก็บถาวร" }
           ])}</div>
@@ -3692,7 +3692,7 @@
     const userActionLabels = {
       "Reset password": "Reset password",
       Suspend: "ระงับบัญชีชั่วคราว",
-      Ban: "ระงับถาวร",
+      Ban: "ระงับบัญชีถาวร",
       Restore: "กู้คืนสิทธิ์",
       "Unban user": "Unban user",
       "Open Account Deletion": "เปิด Account Deletion",
@@ -3737,17 +3737,17 @@
         ]
       },
       Ban: {
-        title: "ระงับถาวร",
+        title: "ระงับบัญชีถาวร",
         crumb: "Ban User",
         type: "status",
         targetStatus: "Banned",
         tone: "danger",
-        summary: "ใช้เมื่อยืนยันการละเมิดรุนแรงหรือไม่ควรให้กลับมาใช้งาน เป็นสถานะถาวรกว่า Suspend และต้องใช้เหตุผลชัดเจน",
-        reasonLabel: "เหตุผลการระงับถาวร",
-        reasons: ["Confirmed abuse", "Fraud or impersonation confirmed", "Repeated severe policy violation", "Safety escalation approved"],
+        summary: "ใช้เมื่อยืนยันแล้วว่าบัญชีทำผิดรุนแรงหรือไม่ควรให้ใช้งานต่อ บัญชีจะถูกบล็อกจนกว่า Admin จะปลดระงับ และต้องระบุเหตุผลให้ชัดเจน",
+        reasonLabel: "เหตุผลการระงับบัญชีถาวร",
+        reasons: ["ยืนยันแล้วว่ามีพฤติกรรมหลอกลวง", "ยืนยันแล้วว่าแอบอ้างตัวตนหรือใช้ข้อมูลเท็จ", "ทำผิดนโยบายรุนแรงซ้ำหลายครั้ง", "ได้รับอนุมัติให้ระงับจากทีมที่รับผิดชอบ"],
         notePlaceholder: "ระบุหลักฐานที่ยืนยันแล้ว, report/support ID และ approval ที่เกี่ยวข้อง",
-        confirmLabel: "ยืนยันระงับถาวร",
-        success: user => `${user.displayName} ถูกระงับถาวรแล้ว`,
+        confirmLabel: "ยืนยันระงับบัญชีถาวร",
+        success: user => `${user.displayName} ถูกระงับบัญชีถาวรแล้ว`,
         checklist: [
           "บล็อก FO login และ activity ใหม่",
           "ใช้หลังยืนยันการละเมิด ไม่ใช่แค่รอตรวจสอบ",
@@ -3845,7 +3845,7 @@
     function getUserActionFoImpact(user, action) {
       if (action === "Reset password") return "ไม่มีผลกับสถานะบัญชีหรือโปรไฟล์สาธารณะ ระบบจะส่งเฉพาะลิงก์ตั้งรหัสผ่านใหม่ไปยังอีเมลที่ลงทะเบียนไว้";
       if (action === "Suspend") return "การเข้าสู่ระบบและเซสชันของผู้ใช้ถูกบล็อกชั่วคราวจนกว่า Admin จะ Restore เหมาะกับเคสที่ยังรอตรวจสอบ";
-      if (action === "Ban") return "FO login และ activity ใหม่ถูกบล็อกแบบถาวรกว่า Suspend ใช้กับเคสที่ยืนยันการละเมิดแล้ว";
+      if (action === "Ban") return "ผู้ใช้จะเข้าสู่ระบบไม่ได้ และไม่สามารถทำรายการใหม่ในแอปได้ จนกว่า Admin จะปลดระงับบัญชี เหมาะสำหรับกรณีที่ตรวจสอบแล้วว่ามีการละเมิดจริง";
       if (action === "Restore" || action === "Unban user") return "FO access กลับมาใช้งานได้ตาม policy หลังยืนยัน action";
       return user.foImpact;
     }
