@@ -2887,6 +2887,21 @@
       "U-1222": "./assets/user-avatars/u-1222.png"
     };
 
+    const userSocialStats = {
+      "U-1002": { followers: 1240, following: 86 },
+      "U-1017": { followers: 8420, following: 214 },
+      "U-1042": { followers: 64, following: 143 },
+      "U-1055": { followers: 0, following: 0 },
+      "U-1088": { followers: 3210, following: 178 },
+      "U-1104": { followers: 940, following: 129 },
+      "U-1120": { followers: 2100, following: 73 },
+      "U-1144": { followers: 680, following: 91 },
+      "U-1161": { followers: 32, following: 58 },
+      "U-1186": { followers: 4750, following: 166 },
+      "U-1207": { followers: 0, following: 0 },
+      "U-1222": { followers: 0, following: 0 }
+    };
+
     userManagementData.users.forEach(user => {
       user.profileImage = userProfileImages[user.id] || user.profileImage;
     });
@@ -3374,6 +3389,22 @@
         .join("");
     }
 
+    function getUserSocialStats(user) {
+      return userSocialStats[user.id] || { followers: 0, following: 0 };
+    }
+
+    function formatSocialCount(value) {
+      return Number(value || 0).toLocaleString("en-US");
+    }
+
+    function renderSocialSummary(user, tileClass = "detail-tile") {
+      const social = getUserSocialStats(user);
+      return `
+        <div class="${tileClass}"><span>Follower</span><strong>${formatSocialCount(social.followers)}</strong></div>
+        <div class="${tileClass}"><span>Following</span><strong>${formatSocialCount(social.following)}</strong></div>
+      `;
+    }
+
     function renderContactRows(user, tileClass = "detail-tile") {
       const contacts = getUserContactDisplayItems(user);
       return contacts.length
@@ -3562,6 +3593,7 @@
             <div class="detail-grid two">
               <div class="detail-tile"><span>User ID</span><strong>${user.id}</strong></div>
               <div class="detail-tile"><span>Username</span><strong>${user.displayName}</strong></div>
+              ${renderSocialSummary(user)}
               <div class="detail-tile"><span>Date Joined</span><strong>${user.joined}</strong></div>
               <div class="detail-tile"><span>Last Active</span><strong>${user.lastActive}</strong></div>
               <div class="detail-tile"><span>Total Assets</span><strong>${user.assets}</strong></div>
@@ -3623,6 +3655,7 @@
             <div class="detail-grid two">
               <div class="detail-tile"><span>User ID</span><strong>${user.id}</strong></div>
               <div class="detail-tile"><span>Username</span><strong>${user.displayName}</strong></div>
+              ${renderSocialSummary(user)}
               <div class="detail-tile"><span>Date Joined</span><strong>${user.joined}</strong></div>
               <div class="detail-tile"><span>Last Active</span><strong>${user.lastActive}</strong></div>
             </div>
