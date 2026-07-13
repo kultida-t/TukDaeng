@@ -3704,6 +3704,8 @@
       "View archived summary": "ดู Archived Summary"
     };
 
+    const USER_ACTION_CONFIRM_LABEL = "ยืนยัน";
+
     const userActionConfig = {
       "Reset password": {
         title: "Reset Password Link",
@@ -3714,7 +3716,6 @@
         reasonLabel: "เหตุผลการส่งลิงก์",
         reasons: ["ผู้ใช้แจ้งว่าลืมรหัสผ่าน", "Support ยืนยันตัวตนผู้ใช้แล้ว", "ติดตามเคสด้านความปลอดภัย"],
         notePlaceholder: "ระบุหมายเหตุ เหตุผล หรือข้อมูลอ้างอิงที่เกี่ยวข้อง",
-        confirmLabel: "Send link",
         success: user => `ส่งลิงก์ตั้งรหัสผ่านใหม่ไปยัง ${getUserFullEmail(user)} แล้ว`,
         checklist: [
           "ไม่เปลี่ยนสถานะบัญชี และไม่ logout session ที่ยัง active",
@@ -3732,7 +3733,6 @@
         reasonLabel: "เหตุผลการระงับบัญชีชั่วคราว",
         reasons: ["มีรายงานความเสี่ยงสูง รอตรวจสอบ", "สงสัยว่าเป็นบัญชีหรือโปรไฟล์ซ้ำ", "มีข้อพิพาทจากฝ่าย Support", "พักบัญชีไว้ระหว่างตรวจนโยบาย"],
         notePlaceholder: "ระบุหมายเหตุ เหตุผล หรือข้อมูลอ้างอิงที่เกี่ยวข้อง",
-        confirmLabel: "ยืนยันระงับบัญชีชั่วคราว",
         success: user => `${user.displayName} ถูกระงับบัญชีชั่วคราวแล้ว`,
         checklist: [
           "บล็อกการเข้าสู่ระบบระหว่างถูกระงับ",
@@ -3750,7 +3750,6 @@
         reasonLabel: "เหตุผลการระงับบัญชีถาวร",
         reasons: ["ยืนยันแล้วว่ามีพฤติกรรมหลอกลวง", "ยืนยันแล้วว่าแอบอ้างตัวตนหรือใช้ข้อมูลเท็จ", "ทำผิดนโยบายรุนแรงซ้ำหลายครั้ง", "ได้รับอนุมัติให้ระงับจากทีมที่รับผิดชอบ"],
         notePlaceholder: "ระบุหลักฐานที่ยืนยันแล้ว, report/support ID และ approval ที่เกี่ยวข้อง",
-        confirmLabel: "ยืนยันระงับบัญชีถาวร",
         success: user => `${user.displayName} ถูกระงับบัญชีถาวรแล้ว`,
         checklist: [
           "บล็อกการเข้าสู่ระบบและการทำรายการใหม่",
@@ -3768,7 +3767,6 @@
         reasonLabel: "เหตุผลการยกเลิกระงับบัญชีชั่วคราว",
         reasons: ["ตรวจสอบแล้วไม่พบความเสี่ยงเพิ่มเติม", "หลักฐานหรือข้อร้องเรียนได้รับการแก้ไขแล้ว", "ทีมช่วยเหลืออนุมัติให้กลับมาใช้งานได้"],
         notePlaceholder: "สรุปผลการตรวจสอบ เหตุผลที่ยกเลิกระงับ และข้อมูลอ้างอิงที่เกี่ยวข้อง",
-        confirmLabel: "ยืนยันยกเลิกระงับบัญชีชั่วคราว",
         success: user => `${user.displayName} กลับมาใช้งานได้แล้ว`,
         checklist: [
           "ผู้ใช้จะกลับมาเข้าสู่ระบบและใช้งานบัญชีได้",
@@ -3786,7 +3784,6 @@
         reasonLabel: "เหตุผลการยกเลิกระงับบัญชีถาวร",
         reasons: ["คำขออุทธรณ์ได้รับอนุมัติ", "พบว่าการระงับบัญชีถาวรเกิดจากความผิดพลาด", "ทีมที่รับผิดชอบอนุมัติให้กลับมาใช้งานได้"],
         notePlaceholder: "สรุปผลการตรวจสอบ เหตุผลที่ยกเลิกระงับ และข้อมูลอนุมัติที่เกี่ยวข้อง",
-        confirmLabel: "ยืนยันยกเลิกระงับบัญชีถาวร",
         success: user => `${user.displayName} กลับมาใช้งานได้แล้ว`,
         checklist: [
           "ตรวจบันทึกเดิมของการระงับบัญชีถาวรก่อนยืนยัน",
@@ -3803,7 +3800,6 @@
         reasonLabel: "เหตุผลการส่งซ้ำ",
         reasons: ["User requested verification email", "Support follow-up"],
         notePlaceholder: "บันทึกช่องทาง support หรือ ticket ที่เกี่ยวข้อง",
-        confirmLabel: "ส่งข้อมูลยืนยันตัวตน",
         success: user => `ส่งข้อมูลยืนยันตัวตนให้ ${user.displayName} แล้ว`,
         checklist: [
           "บัญชียังเป็น Pending Verification จนกว่าจะยืนยันสำเร็จ",
@@ -3971,7 +3967,7 @@
                 </label>
                 <div class="module-note user-action-impact"><strong>ผลกระทบต่อแอปพลิเคชัน:</strong> ${getUserActionFoImpact(user, action)}</div>
                 <div class="user-detail-actions">
-                  <button class="user-detail-action-btn ${getUserActionConfirmClass(config)}" type="button" data-user-action-confirm="${action}" data-user-id="${user.id}" ${completed ? "disabled" : ""}>${config.confirmLabel}</button>
+                  <button class="user-detail-action-btn ${getUserActionConfirmClass(config)}" type="button" data-user-action-confirm="${action}" data-user-id="${user.id}" ${completed ? "disabled" : ""}>${USER_ACTION_CONFIRM_LABEL}</button>
                   <button class="user-detail-action-btn" type="button" data-user-action-modal-close>${completed ? "ปิด" : "ยกเลิก"}</button>
                 </div>
                 <div class="warning-note action-feedback user-action-result ${completed ? "show" : ""}">
