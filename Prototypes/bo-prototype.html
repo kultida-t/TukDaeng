@@ -1582,8 +1582,19 @@
       color: #061426;
       font: inherit;
       font-size: 13px;
-      font-weight: 700;
+      font-weight: 400;
       padding: 9px 10px;
+    }
+    .user-action-form .custom-select-trigger {
+      min-height: 44px;
+      border-color: var(--line-strong);
+      padding: 9px 12px;
+      color: #061426;
+      font-size: 13px;
+      font-weight: 400;
+    }
+    .user-action-form .custom-select-menu {
+      z-index: 40;
     }
     .user-action-form textarea {
       min-height: 86px;
@@ -3260,12 +3271,12 @@
       return `<span class="pill ${map[auth] || "blue"}">${label}</span>`;
     }
 
-    function customSelect(id, label, options, selectedValue = "") {
+    function customSelect(id, label, options, selectedValue = "", attrs = "", disabled = false) {
       const selected = options.find(option => option.value === selectedValue) || options[0];
       return `
-        <div class="custom-select" data-custom-select>
+        <div class="custom-select" data-custom-select ${attrs}>
           <input type="hidden" id="${id}" value="${selected.value}" />
-          <button class="field custom-select-trigger" type="button" data-custom-select-trigger aria-haspopup="listbox" aria-expanded="false">
+          <button class="field custom-select-trigger" type="button" data-custom-select-trigger aria-haspopup="listbox" aria-expanded="false" ${disabled ? "disabled" : ""}>
             <span data-custom-select-label>${selected.label}</span>
           </button>
           <div class="custom-select-menu" role="listbox" aria-label="${label}">
@@ -3881,9 +3892,7 @@
               <div class="user-action-form">
                 <label>
                   ${config.reasonLabel}
-                  <select id="user-action-reason" ${completed ? "disabled" : ""}>
-                    ${config.reasons.map(reason => `<option value="${reason}">${reason}</option>`).join("")}
-                  </select>
+                  ${customSelect("user-action-reason", config.reasonLabel, config.reasons.map(reason => ({ value: reason, label: reason })), "", "data-custom-select-silent", completed)}
                 </label>
                 <label>
                   Audit note
@@ -4505,6 +4514,7 @@
         });
         select.classList.remove("open");
         select.querySelector("[data-custom-select-trigger]").setAttribute("aria-expanded", "false");
+        if (select.hasAttribute("data-custom-select-silent")) return;
         userListPage = 1;
         renderUserRows();
         return;
