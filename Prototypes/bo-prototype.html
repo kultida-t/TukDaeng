@@ -2824,7 +2824,7 @@
         </div>
 
         <aside class="detail" id="detail">
-          <div class="detail-empty">เลือกรายการจากตารางเพื่อดูรายละเอียด, timeline, FO impact และ action ที่ Admin ทำได้</div>
+          <div class="detail-empty">เลือกรายการจากตารางเพื่อดูรายละเอียด, timeline, ผลกระทบต่อแอปพลิเคชัน และ action ที่ Admin ทำได้</div>
         </aside>
       </section>
 
@@ -3155,7 +3155,7 @@
         action,
         stats,
         rows,
-        cards: [["Requirement Coverage", "รองรับ list, filter, detail, status, FO impact และ audit/action note ตาม baseline"], ["Sensitive Data", "ข้อมูลส่วนตัวต้อง mask เป็นค่าเริ่มต้นและเปิดตาม permission เท่านั้น"], ["FO Impact", "action สำคัญต้อง sync ไปยัง Feed, Search, Profile, Board, Notification หรือ Watch Alert ตามกรณี"]]
+        cards: [["Requirement Coverage", "รองรับ list, filter, detail, status, ผลกระทบต่อแอปพลิเคชัน และ audit/action note ตาม baseline"], ["Sensitive Data", "ข้อมูลส่วนตัวต้อง mask เป็นค่าเริ่มต้นและเปิดตาม permission เท่านั้น"], ["ผลกระทบต่อแอปพลิเคชัน", "action สำคัญต้อง sync ไปยัง Feed, Search, Profile, Board, Notification หรือ Watch Alert ตามกรณี"]]
       };
     }
 
@@ -3792,12 +3792,12 @@
       const feedback = document.querySelector("#user-action-feedback");
       if (!feedback) return;
       const label = userActionLabels[action] || action;
-      feedback.innerHTML = `<strong>${label}</strong><br>${user.actionNote}<br><span>FO impact: ${user.foImpact}</span>`;
+      feedback.innerHTML = `<strong>${label}</strong><br>${user.actionNote}<br><span>ผลกระทบต่อแอปพลิเคชัน: ${user.foImpact}</span>`;
       feedback.classList.add("show");
     }
 
     function getUserActionFoImpact(user, action) {
-      if (action === "Reset password") return "ไม่มีผลกับสถานะบัญชีหรือ public profile; ส่งเฉพาะ reset link ไปยัง email ที่ลงทะเบียน";
+      if (action === "Reset password") return "ไม่มีผลกับสถานะบัญชีหรือโปรไฟล์สาธารณะ ระบบจะส่งเฉพาะลิงก์ตั้งรหัสผ่านใหม่ไปยังอีเมลที่ลงทะเบียนไว้";
       if (action === "Suspend") return "FO login/session ถูกบล็อกชั่วคราวจนกว่า Admin จะ Restore; เหมาะกับเคสที่ยังรอตรวจสอบ";
       if (action === "Ban") return "FO login และ activity ใหม่ถูกบล็อกแบบถาวรกว่า Suspend; ใช้กับเคสที่ยืนยันการละเมิดแล้ว";
       if (action === "Restore" || action === "Unban user") return "FO access กลับมาใช้งานได้ตาม policy หลังยืนยัน action";
@@ -3898,7 +3898,7 @@
                   Audit note
                   <textarea id="user-action-note" placeholder="${config.notePlaceholder}" ${completed ? "disabled" : ""}></textarea>
                 </label>
-                <div class="module-note user-action-impact"><strong>FO impact:</strong> ${getUserActionFoImpact(user, action)}</div>
+                <div class="module-note user-action-impact"><strong>ผลกระทบต่อแอปพลิเคชัน:</strong> ${getUserActionFoImpact(user, action)}</div>
                 <div class="user-detail-actions">
                   <button class="user-detail-action-btn ${getUserActionConfirmClass(config)}" type="button" data-user-action-confirm="${action}" data-user-id="${user.id}" ${completed ? "disabled" : ""}>${config.confirmLabel}</button>
                   <button class="user-detail-action-btn" type="button" data-user-action-modal-close>${completed ? "Close" : "ยกเลิก"}</button>
@@ -4086,7 +4086,7 @@
             </div>
           </div>
 
-          <div class="module-note"><strong>FO impact:</strong> ${user.foImpact}</div>
+          <div class="module-note"><strong>ผลกระทบต่อแอปพลิเคชัน:</strong> ${user.foImpact}</div>
           <div class="warning-note"><strong>Audit note:</strong> ${user.actionNote}</div>
           ${renderUserDetailActions(user)}
         </div>
@@ -4201,7 +4201,7 @@
             <div class="event"><strong>Review flow</strong><br>เปิด reported reference -> ตรวจ source evidence -> กลับมา clear report หรือ manage account status ตาม policy</div>
           </div>
 
-          <div class="module-note"><strong>FO impact:</strong> Report ไม่ซ่อน profile หรือจำกัดบัญชี จนกว่า Admin จะทำ moderation/action ตาม policy</div>
+          <div class="module-note"><strong>ผลกระทบต่อแอปพลิเคชัน:</strong> Report ไม่ซ่อน profile หรือจำกัดบัญชี จนกว่า Admin จะทำ moderation/action ตาม policy</div>
           ${report.accountStatus === "Deletion Requested" ? `<div class="warning-note"><strong>Deletion dependency:</strong> ต้องตรวจ source report ก่อน แล้วจึง route ไป Account Deletion ห้าม delete/archive ทันทีจากคิวนี้</div>` : ""}
         </div>
       `;
@@ -4456,7 +4456,7 @@
           <div class="timeline">
             <div class="event"><strong>Created</strong><br>รับข้อมูลจาก FO หรือ Admin import และผูกกับ module policy</div>
             <div class="event"><strong>Reviewed</strong><br>Admin ตรวจ context, sensitive data และ related entity ก่อน action</div>
-            <div class="event"><strong>FO impact</strong><br>ผลลัพธ์ต้อง sync กลับไปยัง surface ที่เกี่ยวข้อง และบันทึก audit เมื่อเป็น action เสี่ยง</div>
+            <div class="event"><strong>ผลกระทบต่อแอปพลิเคชัน</strong><br>ผลลัพธ์ต้อง sync กลับไปยัง surface ที่เกี่ยวข้อง และบันทึก audit เมื่อเป็น action เสี่ยง</div>
           </div>
         </div>
       `;
