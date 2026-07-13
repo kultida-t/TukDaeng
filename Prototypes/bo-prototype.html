@@ -3154,7 +3154,7 @@
         </div>
       ` : `
         <div class="user-filter-bar" data-filter-open="${userFilterOpen}">
-          <input class="field search" id="user-search" type="search" placeholder="ค้นหา User ID, ชื่อ, email, phone" />
+          <input class="field search" id="user-search" type="search" placeholder="ค้นหา User ID, ชื่อ, email" />
           <div class="user-advanced-filter">${customSelect("user-status-filter", "Filter account status", [
             { value: "", label: "ทุกสถานะ" },
             { value: "Active", label: "ใช้งานได้" },
@@ -3191,6 +3191,11 @@
 
     function getUserSearchText(record) {
       return Object.values(record).flat().join(" ").toLowerCase();
+    }
+
+    function getUserListSearchText(user) {
+      const searchable = { ...user, contact: getUserContactItems(user).filter(item => !/^phone\s*:/i.test(item)) };
+      return Object.values(searchable).flat().join(" ").toLowerCase();
     }
 
     function getUserFullEmail(user) {
@@ -3436,7 +3441,7 @@
       const auth = document.querySelector("#user-auth-filter")?.value || "";
       const sort = document.querySelector("#user-sort")?.value || "lastActive";
       const sorted = [...userManagementData.users].filter(user => {
-        return (!q || getUserSearchText(user).includes(q))
+        return (!q || getUserListSearchText(user).includes(q))
           && (!status || user.status === status)
           && (!auth || user.auth === auth);
       }).sort((a, b) => {
