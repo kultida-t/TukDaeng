@@ -68,6 +68,7 @@ Recommended note format:
 - [ ] แสดง recent activity feed
 - [ ] Dashboard header แสดง `Last updated` และไม่ต้องมี Date Range / Refresh / Export controls ตาม prototype ปัจจุบัน
 - [ ] Dashboard `New Users` และ `Active Users Today` ต้องนับเฉพาะ registered account/member activity และไม่รวม Guest public traffic
+- [ ] Dashboard prototype ต้องไม่เพิ่ม guest/public analytics KPI, card, panel, chart หรือ drill-in; metric ชุดนี้อยู่ใน Reports & Analytics เท่านั้น
 
 ### Dashboard Prototype Handoff Notes
 
@@ -307,6 +308,7 @@ Recommended note format:
 - [ ] Sensitive data ต้อง mask เป็น default และ sensitive view/export ต้อง audit-log
 - [ ] User Report ต้องแสดง new users, DAU/MAU, auth method, account status และ support/deletion signals
 - [ ] User Report ต้องแยก Guest public view/share analytics ออกจาก registered-user metrics และต้องไม่ใช้ Guest เป็น account status/filter
+- [ ] User Report ต้องรองรับ explicit guest/public metrics ได้แก่ Guest Visitors, Public Asset Views, Public Article Views, Public Profile Views, Public Shares และ Guest-to-Signup Conversion เมื่อ tracking เปิดใช้
 - [ ] Asset Report ต้องใช้ status `Show` / `Hide` ตาม FO และไม่ใช้ legacy collection wording
 - [ ] Offer Report ต้องใช้ status `Rejected` ไม่ใช้ `Declined`
 - [ ] Chat Report ต้องจำกัด transcript export ตาม permission และ audit ทุกครั้ง

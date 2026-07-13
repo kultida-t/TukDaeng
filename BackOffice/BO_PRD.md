@@ -127,6 +127,7 @@ Dashboard ต้องแสดง:
 - Metrics แสดง snapshot ล่าสุดพร้อม `Last updated`; Dashboard ไม่ต้องมี Date Range control ใน prototype ปัจจุบัน
 - ข้อมูลบน Dashboard ต้องเชื่อมกับ report module ได้
 - `New Users` และ `Active Users Today` ต้องนับเฉพาะ registered account/member activity ไม่รวม Guest public view/share traffic
+- Dashboard ไม่ต้องแสดง guest/public analytics ใน prototype; metric ชุดนี้อยู่ใน Reports & Analytics เท่านั้น
 
 ---
 
@@ -432,6 +433,7 @@ Reports ที่ต้องมี:
 - Excel export
 - policy-based visibility
 - User Report ต้องแยก Guest public view/share analytics ออกจาก registered-user metrics เช่น new users, DAU/MAU, auth method และ account status
+- User Report ต้องรองรับ metric ชุด guest/public analytics เมื่อ tracking เปิดใช้ ได้แก่ Guest Visitors, Public Asset Views, Public Article Views, Public Profile Views, Public Shares และ Guest-to-Signup Conversion
 
 ---
 
