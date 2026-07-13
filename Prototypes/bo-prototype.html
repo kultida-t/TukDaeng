@@ -1492,12 +1492,16 @@
       gap: 16px;
     }
     .user-action-head {
-      display: flex;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 38px;
       align-items: flex-start;
       justify-content: space-between;
       gap: 14px;
       padding-bottom: 14px;
       border-bottom: 1px solid var(--line);
+    }
+    .user-action-head > div {
+      min-width: 0;
     }
     .user-action-head h2 {
       margin: 0 0 6px;
@@ -2243,8 +2247,8 @@
     }
     @media (max-width: 760px) {
       .user-action-head {
-        flex-direction: column;
-        align-items: stretch;
+        grid-template-columns: minmax(0, 1fr) 38px;
+        align-items: flex-start;
       }
       .user-action-layout {
         grid-template-columns: 1fr;
