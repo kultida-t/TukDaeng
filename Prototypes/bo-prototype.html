@@ -1992,6 +1992,15 @@
       overflow: hidden;
     }
     .modal-body { padding: 16px; }
+    .modal.user-action-modal {
+      width: min(920px, 100%);
+      max-height: calc(100vh - 36px);
+      display: grid;
+      grid-template-rows: minmax(0, 1fr);
+    }
+    .user-action-modal .modal-body {
+      overflow: auto;
+    }
     .modal-actions {
       display: flex;
       justify-content: flex-end;
@@ -2782,6 +2791,12 @@
 
       <section class="cards" id="cards"></section>
     </main>
+  </div>
+
+  <div class="modal-backdrop" id="user-action-modal" role="dialog" aria-modal="true" aria-labelledby="user-action-modal-title">
+    <div class="modal user-action-modal">
+      <div class="modal-body" id="user-action-modal-body"></div>
+    </div>
   </div>
 
   <script>
@@ -3778,32 +3793,48 @@
       }
     }
 
+    function closeUserActionModal() {
+      const modal = document.querySelector("#user-action-modal");
+      if (!modal) return;
+      modal.classList.remove("show");
+      document.querySelector("#user-action-modal-body").innerHTML = "";
+    }
+
+    function refreshUserActionSurface(user) {
+      if (!user || activeModule !== "users") return;
+      if (document.body.classList.contains("user-detail-mode")) {
+        renderUserDetailPageSpec(user);
+        return;
+      }
+      if (activeSub === "Report User" || activeSub === "Reported Users") {
+        renderReportedUserRows();
+        return;
+      }
+      renderUserRows();
+      renderUserDetail(user);
+    }
+
+    function getUserActionConfirmClass(config) {
+      if (config.tone === "danger") return "danger user-action-confirm";
+      if (config.tone === "warning") return "warning user-action-confirm";
+      return "primary user-action-confirm";
+    }
+
     function renderUserActionPage(user, action, completed = false, resultMessage = "", statusBefore = user?.status) {
       const config = userActionConfig[action];
       if (!user || !config) return;
-      const fullEmail = getUserFullEmail(user);
       const beforeStatus = statusBefore || user.status;
-      document.body.classList.add("user-detail-mode");
-      document.body.classList.remove("user-list-mode");
-      activeSub = "User List";
       activeRow = user;
-      document.querySelector("#crumb").textContent = `การดำเนินงาน / User Management / User Detail / ${user.id} / ${config.crumb}`;
-      document.querySelector("#page-title").textContent = config.title;
-      document.querySelector("#page-meta").textContent = "";
-      document.querySelector("#panel-title").textContent = config.title;
-      document.querySelector("#panel-subtitle").textContent = `${user.id} · ${user.displayName} · ${fullEmail}`;
-      document.querySelector(".filters").innerHTML = "";
-      document.querySelector("#summary-grid").innerHTML = "";
-      document.querySelector("#cards").innerHTML = "";
-      document.querySelector("#detail").innerHTML = "";
-      document.querySelector("#table").innerHTML = `
+      const modal = document.querySelector("#user-action-modal");
+      const modalBody = document.querySelector("#user-action-modal-body");
+      modalBody.innerHTML = `
         <div class="user-action-page">
           <div class="user-action-head">
             <div>
-              <h2>${config.title}</h2>
+              <h2 id="user-action-modal-title">${config.title}</h2>
               <p>${config.summary}</p>
             </div>
-            <button class="btn" type="button" data-user-open="${user.id}">กลับไป User Detail</button>
+            <button class="btn" type="button" data-user-action-modal-close>Close</button>
           </div>
           <div class="user-action-layout">
             <div class="detail-section">
@@ -3822,8 +3853,8 @@
                 <div class="module-note"><strong>FO impact:</strong> ${getUserActionFoImpact(user, action)}</div>
                 <div class="warning-note"><strong>Suspend vs Ban:</strong> Suspend คือระงับชั่วคราวเพื่อ hold ระหว่างตรวจสอบและ Restore ได้ง่ายกว่า ส่วน Ban คือระงับถาวรกว่า ใช้เมื่อยืนยัน abuse/fraud แล้ว และการ Unban ต้องมี approval ชัดเจน</div>
                 <div class="user-detail-actions">
-                  <button class="user-detail-action-btn ${config.tone === "danger" ? "danger user-action-confirm" : config.tone === "warning" ? "warning user-action-confirm" : "primary user-action-confirm"}" type="button" data-user-action-confirm="${action}" data-user-id="${user.id}" ${completed ? "disabled" : ""}>${config.confirmLabel}</button>
-                  <button class="user-detail-action-btn" type="button" data-user-open="${user.id}">ยกเลิก</button>
+                  <button class="user-detail-action-btn ${getUserActionConfirmClass(config)}" type="button" data-user-action-confirm="${action}" data-user-id="${user.id}" ${completed ? "disabled" : ""}>${config.confirmLabel}</button>
+                  <button class="user-detail-action-btn" type="button" data-user-action-modal-close>${completed ? "Close" : "ยกเลิก"}</button>
                 </div>
                 <div class="warning-note action-feedback user-action-result ${completed ? "show" : ""}">
                   <strong>${resultMessage}</strong><br>
@@ -3847,7 +3878,7 @@
           </div>
         </div>
       `;
-      updateActiveNav();
+      modal.classList.add("show");
     }
 
     function confirmUserAction(user, action) {
@@ -3858,6 +3889,7 @@
         user.status = config.targetStatus;
         updateUserActionsForStatus(user);
       }
+      refreshUserActionSurface(user);
       renderUserActionPage(user, action, true, config.success(user), beforeStatus);
     }
 
@@ -4428,6 +4460,11 @@
         closeRowMenus();
       }
 
+      if (event.target.closest("[data-user-action-modal-close]") || event.target.matches("#user-action-modal")) {
+        closeUserActionModal();
+        return;
+      }
+
       const customOption = event.target.closest("[data-custom-select-option]");
       if (customOption) {
         const select = customOption.closest("[data-custom-select]");
@@ -4796,7 +4833,14 @@
     });
     document.querySelector("#sidebar-backdrop").addEventListener("click", () => setNavOpen(false));
     document.addEventListener("keydown", event => {
-      if (event.key === "Escape") setNavOpen(false);
+      if (event.key === "Escape") {
+        const userActionModal = document.querySelector("#user-action-modal");
+        if (userActionModal?.classList.contains("show")) {
+          closeUserActionModal();
+          return;
+        }
+        setNavOpen(false);
+      }
     });
     window.matchMedia("(min-width: 1181px)").addEventListener("change", event => {
       if (event.matches) setNavOpen(false);
