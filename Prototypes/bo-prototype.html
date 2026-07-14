@@ -4771,20 +4771,89 @@
       };
     }
 
+    function renderReportStatusConfirmModal(report, status) {
+      if (!report || status !== "Cleared") {
+        updateReportStatus(report, status);
+        return;
+      }
+      const closeReasons = [
+        "ตรวจหลักฐานครบแล้ว ไม่พบประเด็นค้าง",
+        "ดำเนินการกับบัญชีเรียบร้อยแล้ว",
+        "รายงานซ้ำกับเคสที่ปิดผลแล้ว",
+        "หลักฐานไม่เข้าเงื่อนไขดำเนินการต่อ"
+      ];
+      const modal = document.querySelector("#user-action-modal");
+      const modalBody = document.querySelector("#user-action-modal-body");
+      if (!modal || !modalBody) return;
+      modalBody.innerHTML = `
+        <div class="user-action-page">
+          <div class="user-action-head">
+            <div>
+              <h2 id="user-action-modal-title">ยืนยันการปิดรายงาน</h2>
+              <p>ใช้เมื่อผู้ดูแลตรวจหลักฐานต้นทางครบแล้ว และต้องการทำเครื่องหมายรายงานนี้ว่าเสร็จสิ้น</p>
+            </div>
+            <button class="btn user-action-close" type="button" data-user-action-modal-close aria-label="Close modal" title="Close">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M18 6 6 18"></path>
+                <path d="m6 6 12 12"></path>
+              </svg>
+            </button>
+          </div>
+          <div class="user-action-target">
+            <div>
+              <strong>${report.user}</strong>
+              <span>${report.id} · ${report.reference}</span>
+            </div>
+            ${reportQueueStatusPill(report)}
+          </div>
+          <div class="user-action-layout">
+            <div class="detail-section">
+              <div class="user-action-form">
+                <label>
+                  เหตุผลการปิดรายงาน
+                  ${customSelect("report-close-reason", "เหตุผลการปิดรายงาน", closeReasons.map(reason => ({ value: reason, label: reason })), "", "data-custom-select-silent")}
+                </label>
+                <label>
+                  Note / หมายเหตุ
+                  <textarea id="report-close-note" placeholder="ระบุหมายเหตุ เหตุผล หรือข้อมูลอ้างอิงที่เกี่ยวข้อง"></textarea>
+                </label>
+                <div class="module-note user-action-impact"><strong>ผลกระทบต่อแอปพลิเคชัน:</strong> รายงานจะถูกปิดและออกจากคิวที่ต้องดำเนินการ แต่ไม่เปลี่ยนสถานะบัญชีผู้ใช้โดยอัตโนมัติ</div>
+                <div class="user-detail-actions">
+                  <button class="user-detail-action-btn warning user-action-confirm" type="button" data-report-status-confirm="${status}" data-report-id="${report.id}">ยืนยันปิดรายงาน</button>
+                  <button class="user-detail-action-btn" type="button" data-user-action-modal-close>ยกเลิก</button>
+                </div>
+                <div class="warning-note action-feedback user-action-result"></div>
+                <details class="prototype-tools user-action-prototype-tools">
+                  <summary>Prototype scenario</summary>
+                  <label>
+                    Test flow
+                    ${customSelect("report-close-scenario", "Test flow", userActionFlowScenarios, "success", "data-custom-select-silent")}
+                  </label>
+                </details>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+      modal.classList.add("show");
+    }
+
     function updateReportStatus(report, status) {
       if (!report || !status) return;
       const beforeStatus = report.status;
       if (beforeStatus === status) return;
       const actionSummary = getReportStatusActionSummary(status);
+      const closeReason = document.querySelector("#report-close-reason")?.value;
+      const closeNote = document.querySelector("#report-close-note")?.value.trim();
       report.status = status;
       if (status === "Cleared") report.waiting = "0 ชม.";
       report.accountStatus = getReportAccountStatus(report);
       appendReportAuditLog(report, {
         action: "REPORT_STATUS_UPDATED",
-        detail: actionSummary.detail,
+        detail: closeNote || closeReason || actionSummary.detail,
         before: { reportStatus: beforeStatus, accountStatus: report.accountStatus },
         after: { reportStatus: status, accountStatus: report.accountStatus },
-        reason: "ผู้ดูแลตรวจหลักฐานต้นทางแล้วจึงอัปเดตสถานะรายงาน"
+        reason: closeReason || "ผู้ดูแลตรวจหลักฐานต้นทางแล้วจึงอัปเดตสถานะรายงาน"
       });
       if (document.body.classList.contains("user-detail-mode")) renderReportedUserDetail(report);
       else renderReportedUserRows();
@@ -5496,6 +5565,13 @@
         confirmUserAction(user, userActionConfirmButton.dataset.userActionConfirm);
         return;
       }
+      const reportStatusConfirmButton = event.target.closest("[data-report-status-confirm]");
+      if (reportStatusConfirmButton) {
+        const report = userManagementData.reports.find(entry => entry.id === reportStatusConfirmButton.dataset.reportId);
+        updateReportStatus(report, reportStatusConfirmButton.dataset.reportStatusConfirm);
+        closeUserActionModal();
+        return;
+      }
       const userActionButton = event.target.closest("[data-user-action]");
       if (userActionButton) {
         const id = userActionButton.dataset.userId;
@@ -5521,7 +5597,7 @@
       const reportStatusButton = event.target.closest("[data-report-status-action]");
       if (reportStatusButton) {
         const report = userManagementData.reports.find(entry => entry.id === reportStatusButton.dataset.reportId);
-        updateReportStatus(report, reportStatusButton.dataset.reportStatusAction);
+        renderReportStatusConfirmModal(report, reportStatusButton.dataset.reportStatusAction);
         closeRowMenus();
         return;
       }
