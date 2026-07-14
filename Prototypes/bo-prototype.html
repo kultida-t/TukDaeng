@@ -3620,9 +3620,7 @@
           reportedAt: formatReporterSubmissionTime(baseTime + minuteOffset * 60 * 1000),
           source: report.source,
           note: appReason,
-          status: index === 0
-            ? { label: "เปิดเคส", detail: "รายงานแรกที่สร้างเคสนี้" }
-            : { label: "รวมในเคส", detail: "รายงานซ้ำที่รวมเข้ากับเคสนี้แล้ว" }
+          status: "เปิดเคส"
         };
       });
     }
@@ -3633,7 +3631,7 @@
           <td data-label="วันที่ / เวลา">${row.reportedAt}</td>
           <td data-label="Reporter">${row.reporter}</td>
           <td data-label="Source">${row.source}</td>
-          <td data-label="Status"><span class="pill">${row.status.label}</span><div class="muted">${row.status.detail}</div></td>
+          <td data-label="Status">${row.status}</td>
           <td data-label="Reporter note" class="history-note">${row.note}</td>
         </tr>
       `).join("");
