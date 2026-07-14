@@ -4233,7 +4233,7 @@
 
     function renderReportAccountActionButtons(report) {
       const user = getReportUser(report);
-      if (!user) return `<button type="button" data-report-action="${report.id}">ดูรายละเอียด</button>`;
+      if (!user) return "";
       const actions = getReportAccountActions(report);
       return actions.map(({ action, label }) => `<button type="button" data-user-action="${action}" data-user-id="${user.id}" data-report-context="${report.id}">${label}</button>`).join("");
     }
@@ -4361,7 +4361,6 @@
                 <details class="row-menu">
                   <summary title="Report actions">...</summary>
                   <div class="row-menu-list">
-                    <button type="button" data-report-action="${report.id}">ดูรายละเอียด</button>
                     ${renderReportStatusActionButtons(report)}
                     ${renderReportAccountActionButtons(report)}
                   </div>
