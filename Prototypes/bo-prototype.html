@@ -4833,7 +4833,7 @@
             ${getReportStatusActions(report).map(action => `<button class="user-detail-action-btn ${action.status === "Cleared" ? "primary" : ""}" type="button" data-report-status-action="${action.status}" data-report-id="${report.id}">${action.label}</button>`).join("")}
             ${getReportAccountActions(report).map(({ action, label }, index) => {
               return `<button class="user-detail-action-btn ${getUserActionClass(action, index)}" type="button" data-user-action="${action}" data-user-id="${reportUser.id}" data-report-context="${report.id}">${label}</button>`;
-            }).join("") || `<span class="chip">${getReportQueueStatus(report) === "Cleared" ? "Report closed - no further action" : "No account action available"}</span>`}
+            }).join("") || (getReportQueueStatus(report) === "Cleared" ? "" : `<span class="chip">No account action available</span>`)}
           </div>
         </div>
       `;
