@@ -1640,6 +1640,15 @@
       font-size: 12px;
       font-weight: 400;
     }
+    .report-detail-page .report-reference-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    .report-detail-page .report-detail-grid {
+      grid-template-columns: 1fr;
+    }
+    .report-detail-page .detail-tile strong {
+      overflow-wrap: anywhere;
+    }
     .user-action-target strong {
       display: block;
       margin-bottom: 2px;
@@ -2863,6 +2872,102 @@
       body.user-detail-mode .detail-tile {
         padding: 9px 8px;
       }
+      .report-detail-page {
+        width: 100%;
+        min-width: 0;
+        max-width: 100%;
+        padding: 14px;
+      }
+      .report-detail-page .user-detail-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+      }
+      .report-detail-page .user-detail-head .btn {
+        width: auto;
+        flex: 0 0 auto;
+      }
+      .report-detail-page .user-detail-title {
+        flex: 1 1 auto;
+        align-items: center;
+        min-width: 0;
+      }
+      .report-detail-page .user-detail-title .profile-image {
+        flex: 0 0 auto;
+      }
+      .report-detail-page .user-detail-head h2 {
+        font-size: 28px;
+        line-height: 1.05;
+        overflow-wrap: anywhere;
+      }
+      body.user-detail-mode .report-detail-page .detail-grid.two,
+      .report-detail-page .report-reference-grid,
+      .report-detail-page .report-detail-grid {
+        grid-template-columns: 1fr;
+      }
+      .report-detail-page .detail-tile {
+        padding: 11px 10px;
+      }
+      .report-detail-page .detail-tile span {
+        margin-bottom: 5px;
+      }
+      .report-detail-page .detail-tile .chips {
+        gap: 6px;
+      }
+      .report-detail-page .history-table-wrap {
+        overflow: visible;
+        border: 0;
+        background: transparent;
+      }
+      .report-detail-page .history-table,
+      .report-detail-page .history-table tbody,
+      .report-detail-page .history-table tr,
+      .report-detail-page .history-table td {
+        display: block;
+        width: 100%;
+      }
+      .report-detail-page .history-table thead {
+        display: none;
+      }
+      .report-detail-page .history-table {
+        min-width: 0;
+        border-collapse: separate;
+        border-spacing: 0 8px;
+        background: transparent;
+      }
+      .report-detail-page .history-table .history-note {
+        min-width: 0;
+        max-width: none;
+      }
+      .report-detail-page .history-table tr {
+        border: 1px solid #dce6f2;
+        border-radius: 8px;
+        background: #fff;
+        padding: 10px;
+      }
+      .report-detail-page .history-table td {
+        display: grid;
+        grid-template-columns: 92px minmax(0, 1fr);
+        gap: 10px;
+        align-items: start;
+        border: 0;
+        padding: 6px 0;
+        font-size: 12px;
+        line-height: 1.45;
+        overflow-wrap: anywhere;
+      }
+      .report-detail-page .history-table td::before {
+        content: attr(data-label);
+        color: #66758d;
+        font-size: 11px;
+        font-weight: 800;
+        line-height: 1.35;
+      }
+      .report-detail-page .history-table td .pill {
+        width: max-content;
+        max-width: 100%;
+      }
       .user-detail-action-section .user-detail-actions {
         display: grid;
         grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -3449,11 +3554,11 @@
         const accountStatus = accountStatusByLog.get(log) || report.accountStatus || getReportAccountStatus(report);
         return `
           <tr>
-            <td>${formatAuditDisplayTime(log.createdAt)}</td>
-            <td>${log.actor}</td>
-            <td>${getReportAuditActionLabel(log)}</td>
-            <td>${userStatusPill(accountStatus)}</td>
-            <td class="history-note">${log.reason || ""}</td>
+            <td data-label="วันที่ / เวลา">${formatAuditDisplayTime(log.createdAt)}</td>
+            <td data-label="ผู้ดำเนินการ">${log.actor}</td>
+            <td data-label="Action">${getReportAuditActionLabel(log)}</td>
+            <td data-label="สถานะบัญชี">${userStatusPill(accountStatus)}</td>
+            <td data-label="รายละเอียด" class="history-note">${log.reason || ""}</td>
           </tr>
         `;
       }).join("");
@@ -4825,19 +4930,18 @@
 
           <div class="detail-section">
             <h4>Reported Reference</h4>
-            <div class="detail-grid two">
+            <div class="detail-grid two report-reference-grid">
               <div class="detail-tile"><span>Report ID</span><strong>${report.id}</strong></div>
               <div class="detail-tile"><span>User ID</span><strong>${report.userId}</strong></div>
               <div class="detail-tile"><span>Reference</span><strong>${report.reference}</strong></div>
               <div class="detail-tile"><span>Source Module</span><strong>${report.source}</strong></div>
               <div class="detail-tile"><span>Account Status</span><strong>${userStatusLabels[getReportAccountStatus(report)] || getReportAccountStatus(report)}</strong></div>
-              <div class="detail-tile"><span>Waiting</span><strong>${report.waiting}</strong></div>
             </div>
           </div>
 
           <div class="detail-section">
             <h4>Report Details</h4>
-            <div class="detail-grid">
+            <div class="detail-grid report-detail-grid">
               <div class="detail-tile"><span>Reason</span><strong>${report.reason}</strong></div>
               <div class="detail-tile"><span>Application reporter note</span><div class="chips">${report.evidence.map(item => `<span class="chip">${item}</span>`).join("")}</div></div>
               <div class="detail-tile"><span>Recommendation</span>${report.recommendation}</div>
