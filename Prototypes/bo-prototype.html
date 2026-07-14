@@ -3296,6 +3296,7 @@
     let activeActivityFilter = "ทั้งหมด";
     let userListPage = 1;
     let userFilterOpen = false;
+    let activeReportContextId = null;
     const userListPageSize = 10;
 
     function resetSessionViewState() {
@@ -3437,6 +3438,7 @@
       const mode = subLabel === "Report User" || subLabel === "Reported Users" ? "reports" : "list";
       const isReports = mode === "reports";
       const title = isReports ? "Reported Users" : "User List";
+      activeReportContextId = null;
       document.body.classList.add("user-list-mode");
       document.body.classList.remove("user-detail-mode");
       activeRow = isReports ? userManagementData.reports[0] : userManagementData.users[0];
@@ -4032,6 +4034,16 @@
 
     function refreshUserActionSurface(user) {
       if (!user || activeModule !== "users") return;
+      if ((activeSub === "Report User" || activeSub === "Reported Users") && activeReportContextId) {
+        const report = userManagementData.reports.find(entry => entry.id === activeReportContextId);
+        if (report) {
+          report.accountStatus = user.status;
+          report.actionHistory = `Account status updated from Reported Users: ${user.status} at ${formatBangkokTimestamp()}`;
+          if (document.body.classList.contains("user-detail-mode")) renderReportedUserDetail(report);
+          else renderReportedUserRows();
+          return;
+        }
+      }
       if (document.body.classList.contains("user-detail-mode")) {
         renderUserDetailPageSpec(user);
         return;
@@ -4102,7 +4114,7 @@
                 </label>
                 <div class="module-note user-action-impact"><strong>ผลกระทบต่อแอปพลิเคชัน:</strong> ${getUserActionFoImpact(user, action)}</div>
                 <div class="user-detail-actions">
-                  <button class="user-detail-action-btn ${getUserActionConfirmClass(config)}" type="button" data-user-action-confirm="${action}" data-user-id="${user.id}" ${completed ? "disabled" : ""}>${USER_ACTION_CONFIRM_LABEL}</button>
+                  <button class="user-detail-action-btn ${getUserActionConfirmClass(config)}" type="button" data-user-action-confirm="${action}" data-user-id="${user.id}" data-report-context="${activeReportContextId || ""}" ${completed ? "disabled" : ""}>${USER_ACTION_CONFIRM_LABEL}</button>
                   <button class="user-detail-action-btn" type="button" data-user-action-modal-close>${completed ? "ปิด" : "ยกเลิก"}</button>
                 </div>
                 <div class="warning-note action-feedback user-action-result ${hasResult ? "show" : ""} ${resultType}">
@@ -4135,6 +4147,7 @@
     function confirmUserAction(user, action) {
       const config = userActionConfig[action];
       if (!user || !config) return;
+      activeReportContextId = document.querySelector("[data-user-action-confirm]")?.dataset.reportContext || activeReportContextId;
       const scenario = document.querySelector("#user-action-scenario")?.value || "success";
       const errorSample = getUserActionErrorSample(action, scenario);
       if (errorSample) {
@@ -4163,8 +4176,9 @@
       scrollMainToTop();
     }
 
-    function handleUserAction(user, action) {
+    function handleUserAction(user, action, reportContextId = "") {
       if (!user || !action) return;
+      activeReportContextId = reportContextId || null;
       if (action === "Open Account Deletion") {
         openAccountDeletionRequest(user);
         return;
@@ -4178,6 +4192,61 @@
         return;
       }
       renderUserDetailPage(user);
+    }
+
+    function getReportUser(report) {
+      return userManagementData.users.find(user => user.id === report?.userId);
+    }
+
+    function getReportAccountStatus(report) {
+      return getReportUser(report)?.status || report.accountStatus;
+    }
+
+    function getReportStatusActions(report) {
+      if (!report) return [];
+      if (report.status === "Open") {
+        return [
+          { status: "In Review", label: "เริ่มตรวจ report" },
+          { status: "Cleared", label: "ปิด report" }
+        ];
+      }
+      if (report.status === "In Review") {
+        return [
+          { status: "Cleared", label: "ปิด report" },
+          { status: "Open", label: "ส่งกลับไปรอตรวจ" }
+        ];
+      }
+      return [{ status: "Open", label: "เปิด report อีกครั้ง" }];
+    }
+
+    function getReportAccountActions(report) {
+      const user = getReportUser(report);
+      if (!user) return [];
+      return getUserRowActions(user);
+    }
+
+    function renderReportStatusActionButtons(report) {
+      return getReportStatusActions(report)
+        .map(action => `<button type="button" data-report-status-action="${action.status}" data-report-id="${report.id}">${action.label}</button>`)
+        .join("");
+    }
+
+    function renderReportAccountActionButtons(report) {
+      const user = getReportUser(report);
+      if (!user) return `<button type="button" data-report-action="${report.id}">ดูรายละเอียด</button>`;
+      const actions = getReportAccountActions(report);
+      return actions.map(({ action, label }) => `<button type="button" data-user-action="${action}" data-user-id="${user.id}" data-report-context="${report.id}">${label}</button>`).join("");
+    }
+
+    function updateReportStatus(report, status) {
+      if (!report || !status) return;
+      report.status = status;
+      if (status === "Cleared") report.waiting = "0 ชม.";
+      report.accountStatus = getReportAccountStatus(report);
+      report.actionHistory = `Report status updated to ${status} by Admin at ${formatBangkokTimestamp()}`;
+      if (document.body.classList.contains("user-detail-mode")) renderReportedUserDetail(report);
+      else renderReportedUserRows();
+      showSuccessToast(`${report.id} updated to ${status}`);
     }
 
     function renderUserRows() {
@@ -4275,6 +4344,7 @@
                 ${statusPill(getReportPriorityLabel(report.priority), report.priority)}
                 <div class="user-card-meta">
                   <div class="user-card-meta-item"><span>User</span><strong>${report.user}</strong></div>
+                  <div class="user-card-meta-item"><span>Account</span><strong>${getReportAccountStatus(report)}</strong></div>
                   <div class="user-card-meta-item"><span>Source</span><strong>${report.source}</strong></div>
                   <div class="user-card-meta-item"><span>Waiting</span><strong>${report.waiting}</strong></div>
                   <div class="user-card-meta-item"><span>Report detail</span><strong>${report.reason}</strong></div>
@@ -4292,6 +4362,8 @@
                   <summary title="Report actions">...</summary>
                   <div class="row-menu-list">
                     <button type="button" data-report-action="${report.id}">ดูรายละเอียด</button>
+                    ${renderReportStatusActionButtons(report)}
+                    ${renderReportAccountActionButtons(report)}
                   </div>
                 </details>
               </div>
@@ -4442,6 +4514,7 @@
       document.body.classList.remove("user-list-mode");
       activeSub = "Reported Users";
       activeRow = report;
+      activeReportContextId = report.id;
       document.querySelector("#crumb").textContent = `การดำเนินงาน / User Management / Report Detail / ${report.id}`;
       document.querySelector("#page-title").textContent = "Report Detail";
       document.querySelector("#page-meta").textContent = "";
@@ -4473,7 +4546,7 @@
               <div class="detail-tile"><span>User ID</span><strong>${report.userId}</strong></div>
               <div class="detail-tile"><span>Reference</span><strong>${report.reference}</strong></div>
               <div class="detail-tile"><span>Source Module</span><strong>${report.source}</strong></div>
-              <div class="detail-tile"><span>Account Status</span><strong>${report.accountStatus}</strong></div>
+              <div class="detail-tile"><span>Account Status</span><strong>${getReportAccountStatus(report)}</strong></div>
               <div class="detail-tile"><span>Waiting</span><strong>${report.waiting}</strong></div>
             </div>
           </div>
@@ -4493,8 +4566,19 @@
             <div class="event"><strong>Review flow</strong><br>เปิด reported reference -> ตรวจ source evidence -> กลับมา clear report หรือ manage account status ตาม policy</div>
           </div>
 
+          <div class="detail-section">
+            <h4>Report Actions</h4>
+            <div class="user-detail-actions">
+              ${getReportStatusActions(report).map(action => `<button class="user-detail-action-btn ${action.status === "Cleared" ? "primary" : ""}" type="button" data-report-status-action="${action.status}" data-report-id="${report.id}">${action.label}</button>`).join("")}
+              ${getReportAccountActions(report).map(({ action, label }, index) => {
+                const user = getReportUser(report);
+                return `<button class="user-detail-action-btn ${getUserActionClass(action, index)}" type="button" data-user-action="${action}" data-user-id="${user.id}" data-report-context="${report.id}">${label}</button>`;
+              }).join("") || `<span class="chip">No account action available</span>`}
+            </div>
+          </div>
+
           <div class="module-note"><strong>ผลกระทบต่อแอปพลิเคชัน:</strong> Report ไม่ซ่อน profile หรือจำกัดบัญชี จนกว่า Admin จะทำ moderation/action ตาม policy</div>
-          ${report.accountStatus === "Deletion Requested" ? `<div class="warning-note"><strong>Deletion dependency:</strong> ต้องตรวจ source report ก่อน แล้วจึง route ไป Account Deletion ห้าม delete/archive ทันทีจากคิวนี้</div>` : ""}
+          ${getReportAccountStatus(report) === "Deletion Requested" ? `<div class="warning-note"><strong>Deletion dependency:</strong> ต้องตรวจ source report ก่อน แล้วจึง route ไป Account Deletion ห้าม delete/archive ทันทีจากคิวนี้</div>` : ""}
         </div>
       `;
       document.querySelector("#detail").innerHTML = "";
@@ -4876,6 +4960,7 @@
       if (userActionConfirmButton) {
         const id = userActionConfirmButton.dataset.userId;
         const user = userManagementData.users.find(entry => entry.id === id);
+        activeReportContextId = userActionConfirmButton.dataset.reportContext || activeReportContextId;
         confirmUserAction(user, userActionConfirmButton.dataset.userActionConfirm);
         return;
       }
@@ -4883,7 +4968,7 @@
       if (userActionButton) {
         const id = userActionButton.dataset.userId;
         const user = userManagementData.users.find(entry => entry.id === id);
-        handleUserAction(user, userActionButton.dataset.userAction);
+        handleUserAction(user, userActionButton.dataset.userAction, userActionButton.dataset.reportContext || "");
         closeRowMenus();
         return;
       }
@@ -4898,6 +4983,13 @@
       if (userCard && window.matchMedia("(max-width: 760px)").matches && !event.target.closest(".row-menu, button, a, input, select, [data-custom-select]")) {
         const user = userManagementData.users.find(entry => entry.id === userCard.dataset.userCard);
         renderUserDetailPage(user);
+        return;
+      }
+      const reportStatusButton = event.target.closest("[data-report-status-action]");
+      if (reportStatusButton) {
+        const report = userManagementData.reports.find(entry => entry.id === reportStatusButton.dataset.reportId);
+        updateReportStatus(report, reportStatusButton.dataset.reportStatusAction);
+        closeRowMenus();
         return;
       }
       const reportActionButton = event.target.closest("[data-report-action]");
