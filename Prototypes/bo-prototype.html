@@ -3390,13 +3390,13 @@
     function getReportAuditAccountStatusRows(report) {
       const logs = ensureReportAuditLogs(report);
       let currentStatus = report.accountStatus || getReportAccountStatus(report);
-      const statusById = new Map();
+      const statusByLog = new WeakMap();
       [...logs].reverse().forEach(log => {
         const statusAtLog = log.after?.accountStatus || log.before?.accountStatus || currentStatus;
         currentStatus = statusAtLog;
-        statusById.set(log.id, statusAtLog);
+        statusByLog.set(log, statusAtLog);
       });
-      return statusById;
+      return statusByLog;
     }
 
     function ensureReportAuditLogs(report) {
@@ -3422,8 +3422,12 @@
     function appendReportAuditLog(report, log) {
       if (!report || !log) return;
       const auditLogs = ensureReportAuditLogs(report);
+      const nextAuditNumber = auditLogs.reduce((max, entry) => {
+        const match = String(entry.id || "").match(/-(\d+)$/);
+        return Math.max(max, match ? Number(match[1]) : 0);
+      }, 0) + 1;
       auditLogs.unshift({
-        id: `AUD-${report.id}-${String(auditLogs.length + 1).padStart(3, "0")}`,
+        id: `AUD-${report.id}-${String(nextAuditNumber).padStart(3, "0")}`,
         actor: "Somchai Admin",
         createdAt: formatBangkokTimestamp(),
         entityType: "reported_user",
@@ -3437,16 +3441,16 @@
     }
 
     function renderReportAuditHistoryTable(report) {
-      const accountStatusByLogId = getReportAuditAccountStatusRows(report);
+      const accountStatusByLog = getReportAuditAccountStatusRows(report);
       const rows = ensureReportAuditLogs(report).map(log => {
-        const accountStatus = accountStatusByLogId.get(log.id) || report.accountStatus || getReportAccountStatus(report);
+        const accountStatus = accountStatusByLog.get(log) || report.accountStatus || getReportAccountStatus(report);
         return `
           <tr>
             <td>${formatAuditDisplayTime(log.createdAt)}</td>
             <td>${log.actor}</td>
-            <td>${getReportAuditActionLabel(log)}<br><small>${log.sourceModule}</small></td>
+            <td>${getReportAuditActionLabel(log)}</td>
             <td>${userStatusPill(accountStatus)}</td>
-            <td class="history-note">${log.detail}${log.reason ? `<br><small>เหตุผล: ${log.reason}</small>` : ""}</td>
+            <td class="history-note">${log.reason || ""}</td>
           </tr>
         `;
       }).join("");
