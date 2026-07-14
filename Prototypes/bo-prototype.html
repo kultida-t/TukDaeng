@@ -1148,6 +1148,9 @@
       grid-template-columns: minmax(150px, 1.08fr) minmax(136px, .74fr) minmax(148px, .8fr) minmax(76px, .4fr) minmax(86px, .5fr) minmax(118px, .64fr) minmax(124px, .58fr);
       gap: 16px;
     }
+    .user-row:not(.head):not(.report-row) {
+      cursor: pointer;
+    }
     .user-row:not(.report-row) > div {
       min-width: 0;
     }
@@ -4581,11 +4584,11 @@
               <div data-label="Auth">${userAuthPill(user.auth)}</div>
               <div data-label="Date Joined"><div class="main-text">${user.joined}</div></div>
               <div class="user-row-actions">
-                <button class="panel-action" type="button" data-user-open="${user.id}">${iconSvg.eye}View</button>
                 <details class="row-menu">
                   <summary title="Account actions">...</summary>
                   <div class="row-menu-list">
-                    ${rowActions.map(({ action, label }) => `<button type="button" data-user-action="${action}" data-user-id="${user.id}">${label}</button>`).join("") || `<button type="button" data-user-open="${user.id}">ดูรายละเอียด</button>`}
+                    <button type="button" data-user-open="${user.id}">ดูรายละเอียด</button>
+                    ${rowActions.map(({ action, label }) => `<button type="button" data-user-action="${action}" data-user-id="${user.id}">${label}</button>`).join("")}
                   </div>
                 </details>
               </div>
@@ -5247,10 +5250,11 @@
         const id = userOpenButton.dataset.userOpen;
         const user = userManagementData.users.find(entry => entry.id === id);
         renderUserDetailPage(user);
+        closeRowMenus();
         return;
       }
       const userCard = event.target.closest("[data-user-card]");
-      if (userCard && window.matchMedia("(max-width: 760px)").matches && !event.target.closest(".row-menu, button, a, input, select, [data-custom-select]")) {
+      if (userCard && !event.target.closest(".row-menu, button, a, input, select, [data-custom-select]")) {
         const user = userManagementData.users.find(entry => entry.id === userCard.dataset.userCard);
         renderUserDetailPage(user);
         return;

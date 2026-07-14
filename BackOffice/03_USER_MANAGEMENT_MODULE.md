@@ -264,7 +264,7 @@ Action ที่ทำได้ตามสถานะบัญชี:
 
 กฎของ Prototype ปัจจุบัน:
 
-- Row action แสดงปุ่ม `View` แยก และรวม secondary account action ไว้ใน dropdown `...`
+- Row action รวม `ดูรายละเอียด` และ secondary account action ไว้ใน dropdown `...`; Admin สามารถคลิกแถวเพื่อเปิด User Detail ได้โดยตรง
 - Action modal ใช้ structured action view กลางสำหรับ reset password, suspend, ban, restore, unban และ resend verification context
 - Action modal แสดง target user, current status, reason dropdown, note textarea, FO impact, ปุ่ม confirm และ cancel
 - Prototype ยังไม่ validate ว่าต้องเลือก/กรอก reason ก่อนกด confirm และยังไม่มี confirmation ชั้นที่สองสำหรับ suspend; production/API ต้อง enforce rule นี้ก่อนบันทึก mutation
@@ -438,7 +438,7 @@ Prototype BO ปัจจุบัน align User List กับ visual system �
 - Pagination แสดง 10 user ต่อหน้าหลัง apply search/filter/sort แล้ว Footer แสดงช่วงรายการที่มองเห็น จำนวน row ทั้งหมดหลัง filter และ page navigation
 - `รีเซ็ตค่าทั้งหมด` อยู่ใน list header เป็น icon utility เพราะใช้ล้างเฉพาะ search/filter/sort state และคืน list เป็นค่าเริ่มต้น
 - `Reported Users` ยังคงเข้าถึงได้จาก left navigation แทนการมีปุ่มซ้ำใน User List เพื่อให้หน้านี้โฟกัสที่การ browse บัญชีและ direct account action
-- Row action แสดงปุ่ม `View` ในแต่ละ row ส่วน secondary account action เช่นการส่ง password reset link ให้บัญชี Email หรือการ suspend/restore บัญชี รวมไว้ใน dropdown `...` ขนาด compact เพื่อให้ table สะอาด
+- Row action รวมเมนู `ดูรายละเอียด` และ secondary account action เช่นการส่ง password reset link ให้บัญชี Email หรือการ suspend/restore บัญชีไว้ใน dropdown `...` ขนาด compact; Admin สามารถคลิกแถวเพื่อเปิด User Detail ได้โดยตรง
 - Action reset password อนุญาตเฉพาะบัญชี Email ที่ Active; บัญชี Apple/Google และสถานะที่ไม่อนุญาตจะไม่เห็น reset action ใน Prototype ปัจจุบัน
 - Account deletion ไม่จัดการจาก User List งานที่เกี่ยวกับ deletion อยู่ใน Account Deletion module
 - User List ไม่แสดง Export ใน prototype ปัจจุบัน หากภายหลังต้อง export user data ให้เพิ่มผ่าน Reports/export workflow ที่ควบคุมด้วย permission
