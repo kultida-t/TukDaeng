@@ -3664,9 +3664,8 @@
         <div class="user-filter-bar" data-filter-open="${userFilterOpen}">
           <input class="field search" id="user-search" type="search" placeholder="ค้นหา report ID, user ID, display name, reason หรือ reference" />
           <div class="user-advanced-filter">${customSelect("report-status-filter", "Filter report status", [
-            { value: "", label: "ทุก report status" },
-            { value: "Open", label: "รอตรวจ" },
-            { value: "In Review", label: "กำลังตรวจ" },
+            { value: "", label: "ทุกสถานะ" },
+            { value: "Pending", label: "รอตรวจ" },
             { value: "Cleared", label: "ปิดแล้ว" }
           ])}</div>
           <div class="user-advanced-filter">${customSelect("report-priority-filter", "Filter priority", [
@@ -4420,6 +4419,17 @@
       return getReportUser(report)?.status || report.accountStatus;
     }
 
+    function getReportQueueStatus(report) {
+      return report?.status === "Cleared" ? "Cleared" : "Pending";
+    }
+
+    function reportQueueStatusPill(report) {
+      const status = getReportQueueStatus(report);
+      const label = status === "Cleared" ? "ปิดแล้ว" : "รอตรวจ";
+      const color = status === "Cleared" ? "green" : "amber";
+      return `<span class="pill ${color}">${label}</span>`;
+    }
+
     function getReportStatusActions(report) {
       if (!report) return [];
       if (report.status === "Open") {
@@ -4430,8 +4440,7 @@
       }
       if (report.status === "In Review") {
         return [
-          { status: "Cleared", label: "ปิด report" },
-          { status: "Open", label: "ส่งกลับไปรอตรวจ" }
+          { status: "Cleared", label: "ปิด report" }
         ];
       }
       return [{ status: "Open", label: "เปิด report อีกครั้ง" }];
@@ -4546,7 +4555,7 @@
       const priority = document.querySelector("#report-priority-filter")?.value || "";
       const sort = document.querySelector("#report-sort")?.value || "oldest";
       const sorted = [...userManagementData.reports].filter(report => {
-        return (!q || getUserSearchText(report).includes(q)) && (!status || report.status === status) && (!priority || report.priority === priority);
+        return (!q || getUserSearchText(report).includes(q)) && (!status || getReportQueueStatus(report) === status) && (!priority || report.priority === priority);
       }).sort((a, b) => {
         if (sort === "urgent") return getReportPriorityRank(b.priority) - getReportPriorityRank(a.priority);
         if (sort === "reporters") return b.reporters - a.reporters;
@@ -4564,7 +4573,7 @@
             <div class="user-row report-row" data-report-id="${report.id}">
               <div class="user-cell-primary" data-label="Report ID"><div class="main-text">${report.id}</div></div>
               <div class="user-card-tags">
-                ${userStatusPill(report.status)}
+                ${reportQueueStatusPill(report)}
                 <span class="user-card-tag asset-tag">${report.reporters} reporters</span>
                 ${statusPill(getReportPriorityLabel(report.priority), report.priority)}
                 <div class="user-card-meta">
@@ -4576,7 +4585,7 @@
                 </div>
               </div>
               <div data-label="User"><div class="main-text">${report.user}</div></div>
-              <div data-label="Status">${userStatusPill(report.status)}</div>
+              <div data-label="Status">${reportQueueStatusPill(report)}</div>
               <div data-label="Report Detail"><div class="muted">${report.reason}</div></div>
               <div data-label="Reporters"><div class="main-text">${report.reporters}</div></div>
               <div data-label="Priority">${statusPill(getReportPriorityLabel(report.priority), report.priority)}</div>
@@ -4756,7 +4765,7 @@
               <div>
                 <h2>${report.user}</h2>
                 <div class="chips">
-                  ${userStatusPill(report.status)}
+                  ${reportQueueStatusPill(report)}
                   ${statusPill(getReportPriorityLabel(report.priority), report.priority)}
                   <span class="chip">${report.reporters} reporters</span>
                 </div>
@@ -4791,7 +4800,6 @@
             ${renderReportAuditHistoryTable(report)}
           </div>
 
-          <div class="module-note"><strong>ผลกระทบต่อแอปพลิเคชัน:</strong> Report ไม่ซ่อน profile หรือจำกัดบัญชี จนกว่า Admin จะทำ moderation/action ตาม policy</div>
           ${getReportAccountStatus(report) === "Deletion Requested" ? `<div class="warning-note"><strong>Deletion dependency:</strong> ต้องตรวจ source report ก่อน แล้วจึง route ไป Account Deletion ห้าม delete/archive ทันทีจากคิวนี้</div>` : ""}
           <div class="user-detail-actions">
             ${getReportStatusActions(report).map(action => `<button class="user-detail-action-btn ${action.status === "Cleared" ? "primary" : ""}" type="button" data-report-status-action="${action.status}" data-report-id="${report.id}">${action.label}</button>`).join("")}
