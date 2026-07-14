@@ -1464,6 +1464,30 @@
       gap: 8px;
       flex-wrap: wrap;
     }
+    .report-detail-page .event + .event {
+      margin-top: 10px;
+    }
+    .report-detail-page .module-note {
+      margin-top: 18px;
+      margin-bottom: 14px;
+    }
+    .report-detail-page .warning-note {
+      margin-bottom: 14px;
+    }
+    .report-detail-page .user-detail-actions {
+      padding-top: 2px;
+    }
+    .report-detail-page .detail-tile .chip {
+      display: inline-flex;
+      align-items: center;
+      margin-bottom: 0;
+      border-color: #c7d6e8;
+      background: #fff;
+      color: #071b36;
+      font-size: 12px;
+      font-weight: 400;
+      line-height: 1.45;
+    }
     .user-detail-action-btn {
       display: inline-flex;
       align-items: center;
@@ -4514,6 +4538,7 @@
       activeSub = "Reported Users";
       activeRow = report;
       activeReportContextId = report.id;
+      const reportUser = getReportUser(report);
       document.querySelector("#crumb").textContent = `การดำเนินงาน / User Management / Report Detail / ${report.id}`;
       document.querySelector("#page-title").textContent = "Report Detail";
       document.querySelector("#page-meta").textContent = "";
@@ -4523,9 +4548,10 @@
       document.querySelector("#summary-grid").innerHTML = "";
       document.querySelector("#cards").innerHTML = "";
       document.querySelector("#table").innerHTML = `
-        <div class="user-detail-page">
+        <div class="user-detail-page report-detail-page">
           <div class="user-detail-head">
             <div class="user-detail-title">
+              ${reportUser ? renderUserProfileImage(reportUser) : ""}
               <div>
                 <h2>${report.user}</h2>
                 <div class="chips">
@@ -4554,7 +4580,7 @@
             <h4>Evidence / Context</h4>
             <div class="detail-grid">
               <div class="detail-tile"><span>Reason</span><strong>${report.reason}</strong></div>
-              <div class="detail-tile"><span>FO reporter note</span><div class="chips">${report.evidence.map(item => `<span class="chip">${item}</span>`).join("")}</div></div>
+              <div class="detail-tile"><span>Application reporter note</span><div class="chips">${report.evidence.map(item => `<span class="chip">${item}</span>`).join("")}</div></div>
               <div class="detail-tile"><span>Recommendation</span>${report.recommendation}</div>
             </div>
           </div>
@@ -4565,19 +4591,14 @@
             <div class="event"><strong>Review flow</strong><br>เปิด reported reference -> ตรวจ source evidence -> กลับมา clear report หรือ manage account status ตาม policy</div>
           </div>
 
-          <div class="detail-section">
-            <h4>Report Actions</h4>
-            <div class="user-detail-actions">
-              ${getReportStatusActions(report).map(action => `<button class="user-detail-action-btn ${action.status === "Cleared" ? "primary" : ""}" type="button" data-report-status-action="${action.status}" data-report-id="${report.id}">${action.label}</button>`).join("")}
-              ${getReportAccountActions(report).map(({ action, label }, index) => {
-                const user = getReportUser(report);
-                return `<button class="user-detail-action-btn ${getUserActionClass(action, index)}" type="button" data-user-action="${action}" data-user-id="${user.id}" data-report-context="${report.id}">${label}</button>`;
-              }).join("") || `<span class="chip">No account action available</span>`}
-            </div>
-          </div>
-
           <div class="module-note"><strong>ผลกระทบต่อแอปพลิเคชัน:</strong> Report ไม่ซ่อน profile หรือจำกัดบัญชี จนกว่า Admin จะทำ moderation/action ตาม policy</div>
           ${getReportAccountStatus(report) === "Deletion Requested" ? `<div class="warning-note"><strong>Deletion dependency:</strong> ต้องตรวจ source report ก่อน แล้วจึง route ไป Account Deletion ห้าม delete/archive ทันทีจากคิวนี้</div>` : ""}
+          <div class="user-detail-actions">
+            ${getReportStatusActions(report).map(action => `<button class="user-detail-action-btn ${action.status === "Cleared" ? "primary" : ""}" type="button" data-report-status-action="${action.status}" data-report-id="${report.id}">${action.label}</button>`).join("")}
+            ${getReportAccountActions(report).map(({ action, label }, index) => {
+              return `<button class="user-detail-action-btn ${getUserActionClass(action, index)}" type="button" data-user-action="${action}" data-user-id="${reportUser.id}" data-report-context="${report.id}">${label}</button>`;
+            }).join("") || `<span class="chip">No account action available</span>`}
+          </div>
         </div>
       `;
       document.querySelector("#detail").innerHTML = "";
