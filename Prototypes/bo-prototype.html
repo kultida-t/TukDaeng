@@ -3679,11 +3679,9 @@
             { value: "ปกติ", label: "Low" }
           ])}</div>
           <div class="user-advanced-filter">${customSelect("report-sort", "Sort reports", [
-            { value: "oldest", label: "รอนานสุดก่อน" },
-            { value: "urgent", label: "Urgent ก่อน" },
-            { value: "reporters", label: "จำนวน reporter" },
-            { value: "status", label: "สถานะ" }
-          ], "oldest")}</div>
+            { value: "latest", label: "ล่าสุดก่อน" },
+            { value: "reporters", label: "จำนวน reporter" }
+          ], "latest")}</div>
           <button class="btn filter-reset user-advanced-filter" type="button" id="user-reset" title="รีเซ็ตค่าทั้งหมด" aria-label="รีเซ็ตค่าทั้งหมด">${iconSvg.refresh}<span>รีเซ็ตค่าทั้งหมด</span></button>
         </div>
       ` : `
@@ -4610,14 +4608,12 @@
       const q = (document.querySelector("#user-search")?.value || "").trim().toLowerCase();
       const status = document.querySelector("#report-status-filter")?.value || "";
       const priority = document.querySelector("#report-priority-filter")?.value || "";
-      const sort = document.querySelector("#report-sort")?.value || "oldest";
+      const sort = document.querySelector("#report-sort")?.value || "latest";
       const sorted = [...userManagementData.reports].filter(report => {
         return (!q || getUserSearchText(report).includes(q)) && (!status || getReportQueueStatus(report) === status) && (!priority || report.priority === priority);
       }).sort((a, b) => {
-        if (sort === "urgent") return getReportPriorityRank(b.priority) - getReportPriorityRank(a.priority);
         if (sort === "reporters") return b.reporters - a.reporters;
-        if (sort === "status") return a.status.localeCompare(b.status);
-        return parseInt(b.waiting, 10) - parseInt(a.waiting, 10);
+        return parseInt(a.waiting, 10) - parseInt(b.waiting, 10);
       });
       const pageCount = Math.max(1, Math.ceil(sorted.length / userListPageSize));
       userListPage = Math.min(userListPage, pageCount);
