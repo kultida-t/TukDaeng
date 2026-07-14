@@ -1162,7 +1162,7 @@
       white-space: nowrap;
     }
     .user-row.report-row {
-      grid-template-columns: minmax(104px, .52fr) minmax(168px, .85fr) minmax(106px, .52fr) minmax(240px, 1.45fr) minmax(90px, .42fr) minmax(104px, .5fr) minmax(116px, .58fr) minmax(112px, .52fr);
+      grid-template-columns: minmax(104px, .5fr) minmax(156px, .78fr) minmax(116px, .54fr) minmax(106px, .5fr) minmax(220px, 1.28fr) minmax(86px, .4fr) minmax(96px, .46fr) minmax(108px, .52fr) minmax(104px, .46fr);
     }
     .user-row.report-row:not(.head) {
       cursor: pointer;
@@ -2349,7 +2349,7 @@
         overflow-x: auto;
       }
       .user-row.report-row {
-        grid-template-columns: minmax(104px, .52fr) minmax(150px, .85fr) minmax(106px, .55fr) minmax(220px, 1.35fr) minmax(88px, .44fr) minmax(96px, .48fr) minmax(112px, .58fr) minmax(108px, .52fr);
+        grid-template-columns: minmax(104px, .5fr) minmax(150px, .76fr) minmax(116px, .54fr) minmax(106px, .5fr) minmax(210px, 1.24fr) minmax(88px, .42fr) minmax(96px, .46fr) minmax(108px, .52fr) minmax(104px, .46fr);
         overflow-x: auto;
       }
     }
@@ -4625,7 +4625,7 @@
       const pageRows = sorted.slice(start, start + userListPageSize);
       document.querySelector("#table").innerHTML = `
         <div class="user-table">
-          <div class="user-row report-row head"><div>Report ID</div><div>User</div><div>Status</div><div>Report Detail</div><div>Reporters</div><div>Priority</div><div>Source</div><div>Action</div></div>
+          <div class="user-row report-row head"><div>Report ID</div><div>User</div><div>User Status</div><div>Status</div><div>Report Detail</div><div>Reporters</div><div>Priority</div><div>Source</div><div>Action</div></div>
           ${pageRows.map(report => `
             <div class="user-row report-row" data-report-id="${report.id}">
               <div class="user-cell-primary" data-label="Report ID"><div class="main-text">${report.id}</div></div>
@@ -4642,6 +4642,7 @@
                 </div>
               </div>
               <div data-label="User"><div class="main-text">${report.user}</div></div>
+              <div data-label="User Status">${userStatusPill(getReportAccountStatus(report))}</div>
               <div data-label="Status">${reportQueueStatusPill(report)}</div>
               <div data-label="Report Detail"><div class="muted">${report.reason}</div></div>
               <div data-label="Reporters"><div class="main-text">${report.reporters}</div></div>
