@@ -2926,9 +2926,11 @@
         overflow-wrap: anywhere;
       }
       body.user-detail-mode .report-detail-page .detail-grid.two,
-      .report-detail-page .report-reference-grid,
       .report-detail-page .report-detail-grid {
         grid-template-columns: 1fr;
+      }
+      body.user-detail-mode .report-detail-page .detail-grid.two.report-reference-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
       }
       .report-detail-page .detail-tile {
         padding: 11px 10px;
