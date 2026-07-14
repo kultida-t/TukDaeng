@@ -3213,12 +3213,12 @@
         { id: "U-1222", displayName: "old.user", username: "@olduser", email: "ol***@mail.com", auth: "Email", status: "Deleted / Archived", joined: "17 Jan 2026", joinedBucket: "older", joinedRank: 20260117, lastActive: "15 May 2026 07:44", lastActiveBucket: "older", lastActiveRank: 202605150744, assets: 0, assetBucket: "0", reports: 0, verification: "Archived", contact: [], support: "DEL-020", latest: "Anonymized", reportState: "ปิดเคสแล้ว", statusLabel: "Archived", allowed: ["View archived summary"], blocked: ["Reset password", "Status mutation"], foImpact: "Archived account login blocked; profile/assets hidden or anonymized.", actionNote: "Archive details remain sensitive and audited." }
       ],
       reports: [
-        { id: "RPU-505", category: "Profile", user: "horology.king", userId: "U-1002", accountStatus: "Suspended", reason: "พบโปรไฟล์ซ้ำและพฤติกรรมผู้ขายที่ต้องตรวจสอบ", reporters: 5, priority: "สูง", status: "In Review", reference: "Profile ID PRF-1002", source: "User Detail", waiting: "22 ชม.", evidence: ["รูปโปรไฟล์คล้ายบัญชีอื่น", "ข้อความแนะนำตัวผู้ขายซ้ำหลายจุด"], recommendation: "ตรวจ reference ต้นทางก่อนทำ action เพิ่มกับบัญชี", actionHistory: "เริ่มตรวจสอบโดย Somchai Admin และยังไม่มีการเปลี่ยนสถานะล่าสุด" },
-        { id: "RPU-512", category: "Asset", user: "Crown Time BKK", userId: "U-1017", accountStatus: "Active", reason: "มีรายงานสินทรัพย์ซ้ำและข้อมูลประกาศคล้ายรายการอื่น", reporters: 4, priority: "สูง", status: "Open", reference: "Asset Group AST-DUP-1017", source: "Asset Detail", waiting: "20 ชม.", evidence: ["รูปสินทรัพย์ซ้ำกับรายการอื่น", "ข้อความประกาศถูกใช้ซ้ำ"], recommendation: "เทียบรูปสินค้าและหลักฐาน provenance ก่อนทำ action กับบัญชี", actionHistory: "เปิด report ใหม่ และยังไม่มีการเปลี่ยนสถานะบัญชี" },
-        { id: "RPU-518", category: "Offer / Chat", user: "Omega Club TH", userId: "U-1088", accountStatus: "Active", reason: "มีข้อพิพาทว่าสภาพสินทรัพย์ไม่ตรงกับที่ตกลงในข้อเสนอซื้อ", reporters: 3, priority: "สูง", status: "Open", reference: "Offer OFR-501", source: "Offer / Chat", waiting: "18 ชม.", evidence: ["ประวัติแชท", "ข้อพิพาทจากข้อเสนอซื้อ"], recommendation: "เปิดบริบท Offer / Chat ก่อนปิด report", actionHistory: "เปิด report ใหม่ และรอตรวจสอบ reference ต้นทาง" },
-        { id: "RPU-530", category: "Account Deletion", user: "Archive Collector", userId: "U-1104", accountStatus: "Deletion Requested", reason: "มีคำขอลบบัญชีแต่ยังมี report ที่ต้องตรวจสอบก่อน", reporters: 1, priority: "กลาง", status: "In Review", reference: "DEL-033", source: "Account Deletion", waiting: "10 ชม.", evidence: ["มีข้อเสนอซื้อค้างอยู่", "มี report ผูกกับโปรไฟล์"], recommendation: "เคลียร์ reference ต้นทางก่อน archive หรือ anonymize บัญชี", actionHistory: "เปิด dependency check แล้ว และยังไม่อนุมัติการลบบัญชี" },
-        { id: "RPU-541", category: "Chat", user: "Rolex Rama9", userId: "U-1186", accountStatus: "Suspended", reason: "มีรายงานซ้ำเรื่องข้อความแชทที่ไม่เหมาะสม", reporters: 6, priority: "สูง", status: "Cleared", reference: "CHT-090", source: "Offer / Chat", waiting: "0 ชม.", evidence: ["ประวัติแชท"], recommendation: "ดำเนินการกับบัญชีแล้ว ให้เก็บ audit trail ไว้", actionHistory: "ปิด report แล้วหลังระงับบัญชีและบันทึก audit note" },
-        { id: "RPU-560", category: "Profile", user: "The Collector", userId: "U-1120", accountStatus: "Banned", reason: "ยืนยันพฤติกรรมละเมิดซ้ำและปิดเคสหลังแบนบัญชี", reporters: 8, priority: "สูง", status: "Cleared", reference: "Profile ID PRF-1120", source: "Reported Users", waiting: "0 ชม.", evidence: ["รายงานพฤติกรรมละเมิดซ้ำ", "มี admin action แบนบัญชีแล้ว"], recommendation: "คงสถานะ report เป็นปิดแล้ว และเก็บบันทึกการดำเนินการสำหรับกรณีขอยกเลิกระงับบัญชีถาวร", actionHistory: "ปิด report แล้วหลังแบนบัญชี และบัญชียังคงถูกแบนอยู่" }
+        { id: "RPU-505", category: "Profile", user: "horology.king", userId: "U-1002", accountStatus: "Suspended", reason: "พบโปรไฟล์ซ้ำและพฤติกรรมผู้ขายที่ต้องตรวจสอบ", reporters: 5, priority: "สูง", status: "In Review", reference: "Profile ID PRF-1002", source: "User Detail", waiting: "22 ชม.", evidence: ["รูปโปรไฟล์คล้ายบัญชีอื่น", "ข้อความแนะนำตัวผู้ขายซ้ำหลายจุด"], recommendation: "ตรวจข้อมูลอ้างอิงต้นทางก่อนดำเนินการเพิ่มเติมกับบัญชี", actionHistory: "เริ่มตรวจสอบโดย Somchai Admin และยังไม่มีการเปลี่ยนสถานะล่าสุด" },
+        { id: "RPU-512", category: "Asset", user: "Crown Time BKK", userId: "U-1017", accountStatus: "Active", reason: "มีรายงานสินทรัพย์ซ้ำและข้อมูลประกาศคล้ายรายการอื่น", reporters: 4, priority: "สูง", status: "Open", reference: "Asset Group AST-DUP-1017", source: "Asset Detail", waiting: "20 ชม.", evidence: ["รูปสินทรัพย์ซ้ำกับรายการอื่น", "ข้อความประกาศถูกใช้ซ้ำ"], recommendation: "เทียบรูปสินค้าและหลักฐานที่มาของสินค้า ก่อนดำเนินการกับบัญชี", actionHistory: "เปิดรายงานใหม่ และยังไม่มีการเปลี่ยนสถานะบัญชี" },
+        { id: "RPU-518", category: "Offer / Chat", user: "Omega Club TH", userId: "U-1088", accountStatus: "Active", reason: "มีข้อพิพาทว่าสภาพสินทรัพย์ไม่ตรงกับที่ตกลงในข้อเสนอซื้อ", reporters: 3, priority: "สูง", status: "Open", reference: "Offer OFR-501", source: "Offer / Chat", waiting: "18 ชม.", evidence: ["ประวัติแชท", "ข้อพิพาทจากข้อเสนอซื้อ"], recommendation: "เปิดบริบท Offer / Chat เพื่อตรวจหลักฐานก่อนปิดรายงาน", actionHistory: "เปิดรายงานใหม่ และรอตรวจสอบข้อมูลอ้างอิงต้นทาง" },
+        { id: "RPU-530", category: "Account Deletion", user: "Archive Collector", userId: "U-1104", accountStatus: "Deletion Requested", reason: "มีคำขอลบบัญชีแต่ยังมีรายงานที่ต้องตรวจสอบก่อน", reporters: 1, priority: "กลาง", status: "In Review", reference: "DEL-033", source: "Account Deletion", waiting: "10 ชม.", evidence: ["มีข้อเสนอซื้อค้างอยู่", "มีรายงานผูกกับโปรไฟล์"], recommendation: "เคลียร์ข้อมูลอ้างอิงต้นทางก่อนลบหรือทำข้อมูลบัญชีให้ไม่ระบุตัวตน", actionHistory: "เปิดการตรวจเงื่อนไขก่อนลบบัญชีแล้ว และยังไม่อนุมัติการลบบัญชี" },
+        { id: "RPU-541", category: "Chat", user: "Rolex Rama9", userId: "U-1186", accountStatus: "Suspended", reason: "มีรายงานซ้ำเรื่องข้อความแชทที่ไม่เหมาะสม", reporters: 6, priority: "สูง", status: "Cleared", reference: "CHT-090", source: "Offer / Chat", waiting: "0 ชม.", evidence: ["ประวัติแชท"], recommendation: "ดำเนินการกับบัญชีแล้ว ให้เก็บประวัติการตรวจสอบไว้", actionHistory: "ปิดรายงานแล้วหลังระงับบัญชีและบันทึกประวัติการดำเนินการ" },
+        { id: "RPU-560", category: "Profile", user: "The Collector", userId: "U-1120", accountStatus: "Banned", reason: "ยืนยันพฤติกรรมละเมิดซ้ำและปิดเคสหลังแบนบัญชี", reporters: 8, priority: "สูง", status: "Cleared", reference: "Profile ID PRF-1120", source: "Reported Users", waiting: "0 ชม.", evidence: ["รายงานพฤติกรรมละเมิดซ้ำ", "มีการแบนบัญชีโดยผู้ดูแลแล้ว"], recommendation: "คงสถานะรายงานเป็นปิดแล้ว และเก็บบันทึกการดำเนินการไว้สำหรับกรณีขอยกเลิกระงับบัญชีถาวร", actionHistory: "ปิดรายงานแล้วหลังแบนบัญชี และบัญชียังคงถูกแบนอยู่" }
       ]
     };
 
@@ -3228,24 +3228,24 @@
         { id: "AUD-RPU-505-001", action: "REPORT_CREATED", actor: "System", createdAt: "13 Jul 2026 11:22 GMT+7", entityType: "reported_user", entityId: "RPU-505", sourceModule: "User Detail", detail: "รับรายงานผู้ใช้จากระบบ", before: null, after: { reportStatus: "Open", accountStatus: "Active" }, reason: "พบรายงานโปรไฟล์ซ้ำและพฤติกรรมผู้ขายที่ต้องตรวจสอบ", metadata: { reference: "Profile ID PRF-1002", userId: "U-1002" } }
       ],
       "RPU-512": [
-        { id: "AUD-RPU-512-001", action: "REPORT_CREATED", actor: "System", createdAt: "13 Jul 2026 13:40 GMT+7", entityType: "reported_user", entityId: "RPU-512", sourceModule: "Asset Detail", detail: "สร้าง report จากกลุ่มสินทรัพย์ที่ถูกรายงานว่าซ้ำ", before: null, after: { reportStatus: "Open", accountStatus: "Active" }, reason: "Duplicate asset evidence reached review threshold", metadata: { reference: "Asset Group AST-DUP-1017", userId: "U-1017" } }
+        { id: "AUD-RPU-512-001", action: "REPORT_CREATED", actor: "System", createdAt: "13 Jul 2026 13:40 GMT+7", entityType: "reported_user", entityId: "RPU-512", sourceModule: "Asset Detail", detail: "สร้าง report จากกลุ่มสินทรัพย์ที่ถูกรายงานว่าซ้ำ", before: null, after: { reportStatus: "Open", accountStatus: "Active" }, reason: "หลักฐานสินทรัพย์ซ้ำถึงเกณฑ์ที่ต้องส่งให้ผู้ดูแลตรวจสอบ", metadata: { reference: "Asset Group AST-DUP-1017", userId: "U-1017" } }
       ],
       "RPU-518": [
-        { id: "AUD-RPU-518-001", action: "REPORT_CREATED", actor: "System", createdAt: "13 Jul 2026 15:12 GMT+7", entityType: "reported_user", entityId: "RPU-518", sourceModule: "Offer / Chat", detail: "สร้าง report จากข้อพิพาท offer และประวัติแชท", before: null, after: { reportStatus: "Open", accountStatus: "Active" }, reason: "Buyer dispute requires offer context review", metadata: { reference: "Offer OFR-501", userId: "U-1088" } }
+        { id: "AUD-RPU-518-001", action: "REPORT_CREATED", actor: "System", createdAt: "13 Jul 2026 15:12 GMT+7", entityType: "reported_user", entityId: "RPU-518", sourceModule: "Offer / Chat", detail: "สร้าง report จากข้อพิพาท offer และประวัติแชท", before: null, after: { reportStatus: "Open", accountStatus: "Active" }, reason: "ข้อพิพาทจากผู้ซื้อต้องตรวจบริบทข้อเสนอซื้อและประวัติแชทก่อนปิดรายงาน", metadata: { reference: "Offer OFR-501", userId: "U-1088" } }
       ],
       "RPU-530": [
         { id: "AUD-RPU-530-002", action: "DELETION_DEPENDENCY_CHECK_STARTED", actor: "Somchai Admin", createdAt: "14 Jul 2026 08:45 GMT+7", entityType: "reported_user", entityId: "RPU-530", sourceModule: "Account Deletion", detail: "เริ่ม dependency check ก่อนอนุมัติการลบบัญชี", before: { reportStatus: "Open", accountStatus: "Deletion Requested" }, after: { reportStatus: "In Review", accountStatus: "Deletion Requested" }, reason: "ยังมี report และข้อเสนอซื้อค้างอยู่", metadata: { reference: "DEL-033", userId: "U-1104" } },
-        { id: "AUD-RPU-530-001", action: "REPORT_CREATED", actor: "System", createdAt: "14 Jul 2026 00:05 GMT+7", entityType: "reported_user", entityId: "RPU-530", sourceModule: "Account Deletion", detail: "สร้าง report ระหว่าง workflow คำขอลบบัญชี", before: null, after: { reportStatus: "Open", accountStatus: "Deletion Requested" }, reason: "Deletion request has unresolved report dependency", metadata: { reference: "DEL-033", userId: "U-1104" } }
+        { id: "AUD-RPU-530-001", action: "REPORT_CREATED", actor: "System", createdAt: "14 Jul 2026 00:05 GMT+7", entityType: "reported_user", entityId: "RPU-530", sourceModule: "Account Deletion", detail: "สร้าง report ระหว่าง workflow คำขอลบบัญชี", before: null, after: { reportStatus: "Open", accountStatus: "Deletion Requested" }, reason: "คำขอลบบัญชียังมี report ที่ต้องตรวจสอบก่อนอนุมัติการลบ", metadata: { reference: "DEL-033", userId: "U-1104" } }
       ],
       "RPU-541": [
-        { id: "AUD-RPU-541-002", action: "REPORT_STATUS_UPDATED", actor: "Somchai Admin", createdAt: "13 Jul 2026 18:22 GMT+7", entityType: "reported_user", entityId: "RPU-541", sourceModule: "Reported Users", detail: "ปิด report หลังดำเนินการกับบัญชีและบันทึก audit note", before: { reportStatus: "In Review", accountStatus: "Active" }, after: { reportStatus: "Cleared", accountStatus: "Suspended" }, reason: "ยืนยันข้อความแชทไม่เหมาะสมจาก source evidence", metadata: { reference: "CHT-090", userId: "U-1186" } },
-        { id: "AUD-RPU-541-003", action: "REPORT_REVIEW_STARTED", actor: "Somchai Admin", createdAt: "13 Jul 2026 14:06 GMT+7", entityType: "reported_user", entityId: "RPU-541", sourceModule: "Reported Users", detail: "เริ่มตรวจสอบ transcript และหลักฐานจาก Offer / Chat", before: { reportStatus: "Open", accountStatus: "Active" }, after: { reportStatus: "In Review", accountStatus: "Active" }, reason: "มีรายงานแชทซ้ำ ต้องตรวจ source evidence ก่อนทำ action", metadata: { reference: "CHT-090", userId: "U-1186" } },
-        { id: "AUD-RPU-541-001", action: "REPORT_CREATED", actor: "System", createdAt: "13 Jul 2026 10:14 GMT+7", entityType: "reported_user", entityId: "RPU-541", sourceModule: "Offer / Chat", detail: "สร้าง report จากรายงานแชทซ้ำ", before: null, after: { reportStatus: "Open", accountStatus: "Active" }, reason: "Chat abuse report reached high priority threshold", metadata: { reference: "CHT-090", userId: "U-1186" } }
+        { id: "AUD-RPU-541-002", action: "REPORT_STATUS_UPDATED", actor: "Somchai Admin", createdAt: "13 Jul 2026 18:22 GMT+7", entityType: "reported_user", entityId: "RPU-541", sourceModule: "Reported Users", detail: "ปิดรายงานหลังดำเนินการกับบัญชีและบันทึกประวัติการตรวจสอบ", before: { reportStatus: "In Review", accountStatus: "Active" }, after: { reportStatus: "Cleared", accountStatus: "Suspended" }, reason: "ยืนยันข้อความแชทไม่เหมาะสมจากหลักฐานต้นทาง", metadata: { reference: "CHT-090", userId: "U-1186" } },
+        { id: "AUD-RPU-541-003", action: "REPORT_REVIEW_STARTED", actor: "Somchai Admin", createdAt: "13 Jul 2026 14:06 GMT+7", entityType: "reported_user", entityId: "RPU-541", sourceModule: "Reported Users", detail: "เริ่มตรวจสอบบทสนทนาและหลักฐานจาก Offer / Chat", before: { reportStatus: "Open", accountStatus: "Active" }, after: { reportStatus: "In Review", accountStatus: "Active" }, reason: "มีรายงานแชทซ้ำ ต้องตรวจหลักฐานต้นทางก่อนดำเนินการ", metadata: { reference: "CHT-090", userId: "U-1186" } },
+        { id: "AUD-RPU-541-001", action: "REPORT_CREATED", actor: "System", createdAt: "13 Jul 2026 10:14 GMT+7", entityType: "reported_user", entityId: "RPU-541", sourceModule: "Offer / Chat", detail: "สร้าง report จากรายงานแชทซ้ำ", before: null, after: { reportStatus: "Open", accountStatus: "Active" }, reason: "มีรายงานข้อความแชทไม่เหมาะสมถึงเกณฑ์ความสำคัญสูง", metadata: { reference: "CHT-090", userId: "U-1186" } }
       ],
       "RPU-560": [
-        { id: "AUD-RPU-560-002", action: "REPORT_STATUS_UPDATED", actor: "Somchai Admin", createdAt: "12 Jul 2026 16:08 GMT+7", entityType: "reported_user", entityId: "RPU-560", sourceModule: "Reported Users", detail: "ปิด report หลังแบนบัญชีจากพฤติกรรมละเมิดซ้ำ", before: { reportStatus: "In Review", accountStatus: "Suspended" }, after: { reportStatus: "Cleared", accountStatus: "Banned" }, reason: "ยืนยัน abuse pattern จากหลาย report และหลักฐานผู้ดูแลระบบ", metadata: { reference: "Profile ID PRF-1120", userId: "U-1120" } },
-        { id: "AUD-RPU-560-003", action: "REPORT_REVIEW_STARTED", actor: "Somchai Admin", createdAt: "12 Jul 2026 11:18 GMT+7", entityType: "reported_user", entityId: "RPU-560", sourceModule: "Reported Users", detail: "เริ่มตรวจสอบ pattern การละเมิดซ้ำและประวัติการถูกระงับ", before: { reportStatus: "Open", accountStatus: "Suspended" }, after: { reportStatus: "In Review", accountStatus: "Suspended" }, reason: "ต้องตรวจประวัติเดิมก่อนยืนยันการระงับบัญชีถาวร", metadata: { reference: "Profile ID PRF-1120", userId: "U-1120" } },
-        { id: "AUD-RPU-560-001", action: "REPORT_CREATED", actor: "System", createdAt: "12 Jul 2026 09:35 GMT+7", entityType: "reported_user", entityId: "RPU-560", sourceModule: "Reported Users", detail: "สร้าง report จากรายงานพฤติกรรมละเมิดซ้ำ", before: null, after: { reportStatus: "Open", accountStatus: "Suspended" }, reason: "Multiple abuse reports require account action review", metadata: { reference: "Profile ID PRF-1120", userId: "U-1120" } }
+        { id: "AUD-RPU-560-002", action: "REPORT_STATUS_UPDATED", actor: "Somchai Admin", createdAt: "12 Jul 2026 16:08 GMT+7", entityType: "reported_user", entityId: "RPU-560", sourceModule: "Reported Users", detail: "ปิดรายงานหลังแบนบัญชีจากพฤติกรรมละเมิดซ้ำ", before: { reportStatus: "In Review", accountStatus: "Suspended" }, after: { reportStatus: "Cleared", accountStatus: "Banned" }, reason: "ยืนยันรูปแบบการละเมิดซ้ำจากหลายรายงานและหลักฐานของผู้ดูแลระบบ", metadata: { reference: "Profile ID PRF-1120", userId: "U-1120" } },
+        { id: "AUD-RPU-560-003", action: "REPORT_REVIEW_STARTED", actor: "Somchai Admin", createdAt: "12 Jul 2026 11:18 GMT+7", entityType: "reported_user", entityId: "RPU-560", sourceModule: "Reported Users", detail: "เริ่มตรวจสอบรูปแบบการละเมิดซ้ำและประวัติการถูกระงับ", before: { reportStatus: "Open", accountStatus: "Suspended" }, after: { reportStatus: "In Review", accountStatus: "Suspended" }, reason: "ต้องตรวจประวัติเดิมก่อนยืนยันการระงับบัญชีถาวร", metadata: { reference: "Profile ID PRF-1120", userId: "U-1120" } },
+        { id: "AUD-RPU-560-001", action: "REPORT_CREATED", actor: "System", createdAt: "12 Jul 2026 09:35 GMT+7", entityType: "reported_user", entityId: "RPU-560", sourceModule: "Reported Users", detail: "สร้าง report จากรายงานพฤติกรรมละเมิดซ้ำ", before: null, after: { reportStatus: "Open", accountStatus: "Suspended" }, reason: "มีหลาย report ที่ต้องตรวจสอบก่อนยืนยันการดำเนินการกับบัญชี", metadata: { reference: "Profile ID PRF-1120", userId: "U-1120" } }
       ]
     };
 
@@ -3415,7 +3415,7 @@
         detail: report.actionHistory || "No audit events recorded yet",
         before: null,
         after: { reportStatus: report.status, accountStatus: getReportAccountStatus(report) },
-        reason: "Imported from legacy prototype actionHistory field",
+        reason: "นำเข้าจากประวัติเดิมของ prototype",
         metadata: { reference: report.reference, userId: report.userId }
       }];
       return report.auditLogs;
@@ -3463,7 +3463,7 @@
               <tr>
                 <th>วันที่ / เวลา</th>
                 <th>ผู้ดำเนินการ</th>
-                <th>Action</th>
+                <th>การดำเนินการ</th>
                 <th>สถานะบัญชี</th>
                 <th>รายละเอียด</th>
               </tr>
@@ -3555,9 +3555,9 @@
     };
 
     const reportPriorityLabels = {
-      "สูง": "High",
-      "กลาง": "Medium",
-      "ปกติ": "Low"
+      "สูง": "สูง",
+      "กลาง": "กลาง",
+      "ปกติ": "ปกติ"
     };
 
     function getReportPriorityLabel(priority) {
@@ -3567,6 +3567,10 @@
     function getReportPriorityRank(priority) {
       const priorityRank = { "สูง": 3, "กลาง": 2, "ปกติ": 1 };
       return priorityRank[priority] || 0;
+    }
+
+    function reportReporterLabel(count) {
+      return `ผู้รายงาน ${count} คน`;
     }
 
     function getUserSummaryStats() {
@@ -3675,15 +3679,15 @@
             { value: "Cleared", label: "ปิดแล้ว" }
           ])}</div>
           <div class="user-advanced-filter">${customSelect("report-priority-filter", "Filter priority", [
-            { value: "", label: "ทุก priority" },
-            { value: "สูง", label: "High" },
-            { value: "กลาง", label: "Medium" },
-            { value: "ปกติ", label: "Low" }
+            { value: "", label: "ทุกระดับความสำคัญ" },
+            { value: "สูง", label: "สูง" },
+            { value: "กลาง", label: "กลาง" },
+            { value: "ปกติ", label: "ปกติ" }
           ])}</div>
           <div class="user-advanced-filter">${customSelect("report-sort", "Sort reports", [
             { value: "oldest", label: "รอนานสุดก่อน" },
-            { value: "urgent", label: "Urgent ก่อน" },
-            { value: "reporters", label: "จำนวน reporter" },
+            { value: "urgent", label: "ความสำคัญสูงก่อน" },
+            { value: "reporters", label: "จำนวนผู้รายงาน" },
             { value: "status", label: "สถานะ" }
           ], "oldest")}</div>
           <button class="btn filter-reset user-advanced-filter" type="button" id="user-reset" title="รีเซ็ตค่าทั้งหมด" aria-label="รีเซ็ตค่าทั้งหมด">${iconSvg.refresh}<span>รีเซ็ตค่าทั้งหมด</span></button>
@@ -4440,13 +4444,13 @@
       if (!report) return [];
       if (report.status === "Open") {
         return [
-          { status: "In Review", label: "เริ่มตรวจ report" },
-          { status: "Cleared", label: "ปิด report" }
+          { status: "In Review", label: "เริ่มตรวจรายงาน" },
+          { status: "Cleared", label: "ปิดรายงาน" }
         ];
       }
       if (report.status === "In Review") {
         return [
-          { status: "Cleared", label: "ปิด report" }
+          { status: "Cleared", label: "ปิดรายงาน" }
         ];
       }
       return [];
@@ -4478,7 +4482,7 @@
       if (!actions) return "";
       return `
         <details class="row-menu">
-          <summary title="Report actions">...</summary>
+          <summary title="การดำเนินการกับรายงาน">...</summary>
           <div class="row-menu-list">
             ${actions}
           </div>
@@ -4497,7 +4501,7 @@
             return `<button class="user-detail-action-btn ${getUserActionClass(action, index)}" type="button" data-user-action="${action}" data-user-id="${reportUser.id}" data-report-context="${report.id}">${label}</button>`;
           }).join("")
         : "";
-      const emptyState = !statusActions && !accountActions && getReportQueueStatus(report) !== "Cleared" ? `<span class="chip">No account action available</span>` : "";
+      const emptyState = !statusActions && !accountActions && getReportQueueStatus(report) !== "Cleared" ? `<span class="chip">ไม่มีการดำเนินการเพิ่มเติม</span>` : "";
       const actions = `${statusActions}${accountActions}${emptyState}`;
       return actions ? `<div class="user-detail-actions">${actions}</div>` : "";
     }
@@ -4505,21 +4509,21 @@
     function getReportStatusActionSummary(status) {
       const summaries = {
         "Open": {
-          detail: "เปิด report กลับไปที่คิวรอตรวจ",
-          toast: "เปิด report อีกครั้งแล้ว"
+          detail: "เปิดรายงานกลับไปที่คิวรอตรวจ",
+          toast: "เปิดรายงานอีกครั้งแล้ว"
         },
         "In Review": {
-          detail: "เริ่มตรวจ report และบันทึกว่าอยู่ระหว่างตรวจสอบ",
-          toast: "เริ่มตรวจ report แล้ว"
+          detail: "เริ่มตรวจรายงานและบันทึกว่าอยู่ระหว่างตรวจสอบ",
+          toast: "เริ่มตรวจรายงานแล้ว"
         },
         "Cleared": {
-          detail: "ปิด report หลังตรวจสอบหลักฐานต้นทางแล้ว",
-          toast: "ปิด report แล้ว"
+          detail: "ปิดรายงานหลังตรวจสอบหลักฐานต้นทางแล้ว",
+          toast: "ปิดรายงานแล้ว"
         }
       };
       return summaries[status] || {
-        detail: `เปลี่ยนสถานะ report เป็น ${status}`,
-        toast: `เปลี่ยนสถานะ report เป็น ${status} แล้ว`
+        detail: `เปลี่ยนสถานะรายงานเป็น ${userStatusLabels[status] || status}`,
+        toast: `เปลี่ยนสถานะรายงานเป็น ${userStatusLabels[status] || status} แล้ว`
       };
     }
 
@@ -4536,7 +4540,7 @@
         detail: actionSummary.detail,
         before: { reportStatus: beforeStatus, accountStatus: report.accountStatus },
         after: { reportStatus: status, accountStatus: report.accountStatus },
-        reason: "ผู้ดูแลตรวจหลักฐานต้นทางแล้วจึงอัปเดตสถานะ report"
+        reason: "ผู้ดูแลตรวจหลักฐานต้นทางแล้วจึงอัปเดตสถานะรายงาน"
       });
       if (document.body.classList.contains("user-detail-mode")) renderReportedUserDetail(report);
       else renderReportedUserRows();
@@ -4628,30 +4632,30 @@
       const pageRows = sorted.slice(start, start + userListPageSize);
       document.querySelector("#table").innerHTML = `
         <div class="user-table">
-          <div class="user-row report-row head"><div>Report ID</div><div>User</div><div>Status</div><div>Report Detail</div><div>Reporters</div><div>Priority</div><div>Source</div><div>Action</div></div>
+          <div class="user-row report-row head"><div>Report ID</div><div>ผู้ใช้</div><div>สถานะ</div><div>รายละเอียดรายงาน</div><div>ผู้รายงาน</div><div>ความสำคัญ</div><div>แหล่งที่มา</div><div>การดำเนินการ</div></div>
           ${pageRows.map(report => `
             <div class="user-row report-row" data-report-id="${report.id}">
               <div class="user-cell-primary" data-label="Report ID"><div class="main-text">${report.id}</div></div>
               <div class="user-card-tags">
                 ${reportQueueStatusPill(report)}
-                <span class="user-card-tag asset-tag">${report.reporters} reporters</span>
+                <span class="user-card-tag asset-tag">${reportReporterLabel(report.reporters)}</span>
                 ${statusPill(getReportPriorityLabel(report.priority), report.priority)}
                 <div class="user-card-meta">
-                  <div class="user-card-meta-item"><span>User</span><strong>${report.user}</strong></div>
-                  <div class="user-card-meta-item"><span>Account</span><strong>${getReportAccountStatus(report)}</strong></div>
-                  <div class="user-card-meta-item"><span>Source</span><strong>${report.source}</strong></div>
-                  <div class="user-card-meta-item"><span>Waiting</span><strong>${report.waiting}</strong></div>
-                  <div class="user-card-meta-item"><span>Report detail</span><strong>${report.reason}</strong></div>
+                  <div class="user-card-meta-item"><span>ผู้ใช้</span><strong>${report.user}</strong></div>
+                  <div class="user-card-meta-item"><span>สถานะบัญชี</span><strong>${userStatusLabels[getReportAccountStatus(report)] || getReportAccountStatus(report)}</strong></div>
+                  <div class="user-card-meta-item"><span>แหล่งที่มา</span><strong>${report.source}</strong></div>
+                  <div class="user-card-meta-item"><span>เวลารอ</span><strong>${report.waiting}</strong></div>
+                  <div class="user-card-meta-item"><span>รายละเอียดรายงาน</span><strong>${report.reason}</strong></div>
                 </div>
               </div>
-              <div data-label="User"><div class="main-text">${report.user}</div></div>
-              <div data-label="Status">${reportQueueStatusPill(report)}</div>
-              <div data-label="Report Detail"><div class="muted">${report.reason}</div></div>
-              <div data-label="Reporters"><div class="main-text">${report.reporters}</div></div>
-              <div data-label="Priority">${statusPill(getReportPriorityLabel(report.priority), report.priority)}</div>
-              <div data-label="Source"><div class="main-text">${report.source}</div></div>
+              <div data-label="ผู้ใช้"><div class="main-text">${report.user}</div></div>
+              <div data-label="สถานะ">${reportQueueStatusPill(report)}</div>
+              <div data-label="รายละเอียดรายงาน"><div class="muted">${report.reason}</div></div>
+              <div data-label="ผู้รายงาน"><div class="main-text">${report.reporters}</div></div>
+              <div data-label="ความสำคัญ">${statusPill(getReportPriorityLabel(report.priority), report.priority)}</div>
+              <div data-label="แหล่งที่มา"><div class="main-text">${report.source}</div></div>
               <div class="user-row-actions">
-                <button class="panel-action" type="button" data-report-action="${report.id}">${iconSvg.eye}View</button>
+                <button class="panel-action" type="button" data-report-action="${report.id}">${iconSvg.eye}ดูรายละเอียด</button>
                 ${renderReportRowActionMenu(report)}
               </div>
             </div>
@@ -4803,11 +4807,11 @@
       activeRow = report;
       activeReportContextId = report.id;
       const reportUser = getReportUser(report);
-      document.querySelector("#crumb").textContent = `การดำเนินงาน / User Management / Report Detail / ${report.id}`;
-      document.querySelector("#page-title").textContent = "Report Detail";
+      document.querySelector("#crumb").textContent = `การดำเนินงาน / User Management / รายละเอียดรายงาน / ${report.id}`;
+      document.querySelector("#page-title").textContent = "รายละเอียดรายงาน";
       document.querySelector("#page-meta").textContent = "";
       document.querySelector("#panel-title").textContent = report.user;
-      document.querySelector("#panel-subtitle").textContent = `${report.id} · ${report.category} · reporter identity masked`;
+      document.querySelector("#panel-subtitle").textContent = `${report.id} · ${report.category} · ปิดข้อมูลผู้รายงาน`;
       document.querySelector(".filters").innerHTML = "";
       document.querySelector("#summary-grid").innerHTML = "";
       document.querySelector("#cards").innerHTML = "";
@@ -4821,40 +4825,40 @@
                 <div class="chips">
                   ${reportQueueStatusPill(report)}
                   ${statusPill(getReportPriorityLabel(report.priority), report.priority)}
-                  <span class="chip">${report.reporters} reporters</span>
+                  <span class="chip">${reportReporterLabel(report.reporters)}</span>
                 </div>
               </div>
             </div>
-            <button class="btn" type="button" data-back-reported-users>กลับไป Reported Users</button>
+            <button class="btn" type="button" data-back-reported-users>กลับไปรายการรายงาน</button>
           </div>
 
           <div class="detail-section">
-            <h4>Reported Reference</h4>
+            <h4>ข้อมูลอ้างอิงของรายงาน</h4>
             <div class="detail-grid two">
-              <div class="detail-tile"><span>Report ID</span><strong>${report.id}</strong></div>
-              <div class="detail-tile"><span>User ID</span><strong>${report.userId}</strong></div>
-              <div class="detail-tile"><span>Reference</span><strong>${report.reference}</strong></div>
-              <div class="detail-tile"><span>Source Module</span><strong>${report.source}</strong></div>
-              <div class="detail-tile"><span>Account Status</span><strong>${getReportAccountStatus(report)}</strong></div>
-              <div class="detail-tile"><span>Waiting</span><strong>${report.waiting}</strong></div>
+              <div class="detail-tile"><span>รหัสรายงาน</span><strong>${report.id}</strong></div>
+              <div class="detail-tile"><span>รหัสผู้ใช้</span><strong>${report.userId}</strong></div>
+              <div class="detail-tile"><span>ข้อมูลอ้างอิง</span><strong>${report.reference}</strong></div>
+              <div class="detail-tile"><span>โมดูลต้นทาง</span><strong>${report.source}</strong></div>
+              <div class="detail-tile"><span>สถานะบัญชี</span><strong>${userStatusLabels[getReportAccountStatus(report)] || getReportAccountStatus(report)}</strong></div>
+              <div class="detail-tile"><span>เวลารอ</span><strong>${report.waiting}</strong></div>
             </div>
           </div>
 
           <div class="detail-section">
-            <h4>Report Details</h4>
+            <h4>รายละเอียดรายงาน</h4>
             <div class="detail-grid">
-              <div class="detail-tile"><span>Reason</span><strong>${report.reason}</strong></div>
-              <div class="detail-tile"><span>Application reporter note</span><div class="chips">${report.evidence.map(item => `<span class="chip">${item}</span>`).join("")}</div></div>
-              <div class="detail-tile"><span>Recommendation</span>${report.recommendation}</div>
+              <div class="detail-tile"><span>เหตุผลที่ถูกรายงาน</span><strong>${report.reason}</strong></div>
+              <div class="detail-tile"><span>หลักฐาน / หมายเหตุจากผู้รายงาน</span><div class="chips">${report.evidence.map(item => `<span class="chip">${item}</span>`).join("")}</div></div>
+              <div class="detail-tile"><span>คำแนะนำสำหรับผู้ดูแล</span>${report.recommendation}</div>
             </div>
           </div>
 
           <div class="detail-section">
-            <h4>Admin Action History</h4>
+            <h4>ประวัติการดำเนินการของผู้ดูแล</h4>
             ${renderReportAuditHistoryTable(report)}
           </div>
 
-          ${getReportAccountStatus(report) === "Deletion Requested" ? `<div class="warning-note"><strong>Deletion dependency:</strong> ต้องตรวจ source report ก่อน แล้วจึง route ไป Account Deletion ห้าม delete/archive ทันทีจากคิวนี้</div>` : ""}
+          ${getReportAccountStatus(report) === "Deletion Requested" ? `<div class="warning-note"><strong>เงื่อนไขก่อนลบบัญชี:</strong> ต้องตรวจรายงานจากต้นทางก่อน แล้วจึงส่งต่อไป Account Deletion ห้ามลบหรือเก็บถาวรทันทีจากคิวนี้</div>` : ""}
           ${renderReportDetailActionButtons(report)}
         </div>
       `;
