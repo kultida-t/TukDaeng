@@ -3620,7 +3620,7 @@
           reportedAt: formatReporterSubmissionTime(baseTime + minuteOffset * 60 * 1000),
           source: report.source,
           note: appReason,
-          status: "เปิดเคส"
+          status: index === 0 ? "เปิดเคส" : "รวมเคส"
         };
       });
     }
