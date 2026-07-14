@@ -4771,16 +4771,25 @@
       };
     }
 
-    function renderReportStatusConfirmModal(report, status) {
+    function renderReportStatusConfirmModal(report, status, resultMessage = "", resultDetail = "", resultType = "", selectedScenario = "success") {
       if (!report || status !== "Cleared") {
         updateReportStatus(report, status);
         return;
       }
+      const hasResult = Boolean(resultMessage);
       const closeReasons = [
         "ตรวจหลักฐานครบแล้ว ไม่พบประเด็นค้าง",
         "ดำเนินการกับบัญชีเรียบร้อยแล้ว",
         "รายงานซ้ำกับเคสที่ปิดผลแล้ว",
         "หลักฐานไม่เข้าเงื่อนไขดำเนินการต่อ"
+      ];
+      const reportCloseFlowScenarios = [
+        { value: "success", label: "สำเร็จ" },
+        { value: "invalid_state", label: "รายงานไม่อยู่ในสถานะที่ปิดได้" },
+        { value: "stale_data", label: "ข้อมูลรายงานเปลี่ยนระหว่างดำเนินการ" },
+        { value: "policy_blocked", label: "ยังมีเงื่อนไขที่ต้องตรวจสอบ" },
+        { value: "save_failed", label: "บันทึกผลปิดรายงานไม่สำเร็จ" },
+        { value: "session_expired", label: "เซสชันหมดอายุ" }
       ];
       const modal = document.querySelector("#user-action-modal");
       const modalBody = document.querySelector("#user-action-modal-body");
@@ -4819,15 +4828,18 @@
                 </label>
                 <div class="module-note user-action-impact"><strong>ผลกระทบต่อแอปพลิเคชัน:</strong> รายงานจะถูกปิดและออกจากคิวที่ต้องดำเนินการ แต่ไม่เปลี่ยนสถานะบัญชีผู้ใช้โดยอัตโนมัติ</div>
                 <div class="user-detail-actions">
-                  <button class="user-detail-action-btn warning user-action-confirm" type="button" data-report-status-confirm="${status}" data-report-id="${report.id}">ยืนยันปิดรายงาน</button>
+                  <button class="user-detail-action-btn warning user-action-confirm" type="button" data-report-status-confirm="${status}" data-report-id="${report.id}">ยืนยัน</button>
                   <button class="user-detail-action-btn" type="button" data-user-action-modal-close>ยกเลิก</button>
                 </div>
-                <div class="warning-note action-feedback user-action-result"></div>
+                <div class="warning-note action-feedback user-action-result ${hasResult ? "show" : ""} ${resultType}">
+                  <strong>${resultMessage}</strong><br>
+                  <span>${resultDetail}</span>
+                </div>
                 <details class="prototype-tools user-action-prototype-tools">
                   <summary>Prototype scenario</summary>
                   <label>
                     Test flow
-                    ${customSelect("report-close-scenario", "Test flow", userActionFlowScenarios, "success", "data-custom-select-silent")}
+                    ${customSelect("report-close-scenario", "Test flow", reportCloseFlowScenarios, selectedScenario, "data-custom-select-silent")}
                   </label>
                 </details>
               </div>
@@ -5568,6 +5580,34 @@
       const reportStatusConfirmButton = event.target.closest("[data-report-status-confirm]");
       if (reportStatusConfirmButton) {
         const report = userManagementData.reports.find(entry => entry.id === reportStatusConfirmButton.dataset.reportId);
+        const scenario = document.querySelector("#report-close-scenario")?.value || "success";
+        const reportCloseErrorSamples = {
+          invalid_state: {
+            title: "ไม่สามารถปิดรายงานได้",
+            detail: "สถานะรายงานปัจจุบันไม่ตรงกับเงื่อนไขของการปิดรายงาน กรุณาตรวจสถานะล่าสุดก่อนยืนยันอีกครั้ง"
+          },
+          stale_data: {
+            title: "ข้อมูลรายงานมีการเปลี่ยนแปลงแล้ว",
+            detail: "มีการอัปเดตรายงานนี้ระหว่างที่เปิดหน้าต่างยืนยัน กรุณารีเฟรชข้อมูลแล้วลองอีกครั้ง"
+          },
+          policy_blocked: {
+            title: "ยังมีเงื่อนไขที่ต้องตรวจสอบ",
+            detail: "รายงานนี้ยังมีหลักฐาน ข้อมูลอ้างอิง หรือ action ที่ต้องตรวจสอบก่อนปิดผล"
+          },
+          save_failed: {
+            title: "บันทึกผลปิดรายงานไม่สำเร็จ",
+            detail: "ระบบยังไม่สามารถบันทึกสถานะปิดรายงานและ audit log ได้ กรุณาลองอีกครั้ง"
+          },
+          session_expired: {
+            title: "เซสชันหมดอายุ",
+            detail: "กรุณาเข้าสู่ระบบใหม่ก่อนปิดรายงาน เพื่อให้การยืนยันและ audit log ถูกต้อง"
+          }
+        };
+        const errorSample = reportCloseErrorSamples[scenario] || null;
+        if (errorSample) {
+          renderReportStatusConfirmModal(report, reportStatusConfirmButton.dataset.reportStatusConfirm, errorSample.title, errorSample.detail, "error", scenario);
+          return;
+        }
         updateReportStatus(report, reportStatusConfirmButton.dataset.reportStatusConfirm);
         closeUserActionModal();
         return;
