@@ -3666,7 +3666,7 @@
       `).join("");
       document.querySelector(".filters").innerHTML = isReports ? `
         <div class="user-filter-bar" data-filter-open="${userFilterOpen}">
-          <input class="field search" id="user-search" type="search" placeholder="ค้นหา report ID, user ID, display name, reason หรือ reference" />
+          <input class="field search" id="user-search" type="search" placeholder="Search Report ID, User, User ID" />
           <div class="user-advanced-filter">${customSelect("report-status-filter", "Filter report status", [
             { value: "", label: "ทุกสถานะ" },
             { value: "Pending", label: "รอตรวจ" },
