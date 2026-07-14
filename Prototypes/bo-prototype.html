@@ -1649,7 +1649,8 @@
     .report-detail-page .detail-tile strong {
       overflow-wrap: anywhere;
     }
-    .report-detail-page .report-back-btn .mobile-back-icon {
+    .report-detail-page .report-back-btn .mobile-back-icon,
+    .user-detail-page .user-back-btn .mobile-back-icon {
       display: none;
     }
     .user-action-target strong {
@@ -2891,7 +2892,8 @@
         width: auto;
         flex: 0 0 auto;
       }
-      .report-detail-page .report-back-btn {
+      .report-detail-page .report-back-btn,
+      body.user-detail-mode .user-detail-page .user-back-btn {
         width: 38px;
         min-width: 38px;
         height: 38px;
@@ -2899,12 +2901,14 @@
         display: grid;
         place-items: center;
       }
-      .report-detail-page .report-back-btn .mobile-back-icon {
+      .report-detail-page .report-back-btn .mobile-back-icon,
+      .user-detail-page .user-back-btn .mobile-back-icon {
         display: block;
         width: 18px;
         height: 18px;
       }
-      .report-detail-page .report-back-btn .btn-label {
+      .report-detail-page .report-back-btn .btn-label,
+      .user-detail-page .user-back-btn .btn-label {
         position: absolute;
         width: 1px;
         height: 1px;
@@ -4882,7 +4886,10 @@
                 <div class="chips">${userStatusPill(user.status)}<span class="pill blue">${user.auth}</span></div>
               </div>
             </div>
-            <button class="btn" type="button" data-back-user-list>กลับไป User List</button>
+            <button class="btn user-back-btn" type="button" data-back-user-list aria-label="กลับไป User List" title="กลับไป User List">
+              <svg class="mobile-back-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>
+              <span class="btn-label">กลับไป User List</span>
+            </button>
           </div>
           <div class="detail-section">
             <h4>Account Summary</h4>
