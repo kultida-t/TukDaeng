@@ -4630,13 +4630,12 @@
               <div class="user-cell-primary" data-label="Report ID"><div class="main-text">${report.id}</div></div>
               <div class="user-card-tags">
                 ${reportQueueStatusPill(report)}
+                ${userStatusPill(getReportAccountStatus(report))}
                 <span class="user-card-tag asset-tag">${report.reporters} reporters</span>
                 ${statusPill(getReportPriorityLabel(report.priority), report.priority)}
                 <div class="user-card-meta">
                   <div class="user-card-meta-item"><span>User</span><strong>${report.user}</strong></div>
-                  <div class="user-card-meta-item"><span>Account</span><strong>${getReportAccountStatus(report)}</strong></div>
                   <div class="user-card-meta-item"><span>Source</span><strong>${report.source}</strong></div>
-                  <div class="user-card-meta-item"><span>Waiting</span><strong>${report.waiting}</strong></div>
                   <div class="user-card-meta-item"><span>Report detail</span><strong>${report.reason}</strong></div>
                 </div>
               </div>
