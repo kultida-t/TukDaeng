@@ -3582,6 +3582,79 @@
       });
     }
 
+    function parseBangkokAuditTime(value) {
+      if (!value) return null;
+      const monthMap = { Jan: 0, Feb: 1, Mar: 2, Apr: 3, May: 4, Jun: 5, Jul: 6, Aug: 7, Sep: 8, Oct: 9, Nov: 10, Dec: 11 };
+      const match = String(value).match(/(\d{1,2})\s+([A-Za-z]{3})\s+(\d{4})\s+(\d{2}):(\d{2})/);
+      if (!match) return null;
+      const [, day, month, year, hour, minute] = match;
+      if (monthMap[month] === undefined) return null;
+      return Date.UTC(Number(year), monthMap[month], Number(day), Number(hour), Number(minute));
+    }
+
+    function formatReporterSubmissionTime(timestamp) {
+      if (!timestamp) return "Unknown time";
+      const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+      const date = new Date(timestamp);
+      return `${String(date.getUTCDate()).padStart(2, "0")} ${months[date.getUTCMonth()]} ${date.getUTCFullYear()} ${String(date.getUTCHours()).padStart(2, "0")}:${String(date.getUTCMinutes()).padStart(2, "0")}`;
+    }
+
+    const reportReporterNames = {
+      "RPU-505": ["Nattapol P.", "Patchara L.", "Krit Watch", "Saran Collector", "Maliwan T."],
+      "RPU-512": ["Anucha M.", "Benjawan S.", "Korn Vintage", "Pimchanok R."],
+      "RPU-518": ["Nattapol P.", "Arthit K.", "Supansa W."],
+      "RPU-541": ["Worawit C.", "Jirayu P.", "Nicha S.", "Tawan Watch", "Ploy R.", "Kanda M."],
+      "RPU-560": ["Somkid P.", "Watch Finder TH", "Ratchanon S.", "Mayuree W.", "Thanakorn L.", "Pattarapon C.", "Siriporn N.", "Vasin K."]
+    };
+
+    function getReporterHistoryRows(report) {
+      const createdLog = ensureReportAuditLogs(report).find(log => log.action === "REPORT_CREATED");
+      const baseTime = parseBangkokAuditTime(createdLog?.createdAt) || Date.UTC(2026, 6, 13, 10, 0);
+      const reporterCount = Math.max(Number(report?.reporters) || 0, 1);
+      const reporterNames = reportReporterNames[report.id] || [];
+      return Array.from({ length: reporterCount }, (_, index) => {
+        const appReason = report.evidence?.[index % report.evidence.length] || report.reason;
+        const minuteOffset = index === 0 ? 0 : index * 17;
+        return {
+          reporter: reporterNames[index] || `Reporter ${String(index + 1).padStart(2, "0")}`,
+          reportedAt: formatReporterSubmissionTime(baseTime + minuteOffset * 60 * 1000),
+          source: report.source,
+          note: appReason,
+          status: index === 0
+            ? { label: "เปิดเคส", detail: "รายงานแรกที่สร้างเคสนี้" }
+            : { label: "รวมในเคส", detail: "รายงานซ้ำที่รวมเข้ากับเคสนี้แล้ว" }
+        };
+      });
+    }
+
+    function renderReporterHistoryTable(report) {
+      const rows = getReporterHistoryRows(report).map(row => `
+        <tr>
+          <td data-label="วันที่ / เวลา">${row.reportedAt}</td>
+          <td data-label="Reporter">${row.reporter}</td>
+          <td data-label="Source">${row.source}</td>
+          <td data-label="Status"><span class="pill">${row.status.label}</span><div class="muted">${row.status.detail}</div></td>
+          <td data-label="Reporter note" class="history-note">${row.note}</td>
+        </tr>
+      `).join("");
+      return `
+        <div class="history-table-wrap">
+          <table class="history-table">
+            <thead>
+              <tr>
+                <th>วันที่ / เวลา</th>
+                <th>Reporter</th>
+                <th>Source</th>
+                <th>Status</th>
+                <th>Reporter note</th>
+              </tr>
+            </thead>
+            <tbody>${rows}</tbody>
+          </table>
+        </div>
+      `;
+    }
+
     function renderReportAuditHistoryTable(report) {
       const accountStatusByLog = getReportAuditAccountStatusRows(report);
       const rows = ensureReportAuditLogs(report).map(log => {
@@ -4986,6 +5059,11 @@
               <div class="detail-tile"><span>Application reporter note</span><div class="chips">${report.evidence.map(item => `<span class="chip">${item}</span>`).join("")}</div></div>
               <div class="detail-tile"><span>Recommendation</span>${report.recommendation}</div>
             </div>
+          </div>
+
+          <div class="detail-section">
+            <h4>Reporter History</h4>
+            ${renderReporterHistoryTable(report)}
           </div>
 
           <div class="detail-section">
