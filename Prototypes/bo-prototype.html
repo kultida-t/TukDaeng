@@ -3625,8 +3625,28 @@
       });
     }
 
+    function renderReportHistoryPager(kind, page, pageCount, total, start) {
+      if (total <= reportHistoryPageSize) return "";
+      const pageAttr = kind === "reporter" ? "data-reporter-history-page" : "data-report-audit-history-page";
+      return `
+        <div class="footer-range">
+          <span>แสดง ${start + 1}-${Math.min(start + reportHistoryPageSize, total)} จาก ${total}</span>
+          <div class="pager">
+            <button class="btn" type="button" ${pageAttr}="prev" ${page <= 1 ? "disabled" : ""}>ก่อนหน้า</button>
+            ${Array.from({ length: pageCount }, (_, index) => `<button class="btn ${index + 1 === page ? "active" : ""}" type="button" ${pageAttr}="${index + 1}">${index + 1}</button>`).join("")}
+            <button class="btn" type="button" ${pageAttr}="next" ${page >= pageCount ? "disabled" : ""}>ถัดไป</button>
+          </div>
+        </div>
+      `;
+    }
+
     function renderReporterHistoryTable(report) {
-      const rows = getReporterHistoryRows(report).map(row => `
+      const allRows = getReporterHistoryRows(report);
+      const pageCount = Math.max(1, Math.ceil(allRows.length / reportHistoryPageSize));
+      reporterHistoryPage = Math.min(reporterHistoryPage, pageCount);
+      const start = (reporterHistoryPage - 1) * reportHistoryPageSize;
+      const pageRows = allRows.slice(start, start + reportHistoryPageSize);
+      const rows = pageRows.map(row => `
         <tr>
           <td data-label="วันที่ / เวลา">${row.reportedAt}</td>
           <td data-label="Reporter">${row.reporter}</td>
@@ -3649,13 +3669,19 @@
             </thead>
             <tbody>${rows}</tbody>
           </table>
+          ${renderReportHistoryPager("reporter", reporterHistoryPage, pageCount, allRows.length, start)}
         </div>
       `;
     }
 
     function renderReportAuditHistoryTable(report) {
       const accountStatusByLog = getReportAuditAccountStatusRows(report);
-      const rows = ensureReportAuditLogs(report).map(log => {
+      const allLogs = ensureReportAuditLogs(report);
+      const pageCount = Math.max(1, Math.ceil(allLogs.length / reportHistoryPageSize));
+      reportAuditHistoryPage = Math.min(reportAuditHistoryPage, pageCount);
+      const start = (reportAuditHistoryPage - 1) * reportHistoryPageSize;
+      const pageLogs = allLogs.slice(start, start + reportHistoryPageSize);
+      const rows = pageLogs.map(log => {
         const accountStatus = accountStatusByLog.get(log) || report.accountStatus || getReportAccountStatus(report);
         return `
           <tr>
@@ -3681,6 +3707,7 @@
             </thead>
             <tbody>${rows}</tbody>
           </table>
+          ${renderReportHistoryPager("audit", reportAuditHistoryPage, pageCount, allLogs.length, start)}
         </div>
       `;
     }
@@ -3714,9 +3741,12 @@
     let activeRow = null;
     let activeActivityFilter = "ทั้งหมด";
     let userListPage = 1;
+    let reporterHistoryPage = 1;
+    let reportAuditHistoryPage = 1;
     let userFilterOpen = false;
     let activeReportContextId = null;
     const userListPageSize = 10;
+    const reportHistoryPageSize = 10;
 
     function resetSessionViewState() {
       expandedMenus.clear();
@@ -3724,6 +3754,8 @@
       activeRow = null;
       activeActivityFilter = "ทั้งหมด";
       userListPage = 1;
+      reporterHistoryPage = 1;
+      reportAuditHistoryPage = 1;
       userFilterOpen = false;
       closeRowMenus();
       document.querySelectorAll("[data-custom-select]").forEach(select => {
@@ -5494,6 +5526,8 @@
           renderModule("users", "Reported Users");
         }
         activeRow = report;
+        reporterHistoryPage = 1;
+        reportAuditHistoryPage = 1;
         renderReportedUserDetail(report);
         return;
       }
@@ -5522,6 +5556,24 @@
         else userListPage = Number(target) || 1;
         if (activeModule === "users" && (activeSub === "Report User" || activeSub === "Reported Users")) renderReportedUserRows();
         else renderUserRows();
+        return;
+      }
+      const reporterHistoryPageButton = event.target.closest("[data-reporter-history-page]");
+      if (reporterHistoryPageButton && activeRow) {
+        const target = reporterHistoryPageButton.dataset.reporterHistoryPage;
+        if (target === "prev") reporterHistoryPage = Math.max(1, reporterHistoryPage - 1);
+        else if (target === "next") reporterHistoryPage += 1;
+        else reporterHistoryPage = Number(target) || 1;
+        renderReportedUserDetail(activeRow);
+        return;
+      }
+      const reportAuditHistoryPageButton = event.target.closest("[data-report-audit-history-page]");
+      if (reportAuditHistoryPageButton && activeRow) {
+        const target = reportAuditHistoryPageButton.dataset.reportAuditHistoryPage;
+        if (target === "prev") reportAuditHistoryPage = Math.max(1, reportAuditHistoryPage - 1);
+        else if (target === "next") reportAuditHistoryPage += 1;
+        else reportAuditHistoryPage = Number(target) || 1;
+        renderReportedUserDetail(activeRow);
         return;
       }
       const backReportedUsers = event.target.closest("[data-back-reported-users]");
