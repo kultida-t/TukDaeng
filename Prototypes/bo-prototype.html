@@ -4456,7 +4456,8 @@
       const user = getReportUser(report);
       if (!user) return [];
       if (getReportQueueStatus(report) === "Cleared") return [];
-      return getUserRowActions(user);
+      const reportAccountActionSet = new Set(["Suspend", "Ban", "Restore", "Unban user"]);
+      return getUserRowActions(user).filter(({ action }) => reportAccountActionSet.has(action));
     }
 
     function renderReportStatusActionButtons(report) {
@@ -4488,6 +4489,7 @@
     function renderReportDetailActionButtons(report) {
       const reportUser = getReportUser(report);
       const statusActions = getReportStatusActions(report)
+        .filter(action => action.status !== "In Review")
         .map(action => `<button class="user-detail-action-btn ${action.status === "Cleared" ? "primary" : ""}" type="button" data-report-status-action="${action.status}" data-report-id="${report.id}">${action.label}</button>`)
         .join("");
       const accountActions = reportUser
@@ -4495,8 +4497,8 @@
             return `<button class="user-detail-action-btn ${getUserActionClass(action, index)}" type="button" data-user-action="${action}" data-user-id="${reportUser.id}" data-report-context="${report.id}">${label}</button>`;
           }).join("")
         : "";
-      const emptyState = getReportQueueStatus(report) === "Cleared" ? "" : `<span class="chip">No account action available</span>`;
-      const actions = `${statusActions}${accountActions || emptyState}`;
+      const emptyState = !statusActions && !accountActions && getReportQueueStatus(report) !== "Cleared" ? `<span class="chip">No account action available</span>` : "";
+      const actions = `${statusActions}${accountActions}${emptyState}`;
       return actions ? `<div class="user-detail-actions">${actions}</div>` : "";
     }
 
