@@ -4835,7 +4835,7 @@
               <div class="detail-tile"><span>User ID</span><strong>${report.userId}</strong></div>
               <div class="detail-tile"><span>Reference</span><strong>${report.reference}</strong></div>
               <div class="detail-tile"><span>Source Module</span><strong>${report.source}</strong></div>
-              <div class="detail-tile"><span>Account Status</span><strong>${getReportAccountStatus(report)}</strong></div>
+              <div class="detail-tile"><span>Account Status</span><strong>${userStatusLabels[getReportAccountStatus(report)] || getReportAccountStatus(report)}</strong></div>
               <div class="detail-tile"><span>Waiting</span><strong>${report.waiting}</strong></div>
             </div>
           </div>
