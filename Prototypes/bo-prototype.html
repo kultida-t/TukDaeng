@@ -965,7 +965,7 @@
     }
     .history-table {
       width: 100%;
-      min-width: 980px;
+      min-width: 820px;
       border-collapse: collapse;
       font-size: 12px;
     }
@@ -984,18 +984,14 @@
       letter-spacing: .02em;
     }
     .history-table tr:last-child td { border-bottom: 0; }
-    .history-table .status-change {
-      display: grid;
-      gap: 3px;
-      min-width: 140px;
-    }
-    .history-table .status-change small {
-      color: var(--muted);
-      font-size: 11px;
-    }
     .history-table .history-note {
       min-width: 240px;
       max-width: 360px;
+    }
+    .history-table small {
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 400;
     }
     .panel-action {
       border: 0;
@@ -3228,9 +3224,8 @@
 
     const reportAuditLogSeeds = {
       "RPU-505": [
-        { id: "AUD-RPU-505-003", action: "REPORT_REVIEW_STARTED", actor: "Somchai Admin", createdAt: "14 Jul 2026 09:18 GMT+7", entityType: "reported_user", entityId: "RPU-505", sourceModule: "Reported Users", detail: "รับเคสเข้าตรวจสอบและเปิด reported reference จาก User Detail", before: { reportStatus: "Open" }, after: { reportStatus: "In Review" }, reason: "พบรายงานซ้ำ 5 รายการและบัญชีอยู่ในสถานะ Suspended", metadata: { reference: "Profile ID PRF-1002", userId: "U-1002" } },
-        { id: "AUD-RPU-505-002", action: "SOURCE_EVIDENCE_VIEWED", actor: "Somchai Admin", createdAt: "14 Jul 2026 09:15 GMT+7", entityType: "reported_user", entityId: "RPU-505", sourceModule: "User Detail", detail: "ตรวจ source evidence จากโปรไฟล์และ reporter note", before: null, after: null, reason: "ยืนยันบริบทก่อนทำ action กับบัญชี", metadata: { evidenceCount: 2, reporterCount: 5 } },
-        { id: "AUD-RPU-505-001", action: "REPORT_CREATED", actor: "System", createdAt: "13 Jul 2026 11:22 GMT+7", entityType: "reported_user", entityId: "RPU-505", sourceModule: "User Detail", detail: "สร้าง report จากการรวมรายงานผู้ใช้", before: null, after: { reportStatus: "Open", accountStatus: "Suspended" }, reason: "Profile duplicate and seller behavior reports reached review threshold", metadata: { reference: "Profile ID PRF-1002", userId: "U-1002" } }
+        { id: "AUD-RPU-505-003", action: "REPORT_REVIEW_STARTED", actor: "Somchai Admin", createdAt: "14 Jul 2026 09:18 GMT+7", entityType: "reported_user", entityId: "RPU-505", sourceModule: "Reported Users", detail: "พักบัญชีไว้ระหว่างตรวจนโยบาย", before: { reportStatus: "Open", accountStatus: "Active" }, after: { reportStatus: "In Review", accountStatus: "Suspended" }, reason: "มีรายงานความเสี่ยงสูง รอตรวจสอบ", metadata: { reference: "Profile ID PRF-1002", userId: "U-1002" } },
+        { id: "AUD-RPU-505-001", action: "REPORT_CREATED", actor: "System", createdAt: "13 Jul 2026 11:22 GMT+7", entityType: "reported_user", entityId: "RPU-505", sourceModule: "User Detail", detail: "รับรายงานผู้ใช้จากระบบ", before: null, after: { reportStatus: "Open", accountStatus: "Active" }, reason: "พบรายงานโปรไฟล์ซ้ำและพฤติกรรมผู้ขายที่ต้องตรวจสอบ", metadata: { reference: "Profile ID PRF-1002", userId: "U-1002" } }
       ],
       "RPU-512": [
         { id: "AUD-RPU-512-001", action: "REPORT_CREATED", actor: "System", createdAt: "13 Jul 2026 13:40 GMT+7", entityType: "reported_user", entityId: "RPU-512", sourceModule: "Asset Detail", detail: "สร้าง report จากกลุ่มสินทรัพย์ที่ถูกรายงานว่าซ้ำ", before: null, after: { reportStatus: "Open", accountStatus: "Active" }, reason: "Duplicate asset evidence reached review threshold", metadata: { reference: "Asset Group AST-DUP-1017", userId: "U-1017" } }
@@ -3362,21 +3357,46 @@
     }
 
     const reportAuditActionLabels = {
-      REPORT_CREATED: "เปิดรายงาน",
-      REPORT_REVIEW_STARTED: "เริ่มตรวจรายงาน",
-      SOURCE_EVIDENCE_VIEWED: "ตรวจหลักฐานต้นทาง",
-      REPORT_STATUS_UPDATED: "เปลี่ยนสถานะรายงาน",
-      ACCOUNT_STATUS_UPDATED: "เปลี่ยนสถานะบัญชี",
-      DELETION_DEPENDENCY_CHECK_STARTED: "ตรวจ dependency ก่อนลบบัญชี",
+      REPORT_CREATED: "รับรายงานผู้ใช้",
+      REPORT_REVIEW_STARTED: "เริ่มตรวจสอบรายงาน",
+      DELETION_DEPENDENCY_CHECK_STARTED: "ตรวจเงื่อนไขก่อนลบบัญชี",
       LEGACY_HISTORY_IMPORTED: "นำเข้าประวัติเดิม"
     };
 
-    function renderStatusChange(beforeValue, afterValue, emptyLabel = "ไม่เปลี่ยนแปลง") {
-      const beforeText = beforeValue || "-";
-      const afterText = afterValue || beforeValue || emptyLabel;
-      if (!beforeValue && !afterValue) return `<span>${emptyLabel}</span>`;
-      if (beforeText === afterText) return `<span>${afterText}</span>`;
-      return `<div class="status-change"><small>จาก ${beforeText}</small><strong>เป็น ${afterText}</strong></div>`;
+    let pendingReportActionAudit = null;
+
+    function formatAuditDisplayTime(createdAt) {
+      return String(createdAt || "").replace(/\s*GMT\+7$/i, "");
+    }
+
+    function getReportAuditActionLabel(log) {
+      if (log.actionLabel) return log.actionLabel;
+      if (log.action === "REPORT_CREATED") return reportAuditActionLabels.REPORT_CREATED;
+      if (log.action === "DELETION_DEPENDENCY_CHECK_STARTED") return reportAuditActionLabels.DELETION_DEPENDENCY_CHECK_STARTED;
+      if (log.action === "LEGACY_HISTORY_IMPORTED") return reportAuditActionLabels.LEGACY_HISTORY_IMPORTED;
+      const beforeAccount = log.before?.accountStatus;
+      const afterAccount = log.after?.accountStatus;
+      if (beforeAccount !== afterAccount && afterAccount === "Suspended") return "ระงับบัญชีชั่วคราวระหว่างตรวจสอบ";
+      if (beforeAccount !== afterAccount && afterAccount === "Banned") return "ระงับบัญชีถาวร";
+      if (beforeAccount !== afterAccount && afterAccount === "Active") return "เปิดใช้งานบัญชีอีกครั้ง";
+      if (log.action === "REPORT_STATUS_UPDATED") {
+        if (log.after?.reportStatus === "Cleared") return "ปิดรายงาน";
+        if (log.after?.reportStatus === "In Review") return "เริ่มตรวจสอบรายงาน";
+        if (log.after?.reportStatus === "Open") return "ส่งกลับรอตรวจ";
+      }
+      return reportAuditActionLabels[log.action] || log.action;
+    }
+
+    function getReportAuditAccountStatusRows(report) {
+      const logs = ensureReportAuditLogs(report);
+      let currentStatus = report.accountStatus || getReportAccountStatus(report);
+      const statusById = new Map();
+      [...logs].reverse().forEach(log => {
+        const statusAtLog = log.after?.accountStatus || log.before?.accountStatus || currentStatus;
+        currentStatus = statusAtLog;
+        statusById.set(log.id, statusAtLog);
+      });
+      return statusById;
     }
 
     function ensureReportAuditLogs(report) {
@@ -3417,19 +3437,16 @@
     }
 
     function renderReportAuditHistoryTable(report) {
+      const accountStatusByLogId = getReportAuditAccountStatusRows(report);
       const rows = ensureReportAuditLogs(report).map(log => {
-        const reference = log.metadata?.reference || report.reference || "-";
-        const reportStatus = renderStatusChange(log.before?.reportStatus, log.after?.reportStatus);
-        const accountStatus = renderStatusChange(log.before?.accountStatus, log.after?.accountStatus);
+        const accountStatus = accountStatusByLogId.get(log.id) || report.accountStatus || getReportAccountStatus(report);
         return `
           <tr>
-            <td><strong>${log.createdAt}</strong><br><small>${log.id}</small></td>
+            <td>${formatAuditDisplayTime(log.createdAt)}</td>
             <td>${log.actor}</td>
-            <td><strong>${reportAuditActionLabels[log.action] || log.action}</strong><br><small>${log.sourceModule}</small></td>
-            <td>${reportStatus}</td>
-            <td>${accountStatus}</td>
+            <td>${getReportAuditActionLabel(log)}<br><small>${log.sourceModule}</small></td>
+            <td>${userStatusPill(accountStatus)}</td>
             <td class="history-note">${log.detail}${log.reason ? `<br><small>เหตุผล: ${log.reason}</small>` : ""}</td>
-            <td>${reference}</td>
           </tr>
         `;
       }).join("");
@@ -3441,10 +3458,8 @@
                 <th>วันที่ / เวลา</th>
                 <th>ผู้ดำเนินการ</th>
                 <th>Action</th>
-                <th>สถานะรายงาน</th>
                 <th>สถานะบัญชี</th>
                 <th>รายละเอียด</th>
-                <th>Reference</th>
               </tr>
             </thead>
             <tbody>${rows}</tbody>
@@ -4227,11 +4242,12 @@
           const beforeStatus = report.accountStatus;
           report.accountStatus = user.status;
           appendReportAuditLog(report, {
-            action: "ACCOUNT_STATUS_UPDATED",
-            detail: "เปลี่ยนสถานะบัญชีจาก action ใน Reported Users",
+            action: beforeStatus === user.status ? "ADMIN_ACTION_RECORDED" : "ACCOUNT_STATUS_UPDATED",
+            actionLabel: pendingReportActionAudit?.actionLabel,
+            detail: pendingReportActionAudit?.detail || "บันทึก action จาก Reported Users",
             before: { accountStatus: beforeStatus },
             after: { accountStatus: user.status },
-            reason: "Admin confirmed account status action from report context"
+            reason: pendingReportActionAudit?.reason || "Admin confirmed action from report context"
           });
           if (document.body.classList.contains("user-detail-mode")) renderReportedUserDetail(report);
           else renderReportedUserRows();
@@ -4352,7 +4368,15 @@
         user.status = config.targetStatus;
         updateUserActionsForStatus(user);
       }
+      const selectedReason = document.querySelector("#user-action-reason")?.value || "";
+      const actionNote = document.querySelector("#user-action-note")?.value.trim() || "";
+      pendingReportActionAudit = {
+        actionLabel: config.title,
+        detail: actionNote || selectedReason || config.summary,
+        reason: selectedReason || config.reasonLabel
+      };
       refreshUserActionSurface(user);
+      pendingReportActionAudit = null;
       closeUserActionModal();
       showSuccessToast(config.success(user));
     }
