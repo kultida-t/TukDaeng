@@ -2642,6 +2642,43 @@
       .user-row:not(.head):not(.report-row) > div[data-label]:not(.user-cell-primary) {
         display: none;
       }
+      .user-row:not(.head).report-row {
+        grid-template-columns: minmax(0, 1fr) 34px;
+        column-gap: 14px;
+        row-gap: 14px;
+        padding: 18px 18px 16px;
+        border-color: #cfdbd2;
+        border-radius: 10px;
+        box-shadow: 0 1px 2px rgba(15, 23, 42, .05);
+        cursor: pointer;
+        overflow: visible;
+      }
+      .user-row:not(.head).report-row > div.user-cell-primary[data-label] {
+        grid-column: 1;
+        grid-row: 1;
+        min-height: 30px;
+        display: flex;
+        align-items: center;
+        align-self: center;
+        border-bottom: 0;
+        padding-bottom: 0;
+      }
+      .user-row:not(.head).report-row > div.user-cell-primary[data-label] .main-text {
+        max-width: 100%;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        font-size: 18px;
+        line-height: 1.15;
+      }
+      .user-row:not(.head).report-row > div[data-label]:not(.user-cell-primary) {
+        display: none;
+      }
+      .user-row:not(.head).report-row > .user-row-actions {
+        grid-column: 2;
+        grid-row: 1;
+        align-self: center;
+      }
       .user-card-tags {
         grid-column: 1 / -1;
         grid-row: 2;
@@ -4238,7 +4275,9 @@
                 ${statusPill(getReportPriorityLabel(report.priority), report.priority)}
                 <div class="user-card-meta">
                   <div class="user-card-meta-item"><span>User</span><strong>${report.user}</strong></div>
+                  <div class="user-card-meta-item"><span>Source</span><strong>${report.source}</strong></div>
                   <div class="user-card-meta-item"><span>Waiting</span><strong>${report.waiting}</strong></div>
+                  <div class="user-card-meta-item"><span>Report detail</span><strong>${report.reason}</strong></div>
                 </div>
               </div>
               <div data-label="User"><div class="main-text">${report.user}</div></div>
