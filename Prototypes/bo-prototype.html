@@ -3234,15 +3234,17 @@
         { id: "AUD-RPU-518-001", action: "REPORT_CREATED", actor: "System", createdAt: "13 Jul 2026 15:12 GMT+7", entityType: "reported_user", entityId: "RPU-518", sourceModule: "Offer / Chat", detail: "สร้าง report จากข้อพิพาท offer และประวัติแชท", before: null, after: { reportStatus: "Open", accountStatus: "Active" }, reason: "Buyer dispute requires offer context review", metadata: { reference: "Offer OFR-501", userId: "U-1088" } }
       ],
       "RPU-530": [
-        { id: "AUD-RPU-530-002", action: "DELETION_DEPENDENCY_CHECK_STARTED", actor: "Somchai Admin", createdAt: "14 Jul 2026 08:45 GMT+7", entityType: "reported_user", entityId: "RPU-530", sourceModule: "Account Deletion", detail: "เริ่ม dependency check ก่อนอนุมัติการลบบัญชี", before: { reportStatus: "Open" }, after: { reportStatus: "In Review" }, reason: "ยังมี report และข้อเสนอซื้อค้างอยู่", metadata: { reference: "DEL-033", userId: "U-1104" } },
+        { id: "AUD-RPU-530-002", action: "DELETION_DEPENDENCY_CHECK_STARTED", actor: "Somchai Admin", createdAt: "14 Jul 2026 08:45 GMT+7", entityType: "reported_user", entityId: "RPU-530", sourceModule: "Account Deletion", detail: "เริ่ม dependency check ก่อนอนุมัติการลบบัญชี", before: { reportStatus: "Open", accountStatus: "Deletion Requested" }, after: { reportStatus: "In Review", accountStatus: "Deletion Requested" }, reason: "ยังมี report และข้อเสนอซื้อค้างอยู่", metadata: { reference: "DEL-033", userId: "U-1104" } },
         { id: "AUD-RPU-530-001", action: "REPORT_CREATED", actor: "System", createdAt: "14 Jul 2026 00:05 GMT+7", entityType: "reported_user", entityId: "RPU-530", sourceModule: "Account Deletion", detail: "สร้าง report ระหว่าง workflow คำขอลบบัญชี", before: null, after: { reportStatus: "Open", accountStatus: "Deletion Requested" }, reason: "Deletion request has unresolved report dependency", metadata: { reference: "DEL-033", userId: "U-1104" } }
       ],
       "RPU-541": [
         { id: "AUD-RPU-541-002", action: "REPORT_STATUS_UPDATED", actor: "Somchai Admin", createdAt: "13 Jul 2026 18:22 GMT+7", entityType: "reported_user", entityId: "RPU-541", sourceModule: "Reported Users", detail: "ปิด report หลังดำเนินการกับบัญชีและบันทึก audit note", before: { reportStatus: "In Review", accountStatus: "Active" }, after: { reportStatus: "Cleared", accountStatus: "Suspended" }, reason: "ยืนยันข้อความแชทไม่เหมาะสมจาก source evidence", metadata: { reference: "CHT-090", userId: "U-1186" } },
+        { id: "AUD-RPU-541-003", action: "REPORT_REVIEW_STARTED", actor: "Somchai Admin", createdAt: "13 Jul 2026 14:06 GMT+7", entityType: "reported_user", entityId: "RPU-541", sourceModule: "Reported Users", detail: "เริ่มตรวจสอบ transcript และหลักฐานจาก Offer / Chat", before: { reportStatus: "Open", accountStatus: "Active" }, after: { reportStatus: "In Review", accountStatus: "Active" }, reason: "มีรายงานแชทซ้ำ ต้องตรวจ source evidence ก่อนทำ action", metadata: { reference: "CHT-090", userId: "U-1186" } },
         { id: "AUD-RPU-541-001", action: "REPORT_CREATED", actor: "System", createdAt: "13 Jul 2026 10:14 GMT+7", entityType: "reported_user", entityId: "RPU-541", sourceModule: "Offer / Chat", detail: "สร้าง report จากรายงานแชทซ้ำ", before: null, after: { reportStatus: "Open", accountStatus: "Active" }, reason: "Chat abuse report reached high priority threshold", metadata: { reference: "CHT-090", userId: "U-1186" } }
       ],
       "RPU-560": [
         { id: "AUD-RPU-560-002", action: "REPORT_STATUS_UPDATED", actor: "Somchai Admin", createdAt: "12 Jul 2026 16:08 GMT+7", entityType: "reported_user", entityId: "RPU-560", sourceModule: "Reported Users", detail: "ปิด report หลังแบนบัญชีจากพฤติกรรมละเมิดซ้ำ", before: { reportStatus: "In Review", accountStatus: "Suspended" }, after: { reportStatus: "Cleared", accountStatus: "Banned" }, reason: "ยืนยัน abuse pattern จากหลาย report และหลักฐานผู้ดูแลระบบ", metadata: { reference: "Profile ID PRF-1120", userId: "U-1120" } },
+        { id: "AUD-RPU-560-003", action: "REPORT_REVIEW_STARTED", actor: "Somchai Admin", createdAt: "12 Jul 2026 11:18 GMT+7", entityType: "reported_user", entityId: "RPU-560", sourceModule: "Reported Users", detail: "เริ่มตรวจสอบ pattern การละเมิดซ้ำและประวัติการถูกระงับ", before: { reportStatus: "Open", accountStatus: "Suspended" }, after: { reportStatus: "In Review", accountStatus: "Suspended" }, reason: "ต้องตรวจประวัติเดิมก่อนยืนยันการระงับบัญชีถาวร", metadata: { reference: "Profile ID PRF-1120", userId: "U-1120" } },
         { id: "AUD-RPU-560-001", action: "REPORT_CREATED", actor: "System", createdAt: "12 Jul 2026 09:35 GMT+7", entityType: "reported_user", entityId: "RPU-560", sourceModule: "Reported Users", detail: "สร้าง report จากรายงานพฤติกรรมละเมิดซ้ำ", before: null, after: { reportStatus: "Open", accountStatus: "Suspended" }, reason: "Multiple abuse reports require account action review", metadata: { reference: "Profile ID PRF-1120", userId: "U-1120" } }
       ]
     };
@@ -4470,6 +4472,34 @@
       return actions.map(({ action, label }) => `<button type="button" data-user-action="${action}" data-user-id="${user.id}" data-report-context="${report.id}">${label}</button>`).join("");
     }
 
+    function renderReportRowActionMenu(report) {
+      const actions = `${renderReportStatusActionButtons(report)}${renderReportAccountActionButtons(report)}`;
+      if (!actions) return "";
+      return `
+        <details class="row-menu">
+          <summary title="Report actions">...</summary>
+          <div class="row-menu-list">
+            ${actions}
+          </div>
+        </details>
+      `;
+    }
+
+    function renderReportDetailActionButtons(report) {
+      const reportUser = getReportUser(report);
+      const statusActions = getReportStatusActions(report)
+        .map(action => `<button class="user-detail-action-btn ${action.status === "Cleared" ? "primary" : ""}" type="button" data-report-status-action="${action.status}" data-report-id="${report.id}">${action.label}</button>`)
+        .join("");
+      const accountActions = reportUser
+        ? getReportAccountActions(report).map(({ action, label }, index) => {
+            return `<button class="user-detail-action-btn ${getUserActionClass(action, index)}" type="button" data-user-action="${action}" data-user-id="${reportUser.id}" data-report-context="${report.id}">${label}</button>`;
+          }).join("")
+        : "";
+      const emptyState = getReportQueueStatus(report) === "Cleared" ? "" : `<span class="chip">No account action available</span>`;
+      const actions = `${statusActions}${accountActions || emptyState}`;
+      return actions ? `<div class="user-detail-actions">${actions}</div>` : "";
+    }
+
     function getReportStatusActionSummary(status) {
       const summaries = {
         "Open": {
@@ -4620,13 +4650,7 @@
               <div data-label="Source"><div class="main-text">${report.source}</div></div>
               <div class="user-row-actions">
                 <button class="panel-action" type="button" data-report-action="${report.id}">${iconSvg.eye}View</button>
-                <details class="row-menu">
-                  <summary title="Report actions">...</summary>
-                  <div class="row-menu-list">
-                    ${renderReportStatusActionButtons(report)}
-                    ${renderReportAccountActionButtons(report)}
-                  </div>
-                </details>
+                ${renderReportRowActionMenu(report)}
               </div>
             </div>
           `).join("") || `<div class="detail-empty user-empty">ไม่พบ report ตาม filter ที่เลือก</div>`}
@@ -4829,12 +4853,7 @@
           </div>
 
           ${getReportAccountStatus(report) === "Deletion Requested" ? `<div class="warning-note"><strong>Deletion dependency:</strong> ต้องตรวจ source report ก่อน แล้วจึง route ไป Account Deletion ห้าม delete/archive ทันทีจากคิวนี้</div>` : ""}
-          <div class="user-detail-actions">
-            ${getReportStatusActions(report).map(action => `<button class="user-detail-action-btn ${action.status === "Cleared" ? "primary" : ""}" type="button" data-report-status-action="${action.status}" data-report-id="${report.id}">${action.label}</button>`).join("")}
-            ${getReportAccountActions(report).map(({ action, label }, index) => {
-              return `<button class="user-detail-action-btn ${getUserActionClass(action, index)}" type="button" data-user-action="${action}" data-user-id="${reportUser.id}" data-report-context="${report.id}">${label}</button>`;
-            }).join("") || (getReportQueueStatus(report) === "Cleared" ? "" : `<span class="chip">No account action available</span>`)}
-          </div>
+          ${renderReportDetailActionButtons(report)}
         </div>
       `;
       document.querySelector("#detail").innerHTML = "";
