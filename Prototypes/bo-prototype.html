@@ -1164,6 +1164,9 @@
     .user-row.report-row {
       grid-template-columns: minmax(104px, .52fr) minmax(168px, .85fr) minmax(106px, .52fr) minmax(240px, 1.45fr) minmax(90px, .42fr) minmax(104px, .5fr) minmax(116px, .58fr) minmax(112px, .52fr);
     }
+    .user-row.report-row:not(.head) {
+      cursor: pointer;
+    }
     .user-row:last-child { border-bottom: 0; }
     .user-row.head {
       min-height: 44px;
@@ -3214,10 +3217,10 @@
       ],
       reports: [
         { id: "RPU-505", category: "Profile", user: "horology.king", userId: "U-1002", accountStatus: "Suspended", reason: "พบโปรไฟล์ซ้ำและพฤติกรรมผู้ขายที่ต้องตรวจสอบ", reporters: 5, priority: "สูง", status: "In Review", reference: "Profile ID PRF-1002", source: "User Detail", waiting: "22 ชม.", evidence: ["รูปโปรไฟล์คล้ายบัญชีอื่น", "ข้อความแนะนำตัวผู้ขายซ้ำหลายจุด"], recommendation: "ตรวจ reference ต้นทางก่อนทำ action เพิ่มกับบัญชี", actionHistory: "เริ่มตรวจสอบโดย Somchai Admin และยังไม่มีการเปลี่ยนสถานะล่าสุด" },
-        { id: "RPU-512", category: "Asset", user: "Crown Time BKK", userId: "U-1017", accountStatus: "Active", reason: "มีรายงานสินทรัพย์ซ้ำและข้อมูลประกาศคล้ายรายการอื่น", reporters: 4, priority: "สูง", status: "Open", reference: "Asset Group AST-DUP-1017", source: "Asset Detail", waiting: "20 ชม.", evidence: ["รูปสินทรัพย์ซ้ำกับรายการอื่น", "ข้อความประกาศถูกใช้ซ้ำ"], recommendation: "เทียบรูปสินค้าและหลักฐาน provenance ก่อนทำ action กับบัญชี", actionHistory: "เปิด report ใหม่ และยังไม่มีการเปลี่ยนสถานะบัญชี" },
-        { id: "RPU-518", category: "Offer / Chat", user: "Omega Club TH", userId: "U-1088", accountStatus: "Active", reason: "มีข้อพิพาทว่าสภาพสินทรัพย์ไม่ตรงกับที่ตกลงในข้อเสนอซื้อ", reporters: 3, priority: "สูง", status: "Open", reference: "Offer OFR-501", source: "Offer / Chat", waiting: "18 ชม.", evidence: ["ประวัติแชท", "ข้อพิพาทจากข้อเสนอซื้อ"], recommendation: "เปิดบริบท Offer / Chat ก่อนปิด report", actionHistory: "เปิด report ใหม่ และรอตรวจสอบ reference ต้นทาง" },
-        { id: "RPU-541", category: "Chat", user: "Rolex Rama9", userId: "U-1186", accountStatus: "Suspended", reason: "มีรายงานซ้ำเรื่องข้อความแชทที่ไม่เหมาะสม", reporters: 6, priority: "สูง", status: "Cleared", reference: "CHT-090", source: "Offer / Chat", waiting: "0 ชม.", evidence: ["ประวัติแชท"], recommendation: "ดำเนินการกับบัญชีแล้ว ให้เก็บ audit trail ไว้", actionHistory: "ปิด report แล้วหลังระงับบัญชีและบันทึก audit note" },
-        { id: "RPU-560", category: "Profile", user: "The Collector", userId: "U-1120", accountStatus: "Banned", reason: "ยืนยันพฤติกรรมละเมิดซ้ำและปิดเคสหลังแบนบัญชี", reporters: 8, priority: "สูง", status: "Cleared", reference: "Profile ID PRF-1120", source: "Reported Users", waiting: "0 ชม.", evidence: ["รายงานพฤติกรรมละเมิดซ้ำ", "มี admin action แบนบัญชีแล้ว"], recommendation: "คงสถานะ report เป็นปิดแล้ว และเก็บบันทึกการดำเนินการสำหรับกรณีขอยกเลิกระงับบัญชีถาวร", actionHistory: "ปิด report แล้วหลังแบนบัญชี และบัญชียังคงถูกแบนอยู่" }
+        { id: "RPU-512", category: "Asset", user: "Crown Time BKK", userId: "U-1017", accountStatus: "Active", reason: "มีรายงานสินทรัพย์ซ้ำและข้อมูลประกาศคล้ายรายการอื่น", reporters: 4, priority: "สูง", status: "Open", reference: "Asset Group AST-DUP-1017", source: "Asset Detail", waiting: "20 ชม.", evidence: ["รูปสินทรัพย์ซ้ำกับรายการอื่น", "ข้อความประกาศถูกใช้ซ้ำ"], recommendation: "เทียบรูปสินค้าและหลักฐาน provenance ก่อนทำ action กับบัญชี", actionHistory: "เปิดรายงานใหม่ และยังไม่มีการเปลี่ยนสถานะบัญชี" },
+        { id: "RPU-518", category: "Offer / Chat", user: "Omega Club TH", userId: "U-1088", accountStatus: "Active", reason: "มีข้อพิพาทว่าสภาพสินทรัพย์ไม่ตรงกับที่ตกลงในข้อเสนอซื้อ", reporters: 3, priority: "สูง", status: "Open", reference: "Offer OFR-501", source: "Offer / Chat", waiting: "18 ชม.", evidence: ["ประวัติแชท", "ข้อพิพาทจากข้อเสนอซื้อ"], recommendation: "เปิดบริบท Offer / Chat ก่อนปิดรายงาน", actionHistory: "เปิดรายงานใหม่ และรอตรวจสอบ reference ต้นทาง" },
+        { id: "RPU-541", category: "Chat", user: "Rolex Rama9", userId: "U-1186", accountStatus: "Suspended", reason: "มีรายงานซ้ำเรื่องข้อความแชทที่ไม่เหมาะสม", reporters: 6, priority: "สูง", status: "Cleared", reference: "CHT-090", source: "Offer / Chat", waiting: "0 ชม.", evidence: ["ประวัติแชท"], recommendation: "ดำเนินการกับบัญชีแล้ว ให้เก็บ audit trail ไว้", actionHistory: "ปิดรายงานแล้วหลังระงับบัญชีและบันทึก audit note" },
+        { id: "RPU-560", category: "Profile", user: "The Collector", userId: "U-1120", accountStatus: "Banned", reason: "ยืนยันพฤติกรรมละเมิดซ้ำและปิดเคสหลังแบนบัญชี", reporters: 8, priority: "สูง", status: "Cleared", reference: "Profile ID PRF-1120", source: "Reported Users", waiting: "0 ชม.", evidence: ["รายงานพฤติกรรมละเมิดซ้ำ", "มี admin action แบนบัญชีแล้ว"], recommendation: "คงสถานะรายงานเป็นปิดแล้ว และเก็บบันทึกการดำเนินการสำหรับกรณีขอยกเลิกระงับบัญชีถาวร", actionHistory: "ปิดรายงานแล้วหลังแบนบัญชี และบัญชียังคงถูกแบนอยู่" }
       ]
     };
 
@@ -4435,13 +4438,12 @@
       if (!report) return [];
       if (report.status === "Open") {
         return [
-          { status: "In Review", label: "เริ่มตรวจ report" },
-          { status: "Cleared", label: "ปิด report" }
+          { status: "Cleared", label: "ปิดรายงาน" }
         ];
       }
       if (report.status === "In Review") {
         return [
-          { status: "Cleared", label: "ปิด report" }
+          { status: "Cleared", label: "ปิดรายงาน" }
         ];
       }
       return [];
@@ -4470,11 +4472,11 @@
 
     function renderReportRowActionMenu(report) {
       const actions = `${renderReportStatusActionButtons(report)}${renderReportAccountActionButtons(report)}`;
-      if (!actions) return "";
       return `
         <details class="row-menu">
-          <summary title="Report actions">...</summary>
+          <summary title="เมนูรายงาน">...</summary>
           <div class="row-menu-list">
+            <button type="button" data-report-action="${report.id}">ดูรายละเอียด</button>
             ${actions}
           </div>
         </details>
@@ -4492,7 +4494,7 @@
             return `<button class="user-detail-action-btn ${getUserActionClass(action, index)}" type="button" data-user-action="${action}" data-user-id="${reportUser.id}" data-report-context="${report.id}">${label}</button>`;
           }).join("")
         : "";
-      const emptyState = !statusActions && !accountActions && getReportQueueStatus(report) !== "Cleared" ? `<span class="chip">No account action available</span>` : "";
+      const emptyState = !statusActions && !accountActions && getReportQueueStatus(report) !== "Cleared" ? `<span class="chip">ไม่มี action บัญชีที่ทำได้</span>` : "";
       const actions = `${statusActions}${accountActions}${emptyState}`;
       return actions ? `<div class="user-detail-actions">${actions}</div>` : "";
     }
@@ -4501,20 +4503,20 @@
       const summaries = {
         "Open": {
           detail: "เปิดรายงานกลับไปที่คิวรอตรวจ",
-          toast: "เปิด report อีกครั้งแล้ว"
+          toast: "เปิดรายงานอีกครั้งแล้ว"
         },
         "In Review": {
           detail: "เริ่มตรวจรายงานและบันทึกว่าอยู่ระหว่างตรวจสอบ",
-          toast: "เริ่มตรวจ report แล้ว"
+          toast: "เริ่มตรวจสอบรายงานแล้ว"
         },
         "Cleared": {
           detail: "ปิดรายงานหลังตรวจสอบหลักฐานต้นทางแล้ว",
-          toast: "ปิด report แล้ว"
+          toast: "ปิดรายงานแล้ว"
         }
       };
       return summaries[status] || {
         detail: `เปลี่ยนสถานะรายงานเป็น ${userStatusLabels[status] || status}`,
-        toast: `เปลี่ยนสถานะ report เป็น ${status} แล้ว`
+        toast: `เปลี่ยนสถานะรายงานเป็น ${status} แล้ว`
       };
     }
 
@@ -4646,7 +4648,6 @@
               <div data-label="Priority">${statusPill(getReportPriorityLabel(report.priority), report.priority)}</div>
               <div data-label="Source"><div class="main-text">${report.source}</div></div>
               <div class="user-row-actions">
-                <button class="panel-action" type="button" data-report-action="${report.id}">${iconSvg.eye}View</button>
                 ${renderReportRowActionMenu(report)}
               </div>
             </div>
