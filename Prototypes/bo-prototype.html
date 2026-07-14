@@ -4443,7 +4443,7 @@
           { status: "Cleared", label: "ปิด report" }
         ];
       }
-      return [{ status: "Open", label: "เปิด report อีกครั้ง" }];
+      return [];
     }
 
     function getReportAccountActions(report) {
@@ -4465,22 +4465,45 @@
       return actions.map(({ action, label }) => `<button type="button" data-user-action="${action}" data-user-id="${user.id}" data-report-context="${report.id}">${label}</button>`).join("");
     }
 
+    function getReportStatusActionSummary(status) {
+      const summaries = {
+        "Open": {
+          detail: "เปิด report กลับไปที่คิวรอตรวจ",
+          toast: "เปิด report อีกครั้งแล้ว"
+        },
+        "In Review": {
+          detail: "เริ่มตรวจ report และบันทึกว่าอยู่ระหว่างตรวจสอบ",
+          toast: "เริ่มตรวจ report แล้ว"
+        },
+        "Cleared": {
+          detail: "ปิด report หลังตรวจสอบหลักฐานต้นทางแล้ว",
+          toast: "ปิด report แล้ว"
+        }
+      };
+      return summaries[status] || {
+        detail: `เปลี่ยนสถานะ report เป็น ${status}`,
+        toast: `เปลี่ยนสถานะ report เป็น ${status} แล้ว`
+      };
+    }
+
     function updateReportStatus(report, status) {
       if (!report || !status) return;
       const beforeStatus = report.status;
+      if (beforeStatus === status) return;
+      const actionSummary = getReportStatusActionSummary(status);
       report.status = status;
       if (status === "Cleared") report.waiting = "0 ชม.";
       report.accountStatus = getReportAccountStatus(report);
       appendReportAuditLog(report, {
         action: "REPORT_STATUS_UPDATED",
-        detail: `เปลี่ยนสถานะ report เป็น ${status}`,
-        before: { reportStatus: beforeStatus },
+        detail: actionSummary.detail,
+        before: { reportStatus: beforeStatus, accountStatus: report.accountStatus },
         after: { reportStatus: status, accountStatus: report.accountStatus },
-        reason: "Admin updated report status after source evidence review"
+        reason: "ผู้ดูแลตรวจหลักฐานต้นทางแล้วจึงอัปเดตสถานะ report"
       });
       if (document.body.classList.contains("user-detail-mode")) renderReportedUserDetail(report);
       else renderReportedUserRows();
-      showSuccessToast(`${report.id} updated to ${status}`);
+      showSuccessToast(`${report.id}: ${actionSummary.toast}`);
     }
 
     function renderUserRows() {
