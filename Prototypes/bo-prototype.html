@@ -956,6 +956,43 @@
       font-size: 12px;
       line-height: 1.55;
     }
+    .history-table-wrap {
+      margin-top: 10px;
+      overflow-x: auto;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fff;
+    }
+    .history-table {
+      width: 100%;
+      min-width: 820px;
+      border-collapse: collapse;
+      font-size: 12px;
+    }
+    .history-table th,
+    .history-table td {
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--line);
+      text-align: left;
+      vertical-align: top;
+    }
+    .history-table th {
+      color: var(--muted);
+      background: #f8fafc;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: .02em;
+    }
+    .history-table tr:last-child td { border-bottom: 0; }
+    .history-table .history-note {
+      min-width: 240px;
+      max-width: 360px;
+    }
+    .history-table small {
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 400;
+    }
     .panel-action {
       border: 0;
       color: var(--blue);
@@ -1108,8 +1145,11 @@
       background: #fff;
     }
     .user-row:not(.report-row) {
-      grid-template-columns: minmax(150px, 1.08fr) minmax(136px, .74fr) minmax(148px, .8fr) minmax(76px, .4fr) minmax(86px, .5fr) minmax(118px, .64fr) minmax(124px, .58fr);
-      gap: 16px;
+      grid-template-columns: minmax(180px, 1.32fr) minmax(128px, .82fr) minmax(148px, .94fr) minmax(72px, .48fr) minmax(104px, .68fr) minmax(128px, .82fr) minmax(56px, .26fr);
+      gap: 12px;
+    }
+    .user-row:not(.head):not(.report-row) {
+      cursor: pointer;
     }
     .user-row:not(.report-row) > div {
       min-width: 0;
@@ -1125,7 +1165,10 @@
       white-space: nowrap;
     }
     .user-row.report-row {
-      grid-template-columns: minmax(220px, 1.35fr) minmax(190px, 1fr) minmax(108px, .55fr) minmax(112px, .55fr) minmax(104px, .55fr) minmax(118px, .62fr);
+      grid-template-columns: minmax(104px, .5fr) minmax(156px, .78fr) minmax(116px, .54fr) minmax(106px, .5fr) minmax(220px, 1.28fr) minmax(86px, .4fr) minmax(96px, .46fr) minmax(108px, .52fr) minmax(104px, .46fr);
+    }
+    .user-row.report-row:not(.head) {
+      cursor: pointer;
     }
     .user-row:last-child { border-bottom: 0; }
     .user-row.head {
@@ -1277,6 +1320,9 @@
     }
     .detail-grid.two {
       grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    body.user-detail-mode .detail-grid.two {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
     }
     .detail-tile {
       min-width: 0;
@@ -1461,6 +1507,30 @@
       gap: 8px;
       flex-wrap: wrap;
     }
+    .report-detail-page .event + .event {
+      margin-top: 10px;
+    }
+    .report-detail-page .module-note {
+      margin-top: 18px;
+      margin-bottom: 14px;
+    }
+    .report-detail-page .warning-note {
+      margin-bottom: 14px;
+    }
+    .report-detail-page .user-detail-actions {
+      padding-top: 2px;
+    }
+    .report-detail-page .detail-tile .chip {
+      display: inline-flex;
+      align-items: center;
+      margin-bottom: 0;
+      border-color: #c7d6e8;
+      background: #fff;
+      color: #071b36;
+      font-size: 12px;
+      font-weight: 400;
+      line-height: 1.45;
+    }
     .user-detail-action-btn {
       display: inline-flex;
       align-items: center;
@@ -1569,6 +1639,19 @@
       color: #43546d;
       font-size: 12px;
       font-weight: 400;
+    }
+    .report-detail-page .report-reference-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    .report-detail-page .report-detail-grid {
+      grid-template-columns: 1fr;
+    }
+    .report-detail-page .detail-tile strong {
+      overflow-wrap: anywhere;
+    }
+    .report-detail-page .report-back-btn .mobile-back-icon,
+    .user-detail-page .user-back-btn .mobile-back-icon {
+      display: none;
     }
     .user-action-target strong {
       display: block;
@@ -2282,7 +2365,7 @@
         overflow-x: auto;
       }
       .user-row.report-row {
-        grid-template-columns: minmax(220px, 1.3fr) minmax(110px, .6fr) minmax(122px, .7fr) minmax(110px, .6fr) minmax(92px, .45fr) minmax(112px, .6fr);
+        grid-template-columns: minmax(104px, .5fr) minmax(150px, .76fr) minmax(116px, .54fr) minmax(106px, .5fr) minmax(210px, 1.24fr) minmax(88px, .42fr) minmax(96px, .46fr) minmax(108px, .52fr) minmax(104px, .46fr);
         overflow-x: auto;
       }
     }
@@ -2639,6 +2722,43 @@
       .user-row:not(.head):not(.report-row) > div[data-label]:not(.user-cell-primary) {
         display: none;
       }
+      .user-row:not(.head).report-row {
+        grid-template-columns: minmax(0, 1fr) 34px;
+        column-gap: 14px;
+        row-gap: 14px;
+        padding: 18px 18px 16px;
+        border-color: #cfdbd2;
+        border-radius: 10px;
+        box-shadow: 0 1px 2px rgba(15, 23, 42, .05);
+        cursor: pointer;
+        overflow: visible;
+      }
+      .user-row:not(.head).report-row > div.user-cell-primary[data-label] {
+        grid-column: 1;
+        grid-row: 1;
+        min-height: 30px;
+        display: flex;
+        align-items: center;
+        align-self: center;
+        border-bottom: 0;
+        padding-bottom: 0;
+      }
+      .user-row:not(.head).report-row > div.user-cell-primary[data-label] .main-text {
+        max-width: 100%;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        font-size: 18px;
+        line-height: 1.15;
+      }
+      .user-row:not(.head).report-row > div[data-label]:not(.user-cell-primary) {
+        display: none;
+      }
+      .user-row:not(.head).report-row > .user-row-actions {
+        grid-column: 2;
+        grid-row: 1;
+        align-self: center;
+      }
       .user-card-tags {
         grid-column: 1 / -1;
         grid-row: 2;
@@ -2755,6 +2875,132 @@
       }
       body.user-detail-mode .detail-tile {
         padding: 9px 8px;
+      }
+      .report-detail-page {
+        width: 100%;
+        min-width: 0;
+        max-width: 100%;
+        padding: 14px;
+      }
+      .report-detail-page .user-detail-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+      }
+      .report-detail-page .user-detail-head .btn {
+        width: auto;
+        flex: 0 0 auto;
+      }
+      .report-detail-page .report-back-btn,
+      body.user-detail-mode .user-detail-page .user-back-btn {
+        width: 38px;
+        min-width: 38px;
+        height: 38px;
+        padding: 0;
+        display: grid;
+        place-items: center;
+      }
+      .report-detail-page .report-back-btn .mobile-back-icon,
+      .user-detail-page .user-back-btn .mobile-back-icon {
+        display: block;
+        width: 18px;
+        height: 18px;
+      }
+      .report-detail-page .report-back-btn .btn-label,
+      .user-detail-page .user-back-btn .btn-label {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
+      }
+      .report-detail-page .user-detail-title {
+        flex: 1 1 auto;
+        align-items: center;
+        min-width: 0;
+      }
+      .report-detail-page .user-detail-title .profile-image {
+        flex: 0 0 auto;
+      }
+      .report-detail-page .user-detail-head h2 {
+        font-size: 28px;
+        line-height: 1.05;
+        overflow-wrap: anywhere;
+      }
+      body.user-detail-mode .report-detail-page .detail-grid.two,
+      .report-detail-page .report-detail-grid {
+        grid-template-columns: 1fr;
+      }
+      body.user-detail-mode .report-detail-page .detail-grid.two.report-reference-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+      .report-detail-page .detail-tile {
+        padding: 11px 10px;
+      }
+      .report-detail-page .detail-tile span {
+        margin-bottom: 5px;
+      }
+      .report-detail-page .detail-tile .chips {
+        gap: 6px;
+      }
+      .report-detail-page .history-table-wrap {
+        overflow: visible;
+        border: 0;
+        background: transparent;
+      }
+      .report-detail-page .history-table,
+      .report-detail-page .history-table tbody,
+      .report-detail-page .history-table tr,
+      .report-detail-page .history-table td {
+        display: block;
+        width: 100%;
+      }
+      .report-detail-page .history-table thead {
+        display: none;
+      }
+      .report-detail-page .history-table {
+        min-width: 0;
+        border-collapse: separate;
+        border-spacing: 0 8px;
+        background: transparent;
+      }
+      .report-detail-page .history-table .history-note {
+        min-width: 0;
+        max-width: none;
+      }
+      .report-detail-page .history-table tr {
+        border: 1px solid #dce6f2;
+        border-radius: 8px;
+        background: #fff;
+        padding: 12px 10px;
+      }
+      .report-detail-page .history-table tr + tr {
+        margin-top: 10px;
+      }
+      .report-detail-page .history-table td {
+        display: grid;
+        grid-template-columns: 92px minmax(0, 1fr);
+        column-gap: 10px;
+        row-gap: 0;
+        align-items: baseline;
+        border: 0;
+        padding: 7px 0;
+        font-size: 12px;
+        line-height: 1.45;
+        overflow-wrap: anywhere;
+      }
+      .report-detail-page .history-table td::before {
+        content: attr(data-label);
+        color: #66758d;
+        font-size: 11px;
+        font-weight: 800;
+        line-height: inherit;
+      }
+      .report-detail-page .history-table td .pill {
+        width: max-content;
+        max-width: 100%;
       }
       .user-detail-action-section .user-detail-actions {
         display: grid;
@@ -3103,7 +3349,7 @@
         { id: "U-1042", displayName: "Nattapol P.", username: "@nattapol", email: "na***@privaterelay.appleid.com", auth: "Apple", status: "Active", joined: "08 Jul 2026", joinedBucket: "7d", joinedRank: 20260708, lastActive: "10 Jul 2026 16:02", lastActiveBucket: "24h", lastActiveRank: 202607101602, assets: 0, assetBucket: "0", reports: 0, verification: "Apple SSO", contact: [], support: "SUP-188", latest: "Proof of payment visibility", reportState: "ไม่มีรายงานผู้ใช้", statusLabel: "Normal FO access", allowed: ["Suspend", "Ban"], blocked: ["Reset password"], foImpact: "Apple SSO password reset must be handled outside BO.", actionNote: "Sensitive contact rows display only when data exists." },
         { id: "U-1055", displayName: "Vintage Vault BKK", username: "@vintagevault", email: "vv***@gmail.com", auth: "Email", status: "Pending Verification", joined: "Not joined yet", joinedBucket: "pending", joinedRank: 20260710, lastActive: "No app session", lastActiveBucket: "pending", lastActiveRank: 0, assets: 0, assetBucket: "0", reports: 0, verification: "Email pending", contact: [], support: "None", latest: "รอยืนยันอีเมล", reportState: "ไม่มีรายงานผู้ใช้", statusLabel: "Email not verified", allowed: ["Resend verification context", "Suspend"], blocked: ["Reset password until verified", "Archive from list"], foImpact: "Account cannot enter FO app or create profile/assets until email verification is completed.", actionNote: "Pending verification accounts should use default avatar and contain no in-app profile/contact values." },
         { id: "U-1088", displayName: "Omega Club TH", username: "@omegaclubth", email: "om***@mail.com", auth: "Email", status: "Active", joined: "22 Jun 2026", joinedBucket: "30d", joinedRank: 20260622, lastActive: "09 Jul 2026 22:48", lastActiveBucket: "7d", lastActiveRank: 202607092248, assets: 9, assetBucket: "6-10", reports: 3, verification: "Email verified", contact: ["Phone: 092-345-8820"], support: "DSP-014", latest: "ข้อพิพาทเรื่องสภาพสินทรัพย์ไม่ตรงตามตกลง", reportState: "มี 3 รายงานที่ถูกจัดเป็นความสำคัญสูง", statusLabel: "Normal FO access", allowed: ["Reset password", "Suspend", "Ban"], blocked: ["Deletion from list"], foImpact: "Report count raises review priority but does not change FO access automatically.", actionNote: "3 reports alone must not show as suspended without evidence." },
-        { id: "U-1104", displayName: "Archive Collector", username: "@archivecollector", email: "ar***@mail.com", auth: "Email", status: "Deletion Requested", joined: "15 May 2026", joinedBucket: "older", joinedRank: 20260515, lastActive: "08 Jul 2026 09:15", lastActiveBucket: "7d", lastActiveRank: 202607080915, assets: 6, assetBucket: "6-10", reports: 1, verification: "Email verified", contact: ["Line: archivecollector"], support: "DEL-033", latest: "Deletion dependency check", reportState: "มี 1 รายงานที่ต้องตรวจสอบก่อนลบบัญชี", statusLabel: "Deletion workflow", allowed: ["Open Account Deletion", "View detail"], blocked: ["Archive from User List", "Reset after deletion starts"], foImpact: "Deletion handling belongs in Account Deletion module after dependency review.", actionNote: "User List must not directly delete/archive this account." },
+        { id: "U-1104", displayName: "Archive Collector", username: "@archivecollector", email: "ar***@mail.com", auth: "Email", status: "Deletion Requested", joined: "15 May 2026", joinedBucket: "older", joinedRank: 20260515, lastActive: "08 Jul 2026 09:15", lastActiveBucket: "7d", lastActiveRank: 202607080915, assets: 6, assetBucket: "6-10", reports: 0, verification: "Email verified", contact: ["Line: archivecollector"], support: "DEL-033", latest: "Deletion dependency check", reportState: "ไม่มีรายงานผู้ใช้", statusLabel: "Deletion workflow", allowed: ["Open Account Deletion", "View detail"], blocked: ["Archive from User List", "Reset after deletion starts"], foImpact: "Deletion handling belongs in Account Deletion module after dependency review.", actionNote: "User List must not directly delete/archive this account." },
         { id: "U-1120", displayName: "The Collector", username: "@thecollector", email: "tc***@icloud.com", auth: "Apple", status: "Banned", joined: "02 Apr 2026", joinedBucket: "older", joinedRank: 20260402, lastActive: "24 Jun 2026 13:12", lastActiveBucket: "30d", lastActiveRank: 202606241312, assets: 11, assetBucket: "11+", reports: 8, verification: "Apple SSO", contact: ["Phone: 081-777-0090"], support: "None", latest: "Abuse confirmed", reportState: "รายงานถูกปิดแล้ว - บัญชีถูกแบน", statusLabel: "เข้าสู่ระบบไม่ได้", allowed: ["Unban user"], blocked: ["Reset password"], foImpact: "ผู้ใช้เข้าสู่ระบบไม่ได้และไม่สามารถทำรายการใหม่จนกว่าผู้ดูแลระบบจะยกเลิกระงับบัญชีถาวร", actionNote: "การยกเลิกระงับบัญชีถาวรต้องยืนยัน ระบุเหตุผล และบันทึกสถานะก่อน/หลัง" },
         { id: "U-1144", displayName: "Seiko Corner", username: "@seikocorner", email: "se***@watchmail.com", auth: "Email", status: "Active", joined: "01 Jul 2026", joinedBucket: "30d", joinedRank: 20260701, lastActive: "07 Jul 2026 18:30", lastActiveBucket: "7d", lastActiveRank: 202607071830, assets: 5, assetBucket: "1-5", reports: 0, verification: "Email verified", contact: ["Line: seikocorner"], support: "None", latest: "No support context", reportState: "ไม่มีรายงานผู้ใช้", statusLabel: "Normal FO access", allowed: ["Reset password", "Suspend", "Ban"], blocked: ["Archive from list"], foImpact: "Active account has normal Feed/Search/Profile visibility.", actionNote: "Contact fields display full FO profile values when present." },
         { id: "U-1161", displayName: "Daily Watch Hunter", username: "@dailyhunter", email: "da***@gmail.com", auth: "Google", status: "Active", joined: "09 Jul 2026", joinedBucket: "7d", joinedRank: 20260709, lastActive: "09 Jul 2026 08:04", lastActiveBucket: "7d", lastActiveRank: 202607090804, assets: 1, assetBucket: "1-5", reports: 0, verification: "Google verified", contact: [], support: "None", latest: "New account", reportState: "ไม่มีรายงานผู้ใช้", statusLabel: "Normal FO access", allowed: ["Suspend", "Ban"], blocked: ["Reset password"], foImpact: "Google account cannot receive BO password reset link.", actionNote: "Do not render empty contact rows in detail." },
@@ -3113,14 +3359,47 @@
       ],
       reports: [
         { id: "RPU-505", category: "Profile", user: "horology.king", userId: "U-1002", accountStatus: "Suspended", reason: "พบโปรไฟล์ซ้ำและพฤติกรรมผู้ขายที่ต้องตรวจสอบ", reporters: 5, priority: "สูง", status: "In Review", reference: "Profile ID PRF-1002", source: "User Detail", waiting: "22 ชม.", evidence: ["รูปโปรไฟล์คล้ายบัญชีอื่น", "ข้อความแนะนำตัวผู้ขายซ้ำหลายจุด"], recommendation: "ตรวจ reference ต้นทางก่อนทำ action เพิ่มกับบัญชี", actionHistory: "เริ่มตรวจสอบโดย Somchai Admin และยังไม่มีการเปลี่ยนสถานะล่าสุด" },
-        { id: "RPU-512", category: "Asset", user: "Crown Time BKK", userId: "U-1017", accountStatus: "Active", reason: "มีรายงานสินทรัพย์ซ้ำและข้อมูลประกาศคล้ายรายการอื่น", reporters: 4, priority: "สูง", status: "Open", reference: "Asset Group AST-DUP-1017", source: "Asset Detail", waiting: "20 ชม.", evidence: ["รูปสินทรัพย์ซ้ำกับรายการอื่น", "ข้อความประกาศถูกใช้ซ้ำ"], recommendation: "เทียบรูปสินค้าและหลักฐาน provenance ก่อนทำ action กับบัญชี", actionHistory: "เปิด report ใหม่ และยังไม่มีการเปลี่ยนสถานะบัญชี" },
-        { id: "RPU-518", category: "Offer / Chat", user: "Omega Club TH", userId: "U-1088", accountStatus: "Active", reason: "มีข้อพิพาทว่าสภาพสินทรัพย์ไม่ตรงกับที่ตกลงในข้อเสนอซื้อ", reporters: 3, priority: "สูง", status: "Open", reference: "Offer OFR-501", source: "Offer / Chat", waiting: "18 ชม.", evidence: ["ประวัติแชท", "ข้อพิพาทจากข้อเสนอซื้อ"], recommendation: "เปิดบริบท Offer / Chat ก่อนปิด report", actionHistory: "เปิด report ใหม่ และรอตรวจสอบ reference ต้นทาง" },
-        { id: "RPU-522", category: "Authentication", user: "Vintage Vault BKK", userId: "U-1055", accountStatus: "Pending Verification", reason: "บัญชียังยืนยันอีเมลไม่สำเร็จ", reporters: 1, priority: "กลาง", status: "Open", reference: "Signup AUTH-772", source: "Authentication", waiting: "6 ชม.", evidence: ["ยังไม่ได้ยืนยัน Email OTP"], recommendation: "ตรวจ signup/auth log เพราะยังไม่มี public profile ในระบบ", actionHistory: "ยังไม่มี admin action" },
-        { id: "RPU-530", category: "Account Deletion", user: "Archive Collector", userId: "U-1104", accountStatus: "Deletion Requested", reason: "มีคำขอลบบัญชีแต่ยังมี report ที่ต้องตรวจสอบก่อน", reporters: 1, priority: "กลาง", status: "In Review", reference: "DEL-033", source: "Account Deletion", waiting: "10 ชม.", evidence: ["มีข้อเสนอซื้อค้างอยู่", "มี report ผูกกับโปรไฟล์"], recommendation: "เคลียร์ reference ต้นทางก่อน archive หรือ anonymize บัญชี", actionHistory: "เปิด dependency check แล้ว และยังไม่อนุมัติการลบบัญชี" },
-        { id: "RPU-541", category: "Chat", user: "Rolex Rama9", userId: "U-1186", accountStatus: "Suspended", reason: "มีรายงานซ้ำเรื่องข้อความแชทที่ไม่เหมาะสม", reporters: 6, priority: "สูง", status: "Cleared", reference: "CHT-090", source: "Offer / Chat", waiting: "0 ชม.", evidence: ["ประวัติแชท"], recommendation: "ดำเนินการกับบัญชีแล้ว ให้เก็บ audit trail ไว้", actionHistory: "ปิด report แล้วหลังระงับบัญชีและบันทึก audit note" },
-        { id: "RPU-560", category: "Profile", user: "The Collector", userId: "U-1120", accountStatus: "Banned", reason: "ยืนยันพฤติกรรมละเมิดซ้ำและปิดเคสหลังแบนบัญชี", reporters: 8, priority: "สูง", status: "Cleared", reference: "Profile ID PRF-1120", source: "Reported Users", waiting: "0 ชม.", evidence: ["รายงานพฤติกรรมละเมิดซ้ำ", "มี admin action แบนบัญชีแล้ว"], recommendation: "คงสถานะ report เป็นปิดแล้ว และเก็บบันทึกการดำเนินการสำหรับกรณีขอยกเลิกระงับบัญชีถาวร", actionHistory: "ปิด report แล้วหลังแบนบัญชี และบัญชียังคงถูกแบนอยู่" }
+        { id: "RPU-512", category: "Asset", user: "Crown Time BKK", userId: "U-1017", accountStatus: "Active", reason: "มีรายงานสินทรัพย์ซ้ำและข้อมูลประกาศคล้ายรายการอื่น", reporters: 4, priority: "สูง", status: "Open", reference: "Asset Group AST-DUP-1017", source: "Asset Detail", waiting: "20 ชม.", evidence: ["รูปสินทรัพย์ซ้ำกับรายการอื่น", "ข้อความประกาศถูกใช้ซ้ำ"], recommendation: "เทียบรูปสินค้าและหลักฐาน provenance ก่อนทำ action กับบัญชี", actionHistory: "เปิดรายงานใหม่ และยังไม่มีการเปลี่ยนสถานะบัญชี" },
+        { id: "RPU-518", category: "Offer / Chat", user: "Omega Club TH", userId: "U-1088", accountStatus: "Active", reason: "มีข้อพิพาทว่าสภาพสินทรัพย์ไม่ตรงกับที่ตกลงในข้อเสนอซื้อ", reporters: 3, priority: "สูง", status: "Open", reference: "Offer OFR-501", source: "Offer / Chat", waiting: "18 ชม.", evidence: ["ประวัติแชท", "ข้อพิพาทจากข้อเสนอซื้อ"], recommendation: "เปิดบริบท Offer / Chat ก่อนปิดรายงาน", actionHistory: "เปิดรายงานใหม่ และรอตรวจสอบ reference ต้นทาง" },
+        { id: "RPU-541", category: "Chat", user: "Rolex Rama9", userId: "U-1186", accountStatus: "Suspended", reason: "มีรายงานซ้ำเรื่องข้อความแชทที่ไม่เหมาะสม", reporters: 6, priority: "สูง", status: "Cleared", reference: "CHT-090", source: "Offer / Chat", waiting: "0 ชม.", evidence: ["ประวัติแชท"], recommendation: "ดำเนินการกับบัญชีแล้ว ให้เก็บ audit trail ไว้", actionHistory: "ปิดรายงานแล้วหลังระงับบัญชีและบันทึก audit note" },
+        { id: "RPU-560", category: "Profile", user: "The Collector", userId: "U-1120", accountStatus: "Banned", reason: "ยืนยันพฤติกรรมละเมิดซ้ำและปิดเคสหลังแบนบัญชี", reporters: 13, priority: "สูง", status: "Cleared", reference: "Profile ID PRF-1120", source: "Reported Users", waiting: "0 ชม.", evidence: ["รายงานพฤติกรรมละเมิดซ้ำ", "มี admin action แบนบัญชีแล้ว", "โปรไฟล์มีรูปแบบหลอกลวงซ้ำ", "พบการชวนซื้อขายนอกระบบ"], recommendation: "คงสถานะรายงานเป็นปิดแล้ว และเก็บบันทึกการดำเนินการสำหรับกรณีขอยกเลิกระงับบัญชีถาวร", actionHistory: "ปิดรายงานแล้วหลังแบนบัญชี และบัญชียังคงถูกแบนอยู่" }
       ]
     };
+
+    const reportAuditLogSeeds = {
+      "RPU-505": [
+        { id: "AUD-RPU-505-003", action: "REPORT_REVIEW_STARTED", actor: "Somchai Admin", createdAt: "14 Jul 2026 09:18 GMT+7", entityType: "reported_user", entityId: "RPU-505", sourceModule: "Reported Users", detail: "พักบัญชีไว้ระหว่างตรวจนโยบาย", before: { reportStatus: "Open", accountStatus: "Active" }, after: { reportStatus: "In Review", accountStatus: "Suspended" }, reason: "มีรายงานความเสี่ยงสูง รอตรวจสอบ", metadata: { reference: "Profile ID PRF-1002", userId: "U-1002" } },
+        { id: "AUD-RPU-505-001", action: "REPORT_CREATED", actor: "System", createdAt: "13 Jul 2026 11:22 GMT+7", entityType: "reported_user", entityId: "RPU-505", sourceModule: "User Detail", detail: "รับรายงานผู้ใช้จากระบบ", before: null, after: { reportStatus: "Open", accountStatus: "Active" }, reason: "พบรายงานโปรไฟล์ซ้ำและพฤติกรรมผู้ขายที่ต้องตรวจสอบ", metadata: { reference: "Profile ID PRF-1002", userId: "U-1002" } }
+      ],
+      "RPU-512": [
+        { id: "AUD-RPU-512-001", action: "REPORT_CREATED", actor: "System", createdAt: "13 Jul 2026 13:40 GMT+7", entityType: "reported_user", entityId: "RPU-512", sourceModule: "Asset Detail", detail: "สร้าง report จากกลุ่มสินทรัพย์ที่ถูกรายงานว่าซ้ำ", before: null, after: { reportStatus: "Open", accountStatus: "Active" }, reason: "หลักฐานสินทรัพย์ซ้ำถึงเกณฑ์ที่ต้องส่งให้ผู้ดูแลตรวจสอบ", metadata: { reference: "Asset Group AST-DUP-1017", userId: "U-1017" } }
+      ],
+      "RPU-518": [
+        { id: "AUD-RPU-518-001", action: "REPORT_CREATED", actor: "System", createdAt: "13 Jul 2026 15:12 GMT+7", entityType: "reported_user", entityId: "RPU-518", sourceModule: "Offer / Chat", detail: "สร้าง report จากข้อพิพาท offer และประวัติแชท", before: null, after: { reportStatus: "Open", accountStatus: "Active" }, reason: "ข้อพิพาทจากผู้ซื้อต้องตรวจบริบทข้อเสนอซื้อและประวัติแชทก่อนปิดรายงาน", metadata: { reference: "Offer OFR-501", userId: "U-1088" } }
+      ],
+      "RPU-541": [
+        { id: "AUD-RPU-541-002", action: "REPORT_STATUS_UPDATED", actor: "Somchai Admin", createdAt: "13 Jul 2026 18:22 GMT+7", entityType: "reported_user", entityId: "RPU-541", sourceModule: "Reported Users", detail: "ปิดรายงานหลังดำเนินการกับบัญชีและบันทึกประวัติการตรวจสอบ", before: { reportStatus: "In Review", accountStatus: "Active" }, after: { reportStatus: "Cleared", accountStatus: "Suspended" }, reason: "ยืนยันข้อความแชทไม่เหมาะสมจากหลักฐานต้นทาง", metadata: { reference: "CHT-090", userId: "U-1186" } },
+        { id: "AUD-RPU-541-003", action: "REPORT_REVIEW_STARTED", actor: "Somchai Admin", createdAt: "13 Jul 2026 14:06 GMT+7", entityType: "reported_user", entityId: "RPU-541", sourceModule: "Reported Users", detail: "เริ่มตรวจสอบบทสนทนาและหลักฐานจาก Offer / Chat", before: { reportStatus: "Open", accountStatus: "Active" }, after: { reportStatus: "In Review", accountStatus: "Active" }, reason: "มีรายงานแชทซ้ำ ต้องตรวจหลักฐานต้นทางก่อนดำเนินการ", metadata: { reference: "CHT-090", userId: "U-1186" } },
+        { id: "AUD-RPU-541-001", action: "REPORT_CREATED", actor: "System", createdAt: "13 Jul 2026 10:14 GMT+7", entityType: "reported_user", entityId: "RPU-541", sourceModule: "Offer / Chat", detail: "สร้าง report จากรายงานแชทซ้ำ", before: null, after: { reportStatus: "Open", accountStatus: "Active" }, reason: "มีรายงานข้อความแชทไม่เหมาะสมถึงเกณฑ์ความสำคัญสูง", metadata: { reference: "CHT-090", userId: "U-1186" } }
+      ],
+      "RPU-560": [
+        { id: "AUD-RPU-560-012", action: "REPORT_STATUS_UPDATED", actor: "Somchai Admin", createdAt: "12 Jul 2026 18:40 GMT+7", entityType: "reported_user", entityId: "RPU-560", sourceModule: "Reported Users", detail: "บันทึกผลปิดเคสหลังตรวจสอบหลักฐานครบทุกแหล่ง", before: { reportStatus: "In Review", accountStatus: "Banned" }, after: { reportStatus: "Cleared", accountStatus: "Banned" }, reason: "ยืนยันให้คงสถานะปิดรายงานและแบนบัญชีถาวร", metadata: { reference: "Profile ID PRF-1120", userId: "U-1120" } },
+        { id: "AUD-RPU-560-011", action: "REPORT_STATUS_UPDATED", actor: "Somchai Admin", createdAt: "12 Jul 2026 18:10 GMT+7", entityType: "reported_user", entityId: "RPU-560", sourceModule: "Reported Users", detail: "สรุปรายงานซ้ำที่ถูกรวมเข้ากับเคสหลัก", before: { reportStatus: "In Review", accountStatus: "Banned" }, after: { reportStatus: "In Review", accountStatus: "Banned" }, reason: "รวมรายงานผู้ใช้เพิ่มเติมเข้ากับเคสเดิมก่อนปิดผล", metadata: { reference: "Profile ID PRF-1120", userId: "U-1120" } },
+        { id: "AUD-RPU-560-010", action: "REPORT_STATUS_UPDATED", actor: "Somchai Admin", createdAt: "12 Jul 2026 17:42 GMT+7", entityType: "reported_user", entityId: "RPU-560", sourceModule: "Reported Users", detail: "ตรวจสอบหลักฐานจากรายงานชุดที่สอง", before: { reportStatus: "In Review", accountStatus: "Banned" }, after: { reportStatus: "In Review", accountStatus: "Banned" }, reason: "พบรูปแบบการละเมิดซ้ำจาก reporter หลายราย", metadata: { reference: "Profile ID PRF-1120", userId: "U-1120" } },
+        { id: "AUD-RPU-560-009", action: "REPORT_STATUS_UPDATED", actor: "Somchai Admin", createdAt: "12 Jul 2026 17:15 GMT+7", entityType: "reported_user", entityId: "RPU-560", sourceModule: "Reported Users", detail: "ตรวจสอบประวัติ action เดิมของบัญชี", before: { reportStatus: "In Review", accountStatus: "Banned" }, after: { reportStatus: "In Review", accountStatus: "Banned" }, reason: "บัญชีมีประวัติถูกเตือนและระงับชั่วคราวก่อนหน้า", metadata: { reference: "Profile ID PRF-1120", userId: "U-1120" } },
+        { id: "AUD-RPU-560-008", action: "REPORT_STATUS_UPDATED", actor: "Somchai Admin", createdAt: "12 Jul 2026 16:48 GMT+7", entityType: "reported_user", entityId: "RPU-560", sourceModule: "Reported Users", detail: "ตรวจสอบผลกระทบต่อรายการที่เกี่ยวข้อง", before: { reportStatus: "In Review", accountStatus: "Banned" }, after: { reportStatus: "In Review", accountStatus: "Banned" }, reason: "ต้องคงหลักฐานไว้สำหรับ audit และการอุทธรณ์", metadata: { reference: "Profile ID PRF-1120", userId: "U-1120" } },
+        { id: "AUD-RPU-560-007", action: "REPORT_STATUS_UPDATED", actor: "Somchai Admin", createdAt: "12 Jul 2026 16:30 GMT+7", entityType: "reported_user", entityId: "RPU-560", sourceModule: "Reported Users", detail: "ระงับบัญชีถาวรจากหลักฐานรวม", before: { reportStatus: "In Review", accountStatus: "Suspended" }, after: { reportStatus: "In Review", accountStatus: "Banned" }, reason: "ยืนยันความเสี่ยงสูงจากหลายรายงานและหลักฐานประกอบ", metadata: { reference: "Profile ID PRF-1120", userId: "U-1120" } },
+        { id: "AUD-RPU-560-006", action: "REPORT_STATUS_UPDATED", actor: "Somchai Admin", createdAt: "12 Jul 2026 15:58 GMT+7", entityType: "reported_user", entityId: "RPU-560", sourceModule: "Reported Users", detail: "เพิ่ม note จากรายงานผู้ใช้ล่าสุด", before: { reportStatus: "In Review", accountStatus: "Suspended" }, after: { reportStatus: "In Review", accountStatus: "Suspended" }, reason: "รายงานใหม่ระบุพฤติกรรมชวนซื้อขายนอกระบบซ้ำ", metadata: { reference: "Profile ID PRF-1120", userId: "U-1120" } },
+        { id: "AUD-RPU-560-005", action: "REPORT_STATUS_UPDATED", actor: "Somchai Admin", createdAt: "12 Jul 2026 14:35 GMT+7", entityType: "reported_user", entityId: "RPU-560", sourceModule: "Reported Users", detail: "ตรวจสอบความซ้ำของโปรไฟล์และข้อความประกาศ", before: { reportStatus: "In Review", accountStatus: "Suspended" }, after: { reportStatus: "In Review", accountStatus: "Suspended" }, reason: "พบ pattern ซ้ำกับเคสที่เคยถูกปิดก่อนหน้า", metadata: { reference: "Profile ID PRF-1120", userId: "U-1120" } },
+        { id: "AUD-RPU-560-004", action: "REPORT_STATUS_UPDATED", actor: "Somchai Admin", createdAt: "12 Jul 2026 13:20 GMT+7", entityType: "reported_user", entityId: "RPU-560", sourceModule: "Reported Users", detail: "รวมรายงานซ้ำจาก reporter เพิ่มเติม", before: { reportStatus: "In Review", accountStatus: "Suspended" }, after: { reportStatus: "In Review", accountStatus: "Suspended" }, reason: "มี reporter เพิ่มเติมรายงานเหตุผลเดียวกันในช่วงตรวจสอบ", metadata: { reference: "Profile ID PRF-1120", userId: "U-1120" } },
+        { id: "AUD-RPU-560-003", action: "REPORT_REVIEW_STARTED", actor: "Somchai Admin", createdAt: "12 Jul 2026 11:18 GMT+7", entityType: "reported_user", entityId: "RPU-560", sourceModule: "Reported Users", detail: "เริ่มตรวจสอบรูปแบบการละเมิดซ้ำและประวัติการถูกระงับ", before: { reportStatus: "Open", accountStatus: "Suspended" }, after: { reportStatus: "In Review", accountStatus: "Suspended" }, reason: "ต้องตรวจประวัติเดิมก่อนยืนยันการระงับบัญชีถาวร", metadata: { reference: "Profile ID PRF-1120", userId: "U-1120" } },
+        { id: "AUD-RPU-560-001", action: "REPORT_CREATED", actor: "System", createdAt: "12 Jul 2026 09:35 GMT+7", entityType: "reported_user", entityId: "RPU-560", sourceModule: "Reported Users", detail: "สร้าง report จากรายงานพฤติกรรมละเมิดซ้ำ", before: null, after: { reportStatus: "Open", accountStatus: "Suspended" }, reason: "มีหลาย report ที่ต้องตรวจสอบก่อนยืนยันการดำเนินการกับบัญชี", metadata: { reference: "Profile ID PRF-1120", userId: "U-1120" } }
+      ]
+    };
+
+    userManagementData.reports.forEach(report => {
+      report.auditLogs = reportAuditLogSeeds[report.id] || [];
+    });
 
     const userProfileImages = {
       "U-1002": "./assets/user-avatars/u-1002.png",
@@ -3159,9 +3438,9 @@
         { label: "New Users", value: "128", trend: "วันนี้เพิ่มขึ้น 8.2% เทียบกับเมื่อวาน", chips: ["Today 128", "This Week 642", "This Month 2,840"], module: "users", sub: "User List", icon: "users" },
         { label: "Active Users Today", value: "8.4K", trend: "ผู้ใช้งานรายวันเฉลี่ย 7 วันเพิ่มขึ้น 4.1% เทียบกับ 7 วันก่อน", chips: ["Today 8,420", "This Week 24,700", "This Month 38,900"], module: "users", sub: "User List", icon: "users" },
         { label: "New Assets", value: "94", trend: "สร้างวันนี้ 94 รายการ เทียบกับเมื่อวาน 340 รายการ", chips: ["Sale 64", "Show 17", "Hide 9", "Sold 4"], module: "assets", sub: "Asset List", icon: "asset" },
-        { label: "Reported Items", value: "31", trend: "มี 9 รายงานใกล้ครบกำหนดตรวจ", chips: [
+        { label: "Reported Items", value: "30", trend: "มี 9 รายงานใกล้ครบกำหนดตรวจ", chips: [
           { label: "Assets 22", module: "assets", sub: "Reported Assets" },
-          { label: "Users 6", module: "users", sub: "Reported Users" },
+          { label: "Users 5", module: "users", sub: "Reported Users" },
           { label: "Comments 3", module: "social", sub: "Reported Social" }
         ], icon: "audit" },
         { label: "Offer Activity", value: "184", trend: "ข้อเสนอซื้อวันนี้เพิ่มขึ้น 12.6% เทียบกับเมื่อวาน", chips: ["Made 184", "Accepted 41", "Rejected 19", "Expired 12"], module: "offers", sub: "Offer Queue", icon: "offer" },
@@ -3171,7 +3450,7 @@
       ],
       queues: [
         { title: "รายงานสินทรัพย์", count: 22, priority: "high", detail: "รายการเก่าสุดรอตรวจ 22 ชม. / เหตุผลหลัก: รูปซ้ำและข้อมูลประกาศซ้ำ / ควรตรวจวันนี้", chips: ["ใกล้ครบกำหนด 6", "ผู้ใช้กระทบสูง"], module: "assets", sub: "Reported Assets" },
-        { title: "รายงานผู้ใช้", count: 6, priority: "high", detail: "มีรายงานโปรไฟล์ซ้ำและพฤติกรรมขายซ้ำ / ควรตรวจบัญชีที่ถูก report หลายครั้งก่อน", chips: ["ใกล้ครบกำหนด 3", "ตรวจประวัติ login"], module: "users", sub: "Reported Users" },
+        { title: "รายงานผู้ใช้", count: 5, priority: "high", detail: "มีรายงานโปรไฟล์ซ้ำและพฤติกรรมขายซ้ำ / ควรตรวจบัญชีที่ถูก report หลายครั้งก่อน", chips: ["ใกล้ครบกำหนด 3", "ตรวจประวัติ login"], module: "users", sub: "Reported Users" },
         { title: "งานช่วยเหลือที่เปิดอยู่", count: 18, priority: "high", detail: "มี 3 เคสใกล้ครบกำหนดตอบครั้งแรก 8 ชม. / ควรตอบเคสเร่งด่วนก่อน", chips: ["Open 18", "เร่งด่วน 3"], module: "support", sub: "Tickets" },
         { title: "คำขอลบบัญชี", count: 8, priority: "medium", detail: "มี 2 คำขอที่ยังลบไม่ได้ เพราะมีข้อเสนอซื้อค้างอยู่", chips: ["Blocked 2", "Grace period 4"], module: "deletions", sub: "Requests" },
         { title: "สินทรัพย์ที่ต้องตรวจเพิ่ม", count: 14, priority: "medium", detail: "รายการถูกทำเครื่องหมายจากระบบหรือ Admin / ตรวจราคา รูป และสถานะก่อนปล่อยกลับสู่ FO", chips: ["ราคาเบี่ยง 5", "รูปซ้ำ 4"], module: "assets", sub: "Status Review" },
@@ -3227,6 +3506,220 @@
       return `${formatter.format(date)} GMT+7`;
     }
 
+    const reportAuditActionLabels = {
+      REPORT_CREATED: "รับรายงานผู้ใช้",
+      REPORT_REVIEW_STARTED: "เริ่มตรวจสอบรายงาน",
+      DELETION_DEPENDENCY_CHECK_STARTED: "ตรวจเงื่อนไขก่อนลบบัญชี",
+      LEGACY_HISTORY_IMPORTED: "นำเข้าประวัติเดิม"
+    };
+
+    let pendingReportActionAudit = null;
+
+    function formatAuditDisplayTime(createdAt) {
+      return String(createdAt || "").replace(/\s*GMT\+7$/i, "");
+    }
+
+    function getReportAuditActionLabel(log) {
+      if (log.actionLabel) return log.actionLabel;
+      if (log.action === "REPORT_CREATED") return reportAuditActionLabels.REPORT_CREATED;
+      if (log.action === "DELETION_DEPENDENCY_CHECK_STARTED") return reportAuditActionLabels.DELETION_DEPENDENCY_CHECK_STARTED;
+      if (log.action === "LEGACY_HISTORY_IMPORTED") return reportAuditActionLabels.LEGACY_HISTORY_IMPORTED;
+      const beforeAccount = log.before?.accountStatus;
+      const afterAccount = log.after?.accountStatus;
+      if (beforeAccount !== afterAccount && afterAccount === "Suspended") return "ระงับบัญชีชั่วคราวระหว่างตรวจสอบ";
+      if (beforeAccount !== afterAccount && afterAccount === "Banned") return "ระงับบัญชีถาวร";
+      if (beforeAccount !== afterAccount && afterAccount === "Active") return "เปิดใช้งานบัญชีอีกครั้ง";
+      if (log.action === "REPORT_STATUS_UPDATED") {
+        if (log.after?.reportStatus === "Cleared") return "ปิดรายงาน";
+        if (log.after?.reportStatus === "In Review") return "เริ่มตรวจสอบรายงาน";
+        if (log.after?.reportStatus === "Open") return "ส่งกลับรอตรวจ";
+      }
+      return reportAuditActionLabels[log.action] || log.action;
+    }
+
+    function getReportAuditAccountStatusRows(report) {
+      const logs = ensureReportAuditLogs(report);
+      let currentStatus = report.accountStatus || getReportAccountStatus(report);
+      const statusByLog = new WeakMap();
+      [...logs].reverse().forEach(log => {
+        const statusAtLog = log.after?.accountStatus || log.before?.accountStatus || currentStatus;
+        currentStatus = statusAtLog;
+        statusByLog.set(log, statusAtLog);
+      });
+      return statusByLog;
+    }
+
+    function ensureReportAuditLogs(report) {
+      if (!report) return [];
+      if (Array.isArray(report.auditLogs) && report.auditLogs.length) return report.auditLogs;
+      report.auditLogs = [{
+        id: `AUD-${report.id}-000`,
+        action: "LEGACY_HISTORY_IMPORTED",
+        actor: "System",
+        createdAt: formatBangkokTimestamp(),
+        entityType: "reported_user",
+        entityId: report.id,
+        sourceModule: report.source || "Reported Users",
+        detail: report.actionHistory || "No audit events recorded yet",
+        before: null,
+        after: { reportStatus: report.status, accountStatus: getReportAccountStatus(report) },
+        reason: "นำเข้าจากประวัติเดิมของ prototype",
+        metadata: { reference: report.reference, userId: report.userId }
+      }];
+      return report.auditLogs;
+    }
+
+    function appendReportAuditLog(report, log) {
+      if (!report || !log) return;
+      const auditLogs = ensureReportAuditLogs(report);
+      const nextAuditNumber = auditLogs.reduce((max, entry) => {
+        const match = String(entry.id || "").match(/-(\d+)$/);
+        return Math.max(max, match ? Number(match[1]) : 0);
+      }, 0) + 1;
+      auditLogs.unshift({
+        id: `AUD-${report.id}-${String(nextAuditNumber).padStart(3, "0")}`,
+        actor: "Somchai Admin",
+        createdAt: formatBangkokTimestamp(),
+        entityType: "reported_user",
+        entityId: report.id,
+        sourceModule: "Reported Users",
+        before: null,
+        after: null,
+        metadata: { reference: report.reference, userId: report.userId },
+        ...log
+      });
+    }
+
+    function parseBangkokAuditTime(value) {
+      if (!value) return null;
+      const monthMap = { Jan: 0, Feb: 1, Mar: 2, Apr: 3, May: 4, Jun: 5, Jul: 6, Aug: 7, Sep: 8, Oct: 9, Nov: 10, Dec: 11 };
+      const match = String(value).match(/(\d{1,2})\s+([A-Za-z]{3})\s+(\d{4})\s+(\d{2}):(\d{2})/);
+      if (!match) return null;
+      const [, day, month, year, hour, minute] = match;
+      if (monthMap[month] === undefined) return null;
+      return Date.UTC(Number(year), monthMap[month], Number(day), Number(hour), Number(minute));
+    }
+
+    function formatReporterSubmissionTime(timestamp) {
+      if (!timestamp) return "Unknown time";
+      const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+      const date = new Date(timestamp);
+      return `${String(date.getUTCDate()).padStart(2, "0")} ${months[date.getUTCMonth()]} ${date.getUTCFullYear()} ${String(date.getUTCHours()).padStart(2, "0")}:${String(date.getUTCMinutes()).padStart(2, "0")}`;
+    }
+
+    const reportReporterNames = {
+      "RPU-505": ["Nattapol P.", "Patchara L.", "Krit Watch", "Saran Collector", "Maliwan T."],
+      "RPU-512": ["Anucha M.", "Benjawan S.", "Korn Vintage", "Pimchanok R."],
+      "RPU-518": ["Nattapol P.", "Arthit K.", "Supansa W."],
+      "RPU-541": ["Worawit C.", "Jirayu P.", "Nicha S.", "Tawan Watch", "Ploy R.", "Kanda M."],
+      "RPU-560": ["Somkid P.", "Watch Finder TH", "Ratchanon S.", "Mayuree W.", "Thanakorn L.", "Pattarapon C.", "Siriporn N.", "Vasin K.", "Araya Watch", "Nopporn T.", "Kanokwan S.", "Panuwat R.", "Suda Collector"]
+    };
+
+    function getReporterHistoryRows(report) {
+      const createdLog = ensureReportAuditLogs(report).find(log => log.action === "REPORT_CREATED");
+      const baseTime = parseBangkokAuditTime(createdLog?.createdAt) || Date.UTC(2026, 6, 13, 10, 0);
+      const reporterCount = Math.max(Number(report?.reporters) || 0, 1);
+      const reporterNames = reportReporterNames[report.id] || [];
+      return Array.from({ length: reporterCount }, (_, index) => {
+        const appReason = report.evidence?.[index % report.evidence.length] || report.reason;
+        const minuteOffset = index === 0 ? 0 : index * 17;
+        return {
+          reporter: reporterNames[index] || `Reporter ${String(index + 1).padStart(2, "0")}`,
+          reportedAt: formatReporterSubmissionTime(baseTime + minuteOffset * 60 * 1000),
+          source: report.source,
+          note: appReason,
+          status: index === 0 ? "เปิดเคส" : "รวมเคส"
+        };
+      });
+    }
+
+    function renderReportHistoryPager(kind, page, pageCount, total, start) {
+      if (total <= reportHistoryPageSize) return "";
+      const pageAttr = kind === "reporter" ? "data-reporter-history-page" : "data-report-audit-history-page";
+      return `
+        <div class="footer-range">
+          <span>แสดง ${start + 1}-${Math.min(start + reportHistoryPageSize, total)} จาก ${total}</span>
+          <div class="pager">
+            <button class="btn" type="button" ${pageAttr}="prev" ${page <= 1 ? "disabled" : ""}>ก่อนหน้า</button>
+            ${Array.from({ length: pageCount }, (_, index) => `<button class="btn ${index + 1 === page ? "active" : ""}" type="button" ${pageAttr}="${index + 1}">${index + 1}</button>`).join("")}
+            <button class="btn" type="button" ${pageAttr}="next" ${page >= pageCount ? "disabled" : ""}>ถัดไป</button>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderReporterHistoryTable(report) {
+      const allRows = getReporterHistoryRows(report);
+      const pageCount = Math.max(1, Math.ceil(allRows.length / reportHistoryPageSize));
+      reporterHistoryPage = Math.min(reporterHistoryPage, pageCount);
+      const start = (reporterHistoryPage - 1) * reportHistoryPageSize;
+      const pageRows = allRows.slice(start, start + reportHistoryPageSize);
+      const rows = pageRows.map(row => `
+        <tr>
+          <td data-label="วันที่ / เวลา">${row.reportedAt}</td>
+          <td data-label="Reporter">${row.reporter}</td>
+          <td data-label="Source">${row.source}</td>
+          <td data-label="Status">${row.status}</td>
+          <td data-label="Reporter note" class="history-note">${row.note}</td>
+        </tr>
+      `).join("");
+      return `
+        <div class="history-table-wrap">
+          <table class="history-table">
+            <thead>
+              <tr>
+                <th>วันที่ / เวลา</th>
+                <th>Reporter</th>
+                <th>Source</th>
+                <th>Status</th>
+                <th>Reporter note</th>
+              </tr>
+            </thead>
+            <tbody>${rows}</tbody>
+          </table>
+          ${renderReportHistoryPager("reporter", reporterHistoryPage, pageCount, allRows.length, start)}
+        </div>
+      `;
+    }
+
+    function renderReportAuditHistoryTable(report) {
+      const accountStatusByLog = getReportAuditAccountStatusRows(report);
+      const allLogs = ensureReportAuditLogs(report);
+      const pageCount = Math.max(1, Math.ceil(allLogs.length / reportHistoryPageSize));
+      reportAuditHistoryPage = Math.min(reportAuditHistoryPage, pageCount);
+      const start = (reportAuditHistoryPage - 1) * reportHistoryPageSize;
+      const pageLogs = allLogs.slice(start, start + reportHistoryPageSize);
+      const rows = pageLogs.map(log => {
+        const accountStatus = accountStatusByLog.get(log) || report.accountStatus || getReportAccountStatus(report);
+        return `
+          <tr>
+            <td data-label="วันที่ / เวลา">${formatAuditDisplayTime(log.createdAt)}</td>
+            <td data-label="ผู้ดำเนินการ">${log.actor}</td>
+            <td data-label="Action">${getReportAuditActionLabel(log)}</td>
+            <td data-label="สถานะบัญชี">${userStatusPill(accountStatus)}</td>
+            <td data-label="รายละเอียด" class="history-note">${log.reason || ""}</td>
+          </tr>
+        `;
+      }).join("");
+      return `
+        <div class="history-table-wrap">
+          <table class="history-table">
+            <thead>
+              <tr>
+                <th>วันที่ / เวลา</th>
+                <th>ผู้ดำเนินการ</th>
+                <th>Action</th>
+                <th>สถานะบัญชี</th>
+                <th>รายละเอียด</th>
+              </tr>
+            </thead>
+            <tbody>${rows}</tbody>
+          </table>
+          ${renderReportHistoryPager("audit", reportAuditHistoryPage, pageCount, allLogs.length, start)}
+        </div>
+      `;
+    }
+
     function updateDashboardMeta() {
       const pageMeta = document.querySelector("#page-meta");
       if (!pageMeta || activeModule !== "dashboard") return;
@@ -3256,8 +3749,12 @@
     let activeRow = null;
     let activeActivityFilter = "ทั้งหมด";
     let userListPage = 1;
+    let reporterHistoryPage = 1;
+    let reportAuditHistoryPage = 1;
     let userFilterOpen = false;
+    let activeReportContextId = null;
     const userListPageSize = 10;
+    const reportHistoryPageSize = 10;
 
     function resetSessionViewState() {
       expandedMenus.clear();
@@ -3265,6 +3762,8 @@
       activeRow = null;
       activeActivityFilter = "ทั้งหมด";
       userListPage = 1;
+      reporterHistoryPage = 1;
+      reportAuditHistoryPage = 1;
       userFilterOpen = false;
       closeRowMenus();
       document.querySelectorAll("[data-custom-select]").forEach(select => {
@@ -3306,6 +3805,21 @@
       "Cleared": "ปิดแล้ว"
     };
 
+    const reportPriorityLabels = {
+      "สูง": "High",
+      "กลาง": "Medium",
+      "ปกติ": "Low"
+    };
+
+    function getReportPriorityLabel(priority) {
+      return reportPriorityLabels[priority] || priority;
+    }
+
+    function getReportPriorityRank(priority) {
+      const priorityRank = { "สูง": 3, "กลาง": 2, "ปกติ": 1 };
+      return priorityRank[priority] || 0;
+    }
+
     function getUserSummaryStats() {
       const users = userManagementData.users;
       const countStatus = status => users.filter(user => user.status === status).length;
@@ -3342,7 +3856,7 @@
       const map = {
         "Active": "green",
         "Pending Verification": "amber",
-        "Suspended": "red",
+        "Suspended": "amber",
         "Banned": "red",
         "Deletion Requested": "purple",
         "Deleted / Archived": "purple",
@@ -3383,23 +3897,20 @@
       const mode = subLabel === "Report User" || subLabel === "Reported Users" ? "reports" : "list";
       const isReports = mode === "reports";
       const title = isReports ? "Reported Users" : "User List";
-      document.body.classList.toggle("user-list-mode", !isReports);
+      activeReportContextId = null;
+      document.body.classList.add("user-list-mode");
       document.body.classList.remove("user-detail-mode");
       activeRow = isReports ? userManagementData.reports[0] : userManagementData.users[0];
       document.querySelector("#crumb").textContent = `การดำเนินงาน / User Management / ${title}`;
       document.querySelector("#page-title").textContent = title;
-      document.querySelector("#page-meta").textContent = isReports
-        ? "Operational queue สำหรับตรวจ report ของ FO user/profile ภายใน SLA 24 ชั่วโมง"
-        : "";
-      document.querySelector("#panel-title").textContent = isReports ? "Reported Users Queue" : "User Accounts";
-      document.querySelector("#panel-subtitle").textContent = isReports
-        ? "ตรวจ source reference ก่อน clear report หรือเปลี่ยนสถานะบัญชี"
-        : "";
+      document.querySelector("#page-meta").textContent = "";
+      document.querySelector("#panel-title").textContent = isReports ? "Reported Users" : "User Accounts";
+      document.querySelector("#panel-subtitle").textContent = "";
       document.querySelector("#user-panel-filter-actions").innerHTML = `
         <button class="btn user-filter-toggle" type="button" data-user-filter-toggle aria-expanded="${userFilterOpen}">${iconSvg.filter}<span>${userFilterOpen ? "ปิดตัวกรอง" : "เปิดตัวกรอง"}</span></button>
         <button class="btn" type="button" data-user-reset title="รีเซ็ตค่าทั้งหมด" aria-label="รีเซ็ตค่าทั้งหมด">${iconSvg.refresh}<span>รีเซ็ตค่าทั้งหมด</span></button>
       `;
-      document.querySelector("#summary-grid").innerHTML = getUserSummaryStats().map(stat => `
+      document.querySelector("#summary-grid").innerHTML = isReports ? "" : getUserSummaryStats().map(stat => `
         <article class="stat">
           <div class="stat-label">${stat[0]}</div>
           <div class="stat-value">${stat[1]}</div>
@@ -3407,27 +3918,24 @@
         </article>
       `).join("");
       document.querySelector(".filters").innerHTML = isReports ? `
-        <div class="user-filter-bar report-mode" data-filter-open="${userFilterOpen}">
-          <input class="field search" id="user-search" type="search" placeholder="ค้นหา report ID, user ID, display name, reason หรือ reference" />
-          <select class="field user-advanced-filter" id="report-status-filter" aria-label="Filter report status">
-            <option value="">ทุก report status</option>
-            <option value="Open">รอตรวจ</option>
-            <option value="In Review">กำลังตรวจ</option>
-            <option value="Cleared">ปิดแล้ว</option>
-          </select>
-          <select class="field user-advanced-filter" id="report-priority-filter" aria-label="Filter priority">
-            <option value="">ทุก priority</option>
-            <option value="สูง">สูง</option>
-            <option value="กลาง">กลาง</option>
-            <option value="ปกติ">ปกติ</option>
-          </select>
-          <select class="field user-advanced-filter" id="report-sort" aria-label="Sort reports">
-            <option value="oldest">รอนานสุดก่อน</option>
-            <option value="urgent">Urgent ก่อน</option>
-            <option value="reporters">จำนวน reporter</option>
-            <option value="status">สถานะ</option>
-          </select>
-          <button class="btn icon user-advanced-filter" type="button" id="user-reset" title="รีเซ็ตค่าทั้งหมด" aria-label="รีเซ็ตค่าทั้งหมด">${iconSvg.refresh}</button>
+        <div class="user-filter-bar" data-filter-open="${userFilterOpen}">
+          <input class="field search" id="user-search" type="search" placeholder="ค้นหา Report ID, User, User ID" />
+          <div class="user-advanced-filter">${customSelect("report-status-filter", "Filter report status", [
+            { value: "", label: "ทุกสถานะ" },
+            { value: "Pending", label: "รอตรวจ" },
+            { value: "Cleared", label: "ปิดแล้ว" }
+          ])}</div>
+          <div class="user-advanced-filter">${customSelect("report-priority-filter", "Filter priority", [
+            { value: "", label: "ทุก priority" },
+            { value: "สูง", label: "High" },
+            { value: "กลาง", label: "Medium" },
+            { value: "ปกติ", label: "Low" }
+          ])}</div>
+          <div class="user-advanced-filter">${customSelect("report-sort", "Sort reports", [
+            { value: "latest", label: "ล่าสุดก่อน" },
+            { value: "reporters", label: "จำนวน reporter" }
+          ], "latest")}</div>
+          <button class="btn filter-reset user-advanced-filter" type="button" id="user-reset" title="รีเซ็ตค่าทั้งหมด" aria-label="รีเซ็ตค่าทั้งหมด">${iconSvg.refresh}<span>รีเซ็ตค่าทั้งหมด</span></button>
         </div>
       ` : `
         <div class="user-filter-bar" data-filter-open="${userFilterOpen}">
@@ -3459,7 +3967,7 @@
       document.querySelector("#cards").innerHTML = "";
       if (isReports) {
         renderReportedUserRows();
-        renderReportedUserDetail(activeRow);
+        document.querySelector("#detail").innerHTML = "";
       } else {
         renderUserRows();
         document.querySelector("#detail").innerHTML = "";
@@ -3982,6 +4490,24 @@
 
     function refreshUserActionSurface(user) {
       if (!user || activeModule !== "users") return;
+      if ((activeSub === "Report User" || activeSub === "Reported Users") && activeReportContextId) {
+        const report = userManagementData.reports.find(entry => entry.id === activeReportContextId);
+        if (report) {
+          const beforeStatus = report.accountStatus;
+          report.accountStatus = user.status;
+          appendReportAuditLog(report, {
+            action: beforeStatus === user.status ? "ADMIN_ACTION_RECORDED" : "ACCOUNT_STATUS_UPDATED",
+            actionLabel: pendingReportActionAudit?.actionLabel,
+            detail: pendingReportActionAudit?.detail || "บันทึก action จาก Reported Users",
+            before: { accountStatus: beforeStatus },
+            after: { accountStatus: user.status },
+            reason: pendingReportActionAudit?.reason || "Admin confirmed action from report context"
+          });
+          if (document.body.classList.contains("user-detail-mode")) renderReportedUserDetail(report);
+          else renderReportedUserRows();
+          return;
+        }
+      }
       if (document.body.classList.contains("user-detail-mode")) {
         renderUserDetailPageSpec(user);
         return;
@@ -4052,7 +4578,7 @@
                 </label>
                 <div class="module-note user-action-impact"><strong>ผลกระทบต่อแอปพลิเคชัน:</strong> ${getUserActionFoImpact(user, action)}</div>
                 <div class="user-detail-actions">
-                  <button class="user-detail-action-btn ${getUserActionConfirmClass(config)}" type="button" data-user-action-confirm="${action}" data-user-id="${user.id}" ${completed ? "disabled" : ""}>${USER_ACTION_CONFIRM_LABEL}</button>
+                  <button class="user-detail-action-btn ${getUserActionConfirmClass(config)}" type="button" data-user-action-confirm="${action}" data-user-id="${user.id}" data-report-context="${activeReportContextId || ""}" ${completed ? "disabled" : ""}>${USER_ACTION_CONFIRM_LABEL}</button>
                   <button class="user-detail-action-btn" type="button" data-user-action-modal-close>${completed ? "ปิด" : "ยกเลิก"}</button>
                 </div>
                 <div class="warning-note action-feedback user-action-result ${hasResult ? "show" : ""} ${resultType}">
@@ -4085,6 +4611,7 @@
     function confirmUserAction(user, action) {
       const config = userActionConfig[action];
       if (!user || !config) return;
+      activeReportContextId = document.querySelector("[data-user-action-confirm]")?.dataset.reportContext || activeReportContextId;
       const scenario = document.querySelector("#user-action-scenario")?.value || "success";
       const errorSample = getUserActionErrorSample(action, scenario);
       if (errorSample) {
@@ -4095,7 +4622,15 @@
         user.status = config.targetStatus;
         updateUserActionsForStatus(user);
       }
+      const selectedReason = document.querySelector("#user-action-reason")?.value || "";
+      const actionNote = document.querySelector("#user-action-note")?.value.trim() || "";
+      pendingReportActionAudit = {
+        actionLabel: config.title,
+        detail: actionNote || selectedReason || config.summary,
+        reason: selectedReason || config.reasonLabel
+      };
       refreshUserActionSurface(user);
+      pendingReportActionAudit = null;
       closeUserActionModal();
       showSuccessToast(config.success(user));
     }
@@ -4113,8 +4648,9 @@
       scrollMainToTop();
     }
 
-    function handleUserAction(user, action) {
+    function handleUserAction(user, action, reportContextId = "") {
       if (!user || !action) return;
+      activeReportContextId = reportContextId || null;
       if (action === "Open Account Deletion") {
         openAccountDeletionRequest(user);
         return;
@@ -4128,6 +4664,212 @@
         return;
       }
       renderUserDetailPage(user);
+    }
+
+    function getReportUser(report) {
+      return userManagementData.users.find(user => user.id === report?.userId);
+    }
+
+    function getReportAccountStatus(report) {
+      return getReportUser(report)?.status || report.accountStatus;
+    }
+
+    function getReportQueueStatus(report) {
+      return report?.status === "Cleared" ? "Cleared" : "Pending";
+    }
+
+    function reportQueueStatusPill(report) {
+      const status = getReportQueueStatus(report);
+      const label = status === "Cleared" ? "ปิดแล้ว" : "รอตรวจ";
+      const color = status === "Cleared" ? "green" : "amber";
+      return `<span class="pill ${color}">${label}</span>`;
+    }
+
+    function getReportStatusActions(report) {
+      if (!report) return [];
+      if (report.status === "Open") {
+        return [
+          { status: "Cleared", label: "ปิดรายงาน" }
+        ];
+      }
+      if (report.status === "In Review") {
+        return [
+          { status: "Cleared", label: "ปิดรายงาน" }
+        ];
+      }
+      return [];
+    }
+
+    function getReportAccountActions(report) {
+      const user = getReportUser(report);
+      if (!user) return [];
+      if (getReportQueueStatus(report) === "Cleared") return [];
+      const reportAccountActionSet = new Set(["Suspend", "Ban", "Restore", "Unban user"]);
+      return getUserRowActions(user).filter(({ action }) => reportAccountActionSet.has(action));
+    }
+
+    function renderReportStatusActionButtons(report) {
+      return getReportStatusActions(report)
+        .map(action => `<button type="button" data-report-status-action="${action.status}" data-report-id="${report.id}">${action.label}</button>`)
+        .join("");
+    }
+
+    function renderReportAccountActionButtons(report) {
+      const user = getReportUser(report);
+      if (!user) return "";
+      const actions = getReportAccountActions(report);
+      return actions.map(({ action, label }) => `<button type="button" data-user-action="${action}" data-user-id="${user.id}" data-report-context="${report.id}">${label}</button>`).join("");
+    }
+
+    function renderReportRowActionMenu(report) {
+      const actions = `${renderReportStatusActionButtons(report)}${renderReportAccountActionButtons(report)}`;
+      return `
+        <details class="row-menu">
+          <summary title="เมนูรายงาน">...</summary>
+          <div class="row-menu-list">
+            <button type="button" data-report-action="${report.id}">ดูรายละเอียด</button>
+            ${actions}
+          </div>
+        </details>
+      `;
+    }
+
+    function renderReportDetailActionButtons(report) {
+      const reportUser = getReportUser(report);
+      const statusActions = getReportStatusActions(report)
+        .filter(action => action.status !== "In Review")
+        .map(action => `<button class="user-detail-action-btn ${action.status === "Cleared" ? "primary" : ""}" type="button" data-report-status-action="${action.status}" data-report-id="${report.id}">${action.label}</button>`)
+        .join("");
+      const accountActions = reportUser
+        ? getReportAccountActions(report).map(({ action, label }, index) => {
+            return `<button class="user-detail-action-btn ${getUserActionClass(action, index)}" type="button" data-user-action="${action}" data-user-id="${reportUser.id}" data-report-context="${report.id}">${label}</button>`;
+          }).join("")
+        : "";
+      const emptyState = !statusActions && !accountActions && getReportQueueStatus(report) !== "Cleared" ? `<span class="chip">ไม่มี action บัญชีที่ทำได้</span>` : "";
+      const actions = `${statusActions}${accountActions}${emptyState}`;
+      return actions ? `<div class="user-detail-actions">${actions}</div>` : "";
+    }
+
+    function getReportStatusActionSummary(status) {
+      const summaries = {
+        "Open": {
+          detail: "เปิดรายงานกลับไปที่คิวรอตรวจ",
+          toast: "เปิดรายงานอีกครั้งแล้ว"
+        },
+        "In Review": {
+          detail: "เริ่มตรวจรายงานและบันทึกว่าอยู่ระหว่างตรวจสอบ",
+          toast: "เริ่มตรวจสอบรายงานแล้ว"
+        },
+        "Cleared": {
+          detail: "ปิดรายงานหลังตรวจสอบหลักฐานต้นทางแล้ว",
+          toast: "ปิดรายงานแล้ว"
+        }
+      };
+      return summaries[status] || {
+        detail: `เปลี่ยนสถานะรายงานเป็น ${userStatusLabels[status] || status}`,
+        toast: `เปลี่ยนสถานะรายงานเป็น ${status} แล้ว`
+      };
+    }
+
+    function renderReportStatusConfirmModal(report, status, resultMessage = "", resultDetail = "", resultType = "", selectedScenario = "success") {
+      if (!report || status !== "Cleared") {
+        updateReportStatus(report, status);
+        return;
+      }
+      const hasResult = Boolean(resultMessage);
+      const closeReasons = [
+        "ตรวจหลักฐานครบแล้ว ไม่พบประเด็นค้าง",
+        "ดำเนินการกับบัญชีเรียบร้อยแล้ว",
+        "รายงานซ้ำกับเคสที่ปิดผลแล้ว",
+        "หลักฐานไม่เข้าเงื่อนไขดำเนินการต่อ"
+      ];
+      const reportCloseFlowScenarios = [
+        { value: "success", label: "สำเร็จ" },
+        { value: "invalid_state", label: "รายงานไม่อยู่ในสถานะที่ปิดได้" },
+        { value: "stale_data", label: "ข้อมูลรายงานเปลี่ยนระหว่างดำเนินการ" },
+        { value: "policy_blocked", label: "ยังมีเงื่อนไขที่ต้องตรวจสอบ" },
+        { value: "save_failed", label: "บันทึกผลปิดรายงานไม่สำเร็จ" },
+        { value: "session_expired", label: "เซสชันหมดอายุ" }
+      ];
+      const modal = document.querySelector("#user-action-modal");
+      const modalBody = document.querySelector("#user-action-modal-body");
+      if (!modal || !modalBody) return;
+      modalBody.innerHTML = `
+        <div class="user-action-page">
+          <div class="user-action-head">
+            <div>
+              <h2 id="user-action-modal-title">ยืนยันการปิดรายงาน</h2>
+              <p>ใช้เมื่อผู้ดูแลตรวจหลักฐานต้นทางครบแล้ว และต้องการทำเครื่องหมายรายงานนี้ว่าเสร็จสิ้น</p>
+            </div>
+            <button class="btn user-action-close" type="button" data-user-action-modal-close aria-label="Close modal" title="Close">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M18 6 6 18"></path>
+                <path d="m6 6 12 12"></path>
+              </svg>
+            </button>
+          </div>
+          <div class="user-action-target">
+            <div>
+              <strong>${report.user}</strong>
+              <span>${report.id} · ${report.reference}</span>
+            </div>
+            ${reportQueueStatusPill(report)}
+          </div>
+          <div class="user-action-layout">
+            <div class="detail-section">
+              <div class="user-action-form">
+                <label>
+                  เหตุผลการปิดรายงาน
+                  ${customSelect("report-close-reason", "เหตุผลการปิดรายงาน", closeReasons.map(reason => ({ value: reason, label: reason })), "", "data-custom-select-silent")}
+                </label>
+                <label>
+                  Note / หมายเหตุ
+                  <textarea id="report-close-note" placeholder="ระบุหมายเหตุ เหตุผล หรือข้อมูลอ้างอิงที่เกี่ยวข้อง"></textarea>
+                </label>
+                <div class="module-note user-action-impact"><strong>ผลกระทบต่อแอปพลิเคชัน:</strong> รายงานจะถูกปิดและออกจากคิวที่ต้องดำเนินการ แต่ไม่เปลี่ยนสถานะบัญชีผู้ใช้โดยอัตโนมัติ</div>
+                <div class="user-detail-actions">
+                  <button class="user-detail-action-btn warning user-action-confirm" type="button" data-report-status-confirm="${status}" data-report-id="${report.id}">ยืนยัน</button>
+                  <button class="user-detail-action-btn" type="button" data-user-action-modal-close>ยกเลิก</button>
+                </div>
+                <div class="warning-note action-feedback user-action-result ${hasResult ? "show" : ""} ${resultType}">
+                  <strong>${resultMessage}</strong><br>
+                  <span>${resultDetail}</span>
+                </div>
+                <details class="prototype-tools user-action-prototype-tools">
+                  <summary>Prototype scenario</summary>
+                  <label>
+                    Test flow
+                    ${customSelect("report-close-scenario", "Test flow", reportCloseFlowScenarios, selectedScenario, "data-custom-select-silent")}
+                  </label>
+                </details>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+      modal.classList.add("show");
+    }
+
+    function updateReportStatus(report, status) {
+      if (!report || !status) return;
+      const beforeStatus = report.status;
+      if (beforeStatus === status) return;
+      const actionSummary = getReportStatusActionSummary(status);
+      const closeReason = document.querySelector("#report-close-reason")?.value;
+      const closeNote = document.querySelector("#report-close-note")?.value.trim();
+      report.status = status;
+      if (status === "Cleared") report.waiting = "0 ชม.";
+      report.accountStatus = getReportAccountStatus(report);
+      appendReportAuditLog(report, {
+        action: "REPORT_STATUS_UPDATED",
+        detail: closeNote || closeReason || actionSummary.detail,
+        before: { reportStatus: beforeStatus, accountStatus: report.accountStatus },
+        after: { reportStatus: status, accountStatus: report.accountStatus },
+        reason: closeReason || "ผู้ดูแลตรวจหลักฐานต้นทางแล้วจึงอัปเดตสถานะรายงาน"
+      });
+      if (document.body.classList.contains("user-detail-mode")) renderReportedUserDetail(report);
+      else renderReportedUserRows();
+      showSuccessToast(`${report.id}: ${actionSummary.toast}`);
     }
 
     function renderUserRows() {
@@ -4173,11 +4915,11 @@
               <div data-label="Auth">${userAuthPill(user.auth)}</div>
               <div data-label="Date Joined"><div class="main-text">${user.joined}</div></div>
               <div class="user-row-actions">
-                <button class="panel-action" type="button" data-user-open="${user.id}">${iconSvg.eye}View</button>
                 <details class="row-menu">
                   <summary title="Account actions">...</summary>
                   <div class="row-menu-list">
-                    ${rowActions.map(({ action, label }) => `<button type="button" data-user-action="${action}" data-user-id="${user.id}">${label}</button>`).join("") || `<button type="button" data-user-open="${user.id}">ดูรายละเอียด</button>`}
+                    <button type="button" data-user-open="${user.id}">ดูรายละเอียด</button>
+                    ${rowActions.map(({ action, label }) => `<button type="button" data-user-action="${action}" data-user-id="${user.id}">${label}</button>`).join("")}
                   </div>
                 </details>
               </div>
@@ -4200,31 +4942,55 @@
       const q = (document.querySelector("#user-search")?.value || "").trim().toLowerCase();
       const status = document.querySelector("#report-status-filter")?.value || "";
       const priority = document.querySelector("#report-priority-filter")?.value || "";
-      const sort = document.querySelector("#report-sort")?.value || "oldest";
-      const priorityRank = { "สูง": 3, "กลาง": 2, "ปกติ": 1 };
+      const sort = document.querySelector("#report-sort")?.value || "latest";
       const sorted = [...userManagementData.reports].filter(report => {
-        return (!q || getUserSearchText(report).includes(q)) && (!status || report.status === status) && (!priority || report.priority === priority);
+        return (!q || getUserSearchText(report).includes(q)) && (!status || getReportQueueStatus(report) === status) && (!priority || report.priority === priority);
       }).sort((a, b) => {
-        if (sort === "urgent") return priorityRank[b.priority] - priorityRank[a.priority];
         if (sort === "reporters") return b.reporters - a.reporters;
-        if (sort === "status") return a.status.localeCompare(b.status);
-        return parseInt(b.waiting, 10) - parseInt(a.waiting, 10);
+        return parseInt(a.waiting, 10) - parseInt(b.waiting, 10);
       });
+      const pageCount = Math.max(1, Math.ceil(sorted.length / userListPageSize));
+      userListPage = Math.min(userListPage, pageCount);
+      const start = (userListPage - 1) * userListPageSize;
+      const pageRows = sorted.slice(start, start + userListPageSize);
       document.querySelector("#table").innerHTML = `
         <div class="user-table">
-          <div class="user-row report-row head"><div>Report</div><div>Reported User</div><div>Reporters</div><div>Priority</div><div>Status</div><div>Action</div></div>
-          ${sorted.map(report => `
+          <div class="user-row report-row head"><div>Report ID</div><div>User</div><div>User Status</div><div>Status</div><div>Report Detail</div><div>Reporters</div><div>Priority</div><div>Source</div><div>Action</div></div>
+          ${pageRows.map(report => `
             <div class="user-row report-row" data-report-id="${report.id}">
-              <div class="user-cell-primary" data-label="Report"><div class="main-text">${report.id} · ${report.category}</div><div class="muted">${report.reason}</div><div class="chips"><span class="chip">${report.reference}</span><span class="chip">รอ ${report.waiting}</span></div></div>
-              <div data-label="Reported User"><div class="main-text">${report.user}</div><div class="muted">${report.userId} · ${report.accountStatus}</div></div>
-              <div data-label="Reporters"><div class="main-text">${report.reporters}</div><div class="muted">masked identities</div></div>
-              <div data-label="Priority">${statusPill(report.priority, report.priority)}</div>
-              <div data-label="Status">${userStatusPill(report.status)}</div>
-              <div><button class="panel-action" type="button" data-report-action="${report.id}">${iconSvg.eye}ดูรายละเอียด</button></div>
+              <div class="user-cell-primary" data-label="Report ID"><div class="main-text">${report.id}</div></div>
+              <div class="user-card-tags">
+                ${reportQueueStatusPill(report)}
+                ${userStatusPill(getReportAccountStatus(report))}
+                <span class="user-card-tag asset-tag">${report.reporters} reporters</span>
+                ${statusPill(getReportPriorityLabel(report.priority), report.priority)}
+                <div class="user-card-meta">
+                  <div class="user-card-meta-item"><span>User</span><strong>${report.user}</strong></div>
+                  <div class="user-card-meta-item"><span>Source</span><strong>${report.source}</strong></div>
+                  <div class="user-card-meta-item"><span>Report detail</span><strong>${report.reason}</strong></div>
+                </div>
+              </div>
+              <div data-label="User"><div class="main-text">${report.user}</div></div>
+              <div data-label="User Status">${userStatusPill(getReportAccountStatus(report))}</div>
+              <div data-label="Status">${reportQueueStatusPill(report)}</div>
+              <div data-label="Report Detail"><div class="muted">${report.reason}</div></div>
+              <div data-label="Reporters"><div class="main-text">${report.reporters}</div></div>
+              <div data-label="Priority">${statusPill(getReportPriorityLabel(report.priority), report.priority)}</div>
+              <div data-label="Source"><div class="main-text">${report.source}</div></div>
+              <div class="user-row-actions">
+                ${renderReportRowActionMenu(report)}
+              </div>
             </div>
-          `).join("") || `<div class="detail-empty">ไม่พบ report ตาม filter ที่เลือก</div>`}
+          `).join("") || `<div class="detail-empty user-empty">ไม่พบ report ตาม filter ที่เลือก</div>`}
         </div>
-        <div class="footer-range"><span>แสดง ${sorted.length} reports หลัง filter</span><span>SLA 24 ชั่วโมง</span></div>
+        <div class="footer-range">
+          <span>แสดง ${sorted.length ? `${start + 1}-${Math.min(start + userListPageSize, sorted.length)}` : "0"} จาก ${sorted.length}</span>
+          <div class="pager">
+            <button class="btn" type="button" data-user-page="prev" ${userListPage <= 1 ? "disabled" : ""}>ก่อนหน้า</button>
+            ${Array.from({ length: pageCount }, (_, index) => `<button class="btn ${index + 1 === userListPage ? "active" : ""}" type="button" data-user-page="${index + 1}">${index + 1}</button>`).join("")}
+            <button class="btn" type="button" data-user-page="next" ${userListPage >= pageCount ? "disabled" : ""}>ถัดไป</button>
+          </div>
+        </div>
       `;
     }
 
@@ -4312,7 +5078,10 @@
                 <div class="chips">${userStatusPill(user.status)}<span class="pill blue">${user.auth}</span></div>
               </div>
             </div>
-            <button class="btn" type="button" data-back-user-list>กลับไป User List</button>
+            <button class="btn user-back-btn" type="button" data-back-user-list aria-label="กลับไป User List" title="กลับไป User List">
+              <svg class="mobile-back-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>
+              <span class="btn-label">กลับไป User List</span>
+            </button>
           </div>
           <div class="detail-section">
             <h4>Account Summary</h4>
@@ -4353,52 +5122,80 @@
     }
 
     function renderReportedUserDetail(report) {
-      const detail = document.querySelector("#detail");
       if (!report) {
-        detail.innerHTML = `<div class="detail-empty">เลือก report เพื่อดูรายละเอียดการตรวจ</div>`;
+        renderUserManagement("Reported Users");
         return;
       }
-      detail.innerHTML = `
-        <div class="panel-head">
-          <div>
-            <h2>Report Detail</h2>
-            <p>${report.id} · reporter identity masked</p>
-          </div>
-        </div>
-        <div class="detail-body">
-          <h3 class="detail-title">${report.reason}</h3>
-          <p class="muted">${report.category} · ${report.user} · ${report.userId}</p>
-          <div class="chips">
-            ${userStatusPill(report.status)}
-            ${statusPill(report.priority, report.priority)}
-            <span class="chip">${report.reporters} reporters</span>
+      document.body.classList.add("user-detail-mode");
+      document.body.classList.remove("user-list-mode");
+      activeSub = "Reported Users";
+      activeRow = report;
+      activeReportContextId = report.id;
+      const reportUser = getReportUser(report);
+      document.querySelector("#crumb").textContent = `การดำเนินงาน / User Management / Report Detail / ${report.id}`;
+      document.querySelector("#page-title").textContent = "Report Detail";
+      document.querySelector("#page-meta").textContent = "";
+      document.querySelector("#panel-title").textContent = report.user;
+      document.querySelector("#panel-subtitle").textContent = `${report.id} · ${report.category} · reporter identity masked`;
+      document.querySelector(".filters").innerHTML = "";
+      document.querySelector("#summary-grid").innerHTML = "";
+      document.querySelector("#cards").innerHTML = "";
+      document.querySelector("#table").innerHTML = `
+        <div class="user-detail-page report-detail-page">
+          <div class="user-detail-head">
+            <div class="user-detail-title">
+              ${reportUser ? renderUserProfileImage(reportUser) : ""}
+              <div>
+                <h2>${report.user}</h2>
+                <div class="chips">
+                  ${reportQueueStatusPill(report)}
+                  ${statusPill(getReportPriorityLabel(report.priority), report.priority)}
+                  <span class="chip">${report.reporters} reporters</span>
+                </div>
+              </div>
+            </div>
+            <button class="btn report-back-btn" type="button" data-back-reported-users aria-label="กลับไป Reported Users" title="กลับไป Reported Users">
+              <svg class="mobile-back-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>
+              <span class="btn-label">กลับไป Reported Users</span>
+            </button>
           </div>
 
           <div class="detail-section">
             <h4>Reported Reference</h4>
-            <div class="detail-grid">
-              <div class="kv"><span>Reference</span><strong>${report.reference}</strong></div>
-              <div class="kv"><span>Source Module</span><strong>${report.source}</strong></div>
-              <div class="kv"><span>Account Status</span><strong>${report.accountStatus}</strong></div>
+            <div class="detail-grid two report-reference-grid">
+              <div class="detail-tile"><span>Report ID</span><strong>${report.id}</strong></div>
+              <div class="detail-tile"><span>User ID</span><strong>${report.userId}</strong></div>
+              <div class="detail-tile"><span>Reference</span><strong>${report.reference}</strong></div>
+              <div class="detail-tile"><span>Source Module</span><strong>${report.source}</strong></div>
+              <div class="detail-tile"><span>Account Status</span><strong>${userStatusLabels[getReportAccountStatus(report)] || getReportAccountStatus(report)}</strong></div>
             </div>
           </div>
 
           <div class="detail-section">
-            <h4>Evidence / Context</h4>
-            <div class="detail-tile"><span>FO reporter note</span><div class="chips">${report.evidence.map(item => `<span class="chip">${item}</span>`).join("")}</div></div>
-            <div class="detail-tile"><span>Recommendation</span>${report.recommendation}</div>
+            <h4>Report Details</h4>
+            <div class="detail-grid report-detail-grid">
+              <div class="detail-tile"><span>Reason</span><strong>${report.reason}</strong></div>
+              <div class="detail-tile"><span>Application reporter note</span><div class="chips">${report.evidence.map(item => `<span class="chip">${item}</span>`).join("")}</div></div>
+              <div class="detail-tile"><span>Recommendation</span>${report.recommendation}</div>
+            </div>
+          </div>
+
+          <div class="detail-section">
+            <h4>Reporter History</h4>
+            ${renderReporterHistoryTable(report)}
           </div>
 
           <div class="detail-section">
             <h4>Admin Action History</h4>
-            <div class="event"><strong>Current state</strong><br>${report.actionHistory}</div>
-            <div class="event"><strong>Review flow</strong><br>เปิด reported reference -> ตรวจ source evidence -> กลับมา clear report หรือ manage account status ตาม policy</div>
+            ${renderReportAuditHistoryTable(report)}
           </div>
 
-          <div class="module-note"><strong>ผลกระทบต่อแอปพลิเคชัน:</strong> Report ไม่ซ่อน profile หรือจำกัดบัญชี จนกว่า Admin จะทำ moderation/action ตาม policy</div>
-          ${report.accountStatus === "Deletion Requested" ? `<div class="warning-note"><strong>Deletion dependency:</strong> ต้องตรวจ source report ก่อน แล้วจึง route ไป Account Deletion ห้าม delete/archive ทันทีจากคิวนี้</div>` : ""}
+          ${getReportAccountStatus(report) === "Deletion Requested" ? `<div class="warning-note"><strong>Deletion dependency:</strong> ต้องตรวจ source report ก่อน แล้วจึง route ไป Account Deletion ห้าม delete/archive ทันทีจากคิวนี้</div>` : ""}
+          ${renderReportDetailActionButtons(report)}
         </div>
       `;
+      document.querySelector("#detail").innerHTML = "";
+      updateActiveNav();
     }
 
     function renderModule(id, subLabel = "", displaySubLabel = subLabel) {
@@ -4708,7 +5505,8 @@
         select.querySelector("[data-custom-select-trigger]").setAttribute("aria-expanded", "false");
         if (select.hasAttribute("data-custom-select-silent")) return;
         userListPage = 1;
-        renderUserRows();
+        if (activeModule === "users" && (activeSub === "Report User" || activeSub === "Reported Users")) renderReportedUserRows();
+        else renderUserRows();
         return;
       }
       const customTrigger = event.target.closest("[data-custom-select-trigger]");
@@ -4775,14 +5573,50 @@
       if (userActionConfirmButton) {
         const id = userActionConfirmButton.dataset.userId;
         const user = userManagementData.users.find(entry => entry.id === id);
+        activeReportContextId = userActionConfirmButton.dataset.reportContext || activeReportContextId;
         confirmUserAction(user, userActionConfirmButton.dataset.userActionConfirm);
+        return;
+      }
+      const reportStatusConfirmButton = event.target.closest("[data-report-status-confirm]");
+      if (reportStatusConfirmButton) {
+        const report = userManagementData.reports.find(entry => entry.id === reportStatusConfirmButton.dataset.reportId);
+        const scenario = document.querySelector("#report-close-scenario")?.value || "success";
+        const reportCloseErrorSamples = {
+          invalid_state: {
+            title: "ไม่สามารถปิดรายงานได้",
+            detail: "สถานะรายงานปัจจุบันไม่ตรงกับเงื่อนไขของการปิดรายงาน กรุณาตรวจสถานะล่าสุดก่อนยืนยันอีกครั้ง"
+          },
+          stale_data: {
+            title: "ข้อมูลรายงานมีการเปลี่ยนแปลงแล้ว",
+            detail: "มีการอัปเดตรายงานนี้ระหว่างที่เปิดหน้าต่างยืนยัน กรุณารีเฟรชข้อมูลแล้วลองอีกครั้ง"
+          },
+          policy_blocked: {
+            title: "ยังมีเงื่อนไขที่ต้องตรวจสอบ",
+            detail: "รายงานนี้ยังมีหลักฐาน ข้อมูลอ้างอิง หรือ action ที่ต้องตรวจสอบก่อนปิดผล"
+          },
+          save_failed: {
+            title: "บันทึกผลปิดรายงานไม่สำเร็จ",
+            detail: "ระบบยังไม่สามารถบันทึกสถานะปิดรายงานและ audit log ได้ กรุณาลองอีกครั้ง"
+          },
+          session_expired: {
+            title: "เซสชันหมดอายุ",
+            detail: "กรุณาเข้าสู่ระบบใหม่ก่อนปิดรายงาน เพื่อให้การยืนยันและ audit log ถูกต้อง"
+          }
+        };
+        const errorSample = reportCloseErrorSamples[scenario] || null;
+        if (errorSample) {
+          renderReportStatusConfirmModal(report, reportStatusConfirmButton.dataset.reportStatusConfirm, errorSample.title, errorSample.detail, "error", scenario);
+          return;
+        }
+        updateReportStatus(report, reportStatusConfirmButton.dataset.reportStatusConfirm);
+        closeUserActionModal();
         return;
       }
       const userActionButton = event.target.closest("[data-user-action]");
       if (userActionButton) {
         const id = userActionButton.dataset.userId;
         const user = userManagementData.users.find(entry => entry.id === id);
-        handleUserAction(user, userActionButton.dataset.userAction);
+        handleUserAction(user, userActionButton.dataset.userAction, userActionButton.dataset.reportContext || "");
         closeRowMenus();
         return;
       }
@@ -4791,22 +5625,33 @@
         const id = userOpenButton.dataset.userOpen;
         const user = userManagementData.users.find(entry => entry.id === id);
         renderUserDetailPage(user);
+        closeRowMenus();
         return;
       }
       const userCard = event.target.closest("[data-user-card]");
-      if (userCard && window.matchMedia("(max-width: 760px)").matches && !event.target.closest(".row-menu, button, a, input, select, [data-custom-select]")) {
+      if (userCard && !event.target.closest(".row-menu, button, a, input, select, [data-custom-select]")) {
         const user = userManagementData.users.find(entry => entry.id === userCard.dataset.userCard);
         renderUserDetailPage(user);
         return;
       }
-      const reportButton = event.target.closest("[data-report-action], .user-row[data-report-id]");
-      if (reportButton) {
-        const id = reportButton.dataset.reportAction || reportButton.dataset.reportId;
+      const reportStatusButton = event.target.closest("[data-report-status-action]");
+      if (reportStatusButton) {
+        const report = userManagementData.reports.find(entry => entry.id === reportStatusButton.dataset.reportId);
+        renderReportStatusConfirmModal(report, reportStatusButton.dataset.reportStatusAction);
+        closeRowMenus();
+        return;
+      }
+      const reportActionButton = event.target.closest("[data-report-action]");
+      const reportRow = event.target.closest(".user-row[data-report-id]");
+      if (reportActionButton || (reportRow && !event.target.closest(".row-menu, button, a, input, select, [data-custom-select]"))) {
+        const id = reportActionButton?.dataset.reportAction || reportRow.dataset.reportId;
         const report = userManagementData.reports.find(entry => entry.id === id);
         if (document.body.classList.contains("user-detail-mode")) {
           renderModule("users", "Reported Users");
         }
         activeRow = report;
+        reporterHistoryPage = 1;
+        reportAuditHistoryPage = 1;
         renderReportedUserDetail(report);
         return;
       }
@@ -4833,7 +5678,31 @@
         if (target === "prev") userListPage = Math.max(1, userListPage - 1);
         else if (target === "next") userListPage += 1;
         else userListPage = Number(target) || 1;
-        renderUserRows();
+        if (activeModule === "users" && (activeSub === "Report User" || activeSub === "Reported Users")) renderReportedUserRows();
+        else renderUserRows();
+        return;
+      }
+      const reporterHistoryPageButton = event.target.closest("[data-reporter-history-page]");
+      if (reporterHistoryPageButton && activeRow) {
+        const target = reporterHistoryPageButton.dataset.reporterHistoryPage;
+        if (target === "prev") reporterHistoryPage = Math.max(1, reporterHistoryPage - 1);
+        else if (target === "next") reporterHistoryPage += 1;
+        else reporterHistoryPage = Number(target) || 1;
+        renderReportedUserDetail(activeRow);
+        return;
+      }
+      const reportAuditHistoryPageButton = event.target.closest("[data-report-audit-history-page]");
+      if (reportAuditHistoryPageButton && activeRow) {
+        const target = reportAuditHistoryPageButton.dataset.reportAuditHistoryPage;
+        if (target === "prev") reportAuditHistoryPage = Math.max(1, reportAuditHistoryPage - 1);
+        else if (target === "next") reportAuditHistoryPage += 1;
+        else reportAuditHistoryPage = Number(target) || 1;
+        renderReportedUserDetail(activeRow);
+        return;
+      }
+      const backReportedUsers = event.target.closest("[data-back-reported-users]");
+      if (backReportedUsers) {
+        renderModule("users", "Reported Users", "Reported Users");
         return;
       }
       const backUserList = event.target.closest("[data-back-user-list]");

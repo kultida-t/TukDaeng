@@ -126,6 +126,8 @@ Dashboard ต้องแสดง:
 - Admin เห็นภาพรวมระบบภายในหน้าเดียว
 - Metrics แสดง snapshot ล่าสุดพร้อม `Last updated`; Dashboard ไม่ต้องมี Date Range control ใน prototype ปัจจุบัน
 - ข้อมูลบน Dashboard ต้องเชื่อมกับ report module ได้
+- `New Users` และ `Active Users Today` ต้องนับเฉพาะ registered account/member activity ไม่รวม Guest public view/share traffic
+- Dashboard ไม่ต้องแสดง guest/public analytics ใน prototype; metric ชุดนี้อยู่ใน Reports & Analytics เท่านั้น
 
 ---
 
@@ -144,9 +146,12 @@ Admin ต้องสามารถ:
 - Route งาน deletion ไป Account Deletion workflow; User List ไม่ archive/delete โดยตรง
 - Reset password เฉพาะบัญชี Email/Password
 - ไม่มีปุ่ม Export CSV โดยตรงใน User List; export user data ต้องผ่าน Reports/export หรือ system-level export ตาม permission
+- ไม่ต้องแสดง Guest/Unauthenticated visitor ใน User List, User Detail, status filter หรือ account action flow
 
 ### Business Rules
 
+- `Guest / Unauthenticated` เป็น FO access state ไม่ใช่ BO user status และไม่สร้าง account record ใน User Management
+- ถ้าผู้ใช้สมัคร Email/Password แล้วระบบสร้าง record เพื่อรอ OTP ให้แสดงเป็น `Pending Verification`; กรณีนี้ไม่ใช่ Guest แต่ยังไม่ถือเป็น authenticated member
 - บัญชี Apple/Google reset password จาก BO ไม่ได้
 - Suspended user login FO ไม่ได้
 - Banned user ต้องถูก block ถาวรจนกว่า Admin จะปลด
@@ -427,6 +432,8 @@ Reports ที่ต้องมี:
 - CSV export
 - Excel export
 - policy-based visibility
+- User Report ต้องแยก Guest public view/share analytics ออกจาก registered-user metrics เช่น new users, DAU/MAU, auth method และ account status
+- User Report ต้องรองรับ metric ชุด guest/public analytics เมื่อ tracking เปิดใช้ ได้แก่ Guest Visitors, Public Asset Views, Public Article Views, Public Profile Views, Public Shares และ Guest-to-Signup Conversion
 
 ---
 
