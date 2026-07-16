@@ -4490,7 +4490,7 @@
 
     function getUserActionFoImpact(user, action) {
       if (action === "Reset password") return "ไม่มีผลกับสถานะบัญชีหรือโปรไฟล์สาธารณะ ระบบจะส่งเฉพาะลิงก์ตั้งรหัสผ่านใหม่ไปยังอีเมลที่ลงทะเบียนไว้";
-      if (action === "Suspend") return "หลังยืนยัน ผู้ใช้จะถูกออกจากระบบทันทีและเข้าแอปไม่ได้จนถึงวันที่กำหนด หรือจนกว่า Admin จะยกเลิกการระงับก่อนครบกำหนด";
+      if (action === "Suspend") return "หลังยืนยัน ผู้ใช้จะถูกออกจากระบบทันที และไม่สามารถเข้าสู่ระบบเพื่อใช้งานแอปพลิเคชันได้จนถึงวันที่กำหนด หรือจนกว่า Admin จะยกเลิกการระงับก่อนครบกำหนด";
       if (action === "Ban") return "หลังยืนยัน ผู้ใช้จะถูกออกจากระบบทันทีและเข้าแอปไม่ได้จนกว่า Admin จะยกเลิกการระงับถาวร";
       if (action === "Restore") return "ผู้ใช้จะกลับมาเข้าสู่ระบบและใช้งานบัญชีได้หลังยืนยัน";
       if (action === "Unban user") return "ผู้ใช้จะกลับมาเข้าสู่ระบบและใช้งานบัญชีได้หลังยืนยันยกเลิกระงับบัญชีถาวร";
@@ -4502,7 +4502,7 @@
       return `
         <div class="module-note user-action-impact user-action-impact-card user-action-impact-warning">
           <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 3.2c.7 0 1.35.37 1.7.98l8.05 13.95A1.95 1.95 0 0 1 20.05 21H3.95a1.95 1.95 0 0 1-1.7-2.87L10.3 4.18A1.95 1.95 0 0 1 12 3.2Zm0 4.6a1 1 0 0 0-1 1v4.4a1 1 0 1 0 2 0V8.8a1 1 0 0 0-1-1Zm0 8.45a1.15 1.15 0 1 0 0 2.3 1.15 1.15 0 0 0 0-2.3Z"/></svg>
-          <p><strong>ผลกระทบต่อแอปพลิเคชัน:</strong> ${getUserActionFoImpact(user, action)}</p>
+          <p><strong>ผลกระทบต่อผู้ใช้:</strong> ${getUserActionFoImpact(user, action)}</p>
         </div>
       `;
     }
@@ -4515,10 +4515,11 @@
         : user.auth === "Google"
           ? "Google account email"
           : "registered account email";
+      const emailActionLabel = action === "Suspend" ? "การระงับบัญชีชั่วคราว" : "การระงับบัญชีถาวร";
       return `
         <div class="module-note user-action-impact user-action-impact-card user-action-impact-notice">
           <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M4.5 5h15A2.5 2.5 0 0 1 22 7.5v9A2.5 2.5 0 0 1 19.5 19h-15A2.5 2.5 0 0 1 2 16.5v-9A2.5 2.5 0 0 1 4.5 5Zm0 2a.5.5 0 0 0-.5.5v.3l8 4.9 8-4.9v-.3a.5.5 0 0 0-.5-.5h-15Zm15 10a.5.5 0 0 0 .5-.5v-6.35l-7.48 4.57a1 1 0 0 1-1.04 0L4 10.15v6.35a.5.5 0 0 0 .5.5h15Z"/></svg>
-          <p><strong>แจ้งผู้ใช้:</strong> ระบบจะส่งอีเมลแจ้งผลไปที่ ${fullEmail} (${providerNote}) เป็นช่องทางหลัก ผู้ใช้จะเห็นสถานะบัญชีอีกครั้งเมื่อพยายามเข้าแอป และผลการส่งอีเมลจะถูกบันทึกไว้ตรวจสอบย้อนหลัง</p>
+          <p><strong>แจ้งผู้ใช้:</strong> ระบบจะส่งอีเมลแจ้ง${emailActionLabel}ไปที่ ${fullEmail} (${providerNote}) เป็นช่องทางหลัก</p>
         </div>
       `;
     }
