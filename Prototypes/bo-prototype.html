@@ -1001,6 +1001,21 @@
       font-size: 11px;
       font-weight: 400;
     }
+    .history-delivery-link {
+      border: 1px solid #bbf7d0;
+      background: #ecfdf5;
+      border-radius: 999px;
+      color: #047857;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 26px;
+      padding: 3px 10px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .history-delivery-link:hover { border-color: #86efac; }
     .panel-action {
       border: 0;
       color: var(--blue);
@@ -3437,6 +3452,9 @@
         item("NTF-201", "Auction Week Broadcast", "Marketing", "Broadcast", "กลาง", "Draft", "ส่งให้ผู้ใช้ที่ follow brand Rolex/Omega", ["Segment 4,200"], "ต้อง approval ก่อนส่ง"),
         item("TPL-044", "Watch Alert Matched", "System", "Template", "ปกติ", "Active", "ใช้เมื่อมี Sale listing ตรง criteria", ["Push"], "แก้ template ต้อง audit"),
         item("TPL-ACCT-009", "Account Status Email", "System", "Template", "สูง", "Active", "ใช้แจ้ง suspend/ban ผ่านอีเมลเป็นช่องทางหลัก", ["Email", "Audit linked"], "ห้ามใส่ internal note หรือข้อมูล reporter"),
+        item("DLV-ACCT-010", "Account suspension email", "RPU-505 / U-1002", "Delivery", "สูง", "Sent", "ส่งอีเมลแจ้งระงับบัญชีให้ U-1002 หลัง Admin confirm status action", ["Email", "Status action", "Audit linked"], "ตรวจ delivery trace และ reference ไปยัง account status audit"),
+        item("DLV-ACCT-011", "Account suspension email", "RPU-541 / U-1186", "Delivery", "สูง", "Sent", "ส่งอีเมลแจ้งระงับบัญชีให้ U-1186 หลังปิดรายงานแชท", ["Email", "Status action", "Audit linked"], "reference ต้องตรงกับ Admin Action History ของรายงาน"),
+        item("DLV-ACCT-012", "Account ban email", "RPU-560 / U-1120", "Delivery", "สูง", "Sent", "ส่งอีเมลแจ้งระงับบัญชีถาวรให้ U-1120 หลังยืนยันหลักฐานรวม", ["Email", "Status action", "Audit linked"], "reference ต้องตรงกับ Admin Action History ของรายงาน"),
         item("DLV-882", "Failed delivery batch", "FCM", "Delivery", "กลาง", "Retry", "token expired 92 รายการ", ["Retry queue"], "retry และ cleanup invalid token")
       ]),
       settings: mod("Settings", "เครื่องมือ & รายงาน / Settings", "Admin Settings", "ตั้งค่า admin account, permission policy, security, retention/export และ feature flags", "บันทึก policy", [["Admin Accounts", "6", "ใช้ account type Admin"], ["Email OTP", "Required", "mandatory"], ["Policies", "34", "module/action"], ["Feature Flags", "7", "2 enabled"]], [
@@ -3472,7 +3490,7 @@
 
     const reportAuditLogSeeds = {
       "RPU-505": [
-        { id: "AUD-RPU-505-003", action: "REPORT_REVIEW_STARTED", actor: "Somchai Admin", createdAt: "14 Jul 2026 09:18 GMT+7", entityType: "reported_user", entityId: "RPU-505", sourceModule: "Reported Users", detail: "พักบัญชีไว้ระหว่างตรวจนโยบาย", before: { reportStatus: "Open", accountStatus: "Active" }, after: { reportStatus: "In Review", accountStatus: "Suspended" }, reason: "มีรายงานความเสี่ยงสูง รอตรวจสอบ", metadata: { reference: "Profile ID PRF-1002", userId: "U-1002" } },
+        { id: "AUD-RPU-505-003", action: "REPORT_REVIEW_STARTED", actor: "Somchai Admin", createdAt: "14 Jul 2026 09:18 GMT+7", entityType: "reported_user", entityId: "RPU-505", sourceModule: "Reported Users", detail: "พักบัญชีไว้ระหว่างตรวจนโยบาย", before: { reportStatus: "Open", accountStatus: "Active" }, after: { reportStatus: "In Review", accountStatus: "Suspended" }, reason: "มีรายงานความเสี่ยงสูง รอตรวจสอบ", emailDelivery: { status: "sent", channel: "Email", deliveryId: "DLV-ACCT-010" }, metadata: { reference: "Profile ID PRF-1002", userId: "U-1002" } },
         { id: "AUD-RPU-505-001", action: "REPORT_CREATED", actor: "System", createdAt: "13 Jul 2026 11:22 GMT+7", entityType: "reported_user", entityId: "RPU-505", sourceModule: "User Detail", detail: "รับรายงานผู้ใช้จากระบบ", before: null, after: { reportStatus: "Open", accountStatus: "Active" }, reason: "พบรายงานโปรไฟล์ซ้ำและพฤติกรรมผู้ขายที่ต้องตรวจสอบ", metadata: { reference: "Profile ID PRF-1002", userId: "U-1002" } }
       ],
       "RPU-512": [
@@ -3482,7 +3500,7 @@
         { id: "AUD-RPU-518-001", action: "REPORT_CREATED", actor: "System", createdAt: "13 Jul 2026 15:12 GMT+7", entityType: "reported_user", entityId: "RPU-518", sourceModule: "Offer / Chat", detail: "สร้าง report จากข้อพิพาท offer และประวัติแชท", before: null, after: { reportStatus: "Open", accountStatus: "Active" }, reason: "ข้อพิพาทจากผู้ซื้อต้องตรวจบริบทข้อเสนอซื้อและประวัติแชทก่อนปิดรายงาน", metadata: { reference: "Offer OFR-501", userId: "U-1088" } }
       ],
       "RPU-541": [
-        { id: "AUD-RPU-541-002", action: "REPORT_STATUS_UPDATED", actor: "Somchai Admin", createdAt: "13 Jul 2026 18:22 GMT+7", entityType: "reported_user", entityId: "RPU-541", sourceModule: "Reported Users", detail: "ปิดรายงานหลังดำเนินการกับบัญชีและบันทึกประวัติการตรวจสอบ", before: { reportStatus: "In Review", accountStatus: "Active" }, after: { reportStatus: "Cleared", accountStatus: "Suspended" }, reason: "ยืนยันข้อความแชทไม่เหมาะสมจากหลักฐานต้นทาง", metadata: { reference: "CHT-090", userId: "U-1186" } },
+        { id: "AUD-RPU-541-002", action: "REPORT_STATUS_UPDATED", actor: "Somchai Admin", createdAt: "13 Jul 2026 18:22 GMT+7", entityType: "reported_user", entityId: "RPU-541", sourceModule: "Reported Users", detail: "ปิดรายงานหลังดำเนินการกับบัญชีและบันทึกประวัติการตรวจสอบ", before: { reportStatus: "In Review", accountStatus: "Active" }, after: { reportStatus: "Cleared", accountStatus: "Suspended" }, reason: "ยืนยันข้อความแชทไม่เหมาะสมจากหลักฐานต้นทาง", emailDelivery: { status: "sent", channel: "Email", deliveryId: "DLV-ACCT-011" }, metadata: { reference: "CHT-090", userId: "U-1186" } },
         { id: "AUD-RPU-541-003", action: "REPORT_REVIEW_STARTED", actor: "Somchai Admin", createdAt: "13 Jul 2026 14:06 GMT+7", entityType: "reported_user", entityId: "RPU-541", sourceModule: "Reported Users", detail: "เริ่มตรวจสอบบทสนทนาและหลักฐานจาก Offer / Chat", before: { reportStatus: "Open", accountStatus: "Active" }, after: { reportStatus: "In Review", accountStatus: "Active" }, reason: "มีรายงานแชทซ้ำ ต้องตรวจหลักฐานต้นทางก่อนดำเนินการ", metadata: { reference: "CHT-090", userId: "U-1186" } },
         { id: "AUD-RPU-541-001", action: "REPORT_CREATED", actor: "System", createdAt: "13 Jul 2026 10:14 GMT+7", entityType: "reported_user", entityId: "RPU-541", sourceModule: "Offer / Chat", detail: "สร้าง report จากรายงานแชทซ้ำ", before: null, after: { reportStatus: "Open", accountStatus: "Active" }, reason: "มีรายงานข้อความแชทไม่เหมาะสมถึงเกณฑ์ความสำคัญสูง", metadata: { reference: "CHT-090", userId: "U-1186" } }
       ],
@@ -3492,7 +3510,7 @@
         { id: "AUD-RPU-560-010", action: "REPORT_STATUS_UPDATED", actor: "Somchai Admin", createdAt: "12 Jul 2026 17:42 GMT+7", entityType: "reported_user", entityId: "RPU-560", sourceModule: "Reported Users", detail: "ตรวจสอบหลักฐานจากรายงานชุดที่สอง", before: { reportStatus: "In Review", accountStatus: "Banned" }, after: { reportStatus: "In Review", accountStatus: "Banned" }, reason: "พบรูปแบบการละเมิดซ้ำจาก reporter หลายราย", metadata: { reference: "Profile ID PRF-1120", userId: "U-1120" } },
         { id: "AUD-RPU-560-009", action: "REPORT_STATUS_UPDATED", actor: "Somchai Admin", createdAt: "12 Jul 2026 17:15 GMT+7", entityType: "reported_user", entityId: "RPU-560", sourceModule: "Reported Users", detail: "ตรวจสอบประวัติ action เดิมของบัญชี", before: { reportStatus: "In Review", accountStatus: "Banned" }, after: { reportStatus: "In Review", accountStatus: "Banned" }, reason: "บัญชีมีประวัติถูกเตือนและระงับชั่วคราวก่อนหน้า", metadata: { reference: "Profile ID PRF-1120", userId: "U-1120" } },
         { id: "AUD-RPU-560-008", action: "REPORT_STATUS_UPDATED", actor: "Somchai Admin", createdAt: "12 Jul 2026 16:48 GMT+7", entityType: "reported_user", entityId: "RPU-560", sourceModule: "Reported Users", detail: "ตรวจสอบผลกระทบต่อรายการที่เกี่ยวข้อง", before: { reportStatus: "In Review", accountStatus: "Banned" }, after: { reportStatus: "In Review", accountStatus: "Banned" }, reason: "ต้องคงหลักฐานไว้สำหรับ audit และการอุทธรณ์", metadata: { reference: "Profile ID PRF-1120", userId: "U-1120" } },
-        { id: "AUD-RPU-560-007", action: "REPORT_STATUS_UPDATED", actor: "Somchai Admin", createdAt: "12 Jul 2026 16:30 GMT+7", entityType: "reported_user", entityId: "RPU-560", sourceModule: "Reported Users", detail: "ระงับบัญชีถาวรจากหลักฐานรวม", before: { reportStatus: "In Review", accountStatus: "Suspended" }, after: { reportStatus: "In Review", accountStatus: "Banned" }, reason: "ยืนยันความเสี่ยงสูงจากหลายรายงานและหลักฐานประกอบ", metadata: { reference: "Profile ID PRF-1120", userId: "U-1120" } },
+        { id: "AUD-RPU-560-007", action: "REPORT_STATUS_UPDATED", actor: "Somchai Admin", createdAt: "12 Jul 2026 16:30 GMT+7", entityType: "reported_user", entityId: "RPU-560", sourceModule: "Reported Users", detail: "ระงับบัญชีถาวรจากหลักฐานรวม", before: { reportStatus: "In Review", accountStatus: "Suspended" }, after: { reportStatus: "In Review", accountStatus: "Banned" }, reason: "ยืนยันความเสี่ยงสูงจากหลายรายงานและหลักฐานประกอบ", emailDelivery: { status: "sent", channel: "Email", deliveryId: "DLV-ACCT-012" }, metadata: { reference: "Profile ID PRF-1120", userId: "U-1120" } },
         { id: "AUD-RPU-560-006", action: "REPORT_STATUS_UPDATED", actor: "Somchai Admin", createdAt: "12 Jul 2026 15:58 GMT+7", entityType: "reported_user", entityId: "RPU-560", sourceModule: "Reported Users", detail: "เพิ่ม note จากรายงานผู้ใช้ล่าสุด", before: { reportStatus: "In Review", accountStatus: "Suspended" }, after: { reportStatus: "In Review", accountStatus: "Suspended" }, reason: "รายงานใหม่ระบุพฤติกรรมชวนซื้อขายนอกระบบซ้ำ", metadata: { reference: "Profile ID PRF-1120", userId: "U-1120" } },
         { id: "AUD-RPU-560-005", action: "REPORT_STATUS_UPDATED", actor: "Somchai Admin", createdAt: "12 Jul 2026 14:35 GMT+7", entityType: "reported_user", entityId: "RPU-560", sourceModule: "Reported Users", detail: "ตรวจสอบความซ้ำของโปรไฟล์และข้อความประกาศ", before: { reportStatus: "In Review", accountStatus: "Suspended" }, after: { reportStatus: "In Review", accountStatus: "Suspended" }, reason: "พบ pattern ซ้ำกับเคสที่เคยถูกปิดก่อนหน้า", metadata: { reference: "Profile ID PRF-1120", userId: "U-1120" } },
         { id: "AUD-RPU-560-004", action: "REPORT_STATUS_UPDATED", actor: "Somchai Admin", createdAt: "12 Jul 2026 13:20 GMT+7", entityType: "reported_user", entityId: "RPU-560", sourceModule: "Reported Users", detail: "รวมรายงานซ้ำจาก reporter เพิ่มเติม", before: { reportStatus: "In Review", accountStatus: "Suspended" }, after: { reportStatus: "In Review", accountStatus: "Suspended" }, reason: "มี reporter เพิ่มเติมรายงานเหตุผลเดียวกันในช่วงตรวจสอบ", metadata: { reference: "Profile ID PRF-1120", userId: "U-1120" } },
@@ -3641,6 +3659,55 @@
       return reportAuditActionLabels[log.action] || log.action;
     }
 
+    function getReportAuditEmailDelivery(log) {
+      if (log.emailDelivery) return log.emailDelivery;
+      const beforeAccount = log.before?.accountStatus;
+      const afterAccount = log.after?.accountStatus;
+      const isAccountStatusAction = log.action === "ACCOUNT_STATUS_UPDATED" || log.action === "REPORT_STATUS_UPDATED" || log.action === "REPORT_REVIEW_STARTED";
+      if (isAccountStatusAction && beforeAccount && beforeAccount !== afterAccount && (afterAccount === "Suspended" || afterAccount === "Banned")) {
+        return { status: "pending", channel: "Email" };
+      }
+      return { status: "not_required" };
+    }
+
+    function renderReportAuditEmailDelivery(log) {
+      const delivery = getReportAuditEmailDelivery(log);
+      if (delivery.status === "sent") {
+        if (delivery.deliveryId) {
+          return `<button class="history-delivery-link" type="button" data-delivery-log-jump="${delivery.deliveryId}">${delivery.channel || "Email"} ส่งแล้ว</button>`;
+        }
+        return `<span class="pill green">${delivery.channel || "Email"} ส่งแล้ว</span>`;
+      }
+      if (delivery.status === "pending") return `<span class="pill amber">รอส่ง Email</span>`;
+      if (delivery.status === "failed") return `<span class="pill red">ส่งไม่สำเร็จ</span>`;
+      return `<span class="muted">-</span>`;
+    }
+
+    function getReportActionDeliveryId(action, reportId = activeReportContextId) {
+      const reportPart = String(reportId || "MANUAL").replace(/^RPU-/, "");
+      const actionPart = action === "Ban" ? "BAN" : "SUS";
+      return `DLV-ACCT-${reportPart}-${actionPart}`;
+    }
+
+    function ensureAccountStatusDeliveryLog(deliveryId, user, action, reportId = activeReportContextId) {
+      if (!deliveryId || !user || !moduleData.notifications) return;
+      if (moduleData.notifications.rows.some(row => row.id === deliveryId)) return;
+      const isBan = action === "Ban";
+      moduleData.notifications.rows.splice(moduleData.notifications.rows.length - 1, 0,
+        item(
+          deliveryId,
+          isBan ? "Account ban email" : "Account suspension email",
+          `${reportId || "Reported Users"} / ${user.id}`,
+          "Delivery",
+          "สูง",
+          "Sent",
+          `ส่งอีเมลแจ้ง${isBan ? "ระงับบัญชีถาวร" : "ระงับบัญชี"}ให้ ${user.id} หลัง Admin confirm status action`,
+          ["Email", "Status action", "Audit linked"],
+          "reference ต้องตรงกับ Admin Action History ของรายงาน"
+        )
+      );
+    }
+
     function getReportAuditAccountStatusRows(report) {
       const logs = ensureReportAuditLogs(report);
       let currentStatus = report.accountStatus || getReportAccountStatus(report);
@@ -3668,6 +3735,7 @@
         before: null,
         after: { reportStatus: report.status, accountStatus: getReportAccountStatus(report) },
         reason: "นำเข้าจากประวัติเดิมของ prototype",
+        emailDelivery: { status: "not_required" },
         metadata: { reference: report.reference, userId: report.userId }
       }];
       return report.auditLogs;
@@ -3801,6 +3869,7 @@
             <td data-label="ผู้ดำเนินการ">${log.actor}</td>
             <td data-label="Action">${getReportAuditActionLabel(log)}</td>
             <td data-label="สถานะบัญชี">${userStatusPill(accountStatus)}</td>
+            <td data-label="ส่งอีเมล">${renderReportAuditEmailDelivery(log)}</td>
             <td data-label="รายละเอียด" class="history-note">${log.reason || ""}</td>
           </tr>
         `;
@@ -3814,6 +3883,7 @@
                 <th>ผู้ดำเนินการ</th>
                 <th>Action</th>
                 <th>สถานะบัญชี</th>
+                <th>ส่งอีเมล</th>
                 <th>รายละเอียด</th>
               </tr>
             </thead>
@@ -4753,7 +4823,8 @@
             detail: pendingReportActionAudit?.detail || "บันทึก action จาก Reported Users",
             before: { accountStatus: beforeStatus },
             after: { accountStatus: user.status },
-            reason: pendingReportActionAudit?.reason || "Admin confirmed action from report context"
+            reason: pendingReportActionAudit?.reason || "Admin confirmed action from report context",
+            emailDelivery: pendingReportActionAudit?.emailDelivery || { status: "not_required" }
           });
           if (document.body.classList.contains("user-detail-mode")) renderReportedUserDetail(report);
           else renderReportedUserRows();
@@ -4886,10 +4957,17 @@
       const statusActionDeliveryNote = action === "Suspend" || action === "Ban"
         ? ` · user signed out · notification email sent to ${getUserFullEmail(user)}${suspendUntil ? ` · suspension ends ${suspendUntil}` : ""}`
         : "";
+      const statusActionDeliveryId = action === "Suspend" || action === "Ban"
+        ? getReportActionDeliveryId(action, activeReportContextId)
+        : "";
+      ensureAccountStatusDeliveryLog(statusActionDeliveryId, user, action, activeReportContextId);
       pendingReportActionAudit = {
         actionLabel: config.title,
         detail: `${actionNote || selectedReason || config.summary}${statusActionDeliveryNote}`,
-        reason: selectedReason || config.reasonLabel
+        reason: selectedReason || config.reasonLabel,
+        emailDelivery: action === "Suspend" || action === "Ban"
+          ? { status: "sent", channel: "Email", deliveryId: statusActionDeliveryId }
+          : { status: "not_required" }
       };
       refreshUserActionSurface(user);
       pendingReportActionAudit = null;
@@ -5646,6 +5724,22 @@
       scrollMainToTop();
     }
 
+    function jumpToDeliveryLog(deliveryId) {
+      if (!deliveryId) return;
+      renderModule("notifications", "Delivery Logs", "Delivery Logs");
+      const search = document.querySelector("#search");
+      if (search) {
+        search.value = deliveryId;
+        renderRows();
+      }
+      const row = moduleData.notifications.rows.find(entry => entry.id === deliveryId);
+      if (row) {
+        activeRow = row;
+        renderDetail(row);
+      }
+      scrollMainToTop();
+    }
+
     function updateFilters(data) {
       const statuses = Array.from(new Set(data.rows.map(row => row.status)));
       document.querySelector("#status-filter").innerHTML = `<option value="">ทุกสถานะ</option>${statuses.map(status => `<option value="${status}">${status}</option>`).join("")}`;
@@ -5794,6 +5888,11 @@
       if (activityFilter) {
         activeActivityFilter = activityFilter.dataset.activityFilter;
         renderActivityPanel();
+        return;
+      }
+      const deliveryLogJump = event.target.closest("[data-delivery-log-jump]");
+      if (deliveryLogJump) {
+        jumpToDeliveryLog(deliveryLogJump.dataset.deliveryLogJump);
         return;
       }
       const moduleJump = event.target.closest("[data-module-jump], [data-jump]");
