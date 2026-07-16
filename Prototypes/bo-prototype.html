@@ -1708,7 +1708,9 @@
       width: 100%;
       min-height: 42px;
       border-color: var(--line-strong);
+      caret-color: transparent;
       color: #061426;
+      cursor: pointer;
       font: inherit;
       font-size: 13px;
       font-weight: 400;
@@ -4521,10 +4523,21 @@
       `;
     }
 
+    function formatDateInputValue(date) {
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, "0");
+      const day = String(date.getDate()).padStart(2, "0");
+      return `${year}-${month}-${day}`;
+    }
+
+    function getTodayDateInputValue() {
+      return formatDateInputValue(new Date());
+    }
+
     function getDefaultSuspensionEndDate(days = 7) {
       const date = new Date();
       date.setDate(date.getDate() + days);
-      return date.toISOString().slice(0, 10);
+      return formatDateInputValue(date);
     }
 
     function renderSuspensionEndField(action, completed) {
@@ -4532,10 +4545,19 @@
       return `
         <label class="suspension-end-field">
           ระงับถึงวันที่
-          <input class="field" id="user-action-suspend-until" type="date" value="${getDefaultSuspensionEndDate()}" ${completed ? "disabled" : ""}>
+          <input class="field" id="user-action-suspend-until" type="date" value="${getDefaultSuspensionEndDate()}" min="${getTodayDateInputValue()}" inputmode="none" autocomplete="off" data-calendar-only ${completed ? "disabled" : ""}>
           <span class="field-helper">* ค่าเริ่มต้นคือ 7 วัน Admin แก้ไขวันที่ได้ก่อนกดยืนยัน เมื่อครบกำหนดระบบจะคืนสิทธิ์ให้ผู้ใช้โดยอัตโนมัติและผู้ใช้ต้องเข้าสู่ระบบใหม่</span>
         </label>
       `;
+    }
+
+    function normalizeSuspensionEndDate(input) {
+      if (!input) return "";
+      const minDate = input.min || getTodayDateInputValue();
+      if (!input.value || input.value < minDate) {
+        input.value = input.defaultValue && input.defaultValue >= minDate ? input.defaultValue : minDate;
+      }
+      return input.value;
     }
 
     function updateUserActionsForStatus(user) {
@@ -4731,7 +4753,8 @@
       }
       const selectedReason = document.querySelector("#user-action-reason")?.value || "";
       const actionNote = document.querySelector("#user-action-note")?.value.trim() || "";
-      const suspendUntil = document.querySelector("#user-action-suspend-until")?.value || "";
+      const suspendUntilInput = document.querySelector("#user-action-suspend-until");
+      const suspendUntil = action === "Suspend" ? normalizeSuspensionEndDate(suspendUntilInput) : "";
       const statusActionDeliveryNote = action === "Suspend" || action === "Ban"
         ? ` · user signed out · email queued to ${getUserFullEmail(user)}${suspendUntil ? ` · suspension ends ${suspendUntil}` : ""}`
         : "";
@@ -6013,6 +6036,10 @@
     }
 
     document.addEventListener("input", event => {
+      if (event.target.matches("[data-calendar-only]")) {
+        normalizeSuspensionEndDate(event.target);
+        return;
+      }
       if (event.target.matches("#user-search")) {
         userListPage = 1;
         if (activeModule === "users" && (activeSub === "Report User" || activeSub === "Reported Users")) renderReportedUserRows();
@@ -6022,6 +6049,10 @@
       if (event.target.matches("#search")) renderRows();
     });
     document.addEventListener("change", event => {
+      if (event.target.matches("[data-calendar-only]")) {
+        normalizeSuspensionEndDate(event.target);
+        return;
+      }
       if (event.target.matches("#user-status-filter, #user-auth-filter, #user-sort")) {
         userListPage = 1;
         renderUserRows();
@@ -6033,6 +6064,15 @@
       }
       if (event.target.matches("#status-filter, #priority-filter")) renderRows();
     });
+    document.addEventListener("paste", event => {
+      if (event.target.matches("[data-calendar-only]")) event.preventDefault();
+    });
+    document.addEventListener("drop", event => {
+      if (event.target.matches("[data-calendar-only]")) event.preventDefault();
+    });
+    document.addEventListener("wheel", event => {
+      if (event.target.matches("[data-calendar-only]")) event.preventDefault();
+    }, { passive: false });
     document.querySelector("#logout-icon").innerHTML = iconSvg.logout;
     setNavOpen(false);
     document.querySelector("#menu-toggle").addEventListener("click", () => {
@@ -6040,6 +6080,14 @@
     });
     document.querySelector("#sidebar-backdrop").addEventListener("click", () => setNavOpen(false));
     document.addEventListener("keydown", event => {
+      if (event.target.matches("[data-calendar-only]")) {
+        const allowedKeys = ["Tab", "Shift", "Escape"];
+        if (!allowedKeys.includes(event.key)) {
+          event.preventDefault();
+          return;
+        }
+        if (event.key !== "Escape") return;
+      }
       if (event.key === "Escape") {
         const userActionModal = document.querySelector("#user-action-modal");
         if (userActionModal?.classList.contains("show")) {
