@@ -1058,6 +1058,96 @@
     body.user-detail-mode .detail {
       display: none;
     }
+    body.asset-list-mode .layout {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    body.asset-list-mode .detail {
+      display: none;
+    }
+    body.asset-list-mode .layout > .panel {
+      border-color: #d7e2f0;
+      box-shadow: none;
+      overflow: visible;
+    }
+    body.asset-list-mode #primary-action {
+      display: none;
+    }
+    body.asset-list-mode .panel-head {
+      min-height: 58px;
+      padding: 17px 20px;
+      background: #fff;
+    }
+    body.asset-list-mode .panel-head h2 {
+      color: #071b36;
+      font-size: 24px;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+    body.asset-list-mode .panel-head p {
+      display: none;
+    }
+    body.asset-list-mode .filters {
+      display: grid;
+      grid-template-columns: minmax(240px, 1.35fr) repeat(2, minmax(126px, .68fr));
+      gap: 8px;
+      padding: 12px 16px;
+      background: #fff;
+    }
+    body.asset-list-mode .filters .field {
+      min-height: 48px;
+      border-color: #cfdbea;
+      border-radius: 7px;
+      padding: 10px 14px;
+      color: #061426;
+      font-size: 13px;
+      font-weight: 400;
+    }
+    body.asset-list-mode .filters select.field {
+      padding-right: 42px;
+      background-position: right 14px center;
+    }
+    .asset-table {
+      display: grid;
+    }
+    .asset-row {
+      display: grid;
+      grid-template-columns: minmax(240px, 1.48fr) minmax(160px, .9fr) minmax(128px, .68fr) minmax(132px, .72fr);
+      gap: 12px;
+      align-items: center;
+      min-height: 82px;
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--line);
+      background: #fff;
+      cursor: default;
+    }
+    .asset-row.head {
+      min-height: 44px;
+      background: #f1f5fb;
+      color: #485b75;
+      font-size: 12px;
+      font-weight: 700;
+      padding-top: 12px;
+      padding-bottom: 12px;
+      cursor: default;
+    }
+    .asset-row:last-child {
+      border-bottom: 0;
+    }
+    .asset-row:not(.head):hover {
+      background: #f8fbff;
+    }
+    .asset-row > div {
+      min-width: 0;
+    }
+    .asset-cell-primary .main-text {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .asset-card-tags {
+      display: none;
+    }
     body.user-detail-mode .panel > .panel-head {
       display: none;
     }
@@ -2981,6 +3071,60 @@
       body.user-list-mode .row-menu-list button {
         white-space: normal;
         overflow-wrap: anywhere;
+      }
+      body.asset-list-mode .filters {
+        grid-template-columns: 1fr;
+      }
+      body.asset-list-mode #table {
+        padding: 12px 14px 16px;
+        background: #f8fbff;
+      }
+      body.asset-list-mode .asset-table {
+        grid-template-columns: 1fr;
+        gap: 12px;
+      }
+      body.asset-list-mode .asset-row.head {
+        display: none;
+      }
+      body.asset-list-mode .asset-row:not(.head) {
+        grid-template-columns: minmax(0, 1fr);
+        column-gap: 14px;
+        row-gap: 14px;
+        min-height: 0;
+        padding: 18px 18px 16px;
+        border: 1px solid #cfdbd2;
+        border-radius: 10px;
+        background: #fff;
+        box-shadow: 0 1px 2px rgba(15, 23, 42, .05);
+        overflow: visible;
+      }
+      body.asset-list-mode .asset-row:not(.head) > div[data-label]:not(.asset-cell-primary) {
+        display: none;
+      }
+      body.asset-list-mode .asset-row:not(.head) > .asset-cell-primary {
+        grid-column: 1;
+        grid-row: 1;
+        min-height: 30px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-self: center;
+      }
+      body.asset-list-mode .asset-row:not(.head) > .asset-cell-primary .main-text {
+        max-width: 100%;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        font-size: 18px;
+        line-height: 1.15;
+      }
+      body.asset-list-mode .asset-card-tags {
+        grid-column: 1 / -1;
+        grid-row: 2;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 9px;
+        padding-top: 0;
       }
       .detail-grid.two {
         grid-template-columns: 1fr;
@@ -5529,8 +5673,10 @@
       activeSub = subLabel;
       syncExpandedNavForModule(id, subLabel);
       const data = moduleData[id];
+      const isAssetList = id === "assets" && (subLabel || "Asset List") === "Asset List";
       document.body.classList.toggle("dashboard-mode", id === "dashboard");
       document.body.classList.toggle("user-management-mode", id === "users");
+      document.body.classList.toggle("asset-list-mode", isAssetList);
       if (id !== "users") {
         document.body.classList.remove("user-list-mode", "user-detail-mode");
         document.querySelector("#user-panel-filter-actions").innerHTML = "";
@@ -5553,6 +5699,27 @@
       document.querySelector("#panel-title").textContent = displaySubLabel ? `${displaySubLabel} Queue` : data.panel;
       document.querySelector("#panel-subtitle").textContent = displaySubLabel ? `${data.title}: ${displaySubLabel}` : data.subtitle;
       document.querySelector("#primary-action").textContent = data.action;
+      if (isAssetList) {
+        document.querySelector("#panel-title").textContent = "Assets";
+        document.querySelector("#panel-subtitle").textContent = "";
+        document.querySelector(".filters").innerHTML = `
+          <input class="field search" id="search" type="search" placeholder="Search asset ID, name, or owner" />
+          <select class="field" id="asset-type-filter" aria-label="Filter listing status">
+            <option value="">All listing status</option>
+            ${Array.from(new Set(data.rows.map(row => row.type))).map(type => `<option value="${type}">${type}</option>`).join("")}
+          </select>
+          <select class="field" id="status-filter" aria-label="Filter review status">
+            <option value="">All review status</option>
+            ${Array.from(new Set(data.rows.map(row => row.status))).map(status => `<option value="${status}">${status}</option>`).join("")}
+          </select>
+        `;
+        document.querySelector("#summary-grid").innerHTML = "";
+        document.querySelector("#cards").innerHTML = "";
+        document.querySelector("#detail").innerHTML = "";
+        renderRows();
+        updateActiveNav();
+        return;
+      }
       document.querySelector(".filters").innerHTML = `
         <input class="field search" id="search" type="search" placeholder="ค้นหาจากชื่อ, รหัส, สถานะ หรือเหตุผล" />
         <select class="field" id="status-filter" aria-label="Filter status">
@@ -5730,10 +5897,15 @@
       const statuses = Array.from(new Set(data.rows.map(row => row.status)));
       document.querySelector("#status-filter").innerHTML = `<option value="">ทุกสถานะ</option>${statuses.map(status => `<option value="${status}">${status}</option>`).join("")}`;
       document.querySelector("#search").value = "";
-      document.querySelector("#priority-filter").value = "";
+      const priorityFilter = document.querySelector("#priority-filter");
+      if (priorityFilter) priorityFilter.value = "";
     }
 
     function renderRows() {
+      if (activeModule === "assets" && (activeSub || "Asset List") === "Asset List") {
+        renderAssetListRows();
+        return;
+      }
       const data = moduleData[activeModule];
       const q = document.querySelector("#search").value.trim().toLowerCase();
       const status = document.querySelector("#status-filter").value;
@@ -5754,6 +5926,41 @@
             <div><button class="panel-action" type="button" data-row-action="${row.id}">${iconSvg.eye}ดูรายละเอียด</button></div>
           </div>
         `).join("") || `<div class="detail-empty">ไม่พบรายการตาม filter ที่เลือก</div>`}
+      `;
+    }
+
+    function renderAssetListRows() {
+      const data = moduleData.assets;
+      const q = document.querySelector("#search").value.trim().toLowerCase();
+      const status = document.querySelector("#status-filter").value;
+      const type = document.querySelector("#asset-type-filter").value;
+      const filtered = data.rows.filter(row => {
+        const text = Object.values(row).flat().join(" ").toLowerCase();
+        return (!q || text.includes(q)) && (!status || row.status === status) && (!type || row.type === type);
+      });
+      const table = document.querySelector("#table");
+      table.innerHTML = `
+        <div class="asset-table">
+          <div class="asset-row head"><div>Asset</div><div>Owner</div><div>Listing Status</div><div>Review Status</div></div>
+          ${filtered.map(row => `
+            <div class="asset-row">
+              <div class="asset-cell-primary" data-label="Asset">
+                <div class="main-text">${row.name}</div>
+                <div class="muted">${row.id}</div>
+              </div>
+              <div class="asset-card-tags">
+                <span class="user-card-tag asset-tag">${row.type}</span>
+                ${statusPill(row.status, row.priority)}
+                <div class="user-card-meta">
+                  <div class="user-card-meta-item"><span>Owner</span><strong>${row.owner}</strong></div>
+                </div>
+              </div>
+              <div data-label="Owner"><div class="main-text">${row.owner}</div></div>
+              <div data-label="Listing Status"><span class="pill blue">${row.type}</span></div>
+              <div data-label="Review Status">${statusPill(row.status, row.priority)}</div>
+            </div>
+          `).join("") || `<div class="detail-empty user-empty">No assets match the selected filters</div>`}
+        </div>
       `;
     }
 
@@ -6278,7 +6485,7 @@
         renderReportedUserRows();
         return;
       }
-      if (event.target.matches("#status-filter, #priority-filter")) renderRows();
+      if (event.target.matches("#status-filter, #priority-filter, #asset-type-filter")) renderRows();
     });
     document.addEventListener("paste", event => {
       if (event.target.matches("[data-calendar-only]")) event.preventDefault();
