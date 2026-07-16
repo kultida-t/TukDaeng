@@ -4574,7 +4574,14 @@
       `;
     }
 
-    function getAccountStatusEmailCopy(user, action) {
+    function formatPublicDateFromInput(value) {
+      if (!value) return "";
+      const [year, month, day] = value.split("-");
+      if (!year || !month || !day) return value;
+      return `${day}/${month}/${year}`;
+    }
+
+    function getAccountStatusEmailCopy(user, action, publicReason = "", suspendUntil = "") {
       const isSuspend = action === "Suspend";
       const publicReference = user.support && user.support !== "None" ? user.support : "Account status notice";
       const subject = isSuspend
@@ -4586,33 +4593,58 @@
       const accessLine = isSuspend
         ? "คุณจะไม่สามารถเข้าสู่ระบบหรือใช้งานฟีเจอร์ในแอปได้จนกว่าจะครบกำหนด หรือจนกว่าผู้ดูแลระบบจะยกเลิกการระงับ"
         : "คุณจะไม่สามารถเข้าสู่ระบบหรือใช้งานฟีเจอร์ในแอปได้ เว้นแต่ผู้ดูแลระบบจะยกเลิกการระงับในภายหลัง";
+      const reasonLine = `เหตุผลการดำเนินการ: ${publicReason || "ตรวจสอบตามนโยบายสถานะบัญชี"}`;
+      const suspensionEndLine = isSuspend && suspendUntil
+        ? `บัญชีจะถูกระงับถึงวันที่: ${formatPublicDateFromInput(suspendUntil)}`
+        : "";
       return {
         subject,
         lines: [
           `สวัสดี ${user.displayName},`,
           statusLine,
           accessLine,
+          reasonLine,
+          suspensionEndLine,
           "หากคุณมีคำถามหรือต้องการอุทธรณ์ผลการดำเนินการ กรุณาติดต่อทีมสนับสนุนของ TukDaeng พร้อมระบุเลขอ้างอิงด้านล่าง",
           `Reference: ${publicReference}`,
           "Contact support: support@tukdaeng.example"
-        ]
+        ].filter(Boolean)
       };
     }
 
-    function renderAccountStatusEmailPreview(user, action) {
+    function renderAccountStatusEmailPreviewMessage(emailCopy) {
+      return emailCopy.lines.map(line => `<p>${line}</p>`).join("");
+    }
+
+    function renderAccountStatusEmailPreview(user, action, publicReason = "", suspendUntil = "") {
       if (action !== "Suspend" && action !== "Ban") return "";
-      const emailCopy = getAccountStatusEmailCopy(user, action);
+      const emailCopy = getAccountStatusEmailCopy(user, action, publicReason, suspendUntil);
       return `
-        <details class="email-preview">
+        <details class="email-preview" data-account-status-email-preview data-user-id="${user.id}" data-action="${action}">
           <summary>ดูตัวอย่างอีเมลแจ้งเตือน</summary>
           <div class="email-preview-body">
-            <div class="email-preview-subject"><strong>Subject:</strong> ${emailCopy.subject}</div>
-            <div class="email-preview-message">
-              ${emailCopy.lines.map(line => `<p>${line}</p>`).join("")}
+            <div class="email-preview-subject"><strong>Subject:</strong> <span data-email-preview-subject>${emailCopy.subject}</span></div>
+            <div class="email-preview-message" data-email-preview-message>
+              ${renderAccountStatusEmailPreviewMessage(emailCopy)}
             </div>
           </div>
         </details>
       `;
+    }
+
+    function updateAccountStatusEmailPreview() {
+      const preview = document.querySelector("[data-account-status-email-preview]");
+      if (!preview) return;
+      const user = userManagementData.users.find(entry => entry.id === preview.dataset.userId);
+      const action = preview.dataset.action;
+      if (!user || (action !== "Suspend" && action !== "Ban")) return;
+      const publicReason = document.querySelector("#user-action-reason")?.value || "";
+      const suspendUntil = action === "Suspend" ? document.querySelector("#user-action-suspend-until")?.value || "" : "";
+      const emailCopy = getAccountStatusEmailCopy(user, action, publicReason, suspendUntil);
+      const subject = preview.querySelector("[data-email-preview-subject]");
+      const message = preview.querySelector("[data-email-preview-message]");
+      if (subject) subject.textContent = emailCopy.subject;
+      if (message) message.innerHTML = renderAccountStatusEmailPreviewMessage(emailCopy);
     }
 
     function formatDateInputValue(date) {
@@ -4632,12 +4664,13 @@
       return formatDateInputValue(date);
     }
 
-    function renderSuspensionEndField(action, completed) {
+    function renderSuspensionEndField(action, completed, value = "") {
       if (action !== "Suspend") return "";
+      const endDateValue = value || getDefaultSuspensionEndDate();
       return `
         <label class="suspension-end-field">
           ระงับถึงวันที่
-          <input class="field" id="user-action-suspend-until" type="date" value="${getDefaultSuspensionEndDate()}" min="${getTodayDateInputValue()}" inputmode="none" autocomplete="off" data-calendar-only ${completed ? "disabled" : ""}>
+          <input class="field" id="user-action-suspend-until" type="date" value="${endDateValue}" min="${getTodayDateInputValue()}" inputmode="none" autocomplete="off" data-calendar-only ${completed ? "disabled" : ""}>
           <span class="field-helper">* ค่าเริ่มต้นคือ 7 วัน Admin แก้ไขวันที่ได้ก่อนกดยืนยัน เมื่อครบกำหนดระบบจะคืนสิทธิ์ให้ผู้ใช้โดยอัตโนมัติและผู้ใช้ต้องเข้าสู่ระบบใหม่</span>
         </label>
       `;
@@ -4760,6 +4793,8 @@
       if (!user || !config) return;
       const beforeStatus = statusBefore || user.status;
       const hasResult = Boolean(resultMessage);
+      const defaultPublicReason = config.reasons?.[0] || "";
+      const defaultSuspendUntil = action === "Suspend" ? getDefaultSuspensionEndDate() : "";
       activeRow = user;
       const modal = document.querySelector("#user-action-modal");
       const modalBody = document.querySelector("#user-action-modal-body");
@@ -4795,10 +4830,10 @@
                   Note / หมายเหตุ
                   <textarea id="user-action-note" placeholder="${config.notePlaceholder}" ${completed ? "disabled" : ""}></textarea>
                 </label>
-                ${renderSuspensionEndField(action, completed)}
+                ${renderSuspensionEndField(action, completed, defaultSuspendUntil)}
                 ${renderUserActionImpactNote(user, action)}
                 ${getAccountStatusEmailNote(user, action)}
-                ${renderAccountStatusEmailPreview(user, action)}
+                ${renderAccountStatusEmailPreview(user, action, defaultPublicReason, defaultSuspendUntil)}
                 <div class="user-detail-actions user-action-footer">
                   <button class="user-detail-action-btn ${getUserActionConfirmClass(config)}" type="button" data-user-action-confirm="${action}" data-user-id="${user.id}" data-report-context="${activeReportContextId || ""}" ${completed ? "disabled" : ""}>${USER_ACTION_CONFIRM_LABEL}</button>
                   <button class="user-detail-action-btn" type="button" data-user-action-modal-close>${completed ? "ปิด" : "ยกเลิก"}</button>
@@ -5730,6 +5765,7 @@
         });
         select.classList.remove("open");
         select.querySelector("[data-custom-select-trigger]").setAttribute("aria-expanded", "false");
+        if (hiddenInput.id === "user-action-reason") updateAccountStatusEmailPreview();
         if (select.hasAttribute("data-custom-select-silent")) return;
         userListPage = 1;
         if (activeModule === "users" && (activeSub === "Report User" || activeSub === "Reported Users")) renderReportedUserRows();
@@ -6131,6 +6167,7 @@
     document.addEventListener("input", event => {
       if (event.target.matches("[data-calendar-only]")) {
         normalizeSuspensionEndDate(event.target);
+        if (event.target.matches("#user-action-suspend-until")) updateAccountStatusEmailPreview();
         return;
       }
       if (event.target.matches("#user-search")) {
@@ -6144,6 +6181,7 @@
     document.addEventListener("change", event => {
       if (event.target.matches("[data-calendar-only]")) {
         normalizeSuspensionEndDate(event.target);
+        if (event.target.matches("#user-action-suspend-until")) updateAccountStatusEmailPreview();
         return;
       }
       if (event.target.matches("#user-status-filter, #user-auth-filter, #user-sort")) {
