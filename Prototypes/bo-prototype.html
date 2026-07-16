@@ -1746,11 +1746,11 @@
     .user-action-impact-card {
       display: flex;
       align-items: flex-start;
-      gap: 10px;
-      padding: 12px 14px;
+      gap: 12px;
+      padding: 13px 16px;
       border-radius: 7px;
       font-size: 12px;
-      line-height: 1.55;
+      line-height: 1.65;
     }
     .user-action-impact-card svg {
       width: 16px;
@@ -1777,6 +1777,10 @@
     .user-action-form > .user-detail-actions {
       justify-content: flex-end;
       padding-top: 2px;
+    }
+    .user-action-form > .user-action-footer {
+      margin-top: 6px;
+      padding-top: 6px;
     }
     .user-action-result {
       display: none;
@@ -4680,7 +4684,7 @@
                 ${renderSuspensionEndField(action, completed)}
                 ${renderUserActionImpactNote(user, action)}
                 ${getAccountStatusEmailNote(user, action)}
-                <div class="user-detail-actions">
+                <div class="user-detail-actions user-action-footer">
                   <button class="user-detail-action-btn ${getUserActionConfirmClass(config)}" type="button" data-user-action-confirm="${action}" data-user-id="${user.id}" data-report-context="${activeReportContextId || ""}" ${completed ? "disabled" : ""}>${USER_ACTION_CONFIRM_LABEL}</button>
                   <button class="user-detail-action-btn" type="button" data-user-action-modal-close>${completed ? "ปิด" : "ยกเลิก"}</button>
                 </div>
