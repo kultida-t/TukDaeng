@@ -4507,6 +4507,15 @@
       `;
     }
 
+    function renderReportCloseImpactNote() {
+      return `
+        <div class="module-note user-action-impact user-action-impact-card user-action-impact-warning">
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 3.2c.7 0 1.35.37 1.7.98l8.05 13.95A1.95 1.95 0 0 1 20.05 21H3.95a1.95 1.95 0 0 1-1.7-2.87L10.3 4.18A1.95 1.95 0 0 1 12 3.2Zm0 4.6a1 1 0 0 0-1 1v4.4a1 1 0 1 0 2 0V8.8a1 1 0 0 0-1-1Zm0 8.45a1.15 1.15 0 1 0 0 2.3 1.15 1.15 0 0 0 0-2.3Z"/></svg>
+          <p><strong>ผลกระทบต่อผู้ใช้:</strong> รายงานจะถูกปิดและออกจากคิวที่ต้องดำเนินการ แต่ไม่เปลี่ยนสถานะบัญชีผู้ใช้โดยอัตโนมัติ</p>
+        </div>
+      `;
+    }
+
     function getAccountStatusEmailNote(user, action) {
       if (action !== "Suspend" && action !== "Ban") return "";
       const fullEmail = getUserFullEmail(user);
@@ -4961,7 +4970,7 @@
                   Note / หมายเหตุ
                   <textarea id="report-close-note" placeholder="ระบุหมายเหตุ เหตุผล หรือข้อมูลอ้างอิงที่เกี่ยวข้อง"></textarea>
                 </label>
-                <div class="module-note user-action-impact"><strong>ผลกระทบต่อแอปพลิเคชัน:</strong> รายงานจะถูกปิดและออกจากคิวที่ต้องดำเนินการ แต่ไม่เปลี่ยนสถานะบัญชีผู้ใช้โดยอัตโนมัติ</div>
+                ${renderReportCloseImpactNote()}
                 <div class="user-detail-actions">
                   <button class="user-detail-action-btn warning user-action-confirm" type="button" data-report-status-confirm="${status}" data-report-id="${report.id}">ยืนยัน</button>
                   <button class="user-detail-action-btn" type="button" data-user-action-modal-close>ยกเลิก</button>
