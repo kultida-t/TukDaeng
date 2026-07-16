@@ -171,8 +171,8 @@ Production ต้อง mask ตาม admin access และ audit-log เม�
 | --- | --- | --- |
 | Pending Verification | ผู้ใช้สมัครด้วย Email/Password แล้ว แต่ยังไม่ยืนยัน OTP/email | ยังไม่ถือเป็น authenticated member; ใช้ได้เฉพาะ flow ยืนยันตัวตนหรือ resend OTP ตาม FO Auth rule |
 | Active | ผู้ใช้ใช้งาน FO ได้ปกติ | Login และ action ปกติทำได้ |
-| Suspended | จำกัดการใช้งานชั่วคราวตาม policy | Login ถูก block หรือ session ถูก revoke; ต้องเห็น suspension state ตาม FO Auth rule |
-| Banned | จำกัดการใช้งานถาวรจนกว่า Admin จะปลด | Login ถูก block และผู้ใช้ไม่สามารถสร้าง activity ใหม่ |
+| Suspended | ระงับบัญชีชั่วคราวตาม policy | Session ปัจจุบันต้องถูก revoke/block, login ถูก block และต้องเห็น account status state ตาม FO Auth rule |
+| Banned | ระงับบัญชีถาวรจนกว่า Admin จะปลด | Session ปัจจุบันต้องถูก revoke/block, login ถูก block และผู้ใช้ไม่สามารถสร้าง activity ใหม่ |
 | Deletion Requested | ผู้ใช้ขอปิด/ลบบัญชีแล้ว และกำลังอยู่ใน workflow ตรวจ dependency | Login/session และ public visibility ต้องเป็นไปตาม Account Deletion policy |
 | Deleted / Archived | บัญชีถูกลบหรือ archive ตาม workflow สำเร็จแล้ว | Login ถูก block; public profile/assets ถูกซ่อนหรือ anonymized ตาม retention policy |
 
@@ -181,9 +181,9 @@ Production ต้อง mask ตาม admin access และ audit-log เม�
 | การเปลี่ยนสถานะ | สิทธิ์ | ข้อมูลที่ต้องระบุ | ผลกระทบต่อ FO | Audit |
 | --- | --- | --- | --- | --- |
 | Pending Verification -> Active | System | OTP/email verified | ผู้ใช้เริ่มใช้งาน authenticated FO features ได้ | Yes |
-| Active -> Suspended | Admin | Reason, optional duration | Login/action ถูก block | Yes |
+| Active -> Suspended | Admin | Reason, optional duration | Session ถูก revoke และ login/action ถูก block | Yes |
 | Suspended -> Active | Admin | Reason | Login/action กลับมาใช้งานได้ | Yes |
-| Active/Suspended -> Banned | Admin | Reason | Login/action ถูก block ถาวรจนกว่าจะ unban | Yes |
+| Active/Suspended -> Banned | Admin | Reason | Session ถูก revoke และ login/action ถูก block ถาวรจนกว่าจะ unban | Yes |
 | Banned -> Active | Admin | Reason | Login/action กลับมาใช้งานได้ | Yes |
 | Active/Suspended/Banned -> Deletion Requested | System / Account Deletion | Deletion request created | เข้าสู่ deletion workflow และต้องตรวจ dependency ก่อนลบจริง | Yes |
 | Deletion Requested -> Deleted / Archived | Admin / Account Deletion | Reason, retention/validation note, dependency cleared | Login ถูก block, public profile/assets ถูก hidden/anonymized | Yes |
@@ -195,14 +195,14 @@ Production ต้อง mask ตาม admin access และ audit-log เม�
 1. Queue `Reported Users` คือรายการที่ต้อง review
 2. `Suspended` / `Banned` คือผลลัพธ์จาก policy หรือการตัดสินใจของ Admin
 
-จำนวน report ไม่ควรทำให้ผู้ใช้ถูก ban อัตโนมัติทันที เพราะอาจเป็น false report หรือการกลั่นแกล้งได้ แต่สามารถใช้เป็น threshold เพื่อให้ระบบเพิ่มความเร่งด่วนและระงับชั่วคราวได้ตาม policy
+จำนวน report ไม่ควรทำให้ผู้ใช้ถูก ban อัตโนมัติทันที เพราะอาจเป็น false report หรือการกลั่นแกล้งได้ แต่สามารถใช้เป็น threshold เพื่อให้ระบบเพิ่มความเร่งด่วน และในกรณีที่ถึง guardrail ที่ชัดเจนจึงค่อยระงับชั่วคราวตาม policy
 
 Policy ที่แนะนำ:
 
 | เงื่อนไข | พฤติกรรมของ System / BO | สถานะผลลัพธ์ |
 | --- | --- | --- |
 | มี report 1-2 รายการที่ดูมีมูล | เข้าคิว `Reported Users` และแสดงในจำนวน report | ยังเป็น `Active` จนกว่า Admin review |
-| มี report `>= 3` รายการภายในช่วงเวลาสั้น เช่น 7 วัน หรือมาจากผู้รายงานต่างคน | เพิ่ม priority เป็น high-risk review และแจ้ง Dashboard / Work Queue | ยังเป็น `Active` หรือ `Suspended` ถ้าเข้า risk rule |
+| มี report `>= 3` รายการภายในช่วงเวลาสั้น เช่น 7 วัน หรือมาจากผู้รายงานต่างคน | เพิ่ม priority เป็น high-risk review และแจ้ง Dashboard / Work Queue | ยังเป็น `Active`; ไม่สร้าง feature restriction และไม่ suspend อัตโนมัติจากจำนวน report เพียงอย่างเดียว |
 | มี report `>= 5` รายการ, พบ pattern หลอกลวงซ้ำ, impersonation, spam offer, หรือมี evidence จาก asset/chat ที่เสี่ยงสูง | ระบบสามารถแนะนำหรือทำ `Suspended` ชั่วคราวตาม policy เพื่อหยุดความเสียหายระหว่าง review | `Suspended` |
 | Admin review แล้วพบว่าไม่ผิด / report ไม่สมเหตุสมผล | ปิด report เป็น cleared และคืนสิทธิ์ | `Active` |
 | Admin review แล้วผิดจริงแต่ไม่รุนแรง | คง `Suspended` พร้อม duration / reason หรือ warning ตาม policy | `Suspended` |
@@ -212,8 +212,21 @@ Policy ที่แนะนำ:
 
 - `Suspended` = ระงับชั่วคราวเพื่อรอ review หรือควบคุมความเสี่ยงระยะสั้น สามารถกลับเป็น `Active` ได้เมื่อ clear report แล้ว
 - `Banned` = ระงับถาวรหลัง review แล้วผิดจริงหรือมีความเสี่ยงสูง ต้องใช้ Admin, reason และ audit เสมอ
+- V1 ไม่มีสถานะ `Restricted` หรือ feature-level restriction เช่น ห้ามลง asset อย่างเดียวหรือห้าม chat อย่างเดียว; ถ้าต้องจำกัดบัญชีให้ใช้ `Suspended` หรือ `Banned` ตาม policy นี้
 - Auto-suspend ต้องมี guardrail เช่น จำนวนผู้รายงานที่ไม่ซ้ำกัน, ความรุนแรงของเหตุผล report, ประเภท evidence, time window และประวัติ previous violation
 - Auto-ban ไม่ควรทำใน Phase 1 เว้นแต่ Product/Policy อนุมัติ rule ที่ชัดเจนมาก เช่น known fraud list หรือ security abuse
+
+## 8.1.1 User Notification และ Session Enforcement
+
+เมื่อ Admin ยืนยัน `Suspend User`, `Ban User`, `Unsuspend User` หรือ `Unban User`:
+
+- ระบบต้อง revoke หรือ block active session ของผู้ใช้ทันทีสำหรับ `Suspended` และ `Banned`
+- ผู้ใช้ที่เปิดแอปอยู่ต้องถูกพาออกจาก authenticated app state และเห็น account status / blocked sign-in state ตาม FO Auth rule
+- Email notification เป็น primary channel สำหรับ `Suspended` และ `Banned`; in-app notification เป็น optional/secondary และห้ามเป็นช่องทางเดียวเพราะผู้ใช้อาจเข้าแอปไม่ได้แล้ว
+- Email ต้องส่งไปยัง email ที่ผูกกับบัญชี ไม่ว่าจะเป็น Email/Password, Google email หรือ Apple private relay email ถ้า provider/domain configuration รองรับ
+- Email template ต้องไม่ใส่ internal admin note, reporter identity หรือข้อมูล sensitive ที่ไม่จำเป็น
+- Action modal / API ต้องเก็บ reason, optional duration สำหรับ temporary suspension, public-facing reason copy หรือ support contact และ notification delivery intent
+- Delivery result ของ email/system notification ต้อง trace ได้ผ่าน Notifications delivery log หรือ audit event ที่เชื่อมกับ account action
 
 ## 8.2 Policy สถานะการลบบัญชี
 
@@ -244,9 +257,9 @@ Lifecycle ที่ควรใช้:
 | --- | --- | --- | --- | --- |
 | View User | Admin | ไม่ต้อง | ไม่ต้อง | ไม่มีการเปลี่ยนแปลงโดยตรง |
 | Reset Password | Admin | ต้องยืนยัน | Optional | ส่ง reset flow เฉพาะบัญชี Email/Password |
-| Suspend User | Admin | ต้องยืนยัน | ต้องระบุ | Login/action ของผู้ใช้ถูก block |
+| Suspend User | Admin | ต้องยืนยัน | ต้องระบุ | Session ถูก revoke และ login/action ของผู้ใช้ถูก block |
 | Unsuspend User | Admin | ต้องยืนยัน | ต้องระบุ | ผู้ใช้กลับมาเข้าถึงระบบได้ |
-| Ban User | Admin | ต้องยืนยัน | ต้องระบุ | Login/action ของผู้ใช้ถูก block จนกว่าจะ unban |
+| Ban User | Admin | ต้องยืนยัน | ต้องระบุ | Session ถูก revoke และ login/action ของผู้ใช้ถูก block จนกว่าจะ unban |
 | Unban User | Admin | ต้องยืนยัน | ต้องระบุ | ผู้ใช้กลับมาเข้าถึงระบบได้ |
 | Soft Delete / Archive User | Admin | ต้องยืนยัน | ต้องระบุ | User/profile/assets ถูก hidden หรือ anonymized ตาม policy |
 | Export User Data | Admin | ต้องยืนยันเมื่อเป็น sensitive export | Optional หรือ required ตาม policy | ไม่มีการเปลี่ยนแปลงใน FO UI |
@@ -267,6 +280,7 @@ Action ที่ทำได้ตามสถานะบัญชี:
 - Row action รวม `ดูรายละเอียด` และ secondary account action ไว้ใน dropdown `...`; Admin สามารถคลิกแถวเพื่อเปิด User Detail ได้โดยตรง
 - Action modal ใช้ structured action view กลางสำหรับ reset password, suspend, ban, restore, unban และ resend verification context
 - Action modal แสดง target user, current status, reason dropdown, note textarea, FO impact, ปุ่ม confirm และ cancel
+- Status action สำหรับ `Suspend` และ `Ban` ต้องแสดง notification intent โดย email เป็น default; in-app notification เป็น optional/secondary และ production/API ต้องสามารถ trace delivery result ได้
 - Prototype ยังไม่ validate ว่าต้องเลือก/กรอก reason ก่อนกด confirm และยังไม่มี confirmation ชั้นที่สองสำหรับ suspend; production/API ต้อง enforce rule นี้ก่อนบันทึก mutation
 - เมื่อ confirm status action แล้ว mock data จะเปลี่ยน status, refresh row/detail และแสดง toast สำเร็จ โดย audit จริงยังเป็น production/API responsibility
 
@@ -303,8 +317,8 @@ Action ที่ทำได้ตามสถานะบัญชี:
 
 | การเปลี่ยนแปลงใน BO | พฤติกรรมที่ FO ต้องรองรับ |
 | --- | --- |
-| Suspend user | ผู้ใช้ sign in ไม่ได้ หรือ session ถูก block/revoked; แสดง suspended account state พร้อมเหตุผลและช่องทางติดต่อ support |
-| Ban user | ผู้ใช้ sign in ไม่ได้จนกว่า Admin จะ unban |
+| Suspend user | Session ปัจจุบันถูก block/revoked; ผู้ใช้ sign in ไม่ได้และต้องเห็น suspended account state พร้อมเหตุผล ระยะเวลาถ้ามี และช่องทางติดต่อ support |
+| Ban user | Session ปัจจุบันถูก block/revoked; ผู้ใช้ sign in ไม่ได้จนกว่า Admin จะ unban และต้องเห็น banned/account status state ตาม FO Auth rule |
 | Unsuspend/Unban | ผู้ใช้กลับมา login/action ได้ตามปกติ |
 | Soft delete/archive | ผู้ใช้ login ไม่ได้; public profile/assets ถูก hidden หรือ anonymized ตาม policy |
 | Reset password | ผู้ใช้ได้รับ reset flow; ไม่เปลี่ยน auth method |

@@ -389,7 +389,9 @@ Purpose:
 - [ ] Block ต้องทำให้ Chat read-only
 - [ ] Block ต้องกัน new message/new chat/new offer ระหว่างคู่ที่ block กัน
 - [ ] Unblock behavior ต้อง restore visibility ตาม normal permission
-- [ ] Suspended account ต้อง login ไม่ได้
+- [ ] Suspended/Banned account ต้อง login เข้า main app ไม่ได้ และต้องเห็น account status state พร้อมเหตุผล/support contact
+- [ ] เมื่อ BO เปลี่ยน account เป็น Suspended/Banned ต้อง revoke/block active session และ clear authenticated app state
+- [ ] V1 ไม่มี `Restricted` หรือ feature-level account state
 - [ ] Admin moderation handoff ต้องมี reference/report id
 
 ---

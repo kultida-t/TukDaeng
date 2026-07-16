@@ -218,8 +218,8 @@ BO ต้องใช้ state contract เดียวกับ `FO_BO_INTEGRAT
 | Status | BO Meaning | FO Impact |
 | --- | --- | --- |
 | Active | User ใช้ FO ได้ปกติ | Login และ action ปกติทำได้ |
-| Suspended | ถูกจำกัดชั่วคราวโดย Admin | Login blocked หรือ session revoked ตาม auth implementation |
-| Banned | ถูก block ถาวรจนกว่า Admin จะปลด | Login blocked และสร้าง activity ใหม่ใน FO ไม่ได้ |
+| Suspended | ระงับบัญชีชั่วคราวโดย Admin หรือ policy ที่มี guardrail ชัดเจน | Session ปัจจุบันต้องถูก revoke/block, login blocked และแสดง account status state ตาม FO Auth rule |
+| Banned | ระงับบัญชีถาวรจนกว่า Admin จะปลด | Session ปัจจุบันต้องถูก revoke/block, login blocked และสร้าง activity ใหม่ใน FO ไม่ได้ |
 | Soft Deleted / Archived | ผ่าน account deletion/archive workflow | Login blocked; profile/assets ถูกซ่อนหรือ anonymized ตาม policy |
 
 ## 10.2 Asset Status
@@ -293,7 +293,7 @@ Guest public access rule:
 
 | BO Change | FO Sync Requirement |
 | --- | --- |
-| User suspended/banned | FO login/session/action permission ต้อง block user |
+| User suspended/banned | FO ต้อง revoke/block session ปัจจุบัน, block login/action permission และแสดง account status state |
 | Asset removed/hidden/status changed | FO public surfaces ต้องสะท้อน visibility ใหม่ |
 | Article published/scheduled/archived | FO Board, Search, Category, Detail ต้องสะท้อน status |
 | Brand/model inactive | FO autocomplete/filter และ Watch Alert trigger ใหม่ต้อง exclude ข้อมูล inactive |
@@ -303,6 +303,13 @@ Guest public access rule:
 | Watch Alert disabled | Alert ต้องไม่ trigger notification ใหม่ |
 | Offer expired/invalidated | FO offer/chat state ต้องเป็น unavailable หรือ not actionable |
 | Notification type disabled/template changed | Notification ใหม่ใน FO ต้องใช้ enabled template ล่าสุด |
+
+Account suspension baseline:
+
+- V1 ใช้เฉพาะ `Active`, `Suspended`, `Banned` และ deletion/archive states ที่ระบุใน module ที่เกี่ยวข้อง; ไม่มี `Restricted` หรือ feature-level restriction เป็น account status กลาง
+- `Suspended` และ `Banned` ต้อง block authenticated app access ไม่ใช่ปล่อยให้ผู้ใช้เข้าแอปหลักแล้วค่อย block เป็นราย action
+- Account action ที่ทำให้ผู้ใช้ถูก `Suspended` หรือ `Banned` ต้องส่ง email notification เป็น primary channel และอาจมี in-app notification เป็น secondary เท่านั้น
+- Email notification ต้องรองรับ email ที่ผูกกับบัญชีจาก Email/Password, Google และ Apple private relay ตาม integration/provider configuration
 
 Public/Guest sync requirement:
 

@@ -19,7 +19,7 @@
 
 Authentication Module ใช้สำหรับสมัครสมาชิก เข้าสู่ระบบ ยืนยัน OTP กู้รหัสผ่าน เปลี่ยนรหัสผ่าน และออกจากระบบ โดยต้องรองรับ Email / Password, Sign in / Sign up with Apple และ Sign in / Sign up with Google ตาม master baseline
 
-โมดูลนี้ต้องทำให้ Guest เปลี่ยนเป็น Member ได้อย่างถูกต้อง ป้องกัน account duplication, บังคับยอมรับ Terms of Use และ Privacy Policy ก่อนสมัคร และจัดการบัญชี Suspended ให้เห็นเหตุผลพร้อมช่องทางติดต่อ Support
+โมดูลนี้ต้องทำให้ Guest เปลี่ยนเป็น Member ได้อย่างถูกต้อง ป้องกัน account duplication, บังคับยอมรับ Terms of Use และ Privacy Policy ก่อนสมัคร และจัดการบัญชี Suspended/Banned ให้เห็นเหตุผลพร้อมช่องทางติดต่อ Support
 
 # 3. Prototype Reference
 
@@ -39,7 +39,7 @@ Authentication Module ใช้สำหรับสมัครสมาชิ�
 | SSO verification | SSO Email ไม่ต้องยืนยัน OTP |
 | Email immutability | Email ไม่สามารถเปลี่ยนได้หลังยืนยันแล้ว |
 | Auth method separation | บัญชี SSO ไม่สามารถ Sign In ด้วย Email / Password ได้ และกลับกัน |
-| Suspended account | บัญชี Suspended ต้องเห็น error พร้อมเหตุผลและช่องทางติดต่อ Support |
+| Suspended / Banned account | บัญชี Suspended/Banned ต้องเห็น account status state พร้อมเหตุผล ระยะเวลาถ้ามี และช่องทางติดต่อ Support |
 | Terms / Privacy | ทุกช่องทางต้องยอมรับ Terms of Use และ Privacy Policy ก่อนสมัคร |
 | Login required | Guest ใช้ feature ที่ต้อง Login ต้องเห็น Global Login Required Dialog |
 | Security | ทุก API ใช้ HTTPS และใช้ Token-based Authentication |
@@ -150,13 +150,16 @@ Auth page และปุ่มใน flow สมัครสมาชิกย�
 
 ผู้ใช้ที่ยืนยันตัวตนสำเร็จสามารถใช้งานระบบตามสิทธิ์ Member และสามารถ Sign Out หรือ Change Password ได้ตาม auth method ที่รองรับ
 
-## Suspended User
+## Suspended / Banned User
 
-บัญชี Suspended ต้องไม่เข้าสู่ระบบได้ และต้องเห็น:
+บัญชี Suspended หรือ Banned ต้องไม่เข้าสู่ระบบเข้า main app ได้ และต้องเห็น:
 
-- error state ว่าบัญชีถูกระงับ
+- account status state ว่าบัญชีถูกระงับชั่วคราวหรือถาวร
 - เหตุผลการระงับ
+- วันที่สิ้นสุด ถ้าเป็น temporary suspension และมีข้อมูล
 - ช่องทางติดต่อ Support
+
+หากผู้ใช้มี session ค้างอยู่ตอน BO เปลี่ยนสถานะเป็น `Suspended` หรือ `Banned` ระบบต้อง revoke/block session และพาผู้ใช้ออกจาก authenticated app state ไปยัง account status state
 
 ## SSO Account
 
@@ -192,7 +195,7 @@ Auth page และปุ่มใน flow สมัครสมาชิกย�
 
 1. User เลือก Email / Password, Apple หรือ Google
 2. ระบบตรวจ auth method ให้ตรงกับบัญชีเดิม
-3. ระบบตรวจ suspended status
+3. ระบบตรวจ account status: `Active`, `Suspended`, `Banned`, deletion/archive state
 4. หากผ่าน validation ให้เข้าสู่ระบบ
 5. หากไม่ผ่าน ให้แสดง error state ที่ตรงสาเหตุ
 
@@ -273,11 +276,13 @@ Change Password success:
 - หากยังไม่ยอมรับ ต้องไม่สามารถ submit registration ได้
 - Terms of Use และ Privacy Policy ต้องเปิดอ่านได้จาก Sign Up และ Settings
 
-## Suspended Account Rules
+## Suspended / Banned Account Rules
 
-- Suspended User ต้องไม่เข้าสู่ระบบได้
-- Sign In ต้องแสดงเหตุผล suspension
+- Suspended และ Banned User ต้องไม่เข้าสู่ระบบเข้า main app ได้
+- Sign In ต้องแสดงเหตุผล suspension/ban
+- Temporary suspension ต้องแสดงวันสิ้นสุดเมื่อ backend ส่งข้อมูลมา
 - Sign In ต้องแสดงช่องทางติดต่อ Support
+- ระบบต้องไม่ใช้ in-app notification เป็นช่องทางหลักในการแจ้ง suspend/ban เพราะผู้ใช้อาจเข้าแอปไม่ได้แล้ว; email เป็น primary channel ตาม BO User Management/Notification policy
 
 ## Token And Session Rules
 
@@ -285,6 +290,7 @@ Change Password success:
 - ระบบใช้ Token-based Authentication
 - Sign Out ต้อง clear local token/session
 - เมื่อ token หมดอายุ ให้กลับไป Guest state หรือแสดง Login Required ตาม context
+- เมื่อ token/session ถูก revoke จาก BO เพราะ `Suspended` หรือ `Banned` ต้อง clear local session และเปิด account status state แทน main app
 
 # 11. Permission Rules
 
@@ -294,7 +300,8 @@ Change Password success:
 | Guest | ใช้ feature ที่ต้อง Login ไม่ได้ ต้องเห็น Global Login Required Dialog |
 | Pending Verification | กรอก OTP และขอ resend OTP ได้ แต่ยังไม่ใช้ authenticated feature |
 | Authenticated Member | ใช้ feature ตามสิทธิ์ Member |
-| Suspended User | Sign In ไม่ได้ และต้องเห็น suspension reason + Support contact |
+| Suspended User | Sign In เข้า main app ไม่ได้ และต้องเห็น suspension reason + Support contact |
+| Banned User | Sign In เข้า main app ไม่ได้ และต้องเห็น ban reason + Support contact ตาม policy |
 | SSO User | Sign In ด้วย provider เดิมเท่านั้น |
 
 # 12. Validation Rules
@@ -333,7 +340,7 @@ Change Password success:
 | Change Password new password ซ้ำ current password | แสดง field error `New password must be different from current password.` |
 | Change Password confirm ไม่ตรง | แสดง field error `Passwords do not match.` |
 | Change Password API/network error | ไม่ mark field ใด field หนึ่งเป็น error; แสดง banner/toast `Unable to change password. Please try again.` |
-| Suspended account | แสดงเหตุผลและช่องทาง Support |
+| Suspended / Banned account | แสดง account status state พร้อมเหตุผล ระยะเวลาถ้ามี และช่องทาง Support |
 | Network error | แสดง error พร้อม retry |
 
 # 14. Empty State
@@ -371,7 +378,7 @@ Authentication Module ไม่มี empty list state โดยตรง แต
 | `auth_change_password_submitted` | User submit Change Password |
 | `auth_sign_out_confirmed` | User ยืนยัน Sign Out |
 | `auth_login_required_shown` | Global Login Required Dialog แสดง |
-| `auth_suspended_blocked` | Suspended account ถูก block ตอน Sign In |
+| `auth_account_status_blocked` | Suspended/Banned account ถูก block ตอน Sign In หรือ session revoke |
 
 # 17. Acceptance Criteria
 
@@ -391,8 +398,9 @@ Authentication Module ไม่มี empty list state โดยตรง แต
 | AC-AUTH-012 | บัญชี SSO ไม่สามารถ Sign In ด้วย Email / Password ได้ |
 | AC-AUTH-013 | บัญชี Email / Password ไม่สามารถ Sign In ด้วย SSO provider ได้ใน V1 |
 | AC-AUTH-014 | ทุกช่องทางการสมัครต้องยอมรับ Terms of Use และ Privacy Policy ก่อนสมัคร |
-| AC-AUTH-015 | Suspended account ต้อง Sign In ไม่ได้ |
-| AC-AUTH-016 | Suspended account ต้องเห็น error พร้อมเหตุผลและช่องทางติดต่อ Support |
+| AC-AUTH-015 | Suspended/Banned account ต้อง Sign In เข้า main app ไม่ได้ |
+| AC-AUTH-016 | Suspended/Banned account ต้องเห็น account status state พร้อมเหตุผล ระยะเวลาถ้ามี และช่องทางติดต่อ Support |
+| AC-AUTH-016A | Session ที่ถูก BO revoke เพราะ Suspended/Banned ต้อง clear local session และแสดง account status state |
 | AC-AUTH-017 | Forgot Password ต้องส่ง reset link สำหรับบัญชี Email / Password |
 | AC-AUTH-018 | Reset Password ต้อง validate password policy |
 | AC-AUTH-019 | Invalid หรือ expired reset link ต้องมี state แยกและทางขอ link ใหม่ |

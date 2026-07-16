@@ -2,7 +2,7 @@
 
 อ้างอิงหลักจาก [TukDaeng_Master_Product_Definition.md](TukDaeng_Master_Product_Definition.md)
 
-**Current Baseline Version:** `FO-PRD-v1.2`
+**Current Baseline Version:** `FO-PRD-v1.3`
 **Version Registry:** [DOCUMENT_VERSION.md](DOCUMENT_VERSION.md)
 
 ---
@@ -13,7 +13,9 @@
 
 สำหรับรอบส่งต่อ Dev วันที่ 2026-06-22 ให้ถือว่าชุดเอกสารนี้เป็น baseline ใหม่ทั้งชุดสำหรับแทนเอกสารเก่าที่ Dev เคยใช้ก่อนหน้า ไม่ใช่เฉพาะรายการที่เพิ่งเพิ่มในวันเดียวกัน
 
-เมื่อส่งต่อ Dev / QA / Figma ให้อ้างอิง version `FO-PRD-v1.2` คู่กับ branch `docs-frontoffice-spec-updates`
+เมื่อส่งต่อ Dev / QA / Figma ให้อ้างอิง version `FO-PRD-v1.3` คู่กับ branch `docs-frontoffice-spec-updates`
+
+หมายเหตุรอบ 2026-07-16: `FO-PRD-v1.3` เพิ่ม clarification เรื่อง account suspension/ban โดย V1 ไม่มี `Restricted` account state, Suspended/Banned ต้องเข้า main app ไม่ได้, session ต้องถูก revoke/block เมื่อ BO เปลี่ยนสถานะ, email เป็น primary channel สำหรับการแจ้ง suspend/ban และ FO Notification Center ไม่เพิ่ม Account Action type
 
 หมายเหตุรอบ 2026-07-02: `FO-PRD-v1.2` เพิ่ม error-state UI copy catalog สำหรับ final Figma-to-Dev handoff โดย lock copy และ retry scope ของ Feed refresh failure, Feed load-more failure, Feed image failure, owner fallback, section error, unavailable state และ empty/error pattern หลัก
 

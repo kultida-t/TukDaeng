@@ -153,11 +153,13 @@ Admin ต้องสามารถ:
 - `Guest / Unauthenticated` เป็น FO access state ไม่ใช่ BO user status และไม่สร้าง account record ใน User Management
 - ถ้าผู้ใช้สมัคร Email/Password แล้วระบบสร้าง record เพื่อรอ OTP ให้แสดงเป็น `Pending Verification`; กรณีนี้ไม่ใช่ Guest แต่ยังไม่ถือเป็น authenticated member
 - บัญชี Apple/Google reset password จาก BO ไม่ได้
-- Suspended user login FO ไม่ได้
-- Banned user ต้องถูก block ถาวรจนกว่า Admin จะปลด
+- Suspended user ต้องถูก revoke/block active session และ login FO ไม่ได้จนกว่า restore
+- Banned user ต้องถูก revoke/block active session และถูก block ถาวรจนกว่า Admin จะปลด
+- V1 ไม่มี `Restricted` หรือ feature-level restriction เป็น account status; ถ้าต้องจำกัดบัญชีให้ใช้ `Suspended` หรือ `Banned` ตาม policy
+- Suspend/ban ต้องส่ง email เป็น primary user notification channel และ trace delivery/audit ได้
 - Delete/archive user ต้องจัดการผ่าน Account Deletion workflow และต้องเก็บ audit
 - User reports 1-2 ครั้งต้องเข้าคิว review ก่อน ไม่ควรเปลี่ยนสถานะบัญชีอัตโนมัติ
-- User reports ตั้งแต่ 3 ครั้งขึ้นไปภายในช่วงเวลาสั้น หรือมีหลาย reporter ต้องถูกยกระดับเป็น high-risk review
+- User reports ตั้งแต่ 3 ครั้งขึ้นไปภายในช่วงเวลาสั้น หรือมีหลาย reporter ต้องถูกยกระดับเป็น high-risk review เท่านั้น ไม่ suspend อัตโนมัติจากจำนวน report เพียงอย่างเดียว
 - User reports ตั้งแต่ 5 ครั้งขึ้นไป หรือมี evidence เสี่ยงสูง เช่น scam, impersonation, spam offer, duplicate fraud pattern สามารถเข้าสู่ `Suspended` ชั่วคราวตาม policy เพื่อรอ Admin review
 - `Banned` ต้องเกิดหลัง Admin review แล้วพบว่าผิดจริงหรือมีความเสี่ยงสูง พร้อม reason และ audit
 - Account deletion ต้องมี lifecycle อย่างน้อย `Deletion Requested` -> `Deactivated` -> `Deleted/Archived` -> `Anonymized`

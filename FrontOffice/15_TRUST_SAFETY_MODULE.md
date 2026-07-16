@@ -151,7 +151,9 @@ Trust & Safety Module ใช้สำหรับรองรับ Block, Repor
 
 ## Suspended / Banned User
 
-- ต้องเห็น error พร้อมเหตุผลและช่องทางติดต่อ Support ตาม Authentication rule
+- ต้องถูก block จาก authenticated app access ตาม Authentication rule
+- ต้องเห็น account status state พร้อมเหตุผล ระยะเวลาถ้ามี และช่องทางติดต่อ Support ตาม Authentication rule
+- V1 ไม่มี `Restricted` หรือ feature-level restriction จาก Trust & Safety; report threshold จะยกระดับ queue/review หรือทำให้เกิด `Suspended`/`Banned` ตาม BO policy เท่านั้น
 - รายละเอียด appeal เป็น future
 
 ---

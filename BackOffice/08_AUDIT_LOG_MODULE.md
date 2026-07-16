@@ -114,6 +114,7 @@ Baseline entity types:
 - Admin create/update/disable
 - User suspend/unsuspend
 - User ban/unban
+- Account status notification send/retry/fail linked to suspend/ban/unban action
 - User soft delete/archive
 - Reset password trigger
 
