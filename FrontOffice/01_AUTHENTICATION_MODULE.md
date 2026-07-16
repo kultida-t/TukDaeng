@@ -282,6 +282,7 @@ Change Password success:
 - Sign In ต้องแสดงเหตุผล suspension/ban
 - Temporary suspension ต้องแสดงวันสิ้นสุดเมื่อ backend ส่งข้อมูลมา
 - Sign In ต้องแสดงช่องทางติดต่อ Support
+- เมื่อ temporary suspension ครบกำหนดและ backend เปลี่ยนสถานะกลับเป็น Active แล้ว ผู้ใช้ต้อง Sign In ใหม่ เพราะ session เดิมถูก revoke ไปแล้ว
 - ระบบต้องไม่ใช้ in-app notification เป็นช่องทางหลักในการแจ้ง suspend/ban เพราะผู้ใช้อาจเข้าแอปไม่ได้แล้ว; email เป็น primary channel ตาม BO User Management/Notification policy
 
 ## Token And Session Rules

@@ -181,6 +181,13 @@ Then ระบบต้อง revoke/block session
 And clear authenticated app state
 And แสดง account status state พร้อมเหตุผลและช่องทาง Support
 
+## QA-AUTH-007C: Temporary Suspension End Date
+
+Given account ถูก Suspended แบบชั่วคราวและมี end date
+When ถึง end date และ backend เปลี่ยนสถานะกลับเป็น Active
+Then user ต้อง Sign In ใหม่ได้
+And session เดิมต้องไม่กลับมาใช้งานเอง
+
 ## QA-AUTH-007B: Banned Account
 
 Given account ถูก Banned

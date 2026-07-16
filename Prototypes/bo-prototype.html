@@ -757,6 +757,14 @@
       color: var(--ink);
       font-size: 13px;
     }
+    .field-helper {
+      display: block;
+      margin-top: 4px;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 400;
+      line-height: 1.45;
+    }
     .field:focus,
     .field:focus-visible {
       outline: 0;
@@ -1683,6 +1691,23 @@
       border: 1px solid var(--line-strong);
       border-radius: 7px;
       background: #fff;
+      color: #061426;
+      font: inherit;
+      font-size: 13px;
+      font-weight: 400;
+      padding: 9px 10px;
+    }
+    .user-action-form .suspension-end-field {
+      gap: 0;
+    }
+    .user-action-form .suspension-end-field .field-helper {
+      margin-top: 5px;
+      margin-bottom: 8px;
+    }
+    .user-action-form .suspension-end-field input.field {
+      width: 100%;
+      min-height: 42px;
+      border-color: var(--line-strong);
       color: #061426;
       font: inherit;
       font-size: 13px;
@@ -3330,9 +3355,10 @@
         item("RPT-ASSET", "Asset Moderation Report", "Operations", "Asset", "สูง", "Ready", "รวม reported assets และ force status change", ["Audit linked"], "ใช้ตรวจ SLA"),
         item("RPT-SEARCH", "Search & Watch Alert", "Market", "Search", "กลาง", "Scheduled", "คำค้นยอดนิยมและ alert trigger", ["Weekly"], "ใช้ปรับ Market Data")
       ]),
-      notifications: mod("Notifications", "เครื่องมือ & รายงาน / Notifications", "Broadcast & System Templates", "สร้าง broadcast, system trigger template, delivery logs และ retry", "สร้าง broadcast", [["Draft", "3", "รอ approval"], ["Sent Today", "14,280", "Push 91%"], ["Failed", "92", "retry pending"], ["Templates", "18", "active"]], [
+      notifications: mod("Notifications", "เครื่องมือ & รายงาน / Notifications", "Broadcast & System Templates", "สร้าง broadcast, system trigger template, delivery logs และ retry", "สร้าง broadcast", [["Draft", "3", "รอ approval"], ["Sent Today", "14,280", "Push 91%"], ["Failed", "92", "retry pending"], ["Templates", "19", "active"]], [
         item("NTF-201", "Auction Week Broadcast", "Marketing", "Broadcast", "กลาง", "Draft", "ส่งให้ผู้ใช้ที่ follow brand Rolex/Omega", ["Segment 4,200"], "ต้อง approval ก่อนส่ง"),
         item("TPL-044", "Watch Alert Matched", "System", "Template", "ปกติ", "Active", "ใช้เมื่อมี Sale listing ตรง criteria", ["Push"], "แก้ template ต้อง audit"),
+        item("TPL-ACCT-009", "Account Status Email", "System", "Template", "สูง", "Active", "ใช้แจ้ง suspend/ban ผ่านอีเมลเป็นช่องทางหลัก", ["Email", "Audit linked"], "ห้ามใส่ internal note หรือข้อมูล reporter"),
         item("DLV-882", "Failed delivery batch", "FCM", "Delivery", "กลาง", "Retry", "token expired 92 รายการ", ["Retry queue"], "retry และ cleanup invalid token")
       ]),
       settings: mod("Settings", "เครื่องมือ & รายงาน / Settings", "Admin Settings", "ตั้งค่า admin account, permission policy, security, retention/export และ feature flags", "บันทึก policy", [["Admin Accounts", "6", "ใช้ account type Admin"], ["Email OTP", "Required", "mandatory"], ["Policies", "34", "module/action"], ["Feature Flags", "7", "2 enabled"]], [
@@ -4310,14 +4336,15 @@
         type: "status",
         targetStatus: "Suspended",
         tone: "warning",
-        summary: "ใช้เมื่อยังต้องตรวจสอบต่อหรือรอหลักฐานเพิ่มเติม เป็นสถานะชั่วคราวและกู้คืนได้",
+        summary: "กำหนดระยะเวลาระงับบัญชีชั่วคราว ผู้ใช้จะถูกออกจากระบบทันทีและได้รับอีเมลแจ้งผล",
         reasonLabel: "เหตุผลการระงับบัญชีชั่วคราว",
         reasons: ["มีรายงานความเสี่ยงสูง รอตรวจสอบ", "สงสัยว่าเป็นบัญชีหรือโปรไฟล์ซ้ำ", "มีข้อพิพาทจากฝ่าย Support", "พักบัญชีไว้ระหว่างตรวจนโยบาย"],
         notePlaceholder: "ระบุหมายเหตุ เหตุผล หรือข้อมูลอ้างอิงที่เกี่ยวข้อง",
-        success: user => `${user.displayName} ถูกระงับบัญชีชั่วคราวแล้ว`,
+        success: user => `${user.displayName} ถูกระงับบัญชีชั่วคราวแล้ว · ส่งอีเมลแจ้งผู้ใช้`,
         checklist: [
-          "บล็อกการเข้าสู่ระบบระหว่างถูกระงับ",
-          "ใช้สำหรับพักบัญชีชั่วคราว และยกเลิกการระงับได้หลังตรวจสอบเรียบร้อย",
+          "ผู้ใช้จะถูกออกจากระบบทันทีและเข้าแอปไม่ได้ระหว่างถูกระงับ",
+          "ระบบส่งอีเมลแจ้งผู้ใช้เป็นช่องทางหลัก",
+          "เมื่อครบวันที่กำหนด ระบบคืนสิทธิ์ให้เข้าใช้งานโดยอัตโนมัติ เว้นแต่ Admin ขยายเวลาหรือเปลี่ยนเป็นระงับถาวรก่อนครบกำหนด",
           "ต้องมีเหตุผลและบันทึกการดำเนินการก่อนยืนยัน"
         ]
       },
@@ -4327,13 +4354,14 @@
         type: "status",
         targetStatus: "Banned",
         tone: "danger",
-        summary: "ใช้เมื่อยืนยันแล้วว่าบัญชีทำผิดรุนแรงหรือไม่ควรให้ใช้งานต่อ บัญชีจะถูกบล็อกจนกว่า Admin จะปลดระงับ และต้องระบุเหตุผลให้ชัดเจน",
+        summary: "ใช้เมื่อยืนยันแล้วว่าบัญชีทำผิดรุนแรงหรือไม่ควรให้ใช้งานต่อ ผู้ใช้จะถูกออกจากระบบทันทีและได้รับอีเมลแจ้งผล",
         reasonLabel: "เหตุผลการระงับบัญชีถาวร",
         reasons: ["ยืนยันแล้วว่ามีพฤติกรรมหลอกลวง", "ยืนยันแล้วว่าแอบอ้างตัวตนหรือใช้ข้อมูลเท็จ", "ทำผิดนโยบายรุนแรงซ้ำหลายครั้ง", "ได้รับอนุมัติให้ระงับจากทีมที่รับผิดชอบ"],
         notePlaceholder: "ระบุหลักฐานที่ยืนยันแล้ว, report/support ID และ approval ที่เกี่ยวข้อง",
-        success: user => `${user.displayName} ถูกระงับบัญชีถาวรแล้ว`,
+        success: user => `${user.displayName} ถูกระงับบัญชีถาวรแล้ว · ส่งอีเมลแจ้งผู้ใช้`,
         checklist: [
-          "บล็อกการเข้าสู่ระบบและการทำรายการใหม่",
+          "ผู้ใช้จะถูกออกจากระบบทันทีและเข้าแอปไม่ได้",
+          "ระบบส่งอีเมลแจ้งผู้ใช้เป็นช่องทางหลัก",
           "ใช้หลังยืนยันการละเมิด ไม่ใช่แค่รอตรวจสอบ",
           "การยกเลิกระงับบัญชีถาวรต้องมีเหตุผลและบันทึกสถานะก่อน/หลัง"
         ]
@@ -4425,12 +4453,44 @@
 
     function getUserActionFoImpact(user, action) {
       if (action === "Reset password") return "ไม่มีผลกับสถานะบัญชีหรือโปรไฟล์สาธารณะ ระบบจะส่งเฉพาะลิงก์ตั้งรหัสผ่านใหม่ไปยังอีเมลที่ลงทะเบียนไว้";
-      if (action === "Suspend") return "ผู้ใช้จะเข้าสู่ระบบไม่ได้ชั่วคราวจนกว่าผู้ดูแลระบบจะยกเลิกการระงับ เหมาะกับเคสที่ยังรอตรวจสอบ";
-      if (action === "Ban") return "ผู้ใช้จะเข้าสู่ระบบไม่ได้ และไม่สามารถทำรายการใหม่ในแอปได้ จนกว่าผู้ดูแลระบบจะยกเลิกระงับบัญชีถาวร เหมาะสำหรับกรณีที่ตรวจสอบแล้วว่ามีการละเมิดจริง";
+      if (action === "Suspend") return "หลังยืนยัน ผู้ใช้จะถูกออกจากระบบทันทีและเข้าแอปไม่ได้จนถึงวันที่กำหนด หรือจนกว่า Admin จะยกเลิกการระงับก่อนครบกำหนด";
+      if (action === "Ban") return "หลังยืนยัน ผู้ใช้จะถูกออกจากระบบทันทีและเข้าแอปไม่ได้จนกว่า Admin จะยกเลิกการระงับถาวร";
       if (action === "Restore") return "ผู้ใช้จะกลับมาเข้าสู่ระบบและใช้งานบัญชีได้หลังยืนยัน";
       if (action === "Unban user") return "ผู้ใช้จะกลับมาเข้าสู่ระบบและใช้งานบัญชีได้หลังยืนยันยกเลิกระงับบัญชีถาวร";
       if (action === "Resend verification context") return "ผู้ใช้ยังเข้าแอป สร้างโปรไฟล์ หรือเพิ่มสินทรัพย์ไม่ได้จนกว่าจะยืนยันอีเมลสำเร็จ การส่งครั้งนี้เป็นเพียงการส่งข้อมูลยืนยันซ้ำและไม่เปลี่ยนสถานะบัญชี";
       return user.foImpact;
+    }
+
+    function getAccountStatusEmailNote(user, action) {
+      if (action !== "Suspend" && action !== "Ban") return "";
+      const fullEmail = getUserFullEmail(user);
+      const providerNote = user.auth === "Apple" && fullEmail.includes("privaterelay.appleid.com")
+        ? "Apple private relay email"
+        : user.auth === "Google"
+          ? "Google account email"
+          : "registered account email";
+      return `
+        <div class="module-note user-action-impact">
+          <strong>แจ้งผู้ใช้:</strong> ระบบจะส่งอีเมลแจ้งผลไปที่ ${fullEmail} (${providerNote}) เป็นช่องทางหลัก ผู้ใช้จะเห็นสถานะบัญชีอีกครั้งเมื่อพยายามเข้าแอป และผลการส่งอีเมลจะถูกบันทึกไว้ตรวจสอบย้อนหลัง
+        </div>
+      `;
+    }
+
+    function getDefaultSuspensionEndDate(days = 7) {
+      const date = new Date();
+      date.setDate(date.getDate() + days);
+      return date.toISOString().slice(0, 10);
+    }
+
+    function renderSuspensionEndField(action, completed) {
+      if (action !== "Suspend") return "";
+      return `
+        <label class="suspension-end-field">
+          ระงับถึงวันที่
+          <span class="field-helper">ค่าเริ่มต้นคือ 7 วัน Admin แก้ไขวันที่ได้ก่อนกดยืนยัน เมื่อครบกำหนดระบบจะคืนสิทธิ์ให้ผู้ใช้โดยอัตโนมัติและผู้ใช้ต้องเข้าสู่ระบบใหม่</span>
+          <input class="field" id="user-action-suspend-until" type="date" value="${getDefaultSuspensionEndDate()}" ${completed ? "disabled" : ""}>
+        </label>
+      `;
     }
 
     function updateUserActionsForStatus(user) {
@@ -4448,16 +4508,16 @@
         user.statusLabel = "เข้าสู่ระบบไม่ได้";
         user.allowed = ["Restore", "Ban"];
         user.blocked = ["Reset while suspended"];
-        user.foImpact = "ผู้ใช้เข้าสู่ระบบไม่ได้ระหว่างถูกระงับบัญชีชั่วคราว";
-        user.actionNote = "การยกเลิกระงับต้องแสดงสถานะก่อนดำเนินการและหลังยืนยัน";
+        user.foImpact = "ผู้ใช้ถูกออกจากระบบและเข้าแอปไม่ได้ระหว่างถูกระงับบัญชีชั่วคราว";
+        user.actionNote = "การยกเลิกระงับต้องแสดงสถานะก่อนดำเนินการ หลังยืนยัน และคง audit/email delivery trace ไว้";
         return;
       }
       if (user.status === "Banned") {
         user.statusLabel = "เข้าสู่ระบบไม่ได้";
         user.allowed = ["Unban user"];
         user.blocked = ["Reset password"];
-        user.foImpact = "ผู้ใช้เข้าสู่ระบบไม่ได้และไม่สามารถทำรายการใหม่จนกว่าผู้ดูแลระบบจะยกเลิกระงับบัญชีถาวร";
-        user.actionNote = "การยกเลิกระงับบัญชีถาวรต้องยืนยัน ระบุเหตุผล และบันทึกสถานะก่อน/หลัง";
+        user.foImpact = "ผู้ใช้ถูกออกจากระบบ เข้าแอปไม่ได้ และไม่สามารถทำรายการใหม่จนกว่า Admin จะยกเลิกระงับบัญชีถาวร";
+        user.actionNote = "การยกเลิกระงับบัญชีถาวรต้องยืนยัน ระบุเหตุผล และคง audit/email delivery trace ไว้";
       }
     }
 
@@ -4576,7 +4636,9 @@
                   Note / หมายเหตุ
                   <textarea id="user-action-note" placeholder="${config.notePlaceholder}" ${completed ? "disabled" : ""}></textarea>
                 </label>
+                ${renderSuspensionEndField(action, completed)}
                 <div class="module-note user-action-impact"><strong>ผลกระทบต่อแอปพลิเคชัน:</strong> ${getUserActionFoImpact(user, action)}</div>
+                ${getAccountStatusEmailNote(user, action)}
                 <div class="user-detail-actions">
                   <button class="user-detail-action-btn ${getUserActionConfirmClass(config)}" type="button" data-user-action-confirm="${action}" data-user-id="${user.id}" data-report-context="${activeReportContextId || ""}" ${completed ? "disabled" : ""}>${USER_ACTION_CONFIRM_LABEL}</button>
                   <button class="user-detail-action-btn" type="button" data-user-action-modal-close>${completed ? "ปิด" : "ยกเลิก"}</button>
@@ -4624,9 +4686,13 @@
       }
       const selectedReason = document.querySelector("#user-action-reason")?.value || "";
       const actionNote = document.querySelector("#user-action-note")?.value.trim() || "";
+      const suspendUntil = document.querySelector("#user-action-suspend-until")?.value || "";
+      const statusActionDeliveryNote = action === "Suspend" || action === "Ban"
+        ? ` · user signed out · email queued to ${getUserFullEmail(user)}${suspendUntil ? ` · suspension ends ${suspendUntil}` : ""}`
+        : "";
       pendingReportActionAudit = {
         actionLabel: config.title,
-        detail: actionNote || selectedReason || config.summary,
+        detail: `${actionNote || selectedReason || config.summary}${statusActionDeliveryNote}`,
         reason: selectedReason || config.reasonLabel
       };
       refreshUserActionSurface(user);

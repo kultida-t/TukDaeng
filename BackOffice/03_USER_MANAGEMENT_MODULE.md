@@ -182,7 +182,7 @@ Production ต้อง mask ตาม admin access และ audit-log เม�
 | --- | --- | --- | --- | --- |
 | Pending Verification -> Active | System | OTP/email verified | ผู้ใช้เริ่มใช้งาน authenticated FO features ได้ | Yes |
 | Active -> Suspended | Admin | Reason, optional duration | Session ถูก revoke และ login/action ถูก block | Yes |
-| Suspended -> Active | Admin | Reason | Login/action กลับมาใช้งานได้ | Yes |
+| Suspended -> Active | Admin / System | Reason หรือ suspension end date reached | Login/action กลับมาใช้งานได้เมื่อผู้ใช้ login ใหม่ | Yes |
 | Active/Suspended -> Banned | Admin | Reason | Session ถูก revoke และ login/action ถูก block ถาวรจนกว่าจะ unban | Yes |
 | Banned -> Active | Admin | Reason | Login/action กลับมาใช้งานได้ | Yes |
 | Active/Suspended/Banned -> Deletion Requested | System / Account Deletion | Deletion request created | เข้าสู่ deletion workflow และต้องตรวจ dependency ก่อนลบจริง | Yes |
@@ -213,6 +213,8 @@ Policy ที่แนะนำ:
 - `Suspended` = ระงับชั่วคราวเพื่อรอ review หรือควบคุมความเสี่ยงระยะสั้น สามารถกลับเป็น `Active` ได้เมื่อ clear report แล้ว
 - `Banned` = ระงับถาวรหลัง review แล้วผิดจริงหรือมีความเสี่ยงสูง ต้องใช้ Admin, reason และ audit เสมอ
 - V1 ไม่มีสถานะ `Restricted` หรือ feature-level restriction เช่น ห้ามลง asset อย่างเดียวหรือห้าม chat อย่างเดียว; ถ้าต้องจำกัดบัญชีให้ใช้ `Suspended` หรือ `Banned` ตาม policy นี้
+- Temporary suspension ต้องมี end date ที่ Admin แก้ไขได้ก่อนยืนยัน action; ค่า default ของ prototype คือ 7 วัน
+- เมื่อถึง end date และไม่มี Admin action ใหม่ เช่น extend หรือ ban ระบบเปลี่ยนสถานะกลับเป็น `Active` อัตโนมัติพร้อม audit event ผู้ใช้ต้อง login ใหม่เพราะ session เดิมถูก revoke ไปแล้ว
 - Auto-suspend ต้องมี guardrail เช่น จำนวนผู้รายงานที่ไม่ซ้ำกัน, ความรุนแรงของเหตุผล report, ประเภท evidence, time window และประวัติ previous violation
 - Auto-ban ไม่ควรทำใน Phase 1 เว้นแต่ Product/Policy อนุมัติ rule ที่ชัดเจนมาก เช่น known fraud list หรือ security abuse
 
@@ -225,7 +227,7 @@ Policy ที่แนะนำ:
 - Email notification เป็น primary channel สำหรับ `Suspended` และ `Banned`; in-app notification เป็น optional/secondary และห้ามเป็นช่องทางเดียวเพราะผู้ใช้อาจเข้าแอปไม่ได้แล้ว
 - Email ต้องส่งไปยัง email ที่ผูกกับบัญชี ไม่ว่าจะเป็น Email/Password, Google email หรือ Apple private relay email ถ้า provider/domain configuration รองรับ
 - Email template ต้องไม่ใส่ internal admin note, reporter identity หรือข้อมูล sensitive ที่ไม่จำเป็น
-- Action modal / API ต้องเก็บ reason, optional duration สำหรับ temporary suspension, public-facing reason copy หรือ support contact และ notification delivery intent
+- Action modal / API ต้องเก็บ reason, end date สำหรับ temporary suspension, public-facing reason copy หรือ support contact และ notification delivery intent
 - Delivery result ของ email/system notification ต้อง trace ได้ผ่าน Notifications delivery log หรือ audit event ที่เชื่อมกับ account action
 
 ## 8.2 Policy สถานะการลบบัญชี
