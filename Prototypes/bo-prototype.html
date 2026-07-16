@@ -4487,8 +4487,8 @@
       return `
         <label class="suspension-end-field">
           ระงับถึงวันที่
-          <span class="field-helper">ค่าเริ่มต้นคือ 7 วัน Admin แก้ไขวันที่ได้ก่อนกดยืนยัน เมื่อครบกำหนดระบบจะคืนสิทธิ์ให้ผู้ใช้โดยอัตโนมัติและผู้ใช้ต้องเข้าสู่ระบบใหม่</span>
           <input class="field" id="user-action-suspend-until" type="date" value="${getDefaultSuspensionEndDate()}" ${completed ? "disabled" : ""}>
+          <span class="field-helper">* ค่าเริ่มต้นคือ 7 วัน Admin แก้ไขวันที่ได้ก่อนกดยืนยัน เมื่อครบกำหนดระบบจะคืนสิทธิ์ให้ผู้ใช้โดยอัตโนมัติและผู้ใช้ต้องเข้าสู่ระบบใหม่</span>
         </label>
       `;
     }
