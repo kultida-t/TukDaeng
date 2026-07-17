@@ -4237,10 +4237,10 @@
       const assets = moduleData.assets.rows;
       const countType = type => assets.filter(asset => asset.type === type).length;
       return [
-        ["Sale", countType("Sale"), `${assets.filter(asset => asset.type === "Sale" && asset.status === "Reported").length} reported · Feed/Search visible`],
-        ["Show", countType("Show"), "Portfolio display · no direct sale listing"],
-        ["Hide", countType("Hide"), `${assets.filter(asset => asset.type === "Hide" && asset.status === "Admin Hidden").length} admin hidden · owner-only`],
-        ["Sold", countType("Sold"), "Read-only sale record"]
+        ["Sale", countType("Sale"), "แสดงใน Feed/Search และรับ offer ได้"],
+        ["Show", countType("Show"), "แสดงใน portfolio/profile แต่ไม่ใช่ sale listing"],
+        ["Hide", countType("Hide"), "เห็นเฉพาะ owner และไม่แสดงบน public surface"],
+        ["Sold", countType("Sold"), "ปิดการขายแล้วและแสดงแบบ read-only"]
       ];
     }
 
