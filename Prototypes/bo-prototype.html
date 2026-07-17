@@ -4554,15 +4554,15 @@
 
     function getAssetRowActions(asset) {
       const actions = [];
-      if (canAdminForceHideAsset(asset)) actions.push({ action: "hide", label: "Force Hide" });
-      if (isTemporarilyHiddenAsset(asset)) actions.push({ action: "restore-visibility", label: `Restore to ${asset.type}` });
+      if (canAdminForceHideAsset(asset)) actions.push({ action: "hide", label: "ซ่อนชั่วคราว" });
+      if (isTemporarilyHiddenAsset(asset)) actions.push({ action: "restore-visibility", label: "ยกเลิกการซ่อนชั่วคราว" });
       return actions;
     }
 
     function getAssetActionConfig(action, asset) {
       const restoreTarget = asset?.type || "Sale";
       const configs = {
-        hide: { title: "Confirm Force Hide", button: "Force Hide", apply: asset => { asset.status = "Admin Hidden"; asset.action = "ซ่อนโพสต์ชั่วคราวจาก Feed/Search/Profile public surface พร้อมบันทึกเหตุผล"; } },
+        hide: { title: "ยืนยันการซ่อนชั่วคราว", button: "ซ่อนชั่วคราว", apply: asset => { asset.status = "Admin Hidden"; asset.action = "ซ่อนโพสต์ชั่วคราวจาก Feed/Search/Profile public surface พร้อมบันทึกเหตุผล"; } },
         "restore-visibility": { title: `Confirm restore ${restoreTarget} visibility`, button: `Restore ${restoreTarget}`, apply: asset => { asset.status = "Active"; asset.action = `Restore ${restoreTarget} visibility after evidence review and FO sync`; } }
       };
       return configs[action];
