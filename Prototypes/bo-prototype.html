@@ -1179,6 +1179,9 @@
       gap: 8px;
       width: 100%;
     }
+    body.asset-list-mode .user-filter-bar {
+      grid-template-columns: minmax(240px, 1.35fr) repeat(2, minmax(126px, .68fr)) max-content;
+    }
     .user-filter-actions {
       display: none;
     }
@@ -5939,7 +5942,6 @@
       document.querySelector("#primary-action").textContent = data.action;
       if (isAssetList) {
         const assetBrands = Array.from(new Set(data.rows.map(row => getAssetBrand(row)))).sort((a, b) => a.localeCompare(b));
-        const assetOwners = Array.from(new Set(data.rows.map(row => row.owner))).sort((a, b) => a.localeCompare(b));
         document.querySelector("#panel-title").textContent = "Assets";
         document.querySelector("#panel-subtitle").textContent = "";
         document.querySelector("#user-panel-filter-actions").innerHTML = `
@@ -5960,15 +5962,6 @@
               { value: "", label: "All brands" },
               ...assetBrands.map(brand => ({ value: brand, label: brand }))
             ])}</div>
-            <div class="user-advanced-filter">${customSelect("asset-owner-filter", "Filter owner", [
-              { value: "", label: "All owners" },
-              ...assetOwners.map(owner => ({ value: owner, label: owner }))
-            ])}</div>
-            <div class="user-advanced-filter">${customSelect("asset-sort", "Sort assets", [
-              { value: "review", label: "Needs review first" },
-              { value: "priority", label: "Priority first" },
-              { value: "reports", label: "Most reports" }
-            ], "review")}</div>
             <button class="btn filter-reset user-advanced-filter" type="button" data-asset-reset title="รีเซ็ตค่าทั้งหมด" aria-label="รีเซ็ตค่าทั้งหมด">${iconSvg.refresh}<span>รีเซ็ตค่าทั้งหมด</span></button>
           </div>
         `;
@@ -6199,14 +6192,12 @@
       const q = (document.querySelector("#search")?.value || "").trim().toLowerCase();
       const type = document.querySelector("#asset-type-filter")?.value || "";
       const brand = document.querySelector("#asset-brand-filter")?.value || "";
-      const owner = document.querySelector("#asset-owner-filter")?.value || "";
-      const sort = document.querySelector("#asset-sort")?.value || "review";
+      const sort = "review";
       const sorted = [...data.rows].filter(row => {
         const text = getAssetSearchText(row);
         return (!q || text.includes(q))
           && (!type || row.type === type)
-          && (!brand || getAssetBrand(row) === brand)
-          && (!owner || row.owner === owner);
+          && (!brand || getAssetBrand(row) === brand);
       }).sort((a, b) => getAssetSortRank(b, sort) - getAssetSortRank(a, sort));
       const pageCount = Math.max(1, Math.ceil(sorted.length / assetListPageSize));
       assetListPage = Math.min(assetListPage, pageCount);
@@ -6351,7 +6342,7 @@
         select.querySelector("[data-custom-select-trigger]").setAttribute("aria-expanded", "false");
         if (hiddenInput.id === "user-action-reason") updateAccountStatusEmailPreview();
         if (select.hasAttribute("data-custom-select-silent")) return;
-        if (["asset-type-filter", "asset-brand-filter", "asset-owner-filter", "asset-sort"].includes(hiddenInput.id) && activeModule === "assets") {
+        if (["asset-type-filter", "asset-brand-filter"].includes(hiddenInput.id) && activeModule === "assets") {
           assetListPage = 1;
           renderAssetListRows();
           return;
@@ -6847,7 +6838,7 @@
         renderReportedUserRows();
         return;
       }
-      if (event.target.matches("#status-filter, #priority-filter, #asset-type-filter, #asset-brand-filter, #asset-owner-filter, #asset-sort")) {
+      if (event.target.matches("#status-filter, #priority-filter, #asset-type-filter, #asset-brand-filter")) {
         if (activeModule === "assets") assetListPage = 1;
         renderRows();
       }
