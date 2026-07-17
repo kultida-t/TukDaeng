@@ -1058,18 +1058,22 @@
     body.user-detail-mode .detail {
       display: none;
     }
-    body.asset-list-mode .layout {
+    body.asset-list-mode .layout,
+    body.asset-detail-mode .layout {
       grid-template-columns: minmax(0, 1fr);
     }
-    body.asset-list-mode .detail {
+    body.asset-list-mode .detail,
+    body.asset-detail-mode .detail {
       display: none;
     }
-    body.asset-list-mode .layout > .panel {
+    body.asset-list-mode .layout > .panel,
+    body.asset-detail-mode .layout > .panel {
       border-color: #d7e2f0;
       box-shadow: none;
       overflow: visible;
     }
-    body.asset-list-mode #primary-action {
+    body.asset-list-mode #primary-action,
+    body.asset-detail-mode #primary-action {
       display: none;
     }
     body.asset-list-mode .panel-head {
@@ -1089,7 +1093,7 @@
     }
     body.asset-list-mode .filters {
       display: grid;
-      grid-template-columns: minmax(240px, 1.35fr) repeat(2, minmax(126px, .68fr));
+      grid-template-columns: 1fr;
       gap: 8px;
       padding: 12px 16px;
       background: #fff;
@@ -1112,7 +1116,7 @@
     }
     .asset-row {
       display: grid;
-      grid-template-columns: minmax(240px, 1.48fr) minmax(160px, .9fr) minmax(128px, .68fr) minmax(132px, .72fr);
+      grid-template-columns: minmax(220px, 1.35fr) minmax(156px, .78fr) minmax(116px, .58fr) minmax(124px, .62fr) minmax(56px, .26fr);
       gap: 12px;
       align-items: center;
       min-height: 82px;
@@ -1131,11 +1135,19 @@
       padding-bottom: 12px;
       cursor: default;
     }
+    .asset-row.head > div:last-child {
+      display: flex;
+      justify-content: flex-end;
+      text-align: right;
+    }
     .asset-row:last-child {
       border-bottom: 0;
     }
     .asset-row:not(.head):hover {
       background: #f8fbff;
+    }
+    .asset-row:not(.head) {
+      cursor: pointer;
     }
     .asset-row > div {
       min-width: 0;
@@ -2799,7 +2811,8 @@
       .user-filter-actions {
         display: none;
       }
-      body.user-management-mode .user-panel-filter-actions {
+      body.user-management-mode .user-panel-filter-actions,
+      body.asset-list-mode .user-panel-filter-actions {
         display: flex;
         align-items: center;
         justify-content: flex-end;
@@ -3075,6 +3088,9 @@
       body.asset-list-mode .filters {
         grid-template-columns: 1fr;
       }
+      body.asset-list-mode .user-filter-bar {
+        grid-template-columns: 1fr;
+      }
       body.asset-list-mode #table {
         padding: 12px 14px 16px;
         background: #f8fbff;
@@ -3100,6 +3116,12 @@
       }
       body.asset-list-mode .asset-row:not(.head) > div[data-label]:not(.asset-cell-primary) {
         display: none;
+      }
+      body.asset-list-mode .asset-row:not(.head) > .user-row-actions {
+        grid-column: 1;
+        grid-row: 1;
+        align-self: start;
+        justify-self: end;
       }
       body.asset-list-mode .asset-row:not(.head) > .asset-cell-primary {
         grid-column: 1;
@@ -3540,7 +3562,12 @@
       assets: mod("Asset Management", "การดำเนินงาน / Asset Management", "Asset List & Moderation", "จัดการสถานะ Sale, Show, Hide, Sold และ reported assets", "สร้าง asset note", [["Sale", "2,816", "แสดงใน Feed/Search"], ["Show", "428", "แสดงใน collection"], ["Hidden", "76", "owner-only"], ["Reported", "22", "รอตรวจ 9 รายการ"]], [
         item("AST-8831", "Rolex Submariner 16610", "Crown Time BKK", "Sale", "สูง", "Reported", "รูปประกาศซ้ำและราคาเบี่ยงจาก market index", ["THB 318,000", "Reports 5"], "เทียบรูป, proof of payment, provenance และ Market Price Index"),
         item("AST-8802", "Omega Speedmaster", "Vintage Vault BKK", "Sale", "กลาง", "Active", "ราคาสูงกว่าค่ากลาง 18% จากรุ่นเดียวกัน", ["Watch Alert match 12"], "ส่ง warning หรือ force Hide หากข้อมูลหลอกลวง"),
-        item("AST-8791", "Seiko 6139", "Archive Collector", "Hide", "ปกติ", "Owner-only", "รอ account deletion dependency check", ["Deletion linked"], "คงข้อมูล transaction/audit ตาม retention")
+        item("AST-8791", "Seiko 6139", "Archive Collector", "Hide", "ปกติ", "Owner-only", "รอ account deletion dependency check", ["Deletion linked"], "คงข้อมูล transaction/audit ตาม retention"),
+        item("AST-8755", "Patek Philippe Calatrava", "The Collector", "Show", "ปกติ", "Active", "แสดงใน portfolio เท่านั้น ไม่มีปุ่มเสนอซื้อ", ["Portfolio", "Private price"], "ตรวจว่าข้อมูล private ไม่แสดงบน FO public surface"),
+        item("AST-8720", "Tudor Black Bay 58", "Seiko Corner", "Sold", "ปกติ", "Closed", "ขายแล้วและมี sale record เชื่อมกับ offer", ["Sold record", "Offer OFR-488"], "เปิดอ่านได้แบบ read-only และคง audit/sold history"),
+        item("AST-8694", "Audemars Piguet Royal Oak", "Rolex Rama9", "Sale", "สูง", "Reviewing", "มีรายงาน serial/provenance ไม่ตรงกับรูป", ["Reports 3", "High value"], "ตรวจหลักฐานก่อนซ่อนหรือปิด report"),
+        item("AST-8612", "Grand Seiko Snowflake", "Daily Watch Hunter", "Show", "กลาง", "Active", "มี comment report แต่ asset ยังไม่เข้าเกณฑ์ซ่อน", ["Comment report 1"], "ตรวจ social context โดยไม่เปลี่ยนสถานะ asset ทันที"),
+        item("AST-8588", "Cartier Santos Medium", "Minimal Dial", "Hide", "กลาง", "Admin Hidden", "ถูกซ่อนจากรายงาน duplicate content ระหว่างตรวจ", ["Hidden by Admin", "Audit linked"], "คืนสถานะได้เมื่อหลักฐานผ่านการตรวจสอบ")
       ]),
       content: mod("Content Management", "การดำเนินงาน / Content Management", "Board Articles & Banners", "สร้างบทความ, category, banner, schedule และจัดการ reported board content", "สร้างบทความ", [["Published", "126", "อยู่ใน Board"], ["Scheduled", "5", "รอ publish"], ["Draft", "14", "ยังไม่แสดงบน FO"], ["Reported", "3", "ต้อง review"]], [
         item("ART-044", "Vintage Watch Buying Guide", "Editorial", "Article", "ปกติ", "Scheduled", "ตั้งเวลาเผยแพร่ 10 Jul 2026 19:00", ["Board", "Buying Guide"], "Preview as FO และตรวจ cover image ก่อน publish"),
@@ -4060,8 +4087,11 @@
     let reporterHistoryPage = 1;
     let reportAuditHistoryPage = 1;
     let userFilterOpen = false;
+    let assetListPage = 1;
+    let assetFilterOpen = false;
     let activeReportContextId = null;
     const userListPageSize = 10;
+    const assetListPageSize = 10;
     const reportHistoryPageSize = 10;
 
     function resetSessionViewState() {
@@ -4073,6 +4103,8 @@
       reporterHistoryPage = 1;
       reportAuditHistoryPage = 1;
       userFilterOpen = false;
+      assetListPage = 1;
+      assetFilterOpen = false;
       closeRowMenus();
       document.querySelectorAll("[data-custom-select]").forEach(select => {
         select.classList.remove("open");
@@ -4199,6 +4231,162 @@
           </div>
         </div>
       `;
+    }
+
+    function getAssetSummaryStats() {
+      const assets = moduleData.assets.rows;
+      const countType = type => assets.filter(asset => asset.type === type).length;
+      const reported = assets.filter(asset => ["Reported", "Reviewing", "Admin Hidden"].includes(asset.status)).length;
+      return [
+        ["Sale", countType("Sale"), `${assets.filter(asset => asset.type === "Sale" && asset.status === "Reported").length} reported · Feed/Search visible`],
+        ["Show", countType("Show"), "Portfolio display · no direct sale listing"],
+        ["Hide", countType("Hide"), `${assets.filter(asset => asset.type === "Hide" && asset.status === "Admin Hidden").length} admin hidden · owner-only`],
+        ["Sold", countType("Sold"), "Read-only sale record"],
+        ["Needs Review", reported, "Reported, Reviewing, or Admin Hidden"]
+      ];
+    }
+
+    function assetStatusPill(status) {
+      const map = { Sale: "green", Show: "blue", Hide: "purple", Sold: "amber" };
+      return `<span class="pill ${map[status] || "blue"}">${status}</span>`;
+    }
+
+    function getAssetSearchText(asset) {
+      return Object.values(asset).flat().join(" ").toLowerCase();
+    }
+
+    function getAssetSortRank(asset, sort) {
+      if (sort === "priority") return getReportPriorityRank(asset.priority);
+      if (sort === "reports") {
+        const reportTag = (asset.tags || []).find(tag => /reports?\s+\d+/i.test(tag));
+        return reportTag ? parseInt(reportTag.match(/\d+/)?.[0] || "0", 10) : 0;
+      }
+      const statusRank = { Reported: 5, Reviewing: 4, "Admin Hidden": 3, Active: 2, "Owner-only": 1, Closed: 0 };
+      return statusRank[asset.status] ?? 0;
+    }
+
+    function getAssetRowActions(asset) {
+      const actions = [{ action: "review", label: asset.status === "Reported" || asset.status === "Reviewing" ? "Mark reviewed" : "Add review note" }];
+      if (asset.type !== "Hide" && asset.type !== "Sold") actions.push({ action: "hide", label: "Force Hide" });
+      if (asset.type === "Hide") actions.push({ action: "restore-sale", label: "Restore to Sale" });
+      if (asset.type === "Sale" || asset.type === "Show") actions.push({ action: "sold", label: "Mark as Sold" });
+      return actions;
+    }
+
+    function getAssetActionConfig(action) {
+      const configs = {
+        review: { title: "Confirm asset review", button: "Confirm review", apply: asset => { asset.status = "Active"; asset.priority = "ปกติ"; asset.action = "ตรวจแล้วและบันทึก review note ใน audit"; } },
+        hide: { title: "Confirm Force Hide", button: "Force Hide", apply: asset => { asset.type = "Hide"; asset.status = "Admin Hidden"; asset.action = "ซ่อน asset จาก Feed/Search/Profile public surface พร้อมบันทึกเหตุผล"; } },
+        "restore-sale": { title: "Confirm restore to Sale", button: "Restore to Sale", apply: asset => { asset.type = "Sale"; asset.status = "Active"; asset.action = "คืน asset กลับสู่ Sale หลังตรวจหลักฐานและ sync FO"; } },
+        sold: { title: "Confirm Mark as Sold", button: "Mark as Sold", apply: asset => { asset.type = "Sold"; asset.status = "Closed"; asset.action = "ปิด listing เป็น Sold และเก็บ sale record แบบ read-only"; } }
+      };
+      return configs[action];
+    }
+
+    function renderAssetRowActionMenu(asset) {
+      return `
+        <details class="row-menu">
+          <summary title="Asset actions">...</summary>
+          <div class="row-menu-list">
+            <button type="button" data-asset-open="${asset.id}">ดูรายละเอียด</button>
+            ${getAssetRowActions(asset).map(({ action, label }) => `<button type="button" data-asset-action="${action}" data-asset-id="${asset.id}">${label}</button>`).join("")}
+          </div>
+        </details>
+      `;
+    }
+
+    function renderAssetActionModal(asset, action) {
+      const config = getAssetActionConfig(action);
+      if (!asset || !config) return;
+      const modal = document.querySelector("#user-action-modal");
+      const modalBody = document.querySelector("#user-action-modal-body");
+      modalBody.innerHTML = `
+        <div class="user-action-page">
+          <div class="user-action-head">
+            <div>
+              <h2 id="user-action-modal-title">${config.title}</h2>
+              <p>${asset.id} · ${asset.name}</p>
+            </div>
+            <button class="btn user-action-close" type="button" data-user-action-modal-close aria-label="Close modal" title="Close">
+              ${iconSvg.close}
+            </button>
+          </div>
+          <div class="user-action-card">
+            <div class="detail-grid two">
+              <div class="detail-tile"><span>Current Asset Status</span><strong>${asset.type}</strong></div>
+              <div class="detail-tile"><span>Review Status</span><strong>${asset.status}</strong></div>
+              <div class="detail-tile"><span>Owner</span><strong>${asset.owner}</strong></div>
+              <div class="detail-tile"><span>Priority</span><strong>${asset.priority}</strong></div>
+            </div>
+            <div class="module-note"><strong>FO impact:</strong> Asset actions sync visibility to Feed, Search, Profile, Watch Alert, Offer, Chat reference, and Audit Log.</div>
+          </div>
+          <div class="user-action-footer">
+            <button class="user-detail-action-btn" type="button" data-user-action-modal-close>ยกเลิก</button>
+            <button class="user-detail-action-btn primary" type="button" data-asset-action-confirm="${action}" data-asset-id="${asset.id}">${config.button}</button>
+          </div>
+        </div>
+      `;
+      modal.classList.add("show");
+    }
+
+    function confirmAssetAction(asset, action) {
+      const config = getAssetActionConfig(action);
+      if (!asset || !config) return;
+      const before = `${asset.type} / ${asset.status}`;
+      config.apply(asset);
+      closeUserActionModal();
+      if (document.body.classList.contains("asset-detail-mode")) renderAssetDetailPage(asset);
+      else renderAssetListRows();
+      showSuccessToast(`${asset.id}: ${before} → ${asset.type} / ${asset.status}`);
+    }
+
+    function renderAssetDetailPage(asset) {
+      if (!asset) return;
+      activeModule = "assets";
+      activeSub = "Asset List";
+      activeRow = asset;
+      document.body.classList.add("asset-list-mode", "asset-detail-mode");
+      document.querySelector("#crumb").textContent = `การดำเนินงาน / Asset Management / Asset List / ${asset.id}`;
+      document.querySelector("#page-title").textContent = "Asset Detail";
+      document.querySelector("#page-meta").textContent = "";
+      document.querySelector("#panel-title").textContent = "Asset Detail";
+      document.querySelector("#panel-subtitle").textContent = "";
+      document.querySelector("#user-panel-filter-actions").innerHTML = "";
+      document.querySelector(".filters").innerHTML = "";
+      document.querySelector("#summary-grid").innerHTML = "";
+      document.querySelector("#cards").innerHTML = "";
+      document.querySelector("#detail").innerHTML = "";
+      document.querySelector("#table").innerHTML = `
+        <div class="user-detail-page">
+          <div class="user-detail-head">
+            <div>
+              <button class="btn user-back-btn" type="button" data-back-asset-list aria-label="กลับไป Asset List" title="กลับไป Asset List">
+                ${iconSvg.chevron}
+              </button>
+              <h2>${asset.name}</h2>
+              <p>${asset.id} · ${asset.owner}</p>
+            </div>
+            <div class="user-detail-actions">
+              ${getAssetRowActions(asset).map(({ action, label }) => `<button class="user-detail-action-btn" type="button" data-asset-action="${action}" data-asset-id="${asset.id}">${label}</button>`).join("")}
+            </div>
+          </div>
+          <div class="detail-grid two">
+            <div class="detail-tile"><span>Asset Status</span><strong>${asset.type}</strong></div>
+            <div class="detail-tile"><span>Review Status</span><strong>${asset.status}</strong></div>
+            <div class="detail-tile"><span>Owner</span><strong>${asset.owner}</strong></div>
+            <div class="detail-tile"><span>Priority</span><strong>${asset.priority}</strong></div>
+            <div class="detail-tile"><span>Detail</span><strong>${asset.detail}</strong></div>
+            <div class="detail-tile"><span>Admin Action</span><strong>${asset.action}</strong></div>
+          </div>
+          <div class="detail-section">
+            <h4>Linked Context</h4>
+            <div class="chips">${asset.tags.map(tag => `<span class="chip">${tag}</span>`).join("")}</div>
+            <div class="module-note"><strong>Visibility rule:</strong> Sale appears in Feed/Search, Show appears as portfolio display, Hide is owner/Admin-only, and Sold is read-only with sale history.</div>
+          </div>
+        </div>
+      `;
+      updateActiveNav();
+      scrollMainToTop();
     }
 
     function renderUserManagement(subLabel = "User List") {
@@ -5710,6 +5898,7 @@
       document.body.classList.toggle("dashboard-mode", id === "dashboard");
       document.body.classList.toggle("user-management-mode", id === "users");
       document.body.classList.toggle("asset-list-mode", isAssetList);
+      document.body.classList.remove("asset-detail-mode");
       if (id !== "users") {
         document.body.classList.remove("user-list-mode", "user-detail-mode");
         document.querySelector("#user-panel-filter-actions").innerHTML = "";
@@ -5735,18 +5924,39 @@
       if (isAssetList) {
         document.querySelector("#panel-title").textContent = "Assets";
         document.querySelector("#panel-subtitle").textContent = "";
-        document.querySelector(".filters").innerHTML = `
-          <input class="field search" id="search" type="search" placeholder="Search asset ID, name, or owner" />
-          <select class="field" id="asset-type-filter" aria-label="Filter listing status">
-            <option value="">All listing status</option>
-            ${Array.from(new Set(data.rows.map(row => row.type))).map(type => `<option value="${type}">${type}</option>`).join("")}
-          </select>
-          <select class="field" id="status-filter" aria-label="Filter review status">
-            <option value="">All review status</option>
-            ${Array.from(new Set(data.rows.map(row => row.status))).map(status => `<option value="${status}">${status}</option>`).join("")}
-          </select>
+        document.querySelector("#user-panel-filter-actions").innerHTML = `
+          <button class="btn user-filter-toggle" type="button" data-asset-filter-toggle aria-expanded="${assetFilterOpen}">${iconSvg.filter}<span>${assetFilterOpen ? "ปิดตัวกรอง" : "เปิดตัวกรอง"}</span></button>
+          <button class="btn" type="button" data-asset-reset title="รีเซ็ตค่าทั้งหมด" aria-label="รีเซ็ตค่าทั้งหมด">${iconSvg.refresh}<span>รีเซ็ตค่าทั้งหมด</span></button>
         `;
-        document.querySelector("#summary-grid").innerHTML = "";
+        document.querySelector(".filters").innerHTML = `
+          <div class="user-filter-bar" data-filter-open="${assetFilterOpen}">
+            <input class="field search" id="search" type="search" placeholder="Search asset ID, name, owner, report" />
+            <div class="user-advanced-filter">${customSelect("asset-type-filter", "Filter asset status", [
+              { value: "", label: "All asset status" },
+              { value: "Sale", label: "Sale" },
+              { value: "Show", label: "Show" },
+              { value: "Hide", label: "Hide" },
+              { value: "Sold", label: "Sold" }
+            ])}</div>
+            <div class="user-advanced-filter">${customSelect("status-filter", "Filter review status", [
+              { value: "", label: "All review status" },
+              ...Array.from(new Set(data.rows.map(row => row.status))).map(status => ({ value: status, label: status }))
+            ])}</div>
+            <div class="user-advanced-filter">${customSelect("asset-sort", "Sort assets", [
+              { value: "review", label: "Needs review first" },
+              { value: "priority", label: "Priority first" },
+              { value: "reports", label: "Most reports" }
+            ], "review")}</div>
+            <button class="btn filter-reset user-advanced-filter" type="button" data-asset-reset title="รีเซ็ตค่าทั้งหมด" aria-label="รีเซ็ตค่าทั้งหมด">${iconSvg.refresh}<span>รีเซ็ตค่าทั้งหมด</span></button>
+          </div>
+        `;
+        document.querySelector("#summary-grid").innerHTML = getAssetSummaryStats().map(stat => `
+          <article class="stat">
+            <div class="stat-label">${stat[0]}</div>
+            <div class="stat-value">${stat[1]}</div>
+            <div class="stat-note">${stat[2]}</div>
+          </article>
+        `).join("");
         document.querySelector("#cards").innerHTML = "";
         document.querySelector("#detail").innerHTML = "";
         renderRows();
@@ -5964,35 +6174,61 @@
 
     function renderAssetListRows() {
       const data = moduleData.assets;
-      const q = document.querySelector("#search").value.trim().toLowerCase();
-      const status = document.querySelector("#status-filter").value;
-      const type = document.querySelector("#asset-type-filter").value;
-      const filtered = data.rows.filter(row => {
+      const q = (document.querySelector("#search")?.value || "").trim().toLowerCase();
+      const status = document.querySelector("#status-filter")?.value || "";
+      const type = document.querySelector("#asset-type-filter")?.value || "";
+      const sort = document.querySelector("#asset-sort")?.value || "review";
+      const sorted = [...data.rows].filter(row => {
         const text = Object.values(row).flat().join(" ").toLowerCase();
         return (!q || text.includes(q)) && (!status || row.status === status) && (!type || row.type === type);
-      });
+      }).sort((a, b) => getAssetSortRank(b, sort) - getAssetSortRank(a, sort));
+      const pageCount = Math.max(1, Math.ceil(sorted.length / assetListPageSize));
+      assetListPage = Math.min(assetListPage, pageCount);
+      const start = (assetListPage - 1) * assetListPageSize;
+      const pageRows = sorted.slice(start, start + assetListPageSize);
+      document.querySelector("#summary-grid").innerHTML = getAssetSummaryStats().map(stat => `
+        <article class="stat">
+          <div class="stat-label">${stat[0]}</div>
+          <div class="stat-value">${stat[1]}</div>
+          <div class="stat-note">${stat[2]}</div>
+        </article>
+      `).join("");
+      document.querySelector("#panel-subtitle").textContent = "";
       const table = document.querySelector("#table");
       table.innerHTML = `
         <div class="asset-table">
-          <div class="asset-row head"><div>Asset</div><div>Owner</div><div>Listing Status</div><div>Review Status</div></div>
-          ${filtered.map(row => `
-            <div class="asset-row">
+          <div class="asset-row head"><div>Asset</div><div>Owner</div><div>Asset Status</div><div>Review Status</div><div>Action</div></div>
+          ${pageRows.map(row => `
+            <div class="asset-row" data-asset-card="${row.id}">
               <div class="asset-cell-primary" data-label="Asset">
                 <div class="main-text">${row.name}</div>
-                <div class="muted">${row.id}</div>
+                <div class="muted">${row.id} · ${row.detail}</div>
               </div>
               <div class="asset-card-tags">
-                <span class="user-card-tag asset-tag">${row.type}</span>
+                ${assetStatusPill(row.type)}
                 ${statusPill(row.status, row.priority)}
+                <span class="user-card-tag asset-tag">${row.priority}</span>
                 <div class="user-card-meta">
                   <div class="user-card-meta-item"><span>Owner</span><strong>${row.owner}</strong></div>
+                  <div class="user-card-meta-item"><span>Action</span><strong>${row.action}</strong></div>
                 </div>
               </div>
               <div data-label="Owner"><div class="main-text">${row.owner}</div></div>
-              <div data-label="Listing Status"><span class="pill blue">${row.type}</span></div>
+              <div data-label="Asset Status">${assetStatusPill(row.type)}</div>
               <div data-label="Review Status">${statusPill(row.status, row.priority)}</div>
+              <div class="user-row-actions">
+                ${renderAssetRowActionMenu(row)}
+              </div>
             </div>
           `).join("") || `<div class="detail-empty user-empty">No assets match the selected filters</div>`}
+        </div>
+        <div class="footer-range">
+          <span>แสดง ${sorted.length ? `${start + 1}-${Math.min(start + assetListPageSize, sorted.length)}` : "0"} จาก ${sorted.length}</span>
+          <div class="pager">
+            <button class="btn" type="button" data-asset-page="prev" ${assetListPage <= 1 ? "disabled" : ""}>ก่อนหน้า</button>
+            ${Array.from({ length: pageCount }, (_, index) => `<button class="btn ${index + 1 === assetListPage ? "active" : ""}" type="button" data-asset-page="${index + 1}">${index + 1}</button>`).join("")}
+            <button class="btn" type="button" data-asset-page="next" ${assetListPage >= pageCount ? "disabled" : ""}>ถัดไป</button>
+          </div>
         </div>
       `;
     }
@@ -6087,9 +6323,14 @@
         select.querySelector("[data-custom-select-trigger]").setAttribute("aria-expanded", "false");
         if (hiddenInput.id === "user-action-reason") updateAccountStatusEmailPreview();
         if (select.hasAttribute("data-custom-select-silent")) return;
+        if (["asset-type-filter", "status-filter", "asset-sort"].includes(hiddenInput.id) && activeModule === "assets") {
+          assetListPage = 1;
+          renderAssetListRows();
+          return;
+        }
         userListPage = 1;
         if (activeModule === "users" && (activeSub === "Report User" || activeSub === "Reported Users")) renderReportedUserRows();
-        else renderUserRows();
+        else if (activeModule === "users") renderUserRows();
         return;
       }
       const customTrigger = event.target.closest("[data-custom-select-trigger]");
@@ -6222,6 +6463,32 @@
         renderUserDetailPage(user);
         return;
       }
+      const assetActionConfirm = event.target.closest("[data-asset-action-confirm]");
+      if (assetActionConfirm) {
+        const asset = moduleData.assets.rows.find(entry => entry.id === assetActionConfirm.dataset.assetId);
+        confirmAssetAction(asset, assetActionConfirm.dataset.assetActionConfirm);
+        return;
+      }
+      const assetActionButton = event.target.closest("[data-asset-action]");
+      if (assetActionButton) {
+        const asset = moduleData.assets.rows.find(entry => entry.id === assetActionButton.dataset.assetId);
+        renderAssetActionModal(asset, assetActionButton.dataset.assetAction);
+        closeRowMenus();
+        return;
+      }
+      const assetOpenButton = event.target.closest("[data-asset-open]");
+      if (assetOpenButton) {
+        const asset = moduleData.assets.rows.find(entry => entry.id === assetOpenButton.dataset.assetOpen);
+        renderAssetDetailPage(asset);
+        closeRowMenus();
+        return;
+      }
+      const assetCard = event.target.closest("[data-asset-card]");
+      if (assetCard && !event.target.closest(".row-menu, button, a, input, select, [data-custom-select]")) {
+        const asset = moduleData.assets.rows.find(entry => entry.id === assetCard.dataset.assetCard);
+        renderAssetDetailPage(asset);
+        return;
+      }
       const reportStatusButton = event.target.closest("[data-report-status-action]");
       if (reportStatusButton) {
         const report = userManagementData.reports.find(entry => entry.id === reportStatusButton.dataset.reportId);
@@ -6260,6 +6527,32 @@
         if (label) label.textContent = userFilterOpen ? "ปิดตัวกรอง" : "เปิดตัวกรอง";
         return;
       }
+      const assetReset = event.target.closest("[data-asset-reset]");
+      if (assetReset) {
+        assetListPage = 1;
+        assetFilterOpen = false;
+        renderModule("assets", "Asset List", "Asset List");
+        return;
+      }
+      const assetFilterToggle = event.target.closest("[data-asset-filter-toggle]");
+      if (assetFilterToggle) {
+        assetFilterOpen = !assetFilterOpen;
+        const filterBar = document.querySelector(".user-filter-bar");
+        if (filterBar) filterBar.dataset.filterOpen = String(assetFilterOpen);
+        assetFilterToggle.setAttribute("aria-expanded", String(assetFilterOpen));
+        const label = assetFilterToggle.querySelector("span");
+        if (label) label.textContent = assetFilterOpen ? "ปิดตัวกรอง" : "เปิดตัวกรอง";
+        return;
+      }
+      const assetPageButton = event.target.closest("[data-asset-page]");
+      if (assetPageButton) {
+        const target = assetPageButton.dataset.assetPage;
+        if (target === "prev") assetListPage = Math.max(1, assetListPage - 1);
+        else if (target === "next") assetListPage += 1;
+        else assetListPage = Number(target) || 1;
+        renderAssetListRows();
+        return;
+      }
       const userPageButton = event.target.closest("[data-user-page]");
       if (userPageButton) {
         const target = userPageButton.dataset.userPage;
@@ -6296,6 +6589,11 @@
       const backUserList = event.target.closest("[data-back-user-list]");
       if (backUserList) {
         renderModule("users", "User List", "User List");
+        return;
+      }
+      const backAssetList = event.target.closest("[data-back-asset-list]");
+      if (backAssetList) {
+        renderModule("assets", "Asset List", "Asset List");
         return;
       }
     });
@@ -6501,7 +6799,10 @@
         else if (activeModule === "users") renderUserRows();
         return;
       }
-      if (event.target.matches("#search")) renderRows();
+      if (event.target.matches("#search")) {
+        if (activeModule === "assets") assetListPage = 1;
+        renderRows();
+      }
     });
     document.addEventListener("change", event => {
       if (event.target.matches("[data-calendar-only]")) {
@@ -6518,7 +6819,10 @@
         renderReportedUserRows();
         return;
       }
-      if (event.target.matches("#status-filter, #priority-filter, #asset-type-filter")) renderRows();
+      if (event.target.matches("#status-filter, #priority-filter, #asset-type-filter, #asset-sort")) {
+        if (activeModule === "assets") assetListPage = 1;
+        renderRows();
+      }
     });
     document.addEventListener("paste", event => {
       if (event.target.matches("[data-calendar-only]")) event.preventDefault();
