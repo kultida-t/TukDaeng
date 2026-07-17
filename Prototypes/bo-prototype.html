@@ -4789,8 +4789,8 @@
       const isSuspend = action === "Suspend";
       const publicReference = user.support && user.support !== "None" ? user.support : "Account status notice";
       const subject = isSuspend
-        ? "[TukDaeng] Your account has been temporarily suspended"
-        : "[TukDaeng] Your account has been permanently suspended";
+        ? "[TukDaeng] บัญชีของคุณถูกระงับชั่วคราว"
+        : "[TukDaeng] บัญชีของคุณถูกระงับถาวร";
       const statusLine = isSuspend
         ? "บัญชีของคุณถูกระงับชั่วคราวระหว่างการตรวจสอบ"
         : "บัญชีของคุณถูกระงับถาวรจากผลการตรวจสอบ";
@@ -4827,7 +4827,7 @@
         <details class="email-preview" data-account-status-email-preview data-user-id="${user.id}" data-action="${action}">
           <summary>ดูตัวอย่างอีเมลแจ้งเตือน</summary>
           <div class="email-preview-body">
-            <div class="email-preview-subject"><strong>Subject:</strong> <span data-email-preview-subject>${emailCopy.subject}</span></div>
+            <div class="email-preview-subject"><strong>หัวข้อ:</strong> <span data-email-preview-subject>${emailCopy.subject}</span></div>
             <div class="email-preview-message" data-email-preview-message>
               ${renderAccountStatusEmailPreviewMessage(emailCopy)}
             </div>
