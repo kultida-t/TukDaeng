@@ -930,7 +930,8 @@
       color: var(--muted);
       text-align: center;
     }
-    .user-table .user-empty {
+    .user-table .user-empty,
+    .asset-table .user-empty {
       font-size: 13px;
       font-weight: 400;
       line-height: 1.45;
@@ -5876,7 +5877,7 @@
               </div>
             </div>
           `;
-          }).join("") || `<div class="detail-empty user-empty">ไม่พบผู้ใช้</div>`}
+          }).join("") || `<div class="detail-empty user-empty">ไม่พบข้อมูล</div>`}
         </div>
         <div class="footer-range">
           <span>แสดง ${sorted.length ? `${start + 1}-${Math.min(start + userListPageSize, sorted.length)}` : "0"} จาก ${sorted.length}</span>
@@ -5932,7 +5933,7 @@
                 ${renderReportRowActionMenu(report)}
               </div>
             </div>
-          `).join("") || `<div class="detail-empty user-empty">ไม่พบ report ตาม filter ที่เลือก</div>`}
+          `).join("") || `<div class="detail-empty user-empty">ไม่พบข้อมูล</div>`}
         </div>
         <div class="footer-range">
           <span>แสดง ${sorted.length ? `${start + 1}-${Math.min(start + userListPageSize, sorted.length)}` : "0"} จาก ${sorted.length}</span>
@@ -6418,7 +6419,7 @@
             <div>${statusPill(row.status, row.priority)}</div>
             <div><button class="panel-action" type="button" data-row-action="${row.id}">${iconSvg.eye}ดูรายละเอียด</button></div>
           </div>
-        `).join("") || `<div class="detail-empty">ไม่พบรายการตาม filter ที่เลือก</div>`}
+        `).join("") || `<div class="detail-empty">ไม่พบข้อมูล</div>`}
       `;
     }
 
@@ -6468,7 +6469,7 @@
                 ${renderAssetRowActionMenu(row)}
               </div>
             </div>
-          `).join("") || `<div class="detail-empty user-empty">No assets match the selected filters</div>`}
+          `).join("") || `<div class="detail-empty user-empty">ไม่พบข้อมูล</div>`}
         </div>
         <div class="footer-range">
           <span>แสดง ${sorted.length ? `${start + 1}-${Math.min(start + assetListPageSize, sorted.length)}` : "0"} จาก ${sorted.length}</span>
