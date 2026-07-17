@@ -1091,6 +1091,28 @@
     body.asset-list-mode .panel-head p {
       display: none;
     }
+    body.asset-list-mode .summary-grid {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    }
+    body.asset-list-mode .stat-note.chips {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+    body.asset-list-mode .asset-brand-ranking {
+      display: grid;
+      gap: 8px;
+      margin-top: 8px;
+    }
+    body.asset-list-mode .asset-brand-ranking .brand-ranking-row {
+      min-height: 34px;
+    }
+    body.asset-list-mode .asset-brand-ranking .brand-ranking-top {
+      grid-template-columns: minmax(86px, 1fr) auto;
+    }
+    body.asset-list-mode .asset-brand-ranking .brand-searches {
+      font-size: 19px;
+    }
     body.asset-list-mode .filters {
       display: grid;
       grid-template-columns: 1fr;
@@ -2725,6 +2747,9 @@
       }
       .tools { justify-content: flex-start; }
       .summary-grid, .cards, .nav { grid-template-columns: 1fr; }
+      body.asset-list-mode .summary-grid {
+        grid-template-columns: 1fr;
+      }
       body.user-management-mode .summary-grid {
         grid-template-columns: repeat(2, minmax(0, 1fr));
         gap: 10px;
@@ -4255,12 +4280,46 @@
     function getAssetSummaryStats() {
       const assets = moduleData.assets.rows;
       const countType = type => assets.filter(asset => asset.type === type).length;
+      const brandCounts = assets.reduce((counts, asset) => {
+        const brand = getAssetBrand(asset);
+        counts[brand] = (counts[brand] || 0) + 1;
+        return counts;
+      }, {});
+      const topBrands = Object.entries(brandCounts)
+        .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))
+        .slice(0, 4);
       return [
-        ["Sale", countType("Sale"), "แสดงใน Feed/Search และรับ offer ได้"],
-        ["Show", countType("Show"), "แสดงใน portfolio/profile แต่ไม่ใช่ sale listing"],
-        ["Hide", countType("Hide"), "เห็นเฉพาะ owner และไม่แสดงบน public surface"],
-        ["Sold", countType("Sold"), "ปิดการขายแล้วและแสดงแบบ read-only"]
+        ["All Assets", assets.length, [
+          `Sale ${countType("Sale")}`,
+          `Show ${countType("Show")}`,
+          `Hide ${countType("Hide")}`,
+          `Sold ${countType("Sold")}`
+        ], "chips"],
+        ["Top Brands Added", `Top ${topBrands.length}`, topBrands, "brand-ranking"]
       ];
+    }
+
+    function renderAssetSummaryNote(stat) {
+      if (stat[3] === "chips") return stat[2].map(item => `<span class="chip">${item}</span>`).join("");
+      if (stat[3] === "brand-ranking") {
+        const maxCount = Math.max(...stat[2].map(brand => brand[1]), 1);
+        return `
+          <div class="asset-brand-ranking">
+            ${stat[2].map(([brand, count]) => `
+              <span class="brand-ranking-row">
+                <span class="brand-ranking-top">
+                  <span class="ranking-brand-name">${brand}</span>
+                  <span class="brand-searches">${count}</span>
+                </span>
+                <span class="brand-bar-line">
+                  <span class="brand-bar-track"><span class="brand-bar-fill" style="width: ${Math.round((count / maxCount) * 100)}%"></span></span>
+                </span>
+              </span>
+            `).join("")}
+          </div>
+        `;
+      }
+      return stat[2];
     }
 
     function assetStatusPill(status) {
@@ -5969,7 +6028,7 @@
           <article class="stat">
             <div class="stat-label">${stat[0]}</div>
             <div class="stat-value">${stat[1]}</div>
-            <div class="stat-note">${stat[2]}</div>
+            <div class="stat-note ${stat[3] || ""}">${renderAssetSummaryNote(stat)}</div>
           </article>
         `).join("");
         document.querySelector("#cards").innerHTML = "";
@@ -6207,7 +6266,7 @@
         <article class="stat">
           <div class="stat-label">${stat[0]}</div>
           <div class="stat-value">${stat[1]}</div>
-          <div class="stat-note">${stat[2]}</div>
+          <div class="stat-note ${stat[3] || ""}">${renderAssetSummaryNote(stat)}</div>
         </article>
       `).join("");
       document.querySelector("#panel-subtitle").textContent = "";
