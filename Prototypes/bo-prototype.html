@@ -1192,13 +1192,13 @@
       padding: 14px 20px 16px;
     }
     body.asset-list-mode .asset-brand-ranking .brand-ranking-row {
-      min-height: 44px;
+      min-height: 36px;
       display: grid;
       grid-template-columns: minmax(0, 1fr) minmax(86px, auto);
       grid-template-rows: auto auto;
-      gap: 8px 16px;
+      gap: 6px 16px;
       align-items: end;
-      padding: 8px 0;
+      padding: 5px 0;
     }
     body.asset-list-mode .asset-brand-ranking .ranking-brand-name {
       grid-column: 1;
@@ -1217,7 +1217,8 @@
       align-items: center;
       grid-column: 1 / -1;
       grid-row: 2;
-      grid-template-columns: minmax(0, 1fr);
+      grid-template-columns: minmax(0, 1fr) 42px;
+      gap: 12px;
     }
     body.asset-list-mode .asset-brand-ranking .brand-bar-track {
       height: 6px;
@@ -1232,13 +1233,11 @@
       background: var(--brand);
     }
     body.asset-list-mode .asset-brand-meta {
-      display: inline-grid;
-      grid-template-columns: auto auto;
+      display: grid;
       justify-content: end;
       align-items: baseline;
       grid-column: 2;
       grid-row: 1;
-      gap: 8px;
     }
     body.asset-list-mode .asset-brand-share {
       color: #536983;
@@ -4491,9 +4490,9 @@
                   <span class="ranking-brand-name">${brand}</span>
                   <span class="brand-bar-line">
                     <span class="brand-bar-track"><span class="brand-bar-fill" style="width: ${barWidth}%"></span></span>
+                    <span class="asset-brand-share">${share}%</span>
                   </span>
                   <span class="asset-brand-meta">
-                    <span class="asset-brand-share">${share}%</span>
                     <span class="brand-searches">${count.toLocaleString()}</span>
                   </span>
                 </span>
