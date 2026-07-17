@@ -182,6 +182,7 @@ BO ต้องแสดงข้อมูลกลุ่มนี้ตาม A
 | `Removed/Hidden` | Hidden from public FO surfaces | No | No | No | Existing related offers invalidated/cancelled per offer policy |
 
 หมายเหตุ: เอกสาร BO ตั้งแต่ `BO-04-v0.1` เป็นต้นไปให้ใช้ status ตาม FO คือ `Show` และ `Hide` เท่านั้น
+`Hide` ในตารางนี้หมายถึง owner ตั้ง asset ให้เห็นเฉพาะเจ้าของ ไม่ใช่การซ่อนชั่วคราวจาก report/moderation
 
 ## 8. Status Change Rules
 
@@ -198,9 +199,9 @@ Admin force status change ต้องมี:
 
 | Change | Required Result |
 | --- | --- |
-| `Sale` -> `Sold` | ถอดจาก Feed, Search, Watch Alert, public marketplace surfaces; owner เห็นใน Sold tab; main asset edit ใน FO เป็น read-only |
-| `Sale` -> `Hide` | ถอดจาก public surfaces ทั้งหมด เหลือ owner-only |
-| `Hide` -> `Sale` | กลับเข้า Feed/Search/Watch Alert เมื่อผ่าน moderation และข้อมูลครบ |
+| `Sale` -> `Sold` | ไม่ใช่ BO quick action; ต้องมาจาก owner action หรือ transaction/offer flow เท่านั้น หลังเปลี่ยนแล้วถอดจาก Feed, Search, Watch Alert, public marketplace surfaces; owner เห็นใน Sold tab; main asset edit ใน FO เป็น read-only |
+| `Sale` -> `Hide` | Owner action เท่านั้นใน V1; ถอดจาก public surfaces ทั้งหมด เหลือ owner-only |
+| `Hide` -> `Sale` | Owner action เท่านั้นใน V1; กลับเข้า Feed/Search/Watch Alert เมื่อข้อมูลครบตาม FO rule |
 | `Show` -> `Sale` | กลับเข้า marketplace surfaces และรับ offer ได้ตาม FO rule |
 | `Sale` -> `Show` | หายจาก Feed/Search/Watch Alert แต่ยังอยู่ public profile/detail |
 | Any -> `Removed/Hidden` | หายจาก public surfaces และ direct link ต้องแสดง unavailable behavior ตาม FO policy |
@@ -212,9 +213,13 @@ Admin force status change ต้องมี:
 เมื่อ FO user report asset:
 
 - Asset ต้องเข้า BO reported asset queue
-- Asset ไม่ควรถูกซ่อนจาก FO ทันที เว้นแต่มี policy/system rule ชัดเจน
-- Admin หรือ Admin ต้อง review report แล้วเลือก action
-- Action ที่เป็นไปได้: resolve/no action, flag, unflag, force status, soft remove
+- Report 1 ครั้ง: เข้า reported asset queue และยังไม่ซ่อนจาก FO
+- Report 3 ครั้งจาก unique reporter: ยกระดับเป็น priority review / `Reviewing` แต่ยังไม่ซ่อนจาก FO อัตโนมัติ
+- Report 5 ครั้งจาก unique reporter: ระบบซ่อนโพสต์ชั่วคราวได้โดยคง `Asset Status` เดิม เช่น `Sale` หรือ `Show` และตั้ง `Moderation State` เป็น `Auto Hidden` หรือ `Pending Review` เพื่อรอ Admin ตรวจสอบ
+- การซ่อนอัตโนมัติจากจำนวน report ต้องนับ unique reporter เท่านั้น ไม่นับ report ซ้ำจาก user เดิม และต้องมี guardrail กัน report bombing จากบัญชีใหม่หรือกลุ่มบัญชีที่เกี่ยวข้องกัน
+- กรณี risk สูง เช่น scam, counterfeit, stolen image, ข้อมูลหลอกลวง หรือ external payment fraud ใน V1 ยังไม่มี automated detector/verified signal ให้ซ่อนอัตโนมัติจาก reason เพียงอย่างเดียว; ให้เข้า priority review และให้ Admin ใช้ `Force Hide` เองหลังดู evidence
+- Admin ต้อง review report แล้วเลือก action
+- Action ที่เป็นไปได้ใน V1: no action/keep visible, Force Hide โดยตั้ง `Moderation State = Admin Hidden`, Restore visibility หลังตรวจแล้วไม่ผิด, soft remove ตาม policy
 - ทุกผลลัพธ์ต้อง audit-log และผูกกลับ report record
 
 Reported asset detail ควรแสดง:

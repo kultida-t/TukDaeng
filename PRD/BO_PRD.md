@@ -174,8 +174,9 @@ Admin ต้องสามารถ:
 - ดู user reports
 - Flag / Unflag asset
 - Remove asset แบบ soft delete
-- Force change status
+- Force Hide / Restore Visibility สำหรับ moderation เท่านั้น
 - ดู Provenance, Proof of Payment, Consignment และ Sale History ตามสิทธิ์
+- ไม่แก้ข้อมูลประกาศของ user-owned asset โดยตรง และไม่เปลี่ยน `Sold` จาก BO quick action
 
 ### Asset Status Rules
 
@@ -183,13 +184,15 @@ Admin ต้องสามารถ:
 |---|---|
 | Sale | เห็นใน Feed / Marketplace / Owner Profile / Viewer Profile |
 | Show | เห็นใน Owner Profile และ Viewer Profile แต่ไม่ขาย |
-| Hide | เห็นเฉพาะเจ้าของ |
+| Hide | เห็นเฉพาะเจ้าของ และหมายถึง owner ตั้งซ่อนเอง ไม่ใช่ report/moderation hidden |
 | Sold | เห็นเฉพาะเจ้าของใน Sold tab และแก้ไขไม่ได้ |
 
 ### Acceptance Criteria
 
 - กด View asset ต้องเห็นข้อมูลที่ใช้ตรวจสอบได้ครบ
-- Force status ต้องเปลี่ยนผลการแสดงบน FO ทันที
+- Force Hide / Restore Visibility ต้องเปลี่ยนผลการแสดงบน FO ทันที พร้อม reason และ audit
+- Report threshold สำหรับ asset: 1 report เข้า queue, 3 unique reports ยกระดับ priority review, 5 unique reports ซ่อนโพสต์ชั่วคราวอัตโนมัติเพื่อรอ Admin review โดยคง `Asset Status` เดิมและใช้ `Moderation State = Auto Hidden`
+- High-risk report reason ยังไม่ auto-hide ใน V1 หากไม่มี automated detector/verified signal; ต้องเข้า priority review และให้ Admin กด Force Hide หลังตรวจ evidence
 - Sensitive fields ต้องเห็นเฉพาะ Admin
 - ทุก action ต้องบันทึก before/after ใน audit log
 

@@ -3738,20 +3738,20 @@
         item("U-1042", "Nattapol P.", "Apple", "Buyer", "ปกติ", "Active", "มี support ticket เรื่อง proof of payment", ["Ticket 1"], "เปิด ticket และดูประวัติ offer ที่เกี่ยวข้อง")
       ]),
       assets: mod("Asset Management", "การดำเนินงาน / Asset Management", "Asset List & Moderation", "จัดการสถานะ Sale, Show, Hide, Sold และ reported assets", "สร้าง asset note", [["Sale", "2,816", "แสดงใน Feed/Search"], ["Show", "428", "แสดงใน collection"], ["Hidden", "76", "owner-only"], ["Reported", "22", "รอตรวจ 9 รายการ"]], [
-        item("AST-8831", "Rolex Submariner 16610", "Crown Time BKK", "Sale", "สูง", "Reported", "รูปประกาศซ้ำและราคาเบี่ยงจาก market index", ["THB 318,000", "Reports 5"], "เทียบรูป, proof of payment, provenance และ Market Price Index"),
+        item("AST-8831", "Rolex Submariner 16610", "Crown Time BKK", "Sale", "สูง", "Auto Hidden", "รูปประกาศซ้ำและราคาเบี่ยงจาก market index", ["THB 318,000", "Reports 5", "Auto hidden"], "ครบ 5 unique reports ระบบซ่อนชั่วคราวเพื่อรอ Admin ตรวจรูป, proof of payment, provenance และ Market Price Index"),
         item("AST-8802", "Omega Speedmaster", "Vintage Vault BKK", "Sale", "กลาง", "Active", "ราคาสูงกว่าค่ากลาง 18% จากรุ่นเดียวกัน", ["Watch Alert match 12"], "ส่ง warning หรือ force Hide หากข้อมูลหลอกลวง"),
         item("AST-8791", "Seiko 6139", "Archive Collector", "Hide", "ปกติ", "Owner-only", "รอ account deletion dependency check", ["Deletion linked"], "คงข้อมูล transaction/audit ตาม retention"),
         item("AST-8755", "Patek Philippe Calatrava", "The Collector", "Show", "ปกติ", "Active", "แสดงใน portfolio เท่านั้น ไม่มีปุ่มเสนอซื้อ", ["Portfolio", "Private price"], "ตรวจว่าข้อมูล private ไม่แสดงบน FO public surface"),
         item("AST-8720", "Tudor Black Bay 58", "Seiko Corner", "Sold", "ปกติ", "Closed", "ขายแล้วและมี sale record เชื่อมกับ offer", ["Sold record", "Offer OFR-488"], "เปิดอ่านได้แบบ read-only และคง audit/sold history"),
         item("AST-8694", "Audemars Piguet Royal Oak", "Rolex Rama9", "Sale", "สูง", "Reviewing", "มีรายงาน serial/provenance ไม่ตรงกับรูป", ["Reports 3", "High value"], "ตรวจหลักฐานก่อนซ่อนหรือปิด report"),
         item("AST-8612", "Grand Seiko Snowflake", "Daily Watch Hunter", "Show", "กลาง", "Active", "มี comment report แต่ asset ยังไม่เข้าเกณฑ์ซ่อน", ["Comment report 1"], "ตรวจ social context โดยไม่เปลี่ยนสถานะ asset ทันที"),
-        item("AST-8588", "Cartier Santos Medium", "Minimal Dial", "Hide", "กลาง", "Admin Hidden", "ถูกซ่อนจากรายงาน duplicate content ระหว่างตรวจ", ["Hidden by Admin", "Audit linked"], "คืนสถานะได้เมื่อหลักฐานผ่านการตรวจสอบ"),
+        item("AST-8588", "Cartier Santos Medium", "Minimal Dial", "Sale", "กลาง", "Admin Hidden", "ถูกซ่อนจากรายงาน duplicate content ระหว่างตรวจ", ["Hidden by Admin", "Audit linked"], "คืนสถานะได้เมื่อหลักฐานผ่านการตรวจสอบ"),
         item("AST-8579", "Rolex GMT-Master II Pepsi", "Crown Time BKK", "Sale", "กลาง", "Active", "Price check against recent market index before public boost", ["THB 612,000", "Watch Alert match 8"], "Confirm price evidence and seller ownership before promotion"),
         item("AST-8571", "Rolex Datejust 36", "Bangkok Watch Lab", "Show", "ปกติ", "Active", "Portfolio listing waiting for owner confirmation", ["Portfolio", "Private price"], "Verify private visibility and profile display"),
         item("AST-8566", "Rolex Explorer 124270", "Crown Time BKK", "Sale", "กลาง", "Active", "New listing with complete provenance but missing wrist shot", ["THB 268,000"], "Request additional photo before featuring"),
         item("AST-8559", "Rolex Daytona 116500LN", "Siam Chrono", "Sale", "สูง", "Reviewing", "High value asset with provenance documents under review", ["Reports 1", "High value"], "Review serial proof and receipt before keeping Sale"),
         item("AST-8548", "Omega Seamaster Diver 300M", "Vintage Vault BKK", "Sale", "ปกติ", "Active", "Clean listing with market price in normal range", ["THB 142,000"], "No action needed unless new report arrives"),
-        item("AST-8536", "Omega Speedmaster Reduced", "Daily Watch Hunter", "Hide", "กลาง", "Admin Hidden", "Temporarily hidden while duplicate photos are checked", ["Hidden by Admin"], "Restore when duplicate check passes"),
+        item("AST-8536", "Omega Speedmaster Reduced", "Daily Watch Hunter", "Sale", "กลาง", "Admin Hidden", "Temporarily hidden while duplicate photos are checked", ["Hidden by Admin"], "Restore when duplicate check passes"),
         item("AST-8524", "Omega Aqua Terra", "Minimal Dial", "Show", "ปกติ", "Active", "Collection-only display for owner profile", ["Portfolio"], "Check that offer button stays hidden"),
         item("AST-8518", "Seiko Prospex SPB143", "Seiko Corner", "Sale", "ปกติ", "Active", "Normal listing with complete photos", ["THB 31,500"], "Monitor only"),
         item("AST-8509", "Seiko Presage Cocktail Time", "Archive Collector", "Sold", "ปกติ", "Closed", "Sold listing retained for audit and offer history", ["Sold record"], "Keep read-only history"),
@@ -4516,6 +4516,17 @@
       return `<span class="pill ${map[status] || "blue"}">${status}</span>`;
     }
 
+    function isTemporarilyHiddenAsset(asset) {
+      return asset.status === "Admin Hidden" || asset.status === "Auto Hidden";
+    }
+
+    function renderAssetStatusDisplay(asset) {
+      const moderationPill = isTemporarilyHiddenAsset(asset)
+        ? `<span class="pill red">ซ่อนชั่วคราว</span>`
+        : "";
+      return `${assetStatusPill(asset.type)}${moderationPill}`;
+    }
+
     function getAssetSearchText(asset) {
       return [getAssetBrand(asset), ...Object.values(asset).flat()].join(" ").toLowerCase();
     }
@@ -4526,24 +4537,26 @@
         const reportTag = (asset.tags || []).find(tag => /reports?\s+\d+/i.test(tag));
         return reportTag ? parseInt(reportTag.match(/\d+/)?.[0] || "0", 10) : 0;
       }
-      const statusRank = { Reported: 5, Reviewing: 4, "Admin Hidden": 3, Active: 2, "Owner-only": 1, Closed: 0 };
+      const statusRank = { "Auto Hidden": 6, Reported: 5, Reviewing: 4, "Admin Hidden": 3, Active: 2, "Owner-only": 1, Closed: 0 };
       return statusRank[asset.status] ?? 0;
     }
 
+    function canAdminForceHideAsset(asset) {
+      return (asset.status === "Reported" || asset.status === "Reviewing") && (asset.type === "Sale" || asset.type === "Show");
+    }
+
     function getAssetRowActions(asset) {
-      const actions = [{ action: "review", label: asset.status === "Reported" || asset.status === "Reviewing" ? "Mark reviewed" : "Add review note" }];
-      if (asset.type !== "Hide" && asset.type !== "Sold") actions.push({ action: "hide", label: "Force Hide" });
-      if (asset.type === "Hide") actions.push({ action: "restore-sale", label: "Restore to Sale" });
-      if (asset.type === "Sale" || asset.type === "Show") actions.push({ action: "sold", label: "Mark as Sold" });
+      const actions = [];
+      if (canAdminForceHideAsset(asset)) actions.push({ action: "hide", label: "Force Hide" });
+      if (isTemporarilyHiddenAsset(asset)) actions.push({ action: "restore-visibility", label: `Restore to ${asset.type}` });
       return actions;
     }
 
-    function getAssetActionConfig(action) {
+    function getAssetActionConfig(action, asset) {
+      const restoreTarget = asset?.type || "Sale";
       const configs = {
-        review: { title: "Confirm asset review", button: "Confirm review", apply: asset => { asset.status = "Active"; asset.priority = "ปกติ"; asset.action = "ตรวจแล้วและบันทึก review note ใน audit"; } },
-        hide: { title: "Confirm Force Hide", button: "Force Hide", apply: asset => { asset.type = "Hide"; asset.status = "Admin Hidden"; asset.action = "ซ่อน asset จาก Feed/Search/Profile public surface พร้อมบันทึกเหตุผล"; } },
-        "restore-sale": { title: "Confirm restore to Sale", button: "Restore to Sale", apply: asset => { asset.type = "Sale"; asset.status = "Active"; asset.action = "คืน asset กลับสู่ Sale หลังตรวจหลักฐานและ sync FO"; } },
-        sold: { title: "Confirm Mark as Sold", button: "Mark as Sold", apply: asset => { asset.type = "Sold"; asset.status = "Closed"; asset.action = "ปิด listing เป็น Sold และเก็บ sale record แบบ read-only"; } }
+        hide: { title: "Confirm Force Hide", button: "Force Hide", apply: asset => { asset.status = "Admin Hidden"; asset.action = "ซ่อนโพสต์ชั่วคราวจาก Feed/Search/Profile public surface พร้อมบันทึกเหตุผล"; } },
+        "restore-visibility": { title: `Confirm restore ${restoreTarget} visibility`, button: `Restore ${restoreTarget}`, apply: asset => { asset.status = "Active"; asset.action = `Restore ${restoreTarget} visibility after evidence review and FO sync`; } }
       };
       return configs[action];
     }
@@ -4561,7 +4574,7 @@
     }
 
     function renderAssetActionModal(asset, action) {
-      const config = getAssetActionConfig(action);
+      const config = getAssetActionConfig(action, asset);
       if (!asset || !config) return;
       const modal = document.querySelector("#user-action-modal");
       const modalBody = document.querySelector("#user-action-modal-body");
@@ -4579,11 +4592,11 @@
           <div class="user-action-card">
             <div class="detail-grid two">
               <div class="detail-tile"><span>Current Asset Status</span><strong>${asset.type}</strong></div>
-              <div class="detail-tile"><span>Review Status</span><strong>${asset.status}</strong></div>
+              <div class="detail-tile"><span>Moderation State</span><strong>${asset.status}</strong></div>
               <div class="detail-tile"><span>Owner</span><strong>${asset.owner}</strong></div>
               <div class="detail-tile"><span>Priority</span><strong>${asset.priority}</strong></div>
             </div>
-            <div class="module-note"><strong>FO impact:</strong> Asset actions sync visibility to Feed, Search, Profile, Watch Alert, Offer, Chat reference, and Audit Log.</div>
+            <div class="module-note"><strong>FO impact:</strong> Asset actions sync visibility to Feed, Search, Profile, Watch Alert, Offer, Chat reference, and Audit Log. Admin does not edit user-owned asset content from this menu.</div>
           </div>
           <div class="user-action-footer">
             <button class="user-detail-action-btn" type="button" data-user-action-modal-close>ยกเลิก</button>
@@ -4595,7 +4608,7 @@
     }
 
     function confirmAssetAction(asset, action) {
-      const config = getAssetActionConfig(action);
+      const config = getAssetActionConfig(action, asset);
       if (!asset || !config) return;
       const before = `${asset.type} / ${asset.status}`;
       config.apply(asset);
@@ -4636,8 +4649,8 @@
             </div>
           </div>
           <div class="detail-grid two">
-            <div class="detail-tile"><span>Asset Status</span><strong>${asset.type}</strong></div>
-            <div class="detail-tile"><span>Review Status</span><strong>${asset.status}</strong></div>
+            <div class="detail-tile"><span>Asset Status</span><strong>${renderAssetStatusDisplay(asset)}</strong></div>
+            <div class="detail-tile"><span>Moderation State</span><strong>${asset.status}</strong></div>
             <div class="detail-tile"><span>Owner</span><strong>${asset.owner}</strong></div>
             <div class="detail-tile"><span>Priority</span><strong>${asset.priority}</strong></div>
             <div class="detail-tile"><span>Detail</span><strong>${asset.detail}</strong></div>
@@ -4646,7 +4659,7 @@
           <div class="detail-section">
             <h4>Linked Context</h4>
             <div class="chips">${asset.tags.map(tag => `<span class="chip">${tag}</span>`).join("")}</div>
-            <div class="module-note"><strong>Visibility rule:</strong> Sale appears in Feed/Search, Show appears as portfolio display, Hide is owner/Admin-only, and Sold is read-only with sale history.</div>
+            <div class="module-note"><strong>Visibility rule:</strong> Sale appears in Feed/Search, Show appears as portfolio display, Hide is owner-only, and Sold is read-only with sale history. Temporary report hiding is shown as a Moderation State, not Asset Status. User-owned asset details stay read-only for Admin; BO actions are moderation, review, and visibility changes.</div>
           </div>
         </div>
       `;
@@ -6459,7 +6472,7 @@
               </div>
               <div class="asset-card-tags">
                 <span class="user-card-tag asset-tag">${getAssetBrand(row)}</span>
-                ${assetStatusPill(row.type)}
+                ${renderAssetStatusDisplay(row)}
                 <div class="user-card-meta">
                   <div class="user-card-meta-item"><span>Asset ID</span><strong>${row.id}</strong></div>
                   <div class="user-card-meta-item"><span>Owner</span><strong>${row.owner}</strong></div>
@@ -6467,7 +6480,7 @@
               </div>
               <div data-label="Brand"><div class="main-text">${getAssetBrand(row)}</div></div>
               <div data-label="Owner"><div class="main-text">${row.owner}</div></div>
-              <div data-label="Asset Status">${assetStatusPill(row.type)}</div>
+              <div data-label="Asset Status">${renderAssetStatusDisplay(row)}</div>
               <div class="user-row-actions">
                 ${renderAssetRowActionMenu(row)}
               </div>
