@@ -1116,7 +1116,7 @@
     }
     .asset-row {
       display: grid;
-      grid-template-columns: minmax(220px, 1.35fr) minmax(156px, .78fr) minmax(116px, .58fr) minmax(124px, .62fr) minmax(56px, .26fr);
+      grid-template-columns: minmax(104px, .52fr) minmax(196px, 1.25fr) minmax(156px, .78fr) minmax(116px, .58fr) minmax(124px, .62fr) minmax(56px, .26fr);
       gap: 12px;
       align-items: center;
       min-height: 82px;
@@ -1156,6 +1156,14 @@
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
+    }
+    .asset-row .main-text {
+      color: #061426;
+      font-size: 14px;
+      font-weight: 800;
+    }
+    .asset-row:not(.head) > div:not(:first-child) .main-text {
+      font-weight: 400;
     }
     .asset-card-tags {
       display: none;
@@ -6195,18 +6203,19 @@
       const table = document.querySelector("#table");
       table.innerHTML = `
         <div class="asset-table">
-          <div class="asset-row head"><div>Asset</div><div>Owner</div><div>Asset Status</div><div>Review Status</div><div>Action</div></div>
+          <div class="asset-row head"><div>Asset ID</div><div>Asset</div><div>Owner</div><div>Asset Status</div><div>Review Status</div><div>Action</div></div>
           ${pageRows.map(row => `
             <div class="asset-row" data-asset-card="${row.id}">
+              <div data-label="Asset ID"><div class="main-text">${row.id}</div></div>
               <div class="asset-cell-primary" data-label="Asset">
                 <div class="main-text">${row.name}</div>
-                <div class="muted">${row.id} · ${row.detail}</div>
               </div>
               <div class="asset-card-tags">
                 ${assetStatusPill(row.type)}
                 ${statusPill(row.status, row.priority)}
                 <span class="user-card-tag asset-tag">${row.priority}</span>
                 <div class="user-card-meta">
+                  <div class="user-card-meta-item"><span>Asset ID</span><strong>${row.id}</strong></div>
                   <div class="user-card-meta-item"><span>Owner</span><strong>${row.owner}</strong></div>
                   <div class="user-card-meta-item"><span>Action</span><strong>${row.action}</strong></div>
                 </div>
