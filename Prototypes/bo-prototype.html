@@ -4236,13 +4236,11 @@
     function getAssetSummaryStats() {
       const assets = moduleData.assets.rows;
       const countType = type => assets.filter(asset => asset.type === type).length;
-      const reported = assets.filter(asset => ["Reported", "Reviewing", "Admin Hidden"].includes(asset.status)).length;
       return [
         ["Sale", countType("Sale"), `${assets.filter(asset => asset.type === "Sale" && asset.status === "Reported").length} reported · Feed/Search visible`],
         ["Show", countType("Show"), "Portfolio display · no direct sale listing"],
         ["Hide", countType("Hide"), `${assets.filter(asset => asset.type === "Hide" && asset.status === "Admin Hidden").length} admin hidden · owner-only`],
-        ["Sold", countType("Sold"), "Read-only sale record"],
-        ["Needs Review", reported, "Reported, Reviewing, or Admin Hidden"]
+        ["Sold", countType("Sold"), "Read-only sale record"]
       ];
     }
 
