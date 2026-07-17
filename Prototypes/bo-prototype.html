@@ -1275,7 +1275,7 @@
       background: #fff;
     }
     .user-row:not(.report-row) {
-      grid-template-columns: minmax(180px, 1.32fr) minmax(128px, .82fr) minmax(148px, .94fr) minmax(72px, .48fr) minmax(104px, .68fr) minmax(128px, .82fr) minmax(56px, .26fr);
+      grid-template-columns: minmax(84px, .48fr) minmax(160px, 1.16fr) minmax(124px, .76fr) minmax(142px, .88fr) minmax(70px, .44fr) minmax(96px, .62fr) minmax(124px, .76fr) minmax(56px, .26fr);
       gap: 12px;
     }
     .user-row:not(.head):not(.report-row) {
@@ -1284,14 +1284,15 @@
     .user-row:not(.report-row) > div {
       min-width: 0;
     }
-    .user-row:not(.report-row) > div:first-child .main-text {
+    .user-row:not(.report-row) > div:first-child .main-text,
+    .user-row:not(.report-row) > div.user-cell-primary .main-text {
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
     }
-    .user-row:not(.report-row) > div:nth-child(3) .main-text,
     .user-row:not(.report-row) > div:nth-child(4) .main-text,
-    .user-row:not(.report-row) > div:nth-child(6) .main-text {
+    .user-row:not(.report-row) > div:nth-child(5) .main-text,
+    .user-row:not(.report-row) > div:nth-child(7) .main-text {
       white-space: nowrap;
     }
     .user-row.report-row {
@@ -1354,7 +1355,7 @@
       font-size: 14px;
       font-weight: 800;
     }
-    .user-table .user-row:not(.head) > div:not(:first-child) .main-text {
+    .user-table .user-row:not(.head) > div:not(.user-cell-primary) .main-text {
       font-weight: 400;
     }
     .user-row .muted {
@@ -5588,11 +5589,12 @@
       document.querySelector("#panel-subtitle").textContent = "";
       document.querySelector("#table").innerHTML = `
         <div class="user-table">
-          <div class="user-row head"><div>User</div><div>Status</div><div>Last Active</div><div>Assets</div><div>Auth</div><div>Date Joined</div><div>Action</div></div>
+          <div class="user-row head"><div>User ID</div><div>User</div><div>Status</div><div>Last Active</div><div>Assets</div><div>Auth</div><div>Date Joined</div><div>Action</div></div>
           ${pageRows.map(user => {
             const rowActions = getUserRowActions(user);
             return `
             <div class="user-row" data-user-card="${user.id}">
+              <div data-label="User ID"><div class="main-text">${user.id}</div></div>
               <div class="user-cell-primary" data-label="User"><div class="main-text">${user.displayName}</div></div>
               <div class="user-card-tags">
                 ${userStatusPill(user.status)}
