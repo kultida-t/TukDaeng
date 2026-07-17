@@ -1080,11 +1080,6 @@
       box-shadow: none;
       overflow: visible;
     }
-    body.asset-detail-mode .layout > .panel {
-      border-top: 0;
-      border-top-left-radius: 0;
-      border-top-right-radius: 0;
-    }
     body.asset-list-mode #primary-action,
     body.asset-detail-mode #primary-action {
       display: none;
@@ -5144,7 +5139,8 @@
       activeModule = "assets";
       activeSub = "Asset List";
       activeRow = asset;
-      document.body.classList.add("asset-list-mode", "asset-detail-mode");
+      document.body.classList.remove("asset-list-mode");
+      document.body.classList.add("asset-detail-mode");
       document.querySelector("#crumb").textContent = `การดำเนินงาน / Asset Management / Asset List / ${asset.id}`;
       document.querySelector("#page-title").textContent = "Asset Detail";
       document.querySelector("#page-meta").textContent = "";
