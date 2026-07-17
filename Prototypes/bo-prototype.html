@@ -1106,7 +1106,11 @@
       display: none;
     }
     body.asset-list-mode .asset-kpi-head {
-      padding: 18px 20px 14px;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 16px;
+      align-items: center;
+      padding: 18px 32px 14px 20px;
       border-bottom: 1px solid #d8e4f1;
     }
     body.asset-list-mode .asset-kpi-title {
@@ -1123,6 +1127,15 @@
       color: #6c7e96;
       font-size: 12px;
       font-weight: 600;
+    }
+    body.asset-list-mode .asset-kpi-total {
+      color: #061426;
+      font-family: var(--font-heading);
+      font-size: 36px;
+      font-weight: 400;
+      line-height: 1;
+      text-align: right;
+      white-space: nowrap;
     }
     body.asset-list-mode .asset-status-list {
       display: grid;
@@ -4422,6 +4435,7 @@
           title: "Asset Status",
           subtitle: "จาก Asset List ทั้งหมด",
           type: "status-list",
+          total: assets.length,
           rows: [
             ["Sale", countType("Sale"), "ยอดทั้งหมดที่แสดงใน Feed และ Search"],
             ["Show", countType("Show"), "ยอดทั้งหมดที่แสดงใน collection และ profile"],
@@ -4443,8 +4457,11 @@
         return `
           <article class="stat asset-kpi-card">
             <div class="asset-kpi-head">
-              <div class="asset-kpi-title">${stat.title}</div>
-              <div class="asset-kpi-subtitle">${stat.subtitle}</div>
+              <div>
+                <div class="asset-kpi-title">${stat.title}</div>
+                <div class="asset-kpi-subtitle">${stat.subtitle}</div>
+              </div>
+              <strong class="asset-kpi-total">${stat.total.toLocaleString()}</strong>
             </div>
             <div class="asset-status-list">
               ${stat.rows.map(([label, value, detail]) => `
