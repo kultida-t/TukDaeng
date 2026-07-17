@@ -1342,7 +1342,8 @@
       width: 100%;
     }
     body.asset-list-mode .user-filter-bar {
-      grid-template-columns: minmax(240px, 1.35fr) repeat(2, minmax(126px, .68fr)) max-content;
+      grid-template-columns: minmax(220px, 1.25fr) minmax(132px, .62fr) minmax(150px, .72fr) minmax(154px, .72fr) max-content;
+      align-items: center;
     }
     .user-filter-actions {
       display: none;
@@ -4542,11 +4543,9 @@
     }
 
     function getAssetSortRank(asset, sort) {
-      if (sort === "priority") return getReportPriorityRank(asset.priority);
-      if (sort === "reports") {
-        const reportTag = (asset.tags || []).find(tag => /reports?\s+\d+/i.test(tag));
-        return reportTag ? parseInt(reportTag.match(/\d+/)?.[0] || "0", 10) : 0;
-      }
+      const assetIdRank = parseInt(String(asset.id || "").match(/\d+/)?.[0] || "0", 10);
+      if (sort === "latest") return assetIdRank;
+      if (sort === "oldest") return -assetIdRank;
       const statusRank = { "Auto Hidden": 7, Reported: 6, Reviewing: 5, "Admin Hidden": 4, Active: 3, "Owner-only": 2, Closed: 1, "Deleted / Archived": 0 };
       return statusRank[asset.status] ?? 0;
     }
@@ -6239,7 +6238,6 @@
         document.querySelector("#panel-subtitle").textContent = "";
         document.querySelector("#user-panel-filter-actions").innerHTML = `
           <button class="btn user-filter-toggle" type="button" data-asset-filter-toggle aria-expanded="${assetFilterOpen}">${iconSvg.filter}<span>${assetFilterOpen ? "ปิดตัวกรอง" : "เปิดตัวกรอง"}</span></button>
-          <button class="btn" type="button" data-asset-reset title="รีเซ็ตค่าทั้งหมด" aria-label="รีเซ็ตค่าทั้งหมด">${iconSvg.refresh}<span>รีเซ็ตค่าทั้งหมด</span></button>
         `;
         document.querySelector(".filters").innerHTML = `
           <div class="user-filter-bar" data-filter-open="${assetFilterOpen}">
@@ -6254,6 +6252,10 @@
             <div class="user-advanced-filter">${customSelect("asset-brand-filter", "Filter brand", [
               { value: "", label: "All brands" },
               ...assetBrands.map(brand => ({ value: brand, label: brand }))
+            ])}</div>
+            <div class="user-advanced-filter">${customSelect("asset-sort", "Sort assets", [
+              { value: "latest", label: "Newest first" },
+              { value: "oldest", label: "Oldest first" }
             ])}</div>
             <button class="btn filter-reset user-advanced-filter" type="button" data-asset-reset title="รีเซ็ตค่าทั้งหมด" aria-label="รีเซ็ตค่าทั้งหมด">${iconSvg.refresh}<span>รีเซ็ตค่าทั้งหมด</span></button>
           </div>
@@ -6479,7 +6481,7 @@
       const q = (document.querySelector("#search")?.value || "").trim().toLowerCase();
       const type = document.querySelector("#asset-type-filter")?.value || "";
       const brand = document.querySelector("#asset-brand-filter")?.value || "";
-      const sort = "review";
+      const sort = document.querySelector("#asset-sort")?.value || "latest";
       const sorted = [...data.rows].filter(row => {
         const text = getAssetSearchText(row);
         return (!q || text.includes(q))
@@ -6620,7 +6622,7 @@
         select.querySelector("[data-custom-select-trigger]").setAttribute("aria-expanded", "false");
         if (hiddenInput.id === "user-action-reason") updateAccountStatusEmailPreview();
         if (select.hasAttribute("data-custom-select-silent")) return;
-        if (["asset-type-filter", "asset-brand-filter"].includes(hiddenInput.id) && activeModule === "assets") {
+        if (["asset-type-filter", "asset-brand-filter", "asset-sort"].includes(hiddenInput.id) && activeModule === "assets") {
           assetListPage = 1;
           renderAssetListRows();
           return;
@@ -7116,7 +7118,7 @@
         renderReportedUserRows();
         return;
       }
-      if (event.target.matches("#status-filter, #priority-filter, #asset-type-filter, #asset-brand-filter")) {
+      if (event.target.matches("#status-filter, #priority-filter, #asset-type-filter, #asset-brand-filter, #asset-sort")) {
         if (activeModule === "assets") assetListPage = 1;
         renderRows();
       }
