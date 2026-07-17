@@ -3753,6 +3753,7 @@
         item("AST-8694", "Audemars Piguet Royal Oak", "Rolex Rama9", "Sale", "สูง", "Reviewing", "มีรายงาน serial/provenance ไม่ตรงกับรูป", ["Reports 3", "High value"], "ตรวจหลักฐานก่อนซ่อนหรือปิด report"),
         item("AST-8612", "Grand Seiko Snowflake", "Daily Watch Hunter", "Show", "กลาง", "Active", "มี comment report แต่ asset ยังไม่เข้าเกณฑ์ซ่อน", ["Comment report 1"], "ตรวจ social context โดยไม่เปลี่ยนสถานะ asset ทันที"),
         item("AST-8588", "Cartier Santos Medium", "Minimal Dial", "Sale", "กลาง", "Admin Hidden", "ถูกซ่อนจากรายงาน duplicate content ระหว่างตรวจ", ["Hidden by Admin", "Audit linked"], "คืนสถานะได้เมื่อหลักฐานผ่านการตรวจสอบ"),
+        item("AST-8581", "Rolex Submariner 126610LV", "Rolex Rama9", "Sale", "สูง", "Deleted / Archived", "ลบ/เก็บถาวรหลังตรวจพบว่ารูปและ serial ไม่ตรงกับหลักฐานเจ้าของจริง", ["Archived post", "Reports 6", "Audit linked"], "เอาออกจาก Feed/Search/Profile public surface แต่เก็บ audit, report context และ owner history ไว้"),
         item("AST-8579", "Rolex GMT-Master II Pepsi", "Crown Time BKK", "Sale", "กลาง", "Active", "Price check against recent market index before public boost", ["THB 612,000", "Watch Alert match 8"], "Confirm price evidence and seller ownership before promotion"),
         item("AST-8571", "Rolex Datejust 36", "Bangkok Watch Lab", "Show", "ปกติ", "Active", "Portfolio listing waiting for owner confirmation", ["Portfolio", "Private price"], "Verify private visibility and profile display"),
         item("AST-8566", "Rolex Explorer 124270", "Crown Time BKK", "Sale", "กลาง", "Active", "New listing with complete provenance but missing wrist shot", ["THB 268,000"], "Request additional photo before featuring"),
@@ -4529,7 +4530,9 @@
 
     function renderAssetStatusDisplay(asset) {
       const moderationPill = isTemporarilyHiddenAsset(asset)
-        ? `<span class="pill red">ซ่อนชั่วคราว</span>`
+        ? `<span class="pill amber">ซ่อนชั่วคราว</span>`
+        : asset.status === "Deleted / Archived"
+          ? `<span class="pill red">ลบ/เก็บถาวร</span>`
         : "";
       return `<span class="asset-status-pills">${assetStatusPill(asset.type)}${moderationPill}</span>`;
     }
@@ -4544,7 +4547,7 @@
         const reportTag = (asset.tags || []).find(tag => /reports?\s+\d+/i.test(tag));
         return reportTag ? parseInt(reportTag.match(/\d+/)?.[0] || "0", 10) : 0;
       }
-      const statusRank = { "Auto Hidden": 6, Reported: 5, Reviewing: 4, "Admin Hidden": 3, Active: 2, "Owner-only": 1, Closed: 0 };
+      const statusRank = { "Auto Hidden": 7, Reported: 6, Reviewing: 5, "Admin Hidden": 4, Active: 3, "Owner-only": 2, Closed: 1, "Deleted / Archived": 0 };
       return statusRank[asset.status] ?? 0;
     }
 
@@ -4552,10 +4555,15 @@
       return (asset.status === "Reported" || asset.status === "Reviewing") && (asset.type === "Sale" || asset.type === "Show");
     }
 
+    function canAdminDeleteAsset(asset) {
+      return ["Reported", "Reviewing", "Admin Hidden", "Auto Hidden"].includes(asset.status) && (asset.type === "Sale" || asset.type === "Show");
+    }
+
     function getAssetRowActions(asset) {
       const actions = [];
       if (canAdminForceHideAsset(asset)) actions.push({ action: "hide", label: "ซ่อนชั่วคราว" });
       if (isTemporarilyHiddenAsset(asset)) actions.push({ action: "restore-visibility", label: "ยกเลิกการซ่อนชั่วคราว" });
+      if (canAdminDeleteAsset(asset)) actions.push({ action: "delete-post", label: "ลบ/เก็บถาวร" });
       return actions;
     }
 
@@ -4563,6 +4571,7 @@
       const restoreTarget = asset?.type || "Sale";
       const configs = {
         hide: { title: "ยืนยันการซ่อนชั่วคราว", button: "ซ่อนชั่วคราว", apply: asset => { asset.status = "Admin Hidden"; asset.action = "ซ่อนโพสต์ชั่วคราวจาก Feed/Search/Profile public surface พร้อมบันทึกเหตุผล"; } },
+        "delete-post": { title: "ยืนยันการลบ/เก็บถาวร", button: "ลบ/เก็บถาวร", apply: asset => { asset.status = "Deleted / Archived"; asset.action = "ลบ/เก็บถาวรจาก public surface หลังยืนยันว่าเนื้อหาผิดจริง พร้อมเก็บ audit/history"; } },
         "restore-visibility": { title: `Confirm restore ${restoreTarget} visibility`, button: `Restore ${restoreTarget}`, apply: asset => { asset.status = "Active"; asset.action = `Restore ${restoreTarget} visibility after evidence review and FO sync`; } }
       };
       return configs[action];
@@ -4582,6 +4591,7 @@
 
     function renderAssetActionModal(asset, action) {
       if (action === "hide" && !canAdminForceHideAsset(asset)) return;
+      if (action === "delete-post" && !canAdminDeleteAsset(asset)) return;
       const config = getAssetActionConfig(action, asset);
       if (!asset || !config) return;
       const modal = document.querySelector("#user-action-modal");
@@ -4621,6 +4631,13 @@
         if (document.body.classList.contains("asset-detail-mode")) renderAssetDetailPage(asset);
         else renderAssetListRows();
         showSuccessToast(`${asset.id}: สถานะล่าสุดไม่เข้าเงื่อนไขซ่อนชั่วคราว`);
+        return;
+      }
+      if (action === "delete-post" && !canAdminDeleteAsset(asset)) {
+        closeUserActionModal();
+        if (document.body.classList.contains("asset-detail-mode")) renderAssetDetailPage(asset);
+        else renderAssetListRows();
+        showSuccessToast(`${asset.id}: สถานะล่าสุดไม่เข้าเงื่อนไขลบ/เก็บถาวร`);
         return;
       }
       const config = getAssetActionConfig(action, asset);
