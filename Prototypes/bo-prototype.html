@@ -835,6 +835,13 @@
     .pill.green { color: #07734f; background: #e4f8f0; border-color: #bcebd7; }
     .pill.amber { color: #925500; background: #fff3d8; border-color: #f3d493; }
     .pill.purple { color: #6035ae; background: #efe9ff; border-color: #d8ccff; }
+    .asset-status-pills {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      vertical-align: middle;
+    }
     .chips { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 7px; }
     .chip {
       border: 1px solid #e1e9f3;
@@ -4524,7 +4531,7 @@
       const moderationPill = isTemporarilyHiddenAsset(asset)
         ? `<span class="pill red">ซ่อนชั่วคราว</span>`
         : "";
-      return `${assetStatusPill(asset.type)}${moderationPill}`;
+      return `<span class="asset-status-pills">${assetStatusPill(asset.type)}${moderationPill}</span>`;
     }
 
     function getAssetSearchText(asset) {
@@ -4574,6 +4581,7 @@
     }
 
     function renderAssetActionModal(asset, action) {
+      if (action === "hide" && !canAdminForceHideAsset(asset)) return;
       const config = getAssetActionConfig(action, asset);
       if (!asset || !config) return;
       const modal = document.querySelector("#user-action-modal");
@@ -4608,6 +4616,13 @@
     }
 
     function confirmAssetAction(asset, action) {
+      if (action === "hide" && !canAdminForceHideAsset(asset)) {
+        closeUserActionModal();
+        if (document.body.classList.contains("asset-detail-mode")) renderAssetDetailPage(asset);
+        else renderAssetListRows();
+        showSuccessToast(`${asset.id}: สถานะล่าสุดไม่เข้าเงื่อนไขซ่อนชั่วคราว`);
+        return;
+      }
       const config = getAssetActionConfig(action, asset);
       if (!asset || !config) return;
       const before = `${asset.type} / ${asset.status}`;

@@ -199,6 +199,8 @@ Admin ต้องสามารถ:
 - กด View asset ต้องเห็นข้อมูลที่ใช้ตรวจสอบได้ครบ
 - Force Hide / Restore Visibility ต้องเปลี่ยนผลการแสดงบน FO ทันที พร้อม reason และ audit
 - Report threshold สำหรับ asset: 1 report เข้า queue, 3 unique reports ยกระดับ priority review, 5 unique reports ซ่อนโพสต์ชั่วคราวอัตโนมัติเพื่อรอ Admin review โดยคง `Asset Status` เดิมและใช้ `Moderation State = Auto Hidden`
+- Temporary report hiding ใช้ได้เฉพาะ `Sale` และ `Show` เพราะเป็น asset ที่คนอื่นเห็นและ report ได้; `Hide` และ `Sold` ไม่เข้า flow นี้
+- ถ้า owner เปลี่ยน asset จาก `Sale`/`Show` เป็น `Hide` หรือ `Sold` ระหว่างที่ report ยังรอ review ระบบต้องเก็บ report ไว้ แต่ห้าม auto-hide หรือ Force Hide เพิ่ม เพราะโพสต์ไม่อยู่ public visibility แล้ว
 - High-risk report reason ยังไม่ auto-hide ใน V1 หากไม่มี automated detector/verified signal; ต้องเข้า priority review และให้ Admin กด Force Hide หลังตรวจ evidence
 - Sensitive fields ต้องเห็นเฉพาะ Admin
 - ทุก action ต้องบันทึก before/after ใน audit log

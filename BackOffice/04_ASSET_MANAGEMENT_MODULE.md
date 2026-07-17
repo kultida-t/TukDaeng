@@ -216,6 +216,8 @@ Admin force status change ต้องมี:
 - Report 1 ครั้ง: เข้า reported asset queue และยังไม่ซ่อนจาก FO
 - Report 3 ครั้งจาก unique reporter: ยกระดับเป็น priority review / `Reviewing` แต่ยังไม่ซ่อนจาก FO อัตโนมัติ
 - Report 5 ครั้งจาก unique reporter: ระบบซ่อนโพสต์ชั่วคราวได้โดยคง `Asset Status` เดิม เช่น `Sale` หรือ `Show` และตั้ง `Moderation State` เป็น `Auto Hidden` หรือ `Pending Review` เพื่อรอ Admin ตรวจสอบ
+- Temporary report hiding ใช้ได้เฉพาะ asset ที่มี public visibility คือ `Sale` และ `Show`; ห้ามใช้กับ `Hide` เพราะเป็น owner-only อยู่แล้ว และห้ามใช้กับ `Sold` เพราะเป็น sold history/read-only
+- ถ้า asset ถูก report ตอนเป็น `Sale`/`Show` แต่ owner เปลี่ยนเป็น `Hide` หรือ `Sold` ก่อน Admin action หรือก่อนถึง auto-hide threshold ให้ report queue ยังเก็บ report ไว้เพื่อ audit/review แต่ต้อง block `Force Hide` และไม่ตั้ง `Moderation State = Auto Hidden`; UI ต้องแสดง current asset status ล่าสุดและให้ Admin ทำได้เฉพาะ review/no action, soft remove ตาม policy หรือ action กับ account/report ถ้าหลักฐานผิดจริง
 - การซ่อนอัตโนมัติจากจำนวน report ต้องนับ unique reporter เท่านั้น ไม่นับ report ซ้ำจาก user เดิม และต้องมี guardrail กัน report bombing จากบัญชีใหม่หรือกลุ่มบัญชีที่เกี่ยวข้องกัน
 - กรณี risk สูง เช่น scam, counterfeit, stolen image, ข้อมูลหลอกลวง หรือ external payment fraud ใน V1 ยังไม่มี automated detector/verified signal ให้ซ่อนอัตโนมัติจาก reason เพียงอย่างเดียว; ให้เข้า priority review และให้ Admin ใช้ `Force Hide` เองหลังดู evidence
 - Admin ต้อง review report แล้วเลือก action
