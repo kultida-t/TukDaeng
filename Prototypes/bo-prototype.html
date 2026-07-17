@@ -1080,6 +1080,11 @@
       box-shadow: none;
       overflow: visible;
     }
+    body.asset-detail-mode .layout > .panel {
+      border-top: 0;
+      border-top-left-radius: 0;
+      border-top-right-radius: 0;
+    }
     body.asset-list-mode #primary-action,
     body.asset-detail-mode #primary-action {
       display: none;
@@ -1332,7 +1337,8 @@
     .asset-card-tags {
       display: none;
     }
-    body.user-detail-mode .panel > .panel-head {
+    body.user-detail-mode .panel > .panel-head,
+    body.asset-detail-mode .panel > .panel-head {
       display: none;
     }
     .user-filter-bar {
@@ -5300,10 +5306,9 @@
         <div class="user-detail-page">
           <div class="user-detail-head">
             <div class="user-detail-title">
-              ${renderAssetCover(asset)}
               <div>
                 <h2>${asset.name}</h2>
-                <div class="chips">${renderAssetStatusDisplay(asset)}<span class="pill blue">${detail.brand}</span><span class="pill amber">FO Post Data</span></div>
+                <div class="chips">${renderAssetStatusDisplay(asset)}<span class="pill blue">${detail.brand}</span></div>
               </div>
             </div>
             <button class="btn user-back-btn" type="button" data-back-asset-list aria-label="กลับไป Asset List" title="กลับไป Asset List">
