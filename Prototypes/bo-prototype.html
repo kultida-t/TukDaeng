@@ -1116,7 +1116,7 @@
     }
     .asset-row {
       display: grid;
-      grid-template-columns: minmax(104px, .52fr) minmax(196px, 1.25fr) minmax(156px, .78fr) minmax(116px, .58fr) minmax(124px, .62fr) minmax(56px, .26fr);
+      grid-template-columns: minmax(104px, .52fr) minmax(196px, 1.2fr) minmax(120px, .58fr) minmax(156px, .78fr) minmax(116px, .58fr) minmax(56px, .26fr);
       gap: 12px;
       align-items: center;
       min-height: 82px;
@@ -4071,6 +4071,11 @@
       return { id, name, owner, type, priority, status, detail, tags, action };
     }
 
+    function getAssetBrand(asset) {
+      const brands = ["Audemars Piguet", "Patek Philippe", "Grand Seiko", "Rolex", "Omega", "Seiko", "Tudor", "Cartier"];
+      return brands.find(brand => asset.name.startsWith(brand)) || asset.name.split(" ")[0];
+    }
+
     function mod(title, crumb, panel, subtitle, action, stats, rows) {
       return {
         title,
@@ -6203,7 +6208,7 @@
       const table = document.querySelector("#table");
       table.innerHTML = `
         <div class="asset-table">
-          <div class="asset-row head"><div>Asset ID</div><div>Asset</div><div>Owner</div><div>Asset Status</div><div>Review Status</div><div>Action</div></div>
+          <div class="asset-row head"><div>Asset ID</div><div>Asset</div><div>Brand</div><div>Owner</div><div>Asset Status</div><div>Action</div></div>
           ${pageRows.map(row => `
             <div class="asset-row" data-asset-card="${row.id}">
               <div data-label="Asset ID"><div class="main-text">${row.id}</div></div>
@@ -6211,18 +6216,19 @@
                 <div class="main-text">${row.name}</div>
               </div>
               <div class="asset-card-tags">
+                <span class="user-card-tag asset-tag">${getAssetBrand(row)}</span>
                 ${assetStatusPill(row.type)}
-                ${statusPill(row.status, row.priority)}
                 <span class="user-card-tag asset-tag">${row.priority}</span>
                 <div class="user-card-meta">
                   <div class="user-card-meta-item"><span>Asset ID</span><strong>${row.id}</strong></div>
+                  <div class="user-card-meta-item"><span>Brand</span><strong>${getAssetBrand(row)}</strong></div>
                   <div class="user-card-meta-item"><span>Owner</span><strong>${row.owner}</strong></div>
                   <div class="user-card-meta-item"><span>Action</span><strong>${row.action}</strong></div>
                 </div>
               </div>
+              <div data-label="Brand"><div class="main-text">${getAssetBrand(row)}</div></div>
               <div data-label="Owner"><div class="main-text">${row.owner}</div></div>
               <div data-label="Asset Status">${assetStatusPill(row.type)}</div>
-              <div data-label="Review Status">${statusPill(row.status, row.priority)}</div>
               <div class="user-row-actions">
                 ${renderAssetRowActionMenu(row)}
               </div>
