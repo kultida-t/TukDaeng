@@ -1110,7 +1110,8 @@
       grid-template-columns: minmax(0, 1fr) auto;
       gap: 16px;
       align-items: center;
-      padding: 18px 32px 14px 20px;
+      min-height: 70px;
+      padding: 18px 32px 16px 20px;
       border-bottom: 1px solid #d8e4f1;
     }
     body.asset-list-mode .asset-kpi-title {
@@ -1121,12 +1122,6 @@
       line-height: .95;
       letter-spacing: .035em;
       text-transform: uppercase;
-    }
-    body.asset-list-mode .asset-kpi-subtitle {
-      margin-top: 8px;
-      color: #6c7e96;
-      font-size: 12px;
-      font-weight: 600;
     }
     body.asset-list-mode .asset-kpi-total {
       color: #061426;
@@ -4433,7 +4428,6 @@
       return [
         {
           title: "Asset Status",
-          subtitle: "จาก Asset List ทั้งหมด",
           type: "status-list",
           total: assets.length,
           rows: [
@@ -4445,7 +4439,6 @@
         },
         {
           title: "Top Asset Brands",
-          subtitle: "จาก Asset List ทั้งหมด",
           type: "brand-ranking",
           rows: topBrands
         }
@@ -4459,7 +4452,6 @@
             <div class="asset-kpi-head">
               <div>
                 <div class="asset-kpi-title">${stat.title}</div>
-                <div class="asset-kpi-subtitle">${stat.subtitle}</div>
               </div>
               <strong class="asset-kpi-total">${stat.total.toLocaleString()}</strong>
             </div>
@@ -4483,7 +4475,6 @@
           <article class="stat asset-kpi-card">
             <div class="asset-kpi-head">
               <div class="asset-kpi-title">${stat.title}</div>
-              <div class="asset-kpi-subtitle">${stat.subtitle}</div>
             </div>
             <div class="asset-brand-ranking">
               ${stat.rows.map(([brand, count], index) => {
