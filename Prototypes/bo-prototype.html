@@ -4785,12 +4785,28 @@
       return `${day}/${month}/${year}`;
     }
 
+    const accountStatusReasonTranslations = {
+      "มีรายงานความเสี่ยงสูง รอตรวจสอบ": "High-risk reports are pending review",
+      "สงสัยว่าเป็นบัญชีหรือโปรไฟล์ซ้ำ": "Suspected duplicate account or profile",
+      "มีข้อพิพาทจากฝ่าย Support": "Support team dispute is under review",
+      "พักบัญชีไว้ระหว่างตรวจนโยบาย": "Account paused while policy compliance is reviewed",
+      "ยืนยันแล้วว่ามีพฤติกรรมหลอกลวง": "Confirmed fraudulent behavior",
+      "ยืนยันแล้วว่าแอบอ้างตัวตนหรือใช้ข้อมูลเท็จ": "Confirmed impersonation or false information",
+      "ทำผิดนโยบายรุนแรงซ้ำหลายครั้ง": "Repeated severe policy violations",
+      "ได้รับอนุมัติให้ระงับจากทีมที่รับผิดชอบ": "Suspension approved by the responsible team"
+    };
+
+    function translateAccountStatusReason(reason) {
+      if (!reason) return "Account status policy review";
+      return accountStatusReasonTranslations[reason] || reason;
+    }
+
     function getAccountStatusEmailCopy(user, action, publicReason = "", suspendUntil = "") {
       const isSuspend = action === "Suspend";
       const publicReference = user.support && user.support !== "None" ? user.support : "Account status notice";
       const subject = isSuspend
-        ? "[TukDaeng] บัญชีของคุณถูกระงับชั่วคราว"
-        : "[TukDaeng] บัญชีของคุณถูกระงับถาวร";
+        ? "[TukDaeng] บัญชีของคุณถูกระงับชั่วคราว / Your account has been temporarily suspended"
+        : "[TukDaeng] บัญชีของคุณถูกระงับถาวร / Your account has been permanently suspended";
       const statusLine = isSuspend
         ? "บัญชีของคุณถูกระงับชั่วคราวระหว่างการตรวจสอบ"
         : "บัญชีของคุณถูกระงับถาวรจากผลการตรวจสอบ";
@@ -4801,6 +4817,16 @@
       const suspensionEndLine = isSuspend && suspendUntil
         ? `บัญชีจะถูกระงับถึงวันที่: ${formatPublicDateFromInput(suspendUntil)}`
         : "";
+      const englishStatusLine = isSuspend
+        ? "Your account has been temporarily suspended while the review is in progress."
+        : "Your account has been permanently suspended after review.";
+      const englishAccessLine = isSuspend
+        ? "You will not be able to sign in or use app features until the suspension period ends, or until an admin removes the suspension."
+        : "You will not be able to sign in or use app features unless an admin removes the suspension later.";
+      const englishReasonLine = `Action reason: ${translateAccountStatusReason(publicReason)}`;
+      const englishSuspensionEndLine = isSuspend && suspendUntil
+        ? `Suspended until: ${formatPublicDateFromInput(suspendUntil)}`
+        : "";
       return {
         subject,
         lines: [
@@ -4810,6 +4836,13 @@
           reasonLine,
           suspensionEndLine,
           "หากคุณมีคำถามหรือต้องการอุทธรณ์ผลการดำเนินการ กรุณาติดต่อทีมสนับสนุนของ TukDaeng พร้อมระบุเลขอ้างอิงด้านล่าง",
+          "---",
+          `Hello ${user.displayName},`,
+          englishStatusLine,
+          englishAccessLine,
+          englishReasonLine,
+          englishSuspensionEndLine,
+          "If you have questions or want to appeal this decision, please contact TukDaeng support and include the reference number below.",
           `Reference: ${publicReference}`,
           "Contact support: support@tukdaeng.example"
         ].filter(Boolean)
