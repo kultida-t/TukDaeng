@@ -5131,7 +5131,7 @@
       showSuccessToast(`${asset.id}: ${before} → ${asset.type} / ${asset.status}`);
     }
 
-    function renderAssetDetailPage(asset) {
+    function renderAssetDetailPage(asset, options = {}) {
       if (!asset) return;
       const detail = getAssetFoDetail(asset);
       activeAssetImageIndex = Math.min(Math.max(activeAssetImageIndex, 0), Math.max((detail.uploadedImages || []).length - 1, 0));
@@ -5438,7 +5438,7 @@
         if (assetBackLabel) assetBackLabel.textContent = "กลับไป Asset List";
       }
       updateActiveNav();
-      scrollMainToTop();
+      if (!options.preserveScroll) scrollMainToTop();
     }
 
     function renderUserManagement(subLabel = "User List") {
@@ -7521,7 +7521,7 @@
       const assetImageButton = event.target.closest("[data-asset-image-index]");
       if (assetImageButton && document.body.classList.contains("asset-detail-mode")) {
         activeAssetImageIndex = Number(assetImageButton.dataset.assetImageIndex) || 0;
-        renderAssetDetailPage(activeRow);
+        renderAssetDetailPage(activeRow, { preserveScroll: true });
         return;
       }
       const assetOpenButton = event.target.closest("[data-asset-open]");
