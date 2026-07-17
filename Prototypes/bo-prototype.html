@@ -4266,7 +4266,7 @@
     }
 
     function getAssetSearchText(asset) {
-      return Object.values(asset).flat().join(" ").toLowerCase();
+      return [getAssetBrand(asset), ...Object.values(asset).flat()].join(" ").toLowerCase();
     }
 
     function getAssetSortRank(asset, sort) {
@@ -5938,6 +5938,8 @@
       document.querySelector("#panel-subtitle").textContent = displaySubLabel ? `${data.title}: ${displaySubLabel}` : data.subtitle;
       document.querySelector("#primary-action").textContent = data.action;
       if (isAssetList) {
+        const assetBrands = Array.from(new Set(data.rows.map(row => getAssetBrand(row)))).sort((a, b) => a.localeCompare(b));
+        const assetOwners = Array.from(new Set(data.rows.map(row => row.owner))).sort((a, b) => a.localeCompare(b));
         document.querySelector("#panel-title").textContent = "Assets";
         document.querySelector("#panel-subtitle").textContent = "";
         document.querySelector("#user-panel-filter-actions").innerHTML = `
@@ -5946,7 +5948,7 @@
         `;
         document.querySelector(".filters").innerHTML = `
           <div class="user-filter-bar" data-filter-open="${assetFilterOpen}">
-            <input class="field search" id="search" type="search" placeholder="Search asset ID, name, owner, report" />
+            <input class="field search" id="search" type="search" placeholder="ค้นหา Asset ID, Asset, Owner" />
             <div class="user-advanced-filter">${customSelect("asset-type-filter", "Filter asset status", [
               { value: "", label: "All asset status" },
               { value: "Sale", label: "Sale" },
@@ -5954,9 +5956,13 @@
               { value: "Hide", label: "Hide" },
               { value: "Sold", label: "Sold" }
             ])}</div>
-            <div class="user-advanced-filter">${customSelect("status-filter", "Filter review status", [
-              { value: "", label: "All review status" },
-              ...Array.from(new Set(data.rows.map(row => row.status))).map(status => ({ value: status, label: status }))
+            <div class="user-advanced-filter">${customSelect("asset-brand-filter", "Filter brand", [
+              { value: "", label: "All brands" },
+              ...assetBrands.map(brand => ({ value: brand, label: brand }))
+            ])}</div>
+            <div class="user-advanced-filter">${customSelect("asset-owner-filter", "Filter owner", [
+              { value: "", label: "All owners" },
+              ...assetOwners.map(owner => ({ value: owner, label: owner }))
             ])}</div>
             <div class="user-advanced-filter">${customSelect("asset-sort", "Sort assets", [
               { value: "review", label: "Needs review first" },
@@ -6191,12 +6197,16 @@
     function renderAssetListRows() {
       const data = moduleData.assets;
       const q = (document.querySelector("#search")?.value || "").trim().toLowerCase();
-      const status = document.querySelector("#status-filter")?.value || "";
       const type = document.querySelector("#asset-type-filter")?.value || "";
+      const brand = document.querySelector("#asset-brand-filter")?.value || "";
+      const owner = document.querySelector("#asset-owner-filter")?.value || "";
       const sort = document.querySelector("#asset-sort")?.value || "review";
       const sorted = [...data.rows].filter(row => {
-        const text = Object.values(row).flat().join(" ").toLowerCase();
-        return (!q || text.includes(q)) && (!status || row.status === status) && (!type || row.type === type);
+        const text = getAssetSearchText(row);
+        return (!q || text.includes(q))
+          && (!type || row.type === type)
+          && (!brand || getAssetBrand(row) === brand)
+          && (!owner || row.owner === owner);
       }).sort((a, b) => getAssetSortRank(b, sort) - getAssetSortRank(a, sort));
       const pageCount = Math.max(1, Math.ceil(sorted.length / assetListPageSize));
       assetListPage = Math.min(assetListPage, pageCount);
@@ -6341,7 +6351,7 @@
         select.querySelector("[data-custom-select-trigger]").setAttribute("aria-expanded", "false");
         if (hiddenInput.id === "user-action-reason") updateAccountStatusEmailPreview();
         if (select.hasAttribute("data-custom-select-silent")) return;
-        if (["asset-type-filter", "status-filter", "asset-sort"].includes(hiddenInput.id) && activeModule === "assets") {
+        if (["asset-type-filter", "asset-brand-filter", "asset-owner-filter", "asset-sort"].includes(hiddenInput.id) && activeModule === "assets") {
           assetListPage = 1;
           renderAssetListRows();
           return;
@@ -6837,7 +6847,7 @@
         renderReportedUserRows();
         return;
       }
-      if (event.target.matches("#status-filter, #priority-filter, #asset-type-filter, #asset-sort")) {
+      if (event.target.matches("#status-filter, #priority-filter, #asset-type-filter, #asset-brand-filter, #asset-owner-filter, #asset-sort")) {
         if (activeModule === "assets") assetListPage = 1;
         renderRows();
       }
