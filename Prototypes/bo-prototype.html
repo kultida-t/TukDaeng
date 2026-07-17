@@ -1093,25 +1093,154 @@
     }
     body.asset-list-mode .summary-grid {
       grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      gap: 14px;
     }
-    body.asset-list-mode .stat-note.chips {
-      display: flex;
-      gap: 6px;
-      flex-wrap: wrap;
+    body.asset-list-mode .stat {
+      min-height: 268px;
+      padding: 0;
+      border-color: #d8e4f1;
+      background: linear-gradient(180deg, #fff 0%, #fbfdff 100%);
+      box-shadow: 0 12px 30px rgba(15, 35, 65, .075);
+    }
+    body.asset-list-mode .stat::before {
+      display: none;
+    }
+    body.asset-list-mode .asset-kpi-head {
+      padding: 18px 20px 14px;
+      border-bottom: 1px solid #d8e4f1;
+    }
+    body.asset-list-mode .asset-kpi-title {
+      color: #061426;
+      font-family: var(--font-heading);
+      font-size: 26px;
+      font-weight: 400;
+      line-height: .95;
+      letter-spacing: .035em;
+      text-transform: uppercase;
+    }
+    body.asset-list-mode .asset-kpi-subtitle {
+      margin-top: 8px;
+      color: #6c7e96;
+      font-size: 12px;
+      font-weight: 600;
+    }
+    body.asset-list-mode .asset-status-list {
+      display: grid;
+      gap: 8px;
+      padding: 14px 20px 16px;
+    }
+    body.asset-list-mode .asset-status-row {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 16px;
+      align-items: center;
+      min-height: 44px;
+      padding: 9px 12px 9px 13px;
+      border: 1px solid #e2ebf5;
+      border-left: 4px solid #9fb1c7;
+      border-radius: 7px;
+      background: #fff;
+    }
+    body.asset-list-mode .asset-status-row.sale { border-left-color: #0ea576; background: #f7fffb; }
+    body.asset-list-mode .asset-status-row.show { border-left-color: #2f7be5; background: #f8fbff; }
+    body.asset-list-mode .asset-status-row.hide { border-left-color: #7557d8; background: #fbf9ff; }
+    body.asset-list-mode .asset-status-row.sold { border-left-color: #d28a10; background: #fffdf7; }
+    body.asset-list-mode .asset-status-row.sale .asset-status-value { color: #087853; }
+    body.asset-list-mode .asset-status-row.show .asset-status-value { color: #155ab8; }
+    body.asset-list-mode .asset-status-row.hide .asset-status-value { color: #5a3abb; }
+    body.asset-list-mode .asset-status-row.sold .asset-status-value { color: #8a5700; }
+    body.asset-list-mode .asset-status-copy {
+      min-width: 0;
+    }
+    body.asset-list-mode .asset-status-name {
+      display: block;
+      color: #061426;
+      font-size: 13px;
+      font-weight: 800;
+      line-height: 1.2;
+    }
+    body.asset-list-mode .asset-status-detail {
+      display: block;
+      margin-top: 4px;
+      color: #536983;
+      font-size: 12px;
+      line-height: 1.35;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    body.asset-list-mode .asset-status-value {
+      display: block;
+      color: #061426;
+      font-family: var(--font-heading);
+      font-size: 30px;
+      font-weight: 400;
+      line-height: 1;
+      text-align: right;
     }
     body.asset-list-mode .asset-brand-ranking {
       display: grid;
       gap: 8px;
-      margin-top: 8px;
+      padding: 14px 20px 16px;
     }
     body.asset-list-mode .asset-brand-ranking .brand-ranking-row {
-      min-height: 34px;
+      min-height: 36px;
+      display: grid;
+      grid-template-columns: 28px minmax(0, 1fr) minmax(56px, auto);
+      gap: 10px;
+      align-items: center;
+      padding: 7px 0;
     }
     body.asset-list-mode .asset-brand-ranking .brand-ranking-top {
-      grid-template-columns: minmax(86px, 1fr) auto;
+      display: grid;
+      grid-template-columns: minmax(86px, 1fr);
+      gap: 6px;
+      align-items: stretch;
+    }
+    body.asset-list-mode .asset-brand-rank {
+      width: 26px;
+      height: 26px;
+      display: inline-grid;
+      place-items: center;
+      border: 1px solid #d8e4f1;
+      border-radius: 999px;
+      background: #f3f7fc;
+      color: #536983;
+      font-size: 11px;
+      font-weight: 900;
     }
     body.asset-list-mode .asset-brand-ranking .brand-searches {
-      font-size: 19px;
+      color: #061426;
+      font-family: var(--font-heading);
+      font-size: 25px;
+      line-height: 1;
+      text-align: right;
+    }
+    body.asset-list-mode .asset-brand-ranking .brand-bar-line {
+      align-items: center;
+      grid-template-columns: minmax(0, 1fr);
+    }
+    body.asset-list-mode .asset-brand-ranking .brand-bar-track {
+      height: 6px;
+      background: #e8eef6;
+    }
+    body.asset-list-mode .asset-brand-ranking .brand-bar-fill {
+      background: var(--brand);
+    }
+    body.asset-list-mode .asset-brand-meta {
+      display: block;
+      margin-top: 5px;
+      color: #315d8f;
+      font-size: 11px;
+      font-weight: 800;
+    }
+    body.asset-list-mode .asset-brand-share {
+      display: block;
+      margin-top: 3px;
+      color: #536983;
+      font-size: 11px;
+      font-weight: 700;
+      text-align: right;
     }
     body.asset-list-mode .filters {
       display: grid;
@@ -4287,39 +4416,82 @@
       }, {});
       const topBrands = Object.entries(brandCounts)
         .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))
-        .slice(0, 4);
+        .slice(0, 5);
       return [
-        ["All Assets", assets.length, [
-          `Sale ${countType("Sale")}`,
-          `Show ${countType("Show")}`,
-          `Hide ${countType("Hide")}`,
-          `Sold ${countType("Sold")}`
-        ], "chips"],
-        ["Top Brands Added", `Top ${topBrands.length}`, topBrands, "brand-ranking"]
+        {
+          title: "Asset Status",
+          subtitle: "จาก Asset List ทั้งหมด",
+          type: "status-list",
+          rows: [
+            ["Sale", countType("Sale"), "ยอดทั้งหมดที่แสดงใน Feed และ Search"],
+            ["Show", countType("Show"), "ยอดทั้งหมดที่แสดงใน collection และ profile"],
+            ["Hide", countType("Hide"), "ยอดทั้งหมดที่ owner/Admin เห็นตามสิทธิ์"],
+            ["Sold", countType("Sold"), "ยอดทั้งหมดที่คงประวัติและปิดรับ offer"]
+          ]
+        },
+        {
+          title: "Top Asset Brands",
+          subtitle: "จาก Asset List ทั้งหมด",
+          type: "brand-ranking",
+          rows: topBrands
+        }
       ];
     }
 
-    function renderAssetSummaryNote(stat) {
-      if (stat[3] === "chips") return stat[2].map(item => `<span class="chip">${item}</span>`).join("");
-      if (stat[3] === "brand-ranking") {
-        const maxCount = Math.max(...stat[2].map(brand => brand[1]), 1);
+    function renderAssetSummaryCard(stat) {
+      if (stat.type === "status-list") {
         return `
-          <div class="asset-brand-ranking">
-            ${stat[2].map(([brand, count]) => `
-              <span class="brand-ranking-row">
-                <span class="brand-ranking-top">
-                  <span class="ranking-brand-name">${brand}</span>
-                  <span class="brand-searches">${count}</span>
+          <article class="stat asset-kpi-card">
+            <div class="asset-kpi-head">
+              <div class="asset-kpi-title">${stat.title}</div>
+              <div class="asset-kpi-subtitle">${stat.subtitle}</div>
+            </div>
+            <div class="asset-status-list">
+              ${stat.rows.map(([label, value, detail]) => `
+                <span class="asset-status-row ${label.toLowerCase()}">
+                  <span class="asset-status-copy">
+                    <span class="asset-status-name">${label}</span>
+                    <span class="asset-status-detail">${detail}</span>
+                  </span>
+                  <strong class="asset-status-value">${value.toLocaleString()}</strong>
                 </span>
-                <span class="brand-bar-line">
-                  <span class="brand-bar-track"><span class="brand-bar-fill" style="width: ${Math.round((count / maxCount) * 100)}%"></span></span>
-                </span>
-              </span>
-            `).join("")}
-          </div>
+              `).join("")}
+            </div>
+          </article>
         `;
       }
-      return stat[2];
+      if (stat.type === "brand-ranking") {
+        const total = moduleData.assets.rows.length || 1;
+        return `
+          <article class="stat asset-kpi-card">
+            <div class="asset-kpi-head">
+              <div class="asset-kpi-title">${stat.title}</div>
+              <div class="asset-kpi-subtitle">${stat.subtitle}</div>
+            </div>
+            <div class="asset-brand-ranking">
+              ${stat.rows.map(([brand, count], index) => {
+                const share = Math.round((count / total) * 100);
+                const barWidth = Math.max(10, share);
+                return `
+                <span class="brand-ranking-row">
+                  <span class="asset-brand-rank">${index + 1}</span>
+                  <span class="brand-ranking-top">
+                    <span class="ranking-brand-name">${brand}</span>
+                    <span class="brand-bar-line">
+                      <span class="brand-bar-track"><span class="brand-bar-fill" style="width: ${barWidth}%"></span></span>
+                    </span>
+                  </span>
+                  <span>
+                    <span class="brand-searches">${count.toLocaleString()}</span>
+                    <span class="asset-brand-share">${share}%</span>
+                  </span>
+                </span>
+              `}).join("")}
+            </div>
+          </article>
+        `;
+      }
+      return "";
     }
 
     function assetStatusPill(status) {
@@ -6024,13 +6196,7 @@
             <button class="btn filter-reset user-advanced-filter" type="button" data-asset-reset title="รีเซ็ตค่าทั้งหมด" aria-label="รีเซ็ตค่าทั้งหมด">${iconSvg.refresh}<span>รีเซ็ตค่าทั้งหมด</span></button>
           </div>
         `;
-        document.querySelector("#summary-grid").innerHTML = getAssetSummaryStats().map(stat => `
-          <article class="stat">
-            <div class="stat-label">${stat[0]}</div>
-            <div class="stat-value">${stat[1]}</div>
-            <div class="stat-note ${stat[3] || ""}">${renderAssetSummaryNote(stat)}</div>
-          </article>
-        `).join("");
+        document.querySelector("#summary-grid").innerHTML = getAssetSummaryStats().map(renderAssetSummaryCard).join("");
         document.querySelector("#cards").innerHTML = "";
         document.querySelector("#detail").innerHTML = "";
         renderRows();
@@ -6262,13 +6428,7 @@
       assetListPage = Math.min(assetListPage, pageCount);
       const start = (assetListPage - 1) * assetListPageSize;
       const pageRows = sorted.slice(start, start + assetListPageSize);
-      document.querySelector("#summary-grid").innerHTML = getAssetSummaryStats().map(stat => `
-        <article class="stat">
-          <div class="stat-label">${stat[0]}</div>
-          <div class="stat-value">${stat[1]}</div>
-          <div class="stat-note ${stat[3] || ""}">${renderAssetSummaryNote(stat)}</div>
-        </article>
-      `).join("");
+      document.querySelector("#summary-grid").innerHTML = getAssetSummaryStats().map(renderAssetSummaryCard).join("");
       document.querySelector("#panel-subtitle").textContent = "";
       const table = document.querySelector("#table");
       table.innerHTML = `
