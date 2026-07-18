@@ -2557,19 +2557,12 @@
       flex-wrap: wrap;
       margin-bottom: 12px;
     }
-    .asset-comment-filters {
-      display: flex;
-      gap: 6px;
-      flex-wrap: wrap;
-    }
-    .asset-comment-filters .user-detail-action-btn.active {
-      border-color: var(--active);
-      background: var(--active);
-      color: #fff;
-    }
     .asset-comment-dense-list {
       display: grid;
       gap: 8px;
+      max-height: min(58vh, 520px);
+      overflow-y: auto;
+      padding-right: 4px;
     }
     .asset-comment-dense-row {
       display: grid;
@@ -2579,16 +2572,6 @@
       border-radius: 7px;
       background: #fff;
       padding: 10px;
-    }
-    .asset-comment-pager {
-      display: flex;
-      align-items: center;
-      justify-content: flex-end;
-      gap: 8px;
-      margin-top: 12px;
-      color: #66758d;
-      font-size: 12px;
-      font-weight: 700;
     }
     .asset-detail-section-head {
       display: flex;
@@ -5380,14 +5363,6 @@
       }).slice(0, 3);
     }
 
-    function getFilteredAssetComments(comments, filter) {
-      if (filter === "reported") return comments.filter(comment => comment.status === "Reported");
-      if (filter === "hidden") return comments.filter(comment => comment.status === "Hidden");
-      if (filter === "top") return [...comments].sort((a, b) => (b.likes || 0) - (a.likes || 0));
-      if (filter === "latest") return comments;
-      return comments;
-    }
-
     function renderAssetBoCommentItem(comment, isReply = false, options = {}) {
       const replyCount = (comment.replies || []).length + (comment.hiddenReplies || 0);
       const showReplyCount = options.showReplyCount !== false;
@@ -5420,7 +5395,7 @@
         <div class="detail-section">
           <div class="asset-comment-section-head">
             <h4>Comments</h4>
-            <button class="user-detail-action-btn" type="button" data-asset-comments-modal="${asset.id}" data-comment-filter="all" data-comment-page="1">View all comments</button>
+            <button class="user-detail-action-btn" type="button" data-asset-comments-modal="${asset.id}">View all comments</button>
           </div>
           <div class="asset-context-list asset-comment-list">
             ${previewComments.map(comment => `
@@ -5434,22 +5409,9 @@
       `;
     }
 
-    function renderAssetCommentsModal(asset, filter = "all", page = 1) {
+    function renderAssetCommentsModal(asset) {
       if (!asset) return;
       const comments = getAssetBoComments(asset);
-      const filtered = getFilteredAssetComments(comments, filter);
-      const pageSize = 4;
-      const pageCount = Math.max(1, Math.ceil(filtered.length / pageSize));
-      const safePage = Math.min(Math.max(Number(page) || 1, 1), pageCount);
-      const start = (safePage - 1) * pageSize;
-      const pageRows = filtered.slice(start, start + pageSize);
-      const filters = [
-        ["all", "All"],
-        ["reported", "Reported"],
-        ["hidden", "Hidden"],
-        ["top", "Top liked"],
-        ["latest", "Latest"]
-      ];
       const modal = document.querySelector("#user-action-modal");
       const modalBody = document.querySelector("#user-action-modal-body");
       modalBody.innerHTML = `
@@ -5465,13 +5427,10 @@
           </div>
           <div class="user-action-card">
             <div class="asset-comment-modal-toolbar">
-              <div class="asset-comment-filters">
-                ${filters.map(([value, label]) => `<button class="user-detail-action-btn ${filter === value ? "active" : ""}" type="button" data-asset-comments-modal="${asset.id}" data-comment-filter="${value}" data-comment-page="1">${label}</button>`).join("")}
-              </div>
-              <span class="asset-comment-meta">Showing ${filtered.length ? `${start + 1}-${Math.min(start + pageSize, filtered.length)}` : "0"} of ${filtered.length}</span>
+              <span class="asset-comment-meta">Showing ${comments.length} comments</span>
             </div>
             <div class="asset-comment-dense-list">
-              ${pageRows.map(comment => `
+              ${comments.map(comment => `
                 <div class="asset-comment-dense-row">
                   <span class="asset-comment-avatar"><img src="${getAssetCommentAvatarSrc(comment)}" alt="" /></span>
                   <div>
@@ -5487,16 +5446,8 @@
                     </div>
                   </div>
                 </div>
-              `).join("") || `<div class="detail-empty">No comments match this filter</div>`}
+              `).join("") || `<div class="detail-empty">No comments</div>`}
             </div>
-            <div class="asset-comment-pager">
-              <button class="user-detail-action-btn" type="button" data-asset-comments-modal="${asset.id}" data-comment-filter="${filter}" data-comment-page="${safePage - 1}" ${safePage <= 1 ? "disabled" : ""}>Previous</button>
-              <span>Page ${safePage} / ${pageCount}</span>
-              <button class="user-detail-action-btn" type="button" data-asset-comments-modal="${asset.id}" data-comment-filter="${filter}" data-comment-page="${safePage + 1}" ${safePage >= pageCount ? "disabled" : ""}>Next</button>
-            </div>
-          </div>
-          <div class="user-action-footer">
-            <button class="user-detail-action-btn primary" type="button" data-user-action-modal-close>Close</button>
           </div>
         </div>
       `;
@@ -7907,7 +7858,7 @@
       const assetCommentsButton = event.target.closest("[data-asset-comments-modal]");
       if (assetCommentsButton) {
         const asset = moduleData.assets.rows.find(entry => entry.id === assetCommentsButton.dataset.assetCommentsModal);
-        renderAssetCommentsModal(asset, assetCommentsButton.dataset.commentFilter || "all", assetCommentsButton.dataset.commentPage || "1");
+        renderAssetCommentsModal(asset);
         return;
       }
       const assetPurchaseHistoryButton = event.target.closest("[data-asset-purchase-history]");
