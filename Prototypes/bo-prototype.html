@@ -2549,14 +2549,6 @@
     .asset-comment-section-head h4 {
       margin: 0;
     }
-    .asset-comment-modal-toolbar {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 10px;
-      flex-wrap: wrap;
-      margin-bottom: 12px;
-    }
     .asset-comment-dense-list {
       display: grid;
       gap: 8px;
@@ -2572,6 +2564,23 @@
       border-radius: 7px;
       background: #fff;
       padding: 10px;
+    }
+    .asset-comment-dense-replies {
+      display: grid;
+      gap: 8px;
+      margin-top: 10px;
+      padding-left: 12px;
+      border-left: 1px solid #d8e2ef;
+    }
+    .asset-comment-dense-reply {
+      display: grid;
+      grid-template-columns: 30px minmax(0, 1fr);
+      gap: 8px;
+      padding-top: 2px;
+    }
+    .asset-comment-dense-reply .asset-comment-avatar {
+      width: 30px;
+      height: 30px;
     }
     .asset-detail-section-head {
       display: flex;
@@ -5300,7 +5309,6 @@
           text: "The 5711/1A is truly a masterpiece. The dial transition from blue to black is unmatched. Great piece!",
           likes: 1,
           status: "Active",
-          hiddenReplies: hasReports ? 2 : 0,
           replies: []
         },
         {
@@ -5364,7 +5372,7 @@
     }
 
     function renderAssetBoCommentItem(comment, isReply = false, options = {}) {
-      const replyCount = (comment.replies || []).length + (comment.hiddenReplies || 0);
+      const replyCount = (comment.replies || []).length;
       const showReplyCount = options.showReplyCount !== false;
       return `
         <div class="asset-comment-item ${isReply ? "reply" : ""}">
@@ -5380,8 +5388,46 @@
             <div class="asset-comment-signals">
               <span>${comment.likes || 0} likes</span>
               ${!isReply && showReplyCount ? `<span>${replyCount} replies</span>` : ""}
-              ${comment.hiddenReplies ? `<span>${comment.hiddenReplies} hidden replies</span>` : ""}
             </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderAssetCommentDenseRow(comment) {
+      const replies = comment.replies || [];
+      return `
+        <div class="asset-comment-dense-row">
+          <span class="asset-comment-avatar"><img src="${getAssetCommentAvatarSrc(comment)}" alt="" /></span>
+          <div>
+            <div class="asset-comment-head">
+              <strong>${comment.name}</strong>
+              <span class="asset-comment-meta"><span>${comment.time}</span></span>
+            </div>
+            <p class="asset-comment-text">${comment.text}</p>
+            <div class="asset-comment-signals">
+              <span>${comment.likes || 0} likes</span>
+              <span>${replies.length} replies</span>
+            </div>
+            ${replies.length ? `
+              <div class="asset-comment-dense-replies">
+                ${replies.map(reply => `
+                  <div class="asset-comment-dense-reply">
+                    <span class="asset-comment-avatar"><img src="${getAssetCommentAvatarSrc(reply)}" alt="" /></span>
+                    <div>
+                      <div class="asset-comment-head">
+                        <strong>${reply.name}</strong>
+                        <span class="asset-comment-meta"><span>${reply.time}</span></span>
+                      </div>
+                      <p class="asset-comment-text">${reply.text}</p>
+                      <div class="asset-comment-signals">
+                        <span>${reply.likes || 0} likes</span>
+                      </div>
+                    </div>
+                  </div>
+                `).join("")}
+              </div>
+            ` : ""}
           </div>
         </div>
       `;
@@ -5426,27 +5472,8 @@
             </button>
           </div>
           <div class="user-action-card">
-            <div class="asset-comment-modal-toolbar">
-              <span class="asset-comment-meta">Showing ${comments.length} comments</span>
-            </div>
             <div class="asset-comment-dense-list">
-              ${comments.map(comment => `
-                <div class="asset-comment-dense-row">
-                  <span class="asset-comment-avatar"><img src="${getAssetCommentAvatarSrc(comment)}" alt="" /></span>
-                  <div>
-                    <div class="asset-comment-head">
-                      <strong>${comment.name}</strong>
-                      <span class="asset-comment-meta"><span>${comment.time}</span></span>
-                    </div>
-                    <p class="asset-comment-text">${comment.text}</p>
-                    <div class="asset-comment-signals">
-                      <span>${comment.likes || 0} likes</span>
-                      <span>${(comment.replies || []).length + (comment.hiddenReplies || 0)} replies</span>
-                      ${comment.hiddenReplies ? `<span>${comment.hiddenReplies} hidden replies</span>` : ""}
-                    </div>
-                  </div>
-                </div>
-              `).join("") || `<div class="detail-empty">No comments</div>`}
+              ${comments.map(renderAssetCommentDenseRow).join("") || `<div class="detail-empty">No comments</div>`}
             </div>
           </div>
         </div>
