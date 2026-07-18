@@ -2506,15 +2506,6 @@
       font-size: 11px;
       font-weight: 800;
     }
-    .asset-comment-status {
-      color: #0f6b4f;
-    }
-    .asset-comment-status.reported {
-      color: #9f1722;
-    }
-    .asset-comment-status.hidden {
-      color: #925500;
-    }
     .asset-comment-section-head {
       display: flex;
       align-items: center;
@@ -5345,7 +5336,6 @@
 
     function renderAssetBoCommentItem(comment, isReply = false, options = {}) {
       const replyCount = (comment.replies || []).length + (comment.hiddenReplies || 0);
-      const statusClass = String(comment.status || "").toLowerCase();
       const showReplyCount = options.showReplyCount !== false;
       return `
         <div class="asset-comment-item ${isReply ? "reply" : ""}">
@@ -5355,7 +5345,6 @@
               <strong>${comment.name}</strong>
               <span class="asset-comment-meta">
                 <span>${comment.time}</span>
-                <span class="asset-comment-status ${statusClass}">${comment.status}</span>
               </span>
             </div>
             <p class="asset-comment-text">${comment.text}</p>
@@ -5434,7 +5423,7 @@
                   <div>
                     <div class="asset-comment-head">
                       <strong>${comment.name}</strong>
-                      <span class="asset-comment-meta"><span>${comment.time}</span><span class="asset-comment-status ${String(comment.status).toLowerCase()}">${comment.status}</span></span>
+                      <span class="asset-comment-meta"><span>${comment.time}</span></span>
                     </div>
                     <p class="asset-comment-text">${comment.text}</p>
                     <div class="asset-comment-signals">
