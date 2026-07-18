@@ -5492,7 +5492,11 @@
       const showReplyCount = options.showReplyCount !== false;
       const replyToggle = !isReply && showReplyCount && replyCount
         ? `<button class="asset-comment-reply-toggle" type="button" data-asset-comment-replies="${options.replyKey}" data-asset-comment-replies-surface="detail" data-asset-id="${options.assetId}" aria-expanded="${options.expanded ? "true" : "false"}">${options.expanded ? "Hide replies" : `View ${replyCount} replies`}</button>`
-        : (!isReply && showReplyCount ? `<span>0 replies</span>` : "");
+        : "";
+      const signals = [
+        comment.likes ? `<span>${comment.likes} likes</span>` : "",
+        replyToggle
+      ].filter(Boolean).join("");
       return `
         <div class="asset-comment-item ${isReply ? "reply" : ""}">
           <span class="asset-comment-avatar"><img src="${getAssetCommentAvatarSrc(comment)}" alt="" /></span>
@@ -5504,10 +5508,7 @@
               </span>
             </div>
             <p class="asset-comment-text">${comment.text}</p>
-            <div class="asset-comment-signals">
-              <span>${comment.likes || 0} likes</span>
-              ${replyToggle}
-            </div>
+            ${signals ? `<div class="asset-comment-signals">${signals}</div>` : ""}
           </div>
         </div>
       `;
@@ -5517,6 +5518,11 @@
       const replies = comment.replies || [];
       const replyKey = `${assetId}:modal:${index}`;
       const expanded = expandedAssetCommentReplies.has(replyKey);
+      const replyToggle = replies.length ? `<button class="asset-comment-reply-toggle" type="button" data-asset-comment-replies="${replyKey}" data-asset-comment-replies-surface="modal" data-asset-id="${assetId}" aria-expanded="${expanded}">${expanded ? "Hide replies" : `View ${replies.length} replies`}</button>` : "";
+      const signals = [
+        comment.likes ? `<span>${comment.likes} likes</span>` : "",
+        replyToggle
+      ].filter(Boolean).join("");
       return `
         <div class="asset-comment-dense-row">
           <span class="asset-comment-avatar"><img src="${getAssetCommentAvatarSrc(comment)}" alt="" /></span>
@@ -5526,10 +5532,7 @@
               <span class="asset-comment-meta"><span>${comment.time}</span></span>
             </div>
             <p class="asset-comment-text">${comment.text}</p>
-            <div class="asset-comment-signals">
-              <span>${comment.likes || 0} likes</span>
-              ${replies.length ? `<button class="asset-comment-reply-toggle" type="button" data-asset-comment-replies="${replyKey}" data-asset-comment-replies-surface="modal" data-asset-id="${assetId}" aria-expanded="${expanded}">${expanded ? "Hide replies" : `View ${replies.length} replies`}</button>` : `<span>0 replies</span>`}
-            </div>
+            ${signals ? `<div class="asset-comment-signals">${signals}</div>` : ""}
             ${replies.length && expanded ? `
               <div class="asset-comment-dense-replies">
                 ${replies.map(reply => `
@@ -5541,9 +5544,7 @@
                         <span class="asset-comment-meta"><span>${reply.time}</span></span>
                       </div>
                       <p class="asset-comment-text">${reply.text}</p>
-                      <div class="asset-comment-signals">
-                        <span>${reply.likes || 0} likes</span>
-                      </div>
+                      ${reply.likes ? `<div class="asset-comment-signals"><span>${reply.likes} likes</span></div>` : ""}
                     </div>
                   </div>
                 `).join("")}
