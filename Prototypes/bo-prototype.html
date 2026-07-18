@@ -5154,153 +5154,6 @@
       document.querySelector("#table").innerHTML = `
         <div class="user-detail-page">
           <div class="user-detail-head">
-            <div>
-              <button class="btn user-back-btn" type="button" data-back-asset-list aria-label="กลับไป Asset List" title="กลับไป Asset List">
-                ${iconSvg.chevron}
-              </button>
-              <h2>${asset.name}</h2>
-              <p>${asset.id} · ${asset.owner}</p>
-            </div>
-            <div class="user-detail-actions">
-              ${getAssetRowActions(asset).map(({ action, label }) => `<button class="user-detail-action-btn" type="button" data-asset-action="${action}" data-asset-id="${asset.id}">${label}</button>`).join("")}
-            </div>
-          </div>
-          <div class="detail-grid two">
-            <div class="detail-tile"><span>Asset Status</span><strong>${renderAssetStatusDisplay(asset)}</strong></div>
-            <div class="detail-tile"><span>Moderation State</span><strong>${asset.status}</strong></div>
-            <div class="detail-tile"><span>Owner</span><strong>${asset.owner}</strong></div>
-            <div class="detail-tile"><span>Priority</span><strong>${asset.priority}</strong></div>
-            <div class="detail-tile"><span>Detail</span><strong>${asset.detail}</strong></div>
-            <div class="detail-tile"><span>Admin Action</span><strong>${asset.action}</strong></div>
-          </div>
-          <div class="detail-section">
-            <h4>Linked Context</h4>
-            <div class="chips">${asset.tags.map(tag => `<span class="chip">${tag}</span>`).join("")}</div>
-            <div class="module-note"><strong>Visibility rule:</strong> Sale appears in Feed/Search, Show appears as portfolio display, Hide is owner-only, and Sold is read-only with sale history. Temporary report hiding is shown as a Moderation State, not Asset Status. User-owned asset details stay read-only for Admin; BO actions are moderation, review, and visibility changes.</div>
-          </div>
-        </div>
-      `;
-      document.querySelector("#table").innerHTML = `
-        <div class="user-detail-page">
-          <div class="user-detail-head">
-            <div class="user-detail-title">
-              ${renderAssetCover(asset)}
-              <div>
-                <h2>${asset.name}</h2>
-                <div class="chips">${renderAssetStatusDisplay(asset)}<span class="pill blue">${detail.brand}</span></div>
-              </div>
-            </div>
-            <button class="btn user-back-btn" type="button" data-back-asset-list aria-label="กลับไป Asset List" title="กลับไป Asset List">
-              <svg class="mobile-back-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>
-              <span class="btn-label">กลับไป Asset List</span>
-            </button>
-          </div>
-
-          <div class="detail-section">
-            <h4>Asset Summary</h4>
-            <div class="detail-grid two">
-              ${renderAssetDetailTiles([
-                ["Asset ID", asset.id],
-                ["Asset Status", renderAssetStatusDisplay(asset)],
-                ["Moderation State", asset.status],
-                ["Created At", detail.createdAt],
-                ["Updated At", detail.updatedAt],
-                ["Priority", asset.priority]
-              ])}
-            </div>
-          </div>
-
-          <div class="detail-section">
-            <h4>Owner / Contact</h4>
-            <div class="detail-grid two">
-              ${renderAssetDetailTiles([
-                ["Owner", asset.owner],
-                ["Owner ID", detail.owner.id],
-                ["Username", detail.owner.username],
-                ["Account Status", detail.owner.accountStatus],
-                ["Email", detail.owner.email],
-                ["Phone", detail.owner.phone]
-              ])}
-            </div>
-          </div>
-
-          <div class="detail-section">
-            <h4>Watch Information From FO</h4>
-            <div class="detail-grid two">
-              ${renderAssetDetailTiles([
-                ["Brand", detail.brand],
-                ["Model", detail.model],
-                ["Reference", detail.reference],
-                ["Year", detail.year],
-                ["Case Size", detail.caseSize],
-                ["Material", detail.material],
-                ["Movement", detail.movement],
-                ["Dial", detail.dial],
-                ["Condition", detail.condition],
-                ["Serial", detail.serialMasked],
-                ["Included Set", detail.scope],
-                ["Location", detail.location]
-              ])}
-            </div>
-          </div>
-
-          <div class="detail-section">
-            <h4>Listing / Sale Detail</h4>
-            <div class="detail-grid two">
-              ${renderAssetDetailTiles([
-                ["Asking Price", detail.price],
-                ["Negotiable", detail.negotiable],
-                ["Delivery", detail.delivery],
-                ["Payment", detail.payment],
-                ["Offer", detail.offerEnabled],
-                ["Watch Alert", detail.watchAlert]
-              ])}
-            </div>
-          </div>
-
-          <div class="detail-section">
-            <h4>Media / Description</h4>
-            <div class="detail-grid two">
-              ${renderAssetDetailTiles([
-                ["Photo Count", `${detail.photoCount}`],
-                ["Media Checklist", detail.mediaReview],
-                ["Description", detail.description]
-              ])}
-            </div>
-          </div>
-
-          <div class="detail-section">
-            <h4>Visibility / App Impact</h4>
-            <div class="detail-grid two">
-              ${renderAssetDetailTiles([
-                ["FO Visibility", detail.visibility],
-                ["Comment", detail.commentEnabled],
-                ["Linked Offer", detail.linkedOffer],
-                ["Linked Watch Alert", detail.linkedWatchAlert],
-                ["Reports", detail.reportCount],
-                ["Report Reason", detail.reportReason]
-              ])}
-            </div>
-          </div>
-
-          <div class="detail-section">
-            <h4>Linked Context</h4>
-            <div class="chips">${asset.tags.map(tag => `<span class="chip">${tag}</span>`).join("")}</div>
-            <div class="module-note"><strong>FO impact:</strong> Asset Detail is read-only for user-submitted content. BO actions only change moderation and public visibility across Feed, Search, Profile, Watch Alert, Offer, Chat references, and Audit Log.</div>
-            <div class="warning-note"><strong>Admin action note:</strong> ${asset.action}</div>
-          </div>
-
-          <div class="detail-section user-detail-action-section">
-            <h4>Actions</h4>
-            <div class="user-detail-actions">
-              ${getAssetRowActions(asset).map(({ action, label }) => `<button class="user-detail-action-btn" type="button" data-asset-action="${action}" data-asset-id="${asset.id}">${label}</button>`).join("") || `<span class="chip">No available action</span>`}
-            </div>
-          </div>
-        </div>
-      `;
-      document.querySelector("#table").innerHTML = `
-        <div class="user-detail-page">
-          <div class="user-detail-head">
             <div class="user-detail-title">
               <div>
                 <h2>${asset.name}</h2>
@@ -5317,24 +5170,22 @@
             ${renderAssetFoPreview(asset, detail)}
             <div class="asset-bo-context">
               <div class="detail-section">
-                <h4>FO Listing Header</h4>
+                <h4>Listing Summary</h4>
                 <div class="detail-grid two">
                   ${renderAssetDetailTiles([
                     ["Asset ID", asset.id],
                     ["Post Type", asset.type],
-                    ["Title", asset.name],
                     ["Reference No.", detail.reference],
                     ["Price", detail.price],
-                    ["Status Badge", asset.type],
-                    ["Like Count", `${getAssetSocial(asset).likes}`],
-                    ["Comment Count", `${getAssetSocial(asset).comments}`],
-                    ["Favorite Count", `${getAssetSocial(asset).favorite}`]
+                    ["Created At", detail.createdAt],
+                    ["Updated At", detail.updatedAt],
+                    ["Priority", asset.priority]
                   ])}
                 </div>
               </div>
 
               <div class="detail-section">
-                <h4>FO Seller</h4>
+                <h4>Seller</h4>
                 <div class="detail-grid two">
                   ${renderAssetDetailTiles([
                     ["Display Name", asset.owner],
@@ -5348,7 +5199,7 @@
               </div>
 
               <div class="detail-section">
-                <h4>FO Description</h4>
+                <h4>Description</h4>
                 <div class="detail-grid">
                   ${renderAssetDetailTiles([
                     ["Description", getAssetDescription(asset, detail).join(" ")]
@@ -5357,57 +5208,69 @@
               </div>
 
               <div class="detail-section">
-                <h4>FO Technical</h4>
-                <div class="detail-grid two">
-                  ${renderAssetDetailTiles(getAssetTechnicalRows(detail))}
-                </div>
-              </div>
-
-              <div class="detail-section">
-                <h4>FO Comments</h4>
+                <h4>Specifications</h4>
                 <div class="detail-grid two">
                   ${renderAssetDetailTiles([
-                    ["Visible Comments", `${assetFoComments.length}`],
-                    ["First Comment", `${assetFoComments[0].name}: ${assetFoComments[0].text}`],
-                    ["Replies", "Threaded replies are available from View all"],
-                    ["Comment Input", "Visible with current user avatar on FO"]
+                    ["Model", detail.model],
+                    ["Year of production", detail.year],
+                    ["Condition", detail.condition],
+                    ["Included Set", detail.scope],
+                    ["Location", detail.location],
+                    ["Case size", detail.caseSize],
+                    ["Thickness", detail.thickness],
+                    ["Case material", detail.material],
+                    ["Movement", detail.movement],
+                    ["Dial color", detail.dial],
+                    ["Strap / Bracelet Type", detail.bracelet],
+                    ["Serial", detail.serialMasked]
                   ])}
                 </div>
               </div>
 
               <div class="detail-section">
-                <h4>FO Bottom Actions</h4>
+                <h4>Engagement</h4>
                 <div class="detail-grid two">
                   ${renderAssetDetailTiles([
-                    ["Sticky Price", detail.price],
+                    ["Like Count", `${getAssetSocial(asset).likes}`],
+                    ["Visible Comments", `${assetFoComments.length}`],
+                    ["Favorite Count", `${getAssetSocial(asset).favorite}`],
+                    ["First Comment", `${assetFoComments[0].name}: ${assetFoComments[0].text}`],
+                    ["Replies", "Threaded replies are available from View all"]
+                  ])}
+                </div>
+              </div>
+
+              <div class="detail-section">
+                <h4>Commerce</h4>
+                <div class="detail-grid two">
+                  ${renderAssetDetailTiles([
                     ["Primary Button", getAssetFoActionLabel(asset)],
-                    ["Secondary Button", "Edit"],
                     ["Offer", detail.offerEnabled],
                     ["Delivery", detail.delivery],
-                    ["Payment", detail.payment]
+                    ["Payment", detail.payment],
+                    ["Watch Alert", detail.watchAlert]
                   ])}
                 </div>
               </div>
 
               <div class="detail-section">
-                <h4>BO Moderation / Sync</h4>
+                <h4>Moderation / Sync</h4>
                 <div class="detail-grid two">
                   ${renderAssetDetailTiles([
-                    ["Asset Status", renderAssetStatusDisplay(asset)],
                     ["Moderation State", asset.status],
-                    ["FO Visibility", detail.visibility],
-                    ["Watch Alert", detail.watchAlert],
+                    ["App Visibility", detail.visibility],
+                    ["Comment", detail.commentEnabled],
                     ["Linked Offer", detail.linkedOffer],
                     ["Reports", detail.reportCount],
                     ["Report Reason", detail.reportReason],
                     ["Admin Action Note", asset.action]
                   ])}
                 </div>
-                <div class="module-note"><strong>FO sync:</strong> BO แสดงข้อมูลที่ผู้ใช้กรอกจาก FO แบบ read-only และใช้ action ด้านล่างเพื่อเปลี่ยน moderation/visibility เท่านั้น</div>
+                <div class="module-note"><strong>App sync:</strong> Admin displays user-submitted asset data as read-only and uses the actions below to update moderation or visibility only.</div>
               </div>
 
               <div class="detail-section user-detail-action-section">
-                <h4>BO Actions</h4>
+                <h4>Actions</h4>
                 <div class="user-detail-actions">
                   ${getAssetRowActions(asset).map(({ action, label }) => `<button class="user-detail-action-btn" type="button" data-asset-action="${action}" data-asset-id="${asset.id}">${label}</button>`).join("") || `<span class="chip">No available action</span>`}
                 </div>
