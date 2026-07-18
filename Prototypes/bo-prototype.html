@@ -5732,21 +5732,14 @@
         <div class="user-action-page">
           <div class="user-action-head">
             <div>
-              <h2 id="user-action-modal-title">Sale Record</h2>
-              <p>${asset.id} ยท ${asset.name}</p>
+              <h2 id="user-action-modal-title">Sale History</h2>
+              <p>${asset.id} - ${asset.name}</p>
             </div>
             <button class="btn user-action-close" type="button" data-user-action-modal-close aria-label="Close modal" title="Close">
               ${iconSvg.close}
             </button>
           </div>
           <div class="user-action-card asset-sale-record">
-            <div class="asset-sale-record-head">
-              <div>
-                <strong>Private BO sale history</strong>
-                Values come from the FO Sold form and remain read-only for audit, support, and payment evidence review.
-              </div>
-              <span class="asset-sale-private-pill">Admin only</span>
-            </div>
             <div class="detail-grid asset-sale-modal-grid">
               ${renderAssetDetailTiles([
                 ["Buyer Name", saleRecord.buyerName],
