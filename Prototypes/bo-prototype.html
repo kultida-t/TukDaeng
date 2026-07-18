@@ -2203,13 +2203,31 @@
       gap: 18px;
       align-items: start;
     }
+    body.asset-detail-mode .asset-fo-layout {
+      grid-template-columns: minmax(420px, 680px) minmax(0, 1fr);
+    }
+    .asset-detail-sidebar,
+    .asset-detail-full {
+      min-width: 0;
+    }
+    .asset-detail-full {
+      grid-column: 1 / -1;
+      display: grid;
+      gap: 14px;
+    }
     .asset-fo-preview {
       border: 1px solid #1f2937;
-      border-radius: 18px;
+      border-radius: 8px;
       overflow: hidden;
       background: #101010;
       color: #fff;
       box-shadow: 0 16px 34px rgba(15, 23, 42, .18);
+    }
+    body.asset-detail-mode .asset-fo-preview {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 76px;
+      gap: 0;
+      padding: 0;
     }
     .asset-fo-phone-head,
     .asset-fo-bottom {
@@ -2246,6 +2264,9 @@
       background: #050505;
       overflow: hidden;
     }
+    body.asset-detail-mode .asset-fo-hero {
+      min-height: 420px;
+    }
     .asset-fo-hero img {
       position: absolute;
       inset: 0;
@@ -2279,6 +2300,12 @@
       gap: 10px;
       padding: 14px 18px 18px;
     }
+    body.asset-detail-mode .asset-fo-thumbs {
+      display: grid;
+      align-content: start;
+      gap: 10px;
+      padding: 10px;
+    }
     .asset-fo-thumb {
       width: 58px;
       height: 58px;
@@ -2288,6 +2315,10 @@
       background: #242424;
       padding: 0;
       cursor: pointer;
+    }
+    body.asset-detail-mode .asset-fo-thumb {
+      width: 64px;
+      height: 64px;
     }
     .asset-fo-thumb:hover,
     .asset-fo-thumb:focus-visible {
@@ -2665,6 +2696,7 @@
       }
       body.asset-detail-mode .asset-fo-preview {
         max-width: 520px;
+        grid-template-columns: minmax(0, 1fr) 74px;
       }
       body.asset-detail-mode .asset-context-row {
         grid-template-columns: 1fr;
@@ -3856,6 +3888,26 @@
         padding-top: 0;
       }
       .detail-grid.two {
+        grid-template-columns: 1fr;
+      }
+      body.asset-detail-mode .asset-fo-preview {
+        max-width: none;
+        grid-template-columns: 1fr;
+      }
+      body.asset-detail-mode .asset-fo-hero {
+        min-height: clamp(280px, 62vw, 420px);
+      }
+      body.asset-detail-mode .asset-fo-thumbs {
+        display: flex;
+        overflow-x: auto;
+      }
+      body.asset-detail-mode .asset-fo-thumb {
+        flex: 0 0 58px;
+        width: 58px;
+        height: 58px;
+      }
+      body.asset-detail-mode .detail-grid.two,
+      body.asset-detail-mode .detail-grid.two.asset-listing-summary-grid {
         grid-template-columns: 1fr;
       }
       body.user-detail-mode .detail-grid.two {
@@ -5714,7 +5766,7 @@
 
           <div class="asset-fo-layout">
             ${renderAssetFoPreview(asset, detail)}
-            <div class="asset-bo-context">
+            <div class="asset-bo-context asset-detail-sidebar">
               <div class="detail-section">
                 <h4>Listing Summary</h4>
                 <div class="detail-grid two asset-listing-summary-grid">
@@ -5739,7 +5791,9 @@
                   ])}
                 </div>
               </div>
+            </div>
 
+            <div class="asset-bo-context asset-detail-full">
               <div class="detail-section">
                 <div class="asset-detail-section-head">
                   <h4>Description</h4>
