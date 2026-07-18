@@ -5178,7 +5178,7 @@
                   ${renderAssetDetailTiles([
                     ["Asset ID", asset.id],
                     ["Post Type", asset.type],
-                    ["Like Count", `${getAssetSocial(asset).likes}`],
+                    ["Comment Count", `${getAssetSocial(asset).comments}`],
                     ["Favorite Count", `${getAssetSocial(asset).favorite}`],
                     ["Created At", detail.createdAt],
                     ["Updated At", detail.updatedAt]
@@ -5187,15 +5187,12 @@
               </div>
 
               <div class="detail-section">
-                <h4>Seller</h4>
+                <h4>Owner</h4>
                 <div class="detail-grid two">
                   ${renderAssetDetailTiles([
                     ["Display Name", asset.owner],
                     ["Owner ID", detail.owner.id],
-                    ["Username", detail.owner.username],
-                    ["Account Status", detail.owner.accountStatus],
-                    ["Email", detail.owner.email],
-                    ["Phone", detail.owner.phone]
+                    ["Account Status", detail.owner.accountStatus]
                   ])}
                 </div>
               </div>
@@ -5226,8 +5223,7 @@
                     ["Case material", detail.material],
                     ["Movement", detail.movement],
                     ["Dial color", detail.dial],
-                    ["Strap / Bracelet Type", detail.bracelet],
-                    ["Serial", detail.serialMasked]
+                    ["Strap / Bracelet Type", detail.bracelet]
                   ])}
                 </div>
               </div>
