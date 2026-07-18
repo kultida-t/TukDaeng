@@ -5052,6 +5052,13 @@
       return actions;
     }
 
+    function getAssetActionClass(action, index) {
+      if (action === "delete-post") return "danger";
+      if (action === "hide") return "warning";
+      if (index === 0) return "primary";
+      return "";
+    }
+
     function getAssetActionConfig(action, asset) {
       const restoreTarget = asset?.type || "Sale";
       const configs = {
@@ -5215,39 +5222,9 @@
                 </div>
               </div>
 
-              <div class="detail-section">
-                <h4>Commerce</h4>
-                <div class="detail-grid two">
-                  ${renderAssetDetailTiles([
-                    ["Primary Button", getAssetFoActionLabel(asset)],
-                    ["Offer", detail.offerEnabled],
-                    ["Delivery", detail.delivery],
-                    ["Payment", detail.payment],
-                    ["Watch Alert", detail.watchAlert]
-                  ])}
-                </div>
-              </div>
-
-              <div class="detail-section">
-                <h4>Moderation / Sync</h4>
-                <div class="detail-grid two">
-                  ${renderAssetDetailTiles([
-                    ["Moderation State", asset.status],
-                    ["App Visibility", detail.visibility],
-                    ["Comment", detail.commentEnabled],
-                    ["Linked Offer", detail.linkedOffer],
-                    ["Reports", detail.reportCount],
-                    ["Report Reason", detail.reportReason],
-                    ["Admin Action Note", asset.action]
-                  ])}
-                </div>
-                <div class="module-note"><strong>App sync:</strong> Admin displays user-submitted asset data as read-only and uses the actions below to update moderation or visibility only.</div>
-              </div>
-
               <div class="detail-section user-detail-action-section">
-                <h4>Actions</h4>
                 <div class="user-detail-actions">
-                  ${getAssetRowActions(asset).map(({ action, label }) => `<button class="user-detail-action-btn" type="button" data-asset-action="${action}" data-asset-id="${asset.id}">${label}</button>`).join("") || `<span class="chip">No available action</span>`}
+                  ${getAssetRowActions(asset).map(({ action, label }, index) => `<button class="user-detail-action-btn ${getAssetActionClass(action, index)}" type="button" data-asset-action="${action}" data-asset-id="${asset.id}">${label}</button>`).join("") || `<span class="chip">No available action</span>`}
                 </div>
               </div>
             </div>
