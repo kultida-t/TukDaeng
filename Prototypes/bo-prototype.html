@@ -5982,7 +5982,7 @@
                   <h4>Description</h4>
                   <div class="user-detail-actions">
                     <button class="user-detail-action-btn" type="button" data-asset-purchase-history="${asset.id}">View purchase history</button>
-                    ${asset.type === "Sold" ? `<button class="user-detail-action-btn" type="button" data-asset-sale-record="${asset.id}">View sale record</button>` : ""}
+                    ${asset.type === "Sold" ? `<button class="user-detail-action-btn" type="button" data-asset-sale-record="${asset.id}">View sale history</button>` : ""}
                   </div>
                 </div>
                 <div class="detail-grid">
@@ -5993,8 +5993,6 @@
                   ])}
                 </div>
               </div>
-
-              ${renderAssetSoldSaleRecordSummary(asset, detail)}
 
               <div class="detail-section">
                 <h4>Specifications</h4>
