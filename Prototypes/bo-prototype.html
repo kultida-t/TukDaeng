@@ -2612,6 +2612,13 @@
     .asset-detail-section-head h4 {
       margin: 0;
     }
+    .asset-detail-header-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
     .asset-detail-section-head .user-detail-action-btn {
       min-height: 30px;
       padding: 6px 10px;
@@ -2792,6 +2799,9 @@
       body.asset-detail-mode .asset-detail-section-head {
         align-items: flex-start;
         flex-direction: column;
+      }
+      .asset-detail-header-actions {
+        justify-content: flex-start;
       }
       .asset-sale-record-head {
         flex-direction: column;
@@ -5733,7 +5743,7 @@
           <div class="user-action-head">
             <div>
               <h2 id="user-action-modal-title">Sale History</h2>
-              <p>${asset.id} - ${asset.name}</p>
+              <p>${asset.id} · ${asset.name}</p>
             </div>
             <button class="btn user-action-close" type="button" data-user-action-modal-close aria-label="Close modal" title="Close">
               ${iconSvg.close}
@@ -5973,7 +5983,7 @@
               <div class="detail-section">
                 <div class="asset-detail-section-head">
                   <h4>Description</h4>
-                  <div class="user-detail-actions">
+                  <div class="asset-detail-header-actions">
                     <button class="user-detail-action-btn" type="button" data-asset-purchase-history="${asset.id}">View purchase history</button>
                     ${asset.type === "Sold" ? `<button class="user-detail-action-btn" type="button" data-asset-sale-record="${asset.id}">View sale history</button>` : ""}
                   </div>
@@ -8112,12 +8122,14 @@
       const assetSaleRecordButton = event.target.closest("[data-asset-sale-record]");
       if (assetSaleRecordButton) {
         const asset = moduleData.assets.rows.find(entry => entry.id === assetSaleRecordButton.dataset.assetSaleRecord);
+        assetSaleRecordButton.blur();
         renderAssetSaleRecordModal(asset);
         return;
       }
       const assetPurchaseHistoryButton = event.target.closest("[data-asset-purchase-history]");
       if (assetPurchaseHistoryButton) {
         const asset = moduleData.assets.rows.find(entry => entry.id === assetPurchaseHistoryButton.dataset.assetPurchaseHistory);
+        assetPurchaseHistoryButton.blur();
         renderAssetPurchaseHistoryModal(asset);
         return;
       }
