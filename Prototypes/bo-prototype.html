@@ -5392,6 +5392,9 @@
     function renderAssetBoCommentItem(comment, isReply = false, options = {}) {
       const replyCount = (comment.replies || []).length;
       const showReplyCount = options.showReplyCount !== false;
+      const replyToggle = !isReply && showReplyCount && replyCount
+        ? `<button class="asset-comment-reply-toggle" type="button" data-asset-comment-replies="${options.replyKey}" data-asset-comment-replies-surface="detail" data-asset-id="${options.assetId}" aria-expanded="${options.expanded ? "true" : "false"}">${options.expanded ? "Hide replies" : `View ${replyCount} replies`}</button>`
+        : (!isReply && showReplyCount ? `<span>0 replies</span>` : "");
       return `
         <div class="asset-comment-item ${isReply ? "reply" : ""}">
           <span class="asset-comment-avatar"><img src="${getAssetCommentAvatarSrc(comment)}" alt="" /></span>
@@ -5405,7 +5408,7 @@
             <p class="asset-comment-text">${comment.text}</p>
             <div class="asset-comment-signals">
               <span>${comment.likes || 0} likes</span>
-              ${!isReply && showReplyCount ? `<span>${replyCount} replies</span>` : ""}
+              ${replyToggle}
             </div>
           </div>
         </div>
@@ -5414,7 +5417,7 @@
 
     function renderAssetCommentDenseRow(comment, index, assetId) {
       const replies = comment.replies || [];
-      const replyKey = `${assetId}:${index}`;
+      const replyKey = `${assetId}:modal:${index}`;
       const expanded = expandedAssetCommentReplies.has(replyKey);
       return `
         <div class="asset-comment-dense-row">
@@ -5427,7 +5430,7 @@
             <p class="asset-comment-text">${comment.text}</p>
             <div class="asset-comment-signals">
               <span>${comment.likes || 0} likes</span>
-              ${replies.length ? `<button class="asset-comment-reply-toggle" type="button" data-asset-comment-replies="${replyKey}" aria-expanded="${expanded}">${expanded ? "Hide replies" : `View ${replies.length} replies`}</button>` : `<span>0 replies</span>`}
+              ${replies.length ? `<button class="asset-comment-reply-toggle" type="button" data-asset-comment-replies="${replyKey}" data-asset-comment-replies-surface="modal" data-asset-id="${assetId}" aria-expanded="${expanded}">${expanded ? "Hide replies" : `View ${replies.length} replies`}</button>` : `<span>0 replies</span>`}
             </div>
             ${replies.length && expanded ? `
               <div class="asset-comment-dense-replies">
@@ -5464,12 +5467,15 @@
             <button class="user-detail-action-btn" type="button" data-asset-comments-modal="${asset.id}">View all comments</button>
           </div>
           <div class="asset-context-list asset-comment-list">
-            ${previewComments.map(comment => `
+            ${previewComments.map((comment, index) => {
+              const replyKey = `${asset.id}:detail:${index}`;
+              const expanded = expandedAssetCommentReplies.has(replyKey);
+              return `
               <div class="asset-comment-thread">
-                ${renderAssetBoCommentItem(comment)}
-                ${(comment.replies || []).slice(0, 2).map(reply => renderAssetBoCommentItem(reply, true)).join("")}
+                ${renderAssetBoCommentItem(comment, false, { replyKey, expanded, assetId: asset.id })}
+                ${expanded ? (comment.replies || []).map(reply => renderAssetBoCommentItem(reply, true)).join("") : ""}
               </div>
-            `).join("")}
+            `}).join("")}
           </div>
         </div>
       `;
@@ -7911,8 +7917,13 @@
         const replyKey = assetCommentRepliesButton.dataset.assetCommentReplies;
         if (expandedAssetCommentReplies.has(replyKey)) expandedAssetCommentReplies.delete(replyKey);
         else expandedAssetCommentReplies.add(replyKey);
-        const asset = moduleData.assets.rows.find(entry => entry.id === activeAssetCommentsModalId);
-        renderAssetCommentsModal(asset);
+        const assetId = assetCommentRepliesButton.dataset.assetId || activeAssetCommentsModalId;
+        const asset = moduleData.assets.rows.find(entry => entry.id === assetId);
+        if (assetCommentRepliesButton.dataset.assetCommentRepliesSurface === "detail") {
+          renderAssetDetailPage(asset, { preserveScroll: true });
+        } else {
+          renderAssetCommentsModal(asset);
+        }
         return;
       }
       const assetCommentsButton = event.target.closest("[data-asset-comments-modal]");
