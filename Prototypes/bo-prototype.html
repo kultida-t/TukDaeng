@@ -2515,6 +2515,72 @@
     .asset-comment-status.hidden {
       color: #925500;
     }
+    .asset-comment-section-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 10px;
+    }
+    .asset-comment-section-head h4 {
+      margin: 0;
+    }
+    .asset-comment-summary {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 10px;
+    }
+    .asset-comment-summary span {
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: #f8fbff;
+      color: #43546d;
+      padding: 5px 9px;
+      font-size: 11px;
+      font-weight: 800;
+    }
+    .asset-comment-modal-toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 12px;
+    }
+    .asset-comment-filters {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+    .asset-comment-filters .user-detail-action-btn.active {
+      border-color: var(--active);
+      background: var(--active);
+      color: #fff;
+    }
+    .asset-comment-dense-list {
+      display: grid;
+      gap: 8px;
+    }
+    .asset-comment-dense-row {
+      display: grid;
+      grid-template-columns: 36px minmax(0, 1fr);
+      gap: 10px;
+      border: 1px solid var(--line);
+      border-radius: 7px;
+      background: #fff;
+      padding: 10px;
+    }
+    .asset-comment-pager {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 8px;
+      margin-top: 12px;
+      color: #66758d;
+      font-size: 12px;
+      font-weight: 700;
+    }
     .asset-detail-section-head {
       display: flex;
       align-items: center;
@@ -2636,6 +2702,10 @@
       }
       body.asset-detail-mode .asset-comment-meta {
         justify-content: flex-start;
+      }
+      body.asset-detail-mode .asset-comment-section-head {
+        align-items: flex-start;
+        flex-direction: column;
       }
       body.asset-detail-mode .asset-detail-section-head {
         align-items: flex-start;
@@ -5224,13 +5294,84 @@
           ...assetFoComments[3],
           status: "Active",
           replies: []
+        },
+        {
+          name: "Narin C.",
+          avatar: "U-1161",
+          time: "7h ago",
+          text: "Please add a clasp photo and confirm if the extra links are included.",
+          likes: 3,
+          status: "Active",
+          replies: []
+        },
+        {
+          name: "Watch Alert TH",
+          avatar: "U-1017",
+          time: "9h ago",
+          text: "Price is close to recent listings, but provenance photos should be checked before promotion.",
+          likes: 6,
+          status: hasReports ? "Reported" : "Active",
+          replies: []
+        },
+        {
+          name: "Metha P.",
+          avatar: "U-1120",
+          time: "1d ago",
+          text: "The description matches another listing I saw last week. Admin may need to compare images.",
+          likes: 4,
+          status: hasReports ? "Reported" : "Active",
+          replies: []
+        },
+        {
+          name: "Hidden User",
+          avatar: "U-1088",
+          time: "1d ago",
+          text: "Comment hidden from FO after duplicate report threshold was reached.",
+          likes: 0,
+          status: hasReports ? "Hidden" : "Active",
+          replies: []
+        },
+        {
+          name: "Saran K.",
+          avatar: "U-1161",
+          time: "2d ago",
+          text: "Dial color looks excellent. Is the warranty card dated?",
+          likes: 2,
+          status: "Active",
+          replies: []
         }
       ];
     }
 
-    function renderAssetBoCommentItem(comment, isReply = false) {
+    function getAssetCommentSummary(comments) {
+      return comments.reduce((summary, comment) => {
+        summary.comments += 1;
+        summary.replies += (comment.replies || []).length + (comment.hiddenReplies || 0);
+        if (comment.status === "Reported") summary.reported += 1;
+        if (comment.status === "Hidden") summary.hidden += 1;
+        return summary;
+      }, { comments: 0, replies: 0, reported: 0, hidden: 0 });
+    }
+
+    function getAssetCommentPreview(comments) {
+      return [...comments].sort((a, b) => {
+        const priority = status => status === "Reported" ? 2 : status === "Hidden" ? 1 : 0;
+        return priority(b.status) - priority(a.status);
+      }).slice(0, 3);
+    }
+
+    function getFilteredAssetComments(comments, filter) {
+      if (filter === "reported") return comments.filter(comment => comment.status === "Reported");
+      if (filter === "hidden") return comments.filter(comment => comment.status === "Hidden");
+      if (filter === "top") return [...comments].sort((a, b) => (b.likes || 0) - (a.likes || 0));
+      if (filter === "latest") return comments;
+      return comments;
+    }
+
+    function renderAssetBoCommentItem(comment, isReply = false, options = {}) {
       const replyCount = (comment.replies || []).length + (comment.hiddenReplies || 0);
       const statusClass = String(comment.status || "").toLowerCase();
+      const showReplyCount = options.showReplyCount !== false;
       return `
         <div class="asset-comment-item ${isReply ? "reply" : ""}">
           <span class="asset-comment-avatar"><img src="${getAssetCommentAvatarSrc(comment)}" alt="" /></span>
@@ -5245,7 +5386,7 @@
             <p class="asset-comment-text">${comment.text}</p>
             <div class="asset-comment-signals">
               <span>${comment.likes || 0} likes</span>
-              ${!isReply ? `<span>${replyCount} replies</span>` : ""}
+              ${!isReply && showReplyCount ? `<span>${replyCount} replies</span>` : ""}
               ${comment.hiddenReplies ? `<span>${comment.hiddenReplies} hidden replies</span>` : ""}
             </div>
           </div>
@@ -5256,19 +5397,100 @@
     function renderAssetBoComments(asset) {
       const comments = getAssetBoComments(asset);
       if (!comments.length) return "";
+      const summary = getAssetCommentSummary(comments);
+      const previewComments = getAssetCommentPreview(comments);
       return `
         <div class="detail-section">
-          <h4>Comments</h4>
+          <div class="asset-comment-section-head">
+            <h4>Comments</h4>
+            <button class="user-detail-action-btn" type="button" data-asset-comments-modal="${asset.id}" data-comment-filter="all" data-comment-page="1">View all comments</button>
+          </div>
+          <div class="asset-comment-summary">
+            <span>${summary.comments} comments</span>
+            <span>${summary.replies} replies</span>
+            <span>${summary.reported} reported</span>
+            <span>${summary.hidden} hidden</span>
+          </div>
           <div class="asset-context-list asset-comment-list">
-            ${comments.map(comment => `
+            ${previewComments.map(comment => `
               <div class="asset-comment-thread">
                 ${renderAssetBoCommentItem(comment)}
-                ${(comment.replies || []).map(reply => renderAssetBoCommentItem(reply, true)).join("")}
+                ${(comment.replies || []).slice(0, 2).map(reply => renderAssetBoCommentItem(reply, true)).join("")}
               </div>
             `).join("")}
           </div>
         </div>
       `;
+    }
+
+    function renderAssetCommentsModal(asset, filter = "all", page = 1) {
+      if (!asset) return;
+      const comments = getAssetBoComments(asset);
+      const filtered = getFilteredAssetComments(comments, filter);
+      const pageSize = 4;
+      const pageCount = Math.max(1, Math.ceil(filtered.length / pageSize));
+      const safePage = Math.min(Math.max(Number(page) || 1, 1), pageCount);
+      const start = (safePage - 1) * pageSize;
+      const pageRows = filtered.slice(start, start + pageSize);
+      const summary = getAssetCommentSummary(comments);
+      const filters = [
+        ["all", "All"],
+        ["reported", "Reported"],
+        ["hidden", "Hidden"],
+        ["top", "Top liked"],
+        ["latest", "Latest"]
+      ];
+      const modal = document.querySelector("#user-action-modal");
+      const modalBody = document.querySelector("#user-action-modal-body");
+      modalBody.innerHTML = `
+        <div class="user-action-page">
+          <div class="user-action-head">
+            <div>
+              <h2 id="user-action-modal-title">Comments</h2>
+              <p>${asset.id} · ${asset.name} · ${summary.comments} comments · ${summary.replies} replies</p>
+            </div>
+            <button class="btn user-action-close" type="button" data-user-action-modal-close aria-label="Close modal" title="Close">
+              ${iconSvg.close}
+            </button>
+          </div>
+          <div class="user-action-card">
+            <div class="asset-comment-modal-toolbar">
+              <div class="asset-comment-filters">
+                ${filters.map(([value, label]) => `<button class="user-detail-action-btn ${filter === value ? "active" : ""}" type="button" data-asset-comments-modal="${asset.id}" data-comment-filter="${value}" data-comment-page="1">${label}</button>`).join("")}
+              </div>
+              <span class="asset-comment-meta">Showing ${filtered.length ? `${start + 1}-${Math.min(start + pageSize, filtered.length)}` : "0"} of ${filtered.length}</span>
+            </div>
+            <div class="asset-comment-dense-list">
+              ${pageRows.map(comment => `
+                <div class="asset-comment-dense-row">
+                  <span class="asset-comment-avatar"><img src="${getAssetCommentAvatarSrc(comment)}" alt="" /></span>
+                  <div>
+                    <div class="asset-comment-head">
+                      <strong>${comment.name}</strong>
+                      <span class="asset-comment-meta"><span>${comment.time}</span><span class="asset-comment-status ${String(comment.status).toLowerCase()}">${comment.status}</span></span>
+                    </div>
+                    <p class="asset-comment-text">${comment.text}</p>
+                    <div class="asset-comment-signals">
+                      <span>${comment.likes || 0} likes</span>
+                      <span>${(comment.replies || []).length + (comment.hiddenReplies || 0)} replies</span>
+                      ${comment.hiddenReplies ? `<span>${comment.hiddenReplies} hidden replies</span>` : ""}
+                    </div>
+                  </div>
+                </div>
+              `).join("") || `<div class="detail-empty">No comments match this filter</div>`}
+            </div>
+            <div class="asset-comment-pager">
+              <button class="user-detail-action-btn" type="button" data-asset-comments-modal="${asset.id}" data-comment-filter="${filter}" data-comment-page="${safePage - 1}" ${safePage <= 1 ? "disabled" : ""}>Previous</button>
+              <span>Page ${safePage} / ${pageCount}</span>
+              <button class="user-detail-action-btn" type="button" data-asset-comments-modal="${asset.id}" data-comment-filter="${filter}" data-comment-page="${safePage + 1}" ${safePage >= pageCount ? "disabled" : ""}>Next</button>
+            </div>
+          </div>
+          <div class="user-action-footer">
+            <button class="user-detail-action-btn primary" type="button" data-user-action-modal-close>Close</button>
+          </div>
+        </div>
+      `;
+      modal.classList.add("show");
     }
     function getAssetHistoryRows(asset, detail) {
       const idNumber = parseInt(String(asset.id || "").match(/\d+/)?.[0] || "0", 10);
@@ -7668,6 +7890,12 @@
       if (userCard && !event.target.closest(".row-menu, button, a, input, select, [data-custom-select]")) {
         const user = userManagementData.users.find(entry => entry.id === userCard.dataset.userCard);
         renderUserDetailPage(user);
+        return;
+      }
+      const assetCommentsButton = event.target.closest("[data-asset-comments-modal]");
+      if (assetCommentsButton) {
+        const asset = moduleData.assets.rows.find(entry => entry.id === assetCommentsButton.dataset.assetCommentsModal);
+        renderAssetCommentsModal(asset, assetCommentsButton.dataset.commentFilter || "all", assetCommentsButton.dataset.commentPage || "1");
         return;
       }
       const assetPurchaseHistoryButton = event.target.closest("[data-asset-purchase-history]");
