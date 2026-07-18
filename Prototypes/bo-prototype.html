@@ -2525,21 +2525,6 @@
     .asset-comment-section-head h4 {
       margin: 0;
     }
-    .asset-comment-summary {
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-      margin-bottom: 10px;
-    }
-    .asset-comment-summary span {
-      border: 1px solid var(--line);
-      border-radius: 999px;
-      background: #f8fbff;
-      color: #43546d;
-      padding: 5px 9px;
-      font-size: 11px;
-      font-weight: 800;
-    }
     .asset-comment-modal-toolbar {
       display: flex;
       align-items: center;
@@ -5343,16 +5328,6 @@
       ];
     }
 
-    function getAssetCommentSummary(comments) {
-      return comments.reduce((summary, comment) => {
-        summary.comments += 1;
-        summary.replies += (comment.replies || []).length + (comment.hiddenReplies || 0);
-        if (comment.status === "Reported") summary.reported += 1;
-        if (comment.status === "Hidden") summary.hidden += 1;
-        return summary;
-      }, { comments: 0, replies: 0, reported: 0, hidden: 0 });
-    }
-
     function getAssetCommentPreview(comments) {
       return [...comments].sort((a, b) => {
         const priority = status => status === "Reported" ? 2 : status === "Hidden" ? 1 : 0;
@@ -5397,19 +5372,12 @@
     function renderAssetBoComments(asset) {
       const comments = getAssetBoComments(asset);
       if (!comments.length) return "";
-      const summary = getAssetCommentSummary(comments);
       const previewComments = getAssetCommentPreview(comments);
       return `
         <div class="detail-section">
           <div class="asset-comment-section-head">
             <h4>Comments</h4>
             <button class="user-detail-action-btn" type="button" data-asset-comments-modal="${asset.id}" data-comment-filter="all" data-comment-page="1">View all comments</button>
-          </div>
-          <div class="asset-comment-summary">
-            <span>${summary.comments} comments</span>
-            <span>${summary.replies} replies</span>
-            <span>${summary.reported} reported</span>
-            <span>${summary.hidden} hidden</span>
           </div>
           <div class="asset-context-list asset-comment-list">
             ${previewComments.map(comment => `
@@ -5432,7 +5400,6 @@
       const safePage = Math.min(Math.max(Number(page) || 1, 1), pageCount);
       const start = (safePage - 1) * pageSize;
       const pageRows = filtered.slice(start, start + pageSize);
-      const summary = getAssetCommentSummary(comments);
       const filters = [
         ["all", "All"],
         ["reported", "Reported"],
@@ -5447,7 +5414,7 @@
           <div class="user-action-head">
             <div>
               <h2 id="user-action-modal-title">Comments</h2>
-              <p>${asset.id} · ${asset.name} · ${summary.comments} comments · ${summary.replies} replies</p>
+              <p>${asset.id} · ${asset.name}</p>
             </div>
             <button class="btn user-action-close" type="button" data-user-action-modal-close aria-label="Close modal" title="Close">
               ${iconSvg.close}
