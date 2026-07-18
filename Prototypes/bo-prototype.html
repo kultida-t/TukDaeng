@@ -2620,12 +2620,24 @@
     }
     .asset-purchase-media {
       display: grid;
-      gap: 12px;
+      gap: 10px;
+    }
+    .asset-purchase-media h4 {
+      margin: 6px 0 0;
+      font-size: 15px;
+      line-height: 1.35;
+    }
+    .asset-purchase-media h4:first-child {
+      margin-top: 0;
     }
     .asset-purchase-thumbs {
       display: flex;
       gap: 10px;
       flex-wrap: wrap;
+      margin-bottom: 12px;
+    }
+    .asset-purchase-thumbs + h4 {
+      margin-top: 8px;
     }
     .asset-purchase-thumb,
     .asset-proof-thumb {
@@ -5592,9 +5604,6 @@
             </div>
             <h4>Note</h4>
             <p class="asset-purchase-note">${purchase.note}</p>
-          </div>
-          <div class="user-action-footer">
-            <button class="user-detail-action-btn primary" type="button" data-user-action-modal-close>Close</button>
           </div>
         </div>
       `;
