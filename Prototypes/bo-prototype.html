@@ -4929,16 +4929,16 @@
       return {
         brand,
         model: asset.name.replace(`${brand} `, ""),
-        reference: spec.reference || asset.name.split(" ").slice(-1)[0],
-        year: spec.year || "2021",
-        caseSize: spec.caseSize || "40 mm",
-        material: spec.material || "Stainless steel",
-        movement: spec.movement || "Automatic",
-        dial: spec.dial || "Black",
-        condition: spec.condition || "Very good",
-        scope: spec.scope || "Watch, box, warranty card",
-        thickness: spec.thickness || "11 mm",
-        bracelet: spec.bracelet || spec.material || "Stainless steel",
+        reference: spec.reference || "",
+        year: spec.year || "",
+        caseSize: spec.caseSize || "",
+        material: spec.material || "",
+        movement: spec.movement || "",
+        dial: spec.dial || "",
+        condition: spec.condition || "",
+        scope: spec.scope || "",
+        thickness: spec.thickness || "",
+        bracelet: spec.bracelet || spec.material || "",
         serialMasked: spec.serialMasked || `${String(idNumber).slice(-2)}*****`,
         price: getAssetPrice(asset),
         negotiable: asset.type === "Sale" ? "Yes" : "No",
@@ -4977,7 +4977,7 @@
         ["Movement", detail.movement],
         ["Dial color", detail.dial],
         ["Strap / Bracelet Type", detail.bracelet]
-      ];
+      ].filter(([, value]) => value !== undefined && value !== null && String(value).trim() !== "");
     }
 
     function renderAssetFoTechCards(rows) {
@@ -5211,20 +5211,7 @@
               <div class="detail-section">
                 <h4>Specifications</h4>
                 <div class="detail-grid two">
-                  ${renderAssetDetailTiles([
-                    ["Reference No.", detail.reference],
-                    ["Model", detail.model],
-                    ["Year of production", detail.year],
-                    ["Condition", detail.condition],
-                    ["Included Set", detail.scope],
-                    ["Location", detail.location],
-                    ["Case size", detail.caseSize],
-                    ["Thickness", detail.thickness],
-                    ["Case material", detail.material],
-                    ["Movement", detail.movement],
-                    ["Dial color", detail.dial],
-                    ["Strap / Bracelet Type", detail.bracelet]
-                  ])}
+                  ${renderAssetDetailTiles(getAssetTechnicalRows(detail))}
                 </div>
               </div>
 
