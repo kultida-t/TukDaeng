@@ -2793,15 +2793,15 @@
         justify-content: flex-start;
       }
       body.asset-detail-mode .asset-comment-section-head {
-        align-items: flex-start;
-        flex-direction: column;
+        align-items: center;
+        flex-direction: row;
       }
       body.asset-detail-mode .asset-detail-section-head {
-        align-items: flex-start;
-        flex-direction: column;
+        align-items: center;
+        flex-direction: row;
       }
       .asset-detail-header-actions {
-        justify-content: flex-start;
+        justify-content: flex-end;
       }
       .asset-sale-record-head {
         flex-direction: column;
@@ -4003,9 +4003,11 @@
         width: 58px;
         height: 58px;
       }
-      body.asset-detail-mode .detail-grid.two,
-      body.asset-detail-mode .detail-grid.two.asset-listing-summary-grid {
+      body.asset-detail-mode .detail-grid.two {
         grid-template-columns: 1fr;
+      }
+      body.asset-detail-mode .detail-grid.two.asset-listing-summary-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
       }
       body.user-detail-mode .detail-grid.two {
         grid-template-columns: repeat(2, minmax(0, 1fr));
