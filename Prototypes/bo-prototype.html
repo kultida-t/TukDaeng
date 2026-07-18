@@ -2174,6 +2174,9 @@
     body.asset-detail-mode .detail-grid.two {
       grid-template-columns: repeat(3, minmax(0, 1fr));
     }
+    body.asset-detail-mode .detail-grid.two.asset-listing-summary-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
     .asset-cover-image {
       display: grid;
       place-items: center;
@@ -5171,10 +5174,12 @@
             <div class="asset-bo-context">
               <div class="detail-section">
                 <h4>Listing Summary</h4>
-                <div class="detail-grid two">
+                <div class="detail-grid two asset-listing-summary-grid">
                   ${renderAssetDetailTiles([
                     ["Asset ID", asset.id],
                     ["Post Type", asset.type],
+                    ["Like Count", `${getAssetSocial(asset).likes}`],
+                    ["Favorite Count", `${getAssetSocial(asset).favorite}`],
                     ["Created At", detail.createdAt],
                     ["Updated At", detail.updatedAt]
                   ])}
@@ -5231,9 +5236,7 @@
                 <h4>Engagement</h4>
                 <div class="detail-grid two">
                   ${renderAssetDetailTiles([
-                    ["Like Count", `${getAssetSocial(asset).likes}`],
                     ["Visible Comments", `${assetFoComments.length}`],
-                    ["Favorite Count", `${getAssetSocial(asset).favorite}`],
                     ["First Comment", `${assetFoComments[0].name}: ${assetFoComments[0].text}`],
                     ["Replies", "Threaded replies are available from View all"]
                   ])}
