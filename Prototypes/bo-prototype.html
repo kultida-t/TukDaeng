@@ -2532,12 +2532,28 @@
     }
     .asset-comment-signals {
       display: flex;
+      align-items: center;
       gap: 10px;
       flex-wrap: wrap;
       margin-top: 7px;
       color: #66758d;
       font-size: 11px;
       font-weight: 800;
+    }
+    .asset-comment-reply-toggle {
+      border: 0;
+      background: transparent;
+      color: #1f5f9f;
+      font: inherit;
+      font-weight: 800;
+      padding: 0;
+      cursor: pointer;
+    }
+    .asset-comment-reply-toggle:hover,
+    .asset-comment-reply-toggle:focus-visible {
+      color: #0b4278;
+      text-decoration: underline;
+      outline: none;
     }
     .asset-comment-section-head {
       display: flex;
@@ -4859,6 +4875,8 @@
     let assetListPage = 1;
     let assetFilterOpen = false;
     let activeAssetImageIndex = 0;
+    let activeAssetCommentsModalId = null;
+    let expandedAssetCommentReplies = new Set();
     let activeReportContextId = null;
     const userListPageSize = 10;
     const assetListPageSize = 10;
@@ -5394,8 +5412,10 @@
       `;
     }
 
-    function renderAssetCommentDenseRow(comment) {
+    function renderAssetCommentDenseRow(comment, index, assetId) {
       const replies = comment.replies || [];
+      const replyKey = `${assetId}:${index}`;
+      const expanded = expandedAssetCommentReplies.has(replyKey);
       return `
         <div class="asset-comment-dense-row">
           <span class="asset-comment-avatar"><img src="${getAssetCommentAvatarSrc(comment)}" alt="" /></span>
@@ -5407,9 +5427,9 @@
             <p class="asset-comment-text">${comment.text}</p>
             <div class="asset-comment-signals">
               <span>${comment.likes || 0} likes</span>
-              <span>${replies.length} replies</span>
+              ${replies.length ? `<button class="asset-comment-reply-toggle" type="button" data-asset-comment-replies="${replyKey}" aria-expanded="${expanded}">${expanded ? "Hide replies" : `View ${replies.length} replies`}</button>` : `<span>0 replies</span>`}
             </div>
-            ${replies.length ? `
+            ${replies.length && expanded ? `
               <div class="asset-comment-dense-replies">
                 ${replies.map(reply => `
                   <div class="asset-comment-dense-reply">
@@ -5457,6 +5477,10 @@
 
     function renderAssetCommentsModal(asset) {
       if (!asset) return;
+      if (activeAssetCommentsModalId !== asset.id) {
+        activeAssetCommentsModalId = asset.id;
+        expandedAssetCommentReplies = new Set();
+      }
       const comments = getAssetBoComments(asset);
       const modal = document.querySelector("#user-action-modal");
       const modalBody = document.querySelector("#user-action-modal-body");
@@ -5473,7 +5497,7 @@
           </div>
           <div class="user-action-card">
             <div class="asset-comment-dense-list">
-              ${comments.map(renderAssetCommentDenseRow).join("") || `<div class="detail-empty">No comments</div>`}
+              ${comments.map((comment, index) => renderAssetCommentDenseRow(comment, index, asset.id)).join("") || `<div class="detail-empty">No comments</div>`}
             </div>
           </div>
         </div>
@@ -7880,6 +7904,15 @@
       if (userCard && !event.target.closest(".row-menu, button, a, input, select, [data-custom-select]")) {
         const user = userManagementData.users.find(entry => entry.id === userCard.dataset.userCard);
         renderUserDetailPage(user);
+        return;
+      }
+      const assetCommentRepliesButton = event.target.closest("[data-asset-comment-replies]");
+      if (assetCommentRepliesButton) {
+        const replyKey = assetCommentRepliesButton.dataset.assetCommentReplies;
+        if (expandedAssetCommentReplies.has(replyKey)) expandedAssetCommentReplies.delete(replyKey);
+        else expandedAssetCommentReplies.add(replyKey);
+        const asset = moduleData.assets.rows.find(entry => entry.id === activeAssetCommentsModalId);
+        renderAssetCommentsModal(asset);
         return;
       }
       const assetCommentsButton = event.target.closest("[data-asset-comments-modal]");
