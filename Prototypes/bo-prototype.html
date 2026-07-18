@@ -6004,7 +6004,7 @@
               </div>
 
               ${renderAssetBoComments(asset)}
-              ${renderAssetHistory(asset, detail)}
+              ${asset.type === "Sold" ? "" : renderAssetHistory(asset, detail)}
 
               <div class="detail-section user-detail-action-section">
                 <div class="user-detail-actions">
