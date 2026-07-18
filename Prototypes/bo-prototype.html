@@ -4947,8 +4947,8 @@
         photoCount: Math.max(photoCount, uploadedImages.length),
         mediaReview: `${uploadedImages.length} uploaded asset photos from FO, including cover, dial angle, and bracelet/detail images`,
         owner,
-        createdAt: `${String(createdDay).padStart(2, "0")} Jul 2026 10:${String(idNumber % 60).padStart(2, "0")} GMT+7`,
-        updatedAt: `17 Jul 2026 ${String(updatedHour).padStart(2, "0")}:20 GMT+7`,
+        createdAt: `${String(createdDay).padStart(2, "0")} Jul 2026 10:${String(idNumber % 60).padStart(2, "0")}`,
+        updatedAt: `17 Jul 2026 ${String(updatedHour).padStart(2, "0")}:20`,
         visibility: asset.type === "Sale" ? "Feed, Search, Profile, Watch Alert" : asset.type === "Show" ? "Profile / Collection only" : asset.type === "Hide" ? "Owner-only" : "Read-only sold history",
         offerEnabled: asset.type === "Sale" && !isTemporarilyHiddenAsset(asset) && asset.status !== "Deleted / Archived" ? "Enabled" : "Disabled",
         commentEnabled: asset.status === "Deleted / Archived" ? "Disabled" : "Enabled",
@@ -5175,11 +5175,8 @@
                   ${renderAssetDetailTiles([
                     ["Asset ID", asset.id],
                     ["Post Type", asset.type],
-                    ["Reference No.", detail.reference],
-                    ["Price", detail.price],
                     ["Created At", detail.createdAt],
-                    ["Updated At", detail.updatedAt],
-                    ["Priority", asset.priority]
+                    ["Updated At", detail.updatedAt]
                   ])}
                 </div>
               </div>
@@ -5202,6 +5199,8 @@
                 <h4>Description</h4>
                 <div class="detail-grid">
                   ${renderAssetDetailTiles([
+                    ["Title", asset.name],
+                    ["Price", detail.price],
                     ["Description", getAssetDescription(asset, detail).join(" ")]
                   ])}
                 </div>
@@ -5211,6 +5210,7 @@
                 <h4>Specifications</h4>
                 <div class="detail-grid two">
                   ${renderAssetDetailTiles([
+                    ["Reference No.", detail.reference],
                     ["Model", detail.model],
                     ["Year of production", detail.year],
                     ["Condition", detail.condition],
