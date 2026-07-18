@@ -2438,6 +2438,83 @@
       font-size: 12px;
       line-height: 1.45;
     }
+    .asset-comment-thread {
+      display: grid;
+      gap: 10px;
+      border: 1px solid var(--line);
+      border-radius: 7px;
+      background: #fff;
+      padding: 12px;
+    }
+    .asset-comment-item {
+      display: grid;
+      grid-template-columns: 34px minmax(0, 1fr);
+      gap: 10px;
+    }
+    .asset-comment-item.reply {
+      margin-left: 44px;
+      padding-left: 12px;
+      border-left: 1px solid #d8e2ef;
+    }
+    .asset-comment-avatar {
+      width: 34px;
+      height: 34px;
+      border-radius: 7px;
+      overflow: hidden;
+      background: #eef2f7;
+    }
+    .asset-comment-avatar img {
+      width: 100%;
+      height: 100%;
+      display: block;
+      object-fit: cover;
+    }
+    .asset-comment-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 4px;
+    }
+    .asset-comment-head strong {
+      color: #071b36;
+      font-size: 13px;
+      font-weight: 800;
+      line-height: 1.35;
+    }
+    .asset-comment-meta {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+      color: #66758d;
+      font-size: 11px;
+      font-weight: 700;
+    }
+    .asset-comment-text {
+      margin: 0;
+      color: #31435b;
+      font-size: 12px;
+      line-height: 1.45;
+    }
+    .asset-comment-signals {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 7px;
+      color: #66758d;
+      font-size: 11px;
+      font-weight: 800;
+    }
+    .asset-comment-status {
+      color: #0f6b4f;
+    }
+    .asset-comment-status.reported {
+      color: #9f1722;
+    }
+    .asset-comment-status.hidden {
+      color: #925500;
+    }
     .asset-detail-section-head {
       display: flex;
       align-items: center;
@@ -2549,6 +2626,16 @@
       }
       body.asset-detail-mode .asset-context-row {
         grid-template-columns: 1fr;
+      }
+      body.asset-detail-mode .asset-comment-item.reply {
+        margin-left: 18px;
+      }
+      body.asset-detail-mode .asset-comment-head {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+      body.asset-detail-mode .asset-comment-meta {
+        justify-content: flex-start;
       }
       body.asset-detail-mode .asset-detail-section-head {
         align-items: flex-start;
@@ -5113,11 +5200,57 @@
 
     function getAssetBoComments(asset) {
       if (asset.status === "Deleted / Archived") return [];
-      const comments = assetFoComments.slice(0, Math.min(3, getAssetSocial(asset).comments));
-      return comments.map((comment, index) => ({
-        ...comment,
-        status: index === 0 && Number(getAssetReportCount(asset)) > 0 ? "Reported" : "Active"
-      }));
+      const hasReports = Number(getAssetReportCount(asset)) > 0;
+      return [
+        {
+          ...assetFoComments[0],
+          status: hasReports ? "Reported" : "Active",
+          replies: [
+            { ...assetFoComments[1], status: "Active", likes: 0 },
+            { ...assetFoComments[2], status: "Active", likes: 0 }
+          ]
+        },
+        {
+          name: "Thanawat S.",
+          avatar: "U-1088",
+          time: "2h ago",
+          text: "The 5711/1A is truly a masterpiece. The dial transition from blue to black is unmatched. Great piece!",
+          likes: 1,
+          status: "Active",
+          hiddenReplies: hasReports ? 2 : 0,
+          replies: []
+        },
+        {
+          ...assetFoComments[3],
+          status: "Active",
+          replies: []
+        }
+      ];
+    }
+
+    function renderAssetBoCommentItem(comment, isReply = false) {
+      const replyCount = (comment.replies || []).length + (comment.hiddenReplies || 0);
+      const statusClass = String(comment.status || "").toLowerCase();
+      return `
+        <div class="asset-comment-item ${isReply ? "reply" : ""}">
+          <span class="asset-comment-avatar"><img src="${getAssetCommentAvatarSrc(comment)}" alt="" /></span>
+          <div>
+            <div class="asset-comment-head">
+              <strong>${comment.name}</strong>
+              <span class="asset-comment-meta">
+                <span>${comment.time}</span>
+                <span class="asset-comment-status ${statusClass}">${comment.status}</span>
+              </span>
+            </div>
+            <p class="asset-comment-text">${comment.text}</p>
+            <div class="asset-comment-signals">
+              <span>${comment.likes || 0} likes</span>
+              ${!isReply ? `<span>${replyCount} replies</span>` : ""}
+              ${comment.hiddenReplies ? `<span>${comment.hiddenReplies} hidden replies</span>` : ""}
+            </div>
+          </div>
+        </div>
+      `;
     }
 
     function renderAssetBoComments(asset) {
@@ -5126,21 +5259,17 @@
       return `
         <div class="detail-section">
           <h4>Comments</h4>
-          <div class="asset-context-list">
+          <div class="asset-context-list asset-comment-list">
             ${comments.map(comment => `
-              <div class="asset-context-row">
-                <span>${comment.time} · ${comment.status}</span>
-                <div>
-                  <strong>${comment.name} · ${comment.likes} likes</strong>
-                  <p>${comment.text}</p>
-                </div>
+              <div class="asset-comment-thread">
+                ${renderAssetBoCommentItem(comment)}
+                ${(comment.replies || []).map(reply => renderAssetBoCommentItem(reply, true)).join("")}
               </div>
             `).join("")}
           </div>
         </div>
       `;
     }
-
     function getAssetHistoryRows(asset, detail) {
       const idNumber = parseInt(String(asset.id || "").match(/\d+/)?.[0] || "0", 10);
       const saleRows = asset.type === "Sold"
