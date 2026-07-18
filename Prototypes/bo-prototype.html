@@ -5334,21 +5334,6 @@
               </div>
 
               <div class="detail-section">
-                <h4>FO Media / Gallery</h4>
-                <div class="detail-grid two">
-                  ${renderAssetDetailTiles([
-                    ["Cover Image", detail.uploadedImages[0]?.fileName || "No cover uploaded"],
-                    ["Gallery Position", `1 / ${detail.uploadedImages.length || detail.photoCount}`],
-                    ["Photo Count", `${detail.photoCount}`],
-                    ["Uploaded Files", detail.uploadedImages.map(image => image.fileName).join(", ")],
-                    ["Thumbnail Count", `${detail.uploadedImages.length}`],
-                    ["Media Checklist", detail.mediaReview],
-                    ["Image Source", "User-uploaded asset media from FO"]
-                  ])}
-                </div>
-              </div>
-
-              <div class="detail-section">
                 <h4>FO Seller</h4>
                 <div class="detail-grid two">
                   ${renderAssetDetailTiles([
