@@ -2680,6 +2680,53 @@
       line-height: 1.55;
       white-space: pre-line;
     }
+    .asset-sale-record {
+      display: grid;
+      gap: 12px;
+    }
+    .asset-sale-record-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 11px 12px;
+      border: 1px solid #fde68a;
+      border-radius: 7px;
+      background: #fffbeb;
+      color: #714600;
+      font-size: 12px;
+      line-height: 1.45;
+    }
+    .asset-sale-record-head strong {
+      display: block;
+      margin-bottom: 3px;
+      color: #071b36;
+      font-size: 13px;
+      line-height: 1.35;
+    }
+    .asset-sale-private-pill {
+      flex: 0 0 auto;
+      border-radius: 999px;
+      background: #071b36;
+      color: #fff;
+      padding: 4px 8px;
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: .02em;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+    .asset-sale-media-note {
+      margin: 0;
+      color: #66758d;
+      font-size: 12px;
+      line-height: 1.45;
+    }
+    .asset-sale-modal-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
     .asset-fo-bottom {
       position: sticky;
       bottom: 0;
@@ -2745,6 +2792,12 @@
       body.asset-detail-mode .asset-detail-section-head {
         align-items: flex-start;
         flex-direction: column;
+      }
+      .asset-sale-record-head {
+        flex-direction: column;
+      }
+      .asset-sale-modal-grid {
+        grid-template-columns: 1fr;
       }
       .asset-purchase-modal-grid {
         grid-template-columns: 1fr;
@@ -5623,6 +5676,105 @@
       showUserActionModal(true);
     }
 
+    function getAssetSoldSaleRecord(asset, detail) {
+      return {
+        buyerName: "K. Ying",
+        buyerPhone: "081-234-5678",
+        buyerContact: "IG: Ying1234",
+        salePrice: "120,000.00",
+        purchaseDate: "Oct 12, 2023",
+        payoutMethod: "Bank Transfer",
+        equipmentImages: purchaseEquipmentImages,
+        proofFiles: purchaseProofImages,
+        note: "No note provided by seller."
+      };
+    }
+
+    function renderAssetSoldSaleRecordSummary(asset, detail) {
+      if (asset.type !== "Sold") return "";
+      const saleRecord = getAssetSoldSaleRecord(asset, detail);
+      return `
+        <div class="detail-section">
+          <div class="asset-detail-section-head">
+            <h4>Sale Record</h4>
+            <button class="user-detail-action-btn" type="button" data-asset-sale-record="${asset.id}">View full sale record</button>
+          </div>
+          <div class="asset-sale-record">
+            <div class="asset-sale-record-head">
+              <div>
+                <strong>FO sold form submitted by seller</strong>
+                Buyer, payout, evidence, and note are retained for BO review only. This block is not shown on public FO surfaces.
+              </div>
+              <span class="asset-sale-private-pill">Private</span>
+            </div>
+            <div class="detail-grid two">
+              ${renderAssetDetailTiles([
+                ["Buyer Name", saleRecord.buyerName],
+                ["Buyer Phone", saleRecord.buyerPhone],
+                ["Buyer Contact", saleRecord.buyerContact],
+                ["Sale Price (THB)", saleRecord.salePrice],
+                ["Purchase Date", saleRecord.purchaseDate],
+                ["Payout Method", saleRecord.payoutMethod]
+              ])}
+            </div>
+            <p class="asset-sale-media-note">${saleRecord.equipmentImages.length} equipment/accessory images and ${saleRecord.proofFiles.length} proof of payment files attached.</p>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderAssetSaleRecordModal(asset) {
+      if (!asset) return;
+      const detail = getAssetFoDetail(asset);
+      const saleRecord = getAssetSoldSaleRecord(asset, detail);
+      const modalBody = document.querySelector("#user-action-modal-body");
+      modalBody.innerHTML = `
+        <div class="user-action-page">
+          <div class="user-action-head">
+            <div>
+              <h2 id="user-action-modal-title">Sale Record</h2>
+              <p>${asset.id} ยท ${asset.name}</p>
+            </div>
+            <button class="btn user-action-close" type="button" data-user-action-modal-close aria-label="Close modal" title="Close">
+              ${iconSvg.close}
+            </button>
+          </div>
+          <div class="user-action-card asset-sale-record">
+            <div class="asset-sale-record-head">
+              <div>
+                <strong>Private BO sale history</strong>
+                Values come from the FO Sold form and remain read-only for audit, support, and payment evidence review.
+              </div>
+              <span class="asset-sale-private-pill">Admin only</span>
+            </div>
+            <div class="detail-grid asset-sale-modal-grid">
+              ${renderAssetDetailTiles([
+                ["Buyer Name", saleRecord.buyerName],
+                ["Buyer Phone", saleRecord.buyerPhone],
+                ["Buyer Contact (Line / IG / Facebook)", saleRecord.buyerContact],
+                ["Sale Price (THB)", saleRecord.salePrice],
+                ["Purchase Date", saleRecord.purchaseDate],
+                ["Payout Method", saleRecord.payoutMethod]
+              ])}
+            </div>
+          </div>
+          <div class="user-action-card asset-purchase-media">
+            <h4>All Equipment & Accessories</h4>
+            <div class="asset-purchase-thumbs">
+              ${saleRecord.equipmentImages.map(image => `<div class="asset-purchase-thumb"><img src="${image.src}" alt="${asset.name} ${image.label}" /></div>`).join("")}
+            </div>
+            <h4>Proof of Payment</h4>
+            <div class="asset-purchase-thumbs">
+              ${saleRecord.proofFiles.map(file => `<div class="asset-proof-thumb"><img src="${file.src}" alt="${asset.name} ${file.label}" /></div>`).join("")}
+            </div>
+            <h4>Note</h4>
+            <p class="asset-purchase-note">${saleRecord.note}</p>
+          </div>
+        </div>
+      `;
+      showUserActionModal(true);
+    }
+
     function renderAssetFoPreview(asset, detail) {
       const uploadedImages = detail.uploadedImages || [];
       const selectedIndex = Math.min(Math.max(activeAssetImageIndex, 0), Math.max(uploadedImages.length - 1, 0));
@@ -5828,7 +5980,10 @@
               <div class="detail-section">
                 <div class="asset-detail-section-head">
                   <h4>Description</h4>
-                  <button class="user-detail-action-btn" type="button" data-asset-purchase-history="${asset.id}">View purchase history</button>
+                  <div class="user-detail-actions">
+                    <button class="user-detail-action-btn" type="button" data-asset-purchase-history="${asset.id}">View purchase history</button>
+                    ${asset.type === "Sold" ? `<button class="user-detail-action-btn" type="button" data-asset-sale-record="${asset.id}">View sale record</button>` : ""}
+                  </div>
                 </div>
                 <div class="detail-grid">
                   ${renderAssetDetailTiles([
@@ -5838,6 +5993,8 @@
                   ])}
                 </div>
               </div>
+
+              ${renderAssetSoldSaleRecordSummary(asset, detail)}
 
               <div class="detail-section">
                 <h4>Specifications</h4>
@@ -7959,6 +8116,12 @@
       if (assetCommentsButton) {
         const asset = moduleData.assets.rows.find(entry => entry.id === assetCommentsButton.dataset.assetCommentsModal);
         renderAssetCommentsModal(asset);
+        return;
+      }
+      const assetSaleRecordButton = event.target.closest("[data-asset-sale-record]");
+      if (assetSaleRecordButton) {
+        const asset = moduleData.assets.rows.find(entry => entry.id === assetSaleRecordButton.dataset.assetSaleRecord);
+        renderAssetSaleRecordModal(asset);
         return;
       }
       const assetPurchaseHistoryButton = event.target.closest("[data-asset-purchase-history]");
