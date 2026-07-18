@@ -2405,6 +2405,104 @@
       color: #fff;
       font-size: 13px;
     }
+    .asset-context-list {
+      display: grid;
+      gap: 8px;
+    }
+    .asset-context-row {
+      display: grid;
+      grid-template-columns: minmax(120px, .35fr) minmax(0, 1fr);
+      gap: 12px;
+      border: 1px solid var(--line);
+      border-radius: 7px;
+      background: #fff;
+      padding: 11px 12px;
+    }
+    .asset-context-row span {
+      color: #66758d;
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+    }
+    .asset-context-row strong {
+      display: block;
+      margin-bottom: 4px;
+      color: #071b36;
+      font-size: 13px;
+      font-weight: 800;
+      line-height: 1.35;
+    }
+    .asset-context-row p {
+      margin: 0;
+      color: #31435b;
+      font-size: 12px;
+      line-height: 1.45;
+    }
+    .asset-detail-section-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 10px;
+    }
+    .asset-detail-section-head h4 {
+      margin: 0;
+    }
+    .asset-detail-section-head .user-detail-action-btn {
+      min-height: 30px;
+      padding: 6px 10px;
+      white-space: nowrap;
+    }
+    .asset-purchase-modal-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+    }
+    .asset-purchase-media {
+      display: grid;
+      gap: 12px;
+    }
+    .asset-purchase-thumbs {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .asset-purchase-thumb,
+    .asset-proof-thumb {
+      width: 124px;
+      aspect-ratio: 1;
+      border: 1px solid var(--line);
+      border-radius: 7px;
+      overflow: hidden;
+      background: #f8fafc;
+    }
+    .asset-purchase-thumb img {
+      width: 100%;
+      height: 100%;
+      display: block;
+      object-fit: cover;
+    }
+    .asset-proof-thumb {
+      display: grid;
+      place-items: center;
+      padding: 10px;
+      color: #66758d;
+      font-size: 11px;
+      font-weight: 800;
+      line-height: 1.35;
+      text-align: center;
+    }
+    .asset-purchase-note {
+      margin: 0;
+      border: 1px solid var(--line);
+      border-radius: 7px;
+      background: #f8fbff;
+      color: #31435b;
+      padding: 11px 12px;
+      font-size: 12px;
+      line-height: 1.55;
+      white-space: pre-line;
+    }
     .asset-fo-bottom {
       position: sticky;
       bottom: 0;
@@ -2448,6 +2546,16 @@
       }
       body.asset-detail-mode .asset-fo-preview {
         max-width: 520px;
+      }
+      body.asset-detail-mode .asset-context-row {
+        grid-template-columns: 1fr;
+      }
+      body.asset-detail-mode .asset-detail-section-head {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+      .asset-purchase-modal-grid {
+        grid-template-columns: 1fr;
       }
     }
     body.user-management-mode .cards {
@@ -5003,6 +5111,127 @@
       `).join("");
     }
 
+    function getAssetBoComments(asset) {
+      if (asset.status === "Deleted / Archived") return [];
+      const comments = assetFoComments.slice(0, Math.min(3, getAssetSocial(asset).comments));
+      return comments.map((comment, index) => ({
+        ...comment,
+        status: index === 0 && Number(getAssetReportCount(asset)) > 0 ? "Reported" : "Active"
+      }));
+    }
+
+    function renderAssetBoComments(asset) {
+      const comments = getAssetBoComments(asset);
+      if (!comments.length) return "";
+      return `
+        <div class="detail-section">
+          <h4>Comments</h4>
+          <div class="asset-context-list">
+            ${comments.map(comment => `
+              <div class="asset-context-row">
+                <span>${comment.time} · ${comment.status}</span>
+                <div>
+                  <strong>${comment.name} · ${comment.likes} likes</strong>
+                  <p>${comment.text}</p>
+                </div>
+              </div>
+            `).join("")}
+          </div>
+        </div>
+      `;
+    }
+
+    function getAssetHistoryRows(asset, detail) {
+      const idNumber = parseInt(String(asset.id || "").match(/\d+/)?.[0] || "0", 10);
+      const saleRows = asset.type === "Sold"
+        ? [{
+            type: "Sale History",
+            title: `Sold from ${asset.owner} to buyer B***-${idNumber % 90}`,
+            detail: `${detail.linkedOffer !== "None" ? detail.linkedOffer : `OFR-${idNumber % 900}`} · final price masked · payment and delivery evidence summarized for BO review`
+          }]
+        : [];
+      return saleRows.filter(row => row.title && row.detail);
+    }
+
+    function getAssetPurchaseHistory(asset, detail) {
+      const idNumber = parseInt(String(asset.id || "").match(/\d+/)?.[0] || "0", 10);
+      return {
+        price: detail.price && detail.price !== "Private price" && detail.price !== "Sold price hidden" ? detail.price.replace(/^THB\s*/i, "") : "100,000.00",
+        date: `${String(Math.max(1, idNumber % 28 || 12)).padStart(2, "0")} Oct 2023`,
+        from: idNumber % 2 ? "Dealer" : "Private Seller",
+        equipmentImages: (detail.uploadedImages || defaultAssetUploadedImages).slice(0, 2),
+        proofFiles: ["Payment proof masked", "Receipt masked"],
+        note: `${asset.name} (${detail.reference || "reference not specified"})\n${asset.detail}\n\n- ${detail.caseSize || "Case size not specified"} case\n- ${detail.movement || "Movement not specified"}\n- ${detail.scope || "Accessories not specified"}`
+      };
+    }
+
+    function renderAssetHistory(asset, detail) {
+      const rows = getAssetHistoryRows(asset, detail);
+      if (!rows.length) return "";
+      return `
+        <div class="detail-section">
+          <h4>History</h4>
+          <div class="asset-context-list">
+            ${rows.map(row => `
+              <div class="asset-context-row">
+                <span>${row.type}</span>
+                <div>
+                  <strong>${row.title}</strong>
+                  <p>${row.detail}</p>
+                </div>
+              </div>
+            `).join("")}
+          </div>
+        </div>
+      `;
+    }
+
+    function renderAssetPurchaseHistoryModal(asset) {
+      if (!asset) return;
+      const detail = getAssetFoDetail(asset);
+      const purchase = getAssetPurchaseHistory(asset, detail);
+      const modal = document.querySelector("#user-action-modal");
+      const modalBody = document.querySelector("#user-action-modal-body");
+      modalBody.innerHTML = `
+        <div class="user-action-page">
+          <div class="user-action-head">
+            <div>
+              <h2 id="user-action-modal-title">Purchase History</h2>
+              <p>${asset.id} · ${asset.name}</p>
+            </div>
+            <button class="btn user-action-close" type="button" data-user-action-modal-close aria-label="Close modal" title="Close">
+              ${iconSvg.close}
+            </button>
+          </div>
+          <div class="user-action-card">
+            <div class="detail-grid two asset-purchase-modal-grid">
+              ${renderAssetDetailTiles([
+                ["Purchase Price (THB)", purchase.price],
+                ["Purchase Date", purchase.date],
+                ["Purchase From", purchase.from]
+              ])}
+            </div>
+          </div>
+          <div class="user-action-card asset-purchase-media">
+            <h4>All Equipment & Accessories</h4>
+            <div class="asset-purchase-thumbs">
+              ${purchase.equipmentImages.map(image => `<div class="asset-purchase-thumb"><img src="${image.src}" alt="${asset.name} ${image.label}" /></div>`).join("")}
+            </div>
+            <h4>Proof of Payment</h4>
+            <div class="asset-purchase-thumbs">
+              ${purchase.proofFiles.map(file => `<div class="asset-proof-thumb">${file}</div>`).join("")}
+            </div>
+            <h4>Note</h4>
+            <p class="asset-purchase-note">${purchase.note}</p>
+          </div>
+          <div class="user-action-footer">
+            <button class="user-detail-action-btn primary" type="button" data-user-action-modal-close>Close</button>
+          </div>
+        </div>
+      `;
+      modal.classList.add("show");
+    }
+
     function renderAssetFoPreview(asset, detail) {
       const uploadedImages = detail.uploadedImages || [];
       const selectedIndex = Math.min(Math.max(activeAssetImageIndex, 0), Math.max(uploadedImages.length - 1, 0));
@@ -5205,7 +5434,10 @@
               </div>
 
               <div class="detail-section">
-                <h4>Description</h4>
+                <div class="asset-detail-section-head">
+                  <h4>Description</h4>
+                  <button class="user-detail-action-btn" type="button" data-asset-purchase-history="${asset.id}">View purchase history</button>
+                </div>
                 <div class="detail-grid">
                   ${renderAssetDetailTiles([
                     ["Title", asset.name],
@@ -5222,9 +5454,12 @@
                 </div>
               </div>
 
+              ${renderAssetBoComments(asset)}
+              ${renderAssetHistory(asset, detail)}
+
               <div class="detail-section user-detail-action-section">
                 <div class="user-detail-actions">
-                  ${getAssetRowActions(asset).map(({ action, label }, index) => `<button class="user-detail-action-btn ${getAssetActionClass(action, index)}" type="button" data-asset-action="${action}" data-asset-id="${asset.id}">${label}</button>`).join("") || `<span class="chip">No available action</span>`}
+                  ${getAssetRowActions(asset).map(({ action, label }, index) => `<button class="user-detail-action-btn ${getAssetActionClass(action, index)}" type="button" data-asset-action="${action}" data-asset-id="${asset.id}">${label}</button>`).join("")}
                 </div>
               </div>
             </div>
@@ -7304,6 +7539,12 @@
       if (userCard && !event.target.closest(".row-menu, button, a, input, select, [data-custom-select]")) {
         const user = userManagementData.users.find(entry => entry.id === userCard.dataset.userCard);
         renderUserDetailPage(user);
+        return;
+      }
+      const assetPurchaseHistoryButton = event.target.closest("[data-asset-purchase-history]");
+      if (assetPurchaseHistoryButton) {
+        const asset = moduleData.assets.rows.find(entry => entry.id === assetPurchaseHistoryButton.dataset.assetPurchaseHistory);
+        renderAssetPurchaseHistoryModal(asset);
         return;
       }
       const assetActionConfirm = event.target.closest("[data-asset-action-confirm]");
