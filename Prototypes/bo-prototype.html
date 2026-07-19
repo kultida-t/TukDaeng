@@ -6136,6 +6136,14 @@
       return { status: "sent", channel: "Email" };
     }
 
+    function getAssetReportReceivedState(asset) {
+      const reviewStatuses = new Set(["Reported", "Reviewing", "Auto Hidden", "Admin Hidden", "Deleted / Archived"]);
+      return {
+        type: asset.type,
+        status: reviewStatuses.has(asset.status) ? "Reviewing" : asset.status
+      };
+    }
+
     function getAssetHiddenHistoryAction(status) {
       if (status === "Auto Hidden") return "Auto Hide Asset";
       if (status === "Admin Hidden") return "Force Hide Asset";
@@ -6540,17 +6548,26 @@
     }
 
     function getAssetReportActionRows(asset, detail) {
-      const reportActions = new Set(["Auto Hide Asset", "Force Hide Asset", "Archive Asset", "Restore Visibility"]);
-      const rows = getAssetStatusHistoryRows(asset, detail);
+      const reportActions = new Set(["Report Received", "Auto Hide Asset", "Force Hide Asset", "Archive Asset", "Restore Visibility"]);
+      const rows = getAssetStatusHistoryRows(asset, detail).map(row => ({ ...row }));
       const reportCount = Number(getAssetReportCount(asset)) || 0;
-      const reportReference = getAssetReportReference(asset);
+      const reportReference = getAssetReportId(asset);
+      rows.forEach(row => {
+        if (String(row.reference || "").startsWith("RPA-")) {
+          row.reference = reportReference;
+          row.referenceAssetId = asset.id;
+        }
+        if (row.action === "Auto Hide Asset" && reportCount >= 5) {
+          row.createdAt = getAssetAutoHideThresholdTime(asset) || row.createdAt;
+        }
+      });
       if (reportCount > 0 && !rows.some(row => row.action === "Report Received" && row.reference === reportReference)) {
         rows.push({
           createdAt: getAssetReportReceivedTime(asset) || detail.updatedAt,
           actor: "System",
           action: "Report Received",
           before: null,
-          after: { type: asset.type, status: asset.status || "Reviewing" },
+          after: getAssetReportReceivedState(asset),
           reference: reportReference,
           referenceAssetId: asset.id,
           emailDelivery: { status: "not_required" },
