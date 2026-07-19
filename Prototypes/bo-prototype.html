@@ -6254,7 +6254,6 @@
       if (!asset) return [];
       const queueStatus = getAssetReportQueueStatus(asset);
       if (queueStatus === "Pending") return [{ status: "Cleared", label: "ปิดรายงาน" }];
-      if (asset.reportStatus === "Cleared" && asset.status !== "Deleted / Archived") return [{ status: "Open", label: "ส่งกลับรอตรวจ" }];
       return [];
     }
 
@@ -6862,7 +6861,7 @@
           <div class="row-menu-list">
             <button type="button" data-asset-report-open="${asset.id}">ดูรายละเอียด</button>
             ${renderAssetReportStatusActionButtons(asset)}
-            ${getAssetRowActions(asset).map(({ action, label }) => `<button type="button" data-asset-action="${action}" data-asset-id="${asset.id}">${label}</button>`).join("")}
+            ${getAssetReportAssetActions(asset).map(({ action, label }) => `<button type="button" data-asset-action="${action}" data-asset-id="${asset.id}">${label}</button>`).join("")}
           </div>
         </details>
       `;
@@ -6882,6 +6881,11 @@
       if (isTemporarilyHiddenAsset(asset)) actions.push({ action: "restore-visibility", label: "ยกเลิกการซ่อนชั่วคราว" });
       if (canAdminDeleteAsset(asset)) actions.push({ action: "delete-post", label: "ลบ/เก็บถาวร" });
       return actions;
+    }
+
+    function getAssetReportAssetActions(asset) {
+      if (getAssetReportQueueStatus(asset) !== "Pending") return [];
+      return getAssetRowActions(asset);
     }
 
     function getAssetActionClass(action, index) {
@@ -9187,7 +9191,7 @@
       document.querySelector("#summary-grid").innerHTML = "";
       document.querySelector("#cards").innerHTML = "";
       const reportStatusActionButtons = renderAssetReportDetailStatusActionButtons(asset);
-      const assetActionButtons = getAssetRowActions(asset)
+      const assetActionButtons = getAssetReportAssetActions(asset)
         .map(({ action, label }, index) => `<button class="user-detail-action-btn ${getAssetActionClass(action, index)}" type="button" data-asset-action="${action}" data-asset-id="${asset.id}">${label}</button>`)
         .join("");
       const detailActionButtons = `${reportStatusActionButtons}${assetActionButtons}`;
