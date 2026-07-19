@@ -2274,6 +2274,9 @@
     .asset-report-modal-summary-grid {
       grid-template-columns: repeat(3, minmax(0, 1fr));
     }
+    .asset-report-modal-spec-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
     .asset-report-modal-grid .detail-tile,
     .asset-report-modal-grid .detail-tile strong {
       min-width: 0;
@@ -5836,7 +5839,7 @@
               </div>
               <div class="detail-section">
                 <h4>Specifications</h4>
-                <div class="detail-grid asset-report-modal-grid">
+                <div class="detail-grid asset-report-modal-grid asset-report-modal-spec-grid">
                   ${renderAssetDetailTiles(getAssetTechnicalRows(detail))}
                 </div>
               </div>
