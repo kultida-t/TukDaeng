@@ -91,12 +91,14 @@ Integrations Module กำหนดขอบเขต integration ภายน�
 - ต้องรองรับ Apple compliance ที่เกี่ยวกับ Report, Block, Terms of Use, Privacy Policy และ Moderation Flow
 - SSO Email ไม่ต้องยืนยัน OTP
 - บัญชี Apple Sign In ต้องไม่ Sign In ด้วย Email / Password ใน V1
+- Email ที่ได้จาก Apple อาจเป็น private relay email; ระบบต้องเก็บเป็น account email สำหรับ account-status email เช่น suspend/ban และ email provider/domain ต้องรองรับการส่งผ่าน Apple relay ตาม configuration
 
 ## Google OAuth
 
 - ใช้สำหรับ Sign In / Sign Up ด้วย Google Account
 - SSO Email ไม่ต้องยืนยัน OTP
 - บัญชี Google OAuth ต้องไม่ Sign In ด้วย Email / Password ใน V1
+- Google account email ต้องใช้เป็น account email สำหรับ account-status email เช่น suspend/ban เมื่อ BO trigger notification
 
 ## Firebase Cloud Messaging
 
@@ -123,6 +125,7 @@ Integrations Module กำหนดขอบเขต integration ภายน�
 
 - ทุก integration call ต้องใช้ HTTPS
 - Authentication integration ต้องออก token/session ตาม Token-based Authentication rule
+- Authentication integration ต้องรองรับ token/session revocation จาก BO account status change (`Suspended`, `Banned`)
 - Private Asset Data ต้องตรวจสิทธิ์ก่อนส่งให้ integration หรือ render ผ่าน CDN
 - Push notification payload ต้องไม่ใส่ private data ที่ไม่จำเป็น
 - Admin Action ผ่าน Back Office ต้องมี Audit Trail

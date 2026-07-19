@@ -65,6 +65,13 @@ FO V1 ไม่รองรับ type ต่อไปนี้ใน Notificati
 
 New Message ใช้เป็น unread badge/count ในเมนู Chat ได้ แต่ไม่ใช่ Notification Center type
 
+Account suspension/ban messaging is handled as account-status communication, not as a FO Notification Center type:
+
+- `Suspended` และ `Banned` ต้องส่ง email เป็น primary channel จาก account action ใน User Management
+- In-app notification สำหรับ account action เป็น optional/secondary เท่านั้น และห้ามใช้เป็นช่องทางเดียว เพราะผู้ใช้อาจถูก revoke session หรือ login ไม่ได้แล้ว
+- Delivery log ของ email/account-status message ต้อง trace กลับไปยัง User Management action และ audit event ได้
+- ห้ามเพิ่ม `Account Action` เข้า FO Notification Center V1 โดยไม่มี master decision ใหม่
+
 ## 4. Broadcast vs System Trigger
 
 | Area | Broadcast Notification | System Notification Trigger |
@@ -195,7 +202,7 @@ System trigger ที่ BO จัดการได้สำหรับ FO V1:
 | Sale Success | Future; ห้ามส่ง FO V1 จนกว่า master เพิ่ม scope |
 | Like Valuation | Future; ห้ามส่ง FO V1 จนกว่า master เพิ่ม scope |
 | Moderation Action | Future; ถ้าต้องแจ้ง user ให้เปิด decision แยก |
-| Account Action | Future; account deletion/suspension ใช้ Auth/Settings support state ตาม scope ปัจจุบัน |
+| Account Action | Future for FO Notification Center; account suspension/ban uses email as primary channel and Auth account-status state when user opens app/signs in |
 
 ## 9. Template Management
 
@@ -221,6 +228,8 @@ Template variables ต้องใช้ allowlist เท่านั้น เ�
 | Follow | actor_display_name |
 | Offer | actor_display_name, asset_title, offer_price, offer_status |
 | Watch Alert | alert_name, matched_count, brand, model |
+| Account Suspension Email | account_status, public_reason, suspension_end_at, support_contact |
+| Account Ban Email | account_status, public_reason, support_contact |
 
 ห้ามใส่ sensitive data เช่น phone, email, LINE, full chat content หรือ internal admin note ลง notification template
 
@@ -246,8 +255,8 @@ Delivery log ต้องเก็บ:
 | Notification ID | อ้างถึง broadcast/system notification |
 | Notification Type | Broadcast หรือ system trigger type |
 | Recipient User ID | ผู้รับ |
-| Channel | Push, In-app, Push + In-app |
-| Provider | เช่น FCM ถ้ามี |
+| Channel | Push, In-app, Email, Push + In-app |
+| Provider | เช่น FCM หรือ email provider ถ้ามี |
 | Status | Queued, Sent, Delivered, Opened, Failed, Skipped |
 | Failure Reason | Required ถ้า failed/skipped |
 | Destination | Deep link / route |
@@ -266,6 +275,7 @@ Delivery tracking target ตาม BO PRD: มากกว่า 95% ของ n
 | Destination invalid | ห้าม retry จนกว่าข้อมูล destination ถูกแก้ |
 | Broadcast already sent | Retry เฉพาะ failed recipients ถ้า policy อนุญาต |
 | System notification duplicate | ต้องมี idempotency key ป้องกันส่งซ้ำ |
+| Account suspension email failed | Mark failed, expose retry/admin-visible failure state, and keep account status mutation intact unless product policy requires blocking mutation on delivery failure |
 
 Retry action ต้องมี audit log และต้องไม่สร้าง notification ซ้ำใน FO list โดยไม่มี idempotency guard
 
@@ -283,6 +293,7 @@ Retry action ต้องมี audit log และต้องไม่สร�
 | Enable/disable system type | Reason required | Required |
 | Retry failed notification | Scope and reason required | Required |
 | Export delivery log | Scope and reason required | Required |
+| Retry account-status email | Scope, reason, target account action reference required | Required |
 
 ## 14. Cross-Module Integration
 

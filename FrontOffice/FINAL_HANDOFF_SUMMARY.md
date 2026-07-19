@@ -2,7 +2,7 @@
 
 อ้างอิงหลักจาก [TukDaeng_Master_Product_Definition.md](TukDaeng_Master_Product_Definition.md)
 
-**Current Baseline Version:** `FO-PRD-v1.2`
+**Current Baseline Version:** `FO-PRD-v1.3`
 **Version Registry:** [DOCUMENT_VERSION.md](DOCUMENT_VERSION.md)
 
 ---
@@ -25,6 +25,8 @@
 หมายเหตุสำหรับรอบ 2026-06-23: `FO-PRD-v1.1` supersede `FO-PRD-v1.0` สำหรับ Dev / QA / Figma โดยเพิ่ม product decision เรื่อง Asset Detail / Social comment model ให้รองรับ IG-style one-level replies ใต้ comment หลัก, ใช้ `View more replies` สำหรับ collapsed replies ชั้นเดียว และไม่รองรับ multi-level nested thread
 
 หมายเหตุสำหรับรอบ 2026-07-02: `FO-PRD-v1.2` supersede `FO-PRD-v1.1` สำหรับ Dev / QA / Figma เฉพาะ error-state handoff โดยเพิ่ม [ERROR_STATE_UI_COPY_CATALOG.md](ERROR_STATE_UI_COPY_CATALOG.md), lock copy/retry scope ของ Feed refresh failure, Feed load-more failure, image failure, owner fallback และอัปเดต Feed/QA checklist ให้ตรงกับ Figma ล่าสุด
+
+หมายเหตุสำหรับรอบ 2026-07-16: `FO-PRD-v1.3` supersede `FO-PRD-v1.2` สำหรับ clarification เรื่อง account suspension/ban โดย V1 ไม่มี `Restricted` account state, Suspended/Banned ต้องเข้า main app ไม่ได้, BO status change ต้อง revoke/block session, email เป็น primary notification channel และ FO Notification Center ไม่เพิ่ม Account Action type
 
 # 2. Approved Product Decisions
 

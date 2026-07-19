@@ -170,6 +170,30 @@ Then ระบบต้องแสดง auth method conflict error
 Given account ถูก Suspended  
 When user Sign In  
 Then ระบบต้อง block login พร้อมเหตุผลและช่องทาง Support
+And ถ้ามี suspension end date ต้องแสดงวันสิ้นสุด
+And user ต้องไม่เข้า main app หรือทำ authenticated action ได้
+
+## QA-AUTH-007A: Active Session Revoked After Suspension
+
+Given Member กำลังใช้งาน app อยู่
+When BO เปลี่ยน account เป็น Suspended หรือ Banned
+Then ระบบต้อง revoke/block session
+And clear authenticated app state
+And แสดง account status state พร้อมเหตุผลและช่องทาง Support
+
+## QA-AUTH-007C: Temporary Suspension End Date
+
+Given account ถูก Suspended แบบชั่วคราวและมี end date
+When ถึง end date และ backend เปลี่ยนสถานะกลับเป็น Active
+Then user ต้อง Sign In ใหม่ได้
+And session เดิมต้องไม่กลับมาใช้งานเอง
+
+## QA-AUTH-007B: Banned Account
+
+Given account ถูก Banned
+When user Sign In ด้วย Email, Apple หรือ Google
+Then ระบบต้อง block login พร้อมเหตุผลและช่องทาง Support
+And user ต้องไม่เข้า main app หรือทำ authenticated action ได้
 
 ---
 
