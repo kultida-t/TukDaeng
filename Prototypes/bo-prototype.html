@@ -5825,33 +5825,11 @@
                 </div>` : ""}
               </div>
               <div class="detail-section">
-                <h4>Listing Summary</h4>
-                <div class="detail-grid asset-report-modal-grid asset-report-modal-summary-grid">
-                  ${renderAssetDetailTiles([
-                    ["Asset ID", asset.id],
-                    ["Post Type", asset.type],
-                    ["Moderation State", asset.status],
-                    ["Brand", detail.brand],
-                    ["Price", detail.price],
-                    ["Visibility", detail.visibility]
-                  ])}
-                </div>
-              </div>
-              <div class="detail-section">
-                <h4>Owner</h4>
-                <div class="detail-grid asset-report-modal-grid">
-                  ${renderAssetDetailTiles([
-                    ["Display Name", asset.owner],
-                    ["Owner ID", detail.owner.id],
-                    ["Account Status", detail.owner.accountStatus]
-                  ])}
-                </div>
-              </div>
-              <div class="detail-section">
                 <h4>Description</h4>
                 <div class="detail-grid">
                   ${renderAssetDetailTiles([
                     ["Title", asset.name],
+                    ["Price", detail.price],
                     ["Description", getAssetDescription(asset, detail).join(" ")]
                   ])}
                 </div>
