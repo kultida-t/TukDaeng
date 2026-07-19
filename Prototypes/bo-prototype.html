@@ -8565,6 +8565,7 @@
         const report = userManagementData.reports.find(entry => entry.id === activeReportContextId);
         if (report) {
           const beforeStatus = report.accountStatus;
+          const beforeReportStatus = report.status;
           report.accountStatus = user.status;
           appendReportAuditLog(report, {
             action: beforeStatus === user.status ? "ADMIN_ACTION_RECORDED" : "ACCOUNT_STATUS_UPDATED",
@@ -8575,6 +8576,7 @@
             reason: pendingReportActionAudit?.reason || "Admin confirmed action from report context",
             emailDelivery: pendingReportActionAudit?.emailDelivery || { status: "not_required" }
           });
+          closeReportAfterAccountOutcome(report, user, pendingReportActionAudit?.accountAction, beforeReportStatus);
           if (document.body.classList.contains("user-detail-mode")) renderReportedUserDetail(report);
           else renderReportedUserRows();
           return;
@@ -8722,6 +8724,7 @@
           : { status: "not_required" }
       });
       pendingReportActionAudit = {
+        accountAction: action,
         actionLabel: config.title,
         detail: `${actionNote || selectedReason || config.summary}${statusActionDeliveryNote}`,
         reason: selectedReason || config.reasonLabel,
@@ -8787,6 +8790,7 @@
 
     function getReportStatusActions(report) {
       if (!report) return [];
+      if (getReportAccountStatus(report) === "Suspended") return [];
       if (report.status === "Open") {
         return [
           { status: "Cleared", label: "ปิดรายงาน" }
@@ -8798,6 +8802,33 @@
         ];
       }
       return [];
+    }
+
+    function shouldCloseReportAfterAccountOutcome(action) {
+      return activeModule === "users"
+        && (activeSub === "Report User" || activeSub === "Reported Users")
+        && ["Restore", "Ban"].includes(action);
+    }
+
+    function closeReportAfterAccountOutcome(report, user, action, beforeReportStatus) {
+      if (!shouldCloseReportAfterAccountOutcome(action)) return false;
+      if (!report || !user || getReportQueueStatus(report) === "Cleared") return false;
+      report.status = "Cleared";
+      report.accountStatus = user.status;
+      report.waiting = "0 ชม.";
+      appendReportAuditLog(report, {
+        action: "REPORT_STATUS_UPDATED",
+        detail: action === "Restore"
+          ? "ปิดรายงานหลังยกเลิกระงับบัญชีชั่วคราวและคืนสิทธิ์ผู้ใช้"
+          : "ปิดรายงานหลังยืนยันระงับบัญชีถาวร",
+        before: { reportStatus: beforeReportStatus, accountStatus: user.status },
+        after: { reportStatus: "Cleared", accountStatus: user.status },
+        reason: action === "Restore"
+          ? "ยืนยันผลตรวจสอบแล้วว่าผู้ใช้กลับมาใช้งานได้"
+          : "ยืนยันผลตรวจสอบแล้วว่าต้องระงับบัญชีถาวร",
+        emailDelivery: { status: "not_required" }
+      });
+      return true;
     }
 
     function getReportAccountActions(report) {
