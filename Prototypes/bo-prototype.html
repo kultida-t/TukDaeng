@@ -2231,6 +2231,37 @@
       color: #fff;
       box-shadow: 0 16px 34px rgba(15, 23, 42, .18);
     }
+    .asset-report-detail-modal-card {
+      padding: 0;
+      border: 0;
+      background: transparent;
+      box-shadow: none;
+    }
+    .asset-report-modal-layout {
+      display: grid;
+      gap: 16px;
+    }
+    .asset-report-modal-media .asset-fo-preview {
+      width: 100%;
+      box-shadow: none;
+    }
+    .asset-report-modal-media .asset-fo-hero {
+      min-height: 0;
+      aspect-ratio: 16 / 9;
+    }
+    .asset-report-modal-media .asset-fo-hero img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .asset-report-modal-grid {
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    }
+    .asset-report-modal-grid .detail-tile,
+    .asset-report-modal-grid .detail-tile strong {
+      min-width: 0;
+      overflow-wrap: anywhere;
+    }
     body.asset-detail-mode .asset-fo-preview {
       display: grid;
       grid-template-columns: minmax(0, 1fr) 76px;
@@ -5718,6 +5749,78 @@
       `;
       showUserActionModal(true);
     }
+
+    function renderAssetReportDetailModal(asset) {
+      if (!asset) return;
+      const detail = getAssetFoDetail(asset);
+      const coverImage = (detail.uploadedImages || [])[0];
+      const modalBody = document.querySelector("#user-action-modal-body");
+      modalBody.innerHTML = `
+        <div class="user-action-page">
+          <div class="user-action-head">
+            <div>
+              <h2 id="user-action-modal-title">Asset Detail</h2>
+              <p>${asset.id} · ${asset.name} · ${asset.owner}</p>
+            </div>
+            <button class="btn user-action-close" type="button" data-user-action-modal-close aria-label="Close modal" title="Close">
+              ${iconSvg.close}
+            </button>
+          </div>
+          <div class="user-action-card asset-report-detail-modal-card">
+            <div class="asset-report-modal-layout">
+              <div class="asset-report-modal-media">
+                <div class="asset-fo-preview">
+                  <div class="asset-fo-hero">
+                    ${coverImage ? `<img src="${coverImage.src}" alt="${asset.name} uploaded cover photo" />` : ""}
+                    <span class="asset-fo-counter">1 / ${detail.uploadedImages?.length || detail.photoCount}</span>
+                  </div>
+                </div>
+              </div>
+              <div class="detail-section">
+                <h4>Listing Summary</h4>
+                <div class="detail-grid asset-report-modal-grid">
+                  ${renderAssetDetailTiles([
+                    ["Asset ID", asset.id],
+                    ["Post Type", asset.type],
+                    ["Moderation State", asset.status],
+                    ["Brand", detail.brand],
+                    ["Price", detail.price],
+                    ["Visibility", detail.visibility]
+                  ])}
+                </div>
+              </div>
+              <div class="detail-section">
+                <h4>Owner</h4>
+                <div class="detail-grid asset-report-modal-grid">
+                  ${renderAssetDetailTiles([
+                    ["Display Name", asset.owner],
+                    ["Owner ID", detail.owner.id],
+                    ["Account Status", detail.owner.accountStatus]
+                  ])}
+                </div>
+              </div>
+              <div class="detail-section">
+                <h4>Description</h4>
+                <div class="detail-grid">
+                  ${renderAssetDetailTiles([
+                    ["Title", asset.name],
+                    ["Description", getAssetDescription(asset, detail).join(" ")]
+                  ])}
+                </div>
+              </div>
+              <div class="detail-section">
+                <h4>Specifications</h4>
+                <div class="detail-grid asset-report-modal-grid">
+                  ${renderAssetDetailTiles(getAssetTechnicalRows(detail))}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+      showUserActionModal(true);
+    }
+
     function getAssetHistoryRows(asset, detail) {
       const idNumber = parseInt(String(asset.id || "").match(/\d+/)?.[0] || "0", 10);
       const saleRows = asset.type === "Sold"
@@ -8443,10 +8546,13 @@
                 </div>
               </div>
             </div>
-            <button class="btn report-back-btn" type="button" data-back-reported-assets aria-label="กลับไป Reported Assets" title="กลับไป Reported Assets">
+            <div class="user-detail-actions">
+              <button class="btn report-back-btn" type="button" data-back-reported-assets aria-label="กลับไป Reported Assets" title="กลับไป Reported Assets">
               <svg class="mobile-back-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>
               <span class="btn-label">กลับไป Reported Assets</span>
-            </button>
+              </button>
+              <button class="btn" type="button" data-asset-report-detail-modal="${asset.id}">${iconSvg.eye}<span>View Asset Detail</span></button>
+            </div>
           </div>
 
           <div class="detail-section">
@@ -9229,6 +9335,13 @@
         const asset = moduleData.assets.rows.find(entry => entry.id === assetPurchaseHistoryButton.dataset.assetPurchaseHistory);
         assetPurchaseHistoryButton.blur();
         renderAssetPurchaseHistoryModal(asset);
+        return;
+      }
+      const assetReportDetailModalButton = event.target.closest("[data-asset-report-detail-modal]");
+      if (assetReportDetailModalButton) {
+        const asset = moduleData.assets.rows.find(entry => entry.id === assetReportDetailModalButton.dataset.assetReportDetailModal);
+        assetReportDetailModalButton.blur();
+        renderAssetReportDetailModal(asset);
         return;
       }
       const assetActionConfirm = event.target.closest("[data-asset-action-confirm]");
