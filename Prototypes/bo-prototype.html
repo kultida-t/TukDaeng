@@ -5115,6 +5115,18 @@
       });
     }
 
+    function getAssetAutoHideThresholdTime(asset) {
+      const report = buildAssetReportContext(asset);
+      const thresholdRow = getReporterHistoryRows(report)[4];
+      return thresholdRow?.reportedAt ? `${thresholdRow.reportedAt} GMT+7` : "";
+    }
+
+    function getAssetReportReceivedTime(asset) {
+      const report = buildAssetReportContext(asset);
+      const firstReportRow = getReporterHistoryRows(report)[0];
+      return firstReportRow?.reportedAt ? `${firstReportRow.reportedAt} GMT+7` : "";
+    }
+
     function renderReportHistoryPager(kind, page, pageCount, total, start) {
       if (total <= reportHistoryPageSize) return "";
       const pageAttr = kind === "reporter" ? "data-reporter-history-page" : "data-report-audit-history-page";
@@ -6118,6 +6130,12 @@
       return "Asset status changed after review";
     }
 
+    function getAssetReportEmailDelivery(asset, row) {
+      const emailActions = new Set(["Auto Hide Asset", "Force Hide Asset", "Archive Asset", "Restore Visibility"]);
+      if (!emailActions.has(row.action)) return { status: "not_required" };
+      return { status: "sent", channel: "Email" };
+    }
+
     function getAssetHiddenHistoryAction(status) {
       if (status === "Auto Hidden") return "Auto Hide Asset";
       if (status === "Admin Hidden") return "Force Hide Asset";
@@ -6523,7 +6541,37 @@
 
     function getAssetReportActionRows(asset, detail) {
       const reportActions = new Set(["Auto Hide Asset", "Force Hide Asset", "Archive Asset", "Restore Visibility"]);
-      return getAssetStatusHistoryRows(asset, detail)
+      const rows = getAssetStatusHistoryRows(asset, detail);
+      const reportCount = Number(getAssetReportCount(asset)) || 0;
+      const reportReference = getAssetReportReference(asset);
+      if (reportCount > 0 && !rows.some(row => row.action === "Report Received" && row.reference === reportReference)) {
+        rows.push({
+          createdAt: getAssetReportReceivedTime(asset) || detail.updatedAt,
+          actor: "System",
+          action: "Report Received",
+          before: null,
+          after: { type: asset.type, status: asset.status || "Reviewing" },
+          reference: reportReference,
+          referenceAssetId: asset.id,
+          emailDelivery: { status: "not_required" },
+          note: "System received the asset report and opened the review case"
+        });
+      }
+      const hasAutoHideHistory = rows.some(row => row.action === "Auto Hide Asset" && row.after?.status === "Auto Hidden");
+      if (asset.status === "Deleted / Archived" && reportCount >= 5 && !hasAutoHideHistory) {
+        rows.push({
+          createdAt: getAssetAutoHideThresholdTime(asset) || getAssetHistoryOffsetTime(detail.updatedAt, -60),
+          actor: "System",
+          action: "Auto Hide Asset",
+          before: { type: asset.type, status: "Reviewing" },
+          after: { type: asset.type, status: "Auto Hidden" },
+          reference: reportReference,
+          referenceAssetId: asset.id,
+          emailDelivery: { status: "sent", channel: "Email" },
+          note: "System temporarily hid the asset after 5 reports for admin review"
+        });
+      }
+      return rows
         .filter(row => reportActions.has(row.action) || String(row.reference || "").startsWith("RPA-"))
         .sort((a, b) => parseAssetHistoryTime(b.createdAt) - parseAssetHistoryTime(a.createdAt));
     }
@@ -6541,11 +6589,12 @@
           <td data-label="Actor">${row.actor}</td>
           <td data-label="Action">${row.action}</td>
           <td data-label="Status">${renderAssetAuditState(row.after)}</td>
+          <td data-label="Email">${renderReportAuditEmailDelivery({ emailDelivery: row.emailDelivery || getAssetReportEmailDelivery(asset, row) })}</td>
           <td data-label="Reason / Note" class="history-note">${row.note || ""}</td>
         </tr>
       `).join("") : `
         <tr>
-          <td colspan="5" class="history-note">No admin action recorded yet</td>
+          <td colspan="6" class="history-note">No admin action recorded yet</td>
         </tr>
       `;
       return `
@@ -6557,6 +6606,7 @@
                 <th>Actor</th>
                 <th>Action</th>
                 <th>Status</th>
+                <th>Email</th>
                 <th>Reason / Note</th>
               </tr>
             </thead>
@@ -8732,6 +8782,9 @@
       document.querySelector(".filters").innerHTML = "";
       document.querySelector("#summary-grid").innerHTML = "";
       document.querySelector("#cards").innerHTML = "";
+      const assetActionButtons = getAssetRowActions(asset)
+        .map(({ action, label }, index) => `<button class="user-detail-action-btn ${getAssetActionClass(action, index)}" type="button" data-asset-action="${action}" data-asset-id="${asset.id}">${label}</button>`)
+        .join("");
       document.querySelector("#table").innerHTML = `
         <div class="user-detail-page report-detail-page">
           <div class="user-detail-head">
@@ -8777,9 +8830,7 @@
             ${renderAssetReportAuditHistoryTable(asset)}
           </div>
 
-          <div class="user-detail-actions">
-            ${getAssetRowActions(asset).map(({ action, label }, index) => `<button class="user-detail-action-btn ${getAssetActionClass(action, index)}" type="button" data-asset-action="${action}" data-asset-id="${asset.id}">${label}</button>`).join("") || `<span class="chip">No asset action available</span>`}
-          </div>
+          ${assetActionButtons ? `<div class="user-detail-actions">${assetActionButtons}</div>` : ""}
         </div>
       `;
       document.querySelector("#detail").innerHTML = "";
