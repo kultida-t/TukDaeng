@@ -5142,6 +5142,10 @@
       `;
     }
 
+    function renderHistoryValue(value) {
+      return String(value ?? "").trim() || "-";
+    }
+
     function renderReporterHistoryTable(report) {
       const allRows = getReporterHistoryRows(report);
       const pageCount = Math.max(1, Math.ceil(allRows.length / reportHistoryPageSize));
@@ -5157,8 +5161,8 @@
           <td data-label="Reporter">${row.reporter}</td>
           ${isAssetReportHistory ? "" : `<td data-label="Source">${row.source}</td>`}
           <td data-label="Status">${row.status}</td>
-          <td data-label="${noteColumnLabel}" class="history-note">${row.note}</td>
-          ${showAdditionalDetails ? `<td data-label="Additional Details" class="history-note">${row.additionalDetails || ""}</td>` : ""}
+          <td data-label="${noteColumnLabel}" class="history-note">${renderHistoryValue(row.note)}</td>
+          ${showAdditionalDetails ? `<td data-label="Additional Details" class="history-note">${renderHistoryValue(row.additionalDetails)}</td>` : ""}
         </tr>
       `).join("");
       const tableClass = isAssetReportHistory ? "history-table asset-reporter-history-table" : "history-table";
@@ -5207,7 +5211,7 @@
             <td data-label="Action">${getReportAuditActionLabel(log)}</td>
             <td data-label="สถานะบัญชี">${userStatusPill(accountStatus)}</td>
             <td data-label="ส่งอีเมล">${renderReportAuditEmailDelivery(log)}</td>
-            <td data-label="รายละเอียด" class="history-note">${log.reason || ""}</td>
+            <td data-label="รายละเอียด" class="history-note">${renderHistoryValue(log.reason)}</td>
           </tr>
         `;
       }).join("");
@@ -6144,6 +6148,66 @@
       };
     }
 
+    function getAssetReportStatusActions(asset) {
+      if (!asset) return [];
+      const queueStatus = getAssetReportQueueStatus(asset);
+      if (queueStatus === "Pending") return [{ status: "Cleared", label: "ปิดรายงาน" }];
+      if (asset.reportStatus === "Cleared" && asset.status !== "Deleted / Archived") return [{ status: "Open", label: "ส่งกลับรอตรวจ" }];
+      return [];
+    }
+
+    function renderAssetReportStatusActionButtons(asset) {
+      return getAssetReportStatusActions(asset)
+        .map(action => `<button type="button" data-asset-report-status-action="${action.status}" data-asset-id="${asset.id}">${action.label}</button>`)
+        .join("");
+    }
+
+    function renderAssetReportDetailStatusActionButtons(asset) {
+      return getAssetReportStatusActions(asset)
+        .map(action => `<button class="user-detail-action-btn ${action.status === "Cleared" ? "primary" : ""}" type="button" data-asset-report-status-action="${action.status}" data-asset-id="${asset.id}">${action.label}</button>`)
+        .join("");
+    }
+
+    function updateAssetReportStatus(asset, status) {
+      if (!asset || !status) return;
+      const beforeStatus = getAssetReportQueueStatus(asset);
+      const nextStatus = status === "Cleared" ? "Cleared" : "Pending";
+      if (beforeStatus === nextStatus) return;
+      asset.reportStatus = status === "Cleared" ? "Cleared" : "Open";
+      appendAssetReportAuditHistory(asset, {
+        action: status === "Cleared" ? "Close Report" : "Reopen Report",
+        before: { reportStatus: beforeStatus },
+        after: { reportStatus: nextStatus },
+        reference: getAssetReportId(asset),
+        referenceAssetId: asset.id,
+        note: status === "Cleared"
+          ? "Admin closed the asset report after review"
+          : "Admin sent the asset report back to the pending queue"
+      });
+      if (document.body.classList.contains("user-detail-mode") && activeModule === "assets" && activeSub === "Reported Assets") {
+        renderReportedAssetDetail(asset);
+      } else {
+        renderReportedAssetRows();
+      }
+      showSuccessToast(`${getAssetReportId(asset)}: ${nextStatus === "Cleared" ? "ปิดรายงานแล้ว" : "ส่งกลับรอตรวจแล้ว"}`);
+    }
+
+    function appendAssetReportAuditHistory(asset, log) {
+      if (!asset || !log) return;
+      if (!Array.isArray(asset.reportAuditHistory)) asset.reportAuditHistory = [];
+      const nextNumber = asset.reportAuditHistory.reduce((max, entry) => {
+        const number = parseInt(String(entry.id || "").split("-").pop() || "0", 10);
+        return Math.max(max, Number.isFinite(number) ? number : 0);
+      }, 0) + 1;
+      asset.reportAuditHistory.unshift({
+        id: `AUD-${getAssetReportId(asset)}-${String(nextNumber).padStart(3, "0")}`,
+        createdAt: formatBangkokTimestamp(),
+        actor: "Somchai Admin",
+        emailDelivery: { status: "not_required" },
+        ...log
+      });
+    }
+
     function getAssetHiddenHistoryAction(status) {
       if (status === "Auto Hidden") return "Auto Hide Asset";
       if (status === "Admin Hidden") return "Force Hide Asset";
@@ -6428,6 +6492,8 @@
     }
 
     function getAssetReportQueueStatus(asset) {
+      if (asset.reportStatus === "Cleared") return "Cleared";
+      if (asset.reportStatus === "Open") return "Pending";
       return asset.status === "Deleted / Archived" ? "Cleared" : "Pending";
     }
 
@@ -6436,6 +6502,38 @@
       const label = status === "Cleared" ? "Closed" : "Pending";
       const color = status === "Cleared" ? "green" : "amber";
       return `<span class="pill ${color}">${label}</span>`;
+    }
+
+    function renderAssetReportStatusPill(status) {
+      const label = status === "Cleared" ? "Closed" : "Pending";
+      const color = status === "Cleared" ? "green" : "amber";
+      return `<span class="pill ${color}">${label}</span>`;
+    }
+
+    function getAssetReportAuditActionLabel(row) {
+      const labels = {
+        "Report Received": "รับรายงานสินทรัพย์",
+        "Auto Hide Asset": "ซ่อนสินทรัพย์อัตโนมัติ",
+        "Force Hide Asset": "ซ่อนชั่วคราว",
+        "Archive Asset": "ลบ/เก็บถาวรสินทรัพย์",
+        "Close Report": "ปิดรายงาน",
+        "Reopen Report": "ส่งกลับรอตรวจ",
+        "Restore Visibility": "คืนสถานะการแสดงผล"
+      };
+      return labels[row.action] || row.action;
+    }
+
+    function getAssetReportAuditNote(row) {
+      const notes = {
+        "Report Received": "ระบบรับรายงานสินทรัพย์และเปิดเคสตรวจสอบ",
+        "Auto Hide Asset": "มีรายงานครบ 5 รายงาน ระบบจึงซ่อนสินทรัพย์ชั่วคราวระหว่างรอผู้ดูแลตรวจสอบ",
+        "Force Hide Asset": "ผู้ดูแลซ่อนสินทรัพย์ชั่วคราวระหว่างตรวจสอบ",
+        "Archive Asset": "ผู้ดูแลยืนยันผลตรวจสอบและลบ/เก็บถาวรสินทรัพย์",
+        "Close Report": "ผู้ดูแลปิดรายงานหลังดำเนินการกับสินทรัพย์เรียบร้อยแล้ว",
+        "Reopen Report": "ผู้ดูแลส่งรายงานกลับไปรอตรวจสอบ",
+        "Restore Visibility": "ผู้ดูแลคืนสถานะการแสดงผลหลังตรวจสอบ"
+      };
+      return notes[row.action] || row.note || "";
     }
 
     function getAssetReportPriority(asset) {
@@ -6548,8 +6646,11 @@
     }
 
     function getAssetReportActionRows(asset, detail) {
-      const reportActions = new Set(["Report Received", "Auto Hide Asset", "Force Hide Asset", "Archive Asset", "Restore Visibility"]);
-      const rows = getAssetStatusHistoryRows(asset, detail).map(row => ({ ...row }));
+      const reportActions = new Set(["Report Received", "Close Report", "Reopen Report", "Auto Hide Asset", "Force Hide Asset", "Archive Asset", "Restore Visibility"]);
+      const rows = [
+        ...getAssetStatusHistoryRows(asset, detail),
+        ...(Array.isArray(asset.reportAuditHistory) ? asset.reportAuditHistory : [])
+      ].map(row => ({ ...row }));
       const reportCount = Number(getAssetReporters(asset)) || 0;
       const reportReference = getAssetReportId(asset);
       rows.forEach(row => {
@@ -6588,6 +6689,21 @@
           note: "System temporarily hid the asset after 5 reports for admin review"
         });
       }
+      const hasCloseReportHistory = rows.some(row => row.action === "Close Report" && row.after?.reportStatus === "Cleared");
+      if (asset.status === "Deleted / Archived" && !hasCloseReportHistory) {
+        const archiveRow = rows.find(row => row.action === "Archive Asset");
+        rows.push({
+          createdAt: getAssetHistoryOffsetTime(archiveRow?.createdAt || detail.updatedAt, 1),
+          actor: archiveRow?.actor || "Somchai Admin",
+          action: "Close Report",
+          before: { reportStatus: "Pending" },
+          after: { type: asset.type, status: asset.status, reportStatus: "Cleared" },
+          reference: reportReference,
+          referenceAssetId: asset.id,
+          emailDelivery: { status: "not_required" },
+          note: "Admin closed the asset report after archiving the asset"
+        });
+      }
       return rows
         .filter(row => reportActions.has(row.action) || String(row.reference || "").startsWith("RPA-"))
         .sort((a, b) => parseAssetHistoryTime(b.createdAt) - parseAssetHistoryTime(a.createdAt));
@@ -6600,16 +6716,19 @@
       reportAuditHistoryPage = Math.min(reportAuditHistoryPage, pageCount);
       const start = (reportAuditHistoryPage - 1) * reportHistoryPageSize;
       const pageRows = allRows.slice(start, start + reportHistoryPageSize);
-      const rows = pageRows.length ? pageRows.map(row => `
-        <tr>
-          <td data-label="Date / Time">${formatAuditDisplayTime(row.createdAt)}</td>
-          <td data-label="Actor">${row.actor}</td>
-          <td data-label="Action">${row.action}</td>
-          <td data-label="Status">${renderAssetAuditState(row.after)}</td>
-          <td data-label="Email">${renderReportAuditEmailDelivery({ emailDelivery: row.emailDelivery || getAssetReportEmailDelivery(asset, row) })}</td>
-          <td data-label="Reason / Note" class="history-note">${row.note || ""}</td>
-        </tr>
-      `).join("") : `
+      const rows = pageRows.length ? pageRows.map(row => {
+        const assetStatus = row.after?.type ? renderAssetAuditState(row.after) : `<span class="muted">-</span>`;
+        return `
+          <tr>
+            <td data-label="วันที่ / เวลา">${formatAuditDisplayTime(row.createdAt)}</td>
+            <td data-label="ผู้ดำเนินการ">${row.actor}</td>
+            <td data-label="Action">${getAssetReportAuditActionLabel(row)}</td>
+            <td data-label="สถานะสินทรัพย์">${assetStatus}</td>
+            <td data-label="ส่งอีเมล">${renderReportAuditEmailDelivery({ emailDelivery: row.emailDelivery || getAssetReportEmailDelivery(asset, row) })}</td>
+            <td data-label="รายละเอียด" class="history-note">${renderHistoryValue(getAssetReportAuditNote(row))}</td>
+          </tr>
+        `;
+      }).join("") : `
         <tr>
           <td colspan="6" class="history-note">No admin action recorded yet</td>
         </tr>
@@ -6619,12 +6738,12 @@
           <table class="history-table asset-status-history-table">
             <thead>
               <tr>
-                <th>Date / Time</th>
-                <th>Actor</th>
+                <th>วันที่ / เวลา</th>
+                <th>ผู้ดำเนินการ</th>
                 <th>Action</th>
-                <th>Status</th>
-                <th>Email</th>
-                <th>Reason / Note</th>
+                <th>สถานะสินทรัพย์</th>
+                <th>ส่งอีเมล</th>
+                <th>รายละเอียด</th>
               </tr>
             </thead>
             <tbody>${rows}</tbody>
@@ -6640,6 +6759,7 @@
           <summary title="Asset report actions">...</summary>
           <div class="row-menu-list">
             <button type="button" data-asset-report-open="${asset.id}">View report detail</button>
+            ${renderAssetReportStatusActionButtons(asset)}
             ${getAssetRowActions(asset).map(({ action, label }) => `<button type="button" data-asset-action="${action}" data-asset-id="${asset.id}">${label}</button>`).join("")}
           </div>
         </details>
@@ -6746,7 +6866,20 @@
     function getAssetActionConfig(action, asset) {
       const restoreTarget = asset?.type || "Sale";
       const configs = {
-        hide: { title: "ยืนยันการซ่อนชั่วคราว", button: "ซ่อนชั่วคราว", apply: asset => { asset.status = "Admin Hidden"; asset.action = "ซ่อนโพสต์ชั่วคราวจาก Feed/Search/Profile public surface พร้อมบันทึกเหตุผล"; } },
+        hide: {
+          title: "ซ่อนสินทรัพย์ชั่วคราว",
+          button: "ยืนยัน",
+          summary: "ซ่อนสินทรัพย์จากพื้นที่สาธารณะระหว่างตรวจสอบ เจ้าของสินทรัพย์จะได้รับอีเมลแจ้งผล",
+          reasonLabel: `เหตุผลการซ่อนชั่วคราวของ ${restoreTarget}`,
+          reasons: [
+            "มีรายงานความเสี่ยงสูง รอตรวจสอบ",
+            "ข้อมูลสินทรัพย์หรือหลักฐานยังไม่เพียงพอ",
+            "สงสัยว่ารูปหรือ serial ไม่ตรงกับหลักฐานเจ้าของ",
+            "ทีมที่รับผิดชอบอนุมัติให้ซ่อนระหว่างตรวจสอบ"
+          ],
+          notePlaceholder: "ระบุหมายเหตุ เหตุผล หรือข้อมูลอ้างอิงที่เกี่ยวข้องกับการซ่อนชั่วคราว",
+          apply: asset => { asset.status = "Admin Hidden"; asset.action = "ซ่อนโพสต์ชั่วคราวจาก Feed/Search/Profile public surface พร้อมบันทึกเหตุผล"; }
+        },
         "delete-post": {
           title: "ยืนยันการลบ/เก็บถาวร",
           button: "ยืนยัน",
@@ -6799,6 +6932,156 @@
           <p><strong>ผลกระทบต่อแอปพลิเคชัน:</strong> หลังยืนยัน ระบบจะนำ asset สถานะ ${asset.type.toLowerCase()} นี้ออกจาก ${visibilitySurface} และบันทึก Audit Log โดยไม่แก้ไขเนื้อหาที่เจ้าของ Asset กรอกไว้</p>
         </div>
       `;
+    }
+
+    const assetHideFlowScenarios = [
+      { value: "success", label: "สำเร็จ" },
+      { value: "invalid_state", label: "สถานะ Asset ไม่ตรงเงื่อนไข" },
+      { value: "stale_data", label: "ข้อมูลเปลี่ยนระหว่างดำเนินการ" },
+      { value: "policy_blocked", label: "ยังไม่ผ่านเงื่อนไขที่ระบบกำหนด" },
+      { value: "sync_failed", label: "ซ่อนจาก public surface ไม่สำเร็จ" },
+      { value: "audit_failed", label: "บันทึก Audit Log ไม่สำเร็จ" },
+      { value: "session_expired", label: "เซสชันหมดอายุ" }
+    ];
+
+    const assetHideErrorSamples = {
+      invalid_state: { title: "ไม่สามารถซ่อนชั่วคราวได้", detail: "สถานะ Asset ปัจจุบันไม่ตรงกับเงื่อนไขของการซ่อนชั่วคราว กรุณาตรวจสอบสถานะล่าสุดก่อนยืนยันอีกครั้ง" },
+      stale_data: { title: "ข้อมูล Asset มีการเปลี่ยนแปลงแล้ว", detail: "มีการอัปเดต Asset นี้ระหว่างที่เปิดหน้าต่างยืนยัน กรุณารีเฟรชข้อมูลแล้วลองอีกครั้ง" },
+      policy_blocked: { title: "ยังไม่สามารถซ่อน Asset นี้ได้", detail: "Asset นี้ยังมีเงื่อนไขหรือหลักฐานที่ต้องตรวจสอบเพิ่มเติมก่อนซ่อนจากพื้นที่สาธารณะ" },
+      sync_failed: { title: "ซ่อนจากพื้นที่สาธารณะไม่สำเร็จ", detail: "ระบบยังไม่สามารถซ่อน Asset จาก Feed, Search, Profile หรือ surface ที่เกี่ยวข้องได้ กรุณาลองอีกครั้ง" },
+      audit_failed: { title: "บันทึก Audit Log ไม่สำเร็จ", detail: "ระบบยังไม่สามารถบันทึกเหตุผลและสถานะก่อน/หลังการดำเนินการได้ กรุณาลองอีกครั้งก่อนยืนยัน" },
+      session_expired: { title: "เซสชันหมดอายุ", detail: "กรุณาเข้าสู่ระบบใหม่ก่อนยืนยัน เพื่อให้การดำเนินการและ Audit Log ถูกต้อง" }
+    };
+
+    function getAssetOwnerEmail(asset) {
+      return getAssetFoDetail(asset).owner?.email || "owner@example.com";
+    }
+
+    function renderAssetHideImpactNote(asset) {
+      const visibilitySurface = asset.type === "Sale"
+        ? "Feed, Search, Profile, Watch Alert, Offer และ Chat reference"
+        : "Profile / Collection และ public reference ที่เกี่ยวข้อง";
+      return `
+        <div class="module-note user-action-impact user-action-impact-card user-action-impact-warning">
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 3.2c.7 0 1.35.37 1.7.98l8.05 13.95A1.95 1.95 0 0 1 20.05 21H3.95a1.95 1.95 0 0 1-1.7-2.87L10.3 4.18A1.95 1.95 0 0 1 12 3.2Zm0 4.6a1 1 0 0 0-1 1v4.4a1 1 0 1 0 2 0V8.8a1 1 0 0 0-1-1Zm0 8.45a1.15 1.15 0 1 0 0 2.3 1.15 1.15 0 0 0 0-2.3Z"/></svg>
+          <p><strong>ผลกระทบต่อผู้ใช้:</strong> หลังยืนยัน สินทรัพย์จะถูกซ่อนจาก ${visibilitySurface} เจ้าของยังเห็นรายการนี้ในโปรไฟล์ของตนพร้อมสถานะถูกซ่อนชั่วคราว</p>
+        </div>
+      `;
+    }
+
+    function renderAssetHideEmailNote(asset) {
+      return `
+        <div class="module-note user-action-impact user-action-impact-card user-action-impact-notice">
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M4.5 5h15A2.5 2.5 0 0 1 22 7.5v9A2.5 2.5 0 0 1 19.5 19h-15A2.5 2.5 0 0 1 2 16.5v-9A2.5 2.5 0 0 1 4.5 5Zm0 2a.5.5 0 0 0-.5.5v.3l8 4.9 8-4.9v-.3a.5.5 0 0 0-.5-.5h-15Zm15 10a.5.5 0 0 0 .5-.5v-6.35l-7.48 4.57a1 1 0 0 1-1.04 0L4 10.15v6.35a.5.5 0 0 0 .5.5h15Z"/></svg>
+          <p><strong>แจ้งผู้ใช้:</strong> ระบบจะส่งอีเมลแจ้งการซ่อนสินทรัพย์ชั่วคราวไปที่ ${getAssetOwnerEmail(asset)} (registered owner email) เป็นช่องทางหลัก</p>
+        </div>
+      `;
+    }
+
+    function getAssetHideEmailCopy(asset, reason = "") {
+      return {
+        subject: "[TukDaeng] สินทรัพย์ของคุณถูกซ่อนชั่วคราว / Your asset has been temporarily hidden",
+        lines: [
+          `สวัสดี ${asset.owner},`,
+          `สินทรัพย์ ${asset.name} (${asset.id}) ถูกซ่อนชั่วคราวระหว่างการตรวจสอบ`,
+          `เหตุผลการดำเนินการ: ${reason || "ตรวจสอบตามนโยบายการรายงานสินทรัพย์"}`,
+          "รายการนี้จะไม่แสดงบน Feed, Search, Profile และพื้นที่สาธารณะที่เกี่ยวข้อง จนกว่า Admin จะยกเลิกการซ่อน",
+          "---",
+          `Hello ${asset.owner},`,
+          `Your asset ${asset.name} (${asset.id}) has been temporarily hidden while the review is in progress.`,
+          `Action reason: ${reason || "Asset report policy review"}`,
+          "This asset will not appear on Feed, Search, Profile, or related public surfaces until an admin restores visibility.",
+          `Reference: ${asset.id}`,
+          "Contact support: support@tukdaeng.example"
+        ]
+      };
+    }
+
+    function renderAssetHideEmailPreview(asset, reason = "") {
+      const emailCopy = getAssetHideEmailCopy(asset, reason);
+      return `
+        <details class="email-preview" data-asset-hide-email-preview data-asset-id="${asset.id}">
+          <summary>ดูตัวอย่างอีเมลแจ้งเตือน</summary>
+          <div class="email-preview-body">
+            <div class="email-preview-subject"><strong>หัวข้อ:</strong> <span data-email-preview-subject>${emailCopy.subject}</span></div>
+            <div class="email-preview-message" data-email-preview-message>
+              ${emailCopy.lines.map(line => `<p>${line}</p>`).join("")}
+            </div>
+          </div>
+        </details>
+      `;
+    }
+
+    function updateAssetHideEmailPreview() {
+      const preview = document.querySelector("[data-asset-hide-email-preview]");
+      if (!preview) return;
+      const asset = moduleData.assets.rows.find(entry => entry.id === preview.dataset.assetId);
+      if (!asset) return;
+      const reason = document.querySelector("#asset-hide-reason")?.value || "";
+      const emailCopy = getAssetHideEmailCopy(asset, reason);
+      const subject = preview.querySelector("[data-email-preview-subject]");
+      const message = preview.querySelector("[data-email-preview-message]");
+      if (subject) subject.textContent = emailCopy.subject;
+      if (message) message.innerHTML = emailCopy.lines.map(line => `<p>${line}</p>`).join("");
+    }
+
+    function renderAssetHideModal(asset, action, config, resultMessage = "", resultDetail = "", resultType = "", selectedScenario = "success") {
+      const hasResult = Boolean(resultMessage);
+      const defaultReason = config.reasons?.[0] || "";
+      const modalBody = document.querySelector("#user-action-modal-body");
+      modalBody.innerHTML = `
+        <div class="user-action-page">
+          <div class="user-action-head">
+            <div>
+              <h2 id="user-action-modal-title">${config.title}</h2>
+              <p>${config.summary}</p>
+            </div>
+            <button class="btn user-action-close" type="button" data-user-action-modal-close aria-label="Close modal" title="Close">
+              ${iconSvg.close}
+            </button>
+          </div>
+          <div class="user-action-target">
+            <div>
+              <strong>${asset.name}</strong>
+              <span>${asset.id} · ${asset.owner}</span>
+            </div>
+            ${renderAssetStatusDisplay(asset)}
+          </div>
+          <div class="user-action-layout">
+            <div class="detail-section">
+              <div class="user-action-form">
+                <label>
+                  ${config.reasonLabel}
+                  ${customSelect("asset-hide-reason", config.reasonLabel, config.reasons.map(reason => ({ value: reason, label: reason })), "", "data-custom-select-silent")}
+                </label>
+                <label>
+                  Note / หมายเหตุ
+                  <textarea id="asset-hide-note" placeholder="${config.notePlaceholder}"></textarea>
+                </label>
+                ${renderAssetHideImpactNote(asset)}
+                ${renderAssetHideEmailNote(asset)}
+                ${renderAssetHideEmailPreview(asset, defaultReason)}
+                <div class="user-detail-actions user-action-footer">
+                  <button class="user-detail-action-btn warning user-action-confirm" type="button" data-asset-action-confirm="${action}" data-asset-id="${asset.id}">${config.button}</button>
+                  <button class="user-detail-action-btn" type="button" data-user-action-modal-close>ยกเลิก</button>
+                </div>
+                <div class="warning-note action-feedback user-action-result ${hasResult ? "show" : ""} ${resultType}">
+                  <strong>${resultMessage || "Audit requirement"}</strong><br>
+                  <span>${resultDetail || "ต้องบันทึกเหตุผล ผลตรวจสอบ และสถานะก่อน/หลังการดำเนินการไว้ใน Admin Action History"}</span>
+                </div>
+                <details class="prototype-tools user-action-prototype-tools">
+                  <summary>Prototype scenario</summary>
+                  <label>
+                    Test flow
+                    ${customSelect("asset-hide-scenario", "Test flow", assetHideFlowScenarios, selectedScenario, "data-custom-select-silent")}
+                  </label>
+                </details>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+      showUserActionModal(true);
     }
 
     function renderAssetDeletePostModal(asset, action, config, resultMessage = "", resultDetail = "", resultType = "", selectedScenario = "success") {
@@ -6938,6 +7221,10 @@
         renderAssetDeletePostModal(asset, action, config);
         return;
       }
+      if (action === "hide") {
+        renderAssetHideModal(asset, action, config);
+        return;
+      }
       const modalBody = document.querySelector("#user-action-modal-body");
       modalBody.innerHTML = `
         <div class="user-action-page">
@@ -6998,11 +7285,18 @@
       const before = `${asset.type} / ${asset.status}`;
       const beforeState = { type: asset.type, status: asset.status };
       if (action === "restore-visibility" || action === "delete-post") ensureAssetHiddenHistoryBeforeRestore(asset, beforeState);
+      const actionReason = action === "hide"
+        ? (document.querySelector("#asset-hide-reason")?.value || "")
+        : "";
+      const actionNote = action === "hide"
+        ? (document.querySelector("#asset-hide-note")?.value.trim() || "")
+        : "";
       config.apply(asset);
       appendAssetStatusHistory(asset, {
         action: getAssetAuditActionLabel(action),
         before: beforeState,
-        after: { type: asset.type, status: asset.status }
+        after: { type: asset.type, status: asset.status },
+        note: actionNote || actionReason || getAssetModerationHistoryNote(getAssetAuditActionLabel(action))
       });
       closeUserActionModal();
       refreshAfterAssetAction(asset);
@@ -8799,9 +9093,11 @@
       document.querySelector(".filters").innerHTML = "";
       document.querySelector("#summary-grid").innerHTML = "";
       document.querySelector("#cards").innerHTML = "";
+      const reportStatusActionButtons = renderAssetReportDetailStatusActionButtons(asset);
       const assetActionButtons = getAssetRowActions(asset)
         .map(({ action, label }, index) => `<button class="user-detail-action-btn ${getAssetActionClass(action, index)}" type="button" data-asset-action="${action}" data-asset-id="${asset.id}">${label}</button>`)
         .join("");
+      const detailActionButtons = `${reportStatusActionButtons}${assetActionButtons}`;
       document.querySelector("#table").innerHTML = `
         <div class="user-detail-page report-detail-page">
           <div class="user-detail-head">
@@ -8811,13 +9107,11 @@
                 <div class="chips">
                   ${assetReportQueueStatusPill(asset)}
                   ${renderAssetStatusDisplay(asset)}
-                  <span class="pill ${getAssetReportPriorityValue(asset) === "high" ? "red" : getAssetReportPriorityValue(asset) === "medium" ? "amber" : "blue"}">${report.priority}</span>
-                  <span class="chip">${report.reporters} reporters</span>
                 </div>
               </div>
             </div>
             <div class="user-detail-actions">
-              <button class="btn" type="button" data-asset-report-detail-modal="${asset.id}">${iconSvg.eye}<span>View Asset Detail</span></button>
+              <button class="btn" type="button" data-asset-report-detail-modal="${asset.id}">${iconSvg.eye}<span>View Asset</span></button>
               <button class="btn report-back-btn" type="button" data-back-reported-assets aria-label="กลับไป Reported Assets" title="กลับไป Reported Assets">
               <svg class="mobile-back-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>
               <span class="btn-label">กลับไป Reported Assets</span>
@@ -8847,7 +9141,7 @@
             ${renderAssetReportAuditHistoryTable(asset)}
           </div>
 
-          ${assetActionButtons ? `<div class="user-detail-actions">${assetActionButtons}</div>` : ""}
+          ${detailActionButtons ? `<div class="user-detail-actions">${detailActionButtons}</div>` : ""}
         </div>
       `;
       document.querySelector("#detail").innerHTML = "";
@@ -9397,6 +9691,7 @@
         select.classList.remove("open");
         select.querySelector("[data-custom-select-trigger]").setAttribute("aria-expanded", "false");
         if (hiddenInput.id === "user-action-reason") updateAccountStatusEmailPreview();
+        if (hiddenInput.id === "asset-hide-reason") updateAssetHideEmailPreview();
         if (select.hasAttribute("data-custom-select-silent")) return;
         if (["asset-report-status-filter", "asset-report-priority-filter", "asset-report-sort"].includes(hiddenInput.id) && activeModule === "assets" && activeSub === "Reported Assets") {
           assetListPage = 1;
@@ -9608,6 +9903,13 @@
           renderAssetRestoreVisibilityModal(asset, assetAction, config, errorSample.title, errorSample.detail, "error", scenario);
           return;
         }
+        const hideScenario = document.querySelector("#asset-hide-scenario")?.value || "success";
+        if (assetAction === "hide" && hideScenario !== "success") {
+          const config = getAssetActionConfig(assetAction, asset);
+          const errorSample = assetHideErrorSamples[hideScenario] || assetHideErrorSamples.invalid_state;
+          renderAssetHideModal(asset, assetAction, config, errorSample.title, errorSample.detail, "error", hideScenario);
+          return;
+        }
         const deleteScenario = document.querySelector("#asset-delete-scenario")?.value || "success";
         if (assetAction === "delete-post" && deleteScenario !== "success") {
           const config = getAssetActionConfig(assetAction, asset);
@@ -9661,6 +9963,13 @@
         const asset = moduleData.assets.rows.find(entry => entry.id === assetCard.dataset.assetCard);
         activeAssetImageIndex = 0;
         renderAssetDetailPage(asset);
+        return;
+      }
+      const assetReportStatusButton = event.target.closest("[data-asset-report-status-action]");
+      if (assetReportStatusButton) {
+        const asset = moduleData.assets.rows.find(entry => entry.id === assetReportStatusButton.dataset.assetId);
+        updateAssetReportStatus(asset, assetReportStatusButton.dataset.assetReportStatusAction);
+        closeRowMenus();
         return;
       }
       const reportStatusButton = event.target.closest("[data-report-status-action]");
