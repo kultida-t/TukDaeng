@@ -6128,7 +6128,7 @@
     }
 
     function getAssetReportQueueStatus(asset) {
-      return asset.status === "Auto Hidden" ? "Cleared" : "Pending";
+      return asset.status === "Deleted / Archived" ? "Cleared" : "Pending";
     }
 
     function assetReportQueueStatusPill(asset) {
