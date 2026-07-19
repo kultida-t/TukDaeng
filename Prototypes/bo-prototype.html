@@ -6253,6 +6253,7 @@
     function getAssetReportStatusActions(asset) {
       if (!asset) return [];
       const queueStatus = getAssetReportQueueStatus(asset);
+      if (isTemporarilyHiddenAsset(asset)) return [];
       if (queueStatus === "Pending") return [{ status: "Cleared", label: "ปิดรายงาน" }];
       return [];
     }
@@ -6269,11 +6270,101 @@
         .join("");
     }
 
+    function renderAssetReportCloseImpactNote() {
+      return `
+        <div class="module-note user-action-impact user-action-impact-card user-action-impact-warning">
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 3.2c.7 0 1.35.37 1.7.98l8.05 13.95A1.95 1.95 0 0 1 20.05 21H3.95a1.95 1.95 0 0 1-1.7-2.87L10.3 4.18A1.95 1.95 0 0 1 12 3.2Zm0 4.6a1 1 0 0 0-1 1v4.4a1 1 0 1 0 2 0V8.8a1 1 0 0 0-1-1Zm0 8.45a1.15 1.15 0 1 0 0 2.3 1.15 1.15 0 0 0 0-2.3Z"/></svg>
+          <p><strong>ผลกระทบต่อผู้ใช้:</strong> รายงานจะถูกปิดและออกจากคิวที่ต้องดำเนินการ แต่ไม่เปลี่ยนสถานะ asset โดยอัตโนมัติ</p>
+        </div>
+      `;
+    }
+
+    function renderAssetReportStatusConfirmModal(asset, status, resultMessage = "", resultDetail = "", resultType = "", selectedScenario = "success") {
+      if (!asset || status !== "Cleared") {
+        updateAssetReportStatus(asset, status);
+        return;
+      }
+      const hasResult = Boolean(resultMessage);
+      const closeReasons = [
+        "ตรวจหลักฐานครบแล้ว ไม่พบประเด็นค้าง",
+        "รายงานไม่เข้าเงื่อนไขซ่อนหรือลบสินทรัพย์",
+        "ข้อมูลประกาศและหลักฐานเจ้าของถูกต้อง",
+        "รายงานซ้ำกับเคสที่ปิดผลแล้ว"
+      ];
+      const reportCloseFlowScenarios = [
+        { value: "success", label: "สำเร็จ" },
+        { value: "invalid_state", label: "รายงานไม่อยู่ในสถานะที่ปิดได้" },
+        { value: "stale_data", label: "ข้อมูลรายงานเปลี่ยนระหว่างดำเนินการ" },
+        { value: "policy_blocked", label: "ยังมีเงื่อนไขที่ต้องตรวจสอบ" },
+        { value: "save_failed", label: "บันทึกผลปิดรายงานไม่สำเร็จ" },
+        { value: "session_expired", label: "เซสชันหมดอายุ" }
+      ];
+      const modal = document.querySelector("#user-action-modal");
+      const modalBody = document.querySelector("#user-action-modal-body");
+      if (!modal || !modalBody) return;
+      modalBody.innerHTML = `
+        <div class="user-action-page">
+          <div class="user-action-head">
+            <div>
+              <h2 id="user-action-modal-title">ยืนยันการปิดรายงาน</h2>
+              <p>ใช้เมื่อผู้ดูแลตรวจหลักฐานของรายงานสินทรัพย์ครบแล้ว และยืนยันว่าไม่ต้องซ่อนหรือลบสินทรัพย์นี้</p>
+            </div>
+            <button class="btn user-action-close" type="button" data-user-action-modal-close aria-label="Close modal" title="Close">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M18 6 6 18"></path>
+                <path d="m6 6 12 12"></path>
+              </svg>
+            </button>
+          </div>
+          <div class="user-action-target">
+            <div>
+              <strong>${asset.name}</strong>
+              <span>${getAssetReportId(asset)} · ${asset.id}</span>
+            </div>
+            ${assetReportQueueStatusPill(asset)}
+          </div>
+          <div class="user-action-layout">
+            <div class="detail-section">
+              <div class="user-action-form">
+                <label>
+                  เหตุผลการปิดรายงาน
+                  ${customSelect("asset-report-close-reason", "เหตุผลการปิดรายงาน", closeReasons.map(reason => ({ value: reason, label: reason })), "", "data-custom-select-silent")}
+                </label>
+                <label>
+                  Note / หมายเหตุ
+                  <textarea id="asset-report-close-note" placeholder="ระบุหมายเหตุ เหตุผล หรือข้อมูลอ้างอิงที่เกี่ยวข้อง"></textarea>
+                </label>
+                ${renderAssetReportCloseImpactNote()}
+                <div class="user-detail-actions">
+                  <button class="user-detail-action-btn warning user-action-confirm" type="button" data-asset-report-status-confirm="${status}" data-asset-id="${asset.id}">ยืนยัน</button>
+                  <button class="user-detail-action-btn" type="button" data-user-action-modal-close>ยกเลิก</button>
+                </div>
+                <div class="warning-note action-feedback user-action-result ${hasResult ? "show" : ""} ${resultType}">
+                  <strong>${resultMessage}</strong><br>
+                  <span>${resultDetail}</span>
+                </div>
+                <details class="prototype-tools user-action-prototype-tools">
+                  <summary>Prototype scenario</summary>
+                  <label>
+                    Test flow
+                    ${customSelect("asset-report-close-scenario", "Test flow", reportCloseFlowScenarios, selectedScenario, "data-custom-select-silent")}
+                  </label>
+                </details>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+      modal.classList.add("show");
+    }
+
     function updateAssetReportStatus(asset, status) {
       if (!asset || !status) return;
       const beforeStatus = getAssetReportQueueStatus(asset);
       const nextStatus = status === "Cleared" ? "Cleared" : "Pending";
       if (beforeStatus === nextStatus) return;
+      const closeReason = document.querySelector("#asset-report-close-reason")?.value || "";
+      const closeNote = document.querySelector("#asset-report-close-note")?.value.trim() || "";
       asset.reportStatus = status === "Cleared" ? "Cleared" : "Open";
       appendAssetReportAuditHistory(asset, {
         action: status === "Cleared" ? "Close Report" : "Reopen Report",
@@ -6282,7 +6373,7 @@
         reference: getAssetReportId(asset),
         referenceAssetId: asset.id,
         note: status === "Cleared"
-          ? "Admin closed the asset report after review"
+          ? (closeNote || closeReason || "Admin closed the asset report after review")
           : "Admin sent the asset report back to the pending queue"
       });
       if (document.body.classList.contains("user-detail-mode") && activeModule === "assets" && activeSub === "Reported Assets") {
@@ -6888,6 +6979,28 @@
       return getAssetRowActions(asset);
     }
 
+    function shouldCloseAssetReportAfterAssetOutcome(action) {
+      return activeModule === "assets"
+        && activeSub === "Reported Assets"
+        && ["restore-visibility", "delete-post"].includes(action);
+    }
+
+    function closeAssetReportAfterAssetOutcome(asset, action, beforeReportStatus) {
+      if (!asset || beforeReportStatus !== "Pending") return false;
+      asset.reportStatus = "Cleared";
+      appendAssetReportAuditHistory(asset, {
+        action: "Close Report",
+        before: { reportStatus: beforeReportStatus },
+        after: { type: asset.type, status: asset.status, reportStatus: "Cleared" },
+        reference: getAssetReportId(asset),
+        referenceAssetId: asset.id,
+        note: action === "restore-visibility"
+          ? "Admin restored asset visibility after review and closed the report"
+          : "Admin archived the asset after review and closed the report"
+      });
+      return true;
+    }
+
     function getAssetActionClass(action, index) {
       if (action === "delete-post") return "danger";
       if (action === "hide") return "warning";
@@ -7390,6 +7503,8 @@
       if (!asset || !config) return;
       const before = `${asset.type} / ${asset.status}`;
       const beforeState = { type: asset.type, status: asset.status };
+      const shouldCloseReport = shouldCloseAssetReportAfterAssetOutcome(action);
+      const beforeReportStatus = shouldCloseReport ? getAssetReportQueueStatus(asset) : "";
       if (action === "restore-visibility" || action === "delete-post") ensureAssetHiddenHistoryBeforeRestore(asset, beforeState);
       const actionReason = action === "hide"
         ? (document.querySelector("#asset-hide-reason")?.value || "")
@@ -7404,9 +7519,10 @@
         after: { type: asset.type, status: asset.status },
         note: actionNote || actionReason || getAssetModerationHistoryNote(getAssetAuditActionLabel(action))
       });
+      const closedReport = shouldCloseReport ? closeAssetReportAfterAssetOutcome(asset, action, beforeReportStatus) : false;
       closeUserActionModal();
       refreshAfterAssetAction(asset);
-      showSuccessToast(`${asset.id}: ${before} → ${asset.type} / ${asset.status}`);
+      showSuccessToast(`${asset.id}: ${before} → ${asset.type} / ${asset.status}${closedReport ? " และปิดรายงานแล้ว" : ""}`);
     }
 
     function renderAssetDetailPage(asset, options = {}) {
@@ -10062,10 +10178,45 @@
         renderAssetDetailPage(asset);
         return;
       }
+      const assetReportStatusConfirmButton = event.target.closest("[data-asset-report-status-confirm]");
+      if (assetReportStatusConfirmButton) {
+        const asset = moduleData.assets.rows.find(entry => entry.id === assetReportStatusConfirmButton.dataset.assetId);
+        const scenario = document.querySelector("#asset-report-close-scenario")?.value || "success";
+        const assetReportCloseErrorSamples = {
+          invalid_state: {
+            title: "ไม่สามารถปิดรายงานได้",
+            detail: "สถานะรายงานปัจจุบันไม่ตรงกับเงื่อนไขของการปิดรายงาน กรุณาตรวจสถานะล่าสุดก่อนยืนยันอีกครั้ง"
+          },
+          stale_data: {
+            title: "ข้อมูลรายงานมีการเปลี่ยนแปลงแล้ว",
+            detail: "มีการอัปเดตรายงานสินทรัพย์นี้ระหว่างที่เปิดหน้าต่างยืนยัน กรุณารีเฟรชข้อมูลแล้วลองอีกครั้ง"
+          },
+          policy_blocked: {
+            title: "ยังมีเงื่อนไขที่ต้องตรวจสอบ",
+            detail: "รายงานนี้ยังมีหลักฐานหรือสถานะสินทรัพย์ที่ต้องตัดสินผลลัพธ์ก่อนปิดรายงาน"
+          },
+          save_failed: {
+            title: "บันทึกผลปิดรายงานไม่สำเร็จ",
+            detail: "ระบบยังไม่สามารถบันทึกสถานะปิดรายงานและ audit log ได้ กรุณาลองอีกครั้ง"
+          },
+          session_expired: {
+            title: "เซสชันหมดอายุ",
+            detail: "กรุณาเข้าสู่ระบบใหม่ก่อนปิดรายงาน เพื่อให้การยืนยันและ audit log ถูกต้อง"
+          }
+        };
+        const errorSample = assetReportCloseErrorSamples[scenario] || null;
+        if (errorSample) {
+          renderAssetReportStatusConfirmModal(asset, assetReportStatusConfirmButton.dataset.assetReportStatusConfirm, errorSample.title, errorSample.detail, "error", scenario);
+          return;
+        }
+        updateAssetReportStatus(asset, assetReportStatusConfirmButton.dataset.assetReportStatusConfirm);
+        closeUserActionModal();
+        return;
+      }
       const assetReportStatusButton = event.target.closest("[data-asset-report-status-action]");
       if (assetReportStatusButton) {
         const asset = moduleData.assets.rows.find(entry => entry.id === assetReportStatusButton.dataset.assetId);
-        updateAssetReportStatus(asset, assetReportStatusButton.dataset.assetReportStatusAction);
+        renderAssetReportStatusConfirmModal(asset, assetReportStatusButton.dataset.assetReportStatusAction);
         closeRowMenus();
         return;
       }
