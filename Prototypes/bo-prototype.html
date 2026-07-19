@@ -3990,6 +3990,7 @@
       }
       body.asset-detail-mode .asset-fo-preview {
         max-width: none;
+        width: 100%;
         grid-template-columns: 1fr;
       }
       body.asset-detail-mode .asset-fo-hero {
@@ -4004,11 +4005,68 @@
         width: 58px;
         height: 58px;
       }
+      body.asset-detail-mode .asset-fo-bottom {
+        align-items: stretch;
+        flex-direction: column;
+      }
+      body.asset-detail-mode .asset-fo-price {
+        white-space: normal;
+        overflow-wrap: anywhere;
+      }
+      body.asset-detail-mode .asset-fo-actions {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        justify-content: stretch;
+      }
+      body.asset-detail-mode .asset-fo-btn {
+        min-width: 0;
+        width: 100%;
+      }
       body.asset-detail-mode .detail-grid.two {
         grid-template-columns: 1fr;
       }
       body.asset-detail-mode .detail-grid.two.asset-listing-summary-grid {
         grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+      body.asset-detail-mode .asset-fo-layout,
+      body.asset-detail-mode .asset-bo-context,
+      body.asset-detail-mode .asset-detail-sidebar,
+      body.asset-detail-mode .asset-detail-full,
+      body.asset-detail-mode .detail-section,
+      body.asset-detail-mode .detail-grid,
+      body.asset-detail-mode .detail-tile {
+        min-width: 0;
+      }
+      body.asset-detail-mode .detail-tile,
+      body.asset-detail-mode .detail-tile strong,
+      body.asset-detail-mode .asset-comment-text,
+      body.asset-detail-mode .asset-comment-head strong {
+        overflow-wrap: anywhere;
+      }
+      body.asset-detail-mode .asset-comment-section-head,
+      body.asset-detail-mode .asset-detail-section-head {
+        align-items: stretch;
+        flex-direction: column;
+      }
+      body.asset-detail-mode .asset-detail-header-actions {
+        display: grid;
+        grid-template-columns: 1fr;
+        justify-content: stretch;
+      }
+      body.asset-detail-mode .asset-detail-header-actions .user-detail-action-btn {
+        width: 100%;
+        min-width: 0;
+        white-space: normal;
+      }
+      body.asset-detail-mode .asset-comment-head {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+      body.asset-detail-mode .asset-comment-meta {
+        justify-content: flex-start;
+      }
+      body.asset-detail-mode .asset-comment-item.reply {
+        margin-left: 8px;
       }
       body.user-detail-mode .detail-grid.two {
         grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -4089,7 +4147,8 @@
       .report-detail-page .detail-tile .chips {
         gap: 6px;
       }
-      body.user-detail-mode .user-detail-page .history-table-wrap {
+      body.user-detail-mode .user-detail-page .history-table-wrap,
+      body.asset-detail-mode .user-detail-page .history-table-wrap {
         overflow: visible;
         border: 0;
         background: transparent;
@@ -4097,33 +4156,43 @@
       body.user-detail-mode .user-detail-page .history-table,
       body.user-detail-mode .user-detail-page .history-table tbody,
       body.user-detail-mode .user-detail-page .history-table tr,
-      body.user-detail-mode .user-detail-page .history-table td {
+      body.user-detail-mode .user-detail-page .history-table td,
+      body.asset-detail-mode .user-detail-page .history-table,
+      body.asset-detail-mode .user-detail-page .history-table tbody,
+      body.asset-detail-mode .user-detail-page .history-table tr,
+      body.asset-detail-mode .user-detail-page .history-table td {
         display: block;
         width: 100%;
       }
-      body.user-detail-mode .user-detail-page .history-table thead {
+      body.user-detail-mode .user-detail-page .history-table thead,
+      body.asset-detail-mode .user-detail-page .history-table thead {
         display: none;
       }
-      body.user-detail-mode .user-detail-page .history-table {
+      body.user-detail-mode .user-detail-page .history-table,
+      body.asset-detail-mode .user-detail-page .history-table {
         min-width: 0;
         border-collapse: separate;
         border-spacing: 0 8px;
         background: transparent;
       }
-      body.user-detail-mode .user-detail-page .history-table .history-note {
+      body.user-detail-mode .user-detail-page .history-table .history-note,
+      body.asset-detail-mode .user-detail-page .history-table .history-note {
         min-width: 0;
         max-width: none;
       }
-      body.user-detail-mode .user-detail-page .history-table tr {
+      body.user-detail-mode .user-detail-page .history-table tr,
+      body.asset-detail-mode .user-detail-page .history-table tr {
         border: 1px solid #dce6f2;
         border-radius: 8px;
         background: #fff;
         padding: 12px 10px;
       }
-      body.user-detail-mode .user-detail-page .history-table tr + tr {
+      body.user-detail-mode .user-detail-page .history-table tr + tr,
+      body.asset-detail-mode .user-detail-page .history-table tr + tr {
         margin-top: 10px;
       }
-      body.user-detail-mode .user-detail-page .history-table td {
+      body.user-detail-mode .user-detail-page .history-table td,
+      body.asset-detail-mode .user-detail-page .history-table td {
         display: grid;
         grid-template-columns: 92px minmax(0, 1fr);
         column-gap: 10px;
@@ -4135,16 +4204,28 @@
         line-height: 1.45;
         overflow-wrap: anywhere;
       }
-      body.user-detail-mode .user-detail-page .history-table td::before {
+      body.user-detail-mode .user-detail-page .history-table td::before,
+      body.asset-detail-mode .user-detail-page .history-table td::before {
         content: attr(data-label);
         color: #66758d;
         font-size: 11px;
         font-weight: 800;
         line-height: inherit;
       }
-      body.user-detail-mode .user-detail-page .history-table td .pill {
+      body.user-detail-mode .user-detail-page .history-table td .pill,
+      body.asset-detail-mode .user-detail-page .history-table td .pill {
         width: max-content;
         max-width: 100%;
+      }
+      body.user-detail-mode .report-detail-page .history-table td .history-delivery-link {
+        width: max-content;
+        max-width: 100%;
+        justify-self: start;
+      }
+      body.asset-detail-mode .user-detail-page .history-table td .history-delivery-link {
+        width: max-content;
+        max-width: 100%;
+        justify-self: start;
       }
       .user-detail-action-section .user-detail-actions {
         display: grid;
