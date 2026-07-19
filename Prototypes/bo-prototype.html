@@ -5705,8 +5705,37 @@
     function getAssetModerationHistoryNote(action) {
       if (action === "Archive Asset") return "Admin confirmed review result and archived the asset";
       if (action === "Auto Hide Asset") return "System temporarily hid the asset for admin review";
-      if (action === "Force Hide Asset") return "Admin temporarily hid the asset after review";
+      if (action === "Force Hide Asset") return "Admin temporarily hid the asset for review";
+      if (action === "Restore Visibility") return "Admin restored asset visibility after review";
       return "Asset status changed after review";
+    }
+
+    function getAssetHiddenHistoryAction(status) {
+      if (status === "Auto Hidden") return "Auto Hide Asset";
+      if (status === "Admin Hidden") return "Force Hide Asset";
+      return "";
+    }
+
+    function ensureAssetHiddenHistoryBeforeRestore(asset, beforeState) {
+      if (!asset || !isTemporarilyHiddenAsset(beforeState)) return;
+      if (!Array.isArray(asset.assetHistory)) asset.assetHistory = [];
+      const hiddenAction = getAssetHiddenHistoryAction(beforeState.status);
+      if (!hiddenAction) return;
+      const hasHiddenHistory = asset.assetHistory.some(row => row.action === hiddenAction && row.after?.status === beforeState.status);
+      if (hasHiddenHistory) return;
+      const detail = getAssetFoDetail(asset);
+      const reportCount = Number(getAssetReportCount(asset)) || 0;
+      const reference = reportCount ? getAssetReportReference(asset) : asset.id;
+      appendAssetStatusHistory(asset, {
+        createdAt: detail.updatedAt,
+        actor: beforeState.status === "Auto Hidden" ? "System" : "Somchai Admin",
+        action: hiddenAction,
+        before: { type: beforeState.type, status: reportCount ? "Reviewing" : "Reported" },
+        after: beforeState,
+        reference,
+        referenceAssetId: reportCount ? asset.id : "",
+        note: getAssetModerationHistoryNote(hiddenAction)
+      });
     }
 
     function getAssetHistoryOffsetTime(value, offsetMinutes) {
@@ -6058,6 +6087,7 @@
       if (!asset || !config) return;
       const before = `${asset.type} / ${asset.status}`;
       const beforeState = { type: asset.type, status: asset.status };
+      if (action === "restore-visibility") ensureAssetHiddenHistoryBeforeRestore(asset, beforeState);
       config.apply(asset);
       appendAssetStatusHistory(asset, {
         action: getAssetAuditActionLabel(action),
