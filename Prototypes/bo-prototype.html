@@ -2241,26 +2241,63 @@
       display: grid;
       gap: 16px;
     }
+    .asset-report-modal-media {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 76px;
+      gap: 0;
+      overflow: hidden;
+      border: 1px solid #1f2937;
+      border-radius: 8px;
+      background: #101010;
+    }
     .asset-report-modal-media .asset-fo-preview {
       width: 100%;
       box-shadow: none;
+      border: 0;
+      border-radius: 0;
     }
     .asset-report-modal-media .asset-fo-hero {
       min-height: 0;
-      aspect-ratio: 16 / 9;
+      height: clamp(300px, 54vh, 430px);
+      aspect-ratio: auto;
+      align-items: center;
+      justify-content: center;
     }
     .asset-report-modal-media .asset-fo-hero img {
       width: 100%;
       height: 100%;
-      object-fit: cover;
+      object-fit: contain;
     }
     .asset-report-modal-grid {
       grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    }
+    .asset-report-modal-summary-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
     }
     .asset-report-modal-grid .detail-tile,
     .asset-report-modal-grid .detail-tile strong {
       min-width: 0;
       overflow-wrap: anywhere;
+    }
+    .asset-report-modal-thumbs {
+      display: grid;
+      align-content: start;
+      gap: 10px;
+      padding: 10px;
+      overflow-y: auto;
+      max-height: 100%;
+      scrollbar-width: thin;
+    }
+    .asset-report-modal-thumbs .asset-fo-thumb {
+      width: 56px;
+      height: 64px;
+      flex: 0 0 auto;
+      border-color: rgba(255, 255, 255, .2);
+      background: #181818;
+    }
+    .asset-report-modal-thumbs .asset-fo-thumb.active {
+      border-color: #d01217;
+      box-shadow: 0 0 0 2px rgba(208, 18, 23, .12);
     }
     body.asset-detail-mode .asset-fo-preview {
       display: grid;
@@ -5100,6 +5137,7 @@
     let assetFilterOpen = false;
     let assetReportFilterOpen = false;
     let activeAssetImageIndex = 0;
+    let activeAssetReportModalImageIndex = 0;
     let activeAssetCommentsModalId = null;
     let expandedAssetCommentReplies = new Set();
     let activeReportContextId = null;
@@ -5753,7 +5791,10 @@
     function renderAssetReportDetailModal(asset) {
       if (!asset) return;
       const detail = getAssetFoDetail(asset);
-      const coverImage = (detail.uploadedImages || [])[0];
+      const uploadedImages = detail.uploadedImages || [];
+      activeAssetReportModalImageIndex = Math.min(Math.max(activeAssetReportModalImageIndex, 0), Math.max(uploadedImages.length - 1, 0));
+      const selectedIndex = activeAssetReportModalImageIndex;
+      const coverImage = uploadedImages[selectedIndex];
       const modalBody = document.querySelector("#user-action-modal-body");
       modalBody.innerHTML = `
         <div class="user-action-page">
@@ -5772,13 +5813,20 @@
                 <div class="asset-fo-preview">
                   <div class="asset-fo-hero">
                     ${coverImage ? `<img src="${coverImage.src}" alt="${asset.name} uploaded cover photo" />` : ""}
-                    <span class="asset-fo-counter">1 / ${detail.uploadedImages?.length || detail.photoCount}</span>
+                    <span class="asset-fo-counter">${uploadedImages.length ? selectedIndex + 1 : 0} / ${uploadedImages.length || detail.photoCount}</span>
                   </div>
                 </div>
+                ${uploadedImages.length > 1 ? `<div class="asset-report-modal-thumbs">
+                  ${uploadedImages.map((image, index) => `
+                    <button class="asset-fo-thumb ${index === selectedIndex ? "active" : ""}" type="button" data-asset-report-modal-image="${index}" data-asset-id="${asset.id}" aria-label="ดูรูป ${index + 1}: ${image.label}">
+                      <img src="${image.src}" alt="${asset.name} ${image.label}" />
+                    </button>
+                  `).join("")}
+                </div>` : ""}
               </div>
               <div class="detail-section">
                 <h4>Listing Summary</h4>
-                <div class="detail-grid asset-report-modal-grid">
+                <div class="detail-grid asset-report-modal-grid asset-report-modal-summary-grid">
                   ${renderAssetDetailTiles([
                     ["Asset ID", asset.id],
                     ["Post Type", asset.type],
@@ -9341,6 +9389,14 @@
       if (assetReportDetailModalButton) {
         const asset = moduleData.assets.rows.find(entry => entry.id === assetReportDetailModalButton.dataset.assetReportDetailModal);
         assetReportDetailModalButton.blur();
+        activeAssetReportModalImageIndex = 0;
+        renderAssetReportDetailModal(asset);
+        return;
+      }
+      const assetReportModalImageButton = event.target.closest("[data-asset-report-modal-image]");
+      if (assetReportModalImageButton) {
+        const asset = moduleData.assets.rows.find(entry => entry.id === assetReportModalImageButton.dataset.assetId);
+        activeAssetReportModalImageIndex = Number(assetReportModalImageButton.dataset.assetReportModalImage) || 0;
         renderAssetReportDetailModal(asset);
         return;
       }
