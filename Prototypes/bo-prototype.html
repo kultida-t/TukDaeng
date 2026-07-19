@@ -4200,13 +4200,20 @@
       }
       .report-detail-page .user-detail-head {
         display: flex;
-        align-items: center;
+        align-items: flex-start;
         justify-content: space-between;
         gap: 10px;
+      }
+      .report-detail-page .user-detail-actions {
+        align-self: flex-start;
+        padding-top: 0;
       }
       .report-detail-page .user-detail-head .btn {
         width: auto;
         flex: 0 0 auto;
+        min-height: 38px;
+        height: 38px;
+        align-items: center;
       }
       .report-detail-page .report-back-btn,
       body.user-detail-mode .user-detail-page .user-back-btn,
