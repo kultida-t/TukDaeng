@@ -839,6 +839,7 @@
     .pill.green { color: #07734f; background: #e4f8f0; border-color: #bcebd7; }
     .pill.amber { color: #925500; background: #fff3d8; border-color: #f3d493; }
     .pill.purple { color: #6035ae; background: #efe9ff; border-color: #d8ccff; }
+    .pill.gray { color: #475569; background: #f1f5f9; border-color: #cbd5e1; }
     .asset-status-pills {
       display: inline-flex;
       align-items: center;
@@ -5074,11 +5075,11 @@
     function userStatusPill(status) {
       const map = {
         "Active": "green",
-        "Pending Verification": "amber",
+        "Pending Verification": "blue",
         "Suspended": "amber",
         "Banned": "red",
         "Deletion Requested": "purple",
-        "Deleted / Archived": "purple",
+        "Deleted / Archived": "gray",
         "Open": "red",
         "In Review": "amber",
         "Cleared": "green"
@@ -6197,8 +6198,8 @@
     }
 
     function getDeletionContext(user) {
-      if (user.status === "Deletion Requested") return "Deletion request open; review pending offers, assets, chats, and reports in Account Deletion module";
-      if (user.status === "Deleted / Archived") return "Archived account; login blocked and public profile/assets hidden or anonymized";
+      if (user.status === "Deletion Requested") return "User requested account deletion. Check offers, assets, chats, and reports before deleting.";
+      if (user.status === "Deleted / Archived") return "Account was archived after deletion checks. Login is blocked and public profile/assets are hidden or anonymized.";
       return "No active account deletion request";
     }
 
@@ -6251,18 +6252,35 @@
           });
       });
       if (user.status === "Deletion Requested" || user.status === "Deleted / Archived") {
+        if (user.status === "Deleted / Archived") {
+          deletionRows.push({
+            id: `${user.id}-DELETION-REQUESTED`,
+            createdAt: user.lastActive,
+            actor: user.displayName,
+            action: "User requested account deletion",
+            before: "Active",
+            after: "Deletion Requested",
+            reference: user.support || "Account Deletion",
+            note: "User requested account deletion. Dependencies were checked before archive."
+          });
+        }
         deletionRows.push({
           id: `${user.id}-DELETION-STATE`,
           createdAt: user.status === "Deleted / Archived" ? "15 May 2026 08:10 GMT+7" : user.lastActive,
-          actor: user.status === "Deleted / Archived" ? "System" : "Somchai Admin",
-          action: user.status === "Deleted / Archived" ? "Account deleted / archived" : "Account deletion requested",
+          actor: user.status === "Deleted / Archived" ? "System" : user.displayName,
+          action: user.status === "Deleted / Archived" ? "Account deleted / archived" : "User requested account deletion",
           before: user.status === "Deleted / Archived" ? "Deletion Requested" : "Active",
           after: user.status,
           reference: user.support || "Account Deletion",
           note: getDeletionContext(user)
         });
       }
-      return [...user.accountHistory, ...deletionRows, ...statusRows, ...generatedRows];
+      return [...user.accountHistory, ...deletionRows, ...statusRows, ...generatedRows]
+        .sort((a, b) => {
+          const timeA = parseBangkokAuditTime(a.createdAt) || 0;
+          const timeB = parseBangkokAuditTime(b.createdAt) || 0;
+          return timeB - timeA;
+        });
     }
 
     function appendUserAccountStatusHistory(user, log) {
