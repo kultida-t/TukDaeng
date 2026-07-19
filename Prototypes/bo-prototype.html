@@ -5105,6 +5105,59 @@
       ]
     };
 
+    const userReportReasonOptions = [
+      "Fraud or scam",
+      "Impersonation",
+      "Harassment or hate",
+      "Inappropriate content",
+      "Spam",
+      "Other"
+    ];
+
+    const userReportSubmissions = {
+      "RPU-505": [
+        { reason: "Impersonation", additionalDetails: "Profile uses similar identity and seller wording from another account." },
+        { reason: "Fraud or scam", additionalDetails: "Seller profile looks duplicated and needs verification before reopening." },
+        { reason: "Spam" },
+        { reason: "Other", additionalDetails: "Please compare profile photos and seller introduction text." },
+        { reason: "Fraud or scam" }
+      ],
+      "RPU-512": [
+        { reason: "Fraud or scam", additionalDetails: "Asset photos and listing copy appear reused from another post." },
+        { reason: "Other", additionalDetails: "Please check duplicate asset group before taking account action." },
+        { reason: "Spam" },
+        { reason: "Fraud or scam" }
+      ],
+      "RPU-518": [
+        { reason: "Fraud or scam", additionalDetails: "Offer dispute says asset condition does not match the chat agreement." },
+        { reason: "Other" },
+        { reason: "Inappropriate content", additionalDetails: "Chat context needs review before closing this report." }
+      ],
+      "RPU-541": [
+        { reason: "Harassment or hate", additionalDetails: "Chat messages contain repeated inappropriate language." },
+        { reason: "Inappropriate content" },
+        { reason: "Harassment or hate" },
+        { reason: "Spam" },
+        { reason: "Other", additionalDetails: "Please review the full conversation before final action." },
+        { reason: "Inappropriate content" }
+      ],
+      "RPU-560": [
+        { reason: "Fraud or scam", additionalDetails: "Repeated reports show off-platform trading behavior." },
+        { reason: "Fraud or scam" },
+        { reason: "Impersonation", additionalDetails: "Profile pattern looks similar to previously banned accounts." },
+        { reason: "Spam" },
+        { reason: "Other", additionalDetails: "Keep audit trail for permanent ban review." },
+        { reason: "Fraud or scam" },
+        { reason: "Inappropriate content" },
+        { reason: "Fraud or scam" },
+        { reason: "Spam" },
+        { reason: "Other" },
+        { reason: "Fraud or scam" },
+        { reason: "Impersonation" },
+        { reason: "Fraud or scam" }
+      ]
+    };
+
     const assetReporterFallbackNames = [
       "Nattapol P.",
       "Patchara L.",
@@ -5125,24 +5178,38 @@
       return assetReporterFallbackNames[(seed + index) % assetReporterFallbackNames.length];
     }
 
+    function isAssetReportContext(report) {
+      return String(report?.id || "").startsWith("RPA-");
+    }
+
+    function isUserReportContext(report) {
+      return String(report?.id || "").startsWith("RPU-");
+    }
+
     function getReporterHistoryRows(report) {
       const createdLog = ensureReportAuditLogs(report).find(log => log.action === "REPORT_CREATED");
       const baseTime = parseBangkokAuditTime(createdLog?.createdAt) || Date.UTC(2026, 6, 13, 10, 0);
       const reporterCount = Math.max(Number(report?.reporters) || 0, 1);
       const reporterNames = reportReporterNames[report.id] || [];
-      const assetSubmissions = report.category === "Asset" ? (assetReportSubmissions[report.id] || []) : [];
+      const isAssetReport = isAssetReportContext(report);
+      const isUserReport = isUserReportContext(report);
+      const assetSubmissions = isAssetReport ? (assetReportSubmissions[report.id] || []) : [];
+      const userSubmissions = isUserReport ? (userReportSubmissions[report.id] || []) : [];
       return Array.from({ length: reporterCount }, (_, index) => {
         const assetSubmission = assetSubmissions[index];
-        const appReason = report.category === "Asset"
+        const userSubmission = userSubmissions[index];
+        const appReason = isAssetReport
           ? (assetSubmission?.reason || report.foReason || report.reason)
-          : (report.evidence?.[index % report.evidence.length] || report.reason);
+          : isUserReport
+            ? (userSubmission?.reason || userReportReasonOptions[index % userReportReasonOptions.length])
+            : (report.evidence?.[index % report.evidence.length] || report.reason);
         const minuteOffset = index === 0 ? 0 : index * 17;
         return {
-          reporter: assetSubmission?.reporter || reporterNames[index] || (report.category === "Asset" ? getAssetReporterFallbackName(report, index) : `Reporter ${String(index + 1).padStart(2, "0")}`),
+          reporter: assetSubmission?.reporter || reporterNames[index] || (isAssetReport ? getAssetReporterFallbackName(report, index) : `Reporter ${String(index + 1).padStart(2, "0")}`),
           reportedAt: formatReporterSubmissionTime(baseTime + minuteOffset * 60 * 1000),
           source: report.source,
           note: appReason,
-          additionalDetails: assetSubmission?.additionalDetails || "",
+          additionalDetails: assetSubmission?.additionalDetails || userSubmission?.additionalDetails || "",
           status: index === 0 ? "เปิดเคส" : "รวมเคส"
         };
       });
@@ -5185,21 +5252,23 @@
       reporterHistoryPage = Math.min(reporterHistoryPage, pageCount);
       const start = (reporterHistoryPage - 1) * reportHistoryPageSize;
       const pageRows = allRows.slice(start, start + reportHistoryPageSize);
-      const isAssetReportHistory = report.category === "Asset";
-      const noteColumnLabel = report.category === "Asset" ? "Report Reason" : "Reporter note";
-      const showAdditionalDetails = isAssetReportHistory;
+      const isAssetReportHistory = isAssetReportContext(report);
+      const isUserReportHistory = isUserReportContext(report);
+      const usesReportSubmissionLayout = isAssetReportHistory || isUserReportHistory;
+      const noteColumnLabel = usesReportSubmissionLayout ? "Report Reason" : "Reporter note";
+      const showAdditionalDetails = usesReportSubmissionLayout;
       const rows = pageRows.map(row => `
         <tr>
           <td data-label="วันที่ / เวลา">${row.reportedAt}</td>
           <td data-label="Reporter">${row.reporter}</td>
-          ${isAssetReportHistory ? "" : `<td data-label="Source">${row.source}</td>`}
+          ${usesReportSubmissionLayout ? "" : `<td data-label="Source">${row.source}</td>`}
           <td data-label="Status">${row.status}</td>
           <td data-label="${noteColumnLabel}" class="history-note">${renderHistoryValue(row.note)}</td>
           ${showAdditionalDetails ? `<td data-label="Additional Details" class="history-note">${renderHistoryValue(row.additionalDetails)}</td>` : ""}
         </tr>
       `).join("");
-      const tableClass = isAssetReportHistory ? "history-table asset-reporter-history-table" : "history-table";
-      const columnLayout = isAssetReportHistory ? `
+      const tableClass = usesReportSubmissionLayout ? "history-table asset-reporter-history-table" : "history-table";
+      const columnLayout = usesReportSubmissionLayout ? `
             <colgroup>
               <col style="width: 15%">
               <col style="width: 18%">
@@ -5215,7 +5284,7 @@
               <tr>
                 <th>วันที่ / เวลา</th>
                 <th>Reporter</th>
-                ${isAssetReportHistory ? "" : "<th>Source</th>"}
+                ${usesReportSubmissionLayout ? "" : "<th>Source</th>"}
                 <th>Status</th>
                 <th>${noteColumnLabel}</th>
                 ${showAdditionalDetails ? "<th>Additional Details</th>" : ""}
@@ -9074,15 +9143,6 @@
               <div class="detail-tile"><span>Reference</span><strong>${report.reference}</strong></div>
               <div class="detail-tile"><span>Source Module</span><strong>${report.source}</strong></div>
               <div class="detail-tile"><span>Account Status</span><strong>${userStatusLabels[getReportAccountStatus(report)] || getReportAccountStatus(report)}</strong></div>
-            </div>
-          </div>
-
-          <div class="detail-section">
-            <h4>Report Details</h4>
-            <div class="detail-grid report-detail-grid">
-              <div class="detail-tile"><span>Reason</span><strong>${report.reason}</strong></div>
-              <div class="detail-tile"><span>Application reporter note</span><div class="chips">${report.evidence.map(item => `<span class="chip">${item}</span>`).join("")}</div></div>
-              <div class="detail-tile"><span>Recommendation</span>${report.recommendation}</div>
             </div>
           </div>
 
