@@ -2282,6 +2282,16 @@
       min-width: 0;
       overflow-wrap: anywhere;
     }
+    .asset-submitted-description {
+      display: grid;
+      gap: 12px;
+      color: #43546d;
+      font-size: 13px;
+      line-height: 1.55;
+    }
+    .asset-submitted-description p {
+      margin: 0;
+    }
     .asset-report-modal-thumbs {
       display: grid;
       align-content: start;
@@ -5493,6 +5503,25 @@
       ];
     }
 
+    function getAssetSubmittedDescription(asset, detail) {
+      const submittedDescriptions = {
+        "Rolex Submariner 16610": [
+          "A timeless example of Rolex's iconic Submariner 16610, this watch features a clean black dial, stainless steel case, and the classic Oyster bracelet that has made the model a benchmark for everyday sport watches.",
+          "Kept in very good condition and offered with its box, warranty card, and service paper, it is ready for collectors looking for a versatile Submariner with strong wrist presence and enduring long-term appeal."
+        ],
+        "Cartier Santos Medium": [
+          "A refined Cartier Santos Medium with a balanced silver dial and integrated stainless steel bracelet, offering the clean geometry and effortless wearability that define the Santos line.",
+          "Presented in very good condition as a full set, this piece works comfortably as a daily watch while keeping the elegant character expected from one of Cartier's most recognizable designs."
+        ]
+      };
+      const paragraphs = submittedDescriptions[asset.name] || [
+        `A well-presented ${asset.name} with ${detail.dial ? `${detail.dial.toLowerCase()} dial, ` : ""}${detail.material ? `${detail.material.toLowerCase()} case, ` : ""}and ${detail.movement ? `${detail.movement.toLowerCase()} movement` : "carefully documented specifications"}.`,
+        `Listed in ${detail.condition || "good"} condition${detail.scope ? ` with ${detail.scope.toLowerCase()}` : ""}, this ${asset.type || "watch"} post is offered for ${detail.price} and includes clear photos for buyers to review the case, dial, bracelet, and included accessories.`
+      ];
+
+      return `<div class="asset-submitted-description">${paragraphs.map(paragraph => `<p>${paragraph}</p>`).join("")}</div>`;
+    }
+
     function getAssetFoActionLabel(asset) {
       if (asset.type === "Sale") return "Mark as Sold";
       if (asset.type === "Sold") return "Sold";
@@ -5832,9 +5861,12 @@
                 <div class="detail-grid">
                   ${renderAssetDetailTiles([
                     ["Title", asset.name],
-                    ["Price", detail.price],
-                    ["Description", getAssetDescription(asset, detail).join(" ")]
+                    ["Price", detail.price]
                   ])}
+                  <div class="detail-tile asset-description-tile">
+                    <span>Description</span>
+                    ${getAssetSubmittedDescription(asset, detail)}
+                  </div>
                 </div>
               </div>
               <div class="detail-section">
@@ -6321,14 +6353,39 @@
       return `RPA-${String(asset?.id || "").replace(/\D/g, "").slice(-3).padStart(3, "0")}`;
     }
 
+    function getAssetFoReportReason(asset) {
+      const reasonText = getAssetReportReason(asset).toLowerCase();
+      if (/fake|scam|serial|provenance/.test(reasonText)) return "Suspected fake or scam";
+      if (/inappropriate|abuse|spam/.test(reasonText)) return "Inappropriate content";
+      if (/duplicate|price|market|incorrect|information|รูป|ราคา/.test(reasonText)) return "Incorrect information";
+      return "Other";
+    }
+
+    function getAssetReporterNote(asset) {
+      return getAssetReportReason(asset) || "No additional details provided";
+    }
+
+    function getAssetReviewSignals(asset, detail) {
+      const signals = [];
+      if (Number(detail.reportCount) > 0) signals.push(`${detail.reportCount} total reports on this asset`);
+      if (detail.uploadedImages?.length) signals.push(`${detail.uploadedImages.length} listing photos available for review`);
+      if (/duplicate|รูป/.test(getAssetReportReason(asset).toLowerCase())) signals.push("Check whether listing photos match another asset");
+      if (/price|market|ราคา/.test(getAssetReportReason(asset).toLowerCase())) signals.push("Compare listed price with current market range");
+      if (/provenance|serial/.test(getAssetReportReason(asset).toLowerCase())) signals.push("Review provenance, serial, and ownership documents");
+      return signals.length ? signals : ["No automated review signals yet"];
+    }
+
+    function getAssetNextCheck(asset) {
+      const reason = getAssetFoReportReason(asset);
+      if (reason === "Incorrect information") return "ตรวจข้อมูลประกาศ รูปภาพ ราคา และรายละเอียดที่ user ระบุ เทียบกับข้อมูล asset ก่อนตัดสินใจซ่อนหรือปิด report";
+      if (reason === "Suspected fake or scam") return "ตรวจเอกสาร provenance, serial, รูปประกอบ และประวัติเจ้าของก่อนทำ action กับ asset";
+      if (reason === "Inappropriate content") return "ตรวจรูปและข้อความประกาศว่าผิด policy หรือไม่ ก่อนซ่อนเนื้อหาหรือปิด report";
+      return "อ่านรายละเอียดจาก reporter แล้วตรวจ asset context ก่อนเลือก action";
+    }
+
     function buildAssetReportContext(asset) {
       const detail = getAssetFoDetail(asset);
       const owner = detail.owner || {};
-      const evidence = [
-        detail.reportReason,
-        detail.mediaReview,
-        ...((asset.tags || []).filter(tag => /report|duplicate|price|provenance|photo|review/i.test(tag)))
-      ].filter(Boolean);
       return {
         id: getAssetReportId(asset),
         category: "Asset",
@@ -6344,8 +6401,10 @@
         reference: asset.id,
         source: "Asset Detail",
         waiting: `${getAssetReportWaitingHours(asset)} ชม.`,
-        evidence,
-        recommendation: "ตรวจรูปประกาศ รายละเอียด provenance และผลกระทบต่อ Feed/Search/Profile ก่อนทำ action กับ asset",
+        foReason: getAssetFoReportReason(asset),
+        reporterNote: getAssetReporterNote(asset),
+        reviewSignals: getAssetReviewSignals(asset, detail),
+        nextCheck: getAssetNextCheck(asset),
         actionHistory: "เปิดรายงานสินทรัพย์และรอผู้ดูแลตรวจสอบหลักฐานต้นทาง"
       };
     }
@@ -6849,9 +6908,12 @@
                 <div class="detail-grid">
                   ${renderAssetDetailTiles([
                     ["Title", asset.name],
-                    ["Price", detail.price],
-                    ["Description", getAssetDescription(asset, detail).join(" ")]
+                    ["Price", detail.price]
                   ])}
+                  <div class="detail-tile asset-description-tile">
+                    <span>Description</span>
+                    ${getAssetSubmittedDescription(asset, detail)}
+                  </div>
                 </div>
               </div>
 
@@ -8598,9 +8660,10 @@
           <div class="detail-section">
             <h4>Report Details</h4>
             <div class="detail-grid report-detail-grid">
-              <div class="detail-tile"><span>Reason</span><strong>${report.reason}</strong></div>
-              <div class="detail-tile"><span>Application reporter note</span><div class="chips">${report.evidence.map(item => `<span class="chip">${item}</span>`).join("")}</div></div>
-              <div class="detail-tile"><span>Recommendation</span>${report.recommendation}</div>
+              <div class="detail-tile"><span>Report Reason</span><strong>${report.foReason}</strong></div>
+              <div class="detail-tile"><span>Additional Details from Reporter</span><strong>${report.reporterNote}</strong></div>
+              <div class="detail-tile"><span>Admin Checkpoints from System</span><div class="chips">${report.reviewSignals.map(item => `<span class="chip">${item}</span>`).join("")}</div></div>
+              <div class="detail-tile"><span>What to Check Next</span>${report.nextCheck}</div>
             </div>
           </div>
 
