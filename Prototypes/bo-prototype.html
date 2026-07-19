@@ -3536,9 +3536,14 @@
       body.user-detail-mode .user-detail-head,
       body.asset-detail-mode .user-detail-head {
         flex-direction: row;
-        align-items: center;
+        align-items: flex-start;
         gap: 10px;
         margin-bottom: 12px;
+      }
+      body.user-detail-mode .user-detail-actions,
+      body.asset-detail-mode .user-detail-actions {
+        align-self: flex-start;
+        padding-top: 0;
       }
       .user-detail-title {
         align-items: center;
@@ -3561,7 +3566,9 @@
       body.user-detail-mode .user-detail-head .btn,
       body.asset-detail-mode .user-detail-head .btn {
         flex: 0 0 auto;
-        min-height: 34px;
+        min-height: 38px;
+        height: 38px;
+        align-items: center;
         padding: 7px 9px;
         font-size: 12px;
         white-space: nowrap;
@@ -4097,6 +4104,25 @@
         max-width: none;
         width: 100%;
         grid-template-columns: 1fr;
+      }
+      .asset-report-modal-media {
+        grid-template-columns: 1fr;
+      }
+      .asset-report-modal-media .asset-fo-hero {
+        height: auto;
+        min-height: clamp(280px, 62vw, 420px);
+        aspect-ratio: 4 / 3;
+      }
+      .asset-report-modal-thumbs {
+        display: flex;
+        overflow-x: auto;
+        overflow-y: hidden;
+        max-height: none;
+      }
+      .asset-report-modal-thumbs .asset-fo-thumb {
+        flex: 0 0 58px;
+        width: 58px;
+        height: 58px;
       }
       body.asset-detail-mode .asset-fo-hero {
         min-height: clamp(280px, 62vw, 420px);
