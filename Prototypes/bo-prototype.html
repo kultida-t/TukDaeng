@@ -5638,6 +5638,8 @@
       const reportCount = Number(getAssetReportCount(asset)) || 0;
       const actionRows = Array.isArray(asset.assetHistory) ? asset.assetHistory : [];
       const isAutoHidden = asset.status === "Auto Hidden";
+      const reportReference = reportCount ? getAssetReportReference(asset) : "";
+      const moderationAction = asset.status === "Deleted / Archived" ? "Archive Asset" : isAutoHidden ? "Auto Hide Asset" : "Force Hide Asset";
       const saleRows = asset.type === "Sold"
         ? [{
             createdAt: detail.updatedAt,
@@ -5650,26 +5652,16 @@
           }]
         : [];
       const moderationRows = [];
-      if (asset.status === "Reviewing") {
-        moderationRows.push({
-          createdAt: detail.updatedAt,
-          actor: "Somchai Admin",
-          action: "Review Started",
-          before: { type: asset.type, status: "Reported" },
-          after: { type: asset.type, status: "Reviewing" },
-          reference: reportCount ? `Reports ${reportCount}` : asset.id,
-          note: "High value or provenance context requires manual review before visibility changes"
-        });
-      }
       if (isTemporarilyHiddenAsset(asset) || asset.status === "Deleted / Archived") {
         moderationRows.push({
           createdAt: detail.updatedAt,
           actor: isAutoHidden ? "System" : "Somchai Admin",
-          action: asset.status === "Deleted / Archived" ? "Archive Asset" : isAutoHidden ? "Auto Hide Asset" : "Force Hide Asset",
+          action: moderationAction,
           before: { type: asset.type, status: reportCount ? "Reviewing" : "Reported" },
           after: { type: asset.type, status: asset.status },
-          reference: reportCount ? `Reports ${reportCount}` : asset.id,
-          note: asset.action || "Visibility changed after BO moderation review"
+          reference: reportReference || asset.id,
+          referenceAssetId: asset.id,
+          note: getAssetModerationHistoryNote(moderationAction)
         });
       }
       const lifecycleType = asset.type === "Sold" ? "Sale" : asset.type;
@@ -5705,10 +5697,30 @@
       return Date.UTC(Number(year), months[month] ?? 0, Number(day), Number(hour), Number(minute));
     }
 
+    function getAssetReportReference(asset) {
+      const idNumber = String(asset?.id || "").match(/\d+/)?.[0] || "0000";
+      return `RPA-${idNumber}`;
+    }
+
+    function getAssetModerationHistoryNote(action) {
+      if (action === "Archive Asset") return "Admin confirmed review result and archived the asset";
+      if (action === "Auto Hide Asset") return "System temporarily hid the asset for admin review";
+      if (action === "Force Hide Asset") return "Admin temporarily hid the asset after review";
+      return "Asset status changed after review";
+    }
+
     function getAssetHistoryOffsetTime(value, offsetMinutes) {
       const timestamp = parseAssetHistoryTime(value);
       if (!timestamp) return value;
       return `${formatReporterSubmissionTime(timestamp + offsetMinutes * 60 * 1000)} GMT+7`;
+    }
+
+    function renderAssetHistoryReference(row) {
+      if (!row.reference) return "-";
+      if (String(row.reference).startsWith("RPA-")) {
+        return `<button class="history-delivery-link" type="button" data-asset-report-jump="${row.referenceAssetId || ""}">${row.reference}</button>`;
+      }
+      return row.reference;
     }
 
     function renderAssetAuditState(state) {
@@ -5745,7 +5757,7 @@
                     <td data-label="Actor">${row.actor}</td>
                     <td data-label="Action">${row.action}</td>
                     <td data-label="Status">${renderAssetAuditState(row.after)}</td>
-                    <td data-label="Reference">${row.reference || "-"}</td>
+                    <td data-label="Reference">${renderAssetHistoryReference(row)}</td>
                     <td data-label="Reason / Note" class="history-note">${row.note || ""}</td>
                   </tr>
                 `).join("")}
@@ -5775,7 +5787,7 @@
         createdAt: formatBangkokTimestamp(),
         actor: "Somchai Admin",
         reference: asset.id,
-        note: asset.action || "BO moderation action recorded",
+        note: getAssetModerationHistoryNote(log.action),
         ...log
       });
     }
@@ -8047,6 +8059,16 @@
       scrollMainToTop();
     }
 
+    function jumpToAssetReportReference(assetId) {
+      renderModule("assets", "Reported Assets", "Reported Assets");
+      const search = document.querySelector("#search");
+      if (search && assetId) {
+        search.value = assetId;
+        renderRows();
+      }
+      scrollMainToTop();
+    }
+
     function jumpToDeliveryLog(deliveryId) {
       if (!deliveryId) return;
       renderModule("notifications", "Delivery Logs", "Delivery Logs");
@@ -8282,6 +8304,11 @@
       const deliveryLogJump = event.target.closest("[data-delivery-log-jump]");
       if (deliveryLogJump) {
         jumpToDeliveryLog(deliveryLogJump.dataset.deliveryLogJump);
+        return;
+      }
+      const assetReportJump = event.target.closest("[data-asset-report-jump]");
+      if (assetReportJump) {
+        jumpToAssetReportReference(assetReportJump.dataset.assetReportJump);
         return;
       }
       const moduleJump = event.target.closest("[data-module-jump], [data-jump]");
