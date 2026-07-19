@@ -5018,26 +5018,98 @@
       "RPA-559": ["Watch Finder TH", "Arthit K.", "Ratchanon S."],
       "RPA-588": ["Ploy R.", "Minimal Dial Fan", "Kanokwan S."],
       "RPA-536": ["Narin C.", "Thanawat S."],
-      "RPA-581": ["Jirayu P.", "Bangkok Watch Lab", "Suda Collector", "Vasin K."]
+      "RPA-548": ["Vintage Lens", "Market Watch TH"],
+      "RPA-581": ["Jirayu P.", "Bangkok Watch Lab", "Suda Collector", "Vasin K.", "Araya Watch", "Panuwat R."]
     };
+
+    const assetReportSubmissions = {
+      "RPA-831": [
+        { reporter: "Nattapol P.", reason: "Incorrect information", additionalDetails: "รูปประกาศซ้ำและราคาเบี่ยงจาก market index" },
+        { reporter: "Patchara L.", reason: "Incorrect information" },
+        { reporter: "Krit Watch", reason: "Suspected fake or scam", additionalDetails: "รูปชุดนี้เคยเห็นในประกาศอื่น และเอกสารไม่ชัด" },
+        { reporter: "Saran Collector", reason: "Incorrect information" },
+        { reporter: "Maliwan T.", reason: "Other", additionalDetails: "อยากให้ทีมตรวจสอบราคาและรูปเพิ่มเติม" },
+        { reporter: "Anucha M.", reason: "Incorrect information" },
+        { reporter: "Benjawan S.", reason: "Incorrect information" },
+        { reporter: "Korn Vintage", reason: "Suspected fake or scam" },
+        { reporter: "Pimchanok R.", reason: "Incorrect information" },
+        { reporter: "Worawit C.", reason: "Other" }
+      ],
+      "RPA-694": [
+        { reporter: "Daily Watch Hunter", reason: "Suspected fake or scam", additionalDetails: "Serial/provenance ในรูปไม่ตรงกับข้อมูลที่ลงไว้" },
+        { reporter: "Saran Collector", reason: "Incorrect information" },
+        { reporter: "Tawan Watch", reason: "Suspected fake or scam" },
+        { reporter: "Nicha S.", reason: "Other", additionalDetails: "ขอให้ตรวจเอกสารเจ้าของก่อนปล่อยขาย" }
+      ],
+      "RPA-612": [
+        { reporter: "Thanawat S.", reason: "Inappropriate content", additionalDetails: "คอมเมนต์ใต้ asset มีข้อความไม่เหมาะสม" }
+      ],
+      "RPA-588": [
+        { reporter: "Ploy R.", reason: "Incorrect information", additionalDetails: "รูปเหมือนประกาศ Cartier อีกชิ้นที่เคยเห็น" },
+        { reporter: "Minimal Dial Fan", reason: "Incorrect information" },
+        { reporter: "Kanokwan S.", reason: "Other" }
+      ],
+      "RPA-581": [
+        { reporter: "Jirayu P.", reason: "Suspected fake or scam", additionalDetails: "รูปและ serial ดูไม่ตรงกับหลักฐานเจ้าของจริง" },
+        { reporter: "Bangkok Watch Lab", reason: "Suspected fake or scam" },
+        { reporter: "Suda Collector", reason: "Incorrect information" },
+        { reporter: "Vasin K.", reason: "Other" },
+        { reporter: "Araya Watch", reason: "Suspected fake or scam", additionalDetails: "ข้อมูลเจ้าของและรูปประกอบดูไม่สอดคล้องกัน" },
+        { reporter: "Panuwat R.", reason: "Incorrect information" }
+      ],
+      "RPA-559": [
+        { reporter: "Watch Finder TH", reason: "Suspected fake or scam", additionalDetails: "เอกสาร provenance ยังไม่พอสำหรับสินค้ามูลค่าสูง" },
+        { reporter: "Arthit K.", reason: "Incorrect information" },
+        { reporter: "Ratchanon S.", reason: "Suspected fake or scam" }
+      ],
+      "RPA-536": [
+        { reporter: "Narin C.", reason: "Incorrect information", additionalDetails: "รูปซ้ำกับประกาศเก่าระหว่างรอตรวจ" },
+        { reporter: "Thanawat S.", reason: "Other" }
+      ],
+      "RPA-548": [
+        { reporter: "Vintage Lens", reason: "Incorrect information", additionalDetails: "ราคาดูต่ำกว่ารุ่นเดียวกันมาก อยากให้ตรวจข้อมูลก่อนโปรโมต" },
+        { reporter: "Market Watch TH", reason: "Other" }
+      ]
+    };
+
+    const assetReporterFallbackNames = [
+      "Nattapol P.",
+      "Patchara L.",
+      "Krit Watch",
+      "Saran Collector",
+      "Maliwan T.",
+      "Anucha M.",
+      "Benjawan S.",
+      "Korn Vintage",
+      "Pimchanok R.",
+      "Worawit C.",
+      "Daily Watch Hunter",
+      "Watch Finder TH"
+    ];
+
+    function getAssetReporterFallbackName(report, index) {
+      const seed = parseInt(String(report?.id || "").replace(/\D/g, "") || "0", 10);
+      return assetReporterFallbackNames[(seed + index) % assetReporterFallbackNames.length];
+    }
 
     function getReporterHistoryRows(report) {
       const createdLog = ensureReportAuditLogs(report).find(log => log.action === "REPORT_CREATED");
       const baseTime = parseBangkokAuditTime(createdLog?.createdAt) || Date.UTC(2026, 6, 13, 10, 0);
       const reporterCount = Math.max(Number(report?.reporters) || 0, 1);
       const reporterNames = reportReporterNames[report.id] || [];
-      const assetAdditionalDetails = report.category === "Asset" && report.reporterNote ? [report.reporterNote] : [];
+      const assetSubmissions = report.category === "Asset" ? (assetReportSubmissions[report.id] || []) : [];
       return Array.from({ length: reporterCount }, (_, index) => {
+        const assetSubmission = assetSubmissions[index];
         const appReason = report.category === "Asset"
-          ? (report.foReason || report.reason)
+          ? (assetSubmission?.reason || report.foReason || report.reason)
           : (report.evidence?.[index % report.evidence.length] || report.reason);
         const minuteOffset = index === 0 ? 0 : index * 17;
         return {
-          reporter: reporterNames[index] || `Reporter ${String(index + 1).padStart(2, "0")}`,
+          reporter: assetSubmission?.reporter || reporterNames[index] || (report.category === "Asset" ? getAssetReporterFallbackName(report, index) : `Reporter ${String(index + 1).padStart(2, "0")}`),
           reportedAt: formatReporterSubmissionTime(baseTime + minuteOffset * 60 * 1000),
           source: report.source,
           note: appReason,
-          additionalDetails: assetAdditionalDetails[index] || "",
+          additionalDetails: assetSubmission?.additionalDetails || "",
           status: index === 0 ? "เปิดเคส" : "รวมเคส"
         };
       });
@@ -5494,7 +5566,7 @@
     }
 
     function getAssetReportCount(asset) {
-      const reportTag = (asset.tags || []).find(tag => /^Reports?\s+\d+/i.test(tag));
+      const reportTag = (asset.tags || []).find(tag => /\breports?\s+\d+/i.test(tag));
       return reportTag ? reportTag.replace(/[^\d]/g, "") : isTemporarilyHiddenAsset(asset) ? "5" : "0";
     }
 
@@ -6362,6 +6434,8 @@
     function getAssetReporters(asset) {
       const seed = parseInt(String(asset.id || "").match(/\d+/)?.[0] || "0", 10);
       if (asset.status === "Auto Hidden") return 9 + (seed % 5);
+      const taggedReportCount = Number(getAssetReportCount(asset));
+      if (taggedReportCount > 0) return taggedReportCount;
       if (asset.status === "Reported") return 3 + (seed % 6);
       return 1 + (seed % 3);
     }
