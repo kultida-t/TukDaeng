@@ -4925,7 +4925,7 @@
       const beforeAccount = log.before?.accountStatus;
       const afterAccount = log.after?.accountStatus;
       const isAccountStatusAction = log.action === "ACCOUNT_STATUS_UPDATED" || log.action === "REPORT_STATUS_UPDATED";
-      if (isAccountStatusAction && beforeAccount && beforeAccount !== afterAccount && (afterAccount === "Suspended" || afterAccount === "Banned")) {
+      if (isAccountStatusAction && beforeAccount && beforeAccount !== afterAccount && ["Active", "Suspended", "Banned"].includes(afterAccount)) {
         return { status: "pending", channel: "Email" };
       }
       return { status: "not_required" };
@@ -4946,23 +4946,52 @@
 
     function getReportActionDeliveryId(action, reportId = activeReportContextId) {
       const reportPart = String(reportId || "MANUAL").replace(/^RPU-/, "");
-      const actionPart = action === "Ban" ? "BAN" : "SUS";
+      const actionPartByAction = {
+        Suspend: "SUS",
+        Ban: "BAN",
+        Restore: "RES",
+        "Unban user": "UNB"
+      };
+      const actionPart = actionPartByAction[action] || "ACT";
       return `DLV-ACCT-${reportPart}-${actionPart}`;
+    }
+
+    function isAccountStatusEmailAction(action) {
+      return ["Suspend", "Ban", "Restore", "Unban user"].includes(action);
+    }
+
+    function getAccountStatusDeliveryTitle(action) {
+      if (action === "Ban") return "Account ban email";
+      if (action === "Restore") return "Account restore email";
+      if (action === "Unban user") return "Account unban email";
+      return "Account suspension email";
+    }
+
+    function getAccountStatusDeliveryDetail(action, user) {
+      if (action === "Ban") return `ส่งอีเมลแจ้งระงับบัญชีถาวรให้ ${user.id} หลัง Admin confirm status action`;
+      if (action === "Restore") return `ส่งอีเมลแจ้งยกเลิกระงับบัญชีชั่วคราวให้ ${user.id} หลัง Admin confirm status action`;
+      if (action === "Unban user") return `ส่งอีเมลแจ้งยกเลิกระงับบัญชีถาวรให้ ${user.id} หลัง Admin confirm status action`;
+      return `ส่งอีเมลแจ้งระงับบัญชีให้ ${user.id} หลัง Admin confirm status action`;
+    }
+
+    function getAccountStatusDeliveryNote(action, user, suspendUntil = "") {
+      if (!isAccountStatusEmailAction(action)) return "";
+      const accessNote = action === "Suspend" || action === "Ban" ? " · user signed out" : " · user access restored";
+      return `${accessNote} · notification email sent to ${getUserFullEmail(user)}${suspendUntil ? ` · suspension ends ${suspendUntil}` : ""}`;
     }
 
     function ensureAccountStatusDeliveryLog(deliveryId, user, action, reportId = activeReportContextId) {
       if (!deliveryId || !user || !moduleData.notifications) return;
       if (moduleData.notifications.rows.some(row => row.id === deliveryId)) return;
-      const isBan = action === "Ban";
       moduleData.notifications.rows.splice(moduleData.notifications.rows.length - 1, 0,
         item(
           deliveryId,
-          isBan ? "Account ban email" : "Account suspension email",
+          getAccountStatusDeliveryTitle(action),
           `${reportId || "Reported Users"} / ${user.id}`,
           "Delivery",
           "สูง",
           "Sent",
-          `ส่งอีเมลแจ้ง${isBan ? "ระงับบัญชีถาวร" : "ระงับบัญชี"}ให้ ${user.id} หลัง Admin confirm status action`,
+          getAccountStatusDeliveryDetail(action, user),
           ["Email", "Status action", "Audit linked"],
           "reference ต้องตรงกับ Admin Action History ของรายงาน"
         )
@@ -8706,10 +8735,8 @@
         user.status = config.targetStatus;
         updateUserActionsForStatus(user);
       }
-      const statusActionDeliveryNote = action === "Suspend" || action === "Ban"
-        ? ` · user signed out · notification email sent to ${getUserFullEmail(user)}${suspendUntil ? ` · suspension ends ${suspendUntil}` : ""}`
-        : "";
-      const statusActionDeliveryId = action === "Suspend" || action === "Ban"
+      const statusActionDeliveryNote = getAccountStatusDeliveryNote(action, user, suspendUntil);
+      const statusActionDeliveryId = isAccountStatusEmailAction(action)
         ? getReportActionDeliveryId(action, activeReportContextId)
         : "";
       ensureAccountStatusDeliveryLog(statusActionDeliveryId, user, action, activeReportContextId);
@@ -8719,7 +8746,7 @@
         after: user.status,
         reference: activeReportContextId || user.support || "-",
         note: `${actionNote || selectedReason || config.summary}${statusActionDeliveryNote}`,
-        emailDelivery: action === "Suspend" || action === "Ban"
+        emailDelivery: isAccountStatusEmailAction(action)
           ? { status: "sent", channel: "Email", deliveryId: statusActionDeliveryId }
           : { status: "not_required" }
       });
@@ -8728,7 +8755,7 @@
         actionLabel: config.title,
         detail: `${actionNote || selectedReason || config.summary}${statusActionDeliveryNote}`,
         reason: selectedReason || config.reasonLabel,
-        emailDelivery: action === "Suspend" || action === "Ban"
+        emailDelivery: isAccountStatusEmailAction(action)
           ? { status: "sent", channel: "Email", deliveryId: statusActionDeliveryId }
           : { status: "not_required" }
       };
