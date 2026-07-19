@@ -6208,6 +6208,117 @@
       return `${user.lastActive} via ${provider}; device and IP shown only when policy permits`;
     }
 
+    function getUserAccountStatusHistoryRows(user) {
+      if (!user) return [];
+      if (!Array.isArray(user.accountHistory)) user.accountHistory = [];
+      const provider = user.auth === "Email" ? "Email / password" : `${user.auth} SSO`;
+      const generatedRows = [
+        {
+          id: `${user.id}-REGISTERED`,
+          createdAt: user.joined,
+          actor: "System",
+          action: "Account registered",
+          before: "-",
+          after: user.status === "Pending Verification" ? "Pending Verification" : "Active",
+          reference: user.verification || user.auth,
+          note: `User registered with ${provider}`
+        }
+      ];
+      const statusRows = [];
+      const deletionRows = [];
+      if (user.status !== "Pending Verification") {
+        generatedRows.unshift({
+          id: `${user.id}-LOGIN-LATEST`,
+          createdAt: user.lastActive,
+          actor: user.displayName,
+          action: "Latest login / session",
+          before: user.status,
+          after: user.status,
+          reference: provider,
+          note: "Device and IP are masked unless admin policy permits access"
+        });
+      }
+      getReportsForUser(user).forEach(report => {
+        ensureReportAuditLogs(report)
+          .filter(log => log.after?.accountStatus && log.before?.accountStatus !== log.after.accountStatus)
+          .forEach(log => {
+            statusRows.push({
+              id: `${user.id}-${log.id}`,
+              createdAt: log.createdAt,
+              actor: log.actor || "System",
+              action: getReportAuditActionLabel(log),
+              before: log.before?.accountStatus || "-",
+              after: log.after?.accountStatus || "-",
+              reference: report.id,
+              note: log.reason || log.detail || report.reason
+            });
+          });
+      });
+      if (user.status === "Deletion Requested" || user.status === "Deleted / Archived") {
+        deletionRows.push({
+          id: `${user.id}-DELETION-STATE`,
+          createdAt: user.status === "Deleted / Archived" ? "15 May 2026 08:10 GMT+7" : user.lastActive,
+          actor: user.status === "Deleted / Archived" ? "System" : "Somchai Admin",
+          action: user.status === "Deleted / Archived" ? "Account deleted / archived" : "Account deletion requested",
+          before: user.status === "Deleted / Archived" ? "Deletion Requested" : "Active",
+          after: user.status,
+          reference: user.support || "Account Deletion",
+          note: getDeletionContext(user)
+        });
+      }
+      return [...user.accountHistory, ...deletionRows, ...statusRows, ...generatedRows];
+    }
+
+    function appendUserAccountStatusHistory(user, log) {
+      if (!user || !log) return;
+      if (!Array.isArray(user.accountHistory)) user.accountHistory = [];
+      const nextNumber = user.accountHistory.reduce((max, entry) => {
+        const match = String(entry.id || "").match(/-(\d+)$/);
+        return Math.max(max, match ? Number(match[1]) : 0);
+      }, 0) + 1;
+      user.accountHistory.unshift({
+        id: `UAH-${user.id}-${String(nextNumber).padStart(3, "0")}`,
+        createdAt: formatBangkokTimestamp(),
+        actor: "Somchai Admin",
+        action: "Admin action recorded",
+        before: user.status,
+        after: user.status,
+        reference: activeReportContextId || user.support || "-",
+        note: "",
+        ...log
+      });
+    }
+
+    function renderUserAccountStatusHistoryTable(user) {
+      const rows = getUserAccountStatusHistoryRows(user).map(row => `
+        <tr>
+          <td data-label="Date / Time">${formatAuditDisplayTime(row.createdAt)}</td>
+          <td data-label="Actor">${row.actor}</td>
+          <td data-label="Action">${row.action}</td>
+          <td data-label="Status">${row.after && row.after !== "-" ? userStatusPill(row.after) : `<span class="muted">-</span>`}</td>
+          <td data-label="Reference">${row.reference || "-"}</td>
+          <td data-label="Note" class="history-note">${row.note || ""}</td>
+        </tr>
+      `).join("");
+      return `
+        <div class="history-table-wrap">
+          <table class="history-table user-account-history-table">
+            <thead>
+              <tr>
+                <th>Date / Time</th>
+                <th>Actor</th>
+                <th>Action</th>
+                <th>Status</th>
+                <th>Reference</th>
+                <th>Note</th>
+              </tr>
+            </thead>
+            <tbody>${rows}</tbody>
+          </table>
+        </div>
+      `;
+    }
+
     function createProfileImage(user) {
       const palettes = [
         { bg: "#f4dfcf", skin: "#b87656", hair: "#221713", shirt: "#b9000e", accent: "#f6c85f" },
@@ -6957,14 +7068,15 @@
         renderUserActionPage(user, action, false, errorSample.title, user.status, errorSample.detail, "error", scenario);
         return;
       }
-      if (config.type === "status") {
-        user.status = config.targetStatus;
-        updateUserActionsForStatus(user);
-      }
+      const beforeStatus = user.status;
       const selectedReason = document.querySelector("#user-action-reason")?.value || "";
       const actionNote = document.querySelector("#user-action-note")?.value.trim() || "";
       const suspendUntilInput = document.querySelector("#user-action-suspend-until");
       const suspendUntil = action === "Suspend" ? normalizeSuspensionEndDate(suspendUntilInput) : "";
+      if (config.type === "status") {
+        user.status = config.targetStatus;
+        updateUserActionsForStatus(user);
+      }
       const statusActionDeliveryNote = action === "Suspend" || action === "Ban"
         ? ` · user signed out · notification email sent to ${getUserFullEmail(user)}${suspendUntil ? ` · suspension ends ${suspendUntil}` : ""}`
         : "";
@@ -6972,6 +7084,16 @@
         ? getReportActionDeliveryId(action, activeReportContextId)
         : "";
       ensureAccountStatusDeliveryLog(statusActionDeliveryId, user, action, activeReportContextId);
+      appendUserAccountStatusHistory(user, {
+        action: config.title,
+        before: beforeStatus,
+        after: user.status,
+        reference: activeReportContextId || user.support || "-",
+        note: `${actionNote || selectedReason || config.summary}${statusActionDeliveryNote}`,
+        emailDelivery: action === "Suspend" || action === "Ban"
+          ? { status: "sent", channel: "Email", deliveryId: statusActionDeliveryId }
+          : { status: "not_required" }
+      });
       pendingReportActionAudit = {
         actionLabel: config.title,
         detail: `${actionNote || selectedReason || config.summary}${statusActionDeliveryNote}`,
@@ -7397,6 +7519,10 @@
 
           <div class="module-note"><strong>ผลกระทบต่อแอปพลิเคชัน:</strong> ${user.foImpact}</div>
           <div class="warning-note"><strong>หมายเหตุการดำเนินการ:</strong> ${user.actionNote}</div>
+          <div class="detail-section">
+            <h4>Account Status History</h4>
+            ${renderUserAccountStatusHistoryTable(user)}
+          </div>
           ${renderUserDetailActions(user)}
         </div>
       `;
@@ -7458,6 +7584,10 @@
             <div class="detail-grid">
               <div class="detail-tile report-detail-tile"><span>${getReportContextLabel(user)}</span>${renderLatestReportBrief(user)}</div>
             </div>
+          </div>
+          <div class="detail-section">
+            <h4>Account Status History</h4>
+            ${renderUserAccountStatusHistoryTable(user)}
           </div>
           ${renderUserDetailActions(user)}
         </div>
