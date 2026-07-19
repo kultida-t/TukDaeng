@@ -2484,6 +2484,14 @@
       background: #fff;
       padding: 12px;
     }
+    .asset-comment-empty {
+      padding: 10px 0;
+      color: #31435b;
+      font-size: 12px;
+      font-weight: 400;
+      line-height: 1.45;
+      text-align: left;
+    }
     .asset-comment-item {
       display: grid;
       grid-template-columns: 34px minmax(0, 1fr);
@@ -4045,17 +4053,27 @@
       }
       body.asset-detail-mode .asset-comment-section-head,
       body.asset-detail-mode .asset-detail-section-head {
-        align-items: stretch;
-        flex-direction: column;
+        align-items: center;
+        flex-direction: row;
+        gap: 8px;
       }
       body.asset-detail-mode .asset-detail-header-actions {
-        display: grid;
-        grid-template-columns: 1fr;
-        justify-content: stretch;
+        display: flex;
+        flex: 1 1 auto;
+        justify-content: flex-end;
       }
-      body.asset-detail-mode .asset-detail-header-actions .user-detail-action-btn {
-        width: 100%;
+      body.asset-detail-mode .asset-detail-section-head h4,
+      body.asset-detail-mode .asset-comment-section-head h4 {
+        flex: 0 0 auto;
+      }
+      body.asset-detail-mode .asset-detail-header-actions .user-detail-action-btn,
+      body.asset-detail-mode .asset-comment-section-head .user-detail-action-btn {
+        width: auto;
         min-width: 0;
+        min-height: 30px;
+        padding: 6px 8px;
+        font-size: 11px;
+        line-height: 1.2;
         white-space: normal;
       }
       body.asset-detail-mode .asset-comment-head {
@@ -4517,7 +4535,7 @@
         item("AST-8548", "Omega Seamaster Diver 300M", "Vintage Vault BKK", "Sale", "ปกติ", "Active", "Clean listing with market price in normal range", ["THB 142,000"], "No action needed unless new report arrives"),
         item("AST-8536", "Omega Speedmaster Reduced", "Daily Watch Hunter", "Sale", "กลาง", "Admin Hidden", "Temporarily hidden while duplicate photos are checked", ["Hidden by Admin"], "Restore when duplicate check passes"),
         item("AST-8524", "Omega Aqua Terra", "Minimal Dial", "Show", "ปกติ", "Active", "Collection-only display for owner profile", ["Portfolio"], "Check that offer button stays hidden"),
-        item("AST-8518", "Seiko Prospex SPB143", "Seiko Corner", "Sale", "ปกติ", "Active", "Normal listing with complete photos", ["THB 31,500"], "Monitor only"),
+        item("AST-8518", "Seiko Prospex SPB143", "Seiko Corner", "Sale", "ปกติ", "Active", "Normal listing with complete photos", ["THB 31,500", "No comments"], "Monitor only"),
         item("AST-8509", "Seiko Presage Cocktail Time", "Archive Collector", "Sold", "ปกติ", "Closed", "Sold listing retained for audit and offer history", ["Sold record"], "Keep read-only history"),
         item("AST-8497", "Cartier Tank Must", "Minimal Dial", "Sale", "กลาง", "Active", "New Cartier listing with price close to index", ["THB 118,000"], "Confirm reference before featuring")
       ]),
@@ -5378,11 +5396,15 @@
       return `./assets/user-avatars/${comment.avatar.toLowerCase()}.png`;
     }
 
+    function assetHasNoComments(asset) {
+      return (asset.tags || []).some(tag => /^No comments$/i.test(tag));
+    }
+
     function getAssetSocial(asset) {
       const idNumber = parseInt(String(asset.id || "").match(/\d+/)?.[0] || "0", 10);
       return {
         likes: 120 + (idNumber % 800),
-        comments: Math.max(3, Number(getAssetReportCount(asset)) + (idNumber % 24)),
+        comments: assetHasNoComments(asset) ? 0 : Math.max(3, Number(getAssetReportCount(asset)) + (idNumber % 24)),
         favorite: 18 + (idNumber % 90)
       };
     }
@@ -5489,7 +5511,7 @@
     }
 
     function getAssetBoComments(asset) {
-      if (asset.status === "Deleted / Archived") return [];
+      if (assetHasNoComments(asset)) return [];
       const hasReports = Number(getAssetReportCount(asset)) > 0;
       return [
         {
@@ -5639,24 +5661,25 @@
 
     function renderAssetBoComments(asset) {
       const comments = getAssetBoComments(asset);
-      if (!comments.length) return "";
       const previewComments = getAssetCommentPreview(comments);
-      return `
-        <div class="detail-section">
-          <div class="asset-comment-section-head">
-            <h4>Comments</h4>
-            <button class="user-detail-action-btn" type="button" data-asset-comments-modal="${asset.id}">View all comments</button>
-          </div>
-          <div class="asset-context-list asset-comment-list">
-            ${previewComments.map((comment, index) => {
-              const replyKey = `${asset.id}:detail:${index}`;
-              const expanded = expandedAssetCommentReplies.has(replyKey);
-              return `
+      const commentsBody = previewComments.length ? previewComments.map((comment, index) => {
+        const replyKey = `${asset.id}:detail:${index}`;
+        const expanded = expandedAssetCommentReplies.has(replyKey);
+        return `
               <div class="asset-comment-thread">
                 ${renderAssetBoCommentItem(comment, false, { replyKey, expanded, assetId: asset.id })}
                 ${expanded ? (comment.replies || []).map(reply => renderAssetBoCommentItem(reply, true)).join("") : ""}
               </div>
-            `}).join("")}
+            `;
+      }).join("") : `<div class="detail-empty asset-comment-empty">ยังไม่มีการแสดงความคิดเห็น</div>`;
+      return `
+        <div class="detail-section">
+          <div class="asset-comment-section-head">
+            <h4>Comments</h4>
+            ${comments.length ? `<button class="user-detail-action-btn" type="button" data-asset-comments-modal="${asset.id}">View all comments</button>` : ""}
+          </div>
+          <div class="asset-context-list asset-comment-list">
+            ${commentsBody}
           </div>
         </div>
       `;
@@ -5683,7 +5706,7 @@
           </div>
           <div class="user-action-card">
             <div class="asset-comment-dense-list">
-              ${comments.map((comment, index) => renderAssetCommentDenseRow(comment, index, asset.id)).join("") || `<div class="detail-empty">No comments</div>`}
+              ${comments.map((comment, index) => renderAssetCommentDenseRow(comment, index, asset.id)).join("") || `<div class="detail-empty asset-comment-empty">ยังไม่มีการแสดงความคิดเห็น</div>`}
             </div>
           </div>
         </div>
