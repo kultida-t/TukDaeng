@@ -6140,6 +6140,43 @@
       return "";
     }
 
+    const assetRestoreVisibilityFlowScenarios = [
+      { value: "success", label: "สำเร็จ" },
+      { value: "invalid_state", label: "สถานะ Asset ไม่ตรงเงื่อนไข" },
+      { value: "stale_data", label: "ข้อมูลเปลี่ยนระหว่างดำเนินการ" },
+      { value: "policy_blocked", label: "ยังไม่ผ่านเงื่อนไขที่ระบบกำหนด" },
+      { value: "sync_failed", label: "อัปเดตการมองเห็นไม่สำเร็จ" },
+      { value: "audit_failed", label: "บันทึก Audit Log ไม่สำเร็จ" },
+      { value: "session_expired", label: "เซสชันหมดอายุ" }
+    ];
+
+    const assetRestoreVisibilityErrorSamples = {
+      invalid_state: {
+        title: "ไม่สามารถยกเลิกการซ่อนได้",
+        detail: "สถานะ Asset ปัจจุบันไม่ตรงกับเงื่อนไขของการยกเลิกการซ่อนชั่วคราว กรุณาตรวจสถานะล่าสุดก่อนยืนยันอีกครั้ง"
+      },
+      stale_data: {
+        title: "ข้อมูล Asset มีการเปลี่ยนแปลงแล้ว",
+        detail: "มีการอัปเดต Asset นี้ระหว่างที่เปิดหน้าต่างยืนยัน กรุณารีเฟรชข้อมูลแล้วลองอีกครั้ง"
+      },
+      policy_blocked: {
+        title: "ยังไม่สามารถแสดง Asset นี้ได้",
+        detail: "Asset นี้ยังมีเงื่อนไขหรือหลักฐานที่ต้องตรวจสอบเพิ่มเติมก่อนเปิดการมองเห็นกลับในแอป"
+      },
+      sync_failed: {
+        title: "อัปเดตการมองเห็นไม่สำเร็จ",
+        detail: "ระบบยังไม่สามารถอัปเดตการมองเห็นไปยัง Feed, Search, Profile หรือ surface ที่เกี่ยวข้องได้ กรุณาลองอีกครั้ง"
+      },
+      audit_failed: {
+        title: "บันทึก Audit Log ไม่สำเร็จ",
+        detail: "ระบบยังไม่สามารถบันทึกเหตุผลและสถานะก่อน/หลังการดำเนินการได้ กรุณาลองอีกครั้งก่อนยืนยัน"
+      },
+      session_expired: {
+        title: "เซสชันหมดอายุ",
+        detail: "กรุณาเข้าสู่ระบบใหม่ก่อนยืนยัน เพื่อให้การดำเนินการและ Audit Log ถูกต้อง"
+      }
+    };
+
     function getAssetActionConfig(action, asset) {
       const restoreTarget = asset?.type || "Sale";
       const configs = {
@@ -6174,7 +6211,8 @@
       `;
     }
 
-    function renderAssetRestoreVisibilityModal(asset, action, config) {
+    function renderAssetRestoreVisibilityModal(asset, action, config, resultMessage = "", resultDetail = "", resultType = "", selectedScenario = "success") {
+      const hasResult = Boolean(resultMessage);
       const modalBody = document.querySelector("#user-action-modal-body");
       modalBody.innerHTML = `
         <div class="user-action-page">
@@ -6210,10 +6248,17 @@
                   <button class="user-detail-action-btn primary user-action-confirm" type="button" data-asset-action-confirm="${action}" data-asset-id="${asset.id}">${config.button}</button>
                   <button class="user-detail-action-btn" type="button" data-user-action-modal-close>ยกเลิก</button>
                 </div>
-                <div class="warning-note action-feedback user-action-result">
-                  <strong>Audit requirement</strong><br>
-                  <span>ต้องบันทึกเหตุผล ผลตรวจสอบ และสถานะก่อน/หลังการดำเนินการไว้ใน Admin Action History</span>
+                <div class="warning-note action-feedback user-action-result ${hasResult ? "show" : ""} ${resultType}">
+                  <strong>${resultMessage || "Audit requirement"}</strong><br>
+                  <span>${resultDetail || "ต้องบันทึกเหตุผล ผลตรวจสอบ และสถานะก่อน/หลังการดำเนินการไว้ใน Admin Action History"}</span>
                 </div>
+                <details class="prototype-tools user-action-prototype-tools">
+                  <summary>Prototype scenario</summary>
+                  <label>
+                    Test flow
+                    ${customSelect("asset-restore-scenario", "Test flow", assetRestoreVisibilityFlowScenarios, selectedScenario, "data-custom-select-silent")}
+                  </label>
+                </details>
               </div>
             </div>
           </div>
@@ -8684,7 +8729,15 @@
       const assetActionConfirm = event.target.closest("[data-asset-action-confirm]");
       if (assetActionConfirm) {
         const asset = moduleData.assets.rows.find(entry => entry.id === assetActionConfirm.dataset.assetId);
-        confirmAssetAction(asset, assetActionConfirm.dataset.assetActionConfirm);
+        const assetAction = assetActionConfirm.dataset.assetActionConfirm;
+        const scenario = document.querySelector("#asset-restore-scenario")?.value || "success";
+        if (assetAction === "restore-visibility" && scenario !== "success") {
+          const config = getAssetActionConfig(assetAction, asset);
+          const errorSample = assetRestoreVisibilityErrorSamples[scenario] || assetRestoreVisibilityErrorSamples.invalid_state;
+          renderAssetRestoreVisibilityModal(asset, assetAction, config, errorSample.title, errorSample.detail, "error", scenario);
+          return;
+        }
+        confirmAssetAction(asset, assetAction);
         return;
       }
       const assetActionButton = event.target.closest("[data-asset-action]");
