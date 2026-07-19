@@ -6145,9 +6145,81 @@
       const configs = {
         hide: { title: "ยืนยันการซ่อนชั่วคราว", button: "ซ่อนชั่วคราว", apply: asset => { asset.status = "Admin Hidden"; asset.action = "ซ่อนโพสต์ชั่วคราวจาก Feed/Search/Profile public surface พร้อมบันทึกเหตุผล"; } },
         "delete-post": { title: "ยืนยันการลบ/เก็บถาวร", button: "ลบ/เก็บถาวร", apply: asset => { asset.status = "Deleted / Archived"; asset.action = "ลบ/เก็บถาวรจาก public surface หลังยืนยันว่าเนื้อหาผิดจริง พร้อมเก็บ audit/history"; } },
-        "restore-visibility": { title: `Confirm restore ${restoreTarget} visibility`, button: `Restore ${restoreTarget}`, apply: asset => { asset.status = "Active"; asset.action = `Restore ${restoreTarget} visibility after evidence review and FO sync`; } }
+        "restore-visibility": {
+          title: "ยืนยันยกเลิกการซ่อนชั่วคราว",
+          button: "ยืนยัน",
+          summary: "ใช้เมื่อตรวจสอบแล้วว่าสามารถแสดง Asset นี้ได้ตามปกติ",
+          reasonLabel: `เหตุผลการยกเลิกการซ่อนชั่วคราวของ ${restoreTarget}`,
+          reasons: [
+            "ตรวจสอบแล้วไม่พบความเสี่ยงเพิ่มเติม",
+            "หลักฐานหรือข้อมูลประกาศได้รับการแก้ไขแล้ว",
+            "ทีมที่รับผิดชอบอนุมัติให้เปิดการมองเห็นได้"
+          ],
+          notePlaceholder: "สรุปผลการตรวจสอบ เหตุผลที่ยกเลิกการซ่อน และข้อมูลอ้างอิงที่เกี่ยวข้อง",
+          apply: asset => { asset.status = "Active"; asset.action = `Restore ${restoreTarget} visibility after evidence review and FO sync`; }
+        }
       };
       return configs[action];
+    }
+
+    function renderAssetRestoreVisibilityImpactNote(asset) {
+      const visibilitySurface = asset.type === "Sale"
+        ? "Feed, Search, Profile, Watch Alert, Offer และ Chat reference"
+        : "Profile / Collection และ public reference ที่เกี่ยวข้อง";
+      return `
+        <div class="module-note user-action-impact user-action-impact-card user-action-impact-warning">
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 3.2c.7 0 1.35.37 1.7.98l8.05 13.95A1.95 1.95 0 0 1 20.05 21H3.95a1.95 1.95 0 0 1-1.7-2.87L10.3 4.18A1.95 1.95 0 0 1 12 3.2Zm0 4.6a1 1 0 0 0-1 1v4.4a1 1 0 1 0 2 0V8.8a1 1 0 0 0-1-1Zm0 8.45a1.15 1.15 0 1 0 0 2.3 1.15 1.15 0 0 0 0-2.3Z"/></svg>
+          <p><strong>ผลกระทบต่อแอปพลิเคชัน:</strong> หลังยืนยัน ระบบจะเปิดการมองเห็น ${asset.type} กลับไปยัง ${visibilitySurface} และบันทึก Audit Log โดยไม่แก้ไขเนื้อหาที่เจ้าของประกาศกรอกไว้</p>
+        </div>
+      `;
+    }
+
+    function renderAssetRestoreVisibilityModal(asset, action, config) {
+      const modalBody = document.querySelector("#user-action-modal-body");
+      modalBody.innerHTML = `
+        <div class="user-action-page">
+          <div class="user-action-head">
+            <div>
+              <h2 id="user-action-modal-title">${config.title}</h2>
+              <p>${config.summary}</p>
+            </div>
+            <button class="btn user-action-close" type="button" data-user-action-modal-close aria-label="Close modal" title="Close">
+              ${iconSvg.close}
+            </button>
+          </div>
+          <div class="user-action-target">
+            <div>
+              <strong>${asset.name}</strong>
+              <span>${asset.id} · ${asset.owner}</span>
+            </div>
+            ${renderAssetStatusDisplay(asset)}
+          </div>
+          <div class="user-action-layout">
+            <div class="detail-section">
+              <div class="user-action-form">
+                <label>
+                  ${config.reasonLabel}
+                  ${customSelect("asset-restore-reason", config.reasonLabel, config.reasons.map(reason => ({ value: reason, label: reason })), "", "data-custom-select-silent")}
+                </label>
+                <label>
+                  Note / หมายเหตุ
+                  <textarea id="asset-restore-note" placeholder="${config.notePlaceholder}"></textarea>
+                </label>
+                ${renderAssetRestoreVisibilityImpactNote(asset)}
+                <div class="user-detail-actions user-action-footer">
+                  <button class="user-detail-action-btn primary user-action-confirm" type="button" data-asset-action-confirm="${action}" data-asset-id="${asset.id}">${config.button}</button>
+                  <button class="user-detail-action-btn" type="button" data-user-action-modal-close>ยกเลิก</button>
+                </div>
+                <div class="warning-note action-feedback user-action-result">
+                  <strong>Audit requirement</strong><br>
+                  <span>ต้องบันทึกเหตุผล ผลตรวจสอบ และสถานะก่อน/หลังการดำเนินการไว้ใน Admin Action History</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+      showUserActionModal(true);
     }
 
     function renderAssetRowActionMenu(asset) {
@@ -6167,6 +6239,10 @@
       if (action === "delete-post" && !canAdminDeleteAsset(asset)) return;
       const config = getAssetActionConfig(action, asset);
       if (!asset || !config) return;
+      if (action === "restore-visibility") {
+        renderAssetRestoreVisibilityModal(asset, action, config);
+        return;
+      }
       const modalBody = document.querySelector("#user-action-modal-body");
       modalBody.innerHTML = `
         <div class="user-action-page">
