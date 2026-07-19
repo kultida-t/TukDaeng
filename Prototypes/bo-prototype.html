@@ -5008,7 +5008,9 @@
       const reporterCount = Math.max(Number(report?.reporters) || 0, 1);
       const reporterNames = reportReporterNames[report.id] || [];
       return Array.from({ length: reporterCount }, (_, index) => {
-        const appReason = report.evidence?.[index % report.evidence.length] || report.reason;
+        const appReason = report.category === "Asset"
+          ? (report.foReason || report.reason)
+          : (report.evidence?.[index % report.evidence.length] || report.reason);
         const minuteOffset = index === 0 ? 0 : index * 17;
         return {
           reporter: reporterNames[index] || `Reporter ${String(index + 1).padStart(2, "0")}`,
@@ -5041,13 +5043,14 @@
       reporterHistoryPage = Math.min(reporterHistoryPage, pageCount);
       const start = (reporterHistoryPage - 1) * reportHistoryPageSize;
       const pageRows = allRows.slice(start, start + reportHistoryPageSize);
+      const noteColumnLabel = report.category === "Asset" ? "Report Reason" : "Reporter note";
       const rows = pageRows.map(row => `
         <tr>
           <td data-label="วันที่ / เวลา">${row.reportedAt}</td>
           <td data-label="Reporter">${row.reporter}</td>
           <td data-label="Source">${row.source}</td>
           <td data-label="Status">${row.status}</td>
-          <td data-label="Reporter note" class="history-note">${row.note}</td>
+          <td data-label="${noteColumnLabel}" class="history-note">${row.note}</td>
         </tr>
       `).join("");
       return `
@@ -5059,7 +5062,7 @@
                 <th>Reporter</th>
                 <th>Source</th>
                 <th>Status</th>
-                <th>Reporter note</th>
+                <th>${noteColumnLabel}</th>
               </tr>
             </thead>
             <tbody>${rows}</tbody>
@@ -8664,20 +8667,6 @@
               <div class="detail-tile"><span>Additional Details from Reporter</span><strong>${report.reporterNote}</strong></div>
               <div class="detail-tile"><span>Admin Checkpoints from System</span><div class="chips">${report.reviewSignals.map(item => `<span class="chip">${item}</span>`).join("")}</div></div>
               <div class="detail-tile"><span>What to Check Next</span>${report.nextCheck}</div>
-            </div>
-          </div>
-
-          <div class="detail-section">
-            <h4>Asset Context</h4>
-            <div class="detail-grid two">
-              ${renderAssetDetailTiles([
-                ["Brand", detail.brand],
-                ["Reference No.", detail.reference],
-                ["Price", detail.price],
-                ["Visibility", detail.visibility],
-                ["Offer", detail.linkedOffer],
-                ["Watch Alert", detail.linkedWatchAlert]
-              ])}
             </div>
           </div>
 
