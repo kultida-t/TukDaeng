@@ -5633,25 +5633,154 @@
       };
     }
 
+    function getAssetStatusHistoryRows(asset, detail) {
+      const idNumber = parseInt(String(asset.id || "").match(/\d+/)?.[0] || "0", 10);
+      const reportCount = Number(getAssetReportCount(asset)) || 0;
+      const actionRows = Array.isArray(asset.assetHistory) ? asset.assetHistory : [];
+      const saleRows = asset.type === "Sold"
+        ? [{
+            createdAt: `17 Jul 2026 ${String(12 + (idNumber % 5)).padStart(2, "0")}:40 GMT+7`,
+            actor: "System",
+            action: "Sale Record Linked",
+            before: { type: "Sale", status: "Active" },
+            after: { type: "Sold", status: "Closed" },
+            reference: detail.linkedOffer !== "None" ? detail.linkedOffer : `OFR-${idNumber % 900}`,
+            note: `Sold from ${asset.owner} to buyer B***-${idNumber % 90}; final price masked and evidence summarized for BO review`
+          }]
+        : [];
+      const reportRows = reportCount
+        ? [{
+            createdAt: `16 Jul 2026 ${String(9 + (idNumber % 8)).padStart(2, "0")}:15 GMT+7`,
+            actor: "System",
+            action: "Report Asset",
+            before: { type: asset.type, status: "Active" },
+            after: { type: asset.type, status: asset.status === "Active" ? "Reported" : asset.status },
+            reference: `Reports ${reportCount}`,
+            note: detail.reportReason
+          }]
+        : [];
+      const moderationRows = [];
+      if (asset.status === "Reviewing") {
+        moderationRows.push({
+          createdAt: `17 Jul 2026 ${String(10 + (idNumber % 7)).padStart(2, "0")}:05 GMT+7`,
+          actor: "Somchai Admin",
+          action: "Review Started",
+          before: { type: asset.type, status: "Reported" },
+          after: { type: asset.type, status: "Reviewing" },
+          reference: reportCount ? `Reports ${reportCount}` : asset.id,
+          note: "High value or provenance context requires manual review before visibility changes"
+        });
+      }
+      if (isTemporarilyHiddenAsset(asset) || asset.status === "Deleted / Archived") {
+        moderationRows.push({
+          createdAt: detail.updatedAt,
+          actor: "Somchai Admin",
+          action: asset.status === "Deleted / Archived" ? "Archive Asset" : "Force Hide Asset",
+          before: { type: asset.type, status: reportCount ? "Reviewing" : "Reported" },
+          after: { type: asset.type, status: asset.status },
+          reference: reportCount ? `Reports ${reportCount}` : asset.id,
+          note: asset.action || "Visibility changed after BO moderation review"
+        });
+      }
+      const lifecycleRows = [
+        {
+          createdAt: detail.updatedAt,
+          actor: asset.owner,
+          action: "Listing Updated",
+          before: { type: asset.type, status: "Draft" },
+          after: { type: asset.type, status: asset.status },
+          reference: asset.id,
+          note: "Owner submitted latest media, price, visibility, and specification values from FO"
+        },
+        {
+          createdAt: detail.createdAt,
+          actor: asset.owner,
+          action: "Asset Created",
+          before: null,
+          after: { type: asset.type, status: "Active" },
+          reference: asset.id,
+          note: `${detail.brand} ${detail.reference || detail.model} listing created from FO asset form`
+        }
+      ];
+      return [...actionRows, ...moderationRows, ...saleRows, ...reportRows, ...lifecycleRows]
+        .sort((a, b) => parseAssetHistoryTime(b.createdAt) - parseAssetHistoryTime(a.createdAt));
+    }
+
+    function parseAssetHistoryTime(value) {
+      const match = String(value || "").replace(",", "").match(/^(\d{1,2})\s+([A-Za-z]{3})\s+(\d{4})\s+(\d{1,2}):(\d{2})/);
+      if (!match) return 0;
+      const months = { Jan: 0, Feb: 1, Mar: 2, Apr: 3, May: 4, Jun: 5, Jul: 6, Aug: 7, Sep: 8, Oct: 9, Nov: 10, Dec: 11 };
+      const [, day, month, year, hour, minute] = match;
+      return Date.UTC(Number(year), months[month] ?? 0, Number(day), Number(hour), Number(minute));
+    }
+
+    function renderAssetAuditState(state) {
+      if (!state) return `<span class="muted">-</span>`;
+      if (state.type) return renderAssetStatusDisplay({ type: state.type, status: state.status || "Active" });
+      const type = state.type ? assetStatusPill(state.type) : "";
+      const hiddenStatusLabels = ["Active", "Auto Hidden"];
+      const status = state.status && state.status !== state.type && !hiddenStatusLabels.includes(state.status) ? `<small>${state.status}</small>` : "";
+      return `${type}${status}`;
+    }
+
     function renderAssetHistory(asset, detail) {
-      const rows = getAssetHistoryRows(asset, detail);
+      const rows = getAssetStatusHistoryRows(asset, detail);
       if (!rows.length) return "";
       return `
         <div class="detail-section">
-          <h4>History</h4>
-          <div class="asset-context-list">
-            ${rows.map(row => `
-              <div class="asset-context-row">
-                <span>${row.type}</span>
-                <div>
-                  <strong>${row.title}</strong>
-                  <p>${row.detail}</p>
-                </div>
-              </div>
-            `).join("")}
+          <h4>Asset Status History</h4>
+          <div class="history-table-wrap">
+            <table class="history-table asset-status-history-table">
+              <thead>
+                <tr>
+                  <th>Date / Time</th>
+                  <th>Actor</th>
+                  <th>Action</th>
+                  <th>Status</th>
+                  <th>Reference</th>
+                  <th>Reason / Note</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${rows.map(row => `
+                  <tr>
+                    <td data-label="Date / Time">${formatAuditDisplayTime(row.createdAt)}</td>
+                    <td data-label="Actor">${row.actor}</td>
+                    <td data-label="Action">${row.action}</td>
+                    <td data-label="Status">${renderAssetAuditState(row.after)}</td>
+                    <td data-label="Reference">${row.reference || "-"}</td>
+                    <td data-label="Reason / Note" class="history-note">${row.note || ""}</td>
+                  </tr>
+                `).join("")}
+              </tbody>
+            </table>
           </div>
         </div>
       `;
+    }
+
+    function getAssetAuditActionLabel(action) {
+      if (action === "hide") return "Force Hide Asset";
+      if (action === "delete-post") return "Archive Asset";
+      if (action === "restore-visibility") return "Restore Visibility";
+      return action;
+    }
+
+    function appendAssetStatusHistory(asset, log) {
+      if (!asset) return;
+      if (!Array.isArray(asset.assetHistory)) asset.assetHistory = [];
+      const nextNumber = asset.assetHistory.reduce((max, entry) => {
+        const number = parseInt(String(entry.id || "").split("-").pop() || "0", 10);
+        return Math.max(max, Number.isFinite(number) ? number : 0);
+      }, 0) + 1;
+      asset.assetHistory.unshift({
+        id: `AUD-${asset.id}-${String(nextNumber).padStart(3, "0")}`,
+        createdAt: formatBangkokTimestamp(),
+        actor: "Somchai Admin",
+        reference: asset.id,
+        note: asset.action || "BO moderation action recorded",
+        ...log
+      });
     }
 
     function renderAssetPurchaseHistoryModal(asset) {
@@ -5919,7 +6048,13 @@
       const config = getAssetActionConfig(action, asset);
       if (!asset || !config) return;
       const before = `${asset.type} / ${asset.status}`;
+      const beforeState = { type: asset.type, status: asset.status };
       config.apply(asset);
+      appendAssetStatusHistory(asset, {
+        action: getAssetAuditActionLabel(action),
+        before: beforeState,
+        after: { type: asset.type, status: asset.status }
+      });
       closeUserActionModal();
       if (document.body.classList.contains("asset-detail-mode")) renderAssetDetailPage(asset);
       else renderAssetListRows();
@@ -6016,7 +6151,7 @@
               </div>
 
               ${renderAssetBoComments(asset)}
-              ${asset.type === "Sold" ? "" : renderAssetHistory(asset, detail)}
+              ${renderAssetHistory(asset, detail)}
 
               ${rowActions.length ? `<div class="detail-section user-detail-action-section">
                 <div class="user-detail-actions">
