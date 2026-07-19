@@ -8564,7 +8564,6 @@
         <div class="user-detail-page report-detail-page">
           <div class="user-detail-head">
             <div class="user-detail-title">
-              ${renderAssetCover(asset)}
               <div>
                 <h2>${asset.name}</h2>
                 <div class="chips">
@@ -8576,11 +8575,11 @@
               </div>
             </div>
             <div class="user-detail-actions">
+              <button class="btn" type="button" data-asset-report-detail-modal="${asset.id}">${iconSvg.eye}<span>View Asset Detail</span></button>
               <button class="btn report-back-btn" type="button" data-back-reported-assets aria-label="กลับไป Reported Assets" title="กลับไป Reported Assets">
               <svg class="mobile-back-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>
               <span class="btn-label">กลับไป Reported Assets</span>
               </button>
-              <button class="btn" type="button" data-asset-report-detail-modal="${asset.id}">${iconSvg.eye}<span>View Asset Detail</span></button>
             </div>
           </div>
 
