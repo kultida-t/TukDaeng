@@ -6550,7 +6550,7 @@
     function getAssetReportActionRows(asset, detail) {
       const reportActions = new Set(["Report Received", "Auto Hide Asset", "Force Hide Asset", "Archive Asset", "Restore Visibility"]);
       const rows = getAssetStatusHistoryRows(asset, detail).map(row => ({ ...row }));
-      const reportCount = Number(getAssetReportCount(asset)) || 0;
+      const reportCount = Number(getAssetReporters(asset)) || 0;
       const reportReference = getAssetReportId(asset);
       rows.forEach(row => {
         if (String(row.reference || "").startsWith("RPA-")) {
