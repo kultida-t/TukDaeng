@@ -5674,13 +5674,13 @@
       }
       const lifecycleRows = [
         {
-          createdAt: detail.updatedAt,
+          createdAt: getAssetHistoryOffsetTime(detail.updatedAt, -5),
           actor: asset.owner,
           action: "Listing Updated",
           before: { type: asset.type, status: "Draft" },
           after: { type: asset.type, status: "Active" },
           reference: asset.id,
-          note: "Owner submitted latest media, price, visibility, and specification values from FO"
+          note: "Owner updated asset information from FO"
         },
         {
           createdAt: detail.createdAt,
@@ -5702,6 +5702,12 @@
       const months = { Jan: 0, Feb: 1, Mar: 2, Apr: 3, May: 4, Jun: 5, Jul: 6, Aug: 7, Sep: 8, Oct: 9, Nov: 10, Dec: 11 };
       const [, day, month, year, hour, minute] = match;
       return Date.UTC(Number(year), months[month] ?? 0, Number(day), Number(hour), Number(minute));
+    }
+
+    function getAssetHistoryOffsetTime(value, offsetMinutes) {
+      const timestamp = parseAssetHistoryTime(value);
+      if (!timestamp) return value;
+      return `${formatReporterSubmissionTime(timestamp + offsetMinutes * 60 * 1000)} GMT+7`;
     }
 
     function renderAssetAuditState(state) {
