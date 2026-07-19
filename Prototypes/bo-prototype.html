@@ -6521,23 +6521,33 @@
       };
     }
 
+    function getAssetReportActionRows(asset, detail) {
+      const reportActions = new Set(["Auto Hide Asset", "Force Hide Asset", "Archive Asset", "Restore Visibility"]);
+      return getAssetStatusHistoryRows(asset, detail)
+        .filter(row => reportActions.has(row.action) || String(row.reference || "").startsWith("RPA-"))
+        .sort((a, b) => parseAssetHistoryTime(b.createdAt) - parseAssetHistoryTime(a.createdAt));
+    }
+
     function renderAssetReportAuditHistoryTable(asset) {
       const detail = getAssetFoDetail(asset);
-      const report = buildAssetReportContext(asset);
-      const reportCreatedAt = getAssetHistoryOffsetTime(detail.updatedAt, -(getAssetReportWaitingHours(asset) * 60));
-      const reportCreatedRow = {
-        createdAt: reportCreatedAt,
-        actor: "System",
-        action: "Report Created",
-        after: { type: asset.type, status: asset.status },
-        reference: report.id,
-        note: report.reason
-      };
-      const allRows = [reportCreatedRow, ...getAssetStatusHistoryRows(asset, detail)];
+      const allRows = getAssetReportActionRows(asset, detail);
       const pageCount = Math.max(1, Math.ceil(allRows.length / reportHistoryPageSize));
       reportAuditHistoryPage = Math.min(reportAuditHistoryPage, pageCount);
       const start = (reportAuditHistoryPage - 1) * reportHistoryPageSize;
       const pageRows = allRows.slice(start, start + reportHistoryPageSize);
+      const rows = pageRows.length ? pageRows.map(row => `
+        <tr>
+          <td data-label="Date / Time">${formatAuditDisplayTime(row.createdAt)}</td>
+          <td data-label="Actor">${row.actor}</td>
+          <td data-label="Action">${row.action}</td>
+          <td data-label="Status">${renderAssetAuditState(row.after)}</td>
+          <td data-label="Reason / Note" class="history-note">${row.note || ""}</td>
+        </tr>
+      `).join("") : `
+        <tr>
+          <td colspan="5" class="history-note">No admin action recorded yet</td>
+        </tr>
+      `;
       return `
         <div class="history-table-wrap">
           <table class="history-table asset-status-history-table">
@@ -6546,23 +6556,11 @@
                 <th>Date / Time</th>
                 <th>Actor</th>
                 <th>Action</th>
-                <th>Asset Status</th>
-                <th>Reference</th>
+                <th>Status</th>
                 <th>Reason / Note</th>
               </tr>
             </thead>
-            <tbody>
-              ${pageRows.map(row => `
-                <tr>
-                  <td data-label="Date / Time">${formatAuditDisplayTime(row.createdAt)}</td>
-                  <td data-label="Actor">${row.actor}</td>
-                  <td data-label="Action">${row.action}</td>
-                  <td data-label="Asset Status">${renderAssetAuditState(row.after)}</td>
-                  <td data-label="Reference">${row.reference || "-"}</td>
-                  <td data-label="Reason / Note" class="history-note">${row.note || ""}</td>
-                </tr>
-              `).join("")}
-            </tbody>
+            <tbody>${rows}</tbody>
           </table>
           ${renderReportHistoryPager("audit", reportAuditHistoryPage, pageCount, allRows.length, start)}
         </div>
