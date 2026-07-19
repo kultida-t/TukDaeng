@@ -5007,6 +5007,7 @@
       const baseTime = parseBangkokAuditTime(createdLog?.createdAt) || Date.UTC(2026, 6, 13, 10, 0);
       const reporterCount = Math.max(Number(report?.reporters) || 0, 1);
       const reporterNames = reportReporterNames[report.id] || [];
+      const assetAdditionalDetails = report.category === "Asset" && report.reporterNote ? [report.reporterNote] : [];
       return Array.from({ length: reporterCount }, (_, index) => {
         const appReason = report.category === "Asset"
           ? (report.foReason || report.reason)
@@ -5017,6 +5018,7 @@
           reportedAt: formatReporterSubmissionTime(baseTime + minuteOffset * 60 * 1000),
           source: report.source,
           note: appReason,
+          additionalDetails: assetAdditionalDetails[index] || "",
           status: index === 0 ? "เปิดเคส" : "รวมเคส"
         };
       });
@@ -5043,14 +5045,17 @@
       reporterHistoryPage = Math.min(reporterHistoryPage, pageCount);
       const start = (reporterHistoryPage - 1) * reportHistoryPageSize;
       const pageRows = allRows.slice(start, start + reportHistoryPageSize);
+      const isAssetReportHistory = report.category === "Asset";
       const noteColumnLabel = report.category === "Asset" ? "Report Reason" : "Reporter note";
+      const showAdditionalDetails = isAssetReportHistory;
       const rows = pageRows.map(row => `
         <tr>
           <td data-label="วันที่ / เวลา">${row.reportedAt}</td>
           <td data-label="Reporter">${row.reporter}</td>
-          <td data-label="Source">${row.source}</td>
+          ${isAssetReportHistory ? "" : `<td data-label="Source">${row.source}</td>`}
           <td data-label="Status">${row.status}</td>
           <td data-label="${noteColumnLabel}" class="history-note">${row.note}</td>
+          ${showAdditionalDetails ? `<td data-label="Additional Details" class="history-note">${row.additionalDetails || ""}</td>` : ""}
         </tr>
       `).join("");
       return `
@@ -5060,9 +5065,10 @@
               <tr>
                 <th>วันที่ / เวลา</th>
                 <th>Reporter</th>
-                <th>Source</th>
+                ${isAssetReportHistory ? "" : "<th>Source</th>"}
                 <th>Status</th>
                 <th>${noteColumnLabel}</th>
+                ${showAdditionalDetails ? "<th>Additional Details</th>" : ""}
               </tr>
             </thead>
             <tbody>${rows}</tbody>
@@ -8657,16 +8663,6 @@
               <div class="detail-tile"><span>Owner ID</span><strong>${report.ownerId}</strong></div>
               <div class="detail-tile"><span>Source Module</span><strong>${report.source}</strong></div>
               <div class="detail-tile"><span>Asset Status</span><strong>${report.assetStatus}</strong></div>
-            </div>
-          </div>
-
-          <div class="detail-section">
-            <h4>Report Details</h4>
-            <div class="detail-grid report-detail-grid">
-              <div class="detail-tile"><span>Report Reason</span><strong>${report.foReason}</strong></div>
-              <div class="detail-tile"><span>Additional Details from Reporter</span><strong>${report.reporterNote}</strong></div>
-              <div class="detail-tile"><span>Admin Checkpoints from System</span><div class="chips">${report.reviewSignals.map(item => `<span class="chip">${item}</span>`).join("")}</div></div>
-              <div class="detail-tile"><span>What to Check Next</span>${report.nextCheck}</div>
             </div>
           </div>
 
