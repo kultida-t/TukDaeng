@@ -5325,7 +5325,7 @@
       const spec = assetModelSpecs[asset.name] || {};
       const owner = assetOwnerProfiles[asset.owner] || { id: "U-0000", username: asset.owner.toLowerCase().replace(/\s+/g, "."), email: "masked@example.com", phone: "08x-xxx-xxxx", accountStatus: "Active" };
       const idNumber = parseInt(String(asset.id || "").match(/\d+/)?.[0] || "0", 10);
-      const createdDay = Math.max(1, Math.min(28, idNumber % 28 || 14));
+      const createdDay = Math.max(1, Math.min(10, idNumber % 10 || 10));
       const updatedHour = 9 + (idNumber % 10);
       const photoCount = asset.type === "Show" ? 8 : asset.type === "Sold" ? 10 : 12;
       const reportCount = getAssetReportCount(asset);
@@ -5640,7 +5640,7 @@
       const isAutoHidden = asset.status === "Auto Hidden";
       const saleRows = asset.type === "Sold"
         ? [{
-            createdAt: `17 Jul 2026 ${String(12 + (idNumber % 5)).padStart(2, "0")}:40 GMT+7`,
+            createdAt: detail.updatedAt,
             actor: "System",
             action: "Sale Record Linked",
             before: { type: "Sale", status: "Active" },
@@ -5652,7 +5652,7 @@
       const moderationRows = [];
       if (asset.status === "Reviewing") {
         moderationRows.push({
-          createdAt: `17 Jul 2026 ${String(10 + (idNumber % 7)).padStart(2, "0")}:05 GMT+7`,
+          createdAt: detail.updatedAt,
           actor: "Somchai Admin",
           action: "Review Started",
           before: { type: asset.type, status: "Reported" },
@@ -5672,13 +5672,14 @@
           note: asset.action || "Visibility changed after BO moderation review"
         });
       }
+      const lifecycleType = asset.type === "Sold" ? "Sale" : asset.type;
       const lifecycleRows = [
         {
           createdAt: getAssetHistoryOffsetTime(detail.updatedAt, -5),
           actor: asset.owner,
           action: "Listing Updated",
-          before: { type: asset.type, status: "Draft" },
-          after: { type: asset.type, status: "Active" },
+          before: { type: lifecycleType, status: "Draft" },
+          after: { type: lifecycleType, status: "Active" },
           reference: asset.id,
           note: "Owner updated asset information from FO"
         },
@@ -5687,7 +5688,7 @@
           actor: asset.owner,
           action: "Asset Created",
           before: null,
-          after: { type: asset.type, status: "Active" },
+          after: { type: lifecycleType, status: "Active" },
           reference: asset.id,
           note: `${detail.brand} ${detail.reference || detail.model} listing created from FO asset form`
         }
