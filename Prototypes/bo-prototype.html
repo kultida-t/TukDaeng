@@ -6208,6 +6208,14 @@
       return `${user.lastActive} via ${provider}; device and IP shown only when policy permits`;
     }
 
+    function getUserRegisteredAt(user) {
+      if (user.registeredAt) return user.registeredAt;
+      const seed = Math.abs([...user.id].reduce((sum, char) => sum + char.charCodeAt(0), 0));
+      const hour = String(8 + (seed % 10)).padStart(2, "0");
+      const minute = String((seed * 7) % 60).padStart(2, "0");
+      return `${user.joined} ${hour}:${minute} GMT+7`;
+    }
+
     function getUserAccountStatusHistoryRows(user) {
       if (!user) return [];
       if (!Array.isArray(user.accountHistory)) user.accountHistory = [];
@@ -6215,7 +6223,7 @@
       const generatedRows = [
         {
           id: `${user.id}-REGISTERED`,
-          createdAt: user.joined,
+          createdAt: getUserRegisteredAt(user),
           actor: "System",
           action: "Account registered",
           before: "-",
@@ -6226,18 +6234,6 @@
       ];
       const statusRows = [];
       const deletionRows = [];
-      if (user.status !== "Pending Verification") {
-        generatedRows.unshift({
-          id: `${user.id}-LOGIN-LATEST`,
-          createdAt: user.lastActive,
-          actor: user.displayName,
-          action: "Latest login / session",
-          before: user.status,
-          after: user.status,
-          reference: provider,
-          note: "Device and IP are masked unless admin policy permits access"
-        });
-      }
       getReportsForUser(user).forEach(report => {
         ensureReportAuditLogs(report)
           .filter(log => log.after?.accountStatus && log.before?.accountStatus !== log.after.accountStatus)
@@ -6246,7 +6242,7 @@
               id: `${user.id}-${log.id}`,
               createdAt: log.createdAt,
               actor: log.actor || "System",
-              action: getReportAuditActionLabel(log),
+              action: log.action === "REPORT_CREATED" ? "Report User" : getReportAuditActionLabel(log),
               before: log.before?.accountStatus || "-",
               after: log.after?.accountStatus || "-",
               reference: report.id,
