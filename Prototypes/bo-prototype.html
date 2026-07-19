@@ -1475,6 +1475,9 @@
     .user-row.report-row {
       grid-template-columns: minmax(104px, .5fr) minmax(156px, .78fr) minmax(116px, .54fr) minmax(106px, .5fr) minmax(220px, 1.28fr) minmax(86px, .4fr) minmax(96px, .46fr) minmax(108px, .52fr) minmax(104px, .46fr);
     }
+    .user-row.asset-report-row {
+      grid-template-columns: minmax(104px, .5fr) minmax(190px, .9fr) minmax(128px, .6fr) minmax(106px, .5fr) minmax(260px, 1.36fr) minmax(86px, .4fr) minmax(96px, .46fr) minmax(84px, .36fr);
+    }
     .user-row.report-row:not(.head) {
       cursor: pointer;
     }
@@ -8666,7 +8669,7 @@
       const pageRows = sorted.slice(start, start + assetListPageSize);
       document.querySelector("#table").innerHTML = `
         <div class="user-table">
-          <div class="user-row report-row head"><div>Report ID</div><div>Asset</div><div>Asset Status</div><div>Status</div><div>Report Detail</div><div>Reporters</div><div>Priority</div><div>Source</div><div>Action</div></div>
+          <div class="user-row report-row asset-report-row head"><div>Report ID</div><div>Asset</div><div>Asset Status</div><div>Status</div><div>Report Detail</div><div>Reporters</div><div>Priority</div><div>Action</div></div>
           ${pageRows.map(asset => {
             const reportId = `RPA-${String(asset.id || "").replace(/\D/g, "").slice(-3).padStart(3, "0")}`;
             const reporters = getAssetReporters(asset);
@@ -8674,7 +8677,7 @@
             const priorityValue = getAssetReportPriorityValue(asset);
             const reason = getAssetReportReason(asset);
             return `
-              <div class="user-row report-row" data-asset-card="${asset.id}">
+              <div class="user-row report-row asset-report-row" data-asset-card="${asset.id}">
                 <div class="user-cell-primary" data-label="Report ID"><div class="main-text">${reportId}</div></div>
                 <div class="user-card-tags">
                   ${assetReportQueueStatusPill(asset)}
@@ -8683,17 +8686,15 @@
                   <span class="pill ${priorityValue === "high" ? "red" : priorityValue === "medium" ? "amber" : "blue"}">${priorityLabel}</span>
                   <div class="user-card-meta">
                     <div class="user-card-meta-item"><span>Asset</span><strong>${asset.name}</strong></div>
-                    <div class="user-card-meta-item"><span>Source</span><strong>Reported Assets</strong></div>
                     <div class="user-card-meta-item"><span>Report detail</span><strong>${reason}</strong></div>
                   </div>
                 </div>
-                <div data-label="Asset"><div class="main-text">${asset.name}</div><div class="muted">${asset.id} · ${asset.owner}</div></div>
+                <div data-label="Asset"><div class="main-text">${asset.name}</div></div>
                 <div data-label="Asset Status">${renderAssetStatusDisplay(asset)}</div>
                 <div data-label="Status">${assetReportQueueStatusPill(asset)}</div>
                 <div data-label="Report Detail"><div class="muted">${reason}</div></div>
                 <div data-label="Reporters"><div class="main-text">${reporters}</div></div>
                 <div data-label="Priority"><span class="pill ${priorityValue === "high" ? "red" : priorityValue === "medium" ? "amber" : "blue"}">${priorityLabel}</span></div>
-                <div data-label="Source"><div class="main-text">Reported Assets</div></div>
                 <div class="user-row-actions">
                   ${renderAssetReportRowActionMenu(asset)}
                 </div>
