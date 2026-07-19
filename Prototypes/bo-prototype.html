@@ -6898,7 +6898,18 @@
       }
       return rows
         .filter(row => reportActions.has(row.action) || String(row.reference || "").startsWith("RPA-"))
-        .sort((a, b) => parseAssetHistoryTime(b.createdAt) - parseAssetHistoryTime(a.createdAt));
+        .sort((a, b) => {
+          const timeDiff = parseAssetHistoryTime(b.createdAt) - parseAssetHistoryTime(a.createdAt);
+          if (timeDiff) return timeDiff;
+          return getAssetReportActionSortRank(b.action) - getAssetReportActionSortRank(a.action);
+        });
+    }
+
+    function getAssetReportActionSortRank(action) {
+      if (action === "Close Report") return 30;
+      if (action === "Archive Asset" || action === "Restore Visibility") return 20;
+      if (action === "Force Hide Asset" || action === "Auto Hide Asset") return 10;
+      return 0;
     }
 
     function renderAssetReportAuditHistoryTable(asset) {
