@@ -5665,14 +5665,16 @@
           note: getAssetModerationHistoryNote(moderationAction)
         });
       }
-      const lifecycleType = asset.type === "Sold" ? "Sale" : asset.type;
+      const ownerStatusRows = getAssetOwnerStatusHistoryRows(asset, detail);
+      const initialLifecycleType = ownerStatusRows[0]?.before?.type || (asset.type === "Sold" ? "Sale" : asset.type);
+      const currentLifecycleType = asset.type === "Sold" ? "Sale" : asset.type;
       const lifecycleRows = [
         {
           createdAt: getAssetHistoryOffsetTime(detail.updatedAt, -5),
           actor: asset.owner,
           action: "Listing Updated",
-          before: { type: lifecycleType, status: "Draft" },
-          after: { type: lifecycleType, status: "Active" },
+          before: { type: currentLifecycleType, status: "Active" },
+          after: { type: currentLifecycleType, status: "Active" },
           reference: "",
           note: "Owner updated asset information from FO"
         },
@@ -5681,13 +5683,35 @@
           actor: asset.owner,
           action: "Asset Created",
           before: null,
-          after: { type: lifecycleType, status: "Active" },
+          after: { type: initialLifecycleType, status: "Active" },
           reference: "",
           note: `${detail.brand} ${detail.reference || detail.model} listing created from FO asset form`
         }
       ];
-      return [...actionRows, ...moderationRows, ...saleRows, ...lifecycleRows]
+      return [...actionRows, ...moderationRows, ...saleRows, ...ownerStatusRows, ...lifecycleRows]
         .sort((a, b) => parseAssetHistoryTime(b.createdAt) - parseAssetHistoryTime(a.createdAt));
+    }
+
+    function getAssetOwnerStatusHistoryRows(asset, detail) {
+      const flows = {
+        "AST-8755": ["Sale", "Show"],
+        "AST-8791": ["Sale", "Show", "Hide"],
+        "AST-8571": ["Hide", "Show"],
+        "AST-8802": ["Show", "Sale"],
+        "AST-8497": ["Hide", "Sale"],
+        "AST-8524": ["Sale", "Show"]
+      };
+      const flow = flows[asset.id];
+      if (!flow || flow.length < 2) return [];
+      return flow.slice(1).map((type, index) => ({
+        createdAt: getAssetHistoryOffsetTime(detail.updatedAt, -((flow.length - index) * 60)),
+        actor: asset.owner,
+        action: "Asset Status Changed",
+        before: { type: flow[index], status: "Active" },
+        after: { type, status: "Active" },
+        reference: "",
+        note: `Owner changed asset status from ${flow[index]} to ${type}`
+      }));
     }
 
     function parseAssetHistoryTime(value) {
