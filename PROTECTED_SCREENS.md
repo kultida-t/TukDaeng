@@ -10,7 +10,9 @@ These screens have been confirmed by the user and are locked from incidental cha
 - User Management menu entry, User List navigation state, and Reported Users navigation state
 - Asset Management > Asset List
 - Asset Management > Asset Detail
-- Asset Management menu entry, Asset List navigation state, Asset Detail navigation state, and asset status/action flows
+- Asset Management > Reported Assets
+- Asset Management > Asset Report Detail
+- Asset Management menu entry, Asset List navigation state, Asset Detail navigation state, Reported Assets navigation state, Asset Report Detail navigation state, and asset status/action flows
 
 ## Protected Prototype Files
 
@@ -22,7 +24,7 @@ The current confirmed prototype implementation is in:
 - `Prototypes/assets/user-avatars/*`
 - `Prototypes/assets/fonts/*`
 
-Do not edit these files for unrelated work if the edit can change Login, Dashboard, User Management menu behavior, User List, Reported Users, user/report detail views, any user/report action flows, Asset Management menu behavior, Asset List, Asset Detail, or any asset status/action flows.
+Do not edit these files for unrelated work if the edit can change Login, Dashboard, User Management menu behavior, User List, Reported Users, user/report detail views, any user/report action flows, Asset Management menu behavior, Asset List, Asset Detail, Reported Assets, Asset Report Detail, any asset report detail modal, or any asset status/action flows.
 
 ## Login Protected Scope
 
@@ -73,6 +75,17 @@ The protected Asset Management > Asset List and Asset Detail scope includes:
 - Asset Management menu entry, Asset List submenu/active state, breadcrumbs, route behavior, transitions between Asset List and Asset Detail, and navigation state.
 - Mock data, fixtures, state logic, route parameters, audit records, computed labels, and shared components that directly support Asset List, Asset Detail, or asset action flows.
 
+## Reported Assets And Asset Report Detail Protected Scope
+
+The protected Asset Management > Reported Assets and Asset Report Detail scope includes:
+
+- The main Reported Assets list/table, asset report queue, report summary, report filters, search, sorting, pagination, tabs, and selection state.
+- Asset Report Detail pages, detail panels, report context sections, linked asset context, linked owner/user context, evidence/context sections, status history, moderation history, and back navigation from Asset Report Detail.
+- Every modal, drawer, detail modal, confirmation dialog, toast result, lock/confirm state, and action flow opened from Reported Assets or Asset Report Detail actions.
+- Report status actions, asset status actions triggered from report context, owner/user actions opened from asset report context, reason selectors, evidence/context fields, validation, disabled states, completed states, and audit/result messages.
+- Asset Management menu entry, Reported Assets submenu/active state, breadcrumbs, route behavior, transitions between Reported Assets, Asset Report Detail, Asset Detail, and Asset List, and navigation state.
+- Mock data, fixtures, state logic, route parameters, audit records, computed labels, and shared components that directly support Reported Assets or Asset Report Detail flows.
+
 ## Rules
 
 - Do not change layout, styling, behavior, routing, copy, mock data, or component structure for the protected screens unless the user explicitly asks for that exact change.
@@ -85,7 +98,7 @@ The protected Asset Management > Asset List and Asset Detail scope includes:
 ## Review Checklist Before Editing
 
 - Identify the files and routes involved in the requested change.
-- Check whether any target file is part of Login, Dashboard, Dashboard menu, User Management menu, User Management > User List, User Management > Reported Users, User Detail, Report Detail, any user/report action modal, Asset Management menu, Asset Management > Asset List, Asset Detail, or any asset action modal.
+- Check whether any target file is part of Login, Dashboard, Dashboard menu, User Management menu, User Management > User List, User Management > Reported Users, User Detail, Report Detail, any user/report action modal, Asset Management menu, Asset Management > Asset List, Asset Detail, Asset Management > Reported Assets, Asset Report Detail, any asset report detail modal, or any asset action modal.
 - Check whether any shared file is used by those protected screens.
 - If protected impact is possible, ask for confirmation before editing.
 - Keep changes scoped to the requested screen or feature.
