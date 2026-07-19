@@ -1009,6 +1009,19 @@
       min-width: 240px;
       max-width: 360px;
     }
+    .asset-reporter-history-table {
+      min-width: 960px;
+      table-layout: fixed;
+    }
+    .asset-reporter-history-table .history-note {
+      min-width: 0;
+      max-width: none;
+      overflow-wrap: anywhere;
+    }
+    .asset-reporter-history-table th,
+    .asset-reporter-history-table td {
+      padding: 11px 12px;
+    }
     .history-table small {
       color: var(--muted);
       font-size: 11px;
@@ -4999,7 +5012,13 @@
       "RPU-512": ["Anucha M.", "Benjawan S.", "Korn Vintage", "Pimchanok R."],
       "RPU-518": ["Nattapol P.", "Arthit K.", "Supansa W."],
       "RPU-541": ["Worawit C.", "Jirayu P.", "Nicha S.", "Tawan Watch", "Ploy R.", "Kanda M."],
-      "RPU-560": ["Somkid P.", "Watch Finder TH", "Ratchanon S.", "Mayuree W.", "Thanakorn L.", "Pattarapon C.", "Siriporn N.", "Vasin K.", "Araya Watch", "Nopporn T.", "Kanokwan S.", "Panuwat R.", "Suda Collector"]
+      "RPU-560": ["Somkid P.", "Watch Finder TH", "Ratchanon S.", "Mayuree W.", "Thanakorn L.", "Pattarapon C.", "Siriporn N.", "Vasin K.", "Araya Watch", "Nopporn T.", "Kanokwan S.", "Panuwat R.", "Suda Collector"],
+      "RPA-831": ["Nattapol P.", "Patchara L.", "Krit Watch", "Saran Collector", "Maliwan T.", "Anucha M.", "Benjawan S.", "Korn Vintage", "Pimchanok R.", "Worawit C."],
+      "RPA-694": ["Daily Watch Hunter", "Saran Collector", "Tawan Watch", "Nicha S."],
+      "RPA-559": ["Watch Finder TH", "Arthit K.", "Ratchanon S."],
+      "RPA-588": ["Ploy R.", "Minimal Dial Fan", "Kanokwan S."],
+      "RPA-536": ["Narin C.", "Thanawat S."],
+      "RPA-581": ["Jirayu P.", "Bangkok Watch Lab", "Suda Collector", "Vasin K."]
     };
 
     function getReporterHistoryRows(report) {
@@ -5058,9 +5077,19 @@
           ${showAdditionalDetails ? `<td data-label="Additional Details" class="history-note">${row.additionalDetails || ""}</td>` : ""}
         </tr>
       `).join("");
+      const tableClass = isAssetReportHistory ? "history-table asset-reporter-history-table" : "history-table";
+      const columnLayout = isAssetReportHistory ? `
+            <colgroup>
+              <col style="width: 15%">
+              <col style="width: 18%">
+              <col style="width: 12%">
+              <col style="width: 25%">
+              <col style="width: 30%">
+            </colgroup>` : "";
       return `
         <div class="history-table-wrap">
-          <table class="history-table">
+          <table class="${tableClass}">
+            ${columnLayout}
             <thead>
               <tr>
                 <th>วันที่ / เวลา</th>
