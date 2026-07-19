@@ -4420,7 +4420,7 @@
         item("U-1042", "Nattapol P.", "Apple", "Buyer", "ปกติ", "Active", "มี support ticket เรื่อง proof of payment", ["Ticket 1"], "เปิด ticket และดูประวัติ offer ที่เกี่ยวข้อง")
       ]),
       assets: mod("Asset Management", "การดำเนินงาน / Asset Management", "Asset List & Moderation", "จัดการสถานะ Sale, Show, Hide, Sold และ reported assets", "สร้าง asset note", [["Sale", "2,816", "แสดงใน Feed/Search"], ["Show", "428", "แสดงใน collection"], ["Hidden", "76", "owner-only"], ["Reported", "22", "รอตรวจ 9 รายการ"]], [
-        item("AST-8831", "Rolex Submariner 16610", "Crown Time BKK", "Sale", "สูง", "Auto Hidden", "รูปประกาศซ้ำและราคาเบี่ยงจาก market index", ["THB 318,000", "Reports 5", "Auto hidden"], "ครบ 5 unique reports ระบบซ่อนชั่วคราวเพื่อรอ Admin ตรวจรูป, proof of payment, provenance และ Market Price Index"),
+        item("AST-8831", "Rolex Submariner 16610", "Crown Time BKK", "Sale", "สูง", "Auto Hidden", "รูปประกาศซ้ำและราคาเบี่ยงจาก market index", ["THB 318,000", "Reports 5", "Auto hidden"], "ครบ 5 reports ระบบซ่อนชั่วคราวเพื่อรอ Admin ตรวจสอบ"),
         item("AST-8802", "Omega Speedmaster", "Vintage Vault BKK", "Sale", "กลาง", "Active", "ราคาสูงกว่าค่ากลาง 18% จากรุ่นเดียวกัน", ["Watch Alert match 12"], "ส่ง warning หรือ force Hide หากข้อมูลหลอกลวง"),
         item("AST-8791", "Seiko 6139", "Archive Collector", "Hide", "ปกติ", "Owner-only", "รอ account deletion dependency check", ["Deletion linked"], "คงข้อมูล transaction/audit ตาม retention"),
         item("AST-8755", "Patek Philippe Calatrava", "The Collector", "Show", "ปกติ", "Active", "แสดงใน portfolio เท่านั้น ไม่มีปุ่มเสนอซื้อ", ["Portfolio", "Private price"], "ตรวจว่าข้อมูล private ไม่แสดงบน FO public surface"),
@@ -5637,6 +5637,7 @@
       const idNumber = parseInt(String(asset.id || "").match(/\d+/)?.[0] || "0", 10);
       const reportCount = Number(getAssetReportCount(asset)) || 0;
       const actionRows = Array.isArray(asset.assetHistory) ? asset.assetHistory : [];
+      const isAutoHidden = asset.status === "Auto Hidden";
       const saleRows = asset.type === "Sold"
         ? [{
             createdAt: `17 Jul 2026 ${String(12 + (idNumber % 5)).padStart(2, "0")}:40 GMT+7`,
@@ -5646,17 +5647,6 @@
             after: { type: "Sold", status: "Closed" },
             reference: detail.linkedOffer !== "None" ? detail.linkedOffer : `OFR-${idNumber % 900}`,
             note: `Sold from ${asset.owner} to buyer B***-${idNumber % 90}; final price masked and evidence summarized for BO review`
-          }]
-        : [];
-      const reportRows = reportCount
-        ? [{
-            createdAt: `16 Jul 2026 ${String(9 + (idNumber % 8)).padStart(2, "0")}:15 GMT+7`,
-            actor: "System",
-            action: "Report Asset",
-            before: { type: asset.type, status: "Active" },
-            after: { type: asset.type, status: asset.status === "Active" ? "Reported" : asset.status },
-            reference: `Reports ${reportCount}`,
-            note: detail.reportReason
           }]
         : [];
       const moderationRows = [];
@@ -5674,8 +5664,8 @@
       if (isTemporarilyHiddenAsset(asset) || asset.status === "Deleted / Archived") {
         moderationRows.push({
           createdAt: detail.updatedAt,
-          actor: "Somchai Admin",
-          action: asset.status === "Deleted / Archived" ? "Archive Asset" : "Force Hide Asset",
+          actor: isAutoHidden ? "System" : "Somchai Admin",
+          action: asset.status === "Deleted / Archived" ? "Archive Asset" : isAutoHidden ? "Auto Hide Asset" : "Force Hide Asset",
           before: { type: asset.type, status: reportCount ? "Reviewing" : "Reported" },
           after: { type: asset.type, status: asset.status },
           reference: reportCount ? `Reports ${reportCount}` : asset.id,
@@ -5688,7 +5678,7 @@
           actor: asset.owner,
           action: "Listing Updated",
           before: { type: asset.type, status: "Draft" },
-          after: { type: asset.type, status: asset.status },
+          after: { type: asset.type, status: "Active" },
           reference: asset.id,
           note: "Owner submitted latest media, price, visibility, and specification values from FO"
         },
@@ -5702,7 +5692,7 @@
           note: `${detail.brand} ${detail.reference || detail.model} listing created from FO asset form`
         }
       ];
-      return [...actionRows, ...moderationRows, ...saleRows, ...reportRows, ...lifecycleRows]
+      return [...actionRows, ...moderationRows, ...saleRows, ...lifecycleRows]
         .sort((a, b) => parseAssetHistoryTime(b.createdAt) - parseAssetHistoryTime(a.createdAt));
     }
 
