@@ -5652,14 +5652,15 @@
           }]
         : [];
       const moderationRows = [];
-      if (isTemporarilyHiddenAsset(asset) || asset.status === "Deleted / Archived") {
+      const hasExplicitModerationHistory = actionRows.some(row => row.action === moderationAction && row.after?.status === asset.status);
+      if ((isTemporarilyHiddenAsset(asset) || asset.status === "Deleted / Archived") && !hasExplicitModerationHistory) {
         moderationRows.push({
           createdAt: detail.updatedAt,
           actor: isAutoHidden ? "System" : "Somchai Admin",
           action: moderationAction,
           before: { type: asset.type, status: reportCount ? "Reviewing" : "Reported" },
           after: { type: asset.type, status: asset.status },
-          reference: reportReference || asset.id,
+          reference: reportReference,
           referenceAssetId: asset.id,
           note: getAssetModerationHistoryNote(moderationAction)
         });
@@ -5672,7 +5673,7 @@
           action: "Listing Updated",
           before: { type: lifecycleType, status: "Draft" },
           after: { type: lifecycleType, status: "Active" },
-          reference: asset.id,
+          reference: "",
           note: "Owner updated asset information from FO"
         },
         {
@@ -5681,7 +5682,7 @@
           action: "Asset Created",
           before: null,
           after: { type: lifecycleType, status: "Active" },
-          reference: asset.id,
+          reference: "",
           note: `${detail.brand} ${detail.reference || detail.model} listing created from FO asset form`
         }
       ];
@@ -5725,7 +5726,7 @@
       if (hasHiddenHistory) return;
       const detail = getAssetFoDetail(asset);
       const reportCount = Number(getAssetReportCount(asset)) || 0;
-      const reference = reportCount ? getAssetReportReference(asset) : asset.id;
+      const reference = reportCount ? getAssetReportReference(asset) : "";
       appendAssetStatusHistory(asset, {
         createdAt: detail.updatedAt,
         actor: beforeState.status === "Auto Hidden" ? "System" : "Somchai Admin",
@@ -5815,7 +5816,7 @@
         id: `AUD-${asset.id}-${String(nextNumber).padStart(3, "0")}`,
         createdAt: formatBangkokTimestamp(),
         actor: "Somchai Admin",
-        reference: asset.id,
+        reference: "",
         note: getAssetModerationHistoryNote(log.action),
         ...log
       });
@@ -6087,7 +6088,7 @@
       if (!asset || !config) return;
       const before = `${asset.type} / ${asset.status}`;
       const beforeState = { type: asset.type, status: asset.status };
-      if (action === "restore-visibility") ensureAssetHiddenHistoryBeforeRestore(asset, beforeState);
+      if (action === "restore-visibility" || action === "delete-post") ensureAssetHiddenHistoryBeforeRestore(asset, beforeState);
       config.apply(asset);
       appendAssetStatusHistory(asset, {
         action: getAssetAuditActionLabel(action),
