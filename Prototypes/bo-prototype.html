@@ -6118,11 +6118,11 @@
     }
 
     function canAdminForceHideAsset(asset) {
-      return (asset.status === "Reported" || asset.status === "Reviewing") && (asset.type === "Sale" || asset.type === "Show");
+      return ["Active", "Reported", "Reviewing"].includes(asset.status) && (asset.type === "Sale" || asset.type === "Show");
     }
 
     function canAdminDeleteAsset(asset) {
-      return ["Reported", "Reviewing", "Admin Hidden", "Auto Hidden"].includes(asset.status) && (asset.type === "Sale" || asset.type === "Show");
+      return ["Active", "Reported", "Reviewing", "Admin Hidden", "Auto Hidden"].includes(asset.status) && (asset.type === "Sale" || asset.type === "Show");
     }
 
     function getAssetRowActions(asset) {
@@ -6177,11 +6177,60 @@
       }
     };
 
+    const assetDeletePostFlowScenarios = [
+      { value: "success", label: "สำเร็จ" },
+      { value: "invalid_state", label: "สถานะ Asset ไม่ตรงเงื่อนไข" },
+      { value: "stale_data", label: "ข้อมูลเปลี่ยนระหว่างดำเนินการ" },
+      { value: "policy_blocked", label: "ยังไม่ผ่านเงื่อนไขที่ระบบกำหนด" },
+      { value: "archive_failed", label: "ลบ/เก็บถาวรไม่สำเร็จ" },
+      { value: "audit_failed", label: "บันทึก Audit Log ไม่สำเร็จ" },
+      { value: "session_expired", label: "เซสชันหมดอายุ" }
+    ];
+
+    const assetDeletePostErrorSamples = {
+      invalid_state: {
+        title: "ไม่สามารถลบ/เก็บถาวรได้",
+        detail: "สถานะ Asset ปัจจุบันไม่ตรงกับเงื่อนไขของการลบ/เก็บถาวร กรุณาตรวจสถานะล่าสุดก่อนยืนยันอีกครั้ง"
+      },
+      stale_data: {
+        title: "ข้อมูล Asset มีการเปลี่ยนแปลงแล้ว",
+        detail: "มีการอัปเดต Asset นี้ระหว่างที่เปิดหน้าต่างยืนยัน กรุณารีเฟรชข้อมูลแล้วลองอีกครั้ง"
+      },
+      policy_blocked: {
+        title: "ยังไม่สามารถลบ/เก็บถาวร Asset นี้ได้",
+        detail: "Asset นี้ยังมีเงื่อนไข หลักฐาน หรือรายการอ้างอิงที่ต้องตรวจสอบเพิ่มเติมก่อนลบ/เก็บถาวร"
+      },
+      archive_failed: {
+        title: "ลบ/เก็บถาวรไม่สำเร็จ",
+        detail: "ระบบยังไม่สามารถนำ Asset ออกจากการแสดงผลและเปลี่ยนเป็นสถานะเก็บถาวรได้ กรุณาลองอีกครั้ง"
+      },
+      audit_failed: {
+        title: "บันทึก Audit Log ไม่สำเร็จ",
+        detail: "ระบบยังไม่สามารถบันทึกเหตุผลและสถานะก่อน/หลังการดำเนินการได้ กรุณาลองอีกครั้งก่อนยืนยัน"
+      },
+      session_expired: {
+        title: "เซสชันหมดอายุ",
+        detail: "กรุณาเข้าสู่ระบบใหม่ก่อนยืนยัน เพื่อให้การดำเนินการและ Audit Log ถูกต้อง"
+      }
+    };
+
     function getAssetActionConfig(action, asset) {
       const restoreTarget = asset?.type || "Sale";
       const configs = {
         hide: { title: "ยืนยันการซ่อนชั่วคราว", button: "ซ่อนชั่วคราว", apply: asset => { asset.status = "Admin Hidden"; asset.action = "ซ่อนโพสต์ชั่วคราวจาก Feed/Search/Profile public surface พร้อมบันทึกเหตุผล"; } },
-        "delete-post": { title: "ยืนยันการลบ/เก็บถาวร", button: "ลบ/เก็บถาวร", apply: asset => { asset.status = "Deleted / Archived"; asset.action = "ลบ/เก็บถาวรจาก public surface หลังยืนยันว่าเนื้อหาผิดจริง พร้อมเก็บ audit/history"; } },
+        "delete-post": {
+          title: "ยืนยันการลบ/เก็บถาวร",
+          button: "ยืนยัน",
+          summary: "ใช้เมื่อตรวจสอบแล้วว่า Asset นี้ไม่ควรแสดงหรือใช้งานต่อในแอป",
+          reasonLabel: `เหตุผลการลบ/เก็บถาวรของ ${restoreTarget}`,
+          reasons: [
+            "ตรวจสอบแล้วพบว่าเนื้อหาไม่เป็นไปตามนโยบาย",
+            "ยืนยันแล้วว่า Asset หรือข้อมูลอ้างอิงไม่ถูกต้อง",
+            "ทีมที่รับผิดชอบอนุมัติให้ลบ/เก็บถาวร"
+          ],
+          notePlaceholder: "สรุปผลการตรวจสอบ เหตุผลที่ลบ/เก็บถาวร และข้อมูลอ้างอิงที่เกี่ยวข้อง",
+          apply: asset => { asset.status = "Deleted / Archived"; asset.action = "ลบ/เก็บถาวรจาก public surface หลังยืนยันว่าเนื้อหาผิดจริง พร้อมเก็บ audit/history"; }
+        },
         "restore-visibility": {
           title: "ยืนยันยกเลิกการซ่อนชั่วคราว",
           button: "ยืนยัน",
@@ -6209,6 +6258,74 @@
           <p><strong>ผลกระทบต่อแอปพลิเคชัน:</strong> หลังยืนยัน ระบบจะเปิดการมองเห็น ${asset.type} กลับไปยัง ${visibilitySurface} และบันทึก Audit Log โดยไม่แก้ไขเนื้อหาที่เจ้าของประกาศกรอกไว้</p>
         </div>
       `;
+    }
+
+    function renderAssetDeletePostImpactNote(asset) {
+      const visibilitySurface = asset.type === "Sale"
+        ? "Feed, Search, Profile, Watch Alert, Offer และ Chat reference"
+        : "Profile / Collection และ public reference ที่เกี่ยวข้อง";
+      return `
+        <div class="module-note user-action-impact user-action-impact-card user-action-impact-warning">
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 3.2c.7 0 1.35.37 1.7.98l8.05 13.95A1.95 1.95 0 0 1 20.05 21H3.95a1.95 1.95 0 0 1-1.7-2.87L10.3 4.18A1.95 1.95 0 0 1 12 3.2Zm0 4.6a1 1 0 0 0-1 1v4.4a1 1 0 1 0 2 0V8.8a1 1 0 0 0-1-1Zm0 8.45a1.15 1.15 0 1 0 0 2.3 1.15 1.15 0 0 0 0-2.3Z"/></svg>
+          <p><strong>ผลกระทบต่อแอปพลิเคชัน:</strong> หลังยืนยัน ระบบจะนำ asset สถานะ ${asset.type.toLowerCase()} นี้ออกจาก ${visibilitySurface} และบันทึก Audit Log โดยไม่แก้ไขเนื้อหาที่เจ้าของ Asset กรอกไว้</p>
+        </div>
+      `;
+    }
+
+    function renderAssetDeletePostModal(asset, action, config, resultMessage = "", resultDetail = "", resultType = "", selectedScenario = "success") {
+      const hasResult = Boolean(resultMessage);
+      const modalBody = document.querySelector("#user-action-modal-body");
+      modalBody.innerHTML = `
+        <div class="user-action-page">
+          <div class="user-action-head">
+            <div>
+              <h2 id="user-action-modal-title">${config.title}</h2>
+              <p>${config.summary}</p>
+            </div>
+            <button class="btn user-action-close" type="button" data-user-action-modal-close aria-label="Close modal" title="Close">
+              ${iconSvg.close}
+            </button>
+          </div>
+          <div class="user-action-target">
+            <div>
+              <strong>${asset.name}</strong>
+              <span>${asset.id} · ${asset.owner}</span>
+            </div>
+            ${renderAssetStatusDisplay(asset)}
+          </div>
+          <div class="user-action-layout">
+            <div class="detail-section">
+              <div class="user-action-form">
+                <label>
+                  ${config.reasonLabel}
+                  ${customSelect("asset-delete-reason", config.reasonLabel, config.reasons.map(reason => ({ value: reason, label: reason })), "", "data-custom-select-silent")}
+                </label>
+                <label>
+                  Note / หมายเหตุ
+                  <textarea id="asset-delete-note" placeholder="${config.notePlaceholder}"></textarea>
+                </label>
+                ${renderAssetDeletePostImpactNote(asset)}
+                <div class="user-detail-actions user-action-footer">
+                  <button class="user-detail-action-btn danger user-action-confirm" type="button" data-asset-action-confirm="${action}" data-asset-id="${asset.id}">${config.button}</button>
+                  <button class="user-detail-action-btn" type="button" data-user-action-modal-close>ยกเลิก</button>
+                </div>
+                <div class="warning-note action-feedback user-action-result ${hasResult ? "show" : ""} ${resultType}">
+                  <strong>${resultMessage || "Audit requirement"}</strong><br>
+                  <span>${resultDetail || "ต้องบันทึกเหตุผล ผลตรวจสอบ และสถานะก่อน/หลังการดำเนินการไว้ใน Admin Action History"}</span>
+                </div>
+                <details class="prototype-tools user-action-prototype-tools">
+                  <summary>Prototype scenario</summary>
+                  <label>
+                    Test flow
+                    ${customSelect("asset-delete-scenario", "Test flow", assetDeletePostFlowScenarios, selectedScenario, "data-custom-select-silent")}
+                  </label>
+                </details>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+      showUserActionModal(true);
     }
 
     function renderAssetRestoreVisibilityModal(asset, action, config, resultMessage = "", resultDetail = "", resultType = "", selectedScenario = "success") {
@@ -6286,6 +6403,10 @@
       if (!asset || !config) return;
       if (action === "restore-visibility") {
         renderAssetRestoreVisibilityModal(asset, action, config);
+        return;
+      }
+      if (action === "delete-post") {
+        renderAssetDeletePostModal(asset, action, config);
         return;
       }
       const modalBody = document.querySelector("#user-action-modal-body");
@@ -8735,6 +8856,13 @@
           const config = getAssetActionConfig(assetAction, asset);
           const errorSample = assetRestoreVisibilityErrorSamples[scenario] || assetRestoreVisibilityErrorSamples.invalid_state;
           renderAssetRestoreVisibilityModal(asset, assetAction, config, errorSample.title, errorSample.detail, "error", scenario);
+          return;
+        }
+        const deleteScenario = document.querySelector("#asset-delete-scenario")?.value || "success";
+        if (assetAction === "delete-post" && deleteScenario !== "success") {
+          const config = getAssetActionConfig(assetAction, asset);
+          const errorSample = assetDeletePostErrorSamples[deleteScenario] || assetDeletePostErrorSamples.invalid_state;
+          renderAssetDeletePostModal(asset, assetAction, config, errorSample.title, errorSample.detail, "error", deleteScenario);
           return;
         }
         confirmAssetAction(asset, assetAction);
