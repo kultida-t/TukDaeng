@@ -5705,7 +5705,7 @@
     }
 
     function isAssetListConsignment(asset) {
-      return isAssetConsignment(asset) || asset.id === "AST-8831";
+      return isAssetConsignment(asset);
     }
 
     function renderAssetListStatusDisplay(asset) {
@@ -5790,7 +5790,8 @@
     function getAssetReportDescriptionRows(asset, detail) {
       return [
         ["Title", asset.name],
-        ["Price", detail.price || "-"]
+        ["Price", detail.price || "-"],
+        ["Provenance", getAssetProvenanceType(asset)]
       ];
     }
 
@@ -6244,11 +6245,12 @@
     }
 
     function isAssetConsignment(asset) {
-      return asset.type === "Sale" && ["AST-8802", "AST-8579", "AST-8559", "AST-8548"].includes(asset.id);
+      return asset.type === "Sale" && ["AST-8831", "AST-8802", "AST-8579", "AST-8559", "AST-8548"].includes(asset.id);
     }
 
     function getAssetConsignmentAskingPrice(asset) {
       const prices = {
+        "AST-8831": "318,000",
         "AST-8802": "186,000",
         "AST-8579": "612,000",
         "AST-8559": "1,185,000",
@@ -6269,6 +6271,14 @@
       const idNumber = parseInt(String(asset.id || "").match(/\d+/)?.[0] || "0", 10);
       const askingPrice = detail.price && /^THB\s/i.test(detail.price) ? detail.price.replace(/^THB\s*/i, "") : getAssetConsignmentAskingPrice(asset);
       const consignors = {
+        "AST-8831": {
+          fullName: "K. Vichai Prasert",
+          phone: "086-552-8831",
+          contact: "Line: vichai.watch",
+          email: "vichai.prasert@example.com",
+          payoutMethod: "Bank transfer",
+          minimumAcceptablePrice: "305,000"
+        },
         "AST-8802": {
           fullName: "K. Narin Chaiyaporn",
           phone: "082-444-2188",
