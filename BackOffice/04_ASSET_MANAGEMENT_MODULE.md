@@ -81,7 +81,7 @@ Asset list ต้องแสดงข้อมูลขั้นต่ำ:
 - Status
 - Moderation state
 - Flag/report count
-- Asking price หรือ owner estimated value ตาม permission
+- Price field: แสดงเสมอใน BO; ถ้า Owner กรอกราคาให้แสดงราคา ถ้าไม่กรอกให้แสดง `-`
 - Created date
 - Updated date
 - Last status change
@@ -155,6 +155,18 @@ Asset detail ต้องรวมข้อมูลสำหรับ review:
 - Owner Estimated Value
 - Offer summary ถ้ามี
 - Sold status และ sold history ถ้ามี
+
+### Price Display Rules
+
+ให้ใช้ rule กลางเดียวกับ FO:
+
+- Owner สามารถกรอก `Asking Price (THB)` ได้ทุกสถานะ (`Sale`, `Show`, `Hide`) และระบบสามารถเก็บราคาต่อไปในสถานะ `Sold`
+- Price เป็น optional ทุกสถานะ; ถ้าไม่กรอกต้องเก็บเป็น empty/null และ BO ต้องแสดง `-` ไม่สร้าง placeholder เช่น `N/A`
+- BO Asset Detail / Report Detail ต้องแสดง field `Price` เสมอ: มีราคาให้แสดงราคา ไม่มีราคาให้แสดง `-`
+- FO public/buyer-facing surface แสดงราคาเฉพาะ status `Sale`
+- Status `Sale`: ถ้ามีราคา FO แสดงราคานั้น; ถ้าไม่มีราคา FO แสดง `Price on request`
+- Status `Show` หรือ `Hide`: แม้มีราคากรอกไว้ FO public surface ต้องไม่แสดงราคา; ราคาเห็นได้เฉพาะ Owner ในหน้าแก้ไข / owner-private view และ BO/Admin view
+- Status `Sold`: BO แสดงราคาปกติเหมือน Sale; FO owner-facing sold view หากมีราคาให้แสดงเป็นราคาขีดฆ่าเพื่อบอกว่าขายแล้ว
 
 ### Provenance And Consignment
 
