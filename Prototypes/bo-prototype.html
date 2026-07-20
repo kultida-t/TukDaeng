@@ -7309,9 +7309,9 @@
           apply: asset => { asset.status = "Admin Hidden"; asset.action = "ซ่อนโพสต์ชั่วคราวจาก Feed/Search/Profile public surface พร้อมบันทึกเหตุผล"; }
         },
         "delete-post": {
-          title: "ยืนยันการซ่อนถาวร",
+          title: "ซ่อนสินทรัพย์ถาวร",
           button: "ยืนยัน",
-          summary: "ใช้เมื่อตรวจสอบแล้วว่า Asset นี้ไม่ควรแสดงหรือใช้งานต่อในแอป",
+          summary: "ซ่อนสินทรัพย์จากพื้นที่สาธารณะถาวร หลังตรวจสอบแล้วว่าไม่ควรแสดงต่อในแอป",
           reasonLabel: `เหตุผลการซ่อนถาวรของ ${restoreTarget}`,
           reasons: [
             "ตรวจสอบแล้วพบว่าเนื้อหาไม่เป็นไปตามนโยบาย",
@@ -7440,6 +7440,51 @@
       `;
     }
 
+    function renderAssetDeletePostEmailNote(asset) {
+      return `
+        <div class="module-note user-action-impact user-action-impact-card user-action-impact-notice">
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M4.5 5h15A2.5 2.5 0 0 1 22 7.5v9A2.5 2.5 0 0 1 19.5 19h-15A2.5 2.5 0 0 1 2 16.5v-9A2.5 2.5 0 0 1 4.5 5Zm0 2a.5.5 0 0 0-.5.5v.3l8 4.9 8-4.9v-.3a.5.5 0 0 0-.5-.5h-15Zm15 10a.5.5 0 0 0 .5-.5v-6.35l-7.48 4.57a1 1 0 0 1-1.04 0L4 10.15v6.35a.5.5 0 0 0 .5.5h15Z"/></svg>
+          <p><strong>แจ้งผู้ใช้:</strong> ระบบจะส่งอีเมลแจ้งการซ่อนสินทรัพย์ถาวรไปที่ ${getAssetOwnerEmail(asset)} (registered owner email) เป็นช่องทางหลัก</p>
+        </div>
+      `;
+    }
+
+    function getAssetDeletePostEmailCopy(asset, reason = "") {
+      return {
+        subject: "[TukDaeng] สินทรัพย์ของคุณถูกซ่อนถาวร / Your asset has been permanently hidden",
+        lines: [
+          `สวัสดี ${asset.owner},`,
+          `สินทรัพย์ ${asset.name} (${asset.id}) ถูกซ่อนถาวรหลังการตรวจสอบ`,
+          `เหตุผลการดำเนินการ: ${reason || "ตรวจสอบตามนโยบายการรายงานสินทรัพย์"}`,
+          "รายการนี้จะไม่แสดงบน Feed, Search, Profile, Watch Alert, Offer, Chat reference และพื้นที่สาธารณะที่เกี่ยวข้อง",
+          "เจ้าของยังเห็นรายการนี้ได้แบบ read-only แต่ไม่สามารถแก้ไข ยกเลิกซ่อน หรือลบเองได้ และรายการนี้จะไม่ถูกนับใน portfolio value",
+          "---",
+          `Hello ${asset.owner},`,
+          `Your asset ${asset.name} (${asset.id}) has been permanently hidden after review.`,
+          `Action reason: ${reason || "Asset report policy review"}`,
+          "This asset will not appear on Feed, Search, Profile, Watch Alert, Offer, Chat references, or related public surfaces.",
+          "You can still view this asset in read-only mode, but it cannot be edited, restored, or deleted by the owner, and it will not be counted in portfolio value.",
+          `Reference: ${asset.id}`,
+          "Contact support: support@tukdaeng.example"
+        ]
+      };
+    }
+
+    function renderAssetDeletePostEmailPreview(asset, reason = "") {
+      const emailCopy = getAssetDeletePostEmailCopy(asset, reason);
+      return `
+        <details class="email-preview" data-asset-delete-email-preview data-asset-id="${asset.id}">
+          <summary>ดูตัวอย่างอีเมลแจ้งเตือน</summary>
+          <div class="email-preview-body">
+            <div class="email-preview-subject"><strong>หัวข้อ:</strong> <span data-email-preview-subject>${emailCopy.subject}</span></div>
+            <div class="email-preview-message" data-email-preview-message>
+              ${emailCopy.lines.map(line => `<p>${line}</p>`).join("")}
+            </div>
+          </div>
+        </details>
+      `;
+    }
+
     function updateAssetHideEmailPreview() {
       const preview = document.querySelector("[data-asset-hide-email-preview]");
       if (!preview) return;
@@ -7447,6 +7492,19 @@
       if (!asset) return;
       const reason = document.querySelector("#asset-hide-reason")?.value || "";
       const emailCopy = getAssetHideEmailCopy(asset, reason);
+      const subject = preview.querySelector("[data-email-preview-subject]");
+      const message = preview.querySelector("[data-email-preview-message]");
+      if (subject) subject.textContent = emailCopy.subject;
+      if (message) message.innerHTML = emailCopy.lines.map(line => `<p>${line}</p>`).join("");
+    }
+
+    function updateAssetDeletePostEmailPreview() {
+      const preview = document.querySelector("[data-asset-delete-email-preview]");
+      if (!preview) return;
+      const asset = moduleData.assets.rows.find(entry => entry.id === preview.dataset.assetId);
+      if (!asset) return;
+      const reason = document.querySelector("#asset-delete-reason")?.value || "";
+      const emailCopy = getAssetDeletePostEmailCopy(asset, reason);
       const subject = preview.querySelector("[data-email-preview-subject]");
       const message = preview.querySelector("[data-email-preview-message]");
       if (subject) subject.textContent = emailCopy.subject;
@@ -7514,6 +7572,7 @@
 
     function renderAssetDeletePostModal(asset, action, config, resultMessage = "", resultDetail = "", resultType = "", selectedScenario = "success") {
       const hasResult = Boolean(resultMessage);
+      const defaultReason = config.reasons?.[0] || "";
       const modalBody = document.querySelector("#user-action-modal-body");
       modalBody.innerHTML = `
         <div class="user-action-page">
@@ -7545,6 +7604,8 @@
                   <textarea id="asset-delete-note" placeholder="${config.notePlaceholder}"></textarea>
                 </label>
                 ${renderAssetDeletePostImpactNote(asset)}
+                ${renderAssetDeletePostEmailNote(asset)}
+                ${renderAssetDeletePostEmailPreview(asset, defaultReason)}
                 <div class="user-detail-actions user-action-footer">
                   <button class="user-detail-action-btn danger user-action-confirm" type="button" data-asset-action-confirm="${action}" data-asset-id="${asset.id}">${config.button}</button>
                   <button class="user-detail-action-btn" type="button" data-user-action-modal-close>ยกเลิก</button>
@@ -10142,6 +10203,7 @@
         select.querySelector("[data-custom-select-trigger]").setAttribute("aria-expanded", "false");
         if (hiddenInput.id === "user-action-reason") updateAccountStatusEmailPreview();
         if (hiddenInput.id === "asset-hide-reason") updateAssetHideEmailPreview();
+        if (hiddenInput.id === "asset-delete-reason") updateAssetDeletePostEmailPreview();
         if (select.hasAttribute("data-custom-select-silent")) return;
         if (["asset-report-status-filter", "asset-report-priority-filter", "asset-report-sort"].includes(hiddenInput.id) && activeModule === "assets" && activeSub === "Reported Assets") {
           assetListPage = 1;
