@@ -2195,6 +2195,9 @@
     body.asset-detail-mode .detail-grid.two {
       grid-template-columns: repeat(3, minmax(0, 1fr));
     }
+    body.asset-detail-mode .detail-grid.two.asset-consignment-modal-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
     body.asset-detail-mode .detail-grid.two.asset-listing-summary-grid {
       grid-template-columns: repeat(2, minmax(0, 1fr));
     }
@@ -2734,6 +2737,9 @@
       display: grid;
       grid-template-columns: repeat(3, minmax(0, 1fr));
       gap: 10px;
+    }
+    .asset-consignment-modal-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
     }
     .asset-purchase-media {
       display: grid;
@@ -4155,6 +4161,9 @@
       }
       body.asset-detail-mode .detail-grid.two {
         grid-template-columns: 1fr;
+      }
+      body.asset-detail-mode .detail-grid.two.asset-consignment-modal-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
       }
       body.asset-detail-mode .detail-grid.two.asset-listing-summary-grid {
         grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -6190,22 +6199,70 @@
     function getAssetConsignmentDetails(asset, detail) {
       const idNumber = parseInt(String(asset.id || "").match(/\d+/)?.[0] || "0", 10);
       const askingPrice = detail.price && /^THB\s/i.test(detail.price) ? detail.price.replace(/^THB\s*/i, "") : getAssetConsignmentAskingPrice(asset);
+      const consignors = {
+        "AST-8802": {
+          fullName: "K. Narin Chaiyaporn",
+          phone: "082-444-2188",
+          contact: "Line: narin.watch",
+          email: "narin.chaiyaporn@example.com",
+          payoutMethod: "Bank transfer",
+          minimumAcceptablePrice: "176,000"
+        },
+        "AST-8579": {
+          fullName: "K. Sirin Wongwatchara",
+          phone: "089-771-6024",
+          contact: "IG: @sirin.collection",
+          email: "sirin.wongwatchara@example.com",
+          payoutMethod: "Bank transfer",
+          minimumAcceptablePrice: "590,000"
+        },
+        "AST-8559": {
+          fullName: "K. Pattanapong Rattanakul",
+          phone: "081-936-7742",
+          contact: "Line: pattanapong.watch",
+          email: "pattanapong.r@example.com",
+          payoutMethod: "Bank transfer",
+          minimumAcceptablePrice: "1,140,000"
+        },
+        "AST-8548": {
+          fullName: "K. Mayuree Tangsakul",
+          phone: "086-118-4920",
+          contact: "Facebook: Mayuree Watch Sale",
+          email: "mayuree.tangsakul@example.com",
+          payoutMethod: "Bank transfer",
+          minimumAcceptablePrice: "136,000"
+        }
+      };
+      const consignor = consignors[asset.id] || {
+        fullName: `K. ${asset.owner.split(" ")[0]} Chai`,
+        phone: "082-444-2188",
+        contact: "Line: consignor.watch",
+        email: "consignor@example.com",
+        payoutMethod: "Bank transfer",
+        minimumAcceptablePrice: "136,000"
+      };
+      const notes = {
+        "AST-8802": "ฝากขาย Omega Speedmaster เรือนนี้ครับ ใช้งานเองเป็นหลัก มีรอยขนแมวตามปกติแต่เครื่องเดินดี กล่องและเอกสารตามรูป ขอให้ติดต่อก่อนนัดดูของ 1 วัน และถ้าลูกค้าต่อราคา รบกวนเช็คกับผมก่อนยืนยันทุกครั้ง",
+        "AST-8579": "นาฬิกาอยู่ในเซฟ ไม่ได้ใส่บ่อย สภาพตามรูปจริง มีอุปกรณ์ครบตามที่แนบไว้ ถ้ามีผู้ซื้อจริงสามารถนัดดูที่สาขาได้ แต่ขอไม่เปิดราคาต่ำสุดให้ลูกค้าทราบก่อนคุยกับผม",
+        "AST-8559": "ฝากขายตามราคาที่แจ้งไว้ ต้องการปิดดีลกับผู้ซื้อที่โอนมัดจำหรือพร้อมชำระเท่านั้น กรุณาแจ้งล่วงหน้าก่อนนำเรือนออกมาให้ดู และขอรับเงินเข้าบัญชีเดิมหลังหักค่าคอมมิชชัน",
+        "AST-8548": "ตัวเรือนมีตำหนิเล็กน้อยตรงขอบล่างตามรูปเพิ่มเติม อุปกรณ์มีเท่าที่ส่งให้ ไม่มีกล่องนอก ถ้าลูกค้าสนใจจริงสามารถต่อรองได้เล็กน้อย แต่ขอให้ BO โทรยืนยันราคากับผมก่อนปิดการขาย"
+      };
       return {
         rows: [
-          ["Full Name", `K. ${asset.owner.split(" ")[0]} C.`],
-          ["Phone Number", "08x-xxx-2188"],
-          ["Line / IG / Facebook", "@masked-consignor"],
-          ["Email", "co***@example.com"],
-          ["Payout Method", "Bank transfer"],
+          ["Full Name", consignor.fullName],
+          ["Phone Number", consignor.phone],
+          ["Line / IG / Facebook", consignor.contact],
+          ["Email", consignor.email],
+          ["Payout Method", consignor.payoutMethod],
           ["Consignment Date", `${String(Math.max(1, idNumber % 28 || 9)).padStart(2, "0")} Jul 2026`],
           ["Consignment Duration", "90 days"],
           ["Asking Price (THB)", askingPrice],
           ["Commission (%)", "5%"],
-          ["Minimum Acceptable Price", "Masked - reveal required"]
+          ["Minimum Acceptable Price", consignor.minimumAcceptablePrice]
         ],
         equipmentImages: purchaseEquipmentImages,
         proofFiles: purchaseProofImages,
-        note: `Consignment listing for ${asset.name}. Asking price is synced with the Sale listing price. Consignor contact, payout method, commission, and minimum acceptable price are private BO review data.`
+        note: notes[asset.id] || `ฝากขาย ${asset.name} ตามรายละเอียดและรูปที่แนบไว้ หากมีผู้ซื้อสนใจจริง รบกวนติดต่อเจ้าของก่อนยืนยันราคาและเงื่อนไขการชำระเงินทุกครั้ง`
       };
     }
 
@@ -6613,7 +6670,7 @@
             </button>
           </div>
           <div class="user-action-card">
-            <div class="detail-grid two asset-purchase-modal-grid">
+            <div class="detail-grid two asset-purchase-modal-grid${isConsignment ? " asset-consignment-modal-grid" : ""}">
               ${renderAssetDetailTiles(modalRows)}
             </div>
           </div>
