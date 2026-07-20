@@ -840,6 +840,7 @@
     .pill.amber { color: #925500; background: #fff3d8; border-color: #f3d493; }
     .pill.purple { color: #6035ae; background: #efe9ff; border-color: #d8ccff; }
     .pill.gray { color: #475569; background: #f1f5f9; border-color: #cbd5e1; }
+    .pill.slate { color: #334155; background: #f8fafc; border-color: #94a3b8; }
     .asset-status-pills {
       display: inline-flex;
       align-items: center;
@@ -1296,7 +1297,7 @@
     }
     .asset-row {
       display: grid;
-      grid-template-columns: minmax(108px, .56fr) minmax(220px, 1.18fr) minmax(128px, .62fr) minmax(152px, .62fr) minmax(116px, .54fr) minmax(64px, .32fr);
+      grid-template-columns: minmax(104px, .48fr) minmax(220px, 1.08fr) minmax(120px, .54fr) minmax(156px, .66fr) minmax(230px, .94fr) minmax(56px, .24fr);
       column-gap: 14px;
       row-gap: 10px;
       align-items: center;
@@ -1332,6 +1333,12 @@
     }
     .asset-row > div {
       min-width: 0;
+    }
+    .asset-row .asset-status-pills {
+      flex-wrap: nowrap;
+    }
+    .asset-row .asset-status-pills .asset-status-pills {
+      flex-wrap: nowrap;
     }
     .asset-cell-primary .main-text {
       overflow: hidden;
@@ -5702,8 +5709,15 @@
     }
 
     function renderAssetListStatusDisplay(asset) {
-      const consignmentPill = isAssetListConsignment(asset) ? `<span class="pill red">Consignment</span>` : "";
-      return `<span class="asset-status-pills">${renderAssetStatusDisplay(asset)}${consignmentPill}</span>`;
+      const consignmentPill = isAssetListConsignment(asset) ? `<span class="pill slate">Consignment</span>` : "";
+      const moderationPill = isTemporarilyHiddenAsset(asset)
+        ? `<span class="pill amber">ซ่อนชั่วคราว</span>`
+        : isPermanentlyHiddenAsset(asset)
+          ? `<span class="pill red">ซ่อนถาวร</span>`
+        : isOwnerDeletedAsset(asset)
+          ? `<span class="pill gray">ลบโดยเจ้าของ</span>`
+        : "";
+      return `<span class="asset-status-pills">${assetStatusPill(asset.type)}${consignmentPill}${moderationPill}</span>`;
     }
 
     const assetOwnerProfiles = {
