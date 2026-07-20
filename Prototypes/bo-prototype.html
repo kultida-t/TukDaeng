@@ -5697,8 +5697,12 @@
       return `<span class="asset-status-pills">${assetStatusPill(asset.type)}${moderationPill}</span>`;
     }
 
+    function isAssetListConsignment(asset) {
+      return isAssetConsignment(asset) || asset.id === "AST-8831";
+    }
+
     function renderAssetListStatusDisplay(asset) {
-      const consignmentPill = isAssetConsignment(asset) ? `<span class="pill red">Consignment</span>` : "";
+      const consignmentPill = isAssetListConsignment(asset) ? `<span class="pill red">Consignment</span>` : "";
       return `<span class="asset-status-pills">${renderAssetStatusDisplay(asset)}${consignmentPill}</span>`;
     }
 
@@ -6874,7 +6878,7 @@
     }
 
     function getAssetListSearchText(asset) {
-      const provenanceText = isAssetConsignment(asset) ? "consignment sale" : "";
+      const provenanceText = isAssetListConsignment(asset) ? "consignment sale" : "";
       return [getAssetSearchText(asset), provenanceText].join(" ").toLowerCase();
     }
 
@@ -10136,7 +10140,7 @@
       const sorted = [...data.rows].filter(row => {
         const text = getAssetListSearchText(row);
         return (!q || text.includes(q))
-          && (!type || (type === "Sale:Consignment" ? isAssetConsignment(row) : row.type === type || row.status === type))
+          && (!type || (type === "Sale:Consignment" ? isAssetListConsignment(row) : row.type === type || row.status === type))
           && (!brand || getAssetBrand(row) === brand);
       }).sort((a, b) => getAssetSortRank(b, sort) - getAssetSortRank(a, sort));
       const pageCount = Math.max(1, Math.ceil(sorted.length / assetListPageSize));
