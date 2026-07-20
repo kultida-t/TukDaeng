@@ -1,4 +1,4 @@
-# 00 Back Office Global Rules Module
+﻿# 00 Back Office Global Rules Module
 
 อ้างอิง:
 
@@ -268,7 +268,7 @@ Source of truth สำหรับ coverage นี้คือ `../ProjectAdmin/
 FO functions ขั้นต่ำที่ BO ต้องรองรับ:
 
 - Report Asset / User / Comment / Board Content
-- Asset lifecycle: Sale, Show, Hide, Sold, ซ่อนชั่วคราว, ซ่อนถาวร, Owner Deleted
+- Asset lifecycle: Sale, Show, Hide, Sold, ซ่อนชั่วคราว, ซ่อนถาวร, ลบโดยเจ้าของ
 - Board article/category/banner publication
 - Brand/model/reference/price index management
 - Directory item publication
@@ -445,3 +445,4 @@ Responsive QA ต้องตรวจ:
 - `07_DIRECTORY_MODULE.md`
 - `08_AUDIT_LOG_MODULE.md`
 - `../ProjectAdmin/FO_BO_INTEGRATION_MAP.md`
+

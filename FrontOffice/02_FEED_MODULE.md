@@ -468,7 +468,7 @@ Feed ไม่รองรับ:
 | Reported Asset | ไม่หายจาก Feed ทันที จนกว่า Admin ดำเนินการ moderation |
 | Hidden Feed Item | หายจาก Feed เฉพาะผู้กด hide และไม่กระทบผู้ใช้อื่น |
 | Owner Mark as sold from Feed | เปิด Sale Record Form และเมื่อ confirm สำเร็จ Asset หายจาก Feed |
-| Owner Delete asset from Feed | ต้องมี confirmation และเมื่อสำเร็จ Asset หายจาก Feed |
+| ลบโดยเจ้าของจาก Feed | ต้องมี confirmation และเมื่อสำเร็จ Asset หายจาก Feed |
 
 ## Performance And Loading
 

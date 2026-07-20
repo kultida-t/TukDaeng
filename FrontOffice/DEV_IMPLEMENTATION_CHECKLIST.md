@@ -353,7 +353,7 @@ Purpose:
 - [ ] Total Asset Value เป็น entry point จาก Owner Profile
 - [ ] Portfolio คำนวณจาก `Sale`, `Show`, `Hide` ที่ยังใช้งานได้
 - [ ] Portfolio ไม่รวม `Sold`
-- [ ] Portfolio ไม่รวม Owner Deleted Asset
+- [ ] Portfolio ไม่รวม Asset ที่ลบโดยเจ้าของ
 - [ ] Portfolio ไม่รวม Asset ที่ถูก Back Office ซ่อนถาวร
 - [ ] Current Value priority: Watch Price API Market Price -> Owner Estimated Value -> Purchase Price fallback -> No Valuation
 - [ ] Purchase Price fallback ต้องแสดง label ว่าใช้ราคาซื้อเป็นค่าประมาณ
@@ -453,3 +453,4 @@ Purpose:
 - [ ] QA ต้อง test Block, Report, Notification routing, Portfolio fallback และ No market price
 - [ ] Retry scope ต้องตรง catalog: image-only, pagination-only, refresh-only, section-only หรือ screen reload ตาม state
 - [ ] Existing data ต้องไม่ถูก clear เมื่อ refresh/load-more/image/section retry fail
+

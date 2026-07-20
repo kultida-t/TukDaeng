@@ -1,4 +1,4 @@
-# 06 Profile Module
+﻿# 06 Profile Module
 
 อ้างอิงหลักจาก [TukDaeng_Master_Product_Definition.md](TukDaeng_Master_Product_Definition.md)
 
@@ -48,7 +48,7 @@ Profile Module ต้องยึด master baseline ต่อไปนี้เ
 - Public Profile ต้องไม่แสดง `Hide`, `Sold`, Provenance และ Consignment
 - Portfolio เป็น Private และเห็นเฉพาะ Owner
 - Portfolio คำนวณจาก `Sale`, `Show`, `Hide` ที่ยังใช้งานได้
-- Portfolio ไม่รวม `Sold`, Owner Deleted และ Asset ที่ถูก Back Office ซ่อนถาวร
+- Portfolio ไม่รวม `Sold`, ลบโดยเจ้าของ และ Asset ที่ถูก Back Office ซ่อนถาวร
 - Sold History เก็บ Sale Date, Buyer, Contact, Sale Price, Payment Method, Attachment
 
 ---
@@ -63,7 +63,7 @@ Profile Module ต้องยึด master baseline ต่อไปนี้เ
 | Must Fix | `All` tab ใน Public Profile ยังไม่ถูกนิยาม | `All` ต้องแสดง Asset สถานะ `Sale + Show` รวมกัน | ระบุ behavior ของ `All` ให้ชัดใน Figma |
 | High | Owner Profile ยังไม่ชัดว่ามี tabs ครบทุกสถานะ | Owner Profile ต้องมี `All`, `Sale`, `Show`, `Hide`, `Sold` | ตรวจ/เพิ่ม tab ของ Owner Profile ให้ครบ |
 | High | Total Asset Value / Portfolio entry ยังไม่ชัด | Total Asset Value เป็น entry point สำหรับ Portfolio | เพิ่ม Total Asset Value และ interaction ไป Portfolio |
-| High | Portfolio privacy ยังไม่ชัด | Portfolio เห็นเฉพาะ Owner และคำนวณจาก Sale, Show, Hide ที่ยังใช้งานได้ โดยไม่รวม Sold, Owner Deleted และซ่อนถาวร | เพิ่ม Owner-only Portfolio state และระบุ exclusion ให้ชัด |
+| High | Portfolio privacy ยังไม่ชัด | Portfolio เห็นเฉพาะ Owner และคำนวณจาก Sale, Show, Hide ที่ยังใช้งานได้ โดยไม่รวม Sold, ลบโดยเจ้าของ และซ่อนถาวร | เพิ่ม Owner-only Portfolio state และระบุ exclusion ให้ชัด |
 | High | Public Profile อาจแสดงข้อมูล private | Public Profile ต้องไม่แสดง Provenance, Consignment, Hide, Sold | ตรวจ Public Profile และ asset card/detail entry ไม่ให้มี private data |
 | Medium | ยังใช้ label legacy `Collection Show` ในหลายจุด | Canonical term คือ `Show` | Normalize label เป็น `Show` หรือระบุ legacy mapping ให้ชัด |
 | Medium | Guest Follow restriction ยังไม่ชัด | Guest กด Follow ต้องเห็น Global Login Required Dialog | เพิ่ม guest dialog/state เมื่อกด Follow |
@@ -492,7 +492,7 @@ Portfolio:
 - เห็นเฉพาะ Owner
 - เข้าจาก Total Asset Value
 - คำนวณจาก Asset สถานะ `Sale`, `Show`, `Hide` ที่ยังใช้งานได้
-- ไม่รวม `Sold`, Owner Deleted และ Asset ที่ถูก Back Office ซ่อนถาวร
+- ไม่รวม `Sold`, ลบโดยเจ้าของ และ Asset ที่ถูก Back Office ซ่อนถาวร
 
 ## Sold History Rule
 
@@ -748,7 +748,7 @@ Profile Module ต้องรับผลหลัง Save สำเร็จ�
 | AC-PROFILE-021 | Total Asset Value ต้องเป็น entry point ไป Portfolio |
 | AC-PROFILE-022 | Portfolio ต้องเห็นเฉพาะ Owner |
 | AC-PROFILE-023 | Portfolio ต้องคำนวณจาก Asset สถานะ Sale, Show และ Hide ที่ยังใช้งานได้ |
-| AC-PROFILE-024 | Portfolio ต้องไม่รวม Sold, Owner Deleted และ Asset ที่ถูก Back Office ซ่อนถาวร |
+| AC-PROFILE-024 | Portfolio ต้องไม่รวม Sold, ลบโดยเจ้าของ และ Asset ที่ถูก Back Office ซ่อนถาวร |
 | AC-PROFILE-025 | Sold History ต้องเห็นเฉพาะ Owner |
 | AC-PROFILE-026 | Sold History ต้องเก็บ Sale Date, Buyer, Contact, Sale Price, Payment Method และ Attachment |
 
@@ -789,3 +789,4 @@ Profile Module ต้องรับผลหลัง Save สำเร็จ�
 - Rating System
 - Achievement System
 - Profile Analytics
+

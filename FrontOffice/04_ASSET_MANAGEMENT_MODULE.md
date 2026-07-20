@@ -1,4 +1,4 @@
-# 04 Asset Management Module
+﻿# 04 Asset Management Module
 
 อ้างอิงหลักจาก [TukDaeng_Master_Product_Definition.md](TukDaeng_Master_Product_Definition.md)
 
@@ -43,7 +43,7 @@ Asset Management Module ต้องยึด master baseline ต่อไปน
 - `Sold` เป็น terminal state สำหรับบันทึกการขาย ไม่ใช่ status ที่แก้ข้อมูลหลักได้เหมือนสถานะทั่วไป
 - Sold Asset ไม่สามารถ Edit ข้อมูลหลักได้
 - Sold Asset เก็บไว้เพื่อ Sales History, Portfolio และ Admin Review
-- Owner Delete Asset เป็นการลบจากมุมมองหน้าบ้านของเจ้าของและ public surfaces แต่ backend/BO ควรเก็บ record ตาม retention policy
+- ลบ Asset โดยเจ้าของ เป็นการลบจากมุมมองหน้าบ้านของเจ้าของและ public surfaces แต่ backend/BO ควรเก็บ record ตาม retention policy
 - Asset ที่ถูก Back Office ซ่อนถาวรยังให้ Owner เห็นได้แบบ read-only พร้อมสถานะถูกซ่อนถาวร แต่ Owner แก้ไข เปลี่ยนสถานะ publish ใหม่ mark sold หรือ delete เองไม่ได้
 - Gallery รองรับสูงสุด 10 รูป
 - Asset Management ต้องรองรับ Provenance และ Consignment
@@ -53,7 +53,7 @@ Asset Management Module ต้องยึด master baseline ต่อไปน
 - Hide เห็นเฉพาะ Owner
 - Sold เห็นเฉพาะ Owner
 - Hide และ Sold ต้องไม่ Public, ไม่ขึ้น Feed, ไม่ขึ้น Search และไม่เข้า Watch Alert
-- Owner Deleted และ ซ่อนถาวร ต้องไม่ Public, ไม่ขึ้น Feed, ไม่ขึ้น Search, ไม่เข้า Watch Alert และไม่ถูกนำไปรวมใน Portfolio / Asset Value
+- ลบโดยเจ้าของ และ ซ่อนถาวร ต้องไม่ Public, ไม่ขึ้น Feed, ไม่ขึ้น Search, ไม่เข้า Watch Alert และไม่ถูกนำไปรวมใน Portfolio / Asset Value
 - ไม่มี Payment ภายในแอปใน Phase 1
 
 ---
@@ -214,19 +214,20 @@ Mark as Sold สามารถเริ่มจาก Owner Asset Detail ห�
 Owner Asset Detail / Owner Feed Card
 → Delete
 → Confirmation
-→ Asset Owner Deleted
+→ Asset ถูกลบโดยเจ้าของ
 → Asset Removed From Public Surfaces
 ```
 
 Delete Asset สามารถเริ่มจาก Owner Asset Detail หรือ Owner Feed more menu ได้ แต่ต้องใช้ confirmation เดียวกัน และไม่มี Undo
 
-หลัง Owner delete สำเร็จ:
+หลัง ลบโดยเจ้าของ สำเร็จ:
 
 - Asset หายจาก owner list ปกติและ public surfaces ทั้งหมด
 - Asset ไม่ถูกนำไปรวมใน Portfolio / Asset Value
 - Chat ที่เกี่ยวข้องยังอยู่ แต่ Reference Asset ต้องใช้ unavailable/deleted state
 - Offer ที่เกี่ยวข้องต้องเป็น Cancelled ตาม offer policy
 - Backend/BO ควรเก็บ record ตาม retention policy เพื่อ audit, report history, dispute หรือ compliance
+- Backend/BO ต้องบันทึก Asset Status History / Audit History ว่าเจ้าของเป็นผู้ลบ พร้อม before/after state และ timestamp
 - การลบนี้ไม่ใช่ hard delete ทันที เว้นแต่นโยบายระบบระบุไว้ต่างหาก
 
 ## Non Owner Attempts Edit
@@ -1030,9 +1031,10 @@ Owner Profile และ Sold History ใช้ Global Empty State:
 | AC-ASSET-MGMT-026 | เมื่อ Delete Asset สำเร็จ Chat ที่เกี่ยวข้องต้องยังอยู่ แต่ Reference Asset ต้องใช้ deleted asset state |
 | AC-ASSET-MGMT-027 | เมื่อ Delete Asset สำเร็จ Offer ที่เกี่ยวข้องต้องเป็น Cancelled |
 | AC-ASSET-MGMT-027A | เมื่อ Delete Asset สำเร็จ Asset ต้องไม่แสดงใน owner list ปกติและไม่ถูกนำไปรวมใน Portfolio / Asset Value |
-| AC-ASSET-MGMT-027B | Backend/BO ต้องยังเก็บ record ของ Owner Deleted Asset ตาม retention policy เพื่อ audit/report/dispute/compliance |
+| AC-ASSET-MGMT-027B | Backend/BO ต้องยังเก็บ record ของ Asset ที่ลบโดยเจ้าของ ตาม retention policy เพื่อ audit/report/dispute/compliance |
 | AC-ASSET-MGMT-027C | Asset ที่ถูก Back Office ซ่อนถาวรต้องไม่สามารถ Delete ผ่าน Front Office ได้ |
 | AC-ASSET-MGMT-027D | Asset ที่ถูก Back Office ซ่อนถาวรต้องแสดงให้ Owner เห็นแบบ read-only พร้อมสถานะ `ถูกซ่อนถาวรโดยผู้ดูแล` |
+| AC-ASSET-MGMT-027E | เมื่อ Owner Delete Asset สำเร็จ BO ต้องมี Asset Status History / Audit History ระบุว่าเจ้าของเป็นผู้ลบ พร้อม before/after state และ timestamp |
 
 ## Lifecycle
 
@@ -1068,3 +1070,4 @@ Owner Profile และ Sold History ใช้ Global Empty State:
 - QR Asset Verification
 - Video Upload
 - Watch Authentication Service
+

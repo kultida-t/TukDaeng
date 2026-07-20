@@ -4679,7 +4679,7 @@
         item("AST-8612", "Grand Seiko Snowflake", "Daily Watch Hunter", "Show", "กลาง", "Active", "มี comment report แต่ asset ยังไม่เข้าเกณฑ์ซ่อน", ["Comment report 1"], "ตรวจ social context โดยไม่เปลี่ยนสถานะ asset ทันที"),
         item("AST-8588", "Cartier Santos Medium", "Minimal Dial", "Sale", "กลาง", "Admin Hidden", "ถูกซ่อนจากรายงาน duplicate content ระหว่างตรวจ", ["Hidden by Admin", "Audit linked"], "คืนสถานะได้เมื่อหลักฐานผ่านการตรวจสอบ"),
         item("AST-8581", "Rolex Submariner 126610LV", "Rolex Rama9", "Sale", "สูง", "Permanently Hidden", "ซ่อนถาวรหลังตรวจพบว่ารูปและ serial ไม่ตรงกับหลักฐานเจ้าของจริง", ["ซ่อนถาวร", "Reports 6", "Audit linked"], "เอาออกจาก Feed/Search/Profile public surface แต่เจ้าของยังเห็นแบบ read-only และไม่นับใน portfolio value"),
-        item("AST-8576", "IWC Pilot Mark XVIII", "Daily Watch Hunter", "Hide", "ปกติ", "Owner Deleted", "เจ้าของลบ asset จากหน้าบ้านเอง ระบบเก็บ record ไว้ตาม retention policy", ["Owner deleted", "ไม่รวม portfolio value"], "หายจาก owner list ปกติและ public surfaces แต่ BO ยังดูข้อมูลได้เพื่อ audit/history"),
+        item("AST-8576", "IWC Pilot Mark XVIII", "Daily Watch Hunter", "Hide", "ปกติ", "ลบโดยเจ้าของ", "ลบโดยเจ้าของจากหน้าบ้าน ระบบเก็บ record ไว้ตาม retention policy", ["ลบโดยเจ้าของ", "ไม่รวม portfolio value"], "หายจาก owner list ปกติและ public surfaces แต่ BO ยังดูข้อมูลได้เพื่อ audit/history"),
         item("AST-8579", "Rolex GMT-Master II Pepsi", "Crown Time BKK", "Sale", "กลาง", "Active", "Price check against recent market index before public boost", ["THB 612,000", "Watch Alert match 8"], "Confirm price evidence and seller ownership before promotion"),
         item("AST-8571", "Rolex Datejust 36", "Bangkok Watch Lab", "Show", "ปกติ", "Active", "Portfolio listing waiting for owner confirmation", ["Portfolio"], "Verify portfolio visibility and profile display"),
         item("AST-8566", "Rolex Explorer 124270", "Crown Time BKK", "Sale", "กลาง", "Active", "New listing with complete provenance but missing wrist shot", ["THB 268,000"], "Request additional photo before featuring"),
@@ -5600,7 +5600,7 @@
             ["Hide", countType("Hide"), "ยอดทั้งหมดที่ owner/Admin เห็นตามสิทธิ์"],
             ["Sold", countType("Sold"), "ยอดทั้งหมดที่คงประวัติและปิดรับ offer"],
             ["ซ่อนถาวร", assets.filter(isPermanentlyHiddenAsset).length, "ถูกนำออกจาก public surfaces และไม่รวม portfolio value"],
-            ["เจ้าของลบเอง", assets.filter(isOwnerDeletedAsset).length, "ลบจากหน้าบ้านแล้ว แต่ BO เก็บ record ตาม retention"]
+            ["ลบโดยเจ้าของ", assets.filter(isOwnerDeletedAsset).length, "ลบจากหน้าบ้านแล้ว แต่ BO เก็บ record ตาม retention"]
           ]
         },
         {
@@ -5679,7 +5679,7 @@
     }
 
     function isOwnerDeletedAsset(asset) {
-      return asset.status === "Owner Deleted";
+      return asset.status === "ลบโดยเจ้าของ";
     }
 
     function isAssetUnavailableAsset(asset) {
@@ -5692,7 +5692,7 @@
         : isPermanentlyHiddenAsset(asset)
           ? `<span class="pill red">ซ่อนถาวร</span>`
         : isOwnerDeletedAsset(asset)
-          ? `<span class="pill gray">เจ้าของลบเอง</span>`
+          ? `<span class="pill gray">ลบโดยเจ้าของ</span>`
         : "";
       return `<span class="asset-status-pills">${assetStatusPill(asset.type)}${moderationPill}</span>`;
     }
@@ -6344,6 +6344,18 @@
           note: getAssetModerationHistoryNote(moderationAction)
         });
       }
+      const ownerDeletionRows = isOwnerDeletedAsset(asset)
+        ? [{
+            createdAt: detail.updatedAt,
+            actor: asset.owner,
+            action: "Asset Deleted By Owner",
+            before: { type: asset.type, status: "Active" },
+            after: { type: asset.type, status: asset.status },
+            reference: "",
+            referenceAssetId: asset.id,
+            note: "เจ้าของลบ asset จาก Front Office ระบบจึงถอดออกจาก owner list ปกติและ public surfaces แต่เก็บ record ตาม retention policy"
+          }]
+        : [];
       const ownerStatusRows = getAssetOwnerStatusHistoryRows(asset, detail);
       const initialLifecycleType = ownerStatusRows[0]?.before?.type || (asset.type === "Sold" ? "Sale" : asset.type);
       const currentLifecycleType = asset.type === "Sold" ? "Sale" : asset.type;
@@ -6367,7 +6379,7 @@
           note: `${detail.brand} ${detail.reference || detail.model} listing created from FO asset form`
         }
       ];
-      return [...actionRows, ...moderationRows, ...saleRows, ...ownerStatusRows, ...lifecycleRows]
+      return [...actionRows, ...moderationRows, ...ownerDeletionRows, ...saleRows, ...ownerStatusRows, ...lifecycleRows]
         .sort((a, b) => parseAssetHistoryTime(b.createdAt) - parseAssetHistoryTime(a.createdAt));
     }
 
@@ -6860,7 +6872,7 @@
       const assetIdRank = parseInt(String(asset.id || "").match(/\d+/)?.[0] || "0", 10);
       if (sort === "latest") return assetIdRank;
       if (sort === "oldest") return -assetIdRank;
-      const statusRank = { "Auto Hidden": 8, Reported: 7, Reviewing: 6, "Admin Hidden": 5, Active: 4, "Owner-only": 3, Closed: 2, "Permanently Hidden": 1, "Owner Deleted": 0 };
+      const statusRank = { "Auto Hidden": 8, Reported: 7, Reviewing: 6, "Admin Hidden": 5, Active: 4, "Owner-only": 3, Closed: 2, "Permanently Hidden": 1, "ลบโดยเจ้าของ": 0 };
       return statusRank[asset.status] ?? 0;
     }
 
@@ -9674,7 +9686,7 @@
               { value: "Hide", label: "Hide" },
               { value: "Sold", label: "Sold" },
               { value: "Permanently Hidden", label: "ซ่อนถาวร" },
-              { value: "Owner Deleted", label: "เจ้าของลบเอง" }
+              { value: "ลบโดยเจ้าของ", label: "ลบโดยเจ้าของ" }
             ])}</div>
             <div class="user-advanced-filter">${customSelect("asset-brand-filter", "Filter brand", [
               { value: "", label: "All brands" },

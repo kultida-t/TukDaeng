@@ -1,4 +1,4 @@
-# 15 BO Reports & Analytics Module
+﻿# 15 BO Reports & Analytics Module
 
 **Version:** `BO-15-v0.1`  
 **Date:** 2026-07-06  
@@ -164,14 +164,14 @@ Export sensitive fields เช่น email/phone ต้องจำกัดเ�
 | New assets | Count by Sale, Show, Hide, Sold |
 | Visible assets | Assets visible in Feed/Search/Profile |
 | Flagged/reported assets | Count, reason, status, SLA |
-| Asset status transition | Sale -> Sold, Show/Hide, ซ่อนชั่วคราว, ซ่อนถาวร, Owner Deleted |
+| Asset status transition | Sale -> Sold, Show/Hide, ซ่อนชั่วคราว, ซ่อนถาวร, ลบโดยเจ้าของ |
 | Brand/model breakdown | Aggregate by brand/model/reference |
 | Price range | THB min/max/average by brand/model |
 | Market data dependency | Inactive brand/model/reference impact |
 
 Filters:
 
-- Status: Sale, Show, Hide, Sold, ซ่อนชั่วคราว, ซ่อนถาวร, Owner Deleted
+- Status: Sale, Show, Hide, Sold, ซ่อนชั่วคราว, ซ่อนถาวร, ลบโดยเจ้าของ
 - Brand/model/reference
 - Owner
 - Price range
@@ -476,3 +476,4 @@ Audit payload:
 | REP-DEC-002 | Scheduled report email/export ต้องเปิดใน Phase ใด | กระทบ background jobs และ notification/email integration |
 | REP-DEC-003 | Report aggregation ใช้ live query หรือ snapshot table | กระทบ performance และ data freshness |
 | REP-DEC-004 | Sensitive export ต้อง require approval เพิ่มหรือไม่ | กระทบ permission และ operation workflow |
+

@@ -1,4 +1,4 @@
-# 04 BO Asset Management Module
+﻿# 04 BO Asset Management Module
 
 **Version:** `BO-04-v0.1`  
 **Date:** 2026-07-06  
@@ -27,7 +27,7 @@ BO Asset Management คือหน้าจอสำหรับ Admin ใช�
 
 - Asset list พร้อม search, filter, sort, pagination และ export ตาม permission
 - Asset detail สำหรับ admin review
-- Status visibility control: `Sale`, `Show`, `Hide`, `Sold`, `ซ่อนชั่วคราว`, `ซ่อนถาวร`, `Owner Deleted`
+- Status visibility control: `Sale`, `Show`, `Hide`, `Sold`, `ซ่อนชั่วคราว`, `ซ่อนถาวร`, `ลบโดยเจ้าของ`
 - Reported asset queue และ moderation workflow
 - Flag/unflag asset
 - ซ่อนชั่วคราวและซ่อนถาวรจาก public surfaces
@@ -102,7 +102,7 @@ Asset list ต้องแสดงข้อมูลขั้นต่ำ:
 
 ต้องมี filter ขั้นต่ำ:
 
-- Status: `Sale`, `Show`, `Hide`, `Sold`, `ซ่อนถาวร`, `Owner Deleted`
+- Status: `Sale`, `Show`, `Hide`, `Sold`, `ซ่อนถาวร`, `ลบโดยเจ้าของ`
 - Moderation state: normal, flagged, reported, ซ่อนชั่วคราว, ซ่อนถาวร
 - Brand
 - Owner
@@ -124,7 +124,7 @@ Phase 1 ควรรองรับ saved views อย่างน้อย:
 - Sold Assets
 - Reported Assets
 - ซ่อนถาวร
-- Owner Deleted Assets
+- ลบโดยเจ้าของ
 
 ## 6. Asset Detail
 
@@ -194,7 +194,7 @@ BO ต้องแสดงข้อมูลกลุ่มนี้ตาม A
 | `Sold` | Owner sold history + admin review | No | No | No | Not available |
 | `ซ่อนชั่วคราว` | Hidden from public FO surfaces ระหว่างรอตรวจสอบ; owner ยังเห็นพร้อมสถานะถูกซ่อนชั่วคราว | No | No | No | Existing related offers disabled/paused per offer policy |
 | `ซ่อนถาวร` | Hidden from all public FO surfaces; owner ยังเห็นแบบ read-only พร้อมสถานะถูกซ่อนถาวร | No | No | No | Existing related offers invalidated/cancelled per offer policy |
-| `Owner Deleted` | Owner ลบ asset จาก FO แล้ว; ไม่แสดงใน owner list ปกติหรือ public surfaces แต่ BO ยังเก็บ record ตาม retention policy | No | No | No | Existing related offers cancelled per offer policy |
+| `ลบโดยเจ้าของ` | เจ้าของลบ asset จาก FO แล้ว; ไม่แสดงใน owner list ปกติหรือ public surfaces แต่ BO ยังเก็บ record ตาม retention policy | No | No | No | Existing related offers cancelled per offer policy |
 
 หมายเหตุ: เอกสาร BO ตั้งแต่ `BO-04-v0.1` เป็นต้นไปให้ใช้ status ตาม FO คือ `Show` และ `Hide` เท่านั้น
 `Hide` ในตารางนี้หมายถึง owner ตั้ง asset ให้เห็นเฉพาะเจ้าของ ไม่ใช่การซ่อนชั่วคราวจาก report/moderation
@@ -223,9 +223,11 @@ Admin force status change ต้องมี:
 | `Sale` -> `Show` | หายจาก Feed/Search/Watch Alert แต่ยังอยู่ public profile/detail |
 | Any -> `ซ่อนชั่วคราว` | หายจาก public surfaces ระหว่างรอตรวจสอบ; restore/unhide ได้เฉพาะเมื่อ Admin ตรวจแล้วไม่ผิด |
 | Any -> `ซ่อนถาวร` | หายจาก public surfaces ทั้งหมด; owner ยังเห็นแบบ read-only พร้อมสถานะถูกซ่อนถาวร; owner แก้ไข publish ใหม่ ยกเลิกซ่อน boost mark sold หรือลบเองไม่ได้; ไม่ถูกนับใน portfolio/asset value |
-| Any -> `Owner Deleted` | เกิดจาก owner ลบเองใน FO; หายจาก owner list ปกติและ public surfaces; BO เก็บ record ตาม retention policy และไม่ถูกนับใน portfolio/asset value |
+| Any -> `ลบโดยเจ้าของ` | เกิดจากเจ้าของเป็นผู้ลบใน FO; หายจาก owner list ปกติและ public surfaces; BO เก็บ record ตาม retention policy และไม่ถูกนับใน portfolio/asset value |
 
-ถ้า asset ที่ถูกซ่อนถาวร, owner deleted หรือ sold มี pending offers ต้องส่งผลไป Offer lifecycle เป็น invalidated/cancelled ตาม offer policy ที่กำหนดใน Phase 2
+ถ้า asset ที่ถูกซ่อนถาวร, ลบโดยเจ้าของ หรือ sold มี pending offers ต้องส่งผลไป Offer lifecycle เป็น invalidated/cancelled ตาม offer policy ที่กำหนดใน Phase 2
+
+เมื่อ asset ถูกลบโดยเจ้าของจาก FO ต้องมีรายการใน Asset Status History / Audit History ด้วย โดย actor เป็นเจ้าของ asset, action เป็น `Asset Deleted By Owner`, before เป็นสถานะก่อนลบ และ after เป็น `ลบโดยเจ้าของ`
 
 ## 9. Reported And Flagged Asset Handling
 
@@ -294,7 +296,7 @@ Bulk action ใน Phase 1 ควรจำกัดเฉพาะ low-risk acti
 - Empty reported queue
 - Partial load error สำหรับ sensitive section โดยไม่ทำให้ detail ทั้งหน้าล่ม
 - Permission denied state สำหรับ action หรือ field ที่ admin access ไม่มีสิทธิ์
-- Asset unavailable state เมื่อ asset ถูกซ่อนถาวรหรือ owner deleted ระหว่างเปิดหน้า
+- Asset unavailable state เมื่อ asset ถูกซ่อนถาวรหรือ ลบโดยเจ้าของ ระหว่างเปิดหน้า
 - Stale status warning เมื่อมี concurrent update
 
 ## 13. Audit Requirements
@@ -331,7 +333,7 @@ Action types ขั้นต่ำ:
 | --- | --- |
 | Dashboard | ใช้ asset count, reported asset count, status distribution, recent moderation |
 | User Management | Asset list/detail ต้อง link กลับ owner profile ใน BO |
-| Offer & Chat | Asset ซ่อนถาวร, owner deleted หรือ sold ต้องกระทบ pending offer และ related chat context |
+| Offer & Chat | Asset ซ่อนถาวร, ลบโดยเจ้าของ หรือ sold ต้องกระทบ pending offer และ related chat context |
 | Social Interaction | Reported comments บน asset detail ต้องเชื่อม context |
 | Watch Alert | Sale asset เท่านั้นที่ trigger watch alert |
 | Audit Log | ทุก write/export/reveal action ต้อง searchable |
@@ -357,10 +359,11 @@ Action types ขั้นต่ำ:
 | AC-BO-ASSET-006 | BO status change sync ผลไป FO surfaces ตาม visibility matrix |
 | AC-BO-ASSET-007 | BO implementation ใช้ status `Show` และ `Hide` ตาม FO เป็นหลัก และ normalize คำเก่าจาก legacy source ก่อนใช้งาน |
 | AC-BO-ASSET-008 | Sold asset ใช้สำหรับ owner history/admin review และไม่กลับไป marketplace surface |
-| AC-BO-ASSET-009 | Asset ที่ถูกซ่อนถาวรหรือ owner deleted หายจาก public FO surfaces และ direct link ใช้ unavailable behavior |
+| AC-BO-ASSET-009 | Asset ที่ถูกซ่อนถาวรหรือ ลบโดยเจ้าของ หายจาก public FO surfaces และ direct link ใช้ unavailable behavior |
 | AC-BO-ASSET-010 | Responsive layout ใช้งานได้ที่ mobile-width, tablet และ desktop |
 | AC-BO-ASSET-011 | Asset ที่ถูกซ่อนถาวรยังแสดงให้ owner เห็นแบบ read-only แต่ owner แก้ไข publish ใหม่ ยกเลิกซ่อน boost mark sold หรือลบเองไม่ได้ |
-| AC-BO-ASSET-012 | Asset ที่ถูกซ่อนถาวรและ owner deleted ต้องไม่ถูกนำไปรวมใน portfolio/asset value |
+| AC-BO-ASSET-012 | Asset ที่ถูกซ่อนถาวรและ ลบโดยเจ้าของ ต้องไม่ถูกนำไปรวมใน portfolio/asset value |
+| AC-BO-ASSET-013 | Asset ที่ลบโดยเจ้าของต้องมี history/audit row ระบุ actor เจ้าของ, action `Asset Deleted By Owner`, before/after state และ timestamp |
 
 ## 17. Open Decisions
 
@@ -370,3 +373,4 @@ Action types ขั้นต่ำ:
 | BO-ASSET-DEC-002 | Sensitive-field reveal ต้อง audit ทุกครั้งหรือเฉพาะ high-risk fields | Audit อย่างน้อย proof of payment, consignment contact และ export |
 | BO-ASSET-DEC-003 | Pending offer เมื่อ asset ถูก BO remove/sold ใช้ status `Cancelled` หรือ `Invalidated` | ใช้ `Invalidated` เป็น system-caused state และ map UX ใน Offer module |
 | BO-ASSET-DEC-004 | Direct-link unavailable copy ใน FO | ให้ FO UX กำหนด copy แต่ BO ต้องส่ง state ที่ชัดเจน |
+
