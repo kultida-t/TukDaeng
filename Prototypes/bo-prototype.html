@@ -5707,8 +5707,10 @@
     function getAssetPrice(asset) {
       const priceTag = (asset.tags || []).find(tag => /^THB\s/i.test(tag));
       if (priceTag) return priceTag;
+      if (isAssetConsignment(asset)) return `THB ${getAssetConsignmentAskingPrice(asset)}`;
       if (asset.type === "Show") return "Private price";
       if (asset.type === "Sold") return "Sold price hidden";
+      if (asset.type === "Sale") return "Price on request";
       return "Not specified";
     }
 
@@ -5773,7 +5775,7 @@
       };
       const paragraphs = submittedDescriptions[asset.name] || [
         `A well-presented ${asset.name} with ${detail.dial ? `${detail.dial.toLowerCase()} dial, ` : ""}${detail.material ? `${detail.material.toLowerCase()} case, ` : ""}and ${detail.movement ? `${detail.movement.toLowerCase()} movement` : "carefully documented specifications"}.`,
-        `Listed in ${detail.condition || "good"} condition${detail.scope ? ` with ${detail.scope.toLowerCase()}` : ""}, this ${asset.type || "watch"} post is offered for ${detail.price} and includes clear photos for buyers to review the case, dial, bracelet, and included accessories.`
+        `Listed in ${detail.condition || "good"} condition${detail.scope ? ` with ${detail.scope.toLowerCase()}` : ""}${detail.price && detail.price !== "Not specified" ? `, this ${asset.type || "watch"} post is offered for ${detail.price}` : ""} and includes clear photos for buyers to review the case, dial, bracelet, and included accessories.`
       ];
 
       return `<div class="asset-submitted-description">${paragraphs.map(paragraph => `<p>${paragraph}</p>`).join("")}</div>`;
@@ -6163,6 +6165,50 @@
       };
     }
 
+    function isAssetConsignment(asset) {
+      return asset.type === "Sale" && ["AST-8802", "AST-8579", "AST-8559", "AST-8548"].includes(asset.id);
+    }
+
+    function getAssetConsignmentAskingPrice(asset) {
+      const prices = {
+        "AST-8802": "186,000",
+        "AST-8579": "612,000",
+        "AST-8559": "1,185,000",
+        "AST-8548": "142,000"
+      };
+      return prices[asset.id] || "142,000";
+    }
+
+    function getAssetProvenanceType(asset) {
+      return isAssetConsignment(asset) ? "Consignment" : "Owner (Asset)";
+    }
+
+    function getAssetProvenanceActionLabel(asset) {
+      return isAssetConsignment(asset) ? "Consignment Details" : "View purchase history";
+    }
+
+    function getAssetConsignmentDetails(asset, detail) {
+      const idNumber = parseInt(String(asset.id || "").match(/\d+/)?.[0] || "0", 10);
+      const askingPrice = detail.price && /^THB\s/i.test(detail.price) ? detail.price.replace(/^THB\s*/i, "") : getAssetConsignmentAskingPrice(asset);
+      return {
+        rows: [
+          ["Full Name", `K. ${asset.owner.split(" ")[0]} C.`],
+          ["Phone Number", "08x-xxx-2188"],
+          ["Line / IG / Facebook", "@masked-consignor"],
+          ["Email", "co***@example.com"],
+          ["Payout Method", "Bank transfer"],
+          ["Consignment Date", `${String(Math.max(1, idNumber % 28 || 9)).padStart(2, "0")} Jul 2026`],
+          ["Consignment Duration", "90 days"],
+          ["Asking Price (THB)", askingPrice],
+          ["Commission (%)", "5%"],
+          ["Minimum Acceptable Price", "Masked - reveal required"]
+        ],
+        equipmentImages: purchaseEquipmentImages,
+        proofFiles: purchaseProofImages,
+        note: `Consignment listing for ${asset.name}. Asking price is synced with the Sale listing price. Consignor contact, payout method, commission, and minimum acceptable price are private BO review data.`
+      };
+    }
+
     function getAssetStatusHistoryRows(asset, detail) {
       const idNumber = parseInt(String(asset.id || "").match(/\d+/)?.[0] || "0", 10);
       const reportCount = Number(getAssetReportCount(asset)) || 0;
@@ -6544,12 +6590,22 @@
       if (!asset) return;
       const detail = getAssetFoDetail(asset);
       const purchase = getAssetPurchaseHistory(asset, detail);
+      const isConsignment = isAssetConsignment(asset);
+      const consignment = isConsignment ? getAssetConsignmentDetails(asset, detail) : null;
+      const modalRows = isConsignment ? consignment.rows : [
+        ["Purchase Price (THB)", purchase.price],
+        ["Purchase Date", purchase.date],
+        ["Purchase From", purchase.from]
+      ];
+      const equipmentImages = isConsignment ? consignment.equipmentImages : purchase.equipmentImages;
+      const proofFiles = isConsignment ? consignment.proofFiles : purchase.proofFiles;
+      const note = isConsignment ? consignment.note : purchase.note;
       const modalBody = document.querySelector("#user-action-modal-body");
       modalBody.innerHTML = `
         <div class="user-action-page">
           <div class="user-action-head">
             <div>
-              <h2 id="user-action-modal-title">Purchase History</h2>
+              <h2 id="user-action-modal-title">${isConsignment ? "Consignment Details" : "Purchase History"}</h2>
               <p>${asset.id} · ${asset.name}</p>
             </div>
             <button class="btn user-action-close" type="button" data-user-action-modal-close aria-label="Close modal" title="Close">
@@ -6558,24 +6614,20 @@
           </div>
           <div class="user-action-card">
             <div class="detail-grid two asset-purchase-modal-grid">
-              ${renderAssetDetailTiles([
-                ["Purchase Price (THB)", purchase.price],
-                ["Purchase Date", purchase.date],
-                ["Purchase From", purchase.from]
-              ])}
+              ${renderAssetDetailTiles(modalRows)}
             </div>
           </div>
           <div class="user-action-card asset-purchase-media">
             <h4>All Equipment & Accessories</h4>
             <div class="asset-purchase-thumbs">
-              ${purchase.equipmentImages.map(image => `<div class="asset-purchase-thumb"><img src="${image.src}" alt="${asset.name} ${image.label}" /></div>`).join("")}
+              ${equipmentImages.map(image => `<div class="asset-purchase-thumb"><img src="${image.src}" alt="${asset.name} ${image.label}" /></div>`).join("")}
             </div>
             <h4>Proof of Payment</h4>
             <div class="asset-purchase-thumbs">
-              ${purchase.proofFiles.map(file => `<div class="asset-proof-thumb"><img src="${file.src}" alt="${asset.name} ${file.label}" /></div>`).join("")}
+              ${proofFiles.map(file => `<div class="asset-proof-thumb"><img src="${file.src}" alt="${asset.name} ${file.label}" /></div>`).join("")}
             </div>
             <h4>Note</h4>
-            <p class="asset-purchase-note">${purchase.note}</p>
+            <p class="asset-purchase-note">${note}</p>
           </div>
         </div>
       `;
@@ -7634,14 +7686,15 @@
                 <div class="asset-detail-section-head">
                   <h4>Description</h4>
                   <div class="asset-detail-header-actions">
-                    <button class="user-detail-action-btn" type="button" data-asset-purchase-history="${asset.id}">View purchase history</button>
+                    <button class="user-detail-action-btn" type="button" data-asset-purchase-history="${asset.id}">${getAssetProvenanceActionLabel(asset)}</button>
                     ${asset.type === "Sold" ? `<button class="user-detail-action-btn" type="button" data-asset-sale-record="${asset.id}">View sale history</button>` : ""}
                   </div>
                 </div>
                 <div class="detail-grid">
                   ${renderAssetDetailTiles([
                     ["Title", asset.name],
-                    ["Price", detail.price]
+                    ["Price", detail.price],
+                    ["Provenance", getAssetProvenanceType(asset)]
                   ])}
                   <div class="detail-tile asset-description-tile">
                     <span>Description</span>
