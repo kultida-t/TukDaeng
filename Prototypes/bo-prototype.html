@@ -4678,7 +4678,8 @@
         item("AST-8694", "Audemars Piguet Royal Oak", "Rolex Rama9", "Sale", "สูง", "Reviewing", "มีรายงาน serial/provenance ไม่ตรงกับรูป", ["Reports 3", "High value"], "ตรวจหลักฐานก่อนซ่อนหรือปิด report"),
         item("AST-8612", "Grand Seiko Snowflake", "Daily Watch Hunter", "Show", "กลาง", "Active", "มี comment report แต่ asset ยังไม่เข้าเกณฑ์ซ่อน", ["Comment report 1"], "ตรวจ social context โดยไม่เปลี่ยนสถานะ asset ทันที"),
         item("AST-8588", "Cartier Santos Medium", "Minimal Dial", "Sale", "กลาง", "Admin Hidden", "ถูกซ่อนจากรายงาน duplicate content ระหว่างตรวจ", ["Hidden by Admin", "Audit linked"], "คืนสถานะได้เมื่อหลักฐานผ่านการตรวจสอบ"),
-        item("AST-8581", "Rolex Submariner 126610LV", "Rolex Rama9", "Sale", "สูง", "Deleted / Archived", "ลบ/เก็บถาวรหลังตรวจพบว่ารูปและ serial ไม่ตรงกับหลักฐานเจ้าของจริง", ["Archived post", "Reports 6", "Audit linked"], "เอาออกจาก Feed/Search/Profile public surface แต่เก็บ audit, report context และ owner history ไว้"),
+        item("AST-8581", "Rolex Submariner 126610LV", "Rolex Rama9", "Sale", "สูง", "Permanently Hidden", "ซ่อนถาวรหลังตรวจพบว่ารูปและ serial ไม่ตรงกับหลักฐานเจ้าของจริง", ["ซ่อนถาวร", "Reports 6", "Audit linked"], "เอาออกจาก Feed/Search/Profile public surface แต่เจ้าของยังเห็นแบบ read-only และไม่นับใน portfolio value"),
+        item("AST-8576", "IWC Pilot Mark XVIII", "Daily Watch Hunter", "Hide", "ปกติ", "Owner Deleted", "เจ้าของลบ asset จากหน้าบ้านเอง ระบบเก็บ record ไว้ตาม retention policy", ["Owner deleted", "ไม่รวม portfolio value"], "หายจาก owner list ปกติและ public surfaces แต่ BO ยังดูข้อมูลได้เพื่อ audit/history"),
         item("AST-8579", "Rolex GMT-Master II Pepsi", "Crown Time BKK", "Sale", "กลาง", "Active", "Price check against recent market index before public boost", ["THB 612,000", "Watch Alert match 8"], "Confirm price evidence and seller ownership before promotion"),
         item("AST-8571", "Rolex Datejust 36", "Bangkok Watch Lab", "Show", "ปกติ", "Active", "Portfolio listing waiting for owner confirmation", ["Portfolio"], "Verify portfolio visibility and profile display"),
         item("AST-8566", "Rolex Explorer 124270", "Crown Time BKK", "Sale", "กลาง", "Active", "New listing with complete provenance but missing wrist shot", ["THB 268,000"], "Request additional photo before featuring"),
@@ -5579,7 +5580,7 @@
 
     function getAssetSummaryStats() {
       const assets = moduleData.assets.rows;
-      const countType = type => assets.filter(asset => asset.type === type).length;
+      const countType = type => assets.filter(asset => asset.type === type && !isAssetUnavailableAsset(asset)).length;
       const brandCounts = assets.reduce((counts, asset) => {
         const brand = getAssetBrand(asset);
         counts[brand] = (counts[brand] || 0) + 1;
@@ -5597,7 +5598,9 @@
             ["Sale", countType("Sale"), "ยอดทั้งหมดที่แสดงใน Feed และ Search"],
             ["Show", countType("Show"), "ยอดทั้งหมดที่แสดงใน collection และ profile"],
             ["Hide", countType("Hide"), "ยอดทั้งหมดที่ owner/Admin เห็นตามสิทธิ์"],
-            ["Sold", countType("Sold"), "ยอดทั้งหมดที่คงประวัติและปิดรับ offer"]
+            ["Sold", countType("Sold"), "ยอดทั้งหมดที่คงประวัติและปิดรับ offer"],
+            ["ซ่อนถาวร", assets.filter(isPermanentlyHiddenAsset).length, "ถูกนำออกจาก public surfaces และไม่รวม portfolio value"],
+            ["เจ้าของลบเอง", assets.filter(isOwnerDeletedAsset).length, "ลบจากหน้าบ้านแล้ว แต่ BO เก็บ record ตาม retention"]
           ]
         },
         {
@@ -5671,11 +5674,25 @@
       return asset.status === "Admin Hidden" || asset.status === "Auto Hidden";
     }
 
+    function isPermanentlyHiddenAsset(asset) {
+      return asset.status === "Permanently Hidden";
+    }
+
+    function isOwnerDeletedAsset(asset) {
+      return asset.status === "Owner Deleted";
+    }
+
+    function isAssetUnavailableAsset(asset) {
+      return isPermanentlyHiddenAsset(asset) || isOwnerDeletedAsset(asset);
+    }
+
     function renderAssetStatusDisplay(asset) {
       const moderationPill = isTemporarilyHiddenAsset(asset)
         ? `<span class="pill amber">ซ่อนชั่วคราว</span>`
-        : asset.status === "Deleted / Archived"
-          ? `<span class="pill red">ลบ/เก็บถาวร</span>`
+        : isPermanentlyHiddenAsset(asset)
+          ? `<span class="pill red">ซ่อนถาวร</span>`
+        : isOwnerDeletedAsset(asset)
+          ? `<span class="pill gray">เจ้าของลบเอง</span>`
         : "";
       return `<span class="asset-status-pills">${assetStatusPill(asset.type)}${moderationPill}</span>`;
     }
@@ -5866,8 +5883,8 @@
         createdAt: `${String(createdDay).padStart(2, "0")} Jul 2026 10:${String(idNumber % 60).padStart(2, "0")}`,
         updatedAt: `17 Jul 2026 ${String(updatedHour).padStart(2, "0")}:20`,
         visibility: asset.type === "Sale" ? "Feed, Search, Profile, Watch Alert" : asset.type === "Show" ? "Profile / Collection only" : asset.type === "Hide" ? "Owner-only" : "Read-only sold history",
-        offerEnabled: asset.type === "Sale" && !isTemporarilyHiddenAsset(asset) && asset.status !== "Deleted / Archived" ? "Enabled" : "Disabled",
-        commentEnabled: asset.status === "Deleted / Archived" ? "Disabled" : "Enabled",
+        offerEnabled: asset.type === "Sale" && !isTemporarilyHiddenAsset(asset) && !isAssetUnavailableAsset(asset) ? "Enabled" : "Disabled",
+        commentEnabled: isAssetUnavailableAsset(asset) ? "Disabled" : "Enabled",
         watchAlert: asset.type === "Sale" ? "Eligible" : "Not eligible",
         reportCount,
         reportReason: reportCount === "0" ? "No active report" : "Duplicate content / provenance / market price review",
@@ -6301,7 +6318,7 @@
       const actionRows = Array.isArray(asset.assetHistory) ? asset.assetHistory : [];
       const isAutoHidden = asset.status === "Auto Hidden";
       const reportReference = reportCount ? getAssetReportReference(asset) : "";
-      const moderationAction = asset.status === "Deleted / Archived" ? "Archive Asset" : isAutoHidden ? "Auto Hide Asset" : "Force Hide Asset";
+      const moderationAction = isPermanentlyHiddenAsset(asset) ? "Permanent Hide Asset" : isAutoHidden ? "Auto Hide Asset" : "Force Hide Asset";
       const saleRows = asset.type === "Sold"
         ? [{
             createdAt: detail.updatedAt,
@@ -6315,7 +6332,7 @@
         : [];
       const moderationRows = [];
       const hasExplicitModerationHistory = actionRows.some(row => row.action === moderationAction && row.after?.status === asset.status);
-      if ((isTemporarilyHiddenAsset(asset) || asset.status === "Deleted / Archived") && !hasExplicitModerationHistory) {
+      if ((isTemporarilyHiddenAsset(asset) || isPermanentlyHiddenAsset(asset)) && !hasExplicitModerationHistory) {
         moderationRows.push({
           createdAt: detail.updatedAt,
           actor: isAutoHidden ? "System" : "Somchai Admin",
@@ -6390,7 +6407,7 @@
     }
 
     function getAssetModerationHistoryNote(action) {
-      if (action === "Archive Asset") return "Admin confirmed review result and archived the asset";
+      if (action === "Permanent Hide Asset") return "ผู้ดูแลยืนยันผลตรวจสอบและซ่อนสินทรัพย์ถาวร";
       if (action === "Auto Hide Asset") return "System temporarily hid the asset for admin review";
       if (action === "Force Hide Asset") return "Admin temporarily hid the asset for review";
       if (action === "Restore Visibility") return "Admin restored asset visibility after review";
@@ -6398,13 +6415,13 @@
     }
 
     function getAssetReportEmailDelivery(asset, row) {
-      const emailActions = new Set(["Auto Hide Asset", "Force Hide Asset", "Archive Asset", "Restore Visibility"]);
+      const emailActions = new Set(["Auto Hide Asset", "Force Hide Asset", "Permanent Hide Asset", "Restore Visibility"]);
       if (!emailActions.has(row.action)) return { status: "not_required" };
       return { status: "sent", channel: "Email" };
     }
 
     function getAssetReportReceivedState(asset) {
-      const reviewStatuses = new Set(["Reported", "Reviewing", "Auto Hidden", "Admin Hidden", "Deleted / Archived"]);
+      const reviewStatuses = new Set(["Reported", "Reviewing", "Auto Hidden", "Admin Hidden", "Permanently Hidden"]);
       return {
         type: asset.type,
         status: reviewStatuses.has(asset.status) ? "Reviewing" : asset.status
@@ -6650,7 +6667,7 @@
 
     function getAssetAuditActionLabel(action) {
       if (action === "hide") return "Force Hide Asset";
-      if (action === "delete-post") return "Archive Asset";
+      if (action === "delete-post") return "Permanent Hide Asset";
       if (action === "restore-visibility") return "Restore Visibility";
       return action;
     }
@@ -6843,7 +6860,7 @@
       const assetIdRank = parseInt(String(asset.id || "").match(/\d+/)?.[0] || "0", 10);
       if (sort === "latest") return assetIdRank;
       if (sort === "oldest") return -assetIdRank;
-      const statusRank = { "Auto Hidden": 7, Reported: 6, Reviewing: 5, "Admin Hidden": 4, Active: 3, "Owner-only": 2, Closed: 1, "Deleted / Archived": 0 };
+      const statusRank = { "Auto Hidden": 8, Reported: 7, Reviewing: 6, "Admin Hidden": 5, Active: 4, "Owner-only": 3, Closed: 2, "Permanently Hidden": 1, "Owner Deleted": 0 };
       return statusRank[asset.status] ?? 0;
     }
 
@@ -6855,7 +6872,7 @@
     function getAssetReportQueueStatus(asset) {
       if (asset.reportStatus === "Cleared") return "Cleared";
       if (asset.reportStatus === "Open") return "Pending";
-      return asset.status === "Deleted / Archived" ? "Cleared" : "Pending";
+      return isPermanentlyHiddenAsset(asset) ? "Cleared" : "Pending";
     }
 
     function assetReportQueueStatusPill(asset) {
@@ -6876,7 +6893,7 @@
         "Report Received": "รับรายงานสินทรัพย์",
         "Auto Hide Asset": "ซ่อนสินทรัพย์อัตโนมัติ",
         "Force Hide Asset": "ซ่อนชั่วคราว",
-        "Archive Asset": "ลบ/เก็บถาวรสินทรัพย์",
+        "Permanent Hide Asset": "ซ่อนถาวร",
         "Close Report": "ปิดรายงาน",
         "Reopen Report": "ส่งกลับรอตรวจ",
         "Restore Visibility": "คืนสถานะการแสดงผล"
@@ -6889,7 +6906,7 @@
         "Report Received": "ระบบรับรายงานสินทรัพย์และเปิดเคสตรวจสอบ",
         "Auto Hide Asset": "มีรายงานครบ 5 รายงาน ระบบจึงซ่อนสินทรัพย์ชั่วคราวระหว่างรอผู้ดูแลตรวจสอบ",
         "Force Hide Asset": "ผู้ดูแลซ่อนสินทรัพย์ชั่วคราวระหว่างตรวจสอบ",
-        "Archive Asset": "ผู้ดูแลยืนยันผลตรวจสอบและลบ/เก็บถาวรสินทรัพย์",
+        "Permanent Hide Asset": "ผู้ดูแลยืนยันผลตรวจสอบและซ่อนสินทรัพย์ถาวร",
         "Close Report": "ผู้ดูแลปิดรายงานหลังดำเนินการกับสินทรัพย์เรียบร้อยแล้ว",
         "Reopen Report": "ผู้ดูแลส่งรายงานกลับไปรอตรวจสอบ",
         "Restore Visibility": "ผู้ดูแลคืนสถานะการแสดงผลหลังตรวจสอบ"
@@ -7007,7 +7024,7 @@
     }
 
     function getAssetReportActionRows(asset, detail) {
-      const reportActions = new Set(["Report Received", "Close Report", "Reopen Report", "Auto Hide Asset", "Force Hide Asset", "Archive Asset", "Restore Visibility"]);
+      const reportActions = new Set(["Report Received", "Close Report", "Reopen Report", "Auto Hide Asset", "Force Hide Asset", "Permanent Hide Asset", "Restore Visibility"]);
       const rows = [
         ...getAssetStatusHistoryRows(asset, detail),
         ...(Array.isArray(asset.reportAuditHistory) ? asset.reportAuditHistory : [])
@@ -7037,7 +7054,7 @@
         });
       }
       const hasAutoHideHistory = rows.some(row => row.action === "Auto Hide Asset" && row.after?.status === "Auto Hidden");
-      if (asset.status === "Deleted / Archived" && reportCount >= 5 && !hasAutoHideHistory) {
+      if (isPermanentlyHiddenAsset(asset) && reportCount >= 5 && !hasAutoHideHistory) {
         rows.push({
           createdAt: getAssetAutoHideThresholdTime(asset) || getAssetHistoryOffsetTime(detail.updatedAt, -60),
           actor: "System",
@@ -7051,8 +7068,8 @@
         });
       }
       const hasCloseReportHistory = rows.some(row => row.action === "Close Report" && row.after?.reportStatus === "Cleared");
-      if (asset.status === "Deleted / Archived" && !hasCloseReportHistory) {
-        const archiveRow = rows.find(row => row.action === "Archive Asset");
+      if (isPermanentlyHiddenAsset(asset) && !hasCloseReportHistory) {
+        const archiveRow = rows.find(row => row.action === "Permanent Hide Asset");
         rows.push({
           createdAt: getAssetHistoryOffsetTime(archiveRow?.createdAt || detail.updatedAt, 1),
           actor: archiveRow?.actor || "Somchai Admin",
@@ -7062,7 +7079,7 @@
           reference: reportReference,
           referenceAssetId: asset.id,
           emailDelivery: { status: "not_required" },
-          note: "Admin closed the asset report after archiving the asset"
+          note: "ผู้ดูแลปิดรายงานหลังซ่อนสินทรัพย์ถาวร"
         });
       }
       return rows
@@ -7076,7 +7093,7 @@
 
     function getAssetReportActionSortRank(action) {
       if (action === "Close Report") return 30;
-      if (action === "Archive Asset" || action === "Restore Visibility") return 20;
+      if (action === "Permanent Hide Asset" || action === "Restore Visibility") return 20;
       if (action === "Force Hide Asset" || action === "Auto Hide Asset") return 10;
       return 0;
     }
@@ -7142,7 +7159,7 @@
       return ["Active", "Reported", "Reviewing"].includes(asset.status) && (asset.type === "Sale" || asset.type === "Show");
     }
 
-    function canAdminDeleteAsset(asset) {
+    function canAdminPermanentlyHideAsset(asset) {
       return ["Active", "Reported", "Reviewing", "Admin Hidden", "Auto Hidden"].includes(asset.status) && (asset.type === "Sale" || asset.type === "Show");
     }
 
@@ -7150,7 +7167,7 @@
       const actions = [];
       if (canAdminForceHideAsset(asset)) actions.push({ action: "hide", label: "ซ่อนชั่วคราว" });
       if (isTemporarilyHiddenAsset(asset)) actions.push({ action: "restore-visibility", label: "ยกเลิกการซ่อนชั่วคราว" });
-      if (canAdminDeleteAsset(asset)) actions.push({ action: "delete-post", label: "ลบ/เก็บถาวร" });
+      if (canAdminPermanentlyHideAsset(asset)) actions.push({ action: "delete-post", label: "ซ่อนถาวร" });
       return actions;
     }
 
@@ -7176,7 +7193,7 @@
         referenceAssetId: asset.id,
         note: action === "restore-visibility"
           ? "Admin restored asset visibility after review and closed the report"
-          : "Admin archived the asset after review and closed the report"
+          : "ผู้ดูแลซ่อนสินทรัพย์ถาวรหลังตรวจสอบและปิดรายงาน"
       });
       return true;
     }
@@ -7230,27 +7247,27 @@
       { value: "invalid_state", label: "สถานะ Asset ไม่ตรงเงื่อนไข" },
       { value: "stale_data", label: "ข้อมูลเปลี่ยนระหว่างดำเนินการ" },
       { value: "policy_blocked", label: "ยังไม่ผ่านเงื่อนไขที่ระบบกำหนด" },
-      { value: "archive_failed", label: "ลบ/เก็บถาวรไม่สำเร็จ" },
+      { value: "archive_failed", label: "ซ่อนถาวรไม่สำเร็จ" },
       { value: "audit_failed", label: "บันทึก Audit Log ไม่สำเร็จ" },
       { value: "session_expired", label: "เซสชันหมดอายุ" }
     ];
 
     const assetDeletePostErrorSamples = {
       invalid_state: {
-        title: "ไม่สามารถลบ/เก็บถาวรได้",
-        detail: "สถานะ Asset ปัจจุบันไม่ตรงกับเงื่อนไขของการลบ/เก็บถาวร กรุณาตรวจสถานะล่าสุดก่อนยืนยันอีกครั้ง"
+        title: "ไม่สามารถซ่อนถาวรได้",
+        detail: "สถานะ Asset ปัจจุบันไม่ตรงกับเงื่อนไขของการซ่อนถาวร กรุณาตรวจสถานะล่าสุดก่อนยืนยันอีกครั้ง"
       },
       stale_data: {
         title: "ข้อมูล Asset มีการเปลี่ยนแปลงแล้ว",
         detail: "มีการอัปเดต Asset นี้ระหว่างที่เปิดหน้าต่างยืนยัน กรุณารีเฟรชข้อมูลแล้วลองอีกครั้ง"
       },
       policy_blocked: {
-        title: "ยังไม่สามารถลบ/เก็บถาวร Asset นี้ได้",
-        detail: "Asset นี้ยังมีเงื่อนไข หลักฐาน หรือรายการอ้างอิงที่ต้องตรวจสอบเพิ่มเติมก่อนลบ/เก็บถาวร"
+        title: "ยังไม่สามารถซ่อนถาวร Asset นี้ได้",
+        detail: "Asset นี้ยังมีเงื่อนไข หลักฐาน หรือรายการอ้างอิงที่ต้องตรวจสอบเพิ่มเติมก่อนซ่อนถาวร"
       },
       archive_failed: {
-        title: "ลบ/เก็บถาวรไม่สำเร็จ",
-        detail: "ระบบยังไม่สามารถนำ Asset ออกจากการแสดงผลและเปลี่ยนเป็นสถานะเก็บถาวรได้ กรุณาลองอีกครั้ง"
+        title: "ซ่อนถาวรไม่สำเร็จ",
+        detail: "ระบบยังไม่สามารถนำ Asset ออกจากการแสดงผลสาธารณะและเปลี่ยนเป็นสถานะซ่อนถาวรได้ กรุณาลองอีกครั้ง"
       },
       audit_failed: {
         title: "บันทึก Audit Log ไม่สำเร็จ",
@@ -7280,17 +7297,17 @@
           apply: asset => { asset.status = "Admin Hidden"; asset.action = "ซ่อนโพสต์ชั่วคราวจาก Feed/Search/Profile public surface พร้อมบันทึกเหตุผล"; }
         },
         "delete-post": {
-          title: "ยืนยันการลบ/เก็บถาวร",
+          title: "ยืนยันการซ่อนถาวร",
           button: "ยืนยัน",
           summary: "ใช้เมื่อตรวจสอบแล้วว่า Asset นี้ไม่ควรแสดงหรือใช้งานต่อในแอป",
-          reasonLabel: `เหตุผลการลบ/เก็บถาวรของ ${restoreTarget}`,
+          reasonLabel: `เหตุผลการซ่อนถาวรของ ${restoreTarget}`,
           reasons: [
             "ตรวจสอบแล้วพบว่าเนื้อหาไม่เป็นไปตามนโยบาย",
             "ยืนยันแล้วว่า Asset หรือข้อมูลอ้างอิงไม่ถูกต้อง",
-            "ทีมที่รับผิดชอบอนุมัติให้ลบ/เก็บถาวร"
+            "ทีมที่รับผิดชอบอนุมัติให้ซ่อนถาวร"
           ],
-          notePlaceholder: "สรุปผลการตรวจสอบ เหตุผลที่ลบ/เก็บถาวร และข้อมูลอ้างอิงที่เกี่ยวข้อง",
-          apply: asset => { asset.status = "Deleted / Archived"; asset.action = "ลบ/เก็บถาวรจาก public surface หลังยืนยันว่าเนื้อหาผิดจริง พร้อมเก็บ audit/history"; }
+          notePlaceholder: "สรุปผลการตรวจสอบ เหตุผลที่ซ่อนถาวร และข้อมูลอ้างอิงที่เกี่ยวข้อง",
+          apply: asset => { asset.status = "Permanently Hidden"; asset.action = "ซ่อนถาวรจาก public surface หลังยืนยันว่าเนื้อหาผิดจริง พร้อมเก็บ audit/history"; }
         },
         "restore-visibility": {
           title: "ยืนยันยกเลิกการซ่อนชั่วคราว",
@@ -7328,7 +7345,7 @@
       return `
         <div class="module-note user-action-impact user-action-impact-card user-action-impact-warning">
           <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 3.2c.7 0 1.35.37 1.7.98l8.05 13.95A1.95 1.95 0 0 1 20.05 21H3.95a1.95 1.95 0 0 1-1.7-2.87L10.3 4.18A1.95 1.95 0 0 1 12 3.2Zm0 4.6a1 1 0 0 0-1 1v4.4a1 1 0 1 0 2 0V8.8a1 1 0 0 0-1-1Zm0 8.45a1.15 1.15 0 1 0 0 2.3 1.15 1.15 0 0 0 0-2.3Z"/></svg>
-          <p><strong>ผลกระทบต่อแอปพลิเคชัน:</strong> หลังยืนยัน ระบบจะนำ asset สถานะ ${asset.type.toLowerCase()} นี้ออกจาก ${visibilitySurface} และบันทึก Audit Log โดยไม่แก้ไขเนื้อหาที่เจ้าของ Asset กรอกไว้</p>
+          <p><strong>ผลกระทบต่อแอปพลิเคชัน:</strong> หลังยืนยัน ระบบจะซ่อน asset สถานะ ${asset.type.toLowerCase()} นี้ถาวร ออกจาก ${visibilitySurface} เจ้าของยังเห็นแบบ read-only แต่แก้ไข ยกเลิกซ่อน หรือลบเองไม่ได้ และรายการนี้จะไม่ถูกนับใน portfolio value</p>
         </div>
       `;
     }
@@ -7609,7 +7626,7 @@
 
     function renderAssetActionModal(asset, action) {
       if (action === "hide" && !canAdminForceHideAsset(asset)) return;
-      if (action === "delete-post" && !canAdminDeleteAsset(asset)) return;
+      if (action === "delete-post" && !canAdminPermanentlyHideAsset(asset)) return;
       const config = getAssetActionConfig(action, asset);
       if (!asset || !config) return;
       if (action === "restore-visibility") {
@@ -7673,10 +7690,10 @@
         showSuccessToast(`${asset.id}: สถานะล่าสุดไม่เข้าเงื่อนไขซ่อนชั่วคราว`);
         return;
       }
-      if (action === "delete-post" && !canAdminDeleteAsset(asset)) {
+      if (action === "delete-post" && !canAdminPermanentlyHideAsset(asset)) {
         closeUserActionModal();
         refreshAfterAssetAction(asset);
-        showSuccessToast(`${asset.id}: สถานะล่าสุดไม่เข้าเงื่อนไขลบ/เก็บถาวร`);
+        showSuccessToast(`${asset.id}: สถานะล่าสุดไม่เข้าเงื่อนไขซ่อนถาวร`);
         return;
       }
       const config = getAssetActionConfig(action, asset);
@@ -9655,7 +9672,9 @@
               { value: "Sale", label: "Sale" },
               { value: "Show", label: "Show" },
               { value: "Hide", label: "Hide" },
-              { value: "Sold", label: "Sold" }
+              { value: "Sold", label: "Sold" },
+              { value: "Permanently Hidden", label: "ซ่อนถาวร" },
+              { value: "Owner Deleted", label: "เจ้าของลบเอง" }
             ])}</div>
             <div class="user-advanced-filter">${customSelect("asset-brand-filter", "Filter brand", [
               { value: "", label: "All brands" },
@@ -9974,7 +9993,7 @@
       const sorted = [...data.rows].filter(row => {
         const text = getAssetSearchText(row);
         return (!q || text.includes(q))
-          && (!type || row.type === type)
+          && (!type || row.type === type || row.status === type)
           && (!brand || getAssetBrand(row) === brand);
       }).sort((a, b) => getAssetSortRank(b, sort) - getAssetSortRank(a, sort));
       const pageCount = Math.max(1, Math.ceil(sorted.length / assetListPageSize));

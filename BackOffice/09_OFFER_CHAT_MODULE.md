@@ -158,14 +158,14 @@ FO สร้าง offer ได้จาก Asset Detail เท่านั้�
 | Owner accepts offer | บันทึก status `Accepted`, timeline, notification delivery | Buyer ได้ notification เปิด Chat Room |
 | Owner declines offer | บันทึก status `Rejected`, timeline, notification delivery | Buyer ได้ notification เปิด Asset Detail; incoming pending หาย |
 | Admin force expires offer | เปลี่ยนเป็น `Expired`, reason required, audit | Offer accept/decline ไม่ได้และออกจาก active pending flow |
-| Asset removed/sold while pending | เปลี่ยน impacted offers เป็น `Invalidated` ตาม system policy | FO แสดง unavailable/invalidated และไม่ให้ action ต่อ |
+| Asset ซ่อนถาวร/Owner Deleted/sold while pending | เปลี่ยน impacted offers เป็น `Invalidated` ตาม system policy | FO แสดง unavailable/invalidated และไม่ให้ action ต่อ |
 | User/account state blocks transaction | เปลี่ยนหรือ block offer ตาม policy พร้อม reason | FO ต้องไม่เปิด action ที่ทำไม่ได้ |
 
 Asset status rule:
 
 - `Sale` รองรับ offer ตาม marketplace flow
 - `Show` รองรับ offer/contact จาก Asset Detail หรือ public profile detail เฉพาะตาม FO rule แต่ไม่ขึ้น Feed/Search/Watch Alert
-- `Hide`, `Sold`, `Removed/Hidden` ไม่รับ offer ใหม่
+- `Hide`, `Sold`, `ซ่อนถาวร`, `Owner Deleted` ไม่รับ offer ใหม่
 - Existing chat room ยังดูได้หลัง asset sold/deleted แต่ asset card ต้องแสดง unavailable หรือ sold state ตาม FO rule
 
 ## 9. Offer Detail

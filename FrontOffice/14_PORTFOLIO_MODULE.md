@@ -19,7 +19,7 @@
 
 # 2. Objective
 
-Portfolio Module ใช้สำหรับให้ Owner ดูมูลค่าคอลเลกชันส่วนตัวของตนเอง โดยคำนวณจาก Asset สถานะ Sale, Show และ Hide เท่านั้น
+Portfolio Module ใช้สำหรับให้ Owner ดูมูลค่าคอลเลกชันส่วนตัวของตนเอง โดยคำนวณจาก Asset สถานะ Sale, Show และ Hide ที่ยังใช้งานได้เท่านั้น
 
 Portfolio เป็นข้อมูล private เห็นเฉพาะ Owner และต้องไม่แสดงใน Public Profile
 
@@ -40,8 +40,8 @@ Portfolio เป็นข้อมูล private เห็นเฉพาะ Own
 | --- | --- | --- |
 | Privacy | Portfolio เป็น Private และเห็นเฉพาะ Owner | Guest/Public Viewer/User อื่นห้ามเข้าถึง Portfolio |
 | Entry Point | Total Asset Value เป็น entry point สำหรับกดเข้า Portfolio | Portfolio เปิดจาก Owner Profile ผ่าน Total Asset Value |
-| Calculation | Portfolio คำนวณจาก Sale, Show, Hide | ใช้เฉพาะ Asset 3 สถานะนี้ |
-| Exclusion | Portfolio ไม่รวม Sold | Sold ไม่ถูกนำไปคำนวณ Total Asset Value |
+| Calculation | Portfolio คำนวณจาก Sale, Show, Hide ที่ยังใช้งานได้ | ใช้เฉพาะ Asset 3 สถานะนี้ และต้องไม่รวมรายการที่ owner deleted หรือถูก Back Office ซ่อนถาวร |
+| Exclusion | Portfolio ไม่รวม Sold, Owner Deleted และซ่อนถาวร | รายการเหล่านี้ไม่ถูกนำไปคำนวณ Total Asset Value |
 | Market Price | Watch Price API ใช้ดึงราคาตลาด | ใช้เป็นแหล่ง Current Value ลำดับแรก |
 | Fallback Price | หากไม่มีราคาตลาดต้องมี fallback | ใช้ Owner Estimated Value, Purchase Price fallback หรือแสดง No Valuation ตามลำดับ |
 | Gain/Loss | คำนวณจาก Current Value เทียบ Purchase Price | คำนวณเฉพาะรายการที่มีข้อมูลพอและไม่ใช้ Purchase Price fallback |
@@ -63,7 +63,7 @@ Portfolio เป็นข้อมูล private เห็นเฉพาะ Own
 | High | Sold History fields ยังไม่ครบ | Sold History ต้องเก็บ Sale Date, Buyer, Contact, Sale Price, Payment Method, Attachment | เพิ่ม field display/state ให้ครบ |
 | High | Public Profile อาจแสดง Portfolio/private data | Portfolio Value Detail, Sold History, Purchase data เป็น private | ห้ามแสดงใน Public Profile/Viewer mode |
 | Medium | Empty state ของ Portfolio/Sold History ยังไม่ชัด | Empty State ใช้ `ไม่พบข้อมูล` / `No data found` | เพิ่ม empty state ตามข้อความกลาง |
-| Medium | Deleted Asset treatment ยังไม่ชัด | Deleted Asset หายจาก public surfaces และไม่ควรคำนวณ Portfolio | ระบุ deleted asset ไม่ถูกนับใน Portfolio |
+| Medium | Deleted / ซ่อนถาวร treatment ยังไม่ชัด | Owner Deleted และซ่อนถาวรหายจาก public surfaces และไม่ควรคำนวณ Portfolio | ระบุ Owner Deleted และซ่อนถาวรไม่ถูกนับใน Portfolio |
 | High | Market Value source / formula ยังไม่ชัด | Current Value ใช้ Watch Price API -> Owner Estimated Value -> Purchase Price fallback -> No Valuation | Annotate สูตรและ fallback ใน Portfolio dashboard/list |
 | High | Gain/Loss calculation ยังไม่ชัด | Unrealized Gain/Loss = Current Value - Purchase Price เฉพาะรายการที่มีข้อมูลพอ | เพิ่ม Gain/Loss display state และ no-calculation state |
 | High | Realized Gain/Loss ของ Sold History ยังไม่ชัด | Realized Gain/Loss = Sale Price - Purchase Price และแยกจาก Portfolio Value | เพิ่มสูตรและ unavailable state ใน Sold History |
@@ -89,8 +89,8 @@ Portfolio เป็นข้อมูล private เห็นเฉพาะ Own
 - YTD Performance วิธี A
 - Valuation source label
 - No market price / no valuation fallback
-- Asset ที่ใช้คำนวณ: Sale, Show, Hide
-- Exclude Sold จาก Portfolio value
+- Asset ที่ใช้คำนวณ: Sale, Show, Hide ที่ยังใช้งานได้
+- Exclude Sold, Owner Deleted และซ่อนถาวรจาก Portfolio value
 - Sold History แยกจาก Portfolio value
 - Sold History fields:
   - Sale Date
@@ -142,6 +142,7 @@ Portfolio เป็นข้อมูล private เห็นเฉพาะ Own
 - เห็น Portfolio ของตัวเองได้
 - เห็น Total Asset Value ของตัวเองได้
 - เห็น Asset สถานะ Sale, Show, Hide ที่ถูกนำมาคำนวณ
+- Asset ที่ถูก Back Office ซ่อนถาวรอาจยังเห็นได้จาก owner read-only detail แต่ต้องไม่อยู่ใน Portfolio Asset List และไม่รวม Total Asset Value
 - เห็น Sold History ของตัวเองได้
 
 ## Public Viewer / Other User
@@ -214,7 +215,8 @@ Portfolio คำนวณจาก Asset สถานะ:
 Portfolio ไม่รวม:
 
 - Sold
-- Deleted
+- Owner Deleted
+- ซ่อนถาวรจาก Back Office
 - Asset ของ user อื่น
 - Asset ที่ user ไม่มีสิทธิ์เห็น
 
@@ -227,6 +229,8 @@ Eligible Asset คือ Asset ที่ใช้คำนวณ Portfolio ไ�
 - Owner เป็นเจ้าของ Asset
 - Status เป็น `Sale`, `Show` หรือ `Hide`
 - Asset ยังไม่ถูกลบ
+- Asset ไม่ใช่ Owner Deleted
+- Asset ไม่ถูก Back Office ซ่อนถาวร
 - Asset ไม่ใช่ `Sold`
 
 ### Current Value Per Asset
@@ -257,7 +261,8 @@ Rules:
 
 - รวมเฉพาะ Asset สถานะ `Sale`, `Show`, `Hide`
 - ไม่รวม `Sold`
-- ไม่รวม Deleted Asset
+- ไม่รวม Owner Deleted Asset
+- ไม่รวม Asset ที่ถูก Back Office ซ่อนถาวร
 - ไม่รวม Asset ที่เป็น `No Valuation`
 - แสดงจำนวน coverage เป็น `คำนวณจาก X/Y รายการ` โดย:
   - `X` = จำนวน Eligible Asset ที่มี Current Value
@@ -431,7 +436,8 @@ Rules:
 
 - นับเฉพาะ Eligible Asset สถานะ `Sale`, `Show`, `Hide`
 - ไม่รวม `Sold`
-- ไม่รวม Deleted Asset
+- ไม่รวม Owner Deleted Asset
+- ไม่รวม Asset ที่ถูก Back Office ซ่อนถาวร
 - เรียงลำดับด้วย:
   1. จำนวน Asset มากไปน้อย
   2. Total Current Value ของ brand มากไปน้อย
@@ -501,10 +507,12 @@ Sold History ต้องเก็บ:
 - Public Profile เห็นเฉพาะ Asset สถานะ Sale และ Show
 - Public Profile ต้องไม่แสดง Portfolio, Sold History, Purchase data หรือ Portfolio Value Detail
 
-## Deleted Asset Rule
+## Owner Deleted และซ่อนถาวร Rule
 
-- Deleted Asset ไม่ถูกนำมาคำนวณ Portfolio
-- Deleted Asset ต้องหายจาก public surfaces
+- Owner Deleted Asset ไม่ถูกนำมาคำนวณ Portfolio
+- Asset ที่ถูก Back Office ซ่อนถาวรไม่ถูกนำมาคำนวณ Portfolio
+- Owner Deleted และซ่อนถาวรต้องหายจาก public surfaces
+- Asset ที่ถูก Back Office ซ่อนถาวรยังอาจแสดงให้ Owner เห็นแบบ read-only ใน owner detail แต่ต้องไม่แสดงใน Portfolio Asset List
 
 ## Analytics Rule
 
@@ -533,7 +541,7 @@ Portfolio Module ไม่มี user input form หลักใน V1
 | --- | --- |
 | Portfolio calculation | ใช้เฉพาะ Sale, Show, Hide |
 | Current Value | ต้องเลือก source ตามลำดับ Watch Price API -> Owner Estimated Value -> Purchase Price fallback -> No Valuation |
-| Total Asset Value | ต้องไม่รวม Sold, Deleted หรือ No Valuation |
+| Total Asset Value | ต้องไม่รวม Sold, Owner Deleted, ซ่อนถาวร หรือ No Valuation |
 | Gain/Loss | คำนวณเฉพาะ Asset ที่มี Current Value จาก market/owner estimate และมี Purchase Price |
 | Sold History fields | ต้องแสดงตาม field ที่ master กำหนด |
 | Permission | ต้องตรวจสิทธิ์ Owner ทุกครั้ง |
@@ -666,9 +674,9 @@ Given Viewer เปิด Public Profile หรือ Public Asset Detail
 When ข้อมูลแสดง  
 Then ต้องไม่แสดง Purchase Price, Purchase Date, Purchase From, Proof of Payment, Sold History หรือ Portfolio Value Detail
 
-## AC-PORT-009: Deleted Asset Excluded
+## AC-PORT-009: Owner Deleted And Permanently Hidden Excluded
 
-Given Asset ถูกลบ  
+Given Asset เป็น Owner Deleted หรือถูก Back Office ซ่อนถาวร  
 When ระบบคำนวณ Portfolio  
 Then Asset นั้นต้องไม่ถูกนำมาคำนวณ
 
@@ -677,7 +685,7 @@ Then Asset นั้นต้องไม่ถูกนำมาคำนวณ
 Given Owner มี Eligible Asset สถานะ Sale, Show และ Hide  
 When ระบบคำนวณ Total Asset Value  
 Then Total Asset Value ต้องเท่ากับผลรวม Current Value ของ Eligible Asset ที่มี Current Value  
-And ต้องไม่รวม Sold, Deleted หรือ No Valuation
+And ต้องไม่รวม Sold, Owner Deleted, ซ่อนถาวร หรือ No Valuation
 
 ## AC-PORT-011: Current Value Source Priority
 
@@ -774,7 +782,7 @@ Then Holding Period ต้องเท่ากับ Sale Date - Purchase Date
 Given Owner มี Eligible Asset หลาย brand  
 When ระบบแสดง Top Brand Holdings  
 Then ต้องแสดง Top 3 brand จากจำนวน Asset สถานะ Sale, Show, Hide  
-And ต้องไม่รวม Sold หรือ Deleted Asset
+And ต้องไม่รวม Sold, Owner Deleted หรือ Asset ที่ถูก Back Office ซ่อนถาวร
 
 ## AC-PORT-024: YTD Performance Formula
 

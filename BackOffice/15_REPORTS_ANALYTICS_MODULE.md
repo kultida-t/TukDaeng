@@ -164,14 +164,14 @@ Export sensitive fields เช่น email/phone ต้องจำกัดเ�
 | New assets | Count by Sale, Show, Hide, Sold |
 | Visible assets | Assets visible in Feed/Search/Profile |
 | Flagged/reported assets | Count, reason, status, SLA |
-| Asset status transition | Sale -> Sold, Show/Hide, Removed/Hidden |
+| Asset status transition | Sale -> Sold, Show/Hide, ซ่อนชั่วคราว, ซ่อนถาวร, Owner Deleted |
 | Brand/model breakdown | Aggregate by brand/model/reference |
 | Price range | THB min/max/average by brand/model |
 | Market data dependency | Inactive brand/model/reference impact |
 
 Filters:
 
-- Status: Sale, Show, Hide, Sold, Removed/Hidden
+- Status: Sale, Show, Hide, Sold, ซ่อนชั่วคราว, ซ่อนถาวร, Owner Deleted
 - Brand/model/reference
 - Owner
 - Price range

@@ -268,7 +268,7 @@ Source of truth สำหรับ coverage นี้คือ `../ProjectAdmin/
 FO functions ขั้นต่ำที่ BO ต้องรองรับ:
 
 - Report Asset / User / Comment / Board Content
-- Asset lifecycle: Sale, Show, Hide, Sold, Removed/Hidden
+- Asset lifecycle: Sale, Show, Hide, Sold, ซ่อนชั่วคราว, ซ่อนถาวร, Owner Deleted
 - Board article/category/banner publication
 - Brand/model/reference/price index management
 - Directory item publication

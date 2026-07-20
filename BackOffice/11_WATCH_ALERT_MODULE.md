@@ -154,7 +154,7 @@ Match ต้องใช้ rule เดียวกับ FO Search:
 - Match เฉพาะ asset status `Sale`
 - ต้องผ่าน moderation/visibility rule
 - ต้องไม่รวม asset ของ blocked user หรือคู่ที่ block กัน
-- ต้องไม่รวม `Show`, `Hide`, `Sold`, `Deleted`, `Removed/Hidden`
+- ต้องไม่รวม `Show`, `Hide`, `Sold`, `Owner Deleted`, `ซ่อนถาวร`
 - Market data inactive ต้องหยุด new trigger ตาม policy แต่ยังเก็บ alert/history เดิม
 
 Lifecycle impact:
@@ -166,7 +166,7 @@ Lifecycle impact:
 | `Sale` -> `Show` | หายจาก result และไม่ trigger ใหม่ |
 | `Hide` -> `Sale` | Match ได้ถ้าตรง criteria |
 | `Show` -> `Sale` | Match ได้ถ้าตรง criteria |
-| Any -> `Removed/Hidden` | ไม่ match และ direct/result surface ต้อง unavailable |
+| Any -> `Owner Deleted` หรือ `ซ่อนถาวร` | ไม่ match และ direct/result surface ต้อง unavailable |
 
 ## 10. Trigger History
 
