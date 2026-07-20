@@ -2195,6 +2195,9 @@
     body.asset-detail-mode .detail-grid.two {
       grid-template-columns: repeat(3, minmax(0, 1fr));
     }
+    body.asset-detail-mode .detail-grid.two.asset-consignment-modal-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
     body.asset-detail-mode .detail-grid.two.asset-listing-summary-grid {
       grid-template-columns: repeat(2, minmax(0, 1fr));
     }
@@ -2735,6 +2738,9 @@
       grid-template-columns: repeat(3, minmax(0, 1fr));
       gap: 10px;
     }
+    .asset-consignment-modal-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
     .asset-purchase-media {
       display: grid;
       gap: 10px;
@@ -2848,11 +2854,23 @@
       background: #101010;
       align-items: flex-end;
     }
+    .asset-fo-hero .asset-fo-bottom {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      z-index: 2;
+    }
     .asset-fo-price {
       color: #fff;
       font-size: 21px;
       font-weight: 700;
       white-space: nowrap;
+    }
+    .asset-fo-price.sold {
+      color: rgba(255, 255, 255, .7);
+      text-decoration: line-through;
+      text-decoration-thickness: 2px;
     }
     .asset-fo-actions {
       display: flex;
@@ -4156,6 +4174,9 @@
       body.asset-detail-mode .detail-grid.two {
         grid-template-columns: 1fr;
       }
+      body.asset-detail-mode .detail-grid.two.asset-consignment-modal-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
       body.asset-detail-mode .detail-grid.two.asset-listing-summary-grid {
         grid-template-columns: repeat(2, minmax(0, 1fr));
       }
@@ -4651,15 +4672,15 @@
       assets: mod("Asset Management", "การดำเนินงาน / Asset Management", "Asset List & Moderation", "จัดการสถานะ Sale, Show, Hide, Sold และ reported assets", "สร้าง asset note", [["Sale", "2,816", "แสดงใน Feed/Search"], ["Show", "428", "แสดงใน collection"], ["Hidden", "76", "owner-only"], ["Reported", "22", "รอตรวจ 9 รายการ"]], [
         item("AST-8831", "Rolex Submariner 16610", "Crown Time BKK", "Sale", "สูง", "Auto Hidden", "รูปประกาศซ้ำและราคาเบี่ยงจาก market index", ["THB 318,000", "Reports 5", "Auto hidden"], "ครบ 5 reports ระบบซ่อนชั่วคราวเพื่อรอ Admin ตรวจสอบ"),
         item("AST-8802", "Omega Speedmaster", "Vintage Vault BKK", "Sale", "กลาง", "Active", "ราคาสูงกว่าค่ากลาง 18% จากรุ่นเดียวกัน", ["Watch Alert match 12"], "ส่ง warning หรือ force Hide หากข้อมูลหลอกลวง"),
-        item("AST-8791", "Seiko 6139", "Archive Collector", "Hide", "ปกติ", "Owner-only", "รอ account deletion dependency check", ["Deletion linked"], "คงข้อมูล transaction/audit ตาม retention"),
-        item("AST-8755", "Patek Philippe Calatrava", "The Collector", "Show", "ปกติ", "Active", "แสดงใน portfolio เท่านั้น ไม่มีปุ่มเสนอซื้อ", ["Portfolio", "Private price"], "ตรวจว่าข้อมูล private ไม่แสดงบน FO public surface"),
-        item("AST-8720", "Tudor Black Bay 58", "Seiko Corner", "Sold", "ปกติ", "Closed", "ขายแล้วและมี sale record เชื่อมกับ offer", ["Sold record", "Offer OFR-488"], "เปิดอ่านได้แบบ read-only และคง audit/sold history"),
+        item("AST-8791", "Seiko 6139", "Archive Collector", "Hide", "ปกติ", "Owner-only", "รอ account deletion dependency check", ["THB 96,000", "Deletion linked"], "คงข้อมูล transaction/audit ตาม retention"),
+        item("AST-8755", "Patek Philippe Calatrava", "The Collector", "Show", "ปกติ", "Active", "แสดงใน portfolio เท่านั้น ไม่มีปุ่มเสนอซื้อ", ["Portfolio"], "ตรวจว่าโพสต์ Show ไม่แสดงราคาเสนอขายบน FO public surface"),
+        item("AST-8720", "Tudor Black Bay 58", "Seiko Corner", "Sold", "ปกติ", "Closed", "ขายแล้วและมี sale record เชื่อมกับ offer", ["THB 118,000", "Sold record", "Offer OFR-488"], "เปิดอ่านได้แบบ read-only และคง audit/sold history"),
         item("AST-8694", "Audemars Piguet Royal Oak", "Rolex Rama9", "Sale", "สูง", "Reviewing", "มีรายงาน serial/provenance ไม่ตรงกับรูป", ["Reports 3", "High value"], "ตรวจหลักฐานก่อนซ่อนหรือปิด report"),
         item("AST-8612", "Grand Seiko Snowflake", "Daily Watch Hunter", "Show", "กลาง", "Active", "มี comment report แต่ asset ยังไม่เข้าเกณฑ์ซ่อน", ["Comment report 1"], "ตรวจ social context โดยไม่เปลี่ยนสถานะ asset ทันที"),
         item("AST-8588", "Cartier Santos Medium", "Minimal Dial", "Sale", "กลาง", "Admin Hidden", "ถูกซ่อนจากรายงาน duplicate content ระหว่างตรวจ", ["Hidden by Admin", "Audit linked"], "คืนสถานะได้เมื่อหลักฐานผ่านการตรวจสอบ"),
         item("AST-8581", "Rolex Submariner 126610LV", "Rolex Rama9", "Sale", "สูง", "Deleted / Archived", "ลบ/เก็บถาวรหลังตรวจพบว่ารูปและ serial ไม่ตรงกับหลักฐานเจ้าของจริง", ["Archived post", "Reports 6", "Audit linked"], "เอาออกจาก Feed/Search/Profile public surface แต่เก็บ audit, report context และ owner history ไว้"),
         item("AST-8579", "Rolex GMT-Master II Pepsi", "Crown Time BKK", "Sale", "กลาง", "Active", "Price check against recent market index before public boost", ["THB 612,000", "Watch Alert match 8"], "Confirm price evidence and seller ownership before promotion"),
-        item("AST-8571", "Rolex Datejust 36", "Bangkok Watch Lab", "Show", "ปกติ", "Active", "Portfolio listing waiting for owner confirmation", ["Portfolio", "Private price"], "Verify private visibility and profile display"),
+        item("AST-8571", "Rolex Datejust 36", "Bangkok Watch Lab", "Show", "ปกติ", "Active", "Portfolio listing waiting for owner confirmation", ["Portfolio"], "Verify portfolio visibility and profile display"),
         item("AST-8566", "Rolex Explorer 124270", "Crown Time BKK", "Sale", "กลาง", "Active", "New listing with complete provenance but missing wrist shot", ["THB 268,000"], "Request additional photo before featuring"),
         item("AST-8559", "Rolex Daytona 116500LN", "Siam Chrono", "Sale", "สูง", "Reviewing", "High value asset with provenance documents under review", ["Reports 1", "High value"], "Review serial proof and receipt before keeping Sale"),
         item("AST-8548", "Omega Seamaster Diver 300M", "Vintage Vault BKK", "Sale", "ปกติ", "Active", "Clean listing with market price in normal range", ["THB 142,000"], "No action needed unless new report arrives"),
@@ -5704,12 +5725,33 @@
       { src: "./assets/asset-uploads/purchase-dealer-invoice.png", label: "Masked dealer invoice and purchase receipt" }
     ];
 
-    function getAssetPrice(asset) {
+    function getAssetEnteredPrice(asset) {
       const priceTag = (asset.tags || []).find(tag => /^THB\s/i.test(tag));
       if (priceTag) return priceTag;
-      if (asset.type === "Show") return "Private price";
-      if (asset.type === "Sold") return "Sold price hidden";
-      return "Not specified";
+      if (isAssetConsignment(asset)) return `THB ${getAssetConsignmentAskingPrice(asset)}`;
+      return "";
+    }
+
+    function getAssetFoDisplayPrice(asset) {
+      const enteredPrice = getAssetEnteredPrice(asset);
+      if (asset.type === "Sold") return enteredPrice;
+      if (asset.type !== "Sale") return "";
+      return enteredPrice || "Price on request";
+    }
+
+    function getAssetBoDescriptionRows(asset, detail) {
+      return [
+        ["Title", asset.name],
+        ["Price", detail.price || "-"],
+        ["Provenance", getAssetProvenanceType(asset)]
+      ];
+    }
+
+    function getAssetReportDescriptionRows(asset, detail) {
+      return [
+        ["Title", asset.name],
+        ["Price", detail.price || "-"]
+      ];
     }
 
     function getAssetReportCount(asset) {
@@ -5773,7 +5815,7 @@
       };
       const paragraphs = submittedDescriptions[asset.name] || [
         `A well-presented ${asset.name} with ${detail.dial ? `${detail.dial.toLowerCase()} dial, ` : ""}${detail.material ? `${detail.material.toLowerCase()} case, ` : ""}and ${detail.movement ? `${detail.movement.toLowerCase()} movement` : "carefully documented specifications"}.`,
-        `Listed in ${detail.condition || "good"} condition${detail.scope ? ` with ${detail.scope.toLowerCase()}` : ""}, this ${asset.type || "watch"} post is offered for ${detail.price} and includes clear photos for buyers to review the case, dial, bracelet, and included accessories.`
+        `Listed in ${detail.condition || "good"} condition${detail.scope ? ` with ${detail.scope.toLowerCase()}` : ""}${detail.foDisplayPrice ? `, this ${asset.type || "watch"} post is offered for ${detail.foDisplayPrice}` : ""} and includes clear photos for buyers to review the case, dial, bracelet, and included accessories.`
       ];
 
       return `<div class="asset-submitted-description">${paragraphs.map(paragraph => `<p>${paragraph}</p>`).join("")}</div>`;
@@ -5810,7 +5852,8 @@
         thickness: spec.thickness || "",
         bracelet: spec.bracelet || spec.material || "",
         serialMasked: spec.serialMasked || `${String(idNumber).slice(-2)}*****`,
-        price: getAssetPrice(asset),
+        price: getAssetEnteredPrice(asset),
+        foDisplayPrice: getAssetFoDisplayPrice(asset),
         negotiable: asset.type === "Sale" ? "Yes" : "No",
         location: "Bangkok, Thailand",
         delivery: asset.type === "Sale" ? "Meet-up / insured delivery" : "Display only",
@@ -6116,10 +6159,7 @@
               <div class="detail-section">
                 <h4>Description</h4>
                 <div class="detail-grid">
-                  ${renderAssetDetailTiles([
-                    ["Title", asset.name],
-                    ["Price", detail.price]
-                  ])}
+                  ${renderAssetDetailTiles(getAssetReportDescriptionRows(asset, detail))}
                   <div class="detail-tile asset-description-tile">
                     <span>Description</span>
                     ${getAssetSubmittedDescription(asset, detail)}
@@ -6154,12 +6194,104 @@
     function getAssetPurchaseHistory(asset, detail) {
       const idNumber = parseInt(String(asset.id || "").match(/\d+/)?.[0] || "0", 10);
       return {
-        price: detail.price && detail.price !== "Private price" && detail.price !== "Sold price hidden" ? detail.price.replace(/^THB\s*/i, "") : "100,000.00",
+        price: detail.price ? detail.price.replace(/^THB\s*/i, "") : "100,000.00",
         date: `${String(Math.max(1, idNumber % 28 || 12)).padStart(2, "0")} Oct 2023`,
         from: idNumber % 2 ? "Dealer" : "Private Seller",
         equipmentImages: purchaseEquipmentImages,
         proofFiles: purchaseProofImages,
         note: `${asset.name} (${detail.reference || "reference not specified"})\n${asset.detail}\n\n- ${detail.caseSize || "Case size not specified"} case\n- ${detail.movement || "Movement not specified"}\n- ${detail.scope || "Accessories not specified"}`
+      };
+    }
+
+    function isAssetConsignment(asset) {
+      return asset.type === "Sale" && ["AST-8802", "AST-8579", "AST-8559", "AST-8548"].includes(asset.id);
+    }
+
+    function getAssetConsignmentAskingPrice(asset) {
+      const prices = {
+        "AST-8802": "186,000",
+        "AST-8579": "612,000",
+        "AST-8559": "1,185,000",
+        "AST-8548": "142,000"
+      };
+      return prices[asset.id] || "142,000";
+    }
+
+    function getAssetProvenanceType(asset) {
+      return isAssetConsignment(asset) ? "Consignment" : "Owner (Asset)";
+    }
+
+    function getAssetProvenanceActionLabel(asset) {
+      return isAssetConsignment(asset) ? "Consignment Details" : "View purchase history";
+    }
+
+    function getAssetConsignmentDetails(asset, detail) {
+      const idNumber = parseInt(String(asset.id || "").match(/\d+/)?.[0] || "0", 10);
+      const askingPrice = detail.price && /^THB\s/i.test(detail.price) ? detail.price.replace(/^THB\s*/i, "") : getAssetConsignmentAskingPrice(asset);
+      const consignors = {
+        "AST-8802": {
+          fullName: "K. Narin Chaiyaporn",
+          phone: "082-444-2188",
+          contact: "Line: narin.watch",
+          email: "narin.chaiyaporn@example.com",
+          payoutMethod: "Bank transfer",
+          minimumAcceptablePrice: "176,000"
+        },
+        "AST-8579": {
+          fullName: "K. Sirin Wongwatchara",
+          phone: "089-771-6024",
+          contact: "IG: @sirin.collection",
+          email: "sirin.wongwatchara@example.com",
+          payoutMethod: "Bank transfer",
+          minimumAcceptablePrice: "590,000"
+        },
+        "AST-8559": {
+          fullName: "K. Pattanapong Rattanakul",
+          phone: "081-936-7742",
+          contact: "Line: pattanapong.watch",
+          email: "pattanapong.r@example.com",
+          payoutMethod: "Bank transfer",
+          minimumAcceptablePrice: "1,140,000"
+        },
+        "AST-8548": {
+          fullName: "K. Mayuree Tangsakul",
+          phone: "086-118-4920",
+          contact: "Facebook: Mayuree Watch Sale",
+          email: "mayuree.tangsakul@example.com",
+          payoutMethod: "Bank transfer",
+          minimumAcceptablePrice: "136,000"
+        }
+      };
+      const consignor = consignors[asset.id] || {
+        fullName: `K. ${asset.owner.split(" ")[0]} Chai`,
+        phone: "082-444-2188",
+        contact: "Line: consignor.watch",
+        email: "consignor@example.com",
+        payoutMethod: "Bank transfer",
+        minimumAcceptablePrice: "136,000"
+      };
+      const notes = {
+        "AST-8802": "ฝากขาย Omega Speedmaster เรือนนี้ครับ ใช้งานเองเป็นหลัก มีรอยขนแมวตามปกติแต่เครื่องเดินดี กล่องและเอกสารตามรูป ขอให้ติดต่อก่อนนัดดูของ 1 วัน และถ้าลูกค้าต่อราคา รบกวนเช็คกับผมก่อนยืนยันทุกครั้ง",
+        "AST-8579": "นาฬิกาอยู่ในเซฟ ไม่ได้ใส่บ่อย สภาพตามรูปจริง มีอุปกรณ์ครบตามที่แนบไว้ ถ้ามีผู้ซื้อจริงสามารถนัดดูที่สาขาได้ แต่ขอไม่เปิดราคาต่ำสุดให้ลูกค้าทราบก่อนคุยกับผม",
+        "AST-8559": "ฝากขายตามราคาที่แจ้งไว้ ต้องการปิดดีลกับผู้ซื้อที่โอนมัดจำหรือพร้อมชำระเท่านั้น กรุณาแจ้งล่วงหน้าก่อนนำเรือนออกมาให้ดู และขอรับเงินเข้าบัญชีเดิมหลังหักค่าคอมมิชชัน",
+        "AST-8548": "ตัวเรือนมีตำหนิเล็กน้อยตรงขอบล่างตามรูปเพิ่มเติม อุปกรณ์มีเท่าที่ส่งให้ ไม่มีกล่องนอก ถ้าลูกค้าสนใจจริงสามารถต่อรองได้เล็กน้อย แต่ขอให้ BO โทรยืนยันราคากับผมก่อนปิดการขาย"
+      };
+      return {
+        rows: [
+          ["Full Name", consignor.fullName],
+          ["Phone Number", consignor.phone],
+          ["Line / IG / Facebook", consignor.contact],
+          ["Email", consignor.email],
+          ["Payout Method", consignor.payoutMethod],
+          ["Consignment Date", `${String(Math.max(1, idNumber % 28 || 9)).padStart(2, "0")} Jul 2026`],
+          ["Consignment Duration", "90 days"],
+          ["Asking Price (THB)", askingPrice],
+          ["Commission (%)", "5%"],
+          ["Minimum Acceptable Price", consignor.minimumAcceptablePrice]
+        ],
+        equipmentImages: purchaseEquipmentImages,
+        proofFiles: purchaseProofImages,
+        note: notes[asset.id] || `ฝากขาย ${asset.name} ตามรายละเอียดและรูปที่แนบไว้ หากมีผู้ซื้อสนใจจริง รบกวนติดต่อเจ้าของก่อนยืนยันราคาและเงื่อนไขการชำระเงินทุกครั้ง`
       };
     }
 
@@ -6544,12 +6676,22 @@
       if (!asset) return;
       const detail = getAssetFoDetail(asset);
       const purchase = getAssetPurchaseHistory(asset, detail);
+      const isConsignment = isAssetConsignment(asset);
+      const consignment = isConsignment ? getAssetConsignmentDetails(asset, detail) : null;
+      const modalRows = isConsignment ? consignment.rows : [
+        ["Purchase Price (THB)", purchase.price],
+        ["Purchase Date", purchase.date],
+        ["Purchase From", purchase.from]
+      ];
+      const equipmentImages = isConsignment ? consignment.equipmentImages : purchase.equipmentImages;
+      const proofFiles = isConsignment ? consignment.proofFiles : purchase.proofFiles;
+      const note = isConsignment ? consignment.note : purchase.note;
       const modalBody = document.querySelector("#user-action-modal-body");
       modalBody.innerHTML = `
         <div class="user-action-page">
           <div class="user-action-head">
             <div>
-              <h2 id="user-action-modal-title">Purchase History</h2>
+              <h2 id="user-action-modal-title">${isConsignment ? "Consignment Details" : "Purchase History"}</h2>
               <p>${asset.id} · ${asset.name}</p>
             </div>
             <button class="btn user-action-close" type="button" data-user-action-modal-close aria-label="Close modal" title="Close">
@@ -6557,25 +6699,21 @@
             </button>
           </div>
           <div class="user-action-card">
-            <div class="detail-grid two asset-purchase-modal-grid">
-              ${renderAssetDetailTiles([
-                ["Purchase Price (THB)", purchase.price],
-                ["Purchase Date", purchase.date],
-                ["Purchase From", purchase.from]
-              ])}
+            <div class="detail-grid two asset-purchase-modal-grid${isConsignment ? " asset-consignment-modal-grid" : ""}">
+              ${renderAssetDetailTiles(modalRows)}
             </div>
           </div>
           <div class="user-action-card asset-purchase-media">
             <h4>All Equipment & Accessories</h4>
             <div class="asset-purchase-thumbs">
-              ${purchase.equipmentImages.map(image => `<div class="asset-purchase-thumb"><img src="${image.src}" alt="${asset.name} ${image.label}" /></div>`).join("")}
+              ${equipmentImages.map(image => `<div class="asset-purchase-thumb"><img src="${image.src}" alt="${asset.name} ${image.label}" /></div>`).join("")}
             </div>
             <h4>Proof of Payment</h4>
             <div class="asset-purchase-thumbs">
-              ${purchase.proofFiles.map(file => `<div class="asset-proof-thumb"><img src="${file.src}" alt="${asset.name} ${file.label}" /></div>`).join("")}
+              ${proofFiles.map(file => `<div class="asset-proof-thumb"><img src="${file.src}" alt="${asset.name} ${file.label}" /></div>`).join("")}
             </div>
             <h4>Note</h4>
-            <p class="asset-purchase-note">${purchase.note}</p>
+            <p class="asset-purchase-note">${note}</p>
           </div>
         </div>
       `;
@@ -6678,11 +6816,13 @@
       const uploadedImages = detail.uploadedImages || [];
       const selectedIndex = Math.min(Math.max(activeAssetImageIndex, 0), Math.max(uploadedImages.length - 1, 0));
       const coverImage = uploadedImages[selectedIndex];
+      const foPrice = detail.foDisplayPrice;
       return `
         <div class="asset-fo-preview">
           <div class="asset-fo-hero">
             ${coverImage ? `<img src="${coverImage.src}" alt="${asset.name} uploaded cover photo" />` : ""}
             <span class="asset-fo-counter">${uploadedImages.length ? selectedIndex + 1 : 0} / ${uploadedImages.length || detail.photoCount}</span>
+            ${foPrice ? `<div class="asset-fo-bottom"><div class="asset-fo-price ${asset.type === "Sold" ? "sold" : ""}">${foPrice}</div></div>` : ""}
           </div>
           <div class="asset-fo-thumbs">
             ${uploadedImages.map((image, index) => `
@@ -7634,15 +7774,12 @@
                 <div class="asset-detail-section-head">
                   <h4>Description</h4>
                   <div class="asset-detail-header-actions">
-                    <button class="user-detail-action-btn" type="button" data-asset-purchase-history="${asset.id}">View purchase history</button>
+                    <button class="user-detail-action-btn" type="button" data-asset-purchase-history="${asset.id}">${getAssetProvenanceActionLabel(asset)}</button>
                     ${asset.type === "Sold" ? `<button class="user-detail-action-btn" type="button" data-asset-sale-record="${asset.id}">View sale history</button>` : ""}
                   </div>
                 </div>
                 <div class="detail-grid">
-                  ${renderAssetDetailTiles([
-                    ["Title", asset.name],
-                    ["Price", detail.price]
-                  ])}
+                  ${renderAssetDetailTiles(getAssetBoDescriptionRows(asset, detail))}
                   <div class="detail-tile asset-description-tile">
                     <span>Description</span>
                     ${getAssetSubmittedDescription(asset, detail)}

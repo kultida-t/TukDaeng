@@ -14,6 +14,7 @@
 
 | Version | Date | Change Summary |
 | --- | --- | --- |
+| `BO-04-v0.2` | 2026-07-20 | Lock Asset Management prototype handoff notes after prototype completion. Align responsive layout, permission/privacy, route/filter behavior, Asset List/Detail, Reported Assets/Asset Report Detail actions, and FO sync impact with `BackOffice/04_ASSET_MANAGEMENT_MODULE.md`. |
 | `BO-03-v0.3` | 2026-07-16 | Clarify account suspension policy: V1 has no `Restricted` account state, `>= 3 reports` is priority review only, `>= 5 reports/reporters` or high-risk evidence may suspend, suspend/ban must revoke FO session, email is the primary user notification channel, and delivery/audit must be traceable. |
 | `BO-03-v0.2` | 2026-07-13 | Lock User List prototype as display/interaction source of truth. Align responsive layout, route/filter behavior, Account Deletion handoff, no direct User List export, `Deleted / Archived` historical review visibility, and Prototype Handoff Notes. |
 | `BO-PRD-v0.1` | 2026-07-06 | เริ่มชุดเอกสาร Back Office baseline หลัง FO cleanup เพิ่ม reading order, source-of-truth rules, module map, sprint plan และ dev checklist |
