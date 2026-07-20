@@ -5697,6 +5697,11 @@
       return `<span class="asset-status-pills">${assetStatusPill(asset.type)}${moderationPill}</span>`;
     }
 
+    function renderAssetListStatusDisplay(asset) {
+      const consignmentPill = isAssetConsignment(asset) ? `<span class="pill red">Consignment</span>` : "";
+      return `<span class="asset-status-pills">${renderAssetStatusDisplay(asset)}${consignmentPill}</span>`;
+    }
+
     const assetOwnerProfiles = {
       "Crown Time BKK": { id: "U-1017", username: "crowntime.bkk", email: "owner@crowntime.example", phone: "08x-xxx-1717", accountStatus: "Active" },
       "Vintage Vault BKK": { id: "U-1028", username: "vintagevault.bkk", email: "sales@vintagevault.example", phone: "08x-xxx-2802", accountStatus: "Active" },
@@ -6866,6 +6871,11 @@
 
     function getAssetSearchText(asset) {
       return [getAssetBrand(asset), ...Object.values(asset).flat()].join(" ").toLowerCase();
+    }
+
+    function getAssetListSearchText(asset) {
+      const provenanceText = isAssetConsignment(asset) ? "consignment sale" : "";
+      return [getAssetSearchText(asset), provenanceText].join(" ").toLowerCase();
     }
 
     function getAssetSortRank(asset, sort) {
@@ -9802,6 +9812,7 @@
             <div class="user-advanced-filter">${customSelect("asset-type-filter", "Filter asset status", [
               { value: "", label: "All asset status" },
               { value: "Sale", label: "Sale" },
+              { value: "Sale:Consignment", label: "Sale - Consignment" },
               { value: "Show", label: "Show" },
               { value: "Hide", label: "Hide" },
               { value: "Sold", label: "Sold" },
@@ -10123,9 +10134,9 @@
       const brand = document.querySelector("#asset-brand-filter")?.value || "";
       const sort = document.querySelector("#asset-sort")?.value || "latest";
       const sorted = [...data.rows].filter(row => {
-        const text = getAssetSearchText(row);
+        const text = getAssetListSearchText(row);
         return (!q || text.includes(q))
-          && (!type || row.type === type || row.status === type)
+          && (!type || (type === "Sale:Consignment" ? isAssetConsignment(row) : row.type === type || row.status === type))
           && (!brand || getAssetBrand(row) === brand);
       }).sort((a, b) => getAssetSortRank(b, sort) - getAssetSortRank(a, sort));
       const pageCount = Math.max(1, Math.ceil(sorted.length / assetListPageSize));
@@ -10146,7 +10157,7 @@
               </div>
               <div class="asset-card-tags">
                 <span class="user-card-tag asset-tag">${getAssetBrand(row)}</span>
-                ${renderAssetStatusDisplay(row)}
+                ${renderAssetListStatusDisplay(row)}
                 <div class="user-card-meta">
                   <div class="user-card-meta-item"><span>Asset ID</span><strong>${row.id}</strong></div>
                   <div class="user-card-meta-item"><span>Owner</span><strong>${row.owner}</strong></div>
@@ -10154,7 +10165,7 @@
               </div>
               <div data-label="Brand"><div class="main-text">${getAssetBrand(row)}</div></div>
               <div data-label="Owner"><div class="main-text">${row.owner}</div></div>
-              <div data-label="Asset Status">${renderAssetStatusDisplay(row)}</div>
+              <div data-label="Asset Status">${renderAssetListStatusDisplay(row)}</div>
               <div class="user-row-actions">
                 ${renderAssetRowActionMenu(row)}
               </div>
