@@ -4,12 +4,37 @@
 **Date:** 2026-07-06  
 **Purpose:** Checklist ตั้งต้นสำหรับแตก ticket implementation ของ BO
 
+## Prototype Handoff Notes Capture
+
+Use this section while BA/UX is completing the BO prototype. Capture only notes that Dev will need later; do not create the full Dev Handoff Sheet until all prototype modules are stable.
+
+Guidelines:
+
+- Keep notes short and implementation-facing.
+- Put module-specific notes under the related module section in this checklist.
+- After all prototype modules are complete, consolidate these notes into `BO_DEV_HANDOFF.md` or separate module handoff files.
+- Each note should cover at least one of: data/API, route/filter, permission, loading/empty/error state, responsive QA, or FO sync impact.
+
+Recommended note format:
+
+| Field | Detail |
+| --- | --- |
+| Prototype Reference | File, screen, or section in the prototype |
+| Spec Reference | Related PRD/spec/checklist source |
+| Data Needed | API fields, aggregate fields, or mock-data mapping Dev must replace |
+| Route / Drill-in | Target module/route and filter context |
+| State Handling | Loading, empty, error, partial error, stale, unauthorized |
+| Permission / Privacy | Permission enforcement, masked fields, hidden sections |
+| FO Sync Impact | Feed, Search, Profile, Notification, Watch Alert, or other FO impact |
+| Open Question | Product/Dev decision still needed |
+
 ## 0. Foundation
 
 - [ ] ใช้ `../ProjectAdmin/FO_BO_INTEGRATION_MAP.md` ตรวจทุก BO action ที่เปลี่ยน behavior บน FO
 - [ ] ใช้ `00_GLOBAL_RULES_MODULE.md` เป็น baseline กลางเรื่อง responsive layout, admin access control, audit, status, privacy และ FO sync
 - [ ] สร้าง BO web app shell พร้อม authenticated layout, left navigation, top bar และ access-aware menu visibility
 - [ ] กำหนด shared status constants สำหรับ users, assets, articles, offers, comments, tickets, alerts, notifications และ audit actions
+- [ ] ห้ามเพิ่ม `Guest / Unauthenticated` เป็น user status constant ของ BO; ให้ถือเป็น FO access state และใช้เฉพาะ public access/analytics context
 - [ ] ทำ shared table pattern: server pagination, search, filters, sort, column visibility ตามความเหมาะสม และ CSV/Excel export hook
 - [ ] ทำ shared confirmation modal สำหรับ destructive actions พร้อม reason input เมื่อจำเป็น
 - [ ] ทำ shared audit helper เพื่อกันไม่ให้ write action ข้าม audit logging
@@ -18,17 +43,17 @@
 ## 1. Auth And Permission
 
 - [ ] Admin login รองรับ email/password เท่านั้น
-- [ ] Admin must use mandatory 2FA
+- [ ] Admin must pass mandatory Email OTP verification after email/password
 - [ ] Failed login ครบ 5 ครั้ง lock account 15 นาที
 - [ ] Idle session หมดอายุหลัง 8 ชั่วโมง และ max session หลัง 24 ชั่วโมง
 - [ ] Permission guard มีทั้ง route level และ action/API level
 - [ ] BO reset password flow แยกจาก FO user reset password
-- [ ] Login, logout, failed login, 2FA setup/change และ lockout events ต้อง audit-log
+- [ ] Login, logout, failed login, Email OTP sent/verified/failed/resend และ lockout events ต้อง audit-log
 
 ## 2. Dashboard
 
 - [ ] แสดง new users วันนี้/สัปดาห์นี้/เดือนนี้
-- [ ] แสดง DAU/MAU
+- [ ] แสดง Active Users Today เป็น primary Dashboard KPI
 - [ ] แสดง asset count แยกตาม status
 - [ ] แสดง offer made/accepted/rejected counts
 - [ ] แสดง pending report count
@@ -36,24 +61,61 @@
 - [ ] แสดง policy-based dashboard view ตาม permission ของ admin
 - [ ] Metric/queue card ต้อง drill-in ไป module ที่เกี่ยวข้องพร้อม filter
 - [ ] Dashboard ต้องรองรับ partial load error โดยไม่ล้มทั้งหน้า
+- [ ] Dashboard responsive order ตรง prototype: Header -> KPI Summary -> Work Queue -> Recent Activity -> Dashboard Panels
 - [ ] แสดง active watch alert count
 - [ ] แสดง latest articles
 - [ ] แสดง top searched brands
 - [ ] แสดง recent activity feed
-- [ ] Date range change ต้อง update dashboard metrics สม่ำเสมอ
+- [ ] Dashboard header แสดง `Last updated` และไม่ต้องมี Date Range / Refresh / Export controls ตาม prototype ปัจจุบัน
+- [ ] Dashboard `New Users` และ `Active Users Today` ต้องนับเฉพาะ registered account/member activity และไม่รวม Guest public traffic
+- [ ] Dashboard prototype ต้องไม่เพิ่ม guest/public analytics KPI, card, panel, chart หรือ drill-in; metric ชุดนี้อยู่ใน Reports & Analytics เท่านั้น
+
+### Dashboard Prototype Handoff Notes
+
+| Field | Detail |
+| --- | --- |
+| Prototype Reference | `Prototypes/bo-prototype.html` > Dashboard default screen |
+| Spec Reference | `02_DASHBOARD_MODULE.md`, `BO_PRD.md` section 4.2, `PRD/DASHBOARD_UX_TEST_CASES.md` |
+| Data Needed | Dashboard snapshot API should provide `lastUpdated`, KPI metrics, KPI chips, work queues, recent activities, status panels, top searched brands, and drill-in metadata. |
+| Route / Drill-in | KPI cards, metric chips, Work Queue rows, Recent Activity rows, and Dashboard Panel rows must navigate to the related BO module/submodule with the equivalent filter context. |
+| State Handling | Dev must implement section-level loading, empty, partial error, full error, stale data warning, and unauthorized section hiding. Prototype currently uses mock data only. |
+| Permission / Privacy | Dashboard visibility must be policy-based. Hide module metrics/queues/activities if the Admin has no permission, and enforce permission again at destination routes/APIs. |
+| Responsive QA | Verify 375px, 768px, 1280px, and 1440px. Mobile/tablet navigation uses hamburger drawer; Dashboard order must remain Header -> KPI Summary -> Work Queue -> Recent Activity -> Dashboard Panels. |
+| FO Sync Impact | Dashboard signals come from FO-triggered data: reports, assets, offers, support, watch alerts, content, notifications, market/search activity, and account deletion. |
+| Open Question | Final API shape, cache/freshness interval, and exact route/filter parameter names should be confirmed when Dev starts BO implementation. |
 
 ## 3. User Management
 
-- [ ] User list รองรับ search/filter ตาม status, auth method, date joined
+- [ ] User list รองรับ search, filter ตาม status/auth method และ sort ตาม last active, date joined, report count, asset count ตาม Prototype
 - [ ] User profile แสดง account, auth method, profile, assets, activity, login history
 - [ ] User detail แสดง reported user context และ linked report history ตาม permission
 - [ ] Admin reset password ได้เฉพาะ email/password accounts
 - [ ] Apple/Google accounts reset password จาก BO ไม่ได้
-- [ ] Suspend, ban, unsuspend, unban และ soft delete ต้อง enforce Admin Permission
-- [ ] Suspend/ban/soft delete ต้องมี confirmation, reason และ audit before/after
-- [ ] User status changes ต้องส่งผลต่อ FO login/public behavior
-- [ ] Export CSV เปิดให้ admin access ที่มีสิทธิ์
+- [ ] Suspend, ban, unsuspend, unban และ Account Deletion handoff ต้อง enforce Admin Permission
+- [ ] Suspend/ban/status action และ Account Deletion handoff ต้องมี confirmation, reason และ audit before/after ตาม policy
+- [ ] User status changes ต้องส่งผลต่อ FO login/session/public behavior โดย `Suspended` และ `Banned` ต้อง revoke/block active session และ block login
+- [ ] V1 ไม่มี `Restricted` หรือ feature-level restriction; `>= 3 reports` เป็น priority review เท่านั้น ส่วน `>= 5 reports/reporters` หรือ high-risk evidence จึงเข้า `Suspended` ตาม policy
+- [ ] Suspend/ban ต้องส่ง email notification เป็น primary channel, in-app เป็น optional/secondary, และ delivery result ต้อง trace ผ่าน delivery log/audit ได้
+- [ ] User List ไม่แสดง Export โดยตรงใน Phase 1; export user data ต้องไปผ่าน Reports/export หรือ system-level export ที่ควบคุม permission
+- [ ] User List, User Detail, status filter และ account action flow ต้องไม่แสดง Guest/Unauthenticated visitor
 - [ ] Mutation ทุกครั้งต้องเขียน audit log พร้อม before/after state
+
+### User Management Prototype Handoff Notes
+
+| Field | Detail |
+| --- | --- |
+| Prototype Reference | `Prototypes/bo-prototype.html` > `User Management` > `User List` and `Reported Users` submenu. |
+| Spec Reference | `03_USER_MANAGEMENT_MODULE.md` sections 4, 5, 8, 10, 12, 15, 16, 17, and 19; `08_AUDIT_LOG_MODULE.md`; `13_ACCOUNT_DELETION_MODULE.md`; `../ProjectAdmin/FO_BO_INTEGRATION_MAP.md`. |
+| Prototype / Spec Alignment | Prototype aligns with the Phase 1 spec for User List, User Detail, Reported Users, status/auth filters, sort modes, pagination, row action menu, reset-password eligibility, status-action confirmation views, Account Deletion routing, and no direct User List export. Production must add API-backed permission enforcement, masked/unmasked sensitive-field states, audit persistence, reason validation before mutation, and real FO sync/cache invalidation. |
+| Data Needed | Replace mock users with server-paginated API data: user id, display name, username, masked email, auth method, verification state, account status, joined date/rank, last active/rank, asset count, report count, support/deletion reference, latest activity, allowed actions, blocked actions, action note, and FO impact copy. Do not include Guest/Unauthenticated visitor rows because they are not account records. |
+| Route / Drill-in | Left nav route should support `User Management / User List` and `User Management / Reported Users` as sibling routes. Dashboard `New Users`, `Active Users Today`, and reported-user queue cards drill into the correct route with date/status/report context encoded in query params. User row actions open User Detail view, reset-password action view, status-action view, resend-verification context, or Account Deletion route when status is `Deletion Requested`; User List must not archive/delete directly. |
+| Route / Filter | User List filters must map to query params/API fields for search, account status, auth method, sort mode, and page. Search covers display name, username, masked email, auth, verification state, account status, support/latest context, and internal user id/reference; phone/location are not primary searchable columns. Status filter is limited to `Pending Verification`, `Active`, `Suspended`, `Banned`, `Deletion Requested`, and `Deleted / Archived`; it must not include Guest/Unauthenticated. Report context is represented by report count/detail and the `Reported Users` submenu, not a separate User List filter in the current prototype. Reset clears search/filter/sort/page to defaults and should update query params. Logout/login must reset view state to Dashboard and must not keep expanded User Management submenu, active subroute, filter toggle state, custom select, query params, or pagination state. |
+| State Handling | Implement loading, empty, no-result, partial-error, unauthorized, stale, and API failure states for summary cards, table, user detail view, reset-password action view, status-action view, and reported-user detail. Pagination is 10 users per page after search/filter/sort. New or sparse accounts must render without broken layout when profile/assets/offers/reports/activity are empty. |
+| Permission / Privacy | BO has one `Admin` account type; enforce module/action permission at route, UI, API, and service level. UI hiding is not sufficient. Sensitive fields are masked by default in production, with reveal controlled by permission, business reason where required, and audit. Reset password is available only for Email accounts and blocked for Apple/Google/Pending Verification/Suspended/Banned/Deletion Requested/Deleted or Archived cases as specified by the prototype. Suspend, ban, restore, unban, resend verification, Account Deletion routing, sensitive reveal, and export each need separate permission keys. User List does not expose Export in Phase 1; export must route through Reports/export or system export with permission, scope control, expiry/background job, and audit. |
+| Account Status Actions | Suspend/ban/restore/unban must use confirmation with reason, `Status before action`, `After confirmation`, FO impact preview, and audit note before mutation. Prototype currently shows reason controls but does not validate them; production/API must reject missing required reason before saving. `Deletion Requested` users can be viewed and routed to Account Deletion/dependency review, but User List must not archive/delete directly. `Deleted / Archived` appears in the current prototype list/filter for historical review, but actions are limited to permitted historical detail and sensitive fields must stay masked/anonymized. |
+| Responsive QA | Verify 375px, 768px, 1280px, and 1440px against the prototype behavior. Desktop and wide desktop use the control-center layout: compact summary cards, top filter bar, dense table/list rows, row action menu, and structured detail/action views; do not introduce a persistent split list/detail layout for User Detail. Tablet/mobile use stacked card/list rows, hidden row headers, hamburger navigation, panel-header filter toggle, advanced filters expanding in the list area rather than a drawer/bottom sheet, reachable row action menu, and detail/action content that stacks without clipped Thai text. Also verify auth cycle on mobile: User List -> logout -> login returns to Dashboard with nav closed and no User Management submenu, query params, custom select, filter toggle, or pagination state retained. |
+| FO Sync Impact | Account status changes must update FO login/session behavior, account access, public profile visibility, and any dependent cache/indexes. Suspended and Banned must revoke/block active sessions and block login/action access until restore/unban; users should see the FO account-status state rather than entering the main app. V1 has no `Restricted`/feature-level account state. Pending Verification cannot use authenticated FO features; Deletion flow belongs to Account Deletion and may revoke sessions, hide profile/assets, and anonymize/archive according to dependency/grace-period policy. Suspend/ban must trigger email notification as the primary channel, with optional secondary in-app notification and delivery result traceable through Notifications/Audit. Profile, Feed, Search, Asset Detail, Board, Notification, Watch Alert, Offer/Chat, Support, Reports, and Audit must consume the same account-state result consistently. Sync should define event name/payload, timing, retry behavior, stale-state handling, and admin-visible failure state. |
+| Open Question | Confirm final route names/query params, backend enum-to-Thai label mapping, exact permission keys for sensitive reveal/export/reset/resend-verification/status mutations, final FO sync event contract and cache invalidation timing, and production policy for how broadly `Deleted / Archived` historical rows should appear beyond the prototype review state. |
 
 ## 4. Asset Management
 
@@ -71,6 +133,23 @@
 - [ ] Sold assets ยังใช้สำหรับ owner history และ admin review
 - [ ] Asset mutations ทุกครั้งต้องเขียน audit log พร้อม before/after state
 - [ ] Asset Management UI ต้อง responsive ที่ 375px, 768px, 1280px และ 1440px
+
+### Asset Management Prototype Handoff Notes
+
+| Field | Detail |
+| --- | --- |
+| Prototype Reference | `Prototypes/bo-prototype.html` > `Asset Management` > `Asset List`, `Asset Detail`, `Reported Assets`, and `Asset Report Detail`. |
+| Spec Reference | `04_ASSET_MANAGEMENT_MODULE.md` sections 3-16; `08_AUDIT_LOG_MODULE.md`; `09_OFFER_CHAT_MODULE.md`; `11_WATCH_ALERT_MODULE.md`; `../FrontOffice/02_FEED_MODULE.md`; `../FrontOffice/03_SEARCH_FILTER_MODULE.md`; `../FrontOffice/05_ASSET_DETAIL_MODULE.md`; `../ProjectAdmin/FO_BO_INTEGRATION_MAP.md`. |
+| Prototype / Spec Alignment | Prototype aligns with the Phase 1 Asset Management baseline for asset list/detail, canonical asset statuses `Sale`, `Show`, `Hide`, `Sold`, moderation states such as `Admin Hidden` / `Auto Hidden`, reported-asset queue, report detail, confirmation flows, before/after audit notes, FO impact messaging, and responsive operational layout. Production must add server/API permission enforcement, full sensitive-field masking/reveal workflow, required reason validation, persistent audit records, and real FO sync/cache invalidation. |
+| Data Needed | Replace mock asset rows with server-paginated API data: asset id, title, brand, model/reference, owner id/name/account status, status, moderation state, report count/report id, reporter count, report reason, priority, price or private-price state, created/updated timestamps, comment/favorite counts, uploaded images, technical specs, description, purchase/provenance proof, sale history, status history, moderation/audit history, allowed actions, blocked actions, and FO impact copy. |
+| Route / Drill-in | Left nav has sibling routes `Asset Management / Asset List` and `Asset Management / Reported Assets`. Asset row click or row action opens `Asset Detail` with breadcrumb `Asset Management / Asset List / {assetId}` and back to Asset List. Reported Assets row/action opens Asset Report Detail; `View Asset` opens the asset detail modal/context from the report. Dashboard asset KPI/status/report queue links should preserve equivalent route/filter context. |
+| Route / Filter | Asset List prototype filter set is search, asset status, brand, sort, page, and reset. Search covers Asset ID, asset title, owner, brand/model/reference-related text from the row/detail mapping. Status filter is limited to `Sale`, `Show`, `Hide`, and `Sold` in the prototype; production API must still support spec-level filters for moderation state, reported/flagged, owner, price range, removed/hidden, consignment, provenance/proof permission state, and created/updated date range when Product asks to expose them. Reported Assets filters are search, report status `Pending`/`Cleared`, priority, sort by latest/reporters/waiting, page, and reset. Reset clears search/filter/sort/page and should update query params. Logout/login should return to Dashboard and must not retain Asset Management submenu, active subroute, filter toggle state, custom select, query params, selected asset/report, or pagination state. |
+| State Handling | Implement loading, empty, no-result, partial-error, unauthorized, stale-data, invalid-state, policy-blocked, sync-failed, archive/save-failed, audit-failed, session-expired, and unavailable states for Asset List, Asset Detail, Reported Assets, Asset Report Detail, action confirmations, image/proof sections, and audit/history panels. Prototype includes sample error scenarios in action/report confirmation flows but uses in-memory mutation only. |
+| Permission / Privacy | BO has one `Admin` account type; enforce module/action permission at route, UI, API, and service layers. Separate permission keys are needed for module view, detail view, reported queue view, sensitive reveal, purchase/provenance proof view, sale history view, force hide, restore visibility, delete/archive, close/clear report, export, and audit history. Sensitive purchase price/date/from, proof of payment, consignment contact/terms, owner contact, and sold history must be masked by default in production and reveal only by policy with audit. UI hiding is not sufficient, and direct URL/API access must be rejected server-side. |
+| Asset Actions | Prototype action availability follows current asset type and moderation state: Admin can force-hide public `Sale`/`Show` assets in active/reported/reviewing states, restore only temporarily hidden assets, and delete/archive public or temporarily hidden assets according to policy. `Hide` owner-only and `Sold` history states are not quick force-hide targets in V1. Confirmation flows must require reason/note before mutation in production, persist before/after asset status and report status, and close/clear related pending reports only for valid restore/delete outcomes. |
+| Responsive QA | Verify 375px, 768px, 1280px, and 1440px. Desktop/wide desktop use dense operational rows, summary cards, top filter controls, row action menus, and full Asset Detail layout with FO preview plus BO context. Tablet/mobile use stacked card rows, hidden table headers, hamburger navigation, filter toggle with advanced filters expanding in the list area, reachable row action menus, image galleries/thumbnails that do not overflow, and detail/report/action views that stack without clipped Thai text. |
+| FO Sync Impact | Asset visibility changes must update FO Feed, Search, Asset Detail/public deep links, Profile/Collection, Watch Alert matching/results, Board/social references where applicable, Offer/Chat references, and Notifications/delivery context. `Sale` returns to Feed/Search/Watch Alert and may accept offers; `Show` stays profile/detail only and must not match Feed/Search/Watch Alert; `Hide`, `Sold`, and `Removed/Hidden` are not public marketplace results and do not accept new offers. `Removed/Hidden` direct links must show unavailable behavior, and pending offers for removed/sold assets must flow to offer invalidation/cancellation policy. Sync contract must define event names, payload, timing, retry/idempotency, cache/index invalidation, admin-visible failure state, and audit correlation id. |
+| Open Question | Confirm final route names/query params, exact permission key names, whether spec-only filters become visible in V1 UI or remain API/report filters, restore-removed-asset policy, sensitive reveal approval level, pending-offer status wording (`Invalidated` vs `Cancelled`), and final FO sync/cache invalidation SLA for moderation actions. |
 
 ## 5. Content / Board
 
@@ -248,6 +327,8 @@
 - [ ] Large export ต้องใช้ background job พร้อม status Queued / Processing / Completed / Failed / Expired / Cancelled
 - [ ] Sensitive data ต้อง mask เป็น default และ sensitive view/export ต้อง audit-log
 - [ ] User Report ต้องแสดง new users, DAU/MAU, auth method, account status และ support/deletion signals
+- [ ] User Report ต้องแยก Guest public view/share analytics ออกจาก registered-user metrics และต้องไม่ใช้ Guest เป็น account status/filter
+- [ ] User Report ต้องรองรับ explicit guest/public metrics ได้แก่ Guest Visitors, Public Asset Views, Public Article Views, Public Profile Views, Public Shares และ Guest-to-Signup Conversion เมื่อ tracking เปิดใช้
 - [ ] Asset Report ต้องใช้ status `Show` / `Hide` ตาม FO และไม่ใช้ legacy collection wording
 - [ ] Offer Report ต้องใช้ status `Rejected` ไม่ใช้ `Declined`
 - [ ] Chat Report ต้องจำกัด transcript export ตาม permission และ audit ทุกครั้ง
@@ -260,12 +341,12 @@
 
 ## 16. Admin Settings
 
-- [ ] Admin ทุก admin access ต้องเข้าดู own profile/settings และเปลี่ยน password/ตั้งค่า 2FA ตาม rule ได้
-- [ ] Admin ต้องจัดการ admin account lifecycle: invite, change admin access policy, suspend/reactivate, unlock, reset 2FA, archive
+- [ ] Admin ทุก admin access ต้องเข้าดู own profile/settings และเปลี่ยน password ตาม rule ได้
+- [ ] Admin ต้องจัดการ admin account lifecycle: invite, change admin access policy, suspend/reactivate, unlock, archive
 - [ ] ระบบต้องป้องกันการ suspend/archive/change admin access policy ของ Admin active คนสุดท้าย
 - [ ] Admin Access Matrix ต้องแสดงสิทธิ์ตาม module/action และ enforce ทั้ง UI/API level
 - [ ] Permission change ต้องมี confirmation, reason, before/after diff และ audit log
-- [ ] Security policy ต้องสอดคล้องกับ Auth baseline: email/password only, mandatory 2FA สำหรับ Admin, idle 8h, max 24h, failed login 5 ครั้ง, lockout 15 นาที
+- [ ] Security policy ต้องสอดคล้องกับ Auth baseline: email/password only, mandatory Email OTP สำหรับ Admin, idle 8h, max 24h, failed login 5 ครั้ง, lockout 15 นาที
 - [ ] Retention settings ต้องไม่อนุญาต manual delete audit logs จาก UI ปกติ
 - [ ] Export policy ต้องรองรับ CSV/Excel, background job, expiry, sensitive export reason และ audit
 - [ ] Feature flags ต้องแสดง FO/BO impact ก่อนบันทึก และ audit ทุกครั้ง

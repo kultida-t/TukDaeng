@@ -111,11 +111,37 @@ Reports ที่ต้องมี:
 | --- | --- |
 | New users | Today / week / month / custom range |
 | DAU / MAU | Active users daily/monthly |
+| Guest visitors | Anonymous public viewers/share users must be tracked separately from registered users when tracking exists |
+| Public asset views | Guest and logged-in public views on public asset detail/list surfaces, separated by user state when tracking exists |
+| Public article views | Guest and logged-in public views on published Board article surfaces, separated by user state when tracking exists |
+| Public profile views | Guest and logged-in public views on public profile/collection surfaces, separated by user state when tracking exists |
+| Public shares | Share/copy public link events across asset, article, and profile public surfaces, separated by surface and user state when tracking exists |
+| Guest public share | Public share events from unauthenticated users must be separated from logged-in share/member activity when tracking exists |
+| Guest-to-signup conversion | Percentage/count of guest visitors or public viewers who complete registration within the attribution window when tracking exists |
 | Auth method | Email, Apple, Google |
 | Account status | Active, Suspended, Banned, Deactivated, Archived |
 | Retention / activity | Last active, active users by period |
 | Support/account issues | Open tickets, deletion state |
 | Moderation signal | Reported users, ban/suspend trend |
+
+Guest/public analytics metrics:
+
+| Metric | Requirement |
+| --- | --- |
+| Guest Visitors | Count unique unauthenticated visitors by date range; must be separate from registered users |
+| Public Asset Views | Count public asset views by asset status/surface and user state; removed/hidden assets must not count as successful public views after visibility changes |
+| Public Article Views | Count published article public views by category/article and user state |
+| Public Profile Views | Count public profile or public collection views by profile owner and user state when tracking exists |
+| Public Shares | Count share sheet/copy public link events by surface: asset, article, profile; split Guest vs logged-in user |
+| Guest-to-Signup Conversion | Count/rate guest visitors who become registered users within the agreed attribution window |
+
+User Report rules:
+
+- `Guest / Unauthenticated` is not a user account status and must not appear in account status filters or registered-user breakdowns.
+- `New users`, `DAU`, `MAU`, auth method breakdown, account status breakdown, retention, and support/deletion signals count registered account records only.
+- Guest public view/share analytics can appear as separate metrics only when tracking exists, and must be labeled separately from registered-user activity.
+- Guest public view/share events do not create User Management records and do not create BO account actions.
+- Public view/share metrics must include `surface_type`, `entity_id`, `user_state`, `timestamp`, and attribution fields needed for guest-to-signup conversion when tracking is enabled.
 
 Filters:
 
@@ -125,6 +151,9 @@ Filters:
 - Last active range
 - Has report
 - Has support ticket
+- User state: Guest / logged-in user for public analytics only
+- Public surface type: asset, article, profile
+- Conversion state: converted / not converted when tracking exists
 
 Export sensitive fields เช่น email/phone ต้องจำกัดเฉพาะ Admin หรือ policy ที่อนุญาต
 
@@ -429,6 +458,8 @@ Audit payload:
 | AC-BO-REPORT-004 | Large export ต้องใช้ background job และมี status tracking |
 | AC-BO-REPORT-005 | Sensitive report view/export ต้อง mask เป็น default และ audit-log |
 | AC-BO-REPORT-006 | User Report แสดง new users, DAU/MAU, auth method และ account status ได้ |
+| AC-BO-REPORT-006A | User Report ต้องแยก Guest public view/share analytics ออกจาก registered-user metrics และไม่ใช้ Guest เป็น account status |
+| AC-BO-REPORT-006B | User Report ต้องรองรับ Guest Visitors, Public Asset Views, Public Article Views, Public Profile Views, Public Shares และ Guest-to-Signup Conversion เมื่อ tracking เปิดใช้ |
 | AC-BO-REPORT-007 | Asset Report ใช้ status `Show` / `Hide` ตาม FO และไม่ใช้ legacy collection wording |
 | AC-BO-REPORT-008 | Offer Report ใช้ status `Rejected` ไม่ใช้ `Declined` |
 | AC-BO-REPORT-009 | Watch Alert Report ต้องยืนยัน Sale-only match และ destination `Watch Alert Result List` |

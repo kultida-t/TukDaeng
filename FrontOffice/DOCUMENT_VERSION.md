@@ -1,7 +1,7 @@
 # TukDaeng Document Version
 
-**Current Baseline Version:** `FO-PRD-v1.2`  
-**Release Date:** 2026-07-02  
+**Current Baseline Version:** `FO-PRD-v1.3`
+**Release Date:** 2026-07-16
 **Branch:** `docs-frontoffice-spec-updates`  
 **Status:** Product-reviewed baseline update for Dev / QA / Figma
 
@@ -27,6 +27,14 @@ FO-PRD-vX.Y
 ---
 
 # 2. Current Baseline Scope
+
+`FO-PRD-v1.3` covers all of `FO-PRD-v1.2` and clarifies account suspension handling for Dev / QA / Figma:
+
+- V1 has no `Restricted` / feature-level account state
+- Suspended/Banned users cannot enter the main app and must see an account status state
+- BO suspend/ban must revoke/block active sessions
+- Email is the primary user notification channel for suspend/ban; FO Notification Center does not add Account Action type
+- Apple private relay and Google email must be treated as account email channels when provider configuration supports delivery
 
 `FO-PRD-v1.2` covers all of `FO-PRD-v1.1` and adds the final error-state UI copy handoff for Dev / QA / Figma:
 
@@ -57,6 +65,7 @@ Baseline scope หลักยังครอบคลุม:
 
 | Version | Date | Summary | Key Files |
 | --- | --- | --- | --- |
+| `FO-PRD-v1.3` | 2026-07-16 | Clarifies suspended/banned account handling: no `Restricted` account state in V1, active session revocation, account status state on app entry/sign-in, email as primary suspend/ban notification, no Account Action type in FO Notification Center, and Apple/Google email handling. | `01_AUTHENTICATION_MODULE.md`, `00_NAVIGATION_AND_CROSS_MODULE_FLOW.md`, `09_NOTIFICATION_MODULE.md`, `15_TRUST_SAFETY_MODULE.md`, `16_INTEGRATIONS_MODULE.md`, `QA_TEST_SCENARIO_CHECKLIST.md` |
 | `FO-PRD-v1.2` | 2026-07-02 | Final error-state UI copy and retry-scope handoff for Front Office. Locks Feed refresh failure, load-more failure, image failure, owner fallback, shared section/unavailable/empty-state behavior, and QA coverage before moving to Back Office work. | `ERROR_STATE_UI_COPY_CATALOG.md`, `02_FEED_MODULE.md`, `QA_TEST_SCENARIO_CHECKLIST.md`, `README_MODULE_INDEX.md`, `FINAL_HANDOFF_SUMMARY.md`, `DEV_IMPLEMENTATION_CHECKLIST.md` |
 | `FO-PRD-v1.1` | 2026-06-23 | Product decision update for Asset Detail / Social comment model: support IG-style one-level replies, allow collapsed `View more replies`, and explicitly prohibit multi-level nested threads. Supersedes `FO-PRD-v1.0` for Dev / QA / Figma. | `TukDaeng_Master_Product_Definition.md`, `00_GLOBAL_RULES_MODULE.md`, `00_NAVIGATION_AND_CROSS_MODULE_FLOW.md`, `05_ASSET_DETAIL_MODULE.md`, `11_SOCIAL_MODULE.md`, `DEV_IMPLEMENTATION_CHECKLIST.md`, `DEV_CHAT_IMPLEMENTATION_CHECKLIST.md`, `QA_TEST_SCENARIO_CHECKLIST.md`, `Figma_Gap_Checklist_Against_Master.md`, `FIGMA_UX_CLEANUP_TASK_BREAKDOWN.md`, `FO_Functional_PRD.md` |
 | `FO-PRD-v1.0` | 2026-06-22 | Initial Front Office baseline for Dev / QA / Figma handoff. Includes module PRD `00-18`, asset status rules, Add/Edit Asset required-field matrix, Chat-focused Dev checklist and Figma cleanup work packs. | `DEV_BASELINE_HANDOFF_2026-06-22.md`, `README_MODULE_INDEX.md`, `TukDaeng_Master_Product_Definition.md`, `DEV_IMPLEMENTATION_CHECKLIST.md`, `DEV_CHAT_IMPLEMENTATION_CHECKLIST.md`, `QA_TEST_SCENARIO_CHECKLIST.md`, `FIGMA_UX_CLEANUP_TASK_BREAKDOWN.md` |
@@ -68,6 +77,6 @@ Baseline scope หลักยังครอบคลุม:
 When sending documents to Dev, include both:
 
 - Branch: `docs-frontoffice-spec-updates`
-- Version: `FO-PRD-v1.2`
+- Version: `FO-PRD-v1.3`
 
 If Dev reports a gap or builds against this baseline, ask them to cite the version number in their response.

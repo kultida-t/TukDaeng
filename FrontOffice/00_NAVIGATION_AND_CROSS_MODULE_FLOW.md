@@ -203,6 +203,7 @@ Figma may keep these as disabled placeholder or future phase only when clearly a
 # 13. Deep Link Rules
 
 - Every deep link must validate authentication, permission, asset status, block relationship, and deletion state before rendering the target
+- Every app entry, foreground resume, deep link, and notification route must validate account status before rendering authenticated destinations; `Suspended` and `Banned` users must be redirected to the account status state
 - Deep links to login-required surfaces from Guest must show Global Login Required Dialog or Sign In
 - Deep links to unavailable Asset must not crash or show stale private data
 - Deep links from push notification must use the notification destination matrix
@@ -236,6 +237,7 @@ Figma may keep these as disabled placeholder or future phase only when clearly a
 | Notification target deleted | Route to unavailable state |
 | Notification type unsupported | Do not render as active V1 notification type |
 | Deep link requires Login | Show Login Required or Sign In |
+| Account suspended or banned | Clear/reject authenticated route and show account status state |
 | Destination blocked | Show unavailable/blocked fallback |
 | Future menu item tapped | Show placeholder/future state only if product approves |
 | Route validation fails | Stay on current screen or show safe error state |

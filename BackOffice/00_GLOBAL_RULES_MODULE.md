@@ -213,11 +213,13 @@ BO ต้องใช้ state contract เดียวกับ `FO_BO_INTEGRAT
 
 ## 10.1 User Status
 
+`Guest / Unauthenticated` เป็น access state ของ FO เท่านั้น ไม่ใช่ BO user status, ไม่ใช่ account record และไม่ต้องแสดงเป็น filter/status ใน User Management. BO จะเห็นผู้ใช้ใน User Management เฉพาะเมื่อมี account record แล้ว เช่น `Pending Verification`, `Active`, `Suspended`, `Banned` หรือสถานะ deletion/archive ตาม policy.
+
 | Status | BO Meaning | FO Impact |
 | --- | --- | --- |
 | Active | User ใช้ FO ได้ปกติ | Login และ action ปกติทำได้ |
-| Suspended | ถูกจำกัดชั่วคราวโดย Admin | Login blocked หรือ session revoked ตาม auth implementation |
-| Banned | ถูก block ถาวรจนกว่า Admin จะปลด | Login blocked และสร้าง activity ใหม่ใน FO ไม่ได้ |
+| Suspended | ระงับบัญชีชั่วคราวโดย Admin หรือ policy ที่มี guardrail ชัดเจน | Session ปัจจุบันต้องถูก revoke/block, login blocked และแสดง account status state ตาม FO Auth rule |
+| Banned | ระงับบัญชีถาวรจนกว่า Admin จะปลด | Session ปัจจุบันต้องถูก revoke/block, login blocked และสร้าง activity ใหม่ใน FO ไม่ได้ |
 | Soft Deleted / Archived | ผ่าน account deletion/archive workflow | Login blocked; profile/assets ถูกซ่อนหรือ anonymized ตาม policy |
 
 ## 10.2 Asset Status
@@ -280,11 +282,18 @@ FO functions ขั้นต่ำที่ BO ต้องรองรับ:
 - Broadcast และ system notifications
 - Audit trail สำหรับทุก admin action
 
+Guest public access rule:
+
+- FO Guest สามารถดูและแชร์ public surface ที่ระบบอนุญาตได้ เช่น public asset/detail, public profile/detail หรือ published article ตาม status/visibility ของ entity นั้น
+- Guest action ที่เป็น public view/share ไม่สร้าง User Management record และไม่เปิด BO account action
+- Action ที่สร้างข้อมูลหรือ state ของระบบ เช่น like, follow, comment, report, offer, chat, watch alert, add/edit/delete asset หรือ support ticket ต้อง require login ตาม FO Auth rule ก่อนจึงจะเข้า BO workflow ที่เกี่ยวข้อง
+- BO modules ที่ควบคุม public visibility เช่น Asset, Content/Board, Directory และ Market Data ต้องทำให้ public deep link ที่ Guest เปิดหรือแชร์ไว้สะท้อนสถานะล่าสุด เช่น unavailable, removed, archived หรือ inactive
+
 # 12. BO-To-FO Sync Rules
 
 | BO Change | FO Sync Requirement |
 | --- | --- |
-| User suspended/banned | FO login/session/action permission ต้อง block user |
+| User suspended/banned | FO ต้อง revoke/block session ปัจจุบัน, block login/action permission และแสดง account status state |
 | Asset removed/hidden/status changed | FO public surfaces ต้องสะท้อน visibility ใหม่ |
 | Article published/scheduled/archived | FO Board, Search, Category, Detail ต้องสะท้อน status |
 | Brand/model inactive | FO autocomplete/filter และ Watch Alert trigger ใหม่ต้อง exclude ข้อมูล inactive |
@@ -294,6 +303,19 @@ FO functions ขั้นต่ำที่ BO ต้องรองรับ:
 | Watch Alert disabled | Alert ต้องไม่ trigger notification ใหม่ |
 | Offer expired/invalidated | FO offer/chat state ต้องเป็น unavailable หรือ not actionable |
 | Notification type disabled/template changed | Notification ใหม่ใน FO ต้องใช้ enabled template ล่าสุด |
+
+Account suspension baseline:
+
+- V1 ใช้เฉพาะ `Active`, `Suspended`, `Banned` และ deletion/archive states ที่ระบุใน module ที่เกี่ยวข้อง; ไม่มี `Restricted` หรือ feature-level restriction เป็น account status กลาง
+- `Suspended` และ `Banned` ต้อง block authenticated app access ไม่ใช่ปล่อยให้ผู้ใช้เข้าแอปหลักแล้วค่อย block เป็นราย action
+- Account action ที่ทำให้ผู้ใช้ถูก `Suspended` หรือ `Banned` ต้องส่ง email notification เป็น primary channel และอาจมี in-app notification เป็น secondary เท่านั้น
+- Email notification ต้องรองรับ email ที่ผูกกับบัญชีจาก Email/Password, Google และ Apple private relay ตาม integration/provider configuration
+
+Public/Guest sync requirement:
+
+- Public FO surfaces ต้อง validate entity visibility ก่อนแสดงให้ Guest หรือ logged-in user
+- Public share links ต้องไม่ bypass BO hide/remove/archive/inactive status
+- Guest public view/share event สามารถเข้า analytics/event log ได้ แต่ไม่ถือเป็น BO audit event และไม่ถือเป็น registered user activity เว้นแต่ผู้ใช้ login แล้ว
 
 Sync timing:
 
@@ -410,6 +432,7 @@ Responsive QA ต้องตรวจ:
 | AC-BO-GLOBAL-010 | Large export ใช้ background job และควบคุมด้วย permission |
 | AC-BO-GLOBAL-011 | Responsive QA ครอบคลุม mobile, tablet, desktop, wide desktop |
 | AC-BO-GLOBAL-012 | Audit log ครอบคลุม sensitive, destructive, public-impact, export, permission และ login events |
+| AC-BO-GLOBAL-013 | Guest / Unauthenticated ต้องไม่ถูกใช้เป็น BO user status หรือ User Management filter และ public view/share ต้องแยกจาก registered-user action |
 
 # 19. Related Modules
 

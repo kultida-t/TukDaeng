@@ -268,17 +268,18 @@ Add / Edit Asset ต้องรองรับข้อมูลต่อไป
 | Brand Name | Required | Required | Required |
 | Model / Series | Required | Required | Optional |
 | Condition | Required | Optional | Optional |
-| Asking Price (THB) | Required, must be greater than 0 | Not required for public collection display | Not applicable |
+| Asking Price (THB) | Optional; if empty FO shows `Price on request` | Optional; hidden from public FO surfaces | Optional; hidden from public FO surfaces |
 | Owner Estimated Value (Private) | Optional private valuation | Optional private valuation | Optional private valuation |
 | Description | Required | Optional | Optional |
 | Status | Required: `Sale` | Required: `Show` | Required: `Hide` |
 
 หลักการของ V1:
 
-- `Sale` เป็น marketplace listing จึงต้องมีข้อมูลขั้นต่ำให้ buyer ประเมินและเสนอซื้อได้
-- `Show` เป็น public collection / public vault ไม่ใช่ marketplace listing จึงไม่บังคับ Price
-- `Hide` เป็น private collection จึงต้องการข้อมูลขั้นต่ำที่สุดสำหรับ owner cataloging และไม่ใช้ listing price
-- หาก Owner ต้องการเก็บมูลค่าส่วนตัวสำหรับ `Show` หรือ `Hide` ให้ใช้ label `Owner Estimated Value (Private)` ไม่ใช่ `Price` หรือ `Asking Price`
+- `Sale` เป็น marketplace listing; Owner สามารถกรอก Asking Price หรือเว้นว่างได้ ถ้าเว้นว่าง FO buyer-facing surface ต้องแสดง `Price on request`
+- `Show` เป็น public collection / public vault ไม่ใช่ marketplace listing; Owner สามารถกรอก Asking Price เพื่อเก็บข้อมูลส่วนตัวได้ แต่ public FO surface ต้องไม่แสดงราคา
+- `Hide` เป็น private collection; Owner สามารถกรอก Asking Price เพื่อเก็บข้อมูลส่วนตัวได้ แต่ public FO surface ต้องไม่แสดงราคา
+- `Sold` ไม่ใช่ status ใน Add/Edit แต่ Sold detail / Sold History ต้องเก็บและแสดงราคาที่เคยกรอกได้; ใน FO owner-facing sold view หากมีราคาให้แสดงเป็นราคาขีดฆ่าเพื่อสื่อว่าขายแล้ว
+- BO/Admin view ต้องแสดง field `Price` เสมอ: ถ้ามีราคาที่ Owner กรอกให้แสดงราคา ถ้าไม่มีให้แสดง `-`
 - Reference No., Year, Original Box, Original Paper, Specifications, Purchase Date, Purchase From, Documentation และ Note optional ตาม policy ของ MVP
 - Add Asset flow ต้องมี provenance step ก่อน final save โดยให้เลือก `Owner (Asset)` หรือ `Consignment`
 - หากเลือก `Owner (Asset)` ต้องกรอก Purchase Price
@@ -306,7 +307,7 @@ Add / Edit Asset ต้องรองรับข้อมูลต่อไป
 | Brand Name ว่าง | `กรุณากรอกชื่อแบรนด์` |
 | Model / Series ว่างเมื่อ required | `กรุณากรอกรุ่น / ซีรีส์` |
 | Condition ว่างเมื่อ required | `กรุณาเลือกสภาพสินค้า` |
-| Asking Price ว่างเมื่อ required | `กรุณากรอกราคาเสนอขาย` |
+| Asking Price ว่าง | ไม่ต้องแสดง error; หาก Status = `Sale` ให้ FO buyer-facing surface แสดง `Price on request` |
 | Asking Price <= 0 | `ราคาเสนอขายต้องมากกว่า 0` |
 | Description ว่างเมื่อ required | `กรุณากรอกรายละเอียดสินค้า` |
 | Status ว่าง | `กรุณาเลือกสถานะ` |
@@ -624,10 +625,11 @@ Condition:
 Price:
 
 - Label ใน marketplace listing ต้องใช้ `Asking Price (THB)`
-- Required เมื่อ Status = Sale
+- Optional เมื่อ Status = Sale, Show หรือ Hide
 - ต้องมากกว่า 0 เมื่อกรอก
-- ไม่บังคับสำหรับ Status = Show เพราะ Show ไม่ใช่ marketplace listing
-- ไม่ใช้กับ Status = Hide
+- Status = Sale: ถ้ากรอกราคา FO buyer-facing surface แสดงราคานั้น; ถ้าไม่กรอกให้แสดง `Price on request`
+- Status = Show หรือ Hide: แม้กรอกราคา public FO surface ต้องไม่แสดงราคา; เห็นได้เฉพาะ Owner ในหน้าแก้ไข / owner-private view
+- Status = Sold: หากมีราคาที่บันทึกไว้ ให้ FO owner-facing sold view แสดงราคาแบบขีดฆ่า; BO แสดงราคาปกติ
 
 Owner Estimated Value:
 
@@ -947,10 +949,12 @@ Owner Profile และ Sold History ใช้ Global Empty State:
 | AC-ASSET-MGMT-006D | หลัง Owner กด final action ใน Add Asset Provenance step ต้องแสดง confirmation `Add this asset?` และ primary action `Add asset` ก่อนสร้าง asset จริง |
 | AC-ASSET-MGMT-006E | ระหว่าง Add Asset save/upload ต้อง disable action, แสดง `Adding...` และหากสำเร็จต้องแสดง `Asset added.` ก่อนพาไป Owner Asset Detail ของ asset ที่เพิ่งสร้าง |
 | AC-ASSET-MGMT-007 | Add / Edit Asset ต้องรองรับ Brand, Model / Series, Reference No., Year, Condition, Scope of Delivery, Case Size, Thickness, Case Material, Movement, Dial Color, Strap / Bracelet Type, Price และ Description |
-| AC-ASSET-MGMT-007A | Status = Sale ต้อง require Photos, Brand Name, Model / Series, Condition, Price และ Description |
-| AC-ASSET-MGMT-007B | Status = Show ต้อง require Photos, Brand Name และ Model / Series โดยไม่บังคับ Price |
-| AC-ASSET-MGMT-007C | Status = Hide ต้อง require Photos และ Brand Name เท่านั้น ส่วน Model / Series, Condition และ Description เป็น optional และต้องไม่ใช้ listing price |
-| AC-ASSET-MGMT-007D | Optional private value ของ Sale, Show หรือ Hide ต้องใช้ label `Owner Estimated Value (Private)` และห้ามแสดงใน public/viewer surfaces |
+| AC-ASSET-MGMT-007A | Status = Sale ต้อง require Photos, Brand Name, Model / Series, Condition และ Description; Price เป็น optional |
+| AC-ASSET-MGMT-007B | Status = Sale ถ้ามี Price ต้องแสดงราคาที่ FO buyer-facing surface; ถ้าไม่มี Price ต้องแสดง `Price on request` |
+| AC-ASSET-MGMT-007C | Status = Show ต้อง require Photos, Brand Name และ Model / Series; Price เป็น optional และห้ามแสดงใน public FO surface |
+| AC-ASSET-MGMT-007D | Status = Hide ต้อง require Photos และ Brand Name เท่านั้น ส่วน Model / Series, Condition, Price และ Description เป็น optional; Price ห้ามแสดงใน public FO surface |
+| AC-ASSET-MGMT-007E | BO/Admin view ต้องแสดง field `Price` เสมอ: มีราคาให้แสดงราคา ไม่มีราคาให้แสดง `-` |
+| AC-ASSET-MGMT-007F | Sold owner-facing view หากมี Price ต้องแสดงเป็นราคาขีดฆ่า; BO/Admin view แสดงราคาปกติ |
 | AC-ASSET-MGMT-008 | Add Asset ต้องมี provenance step ก่อน final Save / Upload โดยให้เลือก `Owner (Asset)` หรือ `Consignment` และข้อมูลทั้งสองแบบต้องเป็น private |
 | AC-ASSET-MGMT-008A | Provenance ต้องแยก `Owner (Asset)` purchase information ออกจาก `Consignment` consignor/terms information |
 | AC-ASSET-MGMT-008B | หากเลือก `Owner (Asset)` ต้อง require Purchase Price ก่อน Save และ optional field ที่ว่างต้องบันทึกเป็น empty/null โดยไม่สร้าง `N/A` |

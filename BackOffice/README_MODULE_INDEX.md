@@ -18,18 +18,47 @@ BO docs แยกจาก FO docs แต่เชื่อมโยงการ
 | 2 | `BO_MASTER_BASELINE.md` | Scope รวม, admin accesss, modules, phase plan และ open decisions |
 | 3 | `00_GLOBAL_RULES_MODULE.md` | Responsive layout, admin access control, status, audit, privacy, FO sync และ pattern กลาง |
 | 4 | `../ProjectAdmin/FO_BO_INTEGRATION_MAP.md` | แผนที่ trigger/result ระหว่าง FO และ BO |
-| 5 | `BO_DEV_IMPLEMENTATION_CHECKLIST.md` | Checklist สำหรับแตก ticket dev |
+| 5 | `BO_DEV_IMPLEMENTATION_CHECKLIST.md` | Checklist สำหรับแตก ticket dev และเก็บ Prototype Handoff Notes ระหว่าง BA/UX ทำ prototype |
 | 6 | `BO_PRD.md` | Existing product requirement source |
 | 7 | `BO_Spec.md` | Existing screen/module specification source |
 | 8 | `BO_Spec_Completion_Addendum.md` | Coverage เพิ่มเติมเรื่อง offer/chat, social, watch alert, support, deletion, notifications |
 | 9 | `../FrontOffice/18_ADMIN_SCOPE_NOTE.md` | Boundary ว่า Admin อยู่ฝั่ง Web Back Office เท่านั้น |
+
+## Prototype Handoff Notes Workflow
+
+ระหว่าง BA/UX ทำ BO prototype ให้ครบทุก module ยังไม่ต้องทำ Dev Handoff Sheet เต็มทีละหน้า ให้เก็บ note สั้น ๆ ไว้ใน `BO_DEV_IMPLEMENTATION_CHECKLIST.md` ก่อน
+
+เมื่อ prototype ของ module ใดเสร็จ ให้ใช้คำสั่งกับ Codex รูปแบบนี้:
+
+```text
+หน้า [ชื่อโมดูล] prototype เสร็จแล้ว
+ช่วยเทียบกับ BackOffice/[ไฟล์โมดูล].md
+แล้วอัปเดต Prototype Handoff Notes ให้ด้วย
+```
+
+ตัวอย่าง:
+
+```text
+หน้า User Management prototype เสร็จแล้ว
+ช่วยเทียบกับ BackOffice/03_USER_MANAGEMENT_MODULE.md
+แล้วอัปเดต Prototype Handoff Notes ให้ด้วย
+เน้น responsive, permission, route/filter, FO sync impact
+```
+
+Codex ต้องทำ 3 อย่าง:
+
+1. เทียบ prototype กับ spec/module checklist
+2. สรุป gap หรือประเด็นที่ยังต้องตัดสินใจ
+3. เพิ่ม `### [Module] Prototype Handoff Notes` ลงใน `BO_DEV_IMPLEMENTATION_CHECKLIST.md`
+
+มาตรฐานการทำงาน: prototype เสร็จหนึ่ง module -> ตรวจ spec gap -> อัปเดต handoff notes ของ module นั้น -> รวบรวมเป็น Dev Handoff Sheet จริงเมื่อ prototype ทุก module นิ่งแล้ว
 
 ## Module Map
 
 | No. | Module | Primary Purpose | Phase |
 | --- | --- | --- | --- |
 | 00 | `00_GLOBAL_RULES_MODULE.md` | Responsive layout, admin access, audit, status, privacy, timezone, FO sync และ destructive-action rules | 1 |
-| 01 | `01_AUTHENTICATION_MODULE.md` | Email/password login, 2FA, sessions, admin account lifecycle | 1 |
+| 01 | `01_AUTHENTICATION_MODULE.md` | Email/password login, Email OTP, sessions, admin account lifecycle | 1 |
 | 02 | `02_DASHBOARD_MODULE.md` | Dashboard metrics, pending queues, SLA signals, activity feed และ policy-based overview | 1 |
 | 03 | `03_USER_MANAGEMENT_MODULE.md` | User list/detail, auth method, login history, report context, suspend/ban, reset password, FO impact | 1 |
 | 04 | `04_ASSET_MANAGEMENT_MODULE.md` | Asset list/detail, status visibility, reported assets, moderation, sensitive fields, FO sync | 1 |

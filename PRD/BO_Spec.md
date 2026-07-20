@@ -58,7 +58,7 @@ BO Dashboard
 
 **ข้อมูลที่แสดง:**
 - จำนวนผู้ใช้ใหม่วันนี้ / สัปดาห์นี้ / เดือนนี้ (พร้อม % เทียบช่วงก่อน)
-- จำนวน Active Users (DAU / MAU)
+- จำนวน Active Users Today
 - จำนวนสินทรัพย์ที่เพิ่มใหม่วันนี้ แยกตามสถานะ (Sale / Show / Hide)
 - จำนวน Transactions (Offer Accepted) วันนี้
 - จำนวน Pending Reports (สินทรัพย์ที่ถูก Flag รอ Review)
@@ -111,7 +111,7 @@ BO Dashboard
 |---|---|---|
 | **Sale** | เจ้าของ + ผู้ใช้ทั่วไป | แสดงใน Feed / Marketplace ให้ซื้อได้ |
 | **Show** | เจ้าของ + ผู้ใช้ทั่วไป | แสดงในโปรไฟล์เจ้าของ ไม่ขาย |
-| **Hide** | เจ้าของเท่านั้น | ซ่อนจากสาธารณะ |
+| **Hide** | เจ้าของเท่านั้น | Owner ตั้งซ่อนเองจาก FO; ไม่ใช่การซ่อนชั่วคราวจาก report/moderation |
 | **Sold** | เจ้าของเท่านั้น | ขายไปแล้ว ไม่สามารถ Edit ได้ |
 
 **ฟีเจอร์ Admin:**
@@ -119,10 +119,10 @@ BO Dashboard
 |---|---|
 | ดูรายการสินทรัพย์ทั้งหมด | Filter ตาม Status (Sale/Show/Hide/Sold/Flagged), Brand, ราคา, Owner |
 | ดูรายละเอียดสินทรัพย์ | ข้อมูลครบทุกฟิลด์ รวม Provenance, Consignment Info, Sale History |
-| Force Change Status | เปลี่ยนสถานะสินทรัพย์ได้ทุกสถานะ (เฉพาะ Admin) |
+| Force Hide / Restore Visibility | ซ่อน asset ชั่วคราวเพื่อ moderation เมื่อเข้าเงื่อนไข report/review และคืนสถานะหลังตรวจแล้วไม่ผิด |
 | Remove Asset | ลบสินทรัพย์ที่ละเมิด Policy (Soft Delete) |
-| Edit Asset Info | แก้ไขข้อมูลสินทรัพย์ได้ (เฉพาะ Admin) รวมถึงสถานะ Sold |
-| Flag / Unflag Asset | ทำ Flag เพื่อ Review หรือยกเลิก Flag |
+| Edit Asset Info | ไม่ใช่ V1 Admin action สำหรับ user-owned asset; Admin ดูข้อมูลแบบ read-only และแก้ได้เฉพาะ operational/moderation state ที่มี reason + audit |
+| Flag / Unflag Asset | ทำ Flag เพื่อ Review หรือยกเลิก Flag โดยไม่แก้ข้อมูลประกาศของผู้ใช้ |
 | ดู User Reports | ดูรายงานที่ถูก Report โดยผู้ใช้ FO พร้อมเหตุผล |
 | ดู Provenance | ดูข้อมูล Provenance และ Proof of Payment (เฉพาะ Admin) |
 | ดู Sale History | ดูประวัติการขายของสินทรัพย์ที่มีสถานะ Sold |
@@ -431,4 +431,4 @@ BO uses exactly one admin account type: `Admin`. There are no BO sub-types. The 
 | Suspend User | User Login ไม่ได้, เห็น Error Message |
 | Remove Asset | สินทรัพย์หายจาก Feed / Profile ของเจ้าของ |
 | Force Status → Hide | สินทรัพย์หายจาก Feed แต่เจ้าของยังเห็นใน Profile ตัวเอง |
-| Force Status → Sold | สินทรัพย์ย้ายไปแท็บ Sold ในโปรไฟล์เจ้าของ, ปุ่ม Edit หายไป เหลือแค่ Sale History |
+| Status → Sold | ไม่ใช่ Admin quick action; ต้องมาจาก Owner หรือ transaction/offer flow แล้วสินทรัพย์ย้ายไปแท็บ Sold ในโปรไฟล์เจ้าของ, ปุ่ม Edit หายไป เหลือแค่ Sale History |

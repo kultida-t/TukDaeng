@@ -96,6 +96,8 @@ Notification ใน V1 ต้องไม่ขยาย type เกิน maste
 - Notification retention period rule
 - Notification preference center
 
+หมายเหตุ: การแจ้งผู้ใช้เรื่อง `Suspended` หรือ `Banned` ไม่ใช่ FO Notification Center type ใน V1. ระบบใช้ email เป็น primary channel ตาม BO policy และแสดง account status state ผ่าน Authentication เมื่อผู้ใช้เปิดแอปหรือพยายาม Sign In
+
 ---
 
 # 7. Screen Mapping
@@ -125,7 +127,7 @@ Notification ใน V1 ต้องไม่ขยาย type เกิน maste
 - notification ที่เปิดแล้วเปลี่ยนเป็น Read
 - เห็น unread count / badge count
 
-## Blocked / Restricted Context
+## Blocked / Unavailable Context
 
 - ถ้า notification อ้างถึง content หรือ user ที่เข้าถึงไม่ได้ ระบบต้องแสดง unavailable/error state
 - Notification เดิมไม่จำเป็นต้องถูกลบออกจาก list ทันที เว้นแต่ policy กำหนดเพิ่ม

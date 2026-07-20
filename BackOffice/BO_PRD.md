@@ -90,8 +90,8 @@ FO users have a single account type: `User`. BO must support activity from the s
 ### Requirements
 
 - Admin login ด้วย Email/Password เท่านั้น
-- Admin must use mandatory 2FA
-- admin access อื่นแนะนำให้ใช้ 2FA
+- Admin must pass mandatory Email OTP verification after email/password
+- BO V1 does not use an external verification app for Admin login
 - Session หมดอายุเมื่อ idle 8 ชั่วโมง หรือ max 24 ชั่วโมง
 - Failed login เกิน 5 ครั้ง lock account 15 นาที
 - Production รองรับ IP whitelist
@@ -112,7 +112,7 @@ FO users have a single account type: `User`. BO must support activity from the s
 Dashboard ต้องแสดง:
 
 - จำนวนผู้ใช้ใหม่ วันนี้ / สัปดาห์นี้ / เดือนนี้
-- DAU / MAU
+- Active Users Today
 - จำนวน asset ใหม่ แยกตามสถานะ
 - Offer made / accepted / rejected
 - Pending reports
@@ -124,8 +124,10 @@ Dashboard ต้องแสดง:
 ### Acceptance Criteria
 
 - Admin เห็นภาพรวมระบบภายในหน้าเดียว
-- Metrics ต้องรองรับ date range
+- Metrics แสดง snapshot ล่าสุดพร้อม `Last updated`; Dashboard ไม่ต้องมี Date Range control ใน prototype ปัจจุบัน
 - ข้อมูลบน Dashboard ต้องเชื่อมกับ report module ได้
+- `New Users` และ `Active Users Today` ต้องนับเฉพาะ registered account/member activity ไม่รวม Guest public view/share traffic
+- Dashboard ไม่ต้องแสดง guest/public analytics ใน prototype; metric ชุดนี้อยู่ใน Reports & Analytics เท่านั้น
 
 ---
 
@@ -136,27 +138,32 @@ Dashboard ต้องแสดง:
 Admin ต้องสามารถ:
 
 - ดูรายชื่อผู้ใช้ทั้งหมด
-- Search/filter ตาม status, auth method, date joined
+- Search/filter ตาม status และ auth method พร้อม sort ตาม last active, date joined, report count และ asset count ตาม Prototype
 - ดู user profile
 - ดู login history
 - ดู auth method: Email, Apple, Google
 - Suspend / Ban / Unsuspend / Unban
-- Soft delete user โดย Admin
+- Route งาน deletion ไป Account Deletion workflow; User List ไม่ archive/delete โดยตรง
 - Reset password เฉพาะบัญชี Email/Password
-- Export CSV
+- ไม่มีปุ่ม Export CSV โดยตรงใน User List; export user data ต้องผ่าน Reports/export หรือ system-level export ตาม permission
+- ไม่ต้องแสดง Guest/Unauthenticated visitor ใน User List, User Detail, status filter หรือ account action flow
 
 ### Business Rules
 
+- `Guest / Unauthenticated` เป็น FO access state ไม่ใช่ BO user status และไม่สร้าง account record ใน User Management
+- ถ้าผู้ใช้สมัคร Email/Password แล้วระบบสร้าง record เพื่อรอ OTP ให้แสดงเป็น `Pending Verification`; กรณีนี้ไม่ใช่ Guest แต่ยังไม่ถือเป็น authenticated member
 - บัญชี Apple/Google reset password จาก BO ไม่ได้
-- Suspended user login FO ไม่ได้
-- Banned user ต้องถูก block ถาวรจนกว่า Admin จะปลด
-- Delete user เป็น soft delete และต้องเก็บ audit
+- Suspended user ต้องถูก revoke/block active session และ login FO ไม่ได้จนกว่า restore
+- Banned user ต้องถูก revoke/block active session และถูก block ถาวรจนกว่า Admin จะปลด
+- V1 ไม่มี `Restricted` หรือ feature-level restriction เป็น account status; ถ้าต้องจำกัดบัญชีให้ใช้ `Suspended` หรือ `Banned` ตาม policy
+- Suspend/ban ต้องส่ง email เป็น primary user notification channel และ trace delivery/audit ได้
+- Delete/archive user ต้องจัดการผ่าน Account Deletion workflow และต้องเก็บ audit
 - User reports 1-2 ครั้งต้องเข้าคิว review ก่อน ไม่ควรเปลี่ยนสถานะบัญชีอัตโนมัติ
-- User reports ตั้งแต่ 3 ครั้งขึ้นไปภายในช่วงเวลาสั้น หรือมีหลาย reporter ต้องถูกยกระดับเป็น high-risk review
+- User reports ตั้งแต่ 3 ครั้งขึ้นไปภายในช่วงเวลาสั้น หรือมีหลาย reporter ต้องถูกยกระดับเป็น high-risk review เท่านั้น ไม่ suspend อัตโนมัติจากจำนวน report เพียงอย่างเดียว
 - User reports ตั้งแต่ 5 ครั้งขึ้นไป หรือมี evidence เสี่ยงสูง เช่น scam, impersonation, spam offer, duplicate fraud pattern สามารถเข้าสู่ `Suspended` ชั่วคราวตาม policy เพื่อรอ Admin review
 - `Banned` ต้องเกิดหลัง Admin review แล้วพบว่าผิดจริงหรือมีความเสี่ยงสูง พร้อม reason และ audit
 - Account deletion ต้องมี lifecycle อย่างน้อย `Deletion Requested` -> `Deactivated` -> `Deleted/Archived` -> `Anonymized`
-- Deleted user ต้องไม่แสดงใน default User List แต่ต้องดูย้อนหลังได้ใน Account Deletion / Reports / Audit ตาม permission และต้อง mask/anonymize personal data ตาม retention policy
+- Prototype ปัจจุบันแสดง `Deleted / Archived` ได้ใน User List/filter เพื่อ review historical summary ตาม permission; production ต้อง mask/anonymize personal data, จำกัด action และยังต้องดูย้อนหลังได้ใน Account Deletion / Reports / Audit ตาม retention policy
 - Restore หลัง deletion ทำได้เฉพาะก่อน anonymization และควรจำกัดใน grace period เช่น 30 วัน พร้อม reason และ audit
 
 ---
@@ -174,8 +181,9 @@ Admin ต้องสามารถ:
 - ดู user reports
 - Flag / Unflag asset
 - Remove asset แบบ soft delete
-- Force change status
+- Force Hide / Restore Visibility สำหรับ moderation เท่านั้น
 - ดู Provenance, Proof of Payment, Consignment และ Sale History ตามสิทธิ์
+- ไม่แก้ข้อมูลประกาศของ user-owned asset โดยตรง และไม่เปลี่ยน `Sold` จาก BO quick action
 
 ### Asset Status Rules
 
@@ -183,13 +191,17 @@ Admin ต้องสามารถ:
 |---|---|
 | Sale | เห็นใน Feed / Marketplace / Owner Profile / Viewer Profile |
 | Show | เห็นใน Owner Profile และ Viewer Profile แต่ไม่ขาย |
-| Hide | เห็นเฉพาะเจ้าของ |
+| Hide | เห็นเฉพาะเจ้าของ และหมายถึง owner ตั้งซ่อนเอง ไม่ใช่ report/moderation hidden |
 | Sold | เห็นเฉพาะเจ้าของใน Sold tab และแก้ไขไม่ได้ |
 
 ### Acceptance Criteria
 
 - กด View asset ต้องเห็นข้อมูลที่ใช้ตรวจสอบได้ครบ
-- Force status ต้องเปลี่ยนผลการแสดงบน FO ทันที
+- Force Hide / Restore Visibility ต้องเปลี่ยนผลการแสดงบน FO ทันที พร้อม reason และ audit
+- Report threshold สำหรับ asset: 1 report เข้า queue, 3 unique reports ยกระดับ priority review, 5 unique reports ซ่อนโพสต์ชั่วคราวอัตโนมัติเพื่อรอ Admin review โดยคง `Asset Status` เดิมและใช้ `Moderation State = Auto Hidden`
+- Temporary report hiding ใช้ได้เฉพาะ `Sale` และ `Show` เพราะเป็น asset ที่คนอื่นเห็นและ report ได้; `Hide` และ `Sold` ไม่เข้า flow นี้
+- ถ้า owner เปลี่ยน asset จาก `Sale`/`Show` เป็น `Hide` หรือ `Sold` ระหว่างที่ report ยังรอ review ระบบต้องเก็บ report ไว้ แต่ห้าม auto-hide หรือ Force Hide เพิ่ม เพราะโพสต์ไม่อยู่ public visibility แล้ว
+- High-risk report reason ยังไม่ auto-hide ใน V1 หากไม่มี automated detector/verified signal; ต้องเข้า priority review และให้ Admin กด Force Hide หลังตรวจ evidence
 - Sensitive fields ต้องเห็นเฉพาะ Admin
 - ทุก action ต้องบันทึก before/after ใน audit log
 
@@ -427,6 +439,8 @@ Reports ที่ต้องมี:
 - CSV export
 - Excel export
 - policy-based visibility
+- User Report ต้องแยก Guest public view/share analytics ออกจาก registered-user metrics เช่น new users, DAU/MAU, auth method และ account status
+- User Report ต้องรองรับ metric ชุด guest/public analytics เมื่อ tracking เปิดใช้ ได้แก่ Guest Visitors, Public Asset Views, Public Article Views, Public Profile Views, Public Shares และ Guest-to-Signup Conversion
 
 ---
 
@@ -480,7 +494,7 @@ Reports ที่ต้องมี:
 
 - HTTPS ทุก endpoint
 - JWT + Refresh Token
-- 2FA สำหรับ admin access สำคัญ
+- Email OTP verification สำหรับ BO Admin login
 - policy-based access control
 - Sensitive data masking
 - Audit log retention อย่างน้อย 1 ปี

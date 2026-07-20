@@ -14,10 +14,13 @@
 
 | Version | Date | Change Summary |
 | --- | --- | --- |
+| `BO-04-v0.2` | 2026-07-20 | Lock Asset Management prototype handoff notes after prototype completion. Align responsive layout, permission/privacy, route/filter behavior, Asset List/Detail, Reported Assets/Asset Report Detail actions, and FO sync impact with `BackOffice/04_ASSET_MANAGEMENT_MODULE.md`. |
+| `BO-03-v0.3` | 2026-07-16 | Clarify account suspension policy: V1 has no `Restricted` account state, `>= 3 reports` is priority review only, `>= 5 reports/reporters` or high-risk evidence may suspend, suspend/ban must revoke FO session, email is the primary user notification channel, and delivery/audit must be traceable. |
+| `BO-03-v0.2` | 2026-07-13 | Lock User List prototype as display/interaction source of truth. Align responsive layout, route/filter behavior, Account Deletion handoff, no direct User List export, `Deleted / Archived` historical review visibility, and Prototype Handoff Notes. |
 | `BO-PRD-v0.1` | 2026-07-06 | เริ่มชุดเอกสาร Back Office baseline หลัง FO cleanup เพิ่ม reading order, source-of-truth rules, module map, sprint plan และ dev checklist |
 | `INT-MAP-v0.1` | 2026-07-06 | เพิ่ม shared FO/BO integration map ที่ `ProjectAdmin/FO_BO_INTEGRATION_MAP.md` เพื่อให้ FO/BO แยกเอกสารแต่ trace งานข้ามระบบได้ |
 | `BO-00-v0.1` | 2026-07-06 | เพิ่ม Back Office Global Rules module ครอบคลุม responsive web, admin access control, shared patterns, canonical statuses, FO sync, audit, privacy, exports และ responsive QA |
-| `BO-01-v0.1` | 2026-07-06 | เพิ่ม BO Authentication and Admin Accounts module ครอบคลุม login, 2FA, session, lockout, admin lifecycle, permission enforcement, security audit และ responsive auth screens |
+| `BO-01-v0.1` | 2026-07-06 | เพิ่ม BO Authentication and Admin Accounts module ครอบคลุม login, Email OTP, session, lockout, admin lifecycle, permission enforcement, security audit และ responsive auth screens |
 | `BO-02-v0.1` | 2026-07-06 | เพิ่ม BO Dashboard module ครอบคลุม responsive dashboard, metric cards, pending queues, SLA signals, activity feed, policy-based views และ drill-in ไป module ที่เกี่ยวข้อง |
 | `BO-03-v0.1` | 2026-07-06 | เพิ่ม BO User Management module ครอบคลุม user list/detail, auth method, login history, reported user context, reset password, suspend/ban, soft delete/archive, FO impact และ audit |
 | `BO-04-v0.1` | 2026-07-06 | เพิ่ม BO Asset Management module ครอบคลุม asset list/detail, status visibility, reported assets, moderation actions, sensitive fields, FO sync และ audit |
@@ -37,6 +40,8 @@
 | `BO-HANDOFF-v0.1` | 2026-07-06 | เพิ่ม BO Final Review And Dev Handoff สรุป module completeness, implementation order, locked decisions, priority open decisions, QA focus และ dev handoff notes |
 
 ## Source Of Truth Order
+
+Exception: for completed prototype screens, `Prototypes/bo-prototype.html` is the source of truth for visual layout, responsive behavior, route/filter interaction, and on-screen state. Older PRD/spec wording must be aligned to the prototype before implementation handoff.
 
 หากเอกสาร BO ขัดกัน ให้ตัดสินตามลำดับนี้:
 
