@@ -7322,9 +7322,9 @@
           apply: asset => { asset.status = "Permanently Hidden"; asset.action = "ซ่อนถาวรจาก public surface หลังยืนยันว่าเนื้อหาผิดจริง พร้อมเก็บ audit/history"; }
         },
         "restore-visibility": {
-          title: "ยืนยันยกเลิกการซ่อนชั่วคราว",
+          title: "ยกเลิกการซ่อนชั่วคราว",
           button: "ยืนยัน",
-          summary: "ใช้เมื่อตรวจสอบแล้วว่าสามารถแสดง Asset นี้ได้ตามปกติ",
+          summary: "เปิดการมองเห็นสินทรัพย์กลับสู่พื้นที่สาธารณะ หลังตรวจสอบแล้วว่าสามารถแสดงได้ตามปกติ",
           reasonLabel: `เหตุผลการยกเลิกการซ่อนชั่วคราวของ ${restoreTarget}`,
           reasons: [
             "ตรวจสอบแล้วไม่พบความเสี่ยงเพิ่มเติม",
@@ -7440,6 +7440,49 @@
       `;
     }
 
+    function renderAssetRestoreVisibilityEmailNote(asset) {
+      return `
+        <div class="module-note user-action-impact user-action-impact-card user-action-impact-notice">
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M4.5 5h15A2.5 2.5 0 0 1 22 7.5v9A2.5 2.5 0 0 1 19.5 19h-15A2.5 2.5 0 0 1 2 16.5v-9A2.5 2.5 0 0 1 4.5 5Zm0 2a.5.5 0 0 0-.5.5v.3l8 4.9 8-4.9v-.3a.5.5 0 0 0-.5-.5h-15Zm15 10a.5.5 0 0 0 .5-.5v-6.35l-7.48 4.57a1 1 0 0 1-1.04 0L4 10.15v6.35a.5.5 0 0 0 .5.5h15Z"/></svg>
+          <p><strong>แจ้งผู้ใช้:</strong> ระบบจะส่งอีเมลแจ้งการยกเลิกการซ่อนชั่วคราวไปที่ ${getAssetOwnerEmail(asset)} (registered owner email) เป็นช่องทางหลัก</p>
+        </div>
+      `;
+    }
+
+    function getAssetRestoreVisibilityEmailCopy(asset, reason = "") {
+      return {
+        subject: "[TukDaeng] สินทรัพย์ของคุณกลับมาแสดงผลแล้ว / Your asset visibility has been restored",
+        lines: [
+          `สวัสดี ${asset.owner},`,
+          `สินทรัพย์ ${asset.name} (${asset.id}) ได้รับการยกเลิกการซ่อนชั่วคราวหลังการตรวจสอบ`,
+          `เหตุผลการดำเนินการ: ${reason || "ตรวจสอบแล้วไม่พบความเสี่ยงเพิ่มเติม"}`,
+          "รายการนี้จะกลับมาแสดงบน Feed, Search, Profile, Watch Alert, Offer, Chat reference และพื้นที่สาธารณะที่เกี่ยวข้องตามสถานะของสินทรัพย์",
+          "---",
+          `Hello ${asset.owner},`,
+          `Visibility for your asset ${asset.name} (${asset.id}) has been restored after review.`,
+          `Action reason: ${reason || "No further risk found after review"}`,
+          "This asset will appear again on Feed, Search, Profile, Watch Alert, Offer, Chat references, and related public surfaces according to its asset status.",
+          `Reference: ${asset.id}`,
+          "Contact support: support@tukdaeng.example"
+        ]
+      };
+    }
+
+    function renderAssetRestoreVisibilityEmailPreview(asset, reason = "") {
+      const emailCopy = getAssetRestoreVisibilityEmailCopy(asset, reason);
+      return `
+        <details class="email-preview" data-asset-restore-email-preview data-asset-id="${asset.id}">
+          <summary>ดูตัวอย่างอีเมลแจ้งเตือน</summary>
+          <div class="email-preview-body">
+            <div class="email-preview-subject"><strong>หัวข้อ:</strong> <span data-email-preview-subject>${emailCopy.subject}</span></div>
+            <div class="email-preview-message" data-email-preview-message>
+              ${emailCopy.lines.map(line => `<p>${line}</p>`).join("")}
+            </div>
+          </div>
+        </details>
+      `;
+    }
+
     function renderAssetDeletePostEmailNote(asset) {
       return `
         <div class="module-note user-action-impact user-action-impact-card user-action-impact-notice">
@@ -7492,6 +7535,19 @@
       if (!asset) return;
       const reason = document.querySelector("#asset-hide-reason")?.value || "";
       const emailCopy = getAssetHideEmailCopy(asset, reason);
+      const subject = preview.querySelector("[data-email-preview-subject]");
+      const message = preview.querySelector("[data-email-preview-message]");
+      if (subject) subject.textContent = emailCopy.subject;
+      if (message) message.innerHTML = emailCopy.lines.map(line => `<p>${line}</p>`).join("");
+    }
+
+    function updateAssetRestoreVisibilityEmailPreview() {
+      const preview = document.querySelector("[data-asset-restore-email-preview]");
+      if (!preview) return;
+      const asset = moduleData.assets.rows.find(entry => entry.id === preview.dataset.assetId);
+      if (!asset) return;
+      const reason = document.querySelector("#asset-restore-reason")?.value || "";
+      const emailCopy = getAssetRestoreVisibilityEmailCopy(asset, reason);
       const subject = preview.querySelector("[data-email-preview-subject]");
       const message = preview.querySelector("[data-email-preview-message]");
       if (subject) subject.textContent = emailCopy.subject;
@@ -7631,6 +7687,7 @@
 
     function renderAssetRestoreVisibilityModal(asset, action, config, resultMessage = "", resultDetail = "", resultType = "", selectedScenario = "success") {
       const hasResult = Boolean(resultMessage);
+      const defaultReason = config.reasons?.[0] || "";
       const modalBody = document.querySelector("#user-action-modal-body");
       modalBody.innerHTML = `
         <div class="user-action-page">
@@ -7662,6 +7719,8 @@
                   <textarea id="asset-restore-note" placeholder="${config.notePlaceholder}"></textarea>
                 </label>
                 ${renderAssetRestoreVisibilityImpactNote(asset)}
+                ${renderAssetRestoreVisibilityEmailNote(asset)}
+                ${renderAssetRestoreVisibilityEmailPreview(asset, defaultReason)}
                 <div class="user-detail-actions user-action-footer">
                   <button class="user-detail-action-btn primary user-action-confirm" type="button" data-asset-action-confirm="${action}" data-asset-id="${asset.id}">${config.button}</button>
                   <button class="user-detail-action-btn" type="button" data-user-action-modal-close>ยกเลิก</button>
@@ -10203,6 +10262,7 @@
         select.querySelector("[data-custom-select-trigger]").setAttribute("aria-expanded", "false");
         if (hiddenInput.id === "user-action-reason") updateAccountStatusEmailPreview();
         if (hiddenInput.id === "asset-hide-reason") updateAssetHideEmailPreview();
+        if (hiddenInput.id === "asset-restore-reason") updateAssetRestoreVisibilityEmailPreview();
         if (hiddenInput.id === "asset-delete-reason") updateAssetDeletePostEmailPreview();
         if (select.hasAttribute("data-custom-select-silent")) return;
         if (["asset-report-status-filter", "asset-report-priority-filter", "asset-report-sort"].includes(hiddenInput.id) && activeModule === "assets" && activeSub === "Reported Assets") {
