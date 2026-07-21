@@ -1382,6 +1382,12 @@
       background: radial-gradient(circle at center, #3c3c3c 0, #171717 46%, #101010 100%);
       border-bottom: 1px solid rgba(255,255,255,.08);
     }
+    .article-fo-cover img {
+      width: 100%;
+      height: 300px;
+      object-fit: cover;
+      display: block;
+    }
     .article-cover-mark {
       width: 190px;
       aspect-ratio: 1;
@@ -1484,6 +1490,10 @@
       background-repeat: no-repeat;
       background-position: right 14px center;
       background-size: 18px 18px;
+    }
+    .article-editor-form input[type="file"] {
+      padding: 10px 13px;
+      cursor: pointer;
     }
     .article-editor-form textarea {
       min-height: 118px;
@@ -10757,7 +10767,7 @@
               <div><span>Date</span>${article.publishAt === "-" ? "Draft" : article.publishAt.replace(/\s\d{2}:\d{2}$/, "")}</div>
               <div>♡ 12</div>
             </div>
-            <div class="article-fo-cover"><div class="article-cover-mark">TD</div></div>
+            <div class="article-fo-cover">${article.coverImageSrc ? `<img src="${escapeArticleField(article.coverImageSrc)}" alt="${escapeArticleField(article.coverImageName || article.title || "Article cover")}" />` : `<div class="article-cover-mark">TD</div>`}</div>
             <div class="article-fo-body">
               ${firstParagraphs.map(paragraph => `<p>${paragraph}</p>`).join("")}
               ${article.quote ? `<blockquote class="article-fo-quote">"${article.quote}"</blockquote>` : ""}
@@ -10964,7 +10974,9 @@
         detail: "สร้าง draft จาก BO รอตรวจเนื้อหาและ preview",
         deck: "",
         quote: "",
-        body: []
+        body: [],
+        coverImageName: "",
+        coverImageSrc: ""
       };
       const publishParts = parseArticlePublishInputParts(draft.publishAt);
       const publishMin = getBangkokDateTimeInputParts();
@@ -10986,7 +10998,7 @@
         <div class="user-detail-page">
           <div class="article-detail-layout">
             <div class="detail-section">
-              <form class="article-editor-form" data-article-editor data-article-mode="${isEdit ? "edit" : "add"}" data-article-id="${draft.id}">
+              <form class="article-editor-form" data-article-editor data-article-mode="${isEdit ? "edit" : "add"}" data-article-id="${draft.id}" data-article-cover-src="${escapeArticleField(draft.coverImageSrc || "")}" data-article-cover-name="${escapeArticleField(draft.coverImageName || "")}">
                 <div class="article-editor-grid">
                   <label class="full">ชื่อบทความ
                     <input id="article-title-field" name="title" value="${escapeArticleField(draft.title)}" placeholder="เช่น คู่มือเลือกซื้อนาฬิกาวินเทจ" required />
@@ -10998,6 +11010,10 @@
                   </label>
                   <label>ผู้เขียน
                     <input name="author" value="${escapeArticleField(draft.author)}" placeholder="ทีม TukDaeng" required />
+                  </label>
+                  <label class="full">รูป Cover
+                    <input name="coverImage" type="file" accept="image/*" data-article-cover-upload />
+                    <span class="muted" data-article-cover-name>${escapeArticleField(draft.coverImageName || "ยังไม่ได้เลือกรูป")}</span>
                   </label>
                   <label class="full">คำโปรยสั้น
                     <textarea name="deck" placeholder="สรุปเนื้อหาสั้น ๆ สำหรับตรวจ editorial และ preview">${escapeArticleField(draft.deck || "")}</textarea>
@@ -11088,7 +11104,9 @@
         detail: existingArticle?.detail || "Ready for editorial review",
         deck: String(formData.get("deck") || "").trim(),
         quote: String(formData.get("quote") || "").trim(),
-        body: String(formData.get("body") || "").split(/\n{2,}/).map(paragraph => paragraph.trim()).filter(Boolean)
+        body: String(formData.get("body") || "").split(/\n{2,}/).map(paragraph => paragraph.trim()).filter(Boolean),
+        coverImageName: form.dataset.articleCoverName || existingArticle?.coverImageName || "",
+        coverImageSrc: form.dataset.articleCoverSrc || existingArticle?.coverImageSrc || ""
       };
       const existingIndex = articleRows.findIndex(article => article.id === id);
       if (existingIndex >= 0) articleRows.splice(existingIndex, 1, nextArticle);
@@ -12169,6 +12187,22 @@
       if (event.target.matches("[data-calendar-only]")) {
         normalizeSuspensionEndDate(event.target);
         if (event.target.matches("#user-action-suspend-until")) updateAccountStatusEmailPreview();
+        return;
+      }
+      if (event.target.matches("[data-article-cover-upload]")) {
+        const form = event.target.closest("[data-article-editor]");
+        const file = event.target.files?.[0];
+        if (!form || !file) return;
+        if (form.dataset.articleCoverSrc?.startsWith("blob:")) {
+          URL.revokeObjectURL(form.dataset.articleCoverSrc);
+        }
+        const coverSrc = URL.createObjectURL(file);
+        form.dataset.articleCoverSrc = coverSrc;
+        form.dataset.articleCoverName = file.name;
+        const nameNode = form.querySelector("[data-article-cover-name]");
+        if (nameNode) nameNode.textContent = file.name;
+        const coverNode = document.querySelector(".article-fo-cover");
+        if (coverNode) coverNode.innerHTML = `<img src="${coverSrc}" alt="${escapeArticleField(file.name)}" />`;
         return;
       }
       if (event.target.matches("[data-article-publish-status], [data-article-publish-date], [data-article-publish-time]")) {
