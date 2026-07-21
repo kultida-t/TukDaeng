@@ -60,6 +60,8 @@ BO Dashboard
 └── Admin Settings
 ```
 
+Admin Settings updated submenu baseline includes `Admin Accounts`, `Roles & Permissions`, `Security`, `Retention`, policy/legal content sections, support settings, and Audit Log handoff. `Roles & Permissions` manages role templates and module/action policy for the single BO account type `Admin`; it does not introduce separate BO admin account types.
+
 ---
 
 ## 3. Offer & Chat Management
@@ -547,7 +549,7 @@ BO_Spec v1.1 ระบุว่า Admin ตอบ Help ได้ แต่ย�
 
 ### 9.9 Content Permissions
 
-Content permissions use the single BO account type `Admin`. There are no BO sub-types.
+Content permissions use the single BO account type `Admin`. There are no BO sub-types. Role templates may grant focused content access, such as `Content Editor` for draft authoring and `Content Publisher` for publish/schedule/archive actions.
 
 | Action | Admin access rule |
 |---|---|
@@ -557,6 +559,14 @@ Content permissions use the single BO account type `Admin`. There are no BO sub-
 | Delete Article | Not a default action; use archive unless policy explicitly allows delete with reason and audit. |
 | Manage Categories / Banners | Allowed with before/after audit and FO-impact awareness. |
 | Preview as FO | Allowed and must respect canonical FO display rules. |
+
+Content role split baseline:
+
+| Role template | Content scope |
+|---|---|
+| Content Editor | View Content Management, create/edit draft articles, edit metadata/categories, and preview as FO. Cannot publish/schedule/archive. |
+| Content Publisher | Publish, schedule, archive, manage banners/categories, and resolve reported Board content with confirmation/reason/audit where public visibility changes. |
+
 ### 9.10 Board Analytics
 
 | Metric | Description |
@@ -738,7 +748,9 @@ Content permissions use the single BO account type `Admin`. There are no BO sub-
 
 ## 14. Updated Admin Access & Permissions
 
-BO uses a single `Admin` account type. Module behavior is controlled by module/action policy instead of separate BO admin account types.
+BO uses a single `Admin` account type. Module behavior is controlled by role templates and module/action policy instead of separate BO admin account types.
+
+Baseline role templates include `Super Admin`, `Content Editor`, `Content Publisher`, `Moderator`, and `Support Agent`. These are permission presets only; production must enforce explicit permission keys at route, UI, API, and service layers.
 
 | Module | Admin access rule |
 |---|---|

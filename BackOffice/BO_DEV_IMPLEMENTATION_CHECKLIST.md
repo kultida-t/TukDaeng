@@ -46,7 +46,11 @@ Recommended note format:
 - [ ] Admin must pass mandatory Email OTP verification after email/password
 - [ ] Failed login ครบ 5 ครั้ง lock account 15 นาที
 - [ ] Idle session หมดอายุหลัง 8 ชั่วโมง และ max session หลัง 24 ชั่วโมง
+- [ ] BO ใช้ account type เดียวคือ `Admin`; role templates เป็น permission presets เท่านั้น ไม่ใช่ separate BO account types
+- [ ] Seed baseline role templates: `Super Admin`, `Content Editor`, `Content Publisher`, `Moderator`, `Support Agent`
+- [ ] Permission model ต้องมี explicit permission keys สำหรับ module access, create/edit draft, publish/schedule/archive, moderation action, sensitive reveal, export, settings update และ audit visibility
 - [ ] Permission guard มีทั้ง route level และ action/API level
+- [ ] UI menu/action hiding เป็น UX เท่านั้น และต้องมี backend/service enforcement ซ้ำทุกครั้ง
 - [ ] BO reset password flow แยกจาก FO user reset password
 - [ ] Login, logout, failed login, Email OTP sent/verified/failed/resend และ lockout events ต้อง audit-log
 
@@ -344,7 +348,9 @@ Recommended note format:
 - [ ] Admin ทุก admin access ต้องเข้าดู own profile/settings และเปลี่ยน password ตาม rule ได้
 - [ ] Admin ต้องจัดการ admin account lifecycle: invite, change admin access policy, suspend/reactivate, unlock, archive
 - [ ] ระบบต้องป้องกันการ suspend/archive/change admin access policy ของ Admin active คนสุดท้าย
-- [ ] Admin Access Matrix ต้องแสดงสิทธิ์ตาม module/action และ enforce ทั้ง UI/API level
+- [ ] Settings submenu ต้องมี `Roles & Permissions` สำหรับ role templates และ module/action policy
+- [ ] Roles & Permissions matrix ต้องแสดงสิทธิ์ตาม role template, module, action และ enforce ทั้ง UI/API/service level
+- [ ] Content role split ต้องรองรับ `Content Editor` สำหรับ draft authoring และ `Content Publisher` สำหรับ publish/schedule/archive/reported Board actions
 - [ ] Permission change ต้องมี confirmation, reason, before/after diff และ audit log
 - [ ] Security policy ต้องสอดคล้องกับ Auth baseline: email/password only, mandatory Email OTP สำหรับ Admin, idle 8h, max 24h, failed login 5 ครั้ง, lockout 15 นาที
 - [ ] Retention settings ต้องไม่อนุญาต manual delete audit logs จาก UI ปกติ

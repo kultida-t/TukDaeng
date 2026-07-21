@@ -48,6 +48,8 @@ BO Dashboard
 └── Admin Settings
 ```
 
+Admin Settings must include a `Roles & Permissions` section. This section manages role templates and module/action permissions for the single BO account type `Admin`; it must not introduce separate BO admin account types.
+
 ---
 
 ## 3. รายละเอียดแต่ละ Module
@@ -362,6 +364,18 @@ Watch Shops, Accessories Shops, Repair Shops, Auction Centers, Consignment Cente
 ### 3.12 Admin Access & Permissions
 
 BO uses exactly one admin account type: `Admin`. There are no BO sub-types. The former multi-column policy catalog is replaced by module/action policy.
+
+Role templates are allowed as permission presets for Admin accounts. Example baseline roles:
+
+| Role template | Purpose |
+|---|---|
+| Super Admin | Full BO access, including settings, audit, export, and policy changes. |
+| Content Editor | Can view Content Management and create/edit article drafts, categories, and metadata; cannot publish/archive. |
+| Content Publisher | Can publish, schedule, archive, and moderate reported Board content with audit reason. |
+| Moderator | Can review reports and moderation queues according to masking and action policy. |
+| Support Agent | Can manage support tickets and limited linked context without broad settings/export access. |
+
+Permission enforcement must happen at route, UI, API, and service layers. Hiding menu items is not sufficient.
 
 | Module | Admin access rule |
 |---|---|
