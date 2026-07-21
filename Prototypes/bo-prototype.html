@@ -1531,6 +1531,26 @@
       padding: 10px 13px;
       cursor: pointer;
     }
+    .article-upload-help {
+      color: #66758d;
+      font-size: 12px;
+      font-weight: 400;
+      line-height: 1.45;
+    }
+    .article-upload-error {
+      display: none;
+      color: #c8212b;
+      font-size: 12px;
+      font-weight: 600;
+      line-height: 1.45;
+    }
+    .article-upload-error.show {
+      display: block;
+    }
+    .article-upload-invalid {
+      border-color: #c8212b !important;
+      box-shadow: 0 0 0 3px rgba(200, 33, 43, .08);
+    }
     .article-editor-form textarea {
       min-height: 118px;
       resize: vertical;
@@ -10853,6 +10873,53 @@
       previewPanel.innerHTML = renderArticleFoPreview(getArticleEditorPreviewArticle(form));
     }
 
+    function setArticleUploadError(form, kind, message = "") {
+      if (!form) return;
+      const isCover = kind === "cover";
+      const input = form.querySelector(isCover ? "[data-article-cover-upload]" : "[data-article-body-image-upload]");
+      const errorNode = form.querySelector(isCover ? "[data-article-cover-error]" : "[data-article-body-image-error]");
+      if (input) input.classList.toggle("article-upload-invalid", Boolean(message));
+      if (errorNode) {
+        errorNode.textContent = message;
+        errorNode.classList.toggle("show", Boolean(message));
+      }
+    }
+
+    function validateArticleImageUpload(file, kind) {
+      const allowedTypes = ["image/jpeg", "image/png", "image/webp"];
+      const maxSizeMb = 5;
+      if (!allowedTypes.includes(file.type)) {
+        return Promise.resolve({ error: "รองรับเฉพาะไฟล์ JPG, PNG หรือ WebP" });
+      }
+      if (file.size > maxSizeMb * 1024 * 1024) {
+        return Promise.resolve({ error: `ขนาดไฟล์ต้องไม่เกิน ${maxSizeMb}MB` });
+      }
+      const objectUrl = URL.createObjectURL(file);
+      return new Promise(resolve => {
+        const image = new Image();
+        image.onload = () => {
+          const ratio = image.naturalWidth / image.naturalHeight;
+          const isCover = kind === "cover";
+          const validRatio = isCover ? ratio >= 1 && ratio <= 16 / 9 : ratio >= .5 && ratio <= 2.5;
+          if (!validRatio) {
+            URL.revokeObjectURL(objectUrl);
+            resolve({
+              error: isCover
+                ? "รูป Cover ควรเป็นภาพสี่เหลี่ยมหรือแนวนอน สัดส่วนประมาณ 1:1 ถึง 16:9"
+                : "รูปในเนื้อหาควรมีสัดส่วนไม่แคบหรือยาวเกินไป"
+            });
+            return;
+          }
+          resolve({ src: objectUrl, width: image.naturalWidth, height: image.naturalHeight });
+        };
+        image.onerror = () => {
+          URL.revokeObjectURL(objectUrl);
+          resolve({ error: "ไม่สามารถอ่านไฟล์รูปนี้ได้ กรุณาเลือกไฟล์ใหม่" });
+        };
+        image.src = objectUrl;
+      });
+    }
+
     function containArticlePreviewScroll(event) {
       const scroller = event.target.closest(".article-fo-scroll");
       if (!scroller) return;
@@ -11126,6 +11193,8 @@
                   </label>
                   <label class="full">รูป Cover
                     <input name="coverImage" type="file" accept="image/*" data-article-cover-upload />
+                    <span class="article-upload-help">รองรับ JPG, PNG, WebP ไม่เกิน 5MB สัดส่วนแนะนำ 1:1 ถึง 16:9 และจำเป็นเมื่อสถานะเป็น Scheduled หรือ Published</span>
+                    <span class="article-upload-error" data-article-cover-error></span>
                   </label>
                   <label class="full">คำโปรยสั้น
                     <textarea name="deck" placeholder="สรุปเนื้อหาสั้น ๆ สำหรับตรวจ editorial และ preview">${escapeArticleField(draft.deck || "")}</textarea>
@@ -11138,6 +11207,8 @@
                   </label>
                   <label class="full">รูปในเนื้อหาบทความ
                     <input name="bodyImage" type="file" accept="image/*" data-article-body-image-upload />
+                    <span class="article-upload-help">รองรับ JPG, PNG, WebP ไม่เกิน 5MB สัดส่วนไม่แคบหรือยาวเกินไป</span>
+                    <span class="article-upload-error" data-article-body-image-error></span>
                   </label>
                   <div class="article-publish-row">
                     <label>สถานะเผยแพร่
@@ -11207,6 +11278,12 @@
         syncArticlePublishDateTimeLimits(form);
         return;
       }
+      if (["Scheduled", "Published"].includes(status) && !(form.dataset.articleCoverSrc || existingArticle?.coverImageSrc)) {
+        setArticleUploadError(form, "cover", "กรุณาอัปโหลดรูป Cover ก่อนเผยแพร่หรือตั้งเวลาเผยแพร่");
+        form.querySelector("[data-article-cover-upload]")?.focus();
+        return;
+      }
+      setArticleUploadError(form, "cover");
       const nextArticle = {
         id,
         title: String(formData.get("title") || "").trim() || "Untitled Article",
@@ -12311,7 +12388,7 @@
         saveArticleFromForm(articleEditor);
       }
     });
-    document.addEventListener("change", event => {
+    document.addEventListener("change", async event => {
       if (event.target.matches("[data-calendar-only]")) {
         normalizeSuspensionEndDate(event.target);
         if (event.target.matches("#user-action-suspend-until")) updateAccountStatusEmailPreview();
@@ -12324,11 +12401,18 @@
         const isBodyImage = event.target.matches("[data-article-body-image-upload]");
         const srcKey = isBodyImage ? "articleBodyImageSrc" : "articleCoverSrc";
         const nameKey = isBodyImage ? "articleBodyImageName" : "articleCoverName";
+        const validatedImage = await validateArticleImageUpload(file, isBodyImage ? "body" : "cover");
+        if (validatedImage.error) {
+          event.target.value = "";
+          setArticleUploadError(form, isBodyImage ? "body" : "cover", validatedImage.error);
+          return;
+        }
         if (form.dataset[srcKey]?.startsWith("blob:")) {
           URL.revokeObjectURL(form.dataset[srcKey]);
         }
-        form.dataset[srcKey] = URL.createObjectURL(file);
+        form.dataset[srcKey] = validatedImage.src;
         form.dataset[nameKey] = file.name;
+        setArticleUploadError(form, isBodyImage ? "body" : "cover");
         updateArticleEditorPreview(form);
         return;
       }
