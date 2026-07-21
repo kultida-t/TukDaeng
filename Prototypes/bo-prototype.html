@@ -5445,6 +5445,8 @@
     let assetListPage = 1;
     let assetFilterOpen = false;
     let assetReportFilterOpen = false;
+    let articleListPage = 1;
+    let articleFilterOpen = false;
     let activeAssetImageIndex = 0;
     let activeAssetReportModalImageIndex = 0;
     let activeAssetCommentsModalId = null;
@@ -5452,6 +5454,7 @@
     let activeReportContextId = null;
     const userListPageSize = 10;
     const assetListPageSize = 10;
+    const articleListPageSize = 10;
     const reportHistoryPageSize = 10;
 
     function resetSessionViewState() {
@@ -5466,6 +5469,8 @@
       assetListPage = 1;
       assetFilterOpen = false;
       assetReportFilterOpen = false;
+      articleListPage = 1;
+      articleFilterOpen = false;
       activeAssetImageIndex = 0;
       closeRowMenus();
       document.querySelectorAll("[data-custom-select]").forEach(select => {
@@ -9772,9 +9777,10 @@
       const data = moduleData[id];
       const isAssetList = id === "assets" && (subLabel || "Asset List") === "Asset List";
       const isReportedAssets = id === "assets" && subLabel === "Reported Assets";
+      const isArticleList = id === "content" && (subLabel || "Articles") === "Articles";
       document.body.classList.toggle("dashboard-mode", id === "dashboard");
       document.body.classList.toggle("user-management-mode", id === "users" || isReportedAssets);
-      document.body.classList.toggle("asset-list-mode", isAssetList);
+      document.body.classList.toggle("asset-list-mode", isAssetList || isArticleList);
       document.body.classList.toggle("user-list-mode", id === "users" || isReportedAssets);
       document.body.classList.remove("asset-detail-mode");
       if (isReportedAssets) document.body.classList.remove("user-detail-mode");
@@ -9789,6 +9795,46 @@
       }
       if (id === "users") {
         renderUserManagement(subLabel || "User List");
+        updateActiveNav();
+        return;
+      }
+      if (isArticleList) {
+        activeRow = null;
+        document.querySelector("#crumb").textContent = `${data.crumb} / Articles`;
+        document.querySelector("#page-title").textContent = "Articles";
+        document.querySelector("#page-meta").textContent = "";
+        document.querySelector("#panel-title").textContent = "Articles";
+        document.querySelector("#panel-subtitle").textContent = "";
+        document.querySelector("#primary-action").textContent = data.action;
+        document.querySelector("#user-panel-filter-actions").innerHTML = `
+          <button class="btn user-filter-toggle" type="button" data-article-filter-toggle aria-expanded="${articleFilterOpen}">${iconSvg.filter}<span>${articleFilterOpen ? "ปิดตัวกรอง" : "เปิดตัวกรอง"}</span></button>
+        `;
+        document.querySelector(".filters").innerHTML = `
+          <div class="user-filter-bar" data-filter-open="${articleFilterOpen}">
+            <input class="field search" id="article-search" type="search" placeholder="ค้นหา Article ID, Title, Category, Author" />
+            <div class="user-advanced-filter">${customSelect("article-status-filter", "Filter article status", [
+              { value: "", label: "All article status" },
+              { value: "Published", label: "Published" },
+              { value: "Scheduled", label: "Scheduled" },
+              { value: "Draft", label: "Draft" },
+              { value: "Archived", label: "Archived" }
+            ])}</div>
+            <div class="user-advanced-filter">${customSelect("article-category-filter", "Filter category", [
+              { value: "", label: "All categories" },
+              ...getArticleCategories().map(category => ({ value: category, label: category }))
+            ])}</div>
+            <div class="user-advanced-filter">${customSelect("article-sort", "Sort articles", [
+              { value: "latest", label: "Newest first" },
+              { value: "publish", label: "Publish time" },
+              { value: "title", label: "Title A-Z" }
+            ])}</div>
+            <button class="btn filter-reset user-advanced-filter" type="button" data-article-reset title="รีเซ็ตค่าทั้งหมด" aria-label="รีเซ็ตค่าทั้งหมด">${iconSvg.refresh}<span>รีเซ็ตค่าทั้งหมด</span></button>
+          </div>
+        `;
+        document.querySelector("#summary-grid").innerHTML = getArticleSummaryStats().map(renderArticleSummaryCard).join("");
+        document.querySelector("#cards").innerHTML = "";
+        document.querySelector("#detail").innerHTML = "";
+        renderArticleListRows();
         updateActiveNav();
         return;
       }
@@ -10075,6 +10121,10 @@
         renderAssetListRows();
         return;
       }
+      if (activeModule === "content" && (activeSub || "Articles") === "Articles") {
+        renderArticleListRows();
+        return;
+      }
       const data = moduleData[activeModule];
       const q = document.querySelector("#search").value.trim().toLowerCase();
       const status = document.querySelector("#status-filter").value;
@@ -10095,6 +10145,233 @@
             <div><button class="panel-action" type="button" data-row-action="${row.id}">${iconSvg.eye}ดูรายละเอียด</button></div>
           </div>
         `).join("") || `<div class="detail-empty">ไม่พบข้อมูล</div>`}
+      `;
+    }
+
+    function getArticleListRows() {
+      return [
+        {
+          id: "ART-044",
+          title: "Vintage Watch Buying Guide",
+          category: "Buying Guide",
+          author: "Editorial",
+          status: "Scheduled",
+          publishAt: "10 Jul 2026 19:00",
+          updatedAt: "10 Jul 2026 15:30",
+          readTime: "6 min",
+          tags: ["Board", "Buying Guide"],
+          priority: "ปกติ",
+          detail: "Preview as FO และตรวจ cover image ก่อน publish"
+        },
+        {
+          id: "ART-043",
+          title: "How to Check Provenance",
+          category: "Watch 101",
+          author: "Editorial",
+          status: "Published",
+          publishAt: "09 Jul 2026 10:00",
+          updatedAt: "09 Jul 2026 09:42",
+          readTime: "8 min",
+          tags: ["Board", "Education"],
+          priority: "ปกติ",
+          detail: "เผยแพร่แล้วและแสดงบน Board"
+        },
+        {
+          id: "ART-042",
+          title: "Market Notes July",
+          category: "Watch Market",
+          author: "Market Team",
+          status: "Draft",
+          publishAt: "-",
+          updatedAt: "08 Jul 2026 17:15",
+          readTime: "5 min",
+          tags: ["Market", "Draft"],
+          priority: "กลาง",
+          detail: "ยังไม่แสดงบน FO / รอรูป cover"
+        },
+        {
+          id: "ART-041",
+          title: "Auction Week Highlights",
+          category: "Watch Events",
+          author: "Marketing",
+          status: "Scheduled",
+          publishAt: "11 Jul 2026 09:00",
+          updatedAt: "08 Jul 2026 14:10",
+          readTime: "4 min",
+          tags: ["Events", "Auction"],
+          priority: "กลาง",
+          detail: "ตรวจ destination ของ related banner ก่อน publish"
+        },
+        {
+          id: "ART-040",
+          title: "Strap Pairing Guide",
+          category: "Watch Apparel",
+          author: "Editorial",
+          status: "Published",
+          publishAt: "07 Jul 2026 12:00",
+          updatedAt: "07 Jul 2026 11:35",
+          readTime: "7 min",
+          tags: ["Style", "Accessories"],
+          priority: "ปกติ",
+          detail: "เผยแพร่แล้วและมี related articles ครบ"
+        },
+        {
+          id: "ART-039",
+          title: "Collector Interview: Bangkok Vintage",
+          category: "Journal Board",
+          author: "Editorial",
+          status: "Archived",
+          publishAt: "02 Jul 2026 18:00",
+          updatedAt: "06 Jul 2026 13:05",
+          readTime: "9 min",
+          tags: ["Journal", "Archived"],
+          priority: "ปกติ",
+          detail: "นำออกจาก Board/Search/Category แล้ว"
+        }
+      ];
+    }
+
+    function getArticleCategories() {
+      return Array.from(new Set(getArticleListRows().map(article => article.category))).sort((a, b) => a.localeCompare(b));
+    }
+
+    function getArticleSearchText(article) {
+      return [article.id, article.title, article.category, article.author, article.status, article.publishAt, article.tags.join(" ")].join(" ").toLowerCase();
+    }
+
+    function getArticleSortRank(article, sort) {
+      const idRank = parseInt(String(article.id || "").match(/\d+/)?.[0] || "0", 10);
+      if (sort === "latest") return idRank;
+      if (sort === "publish") return Date.parse(article.publishAt.replace(/(\d{2}) (\w{3}) (\d{4})/, "$2 $1, $3")) || 0;
+      return 0;
+    }
+
+    function articleStatusPill(status) {
+      const map = { Published: "green", Scheduled: "blue", Draft: "amber", Archived: "gray", Reviewing: "red" };
+      return `<span class="pill ${map[status] || "blue"}">${status}</span>`;
+    }
+
+    function getArticleSummaryStats() {
+      const articles = getArticleListRows();
+      const countStatus = status => articles.filter(article => article.status === status).length;
+      return [
+        {
+          title: "Article Status",
+          total: articles.length,
+          rows: [
+            ["Published", countStatus("Published"), "แสดงใน Board/Search/Category"],
+            ["Scheduled", countStatus("Scheduled"), "รอ publish ตามเวลาที่ตั้งไว้"],
+            ["Draft", countStatus("Draft"), "ยังไม่แสดงบน FO"],
+            ["Archived", countStatus("Archived"), "นำออกจาก public listing"]
+          ]
+        },
+        {
+          title: "Board Readiness",
+          total: countStatus("Scheduled") + countStatus("Draft"),
+          rows: [
+            ["Preview", countStatus("Scheduled"), "ต้องตรวจ preview as FO"],
+            ["Cover", countStatus("Draft"), "รอ cover image หรือ metadata"],
+            ["Audit", articles.filter(article => ["Published", "Archived"].includes(article.status)).length, "มีผลต่อ FO visibility"]
+          ]
+        }
+      ];
+    }
+
+    function renderArticleSummaryCard(stat) {
+      return `
+        <article class="stat asset-kpi-card">
+          <div class="asset-kpi-head">
+            <div>
+              <div class="asset-kpi-title">${stat.title}</div>
+            </div>
+            <strong class="asset-kpi-total">${stat.total.toLocaleString()}</strong>
+          </div>
+          <div class="asset-status-list">
+            ${stat.rows.map(([label, value, detail]) => `
+              <span class="asset-status-row">
+                <span class="asset-status-copy">
+                  <span class="asset-status-name">${label}</span>
+                  <span class="asset-status-detail">${detail}</span>
+                </span>
+                <strong class="asset-status-value">${value.toLocaleString()}</strong>
+              </span>
+            `).join("")}
+          </div>
+        </article>
+      `;
+    }
+
+    function renderArticleRowActionMenu(article) {
+      return `
+        <details class="row-menu">
+          <summary title="Article actions">...</summary>
+          <div class="row-menu-list">
+            <button type="button">Preview as FO</button>
+            <button type="button">Edit article</button>
+            <button type="button">${article.status === "Archived" ? "Restore" : "Archive"}</button>
+          </div>
+        </details>
+      `;
+    }
+
+    function renderArticleListRows() {
+      const q = (document.querySelector("#article-search")?.value || "").trim().toLowerCase();
+      const status = document.querySelector("#article-status-filter")?.value || "";
+      const category = document.querySelector("#article-category-filter")?.value || "";
+      const sort = document.querySelector("#article-sort")?.value || "latest";
+      const sorted = getArticleListRows().filter(article => {
+        return (!q || getArticleSearchText(article).includes(q))
+          && (!status || article.status === status)
+          && (!category || article.category === category);
+      }).sort((a, b) => {
+        if (sort === "title") return a.title.localeCompare(b.title);
+        return getArticleSortRank(b, sort) - getArticleSortRank(a, sort);
+      });
+      const pageCount = Math.max(1, Math.ceil(sorted.length / articleListPageSize));
+      articleListPage = Math.min(articleListPage, pageCount);
+      const start = (articleListPage - 1) * articleListPageSize;
+      const pageRows = sorted.slice(start, start + articleListPageSize);
+      document.querySelector("#summary-grid").innerHTML = getArticleSummaryStats().map(renderArticleSummaryCard).join("");
+      document.querySelector("#panel-subtitle").textContent = "";
+      document.querySelector("#table").innerHTML = `
+        <div class="asset-table">
+          <div class="asset-row head"><div>Article ID</div><div>Article</div><div>Category</div><div>Author</div><div>Publish Status</div><div>Action</div></div>
+          ${pageRows.map(article => `
+            <div class="asset-row" data-article-card="${article.id}">
+              <div data-label="Article ID"><div class="main-text">${article.id}</div></div>
+              <div class="asset-cell-primary" data-label="Article">
+                <div class="main-text">${article.title}</div>
+                <div class="muted">${article.detail}</div>
+              </div>
+              <div class="asset-card-tags">
+                <span class="user-card-tag asset-tag">${article.category}</span>
+                ${articleStatusPill(article.status)}
+                <span class="user-card-tag asset-tag">${article.readTime}</span>
+                <div class="user-card-meta">
+                  <div class="user-card-meta-item"><span>Article ID</span><strong>${article.id}</strong></div>
+                  <div class="user-card-meta-item"><span>Publish</span><strong>${article.publishAt}</strong></div>
+                </div>
+              </div>
+              <div data-label="Category"><div class="main-text">${article.category}</div></div>
+              <div data-label="Author"><div class="main-text">${article.author}</div></div>
+              <div data-label="Publish Status">
+                ${articleStatusPill(article.status)}
+                <div class="muted">${article.publishAt}</div>
+              </div>
+              <div class="user-row-actions">
+                ${renderArticleRowActionMenu(article)}
+              </div>
+            </div>
+          `).join("") || `<div class="detail-empty user-empty">ไม่พบข้อมูล</div>`}
+        </div>
+        <div class="footer-range">
+          <span>แสดง ${sorted.length ? `${start + 1}-${Math.min(start + articleListPageSize, sorted.length)}` : "0"} จาก ${sorted.length}</span>
+          <div class="pager">
+            <button class="btn" type="button" data-article-page="prev" ${articleListPage <= 1 ? "disabled" : ""}>ก่อนหน้า</button>
+            ${Array.from({ length: pageCount }, (_, index) => `<button class="btn ${index + 1 === articleListPage ? "active" : ""}" type="button" data-article-page="${index + 1}">${index + 1}</button>`).join("")}
+            <button class="btn" type="button" data-article-page="next" ${articleListPage >= pageCount ? "disabled" : ""}>ถัดไป</button>
+          </div>
+        </div>
       `;
     }
 
@@ -10322,6 +10599,11 @@
         if (["asset-type-filter", "asset-brand-filter", "asset-sort"].includes(hiddenInput.id) && activeModule === "assets") {
           assetListPage = 1;
           renderAssetListRows();
+          return;
+        }
+        if (["article-status-filter", "article-category-filter", "article-sort"].includes(hiddenInput.id) && activeModule === "content" && (activeSub || "Articles") === "Articles") {
+          articleListPage = 1;
+          renderArticleListRows();
           return;
         }
         userListPage = 1;
@@ -10700,6 +10982,32 @@
         if (label) label.textContent = assetFilterOpen ? "ปิดตัวกรอง" : "เปิดตัวกรอง";
         return;
       }
+      const articleReset = event.target.closest("[data-article-reset]");
+      if (articleReset) {
+        articleListPage = 1;
+        articleFilterOpen = false;
+        renderModule("content", "Articles", "Articles");
+        return;
+      }
+      const articleFilterToggle = event.target.closest("[data-article-filter-toggle]");
+      if (articleFilterToggle) {
+        articleFilterOpen = !articleFilterOpen;
+        const filterBar = document.querySelector(".user-filter-bar");
+        if (filterBar) filterBar.dataset.filterOpen = String(articleFilterOpen);
+        articleFilterToggle.setAttribute("aria-expanded", String(articleFilterOpen));
+        const label = articleFilterToggle.querySelector("span");
+        if (label) label.textContent = articleFilterOpen ? "ปิดตัวกรอง" : "เปิดตัวกรอง";
+        return;
+      }
+      const articlePageButton = event.target.closest("[data-article-page]");
+      if (articlePageButton) {
+        const target = articlePageButton.dataset.articlePage;
+        if (target === "prev") articleListPage = Math.max(1, articleListPage - 1);
+        else if (target === "next") articleListPage += 1;
+        else articleListPage = Number(target) || 1;
+        renderArticleListRows();
+        return;
+      }
       const assetPageButton = event.target.closest("[data-asset-page]");
       if (assetPageButton) {
         const target = assetPageButton.dataset.assetPage;
@@ -10972,6 +11280,10 @@
         if (activeModule === "assets") assetListPage = 1;
         renderRows();
       }
+      if (event.target.matches("#article-search")) {
+        articleListPage = 1;
+        renderArticleListRows();
+      }
     });
     document.addEventListener("change", event => {
       if (event.target.matches("[data-calendar-only]")) {
@@ -10991,6 +11303,11 @@
       if (event.target.matches("#asset-report-status-filter, #asset-report-priority-filter, #asset-report-sort")) {
         assetListPage = 1;
         renderReportedAssetRows();
+        return;
+      }
+      if (event.target.matches("#article-status-filter, #article-category-filter, #article-sort")) {
+        articleListPage = 1;
+        renderArticleListRows();
         return;
       }
       if (event.target.matches("#status-filter, #priority-filter, #asset-type-filter, #asset-brand-filter, #asset-sort")) {
