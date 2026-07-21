@@ -1527,15 +1527,45 @@
       background-position: right 14px center;
       background-size: 18px 18px;
     }
-    .article-editor-form input[type="file"] {
+    .article-upload-control {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      border: 1px solid #cbd8ea;
+      border-radius: 8px;
       padding: 10px 13px;
-      cursor: pointer;
-    }
-    .article-upload-help {
-      color: #66758d;
-      font-size: 12px;
+      color: #061426;
+      background: #fff;
+      font-size: 14px;
       font-weight: 400;
       line-height: 1.45;
+      cursor: pointer;
+    }
+    .article-upload-control input[type="file"] {
+      display: none;
+    }
+    .article-upload-button {
+      flex-shrink: 0;
+      padding: 4px 10px;
+      border: 1px solid #94a3b8;
+      border-radius: 4px;
+      background: #f8fafc;
+      color: #061426;
+      font-size: 13px;
+      font-weight: 600;
+      line-height: 1.25;
+    }
+    .article-upload-display {
+      min-width: 0;
+      overflow: hidden;
+      color: #061426;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .article-upload-display.placeholder {
+      color: #8a99ad;
+      font-weight: 400;
     }
     .article-upload-error {
       display: none;
@@ -10876,9 +10906,9 @@
     function setArticleUploadError(form, kind, message = "") {
       if (!form) return;
       const isCover = kind === "cover";
-      const input = form.querySelector(isCover ? "[data-article-cover-upload]" : "[data-article-body-image-upload]");
+      const control = form.querySelector(isCover ? "[data-article-cover-upload-control]" : "[data-article-body-image-upload-control]");
       const errorNode = form.querySelector(isCover ? "[data-article-cover-error]" : "[data-article-body-image-error]");
-      if (input) input.classList.toggle("article-upload-invalid", Boolean(message));
+      if (control) control.classList.toggle("article-upload-invalid", Boolean(message));
       if (errorNode) {
         errorNode.textContent = message;
         errorNode.classList.toggle("show", Boolean(message));
@@ -11192,8 +11222,11 @@
                     <input name="author" value="${escapeArticleField(draft.author)}" placeholder="ทีม TukDaeng" required />
                   </label>
                   <label class="full">รูป Cover
-                    <input name="coverImage" type="file" accept="image/*" data-article-cover-upload />
-                    <span class="article-upload-help">รองรับ JPG, PNG, WebP ไม่เกิน 5MB สัดส่วนแนะนำ 1:1 ถึง 16:9 และจำเป็นเมื่อสถานะเป็น Scheduled หรือ Published</span>
+                    <span class="article-upload-control" data-article-cover-upload-control>
+                      <span class="article-upload-button">เลือกไฟล์</span>
+                      <span class="article-upload-display ${draft.coverImageName ? "" : "placeholder"}" data-article-cover-display>${escapeArticleField(draft.coverImageName || "รองรับ JPG, PNG, WebP ไม่เกิน 5MB")}</span>
+                      <input name="coverImage" type="file" accept="image/*" data-article-cover-upload />
+                    </span>
                     <span class="article-upload-error" data-article-cover-error></span>
                   </label>
                   <label class="full">คำโปรยสั้น
@@ -11206,8 +11239,11 @@
                     <textarea name="body" placeholder="ใส่เนื้อหาและเว้นบรรทัดว่างเพื่อแยกย่อหน้า" required>${escapeArticleField(getArticleBodyText(draft))}</textarea>
                   </label>
                   <label class="full">รูปในเนื้อหาบทความ
-                    <input name="bodyImage" type="file" accept="image/*" data-article-body-image-upload />
-                    <span class="article-upload-help">รองรับ JPG, PNG, WebP ไม่เกิน 5MB สัดส่วนไม่แคบหรือยาวเกินไป</span>
+                    <span class="article-upload-control" data-article-body-image-upload-control>
+                      <span class="article-upload-button">เลือกไฟล์</span>
+                      <span class="article-upload-display ${draft.bodyImageName ? "" : "placeholder"}" data-article-body-image-display>${escapeArticleField(draft.bodyImageName || "รองรับ JPG, PNG, WebP ไม่เกิน 5MB")}</span>
+                      <input name="bodyImage" type="file" accept="image/*" data-article-body-image-upload />
+                    </span>
                     <span class="article-upload-error" data-article-body-image-error></span>
                   </label>
                   <div class="article-publish-row">
@@ -11280,7 +11316,7 @@
       }
       if (["Scheduled", "Published"].includes(status) && !(form.dataset.articleCoverSrc || existingArticle?.coverImageSrc)) {
         setArticleUploadError(form, "cover", "กรุณาอัปโหลดรูป Cover ก่อนเผยแพร่หรือตั้งเวลาเผยแพร่");
-        form.querySelector("[data-article-cover-upload]")?.focus();
+        form.querySelector("[data-article-cover-upload-control]")?.scrollIntoView({ block: "center", behavior: "smooth" });
         return;
       }
       setArticleUploadError(form, "cover");
@@ -12401,6 +12437,7 @@
         const isBodyImage = event.target.matches("[data-article-body-image-upload]");
         const srcKey = isBodyImage ? "articleBodyImageSrc" : "articleCoverSrc";
         const nameKey = isBodyImage ? "articleBodyImageName" : "articleCoverName";
+        const displayNode = form.querySelector(isBodyImage ? "[data-article-body-image-display]" : "[data-article-cover-display]");
         const validatedImage = await validateArticleImageUpload(file, isBodyImage ? "body" : "cover");
         if (validatedImage.error) {
           event.target.value = "";
@@ -12412,6 +12449,10 @@
         }
         form.dataset[srcKey] = validatedImage.src;
         form.dataset[nameKey] = file.name;
+        if (displayNode) {
+          displayNode.textContent = file.name;
+          displayNode.classList.remove("placeholder");
+        }
         setArticleUploadError(form, isBodyImage ? "body" : "cover");
         updateArticleEditorPreview(form);
         return;
