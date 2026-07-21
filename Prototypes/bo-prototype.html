@@ -1426,6 +1426,18 @@
     .article-fo-body p {
       margin: 0 0 24px;
     }
+    .article-fo-body-image {
+      margin: 6px 0 26px;
+      border-top: 1px solid rgba(255,255,255,.08);
+      border-bottom: 1px solid rgba(255,255,255,.08);
+      background: #111;
+    }
+    .article-fo-body-image img {
+      width: 100%;
+      max-height: 360px;
+      object-fit: contain;
+      display: block;
+    }
     .article-fo-deck {
       color: rgba(255,255,255,.72);
       font-weight: 700;
@@ -10796,6 +10808,7 @@
               <div class="article-fo-body">
                 ${article.deck ? `<p class="article-fo-deck">${escapeArticleField(article.deck)}</p>` : ""}
                 ${firstParagraphs.map(paragraph => `<p>${escapeArticleField(paragraph)}</p>`).join("")}
+                ${article.bodyImageSrc ? `<div class="article-fo-body-image"><img src="${escapeArticleField(article.bodyImageSrc)}" alt="${escapeArticleField(article.bodyImageName || article.title || "Article content image")}" /></div>` : ""}
                 ${article.quote ? `<blockquote class="article-fo-quote">"${escapeArticleField(article.quote)}"</blockquote>` : ""}
                 ${remainingParagraphs.map(paragraph => `<p>${escapeArticleField(paragraph)}</p>`).join("")}
               </div>
@@ -10828,7 +10841,9 @@
         quote: form.querySelector('[name="quote"]')?.value.trim() || "",
         body: body.length ? body : ["กรอกย่อหน้าแรกของบทความที่ต้องการแสดงบนหน้าบ้าน", "เว้นบรรทัดว่างเพื่อแยกแต่ละย่อหน้าในหน้าอ่านบทความ"],
         coverImageName: form.dataset.articleCoverName || "",
-        coverImageSrc: form.dataset.articleCoverSrc || ""
+        coverImageSrc: form.dataset.articleCoverSrc || "",
+        bodyImageName: form.dataset.articleBodyImageName || "",
+        bodyImageSrc: form.dataset.articleBodyImageSrc || ""
       };
     }
 
@@ -11072,7 +11087,9 @@
         quote: "",
         body: [],
         coverImageName: "",
-        coverImageSrc: ""
+        coverImageSrc: "",
+        bodyImageName: "",
+        bodyImageSrc: ""
       };
       const publishParts = parseArticlePublishInputParts(draft.publishAt);
       const publishMin = getBangkokDateTimeInputParts();
@@ -11094,7 +11111,7 @@
         <div class="user-detail-page">
           <div class="article-detail-layout">
             <div class="detail-section">
-              <form class="article-editor-form" data-article-editor data-article-mode="${isEdit ? "edit" : "add"}" data-article-id="${draft.id}" data-article-cover-src="${escapeArticleField(draft.coverImageSrc || "")}" data-article-cover-name="${escapeArticleField(draft.coverImageName || "")}">
+              <form class="article-editor-form" data-article-editor data-article-mode="${isEdit ? "edit" : "add"}" data-article-id="${draft.id}" data-article-cover-src="${escapeArticleField(draft.coverImageSrc || "")}" data-article-cover-name="${escapeArticleField(draft.coverImageName || "")}" data-article-body-image-src="${escapeArticleField(draft.bodyImageSrc || "")}" data-article-body-image-name="${escapeArticleField(draft.bodyImageName || "")}">
                 <div class="article-editor-grid">
                   <label class="full">ชื่อบทความ
                     <input id="article-title-field" name="title" value="${escapeArticleField(draft.title)}" placeholder="เช่น คู่มือเลือกซื้อนาฬิกาวินเทจ" required />
@@ -11119,6 +11136,10 @@
                   </label>
                   <label class="full">เนื้อหาบทความ
                     <textarea name="body" placeholder="ใส่เนื้อหาและเว้นบรรทัดว่างเพื่อแยกย่อหน้า" required>${escapeArticleField(getArticleBodyText(draft))}</textarea>
+                  </label>
+                  <label class="full">รูปในเนื้อหาบทความ
+                    <input name="bodyImage" type="file" accept="image/*" data-article-body-image-upload />
+                    <span class="muted" data-article-body-image-name>${escapeArticleField(draft.bodyImageName || "ยังไม่ได้เลือกรูป")}</span>
                   </label>
                   <div class="article-publish-row">
                     <label>สถานะเผยแพร่
@@ -11204,7 +11225,9 @@
         quote: String(formData.get("quote") || "").trim(),
         body: String(formData.get("body") || "").split(/\n{2,}/).map(paragraph => paragraph.trim()).filter(Boolean),
         coverImageName: form.dataset.articleCoverName || existingArticle?.coverImageName || "",
-        coverImageSrc: form.dataset.articleCoverSrc || existingArticle?.coverImageSrc || ""
+        coverImageSrc: form.dataset.articleCoverSrc || existingArticle?.coverImageSrc || "",
+        bodyImageName: form.dataset.articleBodyImageName || existingArticle?.bodyImageName || "",
+        bodyImageSrc: form.dataset.articleBodyImageSrc || existingArticle?.bodyImageSrc || ""
       };
       const existingIndex = articleRows.findIndex(article => article.id === id);
       if (existingIndex >= 0) articleRows.splice(existingIndex, 1, nextArticle);
@@ -12296,17 +12319,19 @@
         if (event.target.matches("#user-action-suspend-until")) updateAccountStatusEmailPreview();
         return;
       }
-      if (event.target.matches("[data-article-cover-upload]")) {
+      if (event.target.matches("[data-article-cover-upload], [data-article-body-image-upload]")) {
         const form = event.target.closest("[data-article-editor]");
         const file = event.target.files?.[0];
         if (!form || !file) return;
-        if (form.dataset.articleCoverSrc?.startsWith("blob:")) {
-          URL.revokeObjectURL(form.dataset.articleCoverSrc);
+        const isBodyImage = event.target.matches("[data-article-body-image-upload]");
+        const srcKey = isBodyImage ? "articleBodyImageSrc" : "articleCoverSrc";
+        const nameKey = isBodyImage ? "articleBodyImageName" : "articleCoverName";
+        if (form.dataset[srcKey]?.startsWith("blob:")) {
+          URL.revokeObjectURL(form.dataset[srcKey]);
         }
-        const coverSrc = URL.createObjectURL(file);
-        form.dataset.articleCoverSrc = coverSrc;
-        form.dataset.articleCoverName = file.name;
-        const nameNode = form.querySelector("[data-article-cover-name]");
+        form.dataset[srcKey] = URL.createObjectURL(file);
+        form.dataset[nameKey] = file.name;
+        const nameNode = form.querySelector(isBodyImage ? "[data-article-body-image-name]" : "[data-article-cover-name]");
         if (nameNode) nameNode.textContent = file.name;
         updateArticleEditorPreview(form);
         return;
