@@ -1320,7 +1320,7 @@
       align-items: start;
     }
     .article-phone-preview {
-      max-width: 390px;
+      width: min(100%, 460px);
       margin: 0 auto;
       border: 10px solid #111;
       border-radius: 38px;
@@ -1329,10 +1329,24 @@
       box-shadow: 0 18px 36px rgba(15, 23, 42, .18);
     }
     .article-fo-preview {
-      min-height: 680px;
-      padding: 24px 22px 28px;
+      height: 956px;
+      display: flex;
+      flex-direction: column;
       color: #f8fafc;
       background: #111;
+    }
+    .article-fo-scroll {
+      flex: 1;
+      min-height: 0;
+      overflow-y: auto;
+      padding: 24px 22px 24px;
+    }
+    .article-fo-scroll::-webkit-scrollbar {
+      width: 6px;
+    }
+    .article-fo-scroll::-webkit-scrollbar-thumb {
+      background: rgba(255,255,255,.28);
+      border-radius: 999px;
     }
     .article-fo-top {
       display: flex;
@@ -1385,8 +1399,9 @@
     .article-fo-cover img {
       width: 100%;
       height: 300px;
-      object-fit: cover;
+      object-fit: contain;
       display: block;
+      background: #111;
     }
     .article-cover-mark {
       width: 190px;
@@ -1409,6 +1424,10 @@
     .article-fo-body p {
       margin: 0 0 24px;
     }
+    .article-fo-deck {
+      color: rgba(255,255,255,.72);
+      font-weight: 700;
+    }
     .article-fo-quote {
       margin: 30px 24px;
       color: #ff4b4b;
@@ -1421,7 +1440,10 @@
       justify-content: space-between;
       align-items: center;
       gap: 18px;
-      margin-top: 34px;
+      flex-shrink: 0;
+      padding: 16px 22px 18px;
+      border-top: 1px solid rgba(255,255,255,.14);
+      background: #111;
       font-size: 12px;
       font-weight: 700;
       text-transform: uppercase;
@@ -10756,22 +10778,25 @@
       return `
         <div class="article-phone-preview" aria-label="FO article preview">
           <div class="article-fo-preview">
-            <div class="article-fo-top">
-              <span class="article-fo-icon">‹</span>
-              <span>Board</span>
-              <span class="article-fo-icon">...</span>
-            </div>
-            <h3 class="article-fo-title">${article.title}</h3>
-            <div class="article-fo-meta">
-              <div><span>Author</span>${article.author || "By Tuk Daeng"}</div>
-              <div><span>Date</span>${article.publishAt === "-" ? "Draft" : article.publishAt.replace(/\s\d{2}:\d{2}$/, "")}</div>
-              <div>♡ 12</div>
-            </div>
-            <div class="article-fo-cover">${article.coverImageSrc ? `<img src="${escapeArticleField(article.coverImageSrc)}" alt="${escapeArticleField(article.coverImageName || article.title || "Article cover")}" />` : `<div class="article-cover-mark">TD</div>`}</div>
-            <div class="article-fo-body">
-              ${firstParagraphs.map(paragraph => `<p>${paragraph}</p>`).join("")}
-              ${article.quote ? `<blockquote class="article-fo-quote">"${article.quote}"</blockquote>` : ""}
-              ${remainingParagraphs.map(paragraph => `<p>${paragraph}</p>`).join("")}
+            <div class="article-fo-scroll">
+              <div class="article-fo-top">
+                <span class="article-fo-icon">‹</span>
+                <span>Board</span>
+                <span class="article-fo-icon">...</span>
+              </div>
+              <h3 class="article-fo-title">${escapeArticleField(article.title)}</h3>
+              <div class="article-fo-meta">
+                <div><span>Author</span>${escapeArticleField(article.author || "By Tuk Daeng")}</div>
+                <div><span>Date</span>${article.publishAt === "-" ? "Draft" : article.publishAt.replace(/\s\d{2}:\d{2}$/, "")}</div>
+                <div>♡ 12</div>
+              </div>
+              <div class="article-fo-cover">${article.coverImageSrc ? `<img src="${escapeArticleField(article.coverImageSrc)}" alt="${escapeArticleField(article.coverImageName || article.title || "Article cover")}" />` : `<div class="article-cover-mark">TD</div>`}</div>
+              <div class="article-fo-body">
+                ${article.deck ? `<p class="article-fo-deck">${escapeArticleField(article.deck)}</p>` : ""}
+                ${firstParagraphs.map(paragraph => `<p>${escapeArticleField(paragraph)}</p>`).join("")}
+                ${article.quote ? `<blockquote class="article-fo-quote">"${escapeArticleField(article.quote)}"</blockquote>` : ""}
+                ${remainingParagraphs.map(paragraph => `<p>${escapeArticleField(paragraph)}</p>`).join("")}
+              </div>
             </div>
             <div class="article-fo-share">
               <span>Share this feature</span>
@@ -10783,6 +10808,32 @@
           </div>
         </div>
       `;
+    }
+
+    function getArticleEditorPreviewArticle(form) {
+      const title = form.querySelector('[name="title"]')?.value.trim() || "ชื่อบทความ";
+      const author = form.querySelector('[name="author"]')?.value.trim() || "ทีม TukDaeng";
+      const status = form.querySelector('[name="status"]')?.value || "Draft";
+      const publishDate = form.querySelector('[name="publishDate"]')?.value || "";
+      const publishTime = form.querySelector('[name="publishTime"]')?.value || "";
+      const bodyText = form.querySelector('[name="body"]')?.value || "";
+      const body = bodyText.split(/\n{2,}/).map(paragraph => paragraph.trim()).filter(Boolean);
+      return {
+        title,
+        author,
+        publishAt: ["Draft", "Archived"].includes(status) ? "-" : formatArticlePublishAt(publishDate, publishTime),
+        deck: form.querySelector('[name="deck"]')?.value.trim() || "",
+        quote: form.querySelector('[name="quote"]')?.value.trim() || "",
+        body: body.length ? body : ["กรอกย่อหน้าแรกของบทความที่ต้องการแสดงบนหน้าบ้าน", "เว้นบรรทัดว่างเพื่อแยกแต่ละย่อหน้าในหน้าอ่านบทความ"],
+        coverImageName: form.dataset.articleCoverName || "",
+        coverImageSrc: form.dataset.articleCoverSrc || ""
+      };
+    }
+
+    function updateArticleEditorPreview(form) {
+      const previewPanel = document.querySelector("[data-article-preview-panel]");
+      if (!form || !previewPanel) return;
+      previewPanel.innerHTML = renderArticleFoPreview(getArticleEditorPreviewArticle(form));
     }
 
     function getArticleSummaryStats() {
@@ -11049,7 +11100,7 @@
                 </div>
               </form>
             </div>
-            <div>
+            <div data-article-preview-panel>
               ${renderArticleFoPreview({
                 ...draft,
                 title: draft.title || "ชื่อบทความ",
@@ -11060,7 +11111,9 @@
         </div>
       `;
       document.querySelector("#article-title-field")?.focus();
-      syncArticlePublishDateTimeLimits(document.querySelector("[data-article-editor]"));
+      const articleEditorForm = document.querySelector("[data-article-editor]");
+      syncArticlePublishDateTimeLimits(articleEditorForm);
+      updateArticleEditorPreview(articleEditorForm);
       updateActiveNav();
       scrollMainToTop();
     }
@@ -12153,7 +12206,13 @@
         if (event.target.matches("[data-article-publish-status]")) {
           event.target.closest("[data-article-editor]").dataset.articleStatusChanged = "true";
         }
-        syncArticlePublishDateTimeLimits(event.target.closest("[data-article-editor]"));
+        const form = event.target.closest("[data-article-editor]");
+        syncArticlePublishDateTimeLimits(form);
+        updateArticleEditorPreview(form);
+        return;
+      }
+      if (event.target.matches('[data-article-editor] [name="title"], [data-article-editor] [name="author"], [data-article-editor] [name="deck"], [data-article-editor] [name="quote"], [data-article-editor] [name="body"]')) {
+        updateArticleEditorPreview(event.target.closest("[data-article-editor]"));
         return;
       }
       if (event.target.matches("#user-search")) {
@@ -12201,15 +12260,20 @@
         form.dataset.articleCoverName = file.name;
         const nameNode = form.querySelector("[data-article-cover-name]");
         if (nameNode) nameNode.textContent = file.name;
-        const coverNode = document.querySelector(".article-fo-cover");
-        if (coverNode) coverNode.innerHTML = `<img src="${coverSrc}" alt="${escapeArticleField(file.name)}" />`;
+        updateArticleEditorPreview(form);
         return;
       }
       if (event.target.matches("[data-article-publish-status], [data-article-publish-date], [data-article-publish-time]")) {
         if (event.target.matches("[data-article-publish-status]")) {
           event.target.closest("[data-article-editor]").dataset.articleStatusChanged = "true";
         }
-        syncArticlePublishDateTimeLimits(event.target.closest("[data-article-editor]"));
+        const form = event.target.closest("[data-article-editor]");
+        syncArticlePublishDateTimeLimits(form);
+        updateArticleEditorPreview(form);
+        return;
+      }
+      if (event.target.matches('[data-article-editor] [name="category"]')) {
+        updateArticleEditorPreview(event.target.closest("[data-article-editor]"));
         return;
       }
       if (event.target.matches("#user-status-filter, #user-auth-filter, #user-sort")) {
