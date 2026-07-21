@@ -9831,7 +9831,7 @@
             <button class="btn filter-reset user-advanced-filter" type="button" data-article-reset title="รีเซ็ตค่าทั้งหมด" aria-label="รีเซ็ตค่าทั้งหมด">${iconSvg.refresh}<span>รีเซ็ตค่าทั้งหมด</span></button>
           </div>
         `;
-        document.querySelector("#summary-grid").innerHTML = getArticleSummaryStats().map(renderArticleSummaryCard).join("");
+        document.querySelector("#summary-grid").innerHTML = "";
         document.querySelector("#cards").innerHTML = "";
         document.querySelector("#detail").innerHTML = "";
         renderArticleListRows();
@@ -10331,7 +10331,7 @@
       articleListPage = Math.min(articleListPage, pageCount);
       const start = (articleListPage - 1) * articleListPageSize;
       const pageRows = sorted.slice(start, start + articleListPageSize);
-      document.querySelector("#summary-grid").innerHTML = getArticleSummaryStats().map(renderArticleSummaryCard).join("");
+      document.querySelector("#summary-grid").innerHTML = "";
       document.querySelector("#panel-subtitle").textContent = "";
       document.querySelector("#table").innerHTML = `
         <div class="asset-table">
