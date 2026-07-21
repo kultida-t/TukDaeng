@@ -1307,6 +1307,189 @@
       background: #fff;
       cursor: default;
     }
+    .article-table .asset-row {
+      grid-template-columns: minmax(104px, .46fr) minmax(250px, 1.2fr) minmax(120px, .54fr) minmax(140px, .58fr) minmax(140px, .58fr) minmax(160px, .68fr) minmax(56px, .24fr);
+    }
+    body.article-list-mode #primary-action {
+      display: inline-flex;
+    }
+    .article-detail-layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1.05fr) minmax(320px, .95fr);
+      gap: 20px;
+      align-items: start;
+    }
+    .article-phone-preview {
+      max-width: 390px;
+      margin: 0 auto;
+      border: 10px solid #111;
+      border-radius: 38px;
+      overflow: hidden;
+      background: #111;
+      box-shadow: 0 18px 36px rgba(15, 23, 42, .18);
+    }
+    .article-fo-preview {
+      min-height: 680px;
+      padding: 24px 22px 28px;
+      color: #f8fafc;
+      background: #111;
+    }
+    .article-fo-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 28px;
+      font-weight: 700;
+    }
+    .article-fo-icon {
+      width: 34px;
+      height: 34px;
+      display: grid;
+      place-items: center;
+      border-radius: 999px;
+      background: #2b2b2b;
+      color: #fff;
+    }
+    .article-fo-title {
+      margin: 0 0 24px;
+      font-size: 28px;
+      line-height: 1.32;
+      font-weight: 700;
+      letter-spacing: 0;
+    }
+    .article-fo-meta {
+      display: grid;
+      grid-template-columns: 1fr 1fr auto;
+      gap: 18px;
+      align-items: end;
+      padding-bottom: 24px;
+      border-bottom: 1px solid rgba(255,255,255,.14);
+      color: #fff;
+      font-size: 13px;
+    }
+    .article-fo-meta span {
+      display: block;
+      margin-bottom: 7px;
+      color: rgba(255,255,255,.64);
+      font-size: 11px;
+      font-weight: 700;
+    }
+    .article-fo-cover {
+      min-height: 300px;
+      margin: 0 -22px 26px;
+      display: grid;
+      place-items: center;
+      background: radial-gradient(circle at center, #3c3c3c 0, #171717 46%, #101010 100%);
+      border-bottom: 1px solid rgba(255,255,255,.08);
+    }
+    .article-cover-mark {
+      width: 190px;
+      aspect-ratio: 1;
+      display: grid;
+      place-items: center;
+      border-radius: 999px;
+      border: 18px solid #cfd3d8;
+      color: #f9fafb;
+      font-family: "Bebas Neue", sans-serif;
+      font-size: 64px;
+      background: repeating-radial-gradient(circle, #5d6167 0 6px, #2c2f33 7px 13px);
+      box-shadow: inset 0 0 24px rgba(0,0,0,.55), 0 12px 30px rgba(0,0,0,.45);
+    }
+    .article-fo-body {
+      color: rgba(255,255,255,.9);
+      font-size: 16px;
+      line-height: 1.55;
+    }
+    .article-fo-body p {
+      margin: 0 0 24px;
+    }
+    .article-fo-quote {
+      margin: 30px 24px;
+      color: #ff4b4b;
+      font-size: 27px;
+      line-height: 1.28;
+      text-align: center;
+    }
+    .article-fo-share {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 18px;
+      margin-top: 34px;
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+    .article-fo-actions {
+      display: flex;
+      gap: 12px;
+    }
+    .article-fo-action {
+      width: 52px;
+      height: 52px;
+      display: grid;
+      place-items: center;
+      border-radius: 15px;
+      background: #0062a3;
+    }
+    .article-fo-action svg {
+      width: 22px;
+      height: 22px;
+    }
+    .article-fo-action.favorite {
+      background: #d20f13;
+    }
+    .article-editor-form {
+      display: grid;
+      gap: 16px;
+    }
+    .article-editor-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+    }
+    .article-editor-form label {
+      display: grid;
+      gap: 7px;
+      color: #36506f;
+      font-size: 13px;
+      font-weight: 700;
+    }
+    .article-editor-form input,
+    .article-editor-form select,
+    .article-editor-form textarea {
+      width: 100%;
+      border: 1px solid #cbd8ea;
+      border-radius: 8px;
+      padding: 11px 12px;
+      color: #061426;
+      background: #fff;
+    }
+    .article-editor-form textarea {
+      min-height: 130px;
+      resize: vertical;
+      line-height: 1.5;
+    }
+    .article-editor-form .full {
+      grid-column: 1 / -1;
+    }
+    .article-danger-note {
+      border-color: #fed7d7;
+      background: #fff7f7;
+      color: #7f1d1d;
+    }
+    @media (max-width: 980px) {
+      .article-detail-layout,
+      .article-editor-grid {
+        grid-template-columns: 1fr;
+      }
+      .article-editor-form .full {
+        grid-column: 1;
+      }
+      .article-phone-preview {
+        max-width: 100%;
+      }
+    }
     .asset-row.head {
       min-height: 44px;
       background: #f1f5fb;
@@ -9780,6 +9963,7 @@
       document.body.classList.toggle("dashboard-mode", id === "dashboard");
       document.body.classList.toggle("user-management-mode", id === "users" || isReportedAssets);
       document.body.classList.toggle("asset-list-mode", isAssetList || isArticleList);
+      document.body.classList.toggle("article-list-mode", isArticleList);
       document.body.classList.toggle("user-list-mode", id === "users" || isReportedAssets);
       document.body.classList.remove("asset-detail-mode");
       if (isReportedAssets) document.body.classList.remove("user-detail-mode");
@@ -9811,6 +9995,7 @@
         document.querySelector("#panel-subtitle").textContent = "";
         document.querySelector("#primary-action").textContent = data.action;
         document.querySelector("#user-panel-filter-actions").innerHTML = `
+          <button class="btn" type="button" data-article-add>${iconSvg.content}<span>Add article</span></button>
           <button class="btn user-filter-toggle" type="button" data-article-filter-toggle aria-expanded="${articleFilterOpen}">${iconSvg.filter}<span>${articleFilterOpen ? "ปิดตัวกรอง" : "เปิดตัวกรอง"}</span></button>
         `;
         document.querySelector(".filters").innerHTML = `
@@ -10272,8 +10457,7 @@
       `;
     }
 
-    function getArticleListRows() {
-      return [
+    const articleRows = [
         {
           id: "ART-044",
           title: "Vintage Watch Buying Guide",
@@ -10285,7 +10469,14 @@
           readTime: "6 min",
           tags: ["Board", "Buying Guide"],
           priority: "ปกติ",
-          detail: "Preview as FO และตรวจ cover image ก่อน publish"
+          detail: "Preview as FO และตรวจ cover image ก่อน publish",
+          deck: "A practical editorial guide for evaluating vintage watches before buying.",
+          quote: "Buy the story only after the watch proves it.",
+          body: [
+            "Vintage watch buying starts with patience. Collectors should compare dial condition, case shape, movement photos, and service history before looking at price alone.",
+            "A correct reference is only the beginning. The stronger purchase comes from a consistent watch: matching patina, documented ownership, clear seller identity, and photos that reveal rather than hide flaws.",
+            "Before publishing, the Board article should show a clear cover image, readable paragraphs, and a practical checklist that helps FO users make safer purchase decisions."
+          ]
         },
         {
           id: "ART-043",
@@ -10298,7 +10489,14 @@
           readTime: "8 min",
           tags: ["Board", "Education"],
           priority: "ปกติ",
-          detail: "เผยแพร่แล้วและแสดงบน Board"
+          detail: "เผยแพร่แล้วและแสดงบน Board",
+          deck: "A simple provenance checklist for Board readers.",
+          quote: "Provenance turns a claim into evidence.",
+          body: [
+            "Provenance helps buyers understand where a watch came from and whether the seller's story is supported by documents, service records, and consistent ownership signals.",
+            "A strong article should explain what evidence matters, what can be faked, and when a buyer should pause before making an offer.",
+            "For Board publishing, BO should keep the article readable on mobile and verify that metadata matches the public card."
+          ]
         },
         {
           id: "ART-042",
@@ -10311,7 +10509,13 @@
           readTime: "5 min",
           tags: ["Market", "Draft"],
           priority: "กลาง",
-          detail: "ยังไม่แสดงบน FO / รอรูป cover"
+          detail: "ยังไม่แสดงบน FO / รอรูป cover",
+          deck: "Monthly market notes for active watch categories.",
+          quote: "Price movement is useful only when context is visible.",
+          body: [
+            "The July market update should summarize demand signals, brand movement, and notable buyer behavior across the TukDaeng marketplace.",
+            "This draft still needs cover approval and a final editorial check before it can appear on FO Board."
+          ]
         },
         {
           id: "ART-041",
@@ -10324,7 +10528,13 @@
           readTime: "4 min",
           tags: ["Events", "Auction"],
           priority: "กลาง",
-          detail: "ตรวจ destination ของ related banner ก่อน publish"
+          detail: "ตรวจ destination ของ related banner ก่อน publish",
+          deck: "Highlights from upcoming watch auction activity.",
+          quote: "The best auction stories explain the moment, not only the result.",
+          body: [
+            "Auction Week Highlights should help readers understand key lots, brand momentum, and what makes each event relevant to local collectors.",
+            "Before publishing, confirm that related banners link to the correct Board destination and that scheduled time matches the campaign calendar."
+          ]
         },
         {
           id: "ART-040",
@@ -10337,7 +10547,13 @@
           readTime: "7 min",
           tags: ["Style", "Accessories"],
           priority: "ปกติ",
-          detail: "เผยแพร่แล้วและมี related articles ครบ"
+          detail: "เผยแพร่แล้วและมี related articles ครบ",
+          deck: "A Board guide to matching straps with watch style and case material.",
+          quote: "A strap should support the watch, not compete with it.",
+          body: [
+            "Strap pairing is one of the easiest ways to change a watch's character. The article should explain material, color, taper, buckle, and occasion in practical language.",
+            "Published state confirms the content already appears on Board and has complete related article references."
+          ]
         },
         {
           id: "ART-039",
@@ -10350,9 +10566,18 @@
           readTime: "9 min",
           tags: ["Journal", "Archived"],
           priority: "ปกติ",
-          detail: "นำออกจาก Board/Search/Category แล้ว"
+          detail: "นำออกจาก Board/Search/Category แล้ว",
+          deck: "A collector journal interview for archived Board content.",
+          quote: "Collectors remember the hunt as much as the watch.",
+          body: [
+            "This archived interview is retained for BO audit and editorial reference but no longer appears in public Board listing.",
+            "Restoring it should require checking whether the interview remains accurate and whether all referenced people and assets can still be shown."
+          ]
         }
       ];
+
+    function getArticleListRows() {
+      return articleRows;
     }
 
     function getArticleCategories() {
@@ -10373,6 +10598,71 @@
     function articleStatusPill(status) {
       const map = { Published: "green", Scheduled: "blue", Draft: "amber", Archived: "gray", Reviewing: "red" };
       return `<span class="pill ${map[status] || "blue"}">${status}</span>`;
+    }
+
+    function getArticleById(articleId) {
+      return getArticleListRows().find(article => article.id === articleId);
+    }
+
+    function getArticleBodyText(article) {
+      return (article?.body || []).join("\n\n");
+    }
+
+    function getArticleBodyParagraphs(article) {
+      const body = Array.isArray(article?.body) ? article.body : String(article?.body || "").split(/\n{2,}/);
+      return body.map(paragraph => paragraph.trim()).filter(Boolean);
+    }
+
+    function escapeArticleField(value = "") {
+      return String(value)
+        .replace(/&/g, "&amp;")
+        .replace(/"/g, "&quot;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;");
+    }
+
+    function getNextArticleId() {
+      const maxId = articleRows.reduce((max, article) => {
+        const idNumber = parseInt(String(article.id || "").replace(/\D/g, ""), 10) || 0;
+        return Math.max(max, idNumber);
+      }, 0);
+      return `ART-${String(maxId + 1).padStart(3, "0")}`;
+    }
+
+    function renderArticleFoPreview(article) {
+      const paragraphs = getArticleBodyParagraphs(article);
+      const firstParagraphs = paragraphs.slice(0, 2);
+      const remainingParagraphs = paragraphs.slice(2);
+      return `
+        <div class="article-phone-preview" aria-label="FO article preview">
+          <div class="article-fo-preview">
+            <div class="article-fo-top">
+              <span class="article-fo-icon">‹</span>
+              <span>Board</span>
+              <span class="article-fo-icon">...</span>
+            </div>
+            <h3 class="article-fo-title">${article.title}</h3>
+            <div class="article-fo-meta">
+              <div><span>Author</span>${article.author || "By Tuk Daeng"}</div>
+              <div><span>Date</span>${article.publishAt === "-" ? "Draft" : article.publishAt.replace(/\s\d{2}:\d{2}$/, "")}</div>
+              <div>♡ 12</div>
+            </div>
+            <div class="article-fo-cover"><div class="article-cover-mark">TD</div></div>
+            <div class="article-fo-body">
+              ${firstParagraphs.map(paragraph => `<p>${paragraph}</p>`).join("")}
+              ${article.quote ? `<blockquote class="article-fo-quote">"${article.quote}"</blockquote>` : ""}
+              ${remainingParagraphs.map(paragraph => `<p>${paragraph}</p>`).join("")}
+            </div>
+            <div class="article-fo-share">
+              <span>Share this feature</span>
+              <span class="article-fo-actions">
+                <span class="article-fo-action"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" aria-hidden="true"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="m8.7 10.7 6.6-4.4M8.7 13.3l6.6 4.4"/></svg></span>
+                <span class="article-fo-action favorite"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" aria-hidden="true"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 1 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8Z"/></svg></span>
+              </span>
+            </div>
+          </div>
+        </div>
+      `;
     }
 
     function getArticleSummaryStats() {
@@ -10430,12 +10720,259 @@
         <details class="row-menu">
           <summary title="Article actions">...</summary>
           <div class="row-menu-list">
+            <button type="button" data-article-open="${article.id}">View detail</button>
             <button type="button">Preview as FO</button>
-            <button type="button">Edit article</button>
-            <button type="button">${article.status === "Archived" ? "Restore" : "Archive"}</button>
+            <button type="button" data-article-edit="${article.id}">Edit article</button>
+            <button type="button" data-article-delete="${article.id}">${article.status === "Archived" ? "Delete draft" : "Archive article"}</button>
           </div>
         </details>
       `;
+    }
+
+    function articleToDetailRow(article) {
+      return {
+        id: article.id,
+        name: article.title,
+        owner: article.author,
+        type: article.category,
+        priority: article.priority,
+        status: article.status,
+        detail: article.detail,
+        tags: article.tags,
+        action: `Publish: ${article.publishAt} / Updated: ${article.updatedAt}`
+      };
+    }
+
+    function renderArticleDetailPage(article) {
+      if (!article) return;
+      const detailRow = articleToDetailRow(article);
+      activeModule = "content";
+      activeSub = "Articles";
+      activeRow = detailRow;
+      document.body.classList.remove("asset-list-mode", "article-list-mode", "user-list-mode", "user-detail-mode");
+      document.body.classList.add("asset-detail-mode");
+      document.querySelector("#crumb").textContent = `การดำเนินงาน / Content Management / Articles / ${article.id}`;
+      document.querySelector("#page-title").textContent = "Article Detail";
+      document.querySelector("#page-meta").textContent = "";
+      document.querySelector("#panel-title").textContent = article.title;
+      document.querySelector("#panel-subtitle").textContent = `${article.id} · ${article.category} · ${article.author}`;
+      document.querySelector("#user-panel-filter-actions").innerHTML = "";
+      document.querySelector(".filters").innerHTML = "";
+      document.querySelector("#summary-grid").innerHTML = "";
+      document.querySelector("#cards").innerHTML = "";
+      document.querySelector("#detail").innerHTML = "";
+      document.querySelector("#table").innerHTML = `
+        <div class="user-detail-page">
+          <div class="user-detail-head">
+            <div class="user-detail-title">
+              <div>
+                <h2>${article.title}</h2>
+                <div class="chips">${articleStatusPill(article.status)}<span class="pill blue">${article.category}</span></div>
+              </div>
+            </div>
+            <button class="btn user-back-btn" type="button" data-back-article-list aria-label="กลับไป Articles" title="กลับไป Articles">
+              <svg class="mobile-back-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>
+              <span class="btn-label">กลับไป Articles</span>
+            </button>
+          </div>
+
+          <div class="article-detail-layout">
+            <div>
+              <div class="detail-section">
+                <h4>Article Summary</h4>
+                <div class="detail-grid two">
+                  ${renderAssetDetailTiles([
+                    ["Article ID", article.id],
+                    ["Title", article.title],
+                    ["Category", article.category],
+                    ["Author", article.author],
+                    ["Publish Status", article.status],
+                    ["Publish Date", article.publishAt],
+                    ["Updated At", article.updatedAt],
+                    ["Read Time", article.readTime]
+                  ])}
+                </div>
+              </div>
+
+              <div class="detail-section">
+                <h4>Content For FO</h4>
+                <div class="detail-grid">
+                  ${renderAssetDetailTiles([
+                    ["Intro / Deck", article.deck || "-"],
+                    ["Pull Quote", article.quote || "-"],
+                    ["Body", getArticleBodyParagraphs(article).join("<br><br>") || "-"],
+                    ["Tags", article.tags.join(", ")]
+                  ])}
+                </div>
+              </div>
+
+              <div class="detail-section">
+                <h4>Board Readiness</h4>
+                <div class="module-note"><strong>Admin action:</strong> ${detailRow.action}</div>
+                <div class="detail-grid">
+                  ${renderAssetDetailTiles([
+                    ["Review note", article.detail]
+                  ])}
+                </div>
+              </div>
+
+              <div class="detail-section user-detail-action-section">
+                <h4>Article Actions</h4>
+                <div class="user-detail-actions">
+                  <button class="user-detail-action-btn" type="button" data-article-edit="${article.id}">Edit article</button>
+                  <button class="user-detail-action-btn" type="button" data-article-duplicate="${article.id}">Duplicate draft</button>
+                  <button class="user-detail-action-btn danger" type="button" data-article-delete="${article.id}">${article.status === "Archived" ? "Delete draft" : "Archive article"}</button>
+                </div>
+              </div>
+            </div>
+            <div>
+              <div class="detail-section">
+                <h4>FO Mobile Preview</h4>
+                ${renderArticleFoPreview(article)}
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+      updateActiveNav();
+      scrollMainToTop();
+    }
+
+    function renderArticleEditorPage(article = null, mode = "add") {
+      const isEdit = mode === "edit" && article;
+      const draft = article || {
+        id: getNextArticleId(),
+        title: "",
+        category: "Buying Guide",
+        author: "By Tuk Daeng",
+        status: "Draft",
+        publishAt: "-",
+        updatedAt: formatBangkokTimestamp().replace(/\sGMT\+7$/i, ""),
+        readTime: "5 min",
+        tags: ["Board"],
+        priority: "ปกติ",
+        detail: "Draft article created from BO",
+        deck: "",
+        quote: "",
+        body: []
+      };
+      activeModule = "content";
+      activeSub = "Articles";
+      document.body.classList.remove("asset-list-mode", "article-list-mode", "user-list-mode", "user-detail-mode");
+      document.body.classList.add("asset-detail-mode");
+      document.querySelector("#crumb").textContent = `การดำเนินงาน / Content Management / Articles / ${isEdit ? draft.id : "Add Article"}`;
+      document.querySelector("#page-title").textContent = isEdit ? "Edit Article" : "Add Article";
+      document.querySelector("#page-meta").textContent = "";
+      document.querySelector("#panel-title").textContent = isEdit ? draft.title : "Add Article";
+      document.querySelector("#panel-subtitle").textContent = "Create content for FO Board article view";
+      document.querySelector("#user-panel-filter-actions").innerHTML = "";
+      document.querySelector(".filters").innerHTML = "";
+      document.querySelector("#summary-grid").innerHTML = "";
+      document.querySelector("#cards").innerHTML = "";
+      document.querySelector("#detail").innerHTML = "";
+      document.querySelector("#table").innerHTML = `
+        <div class="user-detail-page">
+          <div class="user-detail-head">
+            <div class="user-detail-title">
+              <div>
+                <h2>${isEdit ? "Edit Article" : "Add Article"}</h2>
+                <div class="chips"><span class="pill amber">${isEdit ? draft.status : "Draft"}</span><span class="pill blue">Board</span></div>
+              </div>
+            </div>
+            <button class="btn user-back-btn" type="button" data-back-article-list aria-label="กลับไป Articles" title="กลับไป Articles">
+              <svg class="mobile-back-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>
+              <span class="btn-label">กลับไป Articles</span>
+            </button>
+          </div>
+
+          <div class="article-detail-layout">
+            <div class="detail-section">
+              <h4>Article Form</h4>
+              <form class="article-editor-form" data-article-editor data-article-mode="${isEdit ? "edit" : "add"}" data-article-id="${draft.id}">
+                <div class="article-editor-grid">
+                  <label class="full">Title
+                    <input id="article-title-field" name="title" value="${escapeArticleField(draft.title)}" placeholder="Article title shown on FO" required />
+                  </label>
+                  <label>Category
+                    <input name="category" value="${escapeArticleField(draft.category)}" placeholder="Buying Guide" required />
+                  </label>
+                  <label>Author
+                    <input name="author" value="${escapeArticleField(draft.author)}" placeholder="By Tuk Daeng" required />
+                  </label>
+                  <label>Publish Status
+                    <select name="status">
+                      ${["Draft", "Scheduled", "Published", "Archived"].map(status => `<option value="${status}" ${draft.status === status ? "selected" : ""}>${status}</option>`).join("")}
+                    </select>
+                  </label>
+                  <label>Publish Date / Time
+                    <input name="publishAt" value="${escapeArticleField(draft.publishAt)}" placeholder="10 Jul 2026 19:00 or -" />
+                  </label>
+                  <label>Read Time
+                    <input name="readTime" value="${escapeArticleField(draft.readTime)}" placeholder="6 min" />
+                  </label>
+                  <label>Tags
+                    <input name="tags" value="${escapeArticleField((draft.tags || []).join(", "))}" placeholder="Board, Buying Guide" />
+                  </label>
+                  <label class="full">Intro / Deck
+                    <textarea name="deck" placeholder="Short summary for editorial review">${escapeArticleField(draft.deck || "")}</textarea>
+                  </label>
+                  <label class="full">Pull Quote
+                    <input name="quote" value="${escapeArticleField(draft.quote || "")}" placeholder="Quote shown between paragraphs" />
+                  </label>
+                  <label class="full">Body
+                    <textarea name="body" placeholder="Separate paragraphs with blank lines" required>${escapeArticleField(getArticleBodyText(draft))}</textarea>
+                  </label>
+                  <label class="full">BO Review Note
+                    <textarea name="detail" placeholder="Internal note for admin readiness">${escapeArticleField(draft.detail || "")}</textarea>
+                  </label>
+                </div>
+                <div class="user-detail-actions">
+                  <button class="user-detail-action-btn" type="submit">${isEdit ? "Save changes" : "Create article"}</button>
+                  <button class="user-detail-action-btn" type="button" data-back-article-list>Cancel</button>
+                </div>
+              </form>
+            </div>
+            <div class="detail-section">
+              <h4>FO Structure Checklist</h4>
+              <div class="module-note"><strong>Required for FO:</strong> title, author, public date, cover, body paragraphs, optional quote, share/favorite entry points, and publish status.</div>
+              ${renderArticleFoPreview({
+                ...draft,
+                title: draft.title || "Article Title",
+                body: getArticleBodyParagraphs(draft).length ? getArticleBodyParagraphs(draft) : ["Write the first paragraph of the article here.", "Use a blank line to separate paragraphs for the FO reading view."]
+              })}
+            </div>
+          </div>
+        </div>
+      `;
+      document.querySelector("#article-title-field")?.focus();
+      updateActiveNav();
+      scrollMainToTop();
+    }
+
+    function saveArticleFromForm(form) {
+      const formData = new FormData(form);
+      const id = form.dataset.articleId || getNextArticleId();
+      const now = formatBangkokTimestamp().replace(/\sGMT\+7$/i, "");
+      const nextArticle = {
+        id,
+        title: String(formData.get("title") || "").trim() || "Untitled Article",
+        category: String(formData.get("category") || "").trim() || "Board",
+        author: String(formData.get("author") || "").trim() || "By Tuk Daeng",
+        status: String(formData.get("status") || "Draft"),
+        publishAt: String(formData.get("publishAt") || "").trim() || "-",
+        updatedAt: now,
+        readTime: String(formData.get("readTime") || "").trim() || "5 min",
+        tags: String(formData.get("tags") || "Board").split(",").map(tag => tag.trim()).filter(Boolean),
+        priority: "ปกติ",
+        detail: String(formData.get("detail") || "").trim() || "Ready for editorial review",
+        deck: String(formData.get("deck") || "").trim(),
+        quote: String(formData.get("quote") || "").trim(),
+        body: String(formData.get("body") || "").split(/\n{2,}/).map(paragraph => paragraph.trim()).filter(Boolean)
+      };
+      const existingIndex = articleRows.findIndex(article => article.id === id);
+      if (existingIndex >= 0) articleRows.splice(existingIndex, 1, nextArticle);
+      else articleRows.unshift(nextArticle);
+      renderArticleDetailPage(nextArticle);
     }
 
     function renderArticleListRows() {
@@ -10458,14 +10995,13 @@
       document.querySelector("#summary-grid").innerHTML = "";
       document.querySelector("#panel-subtitle").textContent = "";
       document.querySelector("#table").innerHTML = `
-        <div class="asset-table">
-          <div class="asset-row head"><div>Article ID</div><div>Article</div><div>Category</div><div>Author</div><div>Publish Status</div><div>Action</div></div>
+        <div class="asset-table article-table">
+          <div class="asset-row head"><div>Article ID</div><div>Article</div><div>Category</div><div>Author</div><div>Publish Status</div><div>Publish Date</div><div>Action</div></div>
           ${pageRows.map(article => `
             <div class="asset-row" data-article-card="${article.id}">
               <div data-label="Article ID"><div class="main-text">${article.id}</div></div>
               <div class="asset-cell-primary" data-label="Article">
                 <div class="main-text">${article.title}</div>
-                <div class="muted">${article.detail}</div>
               </div>
               <div class="asset-card-tags">
                 <span class="user-card-tag asset-tag">${article.category}</span>
@@ -10480,8 +11016,8 @@
               <div data-label="Author"><div class="main-text">${article.author}</div></div>
               <div data-label="Publish Status">
                 ${articleStatusPill(article.status)}
-                <div class="muted">${article.publishAt}</div>
               </div>
+              <div data-label="Publish Date"><div class="main-text">${article.publishAt}</div></div>
               <div class="user-row-actions">
                 ${renderArticleRowActionMenu(article)}
               </div>
@@ -10804,6 +11340,66 @@
         const row = moduleData[activeModule].rows.find(entry => entry.id === id);
         activeRow = row;
         renderDetail(row);
+      }
+      const articleOpenButton = event.target.closest("[data-article-open]");
+      if (articleOpenButton) {
+        const article = getArticleById(articleOpenButton.dataset.articleOpen);
+        if (!article) return;
+        renderArticleDetailPage(article);
+        closeRowMenus();
+        return;
+      }
+      const articleAddButton = event.target.closest("[data-article-add]");
+      if (articleAddButton) {
+        renderArticleEditorPage();
+        return;
+      }
+      const articleEditButton = event.target.closest("[data-article-edit]");
+      if (articleEditButton) {
+        const article = getArticleById(articleEditButton.dataset.articleEdit);
+        if (!article) return;
+        renderArticleEditorPage(article, "edit");
+        closeRowMenus();
+        return;
+      }
+      const articleDuplicateButton = event.target.closest("[data-article-duplicate]");
+      if (articleDuplicateButton) {
+        const article = getArticleById(articleDuplicateButton.dataset.articleDuplicate);
+        if (!article) return;
+        renderArticleEditorPage({
+          ...article,
+          id: getNextArticleId(),
+          title: `${article.title} Copy`,
+          status: "Draft",
+          publishAt: "-",
+          updatedAt: formatBangkokTimestamp().replace(/\sGMT\+7$/i, "")
+        }, "add");
+        return;
+      }
+      const articleDeleteButton = event.target.closest("[data-article-delete]");
+      if (articleDeleteButton) {
+        const article = getArticleById(articleDeleteButton.dataset.articleDelete);
+        if (!article) return;
+        const index = articleRows.findIndex(entry => entry.id === article.id);
+        if (["Draft", "Archived"].includes(article.status)) {
+          if (index >= 0) articleRows.splice(index, 1);
+          renderModule("content", "Articles", "Articles");
+        } else {
+          article.status = "Archived";
+          article.publishAt = article.publishAt || "-";
+          article.updatedAt = formatBangkokTimestamp().replace(/\sGMT\+7$/i, "");
+          article.detail = "Archived from BO. Removed from FO Board/Search/Category.";
+          renderArticleDetailPage(article);
+        }
+        closeRowMenus();
+        return;
+      }
+      const articleCard = event.target.closest("[data-article-card]");
+      if (articleCard && !event.target.closest(".row-menu, button, a, input, select, [data-custom-select]")) {
+        const article = getArticleById(articleCard.dataset.articleCard);
+        if (!article) return;
+        renderArticleDetailPage(article);
+        return;
       }
       const userActionConfirmButton = event.target.closest("[data-user-action-confirm]");
       if (userActionConfirmButton) {
@@ -11192,6 +11788,11 @@
         renderModule("assets", "Asset List", "Asset List");
         return;
       }
+      const backArticleList = event.target.closest("[data-back-article-list]");
+      if (backArticleList) {
+        renderModule("content", "Articles", "Articles");
+        return;
+      }
     });
 
     const auth = {
@@ -11409,6 +12010,13 @@
         renderArticleListRows();
       }
     });
+    document.addEventListener("submit", event => {
+      const articleEditor = event.target.closest("[data-article-editor]");
+      if (articleEditor) {
+        event.preventDefault();
+        saveArticleFromForm(articleEditor);
+      }
+    });
     document.addEventListener("change", event => {
       if (event.target.matches("[data-calendar-only]")) {
         normalizeSuspensionEndDate(event.target);
@@ -11488,6 +12096,9 @@
     document.querySelector("#primary-action").addEventListener("click", () => {
       if (activeModule === "dashboard") {
         jumpToModule("reports", "Search");
+      }
+      if (activeModule === "content" && (activeSub || "Articles") === "Articles") {
+        renderArticleEditorPage();
       }
     });
     document.querySelector("#logout-btn").addEventListener("click", () => {
