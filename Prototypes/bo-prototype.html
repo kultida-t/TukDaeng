@@ -1495,6 +1495,12 @@
     .article-editor-form .full {
       grid-column: 1 / -1;
     }
+    .article-publish-row {
+      display: grid;
+      grid-column: 1 / -1;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 18px 16px;
+    }
     .article-danger-note {
       border-color: #fed7d7;
       background: #fff7f7;
@@ -1507,6 +1513,10 @@
       }
       .article-editor-form .full {
         grid-column: 1;
+      }
+      .article-publish-row {
+        grid-column: 1;
+        grid-template-columns: 1fr;
       }
       .article-phone-preview {
         max-width: 100%;
@@ -10643,6 +10653,84 @@
         .replace(/>/g, "&gt;");
     }
 
+    function getBangkokDateTimeInputParts(date = new Date()) {
+      const parts = new Intl.DateTimeFormat("en-CA", {
+        timeZone: "Asia/Bangkok",
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+        hour: "2-digit",
+        minute: "2-digit",
+        hourCycle: "h23"
+      }).formatToParts(date).reduce((result, part) => {
+        result[part.type] = part.value;
+        return result;
+      }, {});
+      return {
+        date: `${parts.year}-${parts.month}-${parts.day}`,
+        time: `${parts.hour}:${parts.minute}`
+      };
+    }
+
+    function parseArticlePublishInputParts(publishAt = "") {
+      const text = String(publishAt || "").trim();
+      if (!text || text === "-") return { date: "", time: "" };
+      const match = text.match(/^(\d{1,2})\s+([A-Za-z]{3})\s+(\d{4})(?:\s+(\d{2}):(\d{2}))?$/);
+      const monthIndex = {
+        Jan: "01", Feb: "02", Mar: "03", Apr: "04", May: "05", Jun: "06",
+        Jul: "07", Aug: "08", Sep: "09", Oct: "10", Nov: "11", Dec: "12"
+      };
+      if (!match || !monthIndex[match[2]]) return { date: "", time: "" };
+      return {
+        date: `${match[3]}-${monthIndex[match[2]]}-${match[1].padStart(2, "0")}`,
+        time: match[4] && match[5] ? `${match[4]}:${match[5]}` : ""
+      };
+    }
+
+    function formatArticlePublishAt(dateValue, timeValue) {
+      if (!dateValue || !timeValue) return "-";
+      const [year, month, day] = dateValue.split("-").map(Number);
+      const monthName = new Intl.DateTimeFormat("en-GB", { month: "short" }).format(new Date(Date.UTC(year, month - 1, day)));
+      return `${String(day).padStart(2, "0")} ${monthName} ${year} ${timeValue}`;
+    }
+
+    function syncArticlePublishDateTimeLimits(form) {
+      if (!form) return;
+      const statusInput = form.querySelector('[name="status"]');
+      const dateInput = form.querySelector('[name="publishDate"]');
+      const timeInput = form.querySelector('[name="publishTime"]');
+      if (!dateInput || !timeInput) return;
+      const now = getBangkokDateTimeInputParts();
+      const status = statusInput?.value || "Draft";
+      const disabled = ["Draft", "Archived", "Published"].includes(status);
+      dateInput.min = now.date;
+      timeInput.min = dateInput.value === now.date ? now.time : "";
+      dateInput.disabled = disabled;
+      timeInput.disabled = disabled;
+      dateInput.required = status === "Scheduled";
+      timeInput.required = status === "Scheduled";
+      if (status === "Published") {
+        if (form.dataset.articleStatusChanged === "true" || !dateInput.value || !timeInput.value) {
+          dateInput.value = now.date;
+          timeInput.value = now.time;
+        }
+        timeInput.min = now.time;
+        return;
+      }
+      if (["Draft", "Archived"].includes(status)) {
+        dateInput.value = "";
+        timeInput.value = "";
+        timeInput.min = "";
+        return;
+      }
+      if (dateInput.value && dateInput.value < now.date) {
+        dateInput.value = now.date;
+      }
+      if (dateInput.value === now.date && timeInput.value && timeInput.value < now.time) {
+        timeInput.value = now.time;
+      }
+    }
+
     function getNextArticleId() {
       const maxId = articleRows.reduce((max, article) => {
         const idNumber = parseInt(String(article.id || "").replace(/\D/g, ""), 10) || 0;
@@ -10878,6 +10966,8 @@
         quote: "",
         body: []
       };
+      const publishParts = parseArticlePublishInputParts(draft.publishAt);
+      const publishMin = getBangkokDateTimeInputParts();
       activeModule = "content";
       activeSub = "Articles";
       document.body.classList.remove("asset-list-mode", "article-list-mode", "user-list-mode", "user-detail-mode");
@@ -10909,25 +10999,6 @@
                   <label>ผู้เขียน
                     <input name="author" value="${escapeArticleField(draft.author)}" placeholder="ทีม TukDaeng" required />
                   </label>
-                  <label>สถานะเผยแพร่
-                    <select name="status">
-                      ${[
-                        ["Draft", "Draft - ยังไม่แสดง"],
-                        ["Scheduled", "Scheduled - ตั้งเวลา"],
-                        ["Published", "Published - แสดงแล้ว"],
-                        ["Archived", "Archived - เก็บออก"]
-                      ].map(([value, label]) => `<option value="${value}" ${draft.status === value ? "selected" : ""}>${label}</option>`).join("")}
-                    </select>
-                  </label>
-                  <label>วันที่ / เวลาเผยแพร่
-                    <input name="publishAt" value="${escapeArticleField(draft.publishAt)}" placeholder="เช่น 10 Jul 2026 19:00 หรือ -" />
-                  </label>
-                  <label>เวลาอ่านโดยประมาณ
-                    <input name="readTime" value="${escapeArticleField(draft.readTime)}" placeholder="เช่น 6 min" />
-                  </label>
-                  <label>Tags
-                    <input name="tags" value="${escapeArticleField((draft.tags || []).join(", "))}" placeholder="เช่น Board, Buying Guide" />
-                  </label>
                   <label class="full">คำโปรยสั้น
                     <textarea name="deck" placeholder="สรุปเนื้อหาสั้น ๆ สำหรับตรวจ editorial และ preview">${escapeArticleField(draft.deck || "")}</textarea>
                   </label>
@@ -10937,9 +11008,24 @@
                   <label class="full">เนื้อหาบทความ
                     <textarea name="body" placeholder="ใส่เนื้อหาและเว้นบรรทัดว่างเพื่อแยกย่อหน้า" required>${escapeArticleField(getArticleBodyText(draft))}</textarea>
                   </label>
-                  <label class="full">หมายเหตุสำหรับ BO
-                    <textarea name="detail" placeholder="บันทึกสิ่งที่ต้องตรวจ เช่น cover, link, เวลา publish">${escapeArticleField(draft.detail || "")}</textarea>
-                  </label>
+                  <div class="article-publish-row">
+                    <label>สถานะเผยแพร่
+                      <select name="status" data-article-publish-status>
+                        ${[
+                          ["Draft", "Draft"],
+                          ["Scheduled", "Scheduled"],
+                          ["Published", "Published"],
+                          ["Archived", "Archived"]
+                        ].map(([value, label]) => `<option value="${value}" ${draft.status === value ? "selected" : ""}>${label}</option>`).join("")}
+                      </select>
+                    </label>
+                    <label>วันที่เผยแพร่
+                      <input name="publishDate" type="date" value="${escapeArticleField(publishParts.date)}" min="${publishMin.date}" data-article-publish-date data-picker-only />
+                    </label>
+                    <label>เวลาเผยแพร่
+                      <input name="publishTime" type="time" value="${escapeArticleField(publishParts.time)}" min="${publishParts.date === publishMin.date ? publishMin.time : ""}" step="60" data-article-publish-time data-picker-only />
+                    </label>
+                  </div>
                 </div>
                 <div class="user-detail-actions">
                   <button class="user-detail-action-btn" type="submit">${isEdit ? "บันทึกการแก้ไข" : "สร้างบทความ"}</button>
@@ -10958,26 +11044,48 @@
         </div>
       `;
       document.querySelector("#article-title-field")?.focus();
+      syncArticlePublishDateTimeLimits(document.querySelector("[data-article-editor]"));
       updateActiveNav();
       scrollMainToTop();
     }
 
     function saveArticleFromForm(form) {
-      const formData = new FormData(form);
       const id = form.dataset.articleId || getNextArticleId();
       const now = formatBangkokTimestamp().replace(/\sGMT\+7$/i, "");
+      const existingArticle = getArticleById(id);
+      syncArticlePublishDateTimeLimits(form);
+      const formData = new FormData(form);
+      const status = String(formData.get("status") || "Draft");
+      const publishDate = String(form.querySelector('[name="publishDate"]')?.value || "").trim();
+      const publishTime = String(form.querySelector('[name="publishTime"]')?.value || "").trim();
+      const publishIso = publishDate && publishTime ? `${publishDate}T${publishTime}` : "";
+      const nowParts = getBangkokDateTimeInputParts();
+      const nowIso = `${nowParts.date}T${nowParts.time}`;
+      if ((publishDate || publishTime) && !publishIso) {
+        alert("กรุณาเลือกทั้งวันที่เผยแพร่และเวลาเผยแพร่");
+        return;
+      }
+      if (status === "Scheduled" && !publishIso) {
+        alert("กรุณาเลือกวันที่และเวลาเผยแพร่สำหรับสถานะนี้");
+        return;
+      }
+      if (status === "Scheduled" && publishIso && publishIso < nowIso) {
+        alert("วันที่และเวลาเผยแพร่ต้องไม่น้อยกว่าวันเวลาปัจจุบัน");
+        syncArticlePublishDateTimeLimits(form);
+        return;
+      }
       const nextArticle = {
         id,
         title: String(formData.get("title") || "").trim() || "Untitled Article",
         category: String(formData.get("category") || "").trim() || "Board",
         author: String(formData.get("author") || "").trim() || "By Tuk Daeng",
-        status: String(formData.get("status") || "Draft"),
-        publishAt: String(formData.get("publishAt") || "").trim() || "-",
+        status,
+        publishAt: formatArticlePublishAt(publishDate, publishTime),
         updatedAt: now,
-        readTime: String(formData.get("readTime") || "").trim() || "5 min",
-        tags: String(formData.get("tags") || "Board").split(",").map(tag => tag.trim()).filter(Boolean),
+        readTime: existingArticle?.readTime || "5 min",
+        tags: existingArticle?.tags || ["Board"],
         priority: "ปกติ",
-        detail: String(formData.get("detail") || "").trim() || "Ready for editorial review",
+        detail: existingArticle?.detail || "Ready for editorial review",
         deck: String(formData.get("deck") || "").trim(),
         quote: String(formData.get("quote") || "").trim(),
         body: String(formData.get("body") || "").split(/\n{2,}/).map(paragraph => paragraph.trim()).filter(Boolean)
@@ -11997,10 +12105,37 @@
       showOtpForm("");
     }
 
+    document.addEventListener("keydown", event => {
+      if (event.target.matches("[data-picker-only]") && (event.key.length === 1 || ["Backspace", "Delete"].includes(event.key))) {
+        event.preventDefault();
+      }
+    });
+    document.addEventListener("paste", event => {
+      if (event.target.matches("[data-picker-only]")) event.preventDefault();
+    });
+    document.addEventListener("drop", event => {
+      if (event.target.matches("[data-picker-only]")) event.preventDefault();
+    });
+    document.addEventListener("focusin", event => {
+      if (event.target.matches("[data-picker-only]") && typeof event.target.showPicker === "function") {
+        try {
+          event.target.showPicker();
+        } catch (error) {
+          // Some browsers only allow showPicker during direct pointer activation.
+        }
+      }
+    });
     document.addEventListener("input", event => {
       if (event.target.matches("[data-calendar-only]")) {
         normalizeSuspensionEndDate(event.target);
         if (event.target.matches("#user-action-suspend-until")) updateAccountStatusEmailPreview();
+        return;
+      }
+      if (event.target.matches("[data-article-publish-status], [data-article-publish-date], [data-article-publish-time]")) {
+        if (event.target.matches("[data-article-publish-status]")) {
+          event.target.closest("[data-article-editor]").dataset.articleStatusChanged = "true";
+        }
+        syncArticlePublishDateTimeLimits(event.target.closest("[data-article-editor]"));
         return;
       }
       if (event.target.matches("#user-search")) {
@@ -12034,6 +12169,13 @@
       if (event.target.matches("[data-calendar-only]")) {
         normalizeSuspensionEndDate(event.target);
         if (event.target.matches("#user-action-suspend-until")) updateAccountStatusEmailPreview();
+        return;
+      }
+      if (event.target.matches("[data-article-publish-status], [data-article-publish-date], [data-article-publish-time]")) {
+        if (event.target.matches("[data-article-publish-status]")) {
+          event.target.closest("[data-article-editor]").dataset.articleStatusChanged = "true";
+        }
+        syncArticlePublishDateTimeLimits(event.target.closest("[data-article-editor]"));
         return;
       }
       if (event.target.matches("#user-status-filter, #user-auth-filter, #user-sort")) {
