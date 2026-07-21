@@ -4631,7 +4631,7 @@
       { section: "เครื่องมือ & รายงาน", items: [
         { id: "reports", label: "Reports", icon: "reports", subs: ["User", "Asset", "Offer", "Search", "Export Jobs"] },
         { id: "notifications", label: "Notifications", icon: "notifications", subs: ["Broadcast", "System Templates", "Delivery Logs"] },
-        { id: "settings", label: "Settings", icon: "settings", subs: ["Admin Accounts", "Permissions", "Security", "Retention", "Terms of Use", "Privacy Policy", "Version History", "Support Center", "Contact Support", { label: "Audit Log", module: "audit" }] }
+        { id: "settings", label: "Settings", icon: "settings", subs: ["Admin Accounts", "Roles & Permissions", "Security", "Retention", "Terms of Use", "Privacy Policy", "Version History", "Support Center", "Contact Support", { label: "Audit Log", module: "audit" }] }
       ]}
     ];
 
@@ -5602,7 +5602,13 @@
 
     function getAssetSummaryStats() {
       const assets = moduleData.assets.rows;
-      const countType = type => assets.filter(asset => asset.type === type && !isAssetUnavailableAsset(asset)).length;
+      const countType = type => assets.filter(asset => asset.type === type).length;
+      const userSelectedStatusRows = [
+        ["Sale", countType("Sale"), "ยอดทั้งหมดที่แสดงใน Feed และ Search"],
+        ["Show", countType("Show"), "ยอดทั้งหมดที่แสดงใน collection และ profile"],
+        ["Hide", countType("Hide"), "ยอดทั้งหมดที่ owner/Admin เห็นตามสิทธิ์"],
+        ["Sold", countType("Sold"), "ยอดทั้งหมดที่คงประวัติและปิดรับ offer"]
+      ];
       const brandCounts = assets.reduce((counts, asset) => {
         const brand = getAssetBrand(asset);
         counts[brand] = (counts[brand] || 0) + 1;
@@ -5615,15 +5621,8 @@
         {
           title: "Asset Status",
           type: "status-list",
-          total: assets.length,
-          rows: [
-            ["Sale", countType("Sale"), "ยอดทั้งหมดที่แสดงใน Feed และ Search"],
-            ["Show", countType("Show"), "ยอดทั้งหมดที่แสดงใน collection และ profile"],
-            ["Hide", countType("Hide"), "ยอดทั้งหมดที่ owner/Admin เห็นตามสิทธิ์"],
-            ["Sold", countType("Sold"), "ยอดทั้งหมดที่คงประวัติและปิดรับ offer"],
-            ["ซ่อนถาวร", assets.filter(isPermanentlyHiddenAsset).length, "ถูกนำออกจาก public surfaces และไม่รวม portfolio value"],
-            ["ลบโดยเจ้าของ", assets.filter(isOwnerDeletedAsset).length, "ลบจากหน้าบ้านแล้ว แต่ BO เก็บ record ตาม retention"]
-          ]
+          total: userSelectedStatusRows.reduce((sum, [, value]) => sum + value, 0),
+          rows: userSelectedStatusRows
         },
         {
           title: "Top Asset Brands",
@@ -9798,6 +9797,11 @@
         updateActiveNav();
         return;
       }
+      if (id === "settings" && ((subLabel || "Admin Accounts") === "Roles & Permissions" || subLabel === "Permissions")) {
+        renderSettingsPermissionsPage();
+        updateActiveNav();
+        return;
+      }
       if (isArticleList) {
         activeRow = null;
         document.querySelector("#crumb").textContent = `${data.crumb} / Articles`;
@@ -9947,6 +9951,126 @@
       renderRows();
       renderDetail(activeRow);
       updateActiveNav();
+    }
+
+    function getRolePermissionRows() {
+      return [
+        {
+          role: "Super Admin",
+          scope: "All modules",
+          content: "Full",
+          moderation: "Full",
+          sensitive: "Reveal / Export",
+          status: "Active",
+          detail: "ใช้สำหรับเจ้าของระบบหรือ operation lead ที่ต้องจัดการ policy, settings, audit และ export"
+        },
+        {
+          role: "Content Editor",
+          scope: "Content Management",
+          content: "Create / Edit Draft",
+          moderation: "No publish",
+          sensitive: "No sensitive data",
+          status: "Active",
+          detail: "อัปเดตบทความ, category draft และ metadata ได้ แต่ publish/archive ไม่ได้"
+        },
+        {
+          role: "Content Publisher",
+          scope: "Content Management",
+          content: "Publish / Schedule / Archive",
+          moderation: "Reported Board",
+          sensitive: "No user PII",
+          status: "Active",
+          detail: "อนุมัติ publish, schedule, archive และจัดการ reported Board content พร้อม audit reason"
+        },
+        {
+          role: "Moderator",
+          scope: "Reports",
+          content: "Read related content",
+          moderation: "User / Asset / Board reports",
+          sensitive: "Masked by default",
+          status: "Active",
+          detail: "ตรวจรายงานและ action ตาม policy แต่ sensitive fields ต้อง mask เป็นค่าเริ่มต้น"
+        },
+        {
+          role: "Support Agent",
+          scope: "Help & Support",
+          content: "No content write",
+          moderation: "Ticket only",
+          sensitive: "Limited reveal",
+          status: "Active",
+          detail: "ตอบ ticket และดู context เท่าที่จำเป็น ไม่เห็น settings/export โดยตรง"
+        }
+      ];
+    }
+
+    function renderPermissionStatus(status) {
+      const map = { Active: "green", Draft: "amber", Disabled: "gray" };
+      return `<span class="pill ${map[status] || "blue"}">${status}</span>`;
+    }
+
+    function renderSettingsPermissionsPage() {
+      const roles = getRolePermissionRows();
+      activeModule = "settings";
+      activeSub = "Roles & Permissions";
+      syncExpandedNavForModule("settings", "Roles & Permissions");
+      document.body.classList.remove("dashboard-mode", "user-management-mode", "user-list-mode", "asset-list-mode", "asset-detail-mode", "user-detail-mode");
+      activeRow = null;
+      document.querySelector("#crumb").textContent = "เครื่องมือ & รายงาน / Settings / Roles & Permissions";
+      document.querySelector("#page-title").textContent = "Roles & Permissions";
+      document.querySelector("#page-meta").textContent = "";
+      document.querySelector("#panel-title").textContent = "Role Matrix";
+      document.querySelector("#panel-subtitle").textContent = "Admin account type เดียว แต่คุมสิทธิ์ด้วย role และ permission policy ต่อ module/action";
+      document.querySelector("#primary-action").textContent = "บันทึก policy";
+      document.querySelector("#user-panel-filter-actions").innerHTML = "";
+      document.querySelector(".filters").innerHTML = "";
+      document.querySelector("#summary-grid").innerHTML = [
+        ["Admin Account Type", "1", "ทุกบัญชียังเป็น Admin"],
+        ["Role Templates", roles.length, "mock policy สำหรับ prototype"],
+        ["Content Roles", 2, "Editor / Publisher"],
+        ["Enforcement", "API + Route", "ทำจริงใน dev phase"]
+      ].map(([label, value, note]) => `
+        <article class="stat">
+          <div class="stat-label">${label}</div>
+          <div class="stat-value">${value}</div>
+          <div class="stat-note">${note}</div>
+        </article>
+      `).join("");
+      document.querySelector("#cards").innerHTML = [
+        ["Content-only Admin", "รองรับ admin ที่เข้ามาอัปเดตบทความโดยไม่เห็น User, Asset, Export หรือ Settings อื่น"],
+        ["Action Policy", "Publish, Archive, Export, Reveal sensitive data และ policy update ต้องแยกสิทธิ์และบันทึก audit"],
+        ["Prototype Scope", "หน้านี้แสดง coverage ของ role/permission แต่ยังไม่ enforce permission จริงกับทุกหน้าที่ล็อกไว้แล้ว"]
+      ].map(([title, detail]) => `<article class="mini-card"><h3>${title}</h3><p class="muted">${detail}</p></article>`).join("");
+      document.querySelector("#table").innerHTML = `
+        <div class="asset-table">
+          <div class="asset-row head"><div>Role</div><div>Access Scope</div><div>Content Permission</div><div>Moderation</div><div>Sensitive Data</div><div>Status</div></div>
+          ${roles.map(role => `
+            <div class="asset-row">
+              <div data-label="Role"><div class="main-text">${role.role}</div><div class="muted">${role.detail}</div></div>
+              <div data-label="Access Scope"><div class="main-text">${role.scope}</div></div>
+              <div data-label="Content Permission"><div class="main-text">${role.content}</div></div>
+              <div data-label="Moderation"><div class="main-text">${role.moderation}</div></div>
+              <div data-label="Sensitive Data"><div class="main-text">${role.sensitive}</div></div>
+              <div data-label="Status">${renderPermissionStatus(role.status)}</div>
+            </div>
+          `).join("")}
+        </div>
+      `;
+      document.querySelector("#detail").innerHTML = `
+        <div class="panel-head">
+          <div>
+            <h2>Permission Design Notes</h2>
+            <p>Prototype coverage เท่านั้น ยังไม่เปลี่ยน behavior ของหน้าที่ทำไว้ก่อนหน้า</p>
+          </div>
+        </div>
+        <div class="detail-body">
+          <div class="module-note"><strong>Baseline:</strong> BO ใช้ account type เดียวคือ Admin แล้วกำหนดสิทธิ์ผ่าน role/permission policy ต่อ module และ action</div>
+          <div class="timeline">
+            <div class="event"><strong>Route access</strong><br>Dev phase ต้อง enforce ที่ route/API/service layer ไม่ใช่ซ่อนเมนูอย่างเดียว</div>
+            <div class="event"><strong>Action access</strong><br>Create/edit draft, publish, archive, reveal sensitive data, export และ settings update ต้องแยก permission</div>
+            <div class="event"><strong>Audit</strong><br>การเปลี่ยน role, policy, publish/archive และ sensitive action ต้องบันทึก before/after, reason, admin ID และ timestamp</div>
+          </div>
+        </div>
+      `;
     }
 
     function renderDashboard() {
