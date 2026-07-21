@@ -11126,7 +11126,6 @@
                   </label>
                   <label class="full">รูป Cover
                     <input name="coverImage" type="file" accept="image/*" data-article-cover-upload />
-                    <span class="muted" data-article-cover-name>${escapeArticleField(draft.coverImageName || "ยังไม่ได้เลือกรูป")}</span>
                   </label>
                   <label class="full">คำโปรยสั้น
                     <textarea name="deck" placeholder="สรุปเนื้อหาสั้น ๆ สำหรับตรวจ editorial และ preview">${escapeArticleField(draft.deck || "")}</textarea>
@@ -11139,7 +11138,6 @@
                   </label>
                   <label class="full">รูปในเนื้อหาบทความ
                     <input name="bodyImage" type="file" accept="image/*" data-article-body-image-upload />
-                    <span class="muted" data-article-body-image-name>${escapeArticleField(draft.bodyImageName || "ยังไม่ได้เลือกรูป")}</span>
                   </label>
                   <div class="article-publish-row">
                     <label>สถานะเผยแพร่
@@ -12331,8 +12329,6 @@
         }
         form.dataset[srcKey] = URL.createObjectURL(file);
         form.dataset[nameKey] = file.name;
-        const nameNode = form.querySelector(isBodyImage ? "[data-article-body-image-name]" : "[data-article-cover-name]");
-        if (nameNode) nameNode.textContent = file.name;
         updateArticleEditorPreview(form);
         return;
       }
