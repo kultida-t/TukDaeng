@@ -1768,10 +1768,13 @@
     .article-editor-grid {
       display: grid;
       grid-template-columns: repeat(2, minmax(0, 1fr));
+      align-items: start;
       gap: 18px 16px;
     }
     .article-editor-form label {
       display: grid;
+      align-content: start;
+      align-self: start;
       gap: 8px;
       color: #334155;
       font-size: 13px;
@@ -1849,6 +1852,20 @@
       color: #8a99ad;
       font-weight: 400;
     }
+    .article-editor-form input[type="date"]::selection,
+    .article-editor-form input[type="time"]::selection {
+      color: inherit;
+      background: transparent;
+    }
+    .article-editor-form input[type="date"]::-webkit-datetime-edit-day-field:focus,
+    .article-editor-form input[type="date"]::-webkit-datetime-edit-month-field:focus,
+    .article-editor-form input[type="date"]::-webkit-datetime-edit-year-field:focus,
+    .article-editor-form input[type="time"]::-webkit-datetime-edit-hour-field:focus,
+    .article-editor-form input[type="time"]::-webkit-datetime-edit-minute-field:focus,
+    .article-editor-form input[type="time"]::-webkit-datetime-edit-ampm-field:focus {
+      color: inherit;
+      background: transparent;
+    }
     .article-editor-form select {
       min-height: 46px;
       font-weight: 400;
@@ -1905,18 +1922,14 @@
       font-weight: 400;
     }
     .article-upload-error {
-      display: block;
-      min-height: 18px;
-      visibility: hidden;
+      display: none;
       color: #c8212b;
       font-size: 12px;
       font-weight: 600;
       line-height: 1.45;
     }
     .article-field-error {
-      display: block;
-      min-height: 18px;
-      visibility: hidden;
+      display: none;
       color: #c8212b;
       font-size: 12px;
       font-weight: 600;
@@ -1924,7 +1937,7 @@
     }
     .article-upload-error.show,
     .article-field-error.show {
-      visibility: visible;
+      display: block;
     }
     .article-upload-invalid,
     .article-field-invalid {
@@ -11746,8 +11759,8 @@
         category: () => form.querySelector("#article-category-field")?.closest("[data-custom-select]")?.querySelector("[data-custom-select-trigger]")?.focus(),
         cover: () => form.querySelector("[data-article-cover-upload-control]")?.scrollIntoView({ block: "center", behavior: "smooth" }),
         content: () => form.querySelector("[data-article-block-add]")?.focus(),
-        publishDate: () => form.querySelector('[name="publishDate"]')?.focus(),
-        publishTime: () => form.querySelector('[name="publishTime"]')?.focus()
+        publishDate: () => form.querySelector('[name="publishDate"]')?.scrollIntoView({ block: "center", behavior: "smooth" }),
+        publishTime: () => form.querySelector('[name="publishTime"]')?.scrollIntoView({ block: "center", behavior: "smooth" })
       };
       focusMap[firstField]?.();
     }
@@ -13304,8 +13317,9 @@
     document.addEventListener("drop", event => {
       if (event.target.matches("[data-picker-only]")) event.preventDefault();
     });
-    document.addEventListener("focusin", event => {
+    document.addEventListener("pointerdown", event => {
       if (event.target.matches("[data-picker-only]") && typeof event.target.showPicker === "function") {
+        event.preventDefault();
         try {
           event.target.showPicker();
         } catch (error) {
