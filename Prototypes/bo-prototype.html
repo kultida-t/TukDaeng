@@ -3581,6 +3581,41 @@
       display: grid;
       gap: 10px;
     }
+    .user-action-page.asset-detail-related-modal .user-action-head h2 {
+      font-family: var(--font-heading);
+      font-size: 32px;
+      font-weight: 400;
+      line-height: 1;
+      letter-spacing: 0;
+      overflow-wrap: anywhere;
+    }
+    .user-action-page.asset-detail-related-modal .user-action-card + .user-action-card {
+      border-top: 1px solid var(--line);
+      padding-top: 18px;
+    }
+    .user-action-page.asset-detail-related-modal .asset-purchase-media {
+      gap: 14px;
+    }
+    .user-action-page.asset-detail-related-modal .asset-purchase-media h4 {
+      margin: 0;
+      color: #061426;
+      font-family: var(--font-heading);
+      font-size: 24px;
+      font-weight: 400;
+      line-height: .95;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+    .user-action-page.asset-detail-related-modal .asset-purchase-media h4:not(:first-child) {
+      border-top: 1px solid var(--line);
+      padding-top: 14px;
+    }
+    .user-action-page.asset-detail-related-modal .asset-purchase-thumbs {
+      margin-bottom: 0;
+    }
+    .user-action-page.asset-detail-related-modal .asset-purchase-thumbs + h4 {
+      margin-top: 0;
+    }
     .asset-purchase-media h4 {
       margin: 6px 0 0;
       font-size: 15px;
@@ -6996,11 +7031,11 @@
       const comments = getAssetBoComments(asset);
       const modalBody = document.querySelector("#user-action-modal-body");
       modalBody.innerHTML = `
-        <div class="user-action-page">
+        <div class="user-action-page asset-detail-related-modal">
           <div class="user-action-head">
             <div>
               <h2 id="user-action-modal-title">Comments</h2>
-              <p>${asset.id} · ${asset.name}</p>
+              <p>${asset.id} · ${asset.name} · ${asset.owner}</p>
             </div>
             <button class="btn user-action-close" type="button" data-user-action-modal-close aria-label="Close modal" title="Close">
               ${iconSvg.close}
@@ -7605,11 +7640,11 @@
       const note = isConsignment ? consignment.note : purchase.note;
       const modalBody = document.querySelector("#user-action-modal-body");
       modalBody.innerHTML = `
-        <div class="user-action-page">
+        <div class="user-action-page asset-detail-related-modal">
           <div class="user-action-head">
             <div>
               <h2 id="user-action-modal-title">${isConsignment ? "Consignment Details" : "Purchase History"}</h2>
-              <p>${asset.id} · ${asset.name}</p>
+              <p>${asset.id} · ${asset.name} · ${asset.owner}</p>
             </div>
             <button class="btn user-action-close" type="button" data-user-action-modal-close aria-label="Close modal" title="Close">
               ${iconSvg.close}
