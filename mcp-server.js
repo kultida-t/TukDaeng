@@ -3,6 +3,7 @@
 /**
  * Model Context Protocol (MCP) Server for Core Portal Log Ingestion.
  * Exposes a tool to submit logs to the Core Portal via API Key.
+ * API keys can be passed per request or configured through CORE_PORTAL_API_KEY.
  *
  * Running:
  *   node mcp-server.js
@@ -14,7 +15,8 @@
  *         "command": "node",
  *         "args": ["/absolute/path/to/core_portal/mcp-server.js"],
  *         "env": {
- *           "CORE_PORTAL_URL": "http://localhost:5001"
+ *           "CORE_PORTAL_URL": "http://localhost:5001",
+ *           "CORE_PORTAL_API_KEY": "sk_univ_..."
  *         }
  *       }
  *     }
@@ -24,6 +26,7 @@
 import readline from 'readline';
 
 const serverUrl = process.env.CORE_PORTAL_URL || 'http://localhost:5001';
+const defaultApiKey = process.env.CORE_PORTAL_API_KEY;
 
 process.stdin.setEncoding('utf8');
 process.stdout.setDefaultEncoding('utf8');
@@ -89,7 +92,7 @@ rl.on('line', async (line) => {
                   properties: {
                     apiKey: {
                       type: 'string',
-                      description: 'The Core Portal API key (starts with sk_univ_).'
+                      description: 'The Core Portal API key (starts with sk_univ_). Optional when CORE_PORTAL_API_KEY is configured.'
                     },
                     appName: {
                       type: 'string',
@@ -119,7 +122,7 @@ rl.on('line', async (line) => {
                       description: 'An array of task descriptions performed. Avoid duplicate tasks.'
                     }
                   },
-                  required: ['apiKey', 'startDate', 'endDate', 'category', 'logs']
+                  required: ['startDate', 'endDate', 'category', 'logs']
                 }
               }
             ]
@@ -140,6 +143,24 @@ rl.on('line', async (line) => {
         }
 
         const { apiKey, appName, appId, startDate, endDate, category, logs } = args;
+        const effectiveApiKey = apiKey || defaultApiKey;
+
+        if (!effectiveApiKey) {
+          sendResponse({
+            jsonrpc: '2.0',
+            id,
+            result: {
+              content: [
+                {
+                  type: 'text',
+                  text: 'Missing Core Portal API key. Pass apiKey or set CORE_PORTAL_API_KEY in the MCP server environment.'
+                }
+              ],
+              isError: true
+            }
+          });
+          return;
+        }
 
         try {
           // Make HTTP POST call to Express Server
@@ -147,7 +168,7 @@ rl.on('line', async (line) => {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json; charset=utf-8',
-              'X-API-Key': apiKey
+              'X-API-Key': effectiveApiKey
             },
             body: JSON.stringify({
               app_id: appId,
