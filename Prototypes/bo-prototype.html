@@ -1605,7 +1605,7 @@
     }
     .article-block-add-row {
       display: flex;
-      flex-wrap: wrap;
+      flex-wrap: nowrap;
       align-items: center;
       gap: 10px;
       padding: 12px;
@@ -1614,8 +1614,14 @@
       background: #fff;
     }
     .article-block-add-row select {
-      width: min(100%, 260px);
+      flex: 1 1 auto;
+      width: auto;
+      min-width: 0;
       min-height: 42px;
+    }
+    .article-block-add-row .custom-select {
+      flex: 1 1 auto;
+      min-width: 0;
     }
     .article-block-add-row button,
     .article-block-control {
@@ -1628,6 +1634,10 @@
       font-weight: 800;
       line-height: 1;
       cursor: pointer;
+    }
+    .article-block-add-row button {
+      flex: 0 0 auto;
+      white-space: nowrap;
     }
     .article-editor-blocks {
       display: grid;
@@ -1708,6 +1718,30 @@
       font-size: 14px;
       font-weight: 400;
       line-height: 1.45;
+    }
+    .article-editor-form .custom-select-trigger {
+      min-height: 46px;
+      border-color: #cbd8ea;
+      border-radius: 8px;
+      padding: 12px 13px;
+      color: #061426;
+      background: #fff;
+      font-size: 14px;
+      font-weight: 400;
+      line-height: 1.45;
+    }
+    .article-editor-form .custom-select-trigger:hover {
+      border-color: #c3cfdd;
+      background-color: #fbfcfe;
+    }
+    .article-editor-form .custom-select-trigger:focus,
+    .article-editor-form .custom-select-trigger:focus-visible {
+      border-color: #b8c6d8;
+      box-shadow: 0 0 0 3px rgba(118, 135, 158, .10);
+    }
+    .article-editor-form .custom-select-menu {
+      border-color: #aeb8c6;
+      border-radius: 7px;
     }
     .article-editor-form input::placeholder,
     .article-editor-form textarea::placeholder {
@@ -6175,6 +6209,23 @@
         <div class="custom-select" data-custom-select ${attrs}>
           <input type="hidden" id="${id}" value="${selected.value}" />
           <button class="field custom-select-trigger" type="button" data-custom-select-trigger aria-haspopup="listbox" aria-expanded="false" ${disabled ? "disabled" : ""}>
+            <span data-custom-select-label>${selected.label}</span>
+          </button>
+          <div class="custom-select-menu" role="listbox" aria-label="${label}">
+            ${options.map(option => `
+              <button class="custom-select-option ${option.value === selected.value ? "selected" : ""}" type="button" role="option" aria-selected="${option.value === selected.value}" data-custom-select-option data-value="${option.value}">${option.label}</button>
+            `).join("")}
+          </div>
+        </div>
+      `;
+    }
+
+    function articleEditorCustomSelect(id, name, label, options, selectedValue = "", inputAttrs = "") {
+      const selected = options.find(option => option.value === selectedValue) || options[0];
+      return `
+        <div class="custom-select" data-custom-select>
+          <input type="hidden" id="${id}" name="${name}" value="${selected.value}" data-article-editor-custom-select ${inputAttrs} />
+          <button class="field custom-select-trigger" type="button" data-custom-select-trigger aria-haspopup="listbox" aria-expanded="false">
             <span data-custom-select-label>${selected.label}</span>
           </button>
           <div class="custom-select-menu" role="listbox" aria-label="${label}">
@@ -11231,28 +11282,25 @@
 
     function renderArticleBlockEditor(article) {
       const blocks = getArticleContentBlocks(article);
-      const editorBlocks = blocks.length ? blocks : [{ type: "paragraph", content: "" }];
       return `
         <div class="article-block-builder">
           <div class="article-block-add-row">
-            <select data-article-block-type-picker aria-label="เลือกประเภทบล็อก">
-              ${renderArticleBlockTypeOptions()}
-            </select>
+            ${articleEditorCustomSelect("article-block-type-picker", "blockTypePicker", "เลือกประเภทบล็อก", articleBlockTypes.map(([value, label]) => ({ value, label })), "paragraph", "data-article-block-type-picker")}
             <button type="button" data-article-block-add>+ Add block</button>
           </div>
           <div class="article-editor-blocks" data-article-block-list>
-            ${editorBlocks.map((block, index) => renderArticleEditorBlock(block, index, article)).join("")}
+            ${blocks.map((block, index) => renderArticleEditorBlock(block, index, article)).join("")}
           </div>
         </div>
       `;
     }
 
-    function getArticleEditorContentBlocks(form) {
+    function getArticleEditorContentBlocks(form, includeEmpty = false) {
       return Array.from(form.querySelectorAll("[data-article-content-block]")).map(block => ({
         type: block.dataset.articleBlockType || "paragraph",
         content: block.querySelector("[data-article-block-value]")?.value.trim() || "",
         caption: block.dataset.articleBlockType === "image" ? block.querySelector("[data-article-block-value]")?.value.trim() || "" : ""
-      })).filter(block => block.type === "image" || block.content);
+      })).filter(block => includeEmpty || block.type === "image" || block.content);
     }
 
     function getArticleLegacyFieldsFromBlocks(blocks) {
@@ -11274,12 +11322,12 @@
       const list = form?.querySelector("[data-article-block-list]");
       if (!list) return;
       const article = {
-        contentBlocks: getArticleEditorContentBlocks(form),
+        contentBlocks: getArticleEditorContentBlocks(form, true),
         bodyImageName: form.dataset.articleBodyImageName || "",
         bodyImageCaption: "",
         bodyImageSrc: form.dataset.articleBodyImageSrc || ""
       };
-      list.innerHTML = (article.contentBlocks.length ? article.contentBlocks : [{ type: "paragraph", content: "" }])
+      list.innerHTML = article.contentBlocks
         .map((block, index) => renderArticleEditorBlock(block, index, article))
         .join("");
       updateArticleEditorPreview(form);
@@ -11294,7 +11342,7 @@
         alert("เพิ่ม Image + Caption ได้ 1 บล็อกต่อบทความใน prototype นี้");
         return;
       }
-      const blocks = getArticleEditorContentBlocks(form);
+      const blocks = getArticleEditorContentBlocks(form, true);
       blocks.push({ type, content: "", caption: "" });
       const article = {
         contentBlocks: blocks,
@@ -11309,10 +11357,6 @@
     function deleteArticleEditorBlock(block) {
       const form = block?.closest("[data-article-editor]");
       block?.remove();
-      const list = form?.querySelector("[data-article-block-list]");
-      if (list && !list.querySelector("[data-article-content-block]")) {
-        list.innerHTML = renderArticleEditorBlock({ type: "paragraph", content: "" }, 0, {});
-      }
       refreshArticleBlockList(form);
     }
 
@@ -11367,8 +11411,8 @@
     }
 
     function renderArticleBoardHeroPreview(article) {
-      const title = article?.seoTitle || article?.title || "Article title";
-      const deck = article?.deck || article?.seoExcerpt || "";
+      const title = article?.title || "Article title";
+      const deck = article?.deck || "";
       return `
         <div class="article-board-preview" aria-label="Board hero article preview">
           ${article.coverImageSrc ? `<img src="${escapeArticleField(article.coverImageSrc)}" alt="${escapeArticleField(article.coverImageName || title || "Board hero cover")}" />` : `<div class="article-cover-mark">TD</div>`}
@@ -11790,9 +11834,7 @@
                       <input id="article-title-field" name="title" value="${escapeArticleField(draft.title)}" placeholder="เช่น Steel vs. Titanium Watches: ต่างกันอย่างไร" required />
                     </label>
                     <label>หมวดหมู่
-                      <select name="category">
-                        ${["Buying Guide", "Watch 101", "Watch Market", "Watch Events", "Watch Apparel", "Journal Board"].map(category => `<option value="${category}" ${draft.category === category ? "selected" : ""}>${category}</option>`).join("")}
-                      </select>
+                      ${articleEditorCustomSelect("article-category-field", "category", "หมวดหมู่", ["Buying Guide", "Watch 101", "Watch Market", "Watch Events", "Watch Apparel", "Journal Board"].map(category => ({ value: category, label: category })), draft.category)}
                     </label>
                     <label>ผู้เขียน
                       <input name="author" value="${escapeArticleField(draft.author)}" placeholder="ทีม TukDaeng" required />
@@ -11830,29 +11872,15 @@
                 </section>
 
                 <section class="article-editor-section">
-                  <h4>Board Card / SEO</h4>
-                  <div class="article-editor-grid">
-                    <label class="full">Card / SEO title
-                      <input name="seoTitle" value="${escapeArticleField(draft.seoTitle || "")}" placeholder="ถ้าไม่กรอกจะใช้ชื่อบทความ" />
-                    </label>
-                    <label class="full">Card excerpt
-                      <textarea name="seoExcerpt" placeholder="ข้อความสั้นสำหรับ card, search result หรือ share preview">${escapeArticleField(draft.seoExcerpt || "")}</textarea>
-                    </label>
-                  </div>
-                </section>
-
-                <section class="article-editor-section">
                   <h4>Publish Control</h4>
                   <div class="article-publish-row">
                     <label>สถานะเผยแพร่
-                      <select name="status" data-article-publish-status>
-                        ${[
-                          ["Draft", "Draft"],
-                          ["Scheduled", "Scheduled"],
-                          ["Published", "Published"],
-                          ["Archived", "Archived"]
-                        ].map(([value, label]) => `<option value="${value}" ${draft.status === value ? "selected" : ""}>${label}</option>`).join("")}
-                      </select>
+                      ${articleEditorCustomSelect("article-status-field", "status", "สถานะเผยแพร่", [
+                        { value: "Draft", label: "Draft" },
+                        { value: "Scheduled", label: "Scheduled" },
+                        { value: "Published", label: "Published" },
+                        { value: "Archived", label: "Archived" }
+                      ], draft.status, "data-article-publish-status")}
                     </label>
                     <label>วันที่เผยแพร่
                       <input name="publishDate" type="date" value="${escapeArticleField(publishParts.date)}" min="${publishMin.date}" data-article-publish-date data-picker-only />
@@ -11942,8 +11970,8 @@
         keyTakeaways: formData.has("keyTakeaways") ? String(formData.get("keyTakeaways") || "").trim() : existingArticle?.keyTakeaways || "",
         comparisonRows: legacyFields.comparisonRows,
         relatedWatches: legacyFields.relatedWatches,
-        seoTitle: String(formData.get("seoTitle") || "").trim(),
-        seoExcerpt: String(formData.get("seoExcerpt") || "").trim(),
+        seoTitle: formData.has("seoTitle") ? String(formData.get("seoTitle") || "").trim() : existingArticle?.seoTitle || "",
+        seoExcerpt: formData.has("seoExcerpt") ? String(formData.get("seoExcerpt") || "").trim() : existingArticle?.seoExcerpt || "",
         coverImageName: form.dataset.articleCoverName || existingArticle?.coverImageName || "",
         coverImageSrc: form.dataset.articleCoverSrc || existingArticle?.coverImageSrc || "",
         bodyImageName: hasImageBlock ? form.dataset.articleBodyImageName || existingArticle?.bodyImageName || "" : "",
@@ -12231,6 +12259,17 @@
         if (hiddenInput.id === "asset-restore-reason") updateAssetRestoreVisibilityEmailPreview();
         if (hiddenInput.id === "asset-delete-reason") updateAssetDeletePostEmailPreview();
         if (select.hasAttribute("data-custom-select-silent")) return;
+        if (hiddenInput.hasAttribute("data-article-editor-custom-select")) {
+          const form = hiddenInput.closest("[data-article-editor]");
+          if (hiddenInput.matches("[data-article-publish-status]")) {
+            form.dataset.articleStatusChanged = "true";
+            syncArticlePublishDateTimeLimits(form);
+          }
+          if (hiddenInput.name === "category" || hiddenInput.matches("[data-article-publish-status]")) {
+            updateArticleEditorPreview(form);
+          }
+          return;
+        }
         if (["asset-report-status-filter", "asset-report-priority-filter", "asset-report-sort"].includes(hiddenInput.id) && activeModule === "assets" && activeSub === "Reported Assets") {
           assetListPage = 1;
           renderReportedAssetRows();
@@ -13017,7 +13056,7 @@
         updateArticleEditorPreview(form);
         return;
       }
-      if (event.target.matches('[data-article-editor] [name="title"], [data-article-editor] [name="author"], [data-article-editor] [name="deck"], [data-article-editor] [name="coverCaption"], [data-article-editor] [name="keyTakeaways"], [data-article-editor] [name="seoTitle"], [data-article-editor] [name="seoExcerpt"], [data-article-editor] [data-article-block-field]')) {
+      if (event.target.matches('[data-article-editor] [name="title"], [data-article-editor] [name="author"], [data-article-editor] [name="deck"], [data-article-editor] [name="coverCaption"], [data-article-editor] [name="keyTakeaways"], [data-article-editor] [data-article-block-field]')) {
         updateArticleEditorPreview(event.target.closest("[data-article-editor]"));
         return;
       }
