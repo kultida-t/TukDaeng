@@ -5071,8 +5071,9 @@
         flex: 0 0 auto;
       }
       .report-detail-page .user-detail-head h2 {
-        font-size: 28px;
-        line-height: 1.05;
+        margin-bottom: 4px;
+        font-size: 21px;
+        line-height: 1.08;
         overflow-wrap: anywhere;
       }
       body.user-detail-mode .report-detail-page .detail-grid.two,
@@ -8707,7 +8708,7 @@
           <div class="user-detail-head">
             <div class="user-detail-title">
               <div>
-                <h2>${asset.name}</h2>
+                <h2>${asset.id} : ${asset.name}</h2>
                 <div class="chips">${renderAssetStatusDisplay(asset)}<span class="pill blue">${detail.brand}</span></div>
               </div>
             </div>
@@ -10349,7 +10350,7 @@
             <div class="user-detail-title">
               ${renderUserProfileImage(user)}
               <div>
-                <h2>${user.displayName}</h2>
+                <h2>${user.id} : ${user.displayName}</h2>
                 <div class="chips">${userStatusPill(user.status)}<span class="pill blue">${user.auth}</span></div>
               </div>
             </div>
@@ -10425,7 +10426,7 @@
             <div class="user-detail-title">
               ${reportUser ? renderUserProfileImage(reportUser) : ""}
               <div>
-                <h2>${report.user}</h2>
+                <h2>${report.id} : ${report.user}</h2>
                 <div class="chips">
                   ${reportQueueStatusPill(report)}
                   ${statusPill(getReportPriorityLabel(report.priority), report.priority)}
@@ -10500,7 +10501,7 @@
           <div class="user-detail-head">
             <div class="user-detail-title">
               <div>
-                <h2>${asset.name}</h2>
+                <h2>${report.id} : ${asset.name}</h2>
                 <div class="chips">
                   ${assetReportQueueStatusPill(asset)}
                   ${renderAssetStatusDisplay(asset)}
