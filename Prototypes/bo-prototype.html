@@ -1662,6 +1662,11 @@
     }
     .article-block-add-row > button {
       flex: 0 0 auto;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 46px;
+      padding: 12px 14px;
       white-space: nowrap;
     }
     .article-editor-blocks {
@@ -1707,6 +1712,7 @@
     }
     .article-editor-block textarea {
       min-height: 104px;
+      background: #fff;
     }
     .article-editor-block[data-article-block-type="h2"] textarea,
     .article-editor-block[data-article-block-type="h3"] textarea,
@@ -1754,6 +1760,12 @@
       font-size: 14px;
       font-weight: 400;
       line-height: 1.45;
+    }
+    .article-editor-form .article-editor-block textarea,
+    .article-editor-form .article-editor-block input {
+      background: #fff;
+      border-color: #cbdff3;
+      box-shadow: inset 0 1px 2px rgba(15, 23, 42, .04), 0 1px 0 rgba(255, 255, 255, .75);
     }
     .article-editor-form .custom-select-trigger:hover {
       border-color: #c3cfdd;
@@ -1908,12 +1920,13 @@
       margin: 8px 0 28px;
       border: 1px solid rgba(255,255,255,.12);
       border-radius: 8px;
-      overflow: hidden;
+      overflow-x: auto;
       font-size: 12px;
     }
     .article-fo-table-row {
       display: grid;
-      grid-template-columns: .9fr 1fr 1fr;
+      grid-template-columns: repeat(var(--article-table-columns, 3), minmax(96px, 1fr));
+      min-width: max(100%, calc(var(--article-table-columns, 3) * 96px));
       border-top: 1px solid rgba(255,255,255,.1);
     }
     .article-fo-table-row:first-child {
@@ -11218,9 +11231,9 @@
     function parseArticleComparisonRows(value = "") {
       const rows = Array.isArray(value) ? value : String(value || "").split(/\n+/);
       return rows.map(row => {
-        if (Array.isArray(row)) return row.map(cell => String(cell || "").trim()).slice(0, 3);
-        return String(row || "").split("|").map(cell => cell.trim()).slice(0, 3);
-      }).filter(row => row.length >= 3 && row.every(Boolean));
+        if (Array.isArray(row)) return row.map(cell => String(cell || "").trim());
+        return String(row || "").split("|").map(cell => cell.trim());
+      }).filter(row => row.length >= 2 && row.every(Boolean));
     }
 
     function getArticleComparisonRows(article) {
@@ -11299,8 +11312,8 @@
             <input value="${caption}" placeholder="คำอธิบายรูปประกอบกลางบทความ" data-article-block-field data-article-block-value />
           </label>
         `
-        : `<label class="full">${label}
-            <textarea data-article-block-field data-article-block-value placeholder="${placeholder}">${content}</textarea>
+        : `<label class="full">
+            <textarea data-article-block-field data-article-block-value aria-label="${escapeArticleField(label)}" placeholder="${placeholder}">${content}</textarea>
           </label>`;
       return `
         <div class="article-editor-block" data-article-content-block data-article-block-type="${type}">
@@ -11424,14 +11437,15 @@
     function renderArticleComparisonTable(article) {
       const rows = getArticleComparisonRows(article);
       if (!rows.length) return "";
-      const hasCustomHeader = /^(หัวข้อ|topic|criteria|feature)$/i.test(rows[0][0]);
-      const header = hasCustomHeader ? rows[0] : ["หัวข้อ", "ตัวเลือก A", "ตัวเลือก B"];
-      const bodyRows = hasCustomHeader ? rows.slice(1) : rows;
+      const columnCount = Math.max(2, ...rows.map(row => row.length));
+      const normalizeRow = row => Array.from({ length: columnCount }, (_, index) => row[index] || "-");
+      const header = normalizeRow(rows[0]);
+      const bodyRows = rows.slice(1);
       if (!bodyRows.length) return "";
       return `
-        <div class="article-fo-table" aria-label="Article comparison table">
-          <div class="article-fo-table-row"><span>${escapeArticleField(header[0])}</span><span>${escapeArticleField(header[1])}</span><span>${escapeArticleField(header[2])}</span></div>
-          ${bodyRows.map(row => `<div class="article-fo-table-row"><span>${escapeArticleField(row[0])}</span><span>${escapeArticleField(row[1])}</span><span>${escapeArticleField(row[2])}</span></div>`).join("")}
+        <div class="article-fo-table" style="--article-table-columns: ${columnCount};" aria-label="Article comparison table">
+          <div class="article-fo-table-row">${header.map(cell => `<span>${escapeArticleField(cell)}</span>`).join("")}</div>
+          ${bodyRows.map(row => `<div class="article-fo-table-row">${normalizeRow(row).map(cell => `<span>${escapeArticleField(cell)}</span>`).join("")}</div>`).join("")}
         </div>
       `;
     }
