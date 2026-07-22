@@ -25,6 +25,10 @@ import readline from 'readline';
 
 const serverUrl = process.env.CORE_PORTAL_URL || 'http://localhost:5001';
 
+process.stdin.setEncoding('utf8');
+process.stdout.setDefaultEncoding('utf8');
+process.stderr.setDefaultEncoding('utf8');
+
 // Set up stdio reading
 const rl = readline.createInterface({
   input: process.stdin,
@@ -142,7 +146,7 @@ rl.on('line', async (line) => {
           const response = await fetch(`${serverUrl}/api/agent/logs`, {
             method: 'POST',
             headers: {
-              'Content-Type': 'application/json',
+              'Content-Type': 'application/json; charset=utf-8',
               'X-API-Key': apiKey
             },
             body: JSON.stringify({
