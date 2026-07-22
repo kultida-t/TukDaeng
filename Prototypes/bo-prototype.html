@@ -1731,6 +1731,31 @@
       font-family: ui-monospace, SFMono-Regular, Consolas, "Liberation Mono", monospace;
       font-size: 13px;
     }
+    .article-readonly-blocks {
+      display: grid;
+      gap: 12px;
+    }
+    .article-readonly-block {
+      display: grid;
+      gap: 8px;
+      padding: 14px;
+      border: 1px solid #e1e9f3;
+      border-radius: 8px;
+      background: #f8fbff;
+    }
+    .article-readonly-block .article-block-title {
+      margin-bottom: 0;
+    }
+    .article-readonly-block-content {
+      color: #061426;
+      font-size: 14px;
+      line-height: 1.55;
+      overflow-wrap: anywhere;
+    }
+    .article-readonly-empty {
+      color: #8a99ad;
+      font-weight: 400;
+    }
     .article-editor-grid {
       display: grid;
       grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -11355,6 +11380,28 @@
       `;
     }
 
+    function renderArticleReadonlyBlocks(article) {
+      const blocks = getArticleContentBlocks(article);
+      if (!blocks.length) return `<div class="article-readonly-empty">No content blocks</div>`;
+      return `
+        <div class="article-readonly-blocks">
+          ${blocks.map((block, index) => {
+            const type = String(block?.type || "paragraph");
+            const label = articleBlockTypes.find(([value]) => value === type)?.[1] || "Paragraph";
+            const content = type === "image"
+              ? (block.caption || article?.bodyImageCaption || article?.bodyImageName || "Image block")
+              : (block.content || "");
+            return `
+              <div class="article-readonly-block" data-article-block-type="${type}">
+                <div class="article-block-title">${index + 1}. ${label}</div>
+                <div class="article-readonly-block-content">${content ? escapeArticleField(content).replace(/\n/g, "<br>") : `<span class="article-readonly-empty">Empty block</span>`}</div>
+              </div>
+            `;
+          }).join("")}
+        </div>
+      `;
+    }
+
     function getArticleEditorContentBlocks(form, includeEmpty = false) {
       return Array.from(form.querySelectorAll("[data-article-content-block]")).map(block => ({
         type: block.dataset.articleBlockType || "paragraph",
@@ -11807,51 +11854,62 @@
           </div>
 
           <div class="article-detail-layout article-editor-layout">
-            <div>
-              <div class="detail-section">
-                <h4>Article Summary</h4>
-                <div class="detail-grid two">
-                  ${renderAssetDetailTiles([
-                    ["Article ID", article.id],
-                    ["Title", article.title],
-                    ["Category", article.category],
-                    ["Author", article.author],
-                    ["Publish Status", article.status],
-                    ["Publish Date", article.publishAt],
-                    ["Updated At", article.updatedAt],
-                    ["Read Time", article.readTime]
-                  ])}
-                </div>
-              </div>
+            <div class="detail-section">
+              <div class="article-editor-form">
+                <section class="article-editor-section">
+                  <h4>Article Header</h4>
+                  <div class="article-editor-grid">
+                    ${renderAssetDetailTiles([
+                      ["Article ID", article.id],
+                      ["Title", article.title],
+                      ["Category", article.category],
+                      ["Author", article.author],
+                      ["Article URL", article.slug || "-"],
+                      ["Read Time", article.readTime]
+                    ])}
+                  </div>
+                </section>
 
-              <div class="detail-section">
-                <h4>Content For FO</h4>
-                <div class="detail-grid">
-                  ${renderAssetDetailTiles([
-                    ["Intro / Deck", article.deck || "-"],
-                    ["Pull Quote", article.quote || "-"],
-                    ["Body", getArticleBodyParagraphs(article).join("<br><br>") || "-"],
-                    ["Tags", article.tags.join(", ")]
-                  ])}
-                </div>
-              </div>
+                <section class="article-editor-section">
+                  <h4>Hero / Cover</h4>
+                  <div class="article-editor-grid">
+                    ${renderAssetDetailTiles([
+                      ["Cover File", article.coverImageName || "-"],
+                      ["Cover Caption", article.coverCaption || "-"],
+                      ["Intro / Deck", article.deck || "-"]
+                    ])}
+                  </div>
+                </section>
 
-              <div class="detail-section">
-                <h4>Board Readiness</h4>
-                <div class="module-note"><strong>Admin action:</strong> ${detailRow.action}</div>
-                <div class="detail-grid">
-                  ${renderAssetDetailTiles([
-                    ["Review note", article.detail]
-                  ])}
-                </div>
-              </div>
+                <section class="article-editor-section">
+                  <h4>Content Blocks</h4>
+                  <p class="article-editor-section-note">Read-only view of the same block structure used in Add/Edit Article</p>
+                  ${renderArticleReadonlyBlocks(article)}
+                </section>
 
-              <div class="detail-section user-detail-action-section">
-                <h4>Article Actions</h4>
+                <section class="article-editor-section">
+                  <h4>Publish Control</h4>
+                  <div class="article-publish-row">
+                    ${renderAssetDetailTiles([
+                      ["Publish Status", articleStatusPill(article.status)],
+                      ["Publish Date", article.publishAt],
+                      ["Updated At", article.updatedAt]
+                    ])}
+                  </div>
+                  <div class="module-note"><strong>Admin action:</strong> ${detailRow.action}</div>
+                  <div class="detail-grid">
+                    ${renderAssetDetailTiles([
+                      ["Review note", article.detail || "-"],
+                      ["Tags", article.tags.join(", ") || "-"]
+                    ])}
+                  </div>
+                </section>
+
                 <div class="user-detail-actions">
                   <button class="user-detail-action-btn" type="button" data-article-edit="${article.id}">Edit article</button>
                   <button class="user-detail-action-btn" type="button" data-article-preview-id="${article.id}">Preview article</button>
                   <button class="user-detail-action-btn" type="button" data-article-duplicate="${article.id}">Duplicate draft</button>
+                  <button class="user-detail-action-btn" type="button" data-back-article-list>Back to Articles</button>
                   <button class="user-detail-action-btn danger" type="button" data-article-delete="${article.id}">${article.status === "Archived" ? "Delete draft" : "Archive article"}</button>
                 </div>
               </div>
@@ -11906,9 +11964,9 @@
       document.body.classList.remove("asset-list-mode", "article-list-mode", "user-list-mode", "user-detail-mode");
       document.body.classList.add("asset-detail-mode");
       document.querySelector("#crumb").textContent = `การดำเนินงาน / Content Management / Articles / ${isEdit ? draft.id : "Add Article"}`;
-      document.querySelector("#page-title").textContent = isEdit ? "แก้ไขบทความ" : "Add Article";
+      document.querySelector("#page-title").textContent = isEdit ? "Edit Article" : "Add Article";
       document.querySelector("#page-meta").textContent = "";
-      document.querySelector("#panel-title").textContent = isEdit ? draft.title : "Add Article";
+      document.querySelector("#panel-title").textContent = isEdit ? "Edit Article" : "Add Article";
       document.querySelector("#panel-subtitle").textContent = "สร้างและตรวจบทความก่อนแสดงบน Board หน้าบ้าน";
       document.querySelector("#user-panel-filter-actions").innerHTML = "";
       document.querySelector(".filters").innerHTML = "";
