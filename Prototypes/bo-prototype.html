@@ -1350,6 +1350,13 @@
     .modal.user-action-modal.article-preview-modal {
       width: min(1040px, 100%);
     }
+    .article-preview-modal-content .user-action-head {
+      margin-bottom: 18px;
+      padding-bottom: 18px;
+    }
+    .article-preview-modal-content .user-action-head h2 {
+      margin-bottom: 0;
+    }
     .article-preview-modal-content .article-preview-stack {
       grid-template-columns: repeat(2, minmax(0, 1fr));
       align-items: start;
@@ -1818,6 +1825,9 @@
       font-weight: 400;
       line-height: 1.45;
       cursor: pointer;
+    }
+    .article-editor-block .article-upload-control {
+      background: #fff;
     }
     .article-upload-control input[type="file"] {
       display: none;
@@ -11574,7 +11584,6 @@
           <div class="user-action-head">
             <div>
               <h2 id="user-action-modal-title">Preview article</h2>
-              <p>Board hero and article detail preview</p>
             </div>
             <button class="btn user-action-close" type="button" data-user-action-modal-close aria-label="Close modal" title="Close">
               <span>×</span>
