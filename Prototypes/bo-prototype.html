@@ -1322,6 +1322,15 @@
     .article-detail-layout.article-editor-layout {
       grid-template-columns: minmax(0, 1fr);
     }
+    .article-detail-page .user-detail-head {
+      margin-bottom: 22px;
+    }
+    .article-detail-page .user-detail-title h2 {
+      margin-bottom: 8px;
+    }
+    .article-detail-page .user-detail-title .chips {
+      margin-top: 0;
+    }
     .article-phone-preview {
       width: min(100%, 460px);
       margin: 0 auto;
@@ -11839,12 +11848,12 @@
       document.querySelector("#cards").innerHTML = "";
       document.querySelector("#detail").innerHTML = "";
       document.querySelector("#table").innerHTML = `
-        <div class="user-detail-page">
+        <div class="user-detail-page article-detail-page">
           <div class="user-detail-head">
             <div class="user-detail-title">
               <div>
                 <h2>${article.title}</h2>
-                <div class="chips">${articleStatusPill(article.status)}<span class="pill blue">${article.category}</span></div>
+                <div class="chips"><span class="pill blue">${article.id}</span></div>
               </div>
             </div>
             <button class="btn user-back-btn" type="button" data-back-article-list aria-label="กลับไป Articles" title="กลับไป Articles">
@@ -11860,12 +11869,10 @@
                   <h4>Article Header</h4>
                   <div class="article-editor-grid">
                     ${renderAssetDetailTiles([
-                      ["Article ID", article.id],
                       ["Title", article.title],
-                      ["Category", article.category],
-                      ["Author", article.author],
                       ["Article URL", article.slug || "-"],
-                      ["Read Time", article.readTime]
+                      ["Category", article.category],
+                      ["Author", article.author]
                     ])}
                   </div>
                 </section>
@@ -11894,13 +11901,6 @@
                       ["Publish Status", articleStatusPill(article.status)],
                       ["Publish Date", article.publishAt],
                       ["Updated At", article.updatedAt]
-                    ])}
-                  </div>
-                  <div class="module-note"><strong>Admin action:</strong> ${detailRow.action}</div>
-                  <div class="detail-grid">
-                    ${renderAssetDetailTiles([
-                      ["Review note", article.detail || "-"],
-                      ["Tags", article.tags.join(", ") || "-"]
                     ])}
                   </div>
                 </section>
