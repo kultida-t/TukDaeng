@@ -11912,17 +11912,17 @@
                 <section class="article-editor-section">
                   <h4>Article Header</h4>
                   <div class="article-editor-grid">
-                    <label class="full">ชื่อบทความ
+                    <label>ชื่อบทความ
                       <input id="article-title-field" name="title" value="${escapeArticleField(draft.title)}" placeholder="เช่น Steel vs. Titanium Watches: ต่างกันอย่างไร" required />
+                    </label>
+                    <label>Article URL
+                      <input name="slug" value="${escapeArticleField(draft.slug || "")}" placeholder="steel-vs-titanium-watches" />
                     </label>
                     <label>หมวดหมู่
                       ${articleEditorCustomSelect("article-category-field", "category", "หมวดหมู่", ["Buying Guide", "Watch 101", "Watch Market", "Watch Events", "Watch Apparel", "Journal Board"].map(category => ({ value: category, label: category })), draft.category)}
                     </label>
                     <label>ผู้เขียน
                       <input name="author" value="${escapeArticleField(draft.author)}" placeholder="ทีม TukDaeng" required />
-                    </label>
-                    <label class="full">Article URL
-                      <input name="slug" value="${escapeArticleField(draft.slug || "")}" placeholder="steel-vs-titanium-watches" />
                     </label>
                   </div>
                 </section>
