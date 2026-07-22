@@ -1328,6 +1328,79 @@
       background: #111;
       box-shadow: 0 18px 36px rgba(15, 23, 42, .18);
     }
+    .article-preview-stack {
+      display: grid;
+      gap: 18px;
+    }
+    .article-board-preview {
+      width: min(100%, 460px);
+      height: 520px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      overflow: hidden;
+      position: relative;
+      border: 10px solid #111;
+      border-radius: 38px;
+      background: #111;
+      color: #fff;
+      box-shadow: 0 18px 36px rgba(15, 23, 42, .18);
+    }
+    .article-board-preview img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    .article-board-preview > .article-cover-mark {
+      position: absolute;
+      top: 42px;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+    .article-board-preview::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, rgba(0,0,0,.18) 0%, rgba(0,0,0,.42) 44%, rgba(0,0,0,.86) 100%);
+    }
+    .article-board-preview-content {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      gap: 14px;
+      padding: 0 30px 34px;
+    }
+    .article-board-preview-title {
+      margin: 0;
+      max-width: 340px;
+      font-family: var(--font-main);
+      font-size: 30px;
+      line-height: 1.16;
+      font-weight: 700;
+      letter-spacing: 0;
+    }
+    .article-board-preview-deck {
+      margin: 0;
+      max-width: 330px;
+      color: rgba(255,255,255,.86);
+      font-size: 14px;
+      line-height: 1.45;
+    }
+    .article-board-preview-button {
+      width: fit-content;
+      margin-top: 12px;
+      border-radius: 10px;
+      padding: 12px 16px;
+      background: #d20f13;
+      color: #fff;
+      font-size: 14px;
+      font-weight: 800;
+      line-height: 1;
+    }
     .article-fo-preview {
       height: 956px;
       display: flex;
@@ -11042,6 +11115,21 @@
       `;
     }
 
+    function renderArticleBoardHeroPreview(article) {
+      const title = article?.seoTitle || article?.title || "Article title";
+      const deck = article?.deck || article?.seoExcerpt || "";
+      return `
+        <div class="article-board-preview" aria-label="Board hero article preview">
+          ${article.coverImageSrc ? `<img src="${escapeArticleField(article.coverImageSrc)}" alt="${escapeArticleField(article.coverImageName || title || "Board hero cover")}" />` : `<div class="article-cover-mark">TD</div>`}
+          <div class="article-board-preview-content">
+            <h3 class="article-board-preview-title">${escapeArticleField(title)}</h3>
+            ${deck ? `<p class="article-board-preview-deck">${escapeArticleField(deck)}</p>` : ""}
+            <span class="article-board-preview-button">Read Full Article</span>
+          </div>
+        </div>
+      `;
+    }
+
     function renderArticleFoPreview(article) {
       const paragraphs = getArticleBodyParagraphs(article);
       const takeaways = Array.isArray(article?.keyTakeaways) ? article.keyTakeaways : parseArticleMultilineItems(article?.keyTakeaways || "");
@@ -11063,7 +11151,6 @@
               <div class="article-fo-cover">${article.coverImageSrc ? `<img src="${escapeArticleField(article.coverImageSrc)}" alt="${escapeArticleField(article.coverImageName || article.title || "Article cover")}" />` : `<div class="article-cover-mark">TD</div>`}</div>
               <div class="article-fo-body">
                 ${article.coverCaption ? `<div class="article-fo-caption">${escapeArticleField(article.coverCaption)}</div>` : ""}
-                ${article.deck ? `<p class="article-fo-deck">${escapeArticleField(article.deck)}</p>` : ""}
                 ${takeaways.length ? `<div class="article-fo-takeaways"><strong>Key takeaways</strong><ul>${takeaways.map(item => `<li>${escapeArticleField(item)}</li>`).join("")}</ul></div>` : ""}
                 ${paragraphs.map(renderArticleStructuredParagraph).join("")}
                 ${article.bodyImageSrc ? `<div class="article-fo-body-image"><img src="${escapeArticleField(article.bodyImageSrc)}" alt="${escapeArticleField(article.bodyImageName || article.title || "Article content image")}" /></div>` : ""}
@@ -11112,6 +11199,15 @@
       };
     }
 
+    function renderArticlePreviewStack(article) {
+      return `
+        <div class="article-preview-stack">
+          ${renderArticleBoardHeroPreview(article)}
+          ${renderArticleFoPreview(article)}
+        </div>
+      `;
+    }
+
     function updateArticleEditorPreview(form) {
       const previewPanel = document.querySelector("[data-article-preview-panel]");
       if (!form || !previewPanel) return;
@@ -11120,7 +11216,7 @@
       const tableRows = getArticleComparisonRows(previewArticle).length;
       const relatedCount = parseArticleMultilineItems(previewArticle.relatedWatches).length;
       previewPanel.innerHTML = `
-        ${renderArticleFoPreview(previewArticle)}
+        ${renderArticlePreviewStack(previewArticle)}
         <div class="article-readiness">
           <h4>Publish readiness</h4>
           <span class="${previewArticle.coverImageSrc ? "" : "missing"}">Cover image ${previewArticle.coverImageSrc ? "พร้อมใช้งาน" : "ยังไม่ได้อัปโหลด"}</span>
@@ -11483,9 +11579,6 @@
                     <label class="full">คำโปรยสั้น
                       <textarea name="deck" placeholder="สรุปเนื้อหาสั้น ๆ สำหรับตรวจ editorial และ preview">${escapeArticleField(draft.deck || "")}</textarea>
                     </label>
-                    <label class="full">Key takeaways
-                      <textarea name="keyTakeaways" placeholder="ใส่ทีละบรรทัด เช่น&#10;Titanium เบากว่า steel ประมาณ 40%&#10;Steel ขัดเงาง่ายและต้นทุนต่ำกว่า">${escapeArticleField(Array.isArray(draft.keyTakeaways) ? draft.keyTakeaways.join("\n") : draft.keyTakeaways || "")}</textarea>
-                    </label>
                   </div>
                 </section>
 
@@ -11568,7 +11661,7 @@
               </form>
             </div>
             <div data-article-preview-panel>
-              ${renderArticleFoPreview({
+              ${renderArticlePreviewStack({
                 ...draft,
                 title: draft.title || "ชื่อบทความ",
                 body: getArticleBodyParagraphs(draft).length ? getArticleBodyParagraphs(draft) : ["กรอกย่อหน้าแรกของบทความที่ต้องการแสดงบนหน้าบ้าน", "เว้นบรรทัดว่างเพื่อแยกแต่ละย่อหน้าในหน้าอ่านบทความ"]
@@ -11634,7 +11727,7 @@
         slug: String(formData.get("slug") || "").trim(),
         coverCaption: String(formData.get("coverCaption") || "").trim(),
         bodyImageCaption: String(formData.get("bodyImageCaption") || "").trim(),
-        keyTakeaways: String(formData.get("keyTakeaways") || "").trim(),
+        keyTakeaways: formData.has("keyTakeaways") ? String(formData.get("keyTakeaways") || "").trim() : existingArticle?.keyTakeaways || "",
         comparisonRows: String(formData.get("comparisonRows") || "").trim(),
         relatedWatches: String(formData.get("relatedWatches") || "").trim(),
         seoTitle: String(formData.get("seoTitle") || "").trim(),
