@@ -1332,6 +1332,18 @@
       display: grid;
       gap: 18px;
     }
+    .article-preview-group {
+      display: grid;
+      gap: 8px;
+    }
+    .article-preview-label {
+      width: min(100%, 460px);
+      margin: 0 auto;
+      color: #334155;
+      font-size: 13px;
+      font-weight: 800;
+      line-height: 1.35;
+    }
     .article-board-preview {
       width: min(100%, 460px);
       height: 520px;
@@ -11202,8 +11214,14 @@
     function renderArticlePreviewStack(article) {
       return `
         <div class="article-preview-stack">
-          ${renderArticleBoardHeroPreview(article)}
-          ${renderArticleFoPreview(article)}
+          <div class="article-preview-group">
+            <div class="article-preview-label">Preview hero article</div>
+            ${renderArticleBoardHeroPreview(article)}
+          </div>
+          <div class="article-preview-group">
+            <div class="article-preview-label">Preview article detail</div>
+            ${renderArticleFoPreview(article)}
+          </div>
         </div>
       `;
     }
