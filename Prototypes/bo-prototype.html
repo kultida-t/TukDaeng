@@ -1623,7 +1623,7 @@
       flex: 1 1 auto;
       min-width: 0;
     }
-    .article-block-add-row button,
+    .article-block-add-row > button,
     .article-block-control {
       border: 1px solid #cbd8ea;
       border-radius: 8px;
@@ -1635,7 +1635,7 @@
       line-height: 1;
       cursor: pointer;
     }
-    .article-block-add-row button {
+    .article-block-add-row > button {
       flex: 0 0 auto;
       white-space: nowrap;
     }
@@ -1734,8 +1734,15 @@
       border-color: #c3cfdd;
       background-color: #fbfcfe;
     }
+    .article-editor-form input:focus,
+    .article-editor-form input:focus-visible,
+    .article-editor-form select:focus,
+    .article-editor-form select:focus-visible,
+    .article-editor-form textarea:focus,
+    .article-editor-form textarea:focus-visible,
     .article-editor-form .custom-select-trigger:focus,
     .article-editor-form .custom-select-trigger:focus-visible {
+      outline: 0;
       border-color: #b8c6d8;
       box-shadow: 0 0 0 3px rgba(118, 135, 158, .10);
     }
