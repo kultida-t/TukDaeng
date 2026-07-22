@@ -1931,11 +1931,6 @@
       border-color: #c8212b !important;
       box-shadow: 0 0 0 3px rgba(200, 33, 43, .08);
     }
-    .article-editor-blocks.article-field-invalid {
-      border: 1px solid #c8212b;
-      border-radius: 8px;
-      padding: 12px;
-    }
     .article-editor-form textarea {
       min-height: 118px;
       resize: vertical;
@@ -11414,6 +11409,7 @@
             ${articleEditorCustomSelect("article-block-type-picker", "blockTypePicker", "เลือกประเภทบล็อก", articleBlockTypes.map(([value, label]) => ({ value, label })), "paragraph", "data-article-block-type-picker")}
             <button type="button" data-article-block-add>+ Add block</button>
           </div>
+          <span class="article-field-error" data-article-content-error></span>
           <div class="article-editor-blocks" data-article-block-list>
             ${blocks.map((block, index) => renderArticleEditorBlock(block, index, article)).join("")}
           </div>
@@ -11717,7 +11713,7 @@
           error: form.querySelector("[data-article-category-error]")
         },
         content: {
-          control: form.querySelector("[data-article-block-list]"),
+          control: form.querySelector("#article-block-type-picker")?.closest("[data-custom-select]")?.querySelector("[data-custom-select-trigger]"),
           error: form.querySelector("[data-article-content-error]")
         },
         publishDate: {
@@ -12110,7 +12106,6 @@
                   <h4>Content Blocks *</h4>
                   <p class="article-editor-section-note">เพิ่มเนื้อหาเป็นบล็อก แก้ไข ลบ หรือย้ายลำดับได้</p>
                   ${renderArticleBlockEditor(draft)}
-                  <span class="article-field-error" data-article-content-error></span>
                 </section>
 
                 <section class="article-editor-section">
