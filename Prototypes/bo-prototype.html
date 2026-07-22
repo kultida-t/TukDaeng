@@ -2619,7 +2619,7 @@
       padding: 18px 0;
     }
     .report-detail-page .detail-section h4 {
-      margin: 0 0 4px;
+      margin: 0;
       color: #061426;
       font-family: var(--font-heading);
       font-size: 24px;
@@ -2636,7 +2636,7 @@
     }
     body.user-detail-mode .user-detail-page:not(.report-detail-page) .detail-section h4,
     body.asset-detail-mode .user-detail-page:not(.report-detail-page) .detail-section h4 {
-      margin: 0 0 4px;
+      margin: 0;
       color: #061426;
       font-family: var(--font-heading);
       font-size: 24px;
@@ -2644,6 +2644,11 @@
       line-height: .95;
       letter-spacing: .08em;
       text-transform: uppercase;
+    }
+    .report-detail-page .history-table-wrap,
+    body.user-detail-mode .user-detail-page:not(.report-detail-page) .history-table-wrap,
+    body.asset-detail-mode .user-detail-page:not(.report-detail-page) .history-table-wrap {
+      margin-top: 0;
     }
     .report-detail-page .user-detail-actions {
       padding-top: 2px;
