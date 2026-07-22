@@ -1331,6 +1331,10 @@
     .article-detail-page .user-detail-title .chips {
       margin-top: 0;
     }
+    .article-detail-page .article-detail-divider {
+      border-top: 1px solid var(--line);
+      margin: -4px 0 22px;
+    }
     .article-phone-preview {
       width: min(100%, 460px);
       margin: 0 auto;
@@ -11944,8 +11948,7 @@
           <div class="user-detail-head">
             <div class="user-detail-title">
               <div>
-                <h2>${article.title}</h2>
-                <div class="chips"><span class="pill blue">${article.id}</span></div>
+                <h2>${article.id} : ${article.title}</h2>
               </div>
             </div>
             <button class="btn user-back-btn" type="button" data-back-article-list aria-label="กลับไป Articles" title="กลับไป Articles">
@@ -11953,6 +11956,8 @@
               <span class="btn-label">กลับไป Articles</span>
             </button>
           </div>
+
+          <div class="article-detail-divider" aria-hidden="true"></div>
 
           <div class="article-detail-layout article-editor-layout">
             <div class="detail-section">
@@ -13306,6 +13311,7 @@
       showOtpForm("");
     }
 
+    let activeArticlePickerInput = null;
     document.addEventListener("keydown", event => {
       if (event.target.matches("[data-picker-only]") && (event.key.length === 1 || ["Backspace", "Delete"].includes(event.key))) {
         event.preventDefault();
@@ -13320,12 +13326,22 @@
     document.addEventListener("pointerdown", event => {
       if (event.target.matches("[data-picker-only]") && typeof event.target.showPicker === "function") {
         event.preventDefault();
+        if (activeArticlePickerInput === event.target) {
+          event.target.blur();
+          activeArticlePickerInput = null;
+          return;
+        }
         try {
+          activeArticlePickerInput = event.target;
           event.target.showPicker();
         } catch (error) {
+          activeArticlePickerInput = null;
           // Some browsers only allow showPicker during direct pointer activation.
         }
       }
+    });
+    document.addEventListener("focusout", event => {
+      if (event.target === activeArticlePickerInput) activeArticlePickerInput = null;
     });
     document.addEventListener("wheel", containArticlePreviewScroll, { passive: false });
     document.addEventListener("touchstart", startArticlePreviewTouch, { passive: true });
@@ -13337,6 +13353,7 @@
         return;
       }
       if (event.target.matches("[data-article-publish-status], [data-article-publish-date], [data-article-publish-time]")) {
+        if (event.target.matches("[data-article-publish-date], [data-article-publish-time]")) activeArticlePickerInput = null;
         if (event.target.matches("[data-article-publish-status]")) {
           event.target.closest("[data-article-editor]").dataset.articleStatusChanged = "true";
         }
