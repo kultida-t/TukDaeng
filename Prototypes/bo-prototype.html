@@ -1598,21 +1598,6 @@
       font-size: 12px;
       line-height: 1.45;
     }
-    .article-block-toolbar {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-    }
-    .article-block-chip {
-      border: 1px solid #cbd8ea;
-      border-radius: 999px;
-      padding: 7px 11px;
-      color: #334155;
-      background: #fff;
-      font-size: 12px;
-      font-weight: 700;
-      line-height: 1;
-    }
     .article-block-builder {
       display: grid;
       grid-column: 1 / -1;
@@ -11136,10 +11121,10 @@
       ["paragraph", "Paragraph"],
       ["h2", "Heading H2"],
       ["h3", "Heading H3"],
+      ["list", "Bullet List"],
       ["image", "Image + Caption"],
       ["quote", "Quote"],
-      ["comparison", "Comparison Table"],
-      ["related", "Related Watches"]
+      ["comparison", "Comparison Table"]
     ];
 
     function parseArticleComparisonRows(value = "") {
@@ -11162,7 +11147,7 @@
             content: String(block?.content || ""),
             caption: String(block?.caption || "")
           }))
-          .filter(block => block.type === "image" || block.content.trim() || block.caption.trim());
+          .filter(block => block.type !== "related" && (block.type === "image" || block.content.trim() || block.caption.trim()));
       }
       const blocks = getArticleBodyParagraphs(article).map(paragraph => {
         if (paragraph.startsWith("### ")) return { type: "h3", content: paragraph.replace(/^###\s+/, "") };
@@ -11174,7 +11159,6 @@
       }
       if (article?.quote) blocks.push({ type: "quote", content: article.quote });
       if (article?.comparisonRows) blocks.push({ type: "comparison", content: Array.isArray(article.comparisonRows) ? article.comparisonRows.map(row => Array.isArray(row) ? row.join(" | ") : row).join("\n") : article.comparisonRows });
-      if (article?.relatedWatches) blocks.push({ type: "related", content: Array.isArray(article.relatedWatches) ? article.relatedWatches.join("\n") : article.relatedWatches });
       return blocks;
     }
 
@@ -11183,6 +11167,10 @@
       const content = String(block?.content || "").trim();
       if (type === "h2" && content) return `<h4 class="article-fo-heading">${escapeArticleField(content)}</h4>`;
       if (type === "h3" && content) return `<h5 class="article-fo-subheading">${escapeArticleField(content)}</h5>`;
+      if (type === "list" && content) {
+        const items = parseArticleMultilineItems(content);
+        return items.length ? `<ul>${items.map(item => `<li>${escapeArticleField(item)}</li>`).join("")}</ul>` : "";
+      }
       if (type === "quote" && content) return `<blockquote class="article-fo-quote">"${escapeArticleField(content)}"</blockquote>`;
       if (type === "image" && article.bodyImageSrc) {
         return `
@@ -11191,7 +11179,6 @@
         `;
       }
       if (type === "comparison") return renderArticleComparisonTable({ comparisonRows: content });
-      if (type === "related") return renderArticleRelatedItems({ relatedWatches: content });
       if (!content) return "";
       return renderArticleStructuredParagraph(content);
     }
@@ -11205,6 +11192,11 @@
       const label = articleBlockTypes.find(([value]) => value === type)?.[1] || "Paragraph";
       const content = escapeArticleField(block?.content || "");
       const caption = escapeArticleField(block?.caption || article?.bodyImageCaption || "");
+      const placeholder = type === "comparison"
+        ? "หัวข้อ | ตัวเลือก A | ตัวเลือก B&#10;Weight | หนักกว่า | เบากว่า"
+        : type === "list"
+            ? "ใส่รายการละ 1 บรรทัด เช่น&#10;Start the chronograph...&#10;Stop the chronograph..."
+            : "พิมพ์เนื้อหาของบล็อกนี้";
       const field = type === "image"
         ? `
           <label class="full">รูปในเนื้อหา
@@ -11220,7 +11212,7 @@
           </label>
         `
         : `<label class="full">${label}
-            <textarea data-article-block-field data-article-block-value placeholder="${type === "comparison" ? "หัวข้อ | ตัวเลือก A | ตัวเลือก B&#10;Weight | หนักกว่า | เบากว่า" : type === "related" ? "ใส่ทีละบรรทัด เช่น&#10;Grand Seiko SBGA211 Snowflake&#10;Rolex Submariner" : "พิมพ์เนื้อหาของบล็อกนี้"}">${content}</textarea>
+            <textarea data-article-block-field data-article-block-value placeholder="${placeholder}">${content}</textarea>
           </label>`;
       return `
         <div class="article-editor-block" data-article-content-block data-article-block-type="${type}">
@@ -11269,11 +11261,11 @@
       blocks.forEach(block => {
         if (block.type === "h2" && block.content) body.push(`## ${block.content}`);
         else if (block.type === "h3" && block.content) body.push(`### ${block.content}`);
+        else if (block.type === "list" && block.content) body.push(parseArticleMultilineItems(block.content).map(item => `- ${item}`).join("\n"));
         else if (block.type === "paragraph" && block.content) body.push(block.content);
         else if (block.type === "quote" && block.content && !legacy.quote) legacy.quote = block.content;
         else if (block.type === "image" && !legacy.bodyImageCaption) legacy.bodyImageCaption = block.caption || "";
         else if (block.type === "comparison" && block.content && !legacy.comparisonRows) legacy.comparisonRows = block.content;
-        else if (block.type === "related" && block.content && !legacy.relatedWatches) legacy.relatedWatches = block.content;
       });
       return legacy;
     }
@@ -11341,7 +11333,7 @@
       if (!text) return "";
       if (text.startsWith("### ")) return `<h5 class="article-fo-subheading">${escapeArticleField(text.replace(/^###\s+/, ""))}</h5>`;
       if (text.startsWith("## ")) return `<h4 class="article-fo-heading">${escapeArticleField(text.replace(/^##\s+/, ""))}</h4>`;
-      if (/^[-*]\s+/m.test(text)) {
+      if (text.split(/\n+/).filter(Boolean).every(line => /^[-*]\s+/.test(line.trim()))) {
         const items = text.split(/\n+/).map(item => item.replace(/^[-*]\s*/, "").trim()).filter(Boolean);
         return `<ul>${items.map(item => `<li>${escapeArticleField(item)}</li>`).join("")}</ul>`;
       }
@@ -11834,15 +11826,6 @@
                 <section class="article-editor-section">
                   <h4>Content Blocks</h4>
                   <p class="article-editor-section-note">เพิ่มเนื้อหาเป็นบล็อก แก้ไข ลบ หรือย้ายลำดับได้เหมือน editor ของบทความ</p>
-                  <div class="article-block-toolbar" aria-label="Supported article blocks">
-                    <span class="article-block-chip">H2</span>
-                    <span class="article-block-chip">H3</span>
-                    <span class="article-block-chip">Paragraph</span>
-                    <span class="article-block-chip">Image + Caption</span>
-                    <span class="article-block-chip">Quote</span>
-                    <span class="article-block-chip">Comparison Table</span>
-                    <span class="article-block-chip">Related Watches</span>
-                  </div>
                   ${renderArticleBlockEditor(draft)}
                 </section>
 
