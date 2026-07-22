@@ -1607,14 +1607,18 @@
       padding-top: 0;
       border-top: 0;
     }
-    .article-editor-section h4 {
-      margin: 0;
+    .article-editor-form .article-editor-section h4 {
+      margin: 0 0 4px;
       color: #061426;
-      font-size: 15px;
-      line-height: 1.35;
+      font-family: var(--font-heading);
+      font-size: 24px;
+      font-weight: 400;
+      line-height: .95;
+      letter-spacing: .08em;
+      text-transform: uppercase;
     }
-    .article-editor-section-note {
-      margin: -6px 0 0;
+    .article-editor-form .article-editor-section-note {
+      margin: 0 0 4px;
       color: #64748b;
       font-size: 12px;
       line-height: 1.45;
@@ -1646,10 +1650,10 @@
     }
     .article-block-add-row > button,
     .article-block-control {
-      border: 1px solid #cbd8ea;
+      border: 1px solid #d7e5f4;
       border-radius: 8px;
       padding: 10px 12px;
-      background: #f8fafc;
+      background: #f8fbff;
       color: #061426;
       font-size: 13px;
       font-weight: 800;
@@ -1668,9 +1672,9 @@
       display: grid;
       gap: 12px;
       padding: 14px;
-      border: 1px solid #d8e2f0;
+      border: 1px solid #e1e9f3;
       border-radius: 8px;
-      background: #fff;
+      background: #f8fbff;
     }
     .article-block-header {
       display: flex;
@@ -1731,22 +1735,22 @@
     .article-editor-form select,
     .article-editor-form textarea {
       width: 100%;
-      border: 1px solid #cbd8ea;
+      border: 1px solid #d7e5f4;
       border-radius: 8px;
       padding: 12px 13px;
       color: #061426;
-      background: #fff;
+      background: #f8fbff;
       font-size: 14px;
       font-weight: 400;
       line-height: 1.45;
     }
     .article-editor-form .custom-select-trigger {
       min-height: 46px;
-      border-color: #cbd8ea;
+      border-color: #d7e5f4;
       border-radius: 8px;
       padding: 12px 13px;
       color: #061426;
-      background: #fff;
+      background: #f8fbff;
       font-size: 14px;
       font-weight: 400;
       line-height: 1.45;
@@ -1768,8 +1772,9 @@
       box-shadow: 0 0 0 3px rgba(118, 135, 158, .10);
     }
     .article-editor-form .custom-select-menu {
-      border-color: #aeb8c6;
+      border-color: #cbd8ea;
       border-radius: 7px;
+      background: #fff;
     }
     .article-editor-form input::placeholder,
     .article-editor-form textarea::placeholder {
@@ -1792,11 +1797,11 @@
       display: flex;
       align-items: center;
       gap: 9px;
-      border: 1px solid #cbd8ea;
+      border: 1px solid #d7e5f4;
       border-radius: 8px;
       padding: 10px 13px;
       color: #061426;
-      background: #fff;
+      background: #f8fbff;
       font-size: 14px;
       font-weight: 400;
       line-height: 1.45;
@@ -1808,9 +1813,9 @@
     .article-upload-button {
       flex-shrink: 0;
       padding: 4px 10px;
-      border: 1px solid #94a3b8;
+      border: 1px solid #cbd8ea;
       border-radius: 4px;
-      background: #f8fafc;
+      background: #fff;
       color: #061426;
       font-size: 13px;
       font-weight: 600;
