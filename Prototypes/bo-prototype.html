@@ -1796,38 +1796,6 @@
       color: rgba(255,255,255,.7);
       font-weight: 700;
     }
-    .article-readiness {
-      display: grid;
-      gap: 9px;
-      margin-top: 14px;
-      padding: 14px;
-      border: 1px solid #d8e2f0;
-      border-radius: 8px;
-      background: #fff;
-    }
-    .article-readiness h4 {
-      margin: 0;
-      color: #061426;
-      font-size: 14px;
-    }
-    .article-readiness span {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      color: #475569;
-      font-size: 12px;
-      line-height: 1.35;
-    }
-    .article-readiness span::before {
-      content: "";
-      width: 8px;
-      height: 8px;
-      border-radius: 999px;
-      background: #16a34a;
-    }
-    .article-readiness span.missing::before {
-      background: #f59e0b;
-    }
     .article-publish-row {
       display: grid;
       grid-column: 1 / -1;
@@ -11230,19 +11198,7 @@
       const previewPanel = document.querySelector("[data-article-preview-panel]");
       if (!form || !previewPanel) return;
       const previewArticle = getArticleEditorPreviewArticle(form);
-      const bodyCount = getArticleBodyParagraphs(previewArticle).length;
-      const tableRows = getArticleComparisonRows(previewArticle).length;
-      const relatedCount = parseArticleMultilineItems(previewArticle.relatedWatches).length;
-      previewPanel.innerHTML = `
-        ${renderArticlePreviewStack(previewArticle)}
-        <div class="article-readiness">
-          <h4>Publish readiness</h4>
-          <span class="${previewArticle.coverImageSrc ? "" : "missing"}">Cover image ${previewArticle.coverImageSrc ? "พร้อมใช้งาน" : "ยังไม่ได้อัปโหลด"}</span>
-          <span class="${bodyCount >= 2 ? "" : "missing"}">เนื้อหามี ${bodyCount} block และรองรับ H2/H3 ใน preview</span>
-          <span class="${tableRows ? "" : "missing"}">Comparison table ${tableRows ? `${tableRows} แถว` : "ยังไม่ถูกเพิ่ม"}</span>
-          <span class="${relatedCount ? "" : "missing"}">Related watches ${relatedCount ? `${relatedCount} รายการ` : "ยังไม่ถูกเพิ่ม"}</span>
-        </div>
-      `;
+      previewPanel.innerHTML = renderArticlePreviewStack(previewArticle);
     }
 
     function setArticleUploadError(form, kind, message = "") {
@@ -11595,7 +11551,7 @@
                       <input name="coverCaption" value="${escapeArticleField(draft.coverCaption || "")}" placeholder="คำอธิบายภาพที่จะขึ้นใต้รูป hero" />
                     </label>
                     <label class="full">คำโปรยสั้น
-                      <textarea name="deck" placeholder="สรุปเนื้อหาสั้น ๆ สำหรับตรวจ editorial และ preview">${escapeArticleField(draft.deck || "")}</textarea>
+                      <textarea name="deck" placeholder="ข้อความสรุป/เกริ่นนำสั้น ๆ ที่แสดงใต้ hero/cover ก่อนเข้าเนื้อหาหลัก">${escapeArticleField(draft.deck || "")}</textarea>
                     </label>
                   </div>
                 </section>
