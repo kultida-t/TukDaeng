@@ -11441,7 +11441,12 @@
         const items = text.split(/\n+/).map(item => item.replace(/^[-*]\s*/, "").trim()).filter(Boolean);
         return `<ul>${items.map(item => `<li>${escapeArticleField(item)}</li>`).join("")}</ul>`;
       }
-      return `<p>${escapeArticleField(text)}</p>`;
+      return text
+        .split(/\n\s*\n+/)
+        .map(item => item.trim())
+        .filter(Boolean)
+        .map(item => `<p>${escapeArticleField(item).replace(/\n/g, "<br>")}</p>`)
+        .join("");
     }
 
     function renderArticleComparisonTable(article) {
@@ -11890,6 +11895,12 @@
       };
       const publishParts = parseArticlePublishInputParts(draft.publishAt);
       const publishMin = getBangkokDateTimeInputParts();
+      const articleStatusOptions = [
+        { value: "Draft", label: "Draft" },
+        { value: "Scheduled", label: "Scheduled" },
+        { value: "Published", label: "Published" },
+        ...(isEdit ? [{ value: "Archived", label: "Archived" }] : [])
+      ];
       activeModule = "content";
       activeSub = "Articles";
       document.body.classList.remove("asset-list-mode", "article-list-mode", "user-list-mode", "user-detail-mode");
@@ -11930,7 +11941,7 @@
                 <section class="article-editor-section">
                   <h4>Hero / Cover</h4>
                   <div class="article-editor-grid">
-                    <label class="full">รูป Cover
+                    <label>รูป Cover
                       <span class="article-upload-control" data-article-cover-upload-control>
                         <span class="article-upload-button">เลือกไฟล์</span>
                         <span class="article-upload-display ${draft.coverImageName ? "" : "placeholder"}" data-article-cover-display>${escapeArticleField(draft.coverImageName || "รองรับ JPG, PNG, WebP ไม่เกิน 5MB")}</span>
@@ -11938,7 +11949,7 @@
                       </span>
                       <span class="article-upload-error" data-article-cover-error></span>
                     </label>
-                    <label class="full">Caption รูป Cover
+                    <label>Caption รูป Cover
                       <input name="coverCaption" value="${escapeArticleField(draft.coverCaption || "")}" placeholder="คำอธิบายภาพที่จะขึ้นใต้รูป hero" />
                     </label>
                     <label class="full">คำโปรยสั้น
@@ -11949,7 +11960,7 @@
 
                 <section class="article-editor-section">
                   <h4>Content Blocks</h4>
-                  <p class="article-editor-section-note">เพิ่มเนื้อหาเป็นบล็อก แก้ไข ลบ หรือย้ายลำดับได้เหมือน editor ของบทความ</p>
+                  <p class="article-editor-section-note">เพิ่มเนื้อหาเป็นบล็อก แก้ไข ลบ หรือย้ายลำดับได้</p>
                   ${renderArticleBlockEditor(draft)}
                 </section>
 
@@ -11957,12 +11968,7 @@
                   <h4>Publish Control</h4>
                   <div class="article-publish-row">
                     <label>สถานะเผยแพร่
-                      ${articleEditorCustomSelect("article-status-field", "status", "สถานะเผยแพร่", [
-                        { value: "Draft", label: "Draft" },
-                        { value: "Scheduled", label: "Scheduled" },
-                        { value: "Published", label: "Published" },
-                        { value: "Archived", label: "Archived" }
-                      ], draft.status, "data-article-publish-status")}
+                      ${articleEditorCustomSelect("article-status-field", "status", "สถานะเผยแพร่", articleStatusOptions, draft.status, "data-article-publish-status")}
                     </label>
                     <label>วันที่เผยแพร่
                       <input name="publishDate" type="date" value="${escapeArticleField(publishParts.date)}" min="${publishMin.date}" data-article-publish-date data-picker-only />
@@ -12002,6 +12008,10 @@
       const publishIso = publishDate && publishTime ? `${publishDate}T${publishTime}` : "";
       const nowParts = getBangkokDateTimeInputParts();
       const nowIso = `${nowParts.date}T${nowParts.time}`;
+      if (status === "Archived" && form.dataset.articleMode !== "edit") {
+        alert("Archived ใช้ได้เฉพาะตอนแก้ไขบทความที่มีอยู่แล้ว");
+        return;
+      }
       if ((publishDate || publishTime) && !publishIso) {
         alert("กรุณาเลือกทั้งวันที่เผยแพร่และเวลาเผยแพร่");
         return;
