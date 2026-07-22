@@ -1319,6 +1319,9 @@
       gap: 36px;
       align-items: start;
     }
+    .article-detail-layout.article-editor-layout {
+      grid-template-columns: minmax(0, 1fr);
+    }
     .article-phone-preview {
       width: min(100%, 460px);
       margin: 0 auto;
@@ -1343,6 +1346,13 @@
       font-size: 13px;
       font-weight: 800;
       line-height: 1.35;
+    }
+    .modal.user-action-modal.article-preview-modal {
+      width: min(1040px, 100%);
+    }
+    .article-preview-modal-content .article-preview-stack {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      align-items: start;
     }
     .article-board-preview {
       width: min(100%, 460px);
@@ -1928,6 +1938,9 @@
       }
       .article-publish-row {
         grid-column: 1;
+        grid-template-columns: 1fr;
+      }
+      .article-preview-modal-content .article-preview-stack {
         grid-template-columns: 1fr;
       }
       .article-phone-preview {
@@ -9546,6 +9559,7 @@
       const modal = document.querySelector("#user-action-modal");
       if (!modal) return;
       modal.classList.remove("show");
+      modal.querySelector(".user-action-modal")?.classList.remove("article-preview-modal");
       document.body.classList.remove("asset-action-modal-open");
       document.querySelector("#user-action-modal-body").innerHTML = "";
     }
@@ -11519,6 +11533,34 @@
       previewPanel.innerHTML = renderArticlePreviewStack(previewArticle);
     }
 
+    function openArticlePreviewModal(article) {
+      const modal = document.querySelector("#user-action-modal");
+      const modalCard = modal?.querySelector(".user-action-modal");
+      const modalBody = document.querySelector("#user-action-modal-body");
+      if (!article || !modal || !modalCard || !modalBody) return;
+      modalCard.classList.add("article-preview-modal");
+      modalBody.innerHTML = `
+        <div class="user-action-layout article-preview-modal-content">
+          <div class="user-action-head">
+            <div>
+              <h2 id="user-action-modal-title">Preview article</h2>
+              <p>Board hero and article detail preview</p>
+            </div>
+            <button class="btn user-action-close" type="button" data-user-action-modal-close aria-label="Close modal" title="Close">
+              <span>×</span>
+            </button>
+          </div>
+          ${renderArticlePreviewStack(article)}
+        </div>
+      `;
+      showUserActionModal(true);
+    }
+
+    function openArticleEditorPreviewModal(form) {
+      if (!form) return;
+      openArticlePreviewModal(getArticleEditorPreviewArticle(form));
+    }
+
     function setArticleUploadError(form, kind, message = "") {
       if (!form) return;
       const isCover = kind === "cover";
@@ -11720,7 +11762,7 @@
             </button>
           </div>
 
-          <div class="article-detail-layout">
+          <div class="article-detail-layout article-editor-layout">
             <div>
               <div class="detail-section">
                 <h4>Article Summary</h4>
@@ -11764,15 +11806,10 @@
                 <h4>Article Actions</h4>
                 <div class="user-detail-actions">
                   <button class="user-detail-action-btn" type="button" data-article-edit="${article.id}">Edit article</button>
+                  <button class="user-detail-action-btn" type="button" data-article-preview-id="${article.id}">Preview article</button>
                   <button class="user-detail-action-btn" type="button" data-article-duplicate="${article.id}">Duplicate draft</button>
                   <button class="user-detail-action-btn danger" type="button" data-article-delete="${article.id}">${article.status === "Archived" ? "Delete draft" : "Archive article"}</button>
                 </div>
-              </div>
-            </div>
-            <div>
-              <div class="detail-section">
-                <h4>FO Mobile Preview</h4>
-                ${renderArticleFoPreview(article)}
               </div>
             </div>
           </div>
@@ -11830,7 +11867,7 @@
       document.querySelector("#detail").innerHTML = "";
       document.querySelector("#table").innerHTML = `
         <div class="user-detail-page">
-          <div class="article-detail-layout">
+          <div class="article-detail-layout article-editor-layout">
             <div class="detail-section">
               <form class="article-editor-form" data-article-editor data-article-mode="${isEdit ? "edit" : "add"}" data-article-id="${draft.id}" data-article-cover-src="${escapeArticleField(draft.coverImageSrc || "")}" data-article-cover-name="${escapeArticleField(draft.coverImageName || "")}" data-article-body-image-src="${escapeArticleField(draft.bodyImageSrc || "")}" data-article-body-image-name="${escapeArticleField(draft.bodyImageName || "")}">
                 <section class="article-editor-section">
@@ -11898,17 +11935,11 @@
                   </div>
                 </section>
                 <div class="user-detail-actions">
+                  <button class="user-detail-action-btn" type="button" data-article-preview-open>Preview</button>
                   <button class="user-detail-action-btn" type="submit">${isEdit ? "บันทึกการแก้ไข" : "สร้างบทความ"}</button>
                   <button class="user-detail-action-btn" type="button" data-back-article-list>ยกเลิก</button>
                 </div>
               </form>
-            </div>
-            <div data-article-preview-panel>
-              ${renderArticlePreviewStack({
-                ...draft,
-                title: draft.title || "ชื่อบทความ",
-                body: getArticleBodyParagraphs(draft).length ? getArticleBodyParagraphs(draft) : ["กรอกย่อหน้าแรกของบทความที่ต้องการแสดงบนหน้าบ้าน", "เว้นบรรทัดว่างเพื่อแยกแต่ละย่อหน้าในหน้าอ่านบทความ"]
-              })}
             </div>
           </div>
         </div>
@@ -12386,6 +12417,18 @@
         if (!article) return;
         renderArticleEditorPage(article, "edit");
         closeRowMenus();
+        return;
+      }
+      const articlePreviewButton = event.target.closest("[data-article-preview-open]");
+      if (articlePreviewButton) {
+        openArticleEditorPreviewModal(articlePreviewButton.closest("[data-article-editor]"));
+        return;
+      }
+      const articlePreviewIdButton = event.target.closest("[data-article-preview-id]");
+      if (articlePreviewIdButton) {
+        const article = getArticleById(articlePreviewIdButton.dataset.articlePreviewId);
+        if (!article) return;
+        openArticlePreviewModal(article);
         return;
       }
       const articleBlockAdd = event.target.closest("[data-article-block-add]");
