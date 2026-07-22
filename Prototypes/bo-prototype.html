@@ -1782,6 +1782,7 @@
     .article-editor-form select,
     .article-editor-form textarea {
       width: 100%;
+      min-height: 46px;
       border: 1px solid #d7e5f4;
       border-radius: 8px;
       padding: 12px 13px;
@@ -1804,6 +1805,7 @@
     }
     .article-editor-readonly-value {
       width: 100%;
+      min-height: 46px;
       border: 1px solid #d7e5f4;
       border-radius: 8px;
       padding: 12px 13px;
@@ -1863,6 +1865,7 @@
       display: flex;
       align-items: center;
       gap: 9px;
+      min-height: 46px;
       border: 1px solid #d7e5f4;
       border-radius: 8px;
       padding: 10px 13px;
@@ -1902,18 +1905,36 @@
       font-weight: 400;
     }
     .article-upload-error {
-      display: none;
+      display: block;
+      min-height: 18px;
+      visibility: hidden;
       color: #c8212b;
       font-size: 12px;
       font-weight: 600;
       line-height: 1.45;
     }
-    .article-upload-error.show {
+    .article-field-error {
       display: block;
+      min-height: 18px;
+      visibility: hidden;
+      color: #c8212b;
+      font-size: 12px;
+      font-weight: 600;
+      line-height: 1.45;
     }
-    .article-upload-invalid {
+    .article-upload-error.show,
+    .article-field-error.show {
+      visibility: visible;
+    }
+    .article-upload-invalid,
+    .article-field-invalid {
       border-color: #c8212b !important;
       box-shadow: 0 0 0 3px rgba(200, 33, 43, .08);
+    }
+    .article-editor-blocks.article-field-invalid {
+      border: 1px solid #c8212b;
+      border-radius: 8px;
+      padding: 12px;
     }
     .article-editor-form textarea {
       min-height: 118px;
@@ -11236,8 +11257,6 @@
       timeInput.min = dateInput.value === now.date ? now.time : "";
       dateInput.disabled = disabled;
       timeInput.disabled = disabled;
-      dateInput.required = status === "Scheduled";
-      timeInput.required = status === "Scheduled";
       if (status === "Published") {
         if (form.dataset.articleStatusChanged === "true" || !dateInput.value || !timeInput.value) {
           dateInput.value = now.date;
@@ -11686,6 +11705,57 @@
       }
     }
 
+    function setArticleFieldError(form, field, message = "") {
+      if (!form) return;
+      const fieldMap = {
+        title: {
+          control: form.querySelector('[name="title"]'),
+          error: form.querySelector("[data-article-title-error]")
+        },
+        category: {
+          control: form.querySelector("#article-category-field")?.closest("[data-custom-select]")?.querySelector("[data-custom-select-trigger]"),
+          error: form.querySelector("[data-article-category-error]")
+        },
+        content: {
+          control: form.querySelector("[data-article-block-list]"),
+          error: form.querySelector("[data-article-content-error]")
+        },
+        publishDate: {
+          control: form.querySelector('[name="publishDate"]'),
+          error: form.querySelector("[data-article-publish-date-error]")
+        },
+        publishTime: {
+          control: form.querySelector('[name="publishTime"]'),
+          error: form.querySelector("[data-article-publish-time-error]")
+        }
+      };
+      const config = fieldMap[field];
+      if (!config) return;
+      config.control?.classList.toggle("article-field-invalid", Boolean(message));
+      if (config.error) {
+        config.error.textContent = message;
+        config.error.classList.toggle("show", Boolean(message));
+      }
+    }
+
+    function clearArticleValidationErrors(form) {
+      ["title", "category", "content", "publishDate", "publishTime"].forEach(field => setArticleFieldError(form, field));
+      setArticleUploadError(form, "cover");
+    }
+
+    function focusFirstArticleValidationError(form, fields) {
+      const firstField = fields[0];
+      const focusMap = {
+        title: () => form.querySelector('[name="title"]')?.focus(),
+        category: () => form.querySelector("#article-category-field")?.closest("[data-custom-select]")?.querySelector("[data-custom-select-trigger]")?.focus(),
+        cover: () => form.querySelector("[data-article-cover-upload-control]")?.scrollIntoView({ block: "center", behavior: "smooth" }),
+        content: () => form.querySelector("[data-article-block-add]")?.focus(),
+        publishDate: () => form.querySelector('[name="publishDate"]')?.focus(),
+        publishTime: () => form.querySelector('[name="publishTime"]')?.focus()
+      };
+      focusMap[firstField]?.();
+    }
+
     function validateArticleImageUpload(file, kind) {
       const allowedTypes = ["image/jpeg", "image/png", "image/webp"];
       const maxSizeMb = 5;
@@ -11990,22 +12060,26 @@
         <div class="user-detail-page">
           <div class="article-detail-layout article-editor-layout">
             <div class="detail-section">
-              <form class="article-editor-form" data-article-editor data-article-mode="${isEdit ? "edit" : "add"}" data-article-id="${draft.id}" data-article-cover-src="${escapeArticleField(draft.coverImageSrc || "")}" data-article-cover-name="${escapeArticleField(draft.coverImageName || "")}" data-article-body-image-src="${escapeArticleField(draft.bodyImageSrc || "")}" data-article-body-image-name="${escapeArticleField(draft.bodyImageName || "")}">
+              <form class="article-editor-form" data-article-editor data-article-mode="${isEdit ? "edit" : "add"}" data-article-id="${draft.id}" data-article-cover-src="${escapeArticleField(draft.coverImageSrc || "")}" data-article-cover-name="${escapeArticleField(draft.coverImageName || "")}" data-article-body-image-src="${escapeArticleField(draft.bodyImageSrc || "")}" data-article-body-image-name="${escapeArticleField(draft.bodyImageName || "")}" novalidate>
                 <section class="article-editor-section">
                   <h4>Article Header</h4>
                   <div class="article-editor-grid">
                     <label>ชื่อบทความ *
-                      <input id="article-title-field" name="title" value="${escapeArticleField(draft.title)}" placeholder="เช่น Steel vs. Titanium Watches: ต่างกันอย่างไร" required />
+                      <input id="article-title-field" name="title" value="${escapeArticleField(draft.title)}" placeholder="เช่น Steel vs. Titanium Watches: ต่างกันอย่างไร" />
+                      <span class="article-field-error" data-article-title-error></span>
                     </label>
                     <label>Article URL
                       <input name="slug" value="${escapeArticleField(draft.slug || "")}" placeholder="steel-vs-titanium-watches" />
+                      <span class="article-field-error" aria-hidden="true"></span>
                     </label>
                     <label>หมวดหมู่ *
                       ${articleEditorCustomSelect("article-category-field", "category", "หมวดหมู่", [{ value: "", label: "เลือกหมวดหมู่" }, ...["Buying Guide", "Watch 101", "Watch Market", "Watch Events", "Watch Apparel", "Journal Board"].map(category => ({ value: category, label: category }))], draft.category)}
+                      <span class="article-field-error" data-article-category-error></span>
                     </label>
                     <label>ผู้เขียน
                       <input type="hidden" name="author" value="By TukDaeng" />
                       <span class="article-editor-readonly-value">By TukDaeng</span>
+                      <span class="article-field-error" aria-hidden="true"></span>
                     </label>
                   </div>
                 </section>
@@ -12023,9 +12097,11 @@
                     </label>
                     <label>Caption รูป Cover
                       <input name="coverCaption" value="${escapeArticleField(draft.coverCaption || "")}" placeholder="คำอธิบายภาพที่จะขึ้นใต้รูป hero" />
+                      <span class="article-field-error" aria-hidden="true"></span>
                     </label>
                     <label class="full">คำโปรยสั้น
                       <textarea name="deck" placeholder="ข้อความสรุป/เกริ่นนำสั้น ๆ ที่แสดงใต้ hero/cover ก่อนเข้าเนื้อหาหลัก">${escapeArticleField(draft.deck || "")}</textarea>
+                      <span class="article-field-error" aria-hidden="true"></span>
                     </label>
                   </div>
                 </section>
@@ -12034,6 +12110,7 @@
                   <h4>Content Blocks *</h4>
                   <p class="article-editor-section-note">เพิ่มเนื้อหาเป็นบล็อก แก้ไข ลบ หรือย้ายลำดับได้</p>
                   ${renderArticleBlockEditor(draft)}
+                  <span class="article-field-error" data-article-content-error></span>
                 </section>
 
                 <section class="article-editor-section">
@@ -12041,12 +12118,15 @@
                   <div class="article-publish-row">
                     <label>สถานะเผยแพร่
                       ${articleEditorCustomSelect("article-status-field", "status", "สถานะเผยแพร่", articleStatusOptions, draft.status, "data-article-publish-status")}
+                      <span class="article-field-error" aria-hidden="true"></span>
                     </label>
                     <label>วันที่เผยแพร่ *
                       <input name="publishDate" type="date" value="${escapeArticleField(publishParts.date)}" min="${publishMin.date}" data-article-publish-date data-picker-only />
+                      <span class="article-field-error" data-article-publish-date-error></span>
                     </label>
                     <label>เวลาเผยแพร่ *
                       <input name="publishTime" type="time" value="${escapeArticleField(publishParts.time)}" min="${publishParts.date === publishMin.date ? publishMin.time : ""}" step="60" data-article-publish-time data-picker-only />
+                      <span class="article-field-error" data-article-publish-time-error></span>
                     </label>
                   </div>
                 </section>
@@ -12081,45 +12161,61 @@
       const publishIso = publishDate && publishTime ? `${publishDate}T${publishTime}` : "";
       const nowParts = getBangkokDateTimeInputParts();
       const nowIso = `${nowParts.date}T${nowParts.time}`;
+      clearArticleValidationErrors(form);
       if (status === "Archived" && form.dataset.articleMode !== "edit") {
         alert("Archived ใช้ได้เฉพาะตอนแก้ไขบทความที่มีอยู่แล้ว");
         return;
       }
+      const contentBlocks = getArticleEditorContentBlocks(form);
+      const validationErrors = [];
+      const title = String(formData.get("title") || "").trim();
+      if (!title) {
+        setArticleFieldError(form, "title", "กรุณากรอกชื่อบทความ");
+        validationErrors.push("title");
+      }
       if (!category) {
-        alert("กรุณาเลือกหมวดหมู่");
-        form.querySelector("[data-custom-select] [data-custom-select-trigger]")?.focus();
-        return;
+        setArticleFieldError(form, "category", "กรุณาเลือกหมวดหมู่");
+        validationErrors.push("category");
       }
-      if ((publishDate || publishTime) && !publishIso) {
-        alert("กรุณาเลือกทั้งวันที่เผยแพร่และเวลาเผยแพร่");
-        return;
+      if (!(form.dataset.articleCoverSrc || existingArticle?.coverImageSrc)) {
+        setArticleUploadError(form, "cover", "กรุณาอัปโหลดรูป Cover");
+        validationErrors.push("cover");
       }
-      if (status === "Scheduled" && !publishIso) {
-        alert("กรุณาเลือกวันที่และเวลาเผยแพร่สำหรับสถานะนี้");
-        return;
+      if (!contentBlocks.length) {
+        setArticleFieldError(form, "content", "กรุณาเพิ่มเนื้อหาอย่างน้อย 1 บล็อก");
+        validationErrors.push("content");
+      }
+      if (publishDate && !publishTime) {
+        setArticleFieldError(form, "publishTime", "กรุณาเลือกเวลาเผยแพร่");
+        validationErrors.push("publishTime");
+      }
+      if (publishTime && !publishDate) {
+        setArticleFieldError(form, "publishDate", "กรุณาเลือกวันที่เผยแพร่");
+        validationErrors.push("publishDate");
+      }
+      if (status === "Scheduled" && !publishDate) {
+        setArticleFieldError(form, "publishDate", "กรุณาเลือกวันที่เผยแพร่");
+        validationErrors.push("publishDate");
+      }
+      if (status === "Scheduled" && !publishTime) {
+        setArticleFieldError(form, "publishTime", "กรุณาเลือกเวลาเผยแพร่");
+        validationErrors.push("publishTime");
       }
       if (status === "Scheduled" && publishIso && publishIso < nowIso) {
-        alert("วันที่และเวลาเผยแพร่ต้องไม่น้อยกว่าวันเวลาปัจจุบัน");
+        setArticleFieldError(form, "publishDate", "วันที่และเวลาเผยแพร่ต้องไม่น้อยกว่าวันเวลาปัจจุบัน");
+        setArticleFieldError(form, "publishTime", "วันที่และเวลาเผยแพร่ต้องไม่น้อยกว่าวันเวลาปัจจุบัน");
+        validationErrors.push("publishDate", "publishTime");
         syncArticlePublishDateTimeLimits(form);
-        return;
       }
-      if (["Scheduled", "Published"].includes(status) && !(form.dataset.articleCoverSrc || existingArticle?.coverImageSrc)) {
-        setArticleUploadError(form, "cover", "กรุณาอัปโหลดรูป Cover ก่อนเผยแพร่หรือตั้งเวลาเผยแพร่");
-        form.querySelector("[data-article-cover-upload-control]")?.scrollIntoView({ block: "center", behavior: "smooth" });
-        return;
-      }
-      setArticleUploadError(form, "cover");
-      const contentBlocks = getArticleEditorContentBlocks(form);
-      if (!contentBlocks.length) {
-        alert("กรุณาเพิ่มเนื้อหาอย่างน้อย 1 บล็อก");
-        form.querySelector("[data-article-block-add]")?.focus();
+      if (validationErrors.length) {
+        focusFirstArticleValidationError(form, validationErrors);
         return;
       }
       const legacyFields = getArticleLegacyFieldsFromBlocks(contentBlocks);
       const hasImageBlock = contentBlocks.some(block => block.type === "image");
       const nextArticle = {
         id,
-        title: String(formData.get("title") || "").trim() || "Untitled Article",
+        title,
         category,
         author: "By TukDaeng",
         status,
@@ -12433,8 +12529,11 @@
           if (hiddenInput.matches("[data-article-publish-status]")) {
             form.dataset.articleStatusChanged = "true";
             syncArticlePublishDateTimeLimits(form);
+            setArticleFieldError(form, "publishDate");
+            setArticleFieldError(form, "publishTime");
           }
           if (hiddenInput.name === "category" || hiddenInput.matches("[data-article-publish-status]")) {
+            if (hiddenInput.name === "category") setArticleFieldError(form, "category");
             updateArticleEditorPreview(form);
           }
           return;
@@ -13234,11 +13333,16 @@
         }
         const form = event.target.closest("[data-article-editor]");
         syncArticlePublishDateTimeLimits(form);
+        if (event.target.matches("[data-article-publish-date]")) setArticleFieldError(form, "publishDate");
+        if (event.target.matches("[data-article-publish-time]")) setArticleFieldError(form, "publishTime");
         updateArticleEditorPreview(form);
         return;
       }
       if (event.target.matches('[data-article-editor] [name="title"], [data-article-editor] [name="author"], [data-article-editor] [name="deck"], [data-article-editor] [name="coverCaption"], [data-article-editor] [name="keyTakeaways"], [data-article-editor] [data-article-block-field]')) {
-        updateArticleEditorPreview(event.target.closest("[data-article-editor]"));
+        const form = event.target.closest("[data-article-editor]");
+        if (event.target.matches('[name="title"]')) setArticleFieldError(form, "title");
+        if (event.target.matches("[data-article-block-field]")) setArticleFieldError(form, "content");
+        updateArticleEditorPreview(form);
         return;
       }
       if (event.target.matches("#user-search")) {
