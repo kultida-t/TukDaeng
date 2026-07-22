@@ -1613,6 +1613,91 @@
       font-weight: 700;
       line-height: 1;
     }
+    .article-block-builder {
+      display: grid;
+      grid-column: 1 / -1;
+      gap: 14px;
+    }
+    .article-block-add-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 10px;
+      padding: 12px;
+      border: 1px solid #d8e2f0;
+      border-radius: 8px;
+      background: #fff;
+    }
+    .article-block-add-row select {
+      width: min(100%, 260px);
+      min-height: 42px;
+    }
+    .article-block-add-row button,
+    .article-block-control {
+      border: 1px solid #cbd8ea;
+      border-radius: 8px;
+      padding: 10px 12px;
+      background: #f8fafc;
+      color: #061426;
+      font-size: 13px;
+      font-weight: 800;
+      line-height: 1;
+      cursor: pointer;
+    }
+    .article-editor-blocks {
+      display: grid;
+      gap: 12px;
+    }
+    .article-editor-block {
+      display: grid;
+      gap: 12px;
+      padding: 14px;
+      border: 1px solid #d8e2f0;
+      border-radius: 8px;
+      background: #fff;
+    }
+    .article-block-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+    }
+    .article-block-title {
+      color: #061426;
+      font-size: 13px;
+      font-weight: 900;
+      line-height: 1.35;
+    }
+    .article-block-controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+    .article-block-control {
+      width: 34px;
+      height: 34px;
+      display: grid;
+      place-items: center;
+      padding: 0;
+    }
+    .article-block-control.delete {
+      border-color: #fecaca;
+      color: #b91c1c;
+      background: #fff5f5;
+    }
+    .article-editor-block textarea {
+      min-height: 104px;
+    }
+    .article-editor-block[data-article-block-type="h2"] textarea,
+    .article-editor-block[data-article-block-type="h3"] textarea,
+    .article-editor-block[data-article-block-type="quote"] textarea {
+      min-height: 72px;
+    }
+    .article-editor-block[data-article-block-type="comparison"] textarea,
+    .article-editor-block[data-article-block-type="related"] textarea {
+      font-family: ui-monospace, SFMono-Regular, Consolas, "Liberation Mono", monospace;
+      font-size: 13px;
+    }
     .article-editor-grid {
       display: grid;
       grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -11047,14 +11132,208 @@
         .filter(Boolean);
     }
 
-    function getArticleComparisonRows(article) {
-      const rows = Array.isArray(article?.comparisonRows)
-        ? article.comparisonRows
-        : String(article?.comparisonRows || "").split(/\n+/);
+    const articleBlockTypes = [
+      ["paragraph", "Paragraph"],
+      ["h2", "Heading H2"],
+      ["h3", "Heading H3"],
+      ["image", "Image + Caption"],
+      ["quote", "Quote"],
+      ["comparison", "Comparison Table"],
+      ["related", "Related Watches"]
+    ];
+
+    function parseArticleComparisonRows(value = "") {
+      const rows = Array.isArray(value) ? value : String(value || "").split(/\n+/);
       return rows.map(row => {
         if (Array.isArray(row)) return row.map(cell => String(cell || "").trim()).slice(0, 3);
         return String(row || "").split("|").map(cell => cell.trim()).slice(0, 3);
       }).filter(row => row.length >= 3 && row.every(Boolean));
+    }
+
+    function getArticleComparisonRows(article) {
+      return parseArticleComparisonRows(article?.comparisonRows);
+    }
+
+    function getArticleContentBlocks(article) {
+      if (Array.isArray(article?.contentBlocks) && article.contentBlocks.length) {
+        return article.contentBlocks
+          .map(block => ({
+            type: String(block?.type || "paragraph"),
+            content: String(block?.content || ""),
+            caption: String(block?.caption || "")
+          }))
+          .filter(block => block.type === "image" || block.content.trim() || block.caption.trim());
+      }
+      const blocks = getArticleBodyParagraphs(article).map(paragraph => {
+        if (paragraph.startsWith("### ")) return { type: "h3", content: paragraph.replace(/^###\s+/, "") };
+        if (paragraph.startsWith("## ")) return { type: "h2", content: paragraph.replace(/^##\s+/, "") };
+        return { type: "paragraph", content: paragraph };
+      });
+      if (article?.bodyImageSrc || article?.bodyImageCaption) {
+        blocks.push({ type: "image", caption: article.bodyImageCaption || "" });
+      }
+      if (article?.quote) blocks.push({ type: "quote", content: article.quote });
+      if (article?.comparisonRows) blocks.push({ type: "comparison", content: Array.isArray(article.comparisonRows) ? article.comparisonRows.map(row => Array.isArray(row) ? row.join(" | ") : row).join("\n") : article.comparisonRows });
+      if (article?.relatedWatches) blocks.push({ type: "related", content: Array.isArray(article.relatedWatches) ? article.relatedWatches.join("\n") : article.relatedWatches });
+      return blocks;
+    }
+
+    function renderArticleFoContentBlock(block, article) {
+      const type = String(block?.type || "paragraph");
+      const content = String(block?.content || "").trim();
+      if (type === "h2" && content) return `<h4 class="article-fo-heading">${escapeArticleField(content)}</h4>`;
+      if (type === "h3" && content) return `<h5 class="article-fo-subheading">${escapeArticleField(content)}</h5>`;
+      if (type === "quote" && content) return `<blockquote class="article-fo-quote">"${escapeArticleField(content)}"</blockquote>`;
+      if (type === "image" && article.bodyImageSrc) {
+        return `
+          <div class="article-fo-body-image"><img src="${escapeArticleField(article.bodyImageSrc)}" alt="${escapeArticleField(article.bodyImageName || article.title || "Article content image")}" /></div>
+          ${block.caption ? `<div class="article-fo-caption">${escapeArticleField(block.caption)}</div>` : ""}
+        `;
+      }
+      if (type === "comparison") return renderArticleComparisonTable({ comparisonRows: content });
+      if (type === "related") return renderArticleRelatedItems({ relatedWatches: content });
+      if (!content) return "";
+      return renderArticleStructuredParagraph(content);
+    }
+
+    function renderArticleBlockTypeOptions(selectedType = "paragraph") {
+      return articleBlockTypes.map(([value, label]) => `<option value="${value}" ${selectedType === value ? "selected" : ""}>${label}</option>`).join("");
+    }
+
+    function renderArticleEditorBlock(block, index, article) {
+      const type = String(block?.type || "paragraph");
+      const label = articleBlockTypes.find(([value]) => value === type)?.[1] || "Paragraph";
+      const content = escapeArticleField(block?.content || "");
+      const caption = escapeArticleField(block?.caption || article?.bodyImageCaption || "");
+      const field = type === "image"
+        ? `
+          <label class="full">รูปในเนื้อหา
+            <span class="article-upload-control" data-article-body-image-upload-control>
+              <span class="article-upload-button">เลือกไฟล์</span>
+              <span class="article-upload-display ${article?.bodyImageName ? "" : "placeholder"}" data-article-body-image-display>${escapeArticleField(article?.bodyImageName || "รองรับ JPG, PNG, WebP ไม่เกิน 5MB")}</span>
+              <input name="bodyImage" type="file" accept="image/*" data-article-body-image-upload />
+            </span>
+            <span class="article-upload-error" data-article-body-image-error></span>
+          </label>
+          <label class="full">Caption รูปในเนื้อหา
+            <input value="${caption}" placeholder="คำอธิบายรูปประกอบกลางบทความ" data-article-block-field data-article-block-value />
+          </label>
+        `
+        : `<label class="full">${label}
+            <textarea data-article-block-field data-article-block-value placeholder="${type === "comparison" ? "หัวข้อ | ตัวเลือก A | ตัวเลือก B&#10;Weight | หนักกว่า | เบากว่า" : type === "related" ? "ใส่ทีละบรรทัด เช่น&#10;Grand Seiko SBGA211 Snowflake&#10;Rolex Submariner" : "พิมพ์เนื้อหาของบล็อกนี้"}">${content}</textarea>
+          </label>`;
+      return `
+        <div class="article-editor-block" data-article-content-block data-article-block-type="${type}">
+          <div class="article-block-header">
+            <div class="article-block-title">${index + 1}. ${label}</div>
+            <div class="article-block-controls">
+              <button class="article-block-control" type="button" data-article-block-move="up" aria-label="Move block up">↑</button>
+              <button class="article-block-control" type="button" data-article-block-move="down" aria-label="Move block down">↓</button>
+              <button class="article-block-control delete" type="button" data-article-block-delete aria-label="Delete block">×</button>
+            </div>
+          </div>
+          ${field}
+        </div>
+      `;
+    }
+
+    function renderArticleBlockEditor(article) {
+      const blocks = getArticleContentBlocks(article);
+      const editorBlocks = blocks.length ? blocks : [{ type: "paragraph", content: "" }];
+      return `
+        <div class="article-block-builder">
+          <div class="article-block-add-row">
+            <select data-article-block-type-picker aria-label="เลือกประเภทบล็อก">
+              ${renderArticleBlockTypeOptions()}
+            </select>
+            <button type="button" data-article-block-add>+ Add block</button>
+          </div>
+          <div class="article-editor-blocks" data-article-block-list>
+            ${editorBlocks.map((block, index) => renderArticleEditorBlock(block, index, article)).join("")}
+          </div>
+        </div>
+      `;
+    }
+
+    function getArticleEditorContentBlocks(form) {
+      return Array.from(form.querySelectorAll("[data-article-content-block]")).map(block => ({
+        type: block.dataset.articleBlockType || "paragraph",
+        content: block.querySelector("[data-article-block-value]")?.value.trim() || "",
+        caption: block.dataset.articleBlockType === "image" ? block.querySelector("[data-article-block-value]")?.value.trim() || "" : ""
+      })).filter(block => block.type === "image" || block.content);
+    }
+
+    function getArticleLegacyFieldsFromBlocks(blocks) {
+      const body = [];
+      const legacy = { body, quote: "", bodyImageCaption: "", comparisonRows: "", relatedWatches: "" };
+      blocks.forEach(block => {
+        if (block.type === "h2" && block.content) body.push(`## ${block.content}`);
+        else if (block.type === "h3" && block.content) body.push(`### ${block.content}`);
+        else if (block.type === "paragraph" && block.content) body.push(block.content);
+        else if (block.type === "quote" && block.content && !legacy.quote) legacy.quote = block.content;
+        else if (block.type === "image" && !legacy.bodyImageCaption) legacy.bodyImageCaption = block.caption || "";
+        else if (block.type === "comparison" && block.content && !legacy.comparisonRows) legacy.comparisonRows = block.content;
+        else if (block.type === "related" && block.content && !legacy.relatedWatches) legacy.relatedWatches = block.content;
+      });
+      return legacy;
+    }
+
+    function refreshArticleBlockList(form) {
+      const list = form?.querySelector("[data-article-block-list]");
+      if (!list) return;
+      const article = {
+        contentBlocks: getArticleEditorContentBlocks(form),
+        bodyImageName: form.dataset.articleBodyImageName || "",
+        bodyImageCaption: "",
+        bodyImageSrc: form.dataset.articleBodyImageSrc || ""
+      };
+      list.innerHTML = (article.contentBlocks.length ? article.contentBlocks : [{ type: "paragraph", content: "" }])
+        .map((block, index) => renderArticleEditorBlock(block, index, article))
+        .join("");
+      updateArticleEditorPreview(form);
+    }
+
+    function addArticleEditorBlock(form) {
+      const list = form?.querySelector("[data-article-block-list]");
+      const picker = form?.querySelector("[data-article-block-type-picker]");
+      if (!list || !picker) return;
+      const type = picker.value || "paragraph";
+      if (type === "image" && list.querySelector('[data-article-block-type="image"]')) {
+        alert("เพิ่ม Image + Caption ได้ 1 บล็อกต่อบทความใน prototype นี้");
+        return;
+      }
+      const blocks = getArticleEditorContentBlocks(form);
+      blocks.push({ type, content: "", caption: "" });
+      const article = {
+        contentBlocks: blocks,
+        bodyImageName: form.dataset.articleBodyImageName || "",
+        bodyImageSrc: form.dataset.articleBodyImageSrc || ""
+      };
+      list.innerHTML = blocks.map((block, index) => renderArticleEditorBlock(block, index, article)).join("");
+      list.querySelector("[data-article-content-block]:last-child [data-article-block-value]")?.focus();
+      updateArticleEditorPreview(form);
+    }
+
+    function deleteArticleEditorBlock(block) {
+      const form = block?.closest("[data-article-editor]");
+      block?.remove();
+      const list = form?.querySelector("[data-article-block-list]");
+      if (list && !list.querySelector("[data-article-content-block]")) {
+        list.innerHTML = renderArticleEditorBlock({ type: "paragraph", content: "" }, 0, {});
+      }
+      refreshArticleBlockList(form);
+    }
+
+    function moveArticleEditorBlock(block, direction) {
+      const form = block?.closest("[data-article-editor]");
+      if (!block || !form) return;
+      if (direction === "up" && block.previousElementSibling) {
+        block.parentElement.insertBefore(block, block.previousElementSibling);
+      }
+      if (direction === "down" && block.nextElementSibling) {
+        block.parentElement.insertBefore(block.nextElementSibling, block);
+      }
+      refreshArticleBlockList(form);
     }
 
     function renderArticleStructuredParagraph(paragraph) {
@@ -11111,7 +11390,7 @@
     }
 
     function renderArticleFoPreview(article) {
-      const paragraphs = getArticleBodyParagraphs(article);
+      const contentBlocks = getArticleContentBlocks(article);
       const takeaways = Array.isArray(article?.keyTakeaways) ? article.keyTakeaways : parseArticleMultilineItems(article?.keyTakeaways || "");
       return `
         <div class="article-phone-preview" aria-label="FO article preview">
@@ -11132,12 +11411,7 @@
               <div class="article-fo-body">
                 ${article.coverCaption ? `<div class="article-fo-caption">${escapeArticleField(article.coverCaption)}</div>` : ""}
                 ${takeaways.length ? `<div class="article-fo-takeaways"><strong>Key takeaways</strong><ul>${takeaways.map(item => `<li>${escapeArticleField(item)}</li>`).join("")}</ul></div>` : ""}
-                ${paragraphs.map(renderArticleStructuredParagraph).join("")}
-                ${article.bodyImageSrc ? `<div class="article-fo-body-image"><img src="${escapeArticleField(article.bodyImageSrc)}" alt="${escapeArticleField(article.bodyImageName || article.title || "Article content image")}" /></div>` : ""}
-                ${article.bodyImageCaption ? `<div class="article-fo-caption">${escapeArticleField(article.bodyImageCaption)}</div>` : ""}
-                ${article.quote ? `<blockquote class="article-fo-quote">"${escapeArticleField(article.quote)}"</blockquote>` : ""}
-                ${renderArticleComparisonTable(article)}
-                ${renderArticleRelatedItems(article)}
+                ${contentBlocks.map(block => renderArticleFoContentBlock(block, article)).join("")}
               </div>
             </div>
             <div class="article-fo-share">
@@ -11158,20 +11432,21 @@
       const status = form.querySelector('[name="status"]')?.value || "Draft";
       const publishDate = form.querySelector('[name="publishDate"]')?.value || "";
       const publishTime = form.querySelector('[name="publishTime"]')?.value || "";
-      const bodyText = form.querySelector('[name="body"]')?.value || "";
-      const body = bodyText.split(/\n{2,}/).map(paragraph => paragraph.trim()).filter(Boolean);
+      const contentBlocks = getArticleEditorContentBlocks(form);
+      const legacyFields = getArticleLegacyFieldsFromBlocks(contentBlocks);
       return {
         title,
         author,
         publishAt: ["Draft", "Archived"].includes(status) ? "-" : formatArticlePublishAt(publishDate, publishTime),
         deck: form.querySelector('[name="deck"]')?.value.trim() || "",
-        quote: form.querySelector('[name="quote"]')?.value.trim() || "",
-        body: body.length ? body : ["กรอกย่อหน้าแรกของบทความที่ต้องการแสดงบนหน้าบ้าน", "เว้นบรรทัดว่างเพื่อแยกแต่ละย่อหน้าในหน้าอ่านบทความ"],
+        quote: legacyFields.quote,
+        body: legacyFields.body.length ? legacyFields.body : ["กรอกย่อหน้าแรกของบทความที่ต้องการแสดงบนหน้าบ้าน", "เว้นบรรทัดว่างเพื่อแยกแต่ละย่อหน้าในหน้าอ่านบทความ"],
+        contentBlocks: contentBlocks.length ? contentBlocks : [{ type: "paragraph", content: "กรอกย่อหน้าแรกของบทความที่ต้องการแสดงบนหน้าบ้าน" }],
         coverCaption: form.querySelector('[name="coverCaption"]')?.value.trim() || "",
-        bodyImageCaption: form.querySelector('[name="bodyImageCaption"]')?.value.trim() || "",
+        bodyImageCaption: legacyFields.bodyImageCaption,
         keyTakeaways: form.querySelector('[name="keyTakeaways"]')?.value.trim() || "",
-        comparisonRows: form.querySelector('[name="comparisonRows"]')?.value.trim() || "",
-        relatedWatches: form.querySelector('[name="relatedWatches"]')?.value.trim() || "",
+        comparisonRows: legacyFields.comparisonRows,
+        relatedWatches: legacyFields.relatedWatches,
         coverImageName: form.dataset.articleCoverName || "",
         coverImageSrc: form.dataset.articleCoverSrc || "",
         bodyImageName: form.dataset.articleBodyImageName || "",
@@ -11558,7 +11833,7 @@
 
                 <section class="article-editor-section">
                   <h4>Content Blocks</h4>
-                  <p class="article-editor-section-note">ใช้ ## สำหรับ H2, ### สำหรับ H3 และเว้นบรรทัดว่างเพื่อแยก block</p>
+                  <p class="article-editor-section-note">เพิ่มเนื้อหาเป็นบล็อก แก้ไข ลบ หรือย้ายลำดับได้เหมือน editor ของบทความ</p>
                   <div class="article-block-toolbar" aria-label="Supported article blocks">
                     <span class="article-block-chip">H2</span>
                     <span class="article-block-chip">H3</span>
@@ -11568,31 +11843,7 @@
                     <span class="article-block-chip">Comparison Table</span>
                     <span class="article-block-chip">Related Watches</span>
                   </div>
-                  <div class="article-editor-grid">
-                    <label class="full">เนื้อหาบทความ
-                      <textarea name="body" placeholder="## หัวข้อหลัก&#10;&#10;ย่อหน้าบทความ&#10;&#10;### หัวข้อย่อย&#10;&#10;เนื้อหาเพิ่มเติม" required>${escapeArticleField(getArticleBodyText(draft))}</textarea>
-                    </label>
-                    <label class="full">รูปในเนื้อหาบทความ
-                      <span class="article-upload-control" data-article-body-image-upload-control>
-                        <span class="article-upload-button">เลือกไฟล์</span>
-                        <span class="article-upload-display ${draft.bodyImageName ? "" : "placeholder"}" data-article-body-image-display>${escapeArticleField(draft.bodyImageName || "รองรับ JPG, PNG, WebP ไม่เกิน 5MB")}</span>
-                        <input name="bodyImage" type="file" accept="image/*" data-article-body-image-upload />
-                      </span>
-                      <span class="article-upload-error" data-article-body-image-error></span>
-                    </label>
-                    <label class="full">Caption รูปในเนื้อหา
-                      <input name="bodyImageCaption" value="${escapeArticleField(draft.bodyImageCaption || "")}" placeholder="คำอธิบายรูปประกอบกลางบทความ" />
-                    </label>
-                    <label class="full">Quote กลางบทความ
-                      <input name="quote" value="${escapeArticleField(draft.quote || "")}" placeholder="ประโยค quote ที่จะแทรกระหว่างเนื้อหากับตาราง/รายการที่เกี่ยวข้อง" />
-                    </label>
-                    <label class="full">Comparison table
-                      <textarea name="comparisonRows" placeholder="หัวข้อ | Steel | Titanium&#10;Weight | หนักกว่า | เบากว่าประมาณ 40%&#10;Price | ต้นทุนต่ำกว่า | ผลิตยากและแพงกว่า">${escapeArticleField(Array.isArray(draft.comparisonRows) ? draft.comparisonRows.map(row => Array.isArray(row) ? row.join(" | ") : row).join("\n") : draft.comparisonRows || "")}</textarea>
-                    </label>
-                    <label class="full">Related watches / assets
-                      <textarea name="relatedWatches" placeholder="ใส่ทีละบรรทัด เช่น&#10;Grand Seiko SBGA211 Snowflake&#10;Rolex Submariner&#10;Omega Aqua Terra Ultra Light">${escapeArticleField(Array.isArray(draft.relatedWatches) ? draft.relatedWatches.join("\n") : draft.relatedWatches || "")}</textarea>
-                    </label>
-                  </div>
+                  ${renderArticleBlockEditor(draft)}
                 </section>
 
                 <section class="article-editor-section">
@@ -11683,6 +11934,9 @@
         return;
       }
       setArticleUploadError(form, "cover");
+      const contentBlocks = getArticleEditorContentBlocks(form);
+      const legacyFields = getArticleLegacyFieldsFromBlocks(contentBlocks);
+      const hasImageBlock = contentBlocks.some(block => block.type === "image");
       const nextArticle = {
         id,
         title: String(formData.get("title") || "").trim() || "Untitled Article",
@@ -11696,20 +11950,21 @@
         priority: "ปกติ",
         detail: existingArticle?.detail || "Ready for editorial review",
         deck: String(formData.get("deck") || "").trim(),
-        quote: String(formData.get("quote") || "").trim(),
-        body: String(formData.get("body") || "").split(/\n{2,}/).map(paragraph => paragraph.trim()).filter(Boolean),
+        quote: legacyFields.quote,
+        body: legacyFields.body,
+        contentBlocks,
         slug: String(formData.get("slug") || "").trim(),
         coverCaption: String(formData.get("coverCaption") || "").trim(),
-        bodyImageCaption: String(formData.get("bodyImageCaption") || "").trim(),
+        bodyImageCaption: legacyFields.bodyImageCaption,
         keyTakeaways: formData.has("keyTakeaways") ? String(formData.get("keyTakeaways") || "").trim() : existingArticle?.keyTakeaways || "",
-        comparisonRows: String(formData.get("comparisonRows") || "").trim(),
-        relatedWatches: String(formData.get("relatedWatches") || "").trim(),
+        comparisonRows: legacyFields.comparisonRows,
+        relatedWatches: legacyFields.relatedWatches,
         seoTitle: String(formData.get("seoTitle") || "").trim(),
         seoExcerpt: String(formData.get("seoExcerpt") || "").trim(),
         coverImageName: form.dataset.articleCoverName || existingArticle?.coverImageName || "",
         coverImageSrc: form.dataset.articleCoverSrc || existingArticle?.coverImageSrc || "",
-        bodyImageName: form.dataset.articleBodyImageName || existingArticle?.bodyImageName || "",
-        bodyImageSrc: form.dataset.articleBodyImageSrc || existingArticle?.bodyImageSrc || ""
+        bodyImageName: hasImageBlock ? form.dataset.articleBodyImageName || existingArticle?.bodyImageName || "" : "",
+        bodyImageSrc: hasImageBlock ? form.dataset.articleBodyImageSrc || existingArticle?.bodyImageSrc || "" : ""
       };
       const existingIndex = articleRows.findIndex(article => article.id === id);
       if (existingIndex >= 0) articleRows.splice(existingIndex, 1, nextArticle);
@@ -12102,6 +12357,21 @@
         if (!article) return;
         renderArticleEditorPage(article, "edit");
         closeRowMenus();
+        return;
+      }
+      const articleBlockAdd = event.target.closest("[data-article-block-add]");
+      if (articleBlockAdd) {
+        addArticleEditorBlock(articleBlockAdd.closest("[data-article-editor]"));
+        return;
+      }
+      const articleBlockDelete = event.target.closest("[data-article-block-delete]");
+      if (articleBlockDelete) {
+        deleteArticleEditorBlock(articleBlockDelete.closest("[data-article-content-block]"));
+        return;
+      }
+      const articleBlockMove = event.target.closest("[data-article-block-move]");
+      if (articleBlockMove) {
+        moveArticleEditorBlock(articleBlockMove.closest("[data-article-content-block]"), articleBlockMove.dataset.articleBlockMove);
         return;
       }
       const articleDuplicateButton = event.target.closest("[data-article-duplicate]");
@@ -12764,7 +13034,7 @@
         updateArticleEditorPreview(form);
         return;
       }
-      if (event.target.matches('[data-article-editor] [name="title"], [data-article-editor] [name="author"], [data-article-editor] [name="deck"], [data-article-editor] [name="quote"], [data-article-editor] [name="body"], [data-article-editor] [name="coverCaption"], [data-article-editor] [name="bodyImageCaption"], [data-article-editor] [name="keyTakeaways"], [data-article-editor] [name="comparisonRows"], [data-article-editor] [name="relatedWatches"], [data-article-editor] [name="seoTitle"], [data-article-editor] [name="seoExcerpt"]')) {
+      if (event.target.matches('[data-article-editor] [name="title"], [data-article-editor] [name="author"], [data-article-editor] [name="deck"], [data-article-editor] [name="coverCaption"], [data-article-editor] [name="keyTakeaways"], [data-article-editor] [name="seoTitle"], [data-article-editor] [name="seoExcerpt"], [data-article-editor] [data-article-block-field]')) {
         updateArticleEditorPreview(event.target.closest("[data-article-editor]"));
         return;
       }
