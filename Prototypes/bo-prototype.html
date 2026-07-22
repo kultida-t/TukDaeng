@@ -3066,6 +3066,29 @@
       background: transparent;
       box-shadow: none;
     }
+    .user-action-page:has(.asset-report-detail-modal-card) .user-action-head h2 {
+      font-family: var(--font-heading);
+      font-size: 32px;
+      font-weight: 400;
+      line-height: 1;
+      letter-spacing: 0;
+      overflow-wrap: anywhere;
+    }
+    .asset-report-detail-modal-card .detail-section {
+      display: grid;
+      gap: 14px;
+      padding: 18px 0;
+    }
+    .asset-report-detail-modal-card .detail-section h4 {
+      margin: 0;
+      color: #061426;
+      font-family: var(--font-heading);
+      font-size: 24px;
+      font-weight: 400;
+      line-height: .95;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
     .asset-report-modal-layout {
       display: grid;
       gap: 16px;
@@ -7005,7 +7028,7 @@
         <div class="user-action-page">
           <div class="user-action-head">
             <div>
-              <h2 id="user-action-modal-title">Asset Detail</h2>
+              <h2 id="user-action-modal-title">${asset.id} : ${asset.name}</h2>
               <p>${asset.id} · ${asset.name} · ${asset.owner}</p>
             </div>
             <button class="btn user-action-close" type="button" data-user-action-modal-close aria-label="Close modal" title="Close">
