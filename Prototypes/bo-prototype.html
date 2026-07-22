@@ -1802,6 +1802,19 @@
       font-weight: 400;
       line-height: 1.45;
     }
+    .article-editor-readonly-value {
+      width: 100%;
+      border: 1px solid #d7e5f4;
+      border-radius: 8px;
+      padding: 12px 13px;
+      color: #061426;
+      background: #eef3f8;
+      font-size: 14px;
+      font-weight: 400;
+      line-height: 1.45;
+      cursor: default;
+      user-select: none;
+    }
     .article-editor-form .article-editor-block textarea,
     .article-editor-form .article-editor-block input {
       background: #fff;
@@ -11416,7 +11429,7 @@
         type: block.dataset.articleBlockType || "paragraph",
         content: block.querySelector("[data-article-block-value]")?.value.trim() || "",
         caption: block.dataset.articleBlockType === "image" ? block.querySelector("[data-article-block-value]")?.value.trim() || "" : ""
-      })).filter(block => includeEmpty || block.type === "image" || block.content);
+      })).filter(block => includeEmpty || (block.type === "image" ? (form.dataset.articleBodyImageSrc || block.caption) : block.content));
     }
 
     function getArticleLegacyFieldsFromBlocks(blocks) {
@@ -11561,7 +11574,7 @@
               </div>
               <h3 class="article-fo-title">${escapeArticleField(article.title)}</h3>
               <div class="article-fo-meta">
-                <div><span>Author</span>${escapeArticleField(article.author || "By Tuk Daeng")}</div>
+                <div><span>Author</span>${escapeArticleField(article.author || "By TukDaeng")}</div>
                 <div><span>Date</span>${article.publishAt === "-" ? "Draft" : article.publishAt.replace(/\s\d{2}:\d{2}$/, "")}</div>
                 <div>♡ 12</div>
               </div>
@@ -11586,7 +11599,7 @@
 
     function getArticleEditorPreviewArticle(form) {
       const title = form.querySelector('[name="title"]')?.value.trim() || "ชื่อบทความ";
-      const author = form.querySelector('[name="author"]')?.value.trim() || "ทีม TukDaeng";
+      const author = form.querySelector('[name="author"]')?.value.trim() || "By TukDaeng";
       const status = form.querySelector('[name="status"]')?.value || "Draft";
       const publishDate = form.querySelector('[name="publishDate"]')?.value || "";
       const publishTime = form.querySelector('[name="publishTime"]')?.value || "";
@@ -11926,8 +11939,8 @@
       const draft = article || {
         id: getNextArticleId(),
         title: "",
-        category: "Buying Guide",
-        author: "ทีม TukDaeng",
+        category: "",
+        author: "By TukDaeng",
         status: "Draft",
         publishAt: "-",
         updatedAt: formatBangkokTimestamp().replace(/\sGMT\+7$/i, ""),
@@ -11981,17 +11994,18 @@
                 <section class="article-editor-section">
                   <h4>Article Header</h4>
                   <div class="article-editor-grid">
-                    <label>ชื่อบทความ
+                    <label>ชื่อบทความ *
                       <input id="article-title-field" name="title" value="${escapeArticleField(draft.title)}" placeholder="เช่น Steel vs. Titanium Watches: ต่างกันอย่างไร" required />
                     </label>
                     <label>Article URL
                       <input name="slug" value="${escapeArticleField(draft.slug || "")}" placeholder="steel-vs-titanium-watches" />
                     </label>
-                    <label>หมวดหมู่
-                      ${articleEditorCustomSelect("article-category-field", "category", "หมวดหมู่", ["Buying Guide", "Watch 101", "Watch Market", "Watch Events", "Watch Apparel", "Journal Board"].map(category => ({ value: category, label: category })), draft.category)}
+                    <label>หมวดหมู่ *
+                      ${articleEditorCustomSelect("article-category-field", "category", "หมวดหมู่", [{ value: "", label: "เลือกหมวดหมู่" }, ...["Buying Guide", "Watch 101", "Watch Market", "Watch Events", "Watch Apparel", "Journal Board"].map(category => ({ value: category, label: category }))], draft.category)}
                     </label>
                     <label>ผู้เขียน
-                      <input name="author" value="${escapeArticleField(draft.author)}" placeholder="ทีม TukDaeng" required />
+                      <input type="hidden" name="author" value="By TukDaeng" />
+                      <span class="article-editor-readonly-value">By TukDaeng</span>
                     </label>
                   </div>
                 </section>
@@ -11999,7 +12013,7 @@
                 <section class="article-editor-section">
                   <h4>Hero / Cover</h4>
                   <div class="article-editor-grid">
-                    <label>รูป Cover
+                    <label>รูป Cover *
                       <span class="article-upload-control" data-article-cover-upload-control>
                         <span class="article-upload-button">เลือกไฟล์</span>
                         <span class="article-upload-display ${draft.coverImageName ? "" : "placeholder"}" data-article-cover-display>${escapeArticleField(draft.coverImageName || "รองรับ JPG, PNG, WebP ไม่เกิน 5MB")}</span>
@@ -12017,7 +12031,7 @@
                 </section>
 
                 <section class="article-editor-section">
-                  <h4>Content Blocks</h4>
+                  <h4>Content Blocks *</h4>
                   <p class="article-editor-section-note">เพิ่มเนื้อหาเป็นบล็อก แก้ไข ลบ หรือย้ายลำดับได้</p>
                   ${renderArticleBlockEditor(draft)}
                 </section>
@@ -12028,10 +12042,10 @@
                     <label>สถานะเผยแพร่
                       ${articleEditorCustomSelect("article-status-field", "status", "สถานะเผยแพร่", articleStatusOptions, draft.status, "data-article-publish-status")}
                     </label>
-                    <label>วันที่เผยแพร่
+                    <label>วันที่เผยแพร่ *
                       <input name="publishDate" type="date" value="${escapeArticleField(publishParts.date)}" min="${publishMin.date}" data-article-publish-date data-picker-only />
                     </label>
-                    <label>เวลาเผยแพร่
+                    <label>เวลาเผยแพร่ *
                       <input name="publishTime" type="time" value="${escapeArticleField(publishParts.time)}" min="${publishParts.date === publishMin.date ? publishMin.time : ""}" step="60" data-article-publish-time data-picker-only />
                     </label>
                   </div>
@@ -12061,6 +12075,7 @@
       syncArticlePublishDateTimeLimits(form);
       const formData = new FormData(form);
       const status = String(formData.get("status") || "Draft");
+      const category = String(formData.get("category") || "").trim();
       const publishDate = String(form.querySelector('[name="publishDate"]')?.value || "").trim();
       const publishTime = String(form.querySelector('[name="publishTime"]')?.value || "").trim();
       const publishIso = publishDate && publishTime ? `${publishDate}T${publishTime}` : "";
@@ -12068,6 +12083,11 @@
       const nowIso = `${nowParts.date}T${nowParts.time}`;
       if (status === "Archived" && form.dataset.articleMode !== "edit") {
         alert("Archived ใช้ได้เฉพาะตอนแก้ไขบทความที่มีอยู่แล้ว");
+        return;
+      }
+      if (!category) {
+        alert("กรุณาเลือกหมวดหมู่");
+        form.querySelector("[data-custom-select] [data-custom-select-trigger]")?.focus();
         return;
       }
       if ((publishDate || publishTime) && !publishIso) {
@@ -12090,13 +12110,18 @@
       }
       setArticleUploadError(form, "cover");
       const contentBlocks = getArticleEditorContentBlocks(form);
+      if (!contentBlocks.length) {
+        alert("กรุณาเพิ่มเนื้อหาอย่างน้อย 1 บล็อก");
+        form.querySelector("[data-article-block-add]")?.focus();
+        return;
+      }
       const legacyFields = getArticleLegacyFieldsFromBlocks(contentBlocks);
       const hasImageBlock = contentBlocks.some(block => block.type === "image");
       const nextArticle = {
         id,
         title: String(formData.get("title") || "").trim() || "Untitled Article",
-        category: String(formData.get("category") || "").trim() || "Board",
-        author: String(formData.get("author") || "").trim() || "By Tuk Daeng",
+        category,
+        author: "By TukDaeng",
         status,
         publishAt: formatArticlePublishAt(publishDate, publishTime),
         updatedAt: now,
