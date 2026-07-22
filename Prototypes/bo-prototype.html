@@ -2657,6 +2657,14 @@
     .report-detail-page .user-detail-actions {
       padding-top: 2px;
     }
+    .asset-report-detail-page .asset-report-heading {
+      display: block;
+      max-width: 100%;
+    }
+    .asset-report-detail-page .asset-report-id,
+    .asset-report-detail-page .asset-report-name {
+      overflow-wrap: anywhere;
+    }
     .report-detail-page .detail-tile .chip {
       display: inline-flex;
       align-items: center;
@@ -5133,12 +5141,28 @@
         align-self: flex-start;
         padding-top: 0;
       }
+      .asset-report-detail-page .user-detail-actions {
+        flex: 0 0 auto;
+        flex-direction: row;
+        align-items: flex-start;
+        gap: 8px;
+      }
       .report-detail-page .user-detail-head .btn {
         width: auto;
         flex: 0 0 auto;
         min-height: 38px;
         height: 38px;
         align-items: center;
+      }
+      .asset-report-detail-page .asset-report-view-btn {
+        width: auto;
+        min-width: 0;
+        height: 38px;
+        padding: 7px 10px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        white-space: nowrap;
       }
       .report-detail-page .report-back-btn,
       body.user-detail-mode .user-detail-page .user-back-btn,
@@ -5178,6 +5202,15 @@
         font-size: 21px;
         line-height: 1.08;
         overflow-wrap: anywhere;
+      }
+      .asset-report-detail-page .asset-report-heading {
+        display: block;
+        font-size: 21px;
+        line-height: 1.08;
+      }
+      .asset-report-detail-page .asset-report-separator,
+      .asset-report-detail-page .asset-report-name {
+        display: none;
       }
       body.user-detail-mode .report-detail-page .detail-grid.two,
       .report-detail-page .report-detail-grid {
@@ -10599,11 +10632,11 @@
         .join("");
       const detailActionButtons = `${reportStatusActionButtons}${assetActionButtons}`;
       document.querySelector("#table").innerHTML = `
-        <div class="user-detail-page report-detail-page">
+        <div class="user-detail-page report-detail-page asset-report-detail-page">
           <div class="user-detail-head">
             <div class="user-detail-title">
               <div>
-                <h2>${report.id} : ${asset.name}</h2>
+                <h2 class="asset-report-heading"><span class="asset-report-id">${report.id}</span><span class="asset-report-separator"> : </span><span class="asset-report-name">${asset.name}</span></h2>
                 <div class="chips">
                   ${assetReportQueueStatusPill(asset)}
                   ${renderAssetStatusDisplay(asset)}
@@ -10611,7 +10644,7 @@
               </div>
             </div>
             <div class="user-detail-actions">
-              <button class="btn" type="button" data-asset-report-detail-modal="${asset.id}">${iconSvg.eye}<span>View Asset</span></button>
+              <button class="btn asset-report-view-btn" type="button" data-asset-report-detail-modal="${asset.id}" aria-label="View asset ${asset.id}" title="View Asset">${iconSvg.eye}<span class="asset-report-view-label">View Asset</span></button>
               <button class="btn report-back-btn" type="button" data-back-reported-assets aria-label="กลับไป Reported Assets" title="กลับไป Reported Assets">
               <svg class="mobile-back-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>
               <span class="btn-label">กลับไป Reported Assets</span>
