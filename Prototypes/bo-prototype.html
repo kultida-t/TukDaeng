@@ -10875,7 +10875,7 @@
       document.querySelector("#primary-action").textContent = data.action;
       if (isReportedAssets) {
         activeRow = moduleData.assets.rows.find(isReportedAsset) || moduleData.assets.rows[0];
-        document.querySelector("#panel-title").textContent = "Reported Assets";
+        document.querySelector("#panel-title").textContent = "Reported Assets List";
         document.querySelector("#panel-subtitle").textContent = "";
         document.querySelector("#user-panel-filter-actions").innerHTML = `
           <button class="btn user-filter-toggle" type="button" data-asset-report-filter-toggle aria-expanded="${assetReportFilterOpen}">${iconSvg.filter}<span>${assetReportFilterOpen ? "ปิดตัวกรอง" : "เปิดตัวกรอง"}</span></button>
