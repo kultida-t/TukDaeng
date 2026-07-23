@@ -1011,7 +1011,18 @@
       letter-spacing: 0;
       line-height: 1.35;
     }
+    body.user-detail-mode .report-detail-page:not(.asset-report-detail-page) .user-detail-head h2.report-user-detail-heading {
+      font-family: var(--font-main);
+      font-size: 24px !important;
+      font-weight: 600;
+      letter-spacing: 0;
+      line-height: 1.35;
+    }
     body.user-detail-mode .user-detail-page:not(.report-detail-page) .user-detail-head h2.user-detail-heading span {
+      font: inherit;
+      letter-spacing: inherit;
+    }
+    body.user-detail-mode .report-detail-page:not(.asset-report-detail-page) .user-detail-head h2.report-user-detail-heading span {
       font: inherit;
       letter-spacing: inherit;
     }
@@ -4570,6 +4581,9 @@
         line-height: 1.35;
       }
       body.user-detail-mode .user-detail-page:not(.report-detail-page) .user-detail-head h2.user-detail-heading {
+        font-size: 18px !important;
+      }
+      body.user-detail-mode .report-detail-page:not(.asset-report-detail-page) .user-detail-head h2.report-user-detail-heading {
         font-size: 18px !important;
       }
       body.user-detail-mode .user-detail-head .btn,
@@ -10724,7 +10738,7 @@
             <div class="user-detail-title">
               ${reportUser ? renderUserProfileImage(reportUser) : ""}
               <div>
-                <h2>${report.id} : ${report.user}</h2>
+                <h2 class="report-user-detail-heading"><span>${report.id}</span><span class="user-detail-separator"> : </span><span class="user-display-name">${report.user}</span></h2>
                 <div class="chips">
                   ${reportQueueStatusPill(report)}
                   ${statusPill(getReportPriorityLabel(report.priority), report.priority)}
