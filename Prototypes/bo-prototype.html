@@ -1018,6 +1018,14 @@
       letter-spacing: 0;
       line-height: 1.35;
     }
+    body.asset-detail-mode .user-detail-page:not(.report-detail-page) .user-detail-head h2.asset-detail-heading,
+    body.user-detail-mode .asset-report-detail-page .user-detail-head h2.asset-report-heading {
+      font-family: var(--font-main);
+      font-size: 24px !important;
+      font-weight: 600;
+      letter-spacing: 0;
+      line-height: 1.35;
+    }
     body.user-detail-mode .user-detail-page:not(.report-detail-page) .user-detail-head h2.user-detail-heading span {
       font: inherit;
       letter-spacing: inherit;
@@ -1025,6 +1033,27 @@
     body.user-detail-mode .report-detail-page:not(.asset-report-detail-page) .user-detail-head h2.report-user-detail-heading span {
       font: inherit;
       letter-spacing: inherit;
+    }
+    body.asset-detail-mode .user-detail-page:not(.report-detail-page) .user-detail-head h2.asset-detail-heading span,
+    body.user-detail-mode .asset-report-detail-page .user-detail-head h2.asset-report-heading span {
+      font: inherit;
+      letter-spacing: inherit;
+    }
+    .asset-title-meta {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin: 2px 0 8px;
+      color: #58708f;
+      font-size: 12px;
+      font-weight: 600;
+      line-height: 1.35;
+    }
+    .asset-title-meta span + span::before {
+      content: "/";
+      margin-right: 6px;
+      color: #9aabc0;
     }
     .kv {
       display: grid;
@@ -4586,6 +4615,14 @@
       body.user-detail-mode .report-detail-page:not(.asset-report-detail-page) .user-detail-head h2.report-user-detail-heading {
         font-size: 18px !important;
       }
+      body.asset-detail-mode .user-detail-page:not(.report-detail-page) .user-detail-head h2.asset-detail-heading,
+      body.user-detail-mode .asset-report-detail-page .user-detail-head h2.asset-report-heading {
+        font-size: 18px !important;
+      }
+      .asset-title-meta {
+        margin-bottom: 7px;
+        font-size: 11px;
+      }
       body.user-detail-mode .user-detail-head .btn,
       body.asset-detail-mode .user-detail-head .btn {
         flex: 0 0 auto;
@@ -5340,12 +5377,6 @@
       }
       .asset-report-detail-page .asset-report-heading {
         display: block;
-        font-size: 21px;
-        line-height: 1.08;
-      }
-      .asset-report-detail-page .asset-report-separator,
-      .asset-report-detail-page .asset-report-name {
-        display: none;
       }
       body.user-detail-mode .report-detail-page .detail-grid.two,
       .report-detail-page .report-detail-grid {
@@ -9013,7 +9044,8 @@
           <div class="user-detail-head">
             <div class="user-detail-title">
               <div>
-                <h2>${asset.id} : ${asset.name}</h2>
+                <h2 class="asset-detail-heading user-display-name">${asset.name}</h2>
+                <div class="asset-title-meta"><span>${asset.id}</span></div>
                 <div class="chips">${renderAssetStatusDisplay(asset)}<span class="pill blue">${detail.brand}</span></div>
               </div>
             </div>
@@ -10810,7 +10842,7 @@
           <div class="user-detail-head">
             <div class="user-detail-title">
               <div>
-                <h2 class="asset-report-heading"><span class="asset-report-id">${report.id}</span><span class="asset-report-separator"> : </span><span class="asset-report-name">${asset.name}</span></h2>
+                <h2 class="asset-report-heading"><span class="asset-report-id">${report.id}</span><span class="user-detail-separator"> : </span><span class="asset-report-name user-display-name">${asset.name}</span></h2>
                 <div class="chips">
                   ${assetReportQueueStatusPill(asset)}
                   ${renderAssetStatusDisplay(asset)}
