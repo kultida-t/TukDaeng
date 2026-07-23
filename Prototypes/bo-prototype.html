@@ -2916,6 +2916,9 @@
     .report-detail-page .report-reference-grid {
       grid-template-columns: repeat(2, minmax(0, 1fr));
     }
+    body.user-detail-mode .report-detail-page .detail-grid.two.user-report-reference-grid {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
     .report-detail-page .report-detail-grid {
       grid-template-columns: 1fr;
     }
@@ -10807,12 +10810,11 @@
           </div>
 
           <div class="detail-section">
-            <h4>Reported Reference</h4>
-            <div class="detail-grid two report-reference-grid">
+            <h4>Reported User</h4>
+            <div class="detail-grid two report-reference-grid user-report-reference-grid">
               <div class="detail-tile"><span>Report ID</span><strong>${report.id}</strong></div>
               <div class="detail-tile"><span>User ID</span><strong>${report.userId}</strong></div>
-              <div class="detail-tile"><span>Reference</span><strong>${report.reference}</strong></div>
-              <div class="detail-tile"><span>Source Module</span><strong>${report.source}</strong></div>
+              <div class="detail-tile"><span>User</span><strong>${report.user}</strong></div>
               <div class="detail-tile"><span>Account Status</span><strong>${userStatusLabels[getReportAccountStatus(report)] || getReportAccountStatus(report)}</strong></div>
             </div>
           </div>
