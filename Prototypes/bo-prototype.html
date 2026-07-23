@@ -607,6 +607,28 @@
     .topbar > div {
       width: 100%;
     }
+    .page-title-row {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 16px;
+      width: 100%;
+    }
+    .page-title-main {
+      min-width: 0;
+    }
+    .page-actions {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 8px;
+      flex: 0 0 auto;
+      padding-top: 2px;
+    }
+    .page-actions:empty,
+    .page-actions[hidden] {
+      display: none;
+    }
     .crumb {
       color: var(--muted);
       font-size: 13px;
@@ -2794,6 +2816,7 @@
     .report-detail-page .detail-tile strong {
       overflow-wrap: anywhere;
     }
+    .page-actions .page-back-btn .mobile-back-icon,
     .report-detail-page .report-back-btn .mobile-back-icon,
     .user-detail-page .user-back-btn .mobile-back-icon {
       display: none;
@@ -4549,6 +4572,19 @@
       #resend-otp-btn { order: 2; }
       #back-login-btn { order: 3; }
       .topbar { display: grid; }
+      .page-title-row {
+        align-items: center;
+        gap: 10px;
+      }
+      .page-actions {
+        padding-top: 0;
+      }
+      .page-actions .btn {
+        min-height: 38px;
+        height: 38px;
+        padding: 7px 9px;
+        white-space: nowrap;
+      }
       .page-title {
         font-size: 38px;
         overflow-wrap: anywhere;
@@ -5164,6 +5200,7 @@
         justify-content: center;
         white-space: nowrap;
       }
+      .page-actions .page-back-btn,
       .report-detail-page .report-back-btn,
       body.user-detail-mode .user-detail-page .user-back-btn,
       body.asset-detail-mode .user-detail-page .user-back-btn {
@@ -5174,12 +5211,14 @@
         display: grid;
         place-items: center;
       }
+      .page-actions .page-back-btn .mobile-back-icon,
       .report-detail-page .report-back-btn .mobile-back-icon,
       .user-detail-page .user-back-btn .mobile-back-icon {
         display: block;
         width: 18px;
         height: 18px;
       }
+      .page-actions .page-back-btn .btn-label,
       .report-detail-page .report-back-btn .btn-label,
       .user-detail-page .user-back-btn .btn-label {
         position: absolute;
@@ -5431,7 +5470,12 @@
       <div class="topbar">
         <div>
           <p class="crumb" id="crumb">การดำเนินงาน / Dashboard</p>
-          <h1 class="page-title" id="page-title">Dashboard</h1>
+          <div class="page-title-row">
+            <div class="page-title-main">
+              <h1 class="page-title" id="page-title">Dashboard</h1>
+            </div>
+            <div class="page-actions" id="page-actions" hidden></div>
+          </div>
           <p class="page-meta" id="page-meta"></p>
         </div>
       </div>
@@ -6305,6 +6349,22 @@
       const pageMeta = document.querySelector("#page-meta");
       if (!pageMeta || activeModule !== "dashboard") return;
       pageMeta.textContent = `Last updated: ${formatBangkokTimestamp()}`;
+    }
+
+    function setPageActions(html = "") {
+      const pageActions = document.querySelector("#page-actions");
+      if (!pageActions) return;
+      pageActions.innerHTML = html;
+      pageActions.hidden = !html.trim();
+    }
+
+    function renderPageBackButton(dataAttribute, label, className = "user-back-btn") {
+      return `
+        <button class="btn ${className} page-back-btn" type="button" ${dataAttribute} aria-label="${label}" title="${label}">
+          <svg class="mobile-back-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>
+          <span class="btn-label">${label}</span>
+        </button>
+      `;
     }
 
     function item(id, name, owner, type, priority, status, detail, tags, action) {
@@ -8831,6 +8891,7 @@
       document.querySelector("#crumb").textContent = `การดำเนินงาน / Asset Management / Asset List / ${asset.id}`;
       document.querySelector("#page-title").textContent = "Asset Detail";
       document.querySelector("#page-meta").textContent = "";
+      setPageActions(renderPageBackButton("data-back-asset-list", "กลับไป Asset List"));
       document.querySelector("#panel-title").textContent = asset.name;
       document.querySelector("#panel-subtitle").textContent = `${asset.id} · ${detail.brand} · ${asset.owner}`;
       document.querySelector("#user-panel-filter-actions").innerHTML = "";
@@ -8847,10 +8908,6 @@
                 <div class="chips">${renderAssetStatusDisplay(asset)}<span class="pill blue">${detail.brand}</span></div>
               </div>
             </div>
-            <button class="btn user-back-btn" type="button" data-back-asset-list aria-label="กลับไป Asset List" title="กลับไป Asset List">
-              <svg class="mobile-back-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>
-              <span class="btn-label">กลับไป Asset List</span>
-            </button>
           </div>
 
           <div class="asset-fo-layout">
@@ -8934,6 +8991,7 @@
       const mode = subLabel === "Report User" || subLabel === "Reported Users" ? "reports" : "list";
       const isReports = mode === "reports";
       const title = isReports ? "Reported Users" : "User List";
+      setPageActions("");
       activeReportContextId = null;
       document.body.classList.add("user-list-mode");
       document.body.classList.remove("user-detail-mode");
@@ -10474,6 +10532,7 @@
       document.querySelector("#crumb").textContent = `การดำเนินงาน / User Management / User Detail / ${user.id}`;
       document.querySelector("#page-title").textContent = "User Detail";
       document.querySelector("#page-meta").textContent = "";
+      setPageActions(renderPageBackButton("data-back-user-list", "กลับไป User List"));
       document.querySelector("#panel-title").textContent = user.displayName;
       document.querySelector("#panel-subtitle").textContent = `${user.id} · ${user.username} · ${fullEmail}`;
       document.querySelector(".filters").innerHTML = "";
@@ -10489,10 +10548,6 @@
                 <div class="chips">${userStatusPill(user.status)}<span class="pill blue">${user.auth}</span></div>
               </div>
             </div>
-            <button class="btn user-back-btn" type="button" data-back-user-list aria-label="กลับไป User List" title="กลับไป User List">
-              <svg class="mobile-back-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>
-              <span class="btn-label">กลับไป User List</span>
-            </button>
           </div>
           <div class="detail-section">
             <h4>Account Summary</h4>
@@ -10550,6 +10605,7 @@
       document.querySelector("#crumb").textContent = `การดำเนินงาน / User Management / Report Detail / ${report.id}`;
       document.querySelector("#page-title").textContent = "Report Detail";
       document.querySelector("#page-meta").textContent = "";
+      setPageActions(renderPageBackButton("data-back-reported-users", "กลับไป Reported Users", "report-back-btn"));
       document.querySelector("#panel-title").textContent = report.user;
       document.querySelector("#panel-subtitle").textContent = `${report.id} · ${report.category} · reporter identity masked`;
       document.querySelector(".filters").innerHTML = "";
@@ -10569,10 +10625,6 @@
                 </div>
               </div>
             </div>
-            <button class="btn report-back-btn" type="button" data-back-reported-users aria-label="กลับไป Reported Users" title="กลับไป Reported Users">
-              <svg class="mobile-back-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>
-              <span class="btn-label">กลับไป Reported Users</span>
-            </button>
           </div>
 
           <div class="detail-section">
@@ -10620,6 +10672,7 @@
       document.querySelector("#crumb").textContent = `การดำเนินงาน / Asset Management / Report Detail / ${report.id}`;
       document.querySelector("#page-title").textContent = "Report Detail";
       document.querySelector("#page-meta").textContent = "";
+      setPageActions(renderPageBackButton("data-back-reported-assets", "กลับไป Reported Assets", "report-back-btn"));
       document.querySelector("#panel-title").textContent = asset.name;
       document.querySelector("#panel-subtitle").textContent = `${report.id} · ${asset.id} · reporter identity masked`;
       document.querySelector("#user-panel-filter-actions").innerHTML = "";
@@ -10645,10 +10698,6 @@
             </div>
             <div class="user-detail-actions">
               <button class="btn asset-report-view-btn" type="button" data-asset-report-detail-modal="${asset.id}" aria-label="View asset ${asset.id}" title="View Asset">${iconSvg.eye}<span class="asset-report-view-label">View Asset</span></button>
-              <button class="btn report-back-btn" type="button" data-back-reported-assets aria-label="กลับไป Reported Assets" title="กลับไป Reported Assets">
-              <svg class="mobile-back-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>
-              <span class="btn-label">กลับไป Reported Assets</span>
-              </button>
             </div>
           </div>
 
@@ -10685,6 +10734,7 @@
     function renderModule(id, subLabel = "", displaySubLabel = subLabel) {
       activeModule = id;
       activeSub = subLabel;
+      setPageActions("");
       syncExpandedNavForModule(id, subLabel);
       const data = moduleData[id];
       const isAssetList = id === "assets" && (subLabel || "Asset List") === "Asset List";
@@ -10927,6 +10977,7 @@
       const roles = getRolePermissionRows();
       activeModule = "settings";
       activeSub = "Roles & Permissions";
+      setPageActions("");
       syncExpandedNavForModule("settings", "Roles & Permissions");
       document.body.classList.remove("dashboard-mode", "user-management-mode", "user-list-mode", "asset-list-mode", "asset-detail-mode", "user-detail-mode");
       activeRow = null;
@@ -10990,6 +11041,7 @@
 
     function renderDashboard() {
       activeRow = null;
+      setPageActions("");
       const renderMetricChip = chip => {
         if (typeof chip === "string") return `<span class="chip">${chip}</span>`;
         return `<button class="chip" type="button" data-module-jump="${chip.module}" data-sub-jump="${chip.sub || ""}">${chip.label}</button>`;
@@ -12072,6 +12124,7 @@
       document.querySelector("#crumb").textContent = `การดำเนินงาน / Content Management / Articles / ${article.id}`;
       document.querySelector("#page-title").textContent = "Article Detail";
       document.querySelector("#page-meta").textContent = "";
+      setPageActions(renderPageBackButton("data-back-article-list", "กลับไป Articles"));
       document.querySelector("#panel-title").textContent = article.title;
       document.querySelector("#panel-subtitle").textContent = `${article.id} · ${article.category} · ${article.author}`;
       document.querySelector("#user-panel-filter-actions").innerHTML = "";
@@ -12087,10 +12140,6 @@
                 <h2>${article.id} : ${article.title}</h2>
               </div>
             </div>
-            <button class="btn user-back-btn" type="button" data-back-article-list aria-label="กลับไป Articles" title="กลับไป Articles">
-              <svg class="mobile-back-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>
-              <span class="btn-label">กลับไป Articles</span>
-            </button>
           </div>
 
           <div class="article-detail-divider" aria-hidden="true"></div>
@@ -12199,6 +12248,7 @@
       document.querySelector("#crumb").textContent = `การดำเนินงาน / Content Management / Articles / ${isEdit ? draft.id : "Add Article"}`;
       document.querySelector("#page-title").textContent = isEdit ? "Edit Article" : "Add Article";
       document.querySelector("#page-meta").textContent = "";
+      setPageActions("");
       document.querySelector("#panel-title").textContent = isEdit ? "Edit Article" : "Add Article";
       document.querySelector("#panel-subtitle").textContent = "สร้างและตรวจบทความก่อนแสดงบน Board หน้าบ้าน";
       document.querySelector("#user-panel-filter-actions").innerHTML = "";
