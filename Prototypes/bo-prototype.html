@@ -5597,7 +5597,7 @@
     const navGroups = [
       { section: "การดำเนินงาน", items: [
         { id: "dashboard", label: "Dashboard", icon: "dashboard" },
-        { id: "users", label: "User Management", icon: "users", subs: ["User List", "Reported Users"] },
+        { id: "users", label: "User Management", icon: "users", subs: ["User Accounts", "Reported Users"] },
         { id: "assets", label: "Asset Management", icon: "asset", subs: ["Asset List", "Reported Assets"] },
         { id: "content", label: "Content Management", icon: "content", subs: ["Articles", "Categories", "Banners", "Reported Board"] },
         { id: "market", label: "Market Data", icon: "market", subs: ["Brands", "Models", "Price Index", "Import"] },
@@ -5840,8 +5840,8 @@
 
     const dashboardData = {
       metrics: [
-        { label: "New Users", value: "128", trend: "วันนี้เพิ่มขึ้น 8.2% เทียบกับเมื่อวาน", chips: ["Today 128", "This Week 642", "This Month 2,840"], module: "users", sub: "User List", icon: "users" },
-        { label: "Active Users Today", value: "8.4K", trend: "ผู้ใช้งานรายวันเฉลี่ย 7 วันเพิ่มขึ้น 4.1% เทียบกับ 7 วันก่อน", chips: ["Today 8,420", "This Week 24,700", "This Month 38,900"], module: "users", sub: "User List", icon: "users" },
+        { label: "New Users", value: "128", trend: "วันนี้เพิ่มขึ้น 8.2% เทียบกับเมื่อวาน", chips: ["Today 128", "This Week 642", "This Month 2,840"], module: "users", sub: "User Accounts", icon: "users" },
+        { label: "Active Users Today", value: "8.4K", trend: "ผู้ใช้งานรายวันเฉลี่ย 7 วันเพิ่มขึ้น 4.1% เทียบกับ 7 วันก่อน", chips: ["Today 8,420", "This Week 24,700", "This Month 38,900"], module: "users", sub: "User Accounts", icon: "users" },
         { label: "New Assets", value: "94", trend: "สร้างวันนี้ 94 รายการ เทียบกับเมื่อวาน 340 รายการ", chips: ["Sale 64", "Show 17", "Hide 9", "Sold 4"], module: "assets", sub: "Asset List", icon: "asset" },
         { label: "Reported Items", value: "30", trend: "มี 9 รายงานใกล้ครบกำหนดตรวจ", chips: [
           { label: "Assets 22", module: "assets", sub: "Reported Assets" },
@@ -9031,10 +9031,10 @@
       if (!options.preserveScroll) scrollMainToTop();
     }
 
-    function renderUserManagement(subLabel = "User List") {
+    function renderUserManagement(subLabel = "User Accounts") {
       const mode = subLabel === "Report User" || subLabel === "Reported Users" ? "reports" : "list";
       const isReports = mode === "reports";
-      const title = isReports ? "Reported Users" : "User List";
+      const title = isReports ? "Reported Users" : "User Accounts";
       setPageActions("");
       activeReportContextId = null;
       document.body.classList.add("user-list-mode");
@@ -9043,7 +9043,7 @@
       document.querySelector("#crumb").textContent = `การดำเนินงาน / User Management / ${title}`;
       document.querySelector("#page-title").textContent = title;
       document.querySelector("#page-meta").textContent = "";
-      document.querySelector("#panel-title").textContent = isReports ? "Reported Users" : "User Accounts";
+      document.querySelector("#panel-title").textContent = isReports ? "Reported Users List" : "User List";
       document.querySelector("#panel-subtitle").textContent = "";
       document.querySelector("#user-panel-filter-actions").innerHTML = `
         <button class="btn user-filter-toggle" type="button" data-user-filter-toggle aria-expanded="${userFilterOpen}">${iconSvg.filter}<span>${userFilterOpen ? "ปิดตัวกรอง" : "เปิดตัวกรอง"}</span></button>
@@ -10583,12 +10583,12 @@
       const fullEmail = getUserFullEmail(user);
       document.body.classList.add("user-detail-mode");
       document.body.classList.remove("user-list-mode");
-      activeSub = "User List";
+      activeSub = "User Accounts";
       activeRow = user;
       document.querySelector("#crumb").textContent = `การดำเนินงาน / User Management / User Detail / ${user.id}`;
       document.querySelector("#page-title").textContent = "User Detail";
       document.querySelector("#page-meta").textContent = "";
-      setPageActions(renderPageBackButton("data-back-user-list", "กลับไป User List"));
+      setPageActions(renderPageBackButton("data-back-user-list", "กลับไป User Accounts"));
       document.querySelector("#panel-title").textContent = user.displayName;
       document.querySelector("#panel-subtitle").textContent = `${user.id} · ${user.username} · ${fullEmail}`;
       document.querySelector(".filters").innerHTML = "";
@@ -10813,7 +10813,7 @@
         return;
       }
       if (id === "users") {
-        renderUserManagement(subLabel || "User List");
+        renderUserManagement(subLabel || "User Accounts");
         updateActiveNav();
         return;
       }
@@ -13225,7 +13225,7 @@
       if (userReset) {
         userListPage = 1;
         userFilterOpen = false;
-        renderUserManagement(activeSub || "User List");
+        renderUserManagement(activeSub || "User Accounts");
         return;
       }
       const userFilterToggle = event.target.closest("[data-user-filter-toggle]");
@@ -13350,7 +13350,7 @@
       }
       const backUserList = event.target.closest("[data-back-user-list]");
       if (backUserList) {
-        renderModule("users", "User List", "User List");
+        renderModule("users", "User Accounts", "User Accounts");
         return;
       }
       const backAssetList = event.target.closest("[data-back-asset-list]");
