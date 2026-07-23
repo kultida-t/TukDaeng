@@ -2262,6 +2262,10 @@
       line-height: 1.45;
       cursor: pointer;
     }
+    .article-upload-control.has-image {
+      gap: 12px;
+      min-height: 82px;
+    }
     .article-editor-block .article-upload-control {
       background: #fff;
     }
@@ -2289,6 +2293,24 @@
     .article-upload-display.placeholder {
       color: #8a99ad;
       font-weight: 400;
+    }
+    .article-upload-thumbnail {
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 112px;
+      height: 72px;
+      overflow: hidden;
+      border: 1px solid #d7e5f4;
+      border-radius: 8px;
+      background: #eef4fb;
+    }
+    .article-upload-thumbnail img {
+      width: 100%;
+      height: 100%;
+      display: block;
+      object-fit: cover;
     }
     .article-upload-error {
       display: none;
@@ -12134,6 +12156,15 @@
       return articleBlockTypes.map(([value, label]) => `<option value="${value}" ${selectedType === value ? "selected" : ""}>${label}</option>`).join("");
     }
 
+    function renderArticleUploadThumbnail(src, alt, attr) {
+      if (!src) return "";
+      return `
+        <span class="article-upload-thumbnail has-image" ${attr || ""}>
+          <img src="${escapeArticleField(src)}" alt="${escapeArticleField(alt || "Article image preview")}" />
+        </span>
+      `;
+    }
+
     function renderArticleEditorBlock(block, index, article) {
       const type = String(block?.type || "paragraph");
       const label = articleBlockTypes.find(([value]) => value === type)?.[1] || "Paragraph";
@@ -12147,9 +12178,10 @@
       const field = type === "image"
         ? `
           <label class="full">รูปในเนื้อหา
-            <span class="article-upload-control" data-article-body-image-upload-control>
+            <span class="article-upload-control ${article?.bodyImageSrc ? "has-image" : ""}" data-article-body-image-upload-control>
+              ${renderArticleUploadThumbnail(article?.bodyImageSrc || "", article?.bodyImageName || "Article content image preview", "data-article-body-image-thumbnail")}
               <span class="article-upload-button">เลือกไฟล์</span>
-              <span class="article-upload-display ${article?.bodyImageName ? "" : "placeholder"}" data-article-body-image-display>${escapeArticleField(article?.bodyImageName || "รองรับ JPG, PNG, WebP ไม่เกิน 5MB")}</span>
+              ${article?.bodyImageSrc ? "" : `<span class="article-upload-display placeholder" data-article-body-image-display>รองรับ JPG, PNG, WebP ไม่เกิน 5MB</span>`}
               <input name="bodyImage" type="file" accept="image/*" data-article-body-image-upload />
             </span>
             <span class="article-upload-error" data-article-body-image-error></span>
@@ -12909,15 +12941,16 @@
                 <section class="article-editor-section">
                   <h4>Hero / Cover</h4>
                   <div class="article-editor-grid">
-                    <label>รูป Cover *
-                      <span class="article-upload-control" data-article-cover-upload-control>
+                    <label class="full">รูป Cover *
+                      <span class="article-upload-control ${draft.coverImageSrc ? "has-image" : ""}" data-article-cover-upload-control>
+                        ${renderArticleUploadThumbnail(draft.coverImageSrc || "", draft.coverImageName || "Article cover preview", "data-article-cover-thumbnail")}
                         <span class="article-upload-button">เลือกไฟล์</span>
-                        <span class="article-upload-display ${draft.coverImageName ? "" : "placeholder"}" data-article-cover-display>${escapeArticleField(draft.coverImageName || "รองรับ JPG, PNG, WebP ไม่เกิน 5MB")}</span>
+                        ${draft.coverImageSrc ? "" : `<span class="article-upload-display placeholder" data-article-cover-display>รองรับ JPG, PNG, WebP ไม่เกิน 5MB</span>`}
                         <input name="coverImage" type="file" accept="image/*" data-article-cover-upload />
                       </span>
                       <span class="article-upload-error" data-article-cover-error></span>
                     </label>
-                    <label>Caption รูป Cover
+                    <label class="full">Caption รูป Cover
                       <input name="coverCaption" value="${escapeArticleField(draft.coverCaption || "")}" placeholder="คำอธิบายภาพที่จะขึ้นใต้รูป hero" />
                       <span class="article-field-error" aria-hidden="true"></span>
                     </label>
@@ -14343,7 +14376,10 @@
         const isBodyImage = event.target.matches("[data-article-body-image-upload]");
         const srcKey = isBodyImage ? "articleBodyImageSrc" : "articleCoverSrc";
         const nameKey = isBodyImage ? "articleBodyImageName" : "articleCoverName";
+        const controlNode = form.querySelector(isBodyImage ? "[data-article-body-image-upload-control]" : "[data-article-cover-upload-control]");
         const displayNode = form.querySelector(isBodyImage ? "[data-article-body-image-display]" : "[data-article-cover-display]");
+        const thumbnailSelector = isBodyImage ? "[data-article-body-image-thumbnail]" : "[data-article-cover-thumbnail]";
+        const thumbnailAttr = isBodyImage ? "data-article-body-image-thumbnail" : "data-article-cover-thumbnail";
         const validatedImage = await validateArticleImageUpload(file, isBodyImage ? "body" : "cover");
         if (validatedImage.error) {
           event.target.value = "";
@@ -14355,9 +14391,16 @@
         }
         form.dataset[srcKey] = validatedImage.src;
         form.dataset[nameKey] = file.name;
-        if (displayNode) {
-          displayNode.textContent = file.name;
-          displayNode.classList.remove("placeholder");
+        controlNode?.classList.add("has-image");
+        displayNode?.remove();
+        let thumbnailNode = form.querySelector(thumbnailSelector);
+        if (!thumbnailNode && controlNode) {
+          controlNode.insertAdjacentHTML("afterbegin", renderArticleUploadThumbnail(validatedImage.src, file.name, thumbnailAttr));
+          thumbnailNode = form.querySelector(thumbnailSelector);
+        }
+        if (thumbnailNode) {
+          thumbnailNode.innerHTML = `<img src="${escapeArticleField(validatedImage.src)}" alt="${escapeArticleField(file.name)}" />`;
+          thumbnailNode.classList.add("has-image");
         }
         setArticleUploadError(form, isBodyImage ? "body" : "cover");
         updateArticleEditorPreview(form);
