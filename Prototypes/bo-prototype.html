@@ -12865,7 +12865,7 @@
                 <div class="user-detail-actions">
                   <button class="user-detail-action-btn" type="button" data-article-preview-open>Preview</button>
                   <button class="user-detail-action-btn" type="submit">${isEdit ? "บันทึกการแก้ไข" : "สร้างบทความ"}</button>
-                  <button class="user-detail-action-btn" type="button" data-back-article-list>ยกเลิก</button>
+                  <button class="user-detail-action-btn" type="button" ${isEdit ? `data-article-edit-cancel="${draft.id}"` : "data-back-article-list"}>ยกเลิก</button>
                 </div>
               </form>
             </div>
@@ -12878,6 +12878,61 @@
       updateArticleEditorPreview(articleEditorForm);
       updateActiveNav();
       scrollMainToTop();
+    }
+
+    function renderArticleEditorConfirmModal({ title, detail, confirmLabel, confirmAttr, tone = "primary" }) {
+      const modal = document.querySelector("#user-action-modal");
+      const modalCard = modal?.querySelector(".user-action-modal");
+      const modalBody = document.querySelector("#user-action-modal-body");
+      if (!modal || !modalCard || !modalBody) return;
+      modalCard.classList.remove("article-preview-modal");
+      modalBody.innerHTML = `
+        <div class="user-action-page">
+          <div class="user-action-layout">
+            <div class="user-action-head">
+              <div>
+                <p>Content Management</p>
+                <h2 id="user-action-modal-title">${title}</h2>
+              </div>
+              <button class="btn user-action-close" type="button" data-user-action-modal-close aria-label="Close modal" title="Close">
+                ${iconSvg.close}
+              </button>
+            </div>
+            <div class="user-action-card">
+              <p class="user-action-note">${detail}</p>
+              <div class="user-action-result-actions">
+                <button class="user-detail-action-btn ${tone} user-action-confirm" type="button" ${confirmAttr}>${confirmLabel}</button>
+                <button class="user-detail-action-btn" type="button" data-user-action-modal-close>ยกเลิก</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+      showUserActionModal(true);
+    }
+
+    function openArticleEditCancelConfirmModal(form) {
+      const id = form?.dataset.articleId || "";
+      const article = getArticleById(id);
+      renderArticleEditorConfirmModal({
+        title: "ยืนยันการยกเลิกแก้ไข",
+        detail: `การแก้ไข ${article?.title || id} จะไม่ถูกบันทึก และระบบจะพากลับไปหน้า Article Detail`,
+        confirmLabel: "ยืนยันยกเลิก",
+        confirmAttr: `data-article-edit-cancel-confirm="${id}"`,
+        tone: "warning"
+      });
+    }
+
+    function openArticleEditSaveConfirmModal(form) {
+      const id = form?.dataset.articleId || "";
+      const article = getArticleById(id);
+      renderArticleEditorConfirmModal({
+        title: "ยืนยันการบันทึกแก้ไข",
+        detail: `ระบบจะบันทึกการเปลี่ยนแปลงของ ${article?.title || id} และแสดงหน้า Article Detail หลังบันทึก`,
+        confirmLabel: "บันทึกการแก้ไข",
+        confirmAttr: `data-article-edit-save-confirm="${id}"`,
+        tone: "primary"
+      });
     }
 
     function saveArticleFromForm(form) {
@@ -13379,6 +13434,29 @@
         if (!article) return;
         renderArticleEditorPage(article, "edit");
         closeRowMenus();
+        return;
+      }
+      const articleEditCancelButton = event.target.closest("[data-article-edit-cancel]");
+      if (articleEditCancelButton) {
+        const form = articleEditCancelButton.closest("[data-article-editor]");
+        if (!form) return;
+        openArticleEditCancelConfirmModal(form);
+        return;
+      }
+      const articleEditCancelConfirmButton = event.target.closest("[data-article-edit-cancel-confirm]");
+      if (articleEditCancelConfirmButton) {
+        const article = getArticleById(articleEditCancelConfirmButton.dataset.articleEditCancelConfirm);
+        if (!article) return;
+        closeUserActionModal();
+        renderArticleDetailPage(article);
+        return;
+      }
+      const articleEditSaveConfirmButton = event.target.closest("[data-article-edit-save-confirm]");
+      if (articleEditSaveConfirmButton) {
+        const form = document.querySelector(`[data-article-editor][data-article-id="${articleEditSaveConfirmButton.dataset.articleEditSaveConfirm}"]`);
+        if (!form) return;
+        closeUserActionModal();
+        saveArticleFromForm(form);
         return;
       }
       const articlePreviewButton = event.target.closest("[data-article-preview-open]");
@@ -14110,6 +14188,10 @@
       const articleEditor = event.target.closest("[data-article-editor]");
       if (articleEditor) {
         event.preventDefault();
+        if (articleEditor.dataset.articleMode === "edit") {
+          openArticleEditSaveConfirmModal(articleEditor);
+          return;
+        }
         saveArticleFromForm(articleEditor);
       }
     });
