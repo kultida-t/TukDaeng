@@ -1121,6 +1121,9 @@
       box-shadow: none;
       overflow: visible;
     }
+    body.asset-list-mode .layout > .panel {
+      overflow: hidden;
+    }
     body.asset-list-mode #primary-action,
     body.asset-detail-mode #primary-action {
       display: none;
@@ -1295,11 +1298,9 @@
       text-align: right;
     }
     body.asset-list-mode .filters {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 8px;
+      display: flex;
       padding: 12px 16px;
-      background: #fff;
+      background: #f8fbff;
     }
     body.asset-list-mode .filters .field {
       min-height: 48px;
@@ -2177,10 +2178,6 @@
       grid-template-columns: minmax(240px, 1.35fr) repeat(3, minmax(126px, .68fr)) max-content;
       gap: 8px;
       width: 100%;
-    }
-    body.asset-list-mode .user-filter-bar {
-      grid-template-columns: repeat(4, minmax(0, 1fr)) max-content;
-      align-items: center;
     }
     .user-filter-actions {
       display: none;
