@@ -991,10 +991,26 @@
       display: flex;
       align-items: baseline;
       flex-wrap: wrap;
-      column-gap: .18em;
+      column-gap: .06em;
+      font-family: var(--font-main);
+      font-size: 18px;
+      font-weight: 600;
+      letter-spacing: 0;
+      line-height: 1.35;
     }
     .user-detail-heading .user-display-name {
-      font-size: .86em;
+      font-size: 1em;
+    }
+    body.user-detail-mode .user-detail-page:not(.report-detail-page) .user-detail-head h2.user-detail-heading {
+      font-family: var(--font-main);
+      font-size: 24px !important;
+      font-weight: 600;
+      letter-spacing: 0;
+      line-height: 1.35;
+    }
+    body.user-detail-mode .user-detail-page:not(.report-detail-page) .user-detail-head h2.user-detail-heading span {
+      font: inherit;
+      letter-spacing: inherit;
     }
     .kv {
       display: grid;
@@ -4547,8 +4563,11 @@
       body.user-detail-mode .user-detail-title h2,
       body.asset-detail-mode .user-detail-title h2 {
         margin-bottom: 4px;
-        font-size: 21px;
-        line-height: 1.08;
+        font-size: 16px;
+        line-height: 1.35;
+      }
+      body.user-detail-mode .user-detail-page:not(.report-detail-page) .user-detail-head h2.user-detail-heading {
+        font-size: 18px !important;
       }
       body.user-detail-mode .user-detail-head .btn,
       body.asset-detail-mode .user-detail-head .btn {
