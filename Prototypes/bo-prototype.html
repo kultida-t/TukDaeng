@@ -1952,15 +1952,27 @@
     }
     .article-readonly-image {
       display: grid;
-      gap: 8px;
+      grid-template-columns: 168px minmax(0, 1fr);
+      gap: 12px;
+      align-items: start;
     }
     .article-readonly-image img {
-      width: 100%;
-      max-height: 260px;
+      width: 168px;
+      height: 104px;
       object-fit: cover;
       border: 1px solid #d7e5f4;
       border-radius: 8px;
       background: #e8eef6;
+    }
+    .article-readonly-image-caption-field {
+      display: grid;
+      gap: 6px;
+      min-width: 0;
+    }
+    .article-readonly-image-caption-label {
+      color: #31425b;
+      font-size: 12px;
+      font-weight: 800;
     }
     .article-readonly-caption {
       color: #66758d;
@@ -12039,7 +12051,10 @@
         return `
           <div class="article-readonly-image">
             ${article?.bodyImageSrc ? `<img src="${escapeArticleField(article.bodyImageSrc)}" alt="${escapeArticleField(article.bodyImageName || article.title || "Article content image")}" />` : ""}
-            ${caption ? `<div class="article-readonly-caption">${escapeArticleField(caption)}</div>` : ""}
+            <div class="article-readonly-image-caption-field">
+              <div class="article-readonly-image-caption-label">Caption รูปในเนื้อหา</div>
+              <div class="article-readonly-caption">${caption ? escapeArticleField(caption) : "-"}</div>
+            </div>
           </div>
         `;
       }
@@ -12611,7 +12626,6 @@
                   <button class="user-detail-action-btn" type="button" data-article-edit="${article.id}">Edit article</button>
                   <button class="user-detail-action-btn" type="button" data-article-preview-id="${article.id}">Preview article</button>
                   <button class="user-detail-action-btn" type="button" data-article-duplicate="${article.id}">Duplicate draft</button>
-                  <button class="user-detail-action-btn" type="button" data-back-article-list>Back to Articles</button>
                   <button class="user-detail-action-btn danger" type="button" data-article-delete="${article.id}">${article.status === "Archived" ? "Delete draft" : "Archive article"}</button>
                 </div>
               </div>
