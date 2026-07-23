@@ -114,6 +114,10 @@ rl.on('line', async (line) => {
                       type: 'string',
                       description: 'Task Category. Must be one of: Requirement, Design, Feature, Bug Fix, Testing, Refactor, Deploy / DevOps, Documentation, Meeting.'
                     },
+                    status: {
+                      type: 'string',
+                      description: 'Task status to store with each log record (e.g. "Done", "In Progress", "Blocked"). Optional.'
+                    },
                     logs: {
                       type: 'array',
                       items: {
@@ -142,7 +146,7 @@ rl.on('line', async (line) => {
           return;
         }
 
-        const { apiKey, appName, appId, startDate, endDate, category, logs } = args;
+        const { apiKey, appName, appId, startDate, endDate, category, status, logs } = args;
         const effectiveApiKey = apiKey || defaultApiKey;
 
         if (!effectiveApiKey) {
@@ -176,6 +180,7 @@ rl.on('line', async (line) => {
               start_date: startDate,
               end_date: endDate,
               category,
+              status,
               logs
             })
           });
