@@ -991,7 +991,7 @@
       display: flex;
       align-items: baseline;
       flex-wrap: wrap;
-      column-gap: .06em;
+      column-gap: 0;
       font-family: var(--font-main);
       font-size: 18px;
       font-weight: 600;
@@ -1000,6 +1000,9 @@
     }
     .user-detail-heading .user-display-name {
       font-size: 1em;
+    }
+    .user-detail-heading .user-detail-separator {
+      margin: 0 .22em;
     }
     body.user-detail-mode .user-detail-page:not(.report-detail-page) .user-detail-head h2.user-detail-heading {
       font-family: var(--font-main);
@@ -10648,7 +10651,7 @@
             <div class="user-detail-title">
               ${renderUserProfileImage(user)}
               <div>
-                <h2 class="user-detail-heading"><span>${user.id}</span><span>:</span><span class="user-display-name">${user.displayName}</span></h2>
+                <h2 class="user-detail-heading"><span>${user.id}</span><span class="user-detail-separator">:</span><span class="user-display-name">${user.displayName}</span></h2>
                 <div class="chips">${userStatusPill(user.status)}<span class="pill blue">${user.auth}</span></div>
               </div>
             </div>
