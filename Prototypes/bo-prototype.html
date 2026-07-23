@@ -1459,12 +1459,35 @@
     .article-detail-page .user-detail-title h2 {
       margin-bottom: 8px;
     }
+    .article-detail-page .article-detail-heading {
+      font-family: var(--font-main);
+      font-size: 24px;
+      font-weight: 600;
+      letter-spacing: 0;
+      line-height: 1.35;
+    }
+    .article-detail-page .article-detail-heading span {
+      font: inherit;
+      letter-spacing: inherit;
+    }
+    .article-title-image {
+      width: 76px;
+      height: 76px;
+      border-radius: 12px;
+      display: grid;
+      place-items: center;
+      overflow: hidden;
+      flex: 0 0 auto;
+      border: 1px solid #d7e0ef;
+      background: #eef4fb;
+      color: #071b36;
+      font-family: var(--font-heading);
+      font-size: 24px;
+      line-height: 1;
+      letter-spacing: .08em;
+    }
     .article-detail-page .user-detail-title .chips {
       margin-top: 0;
-    }
-    .article-detail-page .article-detail-divider {
-      border-top: 1px solid var(--line);
-      margin: -4px 0 22px;
     }
     .article-phone-preview {
       width: min(100%, 460px);
@@ -2429,7 +2452,8 @@
     }
     .profile-image img,
     .profile-image-small img,
-    .asset-title-image img {
+    .asset-title-image img,
+    .article-title-image img {
       width: 100%;
       height: 100%;
       display: block;
@@ -11468,6 +11492,8 @@
           updatedAt: "10 Jul 2026 15:30",
           readTime: "6 min",
           tags: ["Board", "Buying Guide"],
+          coverImageName: "art-044-vintage-watch-buying-guide.png",
+          coverImageSrc: "./assets/article-covers/art-044-vintage-watch-buying-guide.png",
           priority: "ปกติ",
           detail: "Preview as FO และตรวจ cover image ก่อน publish",
           deck: "A practical editorial guide for evaluating vintage watches before buying.",
@@ -11598,6 +11624,14 @@
     function articleStatusPill(status) {
       const map = { Published: "green", Scheduled: "blue", Draft: "amber", Archived: "gray", Reviewing: "red" };
       return `<span class="pill ${map[status] || "blue"}">${status}</span>`;
+    }
+
+    function renderArticleTitleImage(article) {
+      if (article?.coverImageSrc) {
+        const alt = escapeArticleField(article.coverImageName || article.title || "Article cover");
+        return `<div class="article-title-image"><img src="${escapeArticleField(article.coverImageSrc)}" alt="${alt}"></div>`;
+      }
+      return `<div class="article-title-image" aria-hidden="true">TD</div>`;
     }
 
     function getArticleById(articleId) {
@@ -12354,13 +12388,13 @@
         <div class="user-detail-page article-detail-page">
           <div class="user-detail-head">
             <div class="user-detail-title">
+              ${renderArticleTitleImage(article)}
               <div>
-                <h2>${article.id} : ${article.title}</h2>
+                <h2 class="article-detail-heading"><span>${article.id}</span><span class="user-detail-separator"> : </span><span class="user-display-name">${article.title}</span></h2>
+                <div class="chips">${articleStatusPill(article.status)}<span class="pill blue">${article.category}</span></div>
               </div>
             </div>
           </div>
-
-          <div class="article-detail-divider" aria-hidden="true"></div>
 
           <div class="article-detail-layout article-editor-layout">
             <div class="detail-section">
