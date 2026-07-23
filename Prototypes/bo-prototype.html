@@ -1518,6 +1518,7 @@
       width: min(1040px, 100%);
     }
     .article-preview-modal-content .user-action-head {
+      align-items: center;
       margin-bottom: 18px;
       padding-bottom: 18px;
     }
@@ -1952,13 +1953,13 @@
     }
     .article-readonly-image {
       display: grid;
-      grid-template-columns: 168px minmax(0, 1fr);
+      grid-template-columns: 200px minmax(0, 1fr);
       gap: 12px;
       align-items: start;
     }
     .article-readonly-image img {
-      width: 168px;
-      height: 104px;
+      width: 200px;
+      height: 124px;
       object-fit: cover;
       border: 1px solid #d7e5f4;
       border-radius: 8px;
@@ -3907,8 +3908,6 @@
       font-size: 32px;
       line-height: 1;
     }
-    #user-action-modal .article-preview-modal .modal-heading-en,
-    #user-action-modal .article-preview-modal .modal-heading-th,
     #user-action-modal .article-preview-modal .article-preview-label,
     #user-action-modal .article-preview-modal .article-board-preview-title,
     #user-action-modal .article-preview-modal .article-fo-title,
@@ -5212,6 +5211,9 @@
         background: #f7fafc;
         color: #4a5b6e;
       }
+      body.article-list-mode .article-read-time-tag {
+        display: none;
+      }
       .user-card-tags > .pill {
         align-self: center;
         min-height: 30px;
@@ -5269,6 +5271,40 @@
       }
       body.asset-list-mode .user-filter-bar {
         grid-template-columns: 1fr;
+      }
+      body.article-list-mode .filters,
+      body.article-list-mode .user-filter-bar,
+      body.article-list-mode .user-advanced-filter,
+      body.article-list-mode .custom-select {
+        min-width: 0;
+        max-width: 100%;
+      }
+      body.article-list-mode .custom-select-menu {
+        max-width: 100%;
+        overflow-x: hidden;
+      }
+      body.article-list-mode .custom-select-trigger {
+        min-width: 0;
+      }
+      body.article-list-mode .custom-select-trigger [data-custom-select-label] {
+        display: block;
+        min-width: 0;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+      body.article-list-mode .custom-select-option {
+        width: 100%;
+        min-width: 0;
+        white-space: normal;
+        overflow-wrap: anywhere;
+      }
+      body.article-list-mode .user-panel-filter-actions {
+        min-width: 0;
+        flex-wrap: wrap;
+      }
+      body.article-list-mode .user-panel-filter-actions .btn {
+        max-width: 100%;
       }
       body.asset-list-mode #table {
         padding: 12px 14px 16px;
@@ -11129,6 +11165,7 @@
         document.querySelector("#primary-action").textContent = data.action;
         document.querySelector("#user-panel-filter-actions").innerHTML = `
           <button class="btn user-filter-toggle" type="button" data-article-filter-toggle aria-expanded="${articleFilterOpen}">${iconSvg.filter}<span>${articleFilterOpen ? "ปิดตัวกรอง" : "เปิดตัวกรอง"}</span></button>
+          <button class="btn" type="button" data-article-reset title="รีเซ็ตค่าทั้งหมด" aria-label="รีเซ็ตค่าทั้งหมด">${iconSvg.refresh}<span>รีเซ็ตค่าทั้งหมด</span></button>
         `;
         document.querySelector(".filters").innerHTML = `
           <div class="user-filter-bar" data-filter-open="${articleFilterOpen}">
@@ -12315,7 +12352,7 @@
               <h2 id="user-action-modal-title">Preview article</h2>
             </div>
             <button class="btn user-action-close" type="button" data-user-action-modal-close aria-label="Close modal" title="Close">
-              <span>×</span>
+              ${iconSvg.close}
             </button>
           </div>
           ${renderArticlePreviewStack(article)}
@@ -12912,7 +12949,7 @@
               <div class="asset-card-tags">
                 <span class="user-card-tag asset-tag">${article.category}</span>
                 ${articleStatusPill(article.status)}
-                <span class="user-card-tag asset-tag">${article.readTime}</span>
+                <span class="user-card-tag asset-tag article-read-time-tag">${article.readTime}</span>
                 <div class="user-card-meta">
                   <div class="user-card-meta-item"><span>Article ID</span><strong>${article.id}</strong></div>
                   <div class="user-card-meta-item"><span>Publish</span><strong>${article.publishAt}</strong></div>
