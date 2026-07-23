@@ -12954,7 +12954,7 @@
                 <div class="user-detail-actions">
                   <button class="user-detail-action-btn" type="button" data-article-preview-open>Preview</button>
                   <button class="user-detail-action-btn" type="submit">${isEdit ? "บันทึกการแก้ไข" : "สร้างบทความ"}</button>
-                  <button class="user-detail-action-btn" type="button" ${isEdit ? `data-article-edit-cancel="${draft.id}"` : "data-back-article-list"}>ยกเลิก</button>
+                  <button class="user-detail-action-btn" type="button" ${isEdit ? `data-article-edit-cancel="${draft.id}"` : "data-article-add-cancel"}>ยกเลิก</button>
                 </div>
               </form>
             </div>
@@ -13016,6 +13016,25 @@
         summary: "ระบบจะบันทึกข้อมูลที่แก้ไขและแสดงผลทันที",
         question: "คุณต้องการบันทึกการแก้ไขบทความนี้ใช่หรือไม่?",
         confirmAttr: `data-article-edit-save-confirm="${id}"`
+      });
+    }
+
+    function openArticleAddCancelConfirmModal() {
+      renderArticleEditorConfirmModal({
+        title: "ยืนยันการยกเลิกสร้างบทความ",
+        summary: "ข้อมูลที่กรอกไว้ในหน้า Add Article จะไม่ถูกบันทึก",
+        question: "คุณต้องการยกเลิกการสร้างบทความนี้ใช่หรือไม่?",
+        confirmAttr: "data-article-add-cancel-confirm"
+      });
+    }
+
+    function openArticleAddCreateConfirmModal(form) {
+      const id = form?.dataset.articleId || "";
+      renderArticleEditorConfirmModal({
+        title: "ยืนยันการสร้างบทความ",
+        summary: "ระบบจะสร้างบทความใหม่ตามข้อมูลในแบบฟอร์ม",
+        question: "คุณต้องการสร้างบทความนี้ใช่หรือไม่?",
+        confirmAttr: `data-article-add-create-confirm="${id}"`
       });
     }
 
@@ -13528,6 +13547,11 @@
         openArticleEditCancelConfirmModal(form);
         return;
       }
+      const articleAddCancelButton = event.target.closest("[data-article-add-cancel]");
+      if (articleAddCancelButton) {
+        openArticleAddCancelConfirmModal();
+        return;
+      }
       const articleEditCancelConfirmButton = event.target.closest("[data-article-edit-cancel-confirm]");
       if (articleEditCancelConfirmButton) {
         const article = getArticleById(articleEditCancelConfirmButton.dataset.articleEditCancelConfirm);
@@ -13540,9 +13564,23 @@
         }
         return;
       }
+      const articleAddCancelConfirmButton = event.target.closest("[data-article-add-cancel-confirm]");
+      if (articleAddCancelConfirmButton) {
+        closeUserActionModal();
+        renderModule("content", "Articles", "Articles");
+        return;
+      }
       const articleEditSaveConfirmButton = event.target.closest("[data-article-edit-save-confirm]");
       if (articleEditSaveConfirmButton) {
         const form = document.querySelector(`[data-article-editor][data-article-id="${articleEditSaveConfirmButton.dataset.articleEditSaveConfirm}"]`);
+        if (!form) return;
+        closeUserActionModal();
+        saveArticleFromForm(form);
+        return;
+      }
+      const articleAddCreateConfirmButton = event.target.closest("[data-article-add-create-confirm]");
+      if (articleAddCreateConfirmButton) {
+        const form = document.querySelector(`[data-article-editor][data-article-id="${articleAddCreateConfirmButton.dataset.articleAddCreateConfirm}"]`);
         if (!form) return;
         closeUserActionModal();
         saveArticleFromForm(form);
@@ -14281,7 +14319,7 @@
           openArticleEditSaveConfirmModal(articleEditor);
           return;
         }
-        saveArticleFromForm(articleEditor);
+        openArticleAddCreateConfirmModal(articleEditor);
       }
     });
     document.addEventListener("change", async event => {
