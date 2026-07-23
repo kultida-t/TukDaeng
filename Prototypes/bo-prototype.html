@@ -2379,7 +2379,7 @@
       white-space: nowrap;
     }
     .user-row.report-row {
-      grid-template-columns: minmax(104px, .5fr) minmax(156px, .78fr) minmax(116px, .54fr) minmax(106px, .5fr) minmax(220px, 1.28fr) minmax(86px, .4fr) minmax(96px, .46fr) minmax(108px, .52fr) minmax(104px, .46fr);
+      grid-template-columns: minmax(104px, .5fr) minmax(156px, .76fr) minmax(116px, .54fr) minmax(106px, .5fr) minmax(210px, 1.18fr) minmax(86px, .4fr) minmax(96px, .46fr) minmax(150px, .72fr) minmax(104px, .46fr);
     }
     .user-row.asset-report-row {
       grid-template-columns: minmax(100px, .46fr) minmax(180px, .84fr) minmax(250px, 1.08fr) minmax(92px, .42fr) minmax(230px, 1.06fr) minmax(78px, .34fr) minmax(88px, .38fr) minmax(72px, .3fr);
@@ -4571,7 +4571,7 @@
         overflow-x: auto;
       }
       .user-row.report-row {
-        grid-template-columns: minmax(104px, .5fr) minmax(150px, .76fr) minmax(116px, .54fr) minmax(106px, .5fr) minmax(210px, 1.24fr) minmax(88px, .42fr) minmax(96px, .46fr) minmax(108px, .52fr) minmax(104px, .46fr);
+        grid-template-columns: minmax(104px, .5fr) minmax(150px, .74fr) minmax(116px, .54fr) minmax(106px, .5fr) minmax(200px, 1.14fr) minmax(88px, .42fr) minmax(96px, .46fr) minmax(150px, .72fr) minmax(104px, .46fr);
         overflow-x: auto;
       }
       .user-row.asset-report-row {
@@ -5882,11 +5882,11 @@
         { id: "U-1222", displayName: "old.user", username: "@olduser", email: "ol***@mail.com", auth: "Email", status: "Deleted / Archived", joined: "17 Jan 2026", joinedBucket: "older", joinedRank: 20260117, lastActive: "15 May 2026 07:44", lastActiveBucket: "older", lastActiveRank: 202605150744, assets: 0, assetBucket: "0", reports: 0, verification: "Archived", contact: [], support: "DEL-020", latest: "Anonymized", reportState: "ปิดเคสแล้ว", statusLabel: "Archived", allowed: ["View archived summary"], blocked: ["Reset password", "Status mutation"], foImpact: "Archived account login blocked; profile/assets hidden or anonymized.", actionNote: "Archive details remain sensitive and audited." }
       ],
       reports: [
-        { id: "RPU-505", category: "Profile", user: "horology.king", userId: "U-1002", accountStatus: "Suspended", reason: "พบโปรไฟล์ซ้ำและพฤติกรรมผู้ขายที่ต้องตรวจสอบ", reporters: 5, priority: "สูง", status: "In Review", reference: "Profile ID PRF-1002", source: "User Detail", waiting: "22 ชม.", evidence: ["รูปโปรไฟล์คล้ายบัญชีอื่น", "ข้อความแนะนำตัวผู้ขายซ้ำหลายจุด"], recommendation: "ตรวจ reference ต้นทางก่อนทำ action เพิ่มกับบัญชี", actionHistory: "มีรายงานครบ 5 รายงาน ระบบจึงระงับบัญชีชั่วคราวระหว่างรอตรวจสอบ" },
-        { id: "RPU-512", category: "Asset", user: "Crown Time BKK", userId: "U-1017", accountStatus: "Active", reason: "มีรายงานสินทรัพย์ซ้ำและข้อมูลประกาศคล้ายรายการอื่น", reporters: 4, priority: "สูง", status: "Open", reference: "Asset Group AST-DUP-1017", source: "Asset Detail", waiting: "20 ชม.", evidence: ["รูปสินทรัพย์ซ้ำกับรายการอื่น", "ข้อความประกาศถูกใช้ซ้ำ"], recommendation: "เทียบรูปสินค้าและหลักฐาน provenance ก่อนทำ action กับบัญชี", actionHistory: "เปิดรายงานใหม่ และยังไม่มีการเปลี่ยนสถานะบัญชี" },
-        { id: "RPU-518", category: "Offer / Chat", user: "Omega Club TH", userId: "U-1088", accountStatus: "Active", reason: "มีข้อพิพาทว่าสภาพสินทรัพย์ไม่ตรงกับที่ตกลงในข้อเสนอซื้อ", reporters: 3, priority: "สูง", status: "Open", reference: "Offer OFR-501", source: "Offer / Chat", waiting: "18 ชม.", evidence: ["ประวัติแชท", "ข้อพิพาทจากข้อเสนอซื้อ"], recommendation: "เปิดบริบท Offer / Chat ก่อนปิดรายงาน", actionHistory: "เปิดรายงานใหม่ และรอตรวจสอบ reference ต้นทาง" },
-        { id: "RPU-541", category: "Chat", user: "Rolex Rama9", userId: "U-1186", accountStatus: "Suspended", reason: "มีรายงานซ้ำเรื่องข้อความแชทที่ไม่เหมาะสม", reporters: 6, priority: "สูง", status: "In Review", reference: "CHT-090", source: "Offer / Chat", waiting: "4 ชม.", evidence: ["ประวัติแชท"], recommendation: "ตรวจหลักฐานแชทและกำหนดผลสุดท้ายก่อนปิดรายงาน", actionHistory: "ระงับบัญชีชั่วคราวระหว่างตรวจสอบ และยังไม่ปิดรายงาน" },
-        { id: "RPU-560", category: "Profile", user: "The Collector", userId: "U-1120", accountStatus: "Banned", reason: "ยืนยันพฤติกรรมละเมิดซ้ำและปิดเคสหลังแบนบัญชี", reporters: 13, priority: "สูง", status: "Cleared", reference: "Profile ID PRF-1120", source: "Reported Users", waiting: "0 ชม.", evidence: ["รายงานพฤติกรรมละเมิดซ้ำ", "มี admin action แบนบัญชีแล้ว", "โปรไฟล์มีรูปแบบหลอกลวงซ้ำ", "พบการชวนซื้อขายนอกระบบ"], recommendation: "คงสถานะรายงานเป็นปิดแล้ว และเก็บบันทึกการดำเนินการสำหรับกรณีขอยกเลิกระงับบัญชีถาวร", actionHistory: "ปิดรายงานแล้วหลังแบนบัญชี และบัญชียังคงถูกแบนอยู่" }
+        { id: "RPU-505", category: "Profile", user: "horology.king", userId: "U-1002", accountStatus: "Suspended", reason: "พบโปรไฟล์ซ้ำและพฤติกรรมผู้ขายที่ต้องตรวจสอบ", reporters: 5, priority: "สูง", status: "In Review", reference: "Profile ID PRF-1002", source: "User Detail", sources: ["User Profile"], waiting: "22 ชม.", evidence: ["รูปโปรไฟล์คล้ายบัญชีอื่น", "ข้อความแนะนำตัวผู้ขายซ้ำหลายจุด"], recommendation: "ตรวจ reference ต้นทางก่อนทำ action เพิ่มกับบัญชี", actionHistory: "มีรายงานครบ 5 รายงาน ระบบจึงระงับบัญชีชั่วคราวระหว่างรอตรวจสอบ" },
+        { id: "RPU-512", category: "Asset", user: "Crown Time BKK", userId: "U-1017", accountStatus: "Active", reason: "มีรายงานสินทรัพย์ซ้ำและข้อมูลประกาศคล้ายรายการอื่น", reporters: 4, priority: "สูง", status: "Open", reference: "Asset Group AST-DUP-1017", source: "Asset Detail", sources: ["User Profile"], waiting: "20 ชม.", evidence: ["รูปสินทรัพย์ซ้ำกับรายการอื่น", "ข้อความประกาศถูกใช้ซ้ำ"], recommendation: "เทียบรูปสินค้าและหลักฐาน provenance ก่อนทำ action กับบัญชี", actionHistory: "เปิดรายงานใหม่ และยังไม่มีการเปลี่ยนสถานะบัญชี" },
+        { id: "RPU-518", category: "Offer / Chat", user: "Omega Club TH", userId: "U-1088", accountStatus: "Active", reason: "มีข้อพิพาทว่าสภาพสินทรัพย์ไม่ตรงกับที่ตกลงในข้อเสนอซื้อ", reporters: 3, priority: "สูง", status: "Open", reference: "Offer OFR-501", source: "Offer / Chat", sources: ["Chat"], waiting: "18 ชม.", evidence: ["ประวัติแชท", "ข้อพิพาทจากข้อเสนอซื้อ"], recommendation: "เปิดบริบท Offer / Chat ก่อนปิดรายงาน", actionHistory: "เปิดรายงานใหม่ และรอตรวจสอบ reference ต้นทาง" },
+        { id: "RPU-541", category: "Chat", user: "Rolex Rama9", userId: "U-1186", accountStatus: "Suspended", reason: "มีรายงานซ้ำเรื่องข้อความแชทที่ไม่เหมาะสม", reporters: 6, priority: "สูง", status: "In Review", reference: "CHT-090", source: "Offer / Chat", sources: ["Chat"], waiting: "4 ชม.", evidence: ["ประวัติแชท"], recommendation: "ตรวจหลักฐานแชทและกำหนดผลสุดท้ายก่อนปิดรายงาน", actionHistory: "ระงับบัญชีชั่วคราวระหว่างตรวจสอบ และยังไม่ปิดรายงาน" },
+        { id: "RPU-560", category: "Profile", user: "The Collector", userId: "U-1120", accountStatus: "Banned", reason: "ยืนยันพฤติกรรมละเมิดซ้ำและปิดเคสหลังแบนบัญชี", reporters: 13, priority: "สูง", status: "Cleared", reference: "Profile ID PRF-1120", source: "Reported Users", sources: ["User Profile", "Chat"], waiting: "0 ชม.", evidence: ["รายงานพฤติกรรมละเมิดซ้ำ", "มี admin action แบนบัญชีแล้ว", "โปรไฟล์มีรูปแบบหลอกลวงซ้ำ", "พบการชวนซื้อขายนอกระบบ"], recommendation: "คงสถานะรายงานเป็นปิดแล้ว และเก็บบันทึกการดำเนินการสำหรับกรณีขอยกเลิกระงับบัญชีถาวร", actionHistory: "ปิดรายงานแล้วหลังแบนบัญชี และบัญชียังคงถูกแบนอยู่" }
       ]
     };
 
@@ -6275,45 +6275,45 @@
 
     const userReportSubmissions = {
       "RPU-505": [
-        { reason: "Impersonation", additionalDetails: "Profile uses similar identity and seller wording from another account." },
-        { reason: "Fraud or scam", additionalDetails: "Seller profile looks duplicated and needs verification before reopening." },
-        { reason: "Spam" },
-        { reason: "Other", additionalDetails: "Please compare profile photos and seller introduction text." },
-        { reason: "Fraud or scam" }
+        { source: "User Profile", reason: "Impersonation", additionalDetails: "Profile uses similar identity and seller wording from another account." },
+        { source: "User Profile", reason: "Fraud or scam", additionalDetails: "Seller profile looks duplicated and needs verification before reopening." },
+        { source: "User Profile", reason: "Spam" },
+        { source: "User Profile", reason: "Other", additionalDetails: "Please compare profile photos and seller introduction text." },
+        { source: "User Profile", reason: "Fraud or scam" }
       ],
       "RPU-512": [
-        { reason: "Fraud or scam", additionalDetails: "Asset photos and listing copy appear reused from another post." },
-        { reason: "Other", additionalDetails: "Please check duplicate asset group before taking account action." },
-        { reason: "Spam" },
-        { reason: "Fraud or scam" }
+        { source: "User Profile", reason: "Fraud or scam", additionalDetails: "Asset photos and listing copy appear reused from another post." },
+        { source: "User Profile", reason: "Other", additionalDetails: "Please check duplicate asset group before taking account action." },
+        { source: "User Profile", reason: "Spam" },
+        { source: "User Profile", reason: "Fraud or scam" }
       ],
       "RPU-518": [
-        { reason: "Fraud or scam", additionalDetails: "Offer dispute says asset condition does not match the chat agreement." },
-        { reason: "Other" },
-        { reason: "Inappropriate content", additionalDetails: "Chat context needs review before closing this report." }
+        { source: "Chat", reason: "Fraud or scam", additionalDetails: "Offer dispute says asset condition does not match the chat agreement." },
+        { source: "Chat", reason: "Other" },
+        { source: "Chat", reason: "Inappropriate content", additionalDetails: "Chat context needs review before closing this report." }
       ],
       "RPU-541": [
-        { reason: "Harassment or hate", additionalDetails: "Chat messages contain repeated inappropriate language." },
-        { reason: "Inappropriate content" },
-        { reason: "Harassment or hate" },
-        { reason: "Spam" },
-        { reason: "Other", additionalDetails: "Please review the full conversation before final action." },
-        { reason: "Inappropriate content" }
+        { source: "Chat", reason: "Harassment or hate", additionalDetails: "Chat messages contain repeated inappropriate language." },
+        { source: "Chat", reason: "Inappropriate content" },
+        { source: "Chat", reason: "Harassment or hate" },
+        { source: "Chat", reason: "Spam" },
+        { source: "Chat", reason: "Other", additionalDetails: "Please review the full conversation before final action." },
+        { source: "Chat", reason: "Inappropriate content" }
       ],
       "RPU-560": [
-        { reason: "Fraud or scam", additionalDetails: "Repeated reports show off-platform trading behavior." },
-        { reason: "Fraud or scam" },
-        { reason: "Impersonation", additionalDetails: "Profile pattern looks similar to previously banned accounts." },
-        { reason: "Spam" },
-        { reason: "Other", additionalDetails: "Keep audit trail for permanent ban review." },
-        { reason: "Fraud or scam" },
-        { reason: "Inappropriate content" },
-        { reason: "Fraud or scam" },
-        { reason: "Spam" },
-        { reason: "Other" },
-        { reason: "Fraud or scam" },
-        { reason: "Impersonation" },
-        { reason: "Fraud or scam" }
+        { source: "User Profile", reason: "Fraud or scam", additionalDetails: "Repeated reports show off-platform trading behavior." },
+        { source: "Chat", reason: "Fraud or scam" },
+        { source: "User Profile", reason: "Impersonation", additionalDetails: "Profile pattern looks similar to previously banned accounts." },
+        { source: "Chat", reason: "Spam" },
+        { source: "User Profile", reason: "Other", additionalDetails: "Keep audit trail for permanent ban review." },
+        { source: "Chat", reason: "Fraud or scam" },
+        { source: "Chat", reason: "Inappropriate content" },
+        { source: "User Profile", reason: "Fraud or scam" },
+        { source: "Chat", reason: "Spam" },
+        { source: "User Profile", reason: "Other" },
+        { source: "Chat", reason: "Fraud or scam" },
+        { source: "User Profile", reason: "Impersonation" },
+        { source: "Chat", reason: "Fraud or scam" }
       ]
     };
 
@@ -6345,6 +6345,13 @@
       return String(report?.id || "").startsWith("RPU-");
     }
 
+    function getUserReportSubmissionSource(report, index, submission) {
+      if (submission?.source) return submission.source;
+      const sources = Array.isArray(report?.sources) ? report.sources.filter(Boolean) : [];
+      if (sources.length) return sources[index % sources.length];
+      return report?.source || "-";
+    }
+
     function getReporterHistoryRows(report) {
       const createdLog = ensureReportAuditLogs(report).find(log => log.action === "REPORT_CREATED");
       const baseTime = parseBangkokAuditTime(createdLog?.createdAt) || Date.UTC(2026, 6, 13, 10, 0);
@@ -6366,7 +6373,7 @@
         return {
           reporter: assetSubmission?.reporter || reporterNames[index] || (isAssetReport ? getAssetReporterFallbackName(report, index) : `Reporter ${String(index + 1).padStart(2, "0")}`),
           reportedAt: formatReporterSubmissionTime(baseTime + minuteOffset * 60 * 1000),
-          source: report.source,
+          source: isUserReport ? getUserReportSubmissionSource(report, index, userSubmission) : report.source,
           note: appReason,
           additionalDetails: assetSubmission?.additionalDetails || userSubmission?.additionalDetails || "",
           status: index === 0 ? "เปิดเคส" : "รวมเคส"
@@ -6416,18 +6423,27 @@
       const usesReportSubmissionLayout = isAssetReportHistory || isUserReportHistory;
       const noteColumnLabel = usesReportSubmissionLayout ? "Report Reason" : "Reporter note";
       const showAdditionalDetails = usesReportSubmissionLayout;
+      const showSourceColumn = !usesReportSubmissionLayout || isUserReportHistory;
       const rows = pageRows.map(row => `
         <tr>
           <td data-label="วันที่ / เวลา">${row.reportedAt}</td>
           <td data-label="Reporter">${row.reporter}</td>
-          ${usesReportSubmissionLayout ? "" : `<td data-label="Source">${row.source}</td>`}
+          ${showSourceColumn ? `<td data-label="Source">${renderHistoryValue(row.source)}</td>` : ""}
           <td data-label="Status">${row.status}</td>
           <td data-label="${noteColumnLabel}" class="history-note">${renderHistoryValue(row.note)}</td>
           ${showAdditionalDetails ? `<td data-label="Additional Details" class="history-note">${renderHistoryValue(row.additionalDetails)}</td>` : ""}
         </tr>
       `).join("");
       const tableClass = usesReportSubmissionLayout ? "history-table asset-reporter-history-table" : "history-table";
-      const columnLayout = usesReportSubmissionLayout ? `
+      const columnLayout = isUserReportHistory ? `
+            <colgroup>
+              <col style="width: 14%">
+              <col style="width: 15%">
+              <col style="width: 12%">
+              <col style="width: 10%">
+              <col style="width: 20%">
+              <col style="width: 29%">
+            </colgroup>` : usesReportSubmissionLayout ? `
             <colgroup>
               <col style="width: 15%">
               <col style="width: 18%">
@@ -6443,7 +6459,7 @@
               <tr>
                 <th>วันที่ / เวลา</th>
                 <th>Reporter</th>
-                ${usesReportSubmissionLayout ? "" : "<th>Source</th>"}
+                ${showSourceColumn ? "<th>Source</th>" : ""}
                 <th>Status</th>
                 <th>${noteColumnLabel}</th>
                 ${showAdditionalDetails ? "<th>Additional Details</th>" : ""}
@@ -9243,6 +9259,22 @@
       return Object.values(record).flat().join(" ").toLowerCase();
     }
 
+    function getReportSources(report) {
+      const explicitSources = Array.isArray(report?.sources) ? report.sources : [];
+      const submissionSources = isUserReportContext(report)
+        ? (userReportSubmissions[report.id] || []).map(submission => submission.source)
+        : [];
+      const sources = [...explicitSources, ...submissionSources];
+      if (!sources.some(Boolean)) sources.push(report?.source);
+      return [...new Set(sources.map(source => String(source || "").trim()).filter(Boolean))];
+    }
+
+    function renderReportSourcesLabel(report) {
+      const sources = getReportSources(report);
+      if (!sources.length) return "-";
+      return sources.join(", ");
+    }
+
     function getUserListSearchText(user) {
       const searchable = { ...user, contact: getUserContactItems(user).filter(item => !/^phone\s*:/i.test(item)) };
       return Object.values(searchable).flat().join(" ").toLowerCase();
@@ -10602,7 +10634,7 @@
       const pageRows = sorted.slice(start, start + userListPageSize);
       document.querySelector("#table").innerHTML = `
         <div class="user-table">
-          <div class="user-row report-row head"><div>Report ID</div><div>User</div><div>User Status</div><div>Status</div><div>Report Detail</div><div>Reporters</div><div>Priority</div><div>Source</div><div>Action</div></div>
+          <div class="user-row report-row head"><div>Report ID</div><div>User</div><div>User Status</div><div>Status</div><div>Report Detail</div><div>Reporters</div><div>Priority</div><div>Sources</div><div>Action</div></div>
           ${pageRows.map(report => `
             <div class="user-row report-row" data-report-id="${report.id}">
               <div class="user-cell-primary" data-label="Report ID"><div class="main-text">${report.id}</div></div>
@@ -10613,7 +10645,7 @@
                 ${statusPill(getReportPriorityLabel(report.priority), report.priority)}
                 <div class="user-card-meta">
                   <div class="user-card-meta-item"><span>User</span><strong>${report.user}</strong></div>
-                  <div class="user-card-meta-item"><span>Source</span><strong>${report.source}</strong></div>
+                  <div class="user-card-meta-item"><span>Sources</span><strong>${renderReportSourcesLabel(report)}</strong></div>
                   <div class="user-card-meta-item"><span>Report detail</span><strong>${report.reason}</strong></div>
                 </div>
               </div>
@@ -10623,7 +10655,7 @@
               <div data-label="Report Detail"><div class="muted">${report.reason}</div></div>
               <div data-label="Reporters"><div class="main-text">${report.reporters}</div></div>
               <div data-label="Priority">${statusPill(getReportPriorityLabel(report.priority), report.priority)}</div>
-              <div data-label="Source"><div class="main-text">${report.source}</div></div>
+              <div data-label="Sources"><div class="main-text">${renderReportSourcesLabel(report)}</div></div>
               <div class="user-row-actions">
                 ${renderReportRowActionMenu(report)}
               </div>
