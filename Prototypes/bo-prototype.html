@@ -1333,7 +1333,37 @@
       grid-template-columns: minmax(104px, .46fr) minmax(250px, 1.2fr) minmax(120px, .54fr) minmax(140px, .58fr) minmax(140px, .58fr) minmax(160px, .68fr) minmax(56px, .24fr);
     }
     body.article-list-mode #primary-action {
-      display: inline-flex;
+      display: none;
+    }
+    body.article-list-mode .panel-head {
+      min-height: 58px;
+      padding: 14px 16px;
+      border-top-left-radius: var(--radius);
+      border-top-right-radius: var(--radius);
+      background: #fff;
+    }
+    body.article-list-mode .panel-head h2 {
+      color: #071b36;
+      font-size: 26px;
+      letter-spacing: 0;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+    body.article-list-mode .filters {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--line);
+      background: #f8fbff;
+    }
+    body.article-list-mode .user-filter-bar {
+      grid-template-columns: minmax(240px, 1.35fr) repeat(3, minmax(126px, .68fr)) max-content;
+    }
+    body.article-list-mode .footer-range {
+      border-bottom-left-radius: var(--radius);
+      border-bottom-right-radius: var(--radius);
+      background: #fff;
     }
     .article-detail-layout {
       display: grid;
@@ -5545,6 +5575,7 @@
       users: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M16 21v-2a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v2"/><circle cx="9.5" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>',
       asset: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="7"/><path d="M9 2h6"/><path d="M9 22h6"/><path d="M9.5 2v3.4M14.5 2v3.4M9.5 18.6V22M14.5 18.6V22"/><path d="M12 8v4l2.7 1.8"/></svg>',
       content: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><path d="M14 2v6h6"/><path d="M8 13h8M8 17h6"/></svg>',
+      plus: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14"/><path d="M5 12h14"/></svg>',
       market: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 17 9 11l4 4 8-8"/><path d="M14 7h7v7"/></svg>',
       directory: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 21h18"/><path d="M5 21V7l7-4 7 4v14"/><path d="M9 21v-6h6v6"/><path d="M9 10h.01M15 10h.01"/></svg>',
       audit: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 11h6M9 15h6"/><path d="M8 3h8l3 3v15H5V6l3-3Z"/><path d="M8 3v4h8V3"/></svg>',
@@ -10795,14 +10826,14 @@
       }
       if (isArticleList) {
         activeRow = null;
+        setPageActions(`<button class="btn" type="button" data-article-add>${iconSvg.plus}<span>สร้างบทความ</span></button>`);
         document.querySelector("#crumb").textContent = `${data.crumb} / Articles`;
         document.querySelector("#page-title").textContent = "Articles";
         document.querySelector("#page-meta").textContent = "";
-        document.querySelector("#panel-title").textContent = "Articles";
+        document.querySelector("#panel-title").textContent = "ARTICLE LIST";
         document.querySelector("#panel-subtitle").textContent = "";
         document.querySelector("#primary-action").textContent = data.action;
         document.querySelector("#user-panel-filter-actions").innerHTML = `
-          <button class="btn" type="button" data-article-add>${iconSvg.content}<span>Add article</span></button>
           <button class="btn user-filter-toggle" type="button" data-article-filter-toggle aria-expanded="${articleFilterOpen}">${iconSvg.filter}<span>${articleFilterOpen ? "ปิดตัวกรอง" : "เปิดตัวกรอง"}</span></button>
         `;
         document.querySelector(".filters").innerHTML = `
