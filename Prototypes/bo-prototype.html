@@ -4867,8 +4867,17 @@
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
-        font-size: 18px;
-        line-height: 1.15;
+        font-size: 22px;
+        line-height: 1.05;
+      }
+      .user-row:not(.head):not(.report-row) > div.user-cell-primary[data-label] .mobile-card-title-en {
+        font-family: "Bebas Neue", sans-serif;
+        font-weight: 400;
+        letter-spacing: .04em;
+      }
+      .user-row:not(.head):not(.report-row) > div.user-cell-primary[data-label] .mobile-card-title-th {
+        font-family: "IBM Plex Sans Thai", "Segoe UI", Tahoma, Arial, sans-serif;
+        font-weight: 700;
       }
       .user-row:not(.head):not(.report-row) > div[data-label]:not(.user-cell-primary) {
         display: none;
@@ -10182,6 +10191,12 @@
       return report?.status === "Cleared" ? "Cleared" : "Pending";
     }
 
+    function getMobileCardTitleClass(value) {
+      return /[\u0E00-\u0E7F]/.test(String(value || ""))
+        ? "mobile-card-title-th"
+        : "mobile-card-title-en";
+    }
+
     function reportQueueStatusPill(report) {
       const status = getReportQueueStatus(report);
       const label = status === "Cleared" ? "ปิดแล้ว" : "รอตรวจ";
@@ -10426,10 +10441,11 @@
           <div class="user-row head"><div>User ID</div><div>User</div><div>Status</div><div>Last Active</div><div>Assets</div><div>Auth</div><div>Date Joined</div><div>Action</div></div>
           ${pageRows.map(user => {
             const rowActions = getUserRowActions(user);
+            const titleClass = getMobileCardTitleClass(user.displayName);
             return `
             <div class="user-row" data-user-card="${user.id}">
               <div data-label="User ID"><div class="main-text">${user.id}</div></div>
-              <div class="user-cell-primary" data-label="User"><div class="main-text">${user.displayName}</div></div>
+              <div class="user-cell-primary" data-label="User"><div class="main-text ${titleClass}">${user.displayName}</div></div>
               <div class="user-card-tags">
                 ${userStatusPill(user.status)}
                 <span class="user-card-tag asset-tag">${user.assets} assets</span>
