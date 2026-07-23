@@ -1919,6 +1919,82 @@
       line-height: 1.55;
       overflow-wrap: anywhere;
     }
+    .article-readonly-block-content h4,
+    .article-readonly-block-content h5 {
+      margin: 0;
+      color: #061426;
+      line-height: 1.3;
+    }
+    .article-readonly-block-content h4 {
+      font-size: 20px;
+      font-weight: 900;
+    }
+    .article-readonly-block-content h5 {
+      font-size: 16px;
+      font-weight: 800;
+    }
+    .article-readonly-block-content ul {
+      margin: 0;
+      padding-left: 20px;
+    }
+    .article-readonly-block-content li {
+      margin-bottom: 6px;
+    }
+    .article-readonly-quote {
+      margin: 0;
+      padding: 12px 14px;
+      border-left: 3px solid #1a365f;
+      border-radius: 6px;
+      background: #eef4fb;
+      color: #10223c;
+      font-weight: 700;
+    }
+    .article-readonly-image {
+      display: grid;
+      gap: 8px;
+    }
+    .article-readonly-image img {
+      width: 100%;
+      max-height: 260px;
+      object-fit: cover;
+      border: 1px solid #d7e5f4;
+      border-radius: 8px;
+      background: #e8eef6;
+    }
+    .article-readonly-caption {
+      color: #66758d;
+      font-size: 12px;
+      line-height: 1.45;
+    }
+    .article-readonly-table {
+      border: 1px solid #d7e5f4;
+      border-radius: 8px;
+      overflow-x: auto;
+      background: #fff;
+      font-size: 13px;
+    }
+    .article-readonly-table-row {
+      display: grid;
+      grid-template-columns: repeat(var(--article-table-columns, 3), minmax(120px, 1fr));
+      min-width: max(100%, calc(var(--article-table-columns, 3) * 120px));
+      border-top: 1px solid #e1e9f3;
+    }
+    .article-readonly-table-row:first-child {
+      border-top: 0;
+      background: #eef4fb;
+      color: #061426;
+      font-weight: 800;
+    }
+    .article-readonly-table-row span {
+      min-width: 0;
+      padding: 10px 12px;
+      border-left: 1px solid #e1e9f3;
+      overflow-wrap: anywhere;
+    }
+    .article-readonly-table-row span:first-child {
+      border-left: 0;
+      font-weight: 800;
+    }
     .article-readonly-empty {
       color: #8a99ad;
       font-weight: 400;
@@ -11522,6 +11598,19 @@
           detail: "เผยแพร่แล้วและแสดงบน Board",
           deck: "A simple provenance checklist for Board readers.",
           quote: "Provenance turns a claim into evidence.",
+          bodyImageName: "art-043-how-to-check-provenance.png",
+          bodyImageSrc: "./assets/article-covers/art-043-how-to-check-provenance.png",
+          bodyImageCaption: "Example of provenance evidence grouped for buyer review before making an offer.",
+          comparisonRows: "Evidence Type | Strong Signal | Needs Caution\nOriginal papers | Serial and reference match the watch | Blank or recently printed paper\nService record | Date, shop, and movement work are traceable | Generic invoice without watch details\nSeller history | Ownership timeline is consistent | Story changes between messages",
+          contentBlocks: [
+            { type: "paragraph", content: "Provenance helps buyers understand where a watch came from and whether the seller's story is supported by documents, service records, and consistent ownership signals." },
+            { type: "h2", content: "What BO should verify before publishing" },
+            { type: "h3", content: "Evidence that helps buyers trust the listing" },
+            { type: "list", content: "Match serial, reference, and production period\nCompare service records with seller claims\nCheck that photos reveal the case, dial, movement, and accessories clearly" },
+            { type: "image", caption: "Example of provenance evidence grouped for buyer review before making an offer." },
+            { type: "quote", content: "Provenance turns a claim into evidence." },
+            { type: "comparison", content: "Evidence Type | Strong Signal | Needs Caution\nOriginal papers | Serial and reference match the watch | Blank or recently printed paper\nService record | Date, shop, and movement work are traceable | Generic invoice without watch details\nSeller history | Ownership timeline is consistent | Story changes between messages" }
+          ],
           body: [
             "Provenance helps buyers understand where a watch came from and whether the seller's story is supported by documents, service records, and consistent ownership signals.",
             "A strong article should explain what evidence matters, what can be faked, and when a buyer should pause before making an offer.",
@@ -11898,16 +11987,53 @@
           ${blocks.map((block, index) => {
             const type = String(block?.type || "paragraph");
             const label = articleBlockTypes.find(([value]) => value === type)?.[1] || "Paragraph";
-            const content = type === "image"
-              ? (block.caption || article?.bodyImageCaption || article?.bodyImageName || "Image block")
-              : (block.content || "");
             return `
               <div class="article-readonly-block" data-article-block-type="${type}">
                 <div class="article-block-title">${index + 1}. ${label}</div>
-                <div class="article-readonly-block-content">${content ? escapeArticleField(content).replace(/\n/g, "<br>") : `<span class="article-readonly-empty">Empty block</span>`}</div>
+                <div class="article-readonly-block-content">${renderArticleReadonlyBlockContent(block, article)}</div>
               </div>
             `;
           }).join("")}
+        </div>
+      `;
+    }
+
+    function renderArticleReadonlyBlockContent(block, article) {
+      const type = String(block?.type || "paragraph");
+      const content = String(block?.content || "").trim();
+      if (type === "h2" && content) return `<h4>${escapeArticleField(content)}</h4>`;
+      if (type === "h3" && content) return `<h5>${escapeArticleField(content)}</h5>`;
+      if (type === "list" && content) {
+        const items = parseArticleMultilineItems(content);
+        return items.length ? `<ul>${items.map(item => `<li>${escapeArticleField(item)}</li>`).join("")}</ul>` : `<span class="article-readonly-empty">Empty block</span>`;
+      }
+      if (type === "image") {
+        const caption = String(block?.caption || article?.bodyImageCaption || "").trim();
+        if (!article?.bodyImageSrc && !caption) return `<span class="article-readonly-empty">Empty block</span>`;
+        return `
+          <div class="article-readonly-image">
+            ${article?.bodyImageSrc ? `<img src="${escapeArticleField(article.bodyImageSrc)}" alt="${escapeArticleField(article.bodyImageName || article.title || "Article content image")}" />` : ""}
+            ${caption ? `<div class="article-readonly-caption">${escapeArticleField(caption)}</div>` : ""}
+          </div>
+        `;
+      }
+      if (type === "quote" && content) return `<blockquote class="article-readonly-quote">${escapeArticleField(content)}</blockquote>`;
+      if (type === "comparison") {
+        const table = renderArticleReadonlyComparisonTable(content);
+        return table || `<span class="article-readonly-empty">Empty block</span>`;
+      }
+      if (!content) return `<span class="article-readonly-empty">Empty block</span>`;
+      return escapeArticleField(content).replace(/\n/g, "<br>");
+    }
+
+    function renderArticleReadonlyComparisonTable(content) {
+      const rows = parseArticleComparisonRows(content);
+      if (!rows.length) return "";
+      const columnCount = Math.max(2, ...rows.map(row => row.length));
+      const normalizeRow = row => Array.from({ length: columnCount }, (_, index) => row[index] || "-");
+      return `
+        <div class="article-readonly-table" style="--article-table-columns: ${columnCount};" aria-label="Article comparison table">
+          ${rows.map(row => `<div class="article-readonly-table-row">${normalizeRow(row).map(cell => `<span>${escapeArticleField(cell)}</span>`).join("")}</div>`).join("")}
         </div>
       `;
     }
@@ -12440,7 +12566,7 @@
 
                 <section class="article-editor-section">
                   <h4>Content Blocks</h4>
-                  <p class="article-editor-section-note">Read-only view of the same block structure used in Add/Edit Article</p>
+                  <p class="article-editor-section-note">Saved article content shown as read-only blocks. Add/Edit Article uses input fields plus a live preview.</p>
                   ${renderArticleReadonlyBlocks(article)}
                 </section>
 
