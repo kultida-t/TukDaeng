@@ -9055,8 +9055,7 @@
             <div class="user-detail-title">
               ${renderAssetTitleImage(asset, detail)}
               <div>
-                <h2 class="asset-detail-heading user-display-name">${asset.name}</h2>
-                <div class="asset-title-meta"><span>${asset.id}</span></div>
+                <h2 class="asset-detail-heading"><span>${asset.id}</span><span class="user-detail-separator"> : </span><span class="user-display-name">${asset.name}</span></h2>
                 <div class="chips">${renderAssetStatusDisplay(asset)}<span class="pill blue">${detail.brand}</span></div>
               </div>
             </div>
