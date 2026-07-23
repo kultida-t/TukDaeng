@@ -10915,6 +10915,7 @@
         document.querySelector("#panel-subtitle").textContent = "";
         document.querySelector("#user-panel-filter-actions").innerHTML = `
           <button class="btn user-filter-toggle" type="button" data-asset-filter-toggle aria-expanded="${assetFilterOpen}">${iconSvg.filter}<span>${assetFilterOpen ? "ปิดตัวกรอง" : "เปิดตัวกรอง"}</span></button>
+          <button class="btn" type="button" data-asset-reset title="รีเซ็ตค่าทั้งหมด" aria-label="รีเซ็ตค่าทั้งหมด">${iconSvg.refresh}<span>รีเซ็ตค่าทั้งหมด</span></button>
         `;
         document.querySelector(".filters").innerHTML = `
           <div class="user-filter-bar" data-filter-open="${assetFilterOpen}">
