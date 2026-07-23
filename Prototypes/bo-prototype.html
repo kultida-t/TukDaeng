@@ -1551,6 +1551,87 @@
       grid-template-columns: repeat(2, minmax(0, 1fr));
       align-items: start;
     }
+    .modal.user-action-modal.article-editor-confirm-modal {
+      width: min(420px, calc(100vw - 36px));
+      border-radius: 22px;
+      border-color: #d9e3f1;
+      box-shadow: 0 28px 80px rgba(6, 20, 38, .28);
+    }
+    .article-editor-confirm-modal .modal-body {
+      padding: 26px 24px 24px;
+    }
+    .article-editor-confirm-page {
+      display: grid;
+      justify-items: center;
+      gap: 10px;
+      text-align: center;
+    }
+    .article-editor-confirm-icon {
+      width: 56px;
+      height: 56px;
+      display: grid;
+      place-items: center;
+      border-radius: 10px;
+      background: #e6f0ff;
+      color: #0f2748;
+    }
+    .article-editor-confirm-icon span {
+      width: 38px;
+      height: 38px;
+      display: grid;
+      place-items: center;
+      border-radius: 9px;
+      background: #071a33;
+      color: #fff;
+      box-shadow: 0 10px 18px rgba(7, 26, 51, .18);
+    }
+    .article-editor-confirm-icon svg {
+      width: 22px;
+      height: 22px;
+      display: block;
+    }
+    .article-editor-confirm-page h2 {
+      margin: 8px 0 4px;
+      color: #061426;
+      font-family: var(--font-main);
+      font-size: 21px;
+      font-weight: 800;
+      line-height: 1.25;
+    }
+    .article-editor-confirm-summary {
+      width: min(100%, 300px);
+      margin: -4px 0 0;
+      color: #7a889d;
+      font-size: 11.5px;
+      font-weight: 500;
+      line-height: 1.45;
+    }
+    .article-editor-confirm-question {
+      width: min(100%, 300px);
+      margin: 0;
+      color: #40516a;
+      font-size: 12px;
+      font-weight: 500;
+      line-height: 1.45;
+    }
+    .article-editor-confirm-actions {
+      width: 100%;
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 16px;
+    }
+    .article-editor-confirm-actions .user-detail-action-btn {
+      min-height: 46px;
+      justify-content: center;
+      border-radius: 7px;
+    }
+    .article-editor-confirm-actions .user-action-confirm {
+      border-color: #0f2748;
+      background: #0f2748;
+      color: #fff;
+      box-shadow: 0 12px 22px rgba(15, 39, 72, .18);
+    }
     .article-board-preview {
       width: min(100%, 460px);
       height: 520px;
@@ -10301,7 +10382,7 @@
       const modal = document.querySelector("#user-action-modal");
       if (!modal) return;
       modal.classList.remove("show");
-      modal.querySelector(".user-action-modal")?.classList.remove("article-preview-modal");
+      modal.querySelector(".user-action-modal")?.classList.remove("article-preview-modal", "article-editor-confirm-modal");
       document.body.classList.remove("asset-action-modal-open");
       document.querySelector("#user-action-modal-body").innerHTML = "";
     }
@@ -12880,31 +12961,29 @@
       scrollMainToTop();
     }
 
-    function renderArticleEditorConfirmModal({ title, detail, confirmLabel, confirmAttr, tone = "primary" }) {
+    function renderArticleEditorConfirmModal({ title, summary, question, confirmAttr }) {
       const modal = document.querySelector("#user-action-modal");
       const modalCard = modal?.querySelector(".user-action-modal");
       const modalBody = document.querySelector("#user-action-modal-body");
       if (!modal || !modalCard || !modalBody) return;
       modalCard.classList.remove("article-preview-modal");
+      modalCard.classList.add("article-editor-confirm-modal");
       modalBody.innerHTML = `
-        <div class="user-action-page">
-          <div class="user-action-layout">
-            <div class="user-action-head">
-              <div>
-                <p>Content Management</p>
-                <h2 id="user-action-modal-title">${title}</h2>
-              </div>
-              <button class="btn user-action-close" type="button" data-user-action-modal-close aria-label="Close modal" title="Close">
-                ${iconSvg.close}
-              </button>
-            </div>
-            <div class="user-action-card">
-              <p class="user-action-note">${detail}</p>
-              <div class="user-action-result-actions">
-                <button class="user-detail-action-btn ${tone} user-action-confirm" type="button" ${confirmAttr}>${confirmLabel}</button>
-                <button class="user-detail-action-btn" type="button" data-user-action-modal-close>ยกเลิก</button>
-              </div>
-            </div>
+        <div class="article-editor-confirm-page">
+          <div class="article-editor-confirm-icon" aria-hidden="true">
+            <span>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="8.25" fill="currentColor" stroke="none"></circle>
+                <path d="m8.6 12.2 2.1 2.1 4.7-4.9" stroke="#071a33"></path>
+              </svg>
+            </span>
+          </div>
+          <h2 id="user-action-modal-title">${title}</h2>
+          <p class="article-editor-confirm-question">${question}</p>
+          <p class="article-editor-confirm-summary">${summary}</p>
+          <div class="article-editor-confirm-actions">
+            <button class="user-detail-action-btn" type="button" data-user-action-modal-close>ยกเลิก</button>
+            <button class="user-detail-action-btn user-action-confirm" type="button" ${confirmAttr}>ยืนยัน</button>
           </div>
         </div>
       `;
@@ -12913,25 +12992,21 @@
 
     function openArticleEditCancelConfirmModal(form) {
       const id = form?.dataset.articleId || "";
-      const article = getArticleById(id);
       renderArticleEditorConfirmModal({
         title: "ยืนยันการยกเลิกแก้ไข",
-        detail: `การแก้ไข ${article?.title || id} จะไม่ถูกบันทึก และระบบจะพากลับไปหน้า Article Detail`,
-        confirmLabel: "ยืนยันยกเลิก",
-        confirmAttr: `data-article-edit-cancel-confirm="${id}"`,
-        tone: "warning"
+        summary: "การแก้ไขล่าสุดจะไม่ถูกบันทึก และระบบจะพากลับไปหน้า Article Detail",
+        question: "คุณต้องการยกเลิกการแก้ไข Article นี้ใช่หรือไม่?",
+        confirmAttr: `data-article-edit-cancel-confirm="${id}"`
       });
     }
 
     function openArticleEditSaveConfirmModal(form) {
       const id = form?.dataset.articleId || "";
-      const article = getArticleById(id);
       renderArticleEditorConfirmModal({
         title: "ยืนยันการบันทึกแก้ไข",
-        detail: `ระบบจะบันทึกการเปลี่ยนแปลงของ ${article?.title || id} และแสดงหน้า Article Detail หลังบันทึก`,
-        confirmLabel: "บันทึกการแก้ไข",
-        confirmAttr: `data-article-edit-save-confirm="${id}"`,
-        tone: "primary"
+        summary: "ระบบจะบันทึกข้อมูลที่แก้ไขและแสดงผลทันที",
+        question: "คุณต้องการบันทึกการแก้ไขบทความนี้ใช่หรือไม่?",
+        confirmAttr: `data-article-edit-save-confirm="${id}"`
       });
     }
 
