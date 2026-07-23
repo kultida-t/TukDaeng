@@ -1486,6 +1486,32 @@
       line-height: 1;
       letter-spacing: .08em;
     }
+    .article-cover-preview-tile {
+      grid-column: 1 / -1;
+    }
+    .article-cover-preview {
+      aspect-ratio: 16 / 6;
+      min-height: 160px;
+      border-radius: 8px;
+      overflow: hidden;
+      background: #eef4fb;
+    }
+    .article-cover-preview img {
+      width: 100%;
+      height: 100%;
+      display: block;
+      object-fit: cover;
+    }
+    .article-cover-preview-placeholder {
+      width: 100%;
+      height: 100%;
+      display: grid;
+      place-items: center;
+      color: #071b36;
+      font-family: var(--font-heading);
+      font-size: 34px;
+      letter-spacing: .08em;
+    }
     .article-detail-page .user-detail-title .chips {
       margin-top: 0;
     }
@@ -11492,6 +11518,7 @@
           updatedAt: "10 Jul 2026 15:30",
           readTime: "6 min",
           tags: ["Board", "Buying Guide"],
+          slug: "vintage-watch-buying-guide",
           coverImageName: "art-044-vintage-watch-buying-guide.png",
           coverImageSrc: "./assets/article-covers/art-044-vintage-watch-buying-guide.png",
           priority: "ปกติ",
@@ -11514,6 +11541,9 @@
           updatedAt: "09 Jul 2026 09:42",
           readTime: "8 min",
           tags: ["Board", "Education"],
+          slug: "how-to-check-provenance",
+          coverImageName: "art-043-how-to-check-provenance.png",
+          coverImageSrc: "./assets/article-covers/art-043-how-to-check-provenance.png",
           priority: "ปกติ",
           detail: "เผยแพร่แล้วและแสดงบน Board",
           deck: "A simple provenance checklist for Board readers.",
@@ -11534,6 +11564,9 @@
           updatedAt: "08 Jul 2026 17:15",
           readTime: "5 min",
           tags: ["Market", "Draft"],
+          slug: "market-notes-july",
+          coverImageName: "art-042-market-notes-july.png",
+          coverImageSrc: "./assets/article-covers/art-042-market-notes-july.png",
           priority: "กลาง",
           detail: "ยังไม่แสดงบน FO / รอรูป cover",
           deck: "Monthly market notes for active watch categories.",
@@ -11553,6 +11586,9 @@
           updatedAt: "08 Jul 2026 14:10",
           readTime: "4 min",
           tags: ["Events", "Auction"],
+          slug: "auction-week-highlights",
+          coverImageName: "art-041-auction-week-highlights.png",
+          coverImageSrc: "./assets/article-covers/art-041-auction-week-highlights.png",
           priority: "กลาง",
           detail: "ตรวจ destination ของ related banner ก่อน publish",
           deck: "Highlights from upcoming watch auction activity.",
@@ -11572,6 +11608,9 @@
           updatedAt: "07 Jul 2026 11:35",
           readTime: "7 min",
           tags: ["Style", "Accessories"],
+          slug: "strap-pairing-guide",
+          coverImageName: "art-040-strap-pairing-guide.png",
+          coverImageSrc: "./assets/article-covers/art-040-strap-pairing-guide.png",
           priority: "ปกติ",
           detail: "เผยแพร่แล้วและมี related articles ครบ",
           deck: "A Board guide to matching straps with watch style and case material.",
@@ -11591,6 +11630,9 @@
           updatedAt: "06 Jul 2026 13:05",
           readTime: "9 min",
           tags: ["Journal", "Archived"],
+          slug: "collector-interview-bangkok-vintage",
+          coverImageName: "art-039-collector-interview-bangkok-vintage.png",
+          coverImageSrc: "./assets/article-covers/art-039-collector-interview-bangkok-vintage.png",
           priority: "ปกติ",
           detail: "นำออกจาก Board/Search/Category แล้ว",
           deck: "A collector journal interview for archived Board content.",
@@ -11632,6 +11674,14 @@
         return `<div class="article-title-image"><img src="${escapeArticleField(article.coverImageSrc)}" alt="${alt}"></div>`;
       }
       return `<div class="article-title-image" aria-hidden="true">TD</div>`;
+    }
+
+    function renderArticleCoverPreview(article) {
+      if (article?.coverImageSrc) {
+        const alt = escapeArticleField(article.coverImageName || article.title || "Article cover");
+        return `<div class="article-cover-preview"><img src="${escapeArticleField(article.coverImageSrc)}" alt="${alt}"></div>`;
+      }
+      return `<div class="article-cover-preview" aria-hidden="true"><div class="article-cover-preview-placeholder">TD</div></div>`;
     }
 
     function getArticleById(articleId) {
@@ -12391,7 +12441,7 @@
               ${renderArticleTitleImage(article)}
               <div>
                 <h2 class="article-detail-heading"><span>${article.id}</span><span class="user-detail-separator"> : </span><span class="user-display-name">${article.title}</span></h2>
-                <div class="chips">${articleStatusPill(article.status)}<span class="pill blue">${article.category}</span></div>
+                <div class="chips">${articleStatusPill(article.status)}</div>
               </div>
             </div>
           </div>
@@ -12414,6 +12464,7 @@
                 <section class="article-editor-section">
                   <h4>Hero / Cover</h4>
                   <div class="article-editor-grid">
+                    <div class="detail-tile article-cover-preview-tile"><span>Cover Preview</span>${renderArticleCoverPreview(article)}</div>
                     ${renderAssetDetailTiles([
                       ["Cover File", article.coverImageName || "-"],
                       ["Cover Caption", article.coverCaption || "-"],
