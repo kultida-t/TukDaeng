@@ -1995,6 +1995,9 @@
     .article-readonly-cover {
       margin-bottom: 14px;
     }
+    .article-editor-grid.article-detail-hero-meta {
+      grid-template-columns: 1fr;
+    }
     .article-readonly-image-caption-label {
       color: #31425b;
       font-size: 12px;
@@ -12676,7 +12679,7 @@
                 <section class="article-editor-section">
                   <h4>Hero / Cover</h4>
                   ${renderArticleReadonlyCover(article)}
-                  <div class="article-editor-grid">
+                  <div class="article-editor-grid article-detail-hero-meta">
                     ${renderAssetDetailTiles([
                       ["คำโปรยสั้น", article.deck || "-"]
                     ])}
