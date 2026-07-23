@@ -6482,6 +6482,7 @@
 
     function renderNav() {
       const nav = document.querySelector("#nav");
+      const getSubNavDisplayLabel = (module, subLabel) => module === "assets" && subLabel === "Asset List" ? "Assets" : subLabel;
       nav.innerHTML = navGroups.map(group => `
         <div class="nav-section">${group.section}</div>
         ${group.items.map(entry => `
@@ -6494,7 +6495,7 @@
             ${entry.subs.map(sub => {
               const label = typeof sub === "object" ? sub.label : sub;
               const module = typeof sub === "object" ? sub.module : entry.id;
-              return `<button type="button" data-module="${module}" data-parent="${entry.id}" data-sub="${label}">${label}</button>`;
+              return `<button type="button" data-module="${module}" data-parent="${entry.id}" data-sub="${label}">${getSubNavDisplayLabel(module, label)}</button>`;
             }).join("")}
           </div>` : ""}
         `).join("")}
@@ -10866,12 +10867,13 @@
         return;
       }
       activeRow = data.rows[0];
-      const title = displaySubLabel || data.title;
-      document.querySelector("#crumb").textContent = displaySubLabel ? `${data.crumb} / ${displaySubLabel}` : data.crumb;
+      const displayLabel = isAssetList ? "Assets" : displaySubLabel;
+      const title = displayLabel || data.title;
+      document.querySelector("#crumb").textContent = displayLabel ? `${data.crumb} / ${displayLabel}` : data.crumb;
       document.querySelector("#page-title").textContent = title;
       document.querySelector("#page-meta").textContent = "";
-      document.querySelector("#panel-title").textContent = displaySubLabel ? `${displaySubLabel} Queue` : data.panel;
-      document.querySelector("#panel-subtitle").textContent = displaySubLabel ? `${data.title}: ${displaySubLabel}` : data.subtitle;
+      document.querySelector("#panel-title").textContent = displayLabel ? `${displayLabel} Queue` : data.panel;
+      document.querySelector("#panel-subtitle").textContent = displayLabel ? `${data.title}: ${displayLabel}` : data.subtitle;
       document.querySelector("#primary-action").textContent = data.action;
       if (isReportedAssets) {
         activeRow = moduleData.assets.rows.find(isReportedAsset) || moduleData.assets.rows[0];
@@ -10912,7 +10914,7 @@
       }
       if (isAssetList) {
         const assetBrands = Array.from(new Set(data.rows.map(row => getAssetBrand(row)))).sort((a, b) => a.localeCompare(b));
-        document.querySelector("#panel-title").textContent = "Assets";
+        document.querySelector("#panel-title").textContent = "Assets List";
         document.querySelector("#panel-subtitle").textContent = "";
         document.querySelector("#user-panel-filter-actions").innerHTML = `
           <button class="btn user-filter-toggle" type="button" data-asset-filter-toggle aria-expanded="${assetFilterOpen}">${iconSvg.filter}<span>${assetFilterOpen ? "ปิดตัวกรอง" : "เปิดตัวกรอง"}</span></button>
