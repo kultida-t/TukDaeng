@@ -1632,6 +1632,14 @@
       color: #fff;
       box-shadow: 0 12px 22px rgba(15, 39, 72, .18);
     }
+    .article-editor-confirm-actions .user-action-confirm:hover,
+    .article-editor-confirm-actions .user-action-confirm:focus,
+    .article-editor-confirm-actions .user-action-confirm:focus-visible {
+      border-color: #0f2748;
+      background: #0f2748;
+      color: #fff;
+      box-shadow: 0 14px 24px rgba(15, 39, 72, .22);
+    }
     .article-board-preview {
       width: min(100%, 460px);
       height: 520px;
@@ -12994,8 +13002,8 @@
       const id = form?.dataset.articleId || "";
       renderArticleEditorConfirmModal({
         title: "ยืนยันการยกเลิกแก้ไข",
-        summary: "การแก้ไขล่าสุดจะไม่ถูกบันทึก และระบบจะพากลับไปหน้า Article Detail",
-        question: "คุณต้องการยกเลิกการแก้ไข Article นี้ใช่หรือไม่?",
+        summary: "การแก้ไขล่าสุดจะไม่ถูกบันทึก",
+        question: "คุณต้องการยกเลิกการแก้ไขบทความนี้ใช่หรือไม่?",
         confirmAttr: `data-article-edit-cancel-confirm="${id}"`
       });
     }
