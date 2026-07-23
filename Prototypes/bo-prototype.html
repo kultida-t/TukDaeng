@@ -12825,7 +12825,7 @@
       `;
     }
 
-    function renderArticleEditorPage(article = null, mode = "add") {
+    function renderArticleEditorPage(article = null, mode = "add", returnTo = "list") {
       const isEdit = mode === "edit" && article;
       const draft = article || {
         id: getNextArticleId(),
@@ -12882,7 +12882,7 @@
         <div class="user-detail-page">
           <div class="article-detail-layout article-editor-layout">
             <div class="detail-section">
-              <form class="article-editor-form" data-article-editor data-article-mode="${isEdit ? "edit" : "add"}" data-article-id="${draft.id}" data-article-cover-src="${escapeArticleField(draft.coverImageSrc || "")}" data-article-cover-name="${escapeArticleField(draft.coverImageName || "")}" data-article-body-image-src="${escapeArticleField(draft.bodyImageSrc || "")}" data-article-body-image-name="${escapeArticleField(draft.bodyImageName || "")}" novalidate>
+              <form class="article-editor-form" data-article-editor data-article-mode="${isEdit ? "edit" : "add"}" data-article-return-to="${isEdit ? returnTo : "list"}" data-article-id="${draft.id}" data-article-cover-src="${escapeArticleField(draft.coverImageSrc || "")}" data-article-cover-name="${escapeArticleField(draft.coverImageName || "")}" data-article-body-image-src="${escapeArticleField(draft.bodyImageSrc || "")}" data-article-body-image-name="${escapeArticleField(draft.bodyImageName || "")}" novalidate>
                 <section class="article-editor-section">
                   <h4>Article Header</h4>
                   <div class="article-editor-grid">
@@ -13000,11 +13000,12 @@
 
     function openArticleEditCancelConfirmModal(form) {
       const id = form?.dataset.articleId || "";
+      const returnTo = form?.dataset.articleReturnTo || "detail";
       renderArticleEditorConfirmModal({
         title: "ยืนยันการยกเลิกแก้ไข",
         summary: "การแก้ไขล่าสุดจะไม่ถูกบันทึก",
         question: "คุณต้องการยกเลิกการแก้ไขบทความนี้ใช่หรือไม่?",
-        confirmAttr: `data-article-edit-cancel-confirm="${id}"`
+        confirmAttr: `data-article-edit-cancel-confirm="${id}" data-article-edit-return-to="${returnTo}"`
       });
     }
 
@@ -13515,7 +13516,8 @@
       if (articleEditButton) {
         const article = getArticleById(articleEditButton.dataset.articleEdit);
         if (!article) return;
-        renderArticleEditorPage(article, "edit");
+        const returnTo = articleEditButton.closest(".row-menu") ? "list" : "detail";
+        renderArticleEditorPage(article, "edit", returnTo);
         closeRowMenus();
         return;
       }
@@ -13531,7 +13533,11 @@
         const article = getArticleById(articleEditCancelConfirmButton.dataset.articleEditCancelConfirm);
         if (!article) return;
         closeUserActionModal();
-        renderArticleDetailPage(article);
+        if (articleEditCancelConfirmButton.dataset.articleEditReturnTo === "list") {
+          renderModule("content", "Articles", "Articles");
+        } else {
+          renderArticleDetailPage(article);
+        }
         return;
       }
       const articleEditSaveConfirmButton = event.target.closest("[data-article-edit-save-confirm]");
