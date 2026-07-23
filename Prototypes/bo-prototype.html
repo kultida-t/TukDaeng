@@ -2428,7 +2428,8 @@
       font-size: 13px;
     }
     .profile-image img,
-    .profile-image-small img {
+    .profile-image-small img,
+    .asset-title-image img {
       width: 100%;
       height: 100%;
       display: block;
@@ -3156,6 +3157,9 @@
       background:
         linear-gradient(135deg, rgba(7, 27, 54, .08), rgba(14, 165, 118, .12)),
         #eef4fb;
+    }
+    .asset-title-image {
+      background: #eef4fb;
     }
     .asset-cover-placeholder {
       width: 52px;
@@ -6934,6 +6938,12 @@
       return `<div class="profile-image asset-cover-image" aria-hidden="true"><div class="asset-cover-placeholder">${getAssetInitials(asset)}</div></div>`;
     }
 
+    function renderAssetTitleImage(asset, detail = getAssetFoDetail(asset)) {
+      const coverImage = (detail.uploadedImages || [])[0];
+      if (!coverImage) return renderAssetCover(asset);
+      return `<div class="profile-image asset-title-image"><img src="${coverImage.src}" alt="${asset.name} ${coverImage.label || "asset photo"}"></div>`;
+    }
+
     function renderAssetDetailTiles(rows) {
       return rows.map(([label, value]) => `<div class="detail-tile"><span>${label}</span><strong>${value}</strong></div>`).join("");
     }
@@ -9043,6 +9053,7 @@
         <div class="user-detail-page">
           <div class="user-detail-head">
             <div class="user-detail-title">
+              ${renderAssetTitleImage(asset, detail)}
               <div>
                 <h2 class="asset-detail-heading user-display-name">${asset.name}</h2>
                 <div class="asset-title-meta"><span>${asset.id}</span></div>
@@ -10841,6 +10852,7 @@
         <div class="user-detail-page report-detail-page asset-report-detail-page">
           <div class="user-detail-head">
             <div class="user-detail-title">
+              ${renderAssetTitleImage(asset, detail)}
               <div>
                 <h2 class="asset-report-heading"><span class="asset-report-id">${report.id}</span><span class="user-detail-separator"> : </span><span class="asset-report-name user-display-name">${asset.name}</span></h2>
                 <div class="chips">
