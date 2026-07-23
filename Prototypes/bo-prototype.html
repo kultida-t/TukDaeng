@@ -6477,6 +6477,16 @@
       });
     }
 
+    function resetListFilterPanelsForNavigation(nextModule, nextSub = "") {
+      const currentRoute = `${activeModule}|${activeSub || ""}`;
+      const nextRoute = `${nextModule}|${nextSub || ""}`;
+      if (currentRoute === nextRoute) return;
+      userFilterOpen = false;
+      assetFilterOpen = false;
+      assetReportFilterOpen = false;
+      articleFilterOpen = false;
+    }
+
     function renderNav() {
       const nav = document.querySelector("#nav");
       const getSubNavDisplayLabel = (module, subLabel) => module === "assets" && subLabel === "Asset List" ? "Assets" : subLabel;
@@ -11223,11 +11233,13 @@
     function jumpToModule(moduleId, subLabel = "") {
       if (!moduleId) return;
       const targetSubLabel = subLabel || (moduleId !== "dashboard" ? defaultSubByModule[moduleId] || "" : "");
+      resetListFilterPanelsForNavigation(moduleId, targetSubLabel);
       renderModule(moduleId, targetSubLabel, targetSubLabel);
       scrollMainToTop();
     }
 
     function jumpToAssetReportReference(assetId) {
+      resetListFilterPanelsForNavigation("assets", "Reported Assets");
       renderModule("assets", "Reported Assets", "Reported Assets");
       const search = document.querySelector("#asset-report-search");
       if (search && assetId) {
@@ -12873,6 +12885,7 @@
         }
         const subLabel = navButton.dataset.sub || "";
         const displaySubLabel = navButton.dataset.module === parentId ? subLabel : "";
+        resetListFilterPanelsForNavigation(navButton.dataset.module, subLabel);
         renderModule(navButton.dataset.module, subLabel, displaySubLabel);
         scrollMainToTop();
         if (window.matchMedia("(max-width: 1180px)").matches) setNavOpen(false);
@@ -13225,7 +13238,6 @@
       const userReset = event.target.closest("#user-reset, [data-user-reset]");
       if (userReset) {
         userListPage = 1;
-        userFilterOpen = false;
         renderUserManagement(activeSub || "User Accounts");
         return;
       }
@@ -13242,14 +13254,12 @@
       const assetReset = event.target.closest("[data-asset-reset]");
       if (assetReset) {
         assetListPage = 1;
-        assetFilterOpen = false;
         renderModule("assets", "Asset List", "Asset List");
         return;
       }
       const assetReportReset = event.target.closest("[data-asset-report-reset]");
       if (assetReportReset) {
         assetListPage = 1;
-        assetReportFilterOpen = false;
         renderModule("assets", "Reported Assets", "Reported Assets");
         return;
       }
@@ -13276,7 +13286,6 @@
       const articleReset = event.target.closest("[data-article-reset]");
       if (articleReset) {
         articleListPage = 1;
-        articleFilterOpen = false;
         renderModule("content", "Articles", "Articles");
         return;
       }
