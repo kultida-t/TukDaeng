@@ -13038,10 +13038,8 @@
       });
     }
 
-    function saveArticleFromForm(form) {
-      const id = form.dataset.articleId || getNextArticleId();
-      const now = formatBangkokTimestamp().replace(/\sGMT\+7$/i, "");
-      const existingArticle = getArticleById(id);
+    function validateArticleEditorForm(form) {
+      const existingArticle = getArticleById(form.dataset.articleId || "");
       syncArticlePublishDateTimeLimits(form);
       const formData = new FormData(form);
       const status = String(formData.get("status") || "Draft");
@@ -13054,7 +13052,7 @@
       clearArticleValidationErrors(form);
       if (status === "Archived" && form.dataset.articleMode !== "edit") {
         alert("Archived ใช้ได้เฉพาะตอนแก้ไขบทความที่มีอยู่แล้ว");
-        return;
+        return null;
       }
       const contentBlocks = getArticleEditorContentBlocks(form);
       const validationErrors = [];
@@ -13099,8 +13097,17 @@
       }
       if (validationErrors.length) {
         focusFirstArticleValidationError(form, validationErrors);
-        return;
+        return null;
       }
+      return { formData, status, category, publishDate, publishTime, contentBlocks, title, existingArticle };
+    }
+
+    function saveArticleFromForm(form) {
+      const id = form.dataset.articleId || getNextArticleId();
+      const now = formatBangkokTimestamp().replace(/\sGMT\+7$/i, "");
+      const validated = validateArticleEditorForm(form);
+      if (!validated) return;
+      const { formData, status, category, publishDate, publishTime, contentBlocks, title, existingArticle } = validated;
       const legacyFields = getArticleLegacyFieldsFromBlocks(contentBlocks);
       const hasImageBlock = contentBlocks.some(block => block.type === "image");
       const nextArticle = {
@@ -14319,6 +14326,7 @@
           openArticleEditSaveConfirmModal(articleEditor);
           return;
         }
+        if (!validateArticleEditorForm(articleEditor)) return;
         openArticleAddCreateConfirmModal(articleEditor);
       }
     });
