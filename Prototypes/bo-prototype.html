@@ -1992,6 +1992,9 @@
       gap: 6px;
       min-width: 0;
     }
+    .article-readonly-cover {
+      margin-bottom: 14px;
+    }
     .article-readonly-image-caption-label {
       color: #31425b;
       font-size: 12px;
@@ -11679,6 +11682,7 @@
           slug: "vintage-watch-buying-guide",
           coverImageName: "art-044-vintage-watch-buying-guide.png",
           coverImageSrc: "./assets/article-covers/art-044-vintage-watch-buying-guide.png",
+          coverCaption: "Vintage watch reference setup used as the Board hero image for the buying guide.",
           priority: "ปกติ",
           detail: "Preview as FO และตรวจ cover image ก่อน publish",
           deck: "A practical editorial guide for evaluating vintage watches before buying.",
@@ -11702,6 +11706,7 @@
           slug: "how-to-check-provenance",
           coverImageName: "art-043-how-to-check-provenance.png",
           coverImageSrc: "./assets/article-covers/art-043-how-to-check-provenance.png",
+          coverCaption: "Documents and watch details arranged to introduce the provenance checklist.",
           priority: "ปกติ",
           detail: "เผยแพร่แล้วและแสดงบน Board",
           deck: "A simple provenance checklist for Board readers.",
@@ -11738,6 +11743,7 @@
           slug: "market-notes-july",
           coverImageName: "art-042-market-notes-july.png",
           coverImageSrc: "./assets/article-covers/art-042-market-notes-july.png",
+          coverCaption: "Market note cover image prepared for the July watch category update.",
           priority: "กลาง",
           detail: "ยังไม่แสดงบน FO / รอรูป cover",
           deck: "Monthly market notes for active watch categories.",
@@ -11760,6 +11766,7 @@
           slug: "auction-week-highlights",
           coverImageName: "art-041-auction-week-highlights.png",
           coverImageSrc: "./assets/article-covers/art-041-auction-week-highlights.png",
+          coverCaption: "Auction week hero image used to frame the upcoming event highlights.",
           priority: "กลาง",
           detail: "ตรวจ destination ของ related banner ก่อน publish",
           deck: "Highlights from upcoming watch auction activity.",
@@ -11782,6 +11789,7 @@
           slug: "strap-pairing-guide",
           coverImageName: "art-040-strap-pairing-guide.png",
           coverImageSrc: "./assets/article-covers/art-040-strap-pairing-guide.png",
+          coverCaption: "Strap and watch styling reference used as the guide cover image.",
           priority: "ปกติ",
           detail: "เผยแพร่แล้วและมี related articles ครบ",
           deck: "A Board guide to matching straps with watch style and case material.",
@@ -11804,6 +11812,7 @@
           slug: "collector-interview-bangkok-vintage",
           coverImageName: "art-039-collector-interview-bangkok-vintage.png",
           coverImageSrc: "./assets/article-covers/art-039-collector-interview-bangkok-vintage.png",
+          coverCaption: "Bangkok vintage collector story cover image retained for editorial review.",
           priority: "ปกติ",
           detail: "นำออกจาก Board/Search/Category แล้ว",
           deck: "A collector journal interview for archived Board content.",
@@ -12656,28 +12665,27 @@
                   <h4>Article Header</h4>
                   <div class="article-editor-grid">
                     ${renderAssetDetailTiles([
-                      ["Title", article.title],
+                      ["ชื่อบทความ", article.title],
                       ["Article URL", article.slug || "-"],
-                      ["Category", article.category],
-                      ["Author", article.author]
+                      ["หมวดหมู่", article.category],
+                      ["ผู้เขียน", article.author]
                     ])}
                   </div>
                 </section>
 
                 <section class="article-editor-section">
                   <h4>Hero / Cover</h4>
+                  ${renderArticleReadonlyCover(article)}
                   <div class="article-editor-grid">
                     ${renderAssetDetailTiles([
-                      ["Cover File", article.coverImageName || "-"],
-                      ["Cover Caption", article.coverCaption || "-"],
-                      ["Intro / Deck", article.deck || "-"]
+                      ["คำโปรยสั้น", article.deck || "-"]
                     ])}
                   </div>
                 </section>
 
                 <section class="article-editor-section">
                   <h4>Content Blocks</h4>
-                  <p class="article-editor-section-note">Saved article content shown as read-only blocks. Add/Edit Article uses input fields plus a live preview.</p>
+                  <p class="article-editor-section-note">เนื้อหาที่บันทึกแล้วแสดงแบบอ่านอย่างเดียวตามลำดับบล็อกใน Add/Edit Article</p>
                   ${renderArticleReadonlyBlocks(article)}
                 </section>
 
@@ -12685,8 +12693,8 @@
                   <h4>Publish Control</h4>
                   <div class="article-publish-row">
                     ${renderAssetDetailTiles([
-                      ["Publish Status", articleStatusPill(article.status)],
-                      ["Publish Date", article.publishAt],
+                      ["สถานะเผยแพร่", articleStatusPill(article.status)],
+                      ["วันที่เผยแพร่", article.publishAt],
                       ["Updated At", article.updatedAt]
                     ])}
                   </div>
@@ -12705,6 +12713,20 @@
       `;
       updateActiveNav();
       scrollMainToTop();
+    }
+
+    function renderArticleReadonlyCover(article) {
+      if (!article?.coverImageSrc) return "";
+      const caption = String(article.coverCaption || "").trim();
+      return `
+        <div class="article-readonly-image article-readonly-cover">
+          <img src="${escapeArticleField(article.coverImageSrc)}" alt="${escapeArticleField(article.coverImageName || article.title || "Article cover")}" />
+          <div class="article-readonly-image-caption-field">
+            <div class="article-readonly-image-caption-label">Caption รูป Cover</div>
+            <div class="article-readonly-caption">${caption ? escapeArticleField(caption) : "-"}</div>
+          </div>
+        </div>
+      `;
     }
 
     function renderArticleEditorPage(article = null, mode = "add") {
