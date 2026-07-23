@@ -1409,7 +1409,29 @@
       cursor: default;
     }
     .article-table .asset-row {
-      grid-template-columns: minmax(104px, .46fr) minmax(250px, 1.2fr) minmax(120px, .54fr) minmax(140px, .58fr) minmax(140px, .58fr) minmax(160px, .68fr) minmax(56px, .24fr);
+      grid-template-columns: minmax(112px, .7fr) minmax(360px, 2.35fr) minmax(170px, 1.05fr) minmax(150px, .9fr) minmax(190px, 1.1fr) minmax(72px, .4fr);
+    }
+    body.article-list-mode .article-table .asset-row:not(.head) {
+      column-gap: 18px;
+      min-height: 82px;
+      padding-left: 22px;
+      padding-right: 22px;
+    }
+    body.article-list-mode .article-table .asset-row.head {
+      column-gap: 18px;
+      min-height: 44px;
+      padding: 12px 22px;
+    }
+    body.article-list-mode .article-table .asset-row > div:nth-child(4),
+    body.article-list-mode .article-table .asset-row > div:nth-child(5) {
+      justify-self: start;
+    }
+    body.article-list-mode .article-table .asset-row > div:last-child {
+      justify-self: end;
+    }
+    body.article-list-mode .article-table .asset-row.head > div:nth-child(4),
+    body.article-list-mode .article-table .asset-row.head > div:nth-child(5) {
+      text-align: left;
     }
     body.article-list-mode #primary-action {
       display: none;
@@ -6762,6 +6784,7 @@
     const userListPageSize = 10;
     const assetListPageSize = 10;
     const articleListPageSize = 10;
+    const ARTICLE_EDITOR_AUTHOR = "By TukDaeng";
     const reportHistoryPageSize = 10;
 
     function resetSessionViewState() {
@@ -11179,7 +11202,7 @@
         `;
         document.querySelector(".filters").innerHTML = `
           <div class="user-filter-bar" data-filter-open="${articleFilterOpen}">
-            <input class="field search" id="article-search" type="search" placeholder="ค้นหา Article ID, Title, Category, Author" />
+            <input class="field search" id="article-search" type="search" placeholder="ค้นหา Article ID, Title, Category" />
             <div class="user-advanced-filter">${customSelect("article-status-filter", "Filter article status", [
               { value: "", label: "All article status" },
               { value: "Published", label: "Published" },
@@ -11801,7 +11824,7 @@
     }
 
     function getArticleSearchText(article) {
-      return [article.id, article.title, article.category, article.author, article.status, article.publishAt, article.tags.join(" ")].join(" ").toLowerCase();
+      return [article.id, article.title, article.category, article.status, article.publishAt, article.tags.join(" ")].join(" ").toLowerCase();
     }
 
     function getArticleSortRank(article, sort) {
@@ -12301,7 +12324,7 @@
 
     function getArticleEditorPreviewArticle(form) {
       const title = form.querySelector('[name="title"]')?.value.trim() || "ชื่อบทความ";
-      const author = form.querySelector('[name="author"]')?.value.trim() || "By TukDaeng";
+      const author = ARTICLE_EDITOR_AUTHOR;
       const status = form.querySelector('[name="status"]')?.value || "Draft";
       const publishDate = form.querySelector('[name="publishDate"]')?.value || "";
       const publishTime = form.querySelector('[name="publishTime"]')?.value || "";
@@ -12690,7 +12713,7 @@
         id: getNextArticleId(),
         title: "",
         category: "",
-        author: "By TukDaeng",
+        author: ARTICLE_EDITOR_AUTHOR,
         status: "Draft",
         publishAt: "-",
         updatedAt: formatBangkokTimestamp().replace(/\sGMT\+7$/i, ""),
@@ -12758,8 +12781,8 @@
                       <span class="article-field-error" data-article-category-error></span>
                     </label>
                     <label>ผู้เขียน
-                      <input type="hidden" name="author" value="By TukDaeng" />
-                      <span class="article-editor-readonly-value">By TukDaeng</span>
+                      <input type="hidden" name="author" value="${ARTICLE_EDITOR_AUTHOR}" />
+                      <span class="article-editor-readonly-value">${ARTICLE_EDITOR_AUTHOR}</span>
                       <span class="article-field-error" aria-hidden="true"></span>
                     </label>
                   </div>
@@ -12897,7 +12920,7 @@
         id,
         title,
         category,
-        author: "By TukDaeng",
+        author: ARTICLE_EDITOR_AUTHOR,
         status,
         publishAt: formatArticlePublishAt(publishDate, publishTime),
         updatedAt: now,
@@ -12949,7 +12972,7 @@
       document.querySelector("#panel-subtitle").textContent = "";
       document.querySelector("#table").innerHTML = `
         <div class="asset-table article-table">
-          <div class="asset-row head"><div>Article ID</div><div>Article</div><div>Category</div><div>Author</div><div>Publish Status</div><div>Publish Date</div><div>Action</div></div>
+          <div class="asset-row head"><div>Article ID</div><div>Article</div><div>Category</div><div>Publish Status</div><div>Publish Date</div><div>Action</div></div>
           ${pageRows.map(article => `
             <div class="asset-row" data-article-card="${article.id}">
               <div data-label="Article ID"><div class="main-text">${article.id}</div></div>
@@ -12966,7 +12989,6 @@
                 </div>
               </div>
               <div data-label="Category"><div class="main-text">${article.category}</div></div>
-              <div data-label="Author"><div class="main-text">${article.author}</div></div>
               <div data-label="Publish Status">
                 ${articleStatusPill(article.status)}
               </div>
@@ -14028,7 +14050,7 @@
         updateArticleEditorPreview(form);
         return;
       }
-      if (event.target.matches('[data-article-editor] [name="title"], [data-article-editor] [name="author"], [data-article-editor] [name="deck"], [data-article-editor] [name="coverCaption"], [data-article-editor] [name="keyTakeaways"], [data-article-editor] [data-article-block-field]')) {
+      if (event.target.matches('[data-article-editor] [name="title"], [data-article-editor] [name="deck"], [data-article-editor] [name="coverCaption"], [data-article-editor] [name="keyTakeaways"], [data-article-editor] [data-article-block-field]')) {
         const form = event.target.closest("[data-article-editor]");
         if (event.target.matches('[name="title"]')) setArticleFieldError(form, "title");
         if (event.target.matches("[data-article-block-field]")) setArticleFieldError(form, "content");
