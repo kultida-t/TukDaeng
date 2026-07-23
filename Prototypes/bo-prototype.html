@@ -3659,6 +3659,20 @@
     .asset-purchase-media h4:first-child {
       margin-top: 0;
     }
+    #user-action-modal .modal-heading-en {
+      font-family: var(--font-heading);
+      font-weight: 400;
+    }
+    #user-action-modal .modal-heading-th {
+      font-family: var(--font-main);
+      letter-spacing: 0;
+      text-transform: none;
+    }
+    #user-action-modal .user-action-head h2.modal-heading-en,
+    #user-action-modal .user-action-head h2.modal-heading-th {
+      font-size: 32px;
+      line-height: 1;
+    }
     .asset-purchase-thumbs {
       display: flex;
       gap: 10px;
@@ -7564,6 +7578,7 @@
           </div>
         </div>
       `;
+      applyModalHeadingFonts(modal);
       modal.classList.add("show");
     }
 
@@ -9861,9 +9876,19 @@
       }
     }
 
+    function applyModalHeadingFonts(modal) {
+      if (!modal) return;
+      modal.querySelectorAll(".modal-body h1, .modal-body h2, .modal-body h3, .modal-body h4, .modal-body h5, .modal-body h6").forEach(heading => {
+        const hasThai = /[\u0E00-\u0E7F]/.test(heading.textContent || "");
+        heading.classList.toggle("modal-heading-th", hasThai);
+        heading.classList.toggle("modal-heading-en", !hasThai);
+      });
+    }
+
     function showUserActionModal(lockMainScroll = false) {
       const modal = document.querySelector("#user-action-modal");
       if (!modal) return;
+      applyModalHeadingFonts(modal);
       modal.classList.add("show");
       document.body.classList.toggle("asset-action-modal-open", lockMainScroll);
     }
@@ -10014,6 +10039,7 @@
           </div>
         </div>
       `;
+      applyModalHeadingFonts(modal);
       modal.classList.add("show");
     }
 
@@ -10310,6 +10336,7 @@
           </div>
         </div>
       `;
+      applyModalHeadingFonts(modal);
       modal.classList.add("show");
     }
 
