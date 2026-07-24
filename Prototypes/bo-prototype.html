@@ -12541,6 +12541,35 @@
       previewPanel.innerHTML = renderArticlePreviewStack(previewArticle);
     }
 
+    function getArticleEditorDirtySnapshot(form) {
+      if (!form) return "";
+      return JSON.stringify({
+        title: form.querySelector('[name="title"]')?.value.trim() || "",
+        slug: form.querySelector('[name="slug"]')?.value.trim() || "",
+        category: form.querySelector('[name="category"]')?.value || "",
+        status: form.querySelector('[name="status"]')?.value || "",
+        publishDate: form.querySelector('[name="publishDate"]')?.value || "",
+        publishTime: form.querySelector('[name="publishTime"]')?.value || "",
+        deck: form.querySelector('[name="deck"]')?.value.trim() || "",
+        coverCaption: form.querySelector('[name="coverCaption"]')?.value.trim() || "",
+        coverImageName: form.dataset.articleCoverName || "",
+        coverImageSrc: form.dataset.articleCoverSrc || "",
+        bodyImageName: form.dataset.articleBodyImageName || "",
+        bodyImageSrc: form.dataset.articleBodyImageSrc || "",
+        contentBlocks: getArticleEditorContentBlocks(form, true)
+      });
+    }
+
+    function setArticleEditorInitialSnapshot(form) {
+      if (!form) return;
+      form.dataset.articleInitialSnapshot = getArticleEditorDirtySnapshot(form);
+    }
+
+    function isArticleEditorDirty(form) {
+      if (!form) return false;
+      return getArticleEditorDirtySnapshot(form) !== (form.dataset.articleInitialSnapshot || "");
+    }
+
     function openArticlePreviewModal(article) {
       const modal = document.querySelector("#user-action-modal");
       const modalCard = modal?.querySelector(".user-action-modal");
@@ -13140,8 +13169,24 @@
       const articleEditorForm = document.querySelector("[data-article-editor]");
       syncArticlePublishDateTimeLimits(articleEditorForm);
       updateArticleEditorPreview(articleEditorForm);
+      setArticleEditorInitialSnapshot(articleEditorForm);
       updateActiveNav();
       scrollMainToTop();
+    }
+
+    function cancelArticleEditor(form) {
+      if (!form) return;
+      if (form.dataset.articleMode === "edit") {
+        const article = getArticleById(form.dataset.articleId || "");
+        if (!article) return;
+        if (form.dataset.articleReturnTo === "list") {
+          renderModule("content", "Articles", "Articles");
+        } else {
+          renderArticleDetailPage(article);
+        }
+        return;
+      }
+      renderModule("content", "Articles", "Articles");
     }
 
     function renderArticleEditorConfirmModal({ title, summary, question, confirmAttr, iconType = "confirm" }) {
@@ -13731,30 +13776,38 @@
       if (articleEditCancelButton) {
         const form = articleEditCancelButton.closest("[data-article-editor]");
         if (!form) return;
+        if (!isArticleEditorDirty(form)) {
+          cancelArticleEditor(form);
+          return;
+        }
         openArticleEditCancelConfirmModal(form);
         return;
       }
       const articleAddCancelButton = event.target.closest("[data-article-add-cancel]");
       if (articleAddCancelButton) {
+        const form = articleAddCancelButton.closest("[data-article-editor]");
+        if (!form) return;
+        if (!isArticleEditorDirty(form)) {
+          cancelArticleEditor(form);
+          return;
+        }
         openArticleAddCancelConfirmModal();
         return;
       }
       const articleEditCancelConfirmButton = event.target.closest("[data-article-edit-cancel-confirm]");
       if (articleEditCancelConfirmButton) {
-        const article = getArticleById(articleEditCancelConfirmButton.dataset.articleEditCancelConfirm);
-        if (!article) return;
+        const form = document.querySelector(`[data-article-editor][data-article-id="${articleEditCancelConfirmButton.dataset.articleEditCancelConfirm}"]`);
+        if (!form) return;
         closeUserActionModal();
-        if (articleEditCancelConfirmButton.dataset.articleEditReturnTo === "list") {
-          renderModule("content", "Articles", "Articles");
-        } else {
-          renderArticleDetailPage(article);
-        }
+        cancelArticleEditor(form);
         return;
       }
       const articleAddCancelConfirmButton = event.target.closest("[data-article-add-cancel-confirm]");
       if (articleAddCancelConfirmButton) {
+        const form = document.querySelector('[data-article-editor][data-article-mode="add"]');
+        if (!form) return;
         closeUserActionModal();
-        renderModule("content", "Articles", "Articles");
+        cancelArticleEditor(form);
         return;
       }
       const articleEditSaveConfirmButton = event.target.closest("[data-article-edit-save-confirm]");
