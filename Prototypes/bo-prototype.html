@@ -11445,7 +11445,7 @@
         `;
         document.querySelector(".filters").innerHTML = `
           <div class="user-filter-bar" data-filter-open="${categoryFilterOpen}">
-            <input class="field search" id="category-search" type="search" placeholder="ค้นหา Category ID, Name, Slug" />
+            <input class="field search" id="category-search" type="search" placeholder="ค้นหา Category ID, Name, URL" />
             <div class="user-advanced-filter">${customSelect("category-status-filter", "Filter category status", [
               { value: "", label: "All status" },
               { value: "Active", label: "Active" },
@@ -12287,7 +12287,7 @@
       document.querySelector("#panel-subtitle").textContent = "";
       document.querySelector("#table").innerHTML = `
         <div class="asset-table category-table">
-          <div class="asset-row head"><div>Category ID</div><div>Category</div><div>Slug</div><div>Articles</div><div>Status</div><div>Action</div></div>
+          <div class="asset-row head"><div>Category ID</div><div>Category</div><div>URL</div><div>Articles</div><div>Status</div><div>Action</div></div>
           ${pageRows.map(category => {
             const articleCount = getCategoryArticleCount(category.name);
             return `
@@ -12302,11 +12302,11 @@
                   <span class="user-card-tag asset-tag">${articleCount} articles</span>
                   <span class="user-card-tag asset-tag">Order ${category.displayOrder}</span>
                   <div class="user-card-meta">
-                    <div class="user-card-meta-item"><span>Slug</span><strong>${escapeArticleField(category.slug)}</strong></div>
+                    <div class="user-card-meta-item"><span>URL</span><strong>${escapeArticleField(category.slug)}</strong></div>
                     <div class="user-card-meta-item"><span>Updated</span><strong>${escapeArticleField(category.updatedAt)}</strong></div>
                   </div>
                 </div>
-                <div data-label="Slug"><div class="main-text">${escapeArticleField(category.slug)}</div></div>
+                <div data-label="URL"><div class="main-text">${escapeArticleField(category.slug)}</div></div>
                 <div data-label="Articles"><div class="main-text">${articleCount}</div></div>
                 <div data-label="Status">${getCategoryStatusPill(category.status)}</div>
                 <div class="user-row-actions">
@@ -12400,7 +12400,7 @@
                   <input name="name" value="${escapeArticleField(draft.name)}" placeholder="เช่น Market Insight" data-category-name />
                   <span class="article-field-error" data-category-name-error></span>
                 </label>
-                <label><span>Slug <span class="article-required-mark">*</span></span>
+                <label><span>URL ของหมวดหมู่ <span class="article-required-mark">*</span></span>
                   <input name="slug" value="${escapeArticleField(draft.slug)}" placeholder="market-insight" data-category-slug />
                   <span class="article-field-error" data-category-slug-error></span>
                 </label>
@@ -12454,10 +12454,10 @@
         hasError = true;
       }
       if (!slug) {
-        setCategoryFieldError(form, "slug", "กรุณากรอก slug");
+        setCategoryFieldError(form, "slug", "กรุณากรอก URL ของหมวดหมู่");
         hasError = true;
       } else if (existingSlug) {
-        setCategoryFieldError(form, "slug", "slug นี้มีอยู่แล้ว");
+        setCategoryFieldError(form, "slug", "URL ของหมวดหมู่นี้มีอยู่แล้ว");
         hasError = true;
       }
       if (!Number.isFinite(displayOrder) || displayOrder < 1) {
