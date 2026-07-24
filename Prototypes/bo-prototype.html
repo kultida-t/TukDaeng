@@ -14470,7 +14470,7 @@
         closeRowMenus();
       }
 
-      if (event.target.closest("[data-user-action-modal-close]") || event.target.matches("#user-action-modal")) {
+      if (event.target.closest("[data-user-action-modal-close]")) {
         closeUserActionModal();
         return;
       }
@@ -15644,7 +15644,6 @@
       if (event.key === "Escape") {
         const userActionModal = document.querySelector("#user-action-modal");
         if (userActionModal?.classList.contains("show")) {
-          closeUserActionModal();
           return;
         }
         setNavOpen(false);
