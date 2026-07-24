@@ -6537,7 +6537,7 @@
     function parseBangkokAuditTime(value) {
       if (!value) return null;
       const monthMap = { Jan: 0, Feb: 1, Mar: 2, Apr: 3, May: 4, Jun: 5, Jul: 6, Aug: 7, Sep: 8, Oct: 9, Nov: 10, Dec: 11 };
-      const match = String(value).match(/(\d{1,2})\s+([A-Za-z]{3})\s+(\d{4})\s+(\d{2}):(\d{2})/);
+      const match = String(value).match(/(\d{1,2})\s+([A-Za-z]{3})\s+(\d{4}),?\s+(\d{2}):(\d{2})/);
       if (!match) return null;
       const [, day, month, year, hour, minute] = match;
       if (monthMap[month] === undefined) return null;
@@ -12068,6 +12068,10 @@
       return `${String(day).padStart(2, "0")} ${monthName} ${year} ${timeValue}`;
     }
 
+    function formatArticleActionTimestamp(date = new Date()) {
+      return formatBangkokTimestamp(date).replace(",", "").replace(/\sGMT\+7$/i, "");
+    }
+
     function syncArticlePublishDateTimeLimits(form) {
       if (!form) return;
       const statusInput = form.querySelector('[name="status"]');
@@ -12823,7 +12827,7 @@
           actor,
           action: "Updated",
           note: "แก้ไขข้อมูลบทความล่าสุด",
-          result: "Latest version"
+          result: article.status || "Draft"
         });
       }
 
@@ -12859,11 +12863,11 @@
         <div class="history-table-wrap">
           <table class="history-table article-change-history-table">
             <colgroup>
-              <col style="width: 20%">
-              <col style="width: 16%">
-              <col style="width: 10%">
-              <col style="width: 34%">
-              <col style="width: 20%">
+              <col style="width: 15%">
+              <col style="width: 14%">
+              <col style="width: 14%">
+              <col style="width: 42%">
+              <col style="width: 15%">
             </colgroup>
             <thead>
               <tr>
@@ -13082,7 +13086,7 @@
         author: ARTICLE_EDITOR_AUTHOR,
         status: "Draft",
         publishAt: "-",
-        updatedAt: formatBangkokTimestamp().replace(/\sGMT\+7$/i, ""),
+        updatedAt: formatArticleActionTimestamp(),
         readTime: "5 min",
         tags: ["Board"],
         priority: "ปกติ",
@@ -13359,7 +13363,7 @@
 
     function applyArticleStatusAction(article, actionKey, context = "detail") {
       if (!article) return;
-      const now = formatBangkokTimestamp().replace(/\sGMT\+7$/i, "");
+      const now = formatArticleActionTimestamp();
       if (actionKey === "delete-draft" && article.status === "Draft") {
         const index = articleRows.findIndex(entry => entry.id === article.id);
         if (index >= 0) articleRows.splice(index, 1);
@@ -13462,7 +13466,7 @@
 
     function saveArticleFromForm(form) {
       const id = form.dataset.articleId || getNextArticleId();
-      const now = formatBangkokTimestamp().replace(/\sGMT\+7$/i, "");
+      const now = formatArticleActionTimestamp();
       const validated = validateArticleEditorForm(form);
       if (!validated) return;
       const { formData, status, category, publishDate, publishTime, contentBlocks, title, existingArticle } = validated;
@@ -13504,7 +13508,7 @@
           time: now,
           action: "Updated",
           note: "แก้ไขข้อมูลบทความล่าสุด",
-          result: "Latest version"
+          result: nextArticle.status || "Draft"
         });
       } else {
         nextArticle.actionHistory = getNewArticleActionHistory(nextArticle, now);
