@@ -2432,8 +2432,20 @@
     .article-publish-row {
       display: grid;
       grid-column: 1 / -1;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
       gap: 18px 16px;
+    }
+    .article-change-history-table {
+      min-width: 760px;
+    }
+    .article-change-history-table th:nth-child(3),
+    .article-change-history-table td:nth-child(3) {
+      width: 160px;
+      text-align: left;
+    }
+    .article-change-history-table .history-note {
+      min-width: 220px;
+      max-width: 420px;
     }
     .article-danger-note {
       border-color: #fed7d7;
@@ -12727,6 +12739,103 @@
       `;
     }
 
+    function getArticleCreatedAt(article) {
+      if (article.createdAt) return article.createdAt;
+      if (!article.updatedAt || article.updatedAt === "-") return "-";
+      const datePart = String(article.updatedAt).split(/\s+/).slice(0, 3).join(" ");
+      return datePart ? `${datePart} 09:00` : article.updatedAt;
+    }
+
+    function getArticleAdminName(article) {
+      if (article.updatedBy) return article.updatedBy;
+      const authorAdminMap = {
+        Editorial: "Orn Admin",
+        Marketing: "Mali Admin",
+        "Market Team": "market.admin@tukdaeng.example"
+      };
+      return authorAdminMap[article.author] || "content.admin@tukdaeng.example";
+    }
+
+    function getArticleChangeHistoryRows(article) {
+      const createdAt = getArticleCreatedAt(article);
+      const actor = getArticleAdminName(article);
+      const rows = [
+        {
+          time: article.updatedAt || "-",
+          actor,
+          action: "Updated",
+          note: "แก้ไขข้อมูลบทความล่าสุด",
+          result: "Latest version"
+        }
+      ];
+
+      if (article.status === "Scheduled") {
+        rows.push({
+          time: article.publishAt || "-",
+          actor,
+          action: "Scheduled",
+          note: "ตั้งเวลาเผยแพร่บทความ",
+          result: article.publishAt || "-"
+        });
+      } else if (article.status === "Published") {
+        rows.push({
+          time: article.publishAt || "-",
+          actor,
+          action: "Published",
+          note: "เผยแพร่บทความบน Board แล้ว",
+          result: "Published"
+        });
+      } else if (article.status === "Archived") {
+        rows.push({
+          time: article.updatedAt || "-",
+          actor,
+          action: "Archived",
+          note: "นำบทความออกจากหน้า public",
+          result: "Archived"
+        });
+      }
+
+      rows.push({
+        time: createdAt,
+        actor,
+        action: "Created",
+        note: "สร้างบทความใหม่",
+        result: "Created"
+      });
+
+      return rows;
+    }
+
+    function renderArticleChangeHistory(article) {
+      const rows = getArticleChangeHistoryRows(article);
+      return `
+        <div class="history-table-wrap">
+          <table class="history-table article-change-history-table">
+            <thead>
+              <tr>
+                <th>Date / Time</th>
+                <th>Admin</th>
+                <th>Action</th>
+                <th>Change Detail</th>
+                <th>Result</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${rows.map(row => `
+                <tr>
+                  <td data-label="Date / Time">${escapeArticleField(row.time)}</td>
+                  <td data-label="Admin">${escapeArticleField(row.actor)}</td>
+                  <td data-label="Action">${escapeArticleField(row.action)}</td>
+                  <td class="history-note" data-label="Change Detail">${escapeArticleField(row.note)}</td>
+                  <td data-label="Result">${escapeArticleField(row.result)}</td>
+                </tr>
+              `).join("")}
+            </tbody>
+          </table>
+        </div>
+      `;
+    }
+
     function renderArticleRowActionMenu(article) {
       return `
         <details class="row-menu">
@@ -12823,9 +12932,16 @@
                     ${renderAssetDetailTiles([
                       ["สถานะเผยแพร่", articleStatusPill(article.status)],
                       ["วันที่เผยแพร่", article.publishAt],
+                      ["Created At", getArticleCreatedAt(article)],
                       ["Updated At", article.updatedAt]
                     ])}
                   </div>
+                </section>
+
+                <section class="article-editor-section">
+                  <h4>Change History</h4>
+                  <p class="article-editor-section-note">ประวัติการสร้างและการแก้ไขล่าสุดของบทความ ใช้ตรวจสอบการเปลี่ยนแปลงก่อนเผยแพร่หรือ archive</p>
+                  ${renderArticleChangeHistory(article)}
                 </section>
 
                 <div class="user-detail-actions">
