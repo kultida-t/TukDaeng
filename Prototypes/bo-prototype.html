@@ -1583,6 +1583,10 @@
       background: rgba(16, 185, 129, .18);
       color: #10b981;
     }
+    .article-editor-confirm-icon.cancel {
+      background: rgba(239, 68, 68, .14);
+      color: #ef4444;
+    }
     .article-editor-confirm-icon span {
       width: 34px;
       height: 34px;
@@ -13140,19 +13144,23 @@
       scrollMainToTop();
     }
 
-    function renderArticleEditorConfirmModal({ title, summary, question, confirmAttr }) {
+    function renderArticleEditorConfirmModal({ title, summary, question, confirmAttr, iconType = "confirm" }) {
       const modal = document.querySelector("#user-action-modal");
       const modalCard = modal?.querySelector(".user-action-modal");
       const modalBody = document.querySelector("#user-action-modal-body");
       if (!modal || !modalCard || !modalBody) return;
       modalCard.classList.remove("article-preview-modal");
       modalCard.classList.add("article-editor-confirm-modal");
+      const isCancelIcon = iconType === "cancel";
+      const iconPath = isCancelIcon
+        ? `<path d="m8.4 8.4 7.2 7.2"></path><path d="m15.6 8.4-7.2 7.2"></path>`
+        : `<path d="m7.9 12.2 2.7 2.7 5.8-6"></path>`;
       modalBody.innerHTML = `
         <div class="article-editor-confirm-page">
-          <div class="article-editor-confirm-icon" aria-hidden="true">
+          <div class="article-editor-confirm-icon ${isCancelIcon ? "cancel" : "confirm"}" aria-hidden="true">
             <span>
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
-                <path d="m7.9 12.2 2.7 2.7 5.8-6"></path>
+                ${iconPath}
               </svg>
             </span>
           </div>
@@ -13175,7 +13183,8 @@
         title: "ยืนยันการยกเลิกแก้ไข",
         summary: "การแก้ไขล่าสุดจะไม่ถูกบันทึก",
         question: "คุณต้องการยกเลิกการแก้ไขบทความนี้ใช่หรือไม่?",
-        confirmAttr: `data-article-edit-cancel-confirm="${id}" data-article-edit-return-to="${returnTo}"`
+        confirmAttr: `data-article-edit-cancel-confirm="${id}" data-article-edit-return-to="${returnTo}"`,
+        iconType: "cancel"
       });
     }
 
@@ -13194,7 +13203,8 @@
         title: "ยืนยันการยกเลิกสร้างบทความ",
         summary: "ข้อมูลที่กรอกไว้ในหน้า Add Article จะไม่ถูกบันทึก",
         question: "คุณต้องการยกเลิกการสร้างบทความนี้ใช่หรือไม่?",
-        confirmAttr: "data-article-add-cancel-confirm"
+        confirmAttr: "data-article-add-cancel-confirm",
+        iconType: "cancel"
       });
     }
 
