@@ -1419,7 +1419,16 @@
     .article-table .asset-row {
       grid-template-columns: minmax(112px, .7fr) minmax(360px, 2.35fr) minmax(170px, 1.05fr) minmax(150px, .9fr) minmax(190px, 1.1fr) minmax(72px, .4fr);
     }
+    .category-table .asset-row {
+      grid-template-columns: minmax(112px, .68fr) minmax(260px, 1.65fr) minmax(190px, 1fr) minmax(128px, .7fr) minmax(128px, .7fr) minmax(76px, .42fr);
+    }
     body.article-list-mode .article-table .asset-row:not(.head) {
+      column-gap: 18px;
+      min-height: 82px;
+      padding-left: 22px;
+      padding-right: 22px;
+    }
+    body.category-list-mode .category-table .asset-row:not(.head) {
       column-gap: 18px;
       min-height: 82px;
       padding-left: 22px;
@@ -1430,35 +1439,49 @@
       min-height: 44px;
       padding: 12px 22px;
     }
+    body.category-list-mode .category-table .asset-row.head {
+      column-gap: 18px;
+      min-height: 44px;
+      padding: 12px 22px;
+    }
     body.article-list-mode .article-table .asset-row > div:nth-child(4),
-    body.article-list-mode .article-table .asset-row > div:nth-child(5) {
+    body.article-list-mode .article-table .asset-row > div:nth-child(5),
+    body.category-list-mode .category-table .asset-row > div:nth-child(4),
+    body.category-list-mode .category-table .asset-row > div:nth-child(5) {
       justify-self: start;
     }
-    body.article-list-mode .article-table .asset-row > div:last-child {
+    body.article-list-mode .article-table .asset-row > div:last-child,
+    body.category-list-mode .category-table .asset-row > div:last-child {
       justify-self: end;
     }
     body.article-list-mode .article-table .asset-row.head > div:nth-child(4),
-    body.article-list-mode .article-table .asset-row.head > div:nth-child(5) {
+    body.article-list-mode .article-table .asset-row.head > div:nth-child(5),
+    body.category-list-mode .category-table .asset-row.head > div:nth-child(4),
+    body.category-list-mode .category-table .asset-row.head > div:nth-child(5) {
       text-align: left;
     }
-    body.article-list-mode #primary-action {
+    body.article-list-mode #primary-action,
+    body.category-list-mode #primary-action {
       display: none;
     }
-    body.article-list-mode .panel-head {
+    body.article-list-mode .panel-head,
+    body.category-list-mode .panel-head {
       min-height: 58px;
       padding: 14px 16px;
       border-top-left-radius: var(--radius);
       border-top-right-radius: var(--radius);
       background: #fff;
     }
-    body.article-list-mode .panel-head h2 {
+    body.article-list-mode .panel-head h2,
+    body.category-list-mode .panel-head h2 {
       color: #071b36;
       font-size: 26px;
       letter-spacing: 0;
       text-transform: uppercase;
       white-space: nowrap;
     }
-    body.article-list-mode .filters {
+    body.article-list-mode .filters,
+    body.category-list-mode .filters {
       display: flex;
       gap: 8px;
       flex-wrap: wrap;
@@ -1469,10 +1492,23 @@
     body.article-list-mode .user-filter-bar {
       grid-template-columns: minmax(240px, 1.35fr) repeat(3, minmax(126px, .68fr)) max-content;
     }
-    body.article-list-mode .footer-range {
+    body.category-list-mode .user-filter-bar {
+      grid-template-columns: minmax(240px, 1.35fr) minmax(126px, .68fr) minmax(126px, .68fr) max-content;
+    }
+    body.article-list-mode .footer-range,
+    body.category-list-mode .footer-range {
       border-bottom-left-radius: var(--radius);
       border-bottom-right-radius: var(--radius);
       background: #fff;
+    }
+    .modal.user-action-modal.category-editor-modal {
+      width: min(720px, calc(100vw - 36px));
+      border-radius: 22px;
+      border-color: #d9e3f1;
+      box-shadow: 0 28px 80px rgba(6, 20, 38, .28);
+    }
+    .category-editor-modal .modal-body {
+      padding: 24px;
     }
     .article-detail-layout {
       display: grid;
@@ -6927,6 +6963,8 @@
     let assetReportFilterOpen = false;
     let articleListPage = 1;
     let articleFilterOpen = false;
+    let categoryListPage = 1;
+    let categoryFilterOpen = false;
     let activeAssetImageIndex = 0;
     let activeAssetReportModalImageIndex = 0;
     let activeAssetCommentsModalId = null;
@@ -6959,6 +6997,8 @@
       assetReportFilterOpen = false;
       articleListPage = 1;
       articleFilterOpen = false;
+      categoryListPage = 1;
+      categoryFilterOpen = false;
       activeAssetImageIndex = 0;
       closeRowMenus();
       document.querySelectorAll("[data-custom-select]").forEach(select => {
@@ -6975,6 +7015,7 @@
       assetFilterOpen = false;
       assetReportFilterOpen = false;
       articleFilterOpen = false;
+      categoryFilterOpen = false;
     }
 
     function renderNav() {
@@ -10449,7 +10490,7 @@
       const modal = document.querySelector("#user-action-modal");
       if (!modal) return;
       modal.classList.remove("show");
-      modal.querySelector(".user-action-modal")?.classList.remove("article-preview-modal", "article-editor-confirm-modal");
+      modal.querySelector(".user-action-modal")?.classList.remove("article-preview-modal", "article-editor-confirm-modal", "category-editor-modal");
       document.body.classList.remove("asset-action-modal-open");
       document.querySelector("#user-action-modal-body").innerHTML = "";
     }
@@ -11319,10 +11360,12 @@
       const isAssetList = id === "assets" && (subLabel || "Asset List") === "Asset List";
       const isReportedAssets = id === "assets" && subLabel === "Reported Assets";
       const isArticleList = id === "content" && (subLabel || "Articles") === "Articles";
+      const isCategoryList = id === "content" && subLabel === "Categories";
       document.body.classList.toggle("dashboard-mode", id === "dashboard");
       document.body.classList.toggle("user-management-mode", id === "users" || isReportedAssets);
-      document.body.classList.toggle("asset-list-mode", isAssetList || isArticleList);
+      document.body.classList.toggle("asset-list-mode", isAssetList || isArticleList || isCategoryList);
       document.body.classList.toggle("article-list-mode", isArticleList);
+      document.body.classList.toggle("category-list-mode", isCategoryList);
       document.body.classList.toggle("user-list-mode", id === "users" || isReportedAssets);
       document.body.classList.remove("asset-detail-mode");
       if (isReportedAssets) document.body.classList.remove("user-detail-mode");
@@ -11384,6 +11427,43 @@
         document.querySelector("#cards").innerHTML = "";
         document.querySelector("#detail").innerHTML = "";
         renderArticleListRows();
+        updateActiveNav();
+        return;
+      }
+      if (isCategoryList) {
+        activeRow = null;
+        setPageActions(`<button class="btn" type="button" data-category-add>${iconSvg.plus}<span>เพิ่มหมวดหมู่</span></button>`);
+        document.querySelector("#crumb").textContent = `${data.crumb} / Categories`;
+        document.querySelector("#page-title").textContent = "Categories";
+        document.querySelector("#page-meta").textContent = "";
+        document.querySelector("#panel-title").textContent = "CATEGORY LIST";
+        document.querySelector("#panel-subtitle").textContent = "";
+        document.querySelector("#primary-action").textContent = "เพิ่มหมวดหมู่";
+        document.querySelector("#user-panel-filter-actions").innerHTML = `
+          <button class="btn user-filter-toggle" type="button" data-category-filter-toggle aria-expanded="${categoryFilterOpen}">${iconSvg.filter}<span>${categoryFilterOpen ? "ปิดตัวกรอง" : "เปิดตัวกรอง"}</span></button>
+          <button class="btn" type="button" data-category-reset title="รีเซ็ตค่าทั้งหมด" aria-label="รีเซ็ตค่าทั้งหมด">${iconSvg.refresh}<span>รีเซ็ตค่าทั้งหมด</span></button>
+        `;
+        document.querySelector(".filters").innerHTML = `
+          <div class="user-filter-bar" data-filter-open="${categoryFilterOpen}">
+            <input class="field search" id="category-search" type="search" placeholder="ค้นหา Category ID, Name, Slug" />
+            <div class="user-advanced-filter">${customSelect("category-status-filter", "Filter category status", [
+              { value: "", label: "All status" },
+              { value: "Active", label: "Active" },
+              { value: "Inactive", label: "Inactive" },
+            ])}</div>
+            <div class="user-advanced-filter">${customSelect("category-sort", "Sort categories", [
+              { value: "order", label: "Display order" },
+              { value: "articles", label: "Article count" },
+              { value: "name", label: "Name A-Z" },
+              { value: "latest", label: "Recently updated" }
+            ], "order")}</div>
+            <button class="btn filter-reset user-advanced-filter" type="button" data-category-reset title="รีเซ็ตค่าทั้งหมด" aria-label="รีเซ็ตค่าทั้งหมด">${iconSvg.refresh}<span>รีเซ็ตค่าทั้งหมด</span></button>
+          </div>
+        `;
+        document.querySelector("#summary-grid").innerHTML = "";
+        document.querySelector("#cards").innerHTML = "";
+        document.querySelector("#detail").innerHTML = "";
+        renderCategoryListRows();
         updateActiveNav();
         return;
       }
@@ -11561,7 +11641,7 @@
       activeSub = "Roles & Permissions";
       setPageActions("");
       syncExpandedNavForModule("settings", "Roles & Permissions");
-      document.body.classList.remove("dashboard-mode", "user-management-mode", "user-list-mode", "asset-list-mode", "asset-detail-mode", "user-detail-mode");
+      document.body.classList.remove("dashboard-mode", "user-management-mode", "user-list-mode", "asset-list-mode", "article-list-mode", "category-list-mode", "asset-detail-mode", "user-detail-mode");
       activeRow = null;
       document.querySelector("#crumb").textContent = "เครื่องมือ & รายงาน / Settings / Roles & Permissions";
       document.querySelector("#page-title").textContent = "Roles & Permissions";
@@ -11800,6 +11880,10 @@
         renderArticleListRows();
         return;
       }
+      if (activeModule === "content" && activeSub === "Categories") {
+        renderCategoryListRows();
+        return;
+      }
       const data = moduleData[activeModule];
       const q = document.querySelector("#search").value.trim().toLowerCase();
       const status = document.querySelector("#status-filter").value;
@@ -11979,12 +12063,534 @@
         }
       ];
 
+    const categoryRows = [
+      {
+        id: "CAT-001",
+        name: "Buying Guide",
+        slug: "buying-guide",
+        description: "คำแนะนำการซื้อและตรวจสอบนาฬิกาก่อนตัดสินใจ",
+        status: "Active",
+        displayOrder: 10,
+        updatedAt: "09 Jul 2026 10:12",
+        actionHistory: [
+          { time: "09 Jul 2026 10:12", actor: "By TukDaeng", action: "Updated", note: "ปรับคำอธิบายหมวดหมู่", result: "Active" },
+          { time: "01 Jul 2026 09:00", actor: "System", action: "Created", note: "สร้าง master category เริ่มต้น", result: "Active" }
+        ]
+      },
+      {
+        id: "CAT-002",
+        name: "Watch 101",
+        slug: "watch-101",
+        description: "บทความพื้นฐานสำหรับผู้เริ่มต้นและผู้ใช้งานใหม่",
+        status: "Active",
+        displayOrder: 20,
+        updatedAt: "09 Jul 2026 09:42",
+        actionHistory: [
+          { time: "09 Jul 2026 09:42", actor: "By TukDaeng", action: "Updated", note: "เชื่อมกับบทความ provenance checklist", result: "Active" }
+        ]
+      },
+      {
+        id: "CAT-003",
+        name: "Watch Market",
+        slug: "watch-market",
+        description: "บทวิเคราะห์ตลาด ราคา และสัญญาณความต้องการ",
+        status: "Active",
+        displayOrder: 30,
+        updatedAt: "08 Jul 2026 17:15",
+        actionHistory: [
+          { time: "08 Jul 2026 17:15", actor: "Market Team", action: "Updated", note: "เตรียมใช้กับ monthly market notes", result: "Active" }
+        ]
+      },
+      {
+        id: "CAT-004",
+        name: "Watch Events",
+        slug: "watch-events",
+        description: "ข่าวสาร event, auction, campaign และกิจกรรมของ community",
+        status: "Active",
+        displayOrder: 40,
+        updatedAt: "08 Jul 2026 14:10",
+        actionHistory: [
+          { time: "08 Jul 2026 14:10", actor: "Marketing", action: "Updated", note: "จัดลำดับก่อนแคมเปญ auction week", result: "Active" }
+        ]
+      },
+      {
+        id: "CAT-005",
+        name: "Watch Apparel",
+        slug: "watch-apparel",
+        description: "สาย นาฬิกา เครื่องแต่งกาย และสไตล์ที่เกี่ยวข้อง",
+        status: "Active",
+        displayOrder: 50,
+        updatedAt: "07 Jul 2026 11:35",
+        actionHistory: [
+          { time: "07 Jul 2026 11:35", actor: "Editorial", action: "Updated", note: "เผยแพร่ strap pairing guide", result: "Active" }
+        ]
+      },
+      {
+        id: "CAT-006",
+        name: "Journal Board",
+        slug: "journal-board",
+        description: "บทสัมภาษณ์และเรื่องเล่าจากนักสะสม",
+        status: "Active",
+        displayOrder: 60,
+        updatedAt: "06 Jul 2026 13:05",
+        actionHistory: [
+          { time: "06 Jul 2026 13:05", actor: "Editorial", action: "Updated", note: "เก็บบทความสัมภาษณ์บางรายการเข้าคลัง", result: "Active" }
+        ]
+      },
+      {
+        id: "CAT-007",
+        name: "Owner Stories",
+        slug: "owner-stories",
+        description: "หมวดเรื่องเล่าจากเจ้าของนาฬิกาที่ยังไม่เปิดใช้บน Board",
+        status: "Inactive",
+        displayOrder: 70,
+        updatedAt: "05 Jul 2026 16:20",
+        actionHistory: [
+          { time: "05 Jul 2026 16:20", actor: "Editorial", action: "Disabled", note: "ปิดการเลือกหมวดหมู่ชั่วคราวจนกว่า editorial guideline จะพร้อม", result: "Inactive" },
+          { time: "04 Jul 2026 11:10", actor: "By TukDaeng", action: "Created", note: "สร้างหมวดหมู่เตรียมไว้สำหรับ content pilot", result: "Active" }
+        ]
+      }
+    ];
+
+    function getCategoryRows() {
+      return categoryRows;
+    }
+
+    function getCategoryById(categoryId) {
+      return getCategoryRows().find(category => category.id === categoryId);
+    }
+
+    function getCategoryByName(name) {
+      const normalized = String(name || "").trim().toLowerCase();
+      return getCategoryRows().find(category => category.name.toLowerCase() === normalized);
+    }
+
+    function getCategoryArticleCount(categoryName) {
+      return getArticleListRows().filter(article => article.category === categoryName).length;
+    }
+
+    function getActiveArticleCategories() {
+      return getCategoryRows()
+        .filter(category => category.status === "Active")
+        .sort((a, b) => a.displayOrder - b.displayOrder || a.name.localeCompare(b.name))
+        .map(category => category.name);
+    }
+
+    function getArticleFilterCategories() {
+      const usedCategoryNames = Array.from(new Set(getArticleListRows().map(article => article.category)));
+      const activeMasterNames = getCategoryRows()
+        .filter(category => category.status === "Active")
+        .sort((a, b) => a.displayOrder - b.displayOrder || a.name.localeCompare(b.name))
+        .map(category => category.name);
+      return Array.from(new Set([...activeMasterNames, ...usedCategoryNames]));
+    }
+
+    function getArticleEditorCategoryOptions() {
+      return [
+        { value: "", label: "เลือกหมวดหมู่" },
+        ...getActiveArticleCategories().map(category => ({ value: category, label: category }))
+      ];
+    }
+
+    function getCategoryStatusPill(status) {
+      const map = { Active: "green", Inactive: "amber" };
+      return `<span class="pill ${map[status] || "blue"}">${status}</span>`;
+    }
+
+    function getCategorySearchText(category) {
+      return [category.id, category.name, category.slug, category.description, category.status].join(" ").toLowerCase();
+    }
+
+    function getNextCategoryId() {
+      const maxId = categoryRows.reduce((max, category) => {
+        const idNumber = parseInt(String(category.id || "").replace(/\D/g, ""), 10) || 0;
+        return Math.max(max, idNumber);
+      }, 0);
+      return `CAT-${String(maxId + 1).padStart(3, "0")}`;
+    }
+
+    function slugifyCategory(value) {
+      return String(value || "")
+        .trim()
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, "-")
+        .replace(/^-+|-+$/g, "");
+    }
+
+    function addCategoryActionHistory(category, entry) {
+      if (!category) return;
+      category.actionHistory = [
+        {
+          time: entry.time || formatArticleActionTimestamp(),
+          actor: entry.actor || ARTICLE_EDITOR_AUTHOR,
+          action: entry.action,
+          note: entry.note,
+          result: entry.result
+        },
+        ...(Array.isArray(category.actionHistory) ? category.actionHistory : [])
+      ];
+    }
+
+    function renderCategorySummaryCards() {
+      const rows = getCategoryRows();
+      const active = rows.filter(category => category.status === "Active").length;
+      const inactive = rows.filter(category => category.status === "Inactive").length;
+      const used = rows.filter(category => getCategoryArticleCount(category.name) > 0).length;
+      return [
+        ["Active", active, "เลือกได้ใน Add/Edit Article"],
+        ["Inactive", inactive, "ซ่อนจากตัวเลือกบทความใหม่"],
+        ["In Use", used, "มีบทความผูกอยู่"]
+      ].map(([label, value, note]) => `
+        <article class="stat">
+          <div class="stat-label">${label}</div>
+          <div class="stat-value">${value}</div>
+          <div class="stat-note">${note}</div>
+        </article>
+      `).join("");
+    }
+
+    function renderCategoryRowActionMenu(category) {
+      const articleCount = getCategoryArticleCount(category.name);
+      return `
+        <details class="row-menu">
+          <summary title="Category actions">...</summary>
+          <div class="row-menu-list">
+            <button type="button" data-category-open="${category.id}">View detail</button>
+            <button type="button" data-category-edit="${category.id}">Edit category</button>
+            ${category.status === "Active"
+              ? `<button type="button" data-category-status-action="deactivate" data-category-id="${category.id}">Set inactive</button>`
+              : `<button type="button" data-category-status-action="activate" data-category-id="${category.id}">Set active</button>`}
+            <button type="button" data-category-status-action="delete" data-category-id="${category.id}" ${articleCount ? "disabled" : ""}>Delete category</button>
+          </div>
+        </details>
+      `;
+    }
+
+    function renderCategoryListRows() {
+      const q = (document.querySelector("#category-search")?.value || "").trim().toLowerCase();
+      const status = document.querySelector("#category-status-filter")?.value || "";
+      const sort = document.querySelector("#category-sort")?.value || "order";
+      const sorted = [...getCategoryRows()].filter(category => {
+        return (!q || getCategorySearchText(category).includes(q))
+          && (!status || category.status === status);
+      }).sort((a, b) => {
+        if (sort === "articles") return getCategoryArticleCount(b.name) - getCategoryArticleCount(a.name) || a.displayOrder - b.displayOrder;
+        if (sort === "name") return a.name.localeCompare(b.name);
+        if (sort === "latest") return getArticleSortRank({ id: "", publishAt: b.updatedAt }, "publish") - getArticleSortRank({ id: "", publishAt: a.updatedAt }, "publish");
+        return a.displayOrder - b.displayOrder || a.name.localeCompare(b.name);
+      });
+      const pageCount = Math.max(1, Math.ceil(sorted.length / articleListPageSize));
+      categoryListPage = Math.min(categoryListPage, pageCount);
+      const start = (categoryListPage - 1) * articleListPageSize;
+      const pageRows = sorted.slice(start, start + articleListPageSize);
+      document.querySelector("#summary-grid").innerHTML = "";
+      document.querySelector("#panel-subtitle").textContent = "";
+      document.querySelector("#table").innerHTML = `
+        <div class="asset-table category-table">
+          <div class="asset-row head"><div>Category ID</div><div>Category</div><div>Slug</div><div>Articles</div><div>Status</div><div>Action</div></div>
+          ${pageRows.map(category => {
+            const articleCount = getCategoryArticleCount(category.name);
+            return `
+              <div class="asset-row" data-category-card="${category.id}">
+                <div data-label="Category ID"><div class="main-text">${category.id}</div></div>
+                <div class="asset-cell-primary" data-label="Category">
+                  <div class="main-text">${escapeArticleField(category.name)}</div>
+                  <div class="muted">${escapeArticleField(category.description)}</div>
+                </div>
+                <div class="asset-card-tags">
+                  ${getCategoryStatusPill(category.status)}
+                  <span class="user-card-tag asset-tag">${articleCount} articles</span>
+                  <span class="user-card-tag asset-tag">Order ${category.displayOrder}</span>
+                  <div class="user-card-meta">
+                    <div class="user-card-meta-item"><span>Slug</span><strong>${escapeArticleField(category.slug)}</strong></div>
+                    <div class="user-card-meta-item"><span>Updated</span><strong>${escapeArticleField(category.updatedAt)}</strong></div>
+                  </div>
+                </div>
+                <div data-label="Slug"><div class="main-text">${escapeArticleField(category.slug)}</div></div>
+                <div data-label="Articles"><div class="main-text">${articleCount}</div></div>
+                <div data-label="Status">${getCategoryStatusPill(category.status)}</div>
+                <div class="user-row-actions">
+                  ${renderCategoryRowActionMenu(category)}
+                </div>
+              </div>
+            `;
+          }).join("") || `<div class="detail-empty user-empty">ไม่พบข้อมูล</div>`}
+        </div>
+        <div class="footer-range">
+          <span>แสดง ${sorted.length ? `${start + 1}-${Math.min(start + articleListPageSize, sorted.length)}` : "0"} จาก ${sorted.length}</span>
+          <div class="pager">
+            <button class="btn" type="button" data-category-page="prev" ${categoryListPage <= 1 ? "disabled" : ""}>ก่อนหน้า</button>
+            ${Array.from({ length: pageCount }, (_, index) => `<button class="btn ${index + 1 === categoryListPage ? "active" : ""}" type="button" data-category-page="${index + 1}">${index + 1}</button>`).join("")}
+            <button class="btn" type="button" data-category-page="next" ${categoryListPage >= pageCount ? "disabled" : ""}>ถัดไป</button>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderCategoryDetailPanel(category) {
+      if (!category) return;
+      const articleCount = getCategoryArticleCount(category.name);
+      const articles = getArticleListRows().filter(article => article.category === category.name);
+      document.querySelector("#detail").innerHTML = `
+        <div class="panel-head">
+          <div>
+            <h2>${escapeArticleField(category.name)}</h2>
+            <p>${category.id} / ${escapeArticleField(category.slug)}</p>
+          </div>
+        </div>
+        <div class="detail-body">
+          <div class="detail-grid two">
+            <div class="detail-tile"><span>Status</span><strong>${category.status}</strong></div>
+            <div class="detail-tile"><span>Articles</span><strong>${articleCount}</strong></div>
+            <div class="detail-tile"><span>Display Order</span><strong>${category.displayOrder}</strong></div>
+            <div class="detail-tile"><span>Updated</span><strong>${escapeArticleField(category.updatedAt)}</strong></div>
+          </div>
+          <div class="module-note"><strong>FO impact:</strong> Active categories can appear on Board category navigation and Article editor. Inactive categories are removed from new article selection.</div>
+          <div class="detail-section">
+            <h4>Linked Articles</h4>
+            <div class="timeline">
+              ${articles.map(article => `<div class="event"><strong>${escapeArticleField(article.id)} / ${escapeArticleField(article.title)}</strong><br>${articleStatusPill(article.status)} Publish: ${escapeArticleField(article.publishAt)}</div>`).join("") || `<div class="event"><strong>No linked articles</strong><br>Category can be deleted because no article is using it.</div>`}
+            </div>
+          </div>
+          <div class="detail-section">
+            <h4>Audit History</h4>
+            <div class="timeline">
+              ${(category.actionHistory || []).map(entry => `<div class="event"><strong>${escapeArticleField(entry.action)} / ${escapeArticleField(entry.result)}</strong><br>${escapeArticleField(entry.time)} by ${escapeArticleField(entry.actor)}<br>${escapeArticleField(entry.note)}</div>`).join("")}
+            </div>
+          </div>
+          <div class="user-detail-actions">
+            <button class="user-detail-action-btn primary" type="button" data-category-edit="${category.id}">Edit category</button>
+          ${category.status === "Active"
+              ? `<button class="user-detail-action-btn warning" type="button" data-category-status-action="deactivate" data-category-id="${category.id}">Set inactive</button>`
+              : `<button class="user-detail-action-btn primary" type="button" data-category-status-action="activate" data-category-id="${category.id}">Set active</button>`}
+          </div>
+        </div>
+      `;
+    }
+
+    function renderCategoryEditorModal(category = null) {
+      const isEdit = Boolean(category);
+      const draft = category || {
+        id: getNextCategoryId(),
+        name: "",
+        slug: "",
+        description: "",
+        status: "Active",
+        displayOrder: getCategoryRows().reduce((max, item) => Math.max(max, item.displayOrder || 0), 0) + 10
+      };
+      const modal = document.querySelector("#user-action-modal");
+      const modalCard = modal?.querySelector(".user-action-modal");
+      const modalBody = document.querySelector("#user-action-modal-body");
+      if (!modal || !modalCard || !modalBody) return;
+      modalCard.classList.remove("article-preview-modal", "article-editor-confirm-modal");
+      modalCard.classList.add("category-editor-modal");
+      modalBody.innerHTML = `
+        <div class="user-action-layout">
+          <div class="user-action-head">
+            <div>
+              <h2 id="user-action-modal-title">${isEdit ? "Edit category" : "Add category"}</h2>
+              <p>${isEdit ? "Update category master data and article selection behavior." : "Create a category for Board articles."}</p>
+            </div>
+            <button class="btn user-action-close" type="button" data-user-action-modal-close aria-label="Close modal" title="Close">${iconSvg.close}</button>
+          </div>
+          <form class="article-editor-form" data-category-form data-category-id="${draft.id}" novalidate>
+            <section class="article-editor-section">
+              <div class="article-editor-grid">
+                <label><span>ชื่อหมวดหมู่ <span class="article-required-mark">*</span></span>
+                  <input name="name" value="${escapeArticleField(draft.name)}" placeholder="เช่น Market Insight" data-category-name />
+                  <span class="article-field-error" data-category-name-error></span>
+                </label>
+                <label><span>Slug <span class="article-required-mark">*</span></span>
+                  <input name="slug" value="${escapeArticleField(draft.slug)}" placeholder="market-insight" data-category-slug />
+                  <span class="article-field-error" data-category-slug-error></span>
+                </label>
+                <label>Status
+                  ${articleEditorCustomSelect("category-status-field", "status", "Category status", [
+                    { value: "Active", label: "Active" },
+                    { value: "Inactive", label: "Inactive" }
+                  ], draft.status)}
+                  <span class="article-field-error" aria-hidden="true"></span>
+                </label>
+                <label><span>Display order <span class="article-required-mark">*</span></span>
+                  <input name="displayOrder" type="number" min="1" step="1" value="${escapeArticleField(draft.displayOrder)}" />
+                  <span class="article-field-error" data-category-order-error></span>
+                </label>
+                <label class="full">Description
+                  <textarea name="description" placeholder="อธิบายการใช้งานหมวดหมู่นี้">${escapeArticleField(draft.description)}</textarea>
+                  <span class="article-field-error" aria-hidden="true"></span>
+                </label>
+              </div>
+            </section>
+            <div class="user-detail-actions">
+              <button class="user-detail-action-btn" type="button" data-user-action-modal-close>ยกเลิก</button>
+              <button class="user-detail-action-btn primary" type="submit">${isEdit ? "บันทึกการแก้ไข" : "สร้างหมวดหมู่"}</button>
+            </div>
+          </form>
+        </div>
+      `;
+      showUserActionModal(true);
+    }
+
+    function setCategoryFieldError(form, field, message = "") {
+      const node = form?.querySelector(`[data-category-${field}-error]`);
+      if (node) node.textContent = message;
+    }
+
+    function validateCategoryForm(form) {
+      const formData = new FormData(form);
+      const id = form.dataset.categoryId || "";
+      const name = String(formData.get("name") || "").trim();
+      const slug = slugifyCategory(formData.get("slug") || name);
+      const displayOrder = Number(formData.get("displayOrder"));
+      const existingName = getCategoryRows().find(category => category.id !== id && category.name.toLowerCase() === name.toLowerCase());
+      const existingSlug = getCategoryRows().find(category => category.id !== id && category.slug.toLowerCase() === slug.toLowerCase());
+      ["name", "slug", "order"].forEach(field => setCategoryFieldError(form, field));
+      let hasError = false;
+      if (!name) {
+        setCategoryFieldError(form, "name", "กรุณากรอกชื่อหมวดหมู่");
+        hasError = true;
+      } else if (existingName) {
+        setCategoryFieldError(form, "name", "ชื่อหมวดหมู่นี้มีอยู่แล้ว");
+        hasError = true;
+      }
+      if (!slug) {
+        setCategoryFieldError(form, "slug", "กรุณากรอก slug");
+        hasError = true;
+      } else if (existingSlug) {
+        setCategoryFieldError(form, "slug", "slug นี้มีอยู่แล้ว");
+        hasError = true;
+      }
+      if (!Number.isFinite(displayOrder) || displayOrder < 1) {
+        setCategoryFieldError(form, "order", "กรุณากรอกลำดับเป็นตัวเลขตั้งแต่ 1");
+        hasError = true;
+      }
+      if (hasError) return null;
+      return {
+        id,
+        name,
+        slug,
+        description: String(formData.get("description") || "").trim(),
+        status: String(formData.get("status") || "Active"),
+        displayOrder
+      };
+    }
+
+    function saveCategoryFromForm(form) {
+      const validated = validateCategoryForm(form);
+      if (!validated) return;
+      const now = formatArticleActionTimestamp();
+      const existing = getCategoryById(validated.id);
+      const previousName = existing?.name || "";
+      const nextCategory = {
+        ...(existing || {}),
+        ...validated,
+        updatedAt: now,
+        actionHistory: existing?.actionHistory || []
+      };
+      if (existing && previousName && previousName !== nextCategory.name) {
+        getArticleListRows().forEach(article => {
+          if (article.category === previousName) article.category = nextCategory.name;
+        });
+      }
+      addCategoryActionHistory(nextCategory, {
+        time: now,
+        action: existing ? "Updated" : "Created",
+        note: existing ? "แก้ไข master category และ sync กับ Article selector/filter" : "สร้างหมวดหมู่ใหม่สำหรับ Board articles",
+        result: nextCategory.status
+      });
+      const existingIndex = categoryRows.findIndex(category => category.id === nextCategory.id);
+      if (existingIndex >= 0) categoryRows.splice(existingIndex, 1, nextCategory);
+      else categoryRows.unshift(nextCategory);
+      closeUserActionModal();
+      renderModule("content", "Categories", "Categories");
+      renderCategoryDetailPanel(nextCategory);
+      showSuccessToast(`${nextCategory.id}: บันทึกหมวดหมู่แล้ว`);
+    }
+
+    function getCategoryActionConfig(category, action) {
+      const articleCount = getCategoryArticleCount(category?.name);
+      if (action === "deactivate") {
+        return {
+          title: "ยืนยันการปิดใช้งาน category",
+          question: "ต้องการเปลี่ยนหมวดหมู่นี้เป็น Inactive ใช่หรือไม่?",
+          summary: articleCount ? `มีบทความ ${articleCount} รายการผูกอยู่ บทความเดิมยังคงหมวดนี้ แต่หมวดจะไม่ถูกเลือกได้ในบทความใหม่` : "หมวดนี้จะถูกนำออกจาก FO category และตัวเลือกบทความใหม่",
+          status: "Inactive",
+          historyAction: "Deactivated",
+          tone: "warning",
+          iconType: "cancel"
+        };
+      }
+      if (action === "activate") {
+        return {
+          title: "ยืนยันการเปิดใช้งาน category",
+          question: "ต้องการเปลี่ยนหมวดหมู่นี้เป็น Active ใช่หรือไม่?",
+          summary: "หมวดนี้จะกลับมาแสดงในตัวเลือก Add/Edit Article และ FO category",
+          status: "Active",
+          historyAction: "Activated",
+          tone: "",
+          iconType: "confirm"
+        };
+      }
+      if (action === "delete" && articleCount === 0) {
+        return {
+          title: "ยืนยันการลบ category",
+          question: "ต้องการลบหมวดหมู่นี้ถาวรใช่หรือไม่?",
+          summary: "ลบได้เพราะไม่มีบทความผูกอยู่ ระบบจะเก็บผลลัพธ์ไว้ใน toast ของ prototype เท่านั้น",
+          status: "Deleted",
+          historyAction: "Deleted",
+          tone: "danger",
+          iconType: "cancel"
+        };
+      }
+      return null;
+    }
+
+    function openCategoryActionConfirmModal(category, action) {
+      const config = getCategoryActionConfig(category, action);
+      if (!category || !config) {
+        showSuccessToast("ไม่สามารถลบ category ที่มีบทความผูกอยู่ได้");
+        return;
+      }
+      renderArticleEditorConfirmModal({
+        title: config.title,
+        summary: config.summary,
+        question: config.question,
+        confirmAttr: `data-category-action-confirm="${action}" data-category-id="${category.id}"`,
+        iconType: config.iconType,
+        confirmClass: config.tone
+      });
+    }
+
+    function applyCategoryAction(category, action) {
+      const config = getCategoryActionConfig(category, action);
+      if (!category || !config) return;
+      if (action === "delete") {
+        const index = categoryRows.findIndex(entry => entry.id === category.id);
+        if (index >= 0) categoryRows.splice(index, 1);
+        renderModule("content", "Categories", "Categories");
+        showSuccessToast(`${category.id}: ลบหมวดหมู่แล้ว`);
+        return;
+      }
+      const now = formatArticleActionTimestamp();
+      category.status = config.status;
+      category.updatedAt = now;
+      addCategoryActionHistory(category, {
+        time: now,
+        action: config.historyAction,
+        note: action === "deactivate" ? "นำหมวดหมู่ออกจาก FO category และ Article selector" : "นำหมวดหมู่กลับมาใช้งาน",
+        result: category.status
+      });
+      renderModule("content", "Categories", "Categories");
+      renderCategoryDetailPanel(category);
+      showSuccessToast(`${category.id}: ${category.status}`);
+    }
+
     function getArticleListRows() {
       return articleRows;
     }
 
     function getArticleCategories() {
-      return Array.from(new Set(getArticleListRows().map(article => article.category))).sort((a, b) => a.localeCompare(b));
+      return getArticleFilterCategories();
     }
 
     function getArticleSearchText(article) {
@@ -12584,6 +13190,7 @@
       const modalCard = modal?.querySelector(".user-action-modal");
       const modalBody = document.querySelector("#user-action-modal-body");
       if (!article || !modal || !modalCard || !modalBody) return;
+      modalCard.classList.remove("category-editor-modal", "article-editor-confirm-modal");
       modalCard.classList.add("article-preview-modal");
       modalBody.innerHTML = `
         <div class="user-action-layout article-preview-modal-content">
@@ -12991,7 +13598,7 @@
       activeModule = "content";
       activeSub = "Articles";
       activeRow = detailRow;
-      document.body.classList.remove("asset-list-mode", "article-list-mode", "user-list-mode", "user-detail-mode");
+      document.body.classList.remove("asset-list-mode", "article-list-mode", "category-list-mode", "user-list-mode", "user-detail-mode");
       document.body.classList.add("asset-detail-mode");
       document.querySelector("#crumb").textContent = `การดำเนินงาน / Content Management / Articles / ${article.id}`;
       document.querySelector("#page-title").textContent = "Article Detail";
@@ -13165,7 +13772,7 @@
                       <span class="article-field-error" aria-hidden="true"></span>
                     </label>
                     <label><span>หมวดหมู่ <span class="article-required-mark">*</span></span>
-                      ${articleEditorCustomSelect("article-category-field", "category", "หมวดหมู่", [{ value: "", label: "เลือกหมวดหมู่" }, ...["Buying Guide", "Watch 101", "Watch Market", "Watch Events", "Watch Apparel", "Journal Board"].map(category => ({ value: category, label: category }))], draft.category)}
+                      ${articleEditorCustomSelect("article-category-field", "category", "หมวดหมู่", getArticleEditorCategoryOptions(), draft.category)}
                       <span class="article-field-error" data-article-category-error></span>
                     </label>
                     <label>ผู้เขียน
@@ -13261,7 +13868,7 @@
       const modalCard = modal?.querySelector(".user-action-modal");
       const modalBody = document.querySelector("#user-action-modal-body");
       if (!modal || !modalCard || !modalBody) return;
-      modalCard.classList.remove("article-preview-modal");
+      modalCard.classList.remove("article-preview-modal", "category-editor-modal");
       modalCard.classList.add("article-editor-confirm-modal");
       const isCancelIcon = iconType === "cancel";
       const iconPath = isCancelIcon
@@ -13455,6 +14062,9 @@
       }
       if (!category) {
         setArticleFieldError(form, "category", "กรุณาเลือกหมวดหมู่");
+        validationErrors.push("category");
+      } else if (!getActiveArticleCategories().includes(category)) {
+        setArticleFieldError(form, "category", "หมวดหมู่นี้ไม่พร้อมใช้งาน กรุณาเลือกหมวดหมู่ Active");
         validationErrors.push("category");
       }
       if (!(form.dataset.articleCoverSrc || existingArticle?.coverImageSrc)) {
@@ -13863,6 +14473,11 @@
           renderArticleListRows();
           return;
         }
+        if (["category-status-filter", "category-sort"].includes(hiddenInput.id) && activeModule === "content" && activeSub === "Categories") {
+          categoryListPage = 1;
+          renderCategoryListRows();
+          return;
+        }
         userListPage = 1;
         if (activeModule === "users" && (activeSub === "Report User" || activeSub === "Reported Users")) renderReportedUserRows();
         else if (activeModule === "users") renderUserRows();
@@ -14073,6 +14688,48 @@
         const article = getArticleById(articleCard.dataset.articleCard);
         if (!article) return;
         renderArticleDetailPage(article);
+        return;
+      }
+      const categoryAddButton = event.target.closest("[data-category-add]");
+      if (categoryAddButton) {
+        renderCategoryEditorModal();
+        return;
+      }
+      const categoryOpenButton = event.target.closest("[data-category-open]");
+      if (categoryOpenButton) {
+        const category = getCategoryById(categoryOpenButton.dataset.categoryOpen);
+        if (!category) return;
+        renderCategoryDetailPanel(category);
+        closeRowMenus();
+        return;
+      }
+      const categoryEditButton = event.target.closest("[data-category-edit]");
+      if (categoryEditButton) {
+        const category = getCategoryById(categoryEditButton.dataset.categoryEdit);
+        if (!category) return;
+        renderCategoryEditorModal(category);
+        closeRowMenus();
+        return;
+      }
+      const categoryStatusActionButton = event.target.closest("[data-category-status-action]");
+      if (categoryStatusActionButton) {
+        const category = getCategoryById(categoryStatusActionButton.dataset.categoryId);
+        openCategoryActionConfirmModal(category, categoryStatusActionButton.dataset.categoryStatusAction);
+        closeRowMenus();
+        return;
+      }
+      const categoryActionConfirmButton = event.target.closest("[data-category-action-confirm]");
+      if (categoryActionConfirmButton) {
+        const category = getCategoryById(categoryActionConfirmButton.dataset.categoryId);
+        closeUserActionModal();
+        applyCategoryAction(category, categoryActionConfirmButton.dataset.categoryActionConfirm);
+        return;
+      }
+      const categoryCard = event.target.closest("[data-category-card]");
+      if (categoryCard && !event.target.closest(".row-menu, button, a, input, select, [data-custom-select]")) {
+        const category = getCategoryById(categoryCard.dataset.categoryCard);
+        if (!category) return;
+        renderCategoryDetailPanel(category);
         return;
       }
       const userActionConfirmButton = event.target.closest("[data-user-action-confirm]");
@@ -14379,6 +15036,12 @@
         renderModule("content", "Articles", "Articles");
         return;
       }
+      const categoryReset = event.target.closest("[data-category-reset]");
+      if (categoryReset) {
+        categoryListPage = 1;
+        renderModule("content", "Categories", "Categories");
+        return;
+      }
       const articleFilterToggle = event.target.closest("[data-article-filter-toggle]");
       if (articleFilterToggle) {
         articleFilterOpen = !articleFilterOpen;
@@ -14389,6 +15052,16 @@
         if (label) label.textContent = articleFilterOpen ? "ปิดตัวกรอง" : "เปิดตัวกรอง";
         return;
       }
+      const categoryFilterToggle = event.target.closest("[data-category-filter-toggle]");
+      if (categoryFilterToggle) {
+        categoryFilterOpen = !categoryFilterOpen;
+        const filterBar = document.querySelector(".user-filter-bar");
+        if (filterBar) filterBar.dataset.filterOpen = String(categoryFilterOpen);
+        categoryFilterToggle.setAttribute("aria-expanded", String(categoryFilterOpen));
+        const label = categoryFilterToggle.querySelector("span");
+        if (label) label.textContent = categoryFilterOpen ? "ปิดตัวกรอง" : "เปิดตัวกรอง";
+        return;
+      }
       const articlePageButton = event.target.closest("[data-article-page]");
       if (articlePageButton) {
         const target = articlePageButton.dataset.articlePage;
@@ -14396,6 +15069,15 @@
         else if (target === "next") articleListPage += 1;
         else articleListPage = Number(target) || 1;
         renderArticleListRows();
+        return;
+      }
+      const categoryPageButton = event.target.closest("[data-category-page]");
+      if (categoryPageButton) {
+        const target = categoryPageButton.dataset.categoryPage;
+        if (target === "prev") categoryListPage = Math.max(1, categoryListPage - 1);
+        else if (target === "next") categoryListPage += 1;
+        else categoryListPage = Number(target) || 1;
+        renderCategoryListRows();
         return;
       }
       const assetPageButton = event.target.closest("[data-asset-page]");
@@ -14754,8 +15436,30 @@
         articleListPage = 1;
         renderArticleListRows();
       }
+      if (event.target.matches("#category-search")) {
+        categoryListPage = 1;
+        renderCategoryListRows();
+      }
+      if (event.target.matches("[data-category-name]")) {
+        const form = event.target.closest("[data-category-form]");
+        if (!form) return;
+        setCategoryFieldError(form, "name");
+        const slugInput = form.querySelector("[data-category-slug]");
+        if (slugInput && !slugInput.value.trim()) slugInput.value = slugifyCategory(event.target.value);
+      }
+      if (event.target.matches("[data-category-slug]")) {
+        const form = event.target.closest("[data-category-form]");
+        if (form) setCategoryFieldError(form, "slug");
+        event.target.value = slugifyCategory(event.target.value);
+      }
     });
     document.addEventListener("submit", event => {
+      const categoryForm = event.target.closest("[data-category-form]");
+      if (categoryForm) {
+        event.preventDefault();
+        saveCategoryFromForm(categoryForm);
+        return;
+      }
       const articleEditor = event.target.closest("[data-article-editor]");
       if (articleEditor) {
         event.preventDefault();
