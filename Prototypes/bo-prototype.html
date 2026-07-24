@@ -2437,15 +2437,15 @@
     }
     .article-change-history-table {
       min-width: 760px;
+      table-layout: fixed;
     }
-    .article-change-history-table th:nth-child(3),
-    .article-change-history-table td:nth-child(3) {
-      width: 160px;
+    .article-change-history-table th,
+    .article-change-history-table td {
       text-align: left;
     }
     .article-change-history-table .history-note {
-      min-width: 220px;
-      max-width: 420px;
+      min-width: 0;
+      max-width: none;
     }
     .article-danger-note {
       border-color: #fed7d7;
@@ -12811,6 +12811,13 @@
       return `
         <div class="history-table-wrap">
           <table class="history-table article-change-history-table">
+            <colgroup>
+              <col style="width: 20%">
+              <col style="width: 16%">
+              <col style="width: 10%">
+              <col style="width: 34%">
+              <col style="width: 20%">
+            </colgroup>
             <thead>
               <tr>
                 <th>Date / Time</th>
