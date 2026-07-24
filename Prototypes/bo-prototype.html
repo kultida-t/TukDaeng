@@ -1604,6 +1604,9 @@
     .category-order-note {
       margin-top: 12px;
     }
+    .category-order-modal .user-detail-actions {
+      justify-content: flex-end;
+    }
     .article-detail-layout {
       display: grid;
       grid-template-columns: minmax(0, 1fr) minmax(340px, .82fr);
@@ -12369,16 +12372,15 @@
       if (!modal || !modalCard || !modalBody) return;
       modalCard.classList.remove("article-preview-modal", "article-editor-confirm-modal", "category-editor-modal");
       modalCard.classList.add("category-order-modal");
-      const rows = getOrderedCategoryRows();
+      const rows = getOrderedCategoryRows().filter(category => category.status === "Active");
       modalBody.innerHTML = `
         <div class="user-action-head">
           <div>
-            <h2 id="user-action-modal-title">จัดเรียง Category บน FO Board</h2>
-            <p>ลาก category เพื่อกำหนดลำดับการแสดงผลบน Board หน้า FO</p>
+            <h2 id="user-action-modal-title">จัดเรียงเมนู Category บน Tuk Daeng Board</h2>
+            <p>ลากเรียงลำดับ category เพื่อกำหนดลำดับการแสดงผลบน Tuk Daeng Board</p>
           </div>
           <button class="btn user-action-close" type="button" data-user-action-modal-close aria-label="Close modal" title="Close">${iconSvg.close}</button>
         </div>
-        <div class="module-note category-order-note"><strong>FO impact:</strong> Category สถานะ Active จะแสดงตามลำดับนี้บน Board ส่วน Inactive จะถูกซ่อนจาก FO แต่ยังเก็บลำดับไว้เมื่อเปิดใช้งานกลับมา</div>
         <div class="category-order-list" data-category-order-list>
           ${rows.map((category, index) => `
             <div class="category-order-item" draggable="true" tabindex="0" data-category-order-item="${category.id}">
