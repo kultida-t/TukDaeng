@@ -12891,6 +12891,53 @@
       `;
     }
 
+    function getArticleStatusAction(article) {
+      if (!article) return null;
+      if (article.status === "Draft") {
+        return {
+          key: "delete-draft",
+          label: "Delete draft",
+          title: "ยืนยันการลบฉบับร่าง",
+          question: "คุณต้องการลบบทความฉบับร่างนี้ใช่หรือไม่?",
+          summary: "บทความนี้ยังไม่เคยเผยแพร่ ระบบจะลบออกจากรายการบทความ",
+          tone: "danger",
+          iconType: "cancel"
+        };
+      }
+      if (article.status === "Scheduled") {
+        return {
+          key: "cancel-schedule",
+          label: "Cancel schedule",
+          title: "ยืนยันการยกเลิกกำหนดเผยแพร่",
+          question: "คุณต้องการยกเลิกกำหนดเผยแพร่บทความนี้ใช่หรือไม่?",
+          summary: "ระบบจะล้างวันเวลาเผยแพร่และเปลี่ยนบทความกลับเป็นฉบับร่าง",
+          tone: "warning",
+          iconType: "cancel"
+        };
+      }
+      if (article.status === "Published") {
+        return {
+          key: "archive-article",
+          label: "Archive article",
+          title: "ยืนยันการเก็บบทความเข้าคลัง",
+          question: "คุณต้องการเก็บบทความที่เผยแพร่แล้วนี้เข้าคลังใช่หรือไม่?",
+          summary: "ระบบจะเก็บข้อมูลและประวัติบทความไว้ แต่จะนำออกจาก FO Board, Search และ Category",
+          tone: "danger",
+          iconType: "cancel"
+        };
+      }
+      return null;
+    }
+
+    function renderArticleStatusActionButton(article, context = "detail") {
+      const action = getArticleStatusAction(article);
+      if (!action) return "";
+      if (context === "menu") {
+        return `<button type="button" data-article-status-action="${action.key}" data-article-id="${article.id}" data-article-action-context="list">${action.label}</button>`;
+      }
+      return `<button class="user-detail-action-btn ${action.tone}" type="button" data-article-status-action="${action.key}" data-article-id="${article.id}" data-article-action-context="${context}">${action.label}</button>`;
+    }
+
     function renderArticleRowActionMenu(article) {
       return `
         <details class="row-menu">
@@ -12899,7 +12946,7 @@
             <button type="button" data-article-open="${article.id}">View detail</button>
             <button type="button">Preview as FO</button>
             <button type="button" data-article-edit="${article.id}">Edit article</button>
-            <button type="button" data-article-delete="${article.id}">${article.status === "Archived" ? "Delete draft" : "Archive article"}</button>
+            ${renderArticleStatusActionButton(article, "menu")}
           </div>
         </details>
       `;
@@ -13002,8 +13049,7 @@
                 <div class="user-detail-actions">
                   <button class="user-detail-action-btn" type="button" data-article-edit="${article.id}">Edit article</button>
                   <button class="user-detail-action-btn" type="button" data-article-preview-id="${article.id}">Preview article</button>
-                  <button class="user-detail-action-btn" type="button" data-article-duplicate="${article.id}">Duplicate draft</button>
-                  <button class="user-detail-action-btn danger" type="button" data-article-delete="${article.id}">${article.status === "Archived" ? "Delete draft" : "Archive article"}</button>
+                  ${renderArticleStatusActionButton(article, "detail")}
                 </div>
               </div>
             </div>
@@ -13189,7 +13235,7 @@
       renderModule("content", "Articles", "Articles");
     }
 
-    function renderArticleEditorConfirmModal({ title, summary, question, confirmAttr, iconType = "confirm" }) {
+    function renderArticleEditorConfirmModal({ title, summary, question, confirmAttr, iconType = "confirm", confirmClass = "" }) {
       const modal = document.querySelector("#user-action-modal");
       const modalCard = modal?.querySelector(".user-action-modal");
       const modalBody = document.querySelector("#user-action-modal-body");
@@ -13214,7 +13260,7 @@
           <p class="article-editor-confirm-summary">${summary}</p>
           <div class="article-editor-confirm-actions">
             <button class="user-detail-action-btn" type="button" data-user-action-modal-close>ยกเลิก</button>
-            <button class="user-detail-action-btn user-action-confirm" type="button" ${confirmAttr}>ยืนยัน</button>
+            <button class="user-detail-action-btn user-action-confirm ${confirmClass}" type="button" ${confirmAttr}>ยืนยัน</button>
           </div>
         </div>
       `;
@@ -13261,6 +13307,46 @@
         question: "คุณต้องการสร้างบทความนี้ใช่หรือไม่?",
         confirmAttr: `data-article-add-create-confirm="${id}"`
       });
+    }
+
+    function openArticleStatusActionConfirmModal(article, actionKey, context = "detail") {
+      const action = getArticleStatusAction(article);
+      if (!action || action.key !== actionKey) return;
+      renderArticleEditorConfirmModal({
+        title: action.title,
+        summary: action.summary,
+        question: action.question,
+        confirmAttr: `data-article-status-action-confirm="${action.key}" data-article-id="${article.id}" data-article-action-context="${context}"`,
+        iconType: action.iconType,
+        confirmClass: action.tone
+      });
+    }
+
+    function applyArticleStatusAction(article, actionKey, context = "detail") {
+      if (!article) return;
+      const now = formatBangkokTimestamp().replace(/\sGMT\+7$/i, "");
+      if (actionKey === "delete-draft" && article.status === "Draft") {
+        const index = articleRows.findIndex(entry => entry.id === article.id);
+        if (index >= 0) articleRows.splice(index, 1);
+        renderModule("content", "Articles", "Articles");
+        return;
+      }
+      if (actionKey === "cancel-schedule" && article.status === "Scheduled") {
+        article.status = "Draft";
+        article.publishAt = "-";
+        article.updatedAt = now;
+        article.detail = "Schedule canceled from BO. Article returned to Draft.";
+      }
+      if (actionKey === "archive-article" && article.status === "Published") {
+        article.status = "Archived";
+        article.updatedAt = now;
+        article.detail = "Archived from BO. Removed from FO Board/Search/Category.";
+      }
+      if (context === "list") {
+        renderModule("content", "Articles", "Articles");
+      } else {
+        renderArticleDetailPage(article);
+      }
     }
 
     function validateArticleEditorForm(form) {
@@ -13826,6 +13912,18 @@
         saveArticleFromForm(form);
         return;
       }
+      const articleStatusActionConfirmButton = event.target.closest("[data-article-status-action-confirm]");
+      if (articleStatusActionConfirmButton) {
+        const article = getArticleById(articleStatusActionConfirmButton.dataset.articleId);
+        if (!article) return;
+        closeUserActionModal();
+        applyArticleStatusAction(
+          article,
+          articleStatusActionConfirmButton.dataset.articleStatusActionConfirm,
+          articleStatusActionConfirmButton.dataset.articleActionContext || "detail"
+        );
+        return;
+      }
       const articlePreviewButton = event.target.closest("[data-article-preview-open]");
       if (articlePreviewButton) {
         openArticleEditorPreviewModal(articlePreviewButton.closest("[data-article-editor]"));
@@ -13853,35 +13951,15 @@
         moveArticleEditorBlock(articleBlockMove.closest("[data-article-content-block]"), articleBlockMove.dataset.articleBlockMove);
         return;
       }
-      const articleDuplicateButton = event.target.closest("[data-article-duplicate]");
-      if (articleDuplicateButton) {
-        const article = getArticleById(articleDuplicateButton.dataset.articleDuplicate);
+      const articleStatusActionButton = event.target.closest("[data-article-status-action]");
+      if (articleStatusActionButton) {
+        const article = getArticleById(articleStatusActionButton.dataset.articleId);
         if (!article) return;
-        renderArticleEditorPage({
-          ...article,
-          id: getNextArticleId(),
-          title: `${article.title} Copy`,
-          status: "Draft",
-          publishAt: "-",
-          updatedAt: formatBangkokTimestamp().replace(/\sGMT\+7$/i, "")
-        }, "add");
-        return;
-      }
-      const articleDeleteButton = event.target.closest("[data-article-delete]");
-      if (articleDeleteButton) {
-        const article = getArticleById(articleDeleteButton.dataset.articleDelete);
-        if (!article) return;
-        const index = articleRows.findIndex(entry => entry.id === article.id);
-        if (["Draft", "Archived"].includes(article.status)) {
-          if (index >= 0) articleRows.splice(index, 1);
-          renderModule("content", "Articles", "Articles");
-        } else {
-          article.status = "Archived";
-          article.publishAt = article.publishAt || "-";
-          article.updatedAt = formatBangkokTimestamp().replace(/\sGMT\+7$/i, "");
-          article.detail = "Archived from BO. Removed from FO Board/Search/Category.";
-          renderArticleDetailPage(article);
-        }
+        openArticleStatusActionConfirmModal(
+          article,
+          articleStatusActionButton.dataset.articleStatusAction,
+          articleStatusActionButton.dataset.articleActionContext || "detail"
+        );
         closeRowMenus();
         return;
       }
