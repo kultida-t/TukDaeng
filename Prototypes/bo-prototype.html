@@ -532,8 +532,16 @@
       font-weight: 700;
       flex: 0 0 auto;
     }
-    .admin-box strong { display: block; font-size: 13px; }
-    .admin-box small { display: block; color: #88a0bf; font-size: 11px; }
+    .admin-profile-text { min-width: 0; }
+    .admin-box strong,
+    .admin-box small {
+      display: block;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .admin-box strong { font-size: 13px; }
+    .admin-box small { color: #88a0bf; font-size: 11px; }
     .logout-box {
       width: 100%;
       min-height: 44px;
@@ -1571,23 +1579,21 @@
       height: 56px;
       display: grid;
       place-items: center;
-      border-radius: 10px;
-      background: #e6f0ff;
-      color: #0f2748;
+      border-radius: 50%;
+      background: rgba(16, 185, 129, .18);
+      color: #10b981;
     }
     .article-editor-confirm-icon span {
-      width: 38px;
-      height: 38px;
+      width: 34px;
+      height: 34px;
       display: grid;
       place-items: center;
-      border-radius: 9px;
-      background: #071a33;
-      color: #fff;
-      box-shadow: 0 10px 18px rgba(7, 26, 51, .18);
+      border: 3px solid currentColor;
+      border-radius: 50%;
     }
     .article-editor-confirm-icon svg {
-      width: 22px;
-      height: 22px;
+      width: 24px;
+      height: 24px;
       display: block;
     }
     .article-editor-confirm-page h2 {
@@ -2149,6 +2155,9 @@
       font-size: 13px;
       font-weight: 700;
       line-height: 1.35;
+    }
+    .article-required-mark {
+      color: #c8212b;
     }
     .article-editor-form input,
     .article-editor-form select,
@@ -5939,8 +5948,8 @@
         <span>Logout</span>
       </button>
       <div class="admin-box">
-        <div class="avatar">SA</div>
-        <div><strong>Super Admin</strong><small>Admin</small></div>
+        <div class="avatar" id="admin-avatar">สร</div>
+        <div class="admin-profile-text"><strong id="admin-username">สมชาย รักงาน</strong><small id="admin-role">Admin</small></div>
       </div>
       </div>
     </aside>
@@ -6918,6 +6927,13 @@
     const assetListPageSize = 10;
     const articleListPageSize = 10;
     const ARTICLE_EDITOR_AUTHOR = "By TukDaeng";
+    const ARTICLE_ADMIN_USERS = [
+      "อรนุช แก้วใส",
+      "มะลิ จันทร์ดี",
+      "กิตติ Content",
+      "วราพร Market",
+      "สมชาย รักงาน"
+    ];
     const reportHistoryPageSize = 10;
 
     function resetSessionViewState() {
@@ -12748,12 +12764,11 @@
 
     function getArticleAdminName(article) {
       if (article.updatedBy) return article.updatedBy;
-      const authorAdminMap = {
-        Editorial: "Orn Admin",
-        Marketing: "Mali Admin",
-        "Market Team": "market.admin@tukdaeng.example"
-      };
-      return authorAdminMap[article.author] || "content.admin@tukdaeng.example";
+      if (article.author === ARTICLE_EDITOR_AUTHOR) return auth.admin.username || "สมชาย รักงาน";
+      const seed = String(article.id || article.slug || article.title || "")
+        .split("")
+        .reduce((sum, char) => sum + char.charCodeAt(0), 0);
+      return ARTICLE_ADMIN_USERS[seed % ARTICLE_ADMIN_USERS.length];
     }
 
     function getArticleChangeHistoryRows(article) {
@@ -13041,7 +13056,7 @@
                 <section class="article-editor-section">
                   <h4>Article Header</h4>
                   <div class="article-editor-grid">
-                    <label>ชื่อบทความ *
+                    <label><span>ชื่อบทความ <span class="article-required-mark">*</span></span>
                       <input id="article-title-field" name="title" value="${escapeArticleField(draft.title)}" placeholder="เช่น Steel vs. Titanium Watches: ต่างกันอย่างไร" />
                       <span class="article-field-error" data-article-title-error></span>
                     </label>
@@ -13049,7 +13064,7 @@
                       <input name="slug" value="${escapeArticleField(draft.slug || "")}" placeholder="steel-vs-titanium-watches" />
                       <span class="article-field-error" aria-hidden="true"></span>
                     </label>
-                    <label>หมวดหมู่ *
+                    <label><span>หมวดหมู่ <span class="article-required-mark">*</span></span>
                       ${articleEditorCustomSelect("article-category-field", "category", "หมวดหมู่", [{ value: "", label: "เลือกหมวดหมู่" }, ...["Buying Guide", "Watch 101", "Watch Market", "Watch Events", "Watch Apparel", "Journal Board"].map(category => ({ value: category, label: category }))], draft.category)}
                       <span class="article-field-error" data-article-category-error></span>
                     </label>
@@ -13064,7 +13079,7 @@
                 <section class="article-editor-section">
                   <h4>Hero / Cover</h4>
                   <div class="article-editor-grid">
-                    <label class="full">รูป Cover *
+                    <label class="full"><span>รูป Cover <span class="article-required-mark">*</span></span>
                       <span class="article-upload-control ${draft.coverImageSrc ? "has-image" : ""}" data-article-cover-upload-control>
                         ${renderArticleUploadThumbnail(draft.coverImageSrc || "", draft.coverImageName || "Article cover preview", "data-article-cover-thumbnail")}
                         <span class="article-upload-button">เลือกไฟล์</span>
@@ -13085,7 +13100,7 @@
                 </section>
 
                 <section class="article-editor-section">
-                  <h4>Content Blocks *</h4>
+                  <h4>Content Blocks <span class="article-required-mark">*</span></h4>
                   <p class="article-editor-section-note">เพิ่มเนื้อหาเป็นบล็อก แก้ไข ลบ หรือย้ายลำดับได้</p>
                   ${renderArticleBlockEditor(draft)}
                 </section>
@@ -13097,11 +13112,11 @@
                       ${articleEditorCustomSelect("article-status-field", "status", "สถานะเผยแพร่", articleStatusOptions, draft.status, "data-article-publish-status")}
                       <span class="article-field-error" aria-hidden="true"></span>
                     </label>
-                    <label>วันที่เผยแพร่ *
+                    <label><span>วันที่เผยแพร่ <span class="article-required-mark">*</span></span>
                       <input name="publishDate" type="date" value="${escapeArticleField(publishParts.date)}" min="${publishMin.date}" data-article-publish-date data-picker-only />
                       <span class="article-field-error" data-article-publish-date-error></span>
                     </label>
-                    <label>เวลาเผยแพร่ *
+                    <label><span>เวลาเผยแพร่ <span class="article-required-mark">*</span></span>
                       <input name="publishTime" type="time" value="${escapeArticleField(publishParts.time)}" min="${publishParts.date === publishMin.date ? publishMin.time : ""}" step="60" data-article-publish-time data-picker-only />
                       <span class="article-field-error" data-article-publish-time-error></span>
                     </label>
@@ -13137,8 +13152,7 @@
           <div class="article-editor-confirm-icon" aria-hidden="true">
             <span>
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
-                <circle cx="12" cy="12" r="8.25" fill="currentColor" stroke="none"></circle>
-                <path d="m8.6 12.2 2.1 2.1 4.7-4.9" stroke="#071a33"></path>
+                <path d="m7.9 12.2 2.7 2.7 5.8-6"></path>
               </svg>
             </span>
           </div>
@@ -14208,6 +14222,10 @@
     const auth = {
       email: "admin@tukdaeng.example",
       scenario: "success",
+      admin: {
+        username: "สมชาย รักงาน",
+        role: "Admin"
+      },
       expectedOtp: "123456",
       attempts: 0,
       deliveryRetried: false,
@@ -14219,6 +14237,20 @@
       otpTimer: null,
       otpExpired: false
     };
+
+    function getAdminInitials(username) {
+      const parts = (username || "สมชาย รักงาน").trim().split(/\s+/).filter(Boolean);
+      const initials = parts.length > 1 ? parts.map(part => part[0]).join("") : (parts[0] || "").slice(0, 2);
+      return initials.slice(0, 2).toUpperCase() || "AD";
+    }
+
+    function updateAdminProfileFooter() {
+      const username = auth.admin.username || "สมชาย รักงาน";
+      const role = auth.admin.role || "Admin";
+      document.querySelector("#admin-username").textContent = username;
+      document.querySelector("#admin-role").textContent = role;
+      document.querySelector("#admin-avatar").textContent = getAdminInitials(username);
+    }
 
     function showAuthError(message) {
       const error = document.querySelector("#auth-error");
@@ -14316,6 +14348,8 @@
 
     function sendOtpChallenge() {
       auth.email = document.querySelector("#login-email").value.trim() || "admin@tukdaeng.example";
+      auth.admin.username = "สมชาย รักงาน";
+      auth.admin.role = "Admin";
       auth.scenario = document.querySelector("#auth-scenario").value;
       auth.attempts = 0;
       auth.deliveryRetried = false;
@@ -14356,6 +14390,7 @@
       document.body.classList.remove("logged-out");
       showAuthError("");
       setAuthState("");
+      updateAdminProfileFooter();
       resetSessionViewState();
       renderModule("dashboard");
       scrollMainToTop();
@@ -14649,6 +14684,7 @@
     });
 
     renderNav();
+    updateAdminProfileFooter();
     renderModule("dashboard");
     window.setInterval(updateDashboardMeta, 60000);
     showLoginForm();
