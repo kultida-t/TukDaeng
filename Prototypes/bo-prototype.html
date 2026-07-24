@@ -1510,6 +1510,9 @@
     .category-editor-modal .modal-body {
       padding: 24px;
     }
+    .category-editor-modal .article-editor-form {
+      margin-top: 16px;
+    }
     .article-detail-layout {
       display: grid;
       grid-template-columns: minmax(0, 1fr) minmax(340px, .82fr);
@@ -12256,7 +12259,7 @@
           <summary title="Category actions">...</summary>
           <div class="row-menu-list">
             <button type="button" data-category-open="${category.id}">View detail</button>
-            <button type="button" data-category-edit="${category.id}">Edit category</button>
+            <button type="button" data-category-edit="${category.id}">แก้ไขหมวดหมู่</button>
             ${category.status === "Active"
               ? `<button type="button" data-category-status-action="deactivate" data-category-id="${category.id}">Set inactive</button>`
               : `<button type="button" data-category-status-action="activate" data-category-id="${category.id}">Set active</button>`}
@@ -12359,7 +12362,7 @@
             </div>
           </div>
           <div class="user-detail-actions">
-            <button class="user-detail-action-btn primary" type="button" data-category-edit="${category.id}">Edit category</button>
+            <button class="user-detail-action-btn primary" type="button" data-category-edit="${category.id}">แก้ไขหมวดหมู่</button>
           ${category.status === "Active"
               ? `<button class="user-detail-action-btn warning" type="button" data-category-status-action="deactivate" data-category-id="${category.id}">Set inactive</button>`
               : `<button class="user-detail-action-btn primary" type="button" data-category-status-action="activate" data-category-id="${category.id}">Set active</button>`}
@@ -12388,8 +12391,8 @@
         <div class="user-action-layout">
           <div class="user-action-head">
             <div>
-              <h2 id="user-action-modal-title">${isEdit ? "Edit category" : "Add category"}</h2>
-              <p>${isEdit ? "Update category master data and article selection behavior." : "Create a category for Board articles."}</p>
+              <h2 id="user-action-modal-title">${isEdit ? "แก้ไขหมวดหมู่" : "เพิ่มหมวดหมู่"}</h2>
+              <p>${isEdit ? "แก้ไขข้อมูลหมวดหมู่และการเลือกใช้ในบทความ" : "สร้างหมวดหมู่สำหรับบอร์ดบทความ"}</p>
             </div>
             <button class="btn user-action-close" type="button" data-user-action-modal-close aria-label="Close modal" title="Close">${iconSvg.close}</button>
           </div>
@@ -12404,18 +12407,18 @@
                   <input name="slug" value="${escapeArticleField(draft.slug)}" placeholder="market-insight" data-category-slug />
                   <span class="article-field-error" data-category-slug-error></span>
                 </label>
-                <label>Status
-                  ${articleEditorCustomSelect("category-status-field", "status", "Category status", [
+                <label>สถานะ
+                  ${articleEditorCustomSelect("category-status-field", "status", "สถานะหมวดหมู่", [
                     { value: "Active", label: "Active" },
                     { value: "Inactive", label: "Inactive" }
                   ], draft.status)}
                   <span class="article-field-error" aria-hidden="true"></span>
                 </label>
-                <label><span>Display order <span class="article-required-mark">*</span></span>
+                <label><span>ลำดับการแสดงผล <span class="article-required-mark">*</span></span>
                   <input name="displayOrder" type="number" min="1" step="1" value="${escapeArticleField(draft.displayOrder)}" />
                   <span class="article-field-error" data-category-order-error></span>
                 </label>
-                <label class="full">Description
+                <label class="full">คำอธิบาย
                   <textarea name="description" placeholder="อธิบายการใช้งานหมวดหมู่นี้">${escapeArticleField(draft.description)}</textarea>
                   <span class="article-field-error" aria-hidden="true"></span>
                 </label>
