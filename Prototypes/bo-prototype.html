@@ -1493,7 +1493,7 @@
       grid-template-columns: minmax(240px, 1.35fr) repeat(3, minmax(126px, .68fr)) max-content;
     }
     body.category-list-mode .user-filter-bar {
-      grid-template-columns: minmax(240px, 1.35fr) minmax(126px, .68fr) minmax(126px, .68fr) max-content max-content;
+      grid-template-columns: minmax(240px, 1.35fr) minmax(126px, .68fr) minmax(126px, .68fr) max-content;
     }
     body.article-list-mode .footer-range,
     body.category-list-mode .footer-range {
@@ -11552,7 +11552,10 @@
       }
       if (isCategoryList) {
         activeRow = null;
-        setPageActions(`<button class="btn" type="button" data-category-add>${iconSvg.plus}<span>เพิ่มหมวดหมู่</span></button>`);
+        setPageActions(`
+          <button class="btn" type="button" data-category-order-open title="จัดเรียง Category บน FO Board" aria-label="จัดเรียง Category บน FO Board">${iconSvg.sort}<span>จัดเรียง Category</span></button>
+          <button class="btn" type="button" data-category-add>${iconSvg.plus}<span>เพิ่มหมวดหมู่</span></button>
+        `);
         document.querySelector("#crumb").textContent = `${data.crumb} / Categories`;
         document.querySelector("#page-title").textContent = "Categories";
         document.querySelector("#page-meta").textContent = "";
@@ -11577,7 +11580,6 @@
               { value: "name", label: "Name A-Z" },
               { value: "latest", label: "Recently updated" }
             ], "order")}</div>
-            <button class="btn filter-reset user-advanced-filter" type="button" data-category-order-open title="จัดเรียง Category บน FO Board" aria-label="จัดเรียง Category บน FO Board">${iconSvg.sort}<span>จัดเรียง</span></button>
             <button class="btn filter-reset user-advanced-filter" type="button" data-category-reset title="รีเซ็ตค่าทั้งหมด" aria-label="รีเซ็ตค่าทั้งหมด">${iconSvg.refresh}<span>รีเซ็ตค่าทั้งหมด</span></button>
           </div>
         `;
