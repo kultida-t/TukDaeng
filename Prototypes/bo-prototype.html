@@ -6150,7 +6150,13 @@
 
     function scrollMainToTop() {
       const main = document.querySelector(".main");
-      if (main) main.scrollTo({ top: 0, behavior: "instant" });
+      if (main) {
+        main.scrollTop = 0;
+        main.scrollTo({ top: 0, left: 0, behavior: "instant" });
+      }
+      document.documentElement.scrollTop = 0;
+      document.body.scrollTop = 0;
+      window.scrollTo({ top: 0, left: 0, behavior: "instant" });
     }
 
     function setNavOpen(isOpen) {
@@ -11233,6 +11239,7 @@
       `;
       document.querySelector("#detail").innerHTML = "";
       updateActiveNav();
+      scrollMainToTop();
     }
 
     function renderUserDetailPage(user) {
@@ -11301,6 +11308,7 @@
       `;
       document.querySelector("#detail").innerHTML = "";
       updateActiveNav();
+      scrollMainToTop();
     }
 
     function renderReportedAssetDetail(asset) {
