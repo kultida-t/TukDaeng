@@ -1493,7 +1493,7 @@
       grid-template-columns: minmax(240px, 1.35fr) repeat(3, minmax(126px, .68fr)) max-content;
     }
     body.category-list-mode .user-filter-bar {
-      grid-template-columns: minmax(240px, 1.35fr) minmax(126px, .68fr) minmax(126px, .68fr) max-content;
+      grid-template-columns: minmax(240px, 1.35fr) minmax(126px, .68fr) minmax(126px, .68fr) max-content max-content;
     }
     body.article-list-mode .footer-range,
     body.category-list-mode .footer-range {
@@ -1521,6 +1521,88 @@
     }
     .category-editor-modal .article-editor-form > .user-detail-actions {
       justify-content: flex-end;
+    }
+    .modal.user-action-modal.category-order-modal {
+      width: min(760px, calc(100vw - 36px));
+      border-radius: 22px;
+      border-color: #d9e3f1;
+      box-shadow: 0 28px 80px rgba(6, 20, 38, .28);
+    }
+    .category-order-modal .modal-body {
+      padding: 24px;
+    }
+    .category-order-list {
+      display: grid;
+      gap: 10px;
+      margin: 18px 0;
+    }
+    .category-order-item {
+      display: grid;
+      grid-template-columns: 34px minmax(0, 1fr) auto;
+      gap: 12px;
+      align-items: center;
+      min-height: 68px;
+      padding: 12px 14px;
+      border: 1px solid #dce6f3;
+      border-radius: 8px;
+      background: #fff;
+      cursor: grab;
+      transition: border-color .16s ease, box-shadow .16s ease, transform .16s ease, opacity .16s ease;
+    }
+    .category-order-item:hover,
+    .category-order-item:focus {
+      border-color: #9bb7d9;
+      box-shadow: 0 10px 28px rgba(8, 31, 61, .08);
+      outline: none;
+    }
+    .category-order-item.dragging {
+      opacity: .58;
+      cursor: grabbing;
+      transform: scale(.99);
+    }
+    .category-order-item.drag-over {
+      border-color: #1f5f9f;
+      box-shadow: 0 0 0 3px rgba(31, 95, 159, .12);
+    }
+    .category-order-handle {
+      display: grid;
+      place-items: center;
+      width: 34px;
+      height: 34px;
+      border-radius: 8px;
+      color: #5b6e85;
+      background: #f3f7fc;
+    }
+    .category-order-handle svg {
+      width: 18px;
+      height: 18px;
+    }
+    .category-order-copy {
+      min-width: 0;
+    }
+    .category-order-copy strong {
+      display: block;
+      color: #071b36;
+      font-size: 14px;
+    }
+    .category-order-copy span {
+      display: block;
+      margin-top: 3px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+    .category-order-index {
+      min-width: 54px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: #eff5fb;
+      color: #35506d;
+      font-size: 12px;
+      font-weight: 800;
+      text-align: center;
+    }
+    .category-order-note {
+      margin-top: 12px;
     }
     .article-detail-layout {
       display: grid;
@@ -6100,6 +6182,8 @@
       settings: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 15.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Z"/><path d="M19.4 15a1.7 1.7 0 0 0 .34 1.88l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06A1.7 1.7 0 0 0 15 19.4a1.7 1.7 0 0 0-1 .6 1.7 1.7 0 0 0-.42 1.1V21a2 2 0 1 1-4 0v-.09A1.7 1.7 0 0 0 8 19.4a1.7 1.7 0 0 0-1.88.34l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.7 1.7 0 0 0 3.6 15a1.7 1.7 0 0 0-.6-1H3a2 2 0 1 1 0-4h.09A1.7 1.7 0 0 0 4.6 8a1.7 1.7 0 0 0-.34-1.88l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.7 1.7 0 0 0 9 3.6c.4-.17.72-.38 1-.6V3a2 2 0 1 1 4 0v.09c.28.22.6.43 1 .6a1.7 1.7 0 0 0 1.88-.34l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.7 1.7 0 0 0 19.4 9c.17.4.38.72.6 1H21a2 2 0 1 1 0 4h-.09c-.22.28-.43.6-.6 1Z"/></svg>',
       refresh: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><path d="M21 2v6h-6"/><path d="M20.5 12.5a8.5 8.5 0 1 1-2.5-6L21 8"/></svg>',
       filter: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><path d="M4 7h10"/><path d="M18 7h2"/><circle cx="16" cy="7" r="2"/><path d="M4 17h2"/><path d="M10 17h10"/><circle cx="8" cy="17" r="2"/></svg>',
+      sort: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><path d="M8 7h12"/><path d="M8 12h9"/><path d="M8 17h6"/><path d="m4 8 2-2 2 2"/><path d="M6 6v12"/><path d="m4 16 2 2 2-2"/></svg>',
+      grip: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="7" r="1"/><circle cx="15" cy="7" r="1"/><circle cx="9" cy="12" r="1"/><circle cx="15" cy="12" r="1"/><circle cx="9" cy="17" r="1"/><circle cx="15" cy="17" r="1"/></svg>',
       eye: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/></svg>',
       eyeOff: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="m3 3 18 18"/><path d="M10.6 10.6a2 2 0 0 0 2.8 2.8"/><path d="M9.9 5.2A10.7 10.7 0 0 1 12 5c6.5 0 10 7 10 7a16 16 0 0 1-3 4.1"/><path d="M6.6 6.8C3.6 8.8 2 12 2 12s3.5 7 10 7a10.4 10.4 0 0 0 5.4-1.5"/></svg>',
       logout: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M10 17l5-5-5-5"/><path d="M15 12H3"/><path d="M21 3v18h-8"/></svg>',
@@ -10524,7 +10608,7 @@
       const modal = document.querySelector("#user-action-modal");
       if (!modal) return;
       modal.classList.remove("show");
-      modal.querySelector(".user-action-modal")?.classList.remove("article-preview-modal", "article-editor-confirm-modal", "category-editor-modal");
+      modal.querySelector(".user-action-modal")?.classList.remove("article-preview-modal", "article-editor-confirm-modal", "category-editor-modal", "category-order-modal");
       document.body.classList.remove("asset-action-modal-open");
       document.querySelector("#user-action-modal-body").innerHTML = "";
     }
@@ -11493,6 +11577,7 @@
               { value: "name", label: "Name A-Z" },
               { value: "latest", label: "Recently updated" }
             ], "order")}</div>
+            <button class="btn filter-reset user-advanced-filter" type="button" data-category-order-open title="จัดเรียง Category บน FO Board" aria-label="จัดเรียง Category บน FO Board">${iconSvg.sort}<span>จัดเรียง</span></button>
             <button class="btn filter-reset user-advanced-filter" type="button" data-category-reset title="รีเซ็ตค่าทั้งหมด" aria-label="รีเซ็ตค่าทั้งหมด">${iconSvg.refresh}<span>รีเซ็ตค่าทั้งหมด</span></button>
           </div>
         `;
@@ -12263,15 +12348,82 @@
       });
     }
 
-    function moveCategoryDisplayOrder(categoryId, direction) {
-      const orderedRows = getOrderedCategoryRows();
-      const currentIndex = orderedRows.findIndex(category => category.id === categoryId);
-      const targetIndex = direction === "up" ? currentIndex - 1 : currentIndex + 1;
-      if (currentIndex < 0 || targetIndex < 0 || targetIndex >= orderedRows.length) return false;
-      [orderedRows[currentIndex], orderedRows[targetIndex]] = [orderedRows[targetIndex], orderedRows[currentIndex]];
+    function reorderCategoryDisplayRows(categoryIds) {
+      const orderedIds = Array.isArray(categoryIds) ? categoryIds.filter(Boolean) : [];
+      const orderedRows = orderedIds.map(id => getCategoryById(id)).filter(Boolean);
+      getOrderedCategoryRows().forEach(category => {
+        if (!orderedIds.includes(category.id)) orderedRows.push(category);
+      });
+      if (!orderedRows.length) return false;
       normalizeCategoryDisplayOrder(orderedRows);
       categoryRows.splice(0, categoryRows.length, ...orderedRows);
       return true;
+    }
+
+    function renderCategoryOrderModal() {
+      const modal = document.querySelector("#user-action-modal");
+      const modalCard = modal?.querySelector(".user-action-modal");
+      const modalBody = document.querySelector("#user-action-modal-body");
+      if (!modal || !modalCard || !modalBody) return;
+      modalCard.classList.remove("article-preview-modal", "article-editor-confirm-modal", "category-editor-modal");
+      modalCard.classList.add("category-order-modal");
+      const rows = getOrderedCategoryRows();
+      modalBody.innerHTML = `
+        <div class="user-action-head">
+          <div>
+            <h2 id="user-action-modal-title">จัดเรียง Category บน FO Board</h2>
+            <p>ลาก category เพื่อกำหนดลำดับการแสดงผลบน Board หน้า FO</p>
+          </div>
+          <button class="btn user-action-close" type="button" data-user-action-modal-close aria-label="Close modal" title="Close">${iconSvg.close}</button>
+        </div>
+        <div class="module-note category-order-note"><strong>FO impact:</strong> Category สถานะ Active จะแสดงตามลำดับนี้บน Board ส่วน Inactive จะถูกซ่อนจาก FO แต่ยังเก็บลำดับไว้เมื่อเปิดใช้งานกลับมา</div>
+        <div class="category-order-list" data-category-order-list>
+          ${rows.map((category, index) => `
+            <div class="category-order-item" draggable="true" tabindex="0" data-category-order-item="${category.id}">
+              <span class="category-order-handle" aria-hidden="true">${iconSvg.grip}</span>
+              <span class="category-order-copy">
+                <strong>${escapeArticleField(category.name)}</strong>
+                <span>${escapeArticleField(category.slug)} · ${category.status}${category.status === "Active" ? " · แสดงบน FO" : " · ซ่อนจาก FO"}</span>
+              </span>
+              <span class="category-order-index">#${index + 1}</span>
+            </div>
+          `).join("")}
+        </div>
+        <div class="user-detail-actions">
+          <button class="user-detail-action-btn" type="button" data-user-action-modal-close>ยกเลิก</button>
+          <button class="user-detail-action-btn primary" type="button" data-category-order-save>บันทึกลำดับ</button>
+        </div>
+      `;
+      showUserActionModal();
+    }
+
+    function refreshCategoryOrderIndexes() {
+      document.querySelectorAll("[data-category-order-item]").forEach((item, index) => {
+        const indexNode = item.querySelector(".category-order-index");
+        if (indexNode) indexNode.textContent = `#${index + 1}`;
+      });
+    }
+
+    function getCategoryOrderDragAfterElement(list, y) {
+      const draggableItems = [...list.querySelectorAll("[data-category-order-item]:not(.dragging)")];
+      return draggableItems.reduce((closest, item) => {
+        const box = item.getBoundingClientRect();
+        const offset = y - box.top - box.height / 2;
+        if (offset < 0 && offset > closest.offset) return { offset, element: item };
+        return closest;
+      }, { offset: Number.NEGATIVE_INFINITY, element: null }).element;
+    }
+
+    function saveCategoryDisplayOrderFromModal() {
+      const categoryIds = [...document.querySelectorAll("[data-category-order-item]")]
+        .map(item => item.dataset.categoryOrderItem)
+        .filter(Boolean);
+      if (!reorderCategoryDisplayRows(categoryIds)) return;
+      closeUserActionModal();
+      setCustomSelectValue("category-sort", "order");
+      categoryListPage = 1;
+      renderCategoryListRows();
+      showSuccessToast("บันทึกลำดับ category สำหรับ FO Board แล้ว");
     }
 
     function addCategoryActionHistory(category, entry) {
@@ -12308,16 +12460,12 @@
 
     function renderCategoryRowActionMenu(category) {
       const articleCount = getCategoryArticleCount(category.name);
-      const orderedRows = getOrderedCategoryRows();
-      const categoryIndex = orderedRows.findIndex(item => item.id === category.id);
       return `
         <details class="row-menu">
           <summary title="Category actions">...</summary>
           <div class="row-menu-list">
             <button type="button" data-category-open="${category.id}">View detail</button>
             <button type="button" data-category-edit="${category.id}">แก้ไขหมวดหมู่</button>
-            <button type="button" data-category-order-action="up" data-category-id="${category.id}" ${categoryIndex <= 0 ? "disabled" : ""}>เลื่อนขึ้น</button>
-            <button type="button" data-category-order-action="down" data-category-id="${category.id}" ${categoryIndex < 0 || categoryIndex >= orderedRows.length - 1 ? "disabled" : ""}>เลื่อนลง</button>
             ${category.status === "Active"
               ? `<button type="button" data-category-status-action="deactivate" data-category-id="${category.id}">Set inactive</button>`
               : `<button type="button" data-category-status-action="activate" data-category-id="${category.id}">Set active</button>`}
@@ -14759,6 +14907,16 @@
         renderCategoryEditorModal();
         return;
       }
+      const categoryOrderOpenButton = event.target.closest("[data-category-order-open]");
+      if (categoryOrderOpenButton) {
+        renderCategoryOrderModal();
+        return;
+      }
+      const categoryOrderSaveButton = event.target.closest("[data-category-order-save]");
+      if (categoryOrderSaveButton) {
+        saveCategoryDisplayOrderFromModal();
+        return;
+      }
       const categoryOpenButton = event.target.closest("[data-category-open]");
       if (categoryOpenButton) {
         const category = getCategoryById(categoryOpenButton.dataset.categoryOpen);
@@ -15142,16 +15300,6 @@
         else if (target === "next") categoryListPage += 1;
         else categoryListPage = Number(target) || 1;
         renderCategoryListRows();
-        return;
-      }
-      const categoryOrderButton = event.target.closest("[data-category-order-action]");
-      if (categoryOrderButton) {
-        const moved = moveCategoryDisplayOrder(categoryOrderButton.dataset.categoryId, categoryOrderButton.dataset.categoryOrderAction);
-        if (moved) {
-          setCustomSelectValue("category-sort", "order");
-          renderCategoryListRows();
-          showSuccessToast("อัปเดตลำดับหมวดหมู่แล้ว");
-        }
         return;
       }
       const assetPageButton = event.target.closest("[data-asset-page]");
@@ -15630,6 +15778,43 @@
     });
     document.addEventListener("drop", event => {
       if (event.target.matches("[data-calendar-only]")) event.preventDefault();
+    });
+    document.addEventListener("dragstart", event => {
+      const item = event.target.closest("[data-category-order-item]");
+      if (!item) return;
+      item.classList.add("dragging");
+      event.dataTransfer.effectAllowed = "move";
+      event.dataTransfer.setData("text/plain", item.dataset.categoryOrderItem || "");
+    });
+    document.addEventListener("dragover", event => {
+      const list = event.target.closest("[data-category-order-list]");
+      if (!list) return;
+      event.preventDefault();
+      const dragging = list.querySelector(".dragging");
+      if (!dragging) return;
+      const afterElement = getCategoryOrderDragAfterElement(list, event.clientY);
+      list.querySelectorAll(".drag-over").forEach(item => item.classList.remove("drag-over"));
+      if (afterElement) {
+        afterElement.classList.add("drag-over");
+        list.insertBefore(dragging, afterElement);
+      } else {
+        list.appendChild(dragging);
+      }
+      refreshCategoryOrderIndexes();
+    });
+    document.addEventListener("drop", event => {
+      const list = event.target.closest("[data-category-order-list]");
+      if (!list) return;
+      event.preventDefault();
+      list.querySelectorAll(".drag-over").forEach(item => item.classList.remove("drag-over"));
+      refreshCategoryOrderIndexes();
+    });
+    document.addEventListener("dragend", event => {
+      const item = event.target.closest("[data-category-order-item]");
+      if (!item) return;
+      item.classList.remove("dragging");
+      document.querySelectorAll("[data-category-order-item].drag-over").forEach(row => row.classList.remove("drag-over"));
+      refreshCategoryOrderIndexes();
     });
     document.addEventListener("wheel", event => {
       if (event.target.matches("[data-calendar-only]")) event.preventDefault();
