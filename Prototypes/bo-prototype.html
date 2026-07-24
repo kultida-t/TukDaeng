@@ -2202,6 +2202,11 @@
       cursor: default;
       user-select: none;
     }
+    .article-editor-form .custom-select:has([data-article-status-readonly]) .custom-select-trigger {
+      color: #526176;
+      background: #eef3f8;
+      cursor: default;
+    }
     .article-editor-form .article-editor-block textarea,
     .article-editor-form .article-editor-block input {
       background: #fff;
@@ -12929,6 +12934,17 @@
           iconType: "cancel"
         };
       }
+      if (article.status === "Archived") {
+        return {
+          key: "restore-article",
+          label: "Restore article",
+          title: "ยืนยันการนำบทความกลับมาเผยแพร่",
+          question: "คุณต้องการนำบทความนี้กลับมาเผยแพร่ใช่หรือไม่?",
+          summary: "ระบบจะเปลี่ยนสถานะบทความกลับเป็น Published โดยใช้วันที่เผยแพร่เดิม และแสดงบน FO Board, Search และ Category อีกครั้ง",
+          tone: "warning",
+          iconType: "confirm"
+        };
+      }
       return null;
     }
 
@@ -13109,12 +13125,14 @@
       };
       const publishParts = parseArticlePublishInputParts(draft.publishAt);
       const publishMin = getBangkokDateTimeInputParts();
-      const articleStatusOptions = [
-        { value: "Draft", label: "Draft" },
-        { value: "Scheduled", label: "Scheduled" },
-        { value: "Published", label: "Published" },
-        ...(isEdit ? [{ value: "Archived", label: "Archived" }] : [])
-      ];
+      const isPublishedLifecycleEdit = isEdit && ["Published", "Archived"].includes(draft.status);
+      const articleStatusOptions = ["Published", "Archived"].includes(draft.status)
+        ? [{ value: draft.status, label: draft.status }]
+        : [
+            { value: "Draft", label: "Draft" },
+            { value: "Scheduled", label: "Scheduled" },
+            { value: "Published", label: "Published" }
+          ];
       activeModule = "content";
       activeSub = "Articles";
       document.body.classList.remove("asset-list-mode", "article-list-mode", "user-list-mode", "user-detail-mode");
@@ -13191,7 +13209,7 @@
                   <h4>Publish Control</h4>
                   <div class="article-publish-row">
                     <label>สถานะเผยแพร่
-                      ${articleEditorCustomSelect("article-status-field", "status", "สถานะเผยแพร่", articleStatusOptions, draft.status, "data-article-publish-status")}
+                      ${articleEditorCustomSelect("article-status-field", "status", "สถานะเผยแพร่", articleStatusOptions, draft.status, `data-article-publish-status ${isPublishedLifecycleEdit ? "data-article-status-readonly" : ""}`)}
                       <span class="article-field-error" aria-hidden="true"></span>
                     </label>
                     <label><span>วันที่เผยแพร่ <span class="article-required-mark">*</span></span>
@@ -13393,6 +13411,18 @@
         article.updatedAt = now;
         article.detail = "Archived from BO. Removed from FO Board/Search/Category.";
       }
+      if (actionKey === "restore-article" && article.status === "Archived") {
+        addArticleActionHistory(article, {
+          time: now,
+          action: "Restored",
+          note: "นำบทความกลับมาเผยแพร่บน FO Board, Search และ Category",
+          result: "Published"
+        });
+        article.status = "Published";
+        article.publishAt = article.publishAt || now;
+        article.updatedAt = now;
+        article.detail = "Restored from BO archive. Visible on FO Board/Search/Category.";
+      }
       if (context === "list") {
         renderModule("content", "Articles", "Articles");
       } else {
@@ -13472,13 +13502,18 @@
       const { formData, status, category, publishDate, publishTime, contentBlocks, title, existingArticle } = validated;
       const legacyFields = getArticleLegacyFieldsFromBlocks(contentBlocks);
       const hasImageBlock = contentBlocks.some(block => block.type === "image");
+      const isExistingPublishedLifecycle = ["Published", "Archived"].includes(existingArticle?.status);
+      const nextStatus = isExistingPublishedLifecycle ? existingArticle.status : status;
+      const nextPublishAt = isExistingPublishedLifecycle
+        ? existingArticle.publishAt
+        : formatArticlePublishAt(publishDate, publishTime);
       const nextArticle = {
         id,
         title,
         category,
         author: ARTICLE_EDITOR_AUTHOR,
-        status,
-        publishAt: formatArticlePublishAt(publishDate, publishTime),
+        status: nextStatus,
+        publishAt: nextPublishAt,
         createdAt: existingArticle?.createdAt || now,
         updatedAt: now,
         readTime: existingArticle?.readTime || "5 min",
@@ -13779,6 +13814,11 @@
         const select = customOption.closest("[data-custom-select]");
         const hiddenInput = select.querySelector("input[type='hidden']");
         const label = select.querySelector("[data-custom-select-label]");
+        if (hiddenInput.hasAttribute("data-article-status-readonly")) {
+          select.classList.remove("open");
+          select.querySelector("[data-custom-select-trigger]").setAttribute("aria-expanded", "false");
+          return;
+        }
         const value = customOption.dataset.value || "";
         hiddenInput.value = value;
         label.textContent = customOption.textContent;
@@ -13831,6 +13871,8 @@
       const customTrigger = event.target.closest("[data-custom-select-trigger]");
       if (customTrigger) {
         const select = customTrigger.closest("[data-custom-select]");
+        const hiddenInput = select?.querySelector("input[type='hidden']");
+        if (hiddenInput?.hasAttribute("data-article-status-readonly")) return;
         const willOpen = !select.classList.contains("open");
         document.querySelectorAll("[data-custom-select]").forEach(item => {
           item.classList.remove("open");
