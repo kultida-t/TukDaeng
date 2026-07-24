@@ -1516,6 +1516,21 @@
     .category-editor-modal .article-editor-form > .user-detail-actions {
       justify-content: flex-end;
     }
+    .category-form-alert {
+      display: none;
+      margin: 0;
+      padding: 10px 12px;
+      border: 1px solid #fecaca;
+      border-radius: 8px;
+      background: #fff5f5;
+      color: #b91c1c;
+      font-size: 13px;
+      font-weight: 700;
+      line-height: 1.45;
+    }
+    .category-form-alert.show {
+      display: block;
+    }
     .article-detail-layout {
       display: grid;
       grid-template-columns: minmax(0, 1fr) minmax(340px, .82fr);
@@ -12223,6 +12238,45 @@
         .replace(/^-+|-+$/g, "");
     }
 
+    function getCategoryPositionOptions(category = null) {
+      const rows = getCategoryRows()
+        .filter(item => item.id !== category?.id)
+        .sort((a, b) => a.displayOrder - b.displayOrder || a.name.localeCompare(b.name));
+      return Array.from({ length: rows.length + 1 }, (_, index) => {
+        const nextCategory = rows[index];
+        return {
+          value: String(index + 1),
+          label: nextCategory ? `อันดับ ${index + 1} ก่อน ${nextCategory.name}` : "ท้ายรายการ"
+        };
+      });
+    }
+
+    function getCategoryPositionValue(category = null) {
+      if (!category) return String(getCategoryPositionOptions().length);
+      const rows = [...getCategoryRows()].sort((a, b) => a.displayOrder - b.displayOrder || a.name.localeCompare(b.name));
+      const currentIndex = rows.findIndex(item => item.id === category.id);
+      return String(currentIndex >= 0 ? currentIndex + 1 : getCategoryPositionOptions(category).length);
+    }
+
+    function categoryPositionSelect(category = null) {
+      const options = getCategoryPositionOptions(category);
+      const selectedValue = getCategoryPositionValue(category);
+      const selected = options.find(option => option.value === selectedValue) || options[options.length - 1];
+      return `
+        <div class="custom-select" data-custom-select>
+          <input type="hidden" id="category-position-field" name="displayOrder" value="${selected.value}" />
+          <button class="field custom-select-trigger" type="button" data-custom-select-trigger aria-haspopup="listbox" aria-expanded="false">
+            <span data-custom-select-label>${selected.label}</span>
+          </button>
+          <div class="custom-select-menu" role="listbox" aria-label="ตำแหน่งการแสดงผล">
+            ${options.map(option => `
+              <button class="custom-select-option ${option.value === selected.value ? "selected" : ""}" type="button" role="option" aria-selected="${option.value === selected.value}" data-custom-select-option data-value="${option.value}">${option.label}</button>
+            `).join("")}
+          </div>
+        </div>
+      `;
+    }
+
     function addCategoryActionHistory(category, entry) {
       if (!category) return;
       category.actionHistory = [
@@ -12400,6 +12454,7 @@
             <button class="btn user-action-close" type="button" data-user-action-modal-close aria-label="Close modal" title="Close">${iconSvg.close}</button>
           </div>
           <form class="article-editor-form" data-category-form data-category-id="${draft.id}" novalidate>
+            <p class="category-form-alert" data-category-form-alert>กรุณาตรวจสอบข้อมูลที่จำเป็นก่อนบันทึกหมวดหมู่</p>
             <section class="article-editor-section">
               <div class="article-editor-grid">
                 <label><span>ชื่อหมวดหมู่ <span class="article-required-mark">*</span></span>
@@ -12417,8 +12472,8 @@
                   ], draft.status)}
                   <span class="article-field-error" aria-hidden="true"></span>
                 </label>
-                <label><span>ลำดับการแสดงผล <span class="article-required-mark">*</span></span>
-                  <input name="displayOrder" type="number" min="1" step="1" value="${escapeArticleField(draft.displayOrder)}" />
+                <label><span>ตำแหน่งการแสดงผล <span class="article-required-mark">*</span></span>
+                  ${categoryPositionSelect(category)}
                   <span class="article-field-error" data-category-order-error></span>
                 </label>
                 <label class="full">คำอธิบาย
@@ -12439,7 +12494,16 @@
 
     function setCategoryFieldError(form, field, message = "") {
       const node = form?.querySelector(`[data-category-${field}-error]`);
-      if (node) node.textContent = message;
+      if (node) {
+        node.textContent = message;
+        node.classList.toggle("show", Boolean(message));
+      }
+      const controlMap = {
+        name: form?.querySelector("[data-category-name]"),
+        slug: form?.querySelector("[data-category-slug]"),
+        order: form?.querySelector("#category-position-field")?.closest("[data-custom-select]")?.querySelector("[data-custom-select-trigger]")
+      };
+      controlMap[field]?.classList.toggle("article-field-invalid", Boolean(message));
     }
 
     function validateCategoryForm(form) {
@@ -12447,10 +12511,13 @@
       const id = form.dataset.categoryId || "";
       const name = String(formData.get("name") || "").trim();
       const slug = slugifyCategory(formData.get("slug") || name);
-      const displayOrder = Number(formData.get("displayOrder"));
+      const position = Number(formData.get("displayOrder"));
+      const maxPosition = getCategoryPositionOptions(getCategoryById(id)).length;
       const existingName = getCategoryRows().find(category => category.id !== id && category.name.toLowerCase() === name.toLowerCase());
       const existingSlug = getCategoryRows().find(category => category.id !== id && category.slug.toLowerCase() === slug.toLowerCase());
       ["name", "slug", "order"].forEach(field => setCategoryFieldError(form, field));
+      const alert = form.querySelector("[data-category-form-alert]");
+      if (alert) alert.classList.remove("show");
       let hasError = false;
       if (!name) {
         setCategoryFieldError(form, "name", "กรุณากรอกชื่อหมวดหมู่");
@@ -12466,18 +12533,26 @@
         setCategoryFieldError(form, "slug", "URL ของหมวดหมู่นี้มีอยู่แล้ว");
         hasError = true;
       }
-      if (!Number.isFinite(displayOrder) || displayOrder < 1) {
-        setCategoryFieldError(form, "order", "กรุณากรอกลำดับเป็นตัวเลขตั้งแต่ 1");
+      if (!Number.isInteger(position) || position < 1 || position > maxPosition) {
+        setCategoryFieldError(form, "order", "กรุณาเลือกตำแหน่งการแสดงผล");
         hasError = true;
       }
-      if (hasError) return null;
+      if (hasError) {
+        if (alert) {
+          alert.textContent = "กรุณาตรวจสอบข้อมูลที่จำเป็นก่อนบันทึกหมวดหมู่";
+          alert.classList.add("show");
+        }
+        const firstInvalid = form.querySelector(".article-field-invalid");
+        firstInvalid?.focus?.();
+        return null;
+      }
       return {
         id,
         name,
         slug,
         description: String(formData.get("description") || "").trim(),
         status: String(formData.get("status") || "Active"),
-        displayOrder
+        position
       };
     }
 
@@ -12487,9 +12562,10 @@
       const now = formatArticleActionTimestamp();
       const existing = getCategoryById(validated.id);
       const previousName = existing?.name || "";
+      const { position, ...categoryData } = validated;
       const nextCategory = {
         ...(existing || {}),
-        ...validated,
+        ...categoryData,
         updatedAt: now,
         actionHistory: existing?.actionHistory || []
       };
@@ -12504,9 +12580,14 @@
         note: existing ? "แก้ไข master category และ sync กับ Article selector/filter" : "สร้างหมวดหมู่ใหม่สำหรับ Board articles",
         result: nextCategory.status
       });
-      const existingIndex = categoryRows.findIndex(category => category.id === nextCategory.id);
-      if (existingIndex >= 0) categoryRows.splice(existingIndex, 1, nextCategory);
-      else categoryRows.unshift(nextCategory);
+      const orderedRows = categoryRows
+        .filter(category => category.id !== nextCategory.id)
+        .sort((a, b) => a.displayOrder - b.displayOrder || a.name.localeCompare(b.name));
+      orderedRows.splice(Math.min(Math.max(position - 1, 0), orderedRows.length), 0, nextCategory);
+      orderedRows.forEach((category, index) => {
+        category.displayOrder = (index + 1) * 10;
+      });
+      categoryRows.splice(0, categoryRows.length, ...orderedRows);
       closeUserActionModal();
       renderModule("content", "Categories", "Categories");
       renderCategoryDetailPanel(nextCategory);
@@ -14449,6 +14530,10 @@
         if (hiddenInput.id === "asset-hide-reason") updateAssetHideEmailPreview();
         if (hiddenInput.id === "asset-restore-reason") updateAssetRestoreVisibilityEmailPreview();
         if (hiddenInput.id === "asset-delete-reason") updateAssetDeletePostEmailPreview();
+        if (hiddenInput.id === "category-position-field") {
+          const form = hiddenInput.closest("[data-category-form]");
+          if (form) setCategoryFieldError(form, "order");
+        }
         if (select.hasAttribute("data-custom-select-silent")) return;
         if (hiddenInput.hasAttribute("data-article-editor-custom-select")) {
           const form = hiddenInput.closest("[data-article-editor]");
