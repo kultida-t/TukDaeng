@@ -12804,42 +12804,26 @@
       return ARTICLE_ADMIN_USERS[seed % ARTICLE_ADMIN_USERS.length];
     }
 
-    function getArticleChangeHistoryRows(article) {
+    function getArticleGeneratedChangeHistoryRows(article) {
       const createdAt = getArticleCreatedAt(article);
       const actor = getArticleAdminName(article);
-      const rows = [
-        {
-          time: article.updatedAt || "-",
-          actor,
-          action: "Updated",
-          note: "แก้ไขข้อมูลบทความล่าสุด",
-          result: "Latest version"
-        }
-      ];
+      const rows = [];
 
-      if (article.status === "Scheduled") {
-        rows.push({
-          time: article.publishAt || "-",
-          actor,
-          action: "Scheduled",
-          note: "ตั้งเวลาเผยแพร่บทความ",
-          result: article.publishAt || "-"
-        });
-      } else if (article.status === "Published") {
-        rows.push({
-          time: article.publishAt || "-",
-          actor,
-          action: "Published",
-          note: "เผยแพร่บทความบน Board แล้ว",
-          result: "Published"
-        });
-      } else if (article.status === "Archived") {
+      if (article.status === "Archived") {
         rows.push({
           time: article.updatedAt || "-",
           actor,
           action: "Archived",
           note: "นำบทความออกจากหน้า public",
           result: "Archived"
+        });
+      } else if (article.updatedAt && article.updatedAt !== createdAt) {
+        rows.push({
+          time: article.updatedAt || "-",
+          actor,
+          action: "Updated",
+          note: "แก้ไขข้อมูลบทความล่าสุด",
+          result: "Latest version"
         });
       }
 
@@ -12848,10 +12832,25 @@
         actor,
         action: "Created",
         note: "สร้างบทความใหม่",
-        result: "Created"
+        result: article.status === "Archived" ? "Published" : article.status || "Draft"
       });
 
       return rows;
+    }
+
+    function getArticleChangeHistoryRows(article) {
+      const actor = getArticleAdminName(article);
+      const normalizeRows = rows => rows.map(row => ({
+        time: row.time || "-",
+        actor: row.actor || actor,
+        action: row.action || "-",
+        note: row.note || "-",
+        result: row.result || "-"
+      })).sort((a, b) => (parseBangkokAuditTime(b.time) || 0) - (parseBangkokAuditTime(a.time) || 0));
+      if (!Array.isArray(article.actionHistory) || !article.actionHistory.length) {
+        return normalizeRows(getArticleGeneratedChangeHistoryRows(article));
+      }
+      return normalizeRows(article.actionHistory);
     }
 
     function renderArticleChangeHistory(article) {
@@ -13322,6 +13321,42 @@
       });
     }
 
+    function addArticleActionHistory(article, entry) {
+      if (!article) return;
+      const actor = getArticleAdminName(article);
+      const existingHistory = Array.isArray(article.actionHistory) && article.actionHistory.length
+        ? article.actionHistory
+        : getArticleGeneratedChangeHistoryRows(article);
+      article.actionHistory = [
+        {
+          time: entry.time || article.updatedAt || "-",
+          actor,
+          action: entry.action,
+          note: entry.note,
+          result: entry.result
+        },
+        ...existingHistory
+      ];
+    }
+
+    function getNewArticleActionHistory(article, now) {
+      const actor = getArticleAdminName(article);
+      const createNote = article.status === "Scheduled"
+        ? `สร้างบทความใหม่และตั้งเวลาเผยแพร่ ${article.publishAt || "-"}`
+        : article.status === "Published"
+          ? "สร้างบทความใหม่และเผยแพร่บน Board"
+          : "สร้างบทความใหม่เป็นฉบับร่าง";
+      return [
+        {
+          time: now,
+          actor,
+          action: "Created",
+          note: createNote,
+          result: article.status || "Draft"
+        }
+      ];
+    }
+
     function applyArticleStatusAction(article, actionKey, context = "detail") {
       if (!article) return;
       const now = formatBangkokTimestamp().replace(/\sGMT\+7$/i, "");
@@ -13332,12 +13367,24 @@
         return;
       }
       if (actionKey === "cancel-schedule" && article.status === "Scheduled") {
+        addArticleActionHistory(article, {
+          time: now,
+          action: "Canceled schedule",
+          note: "ยกเลิกกำหนดเผยแพร่และเปลี่ยนบทความกลับเป็นฉบับร่าง",
+          result: "Draft"
+        });
         article.status = "Draft";
         article.publishAt = "-";
         article.updatedAt = now;
         article.detail = "Schedule canceled from BO. Article returned to Draft.";
       }
       if (actionKey === "archive-article" && article.status === "Published") {
+        addArticleActionHistory(article, {
+          time: now,
+          action: "Archived",
+          note: "เก็บบทความเข้าคลังและนำออกจาก FO Board, Search และ Category",
+          result: "Archived"
+        });
         article.status = "Archived";
         article.updatedAt = now;
         article.detail = "Archived from BO. Removed from FO Board/Search/Category.";
@@ -13428,6 +13475,7 @@
         author: ARTICLE_EDITOR_AUTHOR,
         status,
         publishAt: formatArticlePublishAt(publishDate, publishTime),
+        createdAt: existingArticle?.createdAt || now,
         updatedAt: now,
         readTime: existingArticle?.readTime || "5 min",
         tags: existingArticle?.tags || ["Board"],
@@ -13445,11 +13493,22 @@
         relatedWatches: legacyFields.relatedWatches,
         seoTitle: formData.has("seoTitle") ? String(formData.get("seoTitle") || "").trim() : existingArticle?.seoTitle || "",
         seoExcerpt: formData.has("seoExcerpt") ? String(formData.get("seoExcerpt") || "").trim() : existingArticle?.seoExcerpt || "",
+        actionHistory: existingArticle?.actionHistory || (existingArticle ? getArticleGeneratedChangeHistoryRows(existingArticle) : []),
         coverImageName: form.dataset.articleCoverName || existingArticle?.coverImageName || "",
         coverImageSrc: form.dataset.articleCoverSrc || existingArticle?.coverImageSrc || "",
         bodyImageName: hasImageBlock ? form.dataset.articleBodyImageName || existingArticle?.bodyImageName || "" : "",
         bodyImageSrc: hasImageBlock ? form.dataset.articleBodyImageSrc || existingArticle?.bodyImageSrc || "" : ""
       };
+      if (existingArticle) {
+        addArticleActionHistory(nextArticle, {
+          time: now,
+          action: "Updated",
+          note: "แก้ไขข้อมูลบทความล่าสุด",
+          result: "Latest version"
+        });
+      } else {
+        nextArticle.actionHistory = getNewArticleActionHistory(nextArticle, now);
+      }
       const existingIndex = articleRows.findIndex(article => article.id === id);
       if (existingIndex >= 0) articleRows.splice(existingIndex, 1, nextArticle);
       else articleRows.unshift(nextArticle);
