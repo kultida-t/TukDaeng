@@ -12480,7 +12480,7 @@
         reason: "เนื้อหาไม่เหมาะสม",
         reportedPart: "Body image",
         reporterNote: "รูปเอกสารดูเหมือนถูกคัดลอกจากประกาศของดีลเลอร์ และยังเห็นลายน้ำที่ถูกครอปอยู่",
-        nextCheck: "Compare the reported image with source evidence, then hide only the image or archive the article if the claim is confirmed.",
+        nextCheck: "Compare the reported image with source evidence, then edit the article to remove or replace the image before closing the report.",
         preview: "Provenance checklist article with a reported body image inside the Board content.",
         reportedAt: "10 Jul 2026 14:20",
         tags: ["Image rights", "Board", "Reports 2"],
@@ -14882,7 +14882,7 @@
     }
 
     function boardReportContentStatusPill(status) {
-      const color = status === "Published" ? "green" : status === "Scheduled" ? "blue" : status === "Archived" ? "gray" : status === "Image Hidden" ? "amber" : "purple";
+      const color = status === "Published" ? "green" : status === "Scheduled" ? "blue" : status === "Archived" ? "gray" : "purple";
       return `<span class="pill ${color}">${status}</span>`;
     }
 
@@ -14919,28 +14919,33 @@
       const actions = [];
       if (getBoardReportQueueStatus(report) === "Pending") {
         actions.push({ action: "close-report", label: "ปิดรายงาน" });
-        if (report.contentStatus !== "Image Hidden" && report.contentStatus !== "Archived") {
-          actions.push({ action: "hide-image", label: "ซ่อนรูปที่ถูกรายงาน" });
+        if (report.contentStatus !== "Archived") {
+          actions.push({ action: "edit-article", label: "แก้ไขบทความ" });
         }
         if (report.contentStatus !== "Archived") {
           actions.push({ action: "archive-article", label: "Archive article" });
         }
-      }
-      if (report.contentStatus === "Image Hidden") {
-        actions.push({ action: "restore-image", label: "คืนรูปที่ซ่อน" });
       }
       return actions;
     }
 
     function renderBoardReportStatusActionButtons(report) {
       return getBoardReportActions(report)
-        .map(action => `<button type="button" data-board-report-action="${action.action}" data-board-report-id="${report.id}">${action.label}</button>`)
+        .map(action => {
+          if (action.action === "edit-article") {
+            return `<button type="button" data-article-edit="${report.articleId}" data-board-report-edit-article="${report.id}">${action.label}</button>`;
+          }
+          return `<button type="button" data-board-report-action="${action.action}" data-board-report-id="${report.id}">${action.label}</button>`;
+        })
         .join("");
     }
 
     function renderBoardReportDetailActionButtons(report) {
       return getBoardReportActions(report)
         .map((action, index) => {
+          if (action.action === "edit-article") {
+            return `<button class="user-detail-action-btn" type="button" data-article-edit="${report.articleId}" data-board-report-edit-article="${report.id}">${action.label}</button>`;
+          }
           const style = action.action === "close-report" ? "primary" : action.action === "archive-article" ? "danger" : index === 0 ? "primary" : "";
           return `<button class="user-detail-action-btn ${style}" type="button" data-board-report-action="${action.action}" data-board-report-id="${report.id}">${action.label}</button>`;
         })
@@ -14974,9 +14979,7 @@
       const labels = {
         "Report Received": "รับรายงาน Board",
         "Close Report": "ปิดรายงาน",
-        "Hide Reported Image": "ซ่อนรูปที่ถูกรายงาน",
-        "Archive Article": "เก็บบทความ",
-        "Restore Reported Image": "คืนรูปที่ซ่อน"
+        "Archive Article": "เก็บบทความ"
       };
       return labels[action] || action;
     }
@@ -14990,9 +14993,7 @@
       const details = {
         "Report Received": "ระบบรับรายงานและเปิดเคสตรวจสอบ",
         "Close Report": "ตรวจสอบแล้วและปิดรายงาน",
-        "Hide Reported Image": "ซ่อนรูปที่ถูกรายงานจากบทความ",
-        "Archive Article": "เก็บบทความออกจากการแสดงผล",
-        "Restore Reported Image": "คืนรูปที่ซ่อนกลับสู่บทความ"
+        "Archive Article": "เก็บบทความออกจากการแสดงผล"
       };
       return details[action] || "บันทึกการดำเนินการกับรายงาน Board";
     }
@@ -15004,7 +15005,7 @@
       });
       const hasCloseReportHistory = rows.some(row => row.action === "Close Report" && row.after?.reportStatus === "Cleared");
       const closingContentRow = rows.find(row => (
-        ["Hide Reported Image", "Archive Article"].includes(row.action)
+        row.action === "Archive Article"
         && row.after?.reportStatus === "Cleared"
       ));
       if (closingContentRow && !hasCloseReportHistory) {
@@ -15027,7 +15028,7 @@
 
     function getBoardReportActionSortRank(action) {
       if (action === "Close Report") return 30;
-      if (action === "Hide Reported Image" || action === "Archive Article" || action === "Restore Reported Image") return 20;
+      if (action === "Archive Article") return 20;
       return 0;
     }
 
@@ -15257,26 +15258,12 @@
           historyAction: "Close Report",
           note: "Admin closed the Board report after review."
         },
-        "hide-image": {
-          title: "ยืนยันการซ่อนรูปที่ถูกรายงาน",
-          detail: "ซ่อนเฉพาะรูปที่ถูกรายงานจาก Board content และปิดรายงานนี้",
-          confirm: "ยืนยันซ่อนรูป",
-          historyAction: "Hide Reported Image",
-          note: "Admin hid the reported Board image and closed the report."
-        },
         "archive-article": {
           title: "ยืนยันการ Archive article",
           detail: "นำบทความออกจาก Board public surfaces และปิดรายงานนี้",
           confirm: "ยืนยัน Archive",
           historyAction: "Archive Article",
           note: "Admin archived the Board article and closed the report."
-        },
-        "restore-image": {
-          title: "ยืนยันการคืนรูปที่ซ่อน",
-          detail: "คืนรูปที่เคยซ่อนจากรายงานนี้กลับสู่ Board content",
-          confirm: "ยืนยันคืนรูป",
-          historyAction: "Restore Reported Image",
-          note: "Admin restored the reported Board image after review."
         }
       };
       return configs[action] || configs["close-report"];
@@ -15359,15 +15346,10 @@
       const before = { reportStatus: getBoardReportQueueStatus(report), contentStatus: report.contentStatus };
       const note = document.querySelector("#board-report-action-note")?.value.trim() || document.querySelector("#board-report-action-reason")?.value || getBoardReportActionConfig(action).note;
       if (action === "close-report") report.reportStatus = "Cleared";
-      if (action === "hide-image") {
-        report.contentStatus = "Image Hidden";
-        report.reportStatus = "Cleared";
-      }
       if (action === "archive-article") {
         report.contentStatus = "Archived";
         report.reportStatus = "Cleared";
       }
-      if (action === "restore-image") report.contentStatus = "Published";
       appendBoardReportAuditHistory(report, {
         action: getBoardReportActionConfig(action).historyAction,
         before,
