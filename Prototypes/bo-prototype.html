@@ -194,18 +194,36 @@
       padding: 9px 10px;
     }
     .user-action-prototype-tools {
+      width: 100%;
       max-width: none;
       margin-top: 4px;
       padding-top: 12px;
       border-top: 1px dashed var(--line);
+      text-align: left;
     }
     .user-action-prototype-tools summary {
       color: #7890ae;
+      text-align: left;
+    }
+    .user-action-prototype-tools label {
+      width: 100%;
+      text-align: left;
     }
     .user-action-prototype-tools select {
+      width: 100%;
       background: #f8fbff;
       color: var(--ink);
       border-color: var(--line-strong);
+    }
+    .user-action-prototype-tools .custom-select-menu {
+      max-height: 156px;
+      overflow-y: auto;
+    }
+    .user-action-prototype-tools .custom-select-option.selected {
+      font-weight: 400;
+    }
+    .user-action-prototype-tools .custom-select-trigger [data-custom-select-label] {
+      font-weight: 400;
     }
     .login-form {
       display: grid;
@@ -1856,6 +1874,9 @@
       grid-template-columns: repeat(2, minmax(0, 1fr));
       gap: 12px;
       margin-top: 16px;
+    }
+    .article-editor-confirm-actions.single {
+      grid-template-columns: minmax(0, 1fr);
     }
     .article-editor-confirm-actions .user-detail-action-btn {
       min-height: 46px;
@@ -13950,31 +13971,106 @@
       return getArticleEditorDirtySnapshot(form) !== (form.dataset.articleInitialSnapshot || "");
     }
 
-    function openArticlePreviewModal(article) {
+    function renderArticleScenarioSelect(id, scenarios, selectedValue = "success") {
+      return `
+        <label>
+          Test flow
+          ${customSelect(id, "Test flow", scenarios, selectedValue, "data-custom-select-silent")}
+        </label>
+      `;
+    }
+
+    function getArticleScenarioResult(kind, scenario) {
+      const results = {
+        permission_denied: {
+          title: "Permission denied",
+          detail: "Admin account นี้ไม่มีสิทธิ์ดำเนินการกับบทความในขั้นตอนนี้"
+        },
+        save_failed: {
+          title: "บันทึกไม่สำเร็จ",
+          detail: "ระบบยังไม่สามารถบันทึกข้อมูลบทความได้ กรุณาลองอีกครั้ง"
+        },
+        concurrent_edit: {
+          title: "มีการแก้ไขจาก admin อื่น",
+          detail: "บทความนี้ถูกอัปเดตระหว่างที่คุณกำลังแก้ไข กรุณาตรวจข้อมูลล่าสุดก่อนบันทึกทับ"
+        },
+        slug_taken: {
+          title: "Article URL ถูกใช้แล้ว",
+          detail: "มีบทความอื่นใช้ Article URL นี้หลังจากเปิดฟอร์ม กรุณาเปลี่ยน URL แล้วลองอีกครั้ง"
+        },
+        preview_failed: {
+          title: "Preview failed",
+          detail: "ระบบยังไม่สามารถ render preview ได้ กรุณาตรวจรูปและ content block แล้วลองใหม่"
+        },
+        stale_data: {
+          title: "สถานะบทความเปลี่ยนแล้ว",
+          detail: "สถานะล่าสุดไม่ตรงกับ action นี้ กรุณา reload detail แล้วตรวจสอบอีกครั้ง"
+        }
+      };
+      return results[scenario] || null;
+    }
+
+    function openArticleCompactAlertModal(title, detail) {
       const modal = document.querySelector("#user-action-modal");
       const modalCard = modal?.querySelector(".user-action-modal");
       const modalBody = document.querySelector("#user-action-modal-body");
-      if (!article || !modal || !modalCard || !modalBody) return;
-      modalCard.classList.remove("category-editor-modal", "article-editor-confirm-modal");
-      modalCard.classList.add("article-preview-modal");
+      if (!modal || !modalCard || !modalBody) return;
+      modalCard.classList.remove("category-editor-modal", "article-editor-confirm-modal", "article-preview-modal");
+      modalCard.classList.add("article-editor-confirm-modal");
       modalBody.innerHTML = `
-        <div class="user-action-layout article-preview-modal-content">
-          <div class="user-action-head">
-            <div>
-              <h2 id="user-action-modal-title">Preview article</h2>
-            </div>
-            <button class="btn user-action-close" type="button" data-user-action-modal-close aria-label="Close modal" title="Close">
-              ${iconSvg.close}
-            </button>
+        <div class="article-editor-confirm-page">
+          <div class="article-editor-confirm-icon cancel" aria-hidden="true">
+            <span>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+                <path d="m8.4 8.4 7.2 7.2"></path><path d="m15.6 8.4-7.2 7.2"></path>
+              </svg>
+            </span>
           </div>
-          ${renderArticlePreviewStack(article)}
+          <h2 id="user-action-modal-title">${title}</h2>
+          <p class="article-editor-confirm-summary">${detail}</p>
+          <div class="article-editor-confirm-actions single">
+            <button class="user-detail-action-btn user-action-confirm" type="button" data-user-action-modal-close>รับทราบ</button>
+          </div>
         </div>
       `;
       showUserActionModal(true);
     }
 
+    function openArticlePreviewModal(article, result = null) {
+      const modal = document.querySelector("#user-action-modal");
+      const modalCard = modal?.querySelector(".user-action-modal");
+      const modalBody = document.querySelector("#user-action-modal-body");
+      if ((!article && !result) || !modal || !modalCard || !modalBody) return;
+      if (result) {
+        openArticleCompactAlertModal("Preview article", result.detail);
+      } else {
+        modalCard.classList.remove("category-editor-modal", "article-editor-confirm-modal", "article-preview-modal");
+        modalCard.classList.add("article-preview-modal");
+        modalBody.innerHTML = `
+          <div class="user-action-layout article-preview-modal-content">
+            <div class="user-action-head">
+              <div>
+                <h2 id="user-action-modal-title">Preview article</h2>
+              </div>
+              <button class="btn user-action-close" type="button" data-user-action-modal-close aria-label="Close modal" title="Close">
+                ${iconSvg.close}
+              </button>
+            </div>
+            ${renderArticlePreviewStack(article)}
+          </div>
+        `;
+        showUserActionModal(true);
+      }
+    }
+
     function openArticleEditorPreviewModal(form) {
       if (!form) return;
+      const scenario = document.querySelector("#article-preview-scenario")?.value || "success";
+      const result = getArticleScenarioResult("preview", scenario);
+      if (result) {
+        openArticlePreviewModal(null, result);
+        return;
+      }
       openArticlePreviewModal(getArticleEditorPreviewArticle(form));
     }
 
@@ -14623,6 +14719,13 @@
                   <button class="user-detail-action-btn" type="submit">${isEdit ? "บันทึกการแก้ไข" : "สร้างบทความ"}</button>
                   <button class="user-detail-action-btn" type="button" ${isEdit ? `data-article-edit-cancel="${draft.id}"` : "data-article-add-cancel"}>ยกเลิก</button>
                 </div>
+                <details class="prototype-tools user-action-prototype-tools">
+                  <summary>Prototype scenario</summary>
+                  ${renderArticleScenarioSelect("article-preview-scenario", [
+                    { value: "success", label: "Preview success" },
+                    { value: "preview_failed", label: "Preview failed" }
+                  ])}
+                </details>
               </form>
             </div>
           </div>
@@ -14652,7 +14755,7 @@
       renderModule("content", "Articles", "Articles");
     }
 
-    function renderArticleEditorConfirmModal({ title, summary, question, confirmAttr, iconType = "confirm", confirmClass = "" }) {
+    function renderArticleEditorConfirmModal({ title, summary, question, confirmAttr, iconType = "confirm", confirmClass = "", scenarioKind = "", selectedScenario = "success" }) {
       const modal = document.querySelector("#user-action-modal");
       const modalCard = modal?.querySelector(".user-action-modal");
       const modalBody = document.querySelector("#user-action-modal-body");
@@ -14663,6 +14766,28 @@
       const iconPath = isCancelIcon
         ? `<path d="m8.4 8.4 7.2 7.2"></path><path d="m15.6 8.4-7.2 7.2"></path>`
         : `<path d="m7.9 12.2 2.7 2.7 5.8-6"></path>`;
+      const scenarioOptionsByKind = {
+        create: [
+          { value: "success", label: "Success" },
+          { value: "save_failed", label: "Save failed" },
+          { value: "slug_taken", label: "Article URL already taken" }
+        ],
+        edit: [
+          { value: "success", label: "Success" },
+          { value: "permission_denied", label: "Permission denied" },
+          { value: "save_failed", label: "Save failed" },
+          { value: "concurrent_edit", label: "Concurrent edit" },
+          { value: "slug_taken", label: "Article URL already taken" }
+        ],
+        status: [
+          { value: "success", label: "Success" },
+          { value: "permission_denied", label: "Permission denied" },
+          { value: "save_failed", label: "Save failed" },
+          { value: "concurrent_edit", label: "Concurrent edit" },
+          { value: "stale_data", label: "Stale status" }
+        ]
+      };
+      const scenarioOptions = scenarioOptionsByKind[scenarioKind] || scenarioOptionsByKind.edit;
       modalBody.innerHTML = `
         <div class="article-editor-confirm-page">
           <div class="article-editor-confirm-icon ${isCancelIcon ? "cancel" : "confirm"}" aria-hidden="true">
@@ -14679,6 +14804,12 @@
             <button class="user-detail-action-btn" type="button" data-user-action-modal-close>ยกเลิก</button>
             <button class="user-detail-action-btn user-action-confirm ${confirmClass}" type="button" ${confirmAttr}>ยืนยัน</button>
           </div>
+          ${scenarioKind ? `
+            <details class="prototype-tools user-action-prototype-tools">
+              <summary>Prototype scenario</summary>
+              ${renderArticleScenarioSelect("article-action-scenario", scenarioOptions, selectedScenario)}
+            </details>
+          ` : ""}
         </div>
       `;
       showUserActionModal(true);
@@ -14696,13 +14827,15 @@
       });
     }
 
-    function openArticleEditSaveConfirmModal(form) {
+    function openArticleEditSaveConfirmModal(form, selectedScenario = "success") {
       const id = form?.dataset.articleId || "";
       renderArticleEditorConfirmModal({
         title: "ยืนยันการบันทึกแก้ไข",
         summary: "ระบบจะบันทึกข้อมูลที่แก้ไขและแสดงผลทันที",
         question: "คุณต้องการบันทึกการแก้ไขบทความนี้ใช่หรือไม่?",
-        confirmAttr: `data-article-edit-save-confirm="${id}"`
+        confirmAttr: `data-article-edit-save-confirm="${id}"`,
+        scenarioKind: "edit",
+        selectedScenario
       });
     }
 
@@ -14716,17 +14849,19 @@
       });
     }
 
-    function openArticleAddCreateConfirmModal(form) {
+    function openArticleAddCreateConfirmModal(form, selectedScenario = "success") {
       const id = form?.dataset.articleId || "";
       renderArticleEditorConfirmModal({
         title: "ยืนยันการสร้างบทความ",
         summary: "ระบบจะสร้างบทความใหม่ตามข้อมูลในแบบฟอร์ม",
         question: "คุณต้องการสร้างบทความนี้ใช่หรือไม่?",
-        confirmAttr: `data-article-add-create-confirm="${id}"`
+        confirmAttr: `data-article-add-create-confirm="${id}"`,
+        scenarioKind: "create",
+        selectedScenario
       });
     }
 
-    function openArticleStatusActionConfirmModal(article, actionKey, context = "detail") {
+    function openArticleStatusActionConfirmModal(article, actionKey, context = "detail", selectedScenario = "success") {
       const action = getArticleStatusAction(article);
       if (!action || action.key !== actionKey) return;
       renderArticleEditorConfirmModal({
@@ -14735,8 +14870,19 @@
         question: action.question,
         confirmAttr: `data-article-status-action-confirm="${action.key}" data-article-id="${article.id}" data-article-action-context="${context}"`,
         iconType: action.iconType,
-        confirmClass: action.tone
+        confirmClass: action.tone,
+        scenarioKind: "status",
+        selectedScenario
       });
+    }
+
+    function getArticleActionFailureTitle(actionKind, scenario, result) {
+      if (scenario === "save_failed") {
+        if (actionKind === "create") return "สร้างบทความไม่สำเร็จ";
+        if (actionKind === "edit") return "บันทึกการแก้ไขไม่สำเร็จ";
+        if (actionKind === "status") return "ดำเนินการไม่สำเร็จ";
+      }
+      return result?.title || "ดำเนินการไม่สำเร็จ";
     }
 
     function addArticleActionHistory(article, entry) {
@@ -15991,6 +16137,12 @@
       if (articleEditSaveConfirmButton) {
         const form = document.querySelector(`[data-article-editor][data-article-id="${articleEditSaveConfirmButton.dataset.articleEditSaveConfirm}"]`);
         if (!form) return;
+        const scenario = document.querySelector("#article-action-scenario")?.value || "success";
+        const result = getArticleScenarioResult("save", scenario);
+        if (result) {
+          openArticleCompactAlertModal(getArticleActionFailureTitle("edit", scenario, result), result.detail);
+          return;
+        }
         closeUserActionModal();
         saveArticleFromForm(form);
         return;
@@ -15999,6 +16151,12 @@
       if (articleAddCreateConfirmButton) {
         const form = document.querySelector(`[data-article-editor][data-article-id="${articleAddCreateConfirmButton.dataset.articleAddCreateConfirm}"]`);
         if (!form) return;
+        const scenario = document.querySelector("#article-action-scenario")?.value || "success";
+        const result = getArticleScenarioResult("save", scenario);
+        if (result) {
+          openArticleCompactAlertModal(getArticleActionFailureTitle("create", scenario, result), result.detail);
+          return;
+        }
         closeUserActionModal();
         saveArticleFromForm(form);
         return;
@@ -16007,6 +16165,12 @@
       if (articleStatusActionConfirmButton) {
         const article = getArticleById(articleStatusActionConfirmButton.dataset.articleId);
         if (!article) return;
+        const scenario = document.querySelector("#article-action-scenario")?.value || "success";
+        const result = getArticleScenarioResult("status", scenario);
+        if (result) {
+          openArticleCompactAlertModal(getArticleActionFailureTitle("status", scenario, result), result.detail);
+          return;
+        }
         closeUserActionModal();
         applyArticleStatusAction(
           article,
