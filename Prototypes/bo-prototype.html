@@ -15002,7 +15002,7 @@
           <summary title="Board report actions">...</summary>
           <div class="row-menu-list">
             <button type="button" data-board-report-open="${report.id}">ดูรายละเอียด</button>
-            <button type="button" data-board-report-preview="${report.id}">View Board content</button>
+            <button type="button" data-board-report-preview="${report.id}">View Article</button>
             ${renderBoardReportStatusActionButtons(report)}
           </div>
         </details>
@@ -15187,7 +15187,7 @@
       const pageRows = sorted.slice(start, start + articleListPageSize);
       document.querySelector("#table").innerHTML = `
         <div class="asset-table reported-board-table">
-          <div class="asset-row reported-board-row head"><div>Report ID</div><div>Article</div><div>Content Status</div><div>Status</div><div>Report Reason</div><div>Reporters</div><div>Priority</div><div>Action</div></div>
+          <div class="asset-row reported-board-row head"><div>Report ID</div><div>Article</div><div>Article Status</div><div>Status</div><div>Report Reason</div><div>Reporters</div><div>Priority</div><div>Action</div></div>
           ${pageRows.map(report => `
             <div class="asset-row reported-board-row" data-board-report-card="${report.id}">
               <div data-label="Report ID"><div class="main-text">${report.id}</div></div>
@@ -15202,7 +15202,7 @@
                   <div class="user-card-meta-item"><span>Report reason</span><strong>${report.reason}</strong></div>
                 </div>
               </div>
-              <div data-label="Content Status">${boardReportContentStatusPill(report.contentStatus)}</div>
+              <div data-label="Article Status">${boardReportContentStatusPill(report.contentStatus)}</div>
               <div data-label="Status">${boardReportQueueStatusPill(report)}</div>
               <div data-label="Report Reason"><div class="muted">${report.reason}</div></div>
               <div data-label="Reporters"><div class="main-text">${report.reporters}</div></div>
@@ -15269,16 +15269,15 @@
 
           <div class="detail-section">
             <div class="board-report-reference-head">
-              <h4>Reported Reference</h4>
-              <button class="btn asset-report-view-btn" type="button" data-board-report-preview="${report.id}" aria-label="View Board content ${report.id}" title="View Board Content"><span class="asset-report-view-label">View Content</span></button>
+              <h4>Reported Article</h4>
+              <button class="btn asset-report-view-btn" type="button" data-board-report-preview="${report.id}" aria-label="View article ${report.id}" title="View Article"><span class="asset-report-view-label">View Article</span></button>
             </div>
             <div class="detail-grid two report-reference-grid">
               <div class="detail-tile"><span>Report ID</span><strong>${report.id}</strong></div>
               <div class="detail-tile"><span>Article ID</span><strong>${report.articleId}</strong></div>
               <div class="detail-tile"><span>Article Title</span><strong>${report.articleTitle}</strong></div>
               <div class="detail-tile"><span>Category</span><strong>${report.category}</strong></div>
-              <div class="detail-tile"><span>Reported Part</span><strong>${report.reportedPart}</strong></div>
-              <div class="detail-tile"><span>Content Status</span><strong>${report.contentStatus}</strong></div>
+              <div class="detail-tile"><span>Article Status</span><strong>${report.contentStatus}</strong></div>
             </div>
           </div>
 
