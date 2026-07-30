@@ -6903,7 +6903,8 @@
       "Spam": "สแปม",
       "Other": "อื่น ๆ",
       "Suspected fake or scam": "สงสัยว่าเป็นของปลอมหรือหลอกลวง",
-      "Incorrect information": "ข้อมูลไม่ถูกต้อง"
+      "Incorrect information": "ข้อมูลไม่ถูกต้อง",
+      "Prohibited item": "สินค้าต้องห้าม"
     };
 
     const userReportSubmissions = {
@@ -7063,7 +7064,7 @@
           <td data-label="Reporter">${row.reporter}</td>
           ${showSourceColumn ? `<td data-label="Source">${renderHistoryValue(row.source)}</td>` : ""}
           <td data-label="Status">${row.status}</td>
-          <td data-label="${noteColumnLabel}" class="history-note">${renderHistoryValue(isUserReportHistory ? translateReportReason(row.note) : row.note)}</td>
+          <td data-label="${noteColumnLabel}" class="history-note">${renderHistoryValue(usesReportSubmissionLayout ? translateReportReason(row.note) : row.note)}</td>
           ${showAdditionalDetails ? `<td data-label="Additional Details" class="history-note">${renderHistoryValue(row.additionalDetails)}</td>` : ""}
         </tr>
       `).join("");
@@ -8847,6 +8848,7 @@
         asset.status,
         getAssetReportPriority(asset),
         getAssetReportReason(asset),
+        renderAssetReportReasonsLabel(asset),
         ...(asset.tags || [])
       ].join(" ").toLowerCase();
     }
@@ -9941,6 +9943,24 @@
     function translateReportReason(reason) {
       const value = String(reason || "").trim();
       return reportReasonThaiLabels[value] || value;
+    }
+
+    function getAssetReportReasons(assetOrReport) {
+      const reportId = isAssetReportContext(assetOrReport) ? assetOrReport.id : getAssetReportId(assetOrReport);
+      const submissionReasons = (assetReportSubmissions[reportId] || []).map(submission => submission.reason);
+      const fallbackReason = isAssetReportContext(assetOrReport)
+        ? assetOrReport.foReason
+        : getAssetFoReportReason(assetOrReport);
+      const reasons = [...submissionReasons, fallbackReason]
+        .map(reason => String(reason || "").trim())
+        .filter(Boolean);
+      return [...new Set(reasons)];
+    }
+
+    function renderAssetReportReasonsLabel(assetOrReport) {
+      const reasons = getAssetReportReasons(assetOrReport);
+      if (!reasons.length) return "-";
+      return reasons.map(translateReportReason).join(", ");
     }
 
     function getUserReportReasons(report) {
@@ -11617,6 +11637,7 @@
               <div class="detail-tile"><span>Owner ID</span><strong>${report.ownerId}</strong></div>
               <div class="detail-tile"><span>Owner</span><strong>${asset.owner}</strong></div>
               <div class="detail-tile"><span>Asset Status</span><strong>${report.assetStatus}</strong></div>
+              <div class="detail-tile report-summary-reason-tile"><span>Report Reason</span><strong>${renderAssetReportReasonsLabel(report)}</strong></div>
             </div>
           </div>
 
@@ -15343,13 +15364,13 @@
       const pageRows = sorted.slice(start, start + assetListPageSize);
       document.querySelector("#table").innerHTML = `
         <div class="user-table">
-          <div class="user-row report-row asset-report-row head"><div>Report ID</div><div>Asset</div><div>Asset Status</div><div>Status</div><div>Report Detail</div><div>Reporters</div><div>Priority</div><div>Action</div></div>
+          <div class="user-row report-row asset-report-row head"><div>Report ID</div><div>Asset</div><div>Asset Status</div><div>Status</div><div>Report Reason</div><div>Reporters</div><div>Priority</div><div>Action</div></div>
           ${pageRows.map(asset => {
             const reportId = getAssetReportId(asset);
             const reporters = getAssetReporters(asset);
             const priorityLabel = getAssetReportPriority(asset);
             const priorityValue = getAssetReportPriorityValue(asset);
-            const reason = getAssetReportReason(asset);
+            const reason = renderAssetReportReasonsLabel(asset);
             return `
               <div class="user-row report-row asset-report-row" data-asset-report-card="${asset.id}">
                 <div class="user-cell-primary" data-label="Report ID"><div class="main-text">${reportId}</div></div>
@@ -15360,13 +15381,13 @@
                   <span class="pill ${priorityValue === "high" ? "red" : priorityValue === "medium" ? "amber" : "blue"}">${priorityLabel}</span>
                   <div class="user-card-meta">
                     <div class="user-card-meta-item"><span>Asset</span><strong>${asset.name}</strong></div>
-                    <div class="user-card-meta-item"><span>Report detail</span><strong>${reason}</strong></div>
+                    <div class="user-card-meta-item"><span>Report reason</span><strong>${reason}</strong></div>
                   </div>
                 </div>
                 <div data-label="Asset"><div class="main-text">${asset.name}</div></div>
                 <div data-label="Asset Status">${renderAssetListStatusDisplay(asset)}</div>
                 <div data-label="Status">${assetReportQueueStatusPill(asset)}</div>
-                <div data-label="Report Detail"><div class="muted">${reason}</div></div>
+                <div data-label="Report Reason"><div class="muted">${reason}</div></div>
                 <div data-label="Reporters"><div class="main-text">${reporters}</div></div>
                 <div data-label="Priority"><span class="pill ${priorityValue === "high" ? "red" : priorityValue === "medium" ? "amber" : "blue"}">${priorityLabel}</span></div>
                 <div class="user-row-actions">
