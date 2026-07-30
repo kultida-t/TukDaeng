@@ -5209,6 +5209,12 @@
         grid-template-columns: minmax(0, 1fr) 38px;
         align-items: flex-start;
       }
+      .user-action-page:has(.asset-report-detail-modal-card) .user-action-head {
+        align-items: flex-start;
+      }
+      .user-action-page:has(.asset-report-detail-modal-card) .user-action-close {
+        align-self: start;
+      }
       .user-action-layout {
         grid-template-columns: 1fr;
       }
@@ -11709,13 +11715,13 @@
                 </div>
               </div>
             </div>
-            <div class="user-detail-actions">
-              <button class="btn asset-report-view-btn" type="button" data-asset-report-detail-modal="${asset.id}" aria-label="View asset ${asset.id}" title="View Asset">${iconSvg.eye}<span class="asset-report-view-label">View Asset</span></button>
-            </div>
           </div>
 
           <div class="detail-section">
-            <h4>Reported Reference</h4>
+            <div class="board-report-reference-head">
+              <h4>Reported Asset</h4>
+              <button class="btn asset-report-view-btn" type="button" data-asset-report-detail-modal="${asset.id}" aria-label="View asset ${asset.id}" title="View Asset"><span class="asset-report-view-label">View Asset</span></button>
+            </div>
             <div class="detail-grid two report-reference-grid">
               <div class="detail-tile"><span>Report ID</span><strong>${report.id}</strong></div>
               <div class="detail-tile"><span>Asset ID</span><strong>${asset.id}</strong></div>
@@ -15306,14 +15312,26 @@
           detail: "ปิดรายงานหลังตรวจหลักฐานครบแล้ว โดยไม่เปลี่ยนสถานะ Board content อัตโนมัติ",
           confirm: "ยืนยันปิดรายงาน",
           historyAction: "Close Report",
-          note: "Admin closed the Board report after review."
+          note: "Admin closed the Board report after review.",
+          reasonLabel: "เหตุผลการปิดรายงาน",
+          reasons: [
+            "ตรวจสอบแล้วไม่พบการละเมิด",
+            "หลักฐานไม่เพียงพอสำหรับการดำเนินการ",
+            "รายงานซ้ำกับเคสที่ปิดผลแล้ว"
+          ]
         },
         "archive-article": {
           title: "ยืนยันการ Archive article",
           detail: "นำบทความออกจาก Board public surfaces และปิดรายงานนี้",
           confirm: "ยืนยัน Archive",
           historyAction: "Archive Article",
-          note: "Admin archived the Board article and closed the report."
+          note: "Admin archived the Board article and closed the report.",
+          reasonLabel: "เหตุผลการ Archive article",
+          reasons: [
+            "บทความละเมิดนโยบายหรือแนวทางชุมชน",
+            "ข้อมูลบทความไม่ถูกต้องหรือทำให้เข้าใจผิด",
+            "เนื้อหามีความเสี่ยงต่อผู้ใช้หรือแพลตฟอร์ม"
+          ]
         }
       };
       return configs[action] || configs["close-report"];
@@ -15353,12 +15371,8 @@
             <div class="detail-section">
               <div class="user-action-form">
                 <label>
-                  เหตุผล
-                  ${customSelect("board-report-action-reason", "เหตุผล", [
-                    { value: "Evidence reviewed and action is required", label: "Evidence reviewed and action is required" },
-                    { value: "Report does not require further content changes", label: "Report does not require further content changes" },
-                    { value: "Duplicate report already handled", label: "Duplicate report already handled" }
-                  ], "", "data-custom-select-silent")}
+                  ${config.reasonLabel}
+                  ${customSelect("board-report-action-reason", config.reasonLabel, config.reasons.map(reason => ({ value: reason, label: reason })), "", "data-custom-select-silent")}
                 </label>
                 <label>
                   Note / หมายเหตุ
