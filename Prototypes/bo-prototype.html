@@ -13351,6 +13351,10 @@
       return String(article?.coverCaption || article?.title || article?.coverImageName || "Article cover").trim();
     }
 
+    function getArticleBodyImageAlt(article, caption = "") {
+      return String(caption || article?.bodyImageCaption || `${article?.title || article?.bodyImageName || "Article"} - content image`).trim();
+    }
+
     function isArticleSlugDuplicate(slug, articleId = "") {
       const normalizedSlug = slugifyArticle(slug);
       return getArticleListRows().some(article => article.id !== articleId && slugifyArticle(article.slug || "") === normalizedSlug);
@@ -13464,8 +13468,14 @@
       ["comparison", "Comparison Table"]
     ];
 
-    function isSafeArticleLinkUrl(url = "") {
+    function normalizeArticleLinkUrl(url = "") {
       const value = String(url || "").trim();
+      if (/^www\.[^\s<>"']+\.[^\s<>"']+$/i.test(value)) return `https://${value}`;
+      return value;
+    }
+
+    function isSafeArticleLinkUrl(url = "") {
+      const value = normalizeArticleLinkUrl(url);
       return /^https?:\/\/[^\s<>"']+$/i.test(value) || /^\/(?!\/)[^\s<>"']*$/.test(value);
     }
 
@@ -13522,16 +13532,17 @@
         return items.length ? `<${tag}>${items.map(item => `<li>${renderArticleInlineFormatting(item)}</li>`).join("")}</${tag}>` : "";
       }
       if (type === "link") {
-        const url = String(block?.caption || "").trim();
+        const url = normalizeArticleLinkUrl(block?.caption || "");
         if (!content || !isSafeArticleLinkUrl(url)) return "";
         return `<p><a class="article-fo-link" href="${escapeArticleField(url)}" target="_blank" rel="noopener noreferrer">${renderArticleInlineFormatting(content)}</a></p>`;
       }
       if (type === "divider") return `<hr class="article-fo-divider" />`;
       if (type === "quote" && content) return `<blockquote class="article-fo-quote">"${renderArticleInlineFormatting(content)}"</blockquote>`;
       if (type === "image" && article.bodyImageSrc) {
+        const caption = String(block?.caption || article?.bodyImageCaption || "").trim();
         return `
-          <div class="article-fo-body-image"><img src="${escapeArticleField(article.bodyImageSrc)}" alt="${escapeArticleField(article.bodyImageName || article.title || "Article content image")}" /></div>
-          ${block.caption ? `<div class="article-fo-caption">${escapeArticleField(block.caption)}</div>` : ""}
+          <div class="article-fo-body-image"><img src="${escapeArticleField(article.bodyImageSrc)}" alt="${escapeArticleField(getArticleBodyImageAlt(article, caption))}" /></div>
+          ${caption ? `<div class="article-fo-caption">${escapeArticleField(caption)}</div>` : ""}
         `;
       }
       if (type === "comparison") return renderArticleComparisonTable({ comparisonRows: content });
@@ -13660,7 +13671,7 @@
         if (!article?.bodyImageSrc && !caption) return `<span class="article-readonly-empty">Empty block</span>`;
         return `
           <div class="article-readonly-image">
-            ${article?.bodyImageSrc ? `<img src="${escapeArticleField(article.bodyImageSrc)}" alt="${escapeArticleField(article.bodyImageName || article.title || "Article content image")}" />` : ""}
+            ${article?.bodyImageSrc ? `<img src="${escapeArticleField(article.bodyImageSrc)}" alt="${escapeArticleField(getArticleBodyImageAlt(article, caption))}" />` : ""}
             <div class="article-readonly-image-caption-field">
               <div class="article-readonly-image-caption-label">Caption รูปในเนื้อหา</div>
               <div class="article-readonly-caption">${caption ? escapeArticleField(caption) : "-"}</div>
@@ -13669,7 +13680,7 @@
         `;
       }
       if (type === "link") {
-        const url = String(block?.caption || "").trim();
+        const url = normalizeArticleLinkUrl(block?.caption || "");
         if (!content || !isSafeArticleLinkUrl(url)) return `<span class="article-readonly-empty">Invalid link</span>`;
         return `<a class="article-readonly-link" href="${escapeArticleField(url)}" target="_blank" rel="noopener noreferrer">${renderArticleInlineFormatting(content)}</a>`;
       }
@@ -13699,7 +13710,11 @@
       return Array.from(form.querySelectorAll("[data-article-content-block]")).map(block => ({
         type: block.dataset.articleBlockType || "paragraph",
         content: block.querySelector("[data-article-block-value]")?.value.trim() || "",
-        caption: ["image", "link"].includes(block.dataset.articleBlockType) ? (block.querySelector("[data-article-block-url]")?.value.trim() || block.querySelector("[data-article-block-value]")?.value.trim() || "") : ""
+        caption: block.dataset.articleBlockType === "link"
+          ? normalizeArticleLinkUrl(block.querySelector("[data-article-block-url]")?.value || "")
+          : block.dataset.articleBlockType === "image"
+            ? block.querySelector("[data-article-block-value]")?.value.trim() || ""
+            : ""
       })).filter(block => {
         if (includeEmpty) return true;
         if (block.type === "divider") return true;
@@ -14011,10 +14026,6 @@
           control: form.querySelector("#article-category-field")?.closest("[data-custom-select]")?.querySelector("[data-custom-select-trigger]"),
           error: form.querySelector("[data-article-category-error]")
         },
-        coverCaption: {
-          control: form.querySelector('[name="coverCaption"]'),
-          error: form.querySelector("[data-article-cover-caption-error]")
-        },
         content: {
           control: form.querySelector("#article-block-type-picker")?.closest("[data-custom-select]")?.querySelector("[data-custom-select-trigger]"),
           error: form.querySelector("[data-article-content-error]")
@@ -14055,7 +14066,7 @@
     }
 
     function clearArticleValidationErrors(form) {
-      ["title", "slug", "category", "coverCaption", "content", "publishDate", "publishTime"].forEach(field => setArticleFieldError(form, field));
+      ["title", "slug", "category", "content", "publishDate", "publishTime"].forEach(field => setArticleFieldError(form, field));
       setArticleUploadError(form, "cover");
       clearArticleBlockErrors(form);
     }
@@ -14067,7 +14078,6 @@
         slug: () => form.querySelector('[name="slug"]')?.focus(),
         category: () => form.querySelector("#article-category-field")?.closest("[data-custom-select]")?.querySelector("[data-custom-select-trigger]")?.focus(),
         cover: () => form.querySelector("[data-article-cover-upload-control]")?.scrollIntoView({ block: "center", behavior: "smooth" }),
-        coverCaption: () => form.querySelector('[name="coverCaption"]')?.focus(),
         link: () => form.querySelector("[data-article-block-url].article-field-invalid")?.focus(),
         content: () => form.querySelector("[data-article-block-add]")?.focus(),
         publishDate: () => form.querySelector('[name="publishDate"]')?.scrollIntoView({ block: "center", behavior: "smooth" }),
@@ -14598,7 +14608,6 @@
                     </label>
                     <label class="full">Caption / Alt text รูป Cover
                       <input name="coverCaption" value="${escapeArticleField(draft.coverCaption || "")}" placeholder="คำอธิบายภาพที่จะขึ้นใต้รูป hero" />
-                      <span class="article-field-error" data-article-cover-caption-error></span>
                     </label>
                     <label class="full">คำโปรยสั้น
                       <textarea name="deck" placeholder="ข้อความสรุป/เกริ่นนำสั้น ๆ ที่แสดงใต้ hero/cover ก่อนเข้าเนื้อหาหลัก">${escapeArticleField(draft.deck || "")}</textarea>
@@ -14858,7 +14867,6 @@
       const validationErrors = [];
       const title = String(formData.get("title") || "").trim();
       const slug = slugifyArticle(formData.get("slug") || title);
-      const coverCaption = String(formData.get("coverCaption") || "").trim();
       const slugInput = form.querySelector('[name="slug"]');
       if (slugInput && slugInput.value !== slug) slugInput.value = slug;
       if (!title) {
@@ -14883,18 +14891,16 @@
         setArticleUploadError(form, "cover", "กรุณาอัปโหลดรูป Cover");
         validationErrors.push("cover");
       }
-      if (!coverCaption) {
-        setArticleFieldError(form, "coverCaption", "กรุณากรอก Caption รูป Cover เพื่อใช้เป็น alt text");
-        validationErrors.push("coverCaption");
-      }
       const hasMainContentBlock = contentBlocks.some(block => block.type !== "divider" && (block.type === "image" ? (form.dataset.articleBodyImageSrc || block.caption) : block.content));
       let hasInvalidLinkBlock = false;
       form.querySelectorAll('[data-article-content-block][data-article-block-type="link"]').forEach(block => {
         const linkText = block.querySelector("[data-article-block-value]")?.value.trim() || "";
-        const linkUrl = block.querySelector("[data-article-block-url]")?.value.trim() || "";
+        const urlInput = block.querySelector("[data-article-block-url]");
+        const linkUrl = normalizeArticleLinkUrl(urlInput?.value || "");
+        if (urlInput && urlInput.value.trim() && isSafeArticleLinkUrl(linkUrl)) urlInput.value = linkUrl;
         if (!linkText || !isSafeArticleLinkUrl(linkUrl)) {
           hasInvalidLinkBlock = true;
-          setArticleBlockUrlError(block, "กรุณากรอก Link text และ URL ที่ขึ้นต้นด้วย http://, https:// หรือ /");
+          setArticleBlockUrlError(block, "กรุณากรอก Link text และ URL เป็น http://, https://, www. หรือ /");
         }
       });
       if (!hasMainContentBlock) {
@@ -14930,7 +14936,7 @@
         focusFirstArticleValidationError(form, validationErrors);
         return null;
       }
-      return { formData, status, category, publishDate, publishTime, contentBlocks, title, slug, coverCaption, existingArticle };
+      return { formData, status, category, publishDate, publishTime, contentBlocks, title, slug, existingArticle };
     }
 
     function saveArticleFromForm(form) {
@@ -14938,7 +14944,7 @@
       const now = formatArticleActionTimestamp();
       const validated = validateArticleEditorForm(form);
       if (!validated) return;
-      const { formData, status, category, publishDate, publishTime, contentBlocks, title, slug, coverCaption, existingArticle } = validated;
+      const { formData, status, category, publishDate, publishTime, contentBlocks, title, slug, existingArticle } = validated;
       const legacyFields = getArticleLegacyFieldsFromBlocks(contentBlocks);
       const hasImageBlock = contentBlocks.some(block => block.type === "image");
       const isExistingPublishedLifecycle = ["Published", "Archived"].includes(existingArticle?.status);
@@ -14965,7 +14971,7 @@
         body: legacyFields.body,
         contentBlocks,
         slug,
-        coverCaption,
+        coverCaption: String(formData.get("coverCaption") || "").trim(),
         bodyImageCaption: legacyFields.bodyImageCaption,
         keyTakeaways: formData.has("keyTakeaways") ? String(formData.get("keyTakeaways") || "").trim() : existingArticle?.keyTakeaways || "",
         comparisonRows: legacyFields.comparisonRows,
@@ -16914,7 +16920,6 @@
           form.dataset.articleSlugManual = event.target.value.trim() ? "true" : "false";
           setArticleFieldError(form, "slug");
         }
-        if (event.target.matches('[name="coverCaption"]')) setArticleFieldError(form, "coverCaption");
         if (event.target.matches("[data-article-block-field]")) {
           setArticleFieldError(form, "content");
           setArticleBlockUrlError(event.target.closest("[data-article-content-block]"));
