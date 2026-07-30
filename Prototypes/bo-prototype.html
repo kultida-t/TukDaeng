@@ -14768,7 +14768,6 @@
       const title = String(formData.get("title") || "").trim();
       const slug = slugifyArticle(formData.get("slug") || title);
       const coverCaption = String(formData.get("coverCaption") || "").trim();
-      const requiresPublishReadyContent = ["Scheduled", "Published"].includes(status);
       const slugInput = form.querySelector('[name="slug"]');
       if (slugInput && slugInput.value !== slug) slugInput.value = slug;
       if (!title) {
@@ -14789,15 +14788,15 @@
         setArticleFieldError(form, "category", "หมวดหมู่นี้ไม่พร้อมใช้งาน กรุณาเลือกหมวดหมู่ Active");
         validationErrors.push("category");
       }
-      if (requiresPublishReadyContent && !(form.dataset.articleCoverSrc || existingArticle?.coverImageSrc)) {
+      if (!(form.dataset.articleCoverSrc || existingArticle?.coverImageSrc)) {
         setArticleUploadError(form, "cover", "กรุณาอัปโหลดรูป Cover");
         validationErrors.push("cover");
       }
-      if (requiresPublishReadyContent && !coverCaption) {
+      if (!coverCaption) {
         setArticleFieldError(form, "coverCaption", "กรุณากรอก Caption รูป Cover เพื่อใช้เป็น alt text");
         validationErrors.push("coverCaption");
       }
-      if (requiresPublishReadyContent && !contentBlocks.length) {
+      if (!contentBlocks.length) {
         setArticleFieldError(form, "content", "กรุณาเพิ่มเนื้อหาอย่างน้อย 1 บล็อก");
         validationErrors.push("content");
       }
