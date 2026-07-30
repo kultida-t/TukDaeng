@@ -12479,7 +12479,7 @@
         waitingHours: 18,
         reason: "เนื้อหาไม่เหมาะสม",
         reportedPart: "Body image",
-        reporterNote: "The document photo appears copied from a dealer listing and still shows a cropped watermark.",
+        reporterNote: "รูปเอกสารดูเหมือนถูกคัดลอกจากประกาศของดีลเลอร์ และยังเห็นลายน้ำที่ถูกครอปอยู่",
         nextCheck: "Compare the reported image with source evidence, then hide only the image or archive the article if the claim is confirmed.",
         preview: "Provenance checklist article with a reported body image inside the Board content.",
         reportedAt: "10 Jul 2026 14:20",
@@ -14975,7 +14975,7 @@
         "Report Received": "รับรายงาน Board",
         "Close Report": "ปิดรายงาน",
         "Hide Reported Image": "ซ่อนรูปที่ถูกรายงาน",
-        "Archive Article": "Archive article",
+        "Archive Article": "เก็บบทความ",
         "Restore Reported Image": "คืนรูปที่ซ่อน"
       };
       return labels[action] || action;
@@ -14983,10 +14983,7 @@
 
     function renderBoardReportState(state) {
       if (!state) return `<span class="muted">-</span>`;
-      return `
-        ${state.reportStatus ? `<span class="pill ${state.reportStatus === "Cleared" ? "green" : "amber"}">${state.reportStatus === "Cleared" ? "Closed" : state.reportStatus}</span>` : ""}
-        ${state.contentStatus ? boardReportContentStatusPill(state.contentStatus) : ""}
-      `;
+      return state.contentStatus ? boardReportContentStatusPill(state.contentStatus) : `<span class="muted">-</span>`;
     }
 
     function getBoardReportAuditDetail(action) {
@@ -15000,8 +14997,42 @@
       return details[action] || "บันทึกการดำเนินการกับรายงาน Board";
     }
 
+    function getBoardReportActionRows(report) {
+      const rows = Array.isArray(report?.actionHistory) ? report.actionHistory.map(row => ({ ...row })) : [];
+      rows.forEach((row, index) => {
+        row._sortIndex = index;
+      });
+      const hasCloseReportHistory = rows.some(row => row.action === "Close Report" && row.after?.reportStatus === "Cleared");
+      const closingContentRow = rows.find(row => (
+        ["Hide Reported Image", "Archive Article"].includes(row.action)
+        && row.after?.reportStatus === "Cleared"
+      ));
+      if (closingContentRow && !hasCloseReportHistory) {
+        rows.push({
+          createdAt: getAssetHistoryOffsetTime(closingContentRow.createdAt, 1),
+          actor: closingContentRow.actor,
+          action: "Close Report",
+          before: { reportStatus: "Pending", contentStatus: closingContentRow.after?.contentStatus || report.contentStatus },
+          after: { reportStatus: "Cleared", contentStatus: closingContentRow.after?.contentStatus || report.contentStatus },
+          note: "ผู้ดูแลปิดรายงานหลังดำเนินการกับ Board content เรียบร้อยแล้ว",
+          _sortIndex: rows.length
+        });
+      }
+      return rows.sort((a, b) => {
+        const timeDiff = parseAssetHistoryTime(b.createdAt) - parseAssetHistoryTime(a.createdAt);
+        if (timeDiff) return timeDiff;
+        return getBoardReportActionSortRank(b.action) - getBoardReportActionSortRank(a.action) || a._sortIndex - b._sortIndex;
+      });
+    }
+
+    function getBoardReportActionSortRank(action) {
+      if (action === "Close Report") return 30;
+      if (action === "Hide Reported Image" || action === "Archive Article" || action === "Restore Reported Image") return 20;
+      return 0;
+    }
+
     function renderBoardReportAuditHistoryTable(report) {
-      const allRows = Array.isArray(report?.actionHistory) ? report.actionHistory : [];
+      const allRows = getBoardReportActionRows(report);
       const pageCount = Math.max(1, Math.ceil(allRows.length / reportHistoryPageSize));
       reportAuditHistoryPage = Math.min(reportAuditHistoryPage, pageCount);
       const start = (reportAuditHistoryPage - 1) * reportHistoryPageSize;
