@@ -2897,7 +2897,10 @@
       white-space: nowrap;
     }
     .user-row.report-row {
-      grid-template-columns: minmax(104px, .5fr) minmax(156px, .76fr) minmax(116px, .54fr) minmax(106px, .5fr) minmax(210px, 1.18fr) minmax(86px, .4fr) minmax(96px, .46fr) minmax(150px, .72fr) minmax(104px, .46fr);
+      grid-template-columns: minmax(96px, .48fr) minmax(150px, .72fr) minmax(124px, .58fr) minmax(86px, .42fr) minmax(300px, 1.7fr) minmax(70px, .34fr) minmax(76px, .36fr) minmax(138px, .66fr) 46px;
+      gap: 16px;
+      padding-left: 18px;
+      padding-right: 18px;
     }
     .user-row.asset-report-row {
       grid-template-columns: minmax(100px, .46fr) minmax(180px, .84fr) minmax(250px, 1.08fr) minmax(92px, .42fr) minmax(230px, 1.06fr) minmax(78px, .34fr) minmax(88px, .38fr) minmax(72px, .3fr);
@@ -2910,6 +2913,20 @@
     }
     .user-row.report-row:not(.head) {
       cursor: pointer;
+    }
+    .user-row.report-row > div:nth-child(5) {
+      max-width: 420px;
+    }
+    .user-row.report-row > div:nth-child(5) .muted {
+      line-height: 1.5;
+    }
+    .user-row.report-row > div:nth-child(6),
+    .user-row.report-row > div:nth-child(7),
+    .user-row.report-row > div:nth-child(9) {
+      justify-self: start;
+    }
+    .user-row.report-row > .user-row-actions {
+      justify-self: end;
     }
     .user-row:last-child { border-bottom: 0; }
     .user-row.head {
@@ -5123,7 +5140,7 @@
         overflow-x: auto;
       }
       .user-row.report-row {
-        grid-template-columns: minmax(104px, .5fr) minmax(150px, .74fr) minmax(116px, .54fr) minmax(106px, .5fr) minmax(200px, 1.14fr) minmax(88px, .42fr) minmax(96px, .46fr) minmax(150px, .72fr) minmax(104px, .46fr);
+        grid-template-columns: minmax(96px, .46fr) minmax(144px, .7fr) minmax(116px, .54fr) minmax(84px, .4fr) minmax(280px, 1.58fr) minmax(70px, .34fr) minmax(76px, .36fr) minmax(130px, .62fr) 46px;
         overflow-x: auto;
       }
       .user-row.asset-report-row {
