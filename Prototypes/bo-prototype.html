@@ -15198,11 +15198,18 @@
       document.querySelector(".filters").innerHTML = "";
       document.querySelector("#summary-grid").innerHTML = "";
       document.querySelector("#cards").innerHTML = "";
+      const article = getArticleById(report.articleId) || {
+        id: report.articleId,
+        title: report.articleTitle,
+        coverImageSrc: "",
+        coverImageName: ""
+      };
       const detailActionButtons = renderBoardReportDetailActionButtons(report);
       document.querySelector("#table").innerHTML = `
         <div class="user-detail-page report-detail-page asset-report-detail-page">
           <div class="user-detail-head">
             <div class="user-detail-title">
+              ${renderArticleTitleImage(article)}
               <div>
                 <h2 class="asset-report-heading"><span class="asset-report-id">${report.id}</span><span class="user-detail-separator"> : </span><span class="asset-report-name user-display-name">${report.articleTitle}</span></h2>
                 <div class="chips">
