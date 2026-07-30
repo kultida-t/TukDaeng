@@ -2903,7 +2903,29 @@
       padding-right: 18px;
     }
     .user-row.asset-report-row {
-      grid-template-columns: minmax(100px, .46fr) minmax(180px, .84fr) minmax(250px, 1.08fr) minmax(92px, .42fr) minmax(230px, 1.06fr) minmax(78px, .34fr) minmax(88px, .38fr) minmax(72px, .3fr);
+      grid-template-columns: minmax(112px, .52fr) minmax(230px, 1.08fr) minmax(240px, 1.08fr) minmax(112px, .52fr) minmax(330px, 1.55fr) minmax(96px, .44fr) minmax(96px, .44fr) minmax(58px, .28fr);
+      column-gap: 18px;
+      padding-left: 20px;
+      padding-right: 20px;
+    }
+    .user-row.asset-report-row > div {
+      min-width: 0;
+    }
+    .user-row.asset-report-row > div:nth-child(5) {
+      max-width: none;
+    }
+    .user-row.asset-report-row > div:nth-child(5) .muted {
+      color: #40536c;
+      line-height: 1.55;
+      overflow-wrap: anywhere;
+    }
+    .user-row.asset-report-row > div:nth-child(6),
+    .user-row.asset-report-row > div:nth-child(7) {
+      justify-self: start;
+    }
+    .user-row.asset-report-row.head > div:nth-child(6),
+    .user-row.asset-report-row.head > div:nth-child(7) {
+      text-align: left;
     }
     .user-row.asset-report-row .asset-status-pills {
       flex-wrap: nowrap;
@@ -2927,6 +2949,15 @@
     }
     .user-row.report-row > .user-row-actions {
       justify-self: end;
+    }
+    .user-row.report-row.asset-report-row.head > div:last-child {
+      justify-self: stretch;
+      justify-content: center;
+      text-align: center;
+    }
+    .user-row.report-row.asset-report-row > .user-row-actions {
+      justify-self: stretch;
+      justify-content: center;
     }
     .user-row:last-child { border-bottom: 0; }
     .user-row.head {
@@ -5144,7 +5175,8 @@
         overflow-x: auto;
       }
       .user-row.asset-report-row {
-        grid-template-columns: minmax(96px, .42fr) minmax(150px, .7fr) minmax(240px, 1.02fr) minmax(92px, .42fr) minmax(200px, .98fr) minmax(82px, .38fr) minmax(92px, .42fr) minmax(76px, .34fr);
+        grid-template-columns: minmax(104px, .48fr) minmax(200px, 1fr) minmax(220px, 1.02fr) minmax(106px, .5fr) minmax(300px, 1.42fr) minmax(92px, .42fr) minmax(92px, .42fr) minmax(62px, .3fr);
+        column-gap: 16px;
       }
     }
     @media (max-width: 760px) {
