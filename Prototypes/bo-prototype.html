@@ -6052,6 +6052,13 @@
         justify-content: center;
         white-space: nowrap;
       }
+      .asset-report-detail-page .board-report-reference-head .asset-report-view-btn {
+        min-height: 30px;
+        height: 30px;
+        padding: 6px 10px;
+        font-size: 12px;
+        line-height: 1.2;
+      }
       .page-actions .page-back-btn,
       .report-detail-page .report-back-btn,
       body.user-detail-mode .user-detail-page .user-back-btn,
@@ -15263,7 +15270,7 @@
           <div class="detail-section">
             <div class="board-report-reference-head">
               <h4>Reported Reference</h4>
-              <button class="btn asset-report-view-btn" type="button" data-board-report-preview="${report.id}" aria-label="View Board content ${report.id}" title="View Board Content">${iconSvg.eye}<span class="asset-report-view-label">View Content</span></button>
+              <button class="btn asset-report-view-btn" type="button" data-board-report-preview="${report.id}" aria-label="View Board content ${report.id}" title="View Board Content"><span class="asset-report-view-label">View Content</span></button>
             </div>
             <div class="detail-grid two report-reference-grid">
               <div class="detail-tile"><span>Report ID</span><strong>${report.id}</strong></div>
