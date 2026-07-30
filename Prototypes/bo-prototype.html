@@ -1422,6 +1422,9 @@
     .category-table .asset-row {
       grid-template-columns: minmax(112px, .68fr) minmax(260px, 1.65fr) minmax(190px, 1fr) minmax(128px, .7fr) minmax(128px, .7fr) minmax(76px, .42fr);
     }
+    .reported-board-table .asset-row {
+      grid-template-columns: minmax(112px, .68fr) minmax(260px, 1.65fr) minmax(150px, .82fr) minmax(128px, .7fr) minmax(220px, 1.18fr) minmax(96px, .52fr) minmax(112px, .58fr) minmax(76px, .42fr);
+    }
     .asset-table .asset-row:nth-last-child(-n + 2) .row-menu-list,
     .user-table .user-row:nth-last-child(-n + 2) .row-menu-list {
       top: auto;
@@ -1433,18 +1436,21 @@
       padding-left: 22px;
       padding-right: 22px;
     }
-    body.category-list-mode .category-table .asset-row:not(.head) {
+    body.category-list-mode .category-table .asset-row:not(.head),
+    body.reported-board-mode .reported-board-table .asset-row:not(.head) {
       column-gap: 18px;
       min-height: 82px;
       padding-left: 22px;
       padding-right: 22px;
+      cursor: pointer;
     }
     body.article-list-mode .article-table .asset-row.head {
       column-gap: 18px;
       min-height: 44px;
       padding: 12px 22px;
     }
-    body.category-list-mode .category-table .asset-row.head {
+    body.category-list-mode .category-table .asset-row.head,
+    body.reported-board-mode .reported-board-table .asset-row.head {
       column-gap: 18px;
       min-height: 44px;
       padding: 12px 22px;
@@ -1452,25 +1458,34 @@
     body.article-list-mode .article-table .asset-row > div:nth-child(4),
     body.article-list-mode .article-table .asset-row > div:nth-child(5),
     body.category-list-mode .category-table .asset-row > div:nth-child(4),
-    body.category-list-mode .category-table .asset-row > div:nth-child(5) {
+    body.category-list-mode .category-table .asset-row > div:nth-child(5),
+    body.reported-board-mode .reported-board-table .asset-row > div:nth-child(4),
+    body.reported-board-mode .reported-board-table .asset-row > div:nth-child(6),
+    body.reported-board-mode .reported-board-table .asset-row > div:nth-child(7) {
       justify-self: start;
     }
     body.article-list-mode .article-table .asset-row > div:last-child,
-    body.category-list-mode .category-table .asset-row > div:last-child {
+    body.category-list-mode .category-table .asset-row > div:last-child,
+    body.reported-board-mode .reported-board-table .asset-row > div:last-child {
       justify-self: end;
     }
     body.article-list-mode .article-table .asset-row.head > div:nth-child(4),
     body.article-list-mode .article-table .asset-row.head > div:nth-child(5),
     body.category-list-mode .category-table .asset-row.head > div:nth-child(4),
-    body.category-list-mode .category-table .asset-row.head > div:nth-child(5) {
+    body.category-list-mode .category-table .asset-row.head > div:nth-child(5),
+    body.reported-board-mode .reported-board-table .asset-row.head > div:nth-child(4),
+    body.reported-board-mode .reported-board-table .asset-row.head > div:nth-child(6),
+    body.reported-board-mode .reported-board-table .asset-row.head > div:nth-child(7) {
       text-align: left;
     }
     body.article-list-mode #primary-action,
-    body.category-list-mode #primary-action {
+    body.category-list-mode #primary-action,
+    body.reported-board-mode #primary-action {
       display: none;
     }
     body.article-list-mode .panel-head,
-    body.category-list-mode .panel-head {
+    body.category-list-mode .panel-head,
+    body.reported-board-mode .panel-head {
       min-height: 58px;
       padding: 14px 16px;
       border-top-left-radius: var(--radius);
@@ -1478,22 +1493,17 @@
       background: #fff;
     }
     body.article-list-mode .panel-head h2,
-    body.category-list-mode .panel-head h2 {
+    body.category-list-mode .panel-head h2,
+    body.reported-board-mode .panel-head h2 {
       color: #071b36;
       font-size: 26px;
       letter-spacing: 0;
       text-transform: uppercase;
       white-space: nowrap;
     }
-    body.reported-board-mode .layout > .panel .panel-head h2 {
-      color: #071b36;
-      font-size: 26px;
-      letter-spacing: .08em;
-      text-transform: uppercase;
-      white-space: nowrap;
-    }
     body.article-list-mode .filters,
-    body.category-list-mode .filters {
+    body.category-list-mode .filters,
+    body.reported-board-mode .filters {
       display: flex;
       gap: 8px;
       flex-wrap: wrap;
@@ -1507,8 +1517,12 @@
     body.category-list-mode .user-filter-bar {
       grid-template-columns: minmax(240px, 1.35fr) minmax(126px, .68fr) minmax(126px, .68fr) max-content;
     }
+    body.reported-board-mode .user-filter-bar {
+      grid-template-columns: minmax(240px, 1.35fr) repeat(3, minmax(126px, .68fr)) max-content;
+    }
     body.article-list-mode .footer-range,
-    body.category-list-mode .footer-range {
+    body.category-list-mode .footer-range,
+    body.reported-board-mode .footer-range {
       border-bottom-left-radius: var(--radius);
       border-bottom-right-radius: var(--radius);
       background: #fff;
@@ -14866,12 +14880,13 @@
       const start = (boardReportListPage - 1) * articleListPageSize;
       const pageRows = sorted.slice(start, start + articleListPageSize);
       document.querySelector("#table").innerHTML = `
-        <div class="user-table">
-          <div class="user-row report-row asset-report-row head"><div>Report ID</div><div>Article</div><div>Content Status</div><div>Status</div><div>Report Detail</div><div>Reporters</div><div>Priority</div><div>Action</div></div>
+        <div class="asset-table reported-board-table">
+          <div class="asset-row reported-board-row head"><div>Report ID</div><div>Article</div><div>Content Status</div><div>Status</div><div>Report Detail</div><div>Reporters</div><div>Priority</div><div>Action</div></div>
           ${pageRows.map(report => `
-            <div class="user-row report-row asset-report-row" data-board-report-card="${report.id}">
-              <div class="user-cell-primary" data-label="Report ID"><div class="main-text">${report.id}</div></div>
-              <div class="user-card-tags">
+            <div class="asset-row reported-board-row" data-board-report-card="${report.id}">
+              <div data-label="Report ID"><div class="main-text">${report.id}</div></div>
+              <div class="asset-cell-primary" data-label="Article"><div class="main-text">${report.articleTitle}</div><div class="muted">${report.articleId} · ${report.category}</div></div>
+              <div class="asset-card-tags">
                 ${boardReportQueueStatusPill(report)}
                 ${boardReportContentStatusPill(report.contentStatus)}
                 <span class="user-card-tag asset-tag">${report.reporters} reporters</span>
@@ -14881,7 +14896,6 @@
                   <div class="user-card-meta-item"><span>Report detail</span><strong>${report.reason}</strong></div>
                 </div>
               </div>
-              <div data-label="Article"><div class="main-text">${report.articleTitle}</div><div class="muted">${report.articleId} · ${report.category}</div></div>
               <div data-label="Content Status">${boardReportContentStatusPill(report.contentStatus)}</div>
               <div data-label="Status">${boardReportQueueStatusPill(report)}</div>
               <div data-label="Report Detail"><div class="muted">${report.reason}</div></div>
