@@ -11594,13 +11594,12 @@
           </div>
 
           <div class="detail-section">
-            <h4>Reported User</h4>
+            <h4>Reported Reference</h4>
             <div class="detail-grid two report-reference-grid user-report-reference-grid">
               <div class="detail-tile"><span>Report ID</span><strong>${report.id}</strong></div>
               <div class="detail-tile"><span>User ID</span><strong>${report.userId}</strong></div>
               <div class="detail-tile"><span>User</span><strong>${report.user}</strong></div>
               <div class="detail-tile"><span>Account Status</span><strong>${userStatusLabels[getReportAccountStatus(report)] || getReportAccountStatus(report)}</strong></div>
-              <div class="detail-tile report-summary-reason-tile"><span>Report Reason</span><strong>${renderUserReportReasonsLabel(report)}</strong></div>
             </div>
           </div>
 
