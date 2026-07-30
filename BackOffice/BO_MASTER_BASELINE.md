@@ -46,7 +46,7 @@ Phase 1 คือ BO foundation ขั้นต่ำที่จำเป็น
 | Dashboard | Key metrics, pending queues, recent activity, last updated snapshot |
 | User Management | User list, search/filter/sort, profile/detail view, login history, suspend/ban/restore, reset password, Account Deletion handoff, no direct User List export |
 | Asset Management | `04_ASSET_MANAGEMENT_MODULE.md` - Asset list/detail, status visibility, reports, flag/unflag, temporary hide/unhide, permanent hide, ลบโดยเจ้าของ retained record, force status change, sensitive-field control |
-| Content / Board | `05_CONTENT_BOARD_MODULE.md` - Article/category/banner CRUD, preview as FO, draft/publish/schedule/archive, featured ordering |
+| Content / Board | `05_CONTENT_BOARD_MODULE.md` - Article/category CRUD, preview as FO, draft/publish/schedule/archive, automatic Board Main placement from Published Articles; banner/featured ordering is future scope |
 | Market Data | `06_MARKET_DATA_MODULE.md` - Brand/model/reference/price index management และ active/inactive status |
 | Directory | `07_DIRECTORY_MODULE.md` - Directory item CRUD, publication status, map/contact fields, image fields |
 | Audit Log | `08_AUDIT_LOG_MODULE.md` - Immutable event capture, search/filter, export, Admin visibility |

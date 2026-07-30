@@ -162,11 +162,18 @@ Recommended note format:
 - [ ] Preview as FO ต้องเป็น admin-only และไม่เพิ่ม view count
 - [ ] Publish now และ schedule publish ต้องใช้เวลาแสดงผลตาม Asia/Bangkok
 - [ ] Archived articles ต้องหายจาก Board/search/category
-- [ ] Featured และ featured order ต้องควบคุม FO Board hero/featured area
+- [ ] FO Board Main ต้องใช้ Published Articles เท่านั้นสำหรับ Main Hero, Trending Now และ Journal Board preview; Phase 1 ไม่ใช้ Banner entity, Featured toggle หรือ Featured order
+- [ ] Eligible article query ต้องใช้ `status = Published`, `publishDateTime <= now` ตาม Asia/Bangkok, active category, required FO card fields ครบ และไม่เป็น archived/unpublished/deleted/policy-hidden
+- [ ] Automatic fallback ordering ต้องเป็น `publishDateTime DESC`, `updatedAt DESC`, `articleId DESC`
+- [ ] Main Hero ต้องเลือก eligible article ลำดับแรก และ reserve `articleId` ไม่ให้ซ้ำใน Trending Now หรือ Journal Board preview บน Board Main
+- [ ] Trending Now ต้องเลือกจาก eligible articles ที่ไม่ใช่ Main Hero; ถ้ามี trending score ให้ใช้ score ก่อนแล้ว fallback ordering, ถ้ายังไม่มี score ให้ใช้ latest remaining articles
+- [ ] Journal Board preview บน Board Main ต้องเลือกจาก eligible articles ที่ยังไม่ถูกใช้ใน Main Hero/Trending Now; ถ้าไม่มี remaining article ให้ซ่อน section preview
+- [ ] Journal Board View All ต้องเป็นหน้ารวม eligible Published Articles ทั้งหมด เรียงตาม fallback ordering และอนุญาตให้มีบทความเดียวกับ Hero/Trending ได้
+- [ ] Category hero/list ต้องดึงจาก eligible Published Articles ของ active category นั้น โดยใช้ fallback ordering และหลีกเลี่ยงการซ้ำภายในหน้าเดียวกัน
 - [ ] Category active/inactive ต้องส่งผลต่อ FO category sidebar
-- [ ] Banner active date range ต้องควบคุม FO display
+- [ ] Banner management เป็น future scope เฉพาะ campaign/promotion/event/sponsor/external link/non-article deep link และไม่อยู่ใน Phase 1 Board Main
 - [ ] Report article จาก FO ต้องเข้า BO reported Board Content handoff และไม่ทำให้ article หายทันที
-- [ ] Publish/archive/category/banner actions ต้อง audit-log พร้อม before/after state
+- [ ] Publish/archive/category actions ต้อง audit-log พร้อม before/after state
 - [ ] Article editor และ preview ต้อง responsive ที่ 375px, 768px, 1280px และ 1440px
 
 ## 6. Market Data
