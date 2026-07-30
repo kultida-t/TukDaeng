@@ -14865,6 +14865,17 @@
       `;
     }
 
+    function getBoardReportAuditDetail(action) {
+      const details = {
+        "Report Received": "ระบบรับรายงานและเปิดเคสตรวจสอบ",
+        "Close Report": "ตรวจสอบแล้วและปิดรายงาน",
+        "Hide Reported Image": "ซ่อนรูปที่ถูกรายงานจากบทความ",
+        "Archive Article": "เก็บบทความออกจากการแสดงผล",
+        "Restore Reported Image": "คืนรูปที่ซ่อนกลับสู่บทความ"
+      };
+      return details[action] || "บันทึกการดำเนินการกับรายงาน Board";
+    }
+
     function renderBoardReportAuditHistoryTable(report) {
       const allRows = Array.isArray(report?.actionHistory) ? report.actionHistory : [];
       const pageCount = Math.max(1, Math.ceil(allRows.length / reportHistoryPageSize));
@@ -14877,10 +14888,9 @@
           <td data-label="ผู้ดำเนินการ">${row.actor}</td>
           <td data-label="Action">${getBoardReportActionLabel(row.action)}</td>
           <td data-label="สถานะ">${renderBoardReportState(row.after)}</td>
-          <td data-label="ส่งอีเมล"><span class="pill gray">Not required</span></td>
-          <td data-label="รายละเอียด" class="history-note">${renderHistoryValue(row.note || "-")}</td>
+          <td data-label="รายละเอียด" class="history-note">${getBoardReportAuditDetail(row.action)}</td>
         </tr>
-      `).join("") : `<tr><td colspan="6" class="history-note">No admin action recorded yet</td></tr>`;
+      `).join("") : `<tr><td colspan="5" class="history-note">No admin action recorded yet</td></tr>`;
       return `
         <div class="history-table-wrap">
           <table class="history-table asset-status-history-table">
@@ -14890,7 +14900,6 @@
                 <th>ผู้ดำเนินการ</th>
                 <th>Action</th>
                 <th>สถานะ</th>
-                <th>ส่งอีเมล</th>
                 <th>รายละเอียด</th>
               </tr>
             </thead>
