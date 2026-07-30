@@ -1718,6 +1718,73 @@
       grid-template-columns: repeat(2, minmax(0, 1fr));
       align-items: start;
     }
+    .modal.user-action-modal.board-report-phone-preview-modal {
+      width: min(528px, calc(100vw - 28px));
+      max-height: calc(100vh - 28px);
+      overflow: visible;
+      border: 0;
+      background: transparent;
+      box-shadow: none;
+    }
+    .board-report-phone-preview-modal .modal-body {
+      padding: 0;
+      overflow: hidden;
+      scrollbar-width: none;
+    }
+    .board-report-phone-preview-modal .modal-body::-webkit-scrollbar {
+      display: none;
+    }
+    .board-report-phone-preview {
+      position: relative;
+      display: grid;
+      place-items: center;
+      padding: 22px 44px 34px;
+    }
+    .board-report-phone-preview .article-phone-preview {
+      width: min(100%, 460px);
+      height: min(956px, calc(100vh - 78px));
+      margin: 0;
+    }
+    .board-report-phone-preview .article-fo-title,
+    .board-report-phone-preview .article-fo-heading,
+    .board-report-phone-preview .article-fo-subheading {
+      font-family: var(--font-main);
+      letter-spacing: 0;
+      text-transform: none;
+    }
+    .board-report-phone-preview .article-fo-title {
+      font-weight: 700;
+    }
+    .board-report-phone-preview .article-fo-heading,
+    .board-report-phone-preview .article-fo-subheading {
+      font-weight: 800;
+    }
+    .board-report-phone-preview-close {
+      position: absolute;
+      z-index: 4;
+      top: 6px;
+      right: 6px;
+      width: 40px;
+      height: 40px;
+      border-color: rgba(15, 23, 42, .18);
+      border-radius: 999px;
+      background: rgba(255, 255, 255, .96);
+      color: #0f172a;
+      box-shadow: 0 14px 34px rgba(0, 0, 0, .28);
+      backdrop-filter: blur(8px);
+    }
+    .board-report-phone-preview-close svg {
+      width: 18px;
+      height: 18px;
+    }
+    .board-report-phone-preview-title {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+      clip: rect(0 0 0 0);
+      white-space: nowrap;
+    }
     .modal.user-action-modal.article-editor-confirm-modal {
       width: min(420px, calc(100vw - 36px));
       border-radius: 22px;
@@ -10640,7 +10707,7 @@
       const modal = document.querySelector("#user-action-modal");
       if (!modal) return;
       modal.classList.remove("show");
-      modal.querySelector(".user-action-modal")?.classList.remove("article-preview-modal", "article-editor-confirm-modal", "category-editor-modal", "category-order-modal");
+      modal.querySelector(".user-action-modal")?.classList.remove("article-preview-modal", "article-editor-confirm-modal", "category-editor-modal", "category-order-modal", "board-report-phone-preview-modal");
       document.body.classList.remove("asset-action-modal-open");
       document.querySelector("#user-action-modal-body").innerHTML = "";
     }
@@ -15128,33 +15195,28 @@
       const modalCard = modal?.querySelector(".user-action-modal");
       const modalBody = document.querySelector("#user-action-modal-body");
       if (!modal || !modalCard || !modalBody) return;
-      modalCard.classList.remove("article-preview-modal", "article-editor-confirm-modal", "category-order-modal");
+      const article = getArticleById(report.articleId) || {
+        id: report.articleId,
+        title: report.articleTitle,
+        category: report.category,
+        author: "Editorial",
+        publishAt: "-",
+        deck: report.preview,
+        body: [report.preview],
+        coverCaption: "",
+        coverImageName: "",
+        coverImageSrc: ""
+      };
+      modalCard.classList.remove("article-preview-modal", "article-editor-confirm-modal", "category-order-modal", "category-editor-modal");
+      modalCard.classList.add("board-report-phone-preview-modal");
       modalBody.innerHTML = `
-        <div class="user-action-layout">
-          <div class="user-action-head">
-            <div>
-              <h2 id="user-action-modal-title">Board Content Preview</h2>
-              <p>${report.id} · ${report.articleId}</p>
-            </div>
-            <button class="btn user-action-close" type="button" data-user-action-modal-close aria-label="Close modal" title="Close">${iconSvg.close}</button>
-          </div>
-          <div class="detail-section">
-            <h4>${report.articleTitle}</h4>
-            <div class="detail-grid two report-reference-grid">
-              <div class="detail-tile"><span>Category</span><strong>${report.category}</strong></div>
-              <div class="detail-tile"><span>Reported Part</span><strong>${report.reportedPart}</strong></div>
-              <div class="detail-tile"><span>Content Status</span><strong>${report.contentStatus}</strong></div>
-              <div class="detail-tile"><span>Surface</span><strong>${report.surface}</strong></div>
-            </div>
-          </div>
-          <div class="detail-section">
-            <h4>Preview Context</h4>
-            <div class="module-note">${report.preview}</div>
-            <div class="warning-note"><strong>Report reason:</strong> ${report.reason}</div>
-          </div>
+        <div class="board-report-phone-preview">
+          <h2 class="board-report-phone-preview-title" id="user-action-modal-title">Preview article ${escapeArticleField(report.id)} ${escapeArticleField(report.articleId)}</h2>
+          <button class="btn user-action-close board-report-phone-preview-close" type="button" data-user-action-modal-close aria-label="Close modal" title="Close">${iconSvg.close}</button>
+          ${renderArticleFoPreview(article)}
         </div>
       `;
-      showUserActionModal();
+      showUserActionModal(true);
     }
 
     function renderReportedAssetRows() {
