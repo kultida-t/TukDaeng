@@ -272,9 +272,9 @@ Admin ต้องสามารถ:
 - ตั้ง SEO Title / SEO Description
 - Save Draft / Publish Now / Schedule Publish / Archive
 - Preview as FO
-- Set Featured Article และ Featured Order
 - จัดการ Categories
-- จัดการ Board Banners
+- Board Main automatic placement uses Published Articles only; no Featured toggle/order is required in Phase 1
+- Board Banners are future scope for campaign/promotion/event/sponsor/external link or non-article deep link only
 - ดู Board Analytics
 
 ### FO Display Rules
@@ -282,6 +282,10 @@ Admin ต้องสามารถ:
 - FO Board แสดงเฉพาะ article ที่ `Status = Published`
 - Scheduled article แสดงเมื่อ `Publish Date-Time <= current time`
 - Archived article ต้องหายจาก Board/Search/Category
+- Main Hero ดึง eligible Published Article ล่าสุดลำดับแรก โดยเรียง `Publish Date-Time DESC`, `Updated At DESC`, `Article ID DESC`
+- Trending Now ดึงจาก eligible Published Articles ที่ไม่ซ้ำกับ Main Hero; ถ้ามี trending score ให้ใช้ score ก่อน ถ้าไม่มีให้ใช้บทความล่าสุดลำดับถัดไป
+- Journal Board preview บน Board Main ดึงจาก eligible Published Articles ที่ไม่ซ้ำกับ Main Hero และ Trending Now
+- Journal Board View All แสดง eligible Published Articles ทั้งหมดตามลำดับล่าสุด และสามารถมีบทความเดียวกับ Main Hero/Trending Now ได้
 - Preview as FO ไม่เพิ่ม view count และเข้าได้เฉพาะ Admin
 
 ### Acceptance Criteria

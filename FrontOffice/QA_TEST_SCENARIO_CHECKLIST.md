@@ -593,7 +593,7 @@ Then main fields ต้องถูก lock
 
 ## QA-ASSET-005: Delete Asset Impact
 
-Given Owner Delete Asset  
+Given Owner ลบ Asset  
 When deletion สำเร็จ  
 Then Asset ต้องหายจาก Feed/Search/Watch Alert/Public Profile  
 And related Offer ต้องเป็น `Cancelled`  

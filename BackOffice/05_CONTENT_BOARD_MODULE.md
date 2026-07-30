@@ -15,6 +15,18 @@ FO Board เป็น Article Area ไม่ใช่ user-generated forum ใ�
 
 ## 2. Scope
 
+### Phase 1 Board Content Decision - 2026-07-30
+
+Board Main visual placements are article-driven in Phase 1. `Content Management > Banners`, manual `Featured Article`, and `Featured Order` are not required for the current Board flow and are treated as future scope unless Product explicitly re-opens campaign/promotion banners.
+
+Current Phase 1 source of truth:
+
+- BO manages Board content through `Content Management > Articles` and `Content Management > Categories`.
+- FO Board Main renders `Main Hero`, `Trending Now`, and `Journal Board preview` from Published Articles.
+- FO must not use a separate Banner entity for Board Main Hero, Trending Now, or Journal Board preview.
+- Admin does not need to choose Hero/Featured manually in Phase 1; placement is calculated by deterministic query rules in section 11.
+- Any older reference in this document to `Featured Article`, `Featured Order`, or `Board Banners` is superseded by this decision for Phase 1.
+
 ### In Scope
 
 - Article list พร้อม search, filter, sort, pagination
@@ -22,14 +34,14 @@ FO Board เป็น Article Area ไม่ใช่ user-generated forum ใ�
 - Rich text editor
 - Draft / Scheduled / Published / Archived lifecycle
 - Preview as FO
-- Featured article และ featured order
+- Automated Board Main placement from Published Articles
 - Category management
 - Tags และ related articles
-- Board banners
+- Board banner management is future scope
 - SEO fields
 - Board analytics summary
 - Reported Board Content review handoff
-- Audit log ทุก publish/archive/feature/banner/category action
+- Audit log ทุก publish/archive/category action
 - Responsive web layout สำหรับ desktop, tablet และ mobile-width browser
 
 ### Out Of Scope
@@ -218,14 +230,63 @@ Inactive category:
 - ไม่ควรเลือกใช้กับ article publish ใหม่
 - Article เดิมต้องมี fallback rule เช่น archive, move category หรือยังแสดงภายใต้ existing category ตาม decision
 
+## 11. Board Main Article Placement Rules
+
+Phase 1 Board Main does not use a Banner entity and does not require Admin-selected Featured/Hero flags. All visible areas below are selected automatically from eligible Published Articles.
+
+Hero selection is automatic in every Board article listing context:
+
+- Board Main `Main Hero` always uses the latest eligible Published Article across all active Board categories.
+- Each category page hero always uses the latest eligible Published Article within that selected active category.
+- Admin does not manually select these hero articles in Phase 1.
+
+### Eligible Article Pool
+
+An article is eligible for Board Main placement only when all conditions are true:
+
+- `status = Published`
+- `publishDateTime <= now` using `Asia/Bangkok`
+- `category.status = Active`
+- required FO card fields are present: title, slug, cover image, cover image alt text, category, excerpt or generated excerpt, read time
+- article is not archived, unpublished, deleted, or policy-hidden
+
+Base ordering for every automatic fallback:
+
+1. `publishDateTime` descending
+2. `updatedAt` descending as tie-breaker
+3. `articleId` descending as final tie-breaker
+
+### Display Selection Order
+
+| Display Area | Query Source | Selection Order | Deduplication Rule | Empty/Fallback Rule |
+| --- | --- | --- | --- | --- |
+| Main Hero | Eligible article pool | Pick the first article by base ordering. | Reserve selected `articleId`; do not show it again in Trending Now or Journal Board preview on Board Main. | If no eligible article exists, hide Main Hero and show Board empty state below header. |
+| Trending Now | Eligible article pool excluding Main Hero | If analytics ranking exists, sort by trending score within a configurable recent window, then base ordering. If analytics is not available, use base ordering. | Exclude Main Hero and exclude duplicates within Trending Now. | If fewer items than layout needs, show available items only; do not backfill with Main Hero. If none, hide section. |
+| Journal Board preview | Eligible article pool excluding Main Hero and Trending Now items already rendered on Board Main | Pick the first remaining article as the large Journal Board preview card, then continue with smaller list cards if the layout includes them. | Do not repeat articles already rendered in Main Hero or Trending Now on the same Board Main page. | If no remaining article exists, hide Journal Board preview on Board Main. |
+| Journal Board View All page | Eligible article pool | Use base ordering across all published articles. | No cross-page dedupe. Articles used in Board Main Hero or Trending Now must still appear here. | If no eligible article exists, show Journal Board empty state. |
+| Category page hero | Eligible article pool filtered by selected active category | Pick the first article in that category by base ordering. | Reserve selected article from that category page list if the page also shows a hero plus list in the same viewport. | If category has no eligible article, show category empty state. |
+| Category article list | Eligible article pool filtered by selected active category | Use base ordering. | Default is exclude the category hero within the same page preview/list to avoid repetition. | Show available items; empty state when none. |
+
+### Trending Score
+
+Trending score is optional for Phase 1. If implemented, it must be deterministic and documented by backend, for example weighted views, likes, shares, and recency. Until that score is available, Trending Now uses the latest eligible articles after Main Hero.
+
+### Future Banner Scope
+
+Banner management is future scope only for non-article placements such as campaign, promotion, event, sponsor creative, external URL, or deep link that is not an Article Detail. It must not be used for Board Main Hero, Trending Now, or Journal Board preview in Phase 1.
+
+## 11A. Superseded Legacy Featured And Banner Notes
+
+The legacy Featured/Banner notes below are retained only for historical context and must not be implemented for Phase 1 Board Main placement.
+
 ## 11. Featured And Trending
 
 ### Featured Article
 
-- Admin ตั้ง Featured ได้
-- ต้องมี featured order
-- FO Board hero/featured area ใช้เฉพาะ Published article
-- ถ้า Featured article ถูก archive ต้องหลุดจาก featured area
+- Legacy only: Admin-set Featured is not required for Phase 1 Board Main.
+- Legacy only: featured order is not required for Phase 1 Board Main.
+- Legacy only: FO Board hero/featured area now uses the automatic article placement rules above.
+- Legacy only: archived articles are excluded by the eligible article pool rules above.
 
 ### Trending Now
 
@@ -234,9 +295,9 @@ Trending Now อาจมาจาก:
 - Manual curated list ใน BO
 - Analytics/ranking ในอนาคต
 
-Phase 1 recommendation: ใช้ manual curated list เพื่อควบคุม content และลดความเสี่ยงของ algorithm ที่ยังไม่สรุป
+Superseded Phase 1 recommendation: manual curated list is no longer required. Current Phase 1 uses the automatic article placement rules above; analytics ranking can replace the latest-article fallback when available.
 
-## 12. Board Banners
+## 12. Legacy Board Banners (Future Scope)
 
 Banner fields:
 
@@ -337,11 +398,11 @@ Audit event ต้องมี admin ID, admin access, target type, target ID, b
 | AC-BO-CONTENT-002 | FO แสดงเฉพาะ Published article หรือ Scheduled article ที่ถึงเวลาแล้ว |
 | AC-BO-CONTENT-003 | Archived article หายจาก Board/Search/Category และ direct link แสดง unavailable behavior |
 | AC-BO-CONTENT-004 | Preview as FO ไม่เพิ่ม view count และเปิดได้เฉพาะ Admin |
-| AC-BO-CONTENT-005 | Featured article แสดงใน FO Board hero/featured area ตาม order |
+| AC-BO-CONTENT-005 | Board Main Hero, Trending Now, and Journal Board preview are selected automatically from eligible Published Articles with deterministic ordering and no duplicate article within the same Board Main page |
 | AC-BO-CONTENT-006 | Category active/inactive ส่งผลต่อ FO category filter/section |
-| AC-BO-CONTENT-007 | Banner active/scheduled/expired ส่งผลต่อ FO placement ตาม date range |
+| AC-BO-CONTENT-007 | Banner management is out of Phase 1 Board scope; Board Main visual placements must come from Article data |
 | AC-BO-CONTENT-008 | Report article เข้า BO moderation handoff โดย article ยังไม่หายจาก FO ทันที |
-| AC-BO-CONTENT-009 | Publish/archive/banner/category actions ต้อง audit-log |
+| AC-BO-CONTENT-009 | Publish/archive/category actions ต้อง audit-log |
 | AC-BO-CONTENT-010 | UI responsive ใช้งานได้ที่ mobile-width, tablet และ desktop |
 
 ## 19. Open Decisions
@@ -349,7 +410,6 @@ Audit event ต้องมี admin ID, admin access, target type, target ID, b
 | ID | Decision Needed | Current Recommendation |
 | --- | --- | --- |
 | BO-CONTENT-DEC-001 | Board ต้องมี public SEO web page แยกจาก FO mobile หรือไม่ | Phase 1 ถือว่าเป็น FO Board ก่อน |
-| BO-CONTENT-DEC-002 | Trending Now ใช้ manual curated หรือ algorithm | ใช้ manual curated ใน Phase 1 |
+| BO-CONTENT-DEC-002 | Trending Now ใช้ manual curated หรือ algorithm | Phase 1 uses automatic latest-article fallback after Main Hero; analytics ranking can replace fallback when available |
 | BO-CONTENT-DEC-003 | Published article update ต้อง require re-approval หรือไม่ | Admin update ได้ แต่ต้อง audit และ version history |
 | BO-CONTENT-DEC-004 | Inactive category ส่งผลต่อ article เดิมอย่างไร | ต้องตัดสินก่อน implementation; default คือไม่ให้ publish ใหม่กับ inactive category |
-

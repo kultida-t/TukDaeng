@@ -60,6 +60,9 @@ Owner สามารถเห็น Asset ของตัวเองทุก�
 - Show
 - Hide
 - Sold
+- ซ่อนถาวรโดยผู้ดูแล แบบ read-only
+
+Asset ที่ลบโดยเจ้าของไม่แสดงใน owner list ปกติ แต่ backend/BO ควรเก็บ record ตาม retention policy เพื่อ audit, report history, dispute หรือ compliance
 
 ### Viewer
 
@@ -121,6 +124,8 @@ Full Back Office PRD ยังไม่เริ่มระหว่าง FO c
 | Show | Asset ที่แสดงเป็นคอลเลกชัน Public แต่ไม่ได้ขึ้น Marketplace |
 | Hide | Asset ที่ซ่อน เห็นเฉพาะ Owner |
 | Sold | Asset ที่ขายแล้ว เห็นเฉพาะ Owner |
+| ลบโดยเจ้าของ | Asset ที่เจ้าของเป็นผู้ลบจาก Front Office; ไม่แสดงใน owner list ปกติหรือ public surfaces แต่ backend/BO เก็บ record ตาม retention policy |
+| ซ่อนถาวร | Moderation state จาก Back Office สำหรับ asset ที่ไม่ควรแสดงต่อสาธารณะ; owner ยังเห็นแบบ read-only แต่แก้ไขหรือ delete เองไม่ได้ |
 | Owner Profile | โปรไฟล์ของ User เอง เห็น Asset ตัวเองทุกสถานะ |
 | Public Profile | โปรไฟล์ของ User อื่น เห็นเฉพาะ Asset สถานะ Sale และ Show |
 | Watch Alert | การตั้งเงื่อนไขแจ้งเตือนเมื่อมี Asset Sale ที่ตรง Criteria |
@@ -164,6 +169,9 @@ Full Back Office PRD ยังไม่เริ่มระหว่าง FO c
 - Hide และ Sold ไม่ Public, ไม่ขึ้น Feed, ไม่ขึ้น Search และไม่เข้า Watch Alert
 - Sold Asset ไม่สามารถ Edit ข้อมูลหลักได้
 - Sold Asset เก็บไว้เพื่อ Sales History, Portfolio และ Admin Review
+- Asset ที่ลบโดยเจ้าของหายจาก owner list ปกติและ public surfaces แต่ backend/BO เก็บ record ตาม retention policy
+- Asset ที่ถูก Back Office ซ่อนถาวรหายจาก public surfaces ทั้งหมด แต่ owner ยังเห็นแบบ read-only พร้อมสถานะถูกซ่อนถาวร
+- Asset ที่ถูก Back Office ซ่อนถาวร owner ไม่สามารถ Edit, Change Status, Publish ใหม่, Mark as Sold, Boost หรือ Delete เองได้
 
 ## 6. Global Visibility Rules
 
@@ -204,6 +212,9 @@ Full Back Office PRD ยังไม่เริ่มระหว่าง FO c
   - Show: Edit asset, Edit purchase history, Change status, Delete asset
   - Hide: Edit asset, Edit purchase history, Change status, Delete asset
   - Sold: View sale history, View provenance แบบ read-only
+  - ซ่อนถาวร: View detail แบบ read-only เท่านั้น
+
+Asset ที่ลบโดยเจ้าของไม่แสดงใน owner list ปกติ ส่วน asset ที่ถูก Back Office ซ่อนถาวรยังแสดงให้ owner เห็นแบบ read-only เพื่อรับรู้สถานะและประวัติ แต่ไม่รวมใน Portfolio / Asset Value
 
 ## 7. Functional Scope
 
@@ -458,6 +469,25 @@ Sold Asset:
 - เปิดดู Sale History ได้
 - ไม่สามารถ Delete จาก Owner quick actions ปกติ
 
+ลบ Asset โดยเจ้าของ:
+
+- Owner ลบ Asset ที่ไม่ใช่ Sold และไม่ถูก Back Office ซ่อนถาวรได้ตาม policy ของ V1
+- หลังลบแล้ว Asset หายจาก owner list ปกติและ public surfaces ทั้งหมด
+- Chat ที่เกี่ยวข้องยังอยู่ แต่ Reference Asset ต้องแสดง unavailable/deleted state
+- Offer ที่เกี่ยวข้องต้องเป็น Cancelled
+- Backend/BO ควรเก็บ record ตาม retention policy เพื่อ audit, report history, dispute หรือ compliance
+- การลบนี้ไม่ใช่ hard delete ทันที เว้นแต่นโยบายระบบระบุไว้ต่างหาก
+
+Back Office ซ่อนถาวร:
+
+- ใช้แทน action เดิมที่เรียก “ลบ/เก็บถาวร” ใน moderation flow ปกติ
+- หายจาก Feed, Search, Watch Alert, Public Profile และ public deep link
+- Owner ยังเห็นได้แบบ read-only พร้อมสถานะ `ถูกซ่อนถาวรโดยผู้ดูแล`
+- Owner ไม่สามารถ Edit, Change Status, Publish ใหม่, Mark as Sold, Boost หรือ Delete เองได้
+- ไม่ถูกนำไปรวมใน Portfolio / Asset Value
+- Restore ใน moderation flow ปกติรองรับเฉพาะซ่อนชั่วคราว ไม่รองรับซ่อนถาวร
+- การลบข้อมูลจริงถือเป็นกรณีพิเศษตามนโยบายระบบ ไม่ใช่ action ปกติใน Asset Management
+
 ### Chat
 
 Chat ใช้สำหรับการสนทนาระหว่างผู้ซื้อและผู้ขาย
@@ -644,10 +674,12 @@ Portfolio คำนวณจาก:
 Portfolio ไม่รวม:
 
 - Sold
+- ลบโดยเจ้าของ
+- ซ่อนถาวรจาก Back Office
 
 Portfolio valuation baseline:
 
-- Total Asset Value = ผลรวม Current Value ของ Asset สถานะ Sale, Show, Hide ที่ยังไม่ถูกลบ
+- Total Asset Value = ผลรวม Current Value ของ Asset สถานะ Sale, Show, Hide ที่ยังใช้งานได้ และไม่ใช่รายการลบโดยเจ้าของหรือซ่อนถาวร
 - Current Value ใช้ลำดับแหล่งข้อมูล: Watch Price API market price -> Owner Estimated Value -> Purchase Price fallback -> No Valuation
 - หากใช้ Purchase Price fallback ต้องแสดง label ว่าใช้ราคาซื้อเป็นค่าประมาณ เพราะไม่มีราคาตลาด
 - หากไม่มี market price, owner estimate หรือ purchase price ให้แสดง `ไม่มีราคาตลาด` / `No market price` และไม่รวม Asset นั้นใน Total Asset Value
@@ -665,7 +697,7 @@ Portfolio valuation baseline:
 - หากไม่มี Market Price ให้แสดง `ไม่มีราคาตลาด` / `No market price` และไม่แสดง Above/At/Below
 - Holding Period สำหรับ Asset ที่ยังไม่ขาย = Today - Purchase Date
 - Holding Period สำหรับ Sold Asset = Sale Date - Purchase Date
-- Top Brand Holdings = Top 3 brand จากจำนวน Asset สถานะ Sale, Show, Hide โดยเรียง count มากไปน้อย
+- Top Brand Holdings = Top 3 brand จากจำนวน Asset สถานะ Sale, Show, Hide ที่ยังใช้งานได้ โดยเรียง count มากไปน้อย
 - YTD Performance V1 ใช้วิธี A: (Portfolio Value Today - Portfolio Value Start Of Year) / Portfolio Value Start Of Year * 100
 - YTD Performance V1 ไม่รวม Realized Gain จาก Sold Asset ในสูตรหลัก แต่แสดง Realized Gain แยกใน Sold History
 - Sold ไม่รวม Total Asset Value และ Unrealized Gain/Loss แต่แสดงใน Sold History
@@ -1027,3 +1059,4 @@ Asset หรือ Content จะหายเมื่อ Admin ดำเนิ�
 - Future Enhancement
 
 Acceptance Criteria ต้องเขียนให้ QA ทดสอบได้โดยไม่ต้องตีความเพิ่ม
+
