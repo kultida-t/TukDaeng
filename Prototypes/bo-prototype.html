@@ -2074,6 +2074,19 @@
       line-height: 1.28;
       text-align: center;
     }
+    .article-fo-link,
+    .article-readonly-link {
+      color: var(--brand);
+      font-weight: 800;
+      text-decoration: underline;
+      text-underline-offset: 3px;
+    }
+    .article-fo-divider,
+    .article-readonly-divider {
+      border: 0;
+      border-top: 1px solid rgba(118, 133, 157, .35);
+      margin: 16px 0;
+    }
     .article-fo-share {
       display: flex;
       justify-content: space-between;
@@ -2460,6 +2473,9 @@
       border-radius: 7px;
       background: #fff;
     }
+    .article-block-add-row .custom-select-menu {
+      max-height: min(240px, 34vh);
+    }
     .article-editor-form input::placeholder,
     .article-editor-form textarea::placeholder {
       color: #8a99ad;
@@ -2824,6 +2840,9 @@
       top: calc(100% + 4px);
       z-index: 30;
       display: none;
+      max-height: min(280px, 42vh);
+      overflow-y: auto;
+      overscroll-behavior: contain;
       padding: 6px;
       border: 1px solid #aeb8c6;
       border-radius: 7px;
@@ -13437,10 +13456,25 @@
       ["h2", "Heading H2"],
       ["h3", "Heading H3"],
       ["list", "Bullet List"],
+      ["numbered_list", "Numbered List"],
+      ["link", "Hyperlink"],
+      ["divider", "Divider"],
       ["image", "Image + Caption"],
       ["quote", "Quote"],
       ["comparison", "Comparison Table"]
     ];
+
+    function isSafeArticleLinkUrl(url = "") {
+      const value = String(url || "").trim();
+      return /^https?:\/\/[^\s<>"']+$/i.test(value) || /^\/(?!\/)[^\s<>"']*$/.test(value);
+    }
+
+    function renderArticleInlineFormatting(value = "") {
+      return escapeArticleField(value)
+        .replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>")
+        .replace(/~~([^~]+)~~/g, "<s>$1</s>")
+        .replace(/_([^_\n]+)_/g, "<em>$1</em>");
+    }
 
     function parseArticleComparisonRows(value = "") {
       const rows = Array.isArray(value) ? value : String(value || "").split(/\n+/);
@@ -13462,7 +13496,7 @@
             content: String(block?.content || ""),
             caption: String(block?.caption || "")
           }))
-          .filter(block => block.type !== "related" && (block.type === "image" || block.content.trim() || block.caption.trim()));
+          .filter(block => block.type !== "related" && (block.type === "divider" || block.type === "image" || block.content.trim() || block.caption.trim()));
       }
       const blocks = getArticleBodyParagraphs(article).map(paragraph => {
         if (paragraph.startsWith("### ")) return { type: "h3", content: paragraph.replace(/^###\s+/, "") };
@@ -13480,13 +13514,20 @@
     function renderArticleFoContentBlock(block, article) {
       const type = String(block?.type || "paragraph");
       const content = String(block?.content || "").trim();
-      if (type === "h2" && content) return `<h4 class="article-fo-heading">${escapeArticleField(content)}</h4>`;
-      if (type === "h3" && content) return `<h5 class="article-fo-subheading">${escapeArticleField(content)}</h5>`;
-      if (type === "list" && content) {
+      if (type === "h2" && content) return `<h4 class="article-fo-heading">${renderArticleInlineFormatting(content)}</h4>`;
+      if (type === "h3" && content) return `<h5 class="article-fo-subheading">${renderArticleInlineFormatting(content)}</h5>`;
+      if ((type === "list" || type === "numbered_list") && content) {
         const items = parseArticleMultilineItems(content);
-        return items.length ? `<ul>${items.map(item => `<li>${escapeArticleField(item)}</li>`).join("")}</ul>` : "";
+        const tag = type === "numbered_list" ? "ol" : "ul";
+        return items.length ? `<${tag}>${items.map(item => `<li>${renderArticleInlineFormatting(item)}</li>`).join("")}</${tag}>` : "";
       }
-      if (type === "quote" && content) return `<blockquote class="article-fo-quote">"${escapeArticleField(content)}"</blockquote>`;
+      if (type === "link") {
+        const url = String(block?.caption || "").trim();
+        if (!content || !isSafeArticleLinkUrl(url)) return "";
+        return `<p><a class="article-fo-link" href="${escapeArticleField(url)}" target="_blank" rel="noopener noreferrer">${renderArticleInlineFormatting(content)}</a></p>`;
+      }
+      if (type === "divider") return `<hr class="article-fo-divider" />`;
+      if (type === "quote" && content) return `<blockquote class="article-fo-quote">"${renderArticleInlineFormatting(content)}"</blockquote>`;
       if (type === "image" && article.bodyImageSrc) {
         return `
           <div class="article-fo-body-image"><img src="${escapeArticleField(article.bodyImageSrc)}" alt="${escapeArticleField(article.bodyImageName || article.title || "Article content image")}" /></div>
@@ -13515,14 +13556,15 @@
       const type = String(block?.type || "paragraph");
       const label = articleBlockTypes.find(([value]) => value === type)?.[1] || "Paragraph";
       const content = escapeArticleField(block?.content || "");
-      const caption = escapeArticleField(block?.caption || article?.bodyImageCaption || "");
+      const caption = escapeArticleField(block?.caption || (type === "image" ? article?.bodyImageCaption : "") || "");
       const placeholder = type === "comparison"
         ? "หัวข้อ | ตัวเลือก A | ตัวเลือก B&#10;Weight | หนักกว่า | เบากว่า"
-        : type === "list"
+        : type === "list" || type === "numbered_list"
             ? "ใส่รายการละ 1 บรรทัด เช่น&#10;Start the chronograph...&#10;Stop the chronograph..."
             : "พิมพ์เนื้อหาของบล็อกนี้";
-      const field = type === "image"
-        ? `
+      let field = "";
+      if (type === "image") {
+        field = `
           <label class="full">รูปในเนื้อหา
             <span class="article-upload-control ${article?.bodyImageSrc ? "has-image" : ""}" data-article-body-image-upload-control>
               ${renderArticleUploadThumbnail(article?.bodyImageSrc || "", article?.bodyImageName || "Article content image preview", "data-article-body-image-thumbnail")}
@@ -13535,10 +13577,24 @@
           <label class="full">Caption รูปในเนื้อหา
             <input value="${caption}" placeholder="คำอธิบายรูปประกอบกลางบทความ" data-article-block-field data-article-block-value />
           </label>
-        `
-        : `<label class="full">
+        `;
+      } else if (type === "link") {
+        field = `
+          <label class="full">Link text
+            <input value="${content}" placeholder="ข้อความลิงก์ที่จะแสดงในบทความ" data-article-block-field data-article-block-value />
+          </label>
+          <label class="full">URL
+            <input value="${caption}" placeholder="https://example.com หรือ /board/article" data-article-block-field data-article-block-url />
+            <span class="article-field-error" data-article-block-url-error></span>
+          </label>
+        `;
+      } else if (type === "divider") {
+        field = `<p class="article-editor-section-note">Divider จะแสดงเป็นเส้นแบ่งในบทความและไม่นับเป็นเนื้อหาหลักเพียงอย่างเดียว</p>`;
+      } else {
+        field = `<label class="full">
             <textarea data-article-block-field data-article-block-value aria-label="${escapeArticleField(label)}" placeholder="${placeholder}">${content}</textarea>
           </label>`;
+      }
       return `
         <div class="article-editor-block" data-article-content-block data-article-block-type="${type}">
           <div class="article-block-header">
@@ -13592,11 +13648,12 @@
     function renderArticleReadonlyBlockContent(block, article) {
       const type = String(block?.type || "paragraph");
       const content = String(block?.content || "").trim();
-      if (type === "h2" && content) return `<div class="article-readonly-heading h2">${escapeArticleField(content)}</div>`;
-      if (type === "h3" && content) return `<div class="article-readonly-heading h3">${escapeArticleField(content)}</div>`;
-      if (type === "list" && content) {
+      if (type === "h2" && content) return `<div class="article-readonly-heading h2">${renderArticleInlineFormatting(content)}</div>`;
+      if (type === "h3" && content) return `<div class="article-readonly-heading h3">${renderArticleInlineFormatting(content)}</div>`;
+      if ((type === "list" || type === "numbered_list") && content) {
         const items = parseArticleMultilineItems(content);
-        return items.length ? `<ul>${items.map(item => `<li>${escapeArticleField(item)}</li>`).join("")}</ul>` : `<span class="article-readonly-empty">Empty block</span>`;
+        const tag = type === "numbered_list" ? "ol" : "ul";
+        return items.length ? `<${tag}>${items.map(item => `<li>${renderArticleInlineFormatting(item)}</li>`).join("")}</${tag}>` : `<span class="article-readonly-empty">Empty block</span>`;
       }
       if (type === "image") {
         const caption = String(block?.caption || article?.bodyImageCaption || "").trim();
@@ -13611,13 +13668,19 @@
           </div>
         `;
       }
-      if (type === "quote" && content) return `<blockquote class="article-readonly-quote">${escapeArticleField(content)}</blockquote>`;
+      if (type === "link") {
+        const url = String(block?.caption || "").trim();
+        if (!content || !isSafeArticleLinkUrl(url)) return `<span class="article-readonly-empty">Invalid link</span>`;
+        return `<a class="article-readonly-link" href="${escapeArticleField(url)}" target="_blank" rel="noopener noreferrer">${renderArticleInlineFormatting(content)}</a>`;
+      }
+      if (type === "divider") return `<hr class="article-readonly-divider" />`;
+      if (type === "quote" && content) return `<blockquote class="article-readonly-quote">${renderArticleInlineFormatting(content)}</blockquote>`;
       if (type === "comparison") {
         const table = renderArticleReadonlyComparisonTable(content);
         return table || `<span class="article-readonly-empty">Empty block</span>`;
       }
       if (!content) return `<span class="article-readonly-empty">Empty block</span>`;
-      return escapeArticleField(content).replace(/\n/g, "<br>");
+      return renderArticleInlineFormatting(content).replace(/\n/g, "<br>");
     }
 
     function renderArticleReadonlyComparisonTable(content) {
@@ -13636,8 +13699,14 @@
       return Array.from(form.querySelectorAll("[data-article-content-block]")).map(block => ({
         type: block.dataset.articleBlockType || "paragraph",
         content: block.querySelector("[data-article-block-value]")?.value.trim() || "",
-        caption: block.dataset.articleBlockType === "image" ? block.querySelector("[data-article-block-value]")?.value.trim() || "" : ""
-      })).filter(block => includeEmpty || (block.type === "image" ? (form.dataset.articleBodyImageSrc || block.caption) : block.content));
+        caption: ["image", "link"].includes(block.dataset.articleBlockType) ? (block.querySelector("[data-article-block-url]")?.value.trim() || block.querySelector("[data-article-block-value]")?.value.trim() || "") : ""
+      })).filter(block => {
+        if (includeEmpty) return true;
+        if (block.type === "divider") return true;
+        if (block.type === "image") return form.dataset.articleBodyImageSrc || block.caption;
+        if (block.type === "link") return block.content || block.caption;
+        return block.content;
+      });
     }
 
     function getArticleLegacyFieldsFromBlocks(blocks) {
@@ -13647,6 +13716,9 @@
         if (block.type === "h2" && block.content) body.push(`## ${block.content}`);
         else if (block.type === "h3" && block.content) body.push(`### ${block.content}`);
         else if (block.type === "list" && block.content) body.push(parseArticleMultilineItems(block.content).map(item => `- ${item}`).join("\n"));
+        else if (block.type === "numbered_list" && block.content) body.push(parseArticleMultilineItems(block.content).map((item, index) => `${index + 1}. ${item}`).join("\n"));
+        else if (block.type === "link" && block.content && block.caption) body.push(`${block.content}: ${block.caption}`);
+        else if (block.type === "divider") body.push("---");
         else if (block.type === "paragraph" && block.content) body.push(block.content);
         else if (block.type === "quote" && block.content && !legacy.quote) legacy.quote = block.content;
         else if (block.type === "image" && !legacy.bodyImageCaption) legacy.bodyImageCaption = block.caption || "";
@@ -13712,17 +13784,17 @@
     function renderArticleStructuredParagraph(paragraph) {
       const text = String(paragraph || "").trim();
       if (!text) return "";
-      if (text.startsWith("### ")) return `<h5 class="article-fo-subheading">${escapeArticleField(text.replace(/^###\s+/, ""))}</h5>`;
-      if (text.startsWith("## ")) return `<h4 class="article-fo-heading">${escapeArticleField(text.replace(/^##\s+/, ""))}</h4>`;
+      if (text.startsWith("### ")) return `<h5 class="article-fo-subheading">${renderArticleInlineFormatting(text.replace(/^###\s+/, ""))}</h5>`;
+      if (text.startsWith("## ")) return `<h4 class="article-fo-heading">${renderArticleInlineFormatting(text.replace(/^##\s+/, ""))}</h4>`;
       if (text.split(/\n+/).filter(Boolean).every(line => /^[-*]\s+/.test(line.trim()))) {
         const items = text.split(/\n+/).map(item => item.replace(/^[-*]\s*/, "").trim()).filter(Boolean);
-        return `<ul>${items.map(item => `<li>${escapeArticleField(item)}</li>`).join("")}</ul>`;
+        return `<ul>${items.map(item => `<li>${renderArticleInlineFormatting(item)}</li>`).join("")}</ul>`;
       }
       return text
         .split(/\n\s*\n+/)
         .map(item => item.trim())
         .filter(Boolean)
-        .map(item => `<p>${escapeArticleField(item).replace(/\n/g, "<br>")}</p>`)
+        .map(item => `<p>${renderArticleInlineFormatting(item).replace(/\n/g, "<br>")}</p>`)
         .join("");
     }
 
@@ -13965,9 +14037,27 @@
       }
     }
 
+    function setArticleBlockUrlError(block, message = "") {
+      if (!block) return;
+      const urlInput = block.querySelector("[data-article-block-url]");
+      const errorNode = block.querySelector("[data-article-block-url-error]");
+      urlInput?.classList.toggle("article-field-invalid", Boolean(message));
+      if (errorNode) {
+        errorNode.textContent = message;
+        errorNode.classList.toggle("show", Boolean(message));
+      }
+    }
+
+    function clearArticleBlockErrors(form) {
+      form?.querySelectorAll("[data-article-content-block]").forEach(block => {
+        setArticleBlockUrlError(block);
+      });
+    }
+
     function clearArticleValidationErrors(form) {
       ["title", "slug", "category", "coverCaption", "content", "publishDate", "publishTime"].forEach(field => setArticleFieldError(form, field));
       setArticleUploadError(form, "cover");
+      clearArticleBlockErrors(form);
     }
 
     function focusFirstArticleValidationError(form, fields) {
@@ -13978,6 +14068,7 @@
         category: () => form.querySelector("#article-category-field")?.closest("[data-custom-select]")?.querySelector("[data-custom-select-trigger]")?.focus(),
         cover: () => form.querySelector("[data-article-cover-upload-control]")?.scrollIntoView({ block: "center", behavior: "smooth" }),
         coverCaption: () => form.querySelector('[name="coverCaption"]')?.focus(),
+        link: () => form.querySelector("[data-article-block-url].article-field-invalid")?.focus(),
         content: () => form.querySelector("[data-article-block-add]")?.focus(),
         publishDate: () => form.querySelector('[name="publishDate"]')?.scrollIntoView({ block: "center", behavior: "smooth" }),
         publishTime: () => form.querySelector('[name="publishTime"]')?.scrollIntoView({ block: "center", behavior: "smooth" })
@@ -14796,9 +14887,22 @@
         setArticleFieldError(form, "coverCaption", "กรุณากรอก Caption รูป Cover เพื่อใช้เป็น alt text");
         validationErrors.push("coverCaption");
       }
-      if (!contentBlocks.length) {
+      const hasMainContentBlock = contentBlocks.some(block => block.type !== "divider" && (block.type === "image" ? (form.dataset.articleBodyImageSrc || block.caption) : block.content));
+      let hasInvalidLinkBlock = false;
+      form.querySelectorAll('[data-article-content-block][data-article-block-type="link"]').forEach(block => {
+        const linkText = block.querySelector("[data-article-block-value]")?.value.trim() || "";
+        const linkUrl = block.querySelector("[data-article-block-url]")?.value.trim() || "";
+        if (!linkText || !isSafeArticleLinkUrl(linkUrl)) {
+          hasInvalidLinkBlock = true;
+          setArticleBlockUrlError(block, "กรุณากรอก Link text และ URL ที่ขึ้นต้นด้วย http://, https:// หรือ /");
+        }
+      });
+      if (!hasMainContentBlock) {
         setArticleFieldError(form, "content", "กรุณาเพิ่มเนื้อหาอย่างน้อย 1 บล็อก");
         validationErrors.push("content");
+      }
+      if (hasInvalidLinkBlock) {
+        validationErrors.push("link");
       }
       if (publishDate && !publishTime) {
         setArticleFieldError(form, "publishTime", "กรุณาเลือกเวลาเผยแพร่");
@@ -16811,7 +16915,10 @@
           setArticleFieldError(form, "slug");
         }
         if (event.target.matches('[name="coverCaption"]')) setArticleFieldError(form, "coverCaption");
-        if (event.target.matches("[data-article-block-field]")) setArticleFieldError(form, "content");
+        if (event.target.matches("[data-article-block-field]")) {
+          setArticleFieldError(form, "content");
+          setArticleBlockUrlError(event.target.closest("[data-article-content-block]"));
+        }
         updateArticleEditorPreview(form);
         return;
       }
