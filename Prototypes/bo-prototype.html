@@ -13293,7 +13293,7 @@
 
     function renderArticleTitleImage(article) {
       if (article?.coverImageSrc) {
-        const alt = escapeArticleField(article.coverImageName || article.title || "Article cover");
+        const alt = escapeArticleField(getArticleCoverAlt(article));
         return `<div class="article-title-image"><img src="${escapeArticleField(article.coverImageSrc)}" alt="${alt}"></div>`;
       }
       return `<div class="article-title-image" aria-hidden="true">TD</div>`;
@@ -13318,6 +13318,23 @@
         .replace(/"/g, "&quot;")
         .replace(/</g, "&lt;")
         .replace(/>/g, "&gt;");
+    }
+
+    function slugifyArticle(value) {
+      return String(value || "")
+        .trim()
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, "-")
+        .replace(/^-+|-+$/g, "");
+    }
+
+    function getArticleCoverAlt(article) {
+      return String(article?.coverCaption || article?.title || article?.coverImageName || "Article cover").trim();
+    }
+
+    function isArticleSlugDuplicate(slug, articleId = "") {
+      const normalizedSlug = slugifyArticle(slug);
+      return getArticleListRows().some(article => article.id !== articleId && slugifyArticle(article.slug || "") === normalizedSlug);
     }
 
     function getBangkokDateTimeInputParts(date = new Date()) {
@@ -13741,7 +13758,7 @@
       const deck = article?.deck || "";
       return `
         <div class="article-board-preview" aria-label="Board hero article preview">
-          ${article.coverImageSrc ? `<img src="${escapeArticleField(article.coverImageSrc)}" alt="${escapeArticleField(article.coverImageName || title || "Board hero cover")}" />` : `<div class="article-cover-mark">TD</div>`}
+          ${article.coverImageSrc ? `<img src="${escapeArticleField(article.coverImageSrc)}" alt="${escapeArticleField(getArticleCoverAlt(article))}" />` : `<div class="article-cover-mark">TD</div>`}
           <div class="article-board-preview-content">
             <h3 class="article-board-preview-title">${escapeArticleField(title)}</h3>
             ${deck ? `<p class="article-board-preview-deck">${escapeArticleField(deck)}</p>` : ""}
@@ -13769,7 +13786,7 @@
                 <div><span>Date</span>${article.publishAt === "-" ? "Draft" : article.publishAt.replace(/\s\d{2}:\d{2}$/, "")}</div>
                 <div>♡ 12</div>
               </div>
-              <div class="article-fo-cover">${article.coverImageSrc ? `<img src="${escapeArticleField(article.coverImageSrc)}" alt="${escapeArticleField(article.coverImageName || article.title || "Article cover")}" />` : `<div class="article-cover-mark">TD</div>`}</div>
+              <div class="article-fo-cover">${article.coverImageSrc ? `<img src="${escapeArticleField(article.coverImageSrc)}" alt="${escapeArticleField(getArticleCoverAlt(article))}" />` : `<div class="article-cover-mark">TD</div>`}</div>
               <div class="article-fo-body">
                 ${article.coverCaption ? `<div class="article-fo-caption">${escapeArticleField(article.coverCaption)}</div>` : ""}
                 ${takeaways.length ? `<div class="article-fo-takeaways"><strong>Key takeaways</strong><ul>${takeaways.map(item => `<li>${escapeArticleField(item)}</li>`).join("")}</ul></div>` : ""}
@@ -13914,9 +13931,17 @@
           control: form.querySelector('[name="title"]'),
           error: form.querySelector("[data-article-title-error]")
         },
+        slug: {
+          control: form.querySelector('[name="slug"]'),
+          error: form.querySelector("[data-article-slug-error]")
+        },
         category: {
           control: form.querySelector("#article-category-field")?.closest("[data-custom-select]")?.querySelector("[data-custom-select-trigger]"),
           error: form.querySelector("[data-article-category-error]")
+        },
+        coverCaption: {
+          control: form.querySelector('[name="coverCaption"]'),
+          error: form.querySelector("[data-article-cover-caption-error]")
         },
         content: {
           control: form.querySelector("#article-block-type-picker")?.closest("[data-custom-select]")?.querySelector("[data-custom-select-trigger]"),
@@ -13941,7 +13966,7 @@
     }
 
     function clearArticleValidationErrors(form) {
-      ["title", "category", "content", "publishDate", "publishTime"].forEach(field => setArticleFieldError(form, field));
+      ["title", "slug", "category", "coverCaption", "content", "publishDate", "publishTime"].forEach(field => setArticleFieldError(form, field));
       setArticleUploadError(form, "cover");
     }
 
@@ -13949,8 +13974,10 @@
       const firstField = fields[0];
       const focusMap = {
         title: () => form.querySelector('[name="title"]')?.focus(),
+        slug: () => form.querySelector('[name="slug"]')?.focus(),
         category: () => form.querySelector("#article-category-field")?.closest("[data-custom-select]")?.querySelector("[data-custom-select-trigger]")?.focus(),
         cover: () => form.querySelector("[data-article-cover-upload-control]")?.scrollIntoView({ block: "center", behavior: "smooth" }),
+        coverCaption: () => form.querySelector('[name="coverCaption"]')?.focus(),
         content: () => form.querySelector("[data-article-block-add]")?.focus(),
         publishDate: () => form.querySelector('[name="publishDate"]')?.scrollIntoView({ block: "center", behavior: "smooth" }),
         publishTime: () => form.querySelector('[name="publishTime"]')?.scrollIntoView({ block: "center", behavior: "smooth" })
@@ -14374,7 +14401,7 @@
       const caption = String(article.coverCaption || "").trim();
       return `
         <div class="article-readonly-image article-readonly-cover">
-          <img src="${escapeArticleField(article.coverImageSrc)}" alt="${escapeArticleField(article.coverImageName || article.title || "Article cover")}" />
+          <img src="${escapeArticleField(article.coverImageSrc)}" alt="${escapeArticleField(getArticleCoverAlt(article))}" />
           <div class="article-readonly-image-caption-field">
             <div class="article-readonly-image-caption-label">Caption รูป Cover</div>
             <div class="article-readonly-caption">${caption ? escapeArticleField(caption) : "-"}</div>
@@ -14442,7 +14469,7 @@
         <div class="user-detail-page">
           <div class="article-detail-layout article-editor-layout">
             <div class="detail-section">
-              <form class="article-editor-form" data-article-editor data-article-mode="${isEdit ? "edit" : "add"}" data-article-return-to="${isEdit ? returnTo : "list"}" data-article-id="${draft.id}" data-article-cover-src="${escapeArticleField(draft.coverImageSrc || "")}" data-article-cover-name="${escapeArticleField(draft.coverImageName || "")}" data-article-body-image-src="${escapeArticleField(draft.bodyImageSrc || "")}" data-article-body-image-name="${escapeArticleField(draft.bodyImageName || "")}" novalidate>
+              <form class="article-editor-form" data-article-editor data-article-mode="${isEdit ? "edit" : "add"}" data-article-return-to="${isEdit ? returnTo : "list"}" data-article-id="${draft.id}" data-article-cover-src="${escapeArticleField(draft.coverImageSrc || "")}" data-article-cover-name="${escapeArticleField(draft.coverImageName || "")}" data-article-body-image-src="${escapeArticleField(draft.bodyImageSrc || "")}" data-article-body-image-name="${escapeArticleField(draft.bodyImageName || "")}" data-article-slug-manual="${draft.slug ? "true" : "false"}" novalidate>
                 <section class="article-editor-section">
                   <h4>Article Header</h4>
                   <div class="article-editor-grid">
@@ -14451,8 +14478,8 @@
                       <span class="article-field-error" data-article-title-error></span>
                     </label>
                     <label>Article URL
-                      <input name="slug" value="${escapeArticleField(draft.slug || "")}" placeholder="steel-vs-titanium-watches" />
-                      <span class="article-field-error" aria-hidden="true"></span>
+                      <input name="slug" value="${escapeArticleField(draft.slug || "")}" placeholder="english-url-numbers-hyphen" data-article-slug />
+                      <span class="article-field-error" data-article-slug-error></span>
                     </label>
                     <label><span>หมวดหมู่ <span class="article-required-mark">*</span></span>
                       ${articleEditorCustomSelect("article-category-field", "category", "หมวดหมู่", getArticleEditorCategoryOptions(), draft.category)}
@@ -14480,7 +14507,7 @@
                     </label>
                     <label class="full">Caption รูป Cover
                       <input name="coverCaption" value="${escapeArticleField(draft.coverCaption || "")}" placeholder="คำอธิบายภาพที่จะขึ้นใต้รูป hero" />
-                      <span class="article-field-error" aria-hidden="true"></span>
+                      <span class="article-field-error" data-article-cover-caption-error></span>
                     </label>
                     <label class="full">คำโปรยสั้น
                       <textarea name="deck" placeholder="ข้อความสรุป/เกริ่นนำสั้น ๆ ที่แสดงใต้ hero/cover ก่อนเข้าเนื้อหาหลัก">${escapeArticleField(draft.deck || "")}</textarea>
@@ -14739,9 +14766,21 @@
       const contentBlocks = getArticleEditorContentBlocks(form);
       const validationErrors = [];
       const title = String(formData.get("title") || "").trim();
+      const slug = slugifyArticle(formData.get("slug") || title);
+      const coverCaption = String(formData.get("coverCaption") || "").trim();
+      const requiresPublishReadyContent = ["Scheduled", "Published"].includes(status);
+      const slugInput = form.querySelector('[name="slug"]');
+      if (slugInput && slugInput.value !== slug) slugInput.value = slug;
       if (!title) {
         setArticleFieldError(form, "title", "กรุณากรอกชื่อบทความ");
         validationErrors.push("title");
+      }
+      if (!slug) {
+        setArticleFieldError(form, "slug", "กรุณากรอก Article URL เป็นภาษาอังกฤษ ตัวเลข หรือ hyphen");
+        validationErrors.push("slug");
+      } else if (isArticleSlugDuplicate(slug, form.dataset.articleId || "")) {
+        setArticleFieldError(form, "slug", "Article URL นี้ถูกใช้แล้ว");
+        validationErrors.push("slug");
       }
       if (!category) {
         setArticleFieldError(form, "category", "กรุณาเลือกหมวดหมู่");
@@ -14750,11 +14789,15 @@
         setArticleFieldError(form, "category", "หมวดหมู่นี้ไม่พร้อมใช้งาน กรุณาเลือกหมวดหมู่ Active");
         validationErrors.push("category");
       }
-      if (!(form.dataset.articleCoverSrc || existingArticle?.coverImageSrc)) {
+      if (requiresPublishReadyContent && !(form.dataset.articleCoverSrc || existingArticle?.coverImageSrc)) {
         setArticleUploadError(form, "cover", "กรุณาอัปโหลดรูป Cover");
         validationErrors.push("cover");
       }
-      if (!contentBlocks.length) {
+      if (requiresPublishReadyContent && !coverCaption) {
+        setArticleFieldError(form, "coverCaption", "กรุณากรอก Caption รูป Cover เพื่อใช้เป็น alt text");
+        validationErrors.push("coverCaption");
+      }
+      if (requiresPublishReadyContent && !contentBlocks.length) {
         setArticleFieldError(form, "content", "กรุณาเพิ่มเนื้อหาอย่างน้อย 1 บล็อก");
         validationErrors.push("content");
       }
@@ -14784,7 +14827,7 @@
         focusFirstArticleValidationError(form, validationErrors);
         return null;
       }
-      return { formData, status, category, publishDate, publishTime, contentBlocks, title, existingArticle };
+      return { formData, status, category, publishDate, publishTime, contentBlocks, title, slug, coverCaption, existingArticle };
     }
 
     function saveArticleFromForm(form) {
@@ -14792,7 +14835,7 @@
       const now = formatArticleActionTimestamp();
       const validated = validateArticleEditorForm(form);
       if (!validated) return;
-      const { formData, status, category, publishDate, publishTime, contentBlocks, title, existingArticle } = validated;
+      const { formData, status, category, publishDate, publishTime, contentBlocks, title, slug, coverCaption, existingArticle } = validated;
       const legacyFields = getArticleLegacyFieldsFromBlocks(contentBlocks);
       const hasImageBlock = contentBlocks.some(block => block.type === "image");
       const isExistingPublishedLifecycle = ["Published", "Archived"].includes(existingArticle?.status);
@@ -14818,8 +14861,8 @@
         quote: legacyFields.quote,
         body: legacyFields.body,
         contentBlocks,
-        slug: String(formData.get("slug") || "").trim(),
-        coverCaption: String(formData.get("coverCaption") || "").trim(),
+        slug,
+        coverCaption,
         bodyImageCaption: legacyFields.bodyImageCaption,
         keyTakeaways: formData.has("keyTakeaways") ? String(formData.get("keyTakeaways") || "").trim() : existingArticle?.keyTakeaways || "",
         comparisonRows: legacyFields.comparisonRows,
@@ -16753,9 +16796,22 @@
         updateArticleEditorPreview(form);
         return;
       }
-      if (event.target.matches('[data-article-editor] [name="title"], [data-article-editor] [name="deck"], [data-article-editor] [name="coverCaption"], [data-article-editor] [name="keyTakeaways"], [data-article-editor] [data-article-block-field]')) {
+      if (event.target.matches('[data-article-editor] [name="title"], [data-article-editor] [name="slug"], [data-article-editor] [name="deck"], [data-article-editor] [name="coverCaption"], [data-article-editor] [name="keyTakeaways"], [data-article-editor] [data-article-block-field]')) {
         const form = event.target.closest("[data-article-editor]");
-        if (event.target.matches('[name="title"]')) setArticleFieldError(form, "title");
+        if (event.target.matches('[name="title"]')) {
+          setArticleFieldError(form, "title");
+          const slugInput = form.querySelector('[name="slug"]');
+          if (slugInput && form.dataset.articleSlugManual !== "true") {
+            slugInput.value = slugifyArticle(event.target.value);
+            setArticleFieldError(form, "slug");
+          }
+        }
+        if (event.target.matches('[name="slug"]')) {
+          event.target.value = slugifyArticle(event.target.value);
+          form.dataset.articleSlugManual = event.target.value.trim() ? "true" : "false";
+          setArticleFieldError(form, "slug");
+        }
+        if (event.target.matches('[name="coverCaption"]')) setArticleFieldError(form, "coverCaption");
         if (event.target.matches("[data-article-block-field]")) setArticleFieldError(form, "content");
         updateArticleEditorPreview(form);
         return;
