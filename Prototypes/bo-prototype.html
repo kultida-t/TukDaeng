@@ -10968,7 +10968,7 @@
 
     function reportQueueStatusPill(report) {
       const status = getReportQueueStatus(report);
-      const label = status === "Cleared" ? "ปิดแล้ว" : "รอตรวจ";
+      const label = status === "Cleared" ? "Closed" : "Pending";
       const color = status === "Cleared" ? "green" : "amber";
       return `<span class="pill ${color}">${label}</span>`;
     }
@@ -11270,7 +11270,7 @@
       const pageRows = sorted.slice(start, start + userListPageSize);
       document.querySelector("#table").innerHTML = `
         <div class="user-table">
-          <div class="user-row report-row head"><div>Report ID</div><div>User</div><div>User Status</div><div>Status</div><div>Report Detail</div><div>Reporters</div><div>Priority</div><div>Sources</div><div>Action</div></div>
+          <div class="user-row report-row head"><div>Report ID</div><div>User</div><div>User Status</div><div>Status</div><div>Report Reason</div><div>Reporters</div><div>Priority</div><div>Sources</div><div>Action</div></div>
           ${pageRows.map(report => `
             <div class="user-row report-row" data-report-id="${report.id}">
               <div class="user-cell-primary" data-label="Report ID"><div class="main-text">${report.id}</div></div>
@@ -11282,13 +11282,13 @@
                 <div class="user-card-meta">
                   <div class="user-card-meta-item"><span>User</span><strong>${report.user}</strong></div>
                   <div class="user-card-meta-item"><span>Sources</span><strong>${renderReportSourcesLabel(report)}</strong></div>
-                  <div class="user-card-meta-item"><span>Report detail</span><strong>${report.reason}</strong></div>
+                  <div class="user-card-meta-item"><span>Report reason</span><strong>${report.reason}</strong></div>
                 </div>
               </div>
               <div data-label="User"><div class="main-text">${report.user}</div></div>
               <div data-label="User Status">${userStatusPill(getReportAccountStatus(report))}</div>
               <div data-label="Status">${reportQueueStatusPill(report)}</div>
-              <div data-label="Report Detail"><div class="muted">${report.reason}</div></div>
+              <div data-label="Report Reason"><div class="muted">${report.reason}</div></div>
               <div data-label="Reporters"><div class="main-text">${report.reporters}</div></div>
               <div data-label="Priority">${statusPill(getReportPriorityLabel(report.priority), report.priority)}</div>
               <div data-label="Sources"><div class="main-text">${renderReportSourcesLabel(report)}</div></div>
