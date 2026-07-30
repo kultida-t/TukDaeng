@@ -3441,6 +3441,9 @@
     .report-detail-page .report-detail-grid {
       grid-template-columns: 1fr;
     }
+    .report-detail-page .report-summary-reason-tile {
+      grid-column: 1 / -1;
+    }
     .report-detail-page .detail-tile strong {
       overflow-wrap: anywhere;
     }
@@ -9891,10 +9894,6 @@
       }
     }
 
-    function getUserSearchText(record) {
-      return Object.values(record).flat().join(" ").toLowerCase();
-    }
-
     function getReportSources(report) {
       const explicitSources = Array.isArray(report?.sources) ? report.sources : [];
       const submissionSources = isUserReportContext(report)
@@ -9909,6 +9908,28 @@
       const sources = getReportSources(report);
       if (!sources.length) return "-";
       return sources.join(", ");
+    }
+
+    function getUserReportReasons(report) {
+      const submissionReasons = isUserReportContext(report)
+        ? (userReportSubmissions[report.id] || []).map(submission => submission.reason)
+        : [];
+      const reasons = [...submissionReasons].map(reason => String(reason || "").trim()).filter(Boolean);
+      return [...new Set(reasons)];
+    }
+
+    function renderUserReportReasonsLabel(report) {
+      const reasons = getUserReportReasons(report);
+      if (!reasons.length) return "-";
+      return reasons.join(", ");
+    }
+
+    function getUserSearchText(record) {
+      return [
+        ...Object.values(record).flat(),
+        renderReportSourcesLabel(record),
+        renderUserReportReasonsLabel(record)
+      ].join(" ").toLowerCase();
     }
 
     function getUserListSearchText(user) {
@@ -11282,13 +11303,13 @@
                 <div class="user-card-meta">
                   <div class="user-card-meta-item"><span>User</span><strong>${report.user}</strong></div>
                   <div class="user-card-meta-item"><span>Sources</span><strong>${renderReportSourcesLabel(report)}</strong></div>
-                  <div class="user-card-meta-item"><span>Report reason</span><strong>${report.reason}</strong></div>
+                  <div class="user-card-meta-item"><span>Report reason</span><strong>${renderUserReportReasonsLabel(report)}</strong></div>
                 </div>
               </div>
               <div data-label="User"><div class="main-text">${report.user}</div></div>
               <div data-label="User Status">${userStatusPill(getReportAccountStatus(report))}</div>
               <div data-label="Status">${reportQueueStatusPill(report)}</div>
-              <div data-label="Report Reason"><div class="muted">${report.reason}</div></div>
+              <div data-label="Report Reason"><div class="muted">${renderUserReportReasonsLabel(report)}</div></div>
               <div data-label="Reporters"><div class="main-text">${report.reporters}</div></div>
               <div data-label="Priority">${statusPill(getReportPriorityLabel(report.priority), report.priority)}</div>
               <div data-label="Sources"><div class="main-text">${renderReportSourcesLabel(report)}</div></div>
@@ -11485,6 +11506,7 @@
               <div class="detail-tile"><span>User ID</span><strong>${report.userId}</strong></div>
               <div class="detail-tile"><span>User</span><strong>${report.user}</strong></div>
               <div class="detail-tile"><span>Account Status</span><strong>${userStatusLabels[getReportAccountStatus(report)] || getReportAccountStatus(report)}</strong></div>
+              <div class="detail-tile report-summary-reason-tile"><span>Report Reason</span><strong>${renderUserReportReasonsLabel(report)}</strong></div>
             </div>
           </div>
 
