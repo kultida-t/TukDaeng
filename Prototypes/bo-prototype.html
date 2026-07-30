@@ -14741,7 +14741,14 @@
     }
 
     function getBoardReportRows() {
-      return boardReportRows;
+      return boardReportRows.filter(isPublishedBoardReportIntake);
+    }
+
+    function isPublishedBoardReportIntake(report) {
+      return (report.actionHistory || []).some(log => (
+        log.action === "Report Received"
+        && log.after?.contentStatus === "Published"
+      ));
     }
 
     function getBoardReportById(id) {
