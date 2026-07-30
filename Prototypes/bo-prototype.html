@@ -12541,45 +12541,50 @@
       `;
     }
 
-    function renderCategoryDetailPanel(category) {
+    function renderCategoryDetailModal(category) {
       if (!category) return;
-      const articleCount = getCategoryArticleCount(category.name);
-      const articles = getArticleListRows().filter(article => article.category === category.name);
-      document.querySelector("#detail").innerHTML = `
-        <div class="panel-head">
-          <div>
-            <h2>${escapeArticleField(category.name)}</h2>
-            <p>${category.id} / ${escapeArticleField(category.slug)}</p>
-          </div>
-        </div>
-        <div class="detail-body">
-          <div class="detail-grid two">
-            <div class="detail-tile"><span>Status</span><strong>${category.status}</strong></div>
-            <div class="detail-tile"><span>Articles</span><strong>${articleCount}</strong></div>
-            <div class="detail-tile"><span>Display Order</span><strong>${category.displayOrder}</strong></div>
-            <div class="detail-tile"><span>Updated</span><strong>${escapeArticleField(category.updatedAt)}</strong></div>
-          </div>
-          <div class="module-note"><strong>FO impact:</strong> Active categories can appear on Board category navigation and Article editor. Inactive categories are removed from new article selection.</div>
-          <div class="detail-section">
-            <h4>Linked Articles</h4>
-            <div class="timeline">
-              ${articles.map(article => `<div class="event"><strong>${escapeArticleField(article.id)} / ${escapeArticleField(article.title)}</strong><br>${articleStatusPill(article.status)} Publish: ${escapeArticleField(article.publishAt)}</div>`).join("") || `<div class="event"><strong>No linked articles</strong><br>Category can be deleted because no article is using it.</div>`}
+      const modal = document.querySelector("#user-action-modal");
+      const modalCard = modal?.querySelector(".user-action-modal");
+      const modalBody = document.querySelector("#user-action-modal-body");
+      if (!modal || !modalCard || !modalBody) return;
+      modalCard.classList.remove("article-preview-modal", "article-editor-confirm-modal", "category-order-modal");
+      modalCard.classList.add("category-editor-modal");
+      modalBody.innerHTML = `
+        <div class="user-action-layout">
+          <div class="user-action-head">
+            <div>
+              <h2 id="user-action-modal-title">รายละเอียดหมวดหมู่</h2>
+              <p>ข้อมูลหมวดหมู่และการเลือกใช้ในบทความ</p>
             </div>
+            <button class="btn user-action-close" type="button" data-user-action-modal-close aria-label="Close modal" title="Close">${iconSvg.close}</button>
           </div>
-          <div class="detail-section">
-            <h4>Audit History</h4>
-            <div class="timeline">
-              ${(category.actionHistory || []).map(entry => `<div class="event"><strong>${escapeArticleField(entry.action)} / ${escapeArticleField(entry.result)}</strong><br>${escapeArticleField(entry.time)} by ${escapeArticleField(entry.actor)}<br>${escapeArticleField(entry.note)}</div>`).join("")}
+          <form class="article-editor-form" data-category-detail-form>
+            <section class="article-editor-section">
+              <div class="article-editor-grid">
+                <label><span>ชื่อหมวดหมู่</span>
+                  <input value="${escapeArticleField(category.name)}" readonly />
+                </label>
+                <label><span>URL ของหมวดหมู่</span>
+                  <input value="${escapeArticleField(category.slug)}" readonly />
+                </label>
+                <label><span>สถานะ</span>
+                  <input value="${escapeArticleField(category.status)}" readonly />
+                </label>
+                <label class="full"><span>คำอธิบาย</span>
+                  <textarea readonly>${escapeArticleField(category.description || "-")}</textarea>
+                </label>
+              </div>
+            </section>
+            <div class="user-detail-actions">
+              <button class="user-detail-action-btn primary" type="button" data-category-edit="${category.id}">แก้ไขหมวดหมู่</button>
+            ${category.status === "Active"
+                ? `<button class="user-detail-action-btn warning" type="button" data-category-status-action="deactivate" data-category-id="${category.id}">Set inactive</button>`
+                : `<button class="user-detail-action-btn primary" type="button" data-category-status-action="activate" data-category-id="${category.id}">Set active</button>`}
             </div>
-          </div>
-          <div class="user-detail-actions">
-            <button class="user-detail-action-btn primary" type="button" data-category-edit="${category.id}">แก้ไขหมวดหมู่</button>
-          ${category.status === "Active"
-              ? `<button class="user-detail-action-btn warning" type="button" data-category-status-action="deactivate" data-category-id="${category.id}">Set inactive</button>`
-              : `<button class="user-detail-action-btn primary" type="button" data-category-status-action="activate" data-category-id="${category.id}">Set active</button>`}
-          </div>
+          </form>
         </div>
       `;
+      showUserActionModal();
     }
 
     function renderCategoryEditorModal(category = null) {
@@ -12721,7 +12726,7 @@
       normalizeCategoryDisplayOrder();
       closeUserActionModal();
       renderModule("content", "Categories", "Categories");
-      renderCategoryDetailPanel(nextCategory);
+      renderCategoryDetailModal(nextCategory);
       showSuccessToast(`${nextCategory.id}: บันทึกหมวดหมู่แล้ว`);
     }
 
@@ -12799,7 +12804,7 @@
         result: category.status
       });
       renderModule("content", "Categories", "Categories");
-      renderCategoryDetailPanel(category);
+      renderCategoryDetailModal(category);
       showSuccessToast(`${category.id}: ${category.status}`);
     }
 
@@ -14935,7 +14940,7 @@
       if (categoryOpenButton) {
         const category = getCategoryById(categoryOpenButton.dataset.categoryOpen);
         if (!category) return;
-        renderCategoryDetailPanel(category);
+        renderCategoryDetailModal(category);
         closeRowMenus();
         return;
       }
@@ -14965,7 +14970,7 @@
       if (categoryCard && !event.target.closest(".row-menu, button, a, input, select, [data-custom-select]")) {
         const category = getCategoryById(categoryCard.dataset.categoryCard);
         if (!category) return;
-        renderCategoryDetailPanel(category);
+        renderCategoryDetailModal(category);
         return;
       }
       const userActionConfirmButton = event.target.closest("[data-user-action-confirm]");
