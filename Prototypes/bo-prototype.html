@@ -12467,6 +12467,7 @@
 
     function renderCategoryRowActionMenu(category) {
       const articleCount = getCategoryArticleCount(category.name);
+      const canDeactivate = articleCount === 0;
       return `
         <details class="row-menu">
           <summary title="Category actions">...</summary>
@@ -12474,9 +12475,13 @@
             <button type="button" data-category-open="${category.id}">View detail</button>
             <button type="button" data-category-edit="${category.id}">แก้ไขหมวดหมู่</button>
             ${category.status === "Active"
-              ? `<button type="button" data-category-status-action="deactivate" data-category-id="${category.id}">Set inactive</button>`
+              ? canDeactivate
+                ? `<button type="button" data-category-status-action="deactivate" data-category-id="${category.id}">Set inactive</button>`
+                : ""
               : `<button type="button" data-category-status-action="activate" data-category-id="${category.id}">Set active</button>`}
-            <button type="button" data-category-status-action="delete" data-category-id="${category.id}" ${articleCount ? "disabled" : ""}>Delete category</button>
+            ${articleCount
+              ? ""
+              : `<button type="button" data-category-status-action="delete" data-category-id="${category.id}">Delete category</button>`}
           </div>
         </details>
       `;
@@ -12543,6 +12548,8 @@
 
     function renderCategoryDetailModal(category) {
       if (!category) return;
+      const articleCount = getCategoryArticleCount(category.name);
+      const canDeactivate = articleCount === 0;
       const modal = document.querySelector("#user-action-modal");
       const modalCard = modal?.querySelector(".user-action-modal");
       const modalBody = document.querySelector("#user-action-modal-body");
@@ -12578,7 +12585,9 @@
             <div class="user-detail-actions">
               <button class="user-detail-action-btn primary" type="button" data-category-edit="${category.id}">แก้ไขหมวดหมู่</button>
             ${category.status === "Active"
-                ? `<button class="user-detail-action-btn warning" type="button" data-category-status-action="deactivate" data-category-id="${category.id}">Set inactive</button>`
+                ? canDeactivate
+                  ? `<button class="user-detail-action-btn warning" type="button" data-category-status-action="deactivate" data-category-id="${category.id}">Set inactive</button>`
+                  : ""
                 : `<button class="user-detail-action-btn primary" type="button" data-category-status-action="activate" data-category-id="${category.id}">Set active</button>`}
             </div>
           </form>
@@ -12628,7 +12637,7 @@
                     { value: "Active", label: "Active" },
                     { value: "Inactive", label: "Inactive" }
                   ], draft.status)}
-                  <span class="article-field-error" aria-hidden="true"></span>
+                  <span class="article-field-error" data-category-status-error></span>
                 </label>
                 <label class="full">คำอธิบาย
                   <textarea name="description" placeholder="อธิบายการใช้งานหมวดหมู่นี้">${escapeArticleField(draft.description)}</textarea>
@@ -12654,7 +12663,8 @@
       }
       const controlMap = {
         name: form?.querySelector("[data-category-name]"),
-        slug: form?.querySelector("[data-category-slug]")
+        slug: form?.querySelector("[data-category-slug]"),
+        status: form?.querySelector("[name='status']")
       };
       controlMap[field]?.classList.toggle("article-field-invalid", Boolean(message));
     }
@@ -12666,7 +12676,7 @@
       const slug = slugifyCategory(formData.get("slug") || name);
       const existingName = getCategoryRows().find(category => category.id !== id && category.name.toLowerCase() === name.toLowerCase());
       const existingSlug = getCategoryRows().find(category => category.id !== id && category.slug.toLowerCase() === slug.toLowerCase());
-      ["name", "slug"].forEach(field => setCategoryFieldError(form, field));
+      ["name", "slug", "status"].forEach(field => setCategoryFieldError(form, field));
       let hasError = false;
       if (!name) {
         setCategoryFieldError(form, "name", "กรุณากรอกชื่อหมวดหมู่");
@@ -12702,6 +12712,12 @@
       const now = formatArticleActionTimestamp();
       const existing = getCategoryById(validated.id);
       const previousName = existing?.name || "";
+      const linkedArticleCount = existing ? getCategoryArticleCount(previousName) : 0;
+      if (existing && validated.status === "Inactive" && linkedArticleCount > 0) {
+        setCategoryFieldError(form, "status", `ต้องย้ายหรือ archive ${linkedArticleCount} บทความก่อนปิดใช้งาน category`);
+        showSuccessToast(`${existing.id}: ไม่สามารถปิดใช้งาน category ที่มีบทความอยู่ได้`);
+        return;
+      }
       const nextCategory = {
         ...(existing || {}),
         ...validated,
@@ -12733,6 +12749,15 @@
     function getCategoryActionConfig(category, action) {
       const articleCount = getCategoryArticleCount(category?.name);
       if (action === "deactivate") {
+        if (articleCount > 0) {
+          return {
+            blocked: true,
+            title: "ไม่สามารถปิดใช้งาน category",
+            question: "Category นี้ยังมีบทความผูกอยู่",
+            summary: `ต้องย้ายหรือ archive ${articleCount} บทความในหมวดนี้ก่อน จึงจะเปลี่ยนสถานะเป็น Inactive ได้`,
+            iconType: "cancel"
+          };
+        }
         return {
           title: "ยืนยันการปิดใช้งาน category",
           question: "ต้องการเปลี่ยนหมวดหมู่นี้เป็น Inactive ใช่หรือไม่?",
@@ -12768,10 +12793,41 @@
       return null;
     }
 
+    function renderCategoryActionBlockedModal(config) {
+      const modal = document.querySelector("#user-action-modal");
+      const modalCard = modal?.querySelector(".user-action-modal");
+      const modalBody = document.querySelector("#user-action-modal-body");
+      if (!modal || !modalCard || !modalBody) return;
+      modalCard.classList.remove("article-preview-modal", "category-editor-modal");
+      modalCard.classList.add("article-editor-confirm-modal");
+      modalBody.innerHTML = `
+        <div class="article-editor-confirm-page">
+          <div class="article-editor-confirm-icon cancel" aria-hidden="true">
+            <span>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+                <path d="m8.4 8.4 7.2 7.2"></path><path d="m15.6 8.4-7.2 7.2"></path>
+              </svg>
+            </span>
+          </div>
+          <h2 id="user-action-modal-title">${config.title}</h2>
+          <p class="article-editor-confirm-question">${config.question}</p>
+          <p class="article-editor-confirm-summary">${config.summary}</p>
+          <div class="article-editor-confirm-actions">
+            <button class="user-detail-action-btn primary" type="button" data-user-action-modal-close>รับทราบ</button>
+          </div>
+        </div>
+      `;
+      showUserActionModal(true);
+    }
+
     function openCategoryActionConfirmModal(category, action) {
       const config = getCategoryActionConfig(category, action);
       if (!category || !config) {
         showSuccessToast("ไม่สามารถลบ category ที่มีบทความผูกอยู่ได้");
+        return;
+      }
+      if (config.blocked) {
+        renderCategoryActionBlockedModal(config);
         return;
       }
       renderArticleEditorConfirmModal({
@@ -12787,6 +12843,10 @@
     function applyCategoryAction(category, action) {
       const config = getCategoryActionConfig(category, action);
       if (!category || !config) return;
+      if (config.blocked) {
+        renderCategoryActionBlockedModal(config);
+        return;
+      }
       if (action === "delete") {
         const index = categoryRows.findIndex(entry => entry.id === category.id);
         if (index >= 0) categoryRows.splice(index, 1);
