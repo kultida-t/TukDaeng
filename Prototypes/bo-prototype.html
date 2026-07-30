@@ -1485,6 +1485,13 @@
       text-transform: uppercase;
       white-space: nowrap;
     }
+    body.reported-board-mode .layout > .panel .panel-head h2 {
+      color: #071b36;
+      font-size: 26px;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
     body.article-list-mode .filters,
     body.category-list-mode .filters {
       display: flex;
@@ -6303,8 +6310,7 @@
         item("AST-8497", "Cartier Tank Must", "Minimal Dial", "Sale", "กลาง", "Active", "New Cartier listing with price close to index", ["THB 118,000"], "Confirm reference before featuring")
       ]),
       content: mod("Content Management", "การดำเนินงาน / Content Management", "Board Articles", "สร้างบทความ, category, schedule และจัดการ reported board content", "สร้างบทความ", [["Published", "126", "อยู่ใน Board"], ["Scheduled", "5", "รอ publish"], ["Draft", "14", "ยังไม่แสดงบน FO"], ["Reported", "3", "ต้อง review"]], [
-        item("ART-044", "Vintage Watch Buying Guide", "Editorial", "Article", "ปกติ", "Scheduled", "ตั้งเวลาเผยแพร่ 10 Jul 2026 19:00", ["Board", "Buying Guide"], "Preview as FO และตรวจ cover image ก่อน publish"),
-        item("BRD-R02", "Reported article image", "User report", "Board Report", "สูง", "Reviewing", "รูปประกอบบทความถูก report ว่าละเมิดสิทธิ์", ["Reports 2"], "ซ่อนรูปหรือ archive article หากยืนยัน")
+        item("ART-044", "Vintage Watch Buying Guide", "Editorial", "Article", "ปกติ", "Scheduled", "ตั้งเวลาเผยแพร่ 10 Jul 2026 19:00", ["Board", "Buying Guide"], "Preview as FO และตรวจ cover image ก่อน publish")
       ]),
       market: mod("Market Data", "การดำเนินงาน / Market Data", "Watch Master Data", "ดูแล brand, model, reference และ price index ที่ใช้กับ Search, Asset และ Watch Alert", "Import CSV", [["Brands", "482", "Active 461"], ["Models", "8,924", "Inactive 31"], ["Price Index", "17,200", "อัปเดตสัปดาห์นี้"], ["Import Errors", "6", "ต้องแก้ reference"]], [
         item("BRD-ROLEX", "Rolex", "Brand", "Master", "ปกติ", "Active", "ใช้ใน autocomplete และ asset form", ["Models 1,240"], "Inactive จะหยุด trigger Watch Alert ใหม่"),
@@ -7074,6 +7080,8 @@
     let articleFilterOpen = false;
     let categoryListPage = 1;
     let categoryFilterOpen = false;
+    let boardReportListPage = 1;
+    let boardReportFilterOpen = false;
     let activeAssetImageIndex = 0;
     let activeAssetReportModalImageIndex = 0;
     let activeAssetCommentsModalId = null;
@@ -7108,6 +7116,8 @@
       articleFilterOpen = false;
       categoryListPage = 1;
       categoryFilterOpen = false;
+      boardReportListPage = 1;
+      boardReportFilterOpen = false;
       activeAssetImageIndex = 0;
       closeRowMenus();
       document.querySelectorAll("[data-custom-select]").forEach(select => {
@@ -7125,6 +7135,7 @@
       assetReportFilterOpen = false;
       articleFilterOpen = false;
       categoryFilterOpen = false;
+      boardReportFilterOpen = false;
     }
 
     function renderNav() {
@@ -11488,15 +11499,17 @@
       const isReportedAssets = id === "assets" && subLabel === "Reported Assets";
       const isArticleList = id === "content" && (subLabel || "Articles") === "Articles";
       const isCategoryList = id === "content" && subLabel === "Categories";
+      const isReportedBoard = id === "content" && subLabel === "Reported Board";
       document.body.classList.toggle("dashboard-mode", id === "dashboard");
-      document.body.classList.toggle("user-management-mode", id === "users" || isReportedAssets);
-      document.body.classList.toggle("asset-list-mode", isAssetList || isArticleList || isCategoryList);
+      document.body.classList.toggle("user-management-mode", id === "users" || isReportedAssets || isReportedBoard);
+      document.body.classList.toggle("asset-list-mode", isAssetList || isArticleList || isCategoryList || isReportedBoard);
       document.body.classList.toggle("article-list-mode", isArticleList);
       document.body.classList.toggle("category-list-mode", isCategoryList);
-      document.body.classList.toggle("user-list-mode", id === "users" || isReportedAssets);
+      document.body.classList.toggle("reported-board-mode", isReportedBoard);
+      document.body.classList.toggle("user-list-mode", id === "users" || isReportedAssets || isReportedBoard);
       document.body.classList.remove("asset-detail-mode");
-      if (isReportedAssets) document.body.classList.remove("user-detail-mode");
-      if (id !== "users" && !isReportedAssets) {
+      if (isReportedAssets || isReportedBoard) document.body.classList.remove("user-detail-mode");
+      if (id !== "users" && !isReportedAssets && !isReportedBoard) {
         document.body.classList.remove("user-list-mode", "user-detail-mode");
         document.querySelector("#user-panel-filter-actions").innerHTML = "";
       }
@@ -11643,6 +11656,47 @@
         updateActiveNav();
         return;
       }
+      if (isReportedBoard) {
+        activeRow = getBoardReportRows()[0] || null;
+        document.querySelector("#crumb").textContent = `${data.crumb} / Reported Board`;
+        document.querySelector("#page-title").textContent = "Reported Board";
+        document.querySelector("#page-meta").textContent = "";
+        document.querySelector("#panel-title").textContent = "Reported Board List";
+        document.querySelector("#panel-subtitle").textContent = "";
+        document.querySelector("#primary-action").textContent = "เปิดรายงาน";
+        document.querySelector("#user-panel-filter-actions").innerHTML = `
+          <button class="btn user-filter-toggle" type="button" data-board-report-filter-toggle aria-expanded="${boardReportFilterOpen}">${iconSvg.filter}<span>${boardReportFilterOpen ? "ปิดตัวกรอง" : "เปิดตัวกรอง"}</span></button>
+          <button class="btn" type="button" data-board-report-reset title="รีเซ็ตค่าทั้งหมด" aria-label="รีเซ็ตค่าทั้งหมด">${iconSvg.refresh}<span>รีเซ็ตค่าทั้งหมด</span></button>
+        `;
+        document.querySelector(".filters").innerHTML = `
+          <div class="user-filter-bar" data-filter-open="${boardReportFilterOpen}">
+            <input class="field search" id="board-report-search" type="search" placeholder="ค้นหา Report ID, Article, Category, Article ID" />
+            <div class="user-advanced-filter">${customSelect("board-report-status-filter", "Filter report status", [
+              { value: "", label: "ทุกสถานะ" },
+              { value: "Pending", label: "รอตรวจ" },
+              { value: "Cleared", label: "ปิดแล้ว" }
+            ])}</div>
+            <div class="user-advanced-filter">${customSelect("board-report-priority-filter", "Filter priority", [
+              { value: "", label: "ทุก priority" },
+              { value: "high", label: "High" },
+              { value: "medium", label: "Medium" },
+              { value: "low", label: "Low" }
+            ])}</div>
+            <div class="user-advanced-filter">${customSelect("board-report-sort", "Sort board reports", [
+              { value: "latest", label: "ล่าสุดก่อน" },
+              { value: "reporters", label: "จำนวน reporter" },
+              { value: "waiting", label: "รอนานสุด" }
+            ], "latest")}</div>
+            <button class="btn filter-reset user-advanced-filter" type="button" data-board-report-reset title="รีเซ็ตค่าทั้งหมด" aria-label="รีเซ็ตค่าทั้งหมด">${iconSvg.refresh}<span>รีเซ็ตค่าทั้งหมด</span></button>
+          </div>
+        `;
+        document.querySelector("#summary-grid").innerHTML = "";
+        document.querySelector("#cards").innerHTML = "";
+        document.querySelector("#detail").innerHTML = "";
+        renderReportedBoardRows();
+        updateActiveNav();
+        return;
+      }
       if (isAssetList) {
         const assetBrands = Array.from(new Set(data.rows.map(row => getAssetBrand(row)))).sort((a, b) => a.localeCompare(b));
         document.querySelector("#panel-title").textContent = "Assets List";
@@ -11771,7 +11825,7 @@
       activeSub = "Roles & Permissions";
       setPageActions("");
       syncExpandedNavForModule("settings", "Roles & Permissions");
-      document.body.classList.remove("dashboard-mode", "user-management-mode", "user-list-mode", "asset-list-mode", "article-list-mode", "category-list-mode", "asset-detail-mode", "user-detail-mode");
+      document.body.classList.remove("dashboard-mode", "user-management-mode", "user-list-mode", "asset-list-mode", "article-list-mode", "category-list-mode", "reported-board-mode", "asset-detail-mode", "user-detail-mode");
       activeRow = null;
       document.querySelector("#crumb").textContent = "เครื่องมือ & รายงาน / Settings / Roles & Permissions";
       document.querySelector("#page-title").textContent = "Roles & Permissions";
@@ -12014,6 +12068,10 @@
         renderCategoryListRows();
         return;
       }
+      if (activeModule === "content" && activeSub === "Reported Board") {
+        renderReportedBoardRows();
+        return;
+      }
       const data = moduleData[activeModule];
       const q = document.querySelector("#search").value.trim().toLowerCase();
       const status = document.querySelector("#status-filter").value;
@@ -12195,6 +12253,76 @@
           ]
         }
       ];
+
+    const boardReportRows = [
+      {
+        id: "BRD-R02",
+        articleId: "ART-043",
+        articleTitle: "How to Check Provenance",
+        category: "Watch 101",
+        surface: "Board Article",
+        contentStatus: "Published",
+        reportStatus: "Pending",
+        priority: "high",
+        reporters: 2,
+        waitingHours: 18,
+        reason: "Reported article image may use a third-party document photo without permission.",
+        reportedPart: "Body image",
+        reporterNote: "The document photo appears copied from a dealer listing and still shows a cropped watermark.",
+        nextCheck: "Compare the reported image with source evidence, then hide only the image or archive the article if the claim is confirmed.",
+        preview: "Provenance checklist article with a reported body image inside the Board content.",
+        reportedAt: "10 Jul 2026 14:20",
+        tags: ["Image rights", "Board", "Reports 2"],
+        actionHistory: [
+          { createdAt: "10 Jul 2026 14:20 GMT+7", actor: "System", action: "Report Received", before: null, after: { reportStatus: "Pending", contentStatus: "Published" }, note: "System opened a Board report after duplicate image reports reached the review threshold." }
+        ]
+      },
+      {
+        id: "BRD-R03",
+        articleId: "ART-041",
+        articleTitle: "Auction Week Highlights",
+        category: "Watch Events",
+        surface: "Board Article",
+        contentStatus: "Scheduled",
+        reportStatus: "Pending",
+        priority: "medium",
+        reporters: 1,
+        waitingHours: 6,
+        reason: "Reported destination link may route users to the wrong campaign page.",
+        reportedPart: "Related banner link",
+        reporterNote: "The banner opens an old auction campaign instead of the current July event.",
+        nextCheck: "Open the scheduled Board preview, verify the destination URL, then update or close the report.",
+        preview: "Scheduled auction highlight article with related campaign banner.",
+        reportedAt: "10 Jul 2026 11:05",
+        tags: ["Link check", "Scheduled", "Reports 1"],
+        actionHistory: [
+          { createdAt: "10 Jul 2026 11:05 GMT+7", actor: "System", action: "Report Received", before: null, after: { reportStatus: "Pending", contentStatus: "Scheduled" }, note: "System opened a Board report for a scheduled content destination issue." }
+        ]
+      },
+      {
+        id: "BRD-R01",
+        articleId: "ART-039",
+        articleTitle: "Collector Interview: Bangkok Vintage",
+        category: "Journal Board",
+        surface: "Board Article",
+        contentStatus: "Archived",
+        reportStatus: "Cleared",
+        priority: "low",
+        reporters: 3,
+        waitingHours: 0,
+        reason: "Interview contained outdated owner attribution.",
+        reportedPart: "Interview text",
+        reporterNote: "The owner attribution was no longer accurate after the collector requested removal.",
+        nextCheck: "No pending action. Article remains archived and the report is closed.",
+        preview: "Archived collector interview retained for BO audit only.",
+        reportedAt: "09 Jul 2026 16:45",
+        tags: ["Attribution", "Archived", "Closed"],
+        actionHistory: [
+          { createdAt: "09 Jul 2026 17:12 GMT+7", actor: "Orn Admin", action: "Archive Article", before: { reportStatus: "Pending", contentStatus: "Published" }, after: { reportStatus: "Cleared", contentStatus: "Archived" }, note: "Archived the Board article and closed the report after attribution review." },
+          { createdAt: "09 Jul 2026 16:45 GMT+7", actor: "System", action: "Report Received", before: null, after: { reportStatus: "Pending", contentStatus: "Published" }, note: "System opened a Board report for outdated attribution." }
+        ]
+      }
+    ];
 
     const categoryRows = [
       {
@@ -14518,6 +14646,512 @@
       `;
     }
 
+    function getBoardReportRows() {
+      return boardReportRows;
+    }
+
+    function getBoardReportById(id) {
+      return getBoardReportRows().find(report => report.id === id);
+    }
+
+    function getBoardReportQueueStatus(report) {
+      return report?.reportStatus === "Cleared" ? "Cleared" : "Pending";
+    }
+
+    function boardReportQueueStatusPill(report) {
+      const status = getBoardReportQueueStatus(report);
+      return `<span class="pill ${status === "Cleared" ? "green" : "amber"}">${status === "Cleared" ? "Closed" : "Pending"}</span>`;
+    }
+
+    function boardReportContentStatusPill(status) {
+      const color = status === "Published" ? "green" : status === "Scheduled" ? "blue" : status === "Archived" ? "gray" : status === "Image Hidden" ? "amber" : "purple";
+      return `<span class="pill ${color}">${status}</span>`;
+    }
+
+    function getBoardReportPriorityLabel(report) {
+      if (report.priority === "high") return "High";
+      if (report.priority === "medium") return "Medium";
+      return "Low";
+    }
+
+    function boardReportPriorityPill(report) {
+      const color = report.priority === "high" ? "red" : report.priority === "medium" ? "amber" : "blue";
+      return `<span class="pill ${color}">${getBoardReportPriorityLabel(report)}</span>`;
+    }
+
+    function getBoardReportSearchText(report) {
+      return [
+        report.id,
+        report.articleId,
+        report.articleTitle,
+        report.category,
+        report.surface,
+        report.contentStatus,
+        getBoardReportQueueStatus(report),
+        getBoardReportPriorityLabel(report),
+        report.reason,
+        report.reportedPart,
+        report.reporterNote,
+        ...(report.tags || [])
+      ].join(" ").toLowerCase();
+    }
+
+    function getBoardReportActions(report) {
+      if (!report) return [];
+      const actions = [];
+      if (getBoardReportQueueStatus(report) === "Pending") {
+        actions.push({ action: "close-report", label: "ปิดรายงาน" });
+        if (report.contentStatus !== "Image Hidden" && report.contentStatus !== "Archived") {
+          actions.push({ action: "hide-image", label: "ซ่อนรูปที่ถูกรายงาน" });
+        }
+        if (report.contentStatus !== "Archived") {
+          actions.push({ action: "archive-article", label: "Archive article" });
+        }
+      }
+      if (report.contentStatus === "Image Hidden") {
+        actions.push({ action: "restore-image", label: "คืนรูปที่ซ่อน" });
+      }
+      return actions;
+    }
+
+    function renderBoardReportStatusActionButtons(report) {
+      return getBoardReportActions(report)
+        .map(action => `<button type="button" data-board-report-action="${action.action}" data-board-report-id="${report.id}">${action.label}</button>`)
+        .join("");
+    }
+
+    function renderBoardReportDetailActionButtons(report) {
+      return getBoardReportActions(report)
+        .map((action, index) => {
+          const style = action.action === "close-report" ? "primary" : action.action === "archive-article" ? "danger" : index === 0 ? "primary" : "";
+          return `<button class="user-detail-action-btn ${style}" type="button" data-board-report-action="${action.action}" data-board-report-id="${report.id}">${action.label}</button>`;
+        })
+        .join("");
+    }
+
+    function renderBoardReportRowActionMenu(report) {
+      return `
+        <details class="row-menu">
+          <summary title="Board report actions">...</summary>
+          <div class="row-menu-list">
+            <button type="button" data-board-report-open="${report.id}">ดูรายละเอียด</button>
+            <button type="button" data-board-report-preview="${report.id}">View Board content</button>
+            ${renderBoardReportStatusActionButtons(report)}
+          </div>
+        </details>
+      `;
+    }
+
+    function appendBoardReportAuditHistory(report, log) {
+      if (!report || !log) return;
+      if (!Array.isArray(report.actionHistory)) report.actionHistory = [];
+      report.actionHistory.unshift({
+        createdAt: formatBangkokTimestamp(),
+        actor: "Somchai Admin",
+        ...log
+      });
+    }
+
+    function getBoardReportActionLabel(action) {
+      const labels = {
+        "Report Received": "รับรายงาน Board",
+        "Close Report": "ปิดรายงาน",
+        "Hide Reported Image": "ซ่อนรูปที่ถูกรายงาน",
+        "Archive Article": "Archive article",
+        "Restore Reported Image": "คืนรูปที่ซ่อน"
+      };
+      return labels[action] || action;
+    }
+
+    function renderBoardReportState(state) {
+      if (!state) return `<span class="muted">-</span>`;
+      return `
+        ${state.reportStatus ? `<span class="pill ${state.reportStatus === "Cleared" ? "green" : "amber"}">${state.reportStatus === "Cleared" ? "Closed" : state.reportStatus}</span>` : ""}
+        ${state.contentStatus ? boardReportContentStatusPill(state.contentStatus) : ""}
+      `;
+    }
+
+    function renderBoardReportAuditHistoryTable(report) {
+      const allRows = Array.isArray(report?.actionHistory) ? report.actionHistory : [];
+      const pageCount = Math.max(1, Math.ceil(allRows.length / reportHistoryPageSize));
+      reportAuditHistoryPage = Math.min(reportAuditHistoryPage, pageCount);
+      const start = (reportAuditHistoryPage - 1) * reportHistoryPageSize;
+      const pageRows = allRows.slice(start, start + reportHistoryPageSize);
+      const rows = pageRows.length ? pageRows.map(row => `
+        <tr>
+          <td data-label="วันที่ / เวลา">${formatAuditDisplayTime(row.createdAt)}</td>
+          <td data-label="ผู้ดำเนินการ">${row.actor}</td>
+          <td data-label="Action">${getBoardReportActionLabel(row.action)}</td>
+          <td data-label="สถานะ">${renderBoardReportState(row.after)}</td>
+          <td data-label="ส่งอีเมล"><span class="pill gray">Not required</span></td>
+          <td data-label="รายละเอียด" class="history-note">${renderHistoryValue(row.note || "-")}</td>
+        </tr>
+      `).join("") : `<tr><td colspan="6" class="history-note">No admin action recorded yet</td></tr>`;
+      return `
+        <div class="history-table-wrap">
+          <table class="history-table asset-status-history-table">
+            <thead>
+              <tr>
+                <th>วันที่ / เวลา</th>
+                <th>ผู้ดำเนินการ</th>
+                <th>Action</th>
+                <th>สถานะ</th>
+                <th>ส่งอีเมล</th>
+                <th>รายละเอียด</th>
+              </tr>
+            </thead>
+            <tbody>${rows}</tbody>
+          </table>
+          ${renderReportHistoryPager("audit", reportAuditHistoryPage, pageCount, allRows.length, start)}
+        </div>
+      `;
+    }
+
+    function renderBoardReporterHistoryTable(report) {
+      const allRows = Array.from({ length: report.reporters }, (_, index) => ({
+        reporter: `Reporter ${String(index + 1).padStart(2, "0")}`,
+        submittedAt: getAssetHistoryOffsetTime(report.reportedAt, -(index * 17)),
+        reason: index === 0 ? report.reason : report.reporterNote,
+        evidence: index === 0 ? report.reportedPart : "User note"
+      }));
+      const pageCount = Math.max(1, Math.ceil(allRows.length / reportHistoryPageSize));
+      reporterHistoryPage = Math.min(reporterHistoryPage, pageCount);
+      const start = (reporterHistoryPage - 1) * reportHistoryPageSize;
+      const pageRows = allRows.slice(start, start + reportHistoryPageSize);
+      return `
+        <div class="history-table-wrap">
+          <table class="history-table">
+            <thead>
+              <tr>
+                <th>Reporter</th>
+                <th>Reported At</th>
+                <th>Evidence</th>
+                <th>Detail</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${pageRows.map(row => `
+                <tr>
+                  <td data-label="Reporter">${row.reporter}</td>
+                  <td data-label="Reported At">${formatAuditDisplayTime(row.submittedAt)}</td>
+                  <td data-label="Evidence">${row.evidence}</td>
+                  <td data-label="Detail" class="history-note">${renderHistoryValue(row.reason)}</td>
+                </tr>
+              `).join("")}
+            </tbody>
+          </table>
+          ${renderReportHistoryPager("reporter", reporterHistoryPage, pageCount, allRows.length, start)}
+        </div>
+      `;
+    }
+
+    function renderReportedBoardRows() {
+      const q = (document.querySelector("#board-report-search")?.value || "").trim().toLowerCase();
+      const status = document.querySelector("#board-report-status-filter")?.value || "";
+      const priority = document.querySelector("#board-report-priority-filter")?.value || "";
+      const sort = document.querySelector("#board-report-sort")?.value || "latest";
+      const sorted = getBoardReportRows()
+        .filter(report => {
+          return (!q || getBoardReportSearchText(report).includes(q))
+            && (!status || getBoardReportQueueStatus(report) === status)
+            && (!priority || report.priority === priority);
+        })
+        .sort((a, b) => {
+          if (sort === "reporters") return b.reporters - a.reporters;
+          if (sort === "waiting") return b.waitingHours - a.waitingHours;
+          return parseAssetHistoryTime(`${b.reportedAt} GMT+7`) - parseAssetHistoryTime(`${a.reportedAt} GMT+7`);
+        });
+      const pageCount = Math.max(1, Math.ceil(sorted.length / articleListPageSize));
+      boardReportListPage = Math.min(boardReportListPage, pageCount);
+      const start = (boardReportListPage - 1) * articleListPageSize;
+      const pageRows = sorted.slice(start, start + articleListPageSize);
+      document.querySelector("#table").innerHTML = `
+        <div class="user-table">
+          <div class="user-row report-row asset-report-row head"><div>Report ID</div><div>Article</div><div>Content Status</div><div>Status</div><div>Report Detail</div><div>Reporters</div><div>Priority</div><div>Action</div></div>
+          ${pageRows.map(report => `
+            <div class="user-row report-row asset-report-row" data-board-report-card="${report.id}">
+              <div class="user-cell-primary" data-label="Report ID"><div class="main-text">${report.id}</div></div>
+              <div class="user-card-tags">
+                ${boardReportQueueStatusPill(report)}
+                ${boardReportContentStatusPill(report.contentStatus)}
+                <span class="user-card-tag asset-tag">${report.reporters} reporters</span>
+                ${boardReportPriorityPill(report)}
+                <div class="user-card-meta">
+                  <div class="user-card-meta-item"><span>Article</span><strong>${report.articleTitle}</strong></div>
+                  <div class="user-card-meta-item"><span>Report detail</span><strong>${report.reason}</strong></div>
+                </div>
+              </div>
+              <div data-label="Article"><div class="main-text">${report.articleTitle}</div><div class="muted">${report.articleId} · ${report.category}</div></div>
+              <div data-label="Content Status">${boardReportContentStatusPill(report.contentStatus)}</div>
+              <div data-label="Status">${boardReportQueueStatusPill(report)}</div>
+              <div data-label="Report Detail"><div class="muted">${report.reason}</div></div>
+              <div data-label="Reporters"><div class="main-text">${report.reporters}</div></div>
+              <div data-label="Priority">${boardReportPriorityPill(report)}</div>
+              <div class="user-row-actions">
+                ${renderBoardReportRowActionMenu(report)}
+              </div>
+            </div>
+          `).join("") || `<div class="detail-empty user-empty">ไม่พบข้อมูล</div>`}
+        </div>
+        <div class="footer-range">
+          <span>แสดง ${sorted.length ? `${start + 1}-${Math.min(start + articleListPageSize, sorted.length)}` : "0"} จาก ${sorted.length}</span>
+          <div class="pager">
+            <button class="btn" type="button" data-board-report-page="prev" ${boardReportListPage <= 1 ? "disabled" : ""}>ก่อนหน้า</button>
+            ${Array.from({ length: pageCount }, (_, index) => `<button class="btn ${index + 1 === boardReportListPage ? "active" : ""}" type="button" data-board-report-page="${index + 1}">${index + 1}</button>`).join("")}
+            <button class="btn" type="button" data-board-report-page="next" ${boardReportListPage >= pageCount ? "disabled" : ""}>ถัดไป</button>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderReportedBoardDetail(report) {
+      if (!report) {
+        renderModule("content", "Reported Board", "Reported Board");
+        return;
+      }
+      document.body.classList.add("user-management-mode", "user-detail-mode");
+      document.body.classList.remove("user-list-mode", "asset-list-mode", "asset-detail-mode", "article-list-mode", "category-list-mode", "reported-board-mode");
+      activeModule = "content";
+      activeSub = "Reported Board";
+      activeRow = report;
+      document.querySelector("#crumb").textContent = `การดำเนินงาน / Content Management / Report Detail / ${report.id}`;
+      document.querySelector("#page-title").textContent = "Report Detail";
+      document.querySelector("#page-meta").textContent = "";
+      setPageActions(renderPageBackButton("data-back-reported-board", "กลับไป Reported Board", "report-back-btn"));
+      document.querySelector("#panel-title").textContent = report.articleTitle;
+      document.querySelector("#panel-subtitle").textContent = `${report.id} · ${report.articleId} · reporter identity masked`;
+      document.querySelector("#user-panel-filter-actions").innerHTML = "";
+      document.querySelector(".filters").innerHTML = "";
+      document.querySelector("#summary-grid").innerHTML = "";
+      document.querySelector("#cards").innerHTML = "";
+      const detailActionButtons = renderBoardReportDetailActionButtons(report);
+      document.querySelector("#table").innerHTML = `
+        <div class="user-detail-page report-detail-page asset-report-detail-page">
+          <div class="user-detail-head">
+            <div class="user-detail-title">
+              <div>
+                <h2 class="asset-report-heading"><span class="asset-report-id">${report.id}</span><span class="user-detail-separator"> : </span><span class="asset-report-name user-display-name">${report.articleTitle}</span></h2>
+                <div class="chips">
+                  ${boardReportQueueStatusPill(report)}
+                  ${boardReportContentStatusPill(report.contentStatus)}
+                  ${boardReportPriorityPill(report)}
+                </div>
+              </div>
+            </div>
+            <div class="user-detail-actions">
+              <button class="btn asset-report-view-btn" type="button" data-board-report-preview="${report.id}" aria-label="View Board content ${report.id}" title="View Board Content">${iconSvg.eye}<span class="asset-report-view-label">View Content</span></button>
+            </div>
+          </div>
+
+          <div class="detail-section">
+            <h4>Reported Reference</h4>
+            <div class="detail-grid two report-reference-grid">
+              <div class="detail-tile"><span>Report ID</span><strong>${report.id}</strong></div>
+              <div class="detail-tile"><span>Article ID</span><strong>${report.articleId}</strong></div>
+              <div class="detail-tile"><span>Article Title</span><strong>${report.articleTitle}</strong></div>
+              <div class="detail-tile"><span>Category</span><strong>${report.category}</strong></div>
+              <div class="detail-tile"><span>Reported Part</span><strong>${report.reportedPart}</strong></div>
+              <div class="detail-tile"><span>Content Status</span><strong>${report.contentStatus}</strong></div>
+            </div>
+          </div>
+
+          <div class="detail-section">
+            <h4>Report Context</h4>
+            <div class="detail-grid">
+              <div class="detail-tile report-detail-tile"><span>Report Detail</span><strong>${report.reason}</strong></div>
+              <div class="detail-tile report-detail-tile"><span>Reporter Note</span><strong>${report.reporterNote}</strong></div>
+              <div class="detail-tile report-detail-tile"><span>Next Check</span><strong>${report.nextCheck}</strong></div>
+            </div>
+          </div>
+
+          <div class="detail-section">
+            <h4>Reporter History</h4>
+            ${renderBoardReporterHistoryTable(report)}
+          </div>
+
+          <div class="detail-section">
+            <h4>Admin Action History</h4>
+            ${renderBoardReportAuditHistoryTable(report)}
+          </div>
+
+          ${detailActionButtons ? `<div class="user-detail-actions">${detailActionButtons}</div>` : ""}
+        </div>
+      `;
+      document.querySelector("#detail").innerHTML = "";
+      updateActiveNav();
+      scrollMainToTop();
+    }
+
+    function getBoardReportActionConfig(action) {
+      const configs = {
+        "close-report": {
+          title: "ยืนยันการปิดรายงาน",
+          detail: "ปิดรายงานหลังตรวจหลักฐานครบแล้ว โดยไม่เปลี่ยนสถานะ Board content อัตโนมัติ",
+          confirm: "ยืนยันปิดรายงาน",
+          historyAction: "Close Report",
+          note: "Admin closed the Board report after review."
+        },
+        "hide-image": {
+          title: "ยืนยันการซ่อนรูปที่ถูกรายงาน",
+          detail: "ซ่อนเฉพาะรูปที่ถูกรายงานจาก Board content และปิดรายงานนี้",
+          confirm: "ยืนยันซ่อนรูป",
+          historyAction: "Hide Reported Image",
+          note: "Admin hid the reported Board image and closed the report."
+        },
+        "archive-article": {
+          title: "ยืนยันการ Archive article",
+          detail: "นำบทความออกจาก Board public surfaces และปิดรายงานนี้",
+          confirm: "ยืนยัน Archive",
+          historyAction: "Archive Article",
+          note: "Admin archived the Board article and closed the report."
+        },
+        "restore-image": {
+          title: "ยืนยันการคืนรูปที่ซ่อน",
+          detail: "คืนรูปที่เคยซ่อนจากรายงานนี้กลับสู่ Board content",
+          confirm: "ยืนยันคืนรูป",
+          historyAction: "Restore Reported Image",
+          note: "Admin restored the reported Board image after review."
+        }
+      };
+      return configs[action] || configs["close-report"];
+    }
+
+    function renderBoardReportActionConfirmModal(report, action, resultMessage = "", resultDetail = "", resultType = "", selectedScenario = "success") {
+      if (!report) return;
+      const config = getBoardReportActionConfig(action);
+      const hasResult = Boolean(resultMessage);
+      const scenarios = [
+        { value: "success", label: "สำเร็จ" },
+        { value: "invalid_state", label: "สถานะไม่พร้อมดำเนินการ" },
+        { value: "stale_data", label: "ข้อมูลเปลี่ยนระหว่างดำเนินการ" },
+        { value: "save_failed", label: "บันทึกผลไม่สำเร็จ" },
+        { value: "session_expired", label: "เซสชันหมดอายุ" }
+      ];
+      const modal = document.querySelector("#user-action-modal");
+      const modalBody = document.querySelector("#user-action-modal-body");
+      if (!modal || !modalBody) return;
+      modalBody.innerHTML = `
+        <div class="user-action-page">
+          <div class="user-action-head">
+            <div>
+              <h2 id="user-action-modal-title">${config.title}</h2>
+              <p>${config.detail}</p>
+            </div>
+            <button class="btn user-action-close" type="button" data-user-action-modal-close aria-label="Close modal" title="Close">${iconSvg.close}</button>
+          </div>
+          <div class="user-action-target">
+            <div>
+              <strong>${report.articleTitle}</strong>
+              <span>${report.id} · ${report.articleId}</span>
+            </div>
+            ${boardReportQueueStatusPill(report)}
+          </div>
+          <div class="user-action-layout">
+            <div class="detail-section">
+              <div class="user-action-form">
+                <label>
+                  เหตุผล
+                  ${customSelect("board-report-action-reason", "เหตุผล", [
+                    { value: "Evidence reviewed and action is required", label: "Evidence reviewed and action is required" },
+                    { value: "Report does not require further content changes", label: "Report does not require further content changes" },
+                    { value: "Duplicate report already handled", label: "Duplicate report already handled" }
+                  ], "", "data-custom-select-silent")}
+                </label>
+                <label>
+                  Note / หมายเหตุ
+                  <textarea id="board-report-action-note" placeholder="ระบุหมายเหตุสำหรับ audit log"></textarea>
+                </label>
+                <div class="module-note user-action-impact user-action-impact-card user-action-impact-warning">
+                  <p><strong>ผลกระทบ:</strong> ${config.detail} และบันทึก audit log ของ Reported Board โดยไม่แก้ไขข้อมูลหน้า Articles ที่ล็อกไว้</p>
+                </div>
+                <div class="user-detail-actions">
+                  <button class="user-detail-action-btn warning user-action-confirm" type="button" data-board-report-action-confirm="${action}" data-board-report-id="${report.id}">${config.confirm}</button>
+                  <button class="user-detail-action-btn" type="button" data-user-action-modal-close>ยกเลิก</button>
+                </div>
+                <div class="warning-note action-feedback user-action-result ${hasResult ? "show" : ""} ${resultType}">
+                  <strong>${resultMessage}</strong><br>
+                  <span>${resultDetail}</span>
+                </div>
+                <details class="prototype-tools user-action-prototype-tools">
+                  <summary>Prototype scenario</summary>
+                  <label>
+                    Test flow
+                    ${customSelect("board-report-action-scenario", "Test flow", scenarios, selectedScenario, "data-custom-select-silent")}
+                  </label>
+                </details>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+      applyModalHeadingFonts(modal);
+      modal.classList.add("show");
+    }
+
+    function applyBoardReportAction(report, action) {
+      if (!report || !action) return;
+      const before = { reportStatus: getBoardReportQueueStatus(report), contentStatus: report.contentStatus };
+      const note = document.querySelector("#board-report-action-note")?.value.trim() || document.querySelector("#board-report-action-reason")?.value || getBoardReportActionConfig(action).note;
+      if (action === "close-report") report.reportStatus = "Cleared";
+      if (action === "hide-image") {
+        report.contentStatus = "Image Hidden";
+        report.reportStatus = "Cleared";
+      }
+      if (action === "archive-article") {
+        report.contentStatus = "Archived";
+        report.reportStatus = "Cleared";
+      }
+      if (action === "restore-image") report.contentStatus = "Published";
+      appendBoardReportAuditHistory(report, {
+        action: getBoardReportActionConfig(action).historyAction,
+        before,
+        after: { reportStatus: getBoardReportQueueStatus(report), contentStatus: report.contentStatus },
+        note
+      });
+      closeUserActionModal();
+      if (document.body.classList.contains("user-detail-mode") && activeModule === "content" && activeSub === "Reported Board") {
+        renderReportedBoardDetail(report);
+      } else {
+        renderReportedBoardRows();
+      }
+      showSuccessToast(`${report.id}: อัปเดต Reported Board แล้ว`);
+    }
+
+    function renderBoardReportContentModal(report) {
+      if (!report) return;
+      const modal = document.querySelector("#user-action-modal");
+      const modalCard = modal?.querySelector(".user-action-modal");
+      const modalBody = document.querySelector("#user-action-modal-body");
+      if (!modal || !modalCard || !modalBody) return;
+      modalCard.classList.remove("article-preview-modal", "article-editor-confirm-modal", "category-order-modal");
+      modalBody.innerHTML = `
+        <div class="user-action-layout">
+          <div class="user-action-head">
+            <div>
+              <h2 id="user-action-modal-title">Board Content Preview</h2>
+              <p>${report.id} · ${report.articleId}</p>
+            </div>
+            <button class="btn user-action-close" type="button" data-user-action-modal-close aria-label="Close modal" title="Close">${iconSvg.close}</button>
+          </div>
+          <div class="detail-section">
+            <h4>${report.articleTitle}</h4>
+            <div class="detail-grid two report-reference-grid">
+              <div class="detail-tile"><span>Category</span><strong>${report.category}</strong></div>
+              <div class="detail-tile"><span>Reported Part</span><strong>${report.reportedPart}</strong></div>
+              <div class="detail-tile"><span>Content Status</span><strong>${report.contentStatus}</strong></div>
+              <div class="detail-tile"><span>Surface</span><strong>${report.surface}</strong></div>
+            </div>
+          </div>
+          <div class="detail-section">
+            <h4>Preview Context</h4>
+            <div class="module-note">${report.preview}</div>
+            <div class="warning-note"><strong>Reported detail:</strong> ${report.reason}</div>
+          </div>
+        </div>
+      `;
+      showUserActionModal();
+    }
+
     function renderReportedAssetRows() {
       const q = (document.querySelector("#asset-report-search")?.value || "").trim().toLowerCase();
       const status = document.querySelector("#asset-report-status-filter")?.value || "";
@@ -14771,6 +15405,11 @@
         if (["category-status-filter", "category-sort"].includes(hiddenInput.id) && activeModule === "content" && activeSub === "Categories") {
           categoryListPage = 1;
           renderCategoryListRows();
+          return;
+        }
+        if (["board-report-status-filter", "board-report-priority-filter", "board-report-sort"].includes(hiddenInput.id) && activeModule === "content" && activeSub === "Reported Board") {
+          boardReportListPage = 1;
+          renderReportedBoardRows();
           return;
         }
         userListPage = 1;
@@ -15217,6 +15856,29 @@
         renderReportedAssetDetail(asset);
         return;
       }
+      const boardReportOpenButton = event.target.closest("[data-board-report-open]");
+      if (boardReportOpenButton) {
+        const report = getBoardReportById(boardReportOpenButton.dataset.boardReportOpen);
+        reporterHistoryPage = 1;
+        reportAuditHistoryPage = 1;
+        renderReportedBoardDetail(report);
+        closeRowMenus();
+        return;
+      }
+      const boardReportCard = event.target.closest("[data-board-report-card]");
+      if (boardReportCard && !event.target.closest(".row-menu, button, a, input, select, [data-custom-select]")) {
+        const report = getBoardReportById(boardReportCard.dataset.boardReportCard);
+        reporterHistoryPage = 1;
+        reportAuditHistoryPage = 1;
+        renderReportedBoardDetail(report);
+        return;
+      }
+      const boardReportPreviewButton = event.target.closest("[data-board-report-preview]");
+      if (boardReportPreviewButton) {
+        renderBoardReportContentModal(getBoardReportById(boardReportPreviewButton.dataset.boardReportPreview));
+        closeRowMenus();
+        return;
+      }
       const assetCard = event.target.closest("[data-asset-card]");
       if (assetCard && !event.target.closest(".row-menu, button, a, input, select, [data-custom-select]")) {
         const asset = moduleData.assets.rows.find(entry => entry.id === assetCard.dataset.assetCard);
@@ -15263,6 +15925,43 @@
       if (assetReportStatusButton) {
         const asset = moduleData.assets.rows.find(entry => entry.id === assetReportStatusButton.dataset.assetId);
         renderAssetReportStatusConfirmModal(asset, assetReportStatusButton.dataset.assetReportStatusAction);
+        closeRowMenus();
+        return;
+      }
+      const boardReportActionConfirmButton = event.target.closest("[data-board-report-action-confirm]");
+      if (boardReportActionConfirmButton) {
+        const report = getBoardReportById(boardReportActionConfirmButton.dataset.boardReportId);
+        const scenario = document.querySelector("#board-report-action-scenario")?.value || "success";
+        const boardReportErrorSamples = {
+          invalid_state: {
+            title: "ไม่สามารถดำเนินการกับรายงานได้",
+            detail: "สถานะรายงานหรือสถานะ Board content ไม่ตรงกับเงื่อนไขของ action นี้ กรุณาตรวจสอบข้อมูลล่าสุด"
+          },
+          stale_data: {
+            title: "ข้อมูลรายงานมีการเปลี่ยนแปลงแล้ว",
+            detail: "มีการอัปเดตรายงานนี้ระหว่างที่เปิดหน้าต่างยืนยัน กรุณารีเฟรชข้อมูลแล้วลองอีกครั้ง"
+          },
+          save_failed: {
+            title: "บันทึกผลไม่สำเร็จ",
+            detail: "ระบบยังไม่สามารถบันทึกผล action และ audit log ได้ กรุณาลองอีกครั้ง"
+          },
+          session_expired: {
+            title: "เซสชันหมดอายุ",
+            detail: "กรุณาเข้าสู่ระบบใหม่ก่อนยืนยัน action ของ Reported Board"
+          }
+        };
+        const errorSample = boardReportErrorSamples[scenario] || null;
+        if (errorSample) {
+          renderBoardReportActionConfirmModal(report, boardReportActionConfirmButton.dataset.boardReportActionConfirm, errorSample.title, errorSample.detail, "error", scenario);
+          return;
+        }
+        applyBoardReportAction(report, boardReportActionConfirmButton.dataset.boardReportActionConfirm);
+        return;
+      }
+      const boardReportActionButton = event.target.closest("[data-board-report-action]");
+      if (boardReportActionButton) {
+        const report = getBoardReportById(boardReportActionButton.dataset.boardReportId);
+        renderBoardReportActionConfirmModal(report, boardReportActionButton.dataset.boardReportAction);
         closeRowMenus();
         return;
       }
@@ -15347,6 +16046,12 @@
         renderModule("content", "Categories", "Categories");
         return;
       }
+      const boardReportReset = event.target.closest("[data-board-report-reset]");
+      if (boardReportReset) {
+        boardReportListPage = 1;
+        renderModule("content", "Reported Board", "Reported Board");
+        return;
+      }
       const articleFilterToggle = event.target.closest("[data-article-filter-toggle]");
       if (articleFilterToggle) {
         articleFilterOpen = !articleFilterOpen;
@@ -15367,6 +16072,16 @@
         if (label) label.textContent = categoryFilterOpen ? "ปิดตัวกรอง" : "เปิดตัวกรอง";
         return;
       }
+      const boardReportFilterToggle = event.target.closest("[data-board-report-filter-toggle]");
+      if (boardReportFilterToggle) {
+        boardReportFilterOpen = !boardReportFilterOpen;
+        const filterBar = document.querySelector(".user-filter-bar");
+        if (filterBar) filterBar.dataset.filterOpen = String(boardReportFilterOpen);
+        boardReportFilterToggle.setAttribute("aria-expanded", String(boardReportFilterOpen));
+        const label = boardReportFilterToggle.querySelector("span");
+        if (label) label.textContent = boardReportFilterOpen ? "ปิดตัวกรอง" : "เปิดตัวกรอง";
+        return;
+      }
       const articlePageButton = event.target.closest("[data-article-page]");
       if (articlePageButton) {
         const target = articlePageButton.dataset.articlePage;
@@ -15383,6 +16098,15 @@
         else if (target === "next") categoryListPage += 1;
         else categoryListPage = Number(target) || 1;
         renderCategoryListRows();
+        return;
+      }
+      const boardReportPageButton = event.target.closest("[data-board-report-page]");
+      if (boardReportPageButton) {
+        const target = boardReportPageButton.dataset.boardReportPage;
+        if (target === "prev") boardReportListPage = Math.max(1, boardReportListPage - 1);
+        else if (target === "next") boardReportListPage += 1;
+        else boardReportListPage = Number(target) || 1;
+        renderReportedBoardRows();
         return;
       }
       const assetPageButton = event.target.closest("[data-asset-page]");
@@ -15412,6 +16136,7 @@
         else if (target === "next") reporterHistoryPage += 1;
         else reporterHistoryPage = Number(target) || 1;
         if (activeModule === "assets" && activeSub === "Reported Assets") renderReportedAssetDetail(activeRow);
+        else if (activeModule === "content" && activeSub === "Reported Board") renderReportedBoardDetail(activeRow);
         else renderReportedUserDetail(activeRow);
         return;
       }
@@ -15422,6 +16147,7 @@
         else if (target === "next") reportAuditHistoryPage += 1;
         else reportAuditHistoryPage = Number(target) || 1;
         if (activeModule === "assets" && activeSub === "Reported Assets") renderReportedAssetDetail(activeRow);
+        else if (activeModule === "content" && activeSub === "Reported Board") renderReportedBoardDetail(activeRow);
         else renderReportedUserDetail(activeRow);
         return;
       }
@@ -15433,6 +16159,11 @@
       const backReportedUsers = event.target.closest("[data-back-reported-users]");
       if (backReportedUsers) {
         renderModule("users", "Reported Users", "Reported Users");
+        return;
+      }
+      const backReportedBoard = event.target.closest("[data-back-reported-board]");
+      if (backReportedBoard) {
+        renderModule("content", "Reported Board", "Reported Board");
         return;
       }
       const backUserList = event.target.closest("[data-back-user-list]");
@@ -15733,6 +16464,11 @@
         renderReportedAssetRows();
         return;
       }
+      if (event.target.matches("#board-report-search")) {
+        boardReportListPage = 1;
+        renderReportedBoardRows();
+        return;
+      }
       if (event.target.matches("#search")) {
         if (activeModule === "assets") assetListPage = 1;
         renderRows();
@@ -15844,6 +16580,11 @@
       if (event.target.matches("#asset-report-status-filter, #asset-report-priority-filter, #asset-report-sort")) {
         assetListPage = 1;
         renderReportedAssetRows();
+        return;
+      }
+      if (event.target.matches("#board-report-status-filter, #board-report-priority-filter, #board-report-sort")) {
+        boardReportListPage = 1;
+        renderReportedBoardRows();
         return;
       }
       if (event.target.matches("#article-status-filter, #article-category-filter, #article-sort")) {
