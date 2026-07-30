@@ -12067,6 +12067,7 @@
           publishAt: "09 Jul 2026 10:00",
           updatedAt: "09 Jul 2026 09:42",
           readTime: "8 min",
+          likeCount: 248,
           tags: ["Board", "Education"],
           slug: "how-to-check-provenance",
           coverImageName: "art-043-how-to-check-provenance.png",
@@ -12150,6 +12151,7 @@
           publishAt: "07 Jul 2026 12:00",
           updatedAt: "07 Jul 2026 11:35",
           readTime: "7 min",
+          likeCount: 126,
           tags: ["Style", "Accessories"],
           slug: "strap-pairing-guide",
           coverImageName: "art-040-strap-pairing-guide.png",
@@ -12173,6 +12175,7 @@
           publishAt: "02 Jul 2026 18:00",
           updatedAt: "06 Jul 2026 13:05",
           readTime: "9 min",
+          likeCount: 84,
           tags: ["Journal", "Archived"],
           slug: "collector-interview-bangkok-vintage",
           coverImageName: "art-039-collector-interview-bangkok-vintage.png",
@@ -12822,6 +12825,12 @@
     function articleStatusPill(status) {
       const map = { Published: "green", Scheduled: "blue", Draft: "amber", Archived: "gray", Reviewing: "red" };
       return `<span class="pill ${map[status] || "blue"}">${status}</span>`;
+    }
+
+    function getArticleLikeDisplay(article) {
+      if (!["Published", "Archived"].includes(article?.status)) return "-";
+      const likeCount = Number(article?.likeCount || 0);
+      return likeCount.toLocaleString();
     }
 
     function renderArticleTitleImage(article) {
@@ -13875,6 +13884,7 @@
                     ${renderAssetDetailTiles([
                       ["สถานะเผยแพร่", articleStatusPill(article.status)],
                       ["วันที่เผยแพร่", article.publishAt],
+                      ["Likes", getArticleLikeDisplay(article)],
                       ["Created At", getArticleCreatedAt(article)],
                       ["Updated At", article.updatedAt]
                     ])}
@@ -14342,6 +14352,7 @@
         createdAt: existingArticle?.createdAt || now,
         updatedAt: now,
         readTime: existingArticle?.readTime || "5 min",
+        likeCount: existingArticle?.likeCount || (nextStatus === "Published" ? 0 : undefined),
         tags: existingArticle?.tags || ["Board"],
         priority: "ปกติ",
         detail: existingArticle?.detail || "Ready for editorial review",
