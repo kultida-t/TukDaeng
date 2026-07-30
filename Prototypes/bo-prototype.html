@@ -6895,6 +6895,17 @@
       "Other"
     ];
 
+    const reportReasonThaiLabels = {
+      "Fraud or scam": "ฉ้อโกงหรือหลอกลวง",
+      "Impersonation": "แอบอ้างตัวตน",
+      "Harassment or hate": "คุกคามหรือแสดงความเกลียดชัง",
+      "Inappropriate content": "เนื้อหาไม่เหมาะสม",
+      "Spam": "สแปม",
+      "Other": "อื่น ๆ",
+      "Suspected fake or scam": "สงสัยว่าเป็นของปลอมหรือหลอกลวง",
+      "Incorrect information": "ข้อมูลไม่ถูกต้อง"
+    };
+
     const userReportSubmissions = {
       "RPU-505": [
         { source: "User Profile", reason: "Impersonation", additionalDetails: "Profile uses similar identity and seller wording from another account." },
@@ -7052,7 +7063,7 @@
           <td data-label="Reporter">${row.reporter}</td>
           ${showSourceColumn ? `<td data-label="Source">${renderHistoryValue(row.source)}</td>` : ""}
           <td data-label="Status">${row.status}</td>
-          <td data-label="${noteColumnLabel}" class="history-note">${renderHistoryValue(row.note)}</td>
+          <td data-label="${noteColumnLabel}" class="history-note">${renderHistoryValue(isUserReportHistory ? translateReportReason(row.note) : row.note)}</td>
           ${showAdditionalDetails ? `<td data-label="Additional Details" class="history-note">${renderHistoryValue(row.additionalDetails)}</td>` : ""}
         </tr>
       `).join("");
@@ -9927,6 +9938,11 @@
       return sources.join(", ");
     }
 
+    function translateReportReason(reason) {
+      const value = String(reason || "").trim();
+      return reportReasonThaiLabels[value] || value;
+    }
+
     function getUserReportReasons(report) {
       const submissionReasons = isUserReportContext(report)
         ? (userReportSubmissions[report.id] || []).map(submission => submission.reason)
@@ -9938,7 +9954,7 @@
     function renderUserReportReasonsLabel(report) {
       const reasons = getUserReportReasons(report);
       if (!reasons.length) return "-";
-      return reasons.join(", ");
+      return reasons.map(translateReportReason).join(", ");
     }
 
     function getUserSearchText(record) {
