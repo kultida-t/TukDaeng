@@ -1422,6 +1422,10 @@
     .category-table .asset-row {
       grid-template-columns: minmax(112px, .68fr) minmax(260px, 1.65fr) minmax(190px, 1fr) minmax(128px, .7fr) minmax(128px, .7fr) minmax(76px, .42fr);
     }
+    .category-table .asset-row:last-child .row-menu-list {
+      top: auto;
+      bottom: 38px;
+    }
     body.article-list-mode .article-table .asset-row:not(.head) {
       column-gap: 18px;
       min-height: 82px;
@@ -12583,7 +12587,7 @@
               </div>
             </section>
             <div class="user-detail-actions">
-              <button class="user-detail-action-btn primary" type="button" data-category-edit="${category.id}">แก้ไขหมวดหมู่</button>
+              <button class="user-detail-action-btn" type="button" data-category-edit="${category.id}">แก้ไขหมวดหมู่</button>
             ${category.status === "Active"
                 ? canDeactivate
                   ? `<button class="user-detail-action-btn warning" type="button" data-category-status-action="deactivate" data-category-id="${category.id}">Set inactive</button>`
