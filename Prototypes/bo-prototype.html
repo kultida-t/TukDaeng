@@ -12280,7 +12280,7 @@
         priority: "high",
         reporters: 2,
         waitingHours: 18,
-        reason: "Reported article image may use a third-party document photo without permission.",
+        reason: "Inappropriate content",
         reportedPart: "Body image",
         reporterNote: "The document photo appears copied from a dealer listing and still shows a cropped watermark.",
         nextCheck: "Compare the reported image with source evidence, then hide only the image or archive the article if the claim is confirmed.",
@@ -12302,7 +12302,7 @@
         priority: "medium",
         reporters: 1,
         waitingHours: 6,
-        reason: "Reported destination link may route users to the wrong campaign page.",
+        reason: "Spam or misleading",
         reportedPart: "Related banner link",
         reporterNote: "The banner opens an old auction campaign instead of the current July event.",
         nextCheck: "Open the scheduled Board preview, verify the destination URL, then update or close the report.",
@@ -12324,7 +12324,7 @@
         priority: "low",
         reporters: 3,
         waitingHours: 0,
-        reason: "Interview contained outdated owner attribution.",
+        reason: "Other",
         reportedPart: "Interview text",
         reporterNote: "The owner attribution was no longer accurate after the collector requested removal.",
         nextCheck: "No pending action. Article remains archived and the report is closed.",
@@ -14881,11 +14881,11 @@
       const pageRows = sorted.slice(start, start + articleListPageSize);
       document.querySelector("#table").innerHTML = `
         <div class="asset-table reported-board-table">
-          <div class="asset-row reported-board-row head"><div>Report ID</div><div>Article</div><div>Content Status</div><div>Status</div><div>Report Detail</div><div>Reporters</div><div>Priority</div><div>Action</div></div>
+          <div class="asset-row reported-board-row head"><div>Report ID</div><div>Article</div><div>Content Status</div><div>Status</div><div>Report Reason</div><div>Reporters</div><div>Priority</div><div>Action</div></div>
           ${pageRows.map(report => `
             <div class="asset-row reported-board-row" data-board-report-card="${report.id}">
               <div data-label="Report ID"><div class="main-text">${report.id}</div></div>
-              <div class="asset-cell-primary" data-label="Article"><div class="main-text">${report.articleTitle}</div><div class="muted">${report.articleId} · ${report.category}</div></div>
+              <div class="asset-cell-primary" data-label="Article"><div class="main-text">${report.articleTitle}</div></div>
               <div class="asset-card-tags">
                 ${boardReportQueueStatusPill(report)}
                 ${boardReportContentStatusPill(report.contentStatus)}
@@ -14893,12 +14893,12 @@
                 ${boardReportPriorityPill(report)}
                 <div class="user-card-meta">
                   <div class="user-card-meta-item"><span>Article</span><strong>${report.articleTitle}</strong></div>
-                  <div class="user-card-meta-item"><span>Report detail</span><strong>${report.reason}</strong></div>
+                  <div class="user-card-meta-item"><span>Report reason</span><strong>${report.reason}</strong></div>
                 </div>
               </div>
               <div data-label="Content Status">${boardReportContentStatusPill(report.contentStatus)}</div>
               <div data-label="Status">${boardReportQueueStatusPill(report)}</div>
-              <div data-label="Report Detail"><div class="muted">${report.reason}</div></div>
+              <div data-label="Report Reason"><div class="muted">${report.reason}</div></div>
               <div data-label="Reporters"><div class="main-text">${report.reporters}</div></div>
               <div data-label="Priority">${boardReportPriorityPill(report)}</div>
               <div class="user-row-actions">
@@ -14972,8 +14972,8 @@
           <div class="detail-section">
             <h4>Report Context</h4>
             <div class="detail-grid">
-              <div class="detail-tile report-detail-tile"><span>Report Detail</span><strong>${report.reason}</strong></div>
-              <div class="detail-tile report-detail-tile"><span>Reporter Note</span><strong>${report.reporterNote}</strong></div>
+              <div class="detail-tile report-detail-tile"><span>Report Reason</span><strong>${report.reason}</strong></div>
+              <div class="detail-tile report-detail-tile"><span>Additional Details</span><strong>${report.reporterNote}</strong></div>
               <div class="detail-tile report-detail-tile"><span>Next Check</span><strong>${report.nextCheck}</strong></div>
             </div>
           </div>
@@ -15159,7 +15159,7 @@
           <div class="detail-section">
             <h4>Preview Context</h4>
             <div class="module-note">${report.preview}</div>
-            <div class="warning-note"><strong>Reported detail:</strong> ${report.reason}</div>
+            <div class="warning-note"><strong>Report reason:</strong> ${report.reason}</div>
           </div>
         </div>
       `;
