@@ -6205,7 +6205,7 @@
         { id: "dashboard", label: "Dashboard", icon: "dashboard" },
         { id: "users", label: "User Management", icon: "users", subs: ["User Accounts", "Reported Users"] },
         { id: "assets", label: "Asset Management", icon: "asset", subs: ["Asset List", "Reported Assets"] },
-        { id: "content", label: "Content Management", icon: "content", subs: ["Articles", "Categories", "Banners", "Reported Board"] },
+        { id: "content", label: "Content Management", icon: "content", subs: ["Articles", "Categories", "Reported Board"] },
         { id: "market", label: "Market Data", icon: "market", subs: ["Brands", "Models", "Price Index", "Import"] },
         { id: "directory", label: "Directory", icon: "directory" },
       ]},
@@ -6302,9 +6302,8 @@
         item("AST-8509", "Seiko Presage Cocktail Time", "Archive Collector", "Sold", "ปกติ", "Closed", "Sold listing retained for audit and offer history", ["Sold record"], "Keep read-only history"),
         item("AST-8497", "Cartier Tank Must", "Minimal Dial", "Sale", "กลาง", "Active", "New Cartier listing with price close to index", ["THB 118,000"], "Confirm reference before featuring")
       ]),
-      content: mod("Content Management", "การดำเนินงาน / Content Management", "Board Articles & Banners", "สร้างบทความ, category, banner, schedule และจัดการ reported board content", "สร้างบทความ", [["Published", "126", "อยู่ใน Board"], ["Scheduled", "5", "รอ publish"], ["Draft", "14", "ยังไม่แสดงบน FO"], ["Reported", "3", "ต้อง review"]], [
+      content: mod("Content Management", "การดำเนินงาน / Content Management", "Board Articles", "สร้างบทความ, category, schedule และจัดการ reported board content", "สร้างบทความ", [["Published", "126", "อยู่ใน Board"], ["Scheduled", "5", "รอ publish"], ["Draft", "14", "ยังไม่แสดงบน FO"], ["Reported", "3", "ต้อง review"]], [
         item("ART-044", "Vintage Watch Buying Guide", "Editorial", "Article", "ปกติ", "Scheduled", "ตั้งเวลาเผยแพร่ 10 Jul 2026 19:00", ["Board", "Buying Guide"], "Preview as FO และตรวจ cover image ก่อน publish"),
-        item("BAN-012", "Auction Week Banner", "Marketing", "Banner", "กลาง", "Ready", "รอ approval เพื่อขึ้นหน้า Board", ["Desktop/Mobile"], "ตรวจ destination และ start/end date"),
         item("BRD-R02", "Reported article image", "User report", "Board Report", "สูง", "Reviewing", "รูปประกอบบทความถูก report ว่าละเมิดสิทธิ์", ["Reports 2"], "ซ่อนรูปหรือ archive article หากยืนยัน")
       ]),
       market: mod("Market Data", "การดำเนินงาน / Market Data", "Watch Master Data", "ดูแล brand, model, reference และ price index ที่ใช้กับ Search, Asset และ Watch Alert", "Import CSV", [["Brands", "482", "Active 461"], ["Models", "8,924", "Inactive 31"], ["Price Index", "17,200", "อัปเดตสัปดาห์นี้"], ["Import Errors", "6", "ต้องแก้ reference"]], [
