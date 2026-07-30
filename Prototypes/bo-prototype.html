@@ -14901,12 +14901,20 @@
       `;
     }
 
+    const boardReportReporterNames = {
+      "BRD-R02": ["Daily Board Reader", "Saran Collector"],
+      "BRD-R03": ["Auction Watcher BKK"],
+      "BRD-R01": ["Bangkok Vintage Fan", "Nicha S.", "Ploy R."]
+    };
+
     function renderBoardReporterHistoryTable(report) {
+      const reporterNames = boardReportReporterNames[report.id] || [];
       const allRows = Array.from({ length: report.reporters }, (_, index) => ({
-        reporter: `Reporter ${String(index + 1).padStart(2, "0")}`,
-        submittedAt: getAssetHistoryOffsetTime(report.reportedAt, -(index * 17)),
-        reason: index === 0 ? report.reason : report.reporterNote,
-        evidence: index === 0 ? report.reportedPart : "User note"
+        reporter: reporterNames[index] || `Board Reporter ${String(index + 1).padStart(2, "0")}`,
+        reportedAt: formatAuditDisplayTime(getAssetHistoryOffsetTime(report.reportedAt, -(index * 17))),
+        status: index === 0 ? "เปิดเคส" : "รวมเคส",
+        reason: report.reason,
+        additionalDetails: index === 0 ? report.reporterNote : "-"
       }));
       const pageCount = Math.max(1, Math.ceil(allRows.length / reportHistoryPageSize));
       reporterHistoryPage = Math.min(reporterHistoryPage, pageCount);
@@ -14914,22 +14922,31 @@
       const pageRows = allRows.slice(start, start + reportHistoryPageSize);
       return `
         <div class="history-table-wrap">
-          <table class="history-table">
+          <table class="history-table asset-reporter-history-table">
+            <colgroup>
+              <col style="width: 15%">
+              <col style="width: 18%">
+              <col style="width: 12%">
+              <col style="width: 25%">
+              <col style="width: 30%">
+            </colgroup>
             <thead>
               <tr>
+                <th>วันที่ / เวลา</th>
                 <th>Reporter</th>
-                <th>Reported At</th>
-                <th>Evidence</th>
-                <th>Detail</th>
+                <th>Status</th>
+                <th>Report Reason</th>
+                <th>Additional Details</th>
               </tr>
             </thead>
             <tbody>
               ${pageRows.map(row => `
                 <tr>
+                  <td data-label="วันที่ / เวลา">${row.reportedAt}</td>
                   <td data-label="Reporter">${row.reporter}</td>
-                  <td data-label="Reported At">${formatAuditDisplayTime(row.submittedAt)}</td>
-                  <td data-label="Evidence">${row.evidence}</td>
-                  <td data-label="Detail" class="history-note">${renderHistoryValue(row.reason)}</td>
+                  <td data-label="Status">${row.status}</td>
+                  <td data-label="Report Reason" class="history-note">${renderHistoryValue(row.reason)}</td>
+                  <td data-label="Additional Details" class="history-note">${renderHistoryValue(row.additionalDetails)}</td>
                 </tr>
               `).join("")}
             </tbody>
