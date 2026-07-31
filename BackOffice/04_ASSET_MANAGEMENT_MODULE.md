@@ -174,6 +174,13 @@ Asset Detail ใช้สำหรับตรวจสอบข้อมูล 
 - Created timestamp
 - Updated timestamp
 
+### Core Field Display Rules
+
+- ข้อมูลรายละเอียด asset/specifications ให้แสดงเฉพาะ field ที่มีข้อมูลจากผู้ใช้หรือจากระบบ
+- ถ้า field ใดไม่มีข้อมูล ไม่ต้องแสดง field นั้นบน Asset Detail
+- ห้ามสร้าง placeholder เช่น `N/A` สำหรับ field ที่ไม่มีข้อมูล
+- ข้อยกเว้นคือ field ที่มี rule แยกเฉพาะ เช่น `Price` ซึ่งต้องแสดงตาม Price Display Rules
+
 ### Commerce Fields
 
 - Price
