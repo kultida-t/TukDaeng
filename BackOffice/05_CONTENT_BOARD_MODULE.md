@@ -412,7 +412,7 @@ FO `Report article` ส่ง report type `Board Content` และ target type 
 
 - Article ไม่หายจาก FO ทันทีหลังถูก report
 - Admin review report ได้ตาม permission
-- Report queue status: Pending หรือ Cleared
+- Report queue status: Pending หรือ Closed
 - Article status ใน Reported Board แสดงตามสถานะ article master: Published, Scheduled, Draft หรือ Archived
 - Reporter identity ต้อง mask ใน report detail
 - List/detail แสดงจำนวน reporter และ reporter history ระดับ moderation เท่านั้น
@@ -451,7 +451,7 @@ Mobile/card metadata:
 Search/filter/sort:
 
 - Search by Report ID, Article ID, Article title, Category, Surface, Article Status, Report Status, Priority, Report Reason, Reported Part และ Reporter Note
-- Report status filter: ทุกสถานะ, รอตรวจ/Pending, ปิดแล้ว/Cleared
+- Report status filter: ทุกสถานะ, รอตรวจ/Pending, ปิดแล้ว/Closed
 - Priority filter: ทุก priority, High, Medium, Low
 - Sort options:
   - ล่าสุดก่อน
@@ -485,9 +485,9 @@ Detail sections:
 | --- | --- | --- |
 | View detail | ทุก report | เปิด Report Detail |
 | View Article | ทุก report | เปิด FO article preview modal |
-| ปิดรายงาน | Pending report | เปลี่ยน report เป็น Cleared โดยไม่เปลี่ยนสถานะ article |
+| ปิดรายงาน | Pending report | เปลี่ยน report เป็น Closed โดยไม่เปลี่ยนสถานะ article |
 | แก้ไขบทความ | Pending report ที่ article ยังไม่ Archived | เปิด Edit Article ของ article ที่ถูกรายงาน |
-| Archive article | Pending report ที่ article ยังไม่ Archived | เปลี่ยน article master เป็น Archived, เปลี่ยน report content status เป็น Archived, เปลี่ยน report เป็น Cleared, เพิ่ม Article Change History และเพิ่ม Reported Board Admin Action History |
+| Archive article | Pending report ที่ article ยังไม่ Archived | เปลี่ยน article master เป็น Archived, เปลี่ยน report content status เป็น Archived, เปลี่ยน report เป็น Closed, เพิ่ม Article Change History และเพิ่ม Reported Board Admin Action History |
 
 ### Close Report Confirmation
 
@@ -509,7 +509,7 @@ Detail sections:
   - เปลี่ยน article master status เป็น `Archived`
   - เพิ่ม Article Change History เป็น `Archived` พร้อม note ที่อ้างอิง report id
   - เปลี่ยน report content status เป็น `Archived`
-  - เปลี่ยน report status เป็น `Cleared`
+  - เปลี่ยน report status เป็น `Closed`
   - เพิ่ม Reported Board Admin Action History เป็น `Archive Article`
   - เพิ่มหรือแสดง Admin Action History row สำหรับ `Close Report`
 
@@ -578,7 +578,7 @@ Detail sections:
 
 - Reported Board detail แสดง `Reporter History` และ `Admin Action History`
 - `ปิดรายงาน` เพิ่ม Admin Action History เป็น `Close Report`
-- `Archive article` เพิ่ม Admin Action History เป็น `Archive Article`, เปลี่ยน report เป็น `Cleared`, เปลี่ยน report content status เป็น `Archived` และเพิ่ม Article Change History เป็น `Archived` พร้อม reference report id
+- `Archive article` เพิ่ม Admin Action History เป็น `Archive Article`, เปลี่ยน report เป็น `Closed`, เปลี่ยน report content status เป็น `Archived` และเพิ่ม Article Change History เป็น `Archived` พร้อม reference report id
 
 ### Backend Audit Event Fields
 
@@ -610,6 +610,6 @@ Audit event ควรมีข้อมูล:
 | AC-BO-CONTENT-010 | Board Main placement เลือก Main Hero, Trending Now และ Journal Board preview อัตโนมัติจาก eligible published articles โดยไม่แสดงบทความซ้ำในหน้าเดียวกัน |
 | AC-BO-CONTENT-011 | Report article เข้า BO Reported Board โดย article ยังไม่หายจาก FO ทันที |
 | AC-BO-CONTENT-012 | Admin เปิด Reported Board list/detail, search/filter/sort, paginate, view article preview, close report, edit article และ archive article ได้ |
-| AC-BO-CONTENT-013 | Archive article จาก Reported Board เปลี่ยน article master เป็น Archived, ปิด report เป็น Cleared, เพิ่ม Article Change History และ Reported Board Admin Action History และทำให้ article หายจาก FO Board/Search/Category |
+| AC-BO-CONTENT-013 | Archive article จาก Reported Board เปลี่ยน article master เป็น Archived, ปิด report เป็น Closed, เพิ่ม Article Change History และ Reported Board Admin Action History และทำให้ article หายจาก FO Board/Search/Category |
 | AC-BO-CONTENT-014 | Article detail, Category actions และ Reported Board actions มี audit/history ตาม requirement |
 | AC-BO-CONTENT-015 | UI responsive ใช้งานได้ที่ mobile-width, tablet และ desktop โดยไม่มี content overflow หรือ element overlap |
