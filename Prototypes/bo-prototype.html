@@ -7206,6 +7206,25 @@
       "RPA-548": "11 Jul 2026 16:20"
     };
 
+    const assetReportCases = [
+      { id: "RPA-831", assetId: "AST-8831", reportStatus: "Pending", uniqueReporterCount: 10, priority: "High", createdAt: assetReportCreatedTimes["RPA-831"] },
+      { id: "RPA-694", assetId: "AST-8694", reportStatus: "Pending", uniqueReporterCount: 3, priority: "High", createdAt: assetReportCreatedTimes["RPA-694"] },
+      { id: "RPA-612", assetId: "AST-8612", reportStatus: "Pending", uniqueReporterCount: 1, priority: "Medium", createdAt: assetReportCreatedTimes["RPA-612"] },
+      { id: "RPA-581", assetId: "AST-8581", reportStatus: "Closed", uniqueReporterCount: 6, priority: "High", createdAt: assetReportCreatedTimes["RPA-581"] },
+      { id: "RPA-559", assetId: "AST-8559", reportStatus: "Pending", uniqueReporterCount: 1, priority: "High", createdAt: assetReportCreatedTimes["RPA-559"] },
+      { id: "RPA-548", assetId: "AST-8548", reportStatus: "Pending", uniqueReporterCount: 2, priority: "Low", createdAt: assetReportCreatedTimes["RPA-548"] }
+    ];
+
+    function getAssetReportCase(assetOrReport) {
+      if (!assetOrReport) return null;
+      const reportId = String(assetOrReport.id || "").startsWith("RPA-") ? assetOrReport.id : getAssetReportId(assetOrReport);
+      return assetReportCases.find(reportCase => reportCase.id === reportId || reportCase.assetId === assetOrReport.id) || null;
+    }
+
+    function getAssetForReportCase(reportCase) {
+      return moduleData.assets.rows.find(asset => asset.id === reportCase?.assetId) || null;
+    }
+
     function isAssetReportContext(report) {
       return String(report?.id || "").startsWith("RPA-");
     }
@@ -7224,6 +7243,7 @@
     function getReporterHistoryRows(report) {
       const createdLog = ensureReportAuditLogs(report).find(log => log.action === "REPORT_CREATED");
       const baseTime = parseBangkokAuditTime(createdLog?.createdAt)
+        || parseBangkokAuditTime(report?.createdAt)
         || parseBangkokAuditTime(assetReportCreatedTimes[report.id])
         || Date.UTC(2026, 6, 13, 10, 0);
       const reporterCount = Math.max(Number(report?.reporters) || 0, 1);
@@ -8662,8 +8682,10 @@
       const beforeStatus = getAssetReportQueueStatus(asset);
       const nextStatus = status === "Closed" ? "Closed" : "Pending";
       if (beforeStatus === nextStatus) return;
+      const reportCase = getAssetReportCase(asset);
       const closeReason = document.querySelector("#asset-report-close-reason")?.value || "";
       const closeNote = document.querySelector("#asset-report-close-note")?.value.trim() || "";
+      if (reportCase) reportCase.reportStatus = nextStatus;
       asset.reportStatus = status === "Closed" ? "Closed" : "Open";
       appendAssetReportAuditHistory(asset, {
         action: status === "Closed" ? "Close Report" : "Reopen Report",
@@ -8996,6 +9018,8 @@
     }
 
     function getAssetReportQueueStatus(asset) {
+      const reportCase = getAssetReportCase(asset);
+      if (reportCase) return reportCase.reportStatus === "Closed" ? "Closed" : "Pending";
       if (asset.reportStatus === "Closed") return "Closed";
       if (asset.reportStatus === "Open") return "Pending";
       return isPermanentlyHiddenAsset(asset) ? "Closed" : "Pending";
@@ -9041,6 +9065,8 @@
     }
 
     function getAssetReportPriority(asset) {
+      const reportCase = getAssetReportCase(asset);
+      if (reportCase?.priority) return reportCase.priority;
       if (asset.priority === "สูง" || asset.priority === "High") return "High";
       if (asset.priority === "กลาง" || asset.priority === "Medium") return "Medium";
       return "Low";
@@ -9060,6 +9086,8 @@
     }
 
     function getAssetReporters(asset) {
+      const reportCase = getAssetReportCase(asset);
+      if (reportCase?.uniqueReporterCount) return reportCase.uniqueReporterCount;
       const seed = parseInt(String(asset.id || "").match(/\d+/)?.[0] || "0", 10);
       if (asset.status === "Auto Hidden") return 9 + (seed % 5);
       const taggedReportCount = Number(getAssetReportCount(asset));
@@ -9076,7 +9104,8 @@
     }
 
     function getAssetReportReceivedSortRank(asset) {
-      return parseBangkokAuditTime(getAssetReportReceivedTime(asset)) || getAssetSortRank(asset, "latest");
+      const reportCase = getAssetReportCase(asset);
+      return parseBangkokAuditTime(reportCase?.createdAt) || parseBangkokAuditTime(getAssetReportReceivedTime(asset)) || getAssetSortRank(asset, "latest");
     }
 
     function getAssetReportSearchText(asset) {
@@ -9096,6 +9125,7 @@
     }
 
     function getAssetReportId(asset) {
+      if (String(asset?.id || "").startsWith("RPA-")) return asset.id;
       return `RPA-${String(asset?.id || "").replace(/\D/g, "").slice(-3).padStart(3, "0")}`;
     }
 
@@ -9129,11 +9159,13 @@
       return "อ่านรายละเอียดจาก reporter แล้วตรวจ asset context ก่อนเลือก action";
     }
 
-    function buildAssetReportContext(asset) {
+    function buildAssetReportContext(assetOrReport) {
+      const reportCase = getAssetReportCase(assetOrReport);
+      const asset = reportCase ? getAssetForReportCase(reportCase) : assetOrReport;
       const detail = getAssetFoDetail(asset);
       const owner = detail.owner || {};
       return {
-        id: getAssetReportId(asset),
+        id: reportCase?.id || getAssetReportId(asset),
         category: "Asset",
         assetId: asset.id,
         assetName: asset.name,
@@ -9144,6 +9176,8 @@
         reporters: getAssetReporters(asset),
         priority: getAssetReportPriority(asset),
         status: getAssetReportQueueStatus(asset) === "Closed" ? "Closed" : "Open",
+        reportStatus: getAssetReportQueueStatus(asset),
+        createdAt: reportCase?.createdAt || "",
         reference: asset.id,
         source: "Asset Detail",
         waiting: `${getAssetReportWaitingHours(asset)} ชม.`,
@@ -9316,6 +9350,8 @@
 
     function closeAssetReportAfterAssetOutcome(asset, action, beforeReportStatus) {
       if (!asset || beforeReportStatus !== "Pending") return false;
+      const reportCase = getAssetReportCase(asset);
+      if (reportCase) reportCase.reportStatus = "Closed";
       asset.reportStatus = "Closed";
       appendAssetReportAuditHistory(asset, {
         action: "Close Report",
@@ -12030,7 +12066,7 @@
       document.querySelector("#panel-subtitle").textContent = displayLabel ? `${data.title}: ${displayLabel}` : data.subtitle;
       document.querySelector("#primary-action").textContent = data.action;
       if (isReportedAssets) {
-        activeRow = moduleData.assets.rows.find(isReportedAsset) || moduleData.assets.rows[0];
+        activeRow = getAssetForReportCase(assetReportCases[0]) || moduleData.assets.rows[0];
         document.querySelector("#panel-title").textContent = "Reported Assets List";
         document.querySelector("#panel-subtitle").textContent = "";
         document.querySelector("#user-panel-filter-actions").innerHTML = `
@@ -15875,17 +15911,18 @@
       const status = document.querySelector("#asset-report-status-filter")?.value || "";
       const priority = document.querySelector("#asset-report-priority-filter")?.value || "";
       const sort = document.querySelector("#asset-report-sort")?.value || "latest";
-      const sorted = moduleData.assets.rows
-        .filter(isReportedAsset)
-        .filter(asset => {
+      const sorted = assetReportCases
+        .map(reportCase => ({ reportCase, asset: getAssetForReportCase(reportCase) }))
+        .filter(({ asset }) => Boolean(asset))
+        .filter(({ asset }) => {
           return (!q || getAssetReportSearchText(asset).includes(q))
             && (!status || getAssetReportQueueStatus(asset) === status)
             && (!priority || getAssetReportPriorityValue(asset) === priority);
         })
         .sort((a, b) => {
-          if (sort === "reporters") return getAssetReporters(b) - getAssetReporters(a);
-          if (sort === "oldest") return getAssetReportReceivedSortRank(a) - getAssetReportReceivedSortRank(b);
-          return getAssetReportReceivedSortRank(b) - getAssetReportReceivedSortRank(a);
+          if (sort === "reporters") return getAssetReporters(b.asset) - getAssetReporters(a.asset);
+          if (sort === "oldest") return getAssetReportReceivedSortRank(a.asset) - getAssetReportReceivedSortRank(b.asset);
+          return getAssetReportReceivedSortRank(b.asset) - getAssetReportReceivedSortRank(a.asset);
         });
       const pageCount = Math.max(1, Math.ceil(sorted.length / assetListPageSize));
       assetListPage = Math.min(assetListPage, pageCount);
@@ -15894,7 +15931,7 @@
       document.querySelector("#table").innerHTML = `
         <div class="user-table">
           <div class="user-row report-row asset-report-row head"><div>Report ID</div><div>Asset</div><div>Asset Status</div><div>Status</div><div>Reported At</div><div>Report Reason</div><div>Reporters</div><div>Priority</div><div>Action</div></div>
-          ${pageRows.map(asset => {
+          ${pageRows.map(({ asset }) => {
             const reportId = getAssetReportId(asset);
             const reporters = getAssetReporters(asset);
             const priorityLabel = getAssetReportPriority(asset);
