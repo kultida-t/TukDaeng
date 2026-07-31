@@ -1,10 +1,10 @@
 # 05 BO Content / Board Module
 
-**Version:** `BO-05-v0.1`  
-**Date:** 2026-07-06  
-**Status:** Draft baseline  
-**Platform:** Responsive Web Back Office  
-**Primary FO Source:** `../FrontOffice/12_BOARD_MODULE.md`  
+**Version:** `BO-05-v0.2`
+**Date:** 2026-07-31
+**Status:** Prototype-aligned draft
+**Platform:** Responsive Web Back Office
+**Primary FO Source:** `../FrontOffice/12_BOARD_MODULE.md`
 **Integration Map:** `../ProjectAdmin/FO_BO_INTEGRATION_MAP.md`
 
 ## 1. วัตถุประสงค์
@@ -17,29 +17,32 @@ FO Board เป็น Article Area ไม่ใช่ user-generated forum ใ�
 
 ### Phase 1 Board Content Decision - 2026-07-30
 
-Board Main visual placements are article-driven in Phase 1. `Content Management > Banners`, manual `Featured Article`, and `Featured Order` are not required for the current Board flow and are treated as future scope unless Product explicitly re-opens campaign/promotion banners.
+ใน Phase 1 การจัดวาง visual หลักของ Board ต้องมาจาก Article เป็นหลัก ไม่ใช้ `Content Management > Banners`, manual `Featured Article`, หรือ `Featured Order` สำหรับ flow ปัจจุบัน รายการเหล่านี้ถือเป็น future scope เว้นแต่ Product จะเปิด scope campaign/promotion banners ใหม่อย่างชัดเจน
 
-Current Phase 1 source of truth:
+Source of truth ของ Phase 1 ตอนนี้:
 
-- BO manages Board content through `Content Management > Articles` and `Content Management > Categories`.
-- FO Board Main renders `Main Hero`, `Trending Now`, and `Journal Board preview` from Published Articles.
-- FO must not use a separate Banner entity for Board Main Hero, Trending Now, or Journal Board preview.
-- Admin does not need to choose Hero/Featured manually in Phase 1; placement is calculated by deterministic query rules in section 11.
-- Any older reference in this document to `Featured Article`, `Featured Order`, or `Board Banners` is superseded by this decision for Phase 1.
+- BO จัดการ Board content ผ่าน `Content Management > Articles` และ `Content Management > Categories`
+- FO Board Main แสดง `Main Hero`, `Trending Now`, และ `Journal Board preview` จาก Published Articles
+- FO ต้องไม่ใช้ Banner entity แยกสำหรับ Board Main Hero, Trending Now หรือ Journal Board preview
+- Admin ไม่ต้องเลือก Hero/Featured เองใน Phase 1 เพราะ placement คำนวณจาก deterministic query rules ใน section 11
+- reference เก่าในเอกสารนี้ที่พูดถึง `Featured Article`, `Featured Order`, หรือ `Board Banners` ให้ถือว่าถูก superseded ด้วย decision นี้สำหรับ Phase 1
+
+### BO Prototype Alignment - 2026-07-31
+
+สำหรับ BO `Content Management > Articles` ให้ใช้ `../Prototypes/bo-prototype.html` เป็น source of truth ปัจจุบันสำหรับ fields, display behavior, filters, actions, modals, validation states และ responsive presentation
+
+ถ้าเอกสารนี้ขัดกับ prototype ปัจจุบันของ `Content Management > Articles` ให้ยึด behavior ตาม prototype ก่อน เว้นแต่ Product อนุมัติ change request ใหม่ชัดเจน
 
 ### In Scope
 
 - Article list พร้อม search, filter, sort, pagination
 - Create / edit article
-- Rich text editor
+- Article block builder
 - Draft / Scheduled / Published / Archived lifecycle
 - Preview as FO
 - Automated Board Main placement from Published Articles
 - Category management
-- Tags และ related articles
-- Board banner management is future scope
-- SEO fields
-- Board analytics summary
+- Article tags เป็น mock/list metadata เท่านั้นใน prototype ปัจจุบัน
 - Reported Board Content review handoff
 - Audit log ทุก publish/archive/category action
 - Responsive web layout สำหรับ desktop, tablet และ mobile-width browser
@@ -52,108 +55,162 @@ Current Phase 1 source of truth:
 - AI content generation
 - Public SEO web scope นอกเหนือจาก FO Board เว้นแต่มี decision เพิ่ม
 - Broadcast notification เมื่อ publish article ยังเป็น future/needs decision
+- Board banner management เว้นแต่ Product เปิด scope นี้ใหม่ชัดเจน
+- SEO fields, related articles, featured controls และ analytics เว้นแต่ถูกเพิ่มเข้า prototype แล้ว
 
 ## 3. Admin Access And Permissions
 
-BO uses a single Admin account type only. Admin access is controlled by module access, action policy, sensitive-data policy, confirmation, reason, and audit requirements instead of separate BO admin account types.
+BO ใช้ Admin account type เดียว สิทธิ์การเข้าถึงควบคุมผ่าน module access, action policy, sensitive-data policy, confirmation, reason และ audit requirements แทนการแยกหลายประเภทของ BO admin account
 
 
-| Access Area | Rule |
+| Access Area | Rule / เงื่อนไข |
 | --- | --- |
-| Module access | Admin can use list/detail/search/filter when module access is granted. |
-| Write action | Create, update, status change, remove, restore, publish, archive, retry, and similar actions require permission check, confirmation for high-risk actions, reason when FO/user impact exists, and audit log. |
-| Sensitive data | Mask by default; reveal only with business reason, policy approval, and audit log. |
-| Export | Requires permission check, scope control, expiry/background job where needed, and audit export event. |
-| Direct URL/API | Enforce access at route, API, and service layers; never rely only on hidden UI. |
+| Module access | Admin ใช้ list/detail/search/filter ได้เมื่อมีสิทธิ์เข้า module |
+| Write action | Create, update, status change, remove, restore, publish, archive, retry และ action ใกล้เคียงต้องตรวจ permission, มี confirmation สำหรับ action เสี่ยง, ใส่ reason เมื่อกระทบ FO/user และต้องมี audit log |
+| Sensitive data | Mask เป็น default; reveal ได้เฉพาะเมื่อมี business reason, policy approval และ audit log |
+| Export | ต้องตรวจ permission, จำกัด scope, ใช้ expiry/background job เมื่อจำเป็น และบันทึก audit export event |
+| Direct URL/API | ต้อง enforce ที่ route, API และ service layer ห้ามพึ่งแค่การซ่อน UI |
+
 ## 4. Responsive Layout
 
-| Width | Requirement |
+| Width | Requirement / การแสดงผล |
 | --- | --- |
-| Mobile-width browser | Article list เป็น stacked cards, editor แยก section ชัดเจน, publish controls อยู่ใน sticky action area |
-| Tablet | List/detail หรือ editor form ใช้ two-column เฉพาะเมื่อพื้นที่พอ |
-| Desktop | Full table, side filters, editor + metadata panel, preview panel ได้ |
+| Mobile-width browser | Article list ต้อง collapse เป็น stacked card rows และ article editor ต้องแยก section ชัดเจนเป็น `Article Header`, `Hero / Cover`, `Content Blocks`, `Publish Control` |
+| Tablet | List/detail/editor ใช้ responsive shell เดียวกัน และ grid field ต้อง collapse เมื่อพื้นที่จำกัด |
+| Desktop | Article list แสดงเป็น table-like grid; detail และ editor ใช้ full-width section blocks ใน main content panel |
 
-Editor ต้องป้องกัน content overflow, image overflow และ toolbar ซ้อนกันบนหน้าจอเล็ก
+Editor ต้องป้องกัน text, uploaded-image preview, content-block controls, date/time inputs และ modal preview content ไม่ให้ overflow บนหน้าจอเล็ก
 
 ## 5. Article List
 
-Article list ต้องแสดง:
+Article list ต้องตรงกับ table/card behavior ใน prototype ปัจจุบัน
+
+Header controls:
+
+- Page action: `สร้างบทความ`
+- Filter toggle: เปิด/ปิด advanced filters
+- Reset: reset search/filter/sort และกลับไปที่ Articles list default
+
+Desktop table columns:
 
 - Article ID
-- Title
-- Slug
+- Article title / ชื่อบทความ
 - Category
-- Author
-- Status
+- Publish Status
+- Publish Date
+- Action
+
+Mobile/card metadata:
+
+- Article ID
+- Article title
+- Category tag
+- Status pill
+- Read time tag
 - Publish date/time
-- Updated date/time
-- Featured flag
-- Featured order
-- Views
-- Likes
-- Report count
+
+Row action menu:
+
+- View detail
+- Preview as FO
+- Edit article
+- Status-specific action ตามสถานะ:
+  - Draft: `Delete draft`
+  - Scheduled: `Cancel schedule`
+  - Published: `Archive article`
+  - Archived: `Restore article`
 
 ### Search And Filters
 
-ต้องรองรับ:
+Prototype รองรับ:
 
-- Search by title, slug, tag, author
+- Search by Article ID, title, category, status, publish date/time และ tags
 - Status: Draft, Scheduled, Published, Archived
 - Category
-- Author
-- Date range
-- Featured only
-- Reported only
 
-Sort ขั้นต่ำ:
+Prototype ปัจจุบันยังไม่มี author filter, date range filter, featured-only filter หรือ reported-only filter บน Articles list
 
-- Updated date
-- Publish date
-- Views
-- Likes
-- Featured order
+Sort options:
+
+- Newest first
+- Publish time
+- Title A-Z
+
+Pagination:
+
+- Page size ตาม prototype: 10 articles per page
+- มีปุ่ม Previous/next และ numbered page buttons ใต้ list
+- เมื่อ search/filter แล้วไม่พบข้อมูล ให้แสดง shared empty state
 
 ## 6. Article Editor
 
 ### Required Fields
 
-| Field | Rule |
+| Field | Rule / เงื่อนไข |
 | --- | --- |
 | Title | Required |
-| Slug | Required, unique, auto-generate จาก title ได้ และแก้มือได้ |
-| Cover Image | Required ก่อน publish |
-| Cover Image Alt Text | Required ก่อน publish |
+| Article URL / Slug | Required, unique, auto-generate จาก title ได้ ยกเว้น admin แก้เอง |
+| Cover Image | Required ตาม save validation ใน prototype ปัจจุบัน |
+| Cover Caption / Alt text | ใช้ field เดียวใน prototype สำหรับ cover caption และ image alt fallback |
 | Category | Required |
-| Author | Required |
-| Body Content | Required ก่อน publish |
+| Author | Read-only; ใช้ค่า BO admin/editor ปัจจุบัน |
+| Content Blocks | ต้องมีอย่างน้อย 1 content block ที่ไม่ใช่ divider |
 | Status | Required |
 
-### Optional Fields
+### Prototype Fields
 
-- Excerpt
-- Tags
-- Read time
-- Quote highlight / pull quote
-- Related articles
-- SEO title
-- SEO description
-- Featured article
-- Featured order
+Article Header:
 
-### Rich Text Editor
+- Title
+- Article URL
+- Category
+- Read-only Author
 
-Editor ต้องรองรับ:
+Hero / Cover:
 
-- Bold / Italic / Underline / Strikethrough
-- Heading 1-3
-- Bullet list / Numbered list
-- Quote block
-- Image insert + caption + alt text
+- Cover image upload
+- Caption / Alt text ของ cover image
+- Deck / short intro หรือคำโปรยสั้น
+
+Content Blocks:
+
+- Add block
+- Move block up/down
+- Delete block
+- Reorder ทำผ่าน block move controls
+
+Publish Control:
+
+- Status
+- Publish date
+- Publish time
+
+Fields ที่มีเฉพาะใน mock/data model หรือ legacy fallback ห้ามนำมาเป็น required UI จนกว่า prototype จะเพิ่มเข้ามา ได้แก่ tags, read time, related articles, SEO title, SEO description, featured article, featured order
+
+### Article Block Builder
+
+Prototype ปัจจุบันใช้ block builder แทน full rich text toolbar โดยรองรับ block types:
+
+- Paragraph
+- Heading H2
+- Heading H3
+- Bullet List
+- Numbered List
 - Hyperlink
-- Video embed เช่น YouTube
 - Divider
+- Image + Caption
+- Quote block
+- Comparison Table
 
-ต้อง sanitize HTML/content ก่อนบันทึกและก่อนแสดงใน FO
+Inline formatting เป็น prototype-level text parsing เท่านั้น:
+
+- `**bold**`
+- `_italic_`
+- `~~strikethrough~~`
+
+Prototype ปัจจุบันไม่มี toolbar controls สำหรับ underline, H1, rich text styling หรือ video embed
+
+Hyperlink block ต้องมี link text และ safe URL โดย accepted URL forms คือ `http://`, `https://`, `www.` หลัง normalize หรือ internal path ที่ขึ้นต้นด้วย `/`
 
 ## 7. Article Status Lifecycle
 
@@ -166,91 +223,124 @@ Editor ต้องรองรับ:
 
 เวลา publish/schedule ต้องใช้ `Asia/Bangkok`
 
+Prototype status actions:
+
+| Current Status | Available Prototype Action | Result / ผลลัพธ์ |
+| --- | --- | --- |
+| Draft | Delete draft | ลบ draft ออกจาก Articles list หลัง confirm |
+| Scheduled | Cancel schedule | ล้าง publish date/time และเปลี่ยนบทความกลับเป็น Draft |
+| Published | Archive article | เปลี่ยนสถานะเป็น Archived และนำออกจาก FO Board/Search/Category |
+| Archived | Restore article | เปลี่ยนสถานะกลับเป็น Published โดยใช้ publish date เดิมเมื่อมีข้อมูล |
+
+เมื่อ edit article ที่เป็น Published หรือ Archived อยู่แล้ว prototype จะทำให้ publish lifecycle status เป็น read-only ใน editor การเปลี่ยน status ของ article กลุ่มนี้ต้องทำผ่าน status action confirmation flow ไม่ใช่ editor status dropdown
+
 ## 8. Publish Rules
 
-Publish Now ต้องผ่าน validation:
+Prototype ปัจจุบันทำ save validation ก่อน create/update article:
 
-- Required fields ครบ
+- Title ต้องไม่ว่าง
 - Slug unique
-- Cover image พร้อม alt text
-- Category active
-- Body content ไม่ว่าง
-- No unsafe embed/link ตาม policy
+- Cover image ต้องมี
+- Category ต้องมี และต้องเป็น Active category
+- ต้องมีอย่างน้อย 1 non-divider content block
+- Hyperlink block ต้องมี link text และ safe URL
+- Cover/body image upload รองรับ JPG, PNG, WebP ขนาดไม่เกิน 5MB
+- Cover image aspect ratio ควรอยู่ระหว่าง 1:1 ถึง 16:9
+- Body image aspect ratio ต้องไม่แคบหรือสูงเกินไป
 
-Schedule Publish ต้องมี:
+Publish Now behavior ใน prototype:
 
-- Publish date/time ในอนาคต
-- Timezone แสดงเป็น `Asia/Bangkok`
-- Job หรือ scheduled state ที่ตรวจสอบได้
-- Audit log ตอนตั้ง schedule และตอน publish สำเร็จ
+- เมื่อเลือก `Published` ระบบจะ set publish date/time เป็นเวลาปัจจุบันของ `Asia/Bangkok` เมื่อจำเป็น
+- Publish date/time inputs จะ disabled เมื่อ status เป็น `Published` หลัง sync
+- Existing Published articles จะคง publish status เดิมระหว่าง edit
 
-Archive ต้องมี:
+Schedule Publish behavior ใน prototype:
 
-- Confirmation
-- Reason เมื่อ archive จาก moderation/report
-- Audit log
-- FO cache invalidation หรือ sync event
+- Status ต้องเป็น `Scheduled`
+- ต้องมี publish date และ publish time
+- Publish date/time ต้องไม่ย้อนหลังจากเวลาปัจจุบันของ `Asia/Bangkok`
+- Date/time inputs ใช้ browser date/time pickers
+
+Draft behavior ใน prototype:
+
+- Status `Draft` จะ clear และ disable publish date/time inputs
+- Draft articles ลบได้ผ่าน `Delete draft`
+
+Archive behavior ใน prototype:
+
+- Published articles archive ได้ผ่าน `Archive article`
+- Action นี้ต้องผ่าน confirmation modal
+- Archive จะ update status เป็น `Archived`, update `Updated At` และบันทึก change history
+- Archived articles restore ได้ผ่าน `Restore article`
+
+รายการต่อไปนี้เป็น implementation/back-end responsibilities และไม่ได้เป็น visible UI controls ใน prototype:
+
+- Permission enforcement
+- FO cache invalidation or sync event
+- Background schedule job verification
+- Persisted backend audit event schema
+
+Prototype สื่อ behavior เหล่านี้ผ่าน confirmation modals, status/result changes, toast/result states และ Change History
 
 ## 9. Preview As FO
 
-Preview as FO ต้อง:
+Preview as FO ใน prototype ปัจจุบัน:
 
-- เปิดได้เฉพาะ Admin ที่มีสิทธิ์
-- ใช้ rendering ใกล้ FO Article Detail มากที่สุด
-- ไม่เพิ่ม view count
-- ไม่ trigger article analytics ของผู้ใช้จริง
-- แสดงสถานะ preview ชัดเจน
-- รองรับ mobile preview width 375px และ desktop preview
+- เปิดได้จาก article detail, article editor และ article row action surface ในจุดที่ prototype wiring ไว้
+- ใช้ modal ที่มี Board card preview และ phone-style FO article preview
+- แสดง cover image, title, category/status metadata, deck, body/content blocks, quote/list/link/image/comparison content และ share/action affordances ตาม prototype
+- Editor preview update จาก form values ปัจจุบันก่อน save
+- Prototype scenario tools จำลอง preview success หรือ preview failure ได้
+
+Prototype ปัจจุบันยังไม่มี desktop preview mode แยก, ไม่มี view-count/analytics tracking และไม่มี explicit permission UI ใน preview modal สิ่งเหล่านี้ยังเป็น service/security responsibilities นอก visual prototype
 
 ## 10. Categories
 
 Category baseline:
 
-- Feature Article
-- Trending Now
-- Journal Board
-- Watch Brands
+- Buying Guide
 - Watch 101
-- Watch Apparel
-- Watch Events
 - Watch Market ถ้า BO legacy/source ยังใช้อยู่ ให้ถือเป็น category เพิ่มที่ต้อง confirm กับ Product ก่อนเปิดบน FO
+- Watch Events
+- Watch Apparel
+- Journal Board
+- Owner Stories: inactive in the current prototype
 
 Category fields:
 
-- Name TH/EN ถ้ารองรับหลายภาษา
+- Name
 - Slug
 - Description
 - Active/Inactive
 - Display order
-- Parent/section mapping ถ้ามี
 
 Inactive category:
 
 - ไม่แสดงใน FO filter/section
 - ไม่ควรเลือกใช้กับ article publish ใหม่
-- Article เดิมต้องมี fallback rule เช่น archive, move category หรือยังแสดงภายใต้ existing category ตาม decision
+- Prototype จะ block การ deactivate category ที่ยังมี linked articles อยู่ Admin ต้อง move/archive linked articles ก่อนจึงจะ deactivate ได้
 
 ## 11. Board Main Article Placement Rules
 
-Phase 1 Board Main does not use a Banner entity and does not require Admin-selected Featured/Hero flags. All visible areas below are selected automatically from eligible Published Articles.
+Phase 1 Board Main ไม่ใช้ Banner entity และไม่ต้องมี Admin-selected Featured/Hero flags พื้นที่แสดงผลด้านล่างทั้งหมดเลือกอัตโนมัติจาก eligible Published Articles
 
-Hero selection is automatic in every Board article listing context:
+Hero selection เป็น automatic ในทุก Board article listing context:
 
-- Board Main `Main Hero` always uses the latest eligible Published Article across all active Board categories.
-- Each category page hero always uses the latest eligible Published Article within that selected active category.
-- Admin does not manually select these hero articles in Phase 1.
+- Board Main `Main Hero` ใช้ latest eligible Published Article จากทุก active Board categories
+- Category page hero ใช้ latest eligible Published Article ภายใน active category ที่เลือกอยู่
+- Admin ไม่ต้อง manually select hero articles ใน Phase 1
 
 ### Eligible Article Pool
 
-An article is eligible for Board Main placement only when all conditions are true:
+Article จะ eligible สำหรับ Board Main placement ก็ต่อเมื่อครบทุกเงื่อนไข:
 
 - `status = Published`
 - `publishDateTime <= now` using `Asia/Bangkok`
 - `category.status = Active`
-- required FO card fields are present: title, slug, cover image, cover image alt text, category, excerpt or generated excerpt, read time
-- article is not archived, unpublished, deleted, or policy-hidden
+- required FO card fields ต้องมีครบ: title, slug, cover image, cover image alt text, category, excerpt หรือ generated excerpt, read time
+- article ต้องไม่ใช่ archived, unpublished, deleted หรือ policy-hidden
 
-Base ordering for every automatic fallback:
+Base ordering สำหรับ automatic fallback ทุกจุด:
 
 1. `publishDateTime` descending
 2. `updatedAt` descending as tie-breaker
@@ -260,70 +350,28 @@ Base ordering for every automatic fallback:
 
 | Display Area | Query Source | Selection Order | Deduplication Rule | Empty/Fallback Rule |
 | --- | --- | --- | --- | --- |
-| Main Hero | Eligible article pool | Pick the first article by base ordering. | Reserve selected `articleId`; do not show it again in Trending Now or Journal Board preview on Board Main. | If no eligible article exists, hide Main Hero and show Board empty state below header. |
-| Trending Now | Eligible article pool excluding Main Hero | If analytics ranking exists, sort by trending score within a configurable recent window, then base ordering. If analytics is not available, use base ordering. | Exclude Main Hero and exclude duplicates within Trending Now. | If fewer items than layout needs, show available items only; do not backfill with Main Hero. If none, hide section. |
-| Journal Board preview | Eligible article pool excluding Main Hero and Trending Now items already rendered on Board Main | Pick the first remaining article as the large Journal Board preview card, then continue with smaller list cards if the layout includes them. | Do not repeat articles already rendered in Main Hero or Trending Now on the same Board Main page. | If no remaining article exists, hide Journal Board preview on Board Main. |
-| Journal Board View All page | Eligible article pool | Use base ordering across all published articles. | No cross-page dedupe. Articles used in Board Main Hero or Trending Now must still appear here. | If no eligible article exists, show Journal Board empty state. |
-| Category page hero | Eligible article pool filtered by selected active category | Pick the first article in that category by base ordering. | Reserve selected article from that category page list if the page also shows a hero plus list in the same viewport. | If category has no eligible article, show category empty state. |
-| Category article list | Eligible article pool filtered by selected active category | Use base ordering. | Default is exclude the category hero within the same page preview/list to avoid repetition. | Show available items; empty state when none. |
+| Main Hero | Eligible article pool | เลือก article แรกตาม base ordering | Reserve `articleId` ที่เลือกแล้ว และไม่แสดงซ้ำใน Trending Now หรือ Journal Board preview บน Board Main | ถ้าไม่มี eligible article ให้ซ่อน Main Hero และแสดง Board empty state ใต้ header |
+| Trending Now | Eligible article pool ที่ exclude Main Hero | ถ้ามี analytics ranking ให้ sort ด้วย trending score ใน configurable recent window แล้วตามด้วย base ordering; ถ้าไม่มี analytics ใช้ base ordering | Exclude Main Hero และห้ามซ้ำใน Trending Now | ถ้าจำนวนไม่พอ layout ให้แสดงเท่าที่มี ห้าม backfill ด้วย Main Hero; ถ้าไม่มีเลยให้ซ่อน section |
+| Journal Board preview | Eligible article pool ที่ exclude Main Hero และ Trending Now items ที่ render แล้วบน Board Main | เลือก article แรกที่เหลือเป็น large Journal Board preview card แล้วตามด้วย smaller list cards ถ้า layout มี | ห้าม repeat articles ที่แสดงใน Main Hero หรือ Trending Now บน Board Main page เดียวกัน | ถ้าไม่มี article เหลือให้ซ่อน Journal Board preview บน Board Main |
+| Journal Board View All page | Eligible article pool | ใช้ base ordering จาก published articles ทั้งหมด | No cross-page dedupe; articles ที่ใช้ใน Board Main Hero หรือ Trending Now ต้องยังแสดงในหน้านี้ | ถ้าไม่มี eligible article ให้แสดง Journal Board empty state |
+| Category page hero | Eligible article pool filtered by selected active category | เลือก article แรกใน category นั้นตาม base ordering | Reserve selected article จาก category page list ถ้าหน้าเดียวกันมีทั้ง hero และ list | ถ้า category ไม่มี eligible article ให้แสดง category empty state |
+| Category article list | Eligible article pool filtered by selected active category | ใช้ base ordering | Default คือ exclude category hero ใน page preview/list เดียวกันเพื่อลดความซ้ำ | แสดง available items; empty state เมื่อไม่มีข้อมูล |
 
 ### Trending Score
 
-Trending score is optional for Phase 1. If implemented, it must be deterministic and documented by backend, for example weighted views, likes, shares, and recency. Until that score is available, Trending Now uses the latest eligible articles after Main Hero.
+Trending score เป็น optional สำหรับ Phase 1 ถ้า implement ต้อง deterministic และ backend ต้อง document วิธีคิด เช่น weighted views, likes, shares และ recency ระหว่างที่ยังไม่มี score ให้ Trending Now ใช้ latest eligible articles หลังจาก exclude Main Hero
 
 ### Future Banner Scope
 
-Banner management is future scope only for non-article placements such as campaign, promotion, event, sponsor creative, external URL, or deep link that is not an Article Detail. It must not be used for Board Main Hero, Trending Now, or Journal Board preview in Phase 1.
+Banner management เป็น future scope เฉพาะ non-article placements เช่น campaign, promotion, event, sponsor creative, external URL หรือ deep link ที่ไม่ใช่ Article Detail ห้ามใช้ Banner สำหรับ Board Main Hero, Trending Now หรือ Journal Board preview ใน Phase 1
 
-## 11A. Superseded Legacy Featured And Banner Notes
+Featured controls, manual featured order, manual curated Trending Now และ Board Banners ไม่ใช่ behavior ปัจจุบันของ BO Articles prototype ห้ามเพิ่มเข้า `Content Management > Articles` เว้นแต่ Product เปิด scope นี้ใหม่และ prototype ถูก update แล้ว
 
-The legacy Featured/Banner notes below are retained only for historical context and must not be implemented for Phase 1 Board Main placement.
+## 12. Reported Board Content
 
-## 11. Featured And Trending
+FO `Report article` ต้องส่ง report type `Board Content` และ target type `Article` เข้า BO moderation handoff
 
-### Featured Article
-
-- Legacy only: Admin-set Featured is not required for Phase 1 Board Main.
-- Legacy only: featured order is not required for Phase 1 Board Main.
-- Legacy only: FO Board hero/featured area now uses the automatic article placement rules above.
-- Legacy only: archived articles are excluded by the eligible article pool rules above.
-
-### Trending Now
-
-Trending Now อาจมาจาก:
-
-- Manual curated list ใน BO
-- Analytics/ranking ในอนาคต
-
-Superseded Phase 1 recommendation: manual curated list is no longer required. Current Phase 1 uses the automatic article placement rules above; analytics ranking can replace the latest-article fallback when available.
-
-## 12. Legacy Board Banners (Future Scope)
-
-Banner fields:
-
-- Banner title
-- Image
-- Alt text
-- Placement: Board top, Board mid, Feed top, Feed mid ตาม scope ที่เปิด
-- Target link: FO deep link หรือ external URL
-- Start date/time
-- End date/time
-- Status: Draft, Active, Scheduled, Inactive, Expired
-- Display order
-
-Banner rules:
-
-- Active banner แสดงเฉพาะช่วง start/end
-- Expired banner หายจาก FO
-- External URL ต้อง validate และเปิดตาม security policy
-- Preview banner ก่อน activate
-- ทุก activate/deactivate/update ต้อง audit-log
-
-## 13. Reported Board Content
-
-FO `Report article` ต้องส่ง report type `Board Content` target type `Article` เข้า BO moderation handoff
-
-Rules:
+Rules / เงื่อนไข:
 
 - Article ไม่หายจาก FO ทันทีหลังถูก report
 - Admin review report ได้ตาม permission
@@ -331,85 +379,87 @@ Rules:
 - ถ้า archive จาก report ต้องมี reason และ audit
 - Report history ต้องผูกกับ article detail
 
-## 14. FO Display Rules
+## 13. FO Display Rules
 
-| BO Action | FO Result |
+| BO Action | FO Result / ผลบน FO |
 | --- | --- |
 | Publish article | Article แสดงใน Board, category, search และ detail |
 | Schedule article | ยังไม่แสดงจนถึง publish date/time |
 | Archive article | Article หายจาก Board/Search/Category และ direct link แสดง unavailable |
 | Update published article | FO แสดง content ล่าสุดหลัง sync/cache invalidation |
-| Set featured | Article แสดงใน featured/hero area ตาม order |
-| Remove featured | Article ไม่อยู่ใน featured/hero area แต่ยังอยู่ใน listing ถ้า Published |
+| Cancel schedule | Article กลับเป็น Draft และไม่แสดงใน FO |
+| Delete draft | Draft ถูกลบออกจาก BO list และไม่เคยแสดงใน FO |
+| Restore article | Article กลับเป็น Published และแสดงใน Board/Search/Category อีกครั้ง |
 | Activate category | Category แสดงใน FO filter/section |
-| Deactivate category | Category หายจาก FO filter/section ตาม fallback rule |
-| Activate banner | Banner แสดงตาม placement และ date range |
-| Expire/deactivate banner | Banner หายจาก FO |
+| Deactivate category | Category หายจาก FO filter/section หลัง linked articles ถูก resolve แล้ว |
 
-## 15. Analytics
+Featured actions และ banner actions ไม่ใช่ behavior ปัจจุบันของ `Content Management > Articles` prototype
 
-BO ควรแสดง summary:
+## 14. Analytics
 
-- Article views
-- Likes
-- Shares ถ้าเก็บ event
-- Report count
-- Top articles
-- Category performance
-- Search keyword performance ถ้า available
+Articles surfaces ใน prototype ปัจจุบันแสดงเฉพาะ lightweight mock metrics:
 
-BO analytics ต้องไม่รวม preview as FO เป็น user view count
+- Article list อาจแสดง read time ใน card metadata
+- Article detail แสดง Likes เฉพาะ Published/Archived articles
+- Article detail แสดง Change History
 
-## 16. Error, Empty, Loading States
+Prototype ปัจจุบันยังไม่มี Articles analytics dashboard, article views table, shares, report count column, top-articles analytics, category performance analytics หรือ search keyword analytics รายการเหล่านี้เป็น future scope เว้นแต่จะถูกเพิ่มเข้า prototype
 
-ต้องรองรับ:
+## 15. Error, Empty, Loading States
+
+States ที่ prototype ปัจจุบันรองรับ:
 
 - Empty article list
 - Empty category list
-- Empty banner list
 - No search result
 - Save failed
 - Publish validation failed
-- Schedule failed
 - Slug duplicate
 - Preview failed
-- Permission denied
-- Concurrent edit warning
+- Image upload validation failed
+- Unsafe/invalid hyperlink validation failed
+- Cancel create/edit confirmation
+- Status action confirmation
+- Status action failure ผ่าน prototype scenario tools
 
-## 17. Audit Requirements
+Permission denied, concurrent edit warning และ schedule job failure เป็น service/backend states และยังไม่ใช่ Articles prototype UI ตอนนี้
 
-ต้อง audit อย่างน้อย:
+## 16. Audit Requirements
 
-- Article create/update/delete/archive/publish/schedule
-- Featured toggle/order change
+Audit/history display ใน prototype ปัจจุบัน:
+
+- Article detail แสดง `Change History` พร้อม Date/Time, Admin, Action, Change Detail และ Result
+- Article create, update, cancel schedule, archive และ restore จะเพิ่ม visible history rows ใน prototype
+- Draft delete จะลบ draft ออกจาก list ใน prototype
 - Category create/update/activate/deactivate
-- Banner create/update/activate/deactivate
-- Preview ไม่จำเป็นต้อง audit เว้นแต่ policy ต้องการ
-- Export analytics
 - Report moderation result
 
-Audit event ต้องมี admin ID, admin access, target type, target ID, before/after value, timestamp, reason เมื่อเกี่ยวข้อง และ IP/session context ถ้ามี
+Featured toggle/order change, banner create/update/activate/deactivate, export analytics และ preview audit ไม่ใช่ prototype requirements ปัจจุบัน
 
-## 18. Acceptance Criteria
+Backend audit event schema ยังเป็น implementation responsibility และควรมี admin ID, target type, target ID, timestamp, action, result, before/after values เมื่อมีข้อมูล, reason เมื่อจำเป็น และ session/IP context เมื่อมีข้อมูล
 
-| ID | Criteria |
+## 17. Acceptance Criteria
+
+| ID | Criteria / เกณฑ์ยอมรับ |
 | --- | --- |
-| AC-BO-CONTENT-001 | Admin สร้าง แก้ไข save draft publish schedule archive article ได้ตาม permission |
+| AC-BO-CONTENT-001 | Admin เปิด Articles, search/filter/sort, paginate, view detail, create article, edit article, preview article และใช้ status-specific actions ตาม prototype ได้ |
 | AC-BO-CONTENT-002 | FO แสดงเฉพาะ Published article หรือ Scheduled article ที่ถึงเวลาแล้ว |
 | AC-BO-CONTENT-003 | Archived article หายจาก Board/Search/Category และ direct link แสดง unavailable behavior |
-| AC-BO-CONTENT-004 | Preview as FO ไม่เพิ่ม view count และเปิดได้เฉพาะ Admin |
-| AC-BO-CONTENT-005 | Board Main Hero, Trending Now, and Journal Board preview are selected automatically from eligible Published Articles with deterministic ordering and no duplicate article within the same Board Main page |
-| AC-BO-CONTENT-006 | Category active/inactive ส่งผลต่อ FO category filter/section |
-| AC-BO-CONTENT-007 | Banner management is out of Phase 1 Board scope; Board Main visual placements must come from Article data |
+| AC-BO-CONTENT-004 | Preview as FO เปิดใน prototype modal และ render article data เดียวกับที่กำลังกรอกหรือ saved แล้ว |
+| AC-BO-CONTENT-005 | Article editor validate title, unique URL, active category, cover image, อย่างน้อย 1 content block, safe links และ schedule date/time ตาม prototype behavior |
+| AC-BO-CONTENT-006 | Status actions ทำงานผ่าน confirmation flow: delete draft, cancel schedule, archive article, restore article |
+| AC-BO-CONTENT-007 | Category active/inactive behavior ต้องตาม prototype รวมถึง block deactivation เมื่อยังมี linked articles |
 | AC-BO-CONTENT-008 | Report article เข้า BO moderation handoff โดย article ยังไม่หายจาก FO ทันที |
-| AC-BO-CONTENT-009 | Publish/archive/category actions ต้อง audit-log |
-| AC-BO-CONTENT-010 | UI responsive ใช้งานได้ที่ mobile-width, tablet และ desktop |
+| AC-BO-CONTENT-009 | Article detail แสดง Change History สำหรับ create/update/status actions ตาม prototype |
+| AC-BO-CONTENT-010 | UI responsive ใช้งานได้ที่ mobile-width, tablet และ desktop ตาม prototype |
+| AC-BO-CONTENT-011 | Featured article controls, featured order, banner management, article analytics dashboard และ rich text toolbar ไม่ required เว้นแต่ถูกเพิ่มเข้า prototype |
 
-## 19. Open Decisions
+## 18. Open Decisions
 
-| ID | Decision Needed | Current Recommendation |
+| ID | Decision Needed / เรื่องที่ต้องตัดสินใจ | Current Recommendation / แนวทางปัจจุบัน |
 | --- | --- | --- |
 | BO-CONTENT-DEC-001 | Board ต้องมี public SEO web page แยกจาก FO mobile หรือไม่ | Phase 1 ถือว่าเป็น FO Board ก่อน |
-| BO-CONTENT-DEC-002 | Trending Now ใช้ manual curated หรือ algorithm | Phase 1 uses automatic latest-article fallback after Main Hero; analytics ranking can replace fallback when available |
-| BO-CONTENT-DEC-003 | Published article update ต้อง require re-approval หรือไม่ | Admin update ได้ แต่ต้อง audit และ version history |
-| BO-CONTENT-DEC-004 | Inactive category ส่งผลต่อ article เดิมอย่างไร | ต้องตัดสินก่อน implementation; default คือไม่ให้ publish ใหม่กับ inactive category |
+| BO-CONTENT-DEC-002 | Board Main placement algorithm ยังอยู่นอก BO Articles prototype UI ปัจจุบัน | ใช้ product rule เดิม: automatic latest eligible Published Article fallback; ห้ามเพิ่ม manual featured controls เว้นแต่ Product เปิด scope ใหม่ |
+| BO-CONTENT-DEC-003 | Published article update ต้อง require re-approval หรือไม่ | Prototype ปัจจุบัน allow edit และบันทึก Change History; backend approval policy ยังเป็น product/service decision |
+| BO-CONTENT-DEC-004 | Inactive category ส่งผลต่อ article เดิมอย่างไร | Prototype ปัจจุบัน block deactivation เมื่อยังมี linked articles; คง behavior นี้ไว้ เว้นแต่ Product อนุมัติ move/archive fallback |
+| BO-CONTENT-DEC-005 | Articles ควรแสดง analytics columns เช่น views, likes, report count หรือไม่ | ยังไม่อยู่ใน prototype list ปัจจุบัน ให้ถือเป็น future scope |
