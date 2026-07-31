@@ -296,29 +296,125 @@ Prototype ปัจจุบันยังไม่มี desktop preview mode 
 
 ## 10. Categories
 
-Category baseline:
+Category is BO-managed master data:
 
-- Buying Guide
-- Watch 101
-- Watch Market ถ้า BO legacy/source ยังใช้อยู่ ให้ถือเป็น category เพิ่มที่ต้อง confirm กับ Product ก่อนเปิดบน FO
-- Watch Events
-- Watch Apparel
-- Journal Board
-- Owner Stories: inactive in the current prototype
+- Admin สามารถเพิ่ม แก้ไข เปิด/ปิดใช้งาน จัดเรียง และลบ category ได้จาก `Content Management > Categories`
+- ไม่มี fixed baseline ที่บังคับว่าต้องใช้ชื่อ category ใดถาวร
+- Category names ใน prototype เป็น seed/example data เพื่อสาธิต behavior ของระบบเท่านั้น
+- Active category แสดงใน FO filter/section และใช้เป็นตัวเลือกใน Add/Edit Article
+- Inactive category ไม่แสดงใน FO filter/section และไม่เป็นตัวเลือกสำหรับบทความใหม่หรือบทความที่กำลังแก้ไข
+
+Prototype current seed/example data:
+
+| Category ID | Name | Slug | Status | Display order |
+| --- | --- | --- | --- | --- |
+| CAT-001 | Buying Guide | buying-guide | Active | 10 |
+| CAT-002 | Watch 101 | watch-101 | Active | 20 |
+| CAT-003 | Watch Market | watch-market | Active | 30 |
+| CAT-004 | Watch Events | watch-events | Active | 40 |
+| CAT-005 | Watch Apparel | watch-apparel | Active | 50 |
+| CAT-006 | Journal Board | journal-board | Active | 60 |
+| CAT-007 | Owner Stories | owner-stories | Inactive | 70 |
 
 Category fields:
 
+- Category ID: auto-generated as `CAT-###`
 - Name
-- Slug
+- Slug / URL
 - Description
 - Active/Inactive
 - Display order
+- Updated date/time
+- Article count derived from linked articles
+
+Category list:
+
+- Route/menu: `Content Management > Categories`
+- Breadcrumb: `การดำเนินงาน / Content Management / Categories`
+- Page title: `Categories`
+- Panel title: `CATEGORY LIST`
+- Header actions:
+  - `จัดเรียง Category`: opens reorder modal for active categories on FO Board
+  - `เพิ่มหมวดหมู่`: opens create category modal
+- Desktop table columns:
+  - Category ID
+  - Category
+  - URL
+  - Articles
+  - Status
+  - Action
+- Mobile/card metadata:
+  - Status pill
+  - Article count
+  - URL
+  - Updated date/time
+- Search placeholder: `ค้นหา Category ID, Name, URL`
+- Search matches category ID, name, slug, description และ status
+- Status filter: All status, Active, Inactive
+- Sort options:
+  - Display order
+  - Article count
+  - Name A-Z
+  - Recently updated
+- Pagination follows article list page size in the current prototype: 10 rows per page
+- Empty/no result state uses the shared empty row text `ไม่พบข้อมูล`
+
+Category detail modal:
+
+- Opens from row/card or `View detail`
+- Shows read-only name, URL/slug, status และ description
+- Action buttons:
+  - `แก้ไขหมวดหมู่`
+  - `Set inactive` when category is Active and has no linked articles
+  - `Set active` when category is Inactive
+- Current prototype stores category action history in data, but category detail does not render a visible Change History section
+
+Create/edit category modal:
+
+- Required fields: Name, URL/slug, Status
+- Optional field: Description
+- Default status for new category: Active
+- Default display order for new category: appended after the existing max display order
+- Slug auto-fills from name when slug is empty, using lowercase alphanumeric words joined by hyphen
+- Slug input is normalized with the same slug rule while typing
+- Validation:
+  - Name is required
+  - Name must be unique across categories except the current edited category
+  - Slug is required
+  - Slug must be unique across categories except the current edited category
+  - Setting an existing category to Inactive is blocked when linked articles exist
+- Saving create/edit closes the editor, refreshes `Content Management > Categories`, opens the saved category detail modal, and shows success toast
+- When an existing category name changes, linked article rows using the previous category name are synced to the new category name in the prototype data
+
+Category row actions:
+
+- `View detail`
+- `แก้ไขหมวดหมู่`
+- `Set inactive` for Active category only when article count is 0
+- `Set active` for Inactive category
+- `Delete category` only when article count is 0
+
+Category reorder modal:
+
+- Opens from `จัดเรียง Category`
+- Lists Active categories only
+- Supports drag reorder and keyboard focus on reorder rows
+- Saving updates display order, resets sort to `Display order`, refreshes the category list, and shows success toast
 
 Inactive category:
 
 - ไม่แสดงใน FO filter/section
 - ไม่ควรเลือกใช้กับ article publish ใหม่
+- ไม่แสดงเป็นตัวเลือกใน Add/Edit Article สำหรับบทความใหม่หรือบทความที่กำลังแก้ไข
+- Article list filter ยังรวม active master categories และ category names ที่ถูกใช้อยู่ใน article rows เพื่อให้กรองบทความเดิมได้
 - Prototype จะ block การ deactivate category ที่ยังมี linked articles อยู่ Admin ต้อง move/archive linked articles ก่อนจึงจะ deactivate ได้
+
+Delete category:
+
+- Prototype แสดง action นี้เฉพาะ category ที่ไม่มี linked articles
+- Delete ต้องผ่าน confirmation modal
+- เมื่อลบแล้ว category หายจาก BO category list และแสดง success toast
+- Prototype ไม่แสดง visible audit/history row สำหรับ delete category หลังลบ เพราะ row ถูกนำออกจาก mock list
 
 ## 11. Board Main Article Placement Rules
 
@@ -415,6 +511,9 @@ States ที่ prototype ปัจจุบันรองรับ:
 - Save failed
 - Publish validation failed
 - Slug duplicate
+- Category name duplicate
+- Category slug duplicate
+- Blocked category deactivate when linked articles exist
 - Preview failed
 - Image upload validation failed
 - Unsafe/invalid hyperlink validation failed
@@ -431,7 +530,9 @@ Audit/history display ใน prototype ปัจจุบัน:
 - Article detail แสดง `Change History` พร้อม Date/Time, Admin, Action, Change Detail และ Result
 - Article create, update, cancel schedule, archive และ restore จะเพิ่ม visible history rows ใน prototype
 - Draft delete จะลบ draft ออกจาก list ใน prototype
-- Category create/update/activate/deactivate
+- Category create/update/activate/deactivate จะเพิ่ม action history ใน prototype data
+- Category detail modal ใน prototype ปัจจุบันยังไม่แสดง visible Change History section
+- Category delete จะลบ category ออกจาก mock list หลัง confirmation และไม่มี visible history row หลังลบ
 - Report moderation result
 
 Featured toggle/order change, banner create/update/activate/deactivate, export analytics และ preview audit ไม่ใช่ prototype requirements ปัจจุบัน
@@ -448,7 +549,8 @@ Backend audit event schema ยังเป็น implementation responsibility �
 | AC-BO-CONTENT-004 | Preview as FO เปิดใน prototype modal และ render article data เดียวกับที่กำลังกรอกหรือ saved แล้ว |
 | AC-BO-CONTENT-005 | Article editor validate title, unique URL, active category, cover image, อย่างน้อย 1 content block, safe links และ schedule date/time ตาม prototype behavior |
 | AC-BO-CONTENT-006 | Status actions ทำงานผ่าน confirmation flow: delete draft, cancel schedule, archive article, restore article |
-| AC-BO-CONTENT-007 | Category active/inactive behavior ต้องตาม prototype รวมถึง block deactivation เมื่อยังมี linked articles |
+| AC-BO-CONTENT-007 | Admin เปิด Categories, search/filter/sort, paginate, view detail, create/edit, reorder active categories, activate/deactivate และ delete category ที่ไม่มี linked articles ตาม prototype ได้ |
+| AC-BO-CONTENT-007A | Category active/inactive behavior ต้องตาม prototype รวมถึง block deactivation เมื่อยังมี linked articles และ inactive category ไม่แสดงใน Add/Edit Article selector |
 | AC-BO-CONTENT-008 | Report article เข้า BO moderation handoff โดย article ยังไม่หายจาก FO ทันที |
 | AC-BO-CONTENT-009 | Article detail แสดง Change History สำหรับ create/update/status actions ตาม prototype |
 | AC-BO-CONTENT-010 | UI responsive ใช้งานได้ที่ mobile-width, tablet และ desktop ตาม prototype |
