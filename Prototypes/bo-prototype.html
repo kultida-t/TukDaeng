@@ -15658,7 +15658,7 @@
                   <textarea id="board-report-action-note" placeholder="ระบุหมายเหตุสำหรับ audit log"></textarea>
                 </label>
                 <div class="module-note user-action-impact user-action-impact-card user-action-impact-warning">
-                  <p><strong>ผลกระทบ:</strong> ${config.detail} และบันทึก audit log ของ Reported Board โดยไม่แก้ไขข้อมูลหน้า Articles ที่ล็อกไว้</p>
+                  <p><strong>ผลกระทบ:</strong> ${config.detail} และบันทึก audit log ของ Reported Board${action === "archive-article" ? " พร้อมอัปเดตสถานะบทความหลักเป็น Archived เพื่อไม่ให้แสดงบน FO" : ""}</p>
                 </div>
                 <div class="user-detail-actions">
                   <button class="user-detail-action-btn warning user-action-confirm" type="button" data-board-report-action-confirm="${action}" data-board-report-id="${report.id}">${config.confirm}</button>
@@ -15690,6 +15690,20 @@
       const note = document.querySelector("#board-report-action-note")?.value.trim() || document.querySelector("#board-report-action-reason")?.value || getBoardReportActionConfig(action).note;
       if (action === "close-report") report.reportStatus = "Cleared";
       if (action === "archive-article") {
+        const article = getArticleById(report.articleId);
+        const now = formatArticleActionTimestamp();
+        if (article && article.status !== "Archived") {
+          const articleArchiveNote = `${note} / จากรายงาน ${report.id}`;
+          addArticleActionHistory(article, {
+            time: now,
+            action: "Archived",
+            note: articleArchiveNote,
+            result: "Archived"
+          });
+          article.status = "Archived";
+          article.updatedAt = now;
+          article.detail = `Archived from Reported Board ${report.id}. Removed from FO Board/Search/Category.`;
+        }
         report.contentStatus = "Archived";
         report.reportStatus = "Cleared";
       }
