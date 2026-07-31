@@ -186,7 +186,7 @@ Production ต้อง mask ตาม admin access และ audit-log เม�
 | Active/Suspended -> Banned | Admin | Reason | Session ถูก revoke และ login/action ถูก block ถาวรจนกว่าจะ unban | Yes |
 | Banned -> Active | Admin | Reason | Login/action กลับมาใช้งานได้ | Yes |
 | Active/Suspended/Banned -> Deletion Requested | System / Account Deletion | Deletion request created | เข้าสู่ deletion workflow และต้องตรวจ dependency ก่อนลบจริง | Yes |
-| Deletion Requested -> Deleted / Archived | Admin / Account Deletion | Reason, retention/validation note, dependency cleared | Login ถูก block, public profile/assets ถูก hidden/anonymized | Yes |
+| Deletion Requested -> Deleted / Archived | Admin / Account Deletion | Reason, retention/validation note, dependency resolved | Login ถูก block, public profile/assets ถูก hidden/anonymized | Yes |
 
 ## 8.1 Policy การระงับและแบนบัญชี
 
@@ -204,13 +204,13 @@ Policy ที่แนะนำ:
 | มี report 1-2 รายการที่ดูมีมูล | เข้าคิว `Reported Users` และแสดงในจำนวน report | ยังเป็น `Active` จนกว่า Admin review |
 | มี report `>= 3` รายการภายในช่วงเวลาสั้น เช่น 7 วัน หรือมาจากผู้รายงานต่างคน | เพิ่ม priority เป็น high-risk review และแจ้ง Dashboard / Work Queue | ยังเป็น `Active`; ไม่สร้าง feature restriction และไม่ suspend อัตโนมัติจากจำนวน report เพียงอย่างเดียว |
 | มี report `>= 5` รายการ, พบ pattern หลอกลวงซ้ำ, impersonation, spam offer, หรือมี evidence จาก asset/chat ที่เสี่ยงสูง | ระบบสามารถแนะนำหรือทำ `Suspended` ชั่วคราวตาม policy เพื่อหยุดความเสียหายระหว่าง review | `Suspended` |
-| Admin review แล้วพบว่าไม่ผิด / report ไม่สมเหตุสมผล | ปิด report เป็น cleared และคืนสิทธิ์ | `Active` |
+| Admin review แล้วพบว่าไม่ผิด / report ไม่สมเหตุสมผล | ปิด report เป็น `Closed` และคืนสิทธิ์ | `Active` |
 | Admin review แล้วผิดจริงแต่ไม่รุนแรง | คง `Suspended` พร้อม duration / reason หรือ warning ตาม policy | `Suspended` |
 | Admin review แล้วผิดจริงรุนแรง เช่น scam, impersonation, repeated abuse, phishing, bypass system | Admin ยืนยัน action พร้อม reason | `Banned` |
 
 กฎ:
 
-- `Suspended` = ระงับชั่วคราวเพื่อรอ review หรือควบคุมความเสี่ยงระยะสั้น สามารถกลับเป็น `Active` ได้เมื่อ clear report แล้ว
+- `Suspended` = ระงับชั่วคราวเพื่อรอ review หรือควบคุมความเสี่ยงระยะสั้น สามารถกลับเป็น `Active` ได้เมื่อ close report แล้ว
 - `Banned` = ระงับถาวรหลัง review แล้วผิดจริงหรือมีความเสี่ยงสูง ต้องใช้ Admin, reason และ audit เสมอ
 - V1 ไม่มีสถานะ `Restricted` หรือ feature-level restriction เช่น ห้ามลง asset อย่างเดียวหรือห้าม chat อย่างเดียว; ถ้าต้องจำกัดบัญชีให้ใช้ `Suspended` หรือ `Banned` ตาม policy นี้
 - Temporary suspension ต้องมี end date ที่ Admin แก้ไขได้ก่อนยืนยัน action; ค่า default ของ prototype คือ 7 วัน
@@ -324,7 +324,7 @@ Action ที่ทำได้ตามสถานะบัญชี:
 | Unsuspend/Unban | ผู้ใช้กลับมา login/action ได้ตามปกติ |
 | Soft delete/archive | ผู้ใช้ login ไม่ได้; public profile/assets ถูก hidden หรือ anonymized ตาม policy |
 | Reset password | ผู้ใช้ได้รับ reset flow; ไม่เปลี่ยน auth method |
-| Clear report without action | FO content/profile ยังแสดงต่อ |
+| Close report without action | FO content/profile ยังแสดงต่อ |
 
 Integration map ที่เกี่ยวข้อง:
 
@@ -465,16 +465,16 @@ Prototype BO ปัจจุบัน align User List กับ visual system �
 - ใช้ visual system เดียวกับ Dashboard และ User List ได้แก่ module header, summary card 4 ใบ, list utility แบบ compact, filter bar, table พร้อม pagination, structured detail view และ pattern ปุ่มมาตรฐาน
 - Reported Users เป็น operational queue สำหรับ report ผู้ใช้/โปรไฟล์จาก FO ไม่ใช่หน้า analytics และไม่ควรซ้ำกับ Reports & Analytics
 - ตัวอย่าง Suspended ใน prototype ต้อง align กับ policy: ใช้ `>= 5 reports/reporters` หรือมี high-risk evidence ชัดเจนก่อนแสดง `Suspended`; `>= 3 reports` เพิ่มเฉพาะ review priority เว้นแต่เข้า risk rule
-- Mock report queue ครอบคลุม account-status context ทั้งหมดที่ใช้ใน Phase 1 ได้แก่ `Active`, `Pending Verification`, `Suspended`, `Banned`, และ `Deletion Requested`
-- Mock report queue ครอบคลุม outcome หลักของ report handling ได้แก่ report ใหม่/open, report in-review, false report ที่ clear โดยไม่ทำ account action, report ที่ resolved หลัง action, บัญชี active ที่มี 1-2 reports, บัญชี active ที่มี 3 reports และถูกยกระดับเป็น priority review, บัญชี suspended ที่มี 5+ reports/reporters, บัญชี banned หลังยืนยัน severe abuse และบัญชี deletion-request ที่ต้อง review ก่อน archive/anonymize
+- Mock report queue ครอบคลุม account-status context ที่เกิดขึ้นได้กับบัญชีที่ถูกรายงาน ได้แก่ `Active`, `Suspended`, `Banned`, และ `Deletion Requested`; ไม่ใช้ `Pending Verification` ในคิวนี้เพราะ FO report user เกิดจาก user profile หรือ chat ของบัญชีที่ใช้งาน/มี interaction แล้ว
+- Mock report queue ครอบคลุม outcome หลักของ report handling ได้แก่ report ใหม่/open, report in-review, false report ที่ปิดเป็น `Closed` โดยไม่ทำ account action, report ที่ resolved หลัง action, บัญชี active ที่มี 1-2 reports, บัญชี active ที่มี 3 reports และถูกยกระดับเป็น priority review, บัญชี suspended ที่มี 5+ reports/reporters, บัญชี banned หลังยืนยัน severe abuse และบัญชี deletion-request ที่ยังต้อง review user report ก่อน archive/anonymize
 - Summary card แสดง `Open Reports`, `In Review`, `Urgent Cases` และ `Due Soon` เพื่อให้ Admin จัดลำดับ queue ได้โดยไม่ต้องอ่านทุก row
 - Table row แสดง report ID/category, reported user, reason, reporter count, priority, report status และ action `ดูรายละเอียด` ที่ชัดเจนหนึ่งรายการ ส่วน evidence, related data, waiting time และ detailed action อยู่ใน modal เพื่อให้ list สะอาด
 - Filter รองรับการค้นหาด้วย report ID, user ID, display name, reason, category, status และ priority ส่วน sorting รองรับ oldest waiting first, urgent first, reporter count และ status
 - Detail modal แสดง report summary, สถานะบัญชีผู้ใช้ปัจจุบัน, reported reference, note จาก FO reporter, reporter identity/count แบบ masked, timestamp ล่าสุดของ report, evidence/context, related data, recommendation, ประวัติ action ของ Admin และ note ชัดเจนว่า report ไม่ได้ซ่อน profile หรือจำกัดบัญชีจนกว่า Admin จะทำ action
-- Report detail ทุกอันต้องมี reported reference เพื่อให้ Admin trace แหล่งที่มาได้ ได้แก่ reference type, reference ID, source location, related module และสิ่งที่ต้องตรวจ ตัวอย่างเช่น asset ID, profile ID, chat transcript ID, offer ID, deletion request ID หรือ signup/auth log ID
-- Case reported-user ที่เกี่ยวกับ deletion ยังต้องแสดงแหล่ง report เดิมจาก FO เช่น offer/chat dispute, asset report หรือ profile report โดย `Account Deletion` เป็น blocking/dependency context ไม่ใช่แหล่ง report โดยตัวมันเอง
-- ถ้าผู้ใช้ที่ถูกรายงานอยู่ในสถานะ `Deletion Requested` แล้ว report action ต้อง route Admin ไปที่ source reference ก่อน แล้วจึงไป `Account Deletion` Admin ต้องไม่ close report แล้ว delete/archive บัญชีทันทีจนกว่า offer/chat/asset/profile dispute ที่เกี่ยวข้องจะถูก review และ dependency ถูก clear
-- Review flow ที่แนะนำ: เปิด report detail -> กด deep link ของ reported reference -> ไปยัง module/detail context ที่เกี่ยวข้องโดยตรง -> ตรวจ source evidence -> กลับมาที่ report -> start review / clear report / manage account status ตาม policy
-- Queue action ที่ prototype รองรับ: เปิด reported reference เป็น deep link ไป Asset Management, Offer / Chat, Account Deletion หรือ User detail; start review; close report เป็น cleared; เปิด user detail ที่เกี่ยวข้อง; และเปิด account status management เมื่อจำเป็นต้องทำ account action
-- การ close report อัปเดต mock status เป็น `Cleared`, reset waiting time, แสดง toast และคงบัญชีผู้ใช้ไว้เหมือนเดิม
+- Report detail ทุกอันต้องมี reported reference เพื่อให้ Admin trace ผู้ใช้ที่ถูกรายงานได้ ได้แก่ `Report ID`, `User ID`, display name/account status และ source surface จาก FO ที่เป็น `User Profile` หรือ `Chat` เท่านั้น
+- Case reported-user ที่มีบัญชีสถานะ `Deletion Requested` ยังต้องแสดง reported reference เป็นผู้ใช้ที่ถูกรายงาน ไม่ใช่ deletion request; `Account Deletion` เป็น account workflow/dependency หลังจากตรวจ report แล้วเท่านั้น
+- ถ้าผู้ใช้ที่ถูกรายงานอยู่ในสถานะ `Deletion Requested` แล้ว Admin ต้อง review user report จาก source `User Profile` หรือ `Chat` ก่อน และต้องไม่ close report แล้ว delete/archive บัญชีทันทีจนกว่า dependency ของ Account Deletion จะถูก resolved
+- Review flow ที่แนะนำ: เปิด report detail -> ตรวจ reported user และ source surface (`User Profile`/`Chat`) -> ตรวจ reporter history/evidence note -> start review / close report / manage account status ตาม policy -> ถ้าบัญชีอยู่ใน `Deletion Requested` ค่อย route ต่อไป Account Deletion หลัง review
+- Queue action ที่ prototype รองรับ: เปิด report detail ของผู้ใช้ที่ถูกรายงาน; start review; close report เป็น `Closed`; เปิด user detail ที่เกี่ยวข้อง; และเปิด account status management เมื่อจำเป็นต้องทำ account action
+- การ close report อัปเดต mock status เป็น `Closed`, reset waiting time, แสดง toast และคงบัญชีผู้ใช้ไว้เหมือนเดิม
 - การเปลี่ยน account status ยังจัดการผ่าน User account status modal กลาง เพื่อให้ wording ของ suspension/restore และ confirmation rule สอดคล้องกัน
