@@ -17,6 +17,9 @@ These screens have been confirmed by the user and are locked from incidental cha
 - Content Management > Articles > Article Detail, confirmed and locked as of 2026-07-23
 - Content Management > Articles > Add Article, confirmed and locked as of 2026-07-22
 - Content Management > Articles > Edit Article, confirmed and locked as of 2026-07-23
+- Content Management > Categories, confirmed and locked as of 2026-07-31
+- Content Management > Reported Board, confirmed and locked as of 2026-07-31
+- Content Management > Board Report Detail, confirmed and locked as of 2026-07-31
 
 ## Protected Prototype Files
 
@@ -28,7 +31,7 @@ The current confirmed prototype implementation is in:
 - `Prototypes/assets/user-avatars/*`
 - `Prototypes/assets/fonts/*`
 
-Do not edit these files for unrelated work if the edit can change Login, Dashboard, User Management menu behavior, User List, Reported Users, user/report detail views, any user/report action flows, Asset Management menu behavior, Asset List, Asset Detail, Reported Assets, Asset Report Detail, any asset report detail modal, any asset status/action flows, or Content Management > Articles > Article List, Article Detail, Add Article, or Edit Article.
+Do not edit these files for unrelated work if the edit can change Login, Dashboard, User Management menu behavior, User List, Reported Users, user/report detail views, any user/report action flows, Asset Management menu behavior, Asset List, Asset Detail, Reported Assets, Asset Report Detail, any asset report detail modal, any asset status/action flows, or any Content Management screen, submenu, navigation state, article/category/report flow, or content action flow.
 
 ## Login Protected Scope
 
@@ -90,9 +93,9 @@ The protected Asset Management > Reported Assets and Asset Report Detail scope i
 - Asset Management menu entry, Reported Assets submenu/active state, breadcrumbs, route behavior, transitions between Reported Assets, Asset Report Detail, Asset Detail, and Asset List, and navigation state.
 - Mock data, fixtures, state logic, route parameters, audit records, computed labels, and shared components that directly support Reported Assets or Asset Report Detail flows.
 
-## Articles Protected Scope
+## Content Management Protected Scope
 
-The protected Content Management > Articles scope includes:
+The protected Content Management scope includes:
 
 - The Articles list/table/card screen, article summary cards, filters, search, sorting, pagination, status chips, row/card actions, and list empty/loading/error states.
 - Article Detail views, readonly article rendering, cover/title images, captions, metadata, author/category/status fields, published/scheduled state, and back navigation from Article Detail.
@@ -100,13 +103,16 @@ The protected Content Management > Articles scope includes:
 - The Add Article and Edit Article editor layout, header fields, category selector, author field, cover upload, cover caption, intro/deck field, content block builder, block add/delete/move controls, image block upload, publish status selector, publish date/time controls, and submit/cancel buttons.
 - The article preview opened from Add Article or Edit Article, including Board card preview, FO phone preview, scroll containment behavior, modal layout, copy, imagery, metadata, and close behavior.
 - Validation, disabled states, upload error states, draft defaults, generated article IDs, timestamp handling, and save/create/update behavior for articles.
-- Content Management menu entry, Articles submenu/active state, breadcrumbs, titles, panel labels, route behavior, navigation state, and back/cancel behavior connected to Article List, Article Detail, Add Article, or Edit Article.
-- Mock data, state logic, computed values, helper functions, styles, assets, and shared components that directly support Article List, Article Detail, Add Article, or Edit Article rendering or behavior.
+- The Categories list/table/card screen, category summary cards, filters, search, sorting, row/card actions, category detail modal, add/edit category forms, activate/deactivate flows, linked article counts, FO category visibility, and category selector/filter sync.
+- The Reported Board list/table/card screen, report queue, report summary, report filters, search, sorting, pagination, row/card actions, report detail views/panels, reported article preview modal, evidence/context sections, status history, moderation history, and back navigation.
+- Reported Board status actions, article status actions triggered from report context, archive/clear/close flows, reason selectors, validation, disabled states, completed states, audit/result states, confirmation modals, and toast/result messaging.
+- Content Management menu entry, every submenu/active state, breadcrumbs, titles, panel labels, route behavior, navigation state, and back/cancel behavior connected to Articles, Categories, Reported Board, or Board Report Detail.
+- Mock data, state logic, computed values, helper functions, styles, assets, and shared components that directly support Content Management rendering or behavior.
 
 ## Rules
 
 - Do not change layout, styling, behavior, routing, copy, mock data, or component structure for the protected screens unless the user explicitly asks for that exact change.
-- Do not change navigation labels, menu order, active states, breadcrumbs, or route behavior for Dashboard, User Management, Asset Management, or Content Management > Articles unless the user explicitly approves that exact change.
+- Do not change navigation labels, menu order, active states, breadcrumbs, or route behavior for Dashboard, User Management, Asset Management, or Content Management unless the user explicitly approves that exact change.
 - Treat shared files as high risk when they are used by protected screens. This includes layout shells, navigation, route guards, theme files, global CSS, common components, shared hooks, stores, API mocks, fixtures, and assets.
 - If a requested change to another screen requires editing shared code that may affect a protected screen, pause and ask the user for approval first.
 - Do not perform broad refactors, formatting-only rewrites, or dependency upgrades that touch protected-screen files as part of unrelated work.
@@ -115,7 +121,7 @@ The protected Content Management > Articles scope includes:
 ## Review Checklist Before Editing
 
 - Identify the files and routes involved in the requested change.
-- Check whether any target file is part of Login, Dashboard, Dashboard menu, User Management menu, User Management > User List, User Management > Reported Users, User Detail, Report Detail, any user/report action modal, Asset Management menu, Asset Management > Asset List, Asset Detail, Asset Management > Reported Assets, Asset Report Detail, any asset report detail modal, any asset action modal, or Content Management > Articles > Article List, Article Detail, Add Article, or Edit Article.
+- Check whether any target file is part of Login, Dashboard, Dashboard menu, User Management menu, User Management > User List, User Management > Reported Users, User Detail, Report Detail, any user/report action modal, Asset Management menu, Asset Management > Asset List, Asset Detail, Asset Management > Reported Assets, Asset Report Detail, any asset report detail modal, any asset action modal, or any Content Management screen, submenu, modal, detail view, or action flow.
 - Check whether any shared file is used by those protected screens.
 - If protected impact is possible, ask for confirmation before editing.
 - Keep changes scoped to the requested screen or feature.
