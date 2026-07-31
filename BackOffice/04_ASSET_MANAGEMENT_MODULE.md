@@ -338,16 +338,16 @@ Reported Assets เป็น queue แยกจาก Asset List สำหรั
 
 - Report ID
 - Asset
-- Asset ID
-- Owner
 - Asset Status
 - Moderation/Context pill เมื่อมี
 - Report Status
+- Reported timestamp
 - Report Reason
 - Reporters หรือ unique reporter count
 - Priority
-- Created timestamp
 - Row action menu
+
+Asset ID และ Owner ไม่จำเป็นต้องเป็น column หลักในตาราง Reported Assets แต่ต้องค้นหาได้ และต้องแสดงใน Asset Report Detail หรือ reported asset reference context
 
 ### Report Search
 

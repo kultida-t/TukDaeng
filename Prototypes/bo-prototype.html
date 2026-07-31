@@ -3026,28 +3026,38 @@
       padding-right: 18px;
     }
     .user-row.asset-report-row {
-      grid-template-columns: minmax(112px, .52fr) minmax(230px, 1.08fr) minmax(240px, 1.08fr) minmax(112px, .52fr) minmax(330px, 1.55fr) minmax(96px, .44fr) minmax(96px, .44fr) minmax(58px, .28fr);
-      column-gap: 18px;
-      padding-left: 20px;
-      padding-right: 20px;
+      grid-template-columns: minmax(96px, .4fr) minmax(200px, .82fr) minmax(232px, 1.02fr) minmax(112px, .48fr) minmax(132px, .54fr) minmax(340px, 1.42fr) minmax(88px, .36fr) minmax(90px, .38fr) minmax(58px, .24fr);
+      column-gap: 22px;
+      padding-left: 22px;
+      padding-right: 22px;
     }
     .user-row.asset-report-row > div {
       min-width: 0;
     }
-    .user-row.asset-report-row > div:nth-child(5) {
+    .user-row.asset-report-row > div:nth-child(6) {
       max-width: none;
     }
-    .user-row.asset-report-row > div:nth-child(5) .muted {
+    .user-row.asset-report-row > div:nth-child(3) {
+      padding-right: 4px;
+    }
+    .user-row.asset-report-row > div:nth-child(6) .muted {
       color: #40536c;
+      font-size: 12px;
       line-height: 1.55;
       overflow-wrap: anywhere;
     }
-    .user-row.asset-report-row > div:nth-child(6),
-    .user-row.asset-report-row > div:nth-child(7) {
+    .user-row.asset-report-row .asset-report-time {
+      color: #263a54;
+      font-size: 12px;
+      line-height: 1.35;
+      white-space: nowrap;
+    }
+    .user-row.asset-report-row > div:nth-child(7),
+    .user-row.asset-report-row > div:nth-child(8) {
       justify-self: start;
     }
-    .user-row.asset-report-row.head > div:nth-child(6),
-    .user-row.asset-report-row.head > div:nth-child(7) {
+    .user-row.asset-report-row.head > div:nth-child(7),
+    .user-row.asset-report-row.head > div:nth-child(8) {
       text-align: left;
     }
     .user-row.asset-report-row .asset-status-pills {
@@ -5323,8 +5333,8 @@
         overflow-x: auto;
       }
       .user-row.asset-report-row {
-        grid-template-columns: minmax(104px, .48fr) minmax(200px, 1fr) minmax(220px, 1.02fr) minmax(106px, .5fr) minmax(300px, 1.42fr) minmax(92px, .42fr) minmax(92px, .42fr) minmax(62px, .3fr);
-        column-gap: 16px;
+        grid-template-columns: minmax(94px, .4fr) minmax(180px, .78fr) minmax(224px, .98fr) minmax(108px, .46fr) minmax(128px, .52fr) minmax(310px, 1.32fr) minmax(86px, .36fr) minmax(88px, .36fr) minmax(62px, .28fr);
+        column-gap: 20px;
       }
     }
     @media (max-width: 760px) {
@@ -15867,13 +15877,14 @@
       const pageRows = sorted.slice(start, start + assetListPageSize);
       document.querySelector("#table").innerHTML = `
         <div class="user-table">
-          <div class="user-row report-row asset-report-row head"><div>Report ID</div><div>Asset</div><div>Asset Status</div><div>Status</div><div>Report Reason</div><div>Reporters</div><div>Priority</div><div>Action</div></div>
+          <div class="user-row report-row asset-report-row head"><div>Report ID</div><div>Asset</div><div>Asset Status</div><div>Status</div><div>Reported At</div><div>Report Reason</div><div>Reporters</div><div>Priority</div><div>Action</div></div>
           ${pageRows.map(asset => {
             const reportId = getAssetReportId(asset);
             const reporters = getAssetReporters(asset);
             const priorityLabel = getAssetReportPriority(asset);
             const priorityValue = getAssetReportPriorityValue(asset);
             const reason = renderAssetReportReasonsLabel(asset);
+            const reportedAt = (getAssetReportReceivedTime(asset) || "-").replace(/\s*GMT\+7$/, "");
             return `
               <div class="user-row report-row asset-report-row" data-asset-report-card="${asset.id}">
                 <div class="user-cell-primary" data-label="Report ID"><div class="main-text">${reportId}</div></div>
@@ -15884,12 +15895,14 @@
                   <span class="pill ${priorityValue === "high" ? "red" : priorityValue === "medium" ? "amber" : "blue"}">${priorityLabel}</span>
                   <div class="user-card-meta">
                     <div class="user-card-meta-item"><span>Asset</span><strong>${asset.name}</strong></div>
+                    <div class="user-card-meta-item"><span>Reported at</span><strong>${reportedAt}</strong></div>
                     <div class="user-card-meta-item"><span>Report reason</span><strong>${reason}</strong></div>
                   </div>
                 </div>
                 <div data-label="Asset"><div class="main-text">${asset.name}</div></div>
                 <div data-label="Asset Status">${renderAssetListStatusDisplay(asset)}</div>
                 <div data-label="Status">${assetReportQueueStatusPill(asset)}</div>
+                <div data-label="Reported At"><div class="main-text asset-report-time">${reportedAt}</div></div>
                 <div data-label="Report Reason"><div class="muted">${reason}</div></div>
                 <div data-label="Reporters"><div class="main-text">${reporters}</div></div>
                 <div data-label="Priority"><span class="pill ${priorityValue === "high" ? "red" : priorityValue === "medium" ? "amber" : "blue"}">${priorityLabel}</span></div>
