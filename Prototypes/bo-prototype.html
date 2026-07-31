@@ -2176,6 +2176,86 @@
       letter-spacing: .08em;
       text-transform: uppercase;
     }
+    .article-editor-section-title {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 8px;
+    }
+    .article-inline-help {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex: 0 0 auto;
+      width: 17px;
+      height: 17px;
+      border: 1px solid #b9c7d8;
+      border-radius: 50%;
+      background: #fff;
+      color: #475569;
+      font-family: Arial, sans-serif;
+      font-size: 11px;
+      font-weight: 700;
+      line-height: 17px;
+      letter-spacing: 0;
+      text-transform: none;
+      cursor: help;
+      transform: translateY(-1px);
+    }
+    .article-inline-help:focus-visible {
+      outline: 3px solid rgba(0, 98, 163, .2);
+      outline-offset: 2px;
+    }
+    .article-inline-help-content {
+      position: absolute;
+      left: 50%;
+      bottom: calc(100% + 10px);
+      z-index: 20;
+      width: min(280px, calc(100vw - 48px));
+      padding: 10px 12px;
+      border: 1px solid #d8e2f0;
+      border-radius: 8px;
+      background: #061426;
+      color: #f8fafc;
+      box-shadow: 0 12px 28px rgba(15, 23, 42, .18);
+      font-family: var(--font-main);
+      font-size: 12px;
+      font-weight: 600;
+      line-height: 1.45;
+      letter-spacing: 0;
+      text-transform: none;
+      text-align: left;
+      transform: translate(-50%, 4px);
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+      transition: opacity .15s ease, transform .15s ease, visibility .15s ease;
+    }
+    .article-inline-help:hover .article-inline-help-content,
+    .article-inline-help:focus-visible .article-inline-help-content {
+      opacity: 1;
+      visibility: visible;
+      transform: translate(-50%, 0);
+    }
+    .article-inline-help-content::after {
+      content: "";
+      position: absolute;
+      left: 50%;
+      top: 100%;
+      width: 10px;
+      height: 10px;
+      border-right: 1px solid #d8e2f0;
+      border-bottom: 1px solid #d8e2f0;
+      background: #061426;
+      transform: translate(-50%, -5px) rotate(45deg);
+    }
+    .article-inline-help-content code {
+      color: #dbeafe;
+      font-family: ui-monospace, SFMono-Regular, Consolas, "Liberation Mono", monospace;
+      font-size: 11px;
+      font-weight: 800;
+    }
     .article-editor-form .article-editor-section-note {
       margin: 0 0 4px;
       color: #64748b;
@@ -13624,6 +13704,18 @@
       `;
     }
 
+    function renderArticleInlineParsingHelp() {
+      return `
+        <span class="article-inline-help" tabindex="0" role="img" aria-label="Inline text parsing help">i
+          <span class="article-inline-help-content" role="tooltip">
+            <span>พิมพ์ <code>**bold**</code> เพื่อทำตัวหนา</span><br>
+            <span>พิมพ์ <code>_italic_</code> เพื่อทำตัวเอียง</span><br>
+            <span>พิมพ์ <code>~~strikethrough~~</code> เพื่อขีดฆ่า</span>
+          </span>
+        </span>
+      `;
+    }
+
     function renderArticleBlockEditor(article) {
       const blocks = getArticleContentBlocks(article);
       return `
@@ -14695,7 +14787,7 @@
                 </section>
 
                 <section class="article-editor-section">
-                  <h4>Content Blocks <span class="article-required-mark">*</span></h4>
+                  <h4 class="article-editor-section-title">Content Blocks <span class="article-required-mark">*</span>${renderArticleInlineParsingHelp()}</h4>
                   <p class="article-editor-section-note">เพิ่มเนื้อหาเป็นบล็อก แก้ไข ลบ หรือย้ายลำดับได้</p>
                   ${renderArticleBlockEditor(draft)}
                 </section>
