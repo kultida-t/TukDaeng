@@ -467,13 +467,125 @@ Featured controls, manual featured order, manual curated Trending Now และ 
 
 FO `Report article` ต้องส่ง report type `Board Content` และ target type `Article` เข้า BO moderation handoff
 
-Rules / เงื่อนไข:
+สำหรับ BO `Content Management > Reported Board` ให้ใช้ `../Prototypes/bo-prototype.html` เป็น source of truth ปัจจุบันสำหรับ list, filters, detail, preview, action confirmation, audit/history และ responsive presentation
+
+### Report Intake Rules
 
 - Article ไม่หายจาก FO ทันทีหลังถูก report
 - Admin review report ได้ตาม permission
-- Action ที่เป็นไปได้: resolve/no action, edit article, archive article, escalate to Admin
-- ถ้า archive จาก report ต้องมี reason และ audit
-- Report history ต้องผูกกับ article detail
+- Prototype intake แสดงเฉพาะ report ที่มี `Report Received` และ `contentStatus` ตอนรับรายงานเป็น `Published`
+- Report queue status ใน prototype คือ `Pending` หรือ `Cleared`
+- Article status ใน Reported Board แสดง `Published`, `Scheduled`, `Draft`, หรือ `Archived` ตามสถานะ content ที่ report อ้างอิง
+- Reporter identity ต้อง mask ใน report detail; list/detail แสดงจำนวน reporter และ reporter history ระดับ moderation เท่านั้น
+
+### Reported Board List
+
+Route/menu:
+
+- Route/menu: `Content Management > Reported Board`
+- Breadcrumb: `การดำเนินงาน / Content Management / Reported Board`
+- Page title: `Reported Board`
+- Panel title: `Reported Board List`
+
+Header controls:
+
+- Filter toggle: เปิด/ปิด advanced filters
+- Reset: reset search/filter/sort และกลับไป Reported Board default
+
+Desktop table columns:
+
+- Report ID
+- Article
+- Article Status
+- Status
+- Report Reason
+- Reporters
+- Priority
+- Action
+
+Mobile/card metadata:
+
+- Report status pill
+- Article status pill
+- Reporter count
+- Priority pill
+- Article title
+- Report reason
+
+Search/filter/sort:
+
+- Search by Report ID, Article ID, Article title, Category, Surface, Article Status, Report Status, Priority, Report Reason, Reported Part, Reporter Note และ tags
+- Report status filter: ทุกสถานะ, รอตรวจ/Pending, ปิดแล้ว/Cleared
+- Priority filter: ทุก priority, High, Medium, Low
+- Sort: ล่าสุดก่อน, จำนวน reporter, รอนานสุด
+- Pagination ใช้ page size เดียวกับ Article list prototype และมี previous/next กับ numbered page buttons
+- Empty state ใช้ shared empty row/card เมื่อไม่พบข้อมูล
+
+### Report Detail
+
+เมื่อเปิด report detail:
+
+- Breadcrumb: `การดำเนินงาน / Content Management / Report Detail / {Report ID}`
+- Page title: `Report Detail`
+- Back button: `กลับไป Reported Board`
+- Panel title ใช้ article title
+- Panel subtitle แสดง `{Report ID} · {Article ID} · reporter identity masked`
+
+Detail sections:
+
+- Header แสดง report id, article title, report status pill, article status pill และ priority pill
+- `Reported Article`: แสดง Report ID, Article ID, Article Title, Category, Article Status และปุ่ม `View Article`
+- `Reporter History`: แสดง reporter, reported time, status, reason และ additional details พร้อม pagination
+- `Admin Action History`: แสดง Date/Time, Admin, Action, Status และรายละเอียด พร้อม pagination
+
+`View Article` เปิด prototype modal แบบ phone-style FO article preview โดยใช้ article data ล่าสุดจาก article master ถ้าพบ article id; ถ้าไม่พบให้ใช้ fallback report preview data
+
+### Report Actions
+
+Prototype action menu/list detail รองรับ action ต่อไปนี้เฉพาะ report ที่ยัง `Pending`:
+
+| Action | Availability | Result / ผลลัพธ์ |
+| --- | --- | --- |
+| View detail | ทุก report | เปิด Report Detail |
+| View Article | ทุก report | เปิด FO article preview modal |
+| ปิดรายงาน | Pending report | เปลี่ยน report เป็น `Cleared` โดยไม่เปลี่ยนสถานะ article |
+| แก้ไขบทความ | Pending report ที่ article ยังไม่ Archived | เปิด Edit Article ของ article ที่ถูกรายงาน |
+| Archive article | Pending report ที่ article ยังไม่ Archived | เปลี่ยน article master เป็น `Archived`, เปลี่ยน report content status เป็น `Archived`, เปลี่ยน report เป็น `Cleared`, เพิ่ม Article Change History และเพิ่ม Reported Board Admin Action History |
+
+Action ที่ prototype ล่าสุดยังไม่รองรับใน Reported Board:
+
+- Escalate to Admin
+- Restore article จาก Reported Board
+- Delete report
+- Export report queue
+
+### Close Report Confirmation
+
+`ปิดรายงาน` ต้องเปิด confirmation modal:
+
+- แสดง target เป็น article title, report id และ article id
+- ต้องเลือก reason หรือกรอก note สำหรับ audit ได้
+- Impact note ระบุว่าเป็นการปิดรายงานหลัง review โดยไม่เปลี่ยนสถานะ Board content อัตโนมัติ
+- เมื่อสำเร็จต้องเพิ่ม Admin Action History เป็น `Close Report`
+
+Prototype scenario tools รองรับ success, invalid state, stale data, save failed และ session expired
+
+### Archive From Report Confirmation
+
+`Archive article` ต้องเปิด confirmation modal:
+
+- แสดง target เป็น article title, report id และ article id
+- ต้องเลือกเหตุผลหรือกรอก note สำหรับ audit ได้
+- Impact note ต้องระบุว่า action นี้นำบทความออกจาก Board public surfaces, ปิดรายงาน และอัปเดตสถานะบทความหลักเป็น `Archived` เพื่อไม่ให้แสดงบน FO
+- เมื่อสำเร็จต้อง:
+  - เปลี่ยน article master status เป็น `Archived`
+  - เพิ่ม Article Change History เป็น `Archived` พร้อม note ที่อ้างอิง report id
+  - เปลี่ยน report content status เป็น `Archived`
+  - เปลี่ยน report status เป็น `Cleared`
+  - เพิ่ม Reported Board Admin Action History เป็น `Archive Article`
+  - ถ้า report ปิดจาก archive และยังไม่มี `Close Report` history ให้ prototype แสดง derived `Close Report` row ใน Admin Action History
+
+หลัง archive สำเร็จ FO ต้องไม่แสดง article นั้นใน Board/Search/Category และ direct link ต้องแสดง unavailable behavior ตาม FO Display Rules
 
 ## 13. FO Display Rules
 
@@ -482,6 +594,7 @@ Rules / เงื่อนไข:
 | Publish article | Article แสดงใน Board, category, search และ detail |
 | Schedule article | ยังไม่แสดงจนถึง publish date/time |
 | Archive article | Article หายจาก Board/Search/Category และ direct link แสดง unavailable |
+| Archive article from Reported Board | Article master เปลี่ยนเป็น Archived, article หายจาก Board/Search/Category, direct link แสดง unavailable และ report ถูกปิด |
 | Update published article | FO แสดง content ล่าสุดหลัง sync/cache invalidation |
 | Cancel schedule | Article กลับเป็น Draft และไม่แสดงใน FO |
 | Delete draft | Draft ถูกลบออกจาก BO list และไม่เคยแสดงใน FO |
@@ -520,6 +633,11 @@ States ที่ prototype ปัจจุบันรองรับ:
 - Cancel create/edit confirmation
 - Status action confirmation
 - Status action failure ผ่าน prototype scenario tools
+- Empty Reported Board list
+- Reported Board no search result
+- Reported Board action confirmation
+- Reported Board action failure ผ่าน prototype scenario tools: invalid state, stale data, save failed, session expired
+- Missing article fallback ใน View Article modal โดยใช้ report preview data
 
 Permission denied, concurrent edit warning และ schedule job failure เป็น service/backend states และยังไม่ใช่ Articles prototype UI ตอนนี้
 
@@ -533,7 +651,9 @@ Audit/history display ใน prototype ปัจจุบัน:
 - Category create/update/activate/deactivate จะเพิ่ม action history ใน prototype data
 - Category detail modal ใน prototype ปัจจุบันยังไม่แสดง visible Change History section
 - Category delete จะลบ category ออกจาก mock list หลัง confirmation และไม่มี visible history row หลังลบ
-- Report moderation result
+- Reported Board detail แสดง `Reporter History` และ `Admin Action History`
+- Reported Board `ปิดรายงาน` เพิ่ม Admin Action History เป็น `Close Report`
+- Reported Board `Archive article` เพิ่ม Admin Action History เป็น `Archive Article`, เปลี่ยน report เป็น `Cleared`, เปลี่ยน report content status เป็น `Archived`, และเพิ่ม Article Change History เป็น `Archived` พร้อม reference report id
 
 Featured toggle/order change, banner create/update/activate/deactivate, export analytics และ preview audit ไม่ใช่ prototype requirements ปัจจุบัน
 
@@ -551,7 +671,8 @@ Backend audit event schema ยังเป็น implementation responsibility �
 | AC-BO-CONTENT-006 | Status actions ทำงานผ่าน confirmation flow: delete draft, cancel schedule, archive article, restore article |
 | AC-BO-CONTENT-007 | Admin เปิด Categories, search/filter/sort, paginate, view detail, create/edit, reorder active categories, activate/deactivate และ delete category ที่ไม่มี linked articles ตาม prototype ได้ |
 | AC-BO-CONTENT-007A | Category active/inactive behavior ต้องตาม prototype รวมถึง block deactivation เมื่อยังมี linked articles และ inactive category ไม่แสดงใน Add/Edit Article selector |
-| AC-BO-CONTENT-008 | Report article เข้า BO moderation handoff โดย article ยังไม่หายจาก FO ทันที |
+| AC-BO-CONTENT-008 | Report article เข้า BO Reported Board moderation handoff โดย article ยังไม่หายจาก FO ทันที และ Admin เปิด list/detail, search/filter/sort, paginate, view article preview, close report, edit article และ archive article ตาม prototype ได้ |
+| AC-BO-CONTENT-008A | Archive article จาก Reported Board ต้องเปลี่ยน article master เป็น `Archived`, ปิด report เป็น `Cleared`, เพิ่ม Article Change History และ Reported Board Admin Action History, และทำให้ article หายจาก FO Board/Search/Category |
 | AC-BO-CONTENT-009 | Article detail แสดง Change History สำหรับ create/update/status actions ตาม prototype |
 | AC-BO-CONTENT-010 | UI responsive ใช้งานได้ที่ mobile-width, tablet และ desktop ตาม prototype |
 | AC-BO-CONTENT-011 | Featured article controls, featured order, banner management, article analytics dashboard และ rich text toolbar ไม่ required เว้นแต่ถูกเพิ่มเข้า prototype |
