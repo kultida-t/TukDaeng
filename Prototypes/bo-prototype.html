@@ -6750,31 +6750,31 @@
 
     const reportAuditLogSeeds = {
       "RPU-566": [
-        { id: "AUD-RPU-566-001", action: "REPORT_CREATED", actor: "System", createdAt: "14 Jul 2026 08:10 GMT+7", entityType: "reported_user", entityId: "RPU-566", sourceModule: "User Profile", detail: "Opened low-risk profile report while keeping account Active", before: null, after: { reportStatus: "Open", accountStatus: "Active" }, reason: "1-2 reports should stay in review queue without automatic restriction", metadata: { reference: "User ID U-1144", userId: "U-1144" } }
+        { id: "AUD-RPU-566-001", action: "REPORT_CREATED", actor: "System", createdAt: "14 Jul 2026 08:10 GMT+7", entityType: "reported_user", entityId: "RPU-566", sourceModule: "User Profile", detail: "เปิดรายงานผู้ใช้จากหน้าโปรไฟล์", before: null, after: { reportStatus: "Open", accountStatus: "Active" }, reason: "รับรายงานจากหน้าโปรไฟล์ผู้ใช้", metadata: { reference: "User ID U-1144", userId: "U-1144" } }
       ],
       "RPU-579": [
-        { id: "AUD-RPU-579-001", action: "REPORT_CREATED", actor: "System", createdAt: "14 Jul 2026 10:25 GMT+7", entityType: "reported_user", entityId: "RPU-579", sourceModule: "User Profile", detail: "Opened user-profile report for a Deletion Requested account", before: null, after: { reportStatus: "Open", accountStatus: "Deletion Requested" }, reason: "Existing user report must be reviewed before Account Deletion can archive/anonymize the account", metadata: { reference: "User ID U-1104", userId: "U-1104" } }
+        { id: "AUD-RPU-579-001", action: "REPORT_CREATED", actor: "System", createdAt: "14 Jul 2026 10:25 GMT+7", entityType: "reported_user", entityId: "RPU-579", sourceModule: "User Profile", detail: "เปิดรายงานผู้ใช้จากหน้าโปรไฟล์", before: null, after: { reportStatus: "Open", accountStatus: "Deletion Requested" }, reason: "รับรายงานจากหน้าโปรไฟล์ผู้ใช้", metadata: { reference: "User ID U-1104", userId: "U-1104" } }
       ],
       "RPU-588": [
-        { id: "AUD-RPU-588-002", action: "REPORT_STATUS_UPDATED", actor: "Somchai Admin", createdAt: "14 Jul 2026 12:10 GMT+7", entityType: "reported_user", entityId: "RPU-588", sourceModule: "Reported Users", detail: "Closed false report without account action", before: { reportStatus: "Open", accountStatus: "Active" }, after: { reportStatus: "Closed", accountStatus: "Active" }, reason: "Reporter note was not supported by source evidence", metadata: { reference: "User ID U-1161", userId: "U-1161" } },
-        { id: "AUD-RPU-588-001", action: "REPORT_CREATED", actor: "System", createdAt: "14 Jul 2026 11:45 GMT+7", entityType: "reported_user", entityId: "RPU-588", sourceModule: "User Profile", detail: "Opened single-reporter profile report", before: null, after: { reportStatus: "Open", accountStatus: "Active" }, reason: "Single report enters queue for review but does not change account status", metadata: { reference: "User ID U-1161", userId: "U-1161" } }
+        { id: "AUD-RPU-588-002", action: "REPORT_STATUS_UPDATED", actor: "Somchai Admin", createdAt: "14 Jul 2026 12:10 GMT+7", entityType: "reported_user", entityId: "RPU-588", sourceModule: "Reported Users", detail: "ปิดรายงานโดยไม่เปลี่ยนสถานะบัญชี", before: { reportStatus: "Open", accountStatus: "Active" }, after: { reportStatus: "Closed", accountStatus: "Active" }, reason: "ปิดรายงานโดยไม่เปลี่ยนสถานะบัญชี", metadata: { reference: "User ID U-1161", userId: "U-1161" } },
+        { id: "AUD-RPU-588-001", action: "REPORT_CREATED", actor: "System", createdAt: "14 Jul 2026 11:45 GMT+7", entityType: "reported_user", entityId: "RPU-588", sourceModule: "User Profile", detail: "เปิดรายงานผู้ใช้จากหน้าโปรไฟล์", before: null, after: { reportStatus: "Open", accountStatus: "Active" }, reason: "รับรายงานจากหน้าโปรไฟล์ผู้ใช้", metadata: { reference: "User ID U-1161", userId: "U-1161" } }
       ],
       "RPU-505": [
         { id: "AUD-RPU-505-001", action: "REPORT_CREATED", actor: "System", createdAt: "13 Jul 2026 11:22 GMT+7", entityType: "reported_user", entityId: "RPU-505", sourceModule: "User Profile", detail: "รับรายงานครบ 5 รายงาน ระบบจึงระงับบัญชีชั่วคราว", before: null, after: { reportStatus: "In Review", accountStatus: "Suspended" }, reason: "มีรายงานครบ 5 รายงาน ระบบจึงระงับบัญชีชั่วคราวระหว่างรอตรวจสอบ", emailDelivery: { status: "sent", channel: "Email", deliveryId: "DLV-ACCT-010" }, metadata: { reference: "User ID U-1002", userId: "U-1002", reportThreshold: 5, trigger: "auto_suspend_on_report_threshold" } }
       ],
       "RPU-512": [
-        { id: "AUD-RPU-512-001", action: "REPORT_CREATED", actor: "System", createdAt: "13 Jul 2026 13:40 GMT+7", entityType: "reported_user", entityId: "RPU-512", sourceModule: "User Profile", detail: "Created user report from FO user profile", before: null, after: { reportStatus: "Open", accountStatus: "Active" }, reason: "User report was submitted from the reported user profile", metadata: { reference: "User ID U-1017", userId: "U-1017" } }
+        { id: "AUD-RPU-512-001", action: "REPORT_CREATED", actor: "System", createdAt: "13 Jul 2026 13:40 GMT+7", entityType: "reported_user", entityId: "RPU-512", sourceModule: "User Profile", detail: "เปิดรายงานผู้ใช้จากหน้าโปรไฟล์", before: null, after: { reportStatus: "Open", accountStatus: "Active" }, reason: "รับรายงานจากหน้าโปรไฟล์ผู้ใช้", metadata: { reference: "User ID U-1017", userId: "U-1017" } }
       ],
       "RPU-518": [
-        { id: "AUD-RPU-518-001", action: "REPORT_CREATED", actor: "System", createdAt: "13 Jul 2026 15:12 GMT+7", entityType: "reported_user", entityId: "RPU-518", sourceModule: "Chat", detail: "Created user report from FO chat", before: null, after: { reportStatus: "Open", accountStatus: "Active" }, reason: "User report was submitted from chat with the reported user", metadata: { reference: "User ID U-1088", userId: "U-1088" } }
+        { id: "AUD-RPU-518-001", action: "REPORT_CREATED", actor: "System", createdAt: "13 Jul 2026 15:12 GMT+7", entityType: "reported_user", entityId: "RPU-518", sourceModule: "Chat", detail: "เปิดรายงานผู้ใช้จากแชท", before: null, after: { reportStatus: "Open", accountStatus: "Active" }, reason: "รับรายงานจากแชท", metadata: { reference: "User ID U-1088", userId: "U-1088" } }
       ],
       "RPU-541": [
-        { id: "AUD-RPU-541-002", action: "REPORT_STATUS_UPDATED", actor: "Somchai Admin", createdAt: "13 Jul 2026 18:22 GMT+7", entityType: "reported_user", entityId: "RPU-541", sourceModule: "Reported Users", detail: "Temporarily suspended account while reviewing chat-origin user report", before: { reportStatus: "Open", accountStatus: "Active" }, after: { reportStatus: "In Review", accountStatus: "Suspended" }, reason: "Admin needs to review repeated chat reports before closing the report", emailDelivery: { status: "sent", channel: "Email", deliveryId: "DLV-ACCT-011" }, metadata: { reference: "User ID U-1186", userId: "U-1186" } },
-        { id: "AUD-RPU-541-001", action: "REPORT_CREATED", actor: "System", createdAt: "13 Jul 2026 10:14 GMT+7", entityType: "reported_user", entityId: "RPU-541", sourceModule: "Chat", detail: "Created user report from FO chat", before: null, after: { reportStatus: "Open", accountStatus: "Active" }, reason: "Repeated chat-origin user reports reached high priority", metadata: { reference: "User ID U-1186", userId: "U-1186" } }
+        { id: "AUD-RPU-541-002", action: "REPORT_STATUS_UPDATED", actor: "Somchai Admin", createdAt: "13 Jul 2026 18:22 GMT+7", entityType: "reported_user", entityId: "RPU-541", sourceModule: "Reported Users", detail: "ระงับบัญชีชั่วคราวระหว่างตรวจสอบ", before: { reportStatus: "Open", accountStatus: "Active" }, after: { reportStatus: "In Review", accountStatus: "Suspended" }, reason: "ระงับบัญชีชั่วคราวระหว่างตรวจสอบ", emailDelivery: { status: "sent", channel: "Email", deliveryId: "DLV-ACCT-011" }, metadata: { reference: "User ID U-1186", userId: "U-1186" } },
+        { id: "AUD-RPU-541-001", action: "REPORT_CREATED", actor: "System", createdAt: "13 Jul 2026 10:14 GMT+7", entityType: "reported_user", entityId: "RPU-541", sourceModule: "Chat", detail: "เปิดรายงานผู้ใช้จากแชท", before: null, after: { reportStatus: "Open", accountStatus: "Active" }, reason: "รับรายงานจากแชท", metadata: { reference: "User ID U-1186", userId: "U-1186" } }
       ],
       "RPU-560": [
-        { id: "AUD-RPU-560-012", action: "REPORT_STATUS_UPDATED", actor: "Somchai Admin", createdAt: "12 Jul 2026 16:45 GMT+7", entityType: "reported_user", entityId: "RPU-560", sourceModule: "Reported Users", detail: "ปิดรายงานหลังระงับบัญชีถาวรและบันทึกผลตรวจสอบครบถ้วน", before: { reportStatus: "Open", accountStatus: "Banned" }, after: { reportStatus: "Closed", accountStatus: "Banned" }, reason: "ยืนยันให้คงสถานะปิดรายงานและแบนบัญชีถาวร", metadata: { reference: "User ID U-1120", userId: "U-1120" } },
-        { id: "AUD-RPU-560-007", action: "REPORT_STATUS_UPDATED", actor: "Somchai Admin", createdAt: "12 Jul 2026 16:30 GMT+7", entityType: "reported_user", entityId: "RPU-560", sourceModule: "Reported Users", detail: "ระงับบัญชีถาวรจากหลักฐานรวม", before: { reportStatus: "Open", accountStatus: "Suspended" }, after: { reportStatus: "Open", accountStatus: "Banned" }, reason: "ยืนยันความเสี่ยงสูงจากหลายรายงานและหลักฐานประกอบ", emailDelivery: { status: "sent", channel: "Email", deliveryId: "DLV-ACCT-012" }, metadata: { reference: "User ID U-1120", userId: "U-1120" } },
+        { id: "AUD-RPU-560-012", action: "REPORT_STATUS_UPDATED", actor: "Somchai Admin", createdAt: "12 Jul 2026 16:45 GMT+7", entityType: "reported_user", entityId: "RPU-560", sourceModule: "Reported Users", detail: "ปิดรายงานหลังดำเนินการบัญชีแล้ว", before: { reportStatus: "Open", accountStatus: "Banned" }, after: { reportStatus: "Closed", accountStatus: "Banned" }, reason: "ปิดรายงานหลังดำเนินการบัญชีแล้ว", metadata: { reference: "User ID U-1120", userId: "U-1120" } },
+        { id: "AUD-RPU-560-007", action: "REPORT_STATUS_UPDATED", actor: "Somchai Admin", createdAt: "12 Jul 2026 16:30 GMT+7", entityType: "reported_user", entityId: "RPU-560", sourceModule: "Reported Users", detail: "ระงับบัญชีถาวรหลังตรวจสอบ", before: { reportStatus: "Open", accountStatus: "Suspended" }, after: { reportStatus: "Open", accountStatus: "Banned" }, reason: "ระงับบัญชีถาวรหลังตรวจสอบ", emailDelivery: { status: "sent", channel: "Email", deliveryId: "DLV-ACCT-012" }, metadata: { reference: "User ID U-1120", userId: "U-1120" } },
         { id: "AUD-RPU-560-001", action: "REPORT_CREATED", actor: "System", createdAt: "12 Jul 2026 09:35 GMT+7", entityType: "reported_user", entityId: "RPU-560", sourceModule: "User Profile / Chat", detail: "รับรายงานครบ 5 รายงาน ระบบจึงระงับบัญชีชั่วคราว", before: null, after: { reportStatus: "Open", accountStatus: "Suspended" }, reason: "มีรายงานครบ 5 รายงาน ระบบจึงระงับบัญชีชั่วคราวระหว่างรอตรวจสอบ", emailDelivery: { status: "sent", channel: "Email", deliveryId: "DLV-ACCT-009" }, metadata: { reference: "User ID U-1120", userId: "U-1120", reportThreshold: 5, trigger: "auto_suspend_on_report_threshold" } }
       ]
     };
@@ -7158,56 +7158,56 @@
 
     const userReportSubmissions = {
       "RPU-566": [
-        { source: "User Profile", reason: "Other", additionalDetails: "Profile copy looked confusing, but reporter did not provide fraud evidence" },
-        { source: "User Profile", reason: "Spam" }
+        { source: "User Profile", reason: "Other", additionalDetails: "ข้อความในโปรไฟล์ดูสับสนและใช้คำซ้ำกับหลายบัญชี อยากให้ผู้ดูแลช่วยตรวจสอบ" },
+        { source: "User Profile", reason: "Spam", additionalDetails: "โปรไฟล์ใส่ข้อความเชิญชวนซ้ำ ๆ และเหมือนตั้งใจโปรโมตนอกระบบ" }
       ],
       "RPU-579": [
-        { source: "Chat", reason: "Fraud or scam", additionalDetails: "Open offer/chat dispute must be reviewed before deletion dependency can be resolved" },
-        { source: "User Profile", reason: "Other", additionalDetails: "The account requested deletion after this user report was already in the queue" }
+        { source: "Chat", reason: "Fraud or scam", additionalDetails: "ในแชทพยายามให้โอนเงินก่อนและขอคุยนอกแอป ทำให้กังวลว่าจะถูกหลอก" },
+        { source: "User Profile", reason: "Other", additionalDetails: "รายงานโปรไฟล์นี้ไว้ก่อนบัญชีจะขอลบ อยากให้ตรวจสอบให้จบก่อนปิดบัญชี" }
       ],
       "RPU-588": [
-        { source: "User Profile", reason: "Other", additionalDetails: "Admin checked the profile and closed this as a false report without account action" }
+        { source: "User Profile", reason: "Other", additionalDetails: "ไม่แน่ใจว่าข้อมูลในโปรไฟล์ถูกต้องหรือไม่ เลยส่งให้ผู้ดูแลช่วยตรวจสอบ" }
       ],
       "RPU-505": [
         { source: "User Profile", reason: "Impersonation", additionalDetails: "รูปโปรไฟล์กับข้อความแนะนำตัวเหมือนบัญชีอื่นที่เคยเห็น" },
         { source: "User Profile", reason: "Fraud or scam", additionalDetails: "ผู้ขายใช้รูปเดิมและชวนให้โอนเงินก่อนคุยรายละเอียด" },
-        { source: "User Profile", reason: "Spam" },
+        { source: "User Profile", reason: "Spam", additionalDetails: "โปรไฟล์ลงข้อความโปรโมตซ้ำและชวนให้ติดต่อช่องทางอื่นหลายจุด" },
         { source: "User Profile", reason: "Other", additionalDetails: "เห็นข้อความแนะนำตัวซ้ำกับหลายบัญชี เลยคิดว่าน่าสงสัย" },
-        { source: "User Profile", reason: "Fraud or scam" }
+        { source: "User Profile", reason: "Fraud or scam", additionalDetails: "มีข้อความเร่งให้โอนเงินก่อนและไม่ให้หลักฐานยืนยันตัวตนเพิ่มเติม" }
       ],
       "RPU-512": [
-        { source: "User Profile", reason: "Fraud or scam", additionalDetails: "Profile details and seller behavior looked suspicious to the reporter" },
-        { source: "User Profile", reason: "Other", additionalDetails: "Reporter asked Admin to review this user profile before any account action" },
-        { source: "User Profile", reason: "Spam" },
-        { source: "User Profile", reason: "Fraud or scam" }
+        { source: "User Profile", reason: "Fraud or scam", additionalDetails: "โปรไฟล์ใช้รูปและคำอธิบายคล้ายร้านอื่นมาก กลัวว่าจะเป็นบัญชีหลอกลวง" },
+        { source: "User Profile", reason: "Other", additionalDetails: "ข้อมูลผู้ขายดูไม่ตรงกันหลายจุด อยากให้ทีมงานช่วยตรวจสอบก่อนมีคนติดต่อซื้อขาย" },
+        { source: "User Profile", reason: "Spam", additionalDetails: "หน้าโปรไฟล์มีข้อความเชิญชวนซ้ำ ๆ และเน้นให้ติดต่อช่องทางอื่น" },
+        { source: "User Profile", reason: "Fraud or scam", additionalDetails: "ผู้ขายดูเร่งให้ตัดสินใจและไม่ให้รายละเอียดที่ตรวจสอบได้" }
       ],
       "RPU-518": [
-        { source: "Chat", reason: "Fraud or scam", additionalDetails: "Reporter says this user pressured them to continue outside the app" },
-        { source: "Chat", reason: "Other" },
-        { source: "Chat", reason: "Inappropriate content", additionalDetails: "Reporter says the chat included pressure and suspicious behavior" }
+        { source: "Chat", reason: "Fraud or scam", additionalDetails: "ในแชทพยายามให้ไปคุยนอกแอปและขอให้โอนเงินก่อนตรวจสอบรายละเอียด" },
+        { source: "Chat", reason: "Other", additionalDetails: "คู่สนทนาตอบเลี่ยงคำถามหลายครั้ง เลยอยากให้ผู้ดูแลช่วยดูบริบทแชท" },
+        { source: "Chat", reason: "Inappropriate content", additionalDetails: "มีข้อความกดดันให้รีบตัดสินใจและใช้ถ้อยคำที่ทำให้รู้สึกไม่ปลอดภัย" }
       ],
       "RPU-541": [
-        { source: "Chat", reason: "Harassment or hate", additionalDetails: "Repeated abusive messages were reported from chat" },
-        { source: "Chat", reason: "Inappropriate content" },
-        { source: "Chat", reason: "Harassment or hate" },
-        { source: "Chat", reason: "Spam" },
-        { source: "Chat", reason: "Other", additionalDetails: "Reporter says this user kept pushing for replies outside the app" },
-        { source: "Chat", reason: "Inappropriate content" }
+        { source: "Chat", reason: "Harassment or hate", additionalDetails: "อีกฝ่ายส่งข้อความต่อว่าซ้ำหลายครั้งหลังจากปฏิเสธการคุยต่อ" },
+        { source: "Chat", reason: "Inappropriate content", additionalDetails: "มีข้อความหยาบคายและทำให้รู้สึกถูกคุกคามในแชท" },
+        { source: "Chat", reason: "Harassment or hate", additionalDetails: "ยังส่งข้อความรบกวนต่อเนื่องแม้แจ้งว่าไม่สะดวกคุยแล้ว" },
+        { source: "Chat", reason: "Spam", additionalDetails: "ส่งข้อความเดิมซ้ำหลายครั้งและพยายามดันให้ตอบกลับ" },
+        { source: "Chat", reason: "Other", additionalDetails: "อีกฝ่ายพยายามให้ย้ายไปคุยนอกแอปและไม่ยอมหยุดส่งข้อความ" },
+        { source: "Chat", reason: "Inappropriate content", additionalDetails: "มีถ้อยคำไม่เหมาะสมและกดดันให้ทำตามที่อีกฝ่ายต้องการ" }
       ],
       "RPU-560": [
         { source: "User Profile", reason: "Fraud or scam", additionalDetails: "โปรไฟล์นี้ใส่ข้อความให้รีบติดต่อช่องทางอื่นและไม่ให้ถามรายละเอียดเพิ่มเติมในแชท" },
-        { source: "Chat", reason: "Fraud or scam" },
+        { source: "Chat", reason: "Fraud or scam", additionalDetails: "ในแชทขอให้โอนเงินมัดจำก่อนและไม่ยอมตอบคำถามเรื่องตัวตน" },
         { source: "User Profile", reason: "Impersonation", additionalDetails: "ชื่อและรูปโปรไฟล์คล้ายบัญชีร้านอื่นมาก เหมือนพยายามแอบอ้าง" },
-        { source: "Chat", reason: "Spam" },
+        { source: "Chat", reason: "Spam", additionalDetails: "ส่งข้อความขายซ้ำ ๆ หลายครั้งโดยไม่ได้คุยเรื่องที่ถามไว้" },
         { source: "User Profile", reason: "Other", additionalDetails: "เคยเห็นบัญชีนี้ใช้รูปเดิมในหลายโพสต์และเปลี่ยนชื่อร้านบ่อย" },
-        { source: "Chat", reason: "Fraud or scam" },
-        { source: "Chat", reason: "Inappropriate content" },
-        { source: "User Profile", reason: "Fraud or scam" },
-        { source: "Chat", reason: "Spam" },
-        { source: "User Profile", reason: "Other" },
-        { source: "Chat", reason: "Fraud or scam" },
-        { source: "User Profile", reason: "Impersonation" },
-        { source: "Chat", reason: "Fraud or scam" }
+        { source: "Chat", reason: "Fraud or scam", additionalDetails: "พยายามให้ชำระเงินผ่านบัญชีส่วนตัวและบอกว่าไม่ต้องทำรายการในระบบ" },
+        { source: "Chat", reason: "Inappropriate content", additionalDetails: "มีข้อความข่มขู่และใช้ถ้อยคำไม่เหมาะสมหลังจากขอหลักฐานเพิ่มเติม" },
+        { source: "User Profile", reason: "Fraud or scam", additionalDetails: "โปรไฟล์ให้ข้อมูลติดต่อหลายช่องทางและดูพยายามหลีกเลี่ยงการคุยในแอป" },
+        { source: "Chat", reason: "Spam", additionalDetails: "ส่งข้อความเดิมซ้ำและเร่งให้ตอบกลับหลายรอบ" },
+        { source: "User Profile", reason: "Other", additionalDetails: "รายละเอียดโปรไฟล์เปลี่ยนบ่อยและดูไม่สอดคล้องกับชื่อบัญชี" },
+        { source: "Chat", reason: "Fraud or scam", additionalDetails: "เสนอราคาผิดปกติและเร่งให้โอนเงินทันที" },
+        { source: "User Profile", reason: "Impersonation", additionalDetails: "ใช้รูปและชื่อคล้ายร้านที่รู้จัก แต่ข้อมูลติดต่อไม่ตรงกัน" },
+        { source: "Chat", reason: "Fraud or scam", additionalDetails: "ขอข้อมูลส่วนตัวและชวนทำธุรกรรมนอกระบบ" }
       ]
     };
 
