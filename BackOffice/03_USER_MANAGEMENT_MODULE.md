@@ -115,7 +115,7 @@ BO มีประเภทบัญชีผู้ดูแลเพียง�
 
 | Field | ตารางบน Desktop | Card บน Mobile |
 | --- | --- | --- |
-| User ID | ไม่แสดงใน list; ใช้ได้ในการค้นหาและแสดงใน User Detail | แสดงเฉพาะในรายละเอียด |
+| User ID | แสดงใน list; ใช้ได้ในการค้นหาและแสดงใน User Detail | แสดงใน card/list metadata และรายละเอียด |
 | Display Name | แสดง | ข้อมูลหลัก |
 | Username | ไม่แสดงเป็น column แยกใน list; ใช้ค้นหาและแสดงใน User Detail | แสดงในรายละเอียด |
 | Email | ไม่แสดงใน list ปัจจุบัน; ใช้ค้นหาแบบ masked และแสดงเต็มใน User Detail prototype | ไม่แสดงบน card list ปัจจุบัน |
@@ -438,7 +438,7 @@ Prototype BO ปัจจุบัน align User List กับ visual system �
 
 ข้อมูลและ interaction ของ User List prototype ปัจจุบัน:
 
-- Mock user ของ FO มี display name/username, email แบบ masked, auth method, verification state, account status, joined date, last active, จำนวน asset, จำนวน report, support/latest context และบริบท FO impact/action note; main table แสดง display name, status, last active, asset count, auth method, joined date และ action ส่วน username/email/verification/report context อยู่ใน search data และ User Detail/Reported Users
+- Mock user ของ FO มี display name/username, email แบบ masked, auth method, verification state, account status, joined date, last active, จำนวน asset, จำนวน report, support/latest context และบริบท FO impact/action note; main table แสดง User ID, display name, status, last active, asset count, auth method, joined date และ action ส่วน username/email/verification/report context อยู่ใน search data และ User Detail/Reported Users
 - Table หลักของ User List ไม่แสดง column `FO impact` แยก เพราะสถานะการเข้าถึงบัญชีสื่อสารผ่าน `Status` อยู่แล้ว ส่วน FO impact ยังอยู่ใน detail และ account-action modal เพื่อให้ Admin เข้าใจผลลัพธ์ก่อนเปลี่ยนสถานะบัญชี
 - ผู้ใช้ Email ที่ยังทำ OTP ไม่เสร็จแสดงเป็น `Pending Verification` / `รอยืนยันอีเมล` ไม่ใช่ `Active` ผู้ใช้กลุ่มนี้ยังใช้ authenticated FO features ไม่ได้ และไม่ควรเห็น action reset password จนกว่าจะยืนยันสำเร็จ
 - Guest ที่เข้าดูหรือแชร์ public surface ยังไม่อยู่ใน mock user dataset และไม่ควรเพิ่มเข้า User List; หากต้องวิเคราะห์ traffic/share ให้ดูใน Reports & Analytics แยกจาก registered-user metrics
