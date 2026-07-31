@@ -7197,6 +7197,15 @@
       return assetReporterFallbackNames[(seed + index) % assetReporterFallbackNames.length];
     }
 
+    const assetReportCreatedTimes = {
+      "RPA-831": "13 Jul 2026 15:40",
+      "RPA-694": "13 Jul 2026 13:25",
+      "RPA-612": "13 Jul 2026 10:10",
+      "RPA-581": "12 Jul 2026 17:50",
+      "RPA-559": "12 Jul 2026 11:35",
+      "RPA-548": "11 Jul 2026 16:20"
+    };
+
     function isAssetReportContext(report) {
       return String(report?.id || "").startsWith("RPA-");
     }
@@ -7214,7 +7223,9 @@
 
     function getReporterHistoryRows(report) {
       const createdLog = ensureReportAuditLogs(report).find(log => log.action === "REPORT_CREATED");
-      const baseTime = parseBangkokAuditTime(createdLog?.createdAt) || Date.UTC(2026, 6, 13, 10, 0);
+      const baseTime = parseBangkokAuditTime(createdLog?.createdAt)
+        || parseBangkokAuditTime(assetReportCreatedTimes[report.id])
+        || Date.UTC(2026, 6, 13, 10, 0);
       const reporterCount = Math.max(Number(report?.reporters) || 0, 1);
       const reporterNames = reportReporterNames[report.id] || [];
       const isAssetReport = isAssetReportContext(report);
@@ -9062,6 +9073,10 @@
       if (asset.status === "Auto Hidden") return 0;
       if (asset.status === "Reported") return 6 + (seed % 18);
       return 2 + (seed % 8);
+    }
+
+    function getAssetReportReceivedSortRank(asset) {
+      return parseBangkokAuditTime(getAssetReportReceivedTime(asset)) || getAssetSortRank(asset, "latest");
     }
 
     function getAssetReportSearchText(asset) {
@@ -15869,8 +15884,8 @@
         })
         .sort((a, b) => {
           if (sort === "reporters") return getAssetReporters(b) - getAssetReporters(a);
-          if (sort === "oldest") return getAssetSortRank(a, "latest") - getAssetSortRank(b, "latest");
-          return getAssetSortRank(b, "latest") - getAssetSortRank(a, "latest");
+          if (sort === "oldest") return getAssetReportReceivedSortRank(a) - getAssetReportReceivedSortRank(b);
+          return getAssetReportReceivedSortRank(b) - getAssetReportReceivedSortRank(a);
         });
       const pageCount = Math.max(1, Math.ceil(sorted.length / assetListPageSize));
       assetListPage = Math.min(assetListPage, pageCount);
