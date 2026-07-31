@@ -3074,10 +3074,12 @@
     .user-row.report-row:not(.head) {
       cursor: pointer;
     }
-    .user-row.report-row:not(.asset-report-row) > div:nth-child(6) {
+    .user-row.report-row:not(.asset-report-row) > div:nth-child(6),
+    .user-row.report-row:not(.asset-report-row) > div:nth-child(9) {
       max-width: 420px;
     }
-    .user-row.report-row:not(.asset-report-row) > div:nth-child(6) .muted {
+    .user-row.report-row:not(.asset-report-row) > div:nth-child(6) .muted,
+    .user-row.report-row:not(.asset-report-row) > div:nth-child(9) .muted {
       line-height: 1.5;
     }
     .user-row.report-row > div:nth-child(7),
@@ -6739,11 +6741,28 @@
         { id: "RPU-512", category: "Asset", user: "Crown Time BKK", userId: "U-1017", accountStatus: "Active", reason: "มีรายงานสินทรัพย์ซ้ำและข้อมูลประกาศคล้ายรายการอื่น", reporters: 4, priority: "สูง", status: "Open", reference: "Asset Group AST-DUP-1017", source: "Asset Detail", sources: ["User Profile"], waiting: "20 ชม.", evidence: ["รูปสินทรัพย์ซ้ำกับรายการอื่น", "ข้อความประกาศถูกใช้ซ้ำ"], recommendation: "เทียบรูปสินค้าและหลักฐาน provenance ก่อนทำ action กับบัญชี", actionHistory: "เปิดรายงานใหม่ และยังไม่มีการเปลี่ยนสถานะบัญชี" },
         { id: "RPU-518", category: "Offer / Chat", user: "Omega Club TH", userId: "U-1088", accountStatus: "Active", reason: "มีข้อพิพาทว่าสภาพสินทรัพย์ไม่ตรงกับที่ตกลงในข้อเสนอซื้อ", reporters: 3, priority: "สูง", status: "Open", reference: "Offer OFR-501", source: "Offer / Chat", sources: ["Chat"], waiting: "18 ชม.", evidence: ["ประวัติแชท", "ข้อพิพาทจากข้อเสนอซื้อ"], recommendation: "เปิดบริบท Offer / Chat ก่อนปิดรายงาน", actionHistory: "เปิดรายงานใหม่ และรอตรวจสอบ reference ต้นทาง" },
         { id: "RPU-541", category: "Chat", user: "Rolex Rama9", userId: "U-1186", accountStatus: "Suspended", reason: "มีรายงานซ้ำเรื่องข้อความแชทที่ไม่เหมาะสม", reporters: 6, priority: "สูง", status: "In Review", reference: "CHT-090", source: "Offer / Chat", sources: ["Chat"], waiting: "4 ชม.", evidence: ["ประวัติแชท"], recommendation: "ตรวจหลักฐานแชทและกำหนดผลสุดท้ายก่อนปิดรายงาน", actionHistory: "ระงับบัญชีชั่วคราวระหว่างตรวจสอบ และยังไม่ปิดรายงาน" },
-        { id: "RPU-560", category: "Profile", user: "The Collector", userId: "U-1120", accountStatus: "Banned", reason: "ยืนยันพฤติกรรมละเมิดซ้ำและปิดเคสหลังแบนบัญชี", reporters: 13, priority: "สูง", status: "Closed", reference: "Profile ID PRF-1120", source: "Reported Users", sources: ["User Profile", "Chat"], waiting: "0 ชม.", evidence: ["รายงานพฤติกรรมละเมิดซ้ำ", "มี admin action แบนบัญชีแล้ว", "โปรไฟล์มีรูปแบบหลอกลวงซ้ำ", "พบการชวนซื้อขายนอกระบบ"], recommendation: "คงสถานะรายงานเป็นปิดแล้ว และเก็บบันทึกการดำเนินการสำหรับกรณีขอยกเลิกระงับบัญชีถาวร", actionHistory: "ปิดรายงานแล้วหลังแบนบัญชี และบัญชียังคงถูกแบนอยู่" }
+        { id: "RPU-560", category: "Profile", user: "The Collector", userId: "U-1120", accountStatus: "Banned", reason: "ยืนยันพฤติกรรมละเมิดซ้ำและปิดเคสหลังแบนบัญชี", reporters: 13, priority: "สูง", status: "Closed", reference: "Profile ID PRF-1120", source: "Reported Users", sources: ["User Profile", "Chat"], waiting: "0 ชม.", evidence: ["รายงานพฤติกรรมละเมิดซ้ำ", "มี admin action แบนบัญชีแล้ว", "โปรไฟล์มีรูปแบบหลอกลวงซ้ำ", "พบการชวนซื้อขายนอกระบบ"], recommendation: "คงสถานะรายงานเป็นปิดแล้ว และเก็บบันทึกการดำเนินการสำหรับกรณีขอยกเลิกระงับบัญชีถาวร", actionHistory: "ปิดรายงานแล้วหลังแบนบัญชี และบัญชียังคงถูกแบนอยู่" },
+        { id: "RPU-566", category: "Profile", user: "Seiko Corner", userId: "U-1144", accountStatus: "Active", reason: "Active account with 1-2 profile reports for low-risk review", reporters: 2, priority: "Low", status: "Open", reference: "Profile ID PRF-1144", source: "User Profile", sources: ["User Profile"], waiting: "12 hr", evidence: ["Profile wording was reported as confusing", "No high-risk pattern found yet"], recommendation: "Keep account Active while Admin checks the profile report context", actionHistory: "New low-volume report; account remains Active because 1-2 reports do not trigger restriction" },
+        { id: "RPU-572", category: "Signup / Auth", user: "Vintage Vault BKK", userId: "U-1055", accountStatus: "Pending Verification", reason: "Pending verification account reported from signup/auth support context", reporters: 1, priority: "Medium", status: "Open", reference: "Signup Log SGN-1055", source: "Signup / Auth", sources: ["Signup / Auth"], waiting: "10 hr", evidence: ["Email verification is still pending", "Reporter asked support to verify whether the account is genuine"], recommendation: "Review signup/auth log first; do not enable reset password or treat as Active", actionHistory: "Report opened while account remains Pending Verification" },
+        { id: "RPU-579", category: "Offer / Chat", user: "Archive Collector", userId: "U-1104", accountStatus: "Deletion Requested", reason: "Deletion-requested account still has report dependency from offer/chat context", reporters: 2, priority: "High", status: "Open", reference: "Offer OFR-612 / Deletion DEL-033", source: "Offer / Chat", sources: ["Offer / Chat", "Account Deletion"], waiting: "8 hr", evidence: ["Open offer/chat dispute before deletion", "Deletion workflow is waiting for dependency review"], recommendation: "Open source report first, then route to Account Deletion after dependency is cleared", actionHistory: "Deletion Requested account must not be archived directly from Reported Users" },
+        { id: "RPU-588", category: "Profile", user: "Daily Watch Hunter", userId: "U-1161", accountStatus: "Active", reason: "False profile report cleared without account action", reporters: 1, priority: "Low", status: "Closed", reference: "Profile ID PRF-1161", source: "User Profile", sources: ["User Profile"], waiting: "0 hr", evidence: ["Reporter note was not supported by profile evidence", "No duplicate or impersonation signal found"], recommendation: "Keep report closed/cleared and leave account Active", actionHistory: "Admin cleared false report without changing account status" }
       ]
     };
 
     const reportAuditLogSeeds = {
+      "RPU-566": [
+        { id: "AUD-RPU-566-001", action: "REPORT_CREATED", actor: "System", createdAt: "14 Jul 2026 08:10 GMT+7", entityType: "reported_user", entityId: "RPU-566", sourceModule: "User Profile", detail: "Opened low-risk profile report while keeping account Active", before: null, after: { reportStatus: "Open", accountStatus: "Active" }, reason: "1-2 reports should stay in review queue without automatic restriction", metadata: { reference: "Profile ID PRF-1144", userId: "U-1144" } }
+      ],
+      "RPU-572": [
+        { id: "AUD-RPU-572-001", action: "REPORT_CREATED", actor: "System", createdAt: "14 Jul 2026 09:05 GMT+7", entityType: "reported_user", entityId: "RPU-572", sourceModule: "Signup / Auth", detail: "Opened report for a Pending Verification account from signup/auth context", before: null, after: { reportStatus: "Open", accountStatus: "Pending Verification" }, reason: "Admin must review signup/auth evidence before treating account as verified", metadata: { reference: "Signup Log SGN-1055", userId: "U-1055" } }
+      ],
+      "RPU-579": [
+        { id: "AUD-RPU-579-001", action: "REPORT_CREATED", actor: "System", createdAt: "14 Jul 2026 10:25 GMT+7", entityType: "reported_user", entityId: "RPU-579", sourceModule: "Offer / Chat", detail: "Opened report dependency for a Deletion Requested account", before: null, after: { reportStatus: "Open", accountStatus: "Deletion Requested" }, reason: "Source dispute must be reviewed before Account Deletion can archive/anonymize the account", metadata: { reference: "Offer OFR-612 / Deletion DEL-033", userId: "U-1104" } }
+      ],
+      "RPU-588": [
+        { id: "AUD-RPU-588-002", action: "REPORT_STATUS_UPDATED", actor: "Somchai Admin", createdAt: "14 Jul 2026 12:10 GMT+7", entityType: "reported_user", entityId: "RPU-588", sourceModule: "Reported Users", detail: "Cleared false report without account action", before: { reportStatus: "Open", accountStatus: "Active" }, after: { reportStatus: "Closed", accountStatus: "Active" }, reason: "Reporter note was not supported by source evidence", metadata: { reference: "Profile ID PRF-1161", userId: "U-1161" } },
+        { id: "AUD-RPU-588-001", action: "REPORT_CREATED", actor: "System", createdAt: "14 Jul 2026 11:45 GMT+7", entityType: "reported_user", entityId: "RPU-588", sourceModule: "User Profile", detail: "Opened single-reporter profile report", before: null, after: { reportStatus: "Open", accountStatus: "Active" }, reason: "Single report enters queue for review but does not change account status", metadata: { reference: "Profile ID PRF-1161", userId: "U-1161" } }
+      ],
       "RPU-505": [
         { id: "AUD-RPU-505-001", action: "REPORT_CREATED", actor: "System", createdAt: "13 Jul 2026 11:22 GMT+7", entityType: "reported_user", entityId: "RPU-505", sourceModule: "User Detail", detail: "รับรายงานครบ 5 รายงาน ระบบจึงระงับบัญชีชั่วคราว", before: null, after: { reportStatus: "In Review", accountStatus: "Suspended" }, reason: "มีรายงานครบ 5 รายงาน ระบบจึงระงับบัญชีชั่วคราวระหว่างรอตรวจสอบ", emailDelivery: { status: "sent", channel: "Email", deliveryId: "DLV-ACCT-010" }, metadata: { reference: "Profile ID PRF-1002", userId: "U-1002", reportThreshold: 5, trigger: "auto_suspend_on_report_threshold" } }
       ],
@@ -7058,6 +7077,10 @@
       "RPU-518": ["Nattapol P.", "Arthit K.", "Supansa W."],
       "RPU-541": ["Worawit C.", "Jirayu P.", "Nicha S.", "Tawan Watch", "Ploy R.", "Kanda M."],
       "RPU-560": ["Somkid P.", "Watch Finder TH", "Ratchanon S.", "Mayuree W.", "Thanakorn L.", "Pattarapon C.", "Siriporn N.", "Vasin K.", "Araya Watch", "Nopporn T.", "Kanokwan S.", "Panuwat R.", "Suda Collector"],
+      "RPU-566": ["Narin C.", "Market Watch TH"],
+      "RPU-572": ["Support Intake"],
+      "RPU-579": ["Buyer Dispute Team", "Krit Watch"],
+      "RPU-588": ["Anonymous Reporter"],
       "RPA-831": ["Nattapol P.", "Patchara L.", "Krit Watch", "Saran Collector", "Maliwan T.", "Anucha M.", "Benjawan S.", "Korn Vintage", "Pimchanok R.", "Worawit C."],
       "RPA-694": ["Daily Watch Hunter", "Saran Collector", "Tawan Watch", "Nicha S."],
       "RPA-559": ["Watch Finder TH", "Arthit K.", "Ratchanon S."],
@@ -7139,6 +7162,20 @@
     };
 
     const userReportSubmissions = {
+      "RPU-566": [
+        { source: "User Profile", reason: "Other", additionalDetails: "Profile copy looked confusing, but reporter did not provide fraud evidence" },
+        { source: "User Profile", reason: "Spam" }
+      ],
+      "RPU-572": [
+        { source: "Signup / Auth", reason: "Other", additionalDetails: "Support asked Admin to verify whether the unverified signup is legitimate before any account action" }
+      ],
+      "RPU-579": [
+        { source: "Chat", reason: "Fraud or scam", additionalDetails: "Open offer/chat dispute must be reviewed before deletion dependency can be cleared" },
+        { source: "Account Deletion", reason: "Other", additionalDetails: "Deletion request is blocked until source dispute review is completed" }
+      ],
+      "RPU-588": [
+        { source: "User Profile", reason: "Other", additionalDetails: "Admin checked the profile and cleared this as a false report without account action" }
+      ],
       "RPU-505": [
         { source: "User Profile", reason: "Impersonation", additionalDetails: "รูปโปรไฟล์กับข้อความแนะนำตัวเหมือนบัญชีอื่นที่เคยเห็น" },
         { source: "User Profile", reason: "Fraud or scam", additionalDetails: "ผู้ขายใช้รูปเดิมและชวนให้โอนเงินก่อนคุยรายละเอียด" },
@@ -11663,7 +11700,7 @@
               <div data-label="Report Reason"><div class="muted">${renderUserReportReasonsLabel(report)}</div></div>
               <div data-label="Reporters"><div class="main-text">${report.reporters}</div></div>
               <div data-label="Priority">${statusPill(getReportPriorityLabel(report.priority), report.priority)}</div>
-              <div data-label="Sources"><div class="main-text">${renderReportSourcesLabel(report)}</div></div>
+              <div data-label="Sources"><div class="muted">${renderReportSourcesLabel(report)}</div></div>
               <div class="user-row-actions">
                 ${renderReportRowActionMenu(report)}
               </div>
