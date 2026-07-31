@@ -12027,8 +12027,8 @@
             ])}</div>
             <div class="user-advanced-filter">${customSelect("asset-report-sort", "Sort asset reports", [
               { value: "latest", label: "ล่าสุดก่อน" },
-              { value: "reporters", label: "จำนวน reporter" },
-              { value: "waiting", label: "รอนานสุด" }
+              { value: "oldest", label: "เก่าสุดก่อน" },
+              { value: "reporters", label: "จำนวน reporter" }
             ], "latest")}</div>
             <button class="btn filter-reset user-advanced-filter" type="button" data-asset-report-reset title="รีเซ็ตค่าทั้งหมด" aria-label="รีเซ็ตค่าทั้งหมด">${iconSvg.refresh}<span>รีเซ็ตค่าทั้งหมด</span></button>
           </div>
@@ -15858,7 +15858,7 @@
         })
         .sort((a, b) => {
           if (sort === "reporters") return getAssetReporters(b) - getAssetReporters(a);
-          if (sort === "waiting") return getAssetReportWaitingHours(b) - getAssetReportWaitingHours(a);
+          if (sort === "oldest") return getAssetSortRank(a, "latest") - getAssetSortRank(b, "latest");
           return getAssetSortRank(b, "latest") - getAssetSortRank(a, "latest");
         });
       const pageCount = Math.max(1, Math.ceil(sorted.length / assetListPageSize));

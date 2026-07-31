@@ -366,7 +366,7 @@ Reported Assets ต้องมี filter ขั้นต่ำ:
 
 - Report Status: `Pending`, `Closed`
 - Priority
-- Sort: newest first, oldest first
+- Sort: newest first, oldest first, reporter count
 - Reset filter
 
 ### Report Pagination
