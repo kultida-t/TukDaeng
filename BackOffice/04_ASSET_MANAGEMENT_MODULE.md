@@ -191,7 +191,8 @@ Asset Detail ใช้สำหรับตรวจสอบข้อมูล 
 
 ### Price Display Rules
 
-- Asset Detail และ Asset Report Detail ต้องแสดง field `Price` เสมอ
+- Asset Detail ต้องแสดง field `Price` เสมอ
+- Asset Report Detail ต้องเข้าถึง field `Price` ผ่าน View Asset modal/reference ได้เสมอ
 - ถ้ามีราคาให้แสดงราคาตามข้อมูล asset
 - ถ้าไม่มีราคาให้แสดง `-`
 - ห้ามสร้าง placeholder เช่น `N/A`
@@ -394,15 +395,11 @@ Asset Report Detail ใช้สำหรับตรวจสอบ report case
 
 ### Required Sections
 
-- Report summary
 - Reported Asset reference
-- Current asset status
-- Current moderation state
-- Owner information
 - Reporter History
-- Report reason และ additional details
 - Admin Action History
-- Asset status/moderation history ที่เกี่ยวข้อง
+
+ข้อมูลสรุปของ report case แสดงผ่าน header, status pill, moderation/context pill และข้อมูลใน Reported Asset reference
 
 ### Required Reported Asset Reference
 
@@ -411,9 +408,10 @@ Asset Report Detail ใช้สำหรับตรวจสอบ report case
 - Asset name
 - Owner ID
 - Owner name
-- Current asset status
-- Current moderation state
+- Current asset status และ moderation/context state แสดงรวมกันใน Asset Status
 - View Asset action
+
+View Asset action ต้องเปิดรายละเอียด asset แบบ read-only และต้องแสดงข้อมูล asset ที่เกี่ยวข้องกับ report context เช่น Price, description, specifications, provenance summary, image gallery และ asset context อื่นที่จำเป็นต่อการตรวจสอบ
 
 ### Reporter History
 
