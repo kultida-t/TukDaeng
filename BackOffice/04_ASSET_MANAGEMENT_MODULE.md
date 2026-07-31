@@ -357,7 +357,6 @@ Reported Assets ต้องค้นหาได้จาก:
 - Asset ID
 - Asset name
 - Owner name
-- Reporter name
 - Report reason
 
 ### Report Filters

@@ -9066,6 +9066,7 @@
 
     function getAssetReportSearchText(asset) {
       return [
+        getAssetReportId(asset),
         asset.id,
         asset.name,
         asset.owner,
