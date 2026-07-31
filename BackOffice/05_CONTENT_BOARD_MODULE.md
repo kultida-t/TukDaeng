@@ -82,7 +82,10 @@ Content / Board Module อยู่ภายใต้เมนู `Content Manag
   - Title A-Z
 - Pagination:
   - Page size: 10 articles per page
-  - มี Previous, Next และ numbered page buttons
+  - มี Previous button
+  - มี Next button
+  - มี numbered page buttons
+  - ต้องคงค่า search/filter/sort ระหว่างเปลี่ยนหน้า
   - เมื่อไม่พบข้อมูลให้แสดง empty state `ไม่พบข้อมูล`
 
 ### Row/Card Actions
@@ -314,8 +317,13 @@ Search/filter/sort:
   - Article count
   - Name A-Z
   - Recently updated
-- Pagination: 10 rows per page
-- Empty/no result state: `ไม่พบข้อมูล`
+- Pagination:
+  - Page size: 10 categories per page
+  - มี Previous button
+  - มี Next button
+  - มี numbered page buttons
+  - ต้องคงค่า search/filter/sort ระหว่างเปลี่ยนหน้า
+  - เมื่อไม่พบข้อมูลให้แสดง empty state `ไม่พบข้อมูล`
 
 ### Category Detail Modal
 
@@ -457,8 +465,13 @@ Search/filter/sort:
   - ล่าสุดก่อน
   - จำนวน reporter
   - รอนานสุด
-- Pagination: 10 rows per page พร้อม Previous, Next และ numbered page buttons
-- Empty/no result state: `ไม่พบข้อมูล`
+- Pagination:
+  - Page size: 10 reports per page
+  - มี Previous button
+  - มี Next button
+  - มี numbered page buttons
+  - ต้องคงค่า search/filter/sort ระหว่างเปลี่ยนหน้า
+  - เมื่อไม่พบข้อมูลให้แสดง empty state `ไม่พบข้อมูล`
 
 ### Report Detail
 
@@ -476,6 +489,15 @@ Detail sections:
 - `Reported Article`: Report ID, Article ID, Article Title, Category, Article Status, `View Article`
 - `Reporter History`: reporter, reported time, status, reason, additional details พร้อม pagination
 - `Admin Action History`: Date/Time, Admin, Action, Status, details พร้อม pagination
+
+Pagination ของ `Reporter History` และ `Admin Action History` ต้องใช้มาตรฐานเดียวกัน:
+
+- Page size: 10 rows per page
+- มี Previous button
+- มี Next button
+- มี numbered page buttons
+- ต้องคงค่าลำดับการแสดงผลระหว่างเปลี่ยนหน้า
+- เมื่อไม่พบข้อมูลให้แสดง empty state `ไม่พบข้อมูล`
 
 `View Article` เปิด phone-style FO article preview โดยใช้ article data ล่าสุดจาก article master ถ้าพบ article id และใช้ report preview data เป็น fallback เมื่อ article master ไม่พบ
 
