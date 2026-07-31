@@ -1,134 +1,153 @@
-﻿# 04 BO Asset Management Module
+# 04 BO Asset Management Module
 
-**Version:** `BO-04-v0.1`  
+**Version:** `BO-04-v1.0`  
 **Date:** 2026-07-31  
-**Status:** Prototype-aligned baseline  
-**Platform:** Responsive Web Back Office  
-**Primary FO Sources:** `../FrontOffice/04_ASSET_MANAGEMENT_MODULE.md`, `../FrontOffice/05_ASSET_DETAIL_MODULE.md`, `../FrontOffice/02_FEED_MODULE.md`, `../FrontOffice/03_SEARCH_FILTER_MODULE.md`, `../FrontOffice/06_PROFILE_MODULE.md`, `../FrontOffice/10_WATCH_ALERT_MODULE.md`, `../FrontOffice/14_PORTFOLIO_MODULE.md`  
-**Integration Map:** `../ProjectAdmin/FO_BO_INTEGRATION_MAP.md`
+**Status:** Current functional specification  
+**Platform:** Responsive Web Back Office
 
 ## 1. วัตถุประสงค์
 
-BO Asset Management คือหน้าจอสำหรับ Admin ใช้ตรวจสอบ จัดการ และควบคุม operational state ของ asset ที่ผู้ใช้สร้างจาก FO
+Asset Management คือเมนูสำหรับ Admin ใช้ตรวจสอบรายการ asset, รายละเอียด asset, รายงาน asset และดำเนินการ moderation ที่มีผลต่อการมองเห็นของ asset ในระบบ
 
-โมดูลนี้ต้องรองรับงานหลัก:
+เมนูนี้ต้องทำงานได้ครบตามขอบเขตต่อไปนี้:
 
-- ดูรายการ asset ทั้งหมดที่เกิดจาก FO
-- ตรวจสอบรายละเอียด asset แบบครบถ้วนตามสิทธิ์
-- ดู reported asset และดำเนินการ moderation
-- จัดการ moderation visibility ของ asset ตามสิทธิ์ โดยไม่เปลี่ยน owner-controlled status โดยตรง
-- ตรวจสอบ sensitive context เช่น provenance, proof of payment, consignment และ sold history ในรูปแบบ read-only/masked ตาม prototype
-- ทำให้ผลของ BO action sync กลับไป FO surfaces อย่างถูกต้อง
-- บันทึก audit log ทุก action ที่กระทบข้อมูลหรือ visibility
+- ดูรายการ asset ทั้งหมด
+- ค้นหา กรอง เรียงลำดับ และแบ่งหน้ารายการ asset
+- เปิดดูรายละเอียด asset แบบ read-only
+- ดูข้อมูล sensitive context ในรูปแบบ read-only/masked/summarized
+- ดูรายงาน asset ที่ user ส่งเข้ามา
+- ตรวจสอบรายงานและดำเนินการ moderation ตามสถานะที่อนุญาต
+- ซ่อน asset ชั่วคราวจาก public surfaces
+- ยกเลิกการซ่อนชั่วคราวเมื่อ review แล้วไม่พบปัญหา
+- ซ่อน asset ถาวรตามเงื่อนไข moderation
+- ปิด report case พร้อมบันทึกผลการตรวจสอบ
+- บันทึก audit log สำหรับทุก action ที่เปลี่ยน state หรือ visibility
 
 ## 2. Scope
 
 ### In Scope
 
-- Asset list พร้อม search, status/brand filter, sort, pagination และ reset filter ตาม prototype
-- Asset detail สำหรับ admin review
-- Status visibility control: `Sale`, `Show`, `Hide`, `Sold`, `ซ่อนชั่วคราว`, `ซ่อนถาวร`, `ลบโดยเจ้าของ`
-- Reported asset queue และ moderation workflow
-- ซ่อนชั่วคราวและซ่อนถาวรจาก public surfaces
-- Moderation visibility action ตาม Admin Permission โดยไม่ให้ Admin เปลี่ยน owner-controlled asset status โดยตรง
-- Sensitive-field review ผ่าน purchase history, consignment details, proof of payment และ sold history modal ตาม prototype
-- Audit trail พร้อม before/after state และ reason
+- Asset List
+- Asset Detail
+- Reported Assets queue
+- Asset Report Detail
+- Search, filter, sort, pagination และ reset filter
+- Owner-controlled asset status: `Sale`, `Show`, `Hide`, `Sold`
+- System/retention state: `ลบโดยเจ้าของ`
+- Moderation state: `ซ่อนชั่วคราว`, `ซ่อนถาวร`
+- Moderation action: temporary hide, restore temporary hide, permanent hide, close report
+- Confirmation, reason และ audit สำหรับ action ที่กระทบ visibility หรือ report outcome
 - Responsive layout สำหรับ desktop, tablet และ mobile-width browser
 
 ### Out Of Scope
 
-- การสร้าง asset แทน user จาก BO ใน Phase 1
-- การแก้ไข business data แทน owner แบบเต็มรูปแบบ
-- Payment operation หรือ escrow
+- การสร้าง asset แทน user
+- การแก้ไข business data ของ asset แทน owner
+- การเปลี่ยน owner-controlled status โดยตรงจาก Back Office เช่น `Sale`, `Show`, `Hide`, `Sold`
+- Payment operation, escrow, offer negotiation และ chat dispute workflow
 - AI moderation
-- Offer/chat dispute workflow แบบเต็มรูปแบบ อยู่ใน Phase 2 module
-- Generic BO action สำหรับเปลี่ยน `Sale`/`Show`/`Hide`/`Sold`
-- Flag/unflag asset, export asset list และ generic sensitive-data reveal flow ยังไม่อยู่ใน prototype ปัจจุบัน
+- Bulk action
+- Export
+- Flag/unflag asset
+- Reveal sensitive data แบบเต็ม
+- Restore จากสถานะซ่อนถาวร
+- ลบข้อมูล asset จริงจาก Back Office
 
-## 3. Admin Access And Permissions
+## 3. Access And Permission Rules
 
-BO uses a single Admin account type only. Admin access is controlled by module access, action policy, sensitive-data policy, confirmation, reason, and audit requirements instead of separate BO admin account types.
+ระบบใช้ Admin access เดียว โดยตรวจสิทธิ์ตามเมนูและ action ที่ทำ ไม่แยกประเภทบัญชี Admin ในสเปกนี้
 
-
-| Access Area | Rule |
+| Area | Rule |
 | --- | --- |
-| Module access | Admin can use list/detail/search/filter when module access is granted. |
-| Write action | Moderation actions such as temporary hide, restore visibility, permanent hide, and close report require permission check, confirmation for high-risk actions, reason when FO/user impact exists, and audit log. |
-| Sensitive data | Prototype shows sensitive review context in read-only/masked form; production reveal policy can be added outside the current prototype flow. |
-| Export | Not exposed in the current prototype; production export requires permission check, scope control, expiry/background job where needed, and audit export event. |
-| Direct URL/API | Enforce access at route, API, and service layers; never rely only on hidden UI. |
+| Module access | Admin ที่มีสิทธิ์เข้าเมนูสามารถดู list, detail, search, filter, sort และ pagination ได้ |
+| Write action | Action ที่เปลี่ยน visibility หรือ report outcome ต้องตรวจ permission, แสดง confirmation, บังคับกรอก reason และบันทึก audit |
+| Sensitive data | แสดงเฉพาะรูปแบบ read-only/masked/summarized |
+| Direct URL/API | ต้องตรวจสิทธิ์ที่ route, API และ service layer เสมอ |
+
 ## 4. Responsive Layout
 
-BO Asset Management ต้องเป็น responsive web application:
+เมนู Asset Management ต้องใช้งานได้ครบทุกขนาดหน้าจอ
 
 | Width | Layout Requirement |
 | --- | --- |
-| Mobile-width browser | Table เปลี่ยนเป็น stacked cards, filter อยู่ใน drawer/bottom sheet, action สำคัญยังเข้าถึงได้ |
-| Tablet | Table แสดง column สำคัญ, secondary fields เปิดผ่าน detail panel |
-| Desktop | Full table, side filter, bulk/saved view controls และ split detail panel ได้ |
+| Mobile-width browser | ตารางเปลี่ยนเป็น stacked cards, filter อยู่ใน drawer หรือ bottom sheet, action หลักยังเข้าถึงได้ |
+| Tablet | แสดง column สำคัญในตาราง และเปิดข้อมูลรองผ่าน detail view |
+| Desktop | แสดง full table, filter, pagination และ detail/action flow ได้ครบ |
 
-ห้ามมี horizontal overflow ที่ทำให้ action หลักใช้งานไม่ได้ ยกเว้น table container ที่ตั้งใจให้ scroll เฉพาะภายใน
+ห้ามมี horizontal overflow ที่ทำให้ action หลักใช้งานไม่ได้ ยกเว้นพื้นที่ตารางที่ตั้งใจให้ scroll ภายใน container
 
-## 5. Asset List
+## 5. Navigation
 
-Asset list ใน prototype แสดงข้อมูลหลักสำหรับ scan และเปิด detail:
+เมนู Asset Management ต้องมี submenu ต่อไปนี้:
+
+- `Asset List`
+- `Reported Assets`
+
+เมื่อเปิด asset จาก `Asset List` ต้องเข้าสู่ `Asset Detail`
+
+เมื่อเปิด report จาก `Reported Assets` ต้องเข้าสู่ `Asset Report Detail`
+
+ทุกหน้าต้องมี breadcrumb หรือ back navigation ที่พากลับไปยังหน้ารายการต้นทางได้ถูกต้อง
+
+## 6. Asset List
+
+Asset List ใช้สำหรับ scan asset ทั้งหมดและเปิดรายละเอียดหรือ action ที่ทำได้ตาม state
+
+### Required Display Fields
 
 - Asset ID
 - Asset name
 - Brand
 - Owner
-- Asset Status รวม owner-controlled status และ moderation pill เช่น `Sale`, `Show`, `Hide`, `Sold`, `Consignment`, `ซ่อนชั่วคราว`, `ซ่อนถาวร`, `ลบโดยเจ้าของ`
-- Action menu สำหรับเปิด detail และ moderation action ที่ทำได้ตามสถานะ
+- Asset Status
+- Moderation/Context pill เมื่อมี เช่น `Consignment`, `ซ่อนชั่วคราว`, `ซ่อนถาวร`, `ลบโดยเจ้าของ`
+- Row action menu
 
-ข้อมูลเชิงลึก เช่น thumbnail/gallery, model/series, reference no., price, created/updated date, report count, linked offer และ history แสดงใน Asset Detail หรือ Reported Asset Detail แทนการใส่ทุก column ใน list
+### Row Actions
+
+Action ในแต่ละ row ต้องแสดงเฉพาะรายการที่ทำได้ตาม current state และ permission
+
+- View Detail
+- ซ่อนชั่วคราว
+- ยกเลิกซ่อนชั่วคราว
+- ซ่อนถาวร
+
+ห้ามมี action สำหรับเปลี่ยน asset status เป็น `Sale`, `Show`, `Hide` หรือ `Sold` โดยตรง
 
 ### Search
 
-Prototype search ใน Assets List ค้นจากข้อมูล asset mock รวมถึง:
+Asset List ต้องค้นหาได้จาก:
 
 - Asset ID
+- Asset name
 - Brand
-- Asset name/model
 - Owner name
 - Description keyword
-- Status/tag/context ที่อยู่ใน mock data
-
-Production implementation อาจขยายให้ค้น owner username/user ID และ reference no. แบบ field-specific ได้เมื่อเชื่อม backend
+- Status หรือ context keyword ที่แสดงในรายการ
 
 ### Filters
 
-Prototype มี filter ขั้นต่ำ:
+Asset List ต้องมี filter ขั้นต่ำ:
 
 - Status: `Sale`, `Show`, `Hide`, `Sold`, `ซ่อนถาวร`, `ลบโดยเจ้าของ`
-- Status preset พิเศษ: `Sale - Consignment`
+- Preset: `Sale - Consignment`
 - Brand
-- Sort: newest first / oldest first
+- Sort: newest first, oldest first
 - Reset filter
 
-Reported asset ใช้ submenu `Reported Assets` พร้อม report status, priority และ sort filter แยกต่างหาก
+### Pagination
 
-Production implementation อาจเพิ่ม owner, price range, created/updated date range, has report และ provenance/proof filter ตาม permission หากต้องการ workflow ละเอียดกว่าต้นแบบ
+Asset List ต้องมี pagination และต้องคงค่า search/filter/sort ระหว่างเปลี่ยนหน้า
 
-### Saved Views
+## 7. Asset Detail
 
-Phase 1 prototype ใช้ status filter ในหน้า Assets List เป็น saved-view preset หลัก โดยต้องครอบคลุม:
-
-- All Assets = `All asset status`
-- Sale Listings = `Sale`
-- Public Collection = `Show`
-- Owner-only Assets = `Hide`
-- Sold Assets = `Sold`
-- ซ่อนถาวร = moderation state `Permanently Hidden`
-- ลบโดยเจ้าของ = owner-deleted state
-- Reported Assets = แยกเป็น submenu/queue `Asset Management > Reported Assets` ไม่ใช่ saved view ใน Assets List
-
-## 6. Asset Detail
-
-Asset detail ต้องรวมข้อมูลสำหรับ review:
+Asset Detail ใช้สำหรับตรวจสอบข้อมูล asset แบบ read-only และดำเนินการ moderation ที่ทำได้ตาม state
 
 ### Core Fields
 
 - Gallery images สูงสุด 10 รูป
+- Asset ID
+- Asset name
 - Brand
 - Model / Series
 - Reference No.
@@ -142,32 +161,31 @@ Asset detail ต้องรวมข้อมูลสำหรับ review:
 - Dial Color
 - Strap / Bracelet Type
 - Description
-- Status
 - Owner
-- Created/updated timestamps
+- Asset Status
+- Moderation State
+- Created timestamp
+- Updated timestamp
 
 ### Commerce Fields
 
-- Asking Price
+- Price
 - Owner Estimated Value
 - Offer summary ถ้ามี
-- Sold status และ sold history ถ้ามี
+- Sold status ถ้ามี
+- Sold history ถ้ามี
 
 ### Price Display Rules
 
-ให้ใช้ rule กลางเดียวกับ FO:
+- Asset Detail และ Asset Report Detail ต้องแสดง field `Price` เสมอ
+- ถ้ามีราคาให้แสดงราคาตามข้อมูล asset
+- ถ้าไม่มีราคาให้แสดง `-`
+- ห้ามสร้าง placeholder เช่น `N/A`
+- ราคาเป็นข้อมูล read-only ใน Back Office
 
-- Owner สามารถกรอก `Asking Price (THB)` ได้ทุกสถานะ (`Sale`, `Show`, `Hide`) และระบบสามารถเก็บราคาต่อไปในสถานะ `Sold`
-- Price เป็น optional ทุกสถานะ; ถ้าไม่กรอกต้องเก็บเป็น empty/null และ BO ต้องแสดง `-` ไม่สร้าง placeholder เช่น `N/A`
-- BO Asset Detail / Report Detail ต้องแสดง field `Price` เสมอ: มีราคาให้แสดงราคา ไม่มีราคาให้แสดง `-`
-- FO public/buyer-facing surface แสดงราคาเฉพาะ status `Sale`
-- Status `Sale`: ถ้ามีราคา FO แสดงราคานั้น; ถ้าไม่มีราคา FO แสดง `Price on request`
-- Status `Show` หรือ `Hide`: แม้มีราคากรอกไว้ FO public surface ต้องไม่แสดงราคา; ราคาเห็นได้เฉพาะ Owner ในหน้าแก้ไข / owner-private view และ BO/Admin view
-- Status `Sold`: BO แสดงราคาปกติเหมือน Sale; FO owner-facing sold view หากมีราคาให้แสดงเป็นราคาขีดฆ่าเพื่อบอกว่าขายแล้ว
+### Sensitive Context
 
-### Provenance And Consignment
-
-ข้อมูลกลุ่มนี้เป็น sensitive data:
+ข้อมูลต่อไปนี้ต้องแสดงแบบ read-only/masked/summarized เท่านั้น:
 
 - Provenance type
 - Purchase Price
@@ -177,261 +195,339 @@ Asset detail ต้องรวมข้อมูลสำหรับ review:
 - Consignment owner contact
 - Consignment terms
 - Consignment asking price
+- Sold history
 
-Prototype แสดงข้อมูลกลุ่มนี้ใน read-only modal เช่น purchase history, consignment details, proof of payment และ sold history โดยใช้ข้อมูลตัวอย่างแบบ masked/summarized
-ระบบจริงควรต่อยอดด้วย Admin Permission, permission denied state และ reveal audit เมื่อมีการเปิดข้อมูลเสี่ยงสูงแบบเต็ม
+Sensitive context ต้องเปิดผ่าน modal หรือ section ที่แยกจากข้อมูลหลัก และต้องไม่แสดงข้อมูลเต็มแบบเปิดโล่ง
 
-## 7. Status And FO Visibility Matrix
+### History Sections
 
-| Status | FO Visibility | Feed | Search | Watch Alert | Offer |
-| --- | --- | --- | --- | --- | --- |
-| `Sale` | Public marketplace + owner profile + public profile | Yes | Yes | Yes | Available |
-| `Show` | Public profile/detail only | No | No | No | Detail/Profile only if FO Offer rule allows |
-| `Hide` | Owner only | No | No | No | Not available |
-| `Sold` | Owner sold history + admin review | No | No | No | Not available |
-| `ซ่อนชั่วคราว` | Hidden from public FO surfaces ระหว่างรอตรวจสอบ; owner ยังเห็นพร้อมสถานะถูกซ่อนชั่วคราว | No | No | No | Existing related offers disabled/paused per offer policy |
-| `ซ่อนถาวร` | Hidden from all public FO surfaces; owner ยังเห็นแบบ read-only พร้อมสถานะถูกซ่อนถาวร | No | No | No | Existing related offers invalidated/cancelled per offer policy |
-| `ลบโดยเจ้าของ` | เจ้าของลบ asset จาก FO แล้ว; ไม่แสดงใน owner list ปกติหรือ public surfaces แต่ BO ยังเก็บ record ตาม retention policy | No | No | No | Existing related offers cancelled per offer policy |
+Asset Detail ต้องแสดง history ที่เกี่ยวข้องเมื่อมีข้อมูล:
 
-หมายเหตุ: เอกสาร BO ตั้งแต่ `BO-04-v0.1` เป็นต้นไปให้ใช้ status ตาม FO คือ `Show` และ `Hide` เท่านั้น
-`Hide` ในตารางนี้หมายถึง owner ตั้ง asset ให้เห็นเฉพาะเจ้าของ ไม่ใช่การซ่อนชั่วคราวจาก report/moderation
+- Asset Status History
+- Moderation History
+- Report History
+- Admin Action History
 
-`ซ่อนถาวร` เป็น moderation state ของ Back Office ไม่ใช่การลบข้อมูลจริง และไม่ใช่ `Hide` ที่ owner เลือกเองจาก Front Office
+## 8. Status Model
 
-## 8. Status Change Rules
+ระบบต้องแยก owner-controlled status ออกจาก moderation state
 
-Admin ไม่มีสิทธิ์เปลี่ยน owner-controlled asset status โดยตรง เช่น `Sale`, `Show`, `Hide`, `Sold`
-ใน Phase 1 สถานะเหล่านี้ต้องมาจาก FO owner action หรือ transaction/offer flow เท่านั้น
+### Owner-Controlled Status
 
-BO action ใน prototype เป็น moderation visibility overlay บนสถานะเดิม เช่น `Admin Hidden`, `Auto Hidden`, `Permanently Hidden` และต้องมี:
+| Status | Meaning |
+| --- | --- |
+| `Sale` | Asset เปิดขายและแสดงใน public marketplace |
+| `Show` | Asset แสดงใน public profile/detail แต่ไม่อยู่ใน marketplace feed/search |
+| `Hide` | Asset เห็นเฉพาะ owner |
+| `Sold` | Asset ถูกขายแล้ว ใช้สำหรับ owner history และ admin review |
+
+Admin ห้ามเปลี่ยน owner-controlled status โดยตรงจาก Back Office
+
+### System/Retention State
+
+| State | Meaning |
+| --- | --- |
+| `ลบโดยเจ้าของ` | Owner ลบ asset จากฝั่งผู้ใช้งานแล้ว ไม่แสดงใน owner list ปกติหรือ public surfaces แต่ Back Office ยังเก็บ record ตาม retention rule ของระบบ |
+
+### Moderation State
+
+| State | Meaning |
+| --- | --- |
+| None | ไม่มี moderation overlay |
+| `ซ่อนชั่วคราว` | Asset ถูกซ่อนจาก public surfaces ระหว่างรอหรือตามผล review |
+| `ซ่อนถาวร` | Asset ถูกซ่อนจาก public surfaces ถาวรตาม moderation outcome |
+
+Moderation state เป็น overlay บน owner-controlled status และไม่เปลี่ยนค่า owner-controlled status เดิม
+
+## 9. Visibility Matrix
+
+| State | Public Marketplace | Public Profile/Detail | Owner View | Offer Availability |
+| --- | --- | --- | --- | --- |
+| `Sale` | แสดง | แสดง | แสดง | ใช้งานได้ |
+| `Show` | ไม่แสดง | แสดง | แสดง | ใช้ได้เฉพาะกรณีที่ระบบอนุญาตจาก detail/profile |
+| `Hide` | ไม่แสดง | ไม่แสดง | แสดง | ใช้งานไม่ได้ |
+| `Sold` | ไม่แสดง | ไม่แสดง | แสดงใน sold history | ใช้งานไม่ได้ |
+| `ซ่อนชั่วคราว` | ไม่แสดง | ไม่แสดง | แสดงพร้อมสถานะถูกซ่อนชั่วคราว | Pending offer ต้องถูก pause และห้ามสร้าง offer ใหม่ |
+| `ซ่อนถาวร` | ไม่แสดง | ไม่แสดง | แสดงแบบ read-only พร้อมสถานะถูกซ่อนถาวร | Pending offer ต้องถูกตั้งเป็น `Invalidated` และห้ามสร้าง offer ใหม่ |
+| `ลบโดยเจ้าของ` | ไม่แสดง | ไม่แสดง | ไม่แสดงใน owner list ปกติ | Pending offer ต้องถูกตั้งเป็น `Cancelled` และห้ามสร้าง offer ใหม่ |
+
+Asset ที่มี state `ซ่อนถาวร` หรือ `ลบโดยเจ้าของ` ต้องไม่ถูกนับใน portfolio value หรือ asset value summary
+
+## 10. Moderation Action Rules
+
+### General Requirements
+
+ทุก moderation action ต้องมี:
 
 - Permission check
 - Confirmation modal
 - Required reason
-- Before/after value
+- Before state
+- After state
+- Actor
+- Timestamp
 - Audit log
-- FO sync event หรือ cache invalidation
+- ผลลัพธ์ที่อัปเดตไปยัง public surfaces ที่เกี่ยวข้อง
 
-### Required FO Impact
+### Temporary Hide
 
-| Change | Required Result |
-| --- | --- |
-| `Sale` -> `Sold` | ไม่ใช่ BO quick action; ต้องมาจาก owner action หรือ transaction/offer flow เท่านั้น หลังเปลี่ยนแล้วถอดจาก Feed, Search, Watch Alert, public marketplace surfaces; owner เห็นใน Sold tab; main asset edit ใน FO เป็น read-only |
-| `Sale` -> `Hide` | Owner action เท่านั้นใน V1; ถอดจาก public surfaces ทั้งหมด เหลือ owner-only |
-| `Hide` -> `Sale` | Owner action เท่านั้นใน V1; กลับเข้า Feed/Search/Watch Alert เมื่อข้อมูลครบตาม FO rule |
-| `Show` -> `Sale` | Owner action เท่านั้นใน V1; กลับเข้า marketplace surfaces และรับ offer ได้ตาม FO rule |
-| `Sale` -> `Show` | Owner action เท่านั้นใน V1; หายจาก Feed/Search/Watch Alert แต่ยังอยู่ public profile/detail |
-| Any -> `ซ่อนชั่วคราว` | หายจาก public surfaces ระหว่างรอตรวจสอบ; restore/unhide ได้เฉพาะเมื่อ Admin ตรวจแล้วไม่ผิด |
-| Any -> `ซ่อนถาวร` | หายจาก public surfaces ทั้งหมด; owner ยังเห็นแบบ read-only พร้อมสถานะถูกซ่อนถาวร; owner แก้ไข publish ใหม่ ยกเลิกซ่อน boost mark sold หรือลบเองไม่ได้; ไม่ถูกนับใน portfolio/asset value |
-| Any -> `ลบโดยเจ้าของ` | เกิดจากเจ้าของเป็นผู้ลบใน FO; หายจาก owner list ปกติและ public surfaces; BO เก็บ record ตาม retention policy และไม่ถูกนับใน portfolio/asset value |
+ใช้เพื่อซ่อน asset จาก public surfaces ชั่วคราว
 
-ดังนั้น prototype ต้องไม่มี generic BO control สำหรับเปลี่ยน `Sale`/`Show`/`Hide`/`Sold` โดยตรง
-Admin ทำได้เฉพาะ moderation actions ที่ซ้อนทับ visibility และ report outcome ตามสิทธิ์
+เงื่อนไข:
 
-ถ้า asset ที่ถูกซ่อนถาวร, ลบโดยเจ้าของ หรือ sold มี pending offers ต้องส่งผลไป Offer lifecycle เป็น invalidated/cancelled ตาม offer policy ที่กำหนดใน Phase 2
+- ทำได้กับ asset ที่ current owner-controlled status เป็น `Sale` หรือ `Show`
+- ทำไม่ได้กับ `Hide`, `Sold`, `ซ่อนถาวร` หรือ `ลบโดยเจ้าของ`
+- ต้องคง owner-controlled status เดิมไว้
+- ต้องตั้ง moderation state เป็น `ซ่อนชั่วคราว`
 
-เมื่อ asset ถูกลบโดยเจ้าของจาก FO ต้องมีรายการใน Asset Status History / Audit History ด้วย โดย actor เป็นเจ้าของ asset, action เป็น `Asset Deleted By Owner`, before เป็นสถานะก่อนลบ และ after เป็น `ลบโดยเจ้าของ`
+### Restore Temporary Hide
 
-## 9. Reported Asset Handling
+ใช้เพื่อยกเลิกการซ่อนชั่วคราวเมื่อ review แล้วไม่พบปัญหา
 
-เมื่อ FO user report asset:
+เงื่อนไข:
 
-- Asset ต้องเข้า BO reported asset queue
-- Report 1 ครั้ง: เข้า reported asset queue และยังไม่ซ่อนจาก FO
-- Report 3 ครั้งจาก unique reporter: ยกระดับเป็น priority review / `Reviewing` แต่ยังไม่ซ่อนจาก FO อัตโนมัติ
-- Report 5 ครั้งจาก unique reporter: ระบบซ่อนโพสต์ชั่วคราวได้โดยคง `Asset Status` เดิม เช่น `Sale` หรือ `Show` และตั้ง `Moderation State` เป็น `Auto Hidden` หรือ `Pending Review` เพื่อรอ Admin ตรวจสอบ
-- Temporary report hiding ใช้ได้เฉพาะ asset ที่มี public visibility คือ `Sale` และ `Show`; ห้ามใช้กับ `Hide` เพราะเป็น owner-only อยู่แล้ว และห้ามใช้กับ `Sold` เพราะเป็น sold history/read-only
-- ถ้า asset ถูก report ตอนเป็น `Sale`/`Show` แต่ owner เปลี่ยนเป็น `Hide` หรือ `Sold` ก่อน Admin action หรือก่อนถึง auto-hide threshold ให้ report queue ยังเก็บ report ไว้เพื่อ audit/review แต่ต้อง block `Force Hide` และไม่ตั้ง `Moderation State = Auto Hidden`; UI ต้องแสดง current asset status ล่าสุดและให้ Admin ทำได้เฉพาะ review/no action หรือซ่อนถาวรตาม policy เฉพาะเมื่อ current asset status และ permission ยังเข้าเงื่อนไข
-- การซ่อนอัตโนมัติจากจำนวน report ต้องนับ unique reporter เท่านั้น ไม่นับ report ซ้ำจาก user เดิม และต้องมี guardrail กัน report bombing จากบัญชีใหม่หรือกลุ่มบัญชีที่เกี่ยวข้องกัน
-- กรณี risk สูง เช่น scam, counterfeit, stolen image, ข้อมูลหลอกลวง หรือ external payment fraud ใน V1 ยังไม่มี automated detector/verified signal ให้ซ่อนอัตโนมัติจาก reason เพียงอย่างเดียว; ให้เข้า priority review และให้ Admin ใช้ `Force Hide` เองหลังดู evidence
-- Admin ต้อง review report แล้วเลือก action
-- Action ที่เป็นไปได้ใน V1: no action/keep visible, Force Hide โดยตั้ง `Moderation State = Admin Hidden`, Restore visibility หลังตรวจแล้วไม่ผิด, ซ่อนถาวรตาม policy
-- Restore visibility รองรับเฉพาะ asset ที่ถูกซ่อนชั่วคราวเท่านั้น ไม่รองรับการ restore จากสถานะซ่อนถาวรใน moderation flow ปกติ
-- การลบ asset จริงไม่ใช่ action ปกติในหน้า Asset Management ของ prototype นี้ หากต้องลบข้อมูลจริงให้ถือเป็นกระบวนการนอกหน้าจอปกติ เช่น internal request, legal/privacy request หรือ system retention job ตามนโยบายระบบ
-- ทุกผลลัพธ์ต้อง audit-log และผูกกลับ report record
+- ทำได้เฉพาะ asset ที่อยู่ใน moderation state `ซ่อนชั่วคราว`
+- ต้อง restore visibility กลับตาม owner-controlled status เดิม
+- ทำไม่ได้กับ `ซ่อนถาวร`
+- ต้องบันทึก reason และ audit
 
-### Reported Assets Prototype Surface
+### Permanent Hide
 
-หน้า `Asset Management > Reported Assets` ใน prototype เป็น queue แยกจาก `Asset List` และต้องแสดงข้อมูลหลักสำหรับ scan/report handling ดังนี้:
+ใช้เพื่อซ่อน asset จาก public surfaces ถาวรตาม moderation outcome
 
-- `Report ID`
-- `Asset`
-- `Asset Status` โดยแสดง owner-controlled status เช่น `Sale`/`Show` พร้อม moderation/context pill เช่น `Consignment`, `ซ่อนชั่วคราว`, `ซ่อนถาวร`
-- `Status` ของ report case เช่น `Pending`, `Closed`
-- `Report Reason`
-- `Reporters` เป็นจำนวน reporter/unique reporter ที่ใช้ประเมิน threshold
-- `Priority`
-- Row action menu สำหรับเปิด report detail และ action ที่ยังทำได้ตาม current asset/report state
+เงื่อนไข:
 
-Filter ของ queue ใน prototype ต้องมีอย่างน้อย search จาก `Report ID`, asset, owner, asset ID รวมถึง filter แยกตาม report status, priority, sort และ reset filter
+- ต้องใช้ confirmation และ reason
+- ต้องตั้ง moderation state เป็น `ซ่อนถาวร`
+- Owner ยังเห็น asset แบบ read-only พร้อมสถานะถูกซ่อนถาวร
+- Owner แก้ไข publish ใหม่ ยกเลิกซ่อน boost mark sold หรือลบเองไม่ได้
+- Asset ไม่ถูกนับใน portfolio value หรือ asset value summary
+- Pending offer ที่เกี่ยวข้องต้องถูกตั้งเป็น `Invalidated`
 
-Report detail ใน prototype ต้องมี:
+### Owner Deleted
 
-- `Reported Asset` reference พร้อม `Report ID`, `Asset ID`, asset name, owner ID, owner, current asset status และปุ่ม `View Asset`
-- `Reporter History` table ที่แสดงวันที่/เวลา, reporter รายคน, report status, report reason และ additional details
-- `Admin Action History` ที่ผูก action กลับ report/asset พร้อม before/after state, actor, timestamp, email delivery เมื่อมี และ note
-- Action buttons เฉพาะที่ทำได้ตาม state เช่น close report, temporary hide, restore visibility หรือ permanent hide
+เมื่อ owner ลบ asset จากฝั่งผู้ใช้งาน:
 
-### Report Queue Data Model
+- Asset ต้องหายจาก public surfaces
+- Asset ต้องหายจาก owner list ปกติ
+- Back Office ยังต้องเก็บ record ตาม retention rule ของระบบ
+- ต้องมี history/audit row ระบุ actor เป็น owner, action เป็น `Asset Deleted By Owner`, before state, after state `ลบโดยเจ้าของ` และ timestamp
+- Pending offer ที่เกี่ยวข้องต้องถูกตั้งเป็น `Cancelled`
 
-Prototype แสดงหน้าจอด้วย mock data ฝั่ง client แต่ production ต้องถือ `AssetReport` หรือ report case record เป็น source of truth ของ `Asset Management > Reported Assets` queue ไม่ใช่ infer จาก asset status, moderation pill หรือคำใน text ของ asset row เพียงอย่างเดียว
+## 11. Reported Assets
 
-โครงสร้างข้อมูลควรแยกอย่างน้อย:
+Reported Assets เป็น queue แยกจาก Asset List สำหรับจัดการ report case
 
-- `Asset Status`: owner/transaction-controlled status เช่น `Sale`, `Show`, `Hide`, `Sold`
-- `Moderation State`: BO visibility overlay เช่น `None`, `Pending Review`, `Auto Hidden`, `Admin Hidden`, `Permanently Hidden`
-- `Report Status`: สถานะของ report case เช่น `Pending`, `Cleared`
-- `AssetReport`: report case ที่มี `reportId`, `assetId`, `reportStatus`, `uniqueReporterCount`, reporter history, reason summary, priority, created/closed timestamp และ audit references
+### Required Display Fields
 
-ดังนั้น BO reported asset queue ต้อง query จาก `AssetReport` แล้ว join ไปยัง `Asset` เพื่อแสดง asset current status ล่าสุด หาก asset เปลี่ยนจาก `Sale`/`Show` เป็น `Hide` หรือ `Sold` ระหว่างรอตรวจ รายงานยังต้องอยู่ใน queue/report history ตาม `AssetReport.reportStatus` แต่ action ที่กระทบ public visibility เช่น `Force Hide` ต้องถูก block ตาม current `Asset Status`
+- Report ID
+- Asset
+- Asset ID
+- Owner
+- Asset Status
+- Moderation/Context pill เมื่อมี
+- Report Status
+- Report Reason
+- Reporters หรือ unique reporter count
+- Priority
+- Created timestamp
+- Row action menu
 
-จำนวน report สำหรับ threshold 1/3/5 ต้องนับจาก unique reporter ใน `AssetReport` หรือ report event table ไม่นับ report ซ้ำจาก user เดิม และต้องมี metadata/audit signal สำหรับตรวจ guardrail เช่น account age, related accounts, suspicious report burst หรือ report bombing pattern
+### Report Search
 
-### Required Report State Scenarios
+Reported Assets ต้องค้นหาได้จาก:
 
-| Scenario | Required Behavior |
-| --- | --- |
-| 1 report on public `Sale`/`Show` asset | สร้าง `AssetReport`, เข้า queue เป็น `Pending`, asset ยังแสดงบน FO ตาม status เดิม |
-| 3 unique reporters | ยกระดับ priority/review state แต่ยังไม่ auto-hide จาก FO |
-| 5 unique reporters while asset is still `Sale`/`Show` | ระบบซ่อนชั่วคราวได้โดยคง `Asset Status` เดิมและตั้ง `Moderation State = Auto Hidden` หรือ `Pending Review`; ต้องมี audit |
-| Report เกิดตอน `Sale`/`Show` แล้ว owner เปลี่ยนเป็น `Hide` ก่อน Admin action | report ยังอยู่ใน queue/history ตาม `AssetReport.reportStatus`, UI แสดง current asset status เป็น `Hide`, block `Force Hide`, ไม่ตั้ง `Auto Hidden`, Admin close report/no action ได้พร้อม audit |
-| Report เกิดตอน `Sale`/`Show` แล้ว asset กลายเป็น `Sold` ก่อน Admin action | report ยังอยู่ใน queue/history, UI แสดง current asset status เป็น `Sold`, block `Force Hide` และ restore visibility, ไม่ตั้ง `Auto Hidden`, Admin close report/no action ได้พร้อม audit |
-| Report ถูก `Closed`/`Cleared` | ถือเป็น final state ใน Phase 1; ไม่แสดง reopen action ใน prototype flow ปกติ |
-
-Reported asset detail ควรแสดง:
-
+- Report ID
+- Asset ID
+- Asset name
+- Owner name
+- Reporter name
 - Report reason
-- Reporter
-- Reported owner
-- Report timestamp
-- Previous report history
-- Asset current status
-- Related comments/offers ถ้ามีและ admin access มีสิทธิ์
 
-## 10. Sensitive Data Rules
+### Report Filters
 
-Sensitive fields ต้องไม่แสดงแบบเปิดโล่งกับทุก Admin access:
+Reported Assets ต้องมี filter ขั้นต่ำ:
 
-| Data | Default Behavior | Allowed Roles |
-| --- | --- | --- |
-| Purchase Price | Masked | Admin, admin access ที่ได้รับ permission เฉพาะ |
-| Purchase Date / Purchase From | Masked หรือ partial | Admin ตาม policy |
-| Proof of Payment | Hidden/preview blocked | Admin หรือ permission เฉพาะ |
-| Consignment Owner Contact | Masked | Admin ตาม case |
-| Consignment Terms | Masked | Admin, permission เฉพาะ |
-| Sold History | Limited summary | Admin ตาม case |
+- Report Status: `Pending`, `Closed`, `Cleared`
+- Priority
+- Sort: newest first, oldest first
+- Reset filter
 
-ใน prototype ปัจจุบัน sensitive context เป็น read-only review modal และใช้ข้อมูลตัวอย่างแบบ masked/summarized
-ถ้าระบบจริงเพิ่มปุ่ม reveal ข้อมูลเต็ม ต้อง audit เมื่อข้อมูลมีความเสี่ยงสูง เช่น proof of payment หรือ consignment contact
+### Report Status
 
-## 11. Admin Actions
-
-| Action | Requirement |
+| Status | Meaning |
 | --- | --- |
-| View detail | Admin access must have module access |
-| View purchase/provenance context | Read-only/masked modal ตาม prototype |
-| View consignment details | Read-only/masked modal ตาม prototype |
-| View sale history | Read-only/summarized modal สำหรับ sold asset |
-| ซ่อนชั่วคราว | Confirmation + reason required; audit; FO surfaces update |
-| ยกเลิกซ่อนชั่วคราว | Confirmation + reason required; audit; FO surfaces update |
-| ซ่อนถาวร | Confirmation + reason required; audit; FO surfaces update; owner เห็น read-only และไม่สามารถลบเอง |
-| Close report | Confirmation/reason ตาม report outcome และ audit; รายงานที่ปิดแล้วถือเป็น final state ใน Phase 1 และไม่เปิดกลับจาก prototype flow ปกติ |
+| `Pending` | Report ยังรอ review หรือยังมี action ที่ต้องตรวจ |
+| `Closed` | ปิด report แล้วพร้อม outcome |
+| `Cleared` | ตรวจแล้วไม่พบปัญหาและปิด case |
 
-Admin action scope ใน Phase 1 ไม่รวมการเปลี่ยน `Sale`/`Show`/`Hide`/`Sold` โดยตรง เพราะเป็น owner-controlled หรือ transaction-controlled status
+Report ที่ `Closed` หรือ `Cleared` เป็น final state และไม่มี reopen action ในเมนูนี้
 
-Bulk action, flag/unflag, export asset list และ generic reveal sensitive data ไม่อยู่ใน prototype ปัจจุบัน หากเพิ่มภายหลังต้องมี permission, confirmation/reason ตามความเสี่ยง และ audit
+## 12. Asset Report Detail
 
-## 12. Error, Empty, Loading States
+Asset Report Detail ใช้สำหรับตรวจสอบ report case และ action ที่เกี่ยวข้อง
 
-ต้องรองรับ:
+### Required Sections
 
-- Empty list เมื่อไม่มี asset ตาม filter
-- Empty reported queue
-- Asset unavailable state เมื่อ asset ถูกซ่อนถาวรหรือ ลบโดยเจ้าของ ระหว่างเปิดหน้า
-- Error scenario ใน confirmation modal สำหรับซ่อนชั่วคราว, restore visibility และซ่อนถาวร
-- Production implementation ควรเพิ่ม partial load error, permission denied state และ stale status warning เมื่อเชื่อม backend จริง
+- Report summary
+- Reported Asset reference
+- Current asset status
+- Current moderation state
+- Owner information
+- Reporter History
+- Report reason และ additional details
+- Admin Action History
+- Asset status/moderation history ที่เกี่ยวข้อง
 
-## 13. Audit Requirements
+### Required Reported Asset Reference
+
+- Report ID
+- Asset ID
+- Asset name
+- Owner ID
+- Owner name
+- Current asset status
+- Current moderation state
+- View Asset action
+
+### Reporter History
+
+Reporter History ต้องแสดง:
+
+- Report timestamp
+- Reporter
+- Report status
+- Report reason
+- Additional details
+
+### Detail Actions
+
+Action buttons ต้องแสดงเฉพาะที่ทำได้ตาม current asset state, report status และ permission:
+
+- Close report
+- ซ่อนชั่วคราว
+- ยกเลิกซ่อนชั่วคราว
+- ซ่อนถาวร
+
+## 13. Report Handling Rules
+
+เมื่อ user report asset:
+
+- ต้องสร้างหรืออัปเดต report case
+- ต้องเข้า Reported Assets queue
+- ต้องนับ reporter แบบ unique reporter
+- Report ซ้ำจาก user เดิมต้องไม่เพิ่ม unique reporter count
+- Report case ต้องผูกกับ asset current state ล่าสุดเสมอ
+
+### Threshold Rules
+
+| Condition | Required Behavior |
+| --- | --- |
+| 1 unique reporter | สร้าง report case เป็น `Pending`; asset ยังแสดงตาม status เดิม |
+| 3 unique reporters | ยกระดับ priority เป็น review priority; asset ยังแสดงตาม status เดิม |
+| 5 unique reporters และ asset ยังเป็น `Sale` หรือ `Show` | ระบบซ่อนชั่วคราวได้ โดยคง owner-controlled status เดิมและตั้ง moderation state เป็น `ซ่อนชั่วคราว`; ต้องมี audit |
+| 5 unique reporters แต่ asset เป็น `Hide` หรือ `Sold` แล้ว | ไม่ auto-hide, block temporary hide, เก็บ report ใน queue/history และให้ Admin close report ได้ |
+
+Temporary hide จาก report ใช้ได้เฉพาะ asset ที่ current owner-controlled status เป็น `Sale` หรือ `Show`
+
+ถ้า asset ถูก report ตอนเป็น `Sale` หรือ `Show` แล้ว owner เปลี่ยนเป็น `Hide` หรือ asset เปลี่ยนเป็น `Sold` ก่อน Admin action:
+
+- Report ต้องยังอยู่ใน queue/history ตาม report status
+- UI ต้องแสดง current asset status ล่าสุด
+- Temporary hide ต้องถูก block
+- Restore visibility ต้องถูก block ถ้า asset ไม่ได้อยู่ใน moderation state `ซ่อนชั่วคราว`
+- Admin ทำได้เฉพาะ close report หรือ permanent hide เมื่อ current state และ permission อนุญาต
+
+## 14. Report Data Model
+
+Reported Assets queue ต้องใช้ report case เป็น source of truth และ join กับ asset เพื่อแสดง current asset state ล่าสุด
+
+ขั้นต่ำต้องแยกข้อมูลดังนี้:
+
+- Asset Status: `Sale`, `Show`, `Hide`, `Sold`
+- Moderation State: None, `ซ่อนชั่วคราว`, `ซ่อนถาวร`
+- Report Status: `Pending`, `Closed`, `Cleared`
+- Report Case: reportId, assetId, reportStatus, uniqueReporterCount, reporter history, reason summary, priority, created timestamp, closed timestamp, audit references
+
+ห้าม infer รายการใน Reported Assets queue จาก asset status, moderation pill หรือข้อความใน asset row เพียงอย่างเดียว
+
+## 15. Sensitive Data Rules
+
+| Data | Default Behavior |
+| --- | --- |
+| Purchase Price | Masked |
+| Purchase Date | Masked หรือ partial |
+| Purchase From | Masked หรือ partial |
+| Proof of Payment | Hidden หรือ preview blocked |
+| Consignment Owner Contact | Masked |
+| Consignment Terms | Masked หรือ summarized |
+| Sold History | Limited summary |
+
+Sensitive data ต้องเป็น read-only เสมอในเมนูนี้
+
+## 16. Error, Empty And Loading States
+
+ต้องรองรับ state ต่อไปนี้:
+
+- Loading asset list
+- Loading asset detail
+- Loading reported asset queue
+- Loading report detail
+- Empty asset list เมื่อไม่มีข้อมูลตาม filter
+- Empty reported asset queue
+- Empty search result
+- Permission denied
+- Asset unavailable ระหว่างเปิด detail
+- Report unavailable ระหว่างเปิด detail
+- Stale state เมื่อข้อมูลถูกเปลี่ยนก่อนยืนยัน action
+- Action error ใน confirmation modal
+- Validation error เมื่อไม่กรอก reason
+
+เมื่อ action ล้มเหลว ห้ามเปลี่ยน UI เป็น success state และต้องให้ Admin retry หรือปิด modal ได้
+
+## 17. Audit Requirements
 
 ทุก write action ต้องบันทึก:
 
-- Admin ID
-- Admin Access
+- Actor ID
+- Actor role/access
 - Action type
 - Target asset ID
-- Before value
-- After value
-- Reason/note
 - Related report ID ถ้ามี
+- Before state
+- After state
+- Reason/note
 - IP address หรือ session context ถ้ามี
 - Timestamp เป็น `Asia/Bangkok`
 
-Action types ที่ prototype ต้องแสดงใน history/audit:
+### Required Action Types
 
 - `ASSET_TEMP_HIDE`
 - `ASSET_TEMP_UNHIDE`
 - `ASSET_PERMANENT_HIDE`
 - `ASSET_OWNER_DELETE`
-- `ASSET_RESTORE` ใช้เฉพาะการยกเลิกซ่อนชั่วคราว
+- `REPORT_CLOSE`
+- `REPORT_CLEAR`
 
-Action types สำหรับ production extension แต่ไม่อยู่ใน prototype ปัจจุบัน:
+Audit history ต้องแสดงใน Asset Detail หรือ Asset Report Detail ตาม context ที่เกี่ยวข้อง
 
-- `ASSET_FLAG`
-- `ASSET_UNFLAG`
-- `ASSET_EXPORT`
-- `ASSET_SENSITIVE_FIELD_REVEAL`
-
-## 14. Integration With Other BO Modules
-
-| Module | Integration |
-| --- | --- |
-| Dashboard | ใช้ asset count, reported asset count, status distribution, recent moderation |
-| User Management | Asset list/detail ต้อง link กลับ owner profile ใน BO |
-| Offer & Chat | Asset ซ่อนถาวร, ลบโดยเจ้าของ หรือ sold ต้องกระทบ pending offer และ related chat context |
-| Social Interaction | Reported comments บน asset detail ต้องเชื่อม context |
-| Watch Alert | Sale asset เท่านั้นที่ trigger watch alert |
-| Audit Log | ทุก write/export/reveal action ต้อง searchable |
-| Reports & Analytics | Asset data ต้อง export/aggregate ตาม permission |
-
-## 15. Performance
-
-Prototype ปัจจุบันเป็น static HTML/JS mock และทำ search/filter/sort/pagination ฝั่ง client จาก mock data ทั้งหมด
-
-เมื่อเปลี่ยนเป็น production implementation:
-
-- Asset list ต้องใช้ server-side pagination
-- Search/filter ต้องไม่โหลด asset ทั้งหมดมาที่ client
-- Image gallery ใช้ thumbnail และ lazy loading
-- Export ขนาดใหญ่ควรเป็น background job หากเปิด export feature
-- Dashboard metric ควรอ่านจาก aggregate/cache ไม่ query detail หนักทุกครั้ง
-
-## 16. Acceptance Criteria
+## 18. Acceptance Criteria
 
 | ID | Criteria |
 | --- | --- |
-| AC-BO-ASSET-001 | Admin เห็น asset list พร้อม search/filter/sort/pagination ตาม Admin access |
-| AC-BO-ASSET-002 | Asset detail แสดง core fields, gallery/FO preview, status, owner, comments, history และ moderation context ครบ |
-| AC-BO-ASSET-003 | Sensitive review context แสดงใน read-only/masked/summarized modal ตาม prototype และพร้อมต่อยอด permission/reveal audit ในระบบจริง |
-| AC-BO-ASSET-004 | Reported asset เข้า queue โดยไม่หายจาก FO ทันที เว้นแต่มี rule ชัดเจน |
-| AC-BO-ASSET-005 | ซ่อนชั่วคราว/ยกเลิกซ่อนชั่วคราว/ซ่อนถาวร และ report outcome ต้องมี confirmation, reason และ audit; Admin ต้องไม่เปลี่ยน `Sale`/`Show`/`Hide`/`Sold` โดยตรง |
-| AC-BO-ASSET-006 | BO moderation visibility action sync ผลไป FO surfaces ตาม visibility matrix โดยไม่เปลี่ยน owner-controlled status ตรง ๆ |
-| AC-BO-ASSET-007 | BO implementation ใช้ status `Show` และ `Hide` ตาม FO เป็นหลัก และ normalize คำเก่าจาก legacy source ก่อนใช้งาน |
-| AC-BO-ASSET-008 | Sold asset ใช้สำหรับ owner history/admin review และไม่กลับไป marketplace surface |
-| AC-BO-ASSET-009 | Asset ที่ถูกซ่อนถาวรหรือ ลบโดยเจ้าของ หายจาก public FO surfaces และ direct link ใช้ unavailable behavior |
-| AC-BO-ASSET-010 | Responsive layout ใช้งานได้ที่ mobile-width, tablet และ desktop |
-| AC-BO-ASSET-011 | Asset ที่ถูกซ่อนถาวรยังแสดงให้ owner เห็นแบบ read-only แต่ owner แก้ไข publish ใหม่ ยกเลิกซ่อน boost mark sold หรือลบเองไม่ได้ |
-| AC-BO-ASSET-012 | Asset ที่ถูกซ่อนถาวรและ ลบโดยเจ้าของ ต้องไม่ถูกนำไปรวมใน portfolio/asset value |
-| AC-BO-ASSET-013 | Asset ที่ลบโดยเจ้าของต้องมี history/audit row ระบุ actor เจ้าของ, action `Asset Deleted By Owner`, before/after state และ timestamp |
-| AC-BO-ASSET-014 | Reported Assets queue ใน production อ่านจาก `AssetReport`/report case record และ join current asset state เพื่อแสดง queue ไม่ infer จาก asset status หรือ moderation pill อย่างเดียว |
-| AC-BO-ASSET-015 | ถ้า asset ถูก report ตอน `Sale`/`Show` แล้วเปลี่ยนเป็น `Hide` หรือ `Sold` ก่อน Admin action, report ยังอยู่ใน queue/history แต่ `Force Hide` และ auto-hide ต้องถูก block ตาม current asset status |
-| AC-BO-ASSET-016 | Report ที่ `Closed`/`Cleared` เป็น final state ใน Phase 1 และ prototype flow ปกติต้องไม่แสดง reopen action |
-
-## 17. Open Decisions
-
-| ID | Decision Needed | Current Recommendation |
-| --- | --- | --- |
-| BO-ASSET-DEC-001 | จะเปิด restore จากสถานะซ่อนถาวรใน Phase 1 หรือไม่ | ไม่เปิดใน moderation flow ปกติ; restore ได้เฉพาะซ่อนชั่วคราว |
-| BO-ASSET-DEC-002 | Sensitive-field reveal ต้อง audit ทุกครั้งหรือเฉพาะ high-risk fields | Audit อย่างน้อย proof of payment, consignment contact และ export |
-| BO-ASSET-DEC-003 | Pending offer เมื่อ asset ถูก BO remove/sold ใช้ status `Cancelled` หรือ `Invalidated` | ใช้ `Invalidated` เป็น system-caused state และ map UX ใน Offer module |
-| BO-ASSET-DEC-004 | Direct-link unavailable copy ใน FO | ให้ FO UX กำหนด copy แต่ BO ต้องส่ง state ที่ชัดเจน |
-
+| AC-BO-ASSET-001 | Admin ที่มีสิทธิ์เห็น Asset List พร้อม search, filter, sort, pagination และ reset filter |
+| AC-BO-ASSET-002 | Asset List แสดง field หลักและ row action ตาม current state ได้ถูกต้อง |
+| AC-BO-ASSET-003 | Asset Detail แสดง core fields, commerce fields, sensitive context แบบ masked/summarized และ history ที่เกี่ยวข้อง |
+| AC-BO-ASSET-004 | Admin ไม่สามารถเปลี่ยน owner-controlled status `Sale`, `Show`, `Hide`, `Sold` จาก Back Office ได้โดยตรง |
+| AC-BO-ASSET-005 | Temporary hide ทำได้เฉพาะ asset ที่เป็น `Sale` หรือ `Show` และต้องคง owner-controlled status เดิมไว้ |
+| AC-BO-ASSET-006 | Restore temporary hide ทำได้เฉพาะ asset ที่อยู่ใน moderation state `ซ่อนชั่วคราว` |
+| AC-BO-ASSET-007 | Permanent hide ซ่อน asset จาก public surfaces ถาวร และ owner เห็นได้เฉพาะ read-only |
+| AC-BO-ASSET-008 | Asset ที่ `ซ่อนถาวร` หรือ `ลบโดยเจ้าของ` ไม่ถูกนับใน portfolio value หรือ asset value summary |
+| AC-BO-ASSET-009 | Owner deleted asset ต้องมี history/audit row พร้อม actor, before state, after state และ timestamp |
+| AC-BO-ASSET-010 | Reported Assets queue แสดง report case จาก report source of truth ไม่ infer จาก asset row |
+| AC-BO-ASSET-011 | Report threshold 1/3/5 unique reporters ทำงานตาม rule ที่กำหนด |
+| AC-BO-ASSET-012 | ถ้า asset เปลี่ยนเป็น `Hide` หรือ `Sold` ก่อน Admin action ต้อง block temporary hide และแสดง current asset status ล่าสุด |
+| AC-BO-ASSET-013 | Close/Clear report ต้องมี confirmation, reason เมื่อจำเป็น และ audit |
+| AC-BO-ASSET-014 | Report ที่ `Closed` หรือ `Cleared` เป็น final state และไม่มี reopen action ในเมนูนี้ |
+| AC-BO-ASSET-015 | ทุก action ที่กระทบ visibility หรือ report outcome ต้องมี permission check, confirmation, reason, before/after state และ audit |
+| AC-BO-ASSET-016 | Responsive layout ใช้งานได้ครบที่ mobile-width, tablet และ desktop |
