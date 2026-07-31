@@ -117,7 +117,7 @@ BO มีประเภทบัญชีผู้ดูแลเพียง�
 | --- | --- | --- |
 | User ID | แสดงใน list; ใช้ได้ในการค้นหาและแสดงใน User Detail | แสดงใน card/list metadata และรายละเอียด |
 | Display Name | แสดง | ข้อมูลหลัก |
-| Username | ไม่แสดงเป็น column แยกใน list; ใช้ค้นหาและแสดงใน User Detail | แสดงในรายละเอียด |
+| Username | ไม่แสดงเป็น column แยกใน list; ใช้ค้นหาและแสดงใน User Detail header/subtitle | แสดงในรายละเอียดตาม layout ปัจจุบัน |
 | Email | ไม่แสดงใน list ปัจจุบัน; ใช้ค้นหาแบบ masked และแสดงเต็มใน User Detail prototype | ไม่แสดงบน card list ปัจจุบัน |
 | Verification State | ไม่แสดงเป็น column แยก; สื่อผ่าน status/auth และ Contact/Auth ใน detail | ไม่แสดงเป็น field แยก |
 | Auth Method | แสดง | แสดง |
@@ -134,7 +134,7 @@ BO มีประเภทบัญชีผู้ดูแลเพียง�
 
 | Section | เนื้อหา |
 | --- | --- |
-| Account Summary | User ID, display name, รูปโปรไฟล์, สถานะ, วันที่สมัคร, การใช้งานล่าสุด, follower/following; username/reference แสดงใน header/subtitle และใช้ค้นหาได้ |
+| Account Summary | User ID, display name, รูปโปรไฟล์, สถานะ, วันที่สมัคร, การใช้งานล่าสุด, follower/following; username/reference แสดงใน header/subtitle และใช้ค้นหาได้ โดย detail tile ปัจจุบันยังใช้ label `Username` กับค่า display name ตาม Prototype |
 | Contact / Auth | Email, วิธีล็อกอิน, SSO provider, สถานะการยืนยัน email; contact field ที่เป็น optional เช่น phone/Line/Facebook/Instagram แสดงเฉพาะเมื่อผู้ใช้กรอกไว้ภายหลังใน profile/contact details |
 | Link Profile | Profile URL name และ public profile URL ตาม prototype |
 | Assets Summary | จำนวน asset แยกตาม Sale, Show, Hide, Sold, Removed/Hidden |
@@ -462,22 +462,23 @@ Prototype BO ปัจจุบัน align User List กับ visual system �
 
 ข้อมูลและ interaction ของ Reported Users prototype ปัจจุบัน:
 
-- ใช้ visual system เดียวกับ Dashboard และ User List ได้แก่ module header, summary card 4 ใบ, list utility แบบ compact, filter bar, table พร้อม pagination, structured detail view และ pattern ปุ่มมาตรฐาน
+- ใช้ visual system เดียวกับ Dashboard และ User List ได้แก่ module header, list utility แบบ compact, filter bar, table พร้อม pagination, structured detail view และ pattern ปุ่มมาตรฐาน; Prototype ปัจจุบันของ Reported Users ไม่แสดง summary card ในหน้านี้
 - Reported Users เป็น operational queue สำหรับ report ผู้ใช้/โปรไฟล์จาก FO ไม่ใช่หน้า analytics และไม่ควรซ้ำกับ Reports & Analytics
 - ตัวอย่าง Suspended ใน prototype ต้อง align กับ policy: ใช้ `>= 5 reports/reporters` หรือมี high-risk evidence ชัดเจนก่อนแสดง `Suspended`; `>= 3 reports` เพิ่มเฉพาะ review priority เว้นแต่เข้า risk rule
 - Mock report queue ครอบคลุม account-status context ที่เกิดขึ้นได้กับบัญชีที่ถูกรายงาน ได้แก่ `Active`, `Suspended`, `Banned`, และ `Deletion Requested`; ไม่ใช้ `Pending Verification` ในคิวนี้เพราะ FO report user เกิดจาก user profile หรือ chat ของบัญชีที่ใช้งาน/มี interaction แล้ว
 - Mock report queue ครอบคลุม outcome หลักของ report handling ได้แก่ report ใหม่/open, report in-review, false report ที่ปิดเป็น `Closed` โดยไม่ทำ account action, report ที่ resolved หลัง action, บัญชี active ที่มี 1-2 reports, บัญชี active ที่มี 3 reports และถูกยกระดับเป็น priority review, บัญชี suspended ที่มี 5+ reports/reporters, บัญชี banned หลังยืนยัน severe abuse และบัญชี deletion-request ที่ยังต้อง review user report ก่อน archive/anonymize
-- Summary card แสดง `Open Reports`, `In Review`, `Urgent Cases` และ `Due Soon` เพื่อให้ Admin จัดลำดับ queue ได้โดยไม่ต้องอ่านทุก row
+- Reported Users list ปัจจุบันไม่แสดง summary card; การจัดลำดับคิวทำผ่าน table, filter, priority badge, reported-at และ reporter count
 - Table row แสดง `Report ID`, reported user, account status, report status, reported at, report reason, reporter count, priority, sources และ action menu หนึ่งรายการ ส่วน evidence, waiting time, reporter history และ detailed action อยู่ใน Report Detail page เพื่อให้ list สะอาด
-- Filter รองรับการค้นหาด้วย report ID, user ID, display name, reason, category, status และ priority ส่วน sorting รองรับ oldest waiting first, urgent first, reporter count และ status
-- Report Detail แสดง report summary, สถานะบัญชีผู้ใช้ปัจจุบัน, section `Reported User`, reporter identity/count แบบ masked, timestamp ล่าสุดของ report, `Reporter History`, `Admin Action History` และ action buttons โดย note ชัดเจนว่า report ไม่ได้ซ่อน profile หรือจำกัดบัญชีจนกว่า Admin จะทำ action
+- Filter รองรับการค้นหาด้วย report ID, user ID, display name, reason, category, source, status และ priority ส่วน sorting ใน Prototype ปัจจุบันรองรับ `latest`, `oldest` และ `reporters`
+- Report status ใน list แสดงแบบ queue status เป็น `Pending` หรือ `Closed`; ค่า mock ภายในยังมี `Open` และ `In Review` แต่ Prototype ปัจจุบันสรุปสถานะที่ยังไม่ปิดเป็น `Pending`
+- Report Detail ปัจจุบันแสดง section `Reported User`, `Reporter History`, `Admin Action History`, action buttons และ warning note เฉพาะกรณี `Deletion Requested`; ยังไม่มี report summary/timestamp/note แยกเป็น section เฉพาะ
 - Section `Reported User` ต้องแสดงข้อมูลผู้ใช้ที่ถูกรายงาน ได้แก่ `Report ID`, `User ID`, display name/account status และมีปุ่ม `View User` อยู่แถวเดียวกับหัว section เพื่อเปิดหน้า User Detail ของผู้ใช้คนนั้นโดยตรง
 - Source surface ของรายงานผู้ใช้จาก FO ต้องเป็น `User Profile` หรือ `Chat` เท่านั้น; ไม่ reference ไป asset, offer, signup/auth หรือ deletion request จากหน้า Reported Users
 - `Reporter History` แสดง source, status, report reason และ `Additional Details` ที่เป็นข้อความตัวอย่างภาษาไทยจากหน้าบ้านตามเหตุผลที่เลือก เช่น fraud/scam, impersonation, harassment, inappropriate content, spam หรือ other
 - `Admin Action History` ใช้รายละเอียดแบบคำกลางที่อ่านง่ายเหมือน report เมนูอื่น เช่น `รับรายงานจากหน้าโปรไฟล์ผู้ใช้`, `รับรายงานจากแชท`, `ปิดรายงานโดยไม่เปลี่ยนสถานะบัญชี`, `ระงับบัญชีชั่วคราวระหว่างตรวจสอบ` และ `ระงับบัญชีถาวรหลังตรวจสอบ`
 - Case reported-user ที่มีบัญชีสถานะ `Deletion Requested` ยังต้องแสดง `Reported User` เป็นผู้ใช้ที่ถูกรายงาน ไม่ใช่ deletion request; `Account Deletion` เป็น account workflow/dependency หลังจากตรวจ report แล้วเท่านั้น
 - ถ้าผู้ใช้ที่ถูกรายงานอยู่ในสถานะ `Deletion Requested` แล้ว Admin ต้อง review user report จาก source `User Profile` หรือ `Chat` ก่อน และต้องไม่ close report แล้ว delete/archive บัญชีทันทีจนกว่า dependency ของ Account Deletion จะถูก resolved
-- Review flow ที่แนะนำ: เปิด report detail -> ตรวจ reported user และ source surface (`User Profile`/`Chat`) -> ตรวจ reporter history/evidence note -> start review / close report / manage account status ตาม policy -> ถ้าบัญชีอยู่ใน `Deletion Requested` ค่อย route ต่อไป Account Deletion หลัง review
-- Queue action ที่ prototype รองรับ: เปิด report detail ของผู้ใช้ที่ถูกรายงาน; start review; close report เป็น `Closed`; เปิด user detail ที่เกี่ยวข้อง; และเปิด account status management เมื่อจำเป็นต้องทำ account action
+- Review flow ตาม Prototype ปัจจุบัน: เปิด report detail -> ตรวจ reported user และ source surface (`User Profile`/`Chat`) -> ตรวจ reporter history/evidence note -> close report / manage account status ตาม policy -> ถ้าบัญชีอยู่ใน `Deletion Requested` ค่อย route ต่อไป Account Deletion หลัง review
+- Queue action ที่ prototype รองรับ: เปิด report detail ของผู้ใช้ที่ถูกรายงาน; close report เป็น `Closed`; เปิด user detail ที่เกี่ยวข้อง; และเปิด account status management เมื่อจำเป็นต้องทำ account action
 - การ close report อัปเดต mock status เป็น `Closed`, reset waiting time, แสดง toast และคงบัญชีผู้ใช้ไว้เหมือนเดิม
 - การเปลี่ยน account status ยังจัดการผ่าน User account status modal กลาง เพื่อให้ wording ของ suspension/restore และ confirmation rule สอดคล้องกัน
