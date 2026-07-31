@@ -54,6 +54,7 @@ Asset Management Module ต้องยึด master baseline ต่อไปน
 - Sold เห็นเฉพาะ Owner
 - Hide และ Sold ต้องไม่ Public, ไม่ขึ้น Feed, ไม่ขึ้น Search และไม่เข้า Watch Alert
 - ลบโดยเจ้าของ และ ซ่อนถาวร ต้องไม่ Public, ไม่ขึ้น Feed, ไม่ขึ้น Search, ไม่เข้า Watch Alert และไม่ถูกนำไปรวมใน Portfolio / Asset Value
+- Asset ที่เป็น `Consignment` ไม่ถูกนำไปรวมใน Portfolio / Asset Value เพราะเป็นของฝากขาย ไม่ใช่ทรัพย์สินที่ Owner ถือครองเอง
 - ไม่มี Payment ภายในแอปใน Phase 1
 
 ---
@@ -989,6 +990,7 @@ Owner Profile และ Sold History ใช้ Global Empty State:
 | AC-ASSET-MGMT-008G | `Consignment` ต้องเลือกได้เฉพาะ Asset status = Sale เท่านั้น; Status = Show หรือ Hide ต้องแสดงเฉพาะ `Owner (Asset)` provenance form |
 | AC-ASSET-MGMT-008H | หาก Asset ที่มี `Consignment` ถูกเปลี่ยนจาก Sale เป็น Show หรือ Hide ต้องบังคับเปลี่ยน provenance type เป็น `Owner (Asset)` หรือปิด consignment data ก่อนบันทึก |
 | AC-ASSET-MGMT-008I | หลัง Owner กด Save ใน Edit Provenance ต้องแสดง confirmation เฉพาะ context: `Save purchase history?` สำหรับ Owner (Asset) หรือ `Save consignment details?` สำหรับ Consignment และห้ามใช้ Edit Asset body ที่อ้างถึง current status |
+| AC-ASSET-MGMT-008J | Asset ที่เป็น `Consignment` ต้องไม่ถูกนำไปรวมใน Portfolio / Asset Value |
 | AC-ASSET-MGMT-009 | Add / Edit Asset ต้องให้เลือก status ได้เฉพาะ Sale, Show และ Hide |
 | AC-ASSET-MGMT-010 | Add / Edit Asset ต้องไม่ให้เลือก Sold เป็น status ปกติ |
 | AC-ASSET-MGMT-010A | Change Status sheet ต้องให้เลือกเฉพาะ Sale, Show และ Hide โดยไม่มี Sold option และต้อง disable Save เมื่อเลือกสถานะเดิม |

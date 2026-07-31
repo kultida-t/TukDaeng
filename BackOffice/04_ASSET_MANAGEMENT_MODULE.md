@@ -267,6 +267,8 @@ Moderation state เป็น overlay บน owner-controlled status และ�
 
 Asset ที่มี state `ซ่อนถาวร` หรือ `ลบโดยเจ้าของ` ต้องไม่ถูกนับใน portfolio value หรือ asset value summary
 
+Asset ที่เป็น `Consignment` ต้องไม่ถูกนับใน portfolio value หรือ asset value summary เพราะเป็นของฝากขาย ไม่ใช่ทรัพย์สินที่ owner ถือครองเอง
+
 ## 10. Moderation Action Rules
 
 ### General Requirements
@@ -547,7 +549,7 @@ Audit history ต้องแสดงใน Asset Detail หรือ Asset Rep
 | AC-BO-ASSET-005 | Temporary hide ทำได้เฉพาะ asset ที่เป็น `Sale` หรือ `Show` และต้องคง owner-controlled status เดิมไว้ |
 | AC-BO-ASSET-006 | Restore temporary hide ทำได้เฉพาะ asset ที่อยู่ใน moderation state `ซ่อนชั่วคราว` |
 | AC-BO-ASSET-007 | Permanent hide ซ่อน asset จาก public surfaces ถาวร และ owner เห็นได้เฉพาะ read-only |
-| AC-BO-ASSET-008 | Asset ที่ `ซ่อนถาวร` หรือ `ลบโดยเจ้าของ` ไม่ถูกนับใน portfolio value หรือ asset value summary |
+| AC-BO-ASSET-008 | Asset ที่ `ซ่อนถาวร`, `ลบโดยเจ้าของ` หรือเป็น `Consignment` ไม่ถูกนับใน portfolio value หรือ asset value summary |
 | AC-BO-ASSET-009 | Owner deleted asset ต้องมี history/audit row พร้อม actor, before state, after state และ timestamp |
 | AC-BO-ASSET-010 | Reported Assets queue แสดง report case จาก report source of truth ไม่ infer จาก asset row |
 | AC-BO-ASSET-011 | Report threshold 1/3/5 unique reporters ทำงานตาม rule ที่กำหนด |
