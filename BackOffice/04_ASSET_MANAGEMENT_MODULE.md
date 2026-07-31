@@ -241,7 +241,7 @@ Admin ทำได้เฉพาะ moderation actions ที่ซ้อนท
 - Report 3 ครั้งจาก unique reporter: ยกระดับเป็น priority review / `Reviewing` แต่ยังไม่ซ่อนจาก FO อัตโนมัติ
 - Report 5 ครั้งจาก unique reporter: ระบบซ่อนโพสต์ชั่วคราวได้โดยคง `Asset Status` เดิม เช่น `Sale` หรือ `Show` และตั้ง `Moderation State` เป็น `Auto Hidden` หรือ `Pending Review` เพื่อรอ Admin ตรวจสอบ
 - Temporary report hiding ใช้ได้เฉพาะ asset ที่มี public visibility คือ `Sale` และ `Show`; ห้ามใช้กับ `Hide` เพราะเป็น owner-only อยู่แล้ว และห้ามใช้กับ `Sold` เพราะเป็น sold history/read-only
-- ถ้า asset ถูก report ตอนเป็น `Sale`/`Show` แต่ owner เปลี่ยนเป็น `Hide` หรือ `Sold` ก่อน Admin action หรือก่อนถึง auto-hide threshold ให้ report queue ยังเก็บ report ไว้เพื่อ audit/review แต่ต้อง block `Force Hide` และไม่ตั้ง `Moderation State = Auto Hidden`; UI ต้องแสดง current asset status ล่าสุดและให้ Admin ทำได้เฉพาะ review/no action, ซ่อนถาวรตาม policy หรือ action กับ account/report ถ้าหลักฐานผิดจริง
+- ถ้า asset ถูก report ตอนเป็น `Sale`/`Show` แต่ owner เปลี่ยนเป็น `Hide` หรือ `Sold` ก่อน Admin action หรือก่อนถึง auto-hide threshold ให้ report queue ยังเก็บ report ไว้เพื่อ audit/review แต่ต้อง block `Force Hide` และไม่ตั้ง `Moderation State = Auto Hidden`; UI ต้องแสดง current asset status ล่าสุดและให้ Admin ทำได้เฉพาะ review/no action หรือซ่อนถาวรตาม policy เฉพาะเมื่อ current asset status และ permission ยังเข้าเงื่อนไข
 - การซ่อนอัตโนมัติจากจำนวน report ต้องนับ unique reporter เท่านั้น ไม่นับ report ซ้ำจาก user เดิม และต้องมี guardrail กัน report bombing จากบัญชีใหม่หรือกลุ่มบัญชีที่เกี่ยวข้องกัน
 - กรณี risk สูง เช่น scam, counterfeit, stolen image, ข้อมูลหลอกลวง หรือ external payment fraud ใน V1 ยังไม่มี automated detector/verified signal ให้ซ่อนอัตโนมัติจาก reason เพียงอย่างเดียว; ให้เข้า priority review และให้ Admin ใช้ `Force Hide` เองหลังดู evidence
 - Admin ต้อง review report แล้วเลือก action
@@ -249,6 +249,54 @@ Admin ทำได้เฉพาะ moderation actions ที่ซ้อนท
 - Restore visibility รองรับเฉพาะ asset ที่ถูกซ่อนชั่วคราวเท่านั้น ไม่รองรับการ restore จากสถานะซ่อนถาวรใน moderation flow ปกติ
 - การลบ asset จริงไม่ใช่ action ปกติในหน้า Asset Management ของ prototype นี้ หากต้องลบข้อมูลจริงให้ถือเป็นกระบวนการนอกหน้าจอปกติ เช่น internal request, legal/privacy request หรือ system retention job ตามนโยบายระบบ
 - ทุกผลลัพธ์ต้อง audit-log และผูกกลับ report record
+
+### Reported Assets Prototype Surface
+
+หน้า `Asset Management > Reported Assets` ใน prototype เป็น queue แยกจาก `Asset List` และต้องแสดงข้อมูลหลักสำหรับ scan/report handling ดังนี้:
+
+- `Report ID`
+- `Asset`
+- `Asset Status` โดยแสดง owner-controlled status เช่น `Sale`/`Show` พร้อม moderation/context pill เช่น `Consignment`, `ซ่อนชั่วคราว`, `ซ่อนถาวร`
+- `Status` ของ report case เช่น `Pending`, `Closed`
+- `Report Reason`
+- `Reporters` เป็นจำนวน reporter/unique reporter ที่ใช้ประเมิน threshold
+- `Priority`
+- Row action menu สำหรับเปิด report detail และ action ที่ยังทำได้ตาม current asset/report state
+
+Filter ของ queue ใน prototype ต้องมีอย่างน้อย search จาก `Report ID`, asset, owner, asset ID รวมถึง filter แยกตาม report status, priority, sort และ reset filter
+
+Report detail ใน prototype ต้องมี:
+
+- `Reported Asset` reference พร้อม `Report ID`, `Asset ID`, asset name, owner ID, owner, current asset status และปุ่ม `View Asset`
+- `Reporter History` table ที่แสดงวันที่/เวลา, reporter รายคน, report status, report reason และ additional details
+- `Admin Action History` ที่ผูก action กลับ report/asset พร้อม before/after state, actor, timestamp, email delivery เมื่อมี และ note
+- Action buttons เฉพาะที่ทำได้ตาม state เช่น close report, temporary hide, restore visibility หรือ permanent hide
+
+### Report Queue Data Model
+
+Prototype แสดงหน้าจอด้วย mock data ฝั่ง client แต่ production ต้องถือ `AssetReport` หรือ report case record เป็น source of truth ของ `Asset Management > Reported Assets` queue ไม่ใช่ infer จาก asset status, moderation pill หรือคำใน text ของ asset row เพียงอย่างเดียว
+
+โครงสร้างข้อมูลควรแยกอย่างน้อย:
+
+- `Asset Status`: owner/transaction-controlled status เช่น `Sale`, `Show`, `Hide`, `Sold`
+- `Moderation State`: BO visibility overlay เช่น `None`, `Pending Review`, `Auto Hidden`, `Admin Hidden`, `Permanently Hidden`
+- `Report Status`: สถานะของ report case เช่น `Pending`, `Cleared`
+- `AssetReport`: report case ที่มี `reportId`, `assetId`, `reportStatus`, `uniqueReporterCount`, reporter history, reason summary, priority, created/closed timestamp และ audit references
+
+ดังนั้น BO reported asset queue ต้อง query จาก `AssetReport` แล้ว join ไปยัง `Asset` เพื่อแสดง asset current status ล่าสุด หาก asset เปลี่ยนจาก `Sale`/`Show` เป็น `Hide` หรือ `Sold` ระหว่างรอตรวจ รายงานยังต้องอยู่ใน queue/report history ตาม `AssetReport.reportStatus` แต่ action ที่กระทบ public visibility เช่น `Force Hide` ต้องถูก block ตาม current `Asset Status`
+
+จำนวน report สำหรับ threshold 1/3/5 ต้องนับจาก unique reporter ใน `AssetReport` หรือ report event table ไม่นับ report ซ้ำจาก user เดิม และต้องมี metadata/audit signal สำหรับตรวจ guardrail เช่น account age, related accounts, suspicious report burst หรือ report bombing pattern
+
+### Required Report State Scenarios
+
+| Scenario | Required Behavior |
+| --- | --- |
+| 1 report on public `Sale`/`Show` asset | สร้าง `AssetReport`, เข้า queue เป็น `Pending`, asset ยังแสดงบน FO ตาม status เดิม |
+| 3 unique reporters | ยกระดับ priority/review state แต่ยังไม่ auto-hide จาก FO |
+| 5 unique reporters while asset is still `Sale`/`Show` | ระบบซ่อนชั่วคราวได้โดยคง `Asset Status` เดิมและตั้ง `Moderation State = Auto Hidden` หรือ `Pending Review`; ต้องมี audit |
+| Report เกิดตอน `Sale`/`Show` แล้ว owner เปลี่ยนเป็น `Hide` ก่อน Admin action | report ยังอยู่ใน queue/history ตาม `AssetReport.reportStatus`, UI แสดง current asset status เป็น `Hide`, block `Force Hide`, ไม่ตั้ง `Auto Hidden`, Admin close report/no action ได้พร้อม audit |
+| Report เกิดตอน `Sale`/`Show` แล้ว asset กลายเป็น `Sold` ก่อน Admin action | report ยังอยู่ใน queue/history, UI แสดง current asset status เป็น `Sold`, block `Force Hide` และ restore visibility, ไม่ตั้ง `Auto Hidden`, Admin close report/no action ได้พร้อม audit |
+| Report ถูก `Closed`/`Cleared` | ถือเป็น final state ใน Phase 1; ไม่แสดง reopen action ใน prototype flow ปกติ |
 
 Reported asset detail ควรแสดง:
 
@@ -374,6 +422,9 @@ Prototype ปัจจุบันเป็น static HTML/JS mock และท�
 | AC-BO-ASSET-011 | Asset ที่ถูกซ่อนถาวรยังแสดงให้ owner เห็นแบบ read-only แต่ owner แก้ไข publish ใหม่ ยกเลิกซ่อน boost mark sold หรือลบเองไม่ได้ |
 | AC-BO-ASSET-012 | Asset ที่ถูกซ่อนถาวรและ ลบโดยเจ้าของ ต้องไม่ถูกนำไปรวมใน portfolio/asset value |
 | AC-BO-ASSET-013 | Asset ที่ลบโดยเจ้าของต้องมี history/audit row ระบุ actor เจ้าของ, action `Asset Deleted By Owner`, before/after state และ timestamp |
+| AC-BO-ASSET-014 | Reported Assets queue ใน production อ่านจาก `AssetReport`/report case record และ join current asset state เพื่อแสดง queue ไม่ infer จาก asset status หรือ moderation pill อย่างเดียว |
+| AC-BO-ASSET-015 | ถ้า asset ถูก report ตอน `Sale`/`Show` แล้วเปลี่ยนเป็น `Hide` หรือ `Sold` ก่อน Admin action, report ยังอยู่ใน queue/history แต่ `Force Hide` และ auto-hide ต้องถูก block ตาม current asset status |
+| AC-BO-ASSET-016 | Report ที่ `Closed`/`Cleared` เป็น final state ใน Phase 1 และ prototype flow ปกติต้องไม่แสดง reopen action |
 
 ## 17. Open Decisions
 
