@@ -35,7 +35,7 @@ Asset Management คือเมนูสำหรับ Admin ใช้ตร�
 - Owner-controlled asset status: `Sale`, `Show`, `Hide`, `Sold`
 - System/retention state: `ลบโดยเจ้าของ`
 - Moderation state: `ซ่อนชั่วคราว`, `ซ่อนถาวร`
-- Moderation action: temporary hide, restore temporary hide, permanent hide, close report
+- Action สำหรับการตรวจสอบและจัดการ: ซ่อนชั่วคราว, ยกเลิกซ่อนชั่วคราว, ซ่อนถาวร, ปิดรายงาน
 - Confirmation, reason และ audit สำหรับ action ที่กระทบ visibility หรือ report outcome
 - Responsive layout สำหรับ desktop, tablet และ mobile-width browser
 
@@ -269,11 +269,11 @@ Asset ที่มี state `ซ่อนถาวร` หรือ `ลบโ�
 
 Asset ที่เป็น `Consignment` ต้องไม่ถูกนับใน portfolio value หรือ asset value summary เพราะเป็นของฝากขาย ไม่ใช่ทรัพย์สินที่ owner ถือครองเอง
 
-## 10. Moderation Action Rules
+## 10. กฎการตรวจสอบและจัดการ Asset
 
-### General Requirements
+### ข้อกำหนดทั่วไป
 
-ทุก moderation action ต้องมี:
+ทุก action สำหรับการตรวจสอบและจัดการต้องมี:
 
 - Permission check
 - Confirmation modal
@@ -285,7 +285,7 @@ Asset ที่เป็น `Consignment` ต้องไม่ถูกนั�
 - Audit log
 - ผลลัพธ์ที่อัปเดตไปยัง public surfaces ที่เกี่ยวข้อง
 
-### Temporary Hide
+### ซ่อนชั่วคราว
 
 ใช้เพื่อซ่อน asset จาก public surfaces ชั่วคราว
 
@@ -296,7 +296,7 @@ Asset ที่เป็น `Consignment` ต้องไม่ถูกนั�
 - ต้องคง owner-controlled status เดิมไว้
 - ต้องตั้ง moderation state เป็น `ซ่อนชั่วคราว`
 
-### Restore Temporary Hide
+### ยกเลิกซ่อนชั่วคราว
 
 ใช้เพื่อยกเลิกการซ่อนชั่วคราวเมื่อ review แล้วไม่พบปัญหา
 
@@ -307,7 +307,7 @@ Asset ที่เป็น `Consignment` ต้องไม่ถูกนั�
 - ทำไม่ได้กับ `ซ่อนถาวร`
 - ต้องบันทึก reason และ audit
 
-### Permanent Hide
+### ซ่อนถาวร
 
 ใช้เพื่อซ่อน asset จาก public surfaces ถาวรตาม moderation outcome
 
@@ -320,7 +320,7 @@ Asset ที่เป็น `Consignment` ต้องไม่ถูกนั�
 - Asset ไม่ถูกนับใน portfolio value หรือ asset value summary
 - Pending offer ที่เกี่ยวข้องต้องถูกตั้งเป็น `Invalidated`
 
-### Owner Deleted
+### ลบโดยเจ้าของ
 
 เมื่อ owner ลบ asset จากฝั่งผู้ใช้งาน:
 
@@ -453,7 +453,7 @@ Action buttons ต้องแสดงเฉพาะที่ทำได้�
 | 1 unique reporter | สร้าง report case เป็น `Pending`; asset ยังแสดงตาม status เดิม |
 | 3 unique reporters | ยกระดับ priority เป็น review priority; asset ยังแสดงตาม status เดิม |
 | 5 unique reporters และ asset ยังเป็น `Sale` หรือ `Show` | ระบบซ่อนชั่วคราวได้ โดยคง owner-controlled status เดิมและตั้ง moderation state เป็น `ซ่อนชั่วคราว`; ต้องมี audit |
-| 5 unique reporters แต่ asset เป็น `Hide` หรือ `Sold` แล้ว | ไม่ auto-hide, block temporary hide, เก็บ report ใน queue/history และให้ Admin close report ได้ |
+| 5 unique reporters แต่ asset เป็น `Hide` หรือ `Sold` แล้ว | ไม่ซ่อนอัตโนมัติ, ห้ามซ่อนชั่วคราว, เก็บ report ใน queue/history และให้ Admin ปิดรายงานได้ |
 
 Temporary hide จาก report ใช้ได้เฉพาะ asset ที่ current owner-controlled status เป็น `Sale` หรือ `Show`
 
@@ -547,13 +547,13 @@ Audit history ต้องแสดงใน Asset Detail หรือ Asset Rep
 | AC-BO-ASSET-003 | Asset Detail แสดง core fields, commerce fields, sensitive context แบบ masked/summarized และ history ที่เกี่ยวข้อง |
 | AC-BO-ASSET-004 | Admin ไม่สามารถเปลี่ยน owner-controlled status `Sale`, `Show`, `Hide`, `Sold` จาก Back Office ได้โดยตรง |
 | AC-BO-ASSET-005 | Temporary hide ทำได้เฉพาะ asset ที่เป็น `Sale` หรือ `Show` และต้องคง owner-controlled status เดิมไว้ |
-| AC-BO-ASSET-006 | Restore temporary hide ทำได้เฉพาะ asset ที่อยู่ใน moderation state `ซ่อนชั่วคราว` |
+| AC-BO-ASSET-006 | ยกเลิกซ่อนชั่วคราวได้เฉพาะ asset ที่อยู่ใน moderation state `ซ่อนชั่วคราว` |
 | AC-BO-ASSET-007 | Permanent hide ซ่อน asset จาก public surfaces ถาวร และ owner เห็นได้เฉพาะ read-only |
 | AC-BO-ASSET-008 | Asset ที่ `ซ่อนถาวร`, `ลบโดยเจ้าของ` หรือเป็น `Consignment` ไม่ถูกนับใน portfolio value หรือ asset value summary |
 | AC-BO-ASSET-009 | Owner deleted asset ต้องมี history/audit row พร้อม actor, before state, after state และ timestamp |
 | AC-BO-ASSET-010 | Reported Assets queue แสดง report case จาก report source of truth ไม่ infer จาก asset row |
 | AC-BO-ASSET-011 | Report threshold 1/3/5 unique reporters ทำงานตาม rule ที่กำหนด |
-| AC-BO-ASSET-012 | ถ้า asset เปลี่ยนเป็น `Hide` หรือ `Sold` ก่อน Admin action ต้อง block temporary hide และแสดง current asset status ล่าสุด |
+| AC-BO-ASSET-012 | ถ้า asset เปลี่ยนเป็น `Hide` หรือ `Sold` ก่อน Admin ดำเนินการ ต้องห้ามซ่อนชั่วคราวและแสดง current asset status ล่าสุด |
 | AC-BO-ASSET-013 | Close/Clear report ต้องมี confirmation, reason เมื่อจำเป็น และ audit |
 | AC-BO-ASSET-014 | Report ที่ `Closed` หรือ `Cleared` เป็น final state และไม่มี reopen action ในเมนูนี้ |
 | AC-BO-ASSET-015 | ทุก action ที่กระทบ visibility หรือ report outcome ต้องมี permission check, confirmation, reason, before/after state และ audit |
