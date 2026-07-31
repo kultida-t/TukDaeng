@@ -3022,7 +3022,7 @@
       white-space: nowrap;
     }
     .user-row.report-row {
-      grid-template-columns: minmax(96px, .48fr) minmax(150px, .72fr) minmax(124px, .58fr) minmax(86px, .42fr) minmax(300px, 1.7fr) minmax(70px, .34fr) minmax(76px, .36fr) minmax(138px, .66fr) 46px;
+      grid-template-columns: minmax(96px, .42fr) minmax(150px, .64fr) minmax(124px, .52fr) minmax(86px, .38fr) minmax(132px, .54fr) minmax(300px, 1.34fr) minmax(70px, .32fr) minmax(76px, .34fr) minmax(138px, .58fr) 46px;
       gap: 16px;
       padding-left: 18px;
       padding-right: 18px;
@@ -3058,6 +3058,9 @@
     .user-row.asset-report-row > div:nth-child(8) {
       justify-self: start;
     }
+    .user-row.report-row.asset-report-row > div:nth-child(6) {
+      justify-self: start;
+    }
     .user-row.asset-report-row.head > div:nth-child(7),
     .user-row.asset-report-row.head > div:nth-child(8) {
       text-align: left;
@@ -3071,15 +3074,15 @@
     .user-row.report-row:not(.head) {
       cursor: pointer;
     }
-    .user-row.report-row > div:nth-child(5) {
+    .user-row.report-row:not(.asset-report-row) > div:nth-child(6) {
       max-width: 420px;
     }
-    .user-row.report-row > div:nth-child(5) .muted {
+    .user-row.report-row:not(.asset-report-row) > div:nth-child(6) .muted {
       line-height: 1.5;
     }
-    .user-row.report-row > div:nth-child(6),
     .user-row.report-row > div:nth-child(7),
-    .user-row.report-row > div:nth-child(9) {
+    .user-row.report-row > div:nth-child(8),
+    .user-row.report-row > div:nth-child(10) {
       justify-self: start;
     }
     .user-row.report-row > .user-row-actions {
@@ -5331,7 +5334,7 @@
         overflow-x: auto;
       }
       .user-row.report-row {
-        grid-template-columns: minmax(96px, .46fr) minmax(144px, .7fr) minmax(116px, .54fr) minmax(84px, .4fr) minmax(280px, 1.58fr) minmax(70px, .34fr) minmax(76px, .36fr) minmax(130px, .62fr) 46px;
+        grid-template-columns: minmax(96px, .42fr) minmax(144px, .62fr) minmax(116px, .5fr) minmax(84px, .36fr) minmax(128px, .52fr) minmax(280px, 1.24fr) minmax(70px, .32fr) minmax(76px, .34fr) minmax(130px, .56fr) 46px;
         overflow-x: auto;
       }
       .user-row.asset-report-row {
@@ -7284,6 +7287,15 @@
       const report = buildAssetReportContext(asset);
       const firstReportRow = getReporterHistoryRows(report)[0];
       return firstReportRow?.reportedAt ? `${firstReportRow.reportedAt} GMT+7` : "";
+    }
+
+    function getUserReportReceivedTime(report) {
+      const firstReportRow = getReporterHistoryRows(report)[0];
+      return firstReportRow?.reportedAt ? `${firstReportRow.reportedAt} GMT+7` : "";
+    }
+
+    function getUserReportReceivedSortRank(report) {
+      return parseBangkokAuditTime(getUserReportReceivedTime(report)) || parseBangkokAuditTime(report?.createdAt) || 0;
     }
 
     function renderReportHistoryPager(kind, page, pageCount, total, start) {
@@ -10163,6 +10175,7 @@
           ])}</div>
           <div class="user-advanced-filter">${customSelect("report-sort", "Sort reports", [
             { value: "latest", label: "ล่าสุดก่อน" },
+            { value: "oldest", label: "เก่าสุดก่อน" },
             { value: "reporters", label: "จำนวน reporter" }
           ], "latest")}</div>
           <button class="btn filter-reset user-advanced-filter" type="button" id="user-reset" title="รีเซ็ตค่าทั้งหมด" aria-label="รีเซ็ตค่าทั้งหมด">${iconSvg.refresh}<span>รีเซ็ตค่าทั้งหมด</span></button>
@@ -11616,7 +11629,8 @@
         return (!q || getUserSearchText(report).includes(q)) && (!status || getReportQueueStatus(report) === status) && (!priority || report.priority === priority);
       }).sort((a, b) => {
         if (sort === "reporters") return b.reporters - a.reporters;
-        return parseInt(a.waiting, 10) - parseInt(b.waiting, 10);
+        if (sort === "oldest") return getUserReportReceivedSortRank(a) - getUserReportReceivedSortRank(b);
+        return getUserReportReceivedSortRank(b) - getUserReportReceivedSortRank(a);
       });
       const pageCount = Math.max(1, Math.ceil(sorted.length / userListPageSize));
       userListPage = Math.min(userListPage, pageCount);
@@ -11624,9 +11638,11 @@
       const pageRows = sorted.slice(start, start + userListPageSize);
       document.querySelector("#table").innerHTML = `
         <div class="user-table">
-          <div class="user-row report-row head"><div>Report ID</div><div>User</div><div>User Status</div><div>Status</div><div>Report Reason</div><div>Reporters</div><div>Priority</div><div>Sources</div><div>Action</div></div>
-          ${pageRows.map(report => `
-            <div class="user-row report-row" data-report-id="${report.id}">
+          <div class="user-row report-row head"><div>Report ID</div><div>User</div><div>User Status</div><div>Status</div><div>Reported At</div><div>Report Reason</div><div>Reporters</div><div>Priority</div><div>Sources</div><div>Action</div></div>
+          ${pageRows.map(report => {
+            const reportedAt = (getUserReportReceivedTime(report) || "-").replace(/\s*GMT\+7$/, "");
+            return `
+              <div class="user-row report-row" data-report-id="${report.id}">
               <div class="user-cell-primary" data-label="Report ID"><div class="main-text">${report.id}</div></div>
               <div class="user-card-tags">
                 ${reportQueueStatusPill(report)}
@@ -11635,6 +11651,7 @@
                 ${statusPill(getReportPriorityLabel(report.priority), report.priority)}
                 <div class="user-card-meta">
                   <div class="user-card-meta-item"><span>User</span><strong>${report.user}</strong></div>
+                  <div class="user-card-meta-item"><span>Reported at</span><strong>${reportedAt}</strong></div>
                   <div class="user-card-meta-item"><span>Sources</span><strong>${renderReportSourcesLabel(report)}</strong></div>
                   <div class="user-card-meta-item"><span>Report reason</span><strong>${renderUserReportReasonsLabel(report)}</strong></div>
                 </div>
@@ -11642,6 +11659,7 @@
               <div data-label="User"><div class="main-text">${report.user}</div></div>
               <div data-label="User Status">${userStatusPill(getReportAccountStatus(report))}</div>
               <div data-label="Status">${reportQueueStatusPill(report)}</div>
+              <div data-label="Reported At"><div class="muted">${reportedAt}</div></div>
               <div data-label="Report Reason"><div class="muted">${renderUserReportReasonsLabel(report)}</div></div>
               <div data-label="Reporters"><div class="main-text">${report.reporters}</div></div>
               <div data-label="Priority">${statusPill(getReportPriorityLabel(report.priority), report.priority)}</div>
@@ -11650,7 +11668,8 @@
                 ${renderReportRowActionMenu(report)}
               </div>
             </div>
-          `).join("") || `<div class="detail-empty user-empty">ไม่พบข้อมูล</div>`}
+            `;
+          }).join("") || `<div class="detail-empty user-empty">ไม่พบข้อมูล</div>`}
         </div>
         <div class="footer-range">
           <span>แสดง ${sorted.length ? `${start + 1}-${Math.min(start + userListPageSize, sorted.length)}` : "0"} จาก ${sorted.length}</span>
