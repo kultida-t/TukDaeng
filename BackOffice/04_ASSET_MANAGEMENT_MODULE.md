@@ -364,7 +364,7 @@ Reported Assets ต้องค้นหาได้จาก:
 
 Reported Assets ต้องมี filter ขั้นต่ำ:
 
-- Report Status: `Pending`, `Closed`, `Cleared`
+- Report Status: `Pending`, `Closed`
 - Priority
 - Sort: newest first, oldest first
 - Reset filter
@@ -385,10 +385,9 @@ Reported Assets ต้องมี pagination ตามเงื่อนไข:
 | Status | Meaning |
 | --- | --- |
 | `Pending` | Report ยังรอ review หรือยังมี action ที่ต้องตรวจ |
-| `Closed` | ปิด report แล้วพร้อม outcome |
-| `Cleared` | ตรวจแล้วไม่พบปัญหาและปิด case |
+| `Closed` | ปิด report แล้วพร้อม outcome เช่น ตรวจแล้วไม่พบปัญหา หรือดำเนินการ moderation แล้ว |
 
-Report ที่ `Closed` หรือ `Cleared` เป็น final state และไม่มี reopen action ในเมนูนี้
+Report ที่ `Closed` เป็น final state และไม่มี reopen action ในเมนูนี้
 
 ## 12. Asset Report Detail
 
@@ -473,7 +472,7 @@ Reported Assets queue ต้องใช้ report case เป็น source of t
 
 - Asset Status: `Sale`, `Show`, `Hide`, `Sold`
 - Moderation State: None, `ซ่อนชั่วคราว`, `ซ่อนถาวร`
-- Report Status: `Pending`, `Closed`, `Cleared`
+- Report Status: `Pending`, `Closed`
 - Report Case: reportId, assetId, reportStatus, uniqueReporterCount, reporter history, reason summary, priority, created timestamp, closed timestamp, audit references
 
 ห้าม infer รายการใน Reported Assets queue จาก asset status, moderation pill หรือข้อความใน asset row เพียงอย่างเดียว
@@ -554,7 +553,7 @@ Audit history ต้องแสดงใน Asset Detail หรือ Asset Rep
 | AC-BO-ASSET-010 | Reported Assets queue แสดง report case จาก report source of truth ไม่ infer จาก asset row |
 | AC-BO-ASSET-011 | Report threshold 1/3/5 unique reporters ทำงานตาม rule ที่กำหนด |
 | AC-BO-ASSET-012 | ถ้า asset เปลี่ยนเป็น `Hide` หรือ `Sold` ก่อน Admin ดำเนินการ ต้องห้ามซ่อนชั่วคราวและแสดง current asset status ล่าสุด |
-| AC-BO-ASSET-013 | Close/Clear report ต้องมี confirmation, reason เมื่อจำเป็น และ audit |
-| AC-BO-ASSET-014 | Report ที่ `Closed` หรือ `Cleared` เป็น final state และไม่มี reopen action ในเมนูนี้ |
+| AC-BO-ASSET-013 | Close report ต้องมี confirmation, reason เมื่อจำเป็น และ audit |
+| AC-BO-ASSET-014 | Report ที่ `Closed` เป็น final state และไม่มี reopen action ในเมนูนี้ |
 | AC-BO-ASSET-015 | ทุก action ที่กระทบ visibility หรือ report outcome ต้องมี permission check, confirmation, reason, before/after state และ audit |
 | AC-BO-ASSET-016 | Responsive layout ใช้งานได้ครบที่ mobile-width, tablet และ desktop |

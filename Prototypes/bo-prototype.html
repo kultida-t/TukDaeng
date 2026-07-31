@@ -8531,7 +8531,7 @@
       if (!asset) return [];
       const queueStatus = getAssetReportQueueStatus(asset);
       if (isTemporarilyHiddenAsset(asset)) return [];
-      if (queueStatus === "Pending") return [{ status: "Cleared", label: "ปิดรายงาน" }];
+      if (queueStatus === "Pending") return [{ status: "Closed", label: "ปิดรายงาน" }];
       return [];
     }
 
@@ -8543,7 +8543,7 @@
 
     function renderAssetReportDetailStatusActionButtons(asset) {
       return getAssetReportStatusActions(asset)
-        .map(action => `<button class="user-detail-action-btn ${action.status === "Cleared" ? "primary" : ""}" type="button" data-asset-report-status-action="${action.status}" data-asset-id="${asset.id}">${action.label}</button>`)
+        .map(action => `<button class="user-detail-action-btn ${action.status === "Closed" ? "primary" : ""}" type="button" data-asset-report-status-action="${action.status}" data-asset-id="${asset.id}">${action.label}</button>`)
         .join("");
     }
 
@@ -8557,7 +8557,7 @@
     }
 
     function renderAssetReportStatusConfirmModal(asset, status, resultMessage = "", resultDetail = "", resultType = "", selectedScenario = "success") {
-      if (!asset || status !== "Cleared") {
+      if (!asset || status !== "Closed") {
         updateAssetReportStatus(asset, status);
         return;
       }
@@ -8639,18 +8639,18 @@
     function updateAssetReportStatus(asset, status) {
       if (!asset || !status) return;
       const beforeStatus = getAssetReportQueueStatus(asset);
-      const nextStatus = status === "Cleared" ? "Cleared" : "Pending";
+      const nextStatus = status === "Closed" ? "Closed" : "Pending";
       if (beforeStatus === nextStatus) return;
       const closeReason = document.querySelector("#asset-report-close-reason")?.value || "";
       const closeNote = document.querySelector("#asset-report-close-note")?.value.trim() || "";
-      asset.reportStatus = status === "Cleared" ? "Cleared" : "Open";
+      asset.reportStatus = status === "Closed" ? "Closed" : "Open";
       appendAssetReportAuditHistory(asset, {
-        action: status === "Cleared" ? "Close Report" : "Reopen Report",
+        action: status === "Closed" ? "Close Report" : "Reopen Report",
         before: { reportStatus: beforeStatus },
         after: { reportStatus: nextStatus },
         reference: getAssetReportId(asset),
         referenceAssetId: asset.id,
-        note: status === "Cleared"
+        note: status === "Closed"
           ? (closeNote || closeReason || "Admin closed the asset report after review")
           : "Admin sent the asset report back to the pending queue"
       });
@@ -8659,7 +8659,7 @@
       } else {
         renderReportedAssetRows();
       }
-      showSuccessToast(`${getAssetReportId(asset)}: ${nextStatus === "Cleared" ? "ปิดรายงานแล้ว" : "ส่งกลับรอตรวจแล้ว"}`);
+      showSuccessToast(`${getAssetReportId(asset)}: ${nextStatus === "Closed" ? "ปิดรายงานแล้ว" : "ส่งกลับรอตรวจแล้ว"}`);
     }
 
     function appendAssetReportAuditHistory(asset, log) {
@@ -8975,21 +8975,21 @@
     }
 
     function getAssetReportQueueStatus(asset) {
-      if (asset.reportStatus === "Cleared") return "Cleared";
+      if (asset.reportStatus === "Closed") return "Closed";
       if (asset.reportStatus === "Open") return "Pending";
-      return isPermanentlyHiddenAsset(asset) ? "Cleared" : "Pending";
+      return isPermanentlyHiddenAsset(asset) ? "Closed" : "Pending";
     }
 
     function assetReportQueueStatusPill(asset) {
       const status = getAssetReportQueueStatus(asset);
-      const label = status === "Cleared" ? "Closed" : "Pending";
-      const color = status === "Cleared" ? "green" : "amber";
+      const label = status === "Closed" ? "Closed" : "Pending";
+      const color = status === "Closed" ? "green" : "amber";
       return `<span class="pill ${color}">${label}</span>`;
     }
 
     function renderAssetReportStatusPill(status) {
-      const label = status === "Cleared" ? "Closed" : "Pending";
-      const color = status === "Cleared" ? "green" : "amber";
+      const label = status === "Closed" ? "Closed" : "Pending";
+      const color = status === "Closed" ? "green" : "amber";
       return `<span class="pill ${color}">${label}</span>`;
     }
 
@@ -9117,7 +9117,7 @@
         reason: getAssetReportReason(asset),
         reporters: getAssetReporters(asset),
         priority: getAssetReportPriority(asset),
-        status: getAssetReportQueueStatus(asset) === "Cleared" ? "Cleared" : "Open",
+        status: getAssetReportQueueStatus(asset) === "Closed" ? "Closed" : "Open",
         reference: asset.id,
         source: "Asset Detail",
         waiting: `${getAssetReportWaitingHours(asset)} ชม.`,
@@ -9173,7 +9173,7 @@
           note: "System temporarily hid the asset after 5 reports for admin review"
         });
       }
-      const hasCloseReportHistory = rows.some(row => row.action === "Close Report" && row.after?.reportStatus === "Cleared");
+      const hasCloseReportHistory = rows.some(row => row.action === "Close Report" && row.after?.reportStatus === "Closed");
       if (isPermanentlyHiddenAsset(asset) && !hasCloseReportHistory) {
         const archiveRow = rows.find(row => row.action === "Permanent Hide Asset");
         rows.push({
@@ -9181,7 +9181,7 @@
           actor: archiveRow?.actor || "Somchai Admin",
           action: "Close Report",
           before: { reportStatus: "Pending" },
-          after: { type: asset.type, status: asset.status, reportStatus: "Cleared" },
+          after: { type: asset.type, status: asset.status, reportStatus: "Closed" },
           reference: reportReference,
           referenceAssetId: asset.id,
           emailDelivery: { status: "not_required" },
@@ -9290,11 +9290,11 @@
 
     function closeAssetReportAfterAssetOutcome(asset, action, beforeReportStatus) {
       if (!asset || beforeReportStatus !== "Pending") return false;
-      asset.reportStatus = "Cleared";
+      asset.reportStatus = "Closed";
       appendAssetReportAuditHistory(asset, {
         action: "Close Report",
         before: { reportStatus: beforeReportStatus },
-        after: { type: asset.type, status: asset.status, reportStatus: "Cleared" },
+        after: { type: asset.type, status: asset.status, reportStatus: "Closed" },
         reference: getAssetReportId(asset),
         referenceAssetId: asset.id,
         note: action === "restore-visibility"
@@ -12017,7 +12017,7 @@
             <div class="user-advanced-filter">${customSelect("asset-report-status-filter", "Filter report status", [
               { value: "", label: "ทุกสถานะ" },
               { value: "Pending", label: "รอตรวจ" },
-              { value: "Cleared", label: "ปิดแล้ว" }
+              { value: "Closed", label: "ปิดแล้ว" }
             ])}</div>
             <div class="user-advanced-filter">${customSelect("asset-report-priority-filter", "Filter priority", [
               { value: "", label: "ทุก priority" },
