@@ -137,7 +137,14 @@ Asset List ต้องมี filter ขั้นต่ำ:
 
 ### Pagination
 
-Asset List ต้องมี pagination และต้องคงค่า search/filter/sort ระหว่างเปลี่ยนหน้า
+Asset List ต้องมี pagination ตามเงื่อนไข:
+
+- Page size: 10 assets per page
+- มี Previous button
+- มี Next button
+- มี numbered page buttons
+- ต้องคงค่า search/filter/sort ระหว่างเปลี่ยนหน้า
+- เมื่อไม่พบข้อมูลให้แสดง empty state `ไม่พบข้อมูล`
 
 ## 7. Asset Detail
 
@@ -352,6 +359,17 @@ Reported Assets ต้องมี filter ขั้นต่ำ:
 - Priority
 - Sort: newest first, oldest first
 - Reset filter
+
+### Report Pagination
+
+Reported Assets ต้องมี pagination ตามเงื่อนไข:
+
+- Page size: 10 reports per page
+- มี Previous button
+- มี Next button
+- มี numbered page buttons
+- ต้องคงค่า search/filter/sort ระหว่างเปลี่ยนหน้า
+- เมื่อไม่พบข้อมูลให้แสดง empty state `ไม่พบข้อมูล`
 
 ### Report Status
 
