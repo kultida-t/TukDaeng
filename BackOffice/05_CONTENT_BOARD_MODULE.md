@@ -442,6 +442,7 @@ Desktop columns:
 - Article
 - Article Status
 - Status
+- Reported At
 - Report Reason
 - Reporters
 - Priority
@@ -454,6 +455,7 @@ Mobile/card metadata:
 - Reporter count
 - Priority
 - Article title
+- Reported at
 - Report reason
 
 Search/filter/sort:
@@ -463,8 +465,8 @@ Search/filter/sort:
 - Priority filter: ทุก priority, High, Medium, Low
 - Sort options:
   - ล่าสุดก่อน
+  - เก่าสุดก่อน
   - จำนวน reporter
-  - รอนานสุด
 - Pagination:
   - Page size: 10 reports per page
   - มี Previous button

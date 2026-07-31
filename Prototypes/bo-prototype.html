@@ -15633,8 +15633,8 @@
             const reportedAt = report.reportedAt || "-";
             return `
               <div class="asset-row reported-board-row" data-board-report-card="${report.id}">
-                <div data-label="Report ID"><div class="main-text">${report.id}</div></div>
-                <div class="asset-cell-primary" data-label="Article"><div class="main-text">${report.articleTitle}</div></div>
+                <div class="asset-cell-primary" data-label="Report ID"><div class="main-text">${report.id}</div></div>
+                <div data-label="Article"><div class="main-text">${report.articleTitle}</div></div>
                 <div class="asset-card-tags">
                   ${boardReportQueueStatusPill(report)}
                   ${boardReportContentStatusPill(report.contentStatus)}
