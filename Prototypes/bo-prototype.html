@@ -3517,6 +3517,15 @@
     .report-detail-page .user-detail-actions {
       padding-top: 2px;
     }
+    .report-detail-section-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    .report-detail-section-head h4 {
+      margin: 0;
+    }
     .asset-report-detail-page .asset-report-heading {
       display: block;
       max-width: 100%;
@@ -6174,6 +6183,10 @@
       .report-detail-page .user-detail-actions {
         align-self: flex-start;
         padding-top: 0;
+      }
+      .report-detail-section-head {
+        align-items: flex-start;
+        flex-wrap: wrap;
       }
       .asset-report-detail-page .user-detail-actions {
         flex: 0 0 auto;
@@ -11881,7 +11894,10 @@
           </div>
 
           <div class="detail-section">
-            <h4>Reported Reference</h4>
+            <div class="report-detail-section-head">
+              <h4>Reported User</h4>
+              ${reportUser ? `<button class="user-detail-action-btn" type="button" data-user-open="${reportUser.id}">View User</button>` : ""}
+            </div>
             <div class="detail-grid two report-reference-grid user-report-reference-grid">
               <div class="detail-tile"><span>Report ID</span><strong>${report.id}</strong></div>
               <div class="detail-tile"><span>User ID</span><strong>${report.userId}</strong></div>
