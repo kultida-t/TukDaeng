@@ -148,7 +148,7 @@ Asset List ต้องมี pagination ตามเงื่อนไข:
 
 ## 7. Asset Detail
 
-Asset Detail ใช้สำหรับตรวจสอบข้อมูล asset แบบ read-only และดำเนินการ moderation ที่ทำได้ตาม state
+Asset Detail ใช้สำหรับตรวจสอบข้อมูล Asset แบบ read-only และแสดง action สำหรับการตรวจสอบและจัดการตามสถานะปัจจุบันของ Asset
 
 ### Core Fields
 
