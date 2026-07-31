@@ -162,9 +162,16 @@ Sort mode ที่ต้องมี:
 
 ## 7.5 Pagination
 
-- แสดง 10 users ต่อหน้า
+User List ต้องมี pagination ตามเงื่อนไข:
+
+- Page size: 10 users per page
+- มี Previous button
+- มี Next button
+- มี numbered page buttons
+- ต้องคงค่า search/filter/sort ระหว่างเปลี่ยนหน้า
+- เมื่อไม่พบข้อมูลให้แสดง empty state `ไม่พบข้อมูล`
 - Pagination ทำงานหลัง apply search/filter/sort แล้ว
-- Footer ต้องแสดงช่วงรายการที่กำลังเห็น, จำนวนผลลัพธ์ทั้งหมดหลัง filter และปุ่มเปลี่ยนหน้า
+- Footer ต้องแสดงช่วงรายการที่กำลังเห็นและจำนวนผลลัพธ์ทั้งหมดหลัง filter
 - เมื่อเปลี่ยน search/filter/sort ให้กลับไปหน้าแรก
 
 ## 7.6 Columns บน Desktop
@@ -438,6 +445,20 @@ Reported Users เป็นคิวสำหรับตรวจรายง�
 - รายงานจาก 5 reporters ขึ้นไป หรือมี evidence รุนแรง สามารถใช้เป็นเงื่อนไขประกอบการ suspend ระหว่างตรวจสอบ
 - Priority ไม่เปลี่ยนสถานะบัญชีอัตโนมัติ
 
+## 11.7 Pagination
+
+Reported Users ต้องมี pagination ตามเงื่อนไข:
+
+- Page size: 10 reports per page
+- มี Previous button
+- มี Next button
+- มี numbered page buttons
+- ต้องคงค่า search/filter/sort ระหว่างเปลี่ยนหน้า
+- เมื่อไม่พบข้อมูลให้แสดง empty state `ไม่พบข้อมูล`
+- Pagination ทำงานหลัง apply search/filter/sort แล้ว
+- Footer ต้องแสดงช่วงรายการที่กำลังเห็นและจำนวนผลลัพธ์ทั้งหมดหลัง filter
+- เมื่อเปลี่ยน search/filter/sort ให้กลับไปหน้าแรก
+
 # 12. Report Detail
 
 Report Detail แสดงรายละเอียดรายงานหนึ่งรายการและ action ที่ Admin ทำได้กับรายงานนั้น
@@ -492,8 +513,8 @@ Report Detail ต้องไม่อ้าง source ประเภท asset,
 | State | การแสดงผล |
 | --- | --- |
 | Loading | แสดง skeleton หรือ loading row ใน list panel |
-| Empty no data | แจ้งว่าไม่มีผู้ใช้ในระบบ |
-| Empty after filter/search | แจ้งว่าไม่พบผลลัพธ์และให้ reset filter |
+| Empty no data | แสดง empty state `ไม่พบข้อมูล` |
+| Empty after filter/search | แสดง empty state `ไม่พบข้อมูล` และให้ reset filter |
 | Error | แจ้งว่าโหลดข้อมูลไม่สำเร็จและมีปุ่ม retry |
 
 ## 13.2 Reported Users
@@ -501,8 +522,8 @@ Report Detail ต้องไม่อ้าง source ประเภท asset,
 | State | การแสดงผล |
 | --- | --- |
 | Loading | แสดง skeleton หรือ loading row |
-| Empty no data | แจ้งว่าไม่มีรายงานผู้ใช้ |
-| Empty after filter/search | แจ้งว่าไม่พบรายงานตามเงื่อนไข |
+| Empty no data | แสดง empty state `ไม่พบข้อมูล` |
+| Empty after filter/search | แสดง empty state `ไม่พบข้อมูล` และให้ reset filter |
 | Error | แจ้งว่าโหลดคิวรายงานไม่สำเร็จและมีปุ่ม retry |
 
 # 14. Audit Requirements
@@ -550,7 +571,7 @@ Report Detail ต้องไม่อ้าง source ประเภท asset,
 | AC-BO-USER-004 | Search ค้นหา User ID, display name, username, email, auth method และ status ได้ |
 | AC-BO-USER-005 | Filter account status และ auth method ทำงานร่วมกับ search/sort/pagination ได้ |
 | AC-BO-USER-006 | Sort last active, date joined, report count และ asset count ได้ |
-| AC-BO-USER-007 | Pagination แสดง 10 users ต่อหน้าและแสดงจำนวนผลลัพธ์หลัง filter |
+| AC-BO-USER-007 | User List pagination มี 10 users per page, Previous button, Next button, numbered page buttons, คงค่า search/filter/sort ระหว่างเปลี่ยนหน้า และแสดง empty state `ไม่พบข้อมูล` เมื่อไม่พบข้อมูล |
 | AC-BO-USER-008 | Admin เปิด User Detail จาก row หรือ card ได้ |
 | AC-BO-USER-009 | User Detail แสดง account summary, contact/auth, link profile, assets summary, reports และ account actions |
 | AC-BO-USER-010 | Contact/Auth ไม่แสดง row ว่าง และต้องรองรับข้อมูล contact ที่มีจริง |
@@ -561,6 +582,7 @@ Report Detail ต้องไม่อ้าง source ประเภท asset,
 | AC-BO-USER-015 | User List ไม่แสดง delete/archive action โดยตรง |
 | AC-BO-USER-016 | User List ไม่แสดงปุ่ม export user data |
 | AC-BO-USER-017 | Reported Users แสดง search, filter, sort, table/list และ pagination ครบ |
+| AC-BO-USER-017A | Reported Users pagination มี 10 reports per page, Previous button, Next button, numbered page buttons, คงค่า search/filter/sort ระหว่างเปลี่ยนหน้า และแสดง empty state `ไม่พบข้อมูล` เมื่อไม่พบข้อมูล |
 | AC-BO-USER-018 | Reported Users ไม่แสดง summary card |
 | AC-BO-USER-019 | Reported Users แสดง report status เป็น Pending หรือ Closed |
 | AC-BO-USER-020 | Report Detail แสดง Reported User, Reporter History, Admin Action History และ Actions |
