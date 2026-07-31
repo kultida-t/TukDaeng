@@ -1444,7 +1444,7 @@
       grid-template-columns: minmax(112px, .68fr) minmax(260px, 1.65fr) minmax(190px, 1fr) minmax(128px, .7fr) minmax(128px, .7fr) minmax(76px, .42fr);
     }
     .reported-board-table .asset-row {
-      grid-template-columns: minmax(112px, .68fr) minmax(260px, 1.65fr) minmax(150px, .82fr) minmax(128px, .7fr) minmax(220px, 1.18fr) minmax(96px, .52fr) minmax(112px, .58fr) minmax(76px, .42fr);
+      grid-template-columns: minmax(112px, .66fr) minmax(230px, 1.48fr) minmax(140px, .78fr) minmax(116px, .64fr) minmax(154px, .86fr) minmax(190px, 1.04fr) minmax(86px, .48fr) minmax(102px, .56fr) minmax(76px, .42fr);
     }
     .asset-table .asset-row:nth-last-child(-n + 2) .row-menu-list,
     .user-table .user-row:nth-last-child(-n + 2) .row-menu-list {
@@ -1481,8 +1481,9 @@
     body.category-list-mode .category-table .asset-row > div:nth-child(4),
     body.category-list-mode .category-table .asset-row > div:nth-child(5),
     body.reported-board-mode .reported-board-table .asset-row > div:nth-child(4),
-    body.reported-board-mode .reported-board-table .asset-row > div:nth-child(6),
-    body.reported-board-mode .reported-board-table .asset-row > div:nth-child(7) {
+    body.reported-board-mode .reported-board-table .asset-row > div:nth-child(5),
+    body.reported-board-mode .reported-board-table .asset-row > div:nth-child(7),
+    body.reported-board-mode .reported-board-table .asset-row > div:nth-child(8) {
       justify-self: start;
     }
     body.article-list-mode .article-table .asset-row > div:last-child,
@@ -1495,8 +1496,9 @@
     body.category-list-mode .category-table .asset-row.head > div:nth-child(4),
     body.category-list-mode .category-table .asset-row.head > div:nth-child(5),
     body.reported-board-mode .reported-board-table .asset-row.head > div:nth-child(4),
-    body.reported-board-mode .reported-board-table .asset-row.head > div:nth-child(6),
-    body.reported-board-mode .reported-board-table .asset-row.head > div:nth-child(7) {
+    body.reported-board-mode .reported-board-table .asset-row.head > div:nth-child(5),
+    body.reported-board-mode .reported-board-table .asset-row.head > div:nth-child(7),
+    body.reported-board-mode .reported-board-table .asset-row.head > div:nth-child(8) {
       text-align: left;
     }
     body.article-list-mode #primary-action,
@@ -12130,8 +12132,8 @@
             ])}</div>
             <div class="user-advanced-filter">${customSelect("board-report-sort", "Sort board reports", [
               { value: "latest", label: "ล่าสุดก่อน" },
-              { value: "reporters", label: "จำนวน reporter" },
-              { value: "waiting", label: "รอนานสุด" }
+              { value: "oldest", label: "เก่าสุดก่อน" },
+              { value: "reporters", label: "จำนวน reporter" }
             ], "latest")}</div>
             <button class="btn filter-reset user-advanced-filter" type="button" data-board-report-reset title="รีเซ็ตค่าทั้งหมด" aria-label="รีเซ็ตค่าทั้งหมด">${iconSvg.refresh}<span>รีเซ็ตค่าทั้งหมด</span></button>
           </div>
@@ -15617,7 +15619,7 @@
         })
         .sort((a, b) => {
           if (sort === "reporters") return b.reporters - a.reporters;
-          if (sort === "waiting") return b.waitingHours - a.waitingHours;
+          if (sort === "oldest") return parseAssetHistoryTime(`${a.reportedAt} GMT+7`) - parseAssetHistoryTime(`${b.reportedAt} GMT+7`);
           return parseAssetHistoryTime(`${b.reportedAt} GMT+7`) - parseAssetHistoryTime(`${a.reportedAt} GMT+7`);
         });
       const pageCount = Math.max(1, Math.ceil(sorted.length / articleListPageSize));
@@ -15626,31 +15628,36 @@
       const pageRows = sorted.slice(start, start + articleListPageSize);
       document.querySelector("#table").innerHTML = `
         <div class="asset-table reported-board-table">
-          <div class="asset-row reported-board-row head"><div>Report ID</div><div>Article</div><div>Article Status</div><div>Status</div><div>Report Reason</div><div>Reporters</div><div>Priority</div><div>Action</div></div>
-          ${pageRows.map(report => `
-            <div class="asset-row reported-board-row" data-board-report-card="${report.id}">
-              <div data-label="Report ID"><div class="main-text">${report.id}</div></div>
-              <div class="asset-cell-primary" data-label="Article"><div class="main-text">${report.articleTitle}</div></div>
-              <div class="asset-card-tags">
-                ${boardReportQueueStatusPill(report)}
-                ${boardReportContentStatusPill(report.contentStatus)}
-                <span class="user-card-tag asset-tag">${report.reporters} reporters</span>
-                ${boardReportPriorityPill(report)}
-                <div class="user-card-meta">
-                  <div class="user-card-meta-item"><span>Article</span><strong>${report.articleTitle}</strong></div>
-                  <div class="user-card-meta-item"><span>Report reason</span><strong>${report.reason}</strong></div>
+          <div class="asset-row reported-board-row head"><div>Report ID</div><div>Article</div><div>Article Status</div><div>Status</div><div>Reported At</div><div>Report Reason</div><div>Reporters</div><div>Priority</div><div>Action</div></div>
+          ${pageRows.map(report => {
+            const reportedAt = report.reportedAt || "-";
+            return `
+              <div class="asset-row reported-board-row" data-board-report-card="${report.id}">
+                <div data-label="Report ID"><div class="main-text">${report.id}</div></div>
+                <div class="asset-cell-primary" data-label="Article"><div class="main-text">${report.articleTitle}</div></div>
+                <div class="asset-card-tags">
+                  ${boardReportQueueStatusPill(report)}
+                  ${boardReportContentStatusPill(report.contentStatus)}
+                  <span class="user-card-tag asset-tag">${report.reporters} reporters</span>
+                  ${boardReportPriorityPill(report)}
+                  <div class="user-card-meta">
+                    <div class="user-card-meta-item"><span>Article</span><strong>${report.articleTitle}</strong></div>
+                    <div class="user-card-meta-item"><span>Reported at</span><strong>${reportedAt}</strong></div>
+                    <div class="user-card-meta-item"><span>Report reason</span><strong>${report.reason}</strong></div>
+                  </div>
+                </div>
+                <div data-label="Article Status">${boardReportContentStatusPill(report.contentStatus)}</div>
+                <div data-label="Status">${boardReportQueueStatusPill(report)}</div>
+                <div data-label="Reported At"><div class="muted">${reportedAt}</div></div>
+                <div data-label="Report Reason"><div class="muted">${report.reason}</div></div>
+                <div data-label="Reporters"><div class="main-text">${report.reporters}</div></div>
+                <div data-label="Priority">${boardReportPriorityPill(report)}</div>
+                <div class="user-row-actions">
+                  ${renderBoardReportRowActionMenu(report)}
                 </div>
               </div>
-              <div data-label="Article Status">${boardReportContentStatusPill(report.contentStatus)}</div>
-              <div data-label="Status">${boardReportQueueStatusPill(report)}</div>
-              <div data-label="Report Reason"><div class="muted">${report.reason}</div></div>
-              <div data-label="Reporters"><div class="main-text">${report.reporters}</div></div>
-              <div data-label="Priority">${boardReportPriorityPill(report)}</div>
-              <div class="user-row-actions">
-                ${renderBoardReportRowActionMenu(report)}
-              </div>
-            </div>
-          `).join("") || `<div class="detail-empty user-empty">ไม่พบข้อมูล</div>`}
+            `;
+          }).join("") || `<div class="detail-empty user-empty">ไม่พบข้อมูล</div>`}
         </div>
         <div class="footer-range">
           <span>แสดง ${sorted.length ? `${start + 1}-${Math.min(start + articleListPageSize, sorted.length)}` : "0"} จาก ${sorted.length}</span>
