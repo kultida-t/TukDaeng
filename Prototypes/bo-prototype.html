@@ -6734,7 +6734,7 @@
         { id: "RPU-512", category: "Asset", user: "Crown Time BKK", userId: "U-1017", accountStatus: "Active", reason: "มีรายงานสินทรัพย์ซ้ำและข้อมูลประกาศคล้ายรายการอื่น", reporters: 4, priority: "สูง", status: "Open", reference: "Asset Group AST-DUP-1017", source: "Asset Detail", sources: ["User Profile"], waiting: "20 ชม.", evidence: ["รูปสินทรัพย์ซ้ำกับรายการอื่น", "ข้อความประกาศถูกใช้ซ้ำ"], recommendation: "เทียบรูปสินค้าและหลักฐาน provenance ก่อนทำ action กับบัญชี", actionHistory: "เปิดรายงานใหม่ และยังไม่มีการเปลี่ยนสถานะบัญชี" },
         { id: "RPU-518", category: "Offer / Chat", user: "Omega Club TH", userId: "U-1088", accountStatus: "Active", reason: "มีข้อพิพาทว่าสภาพสินทรัพย์ไม่ตรงกับที่ตกลงในข้อเสนอซื้อ", reporters: 3, priority: "สูง", status: "Open", reference: "Offer OFR-501", source: "Offer / Chat", sources: ["Chat"], waiting: "18 ชม.", evidence: ["ประวัติแชท", "ข้อพิพาทจากข้อเสนอซื้อ"], recommendation: "เปิดบริบท Offer / Chat ก่อนปิดรายงาน", actionHistory: "เปิดรายงานใหม่ และรอตรวจสอบ reference ต้นทาง" },
         { id: "RPU-541", category: "Chat", user: "Rolex Rama9", userId: "U-1186", accountStatus: "Suspended", reason: "มีรายงานซ้ำเรื่องข้อความแชทที่ไม่เหมาะสม", reporters: 6, priority: "สูง", status: "In Review", reference: "CHT-090", source: "Offer / Chat", sources: ["Chat"], waiting: "4 ชม.", evidence: ["ประวัติแชท"], recommendation: "ตรวจหลักฐานแชทและกำหนดผลสุดท้ายก่อนปิดรายงาน", actionHistory: "ระงับบัญชีชั่วคราวระหว่างตรวจสอบ และยังไม่ปิดรายงาน" },
-        { id: "RPU-560", category: "Profile", user: "The Collector", userId: "U-1120", accountStatus: "Banned", reason: "ยืนยันพฤติกรรมละเมิดซ้ำและปิดเคสหลังแบนบัญชี", reporters: 13, priority: "สูง", status: "Cleared", reference: "Profile ID PRF-1120", source: "Reported Users", sources: ["User Profile", "Chat"], waiting: "0 ชม.", evidence: ["รายงานพฤติกรรมละเมิดซ้ำ", "มี admin action แบนบัญชีแล้ว", "โปรไฟล์มีรูปแบบหลอกลวงซ้ำ", "พบการชวนซื้อขายนอกระบบ"], recommendation: "คงสถานะรายงานเป็นปิดแล้ว และเก็บบันทึกการดำเนินการสำหรับกรณีขอยกเลิกระงับบัญชีถาวร", actionHistory: "ปิดรายงานแล้วหลังแบนบัญชี และบัญชียังคงถูกแบนอยู่" }
+        { id: "RPU-560", category: "Profile", user: "The Collector", userId: "U-1120", accountStatus: "Banned", reason: "ยืนยันพฤติกรรมละเมิดซ้ำและปิดเคสหลังแบนบัญชี", reporters: 13, priority: "สูง", status: "Closed", reference: "Profile ID PRF-1120", source: "Reported Users", sources: ["User Profile", "Chat"], waiting: "0 ชม.", evidence: ["รายงานพฤติกรรมละเมิดซ้ำ", "มี admin action แบนบัญชีแล้ว", "โปรไฟล์มีรูปแบบหลอกลวงซ้ำ", "พบการชวนซื้อขายนอกระบบ"], recommendation: "คงสถานะรายงานเป็นปิดแล้ว และเก็บบันทึกการดำเนินการสำหรับกรณีขอยกเลิกระงับบัญชีถาวร", actionHistory: "ปิดรายงานแล้วหลังแบนบัญชี และบัญชียังคงถูกแบนอยู่" }
       ]
     };
 
@@ -6753,7 +6753,7 @@
         { id: "AUD-RPU-541-001", action: "REPORT_CREATED", actor: "System", createdAt: "13 Jul 2026 10:14 GMT+7", entityType: "reported_user", entityId: "RPU-541", sourceModule: "Offer / Chat", detail: "สร้าง report จากรายงานแชทซ้ำ", before: null, after: { reportStatus: "Open", accountStatus: "Active" }, reason: "มีรายงานข้อความแชทไม่เหมาะสมถึงเกณฑ์ความสำคัญสูง", metadata: { reference: "CHT-090", userId: "U-1186" } }
       ],
       "RPU-560": [
-        { id: "AUD-RPU-560-012", action: "REPORT_STATUS_UPDATED", actor: "Somchai Admin", createdAt: "12 Jul 2026 16:45 GMT+7", entityType: "reported_user", entityId: "RPU-560", sourceModule: "Reported Users", detail: "ปิดรายงานหลังระงับบัญชีถาวรและบันทึกผลตรวจสอบครบถ้วน", before: { reportStatus: "Open", accountStatus: "Banned" }, after: { reportStatus: "Cleared", accountStatus: "Banned" }, reason: "ยืนยันให้คงสถานะปิดรายงานและแบนบัญชีถาวร", metadata: { reference: "Profile ID PRF-1120", userId: "U-1120" } },
+        { id: "AUD-RPU-560-012", action: "REPORT_STATUS_UPDATED", actor: "Somchai Admin", createdAt: "12 Jul 2026 16:45 GMT+7", entityType: "reported_user", entityId: "RPU-560", sourceModule: "Reported Users", detail: "ปิดรายงานหลังระงับบัญชีถาวรและบันทึกผลตรวจสอบครบถ้วน", before: { reportStatus: "Open", accountStatus: "Banned" }, after: { reportStatus: "Closed", accountStatus: "Banned" }, reason: "ยืนยันให้คงสถานะปิดรายงานและแบนบัญชีถาวร", metadata: { reference: "Profile ID PRF-1120", userId: "U-1120" } },
         { id: "AUD-RPU-560-007", action: "REPORT_STATUS_UPDATED", actor: "Somchai Admin", createdAt: "12 Jul 2026 16:30 GMT+7", entityType: "reported_user", entityId: "RPU-560", sourceModule: "Reported Users", detail: "ระงับบัญชีถาวรจากหลักฐานรวม", before: { reportStatus: "Open", accountStatus: "Suspended" }, after: { reportStatus: "Open", accountStatus: "Banned" }, reason: "ยืนยันความเสี่ยงสูงจากหลายรายงานและหลักฐานประกอบ", emailDelivery: { status: "sent", channel: "Email", deliveryId: "DLV-ACCT-012" }, metadata: { reference: "Profile ID PRF-1120", userId: "U-1120" } },
         { id: "AUD-RPU-560-001", action: "REPORT_CREATED", actor: "System", createdAt: "12 Jul 2026 09:35 GMT+7", entityType: "reported_user", entityId: "RPU-560", sourceModule: "Reported Users", detail: "รับรายงานครบ 5 รายงาน ระบบจึงระงับบัญชีชั่วคราว", before: null, after: { reportStatus: "Open", accountStatus: "Suspended" }, reason: "มีรายงานครบ 5 รายงาน ระบบจึงระงับบัญชีชั่วคราวระหว่างรอตรวจสอบ", emailDelivery: { status: "sent", channel: "Email", deliveryId: "DLV-ACCT-009" }, metadata: { reference: "Profile ID PRF-1120", userId: "U-1120", reportThreshold: 5, trigger: "auto_suspend_on_report_threshold" } }
       ]
@@ -6891,7 +6891,7 @@
       if (beforeAccount !== afterAccount && afterAccount === "Banned") return "ระงับบัญชีถาวร";
       if (beforeAccount !== afterAccount && afterAccount === "Active") return "เปิดใช้งานบัญชีอีกครั้ง";
       if (log.action === "REPORT_STATUS_UPDATED") {
-        if (log.after?.reportStatus === "Cleared") return "ปิดรายงาน";
+        if (log.after?.reportStatus === "Closed") return "ปิดรายงาน";
         if (log.after?.reportStatus === "In Review") return "อัปเดตสถานะรายงาน";
         if (log.after?.reportStatus === "Open") return "ส่งกลับรอตรวจ";
       }
@@ -7552,7 +7552,7 @@
       "Deleted / Archived": "ลบ/เก็บถาวร",
       "Open": "รอตรวจ",
       "In Review": "กำลังตรวจ",
-      "Cleared": "ปิดแล้ว"
+      "Closed": "ปิดแล้ว"
     };
 
     const reportPriorityLabels = {
@@ -7612,7 +7612,7 @@
         "Deleted / Archived": "gray",
         "Open": "red",
         "In Review": "amber",
-        "Cleared": "green"
+        "Closed": "green"
       };
       return `<span class="pill ${map[status] || "blue"}">${userStatusLabels[status] || status}</span>`;
     }
@@ -10151,7 +10151,7 @@
           <div class="user-advanced-filter">${customSelect("report-status-filter", "Filter report status", [
             { value: "", label: "ทุกสถานะ" },
             { value: "Pending", label: "รอตรวจ" },
-            { value: "Cleared", label: "ปิดแล้ว" }
+            { value: "Closed", label: "ปิดแล้ว" }
           ])}</div>
           <div class="user-advanced-filter">${customSelect("report-priority-filter", "Filter priority", [
             { value: "", label: "ทุก priority" },
@@ -11315,13 +11315,13 @@
     }
 
     function getReportQueueStatus(report) {
-      return report?.status === "Cleared" ? "Cleared" : "Pending";
+      return report?.status === "Closed" ? "Closed" : "Pending";
     }
 
     function reportQueueStatusPill(report) {
       const status = getReportQueueStatus(report);
-      const label = status === "Cleared" ? "Closed" : "Pending";
-      const color = status === "Cleared" ? "green" : "amber";
+      const label = status === "Closed" ? "Closed" : "Pending";
+      const color = status === "Closed" ? "green" : "amber";
       return `<span class="pill ${color}">${label}</span>`;
     }
 
@@ -11330,12 +11330,12 @@
       if (getReportAccountStatus(report) === "Suspended") return [];
       if (report.status === "Open") {
         return [
-          { status: "Cleared", label: "ปิดรายงาน" }
+          { status: "Closed", label: "ปิดรายงาน" }
         ];
       }
       if (report.status === "In Review") {
         return [
-          { status: "Cleared", label: "ปิดรายงาน" }
+          { status: "Closed", label: "ปิดรายงาน" }
         ];
       }
       return [];
@@ -11349,8 +11349,8 @@
 
     function closeReportAfterAccountOutcome(report, user, action, beforeReportStatus) {
       if (!shouldCloseReportAfterAccountOutcome(action)) return false;
-      if (!report || !user || getReportQueueStatus(report) === "Cleared") return false;
-      report.status = "Cleared";
+      if (!report || !user || getReportQueueStatus(report) === "Closed") return false;
+      report.status = "Closed";
       report.accountStatus = user.status;
       report.waiting = "0 ชม.";
       appendReportAuditLog(report, {
@@ -11359,7 +11359,7 @@
           ? "ปิดรายงานหลังยกเลิกระงับบัญชีชั่วคราวและคืนสิทธิ์ผู้ใช้"
           : "ปิดรายงานหลังยืนยันระงับบัญชีถาวร",
         before: { reportStatus: beforeReportStatus, accountStatus: user.status },
-        after: { reportStatus: "Cleared", accountStatus: user.status },
+        after: { reportStatus: "Closed", accountStatus: user.status },
         reason: action === "Restore"
           ? "ยืนยันผลตรวจสอบแล้วว่าผู้ใช้กลับมาใช้งานได้"
           : "ยืนยันผลตรวจสอบแล้วว่าต้องระงับบัญชีถาวร",
@@ -11371,7 +11371,7 @@
     function getReportAccountActions(report) {
       const user = getReportUser(report);
       if (!user) return [];
-      if (getReportQueueStatus(report) === "Cleared") return [];
+      if (getReportQueueStatus(report) === "Closed") return [];
       const reportAccountActionSet = new Set(["Suspend", "Ban", "Restore", "Unban user"]);
       return getUserRowActions(user).filter(({ action }) => reportAccountActionSet.has(action));
     }
@@ -11406,14 +11406,14 @@
       const reportUser = getReportUser(report);
       const statusActions = getReportStatusActions(report)
         .filter(action => action.status !== "In Review")
-        .map(action => `<button class="user-detail-action-btn ${action.status === "Cleared" ? "primary" : ""}" type="button" data-report-status-action="${action.status}" data-report-id="${report.id}">${action.label}</button>`)
+        .map(action => `<button class="user-detail-action-btn ${action.status === "Closed" ? "primary" : ""}" type="button" data-report-status-action="${action.status}" data-report-id="${report.id}">${action.label}</button>`)
         .join("");
       const accountActions = reportUser
         ? getReportAccountActions(report).map(({ action, label }, index) => {
             return `<button class="user-detail-action-btn ${getUserActionClass(action, index)}" type="button" data-user-action="${action}" data-user-id="${reportUser.id}" data-report-context="${report.id}">${label}</button>`;
           }).join("")
         : "";
-      const emptyState = !statusActions && !accountActions && getReportQueueStatus(report) !== "Cleared" ? `<span class="chip">ไม่มี action บัญชีที่ทำได้</span>` : "";
+      const emptyState = !statusActions && !accountActions && getReportQueueStatus(report) !== "Closed" ? `<span class="chip">ไม่มี action บัญชีที่ทำได้</span>` : "";
       const actions = `${statusActions}${accountActions}${emptyState}`;
       return actions ? `<div class="user-detail-actions">${actions}</div>` : "";
     }
@@ -11424,7 +11424,7 @@
           detail: "เปิดรายงานกลับไปที่คิวรอตรวจ",
           toast: "เปิดรายงานอีกครั้งแล้ว"
         },
-        "Cleared": {
+        "Closed": {
           detail: "ปิดรายงานหลังตรวจสอบหลักฐานต้นทางแล้ว",
           toast: "ปิดรายงานแล้ว"
         }
@@ -11436,7 +11436,7 @@
     }
 
     function renderReportStatusConfirmModal(report, status, resultMessage = "", resultDetail = "", resultType = "", selectedScenario = "success") {
-      if (!report || status !== "Cleared") {
+      if (!report || status !== "Closed") {
         updateReportStatus(report, status);
         return;
       }
@@ -11523,7 +11523,7 @@
       const closeReason = document.querySelector("#report-close-reason")?.value;
       const closeNote = document.querySelector("#report-close-note")?.value.trim();
       report.status = status;
-      if (status === "Cleared") report.waiting = "0 ชม.";
+      if (status === "Closed") report.waiting = "0 ชม.";
       report.accountStatus = getReportAccountStatus(report);
       appendReportAuditLog(report, {
         action: "REPORT_STATUS_UPDATED",
@@ -12120,7 +12120,7 @@
             <div class="user-advanced-filter">${customSelect("board-report-status-filter", "Filter report status", [
               { value: "", label: "ทุกสถานะ" },
               { value: "Pending", label: "รอตรวจ" },
-              { value: "Cleared", label: "ปิดแล้ว" }
+              { value: "Closed", label: "ปิดแล้ว" }
             ])}</div>
             <div class="user-advanced-filter">${customSelect("board-report-priority-filter", "Filter priority", [
               { value: "", label: "ทุก priority" },
@@ -12731,7 +12731,7 @@
         category: "Journal Board",
         surface: "Board Article",
         contentStatus: "Archived",
-        reportStatus: "Cleared",
+        reportStatus: "Closed",
         priority: "low",
         reporters: 3,
         waitingHours: 0,
@@ -12743,7 +12743,7 @@
         reportedAt: "09 Jul 2026 16:45",
         tags: ["Attribution", "Archived", "Closed"],
         actionHistory: [
-          { createdAt: "09 Jul 2026 17:12 GMT+7", actor: "Orn Admin", action: "Archive Article", before: { reportStatus: "Pending", contentStatus: "Published" }, after: { reportStatus: "Cleared", contentStatus: "Archived" }, note: "Archived the Board article and closed the report after attribution review." },
+          { createdAt: "09 Jul 2026 17:12 GMT+7", actor: "Orn Admin", action: "Archive Article", before: { reportStatus: "Pending", contentStatus: "Published" }, after: { reportStatus: "Closed", contentStatus: "Archived" }, note: "Archived the Board article and closed the report after attribution review." },
           { createdAt: "09 Jul 2026 16:45 GMT+7", actor: "System", action: "Report Received", before: null, after: { reportStatus: "Pending", contentStatus: "Published" }, note: "System opened a Board report for outdated attribution." }
         ]
       }
@@ -15357,12 +15357,12 @@
     }
 
     function getBoardReportQueueStatus(report) {
-      return report?.reportStatus === "Cleared" ? "Cleared" : "Pending";
+      return report?.reportStatus === "Closed" ? "Closed" : "Pending";
     }
 
     function boardReportQueueStatusPill(report) {
       const status = getBoardReportQueueStatus(report);
-      return `<span class="pill ${status === "Cleared" ? "green" : "amber"}">${status === "Cleared" ? "Closed" : "Pending"}</span>`;
+      return `<span class="pill ${status === "Closed" ? "green" : "amber"}">${status === "Closed" ? "Closed" : "Pending"}</span>`;
     }
 
     function boardReportContentStatusPill(status) {
@@ -15487,10 +15487,10 @@
       rows.forEach((row, index) => {
         row._sortIndex = index;
       });
-      const hasCloseReportHistory = rows.some(row => row.action === "Close Report" && row.after?.reportStatus === "Cleared");
+      const hasCloseReportHistory = rows.some(row => row.action === "Close Report" && row.after?.reportStatus === "Closed");
       const closingContentRow = rows.find(row => (
         row.action === "Archive Article"
-        && row.after?.reportStatus === "Cleared"
+        && row.after?.reportStatus === "Closed"
       ));
       if (closingContentRow && !hasCloseReportHistory) {
         rows.push({
@@ -15498,7 +15498,7 @@
           actor: closingContentRow.actor,
           action: "Close Report",
           before: { reportStatus: "Pending", contentStatus: closingContentRow.after?.contentStatus || report.contentStatus },
-          after: { reportStatus: "Cleared", contentStatus: closingContentRow.after?.contentStatus || report.contentStatus },
+          after: { reportStatus: "Closed", contentStatus: closingContentRow.after?.contentStatus || report.contentStatus },
           note: "ผู้ดูแลปิดรายงานหลังดำเนินการกับ Board content เรียบร้อยแล้ว",
           _sortIndex: rows.length
         });
@@ -15842,7 +15842,7 @@
       if (!report || !action) return;
       const before = { reportStatus: getBoardReportQueueStatus(report), contentStatus: report.contentStatus };
       const note = document.querySelector("#board-report-action-note")?.value.trim() || document.querySelector("#board-report-action-reason")?.value || getBoardReportActionConfig(action).note;
-      if (action === "close-report") report.reportStatus = "Cleared";
+      if (action === "close-report") report.reportStatus = "Closed";
       if (action === "archive-article") {
         const article = getArticleById(report.articleId);
         const now = formatArticleActionTimestamp();
@@ -15859,7 +15859,7 @@
           article.detail = `Archived from Reported Board ${report.id}. Removed from FO Board/Search/Category.`;
         }
         report.contentStatus = "Archived";
-        report.reportStatus = "Cleared";
+        report.reportStatus = "Closed";
       }
       appendBoardReportAuditHistory(report, {
         action: getBoardReportActionConfig(action).historyAction,
