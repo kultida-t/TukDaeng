@@ -5872,7 +5872,8 @@
         font-size: 18px;
         line-height: 1.15;
       }
-      body.user-list-mode .reported-users-table .user-row.report-row:not(.head) > div.user-cell-primary[data-label="Report ID"] .main-text {
+      body.user-list-mode .reported-users-table .user-row.report-row:not(.head) > div.user-cell-primary[data-label="Report ID"] .main-text,
+      body.user-list-mode .reported-assets-table .user-row.report-row:not(.head) > div.user-cell-primary[data-label="Report ID"] .main-text {
         max-width: 100%;
         overflow: hidden;
         text-overflow: ellipsis;
@@ -5891,6 +5892,8 @@
         grid-column: 2;
         grid-row: 1;
         align-self: center;
+        justify-self: end;
+        justify-content: flex-end;
       }
       .user-card-tags {
         grid-column: 1 / -1;
@@ -5993,7 +5996,8 @@
         min-width: 78px;
         justify-content: center;
       }
-      body.user-list-mode .row-menu summary {
+      body.user-list-mode .row-menu summary,
+      body.asset-list-mode .row-menu summary {
         width: 30px;
         height: 30px;
         border: 0;
@@ -6003,19 +6007,22 @@
         font-size: 18px;
         transform: translateY(-1px);
       }
-      body.user-list-mode .row-menu[open] summary {
+      body.user-list-mode .row-menu[open] summary,
+      body.asset-list-mode .row-menu[open] summary {
         border-color: transparent;
         background: transparent;
         color: var(--blue);
       }
-      body.user-list-mode .row-menu-list {
+      body.user-list-mode .row-menu-list,
+      body.asset-list-mode .row-menu-list {
         left: auto;
         right: 0;
         width: min(196px, calc(100vw - 64px));
         min-width: 0;
         max-width: calc(100vw - 64px);
       }
-      body.user-list-mode .row-menu-list button {
+      body.user-list-mode .row-menu-list button,
+      body.asset-list-mode .row-menu-list button {
         white-space: normal;
         overflow-wrap: anywhere;
       }
@@ -6069,7 +6076,9 @@
       }
       body.user-list-mode .footer-range,
       body.asset-list-mode .footer-range,
-      body.article-list-mode .footer-range {
+      body.article-list-mode .footer-range,
+      body.category-list-mode .footer-range,
+      body.reported-board-mode .footer-range {
         margin-top: 12px;
         padding: 13px 16px;
         background: transparent;
@@ -6078,7 +6087,7 @@
         display: none;
       }
       body.asset-list-mode .asset-row:not(.head) {
-        grid-template-columns: minmax(0, 1fr);
+        grid-template-columns: minmax(0, 1fr) 34px;
         column-gap: 14px;
         row-gap: 14px;
         min-height: 0;
@@ -6093,9 +6102,9 @@
         display: none;
       }
       body.asset-list-mode .asset-row:not(.head) > .user-row-actions {
-        grid-column: 1;
+        grid-column: 2;
         grid-row: 1;
-        align-self: start;
+        align-self: center;
         justify-self: end;
       }
       body.asset-list-mode .asset-row:not(.head) > .asset-cell-primary {
@@ -6103,17 +6112,22 @@
         grid-row: 1;
         min-height: 30px;
         display: flex;
-        flex-direction: column;
-        justify-content: center;
+        align-items: center;
         align-self: center;
+        border-bottom: 0;
+        padding-bottom: 0;
       }
       body.asset-list-mode .asset-row:not(.head) > .asset-cell-primary .main-text {
         max-width: 100%;
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
-        font-size: 18px;
-        line-height: 1.15;
+        color: #061426;
+        font-family: var(--font-heading);
+        font-size: 22px;
+        font-weight: 500;
+        letter-spacing: .04em;
+        line-height: 1;
       }
       body.asset-list-mode .asset-card-tags {
         grid-column: 1 / -1;
