@@ -8170,6 +8170,11 @@
       const photoCount = asset.type === "Show" ? 8 : asset.type === "Sold" ? 10 : 12;
       const reportCount = getAssetReportCount(asset);
       const uploadedImages = asset.uploadedImages || defaultAssetUploadedImages;
+      const createdAt = asset.createdAt || `${String(createdDay).padStart(2, "0")} Jul 2026 10:${String(idNumber % 60).padStart(2, "0")}`;
+      const createdAtRank = parseBangkokAuditTime(createdAt);
+      const updatedAt = createdAtRank
+        ? formatReporterSubmissionTime(createdAtRank + ((idNumber % 18) + 2) * 60 * 60 * 1000)
+        : `17 Jul 2026 ${String(updatedHour).padStart(2, "0")}:20`;
       return {
         brand,
         model: asset.name.replace(`${brand} `, ""),
@@ -8195,8 +8200,8 @@
         photoCount: Math.max(photoCount, uploadedImages.length),
         mediaReview: `${uploadedImages.length} uploaded asset photos from FO, including cover, dial angle, and bracelet/detail images`,
         owner,
-        createdAt: `${String(createdDay).padStart(2, "0")} Jul 2026 10:${String(idNumber % 60).padStart(2, "0")}`,
-        updatedAt: `17 Jul 2026 ${String(updatedHour).padStart(2, "0")}:20`,
+        createdAt,
+        updatedAt,
         visibility: asset.type === "Sale" ? "Feed, Search, Profile, Watch Alert" : asset.type === "Show" ? "Profile / Collection only" : asset.type === "Hide" ? "Owner-only" : "Read-only sold history",
         offerEnabled: asset.type === "Sale" && !isTemporarilyHiddenAsset(asset) && !isAssetUnavailableAsset(asset) ? "Enabled" : "Disabled",
         commentEnabled: isAssetUnavailableAsset(asset) ? "Disabled" : "Enabled",
