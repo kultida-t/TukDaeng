@@ -5921,11 +5921,25 @@
         color: #485b75;
         font-size: 12px;
         font-weight: 700;
+        white-space: nowrap;
       }
       .user-card-meta-item strong {
         color: #233a5c;
         font-size: 12px;
         font-weight: 400;
+        min-width: 0;
+        text-align: right;
+      }
+      .user-card-meta-item.report-reason-meta {
+        align-items: start;
+      }
+      .user-card-meta-item.report-reason-meta strong {
+        max-width: 58%;
+        display: -webkit-box;
+        overflow: hidden;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 2;
+        white-space: normal;
       }
       .user-card-tag {
         min-height: 30px;
@@ -11756,7 +11770,7 @@
                 <div class="user-card-meta">
                   <div class="user-card-meta-item"><span>User</span><strong>${report.user}</strong></div>
                   <div class="user-card-meta-item"><span>Sources</span><strong>${renderReportSourcesLabel(report)}</strong></div>
-                  <div class="user-card-meta-item"><span>Report reason</span><strong>${renderUserReportReasonsLabel(report)}</strong></div>
+                  <div class="user-card-meta-item report-reason-meta"><span>Report reason</span><strong>${renderUserReportReasonsLabel(report)}</strong></div>
                   <div class="user-card-meta-item"><span>Reported at</span><strong>${reportedAt}</strong></div>
                 </div>
               </div>
