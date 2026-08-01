@@ -3227,6 +3227,9 @@
     .user-card-tags {
       display: none;
     }
+    .mobile-user-card-title {
+      display: none;
+    }
     .user-row .panel-action {
       min-height: 38px;
       padding: 8px 13px;
@@ -5824,14 +5827,19 @@
         border-bottom: 0;
         padding-bottom: 0;
       }
-      .user-row:not(.head):not(.report-row) > div.user-cell-primary[data-label] .main-text {
+      body.user-list-mode .user-table .user-row:not(.head):not(.report-row) > div.user-cell-primary[data-label="User"] .main-text {
         max-width: 100%;
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
-        font-size: 18px;
-        line-height: 1.15;
+        font-family: var(--font-heading);
+        font-size: 22px;
+        font-weight: 500;
+        letter-spacing: .04em;
+        line-height: 1;
       }
+      .user-row:not(.head):not(.report-row) .desktop-user-name { display: none; }
+      .user-row:not(.head):not(.report-row) .mobile-user-card-title { display: inline; }
       .user-row:not(.head):not(.report-row) > div[data-label]:not(.user-cell-primary) {
         display: none;
       }
@@ -5894,15 +5902,17 @@
         justify-content: space-between;
         gap: 8px;
         color: #34445b;
-        font-size: 13px;
+        font-size: 12px;
         line-height: 1.35;
       }
       .user-card-meta-item span {
-        color: #5f6f83;
-        font-size: 13px;
-        font-weight: 600;
+        color: #485b75;
+        font-size: 12px;
+        font-weight: 700;
       }
       .user-card-meta-item strong {
+        color: #233a5c;
+        font-size: 12px;
         font-weight: 400;
       }
       .user-card-tag {
@@ -11662,15 +11672,15 @@
             return `
             <div class="user-row" data-user-card="${user.id}">
               <div data-label="User ID"><div class="main-text">${user.id}</div></div>
-              <div class="user-cell-primary" data-label="User"><div class="main-text">${user.displayName}</div></div>
+              <div class="user-cell-primary" data-label="User"><div class="main-text"><span class="desktop-user-name">${user.displayName}</span><span class="mobile-user-card-title">${user.id}</span></div></div>
               <div class="user-card-tags">
                 ${userStatusPill(user.status)}
                 <span class="user-card-tag asset-tag">${user.assets} assets</span>
                 ${userAuthPill(user.auth)}
                 <div class="user-card-meta">
-                  <div class="user-card-meta-item"><span>User ID</span><strong>${user.id}</strong></div>
-                  <div class="user-card-meta-item"><span>Last active</span><strong>${user.lastActive}</strong></div>
+                  <div class="user-card-meta-item"><span>User</span><strong>${user.displayName}</strong></div>
                   <div class="user-card-meta-item"><span>Date joined</span><strong>${user.joined}</strong></div>
+                  <div class="user-card-meta-item"><span>Last active</span><strong>${user.lastActive}</strong></div>
                 </div>
               </div>
               <div data-label="Status">${userStatusPill(user.status)}</div>
