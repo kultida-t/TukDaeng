@@ -1,9 +1,9 @@
 # 04 BO Asset Management Module
 
-**Version:** `BO-04-v1.0`  
-**Date:** 2026-07-31  
-**Status:** Current functional specification  
-**Platform:** Responsive Web Back Office
+**เวอร์ชัน:** `BO-04-v1.0`  
+**วันที่:** 2026-07-31  
+**สถานะ:** สเปกปัจจุบัน  
+**แพลตฟอร์ม:** Responsive Web Back Office
 
 
 ## มาตรฐาน UI และ Prototype อ้างอิง
@@ -12,7 +12,7 @@
 
 ห้ามออกแบบ pattern แยกเองสำหรับ list toolbar, breakpoint, table/card layout, pagination, reset, action menu, detail layout หรือ confirmation modal ยกเว้นเอกสารนี้ระบุไว้ชัดเจนว่าเป็น override ที่อนุมัติแล้ว
 
-## 1. Objective
+## 1. วัตถุประสงค์
 
 Asset Management คือเมนูสำหรับ Admin ใช้ตรวจสอบรายการ asset, รายละเอียด asset, รายงาน asset และดำเนินการ moderation ที่มีผลต่อการมองเห็นของ asset ในระบบ
 
@@ -30,9 +30,9 @@ Asset Management คือเมนูสำหรับ Admin ใช้ตร�
 - ปิด report case พร้อมบันทึกผลการตรวจสอบ
 - บันทึก audit log สำหรับทุก action ที่เปลี่ยน state หรือ visibility
 
-## 2. Scope
+## 2. ขอบเขต
 
-### In Scope
+### อยู่ในขอบเขต
 
 - Asset List
 - Asset Detail
@@ -46,7 +46,7 @@ Asset Management คือเมนูสำหรับ Admin ใช้ตร�
 - Confirmation, reason และ audit สำหรับ action ที่กระทบ visibility หรือ report outcome
 - Responsive layout สำหรับ desktop, tablet และ mobile-width browser
 
-### Out Of Scope
+### นอกขอบเขต
 
 - การสร้าง asset แทน user
 - การแก้ไข business data ของ asset แทน owner
@@ -60,20 +60,27 @@ Asset Management คือเมนูสำหรับ Admin ใช้ตร�
 - Restore จากสถานะซ่อนถาวร
 - ลบข้อมูล asset จริงจาก Back Office
 
-## 3. Menu Structure
+## 3. โครงสร้างเมนู
 
-เมนู Asset Management ต้องมี submenu ต่อไปนี้:
+เมนูหลัก: `Asset Management`
 
-- `Asset List`
-- `Reported Assets`
+Submenu ภายใต้ Asset Management:
 
-เมื่อเปิด asset จาก `Asset List` ต้องเข้าสู่ `Asset Detail`
+| เมนู | หน้าที่ |
+| --- | --- |
+| `Asset List` | แสดงรายการ asset ทั้งหมด, ค้นหา/filter/sort, เปิดรายละเอียด asset และทำ moderation action ที่อนุญาต |
+| `Reported Assets` | แสดงคิวรายงาน asset จาก FO, ค้นหา/filter/sort, เปิดรายละเอียดรายงาน และปิดรายงานหรือจัดการ visibility เมื่อจำเป็น |
 
-เมื่อเปิด report จาก `Reported Assets` ต้องเข้าสู่ `Asset Report Detail`
+พฤติกรรมการนำทาง:
 
-ทุกหน้าต้องมี breadcrumb หรือ back navigation ที่พากลับไปยังหน้ารายการต้นทางได้ถูกต้อง
+- เมื่อเข้า `Asset Management` ให้เปิด `Asset List` เป็นหน้าหลัก
+- เมนูที่ถูกเลือกต้องแสดง active state ที่ submenu นั้น
+- `Asset Detail` เปิดจาก `Asset List` หรือจากปุ่ม `View Asset` ใน `Asset Report Detail`
+- `Asset Report Detail` เปิดจากรายการใน `Reported Assets`
+- ปุ่มย้อนกลับจาก `Asset Detail` ต้องกลับไป context เดิมที่เปิดมา
+- ปุ่มย้อนกลับจาก `Asset Report Detail` ต้องกลับไป `Reported Assets` พร้อมคง search/filter/sort/page เดิม
 
-## 4. Access And Permission Rules
+## 4. สิทธิ์และกฎการเข้าถึง
 
 ระบบใช้ Admin access เดียว โดยตรวจสิทธิ์ตามเมนูและ action ที่ทำ ไม่แยกประเภทบัญชี Admin ในสเปกนี้
 
@@ -84,28 +91,28 @@ Asset Management คือเมนูสำหรับ Admin ใช้ตร�
 | Sensitive data | แสดงเฉพาะรูปแบบ read-only/masked/summarized |
 | Direct URL/API | ต้องตรวจสิทธิ์ที่ route, API และ service layer เสมอ |
 
-## 5. Responsive Layout
+## 5. รูปแบบ Responsive
 
-Asset Management must follow the shared responsive rules in `00_GLOBAL_RULES_MODULE.md` and the confirmed behavior in `../Prototypes/bo-prototype.html`.
+Asset Management ต้องใช้กฎ responsive กลางจาก `00_GLOBAL_RULES_MODULE.md` และยึดพฤติกรรมที่ยืนยันแล้วใน `../Prototypes/bo-prototype.html`
 
-| Breakpoint | Width | Asset Management Requirement |
+| Breakpoint | ความกว้าง | ข้อกำหนดของ Asset Management |
 | --- | --- | --- |
 | Mobile | `<= 760px` | Asset List and Reported Assets render as stacked cards with asset/report identity, status/context pills, key metadata, and compact action menu. Advanced filters collapse inline behind the filter toggle. Asset Detail and Asset Report Detail render as vertical sections with reachable actions. |
 | Tablet | `761px - 1365px` | Uses the same page shell and panels as the prototype. Filter toolbar compacts into a grid. Dense tables may scroll inside the list container only when required. |
 | Desktop | `> 1365px` | Shows page header, Asset List summary cards, filter toolbar, dense table/grid, pagination footer, and compact row action menu. |
 
-Additional requirements:
+ข้อกำหนดเพิ่มเติม:
 
-- Asset List shows summary cards following the prototype; Reported Assets does not show summary cards.
-- Text, image thumbnails, status pills, buttons, table/card content, and modal content must not overflow or overlap.
-- Important moderation/report actions must remain reachable on mobile and desktop.
-- Mobile filters open/close inline in the list area and must not use a separate drawer or bottom sheet.
+- Asset List แสดง summary cards ตาม prototype ส่วน Reported Assets ไม่แสดง summary cards
+- ข้อความ, thumbnail, status pill, button, เนื้อหา table/card และ modal ต้องไม่ล้นหรือซ้อนกัน
+- Action สำคัญด้าน moderation/report ต้องเข้าถึงได้บน mobile และ desktop
+- Filter บน mobile ต้องเปิด/ปิดแบบ inline ในพื้นที่ list และห้ามใช้ drawer หรือ bottom sheet แยก
 
-## 6. Asset List
+## 6. รายการ Asset (Asset List)
 
 Asset List ใช้สำหรับ scan asset ทั้งหมดและเปิดรายละเอียดหรือ action ที่ทำได้ตาม state
 
-### Required Display Fields
+### Field ที่ต้องแสดง
 
 - Asset ID
 - Asset name
@@ -115,7 +122,7 @@ Asset List ใช้สำหรับ scan asset ทั้งหมดและ
 - Moderation/Context pill เมื่อมี เช่น `Consignment`, `ซ่อนชั่วคราว`, `ซ่อนถาวร`, `ลบโดยเจ้าของ`
 - Row action menu
 
-### Row Actions
+### Action ในแต่ละแถว
 
 Action ในแต่ละ row ต้องแสดงเฉพาะรายการที่ทำได้ตาม current state และ permission
 
@@ -126,7 +133,7 @@ Action ในแต่ละ row ต้องแสดงเฉพาะรา�
 
 ห้ามมี action สำหรับเปลี่ยน asset status เป็น `Sale`, `Show`, `Hide` หรือ `Sold` โดยตรง
 
-### Search
+### การค้นหา (Search)
 
 Asset List ต้องค้นหาได้จาก:
 
@@ -137,7 +144,7 @@ Asset List ต้องค้นหาได้จาก:
 - Description keyword
 - Status หรือ context keyword ที่แสดงในรายการ
 
-### Filters
+### ตัวกรอง (Filters)
 
 Asset List ต้องมี filter ขั้นต่ำ:
 
@@ -147,7 +154,7 @@ Asset List ต้องมี filter ขั้นต่ำ:
 - Sort: newest first, oldest first
 - Reset filter
 
-### Pagination
+### การแบ่งหน้า (Pagination)
 
 Asset List ต้องมี pagination ตามเงื่อนไข:
 
@@ -158,11 +165,11 @@ Asset List ต้องมี pagination ตามเงื่อนไข:
 - ต้องคงค่า search/filter/sort ระหว่างเปลี่ยนหน้า
 - เมื่อไม่พบข้อมูลให้แสดง empty state `ไม่พบข้อมูล`
 
-## 7. Asset Detail
+## 7. รายละเอียด Asset
 
 Asset Detail ใช้สำหรับตรวจสอบข้อมูล Asset แบบ read-only และแสดง action สำหรับการตรวจสอบและจัดการตามสถานะปัจจุบันของ Asset
 
-### Core Fields
+### Field หลัก
 
 - Gallery images สูงสุด 10 รูป
 - Asset ID
@@ -186,14 +193,14 @@ Asset Detail ใช้สำหรับตรวจสอบข้อมูล 
 - Created timestamp
 - Updated timestamp
 
-### Core Field Display Rules
+### กฎการแสดง Field หลัก
 
 - ข้อมูลรายละเอียด asset/specifications ให้แสดงเฉพาะ field ที่มีข้อมูลจากผู้ใช้หรือจากระบบ
 - ถ้า field ใดไม่มีข้อมูล ไม่ต้องแสดง field นั้นบน Asset Detail
 - ห้ามสร้าง placeholder เช่น `N/A` สำหรับ field ที่ไม่มีข้อมูล
 - ข้อยกเว้นคือ field ที่มี rule แยกเฉพาะ เช่น `Price` ซึ่งต้องแสดงตาม Price Display Rules
 
-### Commerce Fields
+### Field ด้านการซื้อขาย
 
 - Price
 - Owner Estimated Value
@@ -201,7 +208,7 @@ Asset Detail ใช้สำหรับตรวจสอบข้อมูล 
 - Sold status ถ้ามี
 - Sold history ถ้ามี
 
-### Price Display Rules
+### กฎการแสดงราคา
 
 - Asset Detail ต้องแสดง field `Price` เสมอ
 - Asset Report Detail ต้องเข้าถึง field `Price` ผ่าน View Asset modal/reference ได้เสมอ
@@ -210,7 +217,7 @@ Asset Detail ใช้สำหรับตรวจสอบข้อมูล 
 - ห้ามสร้าง placeholder เช่น `N/A`
 - ราคาเป็นข้อมูล read-only ใน Back Office
 
-### Sensitive Context
+### ข้อมูลอ่อนไหวที่เกี่ยวข้อง
 
 ข้อมูลต่อไปนี้ต้องแสดงแบบ read-only/masked/summarized เท่านั้น:
 
@@ -226,7 +233,7 @@ Asset Detail ใช้สำหรับตรวจสอบข้อมูล 
 
 Sensitive context ต้องเปิดผ่าน modal หรือ section ที่แยกจากข้อมูลหลัก และต้องไม่แสดงข้อมูลเต็มแบบเปิดโล่ง
 
-### History Sections
+### ส่วนประวัติ
 
 Asset Detail ต้องแสดง history ที่เกี่ยวข้องเมื่อมีข้อมูล:
 
@@ -235,11 +242,11 @@ Asset Detail ต้องแสดง history ที่เกี่ยวข้�
 - Report History
 - Admin Action History
 
-## 8. Asset Status Model
+## 8. โมเดลสถานะ Asset
 
 ระบบต้องแยก owner-controlled status ออกจาก moderation state
 
-### Owner-Controlled Status
+### สถานะที่เจ้าของควบคุม
 
 | Status | Meaning |
 | --- | --- |
@@ -250,13 +257,13 @@ Asset Detail ต้องแสดง history ที่เกี่ยวข้�
 
 Admin ห้ามเปลี่ยน owner-controlled status โดยตรงจาก Back Office
 
-### System/Retention State
+### สถานะระบบ/การเก็บรักษาข้อมูล
 
 | State | Meaning |
 | --- | --- |
 | `ลบโดยเจ้าของ` | Owner ลบ asset จากฝั่งผู้ใช้งานแล้ว ไม่แสดงใน owner list ปกติหรือ public surfaces แต่ Back Office ยังเก็บ record ตาม retention rule ของระบบ |
 
-### Moderation State
+### สถานะ Moderation
 
 | State | Meaning |
 | --- | --- |
@@ -266,7 +273,7 @@ Admin ห้ามเปลี่ยน owner-controlled status โดยตร�
 
 Moderation state เป็น overlay บน owner-controlled status และไม่เปลี่ยนค่า owner-controlled status เดิม
 
-## 9. Visibility Matrix
+## 9. ตารางผลต่อการมองเห็น (Visibility Matrix)
 
 | State | Public Marketplace | Public Profile/Detail | Owner View | Offer Availability |
 | --- | --- | --- | --- | --- |
@@ -282,7 +289,7 @@ Asset ที่มี state `ซ่อนถาวร` หรือ `ลบโ�
 
 Asset ที่เป็น `Consignment` ต้องไม่ถูกนับใน portfolio value หรือ asset value summary เพราะเป็นของฝากขาย ไม่ใช่ทรัพย์สินที่ owner ถือครองเอง
 
-## 10. Asset Action Rules
+## 10. กฎ Action ของ Asset
 
 ### ข้อกำหนดทั่วไป
 
@@ -343,11 +350,11 @@ Asset ที่เป็น `Consignment` ต้องไม่ถูกนั�
 - ต้องมี history/audit row ระบุ actor เป็น owner, action เป็น `Asset Deleted By Owner`, before state, after state `ลบโดยเจ้าของ` และ timestamp
 - Pending offer ที่เกี่ยวข้องต้องถูกตั้งเป็น `Cancelled`
 
-## 11. Reported Assets
+## 11. Asset ที่ถูกรายงาน
 
 Reported Assets เป็น queue แยกจาก Asset List สำหรับจัดการ report case
 
-### Required Display Fields
+### Field ที่ต้องแสดง
 
 - Report ID
 - Asset
@@ -362,7 +369,7 @@ Reported Assets เป็น queue แยกจาก Asset List สำหรั
 
 Asset ID และ Owner ไม่จำเป็นต้องเป็น column หลักในตาราง Reported Assets แต่ต้องค้นหาได้ และต้องแสดงใน Asset Report Detail หรือ reported asset reference context
 
-### Report Search
+### การค้นหารายงาน
 
 Reported Assets ต้องค้นหาได้จาก:
 
@@ -372,7 +379,7 @@ Reported Assets ต้องค้นหาได้จาก:
 - Owner name
 - Report reason
 
-### Report Filters
+### ตัวกรองรายงาน
 
 Reported Assets ต้องมี filter ขั้นต่ำ:
 
@@ -381,7 +388,7 @@ Reported Assets ต้องมี filter ขั้นต่ำ:
 - Sort: newest first, oldest first, reporter count
 - Reset filter
 
-### Report Pagination
+### การแบ่งหน้ารายงาน
 
 Reported Assets ต้องมี pagination ตามเงื่อนไข:
 
@@ -392,7 +399,7 @@ Reported Assets ต้องมี pagination ตามเงื่อนไข:
 - ต้องคงค่า search/filter/sort ระหว่างเปลี่ยนหน้า
 - เมื่อไม่พบข้อมูลให้แสดง empty state `ไม่พบข้อมูล`
 
-### Report Status
+### สถานะรายงาน
 
 | Status | Meaning |
 | --- | --- |
@@ -401,11 +408,11 @@ Reported Assets ต้องมี pagination ตามเงื่อนไข:
 
 Report ที่ `Closed` เป็น final state และไม่มี reopen action ในเมนูนี้
 
-## 12. Asset Report Detail
+## 12. รายละเอียดรายงาน Asset
 
 Asset Report Detail ใช้สำหรับตรวจสอบ report case และ action ที่เกี่ยวข้อง
 
-### Required Sections
+### ส่วนข้อมูลที่ต้องมี
 
 - Reported Asset reference
 - Reporter History
@@ -413,7 +420,7 @@ Asset Report Detail ใช้สำหรับตรวจสอบ report case
 
 ข้อมูลสรุปของ report case แสดงผ่าน header, status pill, moderation/context pill และข้อมูลใน Reported Asset reference
 
-### Required Reported Asset Reference
+### ข้อมูลอ้างอิง Asset ที่ถูกรายงาน
 
 - Report ID
 - Asset ID
@@ -425,7 +432,7 @@ Asset Report Detail ใช้สำหรับตรวจสอบ report case
 
 View Asset action ต้องเปิดรายละเอียด asset แบบ read-only และต้องแสดงข้อมูล asset ที่เกี่ยวข้องกับ report context เช่น Price, description, specifications, provenance summary, image gallery และ asset context อื่นที่จำเป็นต่อการตรวจสอบ
 
-### Reporter History
+### ประวัติผู้รายงาน
 
 Reporter History ต้องแสดง:
 
@@ -435,7 +442,7 @@ Reporter History ต้องแสดง:
 - Report reason
 - Additional details
 
-### Detail Actions
+### Action ในหน้ารายละเอียด
 
 Action buttons ต้องแสดงเฉพาะที่ทำได้ตาม current asset state, report status และ permission:
 
@@ -444,7 +451,7 @@ Action buttons ต้องแสดงเฉพาะที่ทำได้�
 - ยกเลิกซ่อนชั่วคราว
 - ซ่อนถาวร
 
-## 13. Report Handling Rules
+## 13. กฎการจัดการรายงาน
 
 เมื่อ user report asset:
 
@@ -454,7 +461,7 @@ Action buttons ต้องแสดงเฉพาะที่ทำได้�
 - Report ซ้ำจาก user เดิมต้องไม่เพิ่ม unique reporter count
 - Report case ต้องผูกกับ asset current state ล่าสุดเสมอ
 
-### Threshold Rules
+### กฎตามจำนวนผู้รายงาน
 
 | Condition | Required Behavior |
 | --- | --- |
@@ -473,7 +480,7 @@ Action buttons ต้องแสดงเฉพาะที่ทำได้�
 - Restore visibility ต้องถูก block ถ้า asset ไม่ได้อยู่ใน moderation state `ซ่อนชั่วคราว`
 - Admin ทำได้เฉพาะปิดรายงานหรือซ่อนถาวร เมื่อ current state และ permission อนุญาต
 
-## 14. Report Data Model
+## 14. โมเดลข้อมูลรายงาน
 
 Reported Assets queue ต้องใช้ report case เป็น source of truth และ join กับ asset เพื่อแสดง current asset state ล่าสุด
 
@@ -486,7 +493,7 @@ Reported Assets queue ต้องใช้ report case เป็น source of t
 
 ห้าม infer รายการใน Reported Assets queue จาก asset status, moderation pill หรือข้อความใน asset row เพียงอย่างเดียว
 
-## 15. Sensitive Data Rules
+## 15. กฎข้อมูลอ่อนไหว
 
 | Data | Default Behavior |
 | --- | --- |
@@ -500,7 +507,7 @@ Reported Assets queue ต้องใช้ report case เป็น source of t
 
 Sensitive data ต้องเป็น read-only เสมอในเมนูนี้
 
-## 16. Error, Empty And Loading States
+## 16. สถานะ Error, Empty และ Loading
 
 ต้องรองรับ state ต่อไปนี้:
 
@@ -520,7 +527,7 @@ Sensitive data ต้องเป็น read-only เสมอในเมนู
 
 เมื่อ action ล้มเหลว ห้ามเปลี่ยน UI เป็น success state และต้องให้ Admin retry หรือปิด modal ได้
 
-## 17. Audit Requirements
+## 17. ข้อกำหนด Audit
 
 ทุก write action ต้องบันทึก:
 
@@ -535,7 +542,7 @@ Sensitive data ต้องเป็น read-only เสมอในเมนู
 - IP address หรือ session context ถ้ามี
 - Timestamp เป็น `Asia/Bangkok`
 
-### Required Action Types
+### ประเภท Action ที่ต้องบันทึก
 
 - `ASSET_TEMP_HIDE`
 - `ASSET_TEMP_UNHIDE`
@@ -546,13 +553,13 @@ Sensitive data ต้องเป็น read-only เสมอในเมนู
 
 Audit history ต้องแสดงใน Asset Detail หรือ Asset Report Detail ตาม context ที่เกี่ยวข้อง
 
-## Module-Specific Overrides
+## ข้อยกเว้นเฉพาะโมดูล
 
-None.
+ไม่มี
 
-Asset Management must use the shared app shell, navigation, breakpoint, list toolbar, desktop table/grid, mobile card, pagination, reset, detail, action menu, and confirmation modal patterns from `00_GLOBAL_RULES_MODULE.md` and `../Prototypes/bo-prototype.html` without module-specific UI/layout overrides.
+Asset Management ต้องใช้ app shell, navigation, breakpoint, list toolbar, desktop table/grid, mobile card, pagination, reset, detail, action menu และ confirmation modal ตาม `00_GLOBAL_RULES_MODULE.md` และ `../Prototypes/bo-prototype.html` โดยไม่มี UI/layout override เฉพาะโมดูล
 
-## 18. Acceptance Criteria
+## 18. เกณฑ์การยอมรับ
 
 | ID | Criteria |
 | --- | --- |

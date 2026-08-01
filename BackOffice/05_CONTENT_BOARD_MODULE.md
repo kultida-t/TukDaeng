@@ -1,9 +1,9 @@
 # 05 BO Content / Board Module
 
-**Version:** `BO-05-v1.0`  
-**Date:** 2026-07-31  
-**Status:** Current functional specification  
-**Platform:** Responsive Web Back Office
+**เวอร์ชัน:** `BO-05-v1.0`  
+**วันที่:** 2026-07-31  
+**สถานะ:** สเปกปัจจุบัน  
+**แพลตฟอร์ม:** Responsive Web Back Office
 
 
 ## มาตรฐาน UI และ Prototype อ้างอิง
@@ -12,15 +12,15 @@
 
 ห้ามออกแบบ pattern แยกเองสำหรับ list toolbar, breakpoint, table/card layout, pagination, reset, action menu, detail layout หรือ confirmation modal ยกเว้นเอกสารนี้ระบุไว้ชัดเจนว่าเป็น override ที่อนุมัติแล้ว
 
-## 1. Objective
+## 1. วัตถุประสงค์
 
 BO Content / Board Module คือเมนูสำหรับ Admin ใช้จัดการบทความบน FO Board ตั้งแต่สร้าง แก้ไข ดูรายละเอียด ดูตัวอย่าง เผยแพร่ ตั้งเวลา นำออกจากการเผยแพร่ จัดการหมวดหมู่ และตรวจรายงานบทความที่ผู้ใช้แจ้งเข้ามา
 
 FO Board เป็นพื้นที่อ่านบทความ ไม่ใช่ forum และไม่ใช่พื้นที่ให้ผู้ใช้สร้างบทความเอง ผู้ใช้ FO สามารถอ่าน ค้นหา กรองหมวด กด Like, Share และ Report article ได้ ส่วนการสร้างและจัดการบทความทั้งหมดทำใน BO เท่านั้น
 
-## 2. Scope
+## 2. ขอบเขต
 
-### In Scope
+### อยู่ในขอบเขต
 
 - Articles list, detail, create, edit, preview, publish, schedule, unpublish, and archive flows
 - Category list, detail, create, edit, reorder, activate, deactivate, and delete flows
@@ -28,7 +28,7 @@ FO Board เป็นพื้นที่อ่านบทความ ไม�
 - Reported Board Content queue, report detail, report actions, confirmations, and audit
 - Search, filter, sort, pagination, empty/loading/error states, and responsive behavior
 
-### Out Of Scope
+### นอกขอบเขต
 
 - FO article creation by general users
 - Forum/thread behavior for Board content
@@ -37,16 +37,29 @@ FO Board เป็นพื้นที่อ่านบทความ ไม�
 - Export
 - AI moderation
 
-## 3. Menu Structure
-Content / Board Module อยู่ภายใต้เมนู `Content Management` และมี submenu ดังนี้:
+## 3. โครงสร้างเมนู
 
-| Menu | Purpose |
+เมนูหลัก: `Content Management`
+
+Submenu ภายใต้ Content Management:
+
+| เมนู | หน้าที่ |
 | --- | --- |
 | `Articles` | จัดการบทความทั้งหมดของ Board |
 | `Categories` | จัดการหมวดหมู่บทความ |
 | `Reported Board` | ตรวจรายงานบทความที่ผู้ใช้แจ้งจาก FO |
 
-## 4. Access And Permission Rules
+พฤติกรรมการนำทาง:
+
+- เมื่อเข้า `Content Management` ให้เปิด `Articles` เป็นหน้าหลัก
+- เมนูที่ถูกเลือกต้องแสดง active state ที่ submenu นั้น
+- `Article Detail`, `Add Article` และ `Edit Article` เปิดจาก `Articles`
+- `Category Detail` และ category action modal เปิดจาก `Categories`
+- `Board Report Detail` เปิดจากรายการใน `Reported Board`
+- ปุ่มย้อนกลับจาก detail/editor/modal ต้องกลับไป context เดิมที่เปิดมา
+- ปุ่มย้อนกลับจาก `Board Report Detail` ต้องกลับไป `Reported Board` พร้อมคง search/filter/sort/page เดิม
+
+## 4. สิทธิ์และกฎการเข้าถึง
 
 | Access Area | Rule / เงื่อนไข |
 | --- | --- |
@@ -57,26 +70,26 @@ Content / Board Module อยู่ภายใต้เมนู `Content Manag
 | Direct URL/API | ต้อง enforce permission ที่ route, API และ service layer ไม่พึ่งการซ่อนปุ่มบน UI อย่างเดียว |
 | Audit | Action สำคัญต้องบันทึกประวัติพร้อม admin, target, action, timestamp, result และ reason/note เมื่อมี |
 
-## 5. Responsive Layout
+## 5. รูปแบบ Responsive
 
-Content Management must follow the shared responsive rules in `00_GLOBAL_RULES_MODULE.md` and the confirmed behavior in `../Prototypes/bo-prototype.html`.
+Content Management ต้องใช้กฎ responsive กลางจาก `00_GLOBAL_RULES_MODULE.md` และยึดพฤติกรรมที่ยืนยันแล้วใน `../Prototypes/bo-prototype.html`
 
-| Breakpoint | Width | Content Management Requirement |
+| Breakpoint | ความกว้าง | ข้อกำหนดของ Content Management |
 | --- | --- | --- |
 | Mobile | `<= 760px` | Articles, Categories, and Reported Board lists render as stacked cards with primary identity, status/context metadata, and compact action menu. Advanced filters collapse inline behind the filter toggle. Article editor, category modal, report detail, and preview flows keep sectioned layouts that fit the viewport. |
 | Tablet | `761px - 1365px` | Uses the same page shell and panels as the prototype. Filter toolbar compacts into a grid. Editor/detail grids collapse when space is limited. |
 | Desktop | `> 1365px` | Shows page header, page actions where defined, filter toolbar, dense table/grid, pagination footer, and compact row action menu. Detail/editor screens use full-width section blocks in the main content panel. |
 
-Additional requirements:
+ข้อกำหนดเพิ่มเติม:
 
 - Articles, Categories, and Reported Board do not invent separate toolbar, pagination, or mobile card patterns.
-- Text, cover previews, form controls, table/card content, and modal content must not overflow or overlap.
-- Status/public-impact actions must remain reachable on mobile and desktop.
-- Mobile filters open/close inline in the list area and must not use a separate drawer or bottom sheet.
+- ข้อความ, cover preview, form control, เนื้อหา table/card และ modal ต้องไม่ล้นหรือซ้อนกัน
+- Action ที่เปลี่ยน status หรือกระทบ public ต้องเข้าถึงได้บน mobile และ desktop
+- Filter บน mobile ต้องเปิด/ปิดแบบ inline ในพื้นที่ list และห้ามใช้ drawer หรือ bottom sheet แยก
 
-## 6. Articles List
+## 6. รายการบทความ (Articles List)
 
-### Route And Header
+### Route และ Header
 
 - Route/menu: `Content Management > Articles`
 - Breadcrumb: `การดำเนินงาน / Content Management / Articles`
@@ -85,7 +98,7 @@ Additional requirements:
 - Filter toggle: เปิด/ปิด advanced filters
 - Reset action: ล้าง search/filter/sort และกลับไปค่า default ของ list
 
-### Desktop Columns
+### คอลัมน์บน Desktop
 
 - Article ID
 - Article title / ชื่อบทความ
@@ -94,7 +107,7 @@ Additional requirements:
 - Publish Date
 - Action
 
-### Mobile Card Metadata
+### Metadata บนการ์ด Mobile
 
 - Article ID
 - Article title
@@ -103,7 +116,7 @@ Additional requirements:
 - Read time
 - Publish date/time
 
-### Search, Filter, Sort, Pagination
+### Search, Filter, Sort และ Pagination
 
 - Search by Article ID, title, category, status และ publish date/time
 - Status filter: Draft, Scheduled, Published, Archived
@@ -120,7 +133,7 @@ Additional requirements:
   - ต้องคงค่า search/filter/sort ระหว่างเปลี่ยนหน้า
   - เมื่อไม่พบข้อมูลให้แสดง empty state `ไม่พบข้อมูล`
 
-### Row/Card Actions
+### Action ในแถว/การ์ด
 
 | Article Status | Actions |
 | --- | --- |
@@ -129,7 +142,7 @@ Additional requirements:
 | Published | View detail, Preview as FO, Edit article, Archive article |
 | Archived | View detail, Preview as FO, Edit article, Restore article |
 
-## 7. Article Detail
+## 7. รายละเอียดบทความ
 
 Article detail เป็นหน้าหรือ panel สำหรับอ่านข้อมูลบทความแบบ read-only และดูประวัติการเปลี่ยนแปลง
 
@@ -165,11 +178,11 @@ Change History columns:
 - Change Detail
 - Result
 
-## 8. Article Editor
+## 8. Editor บทความ
 
 Article editor ใช้สำหรับ Add Article และ Edit Article โดยแบ่ง section ดังนี้:
 
-### Article Header
+### Header ของบทความ
 
 | Field | Rule / เงื่อนไข |
 | --- | --- |
@@ -192,7 +205,7 @@ Image validation:
 - ขนาดไฟล์ไม่เกิน 5MB
 - Cover image aspect ratio ควรอยู่ระหว่าง 1:1 ถึง 16:9
 
-### Content Blocks
+### Block เนื้อหา
 
 ต้องมีอย่างน้อย 1 content block ที่ไม่ใช่ Divider
 
@@ -234,7 +247,7 @@ Body image validation:
 - ขนาดไฟล์ไม่เกิน 5MB
 - Aspect ratio ต้องไม่แคบหรือสูงเกินไปจนใช้งานบน FO ไม่เหมาะสม
 
-### Publish Control
+### การควบคุมการเผยแพร่
 
 | Field | Rule / เงื่อนไข |
 | --- | --- |
@@ -244,7 +257,7 @@ Body image validation:
 
 เวลา publish/schedule ต้องใช้ timezone `Asia/Bangkok`
 
-## 9. Article Status Lifecycle
+## 9. Lifecycle สถานะบทความ
 
 | Status | BO Meaning | FO Result |
 | --- | --- | --- |
@@ -270,7 +283,7 @@ Editor behavior:
 - เมื่อเลือก Draft ให้ clear และ disable publish date/time
 - Published หรือ Archived article ที่เปิดแก้ไขต้องคง lifecycle status เดิมไว้ การเปลี่ยนสถานะให้ทำผ่าน status action confirmation flow
 
-## 10. Preview As FO
+## 10. Preview แบบ FO
 
 Preview as FO เปิดได้จาก Articles list, Article detail และ Article editor
 
@@ -288,11 +301,11 @@ Preview modal ต้องแสดง:
 
 เมื่อเปิดจาก editor preview ต้องใช้ form values ปัจจุบันก่อน save เพื่อให้ Admin ตรวจบทความได้ทันที
 
-## 11. Categories
+## 11. หมวดหมู่ (Categories)
 
 Category เป็น master data ที่จัดการจาก BO และใช้ควบคุมการจัดกลุ่มบทความใน FO Board
 
-### Category Behavior
+### พฤติกรรมของ Category
 
 - Active category แสดงใน FO filter/section และเป็นตัวเลือกใน Add/Edit Article
 - Inactive category ไม่แสดงใน FO filter/section และไม่เป็นตัวเลือกสำหรับบทความใหม่หรือบทความที่กำลังแก้ไข
@@ -300,7 +313,7 @@ Category เป็น master data ที่จัดการจาก BO แล
 - Admin ต้อง move/archive linked articles ก่อนจึง deactivate category ได้
 - Delete category ทำได้เฉพาะ category ที่ไม่มี linked articles
 
-### Route And Header
+### Route และ Header
 
 - Route/menu: `Content Management > Categories`
 - Breadcrumb: `การดำเนินงาน / Content Management / Categories`
@@ -310,7 +323,7 @@ Category เป็น master data ที่จัดการจาก BO แล
   - `จัดเรียง Category`
   - `เพิ่มหมวดหมู่`
 
-### Category Fields
+### Field ของ Category
 
 - Category ID: auto-generated as `CAT-###`
 - Name
@@ -321,7 +334,7 @@ Category เป็น master data ที่จัดการจาก BO แล
 - Updated date/time
 - Article count derived from linked articles
 
-### Category List
+### รายการ Category
 
 Desktop columns:
 
@@ -357,7 +370,7 @@ Search/filter/sort:
   - ต้องคงค่า search/filter/sort ระหว่างเปลี่ยนหน้า
   - เมื่อไม่พบข้อมูลให้แสดง empty state `ไม่พบข้อมูล`
 
-### Category Detail Modal
+### Modal รายละเอียด Category
 
 Detail modal เปิดจาก row/card หรือ `View detail` และแสดง:
 
@@ -375,7 +388,7 @@ Action buttons:
 - `Set inactive` เมื่อ category เป็น Active และไม่มี linked articles
 - `Set active` เมื่อ category เป็น Inactive
 
-### Create/Edit Category Modal
+### Modal สร้าง/แก้ไข Category
 
 Required fields:
 
@@ -398,7 +411,7 @@ Rules:
 - Save สำเร็จแล้วปิด modal, refresh list, เปิด detail ของ category ที่บันทึก และแสดง success toast
 - เมื่อแก้ชื่อ category ต้อง sync ชื่อ category ใน article rows ที่ link อยู่
 
-### Category Row Actions
+### Action ในแถว Category
 
 - View detail
 - แก้ไขหมวดหมู่
@@ -406,18 +419,18 @@ Rules:
 - Set active เฉพาะ Inactive category
 - Delete category เฉพาะ category ที่ article count = 0
 
-### Category Reorder Modal
+### Modal จัดเรียง Category
 
 - เปิดจาก `จัดเรียง Category`
 - แสดงเฉพาะ Active categories
 - รองรับ drag reorder และ keyboard focus บน reorder rows
 - Save แล้ว update display order, reset sort เป็น `Display order`, refresh list และแสดง success toast
 
-## 12. Board Main Article Placement Rules
+## 12. กฎการจัดวางบทความบน Board Main
 
 Board Main ใช้บทความที่ Published แล้วเป็นแหล่งข้อมูลหลัก พื้นที่ Main Hero, Trending Now และ Journal Board preview เลือกบทความอัตโนมัติจาก eligible article pool
 
-### Eligible Article Pool
+### กลุ่มบทความที่มีสิทธิ์แสดง
 
 Article จะ eligible เมื่อครบทุกเงื่อนไข:
 
@@ -433,7 +446,7 @@ Base ordering:
 2. `updatedAt` descending
 3. `articleId` descending
 
-### Display Selection Order
+### ลำดับการเลือกแสดงผล
 
 | Display Area | Query Source | Selection Order | Deduplication Rule | Empty/Fallback Rule |
 | --- | --- | --- | --- | --- |
@@ -444,11 +457,11 @@ Base ordering:
 | Category page hero | Eligible article pool filtered by selected active category | เลือก article แรกใน category นั้นตาม base ordering | Reserve article ที่เลือกแล้วจาก category page list หน้าเดียวกัน | ถ้า category ไม่มี eligible article ให้แสดง category empty state |
 | Category article list | Eligible article pool filtered by selected active category | ใช้ base ordering | ไม่แสดงซ้ำกับ category hero ในหน้าเดียวกัน | แสดง available items; empty state เมื่อไม่มีข้อมูล |
 
-## 13. Reported Board Content
+## 13. เนื้อหา Board ที่ถูกรายงาน
 
 FO `Report article` ส่ง report type `Board Content` และ target type `Article` เข้า BO ที่ `Content Management > Reported Board`
 
-### Report Intake Rules
+### กฎการรับรายงาน
 
 - Article ไม่หายจาก FO ทันทีหลังถูก report
 - Admin review report ได้ตาม permission
@@ -457,7 +470,7 @@ FO `Report article` ส่ง report type `Board Content` และ target type 
 - Reporter identity ต้อง mask ใน report detail
 - List/detail แสดงจำนวน reporter และ reporter history ระดับ moderation เท่านั้น
 
-### Reported Board List
+### รายการ Reported Board
 
 Route/header:
 
@@ -507,7 +520,7 @@ Search/filter/sort:
   - ต้องคงค่า search/filter/sort ระหว่างเปลี่ยนหน้า
   - เมื่อไม่พบข้อมูลให้แสดง empty state `ไม่พบข้อมูล`
 
-### Report Detail
+### รายละเอียดรายงาน
 
 เมื่อเปิด report detail:
 
@@ -535,7 +548,7 @@ Pagination ของ `Reporter History` และ `Admin Action History` ต้�
 
 `View Article` เปิด phone-style FO article preview โดยใช้ article data ล่าสุดจาก article master ถ้าพบ article id และใช้ report preview data เป็น fallback เมื่อ article master ไม่พบ
 
-### Report Actions
+### Action ของรายงาน
 
 | Action | Availability | Result / ผลลัพธ์ |
 | --- | --- | --- |
@@ -545,7 +558,7 @@ Pagination ของ `Reporter History` และ `Admin Action History` ต้�
 | แก้ไขบทความ | Pending report ที่ article ยังไม่ Archived | เปิด Edit Article ของ article ที่ถูกรายงาน |
 | Archive article | Pending report ที่ article ยังไม่ Archived | เปลี่ยน article master เป็น Archived, เปลี่ยน report content status เป็น Archived, เปลี่ยน report เป็น Closed, เพิ่ม Article Change History และเพิ่ม Reported Board Admin Action History |
 
-### Close Report Confirmation
+### Confirmation สำหรับปิดรายงาน
 
 `ปิดรายงาน` ต้องเปิด confirmation modal:
 
@@ -554,7 +567,7 @@ Pagination ของ `Reporter History` และ `Admin Action History` ต้�
 - Impact note ระบุว่าเป็นการปิดรายงานหลัง review โดยไม่เปลี่ยนสถานะ Board content
 - เมื่อสำเร็จต้องเพิ่ม Admin Action History เป็น `Close Report`
 
-### Archive From Report Confirmation
+### Confirmation สำหรับ Archive จากรายงาน
 
 `Archive article` ต้องเปิด confirmation modal:
 
@@ -571,7 +584,7 @@ Pagination ของ `Reporter History` และ `Admin Action History` ต้�
 
 หลัง archive สำเร็จ FO ต้องไม่แสดง article นั้นใน Board/Search/Category และ direct link ต้องแสดง unavailable
 
-## 14. FO Display Rules
+## 14. กฎการแสดงผลบน FO
 
 | BO Action | FO Result / ผลบน FO |
 | --- | --- |
@@ -587,7 +600,7 @@ Pagination ของ `Reporter History` และ `Admin Action History` ต้�
 | Close report | Report ถูกปิดใน BO โดย article ยังอยู่ตามสถานะเดิม |
 | Archive article from Reported Board | Article master เปลี่ยนเป็น Archived, article หายจาก FO Board/Search/Category, direct link แสดง unavailable และ report ถูกปิด |
 
-## 15. Error, Empty And Loading States
+## 15. สถานะ Error, Empty และ Loading
 
 ต้องรองรับ states ต่อไปนี้:
 
@@ -617,26 +630,26 @@ Pagination ของ `Reporter History` และ `Admin Action History` ต้�
 - Preview failed
 - Missing article fallback ใน View Article modal
 
-## 16. Audit Requirements
+## 16. ข้อกำหนด Audit
 
-### Article Audit
+### Audit ของบทความ
 
 - Article detail แสดง `Change History`
 - Article create/update/cancel schedule/archive/restore เพิ่ม visible history rows
 - Draft delete บันทึก audit event แม้ draft หายจาก list หลังลบ
 
-### Category Audit
+### Audit ของ Category
 
 - Category create/update/activate/deactivate/reorder/delete บันทึก audit event
 - Category delete ต้องบันทึก audit ก่อนนำ row ออกจาก list
 
-### Reported Board Audit
+### Audit ของ Reported Board
 
 - Reported Board detail แสดง `Reporter History` และ `Admin Action History`
 - `ปิดรายงาน` เพิ่ม Admin Action History เป็น `Close Report`
 - `Archive article` เพิ่ม Admin Action History เป็น `Archive Article`, เปลี่ยน report เป็น `Closed`, เปลี่ยน report content status เป็น `Archived` และเพิ่ม Article Change History เป็น `Archived` พร้อม reference report id
 
-### Backend Audit Event Fields
+### Field ของ Backend Audit Event
 
 Audit event ควรมีข้อมูล:
 
@@ -650,13 +663,13 @@ Audit event ควรมีข้อมูล:
 - Reason/note เมื่อจำเป็น
 - Session/IP context เมื่อมีข้อมูล
 
-## Module-Specific Overrides
+## ข้อยกเว้นเฉพาะโมดูล
 
-None.
+ไม่มี
 
-Content Management must use the shared app shell, navigation, breakpoint, list toolbar, desktop table/grid, mobile card, pagination, reset, detail/editor, action menu, preview, and confirmation modal patterns from `00_GLOBAL_RULES_MODULE.md` and `../Prototypes/bo-prototype.html` without module-specific UI/layout overrides.
+Content Management ต้องใช้ app shell, navigation, breakpoint, list toolbar, desktop table/grid, mobile card, pagination, reset, detail/editor, action menu, preview และ confirmation modal ตาม `00_GLOBAL_RULES_MODULE.md` และ `../Prototypes/bo-prototype.html` โดยไม่มี UI/layout override เฉพาะโมดูล
 
-## 17. Acceptance Criteria
+## 17. เกณฑ์การยอมรับ
 
 | ID | Criteria / เกณฑ์ยอมรับ |
 | --- | --- |

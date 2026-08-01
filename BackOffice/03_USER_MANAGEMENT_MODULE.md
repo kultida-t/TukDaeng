@@ -1,9 +1,9 @@
 # 03 BO User Management Module
 
-**Version:** `BO-03-v1.0`  
-**Date:** 2026-07-31  
-**Status:** Current functional specification  
-**Platform:** Responsive Web Back Office
+**เวอร์ชัน:** `BO-03-v1.0`  
+**วันที่:** 2026-07-31  
+**สถานะ:** สเปกปัจจุบัน  
+**แพลตฟอร์ม:** Responsive Web Back Office
 
 
 ## มาตรฐาน UI และ Prototype อ้างอิง
@@ -12,13 +12,13 @@
 
 ห้ามออกแบบ pattern แยกเองสำหรับ list toolbar, breakpoint, table/card layout, pagination, reset, action menu, detail layout หรือ confirmation modal ยกเว้นเอกสารนี้ระบุไว้ชัดเจนว่าเป็น override ที่อนุมัติแล้ว
 
-## 1. Objective
+## 1. วัตถุประสงค์
 
 User Management เป็นเมนูสำหรับให้ Admin ตรวจสอบ ค้นหา และจัดการบัญชีผู้ใช้ของระบบหน้าบ้าน รวมถึงตรวจสอบรายงานผู้ใช้ที่ถูกร้องเรียน จัดการสถานะบัญชี และบันทึกเหตุผลของการดำเนินการที่มีผลต่อผู้ใช้
 
 เอกสารนี้ระบุข้อกำหนดปัจจุบันของเมนู User Management ให้ครบพอสำหรับนำไปสร้างหน้าจอและ flow ได้จากเนื้อหาในไฟล์นี้
 
-## 2. Scope
+## 2. ขอบเขต
 
 อยู่ในขอบเขต:
 
@@ -51,7 +51,7 @@ User Management เป็นเมนูสำหรับให้ Admin ตร
 - ระบบอุทธรณ์การถูกแบน
 - ระบบให้คะแนนความเสี่ยงอัตโนมัติ
 
-## 3. Menu Structure
+## 3. โครงสร้างเมนู
 
 เมนูหลัก: `User Management`
 
@@ -62,7 +62,7 @@ Submenu ภายใต้ User Management:
 | User List | แสดงรายการบัญชีผู้ใช้ทั้งหมดที่เป็น registered user, ค้นหา/filter/sort, เปิดรายละเอียดผู้ใช้ และทำ account action ที่อนุญาต |
 | Reported Users | แสดงคิวรายงานผู้ใช้จากหน้าบ้าน, ค้นหา/filter/sort, เปิดรายละเอียดรายงาน และปิดรายงานหรือจัดการสถานะบัญชีเมื่อจำเป็น |
 
-Navigation behavior:
+พฤติกรรมการนำทาง:
 
 - เมื่อเข้า `User Management` ให้เปิด `User List` เป็นหน้าหลัก
 - เมนูที่ถูกเลือกต้องแสดง active state ที่ submenu นั้น
@@ -71,7 +71,7 @@ Navigation behavior:
 - ปุ่มย้อนกลับจาก `User Detail` ต้องกลับไป context เดิมที่เปิดมา
 - ปุ่มย้อนกลับจาก `Report Detail` ต้องกลับไป `Reported Users` พร้อมคง search/filter/sort/page เดิม
 
-## 4. Access And Permission Rules
+## 4. สิทธิ์และกฎการเข้าถึง
 
 Admin ที่เข้าถึงเมนูนี้ได้สามารถดูรายการผู้ใช้ รายละเอียดผู้ใช้ รายงานผู้ใช้ และทำ action ตามเงื่อนไขของแต่ละสถานะบัญชี
 
@@ -95,28 +95,28 @@ Admin ที่เข้าถึงเมนูนี้ได้สามา�
 - Login/activity detail
 - รายละเอียดที่เกี่ยวข้องกับการลบหรือ archive บัญชี
 
-## 5. Responsive Layout
+## 5. รูปแบบ Responsive
 
-User Management must follow the shared responsive rules in `00_GLOBAL_RULES_MODULE.md` and the confirmed behavior in `../Prototypes/bo-prototype.html`.
+User Management ต้องใช้กฎ responsive กลางจาก `00_GLOBAL_RULES_MODULE.md` และยึดพฤติกรรมที่ยืนยันแล้วใน `../Prototypes/bo-prototype.html`
 
-| Breakpoint | Width | User Management Requirement |
+| Breakpoint | ความกว้าง | ข้อกำหนดของ User Management |
 | --- | --- | --- |
 | Mobile | `<= 760px` | User List and Reported Users render as stacked cards with primary identity, status badge, key metadata, and compact action menu. Advanced filters collapse inline behind the filter toggle. User Detail and Report Detail render as vertical sections with reachable actions. |
 | Tablet | `761px - 1365px` | Uses the same page shell and panels as the prototype. Filter toolbar compacts into a grid. Dense tables may scroll inside the list container only when required. |
 | Desktop | `> 1365px` | Shows page header, optional summary cards for User List, filter toolbar, dense table/grid, pagination footer, and compact row action menu. |
 
-Additional requirements:
+ข้อกำหนดเพิ่มเติม:
 
-- User List shows summary cards; Reported Users does not show summary cards.
-- Text in cards, badges, buttons, tables, and modals must not overflow or overlap.
-- Important actions must remain reachable on mobile and desktop.
-- Mobile filters open/close inline in the list area and must not use a separate drawer or bottom sheet.
+- User List แสดง summary cards ส่วน Reported Users ไม่แสดง summary cards
+- ข้อความใน card, badge, button, table และ modal ต้องไม่ล้นหรือซ้อนกัน
+- Action สำคัญต้องเข้าถึงได้บน mobile และ desktop
+- Filter บน mobile ต้องเปิด/ปิดแบบ inline ในพื้นที่ list และห้ามใช้ drawer หรือ bottom sheet แยก
 
-## 6. User List
+## 6. รายการผู้ใช้ (User List)
 
 User List แสดง registered user ทั้งหมดที่ระบบมี account record แล้ว ไม่รวม guest หรือ visitor ที่ยังไม่สมัคร/ยังไม่สร้างบัญชี
 
-### Summary Cards
+### การ์ดสรุป (Summary Cards)
 
 แสดง summary cards ด้านบนของ User List:
 
@@ -127,7 +127,7 @@ User List แสดง registered user ทั้งหมดที่ระบ�
 | Suspended / Banned | จำนวนผู้ใช้ที่ถูกระงับชั่วคราวหรือถาวร |
 | Pending Verification | จำนวนผู้ใช้ที่สมัครแล้วแต่ยังไม่ยืนยัน |
 
-### Search
+### การค้นหา (Search)
 
 ช่องค้นหาต้องรองรับ:
 
@@ -142,7 +142,7 @@ User List แสดง registered user ทั้งหมดที่ระบ�
 
 เมื่อค้นหาแล้วต้องแสดงผลบนข้อมูลหลัง apply filter และ sort
 
-### Filter
+### ตัวกรอง (Filter)
 
 Filter ที่ต้องมี:
 
@@ -153,7 +153,7 @@ Filter ที่ต้องมี:
 
 Filter ต้องมีปุ่ม reset เพื่อล้าง search/filter/sort/page กลับเป็นค่าเริ่มต้น
 
-### Sort
+### การเรียงลำดับ (Sort)
 
 Sort mode ที่ต้องมี:
 
@@ -164,7 +164,7 @@ Sort mode ที่ต้องมี:
 | Report Count | ผู้ใช้ที่มีจำนวน report มากขึ้นก่อน |
 | Asset Count | ผู้ใช้ที่มีจำนวน asset มากขึ้นก่อน |
 
-### Pagination
+### การแบ่งหน้า (Pagination)
 
 User List ต้องมี pagination ตามเงื่อนไข:
 
@@ -178,7 +178,7 @@ User List ต้องมี pagination ตามเงื่อนไข:
 - Footer ต้องแสดงช่วงรายการที่กำลังเห็นและจำนวนผลลัพธ์ทั้งหมดหลัง filter
 - เมื่อเปลี่ยน search/filter/sort ให้กลับไปหน้าแรก
 
-### Columns บน Desktop
+### คอลัมน์บน Desktop
 
 | Column | รายละเอียด |
 | --- | --- |
@@ -199,7 +199,7 @@ User List ต้องมี pagination ตามเงื่อนไข:
 - Contact details
 - Support/latest context
 
-### Mobile Card
+### การ์ดบน Mobile
 
 Mobile card ต้องแสดง:
 
@@ -215,7 +215,7 @@ Mobile card ต้องแสดง:
 
 แตะ card หรือกด `View` เพื่อเปิด User Detail
 
-### Row Actions
+### Action ในแต่ละแถว
 
 Action ในแต่ละ user row ต้องแสดงตามสถานะและเงื่อนไขที่อนุญาต:
 
@@ -231,11 +231,11 @@ Action ในแต่ละ user row ต้องแสดงตามสถา
 
 User List ต้องไม่แสดง action delete/archive โดยตรง
 
-## 7. User Detail
+## 7. รายละเอียดผู้ใช้ (User Detail)
 
 User Detail แสดงรายละเอียดของผู้ใช้หนึ่งคน และเป็นจุดเริ่มต้นของ account action ที่อนุญาต
 
-### Header
+### ส่วนหัว (Header)
 
 Header ต้องแสดง:
 
@@ -248,7 +248,7 @@ Header ต้องแสดง:
 - ปุ่มย้อนกลับ
 - Action menu ที่แสดง action ตามสถานะบัญชี
 
-### Sections
+### ส่วนข้อมูล (Sections)
 
 | Section | ข้อมูลที่ต้องแสดง |
 | --- | --- |
@@ -267,7 +267,7 @@ Header ต้องแสดง:
 - Social/contact เพิ่มเติมแสดงเฉพาะเมื่อมีข้อมูลที่ผู้ใช้ให้ไว้
 - ระบบจริงต้องรองรับ masked/unmasked state ตามสิทธิ์
 
-## 8. User Status Model
+## 8. โมเดลสถานะผู้ใช้
 
 | Status | ความหมายใน BO | ผลกระทบต่อหน้าบ้าน |
 | --- | --- | --- |
@@ -286,7 +286,7 @@ Header ต้องแสดง:
 - Report user ไม่เปลี่ยนสถานะบัญชีอัตโนมัติ ต้องรอ Admin action
 - Deleted / Archived เป็นสถานะอ่านย้อนหลัง ไม่ใช่สถานะที่ User List ทำ action ลบโดยตรง
 
-## 9. Account Action Rules
+## 9. กฎ Action ของบัญชี
 
 ### Send Password Reset
 
@@ -379,11 +379,11 @@ UI ต้องมี:
 - บันทึก audit log
 - แสดง success toast
 
-## 10. Reported Users
+## 10. ผู้ใช้ที่ถูกรายงาน (Reported Users)
 
 Reported Users เป็นคิวสำหรับตรวจรายงานผู้ใช้จากหน้าบ้าน ไม่ใช่หน้า analytics
 
-### List Layout
+### Layout ของรายการ
 
 หน้ารายการต้องมี:
 
@@ -397,7 +397,7 @@ Reported Users เป็นคิวสำหรับตรวจรายง�
 
 ไม่ต้องมี summary card ในหน้า Reported Users
 
-### Search
+### การค้นหา (Search)
 
 ค้นหาได้จาก:
 
@@ -410,7 +410,7 @@ Reported Users เป็นคิวสำหรับตรวจรายง�
 - Report status
 - Priority
 
-### Filter
+### ตัวกรอง (Filter)
 
 | Filter | ตัวเลือก |
 | --- | --- |
@@ -419,7 +419,7 @@ Reported Users เป็นคิวสำหรับตรวจรายง�
 | Source | All, User Profile, Chat |
 | Reason | All, Fraud/Scam, Impersonation, Harassment, Inappropriate Content, Spam, Other |
 
-### Sort
+### การเรียงลำดับ (Sort)
 
 | Sort | การเรียง |
 | --- | --- |
@@ -427,7 +427,7 @@ Reported Users เป็นคิวสำหรับตรวจรายง�
 | Oldest | รายงานเก่าสุดขึ้นก่อน |
 | Reporters | จำนวน reporter มากขึ้นก่อน |
 
-### Columns
+### คอลัมน์
 
 | Column | รายละเอียด |
 | --- | --- |
@@ -442,14 +442,14 @@ Reported Users เป็นคิวสำหรับตรวจรายง�
 | Sources | User Profile หรือ Chat |
 | Actions | เปิดรายละเอียดรายงาน |
 
-### Priority Rule
+### กฎ Priority
 
 - รายงานจาก 1-2 reporters เป็น Normal priority
 - รายงานจาก 3-4 reporters เป็น High priority เพื่อเร่ง review
 - รายงานจาก 5 reporters ขึ้นไป หรือมี evidence รุนแรง สามารถใช้เป็นเงื่อนไขประกอบการ suspend ระหว่างตรวจสอบ
 - Priority ไม่เปลี่ยนสถานะบัญชีอัตโนมัติ
 
-### Pagination
+### การแบ่งหน้า (Pagination)
 
 Reported Users ต้องมี pagination ตามเงื่อนไข:
 
@@ -463,11 +463,11 @@ Reported Users ต้องมี pagination ตามเงื่อนไข:
 - Footer ต้องแสดงช่วงรายการที่กำลังเห็นและจำนวนผลลัพธ์ทั้งหมดหลัง filter
 - เมื่อเปลี่ยน search/filter/sort ให้กลับไปหน้าแรก
 
-## 11. User Report Detail
+## 11. รายละเอียดรายงานผู้ใช้
 
 Report Detail แสดงรายละเอียดรายงานหนึ่งรายการและ action ที่ Admin ทำได้กับรายงานนั้น
 
-### Header
+### ส่วนหัว (Header)
 
 ต้องแสดง:
 
@@ -477,7 +477,7 @@ Report Detail แสดงรายละเอียดรายงานหน
 - Reported at
 - ปุ่มย้อนกลับ
 
-### Sections
+### ส่วนข้อมูล (Sections)
 
 | Section | ข้อมูลที่ต้องแสดง |
 | --- | --- |
@@ -493,7 +493,7 @@ Source ของรายงานผู้ใช้มีได้เฉพา�
 
 Report Detail ต้องไม่อ้าง source ประเภท asset, offer, signup/auth หรือ deletion request
 
-### Report Actions
+### Action ของรายงาน
 
 | Action | เงื่อนไข | ผลลัพธ์ |
 | --- | --- | --- |
@@ -510,7 +510,7 @@ Report Detail ต้องไม่อ้าง source ประเภท asset,
 - การปิดรายงานต้องไม่ลบหรือ archive บัญชีทันที
 - Action ที่เปลี่ยนสถานะบัญชีต้องใช้กฎเดียวกับ account action กลาง
 
-## 12. Error, Empty And Loading States
+## 12. สถานะ Error, Empty และ Loading
 
 ### User List
 
@@ -530,7 +530,7 @@ Report Detail ต้องไม่อ้าง source ประเภท asset,
 | Empty after filter/search | แสดง empty state `ไม่พบข้อมูล` และให้ reset filter |
 | Error | แจ้งว่าโหลดคิวรายงานไม่สำเร็จและมีปุ่ม retry |
 
-## 13. Audit Requirements
+## 13. ข้อกำหนด Audit
 
 ต้องบันทึก audit log สำหรับ action ต่อไปนี้:
 
@@ -556,7 +556,7 @@ Report Detail ต้องไม่อ้าง source ประเภท asset,
 | Timestamp | วันและเวลาที่ดำเนินการ |
 | Result | Success หรือ Failed |
 
-## 14. Performance Requirements
+## 14. ข้อกำหนด Performance
 
 - User List ต้องรองรับข้อมูลจำนวนมากด้วย server-side pagination
 - Search/filter/sort ต้องทำงานร่วมกับ pagination
@@ -565,13 +565,13 @@ Report Detail ต้องไม่อ้าง source ประเภท asset,
 - Action modal ต้องเปิดจาก row หรือ detail โดยไม่โหลดหน้าซ้ำทั้งหน้า
 - Detail view ต้องโหลดข้อมูลเฉพาะผู้ใช้หรือรายงานที่เลือก
 
-## Module-Specific Overrides
+## ข้อยกเว้นเฉพาะโมดูล
 
-None.
+ไม่มี
 
-User Management must use the shared app shell, navigation, breakpoint, list toolbar, desktop table/grid, mobile card, pagination, reset, detail, action menu, and confirmation modal patterns from `00_GLOBAL_RULES_MODULE.md` and `../Prototypes/bo-prototype.html` without module-specific UI/layout overrides.
+User Management ต้องใช้ app shell, navigation, breakpoint, list toolbar, desktop table/grid, mobile card, pagination, reset, detail, action menu และ confirmation modal ตาม `00_GLOBAL_RULES_MODULE.md` และ `../Prototypes/bo-prototype.html` โดยไม่มี UI/layout override เฉพาะโมดูล
 
-## 15. Acceptance Criteria
+## 15. เกณฑ์การยอมรับ
 
 | ID | เกณฑ์การยอมรับ |
 | --- | --- |

@@ -14,16 +14,16 @@
 | Field | Detail |
 | --- | --- |
 | Module Name | Back Office Global Rules |
-| Platform | Responsive Web Back Office |
-| Version | `BO-PRD-v0.1` |
-| Status | Current functional specification |
+| แพลตฟอร์ม | Responsive Web Back Office |
+| เวอร์ชัน | `BO-PRD-v0.1` |
+| สถานะ | สเปกปัจจุบัน |
 | Owner | Product / UX / Engineering / Operations |
-| Document Type | Cross-Module Functional PRD |
+| ประเภทเอกสาร | Cross-Module Functional PRD |
 
 
-## Prototype Source Of Truth
+## Prototype ที่ใช้เป็นมาตรฐานหลัก
 
-The confirmed Back Office visual and interaction standard for Dashboard, User Management, Asset Management, and Content Management is `../Prototypes/bo-prototype.html`. New implementation generated from these Markdown files must reproduce the same app shell, navigation behavior, responsive breakpoints, list toolbar, table/card behavior, pagination, action menus, detail pages, and confirmation modal patterns unless a module explicitly defines a later approved override.
+รูปแบบหน้าจอและพฤติกรรมการใช้งานของ Dashboard, User Management, Asset Management และ Content Management ที่ยืนยันแล้ว ให้ยึดจาก `../Prototypes/bo-prototype.html` เป็นมาตรฐานหลัก เมื่อนำเอกสารชุดนี้ไปสร้างระบบใหม่ ต้องทำ app shell, navigation, breakpoint, list toolbar, table/card, pagination, action menu, detail page และ confirmation modal ให้ตรงกับ prototype ยกเว้นโมดูลนั้นระบุ override ที่อนุมัติแล้วไว้อย่างชัดเจน
 
 # 2. วัตถุประสงค์
 
@@ -33,7 +33,7 @@ BO เป็น responsive web application สำหรับทีมภาย�
 
 # 3. ขอบเขต
 
-## In Scope
+## อยู่ในขอบเขต
 
 - กฎ responsive web layout
 - BO Admin Access และ permission model
@@ -46,7 +46,7 @@ BO เป็น responsive web application สำหรับทีมภาย�
 - Destructive action rule
 - Coverage rule สำหรับฟังก์ชั่น FO ที่ต้องมี BO รองรับ
 
-## Out Of Scope
+## นอกขอบเขต
 
 - Layout รายละเอียดของแต่ละหน้าจอ
 - Technical API schema แบบละเอียดของแต่ละ endpoint
@@ -66,9 +66,9 @@ BO เป็น responsive web application สำหรับทีมภาย�
 | Currency | ราคาแสดงเป็น THB |
 | Accessibility | Control ต้องมี label ชัดเจน keyboard reachable มี focus state และไม่ใช้สีเป็นข้อมูลเดียว |
 
-# 5. Responsive Layout Rules
+# 5. กฎ Responsive Layout
 
-The responsive standard follows the confirmed `../Prototypes/bo-prototype.html` behavior.
+มาตรฐาน responsive ต้องอ้างอิงพฤติกรรมที่ยืนยันแล้วใน `../Prototypes/bo-prototype.html`
 
 | Breakpoint | Width | Layout Rule |
 | --- | --- | --- |
@@ -76,22 +76,22 @@ The responsive standard follows the confirmed `../Prototypes/bo-prototype.html` 
 | Tablet | `761px - 1365px` | One-column content shell with desktop-like panels where space allows. Filter bars use compact grid layout. Dense tables may horizontally scroll inside their own container only when needed to preserve required columns/actions. |
 | Desktop | `> 1365px` | Persistent sidebar and dense operation layout. Lists render as table/grid with header row, filter toolbar, summary cards when the module defines them, pagination footer, and compact row action menus. |
 
-Responsive requirements:
+ข้อกำหนด responsive:
 
-- Dashboard, User Management, Asset Management, and Content Management must keep the same visual and interaction language as `../Prototypes/bo-prototype.html`.
-- Mobile navigation uses the prototype hamburger side drawer with backdrop and close control.
-- List filters use the prototype inline collapsible filter bar pattern. Do not use a separate drawer or bottom sheet for list filters in these confirmed modules.
-- Important actions must remain reachable on mobile, tablet, and desktop.
-- Table/list content, badges, buttons, image previews, forms, cards, and modal content must not overflow or overlap in a way that blocks operation.
-- Long tables may scroll inside their table container on tablet/desktop, but primary actions must remain reachable.
-- Modal dialogs must fit the viewport and scroll internally when content is long.
-- Touch targets, keyboard focus states, labels, and visible control names must remain consistent across modules.
+- Dashboard, User Management, Asset Management และ Content Management ต้องใช้รูปแบบหน้าจอและ interaction language เดียวกับ `../Prototypes/bo-prototype.html`
+- Mobile navigation ใช้ hamburger side drawer ตาม prototype พร้อม backdrop และปุ่มปิด
+- Filter ของหน้า list ต้องใช้ inline collapsible filter bar ตาม prototype ห้ามใช้ drawer หรือ bottom sheet แยกสำหรับโมดูลที่ยืนยันแล้ว
+- Action สำคัญต้องเข้าถึงได้บน mobile, tablet และ desktop
+- ข้อมูลใน table/list, badge, button, image preview, form, card และ modal ต้องไม่ล้นหรือซ้อนกันจนใช้งานไม่ได้
+- Table ที่ยาวสามารถ scroll ภายใน container ได้บน tablet/desktop แต่ primary action ต้องยังเข้าถึงได้
+- Modal ต้องพอดีกับ viewport และ scroll ภายในได้เมื่อเนื้อหายาว
+- ขนาดจุดกด, focus state, label และชื่อ control ที่มองเห็นต้องสอดคล้องกันทุกโมดูล
 
-# 6. Navigation Rules
+# 6. กฎ Navigation
 
-Navigation of the confirmed BO prototype is the baseline for Dashboard, User Management, Asset Management, and Content Management.
+Navigation ของ BO prototype ที่ยืนยันแล้วเป็น baseline สำหรับ Dashboard, User Management, Asset Management และ Content Management
 
-Baseline protected navigation:
+Navigation หลักที่ล็อกไว้:
 
 ```text
 การดำเนินงาน
@@ -108,20 +108,20 @@ Baseline protected navigation:
   - Reported Board
 ```
 
-Global navigation rules:
+กฎ navigation กลาง:
 
-- Module visibility depends on admin access and permission.
-- A module without permission must not appear in navigation.
-- Direct URL access must still enforce permission and show access denied when unauthorized.
-- Browser back should preserve relevant context such as active module, submenu, search, filter, sort, list page, and originating list where appropriate.
-- Menu groups with submenus expand/collapse only. They must not navigate to an implicit default child until Admin selects a submenu.
-- Active menu and submenu states must match the current route/detail/report context.
-- Mobile navigation uses the prototype collapsed side drawer behavior.
-- Unprotected or future modules may extend navigation after the confirmed items, but must not change the order, labels, active states, or behavior of the protected navigation above unless explicitly approved.
+- การแสดงโมดูลขึ้นกับ admin access และ permission
+- โมดูลที่ไม่มีสิทธิ์ต้องไม่แสดงใน navigation
+- การเข้าผ่าน direct URL ต้องตรวจ permission เสมอ และแสดง access denied เมื่อไม่มีสิทธิ์
+- Browser back ควรรักษา context ที่เกี่ยวข้อง เช่น active module, submenu, search, filter, sort, list page และหน้ารายการต้นทางเมื่อเหมาะสม
+- เมนูแม่ที่มี submenu ทำหน้าที่ expand/collapse เท่านั้น ห้ามเปลี่ยนหน้าไป child/default เองจนกว่า Admin จะเลือก submenu
+- active state ของ menu และ submenu ต้องตรงกับ route/detail/report context ปัจจุบัน
+- Mobile navigation ใช้พฤติกรรม collapsed side drawer ตาม prototype
+- โมดูลที่ยังไม่ล็อกหรือโมดูลในอนาคตเพิ่มต่อท้ายได้ แต่ห้ามเปลี่ยนลำดับ ชื่อ active state หรือพฤติกรรมของ navigation ที่ล็อกไว้ด้านบน เว้นแต่ได้รับอนุมัติชัดเจน
 
-# 7. Admin Access Model
+# 7. รูปแบบสิทธิ์ Admin
 
-BO has exactly one admin account type: `Admin`. There are no BO sub-types such as content, support, market, moderation, or highest-privilege admin concept. Access differences are defined by module access, action policy, sensitive-data policy, confirmation, reason, and audit requirements.
+BO มีชนิดบัญชี admin เพียงแบบเดียวคือ `Admin` ไม่มี subtype เช่น content, support, market, moderation หรือ highest-privilege admin ในสเปกนี้ ความแตกต่างของสิทธิ์ให้กำหนดผ่าน module access, action policy, sensitive-data policy, confirmation, reason และ audit requirement
 
 | Admin Account Type | Global Access Intent |
 | --- | --- |
@@ -130,16 +130,16 @@ BO has exactly one admin account type: `Admin`. There are no BO sub-types such a
 Permission rules:
 
 - Enforce access at route level and action/API/service level.
-- Hidden UI is not enough; every mutation must check access before write.
+- การซ่อนปุ่มบน UI อย่างเดียวไม่เพียงพอ ทุก mutation ต้องตรวจสิทธิ์ก่อนเขียนข้อมูล
 - BO Admin access never creates a separate account type in FO.
-- Sensitive fields, exports, destructive actions, public-impact actions, and admin account changes must follow policy-based controls and audit requirements.
-# 8. Shared Page Patterns
+- Field อ่อนไหว, export, destructive action, public-impact action และการเปลี่ยนแปลงบัญชี admin ต้องทำตาม policy control และ audit requirement
+# 8. Pattern หน้าจอกลางที่ใช้ร่วมกัน
 
-These patterns are mandatory for Dashboard, User Management, Asset Management, and Content Management because they are confirmed in `../Prototypes/bo-prototype.html`.
+Pattern ต่อไปนี้เป็นข้อบังคับสำหรับ Dashboard, User Management, Asset Management และ Content Management เพราะยืนยันแล้วใน `../Prototypes/bo-prototype.html`
 
-## 8.1 App Shell And Page Structure
+## 8.1 App Shell และโครงสร้างหน้า
 
-Standard page structure:
+โครงสร้างหน้ามาตรฐาน:
 
 - Sidebar navigation using the confirmed module/submenu grouping.
 - Mobile header with hamburger drawer behavior.
@@ -153,9 +153,9 @@ Standard page structure:
 - Pagination footer for paged lists.
 - Detail pages, preview modals, or confirmation modals using the same visual density and control style as the prototype.
 
-## 8.2 List Toolbar Standard
+## 8.2 มาตรฐาน List Toolbar
 
-Every confirmed list page must use the same toolbar pattern:
+หน้า list ที่ยืนยันแล้วทุกหน้าต้องใช้ toolbar pattern เดียวกัน:
 
 - Search input is the first control.
 - A filter toggle button opens/closes advanced filters.
@@ -165,20 +165,20 @@ Every confirmed list page must use the same toolbar pattern:
 - On mobile, advanced filters collapse inline within the list area. They do not move to a drawer or bottom sheet.
 - Reset clears search/filter/sort and returns the list to page 1.
 
-## 8.3 Search, Filter, Sort, Pagination Order
+## 8.3 ลำดับการทำงานของ Search, Filter, Sort และ Pagination
 
-List data operations must run in this order:
+การจัดการข้อมูลในหน้า list ต้องทำตามลำดับนี้:
 
-1. Apply search.
-2. Apply filters.
-3. Apply sort.
-4. Apply pagination.
+1. ใช้ search ก่อน
+2. ใช้ filter
+3. ใช้ sort
+4. ค่อยแบ่ง pagination
 
-When search/filter/sort changes, the current page resets to page 1. When only the page changes, current search/filter/sort values must be preserved.
+เมื่อ search/filter/sort เปลี่ยน ต้องกลับไป page 1 แต่ถ้าเปลี่ยนแค่หน้า ต้องคงค่า search/filter/sort เดิมไว้
 
-## 8.4 Pagination Standard
+## 8.4 มาตรฐาน Pagination
 
-All confirmed list and history tables use the same pagination pattern:
+หน้า list และ history table ที่ยืนยันแล้วต้องใช้ pagination pattern เดียวกัน:
 
 - Page size: `10 rows per page` unless a module explicitly uses a domain noun such as `10 users per page`, `10 assets per page`, `10 articles per page`, or `10 reports per page`.
 - Footer range text format: `แสดง X-Y จาก Z`.
@@ -187,9 +187,9 @@ All confirmed list and history tables use the same pagination pattern:
 - Disable previous on the first page and next on the last page.
 - Numbered page button for the current page uses the active button style.
 
-## 8.5 Desktop Table/Grid Standard
+## 8.5 มาตรฐาน Desktop Table/Grid
 
-Desktop list results use a dense table/grid pattern:
+ผลลัพธ์บน desktop ใช้ dense table/grid pattern:
 
 - Header row is visible.
 - Body rows align to the same columns as the header.
@@ -199,19 +199,19 @@ Desktop list results use a dense table/grid pattern:
 - Row/card click or `View` opens the relevant detail screen.
 - Horizontal scroll is allowed only inside the table container when columns cannot compress safely.
 
-## 8.6 Mobile Card Standard
+## 8.6 มาตรฐาน Mobile Card
 
-Mobile list results use stacked cards:
+ผลลัพธ์บน mobile ใช้ stacked card:
 
 - Hide the desktop table header.
 - Show primary identity, status/context badge, key metadata, and compact action menu.
-- Metadata labels must remain visible enough to understand the row without table headers.
-- The same row actions available on desktop must remain reachable when permitted.
-- Card content must wrap safely without text overlap.
+- Label ของ metadata ต้องชัดพอให้เข้าใจข้อมูลในแถวได้ แม้ไม่มี table header
+- Action ของแถวที่ใช้ได้บน desktop ต้องยังเข้าถึงได้บน mobile เมื่อสิทธิ์อนุญาต
+- เนื้อหาใน card ต้องตัดบรรทัดได้อย่างปลอดภัยและไม่ซ้อนกัน
 
-## 8.7 Detail Page Standard
+## 8.7 มาตรฐาน Detail Page
 
-Detail pages should use the prototype sectioned layout:
+หน้า detail ต้องใช้ layout แบบแบ่ง section ตาม prototype:
 
 - Header with entity identity, status/context badges, and back action where the flow originates from a list.
 - Detail sections rendered as full-width panels or responsive grids.
@@ -219,9 +219,9 @@ Detail pages should use the prototype sectioned layout:
 - Audit/history sections use the shared table/history layout and pagination where applicable.
 - Sensitive sections are read-only and masked/summarized according to the module rules.
 
-## 8.8 Forms And Editors
+## 8.8 Form และ Editor
 
-Form/editor pages follow the Content Management article/category patterns unless a module defines a more specific confirmed flow:
+หน้า form/editor ให้ใช้ pattern ของ article/category ใน Content Management เป็นหลัก ยกเว้นโมดูลนั้นมี flow ที่ยืนยันเฉพาะไว้แล้ว:
 
 - Required field indicators.
 - Field-level validation.
@@ -229,9 +229,9 @@ Form/editor pages follow the Content Management article/category patterns unless
 - Confirmation modal before status changes, destructive actions, or public-impacting changes.
 - Unsaved-change protection for long editors when implemented.
 
-## 8.9 Modals
+## 8.9 Modal
 
-Use the prototype modal pattern for:
+ใช้ modal pattern ตาม prototype สำหรับ:
 
 - Confirmation.
 - Status/action reason input.
@@ -239,9 +239,9 @@ Use the prototype modal pattern for:
 - Compact detail reference from a report context.
 - Action result or failure state.
 
-Do not use a modal as the main long-form editor when a full editor page exists.
+ห้ามใช้ modal เป็น editor หลักสำหรับงานฟอร์มยาว ถ้ามี full editor page อยู่แล้ว
 
-# 9. Shared States And Copy
+# 9. State และข้อความกลาง
 
 | State | Required Behavior |
 | --- | --- |
@@ -254,7 +254,7 @@ Do not use a modal as the main long-form editor when a full editor page exists.
 | Access denied | แจ้งว่า admin access นี้ไม่มีสิทธิ์เข้า module/action. |
 | Session expired | กลับไป login พร้อม message ชัดเจน. |
 
-# 10. Canonical Status Contracts
+# 10. สัญญา Status กลาง
 
 BO ต้องใช้ state contract เดียวกับ `FO_BO_INTEGRATION_MAP.md`
 
@@ -301,7 +301,7 @@ BO ต้องใช้ state contract เดียวกับ `FO_BO_INTEGRAT
 | Expired | หมดอายุหรือถูก force expire | accept/decline ไม่ได้ |
 | Invalidated | Asset/user state ทำให้ offer ใช้ไม่ได้ | แสดง unavailable/invalidated state |
 
-# 11. FO Coverage Rule
+# 11. กฎการครอบคลุมงาน FO
 
 ทุกฟังก์ชั่นของ FO ที่สร้างข้อมูล เปลี่ยน state หรือจำเป็นต้องมี operation oversight ต้องมีหนึ่งใน outcome ต่อไปนี้ใน BO:
 
@@ -333,12 +333,12 @@ Guest public access rule:
 
 - FO Guest สามารถดูและแชร์ public surface ที่ระบบอนุญาตได้ เช่น public asset/detail, public profile/detail หรือ published article ตาม status/visibility ของ entity นั้น
 - Guest action ที่เป็น public view/share ไม่สร้าง User Management record และไม่เปิด BO account action
-- Action ที่สร้างข้อมูลหรือ state ของระบบ เช่น like, follow, comment, report, offer, chat, watch alert, add/edit/delete asset หรือ support ticket ต้อง require login ตาม FO Auth rule ก่อนจึงจะเข้า BO workflow ที่เกี่ยวข้อง
+- Action ที่สร้างข้อมูลหรือเปลี่ยน state ของระบบ เช่น like, follow, comment, report, offer, chat, watch alert, add/edit/delete asset หรือ support ticket ต้อง login ตาม FO Auth rule ก่อน จึงจะเข้า BO workflow ที่เกี่ยวข้องได้
 - BO modules ที่ควบคุม public visibility เช่น Asset, Content/Board, Directory และ Market Data ต้องทำให้ public deep link ที่ Guest เปิดหรือแชร์ไว้สะท้อนสถานะล่าสุด เช่น unavailable, removed, archived หรือ inactive
 
-# 12. BO-To-FO Sync Rules
+# 12. กฎการ Sync จาก BO ไป FO
 
-| BO Change | FO Sync Requirement |
+| การเปลี่ยนแปลงใน BO | ข้อกำหนดการ sync ไป FO |
 | --- | --- |
 | User suspended/banned | FO ต้อง revoke/block session ปัจจุบัน, block login/action permission และแสดง account status state |
 | Asset removed/hidden/status changed | FO public surfaces ต้องสะท้อน visibility ใหม่ |
@@ -370,7 +370,7 @@ Sync timing:
 - Cached FO list ต้อง validate entity status ก่อนแสดงหรือเมื่อ refresh
 - รายละเอียด cache invalidation/API timing ให้สรุปอีกครั้งตอนออกแบบ backend
 
-# 13. Audit Rules
+# 13. กฎ Audit
 
 BO action ที่ create, update, remove, export, publish, archive, resolve, retry หรือเปลี่ยน permission/status ต้องเขียน audit data
 
@@ -393,7 +393,7 @@ Audit access:
 - Module-level audit snippet แสดงให้ admin access ที่มีสิทธิ์ได้
 - Audit record ห้ามแก้ไขผ่าน BO UI ปกติ
 
-# 14. Sensitive Data Rules
+# 14. กฎข้อมูลอ่อนไหว
 
 Sensitive data ต้องถูก mask เป็น default ยกเว้น admin access และ permission อนุญาต
 
@@ -411,7 +411,7 @@ Sensitive data ต้องถูก mask เป็น default ยกเว้�
 
 การเข้าถึง sensitive data ต้อง audit-log เมื่อเป็น high-risk access, export หรือเกี่ยวกับ dispute/support workflow
 
-# 15. Destructive And Public-Impact Actions
+# 15. Action ที่ลบข้อมูลหรือกระทบการแสดงผล public
 
 Action ที่กระทบ FO visibility, user access หรือ public content ต้องมี:
 
@@ -435,7 +435,7 @@ Action ที่กระทบ FO visibility, user access หรือ public c
 - Approve account archive
 - Send broadcast notification
 
-# 16. Export Rules
+# 16. กฎ Export
 
 - Export ต้องควบคุมด้วย permission
 - Sensitive export ต้อง audit-log
@@ -443,9 +443,9 @@ Action ที่กระทบ FO visibility, user access หรือ public c
 - Export file ควรมี expiry หรือ controlled access
 - Data ที่ export ต้อง respect policy-based field masking
 
-# 17. Responsive QA Requirements
+# 17. ข้อกำหนด Responsive QA
 
-Every BO module must be checked at the prototype standard widths:
+ทุก BO module ต้องตรวจที่ความกว้างมาตรฐานของ prototype:
 
 - Mobile width: 375px
 - Mobile breakpoint edge: 760px
@@ -453,7 +453,7 @@ Every BO module must be checked at the prototype standard widths:
 - Desktop width: 1366px
 - Wide desktop width: 1440px
 
-Responsive QA must verify:
+Responsive QA ต้องตรวจว่า:
 
 - Navigation works.
 - Search/filter works.
@@ -467,7 +467,7 @@ Responsive QA must verify:
 - Sticky/action areas do not block content.
 - Destructive confirmation is visible and usable.
 
-# 18. Acceptance Criteria
+# 18. เกณฑ์การยอมรับ
 
 | ID | Criteria |
 | --- | --- |
@@ -485,7 +485,7 @@ Responsive QA must verify:
 | AC-BO-GLOBAL-012 | Audit log ครอบคลุม sensitive, destructive, public-impact, export, permission และ login events |
 | AC-BO-GLOBAL-013 | Guest / Unauthenticated ต้องไม่ถูกใช้เป็น BO user status หรือ User Management filter และ public view/share ต้องแยกจาก registered-user action |
 
-# 19. Related Modules
+# 19. โมดูลที่เกี่ยวข้อง
 
 - `01_AUTHENTICATION_MODULE.md`
 - `02_DASHBOARD_MODULE.md`

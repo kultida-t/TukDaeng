@@ -1,9 +1,9 @@
 # 02 BO Dashboard Module
 
-**Version:** `BO-02-v1.0`  
-**Date:** 2026-07-31  
-**Status:** Current functional specification  
-**Platform:** Responsive Web Back Office
+**เวอร์ชัน:** `BO-02-v1.0`  
+**วันที่:** 2026-07-31  
+**สถานะ:** สเปกปัจจุบัน  
+**แพลตฟอร์ม:** Responsive Web Back Office
 
 
 ## มาตรฐาน UI และ Prototype อ้างอิง
@@ -20,7 +20,7 @@ Dashboard ต้องช่วยให้ Admin เห็นภาพรวม
 
 ## 2. ขอบเขต
 
-### In Scope
+### อยู่ในขอบเขต
 
 - Dashboard overview metrics
 - Pending queue summary
@@ -31,7 +31,7 @@ Dashboard ต้องช่วยให้ Admin เห็นภาพรวม
 - Drill-in links ไป module ที่เกี่ยวข้อง
 - Empty/loading/error states
 
-### Out Of Scope
+### นอกขอบเขต
 
 - Full analytics report detail
 - Custom dashboard builder
@@ -39,45 +39,45 @@ Dashboard ต้องช่วยให้ Admin เห็นภาพรวม
 - Predictive analytics
 - External data warehouse integration
 
-## 3. Dashboard Users
+## 3. ผู้ใช้งาน Dashboard
 
-Dashboard is used by the single BO account type `Admin`. The dashboard must not expose a admin access switcher or separate admin views.
+Dashboard ใช้กับบัญชี BO ชนิดเดียวคือ `Admin` และต้องไม่แสดง admin access switcher หรือแยก admin view หลายแบบ
 
 | Admin Account Type | Dashboard Focus |
 | --- | --- |
 | Admin | System overview, pending queues, activity, support, content, market, notification, report, audit, and security signals according to module/action policy. |
-## 4. Responsive Layout
+## 4. รูปแบบ Responsive
 
-Dashboard must follow the shared responsive rules in `00_GLOBAL_RULES_MODULE.md` and the confirmed behavior in `../Prototypes/bo-prototype.html`.
+Dashboard ต้องใช้กฎ responsive กลางจาก `00_GLOBAL_RULES_MODULE.md` และยึดพฤติกรรมที่ยืนยันแล้วใน `../Prototypes/bo-prototype.html`
 
-| Breakpoint | Width | Dashboard Requirement |
+| Breakpoint | ความกว้าง | ข้อกำหนดของ Dashboard |
 | --- | --- | --- |
 | Mobile | `<= 760px` | Uses the prototype order: Header -> KPI Summary 1 column -> Work Queue -> Recent Activity -> Dashboard Panels. Work Queue renders as a stacked action list. |
 | Tablet | `761px - 1365px` | Uses the prototype responsive shell. KPI Summary renders as 2 columns where space allows, then Work Queue, Recent Activity, and Dashboard Panels. Layout stacks to 1 column when space is limited. |
 | Desktop | `> 1365px` | Shows the confirmed dashboard overview with KPI cards, Work Queue and Recent Activity in the prototype desktop arrangement, then Dashboard Panels below. |
 
-Requirements:
+ข้อกำหนด:
 
 - Dashboard uses the prototype overview-first sequence across breakpoints so generated implementations do not reorder the experience page by page.
 - Work Queue stays immediately after KPI Summary and high-priority items stay at the top of Work Queue.
 - Dashboard Panels use the prototype card/panel visual style and responsive grid behavior.
-- Cards and actions must not overlap and must remain clearly tappable/clickable.
-- Dashboard must remain usable if chart libraries fail by falling back to numbers or table summaries.
+- Card และ action ต้องไม่ซ้อนกัน และต้องกด/คลิกได้ชัดเจน
+- Dashboard ต้องยังใช้งานได้ถ้า chart library โหลดไม่สำเร็จ โดย fallback เป็นตัวเลขหรือ table summary
 
-## 5. Dashboard Header And Controls
+## 5. Header และ Control ของ Dashboard
 
-| Control | Requirement |
+| Control | ข้อกำหนด |
 | --- | --- |
 | Header | Dashboard header stays focused on breadcrumb, page title, and `Last updated`; it does not show Date Range, Refresh, Export, global search, notification popup, or summary tags. |
 | Data Freshness | `Last updated` is the visible freshness indicator for the current prototype. Manual refresh is not required on the Dashboard screen. |
-| Date Scope | Dashboard uses fixed operational snapshot data in the prototype. Date Range controls are not required on Dashboard; date-range analysis belongs in Reports where needed. |
+| ขอบเขตวันที่ | Dashboard ใช้ข้อมูล snapshot ตาม prototype ปัจจุบัน ไม่ต้องมี Date Range บน Dashboard; การวิเคราะห์ตามช่วงวันที่ให้อยู่ใน Reports เมื่อจำเป็น |
 | Admin View | Product capability สำหรับ policy-based visibility; current prototype ใช้ admin access เดียว `Admin` และไม่แสดง admin access switcher |
 | Drill-in | Metric/queue card ต้องคลิกไป module ที่เกี่ยวข้องพร้อม filter ที่เหมาะสม |
 | Export | Dashboard does not expose a direct Export control in the current prototype. Exportable analytics and jobs remain in the Reports module. |
 
-Dashboard must not add header controls unless a future prototype explicitly defines the workflow and placement.
+Dashboard ห้ามเพิ่ม control บน header เว้นแต่ prototype ในอนาคตระบุ workflow และตำแหน่งไว้อย่างชัดเจน
 
-## 6. Metric Cards
+## 6. การ์ดตัวชี้วัด
 
 | Metric | Description | Drill-in | access visibility | Phase |
 | --- | --- | --- | --- | --- |
@@ -95,11 +95,11 @@ Dashboard must not add header controls unless a future prototype explicitly defi
 Dashboard user metric rules:
 
 - `New Users` and `Active Users Today` count registered account records/member activity only.
-- Guest public view/share traffic must not be included in `New Users` or registered-user DAU/MAU style metrics.
-- Dashboard baseline and prototype must not show guest/public analytics KPI, card, panel, chart, or drill-in.
+- Traffic จาก guest/public view/share ห้ามนับรวมใน `New Users` หรือ metric แบบ DAU/MAU ของ registered user
+- Dashboard baseline และ prototype ห้ามแสดง KPI, card, panel, chart หรือ drill-in ของ guest/public analytics
 - Guest/public analytics belongs only in Reports & Analytics, because Guest is not an account status and has no User Management drill-in.
 
-## 7. Pending Queue Summary
+## 7. สรุปคิวที่รอดำเนินการ
 
 Dashboard ต้องมี queue summary ที่ชี้งานต้องทำ ไม่ใช่แค่ metric
 
@@ -122,7 +122,7 @@ SLA baseline:
 - Support first response target: ภายใน 8 ชั่วโมง
 - Queue card ต้อง highlight เมื่อมี item ใกล้ SLA breach หรือ breached
 
-## 8. Recent Activity Feed
+## 8. กิจกรรมล่าสุด
 
 Activity feed แสดงเหตุการณ์ล่าสุดของระบบและ admin action
 
@@ -142,7 +142,7 @@ Activity feed แสดงเหตุการณ์ล่าสุดของ
 
 Fields:
 
-| Field | Requirement |
+| Field | ข้อกำหนด |
 | --- | --- |
 | Timestamp | แสดงเป็น Asia/Bangkok |
 | Event Type | เช่น User, Asset, Report, Article, Market Data, Audit |
@@ -151,7 +151,7 @@ Fields:
 | Summary | ข้อความสั้น อธิบาย event |
 | Link | ไป detail หรือ audit record ตาม permission |
 
-## 9. Admin Dashboard Access Rules
+## 9. กฎสิทธิ์การเข้าถึง Dashboard
 
 Dashboard visibility is policy-based, not Admin access-based. The current BO baseline has one `Admin` account type and no View-as control.
 
@@ -159,9 +159,9 @@ Rules:
 
 - Show dashboard cards by module/action policy and data sensitivity.
 - Hide or mask sensitive values when policy does not allow full detail.
-- Direct drill-in links must enforce access again at the destination module/API.
+- Link แบบ drill-in ต้องตรวจสิทธิ์ซ้ำที่ module/API ปลายทาง
 - If no queue is available for a policy scope, show a useful empty state rather than a blank panel.
-## 10. Dashboard Data Freshness
+## 10. ความสดใหม่ของข้อมูล Dashboard
 
 | Data Type | Freshness Expectation |
 | --- | --- |
@@ -172,7 +172,7 @@ Rules:
 
 Dashboard ต้องแสดง `Last updated` ชัดเจน
 
-## 11. BO/FO Integration Impact
+## 11. ผลกระทบต่อการเชื่อม BO/FO
 
 Dashboard ต้อง reflect integration map หลัก:
 
@@ -192,9 +192,9 @@ Dashboard ต้อง reflect integration map หลัก:
 | `INT-024` System Notification | Notification delivery status |
 | `INT-026` Sensitive Admin Action | Recent admin activity / audit signal |
 
-## 12. Error / Empty / Loading States
+## 12. สถานะ Error / Empty / Loading
 
-| State | Requirement |
+| State | ข้อกำหนด |
 | --- | --- |
 | Loading | แสดง skeleton สำหรับ metric cards และ queue cards |
 | Partial Load Error | ถ้า metric บางชุด load ไม่ได้ ให้ส่วนอื่นยังแสดงได้ พร้อม retry เฉพาะ card/section |
@@ -203,25 +203,25 @@ Dashboard ต้อง reflect integration map หลัก:
 | Unauthorized Section | ไม่แสดง section นั้น แทนการแสดง error |
 | Stale Data | แสดง last updated และ warning เมื่อ data เก่าเกิน threshold |
 
-## 13. Performance Requirements
+## 13. ข้อกำหนด Performance
 
 - Dashboard initial load หลัง auth ควรไม่เกิน 3 วินาทีสำหรับข้อมูลหลัก
 - Section ที่หนัก เช่น trend/report summary สามารถ lazy load ได้
 - Mobile ต้องโหลดข้อมูลสำคัญก่อน chart/visual เสริม
 - Query dashboard ต้องไม่ block งาน operational queue สำคัญ
-- Responsive rendering must preserve the prototype sequence: Header -> KPI Summary -> Work Queue -> Recent Activity -> Dashboard Panels.
+- การ render แบบ responsive ต้องคงลำดับตาม prototype: Header -> KPI Summary -> Work Queue -> Recent Activity -> Dashboard Panels
 
-## Module-Specific Overrides
+## ข้อยกเว้นเฉพาะโมดูล
 
-Dashboard has no override to the shared app shell, navigation, breakpoint, card visual style, or responsive behavior in `00_GLOBAL_RULES_MODULE.md` and `../Prototypes/bo-prototype.html`.
+Dashboard ไม่มี override สำหรับ app shell, navigation, breakpoint, card visual style หรือ responsive behavior ที่กำหนดไว้ใน `00_GLOBAL_RULES_MODULE.md` และ `../Prototypes/bo-prototype.html`
 
-Dashboard-specific application of the shared standard:
+การใช้มาตรฐานกลางเฉพาะกับ Dashboard:
 
-- Dashboard is an overview screen, not a paged list screen, so the shared list toolbar and pagination pattern do not apply to the main Dashboard page.
-- Dashboard must preserve the confirmed section sequence: Header -> KPI Summary -> Work Queue -> Recent Activity -> Dashboard Panels.
-- Dashboard must not add Date Range, Refresh, Export, global search, notification popup, or admin access switcher controls unless a future approved prototype explicitly adds them.
+- Dashboard เป็นหน้า overview ไม่ใช่หน้า list แบบแบ่งหน้า ดังนั้น list toolbar และ pagination pattern กลางไม่ใช้กับหน้า Dashboard หลัก
+- Dashboard ต้องคงลำดับ section ที่ยืนยันแล้ว: Header -> KPI Summary -> Work Queue -> Recent Activity -> Dashboard Panels
+- Dashboard ห้ามเพิ่ม Date Range, Refresh, Export, global search, notification popup หรือ admin access switcher เว้นแต่ prototype ที่อนุมัติในอนาคตเพิ่มไว้ชัดเจน
 
-## 14. Acceptance Criteria
+## 14. เกณฑ์การยอมรับ
 
 | ID | Criteria |
 | --- | --- |
@@ -239,7 +239,7 @@ Dashboard-specific application of the shared standard:
 | AC-BO-DASH-012 | Dashboard ต้องไม่แสดง guest/public analytics; metric ชุดนี้อยู่ใน Reports & Analytics เท่านั้น |
 | AC-BO-DASH-013 | Dashboard ต้องทำตาม `00_GLOBAL_RULES_MODULE.md` และ `../Prototypes/bo-prototype.html` สำหรับ app shell, navigation, breakpoint, card/panel style, responsive sequence และ interaction behavior โดยไม่มี UI pattern แยกเอง |
 
-## 15. Related Modules And References
+## 15. โมดูลและเอกสารอ้างอิงที่เกี่ยวข้อง
 
 - `00_GLOBAL_RULES_MODULE.md`
 - `01_AUTHENTICATION_MODULE.md`
@@ -258,17 +258,17 @@ Dashboard-specific application of the shared standard:
 - `BO_PRD.md`
 - `BO_Spec.md`
 
-## 16. Prototype Alignment Notes
+## 16. บันทึกการปรับให้ตรงกับ Prototype
 
-These notes capture confirmed UX decisions from the BO prototype review and must be kept in sync with `Prototypes/bo-prototype.html`.
+บันทึกส่วนนี้เก็บ UX decision ที่ยืนยันแล้วจากการ review BO prototype และต้อง sync กับ `Prototypes/bo-prototype.html` เสมอ
 
-### 16.1 Admin Access Simplification
+### 16.1 การทำสิทธิ์ Admin ให้เรียบง่าย
 
 - Current prototype uses a single `Admin` admin access for the main Back Office flow.
 - The previous admin access selector / View as control is removed from the header to keep the screen clean.
 - policy-based visibility remains documented as a product capability, but the current prototype does not expose separate Admin Views.
 
-### 16.2 Dashboard KPI Cards
+### 16.2 การ์ด KPI ของ Dashboard
 
 Current primary Dashboard KPI cards are:
 
@@ -283,7 +283,7 @@ Current primary Dashboard KPI cards are:
 | Watch Alert | Active watch alert volume and matching signal | Watch Alert / Market signal |
 | Support Cases | Open support cases and first-response deadline risk | Help & Support |
 
-Card detail text should be shown as short chips/labels, not as one long sentence. Example:
+รายละเอียดในการ์ดควรแสดงเป็น chip/label สั้น ๆ ไม่ใช่ประโยคยาว ตัวอย่าง:
 
 | รายการ | จำนวนรายการ | การเปลี่ยนแปลง | รายละเอียด |
 | --- | --- | --- | --- |
@@ -292,11 +292,11 @@ Card detail text should be shown as short chips/labels, not as one long sentence
 
 Reports remains the place for deeper user growth, retention, DAU/MAU trend, cohort, and export analysis. The Dashboard keeps `Active Users Today` as a primary health signal only.
 
-`New Users` and `Active Users Today` represent registered account/member activity. Guest public view/share analytics, if enabled, must be shown separately in Reports and must not create drill-in rows in User Management.
+`New Users` และ `Active Users Today` หมายถึงกิจกรรมของบัญชี/สมาชิกที่ลงทะเบียนแล้ว ถ้ามี analytics ของ guest public view/share ต้องแสดงแยกใน Reports และห้ามสร้าง drill-in row ใน User Management
 
-Guest/public analytics must stay out of the Dashboard prototype. Use Reports & Analytics for `Guest Visitors`, `Public Asset Views`, `Public Article Views`, `Public Shares`, and `Guest-to-Signup Conversion`.
+Guest/public analytics ต้องไม่อยู่ใน Dashboard prototype ให้ใช้ Reports & Analytics สำหรับ `Guest Visitors`, `Public Asset Views`, `Public Article Views`, `Public Shares` และ `Guest-to-Signup Conversion`
 
-KPI card trend copy must be a complete phrase. Do not show shorthand values that force the user to infer the meaning.
+ข้อความ trend ใน KPI card ต้องเป็นวลีที่อ่านรู้เรื่อง ห้ามใช้คำย่อที่ทำให้ผู้ใช้ต้องเดาความหมายเอง
 
 | Avoid | Use |
 | --- | --- |
@@ -307,7 +307,7 @@ KPI card trend copy must be a complete phrase. Do not show shorthand values that
 
 UI copy rule:
 
-- Do not show the technical term `SLA` in Dashboard cards, queue labels, notification popup copy, or export section titles.
+- ห้ามแสดงคำ technical `SLA` ใน Dashboard card, queue label, notification popup copy หรือหัวข้อ export section
 - Use user-friendly wording instead:
   - `ใกล้ครบกำหนด`
   - `ครบกำหนดตอบ`
@@ -315,15 +315,15 @@ UI copy rule:
   - `ติดตามกำหนดงาน`
 - The technical term `SLA` can remain in internal requirement notes, implementation comments, and backend/report field naming where needed.
 
-### 16.3 Notification Delivery Placement
+### 16.3 ตำแหน่งของ Notification Delivery
 
 - `Notification Delivery` is not shown as a primary KPI card in the current prototype.
 - It is not duplicated as an `Admin Overview` row on Dashboard.
 - Notification health remains available via the Notifications module, Recent Activity when there is a meaningful event, and export/report contexts where relevant.
 
-### 16.3.1 Dashboard Status Panels
+### 16.3.1 Panel สถานะบน Dashboard
 
-Bottom Dashboard panels must remain operational and clickable:
+Panel ด้านล่างของ Dashboard ต้องใช้งานและคลิกได้:
 
 | Panel | Purpose | Interaction |
 | --- | --- | --- |
@@ -332,21 +332,21 @@ Bottom Dashboard panels must remain operational and clickable:
 
 Copy rules:
 
-- Do not show `Admin Overview` on Dashboard because it duplicates information already covered by KPI cards, Work Queue, Recent Activity, and `Last updated`.
-- Do not use prototype-only copy such as `Back Office prototype` or `Next action`.
+- ห้ามแสดง `Admin Overview` บน Dashboard เพราะซ้ำกับข้อมูลที่มีอยู่แล้วใน KPI cards, Work Queue, Recent Activity และ `Last updated`
+- ห้ามใช้ copy ที่เป็นของ prototype เท่านั้น เช่น `Back Office prototype` หรือ `Next action`
 - Keep panel titles in English to match Dashboard section titles.
 - Use Thai descriptions for operational meaning and next action.
 - Avoid unexplained abbreviations and raw backend labels.
 
-### 16.4 Dashboard Header And Export Placement
+### 16.4 Header ของ Dashboard และตำแหน่ง Export
 
 - Current Dashboard prototype does not show Date Range, Refresh, or Export controls in the header.
 - The header shows only breadcrumb, page title, and `Last updated` to keep the operational view focused.
-- Dashboard export is not required in the current prototype. Exportable analytics and generated files should live in the Reports module or report/export job workflows when needed.
+- Prototype ปัจจุบันไม่ต้องมี export บน Dashboard; analytics ที่ export ได้และไฟล์ที่ generate ควรอยู่ใน Reports module หรือ report/export job workflow เมื่อจำเป็น
 
-### 16.5 Work Queue Copy And Display
+### 16.5 ข้อความและการแสดงผลของ Work Queue
 
-Work Queue cards should be written for operational action, not as raw system labels.
+ข้อความในการ์ด Work Queue ควรเขียนให้ช่วยตัดสินใจปฏิบัติงาน ไม่ใช่ใช้ raw system label
 
 Current prototype queue labels:
 
@@ -363,21 +363,21 @@ Current prototype queue labels:
 
 Queue copy rule:
 
-- Do not use raw labels like `Reported Assets`, `Open Tickets`, `Oldest 22h`, or `blocked by pending offer` in the UI.
-- Do not use `flag` as the primary UI label. Use `ต้องตรวจเพิ่ม` or a clearer reason-based label instead.
-- Each queue detail should explain:
+- ห้ามใช้ raw label เช่น `Reported Assets`, `Open Tickets`, `Oldest 22h` หรือ `blocked by pending offer` ใน UI
+- ห้ามใช้ `flag` เป็น label หลักใน UI ให้ใช้ `ต้องตรวจเพิ่ม` หรือ label ที่บอกเหตุผลชัดเจนกว่าแทน
+- รายละเอียดแต่ละ queue ควรอธิบาย:
   - what the queue is,
   - why it needs attention,
   - whether anything is close to the response deadline,
-  - what admin should prioritize.
-- Queue detail should be displayed as short chips/labels, similar to KPI cards.
+  - สิ่งที่ admin ควรจัดลำดับความสำคัญก่อน
+- รายละเอียด queue ควรแสดงเป็น chip/label สั้น ๆ คล้าย KPI card
 - Current prototype displays Work Queue as an Action Center style list, not grid cards:
   - left priority color bar,
   - queue title,
   - concise Thai detail,
   - count on the right,
   - chevron to indicate click-through.
-- Queue ordering must match the UI copy:
+- ลำดับ queue ต้องตรงกับ copy บน UI:
   1. Items close to deadline first.
   2. Within the same urgency level, sort by user impact / operational priority.
   3. Current priority order: รายงานสินทรัพย์, รายงานผู้ใช้, งานช่วยเหลือที่เปิดอยู่, คำขอลบบัญชี, สินทรัพย์ที่ต้องตรวจเพิ่ม, บทความรอเผยแพร่, ข้อมูลตลาดรอตรวจ, แจ้งเตือนส่งไม่สำเร็จ.
@@ -402,18 +402,18 @@ Examples:
 - Exported Excel-readable `.xls` files, when generated from Reports/export workflows, use IBM Plex Sans Thai family naming; final rendering can still depend on the spreadsheet app's font support.
 - Font source: Google Fonts packages for IBM Plex Sans Thai and Bebas Neue.
 
-### 16.7 Recent Activity Feed Copy And Behavior
+### 16.7 ข้อความและพฤติกรรมของ Recent Activity
 
 Recent Activity Feed in the prototype is displayed as `Recent Activity` to match other English dashboard section titles.
 
 Purpose:
 
-- Show the latest operational events that may require admin awareness or follow-up.
-- Do not duplicate KPI card counts unless the event represents a meaningful change or action.
+- แสดง event ล่าสุดที่ admin ควรรู้หรือต้องติดตามต่อ
+- ห้ามแสดงตัวเลขซ้ำกับ KPI card เว้นแต่ event นั้นเป็นการเปลี่ยนแปลงหรือ action ที่มีความหมาย
 - Keep security/audit events visible only when relevant, and do not let them dominate operational events.
-- The card header should stay clean. Do not show helper copy such as `รายการเหตุการณ์สำคัญที่เพิ่งเกิดขึ้น พร้อมลิงก์ไปจัดการต่อ` or prototype badges such as `เปิดรายละเอียดได้`.
+- Header ของ card ต้องสะอาด ไม่ใส่ helper copy เช่น `รายการเหตุการณ์สำคัญที่เพิ่งเกิดขึ้น พร้อมลิงก์ไปจัดการต่อ` หรือ badge แบบ prototype เช่น `เปิดรายละเอียดได้`
 
-Each activity item must include:
+Activity แต่ละรายการต้องมี:
 
 | Field | Prototype Display |
 | --- | --- |
@@ -424,25 +424,25 @@ Each activity item must include:
 
 Copy rules:
 
-- Do not use raw event labels such as `Report submitted`, `Offer status changed`, `Security event`, or `Delivery health` in the UI.
-- Do not show random audit IDs in the prototype. If audit linkage is needed, show the linked module/action instead.
+- ห้ามใช้ raw event label เช่น `Report submitted`, `Offer status changed`, `Security event` หรือ `Delivery health` ใน UI
+- ห้ามแสดง audit ID แบบสุ่มใน prototype ถ้าต้องเชื่อมกับ audit ให้แสดง module/action ที่เกี่ยวข้องแทน
 - Use explicit words: `ข้อเสนอซื้อถูกปฏิเสธ`, `ตั้งเวลาเผยแพร่บทความแล้ว`, `ข้อมูลตลาดอัปเดตแล้ว`.
 - Avoid unexplained abbreviations in the activity card. If an operational term is required, explain it in the summary or next action.
 
 Interaction rules:
 
 - The activity card uses a compact table-like list, not oversized timeline cards. Each row shows left accent, event title, one-line summary, relative time, and a chevron.
-- Activity filters must be clickable and functional: `ทั้งหมด`, `Report`, `Offer`, `Content`, `System`.
+- Filter ของ Activity ต้องกดได้และทำงานจริง: `ทั้งหมด`, `Report`, `Offer`, `Content`, `System`
 - Filter categories are based on linked modules. Asset/user report events map to `Report`; offer events map to `Offer`; content publishing maps to `Content`; watch alert, market data, notification, and audit/system events map to `System`.
-- Clicking an activity navigates directly to the related module/submodule. Do not open an intermediate modal in the current Dashboard prototype.
-- The row content must be sufficient for the Admin to decide whether to follow the link: clear event title, concise summary, relative timestamp, category filter context, and chevron.
-- Activity navigation must target the real related destination, not a fixed generic report page. Examples: Report -> `Reported Assets`, Offer -> `Offer Queue`, Content -> `Articles`, System notification -> `Delivery Logs`.
+- เมื่อคลิก activity ให้ไปยัง module/submodule ที่เกี่ยวข้องโดยตรง ห้ามเปิด modal กลางใน Dashboard prototype ปัจจุบัน
+- เนื้อหาใน row ต้องพอให้ Admin ตัดสินใจได้ว่าจะกดต่อหรือไม่: มี title ชัดเจน, summary สั้น, relative timestamp, category filter context และ chevron
+- Activity navigation ต้องไปปลายทางจริงที่เกี่ยวข้อง ไม่ใช่หน้า report กลางแบบตายตัว ตัวอย่าง: Report -> `Reported Assets`, Offer -> `Offer Queue`, Content -> `Articles`, System notification -> `Delivery Logs`
 - Activity `action` text in mock data may remain as implementation metadata or future enhancement input, but it is not required to render in a Dashboard modal.
-- Do not show prototype/status badges such as `linked`, `ติดตามต่อ`, or random audit IDs in the activity row.
+- ห้ามแสดง badge แบบ prototype/status เช่น `linked`, `ติดตามต่อ` หรือ audit ID แบบสุ่มใน activity row
 
-### 16.8 Dashboard Card Visual Style
+### 16.8 Visual Style ของการ์ด Dashboard
 
-Dashboard follows a control-center layout inspired by the referenced Prakan Go dashboard, while keeping Tuk Daeng colors and BO requirements.
+Dashboard ใช้ layout แบบ control-center ที่อ้างอิงจาก Prakan Go dashboard แต่ยังคงสีและข้อกำหนดของ Tuk Daeng BO
 
 - Shell layout uses a dark navy sidebar, white topbar, light blue-gray workspace background, and Tuk Daeng red for active/accent states.
 - Sidebar uses the referenced menu pattern: compact logo block, section labels, line icons, and chevrons only on expandable menu groups.
@@ -451,9 +451,9 @@ Dashboard follows a control-center layout inspired by the referenced Prakan Go d
 - Current Dashboard topbar does not show Date Range, Refresh, Export, global search, or notification popup because Dashboard focuses on overview, queue, activity, and data freshness via `Last updated`. Add extra header controls only when cross-module behavior is defined.
 - Notifications remain available from the sidebar `Notifications` module instead of a header popup.
 - Page title uses a left vertical accent bar and a thin horizontal divider instead of a heavy framed header card.
-- Dashboard header should not show summary tags for reports/offers/urgent work because the same information is already represented in KPI cards and queue details.
+- Header ของ Dashboard ไม่ควรแสดง summary tag สำหรับ reports/offers/urgent work เพราะข้อมูลเดียวกันแสดงอยู่แล้วใน KPI cards และ queue details
 - KPI cards use a left accent border, compact icon tile, clear label, large value, trend phrase, and detail chips.
 - Dashboard panels use a separated header row and padded body, similar to table/action-center cards.
-- Card corners and shadows should be light, not oversized or decorative.
-- Accent colors are used for grouping and priority only; they must not replace real status text.
-- The visual style must not remove required Dashboard data, links, queue priority, or direct Recent Activity navigation.
+- มุม card และ shadow ควรเบา ไม่ใหญ่หรือแต่งเกินจำเป็น
+- Accent color ใช้เพื่อจัดกลุ่มและบอก priority เท่านั้น ห้ามใช้แทนข้อความ status จริง
+- Visual style ต้องไม่ตัดข้อมูล Dashboard, link, queue priority หรือ direct navigation จาก Recent Activity ที่จำเป็นออก
