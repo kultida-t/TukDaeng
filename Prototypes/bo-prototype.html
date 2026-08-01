@@ -1501,6 +1501,28 @@
     body.reported-board-mode .reported-board-table .asset-row.head > div:nth-child(8) {
       text-align: left;
     }
+    body.asset-list-mode .asset-list-table .asset-row:not(.head),
+    body.article-list-mode .article-table .asset-row:not(.head),
+    body.category-list-mode .category-table .asset-row:not(.head),
+    body.reported-board-mode .reported-board-table .asset-row:not(.head) {
+      min-height: 66px;
+      padding-top: 10px;
+      padding-bottom: 10px;
+    }
+    body.asset-list-mode .asset-list-table .asset-row:not(.head) .main-text,
+    body.asset-list-mode .asset-list-table .asset-row:not(.head) .muted,
+    body.article-list-mode .article-table .asset-row:not(.head) .main-text,
+    body.article-list-mode .article-table .asset-row:not(.head) .muted,
+    body.category-list-mode .category-table .asset-row:not(.head) .main-text,
+    body.category-list-mode .category-table .asset-row:not(.head) .muted,
+    body.reported-board-mode .reported-board-table .asset-row:not(.head) .main-text,
+    body.reported-board-mode .reported-board-table .asset-row:not(.head) .muted {
+      color: #516683;
+      font-size: 12px;
+      font-weight: 400;
+      line-height: 1.5;
+      margin-bottom: 0;
+    }
     body.article-list-mode #primary-action,
     body.category-list-mode #primary-action,
     body.reported-board-mode #primary-action {
@@ -3015,6 +3037,10 @@
       min-height: 66px;
       padding: 10px 18px;
     }
+    body.user-list-mode .reported-assets-table .user-row.report-row:not(.head) {
+      min-height: 66px;
+      padding: 10px 22px;
+    }
     .user-row:not(.report-row) > div {
       min-width: 0;
     }
@@ -3189,7 +3215,9 @@
       margin-bottom: 0;
     }
     body.user-list-mode .reported-users-table .user-row.report-row:not(.head) .main-text,
-    body.user-list-mode .reported-users-table .user-row.report-row:not(.head) .muted {
+    body.user-list-mode .reported-users-table .user-row.report-row:not(.head) .muted,
+    body.user-list-mode .reported-assets-table .user-row.report-row:not(.head) .main-text,
+    body.user-list-mode .reported-assets-table .user-row.report-row:not(.head) .muted {
       color: #516683;
       font-size: 12px;
       font-weight: 400;
@@ -16012,7 +16040,7 @@
       const start = (assetListPage - 1) * assetListPageSize;
       const pageRows = sorted.slice(start, start + assetListPageSize);
       document.querySelector("#table").innerHTML = `
-        <div class="user-table">
+        <div class="user-table reported-assets-table">
           <div class="user-row report-row asset-report-row head"><div>Report ID</div><div>Asset</div><div>Asset Status</div><div>Status</div><div>Reported At</div><div>Report Reason</div><div>Reporters</div><div>Priority</div><div>Action</div></div>
           ${pageRows.map(({ asset }) => {
             const reportId = getAssetReportId(asset);
@@ -16080,7 +16108,7 @@
       document.querySelector("#panel-subtitle").textContent = "";
       const table = document.querySelector("#table");
       table.innerHTML = `
-        <div class="asset-table">
+        <div class="asset-table asset-list-table">
           <div class="asset-row head"><div>Asset ID</div><div>Asset</div><div>Brand</div><div>Owner</div><div>Asset Status</div><div>Action</div></div>
           ${pageRows.map(row => `
             <div class="asset-row" data-asset-card="${row.id}">
