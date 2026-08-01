@@ -197,6 +197,15 @@ Recommended note format:
 - [ ] Existing asset ต้องยังเก็บ historical brand/model/reference ได้แม้ master data ถูก inactive
 - [ ] Market Data UI ต้อง responsive ที่ 375px, 768px, 1280px และ 1440px
 
+### Market Data Prototype Handoff Notes
+
+| Area | Notes |
+| --- | --- |
+| Prototype / Spec Alignment | `Prototypes/bo-prototype.html` currently exposes Market Data as a shared operational list shell with submenu entry points for `Brands`, `Models`, `Price Index`, and `Import`. This aligns with the high-level module scope, but it is not yet a full CRUD/import workflow. |
+| Implementation Gap | Production still needs dedicated brand/model/reference/price-index forms, provider sync metadata, manual override conflict review, import dry-run validation, duplicate/error report rows, and server-side pagination. |
+| Permission / Audit | Create/update/activate/inactivate/import/export/provider-sync actions need separate permission keys and audit events with before/after values. UI hiding is not enough. |
+| FO Sync Impact | Market-data changes must invalidate FO Add Asset autocomplete, Search filters/autocomplete, Watch Alert criteria/matching, Portfolio valuation, and Watch Price surfaces. Inactive data must stop new FO selection and new Watch Alert triggers while preserving historical assets and alert history. |
+
 ## 7. Directory
 
 - [ ] Directory item CRUD รองรับ category, TH/EN names, address, province, phone, Line ID, website, Facebook, Instagram, logo, cover photos, description, opening hours, map location, tags, status
@@ -209,6 +218,15 @@ Recommended note format:
 - [ ] Map provider unavailable ต้องไม่ทำให้ edit form ใช้งานไม่ได้
 - [ ] Directory UI ต้อง responsive ที่ 375px, 768px, 1280px และ 1440px
 
+### Directory Prototype Handoff Notes
+
+| Area | Notes |
+| --- | --- |
+| Prototype / Spec Alignment | The prototype has a top-level `Directory` menu and overview/list behavior for directory publication work. This matches the BO module boundary, but the prototype does not yet show the complete item/category editor, map/contact validation, image controls, or import flow. |
+| Implementation Gap | Production needs item/category CRUD, Active/Inactive/Archived state handling, contact/social/map/image fields, import dry-run validation, duplicate detection, and map-provider fallback states. |
+| Permission / Audit | Directory mutation, image upload/delete, import/export, activate/inactivate/archive, and category changes must be permission-gated and audit-logged. |
+| FO Sync Impact | Active directory records only affect FO Directory surfaces after the Product decision to open the FO route. Until then, active BO records must not be treated as production FO route enablement. |
+
 ## 8. Audit Log
 
 - [ ] Audit log บันทึก admin ID, admin access, action type, target type, target ID, before value, after value, IP address, timestamp และ reason เมื่อมี
@@ -220,6 +238,15 @@ Recommended note format:
 - [ ] Audit export ต้อง audit ตัวเองและมี controlled access/expiry
 - [ ] Retention baseline อย่างน้อย 1 ปี
 - [ ] Audit Log UI ต้อง responsive ที่ 375px, 768px, 1280px และ 1440px
+
+### Audit Log Prototype Handoff Notes
+
+| Area | Notes |
+| --- | --- |
+| Prototype / Spec Alignment | Audit Log is reachable from Settings via the `Audit Log` submenu route and appears as a read/review surface in the shared prototype shell. This matches the navigation expectation, but production still needs a dedicated immutable audit list/detail implementation. |
+| Implementation Gap | Production must add server-side search/filter/sort/pagination, audit detail with before/after diff, correlation-id grouping, masked payload states, export workflow, and error/empty/loading states. |
+| Permission / Audit | Full audit visibility and export must be permission controlled. Audit export must create its own audit event and use controlled access/expiry. |
+| FO Sync Impact | Audit rows should trace BO actions that affect FO visibility, notifications, account access, content publication, marketplace/search state, Watch Alert triggers, and exports. |
 
 ## 9. Offer & Chat Management
 
@@ -246,6 +273,15 @@ Recommended note format:
 - [ ] Export offer history/conversation ต้องจำกัด permission และ audit export event
 - [ ] Offer & Chat UI ต้อง responsive ที่ 375px, 768px, 1280px และ 1440px
 
+### Offer & Chat Prototype Handoff Notes
+
+| Area | Notes |
+| --- | --- |
+| Prototype / Spec Alignment | The prototype exposes `Offer Queue`, `Reported Chat`, and `Dispute Export`. It uses the canonical `Offer / Chat` module placement and aligns with the status vocabulary direction, but it is not yet a complete offer-detail or chat-review workflow. |
+| Implementation Gap | Production still needs offer detail, buyer/owner/asset summaries, offer timeline, chat transcript review, attachment scan states, reported-chat moderation actions, force-expire/invalidate confirmation, and export job handling. |
+| Permission / Audit | Force expire, invalidate, message hide/remove, attachment block, transcript/sensitive reveal, and offer/chat export must be separately permission-gated and audit-logged with reason where FO/user impact exists. |
+| FO Sync Impact | Offer changes must update pending/incoming offer state, chat offer cards, notification delivery context, account-deletion dependency checks, and unavailable/invalidated asset behavior. |
+
 ## 10. Social Interaction Management
 
 - [ ] Comment/reply list ต้องรองรับ search/filter/sort/pagination และ root/reply relation 1 level
@@ -265,6 +301,15 @@ Recommended note format:
 - [ ] Export social data ต้องจำกัด permission และ audit export event
 - [ ] Social Interaction UI ต้อง responsive ที่ 375px, 768px, 1280px และ 1440px
 
+### Social Interaction Prototype Handoff Notes
+
+| Area | Notes |
+| --- | --- |
+| Prototype / Spec Alignment | The prototype exposes `Comments`, `Likes`, `Follows`, and `Reported Social` under Social Interaction. This matches the module split, but the current screen is an overview/list shell rather than full moderation and analytics workflows. |
+| Implementation Gap | Production still needs comment/reply detail, reported-comment queue, moderation timeline, hide/unhide/remove confirmations, like/favorite aggregate analytics, follow analytics, and export handling. |
+| Permission / Audit | Admin must not edit user comment text. Hide/unhide/remove, sensitive reveal, and export require permission checks, reason where required, and audit. |
+| FO Sync Impact | Comment moderation must update FO Asset Detail comment visibility/counts. Like/Favorite and Follow reporting must respect FO rules, including Like adding Favorites and Following Feed using only `Sale` assets. |
+
 ## 11. Watch Alert Management
 
 - [ ] Watch Alert list ต้องรองรับ search/filter/sort/pagination และ export ตาม permission
@@ -283,6 +328,15 @@ Recommended note format:
 - [ ] Notification delivery trace ดูได้ แต่ template/retry อยู่ใน Notification module
 - [ ] Watch Alert UI ต้อง responsive ที่ 375px, 768px, 1280px และ 1440px
 
+### Watch Alert Prototype Handoff Notes
+
+| Area | Notes |
+| --- | --- |
+| Prototype / Spec Alignment | The prototype exposes `Alert Criteria`, `Trigger History`, and `Disabled Alerts`, which matches the spec-level Watch Alert operating areas. It does not yet include full alert detail, criteria revalidation, or disable/enable confirmation flows. |
+| Implementation Gap | Production still needs owner/criteria detail, optional/generated alert name handling, trigger-history snapshots, exclusion reasons, inactive market-data warnings, and notification-delivery trace. |
+| Permission / Audit | Disable/enable/export and criteria-sensitive reveal need separate permission checks and audit. Enable must revalidate criteria before saving. |
+| FO Sync Impact | Matching must remain Sale-only. `Show`, `Hide`, `Sold`, owner-deleted, permanently hidden, blocked relation, and inactive market-data cases must not generate new FO Watch Alert notifications. Notification destination must remain `Watch Alert Result List`. |
+
 ## 12. Help & Support
 
 - [ ] Ticket queue ต้องรองรับ search/filter ตาม Ticket ID, user, channel, type, priority, status, assignee, SLA และ date range
@@ -298,6 +352,15 @@ Recommended note format:
 - [ ] Sensitive reveal, export, status change, reply และ assignment ต้องมี audit log
 - [ ] Help / Support UI ต้อง responsive ที่ 375px, 768px, 1280px และ 1440px
 
+### Help & Support Prototype Handoff Notes
+
+| Area | Notes |
+| --- | --- |
+| Prototype / Spec Alignment | The prototype exposes `Tickets`, `Assignment`, and `SLA`, and Dashboard includes support-ticket counts. This aligns with the support operating model, but it is not yet a complete ticket detail/reply/manual-ticket workflow. |
+| Implementation Gap | Production still needs ticket detail, requester context, related entity links, reply history, internal notes, assignment/change-priority/status flows, manual ticket creation from LINE/Phone/Email, and full SLA states. |
+| Permission / Audit | Assignment, reply, internal note, link entity, priority/status change, sensitive reveal, and export require permission checks and audit. Internal notes must never sync to FO/user-facing channels. |
+| FO Sync Impact | FO V1 remains contact-only unless Product opens in-app ticket history. If in-app ticket history is enabled later, BO status/reply sync needs a separate contract. First response SLA baseline remains 8 hours. |
+
 ## 13. Account Deletion Requests
 
 - [ ] Deletion request queue ต้องรองรับ search/filter ตาม Request ID, user, status, account status, pending offer, grace period และ requested date
@@ -311,6 +374,15 @@ Recommended note format:
 - [ ] Archive/anonymization plan ต้องแยก hide, retain, archive และ anonymize ต่อ entity ให้ชัด
 - [ ] Sensitive reveal, recheck, blocked, approve archive, archive complete, anonymize complete, cancel และ export ต้องมี audit log
 - [ ] Account Deletion UI ต้อง responsive ที่ 375px, 768px, 1280px และ 1440px
+
+### Account Deletion Prototype Handoff Notes
+
+| Area | Notes |
+| --- | --- |
+| Prototype / Spec Alignment | The prototype exposes `Requests`, `Grace Period`, and `Anonymization`, and user records can route deletion-requested users toward the Account Deletion context. This aligns with the module boundary, but full dependency review and archive/anonymization workflows are still implementation gaps. |
+| Implementation Gap | Production needs request detail, dependency recheck across Offer/Chat, Asset, Report, and Support modules, 30-day grace-period state, archive/anonymization plan, cancellation, export, and stale dependency handling. |
+| Permission / Audit | Recheck, approve archive, cancel, anonymize, sensitive reveal, and export must be permission-gated and audit-logged with before/after values and reason. |
+| FO Sync Impact | Successful FO delete-account flow must block login/deactivate account, hide public profile/assets, preserve required records for retention, and only anonymize/archive after blocking dependencies are resolved. |
 
 ## 14. Notifications
 
@@ -329,6 +401,15 @@ Recommended note format:
 - [ ] Retry failed notification ต้องมี idempotency guard และ audit log
 - [ ] Template update, type enable/disable, broadcast approve/send/cancel, retry และ export ต้องมี audit log
 - [ ] Notifications UI ต้อง responsive ที่ 375px, 768px, 1280px และ 1440px
+
+### Notifications Prototype Handoff Notes
+
+| Area | Notes |
+| --- | --- |
+| Prototype / Spec Alignment | The prototype exposes `Broadcast`, `System Templates`, and `Delivery Logs`, plus Dashboard `Broadcast Ready` counts. This matches the module split but not the full broadcast approval/template/retry implementation. |
+| Implementation Gap | Production still needs broadcast draft/approval/schedule/send/cancel, preview, system trigger template configuration, delivery log detail, retry/idempotency, failed/skipped reason handling, and export. |
+| Permission / Audit | Template update, type enable/disable, broadcast approve/send/cancel, retry, sensitive reveal, and export require permission checks and audit. |
+| FO Sync Impact | FO Notification Center V1 must remain limited to Like, Comment, Follow, Offer, and Watch Alert. Generic Broadcast must not appear in the FO in-app list until Product confirms scope. Watch Alert notification destination must remain `Watch Alert Result List`; Chat/New Message uses chat badge/count, not Notification Center. |
 
 ## 15. Reports & Analytics
 
@@ -350,6 +431,15 @@ Recommended note format:
 - [ ] Account Deletion Report ต้องแสดง blocked reason, grace period และ archive/anonymization status
 - [ ] Reports UI ต้อง responsive ที่ 375px, 768px, 1280px และ 1440px
 
+### Reports & Analytics Prototype Handoff Notes
+
+| Area | Notes |
+| --- | --- |
+| Prototype / Spec Alignment | The prototype exposes Reports with `User`, `Asset`, `Offer`, `Search`, and `Export Jobs`. This covers the visible shell, but the spec requires the full report catalog: User, Asset, Offer, Chat, Content/Board, Social, Search, Watch Alert, Support, Notification, Account Deletion, and Export Job/Access History. |
+| Implementation Gap | Production still needs report catalog/detail views, date range/filter/sort controls, last-updated timestamps, chart/table fallbacks, CSV/Excel exports, background export job states, and sensitive report-access handling. |
+| Permission / Audit | Report access must be policy-based. Sensitive report views/exports require masking by default, explicit permission, reason where required, and audit events for request/complete/fail/download. |
+| FO Sync Impact | Reports must use canonical FO terms: asset `Show`/`Hide`, offer status `Rejected`, Watch Alert Sale-only matching and `Watch Alert Result List` destination, first-response support SLA 8 hours, and guest/public analytics separated from registered-user metrics. |
+
 ## 16. Admin Settings
 
 - [ ] Admin ทุก admin access ต้องเข้าดู own profile/settings และเปลี่ยน password ตาม rule ได้
@@ -367,4 +457,13 @@ Recommended note format:
 - [ ] System defaults ต้องแสดง timezone `Asia/Bangkok`, currency THB, Thai-primary language, server pagination และ sensitive masking baseline
 - [ ] Settings change history ต้อง link ไป Audit Log detail ตาม permission
 - [ ] Admin Settings UI ต้อง responsive ที่ 375px, 768px, 1280px และ 1440px
+
+### Admin Settings Prototype Handoff Notes
+
+| Area | Notes |
+| --- | --- |
+| Prototype / Spec Alignment | The prototype exposes `Admin Accounts`, `Roles & Permissions`, `Security`, `Retention`, policy/support content entries, `Version History`, and an `Audit Log` route from Settings. This matches the high-level Settings scope, but the full admin-account lifecycle and permission matrix are not yet implemented in detail. |
+| Implementation Gap | Production still needs own-profile/password settings, admin invite/suspend/reactivate/unlock/archive, last-active-admin guard, role template matrix, security/retention/export policies, feature flags, integration metadata, version history, and settings change history. |
+| Permission / Audit | Permission changes, admin lifecycle actions, security/retention/export policy changes, feature flags, and sensitive/export settings must require confirmation, reason where needed, before/after diff, and audit. |
+| FO Sync Impact | Settings changes can alter BO access, FO/BO feature flags, retention/export behavior, public legal/support content, and security defaults. Changes must surface FO/BO impact before save and link history to Audit Log where permitted. |
 
