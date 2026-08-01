@@ -7449,6 +7449,7 @@
       const usesReportSubmissionLayout = isAssetReportHistory || isUserReportHistory;
       const noteColumnLabel = usesReportSubmissionLayout ? "Report Reason" : "Reporter note";
       const showAdditionalDetails = usesReportSubmissionLayout;
+      const additionalDetailsMobileLabel = isUserReportHistory ? "Details" : "Additional Details";
       const showSourceColumn = !usesReportSubmissionLayout || isUserReportHistory;
       const rows = pageRows.map(row => `
         <tr>
@@ -7457,7 +7458,7 @@
           ${showSourceColumn ? `<td data-label="Source">${renderHistoryValue(row.source)}</td>` : ""}
           <td data-label="Status">${row.status}</td>
           <td data-label="${noteColumnLabel}" class="history-note">${renderHistoryValue(usesReportSubmissionLayout ? translateReportReason(row.note) : row.note)}</td>
-          ${showAdditionalDetails ? `<td data-label="Additional Details" class="history-note">${renderHistoryValue(row.additionalDetails)}</td>` : ""}
+          ${showAdditionalDetails ? `<td data-label="${additionalDetailsMobileLabel}" class="history-note">${renderHistoryValue(row.additionalDetails)}</td>` : ""}
         </tr>
       `).join("");
       const tableClass = usesReportSubmissionLayout ? "history-table asset-reporter-history-table" : "history-table";
