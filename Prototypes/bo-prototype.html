@@ -3011,6 +3011,10 @@
       min-height: 66px;
       padding: 10px 20px;
     }
+    body.user-list-mode .reported-users-table .user-row.report-row:not(.head) {
+      min-height: 66px;
+      padding: 10px 18px;
+    }
     .user-row:not(.report-row) > div {
       min-width: 0;
     }
@@ -3178,6 +3182,14 @@
     body.user-list-mode .user-table .user-row:not(.head):not(.report-row) > div[data-label="User ID"] .main-text,
     body.user-list-mode .user-table .user-row:not(.head):not(.report-row) > div[data-label="User"] .main-text,
     body.user-list-mode .user-table .user-row:not(.head):not(.report-row) > div[data-label="Assets"] .main-text {
+      color: #516683;
+      font-size: 12px;
+      font-weight: 400;
+      line-height: 1.5;
+      margin-bottom: 0;
+    }
+    body.user-list-mode .reported-users-table .user-row.report-row:not(.head) .main-text,
+    body.user-list-mode .reported-users-table .user-row.report-row:not(.head) .muted {
       color: #516683;
       font-size: 12px;
       font-weight: 400;
@@ -11679,7 +11691,7 @@
       const start = (userListPage - 1) * userListPageSize;
       const pageRows = sorted.slice(start, start + userListPageSize);
       document.querySelector("#table").innerHTML = `
-        <div class="user-table">
+        <div class="user-table reported-users-table">
           <div class="user-row report-row head"><div>Report ID</div><div>User</div><div>User Status</div><div>Status</div><div>Reported At</div><div>Report Reason</div><div>Reporters</div><div>Priority</div><div>Sources</div><div>Action</div></div>
           ${pageRows.map(report => {
             const reportedAt = (getUserReportReceivedTime(report) || "-").replace(/\s*GMT\+7$/, "");
