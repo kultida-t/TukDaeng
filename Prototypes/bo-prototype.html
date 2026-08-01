@@ -13285,12 +13285,13 @@
               <div class="asset-row" data-category-card="${category.id}">
                 <div data-label="Category ID"><div class="main-text">${category.id}</div></div>
                 <div class="asset-cell-primary" data-label="Category">
-                  <div class="main-text">${escapeArticleField(category.name)}</div>
+                  <div class="main-text"><span class="desktop-user-name">${escapeArticleField(category.name)}</span><span class="mobile-user-card-title">${category.id}</span></div>
                 </div>
                 <div class="asset-card-tags">
                   ${getCategoryStatusPill(category.status)}
                   <span class="user-card-tag asset-tag">${articleCount} articles</span>
                   <div class="user-card-meta">
+                    <div class="user-card-meta-item"><span>Category</span><strong>${escapeArticleField(category.name)}</strong></div>
                     <div class="user-card-meta-item"><span>URL</span><strong>${escapeArticleField(category.slug)}</strong></div>
                     <div class="user-card-meta-item"><span>Updated</span><strong>${escapeArticleField(category.updatedAt)}</strong></div>
                   </div>
