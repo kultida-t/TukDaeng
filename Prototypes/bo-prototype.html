@@ -1444,7 +1444,7 @@
       grid-template-columns: minmax(112px, .7fr) minmax(360px, 2.35fr) minmax(170px, 1.05fr) minmax(150px, .9fr) minmax(190px, 1.1fr) minmax(72px, .4fr);
     }
     .category-table .asset-row {
-      grid-template-columns: minmax(112px, .68fr) minmax(260px, 1.65fr) minmax(190px, 1fr) minmax(128px, .7fr) minmax(128px, .7fr) minmax(76px, .42fr);
+      grid-template-columns: minmax(112px, .62fr) minmax(240px, 1.5fr) minmax(170px, .88fr) minmax(116px, .58fr) minmax(116px, .58fr) minmax(166px, .82fr) minmax(76px, .38fr);
     }
     .reported-board-table .asset-row {
       grid-template-columns: minmax(112px, .66fr) minmax(230px, 1.48fr) minmax(140px, .78fr) minmax(116px, .64fr) minmax(154px, .86fr) minmax(190px, 1.04fr) minmax(86px, .48fr) minmax(102px, .56fr) minmax(76px, .42fr);
@@ -1483,6 +1483,7 @@
     body.article-list-mode .article-table .asset-row > div:nth-child(5),
     body.category-list-mode .category-table .asset-row > div:nth-child(4),
     body.category-list-mode .category-table .asset-row > div:nth-child(5),
+    body.category-list-mode .category-table .asset-row > div:nth-child(6),
     body.reported-board-mode .reported-board-table .asset-row > div:nth-child(4),
     body.reported-board-mode .reported-board-table .asset-row > div:nth-child(5),
     body.reported-board-mode .reported-board-table .asset-row > div:nth-child(7),
@@ -1498,6 +1499,7 @@
     body.article-list-mode .article-table .asset-row.head > div:nth-child(5),
     body.category-list-mode .category-table .asset-row.head > div:nth-child(4),
     body.category-list-mode .category-table .asset-row.head > div:nth-child(5),
+    body.category-list-mode .category-table .asset-row.head > div:nth-child(6),
     body.reported-board-mode .reported-board-table .asset-row.head > div:nth-child(4),
     body.reported-board-mode .reported-board-table .asset-row.head > div:nth-child(5),
     body.reported-board-mode .reported-board-table .asset-row.head > div:nth-child(7),
@@ -13278,7 +13280,7 @@
       document.querySelector("#panel-subtitle").textContent = "";
       document.querySelector("#table").innerHTML = `
         <div class="asset-table category-table">
-          <div class="asset-row head"><div>Category ID</div><div>Category</div><div>URL</div><div>Articles</div><div>Status</div><div>Action</div></div>
+          <div class="asset-row head"><div>Category ID</div><div>Category</div><div>URL</div><div>Articles</div><div>Status</div><div>Updated</div><div>Action</div></div>
           ${pageRows.map(category => {
             const articleCount = getCategoryArticleCount(category.name);
             return `
@@ -13299,6 +13301,7 @@
                 <div data-label="URL"><div class="main-text">${escapeArticleField(category.slug)}</div></div>
                 <div data-label="Articles"><div class="main-text">${articleCount}</div></div>
                 <div data-label="Status">${getCategoryStatusPill(category.status)}</div>
+                <div data-label="Updated"><div class="main-text">${escapeArticleField(category.updatedAt)}</div></div>
                 <div class="user-row-actions">
                   ${renderCategoryRowActionMenu(category)}
                 </div>
@@ -13347,6 +13350,9 @@
                 </label>
                 <label><span>สถานะ</span>
                   <input value="${escapeArticleField(category.status)}" readonly />
+                </label>
+                <label><span>Updated At</span>
+                  <input value="${escapeArticleField(category.updatedAt)}" readonly />
                 </label>
                 <label class="full"><span>คำอธิบาย</span>
                   <textarea readonly>${escapeArticleField(category.description || "-")}</textarea>
@@ -13513,7 +13519,6 @@
       normalizeCategoryDisplayOrder();
       closeUserActionModal();
       renderModule("content", "Categories", "Categories");
-      renderCategoryDetailModal(nextCategory);
       showSuccessToast(`${nextCategory.id}: บันทึกหมวดหมู่แล้ว`);
     }
 
