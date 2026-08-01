@@ -15815,8 +15815,8 @@
                   ${boardReportPriorityPill(report)}
                   <div class="user-card-meta">
                     <div class="user-card-meta-item"><span>Article</span><strong>${report.articleTitle}</strong></div>
+                    <div class="user-card-meta-item report-reason-meta"><span>Report reason</span><strong>${report.reason}</strong></div>
                     <div class="user-card-meta-item"><span>Reported at</span><strong>${reportedAt}</strong></div>
-                    <div class="user-card-meta-item"><span>Report reason</span><strong>${report.reason}</strong></div>
                   </div>
                 </div>
                 <div data-label="Article Status">${boardReportContentStatusPill(report.contentStatus)}</div>
@@ -16128,8 +16128,8 @@
                   <span class="pill ${priorityValue === "high" ? "red" : priorityValue === "medium" ? "amber" : "blue"}">${priorityLabel}</span>
                   <div class="user-card-meta">
                     <div class="user-card-meta-item"><span>Asset</span><strong>${asset.name}</strong></div>
+                    <div class="user-card-meta-item report-reason-meta"><span>Report reason</span><strong>${reason}</strong></div>
                     <div class="user-card-meta-item"><span>Reported at</span><strong>${reportedAt}</strong></div>
-                    <div class="user-card-meta-item"><span>Report reason</span><strong>${reason}</strong></div>
                   </div>
                 </div>
                 <div data-label="Asset"><div class="main-text">${asset.name}</div></div>
