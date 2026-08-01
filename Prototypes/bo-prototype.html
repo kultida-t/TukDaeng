@@ -6129,6 +6129,8 @@
         letter-spacing: .04em;
         line-height: 1;
       }
+      body.asset-list-mode .asset-row:not(.head) .desktop-user-name { display: none; }
+      body.asset-list-mode .asset-row:not(.head) .mobile-user-card-title { display: inline; }
       body.asset-list-mode .asset-card-tags {
         grid-column: 1 / -1;
         grid-row: 2;
@@ -16168,13 +16170,13 @@
             <div class="asset-row" data-asset-card="${row.id}">
               <div data-label="Asset ID"><div class="main-text">${row.id}</div></div>
               <div class="asset-cell-primary" data-label="Asset">
-                <div class="main-text">${row.name}</div>
+                <div class="main-text"><span class="desktop-user-name">${row.name}</span><span class="mobile-user-card-title">${row.id}</span></div>
               </div>
               <div class="asset-card-tags">
                 <span class="user-card-tag asset-tag">${getAssetBrand(row)}</span>
                 ${renderAssetListStatusDisplay(row)}
                 <div class="user-card-meta">
-                  <div class="user-card-meta-item"><span>Asset ID</span><strong>${row.id}</strong></div>
+                  <div class="user-card-meta-item"><span>Asset</span><strong>${row.name}</strong></div>
                   <div class="user-card-meta-item"><span>Owner</span><strong>${row.owner}</strong></div>
                 </div>
               </div>
