@@ -6084,6 +6084,16 @@
         padding: 13px 16px;
         background: transparent;
       }
+      body.user-list-mode:not(.reported-board-mode) .layout > .panel {
+        overflow: hidden;
+      }
+      body.user-list-mode:not(.reported-board-mode) #table {
+        border-radius: 0 0 calc(var(--radius) - 1px) calc(var(--radius) - 1px);
+        overflow: hidden;
+      }
+      body.user-list-mode:not(.reported-board-mode) .footer-range {
+        background: #f8fbff;
+      }
       body.asset-list-mode .asset-row.head {
         display: none;
       }
