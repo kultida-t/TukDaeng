@@ -15521,14 +15521,14 @@
             <div class="asset-row" data-article-card="${article.id}">
               <div data-label="Article ID"><div class="main-text">${article.id}</div></div>
               <div class="asset-cell-primary" data-label="Article">
-                <div class="main-text">${article.title}</div>
+                <div class="main-text"><span class="desktop-user-name">${article.title}</span><span class="mobile-user-card-title">${article.id}</span></div>
               </div>
               <div class="asset-card-tags">
                 <span class="user-card-tag asset-tag">${article.category}</span>
                 ${articleStatusPill(article.status)}
                 <span class="user-card-tag asset-tag article-read-time-tag">${article.readTime}</span>
                 <div class="user-card-meta">
-                  <div class="user-card-meta-item"><span>Article ID</span><strong>${article.id}</strong></div>
+                  <div class="user-card-meta-item"><span>Article</span><strong>${article.title}</strong></div>
                   <div class="user-card-meta-item"><span>Publish</span><strong>${article.publishAt}</strong></div>
                 </div>
               </div>
