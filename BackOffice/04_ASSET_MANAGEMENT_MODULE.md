@@ -5,6 +5,13 @@
 **Status:** Current functional specification  
 **Platform:** Responsive Web Back Office
 
+
+## มาตรฐาน UI และ Prototype อ้างอิง
+
+เอกสารนี้ต้องใช้ร่วมกับ `00_GLOBAL_RULES_MODULE.md` และยึดรูปแบบหน้าจอ/พฤติกรรมที่ยืนยันแล้วใน `../Prototypes/bo-prototype.html` เป็นมาตรฐานหลัก
+
+ห้ามออกแบบ pattern แยกเองสำหรับ list toolbar, breakpoint, table/card layout, pagination, reset, action menu, detail layout หรือ confirmation modal ยกเว้นเอกสารนี้ระบุไว้ชัดเจนว่าเป็น override ที่อนุมัติแล้ว
+
 ## 1. Objective
 
 Asset Management คือเมนูสำหรับ Admin ใช้ตรวจสอบรายการ asset, รายละเอียด asset, รายงาน asset และดำเนินการ moderation ที่มีผลต่อการมองเห็นของ asset ในระบบ
@@ -79,15 +86,20 @@ Asset Management คือเมนูสำหรับ Admin ใช้ตร�
 
 ## 5. Responsive Layout
 
-เมนู Asset Management ต้องใช้งานได้ครบทุกขนาดหน้าจอ
+Asset Management must follow the shared responsive rules in `00_GLOBAL_RULES_MODULE.md` and the confirmed behavior in `../Prototypes/bo-prototype.html`.
 
-| Width | Layout Requirement |
-| --- | --- |
-| Mobile-width browser | ตารางเปลี่ยนเป็น stacked cards, filter อยู่ใน drawer หรือ bottom sheet, action หลักยังเข้าถึงได้ |
-| Tablet | แสดง column สำคัญในตาราง และเปิดข้อมูลรองผ่าน detail view |
-| Desktop | แสดง full table, filter, pagination และ detail/action flow ได้ครบ |
+| Breakpoint | Width | Asset Management Requirement |
+| --- | --- | --- |
+| Mobile | `<= 760px` | Asset List and Reported Assets render as stacked cards with asset/report identity, status/context pills, key metadata, and compact action menu. Advanced filters collapse inline behind the filter toggle. Asset Detail and Asset Report Detail render as vertical sections with reachable actions. |
+| Tablet | `761px - 1365px` | Uses the same page shell and panels as the prototype. Filter toolbar compacts into a grid. Dense tables may scroll inside the list container only when required. |
+| Desktop | `> 1365px` | Shows page header, Asset List summary cards, filter toolbar, dense table/grid, pagination footer, and compact row action menu. |
 
-ห้ามมี horizontal overflow ที่ทำให้ action หลักใช้งานไม่ได้ ยกเว้นพื้นที่ตารางที่ตั้งใจให้ scroll ภายใน container
+Additional requirements:
+
+- Asset List shows summary cards following the prototype; Reported Assets does not show summary cards.
+- Text, image thumbnails, status pills, buttons, table/card content, and modal content must not overflow or overlap.
+- Important moderation/report actions must remain reachable on mobile and desktop.
+- Mobile filters open/close inline in the list area and must not use a separate drawer or bottom sheet.
 
 ## 6. Asset List
 
@@ -534,6 +546,12 @@ Sensitive data ต้องเป็น read-only เสมอในเมนู
 
 Audit history ต้องแสดงใน Asset Detail หรือ Asset Report Detail ตาม context ที่เกี่ยวข้อง
 
+## Module-Specific Overrides
+
+None.
+
+Asset Management must use the shared app shell, navigation, breakpoint, list toolbar, desktop table/grid, mobile card, pagination, reset, detail, action menu, and confirmation modal patterns from `00_GLOBAL_RULES_MODULE.md` and `../Prototypes/bo-prototype.html` without module-specific UI/layout overrides.
+
 ## 18. Acceptance Criteria
 
 | ID | Criteria |
@@ -554,3 +572,5 @@ Audit history ต้องแสดงใน Asset Detail หรือ Asset Rep
 | AC-BO-ASSET-014 | Report ที่ `Closed` เป็น final state และไม่มี reopen action ในเมนูนี้ |
 | AC-BO-ASSET-015 | ทุก action ที่กระทบ visibility หรือ report outcome ต้องมี permission check, confirmation, reason, before/after state และ audit |
 | AC-BO-ASSET-016 | Responsive layout ใช้งานได้ครบที่ mobile-width, tablet และ desktop |
+| AC-BO-ASSET-017 | Asset Management ต้องทำตาม `00_GLOBAL_RULES_MODULE.md` และ `../Prototypes/bo-prototype.html` สำหรับ list toolbar, responsive table/card behavior, pagination, reset, row/detail actions และ confirmation modal pattern |
+

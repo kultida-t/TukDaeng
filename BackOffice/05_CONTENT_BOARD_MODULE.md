@@ -5,6 +5,13 @@
 **Status:** Current functional specification  
 **Platform:** Responsive Web Back Office
 
+
+## มาตรฐาน UI และ Prototype อ้างอิง
+
+เอกสารนี้ต้องใช้ร่วมกับ `00_GLOBAL_RULES_MODULE.md` และยึดรูปแบบหน้าจอ/พฤติกรรมที่ยืนยันแล้วใน `../Prototypes/bo-prototype.html` เป็นมาตรฐานหลัก
+
+ห้ามออกแบบ pattern แยกเองสำหรับ list toolbar, breakpoint, table/card layout, pagination, reset, action menu, detail layout หรือ confirmation modal ยกเว้นเอกสารนี้ระบุไว้ชัดเจนว่าเป็น override ที่อนุมัติแล้ว
+
 ## 1. Objective
 
 BO Content / Board Module คือเมนูสำหรับ Admin ใช้จัดการบทความบน FO Board ตั้งแต่สร้าง แก้ไข ดูรายละเอียด ดูตัวอย่าง เผยแพร่ ตั้งเวลา นำออกจากการเผยแพร่ จัดการหมวดหมู่ และตรวจรายงานบทความที่ผู้ใช้แจ้งเข้ามา
@@ -52,13 +59,20 @@ Content / Board Module อยู่ภายใต้เมนู `Content Manag
 
 ## 5. Responsive Layout
 
-| Width | Requirement / การแสดงผล |
-| --- | --- |
-| Mobile-width browser | List แสดงเป็น stacked cards, action อยู่ใน card menu, form/editor แยก section ชัดเจน |
-| Tablet | ใช้ responsive shell เดียวกับ desktop แต่ field/grid ต้อง collapse ได้เมื่อพื้นที่จำกัด |
-| Desktop | List แสดงเป็น table-like grid, detail/editor ใช้ full-width section blocks ใน main content panel |
+Content Management must follow the shared responsive rules in `00_GLOBAL_RULES_MODULE.md` and the confirmed behavior in `../Prototypes/bo-prototype.html`.
 
-ทุกหน้าต้องป้องกัน text, image preview, form controls, table/card content และ modal content ไม่ให้ overflow หรือซ้อนกันบนหน้าจอเล็ก
+| Breakpoint | Width | Content Management Requirement |
+| --- | --- | --- |
+| Mobile | `<= 760px` | Articles, Categories, and Reported Board lists render as stacked cards with primary identity, status/context metadata, and compact action menu. Advanced filters collapse inline behind the filter toggle. Article editor, category modal, report detail, and preview flows keep sectioned layouts that fit the viewport. |
+| Tablet | `761px - 1365px` | Uses the same page shell and panels as the prototype. Filter toolbar compacts into a grid. Editor/detail grids collapse when space is limited. |
+| Desktop | `> 1365px` | Shows page header, page actions where defined, filter toolbar, dense table/grid, pagination footer, and compact row action menu. Detail/editor screens use full-width section blocks in the main content panel. |
+
+Additional requirements:
+
+- Articles, Categories, and Reported Board do not invent separate toolbar, pagination, or mobile card patterns.
+- Text, cover previews, form controls, table/card content, and modal content must not overflow or overlap.
+- Status/public-impact actions must remain reachable on mobile and desktop.
+- Mobile filters open/close inline in the list area and must not use a separate drawer or bottom sheet.
 
 ## 6. Articles List
 
@@ -636,6 +650,12 @@ Audit event ควรมีข้อมูล:
 - Reason/note เมื่อจำเป็น
 - Session/IP context เมื่อมีข้อมูล
 
+## Module-Specific Overrides
+
+None.
+
+Content Management must use the shared app shell, navigation, breakpoint, list toolbar, desktop table/grid, mobile card, pagination, reset, detail/editor, action menu, preview, and confirmation modal patterns from `00_GLOBAL_RULES_MODULE.md` and `../Prototypes/bo-prototype.html` without module-specific UI/layout overrides.
+
 ## 17. Acceptance Criteria
 
 | ID | Criteria / เกณฑ์ยอมรับ |
@@ -655,3 +675,5 @@ Audit event ควรมีข้อมูล:
 | AC-BO-CONTENT-013 | Archive article จาก Reported Board เปลี่ยน article master เป็น Archived, ปิด report เป็น Closed, เพิ่ม Article Change History และ Reported Board Admin Action History และทำให้ article หายจาก FO Board/Search/Category |
 | AC-BO-CONTENT-014 | Article detail, Category actions และ Reported Board actions มี audit/history ตาม requirement |
 | AC-BO-CONTENT-015 | UI responsive ใช้งานได้ที่ mobile-width, tablet และ desktop โดยไม่มี content overflow หรือ element overlap |
+| AC-BO-CONTENT-016 | Content Management ต้องทำตาม `00_GLOBAL_RULES_MODULE.md` และ `../Prototypes/bo-prototype.html` สำหรับ list toolbar, responsive table/card behavior, pagination, reset, detail/editor, preview และ confirmation modal pattern |
+

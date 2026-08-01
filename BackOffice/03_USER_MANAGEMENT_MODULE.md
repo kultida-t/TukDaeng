@@ -5,6 +5,13 @@
 **Status:** Current functional specification  
 **Platform:** Responsive Web Back Office
 
+
+## มาตรฐาน UI และ Prototype อ้างอิง
+
+เอกสารนี้ต้องใช้ร่วมกับ `00_GLOBAL_RULES_MODULE.md` และยึดรูปแบบหน้าจอ/พฤติกรรมที่ยืนยันแล้วใน `../Prototypes/bo-prototype.html` เป็นมาตรฐานหลัก
+
+ห้ามออกแบบ pattern แยกเองสำหรับ list toolbar, breakpoint, table/card layout, pagination, reset, action menu, detail layout หรือ confirmation modal ยกเว้นเอกสารนี้ระบุไว้ชัดเจนว่าเป็น override ที่อนุมัติแล้ว
+
 ## 1. Objective
 
 User Management เป็นเมนูสำหรับให้ Admin ตรวจสอบ ค้นหา และจัดการบัญชีผู้ใช้ของระบบหน้าบ้าน รวมถึงตรวจสอบรายงานผู้ใช้ที่ถูกร้องเรียน จัดการสถานะบัญชี และบันทึกเหตุผลของการดำเนินการที่มีผลต่อผู้ใช้
@@ -31,7 +38,7 @@ User Management เป็นเมนูสำหรับให้ Admin ตร
 - เปิดหน้ารายละเอียดผู้ใช้จากบริบทรายงาน
 - แสดงผลกระทบต่อหน้าบ้านก่อนยืนยัน action สำคัญ
 - บันทึก audit/action note สำหรับ action สำคัญ
-- รองรับ mobile, tablet, desktop และ wide desktop
+- รองรับ prototype QA widths และ shared responsive standard
 
 อยู่นอกขอบเขต:
 
@@ -90,19 +97,20 @@ Admin ที่เข้าถึงเมนูนี้ได้สามา�
 
 ## 5. Responsive Layout
 
-| ขนาดหน้าจอ | รูปแบบการแสดงผล |
-| --- | --- |
-| Mobile `< 768px` | แสดงรายการเป็น stacked card/list, ซ่อน table header, ใช้เมนู action แบบ compact, filter เปิด/ปิดในพื้นที่ list |
-| Tablet `768px - 1199px` | แสดง layout แบบย่อจาก desktop, คง filter bar, list panel, pagination และ action menu ให้ใช้งานได้ |
-| Desktop `>= 1200px` | แสดง page header, summary cards, filter bar, table/list แบบ dense, pagination และ row action menu |
-| Wide Desktop `>= 1440px` | ใช้ layout desktop เป็นหลัก ไม่ต้องมี split list/detail ถาวร |
+User Management must follow the shared responsive rules in `00_GLOBAL_RULES_MODULE.md` and the confirmed behavior in `../Prototypes/bo-prototype.html`.
 
-ข้อกำหนด responsive:
+| Breakpoint | Width | User Management Requirement |
+| --- | --- | --- |
+| Mobile | `<= 760px` | User List and Reported Users render as stacked cards with primary identity, status badge, key metadata, and compact action menu. Advanced filters collapse inline behind the filter toggle. User Detail and Report Detail render as vertical sections with reachable actions. |
+| Tablet | `761px - 1365px` | Uses the same page shell and panels as the prototype. Filter toolbar compacts into a grid. Dense tables may scroll inside the list container only when required. |
+| Desktop | `> 1365px` | Shows page header, optional summary cards for User List, filter toolbar, dense table/grid, pagination footer, and compact row action menu. |
 
-- ข้อความใน card, badge, button และ modal ต้องไม่ล้น container
-- Action สำคัญต้องกดใช้งานได้ทั้งบน mobile และ desktop
-- Filter บน mobile ต้องเปิด/ปิดได้ในหน้าเดิม ไม่จำเป็นต้องใช้ drawer แยก
-- User Detail และ Report Detail ต้องอ่านข้อมูลสำคัญได้ครบโดยไม่ซ่อน action ที่จำเป็น
+Additional requirements:
+
+- User List shows summary cards; Reported Users does not show summary cards.
+- Text in cards, badges, buttons, tables, and modals must not overflow or overlap.
+- Important actions must remain reachable on mobile and desktop.
+- Mobile filters open/close inline in the list area and must not use a separate drawer or bottom sheet.
 
 ## 6. User List
 
@@ -557,6 +565,12 @@ Report Detail ต้องไม่อ้าง source ประเภท asset,
 - Action modal ต้องเปิดจาก row หรือ detail โดยไม่โหลดหน้าซ้ำทั้งหน้า
 - Detail view ต้องโหลดข้อมูลเฉพาะผู้ใช้หรือรายงานที่เลือก
 
+## Module-Specific Overrides
+
+None.
+
+User Management must use the shared app shell, navigation, breakpoint, list toolbar, desktop table/grid, mobile card, pagination, reset, detail, action menu, and confirmation modal patterns from `00_GLOBAL_RULES_MODULE.md` and `../Prototypes/bo-prototype.html` without module-specific UI/layout overrides.
+
 ## 15. Acceptance Criteria
 
 | ID | เกณฑ์การยอมรับ |
@@ -587,4 +601,6 @@ Report Detail ต้องไม่อ้าง source ประเภท asset,
 | AC-BO-USER-023 | รายงานจาก User Profile และ Chat เท่านั้นที่เป็น source ของ Reported Users |
 | AC-BO-USER-024 | รายงานของผู้ใช้สถานะ Deletion Requested ต้อง review ได้โดยไม่ลบ/archive บัญชีทันที |
 | AC-BO-USER-025 | Empty, loading และ error state แสดงผลครบทั้ง User List และ Reported Users |
-| AC-BO-USER-026 | หน้าจอทั้งหมดในโมดูลใช้งานได้บน mobile, tablet, desktop และ wide desktop |
+| AC-BO-USER-026 | หน้าจอทั้งหมดในโมดูลใช้งานได้ตาม prototype QA widths และ shared responsive standard |
+| AC-BO-USER-027 | User Management ต้องทำตาม `00_GLOBAL_RULES_MODULE.md` และ `../Prototypes/bo-prototype.html` สำหรับ list toolbar, responsive table/card behavior, pagination, reset, row/detail actions และ confirmation modal pattern |
+

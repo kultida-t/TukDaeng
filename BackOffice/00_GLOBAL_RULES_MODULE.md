@@ -1,4 +1,4 @@
-﻿# 00 Back Office Global Rules Module
+# 00 Back Office Global Rules Module
 
 อ้างอิง:
 
@@ -16,9 +16,14 @@
 | Module Name | Back Office Global Rules |
 | Platform | Responsive Web Back Office |
 | Version | `BO-PRD-v0.1` |
-| Status | Draft |
+| Status | Current functional specification |
 | Owner | Product / UX / Engineering / Operations |
 | Document Type | Cross-Module Functional PRD |
+
+
+## Prototype Source Of Truth
+
+The confirmed Back Office visual and interaction standard for Dashboard, User Management, Asset Management, and Content Management is `../Prototypes/bo-prototype.html`. New implementation generated from these Markdown files must reproduce the same app shell, navigation behavior, responsive breakpoints, list toolbar, table/card behavior, pagination, action menus, detail pages, and confirmation modal patterns unless a module explicitly defines a later approved override.
 
 # 2. วัตถุประสงค์
 
@@ -63,29 +68,30 @@ BO เป็น responsive web application สำหรับทีมภาย�
 
 # 5. Responsive Layout Rules
 
+The responsive standard follows the confirmed `../Prototypes/bo-prototype.html` behavior.
+
 | Breakpoint | Width | Layout Rule |
 | --- | --- | --- |
-| Mobile | `< 768px` | Layout 1 column, navigation แบบ collapsed/drawer, filter stack หรือ drawer, detail แยกเป็น section/accordion/tab, table แปลงเป็น card หรือ horizontal scroll เฉพาะกรณีจำเป็น |
-| Tablet | `768px - 1199px` | Side navigation ยุบ/ขยายได้, detail ใช้ 2 column ได้เมื่อพื้นที่พอ, filter drawer รองรับ |
-| Desktop | `>= 1200px` | Side navigation แสดงถาวร, data table แบบ dense, ใช้ split list/detail ได้เมื่อเหมาะสม |
-| Wide Desktop | `>= 1440px` | รองรับ split pane, expanded metric, audit/detail panel คู่กัน |
+| Mobile | `<= 760px` | One-column app shell. List rows render as stacked cards with primary identity, status/context badges, key metadata, and compact action menu. Advanced filters are hidden behind an inline filter toggle in the list toolbar. Detail, editor, and report pages render as vertical sections. |
+| Tablet | `761px - 1365px` | One-column content shell with desktop-like panels where space allows. Filter bars use compact grid layout. Dense tables may horizontally scroll inside their own container only when needed to preserve required columns/actions. |
+| Desktop | `> 1365px` | Persistent sidebar and dense operation layout. Lists render as table/grid with header row, filter toolbar, summary cards when the module defines them, pagination footer, and compact row action menus. |
 
-ข้อกำหนด responsive:
+Responsive requirements:
 
-- Action สำคัญของ Admin ต้องไม่หายหรือใช้งานไม่ได้บน mobile/tablet
-- Table ที่มีหลาย column ต้องมี priority column และ drill-in ไปหน้า detail
-- Sticky action bar ใช้ได้ใน review workflow แต่ต้องไม่บัง content
-- Modal ต้องพอดีกับ viewport และ scroll ภายในได้เมื่อเนื้อหายาว
-- Search/filter ต้องใช้งานได้ด้วย touch device
-- Bulk selection ซ่อนบน mobile ได้ถ้า individual action ยังทำได้
-- Mobile-width navigation ใช้ hamburger button เปิด side drawer พร้อม backdrop, ปุ่มปิดใน drawer, และต้องไม่ทำให้ content/table/modal ซ้อนหรือ overflow จนใช้งานไม่ได้
-- Side navigation สามารถ scroll ได้เมื่อรายการยาว แต่ไม่ควรแสดง scrollbar และต้อง contain scroll ไม่ให้ wheel/touch scroll เลื่อนไปกระทบ content ด้านหลัง
+- Dashboard, User Management, Asset Management, and Content Management must keep the same visual and interaction language as `../Prototypes/bo-prototype.html`.
+- Mobile navigation uses the prototype hamburger side drawer with backdrop and close control.
+- List filters use the prototype inline collapsible filter bar pattern. Do not use a separate drawer or bottom sheet for list filters in these confirmed modules.
+- Important actions must remain reachable on mobile, tablet, and desktop.
+- Table/list content, badges, buttons, image previews, forms, cards, and modal content must not overflow or overlap in a way that blocks operation.
+- Long tables may scroll inside their table container on tablet/desktop, but primary actions must remain reachable.
+- Modal dialogs must fit the viewport and scroll internally when content is long.
+- Touch targets, keyboard focus states, labels, and visible control names must remain consistent across modules.
 
 # 6. Navigation Rules
 
-Navigation ของ BO ต้องขึ้นกับ admin access และ permission ของ Admin
+Navigation of the confirmed BO prototype is the baseline for Dashboard, User Management, Asset Management, and Content Management.
 
-Baseline navigation:
+Baseline protected navigation:
 
 ```text
 การดำเนินงาน
@@ -94,36 +100,24 @@ Baseline navigation:
   - User List
   - Reported Users
 - Asset Management
-  - Asset Details
   - Asset List
-  - Offer / Chat
+  - Reported Assets
 - Content Management
-  - Content Board
-  - Directory
-  - Watch Alert
-- Market Data
-- Help / Support
-- Account Deletion
-
-เครื่องมือ & รายงาน
-- Notifications
-- Reports
-
-ระบบ
-- Settings
-  - Admin Settings
-  - Audit Log
+  - Articles
+  - Categories
+  - Reported Board
 ```
 
-กฎ navigation:
+Global navigation rules:
 
-- Module ที่ไม่มีสิทธิ์ต้องไม่แสดงใน navigation
-- หากเข้าผ่าน direct URL แต่ไม่มีสิทธิ์ ต้องแสดง access denied state
-- Browser back ควรรักษา context เช่น active filter, list/detail state ตามความเหมาะสม
-- เมนูต้องเรียงตามลำดับการใช้งานจริง: งานปฏิบัติการที่ต้องจัดการบ่อยก่อน, งานสนับสนุน/คำขอเฉพาะทางถัดมา, รายงานและเครื่องมือระบบท้ายสุด
-- เมนูแม่ที่มีเมนูย่อยใช้สำหรับเปิด/ปิดกลุ่มเท่านั้น และไม่ควรเปลี่ยนหน้าเองจนกว่า Admin จะเลือกเมนูย่อย
-- Mobile navigation ใช้ drawer หรือ collapsed menu
-- Parent menu ที่มี sub menu ต้องทำหน้าที่ expand/collapse เท่านั้น ไม่ควรเปลี่ยนหน้าเป็น child/default page เอง ผู้ใช้ต้องเลือก sub menu ก่อนจึงเปลี่ยนหน้า
+- Module visibility depends on admin access and permission.
+- A module without permission must not appear in navigation.
+- Direct URL access must still enforce permission and show access denied when unauthorized.
+- Browser back should preserve relevant context such as active module, submenu, search, filter, sort, list page, and originating list where appropriate.
+- Menu groups with submenus expand/collapse only. They must not navigate to an implicit default child until Admin selects a submenu.
+- Active menu and submenu states must match the current route/detail/report context.
+- Mobile navigation uses the prototype collapsed side drawer behavior.
+- Unprotected or future modules may extend navigation after the confirmed items, but must not change the order, labels, active states, or behavior of the protected navigation above unless explicitly approved.
 
 # 7. Admin Access Model
 
@@ -141,71 +135,124 @@ Permission rules:
 - Sensitive fields, exports, destructive actions, public-impact actions, and admin account changes must follow policy-based controls and audit requirements.
 # 8. Shared Page Patterns
 
-## 8.1 List Page
+These patterns are mandatory for Dashboard, User Management, Asset Management, and Content Management because they are confirmed in `../Prototypes/bo-prototype.html`.
 
-List page ควรรองรับตามความเหมาะสม:
+## 8.1 App Shell And Page Structure
 
-- Search
-- Filter
-- Sort
-- Pagination
-- Saved filter state
-- Export เฉพาะ admin access ที่มีสิทธิ์
-- Empty state
-- Error state
-- Row action menu
-- Detail drill-in
+Standard page structure:
 
-ข้อมูลขนาดใหญ่ต้องใช้ server-side pagination/search/filter
+- Sidebar navigation using the confirmed module/submenu grouping.
+- Mobile header with hamburger drawer behavior.
+- Breadcrumb text in the main header.
+- Page title and optional page meta.
+- Page action area on the right side of the header when the screen has a primary action.
+- Main content panel.
+- Optional summary cards only where the module explicitly defines them.
+- Filter toolbar for list pages.
+- Desktop table/grid or mobile stacked cards for list results.
+- Pagination footer for paged lists.
+- Detail pages, preview modals, or confirmation modals using the same visual density and control style as the prototype.
 
-## 8.2 Detail Page
+## 8.2 List Toolbar Standard
 
-Detail page ควรมี:
+Every confirmed list page must use the same toolbar pattern:
 
-- Entity identity และ status
-- Key metadata
-- ผลกระทบต่อ FO surface ที่เกี่ยวข้อง
-- Activity/timeline เมื่อจำเป็น
-- Audit summary หรือ link ไป audit log สำหรับ admin access ที่มีสิทธิ์
-- Action panel ตาม permission
-- Sensitive section ที่ mask ถ้าไม่มีสิทธิ์
+- Search input is the first control.
+- A filter toggle button opens/closes advanced filters.
+- A reset button is always available.
+- Advanced filters use custom-select controls matching the prototype.
+- Sort is part of the filter bar, not a separate visual pattern.
+- On mobile, advanced filters collapse inline within the list area. They do not move to a drawer or bottom sheet.
+- Reset clears search/filter/sort and returns the list to page 1.
 
-## 8.3 Forms
+## 8.3 Search, Filter, Sort, Pagination Order
 
-Form ต้องรองรับ:
+List data operations must run in this order:
 
-- Required field indicator
-- Validation error ใกล้ field
-- Save draft เมื่อ module รองรับ draft
-- Confirmation สำหรับ destructive หรือ public-impacting change
-- Unsaved-change warning สำหรับฟอร์มยาว
-- File/image preview ก่อน upload
+1. Apply search.
+2. Apply filters.
+3. Apply sort.
+4. Apply pagination.
 
-## 8.4 Modals And Drawers
+When search/filter/sort changes, the current page resets to page 1. When only the page changes, current search/filter/sort values must be preserved.
 
-ใช้ modal/drawer สำหรับ:
+## 8.4 Pagination Standard
 
-- Confirmation
-- Quick review
-- Assign/reassign
-- Status change
-- Audit note
-- Filter panel บนหน้าจอเล็ก
+All confirmed list and history tables use the same pagination pattern:
 
-ไม่ควรใช้ modal เป็น flow หลักของงานยาว เช่น article editor
+- Page size: `10 rows per page` unless a module explicitly uses a domain noun such as `10 users per page`, `10 assets per page`, `10 articles per page`, or `10 reports per page`.
+- Footer range text format: `แสดง X-Y จาก Z`.
+- Empty result range text: `แสดง 0 จาก 0`.
+- Controls: `ก่อนหน้า`, numbered page buttons, `ถัดไป`.
+- Disable previous on the first page and next on the last page.
+- Numbered page button for the current page uses the active button style.
+
+## 8.5 Desktop Table/Grid Standard
+
+Desktop list results use a dense table/grid pattern:
+
+- Header row is visible.
+- Body rows align to the same columns as the header.
+- Primary identity field appears near the left.
+- Status/context badges appear in their defined status column or metadata area.
+- Last column is `Actions` and uses compact row action controls.
+- Row/card click or `View` opens the relevant detail screen.
+- Horizontal scroll is allowed only inside the table container when columns cannot compress safely.
+
+## 8.6 Mobile Card Standard
+
+Mobile list results use stacked cards:
+
+- Hide the desktop table header.
+- Show primary identity, status/context badge, key metadata, and compact action menu.
+- Metadata labels must remain visible enough to understand the row without table headers.
+- The same row actions available on desktop must remain reachable when permitted.
+- Card content must wrap safely without text overlap.
+
+## 8.7 Detail Page Standard
+
+Detail pages should use the prototype sectioned layout:
+
+- Header with entity identity, status/context badges, and back action where the flow originates from a list.
+- Detail sections rendered as full-width panels or responsive grids.
+- Action buttons grouped in the detail action area.
+- Audit/history sections use the shared table/history layout and pagination where applicable.
+- Sensitive sections are read-only and masked/summarized according to the module rules.
+
+## 8.8 Forms And Editors
+
+Form/editor pages follow the Content Management article/category patterns unless a module defines a more specific confirmed flow:
+
+- Required field indicators.
+- Field-level validation.
+- Preview controls where the domain has a preview surface.
+- Confirmation modal before status changes, destructive actions, or public-impacting changes.
+- Unsaved-change protection for long editors when implemented.
+
+## 8.9 Modals
+
+Use the prototype modal pattern for:
+
+- Confirmation.
+- Status/action reason input.
+- Preview.
+- Compact detail reference from a report context.
+- Action result or failure state.
+
+Do not use a modal as the main long-form editor when a full editor page exists.
 
 # 9. Shared States And Copy
 
 | State | Required Behavior |
 | --- | --- |
-| Loading | แสดง skeleton หรือ loading state ที่ชัดเจน |
-| Empty | แสดง empty message ตาม module และมี reset filter เมื่อเกิดจาก filter |
-| Error | อธิบาย failure และมี retry เมื่อทำได้ |
-| Access denied | แจ้งว่า admin access นี้ไม่มีสิทธิ์เข้า module/action |
-| Session expired | กลับไป login พร้อม message ชัดเจน |
-| Unsaved changes | เตือนก่อนออกจาก create/edit form |
-| Export processing | แสดง queued/in-progress สำหรับ export ใหญ่ |
-| Data unavailable | ใช้เมื่อ entity ถูก remove, archive หรือ hide ตาม policy |
+| Loading | Show skeleton, loading row, or loading panel in the same area where content will render. |
+| Empty no data | Show empty state `ไม่พบข้อมูล`. |
+| Empty after search/filter | Show empty state `ไม่พบข้อมูล` and keep reset available. |
+| Error | Explain the failure and allow retry when retry is meaningful. |
+| Action error | Keep the confirmation/action modal open, show the error/result state, and do not update the UI as success. |
+| Stale state | Show that data changed before confirmation and require Admin to refresh or retry with latest data. |
+| Access denied | แจ้งว่า admin access นี้ไม่มีสิทธิ์เข้า module/action. |
+| Session expired | กลับไป login พร้อม message ชัดเจน. |
 
 # 10. Canonical Status Contracts
 
@@ -398,23 +445,27 @@ Action ที่กระทบ FO visibility, user access หรือ public c
 
 # 17. Responsive QA Requirements
 
-ทุก BO module ต้องตรวจที่:
+Every BO module must be checked at the prototype standard widths:
 
 - Mobile width: 375px
-- Tablet width: 768px
-- Desktop width: 1280px
+- Mobile breakpoint edge: 760px
+- Tablet width: 1024px
+- Desktop width: 1366px
 - Wide desktop width: 1440px
 
-Responsive QA ต้องตรวจ:
+Responsive QA must verify:
 
-- Navigation ใช้งานได้
-- Search/filter ใช้งานได้
-- Primary action กดได้
-- Detail content ไม่ overlap หรือ clip
-- Table/card อ่านได้
-- Modal fit viewport
-- Sticky bar ไม่บัง content
-- Destructive confirmation เห็นและใช้งานได้
+- Navigation works.
+- Search/filter works.
+- Filter toggle opens/closes inline advanced filters on mobile.
+- Reset clears search/filter/sort and returns list pagination to page 1.
+- Primary action is reachable.
+- Detail content does not overlap or clip.
+- Table/card content is readable.
+- Pagination range text and controls match the standard pattern.
+- Modal fits viewport.
+- Sticky/action areas do not block content.
+- Destructive confirmation is visible and usable.
 
 # 18. Acceptance Criteria
 

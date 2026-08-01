@@ -1,35 +1,26 @@
 # 02 BO Dashboard Module
 
-อ้างอิง:
+**Version:** `BO-02-v1.0`  
+**Date:** 2026-07-31  
+**Status:** Current functional specification  
+**Platform:** Responsive Web Back Office
 
-- `00_GLOBAL_RULES_MODULE.md`
-- `BO_MASTER_BASELINE.md`
-- `../ProjectAdmin/FO_BO_INTEGRATION_MAP.md`
-- `BO_PRD.md`
-- `BO_Spec.md`
 
----
+## มาตรฐาน UI และ Prototype อ้างอิง
 
-# 1. ข้อมูลเอกสาร
+เอกสารนี้ต้องใช้ร่วมกับ `00_GLOBAL_RULES_MODULE.md` และยึดรูปแบบหน้าจอ/พฤติกรรมที่ยืนยันแล้วใน `../Prototypes/bo-prototype.html` เป็นมาตรฐานหลัก
 
-| Field | Detail |
-| --- | --- |
-| Module Name | BO Dashboard |
-| Platform | Responsive Web Back Office |
-| Version | `BO-PRD-v0.1` |
-| Status | Draft |
-| Owner | Product / UX / Engineering / Operations |
-| Document Type | Functional PRD |
+ห้ามออกแบบ pattern แยกเองสำหรับ list toolbar, breakpoint, table/card layout, pagination, reset, action menu, detail layout หรือ confirmation modal ยกเว้นเอกสารนี้ระบุไว้ชัดเจนว่าเป็น override ที่อนุมัติแล้ว
 
-# 2. วัตถุประสงค์
+## 1. วัตถุประสงค์
 
 Dashboard เป็นหน้าแรกของ BO ที่สรุปสถานะระบบและงานที่ Admin ต้องดำเนินการจากข้อมูลที่เกิดบน FO เช่น user ใหม่, asset ใหม่, pending reports, offer activity, watch alert, support ticket, article publishing และ admin activity
 
 Dashboard ต้องช่วยให้ Admin เห็นภาพรวมเร็ว ตัดสินใจได้ว่า queue ไหนต้องจัดการก่อน และกดไปยัง module ที่เกี่ยวข้องได้ทันที
 
-# 3. ขอบเขต
+## 2. ขอบเขต
 
-## In Scope
+### In Scope
 
 - Dashboard overview metrics
 - Pending queue summary
@@ -40,7 +31,7 @@ Dashboard ต้องช่วยให้ Admin เห็นภาพรวม
 - Drill-in links ไป module ที่เกี่ยวข้อง
 - Empty/loading/error states
 
-## Out Of Scope
+### Out Of Scope
 
 - Full analytics report detail
 - Custom dashboard builder
@@ -48,31 +39,32 @@ Dashboard ต้องช่วยให้ Admin เห็นภาพรวม
 - Predictive analytics
 - External data warehouse integration
 
-# 4. Dashboard Users
+## 3. Dashboard Users
 
 Dashboard is used by the single BO account type `Admin`. The dashboard must not expose a admin access switcher or separate admin views.
 
 | Admin Account Type | Dashboard Focus |
 | --- | --- |
 | Admin | System overview, pending queues, activity, support, content, market, notification, report, audit, and security signals according to module/action policy. |
-# 5. Responsive Layout
+## 4. Responsive Layout
 
-| Breakpoint | Layout |
-| --- | --- |
-| Mobile `< 768px` | ใช้ลำดับเดียวกับ prototype: Header -> KPI Summary 1 column -> Work Queue -> Recent Activity -> Dashboard Panels; Work Queue เป็น stacked action list |
-| Tablet `768px - 1199px` | Header -> KPI Summary 2 columns -> Work Queue -> Recent Activity -> Dashboard Panels; layout stack เป็น 1 column เมื่อพื้นที่ไม่พอ |
-| Desktop `>= 1200px` | Header -> KPI Summary 4 columns -> Work Queue และ Recent Activity แบบ side-by-side -> Dashboard Panels |
-| Wide Desktop `>= 1440px` | รองรับ expanded overview, side-by-side Work Queue / Recent Activity และ Dashboard Panels ด้านล่าง |
+Dashboard must follow the shared responsive rules in `00_GLOBAL_RULES_MODULE.md` and the confirmed behavior in `../Prototypes/bo-prototype.html`.
 
-ข้อกำหนด:
+| Breakpoint | Width | Dashboard Requirement |
+| --- | --- | --- |
+| Mobile | `<= 760px` | Uses the prototype order: Header -> KPI Summary 1 column -> Work Queue -> Recent Activity -> Dashboard Panels. Work Queue renders as a stacked action list. |
+| Tablet | `761px - 1365px` | Uses the prototype responsive shell. KPI Summary renders as 2 columns where space allows, then Work Queue, Recent Activity, and Dashboard Panels. Layout stacks to 1 column when space is limited. |
+| Desktop | `> 1365px` | Shows the confirmed dashboard overview with KPI cards, Work Queue and Recent Activity in the prototype desktop arrangement, then Dashboard Panels below. |
 
-- Dashboard ใช้ overview-first sequence ให้เหมือนกันทุก breakpoint เพื่อให้ prototype อ่านง่ายและไม่ต้อง reorder DOM ระหว่าง desktop/mobile
-- Work Queue ต้องอยู่ถัดจาก KPI Summary ทันที และรายการ priority สูงต้องอยู่บนสุดใน Work Queue
-- Dashboard Panels ด้านล่างใช้ 4 columns บน desktop เพื่อให้ 4 panels สมดุล, 2x2 บน tablet/จอแคบ และ 1 column บน mobile
-- Card/action ต้องไม่ overlap และต้อง tap/click ได้ชัดเจน
-- Dashboard ต้องใช้งานได้แม้ chart library load fail โดย fallback เป็นตัวเลข/table summary
+Requirements:
 
-# 6. Dashboard Header And Controls
+- Dashboard uses the prototype overview-first sequence across breakpoints so generated implementations do not reorder the experience page by page.
+- Work Queue stays immediately after KPI Summary and high-priority items stay at the top of Work Queue.
+- Dashboard Panels use the prototype card/panel visual style and responsive grid behavior.
+- Cards and actions must not overlap and must remain clearly tappable/clickable.
+- Dashboard must remain usable if chart libraries fail by falling back to numbers or table summaries.
+
+## 5. Dashboard Header And Controls
 
 | Control | Requirement |
 | --- | --- |
@@ -85,7 +77,7 @@ Dashboard is used by the single BO account type `Admin`. The dashboard must not 
 
 Dashboard must not add header controls unless a future prototype explicitly defines the workflow and placement.
 
-# 7. Metric Cards
+## 6. Metric Cards
 
 | Metric | Description | Drill-in | access visibility | Phase |
 | --- | --- | --- | --- | --- |
@@ -107,7 +99,7 @@ Dashboard user metric rules:
 - Dashboard baseline and prototype must not show guest/public analytics KPI, card, panel, chart, or drill-in.
 - Guest/public analytics belongs only in Reports & Analytics, because Guest is not an account status and has no User Management drill-in.
 
-# 8. Pending Queue Summary
+## 7. Pending Queue Summary
 
 Dashboard ต้องมี queue summary ที่ชี้งานต้องทำ ไม่ใช่แค่ metric
 
@@ -130,7 +122,7 @@ SLA baseline:
 - Support first response target: ภายใน 8 ชั่วโมง
 - Queue card ต้อง highlight เมื่อมี item ใกล้ SLA breach หรือ breached
 
-# 9. Recent Activity Feed
+## 8. Recent Activity Feed
 
 Activity feed แสดงเหตุการณ์ล่าสุดของระบบและ admin action
 
@@ -159,7 +151,7 @@ Fields:
 | Summary | ข้อความสั้น อธิบาย event |
 | Link | ไป detail หรือ audit record ตาม permission |
 
-# 10. Admin Dashboard Access Rules
+## 9. Admin Dashboard Access Rules
 
 Dashboard visibility is policy-based, not Admin access-based. The current BO baseline has one `Admin` account type and no View-as control.
 
@@ -169,7 +161,7 @@ Rules:
 - Hide or mask sensitive values when policy does not allow full detail.
 - Direct drill-in links must enforce access again at the destination module/API.
 - If no queue is available for a policy scope, show a useful empty state rather than a blank panel.
-# 11. Dashboard Data Freshness
+## 10. Dashboard Data Freshness
 
 | Data Type | Freshness Expectation |
 | --- | --- |
@@ -180,7 +172,7 @@ Rules:
 
 Dashboard ต้องแสดง `Last updated` ชัดเจน
 
-# 12. BO/FO Integration Impact
+## 11. BO/FO Integration Impact
 
 Dashboard ต้อง reflect integration map หลัก:
 
@@ -200,7 +192,7 @@ Dashboard ต้อง reflect integration map หลัก:
 | `INT-024` System Notification | Notification delivery status |
 | `INT-026` Sensitive Admin Action | Recent admin activity / audit signal |
 
-# 13. Error / Empty / Loading States
+## 12. Error / Empty / Loading States
 
 | State | Requirement |
 | --- | --- |
@@ -211,7 +203,7 @@ Dashboard ต้อง reflect integration map หลัก:
 | Unauthorized Section | ไม่แสดง section นั้น แทนการแสดง error |
 | Stale Data | แสดง last updated และ warning เมื่อ data เก่าเกิน threshold |
 
-# 14. Performance Requirements
+## 13. Performance Requirements
 
 - Dashboard initial load หลัง auth ควรไม่เกิน 3 วินาทีสำหรับข้อมูลหลัก
 - Section ที่หนัก เช่น trend/report summary สามารถ lazy load ได้
@@ -219,12 +211,22 @@ Dashboard ต้อง reflect integration map หลัก:
 - Query dashboard ต้องไม่ block งาน operational queue สำคัญ
 - Responsive rendering must preserve the prototype sequence: Header -> KPI Summary -> Work Queue -> Recent Activity -> Dashboard Panels.
 
-# 15. Acceptance Criteria
+## Module-Specific Overrides
+
+Dashboard has no override to the shared app shell, navigation, breakpoint, card visual style, or responsive behavior in `00_GLOBAL_RULES_MODULE.md` and `../Prototypes/bo-prototype.html`.
+
+Dashboard-specific application of the shared standard:
+
+- Dashboard is an overview screen, not a paged list screen, so the shared list toolbar and pagination pattern do not apply to the main Dashboard page.
+- Dashboard must preserve the confirmed section sequence: Header -> KPI Summary -> Work Queue -> Recent Activity -> Dashboard Panels.
+- Dashboard must not add Date Range, Refresh, Export, global search, notification popup, or admin access switcher controls unless a future approved prototype explicitly adds them.
+
+## 14. Acceptance Criteria
 
 | ID | Criteria |
 | --- | --- |
 | AC-BO-DASH-001 | Dashboard แสดง overview metric และ pending queue ตาม Admin Permission |
-| AC-BO-DASH-002 | Dashboard responsive ใช้งานได้ที่ 375px, 768px, 1280px และ 1440px |
+| AC-BO-DASH-002 | Dashboard responsive ใช้งานได้ที่ prototype QA widths 375px, 760px, 1024px, 1366px และ 1440px |
 | AC-BO-DASH-003 | Metric/queue card ที่คลิกได้ต้องพาไป module ที่เกี่ยวข้องพร้อม filter ที่เหมาะสม |
 | AC-BO-DASH-004 | Pending report queue ต้องรองรับ SLA 24 ชั่วโมง |
 | AC-BO-DASH-005 | Support ticket queue ต้องรองรับ first response target 8 ชั่วโมงเมื่อ Phase 2 เปิดใช้ |
@@ -235,8 +237,9 @@ Dashboard ต้อง reflect integration map หลัก:
 | AC-BO-DASH-010 | Dashboard ไม่แสดง sensitive data ให้ admin access ที่ไม่มีสิทธิ์ |
 | AC-BO-DASH-011 | Dashboard user metrics ต้องไม่ปน Guest public traffic กับ registered-user metrics |
 | AC-BO-DASH-012 | Dashboard ต้องไม่แสดง guest/public analytics; metric ชุดนี้อยู่ใน Reports & Analytics เท่านั้น |
+| AC-BO-DASH-013 | Dashboard ต้องทำตาม `00_GLOBAL_RULES_MODULE.md` และ `../Prototypes/bo-prototype.html` สำหรับ app shell, navigation, breakpoint, card/panel style, responsive sequence และ interaction behavior โดยไม่มี UI pattern แยกเอง |
 
-# 16. Related Modules
+## 15. Related Modules And References
 
 - `00_GLOBAL_RULES_MODULE.md`
 - `01_AUTHENTICATION_MODULE.md`
@@ -250,18 +253,22 @@ Dashboard ต้อง reflect integration map หลัก:
 - `12_HELP_SUPPORT_MODULE.md`
 - `14_NOTIFICATIONS_MODULE.md`
 - `15_REPORTS_ANALYTICS_MODULE.md`
+- `BO_MASTER_BASELINE.md`
+- `../ProjectAdmin/FO_BO_INTEGRATION_MAP.md`
+- `BO_PRD.md`
+- `BO_Spec.md`
 
-# 17. Prototype Alignment Notes
+## 16. Prototype Alignment Notes
 
 These notes capture confirmed UX decisions from the BO prototype review and must be kept in sync with `Prototypes/bo-prototype.html`.
 
-## 17.1 Admin Access Simplification
+### 16.1 Admin Access Simplification
 
 - Current prototype uses a single `Admin` admin access for the main Back Office flow.
 - The previous admin access selector / View as control is removed from the header to keep the screen clean.
 - policy-based visibility remains documented as a product capability, but the current prototype does not expose separate Admin Views.
 
-## 17.2 Dashboard KPI Cards
+### 16.2 Dashboard KPI Cards
 
 Current primary Dashboard KPI cards are:
 
@@ -308,13 +315,13 @@ UI copy rule:
   - `ติดตามกำหนดงาน`
 - The technical term `SLA` can remain in internal requirement notes, implementation comments, and backend/report field naming where needed.
 
-## 17.3 Notification Delivery Placement
+### 16.3 Notification Delivery Placement
 
 - `Notification Delivery` is not shown as a primary KPI card in the current prototype.
 - It is not duplicated as an `Admin Overview` row on Dashboard.
 - Notification health remains available via the Notifications module, Recent Activity when there is a meaningful event, and export/report contexts where relevant.
 
-## 17.3.1 Dashboard Status Panels
+### 16.3.1 Dashboard Status Panels
 
 Bottom Dashboard panels must remain operational and clickable:
 
@@ -331,13 +338,13 @@ Copy rules:
 - Use Thai descriptions for operational meaning and next action.
 - Avoid unexplained abbreviations and raw backend labels.
 
-## 17.4 Dashboard Header And Export Placement
+### 16.4 Dashboard Header And Export Placement
 
 - Current Dashboard prototype does not show Date Range, Refresh, or Export controls in the header.
 - The header shows only breadcrumb, page title, and `Last updated` to keep the operational view focused.
 - Dashboard export is not required in the current prototype. Exportable analytics and generated files should live in the Reports module or report/export job workflows when needed.
 
-## 17.5 Work Queue Copy And Display
+### 16.5 Work Queue Copy And Display
 
 Work Queue cards should be written for operational action, not as raw system labels.
 
@@ -384,7 +391,7 @@ Examples:
 | `3 near 8h first response` | `มี 3 เคสใกล้ครบกำหนดตอบครั้งแรก 8 ชม. / ควรตอบเคสเร่งด่วนก่อน` |
 | `2 blocked by pending offer` | `มี 2 คำขอที่ยังลบไม่ได้ เพราะมีข้อเสนอซื้อค้างอยู่` |
 
-## 17.6 Typography
+### 16.6 Typography
 
 - Current BO prototype uses bundled local fonts from `Prototypes/assets/fonts/google`.
 - Primary body/UI font: `IBM Plex Sans Thai Local`.
@@ -395,7 +402,7 @@ Examples:
 - Exported Excel-readable `.xls` files, when generated from Reports/export workflows, use IBM Plex Sans Thai family naming; final rendering can still depend on the spreadsheet app's font support.
 - Font source: Google Fonts packages for IBM Plex Sans Thai and Bebas Neue.
 
-## 17.7 Recent Activity Feed Copy And Behavior
+### 16.7 Recent Activity Feed Copy And Behavior
 
 Recent Activity Feed in the prototype is displayed as `Recent Activity` to match other English dashboard section titles.
 
@@ -433,7 +440,7 @@ Interaction rules:
 - Activity `action` text in mock data may remain as implementation metadata or future enhancement input, but it is not required to render in a Dashboard modal.
 - Do not show prototype/status badges such as `linked`, `ติดตามต่อ`, or random audit IDs in the activity row.
 
-## 17.8 Dashboard Card Visual Style
+### 16.8 Dashboard Card Visual Style
 
 Dashboard follows a control-center layout inspired by the referenced Prakan Go dashboard, while keeping Tuk Daeng colors and BO requirements.
 
