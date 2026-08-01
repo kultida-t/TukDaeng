@@ -1,18 +1,36 @@
 # 05 BO Content / Board Module
 
-**Version:** `BO-05-v1.0`
-**Date:** 2026-07-31
-**Status:** Current Spec
+**Version:** `BO-05-v1.0`  
+**Date:** 2026-07-31  
+**Status:** Current functional specification  
 **Platform:** Responsive Web Back Office
 
-## 1. วัตถุประสงค์
+## 1. Objective
 
 BO Content / Board Module คือเมนูสำหรับ Admin ใช้จัดการบทความบน FO Board ตั้งแต่สร้าง แก้ไข ดูรายละเอียด ดูตัวอย่าง เผยแพร่ ตั้งเวลา นำออกจากการเผยแพร่ จัดการหมวดหมู่ และตรวจรายงานบทความที่ผู้ใช้แจ้งเข้ามา
 
 FO Board เป็นพื้นที่อ่านบทความ ไม่ใช่ forum และไม่ใช่พื้นที่ให้ผู้ใช้สร้างบทความเอง ผู้ใช้ FO สามารถอ่าน ค้นหา กรองหมวด กด Like, Share และ Report article ได้ ส่วนการสร้างและจัดการบทความทั้งหมดทำใน BO เท่านั้น
 
-## 2. Menu Structure
+## 2. Scope
 
+### In Scope
+
+- Articles list, detail, create, edit, preview, publish, schedule, unpublish, and archive flows
+- Category list, detail, create, edit, reorder, activate, deactivate, and delete flows
+- Board main article placement rules
+- Reported Board Content queue, report detail, report actions, confirmations, and audit
+- Search, filter, sort, pagination, empty/loading/error states, and responsive behavior
+
+### Out Of Scope
+
+- FO article creation by general users
+- Forum/thread behavior for Board content
+- Comment moderation workflow
+- Bulk action
+- Export
+- AI moderation
+
+## 3. Menu Structure
 Content / Board Module อยู่ภายใต้เมนู `Content Management` และมี submenu ดังนี้:
 
 | Menu | Purpose |
@@ -21,7 +39,7 @@ Content / Board Module อยู่ภายใต้เมนู `Content Manag
 | `Categories` | จัดการหมวดหมู่บทความ |
 | `Reported Board` | ตรวจรายงานบทความที่ผู้ใช้แจ้งจาก FO |
 
-## 3. Admin Access And Permissions
+## 4. Access And Permission Rules
 
 | Access Area | Rule / เงื่อนไข |
 | --- | --- |
@@ -32,7 +50,7 @@ Content / Board Module อยู่ภายใต้เมนู `Content Manag
 | Direct URL/API | ต้อง enforce permission ที่ route, API และ service layer ไม่พึ่งการซ่อนปุ่มบน UI อย่างเดียว |
 | Audit | Action สำคัญต้องบันทึกประวัติพร้อม admin, target, action, timestamp, result และ reason/note เมื่อมี |
 
-## 4. Responsive Layout
+## 5. Responsive Layout
 
 | Width | Requirement / การแสดงผล |
 | --- | --- |
@@ -42,7 +60,7 @@ Content / Board Module อยู่ภายใต้เมนู `Content Manag
 
 ทุกหน้าต้องป้องกัน text, image preview, form controls, table/card content และ modal content ไม่ให้ overflow หรือซ้อนกันบนหน้าจอเล็ก
 
-## 5. Articles List
+## 6. Articles List
 
 ### Route And Header
 
@@ -97,7 +115,7 @@ Content / Board Module อยู่ภายใต้เมนู `Content Manag
 | Published | View detail, Preview as FO, Edit article, Archive article |
 | Archived | View detail, Preview as FO, Edit article, Restore article |
 
-## 6. Article Detail
+## 7. Article Detail
 
 Article detail เป็นหน้าหรือ panel สำหรับอ่านข้อมูลบทความแบบ read-only และดูประวัติการเปลี่ยนแปลง
 
@@ -133,7 +151,7 @@ Change History columns:
 - Change Detail
 - Result
 
-## 7. Article Editor
+## 8. Article Editor
 
 Article editor ใช้สำหรับ Add Article และ Edit Article โดยแบ่ง section ดังนี้:
 
@@ -212,7 +230,7 @@ Body image validation:
 
 เวลา publish/schedule ต้องใช้ timezone `Asia/Bangkok`
 
-## 8. Article Status Lifecycle
+## 9. Article Status Lifecycle
 
 | Status | BO Meaning | FO Result |
 | --- | --- | --- |
@@ -238,7 +256,7 @@ Editor behavior:
 - เมื่อเลือก Draft ให้ clear และ disable publish date/time
 - Published หรือ Archived article ที่เปิดแก้ไขต้องคง lifecycle status เดิมไว้ การเปลี่ยนสถานะให้ทำผ่าน status action confirmation flow
 
-## 9. Preview As FO
+## 10. Preview As FO
 
 Preview as FO เปิดได้จาก Articles list, Article detail และ Article editor
 
@@ -256,7 +274,7 @@ Preview modal ต้องแสดง:
 
 เมื่อเปิดจาก editor preview ต้องใช้ form values ปัจจุบันก่อน save เพื่อให้ Admin ตรวจบทความได้ทันที
 
-## 10. Categories
+## 11. Categories
 
 Category เป็น master data ที่จัดการจาก BO และใช้ควบคุมการจัดกลุ่มบทความใน FO Board
 
@@ -381,7 +399,7 @@ Rules:
 - รองรับ drag reorder และ keyboard focus บน reorder rows
 - Save แล้ว update display order, reset sort เป็น `Display order`, refresh list และแสดง success toast
 
-## 11. Board Main Article Placement Rules
+## 12. Board Main Article Placement Rules
 
 Board Main ใช้บทความที่ Published แล้วเป็นแหล่งข้อมูลหลัก พื้นที่ Main Hero, Trending Now และ Journal Board preview เลือกบทความอัตโนมัติจาก eligible article pool
 
@@ -412,7 +430,7 @@ Base ordering:
 | Category page hero | Eligible article pool filtered by selected active category | เลือก article แรกใน category นั้นตาม base ordering | Reserve article ที่เลือกแล้วจาก category page list หน้าเดียวกัน | ถ้า category ไม่มี eligible article ให้แสดง category empty state |
 | Category article list | Eligible article pool filtered by selected active category | ใช้ base ordering | ไม่แสดงซ้ำกับ category hero ในหน้าเดียวกัน | แสดง available items; empty state เมื่อไม่มีข้อมูล |
 
-## 12. Reported Board Content
+## 13. Reported Board Content
 
 FO `Report article` ส่ง report type `Board Content` และ target type `Article` เข้า BO ที่ `Content Management > Reported Board`
 
@@ -539,7 +557,7 @@ Pagination ของ `Reporter History` และ `Admin Action History` ต้�
 
 หลัง archive สำเร็จ FO ต้องไม่แสดง article นั้นใน Board/Search/Category และ direct link ต้องแสดง unavailable
 
-## 13. FO Display Rules
+## 14. FO Display Rules
 
 | BO Action | FO Result / ผลบน FO |
 | --- | --- |
@@ -555,7 +573,7 @@ Pagination ของ `Reporter History` และ `Admin Action History` ต้�
 | Close report | Report ถูกปิดใน BO โดย article ยังอยู่ตามสถานะเดิม |
 | Archive article from Reported Board | Article master เปลี่ยนเป็น Archived, article หายจาก FO Board/Search/Category, direct link แสดง unavailable และ report ถูกปิด |
 
-## 14. Error, Empty, Loading States
+## 15. Error, Empty And Loading States
 
 ต้องรองรับ states ต่อไปนี้:
 
@@ -585,7 +603,7 @@ Pagination ของ `Reporter History` และ `Admin Action History` ต้�
 - Preview failed
 - Missing article fallback ใน View Article modal
 
-## 15. Audit Requirements
+## 16. Audit Requirements
 
 ### Article Audit
 
@@ -618,7 +636,7 @@ Audit event ควรมีข้อมูล:
 - Reason/note เมื่อจำเป็น
 - Session/IP context เมื่อมีข้อมูล
 
-## 16. Acceptance Criteria
+## 17. Acceptance Criteria
 
 | ID | Criteria / เกณฑ์ยอมรับ |
 | --- | --- |

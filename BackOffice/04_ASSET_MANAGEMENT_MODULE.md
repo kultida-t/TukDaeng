@@ -5,7 +5,7 @@
 **Status:** Current functional specification  
 **Platform:** Responsive Web Back Office
 
-## 1. วัตถุประสงค์
+## 1. Objective
 
 Asset Management คือเมนูสำหรับ Admin ใช้ตรวจสอบรายการ asset, รายละเอียด asset, รายงาน asset และดำเนินการ moderation ที่มีผลต่อการมองเห็นของ asset ในระบบ
 
@@ -53,30 +53,7 @@ Asset Management คือเมนูสำหรับ Admin ใช้ตร�
 - Restore จากสถานะซ่อนถาวร
 - ลบข้อมูล asset จริงจาก Back Office
 
-## 3. Access And Permission Rules
-
-ระบบใช้ Admin access เดียว โดยตรวจสิทธิ์ตามเมนูและ action ที่ทำ ไม่แยกประเภทบัญชี Admin ในสเปกนี้
-
-| Area | Rule |
-| --- | --- |
-| Module access | Admin ที่มีสิทธิ์เข้าเมนูสามารถดู list, detail, search, filter, sort และ pagination ได้ |
-| Write action | Action ที่เปลี่ยน visibility หรือ report outcome ต้องตรวจ permission, แสดง confirmation, บังคับกรอก reason และบันทึก audit |
-| Sensitive data | แสดงเฉพาะรูปแบบ read-only/masked/summarized |
-| Direct URL/API | ต้องตรวจสิทธิ์ที่ route, API และ service layer เสมอ |
-
-## 4. Responsive Layout
-
-เมนู Asset Management ต้องใช้งานได้ครบทุกขนาดหน้าจอ
-
-| Width | Layout Requirement |
-| --- | --- |
-| Mobile-width browser | ตารางเปลี่ยนเป็น stacked cards, filter อยู่ใน drawer หรือ bottom sheet, action หลักยังเข้าถึงได้ |
-| Tablet | แสดง column สำคัญในตาราง และเปิดข้อมูลรองผ่าน detail view |
-| Desktop | แสดง full table, filter, pagination และ detail/action flow ได้ครบ |
-
-ห้ามมี horizontal overflow ที่ทำให้ action หลักใช้งานไม่ได้ ยกเว้นพื้นที่ตารางที่ตั้งใจให้ scroll ภายใน container
-
-## 5. Navigation
+## 3. Menu Structure
 
 เมนู Asset Management ต้องมี submenu ต่อไปนี้:
 
@@ -88,6 +65,29 @@ Asset Management คือเมนูสำหรับ Admin ใช้ตร�
 เมื่อเปิด report จาก `Reported Assets` ต้องเข้าสู่ `Asset Report Detail`
 
 ทุกหน้าต้องมี breadcrumb หรือ back navigation ที่พากลับไปยังหน้ารายการต้นทางได้ถูกต้อง
+
+## 4. Access And Permission Rules
+
+ระบบใช้ Admin access เดียว โดยตรวจสิทธิ์ตามเมนูและ action ที่ทำ ไม่แยกประเภทบัญชี Admin ในสเปกนี้
+
+| Area | Rule |
+| --- | --- |
+| Module access | Admin ที่มีสิทธิ์เข้าเมนูสามารถดู list, detail, search, filter, sort และ pagination ได้ |
+| Write action | Action ที่เปลี่ยน visibility หรือ report outcome ต้องตรวจ permission, แสดง confirmation, บังคับกรอก reason และบันทึก audit |
+| Sensitive data | แสดงเฉพาะรูปแบบ read-only/masked/summarized |
+| Direct URL/API | ต้องตรวจสิทธิ์ที่ route, API และ service layer เสมอ |
+
+## 5. Responsive Layout
+
+เมนู Asset Management ต้องใช้งานได้ครบทุกขนาดหน้าจอ
+
+| Width | Layout Requirement |
+| --- | --- |
+| Mobile-width browser | ตารางเปลี่ยนเป็น stacked cards, filter อยู่ใน drawer หรือ bottom sheet, action หลักยังเข้าถึงได้ |
+| Tablet | แสดง column สำคัญในตาราง และเปิดข้อมูลรองผ่าน detail view |
+| Desktop | แสดง full table, filter, pagination และ detail/action flow ได้ครบ |
+
+ห้ามมี horizontal overflow ที่ทำให้ action หลักใช้งานไม่ได้ ยกเว้นพื้นที่ตารางที่ตั้งใจให้ scroll ภายใน container
 
 ## 6. Asset List
 
@@ -223,7 +223,7 @@ Asset Detail ต้องแสดง history ที่เกี่ยวข้�
 - Report History
 - Admin Action History
 
-## 8. Status Model
+## 8. Asset Status Model
 
 ระบบต้องแยก owner-controlled status ออกจาก moderation state
 
@@ -270,7 +270,7 @@ Asset ที่มี state `ซ่อนถาวร` หรือ `ลบโ�
 
 Asset ที่เป็น `Consignment` ต้องไม่ถูกนับใน portfolio value หรือ asset value summary เพราะเป็นของฝากขาย ไม่ใช่ทรัพย์สินที่ owner ถือครองเอง
 
-## 10. กฎการตรวจสอบและจัดการ Asset
+## 10. Asset Action Rules
 
 ### ข้อกำหนดทั่วไป
 
