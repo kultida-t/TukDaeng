@@ -1437,6 +1437,9 @@
       background: #fff;
       cursor: default;
     }
+    .asset-list-table .asset-row {
+      grid-template-columns: minmax(98px, .44fr) minmax(220px, 1fr) minmax(116px, .5fr) minmax(150px, .62fr) minmax(146px, .62fr) minmax(222px, .9fr) minmax(56px, .24fr);
+    }
     .article-table .asset-row {
       grid-template-columns: minmax(112px, .7fr) minmax(360px, 2.35fr) minmax(170px, 1.05fr) minmax(150px, .9fr) minmax(190px, 1.1fr) minmax(72px, .4fr);
     }
@@ -7590,8 +7593,35 @@
       `;
     }
 
+    function getMockAssetCreatedAt(id) {
+      const createdAtById = {
+        "AST-8831": "18 Jul 2026 14:35",
+        "AST-8802": "18 Jul 2026 11:20",
+        "AST-8791": "17 Jul 2026 16:05",
+        "AST-8755": "16 Jul 2026 09:42",
+        "AST-8720": "15 Jul 2026 18:10",
+        "AST-8694": "14 Jul 2026 13:55",
+        "AST-8612": "12 Jul 2026 10:18",
+        "AST-8588": "11 Jul 2026 17:30",
+        "AST-8581": "11 Jul 2026 15:12",
+        "AST-8576": "10 Jul 2026 19:04",
+        "AST-8579": "10 Jul 2026 16:40",
+        "AST-8571": "09 Jul 2026 12:22",
+        "AST-8566": "09 Jul 2026 08:48",
+        "AST-8559": "08 Jul 2026 20:05",
+        "AST-8548": "08 Jul 2026 14:16",
+        "AST-8536": "07 Jul 2026 18:36",
+        "AST-8524": "07 Jul 2026 11:08",
+        "AST-8518": "06 Jul 2026 15:24",
+        "AST-8509": "06 Jul 2026 10:50",
+        "AST-8497": "05 Jul 2026 16:15"
+      };
+      return createdAtById[id] || "";
+    }
+
     function item(id, name, owner, type, priority, status, detail, tags, action) {
-      return { id, name, owner, type, priority, status, detail, tags, action };
+      const createdAt = getMockAssetCreatedAt(id);
+      return { id, name, owner, type, priority, status, detail, tags, action, ...(createdAt ? { createdAt } : {}) };
     }
 
     function getAssetBrand(asset) {
@@ -9170,6 +9200,9 @@
     }
 
     function getAssetSortRank(asset, sort) {
+      const createdAtRank = parseBangkokAuditTime(asset.createdAt);
+      if (sort === "latest" && createdAtRank) return createdAtRank;
+      if (sort === "oldest" && createdAtRank) return -createdAtRank;
       const assetIdRank = parseInt(String(asset.id || "").match(/\d+/)?.[0] || "0", 10);
       if (sort === "latest") return assetIdRank;
       if (sort === "oldest") return -assetIdRank;
@@ -16178,7 +16211,7 @@
       const table = document.querySelector("#table");
       table.innerHTML = `
         <div class="asset-table asset-list-table">
-          <div class="asset-row head"><div>Asset ID</div><div>Asset</div><div>Brand</div><div>Owner</div><div>Asset Status</div><div>Action</div></div>
+          <div class="asset-row head"><div>Asset ID</div><div>Asset</div><div>Brand</div><div>Owner</div><div>Created At</div><div>Asset Status</div><div>Action</div></div>
           ${pageRows.map(row => `
             <div class="asset-row" data-asset-card="${row.id}">
               <div data-label="Asset ID"><div class="main-text">${row.id}</div></div>
@@ -16191,10 +16224,12 @@
                 <div class="user-card-meta">
                   <div class="user-card-meta-item"><span>Asset</span><strong>${row.name}</strong></div>
                   <div class="user-card-meta-item"><span>Owner</span><strong>${row.owner}</strong></div>
+                  <div class="user-card-meta-item"><span>Created At</span><strong>${row.createdAt || "-"}</strong></div>
                 </div>
               </div>
               <div data-label="Brand"><div class="main-text">${getAssetBrand(row)}</div></div>
               <div data-label="Owner"><div class="main-text">${row.owner}</div></div>
+              <div data-label="Created At"><div class="main-text">${row.createdAt || "-"}</div></div>
               <div data-label="Asset Status">${renderAssetListStatusDisplay(row)}</div>
               <div class="user-row-actions">
                 ${renderAssetRowActionMenu(row)}
