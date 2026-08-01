@@ -5931,15 +5931,18 @@
         text-align: right;
       }
       .user-card-meta-item.report-reason-meta {
-        align-items: start;
+        display: grid;
+        grid-template-columns: max-content minmax(0, 56%);
+        align-items: baseline;
       }
       .user-card-meta-item.report-reason-meta strong {
-        max-width: 58%;
-        display: -webkit-box;
+        width: 100%;
+        max-width: 100%;
+        display: block;
         overflow: hidden;
-        -webkit-box-orient: vertical;
-        -webkit-line-clamp: 2;
-        white-space: normal;
+        text-align: right;
+        text-overflow: ellipsis;
+        white-space: nowrap;
       }
       .user-card-tag {
         min-height: 30px;
