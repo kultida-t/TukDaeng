@@ -120,7 +120,7 @@ KPI Summary ต้องแสดง 8 cards ตามลำดับนี้:
 | New Users | `128` | `วันนี้เพิ่มขึ้น 8.2% เทียบกับเมื่อวาน` | `Today 128`, `This Week 642`, `This Month 2,840` | เปิด User Management / User Accounts |
 | Active Users Today | `8.4K` | `ผู้ใช้งานรายวันเฉลี่ย 7 วันเพิ่มขึ้น 4.1% เทียบกับ 7 วันก่อน` | `Today 8,420`, `This Week 24,700`, `This Month 38,900` | เปิด User Management / User Accounts |
 | New Assets | `94` | `สร้างวันนี้ 94 รายการ เทียบกับเมื่อวาน 340 รายการ` | `Sale 64`, `Show 17`, `Hide 9`, `Sold 4` | เปิด Asset Management / Asset List |
-| Reported Items | `30` | `มี 9 รายงานใกล้ครบกำหนดตรวจ` | `Assets 22`, `Users 5`, `Comments 3` | Chip เปิด queue รายงานตามประเภท |
+| Reported Items | `33` | `มี 9 รายงานใกล้ครบกำหนดตรวจ` | `Assets 22`, `Users 5`, `Board 3`, `Comments 3` | Chip เปิด queue รายงานตามประเภท |
 | Offer Activity | `184` | `ข้อเสนอซื้อวันนี้เพิ่มขึ้น 12.6% เทียบกับเมื่อวาน` | `Made 184`, `Accepted 41`, `Rejected 19`, `Expired 12` | เปิด Offer / Offer Queue |
 | Articles | `12` | `มี 4 บทความรอเผยแพร่` | `Published 8`, `Scheduled 4` | เปิด Content Management / Articles |
 | Watch Alert | `3.2K` | `มีการจับคู่รายการขาย 146 ครั้งวันนี้` | `Active 3,218`, `Triggered 146` | เปิด Watch Alert / Alert Criteria |
@@ -158,12 +158,11 @@ Work Queue ต้องแสดงเป็น action list โดยแต่�
 | --- | --- | --- | --- | --- | --- |
 | 1 | รายงานสินทรัพย์ | `22` | High | `รายการเก่าสุดรอตรวจ 22 ชม. / เหตุผลหลัก: รูปซ้ำและข้อมูลประกาศซ้ำ / ควรตรวจวันนี้` | Asset Management / Reported Assets |
 | 2 | รายงานผู้ใช้ | `5` | High | `มีรายงานโปรไฟล์ซ้ำและพฤติกรรมขายซ้ำ / ควรตรวจบัญชีที่ถูก report หลายครั้งก่อน` | User Management / Reported Users |
-| 3 | งานช่วยเหลือที่เปิดอยู่ | `18` | High | `มี 3 เคสใกล้ครบกำหนดตอบครั้งแรก 8 ชม. / ควรตอบเคสเร่งด่วนก่อน` | Help & Support / Tickets |
+| 3 | รายงานบทความ | `3` | High | `มีรายงานบทความจาก FO Board รอตรวจ / ตรวจเหตุผลและสถานะบทความก่อนปิดรายงานหรือ archive` | Content Management / Reported Board |
 | 4 | คำขอลบบัญชี | `8` | Medium | `มี 2 คำขอที่ยังลบไม่ได้ เพราะมีข้อเสนอซื้อค้างอยู่` | Account Deletion / Requests |
-| 5 | สินทรัพย์ที่ต้องตรวจเพิ่ม | `14` | Medium | `รายการถูกทำเครื่องหมายจากระบบหรือ Admin / ตรวจราคา รูป และสถานะก่อนปล่อยกลับสู่ FO` | Asset Management / Status Review |
-| 6 | บทความรอเผยแพร่ | `4` | Normal | `บทความ Board ตั้งเวลาเผยแพร่แล้ว / ตรวจ preview และรูป cover ก่อนถึงเวลา` | Content Management / Articles |
-| 7 | ข้อมูลตลาดรอตรวจ | `6` | Normal | `brand, model และ price index จาก import มีข้อมูลซ้ำ / ควรแก้ก่อนใช้กับ Search และ Watch Alert` | Market Data / Import |
-| 8 | แจ้งเตือนส่งไม่สำเร็จ | `92` | Normal | `มี token หมดอายุและงานส่งซ้ำได้ / ตรวจ retry queue และ cleanup invalid token` | Notifications / Delivery Logs |
+| 5 | บทความรอเผยแพร่ | `4` | Normal | `บทความ Board ตั้งเวลาเผยแพร่แล้ว / ตรวจ preview และรูป cover ก่อนถึงเวลา` | Content Management / Articles |
+| 6 | ข้อมูลตลาดรอตรวจ | `6` | Normal | `brand, model และ price index จาก import มีข้อมูลซ้ำ / ควรแก้ก่อนใช้กับ Search และ Watch Alert` | Market Data / Import |
+| 7 | แจ้งเตือนส่งไม่สำเร็จ | `92` | Normal | `มี token หมดอายุและงานส่งซ้ำได้ / ตรวจ retry queue และ cleanup invalid token` | Notifications / Delivery Logs |
 
 กฎการจัดลำดับ:
 
@@ -233,7 +232,7 @@ Rows:
 | --- | --- | --- | --- |
 | Sale | `2,816` | `ยอดทั้งหมดที่แสดงใน Feed และ Search` | Asset Management / Asset List |
 | Show | `428` | `ยอดทั้งหมดที่แสดงใน collection และ profile` | Asset Management / Asset List |
-| Hide | `76` | `ยอดทั้งหมดที่ owner/Admin เห็นตามสิทธิ์` | Asset Management / Status Review |
+| Hide | `76` | `ยอดทั้งหมดที่ owner/Admin เห็นตามสิทธิ์` | Asset Management / Asset List พร้อม context Hide |
 | Sold | `214` | `ยอดทั้งหมดที่คงประวัติและปิดรับ offer` | Asset Management / Asset List |
 
 ### 10.2 Offer Status
@@ -289,6 +288,7 @@ Rows:
 | New Assets card | Asset Management / Asset List |
 | Reported Items / Assets chip | Asset Management / Reported Assets |
 | Reported Items / Users chip | User Management / Reported Users |
+| Reported Items / Board chip | Content Management / Reported Board |
 | Reported Items / Comments chip | Social Moderation / Reported Social |
 | Offer Activity card | Offer / Offer Queue |
 | Articles card | Content Management / Articles |
@@ -373,8 +373,8 @@ Typography:
 | AC-BO-DASH-001 | หลัง login สำเร็จ ระบบเปิด Dashboard เป็นหน้าแรก และเมนู Dashboard แสดง active state |
 | AC-BO-DASH-002 | Header แสดง breadcrumb, title และ `Last updated` โดยไม่มี Date Range, Refresh, Export, global search, notification popup หรือ admin switcher |
 | AC-BO-DASH-003 | Dashboard แสดง KPI Summary ครบ 8 cards ตามลำดับที่กำหนด |
-| AC-BO-DASH-004 | `Reported Items` แสดง chips แยก `Assets`, `Users`, `Comments` และแต่ละ chip ไป queue ที่ถูกต้อง |
-| AC-BO-DASH-005 | Work Queue แสดงครบ 8 rows ตามลำดับและ priority ที่กำหนด |
+| AC-BO-DASH-004 | `Reported Items` แสดง chips แยก `Assets`, `Users`, `Board`, `Comments` และแต่ละ chip ไป queue ที่ถูกต้อง |
+| AC-BO-DASH-005 | Work Queue แสดงครบ 7 rows ตามลำดับและ priority ที่กำหนด |
 | AC-BO-DASH-006 | Work Queue row ทุก row คลิกไป module/submodule ที่เกี่ยวข้องได้ |
 | AC-BO-DASH-007 | Recent Activity แสดง filter `ทั้งหมด`, `Report`, `Offer`, `Content`, `System` และ filter ทำงานจริง |
 | AC-BO-DASH-008 | Recent Activity row คลิกไป module/submodule ที่เกี่ยวข้องโดยตรง และไม่เปิด modal กลางบน Dashboard |

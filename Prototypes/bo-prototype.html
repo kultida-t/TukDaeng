@@ -6559,7 +6559,7 @@
         { id: "dashboard", label: "Dashboard", icon: "dashboard" },
         { id: "users", label: "User Management", icon: "users", subs: ["User Accounts", "Reported Users"] },
         { id: "assets", label: "Asset Management", icon: "asset", subs: ["Asset List", "Reported Assets"] },
-        { id: "content", label: "Content Management", icon: "content", subs: ["Articles", "Categories", "Reported Board"] },
+        { id: "content", label: "Content Management", icon: "content", subs: ["Articles", "Categories", "Reported Articles"] },
         { id: "market", label: "Market Data", icon: "market", subs: ["Brands", "Models", "Price Index", "Import"] },
         { id: "directory", label: "Directory", icon: "directory" },
       ]},
@@ -6820,9 +6820,10 @@
         { label: "New Users", value: "128", trend: "วันนี้เพิ่มขึ้น 8.2% เทียบกับเมื่อวาน", chips: ["Today 128", "This Week 642", "This Month 2,840"], module: "users", sub: "User Accounts", icon: "users" },
         { label: "Active Users Today", value: "8.4K", trend: "ผู้ใช้งานรายวันเฉลี่ย 7 วันเพิ่มขึ้น 4.1% เทียบกับ 7 วันก่อน", chips: ["Today 8,420", "This Week 24,700", "This Month 38,900"], module: "users", sub: "User Accounts", icon: "users" },
         { label: "New Assets", value: "94", trend: "สร้างวันนี้ 94 รายการ เทียบกับเมื่อวาน 340 รายการ", chips: ["Sale 64", "Show 17", "Hide 9", "Sold 4"], module: "assets", sub: "Asset List", icon: "asset" },
-        { label: "Reported Items", value: "30", trend: "มี 9 รายงานใกล้ครบกำหนดตรวจ", chips: [
+        { label: "Reported Items", value: "33", trend: "มี 9 รายงานใกล้ครบกำหนดตรวจ", chips: [
           { label: "Assets 22", module: "assets", sub: "Reported Assets" },
           { label: "Users 5", module: "users", sub: "Reported Users" },
+          { label: "Articles 3", module: "content", sub: "Reported Articles" },
           { label: "Comments 3", module: "social", sub: "Reported Social" }
         ], icon: "audit" },
         { label: "Offer Activity", value: "184", trend: "ข้อเสนอซื้อวันนี้เพิ่มขึ้น 12.6% เทียบกับเมื่อวาน", chips: ["Made 184", "Accepted 41", "Rejected 19", "Expired 12"], module: "offers", sub: "Offer Queue", icon: "offer" },
@@ -6833,9 +6834,8 @@
       queues: [
         { title: "รายงานสินทรัพย์", count: 22, priority: "high", detail: "รายการเก่าสุดรอตรวจ 22 ชม. / เหตุผลหลัก: รูปซ้ำและข้อมูลประกาศซ้ำ / ควรตรวจวันนี้", chips: ["ใกล้ครบกำหนด 6", "ผู้ใช้กระทบสูง"], module: "assets", sub: "Reported Assets" },
         { title: "รายงานผู้ใช้", count: 5, priority: "high", detail: "มีรายงานโปรไฟล์ซ้ำและพฤติกรรมขายซ้ำ / ควรตรวจบัญชีที่ถูก report หลายครั้งก่อน", chips: ["ใกล้ครบกำหนด 3", "ตรวจประวัติ login"], module: "users", sub: "Reported Users" },
-        { title: "งานช่วยเหลือที่เปิดอยู่", count: 18, priority: "high", detail: "มี 3 เคสใกล้ครบกำหนดตอบครั้งแรก 8 ชม. / ควรตอบเคสเร่งด่วนก่อน", chips: ["Open 18", "เร่งด่วน 3"], module: "support", sub: "Tickets" },
+        { title: "รายงานบทความ", count: 3, priority: "high", detail: "มีรายงานบทความจาก FO Board รอตรวจ / ตรวจเหตุผลและสถานะบทความก่อนปิดรายงานหรือ archive", chips: ["Articles 3", "รอตรวจ"], module: "content", sub: "Reported Articles" },
         { title: "คำขอลบบัญชี", count: 8, priority: "medium", detail: "มี 2 คำขอที่ยังลบไม่ได้ เพราะมีข้อเสนอซื้อค้างอยู่", chips: ["Blocked 2", "Grace period 4"], module: "deletions", sub: "Requests" },
-        { title: "สินทรัพย์ที่ต้องตรวจเพิ่ม", count: 14, priority: "medium", detail: "รายการถูกทำเครื่องหมายจากระบบหรือ Admin / ตรวจราคา รูป และสถานะก่อนปล่อยกลับสู่ FO", chips: ["ราคาเบี่ยง 5", "รูปซ้ำ 4"], module: "assets", sub: "Status Review" },
         { title: "บทความรอเผยแพร่", count: 4, priority: "normal", detail: "บทความ Board ตั้งเวลาเผยแพร่แล้ว / ตรวจ preview และรูป cover ก่อนถึงเวลา", chips: ["เผยแพร่วันนี้ 2", "ต้อง preview"], module: "content", sub: "Articles" },
         { title: "ข้อมูลตลาดรอตรวจ", count: 6, priority: "normal", detail: "brand, model และ price index จาก import มีข้อมูลซ้ำ / ควรแก้ก่อนใช้กับ Search และ Watch Alert", chips: ["Import error 6", "Price index"], module: "market", sub: "Import" },
         { title: "แจ้งเตือนส่งไม่สำเร็จ", count: 92, priority: "normal", detail: "มี token หมดอายุและงานส่งซ้ำได้ / ตรวจ retry queue และ cleanup invalid token", chips: ["Retryable 81", "Cleanup 11"], module: "notifications", sub: "Delivery Logs" }
@@ -6851,7 +6851,7 @@
         { title: "Asset Status", meta: "จาก Asset List ทั้งหมด", rows: [
           { label: "Sale", value: "2,816", detail: "ยอดทั้งหมดที่แสดงใน Feed และ Search", module: "assets", sub: "Asset List" },
           { label: "Show", value: "428", detail: "ยอดทั้งหมดที่แสดงใน collection และ profile", module: "assets", sub: "Asset List" },
-          { label: "Hide", value: "76", detail: "ยอดทั้งหมดที่ owner/Admin เห็นตามสิทธิ์", module: "assets", sub: "Status Review" },
+          { label: "Hide", value: "76", detail: "ยอดทั้งหมดที่ owner/Admin เห็นตามสิทธิ์", module: "assets", sub: "Asset List" },
           { label: "Sold", value: "214", detail: "ยอดทั้งหมดที่คงประวัติและปิดรับ offer", module: "assets", sub: "Asset List" }
         ]},
         { title: "Offer Status", meta: "จาก Offer Queue วันนี้", rows: [
@@ -11998,7 +11998,7 @@
       const isReportedAssets = id === "assets" && subLabel === "Reported Assets";
       const isArticleList = id === "content" && (subLabel || "Articles") === "Articles";
       const isCategoryList = id === "content" && subLabel === "Categories";
-      const isReportedBoard = id === "content" && subLabel === "Reported Board";
+      const isReportedBoard = id === "content" && subLabel === "Reported Articles";
       document.body.classList.toggle("dashboard-mode", id === "dashboard");
       document.body.classList.toggle("user-management-mode", id === "users" || isReportedAssets || isReportedBoard);
       document.body.classList.toggle("asset-list-mode", isAssetList || isArticleList || isCategoryList || isReportedBoard);
@@ -12157,10 +12157,10 @@
       }
       if (isReportedBoard) {
         activeRow = getBoardReportRows()[0] || null;
-        document.querySelector("#crumb").textContent = `${data.crumb} / Reported Board`;
-        document.querySelector("#page-title").textContent = "Reported Board";
+        document.querySelector("#crumb").textContent = `${data.crumb} / Reported Articles`;
+        document.querySelector("#page-title").textContent = "Reported Articles";
         document.querySelector("#page-meta").textContent = "";
-        document.querySelector("#panel-title").textContent = "Reported Board List";
+        document.querySelector("#panel-title").textContent = "Reported Article List";
         document.querySelector("#panel-subtitle").textContent = "";
         document.querySelector("#primary-action").textContent = "เปิดรายงาน";
         document.querySelector("#user-panel-filter-actions").innerHTML = `
@@ -12287,7 +12287,7 @@
           role: "Content Publisher",
           scope: "Content Management",
           content: "Publish / Schedule / Archive",
-          moderation: "Reported Board",
+          moderation: "Reported Articles",
           sensitive: "No user PII",
           status: "Active",
           detail: "อนุมัติ publish, schedule, archive และจัดการ reported Board content พร้อม audit reason"
@@ -12567,7 +12567,7 @@
         renderCategoryListRows();
         return;
       }
-      if (activeModule === "content" && activeSub === "Reported Board") {
+      if (activeModule === "content" && activeSub === "Reported Articles") {
         renderReportedBoardRows();
         return;
       }
@@ -12756,7 +12756,7 @@
 
     const boardReportRows = [
       {
-        id: "BRD-R02",
+        id: "RPC-043",
         articleId: "ART-043",
         articleTitle: "How to Check Provenance",
         category: "Watch 101",
@@ -12778,7 +12778,7 @@
         ]
       },
       {
-        id: "BRD-R01",
+        id: "RPC-039",
         articleId: "ART-039",
         articleTitle: "Collector Interview: Bangkok Vintage",
         category: "Journal Board",
@@ -15604,8 +15604,8 @@
     }
 
     const boardReportReporterNames = {
-      "BRD-R02": ["Daily Board Reader", "Saran Collector"],
-      "BRD-R01": ["Bangkok Vintage Fan", "Nicha S.", "Ploy R."]
+      "RPC-043": ["Daily Board Reader", "Saran Collector"],
+      "RPC-039": ["Bangkok Vintage Fan", "Nicha S.", "Ploy R."]
     };
 
     function renderBoardReporterHistoryTable(report) {
@@ -15723,18 +15723,18 @@
 
     function renderReportedBoardDetail(report) {
       if (!report) {
-        renderModule("content", "Reported Board", "Reported Board");
+        renderModule("content", "Reported Articles", "Reported Articles");
         return;
       }
       document.body.classList.add("user-management-mode", "user-detail-mode");
       document.body.classList.remove("user-list-mode", "asset-list-mode", "asset-detail-mode", "article-list-mode", "category-list-mode", "reported-board-mode");
       activeModule = "content";
-      activeSub = "Reported Board";
+      activeSub = "Reported Articles";
       activeRow = report;
       document.querySelector("#crumb").textContent = `การดำเนินงาน / Content Management / Report Detail / ${report.id}`;
       document.querySelector("#page-title").textContent = "Report Detail";
       document.querySelector("#page-meta").textContent = "";
-      setPageActions(renderPageBackButton("data-back-reported-board", "กลับไป Reported Board", "report-back-btn"));
+      setPageActions(renderPageBackButton("data-back-reported-board", "กลับไป Reported Articles", "report-back-btn"));
       document.querySelector("#panel-title").textContent = report.articleTitle;
       document.querySelector("#panel-subtitle").textContent = `${report.id} · ${report.articleId} · reporter identity masked`;
       document.querySelector("#user-panel-filter-actions").innerHTML = "";
@@ -15870,7 +15870,7 @@
                   <textarea id="board-report-action-note" placeholder="ระบุหมายเหตุสำหรับ audit log"></textarea>
                 </label>
                 <div class="module-note user-action-impact user-action-impact-card user-action-impact-warning">
-                  <p><strong>ผลกระทบ:</strong> ${config.detail} และบันทึก audit log ของ Reported Board${action === "archive-article" ? " พร้อมอัปเดตสถานะบทความหลักเป็น Archived เพื่อไม่ให้แสดงบน FO" : ""}</p>
+                  <p><strong>ผลกระทบ:</strong> ${config.detail} และบันทึก audit log ของ Reported Articles${action === "archive-article" ? " พร้อมอัปเดตสถานะบทความหลักเป็น Archived เพื่อไม่ให้แสดงบน FO" : ""}</p>
                 </div>
                 <div class="user-detail-actions">
                   <button class="user-detail-action-btn warning user-action-confirm" type="button" data-board-report-action-confirm="${action}" data-board-report-id="${report.id}">${config.confirm}</button>
@@ -15914,7 +15914,7 @@
           });
           article.status = "Archived";
           article.updatedAt = now;
-          article.detail = `Archived from Reported Board ${report.id}. Removed from FO Board/Search/Category.`;
+          article.detail = `Archived from Reported Articles ${report.id}. Removed from FO Board/Search/Category.`;
         }
         report.contentStatus = "Archived";
         report.reportStatus = "Closed";
@@ -15926,12 +15926,12 @@
         note
       });
       closeUserActionModal();
-      if (document.body.classList.contains("user-detail-mode") && activeModule === "content" && activeSub === "Reported Board") {
+      if (document.body.classList.contains("user-detail-mode") && activeModule === "content" && activeSub === "Reported Articles") {
         renderReportedBoardDetail(report);
       } else {
         renderReportedBoardRows();
       }
-      showSuccessToast(`${report.id}: อัปเดต Reported Board แล้ว`);
+      showSuccessToast(`${report.id}: อัปเดต Reported Articles แล้ว`);
     }
 
     function renderBoardReportContentModal(report) {
@@ -16223,7 +16223,7 @@
           renderCategoryListRows();
           return;
         }
-        if (["board-report-status-filter", "board-report-priority-filter", "board-report-sort"].includes(hiddenInput.id) && activeModule === "content" && activeSub === "Reported Board") {
+        if (["board-report-status-filter", "board-report-priority-filter", "board-report-sort"].includes(hiddenInput.id) && activeModule === "content" && activeSub === "Reported Articles") {
           boardReportListPage = 1;
           renderReportedBoardRows();
           return;
@@ -16781,7 +16781,7 @@
           },
           session_expired: {
             title: "เซสชันหมดอายุ",
-            detail: "กรุณาเข้าสู่ระบบใหม่ก่อนยืนยัน action ของ Reported Board"
+            detail: "กรุณาเข้าสู่ระบบใหม่ก่อนยืนยัน action ของ Reported Articles"
           }
         };
         const errorSample = boardReportErrorSamples[scenario] || null;
@@ -16883,7 +16883,7 @@
       const boardReportReset = event.target.closest("[data-board-report-reset]");
       if (boardReportReset) {
         boardReportListPage = 1;
-        renderModule("content", "Reported Board", "Reported Board");
+        renderModule("content", "Reported Articles", "Reported Articles");
         return;
       }
       const articleFilterToggle = event.target.closest("[data-article-filter-toggle]");
@@ -16970,7 +16970,7 @@
         else if (target === "next") reporterHistoryPage += 1;
         else reporterHistoryPage = Number(target) || 1;
         if (activeModule === "assets" && activeSub === "Reported Assets") renderReportedAssetDetail(activeRow);
-        else if (activeModule === "content" && activeSub === "Reported Board") renderReportedBoardDetail(activeRow);
+        else if (activeModule === "content" && activeSub === "Reported Articles") renderReportedBoardDetail(activeRow);
         else renderReportedUserDetail(activeRow);
         return;
       }
@@ -16981,7 +16981,7 @@
         else if (target === "next") reportAuditHistoryPage += 1;
         else reportAuditHistoryPage = Number(target) || 1;
         if (activeModule === "assets" && activeSub === "Reported Assets") renderReportedAssetDetail(activeRow);
-        else if (activeModule === "content" && activeSub === "Reported Board") renderReportedBoardDetail(activeRow);
+        else if (activeModule === "content" && activeSub === "Reported Articles") renderReportedBoardDetail(activeRow);
         else renderReportedUserDetail(activeRow);
         return;
       }
@@ -16997,7 +16997,7 @@
       }
       const backReportedBoard = event.target.closest("[data-back-reported-board]");
       if (backReportedBoard) {
-        renderModule("content", "Reported Board", "Reported Board");
+        renderModule("content", "Reported Articles", "Reported Articles");
         return;
       }
       const backUserList = event.target.closest("[data-back-user-list]");
