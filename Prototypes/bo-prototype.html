@@ -1769,7 +1769,8 @@
       align-items: start;
     }
     .modal.user-action-modal.board-report-phone-preview-modal {
-      width: min(528px, calc(100vw - 28px));
+      width: 528px;
+      max-width: none;
       max-height: calc(100vh - 28px);
       overflow: visible;
       border: 0;
@@ -1834,6 +1835,20 @@
       overflow: hidden;
       clip: rect(0 0 0 0);
       white-space: nowrap;
+    }
+    @media (max-width: 560px) {
+      .modal.user-action-modal.board-report-phone-preview-modal {
+        transform: translateX(-30px);
+      }
+      .board-report-phone-preview-close {
+        top: 12px;
+        right: 24px;
+        border-color: transparent;
+        background: transparent;
+        color: #fff;
+        box-shadow: none;
+        backdrop-filter: none;
+      }
     }
     .modal.user-action-modal.article-editor-confirm-modal {
       width: min(420px, calc(100vw - 36px));
