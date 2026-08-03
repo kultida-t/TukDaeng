@@ -1509,7 +1509,8 @@
     body.asset-list-mode .asset-list-table .asset-row:not(.head),
     body.article-list-mode .article-table .asset-row:not(.head),
     body.category-list-mode .category-table .asset-row:not(.head),
-    body.reported-board-mode .reported-board-table .asset-row:not(.head) {
+    body.reported-board-mode .reported-board-table .asset-row:not(.head),
+    body.market-list-mode .market-table .asset-row:not(.head) {
       min-height: 66px;
       padding-top: 10px;
       padding-bottom: 10px;
@@ -1521,7 +1522,9 @@
     body.category-list-mode .category-table .asset-row:not(.head) .main-text,
     body.category-list-mode .category-table .asset-row:not(.head) .muted,
     body.reported-board-mode .reported-board-table .asset-row:not(.head) .main-text,
-    body.reported-board-mode .reported-board-table .asset-row:not(.head) .muted {
+    body.reported-board-mode .reported-board-table .asset-row:not(.head) .muted,
+    body.market-list-mode .market-table .asset-row:not(.head) .main-text,
+    body.market-list-mode .market-table .asset-row:not(.head) .muted {
       color: #516683;
       font-size: 12px;
       font-weight: 400;
@@ -1530,12 +1533,14 @@
     }
     body.article-list-mode #primary-action,
     body.category-list-mode #primary-action,
-    body.reported-board-mode #primary-action {
+    body.reported-board-mode #primary-action,
+    body.market-list-mode #primary-action {
       display: none;
     }
     body.article-list-mode .panel-head,
     body.category-list-mode .panel-head,
-    body.reported-board-mode .panel-head {
+    body.reported-board-mode .panel-head,
+    body.market-list-mode .panel-head {
       min-height: 58px;
       padding: 14px 16px;
       border-top-left-radius: var(--radius);
@@ -1544,7 +1549,8 @@
     }
     body.article-list-mode .panel-head h2,
     body.category-list-mode .panel-head h2,
-    body.reported-board-mode .panel-head h2 {
+    body.reported-board-mode .panel-head h2,
+    body.market-list-mode .panel-head h2 {
       color: #071b36;
       font-size: 26px;
       letter-spacing: 0;
@@ -1553,7 +1559,8 @@
     }
     body.article-list-mode .filters,
     body.category-list-mode .filters,
-    body.reported-board-mode .filters {
+    body.reported-board-mode .filters,
+    body.market-list-mode .filters {
       display: flex;
       gap: 8px;
       flex-wrap: wrap;
@@ -1570,9 +1577,94 @@
     body.reported-board-mode .user-filter-bar {
       grid-template-columns: minmax(240px, 1.35fr) repeat(3, minmax(126px, .68fr)) max-content;
     }
+    body.market-list-mode .layout {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    body.market-list-mode .detail,
+    body.market-list-mode .summary-grid,
+    body.market-list-mode .cards {
+      display: none;
+    }
+    body.market-list-mode .layout > .panel {
+      border-color: #d7e2f0;
+      box-shadow: none;
+      overflow: hidden;
+    }
+    body.market-list-mode .user-panel-filter-actions {
+      display: flex;
+    }
+    body.market-list-mode .user-filter-bar {
+      grid-template-columns: minmax(240px, 1.35fr) minmax(126px, .68fr) minmax(126px, .68fr) max-content;
+    }
+    body.market-list-mode .market-catalog-filter-bar {
+      grid-template-columns: minmax(240px, 1fr) max-content;
+    }
+    body.market-list-mode .market-table .asset-row {
+      grid-template-columns: minmax(220px, 1fr) minmax(116px, .45fr) minmax(126px, .5fr) minmax(150px, .6fr) 74px;
+    }
+    body.market-list-mode .market-table.market-record-table .asset-row {
+      grid-template-columns: minmax(220px, 1.35fr) minmax(150px, .9fr) minmax(120px, .65fr) minmax(116px, .65fr) 74px;
+    }
+    body.market-list-mode .market-brand-detail {
+      display: grid;
+      gap: 16px;
+      padding: 18px;
+      background: #f8fbff;
+    }
+    body.market-list-mode .market-detail-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 10px;
+    }
+    body.market-list-mode .market-detail-section {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fff;
+      padding: 16px;
+    }
+    body.market-list-mode .market-detail-section h3 {
+      margin: 0 0 12px;
+      color: #071b36;
+      font-size: 18px;
+      text-transform: uppercase;
+    }
+    body.market-list-mode .market-model-stack {
+      display: grid;
+      gap: 14px;
+    }
+    body.market-list-mode .market-model-block {
+      border: 1px solid #d7e2f0;
+      border-radius: 8px;
+      background: #fff;
+      overflow: hidden;
+    }
+    body.market-list-mode .market-model-head {
+      display: grid;
+      grid-template-columns: minmax(220px, 1fr) repeat(4, minmax(112px, .55fr));
+      gap: 12px;
+      align-items: center;
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--line);
+      background: #f8fbff;
+    }
+    body.market-list-mode .market-model-head span {
+      display: block;
+      color: #5b6f8b;
+      font-size: 11px;
+      font-weight: 700;
+    }
+    body.market-list-mode .market-model-head strong {
+      color: #061426;
+      font-size: 13px;
+      font-weight: 700;
+    }
+    body.market-list-mode .market-reference-table .asset-row {
+      grid-template-columns: minmax(130px, .8fr) minmax(110px, .65fr) minmax(120px, .65fr) minmax(140px, .8fr) minmax(150px, .85fr) minmax(110px, .55fr) minmax(116px, .55fr);
+    }
     body.article-list-mode .footer-range,
     body.category-list-mode .footer-range,
-    body.reported-board-mode .footer-range {
+    body.reported-board-mode .footer-range,
+    body.market-list-mode .footer-range {
       border-bottom-left-radius: var(--radius);
       border-bottom-right-radius: var(--radius);
       background: #fff;
@@ -6701,7 +6793,7 @@
         { id: "users", label: "User Management", icon: "users", subs: ["User Accounts", "Reported Users"] },
         { id: "assets", label: "Asset Management", icon: "asset", subs: ["Asset List", "Reported Assets"] },
         { id: "content", label: "Content Management", icon: "content", subs: ["Articles", "Categories", "Reported Articles"] },
-        { id: "market", label: "Market Data", icon: "market", subs: ["Brands", "Models", "Price Index", "Import"] },
+        { id: "market", label: "Market Data", icon: "market", subs: ["Catalog", "Mapping Queue", "Price Index", "Sync Logs"] },
         { id: "directory", label: "Directory", icon: "directory" },
       ]},
       { section: "งานตรวจสอบและบริการ", items: [
@@ -7694,6 +7786,228 @@
       "สมชาย รักงาน"
     ];
     const reportHistoryPageSize = 10;
+    let activeMarketBrandId = "rolex";
+
+    moduleData.market = mod("Market Data", "การดำเนินงาน / Market Data", "Market Catalog", "ดูแลข้อมูล brand, model, reference, detail และ price indicator จาก thewatchapi ก่อน sync ไปยัง Search, Asset และ Watch Alert", "Sync API", [["Brands", "9", "sample catalog"], ["References", "24", "sample refs"], ["Mapping Queue", "23", "ต้อง review"], ["API Sync", "08:30", "ล่าสุดวันนี้"]], [
+      item("BRD-ROLEX", "Rolex", "Brand Catalog", "thewatchapi", "ปกติ", "Active", "Brand-first catalog with model, reference, detail and price coverage", ["Models 1,240", "Refs 4,820"], "Review brand catalog and drill down before changing visibility"),
+      item("MAP-018", "Unmapped reference 126710BLRO", "Mapping Queue", "Reference", "กลาง", "Needs Review", "Asset user input matches Rolex GMT-Master II but reference mapping is not confirmed", ["Asset AST-8579"], "Confirm mapping before using in Search and Watch Alert"),
+      item("SYNC-20260803", "thewatchapi daily sync", "API Sync", "Batch", "ปกติ", "Completed", "Brand, model, reference, detail and price endpoints completed with warnings", ["Rate limit 72%"], "Review warnings and retry failed records")
+    ]);
+
+    const marketCatalogData = {
+      brands: [
+        {
+          id: "rolex",
+          name: "Rolex",
+          status: "Active",
+          models: 1240,
+          references: 4820,
+          mapped: 4768,
+          priceCoverage: "94%",
+          lastSync: "03 Aug 2026 08:30",
+          health: "Needs Review",
+          source: "brand/list, model/list, reference/list, model/search, price/history",
+          modelsSample: [
+            { name: "Rolex Daytona", refs: "116520, 116500LN", movement: "Automatic", case: "Steel / 40 mm", updated: "03 Aug 2026", price: "USD 24,653", references: [
+              { number: "116520", year: "2000-2016", material: "Stainless steel", caseSize: "40 mm", movement: "Automatic chronograph", description: "Steel bezel Daytona with in-house calibre 4130.", price: "USD 24,653", status: "Mapped" },
+              { number: "116500LN", year: "2016-2023", material: "Stainless steel / ceramic bezel", caseSize: "40 mm", movement: "Automatic chronograph", description: "Ceramic bezel Daytona reference used by Search and Watch Alert.", price: "USD 31,900", status: "Mapped" }
+            ] },
+            { name: "Rolex Submariner", refs: "16610, 124060", movement: "Automatic", case: "Steel / 40 mm", updated: "03 Aug 2026", price: "USD 10,720", references: [
+              { number: "16610", year: "1989-2010", material: "Stainless steel", caseSize: "40 mm", movement: "Automatic", description: "Date Submariner reference commonly matched to Thai listings.", price: "USD 10,720", status: "Mapped" },
+              { number: "124060", year: "2020-present", material: "Stainless steel", caseSize: "41 mm", movement: "Automatic", description: "No-date Submariner with current-generation case and movement.", price: "USD 12,280", status: "Mapped" }
+            ] },
+            { name: "Rolex GMT-Master II", refs: "126710BLRO, 116710LN", movement: "Automatic", case: "Steel / 40 mm", updated: "02 Aug 2026", price: "USD 18,450", references: [
+              { number: "126710BLRO", year: "2018-present", material: "Stainless steel / ceramic bezel", caseSize: "40 mm", movement: "Automatic GMT", description: "Pepsi bezel reference pending confirmation for AST-8579.", price: "USD 18,450", status: "Needs Review" },
+              { number: "116710LN", year: "2007-2019", material: "Stainless steel / ceramic bezel", caseSize: "40 mm", movement: "Automatic GMT", description: "Black bezel GMT-Master II reference.", price: "USD 12,650", status: "Mapped" }
+            ] }
+          ],
+          quality: ["52 references not mapped to TukDaeng assets", "3 price outliers above 25%", "1 model name duplicate needs merge"],
+          impact: "Autocomplete, Asset form, Search facets and Watch Alert triggers use this brand catalog."
+        },
+        {
+          id: "omega",
+          name: "Omega",
+          status: "Active",
+          models: 980,
+          references: 3180,
+          mapped: 3112,
+          priceCoverage: "89%",
+          lastSync: "03 Aug 2026 08:26",
+          health: "Healthy",
+          source: "brand/list, model/list, reference/list, model/search, price/history",
+          modelsSample: [
+            { name: "Omega Speedmaster", refs: "3570.50, 3510.50", movement: "Manual wind / Automatic", case: "Steel / 39-42 mm", updated: "03 Aug 2026", price: "USD 5,140", references: [
+              { number: "3570.50", year: "1996-2014", material: "Stainless steel", caseSize: "42 mm", movement: "Manual wind chronograph", description: "Moonwatch reference with broad listing coverage.", price: "USD 5,140", status: "Mapped" },
+              { number: "3510.50", year: "1988-2009", material: "Stainless steel", caseSize: "39 mm", movement: "Automatic chronograph", description: "Speedmaster Reduced duplicate import needs merge.", price: "USD 2,860", status: "Reviewing" }
+            ] },
+            { name: "Omega Seamaster", refs: "2531.80, 210.30", movement: "Automatic", case: "Steel / 41-42 mm", updated: "02 Aug 2026", price: "USD 4,220", references: [
+              { number: "2531.80", year: "1993-2006", material: "Stainless steel", caseSize: "41 mm", movement: "Automatic", description: "Blue wave dial Seamaster Professional reference.", price: "USD 3,120", status: "Mapped" },
+              { number: "210.30", year: "2018-present", material: "Stainless steel", caseSize: "42 mm", movement: "Automatic", description: "Modern Seamaster Diver reference family.", price: "USD 4,220", status: "Mapped" }
+            ] }
+          ],
+          quality: ["Speedmaster Reduced has duplicate imported rows", "Price history complete for top references"],
+          impact: "Search and board market notes use Omega model/reference mapping."
+        },
+        {
+          id: "seiko",
+          name: "Seiko",
+          status: "Active",
+          models: 860,
+          references: 2400,
+          mapped: 2310,
+          priceCoverage: "76%",
+          lastSync: "03 Aug 2026 08:18",
+          health: "Needs Mapping",
+          source: "brand/list, model/list, reference/list, model/search",
+          modelsSample: [
+            { name: "Seiko 6139", refs: "6139-6002", movement: "Automatic chronograph", case: "Steel / 41 mm", updated: "02 Aug 2026", price: "USD 1,980", references: [
+              { number: "6139-6002", year: "1970s", material: "Stainless steel", caseSize: "41 mm", movement: "Automatic chronograph", description: "Vintage chronograph reference with accepted alias mapping.", price: "USD 1,980", status: "Open" }
+            ] },
+            { name: "Seiko Presage", refs: "SARX, SRPB", movement: "Automatic", case: "Steel / mixed", updated: "01 Aug 2026", price: "USD 620", references: [
+              { number: "SARX", year: "Mixed", material: "Stainless steel", caseSize: "Mixed", movement: "Automatic", description: "Presage reference family from API model search.", price: "USD 720", status: "Needs Mapping" },
+              { number: "SRPB", year: "Mixed", material: "Stainless steel", caseSize: "Mixed", movement: "Automatic", description: "Common FO input alias still needs mapping rule.", price: "USD 620", status: "Needs Mapping" }
+            ] }
+          ],
+          quality: ["Vintage references need manual merge", "Price coverage lower for non-US listings"],
+          impact: "Asset detail suggestions use reference and production detail when available."
+        },
+        {
+          id: "patek",
+          name: "Patek Philippe",
+          status: "Active",
+          models: 520,
+          references: 1680,
+          mapped: 1604,
+          priceCoverage: "92%",
+          lastSync: "03 Aug 2026 08:12",
+          health: "Healthy",
+          source: "brand/list, model/list, reference/list, model/search, price/history",
+          modelsSample: [
+            { name: "Patek Philippe Nautilus", refs: "5711/1A, 5712/1A", movement: "Automatic", case: "Steel / 40 mm", updated: "03 Aug 2026", price: "USD 98,500", references: [
+              { number: "5711/1A", year: "2006-2021", material: "Stainless steel", caseSize: "40 mm", movement: "Automatic", description: "Iconic steel Nautilus reference with high-value listing impact.", price: "USD 98,500", status: "Mapped" },
+              { number: "5712/1A", year: "2006-present", material: "Stainless steel", caseSize: "40 mm", movement: "Automatic micro-rotor", description: "Moonphase Nautilus reference used for high-value matching.", price: "USD 112,000", status: "Mapped" }
+            ] },
+            { name: "Patek Philippe Calatrava", refs: "5196J, 5227G", movement: "Manual wind / Automatic", case: "Gold / 37-39 mm", updated: "02 Aug 2026", price: "USD 21,400", references: [
+              { number: "5196J", year: "2004-2022", material: "Yellow gold", caseSize: "37 mm", movement: "Manual wind", description: "Classic Calatrava reference linked to dress-watch search facets.", price: "USD 21,400", status: "Mapped" },
+              { number: "5227G", year: "2013-present", material: "White gold", caseSize: "39 mm", movement: "Automatic", description: "Officer caseback Calatrava reference.", price: "USD 32,800", status: "Mapped" }
+            ] }
+          ],
+          quality: ["High-value references require careful duplicate review", "Price history available for common references"],
+          impact: "High-value asset review and price comparison use this brand catalog."
+        },
+        {
+          id: "audemars",
+          name: "Audemars Piguet",
+          status: "Active",
+          models: 410,
+          references: 1320,
+          mapped: 1255,
+          priceCoverage: "88%",
+          lastSync: "03 Aug 2026 08:10",
+          health: "Needs Review",
+          source: "brand/list, model/list, reference/list, model/search, price/history",
+          modelsSample: [
+            { name: "Audemars Piguet Royal Oak", refs: "15500ST, 15202ST", movement: "Automatic", case: "Steel / 39-41 mm", updated: "03 Aug 2026", price: "USD 46,800", references: [
+              { number: "15500ST", year: "2019-2022", material: "Stainless steel", caseSize: "41 mm", movement: "Automatic", description: "Royal Oak reference often used in provenance review.", price: "USD 46,800", status: "Mapped" },
+              { number: "15202ST", year: "2000-2021", material: "Stainless steel", caseSize: "39 mm", movement: "Automatic", description: "Jumbo Royal Oak reference with limited production context.", price: "USD 79,000", status: "Needs Review" }
+            ] },
+            { name: "Audemars Piguet Royal Oak Offshore", refs: "26470ST, 15710ST", movement: "Automatic chronograph", case: "Steel / 42 mm", updated: "02 Aug 2026", price: "USD 26,500", references: [
+              { number: "26470ST", year: "2014-2020", material: "Stainless steel", caseSize: "42 mm", movement: "Automatic chronograph", description: "Offshore chronograph reference.", price: "USD 26,500", status: "Mapped" },
+              { number: "15710ST", year: "2010s", material: "Stainless steel", caseSize: "42 mm", movement: "Automatic", description: "Diver reference from Royal Oak Offshore family.", price: "USD 22,700", status: "Mapped" }
+            ] }
+          ],
+          quality: ["Royal Oak naming variants need merge review", "Some Offshore references share partial aliases"],
+          impact: "Asset moderation uses reference mapping for high-value AP listings."
+        },
+        {
+          id: "cartier",
+          name: "Cartier",
+          status: "Active",
+          models: 640,
+          references: 2180,
+          mapped: 2098,
+          priceCoverage: "84%",
+          lastSync: "03 Aug 2026 08:05",
+          health: "Healthy",
+          source: "brand/list, model/list, reference/list, model/search, price/history",
+          modelsSample: [
+            { name: "Cartier Santos", refs: "WSSA0029, WSSA0018", movement: "Automatic", case: "Steel / 35-39.8 mm", updated: "03 Aug 2026", price: "USD 6,450", references: [
+              { number: "WSSA0029", year: "2018-present", material: "Stainless steel", caseSize: "35.1 mm", movement: "Automatic", description: "Santos medium reference commonly submitted in FO asset forms.", price: "USD 6,450", status: "Mapped" },
+              { number: "WSSA0018", year: "2018-present", material: "Stainless steel", caseSize: "39.8 mm", movement: "Automatic", description: "Santos large reference.", price: "USD 7,250", status: "Mapped" }
+            ] },
+            { name: "Cartier Tank", refs: "WSTA0051, WSTA0041", movement: "Quartz / Manual", case: "Steel / mixed", updated: "02 Aug 2026", price: "USD 3,200", references: [
+              { number: "WSTA0051", year: "2021-present", material: "Stainless steel", caseSize: "Large", movement: "Quartz", description: "Tank Must large reference.", price: "USD 3,200", status: "Mapped" },
+              { number: "WSTA0041", year: "2021-present", material: "Stainless steel", caseSize: "Small", movement: "Quartz", description: "Tank Must small reference.", price: "USD 2,980", status: "Mapped" }
+            ] }
+          ],
+          quality: ["Size naming needs normalization for Tank family", "Price coverage strong for Santos and Tank"],
+          impact: "Asset form suggestions use model families and size variants."
+        },
+        {
+          id: "tudor",
+          name: "Tudor",
+          status: "Active",
+          models: 470,
+          references: 1520,
+          mapped: 1462,
+          priceCoverage: "86%",
+          lastSync: "03 Aug 2026 07:58",
+          health: "Healthy",
+          source: "brand/list, model/list, reference/list, model/search, price/history",
+          modelsSample: [
+            { name: "Tudor Black Bay", refs: "79030N, 79230N", movement: "Automatic", case: "Steel / 39-41 mm", updated: "03 Aug 2026", price: "USD 3,380", references: [
+              { number: "79030N", year: "2018-present", material: "Stainless steel", caseSize: "39 mm", movement: "Automatic", description: "Black Bay Fifty-Eight reference.", price: "USD 3,380", status: "Mapped" },
+              { number: "79230N", year: "2016-present", material: "Stainless steel", caseSize: "41 mm", movement: "Automatic", description: "Black Bay 41 reference.", price: "USD 3,120", status: "Mapped" }
+            ] },
+            { name: "Tudor Pelagos", refs: "25600TN, M25407N", movement: "Automatic", case: "Titanium / 39-42 mm", updated: "02 Aug 2026", price: "USD 4,100", references: [
+              { number: "25600TN", year: "2015-present", material: "Titanium", caseSize: "42 mm", movement: "Automatic", description: "Pelagos titanium diver reference.", price: "USD 4,100", status: "Mapped" },
+              { number: "M25407N", year: "2022-present", material: "Titanium", caseSize: "39 mm", movement: "Automatic", description: "Pelagos 39 reference.", price: "USD 4,650", status: "Mapped" }
+            ] }
+          ],
+          quality: ["Reference aliases mostly mapped", "Strong price history for Black Bay"],
+          impact: "Watch Alert matching uses Black Bay and Pelagos reference families."
+        },
+        {
+          id: "grand-seiko",
+          name: "Grand Seiko",
+          status: "Active",
+          models: 360,
+          references: 1180,
+          mapped: 1108,
+          priceCoverage: "79%",
+          lastSync: "03 Aug 2026 07:52",
+          health: "Needs Mapping",
+          source: "brand/list, model/list, reference/list, model/search, price/history",
+          modelsSample: [
+            { name: "Grand Seiko Heritage", refs: "SBGA211, SBGH271", movement: "Spring Drive / Hi-Beat", case: "Titanium / Steel", updated: "03 Aug 2026", price: "USD 5,200", references: [
+              { number: "SBGA211", year: "2017-present", material: "Titanium", caseSize: "41 mm", movement: "Spring Drive", description: "Snowflake reference with frequent FO listings.", price: "USD 5,200", status: "Mapped" },
+              { number: "SBGH271", year: "2019-present", material: "Stainless steel", caseSize: "40 mm", movement: "Hi-Beat automatic", description: "Rikka seasonal dial reference.", price: "USD 5,650", status: "Needs Mapping" }
+            ] },
+            { name: "Grand Seiko Sport", refs: "SBGE253, SLGA015", movement: "Spring Drive", case: "Steel / Titanium", updated: "02 Aug 2026", price: "USD 6,900", references: [
+              { number: "SBGE253", year: "2020-present", material: "Stainless steel", caseSize: "40.5 mm", movement: "Spring Drive GMT", description: "Sport GMT reference.", price: "USD 4,750", status: "Mapped" },
+              { number: "SLGA015", year: "2022-present", material: "Titanium", caseSize: "43.8 mm", movement: "Spring Drive", description: "Diver reference requiring alias normalization.", price: "USD 8,600", status: "Needs Mapping" }
+            ] }
+          ],
+          quality: ["Japanese reference naming needs alias review", "Coverage is lower for limited editions"],
+          impact: "Search facets and asset spec suggestions use movement and dial-family detail."
+        }
+      ],
+      mappingQueue: [
+        { id: "MAP-018", title: "Unmapped reference 126710BLRO", brand: "Rolex", type: "Reference", status: "Needs Review", priority: "กลาง", source: "Asset AST-8579", detail: "User listing says GMT-Master II Pepsi; API reference match exists but TukDaeng mapping is pending.", action: "Confirm mapping before enabling Watch Alert match." },
+        { id: "MAP-017", title: "Duplicate Speedmaster Reduced rows", brand: "Omega", type: "Model", status: "Reviewing", priority: "กลาง", source: "model/search", detail: "Three imported rows share model and reference but differ in description timestamp.", action: "Merge duplicate rows and keep latest API last_updated." },
+        { id: "MAP-016", title: "Seiko 6139 vintage reference alias", brand: "Seiko", type: "Reference", status: "Open", priority: "ปกติ", source: "Asset AST-8791", detail: "FO asset uses 6139-6002 while API reference search returns related 6139 records.", action: "Map accepted aliases for Search without changing user-owned content." }
+      ],
+      priceIndex: [
+        { id: "IDX-ROLEX-116520", title: "Rolex Daytona 116520", brand: "Rolex", type: "Reference Price", status: "Published", priority: "ปกติ", source: "reference/price/history", detail: "Indicative asking price history in USD; latest USD 24,653.12.", action: "Use as comparison signal only; TukDaeng display can convert to THB." },
+        { id: "IDX-OMEGA-3510", title: "Omega Speedmaster Reduced", brand: "Omega", type: "Model Price", status: "Reviewing", priority: "กลาง", source: "model/price/history", detail: "Recent import has duplicate price points and needs review before publishing to internal index.", action: "Resolve duplicate dates and keep API source trace." },
+        { id: "IDX-SEIKO-6139", title: "Seiko 6139", brand: "Seiko", type: "Reference Price", status: "Limited Data", priority: "ปกติ", source: "reference/price/history", detail: "Sparse price history; show low-confidence indicator in BO.", action: "Do not auto-flag asset price outliers when coverage is low." }
+      ],
+      syncLogs: [
+        { id: "SYNC-20260803", title: "Daily thewatchapi sync", brand: "All brands", type: "API Batch", status: "Completed", priority: "ปกติ", source: "Scheduled 03 Aug 2026 08:30", detail: "Brand, model, reference, model detail and price history sync completed with 6 warnings.", action: "Review mapping warnings and rate limit usage." },
+        { id: "SYNC-20260802", title: "Reference retry batch", brand: "Rolex / Omega", type: "Retry", status: "Completed", priority: "ปกติ", source: "Manual retry", detail: "Retried malformed reference searches after parameter normalization.", action: "Keep normalized query in sync rule." },
+        { id: "SYNC-20260801", title: "Price history sync", brand: "Top 20 brands", type: "Price Batch", status: "Partial", priority: "กลาง", source: "price/history", detail: "Some reference price history calls hit plan/rate limit.", action: "Resume from failed cursor after quota reset." }
+      ]
+    };
 
     function resetSessionViewState() {
       expandedMenus.clear();
@@ -12182,6 +12496,7 @@
       document.body.classList.toggle("article-list-mode", isArticleList);
       document.body.classList.toggle("category-list-mode", isCategoryList);
       document.body.classList.toggle("reported-board-mode", isReportedBoard);
+      document.body.classList.toggle("market-list-mode", id === "market");
       document.body.classList.toggle("user-list-mode", id === "users" || isReportedAssets || isReportedBoard);
       document.body.classList.remove("asset-detail-mode");
       if (isReportedAssets || isReportedBoard) document.body.classList.remove("user-detail-mode");
@@ -12196,6 +12511,11 @@
       }
       if (id === "users") {
         renderUserManagement(subLabel || "User Accounts");
+        updateActiveNav();
+        return;
+      }
+      if (id === "market") {
+        renderMarketData(subLabel || "Catalog");
         updateActiveNav();
         return;
       }
@@ -12719,6 +13039,349 @@
       scrollMainToTop();
     }
 
+    function getMarketRowsForSub(subLabel) {
+      if (subLabel === "Mapping Queue") return marketCatalogData.mappingQueue;
+      if (subLabel === "Price Index") return marketCatalogData.priceIndex;
+      if (subLabel === "Sync Logs") return marketCatalogData.syncLogs;
+      return marketCatalogData.brands;
+    }
+
+    function renderMarketSummaryCards(subLabel) {
+      const stats = subLabel === "Catalog"
+        ? [["Brands", "482", "Active 461"], ["Models", "8,924", "from model/list"], ["References", "17,200", "from reference/list"], ["Last Sync", "08:30", "ล่าสุดวันนี้"]]
+        : subLabel === "Mapping Queue"
+          ? [["Open Mapping", "23", "Brand/model/reference"], ["High Impact", "5", "Search & Watch Alert"], ["Auto Match", "68%", "needs admin confirm"], ["Resolved Today", "12", "audit kept"]]
+          : subLabel === "Price Index"
+            ? [["Published Index", "17,200", "Brand/model/reference"], ["Reviewing", "14", "duplicate or outlier"], ["Currency", "USD", "source indicator"], ["THB Display", "Ready", "converted downstream"]]
+            : [["Last Sync", "08:30", "03 Aug 2026"], ["API Usage", "72%", "daily quota"], ["Warnings", "6", "mapping review"], ["Failed Jobs", "0", "retry queue empty"]];
+      document.querySelector("#summary-grid").innerHTML = stats.map(stat => `
+        <article class="stat">
+          <div class="stat-label">${stat[0]}</div>
+          <div class="stat-value">${stat[1]}</div>
+          <div class="stat-note">${stat[2]}</div>
+        </article>
+      `).join("");
+    }
+
+    function setupMarketFilters(subLabel) {
+      const statusOptions = subLabel === "Catalog"
+        ? ["Active", "Needs Review", "Needs Mapping"]
+        : Array.from(new Set(getMarketRowsForSub(subLabel).map(row => row.status)));
+      if (subLabel === "Catalog") {
+        document.querySelector(".filters").innerHTML = `
+          <div class="user-filter-bar market-catalog-filter-bar">
+            <input class="field search" id="market-search" type="search" placeholder="Search brand" />
+            <button class="btn filter-reset" type="button" data-market-reset title="รีเซ็ตค่าทั้งหมด" aria-label="รีเซ็ตค่าทั้งหมด">${iconSvg.refresh}<span>รีเซ็ตค่าทั้งหมด</span></button>
+          </div>
+        `;
+        return;
+      }
+      document.querySelector(".filters").innerHTML = `
+        <div class="user-filter-bar">
+          <input class="field search" id="market-search" type="search" placeholder="Search brand, model, reference, source or status" />
+          ${customSelect("market-status-filter", "Filter market data status", [
+            { value: "", label: "All status" },
+            ...statusOptions.map(status => ({ value: status, label: status }))
+          ])}
+          ${customSelect("market-brand-filter", "Filter market data brand", [
+            { value: "", label: "All brands" },
+            ...marketCatalogData.brands.map(brand => ({ value: brand.name, label: brand.name }))
+          ])}
+          <button class="btn filter-reset" type="button" data-market-reset title="รีเซ็ตค่าทั้งหมด" aria-label="รีเซ็ตค่าทั้งหมด">${iconSvg.refresh}<span>รีเซ็ตค่าทั้งหมด</span></button>
+        </div>
+      `;
+    }
+
+    function renderMarketCatalogRows() {
+      const q = (document.querySelector("#market-search")?.value || "").trim().toLowerCase();
+      const status = document.querySelector("#market-status-filter")?.value || "";
+      const brandFilter = document.querySelector("#market-brand-filter")?.value || "";
+      const rows = marketCatalogData.brands.filter(brand => {
+        const text = Object.values(brand).flat().join(" ").toLowerCase();
+        return (!q || text.includes(q))
+          && (!status || brand.status === status || brand.health === status)
+          && (!brandFilter || brand.name === brandFilter);
+      });
+      document.querySelector("#table").innerHTML = `
+        <div class="asset-table category-table market-table">
+          <div class="asset-row head"><div>Brand</div><div>Models</div><div>References</div><div>Last Sync</div><div>Action</div></div>
+          ${rows.map(brand => `
+            <div class="asset-row" data-market-brand="${brand.id}">
+              <div data-label="Brand"><div class="main-text">${brand.name}</div></div>
+              <div data-label="Models"><div class="main-text">${brand.models.toLocaleString()}</div></div>
+              <div data-label="References"><div class="main-text">${brand.references.toLocaleString()}</div></div>
+              <div data-label="Last Sync"><div class="main-text">${brand.lastSync}</div></div>
+              <div><button class="panel-action" type="button" data-market-brand="${brand.id}">${iconSvg.eye}<span>Open</span></button></div>
+            </div>
+          `).join("") || `<div class="detail-empty user-empty">No market brands found</div>`}
+        </div>
+        <div class="footer-range"><span>แสดง ${rows.length ? `1-${rows.length}` : "0"} จาก ${rows.length}</span></div>
+      `;
+    }
+
+    function renderMarketQueueRows(subLabel) {
+      const q = (document.querySelector("#market-search")?.value || "").trim().toLowerCase();
+      const status = document.querySelector("#market-status-filter")?.value || "";
+      const brandFilter = document.querySelector("#market-brand-filter")?.value || "";
+      const rows = getMarketRowsForSub(subLabel).filter(row => {
+        const text = Object.values(row).flat().join(" ").toLowerCase();
+        return (!q || text.includes(q)) && (!status || row.status === status) && (!brandFilter || row.brand === brandFilter || row.brand.includes(brandFilter));
+      });
+      document.querySelector("#table").innerHTML = `
+        <div class="asset-table category-table market-table market-record-table">
+          <div class="asset-row head"><div>Record</div><div>Brand / Source</div><div>Type</div><div>Status</div><div>Action</div></div>
+        ${rows.map(row => `
+          <div class="asset-row" data-market-record="${row.id}">
+            <div><div class="main-text">${row.title}</div><div class="muted">${row.id} · ${row.detail}</div></div>
+            <div><div class="main-text">${row.brand}</div><div class="muted">${row.source}</div></div>
+            <div><span class="pill blue">${row.type}</span></div>
+            <div>${statusPill(row.status, row.priority)}</div>
+            <div><button class="panel-action" type="button" data-market-record="${row.id}">${iconSvg.eye}<span>Review</span></button></div>
+          </div>
+        `).join("") || `<div class="detail-empty user-empty">No market data records found</div>`}
+        </div>
+        <div class="footer-range"><span>แสดง ${rows.length ? `1-${rows.length}` : "0"} จาก ${rows.length}</span></div>
+      `;
+    }
+
+    function renderMarketBrandDetail(brandId = activeMarketBrandId) {
+      const brand = marketCatalogData.brands.find(entry => entry.id === brandId) || marketCatalogData.brands[0];
+      activeMarketBrandId = brand.id;
+      document.querySelector("#detail").innerHTML = `
+        <div class="panel-head">
+          <div>
+            <h2>${brand.name}</h2>
+            <p>Brand catalog from thewatchapi</p>
+          </div>
+        </div>
+        <div class="detail-body">
+          <div class="detail-grid two">
+            <div class="detail-tile"><span>Models</span><strong>${brand.models.toLocaleString()}</strong></div>
+            <div class="detail-tile"><span>References</span><strong>${brand.references.toLocaleString()}</strong></div>
+            <div class="detail-tile"><span>Last Sync</span><strong>${brand.lastSync}</strong></div>
+            <div class="detail-tile"><span>Status</span><strong>${brand.status}</strong></div>
+          </div>
+          <div class="module-note"><strong>FO impact:</strong> ${brand.impact}</div>
+          <div class="detail-section">
+            <h4>Models & References</h4>
+            ${brand.modelsSample.map(model => `
+              <div class="event">
+                <strong>${model.name}</strong><br>
+                <span class="muted">Refs ${model.refs} · ${model.movement} · ${model.case} · ${model.price} · Updated ${model.updated}</span>
+              </div>
+            `).join("")}
+          </div>
+          <div class="detail-section">
+            <h4>Data Quality</h4>
+            <div class="timeline">${brand.quality.map(item => `<div class="event">${item}</div>`).join("")}</div>
+          </div>
+          <div class="detail-section">
+            <h4>Sync Source</h4>
+            <div class="kv"><span>Endpoints</span><strong>${brand.source}</strong></div>
+            <div class="kv"><span>Last sync</span><strong>${brand.lastSync}</strong></div>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderMarketReferenceStatus(status) {
+      const priority = status === "Needs Review" || status === "Reviewing" ? "กลาง" : status === "Needs Mapping" || status === "Open" ? "ปกติ" : "";
+      return statusPill(status, priority || "ปกติ");
+    }
+
+    function renderMarketModelReferenceBlocks(brand) {
+      return `
+        <div class="market-model-stack">
+          ${brand.modelsSample.map(model => `
+            <article class="market-model-block">
+              <div class="market-model-head">
+                <div><span>Model</span><strong>${model.name}</strong></div>
+                <div><span>References</span><strong>${model.refs}</strong></div>
+                <div><span>Movement</span><strong>${model.movement}</strong></div>
+                <div><span>Case</span><strong>${model.case}</strong></div>
+                <div><span>Updated</span><strong>${model.updated}</strong></div>
+              </div>
+              <div class="asset-table category-table market-table market-reference-table">
+                <div class="asset-row head"><div>Reference</div><div>Year</div><div>Case Size</div><div>Material</div><div>Description</div><div>Price</div><div>Status</div></div>
+                ${(model.references || []).map(reference => `
+                  <div class="asset-row">
+                    <div><div class="main-text">${reference.number}</div></div>
+                    <div><div class="main-text">${reference.year}</div></div>
+                    <div><div class="main-text">${reference.caseSize}</div></div>
+                    <div><div class="main-text">${reference.material}</div><div class="muted">${reference.movement}</div></div>
+                    <div><div class="main-text">${reference.description}</div></div>
+                    <div><span class="pill blue">${reference.price}</span></div>
+                    <div>${renderMarketReferenceStatus(reference.status)}</div>
+                  </div>
+                `).join("") || `<div class="detail-empty user-empty">No references found for this model</div>`}
+              </div>
+            </article>
+          `).join("")}
+        </div>
+      `;
+    }
+
+    function renderMarketBrandDetailPage(brandId = activeMarketBrandId) {
+      const brand = marketCatalogData.brands.find(entry => entry.id === brandId) || marketCatalogData.brands[0];
+      activeMarketBrandId = brand.id;
+      activeModule = "market";
+      activeSub = "Catalog";
+      document.body.classList.add("market-list-mode");
+      document.body.classList.remove("dashboard-mode", "user-management-mode", "asset-list-mode", "article-list-mode", "category-list-mode", "reported-board-mode", "asset-detail-mode", "user-list-mode", "user-detail-mode");
+      setPageActions(`<button class="btn" type="button" data-market-back>${iconSvg.chevron}<span>Back to Catalog</span></button><button class="btn" type="button" data-module-jump="market" data-sub-jump="Sync Logs">${iconSvg.refresh}<span>Sync API</span></button>`);
+      document.querySelector("#crumb").textContent = `${moduleData.market.crumb} / Catalog / ${brand.name}`;
+      document.querySelector("#page-title").textContent = brand.name;
+      document.querySelector("#page-meta").textContent = "";
+      document.querySelector("#panel-title").textContent = "BRAND DETAIL";
+      document.querySelector("#panel-subtitle").textContent = "";
+      document.querySelector("#primary-action").textContent = "";
+      document.querySelector("#user-panel-filter-actions").innerHTML = "";
+      document.querySelector(".filters").innerHTML = "";
+      document.querySelector("#summary-grid").innerHTML = "";
+      document.querySelector("#cards").innerHTML = "";
+      document.querySelector("#detail").innerHTML = "";
+      document.querySelector("#table").innerHTML = `
+        <div class="market-brand-detail">
+          <div class="market-detail-grid">
+            <div class="detail-tile"><span>Models</span><strong>${brand.models.toLocaleString()}</strong></div>
+            <div class="detail-tile"><span>References</span><strong>${brand.references.toLocaleString()}</strong></div>
+            <div class="detail-tile"><span>Last Sync</span><strong>${brand.lastSync}</strong></div>
+            <div class="detail-tile"><span>Status</span><strong>${brand.status}</strong></div>
+          </div>
+          <div class="module-note"><strong>FO impact:</strong> ${brand.impact}</div>
+          <section class="market-detail-section">
+            <h3>Models & References</h3>
+            ${renderMarketModelReferenceBlocks(brand)}
+          </section>
+          <section class="market-detail-section">
+            <h3>Data Quality</h3>
+            <div class="timeline">${brand.quality.map(item => `<div class="event">${item}</div>`).join("")}</div>
+          </section>
+          <section class="market-detail-section">
+            <h3>Sync Source</h3>
+            <div class="kv"><span>Endpoints</span><strong>${brand.source}</strong></div>
+            <div class="kv"><span>Last sync</span><strong>${brand.lastSync}</strong></div>
+          </section>
+        </div>
+      `;
+      updateActiveNav();
+      scrollMainToTop();
+    }
+
+    function renderMarketRecordDetail(recordId, subLabel = activeSub) {
+      const row = getMarketRowsForSub(subLabel).find(entry => entry.id === recordId) || getMarketRowsForSub(subLabel)[0];
+      if (!row) {
+        document.querySelector("#detail").innerHTML = `<div class="detail-empty">Select a market data record to review detail</div>`;
+        return;
+      }
+      document.querySelector("#detail").innerHTML = `
+        <div class="panel-head">
+          <div>
+            <h2>${row.title}</h2>
+            <p>${subLabel}</p>
+          </div>
+        </div>
+        <div class="detail-body">
+          <div class="kv"><span>Record ID</span><strong>${row.id}</strong></div>
+          <div class="kv"><span>Brand</span><strong>${row.brand}</strong></div>
+          <div class="kv"><span>Source</span><strong>${row.source}</strong></div>
+          <div class="kv"><span>Type</span><strong>${row.type}</strong></div>
+          <div class="kv"><span>Status</span><strong>${row.status}</strong></div>
+          <div class="module-note"><strong>Admin action:</strong> ${row.action}</div>
+          <div class="timeline">
+            <div class="event"><strong>Source data</strong><br>${row.detail}</div>
+            <div class="event"><strong>System rule</strong><br>Keep API source trace, preserve user-owned asset content, and sync approved mappings to Search, Asset and Watch Alert.</div>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderMarketRecordDetailPage(recordId, subLabel = activeSub) {
+      const row = getMarketRowsForSub(subLabel).find(entry => entry.id === recordId) || getMarketRowsForSub(subLabel)[0];
+      if (!row) return;
+      activeModule = "market";
+      activeSub = subLabel;
+      document.body.classList.add("market-list-mode");
+      document.body.classList.remove("dashboard-mode", "user-management-mode", "asset-list-mode", "article-list-mode", "category-list-mode", "reported-board-mode", "asset-detail-mode", "user-list-mode", "user-detail-mode");
+      setPageActions(`<button class="btn" type="button" data-market-back>${iconSvg.chevron}<span>Back to ${subLabel}</span></button>`);
+      document.querySelector("#crumb").textContent = `${moduleData.market.crumb} / ${subLabel} / ${row.id}`;
+      document.querySelector("#page-title").textContent = row.title;
+      document.querySelector("#page-meta").textContent = "";
+      document.querySelector("#panel-title").textContent = "RECORD DETAIL";
+      document.querySelector("#panel-subtitle").textContent = "";
+      document.querySelector("#primary-action").textContent = "";
+      document.querySelector("#user-panel-filter-actions").innerHTML = "";
+      document.querySelector(".filters").innerHTML = "";
+      document.querySelector("#summary-grid").innerHTML = "";
+      document.querySelector("#cards").innerHTML = "";
+      document.querySelector("#detail").innerHTML = "";
+      document.querySelector("#table").innerHTML = `
+        <div class="market-brand-detail">
+          <div class="market-detail-grid">
+            <div class="detail-tile"><span>Record ID</span><strong>${row.id}</strong></div>
+            <div class="detail-tile"><span>Brand</span><strong>${row.brand}</strong></div>
+            <div class="detail-tile"><span>Type</span><strong>${row.type}</strong></div>
+            <div class="detail-tile"><span>Status</span><strong>${row.status}</strong></div>
+          </div>
+          <section class="market-detail-section">
+            <h3>Source Data</h3>
+            <div class="kv"><span>Source</span><strong>${row.source}</strong></div>
+            <div class="module-note"><strong>Detail:</strong> ${row.detail}</div>
+          </section>
+          <section class="market-detail-section">
+            <h3>Admin Action</h3>
+            <div class="module-note"><strong>Next step:</strong> ${row.action}</div>
+            <div class="timeline">
+              <div class="event"><strong>System rule</strong><br>Keep API source trace, preserve user-owned asset content, and sync approved mappings to Search, Asset and Watch Alert.</div>
+            </div>
+          </section>
+        </div>
+      `;
+      updateActiveNav();
+      scrollMainToTop();
+    }
+
+    function renderMarketCards(subLabel) {
+      const cards = subLabel === "Catalog"
+        ? [["Brand-first workflow", "Admin starts from a brand, then drills into models, references, detail fields and price coverage in one context."], ["API source", "thewatchapi supplies brand, model, reference, detail and USD price history. BO keeps source trace and last_updated."], ["Downstream usage", "Approved records feed autocomplete, Asset form suggestions, Search facets, price comparison and Watch Alert matching."]]
+        : subLabel === "Mapping Queue"
+          ? [["Mapping review", "Resolve user-entered names, aliases, duplicate references and unmatched API results before exposing them to search logic."], ["No content rewrite", "Mapping can improve system matching without changing the original owner-entered asset text."], ["Audit baseline", "Every manual confirm, merge or ignore decision should keep reason and source endpoint."]]
+          : subLabel === "Price Index"
+            ? [["Indicative price", "API price history is an asking-price signal in USD, not a final appraisal or transaction value."], ["TukDaeng display", "BO can review USD source values while FO or reports convert downstream where THB display is required."], ["Confidence", "Sparse or duplicate price history should lower confidence and avoid auto-flagging assets."]]
+            : [["Sync control", "Scheduled and manual syncs should show endpoint coverage, quota usage, warnings and retry state."], ["Error handling", "Rate limit, malformed parameters, token errors and maintenance responses stay visible for operations."], ["Fallback", "CSV import remains a backup path for curated corrections or one-time bulk data loads."]];
+      document.querySelector("#cards").innerHTML = cards.map(card => `
+        <article class="mini-card">
+          <h3>${card[0]}</h3>
+          <p>${card[1]}</p>
+        </article>
+      `).join("");
+    }
+
+    function renderMarketData(subLabel = "Catalog") {
+      activeModule = "market";
+      activeSub = subLabel;
+      activeRow = null;
+      document.body.classList.add("market-list-mode");
+      document.body.classList.remove("dashboard-mode", "user-management-mode", "asset-list-mode", "article-list-mode", "category-list-mode", "reported-board-mode", "asset-detail-mode", "user-list-mode", "user-detail-mode");
+      setPageActions(`<button class="btn" type="button" data-module-jump="market" data-sub-jump="Sync Logs">${iconSvg.refresh}<span>${subLabel === "Sync Logs" ? "Run sync" : "Sync API"}</span></button>`);
+      document.querySelector("#user-panel-filter-actions").innerHTML = "";
+      document.querySelector("#crumb").textContent = `${moduleData.market.crumb} / ${subLabel}`;
+      document.querySelector("#page-title").textContent = subLabel;
+      document.querySelector("#page-meta").textContent = "";
+      document.querySelector("#panel-title").textContent = subLabel === "Catalog" ? "BRAND CATALOG" : subLabel.toUpperCase();
+      document.querySelector("#panel-subtitle").textContent = "";
+      document.querySelector("#primary-action").textContent = subLabel === "Sync Logs" ? "Run sync" : "Sync API";
+      setupMarketFilters(subLabel);
+      document.querySelector("#summary-grid").innerHTML = "";
+      document.querySelector("#cards").innerHTML = "";
+      document.querySelector("#detail").innerHTML = "";
+      if (subLabel === "Catalog") {
+        renderMarketCatalogRows();
+      } else {
+        renderMarketQueueRows(subLabel);
+      }
+    }
+
     function updateFilters(data) {
       const statuses = Array.from(new Set(data.rows.map(row => row.status)));
       document.querySelector("#status-filter").innerHTML = `<option value="">ทุกสถานะ</option>${statuses.map(status => `<option value="${status}">${status}</option>`).join("")}`;
@@ -12746,6 +13409,11 @@
       }
       if (activeModule === "content" && activeSub === "Reported Articles") {
         renderReportedBoardRows();
+        return;
+      }
+      if (activeModule === "market") {
+        if ((activeSub || "Catalog") === "Catalog") renderMarketCatalogRows();
+        else renderMarketQueueRows(activeSub);
         return;
       }
       const data = moduleData[activeModule];
@@ -16416,6 +17084,10 @@
           renderReportedBoardRows();
           return;
         }
+        if (["market-status-filter", "market-brand-filter"].includes(hiddenInput.id) && activeModule === "market") {
+          renderRows();
+          return;
+        }
         userListPage = 1;
         if (activeModule === "users" && (activeSub === "Report User" || activeSub === "Reported Users")) renderReportedUserRows();
         else if (activeModule === "users") renderUserRows();
@@ -16485,6 +17157,40 @@
         renderModule(navButton.dataset.module, subLabel, displaySubLabel);
         scrollMainToTop();
         if (window.matchMedia("(max-width: 1180px)").matches) setNavOpen(false);
+        return;
+      }
+      const marketBrandButton = event.target.closest("[data-market-brand]");
+      if (marketBrandButton && activeModule === "market") {
+        renderMarketBrandDetailPage(marketBrandButton.dataset.marketBrand);
+        return;
+      }
+      const marketRecordButton = event.target.closest("[data-market-record]");
+      if (marketRecordButton && activeModule === "market") {
+        renderMarketRecordDetailPage(marketRecordButton.dataset.marketRecord, activeSub);
+        return;
+      }
+      const marketBackButton = event.target.closest("[data-market-back]");
+      if (marketBackButton && activeModule === "market") {
+        renderMarketData(activeSub || "Catalog");
+        updateActiveNav();
+        scrollMainToTop();
+        return;
+      }
+      const marketResetButton = event.target.closest("[data-market-reset]");
+      if (marketResetButton && activeModule === "market") {
+        const search = document.querySelector("#market-search");
+        const status = document.querySelector("#market-status-filter");
+        const brand = document.querySelector("#market-brand-filter");
+        if (search) search.value = "";
+        if (status) {
+          status.value = "";
+          updateCustomSelect(status, "");
+        }
+        if (brand) {
+          brand.value = "";
+          updateCustomSelect(brand, "");
+        }
+        renderRows();
         return;
       }
       const rowButton = event.target.closest("[data-row-action], .row[data-row]");
@@ -17511,6 +18217,9 @@
         if (activeModule === "assets") assetListPage = 1;
         renderRows();
       }
+      if (event.target.matches("#market-search")) {
+        renderRows();
+      }
       if (event.target.matches("#article-search")) {
         articleListPage = 1;
         renderArticleListRows();
@@ -17630,6 +18339,10 @@
         renderArticleListRows();
         return;
       }
+      if (event.target.matches("#market-status-filter, #market-brand-filter")) {
+        renderRows();
+        return;
+      }
       if (event.target.matches("#status-filter, #priority-filter, #asset-type-filter, #asset-brand-filter, #asset-sort")) {
         if (activeModule === "assets") assetListPage = 1;
         renderRows();
@@ -17723,6 +18436,9 @@
       }
       if (activeModule === "content" && (activeSub || "Articles") === "Articles") {
         renderArticleEditorPage();
+      }
+      if (activeModule === "market") {
+        renderModule("market", "Sync Logs", "Sync Logs");
       }
     });
     document.querySelector("#logout-btn").addEventListener("click", () => {
