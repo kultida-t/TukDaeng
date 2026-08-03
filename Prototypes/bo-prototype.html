@@ -1597,7 +1597,7 @@
       grid-template-columns: minmax(240px, 1.35fr) minmax(126px, .68fr) minmax(126px, .68fr) max-content;
     }
     body.market-list-mode .market-catalog-filter-bar {
-      grid-template-columns: minmax(240px, 1fr) max-content;
+      grid-template-columns: minmax(240px, 1fr);
     }
     body.market-list-mode .market-table .asset-row {
       grid-template-columns: minmax(220px, 1fr) minmax(116px, .45fr) minmax(126px, .5fr) minmax(150px, .6fr) 74px;
@@ -6981,6 +6981,8 @@
       ]
     };
 
+
+
     const reportAuditLogSeeds = {
       "RPU-566": [
         { id: "AUD-RPU-566-001", action: "REPORT_CREATED", actor: "System", createdAt: "14 Jul 2026 08:10 GMT+7", entityType: "reported_user", entityId: "RPU-566", sourceModule: "User Profile", detail: "เปิดรายงานผู้ใช้จากหน้าโปรไฟล์", before: null, after: { reportStatus: "Open", accountStatus: "Active" }, reason: "รับรายงานจากหน้าโปรไฟล์ผู้ใช้", metadata: { reference: "User ID U-1144", userId: "U-1144" } }
@@ -7787,6 +7789,7 @@
     ];
     const reportHistoryPageSize = 10;
     let activeMarketBrandId = "rolex";
+    let activeMarketModelIndex = 0;
 
     moduleData.market = mod("Market Data", "การดำเนินงาน / Market Data", "Market Catalog", "ดูแลข้อมูล brand, model, reference, detail และ price indicator จาก thewatchapi ก่อน sync ไปยัง Search, Asset และ Watch Alert", "Sync API", [["Brands", "9", "sample catalog"], ["References", "24", "sample refs"], ["Mapping Queue", "23", "ต้อง review"], ["API Sync", "08:30", "ล่าสุดวันนี้"]], [
       item("BRD-ROLEX", "Rolex", "Brand Catalog", "thewatchapi", "ปกติ", "Active", "Brand-first catalog with model, reference, detail and price coverage", ["Models 1,240", "Refs 4,820"], "Review brand catalog and drill down before changing visibility"),
@@ -8008,6 +8011,101 @@
         { id: "SYNC-20260801", title: "Price history sync", brand: "Top 20 brands", type: "Price Batch", status: "Partial", priority: "กลาง", source: "price/history", detail: "Some reference price history calls hit plan/rate limit.", action: "Resume from failed cursor after quota reset." }
       ]
     };
+
+    function addMarketModel(brandId, model) {
+      const brand = marketCatalogData.brands.find(entry => entry.id === brandId);
+      if (!brand) return;
+      const exists = brand.modelsSample.some(entry => entry.name === model.name);
+      if (!exists) brand.modelsSample.push(model);
+    }
+
+    [
+      ["rolex", { name: "Rolex Datejust", refs: "126334, 16234, 16014", movement: "Automatic", case: "Steel / 36-41 mm", updated: "03 Aug 2026", price: "USD 8,950", references: [
+        { number: "126334", year: "2017-present", material: "Stainless steel / white gold bezel", caseSize: "41 mm", movement: "Automatic", description: "Current Datejust 41 reference with fluted bezel.", price: "USD 11,200", status: "Mapped" },
+        { number: "16234", year: "1988-2005", material: "Stainless steel / white gold bezel", caseSize: "36 mm", movement: "Automatic", description: "Five-digit Datejust frequently listed in local dealer inventory.", price: "USD 6,350", status: "Mapped" },
+        { number: "16014", year: "1977-1988", material: "Stainless steel / white gold bezel", caseSize: "36 mm", movement: "Automatic", description: "Vintage Datejust reference with acrylic crystal.", price: "USD 4,950", status: "Mapped" }
+      ] }],
+      ["rolex", { name: "Rolex Explorer", refs: "214270, 124270", movement: "Automatic", case: "Steel / 36-39 mm", updated: "02 Aug 2026", price: "USD 7,900", references: [
+        { number: "214270", year: "2010-2021", material: "Stainless steel", caseSize: "39 mm", movement: "Automatic", description: "Explorer I 39 mm reference with strong secondary-market demand.", price: "USD 7,900", status: "Mapped" },
+        { number: "124270", year: "2021-present", material: "Stainless steel", caseSize: "36 mm", movement: "Automatic", description: "Current Explorer I 36 mm reference.", price: "USD 8,450", status: "Mapped" }
+      ] }],
+      ["omega", { name: "Omega Aqua Terra", refs: "220.10.41.21.03.001, 231.10.39.21.03.001", movement: "Automatic", case: "Steel / 39-41 mm", updated: "02 Aug 2026", price: "USD 4,850", references: [
+        { number: "220.10.41.21.03.001", year: "2017-present", material: "Stainless steel", caseSize: "41 mm", movement: "Automatic", description: "Aqua Terra Master Chronometer blue dial reference.", price: "USD 4,850", status: "Mapped" },
+        { number: "231.10.39.21.03.001", year: "2010s", material: "Stainless steel", caseSize: "38.5 mm", movement: "Automatic", description: "Aqua Terra teak dial reference common in pre-owned listings.", price: "USD 3,650", status: "Mapped" }
+      ] }],
+      ["omega", { name: "Omega Constellation", refs: "168.005, 131.10.39.20.02.001", movement: "Automatic", case: "Steel / mixed", updated: "01 Aug 2026", price: "USD 3,300", references: [
+        { number: "168.005", year: "1960s", material: "Stainless steel / gold cap variants", caseSize: "35 mm", movement: "Automatic", description: "Vintage Constellation pie-pan reference family.", price: "USD 2,850", status: "Open" },
+        { number: "131.10.39.20.02.001", year: "2020-present", material: "Stainless steel", caseSize: "39 mm", movement: "Automatic", description: "Modern Constellation Co-Axial reference.", price: "USD 3,300", status: "Mapped" }
+      ] }],
+      ["seiko", { name: "Seiko Prospex", refs: "SPB143, SLA017, SBDC101", movement: "Automatic", case: "Steel / 40-42 mm", updated: "02 Aug 2026", price: "USD 1,050", references: [
+        { number: "SPB143", year: "2020-present", material: "Stainless steel", caseSize: "40.5 mm", movement: "Automatic", description: "Prospex 62MAS-inspired diver reference.", price: "USD 950", status: "Mapped" },
+        { number: "SLA017", year: "2017", material: "Stainless steel", caseSize: "39.9 mm", movement: "Automatic", description: "Limited 62MAS re-creation reference.", price: "USD 3,250", status: "Mapped" },
+        { number: "SBDC101", year: "2020-present", material: "Stainless steel", caseSize: "40.5 mm", movement: "Automatic", description: "Japanese-market variant commonly cross-listed with SPB143.", price: "USD 980", status: "Needs Mapping" }
+      ] }],
+      ["seiko", { name: "Seiko Grand Quartz", refs: "4843-8110, 9943-8030", movement: "Quartz", case: "Steel / 36-38 mm", updated: "01 Aug 2026", price: "USD 680", references: [
+        { number: "4843-8110", year: "1970s", material: "Stainless steel", caseSize: "36 mm", movement: "Quartz", description: "Vintage Grand Quartz reference with local collector interest.", price: "USD 680", status: "Open" },
+        { number: "9943-8030", year: "1970s", material: "Stainless steel", caseSize: "37 mm", movement: "Twin quartz", description: "High-accuracy vintage quartz reference.", price: "USD 820", status: "Open" }
+      ] }],
+      ["patek", { name: "Patek Philippe Aquanaut", refs: "5167A, 5164A", movement: "Automatic", case: "Steel / 40-40.8 mm", updated: "03 Aug 2026", price: "USD 58,000", references: [
+        { number: "5167A", year: "2007-present", material: "Stainless steel", caseSize: "40 mm", movement: "Automatic", description: "Aquanaut on tropical strap; high-demand sports reference.", price: "USD 58,000", status: "Mapped" },
+        { number: "5164A", year: "2011-2024", material: "Stainless steel", caseSize: "40.8 mm", movement: "Automatic travel time", description: "Aquanaut Travel Time reference.", price: "USD 86,000", status: "Needs Review" }
+      ] }],
+      ["patek", { name: "Patek Philippe Complications", refs: "5396G, 5146J", movement: "Automatic", case: "Gold / 38-39 mm", updated: "01 Aug 2026", price: "USD 42,000", references: [
+        { number: "5396G", year: "2006-present", material: "White gold", caseSize: "38.5 mm", movement: "Automatic annual calendar", description: "Annual calendar reference with moonphase.", price: "USD 42,000", status: "Mapped" },
+        { number: "5146J", year: "2000s-2010s", material: "Yellow gold", caseSize: "39 mm", movement: "Automatic annual calendar", description: "Classic annual calendar reference in yellow gold.", price: "USD 35,500", status: "Mapped" }
+      ] }],
+      ["audemars", { name: "Audemars Piguet Code 11.59", refs: "15210OR, 26393OR", movement: "Automatic", case: "Gold / 41 mm", updated: "01 Aug 2026", price: "USD 29,000", references: [
+        { number: "15210OR", year: "2019-present", material: "Pink gold", caseSize: "41 mm", movement: "Automatic", description: "Code 11.59 selfwinding reference.", price: "USD 29,000", status: "Mapped" },
+        { number: "26393OR", year: "2019-present", material: "Pink gold", caseSize: "41 mm", movement: "Automatic chronograph", description: "Code 11.59 chronograph reference.", price: "USD 48,000", status: "Mapped" }
+      ] }],
+      ["cartier", { name: "Cartier Ballon Bleu", refs: "WSBB0049, W69012Z4", movement: "Automatic / Quartz", case: "Steel / 33-40 mm", updated: "02 Aug 2026", price: "USD 5,900", references: [
+        { number: "WSBB0049", year: "2020s", material: "Stainless steel", caseSize: "40 mm", movement: "Automatic", description: "Ballon Bleu automatic reference.", price: "USD 5,900", status: "Mapped" },
+        { number: "W69012Z4", year: "2000s-2010s", material: "Stainless steel", caseSize: "42 mm", movement: "Automatic", description: "Earlier large Ballon Bleu reference.", price: "USD 4,650", status: "Mapped" }
+      ] }],
+      ["tudor", { name: "Tudor Ranger", refs: "79950, 79910", movement: "Automatic", case: "Steel / 39-41 mm", updated: "01 Aug 2026", price: "USD 2,450", references: [
+        { number: "79950", year: "2022-present", material: "Stainless steel", caseSize: "39 mm", movement: "Automatic", description: "Modern Ranger reference with bracelet and strap listing variants.", price: "USD 2,450", status: "Mapped" },
+        { number: "79910", year: "2014-2020", material: "Stainless steel", caseSize: "41 mm", movement: "Automatic", description: "Heritage Ranger reference frequently appears with bracelet mismatch notes.", price: "USD 2,250", status: "Open" }
+      ] }],
+      ["grand-seiko", { name: "Grand Seiko Evolution 9", refs: "SLGH005, SLGA009", movement: "Hi-Beat / Spring Drive", case: "Steel / 40 mm", updated: "01 Aug 2026", price: "USD 7,650", references: [
+        { number: "SLGH005", year: "2021-present", material: "Stainless steel", caseSize: "40 mm", movement: "Hi-Beat automatic", description: "White Birch dial reference.", price: "USD 7,650", status: "Mapped" },
+        { number: "SLGA009", year: "2022-present", material: "Stainless steel", caseSize: "40 mm", movement: "Spring Drive", description: "White Birch Spring Drive reference.", price: "USD 7,850", status: "Needs Mapping" }
+      ] }]
+    ].forEach(([brandId, model]) => addMarketModel(brandId, model));
+
+    if (!marketCatalogData.brands.some(brand => brand.id === "iwc")) {
+      marketCatalogData.brands.push({
+        id: "iwc",
+        name: "IWC",
+        status: "Active",
+        models: 390,
+        references: 1040,
+        mapped: 996,
+        priceCoverage: "81%",
+        lastSync: "03 Aug 2026 07:46",
+        health: "Healthy",
+        source: "brand/list, model/list, reference/list, model/search, price/history",
+        modelsSample: [
+          { name: "IWC Pilot's Watch", refs: "IW327001, IW388101", movement: "Automatic / Chronograph", case: "Steel / 40-43 mm", updated: "03 Aug 2026", price: "USD 4,650", references: [
+            { number: "IW327001", year: "2016-2021", material: "Stainless steel", caseSize: "40 mm", movement: "Automatic", description: "Pilot's Watch Mark XVIII reference common in daily-wear listings.", price: "USD 3,450", status: "Mapped" },
+            { number: "IW388101", year: "2021-present", material: "Stainless steel", caseSize: "41 mm", movement: "Automatic chronograph", description: "Pilot Chronograph 41 reference.", price: "USD 6,250", status: "Mapped" }
+          ] },
+          { name: "IWC Portugieser", refs: "IW371605, IW500705", movement: "Automatic / Chronograph", case: "Steel / 41-42.3 mm", updated: "02 Aug 2026", price: "USD 6,900", references: [
+            { number: "IW371605", year: "2020-present", material: "Stainless steel", caseSize: "41 mm", movement: "Automatic chronograph", description: "Portugieser Chronograph blue dial reference.", price: "USD 6,900", status: "Mapped" },
+            { number: "IW500705", year: "2015-present", material: "Stainless steel", caseSize: "42.3 mm", movement: "Automatic 7-day", description: "Portugieser Automatic reference with seven-day power reserve.", price: "USD 8,450", status: "Mapped" }
+          ] },
+          { name: "IWC Ingenieur", refs: "IW328901, IW323904", movement: "Automatic", case: "Steel / 40-40.5 mm", updated: "01 Aug 2026", price: "USD 8,250", references: [
+            { number: "IW328901", year: "2023-present", material: "Stainless steel", caseSize: "40 mm", movement: "Automatic", description: "Current Ingenieur Automatic 40 reference inspired by the Gerald Genta design.", price: "USD 8,250", status: "Needs Review" },
+            { number: "IW323904", year: "2010s", material: "Stainless steel", caseSize: "40 mm", movement: "Automatic", description: "Ingenieur reference often submitted without full IWC prefix.", price: "USD 5,200", status: "Open" }
+          ] }
+        ],
+        quality: ["Pilot model aliases need prefix normalization", "Portugieser spelling variants are mapped"],
+        impact: "Asset forms and Watch Alert matching use IWC model/reference normalization."
+      });
+    }
+
+    moduleData.market.cards[0][1] = String(marketCatalogData.brands.length);
+    moduleData.market.cards[1][1] = String(marketCatalogData.brands.reduce((sum, brand) => sum + brand.modelsSample.length, 0));
+    moduleData.market.cards[2][1] = String(marketCatalogData.brands.reduce((sum, brand) => sum + brand.modelsSample.reduce((modelSum, model) => modelSum + (model.references || []).length, 0), 0));
 
     function resetSessionViewState() {
       expandedMenus.clear();
@@ -13071,7 +13169,6 @@
         document.querySelector(".filters").innerHTML = `
           <div class="user-filter-bar market-catalog-filter-bar">
             <input class="field search" id="market-search" type="search" placeholder="Search brand" />
-            <button class="btn filter-reset" type="button" data-market-reset title="รีเซ็ตค่าทั้งหมด" aria-label="รีเซ็ตค่าทั้งหมด">${iconSvg.refresh}<span>รีเซ็ตค่าทั้งหมด</span></button>
           </div>
         `;
         return;
@@ -13139,6 +13236,66 @@
             <div><button class="panel-action" type="button" data-market-record="${row.id}">${iconSvg.eye}<span>Review</span></button></div>
           </div>
         `).join("") || `<div class="detail-empty user-empty">No market data records found</div>`}
+        </div>
+        <div class="footer-range"><span>แสดง ${rows.length ? `1-${rows.length}` : "0"} จาก ${rows.length}</span></div>
+      `;
+    }
+
+    function getMarketBrand(brandId = activeMarketBrandId) {
+      return marketCatalogData.brands.find(entry => entry.id === brandId) || marketCatalogData.brands[0];
+    }
+
+    function getMarketModel(brand, modelIndex) {
+      return brand?.modelsSample?.[Number(modelIndex)] || brand?.modelsSample?.[0];
+    }
+
+    function getMarketReference(model, referenceIndex) {
+      return model?.references?.[Number(referenceIndex)] || model?.references?.[0];
+    }
+
+    function renderMarketModelRows(brand = getMarketBrand(activeMarketBrandId)) {
+      const q = (document.querySelector("#market-model-search")?.value || "").trim().toLowerCase();
+      const rows = (brand.modelsSample || []).map((model, index) => ({ model, index })).filter(({ model }) => {
+        const text = [model.name, model.refs, model.movement, model.case].join(" ").toLowerCase();
+        return !q || text.includes(q);
+      });
+      document.querySelector("#table").innerHTML = `
+        <div class="asset-table category-table market-table market-record-table">
+          <div class="asset-row head"><div>Model</div><div>References</div><div>Movement</div><div>Case</div><div>Action</div></div>
+          ${rows.map(({ model, index }) => `
+            <div class="asset-row" data-market-model="${index}" data-market-brand-id="${brand.id}">
+              <div><div class="main-text">${model.name}</div></div>
+              <div><div class="main-text">${(model.references || []).length}</div></div>
+              <div><div class="main-text">${model.movement}</div></div>
+              <div><div class="main-text">${model.case}</div></div>
+              <div><button class="panel-action" type="button" data-market-model="${index}" data-market-brand-id="${brand.id}">${iconSvg.eye}<span>Open</span></button></div>
+            </div>
+          `).join("") || `<div class="detail-empty user-empty">No models found for this brand</div>`}
+        </div>
+        <div class="footer-range"><span>แสดง ${rows.length ? `1-${rows.length}` : "0"} จาก ${rows.length}</span></div>
+      `;
+    }
+
+    function renderMarketReferenceRows(brand = getMarketBrand(activeMarketBrandId), modelIndex = activeMarketModelIndex) {
+      const model = getMarketModel(brand, modelIndex);
+      if (!model) return;
+      const q = (document.querySelector("#market-reference-search")?.value || "").trim().toLowerCase();
+      const rows = (model.references || []).map((reference, index) => ({ reference, index })).filter(({ reference }) => {
+        const text = [reference.number, reference.year, reference.material, reference.caseSize, reference.movement, reference.status].join(" ").toLowerCase();
+        return !q || text.includes(q);
+      });
+      document.querySelector("#table").innerHTML = `
+        <div class="asset-table category-table market-table market-record-table">
+          <div class="asset-row head"><div>Reference</div><div>Year</div><div>Material</div><div>Status</div><div>Action</div></div>
+          ${rows.map(({ reference, index }) => `
+            <div class="asset-row" data-market-reference="${index}" data-market-brand-id="${brand.id}" data-market-model-index="${modelIndex}">
+              <div><div class="main-text">${reference.number}</div></div>
+              <div><div class="main-text">${reference.year}</div></div>
+              <div><div class="main-text">${reference.material}</div><div class="muted">${reference.caseSize} / ${reference.movement}</div></div>
+              <div>${renderMarketReferenceStatus(reference.status)}</div>
+              <div><button class="panel-action" type="button" data-market-reference="${index}" data-market-brand-id="${brand.id}" data-market-model-index="${modelIndex}">${iconSvg.eye}<span>Open</span></button></div>
+            </div>
+          `).join("") || `<div class="detail-empty user-empty">No references found for this model</div>`}
         </div>
         <div class="footer-range"><span>แสดง ${rows.length ? `1-${rows.length}` : "0"} จาก ${rows.length}</span></div>
       `;
@@ -13222,17 +13379,80 @@
     }
 
     function renderMarketBrandDetailPage(brandId = activeMarketBrandId) {
-      const brand = marketCatalogData.brands.find(entry => entry.id === brandId) || marketCatalogData.brands[0];
+      const brand = getMarketBrand(brandId);
       activeMarketBrandId = brand.id;
       activeModule = "market";
       activeSub = "Catalog";
       document.body.classList.add("market-list-mode");
       document.body.classList.remove("dashboard-mode", "user-management-mode", "asset-list-mode", "article-list-mode", "category-list-mode", "reported-board-mode", "asset-detail-mode", "user-list-mode", "user-detail-mode");
-      setPageActions(`<button class="btn" type="button" data-market-back>${iconSvg.chevron}<span>Back to Catalog</span></button><button class="btn" type="button" data-module-jump="market" data-sub-jump="Sync Logs">${iconSvg.refresh}<span>Sync API</span></button>`);
+      setPageActions(renderPageBackButton('data-market-back="catalog"', "Back to Catalog"));
       document.querySelector("#crumb").textContent = `${moduleData.market.crumb} / Catalog / ${brand.name}`;
       document.querySelector("#page-title").textContent = brand.name;
       document.querySelector("#page-meta").textContent = "";
-      document.querySelector("#panel-title").textContent = "BRAND DETAIL";
+      document.querySelector("#panel-title").textContent = "MODELS";
+      document.querySelector("#panel-subtitle").textContent = "";
+      document.querySelector("#primary-action").textContent = "";
+      document.querySelector("#user-panel-filter-actions").innerHTML = "";
+      document.querySelector(".filters").innerHTML = `
+        <div class="user-filter-bar market-catalog-filter-bar">
+          <input class="field search" id="market-model-search" type="search" placeholder="Search model" />
+        </div>
+      `;
+      document.querySelector("#summary-grid").innerHTML = "";
+      document.querySelector("#cards").innerHTML = "";
+      document.querySelector("#detail").innerHTML = "";
+      renderMarketModelRows(brand);
+      updateActiveNav();
+      scrollMainToTop();
+    }
+
+    function renderMarketModelDetailPage(brandId = activeMarketBrandId, modelIndex = 0) {
+      const brand = getMarketBrand(brandId);
+      const model = getMarketModel(brand, modelIndex);
+      if (!brand || !model) return;
+      activeMarketBrandId = brand.id;
+      activeMarketModelIndex = Number(modelIndex) || 0;
+      activeModule = "market";
+      activeSub = "Catalog";
+      document.body.classList.add("market-list-mode");
+      document.body.classList.remove("dashboard-mode", "user-management-mode", "asset-list-mode", "article-list-mode", "category-list-mode", "reported-board-mode", "asset-detail-mode", "user-list-mode", "user-detail-mode");
+      setPageActions(renderPageBackButton(`data-market-back="brand" data-market-brand-id="${brand.id}"`, `Back to ${brand.name}`));
+      document.querySelector("#crumb").textContent = `${moduleData.market.crumb} / Catalog / ${brand.name} / ${model.name}`;
+      document.querySelector("#page-title").textContent = model.name;
+      document.querySelector("#page-meta").textContent = "";
+      document.querySelector("#panel-title").textContent = "REFERENCES";
+      document.querySelector("#panel-subtitle").textContent = "";
+      document.querySelector("#primary-action").textContent = "";
+      document.querySelector("#user-panel-filter-actions").innerHTML = "";
+      document.querySelector(".filters").innerHTML = `
+        <div class="user-filter-bar market-catalog-filter-bar">
+          <input class="field search" id="market-reference-search" type="search" placeholder="Search reference" />
+        </div>
+      `;
+      document.querySelector("#summary-grid").innerHTML = "";
+      document.querySelector("#cards").innerHTML = "";
+      document.querySelector("#detail").innerHTML = "";
+      renderMarketReferenceRows(brand, activeMarketModelIndex);
+      updateActiveNav();
+      scrollMainToTop();
+    }
+
+    function renderMarketReferenceDetailPage(brandId = activeMarketBrandId, modelIndex = 0, referenceIndex = 0) {
+      const brand = getMarketBrand(brandId);
+      const model = getMarketModel(brand, modelIndex);
+      const reference = getMarketReference(model, referenceIndex);
+      if (!brand || !model || !reference) return;
+      activeMarketBrandId = brand.id;
+      activeMarketModelIndex = Number(modelIndex) || 0;
+      activeModule = "market";
+      activeSub = "Catalog";
+      document.body.classList.add("market-list-mode");
+      document.body.classList.remove("dashboard-mode", "user-management-mode", "asset-list-mode", "article-list-mode", "category-list-mode", "reported-board-mode", "asset-detail-mode", "user-list-mode", "user-detail-mode");
+      setPageActions(renderPageBackButton(`data-market-back="model" data-market-brand-id="${brand.id}" data-market-model-index="${activeMarketModelIndex}"`, `Back to ${model.name}`));
+      document.querySelector("#crumb").textContent = `${moduleData.market.crumb} / Catalog / ${brand.name} / ${model.name} / ${reference.number}`;
+      document.querySelector("#page-title").textContent = reference.number;
+      document.querySelector("#page-meta").textContent = "";
+      document.querySelector("#panel-title").textContent = "REFERENCE DETAIL";
       document.querySelector("#panel-subtitle").textContent = "";
       document.querySelector("#primary-action").textContent = "";
       document.querySelector("#user-panel-filter-actions").innerHTML = "";
@@ -13242,26 +13462,18 @@
       document.querySelector("#detail").innerHTML = "";
       document.querySelector("#table").innerHTML = `
         <div class="market-brand-detail">
-          <div class="market-detail-grid">
-            <div class="detail-tile"><span>Models</span><strong>${brand.models.toLocaleString()}</strong></div>
-            <div class="detail-tile"><span>References</span><strong>${brand.references.toLocaleString()}</strong></div>
-            <div class="detail-tile"><span>Last Sync</span><strong>${brand.lastSync}</strong></div>
-            <div class="detail-tile"><span>Status</span><strong>${brand.status}</strong></div>
+          <div class="detail-grid two">
+            <div class="detail-tile"><span>Brand</span><strong>${brand.name}</strong></div>
+            <div class="detail-tile"><span>Model</span><strong>${model.name}</strong></div>
+            <div class="detail-tile"><span>Reference</span><strong>${reference.number}</strong></div>
+            <div class="detail-tile"><span>Status</span><strong>${reference.status}</strong></div>
+            <div class="detail-tile"><span>Year</span><strong>${reference.year}</strong></div>
+            <div class="detail-tile"><span>Case Size</span><strong>${reference.caseSize}</strong></div>
+            <div class="detail-tile"><span>Material</span><strong>${reference.material}</strong></div>
+            <div class="detail-tile"><span>Movement</span><strong>${reference.movement}</strong></div>
+            <div class="detail-tile"><span>Price</span><strong>${reference.price}</strong></div>
           </div>
-          <div class="module-note"><strong>FO impact:</strong> ${brand.impact}</div>
-          <section class="market-detail-section">
-            <h3>Models & References</h3>
-            ${renderMarketModelReferenceBlocks(brand)}
-          </section>
-          <section class="market-detail-section">
-            <h3>Data Quality</h3>
-            <div class="timeline">${brand.quality.map(item => `<div class="event">${item}</div>`).join("")}</div>
-          </section>
-          <section class="market-detail-section">
-            <h3>Sync Source</h3>
-            <div class="kv"><span>Endpoints</span><strong>${brand.source}</strong></div>
-            <div class="kv"><span>Last sync</span><strong>${brand.lastSync}</strong></div>
-          </section>
+          <div class="module-note"><strong>Description:</strong> ${reference.description}</div>
         </div>
       `;
       updateActiveNav();
@@ -17164,6 +17376,20 @@
         renderMarketBrandDetailPage(marketBrandButton.dataset.marketBrand);
         return;
       }
+      const marketModelButton = event.target.closest("[data-market-model]");
+      if (marketModelButton && activeModule === "market") {
+        renderMarketModelDetailPage(marketModelButton.dataset.marketBrandId || activeMarketBrandId, marketModelButton.dataset.marketModel);
+        return;
+      }
+      const marketReferenceButton = event.target.closest("[data-market-reference]");
+      if (marketReferenceButton && activeModule === "market") {
+        renderMarketReferenceDetailPage(
+          marketReferenceButton.dataset.marketBrandId || activeMarketBrandId,
+          marketReferenceButton.dataset.marketModelIndex || 0,
+          marketReferenceButton.dataset.marketReference
+        );
+        return;
+      }
       const marketRecordButton = event.target.closest("[data-market-record]");
       if (marketRecordButton && activeModule === "market") {
         renderMarketRecordDetailPage(marketRecordButton.dataset.marketRecord, activeSub);
@@ -17171,7 +17397,14 @@
       }
       const marketBackButton = event.target.closest("[data-market-back]");
       if (marketBackButton && activeModule === "market") {
-        renderMarketData(activeSub || "Catalog");
+        const target = marketBackButton.dataset.marketBack || "catalog";
+        if (target === "model") {
+          renderMarketModelDetailPage(marketBackButton.dataset.marketBrandId || activeMarketBrandId, marketBackButton.dataset.marketModelIndex || 0);
+        } else if (target === "brand") {
+          renderMarketBrandDetailPage(marketBackButton.dataset.marketBrandId || activeMarketBrandId);
+        } else {
+          renderMarketData(activeSub || "Catalog");
+        }
         updateActiveNav();
         scrollMainToTop();
         return;
@@ -18219,6 +18452,12 @@
       }
       if (event.target.matches("#market-search")) {
         renderRows();
+      }
+      if (event.target.matches("#market-model-search")) {
+        renderMarketModelRows(getMarketBrand(activeMarketBrandId));
+      }
+      if (event.target.matches("#market-reference-search")) {
+        renderMarketReferenceRows(getMarketBrand(activeMarketBrandId), activeMarketModelIndex);
       }
       if (event.target.matches("#article-search")) {
         articleListPage = 1;
