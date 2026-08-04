@@ -6968,6 +6968,8 @@
       asset: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="7"/><path d="M9 2h6"/><path d="M9 22h6"/><path d="M9.5 2v3.4M14.5 2v3.4M9.5 18.6V22M14.5 18.6V22"/><path d="M12 8v4l2.7 1.8"/></svg>',
       content: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><path d="M14 2v6h6"/><path d="M8 13h8M8 17h6"/></svg>',
       plus: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14"/><path d="M5 12h14"/></svg>',
+      importFile: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg>',
+      exportFile: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21V9"/><path d="m7 14 5-5 5 5"/><path d="M5 3h14"/></svg>',
       market: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 17 9 11l4 4 8-8"/><path d="M14 7h7v7"/></svg>',
       directory: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 21h18"/><path d="M5 21V7l7-4 7 4v14"/><path d="M9 21v-6h6v6"/><path d="M9 10h.01M15 10h.01"/></svg>',
       audit: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 11h6M9 15h6"/><path d="M8 3h8l3 3v15H5V6l3-3Z"/><path d="M8 3v4h8V3"/></svg>',
@@ -14300,8 +14302,8 @@
       document.body.classList.remove("dashboard-mode", "user-management-mode", "asset-list-mode", "article-list-mode", "category-list-mode", "reported-board-mode", "asset-detail-mode", "user-list-mode", "user-detail-mode");
       setPageActions(`
         ${subLabel === "Catalog" ? `<button class="btn" type="button" data-market-management-action="add-brand" data-market-scope="brand">${iconSvg.plus}<span>Add Brand</span></button>` : ""}
-        <button class="btn" type="button" data-market-management-action="import" data-market-scope="brand">${iconSvg.upload || iconSvg.refresh}<span>Import</span></button>
-        <button class="btn" type="button" data-market-management-action="export" data-market-scope="brand">${iconSvg.download || iconSvg.eye}<span>Export</span></button>
+        <button class="btn" type="button" data-market-management-action="import" data-market-scope="brand">${iconSvg.importFile}<span>Import</span></button>
+        <button class="btn" type="button" data-market-management-action="export" data-market-scope="brand">${iconSvg.exportFile}<span>Export</span></button>
         <button class="btn" type="button" data-market-sync-api>${iconSvg.refresh}<span>${subLabel === "Sync Logs" ? "Run sync" : "Sync API"}</span></button>
       `);
       document.querySelector("#user-panel-filter-actions").innerHTML = "";
