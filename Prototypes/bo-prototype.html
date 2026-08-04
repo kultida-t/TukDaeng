@@ -1633,6 +1633,31 @@
     body.market-list-mode .market-table.market-record-table .asset-row {
       grid-template-columns: minmax(220px, 1.35fr) minmax(150px, .9fr) minmax(120px, .65fr) minmax(116px, .65fr) 74px;
     }
+    .market-sync-modal-content .user-action-target {
+      margin-bottom: 14px;
+    }
+    .market-sync-modal-content .detail-grid.two {
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+    .market-sync-modal-content .timeline {
+      gap: 8px;
+      margin-top: 0;
+      margin-bottom: 16px;
+    }
+    .market-sync-modal-content .event {
+      min-height: 48px;
+      padding: 9px 12px;
+      line-height: 1.35;
+    }
+    .market-sync-modal-content .user-action-footer {
+      margin-top: 4px;
+      margin-bottom: 10px;
+    }
+    .market-sync-modal-content .user-action-prototype-tools {
+      margin-top: 0;
+      padding-top: 12px;
+    }
     body.market-list-mode .market-brand-detail {
       display: grid;
       gap: 16px;
@@ -7820,6 +7845,7 @@
     let activeMarketModelIndex = 0;
     let marketCatalogPage = 1;
     const marketCatalogPageSize = 10;
+    let activeMarketSyncJob = null;
 
     moduleData.market = mod("Market Data", "การดำเนินงาน / Market Data", "Market Catalog", "ดูแลข้อมูล brand, model, reference, detail และ price indicator จาก thewatchapi ก่อน sync ไปยัง Search, Asset และ Watch Alert", "Sync API", [["Brands", "9", "sample catalog"], ["References", "24", "sample refs"], ["Mapping Queue", "23", "ต้อง review"], ["API Sync", "08:30", "ล่าสุดวันนี้"]], [
       item("BRD-ROLEX", "Rolex", "Brand Catalog", "thewatchapi", "ปกติ", "Active", "Brand-first catalog with model, reference, detail and price coverage", ["Models 1,240", "Refs 4,820"], "Review brand catalog and drill down before changing visibility"),
@@ -13636,6 +13662,136 @@
       scrollMainToTop();
     }
 
+    function formatMarketSyncTimestamp(date = new Date()) {
+      const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+      return `${String(date.getDate()).padStart(2, "0")} ${months[date.getMonth()]} ${date.getFullYear()} ${String(date.getHours()).padStart(2, "0")}:${String(date.getMinutes()).padStart(2, "0")}`;
+    }
+
+    function getMarketSyncJobId(date = new Date()) {
+      return `SYNC-${date.getFullYear()}${String(date.getMonth() + 1).padStart(2, "0")}${String(date.getDate()).padStart(2, "0")}-${String(date.getHours()).padStart(2, "0")}${String(date.getMinutes()).padStart(2, "0")}`;
+    }
+
+    function renderMarketSyncSteps(activeIndex = -1, failedIndex = -1) {
+      const steps = ["Queued", "Syncing brand/list", "Syncing model/list", "Syncing reference/list", "Syncing price/history"];
+      return `
+        <div class="timeline">
+          ${steps.map((step, index) => {
+            const state = failedIndex === index ? "Failed" : index < activeIndex ? "Done" : index === activeIndex ? "Running" : "Pending";
+            return `<div class="event"><strong>${step}</strong><br><span class="muted">${state}</span></div>`;
+          }).join("")}
+        </div>
+      `;
+    }
+
+    function renderMarketSyncModal(state = "confirm", scenario = "success") {
+      const modalBody = document.querySelector("#user-action-modal-body");
+      if (!modalBody) return;
+      const now = new Date();
+      const job = activeMarketSyncJob || {
+        id: getMarketSyncJobId(now),
+        timestamp: formatMarketSyncTimestamp(now),
+        brands: marketCatalogData.brands.length,
+        references: marketCatalogData.brands.reduce((sum, brand) => sum + brand.references, 0)
+      };
+      const isRunning = state === "running";
+      const isSuccess = state === "success";
+      const isError = state === "error";
+      modalBody.innerHTML = `
+        <div class="user-action-page market-sync-modal-content">
+          <div class="user-action-head">
+            <div>
+              <h2 id="user-action-modal-title">${isSuccess ? "Sync completed" : isError ? "Sync failed" : isRunning ? "Syncing API" : "Run API sync?"}</h2>
+              <p>${isSuccess ? "Catalog records were refreshed and the sync log was updated." : isError ? "Catalog data was not changed. Retry failed endpoints after checking the source response." : "Start a new thewatchapi sync job for catalog source data."}</p>
+            </div>
+            <button class="btn user-action-close" type="button" data-user-action-modal-close aria-label="Close modal" title="Close">${iconSvg.close}</button>
+          </div>
+          <div class="user-action-target">
+            <div>
+              <strong>thewatchapi</strong>
+              <span>Brands, Models, References, Price History</span>
+            </div>
+            <span class="pill ${isError ? "red" : isSuccess ? "green" : "blue"}">${isError ? "Failed" : isSuccess ? "Completed" : isRunning ? "Running" : "Ready"}</span>
+          </div>
+          <div class="user-action-layout">
+            <div class="detail-section">
+              <div class="detail-grid two">
+                <div class="detail-tile"><span>Job ID</span><strong>${job.id}</strong></div>
+                <div class="detail-tile"><span>Last Sync</span><strong>${marketCatalogData.brands[0]?.lastSync || "-"}</strong></div>
+                <div class="detail-tile"><span>Brands</span><strong>${job.brands.toLocaleString()}</strong></div>
+                <div class="detail-tile"><span>References</span><strong>${job.references.toLocaleString()}</strong></div>
+              </div>
+              ${renderMarketSyncSteps(isRunning ? 3 : isSuccess ? 5 : isError ? 3 : -1, isError ? 3 : -1)}
+              ${isError ? `<div class="warning-note action-feedback show error"><strong>reference/list failed</strong><br><span>Rate limit returned from source API. Existing Catalog values remain unchanged.</span></div>` : ""}
+              ${isSuccess ? `<div class="warning-note action-feedback show success"><strong>Sync completed</strong><br><span>Updated ${job.brands.toLocaleString()} brands at ${job.timestamp}. Mapping warnings were added to Sync Logs.</span></div>` : ""}
+              <div class="user-detail-actions user-action-footer">
+                ${state === "confirm" ? `<button class="user-detail-action-btn primary user-action-confirm" type="button" data-market-sync-run>Run sync</button><button class="user-detail-action-btn" type="button" data-user-action-modal-close>Cancel</button>` : ""}
+                ${isRunning ? `<button class="user-detail-action-btn primary user-action-confirm" type="button" disabled>Syncing...</button>` : ""}
+                ${isSuccess ? `<button class="user-detail-action-btn primary" type="button" data-market-sync-view-logs>View Sync Logs</button><button class="user-detail-action-btn" type="button" data-user-action-modal-close>Close</button>` : ""}
+                ${isError ? `<button class="user-detail-action-btn warning user-action-confirm" type="button" data-market-sync-retry>Retry failed endpoints</button><button class="user-detail-action-btn" type="button" data-user-action-modal-close>Close</button>` : ""}
+              </div>
+              ${state === "confirm" ? `
+                <details class="prototype-tools user-action-prototype-tools">
+                  <summary>Prototype scenario</summary>
+                  <select class="field" id="market-sync-scenario">
+                    <option value="success" ${scenario === "success" ? "selected" : ""}>Success</option>
+                    <option value="rate_limit" ${scenario === "rate_limit" ? "selected" : ""}>Rate limit error</option>
+                  </select>
+                </details>
+              ` : ""}
+            </div>
+          </div>
+        </div>
+      `;
+      showUserActionModal();
+    }
+
+    function openMarketSyncModal() {
+      activeMarketSyncJob = null;
+      renderMarketSyncModal("confirm");
+    }
+
+    function completeMarketSyncJob(job) {
+      const syncStartedAt = job.startedAt || new Date();
+      marketCatalogData.brands.forEach((brand, index) => {
+        brand.lastSync = formatMarketSyncTimestamp(new Date(syncStartedAt.getTime() - (index % 5) * 60000));
+      });
+      const newLog = {
+        id: job.id,
+        title: "Manual thewatchapi sync",
+        brand: "All brands",
+        type: "API Batch",
+        status: "Completed",
+        priority: "ปกติ",
+        source: `Manual ${job.timestamp}`,
+        detail: `Brands, models, references and price history completed for ${job.brands.toLocaleString()} brands with 6 mapping warnings.`,
+        action: "Review mapping warnings before publishing downstream changes."
+      };
+      if (!marketCatalogData.syncLogs.some(log => log.id === newLog.id)) marketCatalogData.syncLogs.unshift(newLog);
+      moduleData.market.cards[3][1] = job.timestamp.slice(12);
+      if (activeModule === "market" && activeSub === "Catalog") renderMarketCatalogRows();
+      renderMarketSyncModal("success");
+      showSuccessToast(`${job.id}: Sync completed`);
+    }
+
+    function runMarketSyncJob(scenario = "success") {
+      const now = new Date();
+      activeMarketSyncJob = {
+        id: getMarketSyncJobId(now),
+        timestamp: formatMarketSyncTimestamp(now),
+        startedAt: now,
+        brands: marketCatalogData.brands.length,
+        references: marketCatalogData.brands.reduce((sum, brand) => sum + brand.references, 0)
+      };
+      renderMarketSyncModal("running", scenario);
+      window.setTimeout(() => {
+        if (scenario === "rate_limit") {
+          renderMarketSyncModal("error", scenario);
+          return;
+        }
+        completeMarketSyncJob(activeMarketSyncJob);
+      }, 900);
+    }
+
     function renderMarketCards(subLabel) {
       const cards = subLabel === "Catalog"
         ? [["Brand-first workflow", "Admin starts from a brand, then drills into models, references, detail fields and price coverage in one context."], ["API source", "thewatchapi supplies brand, model, reference, detail and USD price history. BO keeps source trace and last_updated."], ["Downstream usage", "Approved records feed autocomplete, Asset form suggestions, Search facets, price comparison and Watch Alert matching."]]
@@ -13658,7 +13814,7 @@
       activeRow = null;
       document.body.classList.add("market-list-mode");
       document.body.classList.remove("dashboard-mode", "user-management-mode", "asset-list-mode", "article-list-mode", "category-list-mode", "reported-board-mode", "asset-detail-mode", "user-list-mode", "user-detail-mode");
-      setPageActions(`<button class="btn" type="button" data-module-jump="market" data-sub-jump="Sync Logs">${iconSvg.refresh}<span>${subLabel === "Sync Logs" ? "Run sync" : "Sync API"}</span></button>`);
+      setPageActions(`<button class="btn" type="button" data-market-sync-api>${iconSvg.refresh}<span>${subLabel === "Sync Logs" ? "Run sync" : "Sync API"}</span></button>`);
       document.querySelector("#user-panel-filter-actions").innerHTML = "";
       document.querySelector("#crumb").textContent = `${moduleData.market.crumb} / ${subLabel}`;
       document.querySelector("#page-title").textContent = subLabel;
@@ -17424,6 +17580,28 @@
       const assetReportJump = event.target.closest("[data-asset-report-jump]");
       if (assetReportJump) {
         jumpToAssetReportReference(assetReportJump.dataset.assetReportJump);
+        return;
+      }
+      const marketSyncButton = event.target.closest("[data-market-sync-api]");
+      if (marketSyncButton) {
+        openMarketSyncModal();
+        return;
+      }
+      const marketSyncRunButton = event.target.closest("[data-market-sync-run]");
+      if (marketSyncRunButton) {
+        const scenario = document.querySelector("#market-sync-scenario")?.value || "success";
+        runMarketSyncJob(scenario);
+        return;
+      }
+      const marketSyncRetryButton = event.target.closest("[data-market-sync-retry]");
+      if (marketSyncRetryButton) {
+        runMarketSyncJob("success");
+        return;
+      }
+      const marketSyncLogsButton = event.target.closest("[data-market-sync-view-logs]");
+      if (marketSyncLogsButton) {
+        closeUserActionModal();
+        jumpToModule("market", "Sync Logs");
         return;
       }
       const moduleJump = event.target.closest("[data-module-jump], [data-jump]");
