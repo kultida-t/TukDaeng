@@ -1636,24 +1636,41 @@
     body.market-list-mode .market-card-tags {
       display: none;
     }
-    .market-sync-modal-content .user-action-target {
+    .market-sync-modal-content .user-action-target,
+    .market-action-modal-content .user-action-target {
       margin-bottom: 14px;
     }
-    .market-sync-modal-content .detail-grid.two {
+    .market-sync-modal-content .detail-grid.two,
+    .market-action-modal-content .detail-grid.two {
       gap: 8px;
       margin-bottom: 12px;
     }
-    .market-sync-modal-content .timeline {
+    .market-sync-modal-content .timeline,
+    .market-action-modal-content .timeline {
       gap: 8px;
       margin-top: 0;
       margin-bottom: 16px;
     }
-    .market-sync-modal-content .event {
+    .market-sync-modal-content .event,
+    .market-action-modal-content .event {
       min-height: 48px;
       padding: 9px 12px;
       line-height: 1.35;
     }
-    .market-sync-modal-content .user-action-footer {
+    .market-action-modal-content .user-action-form {
+      margin-bottom: 12px;
+    }
+    .market-action-modal-content .market-action-fields {
+      display: grid;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+    .market-action-modal-content .warning-note.action-feedback {
+      margin-top: 0;
+      margin-bottom: 12px;
+    }
+    .market-sync-modal-content .user-action-footer,
+    .market-action-modal-content .user-action-footer {
       justify-content: flex-end;
       margin-top: 4px;
       margin-bottom: 10px;
@@ -1732,16 +1749,34 @@
       border-color: #d9e3f1;
       box-shadow: 0 28px 80px rgba(6, 20, 38, .28);
     }
+    .modal.user-action-modal.market-editor-modal {
+      width: min(720px, calc(100vw - 36px));
+      border-radius: 22px;
+      border-color: #d9e3f1;
+      box-shadow: 0 28px 80px rgba(6, 20, 38, .28);
+    }
     .category-editor-modal .modal-body {
+      padding: 24px;
+    }
+    .market-editor-modal .modal-body {
       padding: 24px;
     }
     .category-editor-modal .article-editor-form {
       margin-top: 16px;
     }
+    .market-editor-modal .article-editor-form {
+      margin-top: 16px;
+    }
     .category-editor-modal .article-editor-grid {
       grid-template-columns: minmax(0, 1fr);
     }
+    .market-editor-modal .market-action-fields {
+      grid-template-columns: minmax(0, 1fr);
+    }
     .category-editor-modal .article-editor-form label {
+      grid-column: 1 / -1;
+    }
+    .market-editor-modal .article-editor-form label {
       grid-column: 1 / -1;
     }
     .category-editor-modal .article-editor-form > .user-detail-actions {
@@ -11962,7 +11997,7 @@
       const modal = document.querySelector("#user-action-modal");
       if (!modal) return;
       modal.classList.remove("show");
-      modal.querySelector(".user-action-modal")?.classList.remove("article-preview-modal", "article-editor-confirm-modal", "category-editor-modal", "category-order-modal", "board-report-phone-preview-modal");
+      modal.querySelector(".user-action-modal")?.classList.remove("article-preview-modal", "article-editor-confirm-modal", "category-editor-modal", "category-order-modal", "market-editor-modal", "board-report-phone-preview-modal");
       document.body.classList.remove("asset-action-modal-open");
       document.querySelector("#user-action-modal-body").innerHTML = "";
     }
@@ -13402,6 +13437,9 @@
     }
 
     function getMarketImpactCounts(brand) {
+      if (!brand || brand.status === "Draft" || (!brand.modelsSample?.length && !(Number(brand.references) || 0))) {
+        return { assets: 0, alerts: 0, search: 0, portfolio: 0 };
+      }
       return {
         assets: Math.max(1, Math.round((brand?.mapped || 0) * .18)),
         alerts: Math.max(1, Math.round((brand?.references || 0) * .025)),
@@ -13739,64 +13777,216 @@
       return { brand, model: null, reference: null, title: brand?.name || "Brand", status: brand?.status || "Active" };
     }
 
+    function normalizeMarketKey(value = "") {
+      return String(value).trim().replace(/[^a-z0-9]+/gi, " ").replace(/\s+/g, " ").toLowerCase();
+    }
+
+    function setMarketActionFieldError(field, message = "") {
+      const modalBody = document.querySelector("#user-action-modal-body");
+      const node = modalBody?.querySelector(`[data-market-${field}-error]`);
+      if (node) {
+        node.textContent = message;
+        node.classList.toggle("show", Boolean(message));
+      }
+      const controlMap = {
+        name: modalBody?.querySelector("#market-action-name"),
+        refs: modalBody?.querySelector("#market-action-refs"),
+        year: modalBody?.querySelector("#market-action-year"),
+        reason: modalBody?.querySelector("#market-action-reason")
+      };
+      controlMap[field]?.classList.toggle("article-field-invalid", Boolean(message));
+    }
+
+    function clearMarketActionFieldErrors() {
+      ["name", "refs", "year", "reason"].forEach(field => setMarketActionFieldError(field));
+    }
+
+    function bindMarketActionValidationReset() {
+      const modalBody = document.querySelector("#user-action-modal-body");
+      const fields = [
+        ["#market-action-name", "name"],
+        ["#market-action-refs", "refs"],
+        ["#market-action-year", "year"],
+        ["#market-action-reason", "reason"]
+      ];
+      fields.forEach(([selector, field]) => {
+        modalBody?.querySelector(selector)?.addEventListener("input", () => setMarketActionFieldError(field));
+      });
+    }
+
+    function renderMarketActionSteps(action) {
+      const stepsByAction = {
+        import: ["อัปโหลดไฟล์", "ตรวจสอบข้อมูลก่อนบันทึก", "เตรียมรายการที่ผ่าน", "ส่งรายการที่ต้องแก้ไป Mapping Queue"],
+        export: ["อ่านขอบเขตข้อมูลปัจจุบัน", "สร้างชุดไฟล์ส่งออก", "กำหนดอายุสิทธิ์ไฟล์", "บันทึก audit"]
+      };
+      const steps = stepsByAction[action] || ["ตรวจสอบข้อมูล", "บันทึกการเปลี่ยนแปลง", "บันทึก audit", "รีเฟรช Catalog"];
+      return `
+        <div class="timeline">
+          ${steps.map((step, index) => `<div class="event"><strong>${step}</strong><br><span class="muted">${index === 0 ? "พร้อมดำเนินการ" : "รอดำเนินการ"}</span></div>`).join("")}
+        </div>
+      `;
+    }
+
+    function renderMarketActionTiles(action, target) {
+      const brands = marketCatalogData.brands.length;
+      const references = marketCatalogData.brands.reduce((sum, brand) => sum + brand.references, 0);
+      const configs = {
+        import: [
+          ["Batch", "CSV / XLSX"],
+          ["Dry Run", "Required"],
+          ["Valid Rows", "142"],
+          ["Review Rows", "11"]
+        ],
+        export: [
+          ["Scope", "Catalog"],
+          ["Brands", brands.toLocaleString()],
+          ["References", references.toLocaleString()],
+          ["Expires", "24 hours"]
+        ]
+      };
+      const tiles = configs[action] || [
+        ["Target", target.title],
+        ["Scope", "Market Data"],
+        ["Status", target.status],
+        ["Audit", "Required"]
+      ];
+      return `
+        <div class="detail-grid two">
+          ${tiles.map(tile => `<div class="detail-tile"><span>${tile[0]}</span><strong>${tile[1]}</strong></div>`).join("")}
+        </div>
+      `;
+    }
+
+    function renderMarketActionBody(action, target) {
+      const isAdd = action === "add-brand";
+      const isAddModel = action === "add-model";
+      const isAddReference = action === "add-reference";
+      const isImport = action === "import";
+      const isExport = action === "export";
+      if (isAdd) {
+        return `
+          <div class="market-action-fields">
+            <label><span>ชื่อแบรนด์ <span class="article-required-mark">*</span></span>
+              <input id="market-action-name" class="field" value="" placeholder="เช่น Rolex" />
+              <span class="article-field-error" data-market-name-error></span>
+            </label>
+            <label><span>เหตุผล <span class="article-required-mark">*</span></span>
+              <textarea id="market-action-reason" class="field" rows="3" placeholder="ระบุเหตุผลสำหรับบันทึก audit">อัปเดตคุณภาพข้อมูลตลาด</textarea>
+              <span class="article-field-error" data-market-reason-error></span>
+            </label>
+          </div>
+        `;
+      }
+      if (isAddModel) {
+        return `
+          <div class="market-action-fields">
+            <label><span>ชื่อรุ่น <span class="article-required-mark">*</span></span>
+              <input id="market-action-name" class="field" value="" placeholder="เช่น Submariner" />
+              <span class="article-field-error" data-market-name-error></span>
+            </label>
+            <label><span>เลข Reference</span>
+              <input id="market-action-refs" class="field" value="" placeholder="ถ้ามีหลายรายการให้คั่นด้วยเครื่องหมายจุลภาค" />
+              <span class="article-field-error" data-market-refs-error></span>
+            </label>
+            <label><span>เหตุผล <span class="article-required-mark">*</span></span>
+              <textarea id="market-action-reason" class="field" rows="3" placeholder="ระบุเหตุผลสำหรับบันทึก audit">อัปเดตคุณภาพข้อมูลตลาด</textarea>
+              <span class="article-field-error" data-market-reason-error></span>
+            </label>
+          </div>
+        `;
+      }
+      if (isAddReference) {
+        return `
+          <div class="market-action-fields">
+            <label><span>เลข Reference <span class="article-required-mark">*</span></span>
+              <input id="market-action-name" class="field" value="" placeholder="เช่น 126610LN" />
+              <span class="article-field-error" data-market-name-error></span>
+            </label>
+            <label><span>ปี / ช่วงปี</span>
+              <input id="market-action-year" class="field" value="" placeholder="เช่น 2020-present" />
+              <span class="article-field-error" data-market-year-error></span>
+            </label>
+            <label><span>เหตุผล <span class="article-required-mark">*</span></span>
+              <textarea id="market-action-reason" class="field" rows="3" placeholder="ระบุเหตุผลสำหรับบันทึก audit">อัปเดตคุณภาพข้อมูลตลาด</textarea>
+              <span class="article-field-error" data-market-reason-error></span>
+            </label>
+          </div>
+        `;
+      }
+      return `
+        ${renderMarketActionTiles(action, target)}
+        <div class="market-action-fields">
+          ${isImport ? `
+            <label>ไฟล์นำเข้า<input id="market-action-name" class="field" value="market-data-import-2026-08-04.csv" /></label>
+          ` : ""}
+          ${!isAdd && !isImport && !isExport ? `
+            <label>ชื่อที่แสดง<input id="market-action-name" class="field" value="${target.title}" placeholder="ชื่อแบรนด์ รุ่น หรือ Reference" /></label>
+            <label>หมายเหตุแหล่งข้อมูล<input id="market-action-source" class="field" value="แก้ไขโดยผู้ดูแล" placeholder="Manual, Provider, Import" /></label>
+          ` : ""}
+          <label>เหตุผล<textarea id="market-action-reason" class="field" rows="3" placeholder="ระบุเหตุผลสำหรับ audit และผลกระทบ downstream">อัปเดตคุณภาพข้อมูลตลาด</textarea></label>
+        </div>
+        ${renderMarketActionSteps(action)}
+        ${isImport ? `<div class="warning-note action-feedback show"><strong>ผลการตรวจสอบไฟล์</strong><br><span>ข้อมูลผ่าน 142 รายการ, ซ้ำ 6 รายการ, alias conflict 3 รายการ, ขาดข้อมูลจำเป็น 2 รายการ ระบบจะยังไม่บันทึกข้อมูลจนกว่าจะยืนยัน</span></div>` : ""}
+        ${isExport ? `<div class="warning-note action-feedback show success"><strong>ไฟล์ส่งออกมีการควบคุมสิทธิ์</strong><br><span>ไฟล์ CSV และ Excel จะหมดอายุภายใน 24 ชั่วโมง และมีการบันทึก audit</span></div>` : ""}
+      `;
+    }
+
     function openMarketManagementModal(action, scope = "brand", brandId = activeMarketBrandId, modelIndex = activeMarketModelIndex, referenceIndex = 0) {
+      const modal = document.querySelector("#user-action-modal");
+      const modalCard = modal?.querySelector(".user-action-modal");
       const modalBody = document.querySelector("#user-action-modal-body");
       if (!modalBody) return;
+      modalCard?.classList.remove("article-preview-modal", "article-editor-confirm-modal", "category-editor-modal", "category-order-modal", "board-report-phone-preview-modal");
+      modalCard?.classList.add("market-editor-modal");
       const target = getMarketActionTarget(scope, brandId, modelIndex, referenceIndex);
       const isAdd = action === "add-brand";
+      const isAddModel = action === "add-model";
+      const isAddReference = action === "add-reference";
       const isImport = action === "import";
       const isExport = action === "export";
       const isAudit = action === "audit";
       const isToggle = action === "toggle-status";
-      const title = isAdd ? "Add market brand" : isImport ? "Import market data" : isExport ? "Export market data" : isAudit ? "Audit trail" : `${action === "override" ? "Override provider data" : isToggle ? (target.status === "Inactive" ? "Reactivate record" : "Inactivate record") : "Edit market record"}`;
+      const title = isAdd ? "Add Market Brand" : isAddModel ? "Add Market Model" : isAddReference ? "Add Reference" : isImport ? "Import Market Data" : isExport ? "Export Market Data" : isAudit ? "Audit Trail" : `${action === "override" ? "Override Provider Data" : isToggle ? (target.status === "Inactive" ? "Reactivate Record" : "Inactivate Record") : "Edit Market Record"}`;
       const nextStatus = target.status === "Inactive" ? "Active" : "Inactive";
       modalBody.innerHTML = `
-        <div class="user-action-page">
+        <div class="user-action-page ${isAdd || isAddModel || isAddReference || isImport || isExport ? "market-action-modal-content" : ""}">
           <div class="user-action-head">
             <div>
               <h2 id="user-action-modal-title">${title}</h2>
-              <p>${isAdd ? "Create an internal master-data record." : isImport ? "Run dry-run validation before writing any imported rows." : isExport ? "Create a permission-controlled export job." : `${target.title} · ${scope}`}</p>
+              <p>${isAdd ? "สร้างข้อมูลแบรนด์สำหรับใช้งานภายในระบบ" : isAddModel ? `เพิ่มรุ่นภายใต้ ${target.brand?.name || "แบรนด์นี้"}` : isAddReference ? `เพิ่ม Reference ภายใต้ ${target.model?.name || "รุ่นนี้"}` : isImport ? "ตรวจสอบไฟล์ก่อนนำข้อมูลเข้าระบบ" : isExport ? "สร้างไฟล์ส่งออกพร้อมบันทึก audit" : `${target.title} · ${scope}`}</p>
             </div>
             <button class="btn user-action-close" type="button" data-user-action-modal-close aria-label="Close modal" title="Close">${iconSvg.close}</button>
           </div>
           ${isAudit ? renderMarketAuditSection(target.title) : `
-            <div class="user-action-target">
+            ${isAdd || isAddModel || isAddReference ? "" : `<div class="user-action-target">
               <div>
-                <strong>${isAdd ? "New internal record" : isImport ? "CSV/XLSX dry-run" : isExport ? "Catalog export" : target.title}</strong>
+                <strong>${isImport ? "CSV/XLSX dry-run" : isExport ? "Catalog export" : target.title}</strong>
                 <span>${isToggle ? `Status will change to ${nextStatus}` : isImport ? "Provider rows, manual rows and duplicate checks" : "Permission, reason and audit required"}</span>
               </div>
               <span class="pill ${isToggle && nextStatus === "Inactive" ? "amber" : "blue"}">${isToggle ? nextStatus : "Draft"}</span>
-            </div>
+            </div>`}
             <div class="user-action-layout">
               <div class="detail-section">
-                <div class="user-action-form">
-                  ${isAdd || action === "edit" || action === "override" ? `
-                    <label>Display name<input id="market-action-name" class="field" value="${isAdd ? "" : target.title}" placeholder="Brand, model or reference name" /></label>
-                    <label>Source note<input id="market-action-source" class="field" value="${isAdd ? "Manual" : "Manual override"}" placeholder="Manual, Provider, Import" /></label>
-                  ` : ""}
-                  ${isImport ? `
-                    <label>Import batch<input id="market-action-name" class="field" value="market-data-import-2026-08-04.csv" /></label>
-                    <div class="warning-note action-feedback show"><strong>Dry-run result</strong><br><span>142 valid rows, 6 duplicates, 3 alias conflicts, 2 missing required fields. No data is written until confirmed.</span></div>
-                  ` : ""}
-                  ${isExport ? `
-                    <div class="detail-grid two">
-                      <div class="detail-tile"><span>Scope</span><strong>Filtered Catalog</strong></div>
-                      <div class="detail-tile"><span>Format</span><strong>CSV + Excel</strong></div>
-                    </div>
-                    <div class="module-note"><strong>Security:</strong> export job expires after 24 hours and writes an audit event.</div>
-                  ` : ""}
-                  ${isToggle ? renderMarketImpactSection(target.brand) : ""}
-                  <label>Reason<textarea id="market-action-reason" class="field" rows="3" placeholder="Required for audit and downstream impact">Operational data quality update</textarea></label>
+                <div class="user-action-form article-editor-form">
+                  ${isAdd || isAddModel || isAddReference || isImport || isExport ? renderMarketActionBody(action, target) : `
+                    ${action === "edit" || action === "override" ? `
+                      <label>ชื่อที่แสดง<input id="market-action-name" class="field" value="${target.title}" placeholder="ชื่อแบรนด์ รุ่น หรือ Reference" /></label>
+                      <label>หมายเหตุแหล่งข้อมูล<input id="market-action-source" class="field" value="แก้ไขโดยผู้ดูแล" placeholder="Manual, Provider, Import" /></label>
+                    ` : ""}
+                    ${isToggle ? renderMarketImpactSection(target.brand) : ""}
+                    <label>เหตุผล<textarea id="market-action-reason" class="field" rows="3" placeholder="ระบุเหตุผลสำหรับ audit และผลกระทบ downstream">อัปเดตคุณภาพข้อมูลตลาด</textarea></label>
+                  `}
                 </div>
                 <div class="user-detail-actions user-action-footer">
-                  <button class="user-detail-action-btn primary user-action-confirm" type="button" data-market-action-confirm="${action}" data-market-scope="${scope}" data-market-brand-id="${target.brand?.id || ""}" data-market-model-index="${modelIndex}" data-market-reference-index="${referenceIndex}">Confirm</button>
-                  <button class="user-detail-action-btn" type="button" data-user-action-modal-close>Cancel</button>
+                  <button class="user-detail-action-btn" type="button" data-user-action-modal-close>ยกเลิก</button>
+                  <button class="user-detail-action-btn primary user-action-confirm" type="button" data-market-action-confirm="${action}" data-market-scope="${scope}" data-market-brand-id="${target.brand?.id || ""}" data-market-model-index="${modelIndex}" data-market-reference-index="${referenceIndex}">ยืนยัน</button>
                 </div>
               </div>
             </div>
           `}
         </div>
       `;
+      bindMarketActionValidationReset();
       showUserActionModal(true);
     }
 
@@ -13809,18 +13999,150 @@
       const model = getMarketModel(brand, modelIndex);
       const reference = getMarketReference(model, referenceIndex);
       const nameInput = document.querySelector("#market-action-name");
-      const reason = document.querySelector("#market-action-reason")?.value.trim() || "Prototype admin action";
+      const refsInput = document.querySelector("#market-action-refs");
+      const yearInput = document.querySelector("#market-action-year");
+      const reasonValue = document.querySelector("#market-action-reason")?.value.trim() || "";
+      const reason = reasonValue || "Prototype admin action";
       let targetName = brand.name;
       let before = "";
       let after = "";
+      let createdBrandId = "";
+      let createdModelIndex = -1;
+      let createdReferenceIndex = -1;
+      clearMarketActionFieldErrors();
 
       if (action === "add-brand") {
-        const name = (nameInput?.value || "New Brand").trim();
+        const name = (nameInput?.value || "").trim().replace(/\s+/g, " ");
+        if (!name) {
+          setMarketActionFieldError("name", "กรุณากรอกชื่อแบรนด์");
+          nameInput?.focus();
+          return;
+        }
+        if (!normalizeMarketKey(name)) {
+          setMarketActionFieldError("name", "กรุณากรอกชื่อแบรนด์ให้ถูกต้อง");
+          nameInput?.focus();
+          return;
+        }
+        if (!reasonValue) {
+          setMarketActionFieldError("reason", "กรุณาระบุเหตุผล");
+          document.querySelector("#market-action-reason")?.focus();
+          return;
+        }
+        if (marketCatalogData.brands.some(entry => normalizeMarketKey(entry.name) === normalizeMarketKey(name))) {
+          setMarketActionFieldError("name", "แบรนด์นี้มีอยู่ใน Catalog แล้ว");
+          nameInput?.focus();
+          return;
+        }
         const id = name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") || `brand-${marketCatalogData.brands.length + 1}`;
-        if (!marketCatalogData.brands.some(entry => entry.id === id)) marketCatalogData.brands.push(createMarketSampleBrand(id, name, 0, 0, formatMarketSyncTimestamp(new Date()), "Needs Mapping"));
+        const nextBrand = createMarketSampleBrand(id, name, 0, 0, formatMarketSyncTimestamp(new Date()), "Needs Mapping");
+        nextBrand.status = "Draft";
+        nextBrand.modelsSample = [];
+        nextBrand.quality = ["No models added yet"];
+        nextBrand.impact = "Not used downstream until reviewed and completed.";
+        marketCatalogData.brands.push(nextBrand);
+        createdBrandId = id;
         targetName = name;
         before = "Not created";
         after = "Internal draft brand created";
+      } else if (action === "add-model") {
+        const name = (nameInput?.value || "").trim().replace(/\s+/g, " ");
+        if (!name) {
+          setMarketActionFieldError("name", "กรุณากรอกชื่อรุ่น");
+          nameInput?.focus();
+          return;
+        }
+        if (!normalizeMarketKey(name)) {
+          setMarketActionFieldError("name", "กรุณากรอกชื่อรุ่นให้ถูกต้อง");
+          nameInput?.focus();
+          return;
+        }
+        if (!reasonValue) {
+          setMarketActionFieldError("reason", "กรุณาระบุเหตุผล");
+          document.querySelector("#market-action-reason")?.focus();
+          return;
+        }
+        if ((brand.modelsSample || []).some(entry => normalizeMarketKey(entry.name) === normalizeMarketKey(name))) {
+          setMarketActionFieldError("name", "รุ่นนี้มีอยู่ภายใต้แบรนด์นี้แล้ว");
+          nameInput?.focus();
+          return;
+        }
+        const refNumbers = (refsInput?.value || "").split(",").map(item => item.trim()).filter(Boolean);
+        const references = refNumbers.map(number => ({
+          number,
+          year: "Needs detail",
+          material: "Needs detail",
+          caseSize: "Needs detail",
+          movement: "Needs detail",
+          description: `${name} reference added manually for review.`,
+          price: "Needs price",
+          status: "Needs Mapping"
+        }));
+        brand.modelsSample.push({
+          name,
+          refs: refNumbers.length ? refNumbers.join(", ") : "No references yet",
+          movement: "Needs detail",
+          case: "Needs detail",
+          updated: formatMarketSyncTimestamp(new Date()),
+          price: "Needs price",
+          status: "Draft",
+          references
+        });
+        brand.models = Math.max(Number(brand.models) || 0, brand.modelsSample.length);
+        brand.references = (Number(brand.references) || 0) + references.length;
+        brand.mapped = Math.max(0, (Number(brand.mapped) || 0));
+        brand.health = "Needs Mapping";
+        createdBrandId = brand.id;
+        createdModelIndex = brand.modelsSample.length - 1;
+        targetName = name;
+        before = "Not created";
+        after = `${name} model created`;
+      } else if (action === "add-reference") {
+        const number = (nameInput?.value || "").trim().replace(/\s+/g, " ");
+        if (!model) {
+          setMarketActionFieldError("name", "กรุณาเลือกรุ่นก่อนเพิ่ม Reference");
+          return;
+        }
+        if (!number) {
+          setMarketActionFieldError("name", "กรุณากรอกเลข Reference");
+          nameInput?.focus();
+          return;
+        }
+        if (!normalizeMarketKey(number)) {
+          setMarketActionFieldError("name", "กรุณากรอกเลข Reference ให้ถูกต้อง");
+          nameInput?.focus();
+          return;
+        }
+        if (!reasonValue) {
+          setMarketActionFieldError("reason", "กรุณาระบุเหตุผล");
+          document.querySelector("#market-action-reason")?.focus();
+          return;
+        }
+        if ((model.references || []).some(entry => normalizeMarketKey(entry.number) === normalizeMarketKey(number))) {
+          setMarketActionFieldError("name", "Reference นี้มีอยู่ภายใต้รุ่นนี้แล้ว");
+          nameInput?.focus();
+          return;
+        }
+        model.references = model.references || [];
+        model.references.push({
+          number,
+          year: (yearInput?.value || "Needs detail").trim() || "Needs detail",
+          material: "Needs detail",
+          caseSize: "Needs detail",
+          movement: model.movement || "Needs detail",
+          description: `${number} reference added manually for review.`,
+          price: "Needs price",
+          status: "Needs Mapping"
+        });
+        model.refs = model.references.map(entry => entry.number).join(", ");
+        model.updated = formatMarketSyncTimestamp(new Date());
+        brand.references = (Number(brand.references) || 0) + 1;
+        brand.health = "Needs Mapping";
+        createdBrandId = brand.id;
+        createdModelIndex = modelIndex;
+        createdReferenceIndex = model.references.length - 1;
+        targetName = number;
+        before = "Not created";
+        after = `${number} reference created`;
       } else if (action === "edit" || action === "override") {
         const nextName = (nameInput?.value || "").trim();
         if (scope === "reference" && reference) {
@@ -13874,7 +14196,10 @@
       addMarketAudit(targetName, action, before, after, reason);
       closeUserActionModal();
       if (activeModule === "market") {
-        if (scope === "reference") renderMarketReferenceDetailPage(brand.id, modelIndex, referenceIndex);
+        if (action === "add-brand" && createdBrandId) renderMarketBrandDetailPage(createdBrandId);
+        else if (action === "add-model" && createdModelIndex >= 0) renderMarketModelDetailPage(createdBrandId || brand.id, createdModelIndex);
+        else if (action === "add-reference" && createdReferenceIndex >= 0) renderMarketReferenceDetailPage(createdBrandId || brand.id, createdModelIndex, createdReferenceIndex);
+        else if (scope === "reference") renderMarketReferenceDetailPage(brand.id, modelIndex, referenceIndex);
         else if (scope === "model") renderMarketModelDetailPage(brand.id, modelIndex);
         else if (activeSub === "Catalog") renderMarketData("Catalog");
         else renderMarketData(activeSub);
@@ -13921,7 +14246,7 @@
       activeSub = "Catalog";
       document.body.classList.add("market-list-mode");
       document.body.classList.remove("dashboard-mode", "user-management-mode", "asset-list-mode", "article-list-mode", "category-list-mode", "reported-board-mode", "asset-detail-mode", "user-list-mode", "user-detail-mode");
-      setPageActions(`${renderPageBackButton('data-market-back="catalog"', "Back to Catalog")}<button class="btn" type="button" data-market-management-action="edit" data-market-scope="brand" data-market-brand-id="${brand.id}">Edit</button><button class="btn" type="button" data-market-management-action="toggle-status" data-market-scope="brand" data-market-brand-id="${brand.id}">${brand.status === "Inactive" ? "Reactivate" : "Inactivate"}</button>`);
+      setPageActions(`${renderPageBackButton('data-market-back="catalog"', "Back to Catalog")}<button class="btn" type="button" data-market-management-action="add-model" data-market-scope="brand" data-market-brand-id="${brand.id}">${iconSvg.plus}<span>Add Model</span></button><button class="btn" type="button" data-market-management-action="edit" data-market-scope="brand" data-market-brand-id="${brand.id}">Edit</button><button class="btn" type="button" data-market-management-action="toggle-status" data-market-scope="brand" data-market-brand-id="${brand.id}">${brand.status === "Inactive" ? "Reactivate" : "Inactivate"}</button>`);
       document.querySelector("#crumb").textContent = `${moduleData.market.crumb} / Catalog / ${brand.name}`;
       document.querySelector("#page-title").textContent = brand.name;
       document.querySelector("#page-meta").textContent = "";
@@ -13959,7 +14284,7 @@
       activeSub = "Catalog";
       document.body.classList.add("market-list-mode");
       document.body.classList.remove("dashboard-mode", "user-management-mode", "asset-list-mode", "article-list-mode", "category-list-mode", "reported-board-mode", "asset-detail-mode", "user-list-mode", "user-detail-mode");
-      setPageActions(`${renderPageBackButton(`data-market-back="brand" data-market-brand-id="${brand.id}"`, `Back to ${brand.name}`)}<button class="btn" type="button" data-market-management-action="edit" data-market-scope="model" data-market-brand-id="${brand.id}" data-market-model-index="${activeMarketModelIndex}">Edit</button><button class="btn" type="button" data-market-management-action="override" data-market-scope="model" data-market-brand-id="${brand.id}" data-market-model-index="${activeMarketModelIndex}">Override</button>`);
+      setPageActions(`${renderPageBackButton(`data-market-back="brand" data-market-brand-id="${brand.id}"`, `Back to ${brand.name}`)}<button class="btn" type="button" data-market-management-action="add-reference" data-market-scope="model" data-market-brand-id="${brand.id}" data-market-model-index="${activeMarketModelIndex}">${iconSvg.plus}<span>Add Reference</span></button><button class="btn" type="button" data-market-management-action="edit" data-market-scope="model" data-market-brand-id="${brand.id}" data-market-model-index="${activeMarketModelIndex}">Edit</button><button class="btn" type="button" data-market-management-action="override" data-market-scope="model" data-market-brand-id="${brand.id}" data-market-model-index="${activeMarketModelIndex}">Override</button>`);
       document.querySelector("#crumb").textContent = `${moduleData.market.crumb} / Catalog / ${brand.name} / ${model.name}`;
       document.querySelector("#page-title").textContent = model.name;
       document.querySelector("#page-meta").textContent = "";
@@ -14143,35 +14468,35 @@
         <div class="user-action-page market-sync-modal-content">
           <div class="user-action-head">
             <div>
-              <h2 id="user-action-modal-title">${isSuccess ? "Sync completed" : isError ? "Sync failed" : isRunning ? "Syncing API" : "Run API sync?"}</h2>
-              <p>${isSuccess ? "Catalog records were refreshed and the sync log was updated." : isError ? "Catalog data was not changed. Retry failed endpoints after checking the source response." : "Start a new thewatchapi sync job for catalog source data."}</p>
+              <h2 id="user-action-modal-title">${isSuccess ? "Sync สำเร็จ" : isError ? "Sync ไม่สำเร็จ" : isRunning ? "กำลัง Sync API" : "เริ่ม Sync API?"}</h2>
+              <p>${isSuccess ? "รีเฟรชข้อมูล Catalog และบันทึก Sync Log แล้ว" : isError ? "ยังไม่มีการเปลี่ยนข้อมูล Catalog กรุณาตรวจสอบ response ต้นทางก่อน retry endpoint ที่ไม่สำเร็จ" : "เริ่มงาน sync ใหม่จาก thewatchapi สำหรับข้อมูลต้นทางของ Catalog"}</p>
             </div>
             ${isRunning ? "" : `<button class="btn user-action-close" type="button" data-user-action-modal-close aria-label="Close modal" title="Close">${iconSvg.close}</button>`}
           </div>
           <div class="user-action-target">
             <div>
               <strong>thewatchapi</strong>
-              <span>Brands, Models, References, Price History</span>
+              <span>แบรนด์, รุ่น, Reference, ประวัติราคา</span>
             </div>
-            <span class="pill ${isError ? "red" : isSuccess ? "green" : "blue"}">${isError ? "Failed" : isSuccess ? "Completed" : isRunning ? "Running" : "Ready"}</span>
+            <span class="pill ${isError ? "red" : isSuccess ? "green" : "blue"}">${isError ? "ไม่สำเร็จ" : isSuccess ? "สำเร็จ" : isRunning ? "กำลังทำงาน" : "พร้อม"}</span>
           </div>
           <div class="user-action-layout">
             <div class="detail-section">
               <div class="detail-grid two">
                 <div class="detail-tile"><span>Job ID</span><strong>${job.id}</strong></div>
-                <div class="detail-tile"><span>Last Sync</span><strong>${marketCatalogData.brands[0]?.lastSync || "-"}</strong></div>
-                <div class="detail-tile"><span>Brands</span><strong>${job.brands.toLocaleString()}</strong></div>
+                <div class="detail-tile"><span>Sync ล่าสุด</span><strong>${marketCatalogData.brands[0]?.lastSync || "-"}</strong></div>
+                <div class="detail-tile"><span>แบรนด์</span><strong>${job.brands.toLocaleString()}</strong></div>
                 <div class="detail-tile"><span>References</span><strong>${job.references.toLocaleString()}</strong></div>
               </div>
               ${renderMarketSyncSteps(isRunning ? 3 : isSuccess ? 5 : isError ? 3 : -1, isError ? 3 : -1)}
               <div class="user-detail-actions user-action-footer">
-                ${state === "confirm" ? `<button class="user-detail-action-btn primary user-action-confirm" type="button" data-market-sync-run>Run sync</button><button class="user-detail-action-btn" type="button" data-user-action-modal-close>Cancel</button>` : ""}
-                ${isRunning ? `<button class="user-detail-action-btn primary user-action-confirm" type="button" disabled>Syncing...</button>` : ""}
-                ${isSuccess ? `<button class="user-detail-action-btn primary" type="button" data-market-sync-view-logs>View Sync Logs</button><button class="user-detail-action-btn" type="button" data-user-action-modal-close>Close</button>` : ""}
-                ${isError ? `<button class="user-detail-action-btn warning user-action-confirm" type="button" data-market-sync-retry>Retry failed endpoints</button><button class="user-detail-action-btn" type="button" data-user-action-modal-close>Close</button>` : ""}
+                ${state === "confirm" ? `<button class="user-detail-action-btn primary user-action-confirm" type="button" data-market-sync-run>เริ่ม Sync</button><button class="user-detail-action-btn" type="button" data-user-action-modal-close>ยกเลิก</button>` : ""}
+                ${isRunning ? `<button class="user-detail-action-btn primary user-action-confirm" type="button" disabled>กำลัง Sync...</button>` : ""}
+                ${isSuccess ? `<button class="user-detail-action-btn primary" type="button" data-market-sync-view-logs>ดู Sync Logs</button><button class="user-detail-action-btn" type="button" data-user-action-modal-close>ปิด</button>` : ""}
+                ${isError ? `<button class="user-detail-action-btn warning user-action-confirm" type="button" data-market-sync-retry>Retry endpoint ที่ไม่สำเร็จ</button><button class="user-detail-action-btn" type="button" data-user-action-modal-close>ปิด</button>` : ""}
               </div>
-              ${isError ? `<div class="warning-note action-feedback show error"><strong>reference/list failed</strong><br><span>Rate limit returned from source API. Existing Catalog values remain unchanged.</span></div>` : ""}
-              ${isSuccess ? `<div class="warning-note action-feedback show success"><strong>Sync completed successfully</strong><br><span>${job.brands.toLocaleString()} brands were refreshed at ${job.timestamp}. Non-blocking mapping warnings were recorded in Sync Logs for review.</span></div>` : ""}
+              ${isError ? `<div class="warning-note action-feedback show error"><strong>reference/list ไม่สำเร็จ</strong><br><span>source API ส่ง rate limit กลับมา ข้อมูล Catalog เดิมยังไม่ถูกเปลี่ยนแปลง</span></div>` : ""}
+              ${isSuccess ? `<div class="warning-note action-feedback show success"><strong>Sync สำเร็จ</strong><br><span>รีเฟรชแบรนด์ ${job.brands.toLocaleString()} รายการเมื่อ ${job.timestamp} และบันทึก mapping warning ที่ไม่ block งานไว้ใน Sync Logs แล้ว</span></div>` : ""}
               ${state === "confirm" ? `
                 <details class="prototype-tools user-action-prototype-tools">
                   <summary>Prototype scenario</summary>
@@ -14283,7 +14608,7 @@
         ${subLabel === "Catalog" ? `<button class="btn" type="button" data-market-management-action="add-brand" data-market-scope="brand">${iconSvg.plus}<span>Add Brand</span></button>` : ""}
         <button class="btn" type="button" data-market-management-action="import" data-market-scope="brand">${iconSvg.importFile}<span>Import</span></button>
         <button class="btn" type="button" data-market-management-action="export" data-market-scope="brand">${iconSvg.exportFile}<span>Export</span></button>
-        <button class="btn" type="button" data-market-sync-api>${iconSvg.refresh}<span>${subLabel === "Sync Logs" ? "Run sync" : "Sync API"}</span></button>
+        <button class="btn" type="button" data-market-sync-api>${iconSvg.refresh}<span>${subLabel === "Sync Logs" ? "เริ่ม Sync" : "Sync API"}</span></button>
       `);
       document.querySelector("#user-panel-filter-actions").innerHTML = "";
       document.querySelector("#crumb").textContent = `${moduleData.market.crumb} / ${subLabel}`;
@@ -14293,7 +14618,7 @@
         ? `BRAND CATALOG <span class="panel-title-count">${marketCatalogData.brands.length.toLocaleString()} Brands</span>`
         : subLabel.toUpperCase();
       document.querySelector("#panel-subtitle").textContent = "";
-      document.querySelector("#primary-action").textContent = subLabel === "Sync Logs" ? "Run sync" : "Sync API";
+      document.querySelector("#primary-action").textContent = subLabel === "Sync Logs" ? "เริ่ม Sync" : "Sync API";
       setupMarketFilters(subLabel);
       renderMarketSummaryCards(subLabel);
       renderMarketCards(subLabel);
