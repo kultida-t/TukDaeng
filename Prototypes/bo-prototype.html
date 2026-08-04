@@ -1618,7 +1618,7 @@
       grid-template-columns: minmax(240px, 1.35fr) minmax(126px, .68fr) minmax(126px, .68fr) max-content;
     }
     body.market-list-mode .market-catalog-filter-bar {
-      grid-template-columns: minmax(240px, 1fr);
+      grid-template-columns: minmax(240px, 1.35fr) minmax(126px, .68fr) minmax(126px, .68fr) max-content;
     }
     body.market-list-mode .market-table .asset-row {
       grid-template-columns: minmax(220px, 1fr) minmax(116px, .45fr) minmax(126px, .5fr) minmax(150px, .6fr) 74px;
@@ -8217,6 +8217,11 @@
         { id: "SYNC-20260803", title: "Daily thewatchapi sync", brand: "All brands", type: "API Batch", status: "Completed", priority: "ปกติ", source: "Scheduled 03 Aug 2026 08:30", detail: "Brand, model, reference, model detail and price history sync completed with 6 warnings.", action: "Review mapping warnings and rate limit usage." },
         { id: "SYNC-20260802", title: "Reference retry batch", brand: "Rolex / Omega", type: "Retry", status: "Completed", priority: "ปกติ", source: "Manual retry", detail: "Retried malformed reference searches after parameter normalization.", action: "Keep normalized query in sync rule." },
         { id: "SYNC-20260801", title: "Price history sync", brand: "Top 20 brands", type: "Price Batch", status: "Partial", priority: "กลาง", source: "price/history", detail: "Some reference price history calls hit plan/rate limit.", action: "Resume from failed cursor after quota reset." }
+      ],
+      auditLog: [
+        { id: "AUD-MKT-003", target: "Rolex", action: "Provider sync completed", actor: "System", time: "03 Aug 2026 08:30", before: "Last sync 02 Aug 2026", after: "Last sync 03 Aug 2026", reason: "Scheduled daily sync" },
+        { id: "AUD-MKT-002", target: "Omega Speedmaster", action: "Duplicate review opened", actor: "Admin", time: "02 Aug 2026 16:45", before: "3 duplicate rows", after: "Reviewing", reason: "Protect Search and Watch Alert mapping" },
+        { id: "AUD-MKT-001", target: "Seiko SARX", action: "Reference mapping flagged", actor: "Admin", time: "01 Aug 2026 11:20", before: "Open", after: "Needs Mapping", reason: "FO asset input alias collision" }
       ]
     };
 
@@ -13394,9 +13399,41 @@
       return marketCatalogData.brands;
     }
 
+    function getMarketImpactCounts(brand) {
+      return {
+        assets: Math.max(1, Math.round((brand?.mapped || 0) * .18)),
+        alerts: Math.max(1, Math.round((brand?.references || 0) * .025)),
+        search: Math.max(1, Math.round((brand?.models || 0) * 3.4)),
+        portfolio: Math.max(1, Math.round((brand?.references || 0) * .08))
+      };
+    }
+
+    function getMarketAuditRows(targetName = "") {
+      return marketCatalogData.auditLog
+        .filter(row => !targetName || row.target === targetName || row.target.includes(targetName) || targetName.includes(row.target))
+        .slice(0, 5);
+    }
+
+    function addMarketAudit(target, action, before, after, reason = "Prototype admin action") {
+      marketCatalogData.auditLog.unshift({
+        id: `AUD-MKT-${String(marketCatalogData.auditLog.length + 1).padStart(3, "0")}`,
+        target,
+        action,
+        actor: "Admin",
+        time: formatMarketSyncTimestamp(new Date()),
+        before,
+        after,
+        reason
+      });
+    }
+
     function renderMarketSummaryCards(subLabel) {
+      const brands = marketCatalogData.brands;
+      const issueCount = brands.filter(brand => brand.health !== "Healthy" || brand.status !== "Active").length;
+      const modelCount = brands.reduce((sum, brand) => sum + brand.modelsSample.length, 0);
+      const referenceCount = brands.reduce((sum, brand) => sum + brand.modelsSample.reduce((modelSum, model) => modelSum + (model.references || []).length, 0), 0);
       const stats = subLabel === "Catalog"
-        ? [["Brands", "482", "Active 461"], ["Models", "8,924", "from model/list"], ["References", "17,200", "from reference/list"], ["Last Sync", "08:30", "ล่าสุดวันนี้"]]
+        ? [["Brands", brands.length.toLocaleString(), `${brands.filter(brand => brand.status === "Active").length} active`], ["Models", modelCount.toLocaleString(), "reviewable samples"], ["References", referenceCount.toLocaleString(), "mapped detail rows"], ["Data Issues", issueCount.toLocaleString(), "quality / inactive"]]
         : subLabel === "Mapping Queue"
           ? [["Open Mapping", "23", "Brand/model/reference"], ["High Impact", "5", "Search & Watch Alert"], ["Auto Match", "68%", "needs admin confirm"], ["Resolved Today", "12", "audit kept"]]
           : subLabel === "Price Index"
@@ -13413,12 +13450,21 @@
 
     function setupMarketFilters(subLabel) {
       const statusOptions = subLabel === "Catalog"
-        ? ["Active", "Needs Review", "Needs Mapping"]
+        ? ["Active", "Inactive", "Needs Review", "Needs Mapping"]
         : Array.from(new Set(getMarketRowsForSub(subLabel).map(row => row.status)));
       if (subLabel === "Catalog") {
         document.querySelector(".filters").innerHTML = `
           <div class="user-filter-bar market-catalog-filter-bar">
-            <input class="field search" id="market-search" type="search" placeholder="Search brand" />
+            <input class="field search" id="market-search" type="search" placeholder="Search brand, model, reference, source, status" />
+            ${customSelect("market-status-filter", "Filter catalog status", [
+              { value: "", label: "All status / quality" },
+              ...statusOptions.map(status => ({ value: status, label: status }))
+            ])}
+            ${customSelect("market-brand-filter", "Filter catalog brand", [
+              { value: "", label: "All brands" },
+              ...marketCatalogData.brands.map(brand => ({ value: brand.name, label: brand.name }))
+            ])}
+            <button class="btn filter-reset" type="button" data-market-reset title="รีเซ็ตค่าทั้งหมด" aria-label="รีเซ็ตค่าทั้งหมด">${iconSvg.refresh}<span>รีเซ็ตค่าทั้งหมด</span></button>
           </div>
         `;
         return;
@@ -13444,7 +13490,15 @@
       const status = document.querySelector("#market-status-filter")?.value || "";
       const brandFilter = document.querySelector("#market-brand-filter")?.value || "";
       const rows = marketCatalogData.brands.filter(brand => {
-        const text = Object.values(brand).flat().join(" ").toLowerCase();
+        const modelText = (brand.modelsSample || []).map(model => [
+          model.name,
+          model.refs,
+          model.movement,
+          model.case,
+          model.status || "",
+          ...(model.references || []).map(reference => [reference.number, reference.year, reference.material, reference.caseSize, reference.movement, reference.status].join(" "))
+        ].flat().join(" ")).join(" ");
+        const text = [brand.id, brand.name, brand.status, brand.health, brand.source, brand.lastSync, modelText].join(" ").toLowerCase();
         return (!q || text.includes(q))
           && (!status || brand.status === status || brand.health === status)
           && (!brandFilter || brand.name === brandFilter);
@@ -13547,10 +13601,12 @@
             <div class="asset-row" data-market-model="${index}" data-market-brand-id="${brand.id}">
               <div data-label="Model"><div class="main-text">${model.name}</div></div>
               <div class="market-card-tags">
+                <span class="pill ${model.status === "Inactive" ? "amber" : "green"}">${model.status || "Active"}</span>
                 <span class="user-card-tag asset-tag">${(model.references || []).length} refs</span>
                 <span class="user-card-tag asset-tag">${model.movement}</span>
                 <div class="market-card-meta user-card-meta">
                   <div class="user-card-meta-item"><span>References</span><strong>${(model.references || []).length}</strong></div>
+                  <div class="user-card-meta-item"><span>Status</span><strong>${model.status || "Active"}</strong></div>
                   <div class="user-card-meta-item"><span>Movement</span><strong>${model.movement}</strong></div>
                   <div class="user-card-meta-item"><span>Case</span><strong>${model.case}</strong></div>
                 </div>
@@ -13646,6 +13702,205 @@
       return statusPill(status, priority || "ปกติ");
     }
 
+    function renderMarketManagementActions(scope, brand, modelIndex = "", referenceIndex = "") {
+      const model = modelIndex !== "" ? getMarketModel(brand, modelIndex) : null;
+      const reference = referenceIndex !== "" ? getMarketReference(model, referenceIndex) : null;
+      const currentStatus = scope === "reference" ? reference?.status : scope === "model" ? model?.status : brand?.status;
+      const inactiveLabel = currentStatus === "Inactive" ? "Reactivate" : "Inactivate";
+      const targetAttrs = `data-market-brand-id="${brand?.id || ""}" data-market-model-index="${modelIndex}" data-market-reference-index="${referenceIndex}"`;
+      return `
+        <section class="market-detail-section">
+          <h3>Management Controls</h3>
+          <div class="user-detail-actions">
+            <button class="user-detail-action-btn primary" type="button" data-market-management-action="edit" data-market-scope="${scope}" ${targetAttrs}>Edit record</button>
+            <button class="user-detail-action-btn" type="button" data-market-management-action="override" data-market-scope="${scope}" ${targetAttrs}>Override provider</button>
+            <button class="user-detail-action-btn warning" type="button" data-market-management-action="toggle-status" data-market-scope="${scope}" ${targetAttrs}>${inactiveLabel}</button>
+            <button class="user-detail-action-btn" type="button" data-market-management-action="audit" data-market-scope="${scope}" ${targetAttrs}>Audit trail</button>
+          </div>
+        </section>
+      `;
+    }
+
+    function renderMarketImpactSection(brand) {
+      const impact = getMarketImpactCounts(brand);
+      return `
+        <section class="market-detail-section">
+          <h3>Downstream Impact</h3>
+          <div class="market-detail-grid">
+            <div class="detail-tile"><span>Linked Assets</span><strong>${impact.assets.toLocaleString()}</strong></div>
+            <div class="detail-tile"><span>Watch Alerts</span><strong>${impact.alerts.toLocaleString()}</strong></div>
+            <div class="detail-tile"><span>Search Uses</span><strong>${impact.search.toLocaleString()}</strong></div>
+            <div class="detail-tile"><span>Portfolio Rows</span><strong>${impact.portfolio.toLocaleString()}</strong></div>
+          </div>
+          <div class="module-note"><strong>Production rule:</strong> status changes invalidate Add Asset autocomplete, Search filters, Watch Alert matching and Portfolio valuation cache.</div>
+        </section>
+      `;
+    }
+
+    function renderMarketAuditSection(targetName) {
+      const rows = getMarketAuditRows(targetName);
+      return `
+        <section class="market-detail-section">
+          <h3>Audit Trail</h3>
+          <div class="timeline">
+            ${rows.map(row => `<div class="event"><strong>${row.action}</strong><br><span class="muted">${row.id} · ${row.actor} · ${row.time}</span><br>${row.before} -> ${row.after}<br><span class="muted">${row.reason}</span></div>`).join("") || `<div class="event">No audit events for this target yet</div>`}
+          </div>
+        </section>
+      `;
+    }
+
+    function getMarketActionTarget(scope, brandId, modelIndex = 0, referenceIndex = 0) {
+      const brand = getMarketBrand(brandId);
+      const model = getMarketModel(brand, modelIndex);
+      const reference = getMarketReference(model, referenceIndex);
+      if (scope === "reference") return { brand, model, reference, title: reference?.number || "Reference", status: reference?.status || "Active" };
+      if (scope === "model") return { brand, model, reference: null, title: model?.name || "Model", status: model?.status || "Active" };
+      return { brand, model: null, reference: null, title: brand?.name || "Brand", status: brand?.status || "Active" };
+    }
+
+    function openMarketManagementModal(action, scope = "brand", brandId = activeMarketBrandId, modelIndex = activeMarketModelIndex, referenceIndex = 0) {
+      const modalBody = document.querySelector("#user-action-modal-body");
+      if (!modalBody) return;
+      const target = getMarketActionTarget(scope, brandId, modelIndex, referenceIndex);
+      const isAdd = action === "add-brand";
+      const isImport = action === "import";
+      const isExport = action === "export";
+      const isAudit = action === "audit";
+      const isToggle = action === "toggle-status";
+      const title = isAdd ? "Add market brand" : isImport ? "Import market data" : isExport ? "Export market data" : isAudit ? "Audit trail" : `${action === "override" ? "Override provider data" : isToggle ? (target.status === "Inactive" ? "Reactivate record" : "Inactivate record") : "Edit market record"}`;
+      const nextStatus = target.status === "Inactive" ? "Active" : "Inactive";
+      modalBody.innerHTML = `
+        <div class="user-action-page">
+          <div class="user-action-head">
+            <div>
+              <h2 id="user-action-modal-title">${title}</h2>
+              <p>${isAdd ? "Create an internal master-data record." : isImport ? "Run dry-run validation before writing any imported rows." : isExport ? "Create a permission-controlled export job." : `${target.title} · ${scope}`}</p>
+            </div>
+            <button class="btn user-action-close" type="button" data-user-action-modal-close aria-label="Close modal" title="Close">${iconSvg.close}</button>
+          </div>
+          ${isAudit ? renderMarketAuditSection(target.title) : `
+            <div class="user-action-target">
+              <div>
+                <strong>${isAdd ? "New internal record" : isImport ? "CSV/XLSX dry-run" : isExport ? "Catalog export" : target.title}</strong>
+                <span>${isToggle ? `Status will change to ${nextStatus}` : isImport ? "Provider rows, manual rows and duplicate checks" : "Permission, reason and audit required"}</span>
+              </div>
+              <span class="pill ${isToggle && nextStatus === "Inactive" ? "amber" : "blue"}">${isToggle ? nextStatus : "Draft"}</span>
+            </div>
+            <div class="user-action-layout">
+              <div class="detail-section">
+                <div class="user-action-form">
+                  ${isAdd || action === "edit" || action === "override" ? `
+                    <label>Display name<input id="market-action-name" class="field" value="${isAdd ? "" : target.title}" placeholder="Brand, model or reference name" /></label>
+                    <label>Source note<input id="market-action-source" class="field" value="${isAdd ? "Manual" : "Manual override"}" placeholder="Manual, Provider, Import" /></label>
+                  ` : ""}
+                  ${isImport ? `
+                    <label>Import batch<input id="market-action-name" class="field" value="market-data-import-2026-08-04.csv" /></label>
+                    <div class="warning-note action-feedback show"><strong>Dry-run result</strong><br><span>142 valid rows, 6 duplicates, 3 alias conflicts, 2 missing required fields. No data is written until confirmed.</span></div>
+                  ` : ""}
+                  ${isExport ? `
+                    <div class="detail-grid two">
+                      <div class="detail-tile"><span>Scope</span><strong>Filtered Catalog</strong></div>
+                      <div class="detail-tile"><span>Format</span><strong>CSV + Excel</strong></div>
+                    </div>
+                    <div class="module-note"><strong>Security:</strong> export job expires after 24 hours and writes an audit event.</div>
+                  ` : ""}
+                  ${isToggle ? renderMarketImpactSection(target.brand) : ""}
+                  <label>Reason<textarea id="market-action-reason" class="field" rows="3" placeholder="Required for audit and downstream impact">Operational data quality update</textarea></label>
+                </div>
+                <div class="user-detail-actions user-action-footer">
+                  <button class="user-detail-action-btn primary user-action-confirm" type="button" data-market-action-confirm="${action}" data-market-scope="${scope}" data-market-brand-id="${target.brand?.id || ""}" data-market-model-index="${modelIndex}" data-market-reference-index="${referenceIndex}">Confirm</button>
+                  <button class="user-detail-action-btn" type="button" data-user-action-modal-close>Cancel</button>
+                </div>
+              </div>
+            </div>
+          `}
+        </div>
+      `;
+      showUserActionModal(true);
+    }
+
+    function confirmMarketManagementAction(button) {
+      const action = button.dataset.marketActionConfirm;
+      const scope = button.dataset.marketScope || "brand";
+      const brand = getMarketBrand(button.dataset.marketBrandId || activeMarketBrandId);
+      const modelIndex = Number(button.dataset.marketModelIndex || 0);
+      const referenceIndex = Number(button.dataset.marketReferenceIndex || 0);
+      const model = getMarketModel(brand, modelIndex);
+      const reference = getMarketReference(model, referenceIndex);
+      const nameInput = document.querySelector("#market-action-name");
+      const reason = document.querySelector("#market-action-reason")?.value.trim() || "Prototype admin action";
+      let targetName = brand.name;
+      let before = "";
+      let after = "";
+
+      if (action === "add-brand") {
+        const name = (nameInput?.value || "New Brand").trim();
+        const id = name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") || `brand-${marketCatalogData.brands.length + 1}`;
+        if (!marketCatalogData.brands.some(entry => entry.id === id)) marketCatalogData.brands.push(createMarketSampleBrand(id, name, 0, 0, formatMarketSyncTimestamp(new Date()), "Needs Mapping"));
+        targetName = name;
+        before = "Not created";
+        after = "Internal draft brand created";
+      } else if (action === "edit" || action === "override") {
+        const nextName = (nameInput?.value || "").trim();
+        if (scope === "reference" && reference) {
+          before = reference.number;
+          if (nextName) reference.number = nextName;
+          reference.status = action === "override" ? "Reviewing" : reference.status;
+          targetName = reference.number;
+          after = `${reference.number} (${reference.status})`;
+        } else if (scope === "model" && model) {
+          before = model.name;
+          if (nextName) model.name = nextName;
+          targetName = model.name;
+          after = model.name;
+        } else {
+          before = brand.name;
+          if (nextName) brand.name = nextName;
+          brand.health = action === "override" ? "Needs Review" : brand.health;
+          targetName = brand.name;
+          after = `${brand.name} (${brand.health})`;
+        }
+      } else if (action === "toggle-status") {
+        if (scope === "reference" && reference) {
+          before = reference.status;
+          reference.status = reference.status === "Inactive" ? "Mapped" : "Inactive";
+          targetName = reference.number;
+          after = reference.status;
+        } else if (scope === "model" && model) {
+          before = model.status || "Active";
+          model.status = model.status === "Inactive" ? "Active" : "Inactive";
+          targetName = model.name;
+          after = model.status;
+        } else {
+          before = brand.status;
+          brand.status = brand.status === "Inactive" ? "Active" : "Inactive";
+          brand.health = brand.status === "Inactive" ? "Needs Review" : brand.health;
+          after = brand.status;
+        }
+      } else if (action === "import") {
+        targetName = "Market import";
+        before = "Dry-run only";
+        after = "142 rows staged, 11 rows require review";
+        if (!marketCatalogData.mappingQueue.some(row => row.id === "MAP-IMPORT-001")) {
+          marketCatalogData.mappingQueue.unshift({ id: "MAP-IMPORT-001", title: "Import dry-run conflicts", brand: "Mixed", type: "Import Validation", status: "Needs Review", priority: "กลาง", source: "market-data-import-2026-08-04.csv", detail: "6 duplicate rows, 3 alias conflicts and 2 missing required fields require review before write.", action: "Resolve import errors before committing data." });
+        }
+      } else if (action === "export") {
+        targetName = "Market export";
+        before = "No export job";
+        after = "Export job queued";
+      }
+
+      addMarketAudit(targetName, action, before, after, reason);
+      closeUserActionModal();
+      if (activeModule === "market") {
+        if (scope === "reference") renderMarketReferenceDetailPage(brand.id, modelIndex, referenceIndex);
+        else if (scope === "model") renderMarketModelDetailPage(brand.id, modelIndex);
+        else if (activeSub === "Catalog") renderMarketData("Catalog");
+        else renderMarketData(activeSub);
+      }
+      showSuccessToast(`${targetName}: ${action} saved`);
+    }
+
     function renderMarketModelReferenceBlocks(brand) {
       return `
         <div class="market-model-stack">
@@ -13685,7 +13940,7 @@
       activeSub = "Catalog";
       document.body.classList.add("market-list-mode");
       document.body.classList.remove("dashboard-mode", "user-management-mode", "asset-list-mode", "article-list-mode", "category-list-mode", "reported-board-mode", "asset-detail-mode", "user-list-mode", "user-detail-mode");
-      setPageActions(renderPageBackButton('data-market-back="catalog"', "Back to Catalog"));
+      setPageActions(`${renderPageBackButton('data-market-back="catalog"', "Back to Catalog")}<button class="btn" type="button" data-market-management-action="edit" data-market-scope="brand" data-market-brand-id="${brand.id}">Edit</button><button class="btn" type="button" data-market-management-action="toggle-status" data-market-scope="brand" data-market-brand-id="${brand.id}">${brand.status === "Inactive" ? "Reactivate" : "Inactivate"}</button>`);
       document.querySelector("#crumb").textContent = `${moduleData.market.crumb} / Catalog / ${brand.name}`;
       document.querySelector("#page-title").textContent = brand.name;
       document.querySelector("#page-meta").textContent = "";
@@ -13700,7 +13955,14 @@
       `;
       document.querySelector("#summary-grid").innerHTML = "";
       document.querySelector("#cards").innerHTML = "";
-      document.querySelector("#detail").innerHTML = "";
+      document.querySelector("#detail").innerHTML = `
+        <div class="panel-head"><div><h2>Record Control</h2><p>Permission-aware actions and downstream impact</p></div></div>
+        <div class="detail-body">
+          ${renderMarketImpactSection(brand)}
+          ${renderMarketManagementActions("brand", brand)}
+          ${renderMarketAuditSection(brand.name)}
+        </div>
+      `;
       renderMarketModelRows(brand);
       updateActiveNav();
       scrollMainToTop();
@@ -13716,7 +13978,7 @@
       activeSub = "Catalog";
       document.body.classList.add("market-list-mode");
       document.body.classList.remove("dashboard-mode", "user-management-mode", "asset-list-mode", "article-list-mode", "category-list-mode", "reported-board-mode", "asset-detail-mode", "user-list-mode", "user-detail-mode");
-      setPageActions(renderPageBackButton(`data-market-back="brand" data-market-brand-id="${brand.id}"`, `Back to ${brand.name}`));
+      setPageActions(`${renderPageBackButton(`data-market-back="brand" data-market-brand-id="${brand.id}"`, `Back to ${brand.name}`)}<button class="btn" type="button" data-market-management-action="edit" data-market-scope="model" data-market-brand-id="${brand.id}" data-market-model-index="${activeMarketModelIndex}">Edit</button><button class="btn" type="button" data-market-management-action="override" data-market-scope="model" data-market-brand-id="${brand.id}" data-market-model-index="${activeMarketModelIndex}">Override</button>`);
       document.querySelector("#crumb").textContent = `${moduleData.market.crumb} / Catalog / ${brand.name} / ${model.name}`;
       document.querySelector("#page-title").textContent = model.name;
       document.querySelector("#page-meta").textContent = "";
@@ -13731,7 +13993,14 @@
       `;
       document.querySelector("#summary-grid").innerHTML = "";
       document.querySelector("#cards").innerHTML = "";
-      document.querySelector("#detail").innerHTML = "";
+      document.querySelector("#detail").innerHTML = `
+        <div class="panel-head"><div><h2>Model Control</h2><p>Model relation, provider override and audit</p></div></div>
+        <div class="detail-body">
+          ${renderMarketImpactSection(brand)}
+          ${renderMarketManagementActions("model", brand, activeMarketModelIndex)}
+          ${renderMarketAuditSection(model.name)}
+        </div>
+      `;
       renderMarketReferenceRows(brand, activeMarketModelIndex);
       updateActiveNav();
       scrollMainToTop();
@@ -13748,7 +14017,7 @@
       activeSub = "Catalog";
       document.body.classList.add("market-list-mode");
       document.body.classList.remove("dashboard-mode", "user-management-mode", "asset-list-mode", "article-list-mode", "category-list-mode", "reported-board-mode", "asset-detail-mode", "user-list-mode", "user-detail-mode");
-      setPageActions(renderPageBackButton(`data-market-back="model" data-market-brand-id="${brand.id}" data-market-model-index="${activeMarketModelIndex}"`, `Back to ${model.name}`));
+      setPageActions(`${renderPageBackButton(`data-market-back="model" data-market-brand-id="${brand.id}" data-market-model-index="${activeMarketModelIndex}"`, `Back to ${model.name}`)}<button class="btn" type="button" data-market-management-action="edit" data-market-scope="reference" data-market-brand-id="${brand.id}" data-market-model-index="${activeMarketModelIndex}" data-market-reference-index="${referenceIndex}">Edit</button><button class="btn" type="button" data-market-management-action="override" data-market-scope="reference" data-market-brand-id="${brand.id}" data-market-model-index="${activeMarketModelIndex}" data-market-reference-index="${referenceIndex}">Override</button>`);
       document.querySelector("#crumb").textContent = `${moduleData.market.crumb} / Catalog / ${brand.name} / ${model.name} / ${reference.number}`;
       document.querySelector("#page-title").textContent = reference.number;
       document.querySelector("#page-meta").textContent = "";
@@ -13774,6 +14043,8 @@
             <div class="detail-tile"><span>Price</span><strong>${reference.price}</strong></div>
           </div>
           <div class="module-note"><strong>Description:</strong> ${reference.description}</div>
+          ${renderMarketManagementActions("reference", brand, activeMarketModelIndex, referenceIndex)}
+          ${renderMarketAuditSection(reference.number)}
         </div>
       `;
       updateActiveNav();
@@ -14027,7 +14298,12 @@
       activeRow = null;
       document.body.classList.add("market-list-mode");
       document.body.classList.remove("dashboard-mode", "user-management-mode", "asset-list-mode", "article-list-mode", "category-list-mode", "reported-board-mode", "asset-detail-mode", "user-list-mode", "user-detail-mode");
-      setPageActions(`<button class="btn" type="button" data-market-sync-api>${iconSvg.refresh}<span>${subLabel === "Sync Logs" ? "Run sync" : "Sync API"}</span></button>`);
+      setPageActions(`
+        ${subLabel === "Catalog" ? `<button class="btn" type="button" data-market-management-action="add-brand" data-market-scope="brand">${iconSvg.plus}<span>Add Brand</span></button>` : ""}
+        <button class="btn" type="button" data-market-management-action="import" data-market-scope="brand">${iconSvg.upload || iconSvg.refresh}<span>Import</span></button>
+        <button class="btn" type="button" data-market-management-action="export" data-market-scope="brand">${iconSvg.download || iconSvg.eye}<span>Export</span></button>
+        <button class="btn" type="button" data-market-sync-api>${iconSvg.refresh}<span>${subLabel === "Sync Logs" ? "Run sync" : "Sync API"}</span></button>
+      `);
       document.querySelector("#user-panel-filter-actions").innerHTML = "";
       document.querySelector("#crumb").textContent = `${moduleData.market.crumb} / ${subLabel}`;
       document.querySelector("#page-title").textContent = subLabel;
@@ -14038,8 +14314,8 @@
       document.querySelector("#panel-subtitle").textContent = "";
       document.querySelector("#primary-action").textContent = subLabel === "Sync Logs" ? "Run sync" : "Sync API";
       setupMarketFilters(subLabel);
-      document.querySelector("#summary-grid").innerHTML = "";
-      document.querySelector("#cards").innerHTML = "";
+      renderMarketSummaryCards(subLabel);
+      renderMarketCards(subLabel);
       document.querySelector("#detail").innerHTML = "";
       if (subLabel === "Catalog") {
         renderMarketCatalogRows();
@@ -17752,6 +18028,7 @@
           return;
         }
         if (["market-status-filter", "market-brand-filter"].includes(hiddenInput.id) && activeModule === "market") {
+          if ((activeSub || "Catalog") === "Catalog") marketCatalogPage = 1;
           renderRows();
           return;
         }
@@ -17799,6 +18076,22 @@
       const marketSyncButton = event.target.closest("[data-market-sync-api]");
       if (marketSyncButton) {
         openMarketSyncModal();
+        return;
+      }
+      const marketManagementButton = event.target.closest("[data-market-management-action]");
+      if (marketManagementButton && activeModule === "market") {
+        openMarketManagementModal(
+          marketManagementButton.dataset.marketManagementAction,
+          marketManagementButton.dataset.marketScope || "brand",
+          marketManagementButton.dataset.marketBrandId || activeMarketBrandId,
+          marketManagementButton.dataset.marketModelIndex || activeMarketModelIndex,
+          marketManagementButton.dataset.marketReferenceIndex || 0
+        );
+        return;
+      }
+      const marketActionConfirmButton = event.target.closest("[data-market-action-confirm]");
+      if (marketActionConfirmButton) {
+        confirmMarketManagementAction(marketActionConfirmButton);
         return;
       }
       const marketSyncRunButton = event.target.closest("[data-market-sync-run]");
@@ -17900,6 +18193,7 @@
           brand.value = "";
           updateCustomSelect(brand, "");
         }
+        if ((activeSub || "Catalog") === "Catalog") marketCatalogPage = 1;
         renderRows();
         return;
       }
@@ -19066,6 +19360,7 @@
         return;
       }
       if (event.target.matches("#market-status-filter, #market-brand-filter")) {
+        if (activeModule === "market" && (activeSub || "Catalog") === "Catalog") marketCatalogPage = 1;
         renderRows();
         return;
       }
