@@ -1,0 +1,5 @@
+record_type,brand_name,model_name,reference_no,source_type,source_note,updated_date,price_min,price_median,price_max,currency
+brand,Rolex,,,Import,Verified from provider export,2026-08-04,,,,
+model,Rolex,Daytona,,Import,Verified from provider export,2026-08-04,,,,
+reference,Rolex,Daytona,116500LN,Import,Verified from provider export,2026-08-04,,,,
+price_index,Rolex,Daytona,116500LN,Import,Market price import sample,2026-08-04,24600,31900,35600,USD
