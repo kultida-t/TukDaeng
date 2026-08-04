@@ -1633,6 +1633,9 @@
     body.market-list-mode .market-table.market-record-table .asset-row {
       grid-template-columns: minmax(220px, 1.35fr) minmax(150px, .9fr) minmax(120px, .65fr) minmax(116px, .65fr) 74px;
     }
+    body.market-list-mode .market-card-tags {
+      display: none;
+    }
     .market-sync-modal-content .user-action-target {
       margin-bottom: 14px;
     }
@@ -6320,6 +6323,177 @@
         flex-wrap: wrap;
         gap: 9px;
         padding-top: 0;
+      }
+      body.market-list-mode .panel-head {
+        align-items: center;
+        flex-direction: row;
+        justify-content: space-between;
+        gap: 10px;
+      }
+      body.market-list-mode .panel-head h2 {
+        font-size: 24px;
+        line-height: 1;
+      }
+      body.market-list-mode .panel-title-count {
+        display: none;
+      }
+      body.market-list-mode .filters {
+        padding: 12px 14px;
+        background: #f8fbff;
+      }
+      body.market-list-mode .market-catalog-filter-bar,
+      body.market-list-mode .user-filter-bar {
+        grid-template-columns: 1fr;
+      }
+      body.market-list-mode #table {
+        padding: 12px 14px 16px;
+        background: #f8fbff;
+      }
+      body.market-list-mode .market-table {
+        grid-template-columns: 1fr;
+        gap: 12px;
+      }
+      body.market-list-mode .market-table .asset-row.head {
+        display: none;
+      }
+      body.market-list-mode .market-table .asset-row:not(.head) {
+        grid-template-columns: minmax(0, 1fr) 34px;
+        column-gap: 14px;
+        row-gap: 14px;
+        min-height: 0;
+        padding: 18px 18px 16px;
+        border: 1px solid #cfdbd2;
+        border-radius: 10px;
+        background: #fff;
+        box-shadow: 0 1px 2px rgba(15, 23, 42, .05);
+        overflow: visible;
+      }
+      body.market-list-mode .market-table .asset-row:not(.head) > div[data-label] {
+        display: grid;
+        grid-template-columns: 98px minmax(0, 1fr);
+        gap: 12px;
+        align-items: baseline;
+        width: 100%;
+        padding: 8px 0;
+        border-bottom: 1px solid #edf2f7;
+      }
+      body.market-list-mode .market-table .asset-row:not(.head) > div[data-label]::before {
+        content: attr(data-label);
+        color: #5d718b;
+        font-size: 11px;
+        font-weight: 800;
+        line-height: 1.25;
+      }
+      body.market-list-mode .market-table .asset-row:not(.head) > div[data-label]:first-child {
+        grid-column: 1;
+        grid-row: 1;
+        display: block;
+        padding-top: 0;
+        padding-bottom: 0;
+        border-bottom: 0;
+      }
+      body.market-list-mode .market-table .asset-row:not(.head) > div[data-label]:first-child::before {
+        content: none;
+      }
+      body.market-list-mode .market-table .asset-row:not(.head) > div[data-label]:first-child .main-text {
+        max-width: 100%;
+        overflow: hidden;
+        color: #061426;
+        font-family: var(--font-heading);
+        font-size: 22px;
+        font-weight: 500;
+        letter-spacing: .04em;
+        line-height: 1;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+      body.market-list-mode .market-table .asset-row:not(.head) > div[data-label]:not(:first-child) {
+        display: none;
+      }
+      body.market-list-mode .market-table .asset-row:not(.head) > div:last-child {
+        grid-column: 2;
+        grid-row: 1;
+        align-self: center;
+        justify-self: end;
+        padding-top: 0;
+        text-align: left;
+      }
+      body.market-list-mode .market-table .asset-row:not(.head) .panel-action {
+        width: 30px;
+        min-width: 30px;
+        height: 30px;
+        min-height: 30px;
+        padding: 0;
+        border: 0;
+        background: transparent;
+        color: #061426;
+        box-shadow: none;
+        justify-content: center;
+      }
+      body.market-list-mode .market-table .asset-row:not(.head) .panel-action svg,
+      body.market-list-mode .market-table .asset-row:not(.head) .panel-action span {
+        display: none;
+      }
+      body.market-list-mode .market-table .asset-row:not(.head) .panel-action::before {
+        content: "...";
+        color: #061426;
+        font-size: 18px;
+        font-weight: 800;
+        line-height: 1;
+        transform: translateY(-4px);
+      }
+      body.market-list-mode .market-card-tags {
+        grid-column: 1 / -1;
+        grid-row: 2;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 9px;
+      }
+      body.market-list-mode .market-card-tags .pill,
+      body.market-list-mode .market-card-tags .user-card-tag {
+        align-self: center;
+        min-height: 30px;
+        padding: 6px 11px;
+        font-size: 13px;
+      }
+      body.market-list-mode .market-card-meta {
+        flex: 1 0 100%;
+        display: grid;
+        gap: 3px;
+        margin-top: 8px;
+        padding-top: 11px;
+        border-top: 1px solid #edf2f7;
+      }
+      body.market-list-mode .market-card-meta .user-card-meta-item {
+        display: flex;
+      }
+      body.market-list-mode .footer-range {
+        margin-top: 12px;
+        padding: 13px 16px;
+        background: #f8fbff;
+      }
+      body.market-list-mode .footer-range,
+      body.market-list-mode .pager {
+        align-items: center;
+        flex-direction: row;
+        gap: 8px;
+      }
+      body.market-list-mode .pager .btn {
+        min-width: 36px;
+        justify-content: center;
+      }
+      body.market-list-mode .market-brand-detail {
+        padding: 12px;
+      }
+      body.market-list-mode .market-detail-grid,
+      body.market-list-mode .detail-grid.two {
+        grid-template-columns: 1fr;
+      }
+      body.market-list-mode .market-detail-section,
+      body.market-list-mode .detail-tile,
+      body.market-list-mode .module-note {
+        min-width: 0;
+        overflow-wrap: anywhere;
       }
       .detail-grid.two {
         grid-template-columns: 1fr;
@@ -13314,6 +13488,16 @@
           ${visibleRows.map(brand => `
             <div class="asset-row" data-market-brand="${brand.id}">
               <div data-label="Brand"><div class="main-text">${brand.name}</div></div>
+              <div class="market-card-tags">
+                ${statusPill(brand.status, "ปกติ")}
+                <span class="user-card-tag asset-tag">${brand.health}</span>
+                <span class="user-card-tag asset-tag">${brand.models.toLocaleString()} models</span>
+                <div class="market-card-meta user-card-meta">
+                  <div class="user-card-meta-item"><span>Models</span><strong>${brand.models.toLocaleString()}</strong></div>
+                  <div class="user-card-meta-item"><span>References</span><strong>${brand.references.toLocaleString()}</strong></div>
+                  <div class="user-card-meta-item"><span>Last Sync</span><strong>${brand.lastSync}</strong></div>
+                </div>
+              </div>
               <div data-label="Models"><div class="main-text">${brand.models.toLocaleString()}</div></div>
               <div data-label="References"><div class="main-text">${brand.references.toLocaleString()}</div></div>
               <div data-label="Last Sync"><div class="main-text">${brand.lastSync}</div></div>
@@ -13345,10 +13529,20 @@
           <div class="asset-row head"><div>Record</div><div>Brand / Source</div><div>Type</div><div>Status</div><div>Action</div></div>
         ${rows.map(row => `
           <div class="asset-row" data-market-record="${row.id}">
-            <div><div class="main-text">${row.title}</div><div class="muted">${row.id} · ${row.detail}</div></div>
-            <div><div class="main-text">${row.brand}</div><div class="muted">${row.source}</div></div>
-            <div><span class="pill blue">${row.type}</span></div>
-            <div>${statusPill(row.status, row.priority)}</div>
+            <div data-label="Record"><div class="main-text">${row.title}</div><div class="muted">${row.id} · ${row.detail}</div></div>
+            <div class="market-card-tags">
+              ${statusPill(row.status, row.priority)}
+              <span class="user-card-tag asset-tag">${row.type}</span>
+              <span class="user-card-tag asset-tag">${row.brand}</span>
+              <div class="market-card-meta user-card-meta">
+                <div class="user-card-meta-item"><span>Brand</span><strong>${row.brand}</strong></div>
+                <div class="user-card-meta-item"><span>Source</span><strong>${row.source}</strong></div>
+                <div class="user-card-meta-item"><span>Status</span><strong>${row.status}</strong></div>
+              </div>
+            </div>
+            <div data-label="Brand / Source"><div class="main-text">${row.brand}</div><div class="muted">${row.source}</div></div>
+            <div data-label="Type"><span class="pill blue">${row.type}</span></div>
+            <div data-label="Status">${statusPill(row.status, row.priority)}</div>
             <div><button class="panel-action" type="button" data-market-record="${row.id}">${iconSvg.eye}<span>Review</span></button></div>
           </div>
         `).join("") || `<div class="detail-empty user-empty">No market data records found</div>`}
@@ -13380,10 +13574,19 @@
           <div class="asset-row head"><div>Model</div><div>References</div><div>Movement</div><div>Case</div><div>Action</div></div>
           ${rows.map(({ model, index }) => `
             <div class="asset-row" data-market-model="${index}" data-market-brand-id="${brand.id}">
-              <div><div class="main-text">${model.name}</div></div>
-              <div><div class="main-text">${(model.references || []).length}</div></div>
-              <div><div class="main-text">${model.movement}</div></div>
-              <div><div class="main-text">${model.case}</div></div>
+              <div data-label="Model"><div class="main-text">${model.name}</div></div>
+              <div class="market-card-tags">
+                <span class="user-card-tag asset-tag">${(model.references || []).length} refs</span>
+                <span class="user-card-tag asset-tag">${model.movement}</span>
+                <div class="market-card-meta user-card-meta">
+                  <div class="user-card-meta-item"><span>References</span><strong>${(model.references || []).length}</strong></div>
+                  <div class="user-card-meta-item"><span>Movement</span><strong>${model.movement}</strong></div>
+                  <div class="user-card-meta-item"><span>Case</span><strong>${model.case}</strong></div>
+                </div>
+              </div>
+              <div data-label="References"><div class="main-text">${(model.references || []).length}</div></div>
+              <div data-label="Movement"><div class="main-text">${model.movement}</div></div>
+              <div data-label="Case"><div class="main-text">${model.case}</div></div>
               <div><button class="panel-action" type="button" data-market-model="${index}" data-market-brand-id="${brand.id}">${iconSvg.eye}<span>Open</span></button></div>
             </div>
           `).join("") || `<div class="detail-empty user-empty">No models found for this brand</div>`}
@@ -13405,10 +13608,20 @@
           <div class="asset-row head"><div>Reference</div><div>Year</div><div>Material</div><div>Status</div><div>Action</div></div>
           ${rows.map(({ reference, index }) => `
             <div class="asset-row" data-market-reference="${index}" data-market-brand-id="${brand.id}" data-market-model-index="${modelIndex}">
-              <div><div class="main-text">${reference.number}</div></div>
-              <div><div class="main-text">${reference.year}</div></div>
-              <div><div class="main-text">${reference.material}</div><div class="muted">${reference.caseSize} / ${reference.movement}</div></div>
-              <div>${renderMarketReferenceStatus(reference.status)}</div>
+              <div data-label="Reference"><div class="main-text">${reference.number}</div></div>
+              <div class="market-card-tags">
+                ${renderMarketReferenceStatus(reference.status)}
+                <span class="user-card-tag asset-tag">${reference.year}</span>
+                <span class="user-card-tag asset-tag">${reference.caseSize}</span>
+                <div class="market-card-meta user-card-meta">
+                  <div class="user-card-meta-item"><span>Year</span><strong>${reference.year}</strong></div>
+                  <div class="user-card-meta-item"><span>Material</span><strong>${reference.material}</strong></div>
+                  <div class="user-card-meta-item"><span>Status</span><strong>${reference.status}</strong></div>
+                </div>
+              </div>
+              <div data-label="Year"><div class="main-text">${reference.year}</div></div>
+              <div data-label="Material"><div class="main-text">${reference.material}</div><div class="muted">${reference.caseSize} / ${reference.movement}</div></div>
+              <div data-label="Status">${renderMarketReferenceStatus(reference.status)}</div>
               <div><button class="panel-action" type="button" data-market-reference="${index}" data-market-brand-id="${brand.id}" data-market-model-index="${modelIndex}">${iconSvg.eye}<span>Open</span></button></div>
             </div>
           `).join("") || `<div class="detail-empty user-empty">No references found for this model</div>`}
