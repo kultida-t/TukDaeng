@@ -1618,7 +1618,7 @@
       grid-template-columns: minmax(240px, 1.35fr) minmax(126px, .68fr) minmax(126px, .68fr) max-content;
     }
     body.market-list-mode .market-catalog-filter-bar {
-      grid-template-columns: minmax(240px, 1.35fr) minmax(126px, .68fr) minmax(126px, .68fr) max-content;
+      grid-template-columns: minmax(240px, 1fr);
     }
     body.market-list-mode .market-table .asset-row {
       grid-template-columns: minmax(220px, 1fr) minmax(116px, .45fr) minmax(126px, .5fr) minmax(150px, .6fr) 74px;
@@ -13457,16 +13457,7 @@
       if (subLabel === "Catalog") {
         document.querySelector(".filters").innerHTML = `
           <div class="user-filter-bar market-catalog-filter-bar">
-            <input class="field search" id="market-search" type="search" placeholder="Search brand, model, reference, source, status" />
-            ${customSelect("market-status-filter", "Filter catalog status", [
-              { value: "", label: "All status / quality" },
-              ...statusOptions.map(status => ({ value: status, label: status }))
-            ])}
-            ${customSelect("market-brand-filter", "Filter catalog brand", [
-              { value: "", label: "All brands" },
-              ...marketCatalogData.brands.map(brand => ({ value: brand.name, label: brand.name }))
-            ])}
-            <button class="btn filter-reset" type="button" data-market-reset title="รีเซ็ตค่าทั้งหมด" aria-label="รีเซ็ตค่าทั้งหมด">${iconSvg.refresh}<span>รีเซ็ตค่าทั้งหมด</span></button>
+            <input class="field search" id="market-search" type="search" placeholder="Search brand" />
           </div>
         `;
         return;
@@ -13489,21 +13480,9 @@
 
     function renderMarketCatalogRows() {
       const q = (document.querySelector("#market-search")?.value || "").trim().toLowerCase();
-      const status = document.querySelector("#market-status-filter")?.value || "";
-      const brandFilter = document.querySelector("#market-brand-filter")?.value || "";
       const rows = marketCatalogData.brands.filter(brand => {
-        const modelText = (brand.modelsSample || []).map(model => [
-          model.name,
-          model.refs,
-          model.movement,
-          model.case,
-          model.status || "",
-          ...(model.references || []).map(reference => [reference.number, reference.year, reference.material, reference.caseSize, reference.movement, reference.status].join(" "))
-        ].flat().join(" ")).join(" ");
-        const text = [brand.id, brand.name, brand.status, brand.health, brand.source, brand.lastSync, modelText].join(" ").toLowerCase();
-        return (!q || text.includes(q))
-          && (!status || brand.status === status || brand.health === status)
-          && (!brandFilter || brand.name === brandFilter);
+        const text = [brand.id, brand.name].join(" ").toLowerCase();
+        return !q || text.includes(q);
       }).sort((a, b) => a.name.localeCompare(b.name));
       const pageCount = Math.max(1, Math.ceil(rows.length / marketCatalogPageSize));
       marketCatalogPage = Math.min(marketCatalogPage, pageCount);
