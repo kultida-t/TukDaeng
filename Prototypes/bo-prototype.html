@@ -1651,6 +1651,7 @@
       line-height: 1.35;
     }
     .market-sync-modal-content .user-action-footer {
+      justify-content: flex-end;
       margin-top: 4px;
       margin-bottom: 10px;
     }
@@ -3796,6 +3797,11 @@
     }
     .action-feedback.show {
       display: block;
+    }
+    .action-feedback.success {
+      border-color: #a7e4c6;
+      background: #effdf5;
+      color: #087853;
     }
     .user-action-page {
       display: grid;
@@ -7846,6 +7852,7 @@
     let marketCatalogPage = 1;
     const marketCatalogPageSize = 10;
     let activeMarketSyncJob = null;
+    let marketSyncTimer = null;
 
     moduleData.market = mod("Market Data", "การดำเนินงาน / Market Data", "Market Catalog", "ดูแลข้อมูล brand, model, reference, detail และ price indicator จาก thewatchapi ก่อน sync ไปยัง Search, Asset และ Watch Alert", "Sync API", [["Brands", "9", "sample catalog"], ["References", "24", "sample refs"], ["Mapping Queue", "23", "ต้อง review"], ["API Sync", "08:30", "ล่าสุดวันนี้"]], [
       item("BRD-ROLEX", "Rolex", "Brand Catalog", "thewatchapi", "ปกติ", "Active", "Brand-first catalog with model, reference, detail and price coverage", ["Models 1,240", "Refs 4,820"], "Review brand catalog and drill down before changing visibility"),
@@ -13703,7 +13710,7 @@
               <h2 id="user-action-modal-title">${isSuccess ? "Sync completed" : isError ? "Sync failed" : isRunning ? "Syncing API" : "Run API sync?"}</h2>
               <p>${isSuccess ? "Catalog records were refreshed and the sync log was updated." : isError ? "Catalog data was not changed. Retry failed endpoints after checking the source response." : "Start a new thewatchapi sync job for catalog source data."}</p>
             </div>
-            <button class="btn user-action-close" type="button" data-user-action-modal-close aria-label="Close modal" title="Close">${iconSvg.close}</button>
+            ${isRunning ? "" : `<button class="btn user-action-close" type="button" data-user-action-modal-close aria-label="Close modal" title="Close">${iconSvg.close}</button>`}
           </div>
           <div class="user-action-target">
             <div>
@@ -13721,21 +13728,24 @@
                 <div class="detail-tile"><span>References</span><strong>${job.references.toLocaleString()}</strong></div>
               </div>
               ${renderMarketSyncSteps(isRunning ? 3 : isSuccess ? 5 : isError ? 3 : -1, isError ? 3 : -1)}
-              ${isError ? `<div class="warning-note action-feedback show error"><strong>reference/list failed</strong><br><span>Rate limit returned from source API. Existing Catalog values remain unchanged.</span></div>` : ""}
-              ${isSuccess ? `<div class="warning-note action-feedback show success"><strong>Sync completed</strong><br><span>Updated ${job.brands.toLocaleString()} brands at ${job.timestamp}. Mapping warnings were added to Sync Logs.</span></div>` : ""}
               <div class="user-detail-actions user-action-footer">
                 ${state === "confirm" ? `<button class="user-detail-action-btn primary user-action-confirm" type="button" data-market-sync-run>Run sync</button><button class="user-detail-action-btn" type="button" data-user-action-modal-close>Cancel</button>` : ""}
                 ${isRunning ? `<button class="user-detail-action-btn primary user-action-confirm" type="button" disabled>Syncing...</button>` : ""}
                 ${isSuccess ? `<button class="user-detail-action-btn primary" type="button" data-market-sync-view-logs>View Sync Logs</button><button class="user-detail-action-btn" type="button" data-user-action-modal-close>Close</button>` : ""}
                 ${isError ? `<button class="user-detail-action-btn warning user-action-confirm" type="button" data-market-sync-retry>Retry failed endpoints</button><button class="user-detail-action-btn" type="button" data-user-action-modal-close>Close</button>` : ""}
               </div>
+              ${isError ? `<div class="warning-note action-feedback show error"><strong>reference/list failed</strong><br><span>Rate limit returned from source API. Existing Catalog values remain unchanged.</span></div>` : ""}
+              ${isSuccess ? `<div class="warning-note action-feedback show success"><strong>Sync completed successfully</strong><br><span>${job.brands.toLocaleString()} brands were refreshed at ${job.timestamp}. Non-blocking mapping warnings were recorded in Sync Logs for review.</span></div>` : ""}
               ${state === "confirm" ? `
                 <details class="prototype-tools user-action-prototype-tools">
                   <summary>Prototype scenario</summary>
-                  <select class="field" id="market-sync-scenario">
-                    <option value="success" ${scenario === "success" ? "selected" : ""}>Success</option>
-                    <option value="rate_limit" ${scenario === "rate_limit" ? "selected" : ""}>Rate limit error</option>
-                  </select>
+                  <label>
+                    Test flow
+                    ${customSelect("market-sync-scenario", "Test flow", [
+                      { value: "success", label: "Sync completed successfully" },
+                      { value: "rate_limit", label: "Rate limit error" }
+                    ], scenario, "data-custom-select-silent")}
+                  </label>
                 </details>
               ` : ""}
             </div>
@@ -13746,6 +13756,10 @@
     }
 
     function openMarketSyncModal() {
+      if (activeMarketSyncJob?.status === "running") {
+        renderMarketSyncModal("running");
+        return;
+      }
       activeMarketSyncJob = null;
       renderMarketSyncModal("confirm");
     }
@@ -13769,27 +13783,42 @@
       if (!marketCatalogData.syncLogs.some(log => log.id === newLog.id)) marketCatalogData.syncLogs.unshift(newLog);
       moduleData.market.cards[3][1] = job.timestamp.slice(12);
       if (activeModule === "market" && activeSub === "Catalog") renderMarketCatalogRows();
+      job.status = "success";
       renderMarketSyncModal("success");
       showSuccessToast(`${job.id}: Sync completed`);
     }
 
     function runMarketSyncJob(scenario = "success") {
+      scenario = scenario === "rate_limit" ? "rate_limit" : "success";
       const now = new Date();
+      if (marketSyncTimer) window.clearTimeout(marketSyncTimer);
       activeMarketSyncJob = {
         id: getMarketSyncJobId(now),
         timestamp: formatMarketSyncTimestamp(now),
         startedAt: now,
+        status: "running",
         brands: marketCatalogData.brands.length,
         references: marketCatalogData.brands.reduce((sum, brand) => sum + brand.references, 0)
       };
       renderMarketSyncModal("running", scenario);
-      window.setTimeout(() => {
-        if (scenario === "rate_limit") {
-          renderMarketSyncModal("error", scenario);
-          return;
-        }
+      marketSyncTimer = window.setTimeout(() => finishMarketSyncJob(scenario), 1200);
+    }
+
+    function finishMarketSyncJob(scenario = "success") {
+      if (!activeMarketSyncJob || activeMarketSyncJob.status !== "running") return;
+      marketSyncTimer = null;
+      if (scenario === "rate_limit") {
+        activeMarketSyncJob.status = "error";
+        renderMarketSyncModal("error", scenario);
+        return;
+      }
+      try {
         completeMarketSyncJob(activeMarketSyncJob);
-      }, 900);
+      } catch (error) {
+        console.error("Market sync prototype failed", error);
+        activeMarketSyncJob.status = "success";
+        renderMarketSyncModal("success");
+      }
     }
 
     function renderMarketCards(subLabel) {
@@ -17469,6 +17498,7 @@
       }
 
       if (event.target.closest("[data-user-action-modal-close]")) {
+        if (activeMarketSyncJob?.status === "running" && event.target.closest(".market-sync-modal-content")) return;
         closeUserActionModal();
         return;
       }
