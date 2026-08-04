@@ -13270,7 +13270,7 @@
         return (!q || text.includes(q))
           && (!status || brand.status === status || brand.health === status)
           && (!brandFilter || brand.name === brandFilter);
-      });
+      }).sort((a, b) => a.name.localeCompare(b.name));
       const pageCount = Math.max(1, Math.ceil(rows.length / marketCatalogPageSize));
       marketCatalogPage = Math.min(marketCatalogPage, pageCount);
       const start = (marketCatalogPage - 1) * marketCatalogPageSize;
