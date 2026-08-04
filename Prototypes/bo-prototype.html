@@ -1779,6 +1779,10 @@
     .market-editor-modal .article-editor-form label {
       grid-column: 1 / -1;
     }
+    .market-editor-modal .article-editor-form input,
+    .market-editor-modal .article-editor-form textarea {
+      background: #fff;
+    }
     .category-editor-modal .article-editor-form > .user-detail-actions {
       justify-content: flex-end;
     }
@@ -13871,7 +13875,7 @@
               <span class="article-field-error" data-market-name-error></span>
             </label>
             <label><span>เหตุผล <span class="article-required-mark">*</span></span>
-              <textarea id="market-action-reason" class="field" rows="3" placeholder="ระบุเหตุผลสำหรับบันทึก audit">อัปเดตคุณภาพข้อมูลตลาด</textarea>
+              <textarea id="market-action-reason" class="field" rows="3" placeholder="เช่น เพิ่มข้อมูลตามแหล่งอ้างอิงที่ตรวจสอบแล้ว"></textarea>
               <span class="article-field-error" data-market-reason-error></span>
             </label>
           </div>
@@ -13889,7 +13893,7 @@
               <span class="article-field-error" data-market-refs-error></span>
             </label>
             <label><span>เหตุผล <span class="article-required-mark">*</span></span>
-              <textarea id="market-action-reason" class="field" rows="3" placeholder="ระบุเหตุผลสำหรับบันทึก audit">อัปเดตคุณภาพข้อมูลตลาด</textarea>
+              <textarea id="market-action-reason" class="field" rows="3" placeholder="เช่น เพิ่มข้อมูลตามแหล่งอ้างอิงที่ตรวจสอบแล้ว"></textarea>
               <span class="article-field-error" data-market-reason-error></span>
             </label>
           </div>
@@ -13907,7 +13911,7 @@
               <span class="article-field-error" data-market-year-error></span>
             </label>
             <label><span>เหตุผล <span class="article-required-mark">*</span></span>
-              <textarea id="market-action-reason" class="field" rows="3" placeholder="ระบุเหตุผลสำหรับบันทึก audit">อัปเดตคุณภาพข้อมูลตลาด</textarea>
+              <textarea id="market-action-reason" class="field" rows="3" placeholder="เช่น เพิ่มข้อมูลตามแหล่งอ้างอิงที่ตรวจสอบแล้ว"></textarea>
               <span class="article-field-error" data-market-reason-error></span>
             </label>
           </div>
@@ -13923,7 +13927,7 @@
             <label>ชื่อที่แสดง<input id="market-action-name" class="field" value="${target.title}" placeholder="ชื่อแบรนด์ รุ่น หรือ Reference" /></label>
             <label>หมายเหตุแหล่งข้อมูล<input id="market-action-source" class="field" value="แก้ไขโดยผู้ดูแล" placeholder="Manual, Provider, Import" /></label>
           ` : ""}
-          <label>เหตุผล<textarea id="market-action-reason" class="field" rows="3" placeholder="ระบุเหตุผลสำหรับ audit และผลกระทบ downstream">อัปเดตคุณภาพข้อมูลตลาด</textarea></label>
+          <label>เหตุผล<textarea id="market-action-reason" class="field" rows="3" placeholder="เช่น ปรับปรุงข้อมูลตามแหล่งอ้างอิงที่ตรวจสอบแล้ว"></textarea></label>
         </div>
         ${renderMarketActionSteps(action)}
         ${isImport ? `<div class="warning-note action-feedback show"><strong>ผลการตรวจสอบไฟล์</strong><br><span>ข้อมูลผ่าน 142 รายการ, ซ้ำ 6 รายการ, alias conflict 3 รายการ, ขาดข้อมูลจำเป็น 2 รายการ ระบบจะยังไม่บันทึกข้อมูลจนกว่าจะยืนยัน</span></div>` : ""}
@@ -13974,7 +13978,7 @@
                       <label>หมายเหตุแหล่งข้อมูล<input id="market-action-source" class="field" value="แก้ไขโดยผู้ดูแล" placeholder="Manual, Provider, Import" /></label>
                     ` : ""}
                     ${isToggle ? renderMarketImpactSection(target.brand) : ""}
-                    <label>เหตุผล<textarea id="market-action-reason" class="field" rows="3" placeholder="ระบุเหตุผลสำหรับ audit และผลกระทบ downstream">อัปเดตคุณภาพข้อมูลตลาด</textarea></label>
+                    <label>เหตุผล<textarea id="market-action-reason" class="field" rows="3" placeholder="เช่น ปรับปรุงข้อมูลตามแหล่งอ้างอิงที่ตรวจสอบแล้ว"></textarea></label>
                   `}
                 </div>
                 <div class="user-detail-actions user-action-footer">
@@ -14019,17 +14023,17 @@
           return;
         }
         if (!normalizeMarketKey(name)) {
-          setMarketActionFieldError("name", "กรุณากรอกชื่อแบรนด์ให้ถูกต้อง");
+          setMarketActionFieldError("name", "รูปแบบข้อมูลไม่ถูกต้อง");
           nameInput?.focus();
           return;
         }
         if (!reasonValue) {
-          setMarketActionFieldError("reason", "กรุณาระบุเหตุผล");
+          setMarketActionFieldError("reason", "กรุณากรอกเหตุผล");
           document.querySelector("#market-action-reason")?.focus();
           return;
         }
         if (marketCatalogData.brands.some(entry => normalizeMarketKey(entry.name) === normalizeMarketKey(name))) {
-          setMarketActionFieldError("name", "แบรนด์นี้มีอยู่ใน Catalog แล้ว");
+          setMarketActionFieldError("name", "ชื่อแบรนด์นี้มีอยู่ในระบบแล้ว");
           nameInput?.focus();
           return;
         }
@@ -14052,17 +14056,17 @@
           return;
         }
         if (!normalizeMarketKey(name)) {
-          setMarketActionFieldError("name", "กรุณากรอกชื่อรุ่นให้ถูกต้อง");
+          setMarketActionFieldError("name", "รูปแบบข้อมูลไม่ถูกต้อง");
           nameInput?.focus();
           return;
         }
         if (!reasonValue) {
-          setMarketActionFieldError("reason", "กรุณาระบุเหตุผล");
+          setMarketActionFieldError("reason", "กรุณากรอกเหตุผล");
           document.querySelector("#market-action-reason")?.focus();
           return;
         }
         if ((brand.modelsSample || []).some(entry => normalizeMarketKey(entry.name) === normalizeMarketKey(name))) {
-          setMarketActionFieldError("name", "รุ่นนี้มีอยู่ภายใต้แบรนด์นี้แล้ว");
+          setMarketActionFieldError("name", "ชื่อรุ่นนี้มีอยู่ในระบบแล้ว");
           nameInput?.focus();
           return;
         }
@@ -14099,7 +14103,7 @@
       } else if (action === "add-reference") {
         const number = (nameInput?.value || "").trim().replace(/\s+/g, " ");
         if (!model) {
-          setMarketActionFieldError("name", "กรุณาเลือกรุ่นก่อนเพิ่ม Reference");
+          setMarketActionFieldError("name", "กรุณาเลือกข้อมูลที่เกี่ยวข้องก่อนดำเนินการ");
           return;
         }
         if (!number) {
@@ -14108,17 +14112,17 @@
           return;
         }
         if (!normalizeMarketKey(number)) {
-          setMarketActionFieldError("name", "กรุณากรอกเลข Reference ให้ถูกต้อง");
+          setMarketActionFieldError("name", "รูปแบบข้อมูลไม่ถูกต้อง");
           nameInput?.focus();
           return;
         }
         if (!reasonValue) {
-          setMarketActionFieldError("reason", "กรุณาระบุเหตุผล");
+          setMarketActionFieldError("reason", "กรุณากรอกเหตุผล");
           document.querySelector("#market-action-reason")?.focus();
           return;
         }
         if ((model.references || []).some(entry => normalizeMarketKey(entry.number) === normalizeMarketKey(number))) {
-          setMarketActionFieldError("name", "Reference นี้มีอยู่ภายใต้รุ่นนี้แล้ว");
+          setMarketActionFieldError("name", "เลข Reference นี้มีอยู่ในระบบแล้ว");
           nameInput?.focus();
           return;
         }
