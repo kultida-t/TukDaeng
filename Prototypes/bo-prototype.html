@@ -1557,6 +1557,27 @@
       text-transform: uppercase;
       white-space: nowrap;
     }
+    body.market-list-mode .panel-head h2 {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      width: 100%;
+    }
+    body.market-list-mode .panel-title-count {
+      margin-left: auto;
+      color: #5f718b;
+      font-family: var(--font-heading);
+      font-size: 22px;
+      font-weight: 400;
+      line-height: 1;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+    body.market-list-mode .panel-head > div:first-child {
+      width: 100%;
+      min-width: 0;
+    }
     body.article-list-mode .filters,
     body.category-list-mode .filters,
     body.reported-board-mode .filters,
@@ -1601,6 +1622,13 @@
     }
     body.market-list-mode .market-table .asset-row {
       grid-template-columns: minmax(220px, 1fr) minmax(116px, .45fr) minmax(126px, .5fr) minmax(150px, .6fr) 74px;
+    }
+    body.market-list-mode .market-catalog-table .asset-row {
+      grid-template-columns: minmax(220px, 1fr) minmax(116px, .45fr) minmax(126px, .5fr) minmax(150px, .6fr) 92px;
+    }
+    body.market-list-mode .market-catalog-table .asset-row > div:last-child {
+      justify-self: end;
+      text-align: right;
     }
     body.market-list-mode .market-table.market-record-table .asset-row {
       grid-template-columns: minmax(220px, 1.35fr) minmax(150px, .9fr) minmax(120px, .65fr) minmax(116px, .65fr) 74px;
@@ -7790,6 +7818,8 @@
     const reportHistoryPageSize = 10;
     let activeMarketBrandId = "rolex";
     let activeMarketModelIndex = 0;
+    let marketCatalogPage = 1;
+    const marketCatalogPageSize = 10;
 
     moduleData.market = mod("Market Data", "การดำเนินงาน / Market Data", "Market Catalog", "ดูแลข้อมูล brand, model, reference, detail และ price indicator จาก thewatchapi ก่อน sync ไปยัง Search, Asset และ Watch Alert", "Sync API", [["Brands", "9", "sample catalog"], ["References", "24", "sample refs"], ["Mapping Queue", "23", "ต้อง review"], ["API Sync", "08:30", "ล่าสุดวันนี้"]], [
       item("BRD-ROLEX", "Rolex", "Brand Catalog", "thewatchapi", "ปกติ", "Active", "Brand-first catalog with model, reference, detail and price coverage", ["Models 1,240", "Refs 4,820"], "Review brand catalog and drill down before changing visibility"),
@@ -8103,6 +8133,47 @@
       });
     }
 
+    function createMarketSampleBrand(id, name, models, references, lastSync, health = "Healthy") {
+      return {
+        id,
+        name,
+        status: "Active",
+        models,
+        references,
+        mapped: Math.max(0, references - Math.round(references * .05)),
+        priceCoverage: "82%",
+        lastSync,
+        health,
+        source: "brand/list, model/list, reference/list, model/search, price/history",
+        modelsSample: [
+          { name: `${name} Core Collection`, refs: "Sample references", movement: "Automatic", case: "Mixed", updated: "03 Aug 2026", price: "USD sample", references: [
+            { number: `${id.toUpperCase()}-REF-01`, year: "Mixed", material: "Mixed", caseSize: "Mixed", movement: "Automatic", description: `${name} sample reference for pagination and drill-down review.`, price: "USD sample", status: health === "Needs Mapping" ? "Needs Mapping" : "Mapped" }
+          ] }
+        ],
+        quality: health === "Needs Mapping" ? ["Sample aliases need mapping review"] : ["Sample catalog row for pagination review"],
+        impact: `${name} catalog data supports Search, Asset form suggestions and Watch Alert matching.`
+      };
+    }
+
+    [
+      createMarketSampleBrand("breitling", "Breitling", 340, 980, "03 Aug 2026 07:42"),
+      createMarketSampleBrand("tag-heuer", "TAG Heuer", 520, 1460, "03 Aug 2026 07:38", "Needs Review"),
+      createMarketSampleBrand("panerai", "Panerai", 260, 820, "03 Aug 2026 07:34"),
+      createMarketSampleBrand("jaeger-lecoultre", "Jaeger-LeCoultre", 300, 940, "03 Aug 2026 07:31"),
+      createMarketSampleBrand("vacheron", "Vacheron Constantin", 280, 870, "03 Aug 2026 07:26", "Needs Mapping"),
+      createMarketSampleBrand("zenith", "Zenith", 240, 720, "03 Aug 2026 07:22"),
+      createMarketSampleBrand("longines", "Longines", 610, 1840, "03 Aug 2026 07:18"),
+      createMarketSampleBrand("hamilton", "Hamilton", 420, 1210, "03 Aug 2026 07:14"),
+      createMarketSampleBrand("oris", "Oris", 310, 890, "03 Aug 2026 07:10"),
+      createMarketSampleBrand("nomos", "NOMOS Glashutte", 180, 540, "03 Aug 2026 07:06"),
+      createMarketSampleBrand("glashutte-original", "Glashutte Original", 160, 480, "03 Aug 2026 07:02"),
+      createMarketSampleBrand("blancpain", "Blancpain", 210, 640, "03 Aug 2026 06:58"),
+      createMarketSampleBrand("breguet", "Breguet", 190, 590, "03 Aug 2026 06:54"),
+      createMarketSampleBrand("hublot", "Hublot", 330, 960, "03 Aug 2026 06:50", "Needs Review")
+    ].forEach(brand => {
+      if (!marketCatalogData.brands.some(entry => entry.id === brand.id)) marketCatalogData.brands.push(brand);
+    });
+
     moduleData.market.cards[0][1] = String(marketCatalogData.brands.length);
     moduleData.market.cards[1][1] = String(marketCatalogData.brands.reduce((sum, brand) => sum + brand.modelsSample.length, 0));
     moduleData.market.cards[2][1] = String(marketCatalogData.brands.reduce((sum, brand) => sum + brand.modelsSample.reduce((modelSum, model) => modelSum + (model.references || []).length, 0), 0));
@@ -8125,6 +8196,7 @@
       categoryFilterOpen = false;
       boardReportListPage = 1;
       boardReportFilterOpen = false;
+      marketCatalogPage = 1;
       activeAssetImageIndex = 0;
       closeRowMenus();
       document.querySelectorAll("[data-custom-select]").forEach(select => {
@@ -13199,10 +13271,14 @@
           && (!status || brand.status === status || brand.health === status)
           && (!brandFilter || brand.name === brandFilter);
       });
+      const pageCount = Math.max(1, Math.ceil(rows.length / marketCatalogPageSize));
+      marketCatalogPage = Math.min(marketCatalogPage, pageCount);
+      const start = (marketCatalogPage - 1) * marketCatalogPageSize;
+      const visibleRows = rows.slice(start, start + marketCatalogPageSize);
       document.querySelector("#table").innerHTML = `
-        <div class="asset-table category-table market-table">
+        <div class="asset-table category-table market-table market-catalog-table">
           <div class="asset-row head"><div>Brand</div><div>Models</div><div>References</div><div>Last Sync</div><div>Action</div></div>
-          ${rows.map(brand => `
+          ${visibleRows.map(brand => `
             <div class="asset-row" data-market-brand="${brand.id}">
               <div data-label="Brand"><div class="main-text">${brand.name}</div></div>
               <div data-label="Models"><div class="main-text">${brand.models.toLocaleString()}</div></div>
@@ -13212,7 +13288,14 @@
             </div>
           `).join("") || `<div class="detail-empty user-empty">No market brands found</div>`}
         </div>
-        <div class="footer-range"><span>แสดง ${rows.length ? `1-${rows.length}` : "0"} จาก ${rows.length}</span></div>
+        <div class="footer-range">
+          <span>แสดง ${rows.length ? `${start + 1}-${Math.min(start + marketCatalogPageSize, rows.length)}` : "0"} จาก ${rows.length}</span>
+          <div class="pager">
+            <button class="btn" type="button" data-market-catalog-page="prev" ${marketCatalogPage <= 1 ? "disabled" : ""}>ก่อนหน้า</button>
+            ${Array.from({ length: pageCount }, (_, index) => `<button class="btn ${index + 1 === marketCatalogPage ? "active" : ""}" type="button" data-market-catalog-page="${index + 1}">${index + 1}</button>`).join("")}
+            <button class="btn" type="button" data-market-catalog-page="next" ${marketCatalogPage >= pageCount ? "disabled" : ""}>ถัดไป</button>
+          </div>
+        </div>
       `;
     }
 
@@ -13580,7 +13663,9 @@
       document.querySelector("#crumb").textContent = `${moduleData.market.crumb} / ${subLabel}`;
       document.querySelector("#page-title").textContent = subLabel;
       document.querySelector("#page-meta").textContent = "";
-      document.querySelector("#panel-title").textContent = subLabel === "Catalog" ? "BRAND CATALOG" : subLabel.toUpperCase();
+      document.querySelector("#panel-title").innerHTML = subLabel === "Catalog"
+        ? `BRAND CATALOG <span class="panel-title-count">${marketCatalogData.brands.length.toLocaleString()} Brands</span>`
+        : subLabel.toUpperCase();
       document.querySelector("#panel-subtitle").textContent = "";
       document.querySelector("#primary-action").textContent = subLabel === "Sync Logs" ? "Run sync" : "Sync API";
       setupMarketFilters(subLabel);
@@ -18071,6 +18156,15 @@
         renderReportedBoardRows();
         return;
       }
+      const marketCatalogPageButton = event.target.closest("[data-market-catalog-page]");
+      if (marketCatalogPageButton) {
+        const target = marketCatalogPageButton.dataset.marketCatalogPage;
+        if (target === "prev") marketCatalogPage = Math.max(1, marketCatalogPage - 1);
+        else if (target === "next") marketCatalogPage += 1;
+        else marketCatalogPage = Number(target) || 1;
+        renderMarketCatalogRows();
+        return;
+      }
       const assetPageButton = event.target.closest("[data-asset-page]");
       if (assetPageButton) {
         const target = assetPageButton.dataset.assetPage;
@@ -18451,6 +18545,7 @@
         renderRows();
       }
       if (event.target.matches("#market-search")) {
+        if (activeModule === "market" && activeSub === "Catalog") marketCatalogPage = 1;
         renderRows();
       }
       if (event.target.matches("#market-model-search")) {
