@@ -1645,10 +1645,17 @@
       justify-self: stretch;
       text-align: left;
     }
-    body.market-list-mode .market-table.market-model-table .asset-row > div:nth-child(2) {
+    body.market-list-mode .market-table.market-model-table .market-card-tags {
+      display: none;
+    }
+    body.market-list-mode .market-table.market-model-table .asset-row.head > div:nth-child(2),
+    body.market-list-mode .market-table.market-model-table .asset-row:not(.head) > div:nth-child(3) {
+      display: flex;
+      justify-content: center;
       text-align: center;
     }
-    body.market-list-mode .market-table.market-model-table .asset-row > div:nth-child(2) .main-text {
+    body.market-list-mode .market-table.market-model-table .asset-row:not(.head) > div:nth-child(3) .main-text {
+      width: 100%;
       text-align: center;
     }
     body.market-list-mode .market-table.market-model-table .asset-row > div:last-child {
@@ -14762,7 +14769,7 @@
       document.querySelector("#crumb").textContent = `${moduleData.market.crumb} / Catalog / ${brand.name}`;
       document.querySelector("#page-title").textContent = brand.name;
       document.querySelector("#page-meta").textContent = "";
-      document.querySelector("#panel-title").textContent = "MODELS";
+      document.querySelector("#panel-title").innerHTML = `MODELS <span class="panel-title-count">${(brand.modelsSample || []).length.toLocaleString()} Models</span>`;
       document.querySelector("#panel-subtitle").textContent = "";
       document.querySelector("#primary-action").textContent = "";
       document.querySelector("#user-panel-filter-actions").innerHTML = "";
