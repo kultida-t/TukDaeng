@@ -1685,8 +1685,8 @@
     }
     .market-action-modal-content .market-import-guide-head {
       display: flex;
-      align-items: flex-start;
-      justify-content: space-between;
+      align-items: center;
+      justify-content: flex-start;
       gap: 12px;
     }
     .market-action-modal-content .market-import-template-btn {
@@ -13996,11 +13996,8 @@
       return `
         <div class="market-import-guide">
           <div class="market-import-guide-head">
-            <div>
-              <strong>Import template</strong><br>
-              <span class="muted">ดาวน์โหลดไฟล์ตัวอย่างไปกรอกข้อมูล แล้วนำกลับมาอัปโหลดเพื่อ dry-run</span>
-            </div>
             <a class="market-import-template-btn" href="assets/templates/market-data-import-template.csv" download="market-data-import-template.csv">Download CSV Template</a>
+            <span class="muted">ดาวน์โหลดไฟล์ตัวอย่างไปกรอกข้อมูล แล้วนำกลับมาอัปโหลดเพื่อ dry-run</span>
           </div>
         </div>
       `;
