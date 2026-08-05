@@ -1634,8 +1634,8 @@
       grid-template-columns: minmax(220px, 1.35fr) minmax(150px, .9fr) minmax(120px, .65fr) minmax(116px, .65fr) 74px;
     }
     body.market-list-mode .market-table.market-model-table .asset-row {
-      grid-template-columns: minmax(360px, 1.45fr) 150px minmax(280px, 1.05fr) minmax(250px, .95fr) 92px;
-      column-gap: 32px;
+      grid-template-columns: minmax(300px, 1.25fr) minmax(230px, .9fr) minmax(260px, 1fr) minmax(250px, .95fr) 92px;
+      column-gap: 28px;
       align-items: center;
       min-height: 66px;
     }
@@ -1648,16 +1648,6 @@
     }
     body.market-list-mode .market-table.market-model-table .market-card-tags {
       display: none;
-    }
-    body.market-list-mode .market-table.market-model-table .asset-row.head > div:nth-child(2),
-    body.market-list-mode .market-table.market-model-table .asset-row:not(.head) > div:nth-child(3) {
-      display: flex;
-      justify-content: center;
-      text-align: center;
-    }
-    body.market-list-mode .market-table.market-model-table .asset-row:not(.head) > div:nth-child(3) .main-text {
-      width: 100%;
-      text-align: center;
     }
     body.market-list-mode .market-table.market-model-table .asset-row > div:last-child {
       text-align: right;
@@ -13917,10 +13907,79 @@
       return model?.references?.[Number(referenceIndex)] || model?.references?.[0];
     }
 
+    function getMarketUniqueValues(values = []) {
+      return [...new Set(values.map(value => String(value || "").trim()).filter(Boolean))];
+    }
+
+    function formatMarketSummary(values = [], fallback = "-", limit = 2) {
+      const uniqueValues = getMarketUniqueValues(values);
+      if (!uniqueValues.length) return fallback;
+      if (uniqueValues.length <= limit) return uniqueValues.join(" / ");
+      return `${uniqueValues.slice(0, limit).join(" / ")} +${uniqueValues.length - limit}`;
+    }
+
+    function getMarketMovementBaseSummary(values = []) {
+      const bases = getMarketUniqueValues(values.map(value => {
+        const text = String(value || "").toLowerCase();
+        if (text.includes("spring drive")) return "Spring Drive";
+        if (text.includes("quartz")) return "Quartz";
+        if (text.includes("manual")) return "Manual wind";
+        if (text.includes("automatic") || text.includes("hi-beat")) return "Automatic";
+        if (text.includes("tourbillon")) return "Mechanical";
+        return "";
+      }));
+      return formatMarketSummary(bases, "-");
+    }
+
+    function getMarketComplicationSummary(values = []) {
+      const complications = [];
+      values.forEach(value => {
+        const text = String(value || "").toLowerCase();
+        if (text.includes("chronograph")) complications.push("Chronograph");
+        if (text.includes("perpetual")) complications.push("Perpetual calendar");
+        if (text.includes("annual")) complications.push("Annual calendar");
+        if (text.includes("gmt")) complications.push("GMT");
+        if (text.includes("tourbillon")) complications.push("Tourbillon");
+        if (text.includes("extra-thin")) complications.push("Extra-thin");
+        if (text.includes("moonphase")) complications.push("Moonphase");
+      });
+      return formatMarketSummary(complications, "");
+    }
+
+    function getMarketCaseSizeSummary(values = []) {
+      const uniqueValues = getMarketUniqueValues(values);
+      const numericSizes = uniqueValues.map(value => {
+        const match = value.match(/^(\d+(?:\.\d+)?)\s*mm$/i);
+        return match ? Number(match[1]) : null;
+      });
+      if (numericSizes.length && numericSizes.every(value => value !== null)) {
+        const min = Math.min(...numericSizes);
+        const max = Math.max(...numericSizes);
+        const formatSize = size => Number.isInteger(size) ? String(size) : String(size).replace(/\.0$/, "");
+        return min === max ? `${formatSize(min)} mm` : `${formatSize(min)}-${formatSize(max)} mm`;
+      }
+      return formatMarketSummary(uniqueValues, "-");
+    }
+
+    function getMarketModelDisplaySummary(model) {
+      const references = model.references || [];
+      const referenceNumbers = references.map(reference => reference.number);
+      const movements = references.map(reference => reference.movement);
+      return {
+        references: references.length,
+        referenceExamples: formatMarketSummary(referenceNumbers, model.refs || "-", 3),
+        movement: getMarketMovementBaseSummary(movements) || model.movement || "-",
+        complication: getMarketComplicationSummary(movements),
+        caseSize: getMarketCaseSizeSummary(references.map(reference => reference.caseSize)) || model.case || "-",
+        material: formatMarketSummary(references.map(reference => reference.material), "-", 2)
+      };
+    }
+
     function renderMarketModelRows(brand = getMarketBrand(activeMarketBrandId)) {
       const q = (document.querySelector("#market-model-search")?.value || "").trim().toLowerCase();
       const rows = (brand.modelsSample || []).map((model, index) => ({ model, index })).filter(({ model }) => {
-        const text = [model.name, model.refs, model.movement, model.case].join(" ").toLowerCase();
+        const summary = getMarketModelDisplaySummary(model);
+        const text = [model.name, model.refs, model.movement, model.case, summary.referenceExamples, summary.movement, summary.complication, summary.caseSize, summary.material].join(" ").toLowerCase();
         return !q || text.includes(q);
       });
       const pageCount = Math.max(1, Math.ceil(rows.length / marketModelPageSize));
@@ -13929,27 +13988,30 @@
       const visibleRows = rows.slice(start, start + marketModelPageSize);
       document.querySelector("#table").innerHTML = `
         <div class="asset-table category-table market-table market-model-table">
-          <div class="asset-row head"><div>Model</div><div>References</div><div>Movement</div><div>Case</div><div>Action</div></div>
-          ${visibleRows.map(({ model, index }) => `
+          <div class="asset-row head"><div>Model</div><div>References</div><div>Movement</div><div>Case Range</div><div>Action</div></div>
+          ${visibleRows.map(({ model, index }) => {
+            const summary = getMarketModelDisplaySummary(model);
+            return `
             <div class="asset-row" data-market-model="${index}" data-market-brand-id="${brand.id}">
               <div data-label="Model"><div class="main-text">${model.name}</div></div>
               <div class="market-card-tags">
                 <span class="pill ${model.status === "Inactive" ? "amber" : "green"}">${model.status || "Active"}</span>
-                <span class="user-card-tag asset-tag">${(model.references || []).length} refs</span>
-                <span class="user-card-tag asset-tag">${model.movement}</span>
+                <span class="user-card-tag asset-tag">${summary.references} refs</span>
+                <span class="user-card-tag asset-tag">${summary.movement}</span>
                 <div class="market-card-meta user-card-meta">
-                  <div class="user-card-meta-item"><span>References</span><strong>${(model.references || []).length}</strong></div>
+                  <div class="user-card-meta-item"><span>References</span><strong>${summary.references}</strong></div>
                   <div class="user-card-meta-item"><span>Status</span><strong>${model.status || "Active"}</strong></div>
-                  <div class="user-card-meta-item"><span>Movement</span><strong>${model.movement}</strong></div>
-                  <div class="user-card-meta-item"><span>Case</span><strong>${model.case}</strong></div>
+                  <div class="user-card-meta-item"><span>Movement</span><strong>${summary.movement}</strong></div>
+                  <div class="user-card-meta-item"><span>Complication</span><strong>${summary.complication || "-"}</strong></div>
+                  <div class="user-card-meta-item"><span>Case</span><strong>${summary.caseSize}</strong></div>
                 </div>
               </div>
-              <div data-label="References"><div class="main-text">${(model.references || []).length}</div></div>
-              <div data-label="Movement"><div class="main-text">${model.movement}</div></div>
-              <div data-label="Case"><div class="main-text">${model.case}</div></div>
+              <div data-label="References"><div class="main-text">${summary.referenceExamples}</div></div>
+              <div data-label="Movement"><div class="main-text">${summary.movement}</div>${summary.complication ? `<div class="muted">${summary.complication}</div>` : ""}</div>
+              <div data-label="Case Range"><div class="main-text">${summary.caseSize}</div><div class="muted">${summary.material}</div></div>
               <div><button class="panel-action" type="button" data-market-model="${index}" data-market-brand-id="${brand.id}">${iconSvg.eye}<span>Open</span></button></div>
             </div>
-          `).join("") || `<div class="detail-empty user-empty">No models found for this brand</div>`}
+          `}).join("") || `<div class="detail-empty user-empty">No models found for this brand</div>`}
         </div>
         <div class="footer-range">
           <span>แสดง ${rows.length ? `${start + 1}-${Math.min(start + marketModelPageSize, rows.length)}` : "0"} จาก ${rows.length}</span>
