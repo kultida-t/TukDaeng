@@ -14017,10 +14017,6 @@
       return input?.files?.[0]?.name || "";
     }
 
-    function isMarketImportDryRunComplete(scenario) {
-      return ["clean", "review", "failed"].includes(scenario);
-    }
-
     function setMarketActionFieldError(field, message = "") {
       const modalBody = document.querySelector("#user-action-modal-body");
       const node = modalBody?.querySelector(`[data-market-${field}-error]`);
@@ -14124,9 +14120,8 @@
         <details class="prototype-tools user-action-prototype-tools">
           <summary>Prototype scenario</summary>
           <label>
-            ผล dry-run ที่ต้องการดู
+            Test flow
             ${customSelect("market-import-scenario", "Test flow", [
-              { value: "not_run", label: "ยังไม่แสดงผล" },
               { value: "clean", label: "นำเข้าสำเร็จ" },
               { value: "review", label: "ต้องตรวจสอบบางรายการ" },
               { value: "failed", label: "นำเข้าไม่สำเร็จ" }
@@ -14138,7 +14133,6 @@
     }
 
     function renderMarketImportValidationReport(scenario = "clean") {
-      if (scenario === "not_run") return "";
       if (scenario === "clean") {
         return `
           <div class="warning-note action-feedback show success">
@@ -14608,9 +14602,6 @@
         if (!/\.(csv|xlsx)$/i.test(selectedFileName)) {
           setMarketActionFieldError("name", "กรุณาเลือกไฟล์ .csv หรือ .xlsx");
           firstInvalidControl = nameInput;
-        } else if (!isMarketImportDryRunComplete(importScenario)) {
-          setMarketActionFieldError("name", "กรุณาเลือกผล dry-run ใน Prototype scenario ก่อนยืนยัน");
-          firstInvalidControl = document.querySelector("#market-import-scenario") || nameInput;
         }
         if (!reasonValue) {
           setMarketActionFieldError("reason", "กรุณากรอกเหตุผลเพื่อบันทึก audit");
