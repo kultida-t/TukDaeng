@@ -1633,6 +1633,9 @@
     body.market-list-mode .market-table.market-record-table .asset-row {
       grid-template-columns: minmax(220px, 1.35fr) minmax(150px, .9fr) minmax(120px, .65fr) minmax(116px, .65fr) 74px;
     }
+    body.market-list-mode .market-table.market-reference-list-table .asset-row {
+      grid-template-columns: minmax(220px, 1.35fr) minmax(150px, .9fr) minmax(240px, 1.1fr) 74px;
+    }
     body.market-list-mode .market-table.market-model-table .asset-row {
       grid-template-columns: minmax(260px, 1.25fr) minmax(180px, .8fr) minmax(116px, .5fr) minmax(150px, .68fr) minmax(96px, .42fr) minmax(170px, .78fr) 92px;
       column-gap: 22px;
@@ -1903,7 +1906,7 @@
       font-weight: 700;
     }
     body.market-list-mode .market-reference-table .asset-row {
-      grid-template-columns: minmax(130px, .8fr) minmax(110px, .65fr) minmax(120px, .65fr) minmax(140px, .8fr) minmax(150px, .85fr) minmax(110px, .55fr) minmax(116px, .55fr);
+      grid-template-columns: minmax(130px, .8fr) minmax(110px, .65fr) minmax(120px, .65fr) minmax(140px, .8fr) minmax(150px, .85fr) minmax(110px, .55fr);
     }
     body.article-list-mode .footer-range,
     body.category-list-mode .footer-range,
@@ -14039,7 +14042,7 @@
       if (!model) return;
       const q = (document.querySelector("#market-reference-search")?.value || "").trim().toLowerCase();
       const rows = (model.references || []).map((reference, index) => ({ reference, index })).filter(({ reference }) => {
-        const text = [reference.number, reference.year, reference.material, reference.caseSize, reference.movement, reference.status].join(" ").toLowerCase();
+        const text = [reference.number, reference.year, reference.material, reference.caseSize, reference.movement].join(" ").toLowerCase();
         return !q || text.includes(q);
       });
       const pageCount = Math.max(1, Math.ceil(rows.length / marketReferencePageSize));
@@ -14047,24 +14050,21 @@
       const start = (marketReferencePage - 1) * marketReferencePageSize;
       const visibleRows = rows.slice(start, start + marketReferencePageSize);
       document.querySelector("#table").innerHTML = `
-        <div class="asset-table category-table market-table market-record-table">
-          <div class="asset-row head"><div>Reference</div><div>Year</div><div>Material</div><div>Status</div><div>Action</div></div>
+        <div class="asset-table category-table market-table market-record-table market-reference-list-table">
+          <div class="asset-row head"><div>Reference</div><div>Year</div><div>Material</div><div>Action</div></div>
           ${visibleRows.map(({ reference, index }) => `
             <div class="asset-row" data-market-reference="${index}" data-market-brand-id="${brand.id}" data-market-model-index="${modelIndex}">
               <div data-label="Reference"><div class="main-text">${reference.number}</div></div>
               <div class="market-card-tags">
-                ${renderMarketReferenceStatus(reference.status)}
                 <span class="user-card-tag asset-tag">${reference.year}</span>
                 <span class="user-card-tag asset-tag">${reference.caseSize}</span>
                 <div class="market-card-meta user-card-meta">
                   <div class="user-card-meta-item"><span>Year</span><strong>${reference.year}</strong></div>
                   <div class="user-card-meta-item"><span>Material</span><strong>${reference.material}</strong></div>
-                  <div class="user-card-meta-item"><span>Status</span><strong>${reference.status}</strong></div>
                 </div>
               </div>
               <div data-label="Year"><div class="main-text">${reference.year}</div></div>
               <div data-label="Material"><div class="main-text">${reference.material}</div><div class="muted">${reference.caseSize} / ${reference.movement}</div></div>
-              <div data-label="Status">${renderMarketReferenceStatus(reference.status)}</div>
               <div><button class="panel-action" type="button" data-market-reference="${index}" data-market-brand-id="${brand.id}" data-market-model-index="${modelIndex}">${iconSvg.eye}<span>Open</span></button></div>
             </div>
           `).join("") || `<div class="detail-empty user-empty">No references found for this model</div>`}
@@ -14129,13 +14129,14 @@
       const model = modelIndex !== "" ? getMarketModel(brand, modelIndex) : null;
       const reference = referenceIndex !== "" ? getMarketReference(model, referenceIndex) : null;
       const currentStatus = scope === "reference" ? reference?.status : scope === "model" ? model?.status : brand?.status;
+      const statusTile = scope === "reference" ? "" : `<div class="detail-tile"><span>Current Status</span><strong>${currentStatus || "Active"}</strong></div>`;
       const targetAttrs = `data-market-brand-id="${brand?.id || ""}" data-market-model-index="${modelIndex}" data-market-reference-index="${referenceIndex}"`;
       return `
         <section class="market-detail-section">
           <h3>Read-only API Record</h3>
           <div class="detail-grid two">
             <div class="detail-tile"><span>Phase 1 Mode</span><strong>Read-only</strong></div>
-            <div class="detail-tile"><span>Current Status</span><strong>${currentStatus || "Active"}</strong></div>
+            ${statusTile}
           </div>
           <div class="module-note"><strong>Rule:</strong> Brand, model, reference, detail and price data come from API/backend sync only. BO can review source data and sync logs, but cannot add, edit, import, override or change status in Phase 1.</div>
           <div class="user-detail-actions">
@@ -14822,7 +14823,7 @@
                 <div><span>Updated</span><strong>${model.updated}</strong></div>
               </div>
               <div class="asset-table category-table market-table market-reference-table">
-                <div class="asset-row head"><div>Reference</div><div>Year</div><div>Case Size</div><div>Material</div><div>Description</div><div>Price</div><div>Status</div></div>
+                <div class="asset-row head"><div>Reference</div><div>Year</div><div>Case Size</div><div>Material</div><div>Description</div><div>Price</div></div>
                 ${(model.references || []).map(reference => `
                   <div class="asset-row">
                     <div><div class="main-text">${reference.number}</div></div>
@@ -14831,7 +14832,6 @@
                     <div><div class="main-text">${reference.material}</div><div class="muted">${reference.movement}</div></div>
                     <div><div class="main-text">${reference.description}</div></div>
                     <div><span class="pill blue">${reference.price}</span></div>
-                    <div>${renderMarketReferenceStatus(reference.status)}</div>
                   </div>
                 `).join("") || `<div class="detail-empty user-empty">No references found for this model</div>`}
               </div>
@@ -14945,7 +14945,6 @@
             <div class="detail-tile"><span>Brand</span><strong>${brand.name}</strong></div>
             <div class="detail-tile"><span>Model</span><strong>${model.name}</strong></div>
             <div class="detail-tile"><span>Reference</span><strong>${reference.number}</strong></div>
-            <div class="detail-tile"><span>Status</span><strong>${reference.status}</strong></div>
             <div class="detail-tile"><span>Year</span><strong>${reference.year}</strong></div>
             <div class="detail-tile"><span>Case Size</span><strong>${reference.caseSize}</strong></div>
             <div class="detail-tile"><span>Material</span><strong>${reference.material}</strong></div>
