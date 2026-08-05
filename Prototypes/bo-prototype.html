@@ -1634,8 +1634,8 @@
       grid-template-columns: minmax(220px, 1.35fr) minmax(150px, .9fr) minmax(120px, .65fr) minmax(116px, .65fr) 74px;
     }
     body.market-list-mode .market-table.market-model-table .asset-row {
-      grid-template-columns: minmax(300px, 1.25fr) minmax(230px, .9fr) minmax(260px, 1fr) minmax(250px, .95fr) 92px;
-      column-gap: 28px;
+      grid-template-columns: minmax(260px, 1.25fr) minmax(180px, .8fr) minmax(116px, .5fr) minmax(150px, .68fr) minmax(96px, .42fr) minmax(170px, .78fr) 92px;
+      column-gap: 22px;
       align-items: center;
       min-height: 66px;
     }
@@ -1653,11 +1653,15 @@
       text-align: right;
     }
     body.market-list-mode .market-table.market-model-table .asset-row > div:nth-child(3),
-    body.market-list-mode .market-table.market-model-table .asset-row > div:nth-child(4) {
+    body.market-list-mode .market-table.market-model-table .asset-row > div:nth-child(4),
+    body.market-list-mode .market-table.market-model-table .asset-row > div:nth-child(5),
+    body.market-list-mode .market-table.market-model-table .asset-row > div:nth-child(6) {
       min-width: 0;
     }
     body.market-list-mode .market-table.market-model-table .main-text {
-      overflow-wrap: anywhere;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
     }
     body.market-list-mode .market-card-tags {
       display: none;
@@ -13988,7 +13992,7 @@
       const visibleRows = rows.slice(start, start + marketModelPageSize);
       document.querySelector("#table").innerHTML = `
         <div class="asset-table category-table market-table market-model-table">
-          <div class="asset-row head"><div>Model</div><div>References</div><div>Movement</div><div>Case Range</div><div>Action</div></div>
+          <div class="asset-row head"><div>Model</div><div>References</div><div>Movement</div><div>Complication</div><div>Case Size</div><div>Material</div><div>Action</div></div>
           ${visibleRows.map(({ model, index }) => {
             const summary = getMarketModelDisplaySummary(model);
             return `
@@ -13998,17 +14002,21 @@
                 <span class="pill ${model.status === "Inactive" ? "amber" : "green"}">${model.status || "Active"}</span>
                 <span class="user-card-tag asset-tag">${summary.references} refs</span>
                 <span class="user-card-tag asset-tag">${summary.movement}</span>
+                <span class="user-card-tag asset-tag">${summary.caseSize}</span>
                 <div class="market-card-meta user-card-meta">
                   <div class="user-card-meta-item"><span>References</span><strong>${summary.references}</strong></div>
                   <div class="user-card-meta-item"><span>Status</span><strong>${model.status || "Active"}</strong></div>
                   <div class="user-card-meta-item"><span>Movement</span><strong>${summary.movement}</strong></div>
                   <div class="user-card-meta-item"><span>Complication</span><strong>${summary.complication || "-"}</strong></div>
-                  <div class="user-card-meta-item"><span>Case</span><strong>${summary.caseSize}</strong></div>
+                  <div class="user-card-meta-item"><span>Case Size</span><strong>${summary.caseSize}</strong></div>
+                  <div class="user-card-meta-item"><span>Material</span><strong>${summary.material}</strong></div>
                 </div>
               </div>
               <div data-label="References"><div class="main-text">${summary.referenceExamples}</div></div>
-              <div data-label="Movement"><div class="main-text">${summary.movement}</div>${summary.complication ? `<div class="muted">${summary.complication}</div>` : ""}</div>
-              <div data-label="Case Range"><div class="main-text">${summary.caseSize}</div><div class="muted">${summary.material}</div></div>
+              <div data-label="Movement"><div class="main-text">${summary.movement}</div></div>
+              <div data-label="Complication"><div class="main-text">${summary.complication || "-"}</div></div>
+              <div data-label="Case Size"><div class="main-text">${summary.caseSize}</div></div>
+              <div data-label="Material"><div class="main-text">${summary.material}</div></div>
               <div><button class="panel-action" type="button" data-market-model="${index}" data-market-brand-id="${brand.id}">${iconSvg.eye}<span>Open</span></button></div>
             </div>
           `}).join("") || `<div class="detail-empty user-empty">No models found for this brand</div>`}
