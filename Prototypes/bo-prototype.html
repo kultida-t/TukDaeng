@@ -1633,6 +1633,34 @@
     body.market-list-mode .market-table.market-record-table .asset-row {
       grid-template-columns: minmax(220px, 1.35fr) minmax(150px, .9fr) minmax(120px, .65fr) minmax(116px, .65fr) 74px;
     }
+    body.market-list-mode .market-table.market-model-table .asset-row {
+      grid-template-columns: minmax(360px, 1.55fr) 110px minmax(260px, 1fr) minmax(250px, .95fr) 92px;
+      align-items: center;
+      min-height: 66px;
+    }
+    body.market-list-mode .market-table.market-model-table .asset-row.head {
+      min-height: 44px;
+    }
+    body.market-list-mode .market-table.market-model-table .asset-row > div {
+      justify-self: stretch;
+      text-align: left;
+    }
+    body.market-list-mode .market-table.market-model-table .asset-row > div:nth-child(2) {
+      text-align: center;
+    }
+    body.market-list-mode .market-table.market-model-table .asset-row > div:nth-child(2) .main-text {
+      text-align: center;
+    }
+    body.market-list-mode .market-table.market-model-table .asset-row > div:last-child {
+      text-align: right;
+    }
+    body.market-list-mode .market-table.market-model-table .asset-row > div:nth-child(3),
+    body.market-list-mode .market-table.market-model-table .asset-row > div:nth-child(4) {
+      min-width: 0;
+    }
+    body.market-list-mode .market-table.market-model-table .main-text {
+      overflow-wrap: anywhere;
+    }
     body.market-list-mode .market-card-tags {
       display: none;
     }
@@ -8219,7 +8247,9 @@
     let activeMarketBrandId = "rolex";
     let activeMarketModelIndex = 0;
     let marketCatalogPage = 1;
+    let marketModelPage = 1;
     const marketCatalogPageSize = 10;
+    const marketModelPageSize = 10;
     let activeMarketSyncJob = null;
     let marketSyncTimer = null;
 
@@ -8494,6 +8524,38 @@
       ["audemars", { name: "Audemars Piguet Code 11.59", refs: "15210OR, 26393OR", movement: "Automatic", case: "Gold / 41 mm", updated: "01 Aug 2026", price: "USD 29,000", references: [
         { number: "15210OR", year: "2019-present", material: "Pink gold", caseSize: "41 mm", movement: "Automatic", description: "Code 11.59 selfwinding reference.", price: "USD 29,000", status: "Mapped" },
         { number: "26393OR", year: "2019-present", material: "Pink gold", caseSize: "41 mm", movement: "Automatic chronograph", description: "Code 11.59 chronograph reference.", price: "USD 48,000", status: "Mapped" }
+      ] }],
+      ["audemars", { name: "Audemars Piguet Royal Oak Chronograph", refs: "26331ST, 26715ST", movement: "Automatic chronograph", case: "Steel / 38-41 mm", updated: "03 Aug 2026", price: "USD 53,500", references: [
+        { number: "26331ST", year: "2017-2022", material: "Stainless steel", caseSize: "41 mm", movement: "Automatic chronograph", description: "Royal Oak Chronograph with integrated bracelet and high-volume market listings.", price: "USD 53,500", status: "Mapped" },
+        { number: "26715ST", year: "2019-present", material: "Stainless steel", caseSize: "38 mm", movement: "Automatic chronograph", description: "Smaller Royal Oak Chronograph reference often listed in blue and grey dial variants.", price: "USD 44,000", status: "Mapped" }
+      ] }],
+      ["audemars", { name: "Audemars Piguet Royal Oak Jumbo Extra-Thin", refs: "16202ST, 15202BC", movement: "Automatic extra-thin", case: "Steel / Gold / 39 mm", updated: "03 Aug 2026", price: "USD 94,000", references: [
+        { number: "16202ST", year: "2022-present", material: "Stainless steel", caseSize: "39 mm", movement: "Automatic extra-thin", description: "Current Jumbo Extra-Thin reference launched for the Royal Oak anniversary generation.", price: "USD 94,000", status: "Needs Review" },
+        { number: "15202BC", year: "2010s-2021", material: "White gold", caseSize: "39 mm", movement: "Automatic extra-thin", description: "White gold Jumbo variant with premium secondary-market impact.", price: "USD 145,000", status: "Mapped" }
+      ] }],
+      ["audemars", { name: "Audemars Piguet Royal Oak Perpetual Calendar", refs: "26574ST, 26579CE", movement: "Automatic perpetual calendar", case: "Steel / Ceramic / 41 mm", updated: "02 Aug 2026", price: "USD 178,000", references: [
+        { number: "26574ST", year: "2015-present", material: "Stainless steel", caseSize: "41 mm", movement: "Automatic perpetual calendar", description: "Royal Oak Perpetual Calendar steel reference used for high-value price checks.", price: "USD 178,000", status: "Mapped" },
+        { number: "26579CE", year: "2017-present", material: "Black ceramic", caseSize: "41 mm", movement: "Automatic perpetual calendar", description: "Black ceramic Royal Oak Perpetual Calendar with scarce market supply.", price: "USD 310,000", status: "Needs Review" }
+      ] }],
+      ["audemars", { name: "Audemars Piguet Royal Oak Concept", refs: "26240OR, 26650IO", movement: "Tourbillon / GMT / Chronograph", case: "Gold / Titanium / 44 mm", updated: "02 Aug 2026", price: "USD 205,000", references: [
+        { number: "26240OR", year: "2022-present", material: "Pink gold", caseSize: "44 mm", movement: "Automatic chronograph", description: "Royal Oak Concept case architecture with premium listing review needs.", price: "USD 205,000", status: "Mapped" },
+        { number: "26650IO", year: "2018-present", material: "Titanium / ceramic", caseSize: "44 mm", movement: "Tourbillon GMT", description: "Royal Oak Concept Flying Tourbillon GMT reference.", price: "USD 238,000", status: "Needs Mapping" }
+      ] }],
+      ["audemars", { name: "Audemars Piguet Millenary", refs: "4101, 77247OR", movement: "Manual wind / Automatic", case: "Gold / 39.5-47 mm", updated: "01 Aug 2026", price: "USD 19,800", references: [
+        { number: "4101", year: "2011-2020", material: "Pink gold / steel variants", caseSize: "47 mm", movement: "Manual wind", description: "Off-centre Millenary architecture with openworked dial layout.", price: "USD 19,800", status: "Open" },
+        { number: "77247OR", year: "2010s", material: "Pink gold", caseSize: "39.5 mm", movement: "Manual wind", description: "Millenary ladies reference commonly submitted with incomplete family naming.", price: "USD 16,500", status: "Needs Mapping" }
+      ] }],
+      ["audemars", { name: "Audemars Piguet Jules Audemars", refs: "15170OR, 26390OR", movement: "Automatic / Chronograph", case: "Gold / 39-41 mm", updated: "01 Aug 2026", price: "USD 18,500", references: [
+        { number: "15170OR", year: "2000s-2010s", material: "Pink gold", caseSize: "39 mm", movement: "Automatic", description: "Jules Audemars dress-watch reference for legacy collection matching.", price: "USD 18,500", status: "Mapped" },
+        { number: "26390OR", year: "2010s", material: "Pink gold", caseSize: "41 mm", movement: "Automatic chronograph", description: "Jules Audemars chronograph reference with smaller listing volume.", price: "USD 27,000", status: "Open" }
+      ] }],
+      ["audemars", { name: "Audemars Piguet Edward Piguet", refs: "25925OR, 26009OR", movement: "Manual wind / Chronograph", case: "Gold / rectangular", updated: "31 Jul 2026", price: "USD 24,000", references: [
+        { number: "25925OR", year: "1990s-2000s", material: "Pink gold", caseSize: "Rectangular", movement: "Manual wind", description: "Edward Piguet rectangular case reference requiring collection alias mapping.", price: "USD 24,000", status: "Open" },
+        { number: "26009OR", year: "2000s", material: "Pink gold", caseSize: "Rectangular", movement: "Chronograph", description: "Edward Piguet chronograph reference found in niche auction listings.", price: "USD 31,000", status: "Open" }
+      ] }],
+      ["audemars", { name: "Audemars Piguet [Re]master01", refs: "26595SR, 26595PT", movement: "Automatic chronograph", case: "Steel / Gold / 40 mm", updated: "31 Jul 2026", price: "USD 55,000", references: [
+        { number: "26595SR", year: "2020", material: "Stainless steel / pink gold", caseSize: "40 mm", movement: "Automatic chronograph", description: "Limited [Re]master01 chronograph inspired by 1940s AP references.", price: "USD 55,000", status: "Mapped" },
+        { number: "26595PT", year: "2023", material: "Platinum", caseSize: "40 mm", movement: "Automatic chronograph", description: "Platinum [Re]master reference with low listing volume and review flag.", price: "USD 148,000", status: "Needs Review" }
       ] }],
       ["cartier", { name: "Cartier Ballon Bleu", refs: "WSBB0049, W69012Z4", movement: "Automatic / Quartz", case: "Steel / 33-40 mm", updated: "02 Aug 2026", price: "USD 5,900", references: [
         { number: "WSBB0049", year: "2020s", material: "Stainless steel", caseSize: "40 mm", movement: "Automatic", description: "Ballon Bleu automatic reference.", price: "USD 5,900", status: "Mapped" },
@@ -13853,10 +13915,14 @@
         const text = [model.name, model.refs, model.movement, model.case].join(" ").toLowerCase();
         return !q || text.includes(q);
       });
+      const pageCount = Math.max(1, Math.ceil(rows.length / marketModelPageSize));
+      marketModelPage = Math.min(marketModelPage, pageCount);
+      const start = (marketModelPage - 1) * marketModelPageSize;
+      const visibleRows = rows.slice(start, start + marketModelPageSize);
       document.querySelector("#table").innerHTML = `
-        <div class="asset-table category-table market-table market-record-table">
+        <div class="asset-table category-table market-table market-model-table">
           <div class="asset-row head"><div>Model</div><div>References</div><div>Movement</div><div>Case</div><div>Action</div></div>
-          ${rows.map(({ model, index }) => `
+          ${visibleRows.map(({ model, index }) => `
             <div class="asset-row" data-market-model="${index}" data-market-brand-id="${brand.id}">
               <div data-label="Model"><div class="main-text">${model.name}</div></div>
               <div class="market-card-tags">
@@ -13877,7 +13943,14 @@
             </div>
           `).join("") || `<div class="detail-empty user-empty">No models found for this brand</div>`}
         </div>
-        <div class="footer-range"><span>แสดง ${rows.length ? `1-${rows.length}` : "0"} จาก ${rows.length}</span></div>
+        <div class="footer-range">
+          <span>แสดง ${rows.length ? `${start + 1}-${Math.min(start + marketModelPageSize, rows.length)}` : "0"} จาก ${rows.length}</span>
+          <div class="pager">
+            <button class="btn" type="button" data-market-model-page="prev" ${marketModelPage <= 1 ? "disabled" : ""}>ก่อนหน้า</button>
+            ${Array.from({ length: pageCount }, (_, index) => `<button class="btn ${index + 1 === marketModelPage ? "active" : ""}" type="button" data-market-model-page="${index + 1}">${index + 1}</button>`).join("")}
+            <button class="btn" type="button" data-market-model-page="next" ${marketModelPage >= pageCount ? "disabled" : ""}>ถัดไป</button>
+          </div>
+        </div>
       `;
     }
 
@@ -14680,6 +14753,7 @@
     function renderMarketBrandDetailPage(brandId = activeMarketBrandId) {
       const brand = getMarketBrand(brandId);
       activeMarketBrandId = brand.id;
+      marketModelPage = 1;
       activeModule = "market";
       activeSub = "Catalog";
       document.body.classList.add("market-list-mode");
@@ -19602,6 +19676,15 @@
         renderMarketCatalogRows();
         return;
       }
+      const marketModelPageButton = event.target.closest("[data-market-model-page]");
+      if (marketModelPageButton) {
+        const target = marketModelPageButton.dataset.marketModelPage;
+        if (target === "prev") marketModelPage = Math.max(1, marketModelPage - 1);
+        else if (target === "next") marketModelPage += 1;
+        else marketModelPage = Number(target) || 1;
+        renderMarketModelRows(getMarketBrand(activeMarketBrandId));
+        return;
+      }
       const assetPageButton = event.target.closest("[data-asset-page]");
       if (assetPageButton) {
         const target = assetPageButton.dataset.assetPage;
@@ -19986,6 +20069,7 @@
         renderRows();
       }
       if (event.target.matches("#market-model-search")) {
+        marketModelPage = 1;
         renderMarketModelRows(getMarketBrand(activeMarketBrandId));
       }
       if (event.target.matches("#market-reference-search")) {
