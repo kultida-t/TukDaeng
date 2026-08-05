@@ -8250,8 +8250,10 @@
     let activeMarketModelIndex = 0;
     let marketCatalogPage = 1;
     let marketModelPage = 1;
+    let marketReferencePage = 1;
     const marketCatalogPageSize = 10;
     const marketModelPageSize = 10;
+    const marketReferencePageSize = 10;
     let activeMarketSyncJob = null;
     let marketSyncTimer = null;
 
@@ -14040,10 +14042,14 @@
         const text = [reference.number, reference.year, reference.material, reference.caseSize, reference.movement, reference.status].join(" ").toLowerCase();
         return !q || text.includes(q);
       });
+      const pageCount = Math.max(1, Math.ceil(rows.length / marketReferencePageSize));
+      marketReferencePage = Math.min(marketReferencePage, pageCount);
+      const start = (marketReferencePage - 1) * marketReferencePageSize;
+      const visibleRows = rows.slice(start, start + marketReferencePageSize);
       document.querySelector("#table").innerHTML = `
         <div class="asset-table category-table market-table market-record-table">
           <div class="asset-row head"><div>Reference</div><div>Year</div><div>Material</div><div>Status</div><div>Action</div></div>
-          ${rows.map(({ reference, index }) => `
+          ${visibleRows.map(({ reference, index }) => `
             <div class="asset-row" data-market-reference="${index}" data-market-brand-id="${brand.id}" data-market-model-index="${modelIndex}">
               <div data-label="Reference"><div class="main-text">${reference.number}</div></div>
               <div class="market-card-tags">
@@ -14063,7 +14069,14 @@
             </div>
           `).join("") || `<div class="detail-empty user-empty">No references found for this model</div>`}
         </div>
-        <div class="footer-range"><span>แสดง ${rows.length ? `1-${rows.length}` : "0"} จาก ${rows.length}</span></div>
+        <div class="footer-range">
+          <span>\u0e41\u0e2a\u0e14\u0e07 ${rows.length ? `${start + 1}-${Math.min(start + marketReferencePageSize, rows.length)}` : "0"} \u0e08\u0e32\u0e01 ${rows.length}</span>
+          <div class="pager">
+            <button class="btn" type="button" data-market-reference-page="prev" ${marketReferencePage <= 1 ? "disabled" : ""}>\u0e01\u0e48\u0e2d\u0e19\u0e2b\u0e19\u0e49\u0e32</button>
+            ${Array.from({ length: pageCount }, (_, index) => `<button class="btn ${index + 1 === marketReferencePage ? "active" : ""}" type="button" data-market-reference-page="${index + 1}">${index + 1}</button>`).join("")}
+            <button class="btn" type="button" data-market-reference-page="next" ${marketReferencePage >= pageCount ? "disabled" : ""}>\u0e16\u0e31\u0e14\u0e44\u0e1b</button>
+          </div>
+        </div>
       `;
     }
 
@@ -14870,6 +14883,7 @@
       if (!brand || !model) return;
       activeMarketBrandId = brand.id;
       activeMarketModelIndex = Number(modelIndex) || 0;
+      marketReferencePage = 1;
       activeModule = "market";
       activeSub = "Catalog";
       document.body.classList.add("market-list-mode");
@@ -19763,6 +19777,15 @@
         renderMarketModelRows(getMarketBrand(activeMarketBrandId));
         return;
       }
+      const marketReferencePageButton = event.target.closest("[data-market-reference-page]");
+      if (marketReferencePageButton) {
+        const target = marketReferencePageButton.dataset.marketReferencePage;
+        if (target === "prev") marketReferencePage = Math.max(1, marketReferencePage - 1);
+        else if (target === "next") marketReferencePage += 1;
+        else marketReferencePage = Number(target) || 1;
+        renderMarketReferenceRows(getMarketBrand(activeMarketBrandId), activeMarketModelIndex);
+        return;
+      }
       const assetPageButton = event.target.closest("[data-asset-page]");
       if (assetPageButton) {
         const target = assetPageButton.dataset.assetPage;
@@ -20151,6 +20174,7 @@
         renderMarketModelRows(getMarketBrand(activeMarketBrandId));
       }
       if (event.target.matches("#market-reference-search")) {
+        marketReferencePage = 1;
         renderMarketReferenceRows(getMarketBrand(activeMarketBrandId), activeMarketModelIndex);
       }
       if (event.target.matches("#article-search")) {
