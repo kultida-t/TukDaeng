@@ -1734,6 +1734,58 @@
       font-style: normal;
       overflow-wrap: anywhere;
     }
+    .market-action-modal-content .market-import-flow {
+      display: grid;
+      gap: 8px;
+      margin-top: -4px;
+    }
+    .market-action-modal-content .market-import-flow-step {
+      display: grid;
+      grid-template-columns: 22px minmax(0, 1fr);
+      gap: 9px;
+      align-items: start;
+      padding: 9px 11px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fff;
+      color: #64748b;
+      font-size: 12px;
+      line-height: 1.35;
+    }
+    .market-action-modal-content .market-import-flow-step strong {
+      display: block;
+      color: var(--text);
+      font-size: 12px;
+    }
+    .market-action-modal-content .market-import-flow-step em {
+      font-style: normal;
+    }
+    .market-action-modal-content .market-import-flow-step span:first-child {
+      display: inline-grid;
+      place-items: center;
+      width: 22px;
+      height: 22px;
+      border-radius: 999px;
+      background: #eef3fb;
+      color: #173b73;
+      font-weight: 900;
+    }
+    .market-action-modal-content .market-import-flow-step.done span:first-child {
+      background: #e7f7ed;
+      color: #16803b;
+    }
+    .market-action-modal-content .market-import-flow-step.running {
+      border-color: #9bb8e8;
+      background: #f7fbff;
+    }
+    .market-action-modal-content .market-import-flow-step.error {
+      border-color: #fecdd3;
+      background: #fff7f7;
+    }
+    .market-action-modal-content .market-import-flow-step.error span:first-child {
+      background: #fee2e2;
+      color: #b91c1c;
+    }
     @media (max-width: 720px) {
       .market-action-modal-content .market-import-guide-head {
         display: grid;
@@ -1744,6 +1796,9 @@
       .market-action-modal-content .market-import-error-row {
         grid-template-columns: 1fr;
         gap: 4px;
+      }
+      .market-action-modal-content .market-import-flow-step {
+        grid-template-columns: 20px minmax(0, 1fr);
       }
     }
     .market-sync-modal-content .user-action-footer,
@@ -13591,6 +13646,59 @@
       });
     }
 
+    function csvCell(value) {
+      return `"${String(value ?? "").replace(/"/g, '""')}"`;
+    }
+
+    function buildMarketCatalogExportCsv() {
+      const headers = ["brand_name", "model_name", "reference_no", "year", "material", "case_size", "movement", "description", "price_min", "price_median", "price_max", "currency", "reference_status", "source_type", "source_note", "updated_date"];
+      const rows = [];
+      const exportDate = new Date().toISOString().slice(0, 10);
+      const sourceType = "Export";
+      marketCatalogData.brands.forEach(brand => {
+        if (!brand.modelsSample?.length) rows.push([brand.name, "", "", "", "", "", "", "", "", "", "", "", brand.status, sourceType, "Brand without model/reference rows", exportDate]);
+        brand.modelsSample.forEach(model => {
+          const references = model.references?.length ? model.references : [{ number: model.refs, year: "", material: "", caseSize: model.case, movement: model.movement, description: "", price: model.price, status: "" }];
+          references.forEach(reference => {
+            const sourceNote = [reference.status, reference.year, reference.material, reference.caseSize].filter(Boolean).join(" / ");
+            const medianPrice = String(reference.price || model.price || "").replace(/[^0-9.]/g, "");
+            rows.push([
+              brand.name,
+              model.name,
+              reference.number,
+              reference.year,
+              reference.material,
+              reference.caseSize,
+              reference.movement || model.movement,
+              reference.description,
+              "",
+              medianPrice,
+              "",
+              medianPrice ? "USD" : "",
+              reference.status,
+              sourceType,
+              sourceNote || "Exported from current catalog",
+              exportDate
+            ]);
+          });
+        });
+      });
+      return [headers, ...rows].map(row => row.map(csvCell).join(",")).join("\r\n");
+    }
+
+    function downloadMarketCatalogExport(fileName = `market-data-export-${new Date().toISOString().slice(0, 10)}.csv`) {
+      const blob = new Blob(["\uFEFF", buildMarketCatalogExportCsv()], { type: "text/csv;charset=utf-8" });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = fileName;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      window.setTimeout(() => URL.revokeObjectURL(url), 1000);
+      return fileName;
+    }
+
     function renderMarketSummaryCards(subLabel) {
       const brands = marketCatalogData.brands;
       const issueCount = brands.filter(brand => brand.health !== "Healthy" || brand.status !== "Active").length;
@@ -14003,7 +14111,15 @@
       `;
     }
 
-    function renderMarketImportScenarioTools(selectedScenario = "not_run") {
+    function renderMarketExportGuide() {
+      return `
+        <div class="market-import-guide">
+          <span class="muted">ระบบจะสร้างไฟล์ส่งออกจากข้อมูล Market Data ปัจจุบัน และบันทึก audit อัตโนมัติ</span>
+        </div>
+      `;
+    }
+
+    function renderMarketImportScenarioTools(selectedScenario = "clean") {
       return `
         <details class="prototype-tools user-action-prototype-tools">
           <summary>Prototype scenario</summary>
@@ -14011,9 +14127,9 @@
             ผล dry-run ที่ต้องการดู
             ${customSelect("market-import-scenario", "Test flow", [
               { value: "not_run", label: "ยังไม่แสดงผล" },
-              { value: "clean", label: "Clean import" },
-              { value: "review", label: "Review required" },
-              { value: "failed", label: "Validation failed" }
+              { value: "clean", label: "นำเข้าสำเร็จ" },
+              { value: "review", label: "ต้องตรวจสอบบางรายการ" },
+              { value: "failed", label: "นำเข้าไม่สำเร็จ" }
             ], selectedScenario, "data-custom-select-silent")}
           </label>
           <div data-market-import-result></div>
@@ -14021,12 +14137,12 @@
       `;
     }
 
-    function renderMarketImportValidationReport(scenario = "not_run") {
+    function renderMarketImportValidationReport(scenario = "clean") {
       if (scenario === "not_run") return "";
       if (scenario === "clean") {
         return `
           <div class="warning-note action-feedback show success">
-            <strong>Clean import ready</strong><br>
+            <strong>พร้อมนำเข้า</strong><br>
             <span>ไฟล์ผ่าน dry-run ทั้งหมด 142 รายการ ไม่มี duplicate หรือ missing required fields รอ confirm เพื่อบันทึกข้อมูลจริง</span>
           </div>
         `;
@@ -14034,7 +14150,7 @@
       if (scenario === "failed") {
         return `
           <div class="warning-note action-feedback show error">
-            <strong>Validation failed</strong><br>
+            <strong>นำเข้าไม่สำเร็จ</strong><br>
             <span>ไฟล์นี้ยัง import ไม่ได้ เพราะ header ไม่ตรง template หรือมี required columns หายไป กรุณาแก้ไฟล์แล้วอัปโหลดใหม่</span>
           </div>
         `;
@@ -14064,8 +14180,85 @@
     function updateMarketImportScenarioResult() {
       const result = document.querySelector("[data-market-import-result]");
       if (!result) return;
-      const scenario = document.querySelector("#market-import-scenario")?.value || "not_run";
+      const scenario = document.querySelector("#market-import-scenario")?.value || "clean";
       result.innerHTML = renderMarketImportValidationReport(scenario);
+    }
+
+    function getMarketImportFlowSteps(scenario = "clean") {
+      const resultText = scenario === "review" ? "จัดเก็บรายการที่ต้อง review เข้า Mapping Queue" : "บันทึกข้อมูลเข้า Market Catalog";
+      return [
+        ["อ่านไฟล์", "โหลดไฟล์ CSV/XLSX และตรวจ header"],
+        ["ตรวจสอบข้อมูล", "ตรวจ required fields, duplicate และ reference mapping"],
+        ["เตรียมข้อมูล", "จัดกลุ่ม brand, model, reference และ price index"],
+        [resultText, "บันทึก audit และ refresh ข้อมูลในหน้าจอ"]
+      ];
+    }
+
+    function renderMarketImportFlow(currentIndex = 0, scenario = "clean", failed = false) {
+      const steps = getMarketImportFlowSteps(scenario);
+      return `
+        <div class="market-import-flow">
+          ${steps.map((step, index) => {
+            const state = failed && index === currentIndex ? "error" : index < currentIndex ? "done" : index === currentIndex ? "running" : "";
+            const marker = failed && index === currentIndex ? "!" : index < currentIndex ? "✓" : index + 1;
+            return `
+              <div class="market-import-flow-step ${state}">
+                <span>${marker}</span>
+                <div><strong>${step[0]}</strong><em>${step[1]}</em></div>
+              </div>
+            `;
+          }).join("")}
+        </div>
+      `;
+    }
+
+    function refreshMarketAfterAction(scope, brandId, modelIndex, referenceIndex) {
+      if (activeModule !== "market") return;
+      if (scope === "reference") renderMarketReferenceDetailPage(brandId, modelIndex, referenceIndex);
+      else if (scope === "model") renderMarketModelDetailPage(brandId, modelIndex);
+      else if (activeSub === "Catalog") renderMarketData("Catalog");
+      else renderMarketData(activeSub);
+    }
+
+    function runMarketImportFlow({ scenario, selectedFileName, reason, scope, brandId, modelIndex, referenceIndex }) {
+      const flowTarget = document.querySelector("[data-market-import-flow]");
+      const confirmButton = document.querySelector('[data-market-action-confirm="import"]');
+      const closeButtons = document.querySelectorAll("[data-user-action-modal-close]");
+      const controls = document.querySelectorAll("#market-action-name, #market-action-reason, #market-import-scenario");
+      confirmButton?.setAttribute("disabled", "disabled");
+      closeButtons.forEach(button => button.setAttribute("disabled", "disabled"));
+      controls.forEach(control => control.setAttribute("disabled", "disabled"));
+      const steps = getMarketImportFlowSteps(scenario);
+      let index = 0;
+      const tick = () => {
+        if (flowTarget) flowTarget.innerHTML = renderMarketImportFlow(index, scenario);
+        const shouldFail = scenario === "failed" && index === 1;
+        if (shouldFail) {
+          window.setTimeout(() => {
+            if (flowTarget) flowTarget.innerHTML = renderMarketImportFlow(index, scenario, true);
+            updateMarketImportScenarioResult();
+            confirmButton?.removeAttribute("disabled");
+            closeButtons.forEach(button => button.removeAttribute("disabled"));
+            controls.forEach(control => control.removeAttribute("disabled"));
+          }, 650);
+          return;
+        }
+        if (index < steps.length) {
+          index += 1;
+          window.setTimeout(tick, 650);
+          return;
+        }
+        const effectiveImportScenario = scenario === "review" ? "review" : "clean";
+        const after = effectiveImportScenario === "clean" ? "142 rows imported, 0 rows require review" : "142 rows staged, 11 rows require review";
+        if (effectiveImportScenario === "review" && !marketCatalogData.mappingQueue.some(row => row.id === "MAP-IMPORT-001")) {
+          marketCatalogData.mappingQueue.unshift({ id: "MAP-IMPORT-001", title: "Import dry-run conflicts", brand: "Mixed", type: "Import Validation", status: "Needs Review", priority: "กลาง", source: selectedFileName, detail: "6 duplicate rows, 3 alias conflicts and 2 missing required fields require review before write.", action: "Resolve import errors before committing data." });
+        }
+        addMarketAudit("Market import", "import", selectedFileName, after, reason);
+        closeUserActionModal();
+        refreshMarketAfterAction(scope, brandId, modelIndex, referenceIndex);
+        showSuccessToast(effectiveImportScenario === "clean" ? "Import สำเร็จ: บันทึกข้อมูล Market Data แล้ว" : "Import สำเร็จ: ส่งรายการที่ต้องตรวจเข้า Mapping Queue แล้ว");
+      };
+      tick();
     }
 
     function renderMarketActionBody(action, target) {
@@ -14125,7 +14318,7 @@
         `;
       }
       return `
-        ${isImport ? "" : renderMarketActionTiles(action, target)}
+        ${isImport || isExport ? "" : renderMarketActionTiles(action, target)}
         <div class="market-action-fields">
           ${isImport ? `
             <label><span>ไฟล์นำเข้า <span class="article-required-mark">*</span></span>
@@ -14135,17 +14328,20 @@
             </label>
             ${renderMarketImportGuide()}
           ` : ""}
+          ${isExport ? renderMarketExportGuide() : ""}
           ${!isAdd && !isImport && !isExport ? `
             <label>ชื่อที่แสดง<input id="market-action-name" class="field" value="${target.title}" placeholder="ชื่อแบรนด์ รุ่น หรือ Reference" /></label>
             <label>หมายเหตุแหล่งข้อมูล<input id="market-action-source" class="field" value="แก้ไขโดยผู้ดูแล" placeholder="Manual, Provider, Import" /></label>
           ` : ""}
-          <label><span>เหตุผล${isImport ? ` <span class="article-required-mark">*</span>` : ""}</span>
-            <textarea id="market-action-reason" class="field" rows="3" placeholder="เช่น ปรับปรุงข้อมูลตามแหล่งอ้างอิงที่ตรวจสอบแล้ว"></textarea>
-            <span class="article-field-error" data-market-reason-error></span>
-          </label>
+          ${!isExport ? `
+            <label><span>เหตุผล${isImport ? ` <span class="article-required-mark">*</span>` : ""}</span>
+              <textarea id="market-action-reason" class="field" rows="3" placeholder="เช่น ปรับปรุงข้อมูลตามแหล่งอ้างอิงที่ตรวจสอบแล้ว"></textarea>
+              <span class="article-field-error" data-market-reason-error></span>
+            </label>
+          ` : ""}
+          ${isImport ? `<div data-market-import-flow></div>` : ""}
         </div>
-        ${isImport ? "" : renderMarketActionSteps(action)}
-        ${isExport ? `<div class="warning-note action-feedback show success"><strong>ไฟล์ส่งออกมีการควบคุมสิทธิ์</strong><br><span>ไฟล์ CSV และ Excel จะหมดอายุภายใน 24 ชั่วโมง และมีการบันทึก audit</span></div>` : ""}
+        ${isImport || isExport ? "" : renderMarketActionSteps(action)}
       `;
     }
 
@@ -14176,7 +14372,7 @@
             <button class="btn user-action-close" type="button" data-user-action-modal-close aria-label="Close modal" title="Close">${iconSvg.close}</button>
           </div>
           ${isAudit ? renderMarketAuditSection(target.title) : `
-            ${isAdd || isAddModel || isAddReference || isImport ? "" : `<div class="user-action-target">
+            ${isAdd || isAddModel || isAddReference || isImport || isExport ? "" : `<div class="user-action-target">
               <div>
                 <strong>${isImport ? "CSV/XLSX dry-run" : isExport ? "Catalog export" : target.title}</strong>
                 <span>${isToggle ? `Status will change to ${nextStatus}` : isImport ? "Provider rows, manual rows and duplicate checks" : "Permission, reason and audit required"}</span>
@@ -14196,8 +14392,8 @@
                   `}
                 </div>
                 <div class="user-detail-actions user-action-footer">
-                  ${isImport ? `
-                    <button class="user-detail-action-btn primary user-action-confirm" type="button" data-market-action-confirm="${action}" data-market-scope="${scope}" data-market-brand-id="${target.brand?.id || ""}" data-market-model-index="${modelIndex}" data-market-reference-index="${referenceIndex}">ยืนยัน</button>
+                  ${isImport || isExport ? `
+                    <button class="user-detail-action-btn primary user-action-confirm" type="button" data-market-action-confirm="${action}" data-market-scope="${scope}" data-market-brand-id="${target.brand?.id || ""}" data-market-model-index="${modelIndex}" data-market-reference-index="${referenceIndex}">${isExport ? "Download CSV" : "ยืนยัน"}</button>
                     <button class="user-detail-action-btn" type="button" data-user-action-modal-close>ยกเลิก</button>
                   ` : `
                     <button class="user-detail-action-btn" type="button" data-user-action-modal-close>ยกเลิก</button>
@@ -14230,6 +14426,7 @@
       let targetName = brand.name;
       let before = "";
       let after = "";
+      let exportedFileName = "";
       let createdBrandId = "";
       let createdModelIndex = -1;
       let createdReferenceIndex = -1;
@@ -14406,7 +14603,7 @@
         }
       } else if (action === "import") {
         const selectedFileName = getMarketImportSelectedFileName(nameInput);
-        const importScenario = document.querySelector("#market-import-scenario")?.value || "not_run";
+        const importScenario = document.querySelector("#market-import-scenario")?.value || "clean";
         let firstInvalidControl = null;
         if (!/\.(csv|xlsx)$/i.test(selectedFileName)) {
           setMarketActionFieldError("name", "กรุณาเลือกไฟล์ .csv หรือ .xlsx");
@@ -14423,22 +14620,13 @@
           firstInvalidControl.focus();
           return;
         }
-        if (importScenario === "failed") {
-          updateMarketImportScenarioResult();
-          showSuccessToast("ไฟล์ยังไม่ผ่าน validation จึงยัง import ไม่ได้");
-          return;
-        }
-        targetName = "Market import";
-        before = "Dry-run only";
-        const effectiveImportScenario = importScenario === "clean" ? "clean" : "review";
-        after = effectiveImportScenario === "clean" ? "142 rows ready to commit, 0 rows require review" : "142 rows staged, 11 rows require review";
-        if (effectiveImportScenario === "review" && !marketCatalogData.mappingQueue.some(row => row.id === "MAP-IMPORT-001")) {
-          marketCatalogData.mappingQueue.unshift({ id: "MAP-IMPORT-001", title: "Import dry-run conflicts", brand: "Mixed", type: "Import Validation", status: "Needs Review", priority: "กลาง", source: selectedFileName, detail: "6 duplicate rows, 3 alias conflicts and 2 missing required fields require review before write.", action: "Resolve import errors before committing data." });
-        }
+        runMarketImportFlow({ scenario: importScenario, selectedFileName, reason, scope, brandId: brand.id, modelIndex, referenceIndex });
+        return;
       } else if (action === "export") {
         targetName = "Market export";
         before = "No export job";
-        after = "Export job queued";
+        exportedFileName = `market-data-export-${new Date().toISOString().slice(0, 10)}.csv`;
+        after = `Downloaded ${exportedFileName}`;
       }
 
       addMarketAudit(targetName, action, before, after, reason);
@@ -14452,7 +14640,12 @@
         else if (activeSub === "Catalog") renderMarketData("Catalog");
         else renderMarketData(activeSub);
       }
-      showSuccessToast(`${targetName}: ${action} saved`);
+      if (action === "export") {
+        showSuccessToast(`กำลังดาวน์โหลดไฟล์ ${exportedFileName}`);
+        window.setTimeout(() => downloadMarketCatalogExport(exportedFileName), 150);
+      } else {
+        showSuccessToast(`${targetName}: ${action} saved`);
+      }
     }
 
     function renderMarketModelReferenceBlocks(brand) {
