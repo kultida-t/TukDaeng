@@ -1786,6 +1786,14 @@
       background: #fee2e2;
       color: #b91c1c;
     }
+    .market-action-modal-content .market-import-flow-step.pending {
+      border-color: #fed7aa;
+      background: #fff7ed;
+    }
+    .market-action-modal-content .market-import-flow-step.pending span:first-child {
+      background: #ffedd5;
+      color: #c2410c;
+    }
     @media (max-width: 720px) {
       .market-action-modal-content .market-import-guide-head {
         display: grid;
@@ -12182,7 +12190,7 @@
     }
 
     let successToastTimer = null;
-    function showSuccessToast(message) {
+    function showSuccessToast(message, title = "สำเร็จ") {
       const toast = document.querySelector("#success-toast");
       if (!toast) return;
       if (successToastTimer) window.clearTimeout(successToastTimer);
@@ -12191,7 +12199,7 @@
           <path d="M20 6 9 17l-5-5"></path>
         </svg>
         <div>
-          <strong>สำเร็จ</strong>
+          <strong>${title}</strong>
           <span>${message}</span>
         </div>
       `;
@@ -14127,7 +14135,6 @@
               { value: "failed", label: "นำเข้าไม่สำเร็จ" }
             ], selectedScenario, "data-custom-select-silent")}
           </label>
-          <div data-market-import-result></div>
         </details>
       `;
     }
@@ -14175,6 +14182,7 @@
       const result = document.querySelector("[data-market-import-result]");
       if (!result) return;
       const scenario = document.querySelector("#market-import-scenario")?.value || "clean";
+      result.hidden = false;
       result.innerHTML = renderMarketImportValidationReport(scenario);
     }
 
@@ -14188,13 +14196,14 @@
       ];
     }
 
-    function renderMarketImportFlow(currentIndex = 0, scenario = "clean", failed = false) {
+    function renderMarketImportFlow(currentIndex = 0, scenario = "clean", failed = false, pendingReview = false) {
       const steps = getMarketImportFlowSteps(scenario);
       return `
         <div class="market-import-flow">
           ${steps.map((step, index) => {
-            const state = failed && index === currentIndex ? "error" : index < currentIndex ? "done" : index === currentIndex ? "running" : "";
-            const marker = failed && index === currentIndex ? "!" : index < currentIndex ? "✓" : index + 1;
+            const isPendingStep = pendingReview && index === steps.length - 1;
+            const state = failed && index === currentIndex ? "error" : isPendingStep ? "pending" : index < currentIndex ? "done" : index === currentIndex ? "running" : "";
+            const marker = failed && index === currentIndex ? "!" : isPendingStep ? "!" : index < currentIndex ? "✓" : index + 1;
             return `
               <div class="market-import-flow-step ${state}">
                 <span>${marker}</span>
@@ -14219,6 +14228,11 @@
       const confirmButton = document.querySelector('[data-market-action-confirm="import"]');
       const closeButtons = document.querySelectorAll("[data-user-action-modal-close]");
       const controls = document.querySelectorAll("#market-action-name, #market-action-reason, #market-import-scenario");
+      const scenarioResult = document.querySelector("[data-market-import-result]");
+      if (scenarioResult) {
+        scenarioResult.hidden = true;
+        scenarioResult.innerHTML = "";
+      }
       confirmButton?.setAttribute("disabled", "disabled");
       closeButtons.forEach(button => button.setAttribute("disabled", "disabled"));
       controls.forEach(control => control.setAttribute("disabled", "disabled"));
@@ -14248,9 +14262,23 @@
           marketCatalogData.mappingQueue.unshift({ id: "MAP-IMPORT-001", title: "Import dry-run conflicts", brand: "Mixed", type: "Import Validation", status: "Needs Review", priority: "กลาง", source: selectedFileName, detail: "6 duplicate rows, 3 alias conflicts and 2 missing required fields require review before write.", action: "Resolve import errors before committing data." });
         }
         addMarketAudit("Market import", "import", selectedFileName, after, reason);
-        closeUserActionModal();
-        refreshMarketAfterAction(scope, brandId, modelIndex, referenceIndex);
-        showSuccessToast(effectiveImportScenario === "clean" ? "Import สำเร็จ: บันทึกข้อมูล Market Data แล้ว" : "Import สำเร็จ: ส่งรายการที่ต้องตรวจเข้า Mapping Queue แล้ว");
+        if (effectiveImportScenario === "clean") {
+          closeUserActionModal();
+          refreshMarketAfterAction(scope, brandId, modelIndex, referenceIndex);
+          showSuccessToast("บันทึกข้อมูล Market Data แล้ว");
+        } else {
+          if (flowTarget) flowTarget.innerHTML = renderMarketImportFlow(steps.length, scenario, false, true);
+          updateMarketImportScenarioResult();
+          if (confirmButton) {
+            confirmButton.removeAttribute("data-market-action-confirm");
+            confirmButton.setAttribute("data-module-jump", "market");
+            confirmButton.setAttribute("data-sub-jump", "Mapping Queue");
+            confirmButton.textContent = "ไป Mapping Queue";
+            confirmButton.removeAttribute("disabled");
+          }
+          closeButtons.forEach(button => button.removeAttribute("disabled"));
+          controls.forEach(control => control.removeAttribute("disabled"));
+        }
       };
       tick();
     }
@@ -14333,7 +14361,7 @@
               <span class="article-field-error" data-market-reason-error></span>
             </label>
           ` : ""}
-          ${isImport ? `<div data-market-import-flow></div>` : ""}
+          ${isImport ? `<div data-market-import-flow></div><div data-market-import-result hidden></div>` : ""}
         </div>
         ${isImport || isExport ? "" : renderMarketActionSteps(action)}
       `;
@@ -18727,7 +18755,11 @@
         if (hiddenInput.id === "asset-delete-reason") updateAssetDeletePostEmailPreview();
         if (hiddenInput.id === "market-import-scenario") {
           setMarketActionFieldError("name");
-          updateMarketImportScenarioResult();
+          const result = document.querySelector("[data-market-import-result]");
+          if (result) {
+            result.hidden = true;
+            result.innerHTML = "";
+          }
         }
         if (select.hasAttribute("data-custom-select-silent")) return;
         if (hiddenInput.hasAttribute("data-article-editor-custom-select")) {
@@ -18855,6 +18887,7 @@
       }
       const moduleJump = event.target.closest("[data-module-jump], [data-jump]");
       if (moduleJump) {
+        if (moduleJump.closest("#user-action-modal")) closeUserActionModal();
         jumpToModule(moduleJump.dataset.moduleJump || moduleJump.dataset.jump, moduleJump.dataset.subJump || "");
         return;
       }
