@@ -14684,7 +14684,7 @@
       activeSub = "Catalog";
       document.body.classList.add("market-list-mode");
       document.body.classList.remove("dashboard-mode", "user-management-mode", "asset-list-mode", "article-list-mode", "category-list-mode", "reported-board-mode", "asset-detail-mode", "user-list-mode", "user-detail-mode");
-      setPageActions(`${renderPageBackButton('data-market-back="catalog"', "Back to Catalog")}<button class="btn" type="button" data-market-sync-api>${iconSvg.refresh}<span>Sync API</span></button>`);
+      setPageActions(renderPageBackButton('data-market-back="catalog"', "Back to Catalog"));
       document.querySelector("#crumb").textContent = `${moduleData.market.crumb} / Catalog / ${brand.name}`;
       document.querySelector("#page-title").textContent = brand.name;
       document.querySelector("#page-meta").textContent = "";
@@ -14722,7 +14722,7 @@
       activeSub = "Catalog";
       document.body.classList.add("market-list-mode");
       document.body.classList.remove("dashboard-mode", "user-management-mode", "asset-list-mode", "article-list-mode", "category-list-mode", "reported-board-mode", "asset-detail-mode", "user-list-mode", "user-detail-mode");
-      setPageActions(`${renderPageBackButton(`data-market-back="brand" data-market-brand-id="${brand.id}"`, `Back to ${brand.name}`)}<button class="btn" type="button" data-market-sync-api>${iconSvg.refresh}<span>Sync API</span></button>`);
+      setPageActions(renderPageBackButton(`data-market-back="brand" data-market-brand-id="${brand.id}"`, `Back to ${brand.name}`));
       document.querySelector("#crumb").textContent = `${moduleData.market.crumb} / Catalog / ${brand.name} / ${model.name}`;
       document.querySelector("#page-title").textContent = model.name;
       document.querySelector("#page-meta").textContent = "";
@@ -14761,7 +14761,7 @@
       activeSub = "Catalog";
       document.body.classList.add("market-list-mode");
       document.body.classList.remove("dashboard-mode", "user-management-mode", "asset-list-mode", "article-list-mode", "category-list-mode", "reported-board-mode", "asset-detail-mode", "user-list-mode", "user-detail-mode");
-      setPageActions(`${renderPageBackButton(`data-market-back="model" data-market-brand-id="${brand.id}" data-market-model-index="${activeMarketModelIndex}"`, `Back to ${model.name}`)}<button class="btn" type="button" data-market-sync-api>${iconSvg.refresh}<span>Sync API</span></button>`);
+      setPageActions(renderPageBackButton(`data-market-back="model" data-market-brand-id="${brand.id}" data-market-model-index="${activeMarketModelIndex}"`, `Back to ${model.name}`));
       document.querySelector("#crumb").textContent = `${moduleData.market.crumb} / Catalog / ${brand.name} / ${model.name} / ${reference.number}`;
       document.querySelector("#page-title").textContent = reference.number;
       document.querySelector("#page-meta").textContent = "";
@@ -15042,9 +15042,10 @@
       activeRow = null;
       document.body.classList.add("market-list-mode");
       document.body.classList.remove("dashboard-mode", "user-management-mode", "asset-list-mode", "article-list-mode", "category-list-mode", "reported-board-mode", "asset-detail-mode", "user-list-mode", "user-detail-mode");
-      setPageActions(`
-        <button class="btn" type="button" data-market-sync-api>${iconSvg.refresh}<span>${subLabel === "Sync Logs" ? "เริ่ม Sync" : "Sync API"}</span></button>
-      `);
+      setPageActions(subLabel === "Sync Logs"
+        ? `<button class="btn" type="button" data-market-sync-api>${iconSvg.refresh}<span>เริ่ม Sync</span></button>`
+        : ""
+      );
       document.querySelector("#user-panel-filter-actions").innerHTML = "";
       document.querySelector("#crumb").textContent = `${moduleData.market.crumb} / ${subLabel}`;
       document.querySelector("#page-title").textContent = subLabel;

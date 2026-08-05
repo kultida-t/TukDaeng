@@ -54,7 +54,7 @@ BO uses a single Admin account type only. Admin access is controlled by module a
 | --- | --- |
 | Module access | Admin can use list/detail/search/filter when module access is granted. |
 | Write action | Phase 1 has no BO write action for market data. Add, edit, delete, status change, import, override, and conflict merge are hidden/disabled. |
-| Provider sync action | Backend scheduled sync is the default. Manual sync trigger is allowed only as an operations action when permission exists and must audit the trigger/result. |
+| Provider sync action | Backend scheduled sync is the default. Manual sync trigger is allowed only as an operations action when permission exists, must audit the trigger/result, and must be placed only on the Sync Logs screen, not on Catalog or brand/model/reference detail pages. |
 | Sensitive data | Mask by default; reveal only with business reason, policy approval, and audit log. |
 | Export | Out of Phase 1 for the Market Data screen unless approved as a reporting workflow. |
 | Direct URL/API | Enforce access at route, API, and service layers; never rely only on hidden UI. |
