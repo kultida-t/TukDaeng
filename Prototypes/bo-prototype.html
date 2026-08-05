@@ -7320,10 +7320,10 @@
       content: mod("Content Management", "การดำเนินงาน / Content Management", "Board Articles", "สร้างบทความ, category, schedule และจัดการ reported board content", "สร้างบทความ", [["Published", "126", "อยู่ใน Board"], ["Scheduled", "5", "รอ publish"], ["Draft", "14", "ยังไม่แสดงบน FO"], ["Reported", "3", "ต้อง review"]], [
         item("ART-044", "Vintage Watch Buying Guide", "Editorial", "Article", "ปกติ", "Scheduled", "ตั้งเวลาเผยแพร่ 10 Jul 2026 19:00", ["Board", "Buying Guide"], "Preview as FO และตรวจ cover image ก่อน publish")
       ]),
-      market: mod("Market Data", "การดำเนินงาน / Market Data", "Watch Master Data", "ดูแล brand, model, reference และ price index ที่ใช้กับ Search, Asset และ Watch Alert", "Import CSV", [["Brands", "482", "Active 461"], ["Models", "8,924", "Inactive 31"], ["Price Index", "17,200", "อัปเดตสัปดาห์นี้"], ["Import Errors", "6", "ต้องแก้ reference"]], [
-        item("BRD-ROLEX", "Rolex", "Brand", "Master", "ปกติ", "Active", "ใช้ใน autocomplete และ asset form", ["Models 1,240"], "Inactive จะหยุด trigger Watch Alert ใหม่"),
-        item("MDL-16610", "Submariner 16610", "Model", "Reference", "กลาง", "Active", "ราคา index มี outlier จาก listing ล่าสุด", ["Median 305,000"], "ตรวจ source และ mark abnormal หากจำเป็น"),
-        item("IDX-202607", "Speedmaster Reduced", "Price Index", "Index", "กลาง", "Reviewing", "ข้อมูลนำเข้าซ้ำ 3 แถว", ["Import batch"], "แก้ duplicate ก่อน publish index")
+      market: mod("Market Data", "การดำเนินงาน / Market Data", "Watch Master Data", "ดู brand, model, reference, detail และ price index จาก API/backend sync แบบ read-only", "Sync API", [["Brands", "482", "API active"], ["Models", "8,924", "API catalog"], ["Price Index", "17,200", "อัปเดตสัปดาห์นี้"], ["Sync Warnings", "6", "ต้อง review"]], [
+        item("BRD-ROLEX", "Rolex", "Brand", "API", "ปกติ", "Active", "ใช้ใน autocomplete และ asset form", ["Models 1,240"], "Phase 1 ดูข้อมูลเท่านั้น ไม่แก้ status จาก BO"),
+        item("MDL-16610", "Submariner 16610", "Model", "Reference", "กลาง", "Active", "ราคา index มี outlier จาก API ล่าสุด", ["Median 305,000"], "ตรวจ source metadata และส่ง correction ผ่าน backend/provider"),
+        item("IDX-202607", "Speedmaster Reduced", "Price Index", "Index", "กลาง", "Reviewing", "ข้อมูล API sync ซ้ำ 3 แถว", ["API batch"], "Backend sync ต้องจัดการ duplicate ก่อนใช้ index")
       ]),
       directory: mod("Directory", "การดำเนินงาน / Directory", "Directory Publication", "จัดการร้าน, service, category, map/contact และสถานะเผยแพร่", "เพิ่ม directory", [["Published", "84", "แสดงบน FO"], ["Draft", "9", "รอข้อมูลติดต่อ"], ["Inactive", "6", "ไม่แสดงบน FO"], ["Missing Map", "4", "ต้องเติมพิกัด"]], [
         item("DIR-021", "Tuk Daeng Watch Service", "Service", "Repair", "ปกติ", "Published", "มีเบอร์โทร, LINE และ map ครบ", ["Bangkok"], "อัปเดต opening hours"),
@@ -8223,10 +8223,10 @@
     let activeMarketSyncJob = null;
     let marketSyncTimer = null;
 
-    moduleData.market = mod("Market Data", "การดำเนินงาน / Market Data", "Market Catalog", "ดูแลข้อมูล brand, model, reference, detail และ price indicator จาก thewatchapi ก่อน sync ไปยัง Search, Asset และ Watch Alert", "Sync API", [["Brands", "9", "sample catalog"], ["References", "24", "sample refs"], ["Mapping Queue", "23", "ต้อง review"], ["API Sync", "08:30", "ล่าสุดวันนี้"]], [
-      item("BRD-ROLEX", "Rolex", "Brand Catalog", "thewatchapi", "ปกติ", "Active", "Brand-first catalog with model, reference, detail and price coverage", ["Models 1,240", "Refs 4,820"], "Review brand catalog and drill down before changing visibility"),
-      item("MAP-018", "Unmapped reference 126710BLRO", "Mapping Queue", "Reference", "กลาง", "Needs Review", "Asset user input matches Rolex GMT-Master II but reference mapping is not confirmed", ["Asset AST-8579"], "Confirm mapping before using in Search and Watch Alert"),
-      item("SYNC-20260803", "thewatchapi daily sync", "API Sync", "Batch", "ปกติ", "Completed", "Brand, model, reference, detail and price endpoints completed with warnings", ["Rate limit 72%"], "Review warnings and retry failed records")
+    moduleData.market = mod("Market Data", "การดำเนินงาน / Market Data", "Market Catalog", "ดูข้อมูล brand, model, reference, detail และ price indicator จาก API/backend sync แบบ read-only ก่อนส่งไป Search, Asset และ Watch Alert", "Sync API", [["Brands", "9", "API catalog"], ["References", "24", "API refs"], ["Mapping Queue", "23", "data quality"], ["API Sync", "08:30", "ล่าสุดวันนี้"]], [
+      item("BRD-ROLEX", "Rolex", "Brand Catalog", "thewatchapi", "ปกติ", "Active", "Brand-first catalog with model, reference, detail and price coverage from API", ["Models 1,240", "Refs 4,820"], "Review brand catalog and drill down; Phase 1 does not allow manual edits"),
+      item("MAP-018", "Unmapped reference 126710BLRO", "Mapping Queue", "Reference", "กลาง", "Needs Review", "Asset user input matches Rolex GMT-Master II but API mapping is not confirmed", ["Asset AST-8579"], "Flag for backend/provider correction; no BO manual merge in Phase 1"),
+      item("SYNC-20260803", "thewatchapi daily sync", "API Sync", "Batch", "ปกติ", "Completed", "Brand, model, reference, detail and price endpoints completed with warnings", ["Rate limit 72%"], "Review warnings and retry failed API records")
     ]);
 
     const marketCatalogData = {
@@ -8428,17 +8428,17 @@
         }
       ],
       mappingQueue: [
-        { id: "MAP-018", title: "Unmapped reference 126710BLRO", brand: "Rolex", type: "Reference", status: "Needs Review", priority: "กลาง", source: "Asset AST-8579", detail: "User listing says GMT-Master II Pepsi; API reference match exists but TukDaeng mapping is pending.", action: "Confirm mapping before enabling Watch Alert match." },
-        { id: "MAP-017", title: "Duplicate Speedmaster Reduced rows", brand: "Omega", type: "Model", status: "Reviewing", priority: "กลาง", source: "model/search", detail: "Three imported rows share model and reference but differ in description timestamp.", action: "Merge duplicate rows and keep latest API last_updated." },
-        { id: "MAP-016", title: "Seiko 6139 vintage reference alias", brand: "Seiko", type: "Reference", status: "Open", priority: "ปกติ", source: "Asset AST-8791", detail: "FO asset uses 6139-6002 while API reference search returns related 6139 records.", action: "Map accepted aliases for Search without changing user-owned content." }
+        { id: "MAP-018", title: "Unmapped reference 126710BLRO", brand: "Rolex", type: "Reference", status: "Needs Review", priority: "กลาง", source: "Asset AST-8579", detail: "User listing says GMT-Master II Pepsi; API reference match exists but TukDaeng mapping is pending.", action: "Send to backend/provider correction queue before enabling Watch Alert match." },
+        { id: "MAP-017", title: "Duplicate Speedmaster Reduced rows", brand: "Omega", type: "Model", status: "Reviewing", priority: "กลาง", source: "model/search", detail: "Three API rows share model and reference but differ in description timestamp.", action: "Backend sync should keep source trace and de-duplicate by provider last_updated." },
+        { id: "MAP-016", title: "Seiko 6139 vintage reference alias", brand: "Seiko", type: "Reference", status: "Open", priority: "ปกติ", source: "Asset AST-8791", detail: "FO asset uses 6139-6002 while API reference search returns related 6139 records.", action: "Route accepted alias suggestion to backend mapping rules without changing user-owned content." }
       ],
       priceIndex: [
         { id: "IDX-ROLEX-116520", title: "Rolex Daytona 116520", brand: "Rolex", type: "Reference Price", status: "Published", priority: "ปกติ", source: "reference/price/history", detail: "Indicative asking price history in USD; latest USD 24,653.12.", action: "Use as comparison signal only; TukDaeng display can convert to THB." },
-        { id: "IDX-OMEGA-3510", title: "Omega Speedmaster Reduced", brand: "Omega", type: "Model Price", status: "Reviewing", priority: "กลาง", source: "model/price/history", detail: "Recent import has duplicate price points and needs review before publishing to internal index.", action: "Resolve duplicate dates and keep API source trace." },
+        { id: "IDX-OMEGA-3510", title: "Omega Speedmaster Reduced", brand: "Omega", type: "Model Price", status: "Reviewing", priority: "กลาง", source: "model/price/history", detail: "Recent API sync has duplicate price points and needs review before use in internal index.", action: "Backend sync should resolve duplicate dates and keep API source trace." },
         { id: "IDX-SEIKO-6139", title: "Seiko 6139", brand: "Seiko", type: "Reference Price", status: "Limited Data", priority: "ปกติ", source: "reference/price/history", detail: "Sparse price history; show low-confidence indicator in BO.", action: "Do not auto-flag asset price outliers when coverage is low." }
       ],
       syncLogs: [
-        { id: "SYNC-20260803", title: "Daily thewatchapi sync", brand: "All brands", type: "API Batch", status: "Completed", priority: "ปกติ", source: "Scheduled 03 Aug 2026 08:30", detail: "Brand, model, reference, model detail and price history sync completed with 6 warnings.", action: "Review mapping warnings and rate limit usage." },
+        { id: "SYNC-20260803", title: "Daily thewatchapi sync", brand: "All brands", type: "API Batch", status: "Completed", priority: "ปกติ", source: "Scheduled 03 Aug 2026 08:30", detail: "Brand, model, reference, model detail and price history sync completed with 6 warnings.", action: "Review mapping warnings and rate limit usage; no manual data edits in Phase 1." },
         { id: "SYNC-20260802", title: "Reference retry batch", brand: "Rolex / Omega", type: "Retry", status: "Completed", priority: "ปกติ", source: "Manual retry", detail: "Retried malformed reference searches after parameter normalization.", action: "Keep normalized query in sync rule." },
         { id: "SYNC-20260801", title: "Price history sync", brand: "Top 20 brands", type: "Price Batch", status: "Partial", priority: "กลาง", source: "price/history", detail: "Some reference price history calls hit plan/rate limit.", action: "Resume from failed cursor after quota reset." }
       ],
@@ -13965,15 +13965,16 @@
       const model = modelIndex !== "" ? getMarketModel(brand, modelIndex) : null;
       const reference = referenceIndex !== "" ? getMarketReference(model, referenceIndex) : null;
       const currentStatus = scope === "reference" ? reference?.status : scope === "model" ? model?.status : brand?.status;
-      const inactiveLabel = currentStatus === "Inactive" ? "Reactivate" : "Inactivate";
       const targetAttrs = `data-market-brand-id="${brand?.id || ""}" data-market-model-index="${modelIndex}" data-market-reference-index="${referenceIndex}"`;
       return `
         <section class="market-detail-section">
-          <h3>Management Controls</h3>
+          <h3>Read-only API Record</h3>
+          <div class="detail-grid two">
+            <div class="detail-tile"><span>Phase 1 Mode</span><strong>Read-only</strong></div>
+            <div class="detail-tile"><span>Current Status</span><strong>${currentStatus || "Active"}</strong></div>
+          </div>
+          <div class="module-note"><strong>Rule:</strong> Brand, model, reference, detail and price data come from API/backend sync only. BO can review source data and sync logs, but cannot add, edit, import, override or change status in Phase 1.</div>
           <div class="user-detail-actions">
-            <button class="user-detail-action-btn primary" type="button" data-market-management-action="edit" data-market-scope="${scope}" ${targetAttrs}>Edit record</button>
-            <button class="user-detail-action-btn" type="button" data-market-management-action="override" data-market-scope="${scope}" ${targetAttrs}>Override provider</button>
-            <button class="user-detail-action-btn warning" type="button" data-market-management-action="toggle-status" data-market-scope="${scope}" ${targetAttrs}>${inactiveLabel}</button>
             <button class="user-detail-action-btn" type="button" data-market-management-action="audit" data-market-scope="${scope}" ${targetAttrs}>Audit trail</button>
           </div>
         </section>
@@ -14372,63 +14373,40 @@
       const modalCard = modal?.querySelector(".user-action-modal");
       const modalBody = document.querySelector("#user-action-modal-body");
       if (!modalBody) return;
+      const phaseOneAllowedMarketActions = new Set(["audit"]);
+      if (!phaseOneAllowedMarketActions.has(action)) {
+        modalCard?.classList.remove("article-preview-modal", "article-editor-confirm-modal", "category-editor-modal", "category-order-modal", "board-report-phone-preview-modal");
+        modalCard?.classList.add("market-editor-modal");
+        modalBody.innerHTML = `
+          <div class="user-action-page">
+            <div class="user-action-head">
+              <div>
+                <h2 id="user-action-modal-title">Read-only in Phase 1</h2>
+                <p>Market Data is synced from API/backend source only.</p>
+              </div>
+              <button class="btn user-action-close" type="button" data-user-action-modal-close aria-label="Close modal" title="Close">${iconSvg.close}</button>
+            </div>
+            <div class="module-note"><strong>Rule:</strong> Add, edit, import, export, override and status changes are not available from BO Market Data in Phase 1.</div>
+          </div>
+        `;
+        showUserActionModal(true);
+        return;
+      }
       modalCard?.classList.remove("article-preview-modal", "article-editor-confirm-modal", "category-editor-modal", "category-order-modal", "board-report-phone-preview-modal");
       modalCard?.classList.add("market-editor-modal");
       const target = getMarketActionTarget(scope, brandId, modelIndex, referenceIndex);
-      const isAdd = action === "add-brand";
-      const isAddModel = action === "add-model";
-      const isAddReference = action === "add-reference";
-      const isImport = action === "import";
-      const isExport = action === "export";
-      const isAudit = action === "audit";
-      const isToggle = action === "toggle-status";
-      const title = isAdd ? "Add Market Brand" : isAddModel ? "Add Market Model" : isAddReference ? "Add Reference" : isImport ? "Import Market Data" : isExport ? "Export Market Data" : isAudit ? "Audit Trail" : `${action === "override" ? "Override Provider Data" : isToggle ? (target.status === "Inactive" ? "Reactivate Record" : "Inactivate Record") : "Edit Market Record"}`;
-      const nextStatus = target.status === "Inactive" ? "Active" : "Inactive";
       modalBody.innerHTML = `
-        <div class="user-action-page ${isAdd || isAddModel || isAddReference || isImport || isExport ? "market-action-modal-content" : ""}">
+        <div class="user-action-page">
           <div class="user-action-head">
             <div>
-              <h2 id="user-action-modal-title">${title}</h2>
-              <p>${isAdd ? "สร้างข้อมูลแบรนด์สำหรับใช้งานภายในระบบ" : isAddModel ? `เพิ่มรุ่นภายใต้ ${target.brand?.name || "แบรนด์นี้"}` : isAddReference ? `เพิ่ม Reference ภายใต้ ${target.model?.name || "รุ่นนี้"}` : isImport ? "ตรวจสอบไฟล์ก่อนนำข้อมูลเข้าระบบ" : isExport ? "สร้างไฟล์ส่งออกพร้อมบันทึก audit" : `${target.title} · ${scope}`}</p>
+              <h2 id="user-action-modal-title">Audit Trail</h2>
+              <p>${target.title} · ${scope}</p>
             </div>
             <button class="btn user-action-close" type="button" data-user-action-modal-close aria-label="Close modal" title="Close">${iconSvg.close}</button>
           </div>
-          ${isAudit ? renderMarketAuditSection(target.title) : `
-            ${isAdd || isAddModel || isAddReference || isImport || isExport ? "" : `<div class="user-action-target">
-              <div>
-                <strong>${isImport ? "CSV/XLSX dry-run" : isExport ? "Catalog export" : target.title}</strong>
-                <span>${isToggle ? `Status will change to ${nextStatus}` : isImport ? "Provider rows, manual rows and duplicate checks" : "Permission, reason and audit required"}</span>
-              </div>
-              <span class="pill ${isToggle && nextStatus === "Inactive" ? "amber" : "blue"}">${isToggle ? nextStatus : "Draft"}</span>
-            </div>`}
-            <div class="user-action-layout">
-              <div class="detail-section">
-                <div class="user-action-form article-editor-form">
-                  ${isAdd || isAddModel || isAddReference || isImport || isExport ? renderMarketActionBody(action, target) : `
-                    ${action === "edit" || action === "override" ? `
-                      <label>ชื่อที่แสดง<input id="market-action-name" class="field" value="${target.title}" placeholder="ชื่อแบรนด์ รุ่น หรือ Reference" /></label>
-                      <label>หมายเหตุแหล่งข้อมูล<input id="market-action-source" class="field" value="แก้ไขโดยผู้ดูแล" placeholder="Manual, Provider, Import" /></label>
-                    ` : ""}
-                    ${isToggle ? renderMarketImpactSection(target.brand) : ""}
-                    <label>เหตุผล<textarea id="market-action-reason" class="field" rows="3" placeholder="เช่น ปรับปรุงข้อมูลตามแหล่งอ้างอิงที่ตรวจสอบแล้ว"></textarea></label>
-                  `}
-                </div>
-                <div class="user-detail-actions user-action-footer">
-                  ${isImport || isExport ? `
-                    <button class="user-detail-action-btn primary user-action-confirm" type="button" data-market-action-confirm="${action}" data-market-scope="${scope}" data-market-brand-id="${target.brand?.id || ""}" data-market-model-index="${modelIndex}" data-market-reference-index="${referenceIndex}">${isExport ? "Download CSV" : "ยืนยัน"}</button>
-                    <button class="user-detail-action-btn" type="button" data-user-action-modal-close>ยกเลิก</button>
-                  ` : `
-                    <button class="user-detail-action-btn" type="button" data-user-action-modal-close>ยกเลิก</button>
-                    <button class="user-detail-action-btn primary user-action-confirm" type="button" data-market-action-confirm="${action}" data-market-scope="${scope}" data-market-brand-id="${target.brand?.id || ""}" data-market-model-index="${modelIndex}" data-market-reference-index="${referenceIndex}">ยืนยัน</button>
-                  `}
-                </div>
-                ${isImport ? renderMarketImportScenarioTools() : ""}
-              </div>
-            </div>
-          `}
+          ${renderMarketAuditSection(target.title)}
         </div>
       `;
-      bindMarketActionValidationReset();
       showUserActionModal(true);
     }
 
@@ -14706,7 +14684,7 @@
       activeSub = "Catalog";
       document.body.classList.add("market-list-mode");
       document.body.classList.remove("dashboard-mode", "user-management-mode", "asset-list-mode", "article-list-mode", "category-list-mode", "reported-board-mode", "asset-detail-mode", "user-list-mode", "user-detail-mode");
-      setPageActions(`${renderPageBackButton('data-market-back="catalog"', "Back to Catalog")}<button class="btn" type="button" data-market-management-action="edit" data-market-scope="brand" data-market-brand-id="${brand.id}">${iconSvg.edit}<span>Edit</span></button><button class="btn primary" type="button" data-market-management-action="add-model" data-market-scope="brand" data-market-brand-id="${brand.id}">${iconSvg.plus}<span>Add Model</span></button>`);
+      setPageActions(`${renderPageBackButton('data-market-back="catalog"', "Back to Catalog")}<button class="btn" type="button" data-market-sync-api>${iconSvg.refresh}<span>Sync API</span></button>`);
       document.querySelector("#crumb").textContent = `${moduleData.market.crumb} / Catalog / ${brand.name}`;
       document.querySelector("#page-title").textContent = brand.name;
       document.querySelector("#page-meta").textContent = "";
@@ -14722,7 +14700,7 @@
       document.querySelector("#summary-grid").innerHTML = "";
       document.querySelector("#cards").innerHTML = "";
       document.querySelector("#detail").innerHTML = `
-        <div class="panel-head"><div><h2>Record Control</h2><p>Permission-aware actions and downstream impact</p></div></div>
+        <div class="panel-head"><div><h2>API Source Review</h2><p>Read-only source data, sync state and downstream impact</p></div></div>
         <div class="detail-body">
           ${renderMarketImpactSection(brand)}
           ${renderMarketManagementActions("brand", brand)}
@@ -14744,7 +14722,7 @@
       activeSub = "Catalog";
       document.body.classList.add("market-list-mode");
       document.body.classList.remove("dashboard-mode", "user-management-mode", "asset-list-mode", "article-list-mode", "category-list-mode", "reported-board-mode", "asset-detail-mode", "user-list-mode", "user-detail-mode");
-      setPageActions(`${renderPageBackButton(`data-market-back="brand" data-market-brand-id="${brand.id}"`, `Back to ${brand.name}`)}<button class="btn" type="button" data-market-management-action="add-reference" data-market-scope="model" data-market-brand-id="${brand.id}" data-market-model-index="${activeMarketModelIndex}">${iconSvg.plus}<span>Add Reference</span></button><button class="btn" type="button" data-market-management-action="edit" data-market-scope="model" data-market-brand-id="${brand.id}" data-market-model-index="${activeMarketModelIndex}">Edit</button><button class="btn" type="button" data-market-management-action="override" data-market-scope="model" data-market-brand-id="${brand.id}" data-market-model-index="${activeMarketModelIndex}">Override</button>`);
+      setPageActions(`${renderPageBackButton(`data-market-back="brand" data-market-brand-id="${brand.id}"`, `Back to ${brand.name}`)}<button class="btn" type="button" data-market-sync-api>${iconSvg.refresh}<span>Sync API</span></button>`);
       document.querySelector("#crumb").textContent = `${moduleData.market.crumb} / Catalog / ${brand.name} / ${model.name}`;
       document.querySelector("#page-title").textContent = model.name;
       document.querySelector("#page-meta").textContent = "";
@@ -14760,7 +14738,7 @@
       document.querySelector("#summary-grid").innerHTML = "";
       document.querySelector("#cards").innerHTML = "";
       document.querySelector("#detail").innerHTML = `
-        <div class="panel-head"><div><h2>Model Control</h2><p>Model relation, provider override and audit</p></div></div>
+        <div class="panel-head"><div><h2>Model Source Review</h2><p>Model relation, API metadata and audit</p></div></div>
         <div class="detail-body">
           ${renderMarketImpactSection(brand)}
           ${renderMarketManagementActions("model", brand, activeMarketModelIndex)}
@@ -14783,7 +14761,7 @@
       activeSub = "Catalog";
       document.body.classList.add("market-list-mode");
       document.body.classList.remove("dashboard-mode", "user-management-mode", "asset-list-mode", "article-list-mode", "category-list-mode", "reported-board-mode", "asset-detail-mode", "user-list-mode", "user-detail-mode");
-      setPageActions(`${renderPageBackButton(`data-market-back="model" data-market-brand-id="${brand.id}" data-market-model-index="${activeMarketModelIndex}"`, `Back to ${model.name}`)}<button class="btn" type="button" data-market-management-action="edit" data-market-scope="reference" data-market-brand-id="${brand.id}" data-market-model-index="${activeMarketModelIndex}" data-market-reference-index="${referenceIndex}">Edit</button><button class="btn" type="button" data-market-management-action="override" data-market-scope="reference" data-market-brand-id="${brand.id}" data-market-model-index="${activeMarketModelIndex}" data-market-reference-index="${referenceIndex}">Override</button>`);
+      setPageActions(`${renderPageBackButton(`data-market-back="model" data-market-brand-id="${brand.id}" data-market-model-index="${activeMarketModelIndex}"`, `Back to ${model.name}`)}<button class="btn" type="button" data-market-sync-api>${iconSvg.refresh}<span>Sync API</span></button>`);
       document.querySelector("#crumb").textContent = `${moduleData.market.crumb} / Catalog / ${brand.name} / ${model.name} / ${reference.number}`;
       document.querySelector("#page-title").textContent = reference.number;
       document.querySelector("#page-meta").textContent = "";
@@ -14836,10 +14814,10 @@
           <div class="kv"><span>Source</span><strong>${row.source}</strong></div>
           <div class="kv"><span>Type</span><strong>${row.type}</strong></div>
           <div class="kv"><span>Status</span><strong>${row.status}</strong></div>
-          <div class="module-note"><strong>Admin action:</strong> ${row.action}</div>
+          <div class="module-note"><strong>System follow-up:</strong> ${row.action}</div>
           <div class="timeline">
             <div class="event"><strong>Source data</strong><br>${row.detail}</div>
-            <div class="event"><strong>System rule</strong><br>Keep API source trace, preserve user-owned asset content, and sync approved mappings to Search, Asset and Watch Alert.</div>
+            <div class="event"><strong>System rule</strong><br>Keep API source trace, preserve user-owned asset content, and route corrections through backend/provider sync. BO has no manual merge/edit in Phase 1.</div>
           </div>
         </div>
       `;
@@ -14878,10 +14856,10 @@
             <div class="module-note"><strong>Detail:</strong> ${row.detail}</div>
           </section>
           <section class="market-detail-section">
-            <h3>Admin Action</h3>
+            <h3>System Follow-up</h3>
             <div class="module-note"><strong>Next step:</strong> ${row.action}</div>
             <div class="timeline">
-              <div class="event"><strong>System rule</strong><br>Keep API source trace, preserve user-owned asset content, and sync approved mappings to Search, Asset and Watch Alert.</div>
+              <div class="event"><strong>System rule</strong><br>Keep API source trace, preserve user-owned asset content, and route corrections through backend/provider sync. BO has no manual merge/edit in Phase 1.</div>
             </div>
           </section>
         </div>
@@ -15044,12 +15022,12 @@
 
     function renderMarketCards(subLabel) {
       const cards = subLabel === "Catalog"
-        ? [["Brand-first workflow", "Admin starts from a brand, then drills into models, references, detail fields and price coverage in one context."], ["API source", "thewatchapi supplies brand, model, reference, detail and USD price history. BO keeps source trace and last_updated."], ["Downstream usage", "Approved records feed autocomplete, Asset form suggestions, Search facets, price comparison and Watch Alert matching."]]
+        ? [["Brand-first workflow", "Admin starts from a brand, then drills into models, references, detail fields and price coverage in one context."], ["API source", "thewatchapi supplies brand, model, reference, detail and USD price history. BO keeps source trace and last_updated."], ["Read-only Phase 1", "BO can review API data and sync state, but cannot add, edit, import, override or change status."]]
         : subLabel === "Mapping Queue"
-          ? [["Mapping review", "Resolve user-entered names, aliases, duplicate references and unmatched API results before exposing them to search logic."], ["No content rewrite", "Mapping can improve system matching without changing the original owner-entered asset text."], ["Audit baseline", "Every manual confirm, merge or ignore decision should keep reason and source endpoint."]]
+          ? [["Mapping review", "Review user-entered names, aliases, duplicate references and unmatched API results before backend exposes them to search logic."], ["No content rewrite", "Mapping can improve system matching without changing the original owner-entered asset text."], ["Phase 1 boundary", "Corrections are routed to backend/provider sync; BO does not manually confirm, merge or ignore records."]]
           : subLabel === "Price Index"
             ? [["Indicative price", "API price history is an asking-price signal in USD, not a final appraisal or transaction value."], ["TukDaeng display", "BO can review USD source values while FO or reports convert downstream where THB display is required."], ["Confidence", "Sparse or duplicate price history should lower confidence and avoid auto-flagging assets."]]
-            : [["Sync control", "Scheduled and manual syncs should show endpoint coverage, quota usage, warnings and retry state."], ["Error handling", "Rate limit, malformed parameters, token errors and maintenance responses stay visible for operations."], ["Fallback", "CSV import remains a backup path for curated corrections or one-time bulk data loads."]];
+            : [["Sync control", "Scheduled and permitted operations syncs show endpoint coverage, quota usage, warnings and retry state."], ["Error handling", "Rate limit, malformed parameters, token errors and maintenance responses stay visible for operations."], ["Fallback", "FO uses the latest backend cache or Portfolio fallback rules when provider data is unavailable."]];
       document.querySelector("#cards").innerHTML = cards.map(card => `
         <article class="mini-card">
           <h3>${card[0]}</h3>
@@ -15065,9 +15043,6 @@
       document.body.classList.add("market-list-mode");
       document.body.classList.remove("dashboard-mode", "user-management-mode", "asset-list-mode", "article-list-mode", "category-list-mode", "reported-board-mode", "asset-detail-mode", "user-list-mode", "user-detail-mode");
       setPageActions(`
-        ${subLabel === "Catalog" ? `<button class="btn" type="button" data-market-management-action="add-brand" data-market-scope="brand">${iconSvg.plus}<span>Add Brand</span></button>` : ""}
-        <button class="btn" type="button" data-market-management-action="import" data-market-scope="brand">${iconSvg.importFile}<span>Import</span></button>
-        <button class="btn" type="button" data-market-management-action="export" data-market-scope="brand">${iconSvg.exportFile}<span>Export</span></button>
         <button class="btn" type="button" data-market-sync-api>${iconSvg.refresh}<span>${subLabel === "Sync Logs" ? "เริ่ม Sync" : "Sync API"}</span></button>
       `);
       document.querySelector("#user-panel-filter-actions").innerHTML = "";

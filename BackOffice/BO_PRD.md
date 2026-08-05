@@ -297,18 +297,20 @@ Admin ต้องสามารถ:
 
 ---
 
-## 4.8 Market Data Management
+## 4.8 Market Data
 
 ### Requirements
 
 Admin ต้องสามารถ:
 
-- เพิ่ม/แก้ไข/ปิดใช้งาน Watch Brand
-- เพิ่ม/แก้ไข/ปิดใช้งาน Watch Model
-- จัดการ Reference Numbers
-- จัดการ Price Index ตาม Brand/Model/Reference
-- ระบุ price min/max, source URL, updated date
-- ดู historical price
+- ดู Watch Brand, Model, Reference, Detail และ Price Index ที่ดึงจาก API/backend sync
+- ค้นหา กรอง และ drill-down ข้อมูล market catalog
+- ดู source metadata, provider updated date, synced date และ data quality status
+- ดู historical price จาก provider/backend cache
+- ดู provider sync log, warning, failure และ rate/usage status
+- เรียก manual API sync ได้เฉพาะ operations permission และต้อง audit
+
+Phase 1 ไม่ให้ Admin เพิ่ม แก้ไข ลบ ปิดใช้งาน import หรือ override market data เองจาก BO เพราะข้อมูลเป็น master/reference data ที่ควรมาจาก API source เดียวก่อน
 
 ### FO Impact
 

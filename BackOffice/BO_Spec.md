@@ -247,8 +247,8 @@ Eligible article conditions: `Status = Published`, `Publish Date <= now` in `Asi
 ### 3.6 Market Data — Watch Brands
 
 **ฟีเจอร์:**
-- เพิ่ม / แก้ไข / ลบ Brand นาฬิกา
-- อัปโหลด Logo Brand
+- ดู Brand นาฬิกาที่ดึงจาก API/backend sync แบบ read-only ใน Phase 1
+- แสดง provider source, sync status, data quality และ downstream usage
 - ข้อมูล Brand ถูกใช้ใน Autocomplete ขณะ Add Asset ใน FO และใน Filter ของ Search
 
 **ข้อมูล Brand:**
@@ -267,7 +267,8 @@ Eligible article conditions: `Status = Published`, `Publish Date <= now` in `Asi
 ### 3.7 Market Data — Watch Models
 
 **ฟีเจอร์:**
-- เพิ่ม / แก้ไข / ลบ Model ในแต่ละ Brand
+- ดู Model ในแต่ละ Brand ที่ดึงจาก API/backend sync แบบ read-only ใน Phase 1
+- แสดง reference/detail/source metadata และ quality status
 - ข้อมูล Model ถูกใช้ใน Autocomplete และ Filter ใน FO
 
 **ข้อมูล Model:**
@@ -286,9 +287,9 @@ Eligible article conditions: `Status = Published`, `Publish Date <= now` in `Asi
 ### 3.8 Market Data — Price Index
 
 **ฟีเจอร์:**
-- อัปเดต Market Price Index ของแต่ละ Model / Reference
-- ระบุแหล่งที่มา (Source URL)
-- กำหนดช่วงราคา (Min / Max THB)
+- ดู Market Price Index ของแต่ละ Model / Reference จาก API/backend sync แบบ read-only ใน Phase 1
+- แสดงแหล่งที่มา, provider updated date, synced date และ USD -> THB conversion metadata
+- ไม่ให้ Admin เพิ่ม แก้ไข import หรือ override price index เองใน Phase 1
 - บันทึก Historical Price (ดู % Change 30d / 90d / 1y ได้)
 - ข้อมูลนี้แสดงใน FO ที่เมนู Watch Price Index และในหน้า Asset Value Dashboard ของ Owner
 
