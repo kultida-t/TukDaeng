@@ -1609,10 +1609,28 @@
     body.market-list-mode.market-dashboard-mode .summary-grid {
       display: grid;
     }
+    body.market-list-mode.market-dashboard-mode .filters {
+      display: none;
+    }
     body.market-list-mode .layout > .panel {
       border-color: #d7e2f0;
       box-shadow: none;
       overflow: hidden;
+    }
+    body.market-list-mode.market-dashboard-mode .layout > .panel {
+      border: 0;
+      background: transparent;
+      overflow: visible;
+    }
+    body.market-list-mode.market-dashboard-mode .layout > .panel > .panel-head {
+      border: 1px solid #d7e2f0;
+      border-bottom: 1px solid var(--line);
+      border-radius: var(--radius) var(--radius) 0 0;
+      background: #fff;
+    }
+    body.market-list-mode.market-dashboard-mode #table {
+      padding: 0;
+      background: transparent;
     }
     body.market-list-mode .user-panel-filter-actions {
       display: flex;
@@ -1720,18 +1738,24 @@
     }
     body.market-list-mode .market-sync-current,
     body.market-list-mode .market-dashboard-table {
-      border: 1px solid #d7e2f0;
-      border-radius: var(--radius);
       background: #fff;
       overflow: hidden;
+    }
+    body.market-list-mode.market-dashboard-mode .market-sync-current {
+      border: 1px solid #d7e2f0;
+      border-top: 0;
+      border-radius: 0 0 var(--radius) var(--radius);
+    }
+    body.market-list-mode.market-dashboard-mode .market-dashboard-table {
+      border: 1px solid #d7e2f0;
+      border-radius: var(--radius);
     }
     body.market-list-mode .market-sync-body {
       display: flex;
       align-items: center;
       gap: 22px;
-      min-height: 138px;
-      padding: 22px;
-      border-top: 1px solid var(--line);
+      min-height: 136px;
+      padding: 22px 24px;
     }
     body.market-list-mode .market-sync-body strong {
       display: block;
@@ -1744,6 +1768,10 @@
       color: #66758d;
       font-size: 12px;
       line-height: 1.6;
+    }
+    body.market-list-mode .market-sync-main {
+      min-width: 0;
+      padding: 0;
     }
     body.market-list-mode .market-progress-ring {
       display: grid;
@@ -6342,6 +6370,14 @@
         padding-left: 16px;
       }
       body.market-list-mode .market-dashboard-status-cards { grid-template-columns: 1fr; }
+      body.market-list-mode .market-sync-body {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 16px;
+      }
+      body.market-list-mode .market-sync-main {
+        padding: 0;
+      }
       .brand-ranking-list {
         padding-right: 16px;
         padding-left: 16px;
@@ -14017,10 +14053,10 @@
     function renderMarketSummaryCards(subLabel) {
       if (subLabel === "Dashboard") {
         const metrics = [
-          { label: "แบรนด์ทั้งหมด", value: "214", trend: "ข้อมูลจาก Brand catalog", icon: "market" },
-          { label: "โมเดลทั้งหมด", value: "3,842", trend: "ข้อมูลจาก Model catalog", icon: "asset" },
-          { label: "เลขอ้างอิงทั้งหมด", value: "28,910", trend: "ข้อมูลจาก Reference catalog", icon: "market" },
-          { label: "Sync ล่าสุด", value: "2 ชม. ที่แล้ว", trend: "08:14, 6 ส.ค. 2569", icon: "refresh" }
+          { label: "แบรนด์ทั้งหมด", value: "214", trend: "ข้อมูลจาก Brand catalog" },
+          { label: "โมเดลทั้งหมด", value: "3,842", trend: "ข้อมูลจาก Model catalog" },
+          { label: "เลขอ้างอิงทั้งหมด", value: "28,910", trend: "ข้อมูลจาก Reference catalog" },
+          { label: "Sync ล่าสุด", value: "2 ชม. ที่แล้ว", trend: "08:14, 6 ส.ค. 2569" }
         ];
         document.querySelector("#summary-grid").innerHTML = metrics.map(metric => `
           <article class="stat">
@@ -14029,7 +14065,6 @@
                 <div class="stat-label">${metric.label}</div>
                 <div class="stat-value">${metric.value}</div>
               </div>
-              <span class="stat-icon">${iconSvg[metric.icon]}</span>
             </div>
             <div class="stat-note">${metric.trend}</div>
           </article>
@@ -15449,7 +15484,7 @@
 
     function renderMarketCards(subLabel) {
       const cards = subLabel === "Dashboard"
-        ? [["สถานะการ Sync ปัจจุบัน", "กำลังอัปเดต Reference catalog ของแบรนด์ Omega เหลือรายการที่รอยืนยันราคากลาง 612 รายการ"], ["แบรนด์ที่เพิ่งอัปเดตล่าสุด", "Rolex, Omega, Patek Philippe, Audemars Piguet และ Seiko พร้อมใช้เป็น master data อ่านอย่างเดียว"], ["ขอบเขตข้อมูล", "ข้อมูลมาจาก The Watch API ผ่าน backend sync และเก็บ source trace กับเวลาอัปเดตไว้ทุกระดับ"]]
+        ? [["สถานะการ Sync ปัจจุบัน", "กำลังอัปเดต Reference catalog ของแบรนด์ Omega เหลือรายการที่รอยืนยันราคากลาง 612 รายการ"]]
         : subLabel === "API Token"
           ? [["Provider", "thewatchapi.com"], ["Plan", "Standard Plan"], ["สิทธิ์ใช้งาน", "Read-only sync ผ่าน backend token ไม่แสดง secret เต็มใน BO"]]
           : [["Brand-first workflow", "Admin เริ่มจากแบรนด์ ต่อด้วยโมเดล แล้วเปิดเลขอ้างอิงเพื่อดูรายละเอียดและราคา"], ["API source", "ข้อมูลมาจาก The Watch API ผ่าน backend sync ของ Brand, Model และ Reference catalog"], ["Read-only", "ไม่มีปุ่มเพิ่ม แก้ไข ลบ หรือ override master data จาก provider"]];
@@ -15466,10 +15501,9 @@
       document.querySelector("#table").innerHTML = `
         <div class="market-dashboard-stack">
           <section class="market-sync-current">
-            <div class="panel-head"><div><h2>สถานะการ Sync ปัจจุบัน</h2></div><span class="muted">รอบถัดไป: ทุก 6 ชั่วโมง</span></div>
             <div class="market-sync-body">
               <div class="market-progress-ring"><span>81%</span><small>SYNCED</small></div>
-              <div>
+              <div class="market-sync-main">
                 <strong>กำลังซิงก์เลข Reference ของแบรนด์ Omega</strong>
                 <p>ซิงก์แล้ว <b>173/214</b> แบรนด์ · เหลือโมเดลที่ยังไม่มีเลขราคา <b>612</b> รายการ · ไม่มี error ใน 24 ชม.ที่ผ่านมา</p>
               </div>
@@ -15532,7 +15566,9 @@
       document.querySelector("#page-meta").textContent = "";
       document.querySelector("#panel-title").innerHTML = subLabel === "แบรนด์ & โมเดล"
         ? `แบรนด์ทั้งหมด <span class="panel-title-count">(${getMarketReadOnlyBrands().length})</span>`
-        : subLabel;
+        : subLabel === "Dashboard"
+          ? "สถานะการ Sync ปัจจุบัน"
+          : subLabel;
       document.querySelector("#panel-subtitle").textContent = "";
       document.querySelector("#primary-action").textContent = "Sync ข้อมูลล่าสุด";
       setupMarketFilters(subLabel);
