@@ -272,9 +272,9 @@ Admin ต้องสามารถ:
 - ตั้ง SEO Title / SEO Description
 - Save Draft / Publish Now / Schedule Publish / Archive
 - Preview as FO
-- Set Featured Article และ Featured Order
 - จัดการ Categories
-- จัดการ Board Banners
+- Board Main automatic placement uses Published Articles only; no Featured toggle/order is required in Phase 1
+- Board Banners are future scope for campaign/promotion/event/sponsor/external link or non-article deep link only
 - ดู Board Analytics
 
 ### FO Display Rules
@@ -282,6 +282,10 @@ Admin ต้องสามารถ:
 - FO Board แสดงเฉพาะ article ที่ `Status = Published`
 - Scheduled article แสดงเมื่อ `Publish Date-Time <= current time`
 - Archived article ต้องหายจาก Board/Search/Category
+- Main Hero ดึง eligible Published Article ล่าสุดลำดับแรก โดยเรียง `Publish Date-Time DESC`, `Updated At DESC`, `Article ID DESC`
+- Trending Now ดึงจาก eligible Published Articles ที่ไม่ซ้ำกับ Main Hero; ถ้ามี trending score ให้ใช้ score ก่อน ถ้าไม่มีให้ใช้บทความล่าสุดลำดับถัดไป
+- Journal Board preview บน Board Main ดึงจาก eligible Published Articles ที่ไม่ซ้ำกับ Main Hero และ Trending Now
+- Journal Board View All แสดง eligible Published Articles ทั้งหมดตามลำดับล่าสุด และสามารถมีบทความเดียวกับ Main Hero/Trending Now ได้
 - Preview as FO ไม่เพิ่ม view count และเข้าได้เฉพาะ Admin
 
 ### Acceptance Criteria
@@ -293,18 +297,20 @@ Admin ต้องสามารถ:
 
 ---
 
-## 4.8 Market Data Management
+## 4.8 Market Data
 
 ### Requirements
 
 Admin ต้องสามารถ:
 
-- เพิ่ม/แก้ไข/ปิดใช้งาน Watch Brand
-- เพิ่ม/แก้ไข/ปิดใช้งาน Watch Model
-- จัดการ Reference Numbers
-- จัดการ Price Index ตาม Brand/Model/Reference
-- ระบุ price min/max, source URL, updated date
-- ดู historical price
+- ดู Watch Brand, Model, Reference, Detail และ Price Index ที่ดึงจาก API/backend sync
+- ค้นหา กรอง และ drill-down ข้อมูล market catalog
+- ดู source metadata, provider updated date, synced date และ data quality status
+- ดู historical price จาก provider/backend cache
+- ดู provider sync log, warning, failure และ rate/usage status
+- เรียก manual API sync ได้เฉพาะ operations permission และต้อง audit
+
+Phase 1 ไม่ให้ Admin เพิ่ม แก้ไข ลบ ปิดใช้งาน import หรือ override market data เองจาก BO เพราะข้อมูลเป็น master/reference data ที่ควรมาจาก API source เดียวก่อน
 
 ### FO Impact
 

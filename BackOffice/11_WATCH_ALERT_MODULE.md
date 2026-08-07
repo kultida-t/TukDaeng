@@ -1,4 +1,4 @@
-# 11 BO Watch Alert Module
+﻿# 11 BO Watch Alert Module
 
 **Version:** `BO-11-v0.1`  
 **Date:** 2026-07-06  
@@ -154,7 +154,7 @@ Match ต้องใช้ rule เดียวกับ FO Search:
 - Match เฉพาะ asset status `Sale`
 - ต้องผ่าน moderation/visibility rule
 - ต้องไม่รวม asset ของ blocked user หรือคู่ที่ block กัน
-- ต้องไม่รวม `Show`, `Hide`, `Sold`, `Deleted`, `Removed/Hidden`
+- ต้องไม่รวม `Show`, `Hide`, `Sold`, `ลบโดยเจ้าของ`, `ซ่อนถาวร`
 - Market data inactive ต้องหยุด new trigger ตาม policy แต่ยังเก็บ alert/history เดิม
 
 Lifecycle impact:
@@ -166,7 +166,7 @@ Lifecycle impact:
 | `Sale` -> `Show` | หายจาก result และไม่ trigger ใหม่ |
 | `Hide` -> `Sale` | Match ได้ถ้าตรง criteria |
 | `Show` -> `Sale` | Match ได้ถ้าตรง criteria |
-| Any -> `Removed/Hidden` | ไม่ match และ direct/result surface ต้อง unavailable |
+| Any -> `ลบโดยเจ้าของ` หรือ `ซ่อนถาวร` | ไม่ match และ direct/result surface ต้อง unavailable |
 
 ## 10. Trigger History
 
@@ -317,3 +317,4 @@ Audit action ขั้นต่ำ:
 | BO-WA-DEC-001 | FO แสดง Admin Disabled alert เป็น disabled state หรือซ่อนจาก list | ให้ FO UX ตัดสิน แต่ BO ต้องส่ง state ชัดเจน |
 | BO-WA-DEC-002 | Inactive market data ทำให้ alert เดิม disabled หรือแค่หยุด trigger ใหม่ | แนะนำหยุด trigger ใหม่ แต่ยังเก็บ alert/history เดิม |
 | BO-WA-DEC-003 | เปิด bulk disable alert หรือไม่ | ยังไม่เปิด default; เปิดเฉพาะ abuse/risk policy พร้อม audit |
+

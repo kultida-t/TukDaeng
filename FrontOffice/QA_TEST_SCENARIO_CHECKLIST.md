@@ -23,8 +23,7 @@ Purpose:
 - [ ] มี Chat Room พร้อม Asset Card และ Offer Card
 - [ ] มี Watch Alert ที่ match และไม่ match
 - [ ] มี Portfolio asset ที่มี Market Price
-- [ ] มี Portfolio asset ที่ไม่มี Market Price แต่มี Owner Estimated Value
-- [ ] มี Portfolio asset ที่ไม่มี Market Price/Owner Estimate แต่มี Purchase Price
+- [ ] มี Portfolio asset ที่ไม่มี Market Price แต่มี Purchase Price
 - [ ] มี Portfolio asset ที่ไม่มี valuation data เลย
 - [ ] มี Sold Asset ที่มี Sale Price และ Purchase Price
 - [ ] มี user pair ที่ block กัน
@@ -439,13 +438,6 @@ Then ระบบต้อง save ได้
 And Asset ต้องเห็นเฉพาะ Owner
 And form ต้องไม่ใช้ listing price สำหรับ `Hide`
 
-## QA-ASSET-002D: Private Owner Estimated Value
-
-Given Owner กรอก `Owner Estimated Value (Private)` ใน Asset status ใดก็ได้
-When user อื่นเปิด Public Profile, Feed, Search หรือ Viewer Asset Detail
-Then user อื่นต้องไม่เห็น `Owner Estimated Value (Private)`
-And ค่านี้ต้องไม่ถูกใช้เป็น Asking Price หรือ Market Comparison
-
 ## QA-ASSET-002G: Add Asset Requires Provenance Step
 
 Given Owner กรอก Add Asset detail ครบตาม required fields
@@ -593,7 +585,7 @@ Then main fields ต้องถูก lock
 
 ## QA-ASSET-005: Delete Asset Impact
 
-Given Owner Delete Asset  
+Given Owner ลบ Asset  
 When deletion สำเร็จ  
 Then Asset ต้องหายจาก Feed/Search/Watch Alert/Public Profile  
 And related Offer ต้องเป็น `Cancelled`  
@@ -777,7 +769,7 @@ And เมื่อปิด comment action sheet ต้องไม่ปิด
 Given Asset มี Asking Price และ Watch Price API Market Price  
 When Asset Detail แสดง price analytics  
 Then ต้องแสดง Above Market / At Market / Below Market ตาม threshold  
-And ต้องไม่ใช้ Owner Estimate หรือ Purchase Price fallback
+And ต้องไม่ใช้ Purchase Price fallback
 
 ## QA-DETAIL-006: Expected Profit Owner Only
 
@@ -1073,25 +1065,25 @@ And ต้องไม่รวม `Sold` หรือ `Deleted`
 
 Given Asset มีหลาย valuation source  
 When Portfolio เลือก Current Value  
-Then ต้องใช้ลำดับ Watch Price API Market Price -> Owner Estimated Value -> Purchase Price fallback -> No Valuation
+Then ต้องใช้ลำดับ Watch Price API Market Price -> Purchase Price fallback -> No Valuation
 
 ## QA-PORT-004: Purchase Price Fallback Label
 
-Given Asset ไม่มี Market Price และ Owner Estimate แต่มี Purchase Price  
+Given Asset ไม่มี Market Price แต่มี Purchase Price
 When Portfolio แสดง Current Value  
 Then ต้องใช้ Purchase Price fallback  
 And แสดง label ว่าใช้ราคาซื้อเป็นค่าประมาณ
 
 ## QA-PORT-005: No Valuation
 
-Given Asset ไม่มี Market Price, Owner Estimate หรือ Purchase Price  
+Given Asset ไม่มี Market Price หรือ Purchase Price
 When Portfolio แสดง Asset  
 Then Current Value ต้องเป็น `—`  
 And Asset ต้องไม่รวม Total Asset Value
 
 ## QA-PORT-006: Unrealized Gain
 
-Given Asset มี Current Value จาก Market Price หรือ Owner Estimate และมี Purchase Price  
+Given Asset มี Current Value จาก Market Price และมี Purchase Price
 When Portfolio คำนวณ Gain/Loss  
 Then Unrealized Gain/Loss = Current Value - Purchase Price  
 And Unrealized Gain/Loss % = Unrealized Gain/Loss / Purchase Price * 100

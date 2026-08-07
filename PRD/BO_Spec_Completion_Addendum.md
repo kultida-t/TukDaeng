@@ -44,7 +44,7 @@ BO Dashboard
 ├── Content Management
 │   ├── Articles
 │   ├── Categories
-│   └── Banners
+│   └── Banners (Future scope; not used for Phase 1 Board Main)
 ├── Market Data
 │   ├── Watch Brands
 │   ├── Watch Models
@@ -419,14 +419,36 @@ BO_Spec v1.1 ระบุว่า Admin ตอบ Help ได้ แต่ย�
 
 ### 9.2 Board Display Areas in FO
 
+Phase 1 Board display is article-driven. `Content Management > Banners`, `Featured`, and `Featured Order` must not drive Board Main placement unless Product re-opens future campaign/promotion banner scope.
+
+Hero selection is automatic: Board Main `Main Hero` uses the latest eligible Published Article across all active Board categories, while each category page hero uses the latest eligible Published Article within that selected active category.
+
 | FO Area | Data Source in BO | Rule |
 |---|---|---|
-| Featured Article | Article ที่ Featured = On | แสดงบทความ featured ล่าสุดหรือเรียงตาม Featured Order |
-| Trending Now | Article ที่มี views/likes สูง หรือ manual section | แสดงเฉพาะ Published |
-| Journal Board | Article list ปกติ | เรียงตาม Publish Date ล่าสุด |
+| Main Hero | Published Articles | Newest eligible article by `Publish Date-Time DESC`, then `Updated At DESC`, then `Article ID DESC` |
+| Trending Now | Published Articles excluding Main Hero | If trending score exists, sort by trending score within the configured recent window, then publish date. If not, use newest remaining articles. |
+| Journal Board preview on Board Main | Published Articles excluding Main Hero and Trending Now items already shown | Show the newest remaining article as the large preview card, then remaining articles if the layout needs more. |
+| Journal Board View All | All eligible Published Articles | Show all eligible articles by newest publish date; no cross-page dedupe, so Hero/Trending articles can appear here. |
+| Category page hero | Published Articles in selected active category | Newest eligible article in that active category. |
 | Category Sidebar | Article Categories | แสดง category ที่ Active เท่านั้น |
 | Article Detail | Article content | เปิดอ่านได้ทั้ง guest และ logged-in user |
 | Board Search | Article title, excerpt, tags, content index | แสดงเฉพาะ Published |
+
+Eligible article conditions:
+
+- `Status = Published`
+- `Publish Date-Time <= now` in `Asia/Bangkok`
+- category is Active
+- title, slug, cover image, cover image alt text, category, excerpt or generated excerpt, and read time are available
+- article is not archived, unpublished, deleted, or policy-hidden
+
+Board Main deduplication order:
+
+1. Select Main Hero first and reserve its `Article ID`.
+2. Select Trending Now from the remaining eligible articles.
+3. Select Journal Board preview from the remaining eligible articles after Main Hero and Trending Now.
+4. Do not duplicate an article within the same Board Main page.
+5. `Journal Board View All` is a full listing and may include articles that appeared on Board Main.
 
 ### 9.3 Article Fields
 
@@ -447,8 +469,8 @@ BO_Spec v1.1 ระบุว่า Admin ตอบ Help ได้ แต่ย�
 | Body Content | Rich Text | Yes | เนื้อหาหลักของบทความ |
 | Related Articles | Multi-select Article | Optional | แสดงบทความแนะนำ |
 | Status | Draft / Published / Scheduled / Archived | Yes | ควบคุมการแสดงบน FO |
-| Featured | Boolean | Yes | แสดงเป็น Feature Article |
-| Featured Order | Number | Optional | ใช้เรียง featured |
+| Featured | Boolean | No | Future scope only; not used for Phase 1 Board Main placement |
+| Featured Order | Number | Optional | Future scope only; Phase 1 uses automatic article ordering |
 | Publish Date-Time | DateTime | Required when Published/Scheduled | เงื่อนไขแสดงบน FO |
 | Unpublish Date-Time | DateTime | Optional | ซ่อนอัตโนมัติเมื่อครบเวลา |
 | SEO Title | Text | Optional | Metadata |
@@ -527,6 +549,8 @@ BO_Spec v1.1 ระบุว่า Admin ตอบ Help ได้ แต่ย�
 
 ### 9.8 Banner Management for Board
 
+**Phase 1 status:** Future scope only. Do not implement or expose `Content Management > Banners` for the current Board Main. Board Main Hero, Trending Now, Journal Board preview, Journal Board View All, and category hero/list are article-driven using section 9.2 rules.
+
 | Field | Type | Required |
 |---|---|---|
 | Banner ID | ID | Yes |
@@ -555,7 +579,7 @@ Content permissions use the single BO account type `Admin`. There are no BO sub-
 | Create / Edit Draft | Allowed; must write audit for saved changes. |
 | Publish / Schedule / Archive Article | Requires confirmation when public visibility changes and must write audit. |
 | Delete Article | Not a default action; use archive unless policy explicitly allows delete with reason and audit. |
-| Manage Categories / Banners | Allowed with before/after audit and FO-impact awareness. |
+| Manage Categories | Allowed with before/after audit and FO-impact awareness. Banner management is future scope for non-article campaigns/promotions only. |
 | Preview as FO | Allowed and must respect canonical FO display rules. |
 ### 9.10 Board Analytics
 
@@ -569,7 +593,7 @@ Content permissions use the single BO account type `Admin`. There are no BO sub-
 | Completion Rate | อ่านถึงท้ายบทความกี่เปอร์เซ็นต์ |
 | Category Performance | performance แยกตาม category |
 | Search Keywords | keyword ที่นำไปสู่ article |
-| Banner CTR | อัตราคลิก banner |
+| Banner CTR | Future scope for campaign/promotion banners only; not required for Phase 1 Board Main |
 
 ### 9.11 BO/FO Mapping for Board
 
@@ -579,13 +603,12 @@ Content permissions use the single BO account type `Admin`. There are no BO sub-
 | Publish Article | บทความปรากฏบน Board ทันที |
 | Schedule Article | บทความปรากฏเมื่อถึง Publish Date-Time |
 | Archive Article | บทความหายจาก Board/Search/Category |
-| Set Featured = On | บทความแสดงใน Featured Article area |
-| Change Featured Order | ลำดับ featured ใน FO เปลี่ยน |
+| Publish newer eligible Article | Board Main recalculates automatically: newest eligible article becomes Main Hero; remaining eligible articles feed Trending Now and Journal Board preview by deterministic rules |
 | Update Cover Image | รูปปกใน Board และ Article Detail เปลี่ยน |
 | Update Category | บทความย้ายไป category ใหม่ |
 | Inactive Category | Category หายจาก sidebar |
-| Activate Banner | Banner แสดงในตำแหน่งที่กำหนด |
-| Deactivate Banner | Banner หายจาก FO |
+| Activate Banner | Future scope only; not used for Phase 1 Board Main |
+| Deactivate Banner | Future scope only; not used for Phase 1 Board Main |
 
 ---
 

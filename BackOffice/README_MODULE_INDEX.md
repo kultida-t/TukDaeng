@@ -63,7 +63,7 @@ Codex ต้องทำ 3 อย่าง:
 | 03 | `03_USER_MANAGEMENT_MODULE.md` | User list/detail, auth method, login history, report context, suspend/ban, reset password, FO impact | 1 |
 | 04 | `04_ASSET_MANAGEMENT_MODULE.md` | Asset list/detail, status visibility, reported assets, moderation, sensitive fields, FO sync | 1 |
 | 05 | `05_CONTENT_BOARD_MODULE.md` | Board articles, editor, publish/schedule/archive, categories, banners, reported Board Content, FO sync | 1 |
-| 06 | `06_MARKET_DATA_MODULE.md` | Watch brand, model, reference, price index, active/inactive, import/export, FO autocomplete/search/alert/portfolio sync | 1 |
+| 06 | `06_MARKET_DATA_MODULE.md` | Read-only API/backend-synced watch brand, model, reference, detail, price index, sync logs, FO autocomplete/search/alert/portfolio sync | 1 |
 | 07 | `07_DIRECTORY_MODULE.md` | Directory items, categories, contact/map/images, active/inactive publication control, FO placeholder/route decision | 1 |
 | 08 | `08_AUDIT_LOG_MODULE.md` | Immutable audit events, schema, search/filter, export, retention, sensitive/destructive/provider-sync trace | 1 |
 | 09 | `09_OFFER_CHAT_MODULE.md` | Offer lifecycle, status `Rejected`, chat review, reported chats, dispute support | 2 |

@@ -1,7 +1,7 @@
 # 06 BO Market Data Module
 
-**Version:** `BO-06-v0.1`  
-**Date:** 2026-07-06  
+**Version:** `BO-06-v0.2`  
+**Date:** 2026-08-05  
 **Status:** Draft baseline  
 **Platform:** Responsive Web Back Office  
 **Primary FO Sources:** `../FrontOffice/03_SEARCH_FILTER_MODULE.md`, `../FrontOffice/04_ASSET_MANAGEMENT_MODULE.md`, `../FrontOffice/10_WATCH_ALERT_MODULE.md`, `../FrontOffice/14_PORTFOLIO_MODULE.md`, `../FrontOffice/16_INTEGRATIONS_MODULE.md`  
@@ -9,9 +9,9 @@
 
 ## 1. วัตถุประสงค์
 
-BO Market Data Module คือระบบจัดการข้อมูลกลางของนาฬิกา เช่น Brand, Model, Reference Number และ Price Index เพื่อให้ FO ใช้งานได้สม่ำเสมอใน Add Asset, Search/Filter, Watch Alert และ Portfolio valuation
+BO Market Data Module คือระบบอ่านและติดตามข้อมูลกลางของนาฬิกา เช่น Brand, Model, Reference Number, Watch Detail และ Price Index ที่ดึงจาก API/backend sync เพื่อให้ FO ใช้งานได้สม่ำเสมอใน Add Asset, Search/Filter, Watch Alert และ Portfolio valuation
 
-Market Data เป็น master data ฝั่ง BO ผู้ใช้ FO ไม่สามารถแก้ master data เหล่านี้ได้โดยตรง
+Market Data เป็น master/reference data ที่มาจาก provider/API เป็นหลัก ผู้ใช้ FO และ Admin ใน BO ไม่สามารถเพิ่ม แก้ไข ลบ ปิดใช้งาน หรือ override master data เหล่านี้ได้โดยตรงใน Phase 1
 
 Current external source ที่ dev ใช้อยู่: `https://www.thewatchapi.com/`
 
@@ -21,14 +21,14 @@ BO ต้องไม่เรียก external API ตรงจาก FO clien
 
 ### In Scope
 
-- Watch Brand management
-- Watch Model / Series management
-- Reference Number management
-- Price Index management
-- Active/Inactive control
+- Watch Brand read-only catalog
+- Watch Model / Series read-only catalog
+- Reference Number read-only catalog
+- Watch detail read-only catalog
+- Price Index read-only catalog
+- Active/Inactive visibility from provider/backend policy
 - External provider sync จาก The Watch API
-- Import/export market data ตาม permission
-- Change history และ audit log
+- Provider sync logs, source metadata, cache status และ data quality visibility
 - Data quality validation
 - FO sync สำหรับ autocomplete, filter, Watch Alert และ Portfolio
 - Responsive web layout
@@ -36,6 +36,10 @@ BO ต้องไม่เรียก external API ตรงจาก FO clien
 ### Out Of Scope
 
 - Real-time external market feed integration แบบ live pass-through ไป FO ใน Phase 1
+- BO add/edit/delete/inactivate/reactivate/override market data by Admin ใน Phase 1
+- CSV/XLSX import สำหรับแก้หรือเพิ่ม market data เองใน Phase 1
+- Manual override/conflict resolution workflow ใน Phase 1
+- Export market data เป็นไฟล์จาก BO ใน Phase 1 เว้นแต่เป็น future/reporting scope ที่ได้รับอนุมัติแยก
 - AI price prediction
 - User-submitted master data approval workflow
 - Portfolio benchmark/advanced analytics
@@ -49,17 +53,18 @@ BO uses a single Admin account type only. Admin access is controlled by module a
 | Access Area | Rule |
 | --- | --- |
 | Module access | Admin can use list/detail/search/filter when module access is granted. |
-| Write action | Create, update, status change, remove, restore, publish, archive, retry, and similar actions require permission check, confirmation for high-risk actions, reason when FO/user impact exists, and audit log. |
+| Write action | Phase 1 has no BO write action for market data. Add, edit, delete, status change, import, override, and conflict merge are hidden/disabled. |
+| Provider sync action | Backend scheduled sync is the default. Manual sync trigger is allowed only as an operations action when permission exists, must audit the trigger/result, and must be placed only on the Sync Logs screen, not on Catalog or brand/model/reference detail pages. |
 | Sensitive data | Mask by default; reveal only with business reason, policy approval, and audit log. |
-| Export | Requires permission check, scope control, expiry/background job where needed, and audit export event. |
+| Export | Out of Phase 1 for the Market Data screen unless approved as a reporting workflow. |
 | Direct URL/API | Enforce access at route, API, and service layers; never rely only on hidden UI. |
 ## 4. Responsive Layout
 
 | Width | Requirement |
 | --- | --- |
-| Mobile-width browser | Master data list แสดงเป็น cards, filter อยู่ใน drawer, action สำคัญยังเข้าถึงได้ |
-| Tablet | Table แสดง column สำคัญและเปิด detail/edit เป็น panel ได้ |
-| Desktop | Full table, side filter, bulk import/export, detail drawer หรือ split view |
+| Mobile-width browser | Master data list แสดงเป็น cards, filter อยู่ใน drawer, drill-down/detail ยังเข้าถึงได้ |
+| Tablet | Table แสดง column สำคัญและเปิด detail เป็น panel ได้ |
+| Desktop | Full table, side filter, API sync status/logs, detail drawer หรือ split view |
 
 ตารางขนาดใหญ่ต้องใช้ server-side pagination และไม่โหลดข้อมูลทั้งหมดเข้าหน้า browser
 
@@ -94,7 +99,7 @@ The Watch API เป็น external watch data provider ที่ dev ใช้�
 - Price จาก provider documentation เป็น indicative asking price ใน USD ต้อง convert/normalize ก่อนแสดงเป็น THB หรือใช้ใน Portfolio
 - ต้องเก็บ `source_currency`, `source_price`, `converted_price_thb`, `fx_rate`, `fx_rate_date`, `provider_updated_at`, `synced_at`
 - ถ้า provider unavailable หรือ usage/rate limit เกิดขึ้น FO ต้องใช้ cached data ล่าสุดหรือ fallback rule ของ Portfolio
-- ข้อมูลจาก provider ไม่ควร overwrite manual override โดยไม่ผ่าน conflict review
+- Phase 1 ไม่มี manual override ใน BO ดังนั้น provider/backend sync เป็นแหล่งข้อมูลเดียวสำหรับ market data ที่แสดงใน BO/FO
 
 ### Provider Error Handling
 
@@ -110,43 +115,42 @@ The Watch API เป็น external watch data provider ที่ dev ใช้�
 
 BO ต้องบันทึก provider sync status: `Pending`, `Synced`, `Failed`, `Skipped`, `Conflict`
 
-### 5.0A Internal Database Ownership And CRUD Rules
+### 5.0A Internal Database Ownership And Phase 1 Read-only Rules
 
 หลังจากดึงข้อมูลจาก The Watch API แล้ว ระบบต้องบันทึกข้อมูลลง database ของ TukDaeng ก่อนใช้งานจริง โดยถือว่า internal database เป็น operational source of truth สำหรับ BO และ FO
 
 หลักการ:
 
 - The Watch API เป็น external provider/source เท่านั้น
-- TukDaeng database เป็นแหล่งข้อมูลที่ BO ใช้จัดการ และ FO ใช้อ่านผ่าน internal API
-- Admin ใน BO สามารถเพิ่ม แก้ไข ปิดใช้งาน และ override ข้อมูลได้ตาม permission
-- การแก้ไขจาก BO ต้องเก็บเป็น manual override หรือ internal record metadata เพื่อไม่ให้ sync รอบถัดไป overwrite ทันที
-- ถ้า provider sync รอบใหม่เจอข้อมูลต่างจาก manual override ต้องสร้าง conflict review state ก่อน merge
+- TukDaeng database/cache เป็นแหล่งข้อมูลที่ BO และ FO ใช้อ่านผ่าน internal API
+- Admin ใน BO อ่าน ค้นหา กรอง drill-down ดู source metadata ดู data quality และดู sync log ได้เท่านั้นใน Phase 1
+- Admin ใน BO ไม่สามารถเพิ่ม แก้ไข ปิดใช้งาน ลบ import หรือ override ข้อมูล market data ได้เองใน Phase 1
+- ถ้าพบข้อมูลผิด ให้ใช้ process นอกระบบหรือ future `request correction` workflow แทนการแก้ record ตรง
 - FO ต้องเห็นเฉพาะข้อมูลที่ผ่าน active/inactive rule และ policy ของระบบเราแล้ว
 
-CRUD rules:
+Phase 1 action rules:
 
 | Action | Rule |
 | --- | --- |
-| Create | Admin เพิ่ม brand/model/reference/price index เองได้ โดยต้องระบุ source เป็น `Manual` หรือ `Internal` |
-| Update | แก้ข้อมูลได้ตาม permission และต้อง audit before/after value |
-| Delete | ห้าม hard delete ถ้าข้อมูลเคยถูกใช้กับ asset, alert, price history หรือ audit แล้ว |
-| Inactivate | ใช้แทน delete เป็น default เพื่อซ่อนจาก new selection ใน FO แต่ยังรักษา historical relation |
-| Reactivate | ทำได้ตาม permission และต้อง audit |
-| Override Provider Data | ทำได้ แต่ต้องตั้ง `manual_override = true` หรือ field ที่เทียบเท่า |
-| Resolve Conflict | ต้องมีหน้าหรือ workflow ให้เลือก keep internal, accept provider หรือ merge |
+| View/List/Detail/Search/Filter | Allowed for Admin with module access. |
+| Manual Sync Trigger | Allowed only for permitted operations users; audit trigger/result and show rate/error status. |
+| Create/Update/Delete | Not available in Phase 1. |
+| Inactivate/Reactivate | Not available from BO in Phase 1; visibility follows provider/backend policy. |
+| Override Provider Data | Not available in Phase 1. |
+| Import CSV/XLSX | Not available in Phase 1. |
+| Export CSV/XLSX | Not available from this module in Phase 1 unless moved to approved Reports scope. |
+| Resolve Conflict | Not available as BO merge action in Phase 1; display data quality issue only. |
 
 Recommended internal fields:
 
-- `source_type`: `Provider`, `Manual`, `Internal`, `Import`
+- `source_type`: `Provider`
 - `provider_name`
 - `provider_key`
-- `manual_override`
 - `active_status`
-- `deleted_at` สำหรับ soft delete เฉพาะกรณีที่ไม่กระทบ relation
-- `created_by`
-- `updated_by`
 - `last_synced_at`
-- `conflict_status`
+- `provider_updated_at`
+- `quality_status`
+- `sync_status`
 
 ### 5.1 Watch Brand
 
@@ -260,11 +264,10 @@ Market data inactive ต้องหยุด new selection และ Watch Aler
 
 เมื่อมี price record หลายรายการ:
 
-1. ใช้ active internal/manual override ที่ match reference ได้ตรงที่สุด ถ้ามี
-2. ใช้ active provider price จาก The Watch API ที่ match reference ได้ตรงที่สุด
-3. ถ้าไม่มี reference match ให้ fallback ไป model/brand level ตาม policy
-4. ใช้ effective date/update date ล่าสุดที่ยัง active
-5. ถ้าไม่มี active price ให้ FO ใช้ fallback rule ของ Portfolio เช่น Owner Estimated Value, Purchase Price fallback หรือ No Valuation
+1. ใช้ active provider price จาก The Watch API/backend cache ที่ match reference ได้ตรงที่สุด
+2. ถ้าไม่มี reference match ให้ fallback ไป model/brand level ตาม policy
+3. ใช้ provider updated date/synced date ล่าสุดที่ยัง active ตาม backend policy
+4. ถ้าไม่มี active price ให้ FO ใช้ fallback rule ของ Portfolio เช่น Purchase Price fallback หรือ No Valuation
 
 ### Price Validation
 
@@ -272,15 +275,15 @@ Market data inactive ต้องหยุด new selection และ Watch Aler
 - Median/market price ต้องอยู่ในช่วง min/max เว้นแต่มี reason
 - Currency ต้องระบุ
 - Source URL หรือ source note ต้องมีอย่างน้อยหนึ่งรายการ
-- Updated date ต้องไม่เป็นอนาคต เว้นแต่เป็น scheduled import ที่แยก workflow
+- Updated date ต้องไม่เป็นอนาคต เว้นแต่เป็น scheduled provider sync ที่แยก workflow
 - ถ้า source currency ไม่ใช่ THB ต้องมี conversion metadata ก่อนใช้งานใน FO
 - Provider price ต้องแสดง source label และ provider updated date ใน BO
 
-## 9. Provider Sync / Import / Export
+## 9. Provider Sync
 
 ### Provider Sync
 
-Phase 1 ให้ใช้ provider sync แบบ backend scheduled job หรือ manual admin-triggered sync ไม่ใช่ FO client call
+Phase 1 ให้ใช้ provider sync แบบ backend scheduled job เป็นหลัก หรือ manual operations-triggered sync ที่มี permission และ audit เท่านั้น ไม่ใช่ FO client call
 
 Sync jobs ที่ควรมี:
 
@@ -291,22 +294,12 @@ Sync jobs ที่ควรมี:
 
 Sync ต้องมี:
 
-- Dry-run หรือ preview สำหรับ bulk change
-- Conflict detection เมื่อ provider data ต่างจาก manual override
 - Retry policy สำหรับ rate limit/server error
 - Sync log และ audit log
 - Last successful sync timestamp
 - Usage/rate limit visibility ถ้า API response/header ให้ข้อมูล
 
-Phase 1 ควรรองรับ:
-
-- CSV/XLSX import สำหรับ brand/model/reference/price index
-- Dry-run validation ก่อน import จริง
-- Error report รายแถว
-- Export ตาม permission
-- Background job สำหรับ import/export ขนาดใหญ่
-
-Import ต้องไม่ overwrite destructive data โดยไม่มี preview และ confirmation
+Phase 1 ไม่รองรับ CSV/XLSX import/export จาก Market Data screen เพราะข้อมูล brand/model/reference/detail/price เป็น master data มาตรฐานที่ต้องมาจาก API/backend source เดียวก่อน
 
 ## 10. Data Quality
 
@@ -320,26 +313,21 @@ Import ต้องไม่ overwrite destructive data โดยไม่มี
 - Reference ที่ไม่ผูก brand/model
 - Source URL invalid
 
-Data quality warning ไม่จำเป็นต้อง block ทุกกรณี แต่ต้องชัดเจนก่อน publish/activate
+Data quality warning ไม่จำเป็นต้อง block ทุกกรณี แต่ต้องชัดเจนก่อน backend นำข้อมูลไปใช้กับ FO autocomplete, Search, Watch Alert หรือ Portfolio
 
 ## 11. Audit Requirements
 
 ต้อง audit:
 
-- Brand create/update/activate/inactivate
-- Model create/update/activate/inactivate
-- Reference create/update/activate/inactivate
-- Price Index create/update/activate/inactivate
 - Provider sync trigger และ provider sync result
-- Conflict resolution ระหว่าง provider data กับ manual override
-- Import/export
-- Bulk update
+- Provider sync error/retry
+- Future approved correction/export workflow ถ้ามี
 
-Audit event ต้องมี admin ID, admin access, target type, target ID, before/after value, reason ถ้ามี, timestamp และ session/IP context ถ้ามี
+Audit event ต้องมี admin ID, admin access, target type, target ID, action/result, reason ถ้ามี, timestamp และ session/IP context ถ้ามี
 
 ## 12. FO Sync And Cache
 
-Market data change ต้อง trigger sync/cache invalidation สำหรับ:
+Market data sync/cache refresh ต้อง trigger downstream cache invalidation สำหรับ:
 
 - Add Asset autocomplete
 - Search filter options
@@ -348,7 +336,7 @@ Market data change ต้อง trigger sync/cache invalidation สำหรั�
 - Portfolio valuation
 - Watch Price / Price Index surfaces
 
-ถ้า sync เป็น async ต้องมี status ให้ Admin เห็น เช่น pending, synced, failed และ retry ได้ตาม permission
+ถ้า sync เป็น async ต้องมี status ให้ Admin เห็น เช่น pending, synced, failed และ retry ได้ตาม operations permission
 
 FO ต้องอ่านข้อมูลจาก internal API/cache ของ TukDaeng เท่านั้น ไม่อ่าน The Watch API ตรง เพื่อป้องกัน token leak, rate-limit กระทบผู้ใช้ และควบคุม active/inactive policy ได้
 
@@ -358,14 +346,12 @@ FO ต้องอ่านข้อมูลจาก internal API/cache ขอ
 
 - Empty brand/model/reference/price list
 - No search result
-- Import validation failed
 - Provider sync failed
 - Provider rate/usage limit reached
 - Duplicate detected
 - Sync failed
 - Price source unavailable
 - Permission denied
-- Concurrent update warning
 
 ## 14. Integration With Other Modules
 
@@ -376,36 +362,36 @@ FO ต้องอ่านข้อมูลจาก internal API/cache ขอ
 | Watch Alert | Criteria schema ใช้ Search Filter และ active market data |
 | Portfolio | Price Index เป็น valuation source priority แรก |
 | The Watch API | External provider สำหรับ brand/model/reference/watch details/price history ที่ต้อง sync เข้า BO ก่อนใช้ |
-| Dashboard | แสดง data quality warnings, latest price updates, inactive data count |
-| Audit Log | ทุก market data mutation ต้อง searchable |
-| Reports | Export market data และ price history |
+| Dashboard | แสดง data quality warnings, latest price updates, inactive data count จาก sync/cache |
+| Audit Log | provider sync trigger/result/error/retry ต้อง searchable |
+| Reports | Future approved export/reporting scope แยกจาก Phase 1 Market Data screen |
 
 ## 15. Acceptance Criteria
 
 | ID | Criteria |
 | --- | --- |
-| AC-BO-MARKET-001 | Admin จัดการ brand/model/reference/price index ได้ตาม permission |
+| AC-BO-MARKET-001 | Admin เปิดดู list/detail/search/filter ของ brand/model/reference/detail/price index ได้ตาม module access โดยไม่มี add/edit/delete/import/override action ใน Phase 1 |
 | AC-BO-MARKET-002 | Brand -> Model dependent relation ต้องถูกต้องใน BO และส่งผลถึง FO |
 | AC-BO-MARKET-003 | Inactive brand/model/reference ไม่แสดงเป็น option ใหม่ใน FO autocomplete/filter |
 | AC-BO-MARKET-004 | Existing asset ยังเก็บ historical brand/model/reference ได้แม้ master data ถูก inactive |
 | AC-BO-MARKET-005 | Price Index active ใช้เป็น source ของ Portfolio Current Value และ Watch Price |
 | AC-BO-MARKET-006 | ถ้าไม่มี active price index FO ต้อง fallback ตาม Portfolio rule |
-| AC-BO-MARKET-007 | Import ต้องมี dry-run validation และ error report |
+| AC-BO-MARKET-007 | Market Data screen Phase 1 ต้องไม่มี CSV/XLSX import flow |
 | AC-BO-MARKET-008 | The Watch API ต้องถูกเรียกผ่าน backend sync/cache เท่านั้น ไม่ถูกเรียกตรงจาก FO client |
 | AC-BO-MARKET-009 | ข้อมูลที่ sync จาก The Watch API ต้องถูกเก็บใน TukDaeng database ก่อน BO/FO ใช้งาน |
-| AC-BO-MARKET-010 | Admin เพิ่ม/แก้/override market data ใน BO ได้ตาม permission |
-| AC-BO-MARKET-011 | ข้อมูลที่เคยถูกใช้งานแล้วต้องใช้ inactive/soft delete แทน hard delete |
-| AC-BO-MARKET-012 | Provider sync ต้องไม่ overwrite manual override โดยไม่ผ่าน conflict review |
+| AC-BO-MARKET-010 | Admin ไม่สามารถเพิ่ม/แก้/override market data ใน BO Phase 1 ได้ |
+| AC-BO-MARKET-011 | Active/inactive visibility ถูกกำหนดจาก provider/backend policy ไม่ใช่ BO manual status action |
+| AC-BO-MARKET-012 | Provider/backend sync เป็น source เดียวของ Phase 1 และต้องเก็บ source trace เพื่อรองรับ future correction workflow |
 | AC-BO-MARKET-013 | Provider USD price ต้องมี conversion metadata ก่อนใช้เป็น THB ใน FO |
-| AC-BO-MARKET-014 | Market data change ต้อง trigger sync/cache invalidation ไป FO surfaces ที่เกี่ยวข้อง |
-| AC-BO-MARKET-015 | Mutation, provider sync และ export ทุกครั้งต้อง audit-log |
+| AC-BO-MARKET-014 | Market data sync/cache refresh ต้อง trigger cache invalidation ไป FO surfaces ที่เกี่ยวข้อง |
+| AC-BO-MARKET-015 | Provider sync trigger/result/error/retry ทุกครั้งต้อง audit-log |
 | AC-BO-MARKET-016 | UI responsive ใช้งานได้ที่ mobile-width, tablet และ desktop |
 
 ## 16. Open Decisions
 
 | ID | Decision Needed | Current Recommendation |
 | --- | --- | --- |
-| BO-MARKET-DEC-001 | External price source จะ integrate ใน Phase 1 หรือไม่ | Phase 1 ใช้ manual/import price index ก่อน |
+| BO-MARKET-DEC-001 | External price source จะ integrate ใน Phase 1 หรือไม่ | Phase 1 ใช้ The Watch API/backend sync เป็นหลัก และไม่ใช้ manual/import price index |
 | BO-MARKET-DEC-002 | Inactive brand/model ส่งผลต่อ Watch Alert เดิมอย่างไร | ไม่ trigger match ใหม่สำหรับ inactive criteria แต่ยังเก็บ alert history |
 | BO-MARKET-DEC-003 | Price fallback จาก model/brand level ใช้ได้แค่ไหน | ใช้ได้พร้อม label ชัดเจนว่าเป็น fallback ไม่ใช่ reference exact |
 | BO-MARKET-DEC-004 | Multi-currency support | Phase 1 แสดง THB เป็นหลัก |

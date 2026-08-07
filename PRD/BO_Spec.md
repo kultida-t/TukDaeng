@@ -30,7 +30,7 @@ BO Dashboard
 ├── Content Management (จัดการเนื้อหา)
 │   ├── Articles (บทความ Board)
 │   ├── Categories (หมวดหมู่บทความ)
-│   └── Banners
+│   └── Banners (Future scope; not used for Phase 1 Board Main)
 ├── Market Data (ข้อมูลตลาด)
 │   ├── Watch Brands
 │   ├── Watch Models
@@ -47,6 +47,8 @@ BO Dashboard
 ├── Audit Log
 └── Admin Settings
 ```
+
+Admin Settings must include a `Roles & Permissions` section. This section manages role templates and module/action permissions for the single BO account type `Admin`; it must not introduce separate BO admin account types.
 
 ---
 
@@ -148,6 +150,24 @@ BO Dashboard
 นี่คือ Module หลักสำหรับสร้าง Content ที่แสดงบนหน้า **Board** ใน FO  
 ผู้ใช้ FO อ่านได้อย่างเดียว; Admin ที่มีสิทธิ์ตาม policy เป็นผู้สร้างและจัดการบทความใน BO
 
+**Phase 1 Board Display Source of Truth**
+
+Board Main uses Articles only. `Content Management > Banners` and manual `Featured Article` selection are not required for the current Board flow.
+
+Hero selection is automatic: Board Main `Main Hero` uses the latest eligible Published Article across all active Board categories, while each category page hero uses the latest eligible Published Article within that selected active category.
+
+FO selection rules:
+
+| FO Area | Data source | Selection rule | Duplication rule |
+|---|---|---|---|
+| Main Hero | Published Articles | Newest eligible article by `publishDateTime DESC`, then `updatedAt DESC`, then `articleId DESC` | Do not repeat on Board Main |
+| Trending Now | Published Articles excluding Main Hero | Use trending score if available; otherwise use newest remaining articles | Do not repeat Main Hero or duplicate items within Trending Now |
+| Journal Board preview on Board Main | Published Articles excluding Main Hero and Trending Now items already shown | Use newest remaining article as the large preview card, then remaining articles if layout needs more | Do not repeat articles already shown on Board Main |
+| Journal Board View All | All eligible Published Articles | Sort by `publishDateTime DESC`, then `updatedAt DESC`, then `articleId DESC` | No cross-page dedupe; articles shown in Hero/Trending can appear here |
+| Category page hero | Published Articles in selected active category | Newest eligible article in that category | Avoid repeating in same page preview/list |
+
+Eligible article conditions: `Status = Published`, `Publish Date <= now` in `Asia/Bangkok`, active category, required FO card fields present, and not archived/unpublished/deleted/policy-hidden.
+
 #### 3.4.1 Article List
 **ฟีเจอร์:**
 - ดูรายการบทความทั้งหมด
@@ -178,7 +198,7 @@ BO Dashboard
 | Category | Dropdown | ✓ | Watch Brands, Watch 101, Watch Apparel, Watch Events, Watch Market, Journal Board |
 | Tags | Multi-select | - | ใช้สำหรับ Search ภายใน Board |
 | Author | Dropdown | ✓ | เลือกจากรายชื่อ Admin ทั้งหมด |
-| Featured Article | Toggle | - | แสดงเป็น Feature Article ขนาดใหญ่บนหน้า Board |
+| Featured Article | Toggle | - | Future scope only; Phase 1 Board Main chooses Main Hero automatically from newest eligible Published Article |
 | Content | Rich Text Editor (WYSIWYG) | ✓ | |
 | Read Time (นาที) | Auto-calculate | - | คำนวณจากจำนวนคำ |
 | SEO Title | Text | - | |
@@ -214,6 +234,8 @@ BO Dashboard
 ---
 
 ### 3.5 Content Management — Banners
+
+**Phase 1 status:** Future scope. Do not implement this menu for current Board Main display. Board Main Hero, Trending Now, and Journal Board preview are rendered from `Articles` using the deterministic rules in section 3.4.
 
 **ฟีเจอร์:**
 - จัดการ Banner ที่แสดงบน Feed และ Board ใน FO
@@ -363,12 +385,24 @@ Watch Shops, Accessories Shops, Repair Shops, Auction Centers, Consignment Cente
 
 BO uses exactly one admin account type: `Admin`. There are no BO sub-types. The former multi-column policy catalog is replaced by module/action policy.
 
+Role templates are allowed as permission presets for Admin accounts. Example baseline roles:
+
+| Role template | Purpose |
+|---|---|
+| Super Admin | Full BO access, including settings, audit, export, and policy changes. |
+| Content Editor | Can view Content Management and create/edit article drafts, categories, and metadata; cannot publish/archive. |
+| Content Publisher | Can publish, schedule, archive, and moderate reported Board content with audit reason. |
+| Moderator | Can review reports and moderation queues according to masking and action policy. |
+| Support Agent | Can manage support tickets and limited linked context without broad settings/export access. |
+
+Permission enforcement must happen at route, UI, API, and service layers. Hiding menu items is not sufficient.
+
 | Module | Admin access rule |
 |---|---|
 | Dashboard | Admin can view operational overview according to data sensitivity policy. |
 | User Management | Admin can view/manage users with confirmation, reason, sensitive-data masking, and audit for high-risk actions. |
 | Asset Management | Admin can review and change assets with FO-impact, sensitive-data, confirmation, reason, and audit controls. |
-| Articles / Banners | Admin can create, edit, preview, publish, schedule, archive, and audit content actions. |
+| Articles / Categories | Admin can create, edit, preview, publish, schedule, archive, manage categories, and audit content actions. Banners are future scope for non-article campaigns/promotions only. |
 | Market Data / Directory | Admin can manage watch data and directory entries with source, inactive/restore, and audit controls. |
 | Reports / Notifications / Audit / Settings | Admin can operate these modules according to export, approval, sensitive-data, and high-risk setting policies. |
 ## 4. BO Authentication
@@ -424,7 +458,7 @@ BO uses exactly one admin account type: `Admin`. There are no BO sub-types. The 
 | Publish Article | บทความปรากฏบนหน้า Board ทันที |
 | Schedule Article | บทความปรากฏตาม Publish Date ที่กำหนด |
 | Unpublish / Archive Article | บทความหายจาก Board ทันที |
-| Set Featured Article = ON | บทความแสดงเป็น Feature Article ขนาดใหญ่ด้านบน Board |
+| Publish newer eligible Article | Board Main recalculates automatically: newest eligible article becomes Main Hero; remaining eligible articles feed Trending Now and Journal Board preview by deterministic rules |
 | Update Price Index | ราคาใน Watch Price Index และ Asset Value Dashboard ของ User อัปเดต |
 | Add Watch Brand / Model | ข้อมูลปรากฏใน Autocomplete ขณะ Add Asset และ Filter ใน Search |
 | Add Directory Item (Active) | ร้านค้า/บริการปรากฏในเมนู FO |

@@ -17,7 +17,7 @@
 
 - Add/Edit Asset required field matrix
 - Asset Detail / Public Profile ว่า `Show` ไม่ถูกสื่อเป็น Sale listing
-- การใช้ `Owner Estimated Value (Private)` สำหรับ private valuation และไม่ใช้ `Price` / `Asking Price` กับ `Hide`
+- การไม่ใช้ `Price` / `Asking Price` กับ `Hide`
 - การส่ง Dev baseline ให้ Dev review app เทียบ checklist
 - Commit งานเอกสารหลัง review ผ่าน
 
@@ -53,7 +53,7 @@
 - `Show` ทำ Make Offer / Contact Seller / Chat ได้จาก Asset Detail หรือ Public Profile detail entry เท่านั้น
 - Public Profile tabs ต้องเป็น `All`, `Sale`, `Show`
 - Public Profile `All` แสดงเฉพาะ `Sale` + `Show`
-- Viewer/Public ต้องไม่เห็น `Owner Estimated Value (Private)` หรือ private financial fields
+- Viewer/Public ต้องไม่เห็น private financial fields
 - Market Comparison ต้องใช้ `Asking Price` เทียบ Watch Price API Market Price เท่านั้น
 - Deep link ของ `Hide`, `Sold`, Deleted หรือ blocked asset ต้องเข้า unavailable / permission state
 
@@ -75,7 +75,7 @@ Gap ที่พบ:
 - ภาพ `Owner asset detail 3.png` แสดง collapsed replies ด้วย `View 2 more replies`; ถือว่าใช้ได้หากกดแล้วกาง replies ใต้ comment หลักเดิมเท่านั้น และไม่เปิด thread ซ้อนหลายระดับ
 - Gallery แสดง `1 / 3` บน Detail และได้รับการยืนยันว่าเป็นจำนวนรูปของ asset นี้ ไม่ใช่ Figma limit
 - Owner-only private fields ไม่จำเป็นต้องอยู่บน Owner Detail หลัก หากเข้าได้จาก `Edit asset` -> `Provenance`; ต้อง annotate ว่า route นี้เป็น Owner-only และห้าม Viewer/Public เข้าถึง
-- Bottom price ใช้ได้กับ `Sale` แต่ต้องตรวจ state `Hide` แยกว่าห้ามใช้ Price / Asking Price และต้องใช้ `Owner Estimated Value (Private)` ถ้ามี private valuation
+- Bottom price ใช้ได้กับ `Sale` แต่ต้องตรวจ state `Hide` แยกว่าห้ามใช้ Price / Asking Price
 - Prototype / Dev note ยังควรระบุว่าปุ่ม `Reply` บน reply item ต้องไม่สร้าง reply ชั้นที่ 2; หากกดจาก reply ให้ตอบกลับเข้าใต้ comment หลักเดิม หรือ prefill mention เท่านั้น
 - `View more replies` ต้องนับและกางเฉพาะ replies ชั้นเดียวใต้ comment หลัก ไม่ใช่จำนวน comment รวมทั้งหมดหรือ thread ซ้อน
 
@@ -94,7 +94,7 @@ Gap ที่พบ:
 
 - `Provenance` ต้องเป็น Owner-only route
 - Viewer/Public Asset Detail และ Public Profile ต้องไม่มีทางเห็น Purchase Price, Purchase Date, Purchase From, Proof of Payment หรือ Provenance note
-- หาก status เป็น `Hide` ห้ามใช้ Price เป็น listing field และต้องแยก `Owner Estimated Value (Private)` สำหรับมูลค่าส่วนตัว
+- หาก status เป็น `Hide` ห้ามใช้ Price เป็น listing field
 
 ### 2.5 Version bump for comment model decision
 
@@ -140,9 +140,9 @@ Product lock decision เรื่อง Asset Detail / Social comments:
 
 ## 6. สรุปสำหรับส่งบริษัท
 
-วันนี้ต่อยอด handoff จากวันที่ 2026-06-22 โดยเพิ่ม work pack สำหรับตรวจ Figma รอบ Asset Detail / Public Profile เพื่อปิดความเสี่ยงที่ `Show` จะถูกสื่อเป็น marketplace listing และปิดความเสี่ยง private data leakage จาก `Owner Estimated Value (Private)`, purchase data, provenance, consignment, Sold History และ Portfolio Value Detail
+วันนี้ต่อยอด handoff จากวันที่ 2026-06-22 โดยเพิ่ม work pack สำหรับตรวจ Figma รอบ Asset Detail / Public Profile เพื่อปิดความเสี่ยงที่ `Show` จะถูกสื่อเป็น marketplace listing และปิดความเสี่ยง private data leakage จาก purchase data, provenance, consignment, Sold History และ Portfolio Value Detail
 
-ผลลัพธ์คือ UX/Dev/QA มี checklist ที่ชัดขึ้นสำหรับตรวจว่า Public Profile แสดงเฉพาะ `Sale` + `Show`, `Show` เปิด Detail/Offer/Chat ได้จาก entry point ที่ถูกต้องเท่านั้น, และ Viewer/Public ไม่เห็น private valuation หรือข้อมูลการเงินส่วนตัวของ Owner
+ผลลัพธ์คือ UX/Dev/QA มี checklist ที่ชัดขึ้นสำหรับตรวจว่า Public Profile แสดงเฉพาะ `Sale` + `Show`, `Show` เปิด Detail/Offer/Chat ได้จาก entry point ที่ถูกต้องเท่านั้น, และ Viewer/Public ไม่เห็นข้อมูลการเงินส่วนตัวของ Owner
 
 ---
 
@@ -153,7 +153,7 @@ Product lock decision เรื่อง Asset Detail / Social comments:
 - Baseline ล่าสุดที่ล็อกวันนี้คือ `FO-PRD-v1.1` และ supersede `FO-PRD-v1.0` สำหรับ Dev / QA / Figma
 - Asset Detail comment model ถูกเปลี่ยนเป็น IG-style one-level replies แล้ว: มี reply ใต้ root comment ได้, มี `View more replies`, แต่ไม่รองรับ multi-level nested thread เกิน 1 ชั้น
 - ยืนยันว่า counter `1 / 3` บน Asset Detail คือจำนวนรูปของ asset นั้น ไม่ใช่ limit; ส่วน limit การเพิ่มรูปยังเป็นสูงสุด 10 รูปตาม Add/Edit Asset
-- Owner-only private data เช่น purchase data, provenance, Owner Estimated Value และ Expected Profit ต้องอยู่หลัง Owner-only route เช่น `Edit asset -> Provenance` และห้ามแสดงใน Viewer/Public detail
+- Owner-only private data เช่น purchase data, provenance และ Expected Profit ต้องอยู่หลัง Owner-only route เช่น `Edit asset -> Provenance` และห้ามแสดงใน Viewer/Public detail
 - เพิ่ม/ยืนยัน trust & safety entry points แล้ว: Report User จาก Profile, Block User จาก Profile, Report User จาก Chat, Block User จาก Chat, Report Asset จาก Asset Detail, Report Comment จาก Asset Detail และ Block User จาก Asset Detail
 - อัปเดตเอกสาร module, Dev checklist, QA checklist, Figma gap checklist, baseline/version docs ให้ชี้มาที่ decision ล่าสุดแล้ว
 - ยังไม่ได้ commit งานเอกสารรอบนี้

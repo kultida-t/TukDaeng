@@ -9,7 +9,7 @@
 
 ## 1. วัตถุประสงค์
 
-Admin Settings Module ใช้สำหรับตั้งค่าและตรวจสอบ configuration ระดับ Back Office ได้แก่ admin account settings, Admin Access Matrix, security settings, system defaults, retention/export policy และ operational settings ที่มีผลต่อการทำงานของ BO
+Admin Settings Module ใช้สำหรับตั้งค่าและตรวจสอบ configuration ระดับ Back Office ได้แก่ admin account settings, Roles & Permissions matrix, security settings, system defaults, retention/export policy และ operational settings ที่มีผลต่อการทำงานของ BO
 
 Module นี้ต้องไม่เป็นทางลัดเพื่อข้าม admin access control, audit, privacy หรือ FO sync rule ที่ระบุใน Global Rules และแต่ละ module
 
@@ -19,7 +19,7 @@ Module นี้ต้องไม่เป็นทางลัดเพื่�
 
 - Admin profile และ own security settings
 - Admin account management shortcut / settings view
-- Admin Access Matrix
+- Roles & Permissions matrix
 - Permission change request / review workflow baseline
 - Security policy settings ที่แก้ได้ใน BO
 - Session / Email OTP / lockout policy display
@@ -44,7 +44,7 @@ Module นี้ต้องไม่เป็นทางลัดเพื่�
 
 ## 3. Admin Access & Permissions
 
-BO uses exactly one admin account type: `Admin`. Admin Settings must not define or display sub-Admin access matrices. It controls account lifecycle, security policy, module/action policy, retention/export settings, feature flags, and integration metadata through policy-based access rules.
+BO uses exactly one admin account type: `Admin`. Admin Settings may define role templates and a Roles & Permissions matrix, but it must not define separate BO admin account types. It controls account lifecycle, security policy, module/action policy, retention/export settings, feature flags, and integration metadata through policy-based access rules.
 
 | Action | Admin access rule |
 | --- | --- |
@@ -60,10 +60,10 @@ The last active Admin account must be protected from suspension/archive or acces
 
 | Breakpoint | Layout |
 | --- | --- |
-| Mobile <= 767px | Settings sections เป็น stacked list, detail/editor เปิด full screen, Admin Access Matrix เป็น grouped cards |
+| Mobile <= 767px | Settings sections เป็น stacked list, detail/editor เปิด full screen, Roles & Permissions matrix เป็น grouped cards |
 | Tablet 768px - 1199px | Section list + detail แบบ single column หรือ split view ตามพื้นที่ |
 | Desktop >= 1200px | Left settings navigation + detail panel + audit/context sidebar |
-| Wide Desktop >= 1440px | รองรับ Admin Access Matrix table แบบ dense พร้อม sticky header/columns |
+| Wide Desktop >= 1440px | รองรับ Roles & Permissions matrix table แบบ dense พร้อม sticky header/columns |
 
 High-risk action ต้องใช้ confirmation modal ที่อ่านง่ายบน mobile และต้องไม่ใช้ hover-only action
 
@@ -73,7 +73,7 @@ High-risk action ต้องใช้ confirmation modal ที่อ่าน�
 | --- | --- |
 | My Account | ดู profile และเปลี่ยน password ของตัวเอง |
 | Admin Accounts | Invite, update admin access policy, suspend, unlock, archive admin |
-| Admin Permissions | Matrix สิทธิ์ตาม module/action policy |
+| Roles & Permissions | Role templates และ matrix สิทธิ์ตาม module/action policy |
 | Security Policy | Email OTP requirement, session timeout, lockout, IP whitelist |
 | System Defaults | Timezone, currency, language mode, pagination/export defaults |
 | Retention Policy | Audit, chat/offer, report, export file, notification log retention |
@@ -126,9 +126,23 @@ Admin Accounts section ต้อง reuse contract จาก `01_AUTHENTICATION_
 
 ต้องป้องกันการเปลี่ยนแปลง Admin คนสุดท้ายตาม rule ใน section 3
 
-## 8. Admin Access Policy Catalog
+## 8. Roles & Permissions Policy Catalog
 
-The previous multi-Admin access policy catalog is replaced by a single Admin account type with module/action policy. The UI may show a policy catalog, but it must not show separate BO admin account types.
+The previous multi-Admin access policy catalog is replaced by a single Admin account type with role templates and module/action policy. The UI may show a `Roles & Permissions` policy catalog, but it must not show separate BO admin account types.
+
+### 8.1 Baseline Role Templates
+
+| Role template | Baseline permissions |
+| --- | --- |
+| Super Admin | Full BO access, including Admin Settings, Audit Log, sensitive reveal/export, and policy changes. |
+| Content Editor | Access Content Management; create/edit article drafts, categories, metadata, and preview as FO; cannot publish/archive. |
+| Content Publisher | Access Content Management; publish, schedule, archive, manage banners/categories, and moderate reported Board content with audit reason. |
+| Moderator | Access report/moderation queues by policy; sensitive data remains masked by default unless reveal permission is granted. |
+| Support Agent | Access Help & Support and limited linked context; cannot broadly access User/Asset/Settings/export surfaces. |
+
+Role templates are presets. Production enforcement must use explicit permission keys at route, UI, API, and service layers.
+
+### 8.2 Module / Action Policy Catalog
 
 | Module | Admin access rule |
 | --- | --- |
@@ -143,9 +157,9 @@ The previous multi-Admin access policy catalog is replaced by a single Admin acc
 | Notifications / Reports | Admin can manage templates, broadcasts, reports, and exports according to approval/export/sensitive-data policy. |
 | Admin Settings | Admin can manage BO settings through high-risk policy controls and audit. |
 
-### 8.1 Permission Change Rules
+### 8.3 Permission Change Rules
 
-- Permission changes are policy changes for the single Admin account type.
+- Permission changes are policy changes for the single Admin account type and its role templates.
 - Require confirmation, reason, before/after diff, and audit.
 - Direct API/service enforcement is required for every changed policy.
 - Changes affecting the current session must be reflected on the next request or token/session refresh.
@@ -263,7 +277,7 @@ Change history ต้อง link ไป Audit Log detail ตาม permission
 | Invite admin | Admin | Yes | Optional | Yes |
 | Change Admin Access | Admin | Yes | Required | Yes |
 | Suspend/reactivate admin | Admin | Yes | Required | Yes |
-| Update Admin Access Matrix | Admin | Yes | Required | Yes |
+| Update Roles & Permissions Matrix | Admin | Yes | Required | Yes |
 | Update security policy | Admin | Yes + re-auth | Required | Yes |
 | Update retention/export policy | Admin | Yes | Required | Yes |
 | Update feature flag | Admin | Yes | Required | Yes |
@@ -324,7 +338,7 @@ Sensitive settings value ต้อง mask ใน audit payload ถ้าเป�
 | --- | --- |
 | AC-BO-SET-001 | Admin ทุก admin access เข้าดู own profile/settings และเปลี่ยน password ตาม rule ได้ |
 | AC-BO-SET-002 | Admin จัดการ admin account lifecycle ได้โดยไม่กระทบ Admin คนสุดท้าย |
-| AC-BO-SET-003 | Admin Access Matrix แสดงสิทธิ์ตาม module/action และ enforce ทั้ง UI/API level |
+| AC-BO-SET-003 | Roles & Permissions matrix แสดง role templates และสิทธิ์ตาม module/action และ enforce ทั้ง UI/API level |
 | AC-BO-SET-004 | Permission/security/system/retention/export setting changes ต้องมี confirmation, reason และ audit |
 | AC-BO-SET-005 | Security policy ต้องสอดคล้องกับ Auth baseline: email/password only, Email OTP mandatory สำหรับ Admin, idle 8h, max 24h, failed login 5 ครั้ง, lockout 15 นาที |
 | AC-BO-SET-006 | Retention settings ต้องไม่อนุญาต manual delete audit logs จาก UI ปกติ |
@@ -337,7 +351,7 @@ Sensitive settings value ต้อง mask ใน audit payload ถ้าเป�
 
 | ID | Decision Needed | Impact |
 | --- | --- | --- |
-| SET-DEC-001 | Fine-grained permission editor จะเปิดใน V1 หรือใช้ fixed admin access matrix | กระทบ data model และ QA scope |
+| SET-DEC-001 | Fine-grained permission editor จะเปิดใน V1 หรือใช้ fixed role template matrix | กระทบ data model และ QA scope |
 | SET-DEC-002 | Security policy fields ใดให้ Admin แก้ได้จริงใน production | กระทบ compliance และ operation |
 | SET-DEC-003 | Retention period ราย entity เช่น chat, offer, support ticket, export file ต้องเก็บกี่วัน/ปี | กระทบ archive/export/report jobs |
 | SET-DEC-004 | ต้องมี approval workflow สำหรับ high-risk setting change หรือไม่ | กระทบ admin operation และ audit |

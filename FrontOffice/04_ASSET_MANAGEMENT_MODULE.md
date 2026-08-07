@@ -1,4 +1,4 @@
-# 04 Asset Management Module
+﻿# 04 Asset Management Module
 
 อ้างอิงหลักจาก [TukDaeng_Master_Product_Definition.md](TukDaeng_Master_Product_Definition.md)
 
@@ -43,6 +43,8 @@ Asset Management Module ต้องยึด master baseline ต่อไปน
 - `Sold` เป็น terminal state สำหรับบันทึกการขาย ไม่ใช่ status ที่แก้ข้อมูลหลักได้เหมือนสถานะทั่วไป
 - Sold Asset ไม่สามารถ Edit ข้อมูลหลักได้
 - Sold Asset เก็บไว้เพื่อ Sales History, Portfolio และ Admin Review
+- ลบ Asset โดยเจ้าของ เป็นการลบจากมุมมองหน้าบ้านของเจ้าของและ public surfaces แต่ backend/BO ควรเก็บ record ตาม retention policy
+- Asset ที่ถูก Back Office ซ่อนถาวรยังให้ Owner เห็นได้แบบ read-only พร้อมสถานะถูกซ่อนถาวร แต่ Owner แก้ไข เปลี่ยนสถานะ publish ใหม่ mark sold หรือ delete เองไม่ได้
 - Gallery รองรับสูงสุด 10 รูป
 - Asset Management ต้องรองรับ Provenance และ Consignment
 - Provenance, Purchase Price, Purchase Date, Purchase From, Proof of Payment, Consignment Owner Contact, Consignment Terms, Sold History และ Portfolio Value Detail เป็น private data
@@ -51,6 +53,8 @@ Asset Management Module ต้องยึด master baseline ต่อไปน
 - Hide เห็นเฉพาะ Owner
 - Sold เห็นเฉพาะ Owner
 - Hide และ Sold ต้องไม่ Public, ไม่ขึ้น Feed, ไม่ขึ้น Search และไม่เข้า Watch Alert
+- ลบโดยเจ้าของ และ ซ่อนถาวร ต้องไม่ Public, ไม่ขึ้น Feed, ไม่ขึ้น Search, ไม่เข้า Watch Alert และไม่ถูกนำไปรวมใน Portfolio / Asset Value
+- Asset ที่เป็น `Consignment` ไม่ถูกนำไปรวมใน Portfolio / Asset Value เพราะเป็นของฝากขาย ไม่ใช่ทรัพย์สินที่ Owner ถือครองเอง
 - ไม่มี Payment ภายในแอปใน Phase 1
 
 ---
@@ -211,11 +215,21 @@ Mark as Sold สามารถเริ่มจาก Owner Asset Detail ห�
 Owner Asset Detail / Owner Feed Card
 → Delete
 → Confirmation
-→ Asset Deleted
+→ Asset ถูกลบโดยเจ้าของ
 → Asset Removed From Public Surfaces
 ```
 
 Delete Asset สามารถเริ่มจาก Owner Asset Detail หรือ Owner Feed more menu ได้ แต่ต้องใช้ confirmation เดียวกัน และไม่มี Undo
+
+หลัง ลบโดยเจ้าของ สำเร็จ:
+
+- Asset หายจาก owner list ปกติและ public surfaces ทั้งหมด
+- Asset ไม่ถูกนำไปรวมใน Portfolio / Asset Value
+- Chat ที่เกี่ยวข้องยังอยู่ แต่ Reference Asset ต้องใช้ unavailable/deleted state
+- Offer ที่เกี่ยวข้องต้องเป็น Cancelled ตาม offer policy
+- Backend/BO ควรเก็บ record ตาม retention policy เพื่อ audit, report history, dispute หรือ compliance
+- Backend/BO ต้องบันทึก Asset Status History / Audit History ว่าเจ้าของเป็นผู้ลบ พร้อม before/after state และ timestamp
+- การลบนี้ไม่ใช่ hard delete ทันที เว้นแต่นโยบายระบบระบุไว้ต่างหาก
 
 ## Non Owner Attempts Edit
 
@@ -234,6 +248,7 @@ Asset Detail
 - User จัดการได้เฉพาะ Asset ของตัวเอง
 - Non Owner ไม่มีสิทธิ์ Edit, Delete, Change Status หรือ Mark as Sold
 - Private Asset Data ต้องตรวจสิทธิ์ทุกครั้ง
+- Owner ไม่มีสิทธิ์ Delete asset ที่ถูก Back Office ซ่อนถาวร เพราะรายการนี้ต้องคงไว้เพื่อ report, moderation history, audit, dispute หรือ compliance
 
 ## Add / Edit Supported Fields
 
@@ -269,7 +284,6 @@ Add / Edit Asset ต้องรองรับข้อมูลต่อไป
 | Model / Series | Required | Required | Optional |
 | Condition | Required | Optional | Optional |
 | Asking Price (THB) | Optional; if empty FO shows `Price on request` | Optional; hidden from public FO surfaces | Optional; hidden from public FO surfaces |
-| Owner Estimated Value (Private) | Optional private valuation | Optional private valuation | Optional private valuation |
 | Description | Required | Optional | Optional |
 | Status | Required: `Sale` | Required: `Show` | Required: `Hide` |
 
@@ -312,7 +326,6 @@ Add / Edit Asset ต้องรองรับข้อมูลต่อไป
 | Description ว่างเมื่อ required | `กรุณากรอกรายละเอียดสินค้า` |
 | Status ว่าง | `กรุณาเลือกสถานะ` |
 | Year เป็นปีในอนาคต | `ปีต้องไม่เป็นปีในอนาคต` |
-| Owner Estimated Value <= 0 | `มูลค่าประมาณต้องมากกว่า 0` |
 
 Provenance validation messages:
 
@@ -515,6 +528,16 @@ Mark as Sold จาก Feed หรือ Asset Detail เป็น shortcut ไ�
 - Sold Asset ไม่ Public
 - Sold Asset ไม่ขึ้น Feed, Search, Watch Alert
 
+## Back Office ซ่อนถาวร Rule
+
+- Asset ที่ถูก Back Office ซ่อนถาวรยังให้ Owner เห็นได้ใน Owner Asset Detail แบบ read-only
+- ต้องแสดงสถานะ `ถูกซ่อนถาวรโดยผู้ดูแล`
+- Owner ไม่สามารถ Edit, Change Status, Publish ใหม่, Mark as Sold, Boost หรือ Delete ได้
+- Viewer/User อื่น/Guest ต้องไม่เห็น Asset นี้ใน public surfaces ทั้งหมด
+- Direct link จาก public context ต้องแสดง unavailable state
+- Asset นี้ไม่ถูกนำไปรวมใน Portfolio / Asset Value
+- การกู้คืนจากสถานะซ่อนถาวรไม่อยู่ใน Front Office V1 และไม่ใช่ action ปกติของ moderation
+
 ## Sale Record Form
 
 ก่อนเปลี่ยนเป็น Sold ต้องกรอก Sale Record Form
@@ -630,14 +653,6 @@ Price:
 - Status = Sale: ถ้ากรอกราคา FO buyer-facing surface แสดงราคานั้น; ถ้าไม่กรอกให้แสดง `Price on request`
 - Status = Show หรือ Hide: แม้กรอกราคา public FO surface ต้องไม่แสดงราคา; เห็นได้เฉพาะ Owner ในหน้าแก้ไข / owner-private view
 - Status = Sold: หากมีราคาที่บันทึกไว้ ให้ FO owner-facing sold view แสดงราคาแบบขีดฆ่า; BO แสดงราคาปกติ
-
-Owner Estimated Value:
-
-- Optional เมื่อ Status = Sale, Show หรือ Hide
-- ต้องมากกว่า 0 เมื่อกรอก
-- ต้องใช้ label `Owner Estimated Value (Private)`
-- เป็น private owner value สำหรับ Portfolio / owner valuation เท่านั้น
-- ห้ามแสดงใน Public Profile, Feed, Search, Watch Alert หรือ Viewer Asset Detail
 
 Description:
 
@@ -965,6 +980,7 @@ Owner Profile และ Sold History ใช้ Global Empty State:
 | AC-ASSET-MGMT-008G | `Consignment` ต้องเลือกได้เฉพาะ Asset status = Sale เท่านั้น; Status = Show หรือ Hide ต้องแสดงเฉพาะ `Owner (Asset)` provenance form |
 | AC-ASSET-MGMT-008H | หาก Asset ที่มี `Consignment` ถูกเปลี่ยนจาก Sale เป็น Show หรือ Hide ต้องบังคับเปลี่ยน provenance type เป็น `Owner (Asset)` หรือปิด consignment data ก่อนบันทึก |
 | AC-ASSET-MGMT-008I | หลัง Owner กด Save ใน Edit Provenance ต้องแสดง confirmation เฉพาะ context: `Save purchase history?` สำหรับ Owner (Asset) หรือ `Save consignment details?` สำหรับ Consignment และห้ามใช้ Edit Asset body ที่อ้างถึง current status |
+| AC-ASSET-MGMT-008J | Asset ที่เป็น `Consignment` ต้องไม่ถูกนำไปรวมใน Portfolio / Asset Value |
 | AC-ASSET-MGMT-009 | Add / Edit Asset ต้องให้เลือก status ได้เฉพาะ Sale, Show และ Hide |
 | AC-ASSET-MGMT-010 | Add / Edit Asset ต้องไม่ให้เลือก Sold เป็น status ปกติ |
 | AC-ASSET-MGMT-010A | Change Status sheet ต้องให้เลือกเฉพาะ Sale, Show และ Hide โดยไม่มี Sold option และต้อง disable Save เมื่อเลือกสถานะเดิม |
@@ -1006,6 +1022,11 @@ Owner Profile และ Sold History ใช้ Global Empty State:
 | AC-ASSET-MGMT-025 | เมื่อ Delete Asset สำเร็จ Asset ต้องหายจาก Feed, Search, Watch Alert และ Public Profile |
 | AC-ASSET-MGMT-026 | เมื่อ Delete Asset สำเร็จ Chat ที่เกี่ยวข้องต้องยังอยู่ แต่ Reference Asset ต้องใช้ deleted asset state |
 | AC-ASSET-MGMT-027 | เมื่อ Delete Asset สำเร็จ Offer ที่เกี่ยวข้องต้องเป็น Cancelled |
+| AC-ASSET-MGMT-027A | เมื่อ Delete Asset สำเร็จ Asset ต้องไม่แสดงใน owner list ปกติและไม่ถูกนำไปรวมใน Portfolio / Asset Value |
+| AC-ASSET-MGMT-027B | Backend/BO ต้องยังเก็บ record ของ Asset ที่ลบโดยเจ้าของ ตาม retention policy เพื่อ audit/report/dispute/compliance |
+| AC-ASSET-MGMT-027C | Asset ที่ถูก Back Office ซ่อนถาวรต้องไม่สามารถ Delete ผ่าน Front Office ได้ |
+| AC-ASSET-MGMT-027D | Asset ที่ถูก Back Office ซ่อนถาวรต้องแสดงให้ Owner เห็นแบบ read-only พร้อมสถานะ `ถูกซ่อนถาวรโดยผู้ดูแล` |
+| AC-ASSET-MGMT-027E | เมื่อ Owner Delete Asset สำเร็จ BO ต้องมี Asset Status History / Audit History ระบุว่าเจ้าของเป็นผู้ลบ พร้อม before/after state และ timestamp |
 
 ## Lifecycle
 
@@ -1041,3 +1062,4 @@ Owner Profile และ Sold History ใช้ Global Empty State:
 - QR Asset Verification
 - Video Upload
 - Watch Authentication Service
+

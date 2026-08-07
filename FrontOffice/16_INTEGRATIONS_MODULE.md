@@ -117,7 +117,7 @@ Integrations Module กำหนดขอบเขต integration ภายน�
 ## Watch Price API
 
 - ใช้ดึงข้อมูลราคาตลาดเพื่อเป็น Current Value source ลำดับแรกของ Portfolio
-- หาก API unavailable ต้อง fallback ตาม Portfolio rule: Owner Estimated Value -> Purchase Price fallback -> No Valuation
+- หาก API unavailable ต้อง fallback ตาม Portfolio rule: Purchase Price fallback -> No Valuation
 - ต้องไม่ทำให้ Portfolio ใช้งานไม่ได้ทั้งหมดเมื่อ API unavailable
 - ควรแสดง source/last updated เมื่อใช้ราคาจาก Watch Price API
 
