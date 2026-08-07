@@ -1801,7 +1801,21 @@
       letter-spacing: .08em;
     }
     body.market-list-mode .market-dashboard-brand-table .asset-row {
-      grid-template-columns: minmax(220px, 1fr) minmax(110px, .5fr) minmax(140px, .55fr) minmax(170px, .75fr) minmax(140px, .55fr);
+      grid-template-columns: minmax(220px, 1.15fr) minmax(110px, .5fr) minmax(140px, .55fr) minmax(170px, .75fr) minmax(140px, .55fr);
+      column-gap: 22px;
+      align-items: center;
+    }
+    body.market-list-mode .market-dashboard-brand-table .asset-row > div {
+      justify-self: stretch;
+      text-align: left;
+    }
+    body.market-list-mode .market-dashboard-brand-table .asset-row > div:nth-child(2),
+    body.market-list-mode .market-dashboard-brand-table .asset-row > div:nth-child(3) {
+      font-variant-numeric: tabular-nums;
+    }
+    body.market-list-mode .market-dashboard-brand-table .asset-row > div:last-child {
+      display: flex;
+      justify-content: flex-start;
     }
     #user-action-modal:has(.market-reference-drawer) {
       place-items: stretch end;
@@ -8515,9 +8529,11 @@
     const reportHistoryPageSize = 10;
     let activeMarketBrandId = "rolex";
     let activeMarketModelIndex = 0;
+    let marketDashboardPage = 1;
     let marketCatalogPage = 1;
     let marketModelPage = 1;
     let marketReferencePage = 1;
+    const marketDashboardPageSize = 5;
     const marketCatalogPageSize = 10;
     const marketModelPageSize = 10;
     const marketReferencePageSize = 10;
@@ -8936,6 +8952,7 @@
       categoryFilterOpen = false;
       boardReportListPage = 1;
       boardReportFilterOpen = false;
+      marketDashboardPage = 1;
       marketCatalogPage = 1;
       activeAssetImageIndex = 0;
       closeRowMenus();
@@ -15501,7 +15518,15 @@
     }
 
     function renderMarketDashboard() {
-      const rows = getMarketReadOnlyBrands();
+      const priorityIds = new Set(getMarketReadOnlyBrands().map(brand => brand.id));
+      const rows = [
+        ...getMarketReadOnlyBrands(),
+        ...marketCatalogData.brands.filter(brand => !priorityIds.has(brand.id)).sort((a, b) => a.name.localeCompare(b.name))
+      ];
+      const pageCount = Math.max(1, Math.ceil(rows.length / marketDashboardPageSize));
+      marketDashboardPage = Math.min(marketDashboardPage, pageCount);
+      const start = (marketDashboardPage - 1) * marketDashboardPageSize;
+      const visibleRows = rows.slice(start, start + marketDashboardPageSize);
       document.querySelector("#table").innerHTML = `
         <div class="market-dashboard-stack">
           <section class="market-sync-current">
@@ -15514,24 +15539,32 @@
             </div>
           </section>
           <section class="market-dashboard-table">
-            <div class="panel-head"><div><h2>แบรนด์ที่เพิ่งอัปเดตล่าสุด</h2></div></div>
+            <div class="panel-head"><div><h2>Recently Updated Brands</h2></div></div>
             <div class="asset-table category-table market-table market-dashboard-brand-table">
-              <div class="asset-row head"><div>แบรนด์</div><div>โมเดล</div><div>เลขอ้างอิง</div><div>อัปเดตล่าสุด</div><div>สถานะ</div></div>
-              ${rows.map((brand, index) => {
+              <div class="asset-row head"><div>Brand</div><div>Models</div><div>References</div><div>Last Updated</div><div>Status</div></div>
+              ${visibleRows.map((brand, index) => {
                 const modelCount = (brand.modelsSample || []).length;
                 const referenceCount = (brand.modelsSample || []).reduce((sum, model) => sum + (model.references || []).length, 0);
                 const running = brand.id === "omega";
                 const times = ["08:14, 6 ส.ค.", "กำลังซิงก์...", "07:40, 6 ส.ค.", "07:38, 6 ส.ค.", "06:55, 6 ส.ค."];
                 return `
                   <div class="asset-row" data-market-brand="${brand.id}">
-                    <div data-label="แบรนด์"><div class="main-text">${brand.name}</div></div>
-                    <div data-label="โมเดล"><div class="main-text">${modelCount}</div></div>
-                    <div data-label="เลขอ้างอิง"><div class="main-text">${referenceCount}</div></div>
-                    <div data-label="อัปเดตล่าสุด"><div class="main-text">${times[index] || brand.lastSync}</div></div>
-                    <div data-label="สถานะ">${statusPill(running ? "กำลังทำงาน" : "สำเร็จ", running ? "กลาง" : "ปกติ")}</div>
+                    <div data-label="Brand"><div class="main-text">${brand.name}</div></div>
+                    <div data-label="Models"><div class="main-text">${modelCount.toLocaleString()}</div></div>
+                    <div data-label="References"><div class="main-text">${referenceCount.toLocaleString()}</div></div>
+                    <div data-label="Last Updated"><div class="main-text">${times[start + index] || brand.lastSync}</div></div>
+                    <div data-label="Status">${statusPill(running ? "Syncing" : "Completed", running ? "กลาง" : "ปกติ")}</div>
                   </div>
                 `;
               }).join("")}
+            </div>
+            <div class="footer-range">
+              <span>Showing ${rows.length ? `${start + 1}-${Math.min(start + marketDashboardPageSize, rows.length)}` : "0"} of ${rows.length}</span>
+              <div class="pager">
+                <button class="btn" type="button" data-market-dashboard-page="prev" ${marketDashboardPage <= 1 ? "disabled" : ""}>Previous</button>
+                ${Array.from({ length: pageCount }, (_, index) => `<button class="btn ${index + 1 === marketDashboardPage ? "active" : ""}" type="button" data-market-dashboard-page="${index + 1}">${index + 1}</button>`).join("")}
+                <button class="btn" type="button" data-market-dashboard-page="next" ${marketDashboardPage >= pageCount ? "disabled" : ""}>Next</button>
+              </div>
             </div>
           </section>
         </div>
@@ -20126,6 +20159,16 @@
         else if (target === "next") marketCatalogPage += 1;
         else marketCatalogPage = Number(target) || 1;
         renderMarketCatalogRows();
+        return;
+      }
+
+      const marketDashboardPageButton = event.target.closest("[data-market-dashboard-page]");
+      if (marketDashboardPageButton) {
+        const target = marketDashboardPageButton.dataset.marketDashboardPage;
+        if (target === "prev") marketDashboardPage = Math.max(1, marketDashboardPage - 1);
+        else if (target === "next") marketDashboardPage += 1;
+        else marketDashboardPage = Number(target) || 1;
+        renderMarketDashboard();
         return;
       }
       const marketModelPageButton = event.target.closest("[data-market-model-page]");
