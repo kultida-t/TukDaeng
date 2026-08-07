@@ -18,7 +18,7 @@
 
 | Order | Area | Current Status | Next Figma Action | Source |
 | --- | --- | --- | --- | --- |
-| 1 | Add / Edit Asset required fields | In progress | ตรวจ status selector, required fields, save/uploading state และ `Owner Estimated Value (Private)` ตาม work pack 2.1 | `04_ASSET_MANAGEMENT_MODULE.md` |
+| 1 | Add / Edit Asset required fields | In progress | ตรวจ status selector, required fields และ save/uploading state ตาม work pack 2.1 | `04_ASSET_MANAGEMENT_MODULE.md` |
 | 2 | Feed / Search / Watch Alert visibility | Pending review | ยืนยันว่า list surfaces แสดงเฉพาะ `Sale`, ไม่มี Location บน cards และ Watch Alert notification ไป Result List | `02_FEED_MODULE.md`, `03_SEARCH_FILTER_MODULE.md`, `10_WATCH_ALERT_MODULE.md` |
 | 3 | Notification / Chat unread | Pending review | ยืนยันว่า Chat/New Message ไม่อยู่ Notification Center และ unread แสดงเฉพาะ Chat menu/list | `07_CHAT_MODULE.md`, `09_NOTIFICATION_MODULE.md` |
 | 4 | Public Profile guest share | Pending review | ยืนยันว่า Guest กด `Share profile` ได้โดยไม่ต้อง Login และมี system share / `Copy Link` fallback แต่ยังทำ Follow / Report / Block / Chat / Offer ไม่ได้ | `06_PROFILE_MODULE.md` |
@@ -73,7 +73,7 @@
 | UX-MF-003 | Future / out-of-scope navigation | UX Lead | จัด Watch Shops, Accessories Shop, Repair Shop, Auction Center, Consignment Center, Authentication Center และ Community เป็น hidden, disabled หรือ placeholder | ไม่มี active route ที่สื่อว่า feature นอก V1 ใช้งานได้จริง | `00_NAVIGATION_AND_CROSS_MODULE_FLOW.md` |
 | UX-MF-004 | Feed card baseline | UX Marketplace | เอา Location ออกจาก Feed Card และคง Posted Time เป็น metadata หลัก | Feed Card ไม่แสดง location เช่น district/province ใน V1 | `02_FEED_MODULE.md` |
 | UX-MF-005 | Feed/Search/Watch Alert status filter | UX Marketplace | Annotate ว่า Feed, Search Result และ Watch Alert Result render เฉพาะ `Sale` | ไม่มี `Show`, `Hide`, `Sold`, `Deleted` ใน public list surfaces | `02_FEED_MODULE.md`, `03_SEARCH_FILTER_MODULE.md`, `10_WATCH_ALERT_MODULE.md` |
-| UX-MF-006 | Asset add/edit status model and required fields | UX Marketplace | ปรับ Add/Edit Asset ให้เลือกได้เฉพาะ `Sale`, `Show`, `Hide`; แยก `Sold` ไป Mark as Sold / Sale Record flow; ทำ required field state ตาม Sale/Show/Hide matrix; แยก `Asking Price` ออกจาก `Owner Estimated Value (Private)` | `Sold` ไม่ปรากฏเป็นตัวเลือก status ปกติใน Edit Asset; Sale require Photo/Brand/Model/Condition/Asking Price/Description; Show require Photo/Brand/Model; Hide require Photo/Brand และไม่ใช้ listing price | `04_ASSET_MANAGEMENT_MODULE.md` |
+| UX-MF-006 | Asset add/edit status model and required fields | UX Marketplace | ปรับ Add/Edit Asset ให้เลือกได้เฉพาะ `Sale`, `Show`, `Hide`; แยก `Sold` ไป Mark as Sold / Sale Record flow; ทำ required field state ตาม Sale/Show/Hide matrix | `Sold` ไม่ปรากฏเป็นตัวเลือก status ปกติใน Edit Asset; Sale require Photo/Brand/Model/Condition/Asking Price/Description; Show require Photo/Brand/Model; Hide require Photo/Brand และไม่ใช้ listing price | `04_ASSET_MANAGEMENT_MODULE.md` |
 | UX-MF-007 | Gallery upload limit | UX Marketplace | ปรับ Add/Edit gallery limit เป็นสูงสุด 10 รูป พร้อม state เมื่อเกิน limit | Upload UI และ validation copy ระบุ 10 รูป | `04_ASSET_MANAGEMENT_MODULE.md` |
 | UX-MF-008 | Comment model | UX Marketplace + UX Transaction | ปรับ comment UI ใน Asset/Social ให้รองรับ IG-style one-level replies | Reply แสดงได้ 1 ชั้นใต้ comment หลัก แต่ไม่มี reply ซ้อนหลายระดับหรือ thread แบบ forum | `05_ASSET_DETAIL_MODULE.md`, `11_SOCIAL_MODULE.md` |
 | UX-MF-009 | Public Profile tabs | UX Marketplace | เพิ่ม Public Profile tabs `All`, `Sale`, `Show`; `All` แสดง `Sale` + `Show` เท่านั้น | Public Profile ไม่มี `Hide` หรือ `Sold`; Owner profile แยกอีก state | `06_PROFILE_MODULE.md` |
@@ -130,7 +130,6 @@
 - Inline validation error state
 - Save disabled / uploading / saving / save error state
 - Status switching state: Sale -> Show, Show -> Sale, Sale -> Hide, Hide -> Sale
-- Owner-only/private valuation field
 - Mark as Sold entry point / Sale Record Form entry
 
 ### Required Figma Changes
@@ -144,8 +143,6 @@
 - `Hide` ต้อง mark required: Photos, Brand
 - `Show` ต้องไม่สื่อว่า Price เป็น required marketplace listing field
 - `Hide` ต้องไม่ใช้ label `Price` หรือ `Asking Price`
-- Optional private valuation ต้องใช้ label `Owner Estimated Value (Private)`
-- `Owner Estimated Value (Private)` ต้องถูก annotate ว่า Owner-only และไม่แสดงใน Public Profile, Feed, Search, Watch Alert หรือ Viewer Asset Detail
 - หลังกรอกข้อมูลครบและกด Save ต้องมี loading popup/overlay หรือ persistent toast แสดง `กำลังอัปโหลด...` / `Uploading...` เมื่อมีไฟล์ upload
 - ระหว่าง uploading/saving ต้องแสดง Save disabled state เพื่อป้องกันการกดซ้ำ
 - Field `Location` ต้องไม่เป็น V1 required/display field หลักใน Add/Edit
@@ -168,7 +165,6 @@
 - Save success path มี uploading/saving state ก่อน Asset Created / Asset Updated
 - ระหว่าง uploading/saving ปุ่ม Save ต้อง disabled และสื่อว่ากำลังทำงาน
 - ไม่มีคำว่า `Price` / `Asking Price` บน `Hide` ในฐานะ listing field
-- มี annotation ชัดว่า `Owner Estimated Value (Private)` เป็น private owner value
 - Prototype หรือ note ระบุ lifecycle impact หลังเปลี่ยน status
 
 ## 2.2 Next Figma Work Pack: Asset Detail / Public Profile
@@ -216,8 +212,6 @@ Current review status: Asset Detail / Profile coverage is complete, including Sh
 - Delete comment confirmation ต้องใช้ copy เฉพาะ comment และไม่มี Undo
 - Report Comment flow ต้องใช้ title `Report this comment`; success copy ว่า comment remains visible until moderation is complete
 - Comments sheet สามารถเปิด comment action sheet ซ้อนเป็นชั้นบนสุดได้ โดยปิด action sheet แล้วต้องไม่ปิด Comments sheet
-- `Owner Estimated Value (Private)` ต้องไม่แสดงใน Public Profile, Viewer Asset Detail, Feed, Search หรือ Watch Alert
-- `Owner Estimated Value (Private)` ต้องไม่ถูกใช้เป็น Asking Price หรือ Market Comparison
 - Asset Detail Market Comparison ต้องใช้ `Asking Price` เทียบ Watch Price API Market Price เท่านั้น
 - Expected Profit ต้องเป็น Owner-only เพราะใช้ purchase/private data
 - Shared deep link ของ `Hide`, `Sold`, Deleted หรือ blocked asset ต้องไป unavailable / permission state ไม่ใช่เปิด private detail
@@ -233,7 +227,7 @@ Current review status: Asset Detail / Profile coverage is complete, including Sh
 | `Sold` deep link by Viewer | แสดง permission denied / unavailable state |
 | Deleted asset deep link | แสดง `รายการนี้ไม่พร้อมใช้งานแล้ว` / `This item is no longer available.` |
 | Permission / unavailable CTA | ใช้ primary CTA `Go back`; ถ้ามี navigation history ให้กลับหน้าก่อนหน้า ถ้าไม่มี history ให้ fallback ไป Feed |
-| Owner opens own `Hide` | แสดง owner-only detail และ private valuation ได้ถ้ามี |
+| Owner opens own `Hide` | แสดง owner-only detail และไม่เปิดเป็น public/viewer detail |
 | Owner opens own `Sold` | แสดง sold owner-only detail, Sold History และ lock main edit action |
 
 ### Acceptance Gate
@@ -241,8 +235,8 @@ Current review status: Asset Detail / Profile coverage is complete, including Sh
 - Public Profile ไม่มี tab `Hide` หรือ `Sold`
 - Public Profile `All` แสดงเฉพาะ `Sale` + `Show`
 - `Show` มี action จาก Detail/Public Profile แต่ไม่ถูกสื่อเป็น Feed/Search listing
-- Viewer/Public ไม่เห็น `Owner Estimated Value (Private)` หรือ private financial fields
-- Market Comparison ไม่ใช้ Owner Estimate หรือ Purchase Price fallback
+- Viewer/Public ไม่เห็น private financial fields
+- Market Comparison ไม่ใช้ Purchase Price fallback
 - Deep link ของ non-public asset ไม่เปิด private detail
 - Permission denied / unavailable screen ใช้ CTA `Go back` พร้อม fallback ไป Feed เมื่อไม่มี navigation history
 
@@ -268,7 +262,7 @@ Observed gaps / notes:
 
 - Gallery count `1 / 3` บน Detail เป็นจำนวนรูปของ asset นี้ ไม่ใช่ upload limit; ไม่เป็น gap หาก Add/Edit gallery รองรับสูงสุด 10 รูป
 - Owner Sale detail ไม่จำเป็นต้องแสดง private fields บน detail หลัก หาก owner เข้าผ่าน `Edit asset` -> `Provenance`; ต้อง annotate ว่า route นี้เป็น Owner-only และห้าม Viewer/Public เข้าถึง
-- Bottom price ใช้ได้กับ `Sale` แต่ต้องยืนยันว่า state `Hide` ไม่ใช้ price/asking price และใช้ `Owner Estimated Value (Private)` เท่านั้น
+- Bottom price ใช้ได้กับ `Sale` แต่ต้องยืนยันว่า state `Hide` ไม่ใช้ price/asking price
 - Prototype / Dev note ยังควรระบุว่าปุ่ม `Reply` บน reply item ต้องไม่สร้าง reply ชั้นที่ 2; หากกดจาก reply ให้ตอบกลับเข้าใต้ comment หลักเดิม หรือ prefill mention เท่านั้น
 - `View more replies` ต้องนับและกางเฉพาะ replies ชั้นเดียวใต้ comment หลัก ไม่ใช่จำนวน comment รวมทั้งหมดหรือ thread ซ้อน
 
@@ -288,7 +282,7 @@ Required annotation:
 
 - `Provenance` route ต้องเป็น Owner-only เสมอ
 - Viewer/Public Asset Detail และ Public Profile ต้องไม่มีทางเห็น Purchase Price, Purchase Date, Purchase From, Proof of Payment หรือ Provenance note
-- เมื่อ status เป็น `Hide` ต้องไม่ใช้ Price เป็น listing field; ถ้าต้องเก็บมูลค่าส่วนตัวให้ใช้ `Owner Estimated Value (Private)` แยกจาก Price
+- เมื่อ status เป็น `Hide` ต้องไม่ใช้ Price เป็น listing field
 
 ---
 
@@ -437,7 +431,7 @@ Required annotation:
 - Change Password ต้องมี Current password, New password, Confirm new password, password helper text, field-level validation states และ API error state แยกจาก field error
 - Portfolio เป็น Owner-only
 - Portfolio คำนวณจาก `Sale`, `Show`, `Hide` และไม่รวม `Sold`
-- เพิ่ม valuation source label: Watch Price API -> Owner Estimated Value -> Purchase Price fallback -> No Valuation
+- เพิ่ม valuation source label: Watch Price API -> Purchase Price fallback -> No Valuation
 - เพิ่ม Gain/Loss, Realized Gain/Loss, Expected Profit และ Market Comparison states
 - Report submit ต้องไม่ทำให้ content หายทันที
 - Report type ต้องตรง master: Asset, User, Comment, Board Content

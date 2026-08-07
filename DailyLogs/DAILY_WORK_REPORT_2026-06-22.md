@@ -65,14 +65,13 @@
   - Sale → Hide
   - Hide → Sale
 - ตัดสินใจ label ของ private value สำหรับ `Hide` แล้วว่าไม่ใช้ listing price
-- หาก Owner ต้องการเก็บมูลค่าส่วนตัว ให้ใช้ `Owner Estimated Value (Private)` และต้องไม่แสดงใน public/viewer surfaces
 
 ### 2.6 Prepare Figma Add/Edit Asset cleanup pack
 
 - เพิ่ม `Next Figma Work Pack: Add / Edit Asset` ใน `FIGMA_UX_CLEANUP_TASK_BREAKDOWN.md`
 - แตก checklist สำหรับ screens/components, required Figma changes, status switching prototype notes และ acceptance gate
 - อัปเดต `Figma_Gap_Checklist_Against_Master.md` ให้ระบุ required fields แยกตาม `Sale / Show / Hide`
-- เพิ่ม gap เรื่อง `Hide` ต้องไม่ใช้ `Price` / `Asking Price` และต้องใช้ `Owner Estimated Value (Private)` สำหรับ private valuation
+- เพิ่ม gap เรื่อง `Hide` ต้องไม่ใช้ `Price` / `Asking Price`
 
 ### 2.7 Add Chat-specific Dev checklist
 
@@ -102,7 +101,6 @@
 | งาน | เหตุผลที่ค้าง | Next Step | ผู้เกี่ยวข้อง |
 | --- | --- | --- | --- |
 | Review Figma Add/Edit Asset screen ตาม required field matrix | วันนี้อัปเดตเอกสารก่อน ยังไม่ได้ตรวจ visual/prototype จริง | ตรวจ required indicator, error state และ status switching behavior ใน Figma | UX / Product |
-| Review `Owner Estimated Value (Private)` ใน Figma | เอกสาร lock label แล้ว แต่ยังไม่ได้ตรวจ visual จริง | ตรวจว่า Figma ไม่ใช้คำว่า Price/Asking Price กับ `Hide` | Product / UX |
 | Review consignment workflow แยกจาก Add/Edit baseline | Word input ระบุ recommended required fields สำหรับ consignment แต่ยังไม่ใช่ full flow | แตก consignment-specific validation เมื่อ scope ถูกยืนยัน | Product / Dev |
 | Commit งานรอบ 2026-06-22 | Product review Dev baseline แล้ว | Commit เป็น docs baseline update | Repo owner |
 
@@ -112,7 +110,7 @@
 
 1. Review Add/Edit Asset Figma ตาม work pack ใน `FIGMA_UX_CLEANUP_TASK_BREAKDOWN.md`
 2. ตรวจ Asset Detail / Public Profile ว่า `Show` ไม่ถูกสื่อเป็น Sale listing
-3. ตรวจ Figma ให้ใช้ `Owner Estimated Value (Private)` สำหรับ private valuation และไม่ใช้ Price/Asking Price กับ `Hide`
+3. ตรวจ Figma ไม่ใช้ Price/Asking Price กับ `Hide`
 4. ส่ง Dev baseline handoff ให้ Dev review app ปัจจุบันเทียบ checklist
 5. Commit เอกสารรอบนี้เมื่อ review ผ่าน
 
@@ -122,4 +120,4 @@
 
 วันนี้นำ requirement ใหม่จากเอกสาร Word เรื่อง required fields ของ Sale Listing และ Show/Hide Status เข้ามา sync กับเอกสารหลักของโปรเจกต์แล้ว โดยเพิ่ม matrix แยกตาม Asset status ใน master PRD และ Asset Management module พร้อมอัปเดต Dev checklist, Figma cleanup ticket และ QA scenarios ให้รองรับ validation และ status switching ที่ต่างกันระหว่าง `Sale`, `Show` และ `Hide`
 
-ข้อสรุปสำคัญคือ `Sale` เป็น marketplace listing จึงต้อง require Photos, Brand, Model, Condition, Asking Price และ Description ส่วน `Show` เป็น public collection จึง require แค่ Photos, Brand, Model และไม่บังคับ Asking Price และ `Hide` เป็น private collection จึง require แค่ Photos กับ Brand หากต้องเก็บมูลค่าส่วนตัวให้ใช้ `Owner Estimated Value (Private)` เท่านั้น
+ข้อสรุปสำคัญคือ `Sale` เป็น marketplace listing จึงต้อง require Photos, Brand, Model, Condition, Asking Price และ Description ส่วน `Show` เป็น public collection จึง require แค่ Photos, Brand, Model และไม่บังคับ Asking Price และ `Hide` เป็น private collection จึง require แค่ Photos กับ Brand

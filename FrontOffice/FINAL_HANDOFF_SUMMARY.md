@@ -33,7 +33,7 @@
 | Decision | Final V1 Rule |
 | --- | --- |
 | `Show` asset actions | `Show` ไม่ขึ้น Feed/Search/Watch Alert แต่สามารถ Make Offer / Contact Seller / Chat ได้จาก Asset Detail หรือ Public Profile detail entry |
-| `Hide` private value label | `Hide` ไม่ใช้ listing price; optional private valuation ต้องใช้ label `Owner Estimated Value (Private)` และห้ามแสดงใน public/viewer surfaces |
+| `Hide` price handling | `Hide` ไม่ใช้ listing price และห้ามแสดงราคาใน public/viewer surfaces |
 | Chat notification | Chat / New Message ไม่เข้า Notification Center; แจ้งเตือนเฉพาะในเมนู Chat ด้วย unread badge/count |
 | Notification Center types | รองรับเฉพาะ Like, Comment, Follow, Offer, Watch Alert |
 | Comment replies | รองรับ IG-style one-level replies ใต้ comment หลัก; ใช้ `View more replies` สำหรับ collapsed replies ชั้นเดียว; ไม่รองรับ multi-level nested thread |

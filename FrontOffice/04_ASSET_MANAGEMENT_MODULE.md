@@ -284,7 +284,6 @@ Add / Edit Asset ต้องรองรับข้อมูลต่อไป
 | Model / Series | Required | Required | Optional |
 | Condition | Required | Optional | Optional |
 | Asking Price (THB) | Optional; if empty FO shows `Price on request` | Optional; hidden from public FO surfaces | Optional; hidden from public FO surfaces |
-| Owner Estimated Value (Private) | Optional private valuation | Optional private valuation | Optional private valuation |
 | Description | Required | Optional | Optional |
 | Status | Required: `Sale` | Required: `Show` | Required: `Hide` |
 
@@ -327,7 +326,6 @@ Add / Edit Asset ต้องรองรับข้อมูลต่อไป
 | Description ว่างเมื่อ required | `กรุณากรอกรายละเอียดสินค้า` |
 | Status ว่าง | `กรุณาเลือกสถานะ` |
 | Year เป็นปีในอนาคต | `ปีต้องไม่เป็นปีในอนาคต` |
-| Owner Estimated Value <= 0 | `มูลค่าประมาณต้องมากกว่า 0` |
 
 Provenance validation messages:
 
@@ -655,14 +653,6 @@ Price:
 - Status = Sale: ถ้ากรอกราคา FO buyer-facing surface แสดงราคานั้น; ถ้าไม่กรอกให้แสดง `Price on request`
 - Status = Show หรือ Hide: แม้กรอกราคา public FO surface ต้องไม่แสดงราคา; เห็นได้เฉพาะ Owner ในหน้าแก้ไข / owner-private view
 - Status = Sold: หากมีราคาที่บันทึกไว้ ให้ FO owner-facing sold view แสดงราคาแบบขีดฆ่า; BO แสดงราคาปกติ
-
-Owner Estimated Value:
-
-- Optional เมื่อ Status = Sale, Show หรือ Hide
-- ต้องมากกว่า 0 เมื่อกรอก
-- ต้องใช้ label `Owner Estimated Value (Private)`
-- เป็น private owner value สำหรับ Portfolio / owner valuation เท่านั้น
-- ห้ามแสดงใน Public Profile, Feed, Search, Watch Alert หรือ Viewer Asset Detail
 
 Description:
 

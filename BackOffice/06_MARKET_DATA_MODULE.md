@@ -267,7 +267,7 @@ Market data inactive ต้องหยุด new selection และ Watch Aler
 1. ใช้ active provider price จาก The Watch API/backend cache ที่ match reference ได้ตรงที่สุด
 2. ถ้าไม่มี reference match ให้ fallback ไป model/brand level ตาม policy
 3. ใช้ provider updated date/synced date ล่าสุดที่ยัง active ตาม backend policy
-4. ถ้าไม่มี active price ให้ FO ใช้ fallback rule ของ Portfolio เช่น Owner Estimated Value, Purchase Price fallback หรือ No Valuation
+4. ถ้าไม่มี active price ให้ FO ใช้ fallback rule ของ Portfolio เช่น Purchase Price fallback หรือ No Valuation
 
 ### Price Validation
 

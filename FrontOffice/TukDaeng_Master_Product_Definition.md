@@ -379,7 +379,7 @@ Asset Detail Price Analytics:
 
 - Market Comparison แสดงได้เมื่อมี Asking Price และ Watch Price API Market Price
 - Market Comparison ใช้ Asking Price เทียบกับ Watch Price API Market Price เท่านั้น
-- Market Comparison ไม่ใช้ Owner Estimated Value หรือ Purchase Price fallback เพื่อแสดง Above/At/Below
+- Market Comparison ไม่ใช้ Purchase Price fallback เพื่อแสดง Above/At/Below
 - Expected Profit แสดงเฉพาะ Owner view เพราะใช้ Purchase Price
 - Expected Profit ต้องไม่แสดงใน Viewer/Public mode
 
@@ -417,11 +417,10 @@ Required Field Matrix:
 | Model / Series | Required | Required | Optional |
 | Condition | Required | Optional | Optional |
 | Asking Price (THB) | Required, must be greater than 0 | Not required for public collection display | Not applicable |
-| Owner Estimated Value (Private) | Optional private valuation | Optional private valuation | Optional private valuation |
 | Description | Required | Optional | Optional |
 | Status | Required: Sale | Required: Show | Required: Hide |
 
-Sale is the only marketplace listing status and uses `Asking Price (THB)`. Show is a public collection status and must not require listing price. Hide is a private collection status and must not use listing price; if the owner wants to record an internal value, use `Owner Estimated Value (Private)` and keep it owner-only.
+Sale is the only marketplace listing status and uses `Asking Price (THB)`. Show is a public collection status and must not require listing price. Hide is a private collection status and must not use listing price.
 
 Add Asset flow:
 
@@ -680,10 +679,10 @@ Portfolio ไม่รวม:
 Portfolio valuation baseline:
 
 - Total Asset Value = ผลรวม Current Value ของ Asset สถานะ Sale, Show, Hide ที่ยังใช้งานได้ และไม่ใช่รายการลบโดยเจ้าของหรือซ่อนถาวร
-- Current Value ใช้ลำดับแหล่งข้อมูล: Watch Price API market price -> Owner Estimated Value -> Purchase Price fallback -> No Valuation
+- Current Value ใช้ลำดับแหล่งข้อมูล: Watch Price API market price -> Purchase Price fallback -> No Valuation
 - หากใช้ Purchase Price fallback ต้องแสดง label ว่าใช้ราคาซื้อเป็นค่าประมาณ เพราะไม่มีราคาตลาด
-- หากไม่มี market price, owner estimate หรือ purchase price ให้แสดง `ไม่มีราคาตลาด` / `No market price` และไม่รวม Asset นั้นใน Total Asset Value
-- Unrealized Gain/Loss คำนวณเฉพาะ Asset ที่มี Current Value จาก Watch Price API หรือ Owner Estimated Value และมี Purchase Price
+- หากไม่มี market price หรือ purchase price ให้แสดง `ไม่มีราคาตลาด` / `No market price` และไม่รวม Asset นั้นใน Total Asset Value
+- Unrealized Gain/Loss คำนวณเฉพาะ Asset ที่มี Current Value จาก Watch Price API และมี Purchase Price
 - Unrealized Gain/Loss = Current Value - Purchase Price
 - Unrealized Gain/Loss % = Unrealized Gain/Loss / Purchase Price * 100
 - Expected Profit คำนวณเฉพาะ Owner view เมื่อมี Asking Price และ Purchase Price

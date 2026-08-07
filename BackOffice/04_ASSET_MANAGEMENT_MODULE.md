@@ -203,7 +203,6 @@ Asset Detail ใช้สำหรับตรวจสอบข้อมูล 
 ### Field ด้านการซื้อขาย
 
 - Price
-- Owner Estimated Value
 - Offer summary ถ้ามี
 - Sold status ถ้ามี
 - Sold history ถ้ามี

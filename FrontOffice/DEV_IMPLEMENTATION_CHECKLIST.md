@@ -102,7 +102,6 @@ Purpose:
 - [ ] Status `Sale` ต้อง require Photos, Brand, Model / Series, Condition, Price, Description
 - [ ] Status `Show` ต้อง require Photos, Brand, Model / Series และไม่บังคับ Price
 - [ ] Status `Hide` ต้อง require Photos, Brand เท่านั้น โดย Model / Series, Condition, Description เป็น optional และไม่ใช้ listing price
-- [ ] Optional private valuation ต้องใช้ label `Owner Estimated Value (Private)` และห้ามแสดงใน public/viewer surfaces
 - [ ] หลังกรอก Add/Edit Asset ครบและกด Save ต้องแสดง uploading/saving state พร้อมข้อความ `กำลังอัปโหลด...` เมื่อมีไฟล์ upload
 - [ ] ระหว่าง uploading/saving ต้อง disable ปุ่ม Save และป้องกัน duplicate submit
 - [ ] Add/Edit ใช้ status model เดียว: `Sale`, `Show`, `Hide`
@@ -141,7 +140,7 @@ Purpose:
 - [ ] Show Asset เปิด Public Detail ได้แต่ไม่ขึ้น Feed/Search/Watch Alert
 - [ ] Show Asset สามารถ Make Offer / Contact Seller / Chat จาก Detail ได้
 - [ ] Market Comparison ใช้ Asking Price เทียบ Watch Price API Market Price เท่านั้น
-- [ ] Market Comparison ไม่ใช้ Owner Estimate หรือ Purchase Price fallback
+- [ ] Market Comparison ไม่ใช้ Purchase Price fallback
 - [ ] Expected Profit แสดงเฉพาะ Owner view
 - [ ] Expected Profit ห้ามแสดงให้ Viewer/Public mode
 - [ ] Purchase data, Sold History, Portfolio Value Detail เป็น Owner-only
@@ -355,7 +354,7 @@ Purpose:
 - [ ] Portfolio ไม่รวม `Sold`
 - [ ] Portfolio ไม่รวม Asset ที่ลบโดยเจ้าของ
 - [ ] Portfolio ไม่รวม Asset ที่ถูก Back Office ซ่อนถาวร
-- [ ] Current Value priority: Watch Price API Market Price -> Owner Estimated Value -> Purchase Price fallback -> No Valuation
+- [ ] Current Value priority: Watch Price API Market Price -> Purchase Price fallback -> No Valuation
 - [ ] Purchase Price fallback ต้องแสดง label ว่าใช้ราคาซื้อเป็นค่าประมาณ
 - [ ] No Valuation แสดง `—` และไม่รวม Total Asset Value
 - [ ] Total Asset Value = SUM(Current Value ของ Eligible Asset ที่มี Current Value)

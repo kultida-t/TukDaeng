@@ -104,7 +104,7 @@ Figma มี coverage ของ flow หลักค่อนข้างมา�
 | Must Fix | Add/Edit อาจเปิดให้เลือก `Sold` เหมือน status ปกติ | Owner แก้ status ได้ระหว่าง `Sale / Show / Hide`; `Sold` ต้องผ่าน Mark as Sold / Sale Record | แยก Mark as Sold flow ออกจาก Edit Asset |
 | Must Fix | จำนวนรูปใน Add/Edit ยังเป็น 3 รูป | Master รองรับ Gallery สูงสุด 10 รูป | ปรับ upload/gallery limit เป็น 10 รูป |
 | Must Fix | Required fields ใน Add/Edit ยังไม่แยกตาม `Sale / Show / Hide` | Sale require Photos/Brand/Model/Condition/Asking Price/Description; Show require Photos/Brand/Model; Hide require Photos/Brand | ทำ required indicator, validation state และ status switching note ตาม matrix |
-| Must Fix | `Hide` อาจยังใช้ label `Price` หรือ `Asking Price` | `Hide` ไม่ใช้ listing price; optional private value ใช้ `Owner Estimated Value (Private)` | เปลี่ยน label และ annotate ว่าเป็น Owner-only private valuation |
+| Must Fix | `Hide` อาจยังใช้ label `Price` หรือ `Asking Price` | `Hide` ไม่ใช้ listing price | เอา listing price treatment ออกจาก `Hide` |
 | High | ยังไม่เห็น Sold Asset read-only state ชัดเจน | Sold Asset ไม่สามารถ Edit ข้อมูลหลักได้ | เพิ่ม owner detail/edit state ที่ lock main fields ของ Sold Asset |
 | High | ยังไม่เห็น Sale Record / Sold History ครบ | Sold History ต้องเก็บ Sale Date, Buyer, Contact, Sale Price, Payment Method, Attachment | เพิ่ม Sale Record Form และ Sold History display |
 | High | ยังไม่เห็น privacy treatment ของ Provenance / Consignment / purchase data | ข้อมูลเหล่านี้เป็น private เห็นเฉพาะ Owner หรือ Admin | ระบุ private section/state และห้ามแสดงใน Public Profile |
@@ -263,7 +263,7 @@ Figma มี coverage ของ flow หลักค่อนข้างมา�
 | High | Public Profile อาจแสดง Portfolio/private data | Portfolio Value Detail, Sold History, Purchase data เป็น private | ห้ามแสดงใน Public Profile/Viewer mode |
 | Medium | Empty state ของ Portfolio/Sold History ยังไม่ชัด | Empty State ใช้ `ไม่พบข้อมูล` / `No data found` | เพิ่ม empty state ตามข้อความกลาง |
 | Medium | Deleted Asset treatment ยังไม่ชัด | Deleted Asset หายจาก public surfaces และไม่ควรคำนวณ Portfolio | ระบุ deleted asset ไม่ถูกนับใน Portfolio |
-| High | Market Value source / Watch Price API formula ต้องแสดงให้ชัด | Current Value ใช้ Watch Price API -> Owner Estimated Value -> Purchase Price fallback -> No Valuation | เพิ่ม valuation source label, fallback state และ coverage count |
+| High | Market Value source / Watch Price API formula ต้องแสดงให้ชัด | Current Value ใช้ Watch Price API -> Purchase Price fallback -> No Valuation | เพิ่ม valuation source label, fallback state และ coverage count |
 | High | Gain/Loss formula ยังไม่ชัด | Unrealized Gain/Loss = Current Value - Purchase Price และคำนวณเฉพาะรายการที่มีข้อมูลพอ | เพิ่ม Gain/Loss display, unavailable state และ coverage count |
 | High | Realized Gain/Loss ของ Sold History ยังไม่ชัด | Realized Gain/Loss = Sale Price - Purchase Price และ Sold ต้องแยกจาก Portfolio Value | เพิ่ม Realized Gain/Loss, Realized Gain %, unavailable state |
 | High | Expected Profit / Market Comparison ยังไม่ชัด | Expected Profit = Asking Price - Purchase Price; Market Comparison = Asking Price เทียบ Watch Price API Market Price | เพิ่ม Owner-only Expected Profit, Above/At/Below และ No market price state |
@@ -332,4 +332,3 @@ Checklist นี้ใช้ร่วมกับเอกสาร PRD รา�
 2. แก้รายการ Priority `High` ก่อนส่ง Dev / QA
 3. ใช้รายการ `Medium` เป็น checklist ก่อนปิด design sign-off
 4. รายการที่เป็น `Needs Decision` ต้องกลับไปตัดสินใน master หรือ product decision log ก่อน implement
-
