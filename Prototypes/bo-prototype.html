@@ -8540,7 +8540,7 @@
     let activeMarketSyncJob = null;
     let marketSyncTimer = null;
 
-    moduleData.market = mod("Market Data", "การดำเนินงาน / Market Data", "Watch Master Data", "ดูข้อมูล brand, model, reference, detail และ price indicator จาก API/backend sync แบบ read-only ก่อนส่งไป Search, Asset และ Watch Alert", "Sync API", [["Brands", "214", "API catalog"], ["Models", "3,842", "ทุกแบรนด์"], ["References", "28,910", "API refs"], ["API Sync", "08:14", "ล่าสุดวันนี้"]], [
+    moduleData.market = mod("Market Data", "การดำเนินงาน / Market Data", "Watch Master Data", "ดูข้อมูล brand, model, reference, detail และ price indicator จาก API/backend sync แบบ read-only ก่อนส่งไป Search, Asset และ Watch Alert", "Sync API", [["Brands", "23", "API catalog"], ["Models", "10,220", "ทุกแบรนด์"], ["References", "32,260", "API refs"], ["API Sync", "08:14", "ล่าสุดวันนี้"]], [
       item("BRD-ROLEX", "Rolex", "Brand Catalog", "thewatchapi", "ปกติ", "Active", "Brand-first catalog with model, reference, detail and price coverage from API", ["Models 1,240", "Refs 4,820"], "Review brand catalog and drill down; Phase 1 does not allow manual edits"),
       item("MAP-018", "Unmapped reference 126710BLRO", "Mapping Queue", "Reference", "กลาง", "Needs Review", "Asset user input matches Rolex GMT-Master II but API mapping is not confirmed", ["Asset AST-8579"], "Flag for backend/provider correction; no BO manual merge in Phase 1"),
       item("SYNC-20260803", "The Watch API daily sync", "API Sync", "Batch", "ปกติ", "Completed", "Brand, model, reference, detail และ price catalog sync completed with warnings", ["Provider warning"], "Review warnings and retry failed catalog records")
@@ -8930,9 +8930,56 @@
       if (!marketCatalogData.brands.some(entry => entry.id === brand.id)) marketCatalogData.brands.push(brand);
     });
 
-    moduleData.market.cards[0][1] = String(marketCatalogData.brands.length);
-    moduleData.market.cards[1][1] = String(marketCatalogData.brands.reduce((sum, brand) => sum + brand.modelsSample.length, 0));
-    moduleData.market.cards[2][1] = String(marketCatalogData.brands.reduce((sum, brand) => sum + brand.modelsSample.reduce((modelSum, model) => modelSum + (model.references || []).length, 0), 0));
+    const marketMetricTotals = getMarketCatalogMetricTotals();
+
+    function getMarketCatalogMetricTotals() {
+      const brands = marketCatalogData.brands.length;
+      const models = marketCatalogData.brands.reduce((sum, brand) => sum + (Number(brand.models) || 0), 0);
+      const references = marketCatalogData.brands.reduce((sum, brand) => sum + (Number(brand.references) || 0), 0);
+      const mapped = marketCatalogData.brands.reduce((sum, brand) => sum + (Number(brand.mapped) || 0), 0);
+      return {
+        brands,
+        models,
+        references,
+        syncedBrands: Math.max(0, brands - 1),
+        pendingPriceValidation: Math.max(0, references - mapped),
+        lastSyncTime: "08:14",
+        lastSyncDate: "6 ส.ค. 2569",
+        lastSyncTimestamp: "06 Aug 2026 08:14",
+        lastSyncRelative: "2 hours ago"
+      };
+    }
+
+    function formatMarketMetric(value) {
+      return Number(value || 0).toLocaleString();
+    }
+
+    function getMarketMetricCards() {
+      return {
+        brands: formatMarketMetric(marketMetricTotals.brands),
+        models: formatMarketMetric(marketMetricTotals.models),
+        references: formatMarketMetric(marketMetricTotals.references),
+        lastSyncTime: marketMetricTotals.lastSyncTime,
+        lastSyncDate: marketMetricTotals.lastSyncDate,
+        lastSyncTimestamp: marketMetricTotals.lastSyncTimestamp,
+        lastSyncRelative: marketMetricTotals.lastSyncRelative,
+        syncedBrands: formatMarketMetric(marketMetricTotals.syncedBrands),
+        pendingPriceValidation: formatMarketMetric(marketMetricTotals.pendingPriceValidation)
+      };
+    }
+
+    function syncMarketModuleCards() {
+      const metrics = getMarketMetricCards();
+      moduleData.market.action = "Sync API";
+      moduleData.market.cards = [
+        ["Brands", metrics.brands, "API catalog"],
+        ["Models", metrics.models, "ทุกแบรนด์"],
+        ["References", metrics.references, "API refs"],
+        ["API Sync", metrics.lastSyncTime, "ล่าสุดวันนี้"]
+      ];
+    }
+
+    syncMarketModuleCards();
 
     function resetSessionViewState() {
       expandedMenus.clear();
@@ -13974,7 +14021,7 @@
 
     function getMarketSyncJobs() {
       return [
-        { id: "JOB-BRAND-LIST", endpoint: "Brand catalog", status: "สำเร็จ", priority: "ปกติ", started: "08:00:01", duration: "1.2s", synced: "214 แบรนด์", detail: "อัปเดตรายชื่อแบรนด์ทั้งหมดจาก The Watch API", source: "The Watch API" },
+        { id: "JOB-BRAND-LIST", endpoint: "Brand catalog", status: "สำเร็จ", priority: "ปกติ", started: "08:00:01", duration: "1.2s", synced: `${getMarketMetricCards().brands} แบรนด์`, detail: "อัปเดตรายชื่อแบรนด์ทั้งหมดจาก The Watch API", source: "The Watch API" },
         { id: "JOB-MODEL-ROLEX", endpoint: "Rolex model catalog", status: "สำเร็จ", priority: "ปกติ", started: "08:00:03", duration: "0.8s", synced: "186 โมเดล", detail: "โหลดโมเดลของ Rolex สำเร็จ", source: "The Watch API" },
         { id: "JOB-OMEGA-SEARCH", endpoint: "Omega reference catalog", status: "กำลังทำงาน", priority: "กลาง", started: "08:00:12", duration: "กำลังทำงาน", synced: "812 / 1,240 รายการ", detail: "กำลังดึงเลขอ้างอิงของ Omega", source: "The Watch API" },
         { id: "JOB-PATEK-LIST", endpoint: "Patek Philippe model catalog", status: "สำเร็จ", priority: "ปกติ", started: "07:40:00", duration: "0.6s", synced: "94 โมเดล", detail: "โหลดโมเดลของ Patek Philippe สำเร็จ", source: "The Watch API" },
@@ -14073,11 +14120,12 @@
 
     function renderMarketSummaryCards(subLabel) {
       if (subLabel === "Dashboard") {
+        const marketMetrics = getMarketMetricCards();
         const metrics = [
-          { label: "Total Brands", value: "214", trend: "ข้อมูลจาก Brand catalog" },
-          { label: "Total Models", value: "3,842", trend: "ข้อมูลจาก Model catalog" },
-          { label: "Total References", value: "28,910", trend: "ข้อมูลจาก Reference catalog" },
-          { label: "Last Sync", value: "2 hours ago", trend: "08:14, 6 ส.ค. 2569" }
+          { label: "Total Brands", value: marketMetrics.brands, trend: "ข้อมูลจาก Brand catalog" },
+          { label: "Total Models", value: marketMetrics.models, trend: "ข้อมูลจาก Model catalog" },
+          { label: "Total References", value: marketMetrics.references, trend: "ข้อมูลจาก Reference catalog" },
+          { label: "Last Sync", value: marketMetrics.lastSyncRelative, trend: `${marketMetrics.lastSyncTime}, ${marketMetrics.lastSyncDate}` }
         ];
         document.querySelector("#summary-grid").innerHTML = metrics.map(metric => `
           <article class="stat">
@@ -14092,8 +14140,9 @@
         `).join("");
         return;
       }
+      const marketMetrics = getMarketMetricCards();
       const stats = subLabel === "Dashboard"
-        ? [["Total Brands", "214", "ข้อมูลจาก Brand catalog"], ["Total Models", "3,842", "ข้อมูลจาก Model catalog"], ["Total References", "28,910", "ข้อมูลจาก Reference catalog"], ["Last Sync", "2 hours ago", "08:14, 6 ส.ค. 2569"]]
+        ? [["Total Brands", marketMetrics.brands, "ข้อมูลจาก Brand catalog"], ["Total Models", marketMetrics.models, "ข้อมูลจาก Model catalog"], ["Total References", marketMetrics.references, "ข้อมูลจาก Reference catalog"], ["Last Sync", marketMetrics.lastSyncRelative, `${marketMetrics.lastSyncTime}, ${marketMetrics.lastSyncDate}`]]
         : subLabel === "Sync Jobs"
           ? [["Jobs วันนี้", "5", "backend sync จาก The Watch API"], ["สำเร็จ", "3", "ใช้ cache ล่าสุดแล้ว"], ["กำลังทำงาน", "1", "Omega reference"], ["ล้มเหลว", "1", "too_many_results"]]
           : subLabel === "API Token"
@@ -14561,8 +14610,7 @@
     }
 
     function renderMarketActionTiles(action, target) {
-      const brands = marketCatalogData.brands.length;
-      const references = marketCatalogData.brands.reduce((sum, brand) => sum + brand.references, 0);
+      const marketMetrics = getMarketMetricCards();
       const configs = {
         import: [
           ["Batch", "CSV / XLSX"],
@@ -14572,8 +14620,8 @@
         ],
         export: [
           ["Scope", "Catalog"],
-          ["Brands", brands.toLocaleString()],
-          ["References", references.toLocaleString()],
+          ["Brands", marketMetrics.brands],
+          ["References", marketMetrics.references],
           ["Expires", "24 hours"]
         ]
       };
@@ -15356,6 +15404,11 @@
       return `${String(date.getDate()).padStart(2, "0")} ${months[date.getMonth()]} ${date.getFullYear()} ${String(date.getHours()).padStart(2, "0")}:${String(date.getMinutes()).padStart(2, "0")}`;
     }
 
+    function formatMarketSyncThaiDate(date = new Date()) {
+      const months = ["ม.ค.", "ก.พ.", "มี.ค.", "เม.ย.", "พ.ค.", "มิ.ย.", "ก.ค.", "ส.ค.", "ก.ย.", "ต.ค.", "พ.ย.", "ธ.ค."];
+      return `${date.getDate()} ${months[date.getMonth()]} ${date.getFullYear() + 543}`;
+    }
+
     function getMarketSyncJobId(date = new Date()) {
       return `SYNC-${date.getFullYear()}${String(date.getMonth() + 1).padStart(2, "0")}${String(date.getDate()).padStart(2, "0")}-${String(date.getHours()).padStart(2, "0")}${String(date.getMinutes()).padStart(2, "0")}`;
     }
@@ -15376,15 +15429,17 @@
       const modalBody = document.querySelector("#user-action-modal-body");
       if (!modalBody) return;
       const now = new Date();
+      const marketMetrics = getMarketMetricCards();
       const job = activeMarketSyncJob || {
         id: getMarketSyncJobId(now),
         timestamp: formatMarketSyncTimestamp(now),
-        brands: marketCatalogData.brands.length,
-        references: marketCatalogData.brands.reduce((sum, brand) => sum + brand.references, 0)
+        brands: marketMetricTotals.brands,
+        references: marketMetricTotals.references
       };
       const isRunning = state === "running";
       const isSuccess = state === "success";
       const isError = state === "error";
+      const shouldShowSyncProgress = isRunning || isSuccess || isError;
       modalBody.innerHTML = `
         <div class="user-action-page market-sync-modal-content">
           <div class="user-action-head">
@@ -15404,12 +15459,12 @@
           <div class="user-action-layout">
             <div class="detail-section">
               <div class="detail-grid two">
-                <div class="detail-tile"><span>Job ID</span><strong>${job.id}</strong></div>
-                <div class="detail-tile"><span>Sync ล่าสุด</span><strong>${marketCatalogData.brands[0]?.lastSync || "-"}</strong></div>
-                <div class="detail-tile"><span>แบรนด์</span><strong>${job.brands.toLocaleString()}</strong></div>
-                <div class="detail-tile"><span>References</span><strong>${job.references.toLocaleString()}</strong></div>
+                ${shouldShowSyncProgress ? `<div class="detail-tile"><span>Job ID</span><strong>${job.id}</strong></div>` : ""}
+                <div class="detail-tile"><span>Sync ล่าสุด</span><strong>${marketMetrics.lastSyncTimestamp}</strong></div>
+                <div class="detail-tile"><span>แบรนด์</span><strong>${formatMarketMetric(job.brands)}</strong></div>
+                <div class="detail-tile"><span>References</span><strong>${formatMarketMetric(job.references)}</strong></div>
               </div>
-              ${renderMarketSyncSteps(isRunning ? 3 : isSuccess ? 5 : isError ? 3 : -1, isError ? 3 : -1)}
+              ${shouldShowSyncProgress ? renderMarketSyncSteps(isRunning ? 3 : isSuccess ? 5 : isError ? 3 : -1, isError ? 3 : -1) : ""}
               <div class="user-detail-actions user-action-footer">
                 ${state === "confirm" ? `<button class="user-detail-action-btn primary user-action-confirm" type="button" data-market-sync-run>เริ่ม Sync</button><button class="user-detail-action-btn" type="button" data-user-action-modal-close>ยกเลิก</button>` : ""}
                 ${isRunning ? `<button class="user-detail-action-btn primary user-action-confirm" type="button" disabled>กำลัง Sync...</button>` : ""}
@@ -15448,6 +15503,11 @@
 
     function completeMarketSyncJob(job) {
       const syncStartedAt = job.startedAt || new Date();
+      marketMetricTotals.lastSyncTime = job.timestamp.slice(12);
+      marketMetricTotals.lastSyncDate = formatMarketSyncThaiDate(syncStartedAt);
+      marketMetricTotals.lastSyncTimestamp = job.timestamp;
+      marketMetricTotals.lastSyncRelative = "just now";
+      syncMarketModuleCards();
       marketCatalogData.brands.forEach((brand, index) => {
         brand.lastSync = formatMarketSyncTimestamp(new Date(syncStartedAt.getTime() - (index % 5) * 60000));
       });
@@ -15463,7 +15523,6 @@
         action: "Review mapping warnings before publishing downstream changes."
       };
       if (!marketCatalogData.syncLogs.some(log => log.id === newLog.id)) marketCatalogData.syncLogs.unshift(newLog);
-      moduleData.market.cards[3][1] = job.timestamp.slice(12);
       if (activeModule === "market" && activeSub === "แบรนด์ & โมเดล") renderMarketCatalogRows();
       job.status = "success";
       renderMarketSyncModal("success");
@@ -15479,8 +15538,8 @@
         timestamp: formatMarketSyncTimestamp(now),
         startedAt: now,
         status: "running",
-        brands: marketCatalogData.brands.length,
-        references: marketCatalogData.brands.reduce((sum, brand) => sum + brand.references, 0)
+        brands: marketMetricTotals.brands,
+        references: marketMetricTotals.references
       };
       renderMarketSyncModal("running", scenario);
       marketSyncTimer = window.setTimeout(() => finishMarketSyncJob(scenario), 1200);
@@ -15504,8 +15563,9 @@
     }
 
     function renderMarketCards(subLabel) {
+      const marketMetrics = getMarketMetricCards();
       const cards = subLabel === "Dashboard"
-        ? [["Current Sync Status", "Updating Omega reference catalog. 612 items are still waiting for central price validation."]]
+        ? [["Current Sync Status", `Updating Omega reference catalog. ${marketMetrics.pendingPriceValidation} items are still waiting for central price validation.`]]
         : subLabel === "API Token"
           ? [["Provider", "thewatchapi.com"], ["Plan", "Standard Plan"], ["สิทธิ์ใช้งาน", "Read-only sync ผ่าน backend token ไม่แสดง secret เต็มใน BO"]]
           : [["Brand-first workflow", "Admin เริ่มจากแบรนด์ ต่อด้วยโมเดล แล้วเปิดเลขอ้างอิงเพื่อดูรายละเอียดและราคา"], ["API source", "ข้อมูลมาจาก The Watch API ผ่าน backend sync ของ Brand, Model และ Reference catalog"], ["Read-only", "ไม่มีปุ่มเพิ่ม แก้ไข ลบ หรือ override master data จาก provider"]];
@@ -15518,6 +15578,8 @@
     }
 
     function renderMarketDashboard() {
+      const marketMetrics = getMarketMetricCards();
+      const syncPercent = Math.round((marketMetricTotals.syncedBrands / marketMetricTotals.brands) * 100);
       const priorityIds = new Set(getMarketReadOnlyBrands().map(brand => brand.id));
       const rows = [
         ...getMarketReadOnlyBrands(),
@@ -15531,10 +15593,10 @@
         <div class="market-dashboard-stack">
           <section class="market-sync-current">
             <div class="market-sync-body">
-              <div class="market-progress-ring"><span>81%</span><small>SYNCED</small></div>
+              <div class="market-progress-ring"><span>${syncPercent}%</span><small>SYNCED</small></div>
               <div class="market-sync-main">
                 <strong>กำลังซิงก์เลข Reference ของแบรนด์ Omega</strong>
-                <p>ซิงก์แล้ว <b>173/214</b> แบรนด์ · เหลือโมเดลที่ยังไม่มีข้อมูลราคากลาง <b>612</b> รายการ · ไม่มี error ใน 24 ชม.ที่ผ่านมา</p>
+                <p>ซิงก์แล้ว <b>${marketMetrics.syncedBrands}/${marketMetrics.brands}</b> แบรนด์ · เหลือโมเดลที่ยังไม่มีข้อมูลราคากลาง <b>${marketMetrics.pendingPriceValidation}</b> รายการ · ไม่มี error ใน 24 ชม.ที่ผ่านมา</p>
               </div>
             </div>
           </section>
@@ -15543,8 +15605,8 @@
             <div class="asset-table category-table market-table market-dashboard-brand-table">
               <div class="asset-row head"><div>Brand</div><div>Models</div><div>References</div><div>Last Updated</div><div>Status</div></div>
               ${visibleRows.map((brand, index) => {
-                const modelCount = (brand.modelsSample || []).length;
-                const referenceCount = (brand.modelsSample || []).reduce((sum, model) => sum + (model.references || []).length, 0);
+                const modelCount = Number(brand.models) || (brand.modelsSample || []).length;
+                const referenceCount = Number(brand.references) || (brand.modelsSample || []).reduce((sum, model) => sum + (model.references || []).length, 0);
                 const running = brand.id === "omega";
                 const times = ["08:14, 6 ส.ค.", "กำลังซิงก์...", "07:40, 6 ส.ค.", "07:38, 6 ส.ค.", "06:55, 6 ส.ค."];
                 return `
