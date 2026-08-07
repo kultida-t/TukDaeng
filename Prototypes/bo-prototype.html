@@ -8540,7 +8540,7 @@
     let activeMarketSyncJob = null;
     let marketSyncTimer = null;
 
-    moduleData.market = mod("Market Data", "การดำเนินงาน / Market Data", "Watch Master Data", "ดูข้อมูล brand, model, reference, detail และ price indicator จาก API/backend sync แบบ read-only ก่อนส่งไป Search, Asset และ Watch Alert", "Sync API", [["Brands", "23", "API catalog"], ["Models", "10,220", "ทุกแบรนด์"], ["References", "32,260", "API refs"], ["API Sync", "08:14", "ล่าสุดวันนี้"]], [
+    moduleData.market = mod("Market Data", "การดำเนินงาน / Market Data", "Watch Master Data", "ดูข้อมูล brand, model, reference, detail และ price indicator จาก API/backend sync แบบ read-only ก่อนส่งไป Search, Asset และ Watch Alert", "Sync API", [["Brands", "23", "API catalog"], ["Models", "54", "ทุกแบรนด์"], ["References", "95", "API refs"], ["API Sync", "08:14", "ล่าสุดวันนี้"]], [
       item("BRD-ROLEX", "Rolex", "Brand Catalog", "thewatchapi", "ปกติ", "Active", "Brand-first catalog with model, reference, detail and price coverage from API", ["Models 1,240", "Refs 4,820"], "Review brand catalog and drill down; Phase 1 does not allow manual edits"),
       item("MAP-018", "Unmapped reference 126710BLRO", "Mapping Queue", "Reference", "กลาง", "Needs Review", "Asset user input matches Rolex GMT-Master II but API mapping is not confirmed", ["Asset AST-8579"], "Flag for backend/provider correction; no BO manual merge in Phase 1"),
       item("SYNC-20260803", "The Watch API daily sync", "API Sync", "Batch", "ปกติ", "Completed", "Brand, model, reference, detail และ price catalog sync completed with warnings", ["Provider warning"], "Review warnings and retry failed catalog records")
@@ -8932,17 +8932,24 @@
 
     const marketMetricTotals = getMarketCatalogMetricTotals();
 
+    function getMarketSampleModelCount(brand) {
+      return (brand.modelsSample || []).length;
+    }
+
+    function getMarketSampleReferenceCount(brand) {
+      return (brand.modelsSample || []).reduce((sum, model) => sum + (model.references || []).length, 0);
+    }
+
     function getMarketCatalogMetricTotals() {
       const brands = marketCatalogData.brands.length;
-      const models = marketCatalogData.brands.reduce((sum, brand) => sum + (Number(brand.models) || 0), 0);
-      const references = marketCatalogData.brands.reduce((sum, brand) => sum + (Number(brand.references) || 0), 0);
-      const mapped = marketCatalogData.brands.reduce((sum, brand) => sum + (Number(brand.mapped) || 0), 0);
+      const models = marketCatalogData.brands.reduce((sum, brand) => sum + getMarketSampleModelCount(brand), 0);
+      const references = marketCatalogData.brands.reduce((sum, brand) => sum + getMarketSampleReferenceCount(brand), 0);
       return {
         brands,
         models,
         references,
         syncedBrands: Math.max(0, brands - 1),
-        pendingPriceValidation: Math.max(0, references - mapped),
+        pendingPriceValidation: marketCatalogData.brands.filter(brand => brand.health === "Needs Review" || brand.health === "Needs Mapping").length,
         lastSyncTime: "08:14",
         lastSyncDate: "6 ส.ค. 2569",
         lastSyncTimestamp: "06 Aug 2026 08:14",
@@ -15605,8 +15612,8 @@
             <div class="asset-table category-table market-table market-dashboard-brand-table">
               <div class="asset-row head"><div>Brand</div><div>Models</div><div>References</div><div>Last Updated</div><div>Status</div></div>
               ${visibleRows.map((brand, index) => {
-                const modelCount = Number(brand.models) || (brand.modelsSample || []).length;
-                const referenceCount = Number(brand.references) || (brand.modelsSample || []).reduce((sum, model) => sum + (model.references || []).length, 0);
+                const modelCount = getMarketSampleModelCount(brand);
+                const referenceCount = getMarketSampleReferenceCount(brand);
                 const running = brand.id === "omega";
                 const times = ["08:14, 6 ส.ค.", "กำลังซิงก์...", "07:40, 6 ส.ค.", "07:38, 6 ส.ค.", "06:55, 6 ส.ค."];
                 return `
