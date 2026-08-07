@@ -1852,6 +1852,10 @@
     #user-action-modal:has(.market-reference-drawer) {
       place-items: stretch end;
       background: rgba(0, 0, 0, .62);
+      transition: background 180ms ease;
+    }
+    #user-action-modal.market-reference-drawer-closing:has(.market-reference-drawer) {
+      background: rgba(0, 0, 0, 0);
     }
     .modal.user-action-modal.market-reference-drawer {
       width: min(420px, 100vw);
@@ -1863,6 +1867,15 @@
       border-bottom: 0;
       background: #fff;
       box-shadow: -22px 0 60px rgba(6, 20, 38, .28);
+      transform: translateX(100%);
+      transition: transform 220ms cubic-bezier(.2, .8, .2, 1);
+      will-change: transform;
+    }
+    #user-action-modal.market-reference-drawer-open .market-reference-drawer {
+      transform: translateX(0);
+    }
+    #user-action-modal.market-reference-drawer-closing .market-reference-drawer {
+      transform: translateX(100%);
     }
     .market-reference-drawer .modal-body {
       height: 100%;
@@ -12612,15 +12625,36 @@
       const modal = document.querySelector("#user-action-modal");
       if (!modal) return;
       applyModalHeadingFonts(modal);
+      modal.classList.remove("market-reference-drawer-closing", "market-reference-drawer-open");
       modal.classList.add("show");
+      if (modal.querySelector(".market-reference-drawer")) {
+        window.requestAnimationFrame(() => {
+          modal.classList.add("market-reference-drawer-open");
+        });
+      }
       document.body.classList.toggle("asset-action-modal-open", lockMainScroll);
     }
 
     function closeUserActionModal() {
       const modal = document.querySelector("#user-action-modal");
       if (!modal) return;
+      const modalCard = modal.querySelector(".user-action-modal");
+      const isMarketReferenceDrawer = modalCard?.classList.contains("market-reference-drawer");
+      if (isMarketReferenceDrawer && !modal.classList.contains("market-reference-drawer-closing")) {
+        modal.classList.remove("market-reference-drawer-open");
+        modal.classList.add("market-reference-drawer-closing");
+        document.body.classList.remove("asset-action-modal-open");
+        window.setTimeout(() => {
+          if (!modal.classList.contains("market-reference-drawer-closing")) return;
+          modal.classList.remove("show", "market-reference-drawer-closing");
+          modalCard.classList.remove("market-reference-drawer");
+          document.querySelector("#user-action-modal-body").innerHTML = "";
+        }, 240);
+        return;
+      }
       modal.classList.remove("show");
-      modal.querySelector(".user-action-modal")?.classList.remove("article-preview-modal", "article-editor-confirm-modal", "category-editor-modal", "category-order-modal", "market-editor-modal", "market-reference-drawer", "board-report-phone-preview-modal");
+      modal.classList.remove("market-reference-drawer-open", "market-reference-drawer-closing");
+      modalCard?.classList.remove("article-preview-modal", "article-editor-confirm-modal", "category-editor-modal", "category-order-modal", "market-editor-modal", "market-reference-drawer", "board-report-phone-preview-modal");
       document.body.classList.remove("asset-action-modal-open");
       document.querySelector("#user-action-modal-body").innerHTML = "";
     }
