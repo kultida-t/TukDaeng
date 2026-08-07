@@ -7532,7 +7532,7 @@
         { id: "users", label: "User Management", icon: "users", subs: ["User Accounts", "Reported Users"] },
         { id: "assets", label: "Asset Management", icon: "asset", subs: ["Asset List", "Reported Assets"] },
         { id: "content", label: "Content Management", icon: "content", subs: ["Articles", "Categories", "Reported Articles"] },
-        { id: "market", label: "Market Data", icon: "market", subs: ["Dashboard", "แบรนด์ & โมเดล", "Sync Jobs", "API Token"] },
+        { id: "market", label: "Market Data", icon: "market", subs: ["Dashboard", "Brands & Models", "Sync Jobs", "API Token"] },
         { id: "directory", label: "Directory", icon: "directory" },
       ]},
       { section: "งานตรวจสอบและบริการ", items: [
@@ -7631,7 +7631,7 @@
       content: mod("Content Management", "การดำเนินงาน / Content Management", "Board Articles", "สร้างบทความ, category, schedule และจัดการ reported board content", "สร้างบทความ", [["Published", "126", "อยู่ใน Board"], ["Scheduled", "5", "รอ publish"], ["Draft", "14", "ยังไม่แสดงบน FO"], ["Reported", "3", "ต้อง review"]], [
         item("ART-044", "Vintage Watch Buying Guide", "Editorial", "Article", "ปกติ", "Scheduled", "ตั้งเวลาเผยแพร่ 10 Jul 2026 19:00", ["Board", "Buying Guide"], "Preview as FO และตรวจ cover image ก่อน publish")
       ]),
-      market: mod("Market Data", "การดำเนินงาน / Market Data", "Watch Master Data", "ดู brand, model, reference, detail และ price index จาก API/backend sync แบบ read-only", "Sync API", [["Brands", "482", "API active"], ["Models", "8,924", "API catalog"], ["Price Index", "17,200", "อัปเดตสัปดาห์นี้"], ["Sync Warnings", "6", "ต้อง review"]], [
+      market: mod("Market Data", "Operations / Market Data", "Watch Master Data", "Read brand, model, reference, detail and price index data from API/backend sync", "Sync API", [["Brands", "482", "API active"], ["Models", "8,924", "API catalog"], ["Price Index", "17,200", "Updated this week"], ["Sync Warnings", "6", "Needs review"]], [
         item("BRD-ROLEX", "Rolex", "Brand", "API", "ปกติ", "Active", "ใช้ใน autocomplete และ asset form", ["Models 1,240"], "Phase 1 ดูข้อมูลเท่านั้น ไม่แก้ status จาก BO"),
         item("MDL-16610", "Submariner 16610", "Model", "Reference", "กลาง", "Active", "ราคา index มี outlier จาก API ล่าสุด", ["Median 305,000"], "ตรวจ source metadata และส่ง correction ผ่าน backend/provider"),
         item("IDX-202607", "Speedmaster Reduced", "Price Index", "Index", "กลาง", "Reviewing", "ข้อมูล API sync ซ้ำ 3 แถว", ["API batch"], "Backend sync ต้องจัดการ duplicate ก่อนใช้ index")
@@ -8540,7 +8540,7 @@
     let activeMarketSyncJob = null;
     let marketSyncTimer = null;
 
-    moduleData.market = mod("Market Data", "การดำเนินงาน / Market Data", "Watch Master Data", "ดูข้อมูล brand, model, reference, detail และ price indicator จาก API/backend sync แบบ read-only ก่อนส่งไป Search, Asset และ Watch Alert", "Sync API", [["Brands", "23", "API catalog"], ["Models", "54", "ทุกแบรนด์"], ["References", "95", "API refs"], ["API Sync", "08:14", "ล่าสุดวันนี้"]], [
+    moduleData.market = mod("Market Data", "Operations / Market Data", "Watch Master Data", "Read-only brand, model, reference, detail and price indicator data from API/backend sync before Search, Asset and Watch Alert use", "Sync API", [["Brands", "23", "API catalog"], ["Models", "54", "All brands"], ["References", "95", "API refs"], ["API Sync", "08:14", "Latest today"]], [
       item("BRD-ROLEX", "Rolex", "Brand Catalog", "thewatchapi", "ปกติ", "Active", "Brand-first catalog with model, reference, detail and price coverage from API", ["Models 1,240", "Refs 4,820"], "Review brand catalog and drill down; Phase 1 does not allow manual edits"),
       item("MAP-018", "Unmapped reference 126710BLRO", "Mapping Queue", "Reference", "กลาง", "Needs Review", "Asset user input matches Rolex GMT-Master II but API mapping is not confirmed", ["Asset AST-8579"], "Flag for backend/provider correction; no BO manual merge in Phase 1"),
       item("SYNC-20260803", "The Watch API daily sync", "API Sync", "Batch", "ปกติ", "Completed", "Brand, model, reference, detail และ price catalog sync completed with warnings", ["Provider warning"], "Review warnings and retry failed catalog records")
@@ -8980,9 +8980,9 @@
       moduleData.market.action = "Sync API";
       moduleData.market.cards = [
         ["Brands", metrics.brands, "API catalog"],
-        ["Models", metrics.models, "ทุกแบรนด์"],
+        ["Models", metrics.models, "All brands"],
         ["References", metrics.references, "API refs"],
-        ["API Sync", metrics.lastSyncTime, "ล่าสุดวันนี้"]
+        ["API Sync", metrics.lastSyncTime, "Latest today"]
       ];
     }
 
@@ -14026,13 +14026,21 @@
       return order.map(id => getMarketBrand(id)).filter(Boolean);
     }
 
+    function getMarketCatalogBrands() {
+      const priorityIds = new Set(getMarketReadOnlyBrands().map(brand => brand.id));
+      return [
+        ...getMarketReadOnlyBrands(),
+        ...marketCatalogData.brands.filter(brand => !priorityIds.has(brand.id)).sort((a, b) => a.name.localeCompare(b.name))
+      ];
+    }
+
     function getMarketSyncJobs() {
       return [
-        { id: "JOB-BRAND-LIST", endpoint: "Brand catalog", status: "สำเร็จ", priority: "ปกติ", started: "08:00:01", duration: "1.2s", synced: `${getMarketMetricCards().brands} แบรนด์`, detail: "อัปเดตรายชื่อแบรนด์ทั้งหมดจาก The Watch API", source: "The Watch API" },
-        { id: "JOB-MODEL-ROLEX", endpoint: "Rolex model catalog", status: "สำเร็จ", priority: "ปกติ", started: "08:00:03", duration: "0.8s", synced: "186 โมเดล", detail: "โหลดโมเดลของ Rolex สำเร็จ", source: "The Watch API" },
-        { id: "JOB-OMEGA-SEARCH", endpoint: "Omega reference catalog", status: "กำลังทำงาน", priority: "กลาง", started: "08:00:12", duration: "กำลังทำงาน", synced: "812 / 1,240 รายการ", detail: "กำลังดึงเลขอ้างอิงของ Omega", source: "The Watch API" },
-        { id: "JOB-PATEK-LIST", endpoint: "Patek Philippe model catalog", status: "สำเร็จ", priority: "ปกติ", started: "07:40:00", duration: "0.6s", synced: "94 โมเดล", detail: "โหลดโมเดลของ Patek Philippe สำเร็จ", source: "The Watch API" },
-        { id: "JOB-SEIKO-REF", endpoint: "Seiko reference catalog", status: "ล้มเหลว", priority: "สูง", started: "06:55:20", duration: "—", synced: "รอตรวจสอบรายการขนาดใหญ่", detail: "ข้อมูลจาก provider ใหญ่เกิน plan ปัจจุบัน", source: "The Watch API" }
+        { id: "JOB-BRAND-LIST", endpoint: "Brand catalog", status: "Completed", priority: "Normal", started: "08:00:01", duration: "1.2s", synced: `${getMarketMetricCards().brands} brands`, detail: "Updated all brand names from The Watch API", source: "The Watch API" },
+        { id: "JOB-MODEL-ROLEX", endpoint: "Rolex model catalog", status: "Completed", priority: "Normal", started: "08:00:03", duration: "0.8s", synced: "186 models", detail: "Loaded Rolex models successfully", source: "The Watch API" },
+        { id: "JOB-OMEGA-SEARCH", endpoint: "Omega reference catalog", status: "Running", priority: "Medium", started: "08:00:12", duration: "Running", synced: "812 / 1,240 records", detail: "Fetching Omega reference numbers", source: "The Watch API" },
+        { id: "JOB-PATEK-LIST", endpoint: "Patek Philippe model catalog", status: "Completed", priority: "Normal", started: "07:40:00", duration: "0.6s", synced: "94 models", detail: "Loaded Patek Philippe models successfully", source: "The Watch API" },
+        { id: "JOB-SEIKO-REF", endpoint: "Seiko reference catalog", status: "Failed", priority: "High", started: "06:55:20", duration: "—", synced: "Large record set pending review", detail: "Provider result set is larger than the current plan allows", source: "The Watch API" }
       ];
     }
 
@@ -14149,12 +14157,12 @@
       }
       const marketMetrics = getMarketMetricCards();
       const stats = subLabel === "Dashboard"
-        ? [["Total Brands", marketMetrics.brands, "ข้อมูลจาก Brand catalog"], ["Total Models", marketMetrics.models, "ข้อมูลจาก Model catalog"], ["Total References", marketMetrics.references, "ข้อมูลจาก Reference catalog"], ["Last Sync", marketMetrics.lastSyncRelative, marketMetrics.lastSyncTimestamp]]
+        ? [["Total Brands", marketMetrics.brands, "From Brand catalog"], ["Total Models", marketMetrics.models, "From Model catalog"], ["Total References", marketMetrics.references, "From Reference catalog"], ["Last Sync", marketMetrics.lastSyncRelative, marketMetrics.lastSyncTimestamp]]
         : subLabel === "Sync Jobs"
-          ? [["Jobs วันนี้", "5", "backend sync จาก The Watch API"], ["สำเร็จ", "3", "ใช้ cache ล่าสุดแล้ว"], ["กำลังทำงาน", "1", "Omega reference"], ["ล้มเหลว", "1", "too_many_results"]]
+          ? [["Jobs Today", "5", "Backend sync from The Watch API"], ["Completed", "3", "Latest cache is in use"], ["Running", "1", "Omega reference"], ["Failed", "1", "too_many_results"]]
           : subLabel === "API Token"
-            ? [["สถานะ", "ปกติ", "Standard Plan"], ["Quota วันนี้", "72%", "เหลือสำหรับ nightly sync"], ["ชุดข้อมูล", "4", "Brand / Model / Reference / Price"], ["Token ล่าสุด", "06 ส.ค. 2569", "read-only display"]]
-            : [["แบรนด์ตัวอย่าง", "5", "คลิกเพื่อดูโมเดลย่อย"], ["โมเดลตัวอย่าง", "10", "ข้อมูลจาก Model catalog"], ["Reference ตัวอย่าง", "24", "ข้อมูลจาก Reference catalog"], ["Sync ล่าสุด", "08:14", "6 ส.ค. 2569"]];
+            ? [["Status", "Normal", "Standard Plan"], ["Quota Today", "72%", "Available for nightly sync"], ["Datasets", "4", "Brand / Model / Reference / Price"], ["Latest Token", "06 Aug 2026", "read-only display"]]
+            : [["Sample Brands", "5", "Click to view child models"], ["Sample Models", "10", "From Model catalog"], ["Sample References", "24", "From Reference catalog"], ["Latest Sync", "08:14", "06 Aug 2026"]];
       document.querySelector("#summary-grid").innerHTML = stats.map(stat => `
         <article class="stat">
           <div class="stat-label">${stat[0]}</div>
@@ -14169,10 +14177,10 @@
         document.querySelector(".filters").innerHTML = "";
         return;
       }
-      if (subLabel === "แบรนด์ & โมเดล") {
+      if (subLabel === "Brands & Models") {
         document.querySelector(".filters").innerHTML = `
           <div class="user-filter-bar market-catalog-filter-bar">
-            <input class="field search" id="market-search" type="search" placeholder="ค้นหาแบรนด์ / โมเดล / เลขอ้างอิง" />
+            <input class="field search" id="market-search" type="search" placeholder="Search brand / model / reference" />
           </div>
         `;
         return;
@@ -14184,23 +14192,23 @@
       const statusOptions = Array.from(new Set(getMarketRowsForSub(subLabel).map(row => row.status)));
       document.querySelector(".filters").innerHTML = `
         <div class="user-filter-bar">
-          <input class="field search" id="market-search" type="search" placeholder="ค้นหาชุดข้อมูล / สถานะ / รายละเอียด" />
+          <input class="field search" id="market-search" type="search" placeholder="Search dataset / status / detail" />
           ${customSelect("market-status-filter", "Filter market data status", [
-            { value: "", label: "ทุกสถานะ" },
+            { value: "", label: "All statuses" },
             ...statusOptions.map(status => ({ value: status, label: status }))
           ])}
           ${customSelect("market-brand-filter", "Filter market data brand", [
-            { value: "", label: "ทุกแหล่งข้อมูล" },
+            { value: "", label: "All sources" },
             { value: "thewatchapi", label: "thewatchapi" }
           ])}
-          <button class="btn filter-reset" type="button" data-market-reset title="รีเซ็ตค่าทั้งหมด" aria-label="รีเซ็ตค่าทั้งหมด">${iconSvg.refresh}<span>รีเซ็ตค่าทั้งหมด</span></button>
+          <button class="btn filter-reset" type="button" data-market-reset title="Reset all filters" aria-label="Reset all filters">${iconSvg.refresh}<span>Reset all filters</span></button>
         </div>
       `;
     }
 
     function renderMarketCatalogRows() {
       const q = (document.querySelector("#market-search")?.value || "").trim().toLowerCase();
-      const rows = getMarketReadOnlyBrands().filter(brand => {
+      const rows = getMarketCatalogBrands().filter(brand => {
         const text = [
           brand.id,
           brand.name,
@@ -14214,7 +14222,7 @@
       const visibleRows = rows.slice(start, start + marketCatalogPageSize);
       document.querySelector("#table").innerHTML = `
         <div class="asset-table category-table market-table market-catalog-table">
-          <div class="asset-row head"><div>แบรนด์</div><div>จำนวนโมเดล</div><div>จำนวนเลขอ้างอิง</div><div></div></div>
+          <div class="asset-row head"><div>Brand</div><div>Models</div><div>References</div><div></div></div>
           ${visibleRows.map(brand => {
             const modelCount = (brand.modelsSample || []).length;
             const referenceCount = (brand.modelsSample || []).reduce((sum, model) => sum + (model.references || []).length, 0);
@@ -14222,27 +14230,27 @@
             <div class="asset-row" data-market-brand="${brand.id}">
               <div data-label="Brand"><div class="main-text">${brand.name}</div></div>
               <div class="market-card-tags">
-                ${statusPill(brand.status, "ปกติ")}
-                <span class="user-card-tag asset-tag">${modelCount.toLocaleString()} โมเดล</span>
-                <span class="user-card-tag asset-tag">${referenceCount.toLocaleString()} รายการ</span>
+                ${statusPill(brand.status, "Normal")}
+                <span class="user-card-tag asset-tag">${modelCount.toLocaleString()} models</span>
+                <span class="user-card-tag asset-tag">${referenceCount.toLocaleString()} references</span>
                 <div class="market-card-meta user-card-meta">
-                  <div class="user-card-meta-item"><span>โมเดล</span><strong>${modelCount.toLocaleString()}</strong></div>
-                  <div class="user-card-meta-item"><span>เลขอ้างอิง</span><strong>${referenceCount.toLocaleString()}</strong></div>
+                  <div class="user-card-meta-item"><span>Models</span><strong>${modelCount.toLocaleString()}</strong></div>
+                  <div class="user-card-meta-item"><span>References</span><strong>${referenceCount.toLocaleString()}</strong></div>
                   <div class="user-card-meta-item"><span>Last Sync</span><strong>${brand.lastSync}</strong></div>
                 </div>
               </div>
-              <div data-label="จำนวนโมเดล"><span class="pill blue">${modelCount.toLocaleString()} โมเดล</span></div>
-              <div data-label="จำนวนเลขอ้างอิง"><span class="pill blue">${referenceCount.toLocaleString()} รายการ</span></div>
-              <div><button class="panel-action market-arrow-action" type="button" data-market-brand="${brand.id}" title="ดูโมเดลของ ${brand.name}" aria-label="ดูโมเดลของ ${brand.name}">→</button></div>
+              <div data-label="Models"><span class="pill blue">${modelCount.toLocaleString()} models</span></div>
+              <div data-label="References"><span class="pill blue">${referenceCount.toLocaleString()} references</span></div>
+              <div><button class="panel-action market-arrow-action" type="button" data-market-brand="${brand.id}" title="View ${brand.name} models" aria-label="View ${brand.name} models">→</button></div>
             </div>
-          `}).join("") || `<div class="detail-empty user-empty">ไม่พบแบรนด์</div>`}
+          `}).join("") || `<div class="detail-empty user-empty">No brands found</div>`}
         </div>
         <div class="footer-range">
-          <span>แสดง ${rows.length ? `${start + 1}-${Math.min(start + marketCatalogPageSize, rows.length)}` : "0"} จาก ${rows.length}</span>
+          <span>Showing ${rows.length ? `${start + 1}-${Math.min(start + marketCatalogPageSize, rows.length)}` : "0"} of ${rows.length}</span>
           <div class="pager">
-            <button class="btn" type="button" data-market-catalog-page="prev" ${marketCatalogPage <= 1 ? "disabled" : ""}>ก่อนหน้า</button>
+            <button class="btn" type="button" data-market-catalog-page="prev" ${marketCatalogPage <= 1 ? "disabled" : ""}>Previous</button>
             ${Array.from({ length: pageCount }, (_, index) => `<button class="btn ${index + 1 === marketCatalogPage ? "active" : ""}" type="button" data-market-catalog-page="${index + 1}">${index + 1}</button>`).join("")}
-            <button class="btn" type="button" data-market-catalog-page="next" ${marketCatalogPage >= pageCount ? "disabled" : ""}>ถัดไป</button>
+            <button class="btn" type="button" data-market-catalog-page="next" ${marketCatalogPage >= pageCount ? "disabled" : ""}>Next</button>
           </div>
         </div>
       `;
@@ -14258,29 +14266,29 @@
       });
       document.querySelector("#table").innerHTML = `
         <div class="asset-table category-table market-table market-record-table">
-          <div class="asset-row head"><div>ชุดข้อมูล</div><div>สถานะ</div><div>เริ่มเมื่อ</div><div>ใช้เวลา</div><div>จำนวนที่ Sync</div><div></div></div>
+          <div class="asset-row head"><div>Dataset</div><div>Status</div><div>Started</div><div>Duration</div><div>Synced Count</div><div></div></div>
         ${rows.map(row => `
           <div class="asset-row" data-market-record="${row.id}">
-            <div data-label="ชุดข้อมูล"><div class="main-text">${row.endpoint}</div><div class="muted">${row.detail}</div></div>
+            <div data-label="Dataset"><div class="main-text">${row.endpoint}</div><div class="muted">${row.detail}</div></div>
             <div class="market-card-tags">
               ${statusPill(row.status, row.priority)}
               <span class="user-card-tag asset-tag">${row.started}</span>
               <span class="user-card-tag asset-tag">${row.synced}</span>
               <div class="market-card-meta user-card-meta">
-                <div class="user-card-meta-item"><span>เริ่มเมื่อ</span><strong>${row.started}</strong></div>
-                <div class="user-card-meta-item"><span>ใช้เวลา</span><strong>${row.duration}</strong></div>
+                <div class="user-card-meta-item"><span>Started</span><strong>${row.started}</strong></div>
+                <div class="user-card-meta-item"><span>Duration</span><strong>${row.duration}</strong></div>
                 <div class="user-card-meta-item"><span>Status</span><strong>${row.status}</strong></div>
               </div>
             </div>
-            <div data-label="สถานะ">${statusPill(row.status, row.priority)}</div>
-            <div data-label="เริ่มเมื่อ"><div class="main-text">${row.started}</div></div>
-            <div data-label="ใช้เวลา"><div class="main-text">${row.duration}</div></div>
-            <div data-label="จำนวนที่ Sync"><div class="main-text">${row.synced}</div></div>
-            <div><button class="panel-action" type="button" data-market-record="${row.id}"><span>รายละเอียด</span></button></div>
+            <div data-label="Status">${statusPill(row.status, row.priority)}</div>
+            <div data-label="Started"><div class="main-text">${row.started}</div></div>
+            <div data-label="Duration"><div class="main-text">${row.duration}</div></div>
+            <div data-label="Synced Count"><div class="main-text">${row.synced}</div></div>
+            <div><button class="panel-action" type="button" data-market-record="${row.id}"><span>Detail</span></button></div>
           </div>
-        `).join("") || `<div class="detail-empty user-empty">ไม่พบ Sync Jobs</div>`}
+        `).join("") || `<div class="detail-empty user-empty">No Sync Jobs found</div>`}
         </div>
-        <div class="footer-range"><span>แสดง ${rows.length ? `1-${rows.length}` : "0"} จาก ${rows.length}</span></div>
+        <div class="footer-range"><span>Showing ${rows.length ? `1-${rows.length}` : "0"} of ${rows.length}</span></div>
       `;
     }
 
@@ -14377,34 +14385,34 @@
       const visibleRows = rows.slice(start, start + marketModelPageSize);
       document.querySelector("#table").innerHTML = `
         <div class="asset-table category-table market-table market-model-table">
-          <div class="asset-row head"><div>โมเดล</div><div>จำนวนเลขอ้างอิง</div><div></div></div>
+          <div class="asset-row head"><div>Model</div><div>References</div><div></div></div>
           ${visibleRows.map(({ model, index }) => {
             const summary = getMarketModelDisplaySummary(model);
             return `
             <div class="asset-row" data-market-model="${index}" data-market-brand-id="${brand.id}">
-              <div data-label="โมเดล"><div class="main-text">${model.name}</div></div>
+              <div data-label="Model"><div class="main-text">${model.name}</div></div>
               <div class="market-card-tags">
                 <span class="pill ${model.status === "Inactive" ? "amber" : "green"}">${model.status || "Active"}</span>
-                <span class="user-card-tag asset-tag">${summary.references} รายการ</span>
+                <span class="user-card-tag asset-tag">${summary.references} references</span>
                 <span class="user-card-tag asset-tag">${summary.movement}</span>
                 <span class="user-card-tag asset-tag">${summary.caseSize}</span>
                 <div class="market-card-meta user-card-meta">
-                  <div class="user-card-meta-item"><span>เลขอ้างอิง</span><strong>${summary.references}</strong></div>
+                  <div class="user-card-meta-item"><span>References</span><strong>${summary.references}</strong></div>
                   <div class="user-card-meta-item"><span>Status</span><strong>${model.status || "Active"}</strong></div>
                   <div class="user-card-meta-item"><span>Movement</span><strong>${summary.movement}</strong></div>
                 </div>
               </div>
-              <div data-label="จำนวนเลขอ้างอิง"><span class="pill blue">${summary.references} รายการ</span></div>
-              <div><button class="panel-action market-arrow-action" type="button" data-market-model="${index}" data-market-brand-id="${brand.id}" title="ดูเลขอ้างอิงของ ${model.name}" aria-label="ดูเลขอ้างอิงของ ${model.name}">→</button></div>
+              <div data-label="References"><span class="pill blue">${summary.references} references</span></div>
+              <div><button class="panel-action market-arrow-action" type="button" data-market-model="${index}" data-market-brand-id="${brand.id}" title="View ${model.name} references" aria-label="View ${model.name} references">→</button></div>
             </div>
-          `}).join("") || `<div class="detail-empty user-empty">ไม่พบโมเดลของแบรนด์นี้</div>`}
+          `}).join("") || `<div class="detail-empty user-empty">No models found for this brand</div>`}
         </div>
         <div class="footer-range">
-          <span>แสดง ${rows.length ? `${start + 1}-${Math.min(start + marketModelPageSize, rows.length)}` : "0"} จาก ${rows.length}</span>
+          <span>Showing ${rows.length ? `${start + 1}-${Math.min(start + marketModelPageSize, rows.length)}` : "0"} of ${rows.length}</span>
           <div class="pager">
-            <button class="btn" type="button" data-market-model-page="prev" ${marketModelPage <= 1 ? "disabled" : ""}>ก่อนหน้า</button>
+            <button class="btn" type="button" data-market-model-page="prev" ${marketModelPage <= 1 ? "disabled" : ""}>Previous</button>
             ${Array.from({ length: pageCount }, (_, index) => `<button class="btn ${index + 1 === marketModelPage ? "active" : ""}" type="button" data-market-model-page="${index + 1}">${index + 1}</button>`).join("")}
-            <button class="btn" type="button" data-market-model-page="next" ${marketModelPage >= pageCount ? "disabled" : ""}>ถัดไป</button>
+            <button class="btn" type="button" data-market-model-page="next" ${marketModelPage >= pageCount ? "disabled" : ""}>Next</button>
           </div>
         </div>
       `;
@@ -14424,7 +14432,7 @@
       const visibleRows = rows.slice(start, start + marketReferencePageSize);
       document.querySelector("#table").innerHTML = `
         <div class="asset-table category-table market-table market-record-table market-reference-list-table">
-          <div class="asset-row head"><div>Reference No.</div><div>Movement</div><div>ปีที่ผลิต</div><div>วัสดุ</div><div>ราคาประมาณ</div><div>อัปเดตล่าสุด</div></div>
+          <div class="asset-row head"><div>Reference No.</div><div>Movement</div><div>Production Year</div><div>Material</div><div>Estimated Price</div><div>Last Updated</div></div>
           ${visibleRows.map(({ reference, index }) => `
             <div class="asset-row" data-market-reference="${index}" data-market-brand-id="${brand.id}" data-market-model-index="${modelIndex}">
               <div data-label="Reference"><div class="main-text">${reference.number}</div></div>
@@ -14438,19 +14446,19 @@
                 </div>
               </div>
               <div data-label="Movement"><div class="main-text">${reference.movement || model.movement}</div></div>
-              <div data-label="ปีที่ผลิต"><div class="main-text">${reference.year}</div></div>
-              <div data-label="วัสดุ"><div class="main-text">${reference.material}</div></div>
-              <div data-label="ราคาประมาณ"><div class="main-text market-price">${reference.price}</div></div>
-              <div data-label="อัปเดตล่าสุด"><div class="main-text">${reference.updated || "2026-08-05"}</div></div>
+              <div data-label="Production Year"><div class="main-text">${reference.year}</div></div>
+              <div data-label="Material"><div class="main-text">${reference.material}</div></div>
+              <div data-label="Estimated Price"><div class="main-text market-price">${reference.price}</div></div>
+              <div data-label="Last Updated"><div class="main-text">${reference.updated || "2026-08-05"}</div></div>
             </div>
-          `).join("") || `<div class="detail-empty user-empty">ไม่พบเลขอ้างอิงของโมเดลนี้</div>`}
+          `).join("") || `<div class="detail-empty user-empty">No references found for this model</div>`}
         </div>
         <div class="footer-range">
-          <span>\u0e41\u0e2a\u0e14\u0e07 ${rows.length ? `${start + 1}-${Math.min(start + marketReferencePageSize, rows.length)}` : "0"} \u0e08\u0e32\u0e01 ${rows.length}</span>
+          <span>Showing ${rows.length ? `${start + 1}-${Math.min(start + marketReferencePageSize, rows.length)}` : "0"} of ${rows.length}</span>
           <div class="pager">
-            <button class="btn" type="button" data-market-reference-page="prev" ${marketReferencePage <= 1 ? "disabled" : ""}>\u0e01\u0e48\u0e2d\u0e19\u0e2b\u0e19\u0e49\u0e32</button>
+            <button class="btn" type="button" data-market-reference-page="prev" ${marketReferencePage <= 1 ? "disabled" : ""}>Previous</button>
             ${Array.from({ length: pageCount }, (_, index) => `<button class="btn ${index + 1 === marketReferencePage ? "active" : ""}" type="button" data-market-reference-page="${index + 1}">${index + 1}</button>`).join("")}
-            <button class="btn" type="button" data-market-reference-page="next" ${marketReferencePage >= pageCount ? "disabled" : ""}>\u0e16\u0e31\u0e14\u0e44\u0e1b</button>
+            <button class="btn" type="button" data-market-reference-page="next" ${marketReferencePage >= pageCount ? "disabled" : ""}>Next</button>
           </div>
         </div>
       `;
@@ -14497,8 +14505,8 @@
     }
 
     function renderMarketReferenceStatus(status) {
-      const priority = status === "Needs Review" || status === "Reviewing" ? "กลาง" : status === "Needs Mapping" || status === "Open" ? "ปกติ" : "";
-      return statusPill(status, priority || "ปกติ");
+      const priority = status === "Needs Review" || status === "Reviewing" ? "Medium" : status === "Needs Mapping" || status === "Open" ? "Normal" : "";
+      return statusPill(status, priority || "Normal");
     }
 
     function renderMarketManagementActions(scope, brand, modelIndex = "", referenceIndex = "") {
@@ -15221,21 +15229,21 @@
       activeMarketBrandId = brand.id;
       marketModelPage = 1;
       activeModule = "market";
-      activeSub = "แบรนด์ & โมเดล";
+      activeSub = "Brands & Models";
       document.body.classList.add("market-list-mode");
       document.body.classList.remove("market-dashboard-mode");
       document.body.classList.remove("dashboard-mode", "user-management-mode", "asset-list-mode", "article-list-mode", "category-list-mode", "reported-board-mode", "asset-detail-mode", "user-list-mode", "user-detail-mode");
-      setPageActions(`${renderPageBackButton('data-market-back="catalog"', "กลับไปแบรนด์")}<button class="btn" type="button" data-market-sync-api>${iconSvg.refresh}<span>Sync ข้อมูลล่าสุด</span></button>`);
-      document.querySelector("#crumb").textContent = `แบรนด์ / ${brand.name}`;
+      setPageActions(`${renderPageBackButton('data-market-back="catalog"', "Back to Brands")}<button class="btn" type="button" data-market-sync-api>${iconSvg.refresh}<span>Sync Latest Data</span></button>`);
+      document.querySelector("#crumb").textContent = `Brands / ${brand.name}`;
       document.querySelector("#page-title").textContent = brand.name;
       document.querySelector("#page-meta").textContent = "";
-      document.querySelector("#panel-title").innerHTML = `${brand.name} — โมเดลทั้งหมด <span class="panel-title-count">(${(brand.modelsSample || []).length.toLocaleString()})</span>`;
+      document.querySelector("#panel-title").innerHTML = `${brand.name} — All Models <span class="panel-title-count">(${(brand.modelsSample || []).length.toLocaleString()})</span>`;
       document.querySelector("#panel-subtitle").textContent = "";
       document.querySelector("#primary-action").textContent = "";
       document.querySelector("#user-panel-filter-actions").innerHTML = "";
       document.querySelector(".filters").innerHTML = `
         <div class="user-filter-bar market-catalog-filter-bar">
-          <input class="field search" id="market-model-search" type="search" placeholder="ค้นหาโมเดลของ ${brand.name}" />
+          <input class="field search" id="market-model-search" type="search" placeholder="Search ${brand.name} models" />
         </div>
       `;
       document.querySelector("#summary-grid").innerHTML = "";
@@ -15254,21 +15262,21 @@
       activeMarketModelIndex = Number(modelIndex) || 0;
       marketReferencePage = 1;
       activeModule = "market";
-      activeSub = "แบรนด์ & โมเดล";
+      activeSub = "Brands & Models";
       document.body.classList.add("market-list-mode");
       document.body.classList.remove("market-dashboard-mode");
       document.body.classList.remove("dashboard-mode", "user-management-mode", "asset-list-mode", "article-list-mode", "category-list-mode", "reported-board-mode", "asset-detail-mode", "user-list-mode", "user-detail-mode");
-      setPageActions(`${renderPageBackButton(`data-market-back="brand" data-market-brand-id="${brand.id}"`, `กลับไป ${brand.name}`)}<button class="btn" type="button" data-market-sync-api>${iconSvg.refresh}<span>Sync ข้อมูลล่าสุด</span></button>`);
-      document.querySelector("#crumb").textContent = `แบรนด์ / ${brand.name} / ${model.name.replace(`${brand.name} `, "")}`;
+      setPageActions(`${renderPageBackButton(`data-market-back="brand" data-market-brand-id="${brand.id}"`, `Back to ${brand.name}`)}<button class="btn" type="button" data-market-sync-api>${iconSvg.refresh}<span>Sync Latest Data</span></button>`);
+      document.querySelector("#crumb").textContent = `Brands / ${brand.name} / ${model.name.replace(`${brand.name} `, "")}`;
       document.querySelector("#page-title").textContent = model.name.replace(`${brand.name} `, "");
       document.querySelector("#page-meta").textContent = "";
-      document.querySelector("#panel-title").textContent = `${model.name} — เลขอ้างอิงทั้งหมด`;
+      document.querySelector("#panel-title").textContent = `${model.name} — All References`;
       document.querySelector("#panel-subtitle").textContent = "";
       document.querySelector("#primary-action").textContent = "";
       document.querySelector("#user-panel-filter-actions").innerHTML = "";
       document.querySelector(".filters").innerHTML = `
         <div class="user-filter-bar market-catalog-filter-bar">
-          <input class="field search" id="market-reference-search" type="search" placeholder="ค้นหาเลขอ้างอิงของ ${model.name}" />
+          <input class="field search" id="market-reference-search" type="search" placeholder="Search ${model.name} references" />
         </div>
       `;
       document.querySelector("#summary-grid").innerHTML = "";
@@ -15305,26 +15313,26 @@
           </div>
           <div class="market-drawer-spec-grid">
             <div><span>Movement</span><strong>${reference.movement || model.movement}</strong></div>
-            <div><span>ปีที่ผลิต</span><strong>${reference.year}</strong></div>
-            <div><span>วัสดุตัวเรือน</span><strong>${reference.material}</strong></div>
-            <div><span>ขนาดหน้าปัด</span><strong>${reference.caseSize}</strong></div>
+            <div><span>Production Year</span><strong>${reference.year}</strong></div>
+            <div><span>Case Material</span><strong>${reference.material}</strong></div>
+            <div><span>Case Size</span><strong>${reference.caseSize}</strong></div>
           </div>
           <section class="market-price-card">
             <div>
-              <span>ราคากลางโดยประมาณ (USD)</span>
+              <span>Estimated Market Price (USD)</span>
               <strong>${priceNumber}</strong>
             </div>
-            <em>▲ 2.4% / 30 วัน</em>
+            <em>▲ 2.4% / 30 days</em>
             <svg viewBox="0 0 320 70" aria-hidden="true">
               <polyline points="4,54 35,50 68,52 100,44 132,46 165,39 198,41 230,35 262,37 292,31 316,33" />
             </svg>
           </section>
           <section class="market-source-copy">
-            <span>คำอธิบาย (จาก SOURCE)</span>
+            <span>Description (from source)</span>
             <p>${reference.description}</p>
           </section>
           <div class="market-source-note">
-            อัปเดตจาก The Watch API ล่าสุด ${reference.updated || "2026-08-05"} · ชุดข้อมูล Reference catalog
+            Last updated from The Watch API ${reference.updated || "2026-08-05"} · Reference catalog dataset
           </div>
         </div>
       `;
@@ -15367,11 +15375,11 @@
       document.body.classList.add("market-list-mode");
       document.body.classList.remove("market-dashboard-mode");
       document.body.classList.remove("dashboard-mode", "user-management-mode", "asset-list-mode", "article-list-mode", "category-list-mode", "reported-board-mode", "asset-detail-mode", "user-list-mode", "user-detail-mode");
-      setPageActions(`<button class="btn" type="button" data-market-back>${iconSvg.chevron}<span>กลับไป ${subLabel}</span></button>`);
+      setPageActions(`<button class="btn" type="button" data-market-back>${iconSvg.chevron}<span>Back to ${subLabel}</span></button>`);
       document.querySelector("#crumb").textContent = `${moduleData.market.crumb} / ${subLabel} / ${row.id}`;
       document.querySelector("#page-title").textContent = row.endpoint || row.title;
       document.querySelector("#page-meta").textContent = "";
-      document.querySelector("#panel-title").textContent = "รายละเอียด Sync Job";
+      document.querySelector("#panel-title").textContent = "Sync Job Detail";
       document.querySelector("#panel-subtitle").textContent = "";
       document.querySelector("#primary-action").textContent = "";
       document.querySelector("#user-panel-filter-actions").innerHTML = "";
@@ -15383,21 +15391,21 @@
         <div class="market-brand-detail">
           <div class="market-detail-grid">
             <div class="detail-tile"><span>Job ID</span><strong>${row.id}</strong></div>
-            <div class="detail-tile"><span>สถานะ</span><strong>${row.status}</strong></div>
-            <div class="detail-tile"><span>เริ่มเมื่อ</span><strong>${row.started}</strong></div>
-            <div class="detail-tile"><span>ใช้เวลา</span><strong>${row.duration}</strong></div>
+            <div class="detail-tile"><span>Status</span><strong>${row.status}</strong></div>
+            <div class="detail-tile"><span>Started</span><strong>${row.started}</strong></div>
+            <div class="detail-tile"><span>Duration</span><strong>${row.duration}</strong></div>
           </div>
           <section class="market-detail-section">
-            <h3>ชุดข้อมูล</h3>
+            <h3>Dataset</h3>
             <div class="kv"><span>Source</span><strong>${row.source}</strong></div>
-            <div class="kv"><span>ชุดข้อมูล</span><strong>${row.endpoint}</strong></div>
-            <div class="module-note"><strong>ผลลัพธ์:</strong> ${row.synced}</div>
+            <div class="kv"><span>Dataset</span><strong>${row.endpoint}</strong></div>
+            <div class="module-note"><strong>Result:</strong> ${row.synced}</div>
           </section>
           <section class="market-detail-section">
-            <h3>รายละเอียด</h3>
+            <h3>Detail</h3>
             <div class="module-note">${row.detail}</div>
             <div class="timeline">
-              <div class="event"><strong>Read-only master data</strong><br>หน้านี้แสดงผล sync จาก backend cache เท่านั้น ไม่มีปุ่มแก้ไข เพิ่ม ลบ หรือ override ข้อมูลจาก provider</div>
+              <div class="event"><strong>Read-only master data</strong><br>This screen displays backend cache sync output only. Edit, add, delete and provider override actions are not available.</div>
             </div>
           </section>
         </div>
@@ -15455,16 +15463,16 @@
           <div class="user-action-head">
             <div>
               <h2 id="user-action-modal-title">Sync Market Data</h2>
-              <p>${isSuccess ? "รีเฟรชข้อมูล Catalog และบันทึก Sync Log / Audit Log แล้ว" : isError ? "ยังไม่มีการเปลี่ยนข้อมูล Catalog กรุณาตรวจสอบ response ต้นทางก่อน retry ชุดข้อมูลที่ไม่สำเร็จ" : "เริ่มงาน sync ใหม่จาก The Watch API สำหรับข้อมูลต้นทางของ Catalog เฉพาะผู้ใช้ operations ที่มีสิทธิ์"}</p>
+              <p>${isSuccess ? "Catalog data was refreshed and Sync Log / Audit Log records were saved." : isError ? "Catalog data was not changed. Review the upstream response before retrying failed datasets." : "Start a new The Watch API sync for catalog source data. Available to permitted operations users only."}</p>
             </div>
             ${isRunning ? "" : `<button class="btn user-action-close" type="button" data-user-action-modal-close aria-label="Close modal" title="Close">${iconSvg.close}</button>`}
           </div>
           <div class="user-action-target">
             <div>
               <strong>The Watch API</strong>
-              <span>แบรนด์, โมเดล, Reference, รายละเอียดนาฬิกา, ประวัติราคา</span>
+              <span>Brands, models, references, watch details and price history</span>
             </div>
-            <span class="pill ${isError ? "red" : isSuccess ? "green" : "blue"}">${isError ? "ไม่สำเร็จ" : isSuccess ? "สำเร็จ" : isRunning ? "กำลังทำงาน" : "พร้อม"}</span>
+            <span class="pill ${isError ? "red" : isSuccess ? "green" : "blue"}">${isError ? "Failed" : isSuccess ? "Completed" : isRunning ? "Running" : "Ready"}</span>
           </div>
           <div class="user-action-layout">
             <div class="detail-section">
@@ -15477,13 +15485,13 @@
               </div>
               ${shouldShowSyncProgress ? renderMarketSyncSteps(isRunning ? 3 : isSuccess ? 5 : isError ? 3 : -1, isError ? 3 : -1) : ""}
               <div class="user-detail-actions user-action-footer">
-                ${state === "confirm" ? `<button class="user-detail-action-btn primary user-action-confirm" type="button" data-market-sync-run>เริ่ม Sync</button><button class="user-detail-action-btn" type="button" data-user-action-modal-close>ยกเลิก</button>` : ""}
-                ${isRunning ? `<button class="user-detail-action-btn primary user-action-confirm" type="button" disabled>กำลัง Sync...</button>` : ""}
-                ${isSuccess ? `<button class="user-detail-action-btn primary" type="button" data-market-sync-view-logs>ดู Sync Jobs</button><button class="user-detail-action-btn" type="button" data-user-action-modal-close>ปิด</button>` : ""}
-                ${isError ? `<button class="user-detail-action-btn warning user-action-confirm" type="button" data-market-sync-retry>Retry ชุดข้อมูลที่ไม่สำเร็จ</button><button class="user-detail-action-btn" type="button" data-user-action-modal-close>ปิด</button>` : ""}
+                ${state === "confirm" ? `<button class="user-detail-action-btn primary user-action-confirm" type="button" data-market-sync-run>Start Sync</button><button class="user-detail-action-btn" type="button" data-user-action-modal-close>Cancel</button>` : ""}
+                ${isRunning ? `<button class="user-detail-action-btn primary user-action-confirm" type="button" disabled>Syncing...</button>` : ""}
+                ${isSuccess ? `<button class="user-detail-action-btn primary" type="button" data-market-sync-view-logs>View Sync Jobs</button><button class="user-detail-action-btn" type="button" data-user-action-modal-close>Close</button>` : ""}
+                ${isError ? `<button class="user-detail-action-btn warning user-action-confirm" type="button" data-market-sync-retry>Retry Failed Datasets</button><button class="user-detail-action-btn" type="button" data-user-action-modal-close>Close</button>` : ""}
               </div>
-              ${isError ? `<div class="warning-note action-feedback show error"><strong>reference/list ไม่สำเร็จ</strong><br><span>source API ส่ง rate limit กลับมา ข้อมูล Catalog เดิมยังไม่ถูกเปลี่ยนแปลง</span></div>` : ""}
-              ${isSuccess ? `<div class="warning-note action-feedback show success"><strong>Sync สำเร็จ</strong><br><span>รีเฟรช ${job.brands.toLocaleString()} แบรนด์, ${job.models.toLocaleString()} โมเดล และ ${job.references.toLocaleString()} references เมื่อ ${jobDisplayTimestamp} พร้อมบันทึก audit แล้ว</span></div>` : ""}
+              ${isError ? `<div class="warning-note action-feedback show error"><strong>reference/list failed</strong><br><span>The source API returned a rate limit. Existing catalog data was not changed.</span></div>` : ""}
+              ${isSuccess ? `<div class="warning-note action-feedback show success"><strong>Sync completed</strong><br><span>Refreshed ${job.brands.toLocaleString()} brands, ${job.models.toLocaleString()} models and ${job.references.toLocaleString()} references at ${jobDisplayTimestamp}. Audit was saved.</span></div>` : ""}
               ${state === "confirm" ? `
                 <details class="prototype-tools user-action-prototype-tools">
                   <summary>Prototype scenario</summary>
@@ -15528,13 +15536,13 @@
         brand: "All brands",
         type: "API Batch",
         status: "Completed",
-        priority: "ปกติ",
+        priority: "Normal",
         source: `Manual ${job.timestamp}`,
         detail: `Brands, models, references and price history completed for ${job.brands.toLocaleString()} brands, ${job.models.toLocaleString()} models and ${job.references.toLocaleString()} references with 6 mapping warnings.`,
         action: "Review mapping warnings and audit record before publishing downstream cache changes."
       };
       if (!marketCatalogData.syncLogs.some(log => log.id === newLog.id)) marketCatalogData.syncLogs.unshift(newLog);
-      if (activeModule === "market" && activeSub === "แบรนด์ & โมเดล") renderMarketCatalogRows();
+      if (activeModule === "market" && activeSub === "Brands & Models") renderMarketCatalogRows();
       job.status = "success";
       renderMarketSyncModal("success");
       showSuccessToast(`${job.id}: Sync completed`);
@@ -15579,8 +15587,8 @@
       const cards = subLabel === "Dashboard"
         ? [["Current Sync Status", `Updating Omega reference catalog. ${marketMetrics.pendingPriceValidation} items are still waiting for central price validation.`]]
         : subLabel === "API Token"
-          ? [["Provider", "thewatchapi.com"], ["Plan", "Standard Plan"], ["สิทธิ์ใช้งาน", "Read-only sync ผ่าน backend token ไม่แสดง secret เต็มใน BO"]]
-          : [["Brand-first workflow", "Admin เริ่มจากแบรนด์ ต่อด้วยโมเดล แล้วเปิดเลขอ้างอิงเพื่อดูรายละเอียดและราคา"], ["API source", "ข้อมูลมาจาก The Watch API ผ่าน backend sync ของ Brand, Model และ Reference catalog"], ["Read-only", "ไม่มีปุ่มเพิ่ม แก้ไข ลบ หรือ override master data จาก provider"]];
+          ? [["Provider", "thewatchapi.com"], ["Plan", "Standard Plan"], ["Access", "Read-only sync through a backend token. The full secret is not shown in BO."]]
+          : [["Brand-first workflow", "Admins start from brands, drill into models, then open references to review detail and price data."], ["API source", "Data comes from The Watch API through backend sync for Brand, Model and Reference catalog."], ["Read-only", "Add, edit, delete and provider master-data overrides are not available."]];
       document.querySelector("#cards").innerHTML = cards.map(card => `
         <article class="mini-card">
           <h3>${card[0]}</h3>
@@ -15592,11 +15600,7 @@
     function renderMarketDashboard() {
       const marketMetrics = getMarketMetricCards();
       const syncPercent = Math.round((marketMetricTotals.syncedBrands / marketMetricTotals.brands) * 100);
-      const priorityIds = new Set(getMarketReadOnlyBrands().map(brand => brand.id));
-      const rows = [
-        ...getMarketReadOnlyBrands(),
-        ...marketCatalogData.brands.filter(brand => !priorityIds.has(brand.id)).sort((a, b) => a.name.localeCompare(b.name))
-      ];
+      const rows = getMarketCatalogBrands();
       const pageCount = Math.max(1, Math.ceil(rows.length / marketDashboardPageSize));
       marketDashboardPage = Math.min(marketDashboardPage, pageCount);
       const start = (marketDashboardPage - 1) * marketDashboardPageSize;
@@ -15607,8 +15611,8 @@
             <div class="market-sync-body">
               <div class="market-progress-ring"><span>${syncPercent}%</span><small>SYNCED</small></div>
               <div class="market-sync-main">
-                <strong>กำลังซิงก์เลข Reference ของแบรนด์ Omega</strong>
-                <p>ซิงก์แล้ว <b>${marketMetrics.syncedBrands}/${marketMetrics.brands}</b> แบรนด์ · เหลือโมเดลที่ยังไม่มีข้อมูลราคากลาง <b>${marketMetrics.pendingPriceValidation}</b> รายการ · ไม่มี error ใน 24 ชม.ที่ผ่านมา</p>
+                <strong>Syncing Omega reference numbers</strong>
+                <p><b>${marketMetrics.syncedBrands}/${marketMetrics.brands}</b> brands synced · <b>${marketMetrics.pendingPriceValidation}</b> models still need central price validation · no errors in the last 24 hours</p>
               </div>
             </div>
           </section>
@@ -15627,7 +15631,7 @@
                     <div data-label="Models"><div class="main-text">${modelCount.toLocaleString()}</div></div>
                     <div data-label="References"><div class="main-text">${referenceCount.toLocaleString()}</div></div>
                     <div data-label="Last Updated"><div class="main-text">${times[start + index] || brand.lastSync}</div></div>
-                    <div data-label="Status">${statusPill(running ? "Syncing" : "Completed", running ? "กลาง" : "ปกติ")}</div>
+                    <div data-label="Status">${statusPill(running ? "Syncing" : "Completed", running ? "Medium" : "Normal")}</div>
                   </div>
                 `;
               }).join("")}
@@ -15652,12 +15656,12 @@
             <h3>API Token</h3>
             <div class="market-detail-grid">
               <div class="detail-tile"><span>Provider</span><strong>thewatchapi</strong></div>
-              <div class="detail-tile"><span>สถานะ</span><strong>เชื่อมต่อปกติ</strong></div>
+              <div class="detail-tile"><span>Status</span><strong>Connected</strong></div>
               <div class="detail-tile"><span>Plan</span><strong>Standard Plan</strong></div>
-              <div class="detail-tile"><span>ใช้ล่าสุด</span><strong>08:14, 6 ส.ค. 2569</strong></div>
+              <div class="detail-tile"><span>Last Used</span><strong>08:14, 06 Aug 2026</strong></div>
             </div>
             <div class="module-note"><strong>Token:</strong> twa_live_••••••••••••••••8f21</div>
-            <div class="module-note">หน้านี้เป็น read-only สำหรับตรวจสอบสถานะ backend token เท่านั้น ไม่แสดง secret เต็มและไม่มี flow แก้ไข token ใน prototype นี้</div>
+            <div class="module-note">This read-only screen is for checking backend token status only. The full secret is not shown and this prototype does not include a token edit flow.</div>
           </section>
         </div>
       `;
@@ -15670,25 +15674,25 @@
       document.body.classList.add("market-list-mode");
       document.body.classList.toggle("market-dashboard-mode", activeSub === "Dashboard");
       document.body.classList.remove("dashboard-mode", "user-management-mode", "asset-list-mode", "article-list-mode", "category-list-mode", "reported-board-mode", "asset-detail-mode", "user-list-mode", "user-detail-mode");
-      setPageActions(`<button class="btn" type="button" data-market-sync-api>${iconSvg.refresh}<span>Sync ข้อมูลล่าสุด</span></button>`);
+      setPageActions(`<button class="btn" type="button" data-market-sync-api>${iconSvg.refresh}<span>Sync Latest Data</span></button>`);
       document.querySelector("#user-panel-filter-actions").innerHTML = "";
       document.querySelector("#crumb").textContent = `${moduleData.market.crumb} / ${subLabel}`;
       document.querySelector("#page-title").textContent = subLabel;
       document.querySelector("#page-meta").textContent = "";
-      document.querySelector("#panel-title").innerHTML = subLabel === "แบรนด์ & โมเดล"
-        ? `แบรนด์ทั้งหมด <span class="panel-title-count">(${getMarketReadOnlyBrands().length})</span>`
+      document.querySelector("#panel-title").innerHTML = subLabel === "Brands & Models"
+        ? `All Brands <span class="panel-title-count">(${getMarketMetricCards().brands})</span>`
         : subLabel === "Dashboard"
           ? "Current Sync Status"
           : subLabel;
       document.querySelector("#panel-subtitle").textContent = "";
-      document.querySelector("#primary-action").textContent = "Sync ข้อมูลล่าสุด";
+      document.querySelector("#primary-action").textContent = "Sync Latest Data";
       setupMarketFilters(subLabel);
       renderMarketSummaryCards(subLabel);
       renderMarketCards(subLabel);
       document.querySelector("#detail").innerHTML = "";
       if (subLabel === "Dashboard") {
         renderMarketDashboard();
-      } else if (subLabel === "แบรนด์ & โมเดล") {
+      } else if (subLabel === "Brands & Models") {
         renderMarketCatalogRows();
       } else if (subLabel === "API Token") {
         renderMarketApiToken();
@@ -15728,7 +15732,7 @@
       }
       if (activeModule === "market") {
         if ((activeSub || "Dashboard") === "Dashboard") renderMarketDashboard();
-        else if (activeSub === "แบรนด์ & โมเดล") renderMarketCatalogRows();
+        else if (activeSub === "Brands & Models") renderMarketCatalogRows();
         else if (activeSub === "API Token") renderMarketApiToken();
         else renderMarketQueueRows(activeSub);
         return;
@@ -19411,7 +19415,7 @@
           return;
         }
         if (["market-status-filter", "market-brand-filter"].includes(hiddenInput.id) && activeModule === "market") {
-          if (activeSub === "แบรนด์ & โมเดล" || activeSub === "Dashboard") marketCatalogPage = 1;
+          if (activeSub === "Brands & Models" || activeSub === "Dashboard") marketCatalogPage = 1;
           renderRows();
           return;
         }
@@ -19577,7 +19581,7 @@
           brand.value = "";
           updateCustomSelect(brand, "");
         }
-        if (activeSub === "แบรนด์ & โมเดล" || activeSub === "Dashboard") marketCatalogPage = 1;
+        if (activeSub === "Brands & Models" || activeSub === "Dashboard") marketCatalogPage = 1;
         renderRows();
         return;
       }
@@ -20643,7 +20647,7 @@
         renderRows();
       }
       if (event.target.matches("#market-search")) {
-        if (activeModule === "market" && (activeSub === "แบรนด์ & โมเดล" || activeSub === "Dashboard")) marketCatalogPage = 1;
+        if (activeModule === "market" && (activeSub === "Brands & Models" || activeSub === "Dashboard")) marketCatalogPage = 1;
         renderRows();
       }
       if (event.target.matches("#market-model-search")) {
@@ -20774,7 +20778,7 @@
         return;
       }
       if (event.target.matches("#market-status-filter, #market-brand-filter")) {
-        if (activeModule === "market" && (activeSub === "แบรนด์ & โมเดล" || activeSub === "Dashboard")) marketCatalogPage = 1;
+        if (activeModule === "market" && (activeSub === "Brands & Models" || activeSub === "Dashboard")) marketCatalogPage = 1;
         renderRows();
         return;
       }
