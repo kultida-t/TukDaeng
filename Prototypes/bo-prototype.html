@@ -1652,8 +1652,8 @@
       text-align: right;
     }
     body.market-list-mode .market-table.market-record-table .asset-row {
-      grid-template-columns: minmax(360px, 1.35fr) minmax(116px, .42fr) minmax(110px, .38fr) minmax(112px, .38fr) minmax(180px, .62fr) minmax(86px, .24fr);
-      column-gap: 16px;
+      grid-template-columns: minmax(260px, 1.15fr) minmax(160px, .7fr) minmax(104px, .42fr) minmax(122px, .52fr) minmax(170px, .72fr) minmax(250px, 1fr) minmax(112px, .48fr);
+      column-gap: 20px;
       min-height: 52px;
       padding-top: 12px;
       padding-bottom: 12px;
@@ -1751,7 +1751,7 @@
       grid-template-columns: minmax(120px, .7fr) minmax(150px, .8fr) minmax(150px, .8fr) minmax(150px, .8fr) minmax(140px, .7fr) minmax(150px, .7fr);
     }
     body.market-list-mode .market-record-table .asset-row {
-      grid-template-columns: minmax(360px, 1fr) 128px 120px 120px minmax(170px, .52fr) 112px;
+      grid-template-columns: minmax(260px, 1.15fr) minmax(160px, .7fr) minmax(104px, .42fr) minmax(122px, .52fr) minmax(170px, .72fr) minmax(250px, 1fr) minmax(112px, .48fr);
     }
     body.market-list-mode .market-arrow-action {
       min-width: 58px;
@@ -14384,13 +14384,46 @@
     }
 
     function renderMarketSyncLogAction(row) {
-      if (row.status === "Failed") {
-        return `<button class="panel-action" type="button" data-market-record="${row.id}"><span>ดู Error</span></button>`;
-      }
-      if (row.status === "Running") {
-        return `<button class="panel-action" type="button" data-market-record="${row.id}"><span>ดูสถานะ</span></button>`;
-      }
-      return `<span class="muted">-</span>`;
+      return `<button class="panel-action" type="button" data-market-record="${row.id}"><span>ดูรายละเอียด</span></button>`;
+    }
+
+    function getMarketSyncTitleLabel(row) {
+      if (row.id === "JOB-BRAND-LIST") return "ซิงก์รายชื่อแบรนด์";
+      if (row.id === "JOB-MODEL-ROLEX") return "ซิงก์โมเดล Rolex";
+      if (row.id === "JOB-OMEGA-SEARCH") return "ค้นหา reference ของ Omega";
+      if (row.id === "JOB-PATEK-LIST") return "ซิงก์โมเดล Patek Philippe";
+      if (row.id === "JOB-SEIKO-REF") return "ซิงก์ reference ของ Seiko";
+      return row.title;
+    }
+
+    function getMarketSyncScopeLabel(row) {
+      if (row.parentEntity === "Provider") return "All brands";
+      const label = (row.parentId || "").replace(/^BRD-/, "").replace(/-/g, " ").trim();
+      if (!label) return row.parentEntity || "-";
+      return label.toLowerCase().replace(/\b\w/g, letter => letter.toUpperCase());
+    }
+
+    function getMarketSyncScopeTypeLabel(row) {
+      if (row.parentEntity === "Provider") return "ทั้งหมด";
+      if (row.parentEntity === "Brand") return "แบรนด์";
+      return row.parentEntity || "-";
+    }
+
+    function getMarketSyncResultLabel(row) {
+      if (row.status === "Failed") return "Sync ไม่สำเร็จ";
+      if (row.status === "Running") return "กำลังอัปเดตข้อมูล";
+      return "อัปเดตข้อมูลแล้ว";
+    }
+
+    function getMarketSyncRecordLabel(row) {
+      if (row.status === "Failed") return "ไม่เปลี่ยนข้อมูลเดิม";
+      return row.synced;
+    }
+
+    function getMarketSyncIssueLabel(row) {
+      if (row.status === "Failed") return row.errorCode === "too_many_results" ? "ข้อมูลจาก provider มากเกินไป ต้องแบ่งรอบ retry" : "Sync ล้มเหลว ต้องตรวจ error";
+      if (row.status === "Running") return "กำลังทำงาน รอผลลัพธ์ล่าสุด";
+      return "ไม่มีปัญหา";
     }
 
     function renderMarketQueueRows(subLabel) {
@@ -14404,25 +14437,30 @@
       });
       document.querySelector("#table").innerHTML = `
         <div class="asset-table category-table market-table market-record-table">
-          <div class="asset-row head"><div>Endpoint</div><div>สถานะ</div><div>เริ่มเมื่อ</div><div>ใช้เวลา</div><div>ผลการ Sync</div><div>Action</div></div>
+          <div class="asset-row head"><div>รายการข้อมูล</div><div>ข้อมูลที่อัปเดต</div><div>สถานะ</div><div>เวลา</div><div>ผลลัพธ์</div><div>หมายเหตุ</div><div>รายละเอียด</div></div>
         ${rows.map(row => `
           <div class="asset-row">
-            <div data-label="Endpoint"><div class="main-text">${row.endpoint}</div></div>
+            <div data-label="รายการข้อมูล"><div class="main-text">${getMarketSyncTitleLabel(row)}</div><div class="muted">${row.id}</div></div>
+            <div data-label="ข้อมูลที่อัปเดต"><div class="main-text">${getMarketSyncScopeLabel(row)}</div><div class="muted">${getMarketSyncScopeTypeLabel(row)}</div></div>
             <div class="market-card-tags">
               ${renderMarketSyncStatus(row)}
+              <span class="user-card-tag asset-tag">${row.id}</span>
               <span class="user-card-tag asset-tag">${row.started}</span>
-              <span class="user-card-tag asset-tag">${row.synced}</span>
+              <span class="user-card-tag asset-tag">${getMarketSyncResultLabel(row)}</span>
               <div class="market-card-meta user-card-meta">
+                <div class="user-card-meta-item"><span>รายการ</span><strong>${getMarketSyncTitleLabel(row)}</strong></div>
+                <div class="user-card-meta-item"><span>ข้อมูลที่อัปเดต</span><strong>${getMarketSyncScopeLabel(row)}</strong></div>
                 <div class="user-card-meta-item"><span>เริ่มเมื่อ</span><strong>${row.started}</strong></div>
                 <div class="user-card-meta-item"><span>ใช้เวลา</span><strong>${row.duration}</strong></div>
                 <div class="user-card-meta-item"><span>สถานะ</span><strong>${row.statusLabel || row.status}</strong></div>
+                <div class="user-card-meta-item"><span>หมายเหตุ</span><strong>${getMarketSyncIssueLabel(row)}</strong></div>
               </div>
             </div>
             <div data-label="สถานะ">${renderMarketSyncStatus(row)}</div>
-            <div data-label="เริ่มเมื่อ"><div class="main-text">${row.started}</div></div>
-            <div data-label="ใช้เวลา"><div class="main-text">${row.duration}</div></div>
-            <div data-label="ผลการ Sync"><div class="main-text">${row.synced}</div></div>
-            <div data-label="Action">${renderMarketSyncLogAction(row)}</div>
+            <div data-label="เวลา"><div class="main-text">${row.started}</div><div class="muted">${row.duration}</div></div>
+            <div data-label="ผลลัพธ์"><div class="main-text">${getMarketSyncRecordLabel(row)}</div></div>
+            <div data-label="หมายเหตุ"><div class="main-text">${getMarketSyncIssueLabel(row)}</div></div>
+            <div data-label="รายละเอียด">${renderMarketSyncLogAction(row)}</div>
           </div>
         `).join("") || `<div class="detail-empty user-empty">No sync logs found</div>`}
         </div>
