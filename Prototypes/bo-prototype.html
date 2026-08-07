@@ -1681,7 +1681,7 @@
       white-space: nowrap;
     }
     body.market-list-mode .market-table.market-record-table .panel-action {
-      min-width: 82px;
+      min-width: 58px;
       justify-content: center;
     }
     body.market-list-mode .market-table.market-reference-list-table .asset-row {
@@ -14386,7 +14386,7 @@
     }
 
     function renderMarketSyncLogAction(row) {
-      return `<button class="panel-action" type="button" data-market-record="${row.id}"><span>ดูรายละเอียด</span></button>`;
+      return `<button class="panel-action" type="button" data-market-record="${row.id}" title="View ${getMarketSyncTitleLabel(row)}" aria-label="View ${getMarketSyncTitleLabel(row)}"><span>View</span></button>`;
     }
 
     function getMarketSyncTitleLabel(row) {
@@ -14439,7 +14439,7 @@
       });
       document.querySelector("#table").innerHTML = `
         <div class="asset-table category-table market-table market-record-table">
-          <div class="asset-row head"><div>รายการข้อมูล</div><div>ข้อมูลที่อัปเดต</div><div>สถานะ</div><div>เวลา</div><div>ผลลัพธ์</div><div>หมายเหตุ</div><div>รายละเอียด</div></div>
+          <div class="asset-row head"><div>รายการข้อมูล</div><div>ข้อมูลที่อัปเดต</div><div>สถานะ</div><div>เวลา</div><div>ผลลัพธ์</div><div>หมายเหตุ</div><div>Action</div></div>
         ${rows.map(row => `
           <div class="asset-row">
             <div data-label="รายการข้อมูล"><div class="main-text">${getMarketSyncTitleLabel(row)}</div><div class="muted">${row.id}</div></div>
@@ -14462,7 +14462,7 @@
             <div data-label="เวลา"><div class="main-text">${row.started}</div><div class="muted">${row.duration}</div></div>
             <div data-label="ผลลัพธ์"><div class="main-text">${getMarketSyncRecordLabel(row)}</div></div>
             <div data-label="หมายเหตุ"><div class="main-text">${getMarketSyncIssueLabel(row)}</div></div>
-            <div data-label="รายละเอียด">${renderMarketSyncLogAction(row)}</div>
+            <div data-label="Action">${renderMarketSyncLogAction(row)}</div>
           </div>
         `).join("") || `<div class="detail-empty user-empty">No sync logs found</div>`}
         </div>
