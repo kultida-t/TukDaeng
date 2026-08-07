@@ -14053,10 +14053,10 @@
     function renderMarketSummaryCards(subLabel) {
       if (subLabel === "Dashboard") {
         const metrics = [
-          { label: "แบรนด์ทั้งหมด", value: "214", trend: "ข้อมูลจาก Brand catalog" },
-          { label: "โมเดลทั้งหมด", value: "3,842", trend: "ข้อมูลจาก Model catalog" },
-          { label: "เลขอ้างอิงทั้งหมด", value: "28,910", trend: "ข้อมูลจาก Reference catalog" },
-          { label: "Sync ล่าสุด", value: "2 ชม. ที่แล้ว", trend: "08:14, 6 ส.ค. 2569" }
+          { label: "Total Brands", value: "214", trend: "ข้อมูลจาก Brand catalog" },
+          { label: "Total Models", value: "3,842", trend: "ข้อมูลจาก Model catalog" },
+          { label: "Total References", value: "28,910", trend: "ข้อมูลจาก Reference catalog" },
+          { label: "Last Sync", value: "2 hours ago", trend: "08:14, 6 ส.ค. 2569" }
         ];
         document.querySelector("#summary-grid").innerHTML = metrics.map(metric => `
           <article class="stat">
@@ -14072,7 +14072,7 @@
         return;
       }
       const stats = subLabel === "Dashboard"
-        ? [["แบรนด์ทั้งหมด", "214", "ข้อมูลจาก Brand catalog"], ["โมเดลทั้งหมด", "3,842", "ข้อมูลจาก Model catalog"], ["เลขอ้างอิงทั้งหมด", "28,910", "ข้อมูลจาก Reference catalog"], ["Sync ล่าสุด", "2 ชม. ที่แล้ว", "08:14, 6 ส.ค. 2569"]]
+        ? [["Total Brands", "214", "ข้อมูลจาก Brand catalog"], ["Total Models", "3,842", "ข้อมูลจาก Model catalog"], ["Total References", "28,910", "ข้อมูลจาก Reference catalog"], ["Last Sync", "2 hours ago", "08:14, 6 ส.ค. 2569"]]
         : subLabel === "Sync Jobs"
           ? [["Jobs วันนี้", "5", "backend sync จาก The Watch API"], ["สำเร็จ", "3", "ใช้ cache ล่าสุดแล้ว"], ["กำลังทำงาน", "1", "Omega reference"], ["ล้มเหลว", "1", "too_many_results"]]
           : subLabel === "API Token"
