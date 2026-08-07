@@ -7697,7 +7697,7 @@
       content: mod("Content Management", "การดำเนินงาน / Content Management", "Board Articles", "สร้างบทความ, category, schedule และจัดการ reported board content", "สร้างบทความ", [["Published", "126", "อยู่ใน Board"], ["Scheduled", "5", "รอ publish"], ["Draft", "14", "ยังไม่แสดงบน FO"], ["Reported", "3", "ต้อง review"]], [
         item("ART-044", "Vintage Watch Buying Guide", "Editorial", "Article", "ปกติ", "Scheduled", "ตั้งเวลาเผยแพร่ 10 Jul 2026 19:00", ["Board", "Buying Guide"], "Preview as FO และตรวจ cover image ก่อน publish")
       ]),
-      market: mod("Market Data", "Operations / Market Data", "Watch Master Data", "Read brand, model, reference, detail and price index data from API/backend sync", "Sync API", [["Brands", "482", "API active"], ["Models", "8,924", "API catalog"], ["Price Index", "17,200", "Updated this week"], ["Sync Warnings", "6", "Needs review"]], [
+      market: mod("Market Data", "การดำเนินงาน / Market Data", "Watch Master Data", "Read brand, model, reference, detail and price index data from API/backend sync", "Sync API", [["Brands", "482", "API active"], ["Models", "8,924", "API catalog"], ["Price Index", "17,200", "Updated this week"], ["Sync Warnings", "6", "Needs review"]], [
         item("BRD-ROLEX", "Rolex", "Brand", "API", "ปกติ", "Active", "ใช้ใน autocomplete และ asset form", ["Models 1,240"], "Phase 1 ดูข้อมูลเท่านั้น ไม่แก้ status จาก BO"),
         item("MDL-16610", "Submariner 16610", "Model", "Reference", "กลาง", "Active", "ราคา index มี outlier จาก API ล่าสุด", ["Median 305,000"], "ตรวจ source metadata และส่ง correction ผ่าน backend/provider"),
         item("IDX-202607", "Speedmaster Reduced", "Price Index", "Index", "กลาง", "Reviewing", "ข้อมูล API sync ซ้ำ 3 แถว", ["API batch"], "Backend sync ต้องจัดการ duplicate ก่อนใช้ index")
@@ -8606,7 +8606,7 @@
     let activeMarketSyncJob = null;
     let marketSyncTimer = null;
 
-    moduleData.market = mod("Market Data", "Operations / Market Data", "Watch Master Data", "Read-only brand, model, reference, detail and price indicator data from API/backend sync before Search, Asset and Watch Alert use", "Sync API", [["Brands", "23", "API catalog"], ["Models", "54", "All brands"], ["References", "95", "API refs"], ["API Sync", "08:14", "Latest today"]], [
+    moduleData.market = mod("Market Data", "การดำเนินงาน / Market Data", "Watch Master Data", "Read-only brand, model, reference, detail and price indicator data from API/backend sync before Search, Asset and Watch Alert use", "Sync API", [["Brands", "23", "API catalog"], ["Models", "54", "All brands"], ["References", "95", "API refs"], ["API Sync", "08:14", "Latest today"]], [
       item("BRD-ROLEX", "Rolex", "Brand Catalog", "thewatchapi", "ปกติ", "Active", "Brand-first catalog with model, reference, detail and price coverage from API", ["Models 1,240", "Refs 4,820"], "Review brand catalog and drill down; Phase 1 does not allow manual edits"),
       item("MAP-018", "Unmapped reference 126710BLRO", "Mapping Queue", "Reference", "กลาง", "Needs Review", "Asset user input matches Rolex GMT-Master II but API mapping is not confirmed", ["Asset AST-8579"], "Flag for backend/provider correction; no BO manual merge in Phase 1"),
       item("SYNC-20260803", "The Watch API daily sync", "API Sync", "Batch", "ปกติ", "Completed", "Brand, model, reference, detail และ price catalog sync completed with warnings", ["Provider warning"], "Review warnings and retry failed catalog records")
@@ -14333,11 +14333,11 @@
           `}).join("") || `<div class="detail-empty user-empty">No brands found</div>`}
         </div>
         <div class="footer-range">
-          <span>แสดง ${rows.length ? `${start + 1}-${Math.min(start + marketCatalogPageSize, rows.length)}` : "0"} จาก ${rows.length}</span>
+          <span>Showing ${rows.length ? `${start + 1}-${Math.min(start + marketCatalogPageSize, rows.length)}` : "0"} of ${rows.length}</span>
           <div class="pager">
-            <button class="btn" type="button" data-market-catalog-page="prev" ${marketCatalogPage <= 1 ? "disabled" : ""}>ก่อนหน้า</button>
+            <button class="btn" type="button" data-market-catalog-page="prev" ${marketCatalogPage <= 1 ? "disabled" : ""}>Previous</button>
             ${Array.from({ length: pageCount }, (_, index) => `<button class="btn ${index + 1 === marketCatalogPage ? "active" : ""}" type="button" data-market-catalog-page="${index + 1}">${index + 1}</button>`).join("")}
-            <button class="btn" type="button" data-market-catalog-page="next" ${marketCatalogPage >= pageCount ? "disabled" : ""}>ถัดไป</button>
+            <button class="btn" type="button" data-market-catalog-page="next" ${marketCatalogPage >= pageCount ? "disabled" : ""}>Next</button>
           </div>
         </div>
       `;
@@ -14375,7 +14375,7 @@
           </div>
         `).join("") || `<div class="detail-empty user-empty">No Sync Jobs found</div>`}
         </div>
-        <div class="footer-range"><span>แสดง ${rows.length ? `1-${rows.length}` : "0"} จาก ${rows.length}</span></div>
+        <div class="footer-range"><span>Showing ${rows.length ? `1-${rows.length}` : "0"} of ${rows.length}</span></div>
       `;
     }
 
@@ -14495,11 +14495,11 @@
           `}).join("") || `<div class="detail-empty user-empty">No models found for this brand</div>`}
         </div>
         <div class="footer-range">
-          <span>แสดง ${rows.length ? `${start + 1}-${Math.min(start + marketModelPageSize, rows.length)}` : "0"} จาก ${rows.length}</span>
+          <span>Showing ${rows.length ? `${start + 1}-${Math.min(start + marketModelPageSize, rows.length)}` : "0"} of ${rows.length}</span>
           <div class="pager">
-            <button class="btn" type="button" data-market-model-page="prev" ${marketModelPage <= 1 ? "disabled" : ""}>ก่อนหน้า</button>
+            <button class="btn" type="button" data-market-model-page="prev" ${marketModelPage <= 1 ? "disabled" : ""}>Previous</button>
             ${Array.from({ length: pageCount }, (_, index) => `<button class="btn ${index + 1 === marketModelPage ? "active" : ""}" type="button" data-market-model-page="${index + 1}">${index + 1}</button>`).join("")}
-            <button class="btn" type="button" data-market-model-page="next" ${marketModelPage >= pageCount ? "disabled" : ""}>ถัดไป</button>
+            <button class="btn" type="button" data-market-model-page="next" ${marketModelPage >= pageCount ? "disabled" : ""}>Next</button>
           </div>
         </div>
       `;
@@ -14519,7 +14519,7 @@
       const visibleRows = rows.slice(start, start + marketReferencePageSize);
       document.querySelector("#table").innerHTML = `
         <div class="asset-table category-table market-table market-record-table market-reference-list-table">
-          <div class="asset-row head"><div>Reference No.</div><div>Movement</div><div>ปีที่ผลิต</div><div>วัสดุ</div><div>ราคาประมาณ</div><div>อัปเดตล่าสุด</div></div>
+          <div class="asset-row head"><div>Reference No.</div><div>Movement</div><div>Production Year</div><div>Material</div><div>Estimated Price</div><div>Last Updated</div></div>
           ${visibleRows.map(({ reference, index }) => `
             <div class="asset-row" data-market-reference="${index}" data-market-brand-id="${brand.id}" data-market-model-index="${modelIndex}">
               <div data-label="Reference No."><div class="main-text">${reference.number}</div></div>
@@ -14533,19 +14533,19 @@
                 </div>
               </div>
               <div data-label="Movement"><div class="main-text">${reference.movement || model.movement}</div></div>
-              <div data-label="ปีที่ผลิต"><div class="main-text">${reference.year}</div></div>
-              <div data-label="วัสดุ"><div class="main-text">${reference.material}</div></div>
-              <div data-label="ราคาประมาณ"><div class="main-text market-price">${reference.price}</div></div>
-              <div data-label="อัปเดตล่าสุด"><div class="main-text">${reference.updated || "2026-08-05"}</div></div>
+              <div data-label="Production Year"><div class="main-text">${reference.year}</div></div>
+              <div data-label="Material"><div class="main-text">${reference.material}</div></div>
+              <div data-label="Estimated Price"><div class="main-text market-price">${reference.price}</div></div>
+              <div data-label="Last Updated"><div class="main-text">${reference.updated || "2026-08-05"}</div></div>
             </div>
           `).join("") || `<div class="detail-empty user-empty">No references found for this model</div>`}
         </div>
         <div class="footer-range">
-          <span>แสดง ${rows.length ? `${start + 1}-${Math.min(start + marketReferencePageSize, rows.length)}` : "0"} จาก ${rows.length}</span>
+          <span>Showing ${rows.length ? `${start + 1}-${Math.min(start + marketReferencePageSize, rows.length)}` : "0"} of ${rows.length}</span>
           <div class="pager">
-            <button class="btn" type="button" data-market-reference-page="prev" ${marketReferencePage <= 1 ? "disabled" : ""}>ก่อนหน้า</button>
+            <button class="btn" type="button" data-market-reference-page="prev" ${marketReferencePage <= 1 ? "disabled" : ""}>Previous</button>
             ${Array.from({ length: pageCount }, (_, index) => `<button class="btn ${index + 1 === marketReferencePage ? "active" : ""}" type="button" data-market-reference-page="${index + 1}">${index + 1}</button>`).join("")}
-            <button class="btn" type="button" data-market-reference-page="next" ${marketReferencePage >= pageCount ? "disabled" : ""}>ถัดไป</button>
+            <button class="btn" type="button" data-market-reference-page="next" ${marketReferencePage >= pageCount ? "disabled" : ""}>Next</button>
           </div>
         </div>
       `;
@@ -15321,7 +15321,7 @@
       document.body.classList.remove("market-dashboard-mode");
       document.body.classList.remove("dashboard-mode", "user-management-mode", "asset-list-mode", "article-list-mode", "category-list-mode", "reported-board-mode", "asset-detail-mode", "user-list-mode", "user-detail-mode");
       setPageActions(`${renderPageBackButton('data-market-back="catalog"', "Back to Brands")}<button class="btn" type="button" data-market-sync-api>${iconSvg.refresh}<span>Sync Latest Data</span></button>`);
-      document.querySelector("#crumb").textContent = `Brands / ${brand.name}`;
+      document.querySelector("#crumb").textContent = `${moduleData.market.crumb} / Brands & Models / ${brand.name}`;
       document.querySelector("#page-title").textContent = brand.name;
       document.querySelector("#page-meta").textContent = "";
       document.querySelector("#panel-title").innerHTML = `${brand.name} — All Models <span class="panel-title-count">(${(brand.modelsSample || []).length.toLocaleString()})</span>`;
@@ -15353,17 +15353,17 @@
       document.body.classList.add("market-list-mode");
       document.body.classList.remove("market-dashboard-mode");
       document.body.classList.remove("dashboard-mode", "user-management-mode", "asset-list-mode", "article-list-mode", "category-list-mode", "reported-board-mode", "asset-detail-mode", "user-list-mode", "user-detail-mode");
-      setPageActions(`${renderPageBackButton(`data-market-back="brand" data-market-brand-id="${brand.id}"`, `กลับไปที่ ${brand.name}`)}<button class="btn" type="button" data-market-sync-api>${iconSvg.refresh}<span>ซิงก์ข้อมูลล่าสุด</span></button>`);
-      document.querySelector("#crumb").textContent = `แบรนด์ / ${brand.name} / ${model.name.replace(`${brand.name} `, "")}`;
+      setPageActions(`${renderPageBackButton(`data-market-back="brand" data-market-brand-id="${brand.id}"`, `Back to ${brand.name}`)}<button class="btn" type="button" data-market-sync-api>${iconSvg.refresh}<span>Sync Latest Data</span></button>`);
+      document.querySelector("#crumb").textContent = `${moduleData.market.crumb} / Brands & Models / ${brand.name} / ${model.name.replace(`${brand.name} `, "")}`;
       document.querySelector("#page-title").textContent = model.name.replace(`${brand.name} `, "");
       document.querySelector("#page-meta").textContent = "";
-      document.querySelector("#panel-title").textContent = `${model.name} -- เลขอ้างอิงทั้งหมด`;
+      document.querySelector("#panel-title").innerHTML = `${model.name} -- All References <span class="panel-title-count">(${(model.references || []).length.toLocaleString()})</span>`;
       document.querySelector("#panel-subtitle").textContent = "";
       document.querySelector("#primary-action").textContent = "";
       document.querySelector("#user-panel-filter-actions").innerHTML = "";
       document.querySelector(".filters").innerHTML = `
         <div class="user-filter-bar market-catalog-filter-bar">
-          <input class="field search" id="market-reference-search" type="search" placeholder="ค้นหาเลขอ้างอิงของ ${model.name}" />
+          <input class="field search" id="market-reference-search" type="search" placeholder="Search ${model.name} references" />
         </div>
       `;
       document.querySelector("#summary-grid").innerHTML = "";
@@ -15736,11 +15736,11 @@
               }).join("")}
             </div>
             <div class="footer-range">
-              <span>แสดง ${rows.length ? `${start + 1}-${Math.min(start + marketDashboardPageSize, rows.length)}` : "0"} จาก ${rows.length}</span>
+              <span>Showing ${rows.length ? `${start + 1}-${Math.min(start + marketDashboardPageSize, rows.length)}` : "0"} of ${rows.length}</span>
               <div class="pager">
-                <button class="btn" type="button" data-market-dashboard-page="prev" ${marketDashboardPage <= 1 ? "disabled" : ""}>ก่อนหน้า</button>
+                <button class="btn" type="button" data-market-dashboard-page="prev" ${marketDashboardPage <= 1 ? "disabled" : ""}>Previous</button>
                 ${Array.from({ length: pageCount }, (_, index) => `<button class="btn ${index + 1 === marketDashboardPage ? "active" : ""}" type="button" data-market-dashboard-page="${index + 1}">${index + 1}</button>`).join("")}
-                <button class="btn" type="button" data-market-dashboard-page="next" ${marketDashboardPage >= pageCount ? "disabled" : ""}>ถัดไป</button>
+                <button class="btn" type="button" data-market-dashboard-page="next" ${marketDashboardPage >= pageCount ? "disabled" : ""}>Next</button>
               </div>
             </div>
           </section>
