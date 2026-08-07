@@ -1560,12 +1560,9 @@
     body.market-list-mode .panel-head h2 {
       display: flex;
       align-items: center;
-      justify-content: space-between;
-      gap: 16px;
-      width: 100%;
+      gap: 8px;
     }
     body.market-list-mode .panel-title-count {
-      margin-left: auto;
       color: #5f718b;
       font-family: var(--font-heading);
       font-size: 22px;
@@ -6867,7 +6864,7 @@
         line-height: 1;
       }
       body.market-list-mode .panel-title-count {
-        display: none;
+        display: inline-block;
       }
       body.market-list-mode .filters {
         padding: 12px 14px;
@@ -15680,7 +15677,7 @@
       document.querySelector("#page-title").textContent = subLabel;
       document.querySelector("#page-meta").textContent = "";
       document.querySelector("#panel-title").innerHTML = subLabel === "Brands & Models"
-        ? `All Brands <span class="panel-title-count">(${getMarketMetricCards().brands})</span>`
+        ? `All Brands <span class="panel-title-count">[${getMarketMetricCards().brands}]</span>`
         : subLabel === "Dashboard"
           ? "Current Sync Status"
           : subLabel;
