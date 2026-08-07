@@ -1655,7 +1655,7 @@
       grid-template-columns: minmax(220px, 1.35fr) minmax(150px, .9fr) minmax(240px, 1.1fr) 74px;
     }
     body.market-list-mode .market-table.market-model-table .asset-row {
-      grid-template-columns: minmax(260px, 1.25fr) minmax(180px, .8fr) minmax(116px, .5fr) minmax(150px, .68fr) minmax(96px, .42fr) minmax(170px, .78fr) 92px;
+      grid-template-columns: minmax(260px, 1fr) minmax(180px, .55fr) 76px;
       column-gap: 22px;
       align-items: center;
       min-height: 66px;
@@ -1688,10 +1688,10 @@
       display: none;
     }
     body.market-list-mode .market-catalog-table .asset-row {
-      grid-template-columns: minmax(220px, 1fr) minmax(160px, .75fr) minmax(180px, .85fr) 52px;
+      grid-template-columns: minmax(220px, 1fr) minmax(160px, .75fr) minmax(180px, .85fr) 76px;
     }
     body.market-list-mode .market-model-table .asset-row {
-      grid-template-columns: minmax(260px, 1fr) minmax(180px, .55fr) 52px;
+      grid-template-columns: minmax(260px, 1fr) minmax(180px, .55fr) 76px;
     }
     body.market-list-mode .market-reference-list-table .asset-row {
       grid-template-columns: minmax(120px, .7fr) minmax(150px, .8fr) minmax(150px, .8fr) minmax(150px, .8fr) minmax(140px, .7fr) minmax(150px, .7fr);
@@ -1700,13 +1700,25 @@
       grid-template-columns: minmax(280px, 1.35fr) minmax(130px, .55fr) minmax(120px, .55fr) minmax(110px, .5fr) minmax(180px, .75fr) minmax(110px, .5fr);
     }
     body.market-list-mode .market-arrow-action {
-      min-width: 0;
-      width: 32px;
+      min-width: 58px;
       height: 32px;
-      padding: 0;
-      border-radius: 999px;
-      font-size: 16px;
+      padding: 0 12px;
+      border-radius: 7px;
+      font-size: 12px;
+      font-weight: 700;
       line-height: 1;
+    }
+    body.market-list-mode .market-catalog-table .asset-row > div:last-child,
+    body.market-list-mode .market-model-table .asset-row > div:last-child {
+      justify-self: stretch;
+      text-align: center;
+    }
+    body.market-list-mode .market-catalog-table .asset-row.head > div:last-child,
+    body.market-list-mode .market-model-table .asset-row.head > div:last-child,
+    body.market-list-mode .market-catalog-table .asset-row:not(.head) > div:last-child,
+    body.market-list-mode .market-model-table .asset-row:not(.head) > div:last-child {
+      display: flex;
+      justify-content: center;
     }
     body.market-list-mode .market-price {
       color: #a96500;
@@ -14219,7 +14231,7 @@
       const visibleRows = rows.slice(start, start + marketCatalogPageSize);
       document.querySelector("#table").innerHTML = `
         <div class="asset-table category-table market-table market-catalog-table">
-          <div class="asset-row head"><div>Brand</div><div>Models</div><div>References</div><div></div></div>
+          <div class="asset-row head"><div>Brand</div><div>Models</div><div>References</div><div>Action</div></div>
           ${visibleRows.map(brand => {
             const modelCount = (brand.modelsSample || []).length;
             const referenceCount = (brand.modelsSample || []).reduce((sum, model) => sum + (model.references || []).length, 0);
@@ -14236,9 +14248,9 @@
                   <div class="user-card-meta-item"><span>Last Sync</span><strong>${brand.lastSync}</strong></div>
                 </div>
               </div>
-              <div data-label="Models"><span class="pill blue">${modelCount.toLocaleString()} models</span></div>
-              <div data-label="References"><span class="pill blue">${referenceCount.toLocaleString()} references</span></div>
-              <div><button class="panel-action market-arrow-action" type="button" data-market-brand="${brand.id}" title="View ${brand.name} models" aria-label="View ${brand.name} models">→</button></div>
+              <div data-label="Models"><div class="main-text">${modelCount.toLocaleString()} models</div></div>
+              <div data-label="References"><div class="main-text">${referenceCount.toLocaleString()} references</div></div>
+              <div><button class="panel-action market-arrow-action" type="button" data-market-brand="${brand.id}" title="View ${brand.name} models" aria-label="View ${brand.name} models">View</button></div>
             </div>
           `}).join("") || `<div class="detail-empty user-empty">No brands found</div>`}
         </div>
@@ -14382,7 +14394,7 @@
       const visibleRows = rows.slice(start, start + marketModelPageSize);
       document.querySelector("#table").innerHTML = `
         <div class="asset-table category-table market-table market-model-table">
-          <div class="asset-row head"><div>Model</div><div>References</div><div></div></div>
+          <div class="asset-row head"><div>Model</div><div>References</div><div>Action</div></div>
           ${visibleRows.map(({ model, index }) => {
             const summary = getMarketModelDisplaySummary(model);
             return `
@@ -14399,8 +14411,8 @@
                   <div class="user-card-meta-item"><span>Movement</span><strong>${summary.movement}</strong></div>
                 </div>
               </div>
-              <div data-label="References"><span class="pill blue">${summary.references} references</span></div>
-              <div><button class="panel-action market-arrow-action" type="button" data-market-model="${index}" data-market-brand-id="${brand.id}" title="View ${model.name} references" aria-label="View ${model.name} references">→</button></div>
+              <div data-label="References"><div class="main-text">${summary.references} references</div></div>
+              <div><button class="panel-action market-arrow-action" type="button" data-market-model="${index}" data-market-brand-id="${brand.id}" title="View ${model.name} references" aria-label="View ${model.name} references">View</button></div>
             </div>
           `}).join("") || `<div class="detail-empty user-empty">No models found for this brand</div>`}
         </div>
