@@ -1652,7 +1652,10 @@
       grid-template-columns: minmax(220px, 1.35fr) minmax(150px, .9fr) minmax(120px, .65fr) minmax(116px, .65fr) 74px;
     }
     body.market-list-mode .market-table.market-reference-list-table .asset-row {
-      grid-template-columns: minmax(220px, 1.35fr) minmax(150px, .9fr) minmax(240px, 1.1fr) 74px;
+      grid-template-columns: minmax(130px, .7fr) minmax(170px, .9fr) minmax(150px, .75fr) minmax(180px, .95fr) minmax(150px, .75fr) minmax(150px, .75fr);
+      column-gap: 22px;
+      align-items: center;
+      min-height: 66px;
     }
     body.market-list-mode .market-table.market-model-table .asset-row {
       grid-template-columns: minmax(260px, 1fr) minmax(180px, .55fr) 76px;
@@ -1683,6 +1686,26 @@
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
+    }
+    body.market-list-mode .market-table.market-reference-list-table .asset-row > div {
+      justify-self: stretch;
+      text-align: left;
+    }
+    body.market-list-mode .market-table.market-reference-list-table .asset-row > div:last-child {
+      display: block;
+      justify-content: flex-start;
+      text-align: left;
+    }
+    body.market-list-mode .market-table.market-reference-list-table .asset-row.head {
+      min-height: 44px;
+    }
+    body.market-list-mode .market-table.market-reference-list-table .main-text {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    body.market-list-mode .market-table.market-reference-list-table .market-card-tags {
+      display: none;
     }
     body.market-list-mode .market-card-tags {
       display: none;
@@ -14255,11 +14278,11 @@
           `}).join("") || `<div class="detail-empty user-empty">No brands found</div>`}
         </div>
         <div class="footer-range">
-          <span>Showing ${rows.length ? `${start + 1}-${Math.min(start + marketCatalogPageSize, rows.length)}` : "0"} of ${rows.length}</span>
+          <span>แสดง ${rows.length ? `${start + 1}-${Math.min(start + marketCatalogPageSize, rows.length)}` : "0"} จาก ${rows.length}</span>
           <div class="pager">
-            <button class="btn" type="button" data-market-catalog-page="prev" ${marketCatalogPage <= 1 ? "disabled" : ""}>Previous</button>
+            <button class="btn" type="button" data-market-catalog-page="prev" ${marketCatalogPage <= 1 ? "disabled" : ""}>ก่อนหน้า</button>
             ${Array.from({ length: pageCount }, (_, index) => `<button class="btn ${index + 1 === marketCatalogPage ? "active" : ""}" type="button" data-market-catalog-page="${index + 1}">${index + 1}</button>`).join("")}
-            <button class="btn" type="button" data-market-catalog-page="next" ${marketCatalogPage >= pageCount ? "disabled" : ""}>Next</button>
+            <button class="btn" type="button" data-market-catalog-page="next" ${marketCatalogPage >= pageCount ? "disabled" : ""}>ถัดไป</button>
           </div>
         </div>
       `;
@@ -14297,7 +14320,7 @@
           </div>
         `).join("") || `<div class="detail-empty user-empty">No Sync Jobs found</div>`}
         </div>
-        <div class="footer-range"><span>Showing ${rows.length ? `1-${rows.length}` : "0"} of ${rows.length}</span></div>
+        <div class="footer-range"><span>แสดง ${rows.length ? `1-${rows.length}` : "0"} จาก ${rows.length}</span></div>
       `;
     }
 
@@ -14417,11 +14440,11 @@
           `}).join("") || `<div class="detail-empty user-empty">No models found for this brand</div>`}
         </div>
         <div class="footer-range">
-          <span>Showing ${rows.length ? `${start + 1}-${Math.min(start + marketModelPageSize, rows.length)}` : "0"} of ${rows.length}</span>
+          <span>แสดง ${rows.length ? `${start + 1}-${Math.min(start + marketModelPageSize, rows.length)}` : "0"} จาก ${rows.length}</span>
           <div class="pager">
-            <button class="btn" type="button" data-market-model-page="prev" ${marketModelPage <= 1 ? "disabled" : ""}>Previous</button>
+            <button class="btn" type="button" data-market-model-page="prev" ${marketModelPage <= 1 ? "disabled" : ""}>ก่อนหน้า</button>
             ${Array.from({ length: pageCount }, (_, index) => `<button class="btn ${index + 1 === marketModelPage ? "active" : ""}" type="button" data-market-model-page="${index + 1}">${index + 1}</button>`).join("")}
-            <button class="btn" type="button" data-market-model-page="next" ${marketModelPage >= pageCount ? "disabled" : ""}>Next</button>
+            <button class="btn" type="button" data-market-model-page="next" ${marketModelPage >= pageCount ? "disabled" : ""}>ถัดไป</button>
           </div>
         </div>
       `;
@@ -14441,10 +14464,10 @@
       const visibleRows = rows.slice(start, start + marketReferencePageSize);
       document.querySelector("#table").innerHTML = `
         <div class="asset-table category-table market-table market-record-table market-reference-list-table">
-          <div class="asset-row head"><div>Reference No.</div><div>Movement</div><div>Production Year</div><div>Material</div><div>Estimated Price</div><div>Last Updated</div></div>
+          <div class="asset-row head"><div>Reference No.</div><div>Movement</div><div>ปีที่ผลิต</div><div>วัสดุ</div><div>ราคาประมาณ</div><div>อัปเดตล่าสุด</div></div>
           ${visibleRows.map(({ reference, index }) => `
             <div class="asset-row" data-market-reference="${index}" data-market-brand-id="${brand.id}" data-market-model-index="${modelIndex}">
-              <div data-label="Reference"><div class="main-text">${reference.number}</div></div>
+              <div data-label="Reference No."><div class="main-text">${reference.number}</div></div>
               <div class="market-card-tags">
                 <span class="user-card-tag asset-tag">${reference.year}</span>
                 <span class="user-card-tag asset-tag">${reference.caseSize}</span>
@@ -14455,19 +14478,19 @@
                 </div>
               </div>
               <div data-label="Movement"><div class="main-text">${reference.movement || model.movement}</div></div>
-              <div data-label="Production Year"><div class="main-text">${reference.year}</div></div>
-              <div data-label="Material"><div class="main-text">${reference.material}</div></div>
-              <div data-label="Estimated Price"><div class="main-text market-price">${reference.price}</div></div>
-              <div data-label="Last Updated"><div class="main-text">${reference.updated || "2026-08-05"}</div></div>
+              <div data-label="ปีที่ผลิต"><div class="main-text">${reference.year}</div></div>
+              <div data-label="วัสดุ"><div class="main-text">${reference.material}</div></div>
+              <div data-label="ราคาประมาณ"><div class="main-text market-price">${reference.price}</div></div>
+              <div data-label="อัปเดตล่าสุด"><div class="main-text">${reference.updated || "2026-08-05"}</div></div>
             </div>
           `).join("") || `<div class="detail-empty user-empty">No references found for this model</div>`}
         </div>
         <div class="footer-range">
-          <span>Showing ${rows.length ? `${start + 1}-${Math.min(start + marketReferencePageSize, rows.length)}` : "0"} of ${rows.length}</span>
+          <span>แสดง ${rows.length ? `${start + 1}-${Math.min(start + marketReferencePageSize, rows.length)}` : "0"} จาก ${rows.length}</span>
           <div class="pager">
-            <button class="btn" type="button" data-market-reference-page="prev" ${marketReferencePage <= 1 ? "disabled" : ""}>Previous</button>
+            <button class="btn" type="button" data-market-reference-page="prev" ${marketReferencePage <= 1 ? "disabled" : ""}>ก่อนหน้า</button>
             ${Array.from({ length: pageCount }, (_, index) => `<button class="btn ${index + 1 === marketReferencePage ? "active" : ""}" type="button" data-market-reference-page="${index + 1}">${index + 1}</button>`).join("")}
-            <button class="btn" type="button" data-market-reference-page="next" ${marketReferencePage >= pageCount ? "disabled" : ""}>Next</button>
+            <button class="btn" type="button" data-market-reference-page="next" ${marketReferencePage >= pageCount ? "disabled" : ""}>ถัดไป</button>
           </div>
         </div>
       `;
@@ -15275,17 +15298,17 @@
       document.body.classList.add("market-list-mode");
       document.body.classList.remove("market-dashboard-mode");
       document.body.classList.remove("dashboard-mode", "user-management-mode", "asset-list-mode", "article-list-mode", "category-list-mode", "reported-board-mode", "asset-detail-mode", "user-list-mode", "user-detail-mode");
-      setPageActions(`${renderPageBackButton(`data-market-back="brand" data-market-brand-id="${brand.id}"`, `Back to ${brand.name}`)}<button class="btn" type="button" data-market-sync-api>${iconSvg.refresh}<span>Sync Latest Data</span></button>`);
-      document.querySelector("#crumb").textContent = `Brands / ${brand.name} / ${model.name.replace(`${brand.name} `, "")}`;
+      setPageActions(`${renderPageBackButton(`data-market-back="brand" data-market-brand-id="${brand.id}"`, `กลับไปที่ ${brand.name}`)}<button class="btn" type="button" data-market-sync-api>${iconSvg.refresh}<span>ซิงก์ข้อมูลล่าสุด</span></button>`);
+      document.querySelector("#crumb").textContent = `แบรนด์ / ${brand.name} / ${model.name.replace(`${brand.name} `, "")}`;
       document.querySelector("#page-title").textContent = model.name.replace(`${brand.name} `, "");
       document.querySelector("#page-meta").textContent = "";
-      document.querySelector("#panel-title").textContent = `${model.name} — All References`;
+      document.querySelector("#panel-title").textContent = `${model.name} -- เลขอ้างอิงทั้งหมด`;
       document.querySelector("#panel-subtitle").textContent = "";
       document.querySelector("#primary-action").textContent = "";
       document.querySelector("#user-panel-filter-actions").innerHTML = "";
       document.querySelector(".filters").innerHTML = `
         <div class="user-filter-bar market-catalog-filter-bar">
-          <input class="field search" id="market-reference-search" type="search" placeholder="Search ${model.name} references" />
+          <input class="field search" id="market-reference-search" type="search" placeholder="ค้นหาเลขอ้างอิงของ ${model.name}" />
         </div>
       `;
       document.querySelector("#summary-grid").innerHTML = "";
@@ -15294,6 +15317,14 @@
       renderMarketReferenceRows(brand, activeMarketModelIndex);
       updateActiveNav();
       scrollMainToTop();
+    }
+
+    function getMarketReferenceThaiDescription(reference) {
+      const descriptionMap = {
+        "15500ST": "Royal Oak 15500ST รุ่นทดแทน 15400ST ตัวเรือน Octagon อันเป็นเอกลักษณ์ ออกแบบโดย Gerald Genta",
+        "15202ST": "Royal Oak Jumbo 15202ST ตัวเรือนบางพิเศษ ขนาด 39 mm เป็นหนึ่งในเลขอ้างอิงสำคัญของตระกูล Royal Oak"
+      };
+      return descriptionMap[reference.number] || `${reference.number} เป็นเลขอ้างอิงในตระกูลรุ่นนี้ ใช้สำหรับตรวจสอบข้อมูลรุ่น วัสดุ ราคา และบริบทประกอบการยืนยันสินค้า`;
     }
 
     function renderMarketReferenceDetailPage(brandId = activeMarketBrandId, modelIndex = 0, referenceIndex = 0) {
@@ -15305,6 +15336,7 @@
       activeMarketModelIndex = Number(modelIndex) || 0;
       const priceNumber = String(reference.price || "").replace(/^USD\s*/i, "$");
       const modelShortName = model.name.replace(`${brand.name} `, "");
+      const sourceDescription = reference.descriptionThai || getMarketReferenceThaiDescription(reference);
       const modal = document.querySelector("#user-action-modal");
       const modalCard = modal?.querySelector(".user-action-modal");
       const modalBody = document.querySelector("#user-action-modal-body");
@@ -15322,26 +15354,26 @@
           </div>
           <div class="market-drawer-spec-grid">
             <div><span>Movement</span><strong>${reference.movement || model.movement}</strong></div>
-            <div><span>Production Year</span><strong>${reference.year}</strong></div>
-            <div><span>Case Material</span><strong>${reference.material}</strong></div>
-            <div><span>Case Size</span><strong>${reference.caseSize}</strong></div>
+            <div><span>ปีที่ผลิต</span><strong>${reference.year}</strong></div>
+            <div><span>วัสดุตัวเรือน</span><strong>${reference.material}</strong></div>
+            <div><span>ขนาดหน้าปัด</span><strong>${reference.caseSize}</strong></div>
           </div>
           <section class="market-price-card">
             <div>
-              <span>Estimated Market Price (USD)</span>
+              <span>ราคาตลาดโดยประมาณ (USD)</span>
               <strong>${priceNumber}</strong>
             </div>
-            <em>▲ 2.4% / 30 days</em>
+            <em>▲ 2.4% / 30 วัน</em>
             <svg viewBox="0 0 320 70" aria-hidden="true">
               <polyline points="4,54 35,50 68,52 100,44 132,46 165,39 198,41 230,35 262,37 292,31 316,33" />
             </svg>
           </section>
           <section class="market-source-copy">
-            <span>Description (from source)</span>
-            <p>${reference.description}</p>
+            <span>คำอธิบาย (จาก SOURCE)</span>
+            <p>${sourceDescription}</p>
           </section>
           <div class="market-source-note">
-            Last updated from The Watch API ${reference.updated || "2026-08-05"} · Reference catalog dataset
+            อัปเดตจาก thewatchapi ล่าสุด ${reference.updated || "2026-08-05"} · endpoint: /v1/model/search
           </div>
         </div>
       `;
@@ -15646,11 +15678,11 @@
               }).join("")}
             </div>
             <div class="footer-range">
-              <span>Showing ${rows.length ? `${start + 1}-${Math.min(start + marketDashboardPageSize, rows.length)}` : "0"} of ${rows.length}</span>
+              <span>แสดง ${rows.length ? `${start + 1}-${Math.min(start + marketDashboardPageSize, rows.length)}` : "0"} จาก ${rows.length}</span>
               <div class="pager">
-                <button class="btn" type="button" data-market-dashboard-page="prev" ${marketDashboardPage <= 1 ? "disabled" : ""}>Previous</button>
+                <button class="btn" type="button" data-market-dashboard-page="prev" ${marketDashboardPage <= 1 ? "disabled" : ""}>ก่อนหน้า</button>
                 ${Array.from({ length: pageCount }, (_, index) => `<button class="btn ${index + 1 === marketDashboardPage ? "active" : ""}" type="button" data-market-dashboard-page="${index + 1}">${index + 1}</button>`).join("")}
-                <button class="btn" type="button" data-market-dashboard-page="next" ${marketDashboardPage >= pageCount ? "disabled" : ""}>Next</button>
+                <button class="btn" type="button" data-market-dashboard-page="next" ${marketDashboardPage >= pageCount ? "disabled" : ""}>ถัดไป</button>
               </div>
             </div>
           </section>
