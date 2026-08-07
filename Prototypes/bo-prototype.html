@@ -15378,7 +15378,7 @@
       document.body.classList.add("market-list-mode");
       document.body.classList.remove("market-dashboard-mode");
       document.body.classList.remove("dashboard-mode", "user-management-mode", "asset-list-mode", "article-list-mode", "category-list-mode", "reported-board-mode", "asset-detail-mode", "user-list-mode", "user-detail-mode");
-      setPageActions(`${renderPageBackButton('data-market-back="catalog"', "Back to Brands")}<button class="btn" type="button" data-market-sync-api>${iconSvg.refresh}<span>Sync Latest Data</span></button>`);
+      setPageActions(renderPageBackButton('data-market-back="catalog"', "Back to Brands"));
       document.querySelector("#crumb").textContent = `${moduleData.market.crumb} / Brands & Models / ${brand.name}`;
       document.querySelector("#page-title").textContent = brand.name;
       document.querySelector("#page-meta").textContent = "";
@@ -15411,7 +15411,7 @@
       document.body.classList.add("market-list-mode");
       document.body.classList.remove("market-dashboard-mode");
       document.body.classList.remove("dashboard-mode", "user-management-mode", "asset-list-mode", "article-list-mode", "category-list-mode", "reported-board-mode", "asset-detail-mode", "user-list-mode", "user-detail-mode");
-      setPageActions(`${renderPageBackButton(`data-market-back="brand" data-market-brand-id="${brand.id}"`, `Back to ${brand.name}`)}<button class="btn" type="button" data-market-sync-api>${iconSvg.refresh}<span>Sync Latest Data</span></button>`);
+      setPageActions(renderPageBackButton(`data-market-back="brand" data-market-brand-id="${brand.id}"`, `Back to ${brand.name}`));
       document.querySelector("#crumb").textContent = `${moduleData.market.crumb} / Brands & Models / ${brand.name} / ${model.name.replace(`${brand.name} `, "")}`;
       document.querySelector("#page-title").textContent = model.name.replace(`${brand.name} `, "");
       document.querySelector("#page-meta").textContent = "";
@@ -15842,7 +15842,7 @@
       document.body.classList.add("market-list-mode");
       document.body.classList.toggle("market-dashboard-mode", activeSub === "Dashboard");
       document.body.classList.remove("dashboard-mode", "user-management-mode", "asset-list-mode", "article-list-mode", "category-list-mode", "reported-board-mode", "asset-detail-mode", "user-list-mode", "user-detail-mode");
-      setPageActions(`<button class="btn" type="button" data-market-sync-api>${iconSvg.refresh}<span>Sync Latest Data</span></button>`);
+      setPageActions("");
       document.querySelector("#user-panel-filter-actions").innerHTML = "";
       document.querySelector("#crumb").textContent = `${moduleData.market.crumb} / ${pageLabel}`;
       document.querySelector("#page-title").textContent = pageLabel;
@@ -15855,7 +15855,7 @@
             ? "Sync Run History"
             : subLabel;
       document.querySelector("#panel-subtitle").textContent = "";
-      document.querySelector("#primary-action").textContent = "Sync Latest Data";
+      document.querySelector("#primary-action").textContent = "";
       setupMarketFilters(subLabel);
       renderMarketSummaryCards(subLabel);
       renderMarketCards(subLabel);
@@ -19630,11 +19630,6 @@
         jumpToAssetReportReference(assetReportJump.dataset.assetReportJump);
         return;
       }
-      const marketSyncButton = event.target.closest("[data-market-sync-api]");
-      if (marketSyncButton) {
-        jumpToModule("market", "Sync History");
-        return;
-      }
       const marketManagementButton = event.target.closest("[data-market-management-action]");
       if (marketManagementButton && activeModule === "market") {
         openMarketManagementModal(
@@ -21045,9 +21040,6 @@
       }
       if (activeModule === "content" && (activeSub || "Articles") === "Articles") {
         renderArticleEditorPage();
-      }
-      if (activeModule === "market") {
-        renderModule("market", "Sync History", "Sync History");
       }
     });
     document.querySelector("#logout-btn").addEventListener("click", () => {
