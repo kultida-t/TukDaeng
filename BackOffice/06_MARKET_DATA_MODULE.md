@@ -86,7 +86,7 @@ The Watch API เป็น external watch data provider ที่ dev ใช้�
 | --- | --- |
 | Brand List / Brand Search | Watch Brand |
 | Model List / Model Search | Watch Model / Series |
-| Reference List / Reference Search | Reference Number |
+| Reference List / Reference Search | Reference Number. `reference/list` returns references by brand, while model linkage must be enriched from `model/search`, `reference/search`, or backend matching rules. |
 | Brand Price History | Brand-level Price Index |
 | Model Price History | Model-level Price Index |
 | Reference Price History | Reference-level Price Index |
@@ -96,6 +96,7 @@ The Watch API เป็น external watch data provider ที่ dev ใช้�
 - API token ต้องเก็บใน backend secret/config เท่านั้น ห้ามอยู่ใน FO client
 - BO ต้องเก็บ `provider_name = TheWatchAPI` และ provider record ID/key เท่าที่มี
 - ข้อมูลจาก provider ต้องผ่าน normalize ก่อนใช้ใน master data เช่น brand casing, alias, reference formatting, duplicate merge
+- Reference records from `GET /v1/reference/list?brand=` must not assume a reliable model relation by themselves. Store the brand relation first, then attach `model_id` only when `model/search`, `reference/search`, or backend mapping can confirm the model relation.
 - Price จาก provider documentation เป็น indicative asking price ใน USD ต้อง convert/normalize ก่อนแสดงเป็น THB หรือใช้ใน Portfolio
 - ต้องเก็บ `source_currency`, `source_price`, `converted_price_thb`, `fx_rate`, `fx_rate_date`, `provider_updated_at`, `synced_at`
 - ถ้า provider unavailable หรือ usage/rate limit เกิดขึ้น FO ต้องใช้ cached data ล่าสุดหรือ fallback rule ของ Portfolio
@@ -151,6 +152,18 @@ Recommended internal fields:
 - `provider_updated_at`
 - `quality_status`
 - `sync_status`
+
+Recommended database shape for The Watch API sync:
+
+| Table | Key Fields |
+| --- | --- |
+| `brands` | `id`, `name`, `provider_name`, `provider_key`, `active_status`, `source_synced_at` |
+| `models` | `id`, `brand_id`, `name`, `provider_name`, `provider_key`, `ref_count`, `source_synced_at` |
+| `watch_references` | `id`, `brand_id`, `model_id` nullable, `reference_number`, `movement`, `year_of_production`, `case_material`, `case_diameter`, `description`, `provider_name`, `provider_key`, `last_updated_source`, `source_synced_at`, `mapping_status` |
+| `price_history` | `id`, `brand_id` nullable, `model_id` nullable, `ref_id` nullable, `source_level`, `date`, `source_price`, `source_currency`, `converted_price_thb`, `fx_rate`, `fx_rate_date`, `provider_updated_at`, `synced_at` |
+| `sync_jobs` | `id`, `provider`, `endpoint`, `params`, `parent_entity_type`, `parent_entity_id`, `status`, `started_at`, `finished_at`, `records_synced`, `error_code`, `error_message`, `retry_count`, `rate_limit_limit`, `rate_limit_remaining`, `audit_event_id` |
+
+`watch_references.model_id` is nullable because The Watch API reference list is brand-scoped. A reference becomes model-linked only after enrichment or backend matching confirms the relation.
 
 ### 5.1 Watch Brand
 
@@ -289,8 +302,8 @@ Sync jobs ที่ควรมี:
 
 - Sync brands
 - Sync models by brand
-- Sync references by brand/model ตาม provider capability
-- Sync price history by brand/model/reference ตาม plan ที่เปิดใช้งาน
+- Sync references by brand first, then enrich model relation through `model/search`, `reference/search`, or backend mapping where possible
+- Sync price history by explicit provider endpoints: `/v1/brand/price/history`, `/v1/model/price/history`, and `/v1/reference/price/history` according to plan access
 
 Sync ต้องมี:
 
@@ -298,6 +311,7 @@ Sync ต้องมี:
 - Sync log และ audit log
 - Last successful sync timestamp
 - Usage/rate limit visibility ถ้า API response/header ให้ข้อมูล
+- Stored request params, parent entity, provider error code/message, retry count, and rate-limit metadata for each `sync_jobs` row
 
 Phase 1 ไม่รองรับ CSV/XLSX import/export จาก Market Data screen เพราะข้อมูล brand/model/reference/detail/price เป็น master data มาตรฐานที่ต้องมาจาก API/backend source เดียวก่อน
 
