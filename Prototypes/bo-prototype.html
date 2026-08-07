@@ -1609,6 +1609,9 @@
     body.market-list-mode.market-dashboard-mode .filters {
       display: none;
     }
+    body.market-list-mode .filters:empty {
+      display: none;
+    }
     body.market-list-mode .layout > .panel {
       border-color: #d7e2f0;
       box-shadow: none;
@@ -1649,8 +1652,8 @@
       text-align: right;
     }
     body.market-list-mode .market-table.market-record-table .asset-row {
-      grid-template-columns: minmax(360px, 1fr) 128px 120px 120px minmax(170px, .52fr) 112px;
-      column-gap: 18px;
+      grid-template-columns: minmax(360px, 1.35fr) minmax(116px, .42fr) minmax(110px, .38fr) minmax(112px, .38fr) minmax(180px, .62fr) minmax(86px, .24fr);
+      column-gap: 16px;
       min-height: 52px;
       padding-top: 12px;
       padding-bottom: 12px;
@@ -1660,6 +1663,10 @@
       min-height: 44px;
       padding-top: 12px;
       padding-bottom: 12px;
+    }
+    body.market-list-mode .market-table.market-record-table .asset-row > div:nth-child(n + 2) {
+      justify-self: start;
+      text-align: left;
     }
     body.market-list-mode .market-table.market-record-table .asset-row > div:last-child {
       justify-self: end;
@@ -15842,9 +15849,7 @@
           : subLabel === "Sync Jobs"
             ? "Sync Run History"
             : subLabel;
-      document.querySelector("#panel-subtitle").textContent = subLabel === "Sync Jobs"
-        ? "บันทึกผลการรัน sync ล่าสุดจาก backend"
-        : "";
+      document.querySelector("#panel-subtitle").textContent = "";
       document.querySelector("#primary-action").textContent = "Sync Latest Data";
       setupMarketFilters(subLabel);
       renderMarketSummaryCards(subLabel);
