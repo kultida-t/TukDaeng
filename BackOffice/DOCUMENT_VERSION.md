@@ -14,6 +14,8 @@
 
 | Version | Date | Change Summary |
 | --- | --- | --- |
+| `BO-06-v0.2` | 2026-08-05 | ปรับ Market Data Phase 1 เป็น read-only API/backend-synced master/reference data: ไม่มี BO add/edit/delete/import/export/override/manual status action, เหลือ list/detail/search/filter/source metadata/sync log/manual sync ตาม operations permission และ FO cache usage |
+| `BO-PROTO-HANDOFF-v0.2` | 2026-08-01 | Add prototype handoff notes for current non-protected BO prototype shell modules: Market Data, Directory, Audit Log, Offer / Chat, Social Interaction, Watch Alert, Help & Support, Account Deletion, Notifications, Reports & Analytics, and Admin Settings. Clarify which prototype areas are aligned at shell/navigation level and which implementation gaps remain against module specs. |
 | `BO-04-v0.2` | 2026-07-20 | Lock Asset Management prototype handoff notes after prototype completion. Align responsive layout, permission/privacy, route/filter behavior, Asset List/Detail, Reported Assets/Asset Report Detail actions, and FO sync impact with `BackOffice/04_ASSET_MANAGEMENT_MODULE.md`. |
 | `BO-03-v0.3` | 2026-07-16 | Clarify account suspension policy: V1 has no `Restricted` account state, `>= 3 reports` is priority review only, `>= 5 reports/reporters` or high-risk evidence may suspend, suspend/ban must revoke FO session, email is the primary user notification channel, and delivery/audit must be traceable. |
 | `BO-03-v0.2` | 2026-07-13 | Lock User List prototype as display/interaction source of truth. Align responsive layout, route/filter behavior, Account Deletion handoff, no direct User List export, `Deleted / Archived` historical review visibility, and Prototype Handoff Notes. |

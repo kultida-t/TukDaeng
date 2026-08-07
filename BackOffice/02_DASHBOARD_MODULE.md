@@ -1,452 +1,388 @@
 # 02 BO Dashboard Module
 
-อ้างอิง:
+**เวอร์ชัน:** `BO-02-v1.0`  
+**วันที่:** 2026-07-31  
+**สถานะ:** สเปกปัจจุบัน  
+**แพลตฟอร์ม:** Responsive Web Back Office
 
-- `00_GLOBAL_RULES_MODULE.md`
-- `BO_MASTER_BASELINE.md`
-- `../ProjectAdmin/FO_BO_INTEGRATION_MAP.md`
-- `BO_PRD.md`
-- `BO_Spec.md`
+## 1. วัตถุประสงค์
 
----
+Dashboard เป็นหน้าแรกของ Back Office สำหรับให้ Admin เห็นภาพรวมสถานะระบบ งานที่ต้องจัดการ และเหตุการณ์ล่าสุดที่ควรติดตามต่อ
 
-# 1. ข้อมูลเอกสาร
+หน้าจอนี้ต้องช่วยให้ Admin:
 
-| Field | Detail |
-| --- | --- |
-| Module Name | BO Dashboard |
-| Platform | Responsive Web Back Office |
-| Version | `BO-PRD-v0.1` |
-| Status | Draft |
-| Owner | Product / UX / Engineering / Operations |
-| Document Type | Functional PRD |
+- เห็น KPI สำคัญของระบบอย่างรวดเร็ว
+- เห็นคิวงานที่ต้องจัดลำดับความสำคัญ
+- เปิดไปยัง module/submodule ที่เกี่ยวข้องได้โดยตรง
+- เห็นความสดใหม่ของข้อมูลผ่าน `Last updated`
+- ใช้งานได้ครบทั้ง desktop, tablet และ mobile-width browser
 
-# 2. วัตถุประสงค์
+## 2. ขอบเขต
 
-Dashboard เป็นหน้าแรกของ BO ที่สรุปสถานะระบบและงานที่ Admin ต้องดำเนินการจากข้อมูลที่เกิดบน FO เช่น user ใหม่, asset ใหม่, pending reports, offer activity, watch alert, support ticket, article publishing และ admin activity
+อยู่ในขอบเขต:
 
-Dashboard ต้องช่วยให้ Admin เห็นภาพรวมเร็ว ตัดสินใจได้ว่า queue ไหนต้องจัดการก่อน และกดไปยัง module ที่เกี่ยวข้องได้ทันที
+- Dashboard header
+- KPI summary cards
+- Work Queue
+- Recent Activity feed และ category filter
+- Dashboard status panels
+- Direct navigation จาก card, chip, queue row, activity row และ panel row
+- Empty, loading, partial error, full error และ stale data states
+- Responsive layout สำหรับ desktop, tablet และ mobile
 
-# 3. ขอบเขต
-
-## In Scope
-
-- Dashboard overview metrics
-- Pending queue summary
-- Operational alerts
-- Recent activity feed
-- policy-based dashboard view
-- Responsive dashboard layout
-- Drill-in links ไป module ที่เกี่ยวข้อง
-- Empty/loading/error states
-
-## Out Of Scope
+อยู่นอกขอบเขต:
 
 - Full analytics report detail
 - Custom dashboard builder
-- Real-time BI dashboard ขั้นสูง
+- Date range control บน Dashboard
+- Manual refresh button บน Dashboard
+- Export จาก Dashboard
+- Notification popup บน header
+- Global search บน header
+- Admin view switcher
+- Chart-heavy BI dashboard
 - Predictive analytics
-- External data warehouse integration
 
-# 4. Dashboard Users
+## 3. โครงสร้างเมนู
 
-Dashboard is used by the single BO account type `Admin`. The dashboard must not expose a admin access switcher or separate admin views.
+เมนูหลัก: `Dashboard`
 
-| Admin Account Type | Dashboard Focus |
-| --- | --- |
-| Admin | System overview, pending queues, activity, support, content, market, notification, report, audit, and security signals according to module/action policy. |
-# 5. Responsive Layout
+Dashboard ไม่มี submenu
 
-| Breakpoint | Layout |
-| --- | --- |
-| Mobile `< 768px` | ใช้ลำดับเดียวกับ prototype: Header -> KPI Summary 1 column -> Work Queue -> Recent Activity -> Dashboard Panels; Work Queue เป็น stacked action list |
-| Tablet `768px - 1199px` | Header -> KPI Summary 2 columns -> Work Queue -> Recent Activity -> Dashboard Panels; layout stack เป็น 1 column เมื่อพื้นที่ไม่พอ |
-| Desktop `>= 1200px` | Header -> KPI Summary 4 columns -> Work Queue และ Recent Activity แบบ side-by-side -> Dashboard Panels |
-| Wide Desktop `>= 1440px` | รองรับ expanded overview, side-by-side Work Queue / Recent Activity และ Dashboard Panels ด้านล่าง |
+พฤติกรรมการนำทาง:
 
-ข้อกำหนด:
+- หลัง login สำเร็จ ให้เปิด `Dashboard` เป็นหน้าแรก
+- เมนู `Dashboard` ต้องแสดง active state เมื่ออยู่บนหน้าจอนี้
+- Dashboard ต้องไม่มี pagination
+- Dashboard ต้องไม่มี list toolbar แบบหน้ารายการ
+- การคลิกแต่ละส่วนต้องเปิด module/submodule ปลายทางที่เกี่ยวข้องโดยตรง
 
-- Dashboard ใช้ overview-first sequence ให้เหมือนกันทุก breakpoint เพื่อให้ prototype อ่านง่ายและไม่ต้อง reorder DOM ระหว่าง desktop/mobile
-- Work Queue ต้องอยู่ถัดจาก KPI Summary ทันที และรายการ priority สูงต้องอยู่บนสุดใน Work Queue
-- Dashboard Panels ด้านล่างใช้ 4 columns บน desktop เพื่อให้ 4 panels สมดุล, 2x2 บน tablet/จอแคบ และ 1 column บน mobile
-- Card/action ต้องไม่ overlap และต้อง tap/click ได้ชัดเจน
-- Dashboard ต้องใช้งานได้แม้ chart library load fail โดย fallback เป็นตัวเลข/table summary
+## 4. สิทธิ์และกฎการเข้าถึง
 
-# 6. Dashboard Header And Controls
+ระบบใช้ Admin access เดียว โดยตรวจสิทธิ์ตาม module/action ที่ปลายทาง
 
-| Control | Requirement |
-| --- | --- |
-| Header | Dashboard header stays focused on breadcrumb, page title, and `Last updated`; it does not show Date Range, Refresh, Export, global search, notification popup, or summary tags. |
-| Data Freshness | `Last updated` is the visible freshness indicator for the current prototype. Manual refresh is not required on the Dashboard screen. |
-| Date Scope | Dashboard uses fixed operational snapshot data in the prototype. Date Range controls are not required on Dashboard; date-range analysis belongs in Reports where needed. |
-| Admin View | Product capability สำหรับ policy-based visibility; current prototype ใช้ admin access เดียว `Admin` และไม่แสดง admin access switcher |
-| Drill-in | Metric/queue card ต้องคลิกไป module ที่เกี่ยวข้องพร้อม filter ที่เหมาะสม |
-| Export | Dashboard does not expose a direct Export control in the current prototype. Exportable analytics and jobs remain in the Reports module. |
+กฎทั่วไป:
 
-Dashboard must not add header controls unless a future prototype explicitly defines the workflow and placement.
+- Admin ที่เข้า Dashboard ได้สามารถดู KPI, queue, activity และ panels ที่อยู่ในสิทธิ์ของตน
+- ถ้าไม่มีสิทธิ์ดูข้อมูลบาง section ให้ซ่อน section หรือซ่อนข้อมูลส่วนนั้น ไม่แสดง error ที่ทำให้ผู้ใช้สับสน
+- Link ที่ออกจาก Dashboard ต้องตรวจสิทธิ์ซ้ำที่ route, API และ service layer ของ module ปลายทาง
+- ข้อมูล sensitive ต้องแสดงเท่าที่จำเป็นต่อการตัดสินใจบน Dashboard
+- Dashboard ห้ามแสดงข้อมูล guest/public analytics เพราะไม่มี User Management drill-in ที่ถูกต้อง
 
-# 7. Metric Cards
+## 5. รูปแบบ Responsive
 
-| Metric | Description | Drill-in | access visibility | Phase |
+| Breakpoint | ความกว้าง | ข้อกำหนดของ Dashboard |
+| --- | --- | --- |
+| Mobile | `<= 760px` | แสดงเป็น 1 column ตามลำดับ Header -> KPI Summary -> Work Queue -> Recent Activity -> Dashboard Panels |
+| Tablet | `761px - 1365px` | KPI Summary แสดง 2 columns เมื่อพื้นที่พอ และ section หลัก stack เป็น 1 column เมื่อพื้นที่จำกัด |
+| Desktop | `> 1365px` | KPI Summary แสดง 4 columns, Work Queue และ Recent Activity อยู่ในแถวเดียวกัน, Dashboard Panels แสดงเป็น grid ด้านล่าง |
+
+ข้อกำหนดเพิ่มเติม:
+
+- ลำดับ section ต้องคงเดิมทุกขนาดหน้าจอ
+- Work Queue ต้องอยู่ถัดจาก KPI Summary เสมอ
+- Recent Activity ต้องอยู่ถัดจาก Work Queue เสมอ
+- Dashboard Panels ต้องอยู่หลัง Recent Activity
+- ข้อความ, ตัวเลข, chip, button และ row ต้องไม่ล้นหรือซ้อนกัน
+- Card และ row ที่คลิกได้ต้องมี hit area ชัดเจนทั้ง mobile และ desktop
+
+## 6. Header
+
+Dashboard header ต้องแสดง:
+
+- Breadcrumb: `การดำเนินงาน / Dashboard`
+- Page title: `Dashboard`
+- Data freshness text: `Last updated: <วัน เวลา GMT+7>`
+
+Dashboard header ต้องไม่แสดง:
+
+- Date Range
+- Refresh
+- Export
+- Global search
+- Notification popup
+- Admin profile
+- Admin access switcher
+- Summary tags
+
+รูปแบบเวลา:
+
+- แสดง timezone เป็น `GMT+7`
+- ใช้เวลาตาม Asia/Bangkok
+- ตัวอย่าง: `Last updated: 01 Aug 2026, 14:35 GMT+7`
+
+## 7. KPI Summary Cards
+
+KPI Summary ต้องแสดง 8 cards ตามลำดับนี้:
+
+| Card | Value ตัวอย่าง | Trend / คำอธิบาย | Detail chips | Navigation |
 | --- | --- | --- | --- | --- |
-| New Users | จำนวน user ใหม่ตาม snapshot/card chips ที่แสดงใน Dashboard | User Management filtered by joined date | Admin | 1 |
-| Active Users Today | ผู้ใช้งาน active วันนี้ พร้อม weekly/monthly chips และ trend copy | User Management / User Report | Admin | 1 |
-| New Assets | จำนวน asset ใหม่แยก Sale / Show / Hide / Sold | Asset Management filtered by created date/status | Admin | 1 |
-| Pending Reports | จำนวน report ที่ยังรอ review | Moderation queue / Asset/User/Comment report filters | Admin | 1/2 |
-| Flagged Assets | Asset ที่ถูก flag หรือรอ moderation | Asset Management filtered flagged | Admin | 1 |
-| Published Articles | Article published/scheduled/archived ตาม Dashboard snapshot | Content / Board Management | Admin | 1 |
-| Active Watch Alerts | จำนวน watch alert active | Watch Alert Management | Admin | 2 |
-| Open Support Tickets | Ticket ที่ยัง open/in progress/waiting user | Help & Support | Admin | 2 |
-| Offer Activity | Offer made/accepted/rejected/expired | `09_OFFER_CHAT_MODULE.md` | Admin | 2 |
-| Notification Delivery | Sent/delivered/opened/failed | Notifications | Admin | 2 |
+| New Users | `128` | `วันนี้เพิ่มขึ้น 8.2% เทียบกับเมื่อวาน` | `Today 128`, `This Week 642`, `This Month 2,840` | เปิด User Management / User Accounts |
+| Active Users Today | `8.4K` | `ผู้ใช้งานรายวันเฉลี่ย 7 วันเพิ่มขึ้น 4.1% เทียบกับ 7 วันก่อน` | `Today 8,420`, `This Week 24,700`, `This Month 38,900` | เปิด User Management / User Accounts |
+| New Assets | `94` | `สร้างวันนี้ 94 รายการ เทียบกับเมื่อวาน 340 รายการ` | `Sale 64`, `Show 17`, `Hide 9`, `Sold 4` | เปิด Asset Management / Asset List |
+| Reported Items | `33` | `มี 9 รายงานใกล้ครบกำหนดตรวจ` | `Assets 22`, `Users 5`, `Board 3`, `Comments 3` | Chip เปิด queue รายงานตามประเภท |
+| Offer Activity | `184` | `ข้อเสนอซื้อวันนี้เพิ่มขึ้น 12.6% เทียบกับเมื่อวาน` | `Made 184`, `Accepted 41`, `Rejected 19`, `Expired 12` | เปิด Offer / Offer Queue |
+| Articles | `12` | `มี 4 บทความรอเผยแพร่` | `Published 8`, `Scheduled 4` | เปิด Content Management / Articles |
+| Watch Alert | `3.2K` | `มีการจับคู่รายการขาย 146 ครั้งวันนี้` | `Active 3,218`, `Triggered 146` | เปิด Watch Alert / Alert Criteria |
+| Support Cases | `18` | `มี 3 เคสใกล้ครบกำหนดตอบครั้งแรก` | `Open 18`, `Assigned 9`, `Urgent 3` | เปิด Help & Support / Tickets |
 
-Dashboard user metric rules:
+กฎการแสดง KPI:
 
-- `New Users` and `Active Users Today` count registered account records/member activity only.
-- Guest public view/share traffic must not be included in `New Users` or registered-user DAU/MAU style metrics.
-- Dashboard baseline and prototype must not show guest/public analytics KPI, card, panel, chart, or drill-in.
-- Guest/public analytics belongs only in Reports & Analytics, because Guest is not an account status and has no User Management drill-in.
+- Card ต้องมี label, value, icon, trend text และ detail chips
+- Trend text ต้องเป็นข้อความที่อ่านรู้เรื่อง ไม่ใช้เครื่องหมายหรือตัวย่อโดด ๆ เช่น `+8.2%`
+- `New Users` และ `Active Users Today` ต้องนับเฉพาะ registered users
+- ห้ามนับ guest/public views, public shares หรือ anonymous traffic รวมใน user KPI
+- `Reported Items` ใช้ chip ย่อยเป็น navigation หลัก เพราะปลายทางแยกตามประเภท report
+- ถ้า card ไม่มีข้อมูล ให้แสดง empty value ที่อ่านเข้าใจ เช่น `0` และคำอธิบายที่เหมาะสม
 
-# 8. Pending Queue Summary
+## 8. Work Queue
 
-Dashboard ต้องมี queue summary ที่ชี้งานต้องทำ ไม่ใช่แค่ metric
+Work Queue เป็นรายการงานที่ Admin ควรจัดการก่อน ไม่ใช่ metric card
 
-| Queue | Trigger Source | Required Fields | Primary Action | Phase |
+Header:
+
+- Title: `Work Queue`
+- Subtitle: `งานที่ต้องจัดการก่อน โดยเรียงจากกำหนดงานและผลกระทบผู้ใช้`
+
+Work Queue ต้องแสดงเป็น action list โดยแต่ละ row มี:
+
+- Priority color bar ด้านซ้าย
+- Queue title
+- Detail text ภาษาไทยแบบกระชับ
+- Count ด้านขวา
+- Chevron แสดงว่าเปิดต่อได้
+
+รายการ Work Queue ต้องแสดงตามลำดับนี้:
+
+| ลำดับ | Queue title | Count ตัวอย่าง | Priority | Detail text | Navigation |
+| --- | --- | --- | --- | --- | --- |
+| 1 | รายงานสินทรัพย์ | `22` | High | `รายการเก่าสุดรอตรวจ 22 ชม. / เหตุผลหลัก: รูปซ้ำและข้อมูลประกาศซ้ำ / ควรตรวจวันนี้` | Asset Management / Reported Assets |
+| 2 | รายงานผู้ใช้ | `5` | High | `มีรายงานโปรไฟล์ซ้ำและพฤติกรรมขายซ้ำ / ควรตรวจบัญชีที่ถูก report หลายครั้งก่อน` | User Management / Reported Users |
+| 3 | รายงานบทความ | `3` | High | `มีรายงานบทความจาก FO Board รอตรวจ / ตรวจเหตุผลและสถานะบทความก่อนปิดรายงานหรือ archive` | Content Management / Reported Board |
+| 4 | คำขอลบบัญชี | `8` | Medium | `มี 2 คำขอที่ยังลบไม่ได้ เพราะมีข้อเสนอซื้อค้างอยู่` | Account Deletion / Requests |
+| 5 | บทความรอเผยแพร่ | `4` | Normal | `บทความ Board ตั้งเวลาเผยแพร่แล้ว / ตรวจ preview และรูป cover ก่อนถึงเวลา` | Content Management / Articles |
+| 6 | ข้อมูลตลาดรอตรวจ | `6` | Normal | `brand, model และ price index จาก import มีข้อมูลซ้ำ / ควรแก้ก่อนใช้กับ Search และ Watch Alert` | Market Data / Import |
+| 7 | แจ้งเตือนส่งไม่สำเร็จ | `92` | Normal | `มี token หมดอายุและงานส่งซ้ำได้ / ตรวจ retry queue และ cleanup invalid token` | Notifications / Delivery Logs |
+
+กฎการจัดลำดับ:
+
+- งานที่ใกล้ครบกำหนดหรือกระทบผู้ใช้สูงต้องอยู่ก่อน
+- Priority high ใช้สีแดง
+- Priority medium ใช้สี amber
+- Priority normal ใช้สี blue หรือ neutral accent
+- ห้ามใช้คำ technical `SLA` ใน UI ให้ใช้คำว่า `ใกล้ครบกำหนด`, `ครบกำหนดตอบ`, `กำหนดตอบครั้งแรก` หรือข้อความที่ผู้ใช้เข้าใจได้
+
+## 9. Recent Activity
+
+Recent Activity แสดงเหตุการณ์ล่าสุดที่ Admin ควรรู้หรือต้องติดตามต่อ
+
+Header:
+
+- Title: `Recent Activity`
+- Filter buttons: `ทั้งหมด`, `Report`, `Offer`, `Content`, `System`
+
+Activity row ต้องมี:
+
+- Event title ภาษาไทย
+- Summary หนึ่งประโยค
+- Relative timestamp ภาษาไทย
+- Chevron แสดงว่าเปิดต่อได้
+- Direct navigation ไป module/submodule ที่เกี่ยวข้อง
+
+รายการตัวอย่างที่ต้องรองรับ:
+
+| Category | Event title | Summary | Time | Navigation |
 | --- | --- | --- | --- | --- |
-| Reported Assets | FO Report Asset | Count, oldest age, SLA risk, top reasons | Go to Asset report queue | 1 |
-| Reported Users | FO Report User/Profile | Count, oldest age, SLA risk | Go to User report queue | 1 |
-| Flagged Assets | BO/System/Report | Count by status, owner, created date | Go to flagged asset list | 1 |
-| Scheduled Articles | BO Content | Next publish time, failed publish count | Go to Articles | 1 |
-| Market Data Pending Review | BO Market updates | Pending brand/model/price changes if workflow exists | Go to Market Data | 1 |
-| Reported Comments | FO Report Comment | Count, oldest age, top reported assets | Go to Social moderation | 2 |
-| Reported Chats | FO Report Chat | Count, attachment risk, oldest age | Go to Chat reports | 2 |
-| Open Tickets | FO Help | Count by priority/status, SLA risk | Go to Help & Support | 2 |
-| Deletion Requests | FO Delete Account | Requested/blocked/ready archive count | Go to Account Deletion | 2 |
-| Failed Notifications | System/Broadcast notification | Failed count, retryable count | Go to Notifications | 2 |
+| Report | มีรายงานสินทรัพย์ใหม่ | `Rolex Submariner 16610 ถูกรายงานเรื่องรูปซ้ำและราคาเบี่ยงจากข้อมูลตลาด` | `15 นาทีที่แล้ว` | Asset Management / Reported Assets |
+| Offer | ข้อเสนอซื้อถูกปฏิเสธ | `ข้อเสนอซื้อ Omega Speedmaster ถูกปฏิเสธและยังมี chat ที่ผู้ใช้ถามต่อ` | `32 นาทีที่แล้ว` | Offer / Offer Queue |
+| Content | ตั้งเวลาเผยแพร่บทความแล้ว | `บทความ Vintage Watch Buying Guide ตั้งเวลาเผยแพร่วันนี้ 19:00` | `1 ชม.ที่แล้ว` | Content Management / Articles |
+| System | ข้อมูลตลาดอัปเดตแล้ว | `Price index ของ Speedmaster Reduced พบข้อมูลนำเข้าซ้ำ 3 แถว` | `2 ชม.ที่แล้ว` | Market Data / Import |
+| System | แจ้งเตือนบางรายการส่งไม่สำเร็จ | `ระบบพบ invalid token ใน delivery batch ล่าสุดและแยกงาน retry แล้ว` | `3 ชม.ที่แล้ว` | Notifications / Delivery Logs |
 
-SLA baseline:
+กฎการทำงาน:
 
-- Report handling target: ภายใน 24 ชั่วโมง
-- Support first response target: ภายใน 8 ชั่วโมง
-- Queue card ต้อง highlight เมื่อมี item ใกล้ SLA breach หรือ breached
+- Filter `ทั้งหมด` แสดงทุก category
+- Filter `Report` แสดง report-related events
+- Filter `Offer` แสดง offer-related events
+- Filter `Content` แสดง content publishing events
+- Filter `System` แสดง market data, notification, watch alert และ audit/system events
+- Activity row ต้องไม่เปิด modal กลางบน Dashboard
+- Activity row ต้องไม่แสดง audit ID แบบสุ่ม
+- Activity row ต้องไม่แสดง badge เช่น `linked` หรือ `ติดตามต่อ`
+- ถ้าไม่มี activity ใน filter ที่เลือก ให้แสดง empty state
 
-# 9. Recent Activity Feed
+## 10. Dashboard Panels
 
-Activity feed แสดงเหตุการณ์ล่าสุดของระบบและ admin action
+Dashboard Panels อยู่ด้านล่าง Recent Activity และต้องใช้งานได้ทุก row
 
-รายการขั้นต่ำ:
+Panel ที่ต้องมี:
 
-- User registered
-- Asset added
-- Asset status changed
-- Asset removed/hidden
-- Report submitted
-- Report resolved
-- Article published/scheduled/archived
-- Brand/model/price index updated
-- Directory item activated/inactivated
-- Admin login/security event เฉพาะ Admin
-- Admin action ที่เป็น public-impact
+| Panel | Header meta | Row content | Navigation |
+| --- | --- | --- | --- |
+| Asset Status | `จาก Asset List ทั้งหมด` | Status label, description, count | เปิด Asset Management ตาม status/context |
+| Offer Status | `จาก Offer Queue วันนี้` | Offer status label, description, count | เปิด Offer / Offer Queue |
+| Latest Articles | `จาก Articles ล่าสุด` | Article title, publish status, detail | เปิด Content Management / Articles |
+| Top Searched Brands | `จาก Search Report สัปดาห์นี้` | Brand, search count, trend, share bar | เปิด Reports / Search |
 
-Fields:
+### 10.1 Asset Status
 
-| Field | Requirement |
+Rows:
+
+| Label | Value ตัวอย่าง | Detail | Navigation |
+| --- | --- | --- | --- |
+| Sale | `2,816` | `ยอดทั้งหมดที่แสดงใน Feed และ Search` | Asset Management / Asset List |
+| Show | `428` | `ยอดทั้งหมดที่แสดงใน collection และ profile` | Asset Management / Asset List |
+| Hide | `76` | `ยอดทั้งหมดที่ owner/Admin เห็นตามสิทธิ์` | Asset Management / Asset List พร้อม context Hide |
+| Sold | `214` | `ยอดทั้งหมดที่คงประวัติและปิดรับ offer` | Asset Management / Asset List |
+
+### 10.2 Offer Status
+
+Rows:
+
+| Label | Value ตัวอย่าง | Detail | Navigation |
+| --- | --- | --- | --- |
+| Made | `184` | `ข้อเสนอซื้อที่ถูกสร้างวันนี้` | Offer / Offer Queue |
+| Accepted | `41` | `ข้อเสนอที่ผู้ขายยอมรับวันนี้` | Offer / Offer Queue |
+| Rejected | `19` | `ข้อเสนอที่ถูกปฏิเสธวันนี้และเก็บประวัติ` | Offer / Offer Queue |
+| Expired | `12` | `ข้อเสนอที่หมดเวลาวันนี้โดยไม่มีการตอบรับ` | Offer / Offer Queue |
+
+### 10.3 Latest Articles
+
+Rows:
+
+| Label | Value ตัวอย่าง | Detail | Navigation |
+| --- | --- | --- | --- |
+| Vintage Watch Buying Guide | `Scheduled` | `ตั้งเวลาเผยแพร่ 10 Jul 2026 19:00` | Content Management / Articles |
+| How to Check Provenance | `Published` | `เผยแพร่แล้วและแสดงบน Board` | Content Management / Articles |
+| Market Notes July | `Draft` | `ยังไม่แสดงบน FO / รอรูป cover` | Content Management / Articles |
+
+### 10.4 Top Searched Brands
+
+Rows:
+
+| Brand | Searches | Share | Trend | Navigation |
+| --- | --- | --- | --- | --- |
+| Rolex | `12.4K` | `32%` | `+6%` | Reports / Search |
+| Omega | `8.7K` | `22%` | `+3%` | Reports / Search |
+| Seiko | `6.1K` | `16%` | `+9%` | Reports / Search |
+| Cartier | `4.2K` | `11%` | `+14%` | Reports / Search |
+| Tudor | `3.6K` | `9%` | `+5%` | Reports / Search |
+
+กฎการแสดง Panels:
+
+- Panel title ใช้ภาษาอังกฤษตามชื่อ panel
+- Row detail ใช้ภาษาไทยเพื่ออธิบายความหมายเชิงงาน
+- Row ที่คลิกได้ต้องมี hover/focus state
+- ห้ามแสดง panel `Admin Overview`
+- ห้ามแสดง copy ที่เป็น placeholder เช่น `Back Office demo`, `Sample data` หรือ `Next action`
+- ถ้าไม่มีข้อมูลใน panel ให้แสดง empty state เฉพาะ panel นั้น
+
+## 11. Direct Navigation
+
+ทุกจุดที่เปิดต่อได้ต้องไปปลายทางที่สัมพันธ์กับเนื้อหานั้นโดยตรง
+
+| Source | Destination |
 | --- | --- |
-| Timestamp | แสดงเป็น Asia/Bangkok |
-| Event Type | เช่น User, Asset, Report, Article, Market Data, Audit |
-| Actor | User/System/Admin ตามสิทธิ์ที่เห็นได้ |
-| Target | Entity name/ID |
-| Summary | ข้อความสั้น อธิบาย event |
-| Link | ไป detail หรือ audit record ตาม permission |
+| New Users card | User Management / User Accounts |
+| Active Users Today card | User Management / User Accounts |
+| New Assets card | Asset Management / Asset List |
+| Reported Items / Assets chip | Asset Management / Reported Assets |
+| Reported Items / Users chip | User Management / Reported Users |
+| Reported Items / Board chip | Content Management / Reported Board |
+| Reported Items / Comments chip | Social Moderation / Reported Social |
+| Offer Activity card | Offer / Offer Queue |
+| Articles card | Content Management / Articles |
+| Watch Alert card | Watch Alert / Alert Criteria |
+| Support Cases card | Help & Support / Tickets |
+| Work Queue row | Module/submodule ตาม queue นั้น |
+| Recent Activity row | Module/submodule ตาม event นั้น |
+| Dashboard Panel row | Module/submodule ตาม row นั้น |
 
-# 10. Admin Dashboard Access Rules
+กฎเพิ่มเติม:
 
-Dashboard visibility is policy-based, not Admin access-based. The current BO baseline has one `Admin` account type and no View-as control.
+- การคลิกต้องไม่ทำให้ context หายโดยไม่จำเป็น
+- ถ้าปลายทางรองรับ filter/context ให้ส่ง context ไปพร้อม navigation
+- ถ้าปลายทางยังไม่พร้อมใช้งาน ให้แสดง disabled state หรือ empty destination ที่อธิบายได้ชัดเจน ห้ามคลิกแล้วไม่เกิดผล
 
-Rules:
+## 12. Empty / Loading / Error States
 
-- Show dashboard cards by module/action policy and data sensitivity.
-- Hide or mask sensitive values when policy does not allow full detail.
-- Direct drill-in links must enforce access again at the destination module/API.
-- If no queue is available for a policy scope, show a useful empty state rather than a blank panel.
-# 11. Dashboard Data Freshness
+| State | ข้อกำหนด |
+| --- | --- |
+| Loading | แสดง skeleton หรือ loading placeholder สำหรับ KPI, Work Queue, Recent Activity และ Panels |
+| Partial Load Error | ถ้าบาง section โหลดไม่ได้ ให้ section อื่นยังใช้งานได้ และแสดง retry เฉพาะ section ที่ผิดพลาด |
+| Full Load Error | แสดง error state ทั้งหน้า พร้อมปุ่ม retry dashboard |
+| Empty KPI | แสดงค่า `0` หรือข้อความ empty ที่อ่านเข้าใจ ไม่ปล่อยช่องว่าง |
+| Empty Queue | แสดงข้อความว่าไม่มีงานค้างใน queue นั้น หรือซ่อน row ที่ไม่มีงานตาม business rule |
+| Empty Activity | แสดงข้อความว่าไม่มีเหตุการณ์ใน filter ที่เลือก |
+| Empty Panel | แสดง empty state ภายใน panel นั้น |
+| Unauthorized Section | ซ่อน section หรือข้อมูลนั้น ไม่แสดง technical error |
+| Stale Data | แสดง `Last updated` และ warning ว่าข้อมูลอาจไม่ล่าสุด |
+
+## 13. Data Freshness
+
+Dashboard ต้องแสดง `Last updated` ชัดเจนบน header
 
 | Data Type | Freshness Expectation |
 | --- | --- |
-| Pending queues | ใกล้ real-time หรือ refresh ทุก 1-5 นาทีตาม backend capability |
-| Dashboard metrics | แสดง snapshot ล่าสุดของระบบพร้อม `Last updated`; Dashboard ไม่ต้องมี Date Range หรือ Manual Refresh control ใน prototype ปัจจุบัน |
-| Activity feed | แสดงล่าสุดเท่าที่ระบบมี พร้อม last updated |
-| Reports summary | อาจมี delay ได้ แต่ต้องระบุ last updated |
+| KPI Summary | ใช้ snapshot ล่าสุดของระบบ |
+| Work Queue | ควรใกล้ real-time หรืออัปเดตตามรอบ backend |
+| Recent Activity | แสดงเหตุการณ์ล่าสุดที่ระบบมี |
+| Dashboard Panels | ใช้ snapshot/report summary ล่าสุดของแต่ละแหล่งข้อมูล |
 
-Dashboard ต้องแสดง `Last updated` ชัดเจน
+Dashboard ไม่มี manual refresh control ในสเปกปัจจุบัน
 
-# 12. BO/FO Integration Impact
+## 14. Copy และ Visual Rules
 
-Dashboard ต้อง reflect integration map หลัก:
+Copy rules:
 
-| Integration | Dashboard Signal |
-| --- | --- |
-| `INT-001` Report Asset | Pending reports / reported asset queue |
-| `INT-002` Report User | Reported user queue / user risk signal |
-| `INT-004` Report Board Content | Content moderation queue |
-| `INT-005` New Sale Asset | New assets metric |
-| `INT-010` Board Articles | Published/scheduled articles |
-| `INT-012` Brand/Model | Market data activity |
-| `INT-013` Price Index | Market data / price update activity |
-| `INT-015` Offer | Offer activity metric |
-| `INT-021` Watch Alert | Active watch alerts / trigger volume |
-| `INT-022` Help Request | Open support tickets |
-| `INT-023` Account Deletion | Deletion request queue |
-| `INT-024` System Notification | Notification delivery status |
-| `INT-026` Sensitive Admin Action | Recent admin activity / audit signal |
+- ใช้ข้อความไทยที่ช่วยตัดสินใจปฏิบัติงาน
+- ห้ามใช้ raw backend label เป็นข้อความหลัก เช่น `Oldest 22h`, `blocked by pending offer`, `Security event`
+- ห้ามใช้คำ technical `SLA` บน UI
+- หลีกเลี่ยงตัวย่อที่ไม่มีคำอธิบาย
+- Trend และ queue detail ต้องอ่านรู้เรื่องเมื่ออยู่เดี่ยว ๆ
 
-# 13. Error / Empty / Loading States
+Visual rules:
 
-| State | Requirement |
-| --- | --- |
-| Loading | แสดง skeleton สำหรับ metric cards และ queue cards |
-| Partial Load Error | ถ้า metric บางชุด load ไม่ได้ ให้ส่วนอื่นยังแสดงได้ พร้อม retry เฉพาะ card/section |
-| Full Load Error | แสดง error state พร้อม retry dashboard |
-| Empty Queue | แสดงข้อความว่าไม่มีงานค้างใน queue นั้น |
-| Unauthorized Section | ไม่แสดง section นั้น แทนการแสดง error |
-| Stale Data | แสดง last updated และ warning เมื่อ data เก่าเกิน threshold |
+- Layout เป็น operational control center ไม่ใช่ analytics report page
+- KPI cards ใช้ left accent, icon tile, label, value, trend และ chips
+- Work Queue และ Recent Activity ใช้ compact action-list row
+- Dashboard Panels ใช้ panel header แยกจาก body และ row ที่กดได้
+- Accent color ใช้เพื่อจัดกลุ่มหรือบอก priority เท่านั้น ไม่ใช้แทนข้อความสถานะจริง
+- Card shadow และ border ต้องเบา
+- UI ต้องไม่ใช้ card ซ้อน card
+- ข้อความต้องไม่ล้น container ทั้ง mobile และ desktop
 
-# 14. Performance Requirements
+Typography:
+
+- Primary body/UI font: `IBM Plex Sans Thai`
+- Heading font: `Bebas Neue`
+- Fallback font stack: `IBM Plex Sans Thai`, `Segoe UI`, `Tahoma`, `Arial`, `sans-serif`
+
+## 15. ข้อกำหนด Performance
 
 - Dashboard initial load หลัง auth ควรไม่เกิน 3 วินาทีสำหรับข้อมูลหลัก
-- Section ที่หนัก เช่น trend/report summary สามารถ lazy load ได้
-- Mobile ต้องโหลดข้อมูลสำคัญก่อน chart/visual เสริม
-- Query dashboard ต้องไม่ block งาน operational queue สำคัญ
-- Responsive rendering must preserve the prototype sequence: Header -> KPI Summary -> Work Queue -> Recent Activity -> Dashboard Panels.
+- KPI Summary และ Work Queue ต้องโหลดก่อน chart/visual เสริม
+- ถ้า section หนักโหลดช้า ต้อง lazy load โดยไม่ block queue สำคัญ
+- Responsive render ต้องไม่ทำให้ลำดับ section เปลี่ยน
+- Interaction filter ของ Recent Activity ต้องตอบสนองทันทีบนข้อมูลที่โหลดแล้ว
 
-# 15. Acceptance Criteria
+## 16. เกณฑ์การยอมรับ
 
 | ID | Criteria |
 | --- | --- |
-| AC-BO-DASH-001 | Dashboard แสดง overview metric และ pending queue ตาม Admin Permission |
-| AC-BO-DASH-002 | Dashboard responsive ใช้งานได้ที่ 375px, 768px, 1280px และ 1440px |
-| AC-BO-DASH-003 | Metric/queue card ที่คลิกได้ต้องพาไป module ที่เกี่ยวข้องพร้อม filter ที่เหมาะสม |
-| AC-BO-DASH-004 | Pending report queue ต้องรองรับ SLA 24 ชั่วโมง |
-| AC-BO-DASH-005 | Support ticket queue ต้องรองรับ first response target 8 ชั่วโมงเมื่อ Phase 2 เปิดใช้ |
-| AC-BO-DASH-006 | Admin access ที่ไม่มีสิทธิ์ต้องไม่เห็น metric หรือ queue ของ module นั้น |
-| AC-BO-DASH-007 | Dashboard แสดง last updated timestamp |
-| AC-BO-DASH-008 | Partial data failure ต้องไม่ทำให้ทั้ง dashboard ใช้งานไม่ได้ |
-| AC-BO-DASH-009 | Activity feed แสดง event สำคัญและ link ไป detail/audit ตาม permission |
-| AC-BO-DASH-010 | Dashboard ไม่แสดง sensitive data ให้ admin access ที่ไม่มีสิทธิ์ |
-| AC-BO-DASH-011 | Dashboard user metrics ต้องไม่ปน Guest public traffic กับ registered-user metrics |
-| AC-BO-DASH-012 | Dashboard ต้องไม่แสดง guest/public analytics; metric ชุดนี้อยู่ใน Reports & Analytics เท่านั้น |
-
-# 16. Related Modules
-
-- `00_GLOBAL_RULES_MODULE.md`
-- `01_AUTHENTICATION_MODULE.md`
-- `03_USER_MANAGEMENT_MODULE.md`
-- `04_ASSET_MANAGEMENT_MODULE.md`
-- `05_CONTENT_BOARD_MODULE.md`
-- `06_MARKET_DATA_MODULE.md`
-- `07_DIRECTORY_MODULE.md`
-- `08_AUDIT_LOG_MODULE.md`
-- `09_OFFER_CHAT_MODULE.md`
-- `12_HELP_SUPPORT_MODULE.md`
-- `14_NOTIFICATIONS_MODULE.md`
-- `15_REPORTS_ANALYTICS_MODULE.md`
-
-# 17. Prototype Alignment Notes
-
-These notes capture confirmed UX decisions from the BO prototype review and must be kept in sync with `Prototypes/bo-prototype.html`.
-
-## 17.1 Admin Access Simplification
-
-- Current prototype uses a single `Admin` admin access for the main Back Office flow.
-- The previous admin access selector / View as control is removed from the header to keep the screen clean.
-- policy-based visibility remains documented as a product capability, but the current prototype does not expose separate Admin Views.
-
-## 17.2 Dashboard KPI Cards
-
-Current primary Dashboard KPI cards are:
-
-| Card | Purpose | Drill-in |
-| --- | --- | --- |
-| New Users | New user registrations shown as Dashboard snapshot with Today / This Week / This Month chips | User Management |
-| Active Users Today | Daily active usage health signal with Today / This Week / This Month chips and trend copy | User Management / Reports |
-| New Assets | New or updated assets by Sale / Show / Hide / Sold | Asset Management |
-| Pending Reports | User reports waiting for admin/moderation review, including deadline risk | Asset / report queue |
-| Offer Activity | Offer movement by accepted / rejected / pending or expired status | Offer / Chat |
-| Articles | Published or scheduled Board content | Content Management |
-| Watch Alert | Active watch alert volume and matching signal | Watch Alert / Market signal |
-| Support Cases | Open support cases and first-response deadline risk | Help & Support |
-
-Card detail text should be shown as short chips/labels, not as one long sentence. Example:
-
-| รายการ | จำนวนรายการ | การเปลี่ยนแปลง | รายละเอียด |
-| --- | --- | --- | --- |
-| New Users | 128 | เพิ่มขึ้น 8.2% จากช่วงก่อนหน้า | Email 68 ราย / Google 37 ราย / Apple 23 ราย |
-| Active Users Today | 8.4K | ผู้ใช้งานรายวันเฉลี่ย 7 วันเพิ่มขึ้น 4.1% เทียบกับ 7 วันก่อน | Today 8,420 / This Week 24,700 / This Month 38,900 |
-
-Reports remains the place for deeper user growth, retention, DAU/MAU trend, cohort, and export analysis. The Dashboard keeps `Active Users Today` as a primary health signal only.
-
-`New Users` and `Active Users Today` represent registered account/member activity. Guest public view/share analytics, if enabled, must be shown separately in Reports and must not create drill-in rows in User Management.
-
-Guest/public analytics must stay out of the Dashboard prototype. Use Reports & Analytics for `Guest Visitors`, `Public Asset Views`, `Public Article Views`, `Public Shares`, and `Guest-to-Signup Conversion`.
-
-KPI card trend copy must be a complete phrase. Do not show shorthand values that force the user to infer the meaning.
-
-| Avoid | Use |
-| --- | --- |
-| `+8.2%` | `เพิ่มขึ้น 8.2% จากช่วงก่อนหน้า` |
-| `+340` | `เพิ่มขึ้น 340 รายการจากช่วงก่อนหน้า` |
-| `9 ใกล้ครบกำหนด` | `มี 9 รายงานใกล้ครบกำหนด` |
-| `+4 รอเผยแพร่` | `มี 4 บทความรอเผยแพร่` |
-
-UI copy rule:
-
-- Do not show the technical term `SLA` in Dashboard cards, queue labels, notification popup copy, or export section titles.
-- Use user-friendly wording instead:
-  - `ใกล้ครบกำหนด`
-  - `ครบกำหนดตอบ`
-  - `กำหนดตอบครั้งแรก`
-  - `ติดตามกำหนดงาน`
-- The technical term `SLA` can remain in internal requirement notes, implementation comments, and backend/report field naming where needed.
-
-## 17.3 Notification Delivery Placement
-
-- `Notification Delivery` is not shown as a primary KPI card in the current prototype.
-- It is not duplicated as an `Admin Overview` row on Dashboard.
-- Notification health remains available via the Notifications module, Recent Activity when there is a meaningful event, and export/report contexts where relevant.
-
-## 17.3.1 Dashboard Status Panels
-
-Bottom Dashboard panels must remain operational and clickable:
-
-| Panel | Purpose | Interaction |
-| --- | --- | --- |
-| Asset Status | Show asset status distribution for the selected range with clear status meaning | Each row opens Asset Management |
-| Offer Status | Show offer status distribution for the selected range with clear status meaning | Each row opens Offer / Chat |
-
-Copy rules:
-
-- Do not show `Admin Overview` on Dashboard because it duplicates information already covered by KPI cards, Work Queue, Recent Activity, and `Last updated`.
-- Do not use prototype-only copy such as `Back Office prototype` or `Next action`.
-- Keep panel titles in English to match Dashboard section titles.
-- Use Thai descriptions for operational meaning and next action.
-- Avoid unexplained abbreviations and raw backend labels.
-
-## 17.4 Dashboard Header And Export Placement
-
-- Current Dashboard prototype does not show Date Range, Refresh, or Export controls in the header.
-- The header shows only breadcrumb, page title, and `Last updated` to keep the operational view focused.
-- Dashboard export is not required in the current prototype. Exportable analytics and generated files should live in the Reports module or report/export job workflows when needed.
-
-## 17.5 Work Queue Copy And Display
-
-Work Queue cards should be written for operational action, not as raw system labels.
-
-Current prototype queue labels:
-
-| Queue Card | Meaning |
-| --- | --- |
-| รายงานสินทรัพย์ | Asset reports submitted from FO and waiting for review |
-| รายงานผู้ใช้ | User/profile reports submitted from FO and waiting for review |
-| สินทรัพย์ที่ต้องตรวจเพิ่ม | Assets marked by system/admin/report and waiting for additional review |
-| บทความรอเผยแพร่ | Scheduled Board content that needs final monitoring |
-| ข้อมูลตลาดรอตรวจ | Brand/model/price/directory data waiting for admin review |
-| งานช่วยเหลือที่เปิดอยู่ | Support cases that are open/in progress/waiting user |
-| คำขอลบบัญชี | Account deletion requests, including blocked requests |
-| แจ้งเตือนส่งไม่สำเร็จ | Failed notification jobs that may need retry or cleanup |
-
-Queue copy rule:
-
-- Do not use raw labels like `Reported Assets`, `Open Tickets`, `Oldest 22h`, or `blocked by pending offer` in the UI.
-- Do not use `flag` as the primary UI label. Use `ต้องตรวจเพิ่ม` or a clearer reason-based label instead.
-- Each queue detail should explain:
-  - what the queue is,
-  - why it needs attention,
-  - whether anything is close to the response deadline,
-  - what admin should prioritize.
-- Queue detail should be displayed as short chips/labels, similar to KPI cards.
-- Current prototype displays Work Queue as an Action Center style list, not grid cards:
-  - left priority color bar,
-  - queue title,
-  - concise Thai detail,
-  - count on the right,
-  - chevron to indicate click-through.
-- Queue ordering must match the UI copy:
-  1. Items close to deadline first.
-  2. Within the same urgency level, sort by user impact / operational priority.
-  3. Current priority order: รายงานสินทรัพย์, รายงานผู้ใช้, งานช่วยเหลือที่เปิดอยู่, คำขอลบบัญชี, สินทรัพย์ที่ต้องตรวจเพิ่ม, บทความรอเผยแพร่, ข้อมูลตลาดรอตรวจ, แจ้งเตือนส่งไม่สำเร็จ.
-- On mobile, Work Queue remains after the KPI Summary instead of being moved above the metrics. This matches the current overview-first Dashboard prototype.
-
-Examples:
-
-| Avoid | Use |
-| --- | --- |
-| `Oldest 22h · fake photo, duplicate listing` | `รายการเก่าสุดรอตรวจ 22 ชม. / เหตุผลหลัก: รูปซ้ำ/ข้อมูลประกาศซ้ำ / ควรตรวจวันนี้` |
-| `3 near 8h first response` | `มี 3 เคสใกล้ครบกำหนดตอบครั้งแรก 8 ชม. / ควรตอบเคสเร่งด่วนก่อน` |
-| `2 blocked by pending offer` | `มี 2 คำขอที่ยังลบไม่ได้ เพราะมีข้อเสนอซื้อค้างอยู่` |
-
-## 17.6 Typography
-
-- Current BO prototype uses bundled local fonts from `Prototypes/assets/fonts/google`.
-- Primary body/UI font: `IBM Plex Sans Thai Local`.
-- Heading font: `Bebas Neue Local` for page titles, section titles, and KPI labels.
-- Bundled IBM Plex Sans Thai weights: Regular 400, Medium 500, SemiBold 600, Bold 700.
-- Bundled Bebas Neue weight: Regular 400.
-- Fallback stack remains `IBM Plex Sans Thai`, `Segoe UI`, `Tahoma`, `Arial`, `sans-serif` if bundled files cannot be loaded.
-- Exported Excel-readable `.xls` files, when generated from Reports/export workflows, use IBM Plex Sans Thai family naming; final rendering can still depend on the spreadsheet app's font support.
-- Font source: Google Fonts packages for IBM Plex Sans Thai and Bebas Neue.
-
-## 17.7 Recent Activity Feed Copy And Behavior
-
-Recent Activity Feed in the prototype is displayed as `Recent Activity` to match other English dashboard section titles.
-
-Purpose:
-
-- Show the latest operational events that may require admin awareness or follow-up.
-- Do not duplicate KPI card counts unless the event represents a meaningful change or action.
-- Keep security/audit events visible only when relevant, and do not let them dominate operational events.
-- The card header should stay clean. Do not show helper copy such as `รายการเหตุการณ์สำคัญที่เพิ่งเกิดขึ้น พร้อมลิงก์ไปจัดการต่อ` or prototype badges such as `เปิดรายละเอียดได้`.
-
-Each activity item must include:
-
-| Field | Prototype Display |
-| --- | --- |
-| Event type | Clear Thai label, for example `มีรายงานสินทรัพย์ใหม่` |
-| Summary | One-sentence explanation of what happened and which entity is affected |
-| Timestamp | Relative time in Thai, for example `15 นาทีที่แล้ว` |
-| Linked module | The Back Office screen/submodule that opens when the activity row is clicked |
-
-Copy rules:
-
-- Do not use raw event labels such as `Report submitted`, `Offer status changed`, `Security event`, or `Delivery health` in the UI.
-- Do not show random audit IDs in the prototype. If audit linkage is needed, show the linked module/action instead.
-- Use explicit words: `ข้อเสนอซื้อถูกปฏิเสธ`, `ตั้งเวลาเผยแพร่บทความแล้ว`, `ข้อมูลตลาดอัปเดตแล้ว`.
-- Avoid unexplained abbreviations in the activity card. If an operational term is required, explain it in the summary or next action.
-
-Interaction rules:
-
-- The activity card uses a compact table-like list, not oversized timeline cards. Each row shows left accent, event title, one-line summary, relative time, and a chevron.
-- Activity filters must be clickable and functional: `ทั้งหมด`, `Report`, `Offer`, `Content`, `System`.
-- Filter categories are based on linked modules. Asset/user report events map to `Report`; offer events map to `Offer`; content publishing maps to `Content`; watch alert, market data, notification, and audit/system events map to `System`.
-- Clicking an activity navigates directly to the related module/submodule. Do not open an intermediate modal in the current Dashboard prototype.
-- The row content must be sufficient for the Admin to decide whether to follow the link: clear event title, concise summary, relative timestamp, category filter context, and chevron.
-- Activity navigation must target the real related destination, not a fixed generic report page. Examples: Report -> `Reported Assets`, Offer -> `Offer Queue`, Content -> `Articles`, System notification -> `Delivery Logs`.
-- Activity `action` text in mock data may remain as implementation metadata or future enhancement input, but it is not required to render in a Dashboard modal.
-- Do not show prototype/status badges such as `linked`, `ติดตามต่อ`, or random audit IDs in the activity row.
-
-## 17.8 Dashboard Card Visual Style
-
-Dashboard follows a control-center layout inspired by the referenced Prakan Go dashboard, while keeping Tuk Daeng colors and BO requirements.
-
-- Shell layout uses a dark navy sidebar, white topbar, light blue-gray workspace background, and Tuk Daeng red for active/accent states.
-- Sidebar uses the referenced menu pattern: compact logo block, section labels, line icons, and chevrons only on expandable menu groups.
-- Admin profile belongs in the sidebar footer under the icon-based logout row, not in the header, to avoid duplicate identity display.
-- Topbar includes breadcrumb only in the current Dashboard prototype to keep the page focused.
-- Current Dashboard topbar does not show Date Range, Refresh, Export, global search, or notification popup because Dashboard focuses on overview, queue, activity, and data freshness via `Last updated`. Add extra header controls only when cross-module behavior is defined.
-- Notifications remain available from the sidebar `Notifications` module instead of a header popup.
-- Page title uses a left vertical accent bar and a thin horizontal divider instead of a heavy framed header card.
-- Dashboard header should not show summary tags for reports/offers/urgent work because the same information is already represented in KPI cards and queue details.
-- KPI cards use a left accent border, compact icon tile, clear label, large value, trend phrase, and detail chips.
-- Dashboard panels use a separated header row and padded body, similar to table/action-center cards.
-- Card corners and shadows should be light, not oversized or decorative.
-- Accent colors are used for grouping and priority only; they must not replace real status text.
-- The visual style must not remove required Dashboard data, links, queue priority, or direct Recent Activity navigation.
+| AC-BO-DASH-001 | หลัง login สำเร็จ ระบบเปิด Dashboard เป็นหน้าแรก และเมนู Dashboard แสดง active state |
+| AC-BO-DASH-002 | Header แสดง breadcrumb, title และ `Last updated` โดยไม่มี Date Range, Refresh, Export, global search, notification popup หรือ admin switcher |
+| AC-BO-DASH-003 | Dashboard แสดง KPI Summary ครบ 8 cards ตามลำดับที่กำหนด |
+| AC-BO-DASH-004 | `Reported Items` แสดง chips แยก `Assets`, `Users`, `Board`, `Comments` และแต่ละ chip ไป queue ที่ถูกต้อง |
+| AC-BO-DASH-005 | Work Queue แสดงครบ 7 rows ตามลำดับและ priority ที่กำหนด |
+| AC-BO-DASH-006 | Work Queue row ทุก row คลิกไป module/submodule ที่เกี่ยวข้องได้ |
+| AC-BO-DASH-007 | Recent Activity แสดง filter `ทั้งหมด`, `Report`, `Offer`, `Content`, `System` และ filter ทำงานจริง |
+| AC-BO-DASH-008 | Recent Activity row คลิกไป module/submodule ที่เกี่ยวข้องโดยตรง และไม่เปิด modal กลางบน Dashboard |
+| AC-BO-DASH-009 | Dashboard Panels แสดงครบ `Asset Status`, `Offer Status`, `Latest Articles`, `Top Searched Brands` |
+| AC-BO-DASH-010 | Panel row ทุก row คลิกไป module/submodule ที่เกี่ยวข้องได้ |
+| AC-BO-DASH-011 | Dashboard responsive ถูกต้องที่ 375px, 760px, 1024px, 1366px และ 1440px |
+| AC-BO-DASH-012 | Mobile แสดงลำดับ Header -> KPI Summary -> Work Queue -> Recent Activity -> Dashboard Panels |
+| AC-BO-DASH-013 | Dashboard ไม่แสดง guest/public analytics ใน KPI, queue, activity หรือ panel |
+| AC-BO-DASH-014 | Partial load error ไม่ทำให้ทั้ง Dashboard ใช้งานไม่ได้ |
+| AC-BO-DASH-015 | Unauthorized section ถูกซ่อนหรือ mask อย่างเหมาะสม |
+| AC-BO-DASH-016 | ข้อความ, chip, button, row และ panel ไม่ล้นหรือซ้อนกันในทุก breakpoint |

@@ -1,0 +1,4 @@
+brand_name,model_name,reference_no,year,material,case_size,movement,description,price_min,price_median,price_max,currency,reference_status,source_type,source_note,updated_date
+Rolex,Daytona,116500LN,2016-2023,Stainless steel / ceramic bezel,40 mm,Automatic chronograph,Ceramic bezel Daytona reference used by Search and Watch Alert.,24600,31900,35600,USD,Mapped,Import,Verified from provider export,2026-08-04
+Omega,Speedmaster,3570.50,1996-2014,Stainless steel,42 mm,Manual wind chronograph,Moonwatch reference with broad listing coverage.,4200,5140,6200,USD,Mapped,Import,Verified from provider export,2026-08-04
+Seiko,Presage,SARX,Mixed,Stainless steel,Mixed,Automatic,Presage reference family from API model search.,520,720,880,USD,Needs Mapping,Import,Manual mapping sample,2026-08-04

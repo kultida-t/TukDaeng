@@ -40,10 +40,10 @@ Portfolio เป็นข้อมูล private เห็นเฉพาะ Own
 | --- | --- | --- |
 | Privacy | Portfolio เป็น Private และเห็นเฉพาะ Owner | Guest/Public Viewer/User อื่นห้ามเข้าถึง Portfolio |
 | Entry Point | Total Asset Value เป็น entry point สำหรับกดเข้า Portfolio | Portfolio เปิดจาก Owner Profile ผ่าน Total Asset Value |
-| Calculation | Portfolio คำนวณจาก Sale, Show, Hide ที่ยังใช้งานได้ | ใช้เฉพาะ Asset 3 สถานะนี้ และต้องไม่รวมรายการที่ลบโดยเจ้าของหรือถูก Back Office ซ่อนถาวร |
-| Exclusion | Portfolio ไม่รวม Sold, ลบโดยเจ้าของ และซ่อนถาวร | รายการเหล่านี้ไม่ถูกนำไปคำนวณ Total Asset Value |
+| Calculation | Portfolio คำนวณจาก Sale, Show, Hide ที่ยังใช้งานได้ | ใช้เฉพาะ Asset 3 สถานะนี้ที่เป็นทรัพย์สินของ Owner จริง และต้องไม่รวมรายการที่ลบโดยเจ้าของ ถูก Back Office ซ่อนถาวร หรือเป็น Consignment |
+| Exclusion | Portfolio ไม่รวม Sold, ลบโดยเจ้าของ, ซ่อนถาวร และ Consignment | รายการเหล่านี้ไม่ถูกนำไปคำนวณ Total Asset Value |
 | Market Price | Watch Price API ใช้ดึงราคาตลาด | ใช้เป็นแหล่ง Current Value ลำดับแรก |
-| Fallback Price | หากไม่มีราคาตลาดต้องมี fallback | ใช้ Owner Estimated Value, Purchase Price fallback หรือแสดง No Valuation ตามลำดับ |
+| Fallback Price | หากไม่มีราคาตลาดต้องมี fallback | ใช้ Purchase Price fallback หรือแสดง No Valuation ตามลำดับ |
 | Gain/Loss | คำนวณจาก Current Value เทียบ Purchase Price | คำนวณเฉพาะรายการที่มีข้อมูลพอและไม่ใช้ Purchase Price fallback |
 | Sold History | เก็บ Sale Date, Buyer, Contact, Sale Price, Payment Method, Attachment | Sold History แยกจาก Portfolio Value |
 | Data Privacy | Portfolio Value Detail, Sold History, Purchase Price/Date/From เป็น private | ห้ามแสดงใน Public Profile หรือ Viewer mode |
@@ -58,13 +58,13 @@ Portfolio เป็นข้อมูล private เห็นเฉพาะ Own
 | --- | --- | --- | --- |
 | High | Portfolio privacy ยังไม่ชัด | Portfolio เห็นเฉพาะ Owner | เพิ่ม Owner-only Portfolio state และห้าม Public Profile เข้าถึง |
 | High | Total Asset Value / Portfolio entry ยังไม่ชัด | Total Asset Value เป็น entry point สำหรับ Portfolio | เพิ่ม interaction จาก Owner Profile ไป Portfolio |
-| High | Portfolio calculation ต้อง lock status | Portfolio คำนวณจาก Sale, Show, Hide | annotate calculation source ให้ชัด |
+| High | Portfolio calculation ต้อง lock status และ provenance | Portfolio คำนวณจาก Sale, Show, Hide ที่เป็น `Owner (Asset)` เท่านั้น | annotate calculation source ให้ชัด และไม่รวม Consignment |
 | High | Sold อาจถูกนับรวมใน Portfolio Value | Portfolio ไม่รวม Sold | ระบุว่า Sold excluded และแยกไป Sold History |
 | High | Sold History fields ยังไม่ครบ | Sold History ต้องเก็บ Sale Date, Buyer, Contact, Sale Price, Payment Method, Attachment | เพิ่ม field display/state ให้ครบ |
 | High | Public Profile อาจแสดง Portfolio/private data | Portfolio Value Detail, Sold History, Purchase data เป็น private | ห้ามแสดงใน Public Profile/Viewer mode |
 | Medium | Empty state ของ Portfolio/Sold History ยังไม่ชัด | Empty State ใช้ `ไม่พบข้อมูล` / `No data found` | เพิ่ม empty state ตามข้อความกลาง |
-| Medium | Deleted / ซ่อนถาวร treatment ยังไม่ชัด | ลบโดยเจ้าของ และซ่อนถาวรหายจาก public surfaces และไม่ควรคำนวณ Portfolio | ระบุ ลบโดยเจ้าของ และซ่อนถาวรไม่ถูกนับใน Portfolio |
-| High | Market Value source / formula ยังไม่ชัด | Current Value ใช้ Watch Price API -> Owner Estimated Value -> Purchase Price fallback -> No Valuation | Annotate สูตรและ fallback ใน Portfolio dashboard/list |
+| Medium | Deleted / ซ่อนถาวร / Consignment treatment ยังไม่ชัด | ลบโดยเจ้าของ, ซ่อนถาวร และ Consignment ไม่ควรคำนวณ Portfolio | ระบุ ลบโดยเจ้าของ, ซ่อนถาวร และ Consignment ไม่ถูกนับใน Portfolio |
+| High | Market Value source / formula ยังไม่ชัด | Current Value ใช้ Watch Price API -> Purchase Price fallback -> No Valuation | Annotate สูตรและ fallback ใน Portfolio dashboard/list |
 | High | Gain/Loss calculation ยังไม่ชัด | Unrealized Gain/Loss = Current Value - Purchase Price เฉพาะรายการที่มีข้อมูลพอ | เพิ่ม Gain/Loss display state และ no-calculation state |
 | High | Realized Gain/Loss ของ Sold History ยังไม่ชัด | Realized Gain/Loss = Sale Price - Purchase Price และแยกจาก Portfolio Value | เพิ่มสูตรและ unavailable state ใน Sold History |
 | High | Expected Profit / Market Comparison ยังไม่ชัด | Expected Profit ใช้ Asking Price - Purchase Price, Market Comparison ใช้ Asking Price เทียบ Watch Price API Market Price | เพิ่ม Owner-only expected profit และ public-safe market comparison state |
@@ -90,7 +90,7 @@ Portfolio เป็นข้อมูล private เห็นเฉพาะ Own
 - Valuation source label
 - No market price / no valuation fallback
 - Asset ที่ใช้คำนวณ: Sale, Show, Hide ที่ยังใช้งานได้
-- Exclude Sold, ลบโดยเจ้าของ และซ่อนถาวรจาก Portfolio value
+- Exclude Sold, ลบโดยเจ้าของ, ซ่อนถาวร และ Consignment จาก Portfolio value
 - Sold History แยกจาก Portfolio value
 - Sold History fields:
   - Sale Date
@@ -217,6 +217,7 @@ Portfolio ไม่รวม:
 - Sold
 - ลบโดยเจ้าของ
 - ซ่อนถาวรจาก Back Office
+- Consignment
 - Asset ของ user อื่น
 - Asset ที่ user ไม่มีสิทธิ์เห็น
 
@@ -228,6 +229,7 @@ Eligible Asset คือ Asset ที่ใช้คำนวณ Portfolio ไ�
 
 - Owner เป็นเจ้าของ Asset
 - Status เป็น `Sale`, `Show` หรือ `Hide`
+- Provenance type เป็น `Owner (Asset)` ไม่ใช่ `Consignment`
 - Asset ยังไม่ถูกลบ
 - Asset ไม่อยู่ในสถานะลบโดยเจ้าของ
 - Asset ไม่ถูก Back Office ซ่อนถาวร
@@ -240,9 +242,8 @@ Current Value คือมูลค่าปัจจุบันที่ใช
 | Priority | Source | Rule | Display Label |
 | --- | --- | --- | --- |
 | 1 | Watch Price API Market Price | ใช้เมื่อ API match brand/model/reference/condition ได้ | `ราคาตลาดล่าสุด` / `Latest market price` |
-| 2 | Owner Estimated Value | ใช้เมื่อ Owner ระบุราคาประเมินเอง และไม่มี market price | `ราคาประเมินโดยเจ้าของ` / `Owner estimate` |
-| 3 | Purchase Price Fallback | ใช้เมื่อไม่มี market price และไม่มี owner estimate แต่มี Purchase Price | `ใช้ราคาซื้อเป็นค่าประมาณ` / `Using purchase price estimate` |
-| 4 | No Valuation | ใช้เมื่อไม่มี market price, owner estimate หรือ purchase price | `ไม่มีราคาตลาด` / `No market price` |
+| 2 | Purchase Price Fallback | ใช้เมื่อไม่มี market price แต่มี Purchase Price | `ใช้ราคาซื้อเป็นค่าประมาณ` / `Using purchase price estimate` |
+| 3 | No Valuation | ใช้เมื่อไม่มี market price หรือ purchase price | `ไม่มีราคาตลาด` / `No market price` |
 
 ถ้า Source เป็น `No Valuation`:
 
@@ -260,6 +261,8 @@ Total Asset Value = SUM(Current Value ของ Eligible Asset ที่มี C
 Rules:
 
 - รวมเฉพาะ Asset สถานะ `Sale`, `Show`, `Hide`
+- รวมเฉพาะ Asset ที่เป็นทรัพย์สินของ Owner จริง (`Owner (Asset)`)
+- ไม่รวม Asset ที่เป็น `Consignment`
 - ไม่รวม `Sold`
 - ไม่รวม Asset ที่ลบโดยเจ้าของ
 - ไม่รวม Asset ที่ถูก Back Office ซ่อนถาวร
@@ -284,7 +287,7 @@ Rules:
 
 คำนวณเฉพาะ Asset ที่มี:
 
-- Current Value จาก Watch Price API หรือ Owner Estimated Value
+- Current Value จาก Watch Price API
 - Purchase Price
 
 ```text
@@ -368,7 +371,7 @@ Display state:
 
 Rules:
 
-- ใช้ Watch Price API Market Price เท่านั้น ไม่ใช้ Owner Estimated Value หรือ Purchase Price fallback สำหรับ Above/At/Below
+- ใช้ Watch Price API Market Price เท่านั้น ไม่ใช้ Purchase Price fallback สำหรับ Above/At/Below
 - ใช้ช่วง `-1%` ถึง `+1%` เป็น `At Market` เพื่อกันเคสส่วนต่างเล็กน้อยจากการปัดเศษราคา
 - หากไม่มี Market Price ให้แสดง `ไม่มีราคาตลาด` / `No market price`
 - หากไม่มี Asking Price ให้แสดง `—`
@@ -514,6 +517,12 @@ Sold History ต้องเก็บ:
 - ลบโดยเจ้าของ และซ่อนถาวรต้องหายจาก public surfaces
 - Asset ที่ถูก Back Office ซ่อนถาวรยังอาจแสดงให้ Owner เห็นแบบ read-only ใน owner detail แต่ต้องไม่แสดงใน Portfolio Asset List
 
+## Consignment Portfolio Rule
+
+- Asset ที่เป็น `Consignment` ไม่ถูกนำมาคำนวณ Portfolio, Total Asset Value หรือ Asset Value Summary
+- เหตุผลคือ Consignment เป็นของฝากขาย ไม่ใช่ทรัพย์สินที่ Owner ถือครองเอง
+- ถ้า Asset เปลี่ยนจาก `Consignment` เป็น `Owner (Asset)` ตาม flow ที่ระบบอนุญาต จึงเริ่มเข้าเงื่อนไขคำนวณ Portfolio ได้
+
 ## Analytics Rule
 
 - Total Asset Value, Unrealized Gain/Loss, Realized Gain/Loss, Expected Profit, Market Comparison, Holding Period, Top Brand Holdings และ YTD Performance วิธี A เป็น V1 baseline ตามสูตรในเอกสารนี้
@@ -539,10 +548,10 @@ Portfolio Module ไม่มี user input form หลักใน V1
 
 | Condition | Rule |
 | --- | --- |
-| Portfolio calculation | ใช้เฉพาะ Sale, Show, Hide |
-| Current Value | ต้องเลือก source ตามลำดับ Watch Price API -> Owner Estimated Value -> Purchase Price fallback -> No Valuation |
-| Total Asset Value | ต้องไม่รวม Sold, ลบโดยเจ้าของ, ซ่อนถาวร หรือ No Valuation |
-| Gain/Loss | คำนวณเฉพาะ Asset ที่มี Current Value จาก market/owner estimate และมี Purchase Price |
+| Portfolio calculation | ใช้เฉพาะ Sale, Show, Hide ที่เป็น `Owner (Asset)` และไม่ใช่ `Consignment` |
+| Current Value | ต้องเลือก source ตามลำดับ Watch Price API -> Purchase Price fallback -> No Valuation |
+| Total Asset Value | ต้องไม่รวม Sold, ลบโดยเจ้าของ, ซ่อนถาวร, Consignment หรือ No Valuation |
+| Gain/Loss | คำนวณเฉพาะ Asset ที่มี Current Value จาก market price และมี Purchase Price |
 | Sold History fields | ต้องแสดงตาม field ที่ master กำหนด |
 | Permission | ต้องตรวจสิทธิ์ Owner ทุกครั้ง |
 | Private data | ต้องไม่ส่ง/แสดงให้ Public Viewer |
@@ -575,14 +584,13 @@ Portfolio Module ไม่มี user input form หลักใน V1
 ## Watch Price API Unavailable
 
 - Portfolio ยังต้องโหลดได้
-- Asset ที่มี Owner Estimated Value ให้ใช้ Owner Estimated Value
-- Asset ที่ไม่มี Owner Estimated Value แต่มี Purchase Price ให้ใช้ Purchase Price fallback
+- Asset ที่มี Purchase Price ให้ใช้ Purchase Price fallback
 - Asset ที่ไม่มีข้อมูลราคาใด ๆ ให้แสดง Current Value เป็น `—` และ label `ไม่มีราคาตลาด`
 - แสดง banner หรือ note: `ราคาตลาดบางรายการไม่พร้อมใช้งาน` / `Some market prices are unavailable`
 
 ## No Market Price For Asset
 
-- แสดง Current Value เป็น `—` หากไม่มี owner estimate หรือ purchase price
+- แสดง Current Value เป็น `—` หากไม่มี purchase price
 - แสดง label `ไม่มีราคาตลาด`
 - Asset ยังอยู่ใน Portfolio Asset List
 - Asset ไม่ถูกรวมใน Total Asset Value และ Gain/Loss
@@ -647,7 +655,7 @@ Then ต้องไม่แสดง Portfolio entry หรือ Portfolio Va
 
 Given Owner มี Asset สถานะ Sale, Show และ Hide  
 When ระบบคำนวณ Portfolio  
-Then Asset ทั้งสามสถานะต้องถูกนำมาคำนวณ
+Then Asset ทั้งสามสถานะต้องถูกนำมาคำนวณเฉพาะรายการที่เป็น `Owner (Asset)`
 
 ## AC-PORT-005: Portfolio Excludes Sold
 
@@ -674,9 +682,9 @@ Given Viewer เปิด Public Profile หรือ Public Asset Detail
 When ข้อมูลแสดง  
 Then ต้องไม่แสดง Purchase Price, Purchase Date, Purchase From, Proof of Payment, Sold History หรือ Portfolio Value Detail
 
-## AC-PORT-009: ไม่รวมรายการลบโดยเจ้าของและซ่อนถาวร
+## AC-PORT-009: ไม่รวมรายการลบโดยเจ้าของ ซ่อนถาวร และ Consignment
 
-Given Asset เป็นสถานะลบโดยเจ้าของ หรือถูก Back Office ซ่อนถาวร  
+Given Asset เป็นสถานะลบโดยเจ้าของ ถูก Back Office ซ่อนถาวร หรือเป็น Consignment  
 When ระบบคำนวณ Portfolio  
 Then Asset นั้นต้องไม่ถูกนำมาคำนวณ
 
@@ -685,27 +693,25 @@ Then Asset นั้นต้องไม่ถูกนำมาคำนวณ
 Given Owner มี Eligible Asset สถานะ Sale, Show และ Hide  
 When ระบบคำนวณ Total Asset Value  
 Then Total Asset Value ต้องเท่ากับผลรวม Current Value ของ Eligible Asset ที่มี Current Value  
-And ต้องไม่รวม Sold, ลบโดยเจ้าของ, ซ่อนถาวร หรือ No Valuation
+And ต้องไม่รวม Sold, ลบโดยเจ้าของ, ซ่อนถาวร, Consignment หรือ No Valuation
 
 ## AC-PORT-011: Current Value Source Priority
 
 Given Asset มีข้อมูลราคาหลายแหล่ง  
 When ระบบเลือก Current Value  
-Then ต้องใช้ลำดับ Watch Price API Market Price, Owner Estimated Value, Purchase Price fallback, No Valuation
+Then ต้องใช้ลำดับ Watch Price API Market Price, Purchase Price fallback, No Valuation
 
 ## AC-PORT-012: No Market Price Fallback
 
 Given Asset ไม่มี Watch Price API market price  
-When Asset มี Owner Estimated Value  
-Then ระบบต้องใช้ Owner Estimated Value  
-When Asset ไม่มี Owner Estimated Value แต่มี Purchase Price  
+When Asset มี Purchase Price
 Then ระบบต้องใช้ Purchase Price fallback และแสดง label ว่าใช้ราคาซื้อเป็นค่าประมาณ  
 When Asset ไม่มีข้อมูลราคาใด ๆ  
 Then Current Value ต้องแสดง `—` และไม่รวมใน Total Asset Value
 
 ## AC-PORT-013: Unrealized Gain Loss Formula
 
-Given Asset มี Current Value จาก Watch Price API หรือ Owner Estimated Value และมี Purchase Price  
+Given Asset มี Current Value จาก Watch Price API และมี Purchase Price
 When ระบบคำนวณ Gain/Loss  
 Then Unrealized Gain/Loss ต้องเท่ากับ Current Value - Purchase Price  
 And Unrealized Gain/Loss % ต้องเท่ากับ Unrealized Gain/Loss / Purchase Price * 100
@@ -722,7 +728,7 @@ And Asset นั้นต้องไม่ถูกรวมใน Total Unreal
 Given Watch Price API unavailable  
 When Owner เปิด Portfolio  
 Then Portfolio ยังต้องโหลดได้  
-And ใช้ Owner Estimated Value หรือ Purchase Price fallback ตามลำดับ  
+And ใช้ Purchase Price fallback เมื่อ Asset มี Purchase Price
 And แสดง note ว่าราคาตลาดบางรายการไม่พร้อมใช้งาน
 
 ## AC-PORT-016: Empty Portfolio
@@ -759,7 +765,7 @@ And หากน้อยกว่า -1% ต้องแสดง `Below Market
 Given Asset ไม่มี Watch Price API Market Price  
 When ระบบแสดง Market Comparison  
 Then ต้องแสดง `ไม่มีราคาตลาด` / `No market price`  
-And ต้องไม่ใช้ Owner Estimated Value หรือ Purchase Price fallback เพื่อแสดง Above/At/Below
+And ต้องไม่ใช้ Purchase Price fallback เพื่อแสดง Above/At/Below
 
 ## AC-PORT-021: Realized Gain Loss Formula
 
@@ -782,7 +788,7 @@ Then Holding Period ต้องเท่ากับ Sale Date - Purchase Date
 Given Owner มี Eligible Asset หลาย brand  
 When ระบบแสดง Top Brand Holdings  
 Then ต้องแสดง Top 3 brand จากจำนวน Asset สถานะ Sale, Show, Hide  
-And ต้องไม่รวม Sold, ลบโดยเจ้าของ หรือ Asset ที่ถูก Back Office ซ่อนถาวร
+And ต้องไม่รวม Sold, ลบโดยเจ้าของ, Consignment หรือ Asset ที่ถูก Back Office ซ่อนถาวร
 
 ## AC-PORT-024: YTD Performance Formula
 

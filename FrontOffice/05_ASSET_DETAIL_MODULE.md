@@ -510,7 +510,7 @@ Display state:
 Rules:
 
 - ใช้ Watch Price API Market Price เท่านั้น
-- ไม่ใช้ Owner Estimated Value หรือ Purchase Price fallback เพื่อแสดง Above/At/Below
+- ไม่ใช้ Purchase Price fallback เพื่อแสดง Above/At/Below
 - หากไม่มี Market Price ให้แสดง `ไม่มีราคาตลาด` / `No market price`
 - หากไม่มี Asking Price ให้ซ่อนหรือแสดง `—` ตาม layout
 
@@ -838,7 +838,7 @@ Comment empty state ต้องใช้ copy และ behavior ตาม `Com
 | AC-DETAIL-008 | Asset Detail ต้องรองรับ Swipe รูป |
 | AC-DETAIL-009 | Gallery ใน Asset Detail ต้องรองรับจำนวนรูปสูงสุด 10 รูปตาม Asset Management |
 | AC-DETAIL-010 | Asset Detail V1 ต้องไม่ใช้ Location เป็น field หลัก เว้นแต่ master จะตัดสินใจเพิ่มภายหลัง |
-| AC-DETAIL-010A | Market Comparison ต้องใช้ Asking Price เทียบกับ Watch Price API Market Price เท่านั้น และต้องไม่ใช้ Owner Estimated Value หรือ Purchase Price fallback เพื่อแสดง Above/At/Below |
+| AC-DETAIL-010A | Market Comparison ต้องใช้ Asking Price เทียบกับ Watch Price API Market Price เท่านั้น และต้องไม่ใช้ Purchase Price fallback เพื่อแสดง Above/At/Below |
 | AC-DETAIL-010B | Expected Profit ต้องแสดงเฉพาะ Owner view และต้องไม่แสดง Purchase Price หรือ expected profit ให้ Viewer/Public mode |
 | AC-DETAIL-010C | Owner Asset Detail ต้องแยก Purchase Information / Owner Provenance ออกจาก Consignment Information และแสดงเฉพาะ Owner หรือ Admin |
 | AC-DETAIL-010D | Optional private fields ที่ไม่ได้กรอกต้องไม่แสดง label หรือ placeholder ใน Viewer/Public mode และ Owner private section ควรซ่อน field ว่าง |

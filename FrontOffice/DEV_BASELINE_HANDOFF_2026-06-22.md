@@ -75,7 +75,7 @@ Figma references remain useful for visual alignment, but if Figma conflicts with
 - `Sale` requires Photos, Brand, Model / Series, Condition, Price and Description
 - `Show` requires Photos, Brand and Model / Series; Price is not required
 - `Hide` requires Photos and Brand only
-- `Hide` must not use listing price; optional private valuation must be labeled `Owner Estimated Value (Private)`
+- `Hide` must not use listing price or expose price in public/viewer surfaces
 - Provenance, purchase data, proof of payment, consignment data, sold history and portfolio value detail are private
 - Mark as Sold opens Sale Record Form before status becomes `Sold`
 - Delete Asset must remove public visibility and cancel related offers while chat remains
