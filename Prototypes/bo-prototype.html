@@ -8487,7 +8487,7 @@
     moduleData.market = mod("Market Data", "การดำเนินงาน / Market Data", "Watch Master Data", "ดูข้อมูล brand, model, reference, detail และ price indicator จาก API/backend sync แบบ read-only ก่อนส่งไป Search, Asset และ Watch Alert", "Sync API", [["Brands", "214", "API catalog"], ["Models", "3,842", "ทุกแบรนด์"], ["References", "28,910", "API refs"], ["API Sync", "08:14", "ล่าสุดวันนี้"]], [
       item("BRD-ROLEX", "Rolex", "Brand Catalog", "thewatchapi", "ปกติ", "Active", "Brand-first catalog with model, reference, detail and price coverage from API", ["Models 1,240", "Refs 4,820"], "Review brand catalog and drill down; Phase 1 does not allow manual edits"),
       item("MAP-018", "Unmapped reference 126710BLRO", "Mapping Queue", "Reference", "กลาง", "Needs Review", "Asset user input matches Rolex GMT-Master II but API mapping is not confirmed", ["Asset AST-8579"], "Flag for backend/provider correction; no BO manual merge in Phase 1"),
-      item("SYNC-20260803", "thewatchapi daily sync", "API Sync", "Batch", "ปกติ", "Completed", "Brand, model, reference, detail and price endpoints completed with warnings", ["Rate limit 72%"], "Review warnings and retry failed API records")
+      item("SYNC-20260803", "The Watch API daily sync", "API Sync", "Batch", "ปกติ", "Completed", "Brand, model, reference, detail และ price catalog sync completed with warnings", ["Provider warning"], "Review warnings and retry failed catalog records")
     ]);
 
     const marketCatalogData = {
@@ -13917,11 +13917,11 @@
 
     function getMarketSyncJobs() {
       return [
-        { id: "JOB-BRAND-LIST", endpoint: "/v1/brand/list", status: "สำเร็จ", priority: "ปกติ", started: "08:00:01", duration: "1.2s", synced: "214 แบรนด์", detail: "อัปเดตรายชื่อแบรนด์ทั้งหมดจาก thewatchapi", source: "thewatchapi" },
-        { id: "JOB-MODEL-ROLEX", endpoint: "/v1/model/list?brand=rolex", status: "สำเร็จ", priority: "ปกติ", started: "08:00:03", duration: "0.8s", synced: "186 โมเดล", detail: "โหลดโมเดลของ Rolex สำเร็จ", source: "thewatchapi" },
-        { id: "JOB-OMEGA-SEARCH", endpoint: "/v1/model/search?brand=omega", status: "กำลังทำงาน", priority: "กลาง", started: "08:00:12", duration: "กำลังทำงาน", synced: "812 / 1,240 รายการ", detail: "กำลังดึง Reference ของ Omega", source: "thewatchapi" },
-        { id: "JOB-PATEK-LIST", endpoint: "/v1/model/list?brand=patek+philippe", status: "สำเร็จ", priority: "ปกติ", started: "07:40:00", duration: "0.6s", synced: "94 โมเดล", detail: "โหลดโมเดลของ Patek Philippe สำเร็จ", source: "thewatchapi" },
-        { id: "JOB-SEIKO-REF", endpoint: "/v1/reference/list?brand=seiko", status: "ล้มเหลว", priority: "สูง", started: "06:55:20", duration: "—", synced: "error: too_many_results", detail: "response จาก provider ใหญ่เกิน plan ปัจจุบัน", source: "thewatchapi" }
+        { id: "JOB-BRAND-LIST", endpoint: "Brand catalog", status: "สำเร็จ", priority: "ปกติ", started: "08:00:01", duration: "1.2s", synced: "214 แบรนด์", detail: "อัปเดตรายชื่อแบรนด์ทั้งหมดจาก The Watch API", source: "The Watch API" },
+        { id: "JOB-MODEL-ROLEX", endpoint: "Rolex model catalog", status: "สำเร็จ", priority: "ปกติ", started: "08:00:03", duration: "0.8s", synced: "186 โมเดล", detail: "โหลดโมเดลของ Rolex สำเร็จ", source: "The Watch API" },
+        { id: "JOB-OMEGA-SEARCH", endpoint: "Omega reference catalog", status: "กำลังทำงาน", priority: "กลาง", started: "08:00:12", duration: "กำลังทำงาน", synced: "812 / 1,240 รายการ", detail: "กำลังดึงเลขอ้างอิงของ Omega", source: "The Watch API" },
+        { id: "JOB-PATEK-LIST", endpoint: "Patek Philippe model catalog", status: "สำเร็จ", priority: "ปกติ", started: "07:40:00", duration: "0.6s", synced: "94 โมเดล", detail: "โหลดโมเดลของ Patek Philippe สำเร็จ", source: "The Watch API" },
+        { id: "JOB-SEIKO-REF", endpoint: "Seiko reference catalog", status: "ล้มเหลว", priority: "สูง", started: "06:55:20", duration: "—", synced: "รอตรวจสอบรายการขนาดใหญ่", detail: "ข้อมูลจาก provider ใหญ่เกิน plan ปัจจุบัน", source: "The Watch API" }
       ];
     }
 
@@ -14016,12 +14016,11 @@
 
     function renderMarketSummaryCards(subLabel) {
       if (subLabel === "Dashboard") {
-        const renderChip = chip => `<span class="chip">${chip}</span>`;
         const metrics = [
-          { label: "แบรนด์ทั้งหมด", value: "214", trend: "อัปเดตจาก /brand/list", chips: ["Active 214", "Provider thewatchapi"], icon: "market" },
-          { label: "โมเดลทั้งหมด", value: "3,842", trend: "รวมทุกแบรนด์จาก /v1/model/list", chips: ["Synced 3,230", "Pending 612"], icon: "asset" },
-          { label: "เลขอ้างอิงทั้งหมด", value: "28,910", trend: "รวมทุก reference จาก /v1/model/search", chips: ["Mapped 28,298", "Missing price 612"], icon: "market" },
-          { label: "Sync ล่าสุด", value: "2 ชม. ที่แล้ว", trend: "08:14, 6 ส.ค. 2569", chips: ["Quota 72%", "รอบถัดไป 6 ชม."], icon: "refresh" }
+          { label: "แบรนด์ทั้งหมด", value: "214", trend: "ข้อมูลจาก Brand catalog", icon: "market" },
+          { label: "โมเดลทั้งหมด", value: "3,842", trend: "ข้อมูลจาก Model catalog", icon: "asset" },
+          { label: "เลขอ้างอิงทั้งหมด", value: "28,910", trend: "ข้อมูลจาก Reference catalog", icon: "market" },
+          { label: "Sync ล่าสุด", value: "2 ชม. ที่แล้ว", trend: "08:14, 6 ส.ค. 2569", icon: "refresh" }
         ];
         document.querySelector("#summary-grid").innerHTML = metrics.map(metric => `
           <article class="stat">
@@ -14033,18 +14032,17 @@
               <span class="stat-icon">${iconSvg[metric.icon]}</span>
             </div>
             <div class="stat-note">${metric.trend}</div>
-            <div class="chips">${metric.chips.map(renderChip).join("")}</div>
           </article>
         `).join("");
         return;
       }
       const stats = subLabel === "Dashboard"
-        ? [["แบรนด์ทั้งหมด", "214", "อัปเดตจาก /brand/list"], ["โมเดลทั้งหมด", "3,842", "รวมทุกแบรนด์"], ["เลขอ้างอิงทั้งหมด", "28,910", "รวมทุก reference"], ["Sync ล่าสุด", "2 ชม. ที่แล้ว", "08:14, 6 ส.ค. 2569"]]
+        ? [["แบรนด์ทั้งหมด", "214", "ข้อมูลจาก Brand catalog"], ["โมเดลทั้งหมด", "3,842", "ข้อมูลจาก Model catalog"], ["เลขอ้างอิงทั้งหมด", "28,910", "ข้อมูลจาก Reference catalog"], ["Sync ล่าสุด", "2 ชม. ที่แล้ว", "08:14, 6 ส.ค. 2569"]]
         : subLabel === "Sync Jobs"
-          ? [["Jobs วันนี้", "5", "endpoint ที่เรียกจาก thewatchapi"], ["สำเร็จ", "3", "ใช้ cache ล่าสุดแล้ว"], ["กำลังทำงาน", "1", "Omega reference"], ["ล้มเหลว", "1", "too_many_results"]]
+          ? [["Jobs วันนี้", "5", "backend sync จาก The Watch API"], ["สำเร็จ", "3", "ใช้ cache ล่าสุดแล้ว"], ["กำลังทำงาน", "1", "Omega reference"], ["ล้มเหลว", "1", "too_many_results"]]
           : subLabel === "API Token"
-            ? [["สถานะ", "ปกติ", "Standard Plan"], ["Quota วันนี้", "72%", "เหลือสำหรับ nightly sync"], ["Endpoint", "4", "brand / model / search / reference"], ["Token ล่าสุด", "06 ส.ค. 2569", "read-only display"]]
-            : [["แบรนด์ตัวอย่าง", "5", "คลิกเพื่อดูโมเดลย่อย"], ["โมเดลตัวอย่าง", "10", "ข้อมูลจาก /v1/model/list"], ["Reference ตัวอย่าง", "24", "ข้อมูลจาก /v1/model/search"], ["Sync ล่าสุด", "08:14", "6 ส.ค. 2569"]];
+            ? [["สถานะ", "ปกติ", "Standard Plan"], ["Quota วันนี้", "72%", "เหลือสำหรับ nightly sync"], ["ชุดข้อมูล", "4", "Brand / Model / Reference / Price"], ["Token ล่าสุด", "06 ส.ค. 2569", "read-only display"]]
+            : [["แบรนด์ตัวอย่าง", "5", "คลิกเพื่อดูโมเดลย่อย"], ["โมเดลตัวอย่าง", "10", "ข้อมูลจาก Model catalog"], ["Reference ตัวอย่าง", "24", "ข้อมูลจาก Reference catalog"], ["Sync ล่าสุด", "08:14", "6 ส.ค. 2569"]];
       document.querySelector("#summary-grid").innerHTML = stats.map(stat => `
         <article class="stat">
           <div class="stat-label">${stat[0]}</div>
@@ -14074,7 +14072,7 @@
       const statusOptions = Array.from(new Set(getMarketRowsForSub(subLabel).map(row => row.status)));
       document.querySelector(".filters").innerHTML = `
         <div class="user-filter-bar">
-          <input class="field search" id="market-search" type="search" placeholder="ค้นหา endpoint / สถานะ / รายละเอียด" />
+          <input class="field search" id="market-search" type="search" placeholder="ค้นหาชุดข้อมูล / สถานะ / รายละเอียด" />
           ${customSelect("market-status-filter", "Filter market data status", [
             { value: "", label: "ทุกสถานะ" },
             ...statusOptions.map(status => ({ value: status, label: status }))
@@ -14148,10 +14146,10 @@
       });
       document.querySelector("#table").innerHTML = `
         <div class="asset-table category-table market-table market-record-table">
-          <div class="asset-row head"><div>Endpoint</div><div>สถานะ</div><div>เริ่มเมื่อ</div><div>ใช้เวลา</div><div>จำนวนที่ Sync</div><div></div></div>
+          <div class="asset-row head"><div>ชุดข้อมูล</div><div>สถานะ</div><div>เริ่มเมื่อ</div><div>ใช้เวลา</div><div>จำนวนที่ Sync</div><div></div></div>
         ${rows.map(row => `
           <div class="asset-row" data-market-record="${row.id}">
-            <div data-label="Endpoint"><div class="main-text">${row.endpoint}</div><div class="muted">${row.detail}</div></div>
+            <div data-label="ชุดข้อมูล"><div class="main-text">${row.endpoint}</div><div class="muted">${row.detail}</div></div>
             <div class="market-card-tags">
               ${statusPill(row.status, row.priority)}
               <span class="user-card-tag asset-tag">${row.started}</span>
@@ -14379,7 +14377,7 @@
           </div>
           <div class="detail-section">
             <h4>Sync Source</h4>
-            <div class="kv"><span>Endpoints</span><strong>${brand.source}</strong></div>
+            <div class="kv"><span>Provider source</span><strong>${brand.source}</strong></div>
             <div class="kv"><span>Last sync</span><strong>${brand.lastSync}</strong></div>
           </div>
         </div>
@@ -15215,7 +15213,7 @@
             <p>${reference.description}</p>
           </section>
           <div class="market-source-note">
-            อัปเดตจาก thewatchapi ล่าสุด ${reference.updated || "2026-08-05"} · endpoint: /v1/model/search
+            อัปเดตจาก The Watch API ล่าสุด ${reference.updated || "2026-08-05"} · ชุดข้อมูล Reference catalog
           </div>
         </div>
       `;
@@ -15279,9 +15277,9 @@
             <div class="detail-tile"><span>ใช้เวลา</span><strong>${row.duration}</strong></div>
           </div>
           <section class="market-detail-section">
-            <h3>Endpoint</h3>
+            <h3>ชุดข้อมูล</h3>
             <div class="kv"><span>Source</span><strong>${row.source}</strong></div>
-            <div class="kv"><span>Path</span><strong>${row.endpoint}</strong></div>
+            <div class="kv"><span>ชุดข้อมูล</span><strong>${row.endpoint}</strong></div>
             <div class="module-note"><strong>ผลลัพธ์:</strong> ${row.synced}</div>
           </section>
           <section class="market-detail-section">
@@ -15336,7 +15334,7 @@
           <div class="user-action-head">
             <div>
               <h2 id="user-action-modal-title">${isSuccess ? "Sync สำเร็จ" : isError ? "Sync ไม่สำเร็จ" : isRunning ? "กำลัง Sync API" : "เริ่ม Sync API?"}</h2>
-              <p>${isSuccess ? "รีเฟรชข้อมูล Catalog และบันทึก Sync Log แล้ว" : isError ? "ยังไม่มีการเปลี่ยนข้อมูล Catalog กรุณาตรวจสอบ response ต้นทางก่อน retry endpoint ที่ไม่สำเร็จ" : "เริ่มงาน sync ใหม่จาก thewatchapi สำหรับข้อมูลต้นทางของ Catalog"}</p>
+              <p>${isSuccess ? "รีเฟรชข้อมูล Catalog และบันทึก Sync Log แล้ว" : isError ? "ยังไม่มีการเปลี่ยนข้อมูล Catalog กรุณาตรวจสอบ response ต้นทางก่อน retry ชุดข้อมูลที่ไม่สำเร็จ" : "เริ่มงาน sync ใหม่จาก The Watch API สำหรับข้อมูลต้นทางของ Catalog"}</p>
             </div>
             ${isRunning ? "" : `<button class="btn user-action-close" type="button" data-user-action-modal-close aria-label="Close modal" title="Close">${iconSvg.close}</button>`}
           </div>
@@ -15360,7 +15358,7 @@
                 ${state === "confirm" ? `<button class="user-detail-action-btn primary user-action-confirm" type="button" data-market-sync-run>เริ่ม Sync</button><button class="user-detail-action-btn" type="button" data-user-action-modal-close>ยกเลิก</button>` : ""}
                 ${isRunning ? `<button class="user-detail-action-btn primary user-action-confirm" type="button" disabled>กำลัง Sync...</button>` : ""}
                 ${isSuccess ? `<button class="user-detail-action-btn primary" type="button" data-market-sync-view-logs>ดู Sync Jobs</button><button class="user-detail-action-btn" type="button" data-user-action-modal-close>ปิด</button>` : ""}
-                ${isError ? `<button class="user-detail-action-btn warning user-action-confirm" type="button" data-market-sync-retry>Retry endpoint ที่ไม่สำเร็จ</button><button class="user-detail-action-btn" type="button" data-user-action-modal-close>ปิด</button>` : ""}
+                ${isError ? `<button class="user-detail-action-btn warning user-action-confirm" type="button" data-market-sync-retry>Retry ชุดข้อมูลที่ไม่สำเร็จ</button><button class="user-detail-action-btn" type="button" data-user-action-modal-close>ปิด</button>` : ""}
               </div>
               ${isError ? `<div class="warning-note action-feedback show error"><strong>reference/list ไม่สำเร็จ</strong><br><span>source API ส่ง rate limit กลับมา ข้อมูล Catalog เดิมยังไม่ถูกเปลี่ยนแปลง</span></div>` : ""}
               ${isSuccess ? `<div class="warning-note action-feedback show success"><strong>Sync สำเร็จ</strong><br><span>รีเฟรชแบรนด์ ${job.brands.toLocaleString()} รายการเมื่อ ${job.timestamp} และบันทึก warning ที่ไม่ block งานไว้ใน Sync Jobs แล้ว</span></div>` : ""}
@@ -15451,10 +15449,10 @@
 
     function renderMarketCards(subLabel) {
       const cards = subLabel === "Dashboard"
-        ? [["สถานะการ Sync ปัจจุบัน", "กำลังซิงก์เลข Reference ของแบรนด์ Omega จาก /v1/model/search เหลือโมเดลที่ยังไม่มีเลขราคา 612 รายการ"], ["แบรนด์ที่เพิ่งอัปเดตล่าสุด", "Rolex, Omega, Patek Philippe, Audemars Piguet และ Seiko พร้อมใช้เป็น master data อ่านอย่างเดียว"], ["ขอบเขตข้อมูล", "ข้อมูลมาจาก thewatchapi และเก็บ source trace, endpoint, last_updated ไว้ทุกระดับ"]]
+        ? [["สถานะการ Sync ปัจจุบัน", "กำลังอัปเดต Reference catalog ของแบรนด์ Omega เหลือรายการที่รอยืนยันราคากลาง 612 รายการ"], ["แบรนด์ที่เพิ่งอัปเดตล่าสุด", "Rolex, Omega, Patek Philippe, Audemars Piguet และ Seiko พร้อมใช้เป็น master data อ่านอย่างเดียว"], ["ขอบเขตข้อมูล", "ข้อมูลมาจาก The Watch API ผ่าน backend sync และเก็บ source trace กับเวลาอัปเดตไว้ทุกระดับ"]]
         : subLabel === "API Token"
           ? [["Provider", "thewatchapi.com"], ["Plan", "Standard Plan"], ["สิทธิ์ใช้งาน", "Read-only sync ผ่าน backend token ไม่แสดง secret เต็มใน BO"]]
-          : [["Brand-first workflow", "Admin เริ่มจากแบรนด์ ต่อด้วยโมเดล แล้วเปิดเลขอ้างอิงเพื่อดูรายละเอียดและราคา"], ["API source", "ข้อมูลมาจาก thewatchapi ผ่าน /v1/brand/list, /v1/model/list และ /v1/model/search"], ["Read-only", "ไม่มีปุ่มเพิ่ม แก้ไข ลบ หรือ override master data จาก provider"]];
+          : [["Brand-first workflow", "Admin เริ่มจากแบรนด์ ต่อด้วยโมเดล แล้วเปิดเลขอ้างอิงเพื่อดูรายละเอียดและราคา"], ["API source", "ข้อมูลมาจาก The Watch API ผ่าน backend sync ของ Brand, Model และ Reference catalog"], ["Read-only", "ไม่มีปุ่มเพิ่ม แก้ไข ลบ หรือ override master data จาก provider"]];
       document.querySelector("#cards").innerHTML = cards.map(card => `
         <article class="mini-card">
           <h3>${card[0]}</h3>
