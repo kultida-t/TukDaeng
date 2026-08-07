@@ -14270,7 +14270,7 @@
       const stats = subLabel === "Dashboard"
         ? [["Total Brands", marketMetrics.brands, "From Brand catalog"], ["Total Models", marketMetrics.models, "From Model catalog"], ["Total References", marketMetrics.references, "From Reference catalog"], ["Last Sync", marketMetrics.lastSyncRelative, marketMetrics.lastSyncTimestamp]]
         : subLabel === "Sync Jobs"
-          ? [["Jobs Today", "5", "Backend sync from The Watch API"], ["Completed", "3", "Latest cache is in use"], ["Running", "1", "Omega reference"], ["Failed", "1", "too_many_results"]]
+          ? [["Log Entries Today", "5", "Backend sync history from The Watch API"], ["Completed", "3", "Latest cache is in use"], ["Running", "1", "Omega reference"], ["Failed", "1", "too_many_results"]]
           : subLabel === "API Token"
             ? [["Status", "Normal", "Standard Plan"], ["Quota Today", "72%", "Available for nightly sync"], ["Datasets", "4", "Brand / Model / Reference / Price"], ["Latest Token", "06 Aug 2026", "read-only display"]]
             : [["Sample Brands", "5", "Click to view child models"], ["Sample Models", "10", "From Model catalog"], ["Sample References", "24", "From Reference catalog"], ["Latest Sync", "08:14", "06 Aug 2026"]];
@@ -14376,6 +14376,16 @@
       return `<span class="pill ${color}">${row.statusLabel || row.status}</span>`;
     }
 
+    function renderMarketSyncLogAction(row) {
+      if (row.status === "Failed") {
+        return `<button class="panel-action" type="button" data-market-record="${row.id}"><span>ดู Error</span></button>`;
+      }
+      if (row.status === "Running") {
+        return `<button class="panel-action" type="button" data-market-record="${row.id}"><span>ดูสถานะ</span></button>`;
+      }
+      return `<span class="muted">-</span>`;
+    }
+
     function renderMarketQueueRows(subLabel) {
       const hasFilters = subLabel !== "Sync Jobs";
       const q = hasFilters ? (document.querySelector("#market-search")?.value || "").trim().toLowerCase() : "";
@@ -14387,9 +14397,9 @@
       });
       document.querySelector("#table").innerHTML = `
         <div class="asset-table category-table market-table market-record-table">
-          <div class="asset-row head"><div>Endpoint</div><div>สถานะ</div><div>เริ่มเมื่อ</div><div>ใช้เวลา</div><div>จำนวนที่ Sync</div><div></div></div>
+          <div class="asset-row head"><div>Endpoint</div><div>สถานะ</div><div>เริ่มเมื่อ</div><div>ใช้เวลา</div><div>ผลการ Sync</div><div>Action</div></div>
         ${rows.map(row => `
-          <div class="asset-row" data-market-record="${row.id}">
+          <div class="asset-row">
             <div data-label="Endpoint"><div class="main-text">${row.endpoint}</div></div>
             <div class="market-card-tags">
               ${renderMarketSyncStatus(row)}
@@ -14404,10 +14414,10 @@
             <div data-label="สถานะ">${renderMarketSyncStatus(row)}</div>
             <div data-label="เริ่มเมื่อ"><div class="main-text">${row.started}</div></div>
             <div data-label="ใช้เวลา"><div class="main-text">${row.duration}</div></div>
-            <div data-label="จำนวนที่ Sync"><div class="main-text">${row.synced}</div></div>
-            <div><button class="panel-action" type="button" data-market-record="${row.id}"><span>รายละเอียด</span></button></div>
+            <div data-label="ผลการ Sync"><div class="main-text">${row.synced}</div></div>
+            <div data-label="Action">${renderMarketSyncLogAction(row)}</div>
           </div>
-        `).join("") || `<div class="detail-empty user-empty">No Sync Jobs found</div>`}
+        `).join("") || `<div class="detail-empty user-empty">No sync logs found</div>`}
         </div>
         <div class="footer-range">
           <span>แสดง ${rows.length ? `1-${rows.length}` : "0"} จาก ${rows.length}</span>
@@ -15510,16 +15520,18 @@
     function renderMarketRecordDetailPage(recordId, subLabel = activeSub) {
       const row = getMarketRowsForSub(subLabel).find(entry => entry.id === recordId) || getMarketRowsForSub(subLabel)[0];
       if (!row) return;
+      const pageLabel = subLabel === "Sync Jobs" ? "Sync History" : subLabel;
+      const detailTitle = row.status === "Failed" ? "Sync Error Detail" : row.status === "Running" ? "Sync Status Detail" : "Sync Log Detail";
       activeModule = "market";
       activeSub = subLabel;
       document.body.classList.add("market-list-mode");
       document.body.classList.remove("market-dashboard-mode");
       document.body.classList.remove("dashboard-mode", "user-management-mode", "asset-list-mode", "article-list-mode", "category-list-mode", "reported-board-mode", "asset-detail-mode", "user-list-mode", "user-detail-mode");
-      setPageActions(`<button class="btn" type="button" data-market-back>${iconSvg.chevron}<span>Back to ${subLabel}</span></button>`);
-      document.querySelector("#crumb").textContent = `${moduleData.market.crumb} / ${subLabel} / ${row.id}`;
+      setPageActions(`<button class="btn" type="button" data-market-back>${iconSvg.chevron}<span>Back to ${pageLabel}</span></button>`);
+      document.querySelector("#crumb").textContent = `${moduleData.market.crumb} / ${pageLabel} / ${row.id}`;
       document.querySelector("#page-title").textContent = row.endpoint || row.title;
       document.querySelector("#page-meta").textContent = "";
-      document.querySelector("#panel-title").textContent = "Sync Job Detail";
+      document.querySelector("#panel-title").textContent = detailTitle;
       document.querySelector("#panel-subtitle").textContent = "";
       document.querySelector("#primary-action").textContent = "";
       document.querySelector("#user-panel-filter-actions").innerHTML = "";
@@ -15630,7 +15642,7 @@
               <div class="user-detail-actions user-action-footer">
                 ${state === "confirm" ? `<button class="user-detail-action-btn primary user-action-confirm" type="button" data-market-sync-run>Start Sync</button><button class="user-detail-action-btn" type="button" data-user-action-modal-close>Cancel</button>` : ""}
                 ${isRunning ? `<button class="user-detail-action-btn primary user-action-confirm" type="button" disabled>Syncing...</button>` : ""}
-                ${isSuccess ? `<button class="user-detail-action-btn primary" type="button" data-market-sync-view-logs>View Sync Jobs</button><button class="user-detail-action-btn" type="button" data-user-action-modal-close>Close</button>` : ""}
+                ${isSuccess ? `<button class="user-detail-action-btn primary" type="button" data-market-sync-view-logs>View Sync History</button><button class="user-detail-action-btn" type="button" data-user-action-modal-close>Close</button>` : ""}
                 ${isError ? `<button class="user-detail-action-btn warning user-action-confirm" type="button" data-market-sync-retry>Retry Failed Datasets</button><button class="user-detail-action-btn" type="button" data-user-action-modal-close>Close</button>` : ""}
               </div>
               ${isError ? `<div class="warning-note action-feedback show error"><strong>reference/list failed</strong><br><span>The source API returned a rate limit. Existing catalog data was not changed.</span></div>` : ""}
@@ -15813,21 +15825,26 @@
     function renderMarketData(subLabel = "Dashboard") {
       activeModule = "market";
       activeSub = subLabel || "Dashboard";
+      const pageLabel = activeSub === "Sync Jobs" ? "Sync History" : activeSub;
       activeRow = null;
       document.body.classList.add("market-list-mode");
       document.body.classList.toggle("market-dashboard-mode", activeSub === "Dashboard");
       document.body.classList.remove("dashboard-mode", "user-management-mode", "asset-list-mode", "article-list-mode", "category-list-mode", "reported-board-mode", "asset-detail-mode", "user-list-mode", "user-detail-mode");
       setPageActions(`<button class="btn" type="button" data-market-sync-api>${iconSvg.refresh}<span>Sync Latest Data</span></button>`);
       document.querySelector("#user-panel-filter-actions").innerHTML = "";
-      document.querySelector("#crumb").textContent = `${moduleData.market.crumb} / ${subLabel}`;
-      document.querySelector("#page-title").textContent = subLabel;
+      document.querySelector("#crumb").textContent = `${moduleData.market.crumb} / ${pageLabel}`;
+      document.querySelector("#page-title").textContent = pageLabel;
       document.querySelector("#page-meta").textContent = "";
       document.querySelector("#panel-title").innerHTML = subLabel === "Brands & Models"
         ? `All Brands <span class="panel-title-count">[${getMarketMetricCards().brands}]</span>`
         : subLabel === "Dashboard"
           ? "Current Sync Status"
-          : subLabel;
-      document.querySelector("#panel-subtitle").textContent = "";
+          : subLabel === "Sync Jobs"
+            ? "Sync Run History"
+            : subLabel;
+      document.querySelector("#panel-subtitle").textContent = subLabel === "Sync Jobs"
+        ? "บันทึกผลการรัน sync ล่าสุดจาก backend"
+        : "";
       document.querySelector("#primary-action").textContent = "Sync Latest Data";
       setupMarketFilters(subLabel);
       renderMarketSummaryCards(subLabel);
