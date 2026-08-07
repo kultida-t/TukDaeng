@@ -1753,14 +1753,15 @@
     body.market-list-mode .market-sync-body {
       display: flex;
       align-items: center;
-      gap: 22px;
-      min-height: 136px;
-      padding: 22px 24px;
+      gap: 24px;
+      min-height: 128px;
+      padding: 20px 24px;
     }
     body.market-list-mode .market-sync-body strong {
       display: block;
       color: #071b36;
-      font-size: 15px;
+      font-size: 16px;
+      line-height: 1.35;
       margin-bottom: 6px;
     }
     body.market-list-mode .market-sync-body p {
@@ -1774,20 +1775,23 @@
       padding: 0;
     }
     body.market-list-mode .market-progress-ring {
-      display: grid;
-      place-items: center;
-      width: 92px;
-      height: 92px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      width: 96px;
+      height: 96px;
       flex: 0 0 auto;
       border-radius: 999px;
       background:
-        radial-gradient(circle at center, #fff 54%, transparent 55%),
-        conic-gradient(#d60012 0 81%, #dce5f0 81% 100%);
+        radial-gradient(circle at center, #fff 56%, transparent 57%),
+        conic-gradient(from -90deg, #d60012 0 81%, #e5edf6 81% 100%);
+      box-shadow: inset 0 0 0 1px rgba(215, 226, 240, .85);
       color: #d60012;
     }
     body.market-list-mode .market-progress-ring span {
       font-family: var(--font-heading);
-      font-size: 26px;
+      font-size: 24px;
       line-height: 1;
     }
     body.market-list-mode .market-progress-ring small {
@@ -15484,7 +15488,7 @@
 
     function renderMarketCards(subLabel) {
       const cards = subLabel === "Dashboard"
-        ? [["สถานะการ Sync ปัจจุบัน", "กำลังอัปเดต Reference catalog ของแบรนด์ Omega เหลือรายการที่รอยืนยันราคากลาง 612 รายการ"]]
+        ? [["Current Sync Status", "Updating Omega reference catalog. 612 items are still waiting for central price validation."]]
         : subLabel === "API Token"
           ? [["Provider", "thewatchapi.com"], ["Plan", "Standard Plan"], ["สิทธิ์ใช้งาน", "Read-only sync ผ่าน backend token ไม่แสดง secret เต็มใน BO"]]
           : [["Brand-first workflow", "Admin เริ่มจากแบรนด์ ต่อด้วยโมเดล แล้วเปิดเลขอ้างอิงเพื่อดูรายละเอียดและราคา"], ["API source", "ข้อมูลมาจาก The Watch API ผ่าน backend sync ของ Brand, Model และ Reference catalog"], ["Read-only", "ไม่มีปุ่มเพิ่ม แก้ไข ลบ หรือ override master data จาก provider"]];
@@ -15505,7 +15509,7 @@
               <div class="market-progress-ring"><span>81%</span><small>SYNCED</small></div>
               <div class="market-sync-main">
                 <strong>กำลังซิงก์เลข Reference ของแบรนด์ Omega</strong>
-                <p>ซิงก์แล้ว <b>173/214</b> แบรนด์ · เหลือโมเดลที่ยังไม่มีเลขราคา <b>612</b> รายการ · ไม่มี error ใน 24 ชม.ที่ผ่านมา</p>
+                <p>ซิงก์แล้ว <b>173/214</b> แบรนด์ · เหลือโมเดลที่ยังไม่มีข้อมูลราคากลาง <b>612</b> รายการ · ไม่มี error ใน 24 ชม.ที่ผ่านมา</p>
               </div>
             </div>
           </section>
@@ -15567,7 +15571,7 @@
       document.querySelector("#panel-title").innerHTML = subLabel === "แบรนด์ & โมเดล"
         ? `แบรนด์ทั้งหมด <span class="panel-title-count">(${getMarketReadOnlyBrands().length})</span>`
         : subLabel === "Dashboard"
-          ? "สถานะการ Sync ปัจจุบัน"
+          ? "Current Sync Status"
           : subLabel;
       document.querySelector("#panel-subtitle").textContent = "";
       document.querySelector("#primary-action").textContent = "Sync ข้อมูลล่าสุด";
