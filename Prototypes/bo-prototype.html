@@ -14333,11 +14333,11 @@
           `}).join("") || `<div class="detail-empty user-empty">No brands found</div>`}
         </div>
         <div class="footer-range">
-          <span>Showing ${rows.length ? `${start + 1}-${Math.min(start + marketCatalogPageSize, rows.length)}` : "0"} of ${rows.length}</span>
+          <span>แสดง ${rows.length ? `${start + 1}-${Math.min(start + marketCatalogPageSize, rows.length)}` : "0"} จาก ${rows.length}</span>
           <div class="pager">
-            <button class="btn" type="button" data-market-catalog-page="prev" ${marketCatalogPage <= 1 ? "disabled" : ""}>Previous</button>
+            <button class="btn" type="button" data-market-catalog-page="prev" ${marketCatalogPage <= 1 ? "disabled" : ""}>ก่อนหน้า</button>
             ${Array.from({ length: pageCount }, (_, index) => `<button class="btn ${index + 1 === marketCatalogPage ? "active" : ""}" type="button" data-market-catalog-page="${index + 1}">${index + 1}</button>`).join("")}
-            <button class="btn" type="button" data-market-catalog-page="next" ${marketCatalogPage >= pageCount ? "disabled" : ""}>Next</button>
+            <button class="btn" type="button" data-market-catalog-page="next" ${marketCatalogPage >= pageCount ? "disabled" : ""}>ถัดไป</button>
           </div>
         </div>
       `;
@@ -14375,7 +14375,7 @@
           </div>
         `).join("") || `<div class="detail-empty user-empty">No Sync Jobs found</div>`}
         </div>
-        <div class="footer-range"><span>Showing ${rows.length ? `1-${rows.length}` : "0"} of ${rows.length}</span></div>
+        <div class="footer-range"><span>แสดง ${rows.length ? `1-${rows.length}` : "0"} จาก ${rows.length}</span></div>
       `;
     }
 
@@ -14495,11 +14495,11 @@
           `}).join("") || `<div class="detail-empty user-empty">No models found for this brand</div>`}
         </div>
         <div class="footer-range">
-          <span>Showing ${rows.length ? `${start + 1}-${Math.min(start + marketModelPageSize, rows.length)}` : "0"} of ${rows.length}</span>
+          <span>แสดง ${rows.length ? `${start + 1}-${Math.min(start + marketModelPageSize, rows.length)}` : "0"} จาก ${rows.length}</span>
           <div class="pager">
-            <button class="btn" type="button" data-market-model-page="prev" ${marketModelPage <= 1 ? "disabled" : ""}>Previous</button>
+            <button class="btn" type="button" data-market-model-page="prev" ${marketModelPage <= 1 ? "disabled" : ""}>ก่อนหน้า</button>
             ${Array.from({ length: pageCount }, (_, index) => `<button class="btn ${index + 1 === marketModelPage ? "active" : ""}" type="button" data-market-model-page="${index + 1}">${index + 1}</button>`).join("")}
-            <button class="btn" type="button" data-market-model-page="next" ${marketModelPage >= pageCount ? "disabled" : ""}>Next</button>
+            <button class="btn" type="button" data-market-model-page="next" ${marketModelPage >= pageCount ? "disabled" : ""}>ถัดไป</button>
           </div>
         </div>
       `;
@@ -14541,11 +14541,11 @@
           `).join("") || `<div class="detail-empty user-empty">No references found for this model</div>`}
         </div>
         <div class="footer-range">
-          <span>Showing ${rows.length ? `${start + 1}-${Math.min(start + marketReferencePageSize, rows.length)}` : "0"} of ${rows.length}</span>
+          <span>แสดง ${rows.length ? `${start + 1}-${Math.min(start + marketReferencePageSize, rows.length)}` : "0"} จาก ${rows.length}</span>
           <div class="pager">
-            <button class="btn" type="button" data-market-reference-page="prev" ${marketReferencePage <= 1 ? "disabled" : ""}>Previous</button>
+            <button class="btn" type="button" data-market-reference-page="prev" ${marketReferencePage <= 1 ? "disabled" : ""}>ก่อนหน้า</button>
             ${Array.from({ length: pageCount }, (_, index) => `<button class="btn ${index + 1 === marketReferencePage ? "active" : ""}" type="button" data-market-reference-page="${index + 1}">${index + 1}</button>`).join("")}
-            <button class="btn" type="button" data-market-reference-page="next" ${marketReferencePage >= pageCount ? "disabled" : ""}>Next</button>
+            <button class="btn" type="button" data-market-reference-page="next" ${marketReferencePage >= pageCount ? "disabled" : ""}>ถัดไป</button>
           </div>
         </div>
       `;
@@ -15736,11 +15736,11 @@
               }).join("")}
             </div>
             <div class="footer-range">
-              <span>Showing ${rows.length ? `${start + 1}-${Math.min(start + marketDashboardPageSize, rows.length)}` : "0"} of ${rows.length}</span>
+              <span>แสดง ${rows.length ? `${start + 1}-${Math.min(start + marketDashboardPageSize, rows.length)}` : "0"} จาก ${rows.length}</span>
               <div class="pager">
-                <button class="btn" type="button" data-market-dashboard-page="prev" ${marketDashboardPage <= 1 ? "disabled" : ""}>Previous</button>
+                <button class="btn" type="button" data-market-dashboard-page="prev" ${marketDashboardPage <= 1 ? "disabled" : ""}>ก่อนหน้า</button>
                 ${Array.from({ length: pageCount }, (_, index) => `<button class="btn ${index + 1 === marketDashboardPage ? "active" : ""}" type="button" data-market-dashboard-page="${index + 1}">${index + 1}</button>`).join("")}
-                <button class="btn" type="button" data-market-dashboard-page="next" ${marketDashboardPage >= pageCount ? "disabled" : ""}>Next</button>
+                <button class="btn" type="button" data-market-dashboard-page="next" ${marketDashboardPage >= pageCount ? "disabled" : ""}>ถัดไป</button>
               </div>
             </div>
           </section>
