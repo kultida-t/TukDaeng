@@ -14132,7 +14132,7 @@
           { label: "Total Brands", value: marketMetrics.brands, trend: "ข้อมูลจาก Brand catalog" },
           { label: "Total Models", value: marketMetrics.models, trend: "ข้อมูลจาก Model catalog" },
           { label: "Total References", value: marketMetrics.references, trend: "ข้อมูลจาก Reference catalog" },
-          { label: "Last Sync", value: marketMetrics.lastSyncRelative, trend: `${marketMetrics.lastSyncTime}, ${marketMetrics.lastSyncDate}` }
+          { label: "Last Sync", value: marketMetrics.lastSyncRelative, trend: marketMetrics.lastSyncTimestamp }
         ];
         document.querySelector("#summary-grid").innerHTML = metrics.map(metric => `
           <article class="stat">
@@ -14149,7 +14149,7 @@
       }
       const marketMetrics = getMarketMetricCards();
       const stats = subLabel === "Dashboard"
-        ? [["Total Brands", marketMetrics.brands, "ข้อมูลจาก Brand catalog"], ["Total Models", marketMetrics.models, "ข้อมูลจาก Model catalog"], ["Total References", marketMetrics.references, "ข้อมูลจาก Reference catalog"], ["Last Sync", marketMetrics.lastSyncRelative, `${marketMetrics.lastSyncTime}, ${marketMetrics.lastSyncDate}`]]
+        ? [["Total Brands", marketMetrics.brands, "ข้อมูลจาก Brand catalog"], ["Total Models", marketMetrics.models, "ข้อมูลจาก Model catalog"], ["Total References", marketMetrics.references, "ข้อมูลจาก Reference catalog"], ["Last Sync", marketMetrics.lastSyncRelative, marketMetrics.lastSyncTimestamp]]
         : subLabel === "Sync Jobs"
           ? [["Jobs วันนี้", "5", "backend sync จาก The Watch API"], ["สำเร็จ", "3", "ใช้ cache ล่าสุดแล้ว"], ["กำลังทำงาน", "1", "Omega reference"], ["ล้มเหลว", "1", "too_many_results"]]
           : subLabel === "API Token"
@@ -15441,25 +15441,28 @@
         id: getMarketSyncJobId(now),
         timestamp: formatMarketSyncTimestamp(now),
         brands: marketMetricTotals.brands,
+        models: marketMetricTotals.models,
         references: marketMetricTotals.references
       };
       const isRunning = state === "running";
       const isSuccess = state === "success";
       const isError = state === "error";
       const shouldShowSyncProgress = isRunning || isSuccess || isError;
+      const lastSuccessfulSync = marketMetrics.lastSyncTimestamp;
+      const jobDisplayTimestamp = job.timestamp || lastSuccessfulSync;
       modalBody.innerHTML = `
         <div class="user-action-page market-sync-modal-content">
           <div class="user-action-head">
             <div>
-              <h2 id="user-action-modal-title">${isSuccess ? "Sync สำเร็จ" : isError ? "Sync ไม่สำเร็จ" : isRunning ? "กำลัง Sync API" : "เริ่ม Sync API?"}</h2>
-              <p>${isSuccess ? "รีเฟรชข้อมูล Catalog และบันทึก Sync Log แล้ว" : isError ? "ยังไม่มีการเปลี่ยนข้อมูล Catalog กรุณาตรวจสอบ response ต้นทางก่อน retry ชุดข้อมูลที่ไม่สำเร็จ" : "เริ่มงาน sync ใหม่จาก The Watch API สำหรับข้อมูลต้นทางของ Catalog"}</p>
+              <h2 id="user-action-modal-title">Sync Market Data</h2>
+              <p>${isSuccess ? "รีเฟรชข้อมูล Catalog และบันทึก Sync Log / Audit Log แล้ว" : isError ? "ยังไม่มีการเปลี่ยนข้อมูล Catalog กรุณาตรวจสอบ response ต้นทางก่อน retry ชุดข้อมูลที่ไม่สำเร็จ" : "เริ่มงาน sync ใหม่จาก The Watch API สำหรับข้อมูลต้นทางของ Catalog เฉพาะผู้ใช้ operations ที่มีสิทธิ์"}</p>
             </div>
             ${isRunning ? "" : `<button class="btn user-action-close" type="button" data-user-action-modal-close aria-label="Close modal" title="Close">${iconSvg.close}</button>`}
           </div>
           <div class="user-action-target">
             <div>
-              <strong>thewatchapi</strong>
-              <span>แบรนด์, รุ่น, Reference, ประวัติราคา</span>
+              <strong>The Watch API</strong>
+              <span>แบรนด์, โมเดล, Reference, รายละเอียดนาฬิกา, ประวัติราคา</span>
             </div>
             <span class="pill ${isError ? "red" : isSuccess ? "green" : "blue"}">${isError ? "ไม่สำเร็จ" : isSuccess ? "สำเร็จ" : isRunning ? "กำลังทำงาน" : "พร้อม"}</span>
           </div>
@@ -15467,8 +15470,9 @@
             <div class="detail-section">
               <div class="detail-grid two">
                 ${shouldShowSyncProgress ? `<div class="detail-tile"><span>Job ID</span><strong>${job.id}</strong></div>` : ""}
-                <div class="detail-tile"><span>Sync ล่าสุด</span><strong>${marketMetrics.lastSyncTimestamp}</strong></div>
-                <div class="detail-tile"><span>แบรนด์</span><strong>${formatMarketMetric(job.brands)}</strong></div>
+                <div class="detail-tile"><span>Last Sync</span><strong>${lastSuccessfulSync}</strong></div>
+                <div class="detail-tile"><span>Brands</span><strong>${formatMarketMetric(job.brands)}</strong></div>
+                <div class="detail-tile"><span>Models</span><strong>${formatMarketMetric(job.models)}</strong></div>
                 <div class="detail-tile"><span>References</span><strong>${formatMarketMetric(job.references)}</strong></div>
               </div>
               ${shouldShowSyncProgress ? renderMarketSyncSteps(isRunning ? 3 : isSuccess ? 5 : isError ? 3 : -1, isError ? 3 : -1) : ""}
@@ -15479,7 +15483,7 @@
                 ${isError ? `<button class="user-detail-action-btn warning user-action-confirm" type="button" data-market-sync-retry>Retry ชุดข้อมูลที่ไม่สำเร็จ</button><button class="user-detail-action-btn" type="button" data-user-action-modal-close>ปิด</button>` : ""}
               </div>
               ${isError ? `<div class="warning-note action-feedback show error"><strong>reference/list ไม่สำเร็จ</strong><br><span>source API ส่ง rate limit กลับมา ข้อมูล Catalog เดิมยังไม่ถูกเปลี่ยนแปลง</span></div>` : ""}
-              ${isSuccess ? `<div class="warning-note action-feedback show success"><strong>Sync สำเร็จ</strong><br><span>รีเฟรชแบรนด์ ${job.brands.toLocaleString()} รายการเมื่อ ${job.timestamp} และบันทึก warning ที่ไม่ block งานไว้ใน Sync Jobs แล้ว</span></div>` : ""}
+              ${isSuccess ? `<div class="warning-note action-feedback show success"><strong>Sync สำเร็จ</strong><br><span>รีเฟรช ${job.brands.toLocaleString()} แบรนด์, ${job.models.toLocaleString()} โมเดล และ ${job.references.toLocaleString()} references เมื่อ ${jobDisplayTimestamp} พร้อมบันทึก audit แล้ว</span></div>` : ""}
               ${state === "confirm" ? `
                 <details class="prototype-tools user-action-prototype-tools">
                   <summary>Prototype scenario</summary>
@@ -15520,14 +15524,14 @@
       });
       const newLog = {
         id: job.id,
-        title: "Manual thewatchapi sync",
+        title: "Manual The Watch API sync",
         brand: "All brands",
         type: "API Batch",
         status: "Completed",
         priority: "ปกติ",
         source: `Manual ${job.timestamp}`,
-        detail: `Brands, models, references and price history completed for ${job.brands.toLocaleString()} brands with 6 mapping warnings.`,
-        action: "Review mapping warnings before publishing downstream changes."
+        detail: `Brands, models, references and price history completed for ${job.brands.toLocaleString()} brands, ${job.models.toLocaleString()} models and ${job.references.toLocaleString()} references with 6 mapping warnings.`,
+        action: "Review mapping warnings and audit record before publishing downstream cache changes."
       };
       if (!marketCatalogData.syncLogs.some(log => log.id === newLog.id)) marketCatalogData.syncLogs.unshift(newLog);
       if (activeModule === "market" && activeSub === "แบรนด์ & โมเดล") renderMarketCatalogRows();
@@ -15546,6 +15550,7 @@
         startedAt: now,
         status: "running",
         brands: marketMetricTotals.brands,
+        models: marketMetricTotals.models,
         references: marketMetricTotals.references
       };
       renderMarketSyncModal("running", scenario);
@@ -15615,7 +15620,7 @@
                 const modelCount = getMarketSampleModelCount(brand);
                 const referenceCount = getMarketSampleReferenceCount(brand);
                 const running = brand.id === "omega";
-                const times = ["08:14, 6 ส.ค.", "กำลังซิงก์...", "07:40, 6 ส.ค.", "07:38, 6 ส.ค.", "06:55, 6 ส.ค."];
+                const times = ["06 Aug 2026 08:14", "Syncing...", "06 Aug 2026 07:40", "06 Aug 2026 07:38", "06 Aug 2026 06:55"];
                 return `
                   <div class="asset-row" data-market-brand="${brand.id}">
                     <div data-label="Brand"><div class="main-text">${brand.name}</div></div>
@@ -19453,7 +19458,7 @@
       }
       const marketSyncButton = event.target.closest("[data-market-sync-api]");
       if (marketSyncButton) {
-        openMarketSyncModal();
+        jumpToModule("market", "Sync Jobs");
         return;
       }
       const marketManagementButton = event.target.closest("[data-market-management-action]");
