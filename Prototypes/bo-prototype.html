@@ -1649,7 +1649,31 @@
       text-align: right;
     }
     body.market-list-mode .market-table.market-record-table .asset-row {
-      grid-template-columns: minmax(220px, 1.35fr) minmax(150px, .9fr) minmax(120px, .65fr) minmax(116px, .65fr) 74px;
+      grid-template-columns: minmax(360px, 1fr) 128px 120px 120px minmax(170px, .52fr) 112px;
+      column-gap: 18px;
+      min-height: 52px;
+      padding-top: 12px;
+      padding-bottom: 12px;
+      align-items: center;
+    }
+    body.market-list-mode .market-table.market-record-table .asset-row.head {
+      min-height: 44px;
+      padding-top: 12px;
+      padding-bottom: 12px;
+    }
+    body.market-list-mode .market-table.market-record-table .asset-row > div:last-child {
+      justify-self: end;
+      text-align: right;
+    }
+    body.market-list-mode .market-table.market-record-table .asset-row .main-text,
+    body.market-list-mode .market-table.market-record-table .asset-row .muted {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    body.market-list-mode .market-table.market-record-table .panel-action {
+      min-width: 82px;
+      justify-content: center;
     }
     body.market-list-mode .market-table.market-reference-list-table .asset-row {
       grid-template-columns: minmax(130px, .7fr) minmax(170px, .9fr) minmax(150px, .75fr) minmax(180px, .95fr) minmax(150px, .75fr) minmax(150px, .75fr);
@@ -1720,7 +1744,7 @@
       grid-template-columns: minmax(120px, .7fr) minmax(150px, .8fr) minmax(150px, .8fr) minmax(150px, .8fr) minmax(140px, .7fr) minmax(150px, .7fr);
     }
     body.market-list-mode .market-record-table .asset-row {
-      grid-template-columns: minmax(280px, 1.35fr) minmax(130px, .55fr) minmax(120px, .55fr) minmax(110px, .5fr) minmax(180px, .75fr) minmax(110px, .5fr);
+      grid-template-columns: minmax(360px, 1fr) 128px 120px 120px minmax(170px, .52fr) 112px;
     }
     body.market-list-mode .market-arrow-action {
       min-width: 58px;
@@ -14123,11 +14147,11 @@
 
     function getMarketSyncJobs() {
       return [
-        { id: "JOB-BRAND-LIST", endpoint: "Brand catalog", status: "Completed", priority: "Normal", started: "08:00:01", duration: "1.2s", synced: `${getMarketMetricCards().brands} brands`, detail: "Updated all brand names from The Watch API", source: "The Watch API" },
-        { id: "JOB-MODEL-ROLEX", endpoint: "Rolex model catalog", status: "Completed", priority: "Normal", started: "08:00:03", duration: "0.8s", synced: "186 models", detail: "Loaded Rolex models successfully", source: "The Watch API" },
-        { id: "JOB-OMEGA-SEARCH", endpoint: "Omega reference catalog", status: "Running", priority: "Medium", started: "08:00:12", duration: "Running", synced: "812 / 1,240 records", detail: "Fetching Omega reference numbers", source: "The Watch API" },
-        { id: "JOB-PATEK-LIST", endpoint: "Patek Philippe model catalog", status: "Completed", priority: "Normal", started: "07:40:00", duration: "0.6s", synced: "94 models", detail: "Loaded Patek Philippe models successfully", source: "The Watch API" },
-        { id: "JOB-SEIKO-REF", endpoint: "Seiko reference catalog", status: "Failed", priority: "High", started: "06:55:20", duration: "—", synced: "Large record set pending review", detail: "Provider result set is larger than the current plan allows", source: "The Watch API" }
+        { id: "JOB-BRAND-LIST", endpoint: "/v1/brand/list", title: "Brand list sync", status: "Completed", statusLabel: "สำเร็จ", priority: "Normal", started: "08:00:01", duration: "1.2s", synced: "214 แบรนด์", detail: "โหลดรายชื่อแบรนด์ทั้งหมดจาก provider แล้ว normalize เข้า TukDaeng cache", source: "thewatchapi", resultCode: "synced", cacheAction: "Refresh brand autocomplete and dependent filters" },
+        { id: "JOB-MODEL-ROLEX", endpoint: "/v1/model/list?brand=rolex", title: "Rolex model sync", status: "Completed", statusLabel: "สำเร็จ", priority: "Normal", started: "08:00:03", duration: "0.8s", synced: "186 โมเดล", detail: "โหลดโมเดล Rolex สำเร็จและผูกกับ brand key ที่ผ่านการ normalize", source: "thewatchapi", resultCode: "synced", cacheAction: "Refresh Rolex model options for Add Asset, Search and Watch Alert" },
+        { id: "JOB-OMEGA-SEARCH", endpoint: "/v1/model/search?brand=omega", title: "Omega reference discovery", status: "Running", statusLabel: "กำลังทำงาน", priority: "Medium", started: "08:00:12", duration: "กำลังทำงาน", synced: "812 / 1,240 รายการ", detail: "กำลังค้นหาและแตก reference/model candidates ของ Omega ก่อนบันทึก cache", source: "thewatchapi", resultCode: "in_progress", cacheAction: "Keep current Omega cache until job completes" },
+        { id: "JOB-PATEK-LIST", endpoint: "/v1/model/list?brand=patek+philippe", title: "Patek Philippe model sync", status: "Completed", statusLabel: "สำเร็จ", priority: "Normal", started: "07:40:00", duration: "0.6s", synced: "94 โมเดล", detail: "โหลดโมเดล Patek Philippe สำเร็จและอัปเดต downstream cache แล้ว", source: "thewatchapi", resultCode: "synced", cacheAction: "Refresh Patek Philippe model options" },
+        { id: "JOB-SEIKO-REF", endpoint: "/v1/reference/list?brand=seiko", title: "Seiko reference sync", status: "Failed", statusLabel: "ล้มเหลว", priority: "High", started: "06:55:20", duration: "-", synced: "error: too_many_results", detail: "provider ส่งผลลัพธ์มากเกินแผนปัจจุบัน ต้องจำกัด parameter หรือ retry แบบแบ่งหน้า", source: "thewatchapi", resultCode: "too_many_results", cacheAction: "Do not replace current Seiko cache; record error for ops review" }
       ];
     }
 
@@ -14276,19 +14300,23 @@
         document.querySelector(".filters").innerHTML = "";
         return;
       }
-      const statusOptions = Array.from(new Set(getMarketRowsForSub(subLabel).map(row => row.status)));
+      if (subLabel === "Sync Jobs") {
+        document.querySelector(".filters").innerHTML = "";
+        return;
+      }
+      const statusOptions = Array.from(new Map(getMarketRowsForSub(subLabel).map(row => [row.status, row.statusLabel || row.status])).entries());
       document.querySelector(".filters").innerHTML = `
         <div class="user-filter-bar">
-          <input class="field search" id="market-search" type="search" placeholder="Search dataset / status / detail" />
+          <input class="field search" id="market-search" type="search" placeholder="ค้นหา endpoint / โมเดล / เลขอ้างอิง" />
           ${customSelect("market-status-filter", "Filter market data status", [
-            { value: "", label: "All statuses" },
-            ...statusOptions.map(status => ({ value: status, label: status }))
+            { value: "", label: "ทุกสถานะ" },
+            ...statusOptions.map(([value, label]) => ({ value, label }))
           ])}
           ${customSelect("market-brand-filter", "Filter market data brand", [
-            { value: "", label: "All sources" },
+            { value: "", label: "ทุกแหล่งข้อมูล" },
             { value: "thewatchapi", label: "thewatchapi" }
           ])}
-          <button class="btn filter-reset" type="button" data-market-reset title="Reset all filters" aria-label="Reset all filters">${iconSvg.refresh}<span>Reset all filters</span></button>
+          <button class="btn filter-reset" type="button" data-market-reset title="ล้างตัวกรอง" aria-label="ล้างตัวกรอง">${iconSvg.refresh}<span>ล้างตัวกรอง</span></button>
         </div>
       `;
     }
@@ -14343,39 +14371,52 @@
       `;
     }
 
+    function renderMarketSyncStatus(row) {
+      const color = row.status === "Completed" ? "green" : row.status === "Failed" ? "red" : row.status === "Running" ? "amber" : "purple";
+      return `<span class="pill ${color}">${row.statusLabel || row.status}</span>`;
+    }
+
     function renderMarketQueueRows(subLabel) {
-      const q = (document.querySelector("#market-search")?.value || "").trim().toLowerCase();
-      const status = document.querySelector("#market-status-filter")?.value || "";
-      const brandFilter = document.querySelector("#market-brand-filter")?.value || "";
+      const hasFilters = subLabel !== "Sync Jobs";
+      const q = hasFilters ? (document.querySelector("#market-search")?.value || "").trim().toLowerCase() : "";
+      const status = hasFilters ? (document.querySelector("#market-status-filter")?.value || "") : "";
+      const brandFilter = hasFilters ? (document.querySelector("#market-brand-filter")?.value || "") : "";
       const rows = getMarketRowsForSub(subLabel).filter(row => {
         const text = Object.values(row).flat().join(" ").toLowerCase();
         return (!q || text.includes(q)) && (!status || row.status === status) && (!brandFilter || row.source === brandFilter);
       });
       document.querySelector("#table").innerHTML = `
         <div class="asset-table category-table market-table market-record-table">
-          <div class="asset-row head"><div>Dataset</div><div>Status</div><div>Started</div><div>Duration</div><div>Synced Count</div><div></div></div>
+          <div class="asset-row head"><div>Endpoint</div><div>สถานะ</div><div>เริ่มเมื่อ</div><div>ใช้เวลา</div><div>จำนวนที่ Sync</div><div></div></div>
         ${rows.map(row => `
           <div class="asset-row" data-market-record="${row.id}">
-            <div data-label="Dataset"><div class="main-text">${row.endpoint}</div><div class="muted">${row.detail}</div></div>
+            <div data-label="Endpoint"><div class="main-text">${row.endpoint}</div></div>
             <div class="market-card-tags">
-              ${statusPill(row.status, row.priority)}
+              ${renderMarketSyncStatus(row)}
               <span class="user-card-tag asset-tag">${row.started}</span>
               <span class="user-card-tag asset-tag">${row.synced}</span>
               <div class="market-card-meta user-card-meta">
-                <div class="user-card-meta-item"><span>Started</span><strong>${row.started}</strong></div>
-                <div class="user-card-meta-item"><span>Duration</span><strong>${row.duration}</strong></div>
-                <div class="user-card-meta-item"><span>Status</span><strong>${row.status}</strong></div>
+                <div class="user-card-meta-item"><span>เริ่มเมื่อ</span><strong>${row.started}</strong></div>
+                <div class="user-card-meta-item"><span>ใช้เวลา</span><strong>${row.duration}</strong></div>
+                <div class="user-card-meta-item"><span>สถานะ</span><strong>${row.statusLabel || row.status}</strong></div>
               </div>
             </div>
-            <div data-label="Status">${statusPill(row.status, row.priority)}</div>
-            <div data-label="Started"><div class="main-text">${row.started}</div></div>
-            <div data-label="Duration"><div class="main-text">${row.duration}</div></div>
-            <div data-label="Synced Count"><div class="main-text">${row.synced}</div></div>
-            <div><button class="panel-action" type="button" data-market-record="${row.id}"><span>Detail</span></button></div>
+            <div data-label="สถานะ">${renderMarketSyncStatus(row)}</div>
+            <div data-label="เริ่มเมื่อ"><div class="main-text">${row.started}</div></div>
+            <div data-label="ใช้เวลา"><div class="main-text">${row.duration}</div></div>
+            <div data-label="จำนวนที่ Sync"><div class="main-text">${row.synced}</div></div>
+            <div><button class="panel-action" type="button" data-market-record="${row.id}"><span>รายละเอียด</span></button></div>
           </div>
         `).join("") || `<div class="detail-empty user-empty">No Sync Jobs found</div>`}
         </div>
-        <div class="footer-range"><span>แสดง ${rows.length ? `1-${rows.length}` : "0"} จาก ${rows.length}</span></div>
+        <div class="footer-range">
+          <span>แสดง ${rows.length ? `1-${rows.length}` : "0"} จาก ${rows.length}</span>
+          <div class="pager">
+            <button class="btn" type="button" disabled>ก่อนหน้า</button>
+            <button class="btn active" type="button">1</button>
+            <button class="btn" type="button" disabled>ถัดไป</button>
+          </div>
+        </div>
       `;
     }
 
@@ -15490,21 +15531,24 @@
         <div class="market-brand-detail">
           <div class="market-detail-grid">
             <div class="detail-tile"><span>Job ID</span><strong>${row.id}</strong></div>
-            <div class="detail-tile"><span>Status</span><strong>${row.status}</strong></div>
-            <div class="detail-tile"><span>Started</span><strong>${row.started}</strong></div>
-            <div class="detail-tile"><span>Duration</span><strong>${row.duration}</strong></div>
+            <div class="detail-tile"><span>สถานะ</span><strong>${row.statusLabel || row.status}</strong></div>
+            <div class="detail-tile"><span>เริ่มเมื่อ</span><strong>${row.started}</strong></div>
+            <div class="detail-tile"><span>ใช้เวลา</span><strong>${row.duration}</strong></div>
           </div>
           <section class="market-detail-section">
-            <h3>Dataset</h3>
-            <div class="kv"><span>Source</span><strong>${row.source}</strong></div>
-            <div class="kv"><span>Dataset</span><strong>${row.endpoint}</strong></div>
-            <div class="module-note"><strong>Result:</strong> ${row.synced}</div>
+            <h3>Provider Request</h3>
+            <div class="kv"><span>Provider</span><strong>${row.source}</strong></div>
+            <div class="kv"><span>Endpoint</span><strong>${row.endpoint}</strong></div>
+            <div class="kv"><span>Result code</span><strong>${row.resultCode || row.status}</strong></div>
+            <div class="module-note"><strong>จำนวนที่ Sync:</strong> ${row.synced}</div>
           </section>
           <section class="market-detail-section">
-            <h3>Detail</h3>
+            <h3>Sync Flow</h3>
             <div class="module-note">${row.detail}</div>
             <div class="timeline">
-              <div class="event"><strong>Read-only master data</strong><br>This screen displays backend cache sync output only. Edit, add, delete and provider override actions are not available.</div>
+              <div class="event"><strong>Backend sync</strong><br>BO แสดงผลจาก TukDaeng backend/cache เท่านั้น ไม่เรียก The Watch API ตรงจาก client</div>
+              <div class="event"><strong>Cache action</strong><br>${row.cacheAction}</div>
+              <div class="event"><strong>Phase 1 rule</strong><br>Admin ดูผล sync และ retry ตาม permission ได้ แต่ไม่มี add, edit, delete, import, export หรือ provider override ใน Market Data</div>
             </div>
           </section>
         </div>
