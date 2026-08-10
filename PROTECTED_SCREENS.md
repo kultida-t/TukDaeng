@@ -20,6 +20,7 @@ These screens have been confirmed by the user and are locked from incidental cha
 - Content Management > Categories, confirmed and locked as of 2026-07-31
 - Content Management > Reported Board, confirmed and locked as of 2026-07-31
 - Content Management > Board Report Detail, confirmed and locked as of 2026-07-31
+- Market Data, including the Market Data menu entry, submenu/active states, routing, market data screens, lists, tables, cards, filters, charts, detail views/panels, import/export or refresh actions, breadcrumbs, mock data, and navigation state, confirmed and locked as of 2026-08-10
 
 ## Protected Prototype Files
 
@@ -31,7 +32,7 @@ The current confirmed prototype implementation is in:
 - `Prototypes/assets/user-avatars/*`
 - `Prototypes/assets/fonts/*`
 
-Do not edit these files for unrelated work if the edit can change Login, Dashboard, User Management menu behavior, User List, Reported Users, user/report detail views, any user/report action flows, Asset Management menu behavior, Asset List, Asset Detail, Reported Assets, Asset Report Detail, any asset report detail modal, any asset status/action flows, or any Content Management screen, submenu, navigation state, article/category/report flow, or content action flow.
+Do not edit these files for unrelated work if the edit can change Login, Dashboard, User Management menu behavior, User List, Reported Users, user/report detail views, any user/report action flows, Asset Management menu behavior, Asset List, Asset Detail, Reported Assets, Asset Report Detail, any asset report detail modal, any asset status/action flows, any Content Management screen, submenu, navigation state, article/category/report flow, or content action flow, or any Market Data screen, menu behavior, submenu, navigation state, data view, chart, filter, detail panel, import/export action, or refresh flow.
 
 ## Login Protected Scope
 
@@ -109,10 +110,20 @@ The protected Content Management scope includes:
 - Content Management menu entry, every submenu/active state, breadcrumbs, titles, panel labels, route behavior, navigation state, and back/cancel behavior connected to Articles, Categories, Reported Board, or Board Report Detail.
 - Mock data, state logic, computed values, helper functions, styles, assets, and shared components that directly support Content Management rendering or behavior.
 
+## Market Data Protected Scope
+
+The protected Market Data scope includes:
+
+- Market Data menu entry, every submenu/active state, breadcrumbs, titles, panel labels, route behavior, navigation state, and back/cancel behavior connected to Market Data screens.
+- Market data list/table/card screens, summary metrics, filters, search, sorting, pagination, tabs, chart panels, empty/loading/error states, and visible status changes.
+- Detail views, detail panels, drilldowns, preview panels, history panels, and any modal or drawer opened from Market Data screens.
+- Import/export, refresh, sync, publish, archive, activate/deactivate, or status actions connected to Market Data, including confirmation modals, validation, disabled states, completed states, audit/result messages, and toast/result messaging.
+- Mock data, fixtures, state logic, route parameters, computed values, helper functions, styles, assets, and shared components that directly support Market Data rendering or behavior.
+
 ## Rules
 
 - Do not change layout, styling, behavior, routing, copy, mock data, or component structure for the protected screens unless the user explicitly asks for that exact change.
-- Do not change navigation labels, menu order, active states, breadcrumbs, or route behavior for Dashboard, User Management, Asset Management, or Content Management unless the user explicitly approves that exact change.
+- Do not change navigation labels, menu order, active states, breadcrumbs, or route behavior for Dashboard, User Management, Asset Management, Content Management, or Market Data unless the user explicitly approves that exact change.
 - Treat shared files as high risk when they are used by protected screens. This includes layout shells, navigation, route guards, theme files, global CSS, common components, shared hooks, stores, API mocks, fixtures, and assets.
 - If a requested change to another screen requires editing shared code that may affect a protected screen, pause and ask the user for approval first.
 - Do not perform broad refactors, formatting-only rewrites, or dependency upgrades that touch protected-screen files as part of unrelated work.
@@ -121,7 +132,7 @@ The protected Content Management scope includes:
 ## Review Checklist Before Editing
 
 - Identify the files and routes involved in the requested change.
-- Check whether any target file is part of Login, Dashboard, Dashboard menu, User Management menu, User Management > User List, User Management > Reported Users, User Detail, Report Detail, any user/report action modal, Asset Management menu, Asset Management > Asset List, Asset Detail, Asset Management > Reported Assets, Asset Report Detail, any asset report detail modal, any asset action modal, or any Content Management screen, submenu, modal, detail view, or action flow.
+- Check whether any target file is part of Login, Dashboard, Dashboard menu, User Management menu, User Management > User List, User Management > Reported Users, User Detail, Report Detail, any user/report action modal, Asset Management menu, Asset Management > Asset List, Asset Detail, Asset Management > Reported Assets, Asset Report Detail, any asset report detail modal, any asset action modal, any Content Management screen, submenu, modal, detail view, or action flow, or any Market Data screen, menu behavior, submenu, modal, detail view, chart, filter, data action, or refresh flow.
 - Check whether any shared file is used by those protected screens.
 - If protected impact is possible, ask for confirmation before editing.
 - Keep changes scoped to the requested screen or feature.

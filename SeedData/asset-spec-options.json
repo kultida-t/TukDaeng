@@ -1,0 +1,122 @@
+{
+  "version": "asset-spec-options-v1",
+  "updated_at": "2026-08-10",
+  "description": "Seed option master for Front Office Add/Edit Asset, Asset Detail, Search Filter, and Watch Alert criteria. These are internal options, not BO Market Data provider catalog.",
+  "schema": {
+    "group": "Option group identifier used by API and forms.",
+    "key": "Stable option key. Do not rename after production use; create a new option and inactive the old one if needed.",
+    "label_en": "English display label.",
+    "label_th": "Thai display label.",
+    "description_en": "Internal description for dev/admin context.",
+    "sort_order": "Display order inside the group.",
+    "is_active": "FO should show only active options for new Add/Edit input.",
+    "is_system": "Seeded baseline option.",
+    "allows_multi_select": "Whether the group is selected as multiple values in FO forms."
+  },
+  "groups": [
+    {
+      "group": "condition",
+      "allows_multi_select": false,
+      "options": [
+        { "key": "new_unworn", "label_en": "New / Unworn", "label_th": "ใหม่ / ยังไม่ผ่านการใช้งาน", "description_en": "Never worn or no visible usage", "sort_order": 10, "is_active": true, "is_system": true },
+        { "key": "mint", "label_en": "Mint", "label_th": "เหมือนใหม่", "description_en": "Near-perfect condition with minimal handling signs", "sort_order": 20, "is_active": true, "is_system": true },
+        { "key": "excellent", "label_en": "Excellent", "label_th": "สภาพดีเยี่ยม", "description_en": "Light signs of use; well cared for", "sort_order": 30, "is_active": true, "is_system": true },
+        { "key": "very_good", "label_en": "Very Good", "label_th": "สภาพดีมาก", "description_en": "Visible but normal signs of use", "sort_order": 40, "is_active": true, "is_system": true },
+        { "key": "good", "label_en": "Good", "label_th": "สภาพดี", "description_en": "Noticeable wear but fully usable", "sort_order": 50, "is_active": true, "is_system": true },
+        { "key": "fair", "label_en": "Fair", "label_th": "พอใช้", "description_en": "Heavy wear or visible marks; should be clearly described", "sort_order": 60, "is_active": true, "is_system": true }
+      ]
+    },
+    {
+      "group": "delivery",
+      "allows_multi_select": true,
+      "options": [
+        { "key": "watch_only", "label_en": "Watch only", "label_th": "เฉพาะตัวเรือน", "description_en": "Watch only without original box or papers", "sort_order": 10, "is_active": true, "is_system": true },
+        { "key": "original_box", "label_en": "Original box", "label_th": "กล่องเดิม", "description_en": "Original manufacturer box", "sort_order": 20, "is_active": true, "is_system": true },
+        { "key": "original_papers", "label_en": "Original papers", "label_th": "เอกสารเดิม", "description_en": "Original documents or papers", "sort_order": 30, "is_active": true, "is_system": true },
+        { "key": "warranty_card", "label_en": "Warranty card", "label_th": "บัตรรับประกัน", "description_en": "Manufacturer or dealer warranty card", "sort_order": 40, "is_active": true, "is_system": true },
+        { "key": "receipt_copy", "label_en": "Receipt copy", "label_th": "สำเนาใบเสร็จ", "description_en": "Receipt or invoice copy", "sort_order": 50, "is_active": true, "is_system": true },
+        { "key": "certificate", "label_en": "Certificate", "label_th": "ใบรับรอง", "description_en": "Certificate or authentication document", "sort_order": 60, "is_active": true, "is_system": true },
+        { "key": "manual_booklet", "label_en": "Manual / booklet", "label_th": "คู่มือ / สมุดคู่มือ", "description_en": "Manual booklet or product booklet", "sort_order": 70, "is_active": true, "is_system": true },
+        { "key": "extra_links", "label_en": "Extra links", "label_th": "ข้อสายสำรอง", "description_en": "Extra bracelet links", "sort_order": 80, "is_active": true, "is_system": true },
+        { "key": "extra_strap", "label_en": "Extra strap", "label_th": "สายสำรอง", "description_en": "Additional strap included", "sort_order": 90, "is_active": true, "is_system": true },
+        { "key": "service_papers", "label_en": "Service papers", "label_th": "เอกสารเซอร์วิส", "description_en": "Service records or service papers", "sort_order": 100, "is_active": true, "is_system": true },
+        { "key": "hang_tag", "label_en": "Hang tag", "label_th": "ป้ายแขวน", "description_en": "Manufacturer or dealer hang tag", "sort_order": 110, "is_active": true, "is_system": true },
+        { "key": "travel_pouch", "label_en": "Travel pouch", "label_th": "ซอง / กระเป๋าพกพา", "description_en": "Travel pouch or carrying case", "sort_order": 120, "is_active": true, "is_system": true }
+      ]
+    },
+    {
+      "group": "case_material",
+      "allows_multi_select": false,
+      "options": [
+        { "key": "stainless_steel", "label_en": "Stainless steel", "label_th": "สแตนเลสสตีล", "description_en": "Stainless steel case material", "sort_order": 10, "is_active": true, "is_system": true },
+        { "key": "yellow_gold", "label_en": "Yellow gold", "label_th": "ทองคำ", "description_en": "Yellow gold case material", "sort_order": 20, "is_active": true, "is_system": true },
+        { "key": "rose_gold", "label_en": "Rose gold", "label_th": "โรสโกลด์", "description_en": "Rose gold case material", "sort_order": 30, "is_active": true, "is_system": true },
+        { "key": "white_gold", "label_en": "White gold", "label_th": "ไวท์โกลด์", "description_en": "White gold case material", "sort_order": 40, "is_active": true, "is_system": true },
+        { "key": "platinum", "label_en": "Platinum", "label_th": "แพลทินัม", "description_en": "Platinum case material", "sort_order": 50, "is_active": true, "is_system": true },
+        { "key": "titanium", "label_en": "Titanium", "label_th": "ไทเทเนียม", "description_en": "Titanium case material", "sort_order": 60, "is_active": true, "is_system": true },
+        { "key": "ceramic", "label_en": "Ceramic", "label_th": "เซรามิก", "description_en": "Ceramic case material", "sort_order": 70, "is_active": true, "is_system": true },
+        { "key": "carbon", "label_en": "Carbon", "label_th": "คาร์บอน", "description_en": "Carbon or carbon composite case material", "sort_order": 80, "is_active": true, "is_system": true },
+        { "key": "bronze", "label_en": "Bronze", "label_th": "บรอนซ์", "description_en": "Bronze case material", "sort_order": 90, "is_active": true, "is_system": true },
+        { "key": "aluminum", "label_en": "Aluminum", "label_th": "อะลูมิเนียม", "description_en": "Aluminum case material", "sort_order": 100, "is_active": true, "is_system": true },
+        { "key": "tantalum", "label_en": "Tantalum", "label_th": "แทนทาลัม", "description_en": "Tantalum case material", "sort_order": 110, "is_active": true, "is_system": true },
+        { "key": "two_tone", "label_en": "Two-tone", "label_th": "ทูโทน", "description_en": "Two-tone or mixed metal case material", "sort_order": 120, "is_active": true, "is_system": true },
+        { "key": "pvd_dlc", "label_en": "PVD / DLC coated", "label_th": "เคลือบ PVD / DLC", "description_en": "Coated metal case material", "sort_order": 130, "is_active": true, "is_system": true }
+      ]
+    },
+    {
+      "group": "movement",
+      "allows_multi_select": false,
+      "options": [
+        { "key": "automatic", "label_en": "Automatic", "label_th": "ออโตเมติก", "description_en": "Self-winding mechanical movement", "sort_order": 10, "is_active": true, "is_system": true },
+        { "key": "manual_winding", "label_en": "Manual winding", "label_th": "ไขลาน", "description_en": "Hand-wound mechanical movement", "sort_order": 20, "is_active": true, "is_system": true },
+        { "key": "quartz", "label_en": "Quartz", "label_th": "ควอตซ์", "description_en": "Battery-powered quartz movement", "sort_order": 30, "is_active": true, "is_system": true },
+        { "key": "spring_drive", "label_en": "Spring Drive", "label_th": "สปริงไดรฟ์", "description_en": "Seiko Spring Drive movement", "sort_order": 40, "is_active": true, "is_system": true },
+        { "key": "solar", "label_en": "Solar", "label_th": "โซลาร์", "description_en": "Solar-powered quartz movement", "sort_order": 50, "is_active": true, "is_system": true },
+        { "key": "kinetic", "label_en": "Kinetic", "label_th": "คิเนติก", "description_en": "Kinetic-powered quartz movement", "sort_order": 60, "is_active": true, "is_system": true },
+        { "key": "meca_quartz", "label_en": "Meca-quartz", "label_th": "เมกะควอตซ์", "description_en": "Hybrid mechanical/quartz chronograph movement", "sort_order": 70, "is_active": true, "is_system": true }
+      ]
+    },
+    {
+      "group": "dial_color",
+      "allows_multi_select": false,
+      "options": [
+        { "key": "black", "label_en": "Black", "label_th": "ดำ", "description_en": "Black dial", "sort_order": 10, "is_active": true, "is_system": true },
+        { "key": "blue", "label_en": "Blue", "label_th": "น้ำเงิน", "description_en": "Blue dial", "sort_order": 20, "is_active": true, "is_system": true },
+        { "key": "white", "label_en": "White", "label_th": "ขาว", "description_en": "White dial", "sort_order": 30, "is_active": true, "is_system": true },
+        { "key": "silver", "label_en": "Silver", "label_th": "เงิน", "description_en": "Silver dial", "sort_order": 40, "is_active": true, "is_system": true },
+        { "key": "gray", "label_en": "Gray", "label_th": "เทา", "description_en": "Gray dial", "sort_order": 50, "is_active": true, "is_system": true },
+        { "key": "green", "label_en": "Green", "label_th": "เขียว", "description_en": "Green dial", "sort_order": 60, "is_active": true, "is_system": true },
+        { "key": "champagne", "label_en": "Champagne", "label_th": "แชมเปญ", "description_en": "Champagne dial", "sort_order": 70, "is_active": true, "is_system": true },
+        { "key": "brown", "label_en": "Brown", "label_th": "น้ำตาล", "description_en": "Brown dial", "sort_order": 80, "is_active": true, "is_system": true },
+        { "key": "gold", "label_en": "Gold", "label_th": "ทอง", "description_en": "Gold dial", "sort_order": 90, "is_active": true, "is_system": true },
+        { "key": "ivory", "label_en": "Ivory", "label_th": "งาช้าง", "description_en": "Ivory or cream dial", "sort_order": 100, "is_active": true, "is_system": true },
+        { "key": "mother_of_pearl", "label_en": "Mother of pearl", "label_th": "มุก", "description_en": "Mother of pearl dial", "sort_order": 110, "is_active": true, "is_system": true },
+        { "key": "red", "label_en": "Red", "label_th": "แดง", "description_en": "Red dial", "sort_order": 120, "is_active": true, "is_system": true },
+        { "key": "burgundy", "label_en": "Burgundy", "label_th": "เบอร์กันดี", "description_en": "Burgundy dial", "sort_order": 130, "is_active": true, "is_system": true },
+        { "key": "orange", "label_en": "Orange", "label_th": "ส้ม", "description_en": "Orange dial", "sort_order": 140, "is_active": true, "is_system": true },
+        { "key": "yellow", "label_en": "Yellow", "label_th": "เหลือง", "description_en": "Yellow dial", "sort_order": 150, "is_active": true, "is_system": true },
+        { "key": "salmon", "label_en": "Salmon", "label_th": "แซลมอน", "description_en": "Salmon dial", "sort_order": 160, "is_active": true, "is_system": true },
+        { "key": "turquoise", "label_en": "Turquoise", "label_th": "เทอร์ควอยซ์", "description_en": "Turquoise dial", "sort_order": 170, "is_active": true, "is_system": true },
+        { "key": "skeleton", "label_en": "Skeleton", "label_th": "สเกเลตัน", "description_en": "Skeleton or openworked dial", "sort_order": 180, "is_active": true, "is_system": true }
+      ]
+    },
+    {
+      "group": "strap_bracelet_type",
+      "allows_multi_select": false,
+      "options": [
+        { "key": "stainless_steel_bracelet", "label_en": "Stainless steel bracelet", "label_th": "สายสแตนเลสสตีล", "description_en": "Stainless steel bracelet", "sort_order": 10, "is_active": true, "is_system": true },
+        { "key": "gold_bracelet", "label_en": "Gold bracelet", "label_th": "สายทอง", "description_en": "Gold bracelet", "sort_order": 20, "is_active": true, "is_system": true },
+        { "key": "two_tone_bracelet", "label_en": "Two-tone bracelet", "label_th": "สายทูโทน", "description_en": "Two-tone bracelet", "sort_order": 30, "is_active": true, "is_system": true },
+        { "key": "titanium_bracelet", "label_en": "Titanium bracelet", "label_th": "สายไทเทเนียม", "description_en": "Titanium bracelet", "sort_order": 40, "is_active": true, "is_system": true },
+        { "key": "ceramic_bracelet", "label_en": "Ceramic bracelet", "label_th": "สายเซรามิก", "description_en": "Ceramic bracelet", "sort_order": 50, "is_active": true, "is_system": true },
+        { "key": "integrated_bracelet", "label_en": "Integrated bracelet", "label_th": "สาย integrated", "description_en": "Integrated bracelet", "sort_order": 60, "is_active": true, "is_system": true },
+        { "key": "leather_strap", "label_en": "Leather strap", "label_th": "สายหนัง", "description_en": "Leather strap", "sort_order": 70, "is_active": true, "is_system": true },
+        { "key": "alligator_strap", "label_en": "Alligator strap", "label_th": "สายหนังจระเข้", "description_en": "Alligator leather strap", "sort_order": 80, "is_active": true, "is_system": true },
+        { "key": "rubber_strap", "label_en": "Rubber strap", "label_th": "สายยาง", "description_en": "Rubber strap", "sort_order": 90, "is_active": true, "is_system": true },
+        { "key": "fabric_nato_strap", "label_en": "Fabric / NATO strap", "label_th": "สายผ้า / NATO", "description_en": "Fabric or NATO strap", "sort_order": 100, "is_active": true, "is_system": true },
+        { "key": "canvas_strap", "label_en": "Canvas strap", "label_th": "สายแคนวาส", "description_en": "Canvas strap", "sort_order": 110, "is_active": true, "is_system": true },
+        { "key": "sailcloth_strap", "label_en": "Sailcloth strap", "label_th": "สาย sailcloth", "description_en": "Sailcloth strap", "sort_order": 120, "is_active": true, "is_system": true }
+      ]
+    }
+  ]
+}
