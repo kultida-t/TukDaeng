@@ -15978,12 +15978,10 @@
                   <div class="asset-row" data-market-brand="${brand.id}">
                     <div data-label="Brand"><div class="main-text">${brand.name}</div></div>
                     <div class="market-card-tags">
-                      ${statusPill(running ? "Syncing" : "Completed", running ? "Medium" : "Normal")}
-                      <span class="user-card-tag asset-tag">${modelCount.toLocaleString()} models</span>
-                      <span class="user-card-tag asset-tag">${referenceCount.toLocaleString()} references</span>
                       <div class="market-card-meta user-card-meta">
                         <div class="user-card-meta-item"><span>Models</span><strong>${modelCount.toLocaleString()}</strong></div>
                         <div class="user-card-meta-item"><span>References</span><strong>${referenceCount.toLocaleString()}</strong></div>
+                        <div class="user-card-meta-item"><span>Status</span><strong>${running ? "Syncing" : "Completed"}</strong></div>
                         <div class="user-card-meta-item"><span>Last Sync</span><strong>${times[start + index] || brand.lastSync}</strong></div>
                       </div>
                     </div>
