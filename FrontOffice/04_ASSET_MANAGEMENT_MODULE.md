@@ -273,6 +273,63 @@ Add / Edit Asset ต้องรองรับข้อมูลต่อไป
 - Provenance
 - Consignment
 
+## Market Data Mapping And User-entered Specification Rule
+
+Brand, Model / Series และ Reference No. ต้องใช้ Market Data เป็นแหล่ง autocomplete / structured selection เมื่อมีข้อมูลในระบบ แต่ข้อมูลที่ Owner กรอกจริงใน Add / Edit Asset ต้องถูกเก็บเป็นข้อมูลของ Asset นั้นเอง ไม่เขียนทับ Market Data catalog และไม่ถูก provider sync ทับภายหลัง
+
+กฎการเก็บข้อมูล:
+
+- `brand_id`, `model_id` และ `reference_id` เก็บ relation ไปยัง Market Data เมื่อ Owner เลือก option ที่มีอยู่ในระบบ
+- ต้องเก็บ `brand_name_snapshot`, `model_name_snapshot` และ `reference_no_snapshot` กับ Asset ทุกครั้ง เพื่อให้ Asset เดิมยังแสดงข้อมูลเดิมได้แม้ Market Data sync แล้วชื่อหรือ mapping เปลี่ยน
+- ถ้า Owner กรอก Brand / Model / Reference ที่ไม่มีใน Market Data ให้เก็บเป็น free-text snapshot และปล่อย relation id เป็น `null`
+- Case Size, Thickness, Case Material, Movement, Dial Color, Strap / Bracelet Type, Year, Condition และ Scope of Delivery คือ user-entered asset specifications ของเรือนจริง ต้องเก็บกับ Asset ไม่ใช่แก้ master catalog
+- เมื่อเลือก Reference แล้วระบบสามารถ prefill ค่า specification จาก Market Data ได้ แต่ Owner ต้องแก้ไขได้ เพราะเรือนจริงอาจเปลี่ยนสาย มีอุปกรณ์ไม่ครบ หรือข้อมูล provider ไม่ครบ
+- Provider/API sync ใช้ refresh catalog, autocomplete, search/filter option และ market price เท่านั้น ห้าม overwrite user-entered asset specifications
+
+Recommended backend split:
+
+| Table / Domain | Purpose |
+| --- | --- |
+| `watch_brands`, `watch_models`, `watch_references` | Market Data catalog จาก provider/backend sync |
+| `watch_assets` | Asset/listing record ของ Owner พร้อม relation id และ snapshot text |
+| `asset_specifications` | Spec จริงที่ Owner กรอกสำหรับ Asset แต่ละชิ้น |
+| `asset_delivery_items` | Scope of Delivery แบบหลายรายการ เช่น box, papers, warranty card, receipt |
+| `spec_options` | Internal option master สำหรับ dropdown/filter เช่น condition, material, movement, dial color, strap type, delivery item |
+
+Minimum asset fields:
+
+| Field | Rule |
+| --- | --- |
+| `brand_id` | Nullable relation to Market Data |
+| `brand_name_snapshot` | Required after save |
+| `model_id` | Nullable relation to Market Data |
+| `model_name_snapshot` | Required when Model / Series has value |
+| `reference_id` | Nullable relation to Market Data |
+| `reference_no_snapshot` | Required when Reference No. has value |
+| `production_year` | Optional integer; must not be future year |
+| `condition_id` | Required only when status rule requires Condition |
+| `case_size_mm` | Optional decimal/string-normalized value |
+| `thickness_mm` | Optional decimal/string-normalized value |
+| `case_material_id` | Optional option relation |
+| `movement_id` | Optional option relation |
+| `dial_color_id` | Optional option relation |
+| `strap_bracelet_type_id` | Optional option relation |
+
+Internal option groups ต้องรองรับอย่างน้อย:
+
+- `condition`: New / Unworn, Excellent, Very Good, Good, Fair
+- `delivery`: Watch only, Original box, Original papers, Warranty card, Receipt copy, Extra links, Extra strap
+- `case_material`: Stainless steel, Yellow gold, Rose gold, White gold, Titanium, Ceramic, Platinum, Carbon
+- `movement`: Automatic, Manual winding, Quartz, Spring Drive
+- `dial_color`: Black, Blue, White, Silver, Grey, Green, Champagne, Brown
+- `strap_bracelet_type`: Stainless steel bracelet, Gold bracelet, Leather strap, Rubber strap, Fabric / NATO strap, Ceramic bracelet
+
+Baseline seed files for implementation:
+
+- `../SeedData/asset-spec-options.csv`
+- `../SeedData/asset-spec-options.json`
+- `../SeedData/README.md`
+
 ## Required Field Matrix
 
 ฟอร์ม Add / Edit Asset ต้อง validate required fields ตาม status ที่ Owner เลือก:

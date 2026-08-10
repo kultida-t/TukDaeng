@@ -73,7 +73,7 @@
 | UX-MF-003 | Future / out-of-scope navigation | UX Lead | จัด Watch Shops, Accessories Shop, Repair Shop, Auction Center, Consignment Center, Authentication Center และ Community เป็น hidden, disabled หรือ placeholder | ไม่มี active route ที่สื่อว่า feature นอก V1 ใช้งานได้จริง | `00_NAVIGATION_AND_CROSS_MODULE_FLOW.md` |
 | UX-MF-004 | Feed card baseline | UX Marketplace | เอา Location ออกจาก Feed Card และคง Posted Time เป็น metadata หลัก | Feed Card ไม่แสดง location เช่น district/province ใน V1 | `02_FEED_MODULE.md` |
 | UX-MF-005 | Feed/Search/Watch Alert status filter | UX Marketplace | Annotate ว่า Feed, Search Result และ Watch Alert Result render เฉพาะ `Sale` | ไม่มี `Show`, `Hide`, `Sold`, `Deleted` ใน public list surfaces | `02_FEED_MODULE.md`, `03_SEARCH_FILTER_MODULE.md`, `10_WATCH_ALERT_MODULE.md` |
-| UX-MF-006 | Asset add/edit status model and required fields | UX Marketplace | ปรับ Add/Edit Asset ให้เลือกได้เฉพาะ `Sale`, `Show`, `Hide`; แยก `Sold` ไป Mark as Sold / Sale Record flow; ทำ required field state ตาม Sale/Show/Hide matrix | `Sold` ไม่ปรากฏเป็นตัวเลือก status ปกติใน Edit Asset; Sale require Photo/Brand/Model/Condition/Asking Price/Description; Show require Photo/Brand/Model; Hide require Photo/Brand และไม่ใช้ listing price | `04_ASSET_MANAGEMENT_MODULE.md` |
+| UX-MF-006 | Asset add/edit status model and required fields | UX Marketplace | ปรับ Add/Edit Asset ให้เลือกได้เฉพาะ `Sale`, `Show`, `Hide`; แยก `Sold` ไป Mark as Sold / Sale Record flow; ทำ required field state ตาม Sale/Show/Hide matrix | `Sold` ไม่ปรากฏเป็นตัวเลือก status ปกติใน Edit Asset; Sale require Photo/Brand/Model/Condition/Description และ Price optional; Show require Photo/Brand/Model; Hide require Photo/Brand และไม่เปิดเผย price บน public surface | `04_ASSET_MANAGEMENT_MODULE.md` |
 | UX-MF-007 | Gallery upload limit | UX Marketplace | ปรับ Add/Edit gallery limit เป็นสูงสุด 10 รูป พร้อม state เมื่อเกิน limit | Upload UI และ validation copy ระบุ 10 รูป | `04_ASSET_MANAGEMENT_MODULE.md` |
 | UX-MF-008 | Comment model | UX Marketplace + UX Transaction | ปรับ comment UI ใน Asset/Social ให้รองรับ IG-style one-level replies | Reply แสดงได้ 1 ชั้นใต้ comment หลัก แต่ไม่มี reply ซ้อนหลายระดับหรือ thread แบบ forum | `05_ASSET_DETAIL_MODULE.md`, `11_SOCIAL_MODULE.md` |
 | UX-MF-009 | Public Profile tabs | UX Marketplace | เพิ่ม Public Profile tabs `All`, `Sale`, `Show`; `All` แสดง `Sale` + `Show` เท่านั้น | Public Profile ไม่มี `Hide` หรือ `Sold`; Owner profile แยกอีก state | `06_PROFILE_MODULE.md` |
@@ -138,7 +138,7 @@
 - ห้ามมี `Sold` เป็นตัวเลือกใน Add/Edit Asset
 - ห้ามมี status model ซ้ำ เช่น `Status` + `Sale Status`
 - Gallery ต้องสื่อว่า required อย่างน้อย 1 รูป และรองรับสูงสุด 10 รูป
-- `Sale` ต้อง mark required: Photos, Brand, Model / Series, Condition, Asking Price, Description
+- `Sale` ต้อง mark required: Photos, Brand, Model / Series, Condition, Description; Asking Price เป็น optional และถ้าเว้นว่างให้แสดง `Price on request`
 - `Show` ต้อง mark required: Photos, Brand, Model / Series
 - `Hide` ต้อง mark required: Photos, Brand
 - `Show` ต้องไม่สื่อว่า Price เป็น required marketplace listing field
@@ -153,9 +153,9 @@
 | Transition | Figma Behavior / Annotation |
 | --- | --- |
 | Sale -> Show | Asset หายจาก Feed/Search/Watch Alert แต่ยังอยู่ Public Profile; Asking Price ไม่ required หลังเปลี่ยนเป็น Show |
-| Show -> Sale | ต้อง require Condition, Asking Price และ Description ก่อน save เป็น Sale |
+| Show -> Sale | ต้อง require Condition และ Description ก่อน save เป็น Sale; Asking Price optional |
 | Sale -> Hide | Asset หายจาก Feed/Search/Watch Alert/Public Profile; owner ยังเห็นใน Owner Profile |
-| Hide -> Sale | ต้อง require Model / Series, Condition, Asking Price และ Description ก่อน save เป็น Sale |
+| Hide -> Sale | ต้อง require Model / Series, Condition และ Description ก่อน save เป็น Sale; Asking Price optional |
 
 ### Acceptance Gate
 

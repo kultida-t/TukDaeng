@@ -408,6 +408,15 @@ Add / Edit Asset รองรับข้อมูล:
 - Provenance
 - Consignment
 
+Market Data และ Asset Specification ต้องแยกขอบเขตดังนี้:
+
+- Brand / Model / Reference ใช้ Market Data สำหรับ autocomplete, structured selection และ prefill ค่า spec เมื่อมีข้อมูล
+- Asset ต้องเก็บ relation id ไปยัง Market Data เมื่อ match ได้ พร้อม snapshot text ของ Brand / Model / Reference ทุกครั้ง
+- ถ้า Owner กรอกค่า Brand / Model / Reference ที่ไม่มีใน Market Data ให้เก็บเป็น free-text snapshot และ relation id เป็น `null`
+- Year, Condition, Scope of Delivery, Case Size, Thickness, Case Material, Movement, Dial Color และ Strap / Bracelet Type เป็นข้อมูลของ Asset เรือนนั้น ต้องเก็บใน Asset Specification ไม่ใช่เขียนกลับไป Market Data
+- Provider/API sync ห้าม overwrite user-entered Asset Specification
+- Internal option master สำหรับ Condition, Delivery, Case Material, Movement, Dial Color และ Strap / Bracelet Type ต้องใช้ร่วมกันระหว่าง Add/Edit Asset, Asset Detail, Search Filter และ Watch Alert criteria
+
 Required Field Matrix:
 
 | Field | Sale | Show | Hide |
@@ -416,11 +425,11 @@ Required Field Matrix:
 | Brand Name | Required | Required | Required |
 | Model / Series | Required | Required | Optional |
 | Condition | Required | Optional | Optional |
-| Asking Price (THB) | Required, must be greater than 0 | Not required for public collection display | Not applicable |
+| Asking Price (THB) | Optional; if empty FO shows `Price on request` | Optional; hidden from public FO surfaces | Optional; hidden from public FO surfaces |
 | Description | Required | Optional | Optional |
 | Status | Required: Sale | Required: Show | Required: Hide |
 
-Sale is the only marketplace listing status and uses `Asking Price (THB)`. Show is a public collection status and must not require listing price. Hide is a private collection status and must not use listing price.
+Sale is the only marketplace listing status and uses `Asking Price (THB)` when provided; if empty, buyer-facing surfaces show `Price on request`. Show is a public collection status and must not expose listing price publicly. Hide is a private collection status and must not expose listing price publicly.
 
 Add Asset flow:
 

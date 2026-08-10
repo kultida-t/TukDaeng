@@ -72,7 +72,7 @@ Figma references remain useful for visual alignment, but if Figma conflicts with
 ## Asset Management
 
 - Gallery requires minimum 1 image and supports maximum 10 images
-- `Sale` requires Photos, Brand, Model / Series, Condition, Price and Description
+- `Sale` requires Photos, Brand, Model / Series, Condition and Description; Price is optional and empty Price displays as `Price on request`
 - `Show` requires Photos, Brand and Model / Series; Price is not required
 - `Hide` requires Photos and Brand only
 - `Hide` must not use listing price or expose price in public/viewer surfaces
