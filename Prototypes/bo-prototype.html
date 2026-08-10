@@ -2239,6 +2239,13 @@
       font-size: 18px;
       text-transform: uppercase;
     }
+    body.market-list-mode .market-detail-section .kv {
+      grid-template-columns: minmax(150px, .14fr) minmax(0, 1fr);
+      column-gap: 22px;
+    }
+    body.market-list-mode .market-detail-section .kv span:first-child {
+      white-space: nowrap;
+    }
     body.market-list-mode .market-model-stack {
       display: grid;
       gap: 14px;
@@ -6389,6 +6396,13 @@
         flex-wrap: wrap;
         width: 100%;
       }
+      body.market-list-mode .page-title-row:has(.page-back-btn) {
+        align-items: center;
+        flex-direction: row;
+      }
+      body.market-list-mode .page-title-row:has(.page-back-btn) .page-actions {
+        width: auto;
+      }
       .tools { justify-content: flex-start; }
       .summary-grid, .cards, .nav { grid-template-columns: 1fr; }
       body.asset-list-mode .summary-grid {
@@ -7035,6 +7049,9 @@
         text-overflow: ellipsis;
         white-space: nowrap;
       }
+      body.market-list-mode .market-record-table .asset-row:not(.head) > div[data-label]:first-child .muted {
+        display: none;
+      }
       body.market-list-mode .market-table .asset-row:not(.head) > div[data-label]:not(:first-child) {
         display: none;
       }
@@ -7047,6 +7064,7 @@
         display: flex;
         flex-wrap: wrap;
         gap: 9px;
+        width: 100%;
       }
       body.market-list-mode .market-card-tags .pill,
       body.market-list-mode .market-card-tags .user-card-tag {
@@ -7062,9 +7080,33 @@
         margin-top: 8px;
         padding-top: 11px;
         border-top: 1px solid #edf2f7;
+        width: 100%;
       }
       body.market-list-mode .market-card-meta .user-card-meta-item {
         display: flex;
+      }
+      body.market-list-mode .market-record-table .market-card-meta {
+        gap: 5px;
+        margin-top: 10px;
+        padding-top: 12px;
+      }
+      body.market-list-mode .market-record-table .market-card-meta .user-card-meta-item {
+        display: grid;
+        grid-template-columns: 116px minmax(0, 1fr);
+        gap: 12px;
+        align-items: start;
+      }
+      body.market-list-mode .market-record-table .market-card-meta .user-card-meta-item span {
+        line-height: 1.35;
+        white-space: nowrap;
+      }
+      body.market-list-mode .market-record-table .market-card-meta .user-card-meta-item strong {
+        line-height: 1.35;
+        overflow-wrap: anywhere;
+        text-align: right;
+      }
+      body.market-list-mode .market-record-table .market-card-meta .user-card-meta-item:first-child {
+        display: none;
       }
       body.market-list-mode .footer-range {
         margin-top: 12px;
@@ -7093,6 +7135,13 @@
       body.market-list-mode .module-note {
         min-width: 0;
         overflow-wrap: anywhere;
+      }
+      body.market-list-mode .market-detail-section .kv {
+        grid-template-columns: minmax(120px, .34fr) minmax(0, 1fr);
+        column-gap: 14px;
+      }
+      body.market-list-mode .market-detail-section .kv span:first-child {
+        white-space: normal;
       }
       .detail-grid.two {
         grid-template-columns: 1fr;
@@ -14425,6 +14474,10 @@
       return "ไม่มีปัญหา";
     }
 
+    function shouldShowMarketSyncIssue(row) {
+      return row.status === "Failed" || row.status === "Running";
+    }
+
     function getMarketSyncCriteriaLabel(row) {
       if (!row.params || row.params === "{}") return "ไม่มีตัวกรอง ดึงข้อมูลทั้งหมด";
       const criteria = [];
@@ -14500,27 +14553,25 @@
         <div class="asset-table category-table market-table market-record-table">
           <div class="asset-row head"><div>รายการข้อมูล</div><div>ข้อมูลที่อัปเดต</div><div>สถานะ</div><div>เวลา</div><div>ผลลัพธ์</div><div>หมายเหตุ</div><div>รายละเอียด</div></div>
         ${rows.map(row => `
-          <div class="asset-row">
+          <div class="asset-row" data-market-record="${row.id}">
             <div data-label="รายการข้อมูล"><div class="main-text">${getMarketSyncTitleLabel(row)}</div><div class="muted">${row.id}</div></div>
             <div data-label="ข้อมูลที่อัปเดต"><div class="main-text">${getMarketSyncScopeLabel(row)}</div><div class="muted">${getMarketSyncScopeTypeLabel(row)}</div></div>
             <div class="market-card-tags">
               ${renderMarketSyncStatus(row)}
               <span class="user-card-tag asset-tag">${row.id}</span>
-              <span class="user-card-tag asset-tag">${row.started}</span>
-              <span class="user-card-tag asset-tag">${getMarketSyncResultLabel(row)}</span>
               <div class="market-card-meta user-card-meta">
                 <div class="user-card-meta-item"><span>รายการ</span><strong>${getMarketSyncTitleLabel(row)}</strong></div>
                 <div class="user-card-meta-item"><span>ข้อมูลที่อัปเดต</span><strong>${getMarketSyncScopeLabel(row)}</strong></div>
                 <div class="user-card-meta-item"><span>เริ่มเมื่อ</span><strong>${row.started}</strong></div>
                 <div class="user-card-meta-item"><span>ใช้เวลา</span><strong>${row.duration}</strong></div>
                 <div class="user-card-meta-item"><span>สถานะ</span><strong>${row.statusLabel || row.status}</strong></div>
-                <div class="user-card-meta-item"><span>หมายเหตุ</span><strong>${getMarketSyncIssueLabel(row)}</strong></div>
+                ${shouldShowMarketSyncIssue(row) ? `<div class="user-card-meta-item"><span>หมายเหตุ</span><strong>${getMarketSyncIssueLabel(row)}</strong></div>` : ""}
               </div>
             </div>
             <div data-label="สถานะ">${renderMarketSyncStatus(row)}</div>
             <div data-label="เวลา"><div class="main-text">${row.started}</div><div class="muted">${row.duration}</div></div>
             <div data-label="ผลลัพธ์"><div class="main-text">${getMarketSyncRecordLabel(row)}</div></div>
-            <div data-label="หมายเหตุ"><div class="main-text">${getMarketSyncIssueLabel(row)}</div></div>
+            <div data-label="หมายเหตุ"><div class="main-text">${shouldShowMarketSyncIssue(row) ? getMarketSyncIssueLabel(row) : ""}</div></div>
             <div data-label="รายละเอียด">${renderMarketSyncLogAction(row)}</div>
           </div>
         `).join("") || `<div class="detail-empty user-empty">No sync logs found</div>`}
