@@ -14578,7 +14578,6 @@
                 <div class="user-card-meta-item"><span>ข้อมูลที่อัปเดต</span><strong>${getMarketSyncScopeLabel(row)}</strong></div>
                 <div class="user-card-meta-item"><span>เริ่มเมื่อ</span><strong>${row.started}</strong></div>
                 <div class="user-card-meta-item"><span>ใช้เวลา</span><strong>${row.duration}</strong></div>
-                <div class="user-card-meta-item"><span>สถานะ</span><strong>${row.statusLabel || row.status}</strong></div>
                 ${shouldShowMarketSyncIssue(row) ? `<div class="user-card-meta-item"><span>หมายเหตุ</span><strong>${getMarketSyncIssueLabel(row)}</strong></div>` : ""}
               </div>
             </div>
