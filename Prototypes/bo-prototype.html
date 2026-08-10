@@ -14387,11 +14387,11 @@
     }
 
     function getMarketSyncTitleLabel(row) {
-      if (row.id === "JOB-BRAND-LIST") return "ซิงก์รายชื่อแบรนด์";
-      if (row.id === "JOB-MODEL-ROLEX") return "ซิงก์โมเดล Rolex";
-      if (row.id === "JOB-OMEGA-SEARCH") return "ค้นหา reference ของ Omega";
-      if (row.id === "JOB-PATEK-LIST") return "ซิงก์โมเดล Patek Philippe";
-      if (row.id === "JOB-SEIKO-REF") return "ซิงก์ reference ของ Seiko";
+      if (row.id === "JOB-BRAND-LIST") return "Brand List Sync";
+      if (row.id === "JOB-MODEL-ROLEX") return "Rolex Model Sync";
+      if (row.id === "JOB-OMEGA-SEARCH") return "Omega Reference Sync";
+      if (row.id === "JOB-PATEK-LIST") return "Patek Philippe Model Sync";
+      if (row.id === "JOB-SEIKO-REF") return "Seiko Reference Sync";
       return row.title;
     }
 
@@ -14455,15 +14455,15 @@
       }
       if (row.status === "Running") {
         return [
-          ["กำลังดึงข้อมูลจาก provider", `ประมวลผล ${row.synced}`],
-          ["รอ mapping ยืนยัน", "ยังไม่แทนที่ cache เดิมจนกว่า job จะจบสมบูรณ์"],
-          ["สถานะ cache ปัจจุบัน", row.cacheAction]
+          ["กำลังประมวลผล", `${row.synced}`],
+          ["รอผลลัพธ์สมบูรณ์", "ยังไม่อัปเดต cache ชุดนี้จนกว่า job จะจบสมบูรณ์"],
+          ["Cache ปัจจุบัน", "ยังใช้ข้อมูล Omega ชุดเดิมระหว่างรอ job เสร็จ"]
         ];
       }
       return [
-        ["รับ response จาก provider", row.detail],
-        ["ไม่แทนที่ cache เดิม", row.cacheAction],
-        ["บันทึก error log", `Error code: ${row.errorCode || "-"}`]
+        ["สาเหตุที่ไม่สำเร็จ", row.errorCode === "too_many_results" ? "provider ส่งผลลัพธ์มากเกินเงื่อนไขที่กำหนด" : row.detail],
+        ["ผลต่อ cache", "ระบบไม่แทนที่ cache เดิม"],
+        ["ข้อมูลที่คงไว้", `${getMarketSyncScopeLabel(row)} ยังใช้ข้อมูลเดิมจนกว่า sync รอบถัดไปจะสำเร็จ`]
       ];
     }
 
@@ -15635,7 +15635,6 @@
             <div class="kv"><span>Endpoint</span><strong>${row.endpoint}</strong></div>
             <div class="kv"><span>Sync criteria</span><strong>${getMarketSyncCriteriaLabel(row)}</strong></div>
             <div class="kv"><span>Progress</span><strong>${row.synced}</strong></div>
-            <div class="kv"><span>Rate limit remaining</span><strong>${row.rateLimit || "-"}</strong></div>
             <div class="module-note">${row.detail}</div>
           </section>
           <section class="market-detail-section">
@@ -15646,16 +15645,14 @@
       }
       return `
         <section class="market-detail-section">
-          <h3>Provider Request</h3>
+          <h3>Sync Error</h3>
           <div class="kv"><span>Provider</span><strong>${row.source}</strong></div>
           <div class="kv"><span>Endpoint</span><strong>${row.endpoint}</strong></div>
           <div class="kv"><span>Sync criteria</span><strong>${getMarketSyncCriteriaLabel(row)}</strong></div>
-          <div class="kv"><span>Parent Entity</span><strong>${row.parentEntity || "-"} / ${row.parentId || "-"}</strong></div>
-          <div class="kv"><span>Result code</span><strong>${row.resultCode || row.status}</strong></div>
-          <div class="kv"><span>Error code</span><strong>${row.errorCode || "-"}</strong></div>
+          <div class="kv"><span>Result</span><strong>${row.statusLabel || row.status}</strong></div>
+          <div class="kv"><span>Error</span><strong>${row.errorCode || "-"}</strong></div>
           <div class="kv"><span>System retry count</span><strong>${row.retryCount ?? 0}</strong></div>
-          <div class="kv"><span>Rate limit remaining</span><strong>${row.rateLimit || "-"}</strong></div>
-          <div class="module-note"><strong>จำนวนที่ Sync:</strong> ${row.synced}</div>
+          <div class="module-note"><strong>ผลลัพธ์:</strong> ไม่อัปเดตข้อมูลใหม่</div>
         </section>
         <section class="market-detail-section">
           <h3>Failure Processing</h3>
@@ -15676,7 +15673,7 @@
       document.body.classList.remove("dashboard-mode", "user-management-mode", "asset-list-mode", "article-list-mode", "category-list-mode", "reported-board-mode", "asset-detail-mode", "user-list-mode", "user-detail-mode");
       setPageActions(renderPageBackButton("data-market-back", `Back to ${pageLabel}`));
       document.querySelector("#crumb").textContent = `${moduleData.market.crumb} / ${pageLabel} / ${row.id}`;
-      document.querySelector("#page-title").textContent = row.endpoint || row.title;
+      document.querySelector("#page-title").textContent = getMarketSyncTitleLabel(row);
       document.querySelector("#page-meta").textContent = "";
       document.querySelector("#panel-title").textContent = detailTitle;
       document.querySelector("#panel-subtitle").textContent = "";
