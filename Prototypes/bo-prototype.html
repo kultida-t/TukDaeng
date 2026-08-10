@@ -15934,7 +15934,7 @@
     function renderMarketCards(subLabel) {
       const marketMetrics = getMarketMetricCards();
       const cards = subLabel === "Dashboard"
-        ? [["Current Sync Status", `Updating Omega reference catalog. ${marketMetrics.pendingPriceValidation} items are still waiting for central price validation.`]]
+        ? [["สถานะการซิงก์ล่าสุด", `กำลังอัปเดตข้อมูลอ้างอิงของ Omega เหลือ ${marketMetrics.pendingPriceValidation} รุ่นที่ต้องตรวจสอบราคากลาง`]]
         : subLabel === "API Token"
           ? [["Provider", "thewatchapi.com"], ["Plan", "Standard Plan"], ["Access", "Read-only sync through a backend token. The full secret is not shown in BO."]]
           : [["Brand-first workflow", "Admins start from brands, drill into models, then open references to review detail and price data."], ["API source", "Data comes from The Watch API through backend sync for Brand, Model and Reference catalog."], ["Read-only", "Add, edit, delete and provider master-data overrides are not available."]];
@@ -15958,10 +15958,10 @@
         <div class="market-dashboard-stack">
           <section class="market-sync-current">
             <div class="market-sync-body">
-              <div class="market-progress-ring"><span>${syncPercent}%</span><small>SYNCED</small></div>
+              <div class="market-progress-ring"><span>${syncPercent}%</span><small>ซิงก์แล้ว</small></div>
               <div class="market-sync-main">
-                <strong>Syncing Omega reference numbers</strong>
-                <p><b>${marketMetrics.syncedBrands}/${marketMetrics.brands}</b> brands synced · <b>${marketMetrics.pendingPriceValidation}</b> models still need central price validation · no errors in the last 24 hours</p>
+                <strong>กำลังซิงก์เลขอ้างอิงของ Omega</strong>
+                <p>ซิงก์แบรนด์แล้ว <b>${marketMetrics.syncedBrands}/${marketMetrics.brands}</b> แบรนด์ · เหลือ <b>${marketMetrics.pendingPriceValidation}</b> รุ่นที่ต้องตรวจสอบราคากลาง · ไม่มีข้อผิดพลาดใน 24 ชั่วโมงที่ผ่านมา</p>
               </div>
             </div>
           </section>
@@ -16040,7 +16040,7 @@
       document.querySelector("#panel-title").innerHTML = subLabel === "Brands & Models"
         ? `All Brands <span class="panel-title-count">[${getMarketMetricCards().brands}]</span>`
         : subLabel === "Dashboard"
-          ? "Current Sync Status"
+          ? "สถานะการซิงก์ล่าสุด"
           : subLabel === "Sync History"
             ? "Sync Run History"
             : subLabel;
