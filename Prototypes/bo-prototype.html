@@ -14276,7 +14276,7 @@
       const stats = subLabel === "Dashboard"
         ? [["Total Brands", marketMetrics.brands, "From Brand catalog"], ["Total Models", marketMetrics.models, "From Model catalog"], ["Total References", marketMetrics.references, "From Reference catalog"], ["Last Sync", marketMetrics.lastSyncRelative, marketMetrics.lastSyncTimestamp]]
         : subLabel === "Sync History"
-          ? [["Log Entries Today", "5", "Backend sync history from The Watch API"], ["Completed", "3", "Latest cache is in use"], ["Running", "1", "Omega reference"], ["Failed", "1", "too_many_results"]]
+          ? [["Log Entries Today", "5", "Backend sync history from The Watch API"], ["Completed", "3", "Latest cache is in use"], ["Running", "1", "Omega reference"], ["Failed", "1", "Existing cache kept"]]
           : subLabel === "API Token"
             ? [["Status", "Normal", "Standard Plan"], ["Quota Today", "72%", "Available for nightly sync"], ["Datasets", "4", "Brand / Model / Reference / Price"], ["Latest Token", "06 Aug 2026", "read-only display"]]
             : [["Sample Brands", "5", "Click to view child models"], ["Sample Models", "10", "From Model catalog"], ["Sample References", "24", "From Reference catalog"], ["Latest Sync", "08:14", "06 Aug 2026"]];
@@ -14435,6 +14435,20 @@
       return criteria.join(" / ") || row.params;
     }
 
+    function getMarketSyncDatasetLabel(row) {
+      if (row.id === "JOB-BRAND-LIST") return "Brand catalog";
+      if (row.id === "JOB-MODEL-ROLEX") return "Rolex models";
+      if (row.id === "JOB-OMEGA-SEARCH") return "Omega references";
+      if (row.id === "JOB-PATEK-LIST") return "Patek Philippe models";
+      if (row.id === "JOB-SEIKO-REF") return "Seiko references";
+      return getMarketSyncScopeLabel(row);
+    }
+
+    function getMarketSyncErrorLabel(row) {
+      if (row.errorCode === "too_many_results") return "provider ส่งผลลัพธ์มากเกินเงื่อนไขที่ระบบกำหนดไว้";
+      return row.detail || "sync ไม่สำเร็จก่อนอัปเดตข้อมูลใหม่";
+    }
+
     function getMarketSyncProcessingSteps(row) {
       const scope = getMarketSyncScopeLabel(row);
       if (row.status === "Completed" && row.id === "JOB-BRAND-LIST") {
@@ -14461,9 +14475,9 @@
         ];
       }
       return [
-        ["สาเหตุที่ไม่สำเร็จ", row.errorCode === "too_many_results" ? "provider ส่งผลลัพธ์มากเกินเงื่อนไขที่กำหนด" : row.detail],
+        ["สาเหตุที่ไม่สำเร็จ", getMarketSyncErrorLabel(row)],
         ["ผลต่อ cache", "ระบบไม่แทนที่ cache เดิม"],
-        ["ข้อมูลที่คงไว้", `${getMarketSyncScopeLabel(row)} ยังใช้ข้อมูลเดิมจนกว่า sync รอบถัดไปจะสำเร็จ`]
+        ["ข้อมูลที่ใช้อยู่", `${getMarketSyncDatasetLabel(row)} ยังใช้ข้อมูลจาก sync ครั้งล่าสุดที่สำเร็จ`]
       ];
     }
 
@@ -15613,7 +15627,7 @@
       if (row.status === "Completed") {
         return `
           <section class="market-detail-section">
-            <h3>Sync Result</h3>
+            <h3>Sync Summary</h3>
             <div class="kv"><span>Provider</span><strong>${row.source}</strong></div>
             <div class="kv"><span>Endpoint</span><strong>${row.endpoint}</strong></div>
             <div class="kv"><span>Sync criteria</span><strong>${getMarketSyncCriteriaLabel(row)}</strong></div>
@@ -15622,7 +15636,7 @@
             <div class="module-note"><strong>จำนวนที่ Sync:</strong> ${row.synced}</div>
           </section>
           <section class="market-detail-section">
-            <h3>Sync Processing</h3>
+            <h3>Sync Status</h3>
             <div class="timeline">${renderMarketSyncProcessingEvents(row)}</div>
           </section>
         `;
@@ -15630,7 +15644,7 @@
       if (row.status === "Running") {
         return `
           <section class="market-detail-section">
-            <h3>Sync Progress</h3>
+            <h3>Sync Summary</h3>
             <div class="kv"><span>Provider</span><strong>${row.source}</strong></div>
             <div class="kv"><span>Endpoint</span><strong>${row.endpoint}</strong></div>
             <div class="kv"><span>Sync criteria</span><strong>${getMarketSyncCriteriaLabel(row)}</strong></div>
@@ -15638,24 +15652,24 @@
             <div class="module-note">${row.detail}</div>
           </section>
           <section class="market-detail-section">
-            <h3>Current Processing</h3>
+            <h3>Sync Status</h3>
             <div class="timeline">${renderMarketSyncProcessingEvents(row)}</div>
           </section>
         `;
       }
       return `
         <section class="market-detail-section">
-          <h3>Sync Error</h3>
-          <div class="kv"><span>Provider</span><strong>${row.source}</strong></div>
-          <div class="kv"><span>Endpoint</span><strong>${row.endpoint}</strong></div>
+          <h3>Sync Summary</h3>
+          <div class="kv"><span>Source</span><strong>${row.source}</strong></div>
+          <div class="kv"><span>Dataset</span><strong>${getMarketSyncDatasetLabel(row)}</strong></div>
           <div class="kv"><span>Sync criteria</span><strong>${getMarketSyncCriteriaLabel(row)}</strong></div>
           <div class="kv"><span>Result</span><strong>${row.statusLabel || row.status}</strong></div>
-          <div class="kv"><span>Error</span><strong>${row.errorCode || "-"}</strong></div>
-          <div class="kv"><span>System retry count</span><strong>${row.retryCount ?? 0}</strong></div>
-          <div class="module-note"><strong>ผลลัพธ์:</strong> ไม่อัปเดตข้อมูลใหม่</div>
+          <div class="kv"><span>สาเหตุ</span><strong>${getMarketSyncErrorLabel(row)}</strong></div>
+          <div class="kv"><span>จำนวนครั้งที่ระบบลองใหม่</span><strong>${row.retryCount ?? 0}</strong></div>
+          <div class="module-note"><strong>ผลลัพธ์:</strong> ระบบเก็บข้อมูลเดิมไว้ และไม่มีข้อมูลใหม่ถูกอัปเดต</div>
         </section>
         <section class="market-detail-section">
-          <h3>Failure Processing</h3>
+          <h3>Sync Status</h3>
           <div class="timeline">${renderMarketSyncProcessingEvents(row)}</div>
         </section>
       `;
@@ -15665,7 +15679,7 @@
       const row = getMarketRowsForSub(subLabel).find(entry => entry.id === recordId) || getMarketRowsForSub(subLabel)[0];
       if (!row) return;
       const pageLabel = subLabel;
-      const detailTitle = row.status === "Failed" ? "Sync Error Detail" : row.status === "Running" ? "Sync Status Detail" : "Sync Log Detail";
+      const detailTitle = "Sync Detail";
       activeModule = "market";
       activeSub = subLabel;
       document.body.classList.add("market-list-mode");
