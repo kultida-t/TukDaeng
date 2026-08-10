@@ -1652,11 +1652,8 @@
       text-align: right;
     }
     body.market-list-mode .market-table.market-record-table .asset-row {
-      grid-template-columns: minmax(260px, 1.15fr) minmax(160px, .7fr) minmax(104px, .42fr) minmax(122px, .52fr) minmax(170px, .72fr) minmax(250px, 1fr) minmax(112px, .48fr);
-      column-gap: 20px;
-      min-height: 52px;
-      padding-top: 12px;
-      padding-bottom: 12px;
+      grid-template-columns: minmax(250px, 1.18fr) minmax(170px, .76fr) minmax(112px, .5fr) minmax(128px, .55fr) minmax(170px, .74fr) minmax(230px, .96fr) 76px;
+      column-gap: 18px;
       align-items: center;
     }
     body.market-list-mode .market-table.market-record-table .asset-row.head {
@@ -1753,7 +1750,7 @@
       grid-template-columns: minmax(120px, .7fr) minmax(150px, .8fr) minmax(150px, .8fr) minmax(150px, .8fr) minmax(140px, .7fr) minmax(150px, .7fr);
     }
     body.market-list-mode .market-record-table .asset-row {
-      grid-template-columns: minmax(260px, 1.15fr) minmax(160px, .7fr) minmax(104px, .42fr) minmax(122px, .52fr) minmax(170px, .72fr) minmax(250px, 1fr) minmax(112px, .48fr);
+      grid-template-columns: minmax(250px, 1.18fr) minmax(170px, .76fr) minmax(112px, .5fr) minmax(128px, .55fr) minmax(170px, .74fr) minmax(230px, .96fr) 76px;
     }
     body.market-list-mode .market-arrow-action {
       min-width: 58px;
@@ -14386,7 +14383,7 @@
     }
 
     function renderMarketSyncLogAction(row) {
-      return `<button class="panel-action" type="button" data-market-record="${row.id}" title="View ${getMarketSyncTitleLabel(row)}" aria-label="View ${getMarketSyncTitleLabel(row)}"><span>View</span></button>`;
+      return `<button class="panel-action market-arrow-action" type="button" data-market-record="${row.id}" title="View sync log for ${getMarketSyncTitleLabel(row)}" aria-label="View sync log for ${getMarketSyncTitleLabel(row)}">Detail</button>`;
     }
 
     function getMarketSyncTitleLabel(row) {
@@ -14423,7 +14420,7 @@
     }
 
     function getMarketSyncIssueLabel(row) {
-      if (row.status === "Failed") return row.errorCode === "too_many_results" ? "ข้อมูลจาก provider มากเกินไป ต้องแบ่งรอบ retry" : "Sync ล้มเหลว ต้องตรวจ error";
+      if (row.status === "Failed") return row.errorCode === "too_many_results" ? "ข้อมูลจาก provider มากเกินไป ระบบไม่เปลี่ยน cache เดิม" : "Sync ล้มเหลว ระบบบันทึก error";
       if (row.status === "Running") return "กำลังทำงาน รอผลลัพธ์ล่าสุด";
       return "ไม่มีปัญหา";
     }
@@ -14439,7 +14436,7 @@
       });
       document.querySelector("#table").innerHTML = `
         <div class="asset-table category-table market-table market-record-table">
-          <div class="asset-row head"><div>รายการข้อมูล</div><div>ข้อมูลที่อัปเดต</div><div>สถานะ</div><div>เวลา</div><div>ผลลัพธ์</div><div>หมายเหตุ</div><div>Action</div></div>
+          <div class="asset-row head"><div>รายการข้อมูล</div><div>ข้อมูลที่อัปเดต</div><div>สถานะ</div><div>เวลา</div><div>ผลลัพธ์</div><div>หมายเหตุ</div><div>รายละเอียด</div></div>
         ${rows.map(row => `
           <div class="asset-row">
             <div data-label="รายการข้อมูล"><div class="main-text">${getMarketSyncTitleLabel(row)}</div><div class="muted">${row.id}</div></div>
@@ -14462,7 +14459,7 @@
             <div data-label="เวลา"><div class="main-text">${row.started}</div><div class="muted">${row.duration}</div></div>
             <div data-label="ผลลัพธ์"><div class="main-text">${getMarketSyncRecordLabel(row)}</div></div>
             <div data-label="หมายเหตุ"><div class="main-text">${getMarketSyncIssueLabel(row)}</div></div>
-            <div data-label="Action">${renderMarketSyncLogAction(row)}</div>
+            <div data-label="รายละเอียด">${renderMarketSyncLogAction(row)}</div>
           </div>
         `).join("") || `<div class="detail-empty user-empty">No sync logs found</div>`}
         </div>
@@ -15602,7 +15599,7 @@
             <div class="kv"><span>Parent Entity</span><strong>${row.parentEntity || "-"} / ${row.parentId || "-"}</strong></div>
             <div class="kv"><span>Result code</span><strong>${row.resultCode || row.status}</strong></div>
             <div class="kv"><span>Error code</span><strong>${row.errorCode || "-"}</strong></div>
-            <div class="kv"><span>Retry count</span><strong>${row.retryCount ?? 0}</strong></div>
+            <div class="kv"><span>System retry count</span><strong>${row.retryCount ?? 0}</strong></div>
             <div class="kv"><span>Rate limit remaining</span><strong>${row.rateLimit || "-"}</strong></div>
             <div class="module-note"><strong>จำนวนที่ Sync:</strong> ${row.synced}</div>
           </section>
@@ -15612,7 +15609,7 @@
             <div class="timeline">
               <div class="event"><strong>Backend sync</strong><br>BO แสดงผลจาก TukDaeng backend/cache เท่านั้น ไม่เรียก The Watch API ตรงจาก client</div>
               <div class="event"><strong>Cache action</strong><br>${row.cacheAction}</div>
-              <div class="event"><strong>Phase 1 rule</strong><br>Admin ดูผล sync และ retry ตาม permission ได้ แต่ไม่มี add, edit, delete, import, export หรือ provider override ใน Market Data</div>
+              <div class="event"><strong>Phase 1 rule</strong><br>Admin ดูผล sync จาก log เท่านั้น ไม่มี add, edit, delete, import, export, retry หรือ provider override ใน Market Data</div>
             </div>
           </section>
         </div>
