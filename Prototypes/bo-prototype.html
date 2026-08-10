@@ -6995,6 +6995,18 @@
         grid-template-columns: 1fr;
         gap: 12px;
       }
+      body.market-list-mode.market-dashboard-mode .market-dashboard-table {
+        border: 0;
+        background: transparent;
+        overflow: visible;
+      }
+      body.market-list-mode.market-dashboard-mode .market-dashboard-table > .panel-head {
+        min-height: 0;
+        padding: 0 0 10px;
+        border: 0;
+        border-radius: 0;
+        background: transparent;
+      }
       body.market-list-mode .market-table .asset-row.head {
         display: none;
       }
@@ -7066,6 +7078,9 @@
         gap: 9px;
         width: 100%;
       }
+      body.market-list-mode .market-table.market-model-table .market-card-tags {
+        display: flex;
+      }
       body.market-list-mode .market-card-tags .pill,
       body.market-list-mode .market-card-tags .user-card-tag {
         align-self: center;
@@ -7081,6 +7096,9 @@
         padding-top: 11px;
         border-top: 1px solid #edf2f7;
         width: 100%;
+      }
+      body.market-list-mode .market-table.market-model-table .market-card-meta {
+        display: grid;
       }
       body.market-list-mode .market-card-meta .user-card-meta-item {
         display: flex;
