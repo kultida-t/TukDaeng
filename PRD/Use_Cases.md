@@ -435,7 +435,7 @@
 | E01 | ไม่อัปโหลดรูปภาพ | แสดง "Please add at least 1 photo" |
 | E02 | ไม่กรอก Brand | แสดง "Brand is required" |
 | E03 | ไม่กรอก Model | แสดง "Model is required" |
-| E04 | Status = Sale แต่ไม่กรอกราคา | แสดง "Price is required for Sale status" (ยกเว้น Price on Request) |
+| E04 | Status = Sale แต่ไม่กรอกราคา | บันทึกได้ และ buyer-facing surface แสดง `Price on request` |
 | E05 | อัปโหลดรูปเกิน 10 รูป | ปุ่มเพิ่มรูปหายไปเมื่อครบ 10 |
 | E06 | รูปภาพ format ไม่รองรับ | แสดง "Only JPG, PNG supported" |
 | E07 | รูปภาพขนาดเกิน 10MB | แสดง "Image size must not exceed 10MB" |

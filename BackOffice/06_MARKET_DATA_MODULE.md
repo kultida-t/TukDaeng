@@ -506,12 +506,21 @@ Supported provider areas:
 
 | FO Area | Market Data Usage |
 | --- | --- |
-| Add Asset | Brand/model/reference autocomplete และ structured selection |
+| Add Asset | Brand/model/reference autocomplete, structured selection และ prefill ค่า specification ที่ provider มีให้ |
 | Search / Filter | Brand, model, reference, case size, movement และ filter ที่เกี่ยวข้อง |
 | Search Autocomplete | แสดง option ที่ active และเกี่ยวข้องกับ Sale/public visibility rule |
 | Watch Alert | ใช้ criteria schema เดียวกับ Search Filter และ active market data |
 | Portfolio | ใช้ Price Index เป็น valuation source priority แรกเมื่อมีข้อมูลเพียงพอ |
 | Watch Price / Integrations | ใช้ latest active price data ตาม brand/model/reference |
+
+Market Data boundary สำหรับ FO Add/Edit Asset:
+
+- Market Data เป็น catalog กลางสำหรับ Brand, Model, Reference, provider specification และ Price Index เท่านั้น
+- ข้อมูลที่ Owner กรอกใน Add/Edit Asset เช่น production year, condition, scope of delivery, case size, case material, movement, dial color และ strap/bracelet type ต้องเก็บใน Asset / Asset Specification domain
+- เมื่อ Owner เลือก Reference ที่มีใน Market Data ระบบสามารถ prefill spec จาก provider ได้ แต่ Owner ต้องแก้ไขได้ และค่าที่ Owner save ต้องไม่ถูก provider sync overwrite
+- Asset ต้องเก็บ relation id ไป Market Data เมื่อเลือก option ที่ match ได้ และต้องเก็บ snapshot text ของ Brand / Model / Reference ไว้กับ Asset เพื่อคง display history
+- ถ้า Owner กรอก free-text ที่ยังไม่มีใน Market Data ให้ asset relation เป็น `null` และเก็บ snapshot text ได้ โดยไม่สร้าง Brand / Model / Reference ใหม่ใน BO Market Data Phase 1
+- Internal option master เช่น condition, delivery item, case material, movement, dial color และ strap/bracelet type เป็น option สำหรับ Asset form/search filter ไม่ใช่ provider catalog ที่ BO Market Data แก้ไขได้ใน Phase 1
 
 Inactive หรือ unmapped market data:
 

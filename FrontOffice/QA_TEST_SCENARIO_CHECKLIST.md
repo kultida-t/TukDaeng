@@ -419,9 +419,10 @@ And `Sold` ต้องเข้าผ่าน Mark as Sold / Sale Record flow
 ## QA-ASSET-002A: Sale Required Fields
 
 Given Owner เลือก Status = `Sale`
-When Owner submit โดยขาด Brand, Model / Series, Condition, Price หรือ Description
+When Owner submit โดยขาด Brand, Model / Series, Condition หรือ Description
 Then ระบบต้องแสดง validation error
-And Price ต้องมากกว่า 0 เมื่อกรอก
+And Price เป็น optional แต่ถ้ากรอกต้องมากกว่า 0
+And ถ้าไม่กรอก Price buyer-facing surface ต้องแสดง `Price on request`
 
 ## QA-ASSET-002B: Show Required Fields
 

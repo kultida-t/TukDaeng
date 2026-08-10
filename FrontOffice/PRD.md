@@ -194,6 +194,14 @@
 - Condition: New / Used (Very Good) / Used (Good) / Used (Fair)
 - Scope of Delivery: Original Box ✓, Original Paper ✓
 - Specifications: Case Size, Thickness, Case Material, Movement, Dial Color, Strap/Bracelet Type
+
+Market Data / Specification storage rule:
+
+- Brand, Model และ Reference No. ใช้ Market Data สำหรับ autocomplete, structured selection และ prefill
+- ระบบต้องเก็บ relation id ไป Market Data เมื่อ match ได้ พร้อม snapshot text ของ Brand / Model / Reference ใน Asset
+- Year, Condition, Scope of Delivery, Case Size, Thickness, Case Material, Movement, Dial Color และ Strap/Bracelet Type เป็นข้อมูลจริงของ Asset ที่ Owner กรอก ต้องเก็บกับ Asset Specification
+- Provider/API sync ห้าม overwrite specification ที่ Owner save แล้ว
+- Condition, Delivery, Case Material, Movement, Dial Color และ Strap/Bracelet Type ต้องใช้ internal option master เดียวกันใน Add/Edit Asset, Asset Detail และ Search/Filter
 - Commerce & Curation: ราคา, Description
 - Status: Sale / Show / Hide
 - Sale Status: Available / Sold

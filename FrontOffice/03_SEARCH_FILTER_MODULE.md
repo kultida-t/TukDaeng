@@ -269,6 +269,14 @@ Search & Filter ต้องรองรับ filter ต่อไปนี้:
 - Dial Color
 - Strap / Bracelet
 
+Filter data source rule:
+
+- Brand, Model และ Reference Number ใช้ Market Data relation/snapshot ของ Asset เพื่อค้นหาและ filter
+- Year of Production, Delivery Contents, Condition, Case Size, Movement, Dial Color และ Strap / Bracelet ใช้ข้อมูลที่ Owner save ไว้ใน Asset Specification
+- Condition, Delivery Contents, Case Material, Movement, Dial Color และ Strap / Bracelet option ต้องอ่านจาก internal option master เดียวกับ Add/Edit Asset
+- Provider/API specification ใช้ช่วย prefill ตอน Add/Edit Asset ได้ แต่ Search/Filter ต้องอิงค่าที่ถูก save กับ Asset จริง
+- ถ้า Asset ใช้ free-text Brand/Model/Reference ที่ไม่มี relation id ต้องยังค้นหา keyword จาก snapshot text ได้
+
 ## Filter Visibility Rule
 
 Filter option ควรแสดงเฉพาะข้อมูลที่มี Asset อยู่จริงในระบบตาม visibility ของ Search
