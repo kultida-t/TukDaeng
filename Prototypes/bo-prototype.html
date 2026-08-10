@@ -14417,9 +14417,6 @@
             <div class="asset-row" data-market-brand="${brand.id}">
               <div data-label="Brand"><div class="main-text">${brand.name}</div></div>
               <div class="market-card-tags">
-                ${statusPill(brand.status, "Normal")}
-                <span class="user-card-tag asset-tag">${modelCount.toLocaleString()} models</span>
-                <span class="user-card-tag asset-tag">${referenceCount.toLocaleString()} references</span>
                 <div class="market-card-meta user-card-meta">
                   <div class="user-card-meta-item"><span>Models</span><strong>${modelCount.toLocaleString()}</strong></div>
                   <div class="user-card-meta-item"><span>References</span><strong>${referenceCount.toLocaleString()}</strong></div>
@@ -14704,13 +14701,8 @@
             <div class="asset-row" data-market-model="${index}" data-market-brand-id="${brand.id}">
               <div data-label="Model"><div class="main-text">${model.name}</div></div>
               <div class="market-card-tags">
-                <span class="pill ${model.status === "Inactive" ? "amber" : "green"}">${model.status || "Active"}</span>
-                <span class="user-card-tag asset-tag">${summary.references} references</span>
-                <span class="user-card-tag asset-tag">${summary.movement}</span>
-                <span class="user-card-tag asset-tag">${summary.caseSize}</span>
                 <div class="market-card-meta user-card-meta">
                   <div class="user-card-meta-item"><span>References</span><strong>${summary.references}</strong></div>
-                  <div class="user-card-meta-item"><span>Status</span><strong>${model.status || "Active"}</strong></div>
                   <div class="user-card-meta-item"><span>Movement</span><strong>${summary.movement}</strong></div>
                 </div>
               </div>
@@ -14748,15 +14740,6 @@
           ${visibleRows.map(({ reference, index }) => `
             <div class="asset-row" data-market-reference="${index}" data-market-brand-id="${brand.id}" data-market-model-index="${modelIndex}">
               <div data-label="Reference No."><div class="main-text">${reference.number}</div></div>
-              <div class="market-card-tags">
-                <span class="user-card-tag asset-tag">${reference.year}</span>
-                <span class="user-card-tag asset-tag">${reference.caseSize}</span>
-                <span class="user-card-tag asset-tag">${reference.price}</span>
-                <div class="market-card-meta user-card-meta">
-                  <div class="user-card-meta-item"><span>Year</span><strong>${reference.year}</strong></div>
-                  <div class="user-card-meta-item"><span>Material</span><strong>${reference.material}</strong></div>
-                </div>
-              </div>
               <div data-label="Movement"><div class="main-text">${reference.movement || model.movement}</div></div>
               <div data-label="Production Year"><div class="main-text">${reference.year}</div></div>
               <div data-label="Material"><div class="main-text">${reference.material}</div></div>
