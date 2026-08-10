@@ -7694,7 +7694,7 @@
         { id: "users", label: "User Management", icon: "users", subs: ["User Accounts", "Reported Users"] },
         { id: "assets", label: "Asset Management", icon: "asset", subs: ["Asset List", "Reported Assets"] },
         { id: "content", label: "Content Management", icon: "content", subs: ["Articles", "Categories", "Reported Articles"] },
-        { id: "market", label: "Market Data", icon: "market", subs: ["Dashboard", "Brands & Models", "Sync History", "API Token"] },
+        { id: "market", label: "Market Data", icon: "market", subs: ["Dashboard", "Brands & Models", "Sync History"] },
         { id: "directory", label: "Directory", icon: "directory" },
       ]},
       { section: "งานตรวจสอบและบริการ", items: [
@@ -14343,9 +14343,7 @@
         ? [["Total Brands", marketMetrics.brands, "From Brand catalog"], ["Total Models", marketMetrics.models, "From Model catalog"], ["Total References", marketMetrics.references, "From Reference catalog"], ["Last Sync", marketMetrics.lastSyncRelative, marketMetrics.lastSyncTimestamp]]
         : subLabel === "Sync History"
           ? [["Log Entries Today", "5", "Backend sync history from The Watch API"], ["Completed", "3", "Latest cache is in use"], ["Running", "1", "Omega reference"], ["Failed", "1", "Existing cache kept"]]
-          : subLabel === "API Token"
-            ? [["Status", "Normal", "Standard Plan"], ["Quota Today", "72%", "Available for nightly sync"], ["Datasets", "4", "Brand / Model / Reference / Price"], ["Latest Token", "06 Aug 2026", "read-only display"]]
-            : [["Sample Brands", "5", "Click to view child models"], ["Sample Models", "10", "From Model catalog"], ["Sample References", "24", "From Reference catalog"], ["Latest Sync", "08:14", "06 Aug 2026"]];
+          : [["Sample Brands", "5", "Click to view child models"], ["Sample Models", "10", "From Model catalog"], ["Sample References", "24", "From Reference catalog"], ["Latest Sync", "08:14", "06 Aug 2026"]];
       document.querySelector("#summary-grid").innerHTML = stats.map(stat => `
         <article class="stat">
           <div class="stat-label">${stat[0]}</div>
@@ -14366,10 +14364,6 @@
             <input class="field search" id="market-search" type="search" placeholder="Search brand / model / reference" />
           </div>
         `;
-        return;
-      }
-      if (subLabel === "API Token") {
-        document.querySelector(".filters").innerHTML = "";
         return;
       }
       if (subLabel === "Sync History") {
@@ -15934,9 +15928,7 @@
       const marketMetrics = getMarketMetricCards();
       const cards = subLabel === "Dashboard"
         ? [["สถานะการซิงก์ล่าสุด", `กำลังอัปเดตข้อมูลอ้างอิงของ Omega เหลือ ${marketMetrics.pendingPriceValidation} รุ่นที่ต้องตรวจสอบราคากลาง`]]
-        : subLabel === "API Token"
-          ? [["Provider", "thewatchapi.com"], ["Plan", "Standard Plan"], ["Access", "Read-only sync through a backend token. The full secret is not shown in BO."]]
-          : [["Brand-first workflow", "Admins start from brands, drill into models, then open references to review detail and price data."], ["API source", "Data comes from The Watch API through backend sync for Brand, Model and Reference catalog."], ["Read-only", "Add, edit, delete and provider master-data overrides are not available."]];
+        : [["Brand-first workflow", "Admins start from brands, drill into models, then open references to review detail and price data."], ["API source", "Data comes from The Watch API through backend sync for Brand, Model and Reference catalog."], ["Read-only", "Add, edit, delete and provider master-data overrides are not available."]];
       document.querySelector("#cards").innerHTML = cards.map(card => `
         <article class="mini-card">
           <h3>${card[0]}</h3>
@@ -16005,24 +15997,6 @@
       `;
     }
 
-    function renderMarketApiToken() {
-      document.querySelector("#table").innerHTML = `
-        <div class="market-brand-detail">
-          <section class="market-detail-section">
-            <h3>API Token</h3>
-            <div class="market-detail-grid">
-              <div class="detail-tile"><span>Provider</span><strong>thewatchapi</strong></div>
-              <div class="detail-tile"><span>Status</span><strong>Connected</strong></div>
-              <div class="detail-tile"><span>Plan</span><strong>Standard Plan</strong></div>
-              <div class="detail-tile"><span>Last Used</span><strong>08:14, 06 Aug 2026</strong></div>
-            </div>
-            <div class="module-note"><strong>Token:</strong> twa_live_••••••••••••••••8f21</div>
-            <div class="module-note">This read-only screen is for checking backend token status only. The full secret is not shown and this prototype does not include a token edit flow.</div>
-          </section>
-        </div>
-      `;
-    }
-
     function renderMarketData(subLabel = "Dashboard") {
       activeModule = "market";
       activeSub = subLabel || "Dashboard";
@@ -16053,8 +16027,6 @@
         renderMarketDashboard();
       } else if (subLabel === "Brands & Models") {
         renderMarketCatalogRows();
-      } else if (subLabel === "API Token") {
-        renderMarketApiToken();
       } else {
         renderMarketQueueRows(subLabel);
       }
@@ -16092,7 +16064,6 @@
       if (activeModule === "market") {
         if ((activeSub || "Dashboard") === "Dashboard") renderMarketDashboard();
         else if (activeSub === "Brands & Models") renderMarketCatalogRows();
-        else if (activeSub === "API Token") renderMarketApiToken();
         else renderMarketQueueRows(activeSub);
         return;
       }
