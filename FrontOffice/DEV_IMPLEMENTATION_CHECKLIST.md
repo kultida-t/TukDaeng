@@ -216,7 +216,13 @@ Purpose:
 - [ ] Show สร้าง Offer ได้จาก Asset Detail / Public Profile detail entry เท่านั้น
 - [ ] Hide, Sold, Deleted สร้าง Offer ใหม่ไม่ได้
 - [ ] Guest กด Offer ต้องเปิด Login Required Dialog
-- [ ] Offer Price ต้อง validate มากกว่า 0
+- [ ] Owner ต้องไม่สามารถ Make Offer กับ Asset ของตัวเอง
+- [ ] Offer Price เป็น required และถ้าว่างต้อง disable ปุ่ม `Send offer`
+- [ ] Offer Price ต้องรับเฉพาะตัวเลขจำนวนเงิน THB ที่ parse ได้
+- [ ] Offer Price ต้อง validate มากกว่า 0 และแสดง `Please enter a valid offer amount` เมื่อเป็น 0, ติดลบ หรือไม่ใช่ตัวเลข
+- [ ] Offer Message เป็น optional, trim ก่อนส่ง และถ้าเป็น whitespace-only ให้ถือว่าไม่กรอก
+- [ ] Offer Message ต้องไม่เกิน 500 characters และแสดง field-level validation error เมื่อเกิน
+- [ ] Buyer ที่มี Pending Offer เดิมของ Asset เดียวกันต้องสร้างซ้ำไม่ได้ และแสดง `You already have a pending offer. Go to chat to view it.`
 - [ ] Offer ส่งสำเร็จแล้ว status = `Pending`
 - [ ] Offer Sent Successfully แล้วเปิด Chat Room
 - [ ] Offer Card ต้องแสดงใน Chat Room

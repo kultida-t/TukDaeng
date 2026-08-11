@@ -949,14 +949,48 @@ Given Asset status เป็น `Hide`, `Sold` หรือ `Deleted`
 When Member พยายาม Make Offer  
 Then ระบบต้องไม่สร้าง Offer
 
-## QA-OFFER-003: Offer Sent Opens Chat
+## QA-OFFER-003: Offer Price Validation
+
+Given Buyer อยู่ใน Make Offer form  
+When Offer Price ว่าง  
+Then ปุ่ม `Send offer` ต้อง disabled  
+When Offer Price เป็น 0, ติดลบ, ตัวอักษร หรือ parse เป็นจำนวนเงินไม่ได้  
+Then ต้องแสดง `Please enter a valid offer amount`  
+And ระบบต้องไม่สร้าง Offer
+
+## QA-OFFER-004: Offer Message Validation
+
+Given Buyer อยู่ใน Make Offer form  
+When Message ว่างหรือมีเฉพาะช่องว่าง  
+Then ระบบต้องส่ง Offer ได้โดยไม่มี Message หลัง trim  
+When Message เกิน 500 characters  
+Then ต้องแสดง field-level validation error  
+And ระบบต้องไม่สร้าง Offer
+
+## QA-OFFER-005: Duplicate Pending Offer
+
+Given Buyer มี Pending Offer เดิมของ Asset เดียวกัน  
+When Buyer ส่ง Offer ซ้ำ  
+Then ระบบต้องไม่สร้าง Offer ใหม่  
+And ต้องแสดง `You already have a pending offer. Go to chat to view it.`
+
+## QA-OFFER-006: Owner And Guest Restrictions
+
+Given user เป็น Guest  
+When user กด Make Offer  
+Then ต้องแสดง Global Login Required Dialog  
+Given user เป็น Owner ของ Asset  
+When user เปิด Asset Detail ของตัวเอง  
+Then ต้องไม่เห็นปุ่ม Make Offer
+
+## QA-OFFER-007: Offer Sent Opens Chat
 
 Given Buyer submit valid offer  
 When offer created  
 Then status ต้องเป็น `Pending`  
 And ระบบต้องเปิด Chat Room พร้อม Offer Card
 
-## QA-OFFER-004: Accept Offer
+## QA-OFFER-008: Accept Offer
 
 Given Seller มี Pending Offer  
 When Seller Accept และ confirm  
@@ -964,7 +998,7 @@ Then Offer status ต้องเป็น `Accepted`
 And Buyer ได้ Offer Accepted notification  
 And notification เปิด Chat Room
 
-## QA-OFFER-005: Reject Offer
+## QA-OFFER-009: Reject Offer
 
 Given Seller มี Pending Offer  
 When Seller Reject และ confirm  
@@ -972,20 +1006,20 @@ Then Offer status ต้องเป็น `Rejected`
 And Buyer ได้ Offer Rejected notification  
 And notification เปิด Asset Detail
 
-## QA-OFFER-006: New Offer Notification
+## QA-OFFER-010: New Offer Notification
 
 Given Buyer ส่ง Offer ใหม่  
 When Seller ได้ New Offer notification  
 Then notification ต้องเปิด Chat Room และ focus Offer Card
 
-## QA-OFFER-007: Offer Cancelled
+## QA-OFFER-011: Offer Cancelled
 
 Given Asset ถูก Deleted  
 When related Offer ถูกเปลี่ยนเป็น `Cancelled`  
 Then Buyer/Seller notification ต้องเปิด Chat Room และ focus Offer Card ที่ Cancelled  
 And Asset reference ต้องแสดง unavailable state
 
-## QA-OFFER-008: Asset Sold Auto Reject
+## QA-OFFER-012: Asset Sold Auto Reject
 
 Given Asset มีหลาย Pending Offer  
 When Owner mark Asset as Sold  

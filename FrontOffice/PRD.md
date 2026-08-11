@@ -162,8 +162,11 @@
 - ปุ่ม "Make an Offer" และ "Contact seller"
 
 **Make an Offer:**
-- กรอกราคาที่ต้องการเสนอ
-- เพิ่ม Message ถึงเจ้าของ
+- กรอกราคาที่ต้องการเสนอ (required, THB, ต้องเป็นตัวเลขมากกว่า 0)
+- หากไม่กรอกราคา ปุ่ม "Send offer" ต้องไม่ Active
+- หากราคาเป็น 0, ติดลบ หรือไม่ใช่ตัวเลข แสดง "Please enter a valid offer amount"
+- เพิ่ม Message ถึงเจ้าของ (optional, trim ก่อนส่ง, ถ้าเป็นช่องว่างล้วนให้ถือว่าไม่กรอก, ไม่เกิน 500 characters)
+- ส่ง Offer ซ้ำไม่ได้หากมี Pending Offer เดิมของ Asset เดียวกัน โดยแสดง "You already have a pending offer. Go to chat to view it."
 - กด "Send offer" → แสดง popup "Offer Sent Successfully" พร้อมปุ่ม "Go to chat"
 
 #### สำหรับเจ้าของ (Owner — ผู้ใช้ที่เป็นเจ้าของสินทรัพย์ชิ้นนั้น)

@@ -375,7 +375,7 @@
 #### Happy Path
 1. กด "Make an Offer"
 2. กรอกราคา (THB)
-3. กรอก Message (ตัวเลือก)
+3. กรอก Message (ตัวเลือก, ไม่เกิน 500 characters)
 4. กด "Send offer"
 5. แสดง Popup "Offer Sent Successfully"
 6. กด "Go to chat" → เข้าห้องแชทกับผู้ขาย
@@ -385,8 +385,13 @@
 |---|---|---|
 | E01 | ไม่กรอกราคา | ปุ่ม Send offer ไม่ Active |
 | E02 | ราคาเป็น 0 หรือติดลบ | แสดง "Please enter a valid offer amount" |
-| E03 | ส่ง Offer สินทรัพย์ที่ขายแล้ว | แสดง "This item is no longer available" |
-| E04 | ส่ง Offer ซ้ำในขณะที่ Offer เดิมยังรอ | แสดง "You already have a pending offer. Go to chat to view it." |
+| E03 | ราคาไม่ใช่ตัวเลข หรือ parse เป็นจำนวนเงินไม่ได้ | แสดง "Please enter a valid offer amount" |
+| E04 | Message มีเฉพาะช่องว่าง | Trim แล้วถือว่าไม่กรอก Message |
+| E05 | Message เกิน 500 characters | แสดง field-level validation error |
+| E06 | ส่ง Offer สินทรัพย์ที่ Hide, Sold หรือ Deleted | แสดง "This item is no longer available" |
+| E07 | ส่ง Offer ซ้ำในขณะที่ Offer เดิมยังรอ | แสดง "You already have a pending offer. Go to chat to view it." |
+| E08 | Guest กด Make an Offer | แสดง Global Login Required Dialog |
+| E09 | Owner กด Make an Offer บน Asset ของตัวเอง | ไม่แสดงปุ่ม Make an Offer |
 
 ---
 
