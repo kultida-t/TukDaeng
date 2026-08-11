@@ -418,6 +418,7 @@ Market Data และ Asset Specification ต้องแยกขอบเข�
 - Year, Condition, Scope of Delivery, Case Size, Thickness, Case Material, Movement, Dial Color และ Strap / Bracelet Type เป็นข้อมูลของ Asset เรือนนั้น ต้องเก็บใน Asset Specification ไม่ใช่เขียนกลับไป Market Data
 - Provider/API sync ห้าม overwrite user-entered Asset Specification
 - Internal option master สำหรับ Condition, Delivery, Case Material, Movement, Dial Color และ Strap / Bracelet Type ต้องใช้ร่วมกันระหว่าง Add/Edit Asset, Asset Detail, Search Filter และ Watch Alert criteria
+- Scope of Delivery ใน FO ใช้ได้เฉพาะ Original box และ Original papers เท่านั้น เป็น optional field; ถ้า Owner ไม่เลือกทั้งสองค่า ให้บันทึกเป็นไม่มีค่า delivery และไม่แสดง Scope of Delivery ใน Asset Detail / FO display surfaces
 
 Required Field Matrix:
 

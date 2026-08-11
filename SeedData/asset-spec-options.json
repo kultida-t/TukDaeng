@@ -1,6 +1,6 @@
 {
   "version": "asset-spec-options-v1",
-  "updated_at": "2026-08-10",
+  "updated_at": "2026-08-11",
   "description": "Seed option master for Front Office Add/Edit Asset, Asset Detail, Search Filter, and Watch Alert criteria. These are internal options, not BO Market Data provider catalog.",
   "schema": {
     "group": "Option group identifier used by API and forms.",
@@ -30,18 +30,8 @@
       "group": "delivery",
       "allows_multi_select": true,
       "options": [
-        { "key": "watch_only", "label_en": "Watch only", "label_th": "เฉพาะตัวเรือน", "description_en": "Watch only without original box or papers", "sort_order": 10, "is_active": true, "is_system": true },
-        { "key": "original_box", "label_en": "Original box", "label_th": "กล่องเดิม", "description_en": "Original manufacturer box", "sort_order": 20, "is_active": true, "is_system": true },
-        { "key": "original_papers", "label_en": "Original papers", "label_th": "เอกสารเดิม", "description_en": "Original documents or papers", "sort_order": 30, "is_active": true, "is_system": true },
-        { "key": "warranty_card", "label_en": "Warranty card", "label_th": "บัตรรับประกัน", "description_en": "Manufacturer or dealer warranty card", "sort_order": 40, "is_active": true, "is_system": true },
-        { "key": "receipt_copy", "label_en": "Receipt copy", "label_th": "สำเนาใบเสร็จ", "description_en": "Receipt or invoice copy", "sort_order": 50, "is_active": true, "is_system": true },
-        { "key": "certificate", "label_en": "Certificate", "label_th": "ใบรับรอง", "description_en": "Certificate or authentication document", "sort_order": 60, "is_active": true, "is_system": true },
-        { "key": "manual_booklet", "label_en": "Manual / booklet", "label_th": "คู่มือ / สมุดคู่มือ", "description_en": "Manual booklet or product booklet", "sort_order": 70, "is_active": true, "is_system": true },
-        { "key": "extra_links", "label_en": "Extra links", "label_th": "ข้อสายสำรอง", "description_en": "Extra bracelet links", "sort_order": 80, "is_active": true, "is_system": true },
-        { "key": "extra_strap", "label_en": "Extra strap", "label_th": "สายสำรอง", "description_en": "Additional strap included", "sort_order": 90, "is_active": true, "is_system": true },
-        { "key": "service_papers", "label_en": "Service papers", "label_th": "เอกสารเซอร์วิส", "description_en": "Service records or service papers", "sort_order": 100, "is_active": true, "is_system": true },
-        { "key": "hang_tag", "label_en": "Hang tag", "label_th": "ป้ายแขวน", "description_en": "Manufacturer or dealer hang tag", "sort_order": 110, "is_active": true, "is_system": true },
-        { "key": "travel_pouch", "label_en": "Travel pouch", "label_th": "ซอง / กระเป๋าพกพา", "description_en": "Travel pouch or carrying case", "sort_order": 120, "is_active": true, "is_system": true }
+        { "key": "original_box", "label_en": "Original box", "label_th": "กล่องเดิม", "description_en": "Original manufacturer box", "sort_order": 10, "is_active": true, "is_system": true },
+        { "key": "original_papers", "label_en": "Original papers", "label_th": "เอกสารเดิม", "description_en": "Original documents or papers", "sort_order": 20, "is_active": true, "is_system": true }
       ]
     },
     {

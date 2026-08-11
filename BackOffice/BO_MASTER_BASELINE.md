@@ -56,7 +56,7 @@ Directory is postponed from Phase 1. Keep `07_DIRECTORY_MODULE.md` as a future r
 
 | Module | Phase 2 Scope |
 | --- | --- |
-| Offer & Chat | `09_OFFER_CHAT_MODULE.md` - Offer lifecycle review, related chat room, reported chat, force expire, invalidation, export for dispute |
+| Offer Management | `09_OFFER_CHAT_MODULE.md` - Read-only offer list/detail, buyer/seller and asset interest overview, related chat context, notification delivery, pending-offer dependency |
 | Social Interaction | `10_SOCIAL_INTERACTION_MODULE.md` - Comment/reply moderation, like/favorite/follow analytics, reported social content |
 | Watch Alert | `11_WATCH_ALERT_MODULE.md` - Alert criteria view, trigger history, notification on/off, disable abuse alerts |
 | Help & Support | `12_HELP_SUPPORT_MODULE.md` - Ticket queue, manual ticket จาก LINE/Phone/Email, assignment, reply history, status, priority, SLA, related entity |
@@ -85,7 +85,7 @@ Directory is postponed from Phase 1. Keep `07_DIRECTORY_MODULE.md` as a future r
 | Archive article | Article หายจาก Board/search/category และ direct link แสดง unavailable behavior |
 | Hide comment | Comment หายจาก Asset Detail |
 | Disable watch alert | Alert ไม่ trigger notification ใหม่ |
-| Force expire offer | Offer ไม่สามารถ accept/decline และออกจาก pending flow |
+| View offer status | Admin ดู offer list/detail แบบ read-only; offer status เปลี่ยนจาก FO user action หรือ system rule ของ Asset/Account workflow |
 | Resolve support ticket | User เห็น ticket status update ถ้า FO expose ticket history |
 
 ## 8. Global Rules

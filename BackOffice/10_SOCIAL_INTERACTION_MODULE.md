@@ -287,7 +287,7 @@ Audit action ขั้นต่ำ:
 | Dashboard | Pending reported comments, social activity trend, SLA risk |
 | User Management | Author/reporter account status, suspend/ban impact |
 | Asset Management | Asset visibility, removed asset impact ต่อ comment surfaces |
-| Offer / Chat | Reported chat/social user context เมื่อต้องดู dispute ต่อเนื่อง |
+| Offer Management | Related offer/chat context เมื่อต้องดู dispute ต่อเนื่อง |
 | Audit Log | Moderation/export/reveal action ต้อง searchable |
 | Notification | Like/comment/follow delivery trace |
 | Reports & Analytics | Comment, like/favorite, follow aggregate |

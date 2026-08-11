@@ -67,7 +67,7 @@ Existing assets must keep displaying historical option labels even if an option 
 | Group | FO Control | Notes |
 | --- | --- | --- |
 | `condition` | Single-select | Required for `Sale`; optional for `Show` / `Hide`. |
-| `delivery` | Multi-select | Scope of Delivery. |
+| `delivery` | Optional multi-select | Scope of Delivery. FO may show only `Original box` and `Original papers`; if neither applies, save no delivery selection. Do not create or accept other delivery options such as `Watch only`, `Warranty card`, receipt, certificate, manual, service paper, hang tag, extra link, extra strap, or travel pouch. |
 | `case_material` | Single-select | Optional asset specification. |
 | `movement` | Single-select | Optional asset specification. |
 | `dial_color` | Single-select | Optional asset specification. |

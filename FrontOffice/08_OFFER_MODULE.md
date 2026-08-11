@@ -225,9 +225,11 @@ FO ต้องแยกคำว่า `Decline` กับ `Rejected` ให้
 | Status | Meaning |
 | --- | --- |
 | Pending | Offer ถูกส่งแล้วและรอ Seller ตัดสินใจ |
+| Paused | Offer ยังรอการตัดสินใจ แต่ถูกพักชั่วคราวเพราะ Asset อยู่ระหว่าง review หรือถูกซ่อนชั่วคราว |
 | Accepted | Seller ยอมรับ Offer |
 | Rejected | Seller กด `Decline` และ Offer ถูกปฏิเสธแล้ว |
 | Cancelled | Offer ถูกยกเลิกจาก system impact เช่น Asset Deleted |
+| Invalidated | Offer ใช้งานไม่ได้ถาวรเพราะ Asset ถูกซ่อนถาวรหรือไม่ผ่าน moderation |
 
 ## Offer Ownership
 
@@ -249,6 +251,30 @@ FO ต้องแยกคำว่า `Decline` กับ `Rejected` ให้
 - Chat ที่เกี่ยวข้องยังใช้งานได้
 - Sold Asset หายจาก public surfaces ตาม master
 
+## Asset Review / Moderation Impact
+
+เมื่อ Asset ที่มี Pending Offer ถูก report และระบบซ่อนชั่วคราวอัตโนมัติ หรือ Admin ซ่อนชั่วคราวระหว่าง review:
+
+- Offer ต้องเปลี่ยนเป็น `Paused`
+- Offer ต้องไม่อยู่ใน Incoming Offers ที่ต้องตัดสินใจแบบ active
+- Offer Card ใน Chat ยังอยู่เพื่อเป็น history/context
+- Seller ต้องกด `Accept` หรือ `Decline` ไม่ได้ระหว่าง `Paused`
+- Buyer และ Seller เห็นข้อความ `Offer Paused` และเหตุผลว่า Asset อยู่ระหว่าง review
+- ถ้า review ผ่านและ Asset กลับเป็น `Sale` หรือ `Show` ให้ Offer กลับเป็น `Pending` และ Seller action กลับมากดได้
+- ถ้า review ไม่ผ่านและ Asset ถูก `ซ่อนถาวร` ให้ Offer เปลี่ยนเป็น `Invalidated`
+
+เมื่อ Owner เปลี่ยน Asset จาก `Sale` หรือ `Show` เป็น `Hide` ขณะมี Pending Offer:
+
+- Offer ต้องเปลี่ยนเป็น `Cancelled`
+- เหตุผลคือ Asset ไม่รับ offer ต่อจาก owner-controlled visibility change
+- Chat ยังอยู่ และ Offer Card แสดง final state `Offer Cancelled`
+
+เมื่อ Asset ถูก BO ซ่อนถาวรจาก moderation:
+
+- Pending/Paused Offer ที่เกี่ยวข้องต้องเปลี่ยนเป็น `Invalidated`
+- Offer Card แสดง final state `Offer Unavailable`
+- ห้ามแสดง `Accept` / `Decline`
+
 ## Deleted Asset Impact
 
 - เมื่อ Asset ถูกลบ Offer ที่เกี่ยวข้องทั้งหมดต้องเป็น Cancelled
@@ -257,16 +283,29 @@ FO ต้องแยกคำว่า `Decline` กับ `Rejected` ให้
 
 ## Incoming Offers
 
-- Incoming Offers แสดงเฉพาะ Pending Offer ที่ Seller ยังต้องตัดสินใจ
+- Incoming Offers แสดงเฉพาะ `Pending` Offer ที่ Seller ยังต้องตัดสินใจและ Asset ยัง action ได้
 - Offer ที่อ่านแล้วแต่ยังไม่ Accept/Decline ต้องยังอยู่ใน Incoming Offers
-- Offer ที่ Accepted, Rejected หรือ Cancelled ต้องไม่อยู่ใน Incoming Offers
+- Offer ที่ `Paused`, `Accepted`, `Rejected`, `Cancelled` หรือ `Invalidated` ต้องไม่อยู่ใน Incoming Offers active list
 
 ## Offer Card In Chat
 
 - Chat Room ต้องรองรับ Offer Card
 - Offer Card ต้องแสดงอย่างน้อย: Asset reference, Offer Price, Message, Status, Timestamp
-- Seller action บน Offer Card แสดงเฉพาะ Pending Offer ที่ตนมีสิทธิ์ตัดสินใจ
+- Seller action บน Offer Card แสดงเฉพาะ `Pending` Offer ที่ตนมีสิทธิ์ตัดสินใจและ Asset ยัง action ได้
 - Buyer เห็น status ของ Offer แต่กด Accept/Decline ไม่ได้
+
+### Offer Card State Display
+
+| Offer state | Header copy | Body / Subcopy | Offer price color | Seller action |
+| --- | --- | --- | --- | --- |
+| `Pending` | ไม่ต้องมี result header | แสดง Offer Card พร้อมราคาและ message | Brand red / normal offer style | แสดง `Decline` และ `Accept` |
+| `Paused` | `Offer Paused` | `This asset is under review. The offer cannot be accepted or declined right now.` | Neutral / disabled | ไม่แสดงปุ่ม หรือ disabled ทั้ง `Decline` และ `Accept` |
+| `Accepted` | `Offer Accepted` | `The buyer has been notified.` | Green | ไม่มี action |
+| `Rejected` | `Offer Declined` | `The buyer has been notified.` | Red | ไม่มี action |
+| `Cancelled` | `Offer Cancelled` | `This asset is no longer available for offers.` | Neutral / disabled | ไม่มี action |
+| `Invalidated` | `Offer Unavailable` | `This asset was removed after review.` | Neutral / disabled | ไม่มี action |
+
+Asset reference card ด้านบน Chat ต้องสะท้อน asset state ด้วย เช่น `SALE`, `SHOW`, `UNDER REVIEW`, `HIDDEN`, `SOLD`, หรือ unavailable state ตาม lifecycle ล่าสุด
 
 ---
 
@@ -296,7 +335,7 @@ FO ต้องแยกคำว่า `Decline` กับ `Rejected` ให้
 | Offer Message Length | ไม่เกิน 500 characters; ถ้าเกินต้องแสดง field-level validation error |
 | Asset Status | ต้องเป็น `Sale` หรือ `Show` |
 | Show Asset Entry | `Show` สร้าง Offer ได้จาก Asset Detail / Public Profile detail entry เท่านั้น |
-| Asset Availability | `Hide`, `Sold` และ `Deleted` สร้าง Offer ใหม่ไม่ได้ |
+| Asset Availability | `Hide`, `Sold`, `Deleted`, `ซ่อนชั่วคราว`, `ซ่อนถาวร` และ asset ที่อยู่ระหว่าง review สร้าง Offer ใหม่ไม่ได้ |
 | Auth State | ต้อง Login ก่อน Make Offer |
 | Owner Restriction | Owner ไม่สามารถ Make Offer กับ Asset ของตัวเอง |
 | Duplicate Pending Offer | ถ้า user มี Pending Offer เดิมของ Asset นี้อยู่แล้ว ต้องไม่สร้างซ้ำ และแสดง `You already have a pending offer. Go to chat to view it.` |
@@ -311,11 +350,23 @@ FO ต้องแยกคำว่า `Decline` กับ `Rejected` ให้
 - EN: `This item has been sold.`
 - Result: ไม่สามารถสร้าง Offer ใหม่ และ pending offers อื่นถูกเปลี่ยนเป็น `Rejected` โดยอัตโนมัติ
 
+## Asset Under Review
+
+- TH: `รายการนี้อยู่ระหว่างการตรวจสอบ`
+- EN: `This item is under review.`
+- Result: ไม่สามารถสร้าง Offer ใหม่ และ existing pending offer ต้องเป็น `Paused` จนกว่า review จะจบ
+
 ## Asset Deleted
 
 - TH: `รายการนี้ไม่พร้อมใช้งานแล้ว`
 - EN: `This item is no longer available.`
 - Result: Offer ที่เกี่ยวข้องเป็น Cancelled
+
+## Asset Permanently Hidden
+
+- TH: `รายการนี้ไม่พร้อมใช้งานแล้ว`
+- EN: `This item is no longer available.`
+- Result: Pending/Paused Offer ที่เกี่ยวข้องเป็น `Invalidated`
 
 ## Invalid Offer Price
 
@@ -359,6 +410,8 @@ FO ต้องแยกคำว่า `Decline` กับ `Rejected` ให้
 | Offer Accepted | Buyer | Chat Room | ต้องตรง master |
 | Offer Rejected | Buyer | Asset Detail | ต้องตรง master |
 | Offer Cancelled | Buyer / Seller | Chat Room + Focus Offer Card | เปิด Offer Card ที่เป็น Cancelled; หาก Asset ถูกลบให้ Chat reference แสดง unavailable state |
+| Offer Paused | Buyer / Seller | Chat Room + Focus Offer Card | ใช้เมื่อ Asset ถูก auto hidden หรือซ่อนชั่วคราวระหว่าง review; Offer Card ต้องไม่มี Accept/Decline |
+| Offer Invalidated | Buyer / Seller | Chat Room + Focus Offer Card | ใช้เมื่อ Asset ถูกซ่อนถาวรจาก moderation; Offer Card ต้องเป็น final unavailable state |
 
 ---
 
@@ -373,6 +426,10 @@ FO ต้องแยกคำว่า `Decline` กับ `Rejected` ให้
 - `offer_rejected`
 - `offer_auto_rejected_asset_sold`
 - `offer_cancelled_asset_deleted`
+- `offer_cancelled_asset_hidden`
+- `offer_paused_asset_under_review`
+- `offer_resumed_asset_review_passed`
+- `offer_invalidated_asset_permanently_hidden`
 - `incoming_offers_viewed`
 
 ---
@@ -470,6 +527,38 @@ Given Asset มี Offer ที่เกี่ยวข้อง
 When Asset ถูกลบ  
 Then Offer ที่เกี่ยวข้องต้องเปลี่ยนเป็น Cancelled  
 And Chat ยังอยู่พร้อม unavailable asset reference
+
+## AC-OFFER-010A: Asset Under Review Pauses Offer
+
+Given Asset มี Pending Offer  
+When Asset ถูก report จนระบบซ่อนชั่วคราวอัตโนมัติ หรือ Admin ซ่อนชั่วคราวระหว่าง review  
+Then Offer ต้องเปลี่ยนเป็น `Paused`  
+And Offer ต้องไม่อยู่ใน Incoming Offers active list  
+And Offer Card ใน Chat ต้องแสดง `Offer Paused`  
+And ต้องไม่มีปุ่ม `Accept` หรือ `Decline`
+
+## AC-OFFER-010B: Review Passed Resumes Offer
+
+Given Offer อยู่ในสถานะ `Paused` เพราะ Asset อยู่ระหว่าง review  
+When review ผ่านและ Asset กลับเป็น `Sale` หรือ `Show`  
+Then Offer ต้องกลับเป็น `Pending`  
+And Seller ต้องเห็น `Accept` และ `Decline` ได้อีกครั้ง
+
+## AC-OFFER-010C: Permanent Hide Invalidates Offer
+
+Given Asset มี Pending หรือ Paused Offer  
+When Admin ซ่อนถาวร Asset จาก moderation  
+Then Offer ต้องเปลี่ยนเป็น `Invalidated`  
+And Offer Card ใน Chat ต้องแสดง `Offer Unavailable`  
+And ต้องไม่มีปุ่ม `Accept` หรือ `Decline`
+
+## AC-OFFER-010D: Owner Hide Cancels Offer
+
+Given Asset สถานะ `Sale` หรือ `Show` มี Pending Offer  
+When Owner เปลี่ยน Asset เป็น `Hide`  
+Then Offer ต้องเปลี่ยนเป็น `Cancelled`  
+And Offer Card ใน Chat ต้องแสดง `Offer Cancelled`  
+And ต้องไม่มีปุ่ม `Accept` หรือ `Decline`
 
 ## AC-OFFER-011: No Counter Offer In V1
 

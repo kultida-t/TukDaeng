@@ -425,7 +425,7 @@
 2. อัปโหลดรูปภาพ (อย่างน้อย 1 รูป)
 3. กรอก Basic Information ครบ
 4. เลือก Condition
-5. เลือก Scope of Delivery
+5. (ตัวเลือก) เลือก Scope of Delivery เฉพาะ Original box / Original papers; ถ้าไม่มีตามนี้ให้ไม่เลือก
 6. กรอก Specifications
 7. กรอก Commerce & Curation (ราคา + Description)
 8. เลือก Status (Sale / Show / Hide)
