@@ -46,7 +46,7 @@
 | 04 | Asset Management | 1 | Complete |
 | 05 | Content / Board | 1 | Complete |
 | 06 | Market Data | 1 | Complete |
-| 07 | Directory | 1 | Complete |
+| 07 | Directory | Future | Postponed from Phase 1 |
 | 08 | Audit Log | 1 | Complete |
 | 09 | Offer / Chat | 2 | Complete |
 | 10 | Social Interaction | 2 | Complete |
@@ -74,9 +74,8 @@
 2. Asset Management
 3. Content / Board
 4. Market Data
-5. Directory
-6. Audit Log
-7. Dashboard drill-in and queue summary
+5. Audit Log
+6. Dashboard drill-in and queue summary
 
 ### 4.3 Phase 2 Build
 
@@ -117,7 +116,7 @@
 | P0 | Account deletion anonymization timing หลัง 30-day grace period | `BO-DEC-003`, `DEL-DEC-003` | กระทบ data model, archive job, privacy/compliance |
 | P0 | The Watch API production plan/quota และ FX source USD -> THB | `BO-MARKET-DEC-005`, `BO-MARKET-DEC-006` | กระทบ market data sync, price index, fallback |
 | P0 | Sync timing จาก BO moderation ไป FO surfaces | `INT-DEC-001` | กระทบ cache invalidation และ user-visible behavior |
-| P1 | Directory V1 activation level | `INT-DEC-005`, `BO-DIR-DEC-001` | กระทบว่า Directory เป็น launch-critical หรือ placeholder |
+| P1 | Directory future activation level | `INT-DEC-005`, `BO-DIR-DEC-001` | Directory is postponed from Phase 1 while FO menu entries remain placeholder-only without detail routes |
 | P1 | FO support ticket history หรือ contact-only | `INT-DEC-004`, `SUP-DEC-001` | กระทบ Help / Support API, BO reply sync, FO UX |
 | P1 | Broadcast แสดงใน FO Notification Center หรือ push-only | `NOTI-DEC-001` | กระทบ FO notification type list และ payload |
 | P1 | Sensitive export ต้องมี approval เพิ่มหรือไม่ | `REP-DEC-004`, `SET-DEC-004` | กระทบ Admin Settings, Reports, Audit |

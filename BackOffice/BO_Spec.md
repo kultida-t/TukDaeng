@@ -13,7 +13,7 @@ Back Office ของตึกแดงเป็น Web Application สำหร
 - จัดการและ Moderate สินทรัพย์ทุกสถานะ (Sale / Show / Hide / Sold)
 - จัดการ Content บทความที่แสดงบนหน้า Board ใน FO
 - จัดการ Watch Brands, Models และ Price Index
-- จัดการ Directory ร้านค้า/บริการ ที่แสดงในเมนู FO
+- Directory ร้านค้า/บริการเป็น future/postponed scope; ไม่รวม Phase 1 เพราะ FO menu ยังเป็น placeholder
 - ดูรายงานและ Analytics
 - จัดการ Push Notification Broadcast
 - ตรวจสอบ Audit Log ทุก Action ของ Admin
@@ -35,7 +35,7 @@ BO Dashboard
 │   ├── Watch Brands
 │   ├── Watch Models
 │   └── Price Index
-├── Directory (เมนูเชื่อมโยง FO)
+├── Directory (future/postponed; not Phase 1)
 │   ├── Watch Shops
 │   ├── Accessories Shops
 │   ├── Repair Shops
@@ -308,6 +308,8 @@ Eligible article conditions: `Status = Published`, `Publish Date <= now` in `Asi
 
 ### 3.9 Directory Management
 
+**Phase 1 status:** Postponed / future scope only. FO directory hamburger entries are placeholder-only and do not have approved detail routes, so BO must not expose Directory navigation, CRUD, publication controls, map/contact fields, or FO sync in Phase 1.
+
 สำหรับจัดการข้อมูลที่แสดงในเมนู Hamburger ของ FO ได้แก่:  
 Watch Shops, Accessories Shops, Repair Shops, Auction Centers, Consignment Centers, Authentication Centers, Community
 
@@ -390,7 +392,7 @@ BO uses exactly one admin account type: `Admin`. There are no BO sub-types. The 
 | User Management | Admin can view/manage users with confirmation, reason, sensitive-data masking, and audit for high-risk actions. |
 | Asset Management | Admin can review and change assets with FO-impact, sensitive-data, confirmation, reason, and audit controls. |
 | Articles / Categories | Admin can create, edit, preview, publish, schedule, archive, manage categories, and audit content actions. Banners are future scope for non-article campaigns/promotions only. |
-| Market Data / Directory | Admin can manage watch data and directory entries with source, inactive/restore, and audit controls. |
+| Market Data / Directory | Admin can manage watch data with source, inactive/restore, and audit controls; Directory entries are future/postponed from Phase 1. |
 | Reports / Notifications / Audit / Settings | Admin can operate these modules according to export, approval, sensitive-data, and high-risk setting policies. |
 ## 4. BO Authentication
 
@@ -413,7 +415,7 @@ BO uses exactly one admin account type: `Admin`. There are no BO sub-types. The 
 - **Rich Text Editor:** TipTap หรือ Quill
 - **File Upload:** รองรับ Drag & Drop, Preview ก่อน Upload
 - **Data Table:** Sortable, Paginated, Searchable, Export
-- **Map:** Google Maps API (สำหรับ Directory Location Picker)
+- **Map:** Future only for Directory Location Picker if Directory scope is reopened
 
 ---
 
@@ -448,7 +450,7 @@ BO uses exactly one admin account type: `Admin`. There are no BO sub-types. The 
 | Publish newer eligible Article | Board Main recalculates automatically: newest eligible article becomes Main Hero; remaining eligible articles feed Trending Now and Journal Board preview by deterministic rules |
 | Update Price Index | ราคาใน Watch Price Index และ Asset Value Dashboard ของ User อัปเดต |
 | Add Watch Brand / Model | ข้อมูลปรากฏใน Autocomplete ขณะ Add Asset และ Filter ใน Search |
-| Add Directory Item (Active) | ร้านค้า/บริการปรากฏในเมนู FO |
+| Add Directory Item (Active) | Future/postponed; ร้านค้า/บริการปรากฏในเมนู FO เฉพาะเมื่อ Directory scope ถูกเปิดใช้งาน |
 | Suspend User | User Login ไม่ได้, เห็น Error Message |
 | Remove Asset | สินทรัพย์หายจาก Feed / Profile ของเจ้าของ |
 | Force Status → Hide | สินทรัพย์หายจาก Feed แต่เจ้าของยังเห็นใน Profile ตัวเอง |

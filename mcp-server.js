@@ -118,6 +118,10 @@ rl.on('line', async (line) => {
                       type: 'string',
                       description: 'Task status to store with each log record (e.g. "Done", "In Progress", "Blocked"). Optional.'
                     },
+                    total_hours: {
+                      type: 'number',
+                      description: 'Total hours spent for this work log. Use a value accepted by Core Portal, such as 2.5.'
+                    },
                     logs: {
                       type: 'array',
                       items: {
@@ -147,6 +151,7 @@ rl.on('line', async (line) => {
         }
 
         const { apiKey, appName, appId, startDate, endDate, category, status, logs } = args;
+        const totalHours = args.total_hours ?? args.totalHours;
         const effectiveApiKey = apiKey || defaultApiKey;
 
         if (!effectiveApiKey) {
@@ -181,6 +186,7 @@ rl.on('line', async (line) => {
               end_date: endDate,
               category,
               status,
+              total_hours: totalHours,
               logs
             })
           });

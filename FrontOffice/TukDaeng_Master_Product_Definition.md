@@ -192,7 +192,9 @@ Full Back Office PRD ยังไม่เริ่มระหว่าง FO c
 
 - Watch Alert Match เฉพาะ Asset สถานะ Sale
 - Watch Alert สร้างจาก Search Filter
-- Watch Alert ไม่มี Required Field
+- Watch Alert criteria ไม่มี Required Field แต่ Alert Name ต้องไม่ว่างตอนบันทึก
+- เมื่อสร้าง Watch Alert ระบบต้องเติมชื่อเริ่มต้นจาก Filter หรือ default name ให้ user แก้ไขได้ก่อนบันทึก
+- หาก user ลบชื่อจนว่างแล้วกดบันทึก ระบบต้องแจ้งให้กรอกชื่อและไม่สร้าง Watch Alert
 - Watch Alert Notification เปิดไปที่ Result List ไม่เปิด Asset ตรง
 
 ### Public Profile
@@ -440,17 +442,19 @@ Add Asset flow:
 - ก่อนสร้าง asset จริงต้องแสดง confirmation `Add this asset?` พร้อม primary action `Add asset`
 - หลังสร้างสำเร็จให้แสดง `Asset added.` และ default ไป Owner Asset Detail ของ asset ที่เพิ่งสร้าง
 
-Provenance required fields:
+Provenance required / optional fields:
 
-| Provenance Type | Available Status | Required Fields |
-| --- | --- | --- |
-| Owner (Asset) | Sale, Show, Hide | Purchase Price (THB), must be greater than 0 |
-| Consignment | Sale only | Full Name, Phone Number, Asking Price (THB), must be greater than 0 |
+| Provenance Type | Available Status | Required Fields | Optional Fields That Must Validate When Filled |
+| --- | --- | --- | --- |
+| Owner (Asset) | Sale, Show, Hide | Purchase Price (THB), must be greater than 0 | Purchase Date, Purchase From, All Equipment & Accessories, Proof of Payment, Note |
+| Consignment | Sale only | Full Name, Phone Number, Asking Price (THB), must be greater than 0 | Line / IG / Facebook, Email, Payout Method, Consignment Date, Consignment Duration, Commission (%), Minimum Acceptable Price, All Equipment & Accessories, Proof of Payment / Documentation, Note |
 
 Provenance display and edit rules:
 
 - Provenance, Purchase Information, Consignment Information, Proof of Payment และ Consignment Terms เป็น private เห็นเฉพาะ Owner หรือ Admin
 - Optional fields ที่ไม่ได้กรอกต้องไม่แสดง label หรือ placeholder ใน Viewer/Public mode
+- Optional fields ที่ user กรอกหรืออัปโหลดต้อง validate ก่อน Save: date ต้องเป็นวันที่จริงและไม่เป็นอนาคตเมื่อเป็น purchase/consignment date, phone/email ต้อง format ถูกต้อง, numeric fields ต้องอยู่ในช่วงที่กำหนด, text ต้องไม่เป็น whitespace-only/เกินความยาว, และ uploads ต้องผ่าน type/size/count limits
+- `Payout Method`, `Consignment Date`, `Consignment Duration` และ `Commission (%)` ไม่ required ใน FO Add Provenance V1 เพราะเป็นเงื่อนไขที่ทีมงานอาจ confirm ภายหลัง แต่ถ้า user กรอกต้อง validate ครบ
 - Consignment Asking Price ต้องใช้ source เดียวกับ Commerce / listing Asking Price
 - หาก Asset ที่เป็น Consignment ถูกเปลี่ยนจาก Sale เป็น Show หรือ Hide ต้องเปลี่ยน provenance type เป็น Owner (Asset) หรือปิด consignment data ก่อนบันทึก
 - Sold Asset ต้องแสดง Provenance / Consignment เป็น read-only และไม่ให้แก้ผ่าน Edit Asset ปกติ
@@ -712,12 +716,13 @@ Portfolio valuation baseline:
 
 Sold History เก็บ:
 
-- Sale Date
-- Buyer
-- Contact
-- Sale Price
-- Payment Method
-- Attachment
+- Sale Date (required)
+- Sale Price (required)
+- Payment Method (required)
+- Buyer (optional)
+- Contact (optional)
+- Attachment (optional)
+- Note (optional)
 
 Sold History calculation:
 

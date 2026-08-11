@@ -140,6 +140,12 @@ Given OTP ถูกสร้างเกิน 30 นาที
 When user submit OTP  
 Then ระบบต้อง reject และให้ขอ OTP ใหม่
 
+## QA-AUTH-002A: OTP Format
+
+Given user อยู่หน้า Verify Email  
+When user กรอก OTP ไม่ครบ 6 หลัก หรือมีตัวอักษรที่ไม่ใช่ตัวเลข  
+Then ปุ่ม verify ต้องไม่ active หรือระบบต้องแสดง field validation ว่า OTP ต้องเป็นตัวเลข 6 หลัก
+
 ## QA-AUTH-003: Password Policy
 
 Given user ตั้ง password น้อยกว่า 8 ตัวอักษร หรือไม่มีตัวเลข/สัญลักษณ์  
@@ -193,6 +199,20 @@ Given account ถูก Banned
 When user Sign In ด้วย Email, Apple หรือ Google
 Then ระบบต้อง block login พร้อมเหตุผลและช่องทาง Support
 And user ต้องไม่เข้า main app หรือทำ authenticated action ได้
+
+## QA-AUTH-008: Forgot Password SSO Account
+
+Given email เป็นบัญชีที่สมัครด้วย Apple หรือ Google  
+When user กรอก email ใน Forgot Password  
+Then ระบบต้องแสดง `If this email exists, a reset link has been sent.`  
+And ต้องไม่เปิดเผยว่า email นั้นเป็น SSO-only account
+
+## QA-AUTH-009: Reset Link Invalid Or Used
+
+Given reset password link หมดอายุ ถูกแก้ไข หรือถูกใช้ไปแล้ว  
+When user เปิด link  
+Then ระบบต้องแสดง Reset Link Invalid / Expired state  
+And ต้องมี action ให้ขอ reset link ใหม่
 
 ---
 
@@ -373,6 +393,34 @@ Then result ต้องแสดงเฉพาะ `Sale`
 Given user เลือก Brand = Rolex  
 When user เปิด Model filter  
 Then Model list ต้องเหลือเฉพาะ model ของ Rolex
+
+## QA-SEARCH-002A: Price Range Manual Input Validation
+
+Given user เปิด Price filter  
+When user กรอก Minimum price หรือ Maximum price เอง  
+Then ระบบต้องรับเฉพาะตัวเลขจำนวนเต็มและ `0`  
+And ต้อง auto-format comma คั่นหลักพันระหว่างกรอก เช่น user พิมพ์ `2000000` แล้ว field แสดง `2,000,000`  
+And ต้องเก็บค่า internal เป็นตัวเลขล้วน และ normalize ค่า display `2,000,000` เป็น `2000000` ก่อน Apply  
+And ถ้า user paste `2,000,000` ต้อง strip comma, validate ค่าเลขล้วน และ format ใหม่ตาม pattern ของระบบ  
+And ถ้า user paste comma ผิดหลัก เช่น `20,00,000` ต้อง strip comma และ format ใหม่เป็น `2,000,000` หากค่าตัวเลขถูกต้อง  
+And ถ้ากรอกตัวอักษร ต้องแสดง validation `กรุณากรอกราคาเป็นตัวเลข`  
+And ถ้ากรอกค่าติดลบ ต้องแสดง validation `ราคาต้องไม่ต่ำกว่า 0`  
+And ถ้ากรอกทศนิยม ต้องแสดง validation `กรุณากรอกราคาเป็นจำนวนเต็ม`  
+And ถ้า Minimum price มากกว่า Maximum price ต้องแสดง validation `ราคาต่ำสุดต้องไม่มากกว่าราคาสูงสุด`  
+And ถ้า Maximum price เกินเพดาน filter ต้องแสดง validation `ราคาสูงสุดต้องไม่เกิน 2,000,000`  
+And ต้องไม่ Apply filter จนกว่าค่าจะถูกต้อง
+
+## QA-SEARCH-002B: Price Range Optional Bounds
+
+Given user เปิด Price filter  
+When user ไม่กรอกทั้ง Minimum price และ Maximum price  
+Then ระบบต้องถือว่าไม่ใช้เงื่อนไข Price Range  
+When user กรอกเฉพาะ Minimum price  
+Then Search Result ต้องใช้เงื่อนไขราคามากกว่าหรือเท่ากับ Minimum price  
+When user กรอกเฉพาะ Maximum price  
+Then Search Result ต้องใช้เงื่อนไขราคาน้อยกว่าหรือเท่ากับ Maximum price  
+When user กรอก Minimum price เท่ากับ Maximum price  
+Then Search Result ต้องใช้เงื่อนไขราคาเท่ากับค่านั้น
 
 ## QA-SEARCH-003: Watch Alert No Required Field
 
@@ -568,6 +616,8 @@ And ต้องไม่สร้าง asset ซ้ำ
 Given Owner mark Asset as Sold  
 When Owner submit Sale Record  
 Then ระบบต้องเก็บ Sale Date, Buyer, Contact, Sale Price, Payment Method, Attachment
+And required fields ต้องมีเฉพาะ Sale Date, Sale Price, Payment Method
+And Buyer Name, Buyer Phone, Buyer Contact, Attachment, Note ต้องเป็น optional
 
 ## QA-ASSET-003A: Sale Record Confirmation Copy
 
@@ -577,6 +627,48 @@ Then ระบบต้องแสดง confirmation title `Save sale history?
 And body ต้องแจ้งว่าจะบันทึกประวัติการขาย เปลี่ยนสถานะเป็น Sold และนำรายการออกจาก Feed, Search และ Watch Alert
 And ต้องไม่ใช้คำว่า `Confirm sold out?`
 And action ต้องเป็น `Cancel` และ `Save sale` / `บันทึกการขาย`
+
+## QA-ASSET-003B: Sale Record Required Field Validation
+
+Given Owner เปิด Add Sale History
+When Owner ไม่กรอก Sale Price หรือกรอก `0`
+Then ระบบต้องแสดง validation error และห้าม Save
+
+Given Owner เปิด Add Sale History
+When Owner ไม่เลือก Sale Date
+Then ระบบต้องแสดง `Sale date is required` และห้าม Save
+
+Given Owner เปิด Add Sale History
+When Owner ไม่เลือก Payment Method
+Then ระบบต้องแสดง `Payment method is required` และห้าม Save
+
+## QA-ASSET-003C: Sale Record Optional Field Validation
+
+Given Owner เปิด Add Sale History
+When Owner ไม่กรอก Buyer Name, Buyer Phone, Buyer Contact, Attachment, Note
+Then Owner ต้องยัง Save ได้ ถ้า Sale Date, Sale Price, Payment Method ถูกต้อง
+
+Given Owner กรอก Buyer Phone
+When Buyer Phone ไม่ตรงรูปแบบเบอร์ที่รองรับ
+Then ระบบต้องแสดง validation error เฉพาะ Buyer Phone และห้าม Save จนกว่าจะแก้หรือเว้นว่าง
+
+Given Owner กรอก Buyer Name, Buyer Contact หรือ Note
+When field มีเฉพาะช่องว่าง, เกินความยาวที่กำหนด หรือมี HTML/script
+Then ระบบต้อง trim/sanitize และแสดง validation error ถ้ายังไม่ถูกต้อง
+
+## QA-ASSET-003D: Sale Record Date And Upload Validation
+
+Given Owner เปิด Add Sale History
+When Sale Date เป็นวันที่อนาคต
+Then ระบบต้องแสดง `Sale date cannot be in the future` และห้าม Save
+
+Given Asset มี Purchase Date
+When Sale Date ก่อน Purchase Date
+Then ระบบต้องแสดง `Sale date cannot be before purchase date` และห้าม Save
+
+Given Owner อัปโหลด Equipment & Accessories หรือ Proof of Payment
+When ไฟล์ไม่ใช่รูปภาพ `jpg/png/webp/heic`, ขนาดเกิน 10MB ต่อไฟล์, หรือเกิน 3 รูปต่อ section
+Then ระบบต้องแสดง upload validation error และห้าม Save ไฟล์ที่ไม่ถูกต้อง
 
 ## QA-ASSET-004: Sold Locks Main Fields
 
@@ -649,7 +741,9 @@ And ต้องไม่อนุญาตให้ Asset status `Show` เก�
 
 Given Owner มี Asset status `Show`
 When Owner เปลี่ยน status เป็น `Sale`
-Then ระบบต้อง require Condition, Asking Price และ Description ตาม Sale validation
+Then ระบบต้อง require Condition และ Description ตาม Sale validation
+And Asking Price ต้องเป็น optional แต่ถ้ากรอกต้องมากกว่า 0
+And ถ้าไม่กรอก Asking Price buyer-facing surface ต้องแสดง `Price on request`
 When save สำเร็จ
 Then Asset ต้องแสดงใน Feed, Search และสามารถ match Watch Alert ได้
 
@@ -673,7 +767,9 @@ And ต้องไม่อนุญาตให้ Asset status `Hide` เก�
 
 Given Owner มี Asset status `Hide`
 When Owner เปลี่ยน status เป็น `Sale`
-Then ระบบต้อง require Model / Series, Condition, Asking Price และ Description ตาม Sale validation
+Then ระบบต้อง require Model / Series, Condition และ Description ตาม Sale validation
+And Asking Price ต้องเป็น optional แต่ถ้ากรอกต้องมากกว่า 0
+And ถ้าไม่กรอก Asking Price buyer-facing surface ต้องแสดง `Price on request`
 When save สำเร็จ
 Then Asset ต้องกลับเข้า Feed, Search และ Watch Alert หากตรงเงื่อนไข visibility/filter
 
@@ -873,14 +969,48 @@ Given Asset status เป็น `Hide`, `Sold` หรือ `Deleted`
 When Member พยายาม Make Offer  
 Then ระบบต้องไม่สร้าง Offer
 
-## QA-OFFER-003: Offer Sent Opens Chat
+## QA-OFFER-003: Offer Price Validation
+
+Given Buyer อยู่ใน Make Offer form  
+When Offer Price ว่าง  
+Then ปุ่ม `Send offer` ต้อง disabled  
+When Offer Price เป็น 0, ติดลบ, ตัวอักษร หรือ parse เป็นจำนวนเงินไม่ได้  
+Then ต้องแสดง `Please enter a valid offer amount`  
+And ระบบต้องไม่สร้าง Offer
+
+## QA-OFFER-004: Offer Message Validation
+
+Given Buyer อยู่ใน Make Offer form  
+When Message ว่างหรือมีเฉพาะช่องว่าง  
+Then ระบบต้องส่ง Offer ได้โดยไม่มี Message หลัง trim  
+When Message เกิน 500 characters  
+Then ต้องแสดง field-level validation error  
+And ระบบต้องไม่สร้าง Offer
+
+## QA-OFFER-005: Duplicate Pending Offer
+
+Given Buyer มี Pending Offer เดิมของ Asset เดียวกัน  
+When Buyer ส่ง Offer ซ้ำ  
+Then ระบบต้องไม่สร้าง Offer ใหม่  
+And ต้องแสดง `You already have a pending offer. Go to chat to view it.`
+
+## QA-OFFER-006: Owner And Guest Restrictions
+
+Given user เป็น Guest  
+When user กด Make Offer  
+Then ต้องแสดง Global Login Required Dialog  
+Given user เป็น Owner ของ Asset  
+When user เปิด Asset Detail ของตัวเอง  
+Then ต้องไม่เห็นปุ่ม Make Offer
+
+## QA-OFFER-007: Offer Sent Opens Chat
 
 Given Buyer submit valid offer  
 When offer created  
 Then status ต้องเป็น `Pending`  
 And ระบบต้องเปิด Chat Room พร้อม Offer Card
 
-## QA-OFFER-004: Accept Offer
+## QA-OFFER-008: Accept Offer
 
 Given Seller มี Pending Offer  
 When Seller Accept และ confirm  
@@ -888,7 +1018,7 @@ Then Offer status ต้องเป็น `Accepted`
 And Buyer ได้ Offer Accepted notification  
 And notification เปิด Chat Room
 
-## QA-OFFER-005: Reject Offer
+## QA-OFFER-009: Reject Offer
 
 Given Seller มี Pending Offer  
 When Seller Reject และ confirm  
@@ -896,20 +1026,20 @@ Then Offer status ต้องเป็น `Rejected`
 And Buyer ได้ Offer Rejected notification  
 And notification เปิด Asset Detail
 
-## QA-OFFER-006: New Offer Notification
+## QA-OFFER-010: New Offer Notification
 
 Given Buyer ส่ง Offer ใหม่  
 When Seller ได้ New Offer notification  
 Then notification ต้องเปิด Chat Room และ focus Offer Card
 
-## QA-OFFER-007: Offer Cancelled
+## QA-OFFER-011: Offer Cancelled
 
 Given Asset ถูก Deleted  
 When related Offer ถูกเปลี่ยนเป็น `Cancelled`  
 Then Buyer/Seller notification ต้องเปิด Chat Room และ focus Offer Card ที่ Cancelled  
 And Asset reference ต้องแสดง unavailable state
 
-## QA-OFFER-008: Asset Sold Auto Reject
+## QA-OFFER-012: Asset Sold Auto Reject
 
 Given Asset มีหลาย Pending Offer  
 When Owner mark Asset as Sold  
@@ -1195,6 +1325,8 @@ Then Change Password ต้องไม่เป็น active action
 Given Member ใช้ Email / Password account และเปิด Change Password
 When Member submit ด้วย current password ที่ไม่ถูกต้อง
 Then ต้องแสดง field error `Current password is incorrect.`
+When Member กรอก new password น้อยกว่า 8 ตัวอักษร หรือไม่มีตัวเลข/สัญลักษณ์
+Then ต้องแสดง password policy validation error
 When Member กรอก new password ซ้ำกับ current password
 Then ต้องแสดง field error `New password must be different from current password.`
 When Member กรอก confirm password ไม่ตรงกับ new password

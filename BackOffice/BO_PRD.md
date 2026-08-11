@@ -18,7 +18,7 @@ BO ต้องช่วยให้ทีม Admin สามารถ:
 - ตรวจสอบและจัดการข้อมูลที่ผู้ใช้สร้างจาก FO
 - Moderate สินทรัพย์ คอมเมนต์ แชท และข้อเสนอที่ผิด policy
 - จัดการบทความและเนื้อหาที่แสดงในเมนู Board ของ FO
-- จัดการ master data เช่น Watch Brand, Model, Price Index และ Directory
+- จัดการ master data เช่น Watch Brand, Model และ Price Index; Directory เป็น future/postponed scope ไม่รวม Phase 1
 - ช่วยเหลือผู้ใช้ผ่าน Support Ticket
 - ตรวจสอบรายงานและ performance ของระบบ
 - บันทึก audit log ทุก action สำคัญของ Admin
@@ -35,7 +35,7 @@ FO มีหลาย flow ที่สร้างข้อมูลและ i
 | Trust & Safety | รองรับ moderation, report handling, suspend/ban, audit |
 | Content Publishing | ให้ Admin จัดการบทความ Board และ Banner ได้จาก BO |
 | Support Efficiency | ให้ Admin ติดตามและตอบ ticket ได้ |
-| Market Data Quality | ให้ทีม Market จัดการ Brand, Model, Price Index และ Directory |
+| Market Data Quality | ให้ทีม Market จัดการ Brand, Model และ Price Index; Directory เป็น future/postponed scope |
 | Traceability | ทุก action สำคัญต้องมี audit log และตรวจสอบย้อนหลังได้ |
 
 ---
@@ -48,7 +48,7 @@ BO has exactly one admin account type: `Admin`. There are no BO sub-types for co
 
 | Admin Account Type | Primary Responsibility |
 |---|---|
-| Admin | Manage all BO operational areas allowed by product scope and policy: users, assets, content, market data, directory, offers, chat, social, watch alerts, support, account deletion, notifications, reports, audit, and settings. |
+| Admin | Manage all BO operational areas allowed by product scope and policy: users, assets, content, market data, offers, chat, social, watch alerts, support, account deletion, notifications, reports, audit, and settings. Directory is future/postponed from Phase 1. |
 
 ### 2.2 FO Users
 
@@ -66,7 +66,7 @@ FO users have a single account type: `User`. BO must support activity from the s
 - Content / Board Management
 - Market Data Management
 - Watch Alert Management
-- Directory Management
+- Directory Management (future/postponed; not Phase 1)
 - Help & Support Ticket
 - Push Notification และ System Notification Trigger
 - Reports & Analytics
@@ -74,6 +74,8 @@ FO users have a single account type: `User`. BO must support activity from the s
 - Admin Settings
 
 ### 3.2 Out of Scope for Phase 1
+
+Directory Management is out of scope for Phase 1. FO directory menu entries are placeholder-only until detail routes and taxonomy are approved, so BO must not expose Directory navigation, CRUD, publication controls, map/contact fields, or FO sync in Phase 1.
 
 - ระบบชำระเงินออนไลน์ใน BO
 - Live chat ระหว่าง Admin กับผู้ใช้แบบ real-time
@@ -342,6 +344,8 @@ Admin ต้องสามารถ:
 
 ## 4.10 Directory Management
 
+**Phase 1 status:** Postponed / future scope only. Keep this section as reference for a later Directory phase; do not implement or expose it in the Phase 1 BO prototype/build.
+
 ### Requirements
 
 Admin ต้องสามารถจัดการ directory ที่แสดงใน FO:
@@ -543,7 +547,6 @@ Reports ที่ต้องมี:
 - Asset Management
 - Content / Board Management
 - Market Data
-- Directory
 - Audit Log
 
 ### Phase 2

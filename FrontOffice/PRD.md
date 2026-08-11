@@ -162,8 +162,11 @@
 - ปุ่ม "Make an Offer" และ "Contact seller"
 
 **Make an Offer:**
-- กรอกราคาที่ต้องการเสนอ
-- เพิ่ม Message ถึงเจ้าของ
+- กรอกราคาที่ต้องการเสนอ (required, THB, ต้องเป็นตัวเลขมากกว่า 0)
+- หากไม่กรอกราคา ปุ่ม "Send offer" ต้องไม่ Active
+- หากราคาเป็น 0, ติดลบ หรือไม่ใช่ตัวเลข แสดง "Please enter a valid offer amount"
+- เพิ่ม Message ถึงเจ้าของ (optional, trim ก่อนส่ง, ถ้าเป็นช่องว่างล้วนให้ถือว่าไม่กรอก, ไม่เกิน 500 characters)
+- ส่ง Offer ซ้ำไม่ได้หากมี Pending Offer เดิมของ Asset เดียวกัน โดยแสดง "You already have a pending offer. Go to chat to view it."
 - กด "Send offer" → แสดง popup "Offer Sent Successfully" พร้อมปุ่ม "Go to chat"
 
 #### สำหรับเจ้าของ (Owner — ผู้ใช้ที่เป็นเจ้าของสินทรัพย์ชิ้นนั้น)
@@ -205,23 +208,27 @@ Market Data / Specification storage rule:
 - Commerce & Curation: ราคา, Description
 - Status: Sale / Show / Hide
 - Sale Status: Available / Sold
+- Add/Edit required field rule by status:
+  - Sale: Required = Photos 1-10, Brand, Model & Series, Condition, Description, Status; Asking Price is optional and buyer-facing surfaces must show `Price on request` when empty
+  - Show: Required = Photos 1-10, Brand, Model & Series, Status; Asking Price, Condition, Description and specifications are optional and price must not be shown on public surfaces
+  - Hide: Required = Photos 1-10, Brand, Status; Model & Series, Asking Price, Condition, Description and specifications are optional and price must not be shown on public surfaces
+  - Every optional field that the user fills, selects, or uploads must still pass validation before save
 - Provenance (ประวัติสินทรัพย์):
-  - Purchase Price (THB)
-  - Purchase Date, Purchase From (Dealer/Individual)
-  - All Equipment & Accessories (รูปภาพ)
-  - Proof of Payment (รูปภาพ)
-  - Note
+  - Required: Purchase Price (THB), must be greater than 0
+  - Optional: Purchase Date, Purchase From, All Equipment & Accessories, Proof of Payment, Note
+  - Optional fields ต้อง validate เมื่อ user กรอกหรืออัปโหลด เช่น date ห้ามเป็นอนาคต, text ห้ามเป็นค่าว่างล้วน/เกินความยาว, upload ต้องผ่าน type/size/count limits
 - Consignment (ฝากขาย):
-  - ข้อมูลเจ้าของฝาก: ชื่อ, โทรศัพท์, Line/IG/Facebook
-  - Consignment Date
-  - Price & Terms: Asking Price, Commission %
-  - Documentation
+  - Required: Full Name, Phone Number, Asking Price (THB), must be greater than 0
+  - Optional: Line/IG/Facebook, Email, Payout Method, Consignment Date, Consignment Duration, Commission %, Minimum Acceptable Price, All Equipment & Accessories, Proof of Payment / Documentation, Note
+  - Payout Method, Consignment Date, Consignment Duration และ Commission % ไม่ required ใน FO Add Provenance V1 เพราะทีมงานอาจ confirm ภายหลัง
+  - Optional fields ต้อง validate เมื่อ user กรอกหรืออัปโหลด เช่น phone/email format, date ห้ามเป็นอนาคต, duration > 0, commission 0-100, minimum acceptable price <= asking price, upload ต้องผ่าน type/size/count limits
 - Save: แสดง Confirmation Dialog ก่อน Save
 
 #### 3.5.2 Edit Asset
 - แก้ไขข้อมูลสินทรัพย์ทุกฟิลด์
 - แก้ไข Status ระหว่าง Sale / Show / Hide
-- บันทึก Sale History: ข้อมูลผู้ซื้อ, ราคาขาย, วิธีชำระ (Bank Transfer / Cash / PromptPay / Other)
+- บันทึก Sale History: Required = Sale Date, Sale Price, Payment Method; Optional = Buyer Name, Buyer Phone, Buyer Contact, Equipment & Accessories, Proof of Payment, Note
+- Sale History validation: Sale Price ต้องมากกว่า 0, Sale Date ห้ามเป็นวันที่อนาคตและห้ามก่อน Purchase Date ถ้ามี, Payment Method ต้องเลือกจาก Bank Transfer / Cash / PromptPay / Other, optional text/contact/upload ต้อง validate เมื่อมีการกรอกหรืออัปโหลด
 
 ---
 

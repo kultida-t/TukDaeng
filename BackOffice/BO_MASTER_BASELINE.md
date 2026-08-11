@@ -20,7 +20,7 @@ BO ต้องแยกจาก FO mobile app ชัดเจน Admin ไม�
 
 | Goal | Requirement |
 | --- | --- |
-| Operational control | Admin จัดการ users, assets, content, market data, directory, support, notifications และ reports ได้ |
+| Operational control | Admin จัดการ users, assets, content, market data, support, notifications และ reports ได้; Directory ถูกเลื่อนออกจาก Phase 1 จนกว่า FO directory detail routes จะเปิด |
 | Trust & safety | Admin review reports, moderate content, suspend/ban users และตรวจสอบ action ได้ |
 | Responsive operation | BO รองรับ desktop, tablet และ mobile-width browser โดย optimize workflow หนาแน่นสำหรับหน้าจอใหญ่ |
 | FO continuity | BO action ต้อง sync ผลกลับไป FO surfaces เช่น Feed, Asset Detail, Board, Search, Profile, Watch Alert และ Notification |
@@ -48,8 +48,9 @@ Phase 1 คือ BO foundation ขั้นต่ำที่จำเป็น
 | Asset Management | `04_ASSET_MANAGEMENT_MODULE.md` - Asset list/detail, status visibility, reports, flag/unflag, temporary hide/unhide, permanent hide, ลบโดยเจ้าของ retained record, force status change, sensitive-field control |
 | Content / Board | `05_CONTENT_BOARD_MODULE.md` - Article/category CRUD, preview as FO, draft/publish/schedule/archive, automatic Board Main placement from Published Articles; banner/featured ordering is future scope |
 | Market Data | `06_MARKET_DATA_MODULE.md` - Brand/model/reference/price index management และ active/inactive status |
-| Directory | `07_DIRECTORY_MODULE.md` - Directory item CRUD, publication status, map/contact fields, image fields |
 | Audit Log | `08_AUDIT_LOG_MODULE.md` - Immutable event capture, search/filter, export, Admin visibility |
+
+Directory is postponed from Phase 1. Keep `07_DIRECTORY_MODULE.md` as a future reference only; do not expose the BO Directory menu, route, CRUD, publication controls, map/contact fields, or FO sync behavior in Phase 1 unless Product explicitly reopens the scope.
 
 ## 5. Phase 2 Scope
 

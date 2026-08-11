@@ -344,6 +344,34 @@ Baseline seed files for implementation:
 | Description | Required | Optional | Optional |
 | Status | Required: `Sale` | Required: `Show` | Required: `Hide` |
 
+## Add / Edit Field Validation Matrix
+
+หลักการเดียวกันใช้ทั้ง Add Asset และ Edit Asset:
+
+- Required field ต้องไม่ว่าง, ต้อง trim whitespace ก่อน validate และต้องไม่ save ถ้าไม่ผ่าน
+- Optional field สามารถเว้นว่างได้ แต่ถ้า user กรอก เลือก หรืออัปโหลด ต้อง validate เต็มรูปแบบก่อน save
+- Optional field ที่เว้นว่างต้องบันทึกเป็น `null` / empty value ตาม data contract และห้ามสร้าง placeholder เช่น `N/A`
+- Error ต้องแสดงใกล้ field หรือ section ที่ผิด และต้องคงข้อมูลที่ user กรอกไว้หลัง error
+
+| Section | Field | Requirement | Validation When Filled / Selected |
+| --- | --- | --- | --- |
+| Gallery | Photos | Required for `Sale`, `Show`, `Hide` | ต้องมีอย่างน้อย 1 รูปและไม่เกิน 10 รูป; หาก Edit แล้วลบรูปจนเหลือ 0 ต้องห้าม Save; ไฟล์ต้องเป็นรูปภาพชนิดที่ระบบรองรับ เช่น `jpg/png/webp/heic`; ไม่เกิน 10MB ต่อไฟล์; ป้องกัน duplicate upload และรูปที่ไม่ผ่าน validation ต้องไม่ถูกแนบ |
+| Basic Information | Brand Name | Required for `Sale`, `Show`, `Hide` | trim whitespace; ห้ามว่างหรือมีแต่ช่องว่าง; ต้องรองรับ Market Data autocomplete/structured selection; ถ้าไม่มี match ให้เก็บ free-text snapshot; ต้องไม่เกินความยาวที่ระบบกำหนด |
+| Basic Information | Model / Series | Required for `Sale`, `Show`; Optional for `Hide` | เมื่อ required ต้องไม่ว่าง; เมื่อ optional แต่กรอกต้อง trim, ห้าม whitespace-only, รองรับ Market Data mapping/free-text snapshot และไม่เกินความยาวที่ระบบกำหนด |
+| Basic Information | Reference No. | Optional | ถ้ากรอกต้อง trim, ห้าม whitespace-only, รองรับ Market Data mapping/free-text snapshot และไม่เกินความยาวที่ระบบกำหนด |
+| Basic Information | Year | Optional | ถ้ากรอกต้องเป็นปีจริงแบบตัวเลขจำนวนเต็ม และต้องไม่เป็นปีในอนาคต |
+| Condition | Condition | Required for `Sale`; Optional for `Show`, `Hide` | ต้องเลือกได้หนึ่งค่าเท่านั้นเมื่อ required; ถ้า optional แต่เลือก ต้องเป็น option ที่มีอยู่ใน internal option master |
+| Scope of Delivery | Delivery items เช่น Original Box / Original Paper | Optional | ถ้าเลือกต้องเป็น option ที่มีอยู่ใน internal option master; รองรับหลายค่าได้ตาม data model; ห้ามบันทึกค่า label ที่ไม่มีใน option master เป็น id ปลอม |
+| Specifications | Case Size (mm) | Optional | ถ้ากรอกต้องเป็นตัวเลขมากกว่า 0; normalize หน่วยเป็น mm; ห้ามตัวอักษรหรือค่าติดลบ |
+| Specifications | Thickness (mm) | Optional | ถ้ากรอกต้องเป็นตัวเลขมากกว่า 0; normalize หน่วยเป็น mm; ห้ามตัวอักษรหรือค่าติดลบ |
+| Specifications | Case Material | Optional | ถ้าเลือกต้องเป็น option ที่มีอยู่ใน internal option master |
+| Specifications | Movement | Optional | ถ้าเลือกต้องเป็น option ที่มีอยู่ใน internal option master |
+| Specifications | Dial Color | Optional | ถ้าเลือกต้องเป็น option ที่มีอยู่ใน internal option master |
+| Specifications | Strap / Bracelet Type | Optional | ถ้าเลือกต้องเป็น option ที่มีอยู่ใน internal option master |
+| Commerce & Curation | Asking Price (THB) | Optional for `Sale`, `Show`, `Hide` | ถ้ากรอกต้องเป็นตัวเลขมากกว่า 0, normalize comma/format, ห้ามค่าติดลบ/ตัวอักษร/ศูนย์ และต้องไม่เกิน max price ที่ระบบกำหนด; ถ้า `Sale` และเว้นว่าง buyer-facing surface ต้องแสดง `Price on request`; ถ้า `Show` หรือ `Hide` ห้ามแสดงราคาใน public FO surfaces |
+| Commerce & Curation | Description | Required for `Sale`; Optional for `Show`, `Hide` | เมื่อ required ต้องไม่ว่างและไม่ใช่ whitespace-only; เมื่อ optional แต่กรอกต้อง trim/sanitize, ห้าม whitespace-only, ห้าม HTML/script ที่ไม่ปลอดภัย และไม่เกินความยาวที่ระบบกำหนด; minimum 20 characters เป็น recommendation/quality hint ไม่ใช่ blocking validation เว้นแต่ product กำหนดเพิ่ม |
+| Status | Status | Required | Add/Edit เลือกได้เฉพาะ `Sale`, `Show`, `Hide`; ห้ามเลือก `Sold` ใน Add/Edit ปกติ; การเปลี่ยน status ต้อง revalidate required fields ตาม status ใหม่ก่อน save |
+
 หลักการของ V1:
 
 - `Sale` เป็น marketplace listing; Owner สามารถกรอก Asking Price หรือเว้นว่างได้ ถ้าเว้นว่าง FO buyer-facing surface ต้องแสดง `Price on request`
@@ -395,11 +423,15 @@ Provenance validation messages:
 | Consignment Phone Number ว่าง | `กรุณากรอกเบอร์โทรผู้ฝากขาย` |
 | Consignment Asking Price ว่าง | `กรุณากรอกราคาเสนอขาย` |
 | Consignment Asking Price <= 0 | `ราคาเสนอขายต้องมากกว่า 0` |
+| Consignment Phone Number รูปแบบไม่ถูกต้อง | `กรุณากรอกเบอร์โทรให้ถูกต้อง` |
 | Consignment Email รูปแบบไม่ถูกต้อง | `กรุณากรอกอีเมลให้ถูกต้อง` |
 | Consignment Date เป็นวันที่ในอนาคต | `วันที่ฝากขายต้องไม่เป็นวันที่ในอนาคต` |
+| Consignment Duration <= 0 | `ระยะเวลาฝากขายต้องมากกว่า 0` |
 | Commission ไม่อยู่ในช่วง 0-100 | `ค่าคอมมิชชันต้องอยู่ระหว่าง 0-100%` |
 | Minimum Acceptable Price <= 0 | `ราคาขั้นต่ำต้องมากกว่า 0` |
 | Minimum Acceptable Price > Asking Price | `ราคาขั้นต่ำต้องไม่มากกว่าราคาเสนอขาย` |
+| Text field มีแต่ช่องว่างหรือยาวเกินกำหนด | แสดง validation เฉพาะ field นั้น |
+| Upload file ไม่ใช่ชนิดที่รองรับ / เกินขนาด / เกินจำนวน | แสดง upload validation เฉพาะ section นั้น |
 
 ## Provenance / Consignment Field Matrix
 
@@ -416,29 +448,29 @@ Provenance ต้องแยกข้อมูลการเป็นเจ้
 | Field | Requirement | Validation / Note |
 | --- | --- | --- |
 | Purchase Price (THB) | Required when saving Owner (Asset) provenance record | ต้องมากกว่า 0; ใช้เป็น asset cost basis, portfolio fallback และ expected profit |
-| Purchase Date | Optional | หากกรอกต้องไม่เป็นวันที่ในอนาคต |
-| Purchase From | Optional | ชื่อร้าน บุคคล แหล่งซื้อ หรือช่องทางที่ซื้อ |
-| All Equipment & Accessories | Optional | Upload รูปกล่อง tag คู่มือ หรืออุปกรณ์ประกอบ |
-| Proof of Payment | Optional | Upload ใบเสร็จ invoice certificate หรือเอกสารส่วนตัว |
-| Note | Optional | ข้อความส่วนตัวของ Owner |
+| Purchase Date | Optional | หากกรอกต้องเป็นวันที่จริงและต้องไม่เป็นวันที่ในอนาคต |
+| Purchase From | Optional | หากกรอกต้อง trim whitespace, ห้ามเป็นค่าว่างล้วน และต้องไม่เกินความยาวที่ระบบกำหนด |
+| All Equipment & Accessories | Optional | หากอัปโหลดต้องเป็น file type ที่รองรับ, ไม่เกินขนาดต่อไฟล์ และไม่เกินจำนวนไฟล์ต่อ section |
+| Proof of Payment | Optional | หากอัปโหลดต้องเป็น file type ที่รองรับ, ไม่เกินขนาดต่อไฟล์ และไม่เกินจำนวนไฟล์ต่อ section; private เฉพาะ Owner/Admin |
+| Note | Optional | หากกรอกต้อง trim whitespace, ห้ามเป็นค่าว่างล้วน และต้องไม่เกินความยาวที่ระบบกำหนด |
 
 ### Consignment Provenance
 
 | Field | Requirement | Validation / Note |
 | --- | --- | --- |
 | Full Name | Required when saving Consignment provenance record | ชื่อผู้ฝากขาย ใช้ใน owner/admin private view เท่านั้น |
-| Phone Number | Required when saving Consignment provenance record | เบอร์ผู้ฝากขาย ใช้ใน owner/admin private view เท่านั้น |
-| Line / IG / Facebook | Optional | ช่องทางติดต่อเสริม |
+| Phone Number | Required when saving Consignment provenance record | เบอร์ผู้ฝากขาย ใช้ใน owner/admin private view เท่านั้น; ต้อง validate phone format และ normalize ก่อนบันทึก |
+| Line / IG / Facebook | Optional | หากกรอกต้อง trim whitespace, ห้ามเป็นค่าว่างล้วน และต้องไม่เกินความยาวที่ระบบกำหนด |
 | Email | Optional | หากกรอกควร validate รูปแบบ email |
-| Payout Method | Optional | วิธีจ่ายเงินคืนผู้ฝากขาย |
-| Consignment Date | Optional | หากกรอกต้องไม่เป็นวันที่ในอนาคต |
-| Consignment Duration | Optional | ระยะเวลาฝากขาย |
+| Payout Method | Optional | หากกรอกต้องเป็น option/value ที่ระบบรองรับ และ validate field ย่อยตาม payout type; ไม่ required ใน FO Add Provenance V1 |
+| Consignment Date | Optional | หากกรอกต้องเป็นวันที่จริงและต้องไม่เป็นวันที่ในอนาคต; ไม่ required ใน FO Add Provenance V1 เพราะทีมงานอาจ confirm ภายหลัง |
+| Consignment Duration | Optional | หากกรอกต้องมากกว่า 0 และต้องไม่เป็นค่าว่างล้วน; ไม่ required ใน FO Add Provenance V1 เพราะเป็น term ที่อาจ confirm ภายหลัง |
 | Asking Price (THB) | Required when saving Consignment provenance record | ราคาเสนอขายของ consignment item; ต้องมากกว่า 0 |
-| Commission (%) | Optional | หากกรอกต้องอยู่ในช่วง 0-100 |
-| Minimum Acceptable Price | Optional | หากกรอกต้องมากกว่า 0 และไม่ควรมากกว่า Asking Price |
-| All Equipment & Accessories | Optional | Upload รูปกล่อง tag คู่มือ หรืออุปกรณ์ประกอบ |
-| Proof of Payment | Optional | Upload เอกสารรับฝาก ใบเสร็จ หรือ certificate |
-| Note | Optional | ข้อความส่วนตัวของ Owner |
+| Commission (%) | Optional | หากกรอกต้องอยู่ในช่วง 0-100; ไม่ required ใน FO Add Provenance V1 เพราะเป็น commercial term ที่ทีมงานต้องยืนยัน |
+| Minimum Acceptable Price | Optional | หากกรอกต้องมากกว่า 0 และต้องไม่มากกว่า Asking Price |
+| All Equipment & Accessories | Optional | หากอัปโหลดต้องเป็น file type ที่รองรับ, ไม่เกินขนาดต่อไฟล์ และไม่เกินจำนวนไฟล์ต่อ section |
+| Proof of Payment / Documentation | Optional | หากอัปโหลดต้องเป็น file type ที่รองรับ, ไม่เกินขนาดต่อไฟล์ และไม่เกินจำนวนไฟล์ต่อ section; ใช้เก็บเอกสารรับฝาก ใบเสร็จ หรือ certificate |
+| Note | Optional | หากกรอกต้อง trim whitespace, ห้ามเป็นค่าว่างล้วน และต้องไม่เกินความยาวที่ระบบกำหนด |
 
 Provenance save rules:
 
@@ -447,9 +479,11 @@ Provenance save rules:
 - ถ้า status = `Show` หรือ `Hide` ต้องใช้ `Owner (Asset)` เท่านั้น และต้องไม่ให้เลือก `Consignment`
 - ถ้าเลือก `Owner (Asset)` ต้อง validate Purchase Price ก่อน Save
 - ถ้าเลือก `Consignment` ต้อง validate Full Name, Phone Number และ Asking Price ก่อน Save
+- `Payout Method`, `Consignment Date`, `Consignment Duration` และ `Commission (%)` เป็น optional ใน FO Add Provenance V1 แต่ต้อง validate ทุกครั้งเมื่อ user กรอก
 - Consignment Asking Price ต้อง prefill จาก Commerce / listing Asking Price ที่กรอกใน Asset detail step และหากแก้ใน Consignment step ต้อง sync กลับเป็น listing Asking Price เดียวกัน
 - หากผู้ใช้ย้อนกลับจาก provenance step ไป asset detail ได้ ข้อมูลที่กรอกไว้ต้องคงอยู่
 - Optional field ที่เว้นว่างต้องบันทึกเป็น empty/null และต้องไม่สร้าง placeholder text เช่น `N/A` ในข้อมูลจริง
+- Optional field ที่ user กรอกหรืออัปโหลดต้อง validate ครบก่อน Save และต้องแสดง error เฉพาะ field/section ที่ไม่ถูกต้อง
 - ถ้า Owner สลับจาก `Owner (Asset)` เป็น `Consignment` ต้องไม่ merge field กัน ให้เก็บเป็นคนละ section หรือให้ user confirm ก่อนแทนที่ข้อมูล provenance type เดิม
 
 ## Empty Optional Field Display Rule
@@ -492,6 +526,9 @@ Owner สามารถแก้ไข Provenance / Consignment ได้เม
 ## Image Rule
 
 - Gallery รองรับสูงสุด 10 รูป
+- Add/Edit ต้องให้ Owner เพิ่มรูปใหม่และลบรูปเดิมได้ ตราบใดที่จำนวนรูปหลังแก้ไขยังอยู่ในช่วง 1-10 รูปก่อน Save
+- หาก Edit แล้วลบรูปทั้งหมด ต้องแสดง validation ว่าต้องมีอย่างน้อย 1 รูป และห้าม Save
+- เมื่อมี 10 รูปแล้ว ปุ่มเพิ่มรูปต้องถูก disabled / hidden หรือป้องกันไม่ให้เลือกเพิ่มเกิน limit
 - รูปภาพต้องถูกใช้ใน Asset Detail, Feed/Search card ตาม visibility ของ Asset
 - หากลบรูปทั้งหมดไม่ได้ตาม validation ของ product ให้ต้องแจ้ง error ก่อน save
 
@@ -743,12 +780,15 @@ Consignment Provenance:
 - Full Name Required
 - Phone Number Required
 - Asking Price Required และต้องมากกว่า 0
+- Payout Method Optional และต้อง validate เมื่อกรอก
 - Email ต้องเป็นรูปแบบ email เมื่อกรอก
 - Consignment Date ต้องไม่เป็นวันที่ในอนาคต เมื่อกรอก
+- Consignment Duration ต้องมากกว่า 0 เมื่อกรอก
 - Commission ต้องอยู่ระหว่าง 0-100 เมื่อกรอก
 - Minimum Acceptable Price ต้องมากกว่า 0 เมื่อกรอก
 - Minimum Acceptable Price ต้องไม่มากกว่า Asking Price เมื่อกรอกทั้งสองค่า
 - Consignment Asking Price ต้อง sync กับ Commerce / listing Asking Price
+- Optional text/upload field ทุก field ต้อง validate เมื่อกรอกหรืออัปโหลด
 
 Purchase Date:
 
@@ -767,7 +807,7 @@ Sale Date:
 
 Buyer:
 
-- Required ตาม policy ของ Sale Record
+- Optional
 
 Sale Price:
 

@@ -208,24 +208,18 @@ Recommended note format:
 
 ## 7. Directory
 
-- [ ] Directory item CRUD รองรับ category, TH/EN names, address, province, phone, Line ID, website, Facebook, Instagram, logo, cover photos, description, opening hours, map location, tags, status
-- [ ] Active items แสดงใน FO directory surfaces
-- [ ] Inactive items หายจาก FO directory surfaces
-- [ ] Directory changes ต้อง audit-log
-- [ ] ถ้า FO Directory ยังเป็น placeholder ต้องไม่เปิด production route โดยไม่มี Product decision
-- [ ] Directory record ที่เคยถูกใช้เป็น FK/report/audit/analytics ต้องไม่ hard delete ให้ใช้ inactive/archive
-- [ ] Import ต้องมี dry-run validation, duplicate detection และ error report รายแถว
-- [ ] Map provider unavailable ต้องไม่ทำให้ edit form ใช้งานไม่ได้
-- [ ] Directory UI ต้อง responsive ที่ 375px, 768px, 1280px และ 1440px
+- [ ] Postponed from Phase 1; do not expose BO Directory navigation, route, CRUD, import/export, publication control, map/contact/image fields, or FO sync behavior in the Phase 1 prototype/build.
+- [ ] Keep `07_DIRECTORY_MODULE.md` as future reference only until Product approves FO directory detail routes and confirms the taxonomy for Watch Shops, Accessories Shop, Repair Shop, Auction Center, Consignment Center, Authentication Center, and Community.
+- [ ] If Product reopens Directory later, restore the full item/category CRUD, publication, audit, map-provider, import, and responsive requirements from `07_DIRECTORY_MODULE.md`.
 
 ### Directory Prototype Handoff Notes
 
 | Area | Notes |
 | --- | --- |
-| Prototype / Spec Alignment | The prototype has a top-level `Directory` menu and overview/list behavior for directory publication work. This matches the BO module boundary, but the prototype does not yet show the complete item/category editor, map/contact validation, image controls, or import flow. |
-| Implementation Gap | Production needs item/category CRUD, Active/Inactive/Archived state handling, contact/social/map/image fields, import dry-run validation, duplicate detection, and map-provider fallback states. |
-| Permission / Audit | Directory mutation, image upload/delete, import/export, activate/inactivate/archive, and category changes must be permission-gated and audit-logged. |
-| FO Sync Impact | Active directory records only affect FO Directory surfaces after the Product decision to open the FO route. Until then, active BO records must not be treated as production FO route enablement. |
+| Prototype / Spec Alignment | Directory has been removed from the Phase 1 BO prototype navigation because FO only has placeholder menu entries and no approved directory detail pages. |
+| Implementation Gap | No Phase 1 implementation. Future scope must restart from `07_DIRECTORY_MODULE.md` after FO route/detail scope is approved. |
+| Permission / Audit | No Phase 1 Directory permissions or audit events are required because Directory mutations are not exposed. |
+| FO Sync Impact | No Phase 1 FO Directory sync. Placeholder FO menu entries must not imply active BO Directory publication. |
 
 ## 8. Audit Log
 

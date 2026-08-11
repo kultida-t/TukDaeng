@@ -43,7 +43,7 @@ Search & Filter Module ต้องยึด master baseline ต่อไปน�
 - Search ต้องไม่แสดง Asset ของ User ที่ถูก Block หรือ Block กันอยู่
 - Search ต้องรองรับ Filter หลายมิติ
 - Watch Alert ต้องสร้างจาก Search Filter
-- Watch Alert ไม่มี Required Field
+- Watch Alert criteria ไม่มี Required Field แต่ Alert Name ต้องไม่ว่างตอนบันทึก
 - Watch Alert Match เฉพาะ Asset สถานะ `Sale`
 - Watch Alert Notification ต้องเปิดไปที่ Watch Alert Result List ไม่เปิด Asset Detail ตรง
 - Guest ใช้ Search / Filter / View Result ได้ แต่ Create Watch Alert ไม่ได้
@@ -408,13 +408,18 @@ Create Watch Alert ต้องสร้างจาก Search Filter เท่�
 ## Watch Alert Rule
 
 - Watch Alert Match เฉพาะ Asset สถานะ `Sale`
-- Watch Alert ไม่มี Required Field
+- Watch Alert criteria ไม่มี Required Field
+- Alert Name ต้องไม่ว่างตอนกด Save this search
 - Watch Alert Notification ต้องเปิดไปที่ Watch Alert Result List
 - Watch Alert Notification ต้องไม่เปิด Asset Detail โดยตรง
 
 ## Watch Alert Name Rule
 
-หาก User ไม่กรอกชื่อ Alert ระบบสร้างชื่ออัตโนมัติจาก Filter ที่ใช้อยู่
+- เมื่อเปิด Save to Watch Alert modal ระบบต้องสร้างชื่อเริ่มต้นจาก Filter ที่ใช้อยู่และเติมลงในช่อง Alert Name ให้ก่อน เช่น brand, model, reference หรือช่วงราคาที่เลือก
+- User สามารถแก้ไขชื่อที่ระบบสร้างให้ได้ก่อนบันทึก
+- ตอนกด `Save this search` ระบบต้อง trim ค่า Alert Name ก่อนตรวจสอบ
+- หาก Alert Name หลัง trim แล้วว่าง ต้องไม่สร้าง Watch Alert และต้องแสดง validation message ให้ user กรอกชื่อ
+- หาก Filter ว่างหรือไม่มี criteria ที่ใช้ตั้งชื่อได้ ระบบต้องเติมชื่อ default เช่น `Watch Alert`
 
 ## Search Refresh And Pagination Behavior
 
@@ -478,6 +483,35 @@ Search Result ต้องรองรับ:
 - สามารถค้นหาโดยไม่เลือก Filter ได้
 - Price Range ต้องไม่ให้ค่าต่ำสุดมากกว่าค่าสูงสุด
 - Year Range ต้องไม่ให้ค่าต่ำสุดมากกว่าค่าสูงสุด
+
+## Price Range Manual Input
+
+- การกรอก Minimum price และ Maximum price เป็น optional ทั้งคู่
+- หากไม่กรอกทั้งสองช่อง ให้ถือว่าไม่ใช้เงื่อนไข Price Range
+- หากกรอกเฉพาะ Minimum price ให้ค้นหาราคาที่มากกว่าหรือเท่ากับค่านั้น
+- หากกรอกเฉพาะ Maximum price ให้ค้นหาราคาที่น้อยกว่าหรือเท่ากับค่านั้น
+- รับเฉพาะตัวเลขจำนวนเต็มบวกและ `0`
+- ระบบต้อง auto-format comma คั่นหลักพันระหว่าง user กรอก เช่น user พิมพ์ `2000000` แล้ว field แสดง `2,000,000`
+- ระบบต้องเก็บค่า internal เป็นตัวเลขล้วนและ normalize ก่อนค้นหา เช่น display `2,000,000` เป็น value `2000000`
+- หาก user paste ค่าที่มี comma เช่น `2,000,000` ระบบต้อง strip comma, validate ค่าเลขล้วน และ format ใหม่ตาม pattern ของระบบ
+- หาก user paste comma ผิดหลัก เช่น `20,00,000` ระบบต้อง strip comma แล้ว format ใหม่เป็น `2,000,000` หากค่าตัวเลขถูกต้อง
+- ห้ามกรอกตัวอักษร, currency symbol หรืออักขระพิเศษอื่น
+- ห้ามกรอกค่าติดลบ
+- ห้ามกรอกทศนิยม
+- Minimum price ต้องไม่มากกว่า Maximum price
+- Maximum price ต้องไม่เกิน price range สูงสุดที่ระบบกำหนดสำหรับ filter นั้น; prototype ปัจจุบันใช้ `2,000,000`
+- Minimum price ต้องไม่น้อยกว่า price range ต่ำสุดที่ระบบกำหนดสำหรับ filter นั้น; prototype ปัจจุบันใช้ `0`
+- หาก Minimum price เท่ากับ Maximum price ให้ค้นหาราคาที่เท่ากับค่านั้นได้
+- เมื่อ input ถูกต้อง ต้อง sync ค่า typed input กับ slider/range control
+- เมื่อ input ไม่ถูกต้อง ต้องไม่ Apply filter และต้องแสดง inline validation ใต้ field ที่ผิดหรือใต้ Price Range control
+
+| Case | TH validation message |
+|---|---|
+| กรอกตัวอักษร/อักขระไม่รองรับ | กรุณากรอกราคาเป็นตัวเลข |
+| กรอกค่าติดลบ | ราคาต้องไม่ต่ำกว่า 0 |
+| กรอกทศนิยม | กรุณากรอกราคาเป็นจำนวนเต็ม |
+| Minimum price > Maximum price | ราคาต่ำสุดต้องไม่มากกว่าราคาสูงสุด |
+| Maximum price เกินเพดาน filter | ราคาสูงสุดต้องไม่เกิน 2,000,000 |
 
 ## Watch Alert
 
@@ -622,9 +656,10 @@ Search Result ต้องรองรับ:
 | AC ID | Criteria |
 |---|---|
 | AC-SEARCH-028 | Create Watch Alert ต้องสร้างจาก Search Filter ได้ |
-| AC-SEARCH-029 | Watch Alert ต้องไม่มี Required Field |
+| AC-SEARCH-029 | Watch Alert criteria ต้องไม่มี Required Field แต่ Alert Name ต้องไม่ว่างตอนบันทึก |
 | AC-SEARCH-030 | Watch Alert ต้อง Match เฉพาะ Asset สถานะ Sale |
-| AC-SEARCH-031 | หาก User ไม่กรอกชื่อ Watch Alert ระบบต้องสร้างชื่ออัตโนมัติจาก Filter |
+| AC-SEARCH-031 | เมื่อเปิด Save to Watch Alert ระบบต้องเติมชื่อเริ่มต้นจาก Filter หรือ default name ให้ user แก้ไขได้ |
+| AC-SEARCH-031A | หาก User ลบ Alert Name จนว่างแล้วกด Save this search ระบบต้องแจ้งเตือนให้กรอกชื่อและไม่สร้าง Watch Alert |
 | AC-SEARCH-032 | Watch Alert Notification ต้องเปิดไปที่ Watch Alert Result List |
 | AC-SEARCH-033 | Watch Alert Notification ต้องไม่เปิด Asset Detail โดยตรง |
 

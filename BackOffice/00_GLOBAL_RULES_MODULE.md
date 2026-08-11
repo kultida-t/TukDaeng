@@ -318,7 +318,7 @@ FO functions ขั้นต่ำที่ BO ต้องรองรับ:
 - Asset lifecycle: Sale, Show, Hide, Sold, ซ่อนชั่วคราว, ซ่อนถาวร, ลบโดยเจ้าของ
 - Board article/category/banner publication
 - Brand/model/reference/price index management
-- Directory item publication
+- Directory item publication (future/postponed; not Phase 1)
 - Offer lifecycle และ offer invalidation
 - Chat review สำหรับ reported content
 - Comment moderation
@@ -334,7 +334,7 @@ Guest public access rule:
 - FO Guest สามารถดูและแชร์ public surface ที่ระบบอนุญาตได้ เช่น public asset/detail, public profile/detail หรือ published article ตาม status/visibility ของ entity นั้น
 - Guest action ที่เป็น public view/share ไม่สร้าง User Management record และไม่เปิด BO account action
 - Action ที่สร้างข้อมูลหรือเปลี่ยน state ของระบบ เช่น like, follow, comment, report, offer, chat, watch alert, add/edit/delete asset หรือ support ticket ต้อง login ตาม FO Auth rule ก่อน จึงจะเข้า BO workflow ที่เกี่ยวข้องได้
-- BO modules ที่ควบคุม public visibility เช่น Asset, Content/Board, Directory และ Market Data ต้องทำให้ public deep link ที่ Guest เปิดหรือแชร์ไว้สะท้อนสถานะล่าสุด เช่น unavailable, removed, archived หรือ inactive
+- BO modules ที่ควบคุม public visibility เช่น Asset, Content/Board, Market Data และ Directory ในอนาคต ต้องทำให้ public deep link ที่ Guest เปิดหรือแชร์ไว้สะท้อนสถานะล่าสุด เช่น unavailable, removed, archived หรือ inactive
 
 # 12. กฎการ Sync จาก BO ไป FO
 
@@ -345,7 +345,7 @@ Guest public access rule:
 | Article published/scheduled/archived | FO Board, Search, Category, Detail ต้องสะท้อน status |
 | Brand/model inactive | FO autocomplete/filter และ Watch Alert trigger ใหม่ต้อง exclude ข้อมูล inactive |
 | Price index updated | FO price index และ asset value surfaces ต้องใช้ active value ล่าสุด |
-| Directory item inactive | FO directory surfaces ต้องซ่อน item |
+| Directory item inactive | Future/postponed; FO directory surfaces ต้องซ่อน item เมื่อ Directory scope ถูกเปิดใช้งาน |
 | Comment hidden/removed | FO Asset Detail ต้องซ่อนหรือแสดง removed state ตาม policy |
 | Watch Alert disabled | Alert ต้องไม่ trigger notification ใหม่ |
 | Offer expired/invalidated | FO offer/chat state ต้องเป็น unavailable หรือ not actionable |
@@ -429,7 +429,7 @@ Action ที่กระทบ FO visibility, user access หรือ public c
 - Hide/remove comment
 - Remove chat message
 - Publish/archive article
-- Activate/deactivate brand/model/directory item/banner
+- Activate/deactivate brand/model/banner; directory item activation is future/postponed
 - Disable watch alert
 - Force expire/invalidate offer
 - Approve account archive
@@ -493,7 +493,7 @@ Responsive QA ต้องตรวจว่า:
 - `04_ASSET_MANAGEMENT_MODULE.md`
 - `05_CONTENT_BOARD_MODULE.md`
 - `06_MARKET_DATA_MODULE.md`
-- `07_DIRECTORY_MODULE.md`
+- `07_DIRECTORY_MODULE.md` (future/postponed; not Phase 1)
 - `08_AUDIT_LOG_MODULE.md`
 - `../ProjectAdmin/FO_BO_INTEGRATION_MAP.md`
 

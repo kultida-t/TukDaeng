@@ -8,7 +8,7 @@
 
 ## 1. Summary
 
-BO_Spec v1.1 รองรับ flow หลักของ FO แล้วในส่วน User, Asset, Content, Market Data, Directory, Reports, Push Notification และ Audit Log แต่ยังขาดรายละเอียดสำหรับ flow ที่เกิดจากการใช้งานจริงของผู้ใช้ใน FO ได้แก่ Offer/Chat, Comment, Like/Favorite, Follow, Watch Alert ราย user, Help/Support, Delete Account และ System Notification Trigger
+BO_Spec v1.1 รองรับ flow หลักของ FO แล้วในส่วน User, Asset, Content, Market Data, Reports, Push Notification และ Audit Log; Directory ถูกเลื่อนเป็น future/postponed scope เพราะ FO directory menu ยังเป็น placeholder แต่ยังขาดรายละเอียดสำหรับ flow ที่เกิดจากการใช้งานจริงของผู้ใช้ใน FO ได้แก่ Offer/Chat, Comment, Like/Favorite, Follow, Watch Alert ราย user, Help/Support, Delete Account และ System Notification Trigger
 
 Addendum นี้เสนอให้เพิ่ม module และ business rules ต่อไปนี้:
 
@@ -50,7 +50,7 @@ BO Dashboard
 │   ├── Watch Models
 │   └── Price Index
 ├── Watch Alert Management
-├── Directory
+├── Directory (future/postponed; not Phase 1)
 ├── Help & Support
 ├── Account Deletion Requests
 ├── Reports & Analytics
