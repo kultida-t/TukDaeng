@@ -195,7 +195,7 @@
 - Gallery: อัปโหลดรูปได้สูงสุด 10 รูป
 - Basic Information: Brand, Model & Series, Reference No., Year
 - Condition: New / Used (Very Good) / Used (Good) / Used (Fair)
-- Scope of Delivery: Original Box ✓, Original Paper ✓
+- Scope of Delivery: Original Box ✓, Original Paper ✓ only; optional. If neither applies, save no Scope of Delivery value and do not show this section/row on FO display surfaces.
 - Specifications: Case Size, Thickness, Case Material, Movement, Dial Color, Strap/Bracelet Type
 
 Market Data / Specification storage rule:
@@ -205,6 +205,7 @@ Market Data / Specification storage rule:
 - Year, Condition, Scope of Delivery, Case Size, Thickness, Case Material, Movement, Dial Color และ Strap/Bracelet Type เป็นข้อมูลจริงของ Asset ที่ Owner กรอก ต้องเก็บกับ Asset Specification
 - Provider/API sync ห้าม overwrite specification ที่ Owner save แล้ว
 - Condition, Delivery, Case Material, Movement, Dial Color และ Strap/Bracelet Type ต้องใช้ internal option master เดียวกันใน Add/Edit Asset, Asset Detail และ Search/Filter
+- Delivery option master for FO must contain only `original_box` and `original_papers`; do not accept, save, or display other delivery labels. Empty delivery selection means the Scope of Delivery section/row is hidden.
 - Commerce & Curation: ราคา, Description
 - Status: Sale / Show / Hide
 - Sale Status: Available / Sold

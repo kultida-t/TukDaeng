@@ -417,6 +417,11 @@ Technical Specifications อ้างอิงจาก Asset Management fields:
 - Dial Color
 - Strap / Bracelet Type
 
+Scope of Delivery display rule:
+
+- Show Scope of Delivery only when the asset has `original_box` and/or `original_papers`.
+- If the asset has no selected Scope of Delivery value, hide the Scope of Delivery section/row. Do not display placeholder text such as `Watch only`, `None`, `N/A`, or other delivery labels.
+
 V1 ไม่กำหนดให้แสดง Location เป็น field หลักใน Asset Detail
 
 ## Owner Information Rule
