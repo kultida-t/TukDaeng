@@ -761,6 +761,118 @@
     .stat-value { font-size: 39px; line-height: .9; margin-bottom: 8px; }
     .stat-note { color: var(--muted); font-size: 12px; line-height: 1.45; }
     .stat-note.chips { margin-top: 7px; }
+    .offer-status-overview {
+      grid-column: 1 / -1;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+    .offer-status-overview-head {
+      display: flex;
+      align-items: baseline;
+      gap: 12px;
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--line);
+    }
+    .offer-status-overview-title {
+      color: var(--ink);
+      font-family: var(--font-heading);
+      font-size: 27px;
+      font-weight: 400;
+      letter-spacing: .06em;
+      line-height: 1;
+    }
+    .offer-status-overview-subtitle {
+      color: var(--muted);
+      font-size: 12px;
+    }
+    .offer-status-overview-body {
+      display: grid;
+      grid-template-columns: minmax(220px, 340px) minmax(0, 1fr);
+      gap: 24px;
+      align-items: center;
+      padding: 22px 28px 24px;
+    }
+    .offer-status-donut-wrap {
+      display: grid;
+      place-items: center;
+      min-height: 230px;
+    }
+    .offer-status-donut {
+      width: min(220px, 100%);
+      aspect-ratio: 1;
+      border-radius: 50%;
+      background: var(--offer-status-gradient);
+      position: relative;
+      box-shadow: inset 0 0 0 1px rgba(10, 35, 66, .04);
+    }
+    .offer-status-donut::after {
+      content: "";
+      position: absolute;
+      inset: 29%;
+      border-radius: 50%;
+      background: var(--panel);
+      box-shadow: 0 0 0 1px rgba(10, 35, 66, .06);
+    }
+    .offer-status-donut-center {
+      position: absolute;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      text-align: center;
+      z-index: 1;
+      pointer-events: none;
+    }
+    .offer-status-donut-center strong {
+      display: block;
+      color: var(--ink);
+      font-size: 34px;
+      line-height: 1;
+    }
+    .offer-status-donut-center span {
+      display: block;
+      color: var(--muted);
+      font-size: 12px;
+      margin-top: 6px;
+    }
+    .offer-status-legend {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px 18px;
+    }
+    .offer-status-legend-item {
+      min-width: 0;
+      display: grid;
+      grid-template-columns: 10px minmax(0, 1fr) auto;
+      gap: 10px;
+      align-items: center;
+      padding: 10px 0;
+      border-bottom: 1px solid #edf2f7;
+    }
+    .offer-status-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 999px;
+      background: var(--offer-status-color);
+    }
+    .offer-status-name {
+      color: var(--ink);
+      font-size: 13px;
+      font-weight: 700;
+    }
+    .offer-status-note {
+      color: var(--muted);
+      font-size: 12px;
+      margin-top: 3px;
+    }
+    .offer-status-count {
+      color: var(--ink);
+      font-size: 13px;
+      font-weight: 800;
+      white-space: nowrap;
+    }
 
     .layout {
       display: grid;
@@ -890,8 +1002,10 @@
     .pill.green { color: #07734f; background: #e4f8f0; border-color: #bcebd7; }
     .pill.amber { color: #925500; background: #fff3d8; border-color: #f3d493; }
     .pill.purple { color: #6035ae; background: #efe9ff; border-color: #d8ccff; }
+    .pill.teal { color: #0f766e; background: #e6fffb; border-color: #99f6e4; }
     .pill.gray { color: #475569; background: #f1f5f9; border-color: #cbd5e1; }
     .pill.slate { color: #334155; background: #f8fafc; border-color: #94a3b8; }
+    .pill.charcoal { color: #111827; background: #e5e7eb; border-color: #9ca3af; }
     .asset-status-pills {
       display: inline-flex;
       align-items: center;
@@ -6492,8 +6606,32 @@
         grid-template-columns: 1fr;
       }
       body.offer-list-mode .summary-grid {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
+        grid-template-columns: 1fr;
         gap: 10px;
+      }
+      body.offer-list-mode .offer-status-overview-head {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 6px;
+        padding: 14px 16px;
+      }
+      body.offer-list-mode .offer-status-overview-title {
+        font-size: 22px;
+      }
+      body.offer-list-mode .offer-status-overview-body {
+        grid-template-columns: 1fr;
+        gap: 14px;
+        padding: 18px 16px 20px;
+      }
+      body.offer-list-mode .offer-status-donut-wrap {
+        min-height: 190px;
+      }
+      body.offer-list-mode .offer-status-donut {
+        width: 190px;
+      }
+      body.offer-list-mode .offer-status-legend {
+        grid-template-columns: 1fr;
+        gap: 4px;
       }
       body.user-management-mode .summary-grid {
         grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -14107,13 +14245,7 @@
             <button class="btn filter-reset user-advanced-filter" type="button" data-offer-reset title="รีเซ็ตค่าทั้งหมด" aria-label="รีเซ็ตค่าทั้งหมด">${iconSvg.refresh}<span>รีเซ็ตค่าทั้งหมด</span></button>
           </div>
         `;
-        document.querySelector("#summary-grid").innerHTML = getOfferSummaryStats(data.rows).map(stat => `
-          <article class="stat">
-            <div class="stat-label">${stat[0]}</div>
-            <div class="stat-value">${stat[1]}</div>
-            <div class="stat-note">${stat[2]}</div>
-          </article>
-        `).join("");
+        document.querySelector("#summary-grid").innerHTML = renderOfferStatusOverview(data.rows);
         document.querySelector("#cards").innerHTML = "";
         document.querySelector("#detail").innerHTML = "";
         renderOfferListRows();
@@ -19868,7 +20000,7 @@
     }
 
     function renderOfferStatusPill(status) {
-      const color = status === "Pending" ? "amber" : status === "Paused" ? "slate" : status === "Accepted" ? "purple" : status === "Rejected" ? "red" : "gray";
+      const color = status === "Pending" ? "amber" : status === "Paused" ? "blue" : status === "Accepted" ? "green" : status === "Rejected" ? "red" : status === "Cancelled" ? "purple" : status === "Invalidated" ? "charcoal" : "gray";
       return `<span class="pill ${color}">${status}</span>`;
     }
 
@@ -19882,6 +20014,64 @@
         ["Cancelled", countByStatus("Cancelled"), "asset ถูกลบ/ซ่อนโดย owner"],
         ["Invalidated", countByStatus("Invalidated"), "ใช้ไม่ได้ถาวร"]
       ];
+    }
+
+    function getOfferStatusMeta() {
+      return [
+        { status: "Pending", label: "Pending", note: "รอ owner ตอบ", color: "#f59e0b" },
+        { status: "Paused", label: "Paused", note: "asset รอตรวจสอบ", color: "#0ea5e9" },
+        { status: "Accepted", label: "Accepted", note: "owner รับ offer แล้ว", color: "#10b981" },
+        { status: "Rejected", label: "Rejected", note: "owner ปฏิเสธ", color: "#ef4444" },
+        { status: "Cancelled", label: "Cancelled", note: "owner ลบ/ซ่อน asset", color: "#8b5cf6" },
+        { status: "Invalidated", label: "Invalidated", note: "ใช้ไม่ได้ถาวร", color: "#111827" }
+      ];
+    }
+
+    function renderOfferStatusOverview(rows = moduleData.offers.rows) {
+      const total = rows.length || 0;
+      const statusItems = getOfferStatusMeta().map(meta => ({
+        ...meta,
+        count: rows.filter(row => row.status === meta.status).length
+      }));
+      let cursor = 0;
+      const gradientParts = statusItems.map(item => {
+        const start = cursor;
+        const end = total ? cursor + (item.count / total * 100) : cursor;
+        cursor = end;
+        return `${item.color} ${start.toFixed(2)}% ${end.toFixed(2)}%`;
+      });
+      const gradient = total ? `conic-gradient(${gradientParts.join(", ")})` : "conic-gradient(#e5edf6 0% 100%)";
+      const legend = statusItems.map(item => {
+        const percent = total ? Math.round(item.count / total * 100) : 0;
+        return `
+          <div class="offer-status-legend-item" style="--offer-status-color:${item.color}">
+            <span class="offer-status-dot"></span>
+            <div>
+              <div class="offer-status-name">${item.label}</div>
+              <div class="offer-status-note">${item.note}</div>
+            </div>
+            <div class="offer-status-count">${item.count} (${percent}%)</div>
+          </div>
+        `;
+      }).join("");
+      return `
+        <article class="offer-status-overview">
+          <div class="offer-status-overview-head">
+            <h2 class="offer-status-overview-title">OFFER STATUS OVERVIEW</h2>
+            <span class="offer-status-overview-subtitle">สัดส่วน offer ตามสถานะล่าสุดจากรายการทั้งหมด</span>
+          </div>
+          <div class="offer-status-overview-body">
+            <div class="offer-status-donut-wrap">
+              <div class="offer-status-donut" style="--offer-status-gradient:${gradient}">
+                <div class="offer-status-donut-center">
+                  <div><strong>${total}</strong><span>Total offers</span></div>
+                </div>
+              </div>
+            </div>
+            <div class="offer-status-legend">${legend}</div>
+          </div>
+        </article>
+      `;
     }
 
     function renderOfferListRows() {
