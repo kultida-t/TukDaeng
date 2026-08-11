@@ -293,7 +293,7 @@ Recommended backend split:
 | `watch_brands`, `watch_models`, `watch_references` | Market Data catalog จาก provider/backend sync |
 | `watch_assets` | Asset/listing record ของ Owner พร้อม relation id และ snapshot text |
 | `asset_specifications` | Spec จริงที่ Owner กรอกสำหรับ Asset แต่ละชิ้น |
-| `asset_delivery_items` | Scope of Delivery แบบหลายรายการ เช่น box, papers, warranty card, receipt |
+| `asset_delivery_items` | Scope of Delivery แบบหลายรายการ เฉพาะ Original box และ Original papers; ถ้าไม่มีตามสองตัวเลือกนี้ให้ไม่บันทึก delivery item |
 | `spec_options` | Internal option master สำหรับ dropdown/filter เช่น condition, material, movement, dial color, strap type, delivery item |
 
 Minimum asset fields:
@@ -318,7 +318,7 @@ Minimum asset fields:
 Internal option groups ต้องรองรับอย่างน้อย:
 
 - `condition`: New / Unworn, Excellent, Very Good, Good, Fair
-- `delivery`: Watch only, Original box, Original papers, Warranty card, Receipt copy, Extra links, Extra strap
+- `delivery`: Original box, Original papers เท่านั้น; ถ้าไม่ตรงสองตัวเลือกนี้ให้ไม่เลือกเลย และห้ามใช้ค่าอื่นแทน
 - `case_material`: Stainless steel, Yellow gold, Rose gold, White gold, Titanium, Ceramic, Platinum, Carbon
 - `movement`: Automatic, Manual winding, Quartz, Spring Drive
 - `dial_color`: Black, Blue, White, Silver, Grey, Green, Champagne, Brown
@@ -361,7 +361,7 @@ Baseline seed files for implementation:
 | Basic Information | Reference No. | Optional | ถ้ากรอกต้อง trim, ห้าม whitespace-only, รองรับ Market Data mapping/free-text snapshot และไม่เกินความยาวที่ระบบกำหนด |
 | Basic Information | Year | Optional | ถ้ากรอกต้องเป็นปีจริงแบบตัวเลขจำนวนเต็ม และต้องไม่เป็นปีในอนาคต |
 | Condition | Condition | Required for `Sale`; Optional for `Show`, `Hide` | ต้องเลือกได้หนึ่งค่าเท่านั้นเมื่อ required; ถ้า optional แต่เลือก ต้องเป็น option ที่มีอยู่ใน internal option master |
-| Scope of Delivery | Delivery items เช่น Original Box / Original Paper | Optional | ถ้าเลือกต้องเป็น option ที่มีอยู่ใน internal option master; รองรับหลายค่าได้ตาม data model; ห้ามบันทึกค่า label ที่ไม่มีใน option master เป็น id ปลอม |
+| Scope of Delivery | Delivery items เฉพาะ Original Box / Original Paper | Optional | ถ้าเลือกต้องเป็น `original_box` หรือ `original_papers` จาก internal option master เท่านั้น; รองรับเลือกได้ 0-2 ค่า; ถ้าไม่มีตามสองตัวเลือกนี้ให้บันทึกเป็นค่าว่าง/null/empty array ตาม data contract; ห้ามบันทึกค่าอื่นหรือสร้าง label/id ปลอม เช่น Watch only, warranty card, receipt, certificate, manual, service paper, hang tag, extra link, extra strap |
 | Specifications | Case Size (mm) | Optional | ถ้ากรอกต้องเป็นตัวเลขมากกว่า 0; normalize หน่วยเป็น mm; ห้ามตัวอักษรหรือค่าติดลบ |
 | Specifications | Thickness (mm) | Optional | ถ้ากรอกต้องเป็นตัวเลขมากกว่า 0; normalize หน่วยเป็น mm; ห้ามตัวอักษรหรือค่าติดลบ |
 | Specifications | Case Material | Optional | ถ้าเลือกต้องเป็น option ที่มีอยู่ใน internal option master |

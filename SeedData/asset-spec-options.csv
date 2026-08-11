@@ -5,18 +5,8 @@ condition,excellent,Excellent,สภาพดีเยี่ยม,Light signs o
 condition,very_good,Very Good,สภาพดีมาก,Visible but normal signs of use,40,true,true,false
 condition,good,Good,สภาพดี,Noticeable wear but fully usable,50,true,true,false
 condition,fair,Fair,พอใช้,Heavy wear or visible marks; should be clearly described,60,true,true,false
-delivery,watch_only,Watch only,เฉพาะตัวเรือน,Watch only without original box or papers,10,true,true,true
-delivery,original_box,Original box,กล่องเดิม,Original manufacturer box,20,true,true,true
-delivery,original_papers,Original papers,เอกสารเดิม,Original documents or papers,30,true,true,true
-delivery,warranty_card,Warranty card,บัตรรับประกัน,Manufacturer or dealer warranty card,40,true,true,true
-delivery,receipt_copy,Receipt copy,สำเนาใบเสร็จ,Receipt or invoice copy,50,true,true,true
-delivery,certificate,Certificate,ใบรับรอง,Certificate or authentication document,60,true,true,true
-delivery,manual_booklet,Manual / booklet,คู่มือ / สมุดคู่มือ,Manual booklet or product booklet,70,true,true,true
-delivery,extra_links,Extra links,ข้อสายสำรอง,Extra bracelet links,80,true,true,true
-delivery,extra_strap,Extra strap,สายสำรอง,Additional strap included,90,true,true,true
-delivery,service_papers,Service papers,เอกสารเซอร์วิส,Service records or service papers,100,true,true,true
-delivery,hang_tag,Hang tag,ป้ายแขวน,Manufacturer or dealer hang tag,110,true,true,true
-delivery,travel_pouch,Travel pouch,ซอง / กระเป๋าพกพา,Travel pouch or carrying case,120,true,true,true
+delivery,original_box,Original box,กล่องเดิม,Original manufacturer box,10,true,true,true
+delivery,original_papers,Original papers,เอกสารเดิม,Original documents or papers,20,true,true,true
 case_material,stainless_steel,Stainless steel,สแตนเลสสตีล,Stainless steel case material,10,true,true,false
 case_material,yellow_gold,Yellow gold,ทองคำ,Yellow gold case material,20,true,true,false
 case_material,rose_gold,Rose gold,โรสโกลด์,Rose gold case material,30,true,true,false
