@@ -1497,15 +1497,8 @@
       grid-template-columns: minmax(112px, .66fr) minmax(230px, 1.48fr) minmax(140px, .78fr) minmax(116px, .64fr) minmax(154px, .86fr) minmax(190px, 1.04fr) minmax(86px, .48fr) minmax(102px, .56fr) minmax(76px, .42fr);
     }
     .offer-list-table .asset-row {
-      grid-template-columns: minmax(104px, .54fr) minmax(188px, .96fr) minmax(108px, .56fr) minmax(126px, .64fr) minmax(168px, .84fr) minmax(96px, .5fr) minmax(108px, .54fr) minmax(108px, .54fr);
+      grid-template-columns: minmax(104px, .54fr) minmax(136px, .68fr) minmax(230px, 1.14fr) minmax(150px, .74fr) minmax(170px, .84fr) minmax(108px, .54fr) minmax(108px, .54fr);
       column-gap: 18px;
-    }
-    .offer-list-table .offer-participant-chip {
-      display: inline-flex;
-      max-width: 100%;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      vertical-align: middle;
     }
     .offer-list-table .asset-row.head > div:last-child {
       justify-content: flex-start;
@@ -14087,16 +14080,10 @@
         `;
         document.querySelector(".filters").innerHTML = `
           <div class="user-filter-bar" data-filter-open="${offerFilterOpen}">
-            <input class="field search" id="offer-search" type="search" placeholder="ค้นหา Offer ID, Asset ID, Buyer, Owner" />
+            <input class="field search" id="offer-search" type="search" placeholder="ค้นหา Offer ID, Asset ID, Asset, Buyer, Owner" />
             <div class="user-advanced-filter">${customSelect("offer-status-filter", "Filter offer status", [
               { value: "", label: "ทุกสถานะ" },
               ...Array.from(new Set(data.rows.map(row => row.status))).map(status => ({ value: status, label: status }))
-            ])}</div>
-            <div class="user-advanced-filter">${customSelect("offer-priority-filter", "Filter priority", [
-              { value: "", label: "ทุก priority" },
-              { value: "สูง", label: "สูง" },
-              { value: "กลาง", label: "กลาง" },
-              { value: "ปกติ", label: "ปกติ" }
             ])}</div>
             <div class="user-advanced-filter">${customSelect("offer-sort", "Sort offers", [
               { value: "latest", label: "Newest first" },
@@ -19825,21 +19812,45 @@
     }
 
     function getOfferSearchText(offer) {
-      return Object.values(offer).flat().join(" ").toLowerCase();
+      return [
+        Object.values(offer).flat().join(" "),
+        getOfferPriceDisplay(offer),
+        getOfferAssetName(offer),
+        getOfferParticipantName(offer, "Buyer"),
+        getOfferParticipantName(offer, "Owner")
+      ].join(" ").toLowerCase();
     }
 
     function getOfferAmount(offer) {
       return Number(String(offer.name || "").replace(/[^\d]/g, "")) || 0;
     }
 
-    function getOfferParticipant(offer, role) {
+    function getOfferPriceDisplay(offer) {
+      return String(offer.name || "").replace(/^Offer\s+/i, "");
+    }
+
+    function getOfferAsset(offer) {
+      return (moduleData.assets?.rows || []).find(asset => asset.id === offer.owner);
+    }
+
+    function getOfferAssetName(offer) {
+      return getOfferAsset(offer)?.name || "-";
+    }
+
+    function getOfferParticipantRaw(offer, role) {
       const label = `${role} `;
       const tag = (offer.tags || []).find(item => String(item).toLowerCase().startsWith(label.toLowerCase()));
       return tag ? String(tag).slice(label.length) : "-";
     }
 
-    function renderOfferParticipantChip(offer, role) {
-      return `<span class="chip offer-participant-chip">${getOfferParticipant(offer, role)}</span>`;
+    function getOfferParticipantName(offer, role) {
+      const raw = getOfferParticipantRaw(offer, role);
+      const userSources = [
+        ...(moduleData.users?.rows || []),
+        ...(userManagementData.users || [])
+      ];
+      const user = userSources.find(row => row.id === raw || row.displayName === raw || row.name === raw);
+      return user?.displayName || user?.name || raw;
     }
 
     function getOfferSortRank(offer, sort) {
@@ -19860,10 +19871,9 @@
       const data = moduleData.offers;
       const q = (document.querySelector("#offer-search")?.value || "").trim().toLowerCase();
       const status = document.querySelector("#offer-status-filter")?.value || "";
-      const priority = document.querySelector("#offer-priority-filter")?.value || "";
       const sort = document.querySelector("#offer-sort")?.value || "latest";
       const filtered = data.rows
-        .filter(row => (!q || getOfferSearchText(row).includes(q)) && (!status || row.status === status) && (!priority || row.priority === priority))
+        .filter(row => (!q || getOfferSearchText(row).includes(q)) && (!status || row.status === status))
         .sort((a, b) => getOfferSortRank(b, sort) - getOfferSortRank(a, sort));
       const pageSize = assetListPageSize;
       const pageCount = Math.max(1, Math.ceil(filtered.length / pageSize));
@@ -19872,28 +19882,27 @@
       const pageRows = filtered.slice(start, start + pageSize);
       document.querySelector("#table").innerHTML = `
         <div class="asset-table offer-list-table">
-          <div class="asset-row head"><div>Offer ID</div><div>Offer</div><div>Asset ID</div><div>Buyer</div><div>Owner</div><div>Priority</div><div>Status</div><div>Action</div></div>
+          <div class="asset-row head"><div>Offer ID</div><div>Offer</div><div>Asset</div><div>Buyer</div><div>Owner</div><div>Status</div><div>Action</div></div>
           ${pageRows.map(row => `
             <div class="asset-row" data-offer-card="${row.id}">
               <div data-label="Offer ID"><div class="main-text">${row.id}</div></div>
               <div class="asset-cell-primary" data-label="Offer">
-                <div class="main-text"><span class="desktop-user-name">${row.name}</span><span class="mobile-user-card-title">${row.id}</span></div>
+                <div class="main-text"><span class="desktop-user-name">${getOfferPriceDisplay(row)}</span><span class="mobile-user-card-title">${row.id}</span></div>
               </div>
               <div class="asset-card-tags">
                 ${renderOfferStatusPill(row.status)}
                 <span class="pill blue">${row.type}</span>
-                ${statusPill(row.priority, row.priority)}
-                ${row.tags.map(tag => `<span class="user-card-tag asset-tag">${tag}</span>`).join("")}
                 <div class="user-card-meta">
-                  <div class="user-card-meta-item"><span>Offer</span><strong>${row.name}</strong></div>
-                  <div class="user-card-meta-item"><span>Asset ID</span><strong>${row.owner}</strong></div>
+                  <div class="user-card-meta-item"><span>Offer</span><strong>${getOfferPriceDisplay(row)}</strong></div>
+                  <div class="user-card-meta-item"><span>Asset</span><strong>${getOfferAssetName(row)}</strong></div>
+                  <div class="user-card-meta-item"><span>Buyer</span><strong>${getOfferParticipantName(row, "Buyer")}</strong></div>
+                  <div class="user-card-meta-item"><span>Owner</span><strong>${getOfferParticipantName(row, "Owner")}</strong></div>
                   <div class="user-card-meta-item"><span>Context</span><strong>${row.detail}</strong></div>
                 </div>
               </div>
-              <div data-label="Asset ID"><div class="main-text">${row.owner}</div></div>
-              <div data-label="Buyer">${renderOfferParticipantChip(row, "Buyer")}</div>
-              <div data-label="Owner">${renderOfferParticipantChip(row, "Owner")}</div>
-              <div data-label="Priority">${statusPill(row.priority, row.priority)}</div>
+              <div data-label="Asset"><div class="main-text">${getOfferAssetName(row)}</div><div class="muted">${row.owner}</div></div>
+              <div data-label="Buyer"><div class="main-text">${getOfferParticipantName(row, "Buyer")}</div></div>
+              <div data-label="Owner"><div class="main-text">${getOfferParticipantName(row, "Owner")}</div></div>
               <div data-label="Status">${renderOfferStatusPill(row.status)}</div>
               <div class="user-row-actions">
                 <button class="panel-action" type="button" data-offer-open="${row.id}">${iconSvg.eye}ดูรายละเอียด</button>
@@ -20104,7 +20113,7 @@
           renderAssetListRows();
           return;
         }
-        if (["offer-status-filter", "offer-priority-filter", "offer-sort"].includes(hiddenInput.id) && activeModule === "offers") {
+        if (["offer-status-filter", "offer-sort"].includes(hiddenInput.id) && activeModule === "offers") {
           offerListPage = 1;
           renderOfferListRows();
           return;
