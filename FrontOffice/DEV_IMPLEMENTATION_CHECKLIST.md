@@ -214,7 +214,7 @@ Purpose:
 - [ ] Make Offer ทำจาก Asset Detail เท่านั้น
 - [ ] Offer รองรับ Asset status `Sale` และ `Show`
 - [ ] Show สร้าง Offer ได้จาก Asset Detail / Public Profile detail entry เท่านั้น
-- [ ] Hide, Sold, Deleted สร้าง Offer ใหม่ไม่ได้
+- [ ] Hide, Sold, Deleted, ซ่อนชั่วคราว/Under Review และซ่อนถาวร สร้าง Offer ใหม่ไม่ได้
 - [ ] Guest กด Offer ต้องเปิด Login Required Dialog
 - [ ] Owner ต้องไม่สามารถ Make Offer กับ Asset ของตัวเอง
 - [ ] Offer Price เป็น required และถ้าว่างต้อง disable ปุ่ม `Send offer`
@@ -233,6 +233,12 @@ Purpose:
 - [ ] Asset Deleted ทำให้ Offer เป็น `Cancelled`
 - [ ] Offer Cancelled notification ไป Chat Room + Focus Offer Card
 - [ ] Asset Sold ต้องเปลี่ยน pending offers อื่นเป็น `Rejected` โดยอัตโนมัติ
+- [ ] Owner เปลี่ยน Asset จาก `Sale`/`Show` เป็น `Hide` ต้องเปลี่ยน pending offers เป็น `Cancelled`
+- [ ] Asset ถูก auto hidden จาก report หรือซ่อนชั่วคราวระหว่าง review ต้องเปลี่ยน pending offers เป็น `Paused`
+- [ ] Offer Card สถานะ `Paused` ต้องแสดง `Offer Paused` และไม่มี `Accept` / `Decline`
+- [ ] Review ผ่านและ Asset กลับเป็น `Sale`/`Show` ต้องเปลี่ยน `Paused` offers กลับเป็น `Pending`
+- [ ] Asset ถูกซ่อนถาวรจาก moderation ต้องเปลี่ยน pending/paused offers เป็น `Invalidated`
+- [ ] Offer Card สถานะ `Invalidated` ต้องแสดง `Offer Unavailable` และไม่มี `Accept` / `Decline`
 - [ ] ไม่มี Counter Offer ใน V1
 - [ ] ไม่มี Withdraw Offer ใน V1
 - [ ] ไม่มี Payment Gateway ใน V1
@@ -257,6 +263,8 @@ Purpose:
 - [ ] Offer Accepted notification ไป Chat Room
 - [ ] Offer Rejected notification ไป Asset Detail
 - [ ] Offer Cancelled notification ไป Chat Room + Focus Offer Card
+- [ ] Offer Paused notification ไป Chat Room + Focus Offer Card และไม่มี action
+- [ ] Offer Invalidated notification ไป Chat Room + Focus Offer Card และไม่มี action
 - [ ] Destination ต้อง handle Deleted Asset, Deleted User, Permission Denied, Block state
 
 ---

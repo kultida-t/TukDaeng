@@ -286,6 +286,12 @@ Moderation state เป็น overlay บน owner-controlled status และ�
 
 Asset ที่มี state `ซ่อนถาวร` หรือ `ลบโดยเจ้าของ` ต้องไม่ถูกนับใน portfolio value หรือ asset value summary
 
+Offer impact เพิ่มเติมสำหรับ owner-controlled status:
+
+- ถ้า owner เปลี่ยน asset จาก `Sale` หรือ `Show` เป็น `Hide` ระหว่างมี pending offer ให้ตั้ง related offers เป็น `Cancelled`
+- ถ้า owner mark asset เป็น `Sold` ให้ตั้ง pending offers อื่นเป็น `Rejected`
+- ถ้า asset ถูกซ่อนชั่วคราวหรือ auto hidden จาก report ให้ตั้ง pending offers เป็น `Paused`; เมื่อ review ผ่านและ asset กลับเป็น `Sale`/`Show` ให้กลับเป็น `Pending`
+
 Asset ที่เป็น `Consignment` ต้องไม่ถูกนับใน portfolio value หรือ asset value summary เพราะเป็นของฝากขาย ไม่ใช่ทรัพย์สินที่ owner ถือครองเอง
 
 ## 10. กฎ Action ของ Asset
@@ -314,6 +320,7 @@ Asset ที่เป็น `Consignment` ต้องไม่ถูกนั�
 - ทำไม่ได้กับ `Hide`, `Sold`, `ซ่อนถาวร` หรือ `ลบโดยเจ้าของ`
 - ต้องคง owner-controlled status เดิมไว้
 - ต้องตั้ง moderation state เป็น `ซ่อนชั่วคราว`
+- Pending offer ที่เกี่ยวข้องต้องถูกตั้งเป็น `Paused`
 
 ### ยกเลิกซ่อนชั่วคราว
 
@@ -325,6 +332,7 @@ Asset ที่เป็น `Consignment` ต้องไม่ถูกนั�
 - ต้อง restore visibility กลับตาม owner-controlled status เดิม
 - ทำไม่ได้กับ `ซ่อนถาวร`
 - ต้องบันทึก reason และ audit
+- Offer ที่ถูก `Paused` จากการซ่อนชั่วคราวต้องกลับเป็น `Pending` เมื่อ asset กลับเป็น `Sale` หรือ `Show`
 
 ### ซ่อนถาวร
 

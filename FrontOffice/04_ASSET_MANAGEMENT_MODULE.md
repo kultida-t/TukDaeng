@@ -585,6 +585,17 @@ Mark as Sold จาก Feed หรือ Asset Detail เป็น shortcut ไ�
 - หายจาก Search ทันที
 - หายจาก Watch Alert ทันที
 - Owner ยังเห็นใน Owner Profile
+- Pending Offer ที่เกี่ยวข้องต้องเปลี่ยนเป็น `Cancelled`
+- Chat ยังอยู่ และ Offer Card ต้องแสดง `Offer Cancelled` โดยไม่มี `Accept` / `Decline`
+
+### Show → Hide
+
+เมื่อ Asset เปลี่ยนจาก Show เป็น Hide:
+
+- หายจาก Public Profile / public detail
+- Owner ยังเห็นใน Owner Profile
+- Pending Offer ที่เกี่ยวข้องต้องเปลี่ยนเป็น `Cancelled`
+- Chat ยังอยู่ และ Offer Card ต้องแสดง `Offer Cancelled` โดยไม่มี `Accept` / `Decline`
 
 ### Hide → Sale
 
@@ -630,7 +641,21 @@ Mark as Sold จาก Feed หรือ Asset Detail เป็น shortcut ไ�
 - Viewer/User อื่น/Guest ต้องไม่เห็น Asset นี้ใน public surfaces ทั้งหมด
 - Direct link จาก public context ต้องแสดง unavailable state
 - Asset นี้ไม่ถูกนำไปรวมใน Portfolio / Asset Value
+- Pending หรือ Paused Offer ที่เกี่ยวข้องต้องเปลี่ยนเป็น `Invalidated`
+- Chat ยังอยู่ และ Offer Card ต้องแสดง `Offer Unavailable` โดยไม่มี `Accept` / `Decline`
 - การกู้คืนจากสถานะซ่อนถาวรไม่อยู่ใน Front Office V1 และไม่ใช่ action ปกติของ moderation
+
+## Back Office ซ่อนชั่วคราว / Auto Hidden Rule
+
+เมื่อ Asset ถูกซ่อนชั่วคราวจาก BO หรือถูกซ่อนชั่วคราวอัตโนมัติจาก report threshold:
+
+- Asset หายจาก public surfaces ระหว่าง review
+- Owner ยังเห็น Asset พร้อมสถานะอยู่ระหว่างตรวจสอบ
+- ห้ามสร้าง Offer ใหม่
+- Pending Offer ที่เกี่ยวข้องต้องเปลี่ยนเป็น `Paused`
+- Chat ยังอยู่ และ Offer Card ต้องแสดง `Offer Paused` โดยไม่มี `Accept` / `Decline`
+- ถ้า review ผ่านและ Asset กลับเป็น `Sale` หรือ `Show` ให้ Paused Offer กลับเป็น `Pending`
+- ถ้า review ไม่ผ่านและ Asset ถูกซ่อนถาวร ให้ Paused Offer เปลี่ยนเป็น `Invalidated`
 
 ## Sale Record Form
 
@@ -667,10 +692,16 @@ Delete Asset จาก Owner Feed more menu ต้องใช้ rule เดี
 
 ## Offer Impact Rule
 
-เมื่อ Asset เปลี่ยนเป็น Sold:
+| Asset event | Offer impact | FO chat card |
+| --- | --- | --- |
+| Mark as Sold | Pending offer อื่นเป็น `Rejected` | `Offer Declined` / ไม่มี action |
+| Owner Delete Asset | Related offers เป็น `Cancelled` | `Offer Cancelled` / ไม่มี action |
+| Sale/Show → Hide | Pending offers เป็น `Cancelled` | `Offer Cancelled` / ไม่มี action |
+| Auto hidden / ซ่อนชั่วคราว | Pending offers เป็น `Paused` | `Offer Paused` / ไม่มี action |
+| Review passed จากซ่อนชั่วคราว | `Paused` offers กลับเป็น `Pending` | แสดง `Accept` / `Decline` อีกครั้ง |
+| ซ่อนถาวร | Pending/Paused offers เป็น `Invalidated` | `Offer Unavailable` / ไม่มี action |
 
-- Offer อื่นต้อง Auto Reject
-- ต้องส่ง Notification ไปยังผู้เสนอราคาที่เกี่ยวข้องตาม Notification / Offer Module
+ทุก offer status change ต้องส่ง notification/delivery context ตาม Offer และ Notification Module
 
 ## Payment Rule
 
