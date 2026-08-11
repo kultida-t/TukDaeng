@@ -1515,8 +1515,8 @@
       grid-template-columns: minmax(112px, .66fr) minmax(230px, 1.48fr) minmax(140px, .78fr) minmax(116px, .64fr) minmax(154px, .86fr) minmax(190px, 1.04fr) minmax(86px, .48fr) minmax(102px, .56fr) minmax(76px, .42fr);
     }
     .offer-list-table .asset-row {
-      grid-template-columns: minmax(104px, .54fr) minmax(136px, .68fr) minmax(230px, 1.14fr) minmax(150px, .74fr) minmax(170px, .84fr) minmax(108px, .54fr) minmax(108px, .54fr);
-      column-gap: 18px;
+      grid-template-columns: minmax(84px, .48fr) minmax(132px, .72fr) minmax(300px, 1.55fr) minmax(170px, .9fr) minmax(170px, .9fr) minmax(116px, .58fr) minmax(56px, .26fr);
+      column-gap: 16px;
     }
     body.offer-list-mode #table {
       overflow-x: auto;
@@ -1526,9 +1526,9 @@
       min-width: 1120px;
     }
     .offer-list-table .asset-row.head > div:last-child {
-      justify-content: flex-end;
-      justify-self: end;
-      text-align: right;
+      justify-content: flex-start;
+      justify-self: start;
+      text-align: left;
     }
     .asset-table .asset-row:nth-last-child(-n + 2) .row-menu-list,
     .user-table .user-row:nth-last-child(-n + 2) .row-menu-list {
@@ -1628,7 +1628,7 @@
       line-height: 1.5;
     }
     body.offer-list-mode .offer-list-table .asset-row:not(.head) > .user-row-actions {
-      justify-self: end;
+      justify-self: start;
     }
     body.offer-list-mode .offer-list-table .asset-row:not(.head) > .user-row-actions .panel-action {
       min-height: auto;
@@ -20000,7 +20000,7 @@
               <div data-label="Owner"><div class="main-text">${getOfferParticipantName(row, "Owner")}</div></div>
               <div data-label="Status">${renderOfferStatusPill(row.status)}</div>
               <div class="user-row-actions">
-                <button class="panel-action" type="button" data-offer-open="${row.id}">${iconSvg.eye}ดูรายละเอียด</button>
+                <button class="panel-action" type="button" data-offer-open="${row.id}">View</button>
               </div>
             </div>
           `).join("") || `<div class="detail-empty user-empty">ไม่พบข้อมูล</div>`}
