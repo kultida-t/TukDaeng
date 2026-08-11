@@ -143,7 +143,7 @@ Baseline entity types:
 - Directory item create/update/activate/inactivate/archive (future/postponed; not Phase 1)
 - Directory import/export (future/postponed; not Phase 1)
 
-### Offer / Chat / Social Phase 2
+### Offer Management / Social Phase 2
 
 - Offer force expire/invalidate
 - Chat message hide/remove/export

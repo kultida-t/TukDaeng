@@ -181,7 +181,7 @@ UI / Reporting rules:
 
 Pending offer dependency ต้องใช้ source เดียวกับ `BackOffice/09_OFFER_CHAT_MODULE.md` และต้อง audit ทุกครั้งที่ใช้เป็นเหตุผล block
 
-Pending user report หรือ offer/chat dispute ต้อง block deletion เช่นเดียวกันจนกว่า Admin จะตรวจ source report และ dependency ให้จบก่อน การลบบัญชีไม่ควร cancel offer หรือปิด dispute อัตโนมัติ; ต้องให้ module ต้นทาง เช่น Offer / Chat หรือ Asset Management เป็นตัวบันทึกผลการตรวจ แล้ว Account Deletion จึงค่อย approve, keep blocked, หรือ cancel request ตาม policy
+Pending user report หรือ offer/support dispute ต้อง block deletion เช่นเดียวกันจนกว่า Admin จะตรวจ source report และ dependency ให้จบก่อน การลบบัญชีไม่ควร cancel offer หรือปิด dispute อัตโนมัติ; ต้องให้ module ต้นทาง เช่น Offer Management, Asset Management หรือ Help & Support เป็นตัวบันทึกผลการตรวจ แล้ว Account Deletion จึงค่อย approve, keep blocked, หรือ cancel request ตาม policy
 
 ## 11. Request Detail
 
@@ -277,7 +277,7 @@ Request detail ต้องมีส่วนข้อมูล:
 | Module | Integration |
 | --- | --- |
 | User Management | Account status, profile/contact masking, login block |
-| Offer / Chat | Pending offer validation, accepted offer retention, chat retention |
+| Offer Management | Pending offer validation, accepted offer retention, related chat retention |
 | Asset Management | Hide assets from FO surfaces and Watch Alert matching |
 | Help / Support | Account-deleted support state, mistake/escalation ticket |
 | Notification | Optional system notification/log for account deletion events ถ้า Product เปิด scope |

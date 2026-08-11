@@ -242,39 +242,36 @@ Recommended note format:
 | Permission / Audit | Full audit visibility and export must be permission controlled. Audit export must create its own audit event and use controlled access/expiry. |
 | FO Sync Impact | Audit rows should trace BO actions that affect FO visibility, notifications, account access, content publication, marketplace/search state, Watch Alert triggers, and exports. |
 
-## 9. Offer & Chat Management
+## 9. Offer Management
 
-- [ ] Offer list ต้องรองรับ search/filter/sort/pagination และ status `Pending`, `Accepted`, `Rejected`, `Cancelled`, `Expired`, `Invalidated`
+- [ ] Offer list ต้องรองรับ search/filter/sort/pagination และ status `Pending`, `Accepted`, `Rejected`, `Cancelled`
 - [ ] Implementation ต้องใช้ `Rejected` ตาม FO เป็นหลัก และ normalize legacy `Declined` เป็น `Rejected`
 - [ ] FO button/action copy ต้องใช้ `Decline` ได้ แต่เมื่อกดแล้วต้องเปลี่ยน status เป็น `Rejected`
 - [ ] Offer detail ต้องแสดง asset summary, buyer, owner, offer timeline, related chat room, notification delivery และ audit events
 - [ ] Offer status timeline ต้องเก็บ actor/source, timestamp, before/after state และ reason เมื่อจำเป็น
-- [ ] Admin force expire offer ได้โดยมี confirmation, reason และ audit log
-- [ ] System/Admin mark invalidated ได้เมื่อ asset/user state ทำให้ offer ใช้งานต่อไม่ได้
-- [ ] Asset ซ่อนถาวร/ลบโดยเจ้าของ/sold ขณะมี pending offer ต้องส่งผลไป offer invalidation policy และ FO active pending flow
+- [ ] Offer Management V1 ต้องเป็น read-only ไม่มี accept/decline/cancel/force-expire/invalidate action
+- [ ] Asset ลบโดยเจ้าของต้องทำให้ related offers เป็น `Cancelled` ตาม FO Offer policy
+- [ ] Asset sold ต้อง auto reject other pending offers เป็น `Rejected` ตาม FO Offer policy
 - [ ] `Show` asset ต้องรองรับ offer/contact เฉพาะ Asset Detail/Public Profile detail ตาม FO rule และไม่ขึ้น Feed/Search/Watch Alert
 - [ ] `Hide`, `Sold`, `ซ่อนถาวร`, `ลบโดยเจ้าของ` ต้องไม่รับ offer ใหม่
-- [ ] Chat room list ต้องรองรับ search/filter จาก participant, asset, has offer, has attachment, reported, date range และ attachment scan status
-- [ ] Chat detail ต้องแสดง participants, related asset, offer card/history, transcript, attachments, report history และ moderation history
+- [ ] Related chat context ต้องเปิดแบบ read-only ตาม permission และ privacy masking
+- [ ] User report จาก chat ต้อง route ไป `User Management > Reported Users` พร้อม `Sources = Chat`
 - [ ] FO Delete Chat ต้องเป็น user-level visibility เท่านั้น ห้าม hard delete server record โดยไม่มี retention/audit policy
 - [ ] Blocked users ต้องส่งข้อความใหม่ไม่ได้ แต่ history เดิมยังอ่านได้ตาม FO read-only rule
 - [ ] Admin ห้าม edit user message หรือ offer price โดยตรง
-- [ ] Admin hide/remove policy-violating message ได้ตาม permission พร้อม reason และ audit
-- [ ] Attachment ต้องมี scan status: `Pending Scan`, `Clean`, `Unsafe`, `Scan Failed`, `Blocked`
-- [ ] Unsafe หรือ scan failed attachment ต้องไม่เปิด preview/download ให้ FO จนกว่าจะผ่าน policy
-- [ ] Offer/chat notification delivery ต้อง trace ได้ แต่ template/retry อยู่ใน Notification module
+- [ ] Offer notification delivery ต้อง trace ได้ แต่ template/retry อยู่ใน Notification module
 - [ ] Pending offer ต้องเป็น dependency สำหรับ block account deletion
-- [ ] Export offer history/conversation ต้องจำกัด permission และ audit export event
-- [ ] Offer & Chat UI ต้อง responsive ที่ 375px, 768px, 1280px และ 1440px
+- [ ] Export offer history ต้องจำกัด permission และ audit export event
+- [ ] Offer Management UI ต้อง responsive ที่ 375px, 768px, 1280px และ 1440px
 
-### Offer & Chat Prototype Handoff Notes
+### Offer Management Prototype Handoff Notes
 
 | Area | Notes |
 | --- | --- |
-| Prototype / Spec Alignment | The prototype exposes `Offer Queue`, `Reported Chat`, and `Dispute Export`. It uses the canonical `Offer / Chat` module placement and aligns with the status vocabulary direction, but it is not yet a complete offer-detail or chat-review workflow. |
-| Implementation Gap | Production still needs offer detail, buyer/owner/asset summaries, offer timeline, chat transcript review, attachment scan states, reported-chat moderation actions, force-expire/invalidate confirmation, and export job handling. |
-| Permission / Audit | Force expire, invalidate, message hide/remove, attachment block, transcript/sensitive reveal, and offer/chat export must be separately permission-gated and audit-logged with reason where FO/user impact exists. |
-| FO Sync Impact | Offer changes must update pending/incoming offer state, chat offer cards, notification delivery context, account-deletion dependency checks, and unavailable/invalidated asset behavior. |
+| Prototype / Spec Alignment | The prototype exposes `Offer Management` with `Offer List` as a read-only overview for asset interest, buyer/seller, offer price, status, and related chat context. It removes chat-report/dispute queue wording; user reports from chat belong in `User Management > Reported Users`. |
+| Implementation Gap | Production still needs offer detail, buyer/owner/asset summaries, offer timeline, related chat read-only context, notification delivery, permission-gated export, and empty/loading/error states. |
+| Permission / Audit | Offer list/detail is read-only. Sensitive reveal, related-chat view, and offer export must be permission-gated and audit-logged. No V1 write action should appear in this module. |
+| FO Sync Impact | Offer status must reflect FO/system events: seller accept/decline, asset deleted -> `Cancelled`, asset sold -> other pending offers `Rejected`, notification delivery context, and account-deletion dependency checks. |
 
 ## 10. Social Interaction Management
 
@@ -362,7 +359,7 @@ Recommended note format:
 - [ ] หลัง FO Delete Account สำเร็จ account ต้องเข้าสู่ deactivated/login blocked state และ public profile/assets ต้องถูกซ่อน
 - [ ] Grace period ต้องใช้ baseline 30 วันและแสดง active / ending soon / expired
 - [ ] Pending incoming/outgoing offer ต้อง block archive/anonymization ได้
-- [ ] Recheck blocking conditions ต้อง query dependency ล่าสุดจาก Offer / Chat, Asset, Report และ Support modules
+- [ ] Recheck blocking conditions ต้อง query dependency ล่าสุดจาก Offer Management, Asset, Report และ Support modules
 - [ ] Archive approval, request cancellation, anonymization trigger, and archive report export require Admin access policy, confirmation, reason, and audit
 - [ ] Admin ดู request และ recheck blocking conditions ได้ แต่ approve/cancel/export ไม่ได้
 - [ ] Archive/anonymization plan ต้องแยก hide, retain, archive และ anonymize ต่อ entity ให้ชัด

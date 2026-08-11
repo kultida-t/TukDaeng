@@ -7693,11 +7693,11 @@
         { id: "dashboard", label: "Dashboard", icon: "dashboard" },
         { id: "users", label: "User Management", icon: "users", subs: ["User Accounts", "Reported Users"] },
         { id: "assets", label: "Asset Management", icon: "asset", subs: ["Asset List", "Reported Assets"] },
+        { id: "offers", label: "Offer Management", icon: "offer", subs: ["Offer List"] },
         { id: "content", label: "Content Management", icon: "content", subs: ["Articles", "Categories", "Reported Articles"] },
         { id: "market", label: "Market Data", icon: "market", subs: ["Dashboard", "Brands & Models", "Sync History"] },
       ]},
       { section: "งานตรวจสอบและบริการ", items: [
-        { id: "offers", label: "Offer / Chat", icon: "offer", subs: ["Offer Queue", "Reported Chat", "Dispute Export"] },
         { id: "social", label: "Social Interaction", icon: "social", subs: ["Comments", "Likes", "Follows", "Reported Social"] },
         { id: "watch-alerts", label: "Watch Alert", icon: "alert", subs: ["Alert Criteria", "Trigger History", "Disabled Alerts"] },
         { id: "support", label: "Help & Support", icon: "support", subs: ["Tickets", "Assignment", "SLA"] },
@@ -7802,10 +7802,10 @@
         item("AUD-88172", "Publish Article", "Orn Admin", "Content", "กลาง", "Recorded", "ART-044 schedule ถูกแก้เวลา publish", ["Board"], "ตรวจ timestamp Asia/Bangkok"),
         item("AUD-88120", "Export User CSV", "Somchai Admin", "Users", "สูง", "Recorded", "Export มี sensitive-data masking", ["CSV", "Policy"], "ตรวจ permission และ download expiry")
       ]),
-      offers: mod("Offer / Chat", "งานตรวจสอบและบริการ / Offer / Chat", "Offer Lifecycle & Chat Review", "ตรวจ offer, rejected status, reported chat และ dispute export", "เปิด dispute export", [["Pending Offers", "44", "รอ buyer/seller"], ["Rejected", "19", "เก็บประวัติ"], ["Reported Chat", "7", "SLA 24 ชม."], ["Disputes", "3", "ต้อง export"]], [
-        item("OFR-501", "Offer THB 285,000", "AST-8831", "Offer", "กลาง", "Pending", "ผู้ซื้อขอลดราคาและถาม proof เพิ่ม", ["Buyer U-1042"], "ดู chat context ก่อน force expire"),
-        item("CHT-090", "Reported abusive chat", "watch.dealer.th", "Chat", "สูง", "Reviewing", "มี report spam offer จากผู้ใช้ 5 คน", ["Reports 5"], "อ่าน transcript และ hide/ban ตาม policy"),
-        item("DSP-014", "Condition mismatch", "Omega Club TH", "Dispute", "สูง", "Open", "คู่ค้าร้องเรียนสภาพสินค้าไม่ตรงรูป", ["Export needed"], "Export offer/chat bundle เพื่อ support")
+      offers: mod("Offer Management", "การดำเนินงาน / Offer Management", "Offer Interest Overview", "ดูรายการ offer แบบ read-only เพื่อเห็นความสนใจต่อ asset, buyer/seller และสถานะ offer", "Export offer report", [["Pending Offers", "44", "รอ seller ตอบ"], ["Accepted", "41", "ตกลงแล้ว"], ["Rejected", "19", "ผู้ขายปฏิเสธ"], ["Cancelled", "12", "asset/user state"]], [
+        item("OFR-501", "Offer THB 285,000", "AST-8831", "Offer", "กลาง", "Pending", "ผู้ซื้อขอลดราคาและถาม proof เพิ่ม", ["Buyer U-1042", "Owner Crown Time BKK"], "Read-only: เปิด offer detail เพื่อดู asset, buyer, seller และ related chat"),
+        item("OFR-488", "Offer THB 118,000", "AST-8720", "Offer", "ปกติ", "Accepted", "ผู้ขายรับข้อเสนอและ buyer ได้ notification ไป Chat Room", ["Buyer U-1161", "Owner Seiko Corner"], "Read-only: ใช้ดู demand และประวัติการตอบรับของ asset"),
+        item("OFR-472", "Offer THB 2,100,000", "AST-8694", "Offer", "สูง", "Rejected", "ผู้ขายกด Decline จาก Incoming Offers", ["Buyer U-1042", "Owner Rolex Rama9"], "Read-only: ใช้เทียบราคาที่เสนอ เทียบ asking price และสถานะล่าสุด")
       ]),
       social: mod("Social Interaction", "งานตรวจสอบและบริการ / Social Interaction", "Comments, Likes & Follows", "จัดการ comment/reply moderation และ analytics ของ like/favorite/follow", "ดู reported social", [["Comments", "8,420", "วันนี้ 184"], ["Reported", "11", "รอตรวจ 4"], ["Follows", "26,100", "เพิ่ม 2.4%"], ["Favorites", "41,900", "ใช้ใน analytics"]], [
         item("COM-711", "Spam comment", "AST-8802", "Comment", "สูง", "Reported", "คอมเมนต์ซ้ำหลาย asset พร้อม link นอกระบบ", ["Reports 3"], "Hide comment จาก Asset Detail และ audit"),

@@ -66,7 +66,7 @@ Codex ต้องทำ 3 อย่าง:
 | 06 | `06_MARKET_DATA_MODULE.md` | Read-only API/backend-synced watch brand, model, reference, detail, price index, sync logs, FO autocomplete/search/alert/portfolio sync | 1 |
 | 07 | `07_DIRECTORY_MODULE.md` | Future/postponed Directory reference only; not exposed in Phase 1 BO prototype or Phase 1 build scope until FO directory detail routes are approved | Future |
 | 08 | `08_AUDIT_LOG_MODULE.md` | Immutable audit events, schema, search/filter, export, retention, sensitive/destructive/provider-sync trace | 1 |
-| 09 | `09_OFFER_CHAT_MODULE.md` | Offer lifecycle, status `Rejected`, chat review, reported chats, dispute support | 2 |
+| 09 | `09_OFFER_CHAT_MODULE.md` | Read-only offer list/detail, buyer/seller and asset interest overview, related chat context, notification delivery | 2 |
 | 10 | `10_SOCIAL_INTERACTION_MODULE.md` | Comment/reply moderation, reported comments, likes/favorites/follows analytics | 2 |
 | 11 | `11_WATCH_ALERT_MODULE.md` | Watch Alert criteria, trigger history, Sale-only match, notification delivery, admin disable | 2 |
 | 12 | `12_HELP_SUPPORT_MODULE.md` | Help/support ticket queue, manual contact-channel tickets, assignment, reply history, SLA tracking | 2 |
