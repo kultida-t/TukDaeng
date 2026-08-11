@@ -479,6 +479,35 @@ Search Result ต้องรองรับ:
 - Price Range ต้องไม่ให้ค่าต่ำสุดมากกว่าค่าสูงสุด
 - Year Range ต้องไม่ให้ค่าต่ำสุดมากกว่าค่าสูงสุด
 
+## Price Range Manual Input
+
+- การกรอก Minimum price และ Maximum price เป็น optional ทั้งคู่
+- หากไม่กรอกทั้งสองช่อง ให้ถือว่าไม่ใช้เงื่อนไข Price Range
+- หากกรอกเฉพาะ Minimum price ให้ค้นหาราคาที่มากกว่าหรือเท่ากับค่านั้น
+- หากกรอกเฉพาะ Maximum price ให้ค้นหาราคาที่น้อยกว่าหรือเท่ากับค่านั้น
+- รับเฉพาะตัวเลขจำนวนเต็มบวกและ `0`
+- ระบบต้อง auto-format comma คั่นหลักพันระหว่าง user กรอก เช่น user พิมพ์ `2000000` แล้ว field แสดง `2,000,000`
+- ระบบต้องเก็บค่า internal เป็นตัวเลขล้วนและ normalize ก่อนค้นหา เช่น display `2,000,000` เป็น value `2000000`
+- หาก user paste ค่าที่มี comma เช่น `2,000,000` ระบบต้อง strip comma, validate ค่าเลขล้วน และ format ใหม่ตาม pattern ของระบบ
+- หาก user paste comma ผิดหลัก เช่น `20,00,000` ระบบต้อง strip comma แล้ว format ใหม่เป็น `2,000,000` หากค่าตัวเลขถูกต้อง
+- ห้ามกรอกตัวอักษร, currency symbol หรืออักขระพิเศษอื่น
+- ห้ามกรอกค่าติดลบ
+- ห้ามกรอกทศนิยม
+- Minimum price ต้องไม่มากกว่า Maximum price
+- Maximum price ต้องไม่เกิน price range สูงสุดที่ระบบกำหนดสำหรับ filter นั้น; prototype ปัจจุบันใช้ `2,000,000`
+- Minimum price ต้องไม่น้อยกว่า price range ต่ำสุดที่ระบบกำหนดสำหรับ filter นั้น; prototype ปัจจุบันใช้ `0`
+- หาก Minimum price เท่ากับ Maximum price ให้ค้นหาราคาที่เท่ากับค่านั้นได้
+- เมื่อ input ถูกต้อง ต้อง sync ค่า typed input กับ slider/range control
+- เมื่อ input ไม่ถูกต้อง ต้องไม่ Apply filter และต้องแสดง inline validation ใต้ field ที่ผิดหรือใต้ Price Range control
+
+| Case | TH validation message |
+|---|---|
+| กรอกตัวอักษร/อักขระไม่รองรับ | กรุณากรอกราคาเป็นตัวเลข |
+| กรอกค่าติดลบ | ราคาต้องไม่ต่ำกว่า 0 |
+| กรอกทศนิยม | กรุณากรอกราคาเป็นจำนวนเต็ม |
+| Minimum price > Maximum price | ราคาต่ำสุดต้องไม่มากกว่าราคาสูงสุด |
+| Maximum price เกินเพดาน filter | ราคาสูงสุดต้องไม่เกิน 2,000,000 |
+
 ## Watch Alert
 
 - ไม่มี Required Field

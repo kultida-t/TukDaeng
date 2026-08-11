@@ -374,6 +374,34 @@ Given user เลือก Brand = Rolex
 When user เปิด Model filter  
 Then Model list ต้องเหลือเฉพาะ model ของ Rolex
 
+## QA-SEARCH-002A: Price Range Manual Input Validation
+
+Given user เปิด Price filter  
+When user กรอก Minimum price หรือ Maximum price เอง  
+Then ระบบต้องรับเฉพาะตัวเลขจำนวนเต็มและ `0`  
+And ต้อง auto-format comma คั่นหลักพันระหว่างกรอก เช่น user พิมพ์ `2000000` แล้ว field แสดง `2,000,000`  
+And ต้องเก็บค่า internal เป็นตัวเลขล้วน และ normalize ค่า display `2,000,000` เป็น `2000000` ก่อน Apply  
+And ถ้า user paste `2,000,000` ต้อง strip comma, validate ค่าเลขล้วน และ format ใหม่ตาม pattern ของระบบ  
+And ถ้า user paste comma ผิดหลัก เช่น `20,00,000` ต้อง strip comma และ format ใหม่เป็น `2,000,000` หากค่าตัวเลขถูกต้อง  
+And ถ้ากรอกตัวอักษร ต้องแสดง validation `กรุณากรอกราคาเป็นตัวเลข`  
+And ถ้ากรอกค่าติดลบ ต้องแสดง validation `ราคาต้องไม่ต่ำกว่า 0`  
+And ถ้ากรอกทศนิยม ต้องแสดง validation `กรุณากรอกราคาเป็นจำนวนเต็ม`  
+And ถ้า Minimum price มากกว่า Maximum price ต้องแสดง validation `ราคาต่ำสุดต้องไม่มากกว่าราคาสูงสุด`  
+And ถ้า Maximum price เกินเพดาน filter ต้องแสดง validation `ราคาสูงสุดต้องไม่เกิน 2,000,000`  
+And ต้องไม่ Apply filter จนกว่าค่าจะถูกต้อง
+
+## QA-SEARCH-002B: Price Range Optional Bounds
+
+Given user เปิด Price filter  
+When user ไม่กรอกทั้ง Minimum price และ Maximum price  
+Then ระบบต้องถือว่าไม่ใช้เงื่อนไข Price Range  
+When user กรอกเฉพาะ Minimum price  
+Then Search Result ต้องใช้เงื่อนไขราคามากกว่าหรือเท่ากับ Minimum price  
+When user กรอกเฉพาะ Maximum price  
+Then Search Result ต้องใช้เงื่อนไขราคาน้อยกว่าหรือเท่ากับ Maximum price  
+When user กรอก Minimum price เท่ากับ Maximum price  
+Then Search Result ต้องใช้เงื่อนไขราคาเท่ากับค่านั้น
+
 ## QA-SEARCH-003: Watch Alert No Required Field
 
 Given user เปิด Create Watch Alert  
