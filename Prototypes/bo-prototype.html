@@ -3902,6 +3902,59 @@
       border-color: #b8c6d8;
       box-shadow: 0 0 0 3px rgba(118, 135, 158, .10);
     }
+    body.user-accounts-mode:not(.user-detail-mode) .filters {
+      padding: 12px 16px;
+    }
+    body.user-accounts-mode:not(.user-detail-mode) .user-filter-bar {
+      grid-template-columns: minmax(260px, 1.65fr) repeat(3, minmax(138px, .82fr)) 42px;
+      align-items: stretch;
+      gap: 8px;
+    }
+    body.user-accounts-mode:not(.user-detail-mode) .user-filter-bar .search,
+    body.user-accounts-mode:not(.user-detail-mode) .user-filter-bar .custom-select,
+    body.user-accounts-mode:not(.user-detail-mode) .user-filter-bar .custom-select-trigger,
+    body.user-accounts-mode:not(.user-detail-mode) .user-filter-bar .filter-reset {
+      width: 100%;
+      height: 48px;
+      min-height: 48px;
+    }
+    body.user-accounts-mode:not(.user-detail-mode) .user-filter-bar .search {
+      grid-column: auto;
+      min-width: 0;
+      line-height: 1.2;
+    }
+    body.user-accounts-mode:not(.user-detail-mode) .user-filter-bar .field,
+    body.user-accounts-mode:not(.user-detail-mode) .user-filter-bar .custom-select,
+    body.user-accounts-mode:not(.user-detail-mode) .user-filter-bar .custom-select-trigger {
+      min-width: 0;
+    }
+    body.user-accounts-mode:not(.user-detail-mode) .user-filter-bar .custom-select-trigger {
+      display: flex;
+      align-items: center;
+      flex-wrap: nowrap;
+    }
+    body.user-accounts-mode:not(.user-detail-mode) .user-filter-bar .custom-select-trigger [data-custom-select-label] {
+      display: block;
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    body.user-accounts-mode:not(.user-detail-mode) .user-filter-bar .filter-reset {
+      min-width: 42px;
+      padding: 0;
+      border-color: #cfdbea;
+      background: #fff;
+      justify-content: center;
+    }
+    body.user-accounts-mode:not(.user-detail-mode) .user-filter-bar .filter-reset span {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+    }
     .user-filter-bar.report-mode {
       grid-template-columns: minmax(220px, 1.3fr) repeat(3, minmax(132px, .7fr)) 42px;
     }
@@ -6309,93 +6362,56 @@
         grid-template-columns: minmax(94px, .4fr) minmax(180px, .78fr) minmax(224px, .98fr) minmax(108px, .46fr) minmax(128px, .52fr) minmax(310px, 1.32fr) minmax(86px, .36fr) minmax(88px, .36fr) minmax(62px, .28fr);
         column-gap: 20px;
       }
-      body.user-list-mode:not(.user-detail-mode) .main {
+      body.user-accounts-mode:not(.user-detail-mode) .main {
         overflow-x: hidden;
       }
-      body.user-list-mode:not(.user-detail-mode) .summary-grid {
+      body.user-accounts-mode:not(.user-detail-mode) .summary-grid {
         grid-template-columns: repeat(2, minmax(0, 1fr));
       }
-      body.user-list-mode:not(.user-detail-mode) .stat {
+      body.user-accounts-mode:not(.user-detail-mode) .stat {
         padding: 14px 15px 15px;
       }
-      body.user-list-mode:not(.user-detail-mode) .stat-label {
+      body.user-accounts-mode:not(.user-detail-mode) .stat-label {
         font-size: 20px;
       }
-      body.user-list-mode:not(.user-detail-mode) .stat-value {
+      body.user-accounts-mode:not(.user-detail-mode) .stat-value {
         font-size: 34px;
       }
-      body.user-list-mode:not(.user-detail-mode) .filters {
-        padding: 12px 14px;
-      }
-      body.user-list-mode:not(.user-detail-mode) .user-filter-bar {
-        grid-template-columns: minmax(0, 1fr) minmax(160px, .58fr) minmax(160px, .58fr) minmax(160px, .58fr) 42px;
-        align-items: center;
-      }
-      body.user-list-mode:not(.user-detail-mode) .user-filter-bar .search {
-        grid-column: auto;
-        min-width: 0;
-      }
-      body.user-list-mode:not(.user-detail-mode) .user-filter-bar .field,
-      body.user-list-mode:not(.user-detail-mode) .user-filter-bar .custom-select,
-      body.user-list-mode:not(.user-detail-mode) .user-filter-bar .custom-select-trigger {
-        min-width: 0;
-      }
-      body.user-list-mode:not(.user-detail-mode) .user-filter-bar .custom-select-trigger [data-custom-select-label] {
-        display: block;
-        min-width: 0;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-      }
-      body.user-list-mode:not(.user-detail-mode) .user-filter-bar .filter-reset {
-        width: 42px;
-        min-width: 42px;
-        padding: 0;
-        justify-content: center;
-      }
-      body.user-list-mode:not(.user-detail-mode) .user-filter-bar .filter-reset span {
-        position: absolute;
-        width: 1px;
-        height: 1px;
-        overflow: hidden;
-        clip: rect(0, 0, 0, 0);
-        white-space: nowrap;
-      }
-      body.user-list-mode:not(.user-detail-mode) #table {
+      body.user-accounts-mode:not(.user-detail-mode) #table {
         max-width: 100%;
         overflow-x: auto;
         scrollbar-width: thin;
       }
-      body.user-list-mode:not(.user-detail-mode) #table .user-table {
+      body.user-accounts-mode:not(.user-detail-mode) #table .user-table {
         min-width: 760px;
       }
-      body.user-list-mode:not(.user-detail-mode) .user-row:not(.report-row) {
+      body.user-accounts-mode:not(.user-detail-mode) .user-row:not(.report-row) {
         grid-template-columns: minmax(74px, .42fr) minmax(138px, 1.08fr) minmax(112px, .7fr) minmax(124px, .78fr) minmax(58px, .36fr) minmax(84px, .54fr) minmax(108px, .66fr) minmax(42px, .22fr);
         gap: 10px;
         padding-left: 14px;
         padding-right: 14px;
       }
-      body.user-list-mode:not(.user-detail-mode) .user-row:not(.head):not(.report-row) {
+      body.user-accounts-mode:not(.user-detail-mode) .user-row:not(.head):not(.report-row) {
         padding-top: 10px;
         padding-bottom: 10px;
       }
-      body.user-list-mode:not(.user-detail-mode) .user-row .main-text,
-      body.user-list-mode:not(.user-detail-mode) .user-row .muted {
+      body.user-accounts-mode:not(.user-detail-mode) .user-row .main-text,
+      body.user-accounts-mode:not(.user-detail-mode) .user-row .muted {
         font-size: 12px;
       }
-      body.user-list-mode:not(.user-detail-mode) .pill {
+      body.user-accounts-mode:not(.user-detail-mode) .pill {
         padding-left: 8px;
         padding-right: 8px;
       }
     }
     @media (max-width: 980px) and (min-width: 761px) {
-      body.user-list-mode:not(.user-detail-mode) .user-filter-bar {
+      body.user-accounts-mode:not(.user-detail-mode) .user-filter-bar {
         grid-template-columns: minmax(0, 1fr) minmax(132px, .5fr) minmax(132px, .5fr) minmax(132px, .5fr) 42px;
       }
-      body.user-list-mode:not(.user-detail-mode) #table .user-table {
+      body.user-accounts-mode:not(.user-detail-mode) #table .user-table {
         min-width: 720px;
       }
-      body.user-list-mode:not(.user-detail-mode) .user-row:not(.report-row) {
+      body.user-accounts-mode:not(.user-detail-mode) .user-row:not(.report-row) {
         grid-template-columns: minmax(68px, .38fr) minmax(128px, 1fr) minmax(108px, .7fr) minmax(116px, .76fr) minmax(52px, .32fr) minmax(78px, .5fr) minmax(100px, .62fr) minmax(38px, .2fr);
         column-gap: 8px;
       }
@@ -6423,10 +6439,10 @@
       }
     }
     @media (max-width: 760px) {
-      body.user-list-mode:not(.user-detail-mode) .summary-grid {
+      body.user-accounts-mode:not(.user-detail-mode) .summary-grid {
         grid-template-columns: 1fr;
       }
-      body.user-list-mode:not(.user-detail-mode) #table .user-table {
+      body.user-accounts-mode:not(.user-detail-mode) #table .user-table {
         min-width: 0;
       }
       .user-action-head {
@@ -12146,6 +12162,7 @@
       activeReportContextId = null;
       document.body.classList.add("user-list-mode");
       document.body.classList.remove("user-detail-mode");
+      document.body.classList.toggle("user-accounts-mode", !isReports);
       activeRow = isReports ? userManagementData.reports[0] : userManagementData.users[0];
       document.querySelector("#crumb").textContent = `การดำเนินงาน / User Management / ${title}`;
       document.querySelector("#page-title").textContent = title;
@@ -14010,6 +14027,7 @@
       document.body.classList.toggle("market-list-mode", id === "market");
       document.body.classList.toggle("market-dashboard-mode", id === "market" && (subLabel || "Dashboard") === "Dashboard");
       document.body.classList.toggle("user-list-mode", id === "users" || isReportedAssets || isReportedBoard);
+      document.body.classList.toggle("user-accounts-mode", id === "users" && (subLabel || "User Accounts") === "User Accounts");
       document.body.classList.remove("asset-detail-mode");
       if (isReportedAssets || isReportedBoard) document.body.classList.remove("user-detail-mode");
       if (id !== "users" && !isReportedAssets && !isReportedBoard) {
