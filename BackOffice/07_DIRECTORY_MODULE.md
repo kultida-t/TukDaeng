@@ -2,10 +2,12 @@
 
 **Version:** `BO-07-v0.1`  
 **Date:** 2026-07-06  
-**Status:** Draft baseline  
+**Status:** Postponed / future reference only
 **Platform:** Responsive Web Back Office  
 **Primary FO Sources:** `../FrontOffice/00_NAVIGATION_AND_CROSS_MODULE_FLOW.md`, `../FrontOffice/README_MODULE_INDEX.md`, `../FrontOffice/Figma_Gap_Checklist_Against_Master.md`  
 **Integration Map:** `../ProjectAdmin/FO_BO_INTEGRATION_MAP.md`
+
+**Phase 1 status:** Postponed. Do not expose the BO Directory menu, route, CRUD, publication controls, map/contact/image fields, import/export, or FO sync in Phase 1 because FO directory menu entries are placeholders and detail routes are not approved.
 
 ## 1. วัตถุประสงค์
 
@@ -159,7 +161,7 @@ Google Maps หรือ map provider เป็น implementation detail แต�
 
 ## 11. Import / Export
 
-Phase 1 ควรรองรับ:
+Future scope should support:
 
 - CSV/XLSX import สำหรับ directory item
 - Dry-run validation ก่อน import จริง
@@ -244,4 +246,3 @@ Audit event ต้องมี admin ID, admin access, target type, target ID, b
 | BO-DIR-DEC-002 | Community category หมายถึง Board, Social หรือ Directory item จริง | ต้อง map taxonomy ก่อนเปิด FO |
 | BO-DIR-DEC-003 | Consignment Centers จะผูกกับ asset consignment workflow ใน Phase 1 หรือไม่ | เก็บ FK-ready field แต่ยังไม่บังคับ |
 | BO-DIR-DEC-004 | Map provider ที่ใช้ production | ต้องเลือก provider และ quota ก่อน implementation |
-

@@ -7667,7 +7667,6 @@
       exportFile: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21V9"/><path d="m7 14 5-5 5 5"/><path d="M5 3h14"/></svg>',
       edit: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>',
       market: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 17 9 11l4 4 8-8"/><path d="M14 7h7v7"/></svg>',
-      directory: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 21h18"/><path d="M5 21V7l7-4 7 4v14"/><path d="M9 21v-6h6v6"/><path d="M9 10h.01M15 10h.01"/></svg>',
       audit: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 11h6M9 15h6"/><path d="M8 3h8l3 3v15H5V6l3-3Z"/><path d="M8 3v4h8V3"/></svg>',
       offer: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 15a4 4 0 0 1-4 4H8l-5 3V7a4 4 0 0 1 4-4h10a4 4 0 0 1 4 4Z"/><path d="M8 9h8M8 13h5"/></svg>',
       social: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 1 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8Z"/></svg>',
@@ -7696,7 +7695,6 @@
         { id: "assets", label: "Asset Management", icon: "asset", subs: ["Asset List", "Reported Assets"] },
         { id: "content", label: "Content Management", icon: "content", subs: ["Articles", "Categories", "Reported Articles"] },
         { id: "market", label: "Market Data", icon: "market", subs: ["Dashboard", "Brands & Models", "Sync History"] },
-        { id: "directory", label: "Directory", icon: "directory" },
       ]},
       { section: "งานตรวจสอบและบริการ", items: [
         { id: "offers", label: "Offer / Chat", icon: "offer", subs: ["Offer Queue", "Reported Chat", "Dispute Export"] },
@@ -7798,11 +7796,6 @@
         item("BRD-ROLEX", "Rolex", "Brand", "API", "ปกติ", "Active", "ใช้ใน autocomplete และ asset form", ["Models 1,240"], "Phase 1 ดูข้อมูลเท่านั้น ไม่แก้ status จาก BO"),
         item("MDL-16610", "Submariner 16610", "Model", "Reference", "กลาง", "Active", "ราคา index มี outlier จาก API ล่าสุด", ["Median 305,000"], "ตรวจ source metadata และส่ง correction ผ่าน backend/provider"),
         item("IDX-202607", "Speedmaster Reduced", "Price Index", "Index", "กลาง", "Reviewing", "ข้อมูล API sync ซ้ำ 3 แถว", ["API batch"], "Backend sync ต้องจัดการ duplicate ก่อนใช้ index")
-      ]),
-      directory: mod("Directory", "การดำเนินงาน / Directory", "Directory Publication", "จัดการร้าน, service, category, map/contact และสถานะเผยแพร่", "เพิ่ม directory", [["Published", "84", "แสดงบน FO"], ["Draft", "9", "รอข้อมูลติดต่อ"], ["Inactive", "6", "ไม่แสดงบน FO"], ["Missing Map", "4", "ต้องเติมพิกัด"]], [
-        item("DIR-021", "Tuk Daeng Watch Service", "Service", "Repair", "ปกติ", "Published", "มีเบอร์โทร, LINE และ map ครบ", ["Bangkok"], "อัปเดต opening hours"),
-        item("DIR-034", "Vintage Strap House", "Shop", "Accessory", "กลาง", "Draft", "ขาดรูป cover และพิกัด", ["Missing map"], "เติมข้อมูลก่อน publish"),
-        item("DIR-041", "Collector Lounge", "Venue", "Community", "กลาง", "Inactive", "ร้านย้ายที่ตั้ง รอข้อมูลใหม่", ["FO hidden"], "Restore เมื่อข้อมูลติดต่อยืนยันแล้ว")
       ]),
       audit: mod("Audit Log", "การดำเนินงาน / Audit Log", "Immutable Admin Events", "ค้นหา action สำคัญ, export และตรวจ before/after value", "Export audit", [["Events Today", "386", "Login 74 · Update 221"], ["High Risk", "18", "ต้องมี reason"], ["Exports", "5", "background jobs"], ["Retention", "365d", "baseline ขั้นต่ำ"]], [
         item("AUD-88201", "Force Hide Asset", "Somchai Admin", "Asset", "สูง", "Recorded", "AST-8831 ถูกเปลี่ยน Sale → Hide พร้อม reason", ["Before/After"], "ตรวจ reason และ FO sync event"),

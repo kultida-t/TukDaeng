@@ -63,7 +63,7 @@ Current Back Office baseline: `BO-PRD-v0.1`
 | BO asset management | [BackOffice/04_ASSET_MANAGEMENT_MODULE.md](BackOffice/04_ASSET_MANAGEMENT_MODULE.md) |
 | BO content / board management | [BackOffice/05_CONTENT_BOARD_MODULE.md](BackOffice/05_CONTENT_BOARD_MODULE.md) |
 | BO market data management | [BackOffice/06_MARKET_DATA_MODULE.md](BackOffice/06_MARKET_DATA_MODULE.md) |
-| BO directory management | [BackOffice/07_DIRECTORY_MODULE.md](BackOffice/07_DIRECTORY_MODULE.md) |
+| BO directory management | [BackOffice/07_DIRECTORY_MODULE.md](BackOffice/07_DIRECTORY_MODULE.md) (future/postponed; not Phase 1) |
 | BO audit log | [BackOffice/08_AUDIT_LOG_MODULE.md](BackOffice/08_AUDIT_LOG_MODULE.md) |
 | BO offer / chat management | [BackOffice/09_OFFER_CHAT_MODULE.md](BackOffice/09_OFFER_CHAT_MODULE.md) |
 | BO social interaction management | [BackOffice/10_SOCIAL_INTERACTION_MODULE.md](BackOffice/10_SOCIAL_INTERACTION_MODULE.md) |

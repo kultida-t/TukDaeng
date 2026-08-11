@@ -150,7 +150,7 @@ Role templates are presets. Production enforcement must use explicit permission 
 | User Management | Admin can manage users subject to sensitive-data, account-status, export, confirmation, reason, and audit rules. |
 | Asset Management | Admin can review and change assets subject to FO-impact, sensitive-data, confirmation, reason, and audit rules. |
 | Content / Board | Admin can create, edit, preview, publish, schedule, archive, and audit content actions. |
-| Market Data / Directory | Admin can manage brand/model/reference/price/directory data with provider-source, inactive/restore, and audit controls. |
+| Market Data / Directory | Admin can manage brand/model/reference/price data with provider-source, inactive/restore, and audit controls; Directory is future/postponed from Phase 1. |
 | Audit Log | Admin can view/export audit data according to audit visibility and sensitive-payload policy. |
 | Offer / Chat / Social / Watch Alert | Admin can review and moderate by policy with privacy masking and audit. |
 | Help / Support / Account Deletion | Admin can process support and deletion workflows with dependency checks, confirmation, reason, and audit. |
@@ -231,7 +231,7 @@ Feature flag ใช้เพื่อควบคุม phase/decision เท่
 
 | Feature / Module | Rule |
 | --- | --- |
-| Directory FO route | ถ้า FO ยังเป็น placeholder ต้องไม่เปิด production route โดยไม่มี Product decision |
+| Directory FO route | Future/postponed from Phase 1; ถ้า FO ยังเป็น placeholder ต้องไม่เปิด production route โดยไม่มี Product decision |
 | Broadcast in FO Notification Center | ต้องรอ master decision ก่อนเพิ่ม generic Broadcast type |
 | FO Support ticket history | ต้องรอ Product decision; contact-only mode ยังรองรับใน BO |
 | Market Update notification | Future; ไม่ส่ง FO V1 จนกว่า master เพิ่ม scope |
@@ -250,7 +250,7 @@ Integration settings ต้องแสดง metadata และสถานะ 
 | Notification provider | Delivery provider status, callback health, non-secret config |
 | Export jobs | Queue status, retry policy metadata |
 | Import jobs | Dry-run rules, duplicate detection status |
-| Map provider | Availability/status only if Directory uses map |
+| Map provider | Future only; availability/status only if Directory scope is reopened and uses map |
 
 Secret เช่น API key, provider token, database credentials ต้องอยู่ใน secure secret manager ไม่ใช่ Admin Settings UI
 

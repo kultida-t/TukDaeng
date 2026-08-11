@@ -59,7 +59,7 @@ BO uses a single Admin account type only. Admin access is controlled by module a
 | Actor ID | Admin ID หรือ system job ID |
 | actor access context | Admin access ณ เวลาที่ทำ action |
 | Action Type | Required enum/string |
-| Target Entity Type | User, Asset, Article, Brand, Model, PriceIndex, Directory, etc. |
+| Target Entity Type | User, Asset, Article, Brand, Model, PriceIndex, Directory (future), etc. |
 | Target Entity ID | Required เมื่อมี target |
 | Before Value | JSON snapshot หรือ diff ก่อน action |
 | After Value | JSON snapshot หรือ diff หลัง action |
@@ -94,7 +94,7 @@ Baseline entity types:
 - PriceIndex
 - MarketDataProviderSync
 - WatchAlert
-- Directory
+- Directory (future/postponed)
 - SupportTicket
 - AccountDeletionRequest
 - Notification
@@ -140,8 +140,8 @@ Baseline entity types:
 - Price index create/update/activate/inactivate
 - The Watch API provider sync trigger/result
 - Provider conflict resolution
-- Directory item create/update/activate/inactivate/archive
-- Directory import/export
+- Directory item create/update/activate/inactivate/archive (future/postponed; not Phase 1)
+- Directory import/export (future/postponed; not Phase 1)
 
 ### Offer / Chat / Social Phase 2
 
@@ -258,7 +258,7 @@ Before/after JSON diff ต้อง wrap และ scroll ภายใน contai
 | Asset Management | Flag/remove/status/sensitive reveal audit |
 | Content / Board | Publish/archive/category/banner audit |
 | Market Data | Provider sync, manual override, price index audit |
-| Directory | Activate/inactivate/import/export audit |
+| Directory | Future/postponed; activate/inactivate/import/export audit only when Directory scope is reopened |
 | Dashboard | Recent activity feed และ SLA/queue context |
 | Reports | Export audit events และ report export history |
 | Admin Settings | Permission/system setting changes audit |
