@@ -803,39 +803,8 @@
     .offer-status-donut {
       width: min(220px, 100%);
       aspect-ratio: 1;
-      border-radius: 50%;
-      background: var(--offer-status-gradient);
-      position: relative;
-      box-shadow: inset 0 0 0 1px rgba(10, 35, 66, .04);
-    }
-    .offer-status-donut::after {
-      content: "";
-      position: absolute;
-      inset: 29%;
-      border-radius: 50%;
-      background: var(--panel);
-      box-shadow: 0 0 0 1px rgba(10, 35, 66, .06);
-    }
-    .offer-status-donut-center {
-      position: absolute;
-      inset: 0;
-      display: grid;
-      place-items: center;
-      text-align: center;
-      z-index: 1;
-      pointer-events: none;
-    }
-    .offer-status-donut-center strong {
       display: block;
-      color: var(--ink);
-      font-size: 34px;
-      line-height: 1;
-    }
-    .offer-status-donut-center span {
-      display: block;
-      color: var(--muted);
-      font-size: 12px;
-      margin-top: 6px;
+      overflow: visible;
     }
     .offer-status-legend {
       display: grid;
@@ -856,6 +825,7 @@
       height: 10px;
       border-radius: 999px;
       background: var(--offer-status-color);
+      border: 1px solid var(--offer-status-border);
     }
     .offer-status-name {
       color: var(--ink);
@@ -20000,8 +19970,8 @@
     }
 
     function renderOfferStatusPill(status) {
-      const color = status === "Pending" ? "amber" : status === "Paused" ? "blue" : status === "Accepted" ? "green" : status === "Rejected" ? "red" : status === "Cancelled" ? "purple" : status === "Invalidated" ? "charcoal" : "gray";
-      return `<span class="pill ${color}">${status}</span>`;
+      const meta = getOfferStatusMeta().find(item => item.status === status);
+      return `<span class="pill ${meta?.pillClass || "gray"}">${status}</span>`;
     }
 
     function getOfferSummaryStats(rows = moduleData.offers.rows) {
@@ -20018,12 +19988,12 @@
 
     function getOfferStatusMeta() {
       return [
-        { status: "Pending", label: "Pending", note: "รอ owner ตอบ", color: "#f59e0b" },
-        { status: "Paused", label: "Paused", note: "asset รอตรวจสอบ", color: "#0ea5e9" },
-        { status: "Accepted", label: "Accepted", note: "owner รับ offer แล้ว", color: "#10b981" },
-        { status: "Rejected", label: "Rejected", note: "owner ปฏิเสธ", color: "#ef4444" },
-        { status: "Cancelled", label: "Cancelled", note: "owner ลบ/ซ่อน asset", color: "#8b5cf6" },
-        { status: "Invalidated", label: "Invalidated", note: "ใช้ไม่ได้ถาวร", color: "#111827" }
+        { status: "Pending", label: "Pending", note: "รอ owner ตอบ", pillClass: "amber", color: "#f59e0b" },
+        { status: "Paused", label: "Paused", note: "asset รอตรวจสอบ", pillClass: "blue", color: "#1da1f2" },
+        { status: "Accepted", label: "Accepted", note: "owner รับ offer แล้ว", pillClass: "green", color: "#18bd8b" },
+        { status: "Rejected", label: "Rejected", note: "owner ปฏิเสธ", pillClass: "red", color: "#ef4444" },
+        { status: "Cancelled", label: "Cancelled", note: "owner ลบ/ซ่อน asset", pillClass: "purple", color: "#8b5cf6" },
+        { status: "Invalidated", label: "Invalidated", note: "ใช้ไม่ได้ถาวร", pillClass: "charcoal", color: "#111827" }
       ];
     }
 
@@ -20033,18 +20003,27 @@
         ...meta,
         count: rows.filter(row => row.status === meta.status).length
       }));
-      let cursor = 0;
-      const gradientParts = statusItems.map(item => {
-        const start = cursor;
-        const end = total ? cursor + (item.count / total * 100) : cursor;
-        cursor = end;
-        return `${item.color} ${start.toFixed(2)}% ${end.toFixed(2)}%`;
-      });
-      const gradient = total ? `conic-gradient(${gradientParts.join(", ")})` : "conic-gradient(#e5edf6 0% 100%)";
+      const cx = 100;
+      const cy = 100;
+      const radius = 64;
+      const strokeWidth = 28;
+      const circumference = 2 * Math.PI * radius;
+      let offset = 0;
+      const visibleItems = statusItems.filter(item => item.count > 0);
+      const gap = visibleItems.length > 1 ? 5 : 0;
+      const donutSegments = visibleItems.map(item => {
+        const rawLength = total ? item.count / total * circumference : 0;
+        const dashLength = Math.max(0, rawLength - gap);
+        const segment = `
+          <circle cx="${cx}" cy="${cy}" r="${radius}" fill="none" stroke="${item.color}" stroke-width="${strokeWidth}" stroke-dasharray="${dashLength.toFixed(2)} ${circumference.toFixed(2)}" stroke-dashoffset="${(-offset).toFixed(2)}" transform="rotate(-90 ${cx} ${cy})" />
+        `;
+        offset += rawLength;
+        return segment;
+      }).join("");
       const legend = statusItems.map(item => {
         const percent = total ? Math.round(item.count / total * 100) : 0;
         return `
-          <div class="offer-status-legend-item" style="--offer-status-color:${item.color}">
+          <div class="offer-status-legend-item" style="--offer-status-color:${item.color};--offer-status-border:${item.color}">
             <span class="offer-status-dot"></span>
             <div>
               <div class="offer-status-name">${item.label}</div>
@@ -20062,11 +20041,9 @@
           </div>
           <div class="offer-status-overview-body">
             <div class="offer-status-donut-wrap">
-              <div class="offer-status-donut" style="--offer-status-gradient:${gradient}">
-                <div class="offer-status-donut-center">
-                  <div><strong>${total}</strong><span>Total offers</span></div>
-                </div>
-              </div>
+              <svg class="offer-status-donut" viewBox="0 0 200 200" role="img" aria-label="Offer status distribution">
+                ${donutSegments}
+              </svg>
             </div>
             <div class="offer-status-legend">${legend}</div>
           </div>
