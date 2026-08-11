@@ -221,7 +221,8 @@ Market Data / Specification storage rule:
 #### 3.5.2 Edit Asset
 - แก้ไขข้อมูลสินทรัพย์ทุกฟิลด์
 - แก้ไข Status ระหว่าง Sale / Show / Hide
-- บันทึก Sale History: ข้อมูลผู้ซื้อ, ราคาขาย, วิธีชำระ (Bank Transfer / Cash / PromptPay / Other)
+- บันทึก Sale History: Required = Sale Date, Sale Price, Payment Method; Optional = Buyer Name, Buyer Phone, Buyer Contact, Equipment & Accessories, Proof of Payment, Note
+- Sale History validation: Sale Price ต้องมากกว่า 0, Sale Date ห้ามเป็นวันที่อนาคตและห้ามก่อน Purchase Date ถ้ามี, Payment Method ต้องเลือกจาก Bank Transfer / Cash / PromptPay / Other, optional text/contact/upload ต้อง validate เมื่อมีการกรอกหรืออัปโหลด
 
 ---
 

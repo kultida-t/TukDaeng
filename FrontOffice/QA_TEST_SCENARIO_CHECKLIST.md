@@ -568,6 +568,8 @@ And ต้องไม่สร้าง asset ซ้ำ
 Given Owner mark Asset as Sold  
 When Owner submit Sale Record  
 Then ระบบต้องเก็บ Sale Date, Buyer, Contact, Sale Price, Payment Method, Attachment
+And required fields ต้องมีเฉพาะ Sale Date, Sale Price, Payment Method
+And Buyer Name, Buyer Phone, Buyer Contact, Attachment, Note ต้องเป็น optional
 
 ## QA-ASSET-003A: Sale Record Confirmation Copy
 
@@ -577,6 +579,48 @@ Then ระบบต้องแสดง confirmation title `Save sale history?
 And body ต้องแจ้งว่าจะบันทึกประวัติการขาย เปลี่ยนสถานะเป็น Sold และนำรายการออกจาก Feed, Search และ Watch Alert
 And ต้องไม่ใช้คำว่า `Confirm sold out?`
 And action ต้องเป็น `Cancel` และ `Save sale` / `บันทึกการขาย`
+
+## QA-ASSET-003B: Sale Record Required Field Validation
+
+Given Owner เปิด Add Sale History
+When Owner ไม่กรอก Sale Price หรือกรอก `0`
+Then ระบบต้องแสดง validation error และห้าม Save
+
+Given Owner เปิด Add Sale History
+When Owner ไม่เลือก Sale Date
+Then ระบบต้องแสดง `Sale date is required` และห้าม Save
+
+Given Owner เปิด Add Sale History
+When Owner ไม่เลือก Payment Method
+Then ระบบต้องแสดง `Payment method is required` และห้าม Save
+
+## QA-ASSET-003C: Sale Record Optional Field Validation
+
+Given Owner เปิด Add Sale History
+When Owner ไม่กรอก Buyer Name, Buyer Phone, Buyer Contact, Attachment, Note
+Then Owner ต้องยัง Save ได้ ถ้า Sale Date, Sale Price, Payment Method ถูกต้อง
+
+Given Owner กรอก Buyer Phone
+When Buyer Phone ไม่ตรงรูปแบบเบอร์ที่รองรับ
+Then ระบบต้องแสดง validation error เฉพาะ Buyer Phone และห้าม Save จนกว่าจะแก้หรือเว้นว่าง
+
+Given Owner กรอก Buyer Name, Buyer Contact หรือ Note
+When field มีเฉพาะช่องว่าง, เกินความยาวที่กำหนด หรือมี HTML/script
+Then ระบบต้อง trim/sanitize และแสดง validation error ถ้ายังไม่ถูกต้อง
+
+## QA-ASSET-003D: Sale Record Date And Upload Validation
+
+Given Owner เปิด Add Sale History
+When Sale Date เป็นวันที่อนาคต
+Then ระบบต้องแสดง `Sale date cannot be in the future` และห้าม Save
+
+Given Asset มี Purchase Date
+When Sale Date ก่อน Purchase Date
+Then ระบบต้องแสดง `Sale date cannot be before purchase date` และห้าม Save
+
+Given Owner อัปโหลด Equipment & Accessories หรือ Proof of Payment
+When ไฟล์ไม่ใช่รูปภาพ `jpg/png/webp/heic`, ขนาดเกิน 10MB ต่อไฟล์, หรือเกิน 3 รูปต่อ section
+Then ระบบต้องแสดง upload validation error และห้าม Save ไฟล์ที่ไม่ถูกต้อง
 
 ## QA-ASSET-004: Sold Locks Main Fields
 

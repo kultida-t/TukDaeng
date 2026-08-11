@@ -505,7 +505,7 @@
 
 #### Happy Path
 1. Edit Asset → Add Sale History
-2. กรอก Buyer Name, Phone, Contact
+2. (ตัวเลือก) กรอก Buyer Name, Phone, Contact
 3. กรอก Sale Price (THB)
 4. เลือก Sale Date, Payment Method
 5. (ตัวเลือก) อัปโหลด Equipment & Accessories รูปภาพ
@@ -513,11 +513,31 @@
 7. กด "Save" → Confirm → บันทึกสำเร็จ
 8. Status เปลี่ยนเป็น "Sold" อัตโนมัติ
 
+#### Required / Optional Fields
+| Field | Required | Validation |
+|---|---:|---|
+| Buyer Name | No | ถ้ากรอกต้องไม่เป็นช่องว่างล้วน, trim ค่า, จำกัดความยาว 100 ตัวอักษร, sanitize HTML/script |
+| Buyer Phone | No | ถ้ากรอกต้องเป็นเบอร์ที่รูปแบบถูกต้อง เช่น เบอร์ไทย 9-10 หลัก หรือ `+66`, trim ค่า |
+| Buyer Contact (Line / IG / Facebook) | No | ถ้ากรอกต้องไม่เป็นช่องว่างล้วน, จำกัดความยาว 150 ตัวอักษร, sanitize HTML/script |
+| Sale Price (THB) | Yes | ต้องเป็นตัวเลขมากกว่า 0, ไม่รับค่าติดลบ/ตัวอักษร, normalize comma, จำกัดไม่เกิน 999,999,999.99 |
+| Sale Date | Yes | ต้องเป็นวันที่จริง, ห้ามเป็นวันที่อนาคต, ถ้ามี Purchase Date ต้องไม่ก่อน Purchase Date |
+| Payment Method | Yes | ต้องเลือกจาก Bank Transfer / Cash / PromptPay / Other |
+| All Equipment & Accessories | No | ถ้าอัปโหลดต้องเป็นรูปภาพ `jpg/png/webp/heic`, สูงสุด 3 รูป, ไม่เกิน 10MB ต่อไฟล์ |
+| Proof of Payment | No | ถ้าอัปโหลดต้องเป็นรูปภาพ `jpg/png/webp/heic`, สูงสุด 3 รูป, ไม่เกิน 10MB ต่อไฟล์ |
+| Note | No | ถ้ากรอกต้องไม่เกิน 1,000 ตัวอักษร, trim ค่า, sanitize HTML/script |
+
 #### Error Cases
 | ID | เงื่อนไข | ผลลัพธ์ |
 |---|---|---|
 | E01 | Sale Price = 0 หรือว่าง | แสดง validation error |
 | E02 | ไม่เลือก Payment Method | แสดง "Payment method is required" |
+| E03 | ไม่เลือก Sale Date | แสดง "Sale date is required" |
+| E04 | Sale Date เป็นวันที่อนาคต | แสดง "Sale date cannot be in the future" |
+| E05 | Sale Date ก่อน Purchase Date ของสินทรัพย์ | แสดง "Sale date cannot be before purchase date" |
+| E06 | Buyer Phone มีรูปแบบไม่ถูกต้อง | แสดง validation error เฉพาะ field แต่ไม่บังคับให้กรอก Buyer Phone |
+| E07 | Buyer Name / Buyer Contact / Note เกินความยาวที่กำหนด หรือมีเฉพาะช่องว่าง | แสดง validation error เฉพาะ field |
+| E08 | ไฟล์อัปโหลดไม่ใช่รูปภาพที่รองรับ, ขนาดเกิน 10MB ต่อไฟล์, หรือเกิน 3 รูปต่อ section | แสดง upload validation error |
+| E09 | Asset มี Pending Offer ที่ยังไม่ accept/decline | แสดง "There are pending offers. Accept or decline them first." |
 
 ---
 

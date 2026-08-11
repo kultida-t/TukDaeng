@@ -49,7 +49,7 @@ Profile Module ต้องยึด master baseline ต่อไปนี้เ
 - Portfolio เป็น Private และเห็นเฉพาะ Owner
 - Portfolio คำนวณจาก `Sale`, `Show`, `Hide` ที่ยังใช้งานได้
 - Portfolio ไม่รวม `Sold`, ลบโดยเจ้าของ และ Asset ที่ถูก Back Office ซ่อนถาวร
-- Sold History เก็บ Sale Date, Buyer, Contact, Sale Price, Payment Method, Attachment
+- Sold History เก็บ Sale Date, Sale Price, Payment Method เป็น required และ Buyer, Contact, Attachment เป็น optional
 
 ---
 

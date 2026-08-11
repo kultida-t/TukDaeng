@@ -712,12 +712,13 @@ Portfolio valuation baseline:
 
 Sold History เก็บ:
 
-- Sale Date
-- Buyer
-- Contact
-- Sale Price
-- Payment Method
-- Attachment
+- Sale Date (required)
+- Sale Price (required)
+- Payment Method (required)
+- Buyer (optional)
+- Contact (optional)
+- Attachment (optional)
+- Note (optional)
 
 Sold History calculation:
 
