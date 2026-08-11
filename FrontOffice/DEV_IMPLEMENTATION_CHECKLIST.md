@@ -104,6 +104,9 @@ Purpose:
 - [ ] Status `Sale` ต้อง require Photos, Brand, Model / Series, Condition และ Description; Price เป็น optional และถ้าเว้นว่าง buyer-facing surface แสดง `Price on request`
 - [ ] Status `Show` ต้อง require Photos, Brand, Model / Series; Price เป็น optional แต่ห้ามแสดงบน public surface
 - [ ] Status `Hide` ต้อง require Photos, Brand เท่านั้น โดย Model / Series, Condition, Price และ Description เป็น optional และ Price ห้ามแสดงบน public surface
+- [ ] Add/Edit ต้อง validate ทุก optional field ที่ user กรอก เลือก หรืออัปโหลด เช่น Year ต้องไม่เป็นปีอนาคต, numeric fields ต้องมากกว่า 0, option fields ต้องอยู่ใน option master, text ต้อง trim/sanitize และไม่เป็น whitespace-only, upload ต้องผ่าน type/size/count limits
+- [ ] Edit Asset ต้องเพิ่ม/ลบรูปได้ แต่จำนวนรูปหลังแก้ไขต้องยังอยู่ในช่วง 1-10 รูปก่อน Save
+- [ ] Asking Price ใน Commerce เป็น optional ทุก status แต่ถ้ากรอกต้องเป็นตัวเลขมากกว่า 0 และห้าม public surface แสดงราคาของ `Show` หรือ `Hide`
 - [ ] Add/Edit ใช้ Market Data สำหรับ Brand/Model/Reference autocomplete, structured selection และ prefill spec เท่านั้น
 - [ ] Add/Edit option dropdown/multi-select ใช้ `spec_options` จาก backend API ไม่ hardcode ใน FO client
 - [ ] Asset ต้องเก็บ `brand_id`/`model_id`/`reference_id` เมื่อ match ได้ และเก็บ snapshot text ของ Brand/Model/Reference ทุกครั้ง

@@ -693,7 +693,9 @@ And ต้องไม่อนุญาตให้ Asset status `Show` เก�
 
 Given Owner มี Asset status `Show`
 When Owner เปลี่ยน status เป็น `Sale`
-Then ระบบต้อง require Condition, Asking Price และ Description ตาม Sale validation
+Then ระบบต้อง require Condition และ Description ตาม Sale validation
+And Asking Price ต้องเป็น optional แต่ถ้ากรอกต้องมากกว่า 0
+And ถ้าไม่กรอก Asking Price buyer-facing surface ต้องแสดง `Price on request`
 When save สำเร็จ
 Then Asset ต้องแสดงใน Feed, Search และสามารถ match Watch Alert ได้
 
@@ -717,7 +719,9 @@ And ต้องไม่อนุญาตให้ Asset status `Hide` เก�
 
 Given Owner มี Asset status `Hide`
 When Owner เปลี่ยน status เป็น `Sale`
-Then ระบบต้อง require Model / Series, Condition, Asking Price และ Description ตาม Sale validation
+Then ระบบต้อง require Model / Series, Condition และ Description ตาม Sale validation
+And Asking Price ต้องเป็น optional แต่ถ้ากรอกต้องมากกว่า 0
+And ถ้าไม่กรอก Asking Price buyer-facing surface ต้องแสดง `Price on request`
 When save สำเร็จ
 Then Asset ต้องกลับเข้า Feed, Search และ Watch Alert หากตรงเงื่อนไข visibility/filter
 

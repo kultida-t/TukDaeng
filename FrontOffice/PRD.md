@@ -205,6 +205,11 @@ Market Data / Specification storage rule:
 - Commerce & Curation: ราคา, Description
 - Status: Sale / Show / Hide
 - Sale Status: Available / Sold
+- Add/Edit required field rule by status:
+  - Sale: Required = Photos 1-10, Brand, Model & Series, Condition, Description, Status; Asking Price is optional and buyer-facing surfaces must show `Price on request` when empty
+  - Show: Required = Photos 1-10, Brand, Model & Series, Status; Asking Price, Condition, Description and specifications are optional and price must not be shown on public surfaces
+  - Hide: Required = Photos 1-10, Brand, Status; Model & Series, Asking Price, Condition, Description and specifications are optional and price must not be shown on public surfaces
+  - Every optional field that the user fills, selects, or uploads must still pass validation before save
 - Provenance (ประวัติสินทรัพย์):
   - Required: Purchase Price (THB), must be greater than 0
   - Optional: Purchase Date, Purchase From, All Equipment & Accessories, Proof of Payment, Note

@@ -344,6 +344,34 @@ Baseline seed files for implementation:
 | Description | Required | Optional | Optional |
 | Status | Required: `Sale` | Required: `Show` | Required: `Hide` |
 
+## Add / Edit Field Validation Matrix
+
+หลักการเดียวกันใช้ทั้ง Add Asset และ Edit Asset:
+
+- Required field ต้องไม่ว่าง, ต้อง trim whitespace ก่อน validate และต้องไม่ save ถ้าไม่ผ่าน
+- Optional field สามารถเว้นว่างได้ แต่ถ้า user กรอก เลือก หรืออัปโหลด ต้อง validate เต็มรูปแบบก่อน save
+- Optional field ที่เว้นว่างต้องบันทึกเป็น `null` / empty value ตาม data contract และห้ามสร้าง placeholder เช่น `N/A`
+- Error ต้องแสดงใกล้ field หรือ section ที่ผิด และต้องคงข้อมูลที่ user กรอกไว้หลัง error
+
+| Section | Field | Requirement | Validation When Filled / Selected |
+| --- | --- | --- | --- |
+| Gallery | Photos | Required for `Sale`, `Show`, `Hide` | ต้องมีอย่างน้อย 1 รูปและไม่เกิน 10 รูป; หาก Edit แล้วลบรูปจนเหลือ 0 ต้องห้าม Save; ไฟล์ต้องเป็นรูปภาพชนิดที่ระบบรองรับ เช่น `jpg/png/webp/heic`; ไม่เกิน 10MB ต่อไฟล์; ป้องกัน duplicate upload และรูปที่ไม่ผ่าน validation ต้องไม่ถูกแนบ |
+| Basic Information | Brand Name | Required for `Sale`, `Show`, `Hide` | trim whitespace; ห้ามว่างหรือมีแต่ช่องว่าง; ต้องรองรับ Market Data autocomplete/structured selection; ถ้าไม่มี match ให้เก็บ free-text snapshot; ต้องไม่เกินความยาวที่ระบบกำหนด |
+| Basic Information | Model / Series | Required for `Sale`, `Show`; Optional for `Hide` | เมื่อ required ต้องไม่ว่าง; เมื่อ optional แต่กรอกต้อง trim, ห้าม whitespace-only, รองรับ Market Data mapping/free-text snapshot และไม่เกินความยาวที่ระบบกำหนด |
+| Basic Information | Reference No. | Optional | ถ้ากรอกต้อง trim, ห้าม whitespace-only, รองรับ Market Data mapping/free-text snapshot และไม่เกินความยาวที่ระบบกำหนด |
+| Basic Information | Year | Optional | ถ้ากรอกต้องเป็นปีจริงแบบตัวเลขจำนวนเต็ม และต้องไม่เป็นปีในอนาคต |
+| Condition | Condition | Required for `Sale`; Optional for `Show`, `Hide` | ต้องเลือกได้หนึ่งค่าเท่านั้นเมื่อ required; ถ้า optional แต่เลือก ต้องเป็น option ที่มีอยู่ใน internal option master |
+| Scope of Delivery | Delivery items เช่น Original Box / Original Paper | Optional | ถ้าเลือกต้องเป็น option ที่มีอยู่ใน internal option master; รองรับหลายค่าได้ตาม data model; ห้ามบันทึกค่า label ที่ไม่มีใน option master เป็น id ปลอม |
+| Specifications | Case Size (mm) | Optional | ถ้ากรอกต้องเป็นตัวเลขมากกว่า 0; normalize หน่วยเป็น mm; ห้ามตัวอักษรหรือค่าติดลบ |
+| Specifications | Thickness (mm) | Optional | ถ้ากรอกต้องเป็นตัวเลขมากกว่า 0; normalize หน่วยเป็น mm; ห้ามตัวอักษรหรือค่าติดลบ |
+| Specifications | Case Material | Optional | ถ้าเลือกต้องเป็น option ที่มีอยู่ใน internal option master |
+| Specifications | Movement | Optional | ถ้าเลือกต้องเป็น option ที่มีอยู่ใน internal option master |
+| Specifications | Dial Color | Optional | ถ้าเลือกต้องเป็น option ที่มีอยู่ใน internal option master |
+| Specifications | Strap / Bracelet Type | Optional | ถ้าเลือกต้องเป็น option ที่มีอยู่ใน internal option master |
+| Commerce & Curation | Asking Price (THB) | Optional for `Sale`, `Show`, `Hide` | ถ้ากรอกต้องเป็นตัวเลขมากกว่า 0, normalize comma/format, ห้ามค่าติดลบ/ตัวอักษร/ศูนย์ และต้องไม่เกิน max price ที่ระบบกำหนด; ถ้า `Sale` และเว้นว่าง buyer-facing surface ต้องแสดง `Price on request`; ถ้า `Show` หรือ `Hide` ห้ามแสดงราคาใน public FO surfaces |
+| Commerce & Curation | Description | Required for `Sale`; Optional for `Show`, `Hide` | เมื่อ required ต้องไม่ว่างและไม่ใช่ whitespace-only; เมื่อ optional แต่กรอกต้อง trim/sanitize, ห้าม whitespace-only, ห้าม HTML/script ที่ไม่ปลอดภัย และไม่เกินความยาวที่ระบบกำหนด; minimum 20 characters เป็น recommendation/quality hint ไม่ใช่ blocking validation เว้นแต่ product กำหนดเพิ่ม |
+| Status | Status | Required | Add/Edit เลือกได้เฉพาะ `Sale`, `Show`, `Hide`; ห้ามเลือก `Sold` ใน Add/Edit ปกติ; การเปลี่ยน status ต้อง revalidate required fields ตาม status ใหม่ก่อน save |
+
 หลักการของ V1:
 
 - `Sale` เป็น marketplace listing; Owner สามารถกรอก Asking Price หรือเว้นว่างได้ ถ้าเว้นว่าง FO buyer-facing surface ต้องแสดง `Price on request`
@@ -498,6 +526,9 @@ Owner สามารถแก้ไข Provenance / Consignment ได้เม
 ## Image Rule
 
 - Gallery รองรับสูงสุด 10 รูป
+- Add/Edit ต้องให้ Owner เพิ่มรูปใหม่และลบรูปเดิมได้ ตราบใดที่จำนวนรูปหลังแก้ไขยังอยู่ในช่วง 1-10 รูปก่อน Save
+- หาก Edit แล้วลบรูปทั้งหมด ต้องแสดง validation ว่าต้องมีอย่างน้อย 1 รูป และห้าม Save
+- เมื่อมี 10 รูปแล้ว ปุ่มเพิ่มรูปต้องถูก disabled / hidden หรือป้องกันไม่ให้เลือกเพิ่มเกิน limit
 - รูปภาพต้องถูกใช้ใน Asset Detail, Feed/Search card ตาม visibility ของ Asset
 - หากลบรูปทั้งหมดไม่ได้ตาม validation ของ product ให้ต้องแจ้ง error ก่อน save
 
@@ -776,7 +807,7 @@ Sale Date:
 
 Buyer:
 
-- Required ตาม policy ของ Sale Record
+- Optional
 
 Sale Price:
 
