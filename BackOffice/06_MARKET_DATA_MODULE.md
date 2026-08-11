@@ -1,333 +1,570 @@
 # 06 BO Market Data Module
 
-**Version:** `BO-06-v0.2`  
-**Date:** 2026-08-05  
-**Status:** Draft baseline  
-**Platform:** Responsive Web Back Office  
-**Primary FO Sources:** `../FrontOffice/03_SEARCH_FILTER_MODULE.md`, `../FrontOffice/04_ASSET_MANAGEMENT_MODULE.md`, `../FrontOffice/10_WATCH_ALERT_MODULE.md`, `../FrontOffice/14_PORTFOLIO_MODULE.md`, `../FrontOffice/16_INTEGRATIONS_MODULE.md`  
-**Integration Map:** `../ProjectAdmin/FO_BO_INTEGRATION_MAP.md`
+**เวอร์ชัน:** `BO-06-v1.0`  
+**วันที่:** 2026-08-10  
+**สถานะ:** สเปกปัจจุบัน  
+**แพลตฟอร์ม:** Responsive Web Back Office
+
+
+## มาตรฐาน UI และ Prototype อ้างอิง
+
+เอกสารนี้ต้องใช้ร่วมกับ `00_GLOBAL_RULES_MODULE.md` และยึดรูปแบบหน้าจอ/พฤติกรรมที่ยืนยันแล้วใน `../Prototypes/bo-prototype.html` เป็นมาตรฐานหลัก
+
+ห้ามออกแบบ pattern แยกเองสำหรับ list toolbar, breakpoint, table/card layout, pagination, reset, drill-down, drawer, modal หรือ detail layout ยกเว้นเอกสารนี้ระบุไว้ชัดเจนว่าเป็น override ที่อนุมัติแล้ว
+
+Market Data ใน prototype เป็นเมนูอ่านข้อมูลอ้างอิงตลาดนาฬิกาแบบ read-only สำหรับ Phase 1 โดย Admin ใช้เพื่อตรวจดู Brand, Model, Reference, ราคาอ้างอิง, source metadata, sync status และ sync history ที่มาจาก API/backend sync เท่านั้น
 
 ## 1. วัตถุประสงค์
 
-BO Market Data Module คือระบบอ่านและติดตามข้อมูลกลางของนาฬิกา เช่น Brand, Model, Reference Number, Watch Detail และ Price Index ที่ดึงจาก API/backend sync เพื่อให้ FO ใช้งานได้สม่ำเสมอใน Add Asset, Search/Filter, Watch Alert และ Portfolio valuation
+Market Data เป็นเมนูสำหรับให้ Admin ตรวจสอบข้อมูลกลางของนาฬิกาที่ระบบใช้ร่วมกันระหว่าง BO และ FO ได้แก่ Brand, Model, Reference, Watch Detail และ Price Index
 
-Market Data เป็น master/reference data ที่มาจาก provider/API เป็นหลัก ผู้ใช้ FO และ Admin ใน BO ไม่สามารถเพิ่ม แก้ไข ลบ ปิดใช้งาน หรือ override master data เหล่านี้ได้โดยตรงใน Phase 1
+ข้อมูลเหล่านี้ต้องมาจาก API/backend sync เป็นหลัก โดย prototype อ้างอิง source เป็น `thewatchapi` / The Watch API และให้ BO อ่านจาก TukDaeng backend/cache เท่านั้น ไม่เรียก external provider จาก FO client โดยตรง
 
-Current external source ที่ dev ใช้อยู่: `https://www.thewatchapi.com/`
+หน้าจอนี้ต้องช่วยให้ Admin:
 
-BO ต้องไม่เรียก external API ตรงจาก FO client ให้ใช้ BO/backend เป็นตัว sync, normalize, cache และควบคุม active/inactive ก่อนส่งข้อมูลให้ FO
+- เห็นสถานะ sync ล่าสุดของ catalog
+- เห็นจำนวน Brand, Model และ Reference ที่ใช้งานอยู่
+- ไล่ดูข้อมูลแบบ Brand -> Model -> Reference ได้ชัดเจน
+- เปิดรายละเอียด Reference ใน drawer เพื่อดูข้อมูลทางเทคนิค ราคาอ้างอิง และ source note
+- ตรวจ sync history, endpoint, result, error และ cache impact
+- เห็น data quality / mapping warning โดยไม่แก้ master data โดยตรงใน Phase 1
 
-## 2. Scope
+## 2. ขอบเขต
 
-### In Scope
+อยู่ในขอบเขต:
 
-- Watch Brand read-only catalog
-- Watch Model / Series read-only catalog
-- Reference Number read-only catalog
-- Watch detail read-only catalog
-- Price Index read-only catalog
-- Active/Inactive visibility from provider/backend policy
-- External provider sync จาก The Watch API
-- Provider sync logs, source metadata, cache status และ data quality visibility
-- Data quality validation
-- FO sync สำหรับ autocomplete, filter, Watch Alert และ Portfolio
-- Responsive web layout
+- Market Data Dashboard
+- Brands & Models catalog
+- Brand detail แบบรายการ Model
+- Model detail แบบรายการ Reference
+- Reference detail drawer
+- Sync History list
+- Sync History detail page
+- Summary metric cards
+- Search ภายใน Brands & Models, Brand detail และ Model detail
+- Pagination สำหรับรายการ catalog
+- Read-only audit trail entry point
+- Provider sync status, endpoint, result, retry, rate-limit และ cache action visibility
+- Responsive layout ตาม prototype
 
-### Out Of Scope
+อยู่นอกขอบเขต:
 
-- Real-time external market feed integration แบบ live pass-through ไป FO ใน Phase 1
-- BO add/edit/delete/inactivate/reactivate/override market data by Admin ใน Phase 1
-- CSV/XLSX import สำหรับแก้หรือเพิ่ม market data เองใน Phase 1
-- Manual override/conflict resolution workflow ใน Phase 1
-- Export market data เป็นไฟล์จาก BO ใน Phase 1 เว้นแต่เป็น future/reporting scope ที่ได้รับอนุมัติแยก
+- เพิ่ม Brand จาก BO
+- เพิ่ม Model จาก BO
+- เพิ่ม Reference จาก BO
+- แก้ไข/ลบ/ปิดใช้งาน/เปิดใช้งาน master data จาก BO
+- Override provider data จาก BO
+- CSV/XLSX import เพื่อแก้ market data ใน Phase 1
+- Export market data จากหน้าจอ Market Data ใน Phase 1
+- Manual conflict merge ใน BO
 - AI price prediction
-- User-submitted master data approval workflow
-- Portfolio benchmark/advanced analytics
-- Payment, transaction, escrow หรือ settlement data
+- Real-time external market feed pass-through ไป FO
+- Portfolio benchmark analytics แบบลึก
+- Payment, offer, escrow หรือ settlement data
 
-## 3. Admin Access And Permissions
+## 3. โครงสร้างเมนู
 
-BO uses a single Admin account type only. Admin access is controlled by module access, action policy, sensitive-data policy, confirmation, reason, and audit requirements instead of separate BO admin account types.
+เมนูหลัก: `Market Data`
 
+Submenu ภายใต้ Market Data:
 
-| Access Area | Rule |
+| เมนู | หน้าที่ |
 | --- | --- |
-| Module access | Admin can use list/detail/search/filter when module access is granted. |
-| Write action | Phase 1 has no BO write action for market data. Add, edit, delete, status change, import, override, and conflict merge are hidden/disabled. |
-| Provider sync action | Backend scheduled sync is the default. Manual sync trigger is allowed only as an operations action when permission exists, must audit the trigger/result, and must be placed only on the Sync Logs screen, not on Catalog or brand/model/reference detail pages. |
-| Sensitive data | Mask by default; reveal only with business reason, policy approval, and audit log. |
-| Export | Out of Phase 1 for the Market Data screen unless approved as a reporting workflow. |
-| Direct URL/API | Enforce access at route, API, and service layers; never rely only on hidden UI. |
-## 4. Responsive Layout
+| Dashboard | แสดงภาพรวม sync ล่าสุด, จำนวนข้อมูล catalog และแบรนด์ที่เพิ่งอัปเดต |
+| Brands & Models | แสดงรายการ Brand ทั้งหมด และ drill-down ไป Model / Reference |
+| Sync History | แสดงประวัติ backend sync job จาก provider/API |
 
-| Width | Requirement |
+พฤติกรรมการนำทาง:
+
+- เมื่อเข้า `Market Data` ให้เปิด `Dashboard` เป็นหน้าแรก
+- เมนู `Market Data` และ submenu ที่เลือกต้องแสดง active state ถูกต้อง
+- จาก `Dashboard` หรือ `Brands & Models` คลิก Brand เพื่อไป Brand detail
+- จาก Brand detail คลิก Model เพื่อไป Model detail
+- จาก Model detail คลิก Reference เพื่อเปิด Reference detail drawer
+- จาก `Sync History` คลิก `Detail` หรือ row เพื่อเปิด Sync History detail page
+- ปุ่มกลับจาก Brand detail ต้องกลับ `Brands & Models`
+- ปุ่มกลับจาก Model detail ต้องกลับ Brand detail เดิม
+- ปุ่มกลับจาก Sync History detail ต้องกลับ `Sync History`
+
+## 4. สิทธิ์และกฎการเข้าถึง
+
+Admin ที่มีสิทธิ์เข้าถึง Market Data สามารถดู list/detail/search/filter และ sync history ได้ตามสิทธิ์ module access
+
+กฎทั่วไป:
+
+- Market Data Phase 1 เป็น read-only
+- Add, edit, delete, import, export, override และ status change ต้องไม่เป็น action ที่ใช้งานได้บนหน้าจอหลัก
+- หากมี entry point ที่เกี่ยวกับการแก้ไขจาก prototype/development tool ต้องแสดง modal `Read-only in Phase 1`
+- API permission ต้อง enforce ที่ route, API และ service layer ไม่พึ่งเฉพาะการซ่อนปุ่มใน UI
+- การเปิด audit trail อ่านได้ตามสิทธิ์ audit/module access
+- Manual sync หากเปิดใช้ใน production ต้องจำกัดเฉพาะ operations permission และบันทึก audit ทุกครั้ง
+
+| Action | Phase 1 Rule |
 | --- | --- |
-| Mobile-width browser | Master data list แสดงเป็น cards, filter อยู่ใน drawer, drill-down/detail ยังเข้าถึงได้ |
-| Tablet | Table แสดง column สำคัญและเปิด detail เป็น panel ได้ |
-| Desktop | Full table, side filter, API sync status/logs, detail drawer หรือ split view |
+| View Dashboard | Allowed |
+| View Brand / Model / Reference | Allowed |
+| Search catalog | Allowed |
+| View Sync History | Allowed |
+| View Sync Detail | Allowed |
+| View Audit Trail | Allowed by permission |
+| Manual Sync Trigger | Operations-only if enabled; audit required |
+| Add/Edit/Delete/Import/Export/Override/Status Change | Not available from BO Market Data |
 
-ตารางขนาดใหญ่ต้องใช้ server-side pagination และไม่โหลดข้อมูลทั้งหมดเข้าหน้า browser
+## 5. รูปแบบ Responsive
 
-## 5. Data Domains
+| Breakpoint | ความกว้าง | ข้อกำหนดของ Market Data |
+| --- | --- | --- |
+| Mobile | `<= 760px` | รายการแสดงเป็น card-like rows, column สำคัญต้องเปลี่ยนเป็น label/value, search เต็มความกว้าง, pagination ใช้งานได้, drawer ต้องไม่ล้นจอ |
+| Tablet | `761px - 1365px` | ตารางยังคงอ่านได้โดยคง column สำคัญ, metric cards จัดเรียงตามพื้นที่, detail/drawer ต้องไม่ทับเนื้อหาสำคัญ |
+| Desktop | `> 1365px` | แสดง table เต็ม, metric cards 4 ใบ, dashboard status และ brand table เป็น layout หลักตาม prototype |
 
-## 5.0 External Provider: The Watch API
+ข้อกำหนดเพิ่มเติม:
 
-The Watch API เป็น external watch data provider ที่ dev ใช้อยู่สำหรับข้อมูล:
+- ข้อความ, chip, button, row และตัวเลขต้องไม่ล้น container
+- ตารางใหญ่ต้องใช้ pagination ไม่โหลดทุก record เข้า browser พร้อมกัน
+- Row ที่คลิกได้ต้องมี hit area ชัดเจนทั้ง mobile และ desktop
+- Reference drawer ต้อง scroll ได้เมื่อเนื้อหายาว
 
-- Brand list/search
-- Model list/search
-- Reference list/search
-- Watch details เช่น movement, year of production, case material, case diameter, description
-- Historical prices ระดับ brand/model/reference
+## 6. Dashboard
 
-### Supported API Areas To Map
+Header:
 
-| The Watch API Area | BO Target |
+- Breadcrumb: `การดำเนินงาน / Market Data / Dashboard`
+- Page title: `Dashboard`
+- Panel title: `Latest Sync Status`
+- Page action หลักว่างตาม prototype
+- Filter bar ว่างตาม prototype
+
+Summary cards ต้องแสดง 4 cards ตามลำดับ:
+
+| Card | ตัวอย่างค่า | คำอธิบาย |
+| --- | --- | --- |
+| Total Brands | `482` หรือค่าจาก catalog จริง | จำนวน brand ทั้งหมดใน catalog |
+| Total Models | `8,924` หรือค่าจาก catalog จริง | จำนวน model ทั้งหมด |
+| Total References | ค่าจาก reference catalog | จำนวน reference ทั้งหมด |
+| Last Sync | `just now` หรือเวลาล่าสุด | เวลา sync ล่าสุดพร้อม timestamp |
+
+Dashboard content:
+
+- แสดง `Latest Sync Status` mini card
+- แสดง progress ring เป็นเปอร์เซ็นต์ synced
+- แสดงข้อความสถานะ sync ล่าสุด เช่นกำลัง sync reference ของ Omega
+- แสดงจำนวน synced brands เทียบ total brands
+- แสดงจำนวนรุ่นที่ยังต้องตรวจ price / mapping validation
+- แสดงข้อความว่าไม่มี error ใน 24 ชั่วโมงที่ผ่านมาเมื่อไม่มี error ล่าสุด
+- แสดงตาราง `Recently Updated Brands`
+
+ตาราง `Recently Updated Brands`:
+
+| Column | ข้อกำหนด |
 | --- | --- |
-| Brand List / Brand Search | Watch Brand |
-| Model List / Model Search | Watch Model / Series |
-| Reference List / Reference Search | Reference Number |
-| Brand Price History | Brand-level Price Index |
-| Model Price History | Model-level Price Index |
-| Reference Price History | Reference-level Price Index |
+| Brand | ชื่อ brand และคลิกไป Brand detail ได้ |
+| Models | จำนวน model |
+| References | จำนวน reference |
+| Last Updated | เวลา sync ล่าสุด หรือ `Syncing...` |
+| Status | `Completed` หรือ `Syncing` |
 
-### Provider Data Rules
+Pagination:
 
-- API token ต้องเก็บใน backend secret/config เท่านั้น ห้ามอยู่ใน FO client
-- BO ต้องเก็บ `provider_name = TheWatchAPI` และ provider record ID/key เท่าที่มี
-- ข้อมูลจาก provider ต้องผ่าน normalize ก่อนใช้ใน master data เช่น brand casing, alias, reference formatting, duplicate merge
-- Price จาก provider documentation เป็น indicative asking price ใน USD ต้อง convert/normalize ก่อนแสดงเป็น THB หรือใช้ใน Portfolio
-- ต้องเก็บ `source_currency`, `source_price`, `converted_price_thb`, `fx_rate`, `fx_rate_date`, `provider_updated_at`, `synced_at`
-- ถ้า provider unavailable หรือ usage/rate limit เกิดขึ้น FO ต้องใช้ cached data ล่าสุดหรือ fallback rule ของ Portfolio
-- Phase 1 ไม่มี manual override ใน BO ดังนั้น provider/backend sync เป็นแหล่งข้อมูลเดียวสำหรับ market data ที่แสดงใน BO/FO
+- แสดงข้อความช่วงรายการ เช่น `แสดง 1-5 จาก <total>`
+- มีปุ่มก่อนหน้า, เลขหน้า และถัดไป
+- ปุ่มที่ใช้งานไม่ได้ต้อง disabled
 
-### Provider Error Handling
+## 7. Brands & Models
 
-ต้องรองรับ error อย่างน้อย:
+Header:
 
-- Invalid API token
-- Usage limit reached
-- Endpoint access restricted ตาม subscription plan
-- Rate limit reached
-- Resource not found
-- Maintenance/server error
-- Too many results หรือ malformed parameters
+- Breadcrumb: `การดำเนินงาน / Market Data / Brands & Models`
+- Page title: `Brands & Models`
+- Panel title: `All Brands [<brand count>]`
+- Page action หลักว่างตาม prototype
 
-BO ต้องบันทึก provider sync status: `Pending`, `Synced`, `Failed`, `Skipped`, `Conflict`
+Filter:
 
-### 5.0A Internal Database Ownership And Phase 1 Read-only Rules
+- มี search field เดียว
+- Placeholder: `Search brand / model / reference`
+- ค้นหาได้จาก Brand ID, Brand name, Model name, Reference number และข้อมูลย่อยที่เกี่ยวข้อง
+- ไม่มี status filter หรือ provider filter บนหน้า Brands & Models ตาม prototype ปัจจุบัน
 
-หลังจากดึงข้อมูลจาก The Watch API แล้ว ระบบต้องบันทึกข้อมูลลง database ของ TukDaeng ก่อนใช้งานจริง โดยถือว่า internal database เป็น operational source of truth สำหรับ BO และ FO
+Summary cards:
 
-หลักการ:
+| Card | ตัวอย่างค่า | คำอธิบาย |
+| --- | --- | --- |
+| Sample Brands | `5` | กลุ่ม brand ตัวอย่างที่เปิด drill-down ได้ |
+| Sample Models | `10` | จำนวน model ตัวอย่าง |
+| Sample References | `24` | จำนวน reference ตัวอย่าง |
+| Latest Sync | `08:14` | วันที่/เวลาซิงก์ล่าสุด |
 
-- The Watch API เป็น external provider/source เท่านั้น
-- TukDaeng database/cache เป็นแหล่งข้อมูลที่ BO และ FO ใช้อ่านผ่าน internal API
-- Admin ใน BO อ่าน ค้นหา กรอง drill-down ดู source metadata ดู data quality และดู sync log ได้เท่านั้นใน Phase 1
-- Admin ใน BO ไม่สามารถเพิ่ม แก้ไข ปิดใช้งาน ลบ import หรือ override ข้อมูล market data ได้เองใน Phase 1
-- ถ้าพบข้อมูลผิด ให้ใช้ process นอกระบบหรือ future `request correction` workflow แทนการแก้ record ตรง
-- FO ต้องเห็นเฉพาะข้อมูลที่ผ่าน active/inactive rule และ policy ของระบบเราแล้ว
+Info cards:
 
-Phase 1 action rules:
+- `Brand-first workflow`
+- `API source`
+- `Read-only`
 
-| Action | Rule |
+ตาราง Brand list:
+
+| Column | ข้อกำหนด |
 | --- | --- |
-| View/List/Detail/Search/Filter | Allowed for Admin with module access. |
-| Manual Sync Trigger | Allowed only for permitted operations users; audit trigger/result and show rate/error status. |
-| Create/Update/Delete | Not available in Phase 1. |
-| Inactivate/Reactivate | Not available from BO in Phase 1; visibility follows provider/backend policy. |
-| Override Provider Data | Not available in Phase 1. |
-| Import CSV/XLSX | Not available in Phase 1. |
-| Export CSV/XLSX | Not available from this module in Phase 1 unless moved to approved Reports scope. |
-| Resolve Conflict | Not available as BO merge action in Phase 1; display data quality issue only. |
+| Brand | ชื่อ brand |
+| Models | จำนวน model และ metadata สำหรับ mobile card |
+| References | จำนวน reference |
+| Action | ปุ่ม `View` เพื่อเปิด Brand detail |
 
-Recommended internal fields:
+กฎการแสดงผล:
 
-- `source_type`: `Provider`
-- `provider_name`
-- `provider_key`
-- `active_status`
-- `last_synced_at`
-- `provider_updated_at`
-- `quality_status`
-- `sync_status`
+- Row ทั้ง row และปุ่ม `View` ต้องเปิด Brand detail เดียวกัน
+- Mobile ต้องแสดง metadata เช่น Models, References, Last Sync ใน card row
+- Empty state: `No brands found`
+- Pagination ต้องทำงานและ reset ไปหน้าแรกเมื่อ search เปลี่ยน
 
-### 5.1 Watch Brand
+## 8. Brand Detail
 
-Fields ขั้นต่ำ:
+เปิดจาก Brand row ใน `Brands & Models`
+
+Header:
+
+- Breadcrumb: `การดำเนินงาน / Market Data / Brands & Models / <Brand>`
+- Page title: `<Brand>`
+- Back button: `Back to Brands`
+- Panel title: `<Brand> -- All Models (<model count>)`
+- ไม่มี summary cards, info cards และ right detail panel
+
+Filter:
+
+- มี search field เดียว
+- Placeholder: `Search <Brand> models`
+
+ตาราง Model list:
+
+| Column | ข้อกำหนด |
+| --- | --- |
+| Model | ชื่อ model |
+| References | จำนวน reference และ metadata สำหรับ mobile card |
+| Action | ปุ่ม `View` เพื่อเปิด Model detail |
+
+Mobile metadata ต้องมีอย่างน้อย:
+
+- References
+- Movement
+
+Empty state: `No models found for this brand`
+
+## 9. Model Detail
+
+เปิดจาก Model row ใน Brand detail
+
+Header:
+
+- Breadcrumb: `การดำเนินงาน / Market Data / Brands & Models / <Brand> / <Model>`
+- Page title: `<Model short name>`
+- Back button: `Back to <Brand>`
+- Panel title: `<Model full name> -- All References (<reference count>)`
+- ไม่มี summary cards, info cards และ right detail panel
+
+Filter:
+
+- มี search field เดียว
+- Placeholder: `Search <Model> references`
+
+ตาราง Reference list:
+
+| Column | ข้อกำหนด |
+| --- | --- |
+| Reference No. | เลข reference |
+| Movement | movement ของ reference หรือ fallback จาก model |
+| Production Year | ปีหรือช่วงปีผลิต |
+| Material | วัสดุตัวเรือน |
+| Estimated Price | ราคาอ้างอิง ต้องแสดงเป็น pill/market price style |
+| Last Updated | วันที่ update ล่าสุด |
+
+กฎการแสดงผล:
+
+- คลิก Reference row เพื่อเปิด Reference detail drawer
+- Empty state: `No references found for this model`
+- Pagination ต้องทำงานและ reset เมื่อ search เปลี่ยน
+
+## 10. Reference Detail Drawer
+
+Reference detail เปิดเป็น drawer/modal จาก Model detail ไม่ใช่หน้าใหม่
+
+Drawer header:
+
+- แสดง Brand uppercase
+- แสดง Model short name
+- แสดง `Ref. <reference number>`
+- มีปุ่มปิด drawer
+
+Spec grid ต้องแสดง:
+
+| Field | ข้อกำหนด |
+| --- | --- |
+| Movement | ใช้ reference movement หรือ fallback จาก model |
+| ปีที่ผลิต | ปีหรือช่วงปีผลิต |
+| วัสดุตัวเรือน | case material |
+| ขนาดหน้าปัด | case size |
+
+Price card:
+
+- Label: `ราคาตลาดโดยประมาณ (USD)`
+- แสดงราคาจาก provider เป็น USD ใน prototype
+- แสดง trend เช่น `+2.4% / 30 วัน`
+- แสดง chart preview ตาม prototype
+
+Source copy:
+
+- แสดงคำอธิบาย reference เป็นภาษาไทยเมื่อมี mapping
+- หากไม่มีคำอธิบายเฉพาะ ให้ใช้ fallback description ที่อ่านรู้เรื่อง
+- แสดง source note ด้านล่าง เช่น `อัปเดตจาก thewatchapi ล่าสุด <date>`
+
+กฎ:
+
+- Drawer ต้องไม่เปิด action แก้ไขข้อมูล
+- ข้อมูลราคาเป็น indicative market data ไม่ใช่ราคาขายจริงของ asset
+- หากแสดง USD ต้องเก็บ conversion metadata แยกใน backend ก่อนนำไปใช้กับ FO ที่ต้องแสดง THB
+
+## 11. Sync History
+
+Header:
+
+- Breadcrumb: `การดำเนินงาน / Market Data / Sync History`
+- Page title: `Sync History`
+- Panel title: `Sync Run History`
+- Page action หลักว่างตาม prototype
+- Filter bar ว่างตาม prototype ปัจจุบัน
+
+Summary cards:
+
+| Card | ตัวอย่างค่า | คำอธิบาย |
+| --- | --- | --- |
+| Log Entries Today | `5` | จำนวน sync log วันนี้ |
+| Completed | `3` | job ที่สำเร็จ |
+| Running | `1` | job ที่กำลังทำงาน |
+| Failed | `1` | job ที่ล้มเหลวและคง cache เดิม |
+
+Info cards:
+
+- `Brand-first workflow`
+- `API source`
+- `Read-only`
+
+ตาราง Sync History:
+
+| Column | ข้อกำหนด |
+| --- | --- |
+| รายการข้อมูล | ชื่อ job และ Job ID |
+| ข้อมูลที่อัปเดต | Scope และ scope type |
+| สถานะ | Pill เช่น สำเร็จ / กำลังทำงาน / ล้มเหลว |
+| เวลา | Started และ duration |
+| ผลลัพธ์ | จำนวนที่ sync หรือ error summary |
+| หมายเหตุ | แสดง issue เฉพาะ job ที่มี warning/error |
+| รายละเอียด | ปุ่ม `Detail` |
+
+ตัวอย่าง job จาก prototype:
+
+| Job ID | Endpoint | Status | Notes |
+| --- | --- | --- | --- |
+| `JOB-BRAND-LIST` | `/v1/brand/list` | Completed | refresh brand autocomplete และ dependent filters |
+| `JOB-MODEL-ROLEX` | `/v1/model/list?brand=rolex` | Completed | refresh Rolex model options |
+| `JOB-OMEGA-SEARCH` | `/v1/model/search?brand=omega` | Running | ยังไม่ replace cache จนกว่า job จะเสร็จ |
+| `JOB-PATEK-LIST` | `/v1/model/list?brand=patek+philippe` | Completed | refresh Patek Philippe model options |
+| `JOB-SEIKO-REF` | `/v1/reference/list?brand=seiko` | Failed | `too_many_results`; ไม่ replace current Seiko cache |
+
+## 12. Sync History Detail
+
+เปิดจาก row หรือปุ่ม `Detail` ใน Sync History
+
+Header:
+
+- Breadcrumb: `การดำเนินงาน / Market Data / Sync History / <Job ID>`
+- Page title: ชื่อ sync job เช่น `Brand List Sync`
+- Back button: `Back to Sync History`
+- Panel title: ชื่อ sync job
+- Panel subtitle: `<Job ID> - <Endpoint>`
+
+Summary tiles:
+
+- Job ID
+- สถานะ
+- เริ่มเมื่อ
+- ใช้เวลา
+
+Section สำหรับ Completed:
+
+- Sync Summary: Provider, Endpoint, Sync criteria, Scope, Result
+- จำนวนที่ sync
+- Sync Status timeline:
+  - ดึงข้อมูลจาก provider
+  - ตรวจสอบและ normalize
+  - อัปเดต backend cache
+  - Refresh dependent data
+
+Section สำหรับ Running:
+
+- Sync Summary: Provider, Endpoint, Dataset, Sync criteria
+- Processing timeline
+- ระบุว่า cache ปัจจุบันยังถูกใช้จนกว่า job จะเสร็จสมบูรณ์
+
+Section สำหรับ Failed:
+
+- Sync Summary: Provider, Endpoint, Dataset, Sync criteria, Error code, Retry count, Rate limit
+- Error detail
+- Cache impact ต้องระบุว่าไม่แทนที่ cache เดิม
+- Processing timeline ต้องแสดง step ที่ล้มเหลว
+
+## 13. Provider และ Data Rules
+
+External provider ปัจจุบัน: The Watch API / `thewatchapi`
+
+Supported provider areas:
+
+| Provider Area | BO Target |
+| --- | --- |
+| Brand list/search | Watch Brand |
+| Model list/search | Watch Model / Series |
+| Reference list/search | Reference Number |
+| Watch detail | Reference detail / watch specification |
+| Brand price history | Brand-level Price Index |
+| Model price history | Model-level Price Index |
+| Reference price history | Reference-level Price Index |
+
+กฎข้อมูล:
+
+- API token ต้องเก็บใน backend secret/config เท่านั้น
+- FO client ห้ามเรียก The Watch API โดยตรง
+- BO และ FO ต้องอ่านจาก TukDaeng internal API/cache
+- ต้องเก็บ provider trace เช่น provider name, provider key, endpoint, params, synced_at
+- Reference จาก `reference/list` ที่เป็น brand-scoped ห้าม assume model relation จนกว่า backend mapping/enrichment ยืนยัน
+- `watch_references.model_id` ต้อง nullable ได้
+- Provider price ที่เป็น USD ต้องเก็บ `source_currency`, `source_price`, `converted_price_thb`, `fx_rate`, `fx_rate_date`, `provider_updated_at`, `synced_at`
+- ถ้า provider unavailable, rate limit หรือ usage limit ให้ FO ใช้ cached data ล่าสุดตาม fallback policy
+
+## 14. Data Domains
+
+### 14.1 Watch Brand
+
+ขั้นต่ำต้องมี:
 
 - Brand ID
-- Name EN
-- Name TH
-- Aliases
-- Logo
-- Country
-- Founded year
-- Official website
-- Active/Inactive
-- Display order
-- Created/updated timestamps
+- Name
+- Aliases ถ้ามี
+- Provider name/key
+- Active status จาก provider/backend policy
+- Model count
+- Reference count
+- Last sync
+- Quality/mapping status
 
-Brand active จึงจะแสดงใน FO autocomplete/filter สำหรับการเลือกใหม่
+### 14.2 Watch Model / Series
 
-### 5.2 Watch Model / Series
-
-Fields ขั้นต่ำ:
+ขั้นต่ำต้องมี:
 
 - Model ID
 - Brand relation
 - Model / Series name
-- Aliases
-- Production years ถ้ามี
-- Default case size ถ้ามี
-- Movement family ถ้ามี
-- Active/Inactive
-- Created/updated timestamps
+- Reference count
+- Movement summary
+- Case summary ถ้ามี
+- Provider name/key
+- Active status จาก provider/backend policy
+- Last sync
 
-Model ต้องผูกกับ active brand และ dependent filter ต้องทำงานแบบ Brand -> Model
+### 14.3 Reference Number
 
-### 5.3 Reference Number
-
-Fields ขั้นต่ำ:
+ขั้นต่ำต้องมี:
 
 - Reference ID
-- Brand
-- Model / Series
+- Brand relation
+- Model relation nullable
 - Reference number
-- Year range
+- Production year / year range
 - Case material
 - Case size
 - Movement
-- Dial variants
-- Strap/bracelet options
-- Active/Inactive
+- Description
+- Estimated price
+- Last updated
+- Provider name/key
+- Mapping status
 
-Reference number ใช้ช่วย Add Asset, Search keyword, Filter และ Price Index matching
+### 14.4 Price Index
 
-### 5.4 Price Index
-
-Fields ขั้นต่ำ:
+ขั้นต่ำต้องมี:
 
 - Price Index ID
-- Brand
-- Model / Series
-- Reference number
-- Condition ถ้ามี
-- Currency
-- Min price
-- Max price
-- Median/Market price
-- Source type
-- Source URL
-- Source note
-- Provider name เช่น `TheWatchAPI`
-- Provider endpoint/source level: Brand, Model, Reference
+- Brand / Model / Reference relation
+- Source level: Brand, Model หรือ Reference
 - Source currency
 - Source price
-- Converted THB price
-- FX rate และ FX rate date ถ้ามี conversion
-- Effective date
-- Updated date
+- Converted THB price เมื่อใช้กับ FO
+- FX rate และ FX rate date
 - Provider updated date
 - Synced date
-- Active/Inactive
+- Effective date
+- Quality status
 
-Currency baseline สำหรับการแสดงผลใน BO และ FO คือ THB แต่ provider price จาก The Watch API เป็น USD ตามเอกสาร provider ดังนั้นต้องมี exchange/conversion rule ชัดเจนก่อนนำไปใช้กับ FO Portfolio หรือ Watch Price
-
-## 6. Active / Inactive Rules
-
-| Entity | Active Result | Inactive Result |
-| --- | --- | --- |
-| Brand | แสดงใน FO autocomplete/filter และเลือกสร้าง asset ใหม่ได้ | ไม่แสดงสำหรับการเลือกใหม่; existing asset ยังเก็บ brand เดิมได้ |
-| Model | แสดงใต้ brand ที่ active | ไม่แสดงสำหรับการเลือกใหม่; existing asset ยังเก็บ model เดิมได้ |
-| Reference | ใช้เป็น option/search/matching ได้ | ไม่แสดงเป็น option ใหม่; existing asset ยังอ้างอิงได้ |
-| Price Index | ใช้คำนวณ Portfolio/Watch Price/Market Comparison ได้ | ไม่ใช้เป็น current price ใหม่ แต่เก็บ history ได้ |
-
-Inactive brand/model/reference ต้องไม่ทำให้ asset เดิมเสียข้อมูล และต้องไม่ลบ historical relation
-
-## 7. FO Usage Rules
+## 15. FO Usage Rules
 
 | FO Area | Market Data Usage |
 | --- | --- |
-| Add Asset | Brand/model/reference autocomplete และ structured selection |
-| Search / Filter | Brand, model, reference, condition, case size, movement, dial, strap filters |
-| Search Autocomplete | แสดงเฉพาะ option ที่เกี่ยวกับ Sale asset ที่ user มีสิทธิ์เห็น ตาม FO search rule |
-| Watch Alert | Criteria ใช้ schema เดียวกับ Search Filter และ match เฉพาะ Sale asset |
-| Portfolio | ใช้ Price Index เป็น priority แรกของ Current Value |
+| Add Asset | Brand/model/reference autocomplete, structured selection และ prefill ค่า specification ที่ provider มีให้ |
+| Search / Filter | Brand, model, reference, case size, movement และ filter ที่เกี่ยวข้อง |
+| Search Autocomplete | แสดง option ที่ active และเกี่ยวข้องกับ Sale/public visibility rule |
+| Watch Alert | ใช้ criteria schema เดียวกับ Search Filter และ active market data |
+| Portfolio | ใช้ Price Index เป็น valuation source priority แรกเมื่อมีข้อมูลเพียงพอ |
 | Watch Price / Integrations | ใช้ latest active price data ตาม brand/model/reference |
 
-Market data inactive ต้องหยุด new selection และ Watch Alert trigger ใหม่ที่อ้าง option นั้นตาม policy แต่ไม่ควรทำให้ alert เดิมหายจากประวัติ
+Market Data boundary สำหรับ FO Add/Edit Asset:
 
-## 8. Price Index Rules
+- Market Data เป็น catalog กลางสำหรับ Brand, Model, Reference, provider specification และ Price Index เท่านั้น
+- ข้อมูลที่ Owner กรอกใน Add/Edit Asset เช่น production year, condition, scope of delivery, case size, case material, movement, dial color และ strap/bracelet type ต้องเก็บใน Asset / Asset Specification domain
+- เมื่อ Owner เลือก Reference ที่มีใน Market Data ระบบสามารถ prefill spec จาก provider ได้ แต่ Owner ต้องแก้ไขได้ และค่าที่ Owner save ต้องไม่ถูก provider sync overwrite
+- Asset ต้องเก็บ relation id ไป Market Data เมื่อเลือก option ที่ match ได้ และต้องเก็บ snapshot text ของ Brand / Model / Reference ไว้กับ Asset เพื่อคง display history
+- ถ้า Owner กรอก free-text ที่ยังไม่มีใน Market Data ให้ asset relation เป็น `null` และเก็บ snapshot text ได้ โดยไม่สร้าง Brand / Model / Reference ใหม่ใน BO Market Data Phase 1
+- Internal option master เช่น condition, delivery item, case material, movement, dial color และ strap/bracelet type เป็น option สำหรับ Asset form/search filter ไม่ใช่ provider catalog ที่ BO Market Data แก้ไขได้ใน Phase 1
 
-### Current Price Selection
+Inactive หรือ unmapped market data:
 
-เมื่อมี price record หลายรายการ:
+- ไม่ควรเป็น option ใหม่ใน FO autocomplete/filter
+- ต้องไม่ลบ relation/history ของ asset เดิม
+- Watch Alert เดิมต้องเก็บ history ได้ แต่ไม่ควร trigger match ใหม่ถ้า criteria อ้าง option ที่ inactive ตาม policy
 
-1. ใช้ active provider price จาก The Watch API/backend cache ที่ match reference ได้ตรงที่สุด
-2. ถ้าไม่มี reference match ให้ fallback ไป model/brand level ตาม policy
-3. ใช้ provider updated date/synced date ล่าสุดที่ยัง active ตาม backend policy
-4. ถ้าไม่มี active price ให้ FO ใช้ fallback rule ของ Portfolio เช่น Purchase Price fallback หรือ No Valuation
+## 16. Data Quality
 
-### Price Validation
-
-- Min price ต้องไม่มากกว่า max price
-- Median/market price ต้องอยู่ในช่วง min/max เว้นแต่มี reason
-- Currency ต้องระบุ
-- Source URL หรือ source note ต้องมีอย่างน้อยหนึ่งรายการ
-- Updated date ต้องไม่เป็นอนาคต เว้นแต่เป็น scheduled provider sync ที่แยก workflow
-- ถ้า source currency ไม่ใช่ THB ต้องมี conversion metadata ก่อนใช้งานใน FO
-- Provider price ต้องแสดง source label และ provider updated date ใน BO
-
-## 9. Provider Sync
-
-### Provider Sync
-
-Phase 1 ให้ใช้ provider sync แบบ backend scheduled job เป็นหลัก หรือ manual operations-triggered sync ที่มี permission และ audit เท่านั้น ไม่ใช่ FO client call
-
-Sync jobs ที่ควรมี:
-
-- Sync brands
-- Sync models by brand
-- Sync references by brand/model ตาม provider capability
-- Sync price history by brand/model/reference ตาม plan ที่เปิดใช้งาน
-
-Sync ต้องมี:
-
-- Retry policy สำหรับ rate limit/server error
-- Sync log และ audit log
-- Last successful sync timestamp
-- Usage/rate limit visibility ถ้า API response/header ให้ข้อมูล
-
-Phase 1 ไม่รองรับ CSV/XLSX import/export จาก Market Data screen เพราะข้อมูล brand/model/reference/detail/price เป็น master data มาตรฐานที่ต้องมาจาก API/backend source เดียวก่อน
-
-## 10. Data Quality
-
-ต้องตรวจ:
+ต้องตรวจอย่างน้อย:
 
 - Duplicate brand/model/reference
 - Alias collision
 - Missing required fields
+- Reference ที่ยังไม่ผูก model
 - Invalid price range
+- Missing conversion metadata สำหรับ non-THB source price
 - Inactive parent with active child
-- Reference ที่ไม่ผูก brand/model
-- Source URL invalid
+- Provider error หรือ stale sync
+- Too many results จาก provider endpoint
 
-Data quality warning ไม่จำเป็นต้อง block ทุกกรณี แต่ต้องชัดเจนก่อน backend นำข้อมูลไปใช้กับ FO autocomplete, Search, Watch Alert หรือ Portfolio
+Data quality warning ไม่จำเป็นต้อง block ทุกกรณี แต่ต้องแสดงชัดก่อน backend นำข้อมูลไปใช้กับ FO autocomplete, Search, Watch Alert หรือ Portfolio
 
-## 11. Audit Requirements
+## 17. Sync และ Cache
 
-ต้อง audit:
+Backend sync jobs ที่ต้องรองรับ:
 
-- Provider sync trigger และ provider sync result
-- Provider sync error/retry
-- Future approved correction/export workflow ถ้ามี
+- Sync brand list
+- Sync models by brand
+- Sync references by brand
+- Enrich reference -> model relation ผ่าน model/search, reference/search หรือ backend mapping rule
+- Sync brand/model/reference price history ตาม plan access
 
-Audit event ต้องมี admin ID, admin access, target type, target ID, action/result, reason ถ้ามี, timestamp และ session/IP context ถ้ามี
+Sync ต้องมี:
 
-## 12. FO Sync And Cache
+- Sync log
+- Audit log สำหรับ manual trigger/result/error/retry
+- Last successful sync timestamp
+- Endpoint, params, parent entity, provider error code/message
+- Retry count
+- Rate-limit metadata เมื่อ provider ส่งมา
+- Cache action / cache invalidation result
 
-Market data sync/cache refresh ต้อง trigger downstream cache invalidation สำหรับ:
+Cache invalidation ต้องกระทบ:
 
 - Add Asset autocomplete
 - Search filter options
@@ -336,64 +573,132 @@ Market data sync/cache refresh ต้อง trigger downstream cache invalidatio
 - Portfolio valuation
 - Watch Price / Price Index surfaces
 
-ถ้า sync เป็น async ต้องมี status ให้ Admin เห็น เช่น pending, synced, failed และ retry ได้ตาม operations permission
+## 18. Empty / Loading / Error States
 
-FO ต้องอ่านข้อมูลจาก internal API/cache ของ TukDaeng เท่านั้น ไม่อ่าน The Watch API ตรง เพื่อป้องกัน token leak, rate-limit กระทบผู้ใช้ และควบคุม active/inactive policy ได้
+| State | ข้อกำหนด |
+| --- | --- |
+| Loading Dashboard | แสดง skeleton/placeholder สำหรับ metric cards และ table |
+| Loading Catalog | แสดง loading state ใน table โดยไม่ทำให้ layout กระโดด |
+| Empty Brand Search | แสดง `No brands found` |
+| Empty Model Search | แสดง `No models found for this brand` |
+| Empty Reference Search | แสดง `No references found for this model` |
+| Empty Sync Logs | แสดง `No sync logs found` |
+| Provider Failed | แสดง error summary และระบุว่า cache เดิมยังใช้อยู่ถ้าไม่ replace |
+| Rate Limit | แสดง error code/rate-limit detail ใน Sync History detail |
+| Permission Denied | แสดง access denied ตาม global BO rule |
+| Read-only Action | แสดง modal `Read-only in Phase 1` |
 
-## 13. Error, Empty, Loading States
+## 19. Copy และ Visual Rules
 
-ต้องรองรับ:
+Copy rules:
 
-- Empty brand/model/reference/price list
-- No search result
-- Provider sync failed
-- Provider rate/usage limit reached
-- Duplicate detected
-- Sync failed
-- Price source unavailable
-- Permission denied
+- ใช้ชื่อเมนูและหัวข้อภาษาอังกฤษตาม prototype: `Dashboard`, `Brands & Models`, `Sync History`
+- ใช้คำอธิบายภาษาไทยเพื่ออธิบายผลกระทบเชิงงาน
+- ห้ามใช้ข้อความ placeholder เช่น `Sample data` เป็นข้อความหลัก
+- สถานะ sync ต้องอ่านรู้เรื่อง ไม่แสดง raw backend code เป็นข้อความเดียวโดยไม่มี label
+- Price ใน drawer ต้องระบุ currency ชัดเจน
 
-## 14. Integration With Other Modules
+Visual rules:
+
+- Layout ต้องเป็น operational catalog/control view ไม่ใช่ analytics report page
+- Summary card ต้องเป็น pattern เดียวกับ BO prototype
+- Table row ต้อง compact และอ่านง่าย
+- Mobile row ต้องใช้ label/value ตาม prototype
+- Drawer ต้องใช้รูปแบบเดียวกับ `market-reference-drawer`
+- Card shadow/border ต้องเบาและไม่ซ้อน card ใน card
+- Typography ต้องตาม global/prototype style
+
+## 20. Performance
+
+- Dashboard initial load หลังเข้าเมนูควรไม่เกิน 3 วินาทีสำหรับข้อมูลหลัก
+- Catalog list ต้องใช้ pagination และ server-side filtering เมื่อข้อมูลจริงมีปริมาณมาก
+- Search ต้อง debounce หรือใช้ server query ตามขนาดข้อมูลจริง
+- Reference drawer ต้องโหลดข้อมูลเฉพาะ reference ที่เลือก
+- Sync History detail ต้องโหลด timeline/metadata เฉพาะ job ที่เปิด
+- Provider sync ต้องทำใน backend job ไม่ block UI
+
+## 21. Audit Requirements
+
+ต้อง audit:
+
+- Manual sync trigger หากเปิดใช้
+- Manual sync result
+- Sync error/retry
+- Read-only blocked action ที่เป็น sensitive operation หากเกิดจาก direct route/API
+- Future approved correction/export workflow
+
+Audit event ต้องมี:
+
+- Admin ID
+- Target type
+- Target ID
+- Action
+- Before/after ถ้ามี
+- Result
+- Reason ถ้ามี
+- Timestamp
+- Session/IP context ตาม global audit policy
+
+## 22. Integration With Other Modules
 
 | Module | Integration |
 | --- | --- |
-| Asset Management | Asset detail อ้าง brand/model/reference และใช้ status เพื่อ FO visibility |
-| Search / Filter | ใช้ active master data และ Sale-only visibility |
-| Watch Alert | Criteria schema ใช้ Search Filter และ active market data |
-| Portfolio | Price Index เป็น valuation source priority แรก |
-| The Watch API | External provider สำหรับ brand/model/reference/watch details/price history ที่ต้อง sync เข้า BO ก่อนใช้ |
-| Dashboard | แสดง data quality warnings, latest price updates, inactive data count จาก sync/cache |
-| Audit Log | provider sync trigger/result/error/retry ต้อง searchable |
-| Reports | Future approved export/reporting scope แยกจาก Phase 1 Market Data screen |
+| Dashboard | แสดง warning งาน Market Data ใน Work Queue เมื่อมี mapping/price issue |
+| Asset Management | Asset detail อ้าง brand/model/reference และใช้ price index ช่วยตรวจราคา |
+| Search / Filter | ใช้ active market data สำหรับ filter/autocomplete |
+| Watch Alert | ใช้ market schema สำหรับ criteria และ match |
+| Portfolio | ใช้ Price Index เป็น valuation source |
+| Reports | ใช้ข้อมูล top searched brands และ market/search report แยกจาก Market Data screen |
+| Audit Log | ค้น provider sync trigger/result/error/retry ได้ |
+| Settings / Permissions | ควบคุม module access และ operations sync permission |
 
-## 15. Acceptance Criteria
+## 23. เกณฑ์การยอมรับ
 
 | ID | Criteria |
 | --- | --- |
-| AC-BO-MARKET-001 | Admin เปิดดู list/detail/search/filter ของ brand/model/reference/detail/price index ได้ตาม module access โดยไม่มี add/edit/delete/import/override action ใน Phase 1 |
-| AC-BO-MARKET-002 | Brand -> Model dependent relation ต้องถูกต้องใน BO และส่งผลถึง FO |
-| AC-BO-MARKET-003 | Inactive brand/model/reference ไม่แสดงเป็น option ใหม่ใน FO autocomplete/filter |
-| AC-BO-MARKET-004 | Existing asset ยังเก็บ historical brand/model/reference ได้แม้ master data ถูก inactive |
-| AC-BO-MARKET-005 | Price Index active ใช้เป็น source ของ Portfolio Current Value และ Watch Price |
-| AC-BO-MARKET-006 | ถ้าไม่มี active price index FO ต้อง fallback ตาม Portfolio rule |
-| AC-BO-MARKET-007 | Market Data screen Phase 1 ต้องไม่มี CSV/XLSX import flow |
-| AC-BO-MARKET-008 | The Watch API ต้องถูกเรียกผ่าน backend sync/cache เท่านั้น ไม่ถูกเรียกตรงจาก FO client |
-| AC-BO-MARKET-009 | ข้อมูลที่ sync จาก The Watch API ต้องถูกเก็บใน TukDaeng database ก่อน BO/FO ใช้งาน |
-| AC-BO-MARKET-010 | Admin ไม่สามารถเพิ่ม/แก้/override market data ใน BO Phase 1 ได้ |
-| AC-BO-MARKET-011 | Active/inactive visibility ถูกกำหนดจาก provider/backend policy ไม่ใช่ BO manual status action |
-| AC-BO-MARKET-012 | Provider/backend sync เป็น source เดียวของ Phase 1 และต้องเก็บ source trace เพื่อรองรับ future correction workflow |
-| AC-BO-MARKET-013 | Provider USD price ต้องมี conversion metadata ก่อนใช้เป็น THB ใน FO |
-| AC-BO-MARKET-014 | Market data sync/cache refresh ต้อง trigger cache invalidation ไป FO surfaces ที่เกี่ยวข้อง |
-| AC-BO-MARKET-015 | Provider sync trigger/result/error/retry ทุกครั้งต้อง audit-log |
-| AC-BO-MARKET-016 | UI responsive ใช้งานได้ที่ mobile-width, tablet และ desktop |
+| AC-BO-MARKET-001 | เข้าเมนู `Market Data` แล้วเปิด `Dashboard` เป็นหน้าแรก และ active state ของเมนู/submenu ถูกต้อง |
+| AC-BO-MARKET-002 | Market Data แสดง submenu ครบ `Dashboard`, `Brands & Models`, `Sync History` ตาม prototype |
+| AC-BO-MARKET-003 | Dashboard แสดง summary cards ครบ `Total Brands`, `Total Models`, `Total References`, `Last Sync` |
+| AC-BO-MARKET-004 | Dashboard แสดง Latest Sync Status, progress ring และตาราง Recently Updated Brands |
+| AC-BO-MARKET-005 | Dashboard brand row คลิกไป Brand detail ได้ |
+| AC-BO-MARKET-006 | `Brands & Models` แสดง panel title `All Brands [<count>]` และมี search field `Search brand / model / reference` |
+| AC-BO-MARKET-007 | Brand list แสดง column Brand, Models, References, Action และปุ่ม `View` เปิด Brand detail ได้ |
+| AC-BO-MARKET-008 | Brand detail แสดง `<Brand> -- All Models (<count>)`, search model และปุ่มกลับ `Back to Brands` |
+| AC-BO-MARKET-009 | Model detail แสดง `<Model> -- All References (<count>)`, search reference และปุ่มกลับ `Back to <Brand>` |
+| AC-BO-MARKET-010 | Reference row เปิด Reference detail drawer พร้อม spec grid, USD price card, chart, description และ source note |
+| AC-BO-MARKET-011 | `Sync History` แสดง summary cards Log Entries Today, Completed, Running, Failed |
+| AC-BO-MARKET-012 | Sync History table แสดง job, scope, status, time, result, issue note และ Detail action |
+| AC-BO-MARKET-013 | Sync History detail แสดง Job ID, status, started, duration, endpoint, criteria, result/error และ cache impact |
+| AC-BO-MARKET-014 | Failed sync ต้องระบุว่าไม่ replace current cache และแสดง error code/retry/rate-limit เมื่อมีข้อมูล |
+| AC-BO-MARKET-015 | Market Data Phase 1 ไม่มี add/edit/delete/import/export/override/status change ที่ใช้งานได้จาก BO |
+| AC-BO-MARKET-016 | หากเรียก action ที่ไม่อนุญาต ต้องแสดง `Read-only in Phase 1` และไม่เปลี่ยนข้อมูล |
+| AC-BO-MARKET-017 | BO/FO อ่าน market data จาก TukDaeng backend/cache ไม่เรียก The Watch API จาก FO client โดยตรง |
+| AC-BO-MARKET-018 | Reference ที่มาจาก brand-scoped endpoint ต้องรองรับ `model_id` nullable จนกว่า backend mapping จะยืนยัน |
+| AC-BO-MARKET-019 | Provider USD price ต้องมี conversion metadata ก่อนใช้แสดง/คำนวณเป็น THB บน FO |
+| AC-BO-MARKET-020 | Sync/cache refresh ต้อง invalidate downstream cache สำหรับ Add Asset, Search, Watch Alert, Portfolio และ Watch Price |
+| AC-BO-MARKET-021 | Empty, loading, failed, rate limit และ permission denied states ต้องแสดงตามที่กำหนด |
+| AC-BO-MARKET-022 | Responsive ต้องใช้งานได้ที่ 375px, 760px, 1024px, 1366px และ 1440px โดยข้อความ/ปุ่ม/ตารางไม่ล้นหรือซ้อนกัน |
 
-## 16. Open Decisions
+## 24. Related Modules
+
+- `00_GLOBAL_RULES_MODULE.md`
+- `02_DASHBOARD_MODULE.md`
+- `04_ASSET_MANAGEMENT_MODULE.md`
+- `08_AUDIT_LOG_MODULE.md`
+- `10_WATCH_ALERT_MODULE.md`
+- `13_REPORTS_MODULE.md`
+- `16_ADMIN_SETTINGS_MODULE.md`
+- `../FrontOffice/03_SEARCH_FILTER_MODULE.md`
+- `../FrontOffice/04_ASSET_MANAGEMENT_MODULE.md`
+- `../FrontOffice/10_WATCH_ALERT_MODULE.md`
+- `../FrontOffice/14_PORTFOLIO_MODULE.md`
+- `../ProjectAdmin/FO_BO_INTEGRATION_MAP.md`
+
+## 25. Open Decisions
 
 | ID | Decision Needed | Current Recommendation |
 | --- | --- | --- |
-| BO-MARKET-DEC-001 | External price source จะ integrate ใน Phase 1 หรือไม่ | Phase 1 ใช้ The Watch API/backend sync เป็นหลัก และไม่ใช้ manual/import price index |
-| BO-MARKET-DEC-002 | Inactive brand/model ส่งผลต่อ Watch Alert เดิมอย่างไร | ไม่ trigger match ใหม่สำหรับ inactive criteria แต่ยังเก็บ alert history |
-| BO-MARKET-DEC-003 | Price fallback จาก model/brand level ใช้ได้แค่ไหน | ใช้ได้พร้อม label ชัดเจนว่าเป็น fallback ไม่ใช่ reference exact |
-| BO-MARKET-DEC-004 | Multi-currency support | Phase 1 แสดง THB เป็นหลัก |
-| BO-MARKET-DEC-005 | The Watch API plan/usage limit ที่ production ต้องใช้ | ต้องให้ dev/ops ยืนยัน plan, quota, endpoint access และ rate limit ก่อน launch |
-| BO-MARKET-DEC-006 | FX rate source สำหรับ USD -> THB | ต้องเลือก source กลางและเก็บ fx metadata ใน price index |
+| BO-MARKET-DEC-001 | Production จะเปิด manual sync trigger บน BO หรือไม่ | เปิดเฉพาะ operations permission พร้อม audit และ rate-limit guard |
+| BO-MARKET-DEC-002 | FX rate source สำหรับ USD -> THB | ต้องเลือก central FX source และเก็บ fx metadata ใน price index |
+| BO-MARKET-DEC-003 | การจัดการ mapping warning จะมี queue แยกหรือไม่ | Phase 1 แสดง warning/read-only; workflow แก้ไขให้เป็น backend/provider process |
+| BO-MARKET-DEC-004 | Production plan/usage limit ของ The Watch API | Dev/Ops ต้องยืนยัน plan, quota, endpoint access และ rate limit ก่อน launch |

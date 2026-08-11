@@ -301,7 +301,7 @@
 #### Happy Path
 1. ตั้ง Filter (เช่น Brand: Rolex)
 2. กดปุ่ม "Save to Watch Alert"
-3. กรอกชื่อ Alert (เช่น "Rolex")
+3. ระบบเติมชื่อ Alert เริ่มต้นจาก Filter ให้ เช่น "Rolex" และผู้ใช้สามารถแก้ไขชื่อได้
 4. เปิด Notification Toggle
 5. กด "Save this search"
 6. แสดง Confirmation: "Thank you! Your search has been saved..."
@@ -310,7 +310,7 @@
 #### Error Cases
 | ID | เงื่อนไข | ผลลัพธ์ |
 |---|---|---|
-| E01 | ไม่กรอกชื่อ Alert | บันทึกด้วยชื่อ Default "Watch Alert on DD/MM/YY" |
+| E01 | User ลบชื่อ Alert จนว่างแล้วกด Save | ไม่บันทึก และแสดงข้อความให้กรอกชื่อ Watch Alert |
 | E02 | Alert ซ้ำ Criteria เดิม | แสดง "A similar alert already exists. Create anyway?" |
 
 ---
@@ -375,7 +375,7 @@
 #### Happy Path
 1. กด "Make an Offer"
 2. กรอกราคา (THB)
-3. กรอก Message (ตัวเลือก)
+3. กรอก Message (ตัวเลือก, ไม่เกิน 500 characters)
 4. กด "Send offer"
 5. แสดง Popup "Offer Sent Successfully"
 6. กด "Go to chat" → เข้าห้องแชทกับผู้ขาย
@@ -385,8 +385,13 @@
 |---|---|---|
 | E01 | ไม่กรอกราคา | ปุ่ม Send offer ไม่ Active |
 | E02 | ราคาเป็น 0 หรือติดลบ | แสดง "Please enter a valid offer amount" |
-| E03 | ส่ง Offer สินทรัพย์ที่ขายแล้ว | แสดง "This item is no longer available" |
-| E04 | ส่ง Offer ซ้ำในขณะที่ Offer เดิมยังรอ | แสดง "You already have a pending offer. Go to chat to view it." |
+| E03 | ราคาไม่ใช่ตัวเลข หรือ parse เป็นจำนวนเงินไม่ได้ | แสดง "Please enter a valid offer amount" |
+| E04 | Message มีเฉพาะช่องว่าง | Trim แล้วถือว่าไม่กรอก Message |
+| E05 | Message เกิน 500 characters | แสดง field-level validation error |
+| E06 | ส่ง Offer สินทรัพย์ที่ Hide, Sold หรือ Deleted | แสดง "This item is no longer available" |
+| E07 | ส่ง Offer ซ้ำในขณะที่ Offer เดิมยังรอ | แสดง "You already have a pending offer. Go to chat to view it." |
+| E08 | Guest กด Make an Offer | แสดง Global Login Required Dialog |
+| E09 | Owner กด Make an Offer บน Asset ของตัวเอง | ไม่แสดงปุ่ม Make an Offer |
 
 ---
 
@@ -435,7 +440,7 @@
 | E01 | ไม่อัปโหลดรูปภาพ | แสดง "Please add at least 1 photo" |
 | E02 | ไม่กรอก Brand | แสดง "Brand is required" |
 | E03 | ไม่กรอก Model | แสดง "Model is required" |
-| E04 | Status = Sale แต่ไม่กรอกราคา | แสดง "Price is required for Sale status" (ยกเว้น Price on Request) |
+| E04 | Status = Sale แต่ไม่กรอกราคา | บันทึกได้ และ buyer-facing surface แสดง `Price on request` |
 | E05 | อัปโหลดรูปเกิน 10 รูป | ปุ่มเพิ่มรูปหายไปเมื่อครบ 10 |
 | E06 | รูปภาพ format ไม่รองรับ | แสดง "Only JPG, PNG supported" |
 | E07 | รูปภาพขนาดเกิน 10MB | แสดง "Image size must not exceed 10MB" |
@@ -505,7 +510,7 @@
 
 #### Happy Path
 1. Edit Asset → Add Sale History
-2. กรอก Buyer Name, Phone, Contact
+2. (ตัวเลือก) กรอก Buyer Name, Phone, Contact
 3. กรอก Sale Price (THB)
 4. เลือก Sale Date, Payment Method
 5. (ตัวเลือก) อัปโหลด Equipment & Accessories รูปภาพ
@@ -513,11 +518,31 @@
 7. กด "Save" → Confirm → บันทึกสำเร็จ
 8. Status เปลี่ยนเป็น "Sold" อัตโนมัติ
 
+#### Required / Optional Fields
+| Field | Required | Validation |
+|---|---:|---|
+| Buyer Name | No | ถ้ากรอกต้องไม่เป็นช่องว่างล้วน, trim ค่า, จำกัดความยาว 100 ตัวอักษร, sanitize HTML/script |
+| Buyer Phone | No | ถ้ากรอกต้องเป็นเบอร์ที่รูปแบบถูกต้อง เช่น เบอร์ไทย 9-10 หลัก หรือ `+66`, trim ค่า |
+| Buyer Contact (Line / IG / Facebook) | No | ถ้ากรอกต้องไม่เป็นช่องว่างล้วน, จำกัดความยาว 150 ตัวอักษร, sanitize HTML/script |
+| Sale Price (THB) | Yes | ต้องเป็นตัวเลขมากกว่า 0, ไม่รับค่าติดลบ/ตัวอักษร, normalize comma, จำกัดไม่เกิน 999,999,999.99 |
+| Sale Date | Yes | ต้องเป็นวันที่จริง, ห้ามเป็นวันที่อนาคต, ถ้ามี Purchase Date ต้องไม่ก่อน Purchase Date |
+| Payment Method | Yes | ต้องเลือกจาก Bank Transfer / Cash / PromptPay / Other |
+| All Equipment & Accessories | No | ถ้าอัปโหลดต้องเป็นรูปภาพ `jpg/png/webp/heic`, สูงสุด 3 รูป, ไม่เกิน 10MB ต่อไฟล์ |
+| Proof of Payment | No | ถ้าอัปโหลดต้องเป็นรูปภาพ `jpg/png/webp/heic`, สูงสุด 3 รูป, ไม่เกิน 10MB ต่อไฟล์ |
+| Note | No | ถ้ากรอกต้องไม่เกิน 1,000 ตัวอักษร, trim ค่า, sanitize HTML/script |
+
 #### Error Cases
 | ID | เงื่อนไข | ผลลัพธ์ |
 |---|---|---|
 | E01 | Sale Price = 0 หรือว่าง | แสดง validation error |
 | E02 | ไม่เลือก Payment Method | แสดง "Payment method is required" |
+| E03 | ไม่เลือก Sale Date | แสดง "Sale date is required" |
+| E04 | Sale Date เป็นวันที่อนาคต | แสดง "Sale date cannot be in the future" |
+| E05 | Sale Date ก่อน Purchase Date ของสินทรัพย์ | แสดง "Sale date cannot be before purchase date" |
+| E06 | Buyer Phone มีรูปแบบไม่ถูกต้อง | แสดง validation error เฉพาะ field แต่ไม่บังคับให้กรอก Buyer Phone |
+| E07 | Buyer Name / Buyer Contact / Note เกินความยาวที่กำหนด หรือมีเฉพาะช่องว่าง | แสดง validation error เฉพาะ field |
+| E08 | ไฟล์อัปโหลดไม่ใช่รูปภาพที่รองรับ, ขนาดเกิน 10MB ต่อไฟล์, หรือเกิน 3 รูปต่อ section | แสดง upload validation error |
+| E09 | Asset มี Pending Offer ที่ยังไม่ accept/decline | แสดง "There are pending offers. Accept or decline them first." |
 
 ---
 
@@ -527,11 +552,21 @@
 
 #### Happy Path
 1. ระหว่าง Add/Edit Asset กด "Provenance"
-2. กรอก Purchase Price, Purchase Date, Purchase From
-3. อัปโหลดรูป Equipment & Accessories (สูงสุด 3 รูป)
-4. อัปโหลดรูป Proof of Payment (สูงสุด 3 รูป)
-5. กรอก Note
+2. กรอก Purchase Price (required)
+3. กรอก Purchase Date, Purchase From (optional)
+4. อัปโหลดรูป Equipment & Accessories, Proof of Payment (optional)
+5. กรอก Note (optional)
 6. กด "Save" → Confirm
+
+#### Required / Optional Fields
+| Field | Required | Validation |
+|---|---|---|
+| Purchase Price (THB) | Yes | ต้องเป็นตัวเลขและมากกว่า 0 |
+| Purchase Date | No | หากกรอกต้องเป็นวันที่จริงและห้ามเป็นวันที่อนาคต |
+| Purchase From | No | หากกรอกต้องไม่เป็นค่าว่างล้วนและต้องไม่เกินความยาวที่กำหนด |
+| All Equipment & Accessories | No | หากอัปโหลดต้องเป็นชนิดไฟล์ที่รองรับ, ไม่เกินขนาดต่อไฟล์, และไม่เกินจำนวนไฟล์ต่อ section |
+| Proof of Payment | No | หากอัปโหลดต้องเป็นชนิดไฟล์ที่รองรับ, ไม่เกินขนาดต่อไฟล์, และไม่เกินจำนวนไฟล์ต่อ section |
+| Note | No | หากกรอกต้องไม่เป็นค่าว่างล้วนและต้องไม่เกินความยาวที่กำหนด |
 
 ---
 
@@ -541,18 +576,37 @@
 
 #### Happy Path
 1. Add Asset → กด Tab "Consignment"
-2. กรอก Full Name, Phone Number, Line/IG/Facebook
-3. เลือก Consignment Date (Date Picker)
-4. กรอก Asking Price
-5. ตั้ง Commission % (0–100)
-6. อัปโหลด Documentation
-7. กด "Save" → Confirm
+2. กรอก Full Name, Phone Number, Asking Price (required)
+3. กรอก Line/IG/Facebook, Email, Payout Method, Consignment Date, Consignment Duration, Commission %, Minimum Acceptable Price (optional)
+4. อัปโหลด Equipment & Accessories และ Proof of Payment / Documentation (optional)
+5. กด "Save" → Confirm
+
+#### Required / Optional Fields
+| Field | Required | Validation |
+|---|---|---|
+| Full Name | Yes | ต้องไม่เป็นค่าว่างล้วนและต้องไม่เกินความยาวที่กำหนด |
+| Phone Number | Yes | ต้องเป็น phone format ที่ถูกต้อง |
+| Asking Price (THB) | Yes | ต้องเป็นตัวเลขและมากกว่า 0 |
+| Line / IG / Facebook | No | หากกรอกต้องไม่เป็นค่าว่างล้วนและต้องไม่เกินความยาวที่กำหนด |
+| Email | No | หากกรอกต้องเป็น email format ที่ถูกต้อง |
+| Payout Method | No | หากกรอกต้องเป็น option/value ที่ระบบรองรับ และ validate field ย่อยตาม payout type |
+| Consignment Date | No | หากกรอกต้องเป็นวันที่จริงและห้ามเป็นวันที่อนาคต |
+| Consignment Duration | No | หากกรอกต้องมากกว่า 0 |
+| Commission (%) | No | หากกรอกต้องอยู่ระหว่าง 0-100 |
+| Minimum Acceptable Price | No | หากกรอกต้องมากกว่า 0 และต้องไม่มากกว่า Asking Price |
+| All Equipment & Accessories | No | หากอัปโหลดต้องเป็นชนิดไฟล์ที่รองรับ, ไม่เกินขนาดต่อไฟล์, และไม่เกินจำนวนไฟล์ต่อ section |
+| Proof of Payment / Documentation | No | หากอัปโหลดต้องเป็นชนิดไฟล์ที่รองรับ, ไม่เกินขนาดต่อไฟล์, และไม่เกินจำนวนไฟล์ต่อ section |
+| Note | No | หากกรอกต้องไม่เป็นค่าว่างล้วนและต้องไม่เกินความยาวที่กำหนด |
 
 #### Error Cases
 | ID | เงื่อนไข | ผลลัพธ์ |
 |---|---|---|
-| E01 | Commission > 100 | แสดง "Commission cannot exceed 100%" |
-| E02 | Phone number format ผิด | แสดง "Invalid phone number" |
+| E01 | ไม่กรอก Full Name | แสดง "Full name is required" |
+| E02 | ไม่กรอก Phone Number หรือ phone number format ผิด | แสดง "Invalid phone number" |
+| E03 | ไม่กรอก Asking Price หรือ Asking Price <= 0 | แสดง "Asking price must be greater than 0" |
+| E04 | Commission ไม่อยู่ในช่วง 0-100 เมื่อกรอก | แสดง "Commission must be between 0 and 100%" |
+| E05 | Minimum Acceptable Price > Asking Price เมื่อกรอกทั้งสองค่า | แสดง "Minimum acceptable price cannot exceed asking price" |
+| E06 | Optional field ที่กรอกมีแต่ช่องว่าง, format ผิด, เกินความยาว, หรือ upload ไม่ผ่าน type/size/count limit | แสดง validation เฉพาะ field/section นั้น |
 
 ---
 

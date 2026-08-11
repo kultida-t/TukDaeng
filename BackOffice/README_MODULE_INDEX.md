@@ -64,7 +64,7 @@ Codex ต้องทำ 3 อย่าง:
 | 04 | `04_ASSET_MANAGEMENT_MODULE.md` | Asset list/detail, status visibility, reported assets, moderation, sensitive fields, FO sync | 1 |
 | 05 | `05_CONTENT_BOARD_MODULE.md` | Board articles, editor, publish/schedule/archive, categories, banners, reported Board Content, FO sync | 1 |
 | 06 | `06_MARKET_DATA_MODULE.md` | Read-only API/backend-synced watch brand, model, reference, detail, price index, sync logs, FO autocomplete/search/alert/portfolio sync | 1 |
-| 07 | `07_DIRECTORY_MODULE.md` | Directory items, categories, contact/map/images, active/inactive publication control, FO placeholder/route decision | 1 |
+| 07 | `07_DIRECTORY_MODULE.md` | Future/postponed Directory reference only; not exposed in Phase 1 BO prototype or Phase 1 build scope until FO directory detail routes are approved | Future |
 | 08 | `08_AUDIT_LOG_MODULE.md` | Immutable audit events, schema, search/filter, export, retention, sensitive/destructive/provider-sync trace | 1 |
 | 09 | `09_OFFER_CHAT_MODULE.md` | Offer lifecycle, status `Rejected`, chat review, reported chats, dispute support | 2 |
 | 10 | `10_SOCIAL_INTERACTION_MODULE.md` | Comment/reply moderation, reported comments, likes/favorites/follows analytics | 2 |
@@ -92,7 +92,6 @@ Phase 1 ต้องส่งมอบ BO foundation ที่ใช้งาน
 - Asset Management
 - Content / Board Management
 - Market Data
-- Directory
 - Audit Log
 
 Phase 1 ยังไม่รวม real-time admin-user chat, AI moderation, external CRM integration หรือ payment operations

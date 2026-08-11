@@ -287,12 +287,19 @@ FO ต้องแยกคำว่า `Decline` กับ `Rejected` ให้
 | Field / Condition | Rule |
 | --- | --- |
 | Offer Price | Required |
-| Offer Price | ต้องมากกว่า 0 |
+| Offer Price Empty | ถ้าไม่กรอก ต้อง disable ปุ่ม `Send offer` |
+| Offer Price Format | รับเฉพาะตัวเลขจำนวนเงินที่ parse ได้ ห้ามตัวอักษรหรือค่าที่ไม่ใช่ตัวเลข |
+| Offer Price Value | ต้องมากกว่า 0; ถ้าเป็น 0 หรือติดลบ ต้องแสดง `Please enter a valid offer amount` |
 | Offer Price Currency | THB |
-| Offer Message | รองรับตาม master flow `Add Message` |
-| Asset Status | ต้องเป็น Sale ใน V1 |
-| Asset Availability | ต้องไม่ Sold และไม่ Deleted |
+| Offer Message | Optional |
+| Offer Message Format | Trim ก่อนส่ง; ถ้ากรอกเฉพาะช่องว่างให้ถือว่าไม่กรอก |
+| Offer Message Length | ไม่เกิน 500 characters; ถ้าเกินต้องแสดง field-level validation error |
+| Asset Status | ต้องเป็น `Sale` หรือ `Show` |
+| Show Asset Entry | `Show` สร้าง Offer ได้จาก Asset Detail / Public Profile detail entry เท่านั้น |
+| Asset Availability | `Hide`, `Sold` และ `Deleted` สร้าง Offer ใหม่ไม่ได้ |
 | Auth State | ต้อง Login ก่อน Make Offer |
+| Owner Restriction | Owner ไม่สามารถ Make Offer กับ Asset ของตัวเอง |
+| Duplicate Pending Offer | ถ้า user มี Pending Offer เดิมของ Asset นี้อยู่แล้ว ต้องไม่สร้างซ้ำ และแสดง `You already have a pending offer. Go to chat to view it.` |
 
 ---
 
@@ -309,6 +316,16 @@ FO ต้องแยกคำว่า `Decline` กับ `Rejected` ให้
 - TH: `รายการนี้ไม่พร้อมใช้งานแล้ว`
 - EN: `This item is no longer available.`
 - Result: Offer ที่เกี่ยวข้องเป็น Cancelled
+
+## Invalid Offer Price
+
+- EN: `Please enter a valid offer amount`
+- Result: ไม่สร้าง Offer เมื่อ Offer Price เป็น 0, ติดลบ, ไม่ใช่ตัวเลข หรือ parse ไม่ได้
+
+## Duplicate Pending Offer
+
+- EN: `You already have a pending offer. Go to chat to view it.`
+- Result: ไม่สร้าง Offer ซ้ำ และให้ user ไปดู Pending Offer เดิมใน Chat
 
 ## Offer Not Available
 
@@ -379,8 +396,29 @@ Then ระบบต้องแสดง Global Login Required Dialog
 ## AC-OFFER-003: Price Validation
 
 Given user อยู่ใน Make Offer form  
-When user ส่ง Offer โดยไม่กรอก Offer Price หรือกรอกราคาไม่มากกว่า 0  
-Then ระบบต้องไม่สร้าง Offer และต้องแสดง validation error
+When user ไม่กรอก Offer Price  
+Then ปุ่ม `Send offer` ต้อง disabled  
+
+When user กรอก Offer Price เป็น 0, ติดลบ, ตัวอักษร หรือค่าที่ parse เป็นจำนวนเงินไม่ได้  
+Then ระบบต้องไม่สร้าง Offer  
+And ต้องแสดง `Please enter a valid offer amount`
+
+## AC-OFFER-003A: Message Validation
+
+Given user อยู่ใน Make Offer form  
+When user ไม่กรอก Message หรือกรอกเฉพาะช่องว่าง  
+Then ระบบต้องส่ง Offer ได้โดยไม่มี Message หลัง trim  
+
+When user กรอก Message เกิน 500 characters  
+Then ระบบต้องไม่สร้าง Offer  
+And ต้องแสดง field-level validation error
+
+## AC-OFFER-003B: Duplicate Pending Offer
+
+Given Buyer มี Pending Offer เดิมของ Asset เดียวกัน  
+When Buyer พยายามส่ง Offer ใหม่  
+Then ระบบต้องไม่สร้าง Offer ซ้ำ  
+And ต้องแสดง `You already have a pending offer. Go to chat to view it.`
 
 ## AC-OFFER-004: Offer Sent Success
 

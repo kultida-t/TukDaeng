@@ -1560,12 +1560,9 @@
     body.market-list-mode .panel-head h2 {
       display: flex;
       align-items: center;
-      justify-content: space-between;
-      gap: 16px;
-      width: 100%;
+      gap: 8px;
     }
     body.market-list-mode .panel-title-count {
-      margin-left: auto;
       color: #5f718b;
       font-family: var(--font-heading);
       font-size: 22px;
@@ -1606,10 +1603,34 @@
     body.market-list-mode .cards {
       display: none;
     }
+    body.market-list-mode.market-dashboard-mode .summary-grid {
+      display: grid;
+    }
+    body.market-list-mode.market-dashboard-mode .filters {
+      display: none;
+    }
+    body.market-list-mode .filters:empty {
+      display: none;
+    }
     body.market-list-mode .layout > .panel {
       border-color: #d7e2f0;
       box-shadow: none;
       overflow: hidden;
+    }
+    body.market-list-mode.market-dashboard-mode .layout > .panel {
+      border: 0;
+      background: transparent;
+      overflow: visible;
+    }
+    body.market-list-mode.market-dashboard-mode .layout > .panel > .panel-head {
+      border: 1px solid #d7e2f0;
+      border-bottom: 1px solid var(--line);
+      border-radius: var(--radius) var(--radius) 0 0;
+      background: #fff;
+    }
+    body.market-list-mode.market-dashboard-mode #table {
+      padding: 0;
+      background: transparent;
     }
     body.market-list-mode .user-panel-filter-actions {
       display: flex;
@@ -1631,13 +1652,43 @@
       text-align: right;
     }
     body.market-list-mode .market-table.market-record-table .asset-row {
-      grid-template-columns: minmax(220px, 1.35fr) minmax(150px, .9fr) minmax(120px, .65fr) minmax(116px, .65fr) 74px;
+      grid-template-columns: minmax(250px, 1.18fr) minmax(170px, .76fr) minmax(112px, .5fr) minmax(128px, .55fr) minmax(170px, .74fr) minmax(230px, .96fr) 76px;
+      column-gap: 18px;
+      align-items: center;
+    }
+    body.market-list-mode .market-table.market-record-table .asset-row.head {
+      min-height: 44px;
+      padding-top: 12px;
+      padding-bottom: 12px;
+    }
+    body.market-list-mode .market-table.market-record-table .asset-row > div:nth-child(n + 2) {
+      justify-self: start;
+      text-align: left;
+    }
+    body.market-list-mode .market-table.market-record-table .asset-row > div:last-child {
+      justify-self: stretch;
+      text-align: center;
+      display: flex;
+      justify-content: center;
+    }
+    body.market-list-mode .market-table.market-record-table .asset-row .main-text,
+    body.market-list-mode .market-table.market-record-table .asset-row .muted {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    body.market-list-mode .market-table.market-record-table .panel-action {
+      min-width: 58px;
+      justify-content: center;
     }
     body.market-list-mode .market-table.market-reference-list-table .asset-row {
-      grid-template-columns: minmax(220px, 1.35fr) minmax(150px, .9fr) minmax(240px, 1.1fr) 74px;
+      grid-template-columns: minmax(130px, .7fr) minmax(170px, .9fr) minmax(150px, .75fr) minmax(180px, .95fr) minmax(150px, .75fr) minmax(150px, .75fr);
+      column-gap: 22px;
+      align-items: center;
+      min-height: 66px;
     }
     body.market-list-mode .market-table.market-model-table .asset-row {
-      grid-template-columns: minmax(260px, 1.25fr) minmax(180px, .8fr) minmax(116px, .5fr) minmax(150px, .68fr) minmax(96px, .42fr) minmax(170px, .78fr) 92px;
+      grid-template-columns: minmax(260px, 1fr) minmax(180px, .55fr) 76px;
       column-gap: 22px;
       align-items: center;
       min-height: 66px;
@@ -1666,8 +1717,322 @@
       text-overflow: ellipsis;
       white-space: nowrap;
     }
+    body.market-list-mode .market-table.market-reference-list-table .asset-row > div {
+      justify-self: stretch;
+      text-align: left;
+    }
+    body.market-list-mode .market-table.market-reference-list-table .asset-row > div:last-child {
+      display: block;
+      justify-content: flex-start;
+      text-align: left;
+    }
+    body.market-list-mode .market-table.market-reference-list-table .asset-row.head {
+      min-height: 44px;
+    }
+    body.market-list-mode .market-table.market-reference-list-table .main-text {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    body.market-list-mode .market-table.market-reference-list-table .market-card-tags {
+      display: none;
+    }
     body.market-list-mode .market-card-tags {
       display: none;
+    }
+    body.market-list-mode .market-catalog-table .asset-row {
+      grid-template-columns: minmax(220px, 1fr) minmax(160px, .75fr) minmax(180px, .85fr) 76px;
+    }
+    body.market-list-mode .market-model-table .asset-row {
+      grid-template-columns: minmax(260px, 1fr) minmax(180px, .55fr) 76px;
+    }
+    body.market-list-mode .market-reference-list-table .asset-row {
+      grid-template-columns: minmax(120px, .7fr) minmax(150px, .8fr) minmax(150px, .8fr) minmax(150px, .8fr) minmax(140px, .7fr) minmax(150px, .7fr);
+    }
+    body.market-list-mode .market-record-table .asset-row {
+      grid-template-columns: minmax(250px, 1.18fr) minmax(170px, .76fr) minmax(112px, .5fr) minmax(128px, .55fr) minmax(170px, .74fr) minmax(230px, .96fr) 76px;
+    }
+    body.market-list-mode .market-arrow-action {
+      min-width: 58px;
+      height: 32px;
+      padding: 0 12px;
+      border-radius: 7px;
+      font-size: 12px;
+      font-weight: 700;
+      line-height: 1;
+    }
+    body.market-list-mode .market-catalog-table .asset-row > div:last-child,
+    body.market-list-mode .market-model-table .asset-row > div:last-child {
+      justify-self: stretch;
+      text-align: center;
+    }
+    body.market-list-mode .market-catalog-table .asset-row.head > div:last-child,
+    body.market-list-mode .market-model-table .asset-row.head > div:last-child,
+    body.market-list-mode .market-catalog-table .asset-row:not(.head) > div:last-child,
+    body.market-list-mode .market-model-table .asset-row:not(.head) > div:last-child {
+      display: flex;
+      justify-content: center;
+    }
+    body.market-list-mode .market-price {
+      color: #a96500;
+      font-weight: 800;
+    }
+    body.market-list-mode .market-dashboard-stack {
+      display: grid;
+      gap: 20px;
+    }
+    body.market-list-mode .market-dashboard-status-cards {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 14px;
+    }
+    body.market-list-mode .market-dashboard-status-cards .dashboard-status-card {
+      min-height: 110px;
+      border: 1px solid #d7e2f0;
+      box-shadow: 0 12px 28px rgba(15, 42, 74, .06);
+    }
+    body.market-list-mode .market-dashboard-status-cards .dashboard-card-head {
+      min-height: 0;
+      padding-bottom: 12px;
+    }
+    body.market-list-mode .market-dashboard-status-cards .status-row {
+      min-height: 72px;
+    }
+    body.market-list-mode .market-sync-current,
+    body.market-list-mode .market-dashboard-table {
+      background: #fff;
+      overflow: hidden;
+    }
+    body.market-list-mode.market-dashboard-mode .market-sync-current {
+      border: 1px solid #d7e2f0;
+      border-top: 0;
+      border-radius: 0 0 var(--radius) var(--radius);
+    }
+    body.market-list-mode.market-dashboard-mode .market-dashboard-table {
+      border: 1px solid #d7e2f0;
+      border-radius: var(--radius);
+    }
+    body.market-list-mode .market-sync-body {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+      min-height: 128px;
+      padding: 20px 24px;
+    }
+    body.market-list-mode .market-sync-body strong {
+      display: block;
+      color: #071b36;
+      font-size: 16px;
+      line-height: 1.35;
+      margin-bottom: 6px;
+    }
+    body.market-list-mode .market-sync-body p {
+      margin: 0;
+      color: #66758d;
+      font-size: 12px;
+      line-height: 1.6;
+    }
+    body.market-list-mode .market-sync-main {
+      min-width: 0;
+      padding: 0;
+    }
+    body.market-list-mode .market-progress-ring {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      width: 96px;
+      height: 96px;
+      flex: 0 0 auto;
+      border-radius: 999px;
+      background:
+        radial-gradient(circle at center, #fff 56%, transparent 57%),
+        conic-gradient(from 0deg, #d60012 0 81%, #e5edf6 81% 100%);
+      box-shadow: inset 0 0 0 1px rgba(215, 226, 240, .85);
+      color: #d60012;
+    }
+    body.market-list-mode .market-progress-ring span {
+      font-family: var(--font-heading);
+      font-size: 24px;
+      line-height: 1;
+    }
+    body.market-list-mode .market-progress-ring small {
+      color: #66758d;
+      font-size: 9px;
+      font-weight: 800;
+      letter-spacing: .08em;
+    }
+    body.market-list-mode .market-dashboard-brand-table .asset-row {
+      grid-template-columns: minmax(220px, 1.15fr) minmax(110px, .5fr) minmax(140px, .55fr) minmax(170px, .75fr) minmax(140px, .55fr);
+      column-gap: 22px;
+      align-items: center;
+    }
+    body.market-list-mode .market-dashboard-brand-table .asset-row > div {
+      justify-self: stretch;
+      text-align: left;
+    }
+    body.market-list-mode .market-dashboard-brand-table .asset-row > div:nth-child(2),
+    body.market-list-mode .market-dashboard-brand-table .asset-row > div:nth-child(3) {
+      font-variant-numeric: tabular-nums;
+    }
+    body.market-list-mode .market-dashboard-brand-table .asset-row > div:last-child {
+      display: flex;
+      justify-content: flex-start;
+      padding-left: 36px;
+    }
+    #user-action-modal:has(.market-reference-drawer) {
+      place-items: stretch end;
+      padding: 0;
+      background: rgba(0, 0, 0, .62);
+      transition: background 180ms ease;
+    }
+    #user-action-modal.market-reference-drawer-closing:has(.market-reference-drawer) {
+      background: rgba(0, 0, 0, 0);
+    }
+    .modal.user-action-modal.market-reference-drawer {
+      width: min(420px, 100vw);
+      height: 100vh;
+      max-height: 100vh;
+      border-radius: 0;
+      border-top: 0;
+      border-right: 0;
+      border-bottom: 0;
+      background: #fff;
+      box-shadow: -22px 0 60px rgba(6, 20, 38, .28);
+      transform: translateX(100%);
+      transition: transform 220ms cubic-bezier(.2, .8, .2, 1);
+      will-change: transform;
+    }
+    #user-action-modal.market-reference-drawer-open .market-reference-drawer {
+      transform: translateX(0);
+    }
+    #user-action-modal.market-reference-drawer-closing .market-reference-drawer {
+      transform: translateX(100%);
+    }
+    .market-reference-drawer .modal-body {
+      height: 100%;
+      padding: 0;
+      overflow: auto;
+    }
+    .market-reference-drawer-content {
+      display: grid;
+      gap: 22px;
+      padding: 24px;
+    }
+    .market-drawer-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      padding-bottom: 18px;
+      border-bottom: 1px solid var(--line);
+    }
+    .market-drawer-head span {
+      display: block;
+      color: #d60012;
+      font-size: 11px;
+      font-weight: 900;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+    .market-drawer-head h2 {
+      margin: 6px 0 2px;
+      color: #071b36;
+      font-size: 32px;
+      line-height: .95;
+    }
+    .market-drawer-head p {
+      margin: 0;
+      color: #66758d;
+      font-size: 12px;
+    }
+    .market-drawer-spec-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px 20px;
+    }
+    .market-drawer-spec-grid span,
+    .market-source-copy span,
+    .market-price-card span {
+      display: block;
+      color: #66758d;
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+    }
+    .market-drawer-spec-grid span {
+      font-weight: 400;
+    }
+    .market-drawer-spec-grid strong {
+      display: block;
+      margin-top: 4px;
+      color: #071b36;
+      font-size: 14px;
+    }
+    .market-price-card {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 6px 12px;
+      align-items: start;
+      padding: 16px 16px 14px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: linear-gradient(180deg, #fbfdff 0%, #f6faff 100%);
+    }
+    .market-price-card strong {
+      display: block;
+      margin-top: 6px;
+      color: #d60012;
+      font-family: var(--font-heading);
+      font-size: 34px;
+      line-height: .95;
+    }
+    .market-price-card em {
+      color: #08875d;
+      font-size: 12px;
+      font-style: normal;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+    .market-price-card svg {
+      grid-column: 1 / -1;
+      width: 100%;
+      height: 44px;
+      margin-top: 0;
+      overflow: visible;
+    }
+    .market-price-card .market-chart-guide {
+      stroke: #d9e3f0;
+      stroke-width: 1;
+      stroke-dasharray: 3 5;
+    }
+    .market-price-card .market-chart-area {
+      fill: rgba(214, 0, 18, .08);
+    }
+    .market-price-card polyline {
+      fill: none;
+      stroke: #d60012;
+      stroke-width: 2.4;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+    .market-price-card circle {
+      fill: #fff;
+      stroke: #d60012;
+      stroke-width: 2.4;
+    }
+    .market-source-copy p {
+      margin: 8px 0 0;
+      color: #334155;
+      font-size: 13px;
+      line-height: 1.7;
+    }
+    .market-source-note {
+      padding: 12px;
+      border-radius: 8px;
+      background: #eef5ff;
+      color: #1f5f9f;
+      font-size: 12px;
+      line-height: 1.5;
     }
     .market-sync-modal-content .user-action-target,
     .market-action-modal-content .user-action-target {
@@ -1874,6 +2239,13 @@
       color: #071b36;
       font-size: 18px;
       text-transform: uppercase;
+    }
+    body.market-list-mode .market-detail-section .kv {
+      grid-template-columns: minmax(150px, .14fr) minmax(0, 1fr);
+      column-gap: 22px;
+    }
+    body.market-list-mode .market-detail-section .kv span:first-child {
+      white-space: nowrap;
     }
     body.market-list-mode .market-model-stack {
       display: grid;
@@ -5795,6 +6167,7 @@
       .detail { position: static; }
       .summary-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
       body.dashboard-mode .cards { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      body.market-list-mode .market-dashboard-status-cards { grid-template-columns: repeat(2, minmax(0, 1fr)); }
       .user-filter-bar,
       .user-filter-bar.report-mode {
         grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -6024,6 +6397,13 @@
         flex-wrap: wrap;
         width: 100%;
       }
+      body.market-list-mode .page-title-row:has(.page-back-btn) {
+        align-items: center;
+        flex-direction: row;
+      }
+      body.market-list-mode .page-title-row:has(.page-back-btn) .page-actions {
+        width: auto;
+      }
       .tools { justify-content: flex-start; }
       .summary-grid, .cards, .nav { grid-template-columns: 1fr; }
       body.asset-list-mode .summary-grid {
@@ -6117,6 +6497,15 @@
         grid-template-columns: minmax(0, 1fr) minmax(64px, max-content);
         padding-right: 16px;
         padding-left: 16px;
+      }
+      body.market-list-mode .market-dashboard-status-cards { grid-template-columns: 1fr; }
+      body.market-list-mode .market-sync-body {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 16px;
+      }
+      body.market-list-mode .market-sync-main {
+        padding: 0;
       }
       .brand-ranking-list {
         padding-right: 16px;
@@ -6589,7 +6978,7 @@
         line-height: 1;
       }
       body.market-list-mode .panel-title-count {
-        display: none;
+        display: inline-block;
       }
       body.market-list-mode .filters {
         padding: 12px 14px;
@@ -6606,6 +6995,11 @@
       body.market-list-mode .market-table {
         grid-template-columns: 1fr;
         gap: 12px;
+      }
+      body.market-list-mode.market-dashboard-mode .market-dashboard-brand-table {
+        gap: 12px;
+        padding: 12px 14px 16px;
+        background: #f8fbff;
       }
       body.market-list-mode .market-table .asset-row.head {
         display: none;
@@ -6661,6 +7055,9 @@
         text-overflow: ellipsis;
         white-space: nowrap;
       }
+      body.market-list-mode .market-record-table .asset-row:not(.head) > div[data-label]:first-child .muted {
+        display: none;
+      }
       body.market-list-mode .market-table .asset-row:not(.head) > div[data-label]:not(:first-child) {
         display: none;
       }
@@ -6673,6 +7070,13 @@
         display: flex;
         flex-wrap: wrap;
         gap: 9px;
+        width: 100%;
+      }
+      body.market-list-mode .market-table.market-model-table .market-card-tags {
+        display: flex;
+      }
+      body.market-list-mode .market-table.market-reference-list-table .market-card-tags {
+        display: flex;
       }
       body.market-list-mode .market-card-tags .pill,
       body.market-list-mode .market-card-tags .user-card-tag {
@@ -6688,9 +7092,39 @@
         margin-top: 8px;
         padding-top: 11px;
         border-top: 1px solid #edf2f7;
+        width: 100%;
+      }
+      body.market-list-mode .market-table.market-model-table .market-card-meta {
+        display: grid;
+      }
+      body.market-list-mode .market-table.market-reference-list-table .market-card-meta {
+        display: grid;
       }
       body.market-list-mode .market-card-meta .user-card-meta-item {
         display: flex;
+      }
+      body.market-list-mode .market-record-table .market-card-meta {
+        gap: 5px;
+        margin-top: 10px;
+        padding-top: 12px;
+      }
+      body.market-list-mode .market-record-table .market-card-meta .user-card-meta-item {
+        display: grid;
+        grid-template-columns: 116px minmax(0, 1fr);
+        gap: 12px;
+        align-items: start;
+      }
+      body.market-list-mode .market-record-table .market-card-meta .user-card-meta-item span {
+        line-height: 1.35;
+        white-space: nowrap;
+      }
+      body.market-list-mode .market-record-table .market-card-meta .user-card-meta-item strong {
+        line-height: 1.35;
+        overflow-wrap: anywhere;
+        text-align: right;
+      }
+      body.market-list-mode .market-record-table .market-card-meta .user-card-meta-item:first-child {
+        display: none;
       }
       body.market-list-mode .footer-range {
         margin-top: 12px;
@@ -6719,6 +7153,13 @@
       body.market-list-mode .module-note {
         min-width: 0;
         overflow-wrap: anywhere;
+      }
+      body.market-list-mode .market-detail-section .kv {
+        grid-template-columns: minmax(120px, .34fr) minmax(0, 1fr);
+        column-gap: 14px;
+      }
+      body.market-list-mode .market-detail-section .kv span:first-child {
+        white-space: normal;
       }
       .detail-grid.two {
         grid-template-columns: 1fr;
@@ -7226,7 +7667,6 @@
       exportFile: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21V9"/><path d="m7 14 5-5 5 5"/><path d="M5 3h14"/></svg>',
       edit: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>',
       market: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 17 9 11l4 4 8-8"/><path d="M14 7h7v7"/></svg>',
-      directory: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 21h18"/><path d="M5 21V7l7-4 7 4v14"/><path d="M9 21v-6h6v6"/><path d="M9 10h.01M15 10h.01"/></svg>',
       audit: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 11h6M9 15h6"/><path d="M8 3h8l3 3v15H5V6l3-3Z"/><path d="M8 3v4h8V3"/></svg>',
       offer: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 15a4 4 0 0 1-4 4H8l-5 3V7a4 4 0 0 1 4-4h10a4 4 0 0 1 4 4Z"/><path d="M8 9h8M8 13h5"/></svg>',
       social: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 1 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8Z"/></svg>',
@@ -7254,8 +7694,7 @@
         { id: "users", label: "User Management", icon: "users", subs: ["User Accounts", "Reported Users"] },
         { id: "assets", label: "Asset Management", icon: "asset", subs: ["Asset List", "Reported Assets"] },
         { id: "content", label: "Content Management", icon: "content", subs: ["Articles", "Categories", "Reported Articles"] },
-        { id: "market", label: "Market Data", icon: "market", subs: ["Catalog", "Mapping Queue", "Price Index", "Sync Logs"] },
-        { id: "directory", label: "Directory", icon: "directory" },
+        { id: "market", label: "Market Data", icon: "market", subs: ["Dashboard", "Brands & Models", "Sync History"] },
       ]},
       { section: "งานตรวจสอบและบริการ", items: [
         { id: "offers", label: "Offer / Chat", icon: "offer", subs: ["Offer Queue", "Reported Chat", "Dispute Export"] },
@@ -7353,15 +7792,10 @@
       content: mod("Content Management", "การดำเนินงาน / Content Management", "Board Articles", "สร้างบทความ, category, schedule และจัดการ reported board content", "สร้างบทความ", [["Published", "126", "อยู่ใน Board"], ["Scheduled", "5", "รอ publish"], ["Draft", "14", "ยังไม่แสดงบน FO"], ["Reported", "3", "ต้อง review"]], [
         item("ART-044", "Vintage Watch Buying Guide", "Editorial", "Article", "ปกติ", "Scheduled", "ตั้งเวลาเผยแพร่ 10 Jul 2026 19:00", ["Board", "Buying Guide"], "Preview as FO และตรวจ cover image ก่อน publish")
       ]),
-      market: mod("Market Data", "การดำเนินงาน / Market Data", "Watch Master Data", "ดู brand, model, reference, detail และ price index จาก API/backend sync แบบ read-only", "Sync API", [["Brands", "482", "API active"], ["Models", "8,924", "API catalog"], ["Price Index", "17,200", "อัปเดตสัปดาห์นี้"], ["Sync Warnings", "6", "ต้อง review"]], [
+      market: mod("Market Data", "การดำเนินงาน / Market Data", "Watch Master Data", "Read brand, model, reference, detail and price index data from API/backend sync", "Sync API", [["Brands", "482", "API active"], ["Models", "8,924", "API catalog"], ["Price Index", "17,200", "Updated this week"], ["Sync Warnings", "6", "Needs review"]], [
         item("BRD-ROLEX", "Rolex", "Brand", "API", "ปกติ", "Active", "ใช้ใน autocomplete และ asset form", ["Models 1,240"], "Phase 1 ดูข้อมูลเท่านั้น ไม่แก้ status จาก BO"),
         item("MDL-16610", "Submariner 16610", "Model", "Reference", "กลาง", "Active", "ราคา index มี outlier จาก API ล่าสุด", ["Median 305,000"], "ตรวจ source metadata และส่ง correction ผ่าน backend/provider"),
         item("IDX-202607", "Speedmaster Reduced", "Price Index", "Index", "กลาง", "Reviewing", "ข้อมูล API sync ซ้ำ 3 แถว", ["API batch"], "Backend sync ต้องจัดการ duplicate ก่อนใช้ index")
-      ]),
-      directory: mod("Directory", "การดำเนินงาน / Directory", "Directory Publication", "จัดการร้าน, service, category, map/contact และสถานะเผยแพร่", "เพิ่ม directory", [["Published", "84", "แสดงบน FO"], ["Draft", "9", "รอข้อมูลติดต่อ"], ["Inactive", "6", "ไม่แสดงบน FO"], ["Missing Map", "4", "ต้องเติมพิกัด"]], [
-        item("DIR-021", "Tuk Daeng Watch Service", "Service", "Repair", "ปกติ", "Published", "มีเบอร์โทร, LINE และ map ครบ", ["Bangkok"], "อัปเดต opening hours"),
-        item("DIR-034", "Vintage Strap House", "Shop", "Accessory", "กลาง", "Draft", "ขาดรูป cover และพิกัด", ["Missing map"], "เติมข้อมูลก่อน publish"),
-        item("DIR-041", "Collector Lounge", "Venue", "Community", "กลาง", "Inactive", "ร้านย้ายที่ตั้ง รอข้อมูลใหม่", ["FO hidden"], "Restore เมื่อข้อมูลติดต่อยืนยันแล้ว")
       ]),
       audit: mod("Audit Log", "การดำเนินงาน / Audit Log", "Immutable Admin Events", "ค้นหา action สำคัญ, export และตรวจ before/after value", "Export audit", [["Events Today", "386", "Login 74 · Update 221"], ["High Risk", "18", "ต้องมี reason"], ["Exports", "5", "background jobs"], ["Retention", "365d", "baseline ขั้นต่ำ"]], [
         item("AUD-88201", "Force Hide Asset", "Somchai Admin", "Asset", "สูง", "Recorded", "AST-8831 ถูกเปลี่ยน Sale → Hide พร้อม reason", ["Before/After"], "ตรวจ reason และ FO sync event"),
@@ -8251,19 +8685,21 @@
     const reportHistoryPageSize = 10;
     let activeMarketBrandId = "rolex";
     let activeMarketModelIndex = 0;
+    let marketDashboardPage = 1;
     let marketCatalogPage = 1;
     let marketModelPage = 1;
     let marketReferencePage = 1;
+    const marketDashboardPageSize = 10;
     const marketCatalogPageSize = 10;
     const marketModelPageSize = 10;
     const marketReferencePageSize = 10;
     let activeMarketSyncJob = null;
     let marketSyncTimer = null;
 
-    moduleData.market = mod("Market Data", "การดำเนินงาน / Market Data", "Market Catalog", "ดูข้อมูล brand, model, reference, detail และ price indicator จาก API/backend sync แบบ read-only ก่อนส่งไป Search, Asset และ Watch Alert", "Sync API", [["Brands", "9", "API catalog"], ["References", "24", "API refs"], ["Mapping Queue", "23", "data quality"], ["API Sync", "08:30", "ล่าสุดวันนี้"]], [
+    moduleData.market = mod("Market Data", "การดำเนินงาน / Market Data", "Watch Master Data", "Read-only brand, model, reference, detail and price indicator data from API/backend sync before Search, Asset and Watch Alert use", "Sync API", [["Brands", "23", "API catalog"], ["Models", "54", "All brands"], ["References", "95", "API refs"], ["API Sync", "08:14", "Latest today"]], [
       item("BRD-ROLEX", "Rolex", "Brand Catalog", "thewatchapi", "ปกติ", "Active", "Brand-first catalog with model, reference, detail and price coverage from API", ["Models 1,240", "Refs 4,820"], "Review brand catalog and drill down; Phase 1 does not allow manual edits"),
       item("MAP-018", "Unmapped reference 126710BLRO", "Mapping Queue", "Reference", "กลาง", "Needs Review", "Asset user input matches Rolex GMT-Master II but API mapping is not confirmed", ["Asset AST-8579"], "Flag for backend/provider correction; no BO manual merge in Phase 1"),
-      item("SYNC-20260803", "thewatchapi daily sync", "API Sync", "Batch", "ปกติ", "Completed", "Brand, model, reference, detail and price endpoints completed with warnings", ["Rate limit 72%"], "Review warnings and retry failed API records")
+      item("SYNC-20260803", "The Watch API daily sync", "API Sync", "Batch", "ปกติ", "Completed", "Brand, model, reference, detail และ price catalog sync completed with warnings", ["Provider warning"], "Review warnings and retry failed catalog records")
     ]);
 
     const marketCatalogData = {
@@ -8278,7 +8714,7 @@
           priceCoverage: "94%",
           lastSync: "03 Aug 2026 08:30",
           health: "Needs Review",
-          source: "brand/list, model/list, reference/list, model/search, price/history",
+          source: "brand/list, model/list, reference/list, model/search, brand/price/history, model/price/history, reference/price/history",
           modelsSample: [
             { name: "Rolex Daytona", refs: "116520, 116500LN", movement: "Automatic", case: "Steel / 40 mm", updated: "03 Aug 2026", price: "USD 24,653", references: [
               { number: "116520", year: "2000-2016", material: "Stainless steel", caseSize: "40 mm", movement: "Automatic chronograph", description: "Steel bezel Daytona with in-house calibre 4130.", price: "USD 24,653", status: "Mapped" },
@@ -8306,7 +8742,7 @@
           priceCoverage: "89%",
           lastSync: "03 Aug 2026 08:26",
           health: "Healthy",
-          source: "brand/list, model/list, reference/list, model/search, price/history",
+          source: "brand/list, model/list, reference/list, model/search, brand/price/history, model/price/history, reference/price/history",
           modelsSample: [
             { name: "Omega Speedmaster", refs: "3570.50, 3510.50", movement: "Manual wind / Automatic", case: "Steel / 39-42 mm", updated: "03 Aug 2026", price: "USD 5,140", references: [
               { number: "3570.50", year: "1996-2014", material: "Stainless steel", caseSize: "42 mm", movement: "Manual wind chronograph", description: "Moonwatch reference with broad listing coverage.", price: "USD 5,140", status: "Mapped" },
@@ -8353,7 +8789,7 @@
           priceCoverage: "92%",
           lastSync: "03 Aug 2026 08:29",
           health: "Healthy",
-          source: "brand/list, model/list, reference/list, model/search, price/history",
+          source: "brand/list, model/list, reference/list, model/search, brand/price/history, model/price/history, reference/price/history",
           modelsSample: [
             { name: "Patek Philippe Nautilus", refs: "5711/1A, 5712/1A", movement: "Automatic", case: "Steel / 40 mm", updated: "03 Aug 2026", price: "USD 98,500", references: [
               { number: "5711/1A", year: "2006-2021", material: "Stainless steel", caseSize: "40 mm", movement: "Automatic", description: "Iconic steel Nautilus reference with high-value listing impact.", price: "USD 98,500", status: "Mapped" },
@@ -8377,7 +8813,7 @@
           priceCoverage: "88%",
           lastSync: "03 Aug 2026 08:28",
           health: "Needs Review",
-          source: "brand/list, model/list, reference/list, model/search, price/history",
+          source: "brand/list, model/list, reference/list, model/search, brand/price/history, model/price/history, reference/price/history",
           modelsSample: [
             { name: "Audemars Piguet Royal Oak", refs: "15500ST, 15202ST", movement: "Automatic", case: "Steel / 39-41 mm", updated: "03 Aug 2026", price: "USD 46,800", references: [
               { number: "15500ST", year: "2019-2022", material: "Stainless steel", caseSize: "41 mm", movement: "Automatic", description: "Royal Oak reference often used in provenance review.", price: "USD 46,800", status: "Mapped" },
@@ -8401,7 +8837,7 @@
           priceCoverage: "84%",
           lastSync: "03 Aug 2026 08:28",
           health: "Healthy",
-          source: "brand/list, model/list, reference/list, model/search, price/history",
+          source: "brand/list, model/list, reference/list, model/search, brand/price/history, model/price/history, reference/price/history",
           modelsSample: [
             { name: "Cartier Santos", refs: "WSSA0029, WSSA0018", movement: "Automatic", case: "Steel / 35-39.8 mm", updated: "03 Aug 2026", price: "USD 6,450", references: [
               { number: "WSSA0029", year: "2018-present", material: "Stainless steel", caseSize: "35.1 mm", movement: "Automatic", description: "Santos medium reference commonly submitted in FO asset forms.", price: "USD 6,450", status: "Mapped" },
@@ -8425,7 +8861,7 @@
           priceCoverage: "86%",
           lastSync: "03 Aug 2026 08:27",
           health: "Healthy",
-          source: "brand/list, model/list, reference/list, model/search, price/history",
+          source: "brand/list, model/list, reference/list, model/search, brand/price/history, model/price/history, reference/price/history",
           modelsSample: [
             { name: "Tudor Black Bay", refs: "79030N, 79230N", movement: "Automatic", case: "Steel / 39-41 mm", updated: "03 Aug 2026", price: "USD 3,380", references: [
               { number: "79030N", year: "2018-present", material: "Stainless steel", caseSize: "39 mm", movement: "Automatic", description: "Black Bay Fifty-Eight reference.", price: "USD 3,380", status: "Mapped" },
@@ -8449,7 +8885,7 @@
           priceCoverage: "79%",
           lastSync: "03 Aug 2026 08:27",
           health: "Needs Mapping",
-          source: "brand/list, model/list, reference/list, model/search, price/history",
+          source: "brand/list, model/list, reference/list, model/search, brand/price/history, model/price/history, reference/price/history",
           modelsSample: [
             { name: "Grand Seiko Heritage", refs: "SBGA211, SBGH271", movement: "Spring Drive / Hi-Beat", case: "Titanium / Steel", updated: "03 Aug 2026", price: "USD 5,200", references: [
               { number: "SBGA211", year: "2017-present", material: "Titanium", caseSize: "41 mm", movement: "Spring Drive", description: "Snowflake reference with frequent FO listings.", price: "USD 5,200", status: "Mapped" },
@@ -8477,7 +8913,7 @@
       syncLogs: [
         { id: "SYNC-20260803", title: "Daily thewatchapi sync", brand: "All brands", type: "API Batch", status: "Completed", priority: "ปกติ", source: "Scheduled 03 Aug 2026 08:30", detail: "Brand, model, reference, model detail and price history sync completed with 6 warnings.", action: "Review mapping warnings and rate limit usage; no manual data edits in Phase 1." },
         { id: "SYNC-20260802", title: "Reference retry batch", brand: "Rolex / Omega", type: "Retry", status: "Completed", priority: "ปกติ", source: "Manual retry", detail: "Retried malformed reference searches after parameter normalization.", action: "Keep normalized query in sync rule." },
-        { id: "SYNC-20260801", title: "Price history sync", brand: "Top 20 brands", type: "Price Batch", status: "Partial", priority: "กลาง", source: "price/history", detail: "Some reference price history calls hit plan/rate limit.", action: "Resume from failed cursor after quota reset." }
+        { id: "SYNC-20260801", title: "Price history sync", brand: "Top 20 brands", type: "Price Batch", status: "Partial", priority: "กลาง", source: "brand/price/history, model/price/history, reference/price/history", detail: "Some reference price history calls hit plan/rate limit.", action: "Resume from failed cursor after quota reset." }
       ],
       auditLog: [
         { id: "AUD-MKT-003", target: "Rolex", action: "Provider sync completed", actor: "System", time: "03 Aug 2026 08:30", before: "Last sync 02 Aug 2026", after: "Last sync 03 Aug 2026", reason: "Scheduled daily sync" },
@@ -8589,7 +9025,7 @@
         priceCoverage: "81%",
         lastSync: "03 Aug 2026 08:26",
         health: "Healthy",
-        source: "brand/list, model/list, reference/list, model/search, price/history",
+        source: "brand/list, model/list, reference/list, model/search, brand/price/history, model/price/history, reference/price/history",
         modelsSample: [
           { name: "IWC Pilot's Watch", refs: "IW327001, IW388101", movement: "Automatic / Chronograph", case: "Steel / 40-43 mm", updated: "03 Aug 2026", price: "USD 4,650", references: [
             { number: "IW327001", year: "2016-2021", material: "Stainless steel", caseSize: "40 mm", movement: "Automatic", description: "Pilot's Watch Mark XVIII reference common in daily-wear listings.", price: "USD 3,450", status: "Mapped" },
@@ -8620,7 +9056,7 @@
         priceCoverage: "82%",
         lastSync,
         health,
-        source: "brand/list, model/list, reference/list, model/search, price/history",
+        source: "brand/list, model/list, reference/list, model/search, brand/price/history, model/price/history, reference/price/history",
         modelsSample: [
           { name: `${name} Core Collection`, refs: "Sample references", movement: "Automatic", case: "Mixed", updated: "03 Aug 2026", price: "USD sample", references: [
             { number: `${id.toUpperCase()}-REF-01`, year: "Mixed", material: "Mixed", caseSize: "Mixed", movement: "Automatic", description: `${name} sample reference for pagination and drill-down review.`, price: "USD sample", status: health === "Needs Mapping" ? "Needs Mapping" : "Mapped" }
@@ -8650,9 +9086,63 @@
       if (!marketCatalogData.brands.some(entry => entry.id === brand.id)) marketCatalogData.brands.push(brand);
     });
 
-    moduleData.market.cards[0][1] = String(marketCatalogData.brands.length);
-    moduleData.market.cards[1][1] = String(marketCatalogData.brands.reduce((sum, brand) => sum + brand.modelsSample.length, 0));
-    moduleData.market.cards[2][1] = String(marketCatalogData.brands.reduce((sum, brand) => sum + brand.modelsSample.reduce((modelSum, model) => modelSum + (model.references || []).length, 0), 0));
+    const marketMetricTotals = getMarketCatalogMetricTotals();
+
+    function getMarketSampleModelCount(brand) {
+      return (brand.modelsSample || []).length;
+    }
+
+    function getMarketSampleReferenceCount(brand) {
+      return (brand.modelsSample || []).reduce((sum, model) => sum + (model.references || []).length, 0);
+    }
+
+    function getMarketCatalogMetricTotals() {
+      const brands = marketCatalogData.brands.length;
+      const models = marketCatalogData.brands.reduce((sum, brand) => sum + getMarketSampleModelCount(brand), 0);
+      const references = marketCatalogData.brands.reduce((sum, brand) => sum + getMarketSampleReferenceCount(brand), 0);
+      return {
+        brands,
+        models,
+        references,
+        syncedBrands: Math.max(0, brands - 1),
+        pendingPriceValidation: marketCatalogData.brands.filter(brand => brand.health === "Needs Review" || brand.health === "Needs Mapping").length,
+        lastSyncTime: "08:14",
+        lastSyncDate: "6 ส.ค. 2569",
+        lastSyncTimestamp: "06 Aug 2026 08:14",
+        lastSyncRelative: "2 hours ago"
+      };
+    }
+
+    function formatMarketMetric(value) {
+      return Number(value || 0).toLocaleString();
+    }
+
+    function getMarketMetricCards() {
+      return {
+        brands: formatMarketMetric(marketMetricTotals.brands),
+        models: formatMarketMetric(marketMetricTotals.models),
+        references: formatMarketMetric(marketMetricTotals.references),
+        lastSyncTime: marketMetricTotals.lastSyncTime,
+        lastSyncDate: marketMetricTotals.lastSyncDate,
+        lastSyncTimestamp: marketMetricTotals.lastSyncTimestamp,
+        lastSyncRelative: marketMetricTotals.lastSyncRelative,
+        syncedBrands: formatMarketMetric(marketMetricTotals.syncedBrands),
+        pendingPriceValidation: formatMarketMetric(marketMetricTotals.pendingPriceValidation)
+      };
+    }
+
+    function syncMarketModuleCards() {
+      const metrics = getMarketMetricCards();
+      moduleData.market.action = "Sync API";
+      moduleData.market.cards = [
+        ["Brands", metrics.brands, "API catalog"],
+        ["Models", metrics.models, "All brands"],
+        ["References", metrics.references, "API refs"],
+        ["API Sync", metrics.lastSyncTime, "Latest today"]
+      ];
+    }
+
+    syncMarketModuleCards();
 
     function resetSessionViewState() {
       expandedMenus.clear();
@@ -8672,6 +9162,7 @@
       categoryFilterOpen = false;
       boardReportListPage = 1;
       boardReportFilterOpen = false;
+      marketDashboardPage = 1;
       marketCatalogPage = 1;
       activeAssetImageIndex = 0;
       closeRowMenus();
@@ -12245,15 +12736,36 @@
       const modal = document.querySelector("#user-action-modal");
       if (!modal) return;
       applyModalHeadingFonts(modal);
+      modal.classList.remove("market-reference-drawer-closing", "market-reference-drawer-open");
       modal.classList.add("show");
+      if (modal.querySelector(".market-reference-drawer")) {
+        window.requestAnimationFrame(() => {
+          modal.classList.add("market-reference-drawer-open");
+        });
+      }
       document.body.classList.toggle("asset-action-modal-open", lockMainScroll);
     }
 
     function closeUserActionModal() {
       const modal = document.querySelector("#user-action-modal");
       if (!modal) return;
+      const modalCard = modal.querySelector(".user-action-modal");
+      const isMarketReferenceDrawer = modalCard?.classList.contains("market-reference-drawer");
+      if (isMarketReferenceDrawer && !modal.classList.contains("market-reference-drawer-closing")) {
+        modal.classList.remove("market-reference-drawer-open");
+        modal.classList.add("market-reference-drawer-closing");
+        document.body.classList.remove("asset-action-modal-open");
+        window.setTimeout(() => {
+          if (!modal.classList.contains("market-reference-drawer-closing")) return;
+          modal.classList.remove("show", "market-reference-drawer-closing");
+          modalCard.classList.remove("market-reference-drawer");
+          document.querySelector("#user-action-modal-body").innerHTML = "";
+        }, 240);
+        return;
+      }
       modal.classList.remove("show");
-      modal.querySelector(".user-action-modal")?.classList.remove("article-preview-modal", "article-editor-confirm-modal", "category-editor-modal", "category-order-modal", "market-editor-modal", "board-report-phone-preview-modal");
+      modal.classList.remove("market-reference-drawer-open", "market-reference-drawer-closing");
+      modalCard?.classList.remove("article-preview-modal", "article-editor-confirm-modal", "category-editor-modal", "category-order-modal", "market-editor-modal", "market-reference-drawer", "board-report-phone-preview-modal");
       document.body.classList.remove("asset-action-modal-open");
       document.querySelector("#user-action-modal-body").innerHTML = "";
     }
@@ -13143,6 +13655,7 @@
       document.body.classList.toggle("category-list-mode", isCategoryList);
       document.body.classList.toggle("reported-board-mode", isReportedBoard);
       document.body.classList.toggle("market-list-mode", id === "market");
+      document.body.classList.toggle("market-dashboard-mode", id === "market" && (subLabel || "Dashboard") === "Dashboard");
       document.body.classList.toggle("user-list-mode", id === "users" || isReportedAssets || isReportedBoard);
       document.body.classList.remove("asset-detail-mode");
       if (isReportedAssets || isReportedBoard) document.body.classList.remove("user-detail-mode");
@@ -13161,7 +13674,7 @@
         return;
       }
       if (id === "market") {
-        renderMarketData(subLabel || "Catalog");
+        renderMarketData(subLabel || "Dashboard");
         updateActiveNav();
         return;
       }
@@ -13685,11 +14198,32 @@
       scrollMainToTop();
     }
 
+    function getMarketReadOnlyBrands() {
+      const order = ["audemars", "omega", "patek", "rolex", "seiko"];
+      return order.map(id => getMarketBrand(id)).filter(Boolean);
+    }
+
+    function getMarketCatalogBrands() {
+      const priorityIds = new Set(getMarketReadOnlyBrands().map(brand => brand.id));
+      return [
+        ...getMarketReadOnlyBrands(),
+        ...marketCatalogData.brands.filter(brand => !priorityIds.has(brand.id)).sort((a, b) => a.name.localeCompare(b.name))
+      ];
+    }
+
+    function getMarketSyncJobs() {
+      return [
+        { id: "JOB-BRAND-LIST", endpoint: "/v1/brand/list", params: "{}", parentEntity: "Provider", parentId: "TheWatchAPI", title: "Brand list sync", status: "Completed", statusLabel: "สำเร็จ", priority: "Normal", started: "08:00:01", duration: "1.2s", synced: "214 แบรนด์", detail: "โหลดรายชื่อแบรนด์ทั้งหมดจาก provider แล้ว normalize เข้า TukDaeng cache", source: "thewatchapi", resultCode: "synced", errorCode: "-", retryCount: 0, rateLimit: "928 / 1,000", cacheAction: "Refresh brand autocomplete and dependent filters" },
+        { id: "JOB-MODEL-ROLEX", endpoint: "/v1/model/list?brand=rolex", params: "{ brand: 'rolex' }", parentEntity: "Brand", parentId: "BRD-ROLEX", title: "Rolex model sync", status: "Completed", statusLabel: "สำเร็จ", priority: "Normal", started: "08:00:03", duration: "0.8s", synced: "186 โมเดล", detail: "โหลดโมเดล Rolex สำเร็จและผูกกับ brand key ที่ผ่านการ normalize", source: "thewatchapi", resultCode: "synced", errorCode: "-", retryCount: 0, rateLimit: "927 / 1,000", cacheAction: "Refresh Rolex model options for Add Asset, Search and Watch Alert" },
+        { id: "JOB-OMEGA-SEARCH", endpoint: "/v1/model/search?brand=omega", params: "{ brand: 'omega', search_attributes: 'model,reference_number' }", parentEntity: "Brand", parentId: "BRD-OMEGA", title: "Omega reference discovery", status: "Running", statusLabel: "กำลังทำงาน", priority: "Medium", started: "08:00:12", duration: "กำลังทำงาน", synced: "812 / 1,240 รายการ", detail: "กำลังค้นหาและแตก reference/model candidates ของ Omega ก่อนบันทึก cache โดย model relation จะถูกผูกเมื่อ backend ยืนยัน mapping แล้ว", source: "thewatchapi", resultCode: "in_progress", errorCode: "-", retryCount: 0, rateLimit: "914 / 1,000", cacheAction: "Keep current Omega cache until job completes" },
+        { id: "JOB-PATEK-LIST", endpoint: "/v1/model/list?brand=patek+philippe", params: "{ brand: 'patek philippe' }", parentEntity: "Brand", parentId: "BRD-PATEK", title: "Patek Philippe model sync", status: "Completed", statusLabel: "สำเร็จ", priority: "Normal", started: "07:40:00", duration: "0.6s", synced: "94 โมเดล", detail: "โหลดโมเดล Patek Philippe สำเร็จและอัปเดต downstream cache แล้ว", source: "thewatchapi", resultCode: "synced", errorCode: "-", retryCount: 0, rateLimit: "962 / 1,000", cacheAction: "Refresh Patek Philippe model options" },
+        { id: "JOB-SEIKO-REF", endpoint: "/v1/reference/list?brand=seiko", params: "{ brand: 'seiko' }", parentEntity: "Brand", parentId: "BRD-SEIKO", title: "Seiko reference sync", status: "Failed", statusLabel: "ล้มเหลว", priority: "High", started: "06:55:20", duration: "-", synced: "error: too_many_results", detail: "provider ส่งผลลัพธ์มากเกินแผนปัจจุบัน ต้องจำกัด parameter หรือ retry แบบแบ่งหน้า; reference ที่ได้จาก endpoint นี้จะเก็บ brand relation ก่อน และ model_id ยัง nullable จนกว่าจะ enrich ได้", source: "thewatchapi", resultCode: "failed", errorCode: "too_many_results", retryCount: 2, rateLimit: "104 / 1,000", cacheAction: "Do not replace current Seiko cache; record error for ops review" }
+      ];
+    }
+
     function getMarketRowsForSub(subLabel) {
-      if (subLabel === "Mapping Queue") return marketCatalogData.mappingQueue;
-      if (subLabel === "Price Index") return marketCatalogData.priceIndex;
-      if (subLabel === "Sync Logs") return marketCatalogData.syncLogs;
-      return marketCatalogData.brands;
+      if (subLabel === "Sync History") return getMarketSyncJobs();
+      return getMarketReadOnlyBrands();
     }
 
     function getMarketImpactCounts(brand) {
@@ -13777,17 +14311,33 @@
     }
 
     function renderMarketSummaryCards(subLabel) {
-      const brands = marketCatalogData.brands;
-      const issueCount = brands.filter(brand => brand.health !== "Healthy" || brand.status !== "Active").length;
-      const modelCount = brands.reduce((sum, brand) => sum + brand.modelsSample.length, 0);
-      const referenceCount = brands.reduce((sum, brand) => sum + brand.modelsSample.reduce((modelSum, model) => modelSum + (model.references || []).length, 0), 0);
-      const stats = subLabel === "Catalog"
-        ? [["Brands", brands.length.toLocaleString(), `${brands.filter(brand => brand.status === "Active").length} active`], ["Models", modelCount.toLocaleString(), "reviewable samples"], ["References", referenceCount.toLocaleString(), "mapped detail rows"], ["Data Issues", issueCount.toLocaleString(), "quality / inactive"]]
-        : subLabel === "Mapping Queue"
-          ? [["Open Mapping", "23", "Brand/model/reference"], ["High Impact", "5", "Search & Watch Alert"], ["Auto Match", "68%", "needs admin confirm"], ["Resolved Today", "12", "audit kept"]]
-          : subLabel === "Price Index"
-            ? [["Published Index", "17,200", "Brand/model/reference"], ["Reviewing", "14", "duplicate or outlier"], ["Currency", "USD", "source indicator"], ["THB Display", "Ready", "converted downstream"]]
-            : [["Last Sync", "08:30", "03 Aug 2026"], ["API Usage", "72%", "daily quota"], ["Warnings", "6", "mapping review"], ["Failed Jobs", "0", "retry queue empty"]];
+      if (subLabel === "Dashboard") {
+        const marketMetrics = getMarketMetricCards();
+        const metrics = [
+          { label: "Total Brands", value: marketMetrics.brands, trend: "ข้อมูลจาก Brand catalog" },
+          { label: "Total Models", value: marketMetrics.models, trend: "ข้อมูลจาก Model catalog" },
+          { label: "Total References", value: marketMetrics.references, trend: "ข้อมูลจาก Reference catalog" },
+          { label: "Last Sync", value: marketMetrics.lastSyncRelative, trend: marketMetrics.lastSyncTimestamp }
+        ];
+        document.querySelector("#summary-grid").innerHTML = metrics.map(metric => `
+          <article class="stat">
+            <div class="stat-top">
+              <div>
+                <div class="stat-label">${metric.label}</div>
+                <div class="stat-value">${metric.value}</div>
+              </div>
+            </div>
+            <div class="stat-note">${metric.trend}</div>
+          </article>
+        `).join("");
+        return;
+      }
+      const marketMetrics = getMarketMetricCards();
+      const stats = subLabel === "Dashboard"
+        ? [["Total Brands", marketMetrics.brands, "From Brand catalog"], ["Total Models", marketMetrics.models, "From Model catalog"], ["Total References", marketMetrics.references, "From Reference catalog"], ["Last Sync", marketMetrics.lastSyncRelative, marketMetrics.lastSyncTimestamp]]
+        : subLabel === "Sync History"
+          ? [["Log Entries Today", "5", "Backend sync history from The Watch API"], ["Completed", "3", "Latest cache is in use"], ["Running", "1", "Omega reference"], ["Failed", "1", "Existing cache kept"]]
+          : [["Sample Brands", "5", "Click to view child models"], ["Sample Models", "10", "From Model catalog"], ["Sample References", "24", "From Reference catalog"], ["Latest Sync", "08:14", "06 Aug 2026"]];
       document.querySelector("#summary-grid").innerHTML = stats.map(stat => `
         <article class="stat">
           <div class="stat-label">${stat[0]}</div>
@@ -13798,37 +14348,47 @@
     }
 
     function setupMarketFilters(subLabel) {
-      const statusOptions = subLabel === "Catalog"
-        ? ["Active", "Inactive", "Needs Review", "Needs Mapping"]
-        : Array.from(new Set(getMarketRowsForSub(subLabel).map(row => row.status)));
-      if (subLabel === "Catalog") {
+      if (subLabel === "Dashboard") {
+        document.querySelector(".filters").innerHTML = "";
+        return;
+      }
+      if (subLabel === "Brands & Models") {
         document.querySelector(".filters").innerHTML = `
           <div class="user-filter-bar market-catalog-filter-bar">
-            <input class="field search" id="market-search" type="search" placeholder="Search brand" />
+            <input class="field search" id="market-search" type="search" placeholder="Search brand / model / reference" />
           </div>
         `;
         return;
       }
+      if (subLabel === "Sync History") {
+        document.querySelector(".filters").innerHTML = "";
+        return;
+      }
+      const statusOptions = Array.from(new Map(getMarketRowsForSub(subLabel).map(row => [row.status, row.statusLabel || row.status])).entries());
       document.querySelector(".filters").innerHTML = `
         <div class="user-filter-bar">
-          <input class="field search" id="market-search" type="search" placeholder="Search brand, model, reference, source or status" />
+          <input class="field search" id="market-search" type="search" placeholder="ค้นหา endpoint / โมเดล / เลขอ้างอิง" />
           ${customSelect("market-status-filter", "Filter market data status", [
-            { value: "", label: "All status" },
-            ...statusOptions.map(status => ({ value: status, label: status }))
+            { value: "", label: "ทุกสถานะ" },
+            ...statusOptions.map(([value, label]) => ({ value, label }))
           ])}
           ${customSelect("market-brand-filter", "Filter market data brand", [
-            { value: "", label: "All brands" },
-            ...marketCatalogData.brands.map(brand => ({ value: brand.name, label: brand.name }))
+            { value: "", label: "ทุกแหล่งข้อมูล" },
+            { value: "thewatchapi", label: "thewatchapi" }
           ])}
-          <button class="btn filter-reset" type="button" data-market-reset title="รีเซ็ตค่าทั้งหมด" aria-label="รีเซ็ตค่าทั้งหมด">${iconSvg.refresh}<span>รีเซ็ตค่าทั้งหมด</span></button>
+          <button class="btn filter-reset" type="button" data-market-reset title="ล้างตัวกรอง" aria-label="ล้างตัวกรอง">${iconSvg.refresh}<span>ล้างตัวกรอง</span></button>
         </div>
       `;
     }
 
     function renderMarketCatalogRows() {
       const q = (document.querySelector("#market-search")?.value || "").trim().toLowerCase();
-      const rows = marketCatalogData.brands.filter(brand => {
-        const text = [brand.id, brand.name].join(" ").toLowerCase();
+      const rows = getMarketCatalogBrands().filter(brand => {
+        const text = [
+          brand.id,
+          brand.name,
+          ...(brand.modelsSample || []).map(model => `${model.name} ${model.refs || ""} ${(model.references || []).map(reference => reference.number).join(" ")}`)
+        ].join(" ").toLowerCase();
         return !q || text.includes(q);
       }).sort((a, b) => a.name.localeCompare(b.name));
       const pageCount = Math.max(1, Math.ceil(rows.length / marketCatalogPageSize));
@@ -13837,26 +14397,25 @@
       const visibleRows = rows.slice(start, start + marketCatalogPageSize);
       document.querySelector("#table").innerHTML = `
         <div class="asset-table category-table market-table market-catalog-table">
-          <div class="asset-row head"><div>Brand</div><div>Models</div><div>References</div><div>Last Sync</div><div>Action</div></div>
-          ${visibleRows.map(brand => `
+          <div class="asset-row head"><div>Brand</div><div>Models</div><div>References</div><div>Action</div></div>
+          ${visibleRows.map(brand => {
+            const modelCount = (brand.modelsSample || []).length;
+            const referenceCount = (brand.modelsSample || []).reduce((sum, model) => sum + (model.references || []).length, 0);
+            return `
             <div class="asset-row" data-market-brand="${brand.id}">
               <div data-label="Brand"><div class="main-text">${brand.name}</div></div>
               <div class="market-card-tags">
-                ${statusPill(brand.status, "ปกติ")}
-                <span class="user-card-tag asset-tag">${brand.health}</span>
-                <span class="user-card-tag asset-tag">${brand.models.toLocaleString()} models</span>
                 <div class="market-card-meta user-card-meta">
-                  <div class="user-card-meta-item"><span>Models</span><strong>${brand.models.toLocaleString()}</strong></div>
-                  <div class="user-card-meta-item"><span>References</span><strong>${brand.references.toLocaleString()}</strong></div>
+                  <div class="user-card-meta-item"><span>Models</span><strong>${modelCount.toLocaleString()}</strong></div>
+                  <div class="user-card-meta-item"><span>References</span><strong>${referenceCount.toLocaleString()}</strong></div>
                   <div class="user-card-meta-item"><span>Last Sync</span><strong>${brand.lastSync}</strong></div>
                 </div>
               </div>
-              <div data-label="Models"><div class="main-text">${brand.models.toLocaleString()}</div></div>
-              <div data-label="References"><div class="main-text">${brand.references.toLocaleString()}</div></div>
-              <div data-label="Last Sync"><div class="main-text">${brand.lastSync}</div></div>
-              <div><button class="panel-action" type="button" data-market-brand="${brand.id}">${iconSvg.eye}<span>Open</span></button></div>
+              <div data-label="Models"><div class="main-text">${modelCount.toLocaleString()} models</div></div>
+              <div data-label="References"><div class="main-text">${referenceCount.toLocaleString()} references</div></div>
+              <div><button class="panel-action market-arrow-action" type="button" data-market-brand="${brand.id}" title="View ${brand.name} models" aria-label="View ${brand.name} models">View</button></div>
             </div>
-          `).join("") || `<div class="detail-empty user-empty">No market brands found</div>`}
+          `}).join("") || `<div class="detail-empty user-empty">No brands found</div>`}
         </div>
         <div class="footer-range">
           <span>แสดง ${rows.length ? `${start + 1}-${Math.min(start + marketCatalogPageSize, rows.length)}` : "0"} จาก ${rows.length}</span>
@@ -13869,38 +14428,163 @@
       `;
     }
 
+    function renderMarketSyncStatus(row) {
+      const color = row.status === "Completed" ? "green" : row.status === "Failed" ? "red" : row.status === "Running" ? "amber" : "purple";
+      return `<span class="pill ${color}">${row.statusLabel || row.status}</span>`;
+    }
+
+    function renderMarketSyncLogAction(row) {
+      return `<button class="panel-action market-arrow-action" type="button" data-market-record="${row.id}" title="View sync log for ${getMarketSyncTitleLabel(row)}" aria-label="View sync log for ${getMarketSyncTitleLabel(row)}">Detail</button>`;
+    }
+
+    function getMarketSyncTitleLabel(row) {
+      if (row.id === "JOB-BRAND-LIST") return "Brand List Sync";
+      if (row.id === "JOB-MODEL-ROLEX") return "Rolex Model Sync";
+      if (row.id === "JOB-OMEGA-SEARCH") return "Omega Reference Sync";
+      if (row.id === "JOB-PATEK-LIST") return "Patek Philippe Model Sync";
+      if (row.id === "JOB-SEIKO-REF") return "Seiko Reference Sync";
+      return row.title;
+    }
+
+    function getMarketSyncScopeLabel(row) {
+      if (row.parentEntity === "Provider") return "All brands";
+      const label = (row.parentId || "").replace(/^BRD-/, "").replace(/-/g, " ").trim();
+      if (!label) return row.parentEntity || "-";
+      return label.toLowerCase().replace(/\b\w/g, letter => letter.toUpperCase());
+    }
+
+    function getMarketSyncScopeTypeLabel(row) {
+      if (row.parentEntity === "Provider") return "ทั้งหมด";
+      if (row.parentEntity === "Brand") return "แบรนด์";
+      return row.parentEntity || "-";
+    }
+
+    function getMarketSyncResultLabel(row) {
+      if (row.status === "Failed") return "Sync ไม่สำเร็จ";
+      if (row.status === "Running") return "กำลังอัปเดตข้อมูล";
+      return "อัปเดตข้อมูลแล้ว";
+    }
+
+    function getMarketSyncRecordLabel(row) {
+      if (row.status === "Failed") return "ไม่เปลี่ยนข้อมูลเดิม";
+      return row.synced;
+    }
+
+    function getMarketSyncIssueLabel(row) {
+      if (row.status === "Failed") return row.errorCode === "too_many_results" ? "ข้อมูลจาก provider มากเกินไป ระบบไม่เปลี่ยน cache เดิม" : "Sync ล้มเหลว ระบบบันทึก error";
+      if (row.status === "Running") return "กำลังทำงาน รอผลลัพธ์ล่าสุด";
+      return "ไม่มีปัญหา";
+    }
+
+    function shouldShowMarketSyncIssue(row) {
+      return row.status === "Failed" || row.status === "Running";
+    }
+
+    function getMarketSyncCriteriaLabel(row) {
+      if (!row.params || row.params === "{}") return "ไม่มีตัวกรอง ดึงข้อมูลทั้งหมด";
+      const criteria = [];
+      const brandMatch = row.params.match(/brand:\s*'([^']+)'/);
+      const searchAttributesMatch = row.params.match(/search_attributes:\s*'([^']+)'/);
+      if (brandMatch) criteria.push(`Brand: ${brandMatch[1]}`);
+      if (searchAttributesMatch) criteria.push(`Search fields: ${searchAttributesMatch[1].replace(/,/g, ", ")}`);
+      return criteria.join(" / ") || row.params;
+    }
+
+    function getMarketSyncDatasetLabel(row) {
+      if (row.id === "JOB-BRAND-LIST") return "Brand catalog";
+      if (row.id === "JOB-MODEL-ROLEX") return "Rolex models";
+      if (row.id === "JOB-OMEGA-SEARCH") return "Omega references";
+      if (row.id === "JOB-PATEK-LIST") return "Patek Philippe models";
+      if (row.id === "JOB-SEIKO-REF") return "Seiko references";
+      return getMarketSyncScopeLabel(row);
+    }
+
+    function getMarketSyncErrorLabel(row) {
+      if (row.errorCode === "too_many_results") return "provider ส่งผลลัพธ์มากเกินเงื่อนไขที่ระบบกำหนดไว้";
+      return row.detail || "sync ไม่สำเร็จก่อนอัปเดตข้อมูลใหม่";
+    }
+
+    function getMarketSyncProcessingSteps(row) {
+      const scope = getMarketSyncScopeLabel(row);
+      if (row.status === "Completed" && row.id === "JOB-BRAND-LIST") {
+        return [
+          ["รับข้อมูลจาก provider", `ดึงรายการแบรนด์จาก ${row.endpoint} โดยไม่มีตัวกรอง`],
+          ["ตรวจสอบและ normalize", "ปรับชื่อแบรนด์, slug/key และตัดรายการซ้ำก่อนบันทึก"],
+          ["อัปเดต backend cache", `${row.synced} ถูกบันทึกเป็น brand catalog ล่าสุด`],
+          ["Refresh dependent data", "อัปเดต brand autocomplete และ filter ที่อ้างอิง brand catalog"]
+        ];
+      }
+      if (row.status === "Completed") {
+        return [
+          ["รับข้อมูลจาก provider", `ดึงข้อมูล ${scope} จาก ${row.endpoint}`],
+          ["ตรวจสอบและ normalize", "ผูกข้อมูลกับ brand key และปรับรูปแบบข้อมูลก่อนเข้า cache"],
+          ["อัปเดต backend cache", `${row.synced} ถูกบันทึกเป็น catalog ล่าสุด`],
+          ["Refresh dependent data", row.cacheAction]
+        ];
+      }
+      if (row.status === "Running") {
+        return [
+          ["กำลังประมวลผล", `${row.synced}`],
+          ["รอผลลัพธ์สมบูรณ์", "ยังไม่อัปเดต cache ชุดนี้จนกว่า job จะจบสมบูรณ์"],
+          ["Cache ปัจจุบัน", "ยังใช้ข้อมูล Omega ชุดเดิมระหว่างรอ job เสร็จ"]
+        ];
+      }
+      return [
+        ["สาเหตุที่ไม่สำเร็จ", getMarketSyncErrorLabel(row)],
+        ["ผลต่อ cache", "ระบบไม่แทนที่ cache เดิม"],
+        ["ข้อมูลที่ใช้อยู่", `${getMarketSyncDatasetLabel(row)} ยังใช้ข้อมูลจาก sync ครั้งล่าสุดที่สำเร็จ`]
+      ];
+    }
+
+    function renderMarketSyncProcessingEvents(row) {
+      return getMarketSyncProcessingSteps(row).map(step => `
+        <div class="event"><strong>${step[0]}</strong><br>${step[1]}</div>
+      `).join("");
+    }
+
     function renderMarketQueueRows(subLabel) {
-      const q = (document.querySelector("#market-search")?.value || "").trim().toLowerCase();
-      const status = document.querySelector("#market-status-filter")?.value || "";
-      const brandFilter = document.querySelector("#market-brand-filter")?.value || "";
+      const hasFilters = subLabel !== "Sync History";
+      const q = hasFilters ? (document.querySelector("#market-search")?.value || "").trim().toLowerCase() : "";
+      const status = hasFilters ? (document.querySelector("#market-status-filter")?.value || "") : "";
+      const brandFilter = hasFilters ? (document.querySelector("#market-brand-filter")?.value || "") : "";
       const rows = getMarketRowsForSub(subLabel).filter(row => {
         const text = Object.values(row).flat().join(" ").toLowerCase();
-        return (!q || text.includes(q)) && (!status || row.status === status) && (!brandFilter || row.brand === brandFilter || row.brand.includes(brandFilter));
+        return (!q || text.includes(q)) && (!status || row.status === status) && (!brandFilter || row.source === brandFilter);
       });
       document.querySelector("#table").innerHTML = `
         <div class="asset-table category-table market-table market-record-table">
-          <div class="asset-row head"><div>Record</div><div>Brand / Source</div><div>Type</div><div>Status</div><div>Action</div></div>
+          <div class="asset-row head"><div>รายการข้อมูล</div><div>ข้อมูลที่อัปเดต</div><div>สถานะ</div><div>เวลา</div><div>ผลลัพธ์</div><div>หมายเหตุ</div><div>รายละเอียด</div></div>
         ${rows.map(row => `
           <div class="asset-row" data-market-record="${row.id}">
-            <div data-label="Record"><div class="main-text">${row.title}</div><div class="muted">${row.id} · ${row.detail}</div></div>
+            <div data-label="รายการข้อมูล"><div class="main-text">${getMarketSyncTitleLabel(row)}</div><div class="muted">${row.id}</div></div>
+            <div data-label="ข้อมูลที่อัปเดต"><div class="main-text">${getMarketSyncScopeLabel(row)}</div><div class="muted">${getMarketSyncScopeTypeLabel(row)}</div></div>
             <div class="market-card-tags">
-              ${statusPill(row.status, row.priority)}
-              <span class="user-card-tag asset-tag">${row.type}</span>
-              <span class="user-card-tag asset-tag">${row.brand}</span>
+              ${renderMarketSyncStatus(row)}
+              <span class="user-card-tag asset-tag">${row.id}</span>
               <div class="market-card-meta user-card-meta">
-                <div class="user-card-meta-item"><span>Brand</span><strong>${row.brand}</strong></div>
-                <div class="user-card-meta-item"><span>Source</span><strong>${row.source}</strong></div>
-                <div class="user-card-meta-item"><span>Status</span><strong>${row.status}</strong></div>
+                <div class="user-card-meta-item"><span>รายการ</span><strong>${getMarketSyncTitleLabel(row)}</strong></div>
+                <div class="user-card-meta-item"><span>ข้อมูลที่อัปเดต</span><strong>${getMarketSyncScopeLabel(row)}</strong></div>
+                <div class="user-card-meta-item"><span>เริ่มเมื่อ</span><strong>${row.started}</strong></div>
+                <div class="user-card-meta-item"><span>ใช้เวลา</span><strong>${row.duration}</strong></div>
+                ${shouldShowMarketSyncIssue(row) ? `<div class="user-card-meta-item"><span>หมายเหตุ</span><strong>${getMarketSyncIssueLabel(row)}</strong></div>` : ""}
               </div>
             </div>
-            <div data-label="Brand / Source"><div class="main-text">${row.brand}</div><div class="muted">${row.source}</div></div>
-            <div data-label="Type"><span class="pill blue">${row.type}</span></div>
-            <div data-label="Status">${statusPill(row.status, row.priority)}</div>
-            <div><button class="panel-action" type="button" data-market-record="${row.id}">${iconSvg.eye}<span>Review</span></button></div>
+            <div data-label="สถานะ">${renderMarketSyncStatus(row)}</div>
+            <div data-label="เวลา"><div class="main-text">${row.started}</div><div class="muted">${row.duration}</div></div>
+            <div data-label="ผลลัพธ์"><div class="main-text">${getMarketSyncRecordLabel(row)}</div></div>
+            <div data-label="หมายเหตุ"><div class="main-text">${shouldShowMarketSyncIssue(row) ? getMarketSyncIssueLabel(row) : ""}</div></div>
+            <div data-label="รายละเอียด">${renderMarketSyncLogAction(row)}</div>
           </div>
-        `).join("") || `<div class="detail-empty user-empty">No market data records found</div>`}
+        `).join("") || `<div class="detail-empty user-empty">No sync logs found</div>`}
         </div>
-        <div class="footer-range"><span>แสดง ${rows.length ? `1-${rows.length}` : "0"} จาก ${rows.length}</span></div>
+        <div class="footer-range">
+          <span>แสดง ${rows.length ? `1-${rows.length}` : "0"} จาก ${rows.length}</span>
+          <div class="pager">
+            <button class="btn" type="button" disabled>ก่อนหน้า</button>
+            <button class="btn active" type="button">1</button>
+            <button class="btn" type="button" disabled>ถัดไป</button>
+          </div>
+        </div>
       `;
     }
 
@@ -13997,32 +14681,20 @@
       const visibleRows = rows.slice(start, start + marketModelPageSize);
       document.querySelector("#table").innerHTML = `
         <div class="asset-table category-table market-table market-model-table">
-          <div class="asset-row head"><div>Model</div><div>References</div><div>Movement</div><div>Complication</div><div>Case Size</div><div>Material</div><div>Action</div></div>
+          <div class="asset-row head"><div>Model</div><div>References</div><div>Action</div></div>
           ${visibleRows.map(({ model, index }) => {
             const summary = getMarketModelDisplaySummary(model);
             return `
             <div class="asset-row" data-market-model="${index}" data-market-brand-id="${brand.id}">
               <div data-label="Model"><div class="main-text">${model.name}</div></div>
               <div class="market-card-tags">
-                <span class="pill ${model.status === "Inactive" ? "amber" : "green"}">${model.status || "Active"}</span>
-                <span class="user-card-tag asset-tag">${summary.references} refs</span>
-                <span class="user-card-tag asset-tag">${summary.movement}</span>
-                <span class="user-card-tag asset-tag">${summary.caseSize}</span>
                 <div class="market-card-meta user-card-meta">
                   <div class="user-card-meta-item"><span>References</span><strong>${summary.references}</strong></div>
-                  <div class="user-card-meta-item"><span>Status</span><strong>${model.status || "Active"}</strong></div>
                   <div class="user-card-meta-item"><span>Movement</span><strong>${summary.movement}</strong></div>
-                  <div class="user-card-meta-item"><span>Complication</span><strong>${summary.complication || "-"}</strong></div>
-                  <div class="user-card-meta-item"><span>Case Size</span><strong>${summary.caseSize}</strong></div>
-                  <div class="user-card-meta-item"><span>Material</span><strong>${summary.material}</strong></div>
                 </div>
               </div>
-              <div data-label="References"><div class="main-text">${summary.referenceExamples}</div></div>
-              <div data-label="Movement"><div class="main-text">${summary.movement}</div></div>
-              <div data-label="Complication"><div class="main-text">${summary.complication || "-"}</div></div>
-              <div data-label="Case Size"><div class="main-text">${summary.caseSize}</div></div>
-              <div data-label="Material"><div class="main-text">${summary.material}</div></div>
-              <div><button class="panel-action" type="button" data-market-model="${index}" data-market-brand-id="${brand.id}">${iconSvg.eye}<span>Open</span></button></div>
+              <div data-label="References"><div class="main-text">${summary.references} references</div></div>
+              <div><button class="panel-action market-arrow-action" type="button" data-market-model="${index}" data-market-brand-id="${brand.id}" title="View ${model.name} references" aria-label="View ${model.name} references">View</button></div>
             </div>
           `}).join("") || `<div class="detail-empty user-empty">No models found for this brand</div>`}
         </div>
@@ -14051,30 +14723,24 @@
       const visibleRows = rows.slice(start, start + marketReferencePageSize);
       document.querySelector("#table").innerHTML = `
         <div class="asset-table category-table market-table market-record-table market-reference-list-table">
-          <div class="asset-row head"><div>Reference</div><div>Year</div><div>Material</div><div>Action</div></div>
+          <div class="asset-row head"><div>Reference No.</div><div>Movement</div><div>Production Year</div><div>Material</div><div>Estimated Price</div><div>Last Updated</div></div>
           ${visibleRows.map(({ reference, index }) => `
             <div class="asset-row" data-market-reference="${index}" data-market-brand-id="${brand.id}" data-market-model-index="${modelIndex}">
-              <div data-label="Reference"><div class="main-text">${reference.number}</div></div>
-              <div class="market-card-tags">
-                <span class="user-card-tag asset-tag">${reference.year}</span>
-                <span class="user-card-tag asset-tag">${reference.caseSize}</span>
-                <div class="market-card-meta user-card-meta">
-                  <div class="user-card-meta-item"><span>Year</span><strong>${reference.year}</strong></div>
-                  <div class="user-card-meta-item"><span>Material</span><strong>${reference.material}</strong></div>
-                </div>
-              </div>
-              <div data-label="Year"><div class="main-text">${reference.year}</div></div>
-              <div data-label="Material"><div class="main-text">${reference.material}</div><div class="muted">${reference.caseSize} / ${reference.movement}</div></div>
-              <div><button class="panel-action" type="button" data-market-reference="${index}" data-market-brand-id="${brand.id}" data-market-model-index="${modelIndex}">${iconSvg.eye}<span>Open</span></button></div>
+              <div data-label="Reference No."><div class="main-text">${reference.number}</div></div>
+              <div data-label="Movement"><div class="main-text">${reference.movement || model.movement}</div></div>
+              <div data-label="Production Year"><div class="main-text">${reference.year}</div></div>
+              <div data-label="Material"><div class="main-text">${reference.material}</div></div>
+              <div data-label="Estimated Price"><div class="main-text market-price">${reference.price}</div></div>
+              <div data-label="Last Updated"><div class="main-text">${reference.updated || "2026-08-05"}</div></div>
             </div>
           `).join("") || `<div class="detail-empty user-empty">No references found for this model</div>`}
         </div>
         <div class="footer-range">
-          <span>\u0e41\u0e2a\u0e14\u0e07 ${rows.length ? `${start + 1}-${Math.min(start + marketReferencePageSize, rows.length)}` : "0"} \u0e08\u0e32\u0e01 ${rows.length}</span>
+          <span>แสดง ${rows.length ? `${start + 1}-${Math.min(start + marketReferencePageSize, rows.length)}` : "0"} จาก ${rows.length}</span>
           <div class="pager">
-            <button class="btn" type="button" data-market-reference-page="prev" ${marketReferencePage <= 1 ? "disabled" : ""}>\u0e01\u0e48\u0e2d\u0e19\u0e2b\u0e19\u0e49\u0e32</button>
+            <button class="btn" type="button" data-market-reference-page="prev" ${marketReferencePage <= 1 ? "disabled" : ""}>ก่อนหน้า</button>
             ${Array.from({ length: pageCount }, (_, index) => `<button class="btn ${index + 1 === marketReferencePage ? "active" : ""}" type="button" data-market-reference-page="${index + 1}">${index + 1}</button>`).join("")}
-            <button class="btn" type="button" data-market-reference-page="next" ${marketReferencePage >= pageCount ? "disabled" : ""}>\u0e16\u0e31\u0e14\u0e44\u0e1b</button>
+            <button class="btn" type="button" data-market-reference-page="next" ${marketReferencePage >= pageCount ? "disabled" : ""}>ถัดไป</button>
           </div>
         </div>
       `;
@@ -14113,7 +14779,7 @@
           </div>
           <div class="detail-section">
             <h4>Sync Source</h4>
-            <div class="kv"><span>Endpoints</span><strong>${brand.source}</strong></div>
+            <div class="kv"><span>Provider source</span><strong>${brand.source}</strong></div>
             <div class="kv"><span>Last sync</span><strong>${brand.lastSync}</strong></div>
           </div>
         </div>
@@ -14121,8 +14787,8 @@
     }
 
     function renderMarketReferenceStatus(status) {
-      const priority = status === "Needs Review" || status === "Reviewing" ? "กลาง" : status === "Needs Mapping" || status === "Open" ? "ปกติ" : "";
-      return statusPill(status, priority || "ปกติ");
+      const priority = status === "Needs Review" || status === "Reviewing" ? "Medium" : status === "Needs Mapping" || status === "Open" ? "Normal" : "";
+      return statusPill(status, priority || "Normal");
     }
 
     function renderMarketManagementActions(scope, brand, modelIndex = "", referenceIndex = "") {
@@ -14241,8 +14907,7 @@
     }
 
     function renderMarketActionTiles(action, target) {
-      const brands = marketCatalogData.brands.length;
-      const references = marketCatalogData.brands.reduce((sum, brand) => sum + brand.references, 0);
+      const marketMetrics = getMarketMetricCards();
       const configs = {
         import: [
           ["Batch", "CSV / XLSX"],
@@ -14252,8 +14917,8 @@
         ],
         export: [
           ["Scope", "Catalog"],
-          ["Brands", brands.toLocaleString()],
-          ["References", references.toLocaleString()],
+          ["Brands", marketMetrics.brands],
+          ["References", marketMetrics.references],
           ["Expires", "24 hours"]
         ]
       };
@@ -14846,32 +15511,26 @@
       activeMarketBrandId = brand.id;
       marketModelPage = 1;
       activeModule = "market";
-      activeSub = "Catalog";
+      activeSub = "Brands & Models";
       document.body.classList.add("market-list-mode");
+      document.body.classList.remove("market-dashboard-mode");
       document.body.classList.remove("dashboard-mode", "user-management-mode", "asset-list-mode", "article-list-mode", "category-list-mode", "reported-board-mode", "asset-detail-mode", "user-list-mode", "user-detail-mode");
-      setPageActions(renderPageBackButton('data-market-back="catalog"', "Back to Catalog"));
-      document.querySelector("#crumb").textContent = `${moduleData.market.crumb} / Catalog / ${brand.name}`;
+      setPageActions(renderPageBackButton('data-market-back="catalog"', "Back to Brands"));
+      document.querySelector("#crumb").textContent = `${moduleData.market.crumb} / Brands & Models / ${brand.name}`;
       document.querySelector("#page-title").textContent = brand.name;
       document.querySelector("#page-meta").textContent = "";
-      document.querySelector("#panel-title").innerHTML = `MODELS <span class="panel-title-count">${(brand.modelsSample || []).length.toLocaleString()} Models</span>`;
+      document.querySelector("#panel-title").innerHTML = `${brand.name} — All Models <span class="panel-title-count">(${(brand.modelsSample || []).length.toLocaleString()})</span>`;
       document.querySelector("#panel-subtitle").textContent = "";
       document.querySelector("#primary-action").textContent = "";
       document.querySelector("#user-panel-filter-actions").innerHTML = "";
       document.querySelector(".filters").innerHTML = `
         <div class="user-filter-bar market-catalog-filter-bar">
-          <input class="field search" id="market-model-search" type="search" placeholder="Search model" />
+          <input class="field search" id="market-model-search" type="search" placeholder="Search ${brand.name} models" />
         </div>
       `;
       document.querySelector("#summary-grid").innerHTML = "";
       document.querySelector("#cards").innerHTML = "";
-      document.querySelector("#detail").innerHTML = `
-        <div class="panel-head"><div><h2>API Source Review</h2><p>Read-only source data, sync state and downstream impact</p></div></div>
-        <div class="detail-body">
-          ${renderMarketImpactSection(brand)}
-          ${renderMarketManagementActions("brand", brand)}
-          ${renderMarketAuditSection(brand.name)}
-        </div>
-      `;
+      document.querySelector("#detail").innerHTML = "";
       renderMarketModelRows(brand);
       updateActiveNav();
       scrollMainToTop();
@@ -14885,35 +15544,37 @@
       activeMarketModelIndex = Number(modelIndex) || 0;
       marketReferencePage = 1;
       activeModule = "market";
-      activeSub = "Catalog";
+      activeSub = "Brands & Models";
       document.body.classList.add("market-list-mode");
+      document.body.classList.remove("market-dashboard-mode");
       document.body.classList.remove("dashboard-mode", "user-management-mode", "asset-list-mode", "article-list-mode", "category-list-mode", "reported-board-mode", "asset-detail-mode", "user-list-mode", "user-detail-mode");
       setPageActions(renderPageBackButton(`data-market-back="brand" data-market-brand-id="${brand.id}"`, `Back to ${brand.name}`));
-      document.querySelector("#crumb").textContent = `${moduleData.market.crumb} / Catalog / ${brand.name} / ${model.name}`;
-      document.querySelector("#page-title").textContent = model.name;
+      document.querySelector("#crumb").textContent = `${moduleData.market.crumb} / Brands & Models / ${brand.name} / ${model.name.replace(`${brand.name} `, "")}`;
+      document.querySelector("#page-title").textContent = model.name.replace(`${brand.name} `, "");
       document.querySelector("#page-meta").textContent = "";
-      document.querySelector("#panel-title").textContent = "REFERENCES";
+      document.querySelector("#panel-title").innerHTML = `${model.name} -- All References <span class="panel-title-count">(${(model.references || []).length.toLocaleString()})</span>`;
       document.querySelector("#panel-subtitle").textContent = "";
       document.querySelector("#primary-action").textContent = "";
       document.querySelector("#user-panel-filter-actions").innerHTML = "";
       document.querySelector(".filters").innerHTML = `
         <div class="user-filter-bar market-catalog-filter-bar">
-          <input class="field search" id="market-reference-search" type="search" placeholder="Search reference" />
+          <input class="field search" id="market-reference-search" type="search" placeholder="Search ${model.name} references" />
         </div>
       `;
       document.querySelector("#summary-grid").innerHTML = "";
       document.querySelector("#cards").innerHTML = "";
-      document.querySelector("#detail").innerHTML = `
-        <div class="panel-head"><div><h2>Model Source Review</h2><p>Model relation, API metadata and audit</p></div></div>
-        <div class="detail-body">
-          ${renderMarketImpactSection(brand)}
-          ${renderMarketManagementActions("model", brand, activeMarketModelIndex)}
-          ${renderMarketAuditSection(model.name)}
-        </div>
-      `;
+      document.querySelector("#detail").innerHTML = "";
       renderMarketReferenceRows(brand, activeMarketModelIndex);
       updateActiveNav();
       scrollMainToTop();
+    }
+
+    function getMarketReferenceThaiDescription(reference) {
+      const descriptionMap = {
+        "15500ST": "Royal Oak 15500ST รุ่นทดแทน 15400ST ตัวเรือน Octagon อันเป็นเอกลักษณ์ ออกแบบโดย Gerald Genta",
+        "15202ST": "Royal Oak Jumbo 15202ST ตัวเรือนบางพิเศษ ขนาด 39 mm เป็นหนึ่งในเลขอ้างอิงสำคัญของตระกูล Royal Oak"
+      };
+      return descriptionMap[reference.number] || `${reference.number} เป็นเลขอ้างอิงในตระกูลรุ่นนี้ ใช้สำหรับตรวจสอบข้อมูลรุ่น วัสดุ ราคา และบริบทประกอบการยืนยันสินค้า`;
     }
 
     function renderMarketReferenceDetailPage(brandId = activeMarketBrandId, modelIndex = 0, referenceIndex = 0) {
@@ -14923,41 +15584,53 @@
       if (!brand || !model || !reference) return;
       activeMarketBrandId = brand.id;
       activeMarketModelIndex = Number(modelIndex) || 0;
-      activeModule = "market";
-      activeSub = "Catalog";
-      document.body.classList.add("market-list-mode");
-      document.body.classList.remove("dashboard-mode", "user-management-mode", "asset-list-mode", "article-list-mode", "category-list-mode", "reported-board-mode", "asset-detail-mode", "user-list-mode", "user-detail-mode");
-      setPageActions(renderPageBackButton(`data-market-back="model" data-market-brand-id="${brand.id}" data-market-model-index="${activeMarketModelIndex}"`, `Back to ${model.name}`));
-      document.querySelector("#crumb").textContent = `${moduleData.market.crumb} / Catalog / ${brand.name} / ${model.name} / ${reference.number}`;
-      document.querySelector("#page-title").textContent = reference.number;
-      document.querySelector("#page-meta").textContent = "";
-      document.querySelector("#panel-title").textContent = "REFERENCE DETAIL";
-      document.querySelector("#panel-subtitle").textContent = "";
-      document.querySelector("#primary-action").textContent = "";
-      document.querySelector("#user-panel-filter-actions").innerHTML = "";
-      document.querySelector(".filters").innerHTML = "";
-      document.querySelector("#summary-grid").innerHTML = "";
-      document.querySelector("#cards").innerHTML = "";
-      document.querySelector("#detail").innerHTML = "";
-      document.querySelector("#table").innerHTML = `
-        <div class="market-brand-detail">
-          <div class="detail-grid two">
-            <div class="detail-tile"><span>Brand</span><strong>${brand.name}</strong></div>
-            <div class="detail-tile"><span>Model</span><strong>${model.name}</strong></div>
-            <div class="detail-tile"><span>Reference</span><strong>${reference.number}</strong></div>
-            <div class="detail-tile"><span>Year</span><strong>${reference.year}</strong></div>
-            <div class="detail-tile"><span>Case Size</span><strong>${reference.caseSize}</strong></div>
-            <div class="detail-tile"><span>Material</span><strong>${reference.material}</strong></div>
-            <div class="detail-tile"><span>Movement</span><strong>${reference.movement}</strong></div>
-            <div class="detail-tile"><span>Price</span><strong>${reference.price}</strong></div>
+      const priceNumber = String(reference.price || "").replace(/^USD\s*/i, "$");
+      const modelShortName = model.name.replace(`${brand.name} `, "");
+      const sourceDescription = reference.descriptionThai || getMarketReferenceThaiDescription(reference);
+      const modal = document.querySelector("#user-action-modal");
+      const modalCard = modal?.querySelector(".user-action-modal");
+      const modalBody = document.querySelector("#user-action-modal-body");
+      if (!modal || !modalCard || !modalBody) return;
+      modalCard.classList.add("market-reference-drawer");
+      modalBody.innerHTML = `
+        <div class="market-reference-drawer-content">
+          <div class="market-drawer-head">
+            <div>
+              <span>${brand.name.toUpperCase()}</span>
+              <h2 id="user-action-modal-title">${modelShortName}</h2>
+              <p>Ref. ${reference.number}</p>
+            </div>
+            <button class="btn user-action-close" type="button" data-user-action-modal-close aria-label="Close modal" title="Close">${iconSvg.close}</button>
           </div>
-          <div class="module-note"><strong>Description:</strong> ${reference.description}</div>
-          ${renderMarketManagementActions("reference", brand, activeMarketModelIndex, referenceIndex)}
-          ${renderMarketAuditSection(reference.number)}
+          <div class="market-drawer-spec-grid">
+            <div><span>Movement</span><strong>${reference.movement || model.movement}</strong></div>
+            <div><span>ปีที่ผลิต</span><strong>${reference.year}</strong></div>
+            <div><span>วัสดุตัวเรือน</span><strong>${reference.material}</strong></div>
+            <div><span>ขนาดหน้าปัด</span><strong>${reference.caseSize}</strong></div>
+          </div>
+          <section class="market-price-card">
+            <div>
+              <span>ราคาตลาดโดยประมาณ (USD)</span>
+              <strong>${priceNumber}</strong>
+            </div>
+            <em>▲ 2.4% / 30 วัน</em>
+            <svg viewBox="0 0 320 48" aria-hidden="true">
+              <line class="market-chart-guide" x1="4" y1="34" x2="316" y2="34" />
+              <polygon class="market-chart-area" points="4,36 35,33 68,35 100,27 132,29 165,22 198,24 230,18 262,20 292,14 316,16 316,42 4,42" />
+              <polyline points="4,36 35,33 68,35 100,27 132,29 165,22 198,24 230,18 262,20 292,14 316,16" />
+              <circle cx="316" cy="16" r="4" />
+            </svg>
+          </section>
+          <section class="market-source-copy">
+            <span>คำอธิบาย</span>
+            <p>${sourceDescription}</p>
+          </section>
+          <div class="market-source-note">
+            อัปเดตจาก thewatchapi ล่าสุด ${reference.updated || "2026-08-05"}
+          </div>
         </div>
       `;
-      updateActiveNav();
-      scrollMainToTop();
+      showUserActionModal();
     }
 
     function renderMarketRecordDetail(recordId, subLabel = activeSub) {
@@ -14988,18 +15661,73 @@
       `;
     }
 
+    function renderMarketRecordDetailSections(row) {
+      if (row.status === "Completed") {
+        return `
+          <section class="market-detail-section">
+            <h3>Sync Summary</h3>
+            <div class="kv"><span>Provider</span><strong>${row.source}</strong></div>
+            <div class="kv"><span>Endpoint</span><strong>${row.endpoint}</strong></div>
+            <div class="kv"><span>Sync criteria</span><strong>${getMarketSyncCriteriaLabel(row)}</strong></div>
+            <div class="kv"><span>Scope</span><strong>${getMarketSyncScopeLabel(row)} / ${getMarketSyncScopeTypeLabel(row)}</strong></div>
+            <div class="kv"><span>Result</span><strong>${row.resultCode || "synced"}</strong></div>
+            <div class="module-note"><strong>จำนวนที่ Sync:</strong> ${row.synced}</div>
+          </section>
+          <section class="market-detail-section">
+            <h3>Sync Status</h3>
+            <div class="timeline">${renderMarketSyncProcessingEvents(row)}</div>
+          </section>
+        `;
+      }
+      if (row.status === "Running") {
+        return `
+          <section class="market-detail-section">
+            <h3>Sync Summary</h3>
+            <div class="kv"><span>Provider</span><strong>${row.source}</strong></div>
+            <div class="kv"><span>Endpoint</span><strong>${row.endpoint}</strong></div>
+            <div class="kv"><span>Sync criteria</span><strong>${getMarketSyncCriteriaLabel(row)}</strong></div>
+            <div class="kv"><span>Progress</span><strong>${row.synced}</strong></div>
+            <div class="module-note">${row.detail}</div>
+          </section>
+          <section class="market-detail-section">
+            <h3>Sync Status</h3>
+            <div class="timeline">${renderMarketSyncProcessingEvents(row)}</div>
+          </section>
+        `;
+      }
+      return `
+        <section class="market-detail-section">
+          <h3>Sync Summary</h3>
+          <div class="kv"><span>Source</span><strong>${row.source}</strong></div>
+          <div class="kv"><span>Dataset</span><strong>${getMarketSyncDatasetLabel(row)}</strong></div>
+          <div class="kv"><span>Sync criteria</span><strong>${getMarketSyncCriteriaLabel(row)}</strong></div>
+          <div class="kv"><span>Result</span><strong>${row.statusLabel || row.status}</strong></div>
+          <div class="kv"><span>สาเหตุ</span><strong>${getMarketSyncErrorLabel(row)}</strong></div>
+          <div class="kv"><span>จำนวนครั้งที่ระบบลองใหม่</span><strong>${row.retryCount ?? 0}</strong></div>
+          <div class="module-note"><strong>ผลลัพธ์:</strong> ระบบเก็บข้อมูลเดิมไว้ และไม่มีข้อมูลใหม่ถูกอัปเดต</div>
+        </section>
+        <section class="market-detail-section">
+          <h3>Sync Status</h3>
+          <div class="timeline">${renderMarketSyncProcessingEvents(row)}</div>
+        </section>
+      `;
+    }
+
     function renderMarketRecordDetailPage(recordId, subLabel = activeSub) {
       const row = getMarketRowsForSub(subLabel).find(entry => entry.id === recordId) || getMarketRowsForSub(subLabel)[0];
       if (!row) return;
+      const pageLabel = subLabel;
+      const detailTitle = "Sync Detail";
       activeModule = "market";
       activeSub = subLabel;
       document.body.classList.add("market-list-mode");
+      document.body.classList.remove("market-dashboard-mode");
       document.body.classList.remove("dashboard-mode", "user-management-mode", "asset-list-mode", "article-list-mode", "category-list-mode", "reported-board-mode", "asset-detail-mode", "user-list-mode", "user-detail-mode");
-      setPageActions(`<button class="btn" type="button" data-market-back>${iconSvg.chevron}<span>Back to ${subLabel}</span></button>`);
-      document.querySelector("#crumb").textContent = `${moduleData.market.crumb} / ${subLabel} / ${row.id}`;
-      document.querySelector("#page-title").textContent = row.title;
+      setPageActions(renderPageBackButton("data-market-back", `Back to ${pageLabel}`));
+      document.querySelector("#crumb").textContent = `${moduleData.market.crumb} / ${pageLabel} / ${row.id}`;
+      document.querySelector("#page-title").textContent = getMarketSyncTitleLabel(row);
       document.querySelector("#page-meta").textContent = "";
-      document.querySelector("#panel-title").textContent = "RECORD DETAIL";
+      document.querySelector("#panel-title").textContent = detailTitle;
       document.querySelector("#panel-subtitle").textContent = "";
       document.querySelector("#primary-action").textContent = "";
       document.querySelector("#user-panel-filter-actions").innerHTML = "";
@@ -15010,23 +15738,12 @@
       document.querySelector("#table").innerHTML = `
         <div class="market-brand-detail">
           <div class="market-detail-grid">
-            <div class="detail-tile"><span>Record ID</span><strong>${row.id}</strong></div>
-            <div class="detail-tile"><span>Brand</span><strong>${row.brand}</strong></div>
-            <div class="detail-tile"><span>Type</span><strong>${row.type}</strong></div>
-            <div class="detail-tile"><span>Status</span><strong>${row.status}</strong></div>
+            <div class="detail-tile"><span>Job ID</span><strong>${row.id}</strong></div>
+            <div class="detail-tile"><span>สถานะ</span><strong>${row.statusLabel || row.status}</strong></div>
+            <div class="detail-tile"><span>เริ่มเมื่อ</span><strong>${row.started}</strong></div>
+            <div class="detail-tile"><span>ใช้เวลา</span><strong>${row.duration}</strong></div>
           </div>
-          <section class="market-detail-section">
-            <h3>Source Data</h3>
-            <div class="kv"><span>Source</span><strong>${row.source}</strong></div>
-            <div class="module-note"><strong>Detail:</strong> ${row.detail}</div>
-          </section>
-          <section class="market-detail-section">
-            <h3>System Follow-up</h3>
-            <div class="module-note"><strong>Next step:</strong> ${row.action}</div>
-            <div class="timeline">
-              <div class="event"><strong>System rule</strong><br>Keep API source trace, preserve user-owned asset content, and route corrections through backend/provider sync. BO has no manual merge/edit in Phase 1.</div>
-            </div>
-          </section>
+          ${renderMarketRecordDetailSections(row)}
         </div>
       `;
       updateActiveNav();
@@ -15038,12 +15755,17 @@
       return `${String(date.getDate()).padStart(2, "0")} ${months[date.getMonth()]} ${date.getFullYear()} ${String(date.getHours()).padStart(2, "0")}:${String(date.getMinutes()).padStart(2, "0")}`;
     }
 
+    function formatMarketSyncThaiDate(date = new Date()) {
+      const months = ["ม.ค.", "ก.พ.", "มี.ค.", "เม.ย.", "พ.ค.", "มิ.ย.", "ก.ค.", "ส.ค.", "ก.ย.", "ต.ค.", "พ.ย.", "ธ.ค."];
+      return `${date.getDate()} ${months[date.getMonth()]} ${date.getFullYear() + 543}`;
+    }
+
     function getMarketSyncJobId(date = new Date()) {
       return `SYNC-${date.getFullYear()}${String(date.getMonth() + 1).padStart(2, "0")}${String(date.getDate()).padStart(2, "0")}-${String(date.getHours()).padStart(2, "0")}${String(date.getMinutes()).padStart(2, "0")}`;
     }
 
     function renderMarketSyncSteps(activeIndex = -1, failedIndex = -1) {
-      const steps = ["Queued", "Syncing brand/list", "Syncing model/list", "Syncing reference/list", "Syncing price/history"];
+      const steps = ["Queued", "Syncing brand/list", "Syncing model/list", "Syncing reference/list", "Syncing brand/model/reference price history"];
       return `
         <div class="timeline">
           ${steps.map((step, index) => {
@@ -15058,48 +15780,54 @@
       const modalBody = document.querySelector("#user-action-modal-body");
       if (!modalBody) return;
       const now = new Date();
+      const marketMetrics = getMarketMetricCards();
       const job = activeMarketSyncJob || {
         id: getMarketSyncJobId(now),
         timestamp: formatMarketSyncTimestamp(now),
-        brands: marketCatalogData.brands.length,
-        references: marketCatalogData.brands.reduce((sum, brand) => sum + brand.references, 0)
+        brands: marketMetricTotals.brands,
+        models: marketMetricTotals.models,
+        references: marketMetricTotals.references
       };
       const isRunning = state === "running";
       const isSuccess = state === "success";
       const isError = state === "error";
+      const shouldShowSyncProgress = isRunning || isSuccess || isError;
+      const lastSuccessfulSync = marketMetrics.lastSyncTimestamp;
+      const jobDisplayTimestamp = job.timestamp || lastSuccessfulSync;
       modalBody.innerHTML = `
         <div class="user-action-page market-sync-modal-content">
           <div class="user-action-head">
             <div>
-              <h2 id="user-action-modal-title">${isSuccess ? "Sync สำเร็จ" : isError ? "Sync ไม่สำเร็จ" : isRunning ? "กำลัง Sync API" : "เริ่ม Sync API?"}</h2>
-              <p>${isSuccess ? "รีเฟรชข้อมูล Catalog และบันทึก Sync Log แล้ว" : isError ? "ยังไม่มีการเปลี่ยนข้อมูล Catalog กรุณาตรวจสอบ response ต้นทางก่อน retry endpoint ที่ไม่สำเร็จ" : "เริ่มงาน sync ใหม่จาก thewatchapi สำหรับข้อมูลต้นทางของ Catalog"}</p>
+              <h2 id="user-action-modal-title">Sync Market Data</h2>
+              <p>${isSuccess ? "Catalog data was refreshed and Sync Log / Audit Log records were saved." : isError ? "Catalog data was not changed. Review the upstream response before retrying failed datasets." : "Start a new The Watch API sync for catalog source data. Available to permitted operations users only."}</p>
             </div>
             ${isRunning ? "" : `<button class="btn user-action-close" type="button" data-user-action-modal-close aria-label="Close modal" title="Close">${iconSvg.close}</button>`}
           </div>
           <div class="user-action-target">
             <div>
-              <strong>thewatchapi</strong>
-              <span>แบรนด์, รุ่น, Reference, ประวัติราคา</span>
+              <strong>The Watch API</strong>
+              <span>Brands, models, references, watch details and price history</span>
             </div>
-            <span class="pill ${isError ? "red" : isSuccess ? "green" : "blue"}">${isError ? "ไม่สำเร็จ" : isSuccess ? "สำเร็จ" : isRunning ? "กำลังทำงาน" : "พร้อม"}</span>
+            <span class="pill ${isError ? "red" : isSuccess ? "green" : "blue"}">${isError ? "Failed" : isSuccess ? "Completed" : isRunning ? "Running" : "Ready"}</span>
           </div>
           <div class="user-action-layout">
             <div class="detail-section">
               <div class="detail-grid two">
-                <div class="detail-tile"><span>Job ID</span><strong>${job.id}</strong></div>
-                <div class="detail-tile"><span>Sync ล่าสุด</span><strong>${marketCatalogData.brands[0]?.lastSync || "-"}</strong></div>
-                <div class="detail-tile"><span>แบรนด์</span><strong>${job.brands.toLocaleString()}</strong></div>
-                <div class="detail-tile"><span>References</span><strong>${job.references.toLocaleString()}</strong></div>
+                ${shouldShowSyncProgress ? `<div class="detail-tile"><span>Job ID</span><strong>${job.id}</strong></div>` : ""}
+                <div class="detail-tile"><span>Last Sync</span><strong>${lastSuccessfulSync}</strong></div>
+                <div class="detail-tile"><span>Brands</span><strong>${formatMarketMetric(job.brands)}</strong></div>
+                <div class="detail-tile"><span>Models</span><strong>${formatMarketMetric(job.models)}</strong></div>
+                <div class="detail-tile"><span>References</span><strong>${formatMarketMetric(job.references)}</strong></div>
               </div>
-              ${renderMarketSyncSteps(isRunning ? 3 : isSuccess ? 5 : isError ? 3 : -1, isError ? 3 : -1)}
+              ${shouldShowSyncProgress ? renderMarketSyncSteps(isRunning ? 3 : isSuccess ? 5 : isError ? 3 : -1, isError ? 3 : -1) : ""}
               <div class="user-detail-actions user-action-footer">
-                ${state === "confirm" ? `<button class="user-detail-action-btn primary user-action-confirm" type="button" data-market-sync-run>เริ่ม Sync</button><button class="user-detail-action-btn" type="button" data-user-action-modal-close>ยกเลิก</button>` : ""}
-                ${isRunning ? `<button class="user-detail-action-btn primary user-action-confirm" type="button" disabled>กำลัง Sync...</button>` : ""}
-                ${isSuccess ? `<button class="user-detail-action-btn primary" type="button" data-market-sync-view-logs>ดู Sync Logs</button><button class="user-detail-action-btn" type="button" data-user-action-modal-close>ปิด</button>` : ""}
-                ${isError ? `<button class="user-detail-action-btn warning user-action-confirm" type="button" data-market-sync-retry>Retry endpoint ที่ไม่สำเร็จ</button><button class="user-detail-action-btn" type="button" data-user-action-modal-close>ปิด</button>` : ""}
+                ${state === "confirm" ? `<button class="user-detail-action-btn primary user-action-confirm" type="button" data-market-sync-run>Start Sync</button><button class="user-detail-action-btn" type="button" data-user-action-modal-close>Cancel</button>` : ""}
+                ${isRunning ? `<button class="user-detail-action-btn primary user-action-confirm" type="button" disabled>Syncing...</button>` : ""}
+                ${isSuccess ? `<button class="user-detail-action-btn primary" type="button" data-market-sync-view-logs>View Sync History</button><button class="user-detail-action-btn" type="button" data-user-action-modal-close>Close</button>` : ""}
+                ${isError ? `<button class="user-detail-action-btn warning user-action-confirm" type="button" data-market-sync-retry>Retry Failed Datasets</button><button class="user-detail-action-btn" type="button" data-user-action-modal-close>Close</button>` : ""}
               </div>
-              ${isError ? `<div class="warning-note action-feedback show error"><strong>reference/list ไม่สำเร็จ</strong><br><span>source API ส่ง rate limit กลับมา ข้อมูล Catalog เดิมยังไม่ถูกเปลี่ยนแปลง</span></div>` : ""}
-              ${isSuccess ? `<div class="warning-note action-feedback show success"><strong>Sync สำเร็จ</strong><br><span>รีเฟรชแบรนด์ ${job.brands.toLocaleString()} รายการเมื่อ ${job.timestamp} และบันทึก mapping warning ที่ไม่ block งานไว้ใน Sync Logs แล้ว</span></div>` : ""}
+              ${isError ? `<div class="warning-note action-feedback show error"><strong>reference/list failed</strong><br><span>The source API returned a rate limit. Existing catalog data was not changed.</span></div>` : ""}
+              ${isSuccess ? `<div class="warning-note action-feedback show success"><strong>Sync completed</strong><br><span>Refreshed ${job.brands.toLocaleString()} brands, ${job.models.toLocaleString()} models and ${job.references.toLocaleString()} references at ${jobDisplayTimestamp}. Audit was saved.</span></div>` : ""}
               ${state === "confirm" ? `
                 <details class="prototype-tools user-action-prototype-tools">
                   <summary>Prototype scenario</summary>
@@ -15130,23 +15858,27 @@
 
     function completeMarketSyncJob(job) {
       const syncStartedAt = job.startedAt || new Date();
+      marketMetricTotals.lastSyncTime = job.timestamp.slice(12);
+      marketMetricTotals.lastSyncDate = formatMarketSyncThaiDate(syncStartedAt);
+      marketMetricTotals.lastSyncTimestamp = job.timestamp;
+      marketMetricTotals.lastSyncRelative = "just now";
+      syncMarketModuleCards();
       marketCatalogData.brands.forEach((brand, index) => {
         brand.lastSync = formatMarketSyncTimestamp(new Date(syncStartedAt.getTime() - (index % 5) * 60000));
       });
       const newLog = {
         id: job.id,
-        title: "Manual thewatchapi sync",
+        title: "Manual The Watch API sync",
         brand: "All brands",
         type: "API Batch",
         status: "Completed",
-        priority: "ปกติ",
+        priority: "Normal",
         source: `Manual ${job.timestamp}`,
-        detail: `Brands, models, references and price history completed for ${job.brands.toLocaleString()} brands with 6 mapping warnings.`,
-        action: "Review mapping warnings before publishing downstream changes."
+        detail: `Brands, models, references and price history completed for ${job.brands.toLocaleString()} brands, ${job.models.toLocaleString()} models and ${job.references.toLocaleString()} references with 6 mapping warnings.`,
+        action: "Review mapping warnings and audit record before publishing downstream cache changes."
       };
       if (!marketCatalogData.syncLogs.some(log => log.id === newLog.id)) marketCatalogData.syncLogs.unshift(newLog);
-      moduleData.market.cards[3][1] = job.timestamp.slice(12);
-      if (activeModule === "market" && activeSub === "Catalog") renderMarketCatalogRows();
+      if (activeModule === "market" && activeSub === "Brands & Models") renderMarketCatalogRows();
       job.status = "success";
       renderMarketSyncModal("success");
       showSuccessToast(`${job.id}: Sync completed`);
@@ -15161,8 +15893,9 @@
         timestamp: formatMarketSyncTimestamp(now),
         startedAt: now,
         status: "running",
-        brands: marketCatalogData.brands.length,
-        references: marketCatalogData.brands.reduce((sum, brand) => sum + brand.references, 0)
+        brands: marketMetricTotals.brands,
+        models: marketMetricTotals.models,
+        references: marketMetricTotals.references
       };
       renderMarketSyncModal("running", scenario);
       marketSyncTimer = window.setTimeout(() => finishMarketSyncJob(scenario), 1200);
@@ -15186,13 +15919,10 @@
     }
 
     function renderMarketCards(subLabel) {
-      const cards = subLabel === "Catalog"
-        ? [["Brand-first workflow", "Admin starts from a brand, then drills into models, references, detail fields and price coverage in one context."], ["API source", "thewatchapi supplies brand, model, reference, detail and USD price history. BO keeps source trace and last_updated."], ["Read-only Phase 1", "BO can review API data and sync state, but cannot add, edit, import, override or change status."]]
-        : subLabel === "Mapping Queue"
-          ? [["Mapping review", "Review user-entered names, aliases, duplicate references and unmatched API results before backend exposes them to search logic."], ["No content rewrite", "Mapping can improve system matching without changing the original owner-entered asset text."], ["Phase 1 boundary", "Corrections are routed to backend/provider sync; BO does not manually confirm, merge or ignore records."]]
-          : subLabel === "Price Index"
-            ? [["Indicative price", "API price history is an asking-price signal in USD, not a final appraisal or transaction value."], ["TukDaeng display", "BO can review USD source values while FO or reports convert downstream where THB display is required."], ["Confidence", "Sparse or duplicate price history should lower confidence and avoid auto-flagging assets."]]
-            : [["Sync control", "Scheduled and permitted operations syncs show endpoint coverage, quota usage, warnings and retry state."], ["Error handling", "Rate limit, malformed parameters, token errors and maintenance responses stay visible for operations."], ["Fallback", "FO uses the latest backend cache or Portfolio fallback rules when provider data is unavailable."]];
+      const marketMetrics = getMarketMetricCards();
+      const cards = subLabel === "Dashboard"
+        ? [["Latest Sync Status", `กำลังอัปเดตข้อมูลอ้างอิงของ Omega เหลือ ${marketMetrics.pendingPriceValidation} รุ่นที่ต้องตรวจสอบราคากลาง`]]
+        : [["Brand-first workflow", "Admins start from brands, drill into models, then open references to review detail and price data."], ["API source", "Data comes from The Watch API through backend sync for Brand, Model and Reference catalog."], ["Read-only", "Add, edit, delete and provider master-data overrides are not available."]];
       document.querySelector("#cards").innerHTML = cards.map(card => `
         <article class="mini-card">
           <h3>${card[0]}</h3>
@@ -15201,30 +15931,95 @@
       `).join("");
     }
 
-    function renderMarketData(subLabel = "Catalog") {
+    function renderMarketDashboard() {
+      const marketMetrics = getMarketMetricCards();
+      const syncPercent = Math.round((marketMetricTotals.syncedBrands / marketMetricTotals.brands) * 100);
+      const rows = getMarketCatalogBrands();
+      const pageCount = Math.max(1, Math.ceil(rows.length / marketDashboardPageSize));
+      marketDashboardPage = Math.min(marketDashboardPage, pageCount);
+      const start = (marketDashboardPage - 1) * marketDashboardPageSize;
+      const visibleRows = rows.slice(start, start + marketDashboardPageSize);
+      document.querySelector("#table").innerHTML = `
+        <div class="market-dashboard-stack">
+          <section class="market-sync-current">
+            <div class="market-sync-body">
+              <div class="market-progress-ring"><span>${syncPercent}%</span><small>Synced</small></div>
+              <div class="market-sync-main">
+                <strong>กำลังซิงก์เลขอ้างอิงของ Omega</strong>
+                <p>ซิงก์แบรนด์แล้ว <b>${marketMetrics.syncedBrands}/${marketMetrics.brands}</b> แบรนด์ · เหลือ <b>${marketMetrics.pendingPriceValidation}</b> รุ่นที่ต้องตรวจสอบราคากลาง · ไม่มีข้อผิดพลาดใน 24 ชั่วโมงที่ผ่านมา</p>
+              </div>
+            </div>
+          </section>
+          <section class="market-dashboard-table">
+            <div class="panel-head"><div><h2>Recently Updated Brands</h2></div></div>
+            <div class="asset-table category-table market-table market-dashboard-brand-table">
+              <div class="asset-row head"><div>Brand</div><div>Models</div><div>References</div><div>Last Updated</div><div>Status</div></div>
+              ${visibleRows.map((brand, index) => {
+                const modelCount = getMarketSampleModelCount(brand);
+                const referenceCount = getMarketSampleReferenceCount(brand);
+                const running = brand.id === "omega";
+                const times = ["06 Aug 2026 08:14", "Syncing...", "06 Aug 2026 07:40", "06 Aug 2026 07:38", "06 Aug 2026 06:55"];
+                return `
+                  <div class="asset-row" data-market-brand="${brand.id}">
+                    <div data-label="Brand"><div class="main-text">${brand.name}</div></div>
+                    <div class="market-card-tags">
+                      <div class="market-card-meta user-card-meta">
+                        <div class="user-card-meta-item"><span>Models</span><strong>${modelCount.toLocaleString()}</strong></div>
+                        <div class="user-card-meta-item"><span>References</span><strong>${referenceCount.toLocaleString()}</strong></div>
+                        <div class="user-card-meta-item"><span>Status</span><strong>${running ? "Syncing" : "Completed"}</strong></div>
+                        <div class="user-card-meta-item"><span>Last Sync</span><strong>${times[start + index] || brand.lastSync}</strong></div>
+                      </div>
+                    </div>
+                    <div data-label="Models"><div class="main-text">${modelCount.toLocaleString()}</div></div>
+                    <div data-label="References"><div class="main-text">${referenceCount.toLocaleString()}</div></div>
+                    <div data-label="Last Updated"><div class="main-text">${times[start + index] || brand.lastSync}</div></div>
+                    <div data-label="Status">${statusPill(running ? "Syncing" : "Completed", running ? "Medium" : "Normal")}</div>
+                  </div>
+                `;
+              }).join("")}
+            </div>
+            <div class="footer-range">
+              <span>แสดง ${rows.length ? `${start + 1}-${Math.min(start + marketDashboardPageSize, rows.length)}` : "0"} จาก ${rows.length}</span>
+              <div class="pager">
+                <button class="btn" type="button" data-market-dashboard-page="prev" ${marketDashboardPage <= 1 ? "disabled" : ""}>ก่อนหน้า</button>
+                ${Array.from({ length: pageCount }, (_, index) => `<button class="btn ${index + 1 === marketDashboardPage ? "active" : ""}" type="button" data-market-dashboard-page="${index + 1}">${index + 1}</button>`).join("")}
+                <button class="btn" type="button" data-market-dashboard-page="next" ${marketDashboardPage >= pageCount ? "disabled" : ""}>ถัดไป</button>
+              </div>
+            </div>
+          </section>
+        </div>
+      `;
+    }
+
+    function renderMarketData(subLabel = "Dashboard") {
       activeModule = "market";
-      activeSub = subLabel;
+      activeSub = subLabel || "Dashboard";
+      const pageLabel = activeSub;
       activeRow = null;
       document.body.classList.add("market-list-mode");
+      document.body.classList.toggle("market-dashboard-mode", activeSub === "Dashboard");
       document.body.classList.remove("dashboard-mode", "user-management-mode", "asset-list-mode", "article-list-mode", "category-list-mode", "reported-board-mode", "asset-detail-mode", "user-list-mode", "user-detail-mode");
-      setPageActions(subLabel === "Sync Logs"
-        ? `<button class="btn" type="button" data-market-sync-api>${iconSvg.refresh}<span>เริ่ม Sync</span></button>`
-        : ""
-      );
+      setPageActions("");
       document.querySelector("#user-panel-filter-actions").innerHTML = "";
-      document.querySelector("#crumb").textContent = `${moduleData.market.crumb} / ${subLabel}`;
-      document.querySelector("#page-title").textContent = subLabel;
+      document.querySelector("#crumb").textContent = `${moduleData.market.crumb} / ${pageLabel}`;
+      document.querySelector("#page-title").textContent = pageLabel;
       document.querySelector("#page-meta").textContent = "";
-      document.querySelector("#panel-title").innerHTML = subLabel === "Catalog"
-        ? `BRAND CATALOG <span class="panel-title-count">${marketCatalogData.brands.length.toLocaleString()} Brands</span>`
-        : subLabel.toUpperCase();
+      document.querySelector("#panel-title").innerHTML = subLabel === "Brands & Models"
+        ? `All Brands <span class="panel-title-count">[${getMarketMetricCards().brands}]</span>`
+        : subLabel === "Dashboard"
+          ? "Latest Sync Status"
+          : subLabel === "Sync History"
+            ? "Sync Run History"
+            : subLabel;
       document.querySelector("#panel-subtitle").textContent = "";
-      document.querySelector("#primary-action").textContent = subLabel === "Sync Logs" ? "เริ่ม Sync" : "Sync API";
+      document.querySelector("#primary-action").textContent = "";
       setupMarketFilters(subLabel);
       renderMarketSummaryCards(subLabel);
       renderMarketCards(subLabel);
       document.querySelector("#detail").innerHTML = "";
-      if (subLabel === "Catalog") {
+      if (subLabel === "Dashboard") {
+        renderMarketDashboard();
+      } else if (subLabel === "Brands & Models") {
         renderMarketCatalogRows();
       } else {
         renderMarketQueueRows(subLabel);
@@ -15261,7 +16056,8 @@
         return;
       }
       if (activeModule === "market") {
-        if ((activeSub || "Catalog") === "Catalog") renderMarketCatalogRows();
+        if ((activeSub || "Dashboard") === "Dashboard") renderMarketDashboard();
+        else if (activeSub === "Brands & Models") renderMarketCatalogRows();
         else renderMarketQueueRows(activeSub);
         return;
       }
@@ -18797,7 +19593,7 @@
     }
 
     function statusPill(status, priority) {
-      const color = priority === "สูง" ? "red" : priority === "กลาง" ? "amber" : status === "Active" || status === "Ready" || status === "Published" ? "green" : "purple";
+      const color = priority === "สูง" ? "red" : priority === "กลาง" ? "amber" : ["Active", "Ready", "Published", "สำเร็จ", "Completed"].includes(status) ? "green" : "purple";
       return `<span class="pill ${color}">${status}</span>`;
     }
 
@@ -18943,7 +19739,7 @@
           return;
         }
         if (["market-status-filter", "market-brand-filter"].includes(hiddenInput.id) && activeModule === "market") {
-          if ((activeSub || "Catalog") === "Catalog") marketCatalogPage = 1;
+          if (activeSub === "Brands & Models" || activeSub === "Dashboard") marketCatalogPage = 1;
           renderRows();
           return;
         }
@@ -18988,11 +19784,6 @@
         jumpToAssetReportReference(assetReportJump.dataset.assetReportJump);
         return;
       }
-      const marketSyncButton = event.target.closest("[data-market-sync-api]");
-      if (marketSyncButton) {
-        openMarketSyncModal();
-        return;
-      }
       const marketManagementButton = event.target.closest("[data-market-management-action]");
       if (marketManagementButton && activeModule === "market") {
         openMarketManagementModal(
@@ -19023,7 +19814,7 @@
       const marketSyncLogsButton = event.target.closest("[data-market-sync-view-logs]");
       if (marketSyncLogsButton) {
         closeUserActionModal();
-        jumpToModule("market", "Sync Logs");
+        jumpToModule("market", "Sync History");
         return;
       }
       const moduleJump = event.target.closest("[data-module-jump], [data-jump]");
@@ -19089,7 +19880,7 @@
         } else if (target === "brand") {
           renderMarketBrandDetailPage(marketBackButton.dataset.marketBrandId || activeMarketBrandId);
         } else {
-          renderMarketData(activeSub || "Catalog");
+          renderMarketData(activeSub || "Dashboard");
         }
         updateActiveNav();
         scrollMainToTop();
@@ -19109,7 +19900,7 @@
           brand.value = "";
           updateCustomSelect(brand, "");
         }
-        if ((activeSub || "Catalog") === "Catalog") marketCatalogPage = 1;
+        if (activeSub === "Brands & Models" || activeSub === "Dashboard") marketCatalogPage = 1;
         renderRows();
         return;
       }
@@ -19767,6 +20558,16 @@
         renderMarketCatalogRows();
         return;
       }
+
+      const marketDashboardPageButton = event.target.closest("[data-market-dashboard-page]");
+      if (marketDashboardPageButton) {
+        const target = marketDashboardPageButton.dataset.marketDashboardPage;
+        if (target === "prev") marketDashboardPage = Math.max(1, marketDashboardPage - 1);
+        else if (target === "next") marketDashboardPage += 1;
+        else marketDashboardPage = Number(target) || 1;
+        renderMarketDashboard();
+        return;
+      }
       const marketModelPageButton = event.target.closest("[data-market-model-page]");
       if (marketModelPageButton) {
         const target = marketModelPageButton.dataset.marketModelPage;
@@ -20165,7 +20966,7 @@
         renderRows();
       }
       if (event.target.matches("#market-search")) {
-        if (activeModule === "market" && activeSub === "Catalog") marketCatalogPage = 1;
+        if (activeModule === "market" && (activeSub === "Brands & Models" || activeSub === "Dashboard")) marketCatalogPage = 1;
         renderRows();
       }
       if (event.target.matches("#market-model-search")) {
@@ -20296,7 +21097,7 @@
         return;
       }
       if (event.target.matches("#market-status-filter, #market-brand-filter")) {
-        if (activeModule === "market" && (activeSub || "Catalog") === "Catalog") marketCatalogPage = 1;
+        if (activeModule === "market" && (activeSub === "Brands & Models" || activeSub === "Dashboard")) marketCatalogPage = 1;
         renderRows();
         return;
       }
@@ -20393,9 +21194,6 @@
       }
       if (activeModule === "content" && (activeSub || "Articles") === "Articles") {
         renderArticleEditorPage();
-      }
-      if (activeModule === "market") {
-        renderModule("market", "Sync Logs", "Sync Logs");
       }
     });
     document.querySelector("#logout-btn").addEventListener("click", () => {

@@ -1,0 +1,69 @@
+group,key,label_en,label_th,description_en,sort_order,is_active,is_system,allows_multi_select
+condition,new_unworn,New / Unworn,ใหม่ / ยังไม่ผ่านการใช้งาน,Never worn or no visible usage,10,true,true,false
+condition,mint,Mint,เหมือนใหม่,Near-perfect condition with minimal handling signs,20,true,true,false
+condition,excellent,Excellent,สภาพดีเยี่ยม,Light signs of use; well cared for,30,true,true,false
+condition,very_good,Very Good,สภาพดีมาก,Visible but normal signs of use,40,true,true,false
+condition,good,Good,สภาพดี,Noticeable wear but fully usable,50,true,true,false
+condition,fair,Fair,พอใช้,Heavy wear or visible marks; should be clearly described,60,true,true,false
+delivery,watch_only,Watch only,เฉพาะตัวเรือน,Watch only without original box or papers,10,true,true,true
+delivery,original_box,Original box,กล่องเดิม,Original manufacturer box,20,true,true,true
+delivery,original_papers,Original papers,เอกสารเดิม,Original documents or papers,30,true,true,true
+delivery,warranty_card,Warranty card,บัตรรับประกัน,Manufacturer or dealer warranty card,40,true,true,true
+delivery,receipt_copy,Receipt copy,สำเนาใบเสร็จ,Receipt or invoice copy,50,true,true,true
+delivery,certificate,Certificate,ใบรับรอง,Certificate or authentication document,60,true,true,true
+delivery,manual_booklet,Manual / booklet,คู่มือ / สมุดคู่มือ,Manual booklet or product booklet,70,true,true,true
+delivery,extra_links,Extra links,ข้อสายสำรอง,Extra bracelet links,80,true,true,true
+delivery,extra_strap,Extra strap,สายสำรอง,Additional strap included,90,true,true,true
+delivery,service_papers,Service papers,เอกสารเซอร์วิส,Service records or service papers,100,true,true,true
+delivery,hang_tag,Hang tag,ป้ายแขวน,Manufacturer or dealer hang tag,110,true,true,true
+delivery,travel_pouch,Travel pouch,ซอง / กระเป๋าพกพา,Travel pouch or carrying case,120,true,true,true
+case_material,stainless_steel,Stainless steel,สแตนเลสสตีล,Stainless steel case material,10,true,true,false
+case_material,yellow_gold,Yellow gold,ทองคำ,Yellow gold case material,20,true,true,false
+case_material,rose_gold,Rose gold,โรสโกลด์,Rose gold case material,30,true,true,false
+case_material,white_gold,White gold,ไวท์โกลด์,White gold case material,40,true,true,false
+case_material,platinum,Platinum,แพลทินัม,Platinum case material,50,true,true,false
+case_material,titanium,Titanium,ไทเทเนียม,Titanium case material,60,true,true,false
+case_material,ceramic,Ceramic,เซรามิก,Ceramic case material,70,true,true,false
+case_material,carbon,Carbon,คาร์บอน,Carbon or carbon composite case material,80,true,true,false
+case_material,bronze,Bronze,บรอนซ์,Bronze case material,90,true,true,false
+case_material,aluminum,Aluminum,อะลูมิเนียม,Aluminum case material,100,true,true,false
+case_material,tantalum,Tantalum,แทนทาลัม,Tantalum case material,110,true,true,false
+case_material,two_tone,Two-tone,ทูโทน,Two-tone or mixed metal case material,120,true,true,false
+case_material,pvd_dlc,PVD / DLC coated,เคลือบ PVD / DLC,Coated metal case material,130,true,true,false
+movement,automatic,Automatic,ออโตเมติก,Self-winding mechanical movement,10,true,true,false
+movement,manual_winding,Manual winding,ไขลาน,Hand-wound mechanical movement,20,true,true,false
+movement,quartz,Quartz,ควอตซ์,Battery-powered quartz movement,30,true,true,false
+movement,spring_drive,Spring Drive,สปริงไดรฟ์,Seiko Spring Drive movement,40,true,true,false
+movement,solar,Solar,โซลาร์,Solar-powered quartz movement,50,true,true,false
+movement,kinetic,Kinetic,คิเนติก,Kinetic-powered quartz movement,60,true,true,false
+movement,meca_quartz,Meca-quartz,เมกะควอตซ์,Hybrid mechanical/quartz chronograph movement,70,true,true,false
+dial_color,black,Black,ดำ,Black dial,10,true,true,false
+dial_color,blue,Blue,น้ำเงิน,Blue dial,20,true,true,false
+dial_color,white,White,ขาว,White dial,30,true,true,false
+dial_color,silver,Silver,เงิน,Silver dial,40,true,true,false
+dial_color,gray,Gray,เทา,Gray dial,50,true,true,false
+dial_color,green,Green,เขียว,Green dial,60,true,true,false
+dial_color,champagne,Champagne,แชมเปญ,Champagne dial,70,true,true,false
+dial_color,brown,Brown,น้ำตาล,Brown dial,80,true,true,false
+dial_color,gold,Gold,ทอง,Gold dial,90,true,true,false
+dial_color,ivory,Ivory,งาช้าง,Ivory or cream dial,100,true,true,false
+dial_color,mother_of_pearl,Mother of pearl,มุก,Mother of pearl dial,110,true,true,false
+dial_color,red,Red,แดง,Red dial,120,true,true,false
+dial_color,burgundy,Burgundy,เบอร์กันดี,Burgundy dial,130,true,true,false
+dial_color,orange,Orange,ส้ม,Orange dial,140,true,true,false
+dial_color,yellow,Yellow,เหลือง,Yellow dial,150,true,true,false
+dial_color,salmon,Salmon,แซลมอน,Salmon dial,160,true,true,false
+dial_color,turquoise,Turquoise,เทอร์ควอยซ์,Turquoise dial,170,true,true,false
+dial_color,skeleton,Skeleton,สเกเลตัน,Skeleton or openworked dial,180,true,true,false
+strap_bracelet_type,stainless_steel_bracelet,Stainless steel bracelet,สายสแตนเลสสตีล,Stainless steel bracelet,10,true,true,false
+strap_bracelet_type,gold_bracelet,Gold bracelet,สายทอง,Gold bracelet,20,true,true,false
+strap_bracelet_type,two_tone_bracelet,Two-tone bracelet,สายทูโทน,Two-tone bracelet,30,true,true,false
+strap_bracelet_type,titanium_bracelet,Titanium bracelet,สายไทเทเนียม,Titanium bracelet,40,true,true,false
+strap_bracelet_type,ceramic_bracelet,Ceramic bracelet,สายเซรามิก,Ceramic bracelet,50,true,true,false
+strap_bracelet_type,integrated_bracelet,Integrated bracelet,สาย integrated,Integrated bracelet,60,true,true,false
+strap_bracelet_type,leather_strap,Leather strap,สายหนัง,Leather strap,70,true,true,false
+strap_bracelet_type,alligator_strap,Alligator strap,สายหนังจระเข้,Alligator leather strap,80,true,true,false
+strap_bracelet_type,rubber_strap,Rubber strap,สายยาง,Rubber strap,90,true,true,false
+strap_bracelet_type,fabric_nato_strap,Fabric / NATO strap,สายผ้า / NATO,Fabric or NATO strap,100,true,true,false
+strap_bracelet_type,canvas_strap,Canvas strap,สายแคนวาส,Canvas strap,110,true,true,false
+strap_bracelet_type,sailcloth_strap,Sailcloth strap,สาย sailcloth,Sailcloth strap,120,true,true,false

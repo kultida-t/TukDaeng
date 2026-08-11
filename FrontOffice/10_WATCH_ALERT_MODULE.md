@@ -40,7 +40,7 @@ Watch Alert ต้องใช้ logic เดียวกับ Search แล�
 | Topic | Master Baseline | Watch Alert Module Rule |
 | --- | --- | --- |
 | Entry Point | Watch Alert สร้างจาก Search Filter | Create Watch Alert ต้องเริ่มจาก Search Filter เท่านั้น |
-| Required Field | Watch Alert ไม่มี Required Field | User สร้าง Alert ได้แม้ไม่ได้กรอกชื่อหรือ criteria เพิ่ม |
+| Required Field | Watch Alert criteria ไม่มี Required Field แต่ Alert Name ต้องไม่ว่างตอนบันทึก | ระบบเติมชื่อเริ่มต้นให้ก่อน User แก้ไขได้ แต่หากลบชื่อจนว่างต้องแจ้ง validation |
 | Match Rule | Match เฉพาะ Asset สถานะ Sale | Show, Hide, Sold และ Deleted ต้องไม่ match |
 | Notification Destination | เปิด Watch Alert Result List ไม่เปิด Asset ตรง | Notification tap ต้องไป Result List |
 | Search Alignment | Search แสดงเฉพาะ Sale และรองรับ filter หลายมิติ | Watch Alert criteria ต้องใช้ filter logic เดียวกับ Search |
@@ -58,8 +58,8 @@ Watch Alert ต้องใช้ logic เดียวกับ Search แล�
 | High | Create Watch Alert อาจไม่ได้เริ่มจาก Search Filter | Watch Alert สร้างจาก Search Filter | จำกัด entry point และ annotate flow จาก Search Filter |
 | High | ต้องยืนยันว่า Watch Alert match เฉพาะ Sale | Watch Alert Match เฉพาะ Asset สถานะ Sale | ตรวจ result/filter state ไม่ให้มี Show, Hide, Sold |
 | High | Guest Create Watch Alert restriction ยังไม่ชัด | Guest ใช้ Watch Alert ไม่ได้และต้องเห็น Global Login Required Dialog | เพิ่ม guest dialog/state |
-| Medium | ต้องยืนยันว่าไม่มี Required Field | Watch Alert ไม่มี Required Field | Create flow ต้อง save ได้แม้ไม่มีชื่อหรือ criteria เพิ่ม |
-| Medium | Alert name auto-generate ยังไม่ชัด | ถ้าไม่กรอกชื่อ ระบบตั้งชื่อจาก filter ได้ | เพิ่ม default/generated name state |
+| Medium | ต้องยืนยันว่าไม่มี Required Field ของ criteria | Watch Alert criteria ไม่มี Required Field | Create flow ต้อง save ได้แม้ criteria ว่างหรือมีบางส่วน |
+| Medium | Alert name auto-generate และ validation ยังไม่ชัด | ระบบต้องเติมชื่อเริ่มต้นจาก filter/default และ Alert Name ต้องไม่ว่างตอน save | เพิ่ม default/generated name state และ empty-name validation |
 | Medium | Filter dependency ต้องตรง Search | Watch Alert ใช้ filter logic เดียวกับ Search | เพิ่มตัวอย่าง Brand -> Model dependency |
 | Medium | Lifecycle impact ยังไม่ชัด | Sale -> Sold/Hide หายจาก result, Hide/Show -> Sale กลับมา match ได้ | เพิ่ม state notes หรือ flow annotation |
 | Medium | Block user impact ยังไม่ชัด | Asset ของผู้ถูก Block ต้องหายจาก Watch Alert Result ทันที | เพิ่ม blocked-user result filtering state |
@@ -192,14 +192,21 @@ Watch Alert List
 
 ## Required Field Rule
 
-- Watch Alert ไม่มี Required Field
+- Watch Alert criteria ไม่มี Required Field
 - User สามารถสร้าง Alert จาก filter ว่างหรือ criteria บางส่วนได้
-- Alert Name เป็น optional
+- Alert Name เป็น required ตอนกดบันทึก
+- ระบบต้องเติมชื่อเริ่มต้นให้ในช่อง Alert Name ก่อน user กดบันทึก เพื่อไม่เพิ่มภาระการกรอกข้อมูล
 
 ## Alert Name Rule
 
-- หาก user ไม่กรอกชื่อ ระบบต้องสร้างชื่ออัตโนมัติจาก criteria
+- เมื่อเปิด Create / Save to Watch Alert modal ระบบต้องสร้างชื่อเริ่มต้นจาก criteria ปัจจุบันและแสดงในช่อง Alert Name ทันที
+- ตัวอย่างชื่อที่ระบบสร้างได้ เช่น `Rolex`, `Rolex GMT-Master II`, `Rolex to ฿500,000` หรือชื่ออื่นที่อ่านแล้วสื่อถึง filter ที่ใช้
 - ถ้าไม่มี criteria ที่ใช้ตั้งชื่อได้ ให้ใช้ default name ตาม implementation เช่น `Watch Alert`
+- User สามารถแก้ไขชื่อที่ระบบสร้างให้ได้ก่อนบันทึก
+- ตอนกด Save ระบบต้อง trim ค่า Alert Name ก่อน validate
+- หาก Alert Name หลัง trim แล้วว่าง ต้องไม่สร้าง Watch Alert
+- กรณีชื่อว่าง ให้แสดง inline validation ใต้ช่องชื่อ เช่น `กรุณากรอกชื่อ Watch Alert` หรือ EN: `Please enter a watch alert name.`
+- หลังแสดง validation ควร focus กลับไปที่ช่อง Alert Name เพื่อให้ user แก้ไขได้ทันที
 
 ## Filter Logic Rule
 
@@ -270,11 +277,12 @@ Watch Alert List
 
 | Field / Condition | Rule |
 | --- | --- |
-| Alert Name | Optional |
+| Alert Name | Required at save time; trim แล้วต้องไม่ว่าง |
 | Filter Condition | Optional |
 | Notification Toggle | Optional |
 | Criteria | ต้องใช้ schema เดียวกับ Search Filter |
 | Delete | ต้อง Confirm ก่อนลบ |
+| Empty Alert Name | ต้องแสดง validation และไม่สร้าง Watch Alert |
 
 ---
 
@@ -357,17 +365,23 @@ Given user เป็น Guest
 When user กด Create Watch Alert  
 Then ระบบต้องแสดง Global Login Required Dialog
 
-## AC-WA-003: No Required Field
+## AC-WA-003: No Required Criteria
 
 Given Member อยู่ใน Create Watch Alert flow  
-When Member ไม่กรอกชื่อและไม่มี required criteria เพิ่ม  
+When Member ไม่มี criteria หรือมี criteria เพียงบางส่วน  
 Then ระบบยังต้องบันทึก Watch Alert ได้
 
-## AC-WA-004: Auto Alert Name
+## AC-WA-004: Generated Alert Name
 
-Given Member ไม่กรอก Alert Name  
-When ระบบสร้าง Watch Alert สำเร็จ  
-Then ระบบต้องสร้างชื่อ Alert อัตโนมัติจาก criteria หรือ default name
+Given Member เปิด Create / Save to Watch Alert modal  
+When ระบบมี criteria จาก Search Filter ปัจจุบัน  
+Then ระบบต้องเติมชื่อ Alert เริ่มต้นจาก criteria หรือ default name ลงในช่อง Alert Name ให้ก่อนบันทึก
+
+## AC-WA-004A: Empty Alert Name Validation
+
+Given Member ลบค่าในช่อง Alert Name จนว่าง  
+When Member กด Save  
+Then ระบบต้องไม่สร้าง Watch Alert และต้องแสดง validation ให้กรอกชื่อ Watch Alert
 
 ## AC-WA-005: Match Only Sale
 

@@ -84,14 +84,18 @@ Purpose:
 - [ ] Keyword search รองรับ brand/model/reference/description ตาม baseline
 - [ ] Autocomplete ทำงานจาก supported searchable fields
 - [ ] Filter รองรับ Brand, Model, Price Range, Year, Condition, Movement, Dial Color, Strap/Bracelet Type
+- [ ] Filter option สำหรับ Condition, Delivery, Case Material, Movement, Dial Color, Strap/Bracelet Type ใช้ internal option master เดียวกับ Add/Edit Asset
+- [ ] Seed internal option master จาก `SeedData/asset-spec-options.csv` หรือ `SeedData/asset-spec-options.json`
 - [ ] Brand -> Model เป็น dependent filter
 - [ ] Sort รองรับ Relevance, Price Low to High, Price High to Low, Newest, Popularity
 - [ ] Result Count แสดงจำนวนผลลัพธ์หลัง filter
 - [ ] Clear Filters reset criteria ทั้งหมด
 - [ ] No result ใช้ empty state กลาง
 - [ ] Create Watch Alert จาก Search Filter ได้
-- [ ] Watch Alert save ได้แม้ไม่มี required field
-- [ ] หากไม่กรอกชื่อ Watch Alert ระบบสร้างชื่อจาก criteria
+- [ ] Watch Alert save ได้แม้ไม่มี required criteria
+- [ ] เมื่อเปิด Save to Watch Alert ต้อง prefill ชื่อจาก criteria หรือ default name
+- [ ] Alert Name ตอน save ต้อง trim แล้วไม่ว่าง
+- [ ] หาก user ลบชื่อ Watch Alert จนว่าง ต้องแสดง validation และไม่สร้าง alert
 
 ---
 
@@ -99,9 +103,17 @@ Purpose:
 
 - [ ] Add Asset รองรับ Gallery สูงสุด 10 รูป
 - [ ] Add/Edit ต้อง require อย่างน้อย 1 รูปสำหรับ `Sale`, `Show`, `Hide`
-- [ ] Status `Sale` ต้อง require Photos, Brand, Model / Series, Condition, Price, Description
-- [ ] Status `Show` ต้อง require Photos, Brand, Model / Series และไม่บังคับ Price
-- [ ] Status `Hide` ต้อง require Photos, Brand เท่านั้น โดย Model / Series, Condition, Description เป็น optional และไม่ใช้ listing price
+- [ ] Status `Sale` ต้อง require Photos, Brand, Model / Series, Condition และ Description; Price เป็น optional และถ้าเว้นว่าง buyer-facing surface แสดง `Price on request`
+- [ ] Status `Show` ต้อง require Photos, Brand, Model / Series; Price เป็น optional แต่ห้ามแสดงบน public surface
+- [ ] Status `Hide` ต้อง require Photos, Brand เท่านั้น โดย Model / Series, Condition, Price และ Description เป็น optional และ Price ห้ามแสดงบน public surface
+- [ ] Add/Edit ต้อง validate ทุก optional field ที่ user กรอก เลือก หรืออัปโหลด เช่น Year ต้องไม่เป็นปีอนาคต, numeric fields ต้องมากกว่า 0, option fields ต้องอยู่ใน option master, text ต้อง trim/sanitize และไม่เป็น whitespace-only, upload ต้องผ่าน type/size/count limits
+- [ ] Edit Asset ต้องเพิ่ม/ลบรูปได้ แต่จำนวนรูปหลังแก้ไขต้องยังอยู่ในช่วง 1-10 รูปก่อน Save
+- [ ] Asking Price ใน Commerce เป็น optional ทุก status แต่ถ้ากรอกต้องเป็นตัวเลขมากกว่า 0 และห้าม public surface แสดงราคาของ `Show` หรือ `Hide`
+- [ ] Add/Edit ใช้ Market Data สำหรับ Brand/Model/Reference autocomplete, structured selection และ prefill spec เท่านั้น
+- [ ] Add/Edit option dropdown/multi-select ใช้ `spec_options` จาก backend API ไม่ hardcode ใน FO client
+- [ ] Asset ต้องเก็บ `brand_id`/`model_id`/`reference_id` เมื่อ match ได้ และเก็บ snapshot text ของ Brand/Model/Reference ทุกครั้ง
+- [ ] User-entered Year, Condition, Delivery, Case Size, Thickness, Case Material, Movement, Dial Color และ Strap/Bracelet Type ต้องเก็บกับ Asset Specification และไม่ถูก provider sync overwrite
+- [ ] ถ้า Brand/Model/Reference ไม่มีใน Market Data ต้องรองรับ free-text snapshot โดย relation id เป็น `null`
 - [ ] หลังกรอก Add/Edit Asset ครบและกด Save ต้องแสดง uploading/saving state พร้อมข้อความ `กำลังอัปโหลด...` เมื่อมีไฟล์ upload
 - [ ] ระหว่าง uploading/saving ต้อง disable ปุ่ม Save และป้องกัน duplicate submit
 - [ ] Add/Edit ใช้ status model เดียว: `Sale`, `Show`, `Hide`
@@ -204,7 +216,13 @@ Purpose:
 - [ ] Show สร้าง Offer ได้จาก Asset Detail / Public Profile detail entry เท่านั้น
 - [ ] Hide, Sold, Deleted สร้าง Offer ใหม่ไม่ได้
 - [ ] Guest กด Offer ต้องเปิด Login Required Dialog
-- [ ] Offer Price ต้อง validate มากกว่า 0
+- [ ] Owner ต้องไม่สามารถ Make Offer กับ Asset ของตัวเอง
+- [ ] Offer Price เป็น required และถ้าว่างต้อง disable ปุ่ม `Send offer`
+- [ ] Offer Price ต้องรับเฉพาะตัวเลขจำนวนเงิน THB ที่ parse ได้
+- [ ] Offer Price ต้อง validate มากกว่า 0 และแสดง `Please enter a valid offer amount` เมื่อเป็น 0, ติดลบ หรือไม่ใช่ตัวเลข
+- [ ] Offer Message เป็น optional, trim ก่อนส่ง และถ้าเป็น whitespace-only ให้ถือว่าไม่กรอก
+- [ ] Offer Message ต้องไม่เกิน 500 characters และแสดง field-level validation error เมื่อเกิน
+- [ ] Buyer ที่มี Pending Offer เดิมของ Asset เดียวกันต้องสร้างซ้ำไม่ได้ และแสดง `You already have a pending offer. Go to chat to view it.`
 - [ ] Offer ส่งสำเร็จแล้ว status = `Pending`
 - [ ] Offer Sent Successfully แล้วเปิด Chat Room
 - [ ] Offer Card ต้องแสดงใน Chat Room
@@ -249,7 +267,9 @@ Purpose:
 - [ ] Watch Alert ไม่ match `Show`, `Hide`, `Sold`, `Deleted`
 - [ ] Create Watch Alert จาก Search/Filter criteria ได้
 - [ ] ไม่มี required field สำหรับ Watch Alert criteria
-- [ ] หากไม่ตั้งชื่อ ระบบสร้างชื่อจาก filter criteria
+- [ ] ระบบสร้างชื่อเริ่มต้นจาก filter criteria หรือ default name ให้ก่อนบันทึก
+- [ ] Alert Name เป็น required at save time และต้องไม่ว่างหลัง trim
+- [ ] หาก user ลบชื่อจนว่าง ต้องแจ้งเตือนให้กรอกชื่อ Watch Alert
 - [ ] รองรับ Watch Alert list
 - [ ] รองรับ toggle notification ต่อ alert
 - [ ] รองรับ rename alert
