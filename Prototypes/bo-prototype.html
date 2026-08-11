@@ -7856,7 +7856,7 @@
         { id: "dashboard", label: "Dashboard", icon: "dashboard" },
         { id: "users", label: "User Management", icon: "users", subs: ["User Accounts", "Reported Users"] },
         { id: "assets", label: "Asset Management", icon: "asset", subs: ["Asset List", "Reported Assets"] },
-        { id: "offers", label: "Offer Management", icon: "offer", subs: ["Offer List"] },
+        { id: "offers", label: "Offer Management", icon: "offer" },
         { id: "content", label: "Content Management", icon: "content", subs: ["Articles", "Categories", "Reported Articles"] },
         { id: "market", label: "Market Data", icon: "market", subs: ["Dashboard", "Brands & Models", "Sync History"] },
       ]},
@@ -13806,6 +13806,10 @@
     }
 
     function renderModule(id, subLabel = "", displaySubLabel = subLabel) {
+      if (id === "offers") {
+        subLabel = "";
+        displaySubLabel = "";
+      }
       activeModule = id;
       activeSub = subLabel;
       setPageActions("");
@@ -13816,7 +13820,7 @@
       const isArticleList = id === "content" && (subLabel || "Articles") === "Articles";
       const isCategoryList = id === "content" && subLabel === "Categories";
       const isReportedBoard = id === "content" && subLabel === "Reported Articles";
-      const isOfferList = id === "offers" && (subLabel || "Offer List") === "Offer List";
+      const isOfferList = id === "offers";
       document.body.classList.toggle("dashboard-mode", id === "dashboard");
       document.body.classList.toggle("user-management-mode", id === "users" || isReportedAssets || isReportedBoard);
       document.body.classList.toggle("asset-list-mode", isAssetList || isArticleList || isCategoryList || isReportedBoard);
@@ -14063,7 +14067,8 @@
       }
       if (isOfferList) {
         activeRow = null;
-        document.querySelector("#crumb").textContent = `${data.crumb} / Offer List`;
+        activeSub = "";
+        document.querySelector("#crumb").textContent = data.crumb;
         document.querySelector("#page-title").textContent = "Offer List";
         document.querySelector("#page-meta").textContent = "";
         document.querySelector("#panel-title").textContent = "Offer List";
@@ -19891,11 +19896,11 @@
 
     function renderOfferDetailPage(offer) {
       if (!offer) {
-        renderModule("offers", "Offer List", "Offer List");
+        renderModule("offers");
         return;
       }
       activeModule = "offers";
-      activeSub = "Offer List";
+      activeSub = "";
       activeRow = offer;
       document.body.classList.add("offer-list-mode");
       document.body.classList.remove("dashboard-mode", "user-management-mode", "asset-list-mode", "article-list-mode", "category-list-mode", "reported-board-mode", "market-list-mode", "market-dashboard-mode", "user-list-mode", "user-detail-mode", "asset-detail-mode");
@@ -20828,7 +20833,7 @@
       const offerReset = event.target.closest("[data-offer-reset]");
       if (offerReset) {
         offerListPage = 1;
-        renderModule("offers", "Offer List", "Offer List");
+        renderModule("offers");
         return;
       }
       const assetReportFilterToggle = event.target.closest("[data-asset-report-filter-toggle]");
@@ -21051,7 +21056,7 @@
       }
       const backOfferList = event.target.closest("[data-back-offer-list]");
       if (backOfferList) {
-        renderModule("offers", "Offer List", "Offer List");
+        renderModule("offers");
         return;
       }
       const backArticleList = event.target.closest("[data-back-article-list]");
