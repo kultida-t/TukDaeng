@@ -7971,7 +7971,7 @@
         item("AUD-88172", "Publish Article", "Orn Admin", "Content", "กลาง", "Recorded", "ART-044 schedule ถูกแก้เวลา publish", ["Board"], "ตรวจ timestamp Asia/Bangkok"),
         item("AUD-88120", "Export User CSV", "Somchai Admin", "Users", "สูง", "Recorded", "Export มี sensitive-data masking", ["CSV", "Policy"], "ตรวจ permission และ download expiry")
       ]),
-      offers: mod("Offer Management", "การดำเนินงาน / Offer Management", "Offer Interest Overview", "ดูรายการ offer แบบ read-only เพื่อเห็นความสนใจต่อ asset, buyer/seller และสถานะ offer", "Export offer report", [["Pending Offers", "3", "รอ owner ตอบ"], ["Accepted", "3", "ตกลงแล้ว"], ["Rejected", "2", "ผู้ขายปฏิเสธ"], ["Cancelled", "2", "ยกเลิกแล้ว"]], [
+      offers: mod("Offer Management", "การดำเนินงาน / Offer Management", "Offer Interest Overview", "ดูรายการ offer แบบ read-only เพื่อเห็นความสนใจต่อ asset, buyer/seller และสถานะ offer", "Export offer report", [["Pending Offers", "3", "รอ owner ตอบ"], ["Paused", "1", "รอตรวจสอบ asset"], ["Accepted", "3", "ตกลงแล้ว"], ["Rejected", "2", "ผู้ขายปฏิเสธ"], ["Cancelled", "2", "asset ถูกลบ/ซ่อนโดย owner"], ["Invalidated", "1", "ใช้ไม่ได้ถาวร"]], [
         item("OFR-501", "Offer THB 285,000", "AST-8831", "Offer", "กลาง", "Pending", "ผู้ซื้อขอลดราคาและถาม proof เพิ่ม", ["Buyer U-1042", "Owner Crown Time BKK"], "Read-only: เปิด offer detail เพื่อดู asset, buyer, seller และ related chat"),
         item("OFR-488", "Offer THB 118,000", "AST-8720", "Offer", "ปกติ", "Accepted", "ผู้ขายรับข้อเสนอและ buyer ได้ notification ไป Chat Room", ["Buyer U-1161", "Owner Seiko Corner"], "Read-only: ใช้ดู demand และประวัติการตอบรับของ asset"),
         item("OFR-472", "Offer THB 2,100,000", "AST-8694", "Offer", "สูง", "Rejected", "ผู้ขายกด Decline จาก Incoming Offers", ["Buyer U-1042", "Owner Rolex Rama9"], "Read-only: ใช้เทียบราคาที่เสนอ เทียบ asking price และสถานะล่าสุด"),
@@ -7981,7 +7981,9 @@
         item("OFR-427", "Offer THB 1,090,000", "AST-8559", "Offer", "สูง", "Rejected", "owner ปฏิเสธเพราะราคาต่ำกว่า reserve สำหรับ consignment", ["Buyer U-1144", "Owner Siam Chrono"], "Read-only: rejected offer ช่วยเทียบช่วงราคาที่ buyer สนใจ"),
         item("OFR-416", "Offer THB 29,000", "AST-8518", "Offer", "ปกติ", "Cancelled", "owner เปลี่ยน asset จาก Sale เป็น Hide ระหว่างที่ offer ยัง pending ทำให้ asset ไม่รับ offer ต่อ", ["Buyer U-1104", "Owner Seiko Corner"], "Read-only: cancelled จาก asset availability change ไม่ใช่ action ของ Admin"),
         item("OFR-404", "Offer THB 109,000", "AST-8497", "Offer", "กลาง", "Pending", "ผู้ซื้อถามรูปเพิ่มและรอ owner ตอบเรื่องใบรับประกัน", ["Buyer U-1161", "Owner Minimal Dial"], "Read-only: pending offer ยังอยู่ใน incoming offer ของ owner"),
-        item("OFR-392", "Offer THB 158,000", "AST-8802", "Offer", "กลาง", "Accepted", "owner รับข้อเสนอหลัง buyer ยืนยันนัดรับและช่องทางชำระเงิน", ["Buyer U-1017", "Owner Vintage Vault BKK"], "Read-only: accepted ไม่เท่ากับ payment complete")
+        item("OFR-392", "Offer THB 158,000", "AST-8802", "Offer", "กลาง", "Accepted", "owner รับข้อเสนอหลัง buyer ยืนยันนัดรับและช่องทางชำระเงิน", ["Buyer U-1017", "Owner Vintage Vault BKK"], "Read-only: accepted ไม่เท่ากับ payment complete"),
+        item("OFR-381", "Offer THB 305,000", "AST-8536", "Offer", "กลาง", "Paused", "asset ถูก auto hidden จาก report ระหว่าง review ทำให้ offer ถูกพักชั่วคราว", ["Buyer U-1088", "Owner Daily Watch Hunter"], "Read-only: paused ระหว่าง asset review; FO ไม่แสดง Accept/Decline จนกว่า review จบ"),
+        item("OFR-366", "Offer THB 1,020,000", "AST-8581", "Offer", "สูง", "Invalidated", "asset ถูกซ่อนถาวรหลัง moderation ทำให้ pending offer ใช้งานไม่ได้ถาวร", ["Buyer U-1161", "Owner Rolex Rama9"], "Read-only: invalidated จาก permanent hide; FO แสดง Offer Unavailable และไม่มี action")
       ]),
       social: mod("Social Interaction", "งานตรวจสอบและบริการ / Social Interaction", "Comments, Likes & Follows", "จัดการ comment/reply moderation และ analytics ของ like/favorite/follow", "ดู reported social", [["Comments", "8,420", "วันนี้ 184"], ["Reported", "11", "รอตรวจ 4"], ["Follows", "26,100", "เพิ่ม 2.4%"], ["Favorites", "41,900", "ใช้ใน analytics"]], [
         item("COM-711", "Spam comment", "AST-8802", "Comment", "สูง", "Reported", "คอมเมนต์ซ้ำหลาย asset พร้อม link นอกระบบ", ["Reports 3"], "Hide comment จาก Asset Detail และ audit"),
@@ -19866,7 +19868,7 @@
     }
 
     function renderOfferStatusPill(status) {
-      const color = status === "Pending" ? "amber" : status === "Accepted" ? "purple" : status === "Rejected" ? "red" : "gray";
+      const color = status === "Pending" ? "amber" : status === "Paused" ? "slate" : status === "Accepted" ? "purple" : status === "Rejected" ? "red" : "gray";
       return `<span class="pill ${color}">${status}</span>`;
     }
 
@@ -19874,9 +19876,11 @@
       const countByStatus = status => rows.filter(row => row.status === status).length;
       return [
         ["Pending Offers", countByStatus("Pending"), "รอ owner ตอบ"],
+        ["Paused", countByStatus("Paused"), "รอตรวจสอบ asset"],
         ["Accepted", countByStatus("Accepted"), "ตกลงแล้ว"],
         ["Rejected", countByStatus("Rejected"), "ผู้ขายปฏิเสธ"],
-        ["Cancelled", countByStatus("Cancelled"), "ยกเลิกแล้ว"]
+        ["Cancelled", countByStatus("Cancelled"), "asset ถูกลบ/ซ่อนโดย owner"],
+        ["Invalidated", countByStatus("Invalidated"), "ใช้ไม่ได้ถาวร"]
       ];
     }
 
