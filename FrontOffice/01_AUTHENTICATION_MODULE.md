@@ -208,6 +208,18 @@ Auth page และปุ่มใน flow สมัครสมาชิกย�
 5. User ตั้ง Password ใหม่ตาม policy
 6. ระบบยืนยันและแสดง Password Updated Success
 
+Forgot Password field validation:
+
+- `Email` ต้องเป็นรูปแบบ email ที่ถูกต้อง
+- Submit button disabled จนกว่า `Email` จะไม่ว่างและผ่าน client-side email format validation
+- หาก email ไม่มีอยู่ในระบบ หรือเป็นบัญชี Apple / Google SSO ให้แสดงข้อความกลาง `If this email exists, a reset link has been sent.` เพื่อไม่เปิดเผย account existence หรือ auth method
+
+Reset Password link validation:
+
+- Reset link ต้องถูกต้อง, ยังไม่หมดอายุ, ยังไม่ถูกใช้ และ token ต้องตรงกับบัญชีที่ขอ reset
+- Link ที่หมดอายุ, invalid, ถูกแก้ไข, หรือถูกใช้ไปแล้ว ต้องแสดง `Reset Link Invalid / Expired` พร้อม action ให้ขอ reset link ใหม่
+- Reset link หมดอายุภายใน 30 นาที
+
 ## Change Password
 
 1. Authenticated Member เปิด Change Password
@@ -255,6 +267,8 @@ Change Password success:
 ## Email / Password Rules
 
 - Email / Password ต้องยืนยัน OTP
+- OTP ต้องเป็นตัวเลข 6 หลัก
+- Verify OTP submit button disabled จนกว่าจะกรอก OTP ครบ 6 หลัก
 - OTP หมดอายุภายใน 30 นาที
 - Password ต้องมีอย่างน้อย 8 ตัวอักษร
 - Password ต้องมีตัวเลขหรือสัญลักษณ์อย่างน้อย 1 ตัว
@@ -313,12 +327,13 @@ Change Password success:
 | Email uniqueness | 1 Email สมัครได้ 1 บัญชีเท่านั้น |
 | Password | อย่างน้อย 8 ตัวอักษร และต้องมีตัวเลขหรือสัญลักษณ์ |
 | Confirm Password | ต้องตรงกับ Password |
-| OTP | ต้องถูกต้องและยังไม่หมดอายุ |
+| OTP | Required, ต้องเป็นตัวเลข 6 หลัก, submit ได้เมื่อกรอกครบ 6 หลัก, ต้องถูกต้องและยังไม่หมดอายุ |
 | OTP expiration | หมดอายุภายใน 30 นาที |
 | Terms / Privacy consent | ต้องถูกยอมรับก่อนสมัครทุกช่องทาง |
 | Auth method | ต้องตรงกับ method ที่บัญชีใช้สมัคร |
 | Suspended status | ต้อง block sign in |
-| Reset password link | ต้องถูกต้องและยังไม่หมดอายุ |
+| Forgot Password email | Required, ต้องเป็นรูปแบบ email ที่ถูกต้อง; หากไม่มีบัญชีหรือเป็น SSO-only account ให้ใช้ generic success message |
+| Reset password link | ต้องถูกต้อง, ยังไม่หมดอายุ, ยังไม่ถูกใช้ และ token ต้องไม่ถูกแก้ไข |
 | Current password | ต้องถูกต้องก่อน Change Password |
 | Change Password current password | Required และต้องตรงกับรหัสปัจจุบัน |
 | Change Password new password | Required, อย่างน้อย 8 ตัวอักษร, ต้องมีตัวเลขหรือสัญลักษณ์ และต้องต่างจาก current password |
@@ -336,7 +351,8 @@ Change Password success:
 | Resend OTP ถี่เกินไป | แสดง cooldown หรือ rate limit message |
 | ใช้ auth method ผิด | แจ้งว่าบัญชีนี้ต้อง Sign In ด้วย method เดิม |
 | SSO provider error | แสดง error และให้ลองใหม่ |
-| Reset link ใช้ไม่ได้หรือหมดอายุ | แสดง invalid/expired reset link state และให้ขอ link ใหม่ |
+| Forgot Password email เป็นบัญชี Apple / Google SSO | แสดง generic success message `If this email exists, a reset link has been sent.` และไม่ส่ง reset link สำหรับ SSO-only account |
+| Reset link ใช้ไม่ได้ หมดอายุ ถูกแก้ไข หรือถูกใช้ไปแล้ว | แสดง invalid/expired reset link state และให้ขอ link ใหม่ |
 | Change Password current password ผิด | แสดง field error `Current password is incorrect.` |
 | Change Password new password ซ้ำ current password | แสดง field error `New password must be different from current password.` |
 | Change Password confirm ไม่ตรง | แสดง field error `Passwords do not match.` |

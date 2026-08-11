@@ -140,6 +140,12 @@ Given OTP ถูกสร้างเกิน 30 นาที
 When user submit OTP  
 Then ระบบต้อง reject และให้ขอ OTP ใหม่
 
+## QA-AUTH-002A: OTP Format
+
+Given user อยู่หน้า Verify Email  
+When user กรอก OTP ไม่ครบ 6 หลัก หรือมีตัวอักษรที่ไม่ใช่ตัวเลข  
+Then ปุ่ม verify ต้องไม่ active หรือระบบต้องแสดง field validation ว่า OTP ต้องเป็นตัวเลข 6 หลัก
+
 ## QA-AUTH-003: Password Policy
 
 Given user ตั้ง password น้อยกว่า 8 ตัวอักษร หรือไม่มีตัวเลข/สัญลักษณ์  
@@ -193,6 +199,20 @@ Given account ถูก Banned
 When user Sign In ด้วย Email, Apple หรือ Google
 Then ระบบต้อง block login พร้อมเหตุผลและช่องทาง Support
 And user ต้องไม่เข้า main app หรือทำ authenticated action ได้
+
+## QA-AUTH-008: Forgot Password SSO Account
+
+Given email เป็นบัญชีที่สมัครด้วย Apple หรือ Google  
+When user กรอก email ใน Forgot Password  
+Then ระบบต้องแสดง `If this email exists, a reset link has been sent.`  
+And ต้องไม่เปิดเผยว่า email นั้นเป็น SSO-only account
+
+## QA-AUTH-009: Reset Link Invalid Or Used
+
+Given reset password link หมดอายุ ถูกแก้ไข หรือถูกใช้ไปแล้ว  
+When user เปิด link  
+Then ระบบต้องแสดง Reset Link Invalid / Expired state  
+And ต้องมี action ให้ขอ reset link ใหม่
 
 ---
 
@@ -1305,6 +1325,8 @@ Then Change Password ต้องไม่เป็น active action
 Given Member ใช้ Email / Password account และเปิด Change Password
 When Member submit ด้วย current password ที่ไม่ถูกต้อง
 Then ต้องแสดง field error `Current password is incorrect.`
+When Member กรอก new password น้อยกว่า 8 ตัวอักษร หรือไม่มีตัวเลข/สัญลักษณ์
+Then ต้องแสดง password policy validation error
 When Member กรอก new password ซ้ำกับ current password
 Then ต้องแสดง field error `New password must be different from current password.`
 When Member กรอก confirm password ไม่ตรงกับ new password
