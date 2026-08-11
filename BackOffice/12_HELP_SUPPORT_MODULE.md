@@ -146,7 +146,7 @@ Ticket type ต้องครอบคลุม flow ของ FO:
 | Account / Login | เข้าใช้งานไม่ได้, บัญชีถูก suspend, account scheduled for deletion |
 | Profile / Settings | แก้ profile, phone, LINE, language, theme, notification settings |
 | Asset / Listing | ปัญหาการลงขาย, Show/Hide, รูปภาพ, reference number |
-| Offer / Chat | Offer dispute, chat issue, asset unavailable ใน chat |
+| Offer Management | Offer dispute, related chat issue, asset unavailable ใน chat |
 | Report / Safety | รายงาน user, asset, comment, chat |
 | Watch Alert / Notification | Watch Alert ไม่แจ้ง, notification destination ผิด |
 | Market Data / Price Index | Brand, model, reference, price index ไม่ถูกต้อง |
@@ -245,7 +245,7 @@ SLA baseline:
 | Dashboard | Open support tickets, SLA risk, oldest ticket |
 | User Management | Requester profile, account status, login/auth context |
 | Asset Management | Related asset/listing context |
-| Offer / Chat | Dispute context, offer status, related chat room |
+| Offer Management | Dispute context, offer status, related chat room |
 | Social Interaction | Reported comments/replies linked to support case |
 | Watch Alert | Alert criteria and trigger history for notification issue |
 | Market Data | Brand/model/reference/price index issue |

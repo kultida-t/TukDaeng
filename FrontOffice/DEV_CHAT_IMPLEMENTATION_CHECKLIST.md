@@ -93,6 +93,10 @@ Out of scope for V1:
 - [ ] If asset is Sold, Chat remains usable
 - [ ] Sold asset reference must not imply normal active sale availability
 - [ ] If asset is Sold, other pending offers become `Rejected` automatically according to Offer Module
+- [ ] If asset is auto hidden or temporarily hidden during review, pending Offer becomes `Paused`
+- [ ] If review passes and asset returns to `Sale` / `Show`, `Paused` Offer returns to `Pending`
+- [ ] If asset is permanently hidden by moderation, pending/paused Offer becomes `Invalidated`
+- [ ] If owner changes asset from `Sale` / `Show` to `Hide`, pending Offer becomes `Cancelled`
 
 ---
 
@@ -108,9 +112,14 @@ Out of scope for V1:
 - [ ] Read but not actioned pending offer remains in Incoming Offers
 - [ ] Asset Deleted changes related offer to `Cancelled`
 - [ ] Asset Sold changes other pending offers to `Rejected` automatically
+- [ ] Offer Card state `Paused` shows `Offer Paused` and no `Accept` / `Decline`
+- [ ] Offer Card state `Invalidated` shows `Offer Unavailable` and no `Accept` / `Decline`
+- [ ] Incoming Offers excludes `Paused`, `Accepted`, `Rejected`, `Cancelled`, and `Invalidated`
 - [ ] Offer Accepted notification opens Chat Room
 - [ ] Offer Rejected notification opens Asset Detail
 - [ ] Offer Cancelled notification opens Chat Room and focuses Offer Card when available
+- [ ] Offer Paused notification opens Chat Room and focuses Offer Card when available
+- [ ] Offer Invalidated notification opens Chat Room and focuses Offer Card when available
 
 ---
 

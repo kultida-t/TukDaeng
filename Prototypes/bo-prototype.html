@@ -761,6 +761,22 @@
     .stat-value { font-size: 39px; line-height: .9; margin-bottom: 8px; }
     .stat-note { color: var(--muted); font-size: 12px; line-height: 1.45; }
     .stat-note.chips { margin-top: 7px; }
+    body.offer-list-mode .summary-grid {
+      grid-template-columns: repeat(6, minmax(0, 1fr));
+    }
+    .offer-status-card {
+      --offer-status-color: var(--brand);
+      min-width: 0;
+    }
+    .offer-status-card::before {
+      background: var(--offer-status-color);
+    }
+    .offer-status-card .stat-label {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
 
     .layout {
       display: grid;
@@ -890,8 +906,10 @@
     .pill.green { color: #07734f; background: #e4f8f0; border-color: #bcebd7; }
     .pill.amber { color: #925500; background: #fff3d8; border-color: #f3d493; }
     .pill.purple { color: #6035ae; background: #efe9ff; border-color: #d8ccff; }
+    .pill.teal { color: #0f766e; background: #e6fffb; border-color: #99f6e4; }
     .pill.gray { color: #475569; background: #f1f5f9; border-color: #cbd5e1; }
     .pill.slate { color: #334155; background: #f8fafc; border-color: #94a3b8; }
+    .pill.charcoal { color: #111827; background: #e5e7eb; border-color: #9ca3af; }
     .asset-status-pills {
       display: inline-flex;
       align-items: center;
@@ -1218,8 +1236,14 @@
     body.asset-detail-mode .layout {
       grid-template-columns: minmax(0, 1fr);
     }
+    body.offer-list-mode .layout {
+      grid-template-columns: minmax(0, 1fr);
+    }
     body.asset-list-mode .detail,
     body.asset-detail-mode .detail {
+      display: none;
+    }
+    body.offer-list-mode .detail {
       display: none;
     }
     body.asset-list-mode .layout > .panel,
@@ -1231,11 +1255,24 @@
     body.asset-list-mode .layout > .panel {
       overflow: hidden;
     }
+    body.offer-list-mode .layout > .panel {
+      border-color: #d7e2f0;
+      box-shadow: none;
+      overflow: hidden;
+    }
     body.asset-list-mode #primary-action,
     body.asset-detail-mode #primary-action {
       display: none;
     }
+    body.offer-list-mode #primary-action {
+      display: none;
+    }
     body.asset-list-mode .panel-head {
+      min-height: 58px;
+      padding: 17px 20px;
+      background: #fff;
+    }
+    body.offer-list-mode .panel-head {
       min-height: 58px;
       padding: 17px 20px;
       background: #fff;
@@ -1247,7 +1284,17 @@
       text-transform: uppercase;
       white-space: nowrap;
     }
+    body.offer-list-mode .panel-head h2 {
+      color: #071b36;
+      font-size: 24px;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
     body.asset-list-mode .panel-head p {
+      display: none;
+    }
+    body.offer-list-mode .panel-head p {
       display: none;
     }
     body.asset-list-mode .summary-grid {
@@ -1409,6 +1456,11 @@
       padding: 12px 16px;
       background: #f8fbff;
     }
+    body.offer-list-mode .filters {
+      display: flex;
+      padding: 12px 16px;
+      background: #f8fbff;
+    }
     body.asset-list-mode .filters .field {
       min-height: 48px;
       border-color: #cfdbea;
@@ -1418,7 +1470,20 @@
       font-size: 13px;
       font-weight: 400;
     }
+    body.offer-list-mode .filters .field {
+      min-height: 48px;
+      border-color: #cfdbea;
+      border-radius: 7px;
+      padding: 10px 14px;
+      color: #061426;
+      font-size: 13px;
+      font-weight: 400;
+    }
     body.asset-list-mode .filters select.field {
+      padding-right: 42px;
+      background-position: right 14px center;
+    }
+    body.offer-list-mode .filters select.field {
       padding-right: 42px;
       background-position: right 14px center;
     }
@@ -1448,6 +1513,22 @@
     }
     .reported-board-table .asset-row {
       grid-template-columns: minmax(112px, .66fr) minmax(230px, 1.48fr) minmax(140px, .78fr) minmax(116px, .64fr) minmax(154px, .86fr) minmax(190px, 1.04fr) minmax(86px, .48fr) minmax(102px, .56fr) minmax(76px, .42fr);
+    }
+    .offer-list-table .asset-row {
+      grid-template-columns: minmax(88px, .52fr) minmax(132px, .74fr) minmax(230px, .98fr) minmax(166px, .8fr) minmax(190px, 1.04fr) minmax(136px, .7fr) minmax(72px, .34fr);
+      column-gap: 16px;
+    }
+    body.offer-list-mode #table {
+      overflow-x: auto;
+      overflow-y: visible;
+    }
+    body.offer-list-mode .offer-list-table {
+      min-width: 1120px;
+    }
+    .offer-list-table .asset-row.head > div:last-child {
+      justify-content: flex-start;
+      justify-self: start;
+      text-align: left;
     }
     .asset-table .asset-row:nth-last-child(-n + 2) .row-menu-list,
     .user-table .user-row:nth-last-child(-n + 2) .row-menu-list {
@@ -1507,6 +1588,7 @@
       text-align: left;
     }
     body.asset-list-mode .asset-list-table .asset-row:not(.head),
+    body.offer-list-mode .offer-list-table .asset-row:not(.head),
     body.article-list-mode .article-table .asset-row:not(.head),
     body.category-list-mode .category-table .asset-row:not(.head),
     body.reported-board-mode .reported-board-table .asset-row:not(.head),
@@ -1517,6 +1599,8 @@
     }
     body.asset-list-mode .asset-list-table .asset-row:not(.head) .main-text,
     body.asset-list-mode .asset-list-table .asset-row:not(.head) .muted,
+    body.offer-list-mode .offer-list-table .asset-row:not(.head) .main-text,
+    body.offer-list-mode .offer-list-table .asset-row:not(.head) .muted,
     body.article-list-mode .article-table .asset-row:not(.head) .main-text,
     body.article-list-mode .article-table .asset-row:not(.head) .muted,
     body.category-list-mode .category-table .asset-row:not(.head) .main-text,
@@ -1530,6 +1614,34 @@
       font-weight: 400;
       line-height: 1.5;
       margin-bottom: 0;
+    }
+    body.offer-list-mode .offer-list-table .asset-row:not(.head) > div {
+      color: #516683;
+      font-size: 12px;
+      font-weight: 400;
+      line-height: 1.5;
+    }
+    body.offer-list-mode .offer-list-table .asset-row:not(.head) .asset-cell-primary .main-text,
+    body.offer-list-mode .offer-list-table .asset-row:not(.head) .panel-action {
+      font-size: 12px;
+      font-weight: 400;
+      line-height: 1.5;
+    }
+    body.offer-list-mode .offer-list-table .asset-row:not(.head) > .user-row-actions {
+      justify-self: start;
+    }
+    body.offer-list-mode .offer-list-table .asset-row:not(.head) > .user-row-actions .panel-action {
+      min-height: auto;
+      padding: 0;
+      border: 0;
+      background: transparent;
+      color: var(--blue);
+      font-weight: 600;
+      white-space: nowrap;
+    }
+    body.offer-list-mode .offer-list-table .asset-row:not(.head) > .user-row-actions .panel-action:hover {
+      background: transparent;
+      color: #0047c7;
     }
     body.article-list-mode #primary-action,
     body.category-list-mode #primary-action,
@@ -3700,6 +3812,9 @@
       gap: 8px;
       width: 100%;
     }
+    body.offer-list-mode .offer-filter-bar {
+      grid-template-columns: minmax(320px, 1.85fr) minmax(190px, .95fr) minmax(190px, .95fr) max-content;
+    }
     .user-filter-actions {
       display: none;
     }
@@ -3786,6 +3901,74 @@
     .user-filter-bar .field:focus-visible {
       border-color: #b8c6d8;
       box-shadow: 0 0 0 3px rgba(118, 135, 158, .10);
+    }
+    body.user-accounts-mode:not(.user-detail-mode) .filters {
+      padding: 12px 16px;
+    }
+    body.user-accounts-mode:not(.user-detail-mode) .user-filter-bar {
+      grid-template-columns: minmax(260px, 1.65fr) repeat(3, minmax(138px, .82fr)) 42px;
+      align-items: stretch;
+      gap: 8px;
+    }
+    body.user-accounts-mode:not(.user-detail-mode) .user-filter-bar .search,
+    body.user-accounts-mode:not(.user-detail-mode) .user-filter-bar .custom-select,
+    body.user-accounts-mode:not(.user-detail-mode) .user-filter-bar .custom-select-trigger,
+    body.user-accounts-mode:not(.user-detail-mode) .user-filter-bar .filter-reset {
+      width: 100%;
+      height: 48px;
+      min-height: 48px;
+    }
+    body.user-accounts-mode:not(.user-detail-mode) .user-filter-bar .search {
+      grid-column: auto;
+      min-width: 0;
+      line-height: 1.2;
+    }
+    body.user-accounts-mode:not(.user-detail-mode) .user-filter-bar .field,
+    body.user-accounts-mode:not(.user-detail-mode) .user-filter-bar .custom-select,
+    body.user-accounts-mode:not(.user-detail-mode) .user-filter-bar .custom-select-trigger {
+      min-width: 0;
+    }
+    body.user-accounts-mode:not(.user-detail-mode) .user-filter-bar .custom-select-trigger {
+      display: flex;
+      align-items: center;
+      flex-wrap: nowrap;
+    }
+    body.user-accounts-mode:not(.user-detail-mode) .user-filter-bar .custom-select-trigger [data-custom-select-label] {
+      display: block;
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    body.user-accounts-mode:not(.user-detail-mode) .user-filter-bar .filter-reset {
+      min-width: 42px;
+      padding: 0;
+      border-color: #cfdbea;
+      background: #fff;
+      justify-content: center;
+    }
+    body.user-accounts-mode:not(.user-detail-mode) .user-filter-bar .filter-reset span {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+    }
+    body.user-accounts-mode:not(.user-detail-mode) .main {
+      overflow-x: hidden;
+    }
+    body.user-accounts-mode:not(.user-detail-mode) .layout > .panel {
+      overflow: hidden;
+    }
+    body.user-accounts-mode:not(.user-detail-mode) #table {
+      max-width: 100%;
+      overflow-x: auto;
+      overflow-y: visible;
+      scrollbar-width: thin;
+    }
+    body.user-accounts-mode:not(.user-detail-mode) #table .user-table {
+      min-width: 980px;
     }
     .user-filter-bar.report-mode {
       grid-template-columns: minmax(220px, 1.3fr) repeat(3, minmax(132px, .7fr)) 42px;
@@ -6172,8 +6355,15 @@
       .user-filter-bar.report-mode {
         grid-template-columns: repeat(2, minmax(0, 1fr));
       }
+      body.offer-list-mode .offer-filter-bar {
+        grid-template-columns: minmax(220px, 1.2fr) minmax(160px, .8fr) minmax(160px, .8fr) max-content;
+        align-items: center;
+      }
       .user-filter-bar .search {
         grid-column: 1 / -1;
+      }
+      body.offer-list-mode .offer-filter-bar .search {
+        grid-column: auto;
       }
       .user-row {
         grid-template-columns: minmax(150px, 1.08fr) minmax(136px, .74fr) minmax(148px, .8fr) minmax(76px, .4fr) minmax(86px, .5fr) minmax(118px, .64fr) minmax(124px, .58fr);
@@ -6187,8 +6377,168 @@
         grid-template-columns: minmax(94px, .4fr) minmax(180px, .78fr) minmax(224px, .98fr) minmax(108px, .46fr) minmax(128px, .52fr) minmax(310px, 1.32fr) minmax(86px, .36fr) minmax(88px, .36fr) minmax(62px, .28fr);
         column-gap: 20px;
       }
+      body.user-accounts-mode:not(.user-detail-mode) .main {
+        overflow-x: hidden;
+      }
+      body.user-accounts-mode:not(.user-detail-mode) .summary-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+      body.user-accounts-mode:not(.user-detail-mode) .stat {
+        padding: 14px 15px 15px;
+      }
+      body.user-accounts-mode:not(.user-detail-mode) .stat-label {
+        font-size: 20px;
+      }
+      body.user-accounts-mode:not(.user-detail-mode) .stat-value {
+        font-size: 34px;
+      }
+      body.user-accounts-mode:not(.user-detail-mode) #table {
+        max-width: 100%;
+        overflow-x: auto;
+        scrollbar-width: thin;
+      }
+      body.user-accounts-mode:not(.user-detail-mode) #table .user-table {
+        min-width: 980px;
+      }
+      body.user-accounts-mode:not(.user-detail-mode) .user-row:not(.report-row) {
+        grid-template-columns: minmax(74px, .42fr) minmax(138px, 1.08fr) minmax(112px, .7fr) minmax(124px, .78fr) minmax(58px, .36fr) minmax(84px, .54fr) minmax(108px, .66fr) minmax(42px, .22fr);
+        gap: 10px;
+        padding-left: 14px;
+        padding-right: 14px;
+      }
+      body.user-accounts-mode:not(.user-detail-mode) .user-row:not(.head):not(.report-row) {
+        padding-top: 10px;
+        padding-bottom: 10px;
+      }
+      body.user-accounts-mode:not(.user-detail-mode) .user-row .main-text,
+      body.user-accounts-mode:not(.user-detail-mode) .user-row .muted {
+        font-size: 12px;
+      }
+      body.user-accounts-mode:not(.user-detail-mode) .pill {
+        padding-left: 8px;
+        padding-right: 8px;
+      }
+    }
+    @media (max-width: 980px) and (min-width: 761px) {
+      body.user-accounts-mode:not(.user-detail-mode) .user-filter-bar {
+        grid-template-columns: minmax(0, 1fr) minmax(132px, .5fr) minmax(132px, .5fr) minmax(132px, .5fr) 42px;
+      }
+      body.user-accounts-mode:not(.user-detail-mode) #table .user-table {
+        min-width: 980px;
+      }
+      body.user-accounts-mode:not(.user-detail-mode) .user-row:not(.report-row) {
+        grid-template-columns: minmax(68px, .38fr) minmax(128px, 1fr) minmax(108px, .7fr) minmax(116px, .76fr) minmax(52px, .32fr) minmax(78px, .5fr) minmax(100px, .62fr) minmax(38px, .2fr);
+        column-gap: 8px;
+      }
+      body.offer-list-mode .offer-filter-bar {
+        grid-template-columns: minmax(240px, 1fr) minmax(132px, .52fr) minmax(132px, .52fr) 42px;
+        align-items: center;
+      }
+      body.offer-list-mode .offer-filter-bar .search {
+        grid-column: auto;
+        min-width: 0;
+      }
+      body.offer-list-mode .offer-filter-bar .filter-reset {
+        width: 42px;
+        min-width: 42px;
+        padding: 0;
+        justify-content: center;
+      }
+      body.offer-list-mode .offer-filter-bar .filter-reset span {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
+      }
     }
     @media (max-width: 760px) {
+      body.user-accounts-mode:not(.user-detail-mode) .summary-grid {
+        grid-template-columns: 1fr;
+      }
+      body.user-accounts-mode:not(.user-detail-mode) .filters {
+        padding: 12px 14px;
+      }
+      body.user-accounts-mode:not(.user-detail-mode) .user-filter-bar {
+        grid-template-columns: 1fr;
+        width: 100%;
+      }
+      body.user-accounts-mode:not(.user-detail-mode) .user-filter-bar .search {
+        grid-column: 1 / -1;
+        width: 100%;
+      }
+      body.user-accounts-mode:not(.user-detail-mode) #table {
+        overflow-x: hidden;
+      }
+      body.user-accounts-mode:not(.user-detail-mode) #table .user-table {
+        min-width: 0;
+      }
+      body.user-accounts-mode:not(.user-detail-mode) .user-row:not(.head):not(.report-row) {
+        grid-template-columns: minmax(0, 1fr) 34px;
+        column-gap: 14px;
+        row-gap: 14px;
+        padding: 18px 18px 16px;
+      }
+      body.user-accounts-mode:not(.user-detail-mode) .user-row:not(.head):not(.report-row) > div.user-cell-primary[data-label] {
+        grid-column: 1;
+        grid-row: 1;
+        min-height: 30px;
+        display: flex;
+        align-items: center;
+        align-self: center;
+        border-bottom: 0;
+        padding-bottom: 0;
+      }
+      body.user-accounts-mode:not(.user-detail-mode) .user-row:not(.head):not(.report-row) > .user-row-actions {
+        grid-column: 2;
+        grid-row: 1;
+        align-self: center;
+        justify-self: end;
+        justify-content: flex-end;
+      }
+      body.user-accounts-mode:not(.user-detail-mode) .user-row:not(.head):not(.report-row) > div[data-label]:not(.user-cell-primary) {
+        display: none;
+      }
+      body.user-accounts-mode:not(.user-detail-mode) .user-card-tags {
+        grid-column: 1 / -1;
+        grid-row: 2;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 9px;
+      }
+      body.user-accounts-mode:not(.user-detail-mode) .user-card-meta {
+        flex: 1 0 100%;
+        display: grid;
+        gap: 3px;
+        margin-top: 8px;
+        padding-top: 11px;
+        border-top: 1px solid #edf2f7;
+      }
+      body.user-accounts-mode:not(.user-detail-mode) .user-card-meta-item {
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        gap: 8px;
+        width: 100%;
+        font-size: 12px;
+        line-height: 1.35;
+      }
+      body.user-accounts-mode:not(.user-detail-mode) .user-card-meta-item span,
+      body.user-accounts-mode:not(.user-detail-mode) .user-card-meta-item strong {
+        display: block;
+        font-size: 12px;
+        line-height: 1.35;
+      }
+      body.user-accounts-mode:not(.user-detail-mode) .user-card-meta-item strong {
+        min-width: 0;
+        overflow: hidden;
+        color: #233a5c;
+        font-weight: 400;
+        text-align: right;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
       .user-action-head {
         grid-template-columns: minmax(0, 1fr) 38px;
         align-items: flex-start;
@@ -6409,6 +6759,10 @@
       body.asset-list-mode .summary-grid {
         grid-template-columns: 1fr;
       }
+      body.offer-list-mode .summary-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+      }
       body.user-management-mode .summary-grid {
         grid-template-columns: repeat(2, minmax(0, 1fr));
         gap: 10px;
@@ -6444,6 +6798,12 @@
         gap: 10px;
       }
       body.asset-list-mode .panel-head {
+        align-items: center;
+        flex-direction: row;
+        justify-content: space-between;
+        gap: 10px;
+      }
+      body.offer-list-mode .panel-head {
         align-items: center;
         flex-direction: row;
         justify-content: space-between;
@@ -6518,6 +6878,9 @@
       .user-filter-bar.report-mode {
         grid-template-columns: 1fr;
       }
+      body.offer-list-mode .offer-filter-bar {
+        grid-template-columns: 1fr;
+      }
       .user-filter-bar .field:not(.search) {
         grid-column: auto;
       }
@@ -6525,7 +6888,8 @@
         display: none;
       }
       body.user-management-mode .user-panel-filter-actions,
-      body.asset-list-mode .user-panel-filter-actions {
+      body.asset-list-mode .user-panel-filter-actions,
+      body.offer-list-mode .user-panel-filter-actions {
         display: flex;
         align-items: center;
         justify-content: flex-end;
@@ -6847,7 +7211,13 @@
       body.asset-list-mode .filters {
         grid-template-columns: 1fr;
       }
+      body.offer-list-mode .filters {
+        grid-template-columns: 1fr;
+      }
       body.asset-list-mode .user-filter-bar {
+        grid-template-columns: 1fr;
+      }
+      body.offer-list-mode .user-filter-bar {
         grid-template-columns: 1fr;
       }
       body.article-list-mode .filters,
@@ -6888,12 +7258,22 @@
         padding: 12px 14px 16px;
         background: #f8fbff;
       }
+      body.offer-list-mode #table {
+        padding: 12px 14px 16px;
+        background: #f8fbff;
+      }
       body.asset-list-mode .asset-table {
         grid-template-columns: 1fr;
         gap: 12px;
       }
+      body.offer-list-mode .asset-table {
+        grid-template-columns: 1fr;
+        gap: 12px;
+        min-width: 0;
+      }
       body.user-list-mode .footer-range,
       body.asset-list-mode .footer-range,
+      body.offer-list-mode .footer-range,
       body.article-list-mode .footer-range,
       body.category-list-mode .footer-range,
       body.reported-board-mode .footer-range {
@@ -6960,6 +7340,61 @@
       body.asset-list-mode .asset-row:not(.head) .desktop-user-name { display: none; }
       body.asset-list-mode .asset-row:not(.head) .mobile-user-card-title { display: inline; }
       body.asset-list-mode .asset-card-tags {
+        grid-column: 1 / -1;
+        grid-row: 2;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 9px;
+        padding-top: 0;
+      }
+      body.offer-list-mode .asset-row.head {
+        display: none;
+      }
+      body.offer-list-mode .asset-row:not(.head) {
+        grid-template-columns: minmax(0, 1fr);
+        column-gap: 14px;
+        row-gap: 14px;
+        min-height: 0;
+        padding: 18px 18px 16px;
+        border: 1px solid #cfdbd2;
+        border-radius: 10px;
+        background: #fff;
+        box-shadow: 0 1px 2px rgba(15, 23, 42, .05);
+        cursor: pointer;
+        overflow: visible;
+      }
+      body.offer-list-mode .asset-row:not(.head) > div[data-label]:not(.asset-cell-primary) {
+        display: none;
+      }
+      body.offer-list-mode .asset-row:not(.head) > .user-row-actions {
+        display: none;
+      }
+      body.offer-list-mode .asset-row:not(.head) > .asset-cell-primary {
+        grid-column: 1;
+        grid-row: 1;
+        min-height: 30px;
+        display: flex;
+        align-items: center;
+        align-self: center;
+        border-bottom: 0;
+        padding-bottom: 0;
+      }
+      body.offer-list-mode .asset-row:not(.head) > .asset-cell-primary .main-text,
+      body.offer-list-mode .offer-list-table .asset-row:not(.head) > .asset-cell-primary .main-text {
+        max-width: 100%;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        color: #061426;
+        font-family: var(--font-heading);
+        font-size: 22px;
+        font-weight: 500;
+        letter-spacing: .04em;
+        line-height: 1;
+      }
+      body.offer-list-mode .asset-row:not(.head) .desktop-user-name { display: none; }
+      body.offer-list-mode .asset-row:not(.head) .mobile-user-card-title { display: inline; }
+      body.offer-list-mode .asset-card-tags {
         grid-column: 1 / -1;
         grid-row: 2;
         display: flex;
@@ -7499,6 +7934,14 @@
       }
       .search { min-width: 100%; }
     }
+    @media (max-width: 560px) {
+      body.offer-list-mode .user-filter-bar {
+        grid-template-columns: 1fr;
+      }
+      body.offer-list-mode .offer-filter-bar .search {
+        grid-column: 1;
+      }
+    }
   </style>
 </head>
 <body class="logged-out">
@@ -7693,11 +8136,11 @@
         { id: "dashboard", label: "Dashboard", icon: "dashboard" },
         { id: "users", label: "User Management", icon: "users", subs: ["User Accounts", "Reported Users"] },
         { id: "assets", label: "Asset Management", icon: "asset", subs: ["Asset List", "Reported Assets"] },
+        { id: "offers", label: "Offer Management", icon: "offer" },
         { id: "content", label: "Content Management", icon: "content", subs: ["Articles", "Categories", "Reported Articles"] },
         { id: "market", label: "Market Data", icon: "market", subs: ["Dashboard", "Brands & Models", "Sync History"] },
       ]},
       { section: "งานตรวจสอบและบริการ", items: [
-        { id: "offers", label: "Offer / Chat", icon: "offer", subs: ["Offer Queue", "Reported Chat", "Dispute Export"] },
         { id: "social", label: "Social Interaction", icon: "social", subs: ["Comments", "Likes", "Follows", "Reported Social"] },
         { id: "watch-alerts", label: "Watch Alert", icon: "alert", subs: ["Alert Criteria", "Trigger History", "Disabled Alerts"] },
         { id: "support", label: "Help & Support", icon: "support", subs: ["Tickets", "Assignment", "SLA"] },
@@ -7802,10 +8245,19 @@
         item("AUD-88172", "Publish Article", "Orn Admin", "Content", "กลาง", "Recorded", "ART-044 schedule ถูกแก้เวลา publish", ["Board"], "ตรวจ timestamp Asia/Bangkok"),
         item("AUD-88120", "Export User CSV", "Somchai Admin", "Users", "สูง", "Recorded", "Export มี sensitive-data masking", ["CSV", "Policy"], "ตรวจ permission และ download expiry")
       ]),
-      offers: mod("Offer / Chat", "งานตรวจสอบและบริการ / Offer / Chat", "Offer Lifecycle & Chat Review", "ตรวจ offer, rejected status, reported chat และ dispute export", "เปิด dispute export", [["Pending Offers", "44", "รอ buyer/seller"], ["Rejected", "19", "เก็บประวัติ"], ["Reported Chat", "7", "SLA 24 ชม."], ["Disputes", "3", "ต้อง export"]], [
-        item("OFR-501", "Offer THB 285,000", "AST-8831", "Offer", "กลาง", "Pending", "ผู้ซื้อขอลดราคาและถาม proof เพิ่ม", ["Buyer U-1042"], "ดู chat context ก่อน force expire"),
-        item("CHT-090", "Reported abusive chat", "watch.dealer.th", "Chat", "สูง", "Reviewing", "มี report spam offer จากผู้ใช้ 5 คน", ["Reports 5"], "อ่าน transcript และ hide/ban ตาม policy"),
-        item("DSP-014", "Condition mismatch", "Omega Club TH", "Dispute", "สูง", "Open", "คู่ค้าร้องเรียนสภาพสินค้าไม่ตรงรูป", ["Export needed"], "Export offer/chat bundle เพื่อ support")
+      offers: mod("Offer Management", "การดำเนินงาน / Offer Management", "Offer Interest Overview", "ดูรายการ offer แบบ read-only เพื่อเห็นความสนใจต่อ asset, buyer/seller และสถานะ offer", "Export offer report", [["Pending Offers", "3", "รอ owner ตอบ"], ["Paused", "1", "รอตรวจสอบ asset"], ["Accepted", "3", "ตกลงแล้ว"], ["Rejected", "2", "ผู้ขายปฏิเสธ"], ["Cancelled", "2", "asset ถูกลบ/ซ่อนโดย owner"], ["Invalidated", "1", "ใช้ไม่ได้ถาวร"]], [
+        item("OFR-501", "Offer THB 285,000", "AST-8831", "Offer", "กลาง", "Pending", "ผู้ซื้อขอลดราคาและถาม proof เพิ่ม", ["Buyer U-1042", "Owner Crown Time BKK"], "Read-only: เปิด offer detail เพื่อดู asset, buyer, seller และ related chat"),
+        item("OFR-488", "Offer THB 118,000", "AST-8720", "Offer", "ปกติ", "Accepted", "ผู้ขายรับข้อเสนอและ buyer ได้ notification ไป Chat Room", ["Buyer U-1161", "Owner Seiko Corner"], "Read-only: ใช้ดู demand และประวัติการตอบรับของ asset"),
+        item("OFR-472", "Offer THB 2,100,000", "AST-8694", "Offer", "สูง", "Rejected", "ผู้ขายกด Decline จาก Incoming Offers", ["Buyer U-1042", "Owner Rolex Rama9"], "Read-only: ใช้เทียบราคาที่เสนอ เทียบ asking price และสถานะล่าสุด"),
+        item("OFR-459", "Offer THB 575,000", "AST-8579", "Offer", "กลาง", "Cancelled", "owner ลบ asset ระหว่างที่ offer ยัง pending ทำให้ระบบยกเลิก offer อัตโนมัติ", ["Buyer U-1161", "Owner Crown Time BKK"], "Read-only: cancelled จาก Asset Deleted ไม่ใช่ owner decline และยังเก็บ history ไว้ตรวจสอบ"),
+        item("OFR-451", "Offer THB 252,000", "AST-8566", "Offer", "กลาง", "Pending", "ผู้ซื้อเสนอราคาต่ำกว่า asking และรอ owner ยืนยันอุปกรณ์", ["Buyer U-1088", "Owner Crown Time BKK"], "Read-only: pending offer ยังไม่ควรนับเป็นดีลสำเร็จ"),
+        item("OFR-438", "Offer THB 136,000", "AST-8548", "Offer", "ปกติ", "Accepted", "owner รับข้อเสนอหลังตกลงเรื่องตำหนิขอบตัวเรือนใน chat", ["Buyer U-1042", "Owner Vintage Vault BKK"], "Read-only: ใช้ดู accepted offer และ related chat context"),
+        item("OFR-427", "Offer THB 1,090,000", "AST-8559", "Offer", "สูง", "Rejected", "owner ปฏิเสธเพราะราคาต่ำกว่า reserve สำหรับ consignment", ["Buyer U-1144", "Owner Siam Chrono"], "Read-only: rejected offer ช่วยเทียบช่วงราคาที่ buyer สนใจ"),
+        item("OFR-416", "Offer THB 29,000", "AST-8518", "Offer", "ปกติ", "Cancelled", "owner เปลี่ยน asset จาก Sale เป็น Hide ระหว่างที่ offer ยัง pending ทำให้ asset ไม่รับ offer ต่อ", ["Buyer U-1104", "Owner Seiko Corner"], "Read-only: cancelled จาก asset availability change ไม่ใช่ action ของ Admin"),
+        item("OFR-404", "Offer THB 109,000", "AST-8497", "Offer", "กลาง", "Pending", "ผู้ซื้อถามรูปเพิ่มและรอ owner ตอบเรื่องใบรับประกัน", ["Buyer U-1161", "Owner Minimal Dial"], "Read-only: pending offer ยังอยู่ใน incoming offer ของ owner"),
+        item("OFR-392", "Offer THB 158,000", "AST-8802", "Offer", "กลาง", "Accepted", "owner รับข้อเสนอหลัง buyer ยืนยันนัดรับและช่องทางชำระเงิน", ["Buyer U-1017", "Owner Vintage Vault BKK"], "Read-only: accepted ไม่เท่ากับ payment complete"),
+        item("OFR-381", "Offer THB 305,000", "AST-8536", "Offer", "กลาง", "Paused", "asset ถูก auto hidden จาก report ระหว่าง review ทำให้ offer ถูกพักชั่วคราว", ["Buyer U-1088", "Owner Daily Watch Hunter"], "Read-only: paused ระหว่าง asset review; FO ไม่แสดง Accept/Decline จนกว่า review จบ"),
+        item("OFR-366", "Offer THB 1,020,000", "AST-8581", "Offer", "สูง", "Invalidated", "asset ถูกซ่อนถาวรหลัง moderation ทำให้ pending offer ใช้งานไม่ได้ถาวร", ["Buyer U-1161", "Owner Rolex Rama9"], "Read-only: invalidated จาก permanent hide; FO แสดง Offer Unavailable และไม่มี action")
       ]),
       social: mod("Social Interaction", "งานตรวจสอบและบริการ / Social Interaction", "Comments, Likes & Follows", "จัดการ comment/reply moderation และ analytics ของ like/favorite/follow", "ดู reported social", [["Comments", "8,420", "วันนี้ 184"], ["Reported", "11", "รอตรวจ 4"], ["Follows", "26,100", "เพิ่ม 2.4%"], ["Favorites", "41,900", "ใช้ใน analytics"]], [
         item("COM-711", "Spam comment", "AST-8802", "Comment", "สูง", "Reported", "คอมเมนต์ซ้ำหลาย asset พร้อม link นอกระบบ", ["Reports 3"], "Hide comment จาก Asset Detail และ audit"),
@@ -8660,6 +9112,8 @@
     let assetListPage = 1;
     let assetFilterOpen = false;
     let assetReportFilterOpen = false;
+    let offerListPage = 1;
+    let offerFilterOpen = false;
     let articleListPage = 1;
     let articleFilterOpen = false;
     let categoryListPage = 1;
@@ -9156,6 +9610,8 @@
       assetListPage = 1;
       assetFilterOpen = false;
       assetReportFilterOpen = false;
+      offerListPage = 1;
+      offerFilterOpen = false;
       articleListPage = 1;
       articleFilterOpen = false;
       categoryListPage = 1;
@@ -9179,6 +9635,7 @@
       userFilterOpen = false;
       assetFilterOpen = false;
       assetReportFilterOpen = false;
+      offerFilterOpen = false;
       articleFilterOpen = false;
       categoryFilterOpen = false;
       boardReportFilterOpen = false;
@@ -11799,6 +12256,7 @@
       activeReportContextId = null;
       document.body.classList.add("user-list-mode");
       document.body.classList.remove("user-detail-mode");
+      document.body.classList.toggle("user-accounts-mode", !isReports);
       activeRow = isReports ? userManagementData.reports[0] : userManagementData.users[0];
       document.querySelector("#crumb").textContent = `การดำเนินงาน / User Management / ${title}`;
       document.querySelector("#page-title").textContent = title;
@@ -13638,6 +14096,10 @@
     }
 
     function renderModule(id, subLabel = "", displaySubLabel = subLabel) {
+      if (id === "offers") {
+        subLabel = "";
+        displaySubLabel = "";
+      }
       activeModule = id;
       activeSub = subLabel;
       setPageActions("");
@@ -13648,15 +14110,18 @@
       const isArticleList = id === "content" && (subLabel || "Articles") === "Articles";
       const isCategoryList = id === "content" && subLabel === "Categories";
       const isReportedBoard = id === "content" && subLabel === "Reported Articles";
+      const isOfferList = id === "offers";
       document.body.classList.toggle("dashboard-mode", id === "dashboard");
       document.body.classList.toggle("user-management-mode", id === "users" || isReportedAssets || isReportedBoard);
       document.body.classList.toggle("asset-list-mode", isAssetList || isArticleList || isCategoryList || isReportedBoard);
+      document.body.classList.toggle("offer-list-mode", isOfferList);
       document.body.classList.toggle("article-list-mode", isArticleList);
       document.body.classList.toggle("category-list-mode", isCategoryList);
       document.body.classList.toggle("reported-board-mode", isReportedBoard);
       document.body.classList.toggle("market-list-mode", id === "market");
       document.body.classList.toggle("market-dashboard-mode", id === "market" && (subLabel || "Dashboard") === "Dashboard");
       document.body.classList.toggle("user-list-mode", id === "users" || isReportedAssets || isReportedBoard);
+      document.body.classList.toggle("user-accounts-mode", id === "users" && (subLabel || "User Accounts") === "User Accounts");
       document.body.classList.remove("asset-detail-mode");
       if (isReportedAssets || isReportedBoard) document.body.classList.remove("user-detail-mode");
       if (id !== "users" && !isReportedAssets && !isReportedBoard) {
@@ -13888,6 +14353,40 @@
         document.querySelector("#cards").innerHTML = "";
         document.querySelector("#detail").innerHTML = "";
         renderRows();
+        updateActiveNav();
+        return;
+      }
+      if (isOfferList) {
+        activeRow = null;
+        activeSub = "";
+        document.querySelector("#crumb").textContent = data.crumb;
+        document.querySelector("#page-title").textContent = data.title;
+        document.querySelector("#page-meta").textContent = "";
+        document.querySelector("#panel-title").textContent = "Offer List";
+        document.querySelector("#panel-subtitle").textContent = "";
+        document.querySelector("#primary-action").textContent = data.action;
+        document.querySelector("#user-panel-filter-actions").innerHTML = `
+          <button class="btn user-filter-toggle" type="button" data-offer-filter-toggle aria-expanded="${offerFilterOpen}">${iconSvg.filter}<span>${offerFilterOpen ? "ปิดตัวกรอง" : "เปิดตัวกรอง"}</span></button>
+          <button class="btn" type="button" data-offer-reset title="รีเซ็ตค่าทั้งหมด" aria-label="รีเซ็ตค่าทั้งหมด">${iconSvg.refresh}<span>รีเซ็ตค่าทั้งหมด</span></button>
+        `;
+        document.querySelector(".filters").innerHTML = `
+          <div class="user-filter-bar offer-filter-bar" data-filter-open="${offerFilterOpen}">
+            <input class="field search" id="offer-search" type="search" placeholder="ค้นหา Offer ID, Asset ID, Asset, Buyer, Owner" />
+            <div class="user-advanced-filter">${customSelect("offer-status-filter", "Filter offer status", [
+              { value: "", label: "ทุกสถานะ" },
+              ...Array.from(new Set(data.rows.map(row => row.status))).map(status => ({ value: status, label: status }))
+            ])}</div>
+            <div class="user-advanced-filter">${customSelect("offer-sort", "Sort offers", [
+              { value: "latest", label: "Newest first" },
+              { value: "oldest", label: "Oldest first" }
+            ], "latest")}</div>
+            <button class="btn filter-reset user-advanced-filter" type="button" data-offer-reset title="รีเซ็ตค่าทั้งหมด" aria-label="รีเซ็ตค่าทั้งหมด">${iconSvg.refresh}<span>รีเซ็ตค่าทั้งหมด</span></button>
+          </div>
+        `;
+        document.querySelector("#summary-grid").innerHTML = renderOfferStatusOverview(data.rows);
+        document.querySelector("#cards").innerHTML = "";
+        document.querySelector("#detail").innerHTML = "";
+        renderOfferListRows();
         updateActiveNav();
         return;
       }
@@ -16053,6 +16552,10 @@
       }
       if (activeModule === "content" && activeSub === "Reported Articles") {
         renderReportedBoardRows();
+        return;
+      }
+      if (activeModule === "offers") {
+        renderOfferListRows();
         return;
       }
       if (activeModule === "market") {
@@ -19592,6 +20095,194 @@
       `;
     }
 
+    function getOfferSearchText(offer) {
+      return [
+        Object.values(offer).flat().join(" "),
+        getOfferPriceDisplay(offer),
+        getOfferAssetName(offer),
+        getOfferParticipantName(offer, "Buyer"),
+        getOfferParticipantName(offer, "Owner")
+      ].join(" ").toLowerCase();
+    }
+
+    function getOfferPriceDisplay(offer) {
+      return String(offer.name || "").replace(/^Offer\s+/i, "");
+    }
+
+    function getOfferAsset(offer) {
+      return (moduleData.assets?.rows || []).find(asset => asset.id === offer.owner);
+    }
+
+    function getOfferAssetName(offer) {
+      return getOfferAsset(offer)?.name || "-";
+    }
+
+    function getOfferParticipantRaw(offer, role) {
+      const label = `${role} `;
+      const tag = (offer.tags || []).find(item => String(item).toLowerCase().startsWith(label.toLowerCase()));
+      return tag ? String(tag).slice(label.length) : "-";
+    }
+
+    function getOfferParticipantName(offer, role) {
+      const raw = getOfferParticipantRaw(offer, role);
+      const userSources = [
+        ...(moduleData.users?.rows || []),
+        ...(userManagementData.users || [])
+      ];
+      const user = userSources.find(row => row.id === raw || row.displayName === raw || row.name === raw);
+      return user?.displayName || user?.name || raw;
+    }
+
+    function getOfferSortRank(offer) {
+      return parseInt(String(offer.id || "").replace(/\D/g, ""), 10) || 0;
+    }
+
+    function renderOfferStatusPill(status) {
+      const meta = getOfferStatusMeta().find(item => item.status === status);
+      return `<span class="pill ${meta?.pillClass || "gray"}">${status}</span>`;
+    }
+
+    function getOfferStatusMeta() {
+      return [
+        { status: "Pending", label: "Pending", note: "รอ owner ตอบ", pillClass: "amber", color: "#f59e0b" },
+        { status: "Paused", label: "Paused", note: "asset รอตรวจสอบ", pillClass: "blue", color: "#1da1f2" },
+        { status: "Accepted", label: "Accepted", note: "owner รับ offer แล้ว", pillClass: "green", color: "#18bd8b" },
+        { status: "Rejected", label: "Rejected", note: "owner ปฏิเสธ", pillClass: "red", color: "#ef4444" },
+        { status: "Cancelled", label: "Cancelled", note: "owner ลบ/ซ่อน asset", pillClass: "purple", color: "#8b5cf6" },
+        { status: "Invalidated", label: "Invalidated", note: "ใช้ไม่ได้ถาวร", pillClass: "charcoal", color: "#111827" }
+      ];
+    }
+
+    function renderOfferStatusOverview(rows = moduleData.offers.rows) {
+      const total = rows.length || 0;
+      const statusItems = getOfferStatusMeta().map(meta => ({
+        ...meta,
+        count: rows.filter(row => row.status === meta.status).length
+      }));
+      return statusItems.map(item => {
+        return `
+          <article class="stat offer-status-card" style="--offer-status-color:${item.color}">
+            <div class="stat-label">${item.label}</div>
+            <div class="stat-value">${item.count}</div>
+          </article>
+        `;
+      }).join("");
+    }
+
+    function renderOfferListRows() {
+      const data = moduleData.offers;
+      const q = (document.querySelector("#offer-search")?.value || "").trim().toLowerCase();
+      const status = document.querySelector("#offer-status-filter")?.value || "";
+      const sort = document.querySelector("#offer-sort")?.value || "latest";
+      const filtered = data.rows
+        .filter(row => (!q || getOfferSearchText(row).includes(q)) && (!status || row.status === status))
+        .sort((a, b) => sort === "oldest" ? getOfferSortRank(a) - getOfferSortRank(b) : getOfferSortRank(b) - getOfferSortRank(a));
+      const pageSize = assetListPageSize;
+      const pageCount = Math.max(1, Math.ceil(filtered.length / pageSize));
+      offerListPage = Math.min(offerListPage, pageCount);
+      const start = (offerListPage - 1) * pageSize;
+      const pageRows = filtered.slice(start, start + pageSize);
+      document.querySelector("#table").innerHTML = `
+        <div class="asset-table offer-list-table">
+          <div class="asset-row head"><div>Offer ID</div><div>Offer</div><div>Asset</div><div>Buyer</div><div>Owner</div><div>Status</div><div>Action</div></div>
+          ${pageRows.map(row => `
+            <div class="asset-row" data-offer-card="${row.id}">
+              <div data-label="Offer ID"><div class="main-text">${row.id}</div></div>
+              <div class="asset-cell-primary" data-label="Offer">
+                <div class="main-text"><span class="desktop-user-name">${getOfferPriceDisplay(row)}</span><span class="mobile-user-card-title">${row.id}</span></div>
+              </div>
+              <div class="asset-card-tags">
+                ${renderOfferStatusPill(row.status)}
+                <span class="pill blue">${row.type}</span>
+                <div class="user-card-meta">
+                  <div class="user-card-meta-item"><span>Offer</span><strong>${getOfferPriceDisplay(row)}</strong></div>
+                  <div class="user-card-meta-item"><span>Asset</span><strong>${getOfferAssetName(row)}</strong></div>
+                  <div class="user-card-meta-item"><span>Buyer</span><strong>${getOfferParticipantName(row, "Buyer")}</strong></div>
+                  <div class="user-card-meta-item"><span>Owner</span><strong>${getOfferParticipantName(row, "Owner")}</strong></div>
+                </div>
+              </div>
+              <div data-label="Asset"><div class="main-text">${getOfferAssetName(row)}</div><div class="muted">${row.owner}</div></div>
+              <div data-label="Buyer"><div class="main-text">${getOfferParticipantName(row, "Buyer")}</div></div>
+              <div data-label="Owner"><div class="main-text">${getOfferParticipantName(row, "Owner")}</div></div>
+              <div data-label="Status">${renderOfferStatusPill(row.status)}</div>
+              <div class="user-row-actions">
+                <button class="panel-action" type="button" data-offer-open="${row.id}">View</button>
+              </div>
+            </div>
+          `).join("") || `<div class="detail-empty user-empty">ไม่พบข้อมูล</div>`}
+        </div>
+        <div class="footer-range">
+          <span>แสดง ${filtered.length ? `${start + 1}-${Math.min(start + pageSize, filtered.length)}` : "0"} จาก ${filtered.length}</span>
+          <div class="pager">
+            <button class="btn" type="button" data-offer-page="prev" ${offerListPage <= 1 ? "disabled" : ""}>ก่อนหน้า</button>
+            ${Array.from({ length: pageCount }, (_, index) => `<button class="btn ${index + 1 === offerListPage ? "active" : ""}" type="button" data-offer-page="${index + 1}">${index + 1}</button>`).join("")}
+            <button class="btn" type="button" data-offer-page="next" ${offerListPage >= pageCount ? "disabled" : ""}>ถัดไป</button>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderOfferDetailPage(offer) {
+      if (!offer) {
+        renderModule("offers");
+        return;
+      }
+      activeModule = "offers";
+      activeSub = "";
+      activeRow = offer;
+      document.body.classList.add("offer-list-mode");
+      document.body.classList.remove("dashboard-mode", "user-management-mode", "asset-list-mode", "article-list-mode", "category-list-mode", "reported-board-mode", "market-list-mode", "market-dashboard-mode", "user-list-mode", "user-detail-mode", "asset-detail-mode");
+      document.querySelector("#crumb").textContent = `การดำเนินงาน / Offer Management / Offer Detail / ${offer.id}`;
+      document.querySelector("#page-title").textContent = "Offer Detail";
+      document.querySelector("#page-meta").textContent = "";
+      setPageActions(renderPageBackButton("data-back-offer-list", "กลับไป Offer Management", "report-back-btn"));
+      document.querySelector("#panel-title").textContent = offer.name;
+      document.querySelector("#panel-subtitle").textContent = `${offer.id} / ${offer.owner}`;
+      document.querySelector("#user-panel-filter-actions").innerHTML = "";
+      document.querySelector(".filters").innerHTML = "";
+      document.querySelector("#summary-grid").innerHTML = "";
+      document.querySelector("#cards").innerHTML = "";
+      document.querySelector("#detail").innerHTML = "";
+      document.querySelector("#table").innerHTML = `
+        <div class="user-detail-page report-detail-page">
+          <div class="user-detail-head">
+            <div class="user-detail-title">
+              <div>
+                <h2 class="asset-report-heading"><span>${offer.id}</span><span class="user-detail-separator"> : </span><span class="asset-report-name user-display-name">${offer.name}</span></h2>
+                <div class="chips">
+                  ${renderOfferStatusPill(offer.status)}
+                  <span class="pill blue">${offer.type}</span>
+                  ${statusPill(offer.priority, offer.priority)}
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="detail-section">
+            <h4>Offer Reference</h4>
+            <div class="detail-grid two report-reference-grid">
+              <div class="detail-tile"><span>Offer ID</span><strong>${offer.id}</strong></div>
+              <div class="detail-tile"><span>Asset ID</span><strong>${offer.owner}</strong></div>
+              <div class="detail-tile"><span>Offer Amount</span><strong>${offer.name.replace(/^Offer\s+/i, "")}</strong></div>
+              <div class="detail-tile"><span>Status</span><strong>${offer.status}</strong></div>
+              <div class="detail-tile"><span>Priority</span><strong>${offer.priority}</strong></div>
+              <div class="detail-tile"><span>Module</span><strong>Offer Management</strong></div>
+            </div>
+          </div>
+          <div class="detail-section">
+            <h4>Related Parties</h4>
+            <div class="chips">${offer.tags.map(tag => `<span class="chip">${tag}</span>`).join("")}</div>
+          </div>
+          <div class="detail-section">
+            <h4>Review Context</h4>
+            <p class="muted">${offer.detail}</p>
+            <div class="module-note"><strong>Admin action:</strong> ${offer.action}</div>
+          </div>
+        </div>
+      `;
+      updateActiveNav();
+      scrollMainToTop();
+    }
+
     function statusPill(status, priority) {
       const color = priority === "สูง" ? "red" : priority === "กลาง" ? "amber" : ["Active", "Ready", "Published", "สำเร็จ", "Completed"].includes(status) ? "green" : "purple";
       return `<span class="pill ${color}">${status}</span>`;
@@ -19721,6 +20412,11 @@
         if (["asset-type-filter", "asset-brand-filter", "asset-sort"].includes(hiddenInput.id) && activeModule === "assets") {
           assetListPage = 1;
           renderAssetListRows();
+          return;
+        }
+        if (["offer-status-filter", "offer-sort"].includes(hiddenInput.id) && activeModule === "offers") {
+          offerListPage = 1;
+          renderOfferListRows();
           return;
         }
         if (["article-status-filter", "article-category-filter", "article-sort"].includes(hiddenInput.id) && activeModule === "content" && (activeSub || "Articles") === "Articles") {
@@ -19910,6 +20606,14 @@
         const row = moduleData[activeModule].rows.find(entry => entry.id === id);
         activeRow = row;
         renderDetail(row);
+      }
+      const offerOpenButton = event.target.closest("[data-offer-open], .asset-row[data-offer-card]");
+      if (offerOpenButton && activeModule === "offers") {
+        if (event.target.closest("button") && !event.target.closest("[data-offer-open]")) return;
+        const id = offerOpenButton.dataset.offerOpen || offerOpenButton.dataset.offerCard;
+        const offer = moduleData.offers.rows.find(entry => entry.id === id);
+        renderOfferDetailPage(offer);
+        return;
       }
       const articleOpenButton = event.target.closest("[data-article-open]");
       if (articleOpenButton) {
@@ -20454,6 +21158,12 @@
         renderModule("assets", "Reported Assets", "Reported Assets");
         return;
       }
+      const offerReset = event.target.closest("[data-offer-reset]");
+      if (offerReset) {
+        offerListPage = 1;
+        renderModule("offers");
+        return;
+      }
       const assetReportFilterToggle = event.target.closest("[data-asset-report-filter-toggle]");
       if (assetReportFilterToggle) {
         assetReportFilterOpen = !assetReportFilterOpen;
@@ -20472,6 +21182,16 @@
         assetFilterToggle.setAttribute("aria-expanded", String(assetFilterOpen));
         const label = assetFilterToggle.querySelector("span");
         if (label) label.textContent = assetFilterOpen ? "ปิดตัวกรอง" : "เปิดตัวกรอง";
+        return;
+      }
+      const offerFilterToggle = event.target.closest("[data-offer-filter-toggle]");
+      if (offerFilterToggle) {
+        offerFilterOpen = !offerFilterOpen;
+        const filterBar = document.querySelector(".user-filter-bar");
+        if (filterBar) filterBar.dataset.filterOpen = String(offerFilterOpen);
+        offerFilterToggle.setAttribute("aria-expanded", String(offerFilterOpen));
+        const label = offerFilterToggle.querySelector("span");
+        if (label) label.textContent = offerFilterOpen ? "ปิดตัวกรอง" : "เปิดตัวกรอง";
         return;
       }
       const articleReset = event.target.closest("[data-article-reset]");
@@ -20596,6 +21316,15 @@
         else renderAssetListRows();
         return;
       }
+      const offerPageButton = event.target.closest("[data-offer-page]");
+      if (offerPageButton) {
+        const target = offerPageButton.dataset.offerPage;
+        if (target === "prev") offerListPage = Math.max(1, offerListPage - 1);
+        else if (target === "next") offerListPage += 1;
+        else offerListPage = Number(target) || 1;
+        renderOfferListRows();
+        return;
+      }
       const userPageButton = event.target.closest("[data-user-page]");
       if (userPageButton) {
         const target = userPageButton.dataset.userPage;
@@ -20651,6 +21380,11 @@
       const backAssetList = event.target.closest("[data-back-asset-list]");
       if (backAssetList) {
         renderModule("assets", "Asset List", "Asset List");
+        return;
+      }
+      const backOfferList = event.target.closest("[data-back-offer-list]");
+      if (backOfferList) {
+        renderModule("offers");
         return;
       }
       const backArticleList = event.target.closest("[data-back-article-list]");
@@ -20961,6 +21695,11 @@
         renderReportedBoardRows();
         return;
       }
+      if (event.target.matches("#offer-search")) {
+        offerListPage = 1;
+        renderOfferListRows();
+        return;
+      }
       if (event.target.matches("#search")) {
         if (activeModule === "assets") assetListPage = 1;
         renderRows();
@@ -21103,6 +21842,7 @@
       }
       if (event.target.matches("#status-filter, #priority-filter, #asset-type-filter, #asset-brand-filter, #asset-sort")) {
         if (activeModule === "assets") assetListPage = 1;
+        if (activeModule === "offers") offerListPage = 1;
         renderRows();
       }
     });

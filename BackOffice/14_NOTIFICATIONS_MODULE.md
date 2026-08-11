@@ -302,7 +302,7 @@ Retry action ต้องมี audit log และต้องไม่สร�
 | Dashboard | Failed notifications, delivery rate, scheduled broadcasts |
 | User Management | Target audience, account status exclusion |
 | Asset Management | Asset detail destination and unavailable fallback |
-| Offer / Chat | Offer trigger, chat room destination, rejected/accepted/cancelled events |
+| Offer Management | Offer trigger, chat room destination, rejected/accepted/cancelled events |
 | Social Interaction | Like, comment, follow triggers |
 | Watch Alert | Match trigger, result list destination, notification enabled/off |
 | Help / Support | Delivery log context for user support tickets |

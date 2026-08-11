@@ -152,7 +152,7 @@ Role templates are presets. Production enforcement must use explicit permission 
 | Content / Board | Admin can create, edit, preview, publish, schedule, archive, and audit content actions. |
 | Market Data / Directory | Admin can manage brand/model/reference/price data with provider-source, inactive/restore, and audit controls; Directory is future/postponed from Phase 1. |
 | Audit Log | Admin can view/export audit data according to audit visibility and sensitive-payload policy. |
-| Offer / Chat / Social / Watch Alert | Admin can review and moderate by policy with privacy masking and audit. |
+| Offer Management / Social / Watch Alert | Admin can review permitted records by policy with privacy masking and audit. Offer Management V1 remains read-only. |
 | Help / Support / Account Deletion | Admin can process support and deletion workflows with dependency checks, confirmation, reason, and audit. |
 | Notifications / Reports | Admin can manage templates, broadcasts, reports, and exports according to approval/export/sensitive-data policy. |
 | Admin Settings | Admin can manage BO settings through high-risk policy controls and audit. |

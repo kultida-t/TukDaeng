@@ -221,15 +221,21 @@ New Message สามารถใช้เป็น unread badge/count ภาย
 | New Offer | Chat Room + Focus Offer Card |
 | Offer Accepted | Chat Room |
 | Offer Rejected | Asset Detail |
+| Offer Paused | Chat Room + Focus Offer Card |
 | Offer Cancelled | Chat Room + Focus Offer Card |
+| Offer Invalidated | Chat Room + Focus Offer Card |
 
 ## Offer Notification Detail
 
 - New Offer เปิด Chat Room และ Focus Offer Card เพื่อให้ Seller ตอบรับหรือปฏิเสธได้ทันที
 - Offer Accepted เปิด Chat Room
 - Offer Rejected เปิด Asset Detail
+- Offer Paused เปิด Chat Room และ Focus Offer Card ที่เป็น Paused; card ต้องไม่มี `Accept` / `Decline`
 - Offer Cancelled เปิด Chat Room และ Focus Offer Card ที่เป็น Cancelled
+- Offer Invalidated เปิด Chat Room และ Focus Offer Card ที่เป็น Unavailable final state
 - หาก Offer Cancelled เกิดจาก Asset Deleted ให้ Chat asset reference แสดง unavailable state
+- หาก Offer Paused เกิดจาก asset auto hidden หรือซ่อนชั่วคราว ให้ Chat asset reference แสดง `UNDER REVIEW` / temporarily hidden state
+- หาก Offer Invalidated เกิดจากซ่อนถาวร ให้ Chat asset reference แสดง unavailable state
 
 ## Watch Alert Rule
 
@@ -274,6 +280,8 @@ Notification Module ไม่มี form validation โดยตรง แต่
 | --- | --- |
 | Missing Destination | แสดง unable to open content |
 | Deleted Asset | แสดง unavailable asset state |
+| Asset Under Review | เปิด Chat Room ได้ แต่ Offer Card ต้องเป็น `Offer Paused` และไม่มี action |
+| Permanently Hidden Asset | เปิด Chat Room ได้ แต่ Offer Card ต้องเป็น `Offer Unavailable` และไม่มี action |
 | Deleted User | แสดง user not found state |
 | Permission Denied | แสดง unable to open content |
 | Unsupported Type | ไม่ควรแสดงใน V1 list |
@@ -325,6 +333,9 @@ Notification Module ไม่มี form validation โดยตรง แต่
 | User follows another user | Followed User | Follow | Public Profile |
 | Offer accepted | Buyer | Offer | Chat Room |
 | Offer rejected | Buyer | Offer | Asset Detail |
+| Offer paused | Buyer / Seller | Offer | Chat Room + Focus Offer Card |
+| Offer cancelled | Buyer / Seller | Offer | Chat Room + Focus Offer Card |
+| Offer invalidated | Buyer / Seller | Offer | Chat Room + Focus Offer Card |
 | Watch Alert criteria matched | Alert Owner | Watch Alert | Watch Alert Result List |
 
 Push Notification รองรับผ่าน Firebase Cloud Messaging ตาม integration baseline แต่ in-app list ต้องยังคงใช้ supported types ตาม master
@@ -417,6 +428,22 @@ When user กด notification
 Then ระบบต้องเปิด Chat Room  
 And focus Offer Card ที่มีสถานะ Cancelled  
 And หาก Asset ถูกลบ Chat asset reference ต้องแสดง unavailable state
+
+## AC-NOTI-009C: Offer Paused Opens Chat Room Offer Card
+
+Given user มี Offer Paused notification  
+When user กด notification  
+Then ระบบต้องเปิด Chat Room  
+And focus Offer Card ที่มีสถานะ Paused  
+And Offer Card ต้องไม่มี `Accept` หรือ `Decline`
+
+## AC-NOTI-009D: Offer Invalidated Opens Chat Room Offer Card
+
+Given user มี Offer Invalidated notification  
+When user กด notification  
+Then ระบบต้องเปิด Chat Room  
+And focus Offer Card ที่มีสถานะ Unavailable  
+And Offer Card ต้องไม่มี `Accept` หรือ `Decline`
 
 ## AC-NOTI-010: Mark As Read
 

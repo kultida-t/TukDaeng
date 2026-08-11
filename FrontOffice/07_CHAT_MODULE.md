@@ -548,6 +548,22 @@ Asset หรือ Content จะหายเมื่อ Admin ดำเนิ�
 - New Offer ส่ง Notification ตาม Offer / Notification Module
 - Offer Accepted ส่ง Notification และเปิด Chat Room
 - Offer Rejected ส่ง Notification และเปิด Asset Detail
+- Offer Paused เปิด Chat Room และ Focus Offer Card โดยไม่มี Accept/Decline
+- Offer Cancelled เปิด Chat Room และ Focus Offer Card ที่เป็น final state
+- Offer Invalidated เปิด Chat Room และ Focus Offer Card ที่เป็น unavailable final state
+
+## Offer Card State In Chat
+
+| Offer state | Chat display | Seller action |
+|---|---|---|
+| `Pending` | แสดง Offer Card พร้อมราคา, asset, message และ timestamp | แสดง `Decline` / `Accept` เฉพาะ Seller |
+| `Paused` | แสดง `Offer Paused` และข้อความ `This asset is under review. The offer cannot be accepted or declined right now.` | ไม่มี action หรือ disabled ทั้งคู่ |
+| `Accepted` | แสดง `Offer Accepted` และข้อความ `The buyer has been notified.` | ไม่มี action |
+| `Rejected` | แสดง `Offer Declined` และข้อความ `The buyer has been notified.` | ไม่มี action |
+| `Cancelled` | แสดง `Offer Cancelled` และข้อความ `This asset is no longer available for offers.` | ไม่มี action |
+| `Invalidated` | แสดง `Offer Unavailable` และข้อความ `This asset was removed after review.` | ไม่มี action |
+
+`Paused` ต้องไม่ถูกนับเป็น active Incoming Offer ระหว่าง asset review; ถ้า review ผ่านและ Offer กลับเป็น `Pending` จึงแสดงใน Incoming Offers อีกครั้ง
 
 Notification destination:
 
@@ -556,6 +572,9 @@ Notification destination:
 | New Message | In-chat unread/badge only; no FO Notification Center type in V1 |
 | Offer Accepted | Chat Room |
 | Offer Rejected | Asset Detail |
+| Offer Paused | Chat Room + Focus Offer Card |
+| Offer Cancelled | Chat Room + Focus Offer Card |
+| Offer Invalidated | Chat Room + Focus Offer Card |
 
 ---
 
@@ -620,6 +639,8 @@ Notification destination:
 | AC-CHAT-019 | Offer ที่อ่านแล้วแต่ยังไม่ action ต้องยังอยู่ใน Incoming Offers |
 | AC-CHAT-020 | Offer Accepted Notification ต้องเปิด Chat Room |
 | AC-CHAT-021 | Offer Rejected Notification ต้องเปิด Asset Detail |
+| AC-CHAT-021A | Offer Paused ต้องหายจาก Incoming Offers active list และ Offer Card ต้องไม่มี `Accept` / `Decline` |
+| AC-CHAT-021B | Offer Cancelled และ Invalidated ต้องเป็น final Offer Card state และไม่มี `Accept` / `Decline` |
 
 ## Permission / Safety
 

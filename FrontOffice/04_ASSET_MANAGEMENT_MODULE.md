@@ -293,7 +293,7 @@ Recommended backend split:
 | `watch_brands`, `watch_models`, `watch_references` | Market Data catalog จาก provider/backend sync |
 | `watch_assets` | Asset/listing record ของ Owner พร้อม relation id และ snapshot text |
 | `asset_specifications` | Spec จริงที่ Owner กรอกสำหรับ Asset แต่ละชิ้น |
-| `asset_delivery_items` | Scope of Delivery แบบหลายรายการ เช่น box, papers, warranty card, receipt |
+| `asset_delivery_items` | Scope of Delivery แบบหลายรายการ เฉพาะ Original box และ Original papers; ถ้าไม่มีตามสองตัวเลือกนี้ให้ไม่บันทึก delivery item |
 | `spec_options` | Internal option master สำหรับ dropdown/filter เช่น condition, material, movement, dial color, strap type, delivery item |
 
 Minimum asset fields:
@@ -318,7 +318,7 @@ Minimum asset fields:
 Internal option groups ต้องรองรับอย่างน้อย:
 
 - `condition`: New / Unworn, Excellent, Very Good, Good, Fair
-- `delivery`: Watch only, Original box, Original papers, Warranty card, Receipt copy, Extra links, Extra strap
+- `delivery`: Original box, Original papers เท่านั้น; ถ้าไม่ตรงสองตัวเลือกนี้ให้ไม่เลือกเลย และห้ามใช้ค่าอื่นแทน
 - `case_material`: Stainless steel, Yellow gold, Rose gold, White gold, Titanium, Ceramic, Platinum, Carbon
 - `movement`: Automatic, Manual winding, Quartz, Spring Drive
 - `dial_color`: Black, Blue, White, Silver, Grey, Green, Champagne, Brown
@@ -361,7 +361,7 @@ Baseline seed files for implementation:
 | Basic Information | Reference No. | Optional | ถ้ากรอกต้อง trim, ห้าม whitespace-only, รองรับ Market Data mapping/free-text snapshot และไม่เกินความยาวที่ระบบกำหนด |
 | Basic Information | Year | Optional | ถ้ากรอกต้องเป็นปีจริงแบบตัวเลขจำนวนเต็ม และต้องไม่เป็นปีในอนาคต |
 | Condition | Condition | Required for `Sale`; Optional for `Show`, `Hide` | ต้องเลือกได้หนึ่งค่าเท่านั้นเมื่อ required; ถ้า optional แต่เลือก ต้องเป็น option ที่มีอยู่ใน internal option master |
-| Scope of Delivery | Delivery items เช่น Original Box / Original Paper | Optional | ถ้าเลือกต้องเป็น option ที่มีอยู่ใน internal option master; รองรับหลายค่าได้ตาม data model; ห้ามบันทึกค่า label ที่ไม่มีใน option master เป็น id ปลอม |
+| Scope of Delivery | Delivery items เฉพาะ Original Box / Original Paper | Optional | ถ้าเลือกต้องเป็น `original_box` หรือ `original_papers` จาก internal option master เท่านั้น; รองรับเลือกได้ 0-2 ค่า; ถ้าไม่มีตามสองตัวเลือกนี้ให้บันทึกเป็นค่าว่าง/null/empty array ตาม data contract; ห้ามบันทึกค่าอื่นหรือสร้าง label/id ปลอม เช่น Watch only, warranty card, receipt, certificate, manual, service paper, hang tag, extra link, extra strap |
 | Specifications | Case Size (mm) | Optional | ถ้ากรอกต้องเป็นตัวเลขมากกว่า 0; normalize หน่วยเป็น mm; ห้ามตัวอักษรหรือค่าติดลบ |
 | Specifications | Thickness (mm) | Optional | ถ้ากรอกต้องเป็นตัวเลขมากกว่า 0; normalize หน่วยเป็น mm; ห้ามตัวอักษรหรือค่าติดลบ |
 | Specifications | Case Material | Optional | ถ้าเลือกต้องเป็น option ที่มีอยู่ใน internal option master |
@@ -585,6 +585,17 @@ Mark as Sold จาก Feed หรือ Asset Detail เป็น shortcut ไ�
 - หายจาก Search ทันที
 - หายจาก Watch Alert ทันที
 - Owner ยังเห็นใน Owner Profile
+- Pending Offer ที่เกี่ยวข้องต้องเปลี่ยนเป็น `Cancelled`
+- Chat ยังอยู่ และ Offer Card ต้องแสดง `Offer Cancelled` โดยไม่มี `Accept` / `Decline`
+
+### Show → Hide
+
+เมื่อ Asset เปลี่ยนจาก Show เป็น Hide:
+
+- หายจาก Public Profile / public detail
+- Owner ยังเห็นใน Owner Profile
+- Pending Offer ที่เกี่ยวข้องต้องเปลี่ยนเป็น `Cancelled`
+- Chat ยังอยู่ และ Offer Card ต้องแสดง `Offer Cancelled` โดยไม่มี `Accept` / `Decline`
 
 ### Hide → Sale
 
@@ -630,7 +641,21 @@ Mark as Sold จาก Feed หรือ Asset Detail เป็น shortcut ไ�
 - Viewer/User อื่น/Guest ต้องไม่เห็น Asset นี้ใน public surfaces ทั้งหมด
 - Direct link จาก public context ต้องแสดง unavailable state
 - Asset นี้ไม่ถูกนำไปรวมใน Portfolio / Asset Value
+- Pending หรือ Paused Offer ที่เกี่ยวข้องต้องเปลี่ยนเป็น `Invalidated`
+- Chat ยังอยู่ และ Offer Card ต้องแสดง `Offer Unavailable` โดยไม่มี `Accept` / `Decline`
 - การกู้คืนจากสถานะซ่อนถาวรไม่อยู่ใน Front Office V1 และไม่ใช่ action ปกติของ moderation
+
+## Back Office ซ่อนชั่วคราว / Auto Hidden Rule
+
+เมื่อ Asset ถูกซ่อนชั่วคราวจาก BO หรือถูกซ่อนชั่วคราวอัตโนมัติจาก report threshold:
+
+- Asset หายจาก public surfaces ระหว่าง review
+- Owner ยังเห็น Asset พร้อมสถานะอยู่ระหว่างตรวจสอบ
+- ห้ามสร้าง Offer ใหม่
+- Pending Offer ที่เกี่ยวข้องต้องเปลี่ยนเป็น `Paused`
+- Chat ยังอยู่ และ Offer Card ต้องแสดง `Offer Paused` โดยไม่มี `Accept` / `Decline`
+- ถ้า review ผ่านและ Asset กลับเป็น `Sale` หรือ `Show` ให้ Paused Offer กลับเป็น `Pending`
+- ถ้า review ไม่ผ่านและ Asset ถูกซ่อนถาวร ให้ Paused Offer เปลี่ยนเป็น `Invalidated`
 
 ## Sale Record Form
 
@@ -667,10 +692,16 @@ Delete Asset จาก Owner Feed more menu ต้องใช้ rule เดี
 
 ## Offer Impact Rule
 
-เมื่อ Asset เปลี่ยนเป็น Sold:
+| Asset event | Offer impact | FO chat card |
+| --- | --- | --- |
+| Mark as Sold | Pending offer อื่นเป็น `Rejected` | `Offer Declined` / ไม่มี action |
+| Owner Delete Asset | Related offers เป็น `Cancelled` | `Offer Cancelled` / ไม่มี action |
+| Sale/Show → Hide | Pending offers เป็น `Cancelled` | `Offer Cancelled` / ไม่มี action |
+| Auto hidden / ซ่อนชั่วคราว | Pending offers เป็น `Paused` | `Offer Paused` / ไม่มี action |
+| Review passed จากซ่อนชั่วคราว | `Paused` offers กลับเป็น `Pending` | แสดง `Accept` / `Decline` อีกครั้ง |
+| ซ่อนถาวร | Pending/Paused offers เป็น `Invalidated` | `Offer Unavailable` / ไม่มี action |
 
-- Offer อื่นต้อง Auto Reject
-- ต้องส่ง Notification ไปยังผู้เสนอราคาที่เกี่ยวข้องตาม Notification / Offer Module
+ทุก offer status change ต้องส่ง notification/delivery context ตาม Offer และ Notification Module
 
 ## Payment Rule
 
