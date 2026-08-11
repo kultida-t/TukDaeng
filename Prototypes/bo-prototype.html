@@ -1497,8 +1497,15 @@
       grid-template-columns: minmax(112px, .66fr) minmax(230px, 1.48fr) minmax(140px, .78fr) minmax(116px, .64fr) minmax(154px, .86fr) minmax(190px, 1.04fr) minmax(86px, .48fr) minmax(102px, .56fr) minmax(76px, .42fr);
     }
     .offer-list-table .asset-row {
-      grid-template-columns: minmax(112px, .58fr) minmax(220px, 1.05fr) minmax(120px, .62fr) minmax(220px, 1.12fr) minmax(104px, .52fr) minmax(118px, .58fr) minmax(118px, .58fr);
+      grid-template-columns: minmax(104px, .54fr) minmax(188px, .96fr) minmax(108px, .56fr) minmax(126px, .64fr) minmax(168px, .84fr) minmax(96px, .5fr) minmax(108px, .54fr) minmax(108px, .54fr);
       column-gap: 18px;
+    }
+    .offer-list-table .offer-participant-chip {
+      display: inline-flex;
+      max-width: 100%;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      vertical-align: middle;
     }
     .offer-list-table .asset-row.head > div:last-child {
       justify-content: flex-start;
@@ -19825,6 +19832,16 @@
       return Number(String(offer.name || "").replace(/[^\d]/g, "")) || 0;
     }
 
+    function getOfferParticipant(offer, role) {
+      const label = `${role} `;
+      const tag = (offer.tags || []).find(item => String(item).toLowerCase().startsWith(label.toLowerCase()));
+      return tag ? String(tag).slice(label.length) : "-";
+    }
+
+    function renderOfferParticipantChip(offer, role) {
+      return `<span class="chip offer-participant-chip">${getOfferParticipant(offer, role)}</span>`;
+    }
+
     function getOfferSortRank(offer, sort) {
       if (sort === "amount") return getOfferAmount(offer);
       if (sort === "status") {
@@ -19855,7 +19872,7 @@
       const pageRows = filtered.slice(start, start + pageSize);
       document.querySelector("#table").innerHTML = `
         <div class="asset-table offer-list-table">
-          <div class="asset-row head"><div>Offer ID</div><div>Offer</div><div>Asset ID</div><div>Buyer / Owner</div><div>Priority</div><div>Status</div><div>Action</div></div>
+          <div class="asset-row head"><div>Offer ID</div><div>Offer</div><div>Asset ID</div><div>Buyer</div><div>Owner</div><div>Priority</div><div>Status</div><div>Action</div></div>
           ${pageRows.map(row => `
             <div class="asset-row" data-offer-card="${row.id}">
               <div data-label="Offer ID"><div class="main-text">${row.id}</div></div>
@@ -19874,7 +19891,8 @@
                 </div>
               </div>
               <div data-label="Asset ID"><div class="main-text">${row.owner}</div></div>
-              <div data-label="Buyer / Owner"><div class="chips">${row.tags.map(tag => `<span class="chip">${tag}</span>`).join("")}</div></div>
+              <div data-label="Buyer">${renderOfferParticipantChip(row, "Buyer")}</div>
+              <div data-label="Owner">${renderOfferParticipantChip(row, "Owner")}</div>
               <div data-label="Priority">${statusPill(row.priority, row.priority)}</div>
               <div data-label="Status">${renderOfferStatusPill(row.status)}</div>
               <div class="user-row-actions">
