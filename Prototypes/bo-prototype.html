@@ -3955,6 +3955,21 @@
       clip: rect(0, 0, 0, 0);
       white-space: nowrap;
     }
+    body.user-accounts-mode:not(.user-detail-mode) .main {
+      overflow-x: hidden;
+    }
+    body.user-accounts-mode:not(.user-detail-mode) .layout > .panel {
+      overflow: hidden;
+    }
+    body.user-accounts-mode:not(.user-detail-mode) #table {
+      max-width: 100%;
+      overflow-x: auto;
+      overflow-y: visible;
+      scrollbar-width: thin;
+    }
+    body.user-accounts-mode:not(.user-detail-mode) #table .user-table {
+      min-width: 980px;
+    }
     .user-filter-bar.report-mode {
       grid-template-columns: minmax(220px, 1.3fr) repeat(3, minmax(132px, .7fr)) 42px;
     }
@@ -6383,7 +6398,7 @@
         scrollbar-width: thin;
       }
       body.user-accounts-mode:not(.user-detail-mode) #table .user-table {
-        min-width: 760px;
+        min-width: 980px;
       }
       body.user-accounts-mode:not(.user-detail-mode) .user-row:not(.report-row) {
         grid-template-columns: minmax(74px, .42fr) minmax(138px, 1.08fr) minmax(112px, .7fr) minmax(124px, .78fr) minmax(58px, .36fr) minmax(84px, .54fr) minmax(108px, .66fr) minmax(42px, .22fr);
@@ -6409,7 +6424,7 @@
         grid-template-columns: minmax(0, 1fr) minmax(132px, .5fr) minmax(132px, .5fr) minmax(132px, .5fr) 42px;
       }
       body.user-accounts-mode:not(.user-detail-mode) #table .user-table {
-        min-width: 720px;
+        min-width: 980px;
       }
       body.user-accounts-mode:not(.user-detail-mode) .user-row:not(.report-row) {
         grid-template-columns: minmax(68px, .38fr) minmax(128px, 1fr) minmax(108px, .7fr) minmax(116px, .76fr) minmax(52px, .32fr) minmax(78px, .5fr) minmax(100px, .62fr) minmax(38px, .2fr);
