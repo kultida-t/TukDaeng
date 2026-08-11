@@ -1218,8 +1218,14 @@
     body.asset-detail-mode .layout {
       grid-template-columns: minmax(0, 1fr);
     }
+    body.offer-list-mode .layout {
+      grid-template-columns: minmax(0, 1fr);
+    }
     body.asset-list-mode .detail,
     body.asset-detail-mode .detail {
+      display: none;
+    }
+    body.offer-list-mode .detail {
       display: none;
     }
     body.asset-list-mode .layout > .panel,
@@ -1231,11 +1237,24 @@
     body.asset-list-mode .layout > .panel {
       overflow: hidden;
     }
+    body.offer-list-mode .layout > .panel {
+      border-color: #d7e2f0;
+      box-shadow: none;
+      overflow: hidden;
+    }
     body.asset-list-mode #primary-action,
     body.asset-detail-mode #primary-action {
       display: none;
     }
+    body.offer-list-mode #primary-action {
+      display: none;
+    }
     body.asset-list-mode .panel-head {
+      min-height: 58px;
+      padding: 17px 20px;
+      background: #fff;
+    }
+    body.offer-list-mode .panel-head {
       min-height: 58px;
       padding: 17px 20px;
       background: #fff;
@@ -1247,7 +1266,17 @@
       text-transform: uppercase;
       white-space: nowrap;
     }
+    body.offer-list-mode .panel-head h2 {
+      color: #071b36;
+      font-size: 24px;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
     body.asset-list-mode .panel-head p {
+      display: none;
+    }
+    body.offer-list-mode .panel-head p {
       display: none;
     }
     body.asset-list-mode .summary-grid {
@@ -1409,6 +1438,11 @@
       padding: 12px 16px;
       background: #f8fbff;
     }
+    body.offer-list-mode .filters {
+      display: flex;
+      padding: 12px 16px;
+      background: #f8fbff;
+    }
     body.asset-list-mode .filters .field {
       min-height: 48px;
       border-color: #cfdbea;
@@ -1418,7 +1452,20 @@
       font-size: 13px;
       font-weight: 400;
     }
+    body.offer-list-mode .filters .field {
+      min-height: 48px;
+      border-color: #cfdbea;
+      border-radius: 7px;
+      padding: 10px 14px;
+      color: #061426;
+      font-size: 13px;
+      font-weight: 400;
+    }
     body.asset-list-mode .filters select.field {
+      padding-right: 42px;
+      background-position: right 14px center;
+    }
+    body.offer-list-mode .filters select.field {
       padding-right: 42px;
       background-position: right 14px center;
     }
@@ -1448,6 +1495,14 @@
     }
     .reported-board-table .asset-row {
       grid-template-columns: minmax(112px, .66fr) minmax(230px, 1.48fr) minmax(140px, .78fr) minmax(116px, .64fr) minmax(154px, .86fr) minmax(190px, 1.04fr) minmax(86px, .48fr) minmax(102px, .56fr) minmax(76px, .42fr);
+    }
+    .offer-list-table .asset-row {
+      grid-template-columns: minmax(112px, .58fr) minmax(220px, 1.05fr) minmax(120px, .62fr) minmax(220px, 1.12fr) minmax(104px, .52fr) minmax(118px, .58fr) minmax(118px, .58fr);
+      column-gap: 18px;
+    }
+    .offer-list-table .asset-row.head > div:last-child {
+      justify-content: flex-start;
+      text-align: left;
     }
     .asset-table .asset-row:nth-last-child(-n + 2) .row-menu-list,
     .user-table .user-row:nth-last-child(-n + 2) .row-menu-list {
@@ -1507,6 +1562,7 @@
       text-align: left;
     }
     body.asset-list-mode .asset-list-table .asset-row:not(.head),
+    body.offer-list-mode .offer-list-table .asset-row:not(.head),
     body.article-list-mode .article-table .asset-row:not(.head),
     body.category-list-mode .category-table .asset-row:not(.head),
     body.reported-board-mode .reported-board-table .asset-row:not(.head),
@@ -1517,6 +1573,8 @@
     }
     body.asset-list-mode .asset-list-table .asset-row:not(.head) .main-text,
     body.asset-list-mode .asset-list-table .asset-row:not(.head) .muted,
+    body.offer-list-mode .offer-list-table .asset-row:not(.head) .main-text,
+    body.offer-list-mode .offer-list-table .asset-row:not(.head) .muted,
     body.article-list-mode .article-table .asset-row:not(.head) .main-text,
     body.article-list-mode .article-table .asset-row:not(.head) .muted,
     body.category-list-mode .category-table .asset-row:not(.head) .main-text,
@@ -1530,6 +1588,27 @@
       font-weight: 400;
       line-height: 1.5;
       margin-bottom: 0;
+    }
+    body.offer-list-mode .offer-list-table .asset-row:not(.head) > div {
+      color: #516683;
+      font-size: 12px;
+      font-weight: 400;
+      line-height: 1.5;
+    }
+    body.offer-list-mode .offer-list-table .asset-row:not(.head) .asset-cell-primary .main-text,
+    body.offer-list-mode .offer-list-table .asset-row:not(.head) .panel-action {
+      font-size: 12px;
+      font-weight: 400;
+      line-height: 1.5;
+    }
+    body.offer-list-mode .offer-list-table .asset-row:not(.head) > .user-row-actions {
+      justify-content: flex-start;
+      justify-self: stretch;
+    }
+    body.offer-list-mode .offer-list-table .panel-action {
+      padding-right: 0;
+      padding-left: 0;
+      text-align: left;
     }
     body.article-list-mode #primary-action,
     body.category-list-mode #primary-action,
@@ -6409,6 +6488,10 @@
       body.asset-list-mode .summary-grid {
         grid-template-columns: 1fr;
       }
+      body.offer-list-mode .summary-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+      }
       body.user-management-mode .summary-grid {
         grid-template-columns: repeat(2, minmax(0, 1fr));
         gap: 10px;
@@ -6444,6 +6527,12 @@
         gap: 10px;
       }
       body.asset-list-mode .panel-head {
+        align-items: center;
+        flex-direction: row;
+        justify-content: space-between;
+        gap: 10px;
+      }
+      body.offer-list-mode .panel-head {
         align-items: center;
         flex-direction: row;
         justify-content: space-between;
@@ -6525,7 +6614,8 @@
         display: none;
       }
       body.user-management-mode .user-panel-filter-actions,
-      body.asset-list-mode .user-panel-filter-actions {
+      body.asset-list-mode .user-panel-filter-actions,
+      body.offer-list-mode .user-panel-filter-actions {
         display: flex;
         align-items: center;
         justify-content: flex-end;
@@ -6847,7 +6937,13 @@
       body.asset-list-mode .filters {
         grid-template-columns: 1fr;
       }
+      body.offer-list-mode .filters {
+        grid-template-columns: 1fr;
+      }
       body.asset-list-mode .user-filter-bar {
+        grid-template-columns: 1fr;
+      }
+      body.offer-list-mode .user-filter-bar {
         grid-template-columns: 1fr;
       }
       body.article-list-mode .filters,
@@ -6888,12 +6984,21 @@
         padding: 12px 14px 16px;
         background: #f8fbff;
       }
+      body.offer-list-mode #table {
+        padding: 12px 14px 16px;
+        background: #f8fbff;
+      }
       body.asset-list-mode .asset-table {
+        grid-template-columns: 1fr;
+        gap: 12px;
+      }
+      body.offer-list-mode .asset-table {
         grid-template-columns: 1fr;
         gap: 12px;
       }
       body.user-list-mode .footer-range,
       body.asset-list-mode .footer-range,
+      body.offer-list-mode .footer-range,
       body.article-list-mode .footer-range,
       body.category-list-mode .footer-range,
       body.reported-board-mode .footer-range {
@@ -6960,6 +7065,64 @@
       body.asset-list-mode .asset-row:not(.head) .desktop-user-name { display: none; }
       body.asset-list-mode .asset-row:not(.head) .mobile-user-card-title { display: inline; }
       body.asset-list-mode .asset-card-tags {
+        grid-column: 1 / -1;
+        grid-row: 2;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 9px;
+        padding-top: 0;
+      }
+      body.offer-list-mode .asset-row.head {
+        display: none;
+      }
+      body.offer-list-mode .asset-row:not(.head) {
+        grid-template-columns: minmax(0, 1fr) minmax(92px, max-content);
+        column-gap: 14px;
+        row-gap: 14px;
+        min-height: 0;
+        padding: 18px 18px 16px;
+        border: 1px solid #cfdbd2;
+        border-radius: 10px;
+        background: #fff;
+        box-shadow: 0 1px 2px rgba(15, 23, 42, .05);
+        cursor: pointer;
+        overflow: visible;
+      }
+      body.offer-list-mode .asset-row:not(.head) > div[data-label]:not(.asset-cell-primary) {
+        display: none;
+      }
+      body.offer-list-mode .asset-row:not(.head) > .user-row-actions {
+        grid-column: 2;
+        grid-row: 1;
+        align-self: center;
+        justify-self: end;
+        justify-content: flex-end;
+      }
+      body.offer-list-mode .asset-row:not(.head) > .asset-cell-primary {
+        grid-column: 1;
+        grid-row: 1;
+        min-height: 30px;
+        display: flex;
+        align-items: center;
+        align-self: center;
+        border-bottom: 0;
+        padding-bottom: 0;
+      }
+      body.offer-list-mode .asset-row:not(.head) > .asset-cell-primary .main-text {
+        max-width: 100%;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        color: #061426;
+        font-family: var(--font-heading);
+        font-size: 22px;
+        font-weight: 500;
+        letter-spacing: .04em;
+        line-height: 1;
+      }
+      body.offer-list-mode .asset-row:not(.head) .desktop-user-name { display: none; }
+      body.offer-list-mode .asset-row:not(.head) .mobile-user-card-title { display: inline; }
+      body.offer-list-mode .asset-card-tags {
         grid-column: 1 / -1;
         grid-row: 2;
         display: flex;
@@ -8660,6 +8823,8 @@
     let assetListPage = 1;
     let assetFilterOpen = false;
     let assetReportFilterOpen = false;
+    let offerListPage = 1;
+    let offerFilterOpen = false;
     let articleListPage = 1;
     let articleFilterOpen = false;
     let categoryListPage = 1;
@@ -9156,6 +9321,8 @@
       assetListPage = 1;
       assetFilterOpen = false;
       assetReportFilterOpen = false;
+      offerListPage = 1;
+      offerFilterOpen = false;
       articleListPage = 1;
       articleFilterOpen = false;
       categoryListPage = 1;
@@ -9179,6 +9346,7 @@
       userFilterOpen = false;
       assetFilterOpen = false;
       assetReportFilterOpen = false;
+      offerFilterOpen = false;
       articleFilterOpen = false;
       categoryFilterOpen = false;
       boardReportFilterOpen = false;
@@ -13648,9 +13816,11 @@
       const isArticleList = id === "content" && (subLabel || "Articles") === "Articles";
       const isCategoryList = id === "content" && subLabel === "Categories";
       const isReportedBoard = id === "content" && subLabel === "Reported Articles";
+      const isOfferList = id === "offers" && (subLabel || "Offer List") === "Offer List";
       document.body.classList.toggle("dashboard-mode", id === "dashboard");
       document.body.classList.toggle("user-management-mode", id === "users" || isReportedAssets || isReportedBoard);
       document.body.classList.toggle("asset-list-mode", isAssetList || isArticleList || isCategoryList || isReportedBoard);
+      document.body.classList.toggle("offer-list-mode", isOfferList);
       document.body.classList.toggle("article-list-mode", isArticleList);
       document.body.classList.toggle("category-list-mode", isCategoryList);
       document.body.classList.toggle("reported-board-mode", isReportedBoard);
@@ -13888,6 +14058,52 @@
         document.querySelector("#cards").innerHTML = "";
         document.querySelector("#detail").innerHTML = "";
         renderRows();
+        updateActiveNav();
+        return;
+      }
+      if (isOfferList) {
+        activeRow = null;
+        document.querySelector("#crumb").textContent = `${data.crumb} / Offer List`;
+        document.querySelector("#page-title").textContent = "Offer List";
+        document.querySelector("#page-meta").textContent = "";
+        document.querySelector("#panel-title").textContent = "Offer List";
+        document.querySelector("#panel-subtitle").textContent = "";
+        document.querySelector("#primary-action").textContent = data.action;
+        document.querySelector("#user-panel-filter-actions").innerHTML = `
+          <button class="btn user-filter-toggle" type="button" data-offer-filter-toggle aria-expanded="${offerFilterOpen}">${iconSvg.filter}<span>${offerFilterOpen ? "ปิดตัวกรอง" : "เปิดตัวกรอง"}</span></button>
+          <button class="btn" type="button" data-offer-reset title="รีเซ็ตค่าทั้งหมด" aria-label="รีเซ็ตค่าทั้งหมด">${iconSvg.refresh}<span>รีเซ็ตค่าทั้งหมด</span></button>
+        `;
+        document.querySelector(".filters").innerHTML = `
+          <div class="user-filter-bar" data-filter-open="${offerFilterOpen}">
+            <input class="field search" id="offer-search" type="search" placeholder="ค้นหา Offer ID, Asset ID, Buyer, Owner" />
+            <div class="user-advanced-filter">${customSelect("offer-status-filter", "Filter offer status", [
+              { value: "", label: "ทุกสถานะ" },
+              ...Array.from(new Set(data.rows.map(row => row.status))).map(status => ({ value: status, label: status }))
+            ])}</div>
+            <div class="user-advanced-filter">${customSelect("offer-priority-filter", "Filter priority", [
+              { value: "", label: "ทุก priority" },
+              { value: "สูง", label: "สูง" },
+              { value: "กลาง", label: "กลาง" },
+              { value: "ปกติ", label: "ปกติ" }
+            ])}</div>
+            <div class="user-advanced-filter">${customSelect("offer-sort", "Sort offers", [
+              { value: "latest", label: "Newest first" },
+              { value: "amount", label: "Offer amount" },
+              { value: "status", label: "Status" }
+            ], "latest")}</div>
+            <button class="btn filter-reset user-advanced-filter" type="button" data-offer-reset title="รีเซ็ตค่าทั้งหมด" aria-label="รีเซ็ตค่าทั้งหมด">${iconSvg.refresh}<span>รีเซ็ตค่าทั้งหมด</span></button>
+          </div>
+        `;
+        document.querySelector("#summary-grid").innerHTML = data.stats.map(stat => `
+          <article class="stat">
+            <div class="stat-label">${stat[0]}</div>
+            <div class="stat-value">${stat[1]}</div>
+            <div class="stat-note">${stat[2]}</div>
+          </article>
+        `).join("");
+        document.querySelector("#cards").innerHTML = "";
+        document.querySelector("#detail").innerHTML = "";
+        renderOfferListRows();
         updateActiveNav();
         return;
       }
@@ -16053,6 +16269,10 @@
       }
       if (activeModule === "content" && activeSub === "Reported Articles") {
         renderReportedBoardRows();
+        return;
+      }
+      if (activeModule === "offers") {
+        renderOfferListRows();
         return;
       }
       if (activeModule === "market") {
@@ -19592,6 +19812,144 @@
       `;
     }
 
+    function getOfferSearchText(offer) {
+      return Object.values(offer).flat().join(" ").toLowerCase();
+    }
+
+    function getOfferAmount(offer) {
+      return Number(String(offer.name || "").replace(/[^\d]/g, "")) || 0;
+    }
+
+    function getOfferSortRank(offer, sort) {
+      if (sort === "amount") return getOfferAmount(offer);
+      if (sort === "status") {
+        const statusRank = { Pending: 4, Accepted: 3, Rejected: 2, Cancelled: 1 };
+        return statusRank[offer.status] || 0;
+      }
+      return parseInt(String(offer.id || "").replace(/\D/g, ""), 10) || 0;
+    }
+
+    function renderOfferStatusPill(status) {
+      const color = status === "Pending" ? "amber" : status === "Accepted" ? "purple" : status === "Rejected" ? "red" : "gray";
+      return `<span class="pill ${color}">${status}</span>`;
+    }
+
+    function renderOfferListRows() {
+      const data = moduleData.offers;
+      const q = (document.querySelector("#offer-search")?.value || "").trim().toLowerCase();
+      const status = document.querySelector("#offer-status-filter")?.value || "";
+      const priority = document.querySelector("#offer-priority-filter")?.value || "";
+      const sort = document.querySelector("#offer-sort")?.value || "latest";
+      const filtered = data.rows
+        .filter(row => (!q || getOfferSearchText(row).includes(q)) && (!status || row.status === status) && (!priority || row.priority === priority))
+        .sort((a, b) => getOfferSortRank(b, sort) - getOfferSortRank(a, sort));
+      const pageSize = assetListPageSize;
+      const pageCount = Math.max(1, Math.ceil(filtered.length / pageSize));
+      offerListPage = Math.min(offerListPage, pageCount);
+      const start = (offerListPage - 1) * pageSize;
+      const pageRows = filtered.slice(start, start + pageSize);
+      document.querySelector("#table").innerHTML = `
+        <div class="asset-table offer-list-table">
+          <div class="asset-row head"><div>Offer ID</div><div>Offer</div><div>Asset ID</div><div>Buyer / Owner</div><div>Priority</div><div>Status</div><div>Action</div></div>
+          ${pageRows.map(row => `
+            <div class="asset-row" data-offer-card="${row.id}">
+              <div data-label="Offer ID"><div class="main-text">${row.id}</div></div>
+              <div class="asset-cell-primary" data-label="Offer">
+                <div class="main-text"><span class="desktop-user-name">${row.name}</span><span class="mobile-user-card-title">${row.id}</span></div>
+              </div>
+              <div class="asset-card-tags">
+                ${renderOfferStatusPill(row.status)}
+                <span class="pill blue">${row.type}</span>
+                ${statusPill(row.priority, row.priority)}
+                ${row.tags.map(tag => `<span class="user-card-tag asset-tag">${tag}</span>`).join("")}
+                <div class="user-card-meta">
+                  <div class="user-card-meta-item"><span>Offer</span><strong>${row.name}</strong></div>
+                  <div class="user-card-meta-item"><span>Asset ID</span><strong>${row.owner}</strong></div>
+                  <div class="user-card-meta-item"><span>Context</span><strong>${row.detail}</strong></div>
+                </div>
+              </div>
+              <div data-label="Asset ID"><div class="main-text">${row.owner}</div></div>
+              <div data-label="Buyer / Owner"><div class="chips">${row.tags.map(tag => `<span class="chip">${tag}</span>`).join("")}</div></div>
+              <div data-label="Priority">${statusPill(row.priority, row.priority)}</div>
+              <div data-label="Status">${renderOfferStatusPill(row.status)}</div>
+              <div class="user-row-actions">
+                <button class="panel-action" type="button" data-offer-open="${row.id}">${iconSvg.eye}ดูรายละเอียด</button>
+              </div>
+            </div>
+          `).join("") || `<div class="detail-empty user-empty">ไม่พบข้อมูล</div>`}
+        </div>
+        <div class="footer-range">
+          <span>แสดง ${filtered.length ? `${start + 1}-${Math.min(start + pageSize, filtered.length)}` : "0"} จาก ${filtered.length}</span>
+          <div class="pager">
+            <button class="btn" type="button" data-offer-page="prev" ${offerListPage <= 1 ? "disabled" : ""}>ก่อนหน้า</button>
+            ${Array.from({ length: pageCount }, (_, index) => `<button class="btn ${index + 1 === offerListPage ? "active" : ""}" type="button" data-offer-page="${index + 1}">${index + 1}</button>`).join("")}
+            <button class="btn" type="button" data-offer-page="next" ${offerListPage >= pageCount ? "disabled" : ""}>ถัดไป</button>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderOfferDetailPage(offer) {
+      if (!offer) {
+        renderModule("offers", "Offer List", "Offer List");
+        return;
+      }
+      activeModule = "offers";
+      activeSub = "Offer List";
+      activeRow = offer;
+      document.body.classList.add("offer-list-mode");
+      document.body.classList.remove("dashboard-mode", "user-management-mode", "asset-list-mode", "article-list-mode", "category-list-mode", "reported-board-mode", "market-list-mode", "market-dashboard-mode", "user-list-mode", "user-detail-mode", "asset-detail-mode");
+      document.querySelector("#crumb").textContent = `การดำเนินงาน / Offer Management / Offer Detail / ${offer.id}`;
+      document.querySelector("#page-title").textContent = "Offer Detail";
+      document.querySelector("#page-meta").textContent = "";
+      setPageActions(renderPageBackButton("data-back-offer-list", "กลับไป Offer List", "report-back-btn"));
+      document.querySelector("#panel-title").textContent = offer.name;
+      document.querySelector("#panel-subtitle").textContent = `${offer.id} / ${offer.owner}`;
+      document.querySelector("#user-panel-filter-actions").innerHTML = "";
+      document.querySelector(".filters").innerHTML = "";
+      document.querySelector("#summary-grid").innerHTML = "";
+      document.querySelector("#cards").innerHTML = "";
+      document.querySelector("#detail").innerHTML = "";
+      document.querySelector("#table").innerHTML = `
+        <div class="user-detail-page report-detail-page">
+          <div class="user-detail-head">
+            <div class="user-detail-title">
+              <div>
+                <h2 class="asset-report-heading"><span>${offer.id}</span><span class="user-detail-separator"> : </span><span class="asset-report-name user-display-name">${offer.name}</span></h2>
+                <div class="chips">
+                  ${renderOfferStatusPill(offer.status)}
+                  <span class="pill blue">${offer.type}</span>
+                  ${statusPill(offer.priority, offer.priority)}
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="detail-section">
+            <h4>Offer Reference</h4>
+            <div class="detail-grid two report-reference-grid">
+              <div class="detail-tile"><span>Offer ID</span><strong>${offer.id}</strong></div>
+              <div class="detail-tile"><span>Asset ID</span><strong>${offer.owner}</strong></div>
+              <div class="detail-tile"><span>Offer Amount</span><strong>${offer.name.replace(/^Offer\s+/i, "")}</strong></div>
+              <div class="detail-tile"><span>Status</span><strong>${offer.status}</strong></div>
+              <div class="detail-tile"><span>Priority</span><strong>${offer.priority}</strong></div>
+              <div class="detail-tile"><span>Module</span><strong>Offer Management</strong></div>
+            </div>
+          </div>
+          <div class="detail-section">
+            <h4>Related Parties</h4>
+            <div class="chips">${offer.tags.map(tag => `<span class="chip">${tag}</span>`).join("")}</div>
+          </div>
+          <div class="detail-section">
+            <h4>Review Context</h4>
+            <p class="muted">${offer.detail}</p>
+            <div class="module-note"><strong>Admin action:</strong> ${offer.action}</div>
+          </div>
+        </div>
+      `;
+      updateActiveNav();
+      scrollMainToTop();
+    }
+
     function statusPill(status, priority) {
       const color = priority === "สูง" ? "red" : priority === "กลาง" ? "amber" : ["Active", "Ready", "Published", "สำเร็จ", "Completed"].includes(status) ? "green" : "purple";
       return `<span class="pill ${color}">${status}</span>`;
@@ -19721,6 +20079,11 @@
         if (["asset-type-filter", "asset-brand-filter", "asset-sort"].includes(hiddenInput.id) && activeModule === "assets") {
           assetListPage = 1;
           renderAssetListRows();
+          return;
+        }
+        if (["offer-status-filter", "offer-priority-filter", "offer-sort"].includes(hiddenInput.id) && activeModule === "offers") {
+          offerListPage = 1;
+          renderOfferListRows();
           return;
         }
         if (["article-status-filter", "article-category-filter", "article-sort"].includes(hiddenInput.id) && activeModule === "content" && (activeSub || "Articles") === "Articles") {
@@ -19910,6 +20273,14 @@
         const row = moduleData[activeModule].rows.find(entry => entry.id === id);
         activeRow = row;
         renderDetail(row);
+      }
+      const offerOpenButton = event.target.closest("[data-offer-open], .asset-row[data-offer-card]");
+      if (offerOpenButton && activeModule === "offers") {
+        if (event.target.closest("button") && !event.target.closest("[data-offer-open]")) return;
+        const id = offerOpenButton.dataset.offerOpen || offerOpenButton.dataset.offerCard;
+        const offer = moduleData.offers.rows.find(entry => entry.id === id);
+        renderOfferDetailPage(offer);
+        return;
       }
       const articleOpenButton = event.target.closest("[data-article-open]");
       if (articleOpenButton) {
@@ -20454,6 +20825,12 @@
         renderModule("assets", "Reported Assets", "Reported Assets");
         return;
       }
+      const offerReset = event.target.closest("[data-offer-reset]");
+      if (offerReset) {
+        offerListPage = 1;
+        renderModule("offers", "Offer List", "Offer List");
+        return;
+      }
       const assetReportFilterToggle = event.target.closest("[data-asset-report-filter-toggle]");
       if (assetReportFilterToggle) {
         assetReportFilterOpen = !assetReportFilterOpen;
@@ -20472,6 +20849,16 @@
         assetFilterToggle.setAttribute("aria-expanded", String(assetFilterOpen));
         const label = assetFilterToggle.querySelector("span");
         if (label) label.textContent = assetFilterOpen ? "ปิดตัวกรอง" : "เปิดตัวกรอง";
+        return;
+      }
+      const offerFilterToggle = event.target.closest("[data-offer-filter-toggle]");
+      if (offerFilterToggle) {
+        offerFilterOpen = !offerFilterOpen;
+        const filterBar = document.querySelector(".user-filter-bar");
+        if (filterBar) filterBar.dataset.filterOpen = String(offerFilterOpen);
+        offerFilterToggle.setAttribute("aria-expanded", String(offerFilterOpen));
+        const label = offerFilterToggle.querySelector("span");
+        if (label) label.textContent = offerFilterOpen ? "ปิดตัวกรอง" : "เปิดตัวกรอง";
         return;
       }
       const articleReset = event.target.closest("[data-article-reset]");
@@ -20596,6 +20983,15 @@
         else renderAssetListRows();
         return;
       }
+      const offerPageButton = event.target.closest("[data-offer-page]");
+      if (offerPageButton) {
+        const target = offerPageButton.dataset.offerPage;
+        if (target === "prev") offerListPage = Math.max(1, offerListPage - 1);
+        else if (target === "next") offerListPage += 1;
+        else offerListPage = Number(target) || 1;
+        renderOfferListRows();
+        return;
+      }
       const userPageButton = event.target.closest("[data-user-page]");
       if (userPageButton) {
         const target = userPageButton.dataset.userPage;
@@ -20651,6 +21047,11 @@
       const backAssetList = event.target.closest("[data-back-asset-list]");
       if (backAssetList) {
         renderModule("assets", "Asset List", "Asset List");
+        return;
+      }
+      const backOfferList = event.target.closest("[data-back-offer-list]");
+      if (backOfferList) {
+        renderModule("offers", "Offer List", "Offer List");
         return;
       }
       const backArticleList = event.target.closest("[data-back-article-list]");
@@ -20961,6 +21362,11 @@
         renderReportedBoardRows();
         return;
       }
+      if (event.target.matches("#offer-search")) {
+        offerListPage = 1;
+        renderOfferListRows();
+        return;
+      }
       if (event.target.matches("#search")) {
         if (activeModule === "assets") assetListPage = 1;
         renderRows();
@@ -21103,6 +21509,7 @@
       }
       if (event.target.matches("#status-filter, #priority-filter, #asset-type-filter, #asset-brand-filter, #asset-sort")) {
         if (activeModule === "assets") assetListPage = 1;
+        if (activeModule === "offers") offerListPage = 1;
         renderRows();
       }
     });
