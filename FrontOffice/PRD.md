@@ -206,16 +206,14 @@ Market Data / Specification storage rule:
 - Status: Sale / Show / Hide
 - Sale Status: Available / Sold
 - Provenance (ประวัติสินทรัพย์):
-  - Purchase Price (THB)
-  - Purchase Date, Purchase From (Dealer/Individual)
-  - All Equipment & Accessories (รูปภาพ)
-  - Proof of Payment (รูปภาพ)
-  - Note
+  - Required: Purchase Price (THB), must be greater than 0
+  - Optional: Purchase Date, Purchase From, All Equipment & Accessories, Proof of Payment, Note
+  - Optional fields ต้อง validate เมื่อ user กรอกหรืออัปโหลด เช่น date ห้ามเป็นอนาคต, text ห้ามเป็นค่าว่างล้วน/เกินความยาว, upload ต้องผ่าน type/size/count limits
 - Consignment (ฝากขาย):
-  - ข้อมูลเจ้าของฝาก: ชื่อ, โทรศัพท์, Line/IG/Facebook
-  - Consignment Date
-  - Price & Terms: Asking Price, Commission %
-  - Documentation
+  - Required: Full Name, Phone Number, Asking Price (THB), must be greater than 0
+  - Optional: Line/IG/Facebook, Email, Payout Method, Consignment Date, Consignment Duration, Commission %, Minimum Acceptable Price, All Equipment & Accessories, Proof of Payment / Documentation, Note
+  - Payout Method, Consignment Date, Consignment Duration และ Commission % ไม่ required ใน FO Add Provenance V1 เพราะทีมงานอาจ confirm ภายหลัง
+  - Optional fields ต้อง validate เมื่อ user กรอกหรืออัปโหลด เช่น phone/email format, date ห้ามเป็นอนาคต, duration > 0, commission 0-100, minimum acceptable price <= asking price, upload ต้องผ่าน type/size/count limits
 - Save: แสดง Confirmation Dialog ก่อน Save
 
 #### 3.5.2 Edit Asset

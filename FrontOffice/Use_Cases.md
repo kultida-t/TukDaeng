@@ -547,11 +547,21 @@
 
 #### Happy Path
 1. ระหว่าง Add/Edit Asset กด "Provenance"
-2. กรอก Purchase Price, Purchase Date, Purchase From
-3. อัปโหลดรูป Equipment & Accessories (สูงสุด 3 รูป)
-4. อัปโหลดรูป Proof of Payment (สูงสุด 3 รูป)
-5. กรอก Note
+2. กรอก Purchase Price (required)
+3. กรอก Purchase Date, Purchase From (optional)
+4. อัปโหลดรูป Equipment & Accessories, Proof of Payment (optional)
+5. กรอก Note (optional)
 6. กด "Save" → Confirm
+
+#### Required / Optional Fields
+| Field | Required | Validation |
+|---|---|---|
+| Purchase Price (THB) | Yes | ต้องเป็นตัวเลขและมากกว่า 0 |
+| Purchase Date | No | หากกรอกต้องเป็นวันที่จริงและห้ามเป็นวันที่อนาคต |
+| Purchase From | No | หากกรอกต้องไม่เป็นค่าว่างล้วนและต้องไม่เกินความยาวที่กำหนด |
+| All Equipment & Accessories | No | หากอัปโหลดต้องเป็นชนิดไฟล์ที่รองรับ, ไม่เกินขนาดต่อไฟล์, และไม่เกินจำนวนไฟล์ต่อ section |
+| Proof of Payment | No | หากอัปโหลดต้องเป็นชนิดไฟล์ที่รองรับ, ไม่เกินขนาดต่อไฟล์, และไม่เกินจำนวนไฟล์ต่อ section |
+| Note | No | หากกรอกต้องไม่เป็นค่าว่างล้วนและต้องไม่เกินความยาวที่กำหนด |
 
 ---
 
@@ -561,18 +571,37 @@
 
 #### Happy Path
 1. Add Asset → กด Tab "Consignment"
-2. กรอก Full Name, Phone Number, Line/IG/Facebook
-3. เลือก Consignment Date (Date Picker)
-4. กรอก Asking Price
-5. ตั้ง Commission % (0–100)
-6. อัปโหลด Documentation
-7. กด "Save" → Confirm
+2. กรอก Full Name, Phone Number, Asking Price (required)
+3. กรอก Line/IG/Facebook, Email, Payout Method, Consignment Date, Consignment Duration, Commission %, Minimum Acceptable Price (optional)
+4. อัปโหลด Equipment & Accessories และ Proof of Payment / Documentation (optional)
+5. กด "Save" → Confirm
+
+#### Required / Optional Fields
+| Field | Required | Validation |
+|---|---|---|
+| Full Name | Yes | ต้องไม่เป็นค่าว่างล้วนและต้องไม่เกินความยาวที่กำหนด |
+| Phone Number | Yes | ต้องเป็น phone format ที่ถูกต้อง |
+| Asking Price (THB) | Yes | ต้องเป็นตัวเลขและมากกว่า 0 |
+| Line / IG / Facebook | No | หากกรอกต้องไม่เป็นค่าว่างล้วนและต้องไม่เกินความยาวที่กำหนด |
+| Email | No | หากกรอกต้องเป็น email format ที่ถูกต้อง |
+| Payout Method | No | หากกรอกต้องเป็น option/value ที่ระบบรองรับ และ validate field ย่อยตาม payout type |
+| Consignment Date | No | หากกรอกต้องเป็นวันที่จริงและห้ามเป็นวันที่อนาคต |
+| Consignment Duration | No | หากกรอกต้องมากกว่า 0 |
+| Commission (%) | No | หากกรอกต้องอยู่ระหว่าง 0-100 |
+| Minimum Acceptable Price | No | หากกรอกต้องมากกว่า 0 และต้องไม่มากกว่า Asking Price |
+| All Equipment & Accessories | No | หากอัปโหลดต้องเป็นชนิดไฟล์ที่รองรับ, ไม่เกินขนาดต่อไฟล์, และไม่เกินจำนวนไฟล์ต่อ section |
+| Proof of Payment / Documentation | No | หากอัปโหลดต้องเป็นชนิดไฟล์ที่รองรับ, ไม่เกินขนาดต่อไฟล์, และไม่เกินจำนวนไฟล์ต่อ section |
+| Note | No | หากกรอกต้องไม่เป็นค่าว่างล้วนและต้องไม่เกินความยาวที่กำหนด |
 
 #### Error Cases
 | ID | เงื่อนไข | ผลลัพธ์ |
 |---|---|---|
-| E01 | Commission > 100 | แสดง "Commission cannot exceed 100%" |
-| E02 | Phone number format ผิด | แสดง "Invalid phone number" |
+| E01 | ไม่กรอก Full Name | แสดง "Full name is required" |
+| E02 | ไม่กรอก Phone Number หรือ phone number format ผิด | แสดง "Invalid phone number" |
+| E03 | ไม่กรอก Asking Price หรือ Asking Price <= 0 | แสดง "Asking price must be greater than 0" |
+| E04 | Commission ไม่อยู่ในช่วง 0-100 เมื่อกรอก | แสดง "Commission must be between 0 and 100%" |
+| E05 | Minimum Acceptable Price > Asking Price เมื่อกรอกทั้งสองค่า | แสดง "Minimum acceptable price cannot exceed asking price" |
+| E06 | Optional field ที่กรอกมีแต่ช่องว่าง, format ผิด, เกินความยาว, หรือ upload ไม่ผ่าน type/size/count limit | แสดง validation เฉพาะ field/section นั้น |
 
 ---
 
