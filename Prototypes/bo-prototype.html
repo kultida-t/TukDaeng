@@ -3779,6 +3779,9 @@
       gap: 8px;
       width: 100%;
     }
+    body.offer-list-mode .offer-filter-bar {
+      grid-template-columns: minmax(320px, 1.85fr) minmax(190px, .95fr) minmax(190px, .95fr) max-content;
+    }
     .user-filter-actions {
       display: none;
     }
@@ -6605,6 +6608,9 @@
       .row.head { display: none; }
       .user-filter-bar,
       .user-filter-bar.report-mode {
+        grid-template-columns: 1fr;
+      }
+      body.offer-list-mode .offer-filter-bar {
         grid-template-columns: 1fr;
       }
       .user-filter-bar .field:not(.search) {
@@ -14079,7 +14085,7 @@
           <button class="btn" type="button" data-offer-reset title="รีเซ็ตค่าทั้งหมด" aria-label="รีเซ็ตค่าทั้งหมด">${iconSvg.refresh}<span>รีเซ็ตค่าทั้งหมด</span></button>
         `;
         document.querySelector(".filters").innerHTML = `
-          <div class="user-filter-bar" data-filter-open="${offerFilterOpen}">
+          <div class="user-filter-bar offer-filter-bar" data-filter-open="${offerFilterOpen}">
             <input class="field search" id="offer-search" type="search" placeholder="ค้นหา Offer ID, Asset ID, Asset, Buyer, Owner" />
             <div class="user-advanced-filter">${customSelect("offer-status-filter", "Filter offer status", [
               { value: "", label: "ทุกสถานะ" },
@@ -14087,8 +14093,7 @@
             ])}</div>
             <div class="user-advanced-filter">${customSelect("offer-sort", "Sort offers", [
               { value: "latest", label: "Newest first" },
-              { value: "amount", label: "Offer amount" },
-              { value: "status", label: "Status" }
+              { value: "oldest", label: "Oldest first" }
             ], "latest")}</div>
             <button class="btn filter-reset user-advanced-filter" type="button" data-offer-reset title="รีเซ็ตค่าทั้งหมด" aria-label="รีเซ็ตค่าทั้งหมด">${iconSvg.refresh}<span>รีเซ็ตค่าทั้งหมด</span></button>
           </div>
@@ -19821,10 +19826,6 @@
       ].join(" ").toLowerCase();
     }
 
-    function getOfferAmount(offer) {
-      return Number(String(offer.name || "").replace(/[^\d]/g, "")) || 0;
-    }
-
     function getOfferPriceDisplay(offer) {
       return String(offer.name || "").replace(/^Offer\s+/i, "");
     }
@@ -19853,12 +19854,7 @@
       return user?.displayName || user?.name || raw;
     }
 
-    function getOfferSortRank(offer, sort) {
-      if (sort === "amount") return getOfferAmount(offer);
-      if (sort === "status") {
-        const statusRank = { Pending: 4, Accepted: 3, Rejected: 2, Cancelled: 1 };
-        return statusRank[offer.status] || 0;
-      }
+    function getOfferSortRank(offer) {
       return parseInt(String(offer.id || "").replace(/\D/g, ""), 10) || 0;
     }
 
@@ -19874,7 +19870,7 @@
       const sort = document.querySelector("#offer-sort")?.value || "latest";
       const filtered = data.rows
         .filter(row => (!q || getOfferSearchText(row).includes(q)) && (!status || row.status === status))
-        .sort((a, b) => getOfferSortRank(b, sort) - getOfferSortRank(a, sort));
+        .sort((a, b) => sort === "oldest" ? getOfferSortRank(a) - getOfferSortRank(b) : getOfferSortRank(b) - getOfferSortRank(a));
       const pageSize = assetListPageSize;
       const pageCount = Math.max(1, Math.ceil(filtered.length / pageSize));
       offerListPage = Math.min(offerListPage, pageCount);
