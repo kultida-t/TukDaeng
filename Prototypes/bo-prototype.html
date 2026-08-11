@@ -14069,7 +14069,7 @@
         activeRow = null;
         activeSub = "";
         document.querySelector("#crumb").textContent = data.crumb;
-        document.querySelector("#page-title").textContent = "Offer List";
+        document.querySelector("#page-title").textContent = data.title;
         document.querySelector("#page-meta").textContent = "";
         document.querySelector("#panel-title").textContent = "Offer List";
         document.querySelector("#panel-subtitle").textContent = "";
@@ -19907,7 +19907,7 @@
       document.querySelector("#crumb").textContent = `การดำเนินงาน / Offer Management / Offer Detail / ${offer.id}`;
       document.querySelector("#page-title").textContent = "Offer Detail";
       document.querySelector("#page-meta").textContent = "";
-      setPageActions(renderPageBackButton("data-back-offer-list", "กลับไป Offer List", "report-back-btn"));
+      setPageActions(renderPageBackButton("data-back-offer-list", "กลับไป Offer Management", "report-back-btn"));
       document.querySelector("#panel-title").textContent = offer.name;
       document.querySelector("#panel-subtitle").textContent = `${offer.id} / ${offer.owner}`;
       document.querySelector("#user-panel-filter-actions").innerHTML = "";
