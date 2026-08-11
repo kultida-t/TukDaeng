@@ -94,7 +94,7 @@ Figma มี coverage ของ flow หลักค่อนข้างมา�
 | Medium | ยังไม่เห็น Result Count / Clear Filters ชัดเจน | Search รองรับ Result Count, Apply Filters, Clear Filters | เพิ่ม result count และ clear filter control ใน Filter/Search Result |
 | Medium | ยังไม่เห็น sort options ครบตาม master | Search รองรับ Relevance, Price Low to High, Price High to Low, Newest, Popularity | เพิ่ม sort option set ให้ครบ |
 | Medium | ต้องยืนยัน dependent filter โดยเฉพาะ Brand → Model | Search Filter ต้องรองรับ dependent filtering | เพิ่ม state ตัวอย่าง Brand = Rolex แล้ว Model เหลือเฉพาะ Rolex |
-| Medium | ต้องยืนยัน Watch Alert ไม่มี Required Field | Watch Alert ไม่มี Required Field และถ้าไม่กรอกชื่อให้ระบบตั้งชื่อจาก Filter | ปรับ Create Watch Alert ให้ save ได้โดยไม่ต้องกรอก field เพิ่ม |
+| Medium | ต้องยืนยัน Watch Alert criteria ไม่มี Required Field และ Alert Name validation | Watch Alert criteria ไม่มี Required Field แต่ระบบต้องเติมชื่อเริ่มต้นจาก Filter/default และ Alert Name ต้องไม่ว่างตอนบันทึก | ปรับ Create Watch Alert ให้ prefill ชื่อ แก้ไขได้ และแจ้ง validation หาก user ลบชื่อจนว่าง |
 
 ### 04 Asset Management Module
 
@@ -197,8 +197,8 @@ Figma มี coverage ของ flow หลักค่อนข้างมา�
 | High | Create Watch Alert อาจไม่ได้เริ่มจาก Search Filter | Watch Alert สร้างจาก Search Filter | จำกัด entry point และ annotate flow จาก Search Filter |
 | High | ต้องยืนยันว่า Watch Alert match เฉพาะ Sale | Watch Alert Match เฉพาะ Asset สถานะ Sale | ตรวจ result/filter state ไม่ให้มี Show, Hide, Sold |
 | High | Guest Create Watch Alert restriction ยังไม่ชัด | Guest ใช้ Watch Alert ไม่ได้และต้องเห็น Global Login Required Dialog | เพิ่ม guest dialog/state เมื่อกด Create Watch Alert |
-| Medium | ต้องยืนยันว่าไม่มี Required Field | Watch Alert ไม่มี Required Field | Create flow ต้อง save ได้แม้ไม่มีชื่อหรือ criteria เพิ่ม |
-| Medium | Alert name auto-generate ยังไม่ชัด | ถ้าไม่กรอกชื่อ ระบบตั้งชื่อจาก filter ได้ | เพิ่ม default/generated name state |
+| Medium | ต้องยืนยันว่า criteria ไม่มี Required Field | Watch Alert criteria ไม่มี Required Field | Create flow ต้อง save ได้แม้ไม่มี criteria หรือมี criteria บางส่วน |
+| Medium | Alert name auto-generate และ validation ยังไม่ชัด | ระบบต้องเติมชื่อเริ่มต้นจาก filter/default และ Alert Name ต้องไม่ว่างตอน save | เพิ่ม default/generated name state และ empty-name validation |
 | Medium | Filter dependency ต้องตรง Search | Watch Alert ใช้ filter logic เดียวกับ Search | เพิ่มตัวอย่าง Brand -> Model dependency |
 | Medium | Lifecycle impact ยังไม่ชัด | Sale -> Sold/Hide/Show หายจาก result, Hide/Show -> Sale กลับมา match ได้ | เพิ่ม state notes หรือ flow annotation |
 | Medium | Block user impact ยังไม่ชัด | Asset ของผู้ถูก Block ต้องหายจาก Watch Alert Result ทันที | เพิ่ม blocked-user result filtering state |

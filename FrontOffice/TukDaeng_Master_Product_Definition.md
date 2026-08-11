@@ -192,7 +192,9 @@ Full Back Office PRD ยังไม่เริ่มระหว่าง FO c
 
 - Watch Alert Match เฉพาะ Asset สถานะ Sale
 - Watch Alert สร้างจาก Search Filter
-- Watch Alert ไม่มี Required Field
+- Watch Alert criteria ไม่มี Required Field แต่ Alert Name ต้องไม่ว่างตอนบันทึก
+- เมื่อสร้าง Watch Alert ระบบต้องเติมชื่อเริ่มต้นจาก Filter หรือ default name ให้ user แก้ไขได้ก่อนบันทึก
+- หาก user ลบชื่อจนว่างแล้วกดบันทึก ระบบต้องแจ้งให้กรอกชื่อและไม่สร้าง Watch Alert
 - Watch Alert Notification เปิดไปที่ Result List ไม่เปิด Asset ตรง
 
 ### Public Profile

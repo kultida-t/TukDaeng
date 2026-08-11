@@ -301,7 +301,7 @@
 #### Happy Path
 1. ตั้ง Filter (เช่น Brand: Rolex)
 2. กดปุ่ม "Save to Watch Alert"
-3. กรอกชื่อ Alert (เช่น "Rolex")
+3. ระบบเติมชื่อ Alert เริ่มต้นจาก Filter ให้ เช่น "Rolex" และผู้ใช้สามารถแก้ไขชื่อได้
 4. เปิด Notification Toggle
 5. กด "Save this search"
 6. แสดง Confirmation: "Thank you! Your search has been saved..."
@@ -310,7 +310,7 @@
 #### Error Cases
 | ID | เงื่อนไข | ผลลัพธ์ |
 |---|---|---|
-| E01 | ไม่กรอกชื่อ Alert | บันทึกด้วยชื่อ Default "Watch Alert on DD/MM/YY" |
+| E01 | User ลบชื่อ Alert จนว่างแล้วกด Save | ไม่บันทึก และแสดงข้อความให้กรอกชื่อ Watch Alert |
 | E02 | Alert ซ้ำ Criteria เดิม | แสดง "A similar alert already exists. Create anyway?" |
 
 ---

@@ -92,8 +92,10 @@ Purpose:
 - [ ] Clear Filters reset criteria ทั้งหมด
 - [ ] No result ใช้ empty state กลาง
 - [ ] Create Watch Alert จาก Search Filter ได้
-- [ ] Watch Alert save ได้แม้ไม่มี required field
-- [ ] หากไม่กรอกชื่อ Watch Alert ระบบสร้างชื่อจาก criteria
+- [ ] Watch Alert save ได้แม้ไม่มี required criteria
+- [ ] เมื่อเปิด Save to Watch Alert ต้อง prefill ชื่อจาก criteria หรือ default name
+- [ ] Alert Name ตอน save ต้อง trim แล้วไม่ว่าง
+- [ ] หาก user ลบชื่อ Watch Alert จนว่าง ต้องแสดง validation และไม่สร้าง alert
 
 ---
 
@@ -259,7 +261,9 @@ Purpose:
 - [ ] Watch Alert ไม่ match `Show`, `Hide`, `Sold`, `Deleted`
 - [ ] Create Watch Alert จาก Search/Filter criteria ได้
 - [ ] ไม่มี required field สำหรับ Watch Alert criteria
-- [ ] หากไม่ตั้งชื่อ ระบบสร้างชื่อจาก filter criteria
+- [ ] ระบบสร้างชื่อเริ่มต้นจาก filter criteria หรือ default name ให้ก่อนบันทึก
+- [ ] Alert Name เป็น required at save time และต้องไม่ว่างหลัง trim
+- [ ] หาก user ลบชื่อจนว่าง ต้องแจ้งเตือนให้กรอกชื่อ Watch Alert
 - [ ] รองรับ Watch Alert list
 - [ ] รองรับ toggle notification ต่อ alert
 - [ ] รองรับ rename alert

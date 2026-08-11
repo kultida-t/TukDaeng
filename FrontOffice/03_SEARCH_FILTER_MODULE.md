@@ -43,7 +43,7 @@ Search & Filter Module ต้องยึด master baseline ต่อไปน�
 - Search ต้องไม่แสดง Asset ของ User ที่ถูก Block หรือ Block กันอยู่
 - Search ต้องรองรับ Filter หลายมิติ
 - Watch Alert ต้องสร้างจาก Search Filter
-- Watch Alert ไม่มี Required Field
+- Watch Alert criteria ไม่มี Required Field แต่ Alert Name ต้องไม่ว่างตอนบันทึก
 - Watch Alert Match เฉพาะ Asset สถานะ `Sale`
 - Watch Alert Notification ต้องเปิดไปที่ Watch Alert Result List ไม่เปิด Asset Detail ตรง
 - Guest ใช้ Search / Filter / View Result ได้ แต่ Create Watch Alert ไม่ได้
@@ -408,13 +408,18 @@ Create Watch Alert ต้องสร้างจาก Search Filter เท่�
 ## Watch Alert Rule
 
 - Watch Alert Match เฉพาะ Asset สถานะ `Sale`
-- Watch Alert ไม่มี Required Field
+- Watch Alert criteria ไม่มี Required Field
+- Alert Name ต้องไม่ว่างตอนกด Save this search
 - Watch Alert Notification ต้องเปิดไปที่ Watch Alert Result List
 - Watch Alert Notification ต้องไม่เปิด Asset Detail โดยตรง
 
 ## Watch Alert Name Rule
 
-หาก User ไม่กรอกชื่อ Alert ระบบสร้างชื่ออัตโนมัติจาก Filter ที่ใช้อยู่
+- เมื่อเปิด Save to Watch Alert modal ระบบต้องสร้างชื่อเริ่มต้นจาก Filter ที่ใช้อยู่และเติมลงในช่อง Alert Name ให้ก่อน เช่น brand, model, reference หรือช่วงราคาที่เลือก
+- User สามารถแก้ไขชื่อที่ระบบสร้างให้ได้ก่อนบันทึก
+- ตอนกด `Save this search` ระบบต้อง trim ค่า Alert Name ก่อนตรวจสอบ
+- หาก Alert Name หลัง trim แล้วว่าง ต้องไม่สร้าง Watch Alert และต้องแสดง validation message ให้ user กรอกชื่อ
+- หาก Filter ว่างหรือไม่มี criteria ที่ใช้ตั้งชื่อได้ ระบบต้องเติมชื่อ default เช่น `Watch Alert`
 
 ## Search Refresh And Pagination Behavior
 
@@ -651,9 +656,10 @@ Search Result ต้องรองรับ:
 | AC ID | Criteria |
 |---|---|
 | AC-SEARCH-028 | Create Watch Alert ต้องสร้างจาก Search Filter ได้ |
-| AC-SEARCH-029 | Watch Alert ต้องไม่มี Required Field |
+| AC-SEARCH-029 | Watch Alert criteria ต้องไม่มี Required Field แต่ Alert Name ต้องไม่ว่างตอนบันทึก |
 | AC-SEARCH-030 | Watch Alert ต้อง Match เฉพาะ Asset สถานะ Sale |
-| AC-SEARCH-031 | หาก User ไม่กรอกชื่อ Watch Alert ระบบต้องสร้างชื่ออัตโนมัติจาก Filter |
+| AC-SEARCH-031 | เมื่อเปิด Save to Watch Alert ระบบต้องเติมชื่อเริ่มต้นจาก Filter หรือ default name ให้ user แก้ไขได้ |
+| AC-SEARCH-031A | หาก User ลบ Alert Name จนว่างแล้วกด Save this search ระบบต้องแจ้งเตือนให้กรอกชื่อและไม่สร้าง Watch Alert |
 | AC-SEARCH-032 | Watch Alert Notification ต้องเปิดไปที่ Watch Alert Result List |
 | AC-SEARCH-033 | Watch Alert Notification ต้องไม่เปิด Asset Detail โดยตรง |
 
