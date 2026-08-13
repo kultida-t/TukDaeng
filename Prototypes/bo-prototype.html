@@ -7678,6 +7678,8 @@
       body.article-list-mode #table,
       body.category-list-mode #table,
       body.reported-board-mode #table {
+        padding: 12px 14px 16px;
+        background: #f8fbff;
         overflow-x: hidden;
       }
       body.asset-list-mode:not(.article-list-mode):not(.category-list-mode):not(.reported-board-mode) #table {
@@ -7696,6 +7698,8 @@
       body.article-list-mode #table .article-table,
       body.category-list-mode #table .category-table,
       body.reported-board-mode #table .reported-board-table {
+        grid-template-columns: 1fr;
+        gap: 12px;
         min-width: 0;
       }
       body.article-list-mode #table > .footer-range,
@@ -7730,6 +7734,133 @@
       }
       body.asset-list-mode:not(.article-list-mode):not(.category-list-mode):not(.reported-board-mode) .asset-list-table .asset-row.head {
         display: none;
+      }
+      body.article-list-mode .article-table .asset-row.head,
+      body.category-list-mode .category-table .asset-row.head,
+      body.reported-board-mode .reported-board-table .asset-row.head {
+        display: none;
+      }
+      body.article-list-mode .article-table .asset-row:not(.head),
+      body.category-list-mode .category-table .asset-row:not(.head),
+      body.reported-board-mode .reported-board-table .asset-row:not(.head) {
+        grid-template-columns: minmax(0, 1fr) 34px;
+        column-gap: 14px;
+        row-gap: 14px;
+        min-height: 0;
+        padding: 18px 18px 16px;
+        border: 1px solid #cfdbd2;
+        border-radius: 10px;
+        background: #fff;
+        box-shadow: 0 1px 2px rgba(15, 23, 42, .05);
+        overflow: visible;
+      }
+      body.article-list-mode .article-table .asset-row:not(.head) > div[data-label]:not(.asset-cell-primary),
+      body.category-list-mode .category-table .asset-row:not(.head) > div[data-label]:not(.asset-cell-primary),
+      body.reported-board-mode .reported-board-table .asset-row:not(.head) > div[data-label]:not(.asset-cell-primary) {
+        display: none;
+      }
+      body.article-list-mode .article-table .asset-row:not(.head) > div[data-label]:first-child,
+      body.category-list-mode .category-table .asset-row:not(.head) > div[data-label]:first-child,
+      body.reported-board-mode .reported-board-table .asset-row:not(.head) > div[data-label]:first-child {
+        display: none;
+      }
+      body.article-list-mode .article-table .asset-row:not(.head) > .user-row-actions,
+      body.category-list-mode .category-table .asset-row:not(.head) > .user-row-actions,
+      body.reported-board-mode .reported-board-table .asset-row:not(.head) > .user-row-actions {
+        grid-column: 2;
+        grid-row: 1;
+        align-self: center;
+        justify-self: end;
+        justify-content: flex-end;
+        width: auto;
+        min-height: 30px;
+        padding-top: 0;
+      }
+      body.article-list-mode .article-table .asset-row:not(.head) > .asset-cell-primary,
+      body.category-list-mode .category-table .asset-row:not(.head) > .asset-cell-primary,
+      body.reported-board-mode .reported-board-table .asset-row:not(.head) > .asset-cell-primary {
+        grid-column: 1;
+        grid-row: 1;
+        min-height: 30px;
+        display: flex;
+        align-items: center;
+        align-self: center;
+        border-bottom: 0;
+        padding-bottom: 0;
+      }
+      body.article-list-mode .article-table .asset-row:not(.head) > .asset-cell-primary .main-text,
+      body.category-list-mode .category-table .asset-row:not(.head) > .asset-cell-primary .main-text,
+      body.reported-board-mode .reported-board-table .asset-row:not(.head) > .asset-cell-primary .main-text {
+        max-width: 100%;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        color: #061426;
+        font-family: var(--font-heading);
+        font-size: 22px;
+        font-weight: 500;
+        letter-spacing: .04em;
+        line-height: 1;
+      }
+      body.article-list-mode .article-table .asset-row:not(.head) .desktop-user-name,
+      body.category-list-mode .category-table .asset-row:not(.head) .desktop-user-name,
+      body.reported-board-mode .reported-board-table .asset-row:not(.head) .desktop-user-name { display: none; }
+      body.article-list-mode .article-table .asset-row:not(.head) .mobile-user-card-title,
+      body.category-list-mode .category-table .asset-row:not(.head) .mobile-user-card-title,
+      body.reported-board-mode .reported-board-table .asset-row:not(.head) .mobile-user-card-title { display: inline; }
+      body.article-list-mode .article-table .asset-card-tags,
+      body.category-list-mode .category-table .asset-card-tags,
+      body.reported-board-mode .reported-board-table .asset-card-tags {
+        grid-column: 1 / -1;
+        grid-row: 2;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 9px;
+        width: 100%;
+        padding-top: 0;
+      }
+      body.article-list-mode .article-table .asset-card-tags .user-card-meta,
+      body.category-list-mode .category-table .asset-card-tags .user-card-meta,
+      body.reported-board-mode .reported-board-table .asset-card-tags .user-card-meta {
+        flex: 1 0 100%;
+        display: grid;
+        gap: 3px;
+        width: 100%;
+        margin-top: 8px;
+        padding-top: 11px;
+        border-top: 1px solid #edf2f7;
+      }
+      body.article-list-mode .article-table .asset-card-tags .user-card-meta-item,
+      body.category-list-mode .category-table .asset-card-tags .user-card-meta-item,
+      body.reported-board-mode .reported-board-table .asset-card-tags .user-card-meta-item {
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        gap: 8px;
+        color: #34445b;
+        font-size: 12px;
+        line-height: 1.35;
+      }
+      body.article-list-mode .article-table .asset-card-tags .user-card-meta-item span,
+      body.category-list-mode .category-table .asset-card-tags .user-card-meta-item span,
+      body.reported-board-mode .reported-board-table .asset-card-tags .user-card-meta-item span {
+        color: #485b75;
+        font-size: 12px;
+        font-weight: 700;
+        white-space: nowrap;
+      }
+      body.article-list-mode .article-table .asset-card-tags .user-card-meta-item strong,
+      body.category-list-mode .category-table .asset-card-tags .user-card-meta-item strong,
+      body.reported-board-mode .reported-board-table .asset-card-tags .user-card-meta-item strong {
+        color: #233a5c;
+        font-size: 12px;
+        font-weight: 400;
+        min-width: 0;
+        max-width: 62%;
+        overflow: hidden;
+        text-align: right;
+        text-overflow: ellipsis;
+        white-space: nowrap;
       }
       body.asset-list-mode:not(.article-list-mode):not(.category-list-mode):not(.reported-board-mode) .asset-list-table .asset-row:not(.head) {
         grid-template-columns: minmax(0, 1fr) 34px;
