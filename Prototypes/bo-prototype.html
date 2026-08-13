@@ -1743,13 +1743,92 @@
       background: transparent;
     }
     body.market-list-mode .user-panel-filter-actions {
-      display: flex;
+      display: none;
     }
     body.market-list-mode .user-filter-bar {
       grid-template-columns: minmax(240px, 1.35fr) minmax(126px, .68fr) minmax(126px, .68fr) max-content;
     }
     body.market-list-mode .market-catalog-filter-bar {
-      grid-template-columns: minmax(240px, 1fr);
+      grid-template-columns: minmax(260px, 1.65fr) repeat(2, minmax(138px, .82fr)) 42px;
+      align-items: stretch;
+      gap: 8px;
+    }
+    body.market-list-mode .market-mode .search,
+    body.market-list-mode .market-mode .custom-select,
+    body.market-list-mode .market-mode .custom-select-trigger,
+    body.market-list-mode .market-mode .filter-reset {
+      width: 100%;
+      height: 48px;
+      min-height: 48px;
+    }
+    body.market-list-mode .market-mode .search {
+      grid-column: auto;
+      min-width: 0;
+      line-height: 1.2;
+    }
+    body.market-list-mode .market-mode .field,
+    body.market-list-mode .market-mode .custom-select,
+    body.market-list-mode .market-mode .custom-select-trigger,
+    body.market-list-mode .market-mode .user-advanced-filter {
+      min-width: 0;
+    }
+    body.market-list-mode .market-mode .custom-select-trigger {
+      display: flex;
+      align-items: center;
+      flex-wrap: nowrap;
+    }
+    body.market-list-mode .market-mode .custom-select-trigger [data-custom-select-label] {
+      display: block;
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    body.market-list-mode .market-mode .filter-reset {
+      min-width: 42px;
+      padding: 0;
+      border-color: #cfdbea;
+      background: #fff;
+      justify-content: center;
+    }
+    body.market-list-mode .market-mode .filter-reset span {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+    }
+    body.market-list-mode .main {
+      overflow-x: hidden;
+    }
+    body.market-list-mode:not(.market-dashboard-mode) .layout > .panel {
+      overflow: hidden;
+    }
+    body.market-list-mode:not(.market-dashboard-mode) #table {
+      max-width: 100%;
+      overflow-x: auto;
+      overflow-y: visible;
+      scrollbar-width: thin;
+    }
+    body.market-list-mode:not(.market-dashboard-mode) #table .market-table .asset-row {
+      overflow-x: visible;
+    }
+    body.market-list-mode #table .market-catalog-table,
+    body.market-list-mode #table .market-catalog-table + .footer-range {
+      min-width: 900px;
+    }
+    body.market-list-mode #table .market-model-table,
+    body.market-list-mode #table .market-model-table + .footer-range {
+      min-width: 820px;
+    }
+    body.market-list-mode #table .market-reference-list-table,
+    body.market-list-mode #table .market-reference-list-table + .footer-range {
+      min-width: 1060px;
+    }
+    body.market-list-mode #table .market-record-table,
+    body.market-list-mode #table .market-record-table + .footer-range {
+      min-width: 1480px;
     }
     body.market-list-mode .market-table .asset-row {
       grid-template-columns: minmax(220px, 1fr) minmax(116px, .45fr) minmax(126px, .5fr) minmax(150px, .6fr) 74px;
@@ -1762,7 +1841,7 @@
       text-align: right;
     }
     body.market-list-mode .market-table.market-record-table .asset-row {
-      grid-template-columns: minmax(250px, 1.18fr) minmax(170px, .76fr) minmax(112px, .5fr) minmax(128px, .55fr) minmax(170px, .74fr) minmax(230px, .96fr) 76px;
+      grid-template-columns: minmax(270px, 1.1fr) minmax(180px, .72fr) minmax(120px, .48fr) minmax(132px, .52fr) minmax(180px, .72fr) minmax(320px, 1fr) 92px;
       column-gap: 18px;
       align-items: center;
     }
@@ -1780,6 +1859,12 @@
       text-align: center;
       display: flex;
       justify-content: center;
+    }
+    body.market-list-mode .market-table.market-record-table .asset-row > div {
+      min-width: 0;
+    }
+    body.market-list-mode .market-table.market-record-table .asset-row > div:nth-child(6) {
+      overflow: hidden;
     }
     body.market-list-mode .market-table.market-record-table .asset-row .main-text,
     body.market-list-mode .market-table.market-record-table .asset-row .muted {
@@ -1860,7 +1945,7 @@
       grid-template-columns: minmax(120px, .7fr) minmax(150px, .8fr) minmax(150px, .8fr) minmax(150px, .8fr) minmax(140px, .7fr) minmax(150px, .7fr);
     }
     body.market-list-mode .market-record-table .asset-row {
-      grid-template-columns: minmax(250px, 1.18fr) minmax(170px, .76fr) minmax(112px, .5fr) minmax(128px, .55fr) minmax(170px, .74fr) minmax(230px, .96fr) 76px;
+      grid-template-columns: minmax(270px, 1.1fr) minmax(180px, .72fr) minmax(120px, .48fr) minmax(132px, .52fr) minmax(180px, .72fr) minmax(320px, 1fr) 92px;
     }
     body.market-list-mode .market-arrow-action {
       min-width: 58px;
@@ -1912,6 +1997,15 @@
     body.market-list-mode .market-dashboard-table {
       background: #fff;
       overflow: hidden;
+    }
+    body.market-list-mode .market-dashboard-table {
+      max-width: 100%;
+      overflow-x: auto;
+      scrollbar-width: thin;
+    }
+    body.market-list-mode .market-dashboard-brand-table,
+    body.market-list-mode .market-dashboard-brand-table + .footer-range {
+      min-width: 960px;
     }
     body.market-list-mode.market-dashboard-mode .market-sync-current {
       border: 1px solid #d7e2f0;
@@ -6428,6 +6522,12 @@
       body.reported-board-mode .user-filter-bar.content-mode {
         grid-template-columns: minmax(0, 1fr) repeat(3, minmax(112px, .5fr)) 42px;
       }
+      body.market-list-mode .user-filter-bar.market-mode {
+        grid-template-columns: minmax(0, 1fr) minmax(132px, .5fr) minmax(132px, .5fr) 42px;
+      }
+      body.market-list-mode .user-filter-bar.market-mode .search {
+        grid-column: auto;
+      }
       body.offer-list-mode .offer-filter-bar {
         grid-template-columns: minmax(220px, 1.2fr) minmax(160px, .8fr) minmax(160px, .8fr) max-content;
         align-items: center;
@@ -6580,6 +6680,12 @@
       body.reported-board-mode .user-filter-bar.content-mode {
         grid-template-columns: minmax(0, 1fr) repeat(3, minmax(112px, .5fr)) 42px;
       }
+      body.market-list-mode .user-filter-bar.market-mode {
+        grid-template-columns: minmax(0, 1fr) minmax(132px, .5fr) minmax(132px, .5fr) 42px;
+      }
+      body.market-list-mode .user-filter-bar.market-mode .search {
+        grid-column: auto;
+      }
       .user-filter-bar.category-mode {
         grid-template-columns: minmax(0, 1fr) minmax(132px, .5fr) minmax(132px, .5fr) 42px;
       }
@@ -6605,6 +6711,7 @@
       .user-filter-bar.report-mode .filter-reset,
       .user-filter-bar.content-mode .filter-reset,
       .user-filter-bar.category-mode .filter-reset,
+      body.market-list-mode .user-filter-bar.market-mode .filter-reset,
       body.asset-list-mode:not(.article-list-mode):not(.category-list-mode):not(.reported-board-mode) .user-filter-bar.asset-mode .filter-reset {
         width: 42px;
         min-width: 42px;
@@ -6615,6 +6722,7 @@
       .user-filter-bar.report-mode .filter-reset span,
       .user-filter-bar.content-mode .filter-reset span,
       .user-filter-bar.category-mode .filter-reset span,
+      body.market-list-mode .user-filter-bar.market-mode .filter-reset span,
       body.asset-list-mode:not(.article-list-mode):not(.category-list-mode):not(.reported-board-mode) .user-filter-bar.asset-mode .filter-reset span {
         position: absolute;
         width: 1px;
@@ -7069,7 +7177,8 @@
       }
       body.user-management-mode .user-panel-filter-actions,
       body.asset-list-mode .user-panel-filter-actions,
-      body.offer-list-mode .user-panel-filter-actions {
+      body.offer-list-mode .user-panel-filter-actions,
+      body.market-list-mode .user-panel-filter-actions {
         display: flex;
         align-items: center;
         justify-content: flex-end;
@@ -7453,13 +7562,15 @@
       }
       body.article-list-mode .user-panel-filter-actions,
       body.category-list-mode .user-panel-filter-actions,
-      body.reported-board-mode .user-panel-filter-actions {
+      body.reported-board-mode .user-panel-filter-actions,
+      body.market-list-mode .user-panel-filter-actions {
         min-width: 0;
         flex-wrap: wrap;
       }
       body.article-list-mode .user-panel-filter-actions .btn,
       body.category-list-mode .user-panel-filter-actions .btn,
-      body.reported-board-mode .user-panel-filter-actions .btn {
+      body.reported-board-mode .user-panel-filter-actions .btn,
+      body.market-list-mode .user-panel-filter-actions .btn {
         max-width: 100%;
       }
       body.article-list-mode #table,
@@ -7650,12 +7761,22 @@
       body.market-list-mode #table {
         padding: 12px 14px 16px;
         background: #f8fbff;
+        overflow-x: hidden;
       }
       body.market-list-mode .market-table {
+        min-width: 0;
         grid-template-columns: 1fr;
         gap: 12px;
       }
+      body.market-list-mode #table .market-table + .footer-range,
+      body.market-list-mode .market-dashboard-brand-table + .footer-range {
+        min-width: 0;
+      }
+      body.market-list-mode .market-dashboard-table {
+        overflow-x: hidden;
+      }
       body.market-list-mode.market-dashboard-mode .market-dashboard-brand-table {
+        min-width: 0;
         gap: 12px;
         padding: 12px 14px 16px;
         background: #f8fbff;
@@ -7819,6 +7940,24 @@
       }
       body.market-list-mode .market-detail-section .kv span:first-child {
         white-space: normal;
+      }
+      body.market-list-mode .user-filter-bar.market-mode,
+      body.market-list-mode .market-catalog-filter-bar.market-mode {
+        grid-template-columns: 1fr;
+      }
+      body.market-list-mode .user-filter-bar.market-mode .search,
+      body.market-list-mode .market-catalog-filter-bar.market-mode .search {
+        grid-column: 1;
+      }
+      body.market-list-mode #table .market-table,
+      body.market-list-mode #table .market-table + .footer-range,
+      body.market-list-mode .market-dashboard-brand-table,
+      body.market-list-mode .market-dashboard-brand-table + .footer-range {
+        min-width: 0;
+        width: 100%;
+      }
+      body.market-list-mode:not(.market-dashboard-mode) #table {
+        overflow-x: hidden;
       }
       .detail-grid.two {
         grid-template-columns: 1fr;
@@ -9375,6 +9514,8 @@
     let marketCatalogPage = 1;
     let marketModelPage = 1;
     let marketReferencePage = 1;
+    let marketFilterOpen = false;
+    let marketFilterSub = "";
     const marketDashboardPageSize = 10;
     const marketCatalogPageSize = 10;
     const marketModelPageSize = 10;
@@ -15084,43 +15225,73 @@
         return;
       }
       if (subLabel === "Brands & Models") {
+        const brandRows = getMarketCatalogBrands();
+        const statusOptions = Array.from(new Set(brandRows.map(brand => brand.status).filter(Boolean)));
+        const healthOptions = Array.from(new Set(brandRows.map(brand => brand.health).filter(Boolean)));
         document.querySelector(".filters").innerHTML = `
-          <div class="user-filter-bar market-catalog-filter-bar">
+          <div class="user-filter-bar market-catalog-filter-bar market-mode" data-filter-open="${marketFilterOpen}">
             <input class="field search" id="market-search" type="search" placeholder="Search brand / model / reference" />
+            <div class="user-advanced-filter">${customSelect("market-status-filter", "Filter brand status", [
+              { value: "", label: "All statuses" },
+              ...statusOptions.map(value => ({ value, label: value }))
+            ])}</div>
+            <div class="user-advanced-filter">${customSelect("market-brand-filter", "Filter catalog health", [
+              { value: "", label: "All health" },
+              ...healthOptions.map(value => ({ value, label: value }))
+            ])}</div>
+            <button class="btn filter-reset user-advanced-filter" type="button" data-market-reset title="Reset filters" aria-label="Reset filters">${iconSvg.refresh}<span>Reset filters</span></button>
           </div>
         `;
         return;
       }
       if (subLabel === "Sync History") {
-        document.querySelector(".filters").innerHTML = "";
+        const syncRows = getMarketRowsForSub(subLabel);
+        const statusOptions = Array.from(new Map(syncRows.map(row => [row.status, row.statusLabel || row.status])).entries());
+        const sourceOptions = Array.from(new Set(syncRows.map(row => row.source).filter(Boolean)));
+        document.querySelector(".filters").innerHTML = `
+          <div class="user-filter-bar market-catalog-filter-bar market-mode" data-filter-open="${marketFilterOpen}">
+            <input class="field search" id="market-search" type="search" placeholder="Search sync job / endpoint / result" />
+            <div class="user-advanced-filter">${customSelect("market-status-filter", "Filter sync status", [
+              { value: "", label: "All statuses" },
+              ...statusOptions.map(([value, label]) => ({ value, label }))
+            ])}</div>
+            <div class="user-advanced-filter">${customSelect("market-brand-filter", "Filter sync source", [
+              { value: "", label: "All sources" },
+              ...sourceOptions.map(value => ({ value, label: value }))
+            ])}</div>
+            <button class="btn filter-reset user-advanced-filter" type="button" data-market-reset title="Reset filters" aria-label="Reset filters">${iconSvg.refresh}<span>Reset filters</span></button>
+          </div>
+        `;
         return;
       }
       const statusOptions = Array.from(new Map(getMarketRowsForSub(subLabel).map(row => [row.status, row.statusLabel || row.status])).entries());
       document.querySelector(".filters").innerHTML = `
-        <div class="user-filter-bar">
+        <div class="user-filter-bar market-mode" data-filter-open="${marketFilterOpen}">
           <input class="field search" id="market-search" type="search" placeholder="ค้นหา endpoint / โมเดล / เลขอ้างอิง" />
-          ${customSelect("market-status-filter", "Filter market data status", [
+          <div class="user-advanced-filter">${customSelect("market-status-filter", "Filter market data status", [
             { value: "", label: "ทุกสถานะ" },
             ...statusOptions.map(([value, label]) => ({ value, label }))
-          ])}
-          ${customSelect("market-brand-filter", "Filter market data brand", [
+          ])}</div>
+          <div class="user-advanced-filter">${customSelect("market-brand-filter", "Filter market data brand", [
             { value: "", label: "ทุกแหล่งข้อมูล" },
             { value: "thewatchapi", label: "thewatchapi" }
-          ])}
-          <button class="btn filter-reset" type="button" data-market-reset title="ล้างตัวกรอง" aria-label="ล้างตัวกรอง">${iconSvg.refresh}<span>ล้างตัวกรอง</span></button>
+          ])}</div>
+          <button class="btn filter-reset user-advanced-filter" type="button" data-market-reset title="ล้างตัวกรอง" aria-label="ล้างตัวกรอง">${iconSvg.refresh}<span>ล้างตัวกรอง</span></button>
         </div>
       `;
     }
 
     function renderMarketCatalogRows() {
       const q = (document.querySelector("#market-search")?.value || "").trim().toLowerCase();
+      const status = document.querySelector("#market-status-filter")?.value || "";
+      const health = document.querySelector("#market-brand-filter")?.value || "";
       const rows = getMarketCatalogBrands().filter(brand => {
         const text = [
           brand.id,
           brand.name,
           ...(brand.modelsSample || []).map(model => `${model.name} ${model.refs || ""} ${(model.references || []).map(reference => reference.number).join(" ")}`)
         ].join(" ").toLowerCase();
-        return !q || text.includes(q);
+        return (!q || text.includes(q)) && (!status || brand.status === status) && (!health || brand.health === health);
       }).sort((a, b) => a.name.localeCompare(b.name));
       const pageCount = Math.max(1, Math.ceil(rows.length / marketCatalogPageSize));
       marketCatalogPage = Math.min(marketCatalogPage, pageCount);
@@ -15274,10 +15445,9 @@
     }
 
     function renderMarketQueueRows(subLabel) {
-      const hasFilters = subLabel !== "Sync History";
-      const q = hasFilters ? (document.querySelector("#market-search")?.value || "").trim().toLowerCase() : "";
-      const status = hasFilters ? (document.querySelector("#market-status-filter")?.value || "") : "";
-      const brandFilter = hasFilters ? (document.querySelector("#market-brand-filter")?.value || "") : "";
+      const q = (document.querySelector("#market-search")?.value || "").trim().toLowerCase();
+      const status = document.querySelector("#market-status-filter")?.value || "";
+      const brandFilter = document.querySelector("#market-brand-filter")?.value || "";
       const rows = getMarketRowsForSub(subLabel).filter(row => {
         const text = Object.values(row).flat().join(" ").toLowerCase();
         return (!q || text.includes(q)) && (!status || row.status === status) && (!brandFilter || row.source === brandFilter);
@@ -16255,7 +16425,7 @@
       document.querySelector("#primary-action").textContent = "";
       document.querySelector("#user-panel-filter-actions").innerHTML = "";
       document.querySelector(".filters").innerHTML = `
-        <div class="user-filter-bar market-catalog-filter-bar">
+        <div class="user-filter-bar market-catalog-filter-bar market-mode">
           <input class="field search" id="market-model-search" type="search" placeholder="Search ${brand.name} models" />
         </div>
       `;
@@ -16288,7 +16458,7 @@
       document.querySelector("#primary-action").textContent = "";
       document.querySelector("#user-panel-filter-actions").innerHTML = "";
       document.querySelector(".filters").innerHTML = `
-        <div class="user-filter-bar market-catalog-filter-bar">
+        <div class="user-filter-bar market-catalog-filter-bar market-mode">
           <input class="field search" id="market-reference-search" type="search" placeholder="Search ${model.name} references" />
         </div>
       `;
@@ -16724,14 +16894,22 @@
 
     function renderMarketData(subLabel = "Dashboard") {
       activeModule = "market";
-      activeSub = subLabel || "Dashboard";
+      const nextSub = subLabel || "Dashboard";
+      if (marketFilterSub !== nextSub) {
+        marketFilterOpen = false;
+        marketFilterSub = nextSub;
+      }
+      activeSub = nextSub;
       const pageLabel = activeSub;
       activeRow = null;
       document.body.classList.add("market-list-mode");
       document.body.classList.toggle("market-dashboard-mode", activeSub === "Dashboard");
       document.body.classList.remove("dashboard-mode", "user-management-mode", "asset-list-mode", "article-list-mode", "category-list-mode", "reported-board-mode", "asset-detail-mode", "user-list-mode", "user-detail-mode");
       setPageActions("");
-      document.querySelector("#user-panel-filter-actions").innerHTML = "";
+      document.querySelector("#user-panel-filter-actions").innerHTML = activeSub === "Dashboard" ? "" : `
+        <button class="btn user-filter-toggle" type="button" data-market-filter-toggle aria-expanded="${marketFilterOpen}">${iconSvg.filter}<span>${marketFilterOpen ? "ปิดตัวกรอง" : "เปิดตัวกรอง"}</span></button>
+        <button class="btn" type="button" data-market-reset title="รีเซ็ตค่าทั้งหมด" aria-label="รีเซ็ตค่าทั้งหมด">${iconSvg.refresh}<span>รีเซ็ตค่าทั้งหมด</span></button>
+      `;
       document.querySelector("#crumb").textContent = `${moduleData.market.crumb} / ${pageLabel}`;
       document.querySelector("#page-title").textContent = pageLabel;
       document.querySelector("#page-meta").textContent = "";
@@ -20822,14 +21000,26 @@
         if (search) search.value = "";
         if (status) {
           status.value = "";
-          updateCustomSelect(status, "");
+          setCustomSelectValue("market-status-filter", "");
         }
         if (brand) {
           brand.value = "";
-          updateCustomSelect(brand, "");
+          setCustomSelectValue("market-brand-filter", "");
         }
-        if (activeSub === "Brands & Models" || activeSub === "Dashboard") marketCatalogPage = 1;
-        renderRows();
+        const renderResetMarketRows = () => {
+          if ((activeSub || "Dashboard") === "Dashboard") {
+            marketDashboardPage = 1;
+            renderMarketDashboard();
+          } else if (activeSub === "Brands & Models") {
+            marketCatalogPage = 1;
+            renderMarketCatalogRows();
+          } else {
+            renderMarketQueueRows(activeSub);
+          }
+          resetTableScrollPosition();
+        };
+        renderResetMarketRows();
+        window.requestAnimationFrame(renderResetMarketRows);
         return;
       }
       const rowButton = event.target.closest("[data-row-action], .row[data-row]");
@@ -21424,6 +21614,16 @@
         offerFilterToggle.setAttribute("aria-expanded", String(offerFilterOpen));
         const label = offerFilterToggle.querySelector("span");
         if (label) label.textContent = offerFilterOpen ? "ปิดตัวกรอง" : "เปิดตัวกรอง";
+        return;
+      }
+      const marketFilterToggle = event.target.closest("[data-market-filter-toggle]");
+      if (marketFilterToggle) {
+        marketFilterOpen = !marketFilterOpen;
+        const filterBar = document.querySelector(".user-filter-bar.market-mode");
+        if (filterBar) filterBar.dataset.filterOpen = String(marketFilterOpen);
+        marketFilterToggle.setAttribute("aria-expanded", String(marketFilterOpen));
+        const label = marketFilterToggle.querySelector("span");
+        if (label) label.textContent = marketFilterOpen ? "ปิดตัวกรอง" : "เปิดตัวกรอง";
         return;
       }
       const articleReset = event.target.closest("[data-article-reset]");
