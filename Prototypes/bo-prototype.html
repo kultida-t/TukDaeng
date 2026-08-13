@@ -8266,9 +8266,17 @@
         main.scrollTop = 0;
         main.scrollTo({ top: 0, left: 0, behavior: "instant" });
       }
+      resetTableScrollPosition();
       document.documentElement.scrollTop = 0;
       document.body.scrollTop = 0;
       window.scrollTo({ top: 0, left: 0, behavior: "instant" });
+    }
+
+    function resetTableScrollPosition() {
+      const table = document.querySelector("#table");
+      if (!table) return;
+      table.scrollLeft = 0;
+      table.scrollTo({ left: 0, behavior: "instant" });
     }
 
     function setNavOpen(isOpen) {
@@ -21339,6 +21347,7 @@
         else if (target === "next") articleListPage += 1;
         else articleListPage = Number(target) || 1;
         renderArticleListRows();
+        resetTableScrollPosition();
         return;
       }
       const categoryPageButton = event.target.closest("[data-category-page]");
@@ -21348,6 +21357,7 @@
         else if (target === "next") categoryListPage += 1;
         else categoryListPage = Number(target) || 1;
         renderCategoryListRows();
+        resetTableScrollPosition();
         return;
       }
       const boardReportPageButton = event.target.closest("[data-board-report-page]");
@@ -21357,6 +21367,7 @@
         else if (target === "next") boardReportListPage += 1;
         else boardReportListPage = Number(target) || 1;
         renderReportedBoardRows();
+        resetTableScrollPosition();
         return;
       }
       const marketCatalogPageButton = event.target.closest("[data-market-catalog-page]");
@@ -21366,6 +21377,7 @@
         else if (target === "next") marketCatalogPage += 1;
         else marketCatalogPage = Number(target) || 1;
         renderMarketCatalogRows();
+        resetTableScrollPosition();
         return;
       }
 
@@ -21376,6 +21388,7 @@
         else if (target === "next") marketDashboardPage += 1;
         else marketDashboardPage = Number(target) || 1;
         renderMarketDashboard();
+        resetTableScrollPosition();
         return;
       }
       const marketModelPageButton = event.target.closest("[data-market-model-page]");
@@ -21385,6 +21398,7 @@
         else if (target === "next") marketModelPage += 1;
         else marketModelPage = Number(target) || 1;
         renderMarketModelRows(getMarketBrand(activeMarketBrandId));
+        resetTableScrollPosition();
         return;
       }
       const marketReferencePageButton = event.target.closest("[data-market-reference-page]");
@@ -21394,6 +21408,7 @@
         else if (target === "next") marketReferencePage += 1;
         else marketReferencePage = Number(target) || 1;
         renderMarketReferenceRows(getMarketBrand(activeMarketBrandId), activeMarketModelIndex);
+        resetTableScrollPosition();
         return;
       }
       const assetPageButton = event.target.closest("[data-asset-page]");
@@ -21404,6 +21419,7 @@
         else assetListPage = Number(target) || 1;
         if (activeModule === "assets" && activeSub === "Reported Assets") renderReportedAssetRows();
         else renderAssetListRows();
+        resetTableScrollPosition();
         return;
       }
       const offerPageButton = event.target.closest("[data-offer-page]");
@@ -21413,6 +21429,7 @@
         else if (target === "next") offerListPage += 1;
         else offerListPage = Number(target) || 1;
         renderOfferListRows();
+        resetTableScrollPosition();
         return;
       }
       const userPageButton = event.target.closest("[data-user-page]");
@@ -21423,6 +21440,7 @@
         else userListPage = Number(target) || 1;
         if (activeModule === "users" && (activeSub === "Report User" || activeSub === "Reported Users")) renderReportedUserRows();
         else renderUserRows();
+        resetTableScrollPosition();
         return;
       }
       const reporterHistoryPageButton = event.target.closest("[data-reporter-history-page]");
