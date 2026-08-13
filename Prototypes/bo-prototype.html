@@ -1756,6 +1756,9 @@
     body.market-list-mode .market-catalog-filter-bar.search-only {
       grid-template-columns: minmax(0, 1fr);
     }
+    body.market-list-mode .market-catalog-filter-bar.status-only {
+      grid-template-columns: minmax(260px, 1.65fr) minmax(138px, .82fr) 42px;
+    }
     body.market-list-mode .user-filter-bar.market-mode.market-drilldown-filter-bar {
       grid-template-columns: minmax(0, 1fr);
     }
@@ -6555,6 +6558,9 @@
       body.market-list-mode .user-filter-bar.market-mode.search-only {
         grid-template-columns: minmax(0, 1fr);
       }
+      body.market-list-mode .user-filter-bar.market-mode.status-only {
+        grid-template-columns: minmax(0, 1fr);
+      }
       body.market-list-mode .user-filter-bar.market-mode .search {
         grid-column: auto;
       }
@@ -6714,6 +6720,9 @@
         grid-template-columns: minmax(0, 1fr) minmax(132px, .5fr) minmax(132px, .5fr) 42px;
       }
       body.market-list-mode .user-filter-bar.market-mode.search-only {
+        grid-template-columns: minmax(0, 1fr);
+      }
+      body.market-list-mode .user-filter-bar.market-mode.status-only {
         grid-template-columns: minmax(0, 1fr);
       }
       body.market-list-mode .user-filter-bar.market-mode .search {
@@ -7201,6 +7210,23 @@
       }
       body.offer-list-mode .offer-filter-bar {
         grid-template-columns: 1fr;
+      }
+      body.market-list-mode .market-catalog-filter-bar.search-only,
+      body.market-list-mode .market-catalog-filter-bar.status-only {
+        display: grid;
+        width: 100%;
+        grid-template-columns: 1fr;
+        gap: 8px;
+      }
+      body.market-list-mode .market-catalog-filter-bar.search-only #market-search,
+      body.market-list-mode .market-catalog-filter-bar.status-only #market-search,
+      body.market-list-mode .market-catalog-filter-bar.status-only .user-advanced-filter,
+      body.market-list-mode .market-catalog-filter-bar.status-only .custom-select,
+      body.market-list-mode .market-catalog-filter-bar.status-only .custom-select-trigger {
+        width: 100%;
+        max-width: none;
+        min-width: 0;
+        box-sizing: border-box;
       }
       .user-filter-bar .field:not(.search) {
         grid-column: auto;
@@ -15268,17 +15294,12 @@
       if (subLabel === "Sync History") {
         const syncRows = getMarketRowsForSub(subLabel);
         const statusOptions = Array.from(new Map(syncRows.map(row => [row.status, row.statusLabel || row.status])).entries());
-        const sourceOptions = Array.from(new Set(syncRows.map(row => row.source).filter(Boolean)));
         document.querySelector(".filters").innerHTML = `
-          <div class="user-filter-bar market-catalog-filter-bar market-mode" data-filter-open="${marketFilterOpen}">
+          <div class="user-filter-bar market-catalog-filter-bar market-mode status-only" data-filter-open="${marketFilterOpen}">
             <input class="field search" id="market-search" type="search" placeholder="Search sync job / endpoint / result" />
             <div class="user-advanced-filter">${customSelect("market-status-filter", "Filter sync status", [
               { value: "", label: "All statuses" },
               ...statusOptions.map(([value, label]) => ({ value, label }))
-            ])}</div>
-            <div class="user-advanced-filter">${customSelect("market-brand-filter", "Filter sync source", [
-              { value: "", label: "All sources" },
-              ...sourceOptions.map(value => ({ value, label: value }))
             ])}</div>
             <button class="btn filter-reset user-advanced-filter" type="button" data-market-reset title="Reset filters" aria-label="Reset filters">${iconSvg.refresh}<span>Reset filters</span></button>
           </div>
