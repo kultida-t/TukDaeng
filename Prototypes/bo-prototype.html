@@ -21442,55 +21442,8 @@
             </div>
           </div>
           <div class="detail-section">
-            <h4>Related Chat And FO State</h4>
-            <div class="offer-context-grid">
-              <article class="offer-chat-card">
-                <h5 class="offer-entity-title">${detail.relatedChat.chatRoomId}</h5>
-                <div class="offer-mini-grid">
-                  ${renderOfferMini("Participants", detail.relatedChat.participants)}
-                  ${renderOfferMini("Last Message", detail.relatedChat.lastMessageAt)}
-                  ${renderOfferMini("Attachment", detail.relatedChat.hasAttachment)}
-                  ${renderOfferMini("Permission", detail.relatedChat.permissionState)}
-                </div>
-                <div class="module-note offer-readonly-note"><strong>Masked preview:</strong> ${detail.relatedChat.lastMessagePreviewMasked}</div>
-              </article>
-              <article class="offer-fo-card">
-                <h5 class="offer-entity-title">FO Display State</h5>
-                <div class="offer-mini-grid">
-                  ${renderOfferMini("Action Availability", detail.foDisplayState.actionAvailability)}
-                  ${renderOfferMini("Visible Surface", detail.foDisplayState.visibleSurface)}
-                  ${renderOfferMini("Offer Card Copy", detail.foDisplayState.offerCardCopy)}
-                  ${renderOfferMini("Notification Destination", detail.foDisplayState.notificationDestination)}
-                </div>
-              </article>
-            </div>
-          </div>
-          <div class="detail-section">
-            <h4>Status Timeline</h4>
-            <div class="offer-timeline">
-              ${detail.statusTimeline.map(event => `
-                <div class="offer-timeline-event">
-                  <time>${event.timestamp}</time>
-                  <div>
-                    <strong>${event.label}</strong>
-                    <div>${event.fromStatus} -> ${event.toStatus} / ${event.actor} / ${event.source}</div>
-                    <div class="muted">${event.reason}</div>
-                  </div>
-                </div>
-              `).join("")}
-            </div>
-          </div>
-          <div class="detail-section">
             <h4>Offer History</h4>
             ${renderOfferHistoryTable(detail.offerHistory)}
-          </div>
-          <div class="detail-section">
-            <h4>Notification Delivery</h4>
-            ${renderOfferNotificationTable(detail.notificationDelivery)}
-          </div>
-          <div class="detail-section">
-            <h4>Audit Events</h4>
-            ${renderOfferAuditTable(detail.auditEvents)}
           </div>
         </div>
       `;
