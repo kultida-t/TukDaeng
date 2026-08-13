@@ -7663,7 +7663,7 @@
       body.reported-board-mode #table {
         overflow-x: hidden;
       }
-      body.asset-list-mode #table {
+      body.asset-list-mode:not(.article-list-mode):not(.category-list-mode):not(.reported-board-mode) #table {
         padding: 12px 14px 16px;
         background: #f8fbff;
       }
@@ -7671,7 +7671,7 @@
         padding: 12px 14px 16px;
         background: #f8fbff;
       }
-      body.asset-list-mode .asset-table {
+      body.asset-list-mode:not(.article-list-mode):not(.category-list-mode):not(.reported-board-mode) #table .asset-list-table {
         grid-template-columns: 1fr;
         gap: 12px;
         min-width: 0;
@@ -7711,10 +7711,10 @@
       body.user-list-mode:not(.reported-board-mode) .footer-range {
         background: #f8fbff;
       }
-      body.asset-list-mode .asset-row.head {
+      body.asset-list-mode:not(.article-list-mode):not(.category-list-mode):not(.reported-board-mode) .asset-list-table .asset-row.head {
         display: none;
       }
-      body.asset-list-mode .asset-row:not(.head) {
+      body.asset-list-mode:not(.article-list-mode):not(.category-list-mode):not(.reported-board-mode) .asset-list-table .asset-row:not(.head) {
         grid-template-columns: minmax(0, 1fr) 34px;
         column-gap: 14px;
         row-gap: 14px;
@@ -7726,16 +7726,23 @@
         box-shadow: 0 1px 2px rgba(15, 23, 42, .05);
         overflow: visible;
       }
-      body.asset-list-mode .asset-row:not(.head) > div[data-label]:not(.asset-cell-primary) {
+      body.asset-list-mode .asset-list-table .asset-row:not(.head) > div[data-label]:not(.asset-cell-primary) {
         display: none;
       }
-      body.asset-list-mode .asset-row:not(.head) > .user-row-actions {
+      body.asset-list-mode .asset-list-table .asset-row:not(.head) > div[data-label]:first-child {
+        display: none;
+      }
+      body.asset-list-mode .asset-list-table .asset-row:not(.head) > .user-row-actions {
         grid-column: 2;
         grid-row: 1;
         align-self: center;
         justify-self: end;
+        justify-content: flex-end;
+        width: auto;
+        min-height: 30px;
+        padding-top: 0;
       }
-      body.asset-list-mode .asset-row:not(.head) > .asset-cell-primary {
+      body.asset-list-mode .asset-list-table .asset-row:not(.head) > .asset-cell-primary {
         grid-column: 1;
         grid-row: 1;
         min-height: 30px;
@@ -7745,7 +7752,7 @@
         border-bottom: 0;
         padding-bottom: 0;
       }
-      body.asset-list-mode .asset-row:not(.head) > .asset-cell-primary .main-text {
+      body.asset-list-mode .asset-list-table .asset-row:not(.head) > .asset-cell-primary .main-text {
         max-width: 100%;
         overflow: hidden;
         text-overflow: ellipsis;
@@ -7757,15 +7764,51 @@
         letter-spacing: .04em;
         line-height: 1;
       }
-      body.asset-list-mode .asset-row:not(.head) .desktop-user-name { display: none; }
-      body.asset-list-mode .asset-row:not(.head) .mobile-user-card-title { display: inline; }
-      body.asset-list-mode .asset-card-tags {
+      body.asset-list-mode .asset-list-table .asset-row:not(.head) .desktop-user-name { display: none; }
+      body.asset-list-mode .asset-list-table .asset-row:not(.head) .mobile-user-card-title { display: inline; }
+      body.asset-list-mode .asset-list-table .asset-card-tags {
         grid-column: 1 / -1;
         grid-row: 2;
         display: flex;
         flex-wrap: wrap;
         gap: 9px;
+        width: 100%;
         padding-top: 0;
+      }
+      body.asset-list-mode:not(.article-list-mode):not(.category-list-mode):not(.reported-board-mode) .asset-list-table .asset-list-card-meta {
+        flex: 1 0 100%;
+        display: grid;
+        gap: 3px;
+        width: 100%;
+        margin-top: 8px;
+        padding-top: 11px;
+        border-top: 1px solid #edf2f7;
+      }
+      body.asset-list-mode:not(.article-list-mode):not(.category-list-mode):not(.reported-board-mode) .asset-list-table .asset-list-card-meta .user-card-meta-item {
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        gap: 8px;
+        color: #34445b;
+        font-size: 12px;
+        line-height: 1.35;
+      }
+      body.asset-list-mode:not(.article-list-mode):not(.category-list-mode):not(.reported-board-mode) .asset-list-table .asset-list-card-meta .user-card-meta-item span {
+        color: #485b75;
+        font-size: 12px;
+        font-weight: 700;
+        white-space: nowrap;
+      }
+      body.asset-list-mode:not(.article-list-mode):not(.category-list-mode):not(.reported-board-mode) .asset-list-table .asset-list-card-meta .user-card-meta-item strong {
+        color: #233a5c;
+        font-size: 12px;
+        font-weight: 400;
+        min-width: 0;
+        max-width: 62%;
+        overflow: hidden;
+        text-align: right;
+        text-overflow: ellipsis;
+        white-space: nowrap;
       }
       body.offer-list-mode .asset-row.head {
         display: none;
@@ -20544,7 +20587,7 @@
               <div class="asset-card-tags">
                 <span class="user-card-tag asset-tag">${getAssetBrand(row)}</span>
                 ${renderAssetListStatusDisplay(row)}
-                <div class="user-card-meta">
+                <div class="user-card-meta asset-list-card-meta">
                   <div class="user-card-meta-item"><span>Asset</span><strong>${row.name}</strong></div>
                   <div class="user-card-meta-item"><span>Owner</span><strong>${row.owner}</strong></div>
                   <div class="user-card-meta-item"><span>Created At</span><strong>${row.createdAt || "-"}</strong></div>
