@@ -21105,14 +21105,16 @@
     function getOfferUserSummary(offer, role) {
       const raw = getOfferParticipantRaw(offer, role);
       const userSources = [
-        ...(moduleData.users?.rows || []),
-        ...(userManagementData.users || [])
+        ...(userManagementData.users || []),
+        ...(moduleData.users?.rows || [])
       ];
       const user = userSources.find(row => row.id === raw || row.displayName === raw || row.name === raw) || {};
       const status = user.status || "Active";
+      const username = user.username ? String(user.username).replace(/^@/, "") : "-";
       return {
         userId: user.id || raw,
         displayName: user.displayName || user.name || raw,
+        username,
         accountStatus: status,
         reportCount: Number.isFinite(user.reports) ? user.reports : 0,
         suspensionSignal: ["Suspended", "Banned"].includes(status) ? status : "No active restriction",
@@ -21300,16 +21302,8 @@
 
     function renderOfferPartyCard(title, party) {
       return `
-        <article class="offer-party-card">
-          <h5 class="offer-entity-title">${title}: ${party.displayName}</h5>
-          <div class="offer-mini-grid">
-            ${renderOfferMini("User ID", party.userId)}
-            ${renderOfferMini("Account Status", party.accountStatus)}
-            ${renderOfferMini("Reports", party.reportCount)}
-            ${renderOfferMini("Risk Signal", party.suspensionSignal)}
-            ${renderOfferMini("Verification", party.verificationState)}
-          </div>
-        </article>
+        <div class="detail-tile"><span>${title} User ID</span><strong>${party.userId}</strong></div>
+        <div class="detail-tile"><span>${title} Username</span><strong>${party.username}</strong></div>
       `;
     }
 
@@ -21442,7 +21436,7 @@
           </div>
           <div class="detail-section">
             <h4>Buyer / Owner</h4>
-            <div class="offer-party-grid">
+            <div class="detail-grid two report-reference-grid">
               ${renderOfferPartyCard("Buyer", detail.buyerSummary)}
               ${renderOfferPartyCard("Owner", detail.ownerSummary)}
             </div>
