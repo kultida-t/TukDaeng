@@ -1297,6 +1297,35 @@
     body.offer-list-mode .panel-head p {
       display: none;
     }
+    body.offer-detail-mode .layout > .panel > .panel-head {
+      display: none !important;
+      min-height: 0 !important;
+      height: 0 !important;
+      padding: 0 !important;
+      border: 0 !important;
+      overflow: hidden !important;
+    }
+    body.offer-detail-mode .filters {
+      display: none !important;
+      min-height: 0 !important;
+      height: 0 !important;
+      padding: 0 !important;
+      border: 0 !important;
+      overflow: hidden !important;
+    }
+    body.offer-detail-mode .summary-grid,
+    body.offer-detail-mode #cards {
+      display: none;
+    }
+    body.offer-detail-mode #table {
+      padding: 0;
+      background: transparent;
+      overflow: visible;
+    }
+    body.offer-detail-mode .layout {
+      margin-top: 0;
+      padding-top: 16px;
+    }
     body.asset-list-mode .summary-grid {
       grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
       gap: 14px;
@@ -4876,6 +4905,118 @@
     .report-detail-page .detail-tile strong {
       overflow-wrap: anywhere;
     }
+    body.offer-list-mode .offer-detail-page {
+      display: grid;
+      gap: 18px;
+    }
+    body.offer-list-mode .offer-detail-page .user-detail-head {
+      margin-bottom: 0;
+    }
+    body.offer-list-mode .offer-detail-page .asset-report-heading {
+      display: block;
+      max-width: 100%;
+      margin-bottom: 5px;
+      font-family: var(--font-main);
+      font-size: 24px !important;
+      font-weight: 600;
+      letter-spacing: 0;
+      line-height: 1.35;
+    }
+    body.offer-list-mode .offer-detail-page .asset-report-id,
+    body.offer-list-mode .offer-detail-page .asset-report-name {
+      font: inherit;
+      letter-spacing: inherit;
+      overflow-wrap: anywhere;
+    }
+    body.offer-list-mode .offer-detail-page .user-detail-separator {
+      font: inherit;
+      letter-spacing: inherit;
+      margin: 0 .22em;
+    }
+    body.offer-list-mode .offer-readonly-note {
+      margin: 0;
+      border-color: #bfd5f4;
+      background: #f4f8ff;
+      color: #24415f;
+    }
+    body.offer-list-mode .offer-party-grid,
+    body.offer-list-mode .offer-context-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+    body.offer-list-mode .offer-party-card,
+    body.offer-list-mode .offer-chat-card,
+    body.offer-list-mode .offer-fo-card {
+      min-width: 0;
+      border: 1px solid #dce6f2;
+      border-radius: 8px;
+      background: #fff;
+      padding: 12px;
+    }
+    body.offer-list-mode .offer-entity-title {
+      margin: 0 0 8px;
+      color: #061426;
+      font-size: 14px;
+      font-weight: 700;
+      line-height: 1.3;
+      overflow-wrap: anywhere;
+    }
+    body.offer-list-mode .offer-mini-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px;
+    }
+    body.offer-list-mode .offer-mini {
+      min-width: 0;
+      color: #061426;
+      font-size: 12px;
+      line-height: 1.45;
+    }
+    body.offer-list-mode .offer-mini span {
+      display: block;
+      margin-bottom: 2px;
+      color: #66758d;
+      font-size: 11px;
+      font-weight: 800;
+    }
+    body.offer-list-mode .offer-mini strong {
+      font-weight: 400;
+      overflow-wrap: anywhere;
+    }
+    body.offer-list-mode .offer-timeline {
+      display: grid;
+      gap: 10px;
+    }
+    body.offer-list-mode .offer-timeline-event {
+      display: grid;
+      grid-template-columns: 150px minmax(0, 1fr);
+      gap: 12px;
+      padding: 11px 12px;
+      border: 1px solid #dce6f2;
+      border-radius: 8px;
+      background: #fff;
+      color: #10223d;
+      font-size: 12px;
+      line-height: 1.45;
+    }
+    body.offer-list-mode .offer-timeline-event time {
+      color: #66758d;
+      font-weight: 800;
+    }
+    body.offer-list-mode .offer-timeline-event strong {
+      display: block;
+      margin-bottom: 3px;
+      color: #061426;
+      font-size: 13px;
+    }
+    body.offer-list-mode .offer-detail-table {
+      min-width: 900px;
+    }
+    body.offer-list-mode .offer-detail-table .history-note {
+      min-width: 220px;
+      max-width: 360px;
+    }
     .page-actions .page-back-btn .mobile-back-icon,
     .report-detail-page .report-back-btn .mobile-back-icon,
     .user-detail-page .user-back-btn .mobile-back-icon {
@@ -7130,6 +7271,14 @@
         justify-content: space-between;
         gap: 10px;
       }
+      body.offer-detail-mode .layout > .panel > .panel-head {
+        display: none !important;
+        min-height: 0 !important;
+        height: 0 !important;
+        padding: 0 !important;
+        border: 0 !important;
+        overflow: hidden !important;
+      }
       body.user-management-mode .panel-head h2 {
         font-size: 24px;
       }
@@ -7689,6 +7838,11 @@
       body.offer-list-mode #table {
         padding: 12px 14px 16px;
         background: #f8fbff;
+      }
+      body.offer-detail-mode #table {
+        padding: 0;
+        background: transparent;
+        overflow: visible;
       }
       body.asset-list-mode:not(.article-list-mode):not(.category-list-mode):not(.reported-board-mode) #table .asset-list-table {
         grid-template-columns: 1fr;
@@ -8546,6 +8700,64 @@
         width: max-content;
         max-width: 100%;
         justify-self: start;
+      }
+      body.offer-list-mode .offer-party-grid,
+      body.offer-list-mode .offer-context-grid,
+      body.offer-list-mode .offer-mini-grid,
+      body.offer-list-mode .offer-timeline-event {
+        grid-template-columns: 1fr;
+      }
+      body.offer-list-mode .offer-detail-table {
+        min-width: 0;
+      }
+      body.offer-list-mode .offer-detail-page .history-table-wrap {
+        overflow: visible;
+        border: 0;
+        background: transparent;
+      }
+      body.offer-list-mode .offer-detail-page .history-table,
+      body.offer-list-mode .offer-detail-page .history-table tbody,
+      body.offer-list-mode .offer-detail-page .history-table tr,
+      body.offer-list-mode .offer-detail-page .history-table td {
+        display: block;
+        width: 100%;
+      }
+      body.offer-list-mode .offer-detail-page .history-table thead {
+        display: none;
+      }
+      body.offer-list-mode .offer-detail-page .history-table {
+        border-collapse: separate;
+        border-spacing: 0 8px;
+        background: transparent;
+      }
+      body.offer-list-mode .offer-detail-page .history-table tr {
+        border: 1px solid #dce6f2;
+        border-radius: 8px;
+        background: #fff;
+        padding: 12px 10px;
+      }
+      body.offer-list-mode .offer-detail-page .history-table tr + tr {
+        margin-top: 10px;
+      }
+      body.offer-list-mode .offer-detail-page .history-table td {
+        display: grid;
+        grid-template-columns: 96px minmax(0, 1fr);
+        gap: 10px;
+        border: 0;
+        padding: 7px 0;
+        font-size: 12px;
+        line-height: 1.45;
+        overflow-wrap: anywhere;
+      }
+      body.offer-list-mode .offer-detail-page .history-table td::before {
+        content: attr(data-label);
+        color: #66758d;
+        font-size: 11px;
+        font-weight: 800;
+      }
+      body.offer-list-mode .offer-detail-page .history-table td .pill {
+        width: max-content;
+        max-width: 100%;
       }
       body.asset-detail-mode .user-detail-page .history-table td .history-delivery-link {
         width: max-content;
@@ -14764,6 +14976,7 @@
       document.body.classList.toggle("user-management-mode", id === "users" || isReportedAssets || isReportedBoard);
       document.body.classList.toggle("asset-list-mode", isAssetList || isArticleList || isCategoryList || isReportedBoard);
       document.body.classList.toggle("offer-list-mode", isOfferList);
+      document.body.classList.remove("offer-detail-mode");
       document.body.classList.toggle("article-list-mode", isArticleList);
       document.body.classList.toggle("category-list-mode", isCategoryList);
       document.body.classList.toggle("reported-board-mode", isReportedBoard);
@@ -20889,60 +21102,403 @@
       `;
     }
 
+    function getOfferUserSummary(offer, role) {
+      const raw = getOfferParticipantRaw(offer, role);
+      const userSources = [
+        ...(moduleData.users?.rows || []),
+        ...(userManagementData.users || [])
+      ];
+      const user = userSources.find(row => row.id === raw || row.displayName === raw || row.name === raw) || {};
+      const status = user.status || "Active";
+      return {
+        userId: user.id || raw,
+        displayName: user.displayName || user.name || raw,
+        accountStatus: status,
+        reportCount: Number.isFinite(user.reports) ? user.reports : 0,
+        suspensionSignal: ["Suspended", "Banned"].includes(status) ? status : "No active restriction",
+        verificationState: user.verification || "Verified profile"
+      };
+    }
+
+    function getOfferAssetSummary(offer) {
+      const asset = getOfferAsset(offer) || {};
+      const askingPrice = asset.id && typeof getAssetConsignmentAskingPrice === "function" ? getAssetConsignmentAskingPrice(asset) : "";
+      const priceTag = (asset.tags || []).find(tag => String(tag).startsWith("THB "));
+      const priceDisplay = askingPrice ? `THB ${askingPrice}` : priceTag || "Price on Request";
+      const nameParts = String(asset.name || getOfferAssetName(offer) || "").split(" ");
+      const brand = asset.name ? getAssetBrand(asset) : nameParts[0] || "-";
+      const model = String(asset.name || "-").replace(brand, "").trim() || asset.name || "-";
+      return {
+        assetId: offer.owner,
+        brand,
+        model,
+        reference: asset.name || getOfferAssetName(offer),
+        currentStatus: asset.status || "-",
+        askingPrice: priceDisplay,
+        ownerDisplayName: asset.owner || getOfferParticipantName(offer, "Owner"),
+        thumbnailLabel: String(brand || "TD").slice(0, 2).toUpperCase()
+      };
+    }
+
+    function getOfferDetailRecord(offer) {
+      const buyer = getOfferUserSummary(offer, "Buyer");
+      const owner = getOfferUserSummary(offer, "Owner");
+      const asset = getOfferAssetSummary(offer);
+      const offerRank = getOfferSortRank(offer);
+      const createdAt = offer.createdAt || `10 Jul 2026 ${String(offerRank % 9 + 10).padStart(2, "0")}:15`;
+      const updatedAt = offer.status === "Pending" ? "10 Jul 2026 18:42" : "11 Jul 2026 09:28";
+      const chatRoomId = `CHT-${offerRank}`;
+      const statusNotes = {
+        Pending: {
+          actionAvailable: "Owner response controls are available in FO",
+          cardCopy: "Pending offer is visible in Incoming Offers and related chat.",
+          destination: "Owner incoming offer / Chat Room"
+        },
+        Paused: {
+          actionAvailable: "Owner response controls are hidden while asset review is open",
+          cardCopy: "Offer Paused card remains in chat without action buttons.",
+          destination: "Buyer and owner chat"
+        },
+        Accepted: {
+          actionAvailable: "No BO action; accepted is not payment complete",
+          cardCopy: "Accepted offer card opens related chat.",
+          destination: "Buyer notification to Chat Room"
+        },
+        Rejected: {
+          actionAvailable: "No pending action remains",
+          cardCopy: "Rejected offer is history only.",
+          destination: "Buyer notification to Asset Detail"
+        },
+        Cancelled: {
+          actionAvailable: "No pending action remains",
+          cardCopy: "Offer Cancelled because asset is unavailable.",
+          destination: "Buyer and owner notification"
+        },
+        Invalidated: {
+          actionAvailable: "No pending action remains",
+          cardCopy: "Offer Unavailable final state.",
+          destination: "Buyer and owner notification"
+        }
+      };
+      const statusNote = statusNotes[offer.status] || statusNotes.Pending;
+      const timeline = [
+        {
+          label: "Offer created",
+          timestamp: createdAt,
+          actor: buyer.displayName,
+          source: "FO Asset Detail",
+          fromStatus: "-",
+          toStatus: "Pending",
+          reason: "Buyer submitted an offer for the asset."
+        },
+        {
+          label: offer.status === "Pending" ? "Owner review pending" : `Status changed to ${offer.status}`,
+          timestamp: updatedAt,
+          actor: offer.status === "Pending" ? owner.displayName : "System / FO event",
+          source: offer.status === "Pending" ? "Incoming Offers" : "Offer lifecycle",
+          fromStatus: offer.status === "Pending" ? "Pending" : "Pending",
+          toStatus: offer.status,
+          reason: offer.detail
+        }
+      ];
+      return {
+        offerSummary: {
+          offerId: offer.id,
+          amount: getOfferPriceDisplay(offer),
+          status: offer.status,
+          priority: offer.priority,
+          createdAt,
+          updatedAt,
+          sourceSurface: "FO Asset Detail",
+          lastActionSource: offer.status === "Pending" ? "Buyer offer / Owner pending" : "FO lifecycle event"
+        },
+        assetSummary: asset,
+        buyerSummary: buyer,
+        ownerSummary: owner,
+        relatedChat: {
+          chatRoomId,
+          participants: `${buyer.displayName} / ${owner.displayName}`,
+          lastMessageAt: updatedAt,
+          lastMessagePreviewMasked: offer.detail,
+          hasAttachment: offer.detail.toLowerCase().includes("proof") ? "Yes, proof requested" : "No flagged attachment",
+          permissionState: "Read-only, sensitive content masked"
+        },
+        statusTimeline: timeline,
+        foDisplayState: {
+          actionAvailability: statusNote.actionAvailable,
+          visibleSurface: offer.status === "Pending" ? "Incoming Offers, Chat offer card" : "Chat history / Offer history",
+          offerCardCopy: statusNote.cardCopy,
+          notificationDestination: statusNote.destination
+        },
+        offerHistory: getOfferHistoryRows(offer, buyer, owner),
+        notificationDelivery: getOfferNotificationRows(offer, buyer, owner, updatedAt),
+        auditEvents: getOfferAuditRows(offer, chatRoomId, createdAt, updatedAt)
+      };
+    }
+
+    function getOfferHistoryRows(offer, buyer, owner) {
+      const amount = getOfferPriceDisplay(offer);
+      const rows = [
+        { offerId: offer.id, buyer: buyer.displayName, amount, status: offer.status, createdAt: offer.createdAt || "10 Jul 2026 10:15", resolvedAt: offer.status === "Pending" ? "-" : "11 Jul 2026 09:28", source: offer.status === "Pending" ? "Open pending offer" : "Lifecycle event" }
+      ];
+      const sameAssetOffers = (moduleData.offers?.rows || [])
+        .filter(row => row.owner === offer.owner && row.id !== offer.id)
+        .slice(0, 2)
+        .map(row => ({
+          offerId: row.id,
+          buyer: getOfferParticipantName(row, "Buyer"),
+          amount: getOfferPriceDisplay(row),
+          status: row.status,
+          createdAt: row.createdAt || "08 Jul 2026 14:20",
+          resolvedAt: row.status === "Pending" ? "-" : "09 Jul 2026 16:30",
+          source: "Same asset"
+        }));
+      if (sameAssetOffers.length) return rows.concat(sameAssetOffers);
+      return rows.concat([
+        { offerId: `OFR-${Math.max(100, getOfferSortRank(offer) - 17)}`, buyer: owner.displayName === "Crown Time BKK" ? "Daily Watch Hunter" : "Archive Collector", amount: "THB 272,000", status: "Rejected", createdAt: "08 Jul 2026 11:12", resolvedAt: "08 Jul 2026 15:46", source: "Same asset benchmark" }
+      ]);
+    }
+
+    function getOfferNotificationRows(offer, buyer, owner, updatedAt) {
+      const rows = [
+        { event: "Offer created", recipient: "Owner", channel: "Push", status: "Sent", sentAt: offer.createdAt || "10 Jul 2026 10:15", destination: "Incoming Offers" }
+      ];
+      if (offer.status !== "Pending") {
+        rows.push({ event: `Offer ${offer.status.toLowerCase()}`, recipient: "Buyer", channel: "Push", status: "Sent", sentAt: updatedAt, destination: offer.status === "Accepted" ? "Chat Room" : "Asset Detail / Chat" });
+      } else {
+        rows.push({ event: "Owner reminder", recipient: "Owner", channel: "Push", status: "Queued", sentAt: "-", destination: "Incoming Offers" });
+      }
+      return rows;
+    }
+
+    function getOfferAuditRows(offer, chatRoomId, createdAt, updatedAt) {
+      return [
+        { eventId: `AUD-${getOfferSortRank(offer)}-01`, action: "OFFER_VIEW", actor: "Admin", target: offer.id, related: `${offer.owner} / ${chatRoomId}`, timestamp: createdAt, note: "Detail view available by module permission." },
+        { eventId: `AUD-${getOfferSortRank(offer)}-02`, action: "OFFER_RELATED_CHAT_VIEW", actor: "Admin", target: chatRoomId, related: `${offer.id} / ${offer.owner}`, timestamp: updatedAt, note: "Chat context is read-only and masked by policy." }
+      ];
+    }
+
+    function renderOfferMini(label, value) {
+      return `<div class="offer-mini"><span>${label}</span><strong>${value || "-"}</strong></div>`;
+    }
+
+    function renderOfferSummaryTiles(summary) {
+      return `
+        <div class="detail-grid two report-reference-grid">
+          <div class="detail-tile"><span>Offer ID</span><strong>${summary.offerId}</strong></div>
+          <div class="detail-tile"><span>Offer Amount</span><strong>${summary.amount}</strong></div>
+          <div class="detail-tile"><span>Created</span><strong>${summary.createdAt}</strong></div>
+          <div class="detail-tile"><span>Updated</span><strong>${summary.updatedAt}</strong></div>
+          <div class="detail-tile"><span>Source Surface</span><strong>${summary.sourceSurface}</strong></div>
+          <div class="detail-tile"><span>Last Action / Source</span><strong>${summary.lastActionSource}</strong></div>
+        </div>
+      `;
+    }
+
+    function renderOfferPartyCard(title, party) {
+      return `
+        <article class="offer-party-card">
+          <h5 class="offer-entity-title">${title}: ${party.displayName}</h5>
+          <div class="offer-mini-grid">
+            ${renderOfferMini("User ID", party.userId)}
+            ${renderOfferMini("Account Status", party.accountStatus)}
+            ${renderOfferMini("Reports", party.reportCount)}
+            ${renderOfferMini("Risk Signal", party.suspensionSignal)}
+            ${renderOfferMini("Verification", party.verificationState)}
+          </div>
+        </article>
+      `;
+    }
+
+    function renderOfferHistoryTable(rows) {
+      return `
+        <div class="history-table-wrap">
+          <table class="history-table offer-detail-table">
+            <thead>
+              <tr><th>Offer ID</th><th>Buyer</th><th>Amount</th><th>Status</th><th>Created</th><th>Resolved</th><th>Source</th></tr>
+            </thead>
+            <tbody>
+              ${rows.map(row => `
+                <tr>
+                  <td data-label="Offer ID">${row.offerId}</td>
+                  <td data-label="Buyer">${row.buyer}</td>
+                  <td data-label="Amount">${row.amount}</td>
+                  <td data-label="Status">${renderOfferStatusPill(row.status)}</td>
+                  <td data-label="Created">${row.createdAt}</td>
+                  <td data-label="Resolved">${row.resolvedAt}</td>
+                  <td data-label="Source" class="history-note">${row.source}</td>
+                </tr>
+              `).join("")}
+            </tbody>
+          </table>
+        </div>
+      `;
+    }
+
+    function renderOfferNotificationTable(rows) {
+      return `
+        <div class="history-table-wrap">
+          <table class="history-table offer-detail-table">
+            <thead>
+              <tr><th>Event</th><th>Recipient</th><th>Channel</th><th>Status</th><th>Sent At</th><th>Destination</th></tr>
+            </thead>
+            <tbody>
+              ${rows.map(row => `
+                <tr>
+                  <td data-label="Event">${row.event}</td>
+                  <td data-label="Recipient">${row.recipient}</td>
+                  <td data-label="Channel">${row.channel}</td>
+                  <td data-label="Status">${row.status}</td>
+                  <td data-label="Sent At">${row.sentAt}</td>
+                  <td data-label="Destination" class="history-note">${row.destination}</td>
+                </tr>
+              `).join("")}
+            </tbody>
+          </table>
+        </div>
+      `;
+    }
+
+    function renderOfferAuditTable(rows) {
+      return `
+        <div class="history-table-wrap">
+          <table class="history-table offer-detail-table">
+            <thead>
+              <tr><th>Event ID</th><th>Action</th><th>Actor</th><th>Target</th><th>Related IDs</th><th>Timestamp</th><th>Reason / Note</th></tr>
+            </thead>
+            <tbody>
+              ${rows.map(row => `
+                <tr>
+                  <td data-label="Event ID">${row.eventId}</td>
+                  <td data-label="Action">${row.action}</td>
+                  <td data-label="Actor">${row.actor}</td>
+                  <td data-label="Target">${row.target}</td>
+                  <td data-label="Related IDs">${row.related}</td>
+                  <td data-label="Timestamp">${row.timestamp}</td>
+                  <td data-label="Reason / Note" class="history-note">${row.note}</td>
+                </tr>
+              `).join("")}
+            </tbody>
+          </table>
+        </div>
+      `;
+    }
+
     function renderOfferDetailPage(offer) {
       if (!offer) {
         renderModule("offers");
         return;
       }
+      const detail = getOfferDetailRecord(offer);
+      const offerAsset = getOfferAsset(offer);
       activeModule = "offers";
       activeSub = "";
       activeRow = offer;
-      document.body.classList.add("offer-list-mode");
+      document.body.classList.add("offer-list-mode", "offer-detail-mode");
       document.body.classList.remove("dashboard-mode", "user-management-mode", "asset-list-mode", "article-list-mode", "category-list-mode", "reported-board-mode", "market-list-mode", "market-dashboard-mode", "user-list-mode", "user-detail-mode", "asset-detail-mode");
       document.querySelector("#crumb").textContent = `การดำเนินงาน / Offer Management / Offer Detail / ${offer.id}`;
       document.querySelector("#page-title").textContent = "Offer Detail";
       document.querySelector("#page-meta").textContent = "";
       setPageActions(renderPageBackButton("data-back-offer-list", "กลับไป Offer Management", "report-back-btn"));
-      document.querySelector("#panel-title").textContent = offer.name;
-      document.querySelector("#panel-subtitle").textContent = `${offer.id} / ${offer.owner}`;
+      document.querySelector("#panel-title").textContent = offer.id;
+      document.querySelector("#panel-subtitle").textContent = `${detail.offerSummary.amount} / ${offer.owner}`;
       document.querySelector("#user-panel-filter-actions").innerHTML = "";
       document.querySelector(".filters").innerHTML = "";
       document.querySelector("#summary-grid").innerHTML = "";
       document.querySelector("#cards").innerHTML = "";
       document.querySelector("#detail").innerHTML = "";
       document.querySelector("#table").innerHTML = `
-        <div class="user-detail-page report-detail-page">
+        <div class="user-detail-page report-detail-page asset-report-detail-page offer-detail-page">
           <div class="user-detail-head">
             <div class="user-detail-title">
+              ${offerAsset ? renderAssetTitleImage(offerAsset) : ""}
               <div>
-                <h2 class="asset-report-heading"><span>${offer.id}</span><span class="user-detail-separator"> : </span><span class="asset-report-name user-display-name">${offer.name}</span></h2>
+                <h2 class="asset-report-heading"><span class="asset-report-id">${offer.id}</span><span class="user-detail-separator"> : </span><span class="asset-report-name user-display-name">${detail.assetSummary.reference}</span></h2>
                 <div class="chips">
                   ${renderOfferStatusPill(offer.status)}
-                  <span class="pill blue">${offer.type}</span>
+                  <span class="pill green">${detail.offerSummary.amount}</span>
                   ${statusPill(offer.priority, offer.priority)}
                 </div>
               </div>
             </div>
           </div>
+
           <div class="detail-section">
-            <h4>Offer Reference</h4>
+            <div class="board-report-reference-head">
+              <h4>Offered Asset</h4>
+              ${offerAsset ? `<button class="btn asset-report-view-btn" type="button" data-asset-open="${offerAsset.id}" aria-label="View asset ${offerAsset.id}" title="View Asset"><span class="asset-report-view-label">View Asset</span></button>` : ""}
+            </div>
             <div class="detail-grid two report-reference-grid">
-              <div class="detail-tile"><span>Offer ID</span><strong>${offer.id}</strong></div>
-              <div class="detail-tile"><span>Asset ID</span><strong>${offer.owner}</strong></div>
-              <div class="detail-tile"><span>Offer Amount</span><strong>${offer.name.replace(/^Offer\s+/i, "")}</strong></div>
-              <div class="detail-tile"><span>Status</span><strong>${offer.status}</strong></div>
-              <div class="detail-tile"><span>Priority</span><strong>${offer.priority}</strong></div>
-              <div class="detail-tile"><span>Module</span><strong>Offer Management</strong></div>
+              <div class="detail-tile"><span>Offer ID</span><strong>${detail.offerSummary.offerId}</strong></div>
+              <div class="detail-tile"><span>Asset ID</span><strong>${detail.assetSummary.assetId}</strong></div>
+              <div class="detail-tile"><span>Asset Name</span><strong>${detail.assetSummary.reference}</strong></div>
+              <div class="detail-tile"><span>Offer Amount</span><strong>${detail.offerSummary.amount}</strong></div>
+              <div class="detail-tile"><span>Asking Price</span><strong>${detail.assetSummary.askingPrice}</strong></div>
+              <div class="detail-tile"><span>Asset Status</span><strong>${detail.assetSummary.currentStatus}</strong></div>
+              <div class="detail-tile"><span>Created</span><strong>${detail.offerSummary.createdAt}</strong></div>
+              <div class="detail-tile"><span>Updated</span><strong>${detail.offerSummary.updatedAt}</strong></div>
+              <div class="detail-tile"><span>Source Surface</span><strong>${detail.offerSummary.sourceSurface}</strong></div>
+              <div class="detail-tile"><span>Last Action / Source</span><strong>${detail.offerSummary.lastActionSource}</strong></div>
+            </div>
+          </div>
+          <div class="module-note offer-readonly-note"><strong>Read-only:</strong> Offer Management V1 allows detail review, related chat context, notification delivery, and audit visibility only. Offer price, buyer, owner, and message content are not editable here.</div>
+          <div class="detail-section">
+            <h4>Buyer / Owner</h4>
+            <div class="offer-party-grid">
+              ${renderOfferPartyCard("Buyer", detail.buyerSummary)}
+              ${renderOfferPartyCard("Owner", detail.ownerSummary)}
             </div>
           </div>
           <div class="detail-section">
-            <h4>Related Parties</h4>
-            <div class="chips">${offer.tags.map(tag => `<span class="chip">${tag}</span>`).join("")}</div>
+            <h4>Related Chat And FO State</h4>
+            <div class="offer-context-grid">
+              <article class="offer-chat-card">
+                <h5 class="offer-entity-title">${detail.relatedChat.chatRoomId}</h5>
+                <div class="offer-mini-grid">
+                  ${renderOfferMini("Participants", detail.relatedChat.participants)}
+                  ${renderOfferMini("Last Message", detail.relatedChat.lastMessageAt)}
+                  ${renderOfferMini("Attachment", detail.relatedChat.hasAttachment)}
+                  ${renderOfferMini("Permission", detail.relatedChat.permissionState)}
+                </div>
+                <div class="module-note offer-readonly-note"><strong>Masked preview:</strong> ${detail.relatedChat.lastMessagePreviewMasked}</div>
+              </article>
+              <article class="offer-fo-card">
+                <h5 class="offer-entity-title">FO Display State</h5>
+                <div class="offer-mini-grid">
+                  ${renderOfferMini("Action Availability", detail.foDisplayState.actionAvailability)}
+                  ${renderOfferMini("Visible Surface", detail.foDisplayState.visibleSurface)}
+                  ${renderOfferMini("Offer Card Copy", detail.foDisplayState.offerCardCopy)}
+                  ${renderOfferMini("Notification Destination", detail.foDisplayState.notificationDestination)}
+                </div>
+              </article>
+            </div>
           </div>
           <div class="detail-section">
-            <h4>Review Context</h4>
-            <p class="muted">${offer.detail}</p>
-            <div class="module-note"><strong>Admin action:</strong> ${offer.action}</div>
+            <h4>Status Timeline</h4>
+            <div class="offer-timeline">
+              ${detail.statusTimeline.map(event => `
+                <div class="offer-timeline-event">
+                  <time>${event.timestamp}</time>
+                  <div>
+                    <strong>${event.label}</strong>
+                    <div>${event.fromStatus} -> ${event.toStatus} / ${event.actor} / ${event.source}</div>
+                    <div class="muted">${event.reason}</div>
+                  </div>
+                </div>
+              `).join("")}
+            </div>
+          </div>
+          <div class="detail-section">
+            <h4>Offer History</h4>
+            ${renderOfferHistoryTable(detail.offerHistory)}
+          </div>
+          <div class="detail-section">
+            <h4>Notification Delivery</h4>
+            ${renderOfferNotificationTable(detail.notificationDelivery)}
+          </div>
+          <div class="detail-section">
+            <h4>Audit Events</h4>
+            ${renderOfferAuditTable(detail.auditEvents)}
           </div>
         </div>
       `;
