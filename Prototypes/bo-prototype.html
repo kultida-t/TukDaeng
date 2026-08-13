@@ -7584,6 +7584,21 @@
       body.asset-list-mode .user-filter-bar {
         grid-template-columns: 1fr;
       }
+      body.asset-list-mode:not(.article-list-mode):not(.category-list-mode):not(.reported-board-mode) .user-filter-bar.asset-mode {
+        display: grid;
+        width: 100%;
+        grid-template-columns: 1fr;
+        gap: 8px;
+      }
+      body.asset-list-mode:not(.article-list-mode):not(.category-list-mode):not(.reported-board-mode) .user-filter-bar.asset-mode .search,
+      body.asset-list-mode:not(.article-list-mode):not(.category-list-mode):not(.reported-board-mode) .user-filter-bar.asset-mode .user-advanced-filter,
+      body.asset-list-mode:not(.article-list-mode):not(.category-list-mode):not(.reported-board-mode) .user-filter-bar.asset-mode .custom-select,
+      body.asset-list-mode:not(.article-list-mode):not(.category-list-mode):not(.reported-board-mode) .user-filter-bar.asset-mode .custom-select-trigger {
+        width: 100%;
+        max-width: none;
+        min-width: 0;
+        box-sizing: border-box;
+      }
       body.offer-list-mode .user-filter-bar {
         grid-template-columns: 1fr;
       }
