@@ -6424,6 +6424,10 @@
       .user-filter-bar.report-mode {
         grid-template-columns: minmax(220px, 1.3fr) repeat(3, minmax(132px, .7fr)) 42px;
       }
+      body.article-list-mode .user-filter-bar.content-mode,
+      body.reported-board-mode .user-filter-bar.content-mode {
+        grid-template-columns: minmax(0, 1fr) repeat(3, minmax(112px, .5fr)) 42px;
+      }
       body.offer-list-mode .offer-filter-bar {
         grid-template-columns: minmax(220px, 1.2fr) minmax(160px, .8fr) minmax(160px, .8fr) max-content;
         align-items: center;
@@ -6572,8 +6576,9 @@
       .user-filter-bar.report-mode {
         grid-template-columns: minmax(0, 1fr) minmax(132px, .5fr) minmax(132px, .5fr) minmax(132px, .5fr) 42px;
       }
-      .user-filter-bar.content-mode {
-        grid-template-columns: minmax(0, 1fr) minmax(132px, .5fr) minmax(132px, .5fr) minmax(132px, .5fr) 42px;
+      body.article-list-mode .user-filter-bar.content-mode,
+      body.reported-board-mode .user-filter-bar.content-mode {
+        grid-template-columns: minmax(0, 1fr) repeat(3, minmax(112px, .5fr)) 42px;
       }
       .user-filter-bar.category-mode {
         grid-template-columns: minmax(0, 1fr) minmax(132px, .5fr) minmax(132px, .5fr) 42px;
@@ -7046,6 +7051,11 @@
       }
       .user-filter-bar.content-mode,
       .user-filter-bar.category-mode {
+        grid-template-columns: 1fr;
+      }
+      body.article-list-mode .user-filter-bar.content-mode,
+      body.reported-board-mode .user-filter-bar.content-mode,
+      body.category-list-mode .user-filter-bar.category-mode {
         grid-template-columns: 1fr;
       }
       body.offer-list-mode .offer-filter-bar {
