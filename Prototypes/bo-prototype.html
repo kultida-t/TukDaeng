@@ -21235,23 +21235,23 @@
           offerCardCopy: statusNote.cardCopy,
           notificationDestination: statusNote.destination
         },
-        offerHistory: getOfferHistoryRows(offer, buyer, createdAt, updatedAt),
+        offerHistory: getOfferHistoryRows(offer, buyer, owner, createdAt, updatedAt),
         notificationDelivery: getOfferNotificationRows(offer, buyer, owner, updatedAt),
         auditEvents: getOfferAuditRows(offer, chatRoomId, createdAt, updatedAt)
       };
     }
 
-    function getOfferHistoryRows(offer, buyer, createdAt, updatedAt) {
+    function getOfferHistoryRows(offer, buyer, owner, createdAt, updatedAt) {
       const amount = getOfferPriceDisplay(offer);
       return [
         {
           offerId: offer.id,
           buyer: buyer.displayName,
+          owner: owner.displayName,
           amount,
           status: offer.status,
           createdAt,
-          resolvedAt: offer.status === "Pending" ? "-" : updatedAt,
-          source: offer.status === "Pending" ? "Current offer" : "Offer lifecycle"
+          resolvedAt: offer.status === "Pending" ? "-" : updatedAt
         }
       ];
     }
@@ -21304,18 +21304,18 @@
         <div class="history-table-wrap">
           <table class="history-table offer-detail-table">
             <thead>
-              <tr><th>Offer ID</th><th>Buyer</th><th>Amount</th><th>Status</th><th>Created</th><th>Resolved</th><th>Source</th></tr>
+              <tr><th>Offer ID</th><th>Buyer</th><th>Owner</th><th>Amount</th><th>Status</th><th>Created</th><th>Resolved</th></tr>
             </thead>
             <tbody>
               ${rows.map(row => `
                 <tr>
                   <td data-label="Offer ID">${row.offerId}</td>
                   <td data-label="Buyer">${row.buyer}</td>
+                  <td data-label="Owner">${row.owner}</td>
                   <td data-label="Amount">${row.amount}</td>
                   <td data-label="Status">${renderOfferStatusPill(row.status)}</td>
                   <td data-label="Created">${row.createdAt}</td>
                   <td data-label="Resolved">${row.resolvedAt}</td>
-                  <td data-label="Source" class="history-note">${row.source}</td>
                 </tr>
               `).join("")}
             </tbody>
