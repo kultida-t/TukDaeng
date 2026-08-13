@@ -21272,7 +21272,7 @@
           status: "Pending",
           actor: buyer.displayName,
           dateTime: createdAt,
-          note: `Buyer submitted ${amount} offer`
+          note: `Offer submitted for ${amount}`
         }
       ];
       if (offer.status !== "Pending") {
@@ -21283,15 +21283,22 @@
           Paused: "Offer Paused",
           Invalidated: "Offer Invalidated"
         };
+        const statusNotes = {
+          Accepted: "Owner accepted the offer",
+          Rejected: "Owner rejected the offer",
+          Cancelled: "Offer was cancelled",
+          Paused: "Offer was paused while the asset is under review",
+          Invalidated: "Offer is no longer valid"
+        };
         rows.push({
           action: statusActionLabels[offer.status] || `Offer ${offer.status}`,
           status: offer.status,
           actor: ["Cancelled", "Paused", "Invalidated"].includes(offer.status) ? "System" : owner.displayName,
           dateTime: updatedAt,
-          note: offer.detail
+          note: statusNotes[offer.status] || "Offer status changed"
         });
       }
-      return rows;
+      return rows.reverse();
     }
 
     function getOfferNotificationRows(offer, buyer, owner, updatedAt) {
