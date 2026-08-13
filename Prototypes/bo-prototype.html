@@ -4035,6 +4035,9 @@
       min-height: 66px;
       padding: 10px 22px;
     }
+    body.user-list-mode .reported-assets-table .user-row.report-row:nth-last-child(2) {
+      border-bottom: 0;
+    }
     .user-row:not(.report-row) > div {
       min-width: 0;
     }
@@ -6436,7 +6439,8 @@
       body.user-accounts-mode:not(.user-detail-mode) #table .user-table {
         min-width: 980px;
       }
-      body.user-list-mode:not(.user-detail-mode) #table:has(.reported-users-table) {
+      body.user-list-mode:not(.user-detail-mode) #table:has(.reported-users-table),
+      body.user-list-mode:not(.user-detail-mode) #table:has(.reported-assets-table) {
         max-width: 100%;
         overflow-x: auto;
         scrollbar-width: thin;
@@ -6444,6 +6448,9 @@
       body.user-list-mode:not(.user-detail-mode) #table .reported-users-table,
       body.user-list-mode:not(.user-detail-mode) #table .reported-assets-table {
         min-width: 1220px;
+      }
+      body.user-list-mode:not(.user-detail-mode) #table .reported-assets-table {
+        min-width: 1484px;
       }
       body.user-list-mode:not(.user-detail-mode) .reported-users-table .user-row.report-row,
       body.user-list-mode:not(.user-detail-mode) .reported-assets-table .user-row.report-row {
@@ -14331,7 +14338,7 @@
           <button class="btn" type="button" data-asset-report-reset title="รีเซ็ตค่าทั้งหมด" aria-label="รีเซ็ตค่าทั้งหมด">${iconSvg.refresh}<span>รีเซ็ตค่าทั้งหมด</span></button>
         `;
         document.querySelector(".filters").innerHTML = `
-          <div class="user-filter-bar" data-filter-open="${assetReportFilterOpen}">
+          <div class="user-filter-bar report-mode" data-filter-open="${assetReportFilterOpen}">
             <input class="field search" id="asset-report-search" type="search" placeholder="ค้นหา Report ID, Asset, Owner, Asset ID" />
             <div class="user-advanced-filter">${customSelect("asset-report-status-filter", "Filter report status", [
               { value: "", label: "ทุกสถานะ" },
