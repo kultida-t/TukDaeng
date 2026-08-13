@@ -3905,7 +3905,8 @@
     body.user-accounts-mode:not(.user-detail-mode) .filters {
       padding: 12px 16px;
     }
-    body.user-accounts-mode:not(.user-detail-mode) .user-filter-bar {
+    body.user-accounts-mode:not(.user-detail-mode) .user-filter-bar,
+    .user-filter-bar.report-mode {
       grid-template-columns: minmax(260px, 1.65fr) repeat(3, minmax(138px, .82fr)) 42px;
       align-items: stretch;
       gap: 8px;
@@ -3913,41 +3914,53 @@
     body.user-accounts-mode:not(.user-detail-mode) .user-filter-bar .search,
     body.user-accounts-mode:not(.user-detail-mode) .user-filter-bar .custom-select,
     body.user-accounts-mode:not(.user-detail-mode) .user-filter-bar .custom-select-trigger,
-    body.user-accounts-mode:not(.user-detail-mode) .user-filter-bar .filter-reset {
+    body.user-accounts-mode:not(.user-detail-mode) .user-filter-bar .filter-reset,
+    .user-filter-bar.report-mode .search,
+    .user-filter-bar.report-mode .custom-select,
+    .user-filter-bar.report-mode .custom-select-trigger,
+    .user-filter-bar.report-mode .filter-reset {
       width: 100%;
       height: 48px;
       min-height: 48px;
     }
-    body.user-accounts-mode:not(.user-detail-mode) .user-filter-bar .search {
+    body.user-accounts-mode:not(.user-detail-mode) .user-filter-bar .search,
+    .user-filter-bar.report-mode .search {
       grid-column: auto;
       min-width: 0;
       line-height: 1.2;
     }
     body.user-accounts-mode:not(.user-detail-mode) .user-filter-bar .field,
     body.user-accounts-mode:not(.user-detail-mode) .user-filter-bar .custom-select,
-    body.user-accounts-mode:not(.user-detail-mode) .user-filter-bar .custom-select-trigger {
+    body.user-accounts-mode:not(.user-detail-mode) .user-filter-bar .custom-select-trigger,
+    .user-filter-bar.report-mode .field,
+    .user-filter-bar.report-mode .custom-select,
+    .user-filter-bar.report-mode .custom-select-trigger {
       min-width: 0;
     }
-    body.user-accounts-mode:not(.user-detail-mode) .user-filter-bar .custom-select-trigger {
+    body.user-accounts-mode:not(.user-detail-mode) .user-filter-bar .custom-select-trigger,
+    .user-filter-bar.report-mode .custom-select-trigger {
       display: flex;
       align-items: center;
       flex-wrap: nowrap;
     }
-    body.user-accounts-mode:not(.user-detail-mode) .user-filter-bar .custom-select-trigger [data-custom-select-label] {
+    body.user-accounts-mode:not(.user-detail-mode) .user-filter-bar .custom-select-trigger [data-custom-select-label],
+    .user-filter-bar.report-mode .custom-select-trigger [data-custom-select-label] {
       display: block;
       min-width: 0;
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
     }
-    body.user-accounts-mode:not(.user-detail-mode) .user-filter-bar .filter-reset {
+    body.user-accounts-mode:not(.user-detail-mode) .user-filter-bar .filter-reset,
+    .user-filter-bar.report-mode .filter-reset {
       min-width: 42px;
       padding: 0;
       border-color: #cfdbea;
       background: #fff;
       justify-content: center;
     }
-    body.user-accounts-mode:not(.user-detail-mode) .user-filter-bar .filter-reset span {
+    body.user-accounts-mode:not(.user-detail-mode) .user-filter-bar .filter-reset span,
+    .user-filter-bar.report-mode .filter-reset span {
       position: absolute;
       width: 1px;
       height: 1px;
@@ -3969,9 +3982,6 @@
     }
     body.user-accounts-mode:not(.user-detail-mode) #table .user-table {
       min-width: 980px;
-    }
-    .user-filter-bar.report-mode {
-      grid-template-columns: minmax(220px, 1.3fr) repeat(3, minmax(132px, .7fr)) 42px;
     }
     .user-table {
       display: grid;
@@ -4000,6 +4010,9 @@
     body.user-list-mode .reported-users-table .user-row.report-row:not(.head) {
       min-height: 66px;
       padding: 10px 18px;
+    }
+    body.user-list-mode .reported-users-table .user-row.report-row:nth-last-child(2) {
+      border-bottom: 0;
     }
     body.user-list-mode .reported-assets-table .user-row.report-row:not(.head) {
       min-height: 66px;
@@ -6351,9 +6364,11 @@
       .summary-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
       body.dashboard-mode .cards { grid-template-columns: repeat(2, minmax(0, 1fr)); }
       body.market-list-mode .market-dashboard-status-cards { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-      .user-filter-bar,
-      .user-filter-bar.report-mode {
+      .user-filter-bar {
         grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+      .user-filter-bar.report-mode {
+        grid-template-columns: minmax(220px, 1.3fr) repeat(3, minmax(132px, .7fr)) 42px;
       }
       body.offer-list-mode .offer-filter-bar {
         grid-template-columns: minmax(220px, 1.2fr) minmax(160px, .8fr) minmax(160px, .8fr) max-content;
@@ -6361,6 +6376,10 @@
       }
       .user-filter-bar .search {
         grid-column: 1 / -1;
+      }
+      .user-filter-bar.report-mode .search {
+        grid-column: auto;
+        min-width: 0;
       }
       body.offer-list-mode .offer-filter-bar .search {
         grid-column: auto;
@@ -6400,6 +6419,17 @@
       body.user-accounts-mode:not(.user-detail-mode) #table .user-table {
         min-width: 980px;
       }
+      body.user-list-mode:not(.user-detail-mode) #table:has(.reported-users-table) {
+        max-width: 100%;
+        overflow-x: auto;
+        scrollbar-width: thin;
+      }
+      body.user-list-mode:not(.user-detail-mode) #table .reported-users-table {
+        min-width: 1220px;
+      }
+      body.user-list-mode:not(.user-detail-mode) .reported-users-table .user-row.report-row {
+        overflow-x: visible;
+      }
       body.user-accounts-mode:not(.user-detail-mode) .user-row:not(.report-row) {
         grid-template-columns: minmax(74px, .42fr) minmax(138px, 1.08fr) minmax(112px, .7fr) minmax(124px, .78fr) minmax(58px, .36fr) minmax(84px, .54fr) minmax(108px, .66fr) minmax(42px, .22fr);
         gap: 10px;
@@ -6423,6 +6453,9 @@
       body.user-accounts-mode:not(.user-detail-mode) .user-filter-bar {
         grid-template-columns: minmax(0, 1fr) minmax(132px, .5fr) minmax(132px, .5fr) minmax(132px, .5fr) 42px;
       }
+      .user-filter-bar.report-mode {
+        grid-template-columns: minmax(0, 1fr) minmax(132px, .5fr) minmax(132px, .5fr) minmax(132px, .5fr) 42px;
+      }
       body.user-accounts-mode:not(.user-detail-mode) #table .user-table {
         min-width: 980px;
       }
@@ -6438,13 +6471,15 @@
         grid-column: auto;
         min-width: 0;
       }
-      body.offer-list-mode .offer-filter-bar .filter-reset {
+      body.offer-list-mode .offer-filter-bar .filter-reset,
+      .user-filter-bar.report-mode .filter-reset {
         width: 42px;
         min-width: 42px;
         padding: 0;
         justify-content: center;
       }
-      body.offer-list-mode .offer-filter-bar .filter-reset span {
+      body.offer-list-mode .offer-filter-bar .filter-reset span,
+      .user-filter-bar.report-mode .filter-reset span {
         position: absolute;
         width: 1px;
         height: 1px;
@@ -6933,6 +6968,12 @@
       }
       body.user-list-mode #table .user-table {
         gap: 12px;
+      }
+      body.user-list-mode:not(.user-detail-mode) #table:has(.reported-users-table) {
+        overflow-x: hidden;
+      }
+      body.user-list-mode:not(.user-detail-mode) #table .reported-users-table {
+        min-width: 0;
       }
       .user-row,
       .user-row.report-row {
@@ -12275,7 +12316,7 @@
         </article>
       `).join("");
       document.querySelector(".filters").innerHTML = isReports ? `
-        <div class="user-filter-bar" data-filter-open="${userFilterOpen}">
+        <div class="user-filter-bar report-mode" data-filter-open="${userFilterOpen}">
           <input class="field search" id="user-search" type="search" placeholder="ค้นหา Report ID, User, User ID" />
           <div class="user-advanced-filter">${customSelect("report-status-filter", "Filter report status", [
             { value: "", label: "ทุกสถานะ" },
@@ -13806,13 +13847,13 @@
             </div>
             `;
           }).join("") || `<div class="detail-empty user-empty">ไม่พบข้อมูล</div>`}
-        </div>
-        <div class="footer-range">
-          <span>แสดง ${sorted.length ? `${start + 1}-${Math.min(start + userListPageSize, sorted.length)}` : "0"} จาก ${sorted.length}</span>
-          <div class="pager">
-            <button class="btn" type="button" data-user-page="prev" ${userListPage <= 1 ? "disabled" : ""}>ก่อนหน้า</button>
-            ${Array.from({ length: pageCount }, (_, index) => `<button class="btn ${index + 1 === userListPage ? "active" : ""}" type="button" data-user-page="${index + 1}">${index + 1}</button>`).join("")}
-            <button class="btn" type="button" data-user-page="next" ${userListPage >= pageCount ? "disabled" : ""}>ถัดไป</button>
+          <div class="footer-range reported-users-footer">
+            <span>แสดง ${sorted.length ? `${start + 1}-${Math.min(start + userListPageSize, sorted.length)}` : "0"} จาก ${sorted.length}</span>
+            <div class="pager">
+              <button class="btn" type="button" data-user-page="prev" ${userListPage <= 1 ? "disabled" : ""}>ก่อนหน้า</button>
+              ${Array.from({ length: pageCount }, (_, index) => `<button class="btn ${index + 1 === userListPage ? "active" : ""}" type="button" data-user-page="${index + 1}">${index + 1}</button>`).join("")}
+              <button class="btn" type="button" data-user-page="next" ${userListPage >= pageCount ? "disabled" : ""}>ถัดไป</button>
+            </div>
           </div>
         </div>
       `;
