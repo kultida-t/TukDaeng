@@ -108,21 +108,19 @@ Admin Settings updated submenu baseline includes `Admin Accounts`, `Roles & Perm
 ### 3.4 Offer Detail
 
 **Data**
-- ข้อมูลสินทรัพย์แบบย่อ
-- ประวัติ offer ของ asset เดียวกัน
-- Chat room ที่เกี่ยวข้อง
-- Buyer/Owner profile summary
-- Status timeline
-- Notification delivery status
+- Current prototype baseline: Offered Asset summary
+- Current prototype baseline: Buyer/Owner summary เฉพาะ User ID และ display name
+- Current prototype baseline: Offer History ของ asset เดียวกัน
+- Not rendered in current prototype: Chat room context, full Buyer/Owner profile signals, Status timeline, Notification delivery status และ Audit events
 
 **Admin Actions**
 
 | Action | Permission | Rule |
 |---|---|---|
-| View Offer | Admin | ดูข้อมูลเพื่อ support และตรวจสอบ |
-| Force Expire Offer | Admin | ใช้กรณีผิด policy หรือ asset unavailable |
-| Mark Invalidated | System / Admin | ใช้เมื่อ asset ถูก remove หรือ sold |
-| Export Offer History | Admin | สำหรับ audit/dispute |
+| View Offer | Admin | Read-only detail view ตาม prototype ปัจจุบัน |
+| Open Asset Detail | Admin | Prototype มีปุ่ม `View Asset` สำหรับ drill-in ตาม permission |
+
+Current prototype Offer Detail ไม่มี Force Expire Offer, Mark Invalidated, Export Offer History, related chat action หรือ notification delivery action. ถ้าเพิ่มภายหลังต้องมี Product approval, permission check, confirmation/reason เมื่อกระทบ FO/user และ audit log.
 
 ### 3.5 Chat Rooms
 
