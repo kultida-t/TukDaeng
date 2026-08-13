@@ -1753,6 +1753,9 @@
       align-items: stretch;
       gap: 8px;
     }
+    body.market-list-mode .market-catalog-filter-bar.search-only {
+      grid-template-columns: minmax(0, 1fr);
+    }
     body.market-list-mode .user-filter-bar.market-mode.market-drilldown-filter-bar {
       grid-template-columns: minmax(0, 1fr);
     }
@@ -6549,6 +6552,9 @@
       body.market-list-mode .user-filter-bar.market-mode {
         grid-template-columns: minmax(0, 1fr) minmax(132px, .5fr) minmax(132px, .5fr) 42px;
       }
+      body.market-list-mode .user-filter-bar.market-mode.search-only {
+        grid-template-columns: minmax(0, 1fr);
+      }
       body.market-list-mode .user-filter-bar.market-mode .search {
         grid-column: auto;
       }
@@ -6706,6 +6712,9 @@
       }
       body.market-list-mode .user-filter-bar.market-mode {
         grid-template-columns: minmax(0, 1fr) minmax(132px, .5fr) minmax(132px, .5fr) 42px;
+      }
+      body.market-list-mode .user-filter-bar.market-mode.search-only {
+        grid-template-columns: minmax(0, 1fr);
       }
       body.market-list-mode .user-filter-bar.market-mode .search {
         grid-column: auto;
@@ -15249,21 +15258,9 @@
         return;
       }
       if (subLabel === "Brands & Models") {
-        const brandRows = getMarketCatalogBrands();
-        const statusOptions = Array.from(new Set(brandRows.map(brand => brand.status).filter(Boolean)));
-        const healthOptions = Array.from(new Set(brandRows.map(brand => brand.health).filter(Boolean)));
         document.querySelector(".filters").innerHTML = `
-          <div class="user-filter-bar market-catalog-filter-bar market-mode" data-filter-open="${marketFilterOpen}">
+          <div class="user-filter-bar market-catalog-filter-bar market-mode search-only">
             <input class="field search" id="market-search" type="search" placeholder="Search brand / model / reference" />
-            <div class="user-advanced-filter">${customSelect("market-status-filter", "Filter brand status", [
-              { value: "", label: "All statuses" },
-              ...statusOptions.map(value => ({ value, label: value }))
-            ])}</div>
-            <div class="user-advanced-filter">${customSelect("market-brand-filter", "Filter catalog health", [
-              { value: "", label: "All health" },
-              ...healthOptions.map(value => ({ value, label: value }))
-            ])}</div>
-            <button class="btn filter-reset user-advanced-filter" type="button" data-market-reset title="Reset filters" aria-label="Reset filters">${iconSvg.refresh}<span>Reset filters</span></button>
           </div>
         `;
         return;
@@ -15307,15 +15304,13 @@
 
     function renderMarketCatalogRows() {
       const q = (document.querySelector("#market-search")?.value || "").trim().toLowerCase();
-      const status = document.querySelector("#market-status-filter")?.value || "";
-      const health = document.querySelector("#market-brand-filter")?.value || "";
       const rows = getMarketCatalogBrands().filter(brand => {
         const text = [
           brand.id,
           brand.name,
           ...(brand.modelsSample || []).map(model => `${model.name} ${model.refs || ""} ${(model.references || []).map(reference => reference.number).join(" ")}`)
         ].join(" ").toLowerCase();
-        return (!q || text.includes(q)) && (!status || brand.status === status) && (!health || brand.health === health);
+        return !q || text.includes(q);
       }).sort((a, b) => a.name.localeCompare(b.name));
       const pageCount = Math.max(1, Math.ceil(rows.length / marketCatalogPageSize));
       marketCatalogPage = Math.min(marketCatalogPage, pageCount);
@@ -16930,7 +16925,7 @@
       document.body.classList.toggle("market-dashboard-mode", activeSub === "Dashboard");
       document.body.classList.remove("dashboard-mode", "user-management-mode", "asset-list-mode", "article-list-mode", "category-list-mode", "reported-board-mode", "asset-detail-mode", "user-list-mode", "user-detail-mode");
       setPageActions("");
-      document.querySelector("#user-panel-filter-actions").innerHTML = activeSub === "Dashboard" ? "" : `
+      document.querySelector("#user-panel-filter-actions").innerHTML = (activeSub === "Dashboard" || activeSub === "Brands & Models") ? "" : `
         <button class="btn user-filter-toggle" type="button" data-market-filter-toggle aria-expanded="${marketFilterOpen}">${iconSvg.filter}<span>${marketFilterOpen ? "ปิดตัวกรอง" : "เปิดตัวกรอง"}</span></button>
         <button class="btn" type="button" data-market-reset title="รีเซ็ตค่าทั้งหมด" aria-label="รีเซ็ตค่าทั้งหมด">${iconSvg.refresh}<span>รีเซ็ตค่าทั้งหมด</span></button>
       `;
