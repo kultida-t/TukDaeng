@@ -1753,6 +1753,12 @@
       align-items: stretch;
       gap: 8px;
     }
+    body.market-list-mode .user-filter-bar.market-mode.market-drilldown-filter-bar {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    body.market-list-mode .user-filter-bar.market-mode.market-drilldown-filter-bar .search {
+      width: 100%;
+    }
     body.market-list-mode .market-mode .search,
     body.market-list-mode .market-mode .custom-select,
     body.market-list-mode .market-mode .custom-select-trigger,
@@ -16425,7 +16431,7 @@
       document.querySelector("#primary-action").textContent = "";
       document.querySelector("#user-panel-filter-actions").innerHTML = "";
       document.querySelector(".filters").innerHTML = `
-        <div class="user-filter-bar market-catalog-filter-bar market-mode">
+        <div class="user-filter-bar market-catalog-filter-bar market-mode market-drilldown-filter-bar">
           <input class="field search" id="market-model-search" type="search" placeholder="Search ${brand.name} models" />
         </div>
       `;
@@ -16458,7 +16464,7 @@
       document.querySelector("#primary-action").textContent = "";
       document.querySelector("#user-panel-filter-actions").innerHTML = "";
       document.querySelector(".filters").innerHTML = `
-        <div class="user-filter-bar market-catalog-filter-bar market-mode">
+        <div class="user-filter-bar market-catalog-filter-bar market-mode market-drilldown-filter-bar">
           <input class="field search" id="market-reference-search" type="search" placeholder="Search ${model.name} references" />
         </div>
       `;
