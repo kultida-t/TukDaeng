@@ -1698,14 +1698,12 @@
       border-bottom: 1px solid var(--line);
       background: #f8fbff;
     }
-    body.article-list-mode .user-filter-bar {
-      grid-template-columns: minmax(240px, 1.35fr) repeat(3, minmax(126px, .68fr)) max-content;
+    body.article-list-mode .user-filter-bar,
+    body.reported-board-mode .user-filter-bar {
+      grid-template-columns: minmax(260px, 1.65fr) repeat(3, minmax(138px, .82fr)) 42px;
     }
     body.category-list-mode .user-filter-bar {
-      grid-template-columns: minmax(240px, 1.35fr) minmax(126px, .68fr) minmax(126px, .68fr) max-content;
-    }
-    body.reported-board-mode .user-filter-bar {
-      grid-template-columns: minmax(240px, 1.35fr) repeat(3, minmax(126px, .68fr)) max-content;
+      grid-template-columns: minmax(260px, 1.65fr) repeat(2, minmax(138px, .82fr)) 42px;
     }
     body.market-list-mode .layout {
       grid-template-columns: minmax(0, 1fr);
@@ -3907,8 +3905,14 @@
     }
     body.user-accounts-mode:not(.user-detail-mode) .user-filter-bar,
     .user-filter-bar.report-mode,
+    .user-filter-bar.content-mode,
     body.asset-list-mode:not(.article-list-mode):not(.category-list-mode):not(.reported-board-mode) .user-filter-bar.asset-mode {
       grid-template-columns: minmax(260px, 1.65fr) repeat(3, minmax(138px, .82fr)) 42px;
+      align-items: stretch;
+      gap: 8px;
+    }
+    .user-filter-bar.category-mode {
+      grid-template-columns: minmax(260px, 1.65fr) repeat(2, minmax(138px, .82fr)) 42px;
       align-items: stretch;
       gap: 8px;
     }
@@ -3917,13 +3921,27 @@
     body.user-accounts-mode:not(.user-detail-mode) .user-filter-bar .custom-select-trigger,
     body.user-accounts-mode:not(.user-detail-mode) .user-filter-bar .filter-reset,
     .user-filter-bar.report-mode .search,
+    .user-filter-bar.content-mode .search,
+    .user-filter-bar.category-mode .search,
     body.asset-list-mode:not(.article-list-mode):not(.category-list-mode):not(.reported-board-mode) .user-filter-bar.asset-mode .search,
     .user-filter-bar.report-mode .custom-select,
+    .user-filter-bar.content-mode .custom-select,
+    .user-filter-bar.category-mode .custom-select,
     body.asset-list-mode:not(.article-list-mode):not(.category-list-mode):not(.reported-board-mode) .user-filter-bar.asset-mode .custom-select,
     .user-filter-bar.report-mode .custom-select-trigger,
+    .user-filter-bar.content-mode .custom-select-trigger,
+    .user-filter-bar.category-mode .custom-select-trigger,
     body.asset-list-mode:not(.article-list-mode):not(.category-list-mode):not(.reported-board-mode) .user-filter-bar.asset-mode .custom-select-trigger,
-    .user-filter-bar.report-mode .filter-reset {
+    .user-filter-bar.report-mode .filter-reset,
+    .user-filter-bar.content-mode .filter-reset,
+    .user-filter-bar.category-mode .filter-reset {
       width: 100%;
+      height: 48px;
+      min-height: 48px;
+    }
+    .user-filter-bar.content-mode .filter-reset,
+    .user-filter-bar.category-mode .filter-reset {
+      width: 42px;
       height: 48px;
       min-height: 48px;
     }
@@ -3934,6 +3952,8 @@
     }
     body.user-accounts-mode:not(.user-detail-mode) .user-filter-bar .search,
     .user-filter-bar.report-mode .search,
+    .user-filter-bar.content-mode .search,
+    .user-filter-bar.category-mode .search,
     body.asset-list-mode:not(.article-list-mode):not(.category-list-mode):not(.reported-board-mode) .user-filter-bar.asset-mode .search {
       grid-column: auto;
       min-width: 0;
@@ -3943,15 +3963,23 @@
     body.user-accounts-mode:not(.user-detail-mode) .user-filter-bar .custom-select,
     body.user-accounts-mode:not(.user-detail-mode) .user-filter-bar .custom-select-trigger,
     .user-filter-bar.report-mode .field,
+    .user-filter-bar.content-mode .field,
+    .user-filter-bar.category-mode .field,
     body.asset-list-mode:not(.article-list-mode):not(.category-list-mode):not(.reported-board-mode) .user-filter-bar.asset-mode .field,
     .user-filter-bar.report-mode .custom-select,
+    .user-filter-bar.content-mode .custom-select,
+    .user-filter-bar.category-mode .custom-select,
     body.asset-list-mode:not(.article-list-mode):not(.category-list-mode):not(.reported-board-mode) .user-filter-bar.asset-mode .custom-select,
     .user-filter-bar.report-mode .custom-select-trigger,
+    .user-filter-bar.content-mode .custom-select-trigger,
+    .user-filter-bar.category-mode .custom-select-trigger,
     body.asset-list-mode:not(.article-list-mode):not(.category-list-mode):not(.reported-board-mode) .user-filter-bar.asset-mode .custom-select-trigger {
       min-width: 0;
     }
     body.user-accounts-mode:not(.user-detail-mode) .user-filter-bar .custom-select-trigger,
     .user-filter-bar.report-mode .custom-select-trigger,
+    .user-filter-bar.content-mode .custom-select-trigger,
+    .user-filter-bar.category-mode .custom-select-trigger,
     body.asset-list-mode:not(.article-list-mode):not(.category-list-mode):not(.reported-board-mode) .user-filter-bar.asset-mode .custom-select-trigger {
       display: flex;
       align-items: center;
@@ -3959,6 +3987,8 @@
     }
     body.user-accounts-mode:not(.user-detail-mode) .user-filter-bar .custom-select-trigger [data-custom-select-label],
     .user-filter-bar.report-mode .custom-select-trigger [data-custom-select-label],
+    .user-filter-bar.content-mode .custom-select-trigger [data-custom-select-label],
+    .user-filter-bar.category-mode .custom-select-trigger [data-custom-select-label],
     body.asset-list-mode:not(.article-list-mode):not(.category-list-mode):not(.reported-board-mode) .user-filter-bar.asset-mode .custom-select-trigger [data-custom-select-label] {
       display: block;
       min-width: 0;
@@ -3968,6 +3998,8 @@
     }
     body.user-accounts-mode:not(.user-detail-mode) .user-filter-bar .filter-reset,
     .user-filter-bar.report-mode .filter-reset,
+    .user-filter-bar.content-mode .filter-reset,
+    .user-filter-bar.category-mode .filter-reset,
     body.asset-list-mode:not(.article-list-mode):not(.category-list-mode):not(.reported-board-mode) .user-filter-bar.asset-mode .filter-reset {
       min-width: 42px;
       padding: 0;
@@ -3977,6 +4009,8 @@
     }
     body.user-accounts-mode:not(.user-detail-mode) .user-filter-bar .filter-reset span,
     .user-filter-bar.report-mode .filter-reset span,
+    .user-filter-bar.content-mode .filter-reset span,
+    .user-filter-bar.category-mode .filter-reset span,
     body.asset-list-mode:not(.article-list-mode):not(.category-list-mode):not(.reported-board-mode) .user-filter-bar.asset-mode .filter-reset span {
       position: absolute;
       width: 1px;
@@ -6456,6 +6490,47 @@
       body.user-list-mode:not(.user-detail-mode) .reported-assets-table .user-row.report-row {
         overflow-x: visible;
       }
+      body.article-list-mode .main,
+      body.category-list-mode .main,
+      body.reported-board-mode .main {
+        overflow-x: hidden;
+      }
+      body.article-list-mode .layout > .panel,
+      body.category-list-mode .layout > .panel,
+      body.reported-board-mode .layout > .panel {
+        overflow: hidden;
+      }
+      body.article-list-mode #table,
+      body.category-list-mode #table,
+      body.reported-board-mode #table {
+        max-width: 100%;
+        overflow-x: auto;
+        overflow-y: visible;
+        scrollbar-width: thin;
+      }
+      body.article-list-mode #table .article-table {
+        min-width: 1050px;
+      }
+      body.article-list-mode #table > .footer-range {
+        min-width: 1050px;
+      }
+      body.category-list-mode #table .category-table {
+        min-width: 1030px;
+      }
+      body.category-list-mode #table > .footer-range {
+        min-width: 1030px;
+      }
+      body.reported-board-mode #table .reported-board-table {
+        min-width: 1280px;
+      }
+      body.reported-board-mode #table > .footer-range {
+        min-width: 1280px;
+      }
+      body.article-list-mode #table .article-table .asset-row,
+      body.category-list-mode #table .category-table .asset-row,
+      body.reported-board-mode #table .reported-board-table .asset-row {
+        overflow-x: visible;
+      }
       body.asset-list-mode:not(.article-list-mode):not(.category-list-mode):not(.reported-board-mode) .main {
         overflow-x: hidden;
       }
@@ -6497,6 +6572,12 @@
       .user-filter-bar.report-mode {
         grid-template-columns: minmax(0, 1fr) minmax(132px, .5fr) minmax(132px, .5fr) minmax(132px, .5fr) 42px;
       }
+      .user-filter-bar.content-mode {
+        grid-template-columns: minmax(0, 1fr) minmax(132px, .5fr) minmax(132px, .5fr) minmax(132px, .5fr) 42px;
+      }
+      .user-filter-bar.category-mode {
+        grid-template-columns: minmax(0, 1fr) minmax(132px, .5fr) minmax(132px, .5fr) 42px;
+      }
       body.asset-list-mode:not(.article-list-mode):not(.category-list-mode):not(.reported-board-mode) .user-filter-bar.asset-mode {
         grid-template-columns: minmax(0, 1fr) minmax(132px, .5fr) minmax(132px, .5fr) minmax(132px, .5fr) 42px;
       }
@@ -6517,6 +6598,8 @@
       }
       body.offer-list-mode .offer-filter-bar .filter-reset,
       .user-filter-bar.report-mode .filter-reset,
+      .user-filter-bar.content-mode .filter-reset,
+      .user-filter-bar.category-mode .filter-reset,
       body.asset-list-mode:not(.article-list-mode):not(.category-list-mode):not(.reported-board-mode) .user-filter-bar.asset-mode .filter-reset {
         width: 42px;
         min-width: 42px;
@@ -6525,6 +6608,8 @@
       }
       body.offer-list-mode .offer-filter-bar .filter-reset span,
       .user-filter-bar.report-mode .filter-reset span,
+      .user-filter-bar.content-mode .filter-reset span,
+      .user-filter-bar.category-mode .filter-reset span,
       body.asset-list-mode:not(.article-list-mode):not(.category-list-mode):not(.reported-board-mode) .user-filter-bar.asset-mode .filter-reset span {
         position: absolute;
         width: 1px;
@@ -6959,6 +7044,10 @@
       .user-filter-bar.report-mode {
         grid-template-columns: 1fr;
       }
+      .user-filter-bar.content-mode,
+      .user-filter-bar.category-mode {
+        grid-template-columns: 1fr;
+      }
       body.offer-list-mode .offer-filter-bar {
         grid-template-columns: 1fr;
       }
@@ -7310,38 +7399,63 @@
         grid-template-columns: 1fr;
       }
       body.article-list-mode .filters,
+      body.category-list-mode .filters,
+      body.reported-board-mode .filters,
       body.article-list-mode .user-filter-bar,
+      body.category-list-mode .user-filter-bar,
+      body.reported-board-mode .user-filter-bar,
       body.article-list-mode .user-advanced-filter,
-      body.article-list-mode .custom-select {
+      body.category-list-mode .user-advanced-filter,
+      body.reported-board-mode .user-advanced-filter,
+      body.article-list-mode .custom-select,
+      body.category-list-mode .custom-select,
+      body.reported-board-mode .custom-select {
         min-width: 0;
         max-width: 100%;
       }
-      body.article-list-mode .custom-select-menu {
+      body.article-list-mode .custom-select-menu,
+      body.category-list-mode .custom-select-menu,
+      body.reported-board-mode .custom-select-menu {
         max-width: 100%;
         overflow-x: hidden;
       }
-      body.article-list-mode .custom-select-trigger {
+      body.article-list-mode .custom-select-trigger,
+      body.category-list-mode .custom-select-trigger,
+      body.reported-board-mode .custom-select-trigger {
         min-width: 0;
       }
-      body.article-list-mode .custom-select-trigger [data-custom-select-label] {
+      body.article-list-mode .custom-select-trigger [data-custom-select-label],
+      body.category-list-mode .custom-select-trigger [data-custom-select-label],
+      body.reported-board-mode .custom-select-trigger [data-custom-select-label] {
         display: block;
         min-width: 0;
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
       }
-      body.article-list-mode .custom-select-option {
+      body.article-list-mode .custom-select-option,
+      body.category-list-mode .custom-select-option,
+      body.reported-board-mode .custom-select-option {
         width: 100%;
         min-width: 0;
         white-space: normal;
         overflow-wrap: anywhere;
       }
-      body.article-list-mode .user-panel-filter-actions {
+      body.article-list-mode .user-panel-filter-actions,
+      body.category-list-mode .user-panel-filter-actions,
+      body.reported-board-mode .user-panel-filter-actions {
         min-width: 0;
         flex-wrap: wrap;
       }
-      body.article-list-mode .user-panel-filter-actions .btn {
+      body.article-list-mode .user-panel-filter-actions .btn,
+      body.category-list-mode .user-panel-filter-actions .btn,
+      body.reported-board-mode .user-panel-filter-actions .btn {
         max-width: 100%;
+      }
+      body.article-list-mode #table,
+      body.category-list-mode #table,
+      body.reported-board-mode #table {
+        overflow-x: hidden;
       }
       body.asset-list-mode #table {
         padding: 12px 14px 16px;
@@ -7354,6 +7468,16 @@
       body.asset-list-mode .asset-table {
         grid-template-columns: 1fr;
         gap: 12px;
+        min-width: 0;
+      }
+      body.article-list-mode #table .article-table,
+      body.category-list-mode #table .category-table,
+      body.reported-board-mode #table .reported-board-table {
+        min-width: 0;
+      }
+      body.article-list-mode #table > .footer-range,
+      body.category-list-mode #table > .footer-range,
+      body.reported-board-mode #table > .footer-range {
         min-width: 0;
       }
       body.offer-list-mode .asset-table {
@@ -14260,7 +14384,7 @@
           <button class="btn" type="button" data-article-reset title="รีเซ็ตค่าทั้งหมด" aria-label="รีเซ็ตค่าทั้งหมด">${iconSvg.refresh}<span>รีเซ็ตค่าทั้งหมด</span></button>
         `;
         document.querySelector(".filters").innerHTML = `
-          <div class="user-filter-bar" data-filter-open="${articleFilterOpen}">
+          <div class="user-filter-bar content-mode" data-filter-open="${articleFilterOpen}">
             <input class="field search" id="article-search" type="search" placeholder="ค้นหา Article ID, Title, Category" />
             <div class="user-advanced-filter">${customSelect("article-status-filter", "Filter article status", [
               { value: "", label: "All article status" },
@@ -14305,7 +14429,7 @@
           <button class="btn" type="button" data-category-reset title="รีเซ็ตค่าทั้งหมด" aria-label="รีเซ็ตค่าทั้งหมด">${iconSvg.refresh}<span>รีเซ็ตค่าทั้งหมด</span></button>
         `;
         document.querySelector(".filters").innerHTML = `
-          <div class="user-filter-bar" data-filter-open="${categoryFilterOpen}">
+          <div class="user-filter-bar category-mode" data-filter-open="${categoryFilterOpen}">
             <input class="field search" id="category-search" type="search" placeholder="ค้นหา Category ID, Name, URL" />
             <div class="user-advanced-filter">${customSelect("category-status-filter", "Filter category status", [
               { value: "", label: "All status" },
@@ -14387,7 +14511,7 @@
           <button class="btn" type="button" data-board-report-reset title="รีเซ็ตค่าทั้งหมด" aria-label="รีเซ็ตค่าทั้งหมด">${iconSvg.refresh}<span>รีเซ็ตค่าทั้งหมด</span></button>
         `;
         document.querySelector(".filters").innerHTML = `
-          <div class="user-filter-bar" data-filter-open="${boardReportFilterOpen}">
+          <div class="user-filter-bar content-mode" data-filter-open="${boardReportFilterOpen}">
             <input class="field search" id="board-report-search" type="search" placeholder="ค้นหา Report ID, Article, Category, Article ID" />
             <div class="user-advanced-filter">${customSelect("board-report-status-filter", "Filter report status", [
               { value: "", label: "ทุกสถานะ" },
