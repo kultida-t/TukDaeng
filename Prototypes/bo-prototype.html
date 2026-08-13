@@ -21243,17 +21243,32 @@
 
     function getOfferHistoryRows(offer, buyer, owner, createdAt, updatedAt) {
       const amount = getOfferPriceDisplay(offer);
-      return [
+      const rows = [
         {
-          offerId: offer.id,
-          buyer: buyer.displayName,
-          owner: owner.displayName,
-          amount,
-          status: offer.status,
-          createdAt,
-          resolvedAt: offer.status === "Pending" ? "-" : updatedAt
+          action: "Offer Created",
+          status: "Pending",
+          actor: buyer.displayName,
+          dateTime: createdAt,
+          note: `Buyer submitted ${amount} offer`
         }
       ];
+      if (offer.status !== "Pending") {
+        const statusActionLabels = {
+          Accepted: "Offer Accepted",
+          Rejected: "Offer Rejected",
+          Cancelled: "Offer Cancelled",
+          Paused: "Offer Paused",
+          Invalidated: "Offer Invalidated"
+        };
+        rows.push({
+          action: statusActionLabels[offer.status] || `Offer ${offer.status}`,
+          status: offer.status,
+          actor: ["Cancelled", "Paused", "Invalidated"].includes(offer.status) ? "System" : owner.displayName,
+          dateTime: updatedAt,
+          note: offer.detail
+        });
+      }
+      return rows;
     }
 
     function getOfferNotificationRows(offer, buyer, owner, updatedAt) {
@@ -21304,18 +21319,16 @@
         <div class="history-table-wrap">
           <table class="history-table offer-detail-table">
             <thead>
-              <tr><th>Offer ID</th><th>Buyer</th><th>Owner</th><th>Amount</th><th>Status</th><th>Created</th><th>Resolved</th></tr>
+              <tr><th>Date / Time</th><th>Actor</th><th>Action</th><th>Status</th><th>Reason / Note</th></tr>
             </thead>
             <tbody>
               ${rows.map(row => `
                 <tr>
-                  <td data-label="Offer ID">${row.offerId}</td>
-                  <td data-label="Buyer">${row.buyer}</td>
-                  <td data-label="Owner">${row.owner}</td>
-                  <td data-label="Amount">${row.amount}</td>
+                  <td data-label="Date / Time">${row.dateTime}</td>
+                  <td data-label="Actor">${row.actor}</td>
+                  <td data-label="Action">${row.action}</td>
                   <td data-label="Status">${renderOfferStatusPill(row.status)}</td>
-                  <td data-label="Created">${row.createdAt}</td>
-                  <td data-label="Resolved">${row.resolvedAt}</td>
+                  <td data-label="Reason / Note" class="history-note">${row.note}</td>
                 </tr>
               `).join("")}
             </tbody>
