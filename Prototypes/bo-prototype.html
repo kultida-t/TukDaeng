@@ -3906,7 +3906,8 @@
       padding: 12px 16px;
     }
     body.user-accounts-mode:not(.user-detail-mode) .user-filter-bar,
-    .user-filter-bar.report-mode {
+    .user-filter-bar.report-mode,
+    body.asset-list-mode:not(.article-list-mode):not(.category-list-mode):not(.reported-board-mode) .user-filter-bar.asset-mode {
       grid-template-columns: minmax(260px, 1.65fr) repeat(3, minmax(138px, .82fr)) 42px;
       align-items: stretch;
       gap: 8px;
@@ -3916,15 +3917,24 @@
     body.user-accounts-mode:not(.user-detail-mode) .user-filter-bar .custom-select-trigger,
     body.user-accounts-mode:not(.user-detail-mode) .user-filter-bar .filter-reset,
     .user-filter-bar.report-mode .search,
+    body.asset-list-mode:not(.article-list-mode):not(.category-list-mode):not(.reported-board-mode) .user-filter-bar.asset-mode .search,
     .user-filter-bar.report-mode .custom-select,
+    body.asset-list-mode:not(.article-list-mode):not(.category-list-mode):not(.reported-board-mode) .user-filter-bar.asset-mode .custom-select,
     .user-filter-bar.report-mode .custom-select-trigger,
+    body.asset-list-mode:not(.article-list-mode):not(.category-list-mode):not(.reported-board-mode) .user-filter-bar.asset-mode .custom-select-trigger,
     .user-filter-bar.report-mode .filter-reset {
       width: 100%;
       height: 48px;
       min-height: 48px;
     }
+    body.asset-list-mode:not(.article-list-mode):not(.category-list-mode):not(.reported-board-mode) .user-filter-bar.asset-mode .filter-reset {
+      width: 42px;
+      height: 48px;
+      min-height: 48px;
+    }
     body.user-accounts-mode:not(.user-detail-mode) .user-filter-bar .search,
-    .user-filter-bar.report-mode .search {
+    .user-filter-bar.report-mode .search,
+    body.asset-list-mode:not(.article-list-mode):not(.category-list-mode):not(.reported-board-mode) .user-filter-bar.asset-mode .search {
       grid-column: auto;
       min-width: 0;
       line-height: 1.2;
@@ -3933,18 +3943,23 @@
     body.user-accounts-mode:not(.user-detail-mode) .user-filter-bar .custom-select,
     body.user-accounts-mode:not(.user-detail-mode) .user-filter-bar .custom-select-trigger,
     .user-filter-bar.report-mode .field,
+    body.asset-list-mode:not(.article-list-mode):not(.category-list-mode):not(.reported-board-mode) .user-filter-bar.asset-mode .field,
     .user-filter-bar.report-mode .custom-select,
-    .user-filter-bar.report-mode .custom-select-trigger {
+    body.asset-list-mode:not(.article-list-mode):not(.category-list-mode):not(.reported-board-mode) .user-filter-bar.asset-mode .custom-select,
+    .user-filter-bar.report-mode .custom-select-trigger,
+    body.asset-list-mode:not(.article-list-mode):not(.category-list-mode):not(.reported-board-mode) .user-filter-bar.asset-mode .custom-select-trigger {
       min-width: 0;
     }
     body.user-accounts-mode:not(.user-detail-mode) .user-filter-bar .custom-select-trigger,
-    .user-filter-bar.report-mode .custom-select-trigger {
+    .user-filter-bar.report-mode .custom-select-trigger,
+    body.asset-list-mode:not(.article-list-mode):not(.category-list-mode):not(.reported-board-mode) .user-filter-bar.asset-mode .custom-select-trigger {
       display: flex;
       align-items: center;
       flex-wrap: nowrap;
     }
     body.user-accounts-mode:not(.user-detail-mode) .user-filter-bar .custom-select-trigger [data-custom-select-label],
-    .user-filter-bar.report-mode .custom-select-trigger [data-custom-select-label] {
+    .user-filter-bar.report-mode .custom-select-trigger [data-custom-select-label],
+    body.asset-list-mode:not(.article-list-mode):not(.category-list-mode):not(.reported-board-mode) .user-filter-bar.asset-mode .custom-select-trigger [data-custom-select-label] {
       display: block;
       min-width: 0;
       overflow: hidden;
@@ -3952,7 +3967,8 @@
       white-space: nowrap;
     }
     body.user-accounts-mode:not(.user-detail-mode) .user-filter-bar .filter-reset,
-    .user-filter-bar.report-mode .filter-reset {
+    .user-filter-bar.report-mode .filter-reset,
+    body.asset-list-mode:not(.article-list-mode):not(.category-list-mode):not(.reported-board-mode) .user-filter-bar.asset-mode .filter-reset {
       min-width: 42px;
       padding: 0;
       border-color: #cfdbea;
@@ -3960,7 +3976,8 @@
       justify-content: center;
     }
     body.user-accounts-mode:not(.user-detail-mode) .user-filter-bar .filter-reset span,
-    .user-filter-bar.report-mode .filter-reset span {
+    .user-filter-bar.report-mode .filter-reset span,
+    body.asset-list-mode:not(.article-list-mode):not(.category-list-mode):not(.reported-board-mode) .user-filter-bar.asset-mode .filter-reset span {
       position: absolute;
       width: 1px;
       height: 1px;
@@ -6424,11 +6441,28 @@
         overflow-x: auto;
         scrollbar-width: thin;
       }
-      body.user-list-mode:not(.user-detail-mode) #table .reported-users-table {
+      body.user-list-mode:not(.user-detail-mode) #table .reported-users-table,
+      body.user-list-mode:not(.user-detail-mode) #table .reported-assets-table {
         min-width: 1220px;
       }
-      body.user-list-mode:not(.user-detail-mode) .reported-users-table .user-row.report-row {
+      body.user-list-mode:not(.user-detail-mode) .reported-users-table .user-row.report-row,
+      body.user-list-mode:not(.user-detail-mode) .reported-assets-table .user-row.report-row {
         overflow-x: visible;
+      }
+      body.asset-list-mode:not(.article-list-mode):not(.category-list-mode):not(.reported-board-mode) .main {
+        overflow-x: hidden;
+      }
+      body.asset-list-mode:not(.article-list-mode):not(.category-list-mode):not(.reported-board-mode) .layout > .panel {
+        overflow: hidden;
+      }
+      body.asset-list-mode:not(.article-list-mode):not(.category-list-mode):not(.reported-board-mode) #table {
+        max-width: 100%;
+        overflow-x: auto;
+        overflow-y: visible;
+        scrollbar-width: thin;
+      }
+      body.asset-list-mode:not(.article-list-mode):not(.category-list-mode):not(.reported-board-mode) #table .asset-list-table {
+        min-width: 1120px;
       }
       body.user-accounts-mode:not(.user-detail-mode) .user-row:not(.report-row) {
         grid-template-columns: minmax(74px, .42fr) minmax(138px, 1.08fr) minmax(112px, .7fr) minmax(124px, .78fr) minmax(58px, .36fr) minmax(84px, .54fr) minmax(108px, .66fr) minmax(42px, .22fr);
@@ -6456,6 +6490,9 @@
       .user-filter-bar.report-mode {
         grid-template-columns: minmax(0, 1fr) minmax(132px, .5fr) minmax(132px, .5fr) minmax(132px, .5fr) 42px;
       }
+      body.asset-list-mode:not(.article-list-mode):not(.category-list-mode):not(.reported-board-mode) .user-filter-bar.asset-mode {
+        grid-template-columns: minmax(0, 1fr) minmax(132px, .5fr) minmax(132px, .5fr) minmax(132px, .5fr) 42px;
+      }
       body.user-accounts-mode:not(.user-detail-mode) #table .user-table {
         min-width: 980px;
       }
@@ -6472,14 +6509,16 @@
         min-width: 0;
       }
       body.offer-list-mode .offer-filter-bar .filter-reset,
-      .user-filter-bar.report-mode .filter-reset {
+      .user-filter-bar.report-mode .filter-reset,
+      body.asset-list-mode:not(.article-list-mode):not(.category-list-mode):not(.reported-board-mode) .user-filter-bar.asset-mode .filter-reset {
         width: 42px;
         min-width: 42px;
         padding: 0;
         justify-content: center;
       }
       body.offer-list-mode .offer-filter-bar .filter-reset span,
-      .user-filter-bar.report-mode .filter-reset span {
+      .user-filter-bar.report-mode .filter-reset span,
+      body.asset-list-mode:not(.article-list-mode):not(.category-list-mode):not(.reported-board-mode) .user-filter-bar.asset-mode .filter-reset span {
         position: absolute;
         width: 1px;
         height: 1px;
@@ -6969,10 +7008,12 @@
       body.user-list-mode #table .user-table {
         gap: 12px;
       }
-      body.user-list-mode:not(.user-detail-mode) #table:has(.reported-users-table) {
+      body.user-list-mode:not(.user-detail-mode) #table:has(.reported-users-table),
+      body.user-list-mode:not(.user-detail-mode) #table:has(.reported-assets-table) {
         overflow-x: hidden;
       }
-      body.user-list-mode:not(.user-detail-mode) #table .reported-users-table {
+      body.user-list-mode:not(.user-detail-mode) #table .reported-users-table,
+      body.user-list-mode:not(.user-detail-mode) #table .reported-assets-table {
         min-width: 0;
       }
       .user-row,
@@ -7306,6 +7347,7 @@
       body.asset-list-mode .asset-table {
         grid-template-columns: 1fr;
         gap: 12px;
+        min-width: 0;
       }
       body.offer-list-mode .asset-table {
         grid-template-columns: 1fr;
@@ -14367,7 +14409,7 @@
           <button class="btn" type="button" data-asset-reset title="รีเซ็ตค่าทั้งหมด" aria-label="รีเซ็ตค่าทั้งหมด">${iconSvg.refresh}<span>รีเซ็ตค่าทั้งหมด</span></button>
         `;
         document.querySelector(".filters").innerHTML = `
-          <div class="user-filter-bar" data-filter-open="${assetFilterOpen}">
+          <div class="user-filter-bar asset-mode" data-filter-open="${assetFilterOpen}">
             <input class="field search" id="search" type="search" placeholder="ค้นหา Asset ID, Asset, Owner" />
             <div class="user-advanced-filter">${customSelect("asset-type-filter", "Filter asset status", [
               { value: "", label: "All asset status" },
