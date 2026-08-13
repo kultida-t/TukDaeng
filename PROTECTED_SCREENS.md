@@ -21,6 +21,7 @@ These screens have been confirmed by the user and are locked from incidental cha
 - Content Management > Reported Board, confirmed and locked as of 2026-07-31
 - Content Management > Board Report Detail, confirmed and locked as of 2026-07-31
 - Market Data, including the Market Data menu entry, submenu/active states, routing, market data screens, lists, tables, cards, filters, charts, detail views/panels, import/export or refresh actions, breadcrumbs, mock data, and navigation state, confirmed and locked as of 2026-08-10
+- Offer Management, including Offer Management menu entry, active state, routing, offer list/table/card layout, summary metrics, filters, search, sorting, pagination, row/card open behavior, Offer Detail, breadcrumbs, mock data, and navigation state, confirmed and locked as of 2026-08-13
 
 ## Protected Prototype Files
 
@@ -32,7 +33,7 @@ The current confirmed prototype implementation is in:
 - `Prototypes/assets/user-avatars/*`
 - `Prototypes/assets/fonts/*`
 
-Do not edit these files for unrelated work if the edit can change Login, Dashboard, User Management menu behavior, User List, Reported Users, user/report detail views, any user/report action flows, Asset Management menu behavior, Asset List, Asset Detail, Reported Assets, Asset Report Detail, any asset report detail modal, any asset status/action flows, any Content Management screen, submenu, navigation state, article/category/report flow, or content action flow, or any Market Data screen, menu behavior, submenu, navigation state, data view, chart, filter, detail panel, import/export action, or refresh flow.
+Do not edit these files for unrelated work if the edit can change Login, Dashboard, User Management menu behavior, User List, Reported Users, user/report detail views, any user/report action flows, Asset Management menu behavior, Asset List, Asset Detail, Reported Assets, Asset Report Detail, any asset report detail modal, any asset status/action flows, any Content Management screen, submenu, navigation state, article/category/report flow, or content action flow, any Market Data screen, menu behavior, submenu, navigation state, data view, chart, filter, detail panel, import/export action, or refresh flow, or any Offer Management screen, menu behavior, routing, offer list, filter, detail page, data, helper functions, CSS, or back/drill-in behavior.
 
 ## Login Protected Scope
 
@@ -120,6 +121,19 @@ The protected Market Data scope includes:
 - Import/export, refresh, sync, publish, archive, activate/deactivate, or status actions connected to Market Data, including confirmation modals, validation, disabled states, completed states, audit/result messages, and toast/result messaging.
 - Mock data, fixtures, state logic, route parameters, computed values, helper functions, styles, assets, and shared components that directly support Market Data rendering or behavior.
 
+## Offer Management Protected Scope
+
+The protected Offer Management scope includes:
+
+- Offer Management menu entry, active state, breadcrumbs, titles, panel labels, routing, navigation state, and back navigation connected to Offer Management.
+- Offer list/table/card layout, summary metrics, filters, search, sorting, pagination, row/card open behavior, empty states, and visible status/amount/asset/buyer/owner display.
+- Offer Detail page layout, header, breadcrumb, page title, panel title/subtitle, status/amount chips, and back navigation to Offer Management.
+- Offered Asset section, including Offer ID, Asset ID, Asset Name, Offer Amount, Asking Price, Asset Status, Created time, and the `View Asset` drill-in.
+- Buyer / Owner section, including User ID/name display and any helper functions or mock data that directly support these values.
+- Offer History section, including table/card structure, Date / Time, Actor, Action, Status, Reason / Note, row ordering, and responsive behavior.
+- Read-only behavior and absence of BO write actions such as accept, decline, cancel, force-expire, invalidate, edit price, edit message, export, related chat action, or notification delivery action unless explicitly approved.
+- Offer Management mock data, route/render helpers, data mapping helpers, CSS selectors, responsive rules, and shared state that directly support Offer list or Offer Detail rendering or navigation.
+
 ## Rules
 
 - Do not change layout, styling, behavior, routing, copy, mock data, or component structure for the protected screens unless the user explicitly asks for that exact change.
@@ -132,7 +146,7 @@ The protected Market Data scope includes:
 ## Review Checklist Before Editing
 
 - Identify the files and routes involved in the requested change.
-- Check whether any target file is part of Login, Dashboard, Dashboard menu, User Management menu, User Management > User List, User Management > Reported Users, User Detail, Report Detail, any user/report action modal, Asset Management menu, Asset Management > Asset List, Asset Detail, Asset Management > Reported Assets, Asset Report Detail, any asset report detail modal, any asset action modal, any Content Management screen, submenu, modal, detail view, or action flow, or any Market Data screen, menu behavior, submenu, modal, detail view, chart, filter, data action, or refresh flow.
+- Check whether any target file is part of Login, Dashboard, Dashboard menu, User Management menu, User Management > User List, User Management > Reported Users, User Detail, Report Detail, any user/report action modal, Asset Management menu, Asset Management > Asset List, Asset Detail, Asset Management > Reported Assets, Asset Report Detail, any asset report detail modal, any asset action modal, any Content Management screen, submenu, modal, detail view, or action flow, any Market Data screen, menu behavior, submenu, modal, detail view, chart, filter, data action, or refresh flow, or any Offer Management screen, menu behavior, list, filter, detail view, route, or data flow.
 - Check whether any shared file is used by those protected screens.
 - If protected impact is possible, ask for confirmation before editing.
 - Keep changes scoped to the requested screen or feature.
