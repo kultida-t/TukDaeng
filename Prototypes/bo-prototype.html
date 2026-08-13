@@ -5013,9 +5013,32 @@
     body.offer-list-mode .offer-detail-table {
       min-width: 900px;
     }
-    body.offer-list-mode .offer-detail-table .history-note {
-      min-width: 220px;
-      max-width: 360px;
+    body.offer-list-mode .offer-history-table {
+      table-layout: fixed;
+    }
+    body.offer-list-mode .offer-history-table th:nth-child(1),
+    body.offer-list-mode .offer-history-table td:nth-child(1) {
+      width: 18%;
+    }
+    body.offer-list-mode .offer-history-table th:nth-child(2),
+    body.offer-list-mode .offer-history-table td:nth-child(2) {
+      width: 18%;
+    }
+    body.offer-list-mode .offer-history-table th:nth-child(3),
+    body.offer-list-mode .offer-history-table td:nth-child(3) {
+      width: 18%;
+    }
+    body.offer-list-mode .offer-history-table th:nth-child(4),
+    body.offer-list-mode .offer-history-table td:nth-child(4) {
+      width: 14%;
+    }
+    body.offer-list-mode .offer-history-table th:nth-child(5),
+    body.offer-list-mode .offer-history-table td:nth-child(5) {
+      width: 32%;
+    }
+    body.offer-list-mode .offer-history-table .history-note {
+      min-width: 0;
+      max-width: none;
     }
     .page-actions .page-back-btn .mobile-back-icon,
     .report-detail-page .report-back-btn .mobile-back-icon,
@@ -21317,7 +21340,7 @@
     function renderOfferHistoryTable(rows) {
       return `
         <div class="history-table-wrap">
-          <table class="history-table offer-detail-table">
+          <table class="history-table offer-detail-table offer-history-table">
             <thead>
               <tr><th>Date / Time</th><th>Actor</th><th>Action</th><th>Status</th><th>Reason / Note</th></tr>
             </thead>
