@@ -21128,12 +21128,15 @@
       const nameParts = String(asset.name || getOfferAssetName(offer) || "").split(" ");
       const brand = asset.name ? getAssetBrand(asset) : nameParts[0] || "-";
       const model = String(asset.name || "-").replace(brand, "").trim() || asset.name || "-";
+      const moderationStatusLabel = ["Auto Hidden", "Admin Hidden"].includes(asset.status)
+        ? "ซ่อนชั่วคราว"
+        : asset.status;
       return {
         assetId: offer.owner,
         brand,
         model,
         reference: asset.name || getOfferAssetName(offer),
-        currentStatus: asset.status || "-",
+        currentStatus: asset.type && moderationStatusLabel ? `${asset.type} / ${moderationStatusLabel}` : moderationStatusLabel || asset.type || "-",
         askingPrice: priceDisplay,
         ownerDisplayName: asset.owner || getOfferParticipantName(offer, "Owner"),
         thumbnailLabel: String(brand || "TD").slice(0, 2).toUpperCase()
@@ -21435,12 +21438,8 @@
               <div class="detail-tile"><span>Asking Price</span><strong>${detail.assetSummary.askingPrice}</strong></div>
               <div class="detail-tile"><span>Asset Status</span><strong>${detail.assetSummary.currentStatus}</strong></div>
               <div class="detail-tile"><span>Created</span><strong>${detail.offerSummary.createdAt}</strong></div>
-              <div class="detail-tile"><span>Updated</span><strong>${detail.offerSummary.updatedAt}</strong></div>
-              <div class="detail-tile"><span>Source Surface</span><strong>${detail.offerSummary.sourceSurface}</strong></div>
-              <div class="detail-tile"><span>Last Action / Source</span><strong>${detail.offerSummary.lastActionSource}</strong></div>
             </div>
           </div>
-          <div class="module-note offer-readonly-note"><strong>Read-only:</strong> Offer Management V1 allows detail review, related chat context, notification delivery, and audit visibility only. Offer price, buyer, owner, and message content are not editable here.</div>
           <div class="detail-section">
             <h4>Buyer / Owner</h4>
             <div class="offer-party-grid">
