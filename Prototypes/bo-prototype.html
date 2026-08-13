@@ -7211,6 +7211,13 @@
       body.offer-list-mode .offer-filter-bar {
         grid-template-columns: 1fr;
       }
+      body.asset-list-mode .filters,
+      body.market-list-mode .filters {
+        display: grid;
+        grid-template-columns: 1fr;
+        width: 100%;
+      }
+      body.asset-list-mode .user-filter-bar.asset-mode,
       body.market-list-mode .market-catalog-filter-bar.search-only,
       body.market-list-mode .market-catalog-filter-bar.status-only {
         display: grid;
@@ -7218,6 +7225,10 @@
         grid-template-columns: 1fr;
         gap: 8px;
       }
+      body.asset-list-mode .user-filter-bar.asset-mode .search,
+      body.asset-list-mode .user-filter-bar.asset-mode .user-advanced-filter,
+      body.asset-list-mode .user-filter-bar.asset-mode .custom-select,
+      body.asset-list-mode .user-filter-bar.asset-mode .custom-select-trigger,
       body.market-list-mode .market-catalog-filter-bar.search-only #market-search,
       body.market-list-mode .market-catalog-filter-bar.status-only #market-search,
       body.market-list-mode .market-catalog-filter-bar.status-only .user-advanced-filter,
