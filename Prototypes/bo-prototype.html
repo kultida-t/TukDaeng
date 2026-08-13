@@ -7225,6 +7225,15 @@
         grid-template-columns: 1fr;
         gap: 8px;
       }
+      body.market-list-mode .market-catalog-filter-bar.status-only[data-filter-open="true"] {
+        grid-template-columns: minmax(0, 1fr) minmax(180px, .5fr);
+      }
+      body.market-list-mode .market-catalog-filter-bar.status-only[data-filter-open="false"] #market-search {
+        grid-column: 1 / -1;
+      }
+      body.market-list-mode .market-catalog-filter-bar.status-only[data-filter-open="true"] #market-search {
+        grid-column: auto;
+      }
       body.asset-list-mode .user-filter-bar.asset-mode .search,
       body.asset-list-mode .user-filter-bar.asset-mode .user-advanced-filter,
       body.asset-list-mode .user-filter-bar.asset-mode .custom-select,
@@ -7278,6 +7287,14 @@
       }
       .user-filter-bar .btn.user-advanced-filter {
         display: none;
+      }
+      @media (max-width: 520px) {
+        body.market-list-mode .market-catalog-filter-bar.status-only[data-filter-open="true"] {
+          grid-template-columns: 1fr;
+        }
+        body.market-list-mode .market-catalog-filter-bar.status-only[data-filter-open="true"] #market-search {
+          grid-column: 1 / -1;
+        }
       }
       .user-table {
         gap: 10px;
