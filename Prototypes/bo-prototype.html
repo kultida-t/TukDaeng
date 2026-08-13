@@ -21235,33 +21235,25 @@
           offerCardCopy: statusNote.cardCopy,
           notificationDestination: statusNote.destination
         },
-        offerHistory: getOfferHistoryRows(offer, buyer, owner),
+        offerHistory: getOfferHistoryRows(offer, buyer, createdAt, updatedAt),
         notificationDelivery: getOfferNotificationRows(offer, buyer, owner, updatedAt),
         auditEvents: getOfferAuditRows(offer, chatRoomId, createdAt, updatedAt)
       };
     }
 
-    function getOfferHistoryRows(offer, buyer, owner) {
+    function getOfferHistoryRows(offer, buyer, createdAt, updatedAt) {
       const amount = getOfferPriceDisplay(offer);
-      const rows = [
-        { offerId: offer.id, buyer: buyer.displayName, amount, status: offer.status, createdAt: offer.createdAt || "10 Jul 2026 10:15", resolvedAt: offer.status === "Pending" ? "-" : "11 Jul 2026 09:28", source: offer.status === "Pending" ? "Open pending offer" : "Lifecycle event" }
+      return [
+        {
+          offerId: offer.id,
+          buyer: buyer.displayName,
+          amount,
+          status: offer.status,
+          createdAt,
+          resolvedAt: offer.status === "Pending" ? "-" : updatedAt,
+          source: offer.status === "Pending" ? "Current offer" : "Offer lifecycle"
+        }
       ];
-      const sameAssetOffers = (moduleData.offers?.rows || [])
-        .filter(row => row.owner === offer.owner && row.id !== offer.id)
-        .slice(0, 2)
-        .map(row => ({
-          offerId: row.id,
-          buyer: getOfferParticipantName(row, "Buyer"),
-          amount: getOfferPriceDisplay(row),
-          status: row.status,
-          createdAt: row.createdAt || "08 Jul 2026 14:20",
-          resolvedAt: row.status === "Pending" ? "-" : "09 Jul 2026 16:30",
-          source: "Same asset"
-        }));
-      if (sameAssetOffers.length) return rows.concat(sameAssetOffers);
-      return rows.concat([
-        { offerId: `OFR-${Math.max(100, getOfferSortRank(offer) - 17)}`, buyer: owner.displayName === "Crown Time BKK" ? "Daily Watch Hunter" : "Archive Collector", amount: "THB 272,000", status: "Rejected", createdAt: "08 Jul 2026 11:12", resolvedAt: "08 Jul 2026 15:46", source: "Same asset benchmark" }
-      ]);
     }
 
     function getOfferNotificationRows(offer, buyer, owner, updatedAt) {
@@ -21303,7 +21295,7 @@
     function renderOfferPartyCard(title, party) {
       return `
         <div class="detail-tile"><span>${title} User ID</span><strong>${party.userId}</strong></div>
-        <div class="detail-tile"><span>${title} name</span><strong>${party.username}</strong></div>
+        <div class="detail-tile"><span>${title} name</span><strong>${party.displayName}</strong></div>
       `;
     }
 
