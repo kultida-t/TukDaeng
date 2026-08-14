@@ -44,6 +44,20 @@ function sendResponse(response) {
   process.stdout.write(JSON.stringify(response) + '\n');
 }
 
+function dateOnly(value) {
+  return typeof value === 'string' && value.length >= 10 ? value.slice(0, 10) : undefined;
+}
+
+function normalizeCategory(category) {
+  if (category === 'Bug FIX') return 'Bug Fix';
+  return category;
+}
+
+function normalizeStatus(status) {
+  if (status === 'Doing') return 'In Progress';
+  return status;
+}
+
 rl.on('line', async (line) => {
   if (!line.trim()) return;
 
@@ -98,6 +112,10 @@ rl.on('line', async (line) => {
                       type: 'string',
                       description: 'The name of the application you are logging work for (e.g. "Eventlog UI", "Core API").'
                     },
+                    applicationName: {
+                      type: 'string',
+                      description: 'Alias for appName, used by TukDaeng work-log drafts.'
+                    },
                     appId: {
                       type: 'integer',
                       description: 'The database ID of the application (optional if appName is provided).'
@@ -109,6 +127,14 @@ rl.on('line', async (line) => {
                     endDate: {
                       type: 'string',
                       description: 'End date of the work in YYYY-MM-DD format.'
+                    },
+                    startedAt: {
+                      type: 'string',
+                      description: 'Alias source for startDate. ISO timestamp values are converted to YYYY-MM-DD.'
+                    },
+                    stoppedAt: {
+                      type: 'string',
+                      description: 'Alias source for endDate. ISO timestamp values are converted to YYYY-MM-DD.'
                     },
                     category: {
                       type: 'string',
@@ -122,6 +148,10 @@ rl.on('line', async (line) => {
                       type: 'number',
                       description: 'Total hours spent for this work log. Use a value accepted by Core Portal, such as 2.5.'
                     },
+                    totalHours: {
+                      type: 'number',
+                      description: 'Alias for total_hours, used by TukDaeng work-log drafts.'
+                    },
                     logs: {
                       type: 'array',
                       items: {
@@ -130,7 +160,7 @@ rl.on('line', async (line) => {
                       description: 'An array of task descriptions performed. Avoid duplicate tasks.'
                     }
                   },
-                  required: ['startDate', 'endDate', 'category', 'logs']
+                  required: ['category', 'logs']
                 }
               }
             ]
@@ -150,9 +180,43 @@ rl.on('line', async (line) => {
           return;
         }
 
-        const { apiKey, appName, appId, startDate, endDate, category, status, logs } = args;
+        const {
+          apiKey,
+          appName,
+          applicationName,
+          appId,
+          startDate,
+          endDate,
+          startedAt,
+          stoppedAt,
+          category,
+          status,
+          logs
+        } = args;
+        const effectiveAppName = appName ?? applicationName;
+        const effectiveStartDate = startDate ?? dateOnly(startedAt);
+        const effectiveEndDate = endDate ?? dateOnly(stoppedAt) ?? effectiveStartDate;
+        const effectiveCategory = normalizeCategory(category);
+        const effectiveStatus = normalizeStatus(status);
         const totalHours = args.total_hours ?? args.totalHours;
         const effectiveApiKey = apiKey || defaultApiKey;
+
+        if (!effectiveStartDate || !effectiveEndDate || !Array.isArray(logs)) {
+          sendResponse({
+            jsonrpc: '2.0',
+            id,
+            result: {
+              content: [
+                {
+                  type: 'text',
+                  text: 'Missing required log fields. Provide startDate/endDate or startedAt/stoppedAt, plus logs as an array.'
+                }
+              ],
+              isError: true
+            }
+          });
+          return;
+        }
 
         if (!effectiveApiKey) {
           sendResponse({
@@ -181,11 +245,11 @@ rl.on('line', async (line) => {
             },
             body: JSON.stringify({
               app_id: appId,
-              app_name: appName,
-              start_date: startDate,
-              end_date: endDate,
-              category,
-              status,
+              app_name: effectiveAppName,
+              start_date: effectiveStartDate,
+              end_date: effectiveEndDate,
+              category: effectiveCategory,
+              status: effectiveStatus,
               total_hours: totalHours,
               logs
             })
