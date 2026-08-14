@@ -9046,7 +9046,7 @@
         { id: "market", label: "Market Data", icon: "market", subs: ["Dashboard", "Brands & Models", "Sync History"] },
       ]},
       { section: "งานตรวจสอบและบริการ", items: [
-        { id: "social", label: "Social Interaction", icon: "social", subs: ["Comments", "Likes", "Follows", "Reported Social"] },
+        { id: "social", label: "Social Interaction", icon: "social", subs: ["Asset Comments", "Reported Comments"] },
         { id: "watch-alerts", label: "Watch Alert", icon: "alert", subs: ["Alert Criteria", "Trigger History", "Disabled Alerts"] },
         { id: "support", label: "Help & Support", icon: "support", subs: ["Tickets", "Assignment", "SLA"] },
         { id: "deletions", label: "Account Deletion", icon: "delete", subs: ["Requests", "Grace Period", "Anonymization"] }
@@ -9172,10 +9172,10 @@
         item("OFR-381", "Offer THB 305,000", "AST-8536", "Offer", "กลาง", "Paused", "asset ถูก auto hidden จาก report ระหว่าง review ทำให้ offer ถูกพักชั่วคราว", ["Buyer U-1088", "Owner Daily Watch Hunter"], "Read-only: paused ระหว่าง asset review; FO ไม่แสดง Accept/Decline จนกว่า review จบ"),
         item("OFR-366", "Offer THB 1,020,000", "AST-8581", "Offer", "สูง", "Invalidated", "asset ถูกซ่อนถาวรหลัง moderation ทำให้ pending offer ใช้งานไม่ได้ถาวร", ["Buyer U-1161", "Owner Rolex Rama9"], "Read-only: invalidated จาก permanent hide; FO แสดง Offer Unavailable และไม่มี action")
       ]),
-      social: mod("Social Interaction", "งานตรวจสอบและบริการ / Social Interaction", "Comments, Likes & Follows", "จัดการ comment/reply moderation และ analytics ของ like/favorite/follow", "ดู reported social", [["Comments", "8,420", "วันนี้ 184"], ["Reported", "11", "รอตรวจ 4"], ["Follows", "26,100", "เพิ่ม 2.4%"], ["Favorites", "41,900", "ใช้ใน analytics"]], [
+      social: mod("Social Interaction", "งานตรวจสอบและบริการ / Social Interaction", "Asset Comment Moderation", "Moderate Asset Detail comments and replies for Sale/Show assets. Likes are metadata only; follows are out of scope for this BO module.", "Open reported comments", [["Total Comments", "8,420", "Sale/Show assets"], ["Reported Pending", "11", "SLA risk 4"], ["Hidden / Removed", "7", "audit required"], ["User Deleted", "31", "retained read-only"]], [
         item("COM-711", "Spam comment", "AST-8802", "Comment", "สูง", "Reported", "คอมเมนต์ซ้ำหลาย asset พร้อม link นอกระบบ", ["Reports 3"], "Hide comment จาก Asset Detail และ audit"),
-        item("FOL-209", "Follow spike", "Crown Time BKK", "Follow", "กลาง", "Monitoring", "follow เพิ่มผิดปกติใน 1 ชม.", ["+240"], "ตรวจพฤติกรรมบัญชีใหม่"),
-        item("LIK-882", "Favorite trend", "Speedmaster", "Favorite", "ปกติ", "Active", "ใช้สำหรับ reports ไม่ต้องแก้ราย record", ["Analytics"], "ดู aggregate เท่านั้น")
+        item("COM-704", "Reply contains phone number", "AST-8831", "Reply", "กลาง", "Flagged", "reply ใต้ root comment 1 ชั้น มีข้อมูลติดต่อที่ควรตรวจ policy", ["Sensitive signal"], "ตรวจ full text แบบ masked และตัดสิน hide/no action"),
+        item("COM-690", "User deleted comment retained", "AST-8612", "Comment", "ปกติ", "User Deleted", "ผู้ใช้ลบเองจาก FO แต่ BO ต้องเห็น retained state เพื่อ audit", ["Read-only"], "ดู history เท่านั้น ไม่ restore จาก BO")
       ]),
       "watch-alerts": mod("Watch Alert", "งานตรวจสอบและบริการ / Watch Alert", "Alert Criteria & Trigger History", "ดู criteria, trigger history, notification on/off และ disable alert ที่ abuse", "Disable selected", [["Active Alerts", "3,218", "Sale-only match"], ["Triggered Today", "146", "ส่ง notification 139"], ["Disabled", "12", "โดย Admin"], ["Failed Delivery", "7", "retry pending"]], [
         item("WAL-1440", "Rolex Submariner <= 320k", "U-1042", "Criteria", "ปกติ", "Active", "Sale-only match และแจ้งเตือนเมื่อราคาเข้าเกณฑ์", ["Push on"], "ดู trigger history และ related listing"),
@@ -9213,6 +9213,55 @@
         item("RET-AUDIT", "Audit retention", "Retention", "System", "กลาง", "365 days", "เก็บ audit อย่างน้อย 1 ปี", ["Export policy"], "แก้ค่าต้อง approval")
       ])
     };
+
+    const socialSubConfigs = {
+      "Asset Comments": {
+        title: "Asset Comments",
+        panel: "Asset Comments Queue",
+        subtitle: "Moderate root comments and one-level replies from Asset Detail on Sale/Show assets, with author, linked asset, report signal, and FO visibility impact.",
+        action: "Open reported comments",
+        stats: [["Visible Comments", "8,420", "Today 184"], ["Flagged", "18", "spam/link/sensitive"], ["Reported Pending", "4", "SLA 24h"], ["Hidden / Removed", "7", "audit required"]],
+        cards: [
+          ["Review Scope", "Sale and Show asset comments only. Like count is shown as signal metadata, not as a moderation target."],
+          ["Detail Context", "Full comment text, author status, asset summary, parent/reply relation, report history, moderation timeline, and audit events."],
+          ["Action Boundary", "Admin cannot edit comment text. Hide, remove, or restore visibility must use confirmation, reason, FO sync, and audit."]
+        ],
+        rows: [
+          item("COM-711", "Spam comment with external link", "AST-8802 / U-1186", "Comment", "สูง", "Reported", "คอมเมนต์ซ้ำหลาย asset พร้อม link นอกระบบจาก Asset Detail", ["Reports 3", "Root comment", "SLA 4h"], "Hide comment หรือ resolve report ต้องมี reason และ audit"),
+          item("COM-704", "Reply contains phone number", "AST-8831 / U-1042", "Reply", "กลาง", "Flagged", "reply ใต้ root comment 1 ชั้น มีข้อมูลติดต่อที่ควรตรวจ policy", ["Sensitive signal", "Reply"], "ตรวจ full text แบบ masked และตัดสิน hide/no action"),
+          item("COM-690", "User deleted comment retained", "AST-8612 / U-1161", "Comment", "ปกติ", "User Deleted", "ผู้ใช้ลบเองจาก FO แต่ BO ต้องเห็น retained state เพื่อ audit", ["User action", "Read-only"], "ดู history เท่านั้น ไม่ restore จาก BO")
+        ]
+      },
+      "Reported Comments": {
+        title: "Reported Comments",
+        panel: "Reported Comments Queue",
+        subtitle: "Review reported asset comments and replies with evidence, linked Asset Detail context, decision state, FO impact, and audit before closing.",
+        action: "Open report",
+        stats: [["Pending Reports", "11", "SLA risk 4"], ["High Priority", "5", "comment/link abuse"], ["Hidden / Removed", "7", "FO visibility changed"], ["Closed Today", "7", "reason/audit saved"]],
+        cards: [
+          ["Report Reasons", "Harassment or hate, Spam or scam, Inappropriate content, False or misleading information, and Other."],
+          ["Review Context", "Report summary, target comment, reporter evidence, linked asset, author context, FO impact, and audit history."],
+          ["Action Boundary", "Close no violation does not change FO content. Hide/remove comment changes FO visibility and requires reason plus audit."]
+        ],
+        rows: [
+          item("RCO-711", "Reported spam comment", "COM-711 / AST-8802", "Comment Report", "สูง", "Pending", "ผู้ใช้ 3 คน report comment ที่มี link นอกระบบ", ["Spam or scam", "SLA 4h"], "Hide comment หรือ close no violation ต้องมี confirm + reason"),
+          item("RCO-706", "Reported reply with contact info", "COM-704 / AST-8831", "Reply Report", "กลาง", "Pending", "report ว่า reply เปิดเผยข้อมูลติดต่อใน public surface", ["Inappropriate content", "Reply"], "ตรวจ policy และ FO visibility impact ก่อน action"),
+          item("RCO-690", "No violation after review", "COM-690 / AST-8612", "Comment Report", "ปกติ", "Closed", "ปิดรายงานหลังพบว่า user deleted comment เองและไม่มี public impact", ["Closed", "Audit"], "ดู result/audit history")
+        ]
+      }
+    };
+
+    function getSocialSubConfig(subLabel = activeSub) {
+      const normalizedSub = normalizeSocialSubLabel(subLabel);
+      return socialSubConfigs[normalizedSub] || socialSubConfigs["Asset Comments"];
+    }
+
+    function normalizeSocialSubLabel(subLabel = activeSub) {
+      if (subLabel === "Reported Social") return "Reported Comments";
+      if (subLabel === "Comments") return "Asset Comments";
+      if (subLabel === "Likes" || subLabel === "Follows") return "Asset Comments";
+      return subLabel || "Asset Comments";
+    }
 
     const userManagementData = {
       users: [
@@ -15291,6 +15340,11 @@
         updateActiveNav();
         return;
       }
+      if (id === "social") {
+        renderSocialInteraction(subLabel || "Asset Comments");
+        updateActiveNav();
+        return;
+      }
       if (id === "settings" && ((subLabel || "Admin Accounts") === "Roles & Permissions" || subLabel === "Permissions")) {
         renderSettingsPermissionsPage();
         updateActiveNav();
@@ -15498,6 +15552,49 @@
       renderRows();
       renderDetail(activeRow);
       updateActiveNav();
+    }
+
+    function renderSocialInteraction(subLabel = "Asset Comments") {
+      const data = moduleData.social;
+      const normalizedSub = normalizeSocialSubLabel(subLabel);
+      const config = getSocialSubConfig(normalizedSub);
+      activeModule = "social";
+      activeSub = normalizedSub;
+      activeRow = config.rows[0] || null;
+      moduleData.social.rows = config.rows;
+      moduleData.social.stats = config.stats;
+      moduleData.social.cards = config.cards;
+      document.body.classList.remove("user-list-mode", "user-detail-mode", "asset-detail-mode", "offer-detail-mode", "asset-list-mode", "article-list-mode", "category-list-mode", "reported-board-mode", "market-list-mode", "market-dashboard-mode");
+      document.querySelector("#user-panel-filter-actions").innerHTML = "";
+      document.querySelector("#crumb").textContent = `${data.crumb} / ${config.title}`;
+      document.querySelector("#page-title").textContent = config.title;
+      document.querySelector("#page-meta").textContent = "";
+      document.querySelector("#panel-title").textContent = config.panel;
+      document.querySelector("#panel-subtitle").textContent = config.subtitle;
+      document.querySelector("#primary-action").textContent = config.action;
+      document.querySelector(".filters").innerHTML = `
+        <input class="field search" id="search" type="search" placeholder="ค้นหา Social ID, asset/user, สถานะ หรือเหตุผล" />
+        <select class="field" id="status-filter" aria-label="Filter status">
+          <option value="">${filterCopy.allStatus}</option>
+        </select>
+        <select class="field" id="priority-filter" aria-label="Filter priority">
+          ${filterOptions("reportPriorityThaiValues").map(option => `<option value="${option.value}">${option.label}</option>`).join("")}
+        </select>
+      `;
+      document.querySelector("#summary-grid").innerHTML = config.stats.map(stat => `
+        <article class="stat">
+          <div class="stat-label">${stat[0]}</div>
+          <div class="stat-value">${stat[1]}</div>
+          <div class="stat-note">${stat[2]}</div>
+        </article>
+      `).join("");
+      document.querySelector("#cards").innerHTML = config.cards.map(card => `
+        <article class="mini-card"><h3>${card[0]}</h3><p class="muted">${card[1]}</p></article>
+      `).join("");
+      updateFilters(moduleData.social);
+      renderRows();
+      renderDetail(activeRow);
+      scrollMainToTop();
     }
 
     function getRolePermissionRows() {

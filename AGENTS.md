@@ -41,3 +41,7 @@ Each Kanban task should be written as a complete execution brief and include, wh
 - Scope boundaries, including what must not be changed
 
 Use Thai as the default language for Kanban task descriptions and related task details. Keep technical terms, product names, file names, screen names, statuses, commands, code identifiers, or English terms that are clearer and commonly understood in English. Prioritize readability for Thai-speaking users.
+
+## Kanban Completion Rule
+
+When a Kanban task involves editing files, do not move the task to `done` immediately after implementation or verification. Keep the task in `in_progress` and wait for explicit user confirmation that the result is accepted. Only move the task to `done` after the user confirms the edited result is OK.
