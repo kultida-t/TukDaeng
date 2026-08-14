@@ -10779,6 +10779,29 @@
         { value: "Temporarily Hidden", label: "ซ่อนชั่วคราว" },
         { value: "Permanently Hidden", label: "ซ่อนถาวร" },
         { value: "ลบโดยเจ้าของ", label: "ลบโดยเจ้าของ" }
+      ],
+      articleStatus: [
+        { value: "", label: filterCopy.allStatus },
+        { value: "Draft", label: "Draft" },
+        { value: "Scheduled", label: "Scheduled" },
+        { value: "Published", label: "Published" },
+        { value: "Archived", label: "Archived" }
+      ],
+      categoryStatus: [
+        { value: "", label: filterCopy.allStatus },
+        { value: "Active", label: "Active" },
+        { value: "Inactive", label: "Inactive" }
+      ],
+      articleSort: [
+        { value: "latest", label: filterCopy.latestFirst },
+        { value: "publish", label: "เวลาเผยแพร่" },
+        { value: "title", label: "Title A-Z" }
+      ],
+      categorySort: [
+        { value: "order", label: "ลำดับแสดงผล" },
+        { value: "articles", label: "จำนวน Article" },
+        { value: "name", label: "Name A-Z" },
+        { value: "latest", label: "อัปเดตล่าสุด" }
       ]
     };
 
@@ -15258,22 +15281,12 @@
         document.querySelector(".filters").innerHTML = `
           <div class="user-filter-bar content-mode" data-filter-open="${articleFilterOpen}">
             <input class="field search" id="article-search" type="search" placeholder="ค้นหา Article ID, Title, Category" />
-            <div class="user-advanced-filter">${customSelect("article-status-filter", "Filter article status", [
-              { value: "", label: filterCopy.allStatus },
-              { value: "Published", label: "Published" },
-              { value: "Scheduled", label: "Scheduled" },
-              { value: "Draft", label: "Draft" },
-              { value: "Archived", label: "Archived" }
-            ])}</div>
+            <div class="user-advanced-filter">${customSelect("article-status-filter", "Filter article status", filterOptions("articleStatus"))}</div>
             <div class="user-advanced-filter">${customSelect("article-category-filter", "Filter category", [
               { value: "", label: filterCopy.allCategories },
               ...getArticleCategories().map(category => ({ value: category, label: category }))
             ])}</div>
-            <div class="user-advanced-filter">${customSelect("article-sort", "Sort articles", [
-              { value: "latest", label: filterCopy.latestFirst },
-              { value: "publish", label: "เวลาเผยแพร่" },
-              { value: "title", label: "Title A-Z" }
-            ])}</div>
+            <div class="user-advanced-filter">${customSelect("article-sort", "Sort articles", filterOptions("articleSort"))}</div>
             ${resetFilterButton("data-article-reset")}
           </div>
         `;
@@ -15303,17 +15316,8 @@
         document.querySelector(".filters").innerHTML = `
           <div class="user-filter-bar category-mode" data-filter-open="${categoryFilterOpen}">
             <input class="field search" id="category-search" type="search" placeholder="ค้นหา Category ID, Name, URL" />
-            <div class="user-advanced-filter">${customSelect("category-status-filter", "Filter category status", [
-              { value: "", label: filterCopy.allStatus },
-              { value: "Active", label: "Active" },
-              { value: "Inactive", label: "Inactive" },
-            ])}</div>
-            <div class="user-advanced-filter">${customSelect("category-sort", "Sort categories", [
-              { value: "order", label: "ลำดับแสดงผล" },
-              { value: "articles", label: "จำนวน Article" },
-              { value: "name", label: "Name A-Z" },
-              { value: "latest", label: "อัปเดตล่าสุด" }
-            ], "order")}</div>
+            <div class="user-advanced-filter">${customSelect("category-status-filter", "Filter category status", filterOptions("categoryStatus"))}</div>
+            <div class="user-advanced-filter">${customSelect("category-sort", "Sort categories", filterOptions("categorySort"), "order")}</div>
             ${resetFilterButton("data-category-reset")}
           </div>
         `;
