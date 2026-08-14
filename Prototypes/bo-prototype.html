@@ -8960,10 +8960,10 @@
               <option value="">ทุกสถานะ</option>
             </select>
             <select class="field" id="priority-filter" aria-label="Filter priority">
-              <option value="">ทุก priority</option>
-              <option value="สูง">สูง</option>
-              <option value="กลาง">กลาง</option>
-              <option value="ปกติ">ปกติ</option>
+              <option value="">ทุก Priority</option>
+              <option value="สูง">High</option>
+              <option value="กลาง">Medium</option>
+              <option value="ปกติ">Low</option>
             </select>
           </div>
           <div class="table" id="table"></div>
@@ -10703,6 +10703,62 @@
     function getReportPriorityRank(priority) {
       const priorityRank = { "สูง": 3, "กลาง": 2, "ปกติ": 1 };
       return priorityRank[priority] || 0;
+    }
+
+    const filterCopy = {
+      resetAll: "รีเซ็ตค่าทั้งหมด",
+      allStatus: "ทุกสถานะ",
+      allPriority: "ทุก Priority",
+      allAuth: "ทุกวิธีเข้าสู่ระบบ",
+      allBrands: "ทุกแบรนด์",
+      allCategories: "ทุกหมวดหมู่",
+      allSources: "ทุกแหล่งข้อมูล",
+      latestFirst: "ล่าสุดก่อน",
+      oldestFirst: "เก่าสุดก่อน",
+      reporters: "จำนวน Reporter"
+    };
+
+    const filterOptionSets = {
+      reportStatus: [
+        { value: "", label: filterCopy.allStatus },
+        { value: "Pending", label: "Pending" },
+        { value: "Closed", label: "Closed" }
+      ],
+      reportPriorityThaiValues: [
+        { value: "", label: filterCopy.allPriority },
+        { value: "สูง", label: "High" },
+        { value: "กลาง", label: "Medium" },
+        { value: "ปกติ", label: "Low" }
+      ],
+      reportPriorityKeyValues: [
+        { value: "", label: filterCopy.allPriority },
+        { value: "high", label: "High" },
+        { value: "medium", label: "Medium" },
+        { value: "low", label: "Low" }
+      ],
+      authMethods: [
+        { value: "", label: filterCopy.allAuth },
+        { value: "Email", label: "Email" },
+        { value: "Google", label: "Google" },
+        { value: "Apple", label: "Apple" }
+      ],
+      latestOldestSort: [
+        { value: "latest", label: filterCopy.latestFirst },
+        { value: "oldest", label: filterCopy.oldestFirst }
+      ],
+      reportSort: [
+        { value: "latest", label: filterCopy.latestFirst },
+        { value: "oldest", label: filterCopy.oldestFirst },
+        { value: "reporters", label: filterCopy.reporters }
+      ]
+    };
+
+    function filterOptions(key) {
+      return (filterOptionSets[key] || []).map(option => ({ ...option }));
+    }
+
+    function resetFilterButton(attrs) {
+      return `<button class="btn filter-reset user-advanced-filter" type="button" ${attrs} title="${filterCopy.resetAll}" aria-label="${filterCopy.resetAll}">${iconSvg.refresh}<span>${filterCopy.resetAll}</span></button>`;
     }
 
     function getUserSummaryStats() {
@@ -13294,23 +13350,10 @@
       document.querySelector(".filters").innerHTML = isReports ? `
         <div class="user-filter-bar report-mode" data-filter-open="${userFilterOpen}">
           <input class="field search" id="user-search" type="search" placeholder="ค้นหา Report ID, User, User ID" />
-          <div class="user-advanced-filter">${customSelect("report-status-filter", "Filter report status", [
-            { value: "", label: "ทุกสถานะ" },
-            { value: "Pending", label: "รอตรวจ" },
-            { value: "Closed", label: "ปิดแล้ว" }
-          ])}</div>
-          <div class="user-advanced-filter">${customSelect("report-priority-filter", "Filter priority", [
-            { value: "", label: "ทุก priority" },
-            { value: "สูง", label: "High" },
-            { value: "กลาง", label: "Medium" },
-            { value: "ปกติ", label: "Low" }
-          ])}</div>
-          <div class="user-advanced-filter">${customSelect("report-sort", "Sort reports", [
-            { value: "latest", label: "ล่าสุดก่อน" },
-            { value: "oldest", label: "เก่าสุดก่อน" },
-            { value: "reporters", label: "จำนวน reporter" }
-          ], "latest")}</div>
-          <button class="btn filter-reset user-advanced-filter" type="button" id="user-reset" title="รีเซ็ตค่าทั้งหมด" aria-label="รีเซ็ตค่าทั้งหมด">${iconSvg.refresh}<span>รีเซ็ตค่าทั้งหมด</span></button>
+          <div class="user-advanced-filter">${customSelect("report-status-filter", "Filter report status", filterOptions("reportStatus"))}</div>
+          <div class="user-advanced-filter">${customSelect("report-priority-filter", "Filter priority", filterOptions("reportPriorityThaiValues"))}</div>
+          <div class="user-advanced-filter">${customSelect("report-sort", "Sort reports", filterOptions("reportSort"), "latest")}</div>
+          ${resetFilterButton('id="user-reset"')}
         </div>
       ` : `
         <div class="user-filter-bar" data-filter-open="${userFilterOpen}">
@@ -13324,12 +13367,7 @@
             { value: "Deletion Requested", label: "รอลบบัญชี" },
             { value: "Deleted / Archived", label: "ลบ/เก็บถาวร" }
           ])}</div>
-          <div class="user-advanced-filter">${customSelect("user-auth-filter", "Filter auth method", [
-            { value: "", label: "ทุกวิธีเข้าสู่ระบบ" },
-            { value: "Email", label: "Email" },
-            { value: "Apple", label: "Apple" },
-            { value: "Google", label: "Google" }
-          ])}</div>
+          <div class="user-advanced-filter">${customSelect("user-auth-filter", "Filter auth method", filterOptions("authMethods"))}</div>
           <div class="user-advanced-filter">${customSelect("user-sort", "Sort users", [
             { value: "lastActive", label: "เรียงตามใช้งานล่าสุด" },
             { value: "joined", label: "เรียงตามวันที่สมัครล่าสุด" },
@@ -15183,22 +15221,22 @@
           <div class="user-filter-bar content-mode" data-filter-open="${articleFilterOpen}">
             <input class="field search" id="article-search" type="search" placeholder="ค้นหา Article ID, Title, Category" />
             <div class="user-advanced-filter">${customSelect("article-status-filter", "Filter article status", [
-              { value: "", label: "All article status" },
+              { value: "", label: filterCopy.allStatus },
               { value: "Published", label: "Published" },
               { value: "Scheduled", label: "Scheduled" },
               { value: "Draft", label: "Draft" },
               { value: "Archived", label: "Archived" }
             ])}</div>
             <div class="user-advanced-filter">${customSelect("article-category-filter", "Filter category", [
-              { value: "", label: "All categories" },
+              { value: "", label: filterCopy.allCategories },
               ...getArticleCategories().map(category => ({ value: category, label: category }))
             ])}</div>
             <div class="user-advanced-filter">${customSelect("article-sort", "Sort articles", [
-              { value: "latest", label: "Newest first" },
-              { value: "publish", label: "Publish time" },
+              { value: "latest", label: filterCopy.latestFirst },
+              { value: "publish", label: "เวลาเผยแพร่" },
               { value: "title", label: "Title A-Z" }
             ])}</div>
-            <button class="btn filter-reset user-advanced-filter" type="button" data-article-reset title="รีเซ็ตค่าทั้งหมด" aria-label="รีเซ็ตค่าทั้งหมด">${iconSvg.refresh}<span>รีเซ็ตค่าทั้งหมด</span></button>
+            ${resetFilterButton("data-article-reset")}
           </div>
         `;
         document.querySelector("#summary-grid").innerHTML = "";
@@ -15228,17 +15266,17 @@
           <div class="user-filter-bar category-mode" data-filter-open="${categoryFilterOpen}">
             <input class="field search" id="category-search" type="search" placeholder="ค้นหา Category ID, Name, URL" />
             <div class="user-advanced-filter">${customSelect("category-status-filter", "Filter category status", [
-              { value: "", label: "All status" },
+              { value: "", label: filterCopy.allStatus },
               { value: "Active", label: "Active" },
               { value: "Inactive", label: "Inactive" },
             ])}</div>
             <div class="user-advanced-filter">${customSelect("category-sort", "Sort categories", [
-              { value: "order", label: "Display order" },
-              { value: "articles", label: "Article count" },
+              { value: "order", label: "ลำดับแสดงผล" },
+              { value: "articles", label: "จำนวน Article" },
               { value: "name", label: "Name A-Z" },
-              { value: "latest", label: "Recently updated" }
+              { value: "latest", label: "อัปเดตล่าสุด" }
             ], "order")}</div>
-            <button class="btn filter-reset user-advanced-filter" type="button" data-category-reset title="รีเซ็ตค่าทั้งหมด" aria-label="รีเซ็ตค่าทั้งหมด">${iconSvg.refresh}<span>รีเซ็ตค่าทั้งหมด</span></button>
+            ${resetFilterButton("data-category-reset")}
           </div>
         `;
         document.querySelector("#summary-grid").innerHTML = "";
@@ -15268,23 +15306,10 @@
         document.querySelector(".filters").innerHTML = `
           <div class="user-filter-bar report-mode" data-filter-open="${assetReportFilterOpen}">
             <input class="field search" id="asset-report-search" type="search" placeholder="ค้นหา Report ID, Asset, Owner, Asset ID" />
-            <div class="user-advanced-filter">${customSelect("asset-report-status-filter", "Filter report status", [
-              { value: "", label: "ทุกสถานะ" },
-              { value: "Pending", label: "รอตรวจ" },
-              { value: "Closed", label: "ปิดแล้ว" }
-            ])}</div>
-            <div class="user-advanced-filter">${customSelect("asset-report-priority-filter", "Filter priority", [
-              { value: "", label: "ทุก priority" },
-              { value: "high", label: "High" },
-              { value: "medium", label: "Medium" },
-              { value: "low", label: "Low" }
-            ])}</div>
-            <div class="user-advanced-filter">${customSelect("asset-report-sort", "Sort asset reports", [
-              { value: "latest", label: "ล่าสุดก่อน" },
-              { value: "oldest", label: "เก่าสุดก่อน" },
-              { value: "reporters", label: "จำนวน reporter" }
-            ], "latest")}</div>
-            <button class="btn filter-reset user-advanced-filter" type="button" data-asset-report-reset title="รีเซ็ตค่าทั้งหมด" aria-label="รีเซ็ตค่าทั้งหมด">${iconSvg.refresh}<span>รีเซ็ตค่าทั้งหมด</span></button>
+            <div class="user-advanced-filter">${customSelect("asset-report-status-filter", "Filter report status", filterOptions("reportStatus"))}</div>
+            <div class="user-advanced-filter">${customSelect("asset-report-priority-filter", "Filter priority", filterOptions("reportPriorityKeyValues"))}</div>
+            <div class="user-advanced-filter">${customSelect("asset-report-sort", "Sort asset reports", filterOptions("reportSort"), "latest")}</div>
+            ${resetFilterButton("data-asset-report-reset")}
           </div>
         `;
         document.querySelector("#summary-grid").innerHTML = "";
@@ -15309,23 +15334,10 @@
         document.querySelector(".filters").innerHTML = `
           <div class="user-filter-bar content-mode" data-filter-open="${boardReportFilterOpen}">
             <input class="field search" id="board-report-search" type="search" placeholder="ค้นหา Report ID, Article, Category, Article ID" />
-            <div class="user-advanced-filter">${customSelect("board-report-status-filter", "Filter report status", [
-              { value: "", label: "ทุกสถานะ" },
-              { value: "Pending", label: "รอตรวจ" },
-              { value: "Closed", label: "ปิดแล้ว" }
-            ])}</div>
-            <div class="user-advanced-filter">${customSelect("board-report-priority-filter", "Filter priority", [
-              { value: "", label: "ทุก priority" },
-              { value: "high", label: "High" },
-              { value: "medium", label: "Medium" },
-              { value: "low", label: "Low" }
-            ])}</div>
-            <div class="user-advanced-filter">${customSelect("board-report-sort", "Sort board reports", [
-              { value: "latest", label: "ล่าสุดก่อน" },
-              { value: "oldest", label: "เก่าสุดก่อน" },
-              { value: "reporters", label: "จำนวน reporter" }
-            ], "latest")}</div>
-            <button class="btn filter-reset user-advanced-filter" type="button" data-board-report-reset title="รีเซ็ตค่าทั้งหมด" aria-label="รีเซ็ตค่าทั้งหมด">${iconSvg.refresh}<span>รีเซ็ตค่าทั้งหมด</span></button>
+            <div class="user-advanced-filter">${customSelect("board-report-status-filter", "Filter report status", filterOptions("reportStatus"))}</div>
+            <div class="user-advanced-filter">${customSelect("board-report-priority-filter", "Filter priority", filterOptions("reportPriorityKeyValues"))}</div>
+            <div class="user-advanced-filter">${customSelect("board-report-sort", "Sort board reports", filterOptions("reportSort"), "latest")}</div>
+            ${resetFilterButton("data-board-report-reset")}
           </div>
         `;
         document.querySelector("#summary-grid").innerHTML = "";
@@ -15347,7 +15359,7 @@
           <div class="user-filter-bar asset-mode" data-filter-open="${assetFilterOpen}">
             <input class="field search" id="search" type="search" placeholder="ค้นหา Asset ID, Asset, Owner" />
             <div class="user-advanced-filter">${customSelect("asset-type-filter", "Filter asset status", [
-              { value: "", label: "All asset status" },
+              { value: "", label: filterCopy.allStatus },
               { value: "Sale", label: "Sale" },
               { value: "Sale:Consignment", label: "Sale - Consignment" },
               { value: "Show", label: "Show" },
@@ -15357,14 +15369,11 @@
               { value: "ลบโดยเจ้าของ", label: "ลบโดยเจ้าของ" }
             ])}</div>
             <div class="user-advanced-filter">${customSelect("asset-brand-filter", "Filter brand", [
-              { value: "", label: "All brands" },
+              { value: "", label: filterCopy.allBrands },
               ...assetBrands.map(brand => ({ value: brand, label: brand }))
             ])}</div>
-            <div class="user-advanced-filter">${customSelect("asset-sort", "Sort assets", [
-              { value: "latest", label: "Newest first" },
-              { value: "oldest", label: "Oldest first" }
-            ])}</div>
-            <button class="btn filter-reset user-advanced-filter" type="button" data-asset-reset title="รีเซ็ตค่าทั้งหมด" aria-label="รีเซ็ตค่าทั้งหมด">${iconSvg.refresh}<span>รีเซ็ตค่าทั้งหมด</span></button>
+            <div class="user-advanced-filter">${customSelect("asset-sort", "Sort assets", filterOptions("latestOldestSort"))}</div>
+            ${resetFilterButton("data-asset-reset")}
           </div>
         `;
         document.querySelector("#summary-grid").innerHTML = getAssetSummaryStats().map(renderAssetSummaryCard).join("");
@@ -15391,14 +15400,11 @@
           <div class="user-filter-bar offer-filter-bar" data-filter-open="${offerFilterOpen}">
             <input class="field search" id="offer-search" type="search" placeholder="ค้นหา Offer ID, Asset ID, Asset, Buyer, Owner" />
             <div class="user-advanced-filter">${customSelect("offer-status-filter", "Filter offer status", [
-              { value: "", label: "ทุกสถานะ" },
+              { value: "", label: filterCopy.allStatus },
               ...Array.from(new Set(data.rows.map(row => row.status))).map(status => ({ value: status, label: status }))
             ])}</div>
-            <div class="user-advanced-filter">${customSelect("offer-sort", "Sort offers", [
-              { value: "latest", label: "Newest first" },
-              { value: "oldest", label: "Oldest first" }
-            ], "latest")}</div>
-            <button class="btn filter-reset user-advanced-filter" type="button" data-offer-reset title="รีเซ็ตค่าทั้งหมด" aria-label="รีเซ็ตค่าทั้งหมด">${iconSvg.refresh}<span>รีเซ็ตค่าทั้งหมด</span></button>
+            <div class="user-advanced-filter">${customSelect("offer-sort", "Sort offers", filterOptions("latestOldestSort"), "latest")}</div>
+            ${resetFilterButton("data-offer-reset")}
           </div>
         `;
         document.querySelector("#summary-grid").innerHTML = renderOfferStatusOverview(data.rows);
@@ -15411,13 +15417,10 @@
       document.querySelector(".filters").innerHTML = `
         <input class="field search" id="search" type="search" placeholder="ค้นหาจากชื่อ, รหัส, สถานะ หรือเหตุผล" />
         <select class="field" id="status-filter" aria-label="Filter status">
-          <option value="">ทุกสถานะ</option>
+          <option value="">${filterCopy.allStatus}</option>
         </select>
         <select class="field" id="priority-filter" aria-label="Filter priority">
-          <option value="">ทุก priority</option>
-          <option value="สูง">สูง</option>
-          <option value="กลาง">กลาง</option>
-          <option value="ปกติ">ปกติ</option>
+          ${filterOptions("reportPriorityThaiValues").map(option => `<option value="${option.value}">${option.label}</option>`).join("")}
         </select>
       `;
       document.querySelector("#summary-grid").innerHTML = data.stats.map(stat => `
@@ -15872,7 +15875,7 @@
       if (subLabel === "Brands & Models") {
         document.querySelector(".filters").innerHTML = `
           <div class="user-filter-bar market-catalog-filter-bar market-mode search-only">
-            <input class="field search" id="market-search" type="search" placeholder="Search brand / model / reference" />
+            <input class="field search" id="market-search" type="search" placeholder="ค้นหา Brand, Model, Reference" />
           </div>
         `;
         return;
@@ -15882,12 +15885,12 @@
         const statusOptions = Array.from(new Map(syncRows.map(row => [row.status, row.statusLabel || row.status])).entries());
         document.querySelector(".filters").innerHTML = `
           <div class="user-filter-bar market-catalog-filter-bar market-mode status-only" data-filter-open="${marketFilterOpen}">
-            <input class="field search" id="market-search" type="search" placeholder="Search sync job / endpoint / result" />
+            <input class="field search" id="market-search" type="search" placeholder="ค้นหา Sync Job, Endpoint, Result" />
             <div class="user-advanced-filter">${customSelect("market-status-filter", "Filter sync status", [
-              { value: "", label: "All statuses" },
+              { value: "", label: filterCopy.allStatus },
               ...statusOptions.map(([value, label]) => ({ value, label }))
             ])}</div>
-            <button class="btn filter-reset user-advanced-filter" type="button" data-market-reset title="Reset filters" aria-label="Reset filters">${iconSvg.refresh}<span>Reset filters</span></button>
+            ${resetFilterButton("data-market-reset")}
           </div>
         `;
         return;
@@ -15897,14 +15900,14 @@
         <div class="user-filter-bar market-mode" data-filter-open="${marketFilterOpen}">
           <input class="field search" id="market-search" type="search" placeholder="ค้นหา endpoint / โมเดล / เลขอ้างอิง" />
           <div class="user-advanced-filter">${customSelect("market-status-filter", "Filter market data status", [
-            { value: "", label: "ทุกสถานะ" },
+            { value: "", label: filterCopy.allStatus },
             ...statusOptions.map(([value, label]) => ({ value, label }))
           ])}</div>
           <div class="user-advanced-filter">${customSelect("market-brand-filter", "Filter market data brand", [
-            { value: "", label: "ทุกแหล่งข้อมูล" },
+            { value: "", label: filterCopy.allSources },
             { value: "thewatchapi", label: "thewatchapi" }
           ])}</div>
-          <button class="btn filter-reset user-advanced-filter" type="button" data-market-reset title="ล้างตัวกรอง" aria-label="ล้างตัวกรอง">${iconSvg.refresh}<span>ล้างตัวกรอง</span></button>
+          ${resetFilterButton("data-market-reset")}
         </div>
       `;
     }
@@ -17563,7 +17566,7 @@
 
     function updateFilters(data) {
       const statuses = Array.from(new Set(data.rows.map(row => row.status)));
-      document.querySelector("#status-filter").innerHTML = `<option value="">ทุกสถานะ</option>${statuses.map(status => `<option value="${status}">${status}</option>`).join("")}`;
+      document.querySelector("#status-filter").innerHTML = `<option value="">${filterCopy.allStatus}</option>${statuses.map(status => `<option value="${status}">${status}</option>`).join("")}`;
       document.querySelector("#search").value = "";
       const priorityFilter = document.querySelector("#priority-filter");
       if (priorityFilter) priorityFilter.value = "";
