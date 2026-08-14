@@ -1,25 +1,29 @@
-{
-  "applicationName": "TukDaeng Back Office",
-  "category": "Design",
-  "status": "Doing",
-  "topic": "ปรับ BO prototype",
-  "startedAt": "2026-08-14T10:42:56+07:00",
-  "timezone": "Asia/Bangkok",
-  "paused": false,
-  "pausedAt": null,
-  "pauseTotalSeconds": 0,
-  "notes": [
-    {
-      "time": "2026-08-14T10:42:56+07:00",
-      "text": "เริ่มจับเวลา งานปรับ BO prototype หมวด Design"
-    },
-    {
-      "time": "2026-08-14T11:04:59+07:00",
-      "text": "Completed BO prototype back icon and context-aware previous-page navigation update; smoke test passed for User, Asset, Offer, Content, and Market flows."
-    },
-    {
-      "time": "2026-08-14T11:42:00+07:00",
-      "text": "Completed BO prototype header spacing standardization task. Updated Prototypes/bo-prototype.html CSS so empty #summary-grid no longer creates extra gap after the red page divider, and removed the Offer Detail-specific 16px layout top padding. Scope covered Dashboard, User Management, Asset Management, Offer Management, Content Management, and Market Data protected screens for spacing only. Verification: git diff --check passed with LF/CRLF warning only, inline script syntax parsed successfully with Node. Browser screenshot QA was attempted through Chrome headless/CDP but blocked by environment GPU process crash / Target crashed."
-    }
-  ]
+﻿{
+    "applicationName":  "TukDaeng Back Office",
+    "category":  "Design",
+    "status":  "Doing",
+    "topic":  "ปรับ BO prototype",
+    "startedAt":  "2026-08-14T10:42:56+07:00",
+    "timezone":  "Asia/Bangkok",
+    "paused":  false,
+    "pausedAt":  null,
+    "pauseTotalSeconds":  0,
+    "notes":  [
+                  {
+                      "time":  "2026-08-14T10:42:56+07:00",
+                      "text":  "เริ่มจับเวลา งานปรับ BO prototype หมวด Design"
+                  },
+                  {
+                      "time":  "2026-08-14T11:04:59+07:00",
+                      "text":  "Completed BO prototype back icon and context-aware previous-page navigation update; smoke test passed for User, Asset, Offer, Content, and Market flows."
+                  },
+                  {
+                      "time":  "2026-08-14T11:42:00+07:00",
+                      "text":  "Completed BO prototype header spacing standardization task. Updated Prototypes/bo-prototype.html CSS so empty #summary-grid no longer creates extra gap after the red page divider, and removed the Offer Detail-specific 16px layout top padding. Scope covered Dashboard, User Management, Asset Management, Offer Management, Content Management, and Market Data protected screens for spacing only. Verification: git diff --check passed with LF/CRLF warning only, inline script syntax parsed successfully with Node. Browser screenshot QA was attempted through Chrome headless/CDP but blocked by environment GPU process crash / Target crashed."
+                  },
+                  {
+                      "time":  "2026-08-14T12:28:22+07:00",
+                      "text":  "Completed BO prototype filter standardization session. Created and completed Kanban tasks for BO filter/sort standardization across User Management, Asset Management, Offer Management, Content Management, and Market Data. Updated Prototypes/bo-prototype.html with shared filterCopy/filterOptionSets helpers, normalized shared status/priority/sort/reset labels, fixed Reported Users priority filtering across Thai/English priority values, standardized Asset List status filter options including temporary hidden/permanent hidden/owner deleted cases, aligned Offer status filter to lifecycle order from getOfferStatusMeta(), moved Content article/category filter options to shared option sets, and ordered Market Sync History status options without restoring removed source filters. Verification: git diff --check passed with LF/CRLF warning only; inline script syntax parsed successfully with Node. Protected impact: touched protected User Management, Asset Management, Offer Management, Content Management, and Market Data by explicit task scope; changes were limited to filter/sort/reset wording, option ordering, and filter matching behavior."
+                  }
+              ]
 }
