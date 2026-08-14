@@ -10802,6 +10802,13 @@
         { value: "articles", label: "จำนวน Article" },
         { value: "name", label: "Name A-Z" },
         { value: "latest", label: "อัปเดตล่าสุด" }
+      ],
+      marketSyncStatus: [
+        { value: "", label: filterCopy.allStatus },
+        { value: "Running", label: "กำลังทำงาน" },
+        { value: "Failed", label: "ล้มเหลว" },
+        { value: "Partial", label: "สำเร็จบางส่วน" },
+        { value: "Completed", label: "สำเร็จ" }
       ]
     };
 
@@ -10811,6 +10818,11 @@
 
     function resetFilterButton(attrs) {
       return `<button class="btn filter-reset user-advanced-filter" type="button" ${attrs} title="${filterCopy.resetAll}" aria-label="${filterCopy.resetAll}">${iconSvg.refresh}<span>${filterCopy.resetAll}</span></button>`;
+    }
+
+    function availableFilterOptions(key, values) {
+      const availableValues = new Set(values);
+      return filterOptions(key).filter(option => option.value === "" || availableValues.has(option.value));
     }
 
     function getUserSummaryStats() {
@@ -15912,14 +15924,11 @@
       }
       if (subLabel === "Sync History") {
         const syncRows = getMarketRowsForSub(subLabel);
-        const statusOptions = Array.from(new Map(syncRows.map(row => [row.status, row.statusLabel || row.status])).entries());
+        const statusOptions = availableFilterOptions("marketSyncStatus", syncRows.map(row => row.status));
         document.querySelector(".filters").innerHTML = `
           <div class="user-filter-bar market-catalog-filter-bar market-mode status-only" data-filter-open="${marketFilterOpen}">
             <input class="field search" id="market-search" type="search" placeholder="ค้นหา Sync Job, Endpoint, Result" />
-            <div class="user-advanced-filter">${customSelect("market-status-filter", "Filter sync status", [
-              { value: "", label: filterCopy.allStatus },
-              ...statusOptions.map(([value, label]) => ({ value, label }))
-            ])}</div>
+            <div class="user-advanced-filter">${customSelect("market-status-filter", "Filter sync status", statusOptions)}</div>
             ${resetFilterButton("data-market-reset")}
           </div>
         `;
