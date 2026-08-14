@@ -15428,10 +15428,7 @@
         document.querySelector(".filters").innerHTML = `
           <div class="user-filter-bar offer-filter-bar" data-filter-open="${offerFilterOpen}">
             <input class="field search" id="offer-search" type="search" placeholder="ค้นหา Offer ID, Asset ID, Asset, Buyer, Owner" />
-            <div class="user-advanced-filter">${customSelect("offer-status-filter", "Filter offer status", [
-              { value: "", label: filterCopy.allStatus },
-              ...Array.from(new Set(data.rows.map(row => row.status))).map(status => ({ value: status, label: status }))
-            ])}</div>
+            <div class="user-advanced-filter">${customSelect("offer-status-filter", "Filter offer status", getOfferStatusFilterOptions())}</div>
             <div class="user-advanced-filter">${customSelect("offer-sort", "Sort offers", filterOptions("latestOldestSort"), "latest")}</div>
             ${resetFilterButton("data-offer-reset")}
           </div>
@@ -21207,7 +21204,7 @@
 
     function renderOfferStatusPill(status) {
       const meta = getOfferStatusMeta().find(item => item.status === status);
-      return `<span class="pill ${meta?.pillClass || "gray"}">${status}</span>`;
+      return `<span class="pill ${meta?.pillClass || "gray"}">${meta?.label || status}</span>`;
     }
 
     function getOfferStatusMeta() {
@@ -21218,6 +21215,13 @@
         { status: "Rejected", label: "Rejected", note: "owner ปฏิเสธ", pillClass: "red", color: "#ef4444" },
         { status: "Cancelled", label: "Cancelled", note: "owner ลบ/ซ่อน asset", pillClass: "purple", color: "#8b5cf6" },
         { status: "Invalidated", label: "Invalidated", note: "ใช้ไม่ได้ถาวร", pillClass: "charcoal", color: "#111827" }
+      ];
+    }
+
+    function getOfferStatusFilterOptions() {
+      return [
+        { value: "", label: filterCopy.allStatus },
+        ...getOfferStatusMeta().map(meta => ({ value: meta.status, label: meta.label }))
       ];
     }
 
