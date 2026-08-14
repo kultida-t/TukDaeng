@@ -10768,6 +10768,17 @@
         { value: "latest", label: filterCopy.latestFirst },
         { value: "oldest", label: filterCopy.oldestFirst },
         { value: "reporters", label: filterCopy.reporters }
+      ],
+      assetStatus: [
+        { value: "", label: filterCopy.allStatus },
+        { value: "Sale", label: "Sale" },
+        { value: "Sale:Consignment", label: "Sale + Consignment" },
+        { value: "Show", label: "Show" },
+        { value: "Hide", label: "Hide" },
+        { value: "Sold", label: "Sold" },
+        { value: "Temporarily Hidden", label: "ซ่อนชั่วคราว" },
+        { value: "Permanently Hidden", label: "ซ่อนถาวร" },
+        { value: "ลบโดยเจ้าของ", label: "ลบโดยเจ้าของ" }
       ]
     };
 
@@ -11017,6 +11028,15 @@
           ? `<span class="pill gray">ลบโดยเจ้าของ</span>`
         : "";
       return `<span class="asset-status-pills">${assetStatusPill(asset.type)}${consignmentPill}${moderationPill}</span>`;
+    }
+
+    function matchesAssetStatusFilter(asset, filterValue) {
+      if (!filterValue) return true;
+      if (filterValue === "Sale:Consignment") return isAssetListConsignment(asset);
+      if (filterValue === "Temporarily Hidden") return isTemporarilyHiddenAsset(asset);
+      if (filterValue === "Permanently Hidden") return isPermanentlyHiddenAsset(asset);
+      if (filterValue === "ลบโดยเจ้าของ") return isOwnerDeletedAsset(asset);
+      return asset.type === filterValue || asset.status === filterValue;
     }
 
     const assetOwnerProfiles = {
@@ -15376,16 +15396,7 @@
         document.querySelector(".filters").innerHTML = `
           <div class="user-filter-bar asset-mode" data-filter-open="${assetFilterOpen}">
             <input class="field search" id="search" type="search" placeholder="ค้นหา Asset ID, Asset, Owner" />
-            <div class="user-advanced-filter">${customSelect("asset-type-filter", "Filter asset status", [
-              { value: "", label: filterCopy.allStatus },
-              { value: "Sale", label: "Sale" },
-              { value: "Sale:Consignment", label: "Sale - Consignment" },
-              { value: "Show", label: "Show" },
-              { value: "Hide", label: "Hide" },
-              { value: "Sold", label: "Sold" },
-              { value: "Permanently Hidden", label: "ซ่อนถาวร" },
-              { value: "ลบโดยเจ้าของ", label: "ลบโดยเจ้าของ" }
-            ])}</div>
+            <div class="user-advanced-filter">${customSelect("asset-type-filter", "Filter asset status", filterOptions("assetStatus"))}</div>
             <div class="user-advanced-filter">${customSelect("asset-brand-filter", "Filter brand", [
               { value: "", label: filterCopy.allBrands },
               ...assetBrands.map(brand => ({ value: brand, label: brand }))
@@ -21103,7 +21114,7 @@
       const sorted = [...data.rows].filter(row => {
         const text = getAssetListSearchText(row);
         return (!q || text.includes(q))
-          && (!type || (type === "Sale:Consignment" ? isAssetListConsignment(row) : row.type === type || row.status === type))
+          && matchesAssetStatusFilter(row, type)
           && (!brand || getAssetBrand(row) === brand);
       }).sort((a, b) => getAssetSortRank(b, sort) - getAssetSortRank(a, sort));
       const pageCount = Math.max(1, Math.ceil(sorted.length / assetListPageSize));
