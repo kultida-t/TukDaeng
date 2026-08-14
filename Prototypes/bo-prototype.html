@@ -9321,7 +9321,7 @@
           { label: "Articles 3", module: "content", sub: "Reported Articles" },
           { label: "Comments 3", module: "social", sub: "Reported Social" }
         ], icon: "audit" },
-        { label: "Offer Activity", value: "184", trend: "ข้อเสนอซื้อวันนี้เพิ่มขึ้น 12.6% เทียบกับเมื่อวาน", chips: ["Made 184", "Accepted 41", "Rejected 19", "Expired 12"], module: "offers", sub: "Offer Queue", icon: "offer" },
+        { label: "Offer Activity", value: "12", trend: "อ้างอิงจาก Offer Management mock-up และสถานะ offer ล่าสุด", chips: ["Pending 3", "Paused 1", "Accepted 3", "Rejected 2", "Cancelled 2", "Invalidated 1"], module: "offers", sub: "Offer Queue", icon: "offer" },
         { label: "Articles", value: "12", trend: "มี 4 บทความรอเผยแพร่", chips: ["Published 8", "Scheduled 4"], module: "content", sub: "Articles", icon: "content" },
         { label: "Watch Alert", value: "3.2K", trend: "มีการจับคู่รายการขาย 146 ครั้งวันนี้", chips: ["Active 3,218", "Triggered 146"], module: "watch-alerts", sub: "Alert Criteria", icon: "alert" },
         { label: "Support Cases", value: "18", trend: "มี 3 เคสใกล้ครบกำหนดตอบครั้งแรก", chips: ["Open 18", "Assigned 9", "Urgent 3"], module: "support", sub: "Tickets", icon: "support" }
@@ -9332,14 +9332,14 @@
         { title: "รายงานบทความ", count: 3, priority: "high", detail: "มีรายงานบทความจาก FO Board รอตรวจ / ตรวจเหตุผลและสถานะบทความก่อนปิดรายงานหรือ archive", chips: ["Articles 3", "รอตรวจ"], module: "content", sub: "Reported Articles" },
         { title: "คำขอลบบัญชี", count: 8, priority: "medium", detail: "มี 2 คำขอที่ยังลบไม่ได้ เพราะมีข้อเสนอซื้อค้างอยู่", chips: ["Blocked 2", "Grace period 4"], module: "deletions", sub: "Requests" },
         { title: "บทความรอเผยแพร่", count: 4, priority: "normal", detail: "บทความ Board ตั้งเวลาเผยแพร่แล้ว / ตรวจ preview และรูป cover ก่อนถึงเวลา", chips: ["เผยแพร่วันนี้ 2", "ต้อง preview"], module: "content", sub: "Articles" },
-        { title: "ข้อมูลตลาดรอตรวจ", count: 6, priority: "normal", detail: "brand, model และ price index จาก import มีข้อมูลซ้ำ / ควรแก้ก่อนใช้กับ Search และ Watch Alert", chips: ["Import error 6", "Price index"], module: "market", sub: "Import" },
+        { title: "ข้อมูลตลาดรอตรวจ", count: 6, priority: "normal", detail: "brand, model และ price index จาก sync มีข้อมูลซ้ำ / ควรตรวจ Sync History ก่อนใช้กับ Search และ Watch Alert", chips: ["Sync issue 6", "Price index"], module: "market", sub: "Sync History" },
         { title: "แจ้งเตือนส่งไม่สำเร็จ", count: 92, priority: "normal", detail: "มี token หมดอายุและงานส่งซ้ำได้ / ตรวจ retry queue และ cleanup invalid token", chips: ["Retryable 81", "Cleanup 11"], module: "notifications", sub: "Delivery Logs" }
       ],
       activities: [
         { category: "Report", title: "มีรายงานสินทรัพย์ใหม่", summary: "Rolex Submariner 16610 ถูกรายงานเรื่องรูปซ้ำและราคาเบี่ยงจากข้อมูลตลาด", time: "15 นาทีที่แล้ว", action: "ตรวจรูปและข้อมูลประกาศก่อนซ่อนรายการจาก FO", module: "assets", sub: "Reported Assets" },
-        { category: "Offer", title: "ข้อเสนอซื้อถูกปฏิเสธ", summary: "ข้อเสนอซื้อ Omega Speedmaster ถูกปฏิเสธและยังมี chat ที่ผู้ใช้ถามต่อ", time: "32 นาทีที่แล้ว", action: "ตรวจบริบท chat หากมีการรายงานหรือข้อพิพาทตามมา", module: "offers", sub: "Offer Queue" },
+        { category: "Offer", title: "ข้อเสนอซื้อถูกปฏิเสธ", summary: "OFR-472 ของ Audemars Piguet Royal Oak ถูก owner ปฏิเสธและยังเก็บ history ไว้ใน Offer Detail", time: "32 นาทีที่แล้ว", action: "เปิด Offer Management เพื่อตรวจ asset, buyer, owner และประวัติ offer", module: "offers", sub: "Offer Queue" },
         { category: "Content", title: "ตั้งเวลาเผยแพร่บทความแล้ว", summary: "บทความ Vintage Watch Buying Guide ตั้งเวลาเผยแพร่วันนี้ 19:00", time: "1 ชม.ที่แล้ว", action: "เปิดหน้า Content เพื่อตรวจ preview และ cover image", module: "content", sub: "Articles" },
-        { category: "System", title: "ข้อมูลตลาดอัปเดตแล้ว", summary: "Price index ของ Speedmaster Reduced พบข้อมูลนำเข้าซ้ำ 3 แถว", time: "2 ชม.ที่แล้ว", action: "ตรวจ batch import ก่อน publish index", module: "market", sub: "Import" },
+        { category: "System", title: "ข้อมูลตลาดอัปเดตแล้ว", summary: "Sync History พบ duplicate price points ของ Omega Speedmaster Reduced 3 แถว", time: "2 ชม.ที่แล้ว", action: "เปิด Sync History เพื่อตรวจ batch ก่อนให้ Search และ Watch Alert ใช้ index", module: "market", sub: "Sync History" },
         { category: "System", title: "แจ้งเตือนบางรายการส่งไม่สำเร็จ", summary: "ระบบพบ invalid token ใน delivery batch ล่าสุดและแยกงาน retry แล้ว", time: "3 ชม.ที่แล้ว", action: "เปิด Delivery Logs เพื่อตรวจรายการ retry และ cleanup", module: "notifications", sub: "Delivery Logs" }
       ],
       panels: [
@@ -9349,11 +9349,13 @@
           { label: "Hide", value: "76", detail: "ยอดทั้งหมดที่ owner/Admin เห็นตามสิทธิ์", module: "assets", sub: "Asset List" },
           { label: "Sold", value: "214", detail: "ยอดทั้งหมดที่คงประวัติและปิดรับ offer", module: "assets", sub: "Asset List" }
         ]},
-        { title: "Offer Status", meta: "จาก Offer Queue วันนี้", rows: [
-          { label: "Made", value: "184", detail: "ข้อเสนอซื้อที่ถูกสร้างวันนี้", module: "offers", sub: "Offer Queue" },
-          { label: "Accepted", value: "41", detail: "ข้อเสนอที่ผู้ขายยอมรับวันนี้", module: "offers", sub: "Offer Queue" },
-          { label: "Rejected", value: "19", detail: "ข้อเสนอที่ถูกปฏิเสธวันนี้และเก็บประวัติ", module: "offers", sub: "Offer Queue" },
-          { label: "Expired", value: "12", detail: "ข้อเสนอที่หมดเวลาวันนี้โดยไม่มีการตอบรับ", module: "offers", sub: "Offer Queue" }
+        { title: "Offer Status", meta: "จาก Offer Management ทั้งหมด", rows: [
+          { label: "Pending", value: "3", detail: "รอ owner ตอบตามรายการใน Offer Management", module: "offers", sub: "Offer Queue" },
+          { label: "Paused", value: "1", detail: "offer ถูกพักระหว่าง asset รอตรวจสอบ", module: "offers", sub: "Offer Queue" },
+          { label: "Accepted", value: "3", detail: "owner รับ offer แล้วแต่ยังเป็น read-only history", module: "offers", sub: "Offer Queue" },
+          { label: "Rejected", value: "2", detail: "owner ปฏิเสธและเก็บไว้ใน Offer History", module: "offers", sub: "Offer Queue" },
+          { label: "Cancelled", value: "2", detail: "asset ถูกลบหรือซ่อนโดย owner ระหว่าง offer", module: "offers", sub: "Offer Queue" },
+          { label: "Invalidated", value: "1", detail: "asset ถูกซ่อนถาวรและ offer ใช้งานไม่ได้", module: "offers", sub: "Offer Queue" }
         ]},
         { title: "Latest Articles", meta: "จาก Articles ล่าสุด", rows: [
           { label: "Vintage Watch Buying Guide", value: "Scheduled", detail: "ตั้งเวลาเผยแพร่ 10 Jul 2026 19:00", module: "content", sub: "Articles" },
