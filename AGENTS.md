@@ -22,3 +22,22 @@ When working on other screens:
 - Before finalizing any UI change, report whether the protected screens were touched.
 
 See `PROTECTED_SCREENS.md` for the protected-screen policy and review checklist.
+
+## Kanban Task Style
+
+When the user asks to create, split, or add Kanban tasks for TukDaeng, prefer one complete task per user-facing work item instead of splitting audit, implementation, QA, and work-log into separate tasks, unless the user explicitly asks for subtasks.
+
+Each Kanban task should be written as a complete execution brief and include, where relevant:
+
+- A concise task title
+- Context or reason for the task
+- Files, screens, modules, or areas expected to be changed
+- Protected screens or flows affected
+- Pages and flows to check
+- What will be done
+- Manual QA checklist
+- Viewports to verify for UI-related work
+- Acceptance criteria
+- Scope boundaries, including what must not be changed
+
+Use Thai as the default language for Kanban task descriptions and related task details. Keep technical terms, product names, file names, screen names, statuses, commands, code identifiers, or English terms that are clearer and commonly understood in English. Prioritize readability for Thai-speaking users.
