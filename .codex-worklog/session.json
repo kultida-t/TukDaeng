@@ -1,0 +1,17 @@
+{
+  "applicationName": "TukDaeng Back Office",
+  "category": "Design",
+  "status": "Doing",
+  "topic": "ปรับ BO prototype",
+  "startedAt": "2026-08-14T10:42:56+07:00",
+  "timezone": "Asia/Bangkok",
+  "paused": false,
+  "pausedAt": null,
+  "pauseTotalSeconds": 0,
+  "notes": [
+    {
+      "time": "2026-08-14T10:42:56+07:00",
+      "text": "เริ่มจับเวลา งานปรับ BO prototype หมวด Design"
+    }
+  ]
+}
