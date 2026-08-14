@@ -953,6 +953,8 @@
     }
     body.dashboard-mode .layout {
       grid-template-columns: minmax(0, 1fr) minmax(430px, 46%);
+      gap: 18px;
+      margin-top: 4px;
     }
     body.dashboard-mode .layout > .panel {
       border-color: #d7e2f0;
@@ -960,8 +962,8 @@
       overflow: hidden;
     }
     body.dashboard-mode .layout > .panel .panel-head {
-      min-height: 58px;
-      padding: 17px 20px;
+      min-height: 62px;
+      padding: 18px 20px;
       background: #fff;
     }
     body.dashboard-mode .layout > .panel .panel-head > div {
@@ -992,14 +994,14 @@
       flex-wrap: wrap;
     }
     body.dashboard-mode .detail .panel-head {
-      min-height: 58px;
-      padding: 17px 20px;
+      min-height: 62px;
+      padding: 18px 20px;
       background: #fff;
     }
     body.dashboard-mode .detail .activity-panel-head {
       gap: 10px;
-      padding-top: 16.5px;
-      padding-bottom: 16.5px;
+      padding-top: 18px;
+      padding-bottom: 18px;
     }
     .activity-panel-head h2 {
       flex: 0 0 auto;
@@ -6149,6 +6151,21 @@
     }
     body.dashboard-mode .cards {
       grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 18px;
+      margin-top: 24px;
+    }
+    body.dashboard-mode .summary-grid {
+      gap: 18px 16px;
+      margin-bottom: 22px;
+    }
+    body.dashboard-mode .stat {
+      padding: 17px 15px 16px;
+    }
+    body.dashboard-mode .stat-top {
+      margin-bottom: 12px;
+    }
+    body.dashboard-mode .stat .chips {
+      margin-top: 12px;
     }
     .mini-card {
       background: #fff;
@@ -6243,9 +6260,9 @@
     }
     body.dashboard-mode .work-row {
       grid-template-columns: 3px minmax(0, 1fr) minmax(58px, auto) 18px;
-      gap: 12px;
-      min-height: 66px;
-      padding: 13px 20px;
+      gap: 14px;
+      min-height: 72px;
+      padding: 15px 20px;
       border-bottom: 0;
     }
     .work-row:last-child,
@@ -6357,9 +6374,9 @@
     }
     body.dashboard-mode .activity-row {
       grid-template-columns: 3px minmax(0, 1fr) minmax(72px, auto) 18px;
-      gap: 12px;
-      min-height: 66px;
-      padding: 13px 20px;
+      gap: 14px;
+      min-height: 72px;
+      padding: 15px 20px;
       border-bottom: 0;
     }
     .activity-row::before {
@@ -6400,9 +6417,9 @@
     }
     .dashboard-status-card .status-row {
       grid-template-columns: minmax(0, 1fr) minmax(64px, auto);
-      gap: 12px;
-      min-height: 62px;
-      padding: 12px 20px;
+      gap: 14px;
+      min-height: 68px;
+      padding: 14px 20px;
       border-bottom: 0;
     }
     .dashboard-status-card .main-text {
@@ -6434,8 +6451,8 @@
     }
     .brand-ranking-list {
       display: grid;
-      padding: 8px 20px 14px;
-      gap: 9px;
+      padding: 12px 20px 16px;
+      gap: 11px;
     }
     .brand-ranking-row {
       width: 100%;
