@@ -5043,7 +5043,17 @@
     .page-actions .page-back-btn .mobile-back-icon,
     .report-detail-page .report-back-btn .mobile-back-icon,
     .user-detail-page .user-back-btn .mobile-back-icon {
-      display: none;
+      display: block;
+      width: 18px;
+      height: 18px;
+    }
+    .page-actions .page-back-btn {
+      width: 40px;
+      min-width: 40px;
+      height: 40px;
+      padding: 0;
+      display: grid;
+      place-items: center;
     }
     .user-action-target strong {
       display: block;
@@ -9924,11 +9934,128 @@
       pageActions.hidden = !html.trim();
     }
 
+    const backNavigationStack = [];
+
+    function getCurrentNavigationContext() {
+      if (activeModule === "users") {
+        if (activeSub === "Reported Users" && document.body.classList.contains("user-detail-mode") && activeRow?.id) {
+          return { type: "reported-user-detail", id: activeRow.id };
+        }
+        if ((activeSub || "User Accounts") === "User Accounts" && document.body.classList.contains("user-detail-mode") && activeRow?.id) {
+          return { type: "user-detail", id: activeRow.id };
+        }
+        return { type: "module", module: "users", sub: activeSub || "User Accounts", displaySub: activeSub || "User Accounts" };
+      }
+      if (activeModule === "assets") {
+        if (activeSub === "Reported Assets" && document.body.classList.contains("user-detail-mode") && activeRow?.id) {
+          return { type: "reported-asset-detail", id: activeRow.id };
+        }
+        if ((activeSub || "Asset List") === "Asset List" && document.body.classList.contains("asset-detail-mode") && activeRow?.id) {
+          return { type: "asset-detail", id: activeRow.id };
+        }
+        return { type: "module", module: "assets", sub: activeSub || "Asset List", displaySub: activeSub || "Asset List" };
+      }
+      if (activeModule === "offers") {
+        if (document.body.classList.contains("offer-detail-mode") && activeRow?.id) {
+          return { type: "offer-detail", id: activeRow.id };
+        }
+        return { type: "module", module: "offers", sub: "", displaySub: "" };
+      }
+      if (activeModule === "content") {
+        if (activeSub === "Reported Articles" && document.body.classList.contains("user-detail-mode") && activeRow?.id) {
+          return { type: "reported-board-detail", id: activeRow.id };
+        }
+        if ((activeSub || "Articles") === "Articles" && document.body.classList.contains("asset-detail-mode") && activeRow?.id) {
+          return { type: "article-detail", id: activeRow.id };
+        }
+        return { type: "module", module: "content", sub: activeSub || "Articles", displaySub: activeSub || "Articles" };
+      }
+      if (activeModule === "market") {
+        return { type: "module", module: "market", sub: activeSub || "Dashboard", displaySub: activeSub || "Dashboard" };
+      }
+      return activeModule ? { type: "module", module: activeModule, sub: activeSub || "", displaySub: activeSub || "" } : null;
+    }
+
+    function pushBackNavigationContext(context = getCurrentNavigationContext()) {
+      if (!context) return;
+      const last = backNavigationStack[backNavigationStack.length - 1];
+      if (last && JSON.stringify(last) === JSON.stringify(context)) return;
+      backNavigationStack.push(context);
+    }
+
+    function restoreNavigationContext(context) {
+      if (!context) return false;
+      if (context.type === "module") {
+        renderModule(context.module, context.sub || "", context.displaySub || context.sub || "");
+        return true;
+      }
+      if (context.type === "user-detail") {
+        renderUserDetailPage(userManagementData.users.find(entry => entry.id === context.id));
+        return true;
+      }
+      if (context.type === "reported-user-detail") {
+        renderReportedUserDetail(userManagementData.reports.find(entry => entry.id === context.id));
+        return true;
+      }
+      if (context.type === "asset-detail") {
+        renderAssetDetailPage(moduleData.assets.rows.find(entry => entry.id === context.id));
+        return true;
+      }
+      if (context.type === "reported-asset-detail") {
+        renderReportedAssetDetail(moduleData.assets.rows.find(entry => entry.id === context.id));
+        return true;
+      }
+      if (context.type === "offer-detail") {
+        renderOfferDetailPage(moduleData.offers.rows.find(entry => entry.id === context.id));
+        return true;
+      }
+      if (context.type === "article-detail") {
+        renderArticleDetailPage(getArticleById(context.id));
+        return true;
+      }
+      if (context.type === "reported-board-detail") {
+        renderReportedBoardDetail(getBoardReportById(context.id));
+        return true;
+      }
+      if (context.type === "market-brand-detail") {
+        renderMarketBrandDetailPage(context.brandId);
+        return true;
+      }
+      if (context.type === "market-model-detail") {
+        renderMarketModelDetailPage(context.brandId, context.modelIndex);
+        return true;
+      }
+      if (context.type === "market-record-detail") {
+        renderMarketRecordDetailPage(context.recordId, context.subLabel);
+        return true;
+      }
+      return false;
+    }
+
+    function getDefaultBackContext() {
+      if (activeModule === "users") return { type: "module", module: "users", sub: activeSub === "Reported Users" ? "Reported Users" : "User Accounts", displaySub: activeSub === "Reported Users" ? "Reported Users" : "User Accounts" };
+      if (activeModule === "assets") return { type: "module", module: "assets", sub: activeSub === "Reported Assets" ? "Reported Assets" : "Asset List", displaySub: activeSub === "Reported Assets" ? "Reported Assets" : "Asset List" };
+      if (activeModule === "offers") return { type: "module", module: "offers", sub: "", displaySub: "" };
+      if (activeModule === "content") return { type: "module", module: "content", sub: activeSub === "Reported Articles" ? "Reported Articles" : "Articles", displaySub: activeSub === "Reported Articles" ? "Reported Articles" : "Articles" };
+      if (activeModule === "market") return { type: "module", module: "market", sub: activeSub || "Dashboard", displaySub: activeSub || "Dashboard" };
+      return null;
+    }
+
+    function goBackToPreviousPage() {
+      const context = backNavigationStack.pop() || getDefaultBackContext();
+      if (!restoreNavigationContext(context)) restoreNavigationContext(getDefaultBackContext());
+      updateActiveNav();
+      scrollMainToTop();
+    }
+
+    function resetBackNavigation() {
+      backNavigationStack.length = 0;
+    }
+
     function renderPageBackButton(dataAttribute, label, className = "user-back-btn") {
       return `
-        <button class="btn ${className} page-back-btn" type="button" ${dataAttribute} aria-label="${label}" title="${label}">
+        <button class="btn ${className} page-back-btn" type="button" ${dataAttribute} aria-label="Back" title="Back">
           <svg class="mobile-back-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>
-          <span class="btn-label">${label}</span>
         </button>
       `;
     }
@@ -13126,6 +13253,8 @@
         assetBackButton.setAttribute("aria-label", "กลับไป Asset List");
         assetBackButton.setAttribute("title", "กลับไป Asset List");
         const assetBackLabel = assetBackButton.querySelector(".btn-label");
+        assetBackButton.setAttribute("aria-label", "Back");
+        assetBackButton.setAttribute("title", "Back");
         if (assetBackLabel) assetBackLabel.textContent = "กลับไป Asset List";
       }
       updateActiveNav();
@@ -21741,6 +21870,7 @@
         }
         const subLabel = navButton.dataset.sub || "";
         const displaySubLabel = navButton.dataset.module === parentId ? subLabel : "";
+        resetBackNavigation();
         resetListFilterPanelsForNavigation(navButton.dataset.module, subLabel);
         renderModule(navButton.dataset.module, subLabel, displaySubLabel);
         scrollMainToTop();
@@ -21749,11 +21879,13 @@
       }
       const marketBrandButton = event.target.closest("[data-market-brand]");
       if (marketBrandButton && activeModule === "market") {
+        pushBackNavigationContext({ type: "module", module: "market", sub: activeSub || "Brands & Models", displaySub: activeSub || "Brands & Models" });
         renderMarketBrandDetailPage(marketBrandButton.dataset.marketBrand);
         return;
       }
       const marketModelButton = event.target.closest("[data-market-model]");
       if (marketModelButton && activeModule === "market") {
+        pushBackNavigationContext({ type: "market-brand-detail", brandId: marketModelButton.dataset.marketBrandId || activeMarketBrandId });
         renderMarketModelDetailPage(marketModelButton.dataset.marketBrandId || activeMarketBrandId, marketModelButton.dataset.marketModel);
         return;
       }
@@ -21768,7 +21900,13 @@
       }
       const marketRecordButton = event.target.closest("[data-market-record]");
       if (marketRecordButton && activeModule === "market") {
+        pushBackNavigationContext({ type: "module", module: "market", sub: activeSub || "Sync History", displaySub: activeSub || "Sync History" });
         renderMarketRecordDetailPage(marketRecordButton.dataset.marketRecord, activeSub);
+        return;
+      }
+      const pageBackButton = event.target.closest(".page-back-btn");
+      if (pageBackButton) {
+        goBackToPreviousPage();
         return;
       }
       const marketBackButton = event.target.closest("[data-market-back]");
@@ -21827,6 +21965,7 @@
         if (event.target.closest("button") && !event.target.closest("[data-offer-open]")) return;
         const id = offerOpenButton.dataset.offerOpen || offerOpenButton.dataset.offerCard;
         const offer = moduleData.offers.rows.find(entry => entry.id === id);
+        pushBackNavigationContext();
         renderOfferDetailPage(offer);
         return;
       }
@@ -21834,6 +21973,7 @@
       if (articleOpenButton) {
         const article = getArticleById(articleOpenButton.dataset.articleOpen);
         if (!article) return;
+        pushBackNavigationContext();
         renderArticleDetailPage(article);
         closeRowMenus();
         return;
@@ -21980,6 +22120,7 @@
       if (articleCard && !event.target.closest(".row-menu, button, a, input, select, [data-custom-select]")) {
         const article = getArticleById(articleCard.dataset.articleCard);
         if (!article) return;
+        pushBackNavigationContext();
         renderArticleDetailPage(article);
         return;
       }
@@ -22090,6 +22231,7 @@
       if (userOpenButton) {
         const id = userOpenButton.dataset.userOpen;
         const user = userManagementData.users.find(entry => entry.id === id);
+        pushBackNavigationContext();
         renderUserDetailPage(user);
         closeRowMenus();
         return;
@@ -22097,6 +22239,7 @@
       const userCard = event.target.closest("[data-user-card]");
       if (userCard && !event.target.closest(".row-menu, button, a, input, select, [data-custom-select]")) {
         const user = userManagementData.users.find(entry => entry.id === userCard.dataset.userCard);
+        pushBackNavigationContext();
         renderUserDetailPage(user);
         return;
       }
@@ -22194,6 +22337,7 @@
       if (assetOpenButton) {
         const asset = moduleData.assets.rows.find(entry => entry.id === assetOpenButton.dataset.assetOpen);
         activeAssetImageIndex = 0;
+        pushBackNavigationContext();
         renderAssetDetailPage(asset);
         closeRowMenus();
         return;
@@ -22203,6 +22347,7 @@
         const asset = moduleData.assets.rows.find(entry => entry.id === assetReportOpenButton.dataset.assetReportOpen);
         reporterHistoryPage = 1;
         reportAuditHistoryPage = 1;
+        pushBackNavigationContext();
         renderReportedAssetDetail(asset);
         closeRowMenus();
         return;
@@ -22212,6 +22357,7 @@
         const asset = moduleData.assets.rows.find(entry => entry.id === assetReportCard.dataset.assetReportCard);
         reporterHistoryPage = 1;
         reportAuditHistoryPage = 1;
+        pushBackNavigationContext();
         renderReportedAssetDetail(asset);
         return;
       }
@@ -22220,6 +22366,7 @@
         const report = getBoardReportById(boardReportOpenButton.dataset.boardReportOpen);
         reporterHistoryPage = 1;
         reportAuditHistoryPage = 1;
+        pushBackNavigationContext();
         renderReportedBoardDetail(report);
         closeRowMenus();
         return;
@@ -22229,6 +22376,7 @@
         const report = getBoardReportById(boardReportCard.dataset.boardReportCard);
         reporterHistoryPage = 1;
         reportAuditHistoryPage = 1;
+        pushBackNavigationContext();
         renderReportedBoardDetail(report);
         return;
       }
@@ -22242,6 +22390,7 @@
       if (assetCard && !event.target.closest(".row-menu, button, a, input, select, [data-custom-select]")) {
         const asset = moduleData.assets.rows.find(entry => entry.id === assetCard.dataset.assetCard);
         activeAssetImageIndex = 0;
+        pushBackNavigationContext();
         renderAssetDetailPage(asset);
         return;
       }
@@ -22342,6 +22491,7 @@
         activeRow = report;
         reporterHistoryPage = 1;
         reportAuditHistoryPage = 1;
+        pushBackNavigationContext();
         renderReportedUserDetail(report);
         return;
       }
