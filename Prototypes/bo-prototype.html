@@ -10693,16 +10693,34 @@
     const reportPriorityLabels = {
       "สูง": "High",
       "กลาง": "Medium",
-      "ปกติ": "Low"
+      "ปกติ": "Low",
+      "high": "High",
+      "medium": "Medium",
+      "low": "Low"
     };
+
+    function getReportPriorityValue(priority) {
+      const priorityValueMap = {
+        "สูง": "high",
+        "กลาง": "medium",
+        "ปกติ": "low",
+        "High": "high",
+        "Medium": "medium",
+        "Low": "low",
+        "high": "high",
+        "medium": "medium",
+        "low": "low"
+      };
+      return priorityValueMap[priority] || String(priority || "").toLowerCase();
+    }
 
     function getReportPriorityLabel(priority) {
       return reportPriorityLabels[priority] || priority;
     }
 
     function getReportPriorityRank(priority) {
-      const priorityRank = { "สูง": 3, "กลาง": 2, "ปกติ": 1 };
-      return priorityRank[priority] || 0;
+      const priorityRank = { high: 3, medium: 2, low: 1 };
+      return priorityRank[getReportPriorityValue(priority)] || 0;
     }
 
     const filterCopy = {
@@ -13351,7 +13369,7 @@
         <div class="user-filter-bar report-mode" data-filter-open="${userFilterOpen}">
           <input class="field search" id="user-search" type="search" placeholder="ค้นหา Report ID, User, User ID" />
           <div class="user-advanced-filter">${customSelect("report-status-filter", "Filter report status", filterOptions("reportStatus"))}</div>
-          <div class="user-advanced-filter">${customSelect("report-priority-filter", "Filter priority", filterOptions("reportPriorityThaiValues"))}</div>
+          <div class="user-advanced-filter">${customSelect("report-priority-filter", "Filter priority", filterOptions("reportPriorityKeyValues"))}</div>
           <div class="user-advanced-filter">${customSelect("report-sort", "Sort reports", filterOptions("reportSort"), "latest")}</div>
           ${resetFilterButton('id="user-reset"')}
         </div>
@@ -14817,7 +14835,7 @@
       const priority = document.querySelector("#report-priority-filter")?.value || "";
       const sort = document.querySelector("#report-sort")?.value || "latest";
       const sorted = [...userManagementData.reports].filter(report => {
-        return (!q || getUserSearchText(report).includes(q)) && (!status || getReportQueueStatus(report) === status) && (!priority || report.priority === priority);
+        return (!q || getUserSearchText(report).includes(q)) && (!status || getReportQueueStatus(report) === status) && (!priority || getReportPriorityValue(report.priority) === priority);
       }).sort((a, b) => {
         if (sort === "reporters") return b.reporters - a.reporters;
         if (sort === "oldest") return getUserReportReceivedSortRank(a) - getUserReportReceivedSortRank(b);
@@ -21623,7 +21641,8 @@
     }
 
     function statusPill(status, priority) {
-      const color = priority === "สูง" ? "red" : priority === "กลาง" ? "amber" : ["Active", "Ready", "Published", "สำเร็จ", "Completed"].includes(status) ? "green" : "purple";
+      const priorityValue = getReportPriorityValue(priority);
+      const color = priorityValue === "high" ? "red" : priorityValue === "medium" ? "amber" : ["Active", "Ready", "Published", "สำเร็จ", "Completed"].includes(status) ? "green" : "purple";
       return `<span class="pill ${color}">${status}</span>`;
     }
 
