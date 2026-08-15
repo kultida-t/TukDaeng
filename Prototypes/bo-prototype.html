@@ -1681,7 +1681,8 @@
     body.article-list-mode #primary-action,
     body.category-list-mode #primary-action,
     body.reported-board-mode #primary-action,
-    body.market-list-mode #primary-action {
+    body.market-list-mode #primary-action,
+    body.user-list-mode #primary-action {
       display: none;
     }
     body.article-list-mode .panel-head,
@@ -4048,7 +4049,8 @@
     body.user-accounts-mode:not(.user-detail-mode) .user-filter-bar,
     .user-filter-bar.report-mode,
     .user-filter-bar.content-mode,
-    body.asset-list-mode:not(.article-list-mode):not(.category-list-mode):not(.reported-board-mode) .user-filter-bar.asset-mode {
+    body.asset-list-mode:not(.article-list-mode):not(.category-list-mode):not(.reported-board-mode) .user-filter-bar.asset-mode,
+    .user-filter-bar.asset-mode {
       grid-template-columns: minmax(260px, 1.65fr) repeat(3, minmax(138px, .82fr)) 42px;
       align-items: stretch;
       gap: 8px;
@@ -4067,26 +4069,31 @@
     .user-filter-bar.category-mode .search,
     body.offer-list-mode .offer-filter-bar .search,
     body.asset-list-mode:not(.article-list-mode):not(.category-list-mode):not(.reported-board-mode) .user-filter-bar.asset-mode .search,
+    .user-filter-bar.asset-mode .search,
     .user-filter-bar.report-mode .custom-select,
     .user-filter-bar.content-mode .custom-select,
     .user-filter-bar.category-mode .custom-select,
     body.offer-list-mode .offer-filter-bar .custom-select,
     body.asset-list-mode:not(.article-list-mode):not(.category-list-mode):not(.reported-board-mode) .user-filter-bar.asset-mode .custom-select,
+    .user-filter-bar.asset-mode .custom-select,
     .user-filter-bar.report-mode .custom-select-trigger,
     .user-filter-bar.content-mode .custom-select-trigger,
     .user-filter-bar.category-mode .custom-select-trigger,
     body.offer-list-mode .offer-filter-bar .custom-select-trigger,
     body.asset-list-mode:not(.article-list-mode):not(.category-list-mode):not(.reported-board-mode) .user-filter-bar.asset-mode .custom-select-trigger,
+    .user-filter-bar.asset-mode .custom-select-trigger,
     .user-filter-bar.report-mode .filter-reset,
     .user-filter-bar.content-mode .filter-reset,
     .user-filter-bar.category-mode .filter-reset,
-    body.offer-list-mode .offer-filter-bar .filter-reset {
+    body.offer-list-mode .offer-filter-bar .filter-reset,
+    .user-filter-bar.asset-mode .filter-reset {
       width: 100%;
       height: 48px;
       min-height: 48px;
     }
     .user-filter-bar.content-mode .filter-reset,
-    .user-filter-bar.category-mode .filter-reset {
+    .user-filter-bar.category-mode .filter-reset,
+    .user-filter-bar.asset-mode .filter-reset {
       width: 42px;
       height: 48px;
       min-height: 48px;
@@ -4106,7 +4113,8 @@
     .user-filter-bar.content-mode .search,
     .user-filter-bar.category-mode .search,
     body.offer-list-mode .offer-filter-bar .search,
-    body.asset-list-mode:not(.article-list-mode):not(.category-list-mode):not(.reported-board-mode) .user-filter-bar.asset-mode .search {
+    body.asset-list-mode:not(.article-list-mode):not(.category-list-mode):not(.reported-board-mode) .user-filter-bar.asset-mode .search,
+    .user-filter-bar.asset-mode .search {
       grid-column: auto;
       min-width: 0;
       line-height: 1.2;
@@ -4119,16 +4127,19 @@
     .user-filter-bar.category-mode .field,
     body.offer-list-mode .offer-filter-bar .field,
     body.asset-list-mode:not(.article-list-mode):not(.category-list-mode):not(.reported-board-mode) .user-filter-bar.asset-mode .field,
+    .user-filter-bar.asset-mode .field,
     .user-filter-bar.report-mode .custom-select,
     .user-filter-bar.content-mode .custom-select,
     .user-filter-bar.category-mode .custom-select,
     body.offer-list-mode .offer-filter-bar .custom-select,
     body.asset-list-mode:not(.article-list-mode):not(.category-list-mode):not(.reported-board-mode) .user-filter-bar.asset-mode .custom-select,
+    .user-filter-bar.asset-mode .custom-select,
     .user-filter-bar.report-mode .custom-select-trigger,
     .user-filter-bar.content-mode .custom-select-trigger,
     .user-filter-bar.category-mode .custom-select-trigger,
     body.offer-list-mode .offer-filter-bar .custom-select-trigger,
-    body.asset-list-mode:not(.article-list-mode):not(.category-list-mode):not(.reported-board-mode) .user-filter-bar.asset-mode .custom-select-trigger {
+    body.asset-list-mode:not(.article-list-mode):not(.category-list-mode):not(.reported-board-mode) .user-filter-bar.asset-mode .custom-select-trigger,
+    .user-filter-bar.asset-mode .custom-select-trigger {
       min-width: 0;
     }
     body.user-accounts-mode:not(.user-detail-mode) .user-filter-bar .custom-select-trigger,
@@ -4136,7 +4147,8 @@
     .user-filter-bar.content-mode .custom-select-trigger,
     .user-filter-bar.category-mode .custom-select-trigger,
     body.offer-list-mode .offer-filter-bar .custom-select-trigger,
-    body.asset-list-mode:not(.article-list-mode):not(.category-list-mode):not(.reported-board-mode) .user-filter-bar.asset-mode .custom-select-trigger {
+    body.asset-list-mode:not(.article-list-mode):not(.category-list-mode):not(.reported-board-mode) .user-filter-bar.asset-mode .custom-select-trigger,
+    .user-filter-bar.asset-mode .custom-select-trigger {
       display: flex;
       align-items: center;
       flex-wrap: nowrap;
@@ -4146,7 +4158,8 @@
     .user-filter-bar.content-mode .custom-select-trigger [data-custom-select-label],
     .user-filter-bar.category-mode .custom-select-trigger [data-custom-select-label],
     body.offer-list-mode .offer-filter-bar .custom-select-trigger [data-custom-select-label],
-    body.asset-list-mode:not(.article-list-mode):not(.category-list-mode):not(.reported-board-mode) .user-filter-bar.asset-mode .custom-select-trigger [data-custom-select-label] {
+    body.asset-list-mode:not(.article-list-mode):not(.category-list-mode):not(.reported-board-mode) .user-filter-bar.asset-mode .custom-select-trigger [data-custom-select-label],
+    .user-filter-bar.asset-mode .custom-select-trigger [data-custom-select-label] {
       display: block;
       min-width: 0;
       overflow: hidden;
@@ -4158,7 +4171,8 @@
     .user-filter-bar.content-mode .filter-reset,
     .user-filter-bar.category-mode .filter-reset,
     body.offer-list-mode .offer-filter-bar .filter-reset,
-    body.asset-list-mode:not(.article-list-mode):not(.category-list-mode):not(.reported-board-mode) .user-filter-bar.asset-mode .filter-reset {
+    body.asset-list-mode:not(.article-list-mode):not(.category-list-mode):not(.reported-board-mode) .user-filter-bar.asset-mode .filter-reset,
+    .user-filter-bar.asset-mode .filter-reset {
       min-width: 42px;
       padding: 0;
       border-color: #cfdbea;
@@ -4170,7 +4184,8 @@
     .user-filter-bar.content-mode .filter-reset span,
     .user-filter-bar.category-mode .filter-reset span,
     body.offer-list-mode .offer-filter-bar .filter-reset span,
-    body.asset-list-mode:not(.article-list-mode):not(.category-list-mode):not(.reported-board-mode) .user-filter-bar.asset-mode .filter-reset span {
+    body.asset-list-mode:not(.article-list-mode):not(.category-list-mode):not(.reported-board-mode) .user-filter-bar.asset-mode .filter-reset span,
+    .user-filter-bar.asset-mode .filter-reset span {
       position: absolute;
       width: 1px;
       height: 1px;
@@ -4201,7 +4216,7 @@
     }
     .comment-row {
       display: grid;
-      grid-template-columns: minmax(100px, .6fr) minmax(140px, 1.2fr) minmax(120px, .8fr) minmax(100px, .6fr) minmax(70px, .4fr) minmax(70px, .4fr) minmax(80px, .5fr) minmax(90px, .5fr) minmax(100px, .6fr) minmax(80px, .5fr);
+      grid-template-columns: minmax(100px, .6fr) minmax(250px, 2.2fr) minmax(200px, 1.4fr) minmax(100px, .6fr) minmax(70px, .4fr) minmax(60px, .35fr) minmax(70px, .4fr) minmax(90px, .55fr) minmax(130px, .8fr) minmax(90px, .6fr);
       gap: 12px;
       align-items: center;
       min-height: 82px;
@@ -4209,10 +4224,40 @@
       border-bottom: 1px solid var(--line);
       background: #fff;
     }
+    .comment-table .comment-row .main-text,
+    .comment-table .asset-row .main-text {
+      color: #061426;
+      font-size: 12px;
+      font-weight: 400;
+    }
+    .comment-table .comment-row .muted,
+    .comment-table .asset-row .muted {
+      color: #66758d;
+      font-size: 12px;
+      font-weight: 400;
+    }
+    .comment-row .pill {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 12px;
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .02em;
+      white-space: nowrap;
+    }
     .comment-row.head {
       font-weight: 600;
       color: var(--muted);
       font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      grid-template-columns: minmax(100px, .6fr) minmax(250px, 2.2fr) minmax(200px, 1.4fr) minmax(100px, .6fr) minmax(70px, .4fr) minmax(60px, .35fr) minmax(70px, .4fr) minmax(90px, .55fr) minmax(130px, .8fr) minmax(90px, .6fr);
+    }
+    .comment-table .comment-row.head > div {
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 600;
       text-transform: uppercase;
       letter-spacing: .08em;
     }
@@ -6994,21 +7039,26 @@
       .user-filter-bar.category-mode {
         grid-template-columns: minmax(0, 1fr) minmax(132px, .5fr) minmax(132px, .5fr) 42px;
       }
-      body.asset-list-mode:not(.article-list-mode):not(.category-list-mode):not(.reported-board-mode) .user-filter-bar.asset-mode {
+      body.asset-list-mode:not(.article-list-mode):not(.category-list-mode):not(.reported-board-mode) .user-filter-bar.asset-mode,
+      .user-filter-bar.asset-mode {
         grid-template-columns: minmax(0, 1fr) minmax(132px, .5fr) minmax(132px, .5fr) minmax(132px, .5fr) 42px;
       }
       body.user-accounts-mode:not(.user-detail-mode) #table .user-table {
         min-width: 980px;
       }
       body.user-accounts-mode:not(.user-detail-mode) #table .comment-table {
-        min-width: 1200px;
+        min-width: 1400px;
       }
       body.user-accounts-mode:not(.user-detail-mode) .user-row:not(.report-row) {
         grid-template-columns: minmax(68px, .38fr) minmax(128px, 1fr) minmax(108px, .7fr) minmax(116px, .76fr) minmax(52px, .32fr) minmax(78px, .5fr) minmax(100px, .62fr) minmax(38px, .2fr);
         column-gap: 8px;
       }
       body.user-accounts-mode:not(.user-detail-mode) .comment-row:not(.head) {
-        grid-template-columns: minmax(80px, .5fr) minmax(120px, 1fr) minmax(100px, .7fr) minmax(80px, .5fr) minmax(60px, .35fr) minmax(60px, .35fr) minmax(70px, .4fr) minmax(80px, .45fr) minmax(90px, .5fr) minmax(70px, .4fr);
+        grid-template-columns: minmax(70px, .45fr) minmax(140px, 1.2fr) minmax(120px, .9fr) minmax(80px, .5fr) minmax(60px, .35fr) minmax(50px, .3fr) minmax(60px, .35fr) minmax(70px, .45fr) minmax(100px, .7fr) minmax(60px, .4fr);
+        column-gap: 8px;
+      }
+      body.user-accounts-mode:not(.user-detail-mode) .comment-row.head {
+        grid-template-columns: minmax(70px, .45fr) minmax(140px, 1.2fr) minmax(120px, .9fr) minmax(80px, .5fr) minmax(60px, .35fr) minmax(50px, .3fr) minmax(60px, .35fr) minmax(70px, .45fr) minmax(100px, .7fr) minmax(60px, .4fr);
         column-gap: 8px;
       }
       body.offer-list-mode .offer-filter-bar {
@@ -7024,7 +7074,8 @@
       .user-filter-bar.content-mode .filter-reset,
       .user-filter-bar.category-mode .filter-reset,
       body.market-list-mode .user-filter-bar.market-mode .filter-reset,
-      body.asset-list-mode:not(.article-list-mode):not(.category-list-mode):not(.reported-board-mode) .user-filter-bar.asset-mode .filter-reset {
+      body.asset-list-mode:not(.article-list-mode):not(.category-list-mode):not(.reported-board-mode) .user-filter-bar.asset-mode .filter-reset,
+      .user-filter-bar.asset-mode .filter-reset {
         width: 42px;
         min-width: 42px;
         padding: 0;
@@ -7035,7 +7086,8 @@
       .user-filter-bar.content-mode .filter-reset span,
       .user-filter-bar.category-mode .filter-reset span,
       body.market-list-mode .user-filter-bar.market-mode .filter-reset span,
-      body.asset-list-mode:not(.article-list-mode):not(.category-list-mode):not(.reported-board-mode) .user-filter-bar.asset-mode .filter-reset span {
+      body.asset-list-mode:not(.article-list-mode):not(.category-list-mode):not(.reported-board-mode) .user-filter-bar.asset-mode .filter-reset span,
+      .user-filter-bar.asset-mode .filter-reset span {
         position: absolute;
         width: 1px;
         height: 1px;
@@ -7530,6 +7582,7 @@
         width: 100%;
       }
       body.asset-list-mode .user-filter-bar.asset-mode,
+      .user-filter-bar.asset-mode,
       body.market-list-mode .market-catalog-filter-bar.search-only,
       body.market-list-mode .market-catalog-filter-bar.status-only {
         display: grid;
@@ -7547,9 +7600,13 @@
         grid-column: auto;
       }
       body.asset-list-mode .user-filter-bar.asset-mode .search,
+      .user-filter-bar.asset-mode .search,
       body.asset-list-mode .user-filter-bar.asset-mode .user-advanced-filter,
+      .user-filter-bar.asset-mode .user-advanced-filter,
       body.asset-list-mode .user-filter-bar.asset-mode .custom-select,
+      .user-filter-bar.asset-mode .custom-select,
       body.asset-list-mode .user-filter-bar.asset-mode .custom-select-trigger,
+      .user-filter-bar.asset-mode .custom-select-trigger,
       body.market-list-mode .market-catalog-filter-bar.search-only #market-search,
       body.market-list-mode .market-catalog-filter-bar.status-only #market-search,
       body.market-list-mode .market-catalog-filter-bar.status-only .user-advanced-filter,
@@ -7925,6 +7982,9 @@
       body.asset-list-mode .user-filter-bar {
         grid-template-columns: 1fr;
       }
+      .user-filter-bar.asset-mode {
+        grid-template-columns: 1fr;
+      }
       body.asset-list-mode:not(.article-list-mode):not(.category-list-mode):not(.reported-board-mode) .user-filter-bar.asset-mode {
         display: grid;
         width: 100%;
@@ -7932,9 +7992,13 @@
         gap: 8px;
       }
       body.asset-list-mode:not(.article-list-mode):not(.category-list-mode):not(.reported-board-mode) .user-filter-bar.asset-mode .search,
+      .user-filter-bar.asset-mode .search,
       body.asset-list-mode:not(.article-list-mode):not(.category-list-mode):not(.reported-board-mode) .user-filter-bar.asset-mode .user-advanced-filter,
+      .user-filter-bar.asset-mode .user-advanced-filter,
       body.asset-list-mode:not(.article-list-mode):not(.category-list-mode):not(.reported-board-mode) .user-filter-bar.asset-mode .custom-select,
-      body.asset-list-mode:not(.article-list-mode):not(.category-list-mode):not(.reported-board-mode) .user-filter-bar.asset-mode .custom-select-trigger {
+      .user-filter-bar.asset-mode .custom-select,
+      body.asset-list-mode:not(.article-list-mode):not(.category-list-mode):not(.reported-board-mode) .user-filter-bar.asset-mode .custom-select-trigger,
+      .user-filter-bar.asset-mode .custom-select-trigger {
         width: 100%;
         max-width: none;
         min-width: 0;
@@ -8133,13 +8197,16 @@
       }
       body.article-list-mode .article-table .asset-row:not(.head) .desktop-user-name,
       body.category-list-mode .category-table .asset-row:not(.head) .desktop-user-name,
-      body.reported-board-mode .reported-board-table .asset-row:not(.head) .desktop-user-name { display: none; }
+      body.reported-board-mode .reported-board-table .asset-row:not(.head) .desktop-user-name,
+      body.user-accounts-mode .comment-list-table .asset-row:not(.head) .desktop-user-name { display: none; }
       body.article-list-mode .article-table .asset-row:not(.head) .mobile-user-card-title,
       body.category-list-mode .category-table .asset-row:not(.head) .mobile-user-card-title,
-      body.reported-board-mode .reported-board-table .asset-row:not(.head) .mobile-user-card-title { display: inline; }
+      body.reported-board-mode .reported-board-table .asset-row:not(.head) .mobile-user-card-title,
+      body.user-accounts-mode .comment-list-table .asset-row:not(.head) .mobile-user-card-title { display: inline; }
       body.article-list-mode .article-table .asset-card-tags,
       body.category-list-mode .category-table .asset-card-tags,
-      body.reported-board-mode .reported-board-table .asset-card-tags {
+      body.reported-board-mode .reported-board-table .asset-card-tags,
+      body.user-accounts-mode .comment-list-table .asset-card-tags {
         grid-column: 1 / -1;
         grid-row: 2;
         display: flex;
@@ -8150,7 +8217,8 @@
       }
       body.article-list-mode .article-table .asset-card-tags .user-card-meta,
       body.category-list-mode .category-table .asset-card-tags .user-card-meta,
-      body.reported-board-mode .reported-board-table .asset-card-tags .user-card-meta {
+      body.reported-board-mode .reported-board-table .asset-card-tags .user-card-meta,
+      body.user-accounts-mode .comment-list-table .asset-card-tags .user-card-meta {
         flex: 1 0 100%;
         display: grid;
         gap: 3px;
@@ -8161,7 +8229,8 @@
       }
       body.article-list-mode .article-table .asset-card-tags .user-card-meta-item,
       body.category-list-mode .category-table .asset-card-tags .user-card-meta-item,
-      body.reported-board-mode .reported-board-table .asset-card-tags .user-card-meta-item {
+      body.reported-board-mode .reported-board-table .asset-card-tags .user-card-meta-item,
+      body.user-accounts-mode .comment-list-table .asset-card-tags .user-card-meta-item {
         display: flex;
         align-items: baseline;
         justify-content: space-between;
@@ -8172,7 +8241,8 @@
       }
       body.article-list-mode .article-table .asset-card-tags .user-card-meta-item span,
       body.category-list-mode .category-table .asset-card-tags .user-card-meta-item span,
-      body.reported-board-mode .reported-board-table .asset-card-tags .user-card-meta-item span {
+      body.reported-board-mode .reported-board-table .asset-card-tags .user-card-meta-item span,
+      body.user-accounts-mode .comment-list-table .asset-card-tags .user-card-meta-item span {
         color: #485b75;
         font-size: 12px;
         font-weight: 700;
@@ -8180,7 +8250,8 @@
       }
       body.article-list-mode .article-table .asset-card-tags .user-card-meta-item strong,
       body.category-list-mode .category-table .asset-card-tags .user-card-meta-item strong,
-      body.reported-board-mode .reported-board-table .asset-card-tags .user-card-meta-item strong {
+      body.reported-board-mode .reported-board-table .asset-card-tags .user-card-meta-item strong,
+      body.user-accounts-mode .comment-list-table .asset-card-tags .user-card-meta-item strong {
         color: #233a5c;
         font-size: 12px;
         font-weight: 400;
@@ -8191,7 +8262,8 @@
         text-overflow: ellipsis;
         white-space: nowrap;
       }
-      body.asset-list-mode:not(.article-list-mode):not(.category-list-mode):not(.reported-board-mode) .asset-list-table .asset-row:not(.head) {
+      body.asset-list-mode:not(.article-list-mode):not(.category-list-mode):not(.reported-board-mode) .asset-list-table .asset-row:not(.head),
+      body.user-accounts-mode .comment-list-table .asset-row:not(.head) {
         grid-template-columns: minmax(0, 1fr) 34px;
         column-gap: 14px;
         row-gap: 14px;
@@ -8203,10 +8275,12 @@
         box-shadow: 0 1px 2px rgba(15, 23, 42, .05);
         overflow: visible;
       }
-      body.asset-list-mode .asset-list-table .asset-row:not(.head) > div[data-label]:not(.asset-cell-primary) {
+      body.asset-list-mode .asset-list-table .asset-row:not(.head) > div[data-label]:not(.asset-cell-primary),
+      body.user-accounts-mode .comment-list-table .asset-row:not(.head) > div[data-label]:not(.asset-cell-primary) {
         display: none;
       }
-      body.asset-list-mode .asset-list-table .asset-row:not(.head) > div[data-label]:first-child {
+      body.asset-list-mode .asset-list-table .asset-row:not(.head) > div[data-label]:first-child,
+      body.user-accounts-mode .comment-list-table .asset-row:not(.head) > div[data-label]:first-child {
         display: none;
       }
       body.asset-list-mode .asset-list-table .asset-row:not(.head) > .user-row-actions {
@@ -8219,7 +8293,27 @@
         min-height: 30px;
         padding-top: 0;
       }
+      body.user-accounts-mode .comment-list-table .asset-row:not(.head) > .user-row-actions {
+        grid-column: 2;
+        grid-row: 1;
+        align-self: center;
+        justify-self: end;
+        justify-content: flex-end;
+        width: auto;
+        min-height: 30px;
+        padding-top: 0;
+      }
       body.asset-list-mode .asset-list-table .asset-row:not(.head) > .asset-cell-primary {
+        grid-column: 1;
+        grid-row: 1;
+        min-height: 30px;
+        display: flex;
+        align-items: center;
+        align-self: center;
+        border-bottom: 0;
+        padding-bottom: 0;
+      }
+      body.user-accounts-mode .comment-list-table .asset-row:not(.head) > .asset-cell-primary {
         grid-column: 1;
         grid-row: 1;
         min-height: 30px;
@@ -8241,9 +8335,32 @@
         letter-spacing: .04em;
         line-height: 1;
       }
+      body.user-accounts-mode .comment-list-table .asset-row:not(.head) > .asset-cell-primary .main-text {
+        max-width: 100%;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        color: #061426;
+        font-family: var(--font-heading);
+        font-size: 22px;
+        font-weight: 500;
+        letter-spacing: .04em;
+        line-height: 1;
+      }
       body.asset-list-mode .asset-list-table .asset-row:not(.head) .desktop-user-name { display: none; }
+      body.user-accounts-mode .comment-list-table .asset-row:not(.head) .desktop-user-name { display: none; }
       body.asset-list-mode .asset-list-table .asset-row:not(.head) .mobile-user-card-title { display: inline; }
+      body.user-accounts-mode .comment-list-table .asset-row:not(.head) .mobile-user-card-title { display: inline; }
       body.asset-list-mode .asset-list-table .asset-card-tags {
+        grid-column: 1 / -1;
+        grid-row: 2;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 9px;
+        width: 100%;
+        padding-top: 0;
+      }
+      body.user-accounts-mode .comment-list-table .asset-card-tags {
         grid-column: 1 / -1;
         grid-row: 2;
         display: flex;
@@ -9342,9 +9459,9 @@
     const socialSubConfigs = {
       "Asset Comments": {
         title: "Asset Comments",
-        panel: "Asset Comments Queue",
-        subtitle: "Moderate root comments and one-level replies from Asset Detail on Sale/Show assets, with author, linked asset, report signal, and FO visibility impact.",
-        action: "Open reported comments",
+        panel: "Asset Comments List",
+        subtitle: "",
+        action: "",
         stats: [["Visible Comments", "8,420", "Today 184"], ["Flagged", "18", "spam/link/sensitive"], ["Reported Pending", "4", "SLA 24h"], ["Hidden / Removed", "7", "audit required"]],
         cards: [
           ["Review Scope", "Sale and Show asset comments only. Like count is shown as signal metadata, not as a moderation target."],
@@ -9354,7 +9471,17 @@
         rows: [
           { id: "COM-711", name: "Spam comment with external link from Asset Detail", author: "U-1186", assetId: "AST-8802", assetName: "Rolex Submariner Date", assetStatus: "Sale", commentType: "Root", likeCount: 11, reportCount: 3, status: "Reported", priority: "สูง", detail: "คอมเมนต์ซ้ำหลาย asset พร้อม link นอกระบบจาก Asset Detail", tags: ["Reports 3", "Root comment", "SLA 4h"], action: "Hide comment หรือ resolve report ต้องมี reason และ audit", createdAt: "10 Jul 2026 14:22", updatedAt: "10 Jul 2026 16:45" },
           { id: "COM-704", name: "Reply contains phone number in public surface", author: "U-1042", assetId: "AST-8831", assetName: "Omega Speedmaster Professional", assetStatus: "Show", commentType: "Reply", parentId: "COM-703", likeCount: 0, reportCount: 1, status: "Flagged", priority: "กลาง", detail: "reply ใต้ root comment 1 ชั้น มีข้อมูลติดต่อที่ควรตรวจ policy", tags: ["Sensitive signal", "Reply"], action: "ตรวจ full text แบบ masked และตัดสิน hide/no action", createdAt: "10 Jul 2026 11:30", updatedAt: "10 Jul 2026 15:20" },
-          { id: "COM-690", name: "User deleted comment retained for audit", author: "U-1161", assetId: "AST-8612", assetName: "Patek Philippe Nautilus", assetStatus: "Sale", commentType: "Root", likeCount: 5, reportCount: 0, status: "User Deleted", priority: "ปกติ", detail: "ผู้ใช้ลบเองจาก FO แต่ BO ต้องเห็น retained state เพื่อ audit", tags: ["User action", "Read-only"], action: "ดู history เท่านั้น ไม่ restore จาก BO", createdAt: "09 Jul 2026 18:15", updatedAt: "09 Jul 2026 19:30" }
+          { id: "COM-690", name: "User deleted comment retained for audit", author: "U-1161", assetId: "AST-8612", assetName: "Patek Philippe Nautilus", assetStatus: "Sale", commentType: "Root", likeCount: 5, reportCount: 0, status: "User Deleted", priority: "ปกติ", detail: "ผู้ใช้ลบเองจาก FO แต่ BO ต้องเห็น retained state เพื่อ audit", tags: ["User action", "Read-only"], action: "ดู history เท่านั้น ไม่ restore จาก BO", createdAt: "09 Jul 2026 18:15", updatedAt: "09 Jul 2026 19:30" },
+          { id: "COM-750", name: "Normal visible comment on Sale asset", author: "U-1234", assetId: "AST-8901", assetName: "Rolex Daytona 116500LN", assetStatus: "Sale", commentType: "Root", likeCount: 8, reportCount: 0, status: "Visible", priority: "ปกติ", detail: "คอมเมนต์ปกติที่แสดงบน FO ไม่มี report", tags: ["Visible", "Root comment"], action: "ดู context และประวัติ ไม่ต้อง action", createdAt: "11 Jul 2026 09:15", updatedAt: "11 Jul 2026 09:15" },
+          { id: "COM-751", name: "Reply to visible comment", author: "U-5678", assetId: "AST-8901", assetName: "Rolex Daytona 116500LN", assetStatus: "Sale", commentType: "Reply", parentId: "COM-750", likeCount: 3, reportCount: 0, status: "Visible", priority: "ปกติ", detail: "reply 1 ชั้นที่แสดงบน FO ไม่มี report", tags: ["Visible", "Reply"], action: "ดู context และประวัติ ไม่ต้อง action", createdAt: "11 Jul 2026 10:30", updatedAt: "11 Jul 2026 10:30" },
+          { id: "COM-703", name: "Root comment with reply under review", author: "U-9999", assetId: "AST-8831", assetName: "Omega Speedmaster Professional", assetStatus: "Show", commentType: "Root", likeCount: 15, reportCount: 0, status: "Visible", priority: "ปกติ", detail: "root comment ที่มี reply อยู่ระหว่างตรวจ", tags: ["Visible", "Root comment", "Has reply"], action: "ดู context และประวัติ ไม่ต้อง action", createdAt: "10 Jul 2026 09:00", updatedAt: "10 Jul 2026 09:00" },
+          { id: "COM-752", name: "Hidden comment by admin after review", author: "U-3456", assetId: "AST-8755", assetName: "Patek Philippe Calatrava", assetStatus: "Show", commentType: "Root", likeCount: 2, reportCount: 5, status: "Hidden", priority: "สูง", detail: "คอมเมนต์ถูกซ่อนโดย Admin หลังตรวจพบว่าเป็น spam", tags: ["Hidden by Admin", "Reports 5", "Root comment"], action: "Restore หรือคงซ่อน ต้องมี reason และ audit", createdAt: "09 Jul 2026 16:45", updatedAt: "09 Jul 2026 18:30" },
+          { id: "COM-753", name: "Hidden reply by admin", author: "U-7890", assetId: "AST-8755", assetName: "Patek Philippe Calatrava", assetStatus: "Show", commentType: "Reply", parentId: "COM-752", likeCount: 0, reportCount: 2, status: "Hidden", priority: "กลาง", detail: "reply ถูกซ่อนโดย Admin หลังตรวจพบว่ามีข้อมูลส่วนตัว", tags: ["Hidden by Admin", "Reports 2", "Reply"], action: "Restore หรือคงซ่อน ต้องมี reason และ audit", createdAt: "09 Jul 2026 17:00", updatedAt: "09 Jul 2026 18:35" },
+          { id: "COM-754", name: "Removed comment permanently by admin", author: "U-1111", assetId: "AST-8588", assetName: "Cartier Santos Medium", assetStatus: "Sale", commentType: "Root", likeCount: 1, reportCount: 8, status: "Removed", priority: "สูง", detail: "คอมเมนต์ถูกลบถาวรโดย Admin หลังตรวจพบว่าเป็น harassment", tags: ["Removed by Admin", "Reports 8", "Root comment"], action: "ไม่สามารถ restore ดู audit history เท่านั้น", createdAt: "08 Jul 2026 14:20", updatedAt: "08 Jul 2026 20:15" },
+          { id: "COM-755", name: "Removed reply permanently by admin", author: "U-2222", assetId: "AST-8588", assetName: "Cartier Santos Medium", assetStatus: "Sale", commentType: "Reply", parentId: "COM-754", likeCount: 0, reportCount: 3, status: "Removed", priority: "กลาง", detail: "reply ถูกลบถาวรโดย Admin หลังตรวจพบว่ามีคำหยาบ", tags: ["Removed by Admin", "Reports 3", "Reply"], action: "ไม่สามารถ restore ดู audit history เท่านั้น", createdAt: "08 Jul 2026 14:45", updatedAt: "08 Jul 2026 20:20" },
+          { id: "COM-756", name: "User deleted reply retained for audit", author: "U-3333", assetId: "AST-8612", assetName: "Patek Philippe Nautilus", assetStatus: "Sale", commentType: "Reply", parentId: "COM-690", likeCount: 2, reportCount: 0, status: "User Deleted", priority: "ปกติ", detail: "ผู้ใช้ลบ reply เองจาก FO แต่ BO ต้องเห็น retained state", tags: ["User action", "Read-only", "Reply"], action: "ดู history เท่านั้น ไม่ restore จาก BO", createdAt: "09 Jul 2026 18:45", updatedAt: "09 Jul 2026 19:00" },
+          { id: "COM-757", name: "Visible comment on Show asset", author: "U-4444", assetId: "AST-8720", assetName: "Tudor Black Bay 58", assetStatus: "Show", commentType: "Root", likeCount: 6, reportCount: 0, status: "Visible", priority: "ปกติ", detail: "คอมเมนต์ปกติบน Show asset ไม่มี report", tags: ["Visible", "Root comment", "Show asset"], action: "ดู context และประวัติ ไม่ต้อง action", createdAt: "11 Jul 2026 08:00", updatedAt: "11 Jul 2026 08:00" },
+          { id: "COM-758", name: "Reported comment with harassment reason", author: "U-5555", assetId: "AST-8694", assetName: "Audemars Piguet Royal Oak", assetStatus: "Sale", commentType: "Root", likeCount: 4, reportCount: 7, status: "Reported", priority: "สูง", detail: "คอมเมนต์ถูก report 7 คน เหตุผล harassment", tags: ["Reports 7", "Harassment", "Root comment", "SLA 2h"], action: "Hide comment หรือ resolve report ต้องมี reason และ audit", createdAt: "11 Jul 2026 07:30", updatedAt: "11 Jul 2026 12:00" }
         ]
       },
       "Reported Comments": {
@@ -15710,30 +15837,24 @@
 
       if (normalizedSub === "Asset Comments") {
         document.querySelector(".filters").innerHTML = `
-          <input class="field search" id="comment-search" type="search" placeholder="ค้นหา Comment ID, Asset ID/Name, Author หรือ keyword" />
-          <select class="field" id="comment-status-filter" aria-label="Filter comment status">
-            <option value="">${filterCopy.allStatus}</option>
-            <option value="Visible">Visible</option>
-            <option value="Reported">Reported</option>
-            <option value="Hidden">Hidden</option>
-            <option value="Removed">Removed</option>
-            <option value="User Deleted">User Deleted</option>
-          </select>
-          <select class="field" id="comment-asset-status-filter" aria-label="Filter asset status">
-            <option value="">${filterCopy.allStatus}</option>
-            <option value="Sale">Sale</option>
-            <option value="Show">Show</option>
-          </select>
-          <select class="field" id="comment-type-filter" aria-label="Filter comment type">
-            <option value="">ทุกประเภท</option>
-            <option value="Root">Root</option>
-            <option value="Reply">Reply</option>
-          </select>
-          <select class="field" id="comment-sort" aria-label="Sort comments">
-            <option value="latest">${filterCopy.latestFirst}</option>
-            <option value="oldest">${filterCopy.oldestFirst}</option>
-          </select>
-          <button class="btn filter-reset" type="button" data-reset-comment-filters title="${filterCopy.resetAll}" aria-label="${filterCopy.resetAll}">${iconSvg.refresh}<span>${filterCopy.resetAll}</span></button>
+          <div class="user-filter-bar asset-mode">
+            <input class="field search" id="comment-search" type="search" placeholder="ค้นหา Comment ID, Asset, Author" />
+            <div class="user-advanced-filter">${customSelect("comment-status-filter", "Filter comment status", [
+              { value: "", label: filterCopy.allStatus },
+              { value: "Visible", label: "Visible" },
+              { value: "Reported", label: "Reported" },
+              { value: "Hidden", label: "Hidden" },
+              { value: "Removed", label: "Removed" },
+              { value: "User Deleted", label: "User Deleted" }
+            ])}</div>
+            <div class="user-advanced-filter">${customSelect("comment-asset-status-filter", "Filter asset status", [
+              { value: "", label: filterCopy.allStatus },
+              { value: "Sale", label: "Sale" },
+              { value: "Show", label: "Show" }
+            ])}</div>
+            <div class="user-advanced-filter">${customSelect("comment-sort", "Sort comments", filterOptions("latestOldestSort"))}</div>
+            ${resetFilterButton("data-reset-comment-filters")}
+          </div>
         `;
       } else {
         document.querySelector(".filters").innerHTML = `
@@ -17889,8 +18010,18 @@
 
     function updateFilters(data) {
       const statuses = Array.from(new Set(data.rows.map(row => row.status)));
-      document.querySelector("#status-filter").innerHTML = `<option value="">${filterCopy.allStatus}</option>${statuses.map(status => `<option value="${status}">${status}</option>`).join("")}`;
-      document.querySelector("#search").value = "";
+      const statusFilter = document.querySelector("#status-filter");
+      const commentStatusFilter = document.querySelector("#comment-status-filter");
+      if (commentStatusFilter) {
+        // Comment filters now use custom selects, options are hardcoded in template
+      } else {
+        const statusFilter = document.querySelector("#status-filter");
+        if (statusFilter) {
+          statusFilter.innerHTML = `<option value="">${filterCopy.allStatus}</option>${statuses.map(status => `<option value="${status}">${status}</option>`).join("")}`;
+        }
+      }
+      const searchInput = document.querySelector("#search") || document.querySelector("#comment-search");
+      if (searchInput) searchInput.value = "";
       const priorityFilter = document.querySelector("#priority-filter");
       if (priorityFilter) priorityFilter.value = "";
     }
@@ -21335,16 +21466,17 @@
     function renderCommentRows() {
       const data = moduleData.social;
       const q = (document.querySelector("#comment-search")?.value || "").trim().toLowerCase();
-      const status = document.querySelector("#comment-status-filter")?.value || "";
-      const assetStatus = document.querySelector("#comment-asset-status-filter")?.value || "";
-      const type = document.querySelector("#comment-type-filter")?.value || "";
-      const sort = document.querySelector("#comment-sort")?.value || "latest";
+      const statusSelect = document.querySelector("[data-custom-select='comment-status-filter']");
+      const status = statusSelect ? statusSelect.dataset.value || "" : "";
+      const assetStatusSelect = document.querySelector("[data-custom-select='comment-asset-status-filter']");
+      const assetStatus = assetStatusSelect ? assetStatusSelect.dataset.value || "" : "";
+      const sortSelect = document.querySelector("[data-custom-select='comment-sort']");
+      const sort = sortSelect ? sortSelect.dataset.value || "latest" : "latest";
       const sorted = [...data.rows].filter(row => {
         const text = Object.values(row).flat().join(" ").toLowerCase();
         return (!q || text.includes(q))
           && (!status || row.status === status)
-          && (!assetStatus || row.assetStatus === assetStatus)
-          && (!type || row.commentType === type);
+          && (!assetStatus || row.assetStatus === assetStatus);
       }).sort((a, b) => {
         if (sort === "oldest") return (a.createdAt || "").localeCompare(b.createdAt || "");
         return (b.createdAt || "").localeCompare(a.createdAt || "");
@@ -21354,40 +21486,27 @@
       const start = (assetListPage - 1) * assetListPageSize;
       const pageRows = sorted.slice(start, start + assetListPageSize);
       document.querySelector("#table").innerHTML = `
-        <div class="user-table comment-table">
-          <div class="user-row comment-row head"><div>Comment ID</div><div>Comment Excerpt</div><div>Asset ID/Name/Status</div><div>Author</div><div>Type</div><div>Like Count</div><div>Report Count</div><div>Comment Status</div><div>Created/Updated</div><div>Action</div></div>
+        <div class="asset-table comment-table">
+          <div class="asset-row head"><div>Comment ID</div><div>Comment Excerpt</div><div>Asset</div><div>Author</div><div>Type</div><div>Likes</div><div>Reports</div><div>Status</div><div>Created</div><div>Action</div></div>
           ${pageRows.map(row => {
             const statusPillClass = row.status === "Visible" ? "green" : row.status === "Reported" ? "red" : row.status === "Hidden" ? "amber" : row.status === "Removed" ? "gray" : row.status === "User Deleted" ? "gray" : "blue";
             const typePillClass = row.commentType === "Root" ? "blue" : "purple";
             return `
-              <div class="user-row comment-row" data-comment-card="${row.id}">
-                <div class="user-cell-primary" data-label="Comment ID"><div class="main-text">${row.id}</div></div>
-                <div class="user-card-tags">
-                  <span class="pill ${statusPillClass}">${row.status}</span>
-                  <span class="pill ${typePillClass}">${row.commentType}</span>
-                  <div class="user-card-meta">
-                    <div class="user-card-meta-item"><span>Comment</span><strong>${row.name.substring(0, 50)}${row.name.length > 50 ? "..." : ""}</strong></div>
-                    <div class="user-card-meta-item"><span>Asset</span><strong>${row.assetId} / ${row.assetName}</strong></div>
-                    <div class="user-card-meta-item"><span>Author</span><strong>${row.author}</strong></div>
-                    <div class="user-card-meta-item"><span>Likes</span><strong>${row.likeCount || 0}</strong></div>
-                    <div class="user-card-meta-item"><span>Reports</span><strong>${row.reportCount || 0}</strong></div>
-                    <div class="user-card-meta-item"><span>Created</span><strong>${row.createdAt || "-"}</strong></div>
-                  </div>
+              <div class="asset-row" data-comment-card="${row.id}">
+                <div data-label="Comment ID"><div class="main-text">${row.id}</div></div>
+                <div data-label="Comment Excerpt">
+                  <div class="main-text">${row.name.substring(0, 60)}${row.name.length > 60 ? "..." : ""}</div>
                 </div>
-                <div data-label="Comment Excerpt"><div class="main-text">${row.name.substring(0, 40)}${row.name.length > 40 ? "..." : ""}</div></div>
-                <div data-label="Asset ID/Name/Status">
+                <div data-label="Asset">
                   <div class="main-text">${row.assetId} / ${row.assetName}</div>
                   <div class="muted">${row.assetStatus}</div>
                 </div>
                 <div data-label="Author"><div class="main-text">${row.author}</div></div>
                 <div data-label="Type"><span class="pill ${typePillClass}">${row.commentType}</span></div>
-                <div data-label="Like Count"><div class="main-text">${row.likeCount || 0}</div></div>
-                <div data-label="Report Count"><div class="main-text">${row.reportCount || 0}</div></div>
-                <div data-label="Comment Status"><span class="pill ${statusPillClass}">${row.status}</span></div>
-                <div data-label="Created/Updated">
-                  <div class="main-text">${row.createdAt || "-"}</div>
-                  <div class="muted">${row.updatedAt || "-"}</div>
-                </div>
+                <div data-label="Likes"><div class="main-text">${row.likeCount || 0}</div></div>
+                <div data-label="Reports"><div class="main-text">${row.reportCount || 0}</div></div>
+                <div data-label="Status"><span class="pill ${statusPillClass}">${row.status}</span></div>
+                <div data-label="Created"><div class="main-text">${row.createdAt || "-"}</div></div>
                 <div class="user-row-actions">
                   <button class="panel-action" type="button" data-comment-action="${row.id}">${iconSvg.eye}ดูรายละเอียด</button>
                 </div>
@@ -23283,15 +23402,18 @@
       const resetCommentFiltersButton = event.target.closest("[data-reset-comment-filters]");
       if (resetCommentFiltersButton) {
         document.querySelector("#comment-search").value = "";
-        document.querySelector("#comment-status-filter").value = "";
-        document.querySelector("#comment-asset-status-filter").value = "";
-        document.querySelector("#comment-type-filter").value = "";
-        document.querySelector("#comment-sort").value = "latest";
+        const statusSelect = document.querySelector("[data-custom-select='comment-status-filter']");
+        if (statusSelect) statusSelect.dataset.value = "";
+        const assetStatusSelect = document.querySelector("[data-custom-select='comment-asset-status-filter']");
+        if (assetStatusSelect) assetStatusSelect.dataset.value = "";
+        const sortSelect = document.querySelector("[data-custom-select='comment-sort']");
+        if (sortSelect) sortSelect.dataset.value = "latest";
+        updateCustomSelectLabels();
         assetListPage = 1;
         renderCommentRows();
         return;
       }
-      if (event.target.id === "comment-search" || event.target.id === "comment-status-filter" || event.target.id === "comment-asset-status-filter" || event.target.id === "comment-type-filter" || event.target.id === "comment-sort") {
+      if (event.target.id === "comment-search" || event.target.closest("[data-custom-select='comment-status-filter']") || event.target.closest("[data-custom-select='comment-asset-status-filter']") || event.target.closest("[data-custom-select='comment-sort']")) {
         assetListPage = 1;
         renderCommentRows();
         return;
