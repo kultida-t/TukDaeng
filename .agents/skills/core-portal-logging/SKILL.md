@@ -20,6 +20,7 @@ Workflow สำหรับส่งบันทึกการทำงาน (
 - [ระยะที่ 1: สรุปงาน (Summarize)](#ระยะที่-1-สรุปงาน-summarize)
 - [ระยะที่ 2: ส่ง log (Submit)](#ระยะที่-2-ส่ง-log-submit)
 - [วิธีส่ง log (Transport)](#วิธีส่ง-log-transport)
+- [ตัวจับเวลาอัตโนมัติ (Auto Timer)](#ตัวจับเวลาอัตโนมัติ-auto-timer)
 - [API Configuration](#api-configuration)
 - [Application List](#application-list)
 - [Categories](#categories)
@@ -170,6 +171,52 @@ mcp_call_tool(server_name="kanban-tukdaeng", tool_name="get_board")
 
 > **กฎเหล็ก:** ต้องมี `totalHours` เสมอ — ห้ามปล่อยว่าง/ใช้ default ของระบบ ถ้าดึงจาก kanban ไม่ได้ ให้ประเมินจากงานที่ทำแทน พร้อมแจ้งผู้ใช้ว่าเป็นค่าประเมิน
 
+#### 1.6. Validation สำหรับ totalHours (ตรวจสอบความสอดคล้องกับงานที่ทำจริง)
+
+หลังจากดึง `totalHours` จาก kanban แล้ว **ต้องตรวจสอบความสอดคล้อง** กับงานที่ทำจริงใน session นี้:
+
+**ตรวจสอบ:**
+1. เปรียบเทียบ `totalHours` จาก kanban กับงานที่ทำใน session นี้ (จาก session context)
+2. ถ้า `totalHours` ดูต่ำเกินไปเมื่อเทียบกับความซับซ้อน/ขนาดของงาน → แจ้งผู้ใช้และถามว่าจะปรับหรือไม่
+3. ถ้า `totalHours` ดูสูงเกินไป → แจ้งผู้ใช้และถามว่าจะปรับหรือไม่
+
+**ตัวอย่างการแจ้งเตือน:**
+```
+⚠️ ตรวจสอบชั่วโมงทำงาน:
+- จาก kanban: 2.0 ชม.
+- งานที่ทำใน session: เพิ่ม API 3 endpoints + ทดสอบ + แก้บั๊ก
+- ความซับซ้อน: งานกลาง-ใหญ่ (คาดว่าควรใช้ 3-4 ชม.)
+
+ค่าจาก kanban (2.0 ชม.) ดูต่ำเกินไปเมื่อเทียบกับงานที่ทำ
+ต้องการปรับ totalHours เป็นกี่ชม.? หรือใช้ค่าเดิม (2.0 ชม.)?
+```
+
+**ถ้าผู้ใช้ต้องการปรับ:**
+- ให้ใช้ `log_time` จาก kanban-tukdaeng MCP เพื่อเพิ่มชั่วโมงให้ task ที่เกี่ยวข้อง:
+```
+mcp_call_tool(
+  server_name="kanban-tukdaeng",
+  tool_name="log_time",
+  arguments={
+    "task_id": "<task_id>",
+    "hours": <ชั่วโมงที่ต้องการเพิ่ม>
+  }
+)
+```
+- หรือใช้ `update_task` เพื่อตั้งค่า `hours_spent` โดยตรง:
+```
+mcp_call_tool(
+  server_name="kanban-tukdaeng",
+  tool_name="update_task",
+  arguments={
+    "task_id": "<task_id>",
+    "hours_spent": <ค่าใหม่รวมทั้งหมด>
+  }
+)
+```
+
+> **สำคัญ:** Validation นี้เป็นการช่วยให้แน่ใจว่าชั่วโมงที่บันทึกสอดคล้องกับงานที่ทำจริง แต่การตัดสินใจสุดท้ายอยู่ที่ผู้ใช้
+
 #### 2. รวมข้อมูลจาก session context ปัจจุบัน
 
 นำสิ่งที่ทำใน session นี้ (จากประวัติการทำงานใน conversation ปัจจุบัน) มารวมกับข้อมูลจาก `get_project_context`:
@@ -309,6 +356,28 @@ mcp_call_tool(server_name="kanban-tukdaeng", tool_name="get_board")
 - ส่งสำเร็จ → บอกผู้ใช้ว่าส่งเข้าระบบแล้ว (แสดงข้อความตอบกลับจากระบบ)
 - ส่งไม่สำเร็จ → บอกผู้ใช้ว่าเกิดข้อผิดพลาด พร้อมรายละเอียด และถามว่าจะลองส่งใหม่หรือไม่
 
+#### 5. บันทึก session note ลง kanban (หลังส่งสำเร็จ)
+
+หลังจากส่ง log สำเร็จแล้ว **ต้องเรียก `save_session_note`** เพื่อบันทึกสรุป session ลง kanban-tukdaeng:
+
+```
+mcp_call_tool(
+  server_name="kanban-tukdaeng",
+  tool_name="save_session_note",
+  arguments={
+    "summary": "<สรุป session ที่ส่งไปใน logs — ใช้ภาษาง่าย ๆ ไม่เทคนิค>"
+  }
+)
+```
+
+**เนื้อหาที่ควรบันทึกใน session note:**
+- สรุปงานที่ทำใน session นี้ (เหมือนที่ส่งใน logs แต่กระชับกว่า)
+- สิ่งที่ตัดสินใจ (decisions) และเหตุผล (WHY)
+- สิ่งที่ยังเปิดอยู่ (open items)
+- ขั้นตอนถัดไป (next step)
+
+> **สำคัญ:** `save_session_note` ควรเรียกหลังจากส่ง log สำเร็จเท่านั้น — ไม่ต้องเรียกถ้าส่งล้มเหลว
+
 ### กฎสำคัญระยะที่ 2
 
 - ⚠️ **ต้องได้รับคำยืนยันจากผู้ใช้ก่อนเสมอ** — ห้ามส่ง log โดยอัตโนมัติ
@@ -357,6 +426,84 @@ curl -sS -X POST "https://coreportal-production.up.railway.app/api/agent/logs" \
 ```
 
 **สังเกต:** ใน curl ใช้ snake_case (`app_name`, `start_date`, `end_date`, `total_hours`) ตามที่ backend รับ — ต่างจาก MCP input ที่ใช้ camelCase (`appName`, `startDate`, `endDate`, `totalHours`)
+
+---
+
+## ตัวจับเวลาอัตโนมัติ (Auto Timer)
+
+kanban-tukdaeng MCP **มีตัวจับเวลาอัตโนมัติในตัว** ช่วยให้ได้เวลาทำงานที่แม่นยำโดยไม่ต้องจดเวลาเอง
+
+### วิธีทำงาน
+
+1. **เมื่อย้าย task เข้า `in_progress`** → เริ่มจับเวลาอัตโนมัติ
+2. **เมื่อย้าย task ออกจาก `in_progress`** → บันทึกเวลาที่ใช้ไปเข้า `hours_spent` อัตโนมัติ (minimum 0.1h)
+3. **Manual adjustment** → ใช้ `log_time` เพื่อเพิ่ม/แก้ไขชั่วโมงถ้า auto-tracking ไม่ตรง
+
+### คำสั่งที่เกี่ยวข้อง
+
+**เริ่มจับเวลา (ย้าย task เข้า in_progress):**
+```
+mcp_call_tool(
+  server_name="kanban-tukdaeng",
+  tool_name="move_task",
+  arguments={
+    "task_id": "<task_id>",
+    "status": "in_progress"
+  }
+)
+```
+
+**หยุดจับเวลา (ย้าย task ออกจาก in_progress):**
+```
+mcp_call_tool(
+  server_name="kanban-tukdaeng",
+  tool_name="move_task",
+  arguments={
+    "task_id": "<task_id>",
+    "status": "done"  // หรือ "todo", "backlog"
+  }
+)
+```
+
+**เพิ่มชั่วโมงด้วยตนเอง (manual adjustment):**
+```
+mcp_call_tool(
+  server_name="kanban-tukdaeng",
+  tool_name="log_time",
+  arguments={
+    "task_id": "<task_id>",
+    "hours": 1.5  // ชั่วโมงที่ต้องการเพิ่ม
+  }
+)
+```
+
+**ตั้งค่า hours_spent โดยตรง (override):**
+```
+mcp_call_tool(
+  server_name="kanban-tukdaeng",
+  tool_name="update_task",
+  arguments={
+    "task_id": "<task_id>",
+    "hours_spent": 3.0  // ค่าใหม่รวมทั้งหมด (ไม่ใช่เพิ่ม)
+  }
+)
+```
+
+### แนวทางการใช้งานที่แนะนำ
+
+1. **เริ่มทำงาน** → ย้าย task เข้า `in_progress` เสมอ
+2. **หยุดพัก/เปลี่ยนงาน** → ย้าย task ออกจาก `in_progress` ก่อน
+3. **เสร็จงาน** → ย้าย task เข้า `done` (ระบบจะบันทึกเวลาอัตโนมัติ)
+4. **ตรวจสอบ** → ถ้า auto-tracking ไม่ตรง ใช้ `log_time` แก้ไข
+
+### ข้อดีของตัวจับเวลาอัตโนมัติ
+
+- **ไม่ต้องจดเวลาเอง** — ระบบจับเวลาให้อัตโนมัติ
+- **แม่นยำกว่า** — ไม่ต้องประมาณเวลาจากความรู้สึก
+- **สะดวก** — แค่ย้าย task เข้า/ออก in_progress
+- **สามารถแก้ไขได้** — ถ้าไม่ตรง ใช้ `log_time` ปรับได้
+
+> **หมายเหตุ:** ระบบตัวจับเวลาอัตโนมัตินี้ทำงานร่วมกับ `get_time_summary` ที่ใช้ดึงชั่วโมงรวมเพื่อส่ง log — ทำให้ได้เวลาที่แม่นยำและสอดคล้องกับงานที่ทำจริง
 
 ---
 
@@ -741,6 +888,7 @@ logs: [
 - [ ] ถ้ามี task `in_progress` ที่เกี่ยวข้องกับ session นี้ → เรียก `get_board` จาก `kanban-tukdaeng` MCP เสริม แล้วบวก `hours_spent` ของ task เหล่านั้นเข้ากับ `total_hours` (แสดงแยกส่วนให้ผู้ใช้เห็นชัด)
 - [ ] แสดงรายการ task ที่นำมารวมให้ผู้ใช้เห็นด้วย
 - [ ] ถ้าดึงจาก kanban ไม่ได้ (`total_hours` เป็น 0 / ไม่มี task DONE / เรียกไม่สำเร็จ) → **ประเมินจากงานที่ทำใน session นี้** และแจ้งผู้ใช้ว่าเป็นค่าประเมิน
+- [ ] **Validation สำหรับ totalHours** — เปรียบเทียบค่าจาก kanban กับงานที่ทำจริง ถ้าดูไม่สอดคล้อง แจ้งผู้ใช้และถามว่าจะปรับหรือไม่
 - [ ] รวมข้อมูลวันนี้ + session context ปัจจุบัน
 - [ ] สรุปเป็นภาษาง่าย ๆ (หลีกเลี่ยงคำเทคนิค)
 - [ ] แสดงรายการหัวข้องานแยกตามแอป
@@ -757,8 +905,9 @@ logs: [
 - [ ] ถ้าส่ง `status: "Doing"` ต้องไม่มีงาน `Doing` เดิมของผู้ใช้คนเดียวกันในโปรเจกต์เดียวกันค้างอยู่ (กฎ WIP Limit — 1 Doing/คน/โปรเจกต์) หากมี ให้เปลี่ยนงานเดิมเป็น `Done` หรือ `Blocked` ก่อน
 - [ ] `startDate` และ `endDate` อยู่ในรูปแบบ `YYYY-MM-DD`
 - [ ] `totalHours` เป็นตัวเลขบวก ทศนิยมได้ — **ดึงจาก `get_time_summary` ของ `kanban-tukdaeng`** (ดูขั้นตอน 1.5) ถ้ามี task in_progress ให้เสริมด้วย `get_board` ถ้าดึงไม่ได้ให้ **ประเมินจากงานที่ทำใน session นี้** และแจ้งผู้ใช้ — **ต้องมีเสมอ ห้ามปล่อยว่าง/ใช้ default**
-- [ ] `logs` เป็น array ที่มี **1 รายการเท่านั้น** — รวมงานทั้งหมดเป็นข้อความเดียว (string เดียวที่ขึ้นบรรทัดใหม่ได้)
+- [ ] `logs` เป็น array ที่มี **1 รายการเท่านั้น** — รวมงานทั้งหมมเป็นข้อความเดียว (string เดียวที่ขึ้นบรรทัดใหม่ได้)
 - [ ] โครงสร้างข้อความ log: **ภาพรวม (50-250 ตัวอักษร)** นำหน้า ตามด้วย **bullet list** (`- ` นำหน้าแต่ละงานย่อย ขึ้นบรรทัดใหม่ด้วย `\n`)
 - [ ] **ส่งผ่าน MCP `core-portal` ก่อนเสมอ** — เรียก `mcp_list_tools` ยืนยันมี `submit_logs` แล้วส่งผ่าน `mcp_call_tool` (ห้ามใช้ curl โดยตรงโดยไม่ได้ลอง MCP ก่อน)
 - [ ] ถ้า MCP ล้มเหลว → แจ้งผู้ใช้ แล้วใช้ curl เป็น fallback
 - [ ] รายงานผลการส่งให้ผู้ใช้ (สำเร็จ/ล้มเหลว)
+- [ ] **หลังส่งสำเร็จ: เรียก `save_session_note`** เพื่อบันทึกสรุป session ลง kanban-tukdaeng (สรุปงาน + decisions + open items + next step)
