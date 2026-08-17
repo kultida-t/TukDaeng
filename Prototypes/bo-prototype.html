@@ -4938,13 +4938,14 @@
     .reported-comment-detail-page .detail-tile-full {
       grid-column: 1 / -1;
     }
+    body.user-detail-mode .reported-comment-detail-page .comment-detail-meta-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    body.user-detail-mode .reported-comment-detail-page .comment-detail-text-grid {
+      grid-template-columns: 1fr;
+    }
     .reported-comment-detail-page .comment-full-text {
       display: block;
-      margin-top: 6px;
-      padding: 10px 12px;
-      border: 1px solid #e1e9f3;
-      border-radius: 8px;
-      background: #f7fafd;
       font-weight: 400;
       line-height: 1.5;
       overflow-wrap: anywhere;
@@ -21752,15 +21753,21 @@
             <div class="detail-grid two report-reference-grid">
               <div class="detail-tile"><span>Report ID</span><strong>${reportCase.id}</strong></div>
               <div class="detail-tile"><span>Comment ID</span><strong>${reportCase.commentId}</strong></div>
-              <div class="detail-tile"><span>Comment Type</span><strong>${reportCase.commentType || "-"}</strong></div>
-              <div class="detail-tile"><span>Comment Status</span><strong>${getReportedCommentCommentStatusPill(reportCase)}</strong></div>
               <div class="detail-tile"><span>Asset ID</span><strong>${reportCase.assetId}</strong></div>
               <div class="detail-tile"><span>Asset Name</span><strong>${assetName}</strong></div>
               <div class="detail-tile"><span>Asset Status</span><strong>${assetStatus}</strong></div>
-              <div class="detail-tile"><span>Author</span><strong>${reportCase.authorName || "-"}</strong></div>
-              <div class="detail-tile"><span>Report Reason</span><strong>${translateReportReason(reportCase.reportReason) || "-"}</strong></div>
               <div class="detail-tile"><span>Created At</span><strong>${reportCase.createdAt || "-"}</strong></div>
-              <div class="detail-tile detail-tile-full"><span>Comment Text</span><strong class="comment-full-text">${reportCase.commentExcerpt || "-"}</strong></div>
+            </div>
+          </div>
+
+          <div class="detail-section">
+            <h4>Comment Detail</h4>
+            <div class="detail-grid two report-reference-grid comment-detail-meta-grid">
+              <div class="detail-tile"><span>Comment Type</span><strong>${reportCase.commentType || "-"}</strong></div>
+              <div class="detail-tile"><span>Author</span><strong>${reportCase.authorName || "-"}</strong></div>
+            </div>
+            <div class="detail-grid report-reference-grid comment-detail-text-grid">
+              <div class="detail-tile"><span>Comment Text</span><strong class="comment-full-text">${reportCase.commentExcerpt || "-"}</strong></div>
             </div>
           </div>
 
