@@ -5080,6 +5080,31 @@
       font-size: 12px;
       font-weight: 400;
     }
+    .reported-comment-action-target {
+      align-items: flex-start;
+    }
+    .reported-comment-action-target-text {
+      min-width: 0;
+      flex: 1 1 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+    .reported-comment-action-target-text strong {
+      font-size: 13px;
+      font-weight: 700;
+      color: #1f2d3d;
+    }
+    .reported-comment-action-comment-text {
+      margin: 6px 0 0;
+      padding: 0;
+      font-size: 12px;
+      line-height: 1.5;
+      color: #43546d;
+      overflow-wrap: anywhere;
+      word-break: break-word;
+      white-space: normal;
+    }
     .report-detail-page .report-reference-grid {
       grid-template-columns: repeat(2, minmax(0, 1fr));
     }
@@ -22067,10 +22092,10 @@
               ${iconSvg.close}
             </button>
           </div>
-          <div class="user-action-target">
-            <div>
+          <div class="user-action-target reported-comment-action-target">
+            <div class="reported-comment-action-target-text">
               <strong>${reportCase.id}</strong>
-              <span>${reportCase.commentId} · ${reportCase.assetId}</span>
+              <p class="reported-comment-action-comment-text">${reportCase.commentExcerpt || reportCase.name || ""}</p>
             </div>
             ${getReportedCommentStatusPill(reportCase)}
           </div>
