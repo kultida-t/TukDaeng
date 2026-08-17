@@ -22219,7 +22219,11 @@
           : { status: "sent", channel: "Email" }
       });
       closeUserActionModal();
-      renderReportedCommentDetail(reportCase);
+      if (document.body.classList.contains("user-detail-mode") && activeModule === "assets" && activeSub === "Reported Comments") {
+        renderReportedCommentDetail(reportCase);
+      } else {
+        renderReportedCommentRows();
+      }
       let toastDetail;
       if (commentStatusChanged && reportStatusChanged) {
         toastDetail = `${reportCase.id}: ${beforeCommentStatus} → ${afterCommentStatus} และปิดรายงานแล้ว`;
