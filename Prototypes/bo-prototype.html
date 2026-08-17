@@ -21729,7 +21729,7 @@
       document.querySelector("#cards").innerHTML = "";
       const asset = moduleData.assets.rows.find(entry => entry.id === reportCase.assetId);
       const assetName = asset ? asset.name : "-";
-      const assetStatus = asset ? asset.status : "-";
+      const assetStatus = asset ? `${asset.type} / ${asset.status}` : "-";
       const assetDetail = asset ? getAssetFoDetail(asset) : null;
       document.querySelector("#table").innerHTML = `
         <div class="user-detail-page report-detail-page asset-report-detail-page reported-comment-detail-page">
@@ -21749,6 +21749,7 @@
           <div class="detail-section">
             <div class="board-report-reference-head">
               <h4>Reported Comment</h4>
+              ${asset ? `<button class="btn asset-report-view-btn" type="button" data-asset-report-detail-modal="${asset.id}" aria-label="View asset ${asset.id}" title="View Asset"><span class="asset-report-view-label">View Asset</span></button>` : ""}
             </div>
             <div class="detail-grid two report-reference-grid">
               <div class="detail-tile"><span>Report ID</span><strong>${reportCase.id}</strong></div>
