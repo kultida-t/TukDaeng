@@ -11655,6 +11655,22 @@
       return `./assets/user-avatars/${comment.avatar.toLowerCase()}.png`;
     }
 
+    function getRelativeTimeFromAbsolute(absoluteTime) {
+      if (!absoluteTime) return "Unknown";
+      const timestamp = parseBangkokAuditTime(absoluteTime);
+      if (!timestamp) return absoluteTime;
+      const now = Date.UTC(2026, 6, 18, 12, 0);
+      const diffMs = now - timestamp;
+      const diffMin = Math.floor(diffMs / 60000);
+      const diffHr = Math.floor(diffMin / 60);
+      const diffDay = Math.floor(diffHr / 24);
+      if (diffMin < 1) return "just now";
+      if (diffMin < 60) return `${diffMin}m ago`;
+      if (diffHr < 24) return `${diffHr}h ago`;
+      if (diffDay < 7) return `${diffDay}d ago`;
+      return `${Math.floor(diffDay / 7)}w ago`;
+    }
+
     function assetHasNoComments(asset) {
       return (asset.tags || []).some(tag => /^No comments$/i.test(tag));
     }
@@ -11794,22 +11810,55 @@
       `).join("");
     }
 
+    function parseRelativeTimeMinutes(timeStr) {
+      if (!timeStr) return Infinity;
+      const match = String(timeStr).match(/(\d+)\s*([mhdw])/);
+      if (!match) return Infinity;
+      const value = Number(match[1]);
+      const unit = match[2];
+      if (unit === "m") return value;
+      if (unit === "h") return value * 60;
+      if (unit === "d") return value * 60 * 24;
+      if (unit === "w") return value * 60 * 24 * 7;
+      return Infinity;
+    }
+
     function getAssetBoComments(asset) {
       if (assetHasNoComments(asset)) return [];
       const hasReports = Number(getAssetReportCount(asset)) > 0;
-      return [
+      const reportedCommentsForAsset = reportedCommentCases
+        .filter(reportCase => reportCase.assetId === asset.id)
+        .map(reportCase => {
+          const relativeTime = getRelativeTimeFromAbsolute(reportCase.commentCreatedAt);
+          return {
+            name: reportCase.authorName || "Unknown",
+            avatar: reportCase.authorId || "U-0000",
+            time: relativeTime,
+            timeMinutes: parseRelativeTimeMinutes(relativeTime),
+            text: reportCase.commentExcerpt || "",
+            likes: 0,
+            status: reportCase.commentStatus === "Visible" ? "Reported" : reportCase.commentStatus === "User Deleted" ? "Active" : reportCase.commentStatus,
+            commentId: reportCase.commentId,
+            reportId: reportCase.id,
+            replies: []
+          };
+        });
+      const baseComments = [
         {
           ...assetFoComments[0],
           status: hasReports ? "Reported" : "Active",
+          timeMinutes: 60,
           replies: [
             { ...assetFoComments[1], status: "Active", likes: 0 },
             { ...assetFoComments[2], status: "Active", likes: 0 }
           ]
         },
+        ...reportedCommentsForAsset,
         {
           name: "Thanawat S.",
           avatar: "U-1088",
           time: "2h ago",
+          timeMinutes: 120,
           text: "The 5711/1A is truly a masterpiece. The dial transition from blue to black is unmatched. Great piece!",
           likes: 1,
           status: "Active",
@@ -11818,12 +11867,14 @@
         {
           ...assetFoComments[3],
           status: "Active",
+          timeMinutes: 300,
           replies: []
         },
         {
           name: "Narin C.",
           avatar: "U-1161",
           time: "7h ago",
+          timeMinutes: 420,
           text: "Please add a clasp photo and confirm if the extra links are included.",
           likes: 3,
           status: "Active",
@@ -11833,6 +11884,7 @@
           name: "Watch Alert TH",
           avatar: "U-1017",
           time: "9h ago",
+          timeMinutes: 540,
           text: "Price is close to recent listings, but provenance photos should be checked before promotion.",
           likes: 6,
           status: hasReports ? "Reported" : "Active",
@@ -11842,6 +11894,7 @@
           name: "Metha P.",
           avatar: "U-1120",
           time: "1d ago",
+          timeMinutes: 1440,
           text: "The description matches another listing I saw last week. Admin may need to compare images.",
           likes: 4,
           status: hasReports ? "Reported" : "Active",
@@ -11851,6 +11904,7 @@
           name: "Hidden User",
           avatar: "U-1088",
           time: "1d ago",
+          timeMinutes: 1440,
           text: "Comment hidden from FO after duplicate report threshold was reached.",
           likes: 0,
           status: hasReports ? "Hidden" : "Active",
@@ -11860,12 +11914,14 @@
           name: "Saran K.",
           avatar: "U-1161",
           time: "2d ago",
+          timeMinutes: 2880,
           text: "Dial color looks excellent. Is the warranty card dated?",
           likes: 2,
           status: "Active",
           replies: []
         }
       ];
+      return baseComments.sort((a, b) => (a.timeMinutes || Infinity) - (b.timeMinutes || Infinity));
     }
 
     function getAssetCommentPreview(comments) {
