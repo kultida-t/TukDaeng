@@ -4409,6 +4409,38 @@
       justify-self: stretch;
       justify-content: center;
     }
+    .user-row.reported-comment-row {
+      grid-template-columns: minmax(96px, .5fr) minmax(220px, 1.2fr) minmax(120px, .5fr) minmax(100px, .45fr) minmax(180px, .9fr) minmax(90px, .4fr) minmax(80px, .35fr);
+      column-gap: 22px;
+      padding-left: 22px;
+      padding-right: 22px;
+    }
+    .user-row.reported-comment-row > div {
+      min-width: 0;
+    }
+    .user-row.reported-comment-row > div:nth-child(2) .muted {
+      color: #40536c;
+      font-size: 12px;
+      line-height: 1.55;
+      overflow-wrap: anywhere;
+    }
+    .user-row.reported-comment-row.head {
+      padding: 12px 22px;
+    }
+    .user-row.reported-comment-row.head > div:last-child {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      justify-self: stretch;
+      text-align: center;
+    }
+    .user-row.reported-comment-row > .user-row-actions {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      justify-self: stretch;
+      width: 100%;
+    }
     .user-row:last-child { border-bottom: 0; }
     .user-row.head {
       min-height: 44px;
@@ -6916,6 +6948,10 @@
         grid-template-columns: minmax(94px, .4fr) minmax(180px, .78fr) minmax(224px, .98fr) minmax(108px, .46fr) minmax(128px, .52fr) minmax(310px, 1.32fr) minmax(86px, .36fr) minmax(88px, .36fr) minmax(62px, .28fr);
         column-gap: 20px;
       }
+      .user-row.reported-comment-row {
+        grid-template-columns: minmax(90px, .45fr) minmax(190px, 1.1fr) minmax(108px, .48fr) minmax(92px, .42fr) minmax(160px, .82fr) minmax(82px, .38fr) minmax(76px, .32fr);
+        column-gap: 18px;
+      }
       body.user-accounts-mode:not(.user-detail-mode) .main {
         overflow-x: hidden;
       }
@@ -6951,6 +6987,9 @@
       }
       body.user-list-mode:not(.user-detail-mode) #table .reported-assets-table {
         min-width: 1484px;
+      }
+      body.user-list-mode:not(.user-detail-mode) #table .reported-comment-table {
+        min-width: 1120px;
       }
       body.user-list-mode:not(.user-detail-mode) .reported-users-table .user-row.report-row,
       body.user-list-mode:not(.user-detail-mode) .reported-assets-table .user-row.report-row {
@@ -21481,13 +21520,13 @@
       const start = (assetListPage - 1) * assetListPageSize;
       const pageRows = sorted.slice(start, start + assetListPageSize);
       document.querySelector("#table").innerHTML = `
-        <div class="user-table reported-assets-table">
-          <div class="user-row report-row asset-report-row head"><div>Report ID</div><div>Comment / Asset</div><div>Type</div><div>Status</div><div>Reason</div><div>Priority</div><div>Action</div></div>
+        <div class="user-table reported-assets-table reported-comment-table">
+          <div class="user-row report-row reported-comment-row head"><div>Report ID</div><div>Comment / Asset</div><div>Type</div><div>Status</div><div>Reason</div><div>Priority</div><div>Action</div></div>
           ${pageRows.map(row => {
             const statusPillClass = row.status === "Pending" ? "amber" : row.status === "Closed" ? "gray" : "blue";
             const priorityPillClass = row.priority === "สูง" ? "red" : row.priority === "กลาง" ? "amber" : "blue";
             return `
-              <div class="user-row report-row asset-report-row" data-reported-comment-card="${row.id}">
+              <div class="user-row report-row reported-comment-row" data-reported-comment-card="${row.id}">
                 <div class="user-cell-primary" data-label="Report ID"><div class="main-text">${row.id}</div></div>
                 <div data-label="Comment / Asset"><div class="main-text">${row.name}</div><div class="muted">${row.owner}</div></div>
                 <div data-label="Type"><span class="pill blue">${row.type}</span></div>
