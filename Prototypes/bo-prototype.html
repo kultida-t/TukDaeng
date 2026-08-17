@@ -9371,13 +9371,12 @@
       { section: "การดำเนินงาน", items: [
         { id: "dashboard", label: "Dashboard", icon: "dashboard" },
         { id: "users", label: "User Management", icon: "users", subs: ["User Accounts", "Reported Users"] },
-        { id: "assets", label: "Asset Management", icon: "asset", subs: ["Asset List", "Reported Assets"] },
+        { id: "assets", label: "Asset Management", icon: "asset", subs: ["Asset List", "Reported Assets", "Reported Comments"] },
         { id: "offers", label: "Offer Management", icon: "offer" },
         { id: "content", label: "Content Management", icon: "content", subs: ["Articles", "Categories", "Reported Articles"] },
         { id: "market", label: "Market Data", icon: "market", subs: ["Dashboard", "Brands & Models", "Sync History"] },
       ]},
       { section: "งานตรวจสอบและบริการ", items: [
-        { id: "social", label: "Social Interaction", icon: "social", subs: [{ label: "Asset Comments", module: "social" }, { label: "Reported Comments", module: "social" }] },
         { id: "watch-alerts", label: "Watch Alert", icon: "alert", subs: ["Alert Criteria", "Trigger History", "Disabled Alerts"] },
         { id: "support", label: "Help & Support", icon: "support", subs: ["Tickets", "Assignment", "SLA"] },
         { id: "deletions", label: "Account Deletion", icon: "delete", subs: ["Requests", "Grace Period", "Anonymization"] }
@@ -9507,11 +9506,6 @@
         item("OFR-381", "Offer THB 305,000", "AST-8536", "Offer", "กลาง", "Paused", "asset ถูก auto hidden จาก report ระหว่าง review ทำให้ offer ถูกพักชั่วคราว", ["Buyer U-1088", "Owner Daily Watch Hunter"], "Read-only: paused ระหว่าง asset review; FO ไม่แสดง Accept/Decline จนกว่า review จบ"),
         item("OFR-366", "Offer THB 1,020,000", "AST-8581", "Offer", "สูง", "Invalidated", "asset ถูกซ่อนถาวรหลัง moderation ทำให้ pending offer ใช้งานไม่ได้ถาวร", ["Buyer U-1161", "Owner Rolex Rama9"], "Read-only: invalidated จาก permanent hide; FO แสดง Offer Unavailable และไม่มี action")
       ]),
-      social: mod("Social Interaction", "งานตรวจสอบและบริการ / Social Interaction", "Asset Comment Moderation", "Moderate Asset Detail comments and replies for Sale/Show assets. Likes are metadata only; follows are out of scope for this BO module.", "Open reported comments", [["Total Comments", "8,420", "Sale/Show assets"], ["Reported Pending", "11", "SLA risk 4"], ["Hidden / Removed", "7", "audit required"], ["User Deleted", "31", "retained read-only"]], [
-        item("COM-711", "Spam comment", "AST-8802", "Comment", "สูง", "Reported", "คอมเมนต์ซ้ำหลาย asset พร้อม link นอกระบบ", ["Reports 3"], "Hide comment จาก Asset Detail และ audit"),
-        item("COM-704", "Reply contains phone number", "AST-8831", "Reply", "กลาง", "Flagged", "reply ใต้ root comment 1 ชั้น มีข้อมูลติดต่อที่ควรตรวจ policy", ["Sensitive signal"], "ตรวจ full text แบบ masked และตัดสิน hide/no action"),
-        item("COM-690", "User deleted comment retained", "AST-8612", "Comment", "ปกติ", "User Deleted", "ผู้ใช้ลบเองจาก FO แต่ BO ต้องเห็น retained state เพื่อ audit", ["Read-only"], "ดู history เท่านั้น ไม่ restore จาก BO")
-      ]),
       "watch-alerts": mod("Watch Alert", "งานตรวจสอบและบริการ / Watch Alert", "Alert Criteria & Trigger History", "ดู criteria, trigger history, notification on/off และ disable alert ที่ abuse", "Disable selected", [["Active Alerts", "3,218", "Sale-only match"], ["Triggered Today", "146", "ส่ง notification 139"], ["Disabled", "12", "โดย Admin"], ["Failed Delivery", "7", "retry pending"]], [
         item("WAL-1440", "Rolex Submariner <= 320k", "U-1042", "Criteria", "ปกติ", "Active", "Sale-only match และแจ้งเตือนเมื่อราคาเข้าเกณฑ์", ["Push on"], "ดู trigger history และ related listing"),
         item("WAL-1228", "Omega Speedmaster Bangkok", "Omega Club TH", "Criteria", "กลาง", "Active", "trigger บ่อยจาก listing ซ้ำ", ["12 triggers"], "ปรับ source หรือ disable หาก abuse"),
@@ -9549,64 +9543,24 @@
       ])
     };
 
-    const socialSubConfigs = {
-      "Asset Comments": {
-        title: "Asset Comments",
-        panel: "Asset Comments List",
-        subtitle: "",
-        action: "",
-        stats: [["Visible Comments", "8,420", "Today 184"], ["Flagged", "18", "spam/link/sensitive"], ["Reported Pending", "4", "SLA 24h"], ["Hidden / Removed", "7", "audit required"]],
-        cards: [
-          ["Review Scope", "Sale and Show asset comments only. Like count is shown as signal metadata, not as a moderation target."],
-          ["Detail Context", "Full comment text, author status, asset summary, parent/reply relation, report history, moderation timeline, and audit events."],
-          ["Action Boundary", "Admin cannot edit comment text. Hide, remove, or restore visibility must use confirmation, reason, FO sync, and audit."]
-        ],
-        rows: [
-          { id: "COM-711", name: "Spam comment with external link from Asset Detail", author: "U-1186", assetId: "AST-8802", assetName: "Rolex Submariner Date", assetStatus: "Sale", commentType: "Root", likeCount: 11, reportCount: 3, status: "Reported", priority: "สูง", detail: "คอมเมนต์ซ้ำหลาย asset พร้อม link นอกระบบจาก Asset Detail", tags: ["Reports 3", "Root comment", "SLA 4h"], action: "Hide comment หรือ resolve report ต้องมี reason และ audit", createdAt: "10 Jul 2026 14:22", updatedAt: "10 Jul 2026 16:45" },
-          { id: "COM-704", name: "Reply contains phone number in public surface", author: "U-1042", assetId: "AST-8831", assetName: "Omega Speedmaster Professional", assetStatus: "Show", commentType: "Reply", parentId: "COM-703", likeCount: 0, reportCount: 1, status: "Flagged", priority: "กลาง", detail: "reply ใต้ root comment 1 ชั้น มีข้อมูลติดต่อที่ควรตรวจ policy", tags: ["Sensitive signal", "Reply"], action: "ตรวจ full text แบบ masked และตัดสิน hide/no action", createdAt: "10 Jul 2026 11:30", updatedAt: "10 Jul 2026 15:20" },
-          { id: "COM-690", name: "User deleted comment retained for audit", author: "U-1161", assetId: "AST-8612", assetName: "Patek Philippe Nautilus", assetStatus: "Sale", commentType: "Root", likeCount: 5, reportCount: 0, status: "User Deleted", priority: "ปกติ", detail: "ผู้ใช้ลบเองจาก FO แต่ BO ต้องเห็น retained state เพื่อ audit", tags: ["User action", "Read-only"], action: "ดู history เท่านั้น ไม่ restore จาก BO", createdAt: "09 Jul 2026 18:15", updatedAt: "09 Jul 2026 19:30" },
-          { id: "COM-750", name: "Normal visible comment on Sale asset", author: "U-1234", assetId: "AST-8901", assetName: "Rolex Daytona 116500LN", assetStatus: "Sale", commentType: "Root", likeCount: 8, reportCount: 0, status: "Visible", priority: "ปกติ", detail: "คอมเมนต์ปกติที่แสดงบน FO ไม่มี report", tags: ["Visible", "Root comment"], action: "ดู context และประวัติ ไม่ต้อง action", createdAt: "11 Jul 2026 09:15", updatedAt: "11 Jul 2026 09:15" },
-          { id: "COM-751", name: "Reply to visible comment", author: "U-5678", assetId: "AST-8901", assetName: "Rolex Daytona 116500LN", assetStatus: "Sale", commentType: "Reply", parentId: "COM-750", likeCount: 3, reportCount: 0, status: "Visible", priority: "ปกติ", detail: "reply 1 ชั้นที่แสดงบน FO ไม่มี report", tags: ["Visible", "Reply"], action: "ดู context และประวัติ ไม่ต้อง action", createdAt: "11 Jul 2026 10:30", updatedAt: "11 Jul 2026 10:30" },
-          { id: "COM-703", name: "Root comment with reply under review", author: "U-9999", assetId: "AST-8831", assetName: "Omega Speedmaster Professional", assetStatus: "Show", commentType: "Root", likeCount: 15, reportCount: 0, status: "Visible", priority: "ปกติ", detail: "root comment ที่มี reply อยู่ระหว่างตรวจ", tags: ["Visible", "Root comment", "Has reply"], action: "ดู context และประวัติ ไม่ต้อง action", createdAt: "10 Jul 2026 09:00", updatedAt: "10 Jul 2026 09:00" },
-          { id: "COM-752", name: "Hidden comment by admin after review", author: "U-3456", assetId: "AST-8755", assetName: "Patek Philippe Calatrava", assetStatus: "Show", commentType: "Root", likeCount: 2, reportCount: 5, status: "Hidden", priority: "สูง", detail: "คอมเมนต์ถูกซ่อนโดย Admin หลังตรวจพบว่าเป็น spam", tags: ["Hidden by Admin", "Reports 5", "Root comment"], action: "Restore หรือคงซ่อน ต้องมี reason และ audit", createdAt: "09 Jul 2026 16:45", updatedAt: "09 Jul 2026 18:30" },
-          { id: "COM-753", name: "Hidden reply by admin", author: "U-7890", assetId: "AST-8755", assetName: "Patek Philippe Calatrava", assetStatus: "Show", commentType: "Reply", parentId: "COM-752", likeCount: 0, reportCount: 2, status: "Hidden", priority: "กลาง", detail: "reply ถูกซ่อนโดย Admin หลังตรวจพบว่ามีข้อมูลส่วนตัว", tags: ["Hidden by Admin", "Reports 2", "Reply"], action: "Restore หรือคงซ่อน ต้องมี reason และ audit", createdAt: "09 Jul 2026 17:00", updatedAt: "09 Jul 2026 18:35" },
-          { id: "COM-754", name: "Removed comment permanently by admin", author: "U-1111", assetId: "AST-8588", assetName: "Cartier Santos Medium", assetStatus: "Sale", commentType: "Root", likeCount: 1, reportCount: 8, status: "Removed", priority: "สูง", detail: "คอมเมนต์ถูกลบถาวรโดย Admin หลังตรวจพบว่าเป็น harassment", tags: ["Removed by Admin", "Reports 8", "Root comment"], action: "ไม่สามารถ restore ดู audit history เท่านั้น", createdAt: "08 Jul 2026 14:20", updatedAt: "08 Jul 2026 20:15" },
-          { id: "COM-755", name: "Removed reply permanently by admin", author: "U-2222", assetId: "AST-8588", assetName: "Cartier Santos Medium", assetStatus: "Sale", commentType: "Reply", parentId: "COM-754", likeCount: 0, reportCount: 3, status: "Removed", priority: "กลาง", detail: "reply ถูกลบถาวรโดย Admin หลังตรวจพบว่ามีคำหยาบ", tags: ["Removed by Admin", "Reports 3", "Reply"], action: "ไม่สามารถ restore ดู audit history เท่านั้น", createdAt: "08 Jul 2026 14:45", updatedAt: "08 Jul 2026 20:20" },
-          { id: "COM-756", name: "User deleted reply retained for audit", author: "U-3333", assetId: "AST-8612", assetName: "Patek Philippe Nautilus", assetStatus: "Sale", commentType: "Reply", parentId: "COM-690", likeCount: 2, reportCount: 0, status: "User Deleted", priority: "ปกติ", detail: "ผู้ใช้ลบ reply เองจาก FO แต่ BO ต้องเห็น retained state", tags: ["User action", "Read-only", "Reply"], action: "ดู history เท่านั้น ไม่ restore จาก BO", createdAt: "09 Jul 2026 18:45", updatedAt: "09 Jul 2026 19:00" },
-          { id: "COM-757", name: "Visible comment on Show asset", author: "U-4444", assetId: "AST-8720", assetName: "Tudor Black Bay 58", assetStatus: "Show", commentType: "Root", likeCount: 6, reportCount: 0, status: "Visible", priority: "ปกติ", detail: "คอมเมนต์ปกติบน Show asset ไม่มี report", tags: ["Visible", "Root comment", "Show asset"], action: "ดู context และประวัติ ไม่ต้อง action", createdAt: "11 Jul 2026 08:00", updatedAt: "11 Jul 2026 08:00" },
-          { id: "COM-758", name: "Reported comment with harassment reason", author: "U-5555", assetId: "AST-8694", assetName: "Audemars Piguet Royal Oak", assetStatus: "Sale", commentType: "Root", likeCount: 4, reportCount: 7, status: "Reported", priority: "สูง", detail: "คอมเมนต์ถูก report 7 คน เหตุผล harassment", tags: ["Reports 7", "Harassment", "Root comment", "SLA 2h"], action: "Hide comment หรือ resolve report ต้องมี reason และ audit", createdAt: "11 Jul 2026 07:30", updatedAt: "11 Jul 2026 12:00" }
-        ]
-      },
-      "Reported Comments": {
-        title: "Reported Comments",
-        panel: "Reported Comments Queue",
-        subtitle: "Review reported asset comments and replies with evidence, linked Asset Detail context, decision state, FO impact, and audit before closing.",
-        action: "Open report",
-        stats: [["Pending Reports", "11", "SLA risk 4"], ["High Priority", "5", "comment/link abuse"], ["Hidden / Removed", "7", "FO visibility changed"], ["Closed Today", "7", "reason/audit saved"]],
-        cards: [
-          ["Report Reasons", "Harassment or hate, Spam or scam, Inappropriate content, False or misleading information, and Other."],
-          ["Review Context", "Report summary, target comment, reporter evidence, linked asset, author context, FO impact, and audit history."],
-          ["Action Boundary", "Close no violation does not change FO content. Hide/remove comment changes FO visibility and requires reason plus audit."]
-        ],
-        rows: [
-          item("RCO-711", "Reported spam comment", "COM-711 / AST-8802", "Comment Report", "สูง", "Pending", "ผู้ใช้ 3 คน report comment ที่มี link นอกระบบ", ["Spam or scam", "SLA 4h"], "Hide comment หรือ close no violation ต้องมี confirm + reason"),
-          item("RCO-706", "Reported reply with contact info", "COM-704 / AST-8831", "Reply Report", "กลาง", "Pending", "report ว่า reply เปิดเผยข้อมูลติดต่อใน public surface", ["Inappropriate content", "Reply"], "ตรวจ policy และ FO visibility impact ก่อน action"),
-          item("RCO-690", "No violation after review", "COM-690 / AST-8612", "Comment Report", "ปกติ", "Closed", "ปิดรายงานหลังพบว่า user deleted comment เองและไม่มี public impact", ["Closed", "Audit"], "ดู result/audit history")
-        ]
-      }
+    const reportedCommentConfig = {
+      title: "Reported Comments",
+      panel: "Reported Comments Queue",
+      subtitle: "Review reported asset comments and replies with evidence, linked Asset Detail context, decision state, FO impact, and audit before closing.",
+      action: "Open report",
+      stats: [["Pending Reports", "11", "SLA risk 4"], ["High Priority", "5", "comment/link abuse"], ["Hidden / Removed", "7", "FO visibility changed"], ["Closed Today", "7", "reason/audit saved"]],
+      cards: [
+        ["Report Reasons", "Harassment or hate, Spam or scam, Inappropriate content, False or misleading information, and Other."],
+        ["Review Context", "Report summary, target comment, reporter evidence, linked asset, author context, FO impact, and audit history."],
+        ["Action Boundary", "Close no violation does not change FO content. Hide/remove comment changes FO visibility and requires reason plus audit."]
+      ]
     };
 
-    function getSocialSubConfig(subLabel = activeSub) {
-      const normalizedSub = normalizeSocialSubLabel(subLabel);
-      return socialSubConfigs[normalizedSub] || socialSubConfigs["Asset Comments"];
-    }
-
-    function normalizeSocialSubLabel(subLabel = activeSub) {
-      if (subLabel === "Reported Social") return "Reported Comments";
-      if (subLabel === "Comments") return "Asset Comments";
-      if (subLabel === "Likes" || subLabel === "Follows") return "Asset Comments";
-      return subLabel || "Asset Comments";
-    }
+    const reportedCommentCases = [
+      item("RCO-711", "Reported spam comment", "COM-711 / AST-8802", "Comment Report", "สูง", "Pending", "ผู้ใช้ 3 คน report comment ที่มี link นอกระบบ", ["Spam or scam", "SLA 4h"], "Hide comment หรือ close no violation ต้องมี confirm + reason"),
+      item("RCO-706", "Reported reply with contact info", "COM-704 / AST-8831", "Reply Report", "กลาง", "Pending", "report ว่า reply เปิดเผยข้อมูลติดต่อใน public surface", ["Inappropriate content", "Reply"], "ตรวจ policy และ FO visibility impact ก่อน action"),
+      item("RCO-690", "No violation after review", "COM-690 / AST-8612", "Comment Report", "ปกติ", "Closed", "ปิดรายงานหลังพบว่า user deleted comment เองและไม่มี public impact", ["Closed", "Audit"], "ดู result/audit history")
+    ];
 
     const userManagementData = {
       users: [
@@ -9713,7 +9667,7 @@
           { label: "Assets 22", module: "assets", sub: "Reported Assets" },
           { label: "Users 5", module: "users", sub: "Reported Users" },
           { label: "Articles 3", module: "content", sub: "Reported Articles" },
-          { label: "Comments 3", module: "social", sub: "Reported Social" }
+          { label: "Comments 3", module: "assets", sub: "Reported Comments" }
         ], icon: "audit" },
         { label: "Offer Activity", value: "12", trend: "อ้างอิงจาก Offer Management mock-up และสถานะ offer ล่าสุด", chips: ["Pending 3", "Paused 1", "Accepted 3", "Rejected 2", "Cancelled 2", "Invalidated 1"], module: "offers", sub: "Offer Queue", icon: "offer" },
         { label: "Articles", value: "12", trend: "มี 4 บทความรอเผยแพร่", chips: ["Published 8", "Scheduled 4"], module: "content", sub: "Articles", icon: "content" },
@@ -10546,6 +10500,7 @@
     let categoryFilterOpen = false;
     let boardReportListPage = 1;
     let boardReportFilterOpen = false;
+    let reportedCommentFilterOpen = false;
     let activeAssetImageIndex = 0;
     let activeAssetReportModalImageIndex = 0;
     let activeAssetCommentsModalId = null;
@@ -11046,6 +11001,7 @@
       categoryFilterOpen = false;
       boardReportListPage = 1;
       boardReportFilterOpen = false;
+      reportedCommentFilterOpen = false;
       marketDashboardPage = 1;
       marketCatalogPage = 1;
       activeAssetImageIndex = 0;
@@ -11067,6 +11023,7 @@
       articleFilterOpen = false;
       categoryFilterOpen = false;
       boardReportFilterOpen = false;
+      reportedCommentFilterOpen = false;
     }
 
     function renderNav() {
@@ -15648,13 +15605,14 @@
       const data = moduleData[id];
       const isAssetList = id === "assets" && (subLabel || "Asset List") === "Asset List";
       const isReportedAssets = id === "assets" && subLabel === "Reported Assets";
+      const isReportedComments = id === "assets" && subLabel === "Reported Comments";
       const isArticleList = id === "content" && (subLabel || "Articles") === "Articles";
       const isCategoryList = id === "content" && subLabel === "Categories";
       const isReportedBoard = id === "content" && subLabel === "Reported Articles";
       const isOfferList = id === "offers";
       document.body.classList.toggle("dashboard-mode", id === "dashboard");
-      document.body.classList.toggle("user-management-mode", id === "users" || isReportedAssets || isReportedBoard);
-      document.body.classList.toggle("asset-list-mode", isAssetList || isArticleList || isCategoryList || isReportedBoard);
+      document.body.classList.toggle("user-management-mode", id === "users" || isReportedAssets || isReportedBoard || isReportedComments);
+      document.body.classList.toggle("asset-list-mode", isAssetList || isArticleList || isCategoryList || isReportedBoard || isReportedComments);
       document.body.classList.toggle("offer-list-mode", isOfferList);
       document.body.classList.remove("offer-detail-mode");
       document.body.classList.toggle("article-list-mode", isArticleList);
@@ -15662,11 +15620,11 @@
       document.body.classList.toggle("reported-board-mode", isReportedBoard);
       document.body.classList.toggle("market-list-mode", id === "market");
       document.body.classList.toggle("market-dashboard-mode", id === "market" && (subLabel || "Dashboard") === "Dashboard");
-      document.body.classList.toggle("user-list-mode", id === "users" || isReportedAssets || isReportedBoard);
+      document.body.classList.toggle("user-list-mode", id === "users" || isReportedAssets || isReportedBoard || isReportedComments);
       document.body.classList.toggle("user-accounts-mode", id === "users" && (subLabel || "User Accounts") === "User Accounts");
       document.body.classList.remove("asset-detail-mode");
-      if (isReportedAssets || isReportedBoard) document.body.classList.remove("user-detail-mode");
-      if (id !== "users" && !isReportedAssets && !isReportedBoard) {
+      if (isReportedAssets || isReportedBoard || isReportedComments) document.body.classList.remove("user-detail-mode");
+      if (id !== "users" && !isReportedAssets && !isReportedBoard && !isReportedComments) {
         document.body.classList.remove("user-list-mode", "user-detail-mode");
         document.querySelector("#user-panel-filter-actions").innerHTML = "";
       }
@@ -15682,11 +15640,6 @@
       }
       if (id === "market") {
         renderMarketData(subLabel || "Dashboard");
-        updateActiveNav();
-        return;
-      }
-      if (id === "social") {
-        renderSocialInteraction(subLabel || "Asset Comments");
         updateActiveNav();
         return;
       }
@@ -15788,6 +15741,42 @@
         document.querySelector("#cards").innerHTML = "";
         document.querySelector("#detail").innerHTML = "";
         renderReportedAssetRows();
+        updateActiveNav();
+        return;
+      }
+      if (isReportedComments) {
+        activeRow = reportedCommentCases[0] || null;
+        document.querySelector("#crumb").textContent = `${data.crumb} / Reported Comments`;
+        document.querySelector("#page-title").textContent = "Reported Comments";
+        document.querySelector("#page-meta").textContent = "";
+        document.querySelector("#panel-title").textContent = "Reported Comments Queue";
+        document.querySelector("#panel-subtitle").textContent = reportedCommentConfig.subtitle;
+        document.querySelector("#primary-action").textContent = reportedCommentConfig.action;
+        document.querySelector("#user-panel-filter-actions").innerHTML = `
+          <button class="btn user-filter-toggle" type="button" data-reported-comment-filter-toggle aria-expanded="${reportedCommentFilterOpen}">${iconSvg.filter}<span>${reportedCommentFilterOpen ? "ปิดตัวกรอง" : "เปิดตัวกรอง"}</span></button>
+          <button class="btn" type="button" data-reported-comment-reset title="รีเซ็ตค่าทั้งหมด" aria-label="รีเซ็ตค่าทั้งหมด">${iconSvg.refresh}<span>รีเซ็ตค่าทั้งหมด</span></button>
+        `;
+        document.querySelector(".filters").innerHTML = `
+          <div class="user-filter-bar report-mode" data-filter-open="${reportedCommentFilterOpen}">
+            <input class="field search" id="reported-comment-search" type="search" placeholder="ค้นหา Report ID, Comment ID, Asset, Author" />
+            <div class="user-advanced-filter">${customSelect("reported-comment-status-filter", "Filter report status", filterOptions("reportStatus"))}</div>
+            <div class="user-advanced-filter">${customSelect("reported-comment-priority-filter", "Filter priority", filterOptions("reportPriorityKeyValues"))}</div>
+            <div class="user-advanced-filter">${customSelect("reported-comment-sort", "Sort reported comments", filterOptions("reportSort"), "latest")}</div>
+            ${resetFilterButton("data-reported-comment-reset")}
+          </div>
+        `;
+        document.querySelector("#summary-grid").innerHTML = reportedCommentConfig.stats.map(stat => `
+          <article class="stat">
+            <div class="stat-label">${stat[0]}</div>
+            <div class="stat-value">${stat[1]}</div>
+            <div class="stat-note">${stat[2]}</div>
+          </article>
+        `).join("");
+        document.querySelector("#cards").innerHTML = reportedCommentConfig.cards.map(card => `
+          <article class="mini-card"><h3>${card[0]}</h3><p class="muted">${card[1]}</p></article>
+        `).join("");
+        document.querySelector("#detail").innerHTML = "";
+        renderReportedCommentRows();
         updateActiveNav();
         return;
       }
@@ -15896,86 +15885,6 @@
       updateFilters(data);
       renderRows();
       renderDetail(activeRow);
-      updateActiveNav();
-    }
-
-    function renderSocialInteraction(subLabel = "Asset Comments") {
-      const data = moduleData.social;
-      const normalizedSub = normalizeSocialSubLabel(subLabel);
-      const config = getSocialSubConfig(normalizedSub);
-      activeModule = "social";
-      activeSub = subLabel; // ใช้ค่าต้นฉบับ ไม่ใช้ normalized
-      activeRow = config.rows[0] || null;
-      moduleData.social.rows = config.rows;
-      moduleData.social.stats = config.stats;
-      moduleData.social.cards = config.cards;
-      expandedMenus.add("social");
-      console.log("renderSocialInteraction:", { activeModule, activeSub, normalizedSub, subLabel });
-      document.body.classList.remove("user-list-mode", "user-detail-mode", "asset-detail-mode", "offer-detail-mode", "asset-list-mode", "article-list-mode", "category-list-mode", "reported-board-mode", "market-list-mode", "market-dashboard-mode", "dashboard-mode");
-      document.body.classList.add("user-list-mode");
-      document.body.classList.remove("dashboard-mode");
-      syncExpandedNavForModule("social", normalizedSub);
-      document.querySelector(".nav-item[data-module='dashboard']")?.classList.remove("active");
-      document.querySelector(".nav-item[data-module='social']")?.classList.add("active");
-      updateActiveNav();
-      document.querySelector("#user-panel-filter-actions").innerHTML = "";
-      document.querySelector("#crumb").textContent = `${data.crumb} / ${config.title}`;
-      document.querySelector("#page-title").textContent = config.title;
-      document.querySelector("#page-meta").textContent = "";
-      document.querySelector("#panel-title").textContent = config.panel;
-      document.querySelector("#panel-subtitle").textContent = config.subtitle;
-      document.querySelector("#primary-action").textContent = config.action;
-      document.querySelector("#detail").innerHTML = "";
-      document.querySelector("#table").innerHTML = "";
-
-      if (normalizedSub === "Asset Comments") {
-        document.querySelector(".filters").innerHTML = `
-          <div class="user-filter-bar asset-mode">
-            <input class="field search" id="comment-search" type="search" placeholder="ค้นหา Comment ID, Asset, Author" />
-            <div class="user-advanced-filter">${customSelect("comment-status-filter", "Filter comment status", [
-              { value: "", label: filterCopy.allStatus },
-              { value: "Visible", label: "Visible" },
-              { value: "Reported", label: "Reported" },
-              { value: "Hidden", label: "Hidden" },
-              { value: "Removed", label: "Removed" },
-              { value: "User Deleted", label: "User Deleted" }
-            ])}</div>
-            <div class="user-advanced-filter">${customSelect("comment-asset-status-filter", "Filter asset status", [
-              { value: "", label: filterCopy.allStatus },
-              { value: "Sale", label: "Sale" },
-              { value: "Show", label: "Show" }
-            ])}</div>
-            <div class="user-advanced-filter">${customSelect("comment-sort", "Sort comments", filterOptions("latestOldestSort"))}</div>
-            ${resetFilterButton("data-reset-comment-filters")}
-          </div>
-        `;
-      } else {
-        document.querySelector(".filters").innerHTML = `
-          <input class="field search" id="search" type="search" placeholder="ค้นหา Social ID, asset/user, สถานะ หรือเหตุผล" />
-          <select class="field" id="status-filter" aria-label="Filter status">
-            <option value="">${filterCopy.allStatus}</option>
-          </select>
-          <select class="field" id="priority-filter" aria-label="Filter priority">
-            ${filterOptions("reportPriorityThaiValues").map(option => `<option value="${option.value}">${option.label}</option>`).join("")}
-          </select>
-        `;
-      }
-
-      document.querySelector("#summary-grid").innerHTML = config.stats.map(stat => `
-        <article class="stat">
-          <div class="stat-label">${stat[0]}</div>
-          <div class="stat-value">${stat[1]}</div>
-          <div class="stat-note">${stat[2]}</div>
-        </article>
-      `).join("");
-      document.querySelector("#cards").innerHTML = config.cards.map(card => `
-        <article class="mini-card"><h3>${card[0]}</h3><p class="muted">${card[1]}</p></article>
-      `).join("");
-      updateFilters(moduleData.social);
-      assetListPage = 1;
-      renderRows();
-      renderDetail(activeRow);
-      scrollMainToTop();
       updateActiveNav();
     }
 
@@ -18104,16 +18013,10 @@
     function updateFilters(data) {
       const statuses = Array.from(new Set(data.rows.map(row => row.status)));
       const statusFilter = document.querySelector("#status-filter");
-      const commentStatusFilter = document.querySelector("#comment-status-filter");
-      if (commentStatusFilter) {
-        // Comment filters now use custom selects, options are hardcoded in template
-      } else {
-        const statusFilter = document.querySelector("#status-filter");
-        if (statusFilter) {
-          statusFilter.innerHTML = `<option value="">${filterCopy.allStatus}</option>${statuses.map(status => `<option value="${status}">${status}</option>`).join("")}`;
-        }
+      if (statusFilter) {
+        statusFilter.innerHTML = `<option value="">${filterCopy.allStatus}</option>${statuses.map(status => `<option value="${status}">${status}</option>`).join("")}`;
       }
-      const searchInput = document.querySelector("#search") || document.querySelector("#comment-search");
+      const searchInput = document.querySelector("#search");
       if (searchInput) searchInput.value = "";
       const priorityFilter = document.querySelector("#priority-filter");
       if (priorityFilter) priorityFilter.value = "";
@@ -18150,8 +18053,8 @@
         else renderMarketQueueRows(activeSub);
         return;
       }
-      if (activeModule === "social" && activeSub === "Asset Comments") {
-        renderCommentRows();
+      if (activeModule === "assets" && activeSub === "Reported Comments") {
+        renderReportedCommentRows();
         return;
       }
       const data = moduleData[activeModule];
@@ -21556,55 +21459,40 @@
       showUserActionModal(true);
     }
 
-    function renderCommentRows() {
-      const data = moduleData.social;
-      const q = (document.querySelector("#comment-search")?.value || "").trim().toLowerCase();
-      const statusSelect = document.querySelector("[data-custom-select='comment-status-filter']");
+    function renderReportedCommentRows() {
+      const q = (document.querySelector("#reported-comment-search")?.value || "").trim().toLowerCase();
+      const statusSelect = document.querySelector("[data-custom-select='reported-comment-status-filter']");
       const status = statusSelect ? statusSelect.dataset.value || "" : "";
-      const assetStatusSelect = document.querySelector("[data-custom-select='comment-asset-status-filter']");
-      const assetStatus = assetStatusSelect ? assetStatusSelect.dataset.value || "" : "";
-      const sortSelect = document.querySelector("[data-custom-select='comment-sort']");
+      const prioritySelect = document.querySelector("[data-custom-select='reported-comment-priority-filter']");
+      const priority = prioritySelect ? prioritySelect.dataset.value || "" : "";
+      const sortSelect = document.querySelector("[data-custom-select='reported-comment-sort']");
       const sort = sortSelect ? sortSelect.dataset.value || "latest" : "latest";
-      const sorted = [...data.rows].filter(row => {
+      const sorted = [...reportedCommentCases].filter(row => {
         const text = Object.values(row).flat().join(" ").toLowerCase();
         return (!q || text.includes(q))
           && (!status || row.status === status)
-          && (!assetStatus || row.assetStatus === assetStatus);
-      }).sort((a, b) => {
-        if (sort === "oldest") return (a.createdAt || "").localeCompare(b.createdAt || "");
-        return (b.createdAt || "").localeCompare(a.createdAt || "");
+          && (!priority || row.priority === priority);
       });
       const pageCount = Math.max(1, Math.ceil(sorted.length / assetListPageSize));
       assetListPage = Math.min(assetListPage, pageCount);
       const start = (assetListPage - 1) * assetListPageSize;
       const pageRows = sorted.slice(start, start + assetListPageSize);
       document.querySelector("#table").innerHTML = `
-        <div class="asset-table comment-table">
-          <div class="asset-row head"><div>Comment ID</div><div>Comment Excerpt</div><div>Asset</div><div>Author</div><div>Type</div><div>Likes</div><div>Reports</div><div>Status</div><div>Created / Updated</div><div>Action</div></div>
+        <div class="user-table reported-assets-table">
+          <div class="user-row report-row asset-report-row head"><div>Report ID</div><div>Comment / Asset</div><div>Type</div><div>Status</div><div>Reason</div><div>Priority</div><div>Action</div></div>
           ${pageRows.map(row => {
-            const statusPillClass = row.status === "Visible" ? "green" : row.status === "Reported" ? "red" : row.status === "Hidden" ? "amber" : row.status === "Removed" ? "gray" : row.status === "User Deleted" ? "gray" : "blue";
-            const typePillClass = row.commentType === "Root" ? "blue" : "purple";
+            const statusPillClass = row.status === "Pending" ? "amber" : row.status === "Closed" ? "gray" : "blue";
+            const priorityPillClass = row.priority === "สูง" ? "red" : row.priority === "กลาง" ? "amber" : "blue";
             return `
-              <div class="asset-row" data-comment-card="${row.id}">
-                <div data-label="Comment ID"><div class="main-text">${row.id}</div></div>
-                <div data-label="Comment Excerpt">
-                  <div class="main-text">${row.name.substring(0, 60)}${row.name.length > 60 ? "..." : ""}</div>
-                </div>
-                <div data-label="Asset">
-                  <div class="main-text">${row.assetId} / ${row.assetName}</div>
-                  <div class="muted">${row.assetStatus}</div>
-                </div>
-                <div data-label="Author"><div class="main-text">${row.author}</div></div>
-                <div data-label="Type"><span class="pill ${typePillClass}">${row.commentType}</span></div>
-                <div data-label="Likes"><div class="main-text">${row.likeCount || 0}</div></div>
-                <div data-label="Reports"><div class="main-text">${row.reportCount || 0}</div></div>
+              <div class="user-row report-row asset-report-row" data-reported-comment-card="${row.id}">
+                <div class="user-cell-primary" data-label="Report ID"><div class="main-text">${row.id}</div></div>
+                <div data-label="Comment / Asset"><div class="main-text">${row.name}</div><div class="muted">${row.owner}</div></div>
+                <div data-label="Type"><span class="pill blue">${row.type}</span></div>
                 <div data-label="Status"><span class="pill ${statusPillClass}">${row.status}</span></div>
-                <div data-label="Created / Updated">
-                  <div class="main-text">${row.createdAt || "-"}</div>
-                  ${row.updatedAt && row.updatedAt !== row.createdAt ? `<div class="muted" style="margin-top:2px;">Updated ${row.updatedAt}</div>` : ""}
-                </div>
+                <div data-label="Reason"><div class="main-text">${row.tags.filter(tag => !["SLA 4h", "Reply", "Closed", "Audit"].includes(tag)).join(", ") || "-"}</div></div>
+                <div data-label="Priority"><span class="pill ${priorityPillClass}">${row.priority}</span></div>
                 <div class="user-row-actions">
-                  <button class="panel-action" type="button" data-comment-action="${row.id}">${iconSvg.eye}ดูรายละเอียด</button>
+                  <button class="panel-action" type="button" data-reported-comment-action="${row.id}">${iconSvg.eye}ดูรายละเอียด</button>
                 </div>
               </div>
             `;
@@ -21613,126 +21501,9 @@
         <div class="footer-range">
           <span>แสดง ${sorted.length ? `${start + 1}-${Math.min(start + assetListPageSize, sorted.length)}` : "0"} จาก ${sorted.length}</span>
           <div class="pager">
-            <button class="btn" type="button" data-comment-page="prev" ${assetListPage <= 1 ? "disabled" : ""}>ก่อนหน้า</button>
-            ${Array.from({ length: pageCount }, (_, index) => `<button class="btn ${index + 1 === assetListPage ? "active" : ""}" type="button" data-comment-page="${index + 1}">${index + 1}</button>`).join("")}
-            <button class="btn" type="button" data-comment-page="next" ${assetListPage >= pageCount ? "disabled" : ""}>ถัดไป</button>
-          </div>
-        </div>
-      `;
-    }
-
-    function renderCommentDetail(comment) {
-      if (!comment) {
-        renderModule("social", "Asset Comments", "Asset Comments");
-        return;
-      }
-      const statusPillClass = comment.status === "Visible" ? "green" : comment.status === "Reported" ? "red" : comment.status === "Hidden" ? "amber" : comment.status === "Removed" ? "gray" : comment.status === "User Deleted" ? "gray" : "blue";
-      const typePillClass = comment.commentType === "Root" ? "blue" : "purple";
-      document.body.classList.add("user-detail-mode");
-      document.querySelector("#detail").innerHTML = `
-        <div class="detail-header">
-          <div class="detail-header-main">
-            <div class="detail-title-row">
-              <h2>${comment.id}</h2>
-              <div class="detail-pills">
-                <span class="pill ${statusPillClass}">${comment.status}</span>
-                <span class="pill ${typePillClass}">${comment.commentType}</span>
-              </div>
-            </div>
-            <div class="detail-meta">
-              <div><strong>Author:</strong> ${comment.author}</div>
-              <div><strong>Asset:</strong> ${comment.assetId} / ${comment.assetName} (${comment.assetStatus})</div>
-              <div><strong>Created:</strong> ${comment.createdAt || "-"}</div>
-              <div><strong>Updated:</strong> ${comment.updatedAt || "-"}</div>
-            </div>
-          </div>
-          <div class="detail-header-actions">
-            <button class="btn ghost" type="button" data-back-to-comments-list>กลับรายการ</button>
-          </div>
-        </div>
-        <div class="detail-sections user-detail-page">
-          <div class="detail-section">
-            <h4>Comment Text</h4>
-            <div class="detail-content-box">
-              <p>${comment.name}</p>
-            </div>
-          </div>
-          <div class="detail-section">
-            <h4>Engagement Signals</h4>
-            <div class="detail-grid two">
-              <div class="detail-grid-item">
-                <span class="detail-grid-label">Like Count</span>
-                <span class="detail-grid-value">${comment.likeCount || 0}</span>
-              </div>
-              <div class="detail-grid-item">
-                <span class="detail-grid-label">Report Count</span>
-                <span class="detail-grid-value">${comment.reportCount || 0}</span>
-              </div>
-            </div>
-          </div>
-          <div class="detail-section">
-            <h4>Asset Context</h4>
-            <div class="detail-grid two">
-              <div class="detail-grid-item">
-                <span class="detail-grid-label">Asset ID</span>
-                <span class="detail-grid-value">${comment.assetId}</span>
-              </div>
-              <div class="detail-grid-item">
-                <span class="detail-grid-label">Asset Name</span>
-                <span class="detail-grid-value">${comment.assetName}</span>
-              </div>
-              <div class="detail-grid-item">
-                <span class="detail-grid-label">Asset Status</span>
-                <span class="detail-grid-value">${comment.assetStatus}</span>
-              </div>
-            </div>
-          </div>
-          <div class="detail-section">
-            <h4>Comment Type & Relation</h4>
-            <div class="detail-grid two">
-              <div class="detail-grid-item">
-                <span class="detail-grid-label">Type</span>
-                <span class="detail-grid-value">${comment.commentType}</span>
-              </div>
-              ${comment.parentId ? `
-                <div class="detail-grid-item">
-                  <span class="detail-grid-label">Parent Comment ID</span>
-                  <span class="detail-grid-value">${comment.parentId}</span>
-                </div>
-              ` : `
-                <div class="detail-grid-item">
-                  <span class="detail-grid-label">Root Comment</span>
-                  <span class="detail-grid-value">Yes</span>
-                </div>
-              `}
-            </div>
-          </div>
-          <div class="detail-section">
-            <h4>Moderation Timeline</h4>
-            <div class="detail-timeline">
-              <div class="timeline-item">
-                <div class="timeline-date">${comment.createdAt || "-"}</div>
-                <div class="timeline-content">Comment created by ${comment.author}</div>
-              </div>
-              ${comment.status !== "Visible" ? `
-                <div class="timeline-item">
-                  <div class="timeline-date">${comment.updatedAt || "-"}</div>
-                  <div class="timeline-content">Status changed to ${comment.status}</div>
-                </div>
-              ` : ""}
-            </div>
-          </div>
-          <div class="detail-section">
-            <h4>FO Impact</h4>
-            <div class="detail-content-box">
-              <p>${comment.status === "Visible" ? "Comment is visible on FO Asset Detail for Sale/Show assets." : comment.status === "Hidden" ? "Comment is hidden from FO Asset Detail but retained in BO for audit." : comment.status === "Removed" ? "Comment is permanently removed from FO and BO (audit retained)." : comment.status === "User Deleted" ? "User deleted this comment from FO; BO shows retained read-only state for audit." : "Comment status changed."}</p>
-            </div>
-          </div>
-          <div class="detail-section">
-            <h4>Action Note</h4>
-            <div class="detail-content-box">
-              <p class="muted">${comment.detail || "No additional action note."}</p>
-            </div>
+            <button class="btn" type="button" data-reported-comment-page="prev" ${assetListPage <= 1 ? "disabled" : ""}>ก่อนหน้า</button>
+            ${Array.from({ length: pageCount }, (_, index) => `<button class="btn ${index + 1 === assetListPage ? "active" : ""}" type="button" data-reported-comment-page="${index + 1}">${index + 1}</button>`).join("")}
+            <button class="btn" type="button" data-reported-comment-page="next" ${assetListPage >= pageCount ? "disabled" : ""}>ถัดไป</button>
           </div>
         </div>
       `;
@@ -22420,12 +22191,11 @@
       if (activeModule !== "dashboard") {
         document.querySelector(".nav-item[data-module='dashboard']")?.classList.remove("active");
       }
-      console.log("Navigation update:", { 
-        activeModule, 
-        activeSub, 
-        activeParent, 
-        navParentByModule_social: navParentByModule["social"],
-        expandedMenus: Array.from(expandedMenus) 
+      console.log("Navigation update:", {
+        activeModule,
+        activeSub,
+        activeParent,
+        expandedMenus: Array.from(expandedMenus)
       });
     }
 
@@ -22499,6 +22269,11 @@
         if (["asset-report-status-filter", "asset-report-priority-filter", "asset-report-sort"].includes(hiddenInput.id) && activeModule === "assets" && activeSub === "Reported Assets") {
           assetListPage = 1;
           renderReportedAssetRows();
+          return;
+        }
+        if (["reported-comment-status-filter", "reported-comment-priority-filter", "reported-comment-sort"].includes(hiddenInput.id) && activeModule === "assets" && activeSub === "Reported Comments") {
+          assetListPage = 1;
+          renderReportedCommentRows();
           return;
         }
         if (["asset-type-filter", "asset-brand-filter", "asset-sort"].includes(hiddenInput.id) && activeModule === "assets") {
@@ -23377,6 +23152,16 @@
         if (label) label.textContent = boardReportFilterOpen ? "ปิดตัวกรอง" : "เปิดตัวกรอง";
         return;
       }
+      const reportedCommentFilterToggle = event.target.closest("[data-reported-comment-filter-toggle]");
+      if (reportedCommentFilterToggle) {
+        reportedCommentFilterOpen = !reportedCommentFilterOpen;
+        const filterBar = document.querySelector(".user-filter-bar");
+        if (filterBar) filterBar.dataset.filterOpen = String(reportedCommentFilterOpen);
+        reportedCommentFilterToggle.setAttribute("aria-expanded", String(reportedCommentFilterOpen));
+        const label = reportedCommentFilterToggle.querySelector("span");
+        if (label) label.textContent = reportedCommentFilterOpen ? "ปิดตัวกรอง" : "เปิดตัวกรอง";
+        return;
+      }
       const articlePageButton = event.target.closest("[data-article-page]");
       if (articlePageButton) {
         const target = articlePageButton.dataset.articlePage;
@@ -23459,59 +23244,53 @@
         resetTableScrollPosition();
         return;
       }
-      const commentPageButton = event.target.closest("[data-comment-page]");
-      if (commentPageButton) {
-        const target = commentPageButton.dataset.commentPage;
+      const reportedCommentPageButton = event.target.closest("[data-reported-comment-page]");
+      if (reportedCommentPageButton) {
+        const target = reportedCommentPageButton.dataset.reportedCommentPage;
         if (target === "prev") assetListPage = Math.max(1, assetListPage - 1);
         else if (target === "next") assetListPage += 1;
         else assetListPage = Number(target) || 1;
-        renderCommentRows();
+        renderReportedCommentRows();
         resetTableScrollPosition();
         return;
       }
-      const commentActionButton = event.target.closest("[data-comment-action]");
-      if (commentActionButton) {
-        const comment = moduleData.social.rows.find(row => row.id === commentActionButton.dataset.commentAction);
-        if (comment) {
-          pushBackNavigationContext();
-          renderCommentDetail(comment);
+      const reportedCommentActionButton = event.target.closest("[data-reported-comment-action]");
+      if (reportedCommentActionButton) {
+        const reportCase = reportedCommentCases.find(row => row.id === reportedCommentActionButton.dataset.reportedCommentAction);
+        if (reportCase) {
+          activeRow = reportCase;
+          renderDetail(reportCase);
           closeRowMenus();
         }
         return;
       }
-      const commentCard = event.target.closest("[data-comment-card]");
-      if (commentCard && !event.target.closest(".row-menu, button, a, input, select, [data-custom-select]")) {
-        const comment = moduleData.social.rows.find(row => row.id === commentCard.dataset.commentCard);
-        if (comment) {
-          pushBackNavigationContext();
-          renderCommentDetail(comment);
+      const reportedCommentCard = event.target.closest("[data-reported-comment-card]");
+      if (reportedCommentCard && !event.target.closest(".row-menu, button, a, input, select, [data-custom-select]")) {
+        const reportCase = reportedCommentCases.find(row => row.id === reportedCommentCard.dataset.reportedCommentCard);
+        if (reportCase) {
+          activeRow = reportCase;
+          renderDetail(reportCase);
         }
         return;
       }
-      const backToCommentsListButton = event.target.closest("[data-back-to-comments-list]");
-      if (backToCommentsListButton) {
-        popBackNavigationContext();
-        document.body.classList.remove("user-detail-mode");
-        renderCommentRows();
-        return;
-      }
-      const resetCommentFiltersButton = event.target.closest("[data-reset-comment-filters]");
-      if (resetCommentFiltersButton) {
-        document.querySelector("#comment-search").value = "";
-        const statusSelect = document.querySelector("[data-custom-select='comment-status-filter']");
+      const resetReportedCommentFiltersButton = event.target.closest("[data-reported-comment-reset]");
+      if (resetReportedCommentFiltersButton) {
+        const searchInput = document.querySelector("#reported-comment-search");
+        if (searchInput) searchInput.value = "";
+        const statusSelect = document.querySelector("[data-custom-select='reported-comment-status-filter']");
         if (statusSelect) statusSelect.dataset.value = "";
-        const assetStatusSelect = document.querySelector("[data-custom-select='comment-asset-status-filter']");
-        if (assetStatusSelect) assetStatusSelect.dataset.value = "";
-        const sortSelect = document.querySelector("[data-custom-select='comment-sort']");
+        const prioritySelect = document.querySelector("[data-custom-select='reported-comment-priority-filter']");
+        if (prioritySelect) prioritySelect.dataset.value = "";
+        const sortSelect = document.querySelector("[data-custom-select='reported-comment-sort']");
         if (sortSelect) sortSelect.dataset.value = "latest";
         updateCustomSelectLabels();
         assetListPage = 1;
-        renderCommentRows();
+        renderReportedCommentRows();
         return;
       }
-      if (event.target.id === "comment-search" || event.target.closest("[data-custom-select='comment-status-filter']") || event.target.closest("[data-custom-select='comment-asset-status-filter']") || event.target.closest("[data-custom-select='comment-sort']")) {
+      if (event.target.id === "reported-comment-search" || event.target.closest("[data-custom-select='reported-comment-status-filter']") || event.target.closest("[data-custom-select='reported-comment-priority-filter']") || event.target.closest("[data-custom-select='reported-comment-sort']")) {
         assetListPage = 1;
-        renderCommentRows();
+        renderReportedCommentRows();
         return;
       }
       const offerPageButton = event.target.closest("[data-offer-page]");
@@ -23890,6 +23669,11 @@
         renderReportedAssetRows();
         return;
       }
+      if (event.target.matches("#reported-comment-search")) {
+        assetListPage = 1;
+        renderReportedCommentRows();
+        return;
+      }
       if (event.target.matches("#board-report-search")) {
         boardReportListPage = 1;
         renderReportedBoardRows();
@@ -24023,6 +23807,11 @@
       if (event.target.matches("#asset-report-status-filter, #asset-report-priority-filter, #asset-report-sort")) {
         assetListPage = 1;
         renderReportedAssetRows();
+        return;
+      }
+      if (event.target.matches("#reported-comment-status-filter, #reported-comment-priority-filter, #reported-comment-sort")) {
+        assetListPage = 1;
+        renderReportedCommentRows();
         return;
       }
       if (event.target.matches("#board-report-status-filter, #board-report-priority-filter, #board-report-sort")) {
