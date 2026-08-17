@@ -4410,8 +4410,8 @@
       justify-content: center;
     }
     .user-row.reported-comment-row {
-      grid-template-columns: minmax(96px, .45fr) minmax(200px, 1.1fr) minmax(180px, .95fr) minmax(120px, .5fr) minmax(100px, .45fr) minmax(170px, .85fr) minmax(90px, .4fr) minmax(80px, .35fr);
-      column-gap: 22px;
+      grid-template-columns: minmax(84px, .38fr) minmax(320px, 1.8fr) minmax(170px, .9fr) minmax(96px, .42fr) minmax(140px, .62fr) minmax(76px, .34fr) minmax(64px, .28fr);
+      column-gap: 18px;
       padding-left: 22px;
       padding-right: 22px;
     }
@@ -6950,8 +6950,8 @@
         column-gap: 20px;
       }
       .user-row.reported-comment-row {
-        grid-template-columns: minmax(90px, .42fr) minmax(170px, 1fr) minmax(160px, .9fr) minmax(108px, .48fr) minmax(92px, .42fr) minmax(150px, .78fr) minmax(82px, .38fr) minmax(76px, .32fr);
-        column-gap: 18px;
+        grid-template-columns: minmax(82px, .38fr) minmax(280px, 1.7fr) minmax(150px, .85fr) minmax(92px, .42fr) minmax(120px, .58fr) minmax(72px, .34fr) minmax(62px, .28fr);
+        column-gap: 16px;
       }
       body.user-accounts-mode:not(.user-detail-mode) .main {
         overflow-x: hidden;
@@ -6990,7 +6990,7 @@
         min-width: 1484px;
       }
       body.user-list-mode:not(.user-detail-mode) #table .reported-comment-table {
-        min-width: 1280px;
+        min-width: 1080px;
       }
       body.user-list-mode:not(.user-detail-mode) .reported-users-table .user-row.report-row,
       body.user-list-mode:not(.user-detail-mode) .reported-assets-table .user-row.report-row {
@@ -9591,9 +9591,9 @@
     };
 
     const reportedCommentCases = [
-      { ...item("RCO-711", "Reported spam comment", "COM-711 / AST-8802", "Comment Report", "สูง", "Pending", "ผู้ใช้ 3 คน report comment ที่มี link นอกระบบ", ["Spam or scam", "SLA 4h"], "Hide comment หรือ close no violation ต้องมี confirm + reason"), commentId: "COM-711", assetId: "AST-8802", commentExcerpt: "ดูนาฬิกาที่ bit.ly/superdeal ราคาถูกกว่าที่นี่เยอะ สนใจทัก Line @watchdealer", reporters: 3 },
-      { ...item("RCO-706", "Reported reply with contact info", "COM-704 / AST-8831", "Reply Report", "กลาง", "Pending", "report ว่า reply เปิดเผยข้อมูลติดต่อใน public surface", ["Inappropriate content", "Reply"], "ตรวจ policy และ FO visibility impact ก่อน action"), commentId: "COM-704", assetId: "AST-8831", commentExcerpt: "สนใจเจรจาเพิ่มได้ครับ ติดต่อ 08x-xxx-xxxx หรือ Line: @collector_th", reporters: 1 },
-      { ...item("RCO-690", "No violation after review", "COM-690 / AST-8612", "Comment Report", "ปกติ", "Closed", "ปิดรายงานหลังพบว่า user deleted comment เองและไม่มี public impact", ["Closed", "Audit"], "ดู result/audit history"), commentId: "COM-690", assetId: "AST-8612", commentExcerpt: "นาฬิการุ่นนี้หายากมาก เคยเห็นที่ร้านเก่าตอนปี 2019 น่าสนใจสำหรับ collector", reporters: 2 }
+      { ...item("RCO-711", "Reported spam comment", "COM-711 / AST-8802", "Comment Report", "High", "Pending", "ผู้ใช้ 3 คน report comment ที่มี link นอกระบบ", ["Spam or scam", "SLA 4h"], "Hide comment หรือ close no violation ต้องมี confirm + reason"), commentId: "COM-711", assetId: "AST-8802", commentExcerpt: "ดูนาฬิกาที่ bit.ly/superdeal ราคาถูกกว่าที่นี่เยอะ สนใจทัก Line @watchdealer", reporters: 3 },
+      { ...item("RCO-706", "Reported reply with contact info", "COM-704 / AST-8831", "Reply Report", "Medium", "Pending", "report ว่า reply เปิดเผยข้อมูลติดต่อใน public surface", ["Inappropriate content", "Reply"], "ตรวจ policy และ FO visibility impact ก่อน action"), commentId: "COM-704", assetId: "AST-8831", commentExcerpt: "สนใจเจรจาเพิ่มได้ครับ ติดต่อ 08x-xxx-xxxx หรือ Line: @collector_th", reporters: 1 },
+      { ...item("RCO-690", "No violation after review", "COM-690 / AST-8612", "Comment Report", "Low", "Closed", "ปิดรายงานหลังพบว่า user deleted comment เองและไม่มี public impact", ["Closed", "Audit"], "ดู result/audit history"), commentId: "COM-690", assetId: "AST-8612", commentExcerpt: "นาฬิการุ่นนี้หายากมาก เคยเห็นที่ร้านเก่าตอนปี 2019 น่าสนใจสำหรับ collector", reporters: 2 }
     ];
 
     const userManagementData = {
@@ -15808,7 +15808,7 @@
           <div class="user-filter-bar report-mode" data-filter-open="${reportedCommentFilterOpen}">
             <input class="field search" id="reported-comment-search" type="search" placeholder="ค้นหา Report ID, Comment ID, Asset, Author" />
             <div class="user-advanced-filter">${customSelect("reported-comment-status-filter", "Filter report status", filterOptions("reportStatus"))}</div>
-            <div class="user-advanced-filter">${customSelect("reported-comment-priority-filter", "Filter priority", filterOptions("reportPriorityThaiValues"))}</div>
+            <div class="user-advanced-filter">${customSelect("reported-comment-priority-filter", "Filter priority", filterOptions("reportPriorityKeyValues"))}</div>
             <div class="user-advanced-filter">${customSelect("reported-comment-sort", "Sort reported comments", filterOptions("reportSort"), "latest")}</div>
             ${resetFilterButton("data-reported-comment-reset")}
           </div>
@@ -21508,7 +21508,7 @@
         const text = Object.values(row).flat().join(" ").toLowerCase();
         return (!q || text.includes(q))
           && (!status || row.status === status)
-          && (!priority || row.priority === priority);
+          && (!priority || row.priority.toLowerCase() === priority.toLowerCase());
       }).sort((a, b) => {
         if (sort === "reporters") return (b.reporters || 0) - (a.reporters || 0);
         const aTime = a.createdAt ? new Date(a.createdAt.replace(/GMT\+7$/, "+07:00")) : 0;
@@ -21522,10 +21522,10 @@
       const pageRows = sorted.slice(start, start + assetListPageSize);
       document.querySelector("#table").innerHTML = `
         <div class="user-table reported-assets-table reported-comment-table">
-          <div class="user-row report-row reported-comment-row head"><div>Report ID</div><div>Comment</div><div>Asset</div><div>Type</div><div>Status</div><div>Reason</div><div>Priority</div><div>Action</div></div>
+          <div class="user-row report-row reported-comment-row head"><div>Report ID</div><div>Comment</div><div>Asset</div><div>Status</div><div>Reason</div><div>Priority</div><div>Action</div></div>
           ${pageRows.map(row => {
-            const statusPillClass = row.status === "Pending" ? "amber" : row.status === "Closed" ? "gray" : "blue";
-            const priorityPillClass = row.priority === "สูง" ? "red" : row.priority === "กลาง" ? "amber" : "blue";
+            const statusPillClass = row.status === "Pending" ? "amber" : row.status === "Closed" ? "green" : "blue";
+            const priorityPillClass = row.priority === "High" ? "red" : row.priority === "Medium" ? "amber" : "blue";
             const asset = moduleData.assets.rows.find(entry => entry.id === row.assetId);
             const assetName = asset ? asset.name : "-";
             return `
@@ -21533,7 +21533,6 @@
                 <div class="user-cell-primary" data-label="Report ID"><div class="main-text">${row.id}</div></div>
                 <div data-label="Comment"><div class="main-text">${row.commentExcerpt || row.name}</div></div>
                 <div data-label="Asset"><div class="main-text">${row.assetId}</div><div class="muted">${assetName}</div></div>
-                <div data-label="Type"><span class="pill blue">${row.type}</span></div>
                 <div data-label="Status"><span class="pill ${statusPillClass}">${row.status}</span></div>
                 <div data-label="Reason"><div class="main-text">${row.tags.filter(tag => !["SLA 4h", "Reply", "Closed", "Audit"].includes(tag)).join(", ") || "-"}</div></div>
                 <div data-label="Priority"><span class="pill ${priorityPillClass}">${row.priority}</span></div>
