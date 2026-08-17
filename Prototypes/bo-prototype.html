@@ -6977,7 +6977,8 @@
         min-width: 980px;
       }
       body.user-list-mode:not(.user-detail-mode) #table:has(.reported-users-table),
-      body.user-list-mode:not(.user-detail-mode) #table:has(.reported-assets-table) {
+      body.user-list-mode:not(.user-detail-mode) #table:has(.reported-assets-table),
+      body.user-list-mode:not(.user-detail-mode) #table:has(.reported-comment-table) {
         max-width: 100%;
         overflow-x: auto;
         scrollbar-width: thin;
@@ -7750,11 +7751,13 @@
         gap: 12px;
       }
       body.user-list-mode:not(.user-detail-mode) #table:has(.reported-users-table),
-      body.user-list-mode:not(.user-detail-mode) #table:has(.reported-assets-table) {
+      body.user-list-mode:not(.user-detail-mode) #table:has(.reported-assets-table),
+      body.user-list-mode:not(.user-detail-mode) #table:has(.reported-comment-table) {
         overflow-x: hidden;
       }
       body.user-list-mode:not(.user-detail-mode) #table .reported-users-table,
-      body.user-list-mode:not(.user-detail-mode) #table .reported-assets-table {
+      body.user-list-mode:not(.user-detail-mode) #table .reported-assets-table,
+      body.user-list-mode:not(.user-detail-mode) #table .reported-comment-table {
         min-width: 0;
       }
       .user-row,
@@ -15660,7 +15663,7 @@
       const isOfferList = id === "offers";
       document.body.classList.toggle("dashboard-mode", id === "dashboard");
       document.body.classList.toggle("user-management-mode", id === "users" || isReportedAssets || isReportedBoard || isReportedComments);
-      document.body.classList.toggle("asset-list-mode", isAssetList || isArticleList || isCategoryList || isReportedBoard || isReportedComments);
+      document.body.classList.toggle("asset-list-mode", isAssetList || isArticleList || isCategoryList || isReportedBoard);
       document.body.classList.toggle("offer-list-mode", isOfferList);
       document.body.classList.remove("offer-detail-mode");
       document.body.classList.toggle("article-list-mode", isArticleList);
