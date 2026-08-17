@@ -9547,13 +9547,7 @@
       title: "Reported Comments",
       panel: "Reported Comments Queue",
       subtitle: "Review reported asset comments and replies with evidence, linked Asset Detail context, decision state, FO impact, and audit before closing.",
-      action: "Open report",
-      stats: [["Pending Reports", "11", "SLA risk 4"], ["High Priority", "5", "comment/link abuse"], ["Hidden / Removed", "7", "FO visibility changed"], ["Closed Today", "7", "reason/audit saved"]],
-      cards: [
-        ["Report Reasons", "Harassment or hate, Spam or scam, Inappropriate content, False or misleading information, and Other."],
-        ["Review Context", "Report summary, target comment, reporter evidence, linked asset, author context, FO impact, and audit history."],
-        ["Action Boundary", "Close no violation does not change FO content. Hide/remove comment changes FO visibility and requires reason plus audit."]
-      ]
+      action: "Open report"
     };
 
     const reportedCommentCases = [
@@ -15765,16 +15759,8 @@
             ${resetFilterButton("data-reported-comment-reset")}
           </div>
         `;
-        document.querySelector("#summary-grid").innerHTML = reportedCommentConfig.stats.map(stat => `
-          <article class="stat">
-            <div class="stat-label">${stat[0]}</div>
-            <div class="stat-value">${stat[1]}</div>
-            <div class="stat-note">${stat[2]}</div>
-          </article>
-        `).join("");
-        document.querySelector("#cards").innerHTML = reportedCommentConfig.cards.map(card => `
-          <article class="mini-card"><h3>${card[0]}</h3><p class="muted">${card[1]}</p></article>
-        `).join("");
+        document.querySelector("#summary-grid").innerHTML = "";
+        document.querySelector("#cards").innerHTML = "";
         document.querySelector("#detail").innerHTML = "";
         renderReportedCommentRows();
         updateActiveNav();
