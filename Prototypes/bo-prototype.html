@@ -4935,6 +4935,20 @@
     .asset-report-detail-page .asset-report-name {
       overflow-wrap: anywhere;
     }
+    .reported-comment-detail-page .detail-tile-full {
+      grid-column: 1 / -1;
+    }
+    .reported-comment-detail-page .comment-full-text {
+      display: block;
+      margin-top: 6px;
+      padding: 10px 12px;
+      border: 1px solid #e1e9f3;
+      border-radius: 8px;
+      background: #f7fafd;
+      font-weight: 400;
+      line-height: 1.5;
+      overflow-wrap: anywhere;
+    }
     .report-detail-page .detail-tile .chip {
       display: inline-flex;
       align-items: center;
@@ -21612,13 +21626,10 @@
 
     function getReportedCommentCommentStatusPill(reportCase) {
       const status = reportCase.commentStatus || "Visible";
-      const map = {
-        "Visible": "green",
-        "Hidden": "amber",
-        "Removed": "red",
-        "User Deleted": "gray"
-      };
-      return `<span class="pill ${map[status] || "blue"}">${status}</span>`;
+      if (status === "Hidden") return `<span class="pill amber">ซ่อนชั่วคราว</span>`;
+      if (status === "Removed") return `<span class="pill red">ซ่อนถาวร</span>`;
+      if (status === "User Deleted") return `<span class="pill gray">ลบโดยเจ้าของ</span>`;
+      return "";
     }
 
     function renderReportedCommentReporterHistoryTable(reportCase) {
@@ -21725,7 +21736,7 @@
             <div class="user-detail-title">
               ${asset ? renderAssetTitleImage(asset, assetDetail) : ""}
               <div>
-                <h2 class="asset-report-heading"><span class="asset-report-id">${reportCase.id}</span><span class="user-detail-separator"> : </span><span class="asset-report-name user-display-name">${reportCase.commentExcerpt || reportCase.name}</span></h2>
+                <h2 class="asset-report-heading"><span class="asset-report-id">${reportCase.id}</span></h2>
                 <div class="chips">
                   ${getReportedCommentStatusPill(reportCase)}
                   ${getReportedCommentCommentStatusPill(reportCase)}
@@ -21749,6 +21760,7 @@
               <div class="detail-tile"><span>Author</span><strong>${reportCase.authorName || "-"}</strong></div>
               <div class="detail-tile"><span>Report Reason</span><strong>${translateReportReason(reportCase.reportReason) || "-"}</strong></div>
               <div class="detail-tile"><span>Created At</span><strong>${reportCase.createdAt || "-"}</strong></div>
+              <div class="detail-tile detail-tile-full"><span>Comment Text</span><strong class="comment-full-text">${reportCase.commentExcerpt || "-"}</strong></div>
             </div>
           </div>
 
