@@ -4410,7 +4410,7 @@
       justify-content: center;
     }
     .user-row.reported-comment-row {
-      grid-template-columns: minmax(96px, .5fr) minmax(220px, 1.2fr) minmax(120px, .5fr) minmax(100px, .45fr) minmax(180px, .9fr) minmax(90px, .4fr) minmax(80px, .35fr);
+      grid-template-columns: minmax(96px, .45fr) minmax(200px, 1.1fr) minmax(180px, .95fr) minmax(120px, .5fr) minmax(100px, .45fr) minmax(170px, .85fr) minmax(90px, .4fr) minmax(80px, .35fr);
       column-gap: 22px;
       padding-left: 22px;
       padding-right: 22px;
@@ -4418,7 +4418,8 @@
     .user-row.reported-comment-row > div {
       min-width: 0;
     }
-    .user-row.reported-comment-row > div:nth-child(2) .muted {
+    .user-row.reported-comment-row > div:nth-child(2) .muted,
+    .user-row.reported-comment-row > div:nth-child(3) .muted {
       color: #40536c;
       font-size: 12px;
       line-height: 1.55;
@@ -6949,7 +6950,7 @@
         column-gap: 20px;
       }
       .user-row.reported-comment-row {
-        grid-template-columns: minmax(90px, .45fr) minmax(190px, 1.1fr) minmax(108px, .48fr) minmax(92px, .42fr) minmax(160px, .82fr) minmax(82px, .38fr) minmax(76px, .32fr);
+        grid-template-columns: minmax(90px, .42fr) minmax(170px, 1fr) minmax(160px, .9fr) minmax(108px, .48fr) minmax(92px, .42fr) minmax(150px, .78fr) minmax(82px, .38fr) minmax(76px, .32fr);
         column-gap: 18px;
       }
       body.user-accounts-mode:not(.user-detail-mode) .main {
@@ -6989,7 +6990,7 @@
         min-width: 1484px;
       }
       body.user-list-mode:not(.user-detail-mode) #table .reported-comment-table {
-        min-width: 1120px;
+        min-width: 1280px;
       }
       body.user-list-mode:not(.user-detail-mode) .reported-users-table .user-row.report-row,
       body.user-list-mode:not(.user-detail-mode) .reported-assets-table .user-row.report-row {
@@ -9590,9 +9591,9 @@
     };
 
     const reportedCommentCases = [
-      { ...item("RCO-711", "Reported spam comment", "COM-711 / AST-8802", "Comment Report", "สูง", "Pending", "ผู้ใช้ 3 คน report comment ที่มี link นอกระบบ", ["Spam or scam", "SLA 4h"], "Hide comment หรือ close no violation ต้องมี confirm + reason"), reporters: 3 },
-      { ...item("RCO-706", "Reported reply with contact info", "COM-704 / AST-8831", "Reply Report", "กลาง", "Pending", "report ว่า reply เปิดเผยข้อมูลติดต่อใน public surface", ["Inappropriate content", "Reply"], "ตรวจ policy และ FO visibility impact ก่อน action"), reporters: 1 },
-      { ...item("RCO-690", "No violation after review", "COM-690 / AST-8612", "Comment Report", "ปกติ", "Closed", "ปิดรายงานหลังพบว่า user deleted comment เองและไม่มี public impact", ["Closed", "Audit"], "ดู result/audit history"), reporters: 2 }
+      { ...item("RCO-711", "Reported spam comment", "COM-711 / AST-8802", "Comment Report", "สูง", "Pending", "ผู้ใช้ 3 คน report comment ที่มี link นอกระบบ", ["Spam or scam", "SLA 4h"], "Hide comment หรือ close no violation ต้องมี confirm + reason"), commentId: "COM-711", assetId: "AST-8802", reporters: 3 },
+      { ...item("RCO-706", "Reported reply with contact info", "COM-704 / AST-8831", "Reply Report", "กลาง", "Pending", "report ว่า reply เปิดเผยข้อมูลติดต่อใน public surface", ["Inappropriate content", "Reply"], "ตรวจ policy และ FO visibility impact ก่อน action"), commentId: "COM-704", assetId: "AST-8831", reporters: 1 },
+      { ...item("RCO-690", "No violation after review", "COM-690 / AST-8612", "Comment Report", "ปกติ", "Closed", "ปิดรายงานหลังพบว่า user deleted comment เองและไม่มี public impact", ["Closed", "Audit"], "ดู result/audit history"), commentId: "COM-690", assetId: "AST-8612", reporters: 2 }
     ];
 
     const userManagementData = {
@@ -21521,14 +21522,17 @@
       const pageRows = sorted.slice(start, start + assetListPageSize);
       document.querySelector("#table").innerHTML = `
         <div class="user-table reported-assets-table reported-comment-table">
-          <div class="user-row report-row reported-comment-row head"><div>Report ID</div><div>Comment / Asset</div><div>Type</div><div>Status</div><div>Reason</div><div>Priority</div><div>Action</div></div>
+          <div class="user-row report-row reported-comment-row head"><div>Report ID</div><div>Comment</div><div>Asset</div><div>Type</div><div>Status</div><div>Reason</div><div>Priority</div><div>Action</div></div>
           ${pageRows.map(row => {
             const statusPillClass = row.status === "Pending" ? "amber" : row.status === "Closed" ? "gray" : "blue";
             const priorityPillClass = row.priority === "สูง" ? "red" : row.priority === "กลาง" ? "amber" : "blue";
+            const asset = moduleData.assets.rows.find(entry => entry.id === row.assetId);
+            const assetName = asset ? asset.name : "-";
             return `
               <div class="user-row report-row reported-comment-row" data-reported-comment-card="${row.id}">
                 <div class="user-cell-primary" data-label="Report ID"><div class="main-text">${row.id}</div></div>
-                <div data-label="Comment / Asset"><div class="main-text">${row.name}</div><div class="muted">${row.owner}</div></div>
+                <div data-label="Comment"><div class="main-text">${row.name}</div><div class="muted">${row.commentId}</div></div>
+                <div data-label="Asset"><div class="main-text">${row.assetId}</div><div class="muted">${assetName}</div></div>
                 <div data-label="Type"><span class="pill blue">${row.type}</span></div>
                 <div data-label="Status"><span class="pill ${statusPillClass}">${row.status}</span></div>
                 <div data-label="Reason"><div class="main-text">${row.tags.filter(tag => !["SLA 4h", "Reply", "Closed", "Audit"].includes(tag)).join(", ") || "-"}</div></div>
