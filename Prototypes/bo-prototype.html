@@ -21762,7 +21762,10 @@
           </div>
 
           <div class="detail-section">
-            <h4>Comment Detail</h4>
+            <div class="asset-comment-section-head">
+              <h4>Comment Detail</h4>
+              ${asset ? `<button class="user-detail-action-btn" type="button" data-asset-comments-modal="${asset.id}">View all comments</button>` : ""}
+            </div>
             <div class="detail-grid two report-reference-grid comment-detail-meta-grid">
               <div class="detail-tile"><span>Comment Type</span><strong>${reportCase.commentType || "-"}</strong></div>
               <div class="detail-tile"><span>Author</span><strong>${reportCase.authorName || "-"}</strong></div>
