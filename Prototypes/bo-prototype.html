@@ -9551,9 +9551,9 @@
     };
 
     const reportedCommentCases = [
-      item("RCO-711", "Reported spam comment", "COM-711 / AST-8802", "Comment Report", "สูง", "Pending", "ผู้ใช้ 3 คน report comment ที่มี link นอกระบบ", ["Spam or scam", "SLA 4h"], "Hide comment หรือ close no violation ต้องมี confirm + reason"),
-      item("RCO-706", "Reported reply with contact info", "COM-704 / AST-8831", "Reply Report", "กลาง", "Pending", "report ว่า reply เปิดเผยข้อมูลติดต่อใน public surface", ["Inappropriate content", "Reply"], "ตรวจ policy และ FO visibility impact ก่อน action"),
-      item("RCO-690", "No violation after review", "COM-690 / AST-8612", "Comment Report", "ปกติ", "Closed", "ปิดรายงานหลังพบว่า user deleted comment เองและไม่มี public impact", ["Closed", "Audit"], "ดู result/audit history")
+      { ...item("RCO-711", "Reported spam comment", "COM-711 / AST-8802", "Comment Report", "สูง", "Pending", "ผู้ใช้ 3 คน report comment ที่มี link นอกระบบ", ["Spam or scam", "SLA 4h"], "Hide comment หรือ close no violation ต้องมี confirm + reason"), reporters: 3 },
+      { ...item("RCO-706", "Reported reply with contact info", "COM-704 / AST-8831", "Reply Report", "กลาง", "Pending", "report ว่า reply เปิดเผยข้อมูลติดต่อใน public surface", ["Inappropriate content", "Reply"], "ตรวจ policy และ FO visibility impact ก่อน action"), reporters: 1 },
+      { ...item("RCO-690", "No violation after review", "COM-690 / AST-8612", "Comment Report", "ปกติ", "Closed", "ปิดรายงานหลังพบว่า user deleted comment เองและไม่มี public impact", ["Closed", "Audit"], "ดู result/audit history"), reporters: 2 }
     ];
 
     const userManagementData = {
@@ -10446,7 +10446,10 @@
         "AST-8524": "07 Jul 2026 11:08",
         "AST-8518": "06 Jul 2026 15:24",
         "AST-8509": "06 Jul 2026 10:50",
-        "AST-8497": "05 Jul 2026 16:15"
+        "AST-8497": "05 Jul 2026 16:15",
+        "RCO-711": "18 Jul 2026 09:12",
+        "RCO-706": "17 Jul 2026 14:48",
+        "RCO-690": "15 Jul 2026 11:30"
       };
       return createdAtById[id] || "";
     }
@@ -12952,6 +12955,17 @@
             <button type="button" data-asset-report-open="${asset.id}">ดูรายละเอียด</button>
             ${renderAssetReportStatusActionButtons(asset)}
             ${getAssetReportAssetActions(asset).map(({ action, label }) => `<button type="button" data-asset-action="${action}" data-asset-id="${asset.id}">${label}</button>`).join("")}
+          </div>
+        </details>
+      `;
+    }
+
+    function renderReportedCommentRowActionMenu(reportCase) {
+      return `
+        <details class="row-menu">
+          <summary title="Reported comment actions">...</summary>
+          <div class="row-menu-list">
+            <button type="button" data-reported-comment-open="${reportCase.id}">ดูรายละเอียด</button>
           </div>
         </details>
       `;
@@ -15754,7 +15768,7 @@
           <div class="user-filter-bar report-mode" data-filter-open="${reportedCommentFilterOpen}">
             <input class="field search" id="reported-comment-search" type="search" placeholder="ค้นหา Report ID, Comment ID, Asset, Author" />
             <div class="user-advanced-filter">${customSelect("reported-comment-status-filter", "Filter report status", filterOptions("reportStatus"))}</div>
-            <div class="user-advanced-filter">${customSelect("reported-comment-priority-filter", "Filter priority", filterOptions("reportPriorityKeyValues"))}</div>
+            <div class="user-advanced-filter">${customSelect("reported-comment-priority-filter", "Filter priority", filterOptions("reportPriorityThaiValues"))}</div>
             <div class="user-advanced-filter">${customSelect("reported-comment-sort", "Sort reported comments", filterOptions("reportSort"), "latest")}</div>
             ${resetFilterButton("data-reported-comment-reset")}
           </div>
@@ -21447,17 +21461,20 @@
 
     function renderReportedCommentRows() {
       const q = (document.querySelector("#reported-comment-search")?.value || "").trim().toLowerCase();
-      const statusSelect = document.querySelector("[data-custom-select='reported-comment-status-filter']");
-      const status = statusSelect ? statusSelect.dataset.value || "" : "";
-      const prioritySelect = document.querySelector("[data-custom-select='reported-comment-priority-filter']");
-      const priority = prioritySelect ? prioritySelect.dataset.value || "" : "";
-      const sortSelect = document.querySelector("[data-custom-select='reported-comment-sort']");
-      const sort = sortSelect ? sortSelect.dataset.value || "latest" : "latest";
+      const status = document.querySelector("#reported-comment-status-filter")?.value || "";
+      const priority = document.querySelector("#reported-comment-priority-filter")?.value || "";
+      const sort = document.querySelector("#reported-comment-sort")?.value || "latest";
       const sorted = [...reportedCommentCases].filter(row => {
         const text = Object.values(row).flat().join(" ").toLowerCase();
         return (!q || text.includes(q))
           && (!status || row.status === status)
           && (!priority || row.priority === priority);
+      }).sort((a, b) => {
+        if (sort === "reporters") return (b.reporters || 0) - (a.reporters || 0);
+        const aTime = a.createdAt ? new Date(a.createdAt.replace(/GMT\+7$/, "+07:00")) : 0;
+        const bTime = b.createdAt ? new Date(b.createdAt.replace(/GMT\+7$/, "+07:00")) : 0;
+        if (sort === "oldest") return aTime - bTime;
+        return bTime - aTime;
       });
       const pageCount = Math.max(1, Math.ceil(sorted.length / assetListPageSize));
       assetListPage = Math.min(assetListPage, pageCount);
@@ -21478,7 +21495,7 @@
                 <div data-label="Reason"><div class="main-text">${row.tags.filter(tag => !["SLA 4h", "Reply", "Closed", "Audit"].includes(tag)).join(", ") || "-"}</div></div>
                 <div data-label="Priority"><span class="pill ${priorityPillClass}">${row.priority}</span></div>
                 <div class="user-row-actions">
-                  <button class="panel-action" type="button" data-reported-comment-action="${row.id}">${iconSvg.eye}ดูรายละเอียด</button>
+                  ${renderReportedCommentRowActionMenu(row)}
                 </div>
               </div>
             `;
@@ -23240,9 +23257,9 @@
         resetTableScrollPosition();
         return;
       }
-      const reportedCommentActionButton = event.target.closest("[data-reported-comment-action]");
-      if (reportedCommentActionButton) {
-        const reportCase = reportedCommentCases.find(row => row.id === reportedCommentActionButton.dataset.reportedCommentAction);
+      const reportedCommentOpenButton = event.target.closest("[data-reported-comment-open]");
+      if (reportedCommentOpenButton) {
+        const reportCase = reportedCommentCases.find(row => row.id === reportedCommentOpenButton.dataset.reportedCommentOpen);
         if (reportCase) {
           activeRow = reportCase;
           renderDetail(reportCase);
@@ -23261,20 +23278,11 @@
       }
       const resetReportedCommentFiltersButton = event.target.closest("[data-reported-comment-reset]");
       if (resetReportedCommentFiltersButton) {
-        const searchInput = document.querySelector("#reported-comment-search");
-        if (searchInput) searchInput.value = "";
-        const statusSelect = document.querySelector("[data-custom-select='reported-comment-status-filter']");
-        if (statusSelect) statusSelect.dataset.value = "";
-        const prioritySelect = document.querySelector("[data-custom-select='reported-comment-priority-filter']");
-        if (prioritySelect) prioritySelect.dataset.value = "";
-        const sortSelect = document.querySelector("[data-custom-select='reported-comment-sort']");
-        if (sortSelect) sortSelect.dataset.value = "latest";
-        updateCustomSelectLabels();
         assetListPage = 1;
-        renderReportedCommentRows();
+        renderModule("assets", "Reported Comments", "Reported Comments");
         return;
       }
-      if (event.target.id === "reported-comment-search" || event.target.closest("[data-custom-select='reported-comment-status-filter']") || event.target.closest("[data-custom-select='reported-comment-priority-filter']") || event.target.closest("[data-custom-select='reported-comment-sort']")) {
+      if (event.target.id === "reported-comment-search") {
         assetListPage = 1;
         renderReportedCommentRows();
         return;
