@@ -21699,25 +21699,30 @@
         <tr>
           <td data-label="วันที่ / เวลา">${row.reportedAt}</td>
           <td data-label="Reporter">${row.reporter}</td>
-          <td data-label="Source">${renderHistoryValue(row.source)}</td>
           <td data-label="Status">${row.status}</td>
           <td data-label="Report Reason" class="history-note">${renderHistoryValue(translateReportReason(row.reason))}</td>
           <td data-label="Details" class="history-note">${renderHistoryValue(row.additionalDetails)}</td>
         </tr>
       `).join("") : `
-        <tr><td colspan="6" class="history-note">No reporter history recorded yet</td></tr>
+        <tr><td colspan="5" class="history-note">No reporter history recorded yet</td></tr>
       `;
       return `
         <div class="history-table-wrap">
           <table class="history-table asset-reporter-history-table">
+            <colgroup>
+              <col style="width: 15%">
+              <col style="width: 18%">
+              <col style="width: 12%">
+              <col style="width: 25%">
+              <col style="width: 30%">
+            </colgroup>
             <thead>
               <tr>
                 <th>วันที่ / เวลา</th>
                 <th>Reporter</th>
-                <th>Source</th>
                 <th>Status</th>
                 <th>Report Reason</th>
-                <th>Details</th>
+                <th>Additional Details</th>
               </tr>
             </thead>
             <tbody>${rows}</tbody>
