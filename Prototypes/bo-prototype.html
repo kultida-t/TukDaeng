@@ -9585,7 +9585,7 @@
 
     const reportedCommentConfig = {
       title: "Reported Comments",
-      panel: "Reported Comments Queue",
+      panel: "Reported Comments List",
       subtitle: "Review reported asset comments and replies with evidence, linked Asset Detail context, decision state, FO impact, and audit before closing.",
       action: "Open report"
     };
@@ -15797,8 +15797,8 @@
         document.querySelector("#crumb").textContent = `${data.crumb} / Reported Comments`;
         document.querySelector("#page-title").textContent = "Reported Comments";
         document.querySelector("#page-meta").textContent = "";
-        document.querySelector("#panel-title").textContent = "Reported Comments Queue";
-        document.querySelector("#panel-subtitle").textContent = reportedCommentConfig.subtitle;
+        document.querySelector("#panel-title").textContent = "Reported Comments List";
+        document.querySelector("#panel-subtitle").textContent = "";
         document.querySelector("#primary-action").textContent = reportedCommentConfig.action;
         document.querySelector("#user-panel-filter-actions").innerHTML = `
           <button class="btn user-filter-toggle" type="button" data-reported-comment-filter-toggle aria-expanded="${reportedCommentFilterOpen}">${iconSvg.filter}<span>${reportedCommentFilterOpen ? "ปิดตัวกรอง" : "เปิดตัวกรอง"}</span></button>
