@@ -9594,9 +9594,49 @@
     };
 
     const reportedCommentCases = [
-      { ...item("RCO-711", "Reported spam comment", "COM-711 / AST-8802", "Comment Report", "High", "Pending", "ผู้ใช้ 3 คน report comment ที่มี link นอกระบบ", ["Spam or scam", "SLA 4h"], "Hide comment หรือ close no violation ต้องมี confirm + reason"), commentId: "COM-711", assetId: "AST-8802", commentExcerpt: "ดูนาฬิกาที่ bit.ly/superdeal ราคาถูกกว่าที่นี่เยอะ สนใจทัก Line @watchdealer", reporters: 3 },
-      { ...item("RCO-706", "Reported reply with contact info", "COM-704 / AST-8831", "Reply Report", "Medium", "Pending", "report ว่า reply เปิดเผยข้อมูลติดต่อใน public surface", ["Inappropriate content", "Reply"], "ตรวจ policy และ FO visibility impact ก่อน action"), commentId: "COM-704", assetId: "AST-8831", commentExcerpt: "สนใจเจรจาเพิ่มได้ครับ ติดต่อ 08x-xxx-xxxx หรือ Line: @collector_th", reporters: 1 },
-      { ...item("RCO-690", "No violation after review", "COM-690 / AST-8612", "Comment Report", "Low", "Closed", "ปิดรายงานหลังพบว่า user deleted comment เองและไม่มี public impact", ["Closed", "Audit"], "ดู result/audit history"), commentId: "COM-690", assetId: "AST-8612", commentExcerpt: "นาฬิการุ่นนี้หายากมาก เคยเห็นที่ร้านเก่าตอนปี 2019 น่าสนใจสำหรับ collector", reporters: 2 }
+      {
+        ...item("RCO-711", "Reported spam comment", "COM-711 / AST-8802", "Comment Report", "High", "Pending", "ผู้ใช้ 3 คน report comment ที่มี link นอกระบบ", ["Spam or scam", "SLA 4h"], "Hide comment หรือ close no violation ต้องมี confirm + reason"),
+        commentId: "COM-711", assetId: "AST-8802", commentExcerpt: "ดูนาฬิกาที่ bit.ly/superdeal ราคาถูกกว่าที่นี่เยอะ สนใจทัก Line @watchdealer", reporters: 3,
+        commentType: "Root comment", commentCreatedAt: "18 Jul 2026 08:45", commentStatus: "Visible",
+        authorId: "U-1088", authorName: "Omega Club TH",
+        reportReason: "Spam or scam",
+        reporterHistory: [
+          { reporter: "Nattapol P.", reportedAt: "18 Jul 2026 09:05", source: "Asset Comment", reason: "Spam or scam", additionalDetails: "เห็น link นอกระบบและชวนติดต่อ Line น่าสงสัย", status: "เปิดเคส" },
+          { reporter: "Patchara L.", reportedAt: "18 Jul 2026 09:12", source: "Asset Comment", reason: "Spam or scam", additionalDetails: "comment ชวนไปดูนาฬิกานอกแอป เหมือน spam", status: "รวมเคส" },
+          { reporter: "Krit Watch", reportedAt: "18 Jul 2026 09:18", source: "Asset Comment", reason: "Spam or scam", additionalDetails: "bit.ly link น่าสงสัย กลัวเป็น scam", status: "รวมเคส" }
+        ],
+        auditHistory: [
+          { createdAt: "18 Jul 2026 09:05 GMT+7", actor: "System", action: "Report Received", note: "System รับ report แรกและเปิดเคส RCO-711" }
+        ]
+      },
+      {
+        ...item("RCO-706", "Reported reply with contact info", "COM-704 / AST-8831", "Reply Report", "Medium", "Pending", "report ว่า reply เปิดเผยข้อมูลติดต่อใน public surface", ["Inappropriate content", "Reply"], "ตรวจ policy และ FO visibility impact ก่อน action"),
+        commentId: "COM-704", assetId: "AST-8831", commentExcerpt: "สนใจเจรจาเพิ่มได้ครับ ติดต่อ 08x-xxx-xxxx หรือ Line: @collector_th", reporters: 1,
+        commentType: "Reply", commentCreatedAt: "17 Jul 2026 13:20", commentStatus: "Visible",
+        authorId: "U-1017", authorName: "Crown Time BKK",
+        reportReason: "Inappropriate content",
+        reporterHistory: [
+          { reporter: "Saran Collector", reportedAt: "17 Jul 2026 14:48", source: "Asset Comment", reason: "Inappropriate content", additionalDetails: "reply เปิดเบอร์และ Line ใน public ไม่เหมาะสม", status: "เปิดเคส" }
+        ],
+        auditHistory: [
+          { createdAt: "17 Jul 2026 14:48 GMT+7", actor: "System", action: "Report Received", note: "System รับ report และเปิดเคส RCO-706" }
+        ]
+      },
+      {
+        ...item("RCO-690", "No violation after review", "COM-690 / AST-8612", "Comment Report", "Low", "Closed", "ปิดรายงานหลังพบว่า user deleted comment เองและไม่มี public impact", ["Closed", "Audit"], "ดู result/audit history"),
+        commentId: "COM-690", assetId: "AST-8612", commentExcerpt: "นาฬิการุ่นนี้หายากมาก เคยเห็นที่ร้านเก่าตอนปี 2019 น่าสนใจสำหรับ collector", reporters: 2,
+        commentType: "Root comment", commentCreatedAt: "15 Jul 2026 09:30", commentStatus: "User Deleted",
+        authorId: "U-1042", authorName: "ณัฐพล พ.",
+        reportReason: "Other",
+        reporterHistory: [
+          { reporter: "Maliwan T.", reportedAt: "15 Jul 2026 11:10", source: "Asset Comment", reason: "Other", additionalDetails: "comment ดูเหมือนโปรโมตร้านนอกระบบ", status: "เปิดเคส" },
+          { reporter: "Vasin K.", reportedAt: "15 Jul 2026 11:30", source: "Asset Comment", reason: "Other", additionalDetails: "ไม่แน่ใจว่าเป็นโฆษณาหรือแชร์ประสบการณ์", status: "รวมเคส" }
+        ],
+        auditHistory: [
+          { createdAt: "15 Jul 2026 11:10 GMT+7", actor: "System", action: "Report Received", note: "System รับ report แรกและเปิดเคส RCO-690" },
+          { createdAt: "15 Jul 2026 13:05 GMT+7", actor: "Somchai Admin", action: "Close Report", note: "Admin ตรวจหลักฐานแล้วไม่พบการละเมิด ปิดรายงานโดยไม่เปลี่ยน FO visibility" }
+        ]
+      }
     ];
 
     const userManagementData = {
@@ -10358,6 +10398,9 @@
         if (activeSub === "Reported Assets" && document.body.classList.contains("user-detail-mode") && activeRow?.id) {
           return { type: "reported-asset-detail", id: activeRow.id };
         }
+        if (activeSub === "Reported Comments" && document.body.classList.contains("user-detail-mode") && activeRow?.id) {
+          return { type: "reported-comment-detail", id: activeRow.id };
+        }
         if ((activeSub || "Asset List") === "Asset List" && document.body.classList.contains("asset-detail-mode") && activeRow?.id) {
           return { type: "asset-detail", id: activeRow.id };
         }
@@ -10413,6 +10456,10 @@
         renderReportedAssetDetail(moduleData.assets.rows.find(entry => entry.id === context.id));
         return true;
       }
+      if (context.type === "reported-comment-detail") {
+        renderReportedCommentDetail(reportedCommentCases.find(entry => entry.id === context.id));
+        return true;
+      }
       if (context.type === "offer-detail") {
         renderOfferDetailPage(moduleData.offers.rows.find(entry => entry.id === context.id));
         return true;
@@ -10442,7 +10489,7 @@
 
     function getDefaultBackContext() {
       if (activeModule === "users") return { type: "module", module: "users", sub: activeSub === "Reported Users" ? "Reported Users" : "User Accounts", displaySub: activeSub === "Reported Users" ? "Reported Users" : "User Accounts" };
-      if (activeModule === "assets") return { type: "module", module: "assets", sub: activeSub === "Reported Assets" ? "Reported Assets" : "Asset List", displaySub: activeSub === "Reported Assets" ? "Reported Assets" : "Asset List" };
+      if (activeModule === "assets") return { type: "module", module: "assets", sub: activeSub === "Reported Assets" ? "Reported Assets" : activeSub === "Reported Comments" ? "Reported Comments" : "Asset List", displaySub: activeSub === "Reported Assets" ? "Reported Assets" : activeSub === "Reported Comments" ? "Reported Comments" : "Asset List" };
       if (activeModule === "offers") return { type: "module", module: "offers", sub: "", displaySub: "" };
       if (activeModule === "content") return { type: "module", module: "content", sub: activeSub === "Reported Articles" ? "Reported Articles" : "Articles", displaySub: activeSub === "Reported Articles" ? "Reported Articles" : "Articles" };
       if (activeModule === "market") return { type: "module", module: "market", sub: activeSub || "Dashboard", displaySub: activeSub || "Dashboard" };
@@ -21557,6 +21604,168 @@
       `;
     }
 
+    function getReportedCommentStatusPill(reportCase) {
+      const status = reportCase.status === "Closed" ? "Closed" : "Pending";
+      const color = status === "Closed" ? "green" : "amber";
+      return `<span class="pill ${color}">${status}</span>`;
+    }
+
+    function getReportedCommentCommentStatusPill(reportCase) {
+      const status = reportCase.commentStatus || "Visible";
+      const map = {
+        "Visible": "green",
+        "Hidden": "amber",
+        "Removed": "red",
+        "User Deleted": "gray"
+      };
+      return `<span class="pill ${map[status] || "blue"}">${status}</span>`;
+    }
+
+    function renderReportedCommentReporterHistoryTable(reportCase) {
+      const allRows = Array.isArray(reportCase.reporterHistory) ? reportCase.reporterHistory : [];
+      const pageCount = Math.max(1, Math.ceil(allRows.length / reportHistoryPageSize));
+      reporterHistoryPage = Math.min(reporterHistoryPage, pageCount);
+      const start = (reporterHistoryPage - 1) * reportHistoryPageSize;
+      const pageRows = allRows.slice(start, start + reportHistoryPageSize);
+      const rows = pageRows.length ? pageRows.map(row => `
+        <tr>
+          <td data-label="วันที่ / เวลา">${row.reportedAt}</td>
+          <td data-label="Reporter">${row.reporter}</td>
+          <td data-label="Source">${renderHistoryValue(row.source)}</td>
+          <td data-label="Status">${row.status}</td>
+          <td data-label="Report Reason" class="history-note">${renderHistoryValue(translateReportReason(row.reason))}</td>
+          <td data-label="Details" class="history-note">${renderHistoryValue(row.additionalDetails)}</td>
+        </tr>
+      `).join("") : `
+        <tr><td colspan="6" class="history-note">No reporter history recorded yet</td></tr>
+      `;
+      return `
+        <div class="history-table-wrap">
+          <table class="history-table asset-reporter-history-table">
+            <thead>
+              <tr>
+                <th>วันที่ / เวลา</th>
+                <th>Reporter</th>
+                <th>Source</th>
+                <th>Status</th>
+                <th>Report Reason</th>
+                <th>Details</th>
+              </tr>
+            </thead>
+            <tbody>${rows}</tbody>
+          </table>
+          ${renderReportHistoryPager("reporter", reporterHistoryPage, pageCount, allRows.length, start)}
+        </div>
+      `;
+    }
+
+    function renderReportedCommentAuditHistoryTable(reportCase) {
+      const allRows = Array.isArray(reportCase.auditHistory) ? reportCase.auditHistory : [];
+      const pageCount = Math.max(1, Math.ceil(allRows.length / reportHistoryPageSize));
+      reportAuditHistoryPage = Math.min(reportAuditHistoryPage, pageCount);
+      const start = (reportAuditHistoryPage - 1) * reportHistoryPageSize;
+      const pageRows = allRows.slice(start, start + reportHistoryPageSize);
+      const rows = pageRows.length ? pageRows.map(row => `
+        <tr>
+          <td data-label="วันที่ / เวลา">${formatAuditDisplayTime(row.createdAt)}</td>
+          <td data-label="ผู้ดำเนินการ">${row.actor}</td>
+          <td data-label="Action">${row.action}</td>
+          <td data-label="รายละเอียด" class="history-note">${renderHistoryValue(row.note)}</td>
+        </tr>
+      `).join("") : `
+        <tr><td colspan="4" class="history-note">No admin action recorded yet</td></tr>
+      `;
+      return `
+        <div class="history-table-wrap">
+          <table class="history-table asset-status-history-table">
+            <thead>
+              <tr>
+                <th>วันที่ / เวลา</th>
+                <th>ผู้ดำเนินการ</th>
+                <th>Action</th>
+                <th>รายละเอียด</th>
+              </tr>
+            </thead>
+            <tbody>${rows}</tbody>
+          </table>
+          ${renderReportHistoryPager("audit", reportAuditHistoryPage, pageCount, allRows.length, start)}
+        </div>
+      `;
+    }
+
+    function renderReportedCommentDetail(reportCase) {
+      if (!reportCase) {
+        renderModule("assets", "Reported Comments", "Reported Comments");
+        return;
+      }
+      document.body.classList.add("user-management-mode", "user-detail-mode");
+      document.body.classList.remove("user-list-mode", "asset-list-mode", "asset-detail-mode", "article-list-mode", "category-list-mode", "reported-board-mode");
+      activeModule = "assets";
+      activeSub = "Reported Comments";
+      activeRow = reportCase;
+      reporterHistoryPage = 1;
+      reportAuditHistoryPage = 1;
+      document.querySelector("#crumb").textContent = `การดำเนินงาน / Asset Management / Report Detail / ${reportCase.id}`;
+      document.querySelector("#page-title").textContent = "Report Detail";
+      document.querySelector("#page-meta").textContent = "";
+      setPageActions(renderPageBackButton("data-back-to-reported-comments-list", "กลับไป Reported Comments", "report-back-btn"));
+      document.querySelector("#panel-title").textContent = reportCase.commentExcerpt || reportCase.name;
+      document.querySelector("#panel-subtitle").textContent = `${reportCase.id} · ${reportCase.commentId} · ${reportCase.assetId} · reporter identity masked`;
+      document.querySelector("#user-panel-filter-actions").innerHTML = "";
+      document.querySelector(".filters").innerHTML = "";
+      document.querySelector("#summary-grid").innerHTML = "";
+      document.querySelector("#cards").innerHTML = "";
+      const asset = moduleData.assets.rows.find(entry => entry.id === reportCase.assetId);
+      const assetName = asset ? asset.name : "-";
+      const assetStatus = asset ? asset.status : "-";
+      document.querySelector("#table").innerHTML = `
+        <div class="user-detail-page report-detail-page asset-report-detail-page reported-comment-detail-page">
+          <div class="user-detail-head">
+            <div class="user-detail-title">
+              <div>
+                <h2 class="asset-report-heading"><span class="asset-report-id">${reportCase.id}</span><span class="user-detail-separator"> : </span><span class="asset-report-name user-display-name">${reportCase.commentExcerpt || reportCase.name}</span></h2>
+                <div class="chips">
+                  ${getReportedCommentStatusPill(reportCase)}
+                  ${getReportedCommentCommentStatusPill(reportCase)}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="detail-section">
+            <div class="board-report-reference-head">
+              <h4>Reported Comment</h4>
+            </div>
+            <div class="detail-grid two report-reference-grid">
+              <div class="detail-tile"><span>Report ID</span><strong>${reportCase.id}</strong></div>
+              <div class="detail-tile"><span>Comment ID</span><strong>${reportCase.commentId}</strong></div>
+              <div class="detail-tile"><span>Comment Type</span><strong>${reportCase.commentType || "-"}</strong></div>
+              <div class="detail-tile"><span>Comment Status</span><strong>${getReportedCommentCommentStatusPill(reportCase)}</strong></div>
+              <div class="detail-tile"><span>Asset ID</span><strong>${reportCase.assetId}</strong></div>
+              <div class="detail-tile"><span>Asset Name</span><strong>${assetName}</strong></div>
+              <div class="detail-tile"><span>Asset Status</span><strong>${assetStatus}</strong></div>
+              <div class="detail-tile"><span>Author</span><strong>${reportCase.authorName || "-"}</strong></div>
+              <div class="detail-tile"><span>Report Reason</span><strong>${translateReportReason(reportCase.reportReason) || "-"}</strong></div>
+              <div class="detail-tile"><span>Created At</span><strong>${reportCase.createdAt || "-"}</strong></div>
+            </div>
+          </div>
+
+          <div class="detail-section">
+            <h4>Reporter History</h4>
+            ${renderReportedCommentReporterHistoryTable(reportCase)}
+          </div>
+
+          <div class="detail-section">
+            <h4>Admin Action History</h4>
+            ${renderReportedCommentAuditHistoryTable(reportCase)}
+          </div>
+        </div>
+      `;
+      document.querySelector("#detail").innerHTML = "";
+      updateActiveNav();
+      scrollMainToTop();
+    }
+
     function renderReportedAssetRows() {
       const q = (document.querySelector("#asset-report-search")?.value || "").trim().toLowerCase();
       const status = document.querySelector("#asset-report-status-filter")?.value || "";
@@ -23307,7 +23516,10 @@
         const reportCase = reportedCommentCases.find(row => row.id === reportedCommentOpenButton.dataset.reportedCommentOpen);
         if (reportCase) {
           activeRow = reportCase;
-          renderDetail(reportCase);
+          reporterHistoryPage = 1;
+          reportAuditHistoryPage = 1;
+          pushBackNavigationContext();
+          renderReportedCommentDetail(reportCase);
           closeRowMenus();
         }
         return;
@@ -23317,7 +23529,10 @@
         const reportCase = reportedCommentCases.find(row => row.id === reportedCommentCard.dataset.reportedCommentCard);
         if (reportCase) {
           activeRow = reportCase;
-          renderDetail(reportCase);
+          reporterHistoryPage = 1;
+          reportAuditHistoryPage = 1;
+          pushBackNavigationContext();
+          renderReportedCommentDetail(reportCase);
         }
         return;
       }
@@ -23360,6 +23575,7 @@
         else if (target === "next") reporterHistoryPage += 1;
         else reporterHistoryPage = Number(target) || 1;
         if (activeModule === "assets" && activeSub === "Reported Assets") renderReportedAssetDetail(activeRow);
+        else if (activeModule === "assets" && activeSub === "Reported Comments") renderReportedCommentDetail(activeRow);
         else if (activeModule === "content" && activeSub === "Reported Articles") renderReportedBoardDetail(activeRow);
         else renderReportedUserDetail(activeRow);
         return;
@@ -23371,6 +23587,7 @@
         else if (target === "next") reportAuditHistoryPage += 1;
         else reportAuditHistoryPage = Number(target) || 1;
         if (activeModule === "assets" && activeSub === "Reported Assets") renderReportedAssetDetail(activeRow);
+        else if (activeModule === "assets" && activeSub === "Reported Comments") renderReportedCommentDetail(activeRow);
         else if (activeModule === "content" && activeSub === "Reported Articles") renderReportedBoardDetail(activeRow);
         else renderReportedUserDetail(activeRow);
         return;
@@ -23378,6 +23595,11 @@
       const backReportedAssets = event.target.closest("[data-back-reported-assets]");
       if (backReportedAssets) {
         renderModule("assets", "Reported Assets", "Reported Assets");
+        return;
+      }
+      const backReportedCommentsList = event.target.closest("[data-back-to-reported-comments-list]");
+      if (backReportedCommentsList) {
+        renderModule("assets", "Reported Comments", "Reported Comments");
         return;
       }
       const backReportedUsers = event.target.closest("[data-back-reported-users]");
