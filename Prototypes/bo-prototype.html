@@ -21718,10 +21718,12 @@
       const asset = moduleData.assets.rows.find(entry => entry.id === reportCase.assetId);
       const assetName = asset ? asset.name : "-";
       const assetStatus = asset ? asset.status : "-";
+      const assetDetail = asset ? getAssetFoDetail(asset) : null;
       document.querySelector("#table").innerHTML = `
         <div class="user-detail-page report-detail-page asset-report-detail-page reported-comment-detail-page">
           <div class="user-detail-head">
             <div class="user-detail-title">
+              ${asset ? renderAssetTitleImage(asset, assetDetail) : ""}
               <div>
                 <h2 class="asset-report-heading"><span class="asset-report-id">${reportCase.id}</span><span class="user-detail-separator"> : </span><span class="asset-report-name user-display-name">${reportCase.commentExcerpt || reportCase.name}</span></h2>
                 <div class="chips">
