@@ -21768,7 +21768,7 @@
 
     function getReportedCommentAuditEmailDelivery(row) {
       if (row.emailDelivery) return row.emailDelivery;
-      const emailActions = new Set(["Hide comment", "Remove comment", "Close no violation", "Report Received"]);
+      const emailActions = new Set(["Hide comment", "Remove comment", "Restore comment", "Close no violation", "Report Received"]);
       if (emailActions.has(row.action)) return { status: "sent", channel: "Email" };
       return { status: "not_required" };
     }
@@ -21778,6 +21778,7 @@
         "Report Received": "รับรายงานความคิดเห็น",
         "Hide comment": "ซ่อนความคิดเห็นชั่วคราว",
         "Remove comment": "ซ่อนความคิดเห็นถาวร",
+        "Restore comment": "ยกเลิกการซ่อนชั่วคราว",
         "Close no violation": "ปิดรายงาน",
         "Reopen Report": "ส่งกลับรอตรวจ"
       };
@@ -21789,6 +21790,7 @@
         "Report Received": "ระบบรับรายงานความคิดเห็นและเปิดเคสตรวจสอบ",
         "Hide comment": "ผู้ดูแลซ่อนความคิดเห็นชั่วคราวระหว่างตรวจสอบ",
         "Remove comment": "ผู้ดูแลยืนยันผลตรวจสอบและซ่อนความคิดเห็นถาวร",
+        "Restore comment": "ผู้ดูแลยกเลิกการซ่อนชั่วคราวและปิดรายงาน",
         "Close no violation": "ผู้ดูแลปิดรายงานหลังตรวจสอบไม่พบการละเมิด",
         "Reopen Report": "ผู้ดูแลส่งรายงานกลับไปรอตรวจสอบ"
       };
@@ -21844,7 +21846,7 @@
       "Hide comment": {
         title: "ซ่อนความคิดเห็นชั่วคราว",
         button: "ยืนยัน",
-        summary: "ซ่อนความคิดเห็นจากพื้นที่สาธารณะของ asset ระหว่างตรวจสอบ เจ้าของความคิดเห็นจะได้รับอีเมลแจ้งผล",
+        summary: "ซ่อนความคิดเห็นจากพื้นที่สาธารณะของรายการระหว่างตรวจสอบ เจ้าของความคิดเห็นจะได้รับอีเมลแจ้งผล",
         reasonLabel: "เหตุผลการซ่อนชั่วคราว",
         reasons: [
           "มีรายงานความเสี่ยงสูง รอตรวจสอบ",
@@ -21856,13 +21858,12 @@
         confirmClass: "warning",
         apply: reportCase => {
           reportCase.commentStatus = "Hidden";
-          reportCase.status = "Closed";
         }
       },
       "Remove comment": {
         title: "ซ่อนความคิดเห็นถาวร",
         button: "ยืนยัน",
-        summary: "ซ่อนความคิดเห็นจากพื้นที่สาธารณะถาวร หลังยืนยันว่าเนื้อหาไม่ควรแสดงต่อ เจ้าของความคิดเห็นจะได้รับอีเมลแจ้งผล",
+        summary: "ซ่อนความคิดเห็นจากพื้นที่สาธารณะถาวร หลังยืนยันว่าเนื้อหาไม่ควรแสดงต่อ เจ้าของความคิดเห็นจะได้รับอีเมลแจ้งผล และรายงานจะถูกปิด",
         reasonLabel: "เหตุผลการซ่อนถาวร",
         reasons: [
           "ตรวจสอบแล้วพบว่าเนื้อหาไม่เป็นไปตามนโยบาย",
@@ -21873,6 +21874,23 @@
         confirmClass: "danger",
         apply: reportCase => {
           reportCase.commentStatus = "Removed";
+          reportCase.status = "Closed";
+        }
+      },
+      "Restore comment": {
+        title: "ยกเลิกการซ่อนชั่วคราว",
+        button: "ยืนยัน",
+        summary: "คืนการมองเห็นความคิดเห็นกลับสู่พื้นที่สาธารณะ หลังตรวจสอบแล้วว่าสามารถแสดงได้ตามปกติ เจ้าของความคิดเห็นจะได้รับอีเมลแจ้งผล และรายงานจะถูกปิด",
+        reasonLabel: "เหตุผลการยกเลิกการซ่อนชั่วคราว",
+        reasons: [
+          "ตรวจสอบแล้วไม่พบความเสี่ยงเพิ่มเติม",
+          "เนื้อหาเป็นการแชร์ประสบการณ์ ไม่ใช่โฆษณา",
+          "ทีมที่รับผิดชอบอนุมัติให้คืนการมองเห็น"
+        ],
+        notePlaceholder: "สรุปผลการตรวจสอบ เหตุผลที่ยกเลิกการซ่อน และข้อมูลอ้างอิงที่เกี่ยวข้อง",
+        confirmClass: "primary",
+        apply: reportCase => {
+          reportCase.commentStatus = "Visible";
           reportCase.status = "Closed";
         }
       },
@@ -21917,6 +21935,13 @@
     function getReportedCommentStatusActions(reportCase) {
       if (!reportCase) return [];
       if (reportCase.status === "Closed") return [];
+      const isHidden = reportCase.commentStatus === "Hidden";
+      if (isHidden) {
+        return [
+          { action: "Restore comment", label: "ยกเลิกการซ่อนชั่วคราว" },
+          { action: "Remove comment", label: "ซ่อนถาวร" }
+        ];
+      }
       return [
         { action: "Close no violation", label: "ปิดรายงาน" },
         { action: "Hide comment", label: "ซ่อนชั่วคราว" },
@@ -21938,6 +21963,14 @@
 
     function renderReportedCommentActionEmailNote(reportCase, action) {
       if (action === "Close no violation") return "";
+      if (action === "Restore comment") {
+        return `
+          <div class="module-note user-action-impact user-action-impact-card user-action-impact-notice">
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M4.5 5h15A2.5 2.5 0 0 1 22 7.5v9A2.5 2.5 0 0 1 19.5 19h-15A2.5 2.5 0 0 1 2 16.5v-9A2.5 2.5 0 0 1 4.5 5Zm0 2a.5.5 0 0 0-.5.5v.3l8 4.9 8-4.9v-.3a.5.5 0 0 0-.5-.5h-15Zm15 10a.5.5 0 0 0 .5-.5v-6.35l-7.48 4.57a1 1 0 0 1-1.04 0L4 10.15v6.35a.5.5 0 0 0 .5.5h15Z"/></svg>
+            <p><strong>แจ้งผู้ใช้:</strong> ระบบจะส่งอีเมลแจ้งการยกเลิกการซ่อนชั่วคราวไปที่ ${getReportedCommentAuthorEmail(reportCase)} (registered author email) เป็นช่องทางหลัก</p>
+          </div>
+        `;
+      }
       return `
         <div class="module-note user-action-impact user-action-impact-card user-action-impact-notice">
           <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M4.5 5h15A2.5 2.5 0 0 1 22 7.5v9A2.5 2.5 0 0 1 19.5 19h-15A2.5 2.5 0 0 1 2 16.5v-9A2.5 2.5 0 0 1 4.5 5Zm0 2a.5.5 0 0 0-.5.5v.3l8 4.9 8-4.9v-.3a.5.5 0 0 0-.5-.5h-15Zm15 10a.5.5 0 0 0 .5-.5v-6.35l-7.48 4.57a1 1 0 0 1-1.04 0L4 10.15v6.35a.5.5 0 0 0 .5.5h15Z"/></svg>
@@ -21948,20 +21981,22 @@
 
     function getReportedCommentActionEmailCopy(reportCase, action, reason = "") {
       const authorName = reportCase?.authorName || reportCase?.authorId || "author";
+      const commentText = reportCase?.commentExcerpt || reportCase?.name || "";
+      const asset = moduleData.assets.rows.find(entry => entry.id === reportCase?.assetId);
+      const assetName = asset?.name || reportCase?.assetId || "asset";
       if (action === "Hide comment") {
         return {
           subject: "[TukDaeng] ความคิดเห็นของคุณถูกซ่อนชั่วคราว / Your comment has been temporarily hidden",
           lines: [
             `สวัสดี ${authorName},`,
-            `ความคิดเห็น ${reportCase.commentId} บน asset ${reportCase.assetId} ถูกซ่อนชั่วคราวระหว่างการตรวจสอบ`,
+            `ความคิดเห็น "${commentText}" บน "${assetName}" ถูกซ่อนชั่วคราวระหว่างการตรวจสอบ`,
             `เหตุผลการดำเนินการ: ${reason || "ตรวจสอบตามนโยบายการรายงานความคิดเห็น"}`,
-            "ความคิดเห็นนี้จะไม่แสดงใน comment section ของ asset จนกว่า Admin จะยกเลิกการซ่อน",
+            "ความคิดเห็นนี้จะไม่แสดงในส่วนความคิดเห็นของรายการนี้จนกว่า Admin จะยกเลิกการซ่อน",
             "---",
             `Hello ${authorName},`,
-            `Your comment ${reportCase.commentId} on asset ${reportCase.assetId} has been temporarily hidden while the review is in progress.`,
+            `Your comment "${commentText}" on "${assetName}" has been temporarily hidden while the review is in progress.`,
             `Action reason: ${reason || "Comment report policy review"}`,
-            "This comment will not appear in the asset comment section until an admin restores visibility.",
-            `Reference: ${reportCase.id}`,
+            "This comment will not appear in the comment section of this listing until an admin restores visibility.",
             "Contact support: support@tukdaeng.example"
           ]
         };
@@ -21971,15 +22006,31 @@
           subject: "[TukDaeng] ความคิดเห็นของคุณถูกซ่อนถาวร / Your comment has been permanently hidden",
           lines: [
             `สวัสดี ${authorName},`,
-            `ความคิดเห็น ${reportCase.commentId} บน asset ${reportCase.assetId} ถูกซ่อนถาวรหลังการตรวจสอบ`,
+            `ความคิดเห็น "${commentText}" บน "${assetName}" ถูกซ่อนถาวรหลังการตรวจสอบ`,
             `เหตุผลการดำเนินการ: ${reason || "ตรวจสอบแล้วพบว่าเนื้อหาไม่เป็นไปตามนโยบาย"}`,
-            "ความคิดเห็นนี้จะไม่แสดงใน comment section ของ asset อีกต่อไป ผู้ใช้ยังเห็นแบบ read-only แต่แก้ไขหรือกู้คืนไม่ได้",
+            "ความคิดเห็นนี้จะไม่แสดงในส่วนความคิดเห็นของรายการนี้อีกต่อไป คุณยังเห็นแบบอ่านอย่างเดียว แต่แก้ไขหรือกู้คืนไม่ได้",
             "---",
             `Hello ${authorName},`,
-            `Your comment ${reportCase.commentId} on asset ${reportCase.assetId} has been permanently hidden after review.`,
+            `Your comment "${commentText}" on "${assetName}" has been permanently hidden after review.`,
             `Action reason: ${reason || "Content found to violate policy after review"}`,
-            "This comment will no longer appear in the asset comment section. You can still view it read-only, but it cannot be edited or restored.",
-            `Reference: ${reportCase.id}`,
+            "This comment will no longer appear in the comment section of this listing. You can still view it read-only, but it cannot be edited or restored.",
+            "Contact support: support@tukdaeng.example"
+          ]
+        };
+      }
+      if (action === "Restore comment") {
+        return {
+          subject: "[TukDaeng] ความคิดเห็นของคุณกลับมาแสดงผลแล้ว / Your comment visibility has been restored",
+          lines: [
+            `สวัสดี ${authorName},`,
+            `ความคิดเห็น "${commentText}" บน "${assetName}" ได้รับการยกเลิกการซ่อนชั่วคราวหลังการตรวจสอบ`,
+            `เหตุผลการดำเนินการ: ${reason || "ตรวจสอบแล้วไม่พบความเสี่ยงเพิ่มเติม"}`,
+            "ความคิดเห็นนี้จะกลับมาแสดงในส่วนความคิดเห็นของรายการตามปกติ",
+            "---",
+            `Hello ${authorName},`,
+            `Visibility for your comment "${commentText}" on "${assetName}" has been restored after review.`,
+            `Action reason: ${reason || "No further risk found after review"}`,
+            "This comment will appear again in the comment section of this listing as normal.",
             "Contact support: support@tukdaeng.example"
           ]
         };
@@ -21988,15 +22039,14 @@
         subject: "[TukDaeng] รายงานความคิดเห็นถูกปิดแล้ว / Comment report has been closed",
         lines: [
           `สวัสดี ${authorName},`,
-          `รายงาน ${reportCase.id} เกี่ยวกับความคิดเห็น ${reportCase.commentId} บน asset ${reportCase.assetId} ถูกปิดหลังการตรวจสอบ`,
+          `รายงานเกี่ยวกับความคิดเห็น "${commentText}" บน "${assetName}" ถูกปิดหลังการตรวจสอบ`,
           `เหตุผลการปิดรายงาน: ${reason || "ตรวจสอบแล้วไม่พบการละเมิด"}`,
           "สถานะการมองเห็นของความคิดเห็นของคุณไม่เปลี่ยนแปลง",
           "---",
           `Hello ${authorName},`,
-          `Report ${reportCase.id} regarding your comment ${reportCase.commentId} on asset ${reportCase.assetId} has been closed after review.`,
+          `The report regarding your comment "${commentText}" on "${assetName}" has been closed after review.`,
           `Close reason: ${reason || "No violation found after review"}`,
           "The visibility of your comment remains unchanged.",
-          `Reference: ${reportCase.id}`,
           "Contact support: support@tukdaeng.example"
         ]
       };
@@ -22036,7 +22086,7 @@
         return `
           <div class="module-note user-action-impact user-action-impact-card user-action-impact-warning">
             <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 3.2c.7 0 1.35.37 1.7.98l8.05 13.95A1.95 1.95 0 0 1 20.05 21H3.95a1.95 1.95 0 0 1-1.7-2.87L10.3 4.18A1.95 1.95 0 0 1 12 3.2Zm0 4.6a1 1 0 0 0-1 1v4.4a1 1 0 1 0 2 0V8.8a1 1 0 0 0-1-1Zm0 8.45a1.15 1.15 0 1 0 0 2.3 1.15 1.15 0 0 0 0-2.3Z"/></svg>
-            <p><strong>ผลกระทบต่อแอปพลิเคชัน:</strong> หลังยืนยัน ความคิดเห็น ${reportCase.commentId} จะถูกซ่อนจาก comment section ของ asset ${reportCase.assetId} ผู้ใช้ที่ถูกรายงานยังเห็นแบบ read-only และรายงานจะถูกปิด</p>
+            <p><strong>ผลกระทบต่อแอปพลิเคชัน:</strong> หลังยืนยัน ความคิดเห็นนี้จะถูกซ่อนจากส่วนความคิดเห็นของรายการ รายงานยังเปิดอยู่เพื่อตรวจสอบต่อ สามารถยกเลิกการซ่อนหรือซ่อนถาวรได้ในภายหลัง</p>
           </div>
         `;
       }
@@ -22044,7 +22094,15 @@
         return `
           <div class="module-note user-action-impact user-action-impact-card user-action-impact-warning">
             <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 3.2c.7 0 1.35.37 1.7.98l8.05 13.95A1.95 1.95 0 0 1 20.05 21H3.95a1.95 1.95 0 0 1-1.7-2.87L10.3 4.18A1.95 1.95 0 0 1 12 3.2Zm0 4.6a1 1 0 0 0-1 1v4.4a1 1 0 1 0 2 0V8.8a1 1 0 0 0-1-1Zm0 8.45a1.15 1.15 0 1 0 0 2.3 1.15 1.15 0 0 0 0-2.3Z"/></svg>
-            <p><strong>ผลกระทบต่อแอปพลิเคชัน:</strong> หลังยืนยัน ความคิดเห็น ${reportCase.commentId} จะถูกซ่อนถาวรจาก comment section ของ asset ${reportCase.assetId} ผู้ใช้ที่ถูกรายงานยังเห็นแบบ read-only แต่แก้ไขหรือกู้คืนไม่ได้ และรายงานจะถูกปิด</p>
+            <p><strong>ผลกระทบต่อแอปพลิเคชัน:</strong> หลังยืนยัน ความคิดเห็นนี้จะถูกซ่อนถาวรจากส่วนความคิดเห็นของรายการ ไม่สามารถกู้คืนได้ และรายงานจะถูกปิด</p>
+          </div>
+        `;
+      }
+      if (action === "Restore comment") {
+        return `
+          <div class="module-note user-action-impact user-action-impact-card user-action-impact-notice">
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M4.5 5h15A2.5 2.5 0 0 1 22 7.5v9A2.5 2.5 0 0 1 19.5 19h-15A2.5 2.5 0 0 1 2 16.5v-9A2.5 2.5 0 0 1 4.5 5Zm0 2a.5.5 0 0 0-.5.5v.3l8 4.9 8-4.9v-.3a.5.5 0 0 0-.5-.5h-15Zm15 10a.5.5 0 0 0 .5-.5v-6.35l-7.48 4.57a1 1 0 0 1-1.04 0L4 10.15v6.35a.5.5 0 0 0 .5.5h15Z"/></svg>
+            <p><strong>ผลกระทบต่อแอปพลิเคชัน:</strong> หลังยืนยัน ความคิดเห็นนี้จะกลับมาแสดงในส่วนความคิดเห็นของรายการตามปกติ และรายงานจะถูกปิด</p>
           </div>
         `;
       }
@@ -22148,21 +22206,27 @@
       const afterReportStatus = reportCase.status === "Closed" ? "Closed" : "Pending";
       const noteText = actionNote || selectedReason || config.summary;
       const commentStatusChanged = beforeCommentStatus !== afterCommentStatus;
+      const reportStatusChanged = beforeReportStatus !== afterReportStatus;
       appendReportedCommentAuditHistory(reportCase, {
         action,
         before: { commentStatus: beforeCommentStatus, reportStatus: beforeReportStatus },
         after: { commentStatus: afterCommentStatus, reportStatus: afterReportStatus },
         reference: reportCase.id,
-        note: `${noteText}${commentStatusChanged ? ` · Comment ${reportCase.commentId}: ${beforeCommentStatus} → ${afterCommentStatus}` : ""} · Report: ${beforeReportStatus} → ${afterReportStatus}`,
+        note: `${noteText}${commentStatusChanged ? ` · Comment ${reportCase.commentId}: ${beforeCommentStatus} → ${afterCommentStatus}` : ""}${reportStatusChanged ? ` · Report: ${beforeReportStatus} → ${afterReportStatus}` : ""}`,
         emailDelivery: action === "Close no violation"
           ? { status: "not_required" }
           : { status: "sent", channel: "Email" }
       });
       closeUserActionModal();
       renderReportedCommentDetail(reportCase);
-      const toastDetail = commentStatusChanged
-        ? `${reportCase.id}: ${beforeCommentStatus} → ${afterCommentStatus} และปิดรายงานแล้ว`
-        : `${reportCase.id}: ปิดรายงานแล้ว (ไม่เปลี่ยนสถานะความคิดเห็น)`;
+      let toastDetail;
+      if (commentStatusChanged && reportStatusChanged) {
+        toastDetail = `${reportCase.id}: ${beforeCommentStatus} → ${afterCommentStatus} และปิดรายงานแล้ว`;
+      } else if (commentStatusChanged && !reportStatusChanged) {
+        toastDetail = `${reportCase.id}: ${beforeCommentStatus} → ${afterCommentStatus} รายงานยังเปิดอยู่`;
+      } else {
+        toastDetail = `${reportCase.id}: ปิดรายงานแล้ว (ไม่เปลี่ยนสถานะความคิดเห็น)`;
+      }
       showSuccessToast(toastDetail);
     }
 
