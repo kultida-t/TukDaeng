@@ -9591,9 +9591,9 @@
     };
 
     const reportedCommentCases = [
-      { ...item("RCO-711", "Reported spam comment", "COM-711 / AST-8802", "Comment Report", "สูง", "Pending", "ผู้ใช้ 3 คน report comment ที่มี link นอกระบบ", ["Spam or scam", "SLA 4h"], "Hide comment หรือ close no violation ต้องมี confirm + reason"), commentId: "COM-711", assetId: "AST-8802", reporters: 3 },
-      { ...item("RCO-706", "Reported reply with contact info", "COM-704 / AST-8831", "Reply Report", "กลาง", "Pending", "report ว่า reply เปิดเผยข้อมูลติดต่อใน public surface", ["Inappropriate content", "Reply"], "ตรวจ policy และ FO visibility impact ก่อน action"), commentId: "COM-704", assetId: "AST-8831", reporters: 1 },
-      { ...item("RCO-690", "No violation after review", "COM-690 / AST-8612", "Comment Report", "ปกติ", "Closed", "ปิดรายงานหลังพบว่า user deleted comment เองและไม่มี public impact", ["Closed", "Audit"], "ดู result/audit history"), commentId: "COM-690", assetId: "AST-8612", reporters: 2 }
+      { ...item("RCO-711", "Reported spam comment", "COM-711 / AST-8802", "Comment Report", "สูง", "Pending", "ผู้ใช้ 3 คน report comment ที่มี link นอกระบบ", ["Spam or scam", "SLA 4h"], "Hide comment หรือ close no violation ต้องมี confirm + reason"), commentId: "COM-711", assetId: "AST-8802", commentExcerpt: "ดูนาฬิกาที่ bit.ly/superdeal ราคาถูกกว่าที่นี่เยอะ สนใจทัก Line @watchdealer", reporters: 3 },
+      { ...item("RCO-706", "Reported reply with contact info", "COM-704 / AST-8831", "Reply Report", "กลาง", "Pending", "report ว่า reply เปิดเผยข้อมูลติดต่อใน public surface", ["Inappropriate content", "Reply"], "ตรวจ policy และ FO visibility impact ก่อน action"), commentId: "COM-704", assetId: "AST-8831", commentExcerpt: "สนใจเจรจาเพิ่มได้ครับ ติดต่อ 08x-xxx-xxxx หรือ Line: @collector_th", reporters: 1 },
+      { ...item("RCO-690", "No violation after review", "COM-690 / AST-8612", "Comment Report", "ปกติ", "Closed", "ปิดรายงานหลังพบว่า user deleted comment เองและไม่มี public impact", ["Closed", "Audit"], "ดู result/audit history"), commentId: "COM-690", assetId: "AST-8612", commentExcerpt: "นาฬิการุ่นนี้หายากมาก เคยเห็นที่ร้านเก่าตอนปี 2019 น่าสนใจสำหรับ collector", reporters: 2 }
     ];
 
     const userManagementData = {
@@ -21531,7 +21531,7 @@
             return `
               <div class="user-row report-row reported-comment-row" data-reported-comment-card="${row.id}">
                 <div class="user-cell-primary" data-label="Report ID"><div class="main-text">${row.id}</div></div>
-                <div data-label="Comment"><div class="main-text">${row.name}</div><div class="muted">${row.commentId}</div></div>
+                <div data-label="Comment"><div class="main-text">${row.commentExcerpt || row.name}</div></div>
                 <div data-label="Asset"><div class="main-text">${row.assetId}</div><div class="muted">${assetName}</div></div>
                 <div data-label="Type"><span class="pill blue">${row.type}</span></div>
                 <div data-label="Status"><span class="pill ${statusPillClass}">${row.status}</span></div>
