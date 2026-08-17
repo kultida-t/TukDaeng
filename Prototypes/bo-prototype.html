@@ -4994,6 +4994,11 @@
       background: #fff7e6;
       color: #925500;
     }
+    .user-detail-action-btn.disabled,
+    .user-detail-action-btn:disabled {
+      cursor: not-allowed;
+      opacity: .55;
+    }
     .action-feedback {
       display: none;
       margin-top: 10px;
@@ -13122,11 +13127,15 @@
     }
 
     function renderReportedCommentRowActionMenu(reportCase) {
+      const statusActions = getReportedCommentStatusActions(reportCase)
+        .map(({ action, label }) => `<button type="button" data-reported-comment-action="${action}" data-report-id="${reportCase.id}">${label}</button>`)
+        .join("");
       return `
         <details class="row-menu">
           <summary title="Reported comment actions">...</summary>
           <div class="row-menu-list">
             <button type="button" data-reported-comment-open="${reportCase.id}">ดูรายละเอียด</button>
+            ${statusActions}
           </div>
         </details>
       `;
@@ -21806,6 +21815,230 @@
       `;
     }
 
+    const reportedCommentActionReasons = [
+      "Harassment or hate",
+      "Spam or scam",
+      "Inappropriate content",
+      "False or misleading information",
+      "Other"
+    ];
+
+    const reportedCommentActionConfig = {
+      "Hide comment": {
+        title: "ซ่อนความคิดเห็นชั่วคราว",
+        button: "ยืนยัน",
+        summary: "ซ่อนความคิดเห็นจากพื้นที่สาธารณะของ asset ระหว่างตรวจสอบ ผู้ใช้ที่ถูกรายงานยังเห็นแบบ read-only และระบบบันทึก audit",
+        reasonLabel: "เหตุผลการซ่อนชั่วคราว",
+        confirmClass: "warning",
+        apply: reportCase => {
+          reportCase.commentStatus = "Hidden";
+          reportCase.status = "Closed";
+        }
+      },
+      "Remove comment": {
+        title: "ซ่อนความคิดเห็นถาวร",
+        button: "ยืนยัน",
+        summary: "ซ่อนความคิดเห็นจากพื้นที่สาธารณะถาวร หลังยืนยันว่าเนื้อหาไม่ควรแสดงต่อ พร้อมบันทึก audit และปิดรายงาน",
+        reasonLabel: "เหตุผลการซ่อนถาวร",
+        confirmClass: "danger",
+        apply: reportCase => {
+          reportCase.commentStatus = "Removed";
+          reportCase.status = "Closed";
+        }
+      },
+      "Close no violation": {
+        title: "ปิดรายงาน (ไม่พบการละเมิด)",
+        button: "ยืนยัน",
+        summary: "ปิดรายงานหลังตรวจสอบแล้วไม่พบการละเมิด ไม่เปลี่ยนสถานะการมองเห็นของความคิดเห็นในแอป และบันทึก audit",
+        reasonLabel: "เหตุผลการปิดรายงาน",
+        confirmClass: "primary",
+        apply: reportCase => {
+          reportCase.status = "Closed";
+        }
+      }
+    };
+
+    const reportedCommentActionFlowScenarios = [
+      { value: "success", label: "สำเร็จ" },
+      { value: "invalid_state", label: "สถานะรายงานไม่ตรงเงื่อนไข" },
+      { value: "stale_data", label: "ข้อมูลเปลี่ยนระหว่างดำเนินการ" },
+      { value: "policy_blocked", label: "ยังไม่ผ่านเงื่อนไขที่ระบบกำหนด" },
+      { value: "save_failed", label: "บันทึกผลการดำเนินการไม่สำเร็จ" },
+      { value: "audit_failed", label: "บันทึก Audit Log ไม่สำเร็จ" },
+      { value: "session_expired", label: "เซสชันหมดอายุ" }
+    ];
+
+    const reportedCommentActionErrorSamples = {
+      invalid_state: { title: "ไม่สามารถดำเนินการได้", detail: "สถานะรายงานปัจจุบันไม่ตรงเงื่อนไขของ action นี้ กรุณาตรวจสถานะล่าสุดก่อนยืนยันอีกครั้ง" },
+      stale_data: { title: "ข้อมูลรายงานมีการเปลี่ยนแปลงแล้ว", detail: "มีการอัปเดตรายงานนี้ระหว่างที่เปิดหน้าต่างยืนยัน กรุณารีเฟรชข้อมูลแล้วลองอีกครั้ง" },
+      policy_blocked: { title: "ยังไม่สามารถดำเนินการได้", detail: "รายงานนี้ยังมีหลักฐานหรือเงื่อนไขที่ต้องตรวจสอบเพิ่มเติมก่อนดำเนินการ" },
+      save_failed: { title: "บันทึกผลการดำเนินการไม่สำเร็จ", detail: "ระบบยังไม่สามารถบันทึกสถานะและ audit log ได้ กรุณาลองอีกครั้ง" },
+      audit_failed: { title: "บันทึก Audit Log ไม่สำเร็จ", detail: "ระบบยังไม่สามารถบันทึกเหตุผลและสถานะก่อน/หลังการดำเนินการได้ กรุณาลองอีกครั้งก่อนยืนยัน" },
+      session_expired: { title: "เซสชันหมดอายุ", detail: "กรุณาเข้าสู่ระบบใหม่ก่อนยืนยัน เพื่อให้การดำเนินการและ Audit Log ถูกต้อง" }
+    };
+
+    function getReportedCommentStatusActions(reportCase) {
+      if (!reportCase) return [];
+      if (reportCase.status === "Closed") return [];
+      return [
+        { action: "Close no violation", label: "ปิดรายงาน (ไม่พบการละเมิด)" },
+        { action: "Hide comment", label: "ซ่อนความคิดเห็นชั่วคราว" },
+        { action: "Remove comment", label: "ซ่อนความคิดเห็นถาวร" }
+      ];
+    }
+
+    function getReportedCommentActionClass(action, index) {
+      const config = reportedCommentActionConfig[action];
+      if (config) return config.confirmClass;
+      if (index === 0) return "primary";
+      return "";
+    }
+
+    function renderReportedCommentActionImpactNote(reportCase, action) {
+      if (action === "Hide comment") {
+        return `
+          <div class="module-note user-action-impact user-action-impact-card user-action-impact-warning">
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 3.2c.7 0 1.35.37 1.7.98l8.05 13.95A1.95 1.95 0 0 1 20.05 21H3.95a1.95 1.95 0 0 1-1.7-2.87L10.3 4.18A1.95 1.95 0 0 1 12 3.2Zm0 4.6a1 1 0 0 0-1 1v4.4a1 1 0 1 0 2 0V8.8a1 1 0 0 0-1-1Zm0 8.45a1.15 1.15 0 1 0 0 2.3 1.15 1.15 0 0 0 0-2.3Z"/></svg>
+            <p><strong>ผลกระทบต่อแอปพลิเคชัน:</strong> หลังยืนยัน ความคิดเห็น ${reportCase.commentId} จะถูกซ่อนจาก comment section ของ asset ${reportCase.assetId} ผู้ใช้ที่ถูกรายงานยังเห็นแบบ read-only และรายงานจะถูกปิด</p>
+          </div>
+        `;
+      }
+      if (action === "Remove comment") {
+        return `
+          <div class="module-note user-action-impact user-action-impact-card user-action-impact-warning">
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 3.2c.7 0 1.35.37 1.7.98l8.05 13.95A1.95 1.95 0 0 1 20.05 21H3.95a1.95 1.95 0 0 1-1.7-2.87L10.3 4.18A1.95 1.95 0 0 1 12 3.2Zm0 4.6a1 1 0 0 0-1 1v4.4a1 1 0 1 0 2 0V8.8a1 1 0 0 0-1-1Zm0 8.45a1.15 1.15 0 1 0 0 2.3 1.15 1.15 0 0 0 0-2.3Z"/></svg>
+            <p><strong>ผลกระทบต่อแอปพลิเคชัน:</strong> หลังยืนยัน ความคิดเห็น ${reportCase.commentId} จะถูกซ่อนถาวรจาก comment section ของ asset ${reportCase.assetId} ผู้ใช้ที่ถูกรายงานยังเห็นแบบ read-only แต่แก้ไขหรือกู้คืนไม่ได้ และรายงานจะถูกปิด</p>
+          </div>
+        `;
+      }
+      return `
+        <div class="module-note user-action-impact user-action-impact-card user-action-impact-notice">
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M4.5 5h15A2.5 2.5 0 0 1 22 7.5v9A2.5 2.5 0 0 1 19.5 19h-15A2.5 2.5 0 0 1 2 16.5v-9A2.5 2.5 0 0 1 4.5 5Zm0 2a.5.5 0 0 0-.5.5v.3l8 4.9 8-4.9v-.3a.5.5 0 0 0-.5-.5h-15Zm15 10a.5.5 0 0 0 .5-.5v-6.35l-7.48 4.57a1 1 0 0 1-1.04 0L4 10.15v6.35a.5.5 0 0 0 .5.5h15Z"/></svg>
+          <p><strong>ผลกระทบต่อแอปพลิเคชัน:</strong> รายงานจะถูกปิดและออกจากคิวที่ต้องดำเนินการ แต่ไม่เปลี่ยนสถานะการมองเห็นของความคิดเห็นในแอป</p>
+        </div>
+      `;
+    }
+
+    function appendReportedCommentAuditHistory(reportCase, log) {
+      if (!reportCase || !log) return;
+      if (!Array.isArray(reportCase.auditHistory)) reportCase.auditHistory = [];
+      const nextNumber = reportCase.auditHistory.reduce((max, entry) => {
+        const number = parseInt(String(entry.id || "").split("-").pop() || "0", 10);
+        return Math.max(max, Number.isFinite(number) ? number : 0);
+      }, 0) + 1;
+      reportCase.auditHistory.unshift({
+        id: `AUD-${reportCase.id}-${String(nextNumber).padStart(3, "0")}`,
+        createdAt: formatBangkokTimestamp(),
+        actor: "Somchai Admin",
+        emailDelivery: { status: "not_required" },
+        ...log
+      });
+    }
+
+    function renderReportedCommentActionModal(reportCase, action, resultMessage = "", resultDetail = "", resultType = "", selectedScenario = "success") {
+      const config = reportedCommentActionConfig[action];
+      if (!reportCase || !config) return;
+      const hasResult = Boolean(resultMessage);
+      const beforeCommentStatus = reportCase.commentStatus || "Visible";
+      const beforeReportStatus = reportCase.status === "Closed" ? "Closed" : "Pending";
+      const modal = document.querySelector("#user-action-modal");
+      const modalBody = document.querySelector("#user-action-modal-body");
+      if (!modal || !modalBody) return;
+      activeRow = reportCase;
+      modalBody.innerHTML = `
+        <div class="user-action-page">
+          <div class="user-action-head">
+            <div>
+              <h2 id="user-action-modal-title">${config.title}</h2>
+              <p>${config.summary}</p>
+            </div>
+            <button class="btn user-action-close" type="button" data-user-action-modal-close aria-label="Close modal" title="Close">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M18 6 6 18"></path>
+                <path d="m6 6 12 12"></path>
+              </svg>
+            </button>
+          </div>
+          <div class="user-action-target">
+            <div>
+              <strong>${reportCase.id}</strong>
+              <span>${reportCase.commentId} · ${reportCase.assetId}</span>
+            </div>
+            ${getReportedCommentStatusPill(reportCase)}
+          </div>
+          <div class="user-action-layout">
+            <div class="detail-section">
+              <div class="user-action-form">
+                <label>
+                  ${config.reasonLabel}
+                  ${customSelect("reported-comment-action-reason", config.reasonLabel, [{ value: "", label: "— เลือกเหตุผล —" }, ...reportedCommentActionReasons.map(reason => ({ value: reason, label: reason }))], "", "data-custom-select-silent")}
+                </label>
+                <label>
+                  Note / หมายเหตุ
+                  <textarea id="reported-comment-action-note" placeholder="ระบุหมายเหตุ เหตุผล หรือข้อมูลอ้างอิงที่เกี่ยวข้องกับการดำเนินการ"></textarea>
+                </label>
+                ${renderReportedCommentActionImpactNote(reportCase, action)}
+                <div class="user-detail-actions user-action-footer">
+                  <button class="user-detail-action-btn ${config.confirmClass} user-action-confirm disabled" type="button" data-reported-comment-action-confirm="${action}" data-report-id="${reportCase.id}" disabled>${config.button}</button>
+                  <button class="user-detail-action-btn" type="button" data-user-action-modal-close>ยกเลิก</button>
+                </div>
+                <div class="warning-note action-feedback user-action-result ${hasResult ? "show" : ""} ${resultType}">
+                  <strong>${resultMessage || "Audit requirement"}</strong><br>
+                  <span>${resultDetail || `ต้องบันทึกเหตุผล ผลตรวจสอบ และสถานะก่อน/หลังการดำเนินการไว้ใน Admin Action History · Comment: ${beforeCommentStatus} · Report: ${beforeReportStatus}`}</span>
+                </div>
+                <details class="prototype-tools user-action-prototype-tools">
+                  <summary>Prototype scenario</summary>
+                  <label>
+                    Test flow
+                    ${customSelect("reported-comment-action-scenario", "Test flow", reportedCommentActionFlowScenarios, selectedScenario, "data-custom-select-silent")}
+                  </label>
+                </details>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+      applyModalHeadingFonts(modal);
+      modal.classList.add("show");
+      document.body.classList.add("asset-action-modal-open");
+    }
+
+    function confirmReportedCommentAction(reportCase, action) {
+      const config = reportedCommentActionConfig[action];
+      if (!reportCase || !config) return;
+      const beforeCommentStatus = reportCase.commentStatus || "Visible";
+      const beforeReportStatus = reportCase.status === "Closed" ? "Closed" : "Pending";
+      const selectedReason = document.querySelector("#reported-comment-action-reason")?.value || "";
+      const actionNote = document.querySelector("#reported-comment-action-note")?.value.trim() || "";
+      if (!selectedReason) {
+        const confirmBtn = document.querySelector("[data-reported-comment-action-confirm]");
+        if (confirmBtn) {
+          confirmBtn.disabled = true;
+          confirmBtn.classList.add("disabled");
+        }
+        return;
+      }
+      config.apply(reportCase);
+      const afterCommentStatus = reportCase.commentStatus || "Visible";
+      const afterReportStatus = reportCase.status === "Closed" ? "Closed" : "Pending";
+      const noteText = actionNote || selectedReason || config.summary;
+      const commentStatusChanged = beforeCommentStatus !== afterCommentStatus;
+      appendReportedCommentAuditHistory(reportCase, {
+        action,
+        before: { commentStatus: beforeCommentStatus, reportStatus: beforeReportStatus },
+        after: { commentStatus: afterCommentStatus, reportStatus: afterReportStatus },
+        reference: reportCase.id,
+        note: `${noteText}${commentStatusChanged ? ` · Comment ${reportCase.commentId}: ${beforeCommentStatus} → ${afterCommentStatus}` : ""} · Report: ${beforeReportStatus} → ${afterReportStatus}`,
+        emailDelivery: { status: "not_required" }
+      });
+      closeUserActionModal();
+      renderReportedCommentDetail(reportCase);
+      const toastDetail = commentStatusChanged
+        ? `${reportCase.id}: ${beforeCommentStatus} → ${afterCommentStatus} และปิดรายงานแล้ว`
+        : `${reportCase.id}: ปิดรายงานแล้ว (ไม่เปลี่ยนสถานะความคิดเห็น)`;
+      showSuccessToast(toastDetail);
+    }
+
     function renderReportedCommentDetail(reportCase) {
       if (!reportCase) {
         renderModule("assets", "Reported Comments", "Reported Comments");
@@ -21885,6 +22118,8 @@
             <h4>Admin Action History</h4>
             ${renderReportedCommentAuditHistoryTable(reportCase)}
           </div>
+
+          ${getReportedCommentStatusActions(reportCase).length ? `<div class="user-detail-actions">${getReportedCommentStatusActions(reportCase).map(({ action, label }, index) => `<button class="user-detail-action-btn ${getReportedCommentActionClass(action, index)}" type="button" data-reported-comment-action="${action}" data-report-id="${reportCase.id}">${label}</button>`).join("")}</div>` : ""}
         </div>
       `;
       document.querySelector("#detail").innerHTML = "";
@@ -22626,6 +22861,14 @@
         if (hiddenInput.id === "asset-hide-reason") updateAssetHideEmailPreview();
         if (hiddenInput.id === "asset-restore-reason") updateAssetRestoreVisibilityEmailPreview();
         if (hiddenInput.id === "asset-delete-reason") updateAssetDeletePostEmailPreview();
+        if (hiddenInput.id === "reported-comment-action-reason") {
+          const confirmBtn = document.querySelector("[data-reported-comment-action-confirm]");
+          if (confirmBtn) {
+            const hasReason = Boolean(value);
+            confirmBtn.disabled = !hasReason;
+            confirmBtn.classList.toggle("disabled", !hasReason);
+          }
+        }
         if (hiddenInput.id === "market-import-scenario") {
           setMarketActionFieldError("name");
           const result = document.querySelector("[data-market-import-result]");
@@ -23666,6 +23909,29 @@
       if (resetReportedCommentFiltersButton) {
         assetListPage = 1;
         renderModule("assets", "Reported Comments", "Reported Comments");
+        return;
+      }
+      const reportedCommentActionConfirmButton = event.target.closest("[data-reported-comment-action-confirm]");
+      if (reportedCommentActionConfirmButton) {
+        const reportCase = reportedCommentCases.find(row => row.id === reportedCommentActionConfirmButton.dataset.reportId);
+        const action = reportedCommentActionConfirmButton.dataset.reportedCommentActionConfirm;
+        const scenario = document.querySelector("#reported-comment-action-scenario")?.value || "success";
+        if (!reportCase || !action) return;
+        if (scenario !== "success") {
+          const errorSample = reportedCommentActionErrorSamples[scenario] || reportedCommentActionErrorSamples.invalid_state;
+          renderReportedCommentActionModal(reportCase, action, errorSample.title, errorSample.detail, "error", scenario);
+          return;
+        }
+        confirmReportedCommentAction(reportCase, action);
+        return;
+      }
+      const reportedCommentActionButton = event.target.closest("[data-reported-comment-action]");
+      if (reportedCommentActionButton) {
+        const reportCase = reportedCommentCases.find(row => row.id === reportedCommentActionButton.dataset.reportId);
+        const action = reportedCommentActionButton.dataset.reportedCommentAction;
+        if (!reportCase || !action) return;
+        renderReportedCommentActionModal(reportCase, action);
+        closeRowMenus();
         return;
       }
       if (event.target.id === "reported-comment-search") {
