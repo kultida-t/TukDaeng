@@ -21895,7 +21895,7 @@
         }
       },
       "Close no violation": {
-        title: "ปิดรายงาน (ไม่พบการละเมิด)",
+        title: "ยืนยันการปิดรายงาน",
         button: "ยืนยัน",
         summary: "ปิดรายงานหลังตรวจสอบแล้วไม่พบการละเมิด",
         reasonLabel: "เหตุผลการปิดรายงาน",
@@ -22053,6 +22053,7 @@
     }
 
     function renderReportedCommentActionEmailPreview(reportCase, action, reason = "") {
+      if (action === "Close no violation") return "";
       const emailCopy = getReportedCommentActionEmailCopy(reportCase, action, reason);
       return `
         <details class="email-preview" data-reported-comment-action-email-preview data-report-id="${reportCase.id}" data-action="${action}">
@@ -22100,15 +22101,15 @@
       }
       if (action === "Restore comment") {
         return `
-          <div class="module-note user-action-impact user-action-impact-card user-action-impact-notice">
-            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M4.5 5h15A2.5 2.5 0 0 1 22 7.5v9A2.5 2.5 0 0 1 19.5 19h-15A2.5 2.5 0 0 1 2 16.5v-9A2.5 2.5 0 0 1 4.5 5Zm0 2a.5.5 0 0 0-.5.5v.3l8 4.9 8-4.9v-.3a.5.5 0 0 0-.5-.5h-15Zm15 10a.5.5 0 0 0 .5-.5v-6.35l-7.48 4.57a1 1 0 0 1-1.04 0L4 10.15v6.35a.5.5 0 0 0 .5.5h15Z"/></svg>
+          <div class="module-note user-action-impact user-action-impact-card user-action-impact-warning">
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 3.2c.7 0 1.35.37 1.7.98l8.05 13.95A1.95 1.95 0 0 1 20.05 21H3.95a1.95 1.95 0 0 1-1.7-2.87L10.3 4.18A1.95 1.95 0 0 1 12 3.2Zm0 4.6a1 1 0 0 0-1 1v4.4a1 1 0 1 0 2 0V8.8a1 1 0 0 0-1-1Zm0 8.45a1.15 1.15 0 1 0 0 2.3 1.15 1.15 0 0 0 0-2.3Z"/></svg>
             <p><strong>ผลกระทบต่อแอปพลิเคชัน:</strong> หลังยืนยัน ความคิดเห็นนี้จะกลับมาแสดงในส่วนความคิดเห็นของรายการตามปกติ และรายงานจะถูกปิด</p>
           </div>
         `;
       }
       return `
-        <div class="module-note user-action-impact user-action-impact-card user-action-impact-notice">
-          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M4.5 5h15A2.5 2.5 0 0 1 22 7.5v9A2.5 2.5 0 0 1 19.5 19h-15A2.5 2.5 0 0 1 2 16.5v-9A2.5 2.5 0 0 1 4.5 5Zm0 2a.5.5 0 0 0-.5.5v.3l8 4.9 8-4.9v-.3a.5.5 0 0 0-.5-.5h-15Zm15 10a.5.5 0 0 0 .5-.5v-6.35l-7.48 4.57a1 1 0 0 1-1.04 0L4 10.15v6.35a.5.5 0 0 0 .5.5h15Z"/></svg>
+        <div class="module-note user-action-impact user-action-impact-card user-action-impact-warning">
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 3.2c.7 0 1.35.37 1.7.98l8.05 13.95A1.95 1.95 0 0 1 20.05 21H3.95a1.95 1.95 0 0 1-1.7-2.87L10.3 4.18A1.95 1.95 0 0 1 12 3.2Zm0 4.6a1 1 0 0 0-1 1v4.4a1 1 0 1 0 2 0V8.8a1 1 0 0 0-1-1Zm0 8.45a1.15 1.15 0 1 0 0 2.3 1.15 1.15 0 0 0 0-2.3Z"/></svg>
           <p><strong>ผลกระทบต่อแอปพลิเคชัน:</strong> รายงานจะถูกปิดและออกจากคิวที่ต้องดำเนินการ แต่ไม่เปลี่ยนสถานะการมองเห็นของความคิดเห็นในแอป</p>
         </div>
       `;
