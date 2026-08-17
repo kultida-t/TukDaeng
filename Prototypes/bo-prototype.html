@@ -1553,6 +1553,24 @@
       grid-template-columns: minmax(88px, .52fr) minmax(132px, .74fr) minmax(230px, .98fr) minmax(166px, .8fr) minmax(190px, 1.04fr) minmax(136px, .7fr) minmax(72px, .34fr);
       column-gap: 16px;
     }
+    .comment-table .asset-row {
+      grid-template-columns: minmax(100px, .48fr) minmax(240px, 1.8fr) minmax(180px, 1fr) minmax(96px, .46fr) minmax(76px, .36fr) minmax(60px, .28fr) minmax(70px, .34fr) minmax(92px, .44fr) minmax(142px, .66fr) minmax(78px, .4fr);
+      gap: 12px;
+    }
+    .comment-table .asset-row.head {
+      min-height: 44px;
+      background: #f1f5fb;
+      color: #485b75;
+      font-size: 12px;
+      font-weight: 700;
+      padding-top: 12px;
+      padding-bottom: 12px;
+    }
+    .comment-table .asset-row.head > div {
+      color: #485b75;
+      font-size: 12px;
+      font-weight: 700;
+    }
     body.offer-list-mode #table {
       overflow-x: auto;
       overflow-y: visible;
@@ -8302,6 +8320,81 @@
         width: auto;
         min-height: 30px;
         padding-top: 0;
+      }
+      body.user-list-mode #table .comment-table {
+        grid-template-columns: 1fr;
+        gap: 12px;
+        min-width: 0;
+      }
+      body.user-list-mode .comment-table .asset-row.head {
+        display: none;
+      }
+      body.user-list-mode .comment-table .asset-row:not(.head) {
+        grid-template-columns: minmax(0, 1fr) 34px;
+        column-gap: 14px;
+        row-gap: 14px;
+        min-height: 0;
+        padding: 18px 18px 16px;
+        border: 1px solid #cfdbd2;
+        border-radius: 10px;
+        background: #fff;
+        box-shadow: 0 1px 2px rgba(15, 23, 42, .05);
+        overflow: visible;
+        align-items: start;
+      }
+      body.user-list-mode .comment-table .asset-row:not(.head) > div[data-label] {
+        display: grid;
+        grid-template-columns: 110px minmax(0, 1fr);
+        gap: 12px;
+        align-items: center;
+        width: 100%;
+        padding: 8px 0;
+        border-bottom: 1px solid #edf2f7;
+      }
+      body.user-list-mode .comment-table .asset-row:not(.head) > div[data-label]:first-child {
+        grid-column: 1;
+        grid-row: 1;
+        display: flex;
+        align-items: center;
+        border-bottom: 0;
+        padding-bottom: 0;
+        min-height: 30px;
+      }
+      body.user-list-mode .comment-table .asset-row:not(.head) > div[data-label]:first-child::before {
+        content: none;
+      }
+      body.user-list-mode .comment-table .asset-row:not(.head) > div[data-label]:first-child .main-text {
+        max-width: 100%;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        color: #061426;
+        font-family: var(--font-heading);
+        font-size: 22px;
+        font-weight: 500;
+        letter-spacing: .04em;
+        line-height: 1;
+      }
+      body.user-list-mode .comment-table .asset-row:not(.head) > div[data-label]::before {
+        content: attr(data-label);
+        color: #5d718b;
+        font-size: 11px;
+        font-weight: 800;
+        line-height: 1.25;
+      }
+      body.user-list-mode .comment-table .asset-row:not(.head) > div[data-label]:not(:first-child) {
+        grid-column: 1 / -1;
+      }
+      body.user-list-mode .comment-table .asset-row:not(.head) > .user-row-actions {
+        grid-column: 2;
+        grid-row: 1;
+        align-self: center;
+        justify-self: end;
+        justify-content: flex-end;
+        width: auto;
+        min-height: 30px;
+        padding-top: 0;
+        display: flex;
       }
       body.asset-list-mode .asset-list-table .asset-row:not(.head) > .asset-cell-primary {
         grid-column: 1;
@@ -21487,7 +21580,7 @@
       const pageRows = sorted.slice(start, start + assetListPageSize);
       document.querySelector("#table").innerHTML = `
         <div class="asset-table comment-table">
-          <div class="asset-row head"><div>Comment ID</div><div>Comment Excerpt</div><div>Asset</div><div>Author</div><div>Type</div><div>Likes</div><div>Reports</div><div>Status</div><div>Created</div><div>Action</div></div>
+          <div class="asset-row head"><div>Comment ID</div><div>Comment Excerpt</div><div>Asset</div><div>Author</div><div>Type</div><div>Likes</div><div>Reports</div><div>Status</div><div>Created / Updated</div><div>Action</div></div>
           ${pageRows.map(row => {
             const statusPillClass = row.status === "Visible" ? "green" : row.status === "Reported" ? "red" : row.status === "Hidden" ? "amber" : row.status === "Removed" ? "gray" : row.status === "User Deleted" ? "gray" : "blue";
             const typePillClass = row.commentType === "Root" ? "blue" : "purple";
@@ -21506,7 +21599,10 @@
                 <div data-label="Likes"><div class="main-text">${row.likeCount || 0}</div></div>
                 <div data-label="Reports"><div class="main-text">${row.reportCount || 0}</div></div>
                 <div data-label="Status"><span class="pill ${statusPillClass}">${row.status}</span></div>
-                <div data-label="Created"><div class="main-text">${row.createdAt || "-"}</div></div>
+                <div data-label="Created / Updated">
+                  <div class="main-text">${row.createdAt || "-"}</div>
+                  ${row.updatedAt && row.updatedAt !== row.createdAt ? `<div class="muted" style="margin-top:2px;">Updated ${row.updatedAt}</div>` : ""}
+                </div>
                 <div class="user-row-actions">
                   <button class="panel-action" type="button" data-comment-action="${row.id}">${iconSvg.eye}ดูรายละเอียด</button>
                 </div>
