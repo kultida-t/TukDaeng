@@ -21815,20 +21815,19 @@
       `;
     }
 
-    const reportedCommentActionReasons = [
-      "Harassment or hate",
-      "Spam or scam",
-      "Inappropriate content",
-      "False or misleading information",
-      "Other"
-    ];
-
     const reportedCommentActionConfig = {
       "Hide comment": {
         title: "ซ่อนความคิดเห็นชั่วคราว",
         button: "ยืนยัน",
         summary: "ซ่อนความคิดเห็นจากพื้นที่สาธารณะของ asset ระหว่างตรวจสอบ เจ้าของความคิดเห็นจะได้รับอีเมลแจ้งผล",
         reasonLabel: "เหตุผลการซ่อนชั่วคราว",
+        reasons: [
+          "มีรายงานความเสี่ยงสูง รอตรวจสอบ",
+          "เนื้อหาความคิดเห็นยังไม่ชัดเจน ต้องตรวจหลักฐานเพิ่ม",
+          "สงสัยว่าเป็นสแปมหรือโฆษณานอกระบบ",
+          "ทีมที่รับผิดชอบอนุมัติให้ซ่อนระหว่างตรวจสอบ"
+        ],
+        notePlaceholder: "ระบุหมายเหตุ เหตุผล หรือข้อมูลอ้างอิงที่เกี่ยวข้องกับการซ่อนชั่วคราว",
         confirmClass: "warning",
         apply: reportCase => {
           reportCase.commentStatus = "Hidden";
@@ -21840,6 +21839,12 @@
         button: "ยืนยัน",
         summary: "ซ่อนความคิดเห็นจากพื้นที่สาธารณะถาวร หลังยืนยันว่าเนื้อหาไม่ควรแสดงต่อ เจ้าของความคิดเห็นจะได้รับอีเมลแจ้งผล",
         reasonLabel: "เหตุผลการซ่อนถาวร",
+        reasons: [
+          "ตรวจสอบแล้วพบว่าเนื้อหาไม่เป็นไปตามนโยบาย",
+          "ยืนยันแล้วว่าเป็นสแปม โฆษณา หรือข้อมูลติดต่อนอกระบบ",
+          "ทีมที่รับผิดชอบอนุมัติให้ซ่อนถาวร"
+        ],
+        notePlaceholder: "สรุปผลการตรวจสอบ เหตุผลที่ซ่อนถาวร และข้อมูลอ้างอิงที่เกี่ยวข้อง",
         confirmClass: "danger",
         apply: reportCase => {
           reportCase.commentStatus = "Removed";
@@ -21851,6 +21856,13 @@
         button: "ยืนยัน",
         summary: "ปิดรายงานหลังตรวจสอบแล้วไม่พบการละเมิด ไม่เปลี่ยนสถานะการมองเห็นของความคิดเห็นในแอป",
         reasonLabel: "เหตุผลการปิดรายงาน",
+        reasons: [
+          "ตรวจหลักฐานครบแล้ว ไม่พบประเด็นค้าง",
+          "ความคิดเห็นไม่เข้าเงื่อนไขซ่อนหรือลบ",
+          "เนื้อหาเป็นการแชร์ประสบการณ์ ไม่ใช่โฆษณา",
+          "รายงานซ้ำกับเคสที่ปิดผลแล้ว"
+        ],
+        notePlaceholder: "ระบุหมายเหตุ เหตุผล หรือข้อมูลอ้างอิงที่เกี่ยวข้องกับการปิดรายงาน",
         confirmClass: "primary",
         apply: reportCase => {
           reportCase.status = "Closed";
@@ -22039,7 +22051,7 @@
       const config = reportedCommentActionConfig[action];
       if (!reportCase || !config) return;
       const hasResult = Boolean(resultMessage);
-      const defaultReason = reportedCommentActionReasons[0] || "";
+      const defaultReason = config.reasons?.[0] || "";
       const modal = document.querySelector("#user-action-modal");
       const modalBody = document.querySelector("#user-action-modal-body");
       if (!modal || !modalBody) return;
@@ -22067,11 +22079,11 @@
               <div class="user-action-form">
                 <label>
                   ${config.reasonLabel}
-                  ${customSelect("reported-comment-action-reason", config.reasonLabel, reportedCommentActionReasons.map(reason => ({ value: reason, label: reason })), defaultReason, "data-custom-select-silent")}
+                  ${customSelect("reported-comment-action-reason", config.reasonLabel, config.reasons.map(reason => ({ value: reason, label: reason })), defaultReason, "data-custom-select-silent")}
                 </label>
                 <label>
                   Note / หมายเหตุ
-                  <textarea id="reported-comment-action-note" placeholder="ระบุหมายเหตุ เหตุผล หรือข้อมูลอ้างอิงที่เกี่ยวข้องกับการดำเนินการ"></textarea>
+                  <textarea id="reported-comment-action-note" placeholder="${config.notePlaceholder}"></textarea>
                 </label>
                 ${renderReportedCommentActionImpactNote(reportCase, action)}
                 ${renderReportedCommentActionEmailNote(reportCase, action)}
