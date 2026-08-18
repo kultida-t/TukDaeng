@@ -7939,6 +7939,12 @@
       body.user-list-mode:not(.user-accounts-mode):not(.user-detail-mode) #table:has(.reported-comment-table) > .footer-range {
         min-width: 0;
       }
+      body.user-list-mode:not(.user-accounts-mode):not(.user-detail-mode) #table .reported-users-table {
+        min-width: 0;
+      }
+      body.user-list-mode:not(.user-accounts-mode):not(.user-detail-mode) #table:has(.reported-users-table) > .footer-range {
+        min-width: 0;
+      }
       .user-row,
       .user-row.report-row {
         grid-template-columns: 1fr;
@@ -8803,6 +8809,53 @@
         gap: 8px;
       }
       body.user-list-mode .reported-comment-table .user-card-meta-item.comment-text-meta strong {
+        width: auto;
+        max-width: none;
+        display: inline;
+        overflow: visible;
+        text-align: right;
+        text-overflow: clip;
+        white-space: normal;
+        overflow-wrap: anywhere;
+      }
+      body.user-list-mode .reported-users-table .user-card-meta {
+        flex: 1 0 100%;
+        display: grid;
+        gap: 3px;
+        width: 100%;
+        margin-top: 8px;
+        padding-top: 11px;
+        border-top: 1px solid #edf2f7;
+      }
+      body.user-list-mode .reported-users-table .user-card-meta .user-card-meta-item {
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        gap: 8px;
+        color: #34445b;
+        font-size: 12px;
+        line-height: 1.35;
+      }
+      body.user-list-mode .reported-users-table .user-card-meta .user-card-meta-item span {
+        color: #485b75;
+        font-size: 12px;
+        font-weight: 700;
+        white-space: nowrap;
+      }
+      body.user-list-mode .reported-users-table .user-card-meta .user-card-meta-item strong {
+        color: #233a5c;
+        font-size: 12px;
+        font-weight: 400;
+        min-width: 0;
+        text-align: right;
+      }
+      body.user-list-mode .reported-users-table .user-card-meta-item.report-reason-meta {
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        gap: 8px;
+      }
+      body.user-list-mode .reported-users-table .user-card-meta-item.report-reason-meta strong {
         width: auto;
         max-width: none;
         display: inline;
