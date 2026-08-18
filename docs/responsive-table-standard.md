@@ -667,8 +667,8 @@ git status --short  # ควรเห็นเฉพาะไฟล์ที่�
 | `.pager-next`        | ปุ่ม "ถัดไป" (desktop: text, mobile: icon)   |
 | `.pager-prev-text`   | ข้อความ "ก่อนหน้า" (ซ่อนบน mobile)         |
 | `.pager-next-text`   | ข้อความ "ถัดไป" (ซ่อนบน mobile)           |
-| `.pager-prev-icon`   | icon `‹` (ซ่อนบน desktop, แสดงบน mobile)  |
-| `.pager-next-icon`   | icon `›` (ซ่อนบน desktop, แสดงบน mobile)  |
+| `.pager-prev-icon`   | icon `‹` (ซ่อนบน desktop, แสดงบน mobile — `font-size: 18px`, `font-weight: 600`)  |
+| `.pager-next-icon`   | icon `›` (ซ่อนบน desktop, แสดงบน mobile — `font-size: 18px`, `font-weight: 600`)  |
 | `.pager-num`         | ปุ่มหมายเลขหน้า (ซ่อนบน mobile)            |
 | `.pager-num.active`  | ปุ่มหน้าปัจจุบัน (ไฮไลต์)                  |
 | `.pager-ellipsis`    | ตัว `…` บอกช่องว่าง (ซ่อนบน mobile)       |
@@ -713,10 +713,16 @@ git status --short  # ควรเห็นเฉพาะไฟล์ที่�
   .pager .pager-prev-text,
   .pager .pager-next-text { display: none; }           /* ซ่อนข้อความ */
   .pager .pager-prev-icon,
-  .pager .pager-next-icon { display: inline; }         /* แสดง icon */
+  .pager .pager-next-icon {                            /* icon ใหญ่ชัดเจน */
+    display: inline;
+    font-size: 18px;
+    font-weight: 600;
+    line-height: 1;
+  }
   .pager .pager-prev,
   .pager .pager-next {
-    min-width: 36px;
+    min-width: 40px;
+    min-height: 36px;
     padding: 5px 8px;
     justify-content: center;
     flex: 0 0 auto;
@@ -770,6 +776,8 @@ const pagerHtml = renderPager(currentPage, pageCount, "data-user-page");
 - [ ] Mobile (≤760px): ซ่อนปุ่มหมายเลข + ellipsis
 - [ ] Mobile: แสดง `‹ current / total ›`
 - [ ] Mobile: ปุ่ม prev/next ใช้ icon ไม่ใช้ข้อความ
+- [ ] Mobile: icon `‹` `›` ใหญ่ชัดเจน (`font-size: 18px`, `font-weight: 600`)
+- [ ] Mobile: ปุ่ม prev/next ขนาดพอดี icon (`min-width: 40px`, `min-height: 36px`)
 - [ ] ปุ่ม prev disabled เมื่อ current = 1
 - [ ] ปุ่ม next disabled เมื่อ current = totalPages
 - [ ] ปุ่ม active มี `aria-current="page"`
