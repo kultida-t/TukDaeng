@@ -8579,7 +8579,17 @@
         font-size: 12px;
         font-weight: 400;
         min-width: 0;
-        max-width: 62%;
+        text-align: right;
+      }
+      .user-card-meta-item.comment-text-meta {
+        display: grid;
+        grid-template-columns: max-content minmax(0, 56%);
+        align-items: baseline;
+      }
+      .user-card-meta-item.comment-text-meta strong {
+        width: 100%;
+        max-width: 100%;
+        display: block;
         overflow: hidden;
         text-align: right;
         text-overflow: ellipsis;
@@ -21683,13 +21693,26 @@
             const priorityPillClass = row.priority === "High" ? "red" : row.priority === "Medium" ? "amber" : "blue";
             const asset = moduleData.assets.rows.find(entry => entry.id === row.assetId);
             const assetName = asset ? asset.name : "-";
+            const reportReason = row.reportReason || row.tags.filter(tag => !["SLA 4h", "Reply", "Closed", "Audit"].includes(tag)).join(", ") || "-";
             return `
               <div class="user-row report-row reported-comment-row" data-reported-comment-card="${row.id}">
                 <div class="user-cell-primary" data-label="Report ID"><div class="main-text">${row.id}</div></div>
+                <div class="user-card-tags">
+                  ${getReportedCommentStatusPill(row)}
+                  ${getReportedCommentCommentStatusPill(row)}
+                  <span class="user-card-tag asset-tag">${row.reporters} reporters</span>
+                  <span class="pill ${priorityPillClass}">${row.priority}</span>
+                  <div class="user-card-meta">
+                    <div class="user-card-meta-item comment-text-meta"><span>Comment</span><strong>${row.commentExcerpt || row.name}</strong></div>
+                    <div class="user-card-meta-item"><span>Asset</span><strong>${row.assetId}${assetName ? ` · ${assetName}` : ""}</strong></div>
+                    <div class="user-card-meta-item comment-text-meta report-reason-meta"><span>Report reason</span><strong>${reportReason}</strong></div>
+                    <div class="user-card-meta-item"><span>Reported at</span><strong>${row.commentCreatedAt || "-"}</strong></div>
+                  </div>
+                </div>
                 <div data-label="Comment"><div class="main-text">${row.commentExcerpt || row.name}</div></div>
                 <div data-label="Asset"><div class="main-text">${row.assetId}</div><div class="muted">${assetName}</div></div>
                 <div data-label="Status"><span class="pill ${statusPillClass}">${row.status}</span></div>
-                <div data-label="Reason"><div class="main-text">${row.tags.filter(tag => !["SLA 4h", "Reply", "Closed", "Audit"].includes(tag)).join(", ") || "-"}</div></div>
+                <div data-label="Reason"><div class="main-text">${reportReason}</div></div>
                 <div data-label="Priority"><span class="pill ${priorityPillClass}">${row.priority}</span></div>
                 <div class="user-row-actions">
                   ${renderReportedCommentRowActionMenu(row)}
