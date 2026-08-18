@@ -8756,20 +8756,36 @@
         text-align: right;
       }
       body.user-list-mode .reported-assets-table .user-card-meta-item.report-reason-meta {
-        display: flex;
+        display: grid;
+        grid-template-columns: max-content minmax(0, 1fr);
         align-items: baseline;
-        justify-content: space-between;
         gap: 8px;
       }
       body.user-list-mode .reported-assets-table .user-card-meta-item.report-reason-meta strong {
-        width: auto;
-        max-width: none;
-        display: inline;
-        overflow: visible;
+        width: 100%;
+        max-width: 100%;
+        min-width: 0;
+        display: block;
+        overflow: hidden;
         text-align: right;
-        text-overflow: clip;
-        white-space: normal;
-        overflow-wrap: anywhere;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+      body.user-list-mode .reported-assets-table .user-card-meta-item.comment-field-meta {
+        display: grid;
+        grid-template-columns: max-content minmax(0, 50%);
+        align-items: baseline;
+        gap: 8px;
+      }
+      body.user-list-mode .reported-assets-table .user-card-meta-item.comment-field-meta strong {
+        width: 100%;
+        max-width: 100%;
+        min-width: 0;
+        display: block;
+        overflow: hidden;
+        text-align: right;
+        text-overflow: ellipsis;
+        white-space: nowrap;
       }
       body.user-list-mode .reported-comment-table .user-card-meta {
         flex: 1 0 100%;
@@ -22676,8 +22692,8 @@
                   <span class="user-card-tag asset-tag">${reporters} reporters</span>
                   <span class="pill ${priorityValue === "high" ? "red" : priorityValue === "medium" ? "amber" : "blue"}">${priorityLabel}</span>
                   <div class="user-card-meta">
-                    <div class="user-card-meta-item"><span>Asset</span><strong>${asset.name}</strong></div>
-                    <div class="user-card-meta-item report-reason-meta"><span>Report reason</span><strong>${reason}</strong></div>
+                    <div class="user-card-meta-item comment-field-meta"><span>Asset</span><strong>${asset.name}</strong></div>
+                    <div class="user-card-meta-item report-reason-meta comment-field-meta"><span>Report reason</span><strong>${reason}</strong></div>
                     <div class="user-card-meta-item"><span>Reported at</span><strong>${reportedAt}</strong></div>
                   </div>
                 </div>
