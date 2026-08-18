@@ -1271,7 +1271,10 @@
       scrollbar-width: thin;
     }
     body.asset-list-mode:not(.article-list-mode):not(.category-list-mode):not(.reported-board-mode) #table .asset-list-table {
-      min-width: 1120px;
+      min-width: 1132px;
+    }
+    body.asset-list-mode:not(.article-list-mode):not(.category-list-mode):not(.reported-board-mode) #table > .footer-range {
+      min-width: 1132px;
     }
     body.offer-list-mode .layout > .panel {
       border-color: #d7e2f0;
@@ -1624,7 +1627,10 @@
       overflow-y: visible;
     }
     body.offer-list-mode .offer-list-table {
-      min-width: 1120px;
+      min-width: 1150px;
+    }
+    body.offer-list-mode #table > .footer-range {
+      min-width: 1150px;
     }
     .offer-list-table .asset-row.head > div:last-child {
       justify-content: flex-start;
@@ -4291,11 +4297,23 @@
     body.user-list-mode:not(.user-accounts-mode):not(.user-detail-mode) #table .reported-users-table {
       min-width: 1220px;
     }
+    body.user-list-mode:not(.user-accounts-mode):not(.user-detail-mode) #table:has(.reported-users-table) > .footer-range {
+      min-width: 1220px;
+      padding: 11px 18px;
+    }
     body.user-list-mode:not(.user-accounts-mode):not(.user-detail-mode) #table .reported-assets-table {
-      min-width: 1484px;
+      min-width: 1568px;
+    }
+    body.user-list-mode:not(.user-accounts-mode):not(.user-detail-mode) #table:has(.reported-assets-table) > .footer-range {
+      min-width: 1568px;
+      padding: 11px 22px;
     }
     body.user-list-mode:not(.user-accounts-mode):not(.user-detail-mode) #table .reported-comment-table {
-      min-width: 1080px;
+      min-width: 1102px;
+    }
+    body.user-list-mode:not(.user-accounts-mode):not(.user-detail-mode) #table:has(.reported-comment-table) > .footer-range {
+      min-width: 1102px;
+      padding: 11px 22px;
     }
     .user-table {
       display: grid;
@@ -4378,16 +4396,10 @@
       min-height: 66px;
       padding: 10px 18px;
     }
-    body.user-list-mode .reported-users-table .user-row.report-row:nth-last-child(2) {
-      border-bottom: 0;
-    }
     body.user-list-mode .reported-assets-table .user-row.report-row:not(.head),
     body.user-list-mode .reported-comment-table .user-row.report-row:not(.head) {
       min-height: 66px;
       padding: 10px 22px;
-    }
-    body.user-list-mode .reported-assets-table:not(.reported-comment-table) .user-row.report-row:nth-last-child(2) {
-      border-bottom: 0;
     }
     .user-row:not(.report-row) > div {
       min-width: 0;
@@ -7134,10 +7146,10 @@
         min-width: 1220px;
       }
       body.user-list-mode:not(.user-detail-mode) #table .reported-assets-table {
-        min-width: 1484px;
+        min-width: 1568px;
       }
       body.user-list-mode:not(.user-detail-mode) #table .reported-comment-table {
-        min-width: 1080px;
+        min-width: 1102px;
       }
       body.user-list-mode:not(.user-detail-mode) .reported-users-table .user-row.report-row,
       body.user-list-mode:not(.user-detail-mode) .reported-assets-table .user-row.report-row,
@@ -7198,7 +7210,10 @@
         scrollbar-width: thin;
       }
       body.asset-list-mode:not(.article-list-mode):not(.category-list-mode):not(.reported-board-mode) #table .asset-list-table {
-        min-width: 1120px;
+        min-width: 1132px;
+      }
+      body.asset-list-mode:not(.article-list-mode):not(.category-list-mode):not(.reported-board-mode) #table > .footer-range {
+        min-width: 1132px;
       }
       body.user-accounts-mode:not(.user-detail-mode) .user-row:not(.report-row) {
         grid-template-columns: minmax(74px, .42fr) minmax(138px, 1.08fr) minmax(112px, .7fr) minmax(124px, .78fr) minmax(58px, .36fr) minmax(84px, .54fr) minmax(108px, .66fr) minmax(42px, .22fr);
@@ -7897,14 +7912,25 @@
       body.user-list-mode #table .user-table {
         gap: 12px;
       }
-      body.user-list-mode:not(.user-detail-mode) #table:has(.reported-users-table),
-      body.user-list-mode:not(.user-detail-mode) #table:has(.reported-assets-table),
-      body.user-list-mode:not(.user-detail-mode) #table:has(.reported-comment-table) {
-        overflow-x: auto;
+      body.user-list-mode:not(.user-accounts-mode):not(.user-detail-mode) #table:has(.reported-users-table),
+      body.user-list-mode:not(.user-accounts-mode):not(.user-detail-mode) #table:has(.reported-assets-table),
+      body.user-list-mode:not(.user-accounts-mode):not(.user-detail-mode) #table:has(.reported-comment-table) {
+        overflow-x: hidden;
       }
       body.user-list-mode:not(.user-detail-mode) #table .reported-users-table,
       body.user-list-mode:not(.user-detail-mode) #table .reported-assets-table,
       body.user-list-mode:not(.user-detail-mode) #table .reported-comment-table {
+        min-width: 0;
+      }
+      body.user-list-mode:not(.user-detail-mode) #table:has(.reported-users-table) > .footer-range,
+      body.user-list-mode:not(.user-detail-mode) #table:has(.reported-assets-table) > .footer-range,
+      body.user-list-mode:not(.user-detail-mode) #table:has(.reported-comment-table) > .footer-range {
+        min-width: 0;
+      }
+      body.user-list-mode:not(.user-accounts-mode):not(.user-detail-mode) #table .reported-assets-table {
+        min-width: 0;
+      }
+      body.user-list-mode:not(.user-accounts-mode):not(.user-detail-mode) #table:has(.reported-assets-table) > .footer-range {
         min-width: 0;
       }
       .user-row,
@@ -8306,7 +8332,9 @@
       }
       body.article-list-mode #table > .footer-range,
       body.category-list-mode #table > .footer-range,
-      body.reported-board-mode #table > .footer-range {
+      body.reported-board-mode #table > .footer-range,
+      body.asset-list-mode:not(.article-list-mode):not(.category-list-mode):not(.reported-board-mode) #table > .footer-range,
+      body.offer-list-mode #table > .footer-range {
         min-width: 0;
       }
       body.offer-list-mode .asset-table {
@@ -8683,6 +8711,53 @@
         font-weight: 400;
         min-width: 0;
         text-align: right;
+      }
+      body.user-list-mode .reported-assets-table .user-card-meta {
+        flex: 1 0 100%;
+        display: grid;
+        gap: 3px;
+        width: 100%;
+        margin-top: 8px;
+        padding-top: 11px;
+        border-top: 1px solid #edf2f7;
+      }
+      body.user-list-mode .reported-assets-table .user-card-meta .user-card-meta-item {
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        gap: 8px;
+        color: #34445b;
+        font-size: 12px;
+        line-height: 1.35;
+      }
+      body.user-list-mode .reported-assets-table .user-card-meta .user-card-meta-item span {
+        color: #485b75;
+        font-size: 12px;
+        font-weight: 700;
+        white-space: nowrap;
+      }
+      body.user-list-mode .reported-assets-table .user-card-meta .user-card-meta-item strong {
+        color: #233a5c;
+        font-size: 12px;
+        font-weight: 400;
+        min-width: 0;
+        text-align: right;
+      }
+      body.user-list-mode .reported-assets-table .user-card-meta-item.report-reason-meta {
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        gap: 8px;
+      }
+      body.user-list-mode .reported-assets-table .user-card-meta-item.report-reason-meta strong {
+        width: auto;
+        max-width: none;
+        display: inline;
+        overflow: visible;
+        text-align: right;
+        text-overflow: clip;
+        white-space: normal;
+        overflow-wrap: anywhere;
       }
       .user-card-meta-item.comment-text-meta {
         display: grid;
