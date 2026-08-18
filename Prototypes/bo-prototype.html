@@ -4960,6 +4960,40 @@
       background: var(--active);
       color: #fff;
     }
+    .pager-ellipsis {
+      color: var(--muted);
+      font-size: 12px;
+      padding: 0 2px;
+      user-select: none;
+      line-height: 30px;
+    }
+    .pager-mobile-info {
+      display: none;
+      font-size: 12px;
+      color: var(--muted);
+      min-width: 56px;
+      text-align: center;
+      align-items: center;
+      justify-content: center;
+    }
+    .pager-prev-icon, .pager-next-icon { display: none; }
+    @media (max-width: 760px) {
+      .pager { flex-wrap: nowrap; gap: 4px; }
+      .pager .pager-num,
+      .pager .pager-ellipsis { display: none; }
+      .pager .pager-mobile-info { display: inline-flex; }
+      .pager .pager-prev-text,
+      .pager .pager-next-text { display: none; }
+      .pager .pager-prev-icon,
+      .pager .pager-next-icon { display: inline; }
+      .pager .pager-prev,
+      .pager .pager-next {
+        min-width: 36px;
+        padding: 5px 8px;
+        justify-content: center;
+        flex: 0 0 auto;
+      }
+    }
     .user-detail-page {
       padding: 18px;
     }
@@ -10754,11 +10788,7 @@
       return `
         <div class="footer-range">
           <span>แสดง ${start + 1}-${Math.min(start + reportHistoryPageSize, total)} จาก ${total}</span>
-          <div class="pager">
-            <button class="btn" type="button" ${pageAttr}="prev" ${page <= 1 ? "disabled" : ""}>ก่อนหน้า</button>
-            ${Array.from({ length: pageCount }, (_, index) => `<button class="btn ${index + 1 === page ? "active" : ""}" type="button" ${pageAttr}="${index + 1}">${index + 1}</button>`).join("")}
-            <button class="btn" type="button" ${pageAttr}="next" ${page >= pageCount ? "disabled" : ""}>ถัดไป</button>
-          </div>
+          ${renderPager(page, pageCount, pageAttr)}
         </div>
       `;
     }
@@ -11774,6 +11804,37 @@
 
     function resetFilterButton(attrs) {
       return `<button class="btn filter-reset user-advanced-filter" type="button" ${attrs} title="${filterCopy.resetAll}" aria-label="${filterCopy.resetAll}">${iconSvg.refresh}<span>${filterCopy.resetAll}</span></button>`;
+    }
+
+    function renderPager(currentPage, totalPages, dataAttr) {
+      const prevDisabled = currentPage <= 1 ? "disabled" : "";
+      const nextDisabled = currentPage >= totalPages ? "disabled" : "";
+      let pages = [];
+      if (totalPages <= 5) {
+        for (let i = 1; i <= totalPages; i++) pages.push(i);
+      } else if (currentPage <= 3) {
+        pages = [1, 2, 3, "...", totalPages];
+      } else if (currentPage >= totalPages - 2) {
+        pages = [1, "...", totalPages - 2, totalPages - 1, totalPages];
+      } else {
+        pages = [1, "...", currentPage - 1, currentPage, currentPage + 1, "...", totalPages];
+      }
+      const numberButtons = pages.map(p => {
+        if (p === "...") {
+          return `<span class="pager-ellipsis" aria-hidden="true">…</span>`;
+        }
+        const isActive = p === currentPage;
+        return `<button class="btn pager-num ${isActive ? "active" : ""}" type="button" ${dataAttr}="${p}" ${isActive ? 'aria-current="page"' : ""}>${p}</button>`;
+      }).join("");
+      const mobileInfo = `<span class="pager-mobile-info" aria-hidden="true">${currentPage} / ${totalPages}</span>`;
+      return `
+        <div class="pager">
+          <button class="btn pager-prev" type="button" ${dataAttr}="prev" ${prevDisabled} aria-label="ก่อนหน้า"><span class="pager-prev-text">ก่อนหน้า</span><span class="pager-prev-icon" aria-hidden="true">‹</span></button>
+          ${numberButtons}
+          ${mobileInfo}
+          <button class="btn pager-next" type="button" ${dataAttr}="next" ${nextDisabled} aria-label="ถัดไป"><span class="pager-next-text">ถัดไป</span><span class="pager-next-icon" aria-hidden="true">›</span></button>
+        </div>
+      `;
     }
 
     function availableFilterOptions(key, values) {
@@ -15902,11 +15963,7 @@
         </div>
         <div class="footer-range">
           <span>แสดง ${sorted.length ? `${start + 1}-${Math.min(start + userListPageSize, sorted.length)}` : "0"} จาก ${sorted.length}</span>
-          <div class="pager">
-            <button class="btn" type="button" data-user-page="prev" ${userListPage <= 1 ? "disabled" : ""}>ก่อนหน้า</button>
-            ${Array.from({ length: pageCount }, (_, index) => `<button class="btn ${index + 1 === userListPage ? "active" : ""}" type="button" data-user-page="${index + 1}">${index + 1}</button>`).join("")}
-            <button class="btn" type="button" data-user-page="next" ${userListPage >= pageCount ? "disabled" : ""}>ถัดไป</button>
-          </div>
+          ${renderPager(userListPage, pageCount, "data-user-page")}
         </div>
       `;
     }
@@ -15963,11 +16020,7 @@
           }).join("") || `<div class="detail-empty user-empty">ไม่พบข้อมูล</div>`}
           <div class="footer-range reported-users-footer">
             <span>แสดง ${sorted.length ? `${start + 1}-${Math.min(start + userListPageSize, sorted.length)}` : "0"} จาก ${sorted.length}</span>
-            <div class="pager">
-              <button class="btn" type="button" data-user-page="prev" ${userListPage <= 1 ? "disabled" : ""}>ก่อนหน้า</button>
-              ${Array.from({ length: pageCount }, (_, index) => `<button class="btn ${index + 1 === userListPage ? "active" : ""}" type="button" data-user-page="${index + 1}">${index + 1}</button>`).join("")}
-              <button class="btn" type="button" data-user-page="next" ${userListPage >= pageCount ? "disabled" : ""}>ถัดไป</button>
-            </div>
+            ${renderPager(userListPage, pageCount, "data-user-page")}
           </div>
         </div>
       `;
@@ -17045,11 +17098,7 @@
         </div>
         <div class="footer-range">
           <span>แสดง ${rows.length ? `${start + 1}-${Math.min(start + marketCatalogPageSize, rows.length)}` : "0"} จาก ${rows.length}</span>
-          <div class="pager">
-            <button class="btn" type="button" data-market-catalog-page="prev" ${marketCatalogPage <= 1 ? "disabled" : ""}>ก่อนหน้า</button>
-            ${Array.from({ length: pageCount }, (_, index) => `<button class="btn ${index + 1 === marketCatalogPage ? "active" : ""}" type="button" data-market-catalog-page="${index + 1}">${index + 1}</button>`).join("")}
-            <button class="btn" type="button" data-market-catalog-page="next" ${marketCatalogPage >= pageCount ? "disabled" : ""}>ถัดไป</button>
-          </div>
+          ${renderPager(marketCatalogPage, pageCount, "data-market-catalog-page")}
         </div>
       `;
     }
@@ -17325,11 +17374,7 @@
         </div>
         <div class="footer-range">
           <span>แสดง ${rows.length ? `${start + 1}-${Math.min(start + marketModelPageSize, rows.length)}` : "0"} จาก ${rows.length}</span>
-          <div class="pager">
-            <button class="btn" type="button" data-market-model-page="prev" ${marketModelPage <= 1 ? "disabled" : ""}>ก่อนหน้า</button>
-            ${Array.from({ length: pageCount }, (_, index) => `<button class="btn ${index + 1 === marketModelPage ? "active" : ""}" type="button" data-market-model-page="${index + 1}">${index + 1}</button>`).join("")}
-            <button class="btn" type="button" data-market-model-page="next" ${marketModelPage >= pageCount ? "disabled" : ""}>ถัดไป</button>
-          </div>
+          ${renderPager(marketModelPage, pageCount, "data-market-model-page")}
         </div>
       `;
     }
@@ -17362,11 +17407,7 @@
         </div>
         <div class="footer-range">
           <span>แสดง ${rows.length ? `${start + 1}-${Math.min(start + marketReferencePageSize, rows.length)}` : "0"} จาก ${rows.length}</span>
-          <div class="pager">
-            <button class="btn" type="button" data-market-reference-page="prev" ${marketReferencePage <= 1 ? "disabled" : ""}>ก่อนหน้า</button>
-            ${Array.from({ length: pageCount }, (_, index) => `<button class="btn ${index + 1 === marketReferencePage ? "active" : ""}" type="button" data-market-reference-page="${index + 1}">${index + 1}</button>`).join("")}
-            <button class="btn" type="button" data-market-reference-page="next" ${marketReferencePage >= pageCount ? "disabled" : ""}>ถัดไป</button>
-          </div>
+          ${renderPager(marketReferencePage, pageCount, "data-market-reference-page")}
         </div>
       `;
     }
@@ -18605,11 +18646,7 @@
             </div>
             <div class="footer-range">
               <span>แสดง ${rows.length ? `${start + 1}-${Math.min(start + marketDashboardPageSize, rows.length)}` : "0"} จาก ${rows.length}</span>
-              <div class="pager">
-                <button class="btn" type="button" data-market-dashboard-page="prev" ${marketDashboardPage <= 1 ? "disabled" : ""}>ก่อนหน้า</button>
-                ${Array.from({ length: pageCount }, (_, index) => `<button class="btn ${index + 1 === marketDashboardPage ? "active" : ""}" type="button" data-market-dashboard-page="${index + 1}">${index + 1}</button>`).join("")}
-                <button class="btn" type="button" data-market-dashboard-page="next" ${marketDashboardPage >= pageCount ? "disabled" : ""}>ถัดไป</button>
-              </div>
+              ${renderPager(marketDashboardPage, pageCount, "data-market-dashboard-page")}
             </div>
           </section>
         </div>
@@ -19284,11 +19321,7 @@
         </div>
         <div class="footer-range">
           <span>แสดง ${sorted.length ? `${start + 1}-${Math.min(start + articleListPageSize, sorted.length)}` : "0"} จาก ${sorted.length}</span>
-          <div class="pager">
-            <button class="btn" type="button" data-category-page="prev" ${categoryListPage <= 1 ? "disabled" : ""}>ก่อนหน้า</button>
-            ${Array.from({ length: pageCount }, (_, index) => `<button class="btn ${index + 1 === categoryListPage ? "active" : ""}" type="button" data-category-page="${index + 1}">${index + 1}</button>`).join("")}
-            <button class="btn" type="button" data-category-page="next" ${categoryListPage >= pageCount ? "disabled" : ""}>ถัดไป</button>
-          </div>
+          ${renderPager(categoryListPage, pageCount, "data-category-page")}
         </div>
       `;
     }
@@ -21529,11 +21562,7 @@
         </div>
         <div class="footer-range">
           <span>แสดง ${sorted.length ? `${start + 1}-${Math.min(start + articleListPageSize, sorted.length)}` : "0"} จาก ${sorted.length}</span>
-          <div class="pager">
-            <button class="btn" type="button" data-article-page="prev" ${articleListPage <= 1 ? "disabled" : ""}>ก่อนหน้า</button>
-            ${Array.from({ length: pageCount }, (_, index) => `<button class="btn ${index + 1 === articleListPage ? "active" : ""}" type="button" data-article-page="${index + 1}">${index + 1}</button>`).join("")}
-            <button class="btn" type="button" data-article-page="next" ${articleListPage >= pageCount ? "disabled" : ""}>ถัดไป</button>
-          </div>
+          ${renderPager(articleListPage, pageCount, "data-article-page")}
         </div>
       `;
     }
@@ -21858,11 +21887,7 @@
         </div>
         <div class="footer-range">
           <span>แสดง ${sorted.length ? `${start + 1}-${Math.min(start + articleListPageSize, sorted.length)}` : "0"} จาก ${sorted.length}</span>
-          <div class="pager">
-            <button class="btn" type="button" data-board-report-page="prev" ${boardReportListPage <= 1 ? "disabled" : ""}>ก่อนหน้า</button>
-            ${Array.from({ length: pageCount }, (_, index) => `<button class="btn ${index + 1 === boardReportListPage ? "active" : ""}" type="button" data-board-report-page="${index + 1}">${index + 1}</button>`).join("")}
-            <button class="btn" type="button" data-board-report-page="next" ${boardReportListPage >= pageCount ? "disabled" : ""}>ถัดไป</button>
-          </div>
+          ${renderPager(boardReportListPage, pageCount, "data-board-report-page")}
         </div>
       `;
     }
@@ -22169,11 +22194,7 @@
         </div>
         <div class="footer-range">
           <span>แสดง ${sorted.length ? `${start + 1}-${Math.min(start + assetListPageSize, sorted.length)}` : "0"} จาก ${sorted.length}</span>
-          <div class="pager">
-            <button class="btn" type="button" data-reported-comment-page="prev" ${assetListPage <= 1 ? "disabled" : ""}>ก่อนหน้า</button>
-            ${Array.from({ length: pageCount }, (_, index) => `<button class="btn ${index + 1 === assetListPage ? "active" : ""}" type="button" data-reported-comment-page="${index + 1}">${index + 1}</button>`).join("")}
-            <button class="btn" type="button" data-reported-comment-page="next" ${assetListPage >= pageCount ? "disabled" : ""}>ถัดไป</button>
-          </div>
+          ${renderPager(assetListPage, pageCount, "data-reported-comment-page")}
         </div>
       `;
     }
@@ -22854,11 +22875,7 @@
         </div>
         <div class="footer-range">
           <span>แสดง ${sorted.length ? `${start + 1}-${Math.min(start + assetListPageSize, sorted.length)}` : "0"} จาก ${sorted.length}</span>
-          <div class="pager">
-            <button class="btn" type="button" data-asset-page="prev" ${assetListPage <= 1 ? "disabled" : ""}>ก่อนหน้า</button>
-            ${Array.from({ length: pageCount }, (_, index) => `<button class="btn ${index + 1 === assetListPage ? "active" : ""}" type="button" data-asset-page="${index + 1}">${index + 1}</button>`).join("")}
-            <button class="btn" type="button" data-asset-page="next" ${assetListPage >= pageCount ? "disabled" : ""}>ถัดไป</button>
-          </div>
+          ${renderPager(assetListPage, pageCount, "data-asset-page")}
         </div>
       `;
     }
@@ -22912,11 +22929,7 @@
         </div>
         <div class="footer-range">
           <span>แสดง ${sorted.length ? `${start + 1}-${Math.min(start + assetListPageSize, sorted.length)}` : "0"} จาก ${sorted.length}</span>
-          <div class="pager">
-            <button class="btn" type="button" data-asset-page="prev" ${assetListPage <= 1 ? "disabled" : ""}>ก่อนหน้า</button>
-            ${Array.from({ length: pageCount }, (_, index) => `<button class="btn ${index + 1 === assetListPage ? "active" : ""}" type="button" data-asset-page="${index + 1}">${index + 1}</button>`).join("")}
-            <button class="btn" type="button" data-asset-page="next" ${assetListPage >= pageCount ? "disabled" : ""}>ถัดไป</button>
-          </div>
+          ${renderPager(assetListPage, pageCount, "data-asset-page")}
         </div>
       `;
     }
@@ -23046,11 +23059,7 @@
         </div>
         <div class="footer-range">
           <span>แสดง ${filtered.length ? `${start + 1}-${Math.min(start + pageSize, filtered.length)}` : "0"} จาก ${filtered.length}</span>
-          <div class="pager">
-            <button class="btn" type="button" data-offer-page="prev" ${offerListPage <= 1 ? "disabled" : ""}>ก่อนหน้า</button>
-            ${Array.from({ length: pageCount }, (_, index) => `<button class="btn ${index + 1 === offerListPage ? "active" : ""}" type="button" data-offer-page="${index + 1}">${index + 1}</button>`).join("")}
-            <button class="btn" type="button" data-offer-page="next" ${offerListPage >= pageCount ? "disabled" : ""}>ถัดไป</button>
-          </div>
+          ${renderPager(offerListPage, pageCount, "data-offer-page")}
         </div>
       `;
     }

@@ -601,6 +601,8 @@ git status --short  # ควรเห็นเฉพาะไฟล์ที่�
 | รีเซ็ต `min-width: 0`      | ~8333           | Asset List                       |
 | แปลง row เป็นการ์ด         | ~8514           | `grid-template-columns: ... 34px`|
 | meta items styling         | ~8696           | Asset List card meta             |
+| pager CSS (base + mobile)  | ~4958           | `.pager-ellipsis`, `.pager-mobile-info` |
+| `renderPager()` helper     | ~11806          | Ellipsis Adaptive pager          |
 | render Asset List          | ~22723          | `renderAssetListRows`            |
 
 > หมายเหตุ: หมายเลขบรรทัดอ้างอิงจากเวอร์ชันที่แก้แล้ว
@@ -618,6 +620,187 @@ git status --short  # ควรเห็นเฉพาะไฟล์ที่�
    ของการ์ด ตัดด้วย ellipsis เมื่อยาวเกิน สัดส่วนเท่ากันทุกฟิลด์
 4. **scoped override ไม่ใช่ global edit** — ห้ามแก้ global rule
    ที่ใช้ร่วมกันระหว่างหน้า
+
+---
+
+## 10. มาตรฐาน Paging (Pagination)
+
+### 10.1 หลักการ
+
+1. **ใช้ helper function เดียวกันทุกหน้า** — สร้าง `renderPager(currentPage, totalPages, dataAttr)`
+   และเรียกจากทุกจุดที่สร้าง pager เพื่อให้พฤติกรรมสม่ำเสมอทั้งระบบ
+2. **Ellipsis Adaptive บน desktop** — แสดงหมายเลขหน้าแบบ adaptive
+   พร้อม ellipsis (`…`) เพื่อให้ผู้ใช้เห็นขอบเขต (หน้าแรก/สุดท้าย) และตำแหน่งปัจจุบัน
+3. **Compact mode บน mobile** — บน viewport ≤ 760px แสดงแค่
+   `‹  current / total  ›` (ปุ่มก่อนหน้า/ถัดไปแบบ icon + ตัวเลขหน้าปัจจุบัน)
+   ซ่อนปุ่มหมายเลขหน้าทั้งหมดเพื่อประหยัดพื้นที่
+4. **จำนวนปุ่มคงที่** — ไม่ว่าจะมี 5 หน้าหรือ 100 หน้า
+   จำนวนปุ่มหมายเลขที่แสดงบน desktop ไม่เกิน 5 ปุ่ม + ellipsis
+5. **ไม่กระทบการ์ด mobile** — pager อยู่ใน `.footer-range` ที่แยกจากการ์ด
+   ไม่ซ้อนทับ ไม่ wrap บน mobile
+
+### 10.2 โครงสร้าง HTML ที่ helper สร้าง
+
+```html
+<div class="pager">
+  <button class="btn pager-prev" type="button" data-*-page="prev" disabled>
+    <span class="pager-prev-text">ก่อนหน้า</span>
+    <span class="pager-prev-icon" aria-hidden="true">‹</span>
+  </button>
+  <button class="btn pager-num active" type="button" data-*-page="1" aria-current="page">1</button>
+  <span class="pager-ellipsis" aria-hidden="true">…</span>
+  <button class="btn pager-num" type="button" data-*-page="5">5</button>
+  <span class="pager-mobile-info" aria-hidden="true">5 / 20</span>
+  <button class="btn pager-next" type="button" data-*-page="next">
+    <span class="pager-next-text">ถัดไป</span>
+    <span class="pager-next-icon" aria-hidden="true">›</span>
+  </button>
+</div>
+```
+
+### 10.3 class ที่ใช้
+
+| class                | บทบาท                                      |
+| -------------------- | ------------------------------------------ |
+| `.pager`             | container ของ pagination (สืบทอดจากเดิม)   |
+| `.pager-prev`        | ปุ่ม "ก่อนหน้า" (desktop: text, mobile: icon) |
+| `.pager-next`        | ปุ่ม "ถัดไป" (desktop: text, mobile: icon)   |
+| `.pager-prev-text`   | ข้อความ "ก่อนหน้า" (ซ่อนบน mobile)         |
+| `.pager-next-text`   | ข้อความ "ถัดไป" (ซ่อนบน mobile)           |
+| `.pager-prev-icon`   | icon `‹` (ซ่อนบน desktop, แสดงบน mobile)  |
+| `.pager-next-icon`   | icon `›` (ซ่อนบน desktop, แสดงบน mobile)  |
+| `.pager-num`         | ปุ่มหมายเลขหน้า (ซ่อนบน mobile)            |
+| `.pager-num.active`  | ปุ่มหน้าปัจจุบัน (ไฮไลต์)                  |
+| `.pager-ellipsis`    | ตัว `…` บอกช่องว่าง (ซ่อนบน mobile)       |
+| `.pager-mobile-info` | ข้อความ `current / total` (แสดงเฉพาะ mobile) |
+
+### 10.4 กฎการแสดงหมายเลขหน้า (Desktop)
+
+| ตำแหน่งหน้าปัจจุบัน | ปุ่มที่แสดง                  |
+| ------------------- | ---------------------------- |
+| totalPages ≤ 5      | แสดงทุกหมายเลข ไม่มี ellipsis |
+| current ≤ 3         | `[1] 2 3 … lastPage`         |
+| current ≥ last-2    | `1 … (last-2) (last-1) [last]` |
+| อื่น ๆ              | `1 … (cur-1) [cur] (cur+1) … lastPage` |
+
+### 10.5 CSS มาตรฐาน
+
+```css
+/* base — สืบทอดจาก .pager เดิม (flex, gap, align-items) */
+.pager-ellipsis {
+  color: var(--muted);
+  font-size: 12px;
+  padding: 0 2px;
+  user-select: none;
+  line-height: 30px;
+}
+.pager-mobile-info {
+  display: none;            /* ซ่อนบน desktop */
+  font-size: 12px;
+  color: var(--muted);
+  min-width: 56px;
+  text-align: center;
+  align-items: center;
+  justify-content: center;
+}
+.pager-prev-icon, .pager-next-icon { display: none; }  /* ซ่อน icon บน desktop */
+
+@media (max-width: 760px) {
+  .pager { flex-wrap: nowrap; gap: 4px; }
+  .pager .pager-num,
+  .pager .pager-ellipsis { display: none; }            /* ซ่อนเลขหน้า + ellipsis */
+  .pager .pager-mobile-info { display: inline-flex; }  /* แสดง current/total */
+  .pager .pager-prev-text,
+  .pager .pager-next-text { display: none; }           /* ซ่อนข้อความ */
+  .pager .pager-prev-icon,
+  .pager .pager-next-icon { display: inline; }         /* แสดง icon */
+  .pager .pager-prev,
+  .pager .pager-next {
+    min-width: 36px;
+    padding: 5px 8px;
+    justify-content: center;
+    flex: 0 0 auto;
+  }
+}
+```
+
+> **สำคัญ:** บน mobile อย่าใช้ `flex: 1` หรือ `justify-content: space-between`
+> บน `.pager-mobile-info` หรือ `.pager` เพราะจะทำให้ตัวเลขกินพื้นที่เต็มช่องว่าง
+> ระหว่างปุ่ม < > จนดูไม่ balanced ให้ตัว `< n/total >` อยู่เป็นก้อนเดียวกัน
+> ใกล้ๆ กัน แล้ว pager ทั้งก้อนชิดขวาตาม base `justify-content: flex-end`
+
+### 10.6 การเรียกใช้ helper
+
+```javascript
+// ตัวอย่าง: เรียกใน render function ของแต่ละหน้า
+const pagerHtml = renderPager(currentPage, pageCount, "data-user-page");
+// ฝังใน footer-range:
+`<div class="footer-range">
+  <span>แสดง ${start + 1}-${end} จาก ${total}</span>
+  ${pagerHtml}
+</div>`
+```
+
+### 10.7 จุดที่ใช้ helper (14 จุด)
+
+| # | หน้า                              | data-attr                       |
+| - | --------------------------------- | ------------------------------- |
+| 1 | Reporter/Audit History (detail)   | `data-reporter-history-page` / `data-report-audit-history-page` |
+| 2 | User Accounts                     | `data-user-page`                |
+| 3 | Reported Users                    | `data-user-page`                |
+| 4 | Market Brands (catalog)           | `data-market-catalog-page`      |
+| 5 | Market Models (drilldown)         | `data-market-model-page`        |
+| 6 | Market References (drilldown)     | `data-market-reference-page`    |
+| 7 | Market Dashboard brands           | `data-market-dashboard-page`    |
+| 8 | Category List                     | `data-category-page`            |
+| 9 | Article List                      | `data-article-page`             |
+| 10 | Reported Articles (Board)        | `data-board-report-page`        |
+| 11 | Reported Comments                | `data-reported-comment-page`    |
+| 12 | Reported Assets                  | `data-asset-page`               |
+| 13 | Asset List                       | `data-asset-page`               |
+| 14 | Offer List                       | `data-offer-page`               |
+
+> หมายเหตุ: Market Sync History ใช้ static pager (disabled, 1 หน้า) ไม่ต้องใช้ helper
+
+### 10.8 Checklist สำหรับ Paging
+
+- [ ] ใช้ `renderPager(currentPage, totalPages, dataAttr)` ทุกจุด
+- [ ] Desktop: แสดงหน้าแรก + หน้าสุดท้าย + หน้ารอบปัจจุบัน + ellipsis
+- [ ] Desktop: ถ้า totalPages ≤ 5 แสดงทุกหมายเลข ไม่มี ellipsis
+- [ ] Mobile (≤760px): ซ่อนปุ่มหมายเลข + ellipsis
+- [ ] Mobile: แสดง `‹ current / total ›`
+- [ ] Mobile: ปุ่ม prev/next ใช้ icon ไม่ใช้ข้อความ
+- [ ] ปุ่ม prev disabled เมื่อ current = 1
+- [ ] ปุ่ม next disabled เมื่อ current = totalPages
+- [ ] ปุ่ม active มี `aria-current="page"`
+- [ ] ไม่ wrap บน mobile (ใส่ใน 1 บรรทัดได้)
+- [ ] ไม่กระทบการ์ด mobile (footer-range แยกจากการ์ด)
+
+### 10.9 ข้อผิดพลาดที่พบบ่อย (Paging)
+
+#### 10.9.1 แสดงทุกหมายเลขหน้า (เดิม)
+
+**อาการ:** หน้ามี 20 หน้า ปุ่มเลข 1-20 แสดงหมด ยาวเกิน footer
+
+**สาเหตุ:** ใช้ `Array.from({ length: pageCount })` สร้างปุ่มทุกหน้าโดยไม่มี ellipsis
+
+**แก้:** ใช้ `renderPager()` ที่มี adaptive ellipsis
+
+#### 10.9.2 ปุ่มหมายเลขล้นบน mobile
+
+**อาการ:** ปุ่มเลข 1-20 แสดงบน mobile แล้ว wrap หลายบรรทัด
+
+**สาเหตุ:** ไม่มี media query ซ่อน `.pager-num` บน mobile
+
+**แก้:** เพิ่ม `@media (max-width: 760px) { .pager .pager-num { display: none; } }`
+
+#### 10.9.3 ข้อความ "ก่อนหน้า/ถัดไป" กินพื้นที่บน mobile
+
+**อาการ:** ปุ่ม prev/next ยาวเกิน ทำให้ mobile info ไม่พอแสดง
+
+**สาเหตุ:** ใช้ข้อความเต็มบน mobile
+
+**แก้:** ใช้ icon `‹` `›` บน mobile ผ่าน `.pager-prev-icon` / `.pager-next-icon`
 5. **ทดสอบด้วยค่าจริง** — ใช้ Playwright วัด bounding box และ
    computed style ไม่ใช่แค่อ่านโค้ด
 6. **ทดสอบหลาย viewport** — 390, 360, 768, 1280 อย่างน้อย
