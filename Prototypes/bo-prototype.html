@@ -8898,20 +8898,132 @@
         text-align: right;
       }
       body.user-list-mode .reported-users-table .user-card-meta-item.report-reason-meta {
-        display: flex;
+        display: grid;
+        grid-template-columns: max-content minmax(0, 1fr);
         align-items: baseline;
-        justify-content: space-between;
         gap: 8px;
       }
       body.user-list-mode .reported-users-table .user-card-meta-item.report-reason-meta strong {
-        width: auto;
-        max-width: none;
-        display: inline;
-        overflow: visible;
+        width: 100%;
+        max-width: 100%;
+        min-width: 0;
+        display: block;
+        overflow: hidden;
         text-align: right;
-        text-overflow: clip;
-        white-space: normal;
-        overflow-wrap: anywhere;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+      body.user-list-mode .reported-users-table .user-card-meta-item.comment-field-meta {
+        display: grid;
+        grid-template-columns: max-content minmax(0, 50%);
+        align-items: baseline;
+        gap: 8px;
+      }
+      body.user-list-mode .reported-users-table .user-card-meta-item.comment-field-meta strong {
+        width: 100%;
+        max-width: 100%;
+        min-width: 0;
+        display: block;
+        overflow: hidden;
+        text-align: right;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+      body.user-accounts-mode .user-table .user-card-meta-item.comment-field-meta {
+        display: grid;
+        grid-template-columns: max-content minmax(0, 50%);
+        align-items: baseline;
+        gap: 8px;
+      }
+      body.user-accounts-mode .user-table .user-card-meta-item.comment-field-meta strong {
+        width: 100%;
+        max-width: 100%;
+        min-width: 0;
+        display: block;
+        overflow: hidden;
+        text-align: right;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+      body.offer-list-mode .offer-list-table .user-card-meta-item.comment-field-meta {
+        display: grid;
+        grid-template-columns: max-content minmax(0, 50%);
+        align-items: baseline;
+        gap: 8px;
+      }
+      body.offer-list-mode .offer-list-table .user-card-meta-item.comment-field-meta strong {
+        width: 100%;
+        max-width: 100%;
+        min-width: 0;
+        display: block;
+        overflow: hidden;
+        text-align: right;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+      body.article-list-mode .article-table .user-card-meta-item.comment-field-meta {
+        display: grid;
+        grid-template-columns: max-content minmax(0, 50%);
+        align-items: baseline;
+        gap: 8px;
+      }
+      body.article-list-mode .article-table .user-card-meta-item.comment-field-meta strong {
+        width: 100%;
+        max-width: 100%;
+        min-width: 0;
+        display: block;
+        overflow: hidden;
+        text-align: right;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+      body.category-list-mode .category-table .user-card-meta-item.comment-field-meta {
+        display: grid;
+        grid-template-columns: max-content minmax(0, 50%);
+        align-items: baseline;
+        gap: 8px;
+      }
+      body.category-list-mode .category-table .user-card-meta-item.comment-field-meta strong {
+        width: 100%;
+        max-width: 100%;
+        min-width: 0;
+        display: block;
+        overflow: hidden;
+        text-align: right;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+      body.reported-board-mode .reported-board-table .user-card-meta-item.comment-field-meta {
+        display: grid;
+        grid-template-columns: max-content minmax(0, 50%);
+        align-items: baseline;
+        gap: 8px;
+      }
+      body.reported-board-mode .reported-board-table .user-card-meta-item.comment-field-meta strong {
+        width: 100%;
+        max-width: 100%;
+        min-width: 0;
+        display: block;
+        overflow: hidden;
+        text-align: right;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+      body.market-list-mode .market-record-table .market-card-meta .user-card-meta-item.comment-field-meta {
+        display: grid;
+        grid-template-columns: max-content minmax(0, 50%);
+        align-items: baseline;
+        gap: 8px;
+      }
+      body.market-list-mode .market-record-table .market-card-meta .user-card-meta-item.comment-field-meta strong {
+        width: 100%;
+        max-width: 100%;
+        min-width: 0;
+        display: block;
+        overflow: hidden;
+        text-align: right;
+        text-overflow: ellipsis;
+        white-space: nowrap;
       }
       .user-card-meta-item.comment-text-meta {
         display: grid;
@@ -15765,9 +15877,9 @@
                 <span class="user-card-tag asset-tag">${user.assets} assets</span>
                 ${userAuthPill(user.auth)}
                 <div class="user-card-meta">
-                  <div class="user-card-meta-item"><span>User</span><strong>${user.displayName}</strong></div>
-                  <div class="user-card-meta-item"><span>Date joined</span><strong>${user.joined}</strong></div>
-                  <div class="user-card-meta-item"><span>Last active</span><strong>${user.lastActive}</strong></div>
+                  <div class="user-card-meta-item comment-field-meta"><span>User</span><strong>${user.displayName}</strong></div>
+                  <div class="user-card-meta-item comment-field-meta"><span>Date joined</span><strong>${user.joined}</strong></div>
+                  <div class="user-card-meta-item comment-field-meta"><span>Last active</span><strong>${user.lastActive}</strong></div>
                 </div>
               </div>
               <div data-label="Status">${userStatusPill(user.status)}</div>
@@ -15829,10 +15941,10 @@
                 <span class="user-card-tag asset-tag">${report.reporters} reporters</span>
                 ${statusPill(getReportPriorityLabel(report.priority), report.priority)}
                 <div class="user-card-meta">
-                  <div class="user-card-meta-item"><span>User</span><strong>${report.user}</strong></div>
-                  <div class="user-card-meta-item"><span>Sources</span><strong>${renderReportSourcesLabel(report)}</strong></div>
-                  <div class="user-card-meta-item report-reason-meta"><span>Report reason</span><strong>${renderUserReportReasonsLabel(report)}</strong></div>
-                  <div class="user-card-meta-item"><span>Reported at</span><strong>${reportedAt}</strong></div>
+                  <div class="user-card-meta-item comment-field-meta"><span>User</span><strong>${report.user}</strong></div>
+                  <div class="user-card-meta-item comment-field-meta"><span>Sources</span><strong>${renderReportSourcesLabel(report)}</strong></div>
+                  <div class="user-card-meta-item report-reason-meta comment-field-meta"><span>Report reason</span><strong>${renderUserReportReasonsLabel(report)}</strong></div>
+                  <div class="user-card-meta-item comment-field-meta"><span>Reported at</span><strong>${reportedAt}</strong></div>
                 </div>
               </div>
               <div data-label="User"><div class="main-text">${report.user}</div></div>
@@ -17076,10 +17188,10 @@
               <span class="user-card-tag asset-tag">${row.id}</span>
               <div class="market-card-meta user-card-meta">
                 <div class="user-card-meta-item"><span>รายการ</span><strong>${getMarketSyncTitleLabel(row)}</strong></div>
-                <div class="user-card-meta-item"><span>ข้อมูลที่อัปเดต</span><strong>${getMarketSyncScopeLabel(row)}</strong></div>
-                <div class="user-card-meta-item"><span>เริ่มเมื่อ</span><strong>${row.started}</strong></div>
-                <div class="user-card-meta-item"><span>ใช้เวลา</span><strong>${row.duration}</strong></div>
-                ${shouldShowMarketSyncIssue(row) ? `<div class="user-card-meta-item"><span>หมายเหตุ</span><strong>${getMarketSyncIssueLabel(row)}</strong></div>` : ""}
+                <div class="user-card-meta-item comment-field-meta"><span>ข้อมูลที่อัปเดต</span><strong>${getMarketSyncScopeLabel(row)}</strong></div>
+                <div class="user-card-meta-item comment-field-meta"><span>เริ่มเมื่อ</span><strong>${row.started}</strong></div>
+                <div class="user-card-meta-item comment-field-meta"><span>ใช้เวลา</span><strong>${row.duration}</strong></div>
+                ${shouldShowMarketSyncIssue(row) ? `<div class="user-card-meta-item comment-field-meta"><span>หมายเหตุ</span><strong>${getMarketSyncIssueLabel(row)}</strong></div>` : ""}
               </div>
             </div>
             <div data-label="สถานะ">${renderMarketSyncStatus(row)}</div>
@@ -19154,9 +19266,9 @@
                   ${getCategoryStatusPill(category.status)}
                   <span class="user-card-tag asset-tag">${articleCount} articles</span>
                   <div class="user-card-meta">
-                    <div class="user-card-meta-item"><span>Category</span><strong>${escapeArticleField(category.name)}</strong></div>
-                    <div class="user-card-meta-item"><span>URL</span><strong>${escapeArticleField(category.slug)}</strong></div>
-                    <div class="user-card-meta-item"><span>Updated</span><strong>${escapeArticleField(category.updatedAt)}</strong></div>
+                    <div class="user-card-meta-item comment-field-meta"><span>Category</span><strong>${escapeArticleField(category.name)}</strong></div>
+                    <div class="user-card-meta-item comment-field-meta"><span>URL</span><strong>${escapeArticleField(category.slug)}</strong></div>
+                    <div class="user-card-meta-item comment-field-meta"><span>Updated</span><strong>${escapeArticleField(category.updatedAt)}</strong></div>
                   </div>
                 </div>
                 <div data-label="URL"><div class="main-text">${escapeArticleField(category.slug)}</div></div>
@@ -21400,8 +21512,8 @@
                 ${articleStatusPill(article.status)}
                 <span class="user-card-tag asset-tag article-read-time-tag">${article.readTime}</span>
                 <div class="user-card-meta">
-                  <div class="user-card-meta-item"><span>Article</span><strong>${article.title}</strong></div>
-                  <div class="user-card-meta-item"><span>Publish</span><strong>${article.publishAt}</strong></div>
+                  <div class="user-card-meta-item comment-field-meta"><span>Article</span><strong>${article.title}</strong></div>
+                  <div class="user-card-meta-item comment-field-meta"><span>Publish</span><strong>${article.publishAt}</strong></div>
                 </div>
               </div>
               <div data-label="Category"><div class="main-text">${article.category}</div></div>
@@ -21726,9 +21838,9 @@
                   <span class="user-card-tag asset-tag">${report.reporters} reporters</span>
                   ${boardReportPriorityPill(report)}
                   <div class="user-card-meta">
-                    <div class="user-card-meta-item"><span>Article</span><strong>${report.articleTitle}</strong></div>
-                    <div class="user-card-meta-item report-reason-meta"><span>Report reason</span><strong>${report.reason}</strong></div>
-                    <div class="user-card-meta-item"><span>Reported at</span><strong>${reportedAt}</strong></div>
+                    <div class="user-card-meta-item comment-field-meta"><span>Article</span><strong>${report.articleTitle}</strong></div>
+                    <div class="user-card-meta-item report-reason-meta comment-field-meta"><span>Report reason</span><strong>${report.reason}</strong></div>
+                    <div class="user-card-meta-item comment-field-meta"><span>Reported at</span><strong>${reportedAt}</strong></div>
                   </div>
                 </div>
                 <div data-label="Article Status">${boardReportContentStatusPill(report.contentStatus)}</div>
@@ -22916,10 +23028,10 @@
                 ${renderOfferStatusPill(row.status)}
                 <span class="pill blue">${row.type}</span>
                 <div class="user-card-meta">
-                  <div class="user-card-meta-item"><span>Offer</span><strong>${getOfferPriceDisplay(row)}</strong></div>
-                  <div class="user-card-meta-item"><span>Asset</span><strong>${getOfferAssetName(row)}</strong></div>
-                  <div class="user-card-meta-item"><span>Buyer</span><strong>${getOfferParticipantName(row, "Buyer")}</strong></div>
-                  <div class="user-card-meta-item"><span>Owner</span><strong>${getOfferParticipantName(row, "Owner")}</strong></div>
+                  <div class="user-card-meta-item comment-field-meta"><span>Offer</span><strong>${getOfferPriceDisplay(row)}</strong></div>
+                  <div class="user-card-meta-item comment-field-meta"><span>Asset</span><strong>${getOfferAssetName(row)}</strong></div>
+                  <div class="user-card-meta-item comment-field-meta"><span>Buyer</span><strong>${getOfferParticipantName(row, "Buyer")}</strong></div>
+                  <div class="user-card-meta-item comment-field-meta"><span>Owner</span><strong>${getOfferParticipantName(row, "Owner")}</strong></div>
                 </div>
               </div>
               <div data-label="Asset"><div class="main-text">${getOfferAssetName(row)}</div><div class="muted">${row.owner}</div></div>
