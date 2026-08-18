@@ -8818,6 +8818,9 @@
         text-overflow: ellipsis;
         white-space: nowrap;
       }
+      body.user-list-mode .reported-comment-table .user-card-meta-item.comment-field-meta {
+        grid-template-columns: max-content minmax(0, 50%);
+      }
       body.user-list-mode .reported-users-table .user-card-meta {
         flex: 1 0 100%;
         display: grid;
@@ -21989,7 +21992,7 @@
                   <span class="user-card-tag asset-tag">${row.reporters} reporters</span>
                   <span class="pill ${priorityPillClass}">${row.priority}</span>
                   <div class="user-card-meta">
-                    <div class="user-card-meta-item comment-text-meta"><span>Comment</span><strong>${row.commentExcerpt || row.name}</strong></div>
+                    <div class="user-card-meta-item comment-text-meta comment-field-meta"><span>Comment</span><strong>${row.commentExcerpt || row.name}</strong></div>
                     <div class="user-card-meta-item comment-text-meta"><span>Asset</span><strong>${row.assetId}${assetName ? ` · ${assetName}` : ""}</strong></div>
                     <div class="user-card-meta-item comment-text-meta report-reason-meta"><span>Report reason</span><strong>${reportReason}</strong></div>
                     <div class="user-card-meta-item"><span>Reported at</span><strong>${row.commentCreatedAt || "-"}</strong></div>
