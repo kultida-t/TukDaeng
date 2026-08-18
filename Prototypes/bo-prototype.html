@@ -9689,7 +9689,7 @@
         ],
         auditHistory: [
           { createdAt: "15 Jul 2026 11:10 GMT+7", actor: "System", action: "Report Received", note: "System รับ report แรกและเปิดเคส RCO-690", emailDelivery: { status: "not_required" } },
-          { createdAt: "15 Jul 2026 13:05 GMT+7", actor: "Somchai Admin", action: "Close no violation", note: "Admin ตรวจหลักฐานแล้วไม่พบการละเมิด ปิดรายงานโดยไม่เปลี่ยน FO visibility", emailDelivery: { status: "sent", channel: "Email" } }
+          { createdAt: "15 Jul 2026 13:05 GMT+7", actor: "Somchai Admin", action: "Close no violation", note: "Admin ตรวจหลักฐานแล้วไม่พบการละเมิด ปิดรายงานโดยไม่เปลี่ยน FO visibility", emailDelivery: { status: "not_required" } }
         ]
       }
     ];
@@ -21791,7 +21791,7 @@
 
     function getReportedCommentAuditEmailDelivery(row) {
       if (row.emailDelivery) return row.emailDelivery;
-      const emailActions = new Set(["Hide comment", "Remove comment", "Restore comment", "Close no violation", "Report Received"]);
+      const emailActions = new Set(["Hide comment", "Remove comment", "Restore comment", "Report Received"]);
       if (emailActions.has(row.action)) return { status: "sent", channel: "Email" };
       return { status: "not_required" };
     }
