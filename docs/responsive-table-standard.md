@@ -17,8 +17,9 @@
    โดยไม่ต้องเลื่อนแนวนอน และไม่ถูก clip ด้วย `overflow: hidden`
 3. **ความกว้างพอดีกรอบ** — การ์ดต้องกว้างพอดีกับ wrapper ของตาราง
    ไม่กว้างเกินจนถูกตัด
-4. **ข้อความยาวห่อบรรทัดได้** — ค่าที่ยาวต้องห่อบรรทัด (`white-space: normal`)
-   ไม่ใช่ตัดด้วย ellipsis จนมองเห็นไม่ครบ
+4. **ข้อความยาวตัดด้วย ellipsis ที่ 50% ของการ์ด** — ค่าทุกฟิลด์ในการ์ด mobile
+   ต้องตัดด้วย `text-overflow: ellipsis` ที่ความกว้างไม่เกิน 50% ของการ์ด
+   เพื่อให้สัดส่วนเท่ากันทุกฟิลด์ อ่านง่าย และไม่ครองพื้นที่เกินจำเป็น
 5. **action menu ใช้งานได้** — ปุ่ม/เมนูในการ์ดต้องคลิกได้บน mobile
 6. **specificity ต้องชนะ** — กฎ reset มือถือต้องมี specificity
    มากกว่าหรือเท่ากับกฎฐาน และอยู่หลังกฎฐานในไฟล์
@@ -253,7 +254,7 @@ body.asset-list-mode:not(.article-list-mode):not(.category-list-mode)
 }
 ```
 
-#### 4.2.7 meta items — แสดง label + value แบบ space-between
+#### 4.2.7 meta items — แสดง label + value แบบ grid 50% truncation
 
 ```css
 .asset-list-table .asset-list-card-meta {
@@ -286,9 +287,29 @@ body.asset-list-mode:not(.article-list-mode):not(.category-list-mode)
   font-weight: 400;
   min-width: 0;
   text-align: right;
-  /* ค่าสามารถห่อบรรทัดได้ — ไม่ใช่ ellipsis */
+}
+/* ทุกฟิลด์ใช้ comment-field-meta เพื่อจำกัด value ที่ 50% ของการ์ด + truncation */
+.asset-list-table .asset-list-card-meta .user-card-meta-item.comment-field-meta {
+  display: grid;
+  grid-template-columns: max-content minmax(0, 50%);
+  align-items: baseline;
+  gap: 8px;
+}
+.asset-list-table .asset-list-card-meta .user-card-meta-item.comment-field-meta strong {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  display: block;
+  overflow: hidden;
+  text-align: right;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 ```
+
+> **สำคัญ:** ทุกฟิลด์ meta ต้องมี class `comment-field-meta` เพื่อให้ value
+> ถูกจำกัดที่ 50% ของการ์ดและตัดด้วย ellipsis เมื่อข้อความยาวเกิน
+> ทำให้สัดส่วนเท่ากันทุกฟิลด์ อ่านง่าย และดู balanced
 
 ---
 
@@ -323,10 +344,12 @@ body.asset-list-mode:not(.article-list-mode):not(.category-list-mode)
 - [ ] cell-primary อยู่คอลัมน์ 1 แถว 1
 - [ ] action menu อยู่คอลัมน์ 2 แถว 1
 - [ ] tags + meta อยู่คอลัมน์ 1/-1 แถว 2
-- [ ] meta items ใช้ `justify-content: space-between`
-- [ ] meta value ใช้ `white-space: normal` (ห่อบรรทัดได้)
-- [ ] meta value ไม่ใช้ `overflow: hidden` + `text-overflow: ellipsis`
-- [ ] meta value ไม่จำกัด `max-width`
+- [ ] meta items ใช้ `justify-content: space-between` (default) หรือ `grid` (comment-field-meta)
+- [ ] meta value ใช้ `white-space: nowrap` + `text-overflow: ellipsis` (ตัด ...)
+- [ ] meta value ใช้ `overflow: hidden` เพื่อ clip ข้อความที่เกิน
+- [ ] meta value จำกัด `max-width` ที่ 50% ของการ์ดผ่าน `grid-template-columns: max-content minmax(0, 50%)`
+- [ ] ทุกฟิลด์ meta มี class `comment-field-meta` เพื่อสัดส่วนเท่ากัน
+- [ ] ทุกฟิลด์มีความกว้าง value เท่ากัน (วัดด้วย Playwright)
 
 ### 5.4 กฎที่ใช้ร่วมกัน (global)
 
@@ -342,8 +365,9 @@ body.asset-list-mode:not(.article-list-mode):not(.category-list-mode)
 - [ ] ทดสอบที่ `1280 × 800` (desktop)
 - [ ] วัด `rowBox.width` ต้องใกล้เคียง wrapper width
 - [ ] วัด `tableMinWidth` ต้องเป็น `0px` บน mobile
-- [ ] ตรวจ meta value ทุกตัวต้อง `white-space: normal`,
-      `overflow: visible`, `text-overflow: clip`, `max-width: none`
+- [ ] ตรวจ meta value ทุกตัวต้อง `white-space: nowrap`,
+      `overflow: hidden`, `text-overflow: ellipsis`
+- [ ] ตรวจ meta value ทุกฟิลด์มีความกว้างเท่ากัน (equal proportions)
 - [ ] ถ่าย screenshot การ์ดแรกเพื่อยืนยันสายตา
 
 ---
@@ -381,29 +405,35 @@ body.asset-list-mode:not(.article-list-mode):not(.category-list-mode)
 
 ### 6.3 global meta rule จำกัดความกว้าง
 
-**อาการ:** ค่าบางคอลัมน์ถูก ellipsis ทั้งที่การ์ดกว้างพอ
+**อาการ:** ค่าบางคอลัมน์ถูก ellipsis ทั้งที่การ์ดกว้างพอ หรือ
+สัดส่วนไม่เท่ากันระหว่างฟิลด์
 
 **สาเหตุ:** กฎ global เช่น `.report-reason-meta` จำกัด
 `grid-template-columns: max-content minmax(0, 56%)` และ
 `white-space: nowrap` + `text-overflow: ellipsis`
+ทำให้สัดส่วนไม่เท่ากับฟิลด์อื่น
 
 **แก้:** เพิ่ม scoped override ในตารางนั้น ๆ ห้ามแก้ global
-เพราะใช้ร่วมกันระหว่างหน้า
+เพราะใช้ร่วมกันระหว่างหน้า ใช้ class `comment-field-meta`
+เพื่อจำกัด value ที่ 50% ของการ์ด
 
 ```css
-/* scoped override เฉพาะตารางนี้ */
-.*-list-table .user-card-meta-item.report-reason-meta {
-  display: flex;
-  justify-content: space-between;
+/* scoped override เฉพาะตารางนี้ — ใช้ comment-field-meta */
+.*-list-table .user-card-meta-item.comment-field-meta {
+  display: grid;
+  grid-template-columns: max-content minmax(0, 50%);
+  align-items: baseline;
   gap: 8px;
 }
-.*-list-table .user-card-meta-item.report-reason-meta strong {
-  width: auto;
-  max-width: none;
-  white-space: normal;
-  overflow: visible;
-  text-overflow: clip;
-  overflow-wrap: anywhere;
+.*-list-table .user-card-meta-item.comment-field-meta strong {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  display: block;
+  overflow: hidden;
+  text-align: right;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 ```
 
@@ -543,10 +573,11 @@ try {
 | `rowGridTemplateColumns`  | `~231–239px 34px`                   |
 | `tableMinWidth`           | `0px`                               |
 | `metaParentBox.width`     | ~279–287px                          |
-| `strongStyles.whiteSpace` | `normal`                            |
-| `strongStyles.overflow`   | `visible`                           |
-| `strongStyles.textOverflow`| `clip`                             |
-| `strongStyles.maxWidth`   | `none`                              |
+| `strongStyles.whiteSpace` | `nowrap`                            |
+| `strongStyles.overflow`   | `hidden`                            |
+| `strongStyles.textOverflow`| `ellipsis`                         |
+| `strongStyles.maxWidth`   | `100%` (จำกัดโดย grid 50%)          |
+| ความกว้าง value ทุกฟิลด์   | เท่ากันทุกฟิลด์ (equal proportions) |
 
 #### 7.5 ทำความสะอาดหลังทดสอบ
 
@@ -582,7 +613,9 @@ git status --short  # ควรเห็นเฉพาะไฟล์ที่�
 1. **specificity สำคัญที่สุด** — กฎ reset มือถือต้อง specificity
    เท่ากับกฎฐาน ไม่ใช่แค่อยู่ใน media query
 2. **`overflow: visible` บนการ์ด** — ห้าม `hidden` ไม่งั้นค่าถูก clip
-3. **meta value ห่อบรรทัดได้, หัวข้อการ์ด ellipsis ได้** — ต่างกัน
+3. **meta value ตัด ... ที่ 50%, หัวข้อการ์ด ellipsis ได้** —
+   ทุกฟิลด์ meta ใช้ class `comment-field-meta` จำกัด value ที่ 50%
+   ของการ์ด ตัดด้วย ellipsis เมื่อยาวเกิน สัดส่วนเท่ากันทุกฟิลด์
 4. **scoped override ไม่ใช่ global edit** — ห้ามแก้ global rule
    ที่ใช้ร่วมกันระหว่างหน้า
 5. **ทดสอบด้วยค่าจริง** — ใช้ Playwright วัด bounding box และ

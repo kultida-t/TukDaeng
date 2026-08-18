@@ -8724,6 +8724,22 @@
         min-width: 0;
         text-align: right;
       }
+      body.asset-list-mode:not(.article-list-mode):not(.category-list-mode):not(.reported-board-mode) .asset-list-table .asset-list-card-meta .user-card-meta-item.comment-field-meta {
+        display: grid;
+        grid-template-columns: max-content minmax(0, 50%);
+        align-items: baseline;
+        gap: 8px;
+      }
+      body.asset-list-mode:not(.article-list-mode):not(.category-list-mode):not(.reported-board-mode) .asset-list-table .asset-list-card-meta .user-card-meta-item.comment-field-meta strong {
+        width: 100%;
+        max-width: 100%;
+        min-width: 0;
+        display: block;
+        overflow: hidden;
+        text-align: right;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
       body.user-list-mode .reported-assets-table .user-card-meta {
         flex: 1 0 100%;
         display: grid;
@@ -8835,7 +8851,20 @@
         white-space: nowrap;
       }
       body.user-list-mode .reported-comment-table .user-card-meta-item.comment-field-meta {
+        display: grid;
         grid-template-columns: max-content minmax(0, 50%);
+        align-items: baseline;
+        gap: 8px;
+      }
+      body.user-list-mode .reported-comment-table .user-card-meta-item.comment-field-meta strong {
+        width: 100%;
+        max-width: 100%;
+        min-width: 0;
+        display: block;
+        overflow: hidden;
+        text-align: right;
+        text-overflow: ellipsis;
+        white-space: nowrap;
       }
       body.user-list-mode .reported-users-table .user-card-meta {
         flex: 1 0 100%;
@@ -22011,7 +22040,7 @@
                     <div class="user-card-meta-item comment-text-meta comment-field-meta"><span>Comment</span><strong>${row.commentExcerpt || row.name}</strong></div>
                     <div class="user-card-meta-item comment-text-meta comment-field-meta"><span>Asset</span><strong>${row.assetId}${assetName ? ` · ${assetName}` : ""}</strong></div>
                     <div class="user-card-meta-item comment-text-meta report-reason-meta comment-field-meta"><span>Report reason</span><strong>${reportReason}</strong></div>
-                    <div class="user-card-meta-item"><span>Reported at</span><strong>${row.commentCreatedAt || "-"}</strong></div>
+                    <div class="user-card-meta-item comment-field-meta"><span>Reported at</span><strong>${row.commentCreatedAt || "-"}</strong></div>
                   </div>
                 </div>
                 <div data-label="Comment" data-comment-full="${(row.commentExcerpt || row.name || "").replace(/"/g, '&quot;')}"><div class="main-text">${row.commentExcerpt || row.name}</div></div>
@@ -22694,7 +22723,7 @@
                   <div class="user-card-meta">
                     <div class="user-card-meta-item comment-field-meta"><span>Asset</span><strong>${asset.name}</strong></div>
                     <div class="user-card-meta-item report-reason-meta comment-field-meta"><span>Report reason</span><strong>${reason}</strong></div>
-                    <div class="user-card-meta-item"><span>Reported at</span><strong>${reportedAt}</strong></div>
+                    <div class="user-card-meta-item comment-field-meta"><span>Reported at</span><strong>${reportedAt}</strong></div>
                   </div>
                 </div>
                 <div data-label="Asset"><div class="main-text">${asset.name}</div></div>
@@ -22754,9 +22783,9 @@
                 <span class="user-card-tag asset-tag">${getAssetBrand(row)}</span>
                 ${renderAssetListStatusDisplay(row)}
                 <div class="user-card-meta asset-list-card-meta">
-                  <div class="user-card-meta-item"><span>Asset</span><strong>${row.name}</strong></div>
-                  <div class="user-card-meta-item"><span>Owner</span><strong>${row.owner}</strong></div>
-                  <div class="user-card-meta-item"><span>Created At</span><strong>${row.createdAt || "-"}</strong></div>
+                  <div class="user-card-meta-item comment-field-meta"><span>Asset</span><strong>${row.name}</strong></div>
+                  <div class="user-card-meta-item comment-field-meta"><span>Owner</span><strong>${row.owner}</strong></div>
+                  <div class="user-card-meta-item comment-field-meta"><span>Created At</span><strong>${row.createdAt || "-"}</strong></div>
                 </div>
               </div>
               <div data-label="Brand"><div class="main-text">${getAssetBrand(row)}</div></div>
