@@ -4442,6 +4442,33 @@
       justify-self: stretch;
       width: 100%;
     }
+    .user-row.reported-comment-row:not(.head) > div[data-label="Comment"] .main-text {
+      max-width: 100%;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .comment-hover-tooltip {
+      position: fixed;
+      z-index: 9999;
+      max-width: 360px;
+      padding: 10px 14px;
+      border: 1px solid #d4deec;
+      border-radius: 8px;
+      background: #ffffff;
+      box-shadow: 0 8px 24px rgba(15, 23, 42, .18);
+      color: #233a5c;
+      font-size: 13px;
+      font-weight: 400;
+      line-height: 1.5;
+      overflow-wrap: anywhere;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity .12s ease;
+    }
+    .comment-hover-tooltip.is-visible {
+      opacity: 1;
+    }
     .user-row:last-child { border-bottom: 0; }
     .user-row.head {
       min-height: 44px;
@@ -21709,7 +21736,7 @@
                     <div class="user-card-meta-item"><span>Reported at</span><strong>${row.commentCreatedAt || "-"}</strong></div>
                   </div>
                 </div>
-                <div data-label="Comment"><div class="main-text">${row.commentExcerpt || row.name}</div></div>
+                <div data-label="Comment" data-comment-full="${(row.commentExcerpt || row.name || "").replace(/"/g, '&quot;')}"><div class="main-text">${row.commentExcerpt || row.name}</div></div>
                 <div data-label="Asset"><div class="main-text">${row.assetId}</div><div class="muted">${assetName}</div></div>
                 <div data-label="Status"><span class="pill ${statusPillClass}">${row.status}</span></div>
                 <div data-label="Reason"><div class="main-text">${reportReason}</div></div>
@@ -23041,6 +23068,51 @@
         if (menu !== exceptMenu) menu.open = false;
       });
     }
+
+    let commentHoverTooltipEl = null;
+    let commentHoverHideTimer = null;
+    function ensureCommentHoverTooltip() {
+      if (!commentHoverTooltipEl) {
+        commentHoverTooltipEl = document.createElement("div");
+        commentHoverTooltipEl.className = "comment-hover-tooltip";
+        commentHoverTooltipEl.setAttribute("role", "tooltip");
+        document.body.appendChild(commentHoverTooltipEl);
+      }
+      return commentHoverTooltipEl;
+    }
+    function showCommentHoverTooltip(cell) {
+      const fullText = cell.getAttribute("data-comment-full");
+      if (!fullText) return;
+      const tooltip = ensureCommentHoverTooltip();
+      tooltip.textContent = fullText;
+      tooltip.classList.add("is-visible");
+      const rect = cell.getBoundingClientRect();
+      const tooltipRect = tooltip.getBoundingClientRect();
+      let top = rect.bottom + 8;
+      let left = rect.left;
+      if (left + tooltipRect.width > window.innerWidth - 12) {
+        left = Math.max(12, window.innerWidth - tooltipRect.width - 12);
+      }
+      if (top + tooltipRect.height > window.innerHeight - 12) {
+        top = Math.max(12, rect.top - tooltipRect.height - 8);
+      }
+      tooltip.style.top = `${top}px`;
+      tooltip.style.left = `${left}px`;
+    }
+    function hideCommentHoverTooltip() {
+      if (commentHoverTooltipEl) commentHoverTooltipEl.classList.remove("is-visible");
+    }
+    document.addEventListener("mouseover", event => {
+      const cell = event.target.closest(".reported-comment-table .user-row.reported-comment-row:not(.head) > div[data-label='Comment'][data-comment-full]");
+      if (!cell) return;
+      clearTimeout(commentHoverHideTimer);
+      showCommentHoverTooltip(cell);
+    });
+    document.addEventListener("mouseout", event => {
+      const cell = event.target.closest(".reported-comment-table .user-row.reported-comment-row:not(.head) > div[data-label='Comment'][data-comment-full]");
+      if (!cell) return;
+      commentHoverHideTimer = setTimeout(hideCommentHoverTooltip, 120);
+    });
 
     document.addEventListener("click", event => {
       const rowMenu = event.target.closest(".row-menu");
