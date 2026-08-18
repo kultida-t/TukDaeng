@@ -24427,6 +24427,8 @@
       if (reportedCommentOpenButton) {
         const reportCase = reportedCommentCases.find(row => row.id === reportedCommentOpenButton.dataset.reportedCommentOpen);
         if (reportCase) {
+          clearTimeout(commentHoverHideTimer);
+          hideCommentHoverTooltip();
           activeRow = reportCase;
           reporterHistoryPage = 1;
           reportAuditHistoryPage = 1;
@@ -24440,6 +24442,8 @@
       if (reportedCommentCard && !event.target.closest(".row-menu, button, a, input, select, [data-custom-select]")) {
         const reportCase = reportedCommentCases.find(row => row.id === reportedCommentCard.dataset.reportedCommentCard);
         if (reportCase) {
+          clearTimeout(commentHoverHideTimer);
+          hideCommentHoverTooltip();
           activeRow = reportCase;
           reporterHistoryPage = 1;
           reportAuditHistoryPage = 1;
