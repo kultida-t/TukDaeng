@@ -1,6 +1,6 @@
 # 17 BO Option Master Module
 
-**เวอร์ชัน:** `BO-17-v0.5`
+**เวอร์ชัน:** `BO-17-v0.6`
 **วันที่:** 2026-08-19
 **สถานะ:** สเปกปัจจุบัน
 **แพลตฟอร์ม:** Responsive Web Back Office
@@ -168,7 +168,7 @@ Header:
 - Page title: `<group>` เช่น `condition`
 - Back button: `Back to Option Groups`
 - Panel title: `<group> -- Options (<option count>)`
-- Page action หลัก: ปุ่ม `Add Option` (เฉพาะ admin ที่มี write permission)
+- Page action หลัก: ปุ่ม `Add Option` และปุ่ม `Reorder` (เฉพาะ admin ที่มี write permission; ปุ่ม `Reorder` แสดงเฉพาะเมื่อมี active option ≥2 ในกลุ่ม)
 
 Group summary section:
 
@@ -239,7 +239,7 @@ Filter:
 | Label (EN) | Editable | trim whitespace; ห้ามว่าง; ไม่เกินความยาวที่ระบบกำหนด |
 | Label (TH) | Editable | trim whitespace; ห้ามว่าง; ไม่เกินความยาวที่ระบบกำหนด |
 | Description (EN) | Editable | trim whitespace; ไม่เกินความยาวที่ระบบกำหนด |
-| Sort Order | Editable | ตัวเลขจำนวนเต็ม |
+| Sort Order | Editable | ตัวเลขจำนวนเต็ม; สำหรับการปรับลำดับรายตัว — การ reorder แบบกลุ่มใช้ Reorder Modal ตาม section 12.1 |
 | Is Active | Editable | toggle ระหว่าง Active/Inactive |
 
 กฎ:
@@ -337,15 +337,47 @@ Confirmation modal ต้องแสดง:
 
 ## 12. Reorder Option
 
-Reorder ทำผ่านการแก้ sort_order ใน Edit Option หรือผ่าน controls เฉพาะถ้า prototype รองรับ
+Reorder ทำได้ 2 วิธี ตาม UX ที่ตัดสินใจใน BO-OPT-004:
 
-กฎ:
+1. **Reorder Modal (หลัก)** — เปิดจากปุ่ม `Reorder` ใน Option Detail ใช้ drag-and-drop บน desktop และ up/down arrow buttons บน touch device
+2. **Edit Option Modal (รอง)** — แก้ sort_order ของ option เดียวผ่าน Edit Option modal ตาม section 9
+
+### 12.1 Reorder Modal (Drag-and-drop)
+
+เปิดจากปุ่ม `Reorder` ใน Option Detail (แสดงเฉพาะ admin ที่มี write permission)
+
+ใช้ modal ตาม prototype pattern ของ Category Display Order ใน `bo-prototype.html` (Content Management) เพื่อรักษาความสอดคล้องของ BO prototype
+
+โครงสร้าง Reorder Modal:
+
+- Header: `จัดเรียง Option ใน <group>` พร้อมคำอธิบาย `ลากเพื่อปรับลำดับการแสดงผลใน FO form/filter`
+- List ของ active option ใน group เรียงตาม sort_order ปัจจุบัน
+- แต่ละ row แสดง: drag handle, option key + label, index (#1, #2, ...)
+- Desktop: ใช้ HTML5 drag-and-drop (เหมือน Category Order pattern)
+- Touch device: แสดง up/down arrow buttons ที่แต่ละ row เป็น fallback เพราะ HTML5 drag-and-drop ไม่รองรับ touch
+- ปุ่ม `Cancel` และ `บันทึกลำดับ`
+
+กฎการทำงาน:
+
+- แสดงเฉพาะ active option เท่านั้น (inactive option ไม่เข้าร่วม reorder)
+- ลำดับใหม่มีผลต่อ FO form/filter ทันทีเมื่อ FO อ่าน option master ล่าสุด
+- หลัง save ระบบคำนวณ sort_order ใหม่แบบ sequential (10, 20, 30, ...) ตามลำดับใน modal
+- บันทึก audit `OPTION_REORDER` ครั้งเดียวต่อการ save พร้อม before/after sort_order ของทุก option ที่เปลี่ยนลำดับ
+- ถ้า admin ไม่ได้เปลี่ยนลำดับเลยและกด save ไม่ต้องบันทึก audit
+
+### 12.2 Edit Option Modal (รอง)
+
+- Admin สามารถแก้ sort_order ของ option เดียวผ่าน Edit Option modal ตาม section 9
+- เหมาะสำหรับการปรับลำดับแบบ precise หรือกรณีแก้ option เดียวพร้อม label
+- บันทึก audit `OPTION_EDIT` (ไม่ใช่ `OPTION_REORDER` เพราะเป็นการแก้ field เดียวใน Edit modal)
+
+### 12.3 กฎทั่วไป
 
 - sort_order เป็นตัวเลขจำนวนเต็มที่กำหนดลำดับการแสดงผลใน FO form/filter
 - ค่าน้อยกว่าแสดงก่อน
 - ถ้าสอง option มี sort_order เท่ากัน ระบบต้อง tie-break ด้วย key ตามตัวอักษร
-- การเปลี่ยน sort_order ต้องบันทึก audit `OPTION_REORDER` (หรือ `OPTION_EDIT` ถ้าทาง Edit Option modal)
 - FO ต้องอ่าน sort_order ล่าสุดเมื่อ render form/filter
+- การ reorder ไม่กระทบ existing assets เพราะ asset เก็บ relation id ไม่ใช่ sort_order
 
 ## 13. Action Rules Summary
 
@@ -354,7 +386,8 @@ Reorder ทำผ่านการแก้ sort_order ใน Edit Option ห�
 | Add option | Key ไม่ซ้ำใน group | Yes | No | `OPTION_ADD` | แสดงใน FO form/filter ใหม่ |
 | Edit label/description | Option มีอยู่ | Yes | No | `OPTION_EDIT` | แสดง label ใหม่ใน FO form/filter; existing assets ยังเก็บ snapshot เดิม |
 | Edit key | Option ยังไม่ถูกใช้ใน asset | Yes | No | `OPTION_EDIT` | ไม่มีผลต่อ existing assets |
-| Edit sort_order | Option มีอยู่ | Yes | No | `OPTION_REORDER` | ลำดับ FO form/filter เปลี่ยน |
+| Reorder (drag-and-drop) | มี active option ≥2 ในกลุ่ม | Yes (save ใน Reorder Modal) | No | `OPTION_REORDER` | ลำดับ FO form/filter เปลี่ยน |
+| Edit sort_order (via Edit Option) | Option มีอยู่ | Yes | No | `OPTION_EDIT` | ลำดับ FO form/filter เปลี่ยน |
 | Deactivate option | Option active; ผ่าน System Option Deactivate Policy (section 10.1) — system option ในกลุ่ม `condition` ล็อก, กลุ่มอื่นต้องมี ≥1 active option เหลือ | Yes | Yes | `OPTION_DEACTIVATE` | ไม่แสดงใน FO form/filter/Watch Alert ใหม่; existing assets ยังแสดงค่าเดิม |
 | Reactivate option | Option inactive | Yes | No | `OPTION_REACTIVATE` | กลับมาแสดงใน FO form/filter/Watch Alert |
 | Delete option | Not available | - | - | - | ไม่รองรับใน Phase 1 |
@@ -402,7 +435,7 @@ Audit action types:
 | `OPTION_EDIT` | แก้ label, description, key (ถ้ายังไม่ถูกใช้), is_active ผ่าน Edit modal | Before/After: field ที่เปลี่ยน |
 | `OPTION_DEACTIVATE` | Deactivate option | Before: active; After: inactive + reason |
 | `OPTION_REACTIVATE` | Reactivate option | Before: inactive; After: active |
-| `OPTION_REORDER` | เปลี่ยน sort_order | Before/After: sort_order เดิม/ใหม่ |
+| `OPTION_REORDER` | เปลี่ยน sort_order ผ่าน Reorder Modal (drag-and-drop หรือ up/down) | Before/After: sort_order เดิม/ใหม่ ของทุก option ที่เปลี่ยนลำดับในการ save ครั้งนั้น |
 
 Minimum audit fields ตาม `00_GLOBAL_RULES_MODULE.md`:
 
@@ -779,6 +812,9 @@ Visual rules:
 - [ ] System option policy ระบุชัด
 - [ ] System Option Deactivate Policy (section 10.1) ระบุชัด: กลุ่ม `condition` ล็อก, กลุ่มอื่นอนุญาตพร้อม reason + safeguard (≥1 active option เหลือในกลุ่ม)
 - [ ] ปุ่ม Deactivate ในกลุ่ม `condition` (system option) disabled พร้อม tooltip อธิบายเหตุผล
+- [ ] Reorder UX ระบุชัด: Reorder Modal (drag-and-drop + up/down fallback) เป็นวิธีหลัก, Edit Option modal เป็นวิธีรอง
+- [ ] Reorder Modal ใช้ pattern เดียวกับ Category Display Order ใน prototype
+- [ ] Touch device มี up/down arrow buttons เป็น fallback สำหรับ drag-and-drop
 - [ ] Integration กับ module อื่น ระบุชัด
 - [ ] Empty/Loading/Error states ครบ
 - [ ] Responsive layout ตาม `00_GLOBAL_RULES_MODULE.md`
@@ -798,7 +834,7 @@ Visual rules:
 | BO-OPT-001 ✅ | Option Master phase | **ยืนยัน Phase 1** (Product confirmed 2026-08-19) — เป็น foundational operational data ที่ FO ต้องใช้ตั้งแต่ launch (Add/Edit Asset, Search Filter, Watch Alert); มี seed data พร้อม 6 groups; scope จำกัดเหมาะ Phase 1 (ไม่มี bulk import/export, ไม่สร้าง group ใหม่, ไม่เชื่อม provider sync); baseline/index ระบุ Phase 1 อยู่แล้วและสอดคล้องกับผลตัดสินใจ |
 | BO-OPT-002 | Prototype screen | ยังไม่มี prototype สำหรับ Option Master; ควรสร้าง prototype และเทียบกับเอกสารนี้ก่อน implementation handoff |
 | BO-OPT-003 ✅ | System option deactivate policy | **ตัดสินใจ: Tiered Deactivation Control** (2026-08-19) — กลุ่ม `condition` (required field สำหรับ Sale status) ล็อกไม่ให้ deactivate system option ผ่าน BO UI ต้องแก้ seed file + migration; กลุ่ม optional อื่น (`delivery`, `case_material`, `movement`, `dial_color`, `strap_bracelet_type`) อนุญาตพร้อม reason + safeguard (≥1 active option เหลือในกลุ่ม); custom option ทุกกลุ่ม deactivate ได้ปกติพร้อม reason + safeguard; รายละเอียดใน section 10.1 |
-| BO-OPT-004 | Reorder UI | ปัจจุบัน reorder ทาง Edit Option modal; อาจเพิ่ม drag-and-drop ใน prototype ถ้าต้องการ UX ที่สะดวกกว่า |
+| BO-OPT-004 ✅ | Reorder UI | **ตัดสินใจ: Drag-and-drop in Reorder Modal + Up/Down Fallback** (2026-08-19) — ใช้ Reorder Modal เป็นวิธีหลัก (drag-and-drop บน desktop + up/down arrow buttons บน touch device) ตาม pattern ของ Category Display Order ใน prototype เพื่อความสอดคล้อง; Edit Option modal ยังคงเป็นวิธีรองสำหรับแก้ sort_order รายตัว; บันทึก audit `OPTION_REORDER` ครั้งเดียวต่อการ save ใน Reorder Modal; รายละเอียดใน section 12 |
 
 ## 22. FO Integration Guidelines
 
