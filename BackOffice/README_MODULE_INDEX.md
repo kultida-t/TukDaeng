@@ -73,6 +73,7 @@ Codex ต้องทำ 3 อย่าง:
 | 14 | `14_NOTIFICATIONS_MODULE.md` | Broadcast notification และ system trigger templates/logs | 2 |
 | 15 | `15_REPORTS_ANALYTICS_MODULE.md` | Exportable reports across user, asset, offer, chat, content, asset reported comments, search, watch alert, support, notifications, account deletion | 2 |
 | 16 | `16_ADMIN_SETTINGS_MODULE.md` | Admin own settings, admin account lifecycle, Admin Permission config, security/system settings, retention/export policy | 3 |
+| 17 | `17_OPTION_MASTER_MODULE.md` | Internal option master management for FO Add/Edit Asset, Search Filter, Watch Alert criteria; option group list/detail, add/edit/deactivate/reactivate/reorder, audit | 1 |
 
 ## Final Handoff
 
@@ -91,6 +92,7 @@ Phase 1 ต้องส่งมอบ BO foundation ที่ใช้งาน
 - Asset Management
 - Content / Board Management
 - Market Data
+- Option Master
 - Audit Log
 
 Phase 1 ยังไม่รวม real-time admin-user chat, AI moderation, external CRM integration หรือ payment operations
