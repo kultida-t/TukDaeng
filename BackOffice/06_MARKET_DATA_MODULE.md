@@ -520,7 +520,7 @@ Market Data boundary สำหรับ FO Add/Edit Asset:
 - เมื่อ Owner เลือก Reference ที่มีใน Market Data ระบบสามารถ prefill spec จาก provider ได้ แต่ Owner ต้องแก้ไขได้ และค่าที่ Owner save ต้องไม่ถูก provider sync overwrite
 - Asset ต้องเก็บ relation id ไป Market Data เมื่อเลือก option ที่ match ได้ และต้องเก็บ snapshot text ของ Brand / Model / Reference ไว้กับ Asset เพื่อคง display history
 - ถ้า Owner กรอก free-text ที่ยังไม่มีใน Market Data ให้ asset relation เป็น `null` และเก็บ snapshot text ได้ โดยไม่สร้าง Brand / Model / Reference ใหม่ใน BO Market Data Phase 1
-- Internal option master เช่น condition, delivery item, case material, movement, dial color และ strap/bracelet type เป็น option สำหรับ Asset form/search filter ไม่ใช่ provider catalog ที่ BO Market Data แก้ไขได้ใน Phase 1
+- Internal option master เช่น condition, delivery item, case material, movement, dial color และ strap/bracelet type เป็น option สำหรับ Asset form/search filter ไม่ใช่ provider catalog ที่ BO Market Data แก้ไขได้ใน Phase 1; จัดการโดย Admin ผ่าน `17_OPTION_MASTER_MODULE.md` section 22 (FO Integration Guidelines) ซึ่งกำหนด prefill behavior, mapping rule ระหว่าง provider text และ `spec_options` และ fallback behavior เมื่อ option ถูก deactivate
 
 Inactive หรือ unmapped market data:
 

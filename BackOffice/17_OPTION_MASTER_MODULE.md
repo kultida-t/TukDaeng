@@ -1,6 +1,6 @@
 # 17 BO Option Master Module
 
-**เวอร์ชัน:** `BO-17-v0.2`
+**เวอร์ชัน:** `BO-17-v0.3`
 **วันที่:** 2026-08-19
 **สถานะ:** สเปกปัจจุบัน
 **แพลตฟอร์ม:** Responsive Web Back Office
@@ -747,3 +747,255 @@ Visual rules:
 | BO-OPT-002 | Prototype screen | ยังไม่มี prototype สำหรับ Option Master; ควรสร้าง prototype และเทียบกับเอกสารนี้ก่อน implementation handoff |
 | BO-OPT-003 | System option deactivate policy | ปัจจุบันอนุญาตให้ deactivate system option ได้ถ้ามี reason ชัดเจน; อาจต้องกำหนดให้ system option บางประเภท lock ไม่ให้ deactivate เลย ถ้ากระทบ FO form หลัก |
 | BO-OPT-004 | Reorder UI | ปัจจุบัน reorder ทาง Edit Option modal; อาจเพิ่ม drag-and-drop ใน prototype ถ้าต้องการ UX ที่สะดวกกว่า |
+
+## 22. FO Integration Guidelines
+
+ส่วนนี้กำหนดแนวทางการ integrate Option Master กับ Front Office อย่างละเอียด ครอบคลุม Add/Edit Asset, Search Filter, Watch Alert, caching, fallback behavior, API contract และ interaction กับ Market Data
+
+อ้างอิง:
+- `../FrontOffice/04_ASSET_MANAGEMENT_MODULE.md` section 10 (Market Data Mapping And User-entered Specification Rule), Required Field Matrix, Add / Edit Field Validation Matrix
+- `../FrontOffice/03_SEARCH_FILTER_MODULE.md` Filter Fields, Filter Visibility Rule, Filter Dependency Rule
+- `../FrontOffice/10_WATCH_ALERT_MODULE.md` Filter Logic Rule, Match Rule, Validation Rules
+- `06_MARKET_DATA_MODULE.md` section 15 (FO Usage Rules)
+
+### 22.1 หลักการทั่วไป
+
+- Option Master เป็น single source of truth ของ `spec_options` domain ที่ FO ใช้ในทุก surface ที่เกี่ยวข้องกับ option ของ condition, delivery, case_material, movement, dial_color และ strap_bracelet_type
+- FO ต้องอ่าน option จาก API ที่อ้างอิง `spec_options` ใน database ไม่ hardcode option list ใน FO client
+- การเปลี่ยนแปลง option master ใน BO ต้องสะท้อนผลใกล้เคียงทันทีเท่าที่ทำได้ โดยคำนึงถึง caching strategy ใน section 22.5
+- Option ที่ deactivate ต้องไม่กระทบ existing assets และต้องคง referential integrity ตาม section 17.4 และ section 17.10
+
+### 22.2 FO Add/Edit Asset Form
+
+วิธีดึง option ไปใช้ใน FO Add/Edit Asset form:
+
+| Group | Control | Required | Rule |
+| --- | --- | --- | --- |
+| `condition` | Single select | Required เมื่อ status = `Sale`; Optional เมื่อ status = `Show`/`Hide` | แสดงเฉพาะ active option; เรียงตาม `sort_order` |
+| `delivery` | Multi-select | Optional | แสดงเฉพาะ active option ใน group `delivery`; เลือกได้หลายค่า; ถ้าไม่เลือกเลยต้องไม่บันทึก `asset_delivery_items` row |
+| `case_material` | Single select | Optional | แสดงเฉพาะ active option; เรียงตาม `sort_order` |
+| `movement` | Single select | Optional | แสดงเฉพาะ active option; เรียงตาม `sort_order` |
+| `dial_color` | Single select | Optional | แสดงเฉพาะ active option; เรียงตาม `sort_order` |
+| `strap_bracelet_type` | Single select | Optional | แสดงเฉพาะ active option; เรียงตาม `sort_order` |
+
+กฎการแสดงผล:
+
+- แสดงเฉพาะ option ที่ `is_active=true` เท่านั้น
+- แสดง label ตามภาษาที่ FO ใช้ (`label_th` หรือ `label_en` ตาม FO language mode)
+- เรียงลำดับตาม `sort_order` จากน้อยไปมาก; tie-break ด้วย `option_key` ตามตัวอักษร
+- Optional field สามารถเว้นว่างได้ (ไม่เลือก) และต้องบันทึกเป็น `null` ตาม Add / Edit Field Validation Matrix
+- Required field (เช่น `condition` เมื่อ status = `Sale`) ต้องเลือกค่าหนึ่ง และต้อง validate ก่อน save
+- `delivery` เป็น multi-select ตาม `allows_multi_select=true` ของ group; FO ต้องบันทึกเป็นหลาย `asset_delivery_items` row โดยแต่ละ row อ้างอิง `option_id` ใน group `delivery` เท่านั้น
+
+กฎการบันทึก:
+
+- FO บันทึก relation id (`condition_id`, `case_material_id`, `movement_id`, `dial_color_id`, `strap_bracelet_type_id`) ลง `watch_assets`
+- FO บันทึก snapshot text (`condition_snapshot`, `case_material_snapshot`, ฯลฯ) คู่กับ relation id เพื่อคง display history ตาม section 17.4
+- ถ้า Owner เว้นว่าง field ที่ optional ให้บันทึก relation id เป็น `null` และ snapshot text เป็น `null`/empty
+- ค่าที่ Owner save ต้องไม่ถูก provider sync overwrite ตาม `06_MARKET_DATA_MODULE.md` section 15
+
+### 22.3 FO Search Filter
+
+วิธีดึง option ไปใช้ใน FO Search Filter:
+
+| Group | Filter Control | Rule |
+| --- | --- | --- |
+| `condition` | Single-select filter | แสดงเฉพาะ active option ที่มี asset ใช้จริง |
+| `delivery` | Multi-select filter | แสดงเฉพาะ active option ที่มี asset ใช้จริง |
+| `case_material` | Single-select หรือ multi-select filter | แสดงเฉพาะ active option ที่มี asset ใช้จริง |
+| `movement` | Single-select หรือ multi-select filter | แสดงเฉพาะ active option ที่มี asset ใช้จริง |
+| `dial_color` | Single-select หรือ multi-select filter | แสดงเฉพาะ active option ที่มี asset ใช้จริง |
+| `strap_bracelet_type` | Single-select หรือ multi-select filter | แสดงเฉพาะ active option ที่มี asset ใช้จริง |
+
+กฎการแสดงผล:
+
+- แสดงเฉพาะ option ที่ `is_active=true`
+- ใช้ Filter Visibility Rule ของ `03_SEARCH_FILTER_MODULE.md`: แสดงเฉพาะ option ที่มี asset อยู่จริงในระบบตาม visibility ของ Search (ไม่แสดง option ที่ทำให้เกิดผลลัพธ์ว่าง)
+- ใช้ Filter Dependency Rule: Brand → Model เป็น dependent filter; option filter ไม่ dependent กับ Brand/Model แต่ทำงานร่วมกันแบบ AND Logic ตาม Multiple Filter Rule
+- รองรับ multi-select filter สำหรับ group ที่ `allows_multi_select=true` และสามารถขยายเป็น multi-select สำหรับ group อื่นถ้า implementation กำหนด
+- เรียงตาม `sort_order` เช่นเดียวกับ Add/Edit Asset form
+- Filter option ต้องอ่านจาก internal option master เดียวกับ Add/Edit Asset ตาม `03_SEARCH_FILTER_MODULE.md` Filter data source rule
+
+กฎการ match:
+
+- Search/Filter ต้องอิงค่าที่ถูก save กับ Asset จริง (relation id และ snapshot text) ไม่ใช่ option master active status
+- Asset ที่มี inactive option ยังปรากฏในผลลัพธ์ถ้าตรงเงื่อนไขอื่น แต่ inactive option ไม่แสดงเป็นตัวเลือก filter ใหม่
+- ถ้า asset ใช้ free-text spec ที่ไม่มี relation id ต้องยังค้นหา keyword จาก snapshot text ได้
+
+### 22.4 FO Watch Alert Criteria
+
+วิธีดึง option ไปใช้ใน FO Watch Alert criteria:
+
+- Watch Alert criteria ใช้ schema เดียวกับ Search Filter ตาม `10_WATCH_ALERT_MODULE.md` Filter Logic Rule และ Validation Rules
+- แสดงเฉพาะ option ที่ `is_active=true` เป็น criteria ใหม่
+- Watch Alert ใช้ filter logic เดียวกับ Search Module รวม dependent filter และ AND Logic
+- Watch Alert match เฉพาะ Asset สถานะ `Sale` ตาม Match Rule; option criteria ทำงานร่วมกับเงื่อนไขอื่นใน criteria
+
+กฎสำหรับ Watch Alert เดิมที่อ้างถึง option ที่ถูก deactivate ภายหลัง:
+
+- ต้องเก็บ criteria history ได้ ไม่ลบ criteria ที่อ้างถึง inactive option
+- ต้องแสดง warning ใน Watch Alert List / Edit Watch Alert ว่า criteria อ้างถึง option ที่ inactive แล้ว
+- ไม่ควร trigger match ใหม่ถ้า criteria อ้าง option ที่ inactive ตาม policy ใน `06_MARKET_DATA_MODULE.md` section 15 (Inactive หรือ unmapped market data)
+- Watch Alert เดิมที่อ้าง inactive option ต้องไม่ถูกลบโดยอัตโนมัติ เพราะ User อาจต้องการแก้ไข criteria หรือลบด้วยตัวเอง
+
+### 22.5 Caching Strategy สำหรับ FO
+
+FO client ต้อง cache option list เพื่อลด API call และรองรับ offline/fallback scenario:
+
+| ด้าน | กฎ |
+| --- | --- |
+| Cache storage | FO client cache option list ใน memory และ/หรือ local storage |
+| Cache key | `option_master_version` (seed version เช่น `asset-spec-options-v1`) หรือ `last_updated` timestamp ของ option master |
+| Cache TTL | ค่าเริ่มต้น 24 ชม. หรือตาม policy ที่ Product กำหนด; สามารถ override ได้ตอน implementation handoff |
+| Refresh trigger | เมื่อ cache expire, เมื่อ FO app เปิดใหม่, หรือเมื่อ FO รับ push notification สำหรับ option master invalidation (ถ้ามี) |
+| Fallback | ถ้า API ไม่พร้อม ใช้ cache เดิมที่มีอยู่ และแสดง indicator ว่ากำลังใช้ข้อมูล cache ถ้าจำเป็น |
+| Validation | FO ต้อง validate active status ของ option ใน cache ก่อนแสดงใน form/filter ใหม่ เพราะ cache อาจเก่ากว่า database |
+
+กฎเพิ่มเติม:
+
+- Cache invalidation สามารถทำได้สองระดับ: (1) TTL-based แบบ passive และ (2) push-based แบบ active ถ้าระบบมี push notification infrastructure
+- ถ้าใช้ push-based invalidation, BO action ที่เปลี่ยน option master ต้อง trigger event ไปยัง FO client เพื่อ refresh cache
+- รายละเอียด cache invalidation/API timing ให้สรุปอีกครั้งตอนออกแบบ backend ตาม section 14 กฎการ sync
+- Cache version ต้องตรงกับ seed version ใน `asset-spec-options.json` เพื่อให้ trace ได้ว่า FO ใช้ option master version ใด
+
+### 22.6 Fallback Behavior เมื่อ Option ถูก Deactivate
+
+| FO/BO Surface | พฤติกรรมเมื่อ option ถูก deactivate |
+| --- | --- |
+| FO Add Asset form | ไม่แสดง option ที่ deactivate ใน dropdown |
+| FO Edit Asset form (asset เดิมที่ใช้ option ที่ deactivate) | ยังแสดง label เดิมได้ เพราะ lookup จาก `spec_options` โดยไม่กรอง `is_active`; Owner สามารถเปลี่ยนเป็น option active อื่นได้ แต่ถ้าเลือกใหม่ต้องเป็น active option เท่านั้น |
+| FO Asset Detail display | ยังแสดง label เดิมได้ เพราะ lookup จาก `spec_options` โดยไม่กรอง `is_active` หรืออ่านจาก snapshot text |
+| FO Search Filter | ไม่แสดง option ที่ deactivate เป็นตัวเลือก filter ใหม่; asset เดิมที่ใช้ inactive option ยังปรากฏในผลลัพธ์ถ้าตรงเงื่อนไขอื่น |
+| FO Watch Alert criteria (ใหม่) | ไม่แสดง option ที่ deactivate เป็น criteria ใหม่ |
+| FO Watch Alert criteria (เดิมที่อ้าง inactive option) | แสดง warning ว่า criteria อ้าง option ที่ inactive แล้ว; ไม่ลบ criteria; ไม่ trigger match ใหม่ถ้า criteria อ้าง inactive option ตาม policy |
+| BO Asset Detail | ยังแสดง label เดิมของ asset แม้ option ถูก deactivate เพราะอ่านจาก asset snapshot/relation ไม่ใช่ option master active status |
+| BO Asset List filter | แสดงเฉพาะ active option เป็นตัวเลือก filter ใหม่; asset ที่มี inactive option ยังปรากฏในผลลัพธ์ถ้าตรงเงื่อนไขอื่น |
+
+กฎสำคัญ:
+
+- ห้าม cascade delete หรือ set null FK ใน `watch_assets` และ `asset_delivery_items` เมื่อ deactivate ตาม section 17.10
+- FO/BO ต้อง lookup label จาก `spec_options` โดยไม่กรอง `is_active` เมื่อแสดงข้อมูล asset เดิม
+- FO form/filter/Watch Alert ใหม่ ต้องกรอง `is_active=true` เท่านั้น
+- Asset snapshot text ไม่กระทบเพราะ asset เก็บ snapshot text คู่กับ relation id แยกต่างหาก
+
+### 22.7 API Contract สำหรับ FO ดึง Option List
+
+FO ดึง option list จาก backend ผ่าน API ต่อไปนี้:
+
+#### Endpoint: `GET /api/spec-options`
+
+| Parameter | Type | Required | Description |
+| --- | --- | --- | --- |
+| `group` | string | Optional | กรองตาม group identifier เช่น `condition`, `delivery`; ถ้าไม่ส่งให้คืนทุก group |
+| `active` | boolean | Optional | ค่าเริ่มต้น `true`; ส่ง `false` เพื่อรวม inactive option (ใช้สำหรับ lookup asset เดิม) |
+| `lang` | string | Optional | `th` หรือ `en`; ค่าเริ่มต้นตาม FO language mode |
+
+#### Response 200 OK
+
+```json
+{
+  "version": "asset-spec-options-v1",
+  "last_updated": "2026-08-19T08:00:00+07:00",
+  "groups": [
+    {
+      "group": "condition",
+      "display_name_en": "Condition",
+      "display_name_th": "สภาพ",
+      "allows_multi_select": false,
+      "options": [
+        {
+          "id": 1,
+          "option_key": "new_unworn",
+          "label_en": "New / Unworn",
+          "label_th": "ใหม่ / ยังไม่ผ่านการใช้งาน",
+          "description_en": "Never worn or no visible usage",
+          "sort_order": 10,
+          "is_active": true,
+          "is_system": true
+        }
+      ]
+    }
+  ]
+}
+```
+
+#### Response 404 Not Found
+
+```json
+{
+  "error": "GROUP_NOT_FOUND",
+  "message": "Option group not found."
+}
+```
+
+#### Response 500 Internal Server Error
+
+```json
+{
+  "error": "INTERNAL_ERROR",
+  "message": "Unable to load option master."
+}
+```
+
+กฎ API:
+
+- Option ไม่น่าเยอะ (58 options ใน Phase 1) จึงไม่ต้อง pagination; คืนทั้งหมดใน response เดียว
+- Response ต้องมี `version` และ `last_updated` เพื่อให้ FO client ใช้เป็น cache key
+- `active=true` (default) กรองเฉพาะ option ที่ `is_active=true`; `active=false` รวม inactive option ด้วย เพื่อให้ FO lookup label ของ asset เดิมได้
+- API permission: FO user ทุก role (Guest, Member) สามารถดึง active option ได้ เพราะเป็นข้อมูลสำหรับ form/filter; ไม่จำกัดเฉพาะ Member
+- API ต้องรองรับ caching header (`Cache-Control`, `ETag`) เพื่อให้ FO client หรือ CDN cache ได้
+- ถ้า FO ต้องการ lookup label ของ option id เฉพาะ สามารถใช้ `GET /api/spec-options/{id}` หรือ lookup จาก cache ที่โหลดทั้งหมดแล้ว
+
+### 22.8 Prefill Behavior จาก Market Data Reference Selection
+
+เมื่อ Owner เลือก Reference จาก Market Data ใน FO Add/Edit Asset form ระบบสามารถ prefill spec ได้:
+
+| Spec Field | Prefill Source | Rule |
+| --- | --- | --- |
+| `case_material` | `watch_references.case_material` (provider text) | Map provider text กับ `spec_options` ใน group `case_material`; ถ้า match ให้เลือก option นั้น; ถ้าไม่ match ให้เว้นว่าง |
+| `case_size_mm` | `watch_references.case_size` | Prefill เป็น free-text/decimal; ไม่ใช่ option master |
+| `movement` | `watch_references.movement` (provider text) | Map provider text กับ `spec_options` ใน group `movement`; ถ้า match ให้เลือก option นั้น; ถ้าไม่ match ให้เว้นว่าง |
+
+กฎ prefill:
+
+- Prefill ใช้ข้อมูลจาก `watch_references` ที่เชื่อมกับ Market Data catalog
+- Owner ต้องแก้ไขค่าที่ prefill ได้ เพราะเรือนจริงอาจเปลี่ยนสาย มีอุปกรณ์ไม่ครบ หรือข้อมูล provider ไม่ครบ
+- ค่าที่ Owner save ต้องไม่ถูก provider sync overwrite ตาม `06_MARKET_DATA_MODULE.md` section 15
+- ถ้า reference ไม่มีข้อมูล spec บาง field ให้เว้นว่าง และไม่บังคับให้เลือก
+- Prefill ต้องไม่บันทึกอัตโนมัติ ต้องรอ Owner กด Save ใน Add/Edit Asset form
+- Prefill ทำเฉพาะตอนเลือก Reference ครั้งแรกใน Add Asset; ใน Edit Asset ถ้า Owner เปลี่ยน Reference ใหม่ ระบบอาจเสนอ prefill ใหม่ แต่ต้องไม่ overwrite ค่าที่ Owner แก้ไว้แล้วโดยไม่ได้รับการยืนยัน
+
+### 22.9 Interaction ระหว่าง Market Data และ Option Master
+
+Market Data และ Option Master เป็นสองระบบแยกกัน แต่ต้องมี interaction ที่ชัดเจน:
+
+| ด้าน | Rule |
+| --- | --- |
+| ขอบเขต | Market Data เป็น provider catalog (brand, model, reference, price index); Option Master เป็น internal option master (condition, delivery, case_material, movement, dial_color, strap_bracelet_type) |
+| ข้อมูล provider | `watch_references.case_material` และ `watch_references.movement` เป็น text จาก provider ไม่ใช่ option master |
+| Mapping | ระบบต้อง map provider text กับ `spec_options` ได้ (ถ้า match) สำหรับ prefill ใน FO Add/Edit Asset |
+| ไม่ match | ถ้า provider text ไม่ match กับ option master ใด ให้เก็บเป็น free-text ใน `asset_specifications` และปล่อย relation id เป็น `null` |
+| ไม่ overwrite | Provider sync ต้องไม่ overwrite option master; option master จัดการโดย Admin ผ่าน BO เท่านั้น |
+| ไม่ sync | Option Master ไม่เชื่อมกับ provider sync ตาม section 2 (อยู่นอกขอบเขต) |
+| BO Market Data | `06_MARKET_DATA_MODULE.md` ไม่จัดการ option master; section 15 ระบุชัดว่า internal option master เป็น option สำหรับ Asset form/search filter ไม่ใช่ provider catalog ที่ BO Market Data แก้ไขได้ใน Phase 1 |
+
+กฎ mapping สำหรับ implementation:
+
+- Mapping rule เก็บใน backend service layer ไม่ใช่ database hardcode
+- ถ้า provider text ใกล้เคียงแต่ไม่ตรงทุกตัวอักษร สามารถใช้ fuzzy match หรือ alias table ถ้า implementation กำหนด
+- Mapping ไม่สำเร็จต้องไม่ block Add/Edit Asset; ให้เว้นว่างและให้ Owner กรอกเอง
+- Mapping result ต้องไม่บันทึกกลับไปยัง `watch_references` หรือ `spec_options`; เป็น read-only mapping สำหรับ prefill เท่านั้น
+
+### 22.10 FO Integration Acceptance Criteria
+
+เพิ่มเติมจาก section 20:
+
+- [ ] วิธีดึง option ไปใช้ใน FO Add/Edit Asset form ระบุชัดสำหรับแต่ละ group (control type, required rule, sort order)
+- [ ] FO Search Filter ระบุชัด รวม Filter Visibility Rule และ Filter Dependency Rule
+- [ ] FO Watch Alert criteria ระบุชัด รวม schema เดียวกับ Search Filter และ warning สำหรับ inactive option
+- [ ] Caching strategy มี storage, cache key, TTL, refresh trigger และ fallback
+- [ ] Fallback behavior สำหรับ deactivate option ครบทุก surface (FO form, FO Edit asset เดิม, FO Asset Detail, FO Search Filter, FO Watch Alert, BO Asset Detail, BO Asset List filter)
+- [ ] API contract มี endpoint, parameter, response format, error response และ caching header
+- [ ] Prefill behavior จาก Market Data reference ระบุชัด รวม Owner แก้ไขได้และไม่ถูก provider sync overwrite
+- [ ] Interaction ระหว่าง Market Data และ Option Master ระบุชัด รวม mapping rule และไม่ match handling
+- [ ] FO Integration ครอบคลุม Add/Edit Asset, Search Filter และ Watch Alert ครบทั้งสาม surface
