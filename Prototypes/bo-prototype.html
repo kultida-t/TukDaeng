@@ -8321,6 +8321,12 @@
         background: #f7fafc;
         color: #4a5b6e;
       }
+      .user-card-tag.tag-blue { background: #e8f1ff; color: #0f52b8; border-color: #c6ddff; }
+      .user-card-tag.tag-green { background: #e4f8f0; color: #07734f; border-color: #bcebd7; }
+      .user-card-tag.tag-amber { background: #fff3d8; color: #925500; border-color: #f3d493; }
+      .user-card-tag.tag-purple { background: #efe9ff; color: #6035ae; border-color: #d8ccff; }
+      .user-card-tag.tag-teal { background: #e6fffb; color: #0f766e; border-color: #99f6e4; }
+      .user-card-tag.tag-slate { background: #f1f5f9; color: #334155; border-color: #cbd5e1; }
       body.article-list-mode .article-read-time-tag {
         display: none;
       }
@@ -19733,14 +19739,13 @@
                 </div>
                 <div data-label="Label (EN)"><div class="main-text">${g.display_name_en}</div></div>
                 <div class="asset-card-tags">
-                  <span class="user-card-tag asset-tag">${active} active</span>
+                  <span class="user-card-tag asset-tag tag-blue">${total} options</span>
+                  <span class="user-card-tag asset-tag tag-green">${active} active</span>
+                  <span class="user-card-tag asset-tag tag-amber">${g.allows_multi_select ? "Multi-select" : "Single-select"}</span>
                   <div class="user-card-meta">
                     <div class="user-card-meta-item comment-field-meta"><span>Group</span><strong>${g.group}</strong></div>
                     <div class="user-card-meta-item comment-field-meta"><span>Label (TH)</span><strong>${g.display_name_th}</strong></div>
                     <div class="user-card-meta-item comment-field-meta"><span>Label (EN)</span><strong>${g.display_name_en}</strong></div>
-                    <div class="user-card-meta-item comment-field-meta"><span>Options</span><strong>${total}</strong></div>
-                    <div class="user-card-meta-item comment-field-meta"><span>Active</span><strong>${active}</strong></div>
-                    <div class="user-card-meta-item comment-field-meta"><span>Multi-select</span><strong>${g.allows_multi_select ? "Yes" : "No"}</strong></div>
                   </div>
                 </div>
                 <div data-label="Options"><div class="main-text">${total}</div></div>
@@ -19876,7 +19881,8 @@
                 </div>
                 <div class="asset-card-tags">
                   ${statusPill}
-                  <span class="user-card-tag asset-tag">${systemLabel === "Yes" ? "System" : "Custom"}</span>
+                  <span class="user-card-tag asset-tag ${systemLabel === "Yes" ? "tag-purple" : "tag-teal"}">${systemLabel === "Yes" ? "System" : "Custom"}</span>
+                  <span class="user-card-tag asset-tag tag-slate">Sort ${o.sort_order}</span>
                   <div class="user-card-meta">
                     <div class="user-card-meta-item comment-field-meta"><span>Label (EN)</span><strong>${o.label_en}</strong></div>
                     <div class="user-card-meta-item comment-field-meta"><span>Label (TH)</span><strong>${o.label_th}</strong></div>
