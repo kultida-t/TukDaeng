@@ -1283,7 +1283,7 @@
       min-width: 1132px;
     }
     body.option-master-mode #table .option-group-table {
-      min-width: 1052px;
+      min-width: 1164px;
     }
     body.option-master-mode #table .option-detail-table {
       min-width: 1084px;
@@ -1616,7 +1616,7 @@
       grid-template-columns: minmax(112px, .62fr) minmax(240px, 1.5fr) minmax(170px, .88fr) minmax(116px, .58fr) minmax(116px, .58fr) minmax(166px, .82fr) minmax(76px, .38fr);
     }
     .option-group-table .asset-row {
-      grid-template-columns: minmax(130px, .72fr) minmax(180px, 1.1fr) minmax(180px, 1.1fr) minmax(96px, .52fr) minmax(96px, .52fr) minmax(120px, .62fr) minmax(76px, .38fr);
+      grid-template-columns: minmax(112px, .62fr) minmax(130px, .72fr) minmax(180px, 1.1fr) minmax(180px, 1.1fr) minmax(96px, .52fr) minmax(96px, .52fr) minmax(120px, .62fr) minmax(76px, .38fr);
     }
     .option-detail-table .asset-row {
       grid-template-columns: minmax(150px, .82fr) minmax(180px, 1.1fr) minmax(160px, .95fr) minmax(96px, .52fr) minmax(110px, .58fr) minmax(86px, .46fr) minmax(150px, .82fr);
@@ -7350,7 +7350,7 @@
         scrollbar-width: thin;
       }
       body.option-master-mode.option-group-list-mode #table .option-group-table {
-        min-width: 1052px;
+        min-width: 1164px;
       }
       body.option-master-mode.option-group-list-mode #table > .footer-range {
         min-width: 1052px;
@@ -10349,6 +10349,7 @@
     // 6 groups, 58 options total. is_system=true for all seeded options.
     const optionMasterGroups = [
       {
+        group_id: "OG-001",
         group: "condition",
         display_name_en: "Condition",
         display_name_th: "สภาพ",
@@ -10364,6 +10365,7 @@
         ]
       },
       {
+        group_id: "OG-002",
         group: "delivery",
         display_name_en: "Scope of Delivery",
         display_name_th: "อุปกรณ์ที่มาด้วย",
@@ -10375,6 +10377,7 @@
         ]
       },
       {
+        group_id: "OG-003",
         group: "case_material",
         display_name_en: "Case Material",
         display_name_th: "วัสดุตัวเรือน",
@@ -10397,6 +10400,7 @@
         ]
       },
       {
+        group_id: "OG-004",
         group: "movement",
         display_name_en: "Movement",
         display_name_th: "กลไก",
@@ -10413,6 +10417,7 @@
         ]
       },
       {
+        group_id: "OG-005",
         group: "dial_color",
         display_name_en: "Dial Color",
         display_name_th: "สีหน้าปัด",
@@ -10440,6 +10445,7 @@
         ]
       },
       {
+        group_id: "OG-006",
         group: "strap_bracelet_type",
         display_name_en: "Strap / Bracelet Type",
         display_name_th: "ประเภทสาย",
@@ -10462,19 +10468,19 @@
       }
     ];
 
-    function getOptionGroup(group) {
-      return optionMasterGroups.find(g => g.group === group) || null;
+    function getOptionGroup(groupId) {
+      return optionMasterGroups.find(g => g.group_id === groupId) || null;
     }
-    function getOptionGroupTotalOptions(group) {
-      const g = getOptionGroup(group);
+    function getOptionGroupTotalOptions(groupId) {
+      const g = getOptionGroup(groupId);
       return g ? g.options.length : 0;
     }
-    function getOptionGroupActiveOptions(group) {
-      const g = getOptionGroup(group);
+    function getOptionGroupActiveOptions(groupId) {
+      const g = getOptionGroup(groupId);
       return g ? g.options.filter(o => o.is_active).length : 0;
     }
-    function getOptionGroupInactiveOptions(group) {
-      const g = getOptionGroup(group);
+    function getOptionGroupInactiveOptions(groupId) {
+      const g = getOptionGroup(groupId);
       return g ? g.options.filter(o => !o.is_active).length : 0;
     }
     function getOptionMasterTotalOptions() {
@@ -10495,8 +10501,10 @@
       if (group === "condition") return "locked";
       return "controlled";
     }
-    function isOptionDeactivateDisabled(group, isSystem) {
-      return getOptionDeactivatePolicy(group, isSystem) === "locked";
+    function isOptionDeactivateDisabled(groupId, isSystem) {
+      const g = getOptionGroup(groupId);
+      if (!g) return false;
+      return getOptionDeactivatePolicy(g.group, isSystem) === "locked";
     }
 
     const reportedCommentConfig = {
@@ -19703,7 +19711,7 @@
       const q = (document.querySelector("#option-group-search")?.value || "").trim().toLowerCase();
       const filtered = optionMasterGroups.filter(g => {
         if (!q) return true;
-        const text = `${g.group} ${g.display_name_en} ${g.display_name_th}`.toLowerCase();
+        const text = `${g.group_id} ${g.group} ${g.display_name_en} ${g.display_name_th}`.toLowerCase();
         return text.includes(q);
       });
       const pageCount = Math.max(1, Math.ceil(filtered.length / optionGroupListPageSize));
@@ -19712,20 +19720,22 @@
       const pageRows = filtered.slice(start, start + optionGroupListPageSize);
       document.querySelector("#table").innerHTML = `
         <div class="asset-table option-group-table">
-          <div class="asset-row head"><div>Group</div><div>Label (TH)</div><div>Label (EN)</div><div>Options</div><div>Active</div><div>Multi-select</div><div>Action</div></div>
+          <div class="asset-row head"><div>Group ID</div><div>Group</div><div>Label (TH)</div><div>Label (EN)</div><div>Options</div><div>Active</div><div>Multi-select</div><div>Action</div></div>
           ${pageRows.map(g => {
-            const total = getOptionGroupTotalOptions(g.group);
-            const active = getOptionGroupActiveOptions(g.group);
+            const total = getOptionGroupTotalOptions(g.group_id);
+            const active = getOptionGroupActiveOptions(g.group_id);
             return `
-              <div class="asset-row" data-option-group="${g.group}">
+              <div class="asset-row" data-option-group="${g.group_id}">
+                <div data-label="Group ID"><div class="main-text">${g.group_id}</div></div>
                 <div data-label="Group"><div class="main-text">${g.group}</div></div>
                 <div class="asset-cell-primary" data-label="Label (TH)">
-                  <div class="main-text"><span class="desktop-user-name">${g.display_name_th}</span><span class="mobile-user-card-title">${g.group}</span></div>
+                  <div class="main-text"><span class="desktop-user-name">${g.display_name_th}</span><span class="mobile-user-card-title">${g.group_id}</span></div>
                 </div>
                 <div data-label="Label (EN)"><div class="main-text">${g.display_name_en}</div></div>
                 <div class="asset-card-tags">
                   <span class="user-card-tag asset-tag">${active} active</span>
                   <div class="user-card-meta">
+                    <div class="user-card-meta-item comment-field-meta"><span>Group</span><strong>${g.group}</strong></div>
                     <div class="user-card-meta-item comment-field-meta"><span>Label (TH)</span><strong>${g.display_name_th}</strong></div>
                     <div class="user-card-meta-item comment-field-meta"><span>Label (EN)</span><strong>${g.display_name_en}</strong></div>
                     <div class="user-card-meta-item comment-field-meta"><span>Options</span><strong>${total}</strong></div>
@@ -19740,7 +19750,7 @@
                   <details class="row-menu">
                     <summary title="Option group actions">...</summary>
                     <div class="row-menu-list">
-                      <button type="button" data-option-group-view="${g.group}">View detail</button>
+                      <button type="button" data-option-group-view="${g.group_id}">View detail</button>
                     </div>
                   </details>
                 </div>
@@ -19755,15 +19765,15 @@
       `;
     }
 
-    function renderOptionDetailPage(group) {
-      const g = getOptionGroup(group);
+    function renderOptionDetailPage(groupId) {
+      const g = getOptionGroup(groupId);
       if (!g) {
         renderOptionGroupList();
         return;
       }
       activeModule = "option-master";
       activeSub = "";
-      activeOptionGroup = group;
+      activeOptionGroup = groupId;
       document.body.classList.remove(
         "dashboard-mode", "user-management-mode", "asset-list-mode", "offer-list-mode",
         "article-list-mode", "category-list-mode", "reported-board-mode", "market-list-mode",
@@ -19771,8 +19781,8 @@
         "offer-detail-mode", "user-detail-mode", "option-group-list-mode"
       );
       document.body.classList.add("option-master-mode", "option-detail-mode");
-      const total = getOptionGroupTotalOptions(group);
-      const active = getOptionGroupActiveOptions(group);
+      const total = getOptionGroupTotalOptions(groupId);
+      const active = getOptionGroupActiveOptions(groupId);
       const activeCountForReorder = active;
       setPageActions(`
         ${activeCountForReorder >= 2 ? `<button class="btn" type="button" data-option-reorder-open title="Reorder" aria-label="Reorder">${iconSvg.sort}<span>Reorder</span></button>` : ""}
@@ -19780,8 +19790,8 @@
         ${renderPageBackButton("data-back-option-groups", "Back to Option Groups")}
       `);
       syncExpandedNavForModule("option-master", "");
-      document.querySelector("#crumb").textContent = `การดำเนินงาน / Option Master / ${group}`;
-      document.querySelector("#page-title").textContent = group;
+      document.querySelector("#crumb").textContent = `การดำเนินงาน / Option Master / ${g.group}`;
+      document.querySelector("#page-title").textContent = g.group;
       document.querySelector("#page-meta").textContent = "";
       document.querySelector("#panel-title").textContent = `Options (${total})`;
       document.querySelector("#panel-subtitle").textContent = "";
@@ -19792,7 +19802,7 @@
       `;
       document.querySelector(".filters").innerHTML = `
         <div class="user-filter-bar option-detail-filter-bar" data-filter-open="${optionDetailFilterOpen}">
-          <input class="field search" id="option-detail-search" type="search" placeholder="Search option in ${group}" />
+          <input class="field search" id="option-detail-search" type="search" placeholder="Search option in ${g.group}" />
           <div class="user-advanced-filter">${customSelect("option-status-filter", "Filter status", [
             { value: "", label: "ทั้งหมด" },
             { value: "active", label: "Active" },
@@ -19835,7 +19845,7 @@
               ? `<span class="pill green">Active</span>`
               : `<span class="pill gray">Inactive</span>`;
             const systemLabel = o.is_system ? "Yes" : "No";
-            const deactivateDisabled = isOptionDeactivateDisabled(g.group, o.is_system);
+            const deactivateDisabled = isOptionDeactivateDisabled(g.group_id, o.is_system);
             const actionMenu = o.is_active
               ? `
                 <details class="row-menu">
@@ -24673,17 +24683,17 @@
       // ===== Option Master click handlers (BO-OPT-002a) =====
       const optionGroupViewButton = event.target.closest("[data-option-group-view]");
       if (optionGroupViewButton) {
-        const group = optionGroupViewButton.dataset.optionGroupView;
+        const groupId = optionGroupViewButton.dataset.optionGroupView;
         optionDetailPage = 1;
-        renderOptionDetailPage(group);
+        renderOptionDetailPage(groupId);
         scrollMainToTop();
         return;
       }
       const optionGroupRow = event.target.closest("[data-option-group]");
       if (optionGroupRow && !event.target.closest("button, a, input, select, [data-custom-select]")) {
-        const group = optionGroupRow.dataset.optionGroup;
+        const groupId = optionGroupRow.dataset.optionGroup;
         optionDetailPage = 1;
-        renderOptionDetailPage(group);
+        renderOptionDetailPage(groupId);
         scrollMainToTop();
         return;
       }
