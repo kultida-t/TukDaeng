@@ -1,7 +1,7 @@
 # 17 BO Option Master Module
 
-**เวอร์ชัน:** `BO-17-v0.6`
-**วันที่:** 2026-08-19
+**เวอร์ชัน:** `BO-17-v0.7`
+**วันที่:** 2026-08-20
 **สถานะ:** สเปกปัจจุบัน
 **แพลตฟอร์ม:** Responsive Web Back Office
 
@@ -106,7 +106,7 @@ Admin ที่มีสิทธิ์เข้าถึง Option Master ส�
 | --- | --- | --- |
 | Mobile | `<= 760px` | รายการแสดงเป็น card-like rows, column สำคัญต้องเปลี่ยนเป็น label/value, search เต็มความกว้าง, pagination ใช้งานได้, modal ต้องไม่ล้นจอ |
 | Tablet | `761px - 1365px` | ตารางยังคงอ่านได้โดยคง column สำคัญ, modal ต้องไม่ทับเนื้อหาสำคัญ |
-| Desktop | `> 1365px` | แสดง table เต็ม, summary cards ตามที่ module กำหนด, list toolbar ตาม prototype pattern |
+| Desktop | `> 1365px` | แสดง table เต็ม, list toolbar ตาม prototype pattern |
 
 ข้อกำหนดเพิ่มเติม:
 
@@ -131,14 +131,7 @@ Filter:
 - ค้นหาได้จาก group identifier และ label
 - ไม่มี status filter เพราะ group ทั้งหมด active ใน Phase 1
 
-Summary cards ต้องแสดง 4 cards:
-
-| Card | ตัวอย่างค่า | คำอธิบาย |
-| --- | --- | --- |
-| Total Groups | `6` | จำนวน option group ทั้งหมด |
-| Total Options | `58` | จำนวน option ทั้งหมดรวมทุก group |
-| Active Options | `58` | จำนวน option ที่ active |
-| Inactive Options | `0` | จำนวน option ที่ deactivate แล้ว |
+> หมายเหตุ: Option Master ไม่แสดง summary cards และ side panel ทั้งใน Option Group List และ Option Detail เพื่อลดความซ้ำซ้อนของข้อมูลที่แสดงในตารางอยู่แล้ว การตัดสินใจนี้อนุมัติแล้วใน BO-17-v0.7
 
 ตาราง Option Group List:
 
@@ -170,9 +163,7 @@ Header:
 - Panel title: `<group> -- Options (<option count>)`
 - Page action หลัก: ปุ่ม `Add Option` และปุ่ม `Reorder` (เฉพาะ admin ที่มี write permission; ปุ่ม `Reorder` แสดงเฉพาะเมื่อมี active option ≥2 ในกลุ่ม)
 
-Group summary section:
-
-- แสดง group identifier, allows_multi_select, จำนวน option ทั้งหมด, จำนวน active, จำนวน inactive
+> หมายเหตุ: ไม่แสดง group summary section แยกต่างหาาก เพราะข้อมูล group identifier, multi-select และ option count แสดงใน panel title/subtitle และในตารางอยู่แล้ว การตัดสินใจนี้อนุมัติแล้วใน BO-17-v0.7
 
 Filter:
 
