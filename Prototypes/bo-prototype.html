@@ -1283,13 +1283,13 @@
       min-width: 1132px;
     }
     body.option-master-mode #table .option-group-table {
-      min-width: 892px;
+      min-width: 1052px;
     }
     body.option-master-mode #table .option-detail-table {
       min-width: 1084px;
     }
     body.option-master-mode.option-group-list-mode #table > .footer-range {
-      min-width: 892px;
+      min-width: 1052px;
     }
     body.option-master-mode.option-detail-mode #table > .footer-range {
       min-width: 1084px;
@@ -1616,7 +1616,7 @@
       grid-template-columns: minmax(112px, .62fr) minmax(240px, 1.5fr) minmax(170px, .88fr) minmax(116px, .58fr) minmax(116px, .58fr) minmax(166px, .82fr) minmax(76px, .38fr);
     }
     .option-group-table .asset-row {
-      grid-template-columns: minmax(130px, .72fr) minmax(240px, 1.5fr) minmax(96px, .52fr) minmax(96px, .52fr) minmax(120px, .62fr) minmax(76px, .38fr);
+      grid-template-columns: minmax(130px, .72fr) minmax(180px, 1.1fr) minmax(180px, 1.1fr) minmax(96px, .52fr) minmax(96px, .52fr) minmax(120px, .62fr) minmax(76px, .38fr);
     }
     .option-detail-table .asset-row {
       grid-template-columns: minmax(150px, .82fr) minmax(180px, 1.1fr) minmax(160px, .95fr) minmax(96px, .52fr) minmax(110px, .58fr) minmax(86px, .46fr) minmax(150px, .82fr);
@@ -7350,10 +7350,10 @@
         scrollbar-width: thin;
       }
       body.option-master-mode.option-group-list-mode #table .option-group-table {
-        min-width: 892px;
+        min-width: 1052px;
       }
       body.option-master-mode.option-group-list-mode #table > .footer-range {
-        min-width: 892px;
+        min-width: 1052px;
       }
       body.option-master-mode.option-detail-mode #table .option-detail-table {
         min-width: 1084px;
@@ -19712,20 +19712,22 @@
       const pageRows = filtered.slice(start, start + optionGroupListPageSize);
       document.querySelector("#table").innerHTML = `
         <div class="asset-table option-group-table">
-          <div class="asset-row head"><div>Group</div><div>Label (TH/EN)</div><div>Options</div><div>Active</div><div>Multi-select</div><div>Action</div></div>
+          <div class="asset-row head"><div>Group</div><div>Label (TH)</div><div>Label (EN)</div><div>Options</div><div>Active</div><div>Multi-select</div><div>Action</div></div>
           ${pageRows.map(g => {
             const total = getOptionGroupTotalOptions(g.group);
             const active = getOptionGroupActiveOptions(g.group);
             return `
               <div class="asset-row" data-option-group="${g.group}">
                 <div data-label="Group"><div class="main-text">${g.group}</div></div>
-                <div class="asset-cell-primary" data-label="Label (TH/EN)">
-                  <div class="main-text"><span class="desktop-user-name">${g.display_name_th} / ${g.display_name_en}</span><span class="mobile-user-card-title">${g.group}</span></div>
+                <div class="asset-cell-primary" data-label="Label (TH)">
+                  <div class="main-text"><span class="desktop-user-name">${g.display_name_th}</span><span class="mobile-user-card-title">${g.group}</span></div>
                 </div>
+                <div data-label="Label (EN)"><div class="main-text">${g.display_name_en}</div></div>
                 <div class="asset-card-tags">
                   <span class="user-card-tag asset-tag">${active} active</span>
                   <div class="user-card-meta">
-                    <div class="user-card-meta-item comment-field-meta"><span>Label</span><strong>${g.display_name_th} / ${g.display_name_en}</strong></div>
+                    <div class="user-card-meta-item comment-field-meta"><span>Label (TH)</span><strong>${g.display_name_th}</strong></div>
+                    <div class="user-card-meta-item comment-field-meta"><span>Label (EN)</span><strong>${g.display_name_en}</strong></div>
                     <div class="user-card-meta-item comment-field-meta"><span>Options</span><strong>${total}</strong></div>
                     <div class="user-card-meta-item comment-field-meta"><span>Active</span><strong>${active}</strong></div>
                     <div class="user-card-meta-item comment-field-meta"><span>Multi-select</span><strong>${g.allows_multi_select ? "Yes" : "No"}</strong></div>
