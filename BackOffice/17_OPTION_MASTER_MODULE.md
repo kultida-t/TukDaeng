@@ -1,6 +1,6 @@
 # 17 BO Option Master Module
 
-**เวอร์ชัน:** `BO-17-v0.1`
+**เวอร์ชัน:** `BO-17-v0.2`
 **วันที่:** 2026-08-19
 **สถานะ:** สเปกปัจจุบัน
 **แพลตฟอร์ม:** Responsive Web Back Office
@@ -379,43 +379,310 @@ Audit action group: เพิ่ม `Option Master` เป็น action group �
 
 Target entity type เพิ่ม: `SpecOption` ใน `08_AUDIT_LOG_MODULE.md` section 5
 
-## 17. Data Domain
+## 17. Data Model และ Seed Data Strategy
 
-### 17.1 Option Group
+ส่วนนี้กำหนด data model เชิงกายภาพ ความสัมพันธ์กับตารางอื่น และกลยุทธ์ seed/migration/versioning ของ Option Master
 
-ขั้นต่ำต้องมี:
+อ้างอิง:
+- `../FrontOffice/04_ASSET_MANAGEMENT_MODULE.md` section 10 (Recommended backend split)
+- `../SeedData/asset-spec-options.json` (schema version `asset-spec-options-v1`)
+- `../SeedData/asset-spec-options.csv`
+- `../SeedData/README.md`
 
-- Group ID
-- Group identifier (`group`) เช่น `condition`, `case_material`
-- Label TH/EN ถ้ามี
-- `allows_multi_select` (boolean)
-- จำนวน option ทั้งหมด
-- จำนวน active option
-- Created/updated timestamp
+### 17.1 ตาราง `spec_option_groups`
 
-### 17.2 Option
+เก็บข้อมูลกลุ่ม option ทั้งหมด ใน Phase 1 group เกิดจาก seed/development เท่านั้น ไม่มีการสร้าง group ใหม่จาก BO
 
-ขั้นต่ำต้องมี:
+```sql
+CREATE TABLE spec_option_groups (
+  group_id BIGSERIAL PRIMARY KEY,
+  group TEXT NOT NULL UNIQUE,
+  display_name_en TEXT NOT NULL,
+  display_name_th TEXT NOT NULL,
+  description TEXT NULL,
+  allows_multi_select BOOLEAN NOT NULL DEFAULT FALSE,
+  is_active BOOLEAN NOT NULL DEFAULT TRUE,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+```
 
-- Option ID
-- Group relation
-- Key (`key`) stable identifier
-- Label EN (`label_en`)
-- Label TH (`label_th`)
-- Description EN (`description_en`) optional
-- Sort order (`sort_order`)
-- Is active (`is_active`)
-- Is system (`is_system`) baseline seed option
-- Created/updated timestamp
-- Created/updated by admin ID
+| Column | Type | Rule |
+| --- | --- | --- |
+| `group_id` | BIGSERIAL | PK |
+| `group` | TEXT | Unique stable identifier เช่น `condition`, `delivery`; ห้าม rename หลังใช้งาน |
+| `display_name_en` | TEXT | ชื่อกลุ่มภาษาอังกฤษ |
+| `display_name_th` | TEXT | ชื่อกลุ่มภาษาไทย |
+| `description` | TEXT | คำอธิบายกลุ่ม (optional) |
+| `allows_multi_select` | BOOLEAN | `true` สำหรับ `delivery`; `false` สำหรับกลุ่มอื่น |
+| `is_active` | BOOLEAN | default `true`; ใน Phase 1 ทุก group active |
+| `created_at` | TIMESTAMPTZ | auto |
+| `updated_at` | TIMESTAMPTZ | auto |
 
-Seed data source: `../SeedData/asset-spec-options.json` (schema version `asset-spec-options-v1`)
+Seed groups (6 กลุ่ม):
 
-กฎข้อมูล:
+| group | allows_multi_select | display_name_en | display_name_th |
+| --- | --- | --- | --- |
+| `condition` | false | Condition | สภาพ |
+| `delivery` | true | Scope of Delivery | อุปกรณ์ที่มาด้วย |
+| `case_material` | false | Case Material | วัสดุตัวเรือน |
+| `movement` | false | Movement | กลไก |
+| `dial_color` | false | Dial Color | สีหน้าปัด |
+| `strap_bracelet_type` | false | Strap / Bracelet Type | ประเภทสาย |
 
-- `key` ต้อง stable ห้าม rename หลังใช้งาน ถ้าต้องการเปลี่ยนให้สร้าง option ใหม่และ deactivate option เดิม
-- `is_system=true` สำหรับ option ที่ seed มาตั้งแต่ต้น สามารถแก้ label และ sort_order ได้ แต่ deactivate ต้องมี reason ชัดเจน
-- `is_active=false` ต้องไม่แสดงใน FO form/filter/Watch Alert ใหม่ แต่ต้องคง relation กับ existing assets
+### 17.2 ตาราง `spec_options`
+
+เก็บรายการ option ภายในแต่ละกลุ่ม เป็นตารางหลักที่ FO อ่านเพื่อ render dropdown/filter/Watch Alert criteria
+
+```sql
+CREATE TABLE spec_options (
+  id BIGSERIAL PRIMARY KEY,
+  group_id BIGINT NOT NULL REFERENCES spec_option_groups(group_id),
+  option_key TEXT NOT NULL,
+  label_en TEXT NOT NULL,
+  label_th TEXT NOT NULL,
+  description_en TEXT NULL,
+  sort_order INTEGER NOT NULL DEFAULT 0,
+  is_active BOOLEAN NOT NULL DEFAULT TRUE,
+  is_system BOOLEAN NOT NULL DEFAULT TRUE,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+  deactivated_at TIMESTAMPTZ NULL,
+  created_by_admin_id BIGINT NULL,
+  updated_by_admin_id BIGINT NULL,
+  UNIQUE (group_id, option_key)
+);
+```
+
+| Column | Type | Rule |
+| --- | --- | --- |
+| `id` | BIGSERIAL | PK; เป็น FK target จาก `watch_assets` และ `asset_delivery_items` |
+| `group_id` | BIGINT | FK → `spec_option_groups.group_id` |
+| `option_key` | TEXT | Stable identifier ห้าม rename หลัง option ถูกใช้ใน asset; lowercase snake_case; unique ภายใน group |
+| `label_en` | TEXT | English label แก้ไขได้ |
+| `label_th` | TEXT | Thai label แก้ไขได้ |
+| `description_en` | TEXT | Internal description (optional) |
+| `sort_order` | INTEGER | ลำดับการแสดงผลใน FO; ค่าน้อยกว่าแสดงก่อน; tie-break ด้วย `option_key` |
+| `is_active` | BOOLEAN | `false` = ไม่แสดงใน FO form/filter/Watch Alert ใหม่ แต่คง relation กับ existing assets |
+| `is_system` | BOOLEAN | `true` = seeded baseline option; จำกัดการ deactivate (ต้องมี reason) |
+| `created_at` | TIMESTAMPTZ | auto |
+| `updated_at` | TIMESTAMPTZ | auto |
+| `deactivated_at` | TIMESTAMPTZ | เวลาที่ deactivate; `NULL` ถ้า active |
+| `created_by_admin_id` | BIGINT | Admin ที่สร้าง option (NULL สำหรับ system seed) |
+| `updated_by_admin_id` | BIGINT | Admin ที่แก้ไขล่าสุด |
+
+Unique constraint: `UNIQUE (group_id, option_key)` ป้องกัน key ซ้ำใน group เดียวกัน
+
+### 17.3 ตาราง `spec_option_audit`
+
+เก็บ audit trail เฉพาะ Option Master แยกจาก audit log กลาง เพื่อให้ query ประวัติการเปลี่ยนแปลง option ได้โดยตรง ข้อมูลเดียวกันต้อง sync ไป audit log กลาง (`08_AUDIT_LOG_MODULE.md`) ด้วย
+
+```sql
+CREATE TABLE spec_option_audit (
+  id BIGSERIAL PRIMARY KEY,
+  action_type TEXT NOT NULL,
+  option_id BIGINT NOT NULL REFERENCES spec_options(id),
+  group_id BIGINT NOT NULL REFERENCES spec_option_groups(group_id),
+  actor_admin_id BIGINT NOT NULL,
+  before_value JSONB NULL,
+  after_value JSONB NULL,
+  reason TEXT NULL,
+  ip_address TEXT NULL,
+  session_context TEXT NULL,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+```
+
+| Column | Type | Rule |
+| --- | --- | --- |
+| `id` | BIGSERIAL | PK |
+| `action_type` | TEXT | enum: `OPTION_ADD`, `OPTION_EDIT`, `OPTION_DEACTIVATE`, `OPTION_REACTIVATE`, `OPTION_REORDER` |
+| `option_id` | BIGINT | FK → `spec_options.id` |
+| `group_id` | BIGINT | FK → `spec_option_groups.group_id` (denormalized สำหรับ query สะดวก) |
+| `actor_admin_id` | BIGINT | Admin ที่ทำ action |
+| `before_value` | JSONB | ค่าก่อนเปลี่ยน (JSON ของ field ที่เปลี่ยน) |
+| `after_value` | JSONB | ค่าหลังเปลี่ยน |
+| `reason` | TEXT | เหตุผล (required สำหรับ `OPTION_DEACTIVATE`) |
+| `ip_address` | TEXT | ถ้ามี |
+| `session_context` | TEXT | ถ้ามี |
+| `created_at` | TIMESTAMPTZ | auto |
+
+Audit record ต้องไม่ถูกแก้ไขหรือลบผ่าน BO UI ตาม `08_AUDIT_LOG_MODULE.md` section 7
+
+### 17.4 ความสัมพันธ์กับตารางอื่น
+
+Option Master เป็นแหล่งข้อมูลอ้างอิง (lookup) ของ asset specifications ที่ Owner กรอกใน FO Add/Edit Asset ความสัมพันธ์เป็น nullable เพราะ asset สามารถไม่มี option ได้ (optional fields)
+
+```text
+spec_option_groups 1───∞ spec_options
+spec_options 1───∞ watch_assets (condition_id)
+spec_options 1───∞ watch_assets (case_material_id)
+spec_options 1───∞ watch_assets (movement_id)
+spec_options 1───∞ watch_assets (dial_color_id)
+spec_options 1───∞ watch_assets (strap_bracelet_type_id)
+spec_options 1───∞ asset_delivery_items (option_id)
+spec_options 1───∞ spec_option_audit
+```
+
+FK columns ใน `watch_assets`:
+
+| Column | FK → | Nullable | Rule |
+| --- | --- | --- | --- |
+| `condition_id` | `spec_options.id` | Yes (optional for Show/Hide) | Required for `Sale` status |
+| `case_material_id` | `spec_options.id` | Yes | Optional asset specification |
+| `movement_id` | `spec_options.id` | Yes | Optional asset specification |
+| `dial_color_id` | `spec_options.id` | Yes | Optional asset specification |
+| `strap_bracelet_type_id` | `spec_options.id` | Yes | Optional asset specification |
+
+FK columns ใน `asset_delivery_items`:
+
+| Column | FK → | Nullable | Rule |
+| --- | --- | --- | --- |
+| `option_id` | `spec_options.id` | No (required when row exists) | ต้องเป็น option ใน group `delivery` เท่านั้น |
+| `asset_id` | `watch_assets.id` | No | Asset ที่มี delivery item นี้ |
+
+กฎ referential integrity:
+
+- FK ทั้งหมดเป็น nullable ยกเว้น `asset_delivery_items.option_id` และ `asset_delivery_items.asset_id`
+- เมื่อ option ถูก deactivate (`is_active=false`) ห้าม cascade delete หรือ set null FK ใน `watch_assets` — ต้องคง relation id เดิมไว้
+- `asset_delivery_items` อ้างอิงเฉพาะ option ใน group `delivery` (enforce ที่ application/service layer)
+- Asset ต้องเก็บ snapshot text (`condition_snapshot`, `case_material_snapshot`, ฯลฯ) คู่กับ relation id เพื่อคง display history แม้ option label เปลี่ยนหรือ deactivate
+
+### 17.5 Indexes และ Constraints
+
+```sql
+-- ค้นหา option ตาม group และ active status (FO form/filter ใช้บ่อย)
+CREATE INDEX idx_spec_options_group_active ON spec_options (group_id, is_active, sort_order);
+
+-- ค้นหา audit ตาม option
+CREATE INDEX idx_spec_option_audit_option ON spec_option_audit (option_id, created_at DESC);
+
+-- ค้นหา audit ตาม action type
+CREATE INDEX idx_spec_option_audit_action ON spec_option_audit (action_type, created_at DESC);
+
+-- ตรวจสอบ delivery items อ้างเฉพาะ group delivery
+ALTER TABLE asset_delivery_items ADD CONSTRAINT chk_delivery_group
+  CHECK (option_id IN (SELECT id FROM spec_options WHERE group_id = (SELECT group_id FROM spec_option_groups WHERE group = 'delivery')));
+```
+
+### 17.6 Seed Data Source
+
+Seed file หลัก: `../SeedData/asset-spec-options.json` (schema version `asset-spec-options-v1`)
+
+Seed file สำรอง (flat format): `../SeedData/asset-spec-options.csv`
+
+เอกสารกำกับ: `../SeedData/README.md`
+
+โครงสร้าง JSON seed file:
+
+```json
+{
+  "version": "asset-spec-options-v1",
+  "updated_at": "2026-08-11",
+  "description": "...",
+  "schema": { ... },
+  "groups": [
+    {
+      "group": "condition",
+      "allows_multi_select": false,
+      "options": [
+        {
+          "key": "new_unworn",
+          "label_en": "New / Unworn",
+          "label_th": "ใหม่ / ยังไม่ผ่านการใช้งาน",
+          "description_en": "Never worn or no visible usage",
+          "sort_order": 10,
+          "is_active": true,
+          "is_system": true
+        }
+      ]
+    }
+  ]
+}
+```
+
+Seed file ครอบคลุม 6 groups ครบ:
+- `condition` — 6 options
+- `delivery` — 2 options (multi-select)
+- `case_material` — 13 options
+- `movement` — 7 options
+- `dial_color` — 18 options
+- `strap_bracelet_type` — 12 options
+- รวม 58 options ทั้งหมด
+
+### 17.7 Sync Strategy (Seed File ↔ Database)
+
+| ประเภท option | Source of truth | Sync ทิศทาง |
+| --- | --- | --- |
+| System option (`is_system=true`) | Seed file | Seed file → Database (ผ่าน migration script) |
+| Custom option (`is_system=false`) | Database | Database เท่านั้น (ไม่เขียนกลับ seed file) |
+
+กฎ sync:
+
+- Migration script อ่าน seed file และ upsert ลง `spec_option_groups` และ `spec_options`
+- System option ที่มีใน seed file แต่ไม่มีใน database → insert
+- System option ที่มีใน database แต่ไม่มีใน seed file → ไม่ลบ (อาจถูก deactivate ไปแล้ว) แต่ log warning
+- Custom option ที่ Admin เพิ่มจาก BO → เก็บใน database เท่านั้น ไม่เขียนกลับ seed file
+- ถ้า seed file เปลี่ยน label ของ system option → migration script update label ใน database (แต่ไม่กระทบ snapshot text ใน existing assets)
+- ถ้า seed file เปลี่ยน `is_active` ของ system option → migration script update `is_active` ใน database และบันทึก audit `OPTION_DEACTIVATE`/`OPTION_REACTIVATE` อัตโนมัติ
+
+### 17.8 Migration Strategy
+
+| Scenario | Seed File | Migration Script | Database | Audit |
+| --- | --- | --- | --- | --- |
+| เพิ่ม option ใหม่ | เพิ่มใน `groups[].options[]` | upsert ลง `spec_options` | insert ใหม่ | `OPTION_ADD` (actor = system migration) |
+| แก้ label | update `label_en`/`label_th` ใน seed file | update ใน `spec_options` | update label | `OPTION_EDIT` |
+| แก้ sort_order | update `sort_order` ใน seed file | update ใน `spec_options` | update sort_order | `OPTION_REORDER` |
+| Deactivate option | update `is_active=false` ใน seed file | update `is_active=false`, `deactivated_at=now()` ใน `spec_options` | update | `OPTION_DEACTIVATE` (reason = "seed file update") |
+| Reactivate option | update `is_active=true` ใน seed file | update `is_active=true`, `deactivated_at=null` | update | `OPTION_REACTIVATE` |
+| Delete option | ห้าม | ไม่รองรับ | ไม่ลบ | — |
+
+กฎ migration:
+
+- ทุก migration ต้อง bump version ใน seed file (`asset-spec-options-v1` → `asset-spec-options-v2`)
+- Migration script ต้อง idempotent (รันซ้ำได้โดยไม่ทำให้ข้อมูลเสีย)
+- Migration script ต้องบันทึก audit ทุกครั้งที่มีการเปลี่ยนแปลง
+- Migration script ต้องไม่ลบ option ที่ถูกใช้ใน asset แล้ว
+- ถ้า migration พบว่า seed file ลด option ที่ถูกใช้ใน asset แล้ว → ไม่ลบ แต่ log warning และเก็บ option ไว้ใน database
+
+### 17.9 Versioning Strategy
+
+```text
+asset-spec-options-v1  (initial seed, 2026-08-11)
+asset-spec-options-v2  (next change)
+asset-spec-options-v3  (next change)
+...
+```
+
+กฎ versioning:
+
+- Seed file มี `version` field สำหรับ track การเปลี่ยนแปลง
+- ทุก migration ต้อง bump version
+- เก็บ migration history ในตาราง `schema_migrations` หรือเทียบเท่า พร้อม `version`, `applied_at`, `description`
+- Database ต้องเก็บ seed version ล่าสุดที่ sync แล้ว เพื่อตรวจสอบว่า migration ทำครบหรือไม่
+- ถ้า database seed version ต่ำกว่า seed file version → รัน migration script ใหม่
+
+### 17.10 Impact ต่อ Existing Assets เมื่อ Option ถูก Deactivate
+
+เมื่อ option ถูก deactivate (`is_active=false`):
+
+| ระบบ | พฤติกรรม |
+| --- | --- |
+| `watch_assets` relation | คง `condition_id`/`case_material_id`/ฯลฯ เดิม ไม่ set null ไม่ cascade delete |
+| `asset_delivery_items` relation | คง `option_id` เดิม ไม่ set null ไม่ cascade delete |
+| FO Asset Detail display | ยังแสดง label เดิมได้ เพราะ lookup จาก `spec_options` โดยไม่กรอง `is_active` |
+| BO Asset Detail display | ยังแสดง label เดิมได้ เช่นเดียวกับ FO |
+| FO Add/Edit Asset form | ไม่แสดง option ที่ deactivate ใน dropdown |
+| FO Search Filter | ไม่แสดง option ที่ deactivate ในตัวกรอง |
+| FO Watch Alert criteria | ไม่แสดง option ที่ deactivate เป็น criteria ใหม่; Watch Alert เดิมที่อ้าง inactive option ต้องแสดง warning ว่า criteria อ้าง option ที่ inactive แล้ว |
+| Asset snapshot text | ไม่กระทบ เพราะ asset เก็บ snapshot text คู่กับ relation id แยกต่างหาก |
+
+กฎสำคัญ:
+
+- ห้าม hard delete option ที่ถูกใช้ใน asset แล้ว — deactivate เท่านั้น
+- ห้าม cascade delete หรือ set null FK ใน `watch_assets` และ `asset_delivery_items` เมื่อ deactivate
+- FO/BO ต้อง lookup label จาก `spec_options` โดยไม่กรอง `is_active` เมื่อแสดงข้อมูล asset เดิม
+- FO form/filter/Watch Alert ใหม่ ต้องกรอง `is_active=true` เท่านั้น
 
 ## 18. Empty / Loading / Error States
 
@@ -463,6 +730,14 @@ Visual rules:
 - [ ] Integration กับ module อื่น ระบุชัด
 - [ ] Empty/Loading/Error states ครบ
 - [ ] Responsive layout ตาม `00_GLOBAL_RULES_MODULE.md`
+- [ ] ตาราง `spec_option_groups`, `spec_options` และ `spec_option_audit` มี field ครบ
+- [ ] ความสัมพันธ์กับ `watch_assets` และ `asset_delivery_items` ระบุชัด พร้อม nullable rule
+- [ ] Audit table มี action_type ครบ 5 ตัว
+- [ ] Seed file schema ตรงกับ data model
+- [ ] Migration strategy ครอบคลุม add/edit/deactivate/reactivate
+- [ ] Versioning strategy ชัดเจน (bump version ทุก migration)
+- [ ] Impact ต่อ existing assets เมื่อ deactivate ระบุชัด (คง relation, คง snapshot, ห้าม cascade delete)
+- [ ] Sync strategy ระหว่าง seed file และ database ชัดเจน (system vs custom option)
 
 ## 21. Open Decisions
 
