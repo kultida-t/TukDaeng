@@ -1,7 +1,7 @@
 # 04 BO Asset Management Module
 
-**เวอร์ชัน:** `BO-04-v1.0`  
-**วันที่:** 2026-07-31  
+**เวอร์ชัน:** `BO-04-v1.1`  
+**วันที่:** 2026-08-19  
 **สถานะ:** สเปกปัจจุบัน  
 **แพลตฟอร์ม:** Responsive Web Back Office
 
@@ -161,11 +161,12 @@ Asset List ต้องค้นหาได้จาก:
 
 Asset List ต้องมี filter ขั้นต่ำ:
 
-- Status: `Sale`, `Show`, `Hide`, `Sold`, `ซ่อนถาวร`, `ลบโดยเจ้าของ`
-- Preset: `Sale - Consignment`
+- Status: `Sale`, `Sale + Consignment`, `Show`, `Hide`, `Sold`, `ซ่อนชั่วคราว`, `ซ่อนถาวร`, `ลบโดยเจ้าของ`
 - Brand
 - Sort: newest first, oldest first
 - Reset filter
+
+`Sale + Consignment` เป็นตัวเลือกย่อยใน Status filter สำหรับกรอง asset ประเภท consignment ที่เป็น `Sale`
 
 ### การแบ่งหน้า (Pagination)
 
@@ -200,7 +201,11 @@ Asset Detail ใช้สำหรับตรวจสอบข้อมูล 
 - Dial Color
 - Strap / Bracelet Type
 - Description
-- Owner
+- Owner (Display Name)
+- Owner ID
+- Owner Account Status
+- Comment Count
+- Favorite Count
 - Asset Status
 - Moderation State
 - Created timestamp
@@ -247,12 +252,16 @@ Sensitive context ต้องเปิดผ่าน modal หรือ sectio
 
 ### ส่วนประวัติ
 
-Asset Detail ต้องแสดง history ที่เกี่ยวข้องเมื่อมีข้อมูล:
+Asset Detail ต้องแสดง Asset Status History เมื่อมีข้อมูล โดยรวมการเปลี่ยนสถานะ asset, การดำเนินการ moderation, การอ้างอิงรายงาน และ admin action ไว้ในตารางเดียว
 
-- Asset Status History
-- Moderation History
-- Report History
-- Admin Action History
+คอลัมน์ใน Asset Status History:
+
+- Date / Time
+- Actor
+- Action
+- Status (แสดง owner-controlled status และ moderation state หลังการเปลี่ยนแปลง)
+- Reference (อ้างอิง Report ID เมื่อเกี่ยวข้อง)
+- Reason / Note
 
 ## 8. โมเดลสถานะ Asset
 
@@ -353,6 +362,8 @@ Asset ที่เป็น `Consignment` ต้องไม่ถูกนั�
 
 เงื่อนไข:
 
+- ทำได้กับ asset ที่ current owner-controlled status เป็น `Sale` หรือ `Show` รวมถึง asset ที่อยู่ใน moderation state `ซ่อนชั่วคราว` อยู่แล้ว
+- ทำไม่ได้กับ `Hide`, `Sold`, `ลบโดยเจ้าของ` หรือ asset ที่เป็น `ซ่อนถาวร` อยู่แล้ว
 - ต้องใช้ confirmation และ reason
 - ต้องตั้ง moderation state เป็น `ซ่อนถาวร`
 - Owner ยังเห็น asset แบบ read-only พร้อมสถานะถูกซ่อนถาวร
@@ -462,6 +473,17 @@ Reporter History ต้องแสดง:
 - Report reason
 - Additional details
 
+### ประวัติการดำเนินการของ Admin
+
+Admin Action History ต้องแสดง:
+
+- วันที่ / เวลา
+- ผู้ดำเนินการ
+- Action
+- สถานะสินทรัพย์ (แสดง owner-controlled status และ moderation state หลังการเปลี่ยนแปลง)
+- ส่งอีเมล (สถานะการส่งอีเมลแจ้งผู้ใช้ ถ้ามี)
+- รายละเอียด
+
 ### Action ในหน้ารายละเอียด
 
 Action buttons ต้องแสดงเฉพาะที่ทำได้ตาม current asset state, report status และ permission:
@@ -520,16 +542,16 @@ Reported Comments เป็น queue แยกจาก Asset List และ Rep
 ### Field ที่ต้องแสดง
 
 - Report ID
-- Comment ID
-- Asset ID และ Asset name
 - Comment excerpt
-- Comment Type (`Root comment` หรือ `Reply`)
-- Comment Status (`Visible`, `Hidden`, `Removed`, `User Deleted`)
+- Asset ID และ Asset name
 - Report Status (`Pending`, `Closed`)
+- Comment Status (`Visible`, `Hidden`, `Removed`, `User Deleted`)
 - Report Reason
 - Reporters หรือ unique reporter count
 - Priority
 - Row action menu
+
+Comment ID และ Comment Type แสดงใน Comment Report Detail ไม่ใช่ column หลักใน list
 
 ### การค้นหารายงานความคิดเห็น
 
@@ -801,12 +823,13 @@ Sensitive data ต้องเป็น read-only เสมอในเมนู
 
 Action ของ asset:
 
+- `ASSET_AUTO_HIDE` (ระบบซ่อนชั่วคราวอัตโนมัติเมื่อครบเกณฑ์ reporter)
 - `ASSET_TEMP_HIDE`
 - `ASSET_TEMP_UNHIDE`
 - `ASSET_PERMANENT_HIDE`
 - `ASSET_OWNER_DELETE`
 - `REPORT_CLOSE`
-- `REPORT_CLEAR`
+- `REPORT_REOPEN`
 
 Action ของ comment moderation:
 
