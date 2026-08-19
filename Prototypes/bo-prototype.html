@@ -7982,7 +7982,8 @@
       body.asset-list-mode .user-panel-filter-actions,
       body.offer-list-mode .user-panel-filter-actions,
       body.market-list-mode .user-panel-filter-actions,
-      body.user-accounts-mode .user-panel-filter-actions {
+      body.user-accounts-mode .user-panel-filter-actions,
+      body.option-master-mode .user-panel-filter-actions {
         display: flex;
         align-items: center;
         justify-content: flex-end;
@@ -8365,6 +8366,31 @@
       }
       .user-filter-bar.asset-mode {
         grid-template-columns: 1fr;
+      }
+      body.option-master-mode .filters {
+        display: grid;
+        grid-template-columns: 1fr;
+        width: 100%;
+        gap: 8px;
+      }
+      body.option-master-mode .user-filter-bar {
+        display: grid;
+        grid-template-columns: 1fr;
+        width: 100%;
+        gap: 8px;
+      }
+      body.option-master-mode .user-filter-bar .search,
+      body.option-master-mode .user-filter-bar .user-advanced-filter,
+      body.option-master-mode .user-filter-bar .custom-select,
+      body.option-master-mode .user-filter-bar .custom-select-trigger {
+        width: 100%;
+        max-width: none;
+        min-width: 0;
+        box-sizing: border-box;
+      }
+      body.option-master-mode .custom-select-menu {
+        max-width: 100%;
+        overflow-x: hidden;
       }
       body.asset-list-mode:not(.article-list-mode):not(.category-list-mode):not(.reported-board-mode) .user-filter-bar.asset-mode {
         display: grid;
@@ -19719,20 +19745,23 @@
         "offer-detail-mode", "user-detail-mode", "option-group-list-mode"
       );
       document.body.classList.add("option-master-mode", "option-detail-mode");
-      setPageActions(renderPageBackButton("data-back-option-groups", "Back to Option Groups"));
-      syncExpandedNavForModule("option-master", "");
       const total = getOptionGroupTotalOptions(group);
       const active = getOptionGroupActiveOptions(group);
+      const activeCountForReorder = active;
+      setPageActions(`
+        ${renderPageBackButton("data-back-option-groups", "Back to Option Groups")}
+        ${activeCountForReorder >= 2 ? `<button class="btn" type="button" data-option-reorder-open title="Reorder" aria-label="Reorder">${iconSvg.sort}<span>Reorder</span></button>` : ""}
+        <button class="btn" type="button" data-option-add-open title="Add Option" aria-label="Add Option">${iconSvg.plus}<span>Add Option</span></button>
+      `);
+      syncExpandedNavForModule("option-master", "");
       document.querySelector("#crumb").textContent = `การดำเนินงาน / Option Master / ${group}`;
       document.querySelector("#page-title").textContent = group;
       document.querySelector("#page-meta").textContent = "";
       document.querySelector("#panel-title").textContent = `${group} — Options (${total})`;
       document.querySelector("#panel-subtitle").textContent = `${g.display_name_th} / ${g.display_name_en}${g.allows_multi_select ? " · multi-select" : ""}`;
       document.querySelector("#primary-action").textContent = "";
-      const activeCountForReorder = active;
       document.querySelector("#user-panel-filter-actions").innerHTML = `
-        <button class="btn" type="button" data-option-add-open title="Add Option" aria-label="Add Option">${iconSvg.plus}<span>Add Option</span></button>
-        ${activeCountForReorder >= 2 ? `<button class="btn" type="button" data-option-reorder-open title="Reorder" aria-label="Reorder">${iconSvg.sort}<span>Reorder</span></button>` : ""}
+        <button class="btn user-filter-toggle" type="button" data-option-detail-filter-toggle aria-expanded="${optionDetailFilterOpen}">${iconSvg.filter}<span>${optionDetailFilterOpen ? "ปิดตัวกรอง" : "เปิดตัวกรอง"}</span></button>
       `;
       document.querySelector(".filters").innerHTML = `
         <div class="user-filter-bar option-detail-filter-bar" data-filter-open="${optionDetailFilterOpen}">
@@ -25030,6 +25059,16 @@
         assetReportFilterToggle.setAttribute("aria-expanded", String(assetReportFilterOpen));
         const label = assetReportFilterToggle.querySelector("span");
         if (label) label.textContent = assetReportFilterOpen ? "ปิดตัวกรอง" : "เปิดตัวกรอง";
+        return;
+      }
+      const optionDetailFilterToggle = event.target.closest("[data-option-detail-filter-toggle]");
+      if (optionDetailFilterToggle) {
+        optionDetailFilterOpen = !optionDetailFilterOpen;
+        const filterBar = document.querySelector(".user-filter-bar");
+        if (filterBar) filterBar.dataset.filterOpen = String(optionDetailFilterOpen);
+        optionDetailFilterToggle.setAttribute("aria-expanded", String(optionDetailFilterOpen));
+        const label = optionDetailFilterToggle.querySelector("span");
+        if (label) label.textContent = optionDetailFilterOpen ? "ปิดตัวกรอง" : "เปิดตัวกรอง";
         return;
       }
       const assetFilterToggle = event.target.closest("[data-asset-filter-toggle]");
