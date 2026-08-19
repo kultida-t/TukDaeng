@@ -1283,13 +1283,16 @@
       min-width: 1132px;
     }
     body.option-master-mode #table .option-group-table {
-      min-width: 880px;
+      min-width: 892px;
     }
     body.option-master-mode #table .option-detail-table {
-      min-width: 980px;
+      min-width: 1084px;
     }
-    body.option-master-mode #table > .footer-range {
-      min-width: 880px;
+    body.option-master-mode.option-group-list-mode #table > .footer-range {
+      min-width: 892px;
+    }
+    body.option-master-mode.option-detail-mode #table > .footer-range {
+      min-width: 1084px;
     }
     body.offer-list-mode .layout > .panel {
       border-color: #d7e2f0;
@@ -1880,36 +1883,6 @@
       gap: 6px;
       flex-wrap: wrap;
       justify-content: flex-end;
-    }
-    body.option-master-mode .option-detail-table .asset-row:not(.head) .user-row-actions .panel-action {
-      min-height: auto;
-      padding: 4px 10px;
-      border: 1px solid var(--line);
-      background: #fff;
-      color: var(--blue);
-      font-weight: 600;
-      white-space: nowrap;
-    }
-    body.option-master-mode .option-detail-table .asset-row:not(.head) .user-row-actions .panel-action:hover {
-      background: #e8f1ff;
-    }
-    body.option-master-mode .option-detail-table .asset-row:not(.head) .user-row-actions .panel-action[disabled] {
-      color: var(--muted);
-      background: #f1f5f9;
-      cursor: not-allowed;
-      opacity: .7;
-    }
-    body.option-master-mode .option-group-table .asset-row:not(.head) .user-row-actions .panel-action {
-      min-height: auto;
-      padding: 4px 10px;
-      border: 1px solid var(--line);
-      background: #fff;
-      color: var(--blue);
-      font-weight: 600;
-      white-space: nowrap;
-    }
-    body.option-master-mode .option-group-table .asset-row:not(.head) .user-row-actions .panel-action:hover {
-      background: #e8f1ff;
     }
     body.market-list-mode .layout {
       grid-template-columns: minmax(0, 1fr);
@@ -7358,6 +7331,24 @@
       body.asset-list-mode:not(.article-list-mode):not(.category-list-mode):not(.reported-board-mode) #table > .footer-range {
         min-width: 1132px;
       }
+      body.option-master-mode #table {
+        max-width: 100%;
+        overflow-x: auto;
+        overflow-y: visible;
+        scrollbar-width: thin;
+      }
+      body.option-master-mode.option-group-list-mode #table .option-group-table {
+        min-width: 892px;
+      }
+      body.option-master-mode.option-group-list-mode #table > .footer-range {
+        min-width: 892px;
+      }
+      body.option-master-mode.option-detail-mode #table .option-detail-table {
+        min-width: 1084px;
+      }
+      body.option-master-mode.option-detail-mode #table > .footer-range {
+        min-width: 1084px;
+      }
       body.user-accounts-mode:not(.user-detail-mode) .user-row:not(.report-row) {
         grid-template-columns: minmax(74px, .42fr) minmax(138px, 1.08fr) minmax(112px, .7fr) minmax(124px, .78fr) minmax(58px, .36fr) minmax(84px, .54fr) minmax(108px, .66fr) minmax(42px, .22fr);
         gap: 10px;
@@ -8472,6 +8463,11 @@
         padding: 12px 14px 16px;
         background: #f8fbff;
       }
+      body.option-master-mode #table {
+        padding: 12px 14px 16px;
+        background: #f8fbff;
+        overflow-x: hidden;
+      }
       body.offer-detail-mode #table {
         padding: 0;
         background: transparent;
@@ -8489,8 +8485,8 @@
         gap: 12px;
         min-width: 0;
       }
-      body.option-master-mode #table .option-group-table,
-      body.option-master-mode #table .option-detail-table {
+      body.option-master-mode.option-group-list-mode #table .option-group-table,
+      body.option-master-mode.option-detail-mode #table .option-detail-table {
         grid-template-columns: 1fr;
         gap: 12px;
         min-width: 0;
@@ -8500,7 +8496,8 @@
       body.reported-board-mode #table > .footer-range,
       body.asset-list-mode:not(.article-list-mode):not(.category-list-mode):not(.reported-board-mode) #table > .footer-range,
       body.offer-list-mode #table > .footer-range,
-      body.option-master-mode #table > .footer-range {
+      body.option-master-mode.option-group-list-mode #table > .footer-range,
+      body.option-master-mode.option-detail-mode #table > .footer-range {
         min-width: 0;
       }
       body.offer-list-mode .asset-table {
@@ -8513,7 +8510,8 @@
       body.offer-list-mode .footer-range,
       body.article-list-mode .footer-range,
       body.category-list-mode .footer-range,
-      body.reported-board-mode .footer-range {
+      body.reported-board-mode .footer-range,
+      body.option-master-mode .footer-range {
         margin-top: 12px;
         padding: 13px 16px;
         background: transparent;
@@ -19687,7 +19685,12 @@
                 <div data-label="Active"><div class="main-text">${active}</div></div>
                 <div data-label="Multi-select"><div class="main-text">${g.allows_multi_select ? "Yes" : "No"}</div></div>
                 <div class="user-row-actions">
-                  <button class="panel-action" type="button" data-option-group-view="${g.group}" aria-label="View ${g.group}" title="View"><span class="asset-report-view-label">View</span></button>
+                  <details class="row-menu">
+                    <summary title="Option group actions">...</summary>
+                    <div class="row-menu-list">
+                      <button type="button" data-option-group-view="${g.group}">View detail</button>
+                    </div>
+                  </details>
                 </div>
               </div>
             `;
@@ -19776,17 +19779,27 @@
               : `<span class="pill gray">Inactive</span>`;
             const systemLabel = o.is_system ? "Yes" : "No";
             const deactivateDisabled = isOptionDeactivateDisabled(g.group, o.is_system);
-            const actionButtons = o.is_active
+            const actionMenu = o.is_active
               ? `
-                <button class="panel-action" type="button" data-option-edit="${o.key}" aria-label="Edit ${o.key}" title="Edit">Edit</button>
-                ${deactivateDisabled
-                  ? `<button class="panel-action" type="button" disabled title="กลุ่มนี้เป็น required field สำหรับ Sale status จึงไม่สามารถ deactivate ผ่าน BO ได้ ต้องแก้ไขผ่าน seed file และ migration" aria-disabled="true">Deactivate</button>`
-                  : `<button class="panel-action" type="button" data-option-deactivate="${o.key}" aria-label="Deactivate ${o.key}" title="Deactivate">Deactivate</button>`
-                }
+                <details class="row-menu">
+                  <summary title="Option actions">...</summary>
+                  <div class="row-menu-list">
+                    <button type="button" data-option-edit="${o.key}">Edit</button>
+                    ${deactivateDisabled
+                      ? `<button type="button" disabled title="กลุ่มนี้เป็น required field สำหรับ Sale status จึงไม่สามารถ deactivate ผ่าน BO ได้ ต้องแก้ไขผ่าน seed file และ migration" aria-disabled="true">Deactivate</button>`
+                      : `<button type="button" data-option-deactivate="${o.key}">Deactivate</button>`
+                    }
+                  </div>
+                </details>
               `
               : `
-                <button class="panel-action" type="button" data-option-edit="${o.key}" aria-label="Edit ${o.key}" title="Edit">Edit</button>
-                <button class="panel-action" type="button" data-option-reactivate="${o.key}" aria-label="Reactivate ${o.key}" title="Reactivate">Reactivate</button>
+                <details class="row-menu">
+                  <summary title="Option actions">...</summary>
+                  <div class="row-menu-list">
+                    <button type="button" data-option-edit="${o.key}">Edit</button>
+                    <button type="button" data-option-reactivate="${o.key}">Reactivate</button>
+                  </div>
+                </details>
               `;
             return `
               <div class="asset-row" data-option-key="${o.key}">
@@ -19809,7 +19822,7 @@
                 <div data-label="Sort Order"><div class="main-text">${o.sort_order}</div></div>
                 <div data-label="Status">${statusPill}</div>
                 <div data-label="System"><div class="main-text">${systemLabel}</div></div>
-                <div class="user-row-actions">${actionButtons}</div>
+                <div class="user-row-actions">${actionMenu}</div>
               </div>
             `;
           }).join("") || `<div class="detail-empty user-empty">ไม่พบข้อมูล</div>`}
