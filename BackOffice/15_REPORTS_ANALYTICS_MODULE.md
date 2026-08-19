@@ -97,7 +97,7 @@ Reports ที่ต้องมี:
 3. Offer Report
 4. Chat Report
 5. Content / Board Report
-6. Social Report
+6. Asset Reported Comments Report
 7. Search Report
 8. Watch Alert Report
 9. Support Report
@@ -247,16 +247,13 @@ Filters:
 
 Preview as FO ต้องไม่เพิ่ม view count
 
-## 13. Social Report
+## 13. Asset Reported Comments Report
 
 | Metric / Data | Requirement |
 | --- | --- |
 | Comments/replies | Count by period |
 | Reported comments | Count, reason, status, SLA |
 | Hidden/removed comments | Count by actor/reason |
-| Likes/favorites | Aggregate trend and top assets |
-| Follow/unfollow | Trend and top followed users |
-| Block impact | Excluded follow/feed relationships where relevant |
 
 Filters:
 
@@ -265,8 +262,6 @@ Filters:
 - Comment status
 - Asset/owner
 - Date range
-
-BO ไม่ควรใช้ report screen แก้ individual like/favorite/follow record โดยตรง
 
 ## 14. Search Report
 

@@ -66,7 +66,6 @@ Current Back Office baseline: `BO-PRD-v0.1`
 | BO directory management | [BackOffice/07_DIRECTORY_MODULE.md](BackOffice/07_DIRECTORY_MODULE.md) (future/postponed; not Phase 1) |
 | BO audit log | [BackOffice/08_AUDIT_LOG_MODULE.md](BackOffice/08_AUDIT_LOG_MODULE.md) |
 | BO offer / chat management | [BackOffice/09_OFFER_CHAT_MODULE.md](BackOffice/09_OFFER_CHAT_MODULE.md) |
-| BO social interaction management | [BackOffice/10_SOCIAL_INTERACTION_MODULE.md](BackOffice/10_SOCIAL_INTERACTION_MODULE.md) |
 | BO watch alert management | [BackOffice/11_WATCH_ALERT_MODULE.md](BackOffice/11_WATCH_ALERT_MODULE.md) |
 | BO help / support management | [BackOffice/12_HELP_SUPPORT_MODULE.md](BackOffice/12_HELP_SUPPORT_MODULE.md) |
 | BO account deletion requests | [BackOffice/13_ACCOUNT_DELETION_MODULE.md](BackOffice/13_ACCOUNT_DELETION_MODULE.md) |

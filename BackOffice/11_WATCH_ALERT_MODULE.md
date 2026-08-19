@@ -290,7 +290,7 @@ Audit action ขั้นต่ำ:
 | User Management | Alert owner profile, account status, support context |
 | Asset Management | Asset status/visibility changes affect match/result |
 | Market Data | Brand/model/reference active status affects criteria and trigger |
-| Social Interaction | Block relation affects result visibility |
+| Asset Management (Reported Comments) | Block relation affects result visibility |
 | Notification | Delivery logs, templates, retry policy |
 | Audit Log | Disable/enable/export/job events searchable |
 | Reports & Analytics | Watch Alert report and search trend report |

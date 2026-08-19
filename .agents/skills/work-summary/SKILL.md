@@ -164,12 +164,19 @@ mcp_call_tool(
   server_name="kanban-tukdaeng",
   tool_name="save_session_note",
   arguments={
-    "summary": "<สรุป session — ใช้ภาษาง่าย ๆ ไม่เทคนิค>"
+    "task_id": "<task_id>",
+    "summary": "<สรุป session แบบกระชับ — ใช้ภาษาง่าย ๆ ไม่เทคนิค>",
+    "note": "<รายละเอียด session: สิ่งที่ทำ, decisions, open items, next step>"
   }
 )
 ```
 
-**เนื้อหาที่ควรบันทึกใน session note:**
+**พารามิเตอร์:**
+- `task_id` (required) — id ของ task ที่เกี่ยวข้อง
+- `summary` (required) — สรุปสั้น ๆ 1 บรรทัด
+- `note` (required) — รายละเอียดเต็มของ session
+
+**เนื้อหาที่ควรบันทึกใน `note`:**
 - สรุปงานที่ทำใน task นี้ (กระชับ)
 - สิ่งที่ตัดสินใจ (decisions) และเหตุผล (WHY)
 - สิ่งที่ยังเปิดอยู่ (open items) — ถ้ามี
@@ -194,6 +201,7 @@ mcp_call_tool(
 
 #### กฎสำคัญ
 - ⚠️ **ต้องถามผู้ใช้ยืนยันก่อนบันทึก session note และปิด task** เสมอ
+- ⚠️ **ห้ามเรียก `log_time` ก่อน `move_task` เป็น `done`** — auto-timer ของ `move_task` บันทึกเวลาอัตโนมัติอยู่แล้ว การเรียก `log_time` ด้วยมือก่อนปิด task จะทำให้ `hours_spent` สูงกว่าเวลาจริง (double-count) ให้ปรับชั่วโมงหลังปิด task ผ่าน `update_task` หรือ `log_time` เฉพาะเมื่อ `get_time_summary` แสดงค่าไม่ถูกต้องเท่านั้น
 - ลำดับ: สรุป → ถามยืนยัน → save_session_note → move_task เป็น `done`
 - ถ้าผู้ใช้ขอแก้ไข → แก้ไขสรุปแล้วแสดงใหม่ แล้วถามยืนยันอีกครั้ง
 - ถ้าผู้ใช้บอก "บันทึก" / "ยืนยัน" / "OK" → ดำเนินการบันทึกและปิด task
@@ -235,12 +243,19 @@ mcp_call_tool(
   server_name="kanban-tukdaeng",
   tool_name="save_session_note",
   arguments={
-    "summary": "<สรุป session — ใช้ภาษาง่าย ๆ ไม่เทคนิค>"
+    "task_id": "<task_id>",
+    "summary": "<สรุป session แบบกระชับ — ใช้ภาษาง่าย ๆ ไม่เทคนิค>",
+    "note": "<รายละเอียด session: สิ่งที่ทำ, decisions, open items, next step>"
   }
 )
 ```
 
-**เนื้อหาที่ควรบันทึกใน session note (กรณี pause):**
+**พารามิเตอร์:**
+- `task_id` (required) — id ของ task ที่เกี่ยวข้อง
+- `summary` (required) — สรุปสั้น ๆ 1 บรรทัด
+- `note` (required) — รายละเอียดเต็มของ session
+
+**เนื้อหาที่ควรบันทึกใน `note` (กรณี pause):**
 - สรุปงานที่ทำใน task นี้ (เท่าที่ทำไป)
 - สิ่งที่ตัดสินใจ (decisions) และเหตุผล (WHY)
 - **สิ่งที่ยังเปิดอยู่ (open items) — สำคัญ** เพื่อให้ session ใหม่รู้ว่าต้องทำอะไรต่อ
@@ -401,12 +416,19 @@ mcp_call_tool(
   server_name="kanban-tukdaeng",
   tool_name="save_session_note",
   arguments={
-    "summary": "<สรุป session — ใช้ภาษาง่าย ๆ ไม่เทคนิค>"
+    "task_id": "<task_id>",
+    "summary": "<สรุป session แบบกระชับ — ใช้ภาษาง่าย ๆ ไม่เทคนิค>",
+    "note": "<รายละเอียด session: สิ่งที่ทำ, decisions, open items, next step>"
   }
 )
 ```
 
-**เนื้อหาที่ควรบันทึกใน session note:**
+**พารามิเตอร์:**
+- `task_id` (required) — id ของ task ที่เกี่ยวข้อง
+- `summary` (required) — สรุปสั้น ๆ 1 บรรทัด
+- `note` (required) — รายละเอียดเต็มของ session
+
+**เนื้อหาที่ควรบันทึกใน `note`:**
 - สรุปงานที่ทำใน session นี้ (กระชับ)
 - สิ่งที่ตัดสินใจ (decisions) และเหตุผล (WHY)
 - สิ่งที่ยังเปิดอยู่ (open items)

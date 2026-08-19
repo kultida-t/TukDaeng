@@ -48,7 +48,7 @@ BO has exactly one admin account type: `Admin`. There are no BO sub-types for co
 
 | Admin Account Type | Primary Responsibility |
 |---|---|
-| Admin | Manage all BO operational areas allowed by product scope and policy: users, assets, content, market data, offers, chat, social, watch alerts, support, account deletion, notifications, reports, audit, and settings. Directory is future/postponed from Phase 1. |
+| Admin | Manage all BO operational areas allowed by product scope and policy: users, assets, content, market data, offers, chat, asset reported comments, watch alerts, support, account deletion, notifications, reports, audit, and settings. Directory is future/postponed from Phase 1. |
 
 ### 2.2 FO Users
 
@@ -62,7 +62,6 @@ FO users have a single account type: `User`. BO must support activity from the s
 - User Management
 - Asset Management
 - Offer & Chat Management
-- Social Interaction Management
 - Content / Board Management
 - Market Data Management
 - Watch Alert Management
@@ -226,35 +225,7 @@ Admin ต้องสามารถ:
 
 ---
 
-## 4.6 Social Interaction Management
-
-### Requirements
-
-รองรับการจัดการ:
-
-- Comments
-- Replies
-- Like comment
-- Asset likes / favorites
-- Follow / unfollow
-- Reported social content
-
-Admin ต้องสามารถ:
-
-- ดู comment ทั้งหมด
-- Hide / Unhide / Soft delete comment
-- ดู report reason
-- ดู aggregate likes/favorites/follows
-
-### Acceptance Criteria
-
-- Hidden comment ต้องหายจาก FO ทันที
-- Reported comment ต้องปรากฏใน moderation queue
-- Like/Favorite/Follow ต้องดูเป็น analytics ได้
-
----
-
-## 4.7 Content / Board Management
+## 4.6 Content / Board Management
 
 ### Requirements
 
@@ -292,7 +263,7 @@ Admin ต้องสามารถ:
 
 ---
 
-## 4.8 Market Data Management
+## 4.7 Market Data Management
 
 ### Requirements
 
@@ -312,7 +283,7 @@ Admin ต้องสามารถ:
 
 ---
 
-## 4.9 Watch Alert Management
+## 4.8 Watch Alert Management
 
 ### Requirements
 
@@ -333,7 +304,7 @@ Admin ต้องสามารถ:
 
 ---
 
-## 4.10 Directory Management
+## 4.9 Directory Management
 
 **Phase 1 status:** Postponed / future scope only. Keep this section as reference for a later Directory phase; do not implement or expose it in the Phase 1 BO prototype/build.
 
@@ -365,7 +336,7 @@ Fields ที่ต้องรองรับ:
 
 ---
 
-## 4.11 Help & Support
+## 4.10 Help & Support
 
 ### Requirements
 
@@ -386,7 +357,7 @@ Admin ต้องสามารถ:
 
 ---
 
-## 4.12 Notifications
+## 4.11 Notifications
 
 ### Requirements
 
@@ -418,7 +389,7 @@ System Trigger ต้องรองรับ:
 
 ---
 
-## 4.13 Reports & Analytics
+## 4.12 Reports & Analytics
 
 Reports ที่ต้องมี:
 
@@ -427,7 +398,7 @@ Reports ที่ต้องมี:
 - Offer Report
 - Chat Report
 - Content / Board Report
-- Social Report
+- Asset Reported Comments Report
 - Search Report
 - Watch Alert Report
 - Support Report
@@ -443,7 +414,7 @@ Reports ที่ต้องมี:
 
 ---
 
-## 4.14 Audit Log
+## 4.13 Audit Log
 
 ### Requirements
 
@@ -541,7 +512,7 @@ Reports ที่ต้องมี:
 ### Phase 2
 
 - Offer & Chat Management
-- Social Moderation
+- Asset Reported Comments Moderation
 - Watch Alert Management
 - Support Ticket
 - Notifications

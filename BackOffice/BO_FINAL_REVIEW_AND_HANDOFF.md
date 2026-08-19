@@ -49,7 +49,6 @@
 | 07 | Directory | Future | Postponed from Phase 1 |
 | 08 | Audit Log | 1 | Complete |
 | 09 | Offer / Chat | 2 | Complete |
-| 10 | Social Interaction | 2 | Complete |
 | 11 | Watch Alert | 2 | Complete |
 | 12 | Help / Support | 2 | Complete |
 | 13 | Account Deletion Requests | 2 | Complete |
@@ -80,12 +79,11 @@
 ### 4.3 Phase 2 Build
 
 1. Offer / Chat
-2. Social Interaction
-3. Watch Alert
-4. Help / Support
-5. Account Deletion Requests
-6. Notifications
-7. Reports & Analytics
+2. Watch Alert
+3. Help / Support
+4. Account Deletion Requests
+5. Notifications
+6. Reports & Analytics
 
 ### 4.4 Phase 3 Build
 

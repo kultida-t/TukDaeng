@@ -152,7 +152,7 @@ Recommended note format:
 | Permission / Privacy | BO has one `Admin` account type; enforce module/action permission at route, UI, API, and service layers. Separate permission keys are needed for module view, detail view, reported queue view, sensitive reveal, purchase/provenance proof view, sale history view, force hide, restore temporary hide, permanent hide, close/clear report, export, and audit history. Sensitive purchase price/date/from, proof of payment, consignment contact/terms, owner contact, and sold history must be masked by default in production and reveal only by policy with audit. UI hiding is not sufficient, and direct URL/API access must be rejected server-side. |
 | Asset Actions | Prototype action availability follows current asset type and moderation state: Admin can force-hide public `Sale`/`Show` assets in active/reported/reviewing states, restore only temporarily hidden assets, and permanently hide public or temporarily hidden assets according to policy. `Hide` owner-only and `Sold` history states are not quick force-hide targets in V1. Confirmation flows must require reason/note before mutation in production, persist before/after asset status and report status, and close/clear related pending reports only for valid restore/permanent-hide outcomes. ลบโดยเจ้าของ is shown as retained BO record and has no standard moderation action. |
 | Responsive QA | Verify 375px, 768px, 1280px, and 1440px. Desktop/wide desktop use dense operational rows, summary cards, top filter controls, row action menus, and full Asset Detail layout with FO preview plus BO context. Tablet/mobile use stacked card rows, hidden table headers, hamburger navigation, filter toggle with advanced filters expanding in the list area, reachable row action menus, image galleries/thumbnails that do not overflow, and detail/report/action views that stack without clipped Thai text. |
-| FO Sync Impact | Asset visibility changes must update FO Feed, Search, Asset Detail/public deep links, Profile/Collection, Watch Alert matching/results, Board/social references where applicable, Offer/Chat references, and Notifications/delivery context. `Sale` returns to Feed/Search/Watch Alert and may accept offers; `Show` stays profile/detail only and must not match Feed/Search/Watch Alert; `Hide`, `Sold`, `ลบโดยเจ้าของ`, `ซ่อนชั่วคราว`, and `ซ่อนถาวร` are not public marketplace results and do not accept new offers. Offer impact is fixed: ซ่อนชั่วคราว/auto hidden -> `Paused`, review passed -> `Pending`, ซ่อนถาวร -> `Invalidated`, ลบโดยเจ้าของ or owner Hide -> `Cancelled`, Sold -> `Rejected`. Sync contract must define event names, payload, timing, retry/idempotency, cache/index invalidation, admin-visible failure state, and audit correlation id. |
+| FO Sync Impact | Asset visibility changes must update FO Feed, Search, Asset Detail/public deep links, Profile/Collection, Watch Alert matching/results, Board/comment references where applicable, Offer/Chat references, and Notifications/delivery context. `Sale` returns to Feed/Search/Watch Alert and may accept offers; `Show` stays profile/detail only and must not match Feed/Search/Watch Alert; `Hide`, `Sold`, `ลบโดยเจ้าของ`, `ซ่อนชั่วคราว`, and `ซ่อนถาวร` are not public marketplace results and do not accept new offers. Offer impact is fixed: ซ่อนชั่วคราว/auto hidden -> `Paused`, review passed -> `Pending`, ซ่อนถาวร -> `Invalidated`, ลบโดยเจ้าของ or owner Hide -> `Cancelled`, Sold -> `Rejected`. Sync contract must define event names, payload, timing, retry/idempotency, cache/index invalidation, admin-visible failure state, and audit correlation id. |
 | Open Question | Confirm final route names/query params, exact permission key names, whether spec-only filters become visible in V1 UI or remain API/report filters, sensitive reveal approval level, and final FO sync/cache invalidation SLA for moderation actions. Restore from ซ่อนถาวร is out of standard moderation flow; restore remains available only for temporary hide. |
 
 ## 5. Content / Board
@@ -277,34 +277,6 @@ Recommended note format:
 | Permission / Audit | Offer list/detail is read-only. Sensitive reveal, related-chat view, and offer export must be permission-gated and audit-logged. No V1 write action should appear in this module. |
 | FO Sync Impact | Offer status must reflect FO/system events: seller accept/decline, asset deleted or owner hide -> `Cancelled`, asset sold -> other pending offers `Rejected`, asset auto-hidden/temp-hidden -> `Paused`, review passed -> `Pending`, permanent hide -> `Invalidated`, notification delivery context, and account-deletion dependency checks. |
 
-## 10. Social Interaction Management
-
-- [ ] Comment/reply list ต้องรองรับ search/filter/sort/pagination และ root/reply relation 1 level
-- [ ] Comment status ต้องรองรับ `Visible`, `Reported`, `Hidden`, `Removed`, `User Deleted`
-- [ ] Reported comment จาก FO ต้องเข้า BO moderation queue และไม่ทำให้ comment หายจาก FO ทันที
-- [ ] Reported comment queue ต้องแสดง SLA baseline 24 ชั่วโมง
-- [ ] Comment detail ต้องแสดง asset context, author, parent/reply relation, report history และ moderation timeline
-- [ ] Admin ห้าม edit user comment text โดยตรง
-- [ ] Admin hide/unhide/remove comment ได้ตาม permission พร้อม confirmation, reason และ audit
-- [ ] Comment count และ Asset Detail visibility ต้อง sync หลัง hide/remove/unhide
-- [ ] User-deleted comment ต้องแยกจาก admin-removed comment เพราะ actor/source ต่างกัน
-- [ ] Like/Favorite analytics ต้องสะท้อน rule: Like เพิ่ม Favorites และ Unlike ลบออกจาก Favorites
-- [ ] BO ไม่ควรแก้ individual like/favorite record โดย Admin ทั่วไป
-- [ ] Follow analytics ต้องรองรับ follower/following relation, follow/unfollow trend และ top followed users
-- [ ] Following Feed rule ต้องใช้เฉพาะ asset status `Sale` ของ user ที่ follow
-- [ ] Block relation ต้องไม่ถูกใช้ในการแสดง Following Feed และต้องเห็น context ใน BO review
-- [ ] Export social data ต้องจำกัด permission และ audit export event
-- [ ] Social Interaction UI ต้อง responsive ที่ 375px, 768px, 1280px และ 1440px
-
-### Social Interaction Prototype Handoff Notes
-
-| Area | Notes |
-| --- | --- |
-| Prototype / Spec Alignment | The prototype exposes `Comments`, `Likes`, `Follows`, and `Reported Social` under Social Interaction. This matches the module split, but the current screen is an overview/list shell rather than full moderation and analytics workflows. |
-| Implementation Gap | Production still needs comment/reply detail, reported-comment queue, moderation timeline, hide/unhide/remove confirmations, like/favorite aggregate analytics, follow analytics, and export handling. |
-| Permission / Audit | Admin must not edit user comment text. Hide/unhide/remove, sensitive reveal, and export require permission checks, reason where required, and audit. |
-| FO Sync Impact | Comment moderation must update FO Asset Detail comment visibility/counts. Like/Favorite and Follow reporting must respect FO rules, including Like adding Favorites and Following Feed using only `Sale` assets. |
-
 ## 11. Watch Alert Management
 
 - [ ] Watch Alert list ต้องรองรับ search/filter/sort/pagination และ export ตาม permission
@@ -408,7 +380,7 @@ Recommended note format:
 
 ## 15. Reports & Analytics
 
-- [ ] Report catalog ต้องมี User, Asset, Offer, Chat, Content / Board, Social, Search, Watch Alert, Support, Notification และ Account Deletion reports
+- [ ] Report catalog ต้องมี User, Asset, Offer, Chat, Content / Board, Asset Reported Comments, Search, Watch Alert, Support, Notification และ Account Deletion reports
 - [ ] ทุก report ต้องรองรับ date range, filter, sort, policy-based visibility และ last updated
 - [ ] ทุก report ที่ export ได้ต้องรองรับ CSV และ Excel ตาม permission
 - [ ] Large export ต้องใช้ background job พร้อม status Queued / Processing / Completed / Failed / Expired / Cancelled
@@ -430,7 +402,7 @@ Recommended note format:
 
 | Area | Notes |
 | --- | --- |
-| Prototype / Spec Alignment | The prototype exposes Reports with `User`, `Asset`, `Offer`, `Search`, and `Export Jobs`. This covers the visible shell, but the spec requires the full report catalog: User, Asset, Offer, Chat, Content/Board, Social, Search, Watch Alert, Support, Notification, Account Deletion, and Export Job/Access History. |
+| Prototype / Spec Alignment | The prototype exposes Reports with `User`, `Asset`, `Offer`, `Search`, and `Export Jobs`. This covers the visible shell, but the spec requires the full report catalog: User, Asset, Offer, Chat, Content/Board, Asset Reported Comments, Search, Watch Alert, Support, Notification, Account Deletion, and Export Job/Access History. |
 | Implementation Gap | Production still needs report catalog/detail views, date range/filter/sort controls, last-updated timestamps, chart/table fallbacks, CSV/Excel exports, background export job states, and sensitive report-access handling. |
 | Permission / Audit | Report access must be policy-based. Sensitive report views/exports require masking by default, explicit permission, reason where required, and audit events for request/complete/fail/download. |
 | FO Sync Impact | Reports must use canonical FO terms: asset `Show`/`Hide`, offer status `Rejected`, Watch Alert Sale-only matching and `Watch Alert Result List` destination, first-response support SLA 8 hours, and guest/public analytics separated from registered-user metrics. |

@@ -57,12 +57,11 @@ Directory is postponed from Phase 1. Keep `07_DIRECTORY_MODULE.md` as a future r
 | Module | Phase 2 Scope |
 | --- | --- |
 | Offer Management | `09_OFFER_CHAT_MODULE.md` - Read-only offer list/detail, buyer/seller and asset interest overview, related chat context, notification delivery, pending-offer dependency |
-| Social Interaction | `10_SOCIAL_INTERACTION_MODULE.md` - Comment/reply moderation, like/favorite/follow analytics, reported social content |
 | Watch Alert | `11_WATCH_ALERT_MODULE.md` - Alert criteria view, trigger history, notification on/off, disable abuse alerts |
 | Help & Support | `12_HELP_SUPPORT_MODULE.md` - Ticket queue, manual ticket จาก LINE/Phone/Email, assignment, reply history, status, priority, SLA, related entity |
 | Account Deletion | `13_ACCOUNT_DELETION_MODULE.md` - Request queue, pending-offer validation, 30-day grace period, archive/anonymization tracking |
 | Notifications | `14_NOTIFICATIONS_MODULE.md` - Broadcast notifications, system trigger templates, delivery logs, retry failed notifications, FO-supported type constraints |
-| Reports | `15_REPORTS_ANALYTICS_MODULE.md` - User, asset, offer, chat, board, social, search, watch alert, support, notification, account deletion reports, export jobs |
+| Reports | `15_REPORTS_ANALYTICS_MODULE.md` - User, asset, offer, chat, board, asset reported comments, search, watch alert, support, notification, account deletion reports, export jobs |
 
 ## 6. Phase 3 Scope
 
