@@ -4212,6 +4212,11 @@
       align-items: stretch;
       gap: 8px;
     }
+    .user-filter-bar.option-detail-filter-bar {
+      grid-template-columns: minmax(260px, 1.65fr) minmax(138px, .82fr) 42px;
+      align-items: stretch;
+      gap: 8px;
+    }
     body.user-accounts-mode:not(.user-detail-mode) .user-filter-bar .search,
     body.user-accounts-mode:not(.user-detail-mode) .user-filter-bar .custom-select,
     body.user-accounts-mode:not(.user-detail-mode) .user-filter-bar .custom-select-trigger,
@@ -4219,24 +4224,28 @@
     .user-filter-bar.report-mode .search,
     .user-filter-bar.content-mode .search,
     .user-filter-bar.category-mode .search,
+    .user-filter-bar.option-detail-filter-bar .search,
     body.offer-list-mode .offer-filter-bar .search,
     body.asset-list-mode:not(.article-list-mode):not(.category-list-mode):not(.reported-board-mode) .user-filter-bar.asset-mode .search,
     .user-filter-bar.asset-mode .search,
     .user-filter-bar.report-mode .custom-select,
     .user-filter-bar.content-mode .custom-select,
     .user-filter-bar.category-mode .custom-select,
+    .user-filter-bar.option-detail-filter-bar .custom-select,
     body.offer-list-mode .offer-filter-bar .custom-select,
     body.asset-list-mode:not(.article-list-mode):not(.category-list-mode):not(.reported-board-mode) .user-filter-bar.asset-mode .custom-select,
     .user-filter-bar.asset-mode .custom-select,
     .user-filter-bar.report-mode .custom-select-trigger,
     .user-filter-bar.content-mode .custom-select-trigger,
     .user-filter-bar.category-mode .custom-select-trigger,
+    .user-filter-bar.option-detail-filter-bar .custom-select-trigger,
     body.offer-list-mode .offer-filter-bar .custom-select-trigger,
     body.asset-list-mode:not(.article-list-mode):not(.category-list-mode):not(.reported-board-mode) .user-filter-bar.asset-mode .custom-select-trigger,
     .user-filter-bar.asset-mode .custom-select-trigger,
     .user-filter-bar.report-mode .filter-reset,
     .user-filter-bar.content-mode .filter-reset,
     .user-filter-bar.category-mode .filter-reset,
+    .user-filter-bar.option-detail-filter-bar .filter-reset,
     body.offer-list-mode .offer-filter-bar .filter-reset,
     .user-filter-bar.asset-mode .filter-reset {
       width: 100%;
@@ -4245,6 +4254,7 @@
     }
     .user-filter-bar.content-mode .filter-reset,
     .user-filter-bar.category-mode .filter-reset,
+    .user-filter-bar.option-detail-filter-bar .filter-reset,
     .user-filter-bar.asset-mode .filter-reset {
       width: 42px;
       height: 48px;
@@ -4322,6 +4332,7 @@
     .user-filter-bar.report-mode .filter-reset,
     .user-filter-bar.content-mode .filter-reset,
     .user-filter-bar.category-mode .filter-reset,
+    .user-filter-bar.option-detail-filter-bar .filter-reset,
     body.offer-list-mode .offer-filter-bar .filter-reset,
     body.asset-list-mode:not(.article-list-mode):not(.category-list-mode):not(.reported-board-mode) .user-filter-bar.asset-mode .filter-reset,
     .user-filter-bar.asset-mode .filter-reset {
@@ -4335,6 +4346,7 @@
     .user-filter-bar.report-mode .filter-reset span,
     .user-filter-bar.content-mode .filter-reset span,
     .user-filter-bar.category-mode .filter-reset span,
+    .user-filter-bar.option-detail-filter-bar .filter-reset span,
     body.offer-list-mode .offer-filter-bar .filter-reset span,
     body.asset-list-mode:not(.article-list-mode):not(.category-list-mode):not(.reported-board-mode) .user-filter-bar.asset-mode .filter-reset span,
     .user-filter-bar.asset-mode .filter-reset span {
@@ -7394,6 +7406,9 @@
       .user-filter-bar.category-mode {
         grid-template-columns: minmax(0, 1fr) minmax(132px, .5fr) minmax(132px, .5fr) 42px;
       }
+      .user-filter-bar.option-detail-filter-bar {
+        grid-template-columns: minmax(0, 1fr) minmax(132px, .5fr) 42px;
+      }
       body.asset-list-mode:not(.article-list-mode):not(.category-list-mode):not(.reported-board-mode) .user-filter-bar.asset-mode,
       .user-filter-bar.asset-mode {
         grid-template-columns: minmax(0, 1fr) minmax(132px, .5fr) minmax(132px, .5fr) minmax(132px, .5fr) 42px;
@@ -7428,6 +7443,7 @@
       .user-filter-bar.report-mode .filter-reset,
       .user-filter-bar.content-mode .filter-reset,
       .user-filter-bar.category-mode .filter-reset,
+      .user-filter-bar.option-detail-filter-bar .filter-reset,
       body.market-list-mode .user-filter-bar.market-mode .filter-reset,
       body.asset-list-mode:not(.article-list-mode):not(.category-list-mode):not(.reported-board-mode) .user-filter-bar.asset-mode .filter-reset,
       .user-filter-bar.asset-mode .filter-reset {
@@ -7440,6 +7456,7 @@
       .user-filter-bar.report-mode .filter-reset span,
       .user-filter-bar.content-mode .filter-reset span,
       .user-filter-bar.category-mode .filter-reset span,
+      .user-filter-bar.option-detail-filter-bar .filter-reset span,
       body.market-list-mode .user-filter-bar.market-mode .filter-reset span,
       body.asset-list-mode:not(.article-list-mode):not(.category-list-mode):not(.reported-board-mode) .user-filter-bar.asset-mode .filter-reset span,
       .user-filter-bar.asset-mode .filter-reset span {
@@ -7919,12 +7936,14 @@
         grid-template-columns: 1fr;
       }
       .user-filter-bar.content-mode,
-      .user-filter-bar.category-mode {
+      .user-filter-bar.category-mode,
+      .user-filter-bar.option-detail-filter-bar {
         grid-template-columns: 1fr;
       }
       body.article-list-mode .user-filter-bar.content-mode,
       body.reported-board-mode .user-filter-bar.content-mode,
-      body.category-list-mode .user-filter-bar.category-mode {
+      body.category-list-mode .user-filter-bar.category-mode,
+      body.option-master-mode .user-filter-bar.option-detail-filter-bar {
         grid-template-columns: 1fr;
       }
       body.offer-list-mode .offer-filter-bar {
@@ -19749,19 +19768,20 @@
       const active = getOptionGroupActiveOptions(group);
       const activeCountForReorder = active;
       setPageActions(`
-        ${renderPageBackButton("data-back-option-groups", "Back to Option Groups")}
         ${activeCountForReorder >= 2 ? `<button class="btn" type="button" data-option-reorder-open title="Reorder" aria-label="Reorder">${iconSvg.sort}<span>Reorder</span></button>` : ""}
         <button class="btn" type="button" data-option-add-open title="Add Option" aria-label="Add Option">${iconSvg.plus}<span>Add Option</span></button>
+        ${renderPageBackButton("data-back-option-groups", "Back to Option Groups")}
       `);
       syncExpandedNavForModule("option-master", "");
       document.querySelector("#crumb").textContent = `การดำเนินงาน / Option Master / ${group}`;
       document.querySelector("#page-title").textContent = group;
       document.querySelector("#page-meta").textContent = "";
-      document.querySelector("#panel-title").textContent = `${group} — Options (${total})`;
-      document.querySelector("#panel-subtitle").textContent = `${g.display_name_th} / ${g.display_name_en}${g.allows_multi_select ? " · multi-select" : ""}`;
+      document.querySelector("#panel-title").textContent = `Options (${total})`;
+      document.querySelector("#panel-subtitle").textContent = "";
       document.querySelector("#primary-action").textContent = "";
       document.querySelector("#user-panel-filter-actions").innerHTML = `
         <button class="btn user-filter-toggle" type="button" data-option-detail-filter-toggle aria-expanded="${optionDetailFilterOpen}">${iconSvg.filter}<span>${optionDetailFilterOpen ? "ปิดตัวกรอง" : "เปิดตัวกรอง"}</span></button>
+        <button class="btn" type="button" data-option-detail-reset title="รีเซ็ตค่าทั้งหมด" aria-label="รีเซ็ตค่าทั้งหมด">${iconSvg.refresh}<span>รีเซ็ตค่าทั้งหมด</span></button>
       `;
       document.querySelector(".filters").innerHTML = `
         <div class="user-filter-bar option-detail-filter-bar" data-filter-open="${optionDetailFilterOpen}">
@@ -19771,6 +19791,7 @@
             { value: "active", label: "Active" },
             { value: "inactive", label: "Inactive" }
           ])}</div>
+          ${resetFilterButton("data-option-detail-reset")}
         </div>
       `;
       document.querySelector("#summary-grid").innerHTML = "";
@@ -25105,6 +25126,28 @@
       if (articleReset) {
         articleListPage = 1;
         renderModule("content", "Articles", "Articles");
+        return;
+      }
+      const optionDetailReset = event.target.closest("[data-option-detail-reset]");
+      if (optionDetailReset) {
+        optionDetailPage = 1;
+        optionDetailFilterOpen = false;
+        const searchInput = document.querySelector("#option-detail-search");
+        if (searchInput) searchInput.value = "";
+        const statusFilter = document.querySelector("#option-status-filter");
+        if (statusFilter) {
+          statusFilter.value = "";
+          statusFilter.dispatchEvent(new Event("change", { bubbles: true }));
+        }
+        renderOptionDetailRows();
+        const filterBar = document.querySelector(".user-filter-bar");
+        if (filterBar) filterBar.dataset.filterOpen = String(optionDetailFilterOpen);
+        const toggleBtn = document.querySelector("[data-option-detail-filter-toggle]");
+        if (toggleBtn) {
+          toggleBtn.setAttribute("aria-expanded", String(optionDetailFilterOpen));
+          const label = toggleBtn.querySelector("span");
+          if (label) label.textContent = optionDetailFilterOpen ? "ปิดตัวกรอง" : "เปิดตัวกรอง";
+        }
         return;
       }
       const categoryReset = event.target.closest("[data-category-reset]");
