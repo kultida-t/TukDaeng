@@ -1,6 +1,6 @@
 # 17 BO Option Master Module
 
-**เวอร์ชัน:** `BO-17-v0.3`
+**เวอร์ชัน:** `BO-17-v0.4`
 **วันที่:** 2026-08-19
 **สถานะ:** สเปกปัจจุบัน
 **แพลตฟอร์ม:** Responsive Web Back Office
@@ -743,7 +743,7 @@ Visual rules:
 
 | ID | Decision Needed | Current Recommendation |
 | --- | --- | --- |
-| BO-OPT-001 | Option Master phase | Phase 1 เพราะเป็น foundational operational data ที่ FO ต้องใช้ตั้งแต่ launch; แต่ต้องยืนยันกับ Product เพราะเป็น module ใหม่นอก baseline เดิม |
+| BO-OPT-001 ✅ | Option Master phase | **ยืนยัน Phase 1** (Product confirmed 2026-08-19) — เป็น foundational operational data ที่ FO ต้องใช้ตั้งแต่ launch (Add/Edit Asset, Search Filter, Watch Alert); มี seed data พร้อม 6 groups; scope จำกัดเหมาะ Phase 1 (ไม่มี bulk import/export, ไม่สร้าง group ใหม่, ไม่เชื่อม provider sync); baseline/index ระบุ Phase 1 อยู่แล้วและสอดคล้องกับผลตัดสินใจ |
 | BO-OPT-002 | Prototype screen | ยังไม่มี prototype สำหรับ Option Master; ควรสร้าง prototype และเทียบกับเอกสารนี้ก่อน implementation handoff |
 | BO-OPT-003 | System option deactivate policy | ปัจจุบันอนุญาตให้ deactivate system option ได้ถ้ามี reason ชัดเจน; อาจต้องกำหนดให้ system option บางประเภท lock ไม่ให้ deactivate เลย ถ้ากระทบ FO form หลัก |
 | BO-OPT-004 | Reorder UI | ปัจจุบัน reorder ทาง Edit Option modal; อาจเพิ่ม drag-and-drop ใน prototype ถ้าต้องการ UX ที่สะดวกกว่า |
