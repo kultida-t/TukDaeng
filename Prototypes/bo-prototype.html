@@ -1275,6 +1275,8 @@
       overflow-x: auto;
       overflow-y: visible;
       scrollbar-width: thin;
+      position: relative;
+      z-index: 36;
     }
     body.asset-list-mode:not(.article-list-mode):not(.category-list-mode):not(.reported-board-mode) #table .asset-list-table {
       min-width: 1132px;
@@ -1663,6 +1665,10 @@
     }
     .asset-table .asset-row:nth-last-child(-n + 2) .row-menu-list,
     .user-table .user-row:nth-last-child(-n + 2) .row-menu-list {
+      top: auto;
+      bottom: 38px;
+    }
+    .option-detail-table .asset-row:nth-last-child(-n + 3) .row-menu-list {
       top: auto;
       bottom: 38px;
     }
@@ -2916,6 +2922,7 @@
     }
     .option-delete-confirm-input {
       margin-top: 16px;
+      margin-bottom: 20px;
     }
     .option-delete-confirm-input label {
       display: grid;
@@ -2935,6 +2942,12 @@
       background: #f8fbff;
       font-size: 14px;
       font-weight: 400;
+    }
+    .option-delete-confirm-input input:focus,
+    .option-delete-confirm-input input:focus-visible {
+      outline: 0;
+      border-color: #b8c6d8;
+      box-shadow: 0 0 0 3px rgba(118, 135, 158, .10);
     }
     .option-key-lock-note {
       display: flex;
@@ -4993,7 +5006,7 @@
       position: absolute;
       right: 0;
       top: 38px;
-      z-index: 10;
+      z-index: 40;
       min-width: 224px;
       padding: 6px;
       border: 1px solid var(--line);
@@ -20315,7 +20328,7 @@
       g.options.splice(idx, 1);
       closeUserActionModal();
       renderOptionDetailRows();
-      showToast(`ลบ option ${option.id} (${option.key}) แล้ว`, "success");
+      showSuccessToast(`ลบ option ${option.id} (${option.key}) แล้ว`);
     }
 
     function openOptionAddModal(prevData = null) {
