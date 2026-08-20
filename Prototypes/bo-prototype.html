@@ -21553,7 +21553,7 @@
                 </div>
                 <div class="option-audit-meta">
                   <div class="option-audit-meta-inline"><span class="option-audit-meta-label">Actor :</span> <span class="option-audit-meta-value">${escapeOptionField(entry.actor || "-")} (${escapeOptionField(entry.actor_access || "-")})</span></div>
-                  ${entry.reason ? `<div class="option-audit-meta-row"><span class="option-audit-meta-label">Reason</span><span class="option-audit-meta-value">${escapeOptionField(entry.reason)}</span></div>` : ""}
+                  ${entry.reason ? `<div class="option-audit-meta-inline"><span class="option-audit-meta-label">Reason :</span> <span class="option-audit-meta-value">${escapeOptionField(entry.reason)}</span></div>` : ""}
                 </div>
                 ${renderOptionAuditDiff(entry)}
               </div>
