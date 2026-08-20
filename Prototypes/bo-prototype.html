@@ -2873,8 +2873,24 @@
       grid-column: 2;
       align-content: start;
     }
-    .option-editor-modal .article-editor-form label.option-field-status .option-status-toggle {
-      margin-top: 11px;
+    .option-editor-modal .article-editor-form label.option-field-status .option-status-toggle-box {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      width: 100%;
+      min-height: 46px;
+      border: 1px solid #d7e5f4;
+      border-radius: 8px;
+      padding: 12px 13px;
+      background: #f8fbff;
+    }
+    .option-status-toggle-text {
+      font-size: 14px;
+      font-weight: 600;
+      color: #22c55e;
+    }
+    .option-status-toggle-box:has(input:not(:checked)) .option-status-toggle-text {
+      color: #94a3b8;
     }
     .option-editor-modal .article-editor-form > .user-detail-actions {
       justify-content: flex-end;
@@ -2970,8 +2986,7 @@
       width: 38px;
       height: 20px;
       border-radius: 999px;
-      background: #f8fbff;
-      border: 1px solid #d7e5f4;
+      background: #cbd5e1;
       transition: background .2s ease, border-color .2s ease;
       flex: 0 0 auto;
     }
@@ -20107,10 +20122,13 @@
     }
     function optionStatusToggle(checked) {
       return `
-        <label class="option-status-toggle">
-          <input type="checkbox" name="is_active" value="true" ${checked ? "checked" : ""} data-option-is-active />
-          <span class="option-status-toggle-track"></span>
-        </label>
+        <div class="option-status-toggle-box">
+          <label class="option-status-toggle">
+            <input type="checkbox" name="is_active" value="true" ${checked ? "checked" : ""} data-option-is-active />
+            <span class="option-status-toggle-track"></span>
+          </label>
+          <span class="option-status-toggle-text">${checked ? "Active" : "Inactive"}</span>
+        </div>
       `;
     }
     function getNextOptionSortOrder(groupId) {
@@ -26407,7 +26425,11 @@
       }
     });
     document.addEventListener("change", event => {
-      if (event.target.matches("[data-option-is-active]")) return;
+      if (event.target.matches("[data-option-is-active]")) {
+        const box = event.target.closest(".option-status-toggle-box");
+        const text = box?.querySelector(".option-status-toggle-text");
+        if (text) text.textContent = event.target.checked ? "Active" : "Inactive";
+      }
     });
     document.addEventListener("submit", event => {
       const categoryForm = event.target.closest("[data-category-form]");
