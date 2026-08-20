@@ -303,7 +303,7 @@ Retry action ต้องมี audit log และต้องไม่สร�
 | User Management | Target audience, account status exclusion |
 | Asset Management | Asset detail destination and unavailable fallback |
 | Offer Management | Offer trigger, chat room destination, rejected/accepted/cancelled events |
-| Social Interaction | Like, comment, follow triggers |
+| Asset Management (Reported Comments) | Comment, like, follow triggers |
 | Watch Alert | Match trigger, result list destination, notification enabled/off |
 | Help / Support | Delivery log context for user support tickets |
 | Account Deletion | Exclude deletion/archived users from broadcast |

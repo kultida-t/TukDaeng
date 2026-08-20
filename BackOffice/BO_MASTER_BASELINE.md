@@ -48,6 +48,7 @@ Phase 1 คือ BO foundation ขั้นต่ำที่จำเป็น
 | Asset Management | `04_ASSET_MANAGEMENT_MODULE.md` - Asset list/detail, status visibility, reports, flag/unflag, temporary hide/unhide, permanent hide, ลบโดยเจ้าของ retained record, force status change, sensitive-field control |
 | Content / Board | `05_CONTENT_BOARD_MODULE.md` - Article/category CRUD, preview as FO, draft/publish/schedule/archive, automatic Board Main placement from Published Articles; banner/featured ordering is future scope |
 | Market Data | `06_MARKET_DATA_MODULE.md` - Brand/model/reference/price index management และ active/inactive status |
+| Option Master | `17_OPTION_MASTER_MODULE.md` - Internal option master management สำหรับ FO Add/Edit Asset, Search Filter, Watch Alert criteria; option group list/detail, add/edit/deactivate/reactivate/reorder, audit |
 | Audit Log | `08_AUDIT_LOG_MODULE.md` - Immutable event capture, search/filter, export, Admin visibility |
 
 Directory is postponed from Phase 1. Keep `07_DIRECTORY_MODULE.md` as a future reference only; do not expose the BO Directory menu, route, CRUD, publication controls, map/contact fields, or FO sync behavior in Phase 1 unless Product explicitly reopens the scope.
@@ -57,12 +58,11 @@ Directory is postponed from Phase 1. Keep `07_DIRECTORY_MODULE.md` as a future r
 | Module | Phase 2 Scope |
 | --- | --- |
 | Offer Management | `09_OFFER_CHAT_MODULE.md` - Read-only offer list/detail, buyer/seller and asset interest overview, related chat context, notification delivery, pending-offer dependency |
-| Social Interaction | `10_SOCIAL_INTERACTION_MODULE.md` - Comment/reply moderation, like/favorite/follow analytics, reported social content |
 | Watch Alert | `11_WATCH_ALERT_MODULE.md` - Alert criteria view, trigger history, notification on/off, disable abuse alerts |
 | Help & Support | `12_HELP_SUPPORT_MODULE.md` - Ticket queue, manual ticket จาก LINE/Phone/Email, assignment, reply history, status, priority, SLA, related entity |
 | Account Deletion | `13_ACCOUNT_DELETION_MODULE.md` - Request queue, pending-offer validation, 30-day grace period, archive/anonymization tracking |
 | Notifications | `14_NOTIFICATIONS_MODULE.md` - Broadcast notifications, system trigger templates, delivery logs, retry failed notifications, FO-supported type constraints |
-| Reports | `15_REPORTS_ANALYTICS_MODULE.md` - User, asset, offer, chat, board, social, search, watch alert, support, notification, account deletion reports, export jobs |
+| Reports | `15_REPORTS_ANALYTICS_MODULE.md` - User, asset, offer, chat, board, asset reported comments, search, watch alert, support, notification, account deletion reports, export jobs |
 
 ## 6. Phase 3 Scope
 

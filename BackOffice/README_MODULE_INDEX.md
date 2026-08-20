@@ -21,7 +21,7 @@ BO docs แยกจาก FO docs แต่เชื่อมโยงการ
 | 5 | `BO_DEV_IMPLEMENTATION_CHECKLIST.md` | Checklist สำหรับแตก ticket dev และเก็บ Prototype Handoff Notes ระหว่าง BA/UX ทำ prototype |
 | 6 | `BO_PRD.md` | Existing product requirement source |
 | 7 | `BO_Spec.md` | Existing screen/module specification source |
-| 8 | `BO_Spec_Completion_Addendum.md` | Coverage เพิ่มเติมเรื่อง offer/chat, social, watch alert, support, deletion, notifications |
+| 8 | `BO_Spec_Completion_Addendum.md` | Coverage เพิ่มเติมเรื่อง offer/chat, watch alert, support, deletion, notifications |
 | 9 | `../FrontOffice/18_ADMIN_SCOPE_NOTE.md` | Boundary ว่า Admin อยู่ฝั่ง Web Back Office เท่านั้น |
 
 ## Prototype Handoff Notes Workflow
@@ -67,13 +67,13 @@ Codex ต้องทำ 3 อย่าง:
 | 07 | `07_DIRECTORY_MODULE.md` | Future/postponed Directory reference only; not exposed in Phase 1 BO prototype or Phase 1 build scope until FO directory detail routes are approved | Future |
 | 08 | `08_AUDIT_LOG_MODULE.md` | Immutable audit events, schema, search/filter, export, retention, sensitive/destructive/provider-sync trace | 1 |
 | 09 | `09_OFFER_CHAT_MODULE.md` | Read-only offer list/detail, buyer/seller and asset interest overview, related chat context, notification delivery | 2 |
-| 10 | `10_SOCIAL_INTERACTION_MODULE.md` | Comment/reply moderation, reported comments, likes/favorites/follows analytics | 2 |
 | 11 | `11_WATCH_ALERT_MODULE.md` | Watch Alert criteria, trigger history, Sale-only match, notification delivery, admin disable | 2 |
 | 12 | `12_HELP_SUPPORT_MODULE.md` | Help/support ticket queue, manual contact-channel tickets, assignment, reply history, SLA tracking | 2 |
 | 13 | `13_ACCOUNT_DELETION_MODULE.md` | Delete-account request queue, pending offer validation, 30-day grace period, archive/anonymization workflow | 2 |
 | 14 | `14_NOTIFICATIONS_MODULE.md` | Broadcast notification และ system trigger templates/logs | 2 |
-| 15 | `15_REPORTS_ANALYTICS_MODULE.md` | Exportable reports across user, asset, offer, chat, content, social, search, watch alert, support, notifications, account deletion | 2 |
+| 15 | `15_REPORTS_ANALYTICS_MODULE.md` | Exportable reports across user, asset, offer, chat, content, asset reported comments, search, watch alert, support, notifications, account deletion | 2 |
 | 16 | `16_ADMIN_SETTINGS_MODULE.md` | Admin own settings, admin account lifecycle, Admin Permission config, security/system settings, retention/export policy | 3 |
+| 17 | `17_OPTION_MASTER_MODULE.md` | Internal option master management for FO Add/Edit Asset, Search Filter, Watch Alert criteria; option group list/detail, add/edit/deactivate/reactivate/reorder, audit | 1 |
 
 ## Final Handoff
 
@@ -92,6 +92,7 @@ Phase 1 ต้องส่งมอบ BO foundation ที่ใช้งาน
 - Asset Management
 - Content / Board Management
 - Market Data
+- Option Master
 - Audit Log
 
 Phase 1 ยังไม่รวม real-time admin-user chat, AI moderation, external CRM integration หรือ payment operations

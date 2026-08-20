@@ -289,7 +289,7 @@ Rows:
 | Reported Items / Assets chip | Asset Management / Reported Assets |
 | Reported Items / Users chip | User Management / Reported Users |
 | Reported Items / Board chip | Content Management / Reported Board |
-| Reported Items / Comments chip | Social Moderation / Reported Social |
+| Reported Items / Comments chip | Asset Management / Reported Comments |
 | Offer Activity card | Offer / Offer Queue |
 | Articles card | Content Management / Articles |
 | Watch Alert card | Watch Alert / Alert Criteria |
