@@ -3386,13 +3386,35 @@
       font-weight: 800;
       letter-spacing: .04em;
       text-transform: uppercase;
-      margin-bottom: 2px;
+      margin-bottom: 4px;
     }
     .option-audit-diff-before .option-audit-diff-tag { color: #94a3b8; }
     .option-audit-diff-after .option-audit-diff-tag { color: #1f5f9f; }
+    .option-audit-diff-list {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      display: grid;
+      gap: 3px;
+    }
+    .option-audit-diff-list li {
+      color: #334155;
+      word-break: break-word;
+      line-height: 1.5;
+    }
+    .option-audit-diff-field {
+      color: #64748b;
+      font-weight: 700;
+    }
+    .option-audit-diff-sep {
+      color: #94a3b8;
+    }
     .option-audit-diff-value {
       color: #334155;
       word-break: break-word;
+    }
+    .option-audit-diff-empty {
+      color: #94a3b8;
     }
     .option-audit-diff-arrow {
       color: #94a3b8;
@@ -3438,13 +3460,20 @@
       }
       .option-audit-diff {
         grid-template-columns: 1fr;
-        gap: 6px;
+        gap: 0;
       }
       .option-audit-diff-arrow {
         display: none;
       }
       .option-audit-diff-side .option-audit-diff-tag::after {
         content: "";
+      }
+      .option-audit-diff-side {
+        padding: 10px 0;
+      }
+      .option-audit-diff-side + .option-audit-diff-side {
+        border-top: 1px dashed #e2e8f0;
+        margin-top: 4px;
       }
       .option-audit-meta-row {
         grid-template-columns: 1fr;
@@ -11146,8 +11175,8 @@
             action: "OPTION_REACTIVATE",
             actor: "สมชาย รักงาน",
             actor_access: "Super Admin",
-            before: "Inactive",
-            after: "Active",
+            before: [{ field: "Status", value: "Inactive" }],
+            after: [{ field: "Status", value: "Active" }],
             reason: "",
             timestamp: "15 Jul 2026 14:30"
           },
@@ -11155,8 +11184,8 @@
             action: "OPTION_DEACTIVATE",
             actor: "สมชาย รักงาน",
             actor_access: "Super Admin",
-            before: "Active",
-            after: "Inactive",
+            before: [{ field: "Status", value: "Active" }],
+            after: [{ field: "Status", value: "Inactive" }],
             reason: "พัก option ชั่วคราวเพื่อทบทวนคำอธิบาย NOS กับทีมงาน",
             timestamp: "14 Jul 2026 11:20"
           },
@@ -11164,8 +11193,14 @@
             action: "OPTION_ADD",
             actor: "สมชาย รักงาน",
             actor_access: "Super Admin",
-            before: "",
-            after: `key=new_old_stock · label_en="New Old Stock (NOS)" · label_th="ของเก่าสภาพใหม่ (NOS)" · sort_order=70 · is_active=true`,
+            before: [],
+            after: [
+              { field: "Key", value: "new_old_stock" },
+              { field: "Label (EN)", value: "New Old Stock (NOS)" },
+              { field: "Label (TH)", value: "ของเก่าสภาพใหม่ (NOS)" },
+              { field: "Sort Order", value: "70" },
+              { field: "Status", value: "Active" }
+            ],
             reason: "",
             timestamp: "13 Jul 2026 16:05"
           }
@@ -11179,8 +11214,14 @@
             action: "OPTION_EDIT",
             actor: "สมชาย รักงาน",
             actor_access: "Super Admin",
-            before: `label_th="พอใช้" · description_en="Heavy wear; usable but clearly worn"`,
-            after: `label_th="พอใช้" · description_en="Heavy wear or visible marks; should be clearly described"`,
+            before: [
+              { field: "Label (TH)", value: "พอใช้" },
+              { field: "Description (EN)", value: "Heavy wear; usable but clearly worn" }
+            ],
+            after: [
+              { field: "Label (TH)", value: "พอใช้" },
+              { field: "Description (EN)", value: "Heavy wear or visible marks; should be clearly described" }
+            ],
             reason: "",
             timestamp: "15 Jul 2026 09:40"
           }
@@ -11194,8 +11235,16 @@
             action: "OPTION_REORDER",
             actor: "สมชาย รักงาน",
             actor_access: "Super Admin",
-            before: "new_unworn: 20 · mint: 10 · excellent: 30",
-            after: "new_unworn: 10 · mint: 20 · excellent: 30",
+            before: [
+              { field: "new_unworn", value: "20" },
+              { field: "mint", value: "10" },
+              { field: "excellent", value: "30" }
+            ],
+            after: [
+              { field: "new_unworn", value: "10" },
+              { field: "mint", value: "20" },
+              { field: "excellent", value: "30" }
+            ],
             reason: "",
             timestamp: "15 Jul 2026 10:15"
           }
@@ -20933,8 +20982,8 @@
       option.updated_at = formatOptionTimestamp(new Date());
       addOptionAuditEntry(option, {
         action: "OPTION_DEACTIVATE",
-        before: "Active",
-        after: "Inactive",
+        before: [{ field: "Status", value: "Active" }],
+        after: [{ field: "Status", value: "Inactive" }],
         reason: reason
       });
       closeUserActionModal();
@@ -20988,8 +21037,8 @@
       option.updated_at = formatOptionTimestamp(new Date());
       addOptionAuditEntry(option, {
         action: "OPTION_REACTIVATE",
-        before: "Inactive",
-        after: "Active"
+        before: [{ field: "Status", value: "Inactive" }],
+        after: [{ field: "Status", value: "Active" }]
       });
       closeUserActionModal();
       renderOptionDetailRows();
@@ -21300,8 +21349,14 @@
       g.options.sort((a, b) => (a.sort_order || 0) - (b.sort_order || 0) || a.key.localeCompare(b.key));
       addOptionAuditEntry(newOption, {
         action: "OPTION_ADD",
-        before: "",
-        after: `key=${data.key} · label_en="${data.label_en}" · label_th="${data.label_th}" · sort_order=${newOption.sort_order} · is_active=${data.is_active}`
+        before: [],
+        after: [
+          { field: "Key", value: data.key },
+          { field: "Label (EN)", value: data.label_en },
+          { field: "Label (TH)", value: data.label_th },
+          { field: "Sort Order", value: String(newOption.sort_order) },
+          { field: "Status", value: data.is_active ? "Active" : "Inactive" }
+        ]
       });
       closeUserActionModal();
       optionDetailPage = 1;
@@ -21315,7 +21370,13 @@
       const option = getOptionByKey(g.group_id, originalKey);
       if (!option) return;
       const keyChanged = data.key !== originalKey;
-      const before = `key=${option.key} · label_en="${option.label_en}" · label_th="${option.label_th}" · description_en="${option.description_en || ""}" · is_active=${option.is_active}`;
+      const before = [
+        { field: "Key", value: option.key },
+        { field: "Label (EN)", value: option.label_en },
+        { field: "Label (TH)", value: option.label_th },
+        { field: "Description (EN)", value: option.description_en || "" },
+        { field: "Status", value: option.is_active ? "Active" : "Inactive" }
+      ];
       Object.assign(option, {
         key: data.key,
         label_en: data.label_en,
@@ -21324,7 +21385,13 @@
         is_active: data.is_active,
         updated_at: formatArticleActionTimestamp()
       });
-      const after = `key=${option.key} · label_en="${option.label_en}" · label_th="${option.label_th}" · description_en="${option.description_en || ""}" · is_active=${option.is_active}`;
+      const after = [
+        { field: "Key", value: option.key },
+        { field: "Label (EN)", value: option.label_en },
+        { field: "Label (TH)", value: option.label_th },
+        { field: "Description (EN)", value: option.description_en || "" },
+        { field: "Status", value: option.is_active ? "Active" : "Inactive" }
+      ];
       addOptionAuditEntry(option, {
         action: "OPTION_EDIT",
         before,
@@ -21454,15 +21521,15 @@
       g.options.sort((a, b) => (a.sort_order || 0) - (b.sort_order || 0) || a.key.localeCompare(b.key));
       // Audit: OPTION_REORDER once per save, only if order changed
       if (orderChanged) {
-        const beforeParts = [];
-        const afterParts = [];
-        currentOrder.forEach((id, i) => {
+        const beforeFields = [];
+        const afterFields = [];
+        currentOrder.forEach((id) => {
           const opt = getOptionById(id);
-          if (opt) beforeParts.push(`${opt.key}: ${beforeMap.get(id)}`);
+          if (opt) beforeFields.push({ field: opt.key, value: String(beforeMap.get(id)) });
         });
         orderedIds.forEach((id, i) => {
           const opt = getOptionById(id);
-          if (opt) afterParts.push(`${opt.key}: ${(i + 1) * 10}`);
+          if (opt) afterFields.push({ field: opt.key, value: String((i + 1) * 10) });
         });
         // Record audit on the first option that moved (representative entry for the batch)
         const firstMovedId = orderedIds.find((id, i) => currentOrder[i] !== id);
@@ -21470,8 +21537,8 @@
         if (firstMoved) {
           addOptionAuditEntry(firstMoved, {
             action: "OPTION_REORDER",
-            before: beforeParts.join(" · "),
-            after: afterParts.join(" · ")
+            before: beforeFields,
+            after: afterFields
           });
         }
       }
@@ -21492,19 +21559,25 @@
       OPTION_REORDER: { label: "Option Reorder", cls: "reorder" }
     };
     function renderOptionAuditDiff(entry) {
-      if (!entry.before && !entry.after) return "";
-      const beforeText = entry.before ? escapeOptionField(entry.before) : "—";
-      const afterText = entry.after ? escapeOptionField(entry.after) : "—";
+      const beforeArr = Array.isArray(entry.before) ? entry.before : [];
+      const afterArr = Array.isArray(entry.after) ? entry.after : [];
+      if (!beforeArr.length && !afterArr.length) return "";
+      const renderFieldList = (items, emptyLabel = "—") => {
+        if (!items.length) return `<span class="option-audit-diff-empty">${emptyLabel}</span>`;
+        return `<ul class="option-audit-diff-list">${items.map(item => `
+          <li><span class="option-audit-diff-field">${escapeOptionField(item.field || "")}</span><span class="option-audit-diff-sep">:</span> <span class="option-audit-diff-value">${escapeOptionField(item.value || "")}</span></li>
+        `).join("")}</ul>`;
+      };
       return `
         <div class="option-audit-diff">
           <div class="option-audit-diff-side option-audit-diff-before">
             <span class="option-audit-diff-tag">Before</span>
-            <span class="option-audit-diff-value">${beforeText}</span>
+            ${renderFieldList(beforeArr, "รายการใหม่")}
           </div>
           <span class="option-audit-diff-arrow">→</span>
           <div class="option-audit-diff-side option-audit-diff-after">
             <span class="option-audit-diff-tag">After</span>
-            <span class="option-audit-diff-value">${afterText}</span>
+            ${renderFieldList(afterArr)}
           </div>
         </div>
       `;
