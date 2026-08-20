@@ -20056,6 +20056,7 @@
                 <details class="row-menu">
                   <summary title="Option actions">...</summary>
                   <div class="row-menu-list">
+                    <button type="button" data-option-view-action="${o.id}">View Detail</button>
                     <button type="button" data-option-edit="${o.id}">Edit</button>
                     ${deactivateDisabled
                       ? `<button type="button" disabled title="กลุ่มนี้เป็น required field สำหรับ Sale status จึงไม่สามารถ deactivate ผ่าน BO ได้ ต้องแก้ไขผ่าน seed file และ migration" aria-disabled="true">Deactivate</button>`
@@ -20068,13 +20069,14 @@
                 <details class="row-menu">
                   <summary title="Option actions">...</summary>
                   <div class="row-menu-list">
+                    <button type="button" data-option-view-action="${o.id}">View Detail</button>
                     <button type="button" data-option-edit="${o.id}">Edit</button>
                     <button type="button" data-option-reactivate="${o.id}">Reactivate</button>
                   </div>
                 </details>
               `;
             return `
-              <div class="asset-row" data-option-id="${o.id}">
+              <div class="asset-row" data-option-view="${o.id}" role="button" tabindex="0" aria-label="ดูรายละเอียด ${o.id}">
                 <div data-label="Option ID"><div class="main-text">${o.id}</div></div>
                 <div data-label="Key"><div class="main-text">${o.key}</div></div>
                 <div class="asset-cell-primary" data-label="Label (EN)">
@@ -20173,6 +20175,50 @@
         .replace(/"/g, "&quot;")
         .replace(/</g, "&lt;")
         .replace(/>/g, "&gt;");
+    }
+
+    function openOptionViewModal(optionId) {
+      const option = getOptionById(optionId);
+      if (!option) return;
+      const g = getOptionGroupByOptionId(optionId);
+      if (!g) return;
+      const modal = document.querySelector("#user-action-modal");
+      const modalCard = modal?.querySelector(".user-action-modal");
+      const modalBody = document.querySelector("#user-action-modal-body");
+      if (!modal || !modalCard || !modalBody) return;
+      modalCard.classList.remove("article-preview-modal", "article-editor-confirm-modal", "category-editor-modal", "category-order-modal", "market-editor-modal", "board-report-phone-preview-modal");
+      modalCard.classList.add("option-editor-modal");
+      const statusPill = option.is_active
+        ? `<span class="pill green">Active</span>`
+        : `<span class="pill gray">Inactive</span>`;
+      modalBody.innerHTML = `
+        <div class="user-action-layout">
+          <div class="user-action-head">
+            <div>
+              <h2 id="user-action-modal-title">Option Detail</h2>
+              <p>${escapeOptionField(option.id)} (${escapeOptionField(option.key)}) ในกลุ่ม ${escapeOptionField(g.display_name_en)}</p>
+            </div>
+            <button class="btn user-action-close" type="button" data-user-action-modal-close aria-label="Close modal" title="Close">${iconSvg.close}</button>
+          </div>
+          <div class="option-confirm-summary">
+            <div class="option-confirm-row"><span class="option-confirm-label">Option ID</span><span class="option-confirm-value">${escapeOptionField(option.id)}</span></div>
+            <div class="option-confirm-row"><span class="option-confirm-label">Key</span><span class="option-confirm-value">${escapeOptionField(option.key)}</span></div>
+            <div class="option-confirm-row"><span class="option-confirm-label">Label (EN)</span><span class="option-confirm-value">${escapeOptionField(option.label_en)}</span></div>
+            <div class="option-confirm-row"><span class="option-confirm-label">Label (TH)</span><span class="option-confirm-value">${escapeOptionField(option.label_th)}</span></div>
+            <div class="option-confirm-row"><span class="option-confirm-label">Description</span><span class="option-confirm-value">${escapeOptionField(option.description_en || "") || "-"}</span></div>
+            <div class="option-confirm-row"><span class="option-confirm-label">Sort Order</span><span class="option-confirm-value">${option.sort_order}</span></div>
+            <div class="option-confirm-row"><span class="option-confirm-label">System</span><span class="option-confirm-value">${option.is_system ? "Yes" : "No"}</span></div>
+            <div class="option-confirm-row"><span class="option-confirm-label">Status</span><span class="option-confirm-value">${statusPill}</span></div>
+            <div class="option-confirm-row"><span class="option-confirm-label">Used in Assets</span><span class="option-confirm-value">${option.used_in_assets ? "Yes" : "No"}</span></div>
+            <div class="option-confirm-row"><span class="option-confirm-label">Updated</span><span class="option-confirm-value">${escapeOptionField(option.updated_at || "-")}</span></div>
+          </div>
+          <div class="user-detail-actions">
+            <button class="user-detail-action-btn" type="button" data-user-action-modal-close>ปิด</button>
+            <button class="user-detail-action-btn primary" type="button" data-option-edit="${option.id}">Edit</button>
+          </div>
+        </div>
+      `;
+      showUserActionModal(true);
     }
 
     function openOptionAddModal(prevData = null) {
@@ -25330,6 +25376,18 @@
       }
       const optionReorderOpen = event.target.closest("[data-option-reorder-open]");
       if (optionReorderOpen) return;
+      // Option "View Detail" from action menu
+      const optionViewAction = event.target.closest("[data-option-view-action]");
+      if (optionViewAction) {
+        openOptionViewModal(optionViewAction.dataset.optionViewAction);
+        return;
+      }
+      // Option row click → open read-only view modal (not when clicking action menu/buttons)
+      const optionRow = event.target.closest("[data-option-view]");
+      if (optionRow && !event.target.closest(".row-menu, button, a, input, select, [data-custom-select]")) {
+        openOptionViewModal(optionRow.dataset.optionView);
+        return;
+      }
       const optionEditButton = event.target.closest("[data-option-edit]");
       if (optionEditButton) {
         openOptionEditModal(optionEditButton.dataset.optionEdit);
