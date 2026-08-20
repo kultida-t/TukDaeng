@@ -1286,13 +1286,13 @@
       min-width: 1164px;
     }
     body.option-master-mode #table .option-detail-table {
-      min-width: 1084px;
+      min-width: 988px;
     }
     body.option-master-mode.option-group-list-mode #table > .footer-range {
       min-width: 1052px;
     }
     body.option-master-mode.option-detail-mode #table > .footer-range {
-      min-width: 1084px;
+      min-width: 988px;
     }
     body.offer-list-mode .layout > .panel {
       border-color: #d7e2f0;
@@ -1619,7 +1619,7 @@
       grid-template-columns: minmax(112px, .62fr) minmax(130px, .72fr) minmax(180px, 1.1fr) minmax(180px, 1.1fr) minmax(96px, .52fr) minmax(96px, .52fr) minmax(120px, .62fr) minmax(76px, .38fr);
     }
     .option-detail-table .asset-row {
-      grid-template-columns: minmax(150px, .82fr) minmax(180px, 1.1fr) minmax(160px, .95fr) minmax(96px, .52fr) minmax(110px, .58fr) minmax(86px, .46fr) minmax(150px, .82fr);
+      grid-template-columns: minmax(108px, .5fr) minmax(200px, 1.2fr) minmax(200px, 1.2fr) minmax(80px, .36fr) minmax(84px, .4fr) minmax(104px, .5fr) minmax(88px, .42fr);
     }
     .reported-board-table .asset-row {
       grid-template-columns: minmax(112px, .66fr) minmax(230px, 1.48fr) minmax(140px, .78fr) minmax(116px, .64fr) minmax(154px, .86fr) minmax(190px, 1.04fr) minmax(86px, .48fr) minmax(102px, .56fr) minmax(76px, .42fr);
@@ -1867,6 +1867,7 @@
     body.option-master-mode .option-detail-table .asset-row.head {
       min-height: 44px;
       padding: 12px 22px;
+      column-gap: 20px;
       background: #f1f5fb;
       color: #485b75;
       font-size: 12px;
@@ -1874,7 +1875,7 @@
     }
     body.option-master-mode .option-group-table .asset-row:not(.head),
     body.option-master-mode .option-detail-table .asset-row:not(.head) {
-      column-gap: 18px;
+      column-gap: 20px;
       padding-left: 22px;
       padding-right: 22px;
     }
@@ -2846,6 +2847,100 @@
     }
     .category-order-modal .user-detail-actions {
       justify-content: flex-end;
+    }
+    .modal.user-action-modal.option-editor-modal {
+      width: min(720px, calc(100vw - 36px));
+      border-radius: 22px;
+      border-color: #d9e3f1;
+      box-shadow: 0 28px 80px rgba(6, 20, 38, .28);
+    }
+    .option-editor-modal .modal-body {
+      padding: 24px;
+    }
+    .option-editor-modal .article-editor-form {
+      margin-top: 16px;
+    }
+    .option-editor-modal .article-editor-grid {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    .option-editor-modal .article-editor-form label {
+      grid-column: 1 / -1;
+    }
+    .option-editor-modal .article-editor-form > .user-detail-actions {
+      justify-content: flex-end;
+    }
+    .option-key-lock-note {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      margin-top: 6px;
+      padding: 10px 12px;
+      border-radius: 8px;
+      background: #f1f5f9;
+      border: 1px solid #cbd5e1;
+      color: #475569;
+      font-size: 12px;
+      font-weight: 500;
+      line-height: 1.5;
+    }
+    .option-key-lock-note svg {
+      flex: 0 0 auto;
+      width: 16px;
+      height: 16px;
+      margin-top: 1px;
+      color: #64748b;
+    }
+    .option-confirm-summary {
+      display: grid;
+      gap: 10px;
+      margin: 16px 0;
+    }
+    .option-confirm-row {
+      display: grid;
+      grid-template-columns: minmax(120px, 0.5fr) minmax(0, 1fr);
+      gap: 12px;
+      padding: 10px 14px;
+      border: 1px solid #dce6f3;
+      border-radius: 8px;
+      background: #fbfdff;
+      font-size: 13px;
+    }
+    .option-confirm-row .option-confirm-label {
+      color: #64748b;
+      font-weight: 700;
+    }
+    .option-confirm-row .option-confirm-value {
+      color: #061426;
+      font-weight: 500;
+      word-break: break-word;
+    }
+    .option-confirm-row.option-confirm-changed {
+      border-color: #9bb7d9;
+      background: #f0f6ff;
+    }
+    .option-confirm-row.option-confirm-changed .option-confirm-value {
+      display: grid;
+      gap: 4px;
+    }
+    .option-confirm-before {
+      color: #94a3b8;
+      text-decoration: line-through;
+      font-size: 12px;
+    }
+    .option-confirm-after {
+      color: #1f5f9f;
+      font-weight: 700;
+    }
+    .option-confirm-impact {
+      margin: 14px 0 0;
+      padding: 12px 14px;
+      border-radius: 8px;
+      background: #fffbeb;
+      border: 1px solid #fde68a;
+      color: #92400e;
+      font-size: 12px;
+      font-weight: 500;
+      line-height: 1.55;
     }
     .article-detail-layout {
       display: grid;
@@ -10474,6 +10569,15 @@
       }
     ];
 
+    // Assign sequential Option IDs (mock for prototype — in production this is BIGSERIAL from DB)
+    let _optionIdCounter = 0;
+    optionMasterGroups.forEach(group => {
+      group.options.forEach(option => {
+        _optionIdCounter += 1;
+        option.id = "OPT-" + String(_optionIdCounter).padStart(3, "0");
+      });
+    });
+
     function getOptionGroup(groupId) {
       return optionMasterGroups.find(g => g.group_id === groupId) || null;
     }
@@ -15844,7 +15948,7 @@
       }
       modal.classList.remove("show");
       modal.classList.remove("market-reference-drawer-open", "market-reference-drawer-closing");
-      modalCard?.classList.remove("article-preview-modal", "article-editor-confirm-modal", "category-editor-modal", "category-order-modal", "market-editor-modal", "market-reference-drawer", "board-report-phone-preview-modal");
+      modalCard?.classList.remove("article-preview-modal", "article-editor-confirm-modal", "category-editor-modal", "category-order-modal", "market-editor-modal", "market-reference-drawer", "board-report-phone-preview-modal", "option-editor-modal");
       document.body.classList.remove("asset-action-modal-open");
       document.querySelector("#user-action-modal-body").innerHTML = "";
     }
@@ -19830,7 +19934,7 @@
       const statusFilter = document.querySelector("#option-status-filter")?.value || "";
       const filtered = g.options.filter(o => {
         if (!q) return true;
-        const text = `${o.key} ${o.label_en} ${o.label_th}`.toLowerCase();
+        const text = `${o.id} ${o.key} ${o.label_en} ${o.label_th}`.toLowerCase();
         return text.includes(q);
       }).filter(o => {
         if (!statusFilter) return true;
@@ -19844,7 +19948,7 @@
       const pageRows = filtered.slice(start, start + optionDetailPageSize);
       document.querySelector("#table").innerHTML = `
         <div class="asset-table option-detail-table">
-          <div class="asset-row head"><div>Key</div><div>Label (EN)</div><div>Label (TH)</div><div>Sort Order</div><div>Status</div><div>System</div><div>Action</div></div>
+          <div class="asset-row head"><div>Option ID</div><div>Label (EN)</div><div>Label (TH)</div><div>Sort Order</div><div>System</div><div>Status</div><div>Action</div></div>
           ${pageRows.map(o => {
             const statusPill = o.is_active
               ? `<span class="pill green">Active</span>`
@@ -19856,10 +19960,10 @@
                 <details class="row-menu">
                   <summary title="Option actions">...</summary>
                   <div class="row-menu-list">
-                    <button type="button" data-option-edit="${o.key}">Edit</button>
+                    <button type="button" data-option-edit="${o.id}">Edit</button>
                     ${deactivateDisabled
                       ? `<button type="button" disabled title="กลุ่มนี้เป็น required field สำหรับ Sale status จึงไม่สามารถ deactivate ผ่าน BO ได้ ต้องแก้ไขผ่าน seed file และ migration" aria-disabled="true">Deactivate</button>`
-                      : `<button type="button" data-option-deactivate="${o.key}">Deactivate</button>`
+                      : `<button type="button" data-option-deactivate="${o.id}">Deactivate</button>`
                     }
                   </div>
                 </details>
@@ -19868,33 +19972,34 @@
                 <details class="row-menu">
                   <summary title="Option actions">...</summary>
                   <div class="row-menu-list">
-                    <button type="button" data-option-edit="${o.key}">Edit</button>
-                    <button type="button" data-option-reactivate="${o.key}">Reactivate</button>
+                    <button type="button" data-option-edit="${o.id}">Edit</button>
+                    <button type="button" data-option-reactivate="${o.id}">Reactivate</button>
                   </div>
                 </details>
               `;
             return `
-              <div class="asset-row" data-option-key="${o.key}">
-                <div data-label="Key"><div class="main-text">${o.key}</div></div>
+              <div class="asset-row" data-option-id="${o.id}">
+                <div data-label="Option ID"><div class="main-text">${o.id}</div></div>
                 <div class="asset-cell-primary" data-label="Label (EN)">
-                  <div class="main-text"><span class="desktop-user-name">${o.label_en}</span><span class="mobile-user-card-title">${o.key}</span></div>
+                  <div class="main-text"><span class="desktop-user-name">${o.label_en}</span><span class="mobile-user-card-title">${o.id}</span></div>
                 </div>
                 <div class="asset-card-tags">
                   ${statusPill}
                   <span class="user-card-tag asset-tag ${systemLabel === "Yes" ? "tag-purple" : "tag-teal"}">${systemLabel === "Yes" ? "System" : "Custom"}</span>
                   <span class="user-card-tag asset-tag tag-slate">Sort ${o.sort_order}</span>
                   <div class="user-card-meta">
+                    <div class="user-card-meta-item comment-field-meta"><span>Option ID</span><strong>${o.id}</strong></div>
                     <div class="user-card-meta-item comment-field-meta"><span>Label (EN)</span><strong>${o.label_en}</strong></div>
                     <div class="user-card-meta-item comment-field-meta"><span>Label (TH)</span><strong>${o.label_th}</strong></div>
                     <div class="user-card-meta-item comment-field-meta"><span>Sort Order</span><strong>${o.sort_order}</strong></div>
-                    <div class="user-card-meta-item comment-field-meta"><span>Status</span><strong>${o.is_active ? "Active" : "Inactive"}</strong></div>
                     <div class="user-card-meta-item comment-field-meta"><span>System</span><strong>${systemLabel}</strong></div>
+                    <div class="user-card-meta-item comment-field-meta"><span>Status</span><strong>${o.is_active ? "Active" : "Inactive"}</strong></div>
                   </div>
                 </div>
                 <div data-label="Label (TH)"><div class="main-text">${o.label_th}</div></div>
                 <div data-label="Sort Order"><div class="main-text">${o.sort_order}</div></div>
-                <div data-label="Status">${statusPill}</div>
                 <div data-label="System"><div class="main-text">${systemLabel}</div></div>
+                <div data-label="Status">${statusPill}</div>
                 <div class="user-row-actions">${actionMenu}</div>
               </div>
             `;
@@ -19906,6 +20011,398 @@
         </div>
       `;
     }
+
+    // ===== Option Master modal helpers (BO-OPT-002b) =====
+    function getOptionByKey(groupId, key) {
+      const g = getOptionGroup(groupId);
+      return g ? g.options.find(o => o.key === key) || null : null;
+    }
+    function getOptionById(optionId) {
+      for (const g of optionMasterGroups) {
+        const found = g.options.find(o => o.id === optionId);
+        if (found) return found;
+      }
+      return null;
+    }
+    function getOptionGroupByOptionId(optionId) {
+      return optionMasterGroups.find(g => g.options.some(o => o.id === optionId)) || null;
+    }
+    function getNextOptionId() {
+      let maxNum = 0;
+      optionMasterGroups.forEach(g => {
+        g.options.forEach(o => {
+          const match = String(o.id || "").match(/OPT-(\d+)/);
+          if (match) maxNum = Math.max(maxNum, parseInt(match[1], 10));
+        });
+      });
+      return "OPT-" + String(maxNum + 1).padStart(3, "0");
+    }
+    function getNextOptionSortOrder(groupId) {
+      const g = getOptionGroup(groupId);
+      if (!g || !g.options.length) return 10;
+      return Math.max(...g.options.map(o => o.sort_order || 0)) + 10;
+    }
+    function isOptionKeyUnique(groupId, key, excludeKey = "") {
+      const g = getOptionGroup(groupId);
+      if (!g) return true;
+      return !g.options.some(o => o.key === key && o.key !== excludeKey);
+    }
+    function escapeOptionField(value = "") {
+      return String(value)
+        .replace(/&/g, "&amp;")
+        .replace(/"/g, "&quot;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;");
+    }
+
+    function openOptionAddModal(prevData = null) {
+      const g = getOptionGroup(activeOptionGroup);
+      if (!g) return;
+      const modal = document.querySelector("#user-action-modal");
+      const modalCard = modal?.querySelector(".user-action-modal");
+      const modalBody = document.querySelector("#user-action-modal-body");
+      if (!modal || !modalCard || !modalBody) return;
+      modalCard.classList.remove("article-preview-modal", "article-editor-confirm-modal", "category-editor-modal", "category-order-modal", "market-editor-modal", "board-report-phone-preview-modal");
+      modalCard.classList.add("option-editor-modal");
+      const nextSort = prevData?.sort_order ?? getNextOptionSortOrder(g.group_id);
+      const isActiveValue = prevData ? String(prevData.is_active) : "true";
+      modalBody.innerHTML = `
+        <div class="user-action-layout">
+          <div class="user-action-head">
+            <div>
+              <h2 id="user-action-modal-title">Add Option</h2>
+              <p>สร้าง option ใหม่ในกลุ่ม ${escapeOptionField(g.display_name_en)} (${escapeOptionField(g.group)})</p>
+            </div>
+            <button class="btn user-action-close" type="button" data-user-action-modal-close aria-label="Close modal" title="Close">${iconSvg.close}</button>
+          </div>
+          <form class="article-editor-form" data-option-form data-option-mode="add" data-option-group="${g.group_id}" novalidate>
+            <section class="article-editor-section">
+              <div class="article-editor-grid">
+                <label><span>Option ID</span>
+                  <input value="${getNextOptionId()} (กำหนดอัตโนมัติ)" readonly />
+                </label>
+                <label><span>Key <span class="article-required-mark">*</span></span>
+                  <input name="key" value="${escapeOptionField(prevData?.key || "")}" placeholder="เช่น new_unworn" data-option-key autocomplete="off" />
+                  <span class="article-field-error" data-option-key-error></span>
+                </label>
+                <label><span>Label (EN) <span class="article-required-mark">*</span></span>
+                  <input name="label_en" value="${escapeOptionField(prevData?.label_en || "")}" placeholder="New / Unworn" data-option-label-en autocomplete="off" />
+                  <span class="article-field-error" data-option-label-en-error></span>
+                </label>
+                <label><span>Label (TH) <span class="article-required-mark">*</span></span>
+                  <input name="label_th" value="${escapeOptionField(prevData?.label_th || "")}" placeholder="ใหม่ / ยังไม่ผ่านการใช้งาน" data-option-label-th autocomplete="off" />
+                  <span class="article-field-error" data-option-label-th-error></span>
+                </label>
+                <label><span>Description (EN)</span>
+                  <textarea name="description_en" placeholder="คำอธิบายเพิ่มเติม (ไม่บังคับ)" data-option-description-en>${escapeOptionField(prevData?.description_en || "")}</textarea>
+                  <span class="article-field-error" aria-hidden="true"></span>
+                </label>
+                <label><span>Sort Order <span class="article-required-mark">*</span></span>
+                  <input name="sort_order" type="number" value="${nextSort}" min="0" step="1" data-option-sort-order />
+                  <span class="article-field-error" data-option-sort-order-error></span>
+                </label>
+                <label>Is Active
+                  ${articleEditorCustomSelect("option-is-active", "is_active", "Is Active", [
+                    { value: "true", label: "Active" },
+                    { value: "false", label: "Inactive" }
+                  ], isActiveValue)}
+                  <span class="article-field-error" aria-hidden="true"></span>
+                </label>
+              </div>
+            </section>
+            <div class="user-detail-actions">
+              <button class="user-detail-action-btn" type="button" data-user-action-modal-close>ยกเลิก</button>
+              <button class="user-detail-action-btn primary" type="submit">สร้าง Option</button>
+            </div>
+          </form>
+        </div>
+      `;
+      showUserActionModal(true);
+    }
+
+    function openOptionEditModal(optionId, prevData = null) {
+      const option = getOptionById(optionId);
+      if (!option) return;
+      const g = getOptionGroupByOptionId(optionId);
+      if (!g) return;
+      const src = prevData || option;
+      const modal = document.querySelector("#user-action-modal");
+      const modalCard = modal?.querySelector(".user-action-modal");
+      const modalBody = document.querySelector("#user-action-modal-body");
+      if (!modal || !modalCard || !modalBody) return;
+      modalCard.classList.remove("article-preview-modal", "article-editor-confirm-modal", "category-editor-modal", "category-order-modal", "market-editor-modal", "board-report-phone-preview-modal");
+      modalCard.classList.add("option-editor-modal");
+      const keyLocked = option.used_in_assets;
+      const keyField = keyLocked
+        ? `<input name="key" value="${escapeOptionField(src.key || option.key)}" readonly data-option-key />
+           <div class="option-key-lock-note">
+             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
+             <span>Key ถูกล็อกเพราะ option นี้ถูกใช้ใน asset แล้ว ไม่สามารถแก้ไขได้เพื่อรักษา referential integrity</span>
+           </div>`
+        : `<input name="key" value="${escapeOptionField(src.key || option.key)}" data-option-key autocomplete="off" />
+           <span class="article-field-error" data-option-key-error></span>`;
+      modalBody.innerHTML = `
+        <div class="user-action-layout">
+          <div class="user-action-head">
+            <div>
+              <h2 id="user-action-modal-title">Edit Option</h2>
+              <p>แก้ไข option ${escapeOptionField(option.id)} (${escapeOptionField(option.key)}) ในกลุ่ม ${escapeOptionField(g.display_name_en)} (${escapeOptionField(g.group)})</p>
+            </div>
+            <button class="btn user-action-close" type="button" data-user-action-modal-close aria-label="Close modal" title="Close">${iconSvg.close}</button>
+          </div>
+          <form class="article-editor-form" data-option-form data-option-mode="edit" data-option-group="${g.group_id}" data-option-original-key="${escapeOptionField(option.key)}" data-option-id="${escapeOptionField(option.id)}" novalidate>
+            <section class="article-editor-section">
+              <div class="article-editor-grid">
+                <label><span>Option ID</span>
+                  <input value="${escapeOptionField(option.id)}" readonly />
+                </label>
+                <label><span>Key ${keyLocked ? "" : '<span class="article-required-mark">*</span>'}</span>
+                  ${keyField}
+                </label>
+                <label><span>Label (EN) <span class="article-required-mark">*</span></span>
+                  <input name="label_en" value="${escapeOptionField(src.label_en ?? option.label_en)}" data-option-label-en autocomplete="off" />
+                  <span class="article-field-error" data-option-label-en-error></span>
+                </label>
+                <label><span>Label (TH) <span class="article-required-mark">*</span></span>
+                  <input name="label_th" value="${escapeOptionField(src.label_th ?? option.label_th)}" data-option-label-th autocomplete="off" />
+                  <span class="article-field-error" data-option-label-th-error></span>
+                </label>
+                <label><span>Description (EN)</span>
+                  <textarea name="description_en" data-option-description-en>${escapeOptionField(src.description_en ?? option.description_en ?? "")}</textarea>
+                  <span class="article-field-error" aria-hidden="true"></span>
+                </label>
+                <label><span>Sort Order <span class="article-required-mark">*</span></span>
+                  <input name="sort_order" type="number" value="${src.sort_order ?? option.sort_order}" min="0" step="1" data-option-sort-order />
+                  <span class="article-field-error" data-option-sort-order-error></span>
+                </label>
+                <label>Is Active
+                  ${articleEditorCustomSelect("option-is-active", "is_active", "Is Active", [
+                    { value: "true", label: "Active" },
+                    { value: "false", label: "Inactive" }
+                  ], String(src.is_active ?? option.is_active))}
+                  <span class="article-field-error" aria-hidden="true"></span>
+                </label>
+              </div>
+            </section>
+            <div class="user-detail-actions">
+              <button class="user-detail-action-btn" type="button" data-user-action-modal-close>ยกเลิก</button>
+              <button class="user-detail-action-btn primary" type="submit">บันทึกการแก้ไข</button>
+            </div>
+          </form>
+        </div>
+      `;
+      showUserActionModal(true);
+    }
+
+    function setOptionFieldError(form, field, message = "") {
+      const node = form?.querySelector(`[data-option-${field}-error]`);
+      if (node) {
+        node.textContent = message;
+        node.classList.toggle("show", Boolean(message));
+      }
+      const controlMap = {
+        key: form?.querySelector("[data-option-key]"),
+        "label-en": form?.querySelector("[data-option-label-en]"),
+        "label-th": form?.querySelector("[data-option-label-th]"),
+        "sort-order": form?.querySelector("[data-option-sort-order]")
+      };
+      controlMap[field]?.classList.toggle("article-field-invalid", Boolean(message));
+    }
+
+    function validateOptionForm(form) {
+      const mode = form.dataset.optionMode || "add";
+      const groupId = form.dataset.optionGroup || "";
+      const originalKey = form.dataset.optionOriginalKey || "";
+      const formData = new FormData(form);
+      const key = String(formData.get("key") || "").trim();
+      const labelEn = String(formData.get("label_en") || "").trim();
+      const labelTh = String(formData.get("label_th") || "").trim();
+      const descriptionEn = String(formData.get("description_en") || "").trim();
+      const sortOrderRaw = String(formData.get("sort_order") || "").trim();
+      const isActive = String(formData.get("is_active") || "true") === "true";
+      const keyLocked = form.querySelector("[data-option-key]")?.hasAttribute("readonly");
+      ["key", "label-en", "label-th", "sort-order"].forEach(field => setOptionFieldError(form, field));
+      let hasError = false;
+      if (!keyLocked) {
+        if (!key) {
+          setOptionFieldError(form, "key", "กรุณากรอก Key");
+          hasError = true;
+        } else if (/\s/.test(key)) {
+          setOptionFieldError(form, "key", "Key ห้ามมีช่องว่าง");
+          hasError = true;
+        } else if (!/^[a-z0-9_]+$/.test(key)) {
+          setOptionFieldError(form, "key", "Key ต้องเป็น lowercase snake_case (a-z, 0-9, _ เท่านั้น)");
+          hasError = true;
+        } else if (key.length > 64) {
+          setOptionFieldError(form, "key", "Key ต้องไม่เกิน 64 ตัวอักษร");
+          hasError = true;
+        } else if (!isOptionKeyUnique(groupId, key, originalKey)) {
+          setOptionFieldError(form, "key", `Key "${key}" ซ้ำในกลุ่มนี้ กรุณาใช้ key อื่น`);
+          hasError = true;
+        }
+      }
+      if (!labelEn) {
+        setOptionFieldError(form, "label-en", "กรุณากรอก Label (EN)");
+        hasError = true;
+      } else if (labelEn.length > 128) {
+        setOptionFieldError(form, "label-en", "Label (EN) ต้องไม่เกิน 128 ตัวอักษร");
+        hasError = true;
+      }
+      if (!labelTh) {
+        setOptionFieldError(form, "label-th", "กรุณากรอก Label (TH)");
+        hasError = true;
+      } else if (labelTh.length > 128) {
+        setOptionFieldError(form, "label-th", "Label (TH) ต้องไม่เกิน 128 ตัวอักษร");
+        hasError = true;
+      }
+      if (descriptionEn.length > 512) {
+        setOptionFieldError(form, "description-en", "Description (EN) ต้องไม่เกิน 512 ตัวอักษร");
+        hasError = true;
+      }
+      const sortOrderNum = parseInt(sortOrderRaw, 10);
+      if (!sortOrderRaw || isNaN(sortOrderNum) || sortOrderNum < 0 || String(sortOrderNum) !== sortOrderRaw) {
+        setOptionFieldError(form, "sort-order", "Sort Order ต้องเป็นตัวเลขจำนวนเต็มไม่ติดลบ");
+        hasError = true;
+      }
+      if (hasError) return null;
+      return { key, label_en: labelEn, label_th: labelTh, description_en: descriptionEn, sort_order: sortOrderNum, is_active: isActive, is_system: false, used_in_assets: false };
+    }
+
+    function openOptionAddConfirmModal(data) {
+      const g = getOptionGroup(activeOptionGroup);
+      if (!g) return;
+      const modal = document.querySelector("#user-action-modal");
+      const modalCard = modal?.querySelector(".user-action-modal");
+      const modalBody = document.querySelector("#user-action-modal-body");
+      if (!modal || !modalCard || !modalBody) return;
+      modalCard.classList.remove("article-preview-modal", "article-editor-confirm-modal", "category-editor-modal", "category-order-modal", "market-editor-modal", "board-report-phone-preview-modal");
+      modalCard.classList.add("option-editor-modal");
+      const previewId = getNextOptionId();
+      modalBody.innerHTML = `
+        <div class="user-action-layout">
+          <div class="user-action-head">
+            <div>
+              <h2 id="user-action-modal-title">ยืนยันการสร้าง Option</h2>
+              <p>กรุณาตรวจสอบค่าที่จะบันทึกก่อนยืนยัน</p>
+            </div>
+            <button class="btn user-action-close" type="button" data-user-action-modal-close aria-label="Close modal" title="Close">${iconSvg.close}</button>
+          </div>
+          <div class="option-confirm-summary">
+            <div class="option-confirm-row"><span class="option-confirm-label">Option ID</span><span class="option-confirm-value">${previewId} <span style="color:#94a3b8;font-size:11px">(กำหนดอัตโนมัติ)</span></span></div>
+            <div class="option-confirm-row"><span class="option-confirm-label">Key</span><span class="option-confirm-value">${escapeOptionField(data.key)}</span></div>
+            <div class="option-confirm-row"><span class="option-confirm-label">Label (EN)</span><span class="option-confirm-value">${escapeOptionField(data.label_en)}</span></div>
+            <div class="option-confirm-row"><span class="option-confirm-label">Label (TH)</span><span class="option-confirm-value">${escapeOptionField(data.label_th)}</span></div>
+            <div class="option-confirm-row"><span class="option-confirm-label">Description (EN)</span><span class="option-confirm-value">${escapeOptionField(data.description_en) || "-"}</span></div>
+            <div class="option-confirm-row"><span class="option-confirm-label">Sort Order</span><span class="option-confirm-value">${data.sort_order}</span></div>
+            <div class="option-confirm-row"><span class="option-confirm-label">Is Active</span><span class="option-confirm-value">${data.is_active ? "Active" : "Inactive"}</span></div>
+          </div>
+          <div class="option-confirm-impact">
+            Option นี้จะปรากฏใน FO Add/Edit Asset form, FO Search Filter และ FO Watch Alert criteria สำหรับกลุ่ม ${escapeOptionField(g.display_name_en)} ทันทีเมื่อ FO อ่าน option master ล่าสุด
+          </div>
+          <div class="user-detail-actions">
+            <button class="user-detail-action-btn" type="button" data-option-add-back>ย้อนกลับ</button>
+            <button class="user-detail-action-btn primary" type="button" data-option-add-confirm>ยืนยันการสร้าง</button>
+          </div>
+        </div>
+      `;
+      showUserActionModal(true);
+    }
+
+    function openOptionEditConfirmModal(data, original) {
+      const g = getOptionGroup(activeOptionGroup);
+      if (!g) return;
+      const modal = document.querySelector("#user-action-modal");
+      const modalCard = modal?.querySelector(".user-action-modal");
+      const modalBody = document.querySelector("#user-action-modal-body");
+      if (!modal || !modalCard || !modalBody) return;
+      modalCard.classList.remove("article-preview-modal", "article-editor-confirm-modal", "category-editor-modal", "category-order-modal", "market-editor-modal", "board-report-phone-preview-modal");
+      modalCard.classList.add("option-editor-modal");
+      const changed = (field) => String(original[field] ?? "") !== String(data[field] ?? "");
+      const row = (label, field, displayFn) => {
+        const isChanged = changed(field);
+        return `<div class="option-confirm-row ${isChanged ? "option-confirm-changed" : ""}">
+          <span class="option-confirm-label">${label}</span>
+          <span class="option-confirm-value">${isChanged
+            ? `<span class="option-confirm-before">${displayFn(original[field])}</span><span class="option-confirm-after">${displayFn(data[field])}</span>`
+            : displayFn(data[field])}</span>
+        </div>`;
+      };
+      const boolDisplay = (v) => v ? "Active" : "Inactive";
+      const textDisplay = (v) => escapeOptionField(v || "");
+      modalBody.innerHTML = `
+        <div class="user-action-layout">
+          <div class="user-action-head">
+            <div>
+              <h2 id="user-action-modal-title">ยืนยันการแก้ไข Option</h2>
+              <p>กรุณาตรวจสอบค่าที่เปลี่ยนแปลงก่อนยืนยัน — ค่าเดิมถูกขีดฆ่าและค่าใหม่แสดงด้านล่าง</p>
+            </div>
+            <button class="btn user-action-close" type="button" data-user-action-modal-close aria-label="Close modal" title="Close">${iconSvg.close}</button>
+          </div>
+          <div class="option-confirm-summary">
+            <div class="option-confirm-row"><span class="option-confirm-label">Option ID</span><span class="option-confirm-value">${escapeOptionField(original.id || "")}</span></div>
+            ${row("Key", "key", textDisplay)}
+            ${row("Label (EN)", "label_en", textDisplay)}
+            ${row("Label (TH)", "label_th", textDisplay)}
+            ${row("Description (EN)", "description_en", textDisplay)}
+            ${row("Sort Order", "sort_order", (v) => String(v ?? ""))}
+            ${row("Is Active", "is_active", boolDisplay)}
+          </div>
+          <div class="option-confirm-impact">
+            การแก้ไข label จะไม่กระทบค่าที่เก็บใน existing assets เพราะ asset เก็บ relation id และ snapshot text แยก แต่ FO form/filter จะแสดง label ใหม่ทันทีเมื่ออ่าน option master ล่าสุด
+          </div>
+          <div class="user-detail-actions">
+            <button class="user-detail-action-btn" type="button" data-option-edit-back>ย้อนกลับ</button>
+            <button class="user-detail-action-btn primary" type="button" data-option-edit-confirm>ยืนยันการแก้ไข</button>
+          </div>
+        </div>
+      `;
+      showUserActionModal(true);
+    }
+
+    function applyOptionAdd(data) {
+      const g = getOptionGroup(activeOptionGroup);
+      if (!g) return;
+      const newOption = {
+        id: getNextOptionId(),
+        key: data.key,
+        label_en: data.label_en,
+        label_th: data.label_th,
+        description_en: data.description_en,
+        sort_order: data.sort_order,
+        is_active: data.is_active,
+        is_system: false,
+        used_in_assets: false
+      };
+      g.options.push(newOption);
+      g.options.sort((a, b) => (a.sort_order || 0) - (b.sort_order || 0) || a.key.localeCompare(b.key));
+      closeUserActionModal();
+      optionDetailPage = 1;
+      renderOptionDetailRows();
+      showSuccessToast(`${g.group}: สร้าง option "${newOption.id}" (${data.key}) แล้ว`);
+    }
+
+    function applyOptionEdit(data, originalKey) {
+      const g = getOptionGroup(activeOptionGroup);
+      if (!g) return;
+      const option = getOptionByKey(g.group_id, originalKey);
+      if (!option) return;
+      const keyChanged = data.key !== originalKey;
+      Object.assign(option, {
+        key: data.key,
+        label_en: data.label_en,
+        label_th: data.label_th,
+        description_en: data.description_en,
+        sort_order: data.sort_order,
+        is_active: data.is_active
+      });
+      g.options.sort((a, b) => (a.sort_order || 0) - (b.sort_order || 0) || a.key.localeCompare(b.key));
+      closeUserActionModal();
+      renderOptionDetailRows();
+      showSuccessToast(`${g.group}: บันทึกการแก้ไข option "${option.id}" แล้ว${keyChanged ? ` (เปลี่ยน key จาก "${originalKey}")` : ""}`);
+    }
+
+    let pendingOptionFormData = null;
+    let pendingOptionOriginal = null;
 
     function renderCategoryListRows() {
       const q = (document.querySelector("#category-search")?.value || "").trim().toLowerCase();
@@ -24723,17 +25220,47 @@
         resetTableScrollPosition();
         return;
       }
-      // Placeholder buttons for 002b/002c/002d — no-op for now
+      // Option Master modal triggers (BO-OPT-002b)
       const optionAddOpen = event.target.closest("[data-option-add-open]");
-      if (optionAddOpen) return;
+      if (optionAddOpen) {
+        openOptionAddModal();
+        return;
+      }
       const optionReorderOpen = event.target.closest("[data-option-reorder-open]");
       if (optionReorderOpen) return;
       const optionEditButton = event.target.closest("[data-option-edit]");
-      if (optionEditButton) return;
+      if (optionEditButton) {
+        openOptionEditModal(optionEditButton.dataset.optionEdit);
+        return;
+      }
       const optionDeactivateButton = event.target.closest("[data-option-deactivate]");
       if (optionDeactivateButton) return;
       const optionReactivateButton = event.target.closest("[data-option-reactivate]");
       if (optionReactivateButton) return;
+      // Option Master confirmation modal buttons (BO-OPT-002b)
+      const optionAddBack = event.target.closest("[data-option-add-back]");
+      if (optionAddBack) {
+        if (pendingOptionFormData) openOptionAddModal(pendingOptionFormData);
+        return;
+      }
+      const optionAddConfirm = event.target.closest("[data-option-add-confirm]");
+      if (optionAddConfirm) {
+        if (pendingOptionFormData) applyOptionAdd(pendingOptionFormData);
+        pendingOptionFormData = null;
+        return;
+      }
+      const optionEditBack = event.target.closest("[data-option-edit-back]");
+      if (optionEditBack) {
+        if (pendingOptionFormData && pendingOptionOriginal) openOptionEditModal(pendingOptionOriginal.id, pendingOptionFormData);
+        return;
+      }
+      const optionEditConfirm = event.target.closest("[data-option-edit-confirm]");
+      if (optionEditConfirm) {
+        if (pendingOptionFormData && pendingOptionOriginal) applyOptionEdit(pendingOptionFormData, pendingOptionOriginal.key);
+        pendingOptionFormData = null;
+        pendingOptionOriginal = null;
+        return;
+      }
 
       const categoryCard = event.target.closest("[data-category-card]");
       if (categoryCard && !event.target.closest(".row-menu, button, a, input, select, [data-custom-select]")) {
@@ -25828,6 +26355,26 @@
       if (categoryForm) {
         event.preventDefault();
         saveCategoryFromForm(categoryForm);
+        return;
+      }
+      const optionForm = event.target.closest("[data-option-form]");
+      if (optionForm) {
+        event.preventDefault();
+        const validated = validateOptionForm(optionForm);
+        if (!validated) return;
+        const mode = optionForm.dataset.optionMode;
+        if (mode === "edit") {
+          const originalKey = optionForm.dataset.optionOriginalKey || "";
+          const g = getOptionGroup(optionForm.dataset.optionGroup || activeOptionGroup);
+          const original = g ? getOptionByKey(g.group_id, originalKey) : null;
+          if (!original) return;
+          pendingOptionFormData = validated;
+          pendingOptionOriginal = { ...original };
+          openOptionEditConfirmModal(validated, pendingOptionOriginal);
+        } else {
+          pendingOptionFormData = validated;
+          openOptionAddConfirmModal(validated);
+        }
         return;
       }
       const articleEditor = event.target.closest("[data-article-editor]");
