@@ -2934,7 +2934,7 @@
     }
     .option-confirm-row .option-confirm-value {
       color: #061426;
-      font-weight: 500;
+      font-weight: 400;
       word-break: break-word;
     }
     .option-confirm-row.option-confirm-changed {
@@ -20362,7 +20362,7 @@
             <button class="btn user-action-close" type="button" data-user-action-modal-close aria-label="Close modal" title="Close">${iconSvg.close}</button>
           </div>
           <div class="option-confirm-summary">
-            <div class="option-confirm-row"><span class="option-confirm-label">Option ID</span><span class="option-confirm-value">${previewId} <span style="color:#94a3b8;font-size:11px">(กำหนดอัตโนมัติ)</span></span></div>
+            <div class="option-confirm-row"><span class="option-confirm-label">Option ID</span><span class="option-confirm-value">${previewId}</span></div>
             <div class="option-confirm-row"><span class="option-confirm-label">Key</span><span class="option-confirm-value">${escapeOptionField(data.key)}</span></div>
             <div class="option-confirm-row"><span class="option-confirm-label">Label (EN)</span><span class="option-confirm-value">${escapeOptionField(data.label_en)}</span></div>
             <div class="option-confirm-row"><span class="option-confirm-label">Label (TH)</span><span class="option-confirm-value">${escapeOptionField(data.label_th)}</span></div>
@@ -20370,11 +20370,11 @@
             <div class="option-confirm-row"><span class="option-confirm-label">Status</span><span class="option-confirm-value">${data.is_active ? "Active" : "Inactive"}</span></div>
           </div>
           <div class="option-confirm-impact">
-            Option นี้จะปรากฏใน FO Add/Edit Asset form, FO Search Filter และ FO Watch Alert criteria สำหรับกลุ่ม ${escapeOptionField(g.display_name_en)} ทันทีเมื่อ FO อ่าน option master ล่าสุด
+            Option นี้จะปรากฏในฝั่ง FO (Add/Edit Asset form, Search Filter และ Watch Alert criteria) สำหรับกลุ่ม ${escapeOptionField(g.display_name_en)} ทันทีเมื่อ FO อ่าน option master ล่าสุด
           </div>
           <div class="user-detail-actions">
             <button class="user-detail-action-btn" type="button" data-option-add-back>ย้อนกลับ</button>
-            <button class="user-detail-action-btn primary" type="button" data-option-add-confirm>ยืนยันการสร้าง</button>
+            <button class="user-detail-action-btn primary" type="button" data-option-add-confirm>ยืนยัน</button>
           </div>
         </div>
       `;
@@ -20424,7 +20424,7 @@
           </div>
           <div class="user-detail-actions">
             <button class="user-detail-action-btn" type="button" data-option-edit-back>ย้อนกลับ</button>
-            <button class="user-detail-action-btn primary" type="button" data-option-edit-confirm>ยืนยันการแก้ไข</button>
+            <button class="user-detail-action-btn primary" type="button" data-option-edit-confirm>ยืนยัน</button>
           </div>
         </div>
       `;
