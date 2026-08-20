@@ -20226,11 +20226,7 @@
       if (!modal || !modalCard || !modalBody) return;
       modalCard.classList.remove("article-preview-modal", "article-editor-confirm-modal", "category-editor-modal", "category-order-modal", "market-editor-modal", "board-report-phone-preview-modal");
       modalCard.classList.add("option-editor-modal");
-      const keyField = `<input name="key" value="${escapeOptionField(src.key || option.key)}" readonly data-option-key />
-           <div class="option-key-lock-note">
-             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
-             <span>Key เป็น stable identifier ใช้ในระบบและ seed file — สร้างอัตโนมัติจาก Label (EN) ตอนสร้าง option และไม่สามารถแก้ไขได้หลังจากนั้น</span>
-           </div>`;
+      const keyField = `<input name="key" value="${escapeOptionField(src.key || option.key)}" readonly data-option-key />`;
       modalBody.innerHTML = `
         <div class="user-action-layout">
           <div class="user-action-head">
