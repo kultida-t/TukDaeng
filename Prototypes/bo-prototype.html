@@ -2888,9 +2888,26 @@
     .option-status-toggle-box:has(input:not(:checked)) .option-status-toggle-text {
       color: #94a3b8;
     }
+    .option-status-toggle.disabled {
+      cursor: not-allowed;
+      opacity: .6;
+    }
+    .option-status-toggle-locked .option-status-toggle-track {
+      background: #cbd5e1;
+    }
+    .option-status-lock-note {
+      margin-top: 6px;
+      font-size: 12px;
+      font-weight: 500;
+      color: #92400e;
+      line-height: 1.45;
+    }
     .option-editor-modal .article-editor-form > .user-detail-actions,
     .option-editor-modal .user-action-layout > .user-detail-actions {
       justify-content: flex-end;
+    }
+    .option-form-banner {
+      margin: 0;
     }
     .option-key-lock-note {
       display: flex;
@@ -20117,11 +20134,11 @@
       });
       return "OPT-" + String(maxNum + 1).padStart(3, "0");
     }
-    function optionStatusToggle(checked) {
+    function optionStatusToggle(checked, disabled = false) {
       return `
-        <div class="option-status-toggle-box">
-          <label class="option-status-toggle">
-            <input type="checkbox" name="is_active" value="true" ${checked ? "checked" : ""} data-option-is-active />
+        <div class="option-status-toggle-box${disabled ? " option-status-toggle-locked" : ""}">
+          <label class="option-status-toggle${disabled ? " disabled" : ""}">
+            <input type="checkbox" name="is_active" value="true" ${checked ? "checked" : ""} ${disabled ? "disabled" : ""} data-option-is-active />
             <span class="option-status-toggle-track"></span>
           </label>
           <span class="option-status-toggle-text">${checked ? "Active" : "Inactive"}</span>
@@ -20262,6 +20279,7 @@
                 </label>
               </div>
             </section>
+            <div class="warning-note option-form-banner" data-option-status-banner hidden></div>
             <div class="user-detail-actions">
               <button class="user-detail-action-btn" type="button" data-user-action-modal-close>ยกเลิก</button>
               <button class="user-detail-action-btn primary" type="submit">บันทึกการแก้ไข</button>
@@ -20281,7 +20299,8 @@
       const controlMap = {
         key: form?.querySelector("[data-option-key]"),
         "label-en": form?.querySelector("[data-option-label-en]"),
-        "label-th": form?.querySelector("[data-option-label-th]")
+        "label-th": form?.querySelector("[data-option-label-th]"),
+        status: form?.querySelector("[data-option-is-active]")
       };
       controlMap[field]?.classList.toggle("article-field-invalid", Boolean(message));
     }
@@ -20299,7 +20318,21 @@
       const isActive = isActiveCheckbox ? isActiveCheckbox.checked : true;
       const keyLocked = form.querySelector("[data-option-key]")?.hasAttribute("readonly");
       ["key", "label-en", "label-th"].forEach(field => setOptionFieldError(form, field));
+      const statusBanner = form.querySelector("[data-option-status-banner]");
+      if (statusBanner) { statusBanner.hidden = true; statusBanner.textContent = ""; }
       let hasError = false;
+      // Edit mode: block status change if option is used in assets
+      if (mode === "edit") {
+        const optionId = form.dataset.optionId || "";
+        const original = getOptionById(optionId);
+        if (original && original.used_in_assets && Boolean(original.is_active) !== isActive) {
+          if (statusBanner) {
+            statusBanner.hidden = false;
+            statusBanner.textContent = "ไม่สามารถเปลี่ยนสถานะได้ เนื่องจาก option นี้มีการใช้งานอยู่";
+          }
+          hasError = true;
+        }
+      }
       if (!labelEn) {
         setOptionFieldError(form, "label-en", "กรุณากรอก Label (EN)");
         hasError = true;
@@ -26446,6 +26479,9 @@
         const box = event.target.closest(".option-status-toggle-box");
         const text = box?.querySelector(".option-status-toggle-text");
         if (text) text.textContent = event.target.checked ? "Active" : "Inactive";
+        const form = event.target.closest("[data-option-form]");
+        const banner = form?.querySelector("[data-option-status-banner]");
+        if (banner) { banner.hidden = true; banner.textContent = ""; }
       }
     });
     document.addEventListener("submit", event => {
