@@ -1286,13 +1286,13 @@
       min-width: 1164px;
     }
     body.option-master-mode #table .option-detail-table {
-      min-width: 988px;
+      min-width: 1156px;
     }
     body.option-master-mode.option-group-list-mode #table > .footer-range {
       min-width: 1052px;
     }
     body.option-master-mode.option-detail-mode #table > .footer-range {
-      min-width: 988px;
+      min-width: 1156px;
     }
     body.offer-list-mode .layout > .panel {
       border-color: #d7e2f0;
@@ -1619,7 +1619,7 @@
       grid-template-columns: minmax(112px, .62fr) minmax(130px, .72fr) minmax(180px, 1.1fr) minmax(180px, 1.1fr) minmax(96px, .52fr) minmax(96px, .52fr) minmax(120px, .62fr) minmax(76px, .38fr);
     }
     .option-detail-table .asset-row {
-      grid-template-columns: minmax(108px, .5fr) minmax(200px, 1.2fr) minmax(200px, 1.2fr) minmax(80px, .36fr) minmax(84px, .4fr) minmax(104px, .5fr) minmax(88px, .42fr);
+      grid-template-columns: minmax(96px, .42fr) minmax(120px, .56fr) minmax(170px, 1fr) minmax(170px, 1fr) minmax(72px, .32fr) minmax(76px, .34fr) minmax(92px, .42fr) minmax(124px, .58fr) minmax(76px, .36fr);
     }
     .reported-board-table .asset-row {
       grid-template-columns: minmax(112px, .66fr) minmax(230px, 1.48fr) minmax(140px, .78fr) minmax(116px, .64fr) minmax(154px, .86fr) minmax(190px, 1.04fr) minmax(86px, .48fr) minmax(102px, .56fr) minmax(76px, .42fr);
@@ -10570,11 +10570,14 @@
     ];
 
     // Assign sequential Option IDs (mock for prototype — in production this is BIGSERIAL from DB)
+    // and seed updated_at timestamps (system options = seed date, custom options = recent)
     let _optionIdCounter = 0;
+    const _optionSeedDate = "12 Jul 2026 09:15";
     optionMasterGroups.forEach(group => {
-      group.options.forEach(option => {
+      group.options.forEach((option, idx) => {
         _optionIdCounter += 1;
         option.id = "OPT-" + String(_optionIdCounter).padStart(3, "0");
+        option.updated_at = option.is_system ? _optionSeedDate : "15 Jul 2026 14:30";
       });
     });
 
@@ -19641,6 +19644,13 @@
         .replace(/[^a-z0-9]+/g, "-")
         .replace(/^-+|-+$/g, "");
     }
+    function slugifyOptionKey(value) {
+      return String(value || "")
+        .trim()
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, "_")
+        .replace(/^_+|_+$/g, "");
+    }
 
     function getOrderedCategoryRows() {
       return [...getCategoryRows()].sort((a, b) => a.displayOrder - b.displayOrder || a.name.localeCompare(b.name));
@@ -19948,7 +19958,7 @@
       const pageRows = filtered.slice(start, start + optionDetailPageSize);
       document.querySelector("#table").innerHTML = `
         <div class="asset-table option-detail-table">
-          <div class="asset-row head"><div>Option ID</div><div>Label (EN)</div><div>Label (TH)</div><div>Sort Order</div><div>System</div><div>Status</div><div>Action</div></div>
+          <div class="asset-row head"><div>Option ID</div><div>Key</div><div>Label (EN)</div><div>Label (TH)</div><div>Sort Order</div><div>System</div><div>Status</div><div>Updated</div><div>Action</div></div>
           ${pageRows.map(o => {
             const statusPill = o.is_active
               ? `<span class="pill green">Active</span>`
@@ -19980,26 +19990,27 @@
             return `
               <div class="asset-row" data-option-id="${o.id}">
                 <div data-label="Option ID"><div class="main-text">${o.id}</div></div>
+                <div data-label="Key"><div class="main-text">${o.key}</div></div>
                 <div class="asset-cell-primary" data-label="Label (EN)">
                   <div class="main-text"><span class="desktop-user-name">${o.label_en}</span><span class="mobile-user-card-title">${o.id}</span></div>
                 </div>
                 <div class="asset-card-tags">
                   ${statusPill}
                   <span class="user-card-tag asset-tag ${systemLabel === "Yes" ? "tag-purple" : "tag-teal"}">${systemLabel === "Yes" ? "System" : "Custom"}</span>
+                  <span class="user-card-tag asset-tag tag-slate">${o.key}</span>
                   <span class="user-card-tag asset-tag tag-slate">Sort ${o.sort_order}</span>
                   <div class="user-card-meta">
-                    <div class="user-card-meta-item comment-field-meta"><span>Option ID</span><strong>${o.id}</strong></div>
+                    <div class="user-card-meta-item comment-field-meta"><span>Key</span><strong>${o.key}</strong></div>
                     <div class="user-card-meta-item comment-field-meta"><span>Label (EN)</span><strong>${o.label_en}</strong></div>
                     <div class="user-card-meta-item comment-field-meta"><span>Label (TH)</span><strong>${o.label_th}</strong></div>
-                    <div class="user-card-meta-item comment-field-meta"><span>Sort Order</span><strong>${o.sort_order}</strong></div>
-                    <div class="user-card-meta-item comment-field-meta"><span>System</span><strong>${systemLabel}</strong></div>
-                    <div class="user-card-meta-item comment-field-meta"><span>Status</span><strong>${o.is_active ? "Active" : "Inactive"}</strong></div>
+                    <div class="user-card-meta-item comment-field-meta"><span>Updated</span><strong>${o.updated_at || "-"}</strong></div>
                   </div>
                 </div>
                 <div data-label="Label (TH)"><div class="main-text">${o.label_th}</div></div>
                 <div data-label="Sort Order"><div class="main-text">${o.sort_order}</div></div>
                 <div data-label="System"><div class="main-text">${systemLabel}</div></div>
                 <div data-label="Status">${statusPill}</div>
+                <div data-label="Updated"><div class="main-text">${o.updated_at || "-"}</div></div>
                 <div class="user-row-actions">${actionMenu}</div>
               </div>
             `;
@@ -20079,10 +20090,10 @@
             <section class="article-editor-section">
               <div class="article-editor-grid">
                 <label><span>Option ID</span>
-                  <input value="${getNextOptionId()} (กำหนดอัตโนมัติ)" readonly />
+                  <input value="${getNextOptionId()}" readonly />
                 </label>
-                <label><span>Key <span class="article-required-mark">*</span></span>
-                  <input name="key" value="${escapeOptionField(prevData?.key || "")}" placeholder="เช่น new_unworn" data-option-key autocomplete="off" />
+                <label><span>Key</span>
+                  <input name="key" value="${escapeOptionField(prevData?.key || "")}" placeholder="Key สร้างอัตโนมัติจาก Label (EN)" readonly data-option-key />
                   <span class="article-field-error" data-option-key-error></span>
                 </label>
                 <label><span>Label (EN) <span class="article-required-mark">*</span></span>
@@ -20132,15 +20143,11 @@
       if (!modal || !modalCard || !modalBody) return;
       modalCard.classList.remove("article-preview-modal", "article-editor-confirm-modal", "category-editor-modal", "category-order-modal", "market-editor-modal", "board-report-phone-preview-modal");
       modalCard.classList.add("option-editor-modal");
-      const keyLocked = option.used_in_assets;
-      const keyField = keyLocked
-        ? `<input name="key" value="${escapeOptionField(src.key || option.key)}" readonly data-option-key />
+      const keyField = `<input name="key" value="${escapeOptionField(src.key || option.key)}" readonly data-option-key />
            <div class="option-key-lock-note">
              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
-             <span>Key ถูกล็อกเพราะ option นี้ถูกใช้ใน asset แล้ว ไม่สามารถแก้ไขได้เพื่อรักษา referential integrity</span>
-           </div>`
-        : `<input name="key" value="${escapeOptionField(src.key || option.key)}" data-option-key autocomplete="off" />
-           <span class="article-field-error" data-option-key-error></span>`;
+             <span>Key เป็น stable identifier ใช้ในระบบและ seed file — สร้างอัตโนมัติจาก Label (EN) ตอนสร้าง option และไม่สามารถแก้ไขได้หลังจากนั้น</span>
+           </div>`;
       modalBody.innerHTML = `
         <div class="user-action-layout">
           <div class="user-action-head">
@@ -20156,7 +20163,7 @@
                 <label><span>Option ID</span>
                   <input value="${escapeOptionField(option.id)}" readonly />
                 </label>
-                <label><span>Key ${keyLocked ? "" : '<span class="article-required-mark">*</span>'}</span>
+                <label><span>Key</span>
                   ${keyField}
                 </label>
                 <label><span>Label (EN) <span class="article-required-mark">*</span></span>
@@ -20223,29 +20230,21 @@
       const keyLocked = form.querySelector("[data-option-key]")?.hasAttribute("readonly");
       ["key", "label-en", "label-th", "sort-order"].forEach(field => setOptionFieldError(form, field));
       let hasError = false;
-      if (!keyLocked) {
-        if (!key) {
-          setOptionFieldError(form, "key", "กรุณากรอก Key");
-          hasError = true;
-        } else if (/\s/.test(key)) {
-          setOptionFieldError(form, "key", "Key ห้ามมีช่องว่าง");
-          hasError = true;
-        } else if (!/^[a-z0-9_]+$/.test(key)) {
-          setOptionFieldError(form, "key", "Key ต้องเป็น lowercase snake_case (a-z, 0-9, _ เท่านั้น)");
-          hasError = true;
-        } else if (key.length > 64) {
-          setOptionFieldError(form, "key", "Key ต้องไม่เกิน 64 ตัวอักษร");
-          hasError = true;
-        } else if (!isOptionKeyUnique(groupId, key, originalKey)) {
-          setOptionFieldError(form, "key", `Key "${key}" ซ้ำในกลุ่มนี้ กรุณาใช้ key อื่น`);
-          hasError = true;
-        }
+      if (!key) {
+        setOptionFieldError(form, "key", "Key สร้างอัตโนมัติไม่ได้ กรุณากรอก Label (EN) ที่เป็นภาษาอังกฤษ");
+        hasError = true;
+      } else if (!isOptionKeyUnique(groupId, key, originalKey)) {
+        setOptionFieldError(form, "key", `Key "${key}" ซ้ำในกลุ่มนี้ กรุณาเปลี่ยน Label (EN)`);
+        hasError = true;
       }
       if (!labelEn) {
         setOptionFieldError(form, "label-en", "กรุณากรอก Label (EN)");
         hasError = true;
       } else if (labelEn.length > 128) {
         setOptionFieldError(form, "label-en", "Label (EN) ต้องไม่เกิน 128 ตัวอักษร");
+        hasError = true;
+      } else if (/[^\x00-\x7F]/.test(labelEn)) {
+        setOptionFieldError(form, "label-en", "Label (EN) ต้องเป็นภาษาอังกฤษเท่านั้น กรุณาใช้ Label (TH) สำหรับภาษาไทย");
         hasError = true;
       }
       if (!labelTh) {
@@ -20371,7 +20370,8 @@
         sort_order: data.sort_order,
         is_active: data.is_active,
         is_system: false,
-        used_in_assets: false
+        used_in_assets: false,
+        updated_at: formatArticleActionTimestamp()
       };
       g.options.push(newOption);
       g.options.sort((a, b) => (a.sort_order || 0) - (b.sort_order || 0) || a.key.localeCompare(b.key));
@@ -20393,7 +20393,8 @@
         label_th: data.label_th,
         description_en: data.description_en,
         sort_order: data.sort_order,
-        is_active: data.is_active
+        is_active: data.is_active,
+        updated_at: formatArticleActionTimestamp()
       });
       g.options.sort((a, b) => (a.sort_order || 0) - (b.sort_order || 0) || a.key.localeCompare(b.key));
       closeUserActionModal();
@@ -26348,6 +26349,22 @@
         const form = event.target.closest("[data-category-form]");
         if (form) setCategoryFieldError(form, "slug");
         event.target.value = slugifyCategory(event.target.value);
+      }
+      if (event.target.matches("[data-option-label-en]")) {
+        const form = event.target.closest("[data-option-form]");
+        if (!form) return;
+        // Block non-ASCII characters (e.g. Thai) from being entered
+        if (/[^\x00-\x7F]/.test(event.target.value)) {
+          event.target.value = event.target.value.replace(/[^\x00-\x7F]/g, "");
+          setOptionFieldError(form, "label-en", "Label (EN) รับเฉพาะภาษาอังกฤษเท่านั้น");
+        } else {
+          setOptionFieldError(form, "label-en");
+        }
+        const mode = form.dataset.optionMode;
+        const keyInput = form.querySelector("[data-option-key]");
+        if (keyInput && mode === "add") {
+          keyInput.value = slugifyOptionKey(event.target.value);
+        }
       }
     });
     document.addEventListener("submit", event => {
