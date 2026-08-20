@@ -2861,10 +2861,20 @@
       margin-top: 16px;
     }
     .option-editor-modal .article-editor-grid {
-      grid-template-columns: minmax(0, 1fr);
+      grid-template-columns: minmax(0, 3fr) minmax(0, 1fr);
     }
     .option-editor-modal .article-editor-form label {
       grid-column: 1 / -1;
+    }
+    .option-editor-modal .article-editor-form label.option-field-option-id {
+      grid-column: 1;
+    }
+    .option-editor-modal .article-editor-form label.option-field-status {
+      grid-column: 2;
+      align-content: start;
+    }
+    .option-editor-modal .article-editor-form label.option-field-status .option-status-toggle {
+      margin-top: 11px;
     }
     .option-editor-modal .article-editor-form > .user-detail-actions {
       justify-content: flex-end;
@@ -2945,26 +2955,9 @@
     .option-status-toggle {
       display: inline-flex;
       align-items: center;
-      gap: 10px;
+      gap: 8px;
       cursor: pointer;
       user-select: none;
-      margin-top: 6px;
-    }
-    .article-editor-form .option-status-toggle {
-      display: inline-flex;
-      margin-top: 0;
-    }
-    .option-status-field {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      grid-column: 1 / -1;
-      margin-top: 4px;
-    }
-    .option-status-field-label {
-      font-size: 13px;
-      font-weight: 600;
-      color: #334155;
     }
     .option-status-toggle input {
       position: absolute;
@@ -2974,30 +2967,33 @@
     }
     .option-status-toggle-track {
       position: relative;
-      width: 42px;
-      height: 24px;
+      width: 38px;
+      height: 20px;
       border-radius: 999px;
-      background: #cbd5e1;
-      transition: background .18s ease;
+      background: #f8fbff;
+      border: 1px solid #d7e5f4;
+      transition: background .2s ease, border-color .2s ease;
       flex: 0 0 auto;
     }
     .option-status-toggle-track::after {
       content: "";
       position: absolute;
-      top: 3px;
-      left: 3px;
-      width: 18px;
-      height: 18px;
+      top: 2px;
+      left: 2px;
+      width: 14px;
+      height: 14px;
       border-radius: 50%;
-      background: #fff;
-      box-shadow: 0 1px 3px rgba(0,0,0,.2);
-      transition: transform .18s ease;
+      background: #cbd5e1;
+      box-shadow: 0 1px 2px rgba(0,0,0,.12);
+      transition: transform .2s ease, background .2s ease;
     }
     .option-status-toggle input:checked + .option-status-toggle-track {
-      background: #16a34a;
+      background: #22c55e;
+      border-color: #22c55e;
     }
     .option-status-toggle input:checked + .option-status-toggle-track::after {
       transform: translateX(18px);
+      background: #fff;
     }
     .option-status-toggle input:focus-visible + .option-status-toggle-track {
       outline: 2px solid #3b82f6;
@@ -20157,8 +20153,11 @@
           <form class="article-editor-form" data-option-form data-option-mode="add" data-option-group="${g.group_id}" novalidate>
             <section class="article-editor-section">
               <div class="article-editor-grid">
-                <label><span>Option ID</span>
+                <label class="option-field-option-id"><span>Option ID</span>
                   <input value="${getNextOptionId()}" readonly />
+                </label>
+                <label class="option-field-status"><span>Status</span>
+                  ${optionStatusToggle(isActiveValue === "true")}
                 </label>
                 <label><span>Key</span>
                   <input name="key" value="${escapeOptionField(prevData?.key || "")}" placeholder="Key สร้างอัตโนมัติจาก Label (EN)" readonly data-option-key />
@@ -20176,10 +20175,6 @@
                   <textarea name="description_en" placeholder="คำอธิบายเพิ่มเติม (ไม่บังคับ)" data-option-description-en>${escapeOptionField(prevData?.description_en || "")}</textarea>
                   <span class="article-field-error" aria-hidden="true"></span>
                 </label>
-                <div class="option-status-field">
-                  <span class="option-status-field-label">Status</span>
-                  ${optionStatusToggle(isActiveValue === "true")}
-                </div>
               </div>
             </section>
             <div class="user-detail-actions">
@@ -20221,8 +20216,11 @@
           <form class="article-editor-form" data-option-form data-option-mode="edit" data-option-group="${g.group_id}" data-option-original-key="${escapeOptionField(option.key)}" data-option-id="${escapeOptionField(option.id)}" novalidate>
             <section class="article-editor-section">
               <div class="article-editor-grid">
-                <label><span>Option ID</span>
+                <label class="option-field-option-id"><span>Option ID</span>
                   <input value="${escapeOptionField(option.id)}" readonly />
+                </label>
+                <label class="option-field-status"><span>Status</span>
+                  ${optionStatusToggle(Boolean(src.is_active ?? option.is_active))}
                 </label>
                 <label><span>Key</span>
                   ${keyField}
@@ -20239,10 +20237,6 @@
                   <textarea name="description_en" data-option-description-en>${escapeOptionField(src.description_en ?? option.description_en ?? "")}</textarea>
                   <span class="article-field-error" aria-hidden="true"></span>
                 </label>
-                <div class="option-status-field">
-                  <span class="option-status-field-label">Status</span>
-                  ${optionStatusToggle(Boolean(src.is_active ?? option.is_active))}
-                </div>
               </div>
             </section>
             <div class="user-detail-actions">
