@@ -3000,13 +3000,10 @@
       background: #f0f6ff;
     }
     .option-confirm-row.option-confirm-changed .option-confirm-value {
-      display: grid;
-      gap: 4px;
+      display: inline;
     }
     .option-confirm-before {
       color: #94a3b8;
-      text-decoration: line-through;
-      font-size: 12px;
     }
     .option-confirm-after {
       color: #1f5f9f;
@@ -20451,7 +20448,7 @@
             <div class="option-confirm-row"><span class="option-confirm-label">Key</span><span class="option-confirm-value">${escapeOptionField(option.key)}</span></div>
             <div class="option-confirm-row"><span class="option-confirm-label">Label (EN)</span><span class="option-confirm-value">${escapeOptionField(option.label_en)}</span></div>
             <div class="option-confirm-row"><span class="option-confirm-label">Label (TH)</span><span class="option-confirm-value">${escapeOptionField(option.label_th)}</span></div>
-            <div class="option-confirm-row option-confirm-changed"><span class="option-confirm-label">Status</span><span class="option-confirm-value">Active → Inactive</span></div>
+            <div class="option-confirm-row option-confirm-changed"><span class="option-confirm-label">Status</span><span class="option-confirm-value"><span class="option-confirm-before">Active</span> → <span class="option-confirm-after">Inactive</span></span></div>
           </div>
           <div class="option-confirm-impact">
             <strong>ผลกระทบต่อ Front Office:</strong> Option นี้จะไม่แสดงใน FO ทุกจุด (Add/Edit Asset form, Search Filter, Watch Alert criteria)
@@ -20527,7 +20524,7 @@
             <div class="option-confirm-row"><span class="option-confirm-label">Key</span><span class="option-confirm-value">${escapeOptionField(option.key)}</span></div>
             <div class="option-confirm-row"><span class="option-confirm-label">Label (EN)</span><span class="option-confirm-value">${escapeOptionField(option.label_en)}</span></div>
             <div class="option-confirm-row"><span class="option-confirm-label">Label (TH)</span><span class="option-confirm-value">${escapeOptionField(option.label_th)}</span></div>
-            <div class="option-confirm-row option-confirm-changed"><span class="option-confirm-label">Status</span><span class="option-confirm-value">Inactive → Active</span></div>
+            <div class="option-confirm-row option-confirm-changed"><span class="option-confirm-label">Status</span><span class="option-confirm-value"><span class="option-confirm-before">Inactive</span> → <span class="option-confirm-after">Active</span></span></div>
           </div>
           <div class="option-confirm-impact">
             <strong>ผลกระทบต่อ Front Office:</strong> Option นี้จะกลับมาแสดงใน FO ทุกจุด (Add/Edit Asset form, Search Filter, Watch Alert criteria)
@@ -20802,7 +20799,7 @@
         return `<div class="option-confirm-row ${isChanged ? "option-confirm-changed" : ""}">
           <span class="option-confirm-label">${label}</span>
           <span class="option-confirm-value">${isChanged
-            ? `<span class="option-confirm-before">${displayFn(original[field])}</span><span class="option-confirm-after">${displayFn(data[field])}</span>`
+            ? `<span class="option-confirm-before">${displayFn(original[field])}</span> → <span class="option-confirm-after">${displayFn(data[field])}</span>`
             : displayFn(data[field])}</span>
         </div>`;
       };
@@ -20813,7 +20810,7 @@
           <div class="user-action-head">
             <div>
               <h2 id="user-action-modal-title">Confirm Edit Option</h2>
-              <p>กรุณาตรวจสอบค่าที่เปลี่ยนแปลงก่อนยืนยัน — ค่าเดิมถูกขีดฆ่าและค่าใหม่แสดงด้านล่าง</p>
+              <p>กรุณาตรวจสอบค่าที่เปลี่ยนแปลงก่อนยืนยัน — ฟิลด์ที่เปลี่ยนแปลงจะมีไฮไลต์และแสดงค่าเดิม → ค่าใหม่</p>
             </div>
             <button class="btn user-action-close" type="button" data-user-action-modal-close aria-label="Close modal" title="Close">${iconSvg.close}</button>
           </div>
