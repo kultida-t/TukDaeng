@@ -20079,8 +20079,11 @@
             const systemLabel = o.is_system ? "Yes" : "No";
             const deactivateDisabled = isOptionDeactivateDisabled(g.group_id, o.is_system);
             const deleteButton = o.used_in_assets
-              ? `<button type="button" disabled title="ไม่สามารถลบ option ที่ถูกใช้ใน asset แล้ว กรุณาใช้ Deactivate" aria-disabled="true">Delete</button>`
+              ? ""
               : `<button type="button" data-option-delete="${o.id}">Delete</button>`;
+            const deactivateButton = deactivateDisabled
+              ? ""
+              : `<button type="button" data-option-deactivate="${o.id}">Deactivate</button>`;
             const actionMenu = o.is_active
               ? `
                 <details class="row-menu">
@@ -20088,10 +20091,7 @@
                   <div class="row-menu-list">
                     <button type="button" data-option-view-action="${o.id}">View Detail</button>
                     <button type="button" data-option-edit="${o.id}">Edit</button>
-                    ${deactivateDisabled
-                      ? `<button type="button" disabled title="กลุ่มนี้เป็น required field สำหรับ Sale status จึงไม่สามารถ deactivate ผ่าน BO ได้ ต้องแก้ไขผ่าน seed file และ migration" aria-disabled="true">Deactivate</button>`
-                      : `<button type="button" data-option-deactivate="${o.id}">Deactivate</button>`
-                    }
+                    ${deactivateButton}
                     ${deleteButton}
                   </div>
                 </details>
