@@ -3073,7 +3073,7 @@
       color: #dc2626;
     }
     .option-safeguard-error {
-      margin: 14px 0 0;
+      margin: 14px 0 20px;
       font-size: 13px;
       line-height: 1.55;
     }
@@ -8667,6 +8667,17 @@
         white-space: normal;
         overflow-wrap: anywhere;
       }
+      body.option-master-mode.option-detail-mode .row-menu-list {
+        left: auto;
+        right: 0;
+        width: min(224px, calc(100vw - 64px));
+        min-width: 0;
+        max-width: calc(100vw - 64px);
+      }
+      body.option-master-mode.option-detail-mode .row-menu-list button {
+        white-space: normal;
+        overflow-wrap: anywhere;
+      }
       body.asset-list-mode .filters {
         grid-template-columns: 1fr;
       }
@@ -8804,7 +8815,7 @@
       body.option-master-mode #table {
         padding: 12px 14px 16px;
         background: #f8fbff;
-        overflow-x: hidden;
+        overflow: visible;
       }
       body.offer-detail-mode #table {
         padding: 0;
@@ -10660,8 +10671,8 @@
         allows_multi_select: true,
         description: "อุปกรณ์ที่มากับเรือน — multi-select",
         options: [
-          { key: "original_box", label_en: "Original box", label_th: "กล่องเดิม", description_en: "Original manufacturer box", sort_order: 10, is_active: true, is_system: true, used_in_assets: true },
-          { key: "original_papers", label_en: "Original papers", label_th: "เอกสารเดิม", description_en: "Original documents or papers", sort_order: 20, is_active: true, is_system: true, used_in_assets: true }
+          { key: "original_box", label_en: "Original box", label_th: "กล่องเดิม", description_en: "Original manufacturer box", sort_order: 10, is_active: true, is_system: true, used_in_assets: false },
+          { key: "original_papers", label_en: "Original papers", label_th: "เอกสารเดิม", description_en: "Original documents or papers", sort_order: 20, is_active: true, is_system: true, used_in_assets: false }
         ]
       },
       {
@@ -20167,17 +20178,17 @@
             const deactivateDisabled = o.used_in_assets;
             const deleteButton = o.used_in_assets
               ? ""
-              : `<button type="button" data-option-delete="${o.id}">Delete</button>`;
+              : `<button type="button" data-option-delete="${o.id}">ลบ</button>`;
             const deactivateButton = deactivateDisabled
               ? ""
-              : `<button type="button" data-option-deactivate="${o.id}">Deactivate</button>`;
+              : `<button type="button" data-option-deactivate="${o.id}">ปิดใช้งาน</button>`;
             const actionMenu = o.is_active
               ? `
                 <details class="row-menu">
                   <summary title="Option actions">...</summary>
                   <div class="row-menu-list">
-                    <button type="button" data-option-view-action="${o.id}">View Detail</button>
-                    <button type="button" data-option-edit="${o.id}">Edit</button>
+                    <button type="button" data-option-view-action="${o.id}">ดูรายละเอียด</button>
+                    <button type="button" data-option-edit="${o.id}">แก้ไข</button>
                     ${deactivateButton}
                     ${deleteButton}
                   </div>
@@ -20187,9 +20198,9 @@
                 <details class="row-menu">
                   <summary title="Option actions">...</summary>
                   <div class="row-menu-list">
-                    <button type="button" data-option-view-action="${o.id}">View Detail</button>
-                    <button type="button" data-option-edit="${o.id}">Edit</button>
-                    <button type="button" data-option-reactivate="${o.id}">Reactivate</button>
+                    <button type="button" data-option-view-action="${o.id}">ดูรายละเอียด</button>
+                    <button type="button" data-option-edit="${o.id}">แก้ไข</button>
+                    <button type="button" data-option-reactivate="${o.id}">เปิดใช้งาน</button>
                     ${deleteButton}
                   </div>
                 </details>
@@ -20455,8 +20466,8 @@
           </div>
           ${willLeaveLessThanOne ? `
             <div class="warning-note option-safeguard-error">
-              <strong>ไม่สามารถ deactivate ได้</strong><br>
-              เนื่องจากต้องมีอย่างน้อย 1 active option เหลือในกลุ่ม ${escapeOptionField(g.display_name_en)} หลังจาก deactivate
+              <strong>ไม่สามารถปิดใช้งานได้</strong><br>
+              เนื่องจากต้องมีอย่างน้อย 1 active option เหลือในกลุ่ม ${escapeOptionField(g.display_name_en)}
             </div>
           ` : `
             <div class="option-action-reason">
@@ -20495,7 +20506,7 @@
       option.updated_at = formatOptionTimestamp(new Date());
       closeUserActionModal();
       renderOptionDetailRows();
-      showSuccessToast(`Deactivate option ${option.id} (${option.key}) แล้ว`);
+      showSuccessToast(`ปิดใช้งาน option ${option.id} (${option.key}) แล้ว`);
       // Mock audit: OPTION_DEACTIVATE with reason
     }
 
@@ -20545,7 +20556,7 @@
       option.updated_at = formatOptionTimestamp(new Date());
       closeUserActionModal();
       renderOptionDetailRows();
-      showSuccessToast(`Reactivate option ${option.id} (${option.key}) แล้ว`);
+      showSuccessToast(`เปิดใช้งาน option ${option.id} (${option.key}) แล้ว`);
       // Mock audit: OPTION_REACTIVATE
     }
 
@@ -25106,6 +25117,15 @@
       document.querySelectorAll(".row-menu[open]").forEach(menu => {
         if (menu !== exceptMenu) menu.open = false;
       });
+      // Reset any fixed-position row-menu lists (mobile option-detail)
+      document.querySelectorAll(".row-menu-list.is-fixed").forEach(list => {
+        list.classList.remove("is-fixed");
+        list.style.position = "";
+        list.style.top = "";
+        list.style.left = "";
+        list.style.right = "";
+        list.style.bottom = "";
+      });
     }
 
     let commentHoverTooltipEl = null;
@@ -25156,7 +25176,34 @@
     document.addEventListener("click", event => {
       const rowMenu = event.target.closest(".row-menu");
       if (rowMenu) {
-        if (event.target.closest(".row-menu summary")) closeRowMenus(rowMenu);
+        if (event.target.closest(".row-menu summary")) {
+          closeRowMenus(rowMenu);
+          // Mobile option-detail: position row-menu-list as fixed to avoid overflow clipping
+          if (document.body.classList.contains("option-master-mode") && document.body.classList.contains("option-detail-mode") && window.innerWidth <= 900) {
+            const list = rowMenu.querySelector(".row-menu-list");
+            const summary = rowMenu.querySelector("summary");
+            if (list && summary && rowMenu.open) {
+              requestAnimationFrame(() => {
+                const rect = summary.getBoundingClientRect();
+                const listWidth = Math.min(224, window.innerWidth - 32);
+                list.classList.add("is-fixed");
+                list.style.position = "fixed";
+                list.style.top = `${rect.bottom + 4}px`;
+                list.style.left = `${rect.right - listWidth}px`;
+                list.style.right = "auto";
+                list.style.bottom = "auto";
+                // If would overflow bottom, open upward
+                requestAnimationFrame(() => {
+                  const listRect = list.getBoundingClientRect();
+                  if (listRect.bottom > window.innerHeight - 8) {
+                    list.style.top = "auto";
+                    list.style.bottom = `${window.innerHeight - rect.top + 4}px`;
+                  }
+                });
+              });
+            }
+          }
+        }
       } else {
         closeRowMenus();
       }
