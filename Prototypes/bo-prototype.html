@@ -2909,6 +2909,33 @@
     .option-form-banner {
       margin: 0;
     }
+    .option-delete-warning {
+      margin: 14px 0 0;
+      font-size: 13px;
+      line-height: 1.55;
+    }
+    .option-delete-confirm-input {
+      margin-top: 16px;
+    }
+    .option-delete-confirm-input label {
+      display: grid;
+      gap: 8px;
+      color: #334155;
+      font-size: 13px;
+      font-weight: 700;
+      line-height: 1.4;
+    }
+    .option-delete-confirm-input input {
+      width: 100%;
+      min-height: 46px;
+      border: 1px solid #d7e5f4;
+      border-radius: 8px;
+      padding: 12px 13px;
+      color: #061426;
+      background: #f8fbff;
+      font-size: 14px;
+      font-weight: 400;
+    }
     .option-key-lock-note {
       display: flex;
       align-items: flex-start;
@@ -20051,6 +20078,9 @@
               : `<span class="pill gray">Inactive</span>`;
             const systemLabel = o.is_system ? "Yes" : "No";
             const deactivateDisabled = isOptionDeactivateDisabled(g.group_id, o.is_system);
+            const deleteButton = o.used_in_assets
+              ? `<button type="button" disabled title="ไม่สามารถลบ option ที่ถูกใช้ใน asset แล้ว กรุณาใช้ Deactivate" aria-disabled="true">Delete</button>`
+              : `<button type="button" data-option-delete="${o.id}">Delete</button>`;
             const actionMenu = o.is_active
               ? `
                 <details class="row-menu">
@@ -20062,6 +20092,7 @@
                       ? `<button type="button" disabled title="กลุ่มนี้เป็น required field สำหรับ Sale status จึงไม่สามารถ deactivate ผ่าน BO ได้ ต้องแก้ไขผ่าน seed file และ migration" aria-disabled="true">Deactivate</button>`
                       : `<button type="button" data-option-deactivate="${o.id}">Deactivate</button>`
                     }
+                    ${deleteButton}
                   </div>
                 </details>
               `
@@ -20072,6 +20103,7 @@
                     <button type="button" data-option-view-action="${o.id}">View Detail</button>
                     <button type="button" data-option-edit="${o.id}">Edit</button>
                     <button type="button" data-option-reactivate="${o.id}">Reactivate</button>
+                    ${deleteButton}
                   </div>
                 </details>
               `;
@@ -20219,6 +20251,71 @@
         </div>
       `;
       showUserActionModal(true);
+    }
+
+    function openOptionDeleteConfirmModal(optionId) {
+      const option = getOptionById(optionId);
+      if (!option) return;
+      const g = getOptionGroupByOptionId(optionId);
+      if (!g) return;
+      if (option.used_in_assets) return;
+      const modal = document.querySelector("#user-action-modal");
+      const modalCard = modal?.querySelector(".user-action-modal");
+      const modalBody = document.querySelector("#user-action-modal-body");
+      if (!modal || !modalCard || !modalBody) return;
+      modalCard.classList.remove("article-preview-modal", "article-editor-confirm-modal", "category-editor-modal", "category-order-modal", "market-editor-modal", "board-report-phone-preview-modal");
+      modalCard.classList.add("option-editor-modal");
+      modalBody.innerHTML = `
+        <div class="user-action-layout">
+          <div class="user-action-head">
+            <div>
+              <h2 id="user-action-modal-title">Delete Option</h2>
+              <p>${escapeOptionField(option.id)} (${escapeOptionField(option.key)}) ในกลุ่ม ${escapeOptionField(g.display_name_en)}</p>
+            </div>
+            <button class="btn user-action-close" type="button" data-user-action-modal-close aria-label="Close modal" title="Close">${iconSvg.close}</button>
+          </div>
+          <div class="warning-note option-delete-warning">
+            <strong>คำเตือน: การกระทำนี้ไม่สามารถย้อนกลับได้</strong><br>
+            Option นี้จะถูกลบออกจากระบบอย่างถาวร หากต้องการเพิ่มกลับมา ต้องสร้างใหม่อีกครั้ง
+          </div>
+          <div class="option-confirm-summary">
+            <div class="option-confirm-row"><span class="option-confirm-label">Option ID</span><span class="option-confirm-value">${escapeOptionField(option.id)}</span></div>
+            <div class="option-confirm-row"><span class="option-confirm-label">Key</span><span class="option-confirm-value">${escapeOptionField(option.key)}</span></div>
+            <div class="option-confirm-row"><span class="option-confirm-label">Label (EN)</span><span class="option-confirm-value">${escapeOptionField(option.label_en)}</span></div>
+            <div class="option-confirm-row"><span class="option-confirm-label">Label (TH)</span><span class="option-confirm-value">${escapeOptionField(option.label_th)}</span></div>
+            <div class="option-confirm-row"><span class="option-confirm-label">Status</span><span class="option-confirm-value">${option.is_active ? "Active" : "Inactive"}</span></div>
+          </div>
+          <div class="option-delete-confirm-input">
+            <label><span>พิมพ์ <strong>${escapeOptionField(option.key)}</strong> เพื่อยืนยันการลบ</span>
+              <input type="text" data-option-delete-confirm-input placeholder="${escapeOptionField(option.key)}" autocomplete="off" />
+            </label>
+          </div>
+          <div class="user-detail-actions">
+            <button class="user-detail-action-btn" type="button" data-user-action-modal-close>ยกเลิก</button>
+            <button class="user-detail-action-btn danger" type="button" data-option-delete-confirm data-option-id="${escapeOptionField(option.id)}" disabled>ลบ Option</button>
+          </div>
+        </div>
+      `;
+      showUserActionModal(true);
+      const confirmInput = modalBody.querySelector("[data-option-delete-confirm-input]");
+      const confirmBtn = modalBody.querySelector("[data-option-delete-confirm]");
+      if (confirmInput && confirmBtn) {
+        confirmInput.addEventListener("input", () => {
+          confirmBtn.disabled = confirmInput.value.trim() !== option.key;
+        });
+      }
+    }
+
+    function applyOptionDelete(optionId) {
+      const g = optionMasterGroups.find(gr => gr.options.some(o => o.id === optionId));
+      if (!g) return;
+      const idx = g.options.findIndex(o => o.id === optionId);
+      if (idx < 0) return;
+      const option = g.options[idx];
+      g.options.splice(idx, 1);
+      closeUserActionModal();
+      renderOptionDetailRows();
+      showToast(`ลบ option ${option.id} (${option.key}) แล้ว`, "success");
     }
 
     function openOptionAddModal(prevData = null) {
@@ -25397,6 +25494,16 @@
       if (optionDeactivateButton) return;
       const optionReactivateButton = event.target.closest("[data-option-reactivate]");
       if (optionReactivateButton) return;
+      const optionDeleteButton = event.target.closest("[data-option-delete]");
+      if (optionDeleteButton) {
+        openOptionDeleteConfirmModal(optionDeleteButton.dataset.optionDelete);
+        return;
+      }
+      const optionDeleteConfirm = event.target.closest("[data-option-delete-confirm]");
+      if (optionDeleteConfirm) {
+        applyOptionDelete(optionDeleteConfirm.dataset.optionId);
+        return;
+      }
       // Option Master confirmation modal buttons (BO-OPT-002b)
       const optionAddBack = event.target.closest("[data-option-add-back]");
       if (optionAddBack) {
