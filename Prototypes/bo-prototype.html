@@ -1272,11 +1272,12 @@
     }
     body.option-master-mode #table {
       max-width: 100%;
-      overflow-x: auto;
-      overflow-y: visible;
-      scrollbar-width: thin;
+      overflow: visible;
       position: relative;
-      z-index: 36;
+    }
+    body.option-master-mode .panel {
+      overflow-x: auto;
+      scrollbar-width: thin;
     }
     body.asset-list-mode:not(.article-list-mode):not(.category-list-mode):not(.reported-board-mode) #table .asset-list-table {
       min-width: 1132px;
@@ -5887,6 +5888,11 @@
       gap: 10px;
       width: min(360px, calc(100vw - 36px));
       pointer-events: none;
+      transition: top .25s ease, bottom .25s ease;
+    }
+    .toast-stack.bottom {
+      top: auto;
+      bottom: 18px;
     }
     .toast {
       display: none;
@@ -16047,6 +16053,7 @@
     function showUserActionModal(lockMainScroll = false) {
       const modal = document.querySelector("#user-action-modal");
       if (!modal) return;
+      closeRowMenus();
       applyModalHeadingFonts(modal);
       modal.classList.remove("market-reference-drawer-closing", "market-reference-drawer-open");
       modal.classList.add("show");
@@ -16086,6 +16093,18 @@
     function showSuccessToast(message, title = "สำเร็จ") {
       const toast = document.querySelector("#success-toast");
       if (!toast) return;
+      const stack = toast.closest(".toast-stack");
+      if (stack) {
+        const table = document.querySelector("#table");
+        const rows = table?.querySelectorAll(".asset-row:not(.head), .user-row:not(.head), .category-row:not(.head)");
+        const firstRow = rows?.[0];
+        if (firstRow && rows.length <= 4) {
+          const rect = firstRow.getBoundingClientRect();
+          stack.classList.toggle("bottom", rect.top < 140);
+        } else {
+          stack.classList.remove("bottom");
+        }
+      }
       if (successToastTimer) window.clearTimeout(successToastTimer);
       toast.innerHTML = `
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
