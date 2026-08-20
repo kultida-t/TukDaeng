@@ -9044,6 +9044,13 @@
         width: min(224px, calc(100vw - 64px));
         min-width: 0;
         max-width: calc(100vw - 64px);
+        visibility: hidden;
+        opacity: 0;
+        transition: opacity 120ms ease-out;
+      }
+      body.option-master-mode.option-detail-mode .row-menu-list.is-fixed {
+        visibility: visible;
+        opacity: 1;
       }
       body.option-master-mode.option-detail-mode .row-menu-list button {
         white-space: normal;
@@ -20665,10 +20672,10 @@
                   <summary title="Option actions">...</summary>
                   <div class="row-menu-list">
                     <button type="button" data-option-view-action="${o.id}">ดูรายละเอียด</button>
-                    <button type="button" data-option-audit-open="${o.id}">ดู Audit Log</button>
                     <button type="button" data-option-edit="${o.id}">แก้ไข</button>
                     ${deactivateButton}
                     ${deleteButton}
+                    <button type="button" data-option-audit-open="${o.id}">ดู Audit Log</button>
                   </div>
                 </details>
               `
@@ -20677,10 +20684,10 @@
                   <summary title="Option actions">...</summary>
                   <div class="row-menu-list">
                     <button type="button" data-option-view-action="${o.id}">ดูรายละเอียด</button>
-                    <button type="button" data-option-audit-open="${o.id}">ดู Audit Log</button>
                     <button type="button" data-option-edit="${o.id}">แก้ไข</button>
                     <button type="button" data-option-reactivate="${o.id}">เปิดใช้งาน</button>
                     ${deleteButton}
+                    <button type="button" data-option-audit-open="${o.id}">ดู Audit Log</button>
                   </div>
                 </details>
               `;
@@ -25869,6 +25876,32 @@
       });
     }
 
+    // Mobile Option Detail: position row-menu-list as fixed (viewport-relative) to avoid
+    // being clipped/mispositioned by the scrollable #table ancestor. Uses the native
+    // "toggle" event (capture phase) so positioning runs only after <details> actually opens.
+    document.addEventListener("toggle", event => {
+      const rowMenu = event.target.closest && event.target.closest(".row-menu");
+      if (!rowMenu || !rowMenu.open) return;
+      if (!(document.body.classList.contains("option-master-mode") && document.body.classList.contains("option-detail-mode") && window.innerWidth <= 900)) return;
+      const list = rowMenu.querySelector(".row-menu-list");
+      const summary = rowMenu.querySelector("summary");
+      if (!list || !summary) return;
+      const rect = summary.getBoundingClientRect();
+      const listWidth = Math.min(224, window.innerWidth - 32);
+      list.classList.add("is-fixed");
+      list.style.position = "fixed";
+      list.style.top = `${rect.bottom + 4}px`;
+      list.style.left = `${rect.right - listWidth}px`;
+      list.style.right = "auto";
+      list.style.bottom = "auto";
+      requestAnimationFrame(() => {
+        const listRect = list.getBoundingClientRect();
+        if (listRect.bottom > window.innerHeight - 8) {
+          list.style.top = "auto";
+          list.style.bottom = `${window.innerHeight - rect.top + 4}px`;
+        }
+      });
+    }, true);
     function closeRowMenus(exceptMenu = null) {
       document.querySelectorAll(".row-menu[open]").forEach(menu => {
         if (menu !== exceptMenu) menu.open = false;
@@ -25934,31 +25967,6 @@
       if (rowMenu) {
         if (event.target.closest(".row-menu summary")) {
           closeRowMenus(rowMenu);
-          // Mobile option-detail: position row-menu-list as fixed to avoid overflow clipping
-          if (document.body.classList.contains("option-master-mode") && document.body.classList.contains("option-detail-mode") && window.innerWidth <= 900) {
-            const list = rowMenu.querySelector(".row-menu-list");
-            const summary = rowMenu.querySelector("summary");
-            if (list && summary && rowMenu.open) {
-              requestAnimationFrame(() => {
-                const rect = summary.getBoundingClientRect();
-                const listWidth = Math.min(224, window.innerWidth - 32);
-                list.classList.add("is-fixed");
-                list.style.position = "fixed";
-                list.style.top = `${rect.bottom + 4}px`;
-                list.style.left = `${rect.right - listWidth}px`;
-                list.style.right = "auto";
-                list.style.bottom = "auto";
-                // If would overflow bottom, open upward
-                requestAnimationFrame(() => {
-                  const listRect = list.getBoundingClientRect();
-                  if (listRect.bottom > window.innerHeight - 8) {
-                    list.style.top = "auto";
-                    list.style.bottom = `${window.innerHeight - rect.top + 4}px`;
-                  }
-                });
-              });
-            }
-          }
         }
       } else {
         closeRowMenus();
