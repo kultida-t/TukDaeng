@@ -20137,6 +20137,18 @@
       if (!g) return true;
       return !g.options.some(o => o.key === key && o.key !== excludeKey);
     }
+    function isOptionLabelEnUnique(groupId, labelEn, excludeKey = "") {
+      const g = getOptionGroup(groupId);
+      if (!g) return true;
+      const normalized = labelEn.trim().toLowerCase();
+      return !g.options.some(o => (o.label_en || "").trim().toLowerCase() === normalized && o.key !== excludeKey);
+    }
+    function isOptionLabelThUnique(groupId, labelTh, excludeKey = "") {
+      const g = getOptionGroup(groupId);
+      if (!g) return true;
+      const normalized = labelTh.trim().toLowerCase();
+      return !g.options.some(o => (o.label_th || "").trim().toLowerCase() === normalized && o.key !== excludeKey);
+    }
     function escapeOptionField(value = "") {
       return String(value)
         .replace(/&/g, "&amp;")
@@ -20291,13 +20303,6 @@
       const keyLocked = form.querySelector("[data-option-key]")?.hasAttribute("readonly");
       ["key", "label-en", "label-th"].forEach(field => setOptionFieldError(form, field));
       let hasError = false;
-      if (!key) {
-        setOptionFieldError(form, "key", "Key สร้างอัตโนมัติไม่ได้ กรุณากรอก Label (EN) ที่เป็นภาษาอังกฤษ");
-        hasError = true;
-      } else if (!isOptionKeyUnique(groupId, key, originalKey)) {
-        setOptionFieldError(form, "key", `Key "${key}" ซ้ำในกลุ่มนี้ กรุณาเปลี่ยน Label (EN)`);
-        hasError = true;
-      }
       if (!labelEn) {
         setOptionFieldError(form, "label-en", "กรุณากรอก Label (EN)");
         hasError = true;
@@ -20307,12 +20312,25 @@
       } else if (/[^\x00-\x7F]/.test(labelEn)) {
         setOptionFieldError(form, "label-en", "Label (EN) ต้องเป็นภาษาอังกฤษเท่านั้น กรุณาใช้ Label (TH) สำหรับภาษาไทย");
         hasError = true;
+      } else if (!isOptionLabelEnUnique(groupId, labelEn, originalKey)) {
+        setOptionFieldError(form, "label-en", "Label (EN) ซ้ำในกลุ่มนี้ กรุณาใช้ค่าอื่น");
+        hasError = true;
+      }
+      if (!key) {
+        setOptionFieldError(form, "key", "Key สร้างอัตโนมัติไม่ได้ กรุณากรอก Label (EN) ที่เป็นภาษาอังกฤษ");
+        hasError = true;
+      } else if (!isOptionKeyUnique(groupId, key, originalKey)) {
+        setOptionFieldError(form, "key", "Key ซ้ำในกลุ่มนี้ กรุณาใช้ค่าอื่น");
+        hasError = true;
       }
       if (!labelTh) {
         setOptionFieldError(form, "label-th", "กรุณากรอก Label (TH)");
         hasError = true;
       } else if (labelTh.length > 128) {
         setOptionFieldError(form, "label-th", "Label (TH) ต้องไม่เกิน 128 ตัวอักษร");
+        hasError = true;
+      } else if (!isOptionLabelThUnique(groupId, labelTh, originalKey)) {
+        setOptionFieldError(form, "label-th", "Label (TH) ซ้ำในกลุ่มนี้ กรุณาใช้ค่าอื่น");
         hasError = true;
       }
       if (descriptionEn.length > 512) {
@@ -20337,7 +20355,7 @@
         <div class="user-action-layout">
           <div class="user-action-head">
             <div>
-              <h2 id="user-action-modal-title">ยืนยันการสร้าง Option</h2>
+              <h2 id="user-action-modal-title">Confirm Create Option</h2>
               <p>กรุณาตรวจสอบค่าที่จะบันทึกก่อนยืนยัน</p>
             </div>
             <button class="btn user-action-close" type="button" data-user-action-modal-close aria-label="Close modal" title="Close">${iconSvg.close}</button>
@@ -20387,7 +20405,7 @@
         <div class="user-action-layout">
           <div class="user-action-head">
             <div>
-              <h2 id="user-action-modal-title">ยืนยันการแก้ไข Option</h2>
+              <h2 id="user-action-modal-title">Confirm Edit Option</h2>
               <p>กรุณาตรวจสอบค่าที่เปลี่ยนแปลงก่อนยืนยัน — ค่าเดิมถูกขีดฆ่าและค่าใหม่แสดงด้านล่าง</p>
             </div>
             <button class="btn user-action-close" type="button" data-user-action-modal-close aria-label="Close modal" title="Close">${iconSvg.close}</button>
@@ -26413,11 +26431,17 @@
         } else {
           setOptionFieldError(form, "label-en");
         }
+        // Clear key error since key auto-regenerates from Label (EN)
+        setOptionFieldError(form, "key");
         const mode = form.dataset.optionMode;
         const keyInput = form.querySelector("[data-option-key]");
         if (keyInput && mode === "add") {
           keyInput.value = slugifyOptionKey(event.target.value);
         }
+      }
+      if (event.target.matches("[data-option-label-th]")) {
+        const form = event.target.closest("[data-option-form]");
+        if (form) setOptionFieldError(form, "label-th");
       }
     });
     document.addEventListener("change", event => {
