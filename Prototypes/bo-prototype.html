@@ -3236,6 +3236,16 @@
     .option-order-modal .user-detail-actions {
       justify-content: flex-end;
     }
+    /* Option Detail row-menu: hide until JS positions it as fixed to avoid clipping */
+    body.option-master-mode.option-detail-mode .row-menu-list {
+      visibility: hidden;
+      opacity: 0;
+      transition: opacity 120ms ease-out;
+    }
+    body.option-master-mode.option-detail-mode .row-menu-list.is-fixed {
+      visibility: visible;
+      opacity: 1;
+    }
     /* ===== Option Audit Log Modal (BO-OPT-002d, section 16) ===== */
     .modal.user-action-modal.option-audit-modal {
       width: min(820px, calc(100vw - 36px));
@@ -9044,13 +9054,6 @@
         width: min(224px, calc(100vw - 64px));
         min-width: 0;
         max-width: calc(100vw - 64px);
-        visibility: hidden;
-        opacity: 0;
-        transition: opacity 120ms ease-out;
-      }
-      body.option-master-mode.option-detail-mode .row-menu-list.is-fixed {
-        visibility: visible;
-        opacity: 1;
       }
       body.option-master-mode.option-detail-mode .row-menu-list button {
         white-space: normal;
@@ -25876,13 +25879,13 @@
       });
     }
 
-    // Mobile Option Detail: position row-menu-list as fixed (viewport-relative) to avoid
-    // being clipped/mispositioned by the scrollable #table ancestor. Uses the native
-    // "toggle" event (capture phase) so positioning runs only after <details> actually opens.
+    // Option Detail: position row-menu-list as fixed (viewport-relative) to avoid
+    // being clipped by the scrollable .panel ancestor. Uses the native "toggle" event
+    // (capture phase) so positioning runs only after <details> actually opens.
     document.addEventListener("toggle", event => {
       const rowMenu = event.target.closest && event.target.closest(".row-menu");
       if (!rowMenu || !rowMenu.open) return;
-      if (!(document.body.classList.contains("option-master-mode") && document.body.classList.contains("option-detail-mode") && window.innerWidth <= 900)) return;
+      if (!(document.body.classList.contains("option-master-mode") && document.body.classList.contains("option-detail-mode"))) return;
       const list = rowMenu.querySelector(".row-menu-list");
       const summary = rowMenu.querySelector("summary");
       if (!list || !summary) return;
