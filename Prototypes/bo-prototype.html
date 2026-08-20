@@ -20606,8 +20606,8 @@
       const active = getOptionGroupActiveOptions(groupId);
       const activeCountForReorder = active;
       setPageActions(`
-        ${activeCountForReorder >= 2 ? `<button class="btn" type="button" data-option-reorder-open title="Reorder" aria-label="Reorder">${iconSvg.sort}<span>Reorder</span></button>` : ""}
-        <button class="btn" type="button" data-option-add-open title="Add Option" aria-label="Add Option">${iconSvg.plus}<span>Add Option</span></button>
+        ${activeCountForReorder >= 2 ? `<button class="btn" type="button" data-option-reorder-open title="จัดเรียง" aria-label="จัดเรียง">${iconSvg.sort}<span>จัดเรียง</span></button>` : ""}
+        <button class="btn" type="button" data-option-add-open title="เพิ่ม Option" aria-label="เพิ่ม Option">${iconSvg.plus}<span>เพิ่ม Option</span></button>
         ${renderPageBackButton("data-back-option-groups", "Back to Option Groups")}
       `);
       syncExpandedNavForModule("option-master", "");
