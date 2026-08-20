@@ -3023,6 +3023,63 @@
       font-weight: 500;
       line-height: 1.55;
     }
+    .option-confirm-impact ul {
+      margin: 6px 0 0;
+      padding-left: 18px;
+    }
+    .option-confirm-impact ul li {
+      margin-top: 2px;
+    }
+    .option-action-existing-note {
+      margin: 12px 0 0;
+      padding: 10px 12px;
+      border-radius: 8px;
+      background: #f0f6ff;
+      border: 1px solid #bfdbfe;
+      color: #1e40af;
+      font-size: 12px;
+      font-weight: 500;
+      line-height: 1.55;
+    }
+    .option-action-reason {
+      margin-top: 16px;
+      margin-bottom: 20px;
+    }
+    .option-action-reason label {
+      display: grid;
+      gap: 8px;
+      color: #334155;
+      font-size: 13px;
+      font-weight: 700;
+      line-height: 1.4;
+    }
+    .option-action-reason textarea {
+      width: 100%;
+      min-height: 80px;
+      border: 1px solid #d7e5f4;
+      border-radius: 8px;
+      padding: 12px 13px;
+      color: #061426;
+      background: #f8fbff;
+      font-size: 14px;
+      font-weight: 400;
+      font-family: inherit;
+      resize: vertical;
+    }
+    .option-action-reason textarea:focus,
+    .option-action-reason textarea:focus-visible {
+      outline: 0;
+      border-color: #b8c6d8;
+      box-shadow: 0 0 0 3px rgba(118, 135, 158, .10);
+    }
+    .option-reason-required {
+      color: #dc2626;
+    }
+    .option-safeguard-error {
+      margin: 14px 0 0;
+      font-size: 13px;
+      line-height: 1.55;
+    }
     .option-status-toggle {
       display: inline-flex;
       align-items: center;
@@ -10594,7 +10651,8 @@
           { key: "excellent", label_en: "Excellent", label_th: "สภาพดีเยี่ยม", description_en: "Light signs of use; well cared for", sort_order: 30, is_active: true, is_system: true, used_in_assets: true },
           { key: "very_good", label_en: "Very Good", label_th: "สภาพดีมาก", description_en: "Visible but normal signs of use", sort_order: 40, is_active: true, is_system: true, used_in_assets: true },
           { key: "good", label_en: "Good", label_th: "สภาพดี", description_en: "Noticeable wear but fully usable", sort_order: 50, is_active: true, is_system: true, used_in_assets: true },
-          { key: "fair", label_en: "Fair", label_th: "พอใช้", description_en: "Heavy wear or visible marks; should be clearly described", sort_order: 60, is_active: true, is_system: true, used_in_assets: false }
+          { key: "fair", label_en: "Fair", label_th: "พอใช้", description_en: "Heavy wear or visible marks; should be clearly described", sort_order: 60, is_active: true, is_system: true, used_in_assets: false },
+          { key: "new_old_stock", label_en: "New Old Stock (NOS)", label_th: "ของเก่าสภาพใหม่ (NOS)", description_en: "Vintage watch never sold, with original protective stickers; custom option added by Admin", sort_order: 70, is_active: true, is_system: false, used_in_assets: false }
         ]
       },
       {
@@ -20109,7 +20167,7 @@
               ? `<span class="pill green">Active</span>`
               : `<span class="pill gray">Inactive</span>`;
             const systemLabel = o.is_system ? "Yes" : "No";
-            const deactivateDisabled = isOptionDeactivateDisabled(g.group_id, o.is_system);
+            const deactivateDisabled = o.used_in_assets;
             const deleteButton = o.used_in_assets
               ? ""
               : `<button type="button" data-option-delete="${o.id}">Delete</button>`;
@@ -20240,6 +20298,18 @@
         .replace(/</g, "&lt;")
         .replace(/>/g, "&gt;");
     }
+    function formatOptionTimestamp(date = new Date()) {
+      const formatter = new Intl.DateTimeFormat("en-GB", {
+        timeZone: "Asia/Bangkok",
+        day: "2-digit",
+        month: "short",
+        year: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+        hourCycle: "h23"
+      });
+      return formatter.format(date);
+    }
 
     function openOptionViewModal(optionId) {
       const option = getOptionById(optionId);
@@ -20348,6 +20418,151 @@
       closeUserActionModal();
       renderOptionDetailRows();
       showSuccessToast(`ลบ option ${option.id} (${option.key}) แล้ว`);
+    }
+
+    // ===== Option Deactivate / Reactivate (BO-OPT-002c) =====
+    function openOptionDeactivateConfirmModal(optionId) {
+      const option = getOptionById(optionId);
+      if (!option) return;
+      const g = getOptionGroupByOptionId(optionId);
+      if (!g) return;
+      // used_in_assets guard — options in use cannot be deactivated
+      if (option.used_in_assets) return;
+      // Safeguard: count active options in group (excluding the one being deactivated)
+      const activeCount = g.options.filter(o => o.is_active).length;
+      const willLeaveLessThanOne = activeCount <= 1;
+      const modal = document.querySelector("#user-action-modal");
+      const modalCard = modal?.querySelector(".user-action-modal");
+      const modalBody = document.querySelector("#user-action-modal-body");
+      if (!modal || !modalCard || !modalBody) return;
+      modalCard.classList.remove("article-preview-modal", "article-editor-confirm-modal", "category-editor-modal", "category-order-modal", "market-editor-modal", "board-report-phone-preview-modal");
+      modalCard.classList.add("option-editor-modal");
+      modalBody.innerHTML = `
+        <div class="user-action-layout">
+          <div class="user-action-head">
+            <div>
+              <h2 id="user-action-modal-title">Deactivate Option</h2>
+              <p>${escapeOptionField(option.id)} (${escapeOptionField(option.key)}) ในกลุ่ม ${escapeOptionField(g.display_name_en)}</p>
+            </div>
+            <button class="btn user-action-close" type="button" data-user-action-modal-close aria-label="Close modal" title="Close">${iconSvg.close}</button>
+          </div>
+          <div class="option-confirm-summary">
+            <div class="option-confirm-row"><span class="option-confirm-label">Option ID</span><span class="option-confirm-value">${escapeOptionField(option.id)}</span></div>
+            <div class="option-confirm-row"><span class="option-confirm-label">Key</span><span class="option-confirm-value">${escapeOptionField(option.key)}</span></div>
+            <div class="option-confirm-row"><span class="option-confirm-label">Label (EN)</span><span class="option-confirm-value">${escapeOptionField(option.label_en)}</span></div>
+            <div class="option-confirm-row"><span class="option-confirm-label">Label (TH)</span><span class="option-confirm-value">${escapeOptionField(option.label_th)}</span></div>
+            <div class="option-confirm-row"><span class="option-confirm-label">Status</span><span class="option-confirm-value">Active</span></div>
+          </div>
+          <div class="option-confirm-impact">
+            <strong>ผลกระทบต่อ Front Office:</strong>
+            <ul>
+              <li>Option นี้จะไม่แสดงใน FO Add/Edit Asset form ใหม่</li>
+              <li>Option นี้จะไม่แสดงใน FO Search Filter ใหม่</li>
+              <li>Option นี้จะไม่แสดงใน FO Watch Alert criteria ใหม่</li>
+            </ul>
+          </div>
+          <div class="option-action-existing-note">
+            <strong>หมายเหตุ:</strong> existing assets ที่ใช้ option นี้ยังแสดงค่าเดิมตามปกติ — การ deactivate ไม่กระทบ asset เดิม
+          </div>
+          ${willLeaveLessThanOne ? `
+            <div class="warning-note option-safeguard-error">
+              <strong>ไม่สามารถ deactivate ได้</strong><br>
+              เนื่องจากต้องมีอย่างน้อย 1 active option เหลือในกลุ่ม ${escapeOptionField(g.display_name_en)} หลังจาก deactivate
+            </div>
+          ` : `
+            <div class="option-action-reason">
+              <label><span>เหตุผลในการ deactivate <span class="option-reason-required">*</span></span>
+                <textarea data-option-deactivate-reason rows="3" placeholder="ระบุเหตุผลในการ deactivate option นี้" autocomplete="off"></textarea>
+              </label>
+            </div>
+          `}
+          <div class="user-detail-actions">
+            <button class="user-detail-action-btn" type="button" data-user-action-modal-close>ยกเลิก</button>
+            ${willLeaveLessThanOne ? "" : `<button class="user-detail-action-btn danger" type="button" data-option-deactivate-confirm data-option-id="${escapeOptionField(option.id)}" disabled>Confirm Deactivate</button>`}
+          </div>
+        </div>
+      `;
+      showUserActionModal(true);
+      if (!willLeaveLessThanOne) {
+        const reasonInput = modalBody.querySelector("[data-option-deactivate-reason]");
+        const confirmBtn = modalBody.querySelector("[data-option-deactivate-confirm]");
+        if (reasonInput && confirmBtn) {
+          reasonInput.addEventListener("input", () => {
+            confirmBtn.disabled = reasonInput.value.trim() === "";
+          });
+        }
+      }
+    }
+
+    function applyOptionDeactivate(optionId, reason) {
+      const option = getOptionById(optionId);
+      if (!option) return;
+      const g = getOptionGroupByOptionId(optionId);
+      if (!g) return;
+      // Safeguard double-check (section 10.1)
+      const activeCount = g.options.filter(o => o.is_active).length;
+      if (activeCount <= 1) return;
+      option.is_active = false;
+      option.updated_at = formatOptionTimestamp(new Date());
+      closeUserActionModal();
+      renderOptionDetailRows();
+      showSuccessToast(`Deactivate option ${option.id} (${option.key}) แล้ว`);
+      // Mock audit: OPTION_DEACTIVATE with reason
+    }
+
+    function openOptionReactivateConfirmModal(optionId) {
+      const option = getOptionById(optionId);
+      if (!option) return;
+      const g = getOptionGroupByOptionId(optionId);
+      if (!g) return;
+      const modal = document.querySelector("#user-action-modal");
+      const modalCard = modal?.querySelector(".user-action-modal");
+      const modalBody = document.querySelector("#user-action-modal-body");
+      if (!modal || !modalCard || !modalBody) return;
+      modalCard.classList.remove("article-preview-modal", "article-editor-confirm-modal", "category-editor-modal", "category-order-modal", "market-editor-modal", "board-report-phone-preview-modal");
+      modalCard.classList.add("option-editor-modal");
+      modalBody.innerHTML = `
+        <div class="user-action-layout">
+          <div class="user-action-head">
+            <div>
+              <h2 id="user-action-modal-title">Reactivate Option</h2>
+              <p>${escapeOptionField(option.id)} (${escapeOptionField(option.key)}) ในกลุ่ม ${escapeOptionField(g.display_name_en)}</p>
+            </div>
+            <button class="btn user-action-close" type="button" data-user-action-modal-close aria-label="Close modal" title="Close">${iconSvg.close}</button>
+          </div>
+          <div class="option-confirm-summary">
+            <div class="option-confirm-row"><span class="option-confirm-label">Option ID</span><span class="option-confirm-value">${escapeOptionField(option.id)}</span></div>
+            <div class="option-confirm-row"><span class="option-confirm-label">Key</span><span class="option-confirm-value">${escapeOptionField(option.key)}</span></div>
+            <div class="option-confirm-row"><span class="option-confirm-label">Label (EN)</span><span class="option-confirm-value">${escapeOptionField(option.label_en)}</span></div>
+            <div class="option-confirm-row"><span class="option-confirm-label">Label (TH)</span><span class="option-confirm-value">${escapeOptionField(option.label_th)}</span></div>
+            <div class="option-confirm-row"><span class="option-confirm-label">Status</span><span class="option-confirm-value">Inactive</span></div>
+          </div>
+          <div class="option-confirm-impact">
+            <strong>ผลกระทบต่อ Front Office:</strong>
+            <ul>
+              <li>Option นี้จะกลับมาแสดงใน FO Add/Edit Asset form</li>
+              <li>Option นี้จะกลับมาแสดงใน FO Search Filter</li>
+              <li>Option นี้จะกลับมาแสดงใน FO Watch Alert criteria</li>
+            </ul>
+          </div>
+          <div class="user-detail-actions">
+            <button class="user-detail-action-btn" type="button" data-user-action-modal-close>ยกเลิก</button>
+            <button class="user-detail-action-btn primary" type="button" data-option-reactivate-confirm data-option-id="${escapeOptionField(option.id)}">Confirm Reactivate</button>
+          </div>
+        </div>
+      `;
+      showUserActionModal(true);
+    }
+
+    function applyOptionReactivate(optionId) {
+      const option = getOptionById(optionId);
+      if (!option) return;
+      option.is_active = true;
+      option.updated_at = formatOptionTimestamp(new Date());
+      closeUserActionModal();
+      renderOptionDetailRows();
+      showSuccessToast(`Reactivate option ${option.id} (${option.key}) แล้ว`);
+      // Mock audit: OPTION_REACTIVATE
     }
 
     function openOptionAddModal(prevData = null) {
@@ -25523,9 +25738,15 @@
         return;
       }
       const optionDeactivateButton = event.target.closest("[data-option-deactivate]");
-      if (optionDeactivateButton) return;
+      if (optionDeactivateButton) {
+        openOptionDeactivateConfirmModal(optionDeactivateButton.dataset.optionDeactivate);
+        return;
+      }
       const optionReactivateButton = event.target.closest("[data-option-reactivate]");
-      if (optionReactivateButton) return;
+      if (optionReactivateButton) {
+        openOptionReactivateConfirmModal(optionReactivateButton.dataset.optionReactivate);
+        return;
+      }
       const optionDeleteButton = event.target.closest("[data-option-delete]");
       if (optionDeleteButton) {
         openOptionDeleteConfirmModal(optionDeleteButton.dataset.optionDelete);
@@ -25534,6 +25755,19 @@
       const optionDeleteConfirm = event.target.closest("[data-option-delete-confirm]");
       if (optionDeleteConfirm) {
         applyOptionDelete(optionDeleteConfirm.dataset.optionId);
+        return;
+      }
+      // Option Deactivate / Reactivate confirm (BO-OPT-002c)
+      const optionDeactivateConfirm = event.target.closest("[data-option-deactivate-confirm]");
+      if (optionDeactivateConfirm) {
+        const reason = document.querySelector("[data-option-deactivate-reason]")?.value?.trim() || "";
+        if (!reason) return;
+        applyOptionDeactivate(optionDeactivateConfirm.dataset.optionId, reason);
+        return;
+      }
+      const optionReactivateConfirm = event.target.closest("[data-option-reactivate-confirm]");
+      if (optionReactivateConfirm) {
+        applyOptionReactivate(optionReactivateConfirm.dataset.optionId);
         return;
       }
       // Option Master confirmation modal buttons (BO-OPT-002b)
