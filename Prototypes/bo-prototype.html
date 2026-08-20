@@ -2942,6 +2942,67 @@
       font-weight: 500;
       line-height: 1.55;
     }
+    .option-status-toggle {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      cursor: pointer;
+      user-select: none;
+      margin-top: 6px;
+    }
+    .article-editor-form .option-status-toggle {
+      display: inline-flex;
+      margin-top: 0;
+    }
+    .option-status-field {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      grid-column: 1 / -1;
+      margin-top: 4px;
+    }
+    .option-status-field-label {
+      font-size: 13px;
+      font-weight: 600;
+      color: #334155;
+    }
+    .option-status-toggle input {
+      position: absolute;
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+    .option-status-toggle-track {
+      position: relative;
+      width: 42px;
+      height: 24px;
+      border-radius: 999px;
+      background: #cbd5e1;
+      transition: background .18s ease;
+      flex: 0 0 auto;
+    }
+    .option-status-toggle-track::after {
+      content: "";
+      position: absolute;
+      top: 3px;
+      left: 3px;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: #fff;
+      box-shadow: 0 1px 3px rgba(0,0,0,.2);
+      transition: transform .18s ease;
+    }
+    .option-status-toggle input:checked + .option-status-toggle-track {
+      background: #16a34a;
+    }
+    .option-status-toggle input:checked + .option-status-toggle-track::after {
+      transform: translateX(18px);
+    }
+    .option-status-toggle input:focus-visible + .option-status-toggle-track {
+      outline: 2px solid #3b82f6;
+      outline-offset: 2px;
+    }
     .article-detail-layout {
       display: grid;
       grid-template-columns: minmax(0, 1fr) minmax(340px, .82fr);
@@ -20048,6 +20109,14 @@
       });
       return "OPT-" + String(maxNum + 1).padStart(3, "0");
     }
+    function optionStatusToggle(checked) {
+      return `
+        <label class="option-status-toggle">
+          <input type="checkbox" name="is_active" value="true" ${checked ? "checked" : ""} data-option-is-active />
+          <span class="option-status-toggle-track"></span>
+        </label>
+      `;
+    }
     function getNextOptionSortOrder(groupId) {
       const g = getOptionGroup(groupId);
       if (!g || !g.options.length) return 10;
@@ -20075,7 +20144,6 @@
       if (!modal || !modalCard || !modalBody) return;
       modalCard.classList.remove("article-preview-modal", "article-editor-confirm-modal", "category-editor-modal", "category-order-modal", "market-editor-modal", "board-report-phone-preview-modal");
       modalCard.classList.add("option-editor-modal");
-      const nextSort = prevData?.sort_order ?? getNextOptionSortOrder(g.group_id);
       const isActiveValue = prevData ? String(prevData.is_active) : "true";
       modalBody.innerHTML = `
         <div class="user-action-layout">
@@ -20104,21 +20172,14 @@
                   <input name="label_th" value="${escapeOptionField(prevData?.label_th || "")}" placeholder="ใหม่ / ยังไม่ผ่านการใช้งาน" data-option-label-th autocomplete="off" />
                   <span class="article-field-error" data-option-label-th-error></span>
                 </label>
-                <label><span>Description (EN)</span>
+                <label><span>Description</span>
                   <textarea name="description_en" placeholder="คำอธิบายเพิ่มเติม (ไม่บังคับ)" data-option-description-en>${escapeOptionField(prevData?.description_en || "")}</textarea>
                   <span class="article-field-error" aria-hidden="true"></span>
                 </label>
-                <label><span>Sort Order <span class="article-required-mark">*</span></span>
-                  <input name="sort_order" type="number" value="${nextSort}" min="0" step="1" data-option-sort-order />
-                  <span class="article-field-error" data-option-sort-order-error></span>
-                </label>
-                <label>Is Active
-                  ${articleEditorCustomSelect("option-is-active", "is_active", "Is Active", [
-                    { value: "true", label: "Active" },
-                    { value: "false", label: "Inactive" }
-                  ], isActiveValue)}
-                  <span class="article-field-error" aria-hidden="true"></span>
-                </label>
+                <div class="option-status-field">
+                  <span class="option-status-field-label">Status</span>
+                  ${optionStatusToggle(isActiveValue === "true")}
+                </div>
               </div>
             </section>
             <div class="user-detail-actions">
@@ -20174,21 +20235,14 @@
                   <input name="label_th" value="${escapeOptionField(src.label_th ?? option.label_th)}" data-option-label-th autocomplete="off" />
                   <span class="article-field-error" data-option-label-th-error></span>
                 </label>
-                <label><span>Description (EN)</span>
+                <label><span>Description</span>
                   <textarea name="description_en" data-option-description-en>${escapeOptionField(src.description_en ?? option.description_en ?? "")}</textarea>
                   <span class="article-field-error" aria-hidden="true"></span>
                 </label>
-                <label><span>Sort Order <span class="article-required-mark">*</span></span>
-                  <input name="sort_order" type="number" value="${src.sort_order ?? option.sort_order}" min="0" step="1" data-option-sort-order />
-                  <span class="article-field-error" data-option-sort-order-error></span>
-                </label>
-                <label>Is Active
-                  ${articleEditorCustomSelect("option-is-active", "is_active", "Is Active", [
-                    { value: "true", label: "Active" },
-                    { value: "false", label: "Inactive" }
-                  ], String(src.is_active ?? option.is_active))}
-                  <span class="article-field-error" aria-hidden="true"></span>
-                </label>
+                <div class="option-status-field">
+                  <span class="option-status-field-label">Status</span>
+                  ${optionStatusToggle(Boolean(src.is_active ?? option.is_active))}
+                </div>
               </div>
             </section>
             <div class="user-detail-actions">
@@ -20210,8 +20264,7 @@
       const controlMap = {
         key: form?.querySelector("[data-option-key]"),
         "label-en": form?.querySelector("[data-option-label-en]"),
-        "label-th": form?.querySelector("[data-option-label-th]"),
-        "sort-order": form?.querySelector("[data-option-sort-order]")
+        "label-th": form?.querySelector("[data-option-label-th]")
       };
       controlMap[field]?.classList.toggle("article-field-invalid", Boolean(message));
     }
@@ -20225,10 +20278,10 @@
       const labelEn = String(formData.get("label_en") || "").trim();
       const labelTh = String(formData.get("label_th") || "").trim();
       const descriptionEn = String(formData.get("description_en") || "").trim();
-      const sortOrderRaw = String(formData.get("sort_order") || "").trim();
-      const isActive = String(formData.get("is_active") || "true") === "true";
+      const isActiveCheckbox = form.querySelector("[data-option-is-active]");
+      const isActive = isActiveCheckbox ? isActiveCheckbox.checked : true;
       const keyLocked = form.querySelector("[data-option-key]")?.hasAttribute("readonly");
-      ["key", "label-en", "label-th", "sort-order"].forEach(field => setOptionFieldError(form, field));
+      ["key", "label-en", "label-th"].forEach(field => setOptionFieldError(form, field));
       let hasError = false;
       if (!key) {
         setOptionFieldError(form, "key", "Key สร้างอัตโนมัติไม่ได้ กรุณากรอก Label (EN) ที่เป็นภาษาอังกฤษ");
@@ -20255,16 +20308,11 @@
         hasError = true;
       }
       if (descriptionEn.length > 512) {
-        setOptionFieldError(form, "description-en", "Description (EN) ต้องไม่เกิน 512 ตัวอักษร");
-        hasError = true;
-      }
-      const sortOrderNum = parseInt(sortOrderRaw, 10);
-      if (!sortOrderRaw || isNaN(sortOrderNum) || sortOrderNum < 0 || String(sortOrderNum) !== sortOrderRaw) {
-        setOptionFieldError(form, "sort-order", "Sort Order ต้องเป็นตัวเลขจำนวนเต็มไม่ติดลบ");
+        setOptionFieldError(form, "description-en", "Description ต้องไม่เกิน 512 ตัวอักษร");
         hasError = true;
       }
       if (hasError) return null;
-      return { key, label_en: labelEn, label_th: labelTh, description_en: descriptionEn, sort_order: sortOrderNum, is_active: isActive, is_system: false, used_in_assets: false };
+      return { key, label_en: labelEn, label_th: labelTh, description_en: descriptionEn, is_active: isActive, is_system: false, used_in_assets: false };
     }
 
     function openOptionAddConfirmModal(data) {
@@ -20291,9 +20339,8 @@
             <div class="option-confirm-row"><span class="option-confirm-label">Key</span><span class="option-confirm-value">${escapeOptionField(data.key)}</span></div>
             <div class="option-confirm-row"><span class="option-confirm-label">Label (EN)</span><span class="option-confirm-value">${escapeOptionField(data.label_en)}</span></div>
             <div class="option-confirm-row"><span class="option-confirm-label">Label (TH)</span><span class="option-confirm-value">${escapeOptionField(data.label_th)}</span></div>
-            <div class="option-confirm-row"><span class="option-confirm-label">Description (EN)</span><span class="option-confirm-value">${escapeOptionField(data.description_en) || "-"}</span></div>
-            <div class="option-confirm-row"><span class="option-confirm-label">Sort Order</span><span class="option-confirm-value">${data.sort_order}</span></div>
-            <div class="option-confirm-row"><span class="option-confirm-label">Is Active</span><span class="option-confirm-value">${data.is_active ? "Active" : "Inactive"}</span></div>
+            <div class="option-confirm-row"><span class="option-confirm-label">Description</span><span class="option-confirm-value">${escapeOptionField(data.description_en) || "-"}</span></div>
+            <div class="option-confirm-row"><span class="option-confirm-label">Status</span><span class="option-confirm-value">${data.is_active ? "Active" : "Inactive"}</span></div>
           </div>
           <div class="option-confirm-impact">
             Option นี้จะปรากฏใน FO Add/Edit Asset form, FO Search Filter และ FO Watch Alert criteria สำหรับกลุ่ม ${escapeOptionField(g.display_name_en)} ทันทีเมื่อ FO อ่าน option master ล่าสุด
@@ -20342,9 +20389,8 @@
             ${row("Key", "key", textDisplay)}
             ${row("Label (EN)", "label_en", textDisplay)}
             ${row("Label (TH)", "label_th", textDisplay)}
-            ${row("Description (EN)", "description_en", textDisplay)}
-            ${row("Sort Order", "sort_order", (v) => String(v ?? ""))}
-            ${row("Is Active", "is_active", boolDisplay)}
+            ${row("Description", "description_en", textDisplay)}
+            ${row("Status", "is_active", boolDisplay)}
           </div>
           <div class="option-confirm-impact">
             การแก้ไข label จะไม่กระทบค่าที่เก็บใน existing assets เพราะ asset เก็บ relation id และ snapshot text แยก แต่ FO form/filter จะแสดง label ใหม่ทันทีเมื่ออ่าน option master ล่าสุด
@@ -20367,7 +20413,7 @@
         label_en: data.label_en,
         label_th: data.label_th,
         description_en: data.description_en,
-        sort_order: data.sort_order,
+        sort_order: getNextOptionSortOrder(g.group_id),
         is_active: data.is_active,
         is_system: false,
         used_in_assets: false,
@@ -20392,7 +20438,6 @@
         label_en: data.label_en,
         label_th: data.label_th,
         description_en: data.description_en,
-        sort_order: data.sort_order,
         is_active: data.is_active,
         updated_at: formatArticleActionTimestamp()
       });
@@ -26366,6 +26411,9 @@
           keyInput.value = slugifyOptionKey(event.target.value);
         }
       }
+    });
+    document.addEventListener("change", event => {
+      if (event.target.matches("[data-option-is-active]")) return;
     });
     document.addEventListener("submit", event => {
       const categoryForm = event.target.closest("[data-category-form]");
