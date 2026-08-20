@@ -3123,6 +3123,344 @@
       outline: 2px solid #3b82f6;
       outline-offset: 2px;
     }
+    /* ===== Option Reorder Modal (BO-OPT-002d, section 12.1) ===== */
+    .modal.user-action-modal.option-order-modal {
+      width: min(760px, calc(100vw - 36px));
+      border-radius: 22px;
+      border-color: #d9e3f1;
+      box-shadow: 0 28px 80px rgba(6, 20, 38, .28);
+    }
+    .option-order-modal .modal-body {
+      padding: 24px;
+    }
+    .option-order-list {
+      display: grid;
+      gap: 10px;
+      margin: 18px 0;
+    }
+    .option-order-item {
+      display: grid;
+      grid-template-columns: 34px minmax(0, 1fr) auto auto;
+      gap: 12px;
+      align-items: center;
+      min-height: 68px;
+      padding: 12px 14px;
+      border: 1px solid #dce6f3;
+      border-radius: 8px;
+      background: #fff;
+      cursor: grab;
+      transition: border-color .16s ease, box-shadow .16s ease, transform .16s ease, opacity .16s ease;
+    }
+    .option-order-item:hover,
+    .option-order-item:focus {
+      border-color: #9bb7d9;
+      box-shadow: 0 10px 28px rgba(8, 31, 61, .08);
+      outline: none;
+    }
+    .option-order-item.dragging {
+      opacity: .58;
+      cursor: grabbing;
+      transform: scale(.99);
+    }
+    .option-order-item.drag-over {
+      border-color: #1f5f9f;
+      box-shadow: 0 0 0 3px rgba(31, 95, 159, .12);
+    }
+    .option-order-handle {
+      display: grid;
+      place-items: center;
+      width: 34px;
+      height: 34px;
+      border-radius: 8px;
+      color: #5b6e85;
+      background: #f3f7fc;
+    }
+    .option-order-handle svg {
+      width: 18px;
+      height: 18px;
+    }
+    .option-order-copy {
+      min-width: 0;
+    }
+    .option-order-copy strong {
+      display: block;
+      color: #071b36;
+      font-size: 14px;
+    }
+    .option-order-copy span {
+      display: block;
+      margin-top: 3px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+    .option-order-arrows {
+      display: none;
+      grid-auto-flow: column;
+      gap: 4px;
+    }
+    .option-order-arrow {
+      display: grid;
+      place-items: center;
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      border: 1px solid #dce6f3;
+      background: #f8fbff;
+      color: #475569;
+      cursor: pointer;
+      transition: border-color .16s ease, background .16s ease, color .16s ease;
+    }
+    .option-order-arrow svg {
+      width: 16px;
+      height: 16px;
+    }
+    .option-order-arrow:hover:not(:disabled) {
+      border-color: #9bb7d9;
+      background: #eef4fc;
+      color: #1f5f9f;
+    }
+    .option-order-arrow:disabled {
+      opacity: .4;
+      cursor: not-allowed;
+    }
+    .option-order-index {
+      min-width: 54px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: #eff5fb;
+      color: #35506d;
+      font-size: 12px;
+      font-weight: 800;
+      text-align: center;
+    }
+    .option-order-modal .user-detail-actions {
+      justify-content: flex-end;
+    }
+    /* ===== Option Audit Log Modal (BO-OPT-002d, section 16) ===== */
+    .modal.user-action-modal.option-audit-modal {
+      width: min(820px, calc(100vw - 36px));
+      border-radius: 22px;
+      border-color: #d9e3f1;
+      box-shadow: 0 28px 80px rgba(6, 20, 38, .28);
+    }
+    .option-audit-modal .modal-body {
+      padding: 24px;
+    }
+    .option-audit-summary {
+      display: grid;
+      gap: 10px;
+      margin: 16px 0 8px;
+    }
+    .option-audit-summary .option-confirm-row {
+      margin: 0;
+    }
+    .option-audit-legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 14px 0 6px;
+    }
+    .option-audit-legend-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: #f1f5f9;
+      border: 1px solid #e2e8f0;
+      color: #475569;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: .02em;
+    }
+    .option-audit-legend-pill .option-audit-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+    }
+    .option-audit-list {
+      display: grid;
+      gap: 10px;
+      margin: 12px 0 18px;
+    }
+    .option-audit-entry {
+      padding: 14px 16px;
+      border: 1px solid #dce6f3;
+      border-radius: 10px;
+      background: #fbfdff;
+    }
+    .option-audit-entry-head {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 8px;
+    }
+    .option-audit-action {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: .02em;
+    }
+    .option-audit-action .option-audit-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+    }
+    .option-audit-action.add { background: #dcfce7; color: #166534; }
+    .option-audit-action.add .option-audit-dot { background: #22c55e; }
+    .option-audit-action.edit { background: #e0e7ff; color: #3730a3; }
+    .option-audit-action.edit .option-audit-dot { background: #6366f1; }
+    .option-audit-action.deactivate { background: #fee2e2; color: #991b1b; }
+    .option-audit-action.deactivate .option-audit-dot { background: #ef4444; }
+    .option-audit-action.reactivate { background: #dbeafe; color: #1e40af; }
+    .option-audit-action.reactivate .option-audit-dot { background: #3b82f6; }
+    .option-audit-action.reorder { background: #fef3c7; color: #92400e; }
+    .option-audit-action.reorder .option-audit-dot { background: #f59e0b; }
+    .option-audit-time {
+      margin-left: auto;
+      color: #94a3b8;
+      font-size: 12px;
+      font-weight: 600;
+    }
+    .option-audit-meta {
+      display: grid;
+      gap: 4px;
+      color: #475569;
+      font-size: 12px;
+      line-height: 1.5;
+    }
+    .option-audit-meta-row {
+      display: grid;
+      grid-template-columns: minmax(90px, 0.4fr) minmax(0, 1fr);
+      gap: 10px;
+    }
+    .option-audit-meta-inline {
+      color: #94a3b8;
+      font-size: 12px;
+      font-weight: 600;
+      line-height: 1.5;
+      text-align: right;
+    }
+    .option-audit-meta-inline .option-audit-meta-label {
+      color: #94a3b8;
+      font-weight: 600;
+    }
+    .option-audit-meta-inline .option-audit-meta-value {
+      color: #94a3b8;
+      font-weight: 600;
+      word-break: break-word;
+    }
+    .option-audit-meta-label {
+      color: #94a3b8;
+      font-weight: 700;
+    }
+    .option-audit-meta-value {
+      color: #334155;
+      word-break: break-word;
+      text-align: right;
+    }
+    .option-audit-diff {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      gap: 10px;
+      align-items: center;
+      margin-top: 8px;
+      padding: 10px 12px;
+      border-radius: 8px;
+      background: #fff;
+      border: 1px solid #e2e8f0;
+    }
+    .option-audit-diff-side {
+      min-width: 0;
+      font-size: 12px;
+    }
+    .option-audit-diff-side .option-audit-diff-tag {
+      display: block;
+      color: #94a3b8;
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+      margin-bottom: 2px;
+    }
+    .option-audit-diff-before .option-audit-diff-tag { color: #94a3b8; }
+    .option-audit-diff-after .option-audit-diff-tag { color: #1f5f9f; }
+    .option-audit-diff-value {
+      color: #334155;
+      word-break: break-word;
+    }
+    .option-audit-diff-arrow {
+      color: #94a3b8;
+      font-size: 16px;
+      font-weight: 700;
+    }
+    .option-audit-empty {
+      padding: 32px 16px;
+      text-align: center;
+      color: #94a3b8;
+      font-size: 13px;
+    }
+    .option-audit-modal .user-detail-actions {
+      justify-content: flex-end;
+    }
+    /* Touch devices: show up/down arrows, hide drag cursor (HTML5 DnD unsupported) */
+    @media (hover: none) and (pointer: coarse) {
+      .option-order-item {
+        cursor: default;
+      }
+      .option-order-handle {
+        display: none;
+      }
+      .option-order-arrows {
+        display: grid;
+      }
+      .option-order-item {
+        grid-template-columns: minmax(0, 1fr) auto auto;
+      }
+    }
+    @media (max-width: 760px) {
+      .option-order-item {
+        cursor: default;
+      }
+      .option-order-handle {
+        display: none;
+      }
+      .option-order-arrows {
+        display: grid;
+      }
+      .option-order-item {
+        grid-template-columns: minmax(0, 1fr) auto auto;
+      }
+      .option-audit-diff {
+        grid-template-columns: 1fr;
+        gap: 6px;
+      }
+      .option-audit-diff-arrow {
+        display: none;
+      }
+      .option-audit-diff-side .option-audit-diff-tag::after {
+        content: "";
+      }
+      .option-audit-meta-row {
+        grid-template-columns: 1fr;
+        gap: 2px;
+      }
+      .option-audit-time {
+        margin-left: 0;
+        width: 100%;
+      }
+    }
+    @media (max-width: 480px) {
+      .option-order-copy strong { font-size: 13px; }
+      .option-order-index { min-width: 42px; padding: 4px 8px; font-size: 11px; }
+      .option-audit-entry { padding: 12px; }
+      .option-audit-entry-head { gap: 8px; }
+    }
     .article-detail-layout {
       display: grid;
       grid-template-columns: minmax(0, 1fr) minmax(340px, .82fr);
@@ -10462,7 +10800,9 @@
       menu: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M4 12h16M4 17h16"/></svg>',
       close: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6l12 12M18 6 6 18"/></svg>',
       chevron: '<svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>',
-      option: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 6h10"/><path d="M18 6h2"/><circle cx="16" cy="6" r="2"/><path d="M4 12h4"/><path d="M12 12h8"/><circle cx="10" cy="12" r="2"/><path d="M4 18h10"/><path d="M18 18h2"/><circle cx="16" cy="18" r="2"/></svg>'
+      option: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 6h10"/><path d="M18 6h2"/><circle cx="16" cy="6" r="2"/><path d="M4 12h4"/><path d="M12 12h8"/><circle cx="10" cy="12" r="2"/><path d="M4 18h10"/><path d="M18 18h2"/><circle cx="16" cy="18" r="2"/></svg>',
+      arrowUp: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 19V5"/><path d="m5 12 7-7 7 7"/></svg>',
+      arrowDown: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14"/><path d="m19 12-7 7-7-7"/></svg>'
     };
 
     const navGroups = [
@@ -10778,6 +11118,90 @@
         option.updated_at = option.is_system ? _optionSeedDate : "15 Jul 2026 14:30";
       });
     });
+
+    // ===== Option Master audit infrastructure (BO-OPT-002d, section 16) =====
+    const OPTION_AUDIT_ACTOR = "สมชาย รักงาน";
+    const OPTION_AUDIT_ACCESS = "Super Admin";
+    function addOptionAuditEntry(option, entry) {
+      if (!option) return;
+      if (!Array.isArray(option.auditHistory)) option.auditHistory = [];
+      option.auditHistory.unshift({
+        action: entry.action,
+        actor: entry.actor || OPTION_AUDIT_ACTOR,
+        actor_access: entry.actor_access || OPTION_AUDIT_ACCESS,
+        before: entry.before || "",
+        after: entry.after || "",
+        reason: entry.reason || "",
+        timestamp: entry.timestamp || formatOptionTimestamp(new Date())
+      });
+    }
+    // Seed mock audit history demonstrating all 5 action types (section 16)
+    (function seedOptionAuditHistory() {
+      const findOpt = id => getOptionById(id);
+      // OPT-007 (new_old_stock, custom): full lifecycle ADD → DEACTIVATE → REACTIVATE
+      const nos = findOpt("OPT-007");
+      if (nos) {
+        nos.auditHistory = [
+          {
+            action: "OPTION_REACTIVATE",
+            actor: "สมชาย รักงาน",
+            actor_access: "Super Admin",
+            before: "Inactive",
+            after: "Active",
+            reason: "",
+            timestamp: "15 Jul 2026 14:30"
+          },
+          {
+            action: "OPTION_DEACTIVATE",
+            actor: "สมชาย รักงาน",
+            actor_access: "Super Admin",
+            before: "Active",
+            after: "Inactive",
+            reason: "พัก option ชั่วคราวเพื่อทบทวนคำอธิบาย NOS กับทีมงาน",
+            timestamp: "14 Jul 2026 11:20"
+          },
+          {
+            action: "OPTION_ADD",
+            actor: "สมชาย รักงาน",
+            actor_access: "Super Admin",
+            before: "",
+            after: `key=new_old_stock · label_en="New Old Stock (NOS)" · label_th="ของเก่าสภาพใหม่ (NOS)" · sort_order=70 · is_active=true`,
+            reason: "",
+            timestamp: "13 Jul 2026 16:05"
+          }
+        ];
+      }
+      // OPT-006 (fair): OPTION_EDIT (label_th refined)
+      const fair = findOpt("OPT-006");
+      if (fair) {
+        fair.auditHistory = [
+          {
+            action: "OPTION_EDIT",
+            actor: "สมชาย รักงาน",
+            actor_access: "Super Admin",
+            before: `label_th="พอใช้" · description_en="Heavy wear; usable but clearly worn"`,
+            after: `label_th="พอใช้" · description_en="Heavy wear or visible marks; should be clearly described"`,
+            reason: "",
+            timestamp: "15 Jul 2026 09:40"
+          }
+        ];
+      }
+      // OPT-001 (new_unworn): OPTION_REORDER (batch reorder in condition group)
+      const newUnworn = findOpt("OPT-001");
+      if (newUnworn) {
+        newUnworn.auditHistory = [
+          {
+            action: "OPTION_REORDER",
+            actor: "สมชาย รักงาน",
+            actor_access: "Super Admin",
+            before: "new_unworn: 20 · mint: 10 · excellent: 30",
+            after: "new_unworn: 10 · mint: 20 · excellent: 30",
+            reason: "",
+            timestamp: "15 Jul 2026 10:15"
+          }
+        ];
+      }
+    })();
 
     function getOptionGroup(groupId) {
       return optionMasterGroups.find(g => g.group_id === groupId) || null;
@@ -16150,7 +16574,7 @@
       }
       modal.classList.remove("show");
       modal.classList.remove("market-reference-drawer-open", "market-reference-drawer-closing");
-      modalCard?.classList.remove("article-preview-modal", "article-editor-confirm-modal", "category-editor-modal", "category-order-modal", "market-editor-modal", "market-reference-drawer", "board-report-phone-preview-modal", "option-editor-modal");
+      modalCard?.classList.remove("article-preview-modal", "article-editor-confirm-modal", "category-editor-modal", "category-order-modal", "market-editor-modal", "market-reference-drawer", "board-report-phone-preview-modal", "option-editor-modal", "option-order-modal", "option-audit-modal");
       document.body.classList.remove("asset-action-modal-open");
       document.querySelector("#user-action-modal-body").innerHTML = "";
     }
@@ -20188,6 +20612,7 @@
                   <summary title="Option actions">...</summary>
                   <div class="row-menu-list">
                     <button type="button" data-option-view-action="${o.id}">ดูรายละเอียด</button>
+                    <button type="button" data-option-audit-open="${o.id}">ดู Audit Log</button>
                     <button type="button" data-option-edit="${o.id}">แก้ไข</button>
                     ${deactivateButton}
                     ${deleteButton}
@@ -20199,6 +20624,7 @@
                   <summary title="Option actions">...</summary>
                   <div class="row-menu-list">
                     <button type="button" data-option-view-action="${o.id}">ดูรายละเอียด</button>
+                    <button type="button" data-option-audit-open="${o.id}">ดู Audit Log</button>
                     <button type="button" data-option-edit="${o.id}">แก้ไข</button>
                     <button type="button" data-option-reactivate="${o.id}">เปิดใช้งาน</button>
                     ${deleteButton}
@@ -20328,7 +20754,7 @@
       const modalCard = modal?.querySelector(".user-action-modal");
       const modalBody = document.querySelector("#user-action-modal-body");
       if (!modal || !modalCard || !modalBody) return;
-      modalCard.classList.remove("article-preview-modal", "article-editor-confirm-modal", "category-editor-modal", "category-order-modal", "market-editor-modal", "board-report-phone-preview-modal");
+      modalCard.classList.remove("article-preview-modal", "article-editor-confirm-modal", "category-editor-modal", "category-order-modal", "market-editor-modal", "board-report-phone-preview-modal", "option-order-modal", "option-audit-modal");
       modalCard.classList.add("option-editor-modal");
       const statusPill = option.is_active
         ? `<span class="pill green">Active</span>`
@@ -20356,6 +20782,7 @@
           </div>
           <div class="user-detail-actions">
             <button class="user-detail-action-btn" type="button" data-user-action-modal-close>ปิด</button>
+            <button class="user-detail-action-btn" type="button" data-option-audit-open="${option.id}">ดู Audit Log</button>
             <button class="user-detail-action-btn primary" type="button" data-option-edit="${option.id}">Edit</button>
           </div>
         </div>
@@ -20373,7 +20800,7 @@
       const modalCard = modal?.querySelector(".user-action-modal");
       const modalBody = document.querySelector("#user-action-modal-body");
       if (!modal || !modalCard || !modalBody) return;
-      modalCard.classList.remove("article-preview-modal", "article-editor-confirm-modal", "category-editor-modal", "category-order-modal", "market-editor-modal", "board-report-phone-preview-modal");
+      modalCard.classList.remove("article-preview-modal", "article-editor-confirm-modal", "category-editor-modal", "category-order-modal", "market-editor-modal", "board-report-phone-preview-modal", "option-order-modal", "option-audit-modal");
       modalCard.classList.add("option-editor-modal");
       modalBody.innerHTML = `
         <div class="user-action-layout">
@@ -20443,7 +20870,7 @@
       const modalCard = modal?.querySelector(".user-action-modal");
       const modalBody = document.querySelector("#user-action-modal-body");
       if (!modal || !modalCard || !modalBody) return;
-      modalCard.classList.remove("article-preview-modal", "article-editor-confirm-modal", "category-editor-modal", "category-order-modal", "market-editor-modal", "board-report-phone-preview-modal");
+      modalCard.classList.remove("article-preview-modal", "article-editor-confirm-modal", "category-editor-modal", "category-order-modal", "market-editor-modal", "board-report-phone-preview-modal", "option-order-modal", "option-audit-modal");
       modalCard.classList.add("option-editor-modal");
       modalBody.innerHTML = `
         <div class="user-action-layout">
@@ -20504,10 +20931,15 @@
       if (activeCount <= 1) return;
       option.is_active = false;
       option.updated_at = formatOptionTimestamp(new Date());
+      addOptionAuditEntry(option, {
+        action: "OPTION_DEACTIVATE",
+        before: "Active",
+        after: "Inactive",
+        reason: reason
+      });
       closeUserActionModal();
       renderOptionDetailRows();
       showSuccessToast(`ปิดใช้งาน option ${option.id} (${option.key}) แล้ว`);
-      // Mock audit: OPTION_DEACTIVATE with reason
     }
 
     function openOptionReactivateConfirmModal(optionId) {
@@ -20519,7 +20951,7 @@
       const modalCard = modal?.querySelector(".user-action-modal");
       const modalBody = document.querySelector("#user-action-modal-body");
       if (!modal || !modalCard || !modalBody) return;
-      modalCard.classList.remove("article-preview-modal", "article-editor-confirm-modal", "category-editor-modal", "category-order-modal", "market-editor-modal", "board-report-phone-preview-modal");
+      modalCard.classList.remove("article-preview-modal", "article-editor-confirm-modal", "category-editor-modal", "category-order-modal", "market-editor-modal", "board-report-phone-preview-modal", "option-order-modal", "option-audit-modal");
       modalCard.classList.add("option-editor-modal");
       modalBody.innerHTML = `
         <div class="user-action-layout">
@@ -20554,10 +20986,14 @@
       if (!option) return;
       option.is_active = true;
       option.updated_at = formatOptionTimestamp(new Date());
+      addOptionAuditEntry(option, {
+        action: "OPTION_REACTIVATE",
+        before: "Inactive",
+        after: "Active"
+      });
       closeUserActionModal();
       renderOptionDetailRows();
       showSuccessToast(`เปิดใช้งาน option ${option.id} (${option.key}) แล้ว`);
-      // Mock audit: OPTION_REACTIVATE
     }
 
     function openOptionAddModal(prevData = null) {
@@ -20567,7 +21003,7 @@
       const modalCard = modal?.querySelector(".user-action-modal");
       const modalBody = document.querySelector("#user-action-modal-body");
       if (!modal || !modalCard || !modalBody) return;
-      modalCard.classList.remove("article-preview-modal", "article-editor-confirm-modal", "category-editor-modal", "category-order-modal", "market-editor-modal", "board-report-phone-preview-modal");
+      modalCard.classList.remove("article-preview-modal", "article-editor-confirm-modal", "category-editor-modal", "category-order-modal", "market-editor-modal", "board-report-phone-preview-modal", "option-order-modal", "option-audit-modal");
       modalCard.classList.add("option-editor-modal");
       const isActiveValue = prevData ? String(prevData.is_active) : "true";
       modalBody.innerHTML = `
@@ -20626,7 +21062,7 @@
       const modalCard = modal?.querySelector(".user-action-modal");
       const modalBody = document.querySelector("#user-action-modal-body");
       if (!modal || !modalCard || !modalBody) return;
-      modalCard.classList.remove("article-preview-modal", "article-editor-confirm-modal", "category-editor-modal", "category-order-modal", "market-editor-modal", "board-report-phone-preview-modal");
+      modalCard.classList.remove("article-preview-modal", "article-editor-confirm-modal", "category-editor-modal", "category-order-modal", "market-editor-modal", "board-report-phone-preview-modal", "option-order-modal", "option-audit-modal");
       modalCard.classList.add("option-editor-modal");
       const keyField = `<input name="key" value="${escapeOptionField(src.key || option.key)}" readonly data-option-key />`;
       modalBody.innerHTML = `
@@ -20763,7 +21199,7 @@
       const modalCard = modal?.querySelector(".user-action-modal");
       const modalBody = document.querySelector("#user-action-modal-body");
       if (!modal || !modalCard || !modalBody) return;
-      modalCard.classList.remove("article-preview-modal", "article-editor-confirm-modal", "category-editor-modal", "category-order-modal", "market-editor-modal", "board-report-phone-preview-modal");
+      modalCard.classList.remove("article-preview-modal", "article-editor-confirm-modal", "category-editor-modal", "category-order-modal", "market-editor-modal", "board-report-phone-preview-modal", "option-order-modal", "option-audit-modal");
       modalCard.classList.add("option-editor-modal");
       const previewId = getNextOptionId();
       modalBody.innerHTML = `
@@ -20802,7 +21238,7 @@
       const modalCard = modal?.querySelector(".user-action-modal");
       const modalBody = document.querySelector("#user-action-modal-body");
       if (!modal || !modalCard || !modalBody) return;
-      modalCard.classList.remove("article-preview-modal", "article-editor-confirm-modal", "category-editor-modal", "category-order-modal", "market-editor-modal", "board-report-phone-preview-modal");
+      modalCard.classList.remove("article-preview-modal", "article-editor-confirm-modal", "category-editor-modal", "category-order-modal", "market-editor-modal", "board-report-phone-preview-modal", "option-order-modal", "option-audit-modal");
       modalCard.classList.add("option-editor-modal");
       const changed = (field) => String(original[field] ?? "") !== String(data[field] ?? "");
       const row = (label, field, displayFn) => {
@@ -20862,6 +21298,11 @@
       };
       g.options.push(newOption);
       g.options.sort((a, b) => (a.sort_order || 0) - (b.sort_order || 0) || a.key.localeCompare(b.key));
+      addOptionAuditEntry(newOption, {
+        action: "OPTION_ADD",
+        before: "",
+        after: `key=${data.key} · label_en="${data.label_en}" · label_th="${data.label_th}" · sort_order=${newOption.sort_order} · is_active=${data.is_active}`
+      });
       closeUserActionModal();
       optionDetailPage = 1;
       renderOptionDetailRows();
@@ -20874,6 +21315,7 @@
       const option = getOptionByKey(g.group_id, originalKey);
       if (!option) return;
       const keyChanged = data.key !== originalKey;
+      const before = `key=${option.key} · label_en="${option.label_en}" · label_th="${option.label_th}" · description_en="${option.description_en || ""}" · is_active=${option.is_active}`;
       Object.assign(option, {
         key: data.key,
         label_en: data.label_en,
@@ -20882,10 +21324,247 @@
         is_active: data.is_active,
         updated_at: formatArticleActionTimestamp()
       });
+      const after = `key=${option.key} · label_en="${option.label_en}" · label_th="${option.label_th}" · description_en="${option.description_en || ""}" · is_active=${option.is_active}`;
+      addOptionAuditEntry(option, {
+        action: "OPTION_EDIT",
+        before,
+        after
+      });
       g.options.sort((a, b) => (a.sort_order || 0) - (b.sort_order || 0) || a.key.localeCompare(b.key));
       closeUserActionModal();
       renderOptionDetailRows();
       showSuccessToast(`${g.group}: บันทึกการแก้ไข option "${option.id}" แล้ว${keyChanged ? ` (เปลี่ยน key จาก "${originalKey}")` : ""}`);
+    }
+
+    // ===== Option Reorder Modal (BO-OPT-002d, section 12.1) =====
+    function getOrderedActiveOptions(groupId) {
+      const g = getOptionGroup(groupId);
+      if (!g) return [];
+      return g.options
+        .filter(o => o.is_active)
+        .sort((a, b) => (a.sort_order || 0) - (b.sort_order || 0) || a.key.localeCompare(b.key));
+    }
+    function renderOptionReorderModal() {
+      const g = getOptionGroup(activeOptionGroup);
+      if (!g) return;
+      const activeCount = getOptionGroupActiveOptions(g.group_id);
+      if (activeCount < 2) return; // safeguard: only show when ≥2 active options
+      const modal = document.querySelector("#user-action-modal");
+      const modalCard = modal?.querySelector(".user-action-modal");
+      const modalBody = document.querySelector("#user-action-modal-body");
+      if (!modal || !modalCard || !modalBody) return;
+      modalCard.classList.remove(
+        "article-preview-modal", "article-editor-confirm-modal", "category-editor-modal",
+        "category-order-modal", "market-editor-modal", "board-report-phone-preview-modal", "option-editor-modal"
+      );
+      modalCard.classList.add("option-order-modal");
+      const rows = getOrderedActiveOptions(g.group_id);
+      modalBody.innerHTML = `
+        <div class="user-action-head">
+          <div>
+            <h2 id="user-action-modal-title">จัดเรียง Option ใน ${escapeOptionField(g.display_name_en)}</h2>
+            <p>ลากเพื่อปรับลำดับการแสดงผลใน FO form/filter</p>
+          </div>
+          <button class="btn user-action-close" type="button" data-user-action-modal-close aria-label="Close modal" title="Close">${iconSvg.close}</button>
+        </div>
+        <div class="option-order-list" data-option-order-list data-option-order-group="${escapeOptionField(g.group_id)}">
+          ${rows.map((option, index) => `
+            <div class="option-order-item" draggable="true" tabindex="0" data-option-order-item="${escapeOptionField(option.id)}">
+              <span class="option-order-handle" aria-hidden="true">${iconSvg.grip}</span>
+              <span class="option-order-copy">
+                <strong>${escapeOptionField(option.label_en)} (${escapeOptionField(option.key)})</strong>
+                <span>${escapeOptionField(option.label_th)} · Sort ${option.sort_order}</span>
+              </span>
+              <span class="option-order-arrows">
+                <button class="option-order-arrow" type="button" data-option-order-up aria-label="เลื่อนขึ้น" title="เลื่อนขึ้น"${index === 0 ? " disabled" : ""}>${iconSvg.arrowUp}</button>
+                <button class="option-order-arrow" type="button" data-option-order-down aria-label="เลื่อนลง" title="เลื่อนลง"${index === rows.length - 1 ? " disabled" : ""}>${iconSvg.arrowDown}</button>
+              </span>
+              <span class="option-order-index">#${index + 1}</span>
+            </div>
+          `).join("")}
+        </div>
+        <div class="user-detail-actions">
+          <button class="user-detail-action-btn" type="button" data-user-action-modal-close>ยกเลิก</button>
+          <button class="user-detail-action-btn primary" type="button" data-option-order-save>บันทึกลำดับ</button>
+        </div>
+      `;
+      showUserActionModal();
+    }
+    function refreshOptionOrderIndexes() {
+      document.querySelectorAll("[data-option-order-item]").forEach((item, index) => {
+        const indexNode = item.querySelector(".option-order-index");
+        if (indexNode) indexNode.textContent = `#${index + 1}`;
+        const upBtn = item.querySelector("[data-option-order-up]");
+        const downBtn = item.querySelector("[data-option-order-down]");
+        const total = document.querySelectorAll("[data-option-order-item]").length;
+        if (upBtn) upBtn.disabled = index === 0;
+        if (downBtn) downBtn.disabled = index === total - 1;
+      });
+    }
+    function getOptionOrderDragAfterElement(list, y) {
+      const draggableItems = [...list.querySelectorAll("[data-option-order-item]:not(.dragging)")];
+      return draggableItems.reduce((closest, item) => {
+        const box = item.getBoundingClientRect();
+        const offset = y - box.top - box.height / 2;
+        if (offset < 0 && offset > closest.offset) return { offset, element: item };
+        return closest;
+      }, { offset: Number.NEGATIVE_INFINITY, element: null }).element;
+    }
+    function moveOptionOrderItem(item, direction) {
+      if (!item) return;
+      const list = item.closest("[data-option-order-list]");
+      if (!list) return;
+      const items = [...list.querySelectorAll("[data-option-order-item]")];
+      const currentIndex = items.indexOf(item);
+      if (currentIndex < 0) return;
+      const targetIndex = direction === "up" ? currentIndex - 1 : currentIndex + 1;
+      if (targetIndex < 0 || targetIndex >= items.length) return;
+      const targetItem = items[targetIndex];
+      if (direction === "up") {
+        list.insertBefore(item, targetItem);
+      } else {
+        list.insertBefore(item, targetItem.nextSibling);
+      }
+      refreshOptionOrderIndexes();
+    }
+    function saveOptionReorderFromModal() {
+      const g = getOptionGroup(activeOptionGroup);
+      if (!g) return;
+      const orderedIds = [...document.querySelectorAll("[data-option-order-item]")]
+        .map(item => item.dataset.optionOrderItem)
+        .filter(Boolean);
+      if (!orderedIds.length) return;
+      // Capture before sort_order for audit diff
+      const beforeMap = new Map();
+      g.options.forEach(o => beforeMap.set(o.id, o.sort_order));
+      // Reorder active options; inactive options keep their sort_order
+      const activeOrdered = orderedIds
+        .map(id => getOptionById(id))
+        .filter(Boolean)
+        .filter(o => o.is_active);
+      // Detect change: compare new sequential order with current
+      const currentOrder = getOrderedActiveOptions(g.group_id).map(o => o.id);
+      const orderChanged = orderedIds.some((id, i) => currentOrder[i] !== id);
+      // Apply sequential sort_order (10, 20, 30, ...)
+      activeOrdered.forEach((option, index) => {
+        option.sort_order = (index + 1) * 10;
+        option.updated_at = formatOptionTimestamp(new Date());
+      });
+      // Re-sort group options (active + inactive together) by sort_order then key
+      g.options.sort((a, b) => (a.sort_order || 0) - (b.sort_order || 0) || a.key.localeCompare(b.key));
+      // Audit: OPTION_REORDER once per save, only if order changed
+      if (orderChanged) {
+        const beforeParts = [];
+        const afterParts = [];
+        currentOrder.forEach((id, i) => {
+          const opt = getOptionById(id);
+          if (opt) beforeParts.push(`${opt.key}: ${beforeMap.get(id)}`);
+        });
+        orderedIds.forEach((id, i) => {
+          const opt = getOptionById(id);
+          if (opt) afterParts.push(`${opt.key}: ${(i + 1) * 10}`);
+        });
+        // Record audit on the first option that moved (representative entry for the batch)
+        const firstMovedId = orderedIds.find((id, i) => currentOrder[i] !== id);
+        const firstMoved = firstMovedId ? getOptionById(firstMovedId) : null;
+        if (firstMoved) {
+          addOptionAuditEntry(firstMoved, {
+            action: "OPTION_REORDER",
+            before: beforeParts.join(" · "),
+            after: afterParts.join(" · ")
+          });
+        }
+      }
+      closeUserActionModal();
+      optionDetailPage = 1;
+      renderOptionDetailRows();
+      showSuccessToast(orderChanged
+        ? `บันทึกลำดับ option ในกลุ่ม ${g.display_name_en} แล้ว`
+        : `ไม่มีการเปลี่ยนลำดับ — ไม่บันทึก audit`);
+    }
+
+    // ===== Option Audit Log Modal (BO-OPT-002d, section 16) =====
+    const OPTION_AUDIT_ACTION_META = {
+      OPTION_ADD: { label: "Option Add", cls: "add" },
+      OPTION_EDIT: { label: "Option Edit", cls: "edit" },
+      OPTION_DEACTIVATE: { label: "Option Deactivate", cls: "deactivate" },
+      OPTION_REACTIVATE: { label: "Option Reactivate", cls: "reactivate" },
+      OPTION_REORDER: { label: "Option Reorder", cls: "reorder" }
+    };
+    function renderOptionAuditDiff(entry) {
+      if (!entry.before && !entry.after) return "";
+      const beforeText = entry.before ? escapeOptionField(entry.before) : "—";
+      const afterText = entry.after ? escapeOptionField(entry.after) : "—";
+      return `
+        <div class="option-audit-diff">
+          <div class="option-audit-diff-side option-audit-diff-before">
+            <span class="option-audit-diff-tag">Before</span>
+            <span class="option-audit-diff-value">${beforeText}</span>
+          </div>
+          <span class="option-audit-diff-arrow">→</span>
+          <div class="option-audit-diff-side option-audit-diff-after">
+            <span class="option-audit-diff-tag">After</span>
+            <span class="option-audit-diff-value">${afterText}</span>
+          </div>
+        </div>
+      `;
+    }
+    function openOptionAuditLogModal(optionId) {
+      const option = getOptionById(optionId);
+      if (!option) return;
+      const g = getOptionGroupByOptionId(optionId);
+      if (!g) return;
+      const modal = document.querySelector("#user-action-modal");
+      const modalCard = modal?.querySelector(".user-action-modal");
+      const modalBody = document.querySelector("#user-action-modal-body");
+      if (!modal || !modalCard || !modalBody) return;
+      modalCard.classList.remove(
+        "article-preview-modal", "article-editor-confirm-modal", "category-editor-modal",
+        "category-order-modal", "market-editor-modal", "board-report-phone-preview-modal", "option-editor-modal",
+        "option-order-modal"
+      );
+      modalCard.classList.add("option-audit-modal");
+      const history = Array.isArray(option.auditHistory) ? option.auditHistory : [];
+      const statusPill = option.is_active
+        ? `<span class="pill green">Active</span>`
+        : `<span class="pill gray">Inactive</span>`;
+      modalBody.innerHTML = `
+        <div class="user-action-head">
+          <div>
+            <h2 id="user-action-modal-title">Audit Log</h2>
+            <p>${escapeOptionField(option.id)} (${escapeOptionField(option.key)}) ในกลุ่ม ${escapeOptionField(g.display_name_en)}</p>
+          </div>
+          <button class="btn user-action-close" type="button" data-user-action-modal-close aria-label="Close modal" title="Close">${iconSvg.close}</button>
+        </div>
+        <div class="option-audit-summary">
+          <div class="option-confirm-row"><span class="option-confirm-label">Option ID</span><span class="option-confirm-value">${escapeOptionField(option.id)}</span></div>
+          <div class="option-confirm-row"><span class="option-confirm-label">Key</span><span class="option-confirm-value">${escapeOptionField(option.key)}</span></div>
+          <div class="option-confirm-row"><span class="option-confirm-label">Label (EN)</span><span class="option-confirm-value">${escapeOptionField(option.label_en)}</span></div>
+          <div class="option-confirm-row"><span class="option-confirm-label">Status</span><span class="option-confirm-value">${statusPill}</span></div>
+        </div>
+        <div class="option-audit-list">
+          ${history.length ? history.map(entry => {
+            const meta = OPTION_AUDIT_ACTION_META[entry.action] || { label: entry.action, cls: "edit" };
+            return `
+              <div class="option-audit-entry">
+                <div class="option-audit-entry-head">
+                  <span class="option-audit-action ${meta.cls}"><span class="option-audit-dot"></span>${escapeOptionField(meta.label)}</span>
+                  <span class="option-audit-time">${escapeOptionField(entry.timestamp || "-")}</span>
+                </div>
+                <div class="option-audit-meta">
+                  <div class="option-audit-meta-inline"><span class="option-audit-meta-label">Actor :</span> <span class="option-audit-meta-value">${escapeOptionField(entry.actor || "-")} (${escapeOptionField(entry.actor_access || "-")})</span></div>
+                  ${entry.reason ? `<div class="option-audit-meta-row"><span class="option-audit-meta-label">Reason</span><span class="option-audit-meta-value">${escapeOptionField(entry.reason)}</span></div>` : ""}
+                </div>
+                ${renderOptionAuditDiff(entry)}
+              </div>
+            `;
+          }).join("") : `<div class="option-audit-empty">ยังไม่มีประวัติ audit สำหรับ option นี้</div>`}
+        </div>
+        <div class="user-detail-actions">
+          <button class="user-detail-action-btn primary" type="button" data-user-action-modal-close>ปิด</button>
+        </div>
+      `;
+      showUserActionModal(true);
     }
 
     let pendingOptionFormData = null;
@@ -25750,7 +26429,35 @@
         return;
       }
       const optionReorderOpen = event.target.closest("[data-option-reorder-open]");
-      if (optionReorderOpen) return;
+      if (optionReorderOpen) {
+        renderOptionReorderModal();
+        return;
+      }
+      // Option Reorder Modal: up/down arrow buttons (BO-OPT-002d)
+      const optionOrderUp = event.target.closest("[data-option-order-up]");
+      if (optionOrderUp) {
+        const item = optionOrderUp.closest("[data-option-order-item]");
+        if (item) moveOptionOrderItem(item, "up");
+        return;
+      }
+      const optionOrderDown = event.target.closest("[data-option-order-down]");
+      if (optionOrderDown) {
+        const item = optionOrderDown.closest("[data-option-order-item]");
+        if (item) moveOptionOrderItem(item, "down");
+        return;
+      }
+      // Option Reorder Modal: save button (BO-OPT-002d)
+      const optionOrderSave = event.target.closest("[data-option-order-save]");
+      if (optionOrderSave) {
+        saveOptionReorderFromModal();
+        return;
+      }
+      // Option Audit Log: open from view modal / action menu (BO-OPT-002d)
+      const optionAuditOpen = event.target.closest("[data-option-audit-open]");
+      if (optionAuditOpen) {
+        openOptionAuditLogModal(optionAuditOpen.dataset.optionAuditOpen);
+        return;
+      }
       // Option "View Detail" from action menu
       const optionViewAction = event.target.closest("[data-option-view-action]");
       if (optionViewAction) {
@@ -27127,6 +27834,44 @@
       item.classList.remove("dragging");
       document.querySelectorAll("[data-category-order-item].drag-over").forEach(row => row.classList.remove("drag-over"));
       refreshCategoryOrderIndexes();
+    });
+    // Option Reorder Modal drag-and-drop (BO-OPT-002d, section 12.1)
+    document.addEventListener("dragstart", event => {
+      const item = event.target.closest("[data-option-order-item]");
+      if (!item) return;
+      item.classList.add("dragging");
+      event.dataTransfer.effectAllowed = "move";
+      event.dataTransfer.setData("text/plain", item.dataset.optionOrderItem || "");
+    });
+    document.addEventListener("dragover", event => {
+      const list = event.target.closest("[data-option-order-list]");
+      if (!list) return;
+      event.preventDefault();
+      const dragging = list.querySelector(".dragging");
+      if (!dragging) return;
+      const afterElement = getOptionOrderDragAfterElement(list, event.clientY);
+      list.querySelectorAll(".drag-over").forEach(item => item.classList.remove("drag-over"));
+      if (afterElement) {
+        afterElement.classList.add("drag-over");
+        list.insertBefore(dragging, afterElement);
+      } else {
+        list.appendChild(dragging);
+      }
+      refreshOptionOrderIndexes();
+    });
+    document.addEventListener("drop", event => {
+      const list = event.target.closest("[data-option-order-list]");
+      if (!list) return;
+      event.preventDefault();
+      list.querySelectorAll(".drag-over").forEach(item => item.classList.remove("drag-over"));
+      refreshOptionOrderIndexes();
+    });
+    document.addEventListener("dragend", event => {
+      const item = event.target.closest("[data-option-order-item]");
+      if (!item) return;
+      item.classList.remove("dragging");
+      document.querySelectorAll("[data-option-order-item].drag-over").forEach(row => row.classList.remove("drag-over"));
+      refreshOptionOrderIndexes();
     });
     document.addEventListener("wheel", event => {
       if (event.target.matches("[data-calendar-only]")) event.preventDefault();
