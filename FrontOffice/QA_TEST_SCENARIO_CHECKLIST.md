@@ -384,14 +384,14 @@ And retry ต้องโหลด next page เท่านั้น ไม่ 
 
 Given Member เห็น Feed Card ของ Asset คนอื่น  
 When Member เปิดเมนูสามจุด  
-Then ต้องเห็น Hide this asset, Report Asset และ Block User  
-And ต้องไม่เห็น Comment หรือ Share direct action จาก Feed
+Then ต้องเห็น Share Asset, Hide this asset, Report Asset และ Block User  
+And ต้องไม่เห็น Comment direct action จาก Feed
 
 ## QA-FEED-011A: Owner Feed More Menu Actions
 
 Given Owner เห็น Feed Card ของ Asset ตัวเอง status `Sale`
 When Owner เปิดเมนูสามจุด
-Then ต้องเห็น `Edit asset`, `Edit provenance`, `Mark as sold`, `Change status`, `Delete asset`
+Then ต้องเห็น `Share Asset`, `Edit asset`, `Edit provenance`, `Mark as sold`, `Change status`, `Delete asset`
 And ต้องไม่เห็น `Hide this asset`, `Report Asset` หรือ `Block User`
 
 ## QA-FEED-011B: Owner Feed Change Status Removes Card

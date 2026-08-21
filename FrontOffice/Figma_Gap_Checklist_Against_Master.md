@@ -218,8 +218,8 @@ Figma มี coverage ของ flow หลักค่อนข้างมา�
 | Priority | Figma Gap | Master Baseline | Action |
 | --- | --- | --- | --- |
 | Must Fix | Comment UI ต้องรองรับการตอบโต้แบบ IG โดยไม่กลายเป็น forum thread | Comment รองรับ one-level replies ใต้ comment หลักเท่านั้น และไม่รองรับ reply ซ้อนหลายระดับ | ปรับ comment UI ให้แสดง reply ได้ 1 ชั้นใต้ comment หลัก และป้องกัน reply ต่อจาก reply |
-| Must Fix | Feed อาจสื่อว่า Comment / Share ทำจาก Feed ได้ | Comment และ Share ต้องทำผ่าน Asset Detail เท่านั้น | ตัด direct comment/share action จาก Feed หรือให้กดแล้วเปิด Asset Detail |
-| High | Guest state สำหรับ Like / Comment / Follow ยังไม่ครบ | Guest กด action ที่ต้อง Login ต้องเห็น Global Login Required Dialog | เพิ่ม guest dialog/state ทุก social action |
+| Must Fix | Feed อาจสื่อว่า Comment ทำจาก Feed ได้ | Comment ต้องทำผ่าน Asset Detail เท่านั้น แต่ Share ทำได้จาก Feed, Asset Detail และ Profile grid | ตัด direct comment action จาก Feed หรือให้กดแล้วเปิด Asset Detail และเพิ่ม Share Asset action บน Feed Card / Profile grid |
+| High | Guest state สำหรับ Like / Comment / Follow / Share ยังไม่ครบ | Guest กด action ที่ต้อง Login ต้องเห็น Global Login Required Dialog; Guest Share ไม่ต้อง Login | เพิ่ม guest dialog/state ทุก social action ที่ต้อง login และ guest share state ที่ไม่ต้อง login |
 | High | Like / Unlike ต้อง sync Favorites | Like สำเร็จต้องเพิ่ม Favorites, Unlike ต้องลบออก | เพิ่ม state note หรือ interaction mapping กับ Favorites |
 | High | Following Feed ต้องแสดงเฉพาะ Sale | Following Feed แสดง Asset Sale ของ user ที่ follow | ตรวจ Figma/annotation ไม่ให้ Show, Hide, Sold โผล่ |
 | Medium | Owner Like Asset ตัวเองอาจถูก block ใน UI | Owner สามารถ Like Asset ตัวเองได้ | ตรวจ owner detail/feed state |

@@ -90,7 +90,8 @@ V1 ไม่ใช่ full social network และไม่รองรับ R
 - Unfollow User
 - Followers / Following count
 - Following Feed integration
-- Share Asset จาก Asset Detail
+- Share Asset จาก Feed, Asset Detail และ Profile asset grid
+- Share Profile จาก Owner Profile และ Public Profile
 - Notification สำหรับ Like, Comment, Follow
 - Guest Login Required Dialog สำหรับ social actions
 
@@ -104,7 +105,7 @@ V1 ไม่ใช่ full social network และไม่รองรับ R
 - Repost
 - Story
 - Social activity feed แยก
-- Share จาก Feed โดยตรง (Feed ไม่รองรับ Comment โดยตรง)
+- Comment จาก Feed โดยตรง (Comment ทำได้ที่ Asset Detail เท่านั้น; Share ทำได้จาก Feed)
 
 ---
 
@@ -112,9 +113,10 @@ V1 ไม่ใช่ full social network และไม่รองรับ R
 
 | Screen / Component | Description |
 | --- | --- |
-| Feed Card | Like/Unlike, Like Count, Comment Count, เปิด Asset Detail |
+| Feed Card | Like/Unlike, Like Count, Comment Count, Share Asset, เปิด Asset Detail |
 | Asset Detail | Like, Comment, Share, Comment Section, Report Comment, Follow owner |
-| Public Profile | Follow / Unfollow |
+| Profile Asset Grid | Share Asset (Owner: Sale/Show; Public: Sale/Show), เปิด Asset Detail |
+| Public Profile | Follow / Unfollow, Share Profile |
 | Following Feed | Asset Sale ของ user ที่กำลัง Follow |
 | Notification | Like, Comment, Follow destination |
 | Global Login Required Dialog | แสดงเมื่อ Guest กด social action |
@@ -268,7 +270,7 @@ Asset Detail
 - Feed Card แสดง Like Count และ Comment Count ได้
 - Feed รองรับ Like / Unlike
 - Feed ไม่รองรับ Comment จาก Feed โดยตรง
-- Feed ไม่รองรับ Share จาก Feed โดยตรง
+- Feed รองรับ Share Asset โดยตรงจาก Feed Card และ Feed more menu
 - กด Comment Count หรือ comment entry จาก Feed ต้องเปิด Asset Detail ไม่ใช่เปิด composer บน Feed
 
 ## Comment Rules

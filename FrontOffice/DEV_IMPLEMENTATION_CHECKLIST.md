@@ -302,12 +302,18 @@ Purpose:
 - [ ] ไม่มี Edit Comment ใน V1
 - [ ] Follow/Unfollow user ได้
 - [ ] Following Feed ใช้ follow relation ที่ไม่ถูก block
-- [ ] Share Asset ต้องทำผ่าน Asset Detail
+- [ ] Share Asset ทำได้จาก Feed, Asset Detail และ Profile asset grid (ไม่จำกัด Asset Detail only); Comment ยังคงทำได้จาก Asset Detail เท่านั้น
+- [ ] Share Profile ทำได้จาก Owner Profile และ Public Profile
 - [ ] Share public deep link ได้โดยไม่ต้อง Login ตาม public share rule
 - [ ] Share ใช้ system share sheet เมื่อ platform รองรับ
 - [ ] Share fallback เป็น copy public deep link
 - [ ] Share ไม่สร้าง Notification Center item
 - [ ] Public deep link ต้อง validate status, permission, deleted state และ block state เมื่อเปิด
+- [ ] Shared Asset deep link ของสถานะ Hide/Sold โดย non-owner แสดง Permission Denied / Unavailable state; Owner เห็น Owner-only detail
+- [ ] Shared Profile deep link ของ user ที่ถูก block/ไม่มีอยู่แสดง Unavailable / User Not Found state
+- [ ] Back button บนหน้าที่เปิดจาก external deep link (ไม่มี navigation history) fallback ไป Feed
+- [ ] Main navigation (bottom tab/menu) ใช้งานได้ต่อหลังเปิด deep link ทั้ง Guest และ Login
+- [ ] Guest ที่เปิด deep link แล้วกด action ที่ต้อง Login เจอ Global Login Required Dialog
 
 ---
 

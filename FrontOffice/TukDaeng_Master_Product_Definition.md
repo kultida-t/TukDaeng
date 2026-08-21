@@ -853,6 +853,7 @@ Feature ที่ Guest ใช้ได้โดยไม่ต้อง Login:
 
 - Read Feed / Search / Public Asset Detail / Public Profile / Board Article
 - Share public Asset deep link
+- Share public Profile deep link
 - Share public Article deep link
 
 ### Deleted Asset
