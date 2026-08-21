@@ -175,18 +175,24 @@ Asset status rule:
 
 ## 9. Offer Detail
 
-Offer detail ต้องแสดง:
+Prototype baseline ปัจจุบันของ Offer Detail เป็น read-only detail view แบบย่อ โดยยึดหน้าจอ `Prototypes/bo-prototype.html` เป็น source of truth:
 
-- Offer summary: ID, status, price, created/updated time, source surface
-- Asset summary: thumbnail, brand, model, reference, current status, asking price
-- Buyer summary: user ID, display name, account status, report/suspension signals
-- Owner summary: user ID, display name, account status, report/suspension signals
-- Status timeline: created, paused/resumed, accepted/rejected/cancelled/invalidated, actor/source, timestamp, reason
-- FO display state: pending action availability, paused copy, final card copy, notification destination
-- Related chat room link
-- Offer history ของ asset เดียวกัน
+- Header แสดง Offer ID, asset reference, offer status และ offer amount
+- Offered Asset section แสดง Offer ID, Asset ID, Asset Name, Offer Amount, Asking Price, Asset Status และ Created time
+- Offered Asset section มีปุ่ม `View Asset` เพื่อ drill-in ไป Asset Detail ตาม permission
+- Buyer / Owner section แสดง Buyer User ID, Buyer name, Owner User ID และ Owner name
+- Offer History section แสดง Date / Time, Actor, Action, Status และ Reason / Note
+
+ข้อมูลต่อไปนี้ยังไม่ถูก render บน prototype Offer Detail ปัจจุบัน และไม่ควรถือว่าเป็นหน้าจอที่ implement แล้วจนกว่าจะมี task แยก:
+
+- Full offer summary ที่รวม updated time, source surface และ last action/source
+- Asset summary แบบเต็มที่แยก thumbnail, brand, model, reference และ owner summary ครบทุก field
+- Buyer/Owner account status, report count, suspension signal และ verification state
+- Status timeline แบบแยก created/paused/resumed/accepted/rejected/cancelled/invalidated events
+- FO display state
+- Related chat room context/link
 - Notification delivery status
-- Audit events ที่เกี่ยวข้อง
+- Audit events visibility
 
 Admin ห้ามแก้ offer price, buyer, owner หรือ message content โดยตรง ถ้าต้องแก้ข้อมูลผิดพลาดให้ใช้ correction workflow ที่มี audit และ Product approval แยกต่างหาก
 
@@ -195,11 +201,9 @@ Admin ห้ามแก้ offer price, buyer, owner หรือ message conte
 | Action | Allowed Roles | Requirement |
 | --- | --- | --- |
 | View offer | Admin | Module permission required |
-| View related chat context | Admin | Read-only, ต้อง respect privacy/sensitive masking |
-| Open asset detail | Admin | Route to Asset Management detail ตาม permission |
-| Open buyer/owner detail | Admin | Route to User Management detail ตาม permission |
-| Export offer history | Admin | Read-only export, audit export event และ controlled access |
-| View notification delivery | Admin | Read-only; retry อยู่ใน Notification module |
+| Open asset detail | Admin | Prototype exposes `View Asset`; route to Asset Management detail ตาม permission |
+
+Prototype ปัจจุบันยังไม่มี action/control สำหรับ related chat context, buyer/owner detail drill-in, export offer history หรือ notification delivery บน Offer Detail
 
 Bulk action สำหรับ offer ไม่เปิดใน V1 เพราะเมนูนี้เป็น read-only overview
 
@@ -286,14 +290,14 @@ Audit action ขั้นต่ำ:
 | ID | Criteria |
 | --- | --- |
 | AC-BO-OFFER-001 | Offer list แสดง search/filter/status ครบและใช้ `Rejected` ไม่ใช้ `Declined` ใน UI ใหม่ |
-| AC-BO-OFFER-002 | Offer detail แสดง asset, buyer, owner, timeline, related chat context และ notification delivery ครบ |
+| AC-BO-OFFER-002 | Prototype Offer Detail แสดง Offered Asset, Buyer/Owner แบบย่อ และ Offer History ตามหน้าจอปัจจุบัน |
 | AC-BO-OFFER-003 | Offer Management V1 เป็น read-only และไม่มีปุ่ม accept/decline/cancel/force-expire/invalidate |
 | AC-BO-OFFER-004 | Asset lifecycle impact ต้องสะท้อน status ถูกต้อง: deleted/owner-hide -> `Cancelled`, sold -> `Rejected`, auto-hidden/temp-hidden -> `Paused`, permanent hide -> `Invalidated` |
 | AC-BO-OFFER-005 | User report ที่มาจาก chat ต้องอยู่ใน `User Management > Reported Users` และแสดง chat/offer เป็น context โดยไม่สื่อว่า FO มี `Report chat` แยกต่างหาก |
 | AC-BO-OFFER-006 | Admin ไม่สามารถ edit user message หรือ offer price โดยตรง |
 | AC-BO-OFFER-007 | FO Delete Chat เป็น user-level visibility เท่านั้น BO ยัง retain record ตาม retention policy |
 | AC-BO-OFFER-008 | Pending offer dependency ใช้ block account deletion ได้ |
-| AC-BO-OFFER-009 | Export offer history จำกัด permission และ audit export event |
+| AC-BO-OFFER-009 | Export offer history ยังไม่ปรากฏบน prototype Offer Detail ปัจจุบัน; ถ้าเพิ่มภายหลังต้องจำกัด permission และ audit export event |
 | AC-BO-OFFER-010 | Responsive layout ใช้งานได้ที่ mobile-width, tablet และ desktop |
 
 ## 18. Open Decisions

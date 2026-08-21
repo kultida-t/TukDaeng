@@ -438,8 +438,8 @@ Quick actions by status:
 
 | Asset Status | Owner Quick Actions |
 |---|---|
-| Sale | Edit asset, Edit provenance, Mark as sold, Change status, Delete asset |
-| Show | Edit asset, Edit purchase history, Change status, Delete asset |
+| Sale | Share asset, Edit asset, Edit provenance, Mark as sold, Change status, Delete asset |
+| Show | Share asset, Edit asset, Edit purchase history, Change status, Delete asset |
 | Hide | Edit asset, Edit purchase history, Change status, Delete asset |
 | Sold | View sale history, View provenance |
 
@@ -447,6 +447,7 @@ Rules:
 
 - `Sold` ต้องไม่มี `Delete asset`, `Edit asset`, `Change status` หรือ `Mark as sold`
 - `Sold` quick actions เป็น read-only entry เท่านั้น
+- `Hide` ต้องไม่มี `Share asset` เพราะ `Hide` ไม่ใช่ public content (ดู Share Asset From Profile Grid Rule)
 - `Mark as sold` แสดงเฉพาะ `Sale`
 - `Consignment` provenance ใช้ได้เฉพาะ `Sale`
 - `Show` และ `Hide` ต้องแก้ได้เฉพาะ `Owner (Asset)` / Purchase History
@@ -474,6 +475,38 @@ Profile Share Sheet ใช้ได้ทั้ง Owner Profile และ Publi
 - Link ที่แชร์ต้องเป็น public profile deep link และต้อง validate blocked/unavailable profile เมื่อเปิด
 - Guest สามารถ Share Public Profile ได้โดยไม่ต้อง Login เพราะเป็น public share action
 - Guest share ต้องไม่เปิดสิทธิ์ Follow, Report User, Block User, Chat, Make Offer หรือ private profile/portfolio data
+
+## Share Asset From Profile Grid Rule
+
+Share Asset จาก Profile asset grid เป็น public share action สำหรับ public Asset:
+
+- Owner Profile: Share asset อยู่ใน quick action menu (`...`) ของ asset card สำหรับ Asset สถานะ `Sale` และ `Show` เท่านั้น
+- Public Profile: Share asset ต้องเข้าถึงได้จาก asset card ของ Asset สถานะ `Sale` และ `Show` (เช่น long-press, share icon หรือ card action)
+- `Hide` และ `Sold` ไม่มี Share asset เพราะไม่ใช่ public content; `Hide` quick action ของ Owner ไม่มี Share asset และ `Sold` quick action เป็น read-only
+- Guest สามารถ Share asset จาก Public Profile grid ได้โดยไม่ต้อง Login
+- Primary channel คือ system share sheet เมื่อ platform รองรับ
+- Fallback คือ copy public deep link พร้อม copy success state
+- Share ไม่สร้าง Notification Center item
+- Shared deep link เปิดแล้วไป Asset Detail และต้อง validate asset status, deleted state, permission และ block state (ดู [05_ASSET_DETAIL_MODULE.md](05_ASSET_DETAIL_MODULE.md) Deep Link Display State Rule)
+- สำหรับ navigation หลังเปิด shared deep link ดู [00_NAVIGATION_AND_CROSS_MODULE_FLOW.md](00_NAVIGATION_AND_CROSS_MODULE_FLOW.md) Back Button And Main Navigation After Deep Link
+
+## Profile Deep Link Display State Rule
+
+เมื่อเปิด shared Public Profile deep link ระบบต้อง validate ก่อน render และแสดง state ตามตารางนี้ (อ้างอิง [00_NAVIGATION_AND_CROSS_MODULE_FLOW.md](00_NAVIGATION_AND_CROSS_MODULE_FLOW.md) Deep Link Rules และ Unavailable Fallback Rules):
+
+| Case | Guest | Login User | Owner (self) |
+| --- | --- | --- | --- |
+| Active public profile | แสดง Public Profile | แสดง Public Profile | แสดง Owner Profile |
+| Profile ของ user ที่ถูก block | Unavailable / blocked state | Unavailable / blocked state | n/a |
+| Profile ของ user ที่ไม่มีอยู่ (deleted) | User Not Found State | User Not Found State | n/a |
+| Account Suspended / Banned | แสดง Public Profile ตามปกติ (profile ยังเป็น public) | Account status state ถ้าเป็น profile ตัวเอง | Account status state |
+
+Rules:
+
+- ทุก profile deep link ต้อง validate block relationship และ user existence ก่อน render
+- Shared profile link ต้องไม่เปิด private profile data, Portfolio, Hide asset หรือ Sold asset
+- Guest เปิด Public Profile deep link ได้โดยไม่ต้อง Login แต่เมื่อ Guest กด action ที่ต้อง Login (เช่น Follow, Report User, Block User, Chat, Make Offer) ต้องแสดง Global Login Required Dialog เช่นเดียวกับการเข้าผ่าน entry point ปกติ
+- Back button และ main navigation หลังเปิด profile deep link ใช้ rule เดียวกับ [00_NAVIGATION_AND_CROSS_MODULE_FLOW.md](00_NAVIGATION_AND_CROSS_MODULE_FLOW.md) Back Button And Main Navigation After Deep Link
 
 ## Asset Visibility Rule
 
@@ -712,8 +745,14 @@ Profile Module ต้องรับผลหลัง Save สำเร็จ�
 | AC-PROFILE-006 | Owner Profile Tab Hide ต้องแสดงเฉพาะ Asset สถานะ Hide |
 | AC-PROFILE-007 | Owner Profile Tab Sold ต้องแสดงเฉพาะ Asset สถานะ Sold |
 | AC-PROFILE-007A | Owner Profile asset card ต้องแสดงปุ่ม `...` เฉพาะ Owner view เพื่อเปิด quick action menu โดยไม่ trigger Asset Detail |
-| AC-PROFILE-007B | Owner Profile quick action menu ต้องแสดง action ตาม status: Sale มี Edit asset, Edit provenance, Mark as sold, Change status, Delete asset; Show/Hide มี Edit asset, Edit purchase history, Change status, Delete asset; Sold มีเฉพาะ View sale history และ View provenance |
+| AC-PROFILE-007B | Owner Profile quick action menu ต้องแสดง action ตาม status: Sale มี Share asset, Edit asset, Edit provenance, Mark as sold, Change status, Delete asset; Show มี Share asset, Edit asset, Edit purchase history, Change status, Delete asset; Hide มี Edit asset, Edit purchase history, Change status, Delete asset (ไม่มี Share asset); Sold มีเฉพาะ View sale history และ View provenance |
 | AC-PROFILE-007C | Public Profile / Visitor view ต้องไม่แสดง asset-card quick action `...` |
+| AC-PROFILE-007D | Owner ต้อง Share asset จาก Owner Profile grid ได้สำหรับ Asset สถานะ Sale และ Show เท่านั้น (ไม่รวม Hide และ Sold เพราะไม่ใช่ public content) |
+| AC-PROFILE-007E | Guest ต้อง Share asset จาก Public Profile grid ได้โดยไม่ต้อง Login สำหรับ Asset สถานะ Sale และ Show |
+| AC-PROFILE-007F | Shared profile deep link ต้อง validate block relationship และ user existence ก่อน render และต้องไม่เปิด private data |
+| AC-PROFILE-007G | เมื่อเปิด shared profile deep link ของ user ที่ถูก block ต้องแสดง Unavailable / blocked state |
+| AC-PROFILE-007H | เมื่อเปิด shared profile deep link ของ user ที่ไม่มีอยู่ ต้องแสดง User Not Found State |
+| AC-PROFILE-007I | Guest เปิด Public Profile deep link ได้โดยไม่ต้อง Login แต่เมื่อ Guest กด action ที่ต้อง Login (Follow, Report User, Block User, Chat, Make Offer) ต้องแสดง Global Login Required Dialog |
 
 ## Public Profile
 

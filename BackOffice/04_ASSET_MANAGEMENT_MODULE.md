@@ -1,7 +1,7 @@
 # 04 BO Asset Management Module
 
-**เวอร์ชัน:** `BO-04-v1.0`  
-**วันที่:** 2026-07-31  
+**เวอร์ชัน:** `BO-04-v1.1`  
+**วันที่:** 2026-08-19  
 **สถานะ:** สเปกปัจจุบัน  
 **แพลตฟอร์ม:** Responsive Web Back Office
 
@@ -14,7 +14,7 @@
 
 ## 1. วัตถุประสงค์
 
-Asset Management คือเมนูสำหรับ Admin ใช้ตรวจสอบรายการ asset, รายละเอียด asset, รายงาน asset และดำเนินการ moderation ที่มีผลต่อการมองเห็นของ asset ในระบบ
+Asset Management คือเมนูสำหรับ Admin ใช้ตรวจสอบรายการ asset, รายละเอียด asset, รายงาน asset, รายงานความคิดเห็นบน asset และดำเนินการ moderation ที่มีผลต่อการมองเห็นของ asset หรือความคิดเห็นในระบบ
 
 เมนูนี้ต้องทำงานได้ครบตามขอบเขตต่อไปนี้:
 
@@ -28,6 +28,9 @@ Asset Management คือเมนูสำหรับ Admin ใช้ตร�
 - ยกเลิกการซ่อนชั่วคราวเมื่อ review แล้วไม่พบปัญหา
 - ซ่อน asset ถาวรตามเงื่อนไข moderation
 - ปิด report case พร้อมบันทึกผลการตรวจสอบ
+- ดูรายงานความคิดเห็น (comment) บน asset ที่ user ส่งเข้ามา
+- ตรวจสอบรายงานความคิดเห็นและดำเนินการ moderation ตามสถานะที่อนุญาต
+- ซ่อนความคิดเห็นชั่วคราว, ยกเลิกการซ่อนชั่วคราว, ซ่อนความคิดเห็นถาวร หรือปิดรายงานความคิดเห็น
 - บันทึก audit log สำหรับทุก action ที่เปลี่ยน state หรือ visibility
 
 ## 2. ขอบเขต
@@ -38,11 +41,15 @@ Asset Management คือเมนูสำหรับ Admin ใช้ตร�
 - Asset Detail
 - Reported Assets queue
 - Asset Report Detail
+- Reported Comments queue
+- Comment Report Detail
 - Search, filter, sort, pagination และ reset filter
 - Owner-controlled asset status: `Sale`, `Show`, `Hide`, `Sold`
 - System/retention state: `ลบโดยเจ้าของ`
 - Moderation state: `ซ่อนชั่วคราว`, `ซ่อนถาวร`
-- Action สำหรับการตรวจสอบและจัดการ: ซ่อนชั่วคราว, ยกเลิกซ่อนชั่วคราว, ซ่อนถาวร, ปิดรายงาน
+- Comment status: `Visible`, `Reported`, `Hidden`, `Removed`, `User Deleted`
+- Action สำหรับการตรวจสอบและจัดการ asset: ซ่อนชั่วคราว, ยกเลิกซ่อนชั่วคราว, ซ่อนถาวร, ปิดรายงาน
+- Action สำหรับการตรวจสอบและจัดการความคิดเห็น: ซ่อนความคิดเห็นชั่วคราว, ยกเลิกการซ่อนชั่วคราว, ซ่อนความคิดเห็นถาวร, ปิดรายงานไม่พบการละเมิด
 - Confirmation, reason และ audit สำหรับ action ที่กระทบ visibility หรือ report outcome
 - Responsive layout สำหรับ desktop, tablet และ mobile-width browser
 
@@ -51,6 +58,7 @@ Asset Management คือเมนูสำหรับ Admin ใช้ตร�
 - การสร้าง asset แทน user
 - การแก้ไข business data ของ asset แทน owner
 - การเปลี่ยน owner-controlled status โดยตรงจาก Back Office เช่น `Sale`, `Show`, `Hide`, `Sold`
+- การแก้ไขหรือลบความคิดเห็นแทน author
 - Payment operation, escrow, offer negotiation และ chat dispute workflow
 - AI moderation
 - Bulk action
@@ -58,7 +66,9 @@ Asset Management คือเมนูสำหรับ Admin ใช้ตร�
 - Flag/unflag asset
 - Reveal sensitive data แบบเต็ม
 - Restore จากสถานะซ่อนถาวร
+- Restore ความคิดเห็นจากสถานะ `Removed`
 - ลบข้อมูล asset จริงจาก Back Office
+- ลบข้อมูลความคิดเห็นจริงจาก Back Office
 
 ## 3. โครงสร้างเมนู
 
@@ -70,15 +80,18 @@ Submenu ภายใต้ Asset Management:
 | --- | --- |
 | `Asset List` | แสดงรายการ asset ทั้งหมด, ค้นหา/filter/sort, เปิดรายละเอียด asset และทำ moderation action ที่อนุญาต |
 | `Reported Assets` | แสดงคิวรายงาน asset จาก FO, ค้นหา/filter/sort, เปิดรายละเอียดรายงาน และปิดรายงานหรือจัดการ visibility เมื่อจำเป็น |
+| `Reported Comments` | แสดงคิวรายงานความคิดเห็นบน asset จาก FO, ค้นหา/filter/sort, เปิดรายละเอียดรายงาน และดำเนินการ moderation ความคิดเห็นหรือปิดรายงานเมื่อจำเป็น |
 
 พฤติกรรมการนำทาง:
 
 - เมื่อเข้า `Asset Management` ให้เปิด `Asset List` เป็นหน้าหลัก
 - เมนูที่ถูกเลือกต้องแสดง active state ที่ submenu นั้น
-- `Asset Detail` เปิดจาก `Asset List` หรือจากปุ่ม `View Asset` ใน `Asset Report Detail`
+- `Asset Detail` เปิดจาก `Asset List` หรือจากปุ่ม `View Asset` ใน `Asset Report Detail` หรือ `Comment Report Detail`
 - `Asset Report Detail` เปิดจากรายการใน `Reported Assets`
+- `Comment Report Detail` เปิดจากรายการใน `Reported Comments`
 - ปุ่มย้อนกลับจาก `Asset Detail` ต้องกลับไป context เดิมที่เปิดมา
 - ปุ่มย้อนกลับจาก `Asset Report Detail` ต้องกลับไป `Reported Assets` พร้อมคง search/filter/sort/page เดิม
+- ปุ่มย้อนกลับจาก `Comment Report Detail` ต้องกลับไป `Reported Comments` พร้อมคง search/filter/sort/page เดิม
 
 ## 4. สิทธิ์และกฎการเข้าถึง
 
@@ -148,11 +161,12 @@ Asset List ต้องค้นหาได้จาก:
 
 Asset List ต้องมี filter ขั้นต่ำ:
 
-- Status: `Sale`, `Show`, `Hide`, `Sold`, `ซ่อนถาวร`, `ลบโดยเจ้าของ`
-- Preset: `Sale - Consignment`
+- Status: `Sale`, `Sale + Consignment`, `Show`, `Hide`, `Sold`, `ซ่อนชั่วคราว`, `ซ่อนถาวร`, `ลบโดยเจ้าของ`
 - Brand
 - Sort: newest first, oldest first
 - Reset filter
+
+`Sale + Consignment` เป็นตัวเลือกย่อยใน Status filter สำหรับกรอง asset ประเภท consignment ที่เป็น `Sale`
 
 ### การแบ่งหน้า (Pagination)
 
@@ -187,7 +201,11 @@ Asset Detail ใช้สำหรับตรวจสอบข้อมูล 
 - Dial Color
 - Strap / Bracelet Type
 - Description
-- Owner
+- Owner (Display Name)
+- Owner ID
+- Owner Account Status
+- Comment Count
+- Favorite Count
 - Asset Status
 - Moderation State
 - Created timestamp
@@ -234,12 +252,16 @@ Sensitive context ต้องเปิดผ่าน modal หรือ sectio
 
 ### ส่วนประวัติ
 
-Asset Detail ต้องแสดง history ที่เกี่ยวข้องเมื่อมีข้อมูล:
+Asset Detail ต้องแสดง Asset Status History เมื่อมีข้อมูล โดยรวมการเปลี่ยนสถานะ asset, การดำเนินการ moderation, การอ้างอิงรายงาน และ admin action ไว้ในตารางเดียว
 
-- Asset Status History
-- Moderation History
-- Report History
-- Admin Action History
+คอลัมน์ใน Asset Status History:
+
+- Date / Time
+- Actor
+- Action
+- Status (แสดง owner-controlled status และ moderation state หลังการเปลี่ยนแปลง)
+- Reference (อ้างอิง Report ID เมื่อเกี่ยวข้อง)
+- Reason / Note
 
 ## 8. โมเดลสถานะ Asset
 
@@ -340,6 +362,8 @@ Asset ที่เป็น `Consignment` ต้องไม่ถูกนั�
 
 เงื่อนไข:
 
+- ทำได้กับ asset ที่ current owner-controlled status เป็น `Sale` หรือ `Show` รวมถึง asset ที่อยู่ใน moderation state `ซ่อนชั่วคราว` อยู่แล้ว
+- ทำไม่ได้กับ `Hide`, `Sold`, `ลบโดยเจ้าของ` หรือ asset ที่เป็น `ซ่อนถาวร` อยู่แล้ว
 - ต้องใช้ confirmation และ reason
 - ต้องตั้ง moderation state เป็น `ซ่อนถาวร`
 - Owner ยังเห็น asset แบบ read-only พร้อมสถานะถูกซ่อนถาวร
@@ -449,6 +473,17 @@ Reporter History ต้องแสดง:
 - Report reason
 - Additional details
 
+### ประวัติการดำเนินการของ Admin
+
+Admin Action History ต้องแสดง:
+
+- วันที่ / เวลา
+- ผู้ดำเนินการ
+- Action
+- สถานะสินทรัพย์ (แสดง owner-controlled status และ moderation state หลังการเปลี่ยนแปลง)
+- ส่งอีเมล (สถานะการส่งอีเมลแจ้งผู้ใช้ ถ้ามี)
+- รายละเอียด
+
 ### Action ในหน้ารายละเอียด
 
 Action buttons ต้องแสดงเฉพาะที่ทำได้ตาม current asset state, report status และ permission:
@@ -500,7 +535,237 @@ Reported Assets queue ต้องใช้ report case เป็น source of t
 
 ห้าม infer รายการใน Reported Assets queue จาก asset status, moderation pill หรือข้อความใน asset row เพียงอย่างเดียว
 
-## 15. กฎข้อมูลอ่อนไหว
+## 15. ความคิดเห็นที่ถูกรายงาน (Reported Comments)
+
+Reported Comments เป็น queue แยกจาก Asset List และ Reported Assets สำหรับจัดการ report case ของความคิดเห็น (comment และ reply) บน asset
+
+### Field ที่ต้องแสดง
+
+- Report ID
+- Comment excerpt
+- Asset ID และ Asset name
+- Report Status (`Pending`, `Closed`)
+- Comment Status (`Visible`, `Hidden`, `Removed`, `User Deleted`)
+- Report Reason
+- Reporters หรือ unique reporter count
+- Priority
+- Row action menu
+
+Comment ID และ Comment Type แสดงใน Comment Report Detail ไม่ใช่ column หลักใน list
+
+### การค้นหารายงานความคิดเห็น
+
+Reported Comments ต้องค้นหาได้จาก:
+
+- Report ID
+- Comment ID
+- Asset ID
+- Asset name
+- Author
+- Report reason
+
+### ตัวกรองรายงานความคิดเห็น
+
+Reported Comments ต้องมี filter ขั้นต่ำ:
+
+- Report Status: `Pending`, `Closed`
+- Priority
+- Sort: newest first, oldest first, reporter count
+- Reset filter
+
+### การแบ่งหน้ารายงานความคิดเห็น
+
+Reported Comments ต้องมี pagination ตามเงื่อนไข:
+
+- Page size: 10 reports per page
+- มี Previous button
+- มี Next button
+- มี numbered page buttons
+- ต้องคงค่า search/filter/sort ระหว่างเปลี่ยนหน้า
+- เมื่อไม่พบข้อมูลให้แสดง empty state `ไม่พบข้อมูล`
+
+### สถานะรายงาน
+
+| Status | Meaning |
+| --- | --- |
+| `Pending` | Report ยังรอ review หรือยังมี action ที่ต้องตรวจ |
+| `Closed` | ปิด report แล้วพร้อม outcome เช่น ตรวจแล้วไม่พบปัญหา หรือดำเนินการ moderation แล้ว |
+
+Report ที่ `Closed` เป็น final state และไม่มี reopen action ในเมนูนี้
+
+## 16. รายละเอียดรายงาน Comment
+
+Comment Report Detail ใช้สำหรับตรวจสอบ report case ของความคิดเห็นและ action ที่เกี่ยวข้อง
+
+### ส่วนข้อมูลที่ต้องมี
+
+- Reported Comment reference
+- Comment Detail
+- Reporter History
+- Admin Action History
+
+ข้อมูลสรุปของ report case แสดงผ่าน header, Report Status pill, Comment Status pill และข้อมูลใน Reported Comment reference
+
+### ข้อมูลอ้างอิง Comment ที่ถูกรายงาน
+
+- Report ID
+- Comment ID
+- Asset ID
+- Asset Name
+- Asset Status รวม owner-controlled status และ moderation/context state
+- Created At
+- View Asset action
+
+View Asset action ต้องเปิดรายละเอียด asset แบบ read-only ผ่าน modal และต้องแสดงข้อมูล asset ที่เกี่ยวข้องกับ report context เช่น Price, description, specifications, provenance summary, image gallery และ asset context อื่นที่จำเป็นต่อการตรวจสอบ
+
+### รายละเอียดความคิดเห็น
+
+Comment Detail ต้องแสดง:
+
+- Comment Type (`Root comment` หรือ `Reply`)
+- Author
+- Comment Text (full)
+- View all comments action
+
+View all comments action ต้องเปิด modal แสดงความคิดเห็นทั้งหมดของ asset ที่เกี่ยวข้อง เพื่อให้ Admin เห็น context รอบด้านของความคิดเห็นที่ถูกรายงาน
+
+### ประวัติผู้รายงาน
+
+Reporter History ต้องแสดง:
+
+- วันที่ / เวลา
+- Reporter
+- Status (เช่น `เปิดเคส`, `รวมเคส`)
+- Report Reason
+- Additional Details
+
+### ประวัติการดำเนินการของ Admin
+
+Admin Action History ต้องแสดง:
+
+- วันที่ / เวลา
+- ผู้ดำเนินการ
+- Action
+- ส่งอีเมล (สถานะการส่งอีเมลแจ้งผู้ใช้)
+- รายละเอียด
+
+### Action ในหน้ารายละเอียด
+
+Action buttons ต้องแสดงเฉพาะที่ทำได้ตาม current comment status, report status และ permission:
+
+- ปิดรายงาน (Close no violation)
+- ซ่อนความคิดเห็นชั่วคราว (Hide comment)
+- ยกเลิกการซ่อนชั่วคราว (Restore comment)
+- ซ่อนความคิดเห็นถาวร (Remove comment)
+
+## 17. Comment Status Contract
+
+ระบบต้องแยก comment status ออกจาก report status และ moderation action
+
+| Status | Meaning | แสดงใน FO |
+| --- | --- | --- |
+| `Visible` | แสดงปกติ ไม่มี moderation overlay | แสดงปกติ |
+| `Reported` | มี report รอ review แต่ยังแสดงอยู่ | แสดงปกติ |
+| `Hidden` | Admin ซ่อนชั่วคราวระหว่างตรวจสอบ | ไม่แสดง หรือแสดง hidden state |
+| `Removed` | Admin ซ่อนถาวรหลังตรวจสอบ | ไม่แสดง หรือแสดง removed state |
+| `User Deleted` | User ลบ comment เอง | ไม่แสดง หรือแสดงตาม retention rule |
+
+Comment status เป็น overlay บน comment record และไม่เปลี่ยนแปลงเนื้อหาต้นฉบับ
+
+## 18. กฎ Action ของ Comment Moderation
+
+### ข้อกำหนดทั่วไป
+
+ทุก action สำหรับ comment moderation ต้องมี:
+
+- Permission check
+- Confirmation modal
+- Required reason
+- Before state (comment status และ report status)
+- After state (comment status และ report status)
+- Actor
+- Timestamp
+- Audit log
+- ผลลัพธ์ที่อัปเดตไปยัง FO comment section ที่เกี่ยวข้อง
+- การส่งอีเมลแจ้ง author ผ่าน registered email (ยกเว้น `Close no violation`)
+
+### ซ่อนความคิดเห็นชั่วคราว (Hide comment)
+
+ใช้เพื่อซ่อนความคิดเห็นจาก public comment section ชั่วคราวระหว่างตรวจสอบ
+
+เงื่อนไข:
+
+- ทำได้กับ comment ที่ current comment status เป็น `Visible` หรือ `Reported`
+- ทำไม่ได้กับ `Hidden`, `Removed` หรือ `User Deleted`
+- ต้องตั้ง comment status เป็น `Hidden`
+- Report status ยังคงเป็น `Pending` (ไม่ปิดรายงานอัตโนมัติ)
+- ต้องมี confirmation, reason และ audit
+- ต้องส่งอีเมลแจ้ง author ผ่าน registered email
+
+### ยกเลิกการซ่อนชั่วคราว (Restore comment)
+
+ใช้เพื่อยกเลิกการซ่อนชั่วคราวเมื่อ review แล้วไม่พบปัญหา
+
+เงื่อนไข:
+
+- ทำได้เฉพาะ comment ที่อยู่ใน comment status `Hidden`
+- ทำไม่ได้กับ `Visible`, `Reported`, `Removed` หรือ `User Deleted`
+- ต้อง restore comment status กลับเป็น `Visible`
+- ต้องตั้ง report status เป็น `Closed` (ปิดรายงานอัตโนมัติ)
+- ต้องมี confirmation, reason และ audit
+- ต้องส่งอีเมลแจ้ง author ผ่าน registered email
+
+### ซ่อนความคิดเห็นถาวร (Remove comment)
+
+ใช้เพื่อซ่อนความคิดเห็นจาก public comment section ถาวรหลังตรวจสอบ
+
+เงื่อนไข:
+
+- ทำได้กับ comment ที่ current comment status เป็น `Visible`, `Reported` หรือ `Hidden`
+- ทำไม่ได้กับ `Removed` หรือ `User Deleted`
+- ต้องตั้ง comment status เป็น `Removed`
+- ต้องตั้ง report status เป็น `Closed` (ปิดรายงานอัตโนมัติ)
+- ไม่สามารถกู้คืนได้ (ไม่มี restore action จาก `Removed`)
+- ต้องมี confirmation, reason และ audit
+- ต้องส่งอีเมลแจ้ง author ผ่าน registered email
+
+### ปิดรายงานไม่พบการละเมิด (Close no violation)
+
+ใช้เพื่อปิดรายงานหลังตรวจสอบแล้วไม่พบการละเมิด
+
+เงื่อนไข:
+
+- ทำได้เฉพาะ report ที่อยู่ใน report status `Pending`
+- ทำไม่ได้กับ report ที่ `Closed`
+- ต้องตั้ง report status เป็น `Closed`
+- ต้องไม่เปลี่ยน comment status ใน FO (comment ยังแสดงตาม status เดิม)
+- ต้องมี confirmation และ reason
+- ไม่ต้องส่งอีเมลแจ้ง author
+
+## 19. กฎการจัดการรายงานความคิดเห็น
+
+เมื่อ user report comment:
+
+- ต้องสร้างหรืออัปเดต report case
+- ต้องเข้า Reported Comments queue
+- ต้องนับ reporter แบบ unique reporter
+- Report ซ้ำจาก user เดิมต้องไม่เพิ่ม unique reporter count
+- Report ต้องเข้า queue โดยไม่ทำให้ comment หายจาก FO ทันที (comment ยังแสดงตาม status เดิม)
+- Report case ต้องผูกกับ comment current state ล่าสุดเสมอ
+- SLA baseline 24 ชั่วโมงสำหรับ comment report ตาม Trust & Safety baseline
+
+## 20. กฎ FO Sync สำหรับ Comment Moderation
+
+| Action | FO Comment Section | Comment Count |
+| --- | --- | --- |
+| Hide comment | comment หายจาก comment section หรือแสดง hidden state | ต้องสะท้อนจำนวนที่ user มีสิทธิ์เห็น |
+| Restore comment | comment กลับมาแสดงใน comment section ตามปกติ | ต้องสะท้อนจำนวนที่ user มีสิทธิ์เห็น |
+| Remove comment | comment หายจาก comment section หรือแสดง removed state | ต้องสะท้อนจำนวนที่ user มีสิทธิ์เห็น |
+| Close no violation | FO content ไม่เปลี่ยนแปลง | ไม่เปลี่ยนแปลง |
+
+Comment count ที่แสดงใน FO ต้องสะท้อนจำนวนความคิดเห็นที่ user มีสิทธิ์เห็นเท่านั้น ไม่นับ comment ที่ถูก `Hidden`, `Removed` หรือ `User Deleted` ในจำนวนที่แสดง
+
+## 21. กฎข้อมูลอ่อนไหว
 
 | Data | Default Behavior |
 | --- | --- |
@@ -514,7 +779,7 @@ Reported Assets queue ต้องใช้ report case เป็น source of t
 
 Sensitive data ต้องเป็น read-only เสมอในเมนูนี้
 
-## 16. สถานะ Error, Empty และ Loading
+## 22. สถานะ Error, Empty และ Loading
 
 ต้องรองรับ state ต่อไปนี้:
 
@@ -522,19 +787,23 @@ Sensitive data ต้องเป็น read-only เสมอในเมนู
 - Loading asset detail
 - Loading reported asset queue
 - Loading report detail
+- Loading reported comment queue
+- Loading comment report detail
 - Empty asset list เมื่อไม่มีข้อมูลตาม filter
 - Empty reported asset queue
+- Empty reported comment queue
 - Empty search result
 - Permission denied
 - Asset unavailable ระหว่างเปิด detail
 - Report unavailable ระหว่างเปิด detail
+- Comment report unavailable ระหว่างเปิด detail
 - Stale state เมื่อข้อมูลถูกเปลี่ยนก่อนยืนยัน action
-- Action error ใน confirmation modal
+- Action error ใน confirmation modal (เช่น สถานะรายงานไม่ตรงเงื่อนไข, ข้อมูลเปลี่ยนระหว่างดำเนินการ, ยังไม่ผ่านเงื่อนไขที่ระบบกำหนด, บันทึกผลไม่สำเร็จ, บันทึก Audit Log ไม่สำเร็จ, เซสชันหมดอายุ)
 - Validation error เมื่อไม่กรอก reason
 
 เมื่อ action ล้มเหลว ห้ามเปลี่ยน UI เป็น success state และต้องให้ Admin retry หรือปิด modal ได้
 
-## 17. ข้อกำหนด Audit
+## 23. ข้อกำหนด Audit
 
 ทุก write action ต้องบันทึก:
 
@@ -542,6 +811,7 @@ Sensitive data ต้องเป็น read-only เสมอในเมนู
 - Actor role/access
 - Action type
 - Target asset ID
+- Target comment ID ถ้ามี
 - Related report ID ถ้ามี
 - Before state
 - After state
@@ -551,14 +821,26 @@ Sensitive data ต้องเป็น read-only เสมอในเมนู
 
 ### ประเภท Action ที่ต้องบันทึก
 
+Action ของ asset:
+
+- `ASSET_AUTO_HIDE` (ระบบซ่อนชั่วคราวอัตโนมัติเมื่อครบเกณฑ์ reporter)
 - `ASSET_TEMP_HIDE`
 - `ASSET_TEMP_UNHIDE`
 - `ASSET_PERMANENT_HIDE`
 - `ASSET_OWNER_DELETE`
 - `REPORT_CLOSE`
-- `REPORT_CLEAR`
+- `REPORT_REOPEN`
 
-Audit history ต้องแสดงใน Asset Detail หรือ Asset Report Detail ตาม context ที่เกี่ยวข้อง
+Action ของ comment moderation:
+
+- `COMMENT_HIDE`
+- `COMMENT_UNHIDE`
+- `COMMENT_REMOVE`
+- `COMMENT_REPORT_RESOLVE`
+
+ทุก event ของ comment moderation ต้องมี actor, action, target comment ID, target asset ID, before/after state (comment status และ report status), reason และ timestamp
+
+Audit history ต้องแสดงใน Asset Detail, Asset Report Detail หรือ Comment Report Detail ตาม context ที่เกี่ยวข้อง
 
 ## ข้อยกเว้นเฉพาะโมดูล
 
@@ -566,7 +848,7 @@ Audit history ต้องแสดงใน Asset Detail หรือ Asset Rep
 
 Asset Management ต้องใช้ app shell, navigation, breakpoint, list toolbar, desktop table/grid, mobile card, pagination, reset, detail, action menu และ confirmation modal ตาม `00_GLOBAL_RULES_MODULE.md` และ `../Prototypes/bo-prototype.html` โดยไม่มี UI/layout override เฉพาะโมดูล
 
-## 18. เกณฑ์การยอมรับ
+## 24. เกณฑ์การยอมรับ
 
 | ID | Criteria |
 | --- | --- |
@@ -587,4 +869,17 @@ Asset Management ต้องใช้ app shell, navigation, breakpoint, list t
 | AC-BO-ASSET-015 | ทุก action ที่กระทบ visibility หรือ report outcome ต้องมี permission check, confirmation, reason, before/after state และ audit |
 | AC-BO-ASSET-016 | Responsive layout ใช้งานได้ครบที่ mobile-width, tablet และ desktop |
 | AC-BO-ASSET-017 | Asset Management ต้องทำตาม `00_GLOBAL_RULES_MODULE.md` และ `../Prototypes/bo-prototype.html` สำหรับ list toolbar, responsive table/card behavior, pagination, reset, row/detail actions และ confirmation modal pattern |
+| AC-BO-ASSET-018 | Reported Comments queue แสดง report case ของความคิดเห็น พร้อม search, filter, sort, pagination และ reset filter |
+| AC-BO-ASSET-019 | Reported Comments List แสดง field หลัก (Report ID, Comment ID, Asset, Comment excerpt, Comment Type, Comment Status, Report Status, Report Reason, Reporters, Priority) และ row action ตาม current state ได้ถูกต้อง |
+| AC-BO-ASSET-020 | Comment Report Detail แสดง 4 ส่วนครบ: Reported Comment reference, Comment Detail, Reporter History และ Admin Action History |
+| AC-BO-ASSET-021 | Comment Status Contract มี 5 สถานะครบ: `Visible`, `Reported`, `Hidden`, `Removed`, `User Deleted` |
+| AC-BO-ASSET-022 | Hide comment ได้เฉพาะ comment ที่เป็น `Visible` หรือ `Reported` และต้องตั้ง comment status เป็น `Hidden` โดยไม่ปิดรายงานอัตโนมัติ |
+| AC-BO-ASSET-023 | Restore comment ได้เฉพาะ comment ที่เป็น `Hidden` และต้องตั้ง comment status กลับเป็น `Visible` พร้อมปิดรายงานอัตโนมัติ |
+| AC-BO-ASSET-024 | Remove comment ได้กับ comment ที่เป็น `Visible`, `Reported` หรือ `Hidden` และต้องตั้ง comment status เป็น `Removed` พร้อมปิดรายงานอัตโนมัติ ไม่สามารถกู้คืนได้ |
+| AC-BO-ASSET-025 | Close no violation ได้เฉพาะ report ที่เป็น `Pending` และต้องไม่เปลี่ยน comment status ใน FO |
+| AC-BO-ASSET-026 | Report comment ต้องเข้า queue โดยไม่ทำให้ comment หายจาก FO ทันที และนับ reporter แบบ unique |
+| AC-BO-ASSET-027 | FO Sync Rules ครอบคลุมทุก comment moderation action: Hide, Restore, Remove และ Close no violation |
+| AC-BO-ASSET-028 | Comment count ใน FO ต้องสะท้อนจำนวนความคิดเห็นที่ user มีสิทธิ์เห็น ไม่นับ `Hidden`, `Removed` หรือ `User Deleted` |
+| AC-BO-ASSET-029 | ทุก comment moderation action ต้องบันทึก audit พร้อม actor, action, target comment ID, target asset ID, before/after state, reason และ timestamp |
+| AC-BO-ASSET-030 | Comment moderation action (ยกเว้น Close no violation) ต้องส่งอีเมลแจ้ง author ผ่าน registered email |
 

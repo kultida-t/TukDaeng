@@ -134,13 +134,15 @@ Phase 1 บทความสร้างและจัดการโดย Ad
 - อ่าน Board และ Article Detail ได้
 - ใช้ Search Article และ Category Filter ได้
 - Share Article ได้โดยไม่ต้อง Login เพราะเป็น public share action
+- Guest share ต้องไม่เปิดสิทธิ์ Article Like หรือ Report Article
+- เปิด shared Article deep link ได้โดยไม่ต้อง Login แต่กด Article Like หรือ Report Article ต้องเจอ Global Login Required Dialog
 - Article Like ควรใช้ login-required baseline จนกว่า master จะแยกกติกา Article Like สำหรับ Guest
 
 ## Member
 
 - อ่าน Board และ Article Detail ได้
 - Like / Unlike Article ได้
-- Share Article ได้ตาม implementation
+- Share Article ได้โดยใช้ system share sheet เป็น primary channel และ copy public Article deep link เป็น fallback
 - ใช้ Search Article และ Category Filter ได้
 
 ## Admin
@@ -194,7 +196,8 @@ Article Detail
 ```text
 Article Detail
 -> Share
--> Open platform share behavior or copy link
+-> Open system share sheet (primary) or copy public Article deep link (fallback)
+-> Show copy success state if fallback used
 ```
 
 ## Infinite Scroll Flow
@@ -270,10 +273,56 @@ Board ต้องรองรับ section/category ต่อไปนี้:
 
 ## Article Share Rule
 
-- Article Share ใช้กับ Article Detail
-- Share channel เช่น system share sheet หรือ copy link เป็น implementation detail
-- Guest Article Share ใช้ได้โดยไม่ต้อง Login
-- Article Share ไม่สร้าง notification และไม่เปลี่ยน permission ของบทความ
+- Article Share entry point: Article Detail เท่านั้น (อ้างอิง [11_SOCIAL_MODULE.md](11_SOCIAL_MODULE.md) Share Rules และ [00_NAVIGATION_AND_CROSS_MODULE_FLOW.md](00_NAVIGATION_AND_CROSS_MODULE_FLOW.md) Deep Link Rules)
+- Share เป็น public share action สำหรับ published Article
+- Share ไม่รองรับ Article ที่ถูก unpublish หรือ deleted เพราะไม่ใช่ public content
+- Guest สามารถ Share Article ได้โดยไม่ต้อง Login เพราะเป็น public share action
+- Guest share ต้องไม่เปิดสิทธิ์ Article Like, Report Article หรือ action อื่นที่ต้อง Login
+- Primary share channel คือ system share sheet เมื่อ platform รองรับ
+- Fallback share channel คือ copy public Article deep link และต้องแสดง copy success state เช่น `Article link copied`
+- Article Share ไม่สร้าง Notification Center item และไม่เปลี่ยน permission ของบทความ
+- Public Article deep link ที่แชร์ต้อง validate publish state, deletion state และ availability ก่อน render (ดู Article Deep Link Display State Rule ด้านล่าง)
+
+## Article Deep Link Display State Rule
+
+เมื่อเปิด shared public Article deep link ระบบต้อง validate ก่อน render และแสดง state ตามตารางนี้ (อ้างอิง [00_NAVIGATION_AND_CROSS_MODULE_FLOW.md](00_NAVIGATION_AND_CROSS_MODULE_FLOW.md) Deep Link Rules และ Unavailable Fallback Rules):
+
+| Case | Guest | Login User | Admin (self-published) |
+| --- | --- | --- | --- |
+| Published Article | แสดง Article Detail (Guest Mode) | แสดง Article Detail | แสดง Article Detail |
+| Unpublished Article (stale link) | Article Unavailable State | Article Unavailable State | แสดง Article Detail พร้อม admin preview note |
+| Deleted Article | Article Unavailable State `บทความนี้ไม่พร้อมใช้งานแล้ว` | Article Unavailable State `บทความนี้ไม่พร้อมใช้งานแล้ว` | Article Unavailable State `บทความนี้ไม่พร้อมใช้งานแล้ว` |
+| Article ที่ไม่มีอยู่ (invalid ID) | Article Not Found State | Article Not Found State | Article Not Found State |
+
+Rules:
+
+- ทุก Article deep link ต้อง validate publish state, deletion state และ availability ก่อน render
+- Deep link ไปยัง unavailable Article ต้องไม่ crash และต้องไม่แสดงเนื้อหาที่ค้างอยู่
+- สำหรับ unpublished stale link ของ non-admin ให้แสดง Article Unavailable State ไม่ใช่เปิดเนื้อหา
+- Guest เปิด published Article deep link ได้โดยไม่ต้อง Login แต่เมื่อ Guest กด action ที่ต้อง Login (เช่น Article Like, Report Article) ต้องแสดง Global Login Required Dialog เช่นเดียวกับการเข้าผ่าน Article Detail ปกติ
+- Login user ที่เปิด deep link แล้ว Article เปลี่ยน publish state ระหว่าง session ต้องอัปเดต visibility ตาม matrix เมื่อ sync/refresh
+
+## Article Back Button And Navigation After Deep Link Rule
+
+เมื่อ Article Detail เปิดจาก external deep link (ไม่มี in-app navigation history) ต้องจัดการ back button และ main navigation ดังนี้ (อ้างอิง [00_NAVIGATION_AND_CROSS_MODULE_FLOW.md](00_NAVIGATION_AND_CROSS_MODULE_FLOW.md) Back Button And Main Navigation After Deep Link):
+
+### Back Button บน Normal Article Detail
+
+- ถ้ามี in-app navigation history (เช่น เปิดจาก Board, Search Article, Category Filter) ให้ back button กลับไปหน้าก่อนหน้าตามปกติ
+- ถ้าไม่มี navigation history (เปิดจาก external deep link โดยตรง) ให้ back button fallback ไป Feed
+- ห้ามปิด app หรือแสดงหน้าจอว่างเปล่าเมื่อกด back button จาก Article Detail ที่เปิดจาก external deep link
+
+### Back Button บน Error / Unavailable State
+
+- ใช้ rule เดียวกับ Exception Handling > Article Not Found / Deleted: primary CTA `Go back`
+- ถ้ามี navigation history ให้กลับหน้าก่อนหน้า
+- ถ้าไม่มี navigation history (external deep link) ให้ fallback ไป Feed
+
+### Main Navigation หลังเปิด Article Deep Link
+
+- หลังเปิด Article deep link ทั้ง Guest และ Login user ต้องใช้งาน main navigation (bottom tab / menu) ต่อได้ เพื่อเข้าถึง Feed, Search, Profile, Notification, Board และ surface อื่น ๆ ตามสิทธิ์
+- ห้ามล็อก user อยู่ใน Article Detail อย่างเดียวหลังเปิด deep link โดยไม่มีทางออกนอกจาก back button
+- Guest ที่เปิด Article deep link แล้วใช้ main navigation ต้องเจอ Global Login Required Dialog เมื่อกด login-required surface เช่นเดียวกับการเข้าผ่าน entry point ปกติ
 
 ## Report Article Rule
 
@@ -343,7 +392,8 @@ Board Front Office ไม่มี create/edit form สำหรับ user ใ�
 | Search Keyword | Optional |
 | Category Filter | Optional |
 | Article Like | 1 User = 1 Like ต่อ Article |
-| Article Share | ต้องมี share target หรือ copy link ตาม implementation |
+| Article Share | Primary = system share sheet; Fallback = copy public Article deep link; ต้องแสดง copy success state; ต้องไม่สร้าง notification |
+| Article Deep Link | ต้อง validate publish state, deletion state และ availability ก่อน render; unpublished/deleted/invalid ต้องแสดง Article Unavailable / Not Found state |
 
 ---
 
@@ -473,9 +523,62 @@ And Article Like Count ต้อง update
 
 ## AC-BOARD-010: Article Share
 
-Given user เปิด Article Detail  
-When user กด Share  
-Then ระบบต้องเริ่ม share behavior ตาม implementation
+Given user เปิด Article Detail
+When user กด Share
+Then ระบบต้องเปิด system share sheet เป็น primary channel หรือ copy public Article deep link เป็น fallback พร้อม copy success state
+
+## AC-BOARD-010A: Guest Article Share Without Login
+
+Given Guest เปิด Article Detail
+When Guest กด Share
+Then ระบบต้องเริ่ม share behavior โดยไม่บังคับ Login
+And ต้องไม่เปิดสิทธิ์ Article Like หรือ Report Article
+
+## AC-BOARD-010B: Article Share No Notification
+
+Given user กด Share Article
+When share สำเร็จ
+Then ระบบต้องไม่สร้าง Notification Center item
+
+## AC-BOARD-010C: Article Deep Link Validation
+
+Given user เปิด shared Article deep link
+When linked Article เป็น published
+Then ระบบต้องแสดง Article Detail
+
+Given user เปิด shared Article deep link
+When linked Article ถูก unpublish หรือ deleted หรือไม่มีอยู่
+Then ระบบต้องแสดง Article Unavailable / Not Found state ไม่ใช่เปิดเนื้อหา
+
+## AC-BOARD-010D: Article Deep Link Display State By User
+
+Given Guest เปิด shared published Article deep link
+Then ระบบต้องแสดง Article Detail โดยไม่ต้อง Login
+And เมื่อ Guest กด Article Like หรือ Report Article ต้องเจอ Global Login Required Dialog
+
+Given Login user เปิด shared published Article deep link
+Then ระบบต้องแสดง Article Detail ตามสิทธิ์
+
+## AC-BOARD-010E: Article Back Button From External Deep Link
+
+Given user เปิด Article Detail จาก external deep link โดยไม่มี navigation history
+When user กด back button
+Then ระบบต้อง fallback ไป Feed ไม่ใช่ปิด app หรือแสดงหน้าว่าง
+
+Given user เปิด Article Detail จาก Board, Search Article หรือ Category Filter (มี navigation history)
+When user กด back button
+Then ระบบต้องกลับไปหน้าก่อนหน้าตามปกติ
+
+## AC-BOARD-010F: Main Navigation Available After Article Deep Link
+
+Given Guest เปิด Article Detail จาก external deep link
+When Guest ใช้ main navigation ไปยัง Feed, Search, Board หรือ Public Profile
+Then ระบบต้องอนุญาตให้เข้าถึง surface เหล่านั้นได้
+And เมื่อ Guest กด login-required surface ต้องเจอ Global Login Required Dialog
+
+Given Login user เปิด Article Detail จาก external deep link
+When Login user ใช้ main navigation ไปยัง surface อื่น
+Then ระบบต้องอนุญาตให้เข้าถึงได้ตามสิทธิ์
 
 ## AC-BOARD-011: No Article Comment Baseline
 

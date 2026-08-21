@@ -1,7 +1,7 @@
 # TukDaeng Document Version
 
-**Current Baseline Version:** `FO-PRD-v1.3`
-**Release Date:** 2026-07-16
+**Current Baseline Version:** `FO-PRD-v1.4`
+**Release Date:** 2026-08-21
 **Branch:** `docs-frontoffice-spec-updates`  
 **Status:** Product-reviewed baseline update for Dev / QA / Figma
 
@@ -27,6 +27,19 @@ FO-PRD-vX.Y
 ---
 
 # 2. Current Baseline Scope
+
+`FO-PRD-v1.4` covers all of `FO-PRD-v1.3` and clarifies Share Asset Deep Link, Share Profile Deep Link, Share Article Deep Link, and navigation-after-deep-link behavior for Dev / QA / Figma:
+
+- Master Share V1 updated: Share Asset entry point expanded to Feed Card, Asset Detail, and Profile asset grid; Share Profile entry point is Owner Profile and Public Profile; Share Article entry point is Article Detail. Comment still Asset Detail only.
+- Asset Detail Share Rule synced with master and Social Module: system share sheet primary, copy public deep link fallback, Guest share without Login, no Notification Center item, full deep link validation
+- Article Share Rule synced with master: system share sheet primary, copy public Article deep link fallback, Guest share without Login, no Notification Center item, Article deep link validation
+- Shared deep link display state matrix by status (`Sale` / `Show` / `Hide` / `Sold` / Deleted / blocked) and user context (Guest / Login non-owner / Owner) for Asset
+- Shared profile deep link display state for blocked and deleted user
+- Shared Article deep link display state for unpublished, deleted and invalid Article
+- Back button on normal screen opened from external deep link must fallback to Feed when no navigation history (Asset Detail, Public Profile, Article Detail)
+- Main navigation (bottom tab / menu) must remain available after opening a deep link for both Guest and Login users
+- Hide / Sold stale deep link by non-owner must show Permission Denied / Unavailable state; Owner sees Owner-only detail
+- New module ACs (AC-DETAIL-026A–026H, AC-NAV-016A–016F, AC-FEED-017J–017L, AC-PROFILE-007D–007I, AC-BOARD-010A–010F) and QA scenarios (QA-GLOBAL-003C–003H, QA-BOARD-002A–002F)
 
 `FO-PRD-v1.3` covers all of `FO-PRD-v1.2` and clarifies account suspension handling for Dev / QA / Figma:
 
@@ -65,6 +78,7 @@ Baseline scope หลักยังครอบคลุม:
 
 | Version | Date | Summary | Key Files |
 | --- | --- | --- | --- |
+| `FO-PRD-v1.4` | 2026-08-21 | Clarifies Share Asset Deep Link, Share Profile Deep Link, Share Article Deep Link, and navigation-after-deep-link behavior. Expands Share Asset entry points to Feed Card, Asset Detail, and Profile asset grid (master override). Adds Share Profile entry points (Owner Profile, Public Profile). Locks Article Share channel (system share sheet primary, copy public Article deep link fallback). Syncs Asset Detail Share Rule with master and Social Module. Adds shared deep link display state matrix by status and user context for Asset, Profile, and Article. Adds back button fallback to Feed for normal screen opened from external deep link. Adds main navigation availability after deep link for Guest and Login. Adds Hide/Sold stale deep link Permission Denied / Unavailable state for non-owner and Owner-only detail for owner. | `TukDaeng_Master_Product_Definition.md`, `00_NAVIGATION_AND_CROSS_MODULE_FLOW.md`, `02_FEED_MODULE.md`, `05_ASSET_DETAIL_MODULE.md`, `06_PROFILE_MODULE.md`, `11_SOCIAL_MODULE.md`, `12_BOARD_MODULE.md`, `Figma_Gap_Checklist_Against_Master.md`, `FIGMA_UX_CLEANUP_TASK_BREAKDOWN.md`, `QA_TEST_SCENARIO_CHECKLIST.md`, `DEV_IMPLEMENTATION_CHECKLIST.md` |
 | `FO-PRD-v1.3` | 2026-07-16 | Clarifies suspended/banned account handling: no `Restricted` account state in V1, active session revocation, account status state on app entry/sign-in, email as primary suspend/ban notification, no Account Action type in FO Notification Center, and Apple/Google email handling. | `01_AUTHENTICATION_MODULE.md`, `00_NAVIGATION_AND_CROSS_MODULE_FLOW.md`, `09_NOTIFICATION_MODULE.md`, `15_TRUST_SAFETY_MODULE.md`, `16_INTEGRATIONS_MODULE.md`, `QA_TEST_SCENARIO_CHECKLIST.md` |
 | `FO-PRD-v1.2` | 2026-07-02 | Final error-state UI copy and retry-scope handoff for Front Office. Locks Feed refresh failure, load-more failure, image failure, owner fallback, shared section/unavailable/empty-state behavior, and QA coverage before moving to Back Office work. | `ERROR_STATE_UI_COPY_CATALOG.md`, `02_FEED_MODULE.md`, `QA_TEST_SCENARIO_CHECKLIST.md`, `README_MODULE_INDEX.md`, `FINAL_HANDOFF_SUMMARY.md`, `DEV_IMPLEMENTATION_CHECKLIST.md` |
 | `FO-PRD-v1.1` | 2026-06-23 | Product decision update for Asset Detail / Social comment model: support IG-style one-level replies, allow collapsed `View more replies`, and explicitly prohibit multi-level nested threads. Supersedes `FO-PRD-v1.0` for Dev / QA / Figma. | `TukDaeng_Master_Product_Definition.md`, `00_GLOBAL_RULES_MODULE.md`, `00_NAVIGATION_AND_CROSS_MODULE_FLOW.md`, `05_ASSET_DETAIL_MODULE.md`, `11_SOCIAL_MODULE.md`, `DEV_IMPLEMENTATION_CHECKLIST.md`, `DEV_CHAT_IMPLEMENTATION_CHECKLIST.md`, `QA_TEST_SCENARIO_CHECKLIST.md`, `Figma_Gap_Checklist_Against_Master.md`, `FIGMA_UX_CLEANUP_TASK_BREAKDOWN.md`, `FO_Functional_PRD.md` |
@@ -77,6 +91,6 @@ Baseline scope หลักยังครอบคลุม:
 When sending documents to Dev, include both:
 
 - Branch: `docs-frontoffice-spec-updates`
-- Version: `FO-PRD-v1.3`
+- Version: `FO-PRD-v1.4`
 
 If Dev reports a gap or builds against this baseline, ask them to cite the version number in their response.

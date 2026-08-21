@@ -246,7 +246,7 @@ SLA baseline:
 | User Management | Requester profile, account status, login/auth context |
 | Asset Management | Related asset/listing context |
 | Offer Management | Dispute context, offer status, related chat room |
-| Social Interaction | Reported comments/replies linked to support case |
+| Asset Management (Reported Comments) | Reported comments/replies linked to support case |
 | Watch Alert | Alert criteria and trigger history for notification issue |
 | Market Data | Brand/model/reference/price index issue |
 | Account Deletion Requests | Deletion mistake/support escalation |
