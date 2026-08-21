@@ -55,3 +55,7 @@ Use Thai as the default language for Kanban task descriptions and related task d
 ## Kanban Completion Rule
 
 When a Kanban task involves editing files, do not move the task to `done` immediately after implementation or verification. Keep the task in `in_progress` and wait for explicit user confirmation that the result is accepted. Only move the task to `done` after the user confirms the edited result is OK.
+
+## Time Display Format
+
+When showing work hours in summaries or reports, display in `X ชม. Y นาที` format (e.g. `1 ชม. 37 นาที`) instead of decimal hours (e.g. `1.62 ชม.`). Convert decimal hours by splitting the integer part as hours and multiplying the fractional part by 60 for minutes. Apply this to all time displays including per-task hours, totals, and running timers.
