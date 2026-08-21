@@ -134,6 +134,7 @@ Menu items outside this scope must be marked as future, placeholder, or needs ma
 | Chat Detail | View Asset | Asset Detail or unavailable state | Chat persists after deleted/sold |
 | Offer Detail | Message seller | Chat Detail | Offer context preserved |
 | Board Content | Report | Report flow | Board content report supported |
+| Article Detail | Share Article | System share sheet / copy public Article deep link | Guest can share without Login; deep link opens Article Detail |
 
 # 9. Notification Destination Rules
 
@@ -182,6 +183,8 @@ Dialog actions:
 | Blocked Asset owner | Asset hidden from Feed, Search, Watch Alert Result; direct deep link shows Unavailable / blocked state |
 | Cancelled Offer | Offer Detail shows Cancelled state |
 | Deleted Asset from Chat | Chat remains, Asset preview opens unavailable state |
+| Unpublished / Deleted Article deep link | Article Detail unavailable state with `บทความนี้ไม่พร้อมใช้งานแล้ว` |
+| Invalid Article deep link | Article Not Found state |
 
 Unavailable / permission fallback screen CTA:
 
@@ -213,6 +216,8 @@ Figma may keep these as disabled placeholder or future phase only when clearly a
 - Deep links from push notification must use the notification destination matrix
 - Deep link ของ Asset สถานะ `Hide` หรือ `Sold` ที่เปิดโดย non-owner ต้องแสดง Permission Denied / Unavailable state ไม่ใช่เปิด private detail
 - Owner เปิด deep link ของ Asset ตัวเองที่ `Hide` หรือ `Sold` ต้องแสดง Owner-only detail
+- Deep link ของ Article ที่ถูก unpublish, deleted หรือ invalid ID ต้องแสดง Article Unavailable / Not Found state ไม่ใช่เปิดเนื้อหา
+- Admin เปิด deep link ของ Article ตัวเองที่ถูก unpublish ต้องเห็น Article Detail พร้อม admin preview note
 
 # 13A. Back Button And Main Navigation After Deep Link
 
@@ -295,6 +300,8 @@ Figma may keep these as disabled placeholder or future phase only when clearly a
 | AC-NAV-016B | Owner เปิด deep link ของ Asset ตัวเองที่ `Hide` หรือ `Sold` ต้องแสดง Owner-only detail |
 | AC-NAV-016C | เมื่อหน้าจอเปิดจาก external deep link โดยไม่มี navigation history แล้วกด back button ต้อง fallback ไป Feed ไม่ใช่ปิด app หรือแสดงหน้าว่าง |
 | AC-NAV-016D | หลังเปิด deep link ทั้ง Guest และ Login user ต้องใช้งาน main navigation ต่อได้ และ Guest ที่กด login-required surface ต้องเจอ Global Login Required Dialog |
+| AC-NAV-016E | Deep link ของ Article ที่ถูก unpublish, deleted หรือ invalid ID ต้องแสดง Article Unavailable / Not Found state ไม่ใช่เปิดเนื้อหา |
+| AC-NAV-016F | Admin เปิด deep link ของ Article ตัวเองที่ถูก unpublish ต้องเห็น Article Detail พร้อม admin preview note |
 
 # 18. Related Modules
 

@@ -238,11 +238,14 @@ Figma มี coverage ของ flow หลักค่อนข้างมา�
 | Must Fix | Figma/PRD อาจมี Create Post / Edit Post / Delete Post สำหรับ user | บทความสร้างและจัดการโดย Admin ผ่าน Back Office เท่านั้น | ตัด FO create/edit/delete article flow ออกจาก V1 |
 | High | ต้องยืนยัน section/category ครบตาม master | รองรับ Feature Article, Trending Now, Journal Board, Watch Brands, Watch 101, Watch Apparel, Watch Events | map section/category ใน Figma ให้ครบ |
 | High | Search Article และ Category Filter ต้องชัด | Master รองรับ Search Article และ Category Filter | เพิ่ม search state, category filter state และ no-result state |
-| High | Article Detail ต้องรองรับ Like / Share | User ทั่วไปอ่าน, Like และ Share บทความได้ใน Phase 1 | เพิ่ม Like/Share action บน Article Detail |
+| High | Article Detail ต้องรองรับ Like / Share | User ทั่วไปอ่าน, Like และ Share บทความได้ใน Phase 1 | เพิ่ม Like/Share action บน Article Detail; Share ต้องใช้ system share sheet เป็น primary และ copy public Article deep link เป็น fallback พร้อม copy success state |
+| High | Article deep link display state ยังไม่ชัด | shared Article deep link ของ unpublished/deleted/invalid ต้องแสดง Article Unavailable / Not Found state | เพิ่ม state สำหรับ Article deep link ของ unpublished, deleted และ invalid ID |
+| High | Article back button จาก external deep link ยังไม่ชัด | ถ้าไม่มี navigation history ต้อง fallback ไป Feed | เพิ่ม back button state/annotation บน Article Detail ที่เปิดจาก external deep link |
+| High | Main navigation หลังเปิด Article deep link ยังไม่ชัด | ทั้ง Guest และ Login ต้องใช้ main navigation ต่อได้ | เพิ่ม state ที่แสดง main navigation available หลังเปิด Article deep link |
 | Medium | Infinite Scroll state ยังต้องตรวจ | Board รองรับ Infinite Scroll | เพิ่ม load more/loading/end state สำหรับ article list |
 | Medium | Guest behavior ของ Article Like ยังต้องตัดสินตาม login baseline | Master ระบุ user ทั่วไป Like/Share ได้ แต่ global login rule ระบุ Like ต้อง login | ใช้ Member สำหรับ Article Like จนกว่า master แยก Article Like สำหรับ Guest |
 | Medium | Menu label `Community` อาจไม่ตรงกับ master module name | Master module คือ Board | normalize label หรือ map `Community` เป็น Board ให้ชัด |
-| Medium | Article Share สำหรับ Guest ต้องชัด | Master lock ให้ Article Share เป็น public share action | เพิ่ม Guest share state โดยไม่ต้อง Login |
+| Medium | Article Share สำหรับ Guest ต้องชัด | Master lock ให้ Article Share เป็น public share action; Guest share ต้องไม่เปิดสิทธิ์ Article Like หรือ Report Article | เพิ่ม Guest share state โดยไม่ต้อง Login และ Guest login-required dialog state สำหรับ Article Like/Report |
 | High | Article Comment / Report Article ต้องไม่ขยายเป็น Board V1 interaction | Master ระบุ Article Like / Share และ `Report article` ที่ map เข้า Trust & Safety `Report Board Content` | ซ่อน Article Comment; ใช้ Article Detail overflow menu label `Report article`, reason sheet, success state และ error states ตาม Board Module |
 
 ### 13 Settings Module

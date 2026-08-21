@@ -305,6 +305,7 @@ Asset Detail
 
 - Share Asset entry point: Feed Card, Asset Detail และ Profile asset grid
 - Share Profile entry point: Owner Profile และ Public Profile
+- Share Article entry point: Article Detail เท่านั้น (ดู [12_BOARD_MODULE.md](12_BOARD_MODULE.md) Article Share Rule และ Article Deep Link Display State Rule)
 - Feed ไม่รองรับ Comment โดยตรง แต่ Share ทำได้จาก Feed
 - Share เป็น public share action สำหรับ public content
 - Guest สามารถ Share public content ได้โดยไม่ต้อง Login

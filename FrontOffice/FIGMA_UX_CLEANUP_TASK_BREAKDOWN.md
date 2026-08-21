@@ -223,6 +223,11 @@ Current review status: Asset Detail / Profile coverage is complete, including Sh
 - Back button บน normal Asset Detail ที่เปิดจาก external deep link (ไม่มี navigation history) ต้อง fallback ไป Feed ไม่ใช่ปิด app
 - Main navigation (bottom tab / menu) ต้อง available หลังเปิด deep link ทั้ง Guest และ Login
 - Guest เปิด public deep link ได้โดยไม่ต้อง Login แต่กด action ที่ต้อง Login (Like, Follow, Comment, Chat, Make Offer, Report, Block User) ต้องเจอ Global Login Required Dialog
+- Article Share ต้องใช้ system share sheet เป็น primary channel และ copy public Article deep link เป็น fallback พร้อม copy success state
+- Shared Article deep link ของ unpublished/deleted/invalid ต้องแสดง Article Unavailable / Not Found state
+- Back button บน Article Detail ที่เปิดจาก external deep link (ไม่มี navigation history) ต้อง fallback ไป Feed
+- Main navigation ต้อง available หลังเปิด Article deep link ทั้ง Guest และ Login
+- Guest ที่เปิด Article deep link แล้วกด Article Like หรือ Report Article ต้องเจอ Global Login Required Dialog
 
 ### Status / Entry Point Notes
 

@@ -330,7 +330,14 @@ Purpose:
 - [ ] Article Like ต้อง Login
 - [ ] Guest Article Like ต้องเปิด Login Required Dialog
 - [ ] Article Share เป็น public share action และ Guest ใช้ได้
+- [ ] Article Share ใช้ system share sheet เป็น primary channel และ copy public Article deep link เป็น fallback พร้อม copy success state
 - [ ] Article Share ไม่สร้าง notification
+- [ ] Public Article deep link ต้อง validate publish state, deletion state และ availability เมื่อเปิด
+- [ ] Shared Article deep link ของ unpublished/deleted/invalid ต้องแสดง Article Unavailable / Not Found state
+- [ ] Admin เปิด deep link ของ Article ตัวเองที่ unpublished ต้องเห็น Article Detail พร้อม admin preview note
+- [ ] Back button บน Article Detail ที่เปิดจาก external deep link (ไม่มี navigation history) fallback ไป Feed
+- [ ] Main navigation (bottom tab/menu) ใช้งานได้ต่อหลังเปิด Article deep link ทั้ง Guest และ Login
+- [ ] Guest ที่เปิด Article deep link แล้วกด Article Like หรือ Report Article ต้องเจอ Global Login Required Dialog
 - [ ] Article Comment ไม่อยู่ใน V1 baseline
 - [ ] Article Detail overflow menu มี `Report article`
 - [ ] Report article ใช้ Trust & Safety report type `Board Content` และ target type `Article`

@@ -1493,7 +1493,64 @@ And ต้องไม่มี user create post/edit post/delete post flow ใ�
 
 Given Guest เปิด Article Detail  
 When Guest กด Share  
-Then ระบบต้องเริ่ม public share behavior โดยไม่บังคับ Login
+Then ระบบต้องเปิด system share sheet หรือ copy public Article deep link fallback โดยไม่บังคับ Login  
+And ต้องไม่เปิดสิทธิ์ Article Like หรือ Report Article
+
+## QA-BOARD-002A: Article Share Channel Fallback
+
+Given platform รองรับ system share sheet  
+When user กด Share Article  
+Then ระบบต้องเปิด system share sheet
+
+Given platform ไม่รองรับ system share sheet  
+When user กด Share Article  
+Then ระบบต้อง fallback เป็น copy public Article deep link และแสดง copy success state
+
+## QA-BOARD-002B: Article Share No Notification
+
+Given user กด Share Article  
+When share สำเร็จ  
+Then ระบบต้องไม่สร้าง Notification Center item
+
+## QA-BOARD-002C: Article Deep Link Validation
+
+Given user เปิด shared Article deep link  
+When linked Article เป็น published  
+Then ระบบต้องแสดง Article Detail
+
+Given user เปิด shared Article deep link  
+When linked Article ถูก unpublish, deleted หรือ invalid ID  
+Then ระบบต้องแสดง Article Unavailable / Not Found state ไม่ใช่เปิดเนื้อหา
+
+## QA-BOARD-002D: Article Deep Link Display State By User
+
+Given Guest เปิด shared published Article deep link  
+Then ระบบต้องแสดง Article Detail โดยไม่ต้อง Login  
+And เมื่อ Guest กด Article Like หรือ Report Article ต้องเจอ Global Login Required Dialog
+
+Given Login user เปิด shared published Article deep link  
+Then ระบบต้องแสดง Article Detail ตามสิทธิ์
+
+## QA-BOARD-002E: Article Back Button From External Deep Link
+
+Given user เปิด Article Detail จาก external deep link โดยไม่มี navigation history  
+When user กด back button  
+Then ระบบต้อง fallback ไป Feed ไม่ใช่ปิด app หรือแสดงหน้าว่าง
+
+Given user เปิด Article Detail จาก Board, Search Article หรือ Category Filter  
+When user กด back button  
+Then ระบบต้องกลับไปหน้าก่อนหน้าตามปกติ
+
+## QA-BOARD-002F: Main Navigation Available After Article Deep Link
+
+Given Guest เปิด Article Detail จาก external deep link  
+When Guest ใช้ main navigation ไปยัง Feed, Search, Board หรือ Public Profile  
+Then ระบบต้องอนุญาตให้เข้าถึง surface เหล่านั้นได้  
+And เมื่อ Guest กด login-required surface ต้องเจอ Global Login Required Dialog
+
+Given Login user เปิด Article Detail จาก external deep link  
+When Login user ใช้ main navigation ไปยัง surface อื่น  
+Then ระบบต้องอนุญาตให้เข้าถึงได้ตามสิทธิ์
 
 ## QA-BOARD-003: Guest Article Like
 
@@ -1639,6 +1696,9 @@ QA sign-off ก่อนส่ง Dev complete ต้องครอบคลุ
 - [ ] Portfolio valuation fallback and no market price
 - [ ] Settings baseline and account-type behavior
 - [ ] Board guest share and login-required article like
+- [ ] Article share channel (system share sheet / copy link fallback)
+- [ ] Article deep link validation (published / unpublished / deleted / invalid)
+- [ ] Article back button + main navigation after deep link
 - [ ] Report and Block trust impact
 - [ ] Integration failure: image, FCM, Watch Price API
 - [ ] Shared deep link display state by status and user (Guest / Login / Owner × Sale / Show / Hide / Sold / Deleted / blocked / suspended)

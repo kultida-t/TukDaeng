@@ -758,6 +758,10 @@ Rules:
 - User ทั่วไปอ่าน, Like และ Share บทความได้ใน Phase 1
 - User ทั่วไปไม่สามารถสร้างหรือแก้ไขบทความได้ใน Phase 1
 - Guest อ่านและ Share บทความได้โดยไม่ต้อง Login เพราะ Article Share เป็น public share action
+- Article Share entry point คือ Article Detail เท่านั้น
+- Primary share channel คือ system share sheet เมื่อ platform รองรับ; Fallback คือ copy public Article deep link
+- Article Share ไม่สร้าง Notification Center item
+- Public Article deep link ต้อง validate publish state, deletion state และ availability เมื่อเปิด
 - Article Like ต้อง Login ตาม Global Login Required baseline
 - Article Comment ไม่อยู่ใน FO V1 baseline
 - Article Detail รองรับ report action ด้วย UI label `Report article`
