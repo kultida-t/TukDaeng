@@ -24,6 +24,15 @@ When working on other screens:
 
 See `PROTECTED_SCREENS.md` for the protected-screen policy and review checklist.
 
+## Language Conventions
+
+UI copy, labels, error messages, and documentation for TukDaeng are primarily in Thai. When writing or editing code:
+
+- Write UI-facing copy (button labels, headings, tooltips, toast/error messages, empty states) in Thai unless the surrounding file already uses English.
+- Write code comments in the same language as neighboring comments in the file; if the file has no comments yet, prefer Thai for user-facing intent and English for purely technical notes.
+- Keep technical terms, product names, file names, screen names, statuses, commands, and code identifiers in English when that is clearer or already the convention in the file.
+- Match the tone and register of nearby copy so new text blends in rather than standing out.
+
 ## Kanban Task Style
 
 When the user asks to create, split, or add Kanban tasks for TukDaeng, prefer one complete task per user-facing work item instead of splitting audit, implementation, QA, and work-log into separate tasks, unless the user explicitly asks for subtasks.
