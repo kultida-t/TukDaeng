@@ -216,6 +216,13 @@ Current review status: Asset Detail / Profile coverage is complete, including Sh
 - Expected Profit ต้องเป็น Owner-only เพราะใช้ purchase/private data
 - Shared deep link ของ `Hide`, `Sold`, Deleted หรือ blocked asset ต้องไป unavailable / permission state ไม่ใช่เปิด private detail
 - Permission denied / unavailable state ต้องใช้ CTA `Go back` และไม่ใช้ `Back to feed` บน shared fallback screen
+- Share บน Asset Detail ต้องใช้ system share sheet เป็น primary channel และ copy public deep link เป็น fallback พร้อม copy success state
+- Share Asset ต้องทำได้จาก Feed, Asset Detail และ Profile asset grid (ไม่จำกัด Asset Detail only)
+- Share Profile ต้องทำได้จาก Owner Profile และ Public Profile
+- Guest ต้อง Share public Asset แดได้โดยไม่ต้อง Login จากทุก entry point และต้องไม่เปิดสิทธิ์ Like, Follow, Comment, Chat, Make Offer, Report หรือ Block User
+- Back button บน normal Asset Detail ที่เปิดจาก external deep link (ไม่มี navigation history) ต้อง fallback ไป Feed ไม่ใช่ปิด app
+- Main navigation (bottom tab / menu) ต้อง available หลังเปิด deep link ทั้ง Guest และ Login
+- Guest เปิด public deep link ได้โดยไม่ต้อง Login แต่กด action ที่ต้อง Login (Like, Follow, Comment, Chat, Make Offer, Report, Block User) ต้องเจอ Global Login Required Dialog
 
 ### Status / Entry Point Notes
 
@@ -229,6 +236,8 @@ Current review status: Asset Detail / Profile coverage is complete, including Sh
 | Permission / unavailable CTA | ใช้ primary CTA `Go back`; ถ้ามี navigation history ให้กลับหน้าก่อนหน้า ถ้าไม่มี history ให้ fallback ไป Feed |
 | Owner opens own `Hide` | แสดง owner-only detail และไม่เปิดเป็น public/viewer detail |
 | Owner opens own `Sold` | แสดง sold owner-only detail, Sold History และ lock main edit action |
+| Normal Asset Detail จาก external deep link (no history) | back button ต้อง fallback ไป Feed ไม่ใช่ปิด app |
+| Main navigation หลังเปิด deep link | bottom tab / menu ต้อง available ทั้ง Guest และ Login |
 
 ### Acceptance Gate
 
@@ -239,6 +248,8 @@ Current review status: Asset Detail / Profile coverage is complete, including Sh
 - Market Comparison ไม่ใช้ Purchase Price fallback
 - Deep link ของ non-public asset ไม่เปิด private detail
 - Permission denied / unavailable screen ใช้ CTA `Go back` พร้อม fallback ไป Feed เมื่อไม่มี navigation history
+- Back button บน normal Asset Detail ที่เปิดจาก external deep link ต้อง fallback ไป Feed
+- Main navigation ต้อง available หลังเปิด deep link ทั้ง Guest และ Login
 
 ### Visual Review Evidence: Owner Asset Detail - Sale
 

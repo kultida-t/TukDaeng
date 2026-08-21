@@ -39,11 +39,13 @@ Figma มี coverage ของ flow หลักค่อนข้างมา�
 | Priority | Figma Gap | Master Baseline | Action |
 | --- | --- | --- | --- |
 | Must Fix | Menu มีรายการนอก baseline เช่น Watch Shops, Accessories Shop, Repair Shop, Auction Center, Consignment Center, Authentication Center, Community | Master ยังไม่ได้สรุปเป็น functional scope หลัก | จัดกลุ่มเป็น in-scope, future phase หรือ placeholder |
-| Must Fix | Feed action อาจทำให้เข้าใจว่า Comment / Share ทำจาก Feed ได้ | Comment และ Share ต้องทำผ่าน Asset Detail เท่านั้น | ปรับ tap target หรือ annotation ให้พาไป Asset Detail |
+| Must Fix | Feed action อาจทำให้เข้าใจว่า Comment ทำจาก Feed ได้ | Comment ต้องทำผ่าน Asset Detail เท่านั้น แต่ Share ทำได้จาก Feed | ตัด Comment action จาก Feed และเพิ่ม Share Asset action บน Feed |
 | High | Notification destination ยังไม่ครบ | Like/Comment ไป Asset Detail, Follow ไป Public Profile, Offer ไป Offer/Chat context, Watch Alert ไป Result List | เพิ่ม destination state ของ notification ทุก type |
 | High | Watch Alert notification อาจเปิด Asset Detail โดยตรง | Watch Alert notification ต้องไป Watch Alert Result List | เพิ่ม Watch Alert Result List เป็น destination |
 | High | Deleted Asset จาก deep link / notification ยังไม่ชัด | Detail ต้องแสดง `รายการนี้ไม่พร้อมใช้งานแล้ว`; Chat ยังอยู่; Offer เป็น Cancelled | เพิ่ม unavailable fallback state |
 | High | Global Login Required Dialog ยังไม่เห็นในทุก entry point | Guest ใช้ feature ที่ต้อง Login ต้องเห็น dialog เดียวกัน | เพิ่ม dialog state จาก Like, Follow, Offer, Chat, Watch Alert, Favorites, Following |
+| High | Back button บน normal screen ที่เปิดจาก external deep link ยังไม่ชัด | ถ้าไม่มี navigation history ให้ fallback ไป Feed ไม่ใช่ปิด app | เพิ่ม state/annotation ของ back button บน Asset Detail / Public Profile / Article Detail ที่เปิดจาก external deep link |
+| High | Main navigation หลังเปิด deep link ยังไม่ชัด | ทั้ง Guest และ Login ต้องใช้ main navigation ต่อได้หลังเปิด deep link | เพิ่ม state ที่แสดง main navigation (bottom tab/menu) available หลังเปิด deep link ทั้ง Guest และ Login |
 | Medium | หลาย screen ยังใช้คำจากเอกสารเก่า | Source of truth ใช้ canonical terminology จาก master | Normalize label หรือใส่ mapping ให้ชัดก่อนส่ง Dev/QA |
 | Medium | Block / Report entry ยังไม่ผูกกับ navigation | Trust & Safety ต้องรองรับ Block และ Report จาก user/content context | เพิ่ม entry points จาก Profile, Asset Detail, Comment, Chat, Board |
 
@@ -77,7 +79,7 @@ Figma มี coverage ของ flow หลักค่อนข้างมา�
 | High | ยังไม่เห็น Feed Error state พร้อม retry | โหลด Feed ไม่สำเร็จต้องแสดง Error State และปุ่ม `ลองใหม่` | เพิ่ม error screen/state พร้อม retry |
 | High | ยังไม่เห็น Offline cached data state | Feed ต้องแสดงข้อมูลล่าสุดที่โหลดไว้เมื่อ Offline | เพิ่ม offline/cached state หรือ banner |
 | Medium | Feed Card ยังไม่ยืนยัน required fields ครบ | Card ต้องแสดง Asset Images, Brand, Model, Price, Posted Time, Owner Name, Like Count, Comment Count | ตรวจและ annotate card fields ให้ครบ |
-| Medium | Feed อาจสื่อว่า Comment / Share ทำจาก Feed ได้ | Comment และ Share ต้องทำผ่าน Asset Detail เท่านั้น | ตัดหรือปรับ action ที่ทำให้เข้าใจผิด |
+| Medium | Feed อาจสื่อว่า Comment ทำจาก Feed ได้ | Comment ต้องทำผ่าน Asset Detail เท่านั้น แต่ Share ทำได้จาก Feed | ตัดหรือปรับ Comment action ที่ทำให้เข้าใจผิด และเพิ่ม Share Asset action บน Feed |
 | Medium | ยังไม่เห็น Like / Unlike sync กับ Favorites | Like ต้องเพิ่มเข้า Favorites และ Unlike ต้องลบออกจาก Favorites | เพิ่ม state หลัง Like / Unlike และผลต่อ Favorites |
 | Medium | ยังไม่เห็น Swipe image / Full Screen Image Viewer จาก Feed card | Feed action ต้องรองรับ Swipe image และเปิด Full Screen Image Viewer | เพิ่ม image interaction state |
 | Medium | ยังไม่เห็น navigation destination ชัด | Feed Card ต้องเปิด Asset Detail และ Owner Name/Profile area ต้องเปิด Public Profile | ระบุ tap target และ destination ให้ชัด |
@@ -126,6 +128,11 @@ Figma มี coverage ของ flow หลักค่อนข้างมา�
 | Medium | Guest restriction state ยังไม่ครบ | Guest ดูได้ แต่ Like, Follow, Comment, Chat, Offer ต้อง Login | เพิ่ม Global Login Required Dialog สำหรับ guest action |
 | Medium | Detail ของ Asset สถานะ Show ต้องรองรับ `Make an Offer` / `Contact seller` | Master อนุญาตให้ `Show` เสนอราคา/ติดต่อได้จาก Detail แต่ยังไม่ขึ้น Feed, Search หรือ Watch Alert | คง Make Offer / Contact Seller บน `Show` และ annotate ว่า entry มาจาก Detail/Public Profile เท่านั้น |
 | High | Market Comparison / Expected Profit ยังไม่ชัด | Market Comparison ใช้ Asking Price เทียบ Watch Price API Market Price; Expected Profit เป็น Owner-only เพราะใช้ Purchase Price | เพิ่ม Above/At/Below, No market price และ Owner-only Expected Profit state |
+| High | Share Rule บน Asset Detail ยังไม่ครบ channel และ guest permission | Share ใช้ system share sheet เป็น primary, copy public deep link เป็น fallback, Guest share ได้โดยไม่ต้อง Login | เพิ่ม share sheet state, copy link success และ guest share state บน Asset Detail |
+| High | Shared deep link display state สำหรับ `Hide` / `Sold` ยังไม่ชัด | non-owner เปิด stale link ของ `Hide` / `Sold` ต้องเห็น Permission Denied / Unavailable state; Owner เปิดของตัวเองต้องเห็น Owner-only detail | เพิ่ม state สำหรับ `Hide` / `Sold` stale deep link แยก non-owner และ owner |
+| High | Back button บน normal Asset Detail ที่เปิดจาก external deep link ยังไม่ชัด | ถ้าไม่มี navigation history ให้ fallback ไป Feed | เพิ่ม back button state/annotation บน Asset Detail ที่เปิดจาก external deep link |
+| High | Main navigation หลังเปิด Asset Detail deep link ยังไม่ชัด | ทั้ง Guest และ Login ต้องใช้ main navigation ต่อได้หลังเปิด deep link | เพิ่ม state ที่แสดง main navigation available หลังเปิด Asset Detail จาก deep link |
+| High | Guest login-required action หลังเปิด deep link ยังไม่ชัด | Guest เปิด public deep link ได้โดยไม่ต้อง Login แต่กด action ที่ต้อง Login ต้องเจอ Global Login Required Dialog | เพิ่ม state ที่ Guest เปิด deep link แล้วกด Like, Follow, Comment, Chat, Make Offer, Report หรือ Block User แล้วเจอ Login Required Dialog |
 
 ### 06 Profile Module
 
@@ -140,6 +147,8 @@ Figma มี coverage ของ flow หลักค่อนข้างมา�
 | Medium | ยังใช้ label legacy `Collection Show` ในหลายจุด | Canonical term คือ `Show` | ตัดสินใจว่าจะ normalize เป็น `Show` หรือเก็บ legacy label พร้อม mapping |
 | Medium | Guest Follow restriction ยังไม่ชัด | Guest กด Follow ต้องเห็น Global Login Required Dialog | เพิ่ม guest dialog/state เมื่อกด Follow |
 | Medium | Guest Share Public Profile ยังต้องตรวจ | Share Public Profile เป็น public share action และ Guest ใช้ได้โดยไม่ต้อง Login | เพิ่ม Profile Share Sheet / Copy Link fallback สำหรับ Guest และห้ามเปิด private/profile action อื่น |
+| High | Share Asset จาก Profile grid ยังไม่ชัด | Owner Profile และ Public Profile ต้องรองรับ Share asset จาก grid | เพิ่ม Share asset action บน asset card ของ Owner Profile (quick menu) และ Public Profile |
+| High | Shared profile deep link display state ยังไม่ชัด | blocked/deleted profile ต้องแสดง unavailable/not found state | เพิ่ม state สำหรับ shared profile deep link ของ blocked และ deleted user |
 | Medium | Blocked / unavailable profile state ยังไม่ชัด | Blocked profile ต้องไม่สามารถเข้าถึงได้ตาม Trust & Safety rule | เพิ่ม blocked/unavailable profile state |
 | Medium | Report / Block entry ใน Public Profile ยังต้องตรวจ | Public Profile ของ user อื่นต้องมี Report User และ Block User entry ตาม Trust & Safety | เพิ่ม more menu / action state สำหรับ Report User และ Block User |
 

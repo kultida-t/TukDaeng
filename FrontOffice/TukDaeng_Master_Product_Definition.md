@@ -302,13 +302,14 @@ Hide Feed Item:
 Feed ไม่รองรับ:
 
 - Comment จาก Feed โดยตรง
-- Share จาก Feed โดยตรง
 
-Comment และ Share ต้องทำผ่าน Asset Detail เท่านั้น
+Comment ต้องทำผ่าน Asset Detail เท่านั้น ส่วน Share สามารถทำได้จาก Feed, Asset Detail และ Profile grid (ดู Share V1 ด้านล่าง)
 
 Share V1:
 
 - Share เป็น public share action สำหรับ public Asset และ public Article
+- Share Asset entry point: Feed Card, Asset Detail และ Profile asset grid
+- Share Profile entry point: Owner Profile และ Public Profile
 - Guest สามารถ Share public content ได้โดยไม่ต้อง Login
 - Primary channel คือ system share sheet เมื่อ platform รองรับ
 - Fallback คือ copy public deep link

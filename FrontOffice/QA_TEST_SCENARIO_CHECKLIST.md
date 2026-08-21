@@ -60,6 +60,40 @@ Given platform ไม่รองรับ system share sheet
 When user กด Share public Asset, Public Profile หรือ Article  
 Then ระบบต้อง fallback เป็น copy public deep link และแสดง copy success state
 
+## QA-GLOBAL-003F: Share Asset Entry Points
+
+Given Member อยู่ที่ Feed
+When Member กด Share Asset จาก Feed Card หรือ Feed more menu
+Then ระบบต้องเริ่ม Share flow และ shared link ต้องเปิด Asset Detail
+
+Given Member อยู่ที่ Asset Detail
+When Member กด Share
+Then ระบบต้องเริ่ม Share flow และ shared link ต้องเปิด Asset Detail
+
+Given Member อยู่ที่ Profile asset grid
+When Member กด Share Asset จาก asset card
+Then ระบบต้องเริ่ม Share flow และ shared link ต้องเปิด Asset Detail
+
+Given Guest อยู่ที่ Feed, Asset Detail หรือ Public Profile grid
+When Guest กด Share Asset
+Then ระบบต้องเริ่ม Share flow โดยไม่บังคับ Login
+
+## QA-GLOBAL-003G: Share Profile Entry Points And Deep Link
+
+Given Member อยู่ที่ Owner Profile หรือ Public Profile
+When Member กด Share Profile
+Then ระบบต้องเปิด Profile Share Sheet และ shared link ต้องเปิด Public Profile
+
+Given Guest อยู่ที่ Public Profile
+When Guest กด Share Profile
+Then ระบบต้องเปิด Profile Share Sheet โดยไม่บังคับ Login
+
+Given user เปิด shared profile deep link ของ user ที่ถูก block
+Then ระบบต้องแสดง Unavailable / blocked state
+
+Given user เปิด shared profile deep link ของ user ที่ไม่มีอยู่
+Then ระบบต้องแสดง User Not Found State
+
 ## QA-GLOBAL-003B: Shared Deep Link Validation
 
 Given user เปิด public deep link  
@@ -68,6 +102,58 @@ Then ระบบต้องไม่แสดง private content และต�
 And primary CTA ต้องเป็น `Go back`
 And ถ้ามี navigation history ต้องกลับไปหน้าก่อนหน้า
 And ถ้าไม่มี navigation history ต้อง fallback ไป Feed
+
+## QA-GLOBAL-003C: Shared Deep Link Display State By Status And User
+
+Given user เปิด shared public Asset deep link
+When linked Asset เป็น `Sale` หรือ `Show`
+Then Guest ต้องเห็น public Asset Detail (Guest Mode) และ Login non-owner ต้องเห็น Viewer Mode และ Owner ต้องเห็น Owner Asset Detail
+
+Given non-owner เปิด shared deep link ของ Asset สถานะ `Hide` หรือ `Sold`
+Then ระบบต้องแสดง Permission Denied / Unavailable state ไม่ใช่เปิด private detail
+
+Given Owner เปิด deep link ของ Asset ตัวเองที่ `Hide` หรือ `Sold`
+Then ระบบต้องแสดง Owner-only detail ไม่ใช่ public/viewer detail
+
+Given user เปิด shared deep link ของ Asset ที่ถูกลบ
+Then ระบบต้องแสดง `รายการนี้ไม่พร้อมใช้งานแล้ว`
+
+Given Guest เปิด deep link ไปยัง login-required surface
+Then ระบบต้องแสดง Global Login Required Dialog หรือ Sign In
+
+Given Login user ที่ถูก Suspend หรือ Ban เปิด deep link
+Then ระบบต้อง redirect ไป account status state
+
+## QA-GLOBAL-003D: Back Button On Normal Screen From External Deep Link
+
+Given user เปิด Asset Detail จาก external deep link โดยไม่มี in-app navigation history
+When user กด back button
+Then ระบบต้อง fallback ไป Feed ไม่ใช่ปิด app หรือแสดงหน้าว่าง
+
+Given user เปิด Asset Detail จาก Feed, Search, Public Profile หรือ Notification (มี navigation history)
+When user กด back button
+Then ระบบต้องกลับไปหน้าก่อนหน้าตามปกติ
+
+## QA-GLOBAL-003E: Main Navigation Available After Deep Link
+
+Given Guest เปิด Asset Detail จาก external deep link
+When Guest ใช้ main navigation (bottom tab / menu) ไปยัง Feed, Search หรือ Public Profile
+Then ระบบต้องอนุญาตให้เข้าถึง surface เหล่านั้นได้
+And เมื่อ Guest กด login-required surface ต้องเจอ Global Login Required Dialog
+
+Given Login user เปิด Asset Detail จาก external deep link
+When Login user ใช้ main navigation ไปยัง surface อื่น
+Then ระบบต้องอนุญาตให้เข้าถึงได้ตามสิทธิ์
+
+## QA-GLOBAL-003H: Guest Login-Required Action After Deep Link
+
+Given Guest เปิด public Asset deep link
+When Guest กด Like, Follow, Comment, Chat, Make Offer, Report หรือ Block User บน Asset Detail
+Then ระบบต้องแสดง Global Login Required Dialog
+
+Given Guest เปิด Public Profile deep link
+When Guest กด Follow, Report User, Block User, Chat หรือ Make Offer บน Public Profile
+Then ระบบต้องแสดง Global Login Required Dialog
 
 ## QA-GLOBAL-004: Private Data Not Public
 
@@ -1555,3 +1641,9 @@ QA sign-off ก่อนส่ง Dev complete ต้องครอบคลุ
 - [ ] Board guest share and login-required article like
 - [ ] Report and Block trust impact
 - [ ] Integration failure: image, FCM, Watch Price API
+- [ ] Shared deep link display state by status and user (Guest / Login / Owner × Sale / Show / Hide / Sold / Deleted / blocked / suspended)
+- [ ] Back button on normal screen from external deep link fallback to Feed
+- [ ] Main navigation available after deep link for Guest and Login
+- [ ] Guest login-required action after deep link (Asset Detail + Public Profile)
+- [ ] Share Asset entry points: Feed, Asset Detail, Profile grid (Guest + Login)
+- [ ] Share Profile entry points and deep link display state (blocked / deleted user)
