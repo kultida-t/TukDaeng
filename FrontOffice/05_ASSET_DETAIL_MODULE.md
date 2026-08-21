@@ -587,9 +587,61 @@ Rules:
 
 ## Share Rule
 
-- Share ทำผ่าน Asset Detail
-- Share เป็น Deep Link ของ Asset
-- หากเปิด link ของ Asset ที่ถูกลบ ต้องแสดง Deleted Asset State
+- Share Asset entry point: Feed Card, Asset Detail และ Profile asset grid (อ้างอิง [11_SOCIAL_MODULE.md](11_SOCIAL_MODULE.md) Share Rules และ [00_NAVIGATION_AND_CROSS_MODULE_FLOW.md](00_NAVIGATION_AND_CROSS_MODULE_FLOW.md) Deep Link Rules)
+- Comment ยังทำได้จาก Asset Detail เท่านั้น แต่ Share ทำได้จาก Feed, Asset Detail และ Profile grid
+- Share เป็น public share action สำหรับ public Asset (`Sale`, `Show`)
+- Share ไม่รองรับ Asset สถานะ `Hide`, `Sold` หรือ Asset ที่ถูกลบ เพราะไม่ใช่ public content
+- Guest สามารถ Share public Asset ได้โดยไม่ต้อง Login เพราะเป็น public share action
+- Guest share ต้องไม่เปิดสิทธิ์ Like, Follow, Comment, Chat, Make Offer, Report หรือ Block User
+- Primary share channel คือ system share sheet เมื่อ platform รองรับ
+- Fallback share channel คือ copy public deep link และต้องแสดง copy success state เช่น `Asset link copied`
+- Share ไม่สร้าง Notification Center item
+- Public deep link ที่แชร์ต้อง validate asset status, deleted state, permission และ block state เมื่อเปิด (ดู Deep Link Display State Rule ด้านล่าง)
+
+## Deep Link Display State Rule
+
+เมื่อเปิด shared public Asset deep link ระบบต้อง validate ก่อน render และแสดง state ตามตารางนี้ (อ้างอิง [00_NAVIGATION_AND_CROSS_MODULE_FLOW.md](00_NAVIGATION_AND_CROSS_MODULE_FLOW.md) Deep Link Rules และ Unavailable Fallback Rules):
+
+| Case | Guest | Login User (non-owner) | Owner |
+| --- | --- | --- | --- |
+| Public Asset `Sale` / `Show` | แสดง public Asset Detail (Guest Mode) | แสดง public Asset Detail (Viewer Mode) | แสดง Owner Asset Detail |
+| Asset `Hide` (stale link) | Permission Denied / Unavailable state | Permission Denied / Unavailable state | แสดง Owner-only Asset Detail |
+| Asset `Sold` (stale link) | Permission Denied / Unavailable state | Permission Denied / Unavailable state | แสดง Owner-only Sold Asset Detail |
+| Asset Deleted | Deleted Asset State `รายการนี้ไม่พร้อมใช้งานแล้ว` | Deleted Asset State `รายการนี้ไม่พร้อมใช้งานแล้ว` | Deleted Asset State `รายการนี้ไม่พร้อมใช้งานแล้ว` |
+| Asset owner blocked viewer | Unavailable / blocked state | Unavailable / blocked state | n/a |
+| Login-required surface (เช่น Make Offer จาก deep link) | Global Login Required Dialog หรือ Sign In | แสดง surface ตามสิทธิ์ | แสดง surface ตามสิทธิ์ |
+| Account Suspended / Banned | n/a (Guest ไม่มี account) | Account status state | Account status state |
+
+Rules:
+
+- ทุก deep link ต้อง validate authentication, permission, asset status, block relationship และ deletion state ก่อน render
+- Deep link ไปยัง unavailable Asset ต้องไม่ crash และต้องไม่แสดง private data ที่ค้างอยู่
+- สำหรับ `Hide` และ `Sold` stale link ของ non-owner ให้แสดง Permission Denied / Unavailable state ไม่ใช่เปิด private detail
+- Owner เปิด deep link ของ Asset ตัวเองที่ `Hide` หรือ `Sold` ต้องแสดง Owner-only detail ไม่ใช่ public/viewer detail
+- Guest เปิด public Asset deep link ได้โดยไม่ต้อง Login แต่เมื่อ Guest กด action ที่ต้อง Login (เช่น Like, Follow, Comment, Chat, Make Offer, Report, Block User) ต้องแสดง Global Login Required Dialog เช่นเดียวกับการเข้าผ่าน entry point ปกติ
+- Login user ที่เปิด deep link แล้ว asset เปลี่ยนสถานะระหว่าง session ต้องอัปเดต visibility ตาม matrix เมื่อ sync/refresh
+
+## Back Button And Navigation After Deep Link Rule
+
+เมื่อ Asset Detail เปิดจาก external deep link (ไม่มี in-app navigation history) ต้องจัดการ back button และ main navigation ดังนี้:
+
+### Back Button บน Normal Asset Detail
+
+- ถ้ามี in-app navigation history (เช่น เปิดจาก Feed, Search, Public Profile, Notification) ให้ back button กลับไปหน้าก่อนหน้าตามปกติ
+- ถ้าไม่มี navigation history (เปิดจาก external deep link โดยตรง) ให้ back button fallback ไป Feed
+- ห้ามปิด app หรือแสดงหน้าจอว่างเปล่าเมื่อกด back button จาก Asset Detail ที่เปิดจาก external deep link
+
+### Back Button บน Error / Unavailable State
+
+- ใช้ rule เดียวกับ Exception Handling > Asset Deleted และ Permission Denied: primary CTA `Go back`
+- ถ้ามี navigation history ให้กลับหน้าก่อนหน้า
+- ถ้าไม่มี navigation history (external deep link) ให้ fallback ไป Feed
+
+### Main Navigation หลังเปิด Deep Link
+
+- หลังเปิด deep link ทั้ง Guest และ Login user ต้องใช้งาน main navigation (bottom tab / menu) ต่อได้ เพื่อเข้าถึง Feed, Search, Profile, Notification และ surface อื่น ๆ ตามสิทธิ์
+- ห้ามล็อก user อยู่ใน Asset Detail อย่างเดียวหลังเปิด deep link โดยไม่มีทางออกนอกจาก back button
+- Guest ที่เปิด deep link แล้วใช้ main navigation ต้องเจอ Global Login Required Dialog เมื่อกด login-required surface เช่นเดียวกับการเข้าผ่าน Feed ปกติ
 
 ## Make Offer Rule
 
@@ -890,7 +942,15 @@ Additional Like & Comment display criteria:
 | AC-DETAIL-023 | เมื่อ Offer Accepted ต้องเปิด Chat Room |
 | AC-DETAIL-024 | เมื่อ Offer Rejected ต้องเปิด Asset Detail |
 | AC-DETAIL-025 | User ต้องเปิด Chat จาก Asset Detail ได้ตามสิทธิ์ |
-| AC-DETAIL-026 | User ต้อง Share Asset Deep Link จาก Asset Detail ได้ |
+| AC-DETAIL-026 | User ต้อง Share Asset Deep Link จาก Asset Detail, Feed และ Profile grid ได้ โดยใช้ system share sheet เป็น primary channel และ copy public deep link เป็น fallback |
+| AC-DETAIL-026A | Guest ต้อง Share public Asset ได้โดยไม่ต้อง Login และต้องไม่เปิดสิทธิ์ Like, Follow, Comment, Chat, Make Offer, Report หรือ Block User |
+| AC-DETAIL-026B | Share ต้องไม่สร้าง Notification Center item |
+| AC-DETAIL-026C | Shared public deep link ที่เปิดต้อง validate asset status, deleted state, permission และ block state ก่อน render และต้องไม่แสดง private data |
+| AC-DETAIL-026D | เมื่อเปิด shared deep link ของ Asset `Hide` หรือ `Sold` โดย non-owner ต้องแสดง Permission Denied / Unavailable state ไม่ใช่เปิด private detail |
+| AC-DETAIL-026E | Owner เปิด deep link ของ Asset ตัวเองที่ `Hide` หรือ `Sold` ต้องแสดง Owner-only detail |
+| AC-DETAIL-026F | เมื่อ Asset Detail เปิดจาก external deep link โดยไม่มี navigation history แล้วกด back button ต้อง fallback ไป Feed ไม่ใช่ปิด app หรือแสดงหน้าว่าง |
+| AC-DETAIL-026G | หลังเปิด deep link ทั้ง Guest และ Login user ต้องใช้งาน main navigation ต่อได้ และ Guest ที่กด login-required surface ต้องเจอ Global Login Required Dialog |
+| AC-DETAIL-026H | Guest เปิด public Asset deep link ได้โดยไม่ต้อง Login แต่เมื่อ Guest กด action ที่ต้อง Login (Like, Follow, Comment, Chat, Make Offer, Report, Block User) ต้องแสดง Global Login Required Dialog |
 | AC-DETAIL-027 | Asset สถานะ `Show` ต้องแสดง Make Offer / Contact Seller / Chat ได้จาก Asset Detail แต่ต้องไม่ขึ้น Feed, Search หรือ Watch Alert |
 
 ## Deleted / Sold Asset

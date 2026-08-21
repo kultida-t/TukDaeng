@@ -40,9 +40,9 @@ Feed Module เป็น marketplace หลักของ TukDaeng สำหร
 | Tabs | `All`, `Following`, `Favorites` |
 | Card required fields | Asset Images, Brand, Model, Price, Posted Time, Owner Name, Like Count, Comment Count |
 | Card exclusions in V1 | ไม่แสดง Location, Verified Badge, Status Badge |
-| Supported actions | Like / Unlike, Swipe image, เปิด Asset Detail, เปิด Public Profile, เปิด Full Screen Image Viewer |
-| More menu actions | Asset ของผู้อื่นรองรับ Hide this asset, Report Asset, Block User; Asset ของ Owner รองรับ Edit asset, Mark as sold, Delete asset |
-| Unsupported actions | ไม่รองรับ Comment หรือ Share จาก Feed โดยตรง |
+| Supported actions | Like / Unlike, Swipe image, เปิด Asset Detail, เปิด Public Profile, เปิด Full Screen Image Viewer, Share Asset |
+| More menu actions | Asset ของผู้อื่นรองรับ Hide this asset, Report Asset, Block User, Share Asset; Asset ของ Owner รองรับ Edit asset, Mark as sold, Delete asset, Share Asset |
+| Unsupported actions | ไม่รองรับ Comment จาก Feed โดยตรง |
 | Guest access | Guest ดู Feed ได้ แต่ action ที่ต้อง Login ต้องแสดง Global Login Required Dialog |
 | Performance | Feed โหลดภายใน 2 วินาที, รูปภาพ Lazy Load, รองรับ Infinite Scroll |
 | End state | เมื่อ Scroll ถึงรายการสุดท้ายให้แสดง `คุณดูรายการทั้งหมดแล้ว` |
@@ -66,7 +66,7 @@ Feed Module เป็น marketplace หลักของ TukDaeng สำหร
 | High | ยังไม่เห็น Feed Error state พร้อม retry | โหลด Feed ไม่สำเร็จต้องแสดง Error State และปุ่ม `ลองใหม่` | เพิ่ม error screen/state พร้อม retry |
 | High | ยังไม่เห็น Offline cached data state | Feed ต้องแสดงข้อมูลล่าสุดที่โหลดไว้เมื่อ Offline | เพิ่ม offline/cached state หรือ banner |
 | Medium | Feed Card ยังไม่ยืนยัน required fields ครบ | Card ต้องแสดง Asset Images, Brand, Model, Price, Posted Time, Owner Name, Like Count, Comment Count | ตรวจและ annotate card fields ให้ครบ |
-| Medium | Feed อาจสื่อว่า Comment / Share ทำจาก Feed ได้ | Comment และ Share ต้องทำผ่าน Asset Detail เท่านั้น | ตัดหรือปรับ action ที่ทำให้เข้าใจผิด |
+| Medium | Feed อาจสื่อว่า Comment ทำจาก Feed ได้ | Comment ต้องทำผ่าน Asset Detail เท่านั้น แต่ Share ทำได้จาก Feed | ตัดหรือปรับ Comment action ที่ทำให้เข้าใจผิด และเพิ่ม Share Asset action บน Feed |
 | Medium | ยังไม่เห็น Like / Unlike sync กับ Favorites | Like ต้องเพิ่มเข้า Favorites และ Unlike ต้องลบออกจาก Favorites | เพิ่ม state หลัง Like / Unlike และผลต่อ Favorites |
 | Medium | ยังไม่เห็น Swipe image / Full Screen Image Viewer จาก Feed card | Feed action ต้องรองรับ Swipe image และเปิด Full Screen Image Viewer | เพิ่ม image interaction state |
 | Medium | ยังไม่เห็น navigation destination ชัด | Feed Card ต้องเปิด Asset Detail และ Owner Name/Profile area ต้องเปิด Public Profile | ระบุ tap target และ destination ให้ชัด |
@@ -101,7 +101,6 @@ Feed Module เป็น marketplace หลักของ TukDaeng สำหร
 ## Out Of Scope
 
 - Comment จาก Feed โดยตรง
-- Share จาก Feed โดยตรง
 - Location บน Feed Card
 - Verified Badge บน Feed Card
 - Status Badge บน Feed Card
@@ -215,7 +214,7 @@ Owner ต้องไม่เห็น Hide this asset, Report Asset หรื�
 
 1. User กด Feed Card
 2. ระบบเปิด Asset Detail
-3. Comment และ Share ต้องทำจาก Asset Detail เท่านั้น
+3. Comment ต้องทำจาก Asset Detail เท่านั้น ส่วน Share ทำได้จาก Feed และ Asset Detail
 
 ## Open Public Profile
 
@@ -406,11 +405,14 @@ Feed รองรับ:
 - เปิด Asset Detail
 - เปิด Public Profile
 - เปิด Full Screen Image Viewer
+- Share Asset (system share sheet / copy public deep link)
 - เมนูสามจุดสำหรับ Asset ของผู้อื่น:
+  - Share Asset / แชร์รายการนี้
   - Hide this asset / ไม่ต้องการเห็นรายการนี้
   - Report Asset / รายงานรายการนี้
   - Block User / บล็อกผู้ใช้งาน
 - เมนูสามจุดสำหรับ Asset ของ Owner:
+  - Share Asset / แชร์รายการนี้
   - Edit asset / แก้ไขรายการ
   - Edit provenance / แก้ไขประวัติหรือข้อมูลฝากขาย
   - Mark as sold / บันทึกว่าขายแล้ว
@@ -420,7 +422,22 @@ Feed รองรับ:
 Feed ไม่รองรับ:
 
 - Comment จาก Feed โดยตรง
-- Share จาก Feed โดยตรง
+
+## Share Asset From Feed
+
+1. User กด Share Asset จาก Feed Card หรือ Feed more menu
+2. ระบบเปิด system share sheet หรือ copy public deep link fallback
+3. Shared link เปิดแล้วไป Asset Detail
+
+Share Asset from Feed rules:
+
+- Share เป็น public share action สำหรับ Asset สถานะ `Sale` (Feed แสดงเฉพาะ `Sale`)
+- Guest สามารถ Share ได้โดยไม่ต้อง Login
+- Primary channel คือ system share sheet เมื่อ platform รองรับ
+- Fallback คือ copy public deep link พร้อม copy success state
+- Share ไม่สร้าง Notification Center item
+- Shared deep link ต้อง validate asset status, deleted state, permission และ block state เมื่อเปิด (ดู [05_ASSET_DETAIL_MODULE.md](05_ASSET_DETAIL_MODULE.md) Deep Link Display State Rule)
+- สำหรับ navigation หลังเปิด shared deep link ดู [00_NAVIGATION_AND_CROSS_MODULE_FLOW.md](00_NAVIGATION_AND_CROSS_MODULE_FLOW.md) Back Button And Main Navigation After Deep Link
 
 ## Hide Feed Item Rule
 
@@ -655,7 +672,10 @@ Owner fallback rules:
 | AC-FEED-014 | Feed Card เปิด Asset Detail ได้ |
 | AC-FEED-015 | Owner Name หรือ Profile area เปิด Public Profile ได้ |
 | AC-FEED-016 | Feed รองรับ Swipe image และ Full Screen Image Viewer |
-| AC-FEED-017 | Feed ไม่อนุญาต Comment หรือ Share จาก Feed โดยตรง |
+| AC-FEED-017 | Feed ไม่อนุญาต Comment จาก Feed โดยตรง แต่ Share Asset ทำได้จาก Feed |
+| AC-FEED-017J | Feed more menu สำหรับ Asset ของผู้อื่นต้องมี Share Asset, Hide this asset, Report Asset และ Block User |
+| AC-FEED-017K | Owner Feed more menu ต้องมี Share Asset, Edit asset, Edit provenance, Mark as sold, Change status และ Delete asset |
+| AC-FEED-017L | Guest ต้อง Share Asset จาก Feed ได้โดยไม่ต้อง Login และ shared link ต้องเปิด Asset Detail |
 | AC-FEED-017A | Feed more menu สำหรับ Asset ของผู้อื่นต้องมี Hide this asset, Report Asset และ Block User |
 | AC-FEED-017B | Hide this asset ต้องซ่อน Asset เฉพาะ Feed ของผู้กด และไม่กระทบ Owner, ผู้ใช้อื่น, Public Profile, Offer หรือ Chat |
 | AC-FEED-017C | Hide this asset ต้องมี Undo ชั่วคราว และถ้าไม่ Undo ต้องไม่กลับมาใน Feed หลัง refresh/reload |

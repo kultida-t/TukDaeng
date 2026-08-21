@@ -44,7 +44,7 @@ V1 ไม่ใช่ full social network และไม่รองรับ R
 | Like Entry | Feed และ Asset Detail | Like/Unlike ทำได้จาก Feed และ Asset Detail |
 | Favorites Integration | Like เพิ่ม Asset เข้า Favorites, Unlike ลบออก | Like state ต้อง sync กับ Favorites |
 | Owner Like | Owner สามารถ Like Asset ตัวเองได้ | ห้าม block owner-like เว้นแต่ master เปลี่ยน |
-| Feed Comment / Share | Feed ไม่รองรับ Comment หรือ Share โดยตรง | Feed แสดง Comment Count ได้ แต่ action ต้องเปิด Asset Detail |
+| Feed Comment / Share | Feed ไม่รองรับ Comment โดยตรง แต่ Share ทำได้จาก Feed | Feed แสดง Comment Count ได้ แต่ action ต้องเปิด Asset Detail; Share ทำได้จาก Feed Card |
 | Comment Entry | Comment ต้องทำใน Asset Detail | ห้าม comment จาก Feed |
 | Comment Structure | IG-style one-level replies | Figma รองรับ reply ได้ 1 ชั้นใต้ comment หลัก แต่ไม่มี reply ซ้อนหลายระดับ |
 | Comment Edit | ไม่มี Edit Comment ใน V1 | ห้ามแสดง edit comment action |
@@ -61,7 +61,7 @@ V1 ไม่ใช่ full social network และไม่รองรับ R
 | Priority | Figma Gap | Master Baseline | Action |
 | --- | --- | --- | --- |
 | Must Fix | Comment UI ต้องรองรับการตอบโต้แบบ IG โดยไม่กลายเป็น forum thread | Comment รองรับ one-level replies ใต้ comment หลักเท่านั้น และไม่รองรับ reply ซ้อนหลายระดับ | ปรับ comment UI ให้แสดง reply ได้ 1 ชั้นใต้ comment หลัก และป้องกัน reply ต่อจาก reply |
-| Must Fix | Feed อาจสื่อว่า Comment / Share ทำจาก Feed ได้ | Comment และ Share ต้องทำผ่าน Asset Detail เท่านั้น | ตัด direct comment/share action จาก Feed หรือให้กดแล้วเปิด Asset Detail |
+| Must Fix | Feed อาจสื่อว่า Comment ทำจาก Feed ได้ | Comment ต้องทำผ่าน Asset Detail เท่านั้น แต่ Share ทำได้จาก Feed | ตัด direct comment action จาก Feed หรือให้กดแล้วเปิด Asset Detail และเพิ่ม Share action บน Feed |
 | High | Guest state สำหรับ Like / Comment / Follow ยังไม่ครบ | Guest กด action ที่ต้อง Login ต้องเห็น Global Login Required Dialog | เพิ่ม guest dialog/state ทุก action |
 | High | Like / Unlike ต้อง sync Favorites | Like สำเร็จต้องเพิ่ม Favorites, Unlike ต้องลบออก | เพิ่ม state note หรือ interaction mapping กับ Favorites |
 | High | Following Feed ต้องแสดงเฉพาะ Sale | Following Feed แสดง Asset Sale ของ user ที่ follow | ตรวจ Figma/annotation ไม่ให้ Show, Hide, Sold โผล่ |
@@ -90,7 +90,8 @@ V1 ไม่ใช่ full social network และไม่รองรับ R
 - Unfollow User
 - Followers / Following count
 - Following Feed integration
-- Share Asset จาก Asset Detail
+- Share Asset จาก Feed, Asset Detail และ Profile asset grid
+- Share Profile จาก Owner Profile และ Public Profile
 - Notification สำหรับ Like, Comment, Follow
 - Guest Login Required Dialog สำหรับ social actions
 
@@ -104,7 +105,7 @@ V1 ไม่ใช่ full social network และไม่รองรับ R
 - Repost
 - Story
 - Social activity feed แยก
-- Share จาก Feed โดยตรง
+- Comment จาก Feed โดยตรง (Comment ทำได้ที่ Asset Detail เท่านั้น; Share ทำได้จาก Feed)
 
 ---
 
@@ -112,9 +113,10 @@ V1 ไม่ใช่ full social network และไม่รองรับ R
 
 | Screen / Component | Description |
 | --- | --- |
-| Feed Card | Like/Unlike, Like Count, Comment Count, เปิด Asset Detail |
+| Feed Card | Like/Unlike, Like Count, Comment Count, Share Asset, เปิด Asset Detail |
 | Asset Detail | Like, Comment, Share, Comment Section, Report Comment, Follow owner |
-| Public Profile | Follow / Unfollow |
+| Profile Asset Grid | Share Asset (Owner: Sale/Show; Public: Sale/Show), เปิด Asset Detail |
+| Public Profile | Follow / Unfollow, Share Profile |
 | Following Feed | Asset Sale ของ user ที่กำลัง Follow |
 | Notification | Like, Comment, Follow destination |
 | Global Login Required Dialog | แสดงเมื่อ Guest กด social action |
@@ -268,7 +270,7 @@ Asset Detail
 - Feed Card แสดง Like Count และ Comment Count ได้
 - Feed รองรับ Like / Unlike
 - Feed ไม่รองรับ Comment จาก Feed โดยตรง
-- Feed ไม่รองรับ Share จาก Feed โดยตรง
+- Feed รองรับ Share Asset โดยตรงจาก Feed Card และ Feed more menu
 - กด Comment Count หรือ comment entry จาก Feed ต้องเปิด Asset Detail ไม่ใช่เปิด composer บน Feed
 
 ## Comment Rules
@@ -301,14 +303,17 @@ Asset Detail
 
 ## Share Rules
 
-- Share Asset ทำผ่าน Asset Detail เท่านั้น
-- Feed ไม่รองรับ Share โดยตรง
+- Share Asset entry point: Feed Card, Asset Detail และ Profile asset grid
+- Share Profile entry point: Owner Profile และ Public Profile
+- Share Article entry point: Article Detail เท่านั้น (ดู [12_BOARD_MODULE.md](12_BOARD_MODULE.md) Article Share Rule และ Article Deep Link Display State Rule)
+- Feed ไม่รองรับ Comment โดยตรง แต่ Share ทำได้จาก Feed
 - Share เป็น public share action สำหรับ public content
 - Guest สามารถ Share public content ได้โดยไม่ต้อง Login
 - Share ไม่สร้าง Notification Center item
 - Primary share channel คือ system share sheet เมื่อ platform รองรับ
 - Fallback share channel คือ copy public deep link
 - Public deep link ต้อง validate asset status, deleted state, permission และ block state เมื่อเปิด
+- สำหรับ display state และ navigation หลังเปิด shared deep link ดู [05_ASSET_DETAIL_MODULE.md](05_ASSET_DETAIL_MODULE.md) Deep Link Display State Rule และ Back Button And Navigation After Deep Link Rule และ [00_NAVIGATION_AND_CROSS_MODULE_FLOW.md](00_NAVIGATION_AND_CROSS_MODULE_FLOW.md) Deep Link Rules
 
 ## Guest Rules
 
@@ -531,14 +536,19 @@ When Member กด notification
 Then ระบบต้องเปิด Asset Detail  
 And focus comment ที่เกี่ยวข้อง
 
-## AC-SOCIAL-014: Share From Asset Detail Only
+## AC-SOCIAL-014: Share From Feed, Asset Detail And Profile Grid
 
 Given Member ต้องการ Share Asset  
 When Member อยู่ที่ Feed  
-Then ระบบต้องไม่ share จาก Feed โดยตรง
+Then ระบบต้องเริ่ม Share flow ได้จาก Feed
 
 And เมื่อ Member อยู่ที่ Asset Detail  
 Then ระบบสามารถเริ่ม Share flow ได้
+
+And เมื่อ Member อยู่ที่ Profile asset grid  
+Then ระบบสามารถเริ่ม Share flow ได้
+
+And Comment ยังทำได้จาก Asset Detail เท่านั้น
 
 ---
 

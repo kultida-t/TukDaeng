@@ -302,13 +302,14 @@ Hide Feed Item:
 Feed ไม่รองรับ:
 
 - Comment จาก Feed โดยตรง
-- Share จาก Feed โดยตรง
 
-Comment และ Share ต้องทำผ่าน Asset Detail เท่านั้น
+Comment ต้องทำผ่าน Asset Detail เท่านั้น ส่วน Share สามารถทำได้จาก Feed, Asset Detail และ Profile grid (ดู Share V1 ด้านล่าง)
 
 Share V1:
 
 - Share เป็น public share action สำหรับ public Asset และ public Article
+- Share Asset entry point: Feed Card, Asset Detail และ Profile asset grid
+- Share Profile entry point: Owner Profile และ Public Profile
 - Guest สามารถ Share public content ได้โดยไม่ต้อง Login
 - Primary channel คือ system share sheet เมื่อ platform รองรับ
 - Fallback คือ copy public deep link
@@ -757,6 +758,10 @@ Rules:
 - User ทั่วไปอ่าน, Like และ Share บทความได้ใน Phase 1
 - User ทั่วไปไม่สามารถสร้างหรือแก้ไขบทความได้ใน Phase 1
 - Guest อ่านและ Share บทความได้โดยไม่ต้อง Login เพราะ Article Share เป็น public share action
+- Article Share entry point คือ Article Detail เท่านั้น
+- Primary share channel คือ system share sheet เมื่อ platform รองรับ; Fallback คือ copy public Article deep link
+- Article Share ไม่สร้าง Notification Center item
+- Public Article deep link ต้อง validate publish state, deletion state และ availability เมื่อเปิด
 - Article Like ต้อง Login ตาม Global Login Required baseline
 - Article Comment ไม่อยู่ใน FO V1 baseline
 - Article Detail รองรับ report action ด้วย UI label `Report article`
@@ -852,6 +857,7 @@ Feature ที่ Guest ใช้ได้โดยไม่ต้อง Login:
 
 - Read Feed / Search / Public Asset Detail / Public Profile / Board Article
 - Share public Asset deep link
+- Share public Profile deep link
 - Share public Article deep link
 
 ### Deleted Asset

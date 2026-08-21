@@ -216,6 +216,18 @@ Current review status: Asset Detail / Profile coverage is complete, including Sh
 - Expected Profit ต้องเป็น Owner-only เพราะใช้ purchase/private data
 - Shared deep link ของ `Hide`, `Sold`, Deleted หรือ blocked asset ต้องไป unavailable / permission state ไม่ใช่เปิด private detail
 - Permission denied / unavailable state ต้องใช้ CTA `Go back` และไม่ใช้ `Back to feed` บน shared fallback screen
+- Share บน Asset Detail ต้องใช้ system share sheet เป็น primary channel และ copy public deep link เป็น fallback พร้อม copy success state
+- Share Asset ต้องทำได้จาก Feed, Asset Detail และ Profile asset grid (ไม่จำกัด Asset Detail only)
+- Share Profile ต้องทำได้จาก Owner Profile และ Public Profile
+- Guest ต้อง Share public Asset แดได้โดยไม่ต้อง Login จากทุก entry point และต้องไม่เปิดสิทธิ์ Like, Follow, Comment, Chat, Make Offer, Report หรือ Block User
+- Back button บน normal Asset Detail ที่เปิดจาก external deep link (ไม่มี navigation history) ต้อง fallback ไป Feed ไม่ใช่ปิด app
+- Main navigation (bottom tab / menu) ต้อง available หลังเปิด deep link ทั้ง Guest และ Login
+- Guest เปิด public deep link ได้โดยไม่ต้อง Login แต่กด action ที่ต้อง Login (Like, Follow, Comment, Chat, Make Offer, Report, Block User) ต้องเจอ Global Login Required Dialog
+- Article Share ต้องใช้ system share sheet เป็น primary channel และ copy public Article deep link เป็น fallback พร้อม copy success state
+- Shared Article deep link ของ unpublished/deleted/invalid ต้องแสดง Article Unavailable / Not Found state
+- Back button บน Article Detail ที่เปิดจาก external deep link (ไม่มี navigation history) ต้อง fallback ไป Feed
+- Main navigation ต้อง available หลังเปิด Article deep link ทั้ง Guest และ Login
+- Guest ที่เปิด Article deep link แล้วกด Article Like หรือ Report Article ต้องเจอ Global Login Required Dialog
 
 ### Status / Entry Point Notes
 
@@ -229,6 +241,8 @@ Current review status: Asset Detail / Profile coverage is complete, including Sh
 | Permission / unavailable CTA | ใช้ primary CTA `Go back`; ถ้ามี navigation history ให้กลับหน้าก่อนหน้า ถ้าไม่มี history ให้ fallback ไป Feed |
 | Owner opens own `Hide` | แสดง owner-only detail และไม่เปิดเป็น public/viewer detail |
 | Owner opens own `Sold` | แสดง sold owner-only detail, Sold History และ lock main edit action |
+| Normal Asset Detail จาก external deep link (no history) | back button ต้อง fallback ไป Feed ไม่ใช่ปิด app |
+| Main navigation หลังเปิด deep link | bottom tab / menu ต้อง available ทั้ง Guest และ Login |
 
 ### Acceptance Gate
 
@@ -239,6 +253,8 @@ Current review status: Asset Detail / Profile coverage is complete, including Sh
 - Market Comparison ไม่ใช้ Purchase Price fallback
 - Deep link ของ non-public asset ไม่เปิด private detail
 - Permission denied / unavailable screen ใช้ CTA `Go back` พร้อม fallback ไป Feed เมื่อไม่มี navigation history
+- Back button บน normal Asset Detail ที่เปิดจาก external deep link ต้อง fallback ไป Feed
+- Main navigation ต้อง available หลังเปิด deep link ทั้ง Guest และ Login
 
 ### Visual Review Evidence: Owner Asset Detail - Sale
 
@@ -495,7 +511,7 @@ Required annotation:
 | Decision Item | Current Baseline | Recommended V1 Decision | Figma / UX Action | Dev / QA Note |
 | --- | --- | --- | --- | --- |
 | Delete Chat behavior แบบละเอียด | Locked in Chat Module for V1 | Delete Chat = ซ่อนห้องแชทจาก list เฉพาะฝั่งผู้กด, ไม่ลบ message/archive ฝั่ง server, ไม่กระทบคู่สนทนา, ไม่ลบหลักฐาน offer/chat history, และไม่มี restore UI ใน V1 | Chat overflow menu ต้องมี `View profile`, `Mute notifications`/`Unmute notifications`, `Delete chat`, `Report user`, `Block user`; Delete confirmation ใช้ `Delete chat?`, actions `Cancel`/`Delete chat`, success `Chat deleted`, API error `Unable to delete chat. Please try again.` | Backend ควรเก็บ conversation/message audit ไว้ตาม retention policy; QA ต้อง test menu order, mute/unmute toast, คู่สนทนายังเห็นห้องเดิม และ offer/chat record ไม่หาย |
-| Share channel implementation | Social/Board ระบุว่า Share ต้องทำผ่าน Asset Detail หรือ Article Detail แต่ยังไม่ lock ว่าใช้ system share sheet, copy link หรือ deep link preview | ใช้ V1 เป็น public share action: primary = system share sheet ถ้า platform รองรับ, fallback = copy public deep link; ไม่ต้อง login สำหรับ share public content; ไม่สร้าง notification | เพิ่ม Share Sheet state, Copy Link success state และ unavailable state เมื่อ content ถูกลบ/ไม่ public; Asset share เริ่มจาก Asset Detail เท่านั้น ส่วน Article share เริ่มจาก Article Detail | Dev ต้อง generate public deep link ที่ validate status/permission เมื่อเปิด; QA ต้อง test guest share, deleted asset link, private/Hide/Sold link และ article share |
+| Share channel implementation (Resolved in `FO-PRD-v1.4`) | Social/Board เดิมระบุว่า Asset Share ต้องทำผ่าน Asset Detail เท่านั้น; ปัจจุบัน master และ module PRD (`05_ASSET_DETAIL_MODULE.md`, `06_PROFILE_MODULE.md`, `02_FEED_MODULE.md`, `11_SOCIAL_MODULE.md`) อัปเดตแล้วว่า Asset Share ทำได้จาก Feed, Asset Detail และ Profile asset grid; Article share ยังเริ่มจาก Article Detail | ใช้ V1 เป็น public share action: primary = system share sheet ถ้า platform รองรับ, fallback = copy public deep link; ไม่ต้อง login สำหรับ share public content; ไม่สร้าง notification | เพิ่ม Share action บน Feed Card, Feed more menu, Asset Detail และ Profile asset grid (Sale/Show เท่านั้น ไม่รวม Hide/Sold); เพิ่ม Share Sheet state, Copy Link success state และ unavailable state เมื่อ content ถูกลบ/ไม่ public | Dev ต้อง generate public deep link ที่ validate status/permission เมื่อเปิด; QA ต้อง test guest share จากทุก entry point, deleted asset link, private/Hide/Sold link และ article share |
 | Article Comment / Report Article ใน Board V1 | Locked in Board Module for V1 | คง Article Comment ออกจาก FO V1; เปิด report ผ่าน label `Report article` โดย map เข้า Trust & Safety report type `Board Content` และ target type `Article` | Article Detail overflow menu มี `Report article`; reason sheet มี 6 reasons, `Additional details (optional)`, disabled submit until reason selected; success ใช้ `Report submitted`, body ว่า article ยัง visible จน moderation complete, action `Done`; ห้ามแสดง `Hide article` หรือ `Hide this asset from feed?` | QA ต้องยืนยันว่า Front Office user สร้าง/edit/delete article หรือ comment ไม่ได้, report ไม่ทำให้บทความหายทันที, duplicate แสดง `You already reported this article.`, API fail แสดง retry error |
 | Delete Account retention / grace period policy | Decision locked in Settings Module for V1 | Soft delete/deactivate account after confirm, revoke session immediately, show `Account deletion started`, route `Back to sign in` to Sign In / pre-auth, use 30-day grace period before hard delete/anonymization, and retain chats/offers/reports/transaction/audit records where required for safety/legal/audit | Add Delete Account confirmation, success modal, Sign In destination, account-deleted/support login state, and API failure/retry state; copy must not promise immediate full data deletion | Dev must separate profile/account deactivation from transaction/audit retention; QA must test session revoke, back navigation blocked, public profile unavailable, asset visibility, chat/offer historical reference, failed API handling, and re-login during grace period |
 | Full Back Office PRD | Mobile V1 ใช้ `18_ADMIN_SCOPE_NOTE.md` เป็น boundary และ Admin อยู่บน Web Back Office เท่านั้น | ยังไม่เริ่ม Full Back Office PRD ในรอบนี้ ให้จัดการ FO ให้ครบก่อน: master/module PRD, Figma cleanup, Dev checklist, QA checklist และ FO sign-off ต้องนิ่งก่อน แล้วค่อยเปิด Back Office sprint แยก | ใน Figma FO ให้แสดงเฉพาะ handoff note หรือ moderation/admin boundary ที่จำเป็น ห้ามเพิ่ม Admin mobile flow | Dev/QA ใช้ `18_ADMIN_SCOPE_NOTE.md` เป็น boundary ชั่วคราว; งาน Full Back Office PRD จะเริ่มหลัง FO scope complete และไม่ควร block FO implementation |
