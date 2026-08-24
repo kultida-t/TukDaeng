@@ -1304,13 +1304,13 @@
       min-width: 1132px;
     }
     body.option-master-mode #table .option-group-table {
-      min-width: 1294px;
+      min-width: 1464px;
     }
     body.option-master-mode #table .option-detail-table {
       min-width: 1200px;
     }
     body.option-master-mode.option-group-list-mode #table > .footer-range {
-      min-width: 1294px;
+      min-width: 1464px;
     }
     body.option-master-mode.option-detail-mode #table > .footer-range {
       min-width: 1200px;
@@ -1637,7 +1637,7 @@
       grid-template-columns: minmax(112px, .62fr) minmax(240px, 1.5fr) minmax(170px, .88fr) minmax(116px, .58fr) minmax(116px, .58fr) minmax(166px, .82fr) minmax(76px, .38fr);
     }
     .option-group-table .asset-row {
-      grid-template-columns: minmax(112px, .62fr) minmax(130px, .72fr) minmax(180px, 1.1fr) minmax(180px, 1.1fr) minmax(96px, .52fr) minmax(96px, .52fr) minmax(120px, .62fr) minmax(100px, .55fr) minmax(76px, .38fr);
+      grid-template-columns: minmax(112px, .62fr) minmax(130px, .72fr) minmax(180px, 1.1fr) minmax(180px, 1.1fr) minmax(96px, .52fr) minmax(96px, .52fr) minmax(120px, .62fr) minmax(100px, .55fr) minmax(150px, .8fr) minmax(76px, .38fr);
     }
     .option-detail-table .asset-row {
       grid-template-columns: minmax(96px, .42fr) minmax(120px, .56fr) minmax(170px, 1fr) minmax(170px, 1fr) minmax(72px, .32fr) minmax(76px, .34fr) minmax(92px, .42fr) minmax(124px, .58fr) minmax(76px, .36fr);
@@ -8040,10 +8040,10 @@
         scrollbar-width: thin;
       }
       body.option-master-mode.option-group-list-mode #table .option-group-table {
-        min-width: 1294px;
+        min-width: 1464px;
       }
       body.option-master-mode.option-group-list-mode #table > .footer-range {
-        min-width: 1294px;
+        min-width: 1464px;
       }
       body.option-master-mode.option-detail-mode #table .option-detail-table {
         min-width: 1200px;
@@ -11242,6 +11242,7 @@
     let _optionIdCounter = 0;
     const _optionSeedDate = "12 Jul 2026 09:15";
     optionMasterGroups.forEach(group => {
+      group.updated_at = group.is_active ? _optionSeedDate : "14 Jul 2026 11:00";
       group.options.forEach((option, idx) => {
         _optionIdCounter += 1;
         option.id = "OPT-" + String(_optionIdCounter).padStart(3, "0");
@@ -20665,7 +20666,7 @@
       const pageRows = filtered.slice(start, start + optionGroupListPageSize);
       document.querySelector("#table").innerHTML = `
         <div class="asset-table option-group-table">
-          <div class="asset-row head"><div>Group ID</div><div>Group</div><div>Label (TH)</div><div>Label (EN)</div><div>Options</div><div>Active</div><div>Multi-select</div><div>Status</div><div>Action</div></div>
+          <div class="asset-row head"><div>Group ID</div><div>Group</div><div>Label (TH)</div><div>Label (EN)</div><div>Options</div><div>Active</div><div>Multi-select</div><div>Status</div><div>Updated</div><div>Action</div></div>
           ${pageRows.map(g => {
             const total = getOptionGroupTotalOptions(g.group_id);
             const active = getOptionGroupActiveOptions(g.group_id);
@@ -20702,12 +20703,14 @@
                     <div class="user-card-meta-item comment-field-meta"><span>Group</span><strong>${g.group}</strong></div>
                     <div class="user-card-meta-item comment-field-meta"><span>Label (TH)</span><strong>${g.display_name_th}</strong></div>
                     <div class="user-card-meta-item comment-field-meta"><span>Label (EN)</span><strong>${g.display_name_en}</strong></div>
+                    <div class="user-card-meta-item comment-field-meta"><span>Updated</span><strong>${g.updated_at || "-"}</strong></div>
                   </div>
                 </div>
                 <div data-label="Options"><div class="main-text">${total}</div></div>
                 <div data-label="Active"><div class="main-text">${active}</div></div>
                 <div data-label="Multi-select"><div class="main-text">${g.allows_multi_select ? "Yes" : "No"}</div></div>
                 <div data-label="Status">${statusPill}</div>
+                <div data-label="Updated"><div class="main-text">${g.updated_at || "-"}</div></div>
                 <div class="user-row-actions">
                   <details class="row-menu">
                     <summary title="Option group actions">...</summary>
