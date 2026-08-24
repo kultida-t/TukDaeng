@@ -1279,6 +1279,24 @@
       overflow-x: auto;
       scrollbar-width: thin;
     }
+    /* Option Group List: scroll on #table (not .panel) so filter bar stays full width */
+    body.option-master-mode.option-group-list-mode .panel {
+      overflow: visible;
+    }
+    body.option-master-mode.option-group-list-mode #table {
+      overflow-x: auto;
+      overflow-y: visible;
+      scrollbar-width: thin;
+    }
+    /* Option Detail: scroll on #table (not .panel) so filter bar stays full width */
+    body.option-master-mode.option-detail-mode .panel {
+      overflow: visible;
+    }
+    body.option-master-mode.option-detail-mode #table {
+      overflow-x: auto;
+      overflow-y: visible;
+      scrollbar-width: thin;
+    }
     body.asset-list-mode:not(.article-list-mode):not(.category-list-mode):not(.reported-board-mode) #table .asset-list-table {
       min-width: 1132px;
     }
@@ -1292,7 +1310,7 @@
       min-width: 1156px;
     }
     body.option-master-mode.option-group-list-mode #table > .footer-range {
-      min-width: 1152px;
+      min-width: 1264px;
     }
     body.option-master-mode.option-detail-mode #table > .footer-range {
       min-width: 1156px;
@@ -3237,12 +3255,14 @@
       justify-content: flex-end;
     }
     /* Option Detail row-menu: hide until JS positions it as fixed to avoid clipping */
-    body.option-master-mode.option-detail-mode .row-menu-list {
+    body.option-master-mode.option-detail-mode .row-menu-list,
+    body.option-master-mode.option-group-list-mode .row-menu-list {
       visibility: hidden;
       opacity: 0;
       transition: opacity 120ms ease-out;
     }
-    body.option-master-mode.option-detail-mode .row-menu-list.is-fixed {
+    body.option-master-mode.option-detail-mode .row-menu-list.is-fixed,
+    body.option-master-mode.option-group-list-mode .row-menu-list.is-fixed {
       visibility: visible;
       opacity: 1;
     }
@@ -4869,7 +4889,8 @@
       align-items: stretch;
       gap: 8px;
     }
-    .user-filter-bar.option-detail-filter-bar {
+    .user-filter-bar.option-detail-filter-bar,
+    .user-filter-bar.option-group-filter-bar {
       grid-template-columns: minmax(260px, 1.65fr) minmax(138px, .82fr) 42px;
       align-items: stretch;
       gap: 8px;
@@ -4882,6 +4903,7 @@
     .user-filter-bar.content-mode .search,
     .user-filter-bar.category-mode .search,
     .user-filter-bar.option-detail-filter-bar .search,
+    .user-filter-bar.option-group-filter-bar .search,
     body.offer-list-mode .offer-filter-bar .search,
     body.asset-list-mode:not(.article-list-mode):not(.category-list-mode):not(.reported-board-mode) .user-filter-bar.asset-mode .search,
     .user-filter-bar.asset-mode .search,
@@ -4889,6 +4911,7 @@
     .user-filter-bar.content-mode .custom-select,
     .user-filter-bar.category-mode .custom-select,
     .user-filter-bar.option-detail-filter-bar .custom-select,
+    .user-filter-bar.option-group-filter-bar .custom-select,
     body.offer-list-mode .offer-filter-bar .custom-select,
     body.asset-list-mode:not(.article-list-mode):not(.category-list-mode):not(.reported-board-mode) .user-filter-bar.asset-mode .custom-select,
     .user-filter-bar.asset-mode .custom-select,
@@ -4896,6 +4919,7 @@
     .user-filter-bar.content-mode .custom-select-trigger,
     .user-filter-bar.category-mode .custom-select-trigger,
     .user-filter-bar.option-detail-filter-bar .custom-select-trigger,
+    .user-filter-bar.option-group-filter-bar .custom-select-trigger,
     body.offer-list-mode .offer-filter-bar .custom-select-trigger,
     body.asset-list-mode:not(.article-list-mode):not(.category-list-mode):not(.reported-board-mode) .user-filter-bar.asset-mode .custom-select-trigger,
     .user-filter-bar.asset-mode .custom-select-trigger,
@@ -8019,7 +8043,7 @@
         min-width: 1264px;
       }
       body.option-master-mode.option-group-list-mode #table > .footer-range {
-        min-width: 1152px;
+        min-width: 1264px;
       }
       body.option-master-mode.option-detail-mode #table .option-detail-table {
         min-width: 1084px;
@@ -8072,7 +8096,8 @@
       .user-filter-bar.category-mode {
         grid-template-columns: minmax(0, 1fr) minmax(132px, .5fr) minmax(132px, .5fr) 42px;
       }
-      .user-filter-bar.option-detail-filter-bar {
+      .user-filter-bar.option-detail-filter-bar,
+      .user-filter-bar.option-group-filter-bar {
         grid-template-columns: minmax(0, 1fr) minmax(132px, .5fr) 42px;
       }
       body.asset-list-mode:not(.article-list-mode):not(.category-list-mode):not(.reported-board-mode) .user-filter-bar.asset-mode,
@@ -8615,13 +8640,15 @@
       }
       .user-filter-bar.content-mode,
       .user-filter-bar.category-mode,
-      .user-filter-bar.option-detail-filter-bar {
+      .user-filter-bar.option-detail-filter-bar,
+      .user-filter-bar.option-group-filter-bar {
         grid-template-columns: 1fr;
       }
       body.article-list-mode .user-filter-bar.content-mode,
       body.reported-board-mode .user-filter-bar.content-mode,
       body.category-list-mode .user-filter-bar.category-mode,
-      body.option-master-mode .user-filter-bar.option-detail-filter-bar {
+      body.option-master-mode .user-filter-bar.option-detail-filter-bar,
+      body.option-master-mode .user-filter-bar.option-group-filter-bar {
         grid-template-columns: 1fr;
       }
       body.offer-list-mode .offer-filter-bar {
@@ -26000,13 +26027,14 @@
       });
     }
 
-    // Option Detail: position row-menu-list as fixed (viewport-relative) to avoid
-    // being clipped by the scrollable .panel ancestor. Uses the native "toggle" event
+    // Option Master (Detail + Group List): position row-menu-list as fixed (viewport-relative)
+    // to avoid being clipped by the scrollable #table ancestor. Uses the native "toggle" event
     // (capture phase) so positioning runs only after <details> actually opens.
     document.addEventListener("toggle", event => {
       const rowMenu = event.target.closest && event.target.closest(".row-menu");
       if (!rowMenu || !rowMenu.open) return;
-      if (!(document.body.classList.contains("option-master-mode") && document.body.classList.contains("option-detail-mode"))) return;
+      if (!document.body.classList.contains("option-master-mode")) return;
+      if (!document.body.classList.contains("option-detail-mode") && !document.body.classList.contains("option-group-list-mode")) return;
       const list = rowMenu.querySelector(".row-menu-list");
       const summary = rowMenu.querySelector("summary");
       if (!list || !summary) return;
