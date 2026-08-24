@@ -26885,6 +26885,26 @@
         list.style.bottom = "";
       });
     }
+    function hasOpenRowMenus() {
+      return document.querySelector(".row-menu[open]") != null;
+    }
+    // BO-OPT-006f: close any open row-menu when the user scrolls or resizes.
+    // Scroll events do not bubble, so listen on window in capture phase to catch
+    // scroll from any scrollable ancestor (e.g. .main, #table). Resize fires on
+    // window. Both skip work when no row-menu is open.
+    // A short suppress flag is set when a row-menu summary is clicked so that
+    // scroll events triggered by the browser auto-scrolling the summary into
+    // view (e.g. horizontal scroll on a wide table) do not immediately close
+    // the menu that the click just opened.
+    let suppressRowMenuScrollClose = false;
+    document.addEventListener("scroll", () => {
+      if (suppressRowMenuScrollClose) return;
+      if (hasOpenRowMenus()) closeRowMenus();
+    }, true);
+    window.addEventListener("resize", () => {
+      if (suppressRowMenuScrollClose) return;
+      if (hasOpenRowMenus()) closeRowMenus();
+    });
 
     let commentHoverTooltipEl = null;
     let commentHoverHideTimer = null;
@@ -26936,6 +26956,10 @@
       if (rowMenu) {
         if (event.target.closest(".row-menu summary")) {
           closeRowMenus(rowMenu);
+          // BO-OPT-006f: suppress scroll-close briefly so the browser's
+          // auto-scroll-to-element doesn't immediately close the menu.
+          suppressRowMenuScrollClose = true;
+          setTimeout(() => { suppressRowMenuScrollClose = false; }, 250);
         }
       } else {
         closeRowMenus();
