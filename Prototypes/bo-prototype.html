@@ -21724,7 +21724,7 @@
                 <label class="option-field-identifier"><span>Group Identifier <span class="article-required-mark">*</span></span>
                   <input name="group" value="${escapeOptionField(prevData?.group || "")}" placeholder="เช่น condition, dial_color" data-option-group-identifier autocomplete="off" />
                   <span class="article-field-error" data-option-group-identifier-error></span>
-                  <span class="option-identifier-note">identifier ใช้เป็น stable key ที่ FO/seed/migration อ้างอิง — ห้ามเปลี่ยนหลังสร้างแล้ว</span>
+                  <span class="option-identifier-note">ห้ามเปลี่ยนหลังสร้างแล้ว เพราะข้อมูลที่เกี่ยวข้องทั้งหมดอ้างอิงด้วยค่านี้</span>
                 </label>
                 <label class="option-field-multi-select"><span>Multi-select</span>
                   ${groupMultiSelectToggle(multiSelectValue)}
@@ -21783,7 +21783,7 @@
                 </label>
                 <label class="option-field-identifier"><span>Group Identifier</span>
                   <input value="${escapeOptionField(g.group)}" readonly />
-                  <span class="option-identifier-note">identifier ล็อกห้าม rename หลังใช้งาน — เป็น stable key ที่ FO/seed/migration อ้างอิง</span>
+                  <span class="option-identifier-note">identifier ล็อกไว้ — เป็นรหัสอ้างอิงของระบบที่ข้อมูลทั้งหมดอ้างอิงด้วยค่านี้ ห้ามเปลี่ยน</span>
                 </label>
                 <label class="option-field-multi-select"><span>Multi-select</span>
                   ${groupMultiSelectToggle(Boolean(src.allows_multi_select ?? g.allows_multi_select))}
