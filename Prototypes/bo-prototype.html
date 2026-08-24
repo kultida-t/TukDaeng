@@ -20642,19 +20642,16 @@
               ? `<span class="pill green">Active</span>`
               : `<span class="pill gray">Inactive</span>`;
             const usedInAssets = isGroupUsedInAssets(g.group_id);
-            // Action menu: View / Edit / Deactivate (Active) | Reactivate (Inactive) / Delete (Inactive + no asset usage)
-            const deactivateButton = isActive
-              ? (usedInAssets
-                ? `<button type="button" data-option-group-deactivate="${g.group_id}" disabled title="ไม่สามารถ deactivate group ได้ เนื่องจากยังมี asset ใช้ option ใน group ${g.group} อยู่">Deactivate</button>`
-                : `<button type="button" data-option-group-deactivate="${g.group_id}">Deactivate</button>`)
+            // Action menu: View / Edit / Deactivate (Active + no asset usage) | Reactivate (Inactive) / Delete (Inactive + no asset usage)
+            // ปุ่มที่ทำไม่ได้จะไม่แสดง (ซ่อนแทน disabled) ตามมติผู้ใช้ BO-OPT-006a
+            const deactivateButton = isActive && !usedInAssets
+              ? `<button type="button" data-option-group-deactivate="${g.group_id}">Deactivate</button>`
               : "";
             const reactivateButton = !isActive
               ? `<button type="button" data-option-group-reactivate="${g.group_id}">Reactivate</button>`
               : "";
-            const deleteButton = !isActive
-              ? (usedInAssets
-                ? `<button type="button" data-option-group-delete="${g.group_id}" disabled title="ไม่สามารถ delete group ได้ เนื่องจากยังมี asset ใช้ option ใน group ${g.group} อยู่">Delete</button>`
-                : `<button type="button" data-option-group-delete="${g.group_id}">Delete</button>`)
+            const deleteButton = !isActive && !usedInAssets
+              ? `<button type="button" data-option-group-delete="${g.group_id}">Delete</button>`
               : "";
             return `
               <div class="asset-row" data-option-group="${g.group_id}">
@@ -26617,7 +26614,7 @@
         return;
       }
       const optionGroupRow = event.target.closest("[data-option-group]");
-      if (optionGroupRow && !event.target.closest("button, a, input, select, [data-custom-select]")) {
+      if (optionGroupRow && !event.target.closest(".row-menu, button, a, input, select, [data-custom-select]")) {
         const groupId = optionGroupRow.dataset.optionGroup;
         optionDetailPage = 1;
         renderOptionDetailPage(groupId);
