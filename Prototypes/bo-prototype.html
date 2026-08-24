@@ -3178,23 +3178,6 @@
       font-weight: 700;
       letter-spacing: .02em;
     }
-    .option-delete-step-indicator {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      margin: 0 0 4px;
-      padding: 4px 10px;
-      border-radius: 999px;
-      background: #fef2f2;
-      border: 1px solid #fecaca;
-      color: #991b1b;
-      font-size: 11px;
-      font-weight: 700;
-      letter-spacing: .02em;
-    }
-    .option-delete-step-indicator .option-delete-step-current {
-      color: #dc2626;
-    }
     .option-delete-impact-count {
       margin: 10px 0 0;
       padding: 10px 12px;
@@ -22329,7 +22312,6 @@
               <button class="user-detail-action-btn" type="button" data-user-action-modal-close>ปิด</button>
             </div>
           ` : `
-            <span class="option-delete-step-indicator">Step <span class="option-delete-step-current">1</span> of 2</span>
             <div class="warning-note option-delete-warning">
               <strong>คำเตือน: การกระทำนี้ไม่สามารถย้อนกลับได้</strong><br>
               การลบ group เป็นการกระทำที่ไม่สามารถย้อนกลับได้ ข้อมูล group และ option ทั้งหมดใน group จะถูกลบออกจากระบบอย่างถาวร
@@ -22344,54 +22326,28 @@
             <div class="option-delete-impact-count">
               จะลบ option ใน group นี้ทั้งหมด <strong>${totalOptions}</strong> รายการ พร้อมข้อมูล group อย่างถาวร
             </div>
+            <div class="option-delete-confirm-input">
+              <label><span>พิมพ์ <strong>${escapeOptionField(g.group)}</strong> เพื่อยืนยันการลบ</span>
+                <input type="text" data-option-group-delete-confirm-input placeholder="${escapeOptionField(g.group)}" autocomplete="off" />
+              </label>
+            </div>
             <div class="user-detail-actions">
               <button class="user-detail-action-btn" type="button" data-user-action-modal-close>ยกเลิก</button>
-              <button class="user-detail-action-btn danger" type="button" data-option-group-delete-advance data-option-group-id="${escapeOptionField(g.group_id)}">ยืนยัน Delete</button>
+              <button class="user-detail-action-btn danger" type="button" data-option-group-delete-confirm data-option-group-id="${escapeOptionField(g.group_id)}" disabled>ลบ Group ถาวร</button>
             </div>
           `}
         </div>
       `;
       showUserActionModal(true);
-    }
-
-    function renderOptionGroupDeleteStep2(groupId) {
-      const g = getOptionGroup(groupId);
-      if (!g) return;
-      const modal = document.querySelector("#user-action-modal");
-      const modalCard = modal?.querySelector(".user-action-modal");
-      const modalBody = document.querySelector("#user-action-modal-body");
-      if (!modal || !modalCard || !modalBody) return;
-      const totalOptions = getOptionGroupTotalOptions(groupId);
-      modalBody.innerHTML = `
-        <div class="user-action-layout">
-          ${buildOptionGroupActionModalShell(
-            modalCard,
-            "Delete Group — Re-confirm",
-            `${escapeOptionField(g.group_id)} (${escapeOptionField(g.group)}) — ${escapeOptionField(g.display_name_en)}`
-          )}
-          <span class="option-delete-step-indicator">Step <span class="option-delete-step-current">2</span> of 2</span>
-          <div class="warning-note option-delete-warning">
-            <strong>ยืนยันการลบอีกครั้ง</strong><br>
-            การกระทำนี้ไม่สามารถย้อนกลับได้ ข้อมูล group และ option ทั้งหมด ${totalOptions} รายการจะถูกลบอย่างถาวร
-          </div>
-          <div class="option-delete-confirm-input">
-            <label><span>พิมพ์ <strong>${escapeOptionField(g.group)}</strong> เพื่อยืนยันการลบ</span>
-              <input type="text" data-option-group-delete-confirm-input placeholder="${escapeOptionField(g.group)}" autocomplete="off" />
-            </label>
-          </div>
-          <div class="user-detail-actions">
-            <button class="user-detail-action-btn" type="button" data-user-action-modal-close>ยกเลิก</button>
-            <button class="user-detail-action-btn danger" type="button" data-option-group-delete-confirm data-option-group-id="${escapeOptionField(g.group_id)}" disabled>ลบ Group ถาวร</button>
-          </div>
-        </div>
-      `;
-      const confirmInput = modalBody.querySelector("[data-option-group-delete-confirm-input]");
-      const confirmBtn = modalBody.querySelector("[data-option-group-delete-confirm]");
-      if (confirmInput && confirmBtn) {
-        confirmInput.focus();
-        confirmInput.addEventListener("input", () => {
-          confirmBtn.disabled = confirmInput.value.trim() !== g.group;
-        });
+      if (!safeguardError) {
+        const confirmInput = modalBody.querySelector("[data-option-group-delete-confirm-input]");
+        const confirmBtn = modalBody.querySelector("[data-option-group-delete-confirm]");
+        if (confirmInput && confirmBtn) {
+          confirmInput.focus();
+          confirmInput.addEventListener("input", () => {
+            confirmBtn.disabled = confirmInput.value.trim() !== g.group;
+          });
+        }
       }
     }
 
@@ -27744,11 +27700,6 @@
       const optionGroupReactivateConfirm = event.target.closest("[data-option-group-reactivate-confirm]");
       if (optionGroupReactivateConfirm) {
         applyOptionGroupReactivate(optionGroupReactivateConfirm.dataset.optionGroupId);
-        return;
-      }
-      const optionGroupDeleteAdvance = event.target.closest("[data-option-group-delete-advance]");
-      if (optionGroupDeleteAdvance) {
-        renderOptionGroupDeleteStep2(optionGroupDeleteAdvance.dataset.optionGroupId);
         return;
       }
       const optionGroupDeleteConfirm = event.target.closest("[data-option-group-delete-confirm]");
