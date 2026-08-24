@@ -21722,20 +21722,20 @@
                   ${optionStatusToggle(isActiveValue === "true")}
                 </label>
                 <label class="option-field-identifier"><span>Group Identifier <span class="article-required-mark">*</span></span>
-                  <input name="group" value="${escapeOptionField(prevData?.group || "")}" placeholder="เช่น condition, dial_color" data-option-group-identifier autocomplete="off" />
+                  <input name="group" value="${escapeOptionField(prevData?.group || "")}" placeholder="สร้างอัตโนมัติจาก Label (EN)" data-option-group-identifier data-user-edited="${prevData?.group ? "true" : "false"}" autocomplete="off" />
                   <span class="article-field-error" data-option-group-identifier-error></span>
                   <span class="option-identifier-note">ห้ามเปลี่ยนหลังสร้างแล้ว เพราะข้อมูลที่เกี่ยวข้องทั้งหมดอ้างอิงด้วยค่านี้</span>
                 </label>
                 <label class="option-field-multi-select"><span>Multi-select</span>
                   ${groupMultiSelectToggle(multiSelectValue)}
                 </label>
-                <label><span>Label (TH) <span class="article-required-mark">*</span></span>
-                  <input name="display_name_th" value="${escapeOptionField(prevData?.display_name_th || "")}" placeholder="สภาพ" data-option-group-name-th autocomplete="off" />
-                  <span class="article-field-error" data-option-group-name-th-error></span>
-                </label>
                 <label><span>Label (EN) <span class="article-required-mark">*</span></span>
                   <input name="display_name_en" value="${escapeOptionField(prevData?.display_name_en || "")}" placeholder="Condition" data-option-group-name-en autocomplete="off" />
                   <span class="article-field-error" data-option-group-name-en-error></span>
+                </label>
+                <label><span>Label (TH) <span class="article-required-mark">*</span></span>
+                  <input name="display_name_th" value="${escapeOptionField(prevData?.display_name_th || "")}" placeholder="สภาพ" data-option-group-name-th autocomplete="off" />
+                  <span class="article-field-error" data-option-group-name-th-error></span>
                 </label>
                 <label><span>Description</span>
                   <textarea name="description" placeholder="คำอธิบายเพิ่มเติม (ไม่บังคับ)" data-option-group-description>${escapeOptionField(prevData?.description || "")}</textarea>
@@ -21788,13 +21788,13 @@
                 <label class="option-field-multi-select"><span>Multi-select</span>
                   ${groupMultiSelectToggle(Boolean(src.allows_multi_select ?? g.allows_multi_select))}
                 </label>
-                <label><span>Label (TH) <span class="article-required-mark">*</span></span>
-                  <input name="display_name_th" value="${escapeOptionField(src.display_name_th ?? g.display_name_th)}" data-option-group-name-th autocomplete="off" />
-                  <span class="article-field-error" data-option-group-name-th-error></span>
-                </label>
                 <label><span>Label (EN) <span class="article-required-mark">*</span></span>
                   <input name="display_name_en" value="${escapeOptionField(src.display_name_en ?? g.display_name_en)}" data-option-group-name-en autocomplete="off" />
                   <span class="article-field-error" data-option-group-name-en-error></span>
+                </label>
+                <label><span>Label (TH) <span class="article-required-mark">*</span></span>
+                  <input name="display_name_th" value="${escapeOptionField(src.display_name_th ?? g.display_name_th)}" data-option-group-name-th autocomplete="off" />
+                  <span class="article-field-error" data-option-group-name-th-error></span>
                 </label>
                 <label><span>Description</span>
                   <textarea name="description" data-option-group-description>${escapeOptionField(src.description ?? g.description ?? "")}</textarea>
@@ -28514,6 +28514,8 @@
         } else {
           setOptionGroupFieldError(form, "identifier");
         }
+        // Mark as user-edited so auto-generate from Label (EN) won't overwrite
+        event.target.dataset.userEdited = "true";
       }
       if (event.target.matches("[data-option-group-name-en]")) {
         const form = event.target.closest("[data-option-group-form]");
@@ -28523,6 +28525,18 @@
           setOptionGroupFieldError(form, "name-en", "Label (EN) รับเฉพาะภาษาอังกฤษเท่านั้น");
         } else {
           setOptionGroupFieldError(form, "name-en");
+        }
+        // Auto-generate Group Identifier from Label (EN) in add mode (only if identifier is empty or was auto-generated)
+        const mode = form.dataset.optionGroupMode;
+        if (mode === "add") {
+          const idInput = form.querySelector("[data-option-group-identifier]");
+          if (idInput) {
+            const auto = slugifyOptionKey(event.target.value);
+            if (!idInput.dataset.userEdited || idInput.dataset.userEdited === "false") {
+              idInput.value = auto;
+              setOptionGroupFieldError(form, "identifier");
+            }
+          }
         }
       }
       if (event.target.matches("[data-option-group-name-th]")) {
