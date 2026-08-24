@@ -1280,10 +1280,14 @@
       scrollbar-width: thin;
     }
     /* Option Group List: scroll on #table (not .panel) so filter bar stays full width */
+    /* BO-OPT-006a-R1: use display:block so .option-group-table and .footer-range share
+       the same content width (grid without grid-template-columns caused width mismatch
+       in responsive). Scoped to option-master-mode only — does not affect other modes. */
     body.option-master-mode.option-group-list-mode .panel {
       overflow: visible;
     }
     body.option-master-mode.option-group-list-mode #table {
+      display: block;
       overflow-x: auto;
       overflow-y: visible;
       scrollbar-width: thin;
@@ -1293,6 +1297,7 @@
       overflow: visible;
     }
     body.option-master-mode.option-detail-mode #table {
+      display: block;
       overflow-x: auto;
       overflow-y: visible;
       scrollbar-width: thin;
@@ -17642,6 +17647,11 @@
       document.body.classList.toggle("asset-list-mode", isAssetList || isArticleList || isCategoryList || isReportedBoard);
       document.body.classList.toggle("offer-list-mode", isOfferList);
       document.body.classList.remove("offer-detail-mode");
+      // BO-OPT-006a-R1: option-master-mode classes were only ever added, never removed,
+      // so they leaked into other modules navigated to via renderModule (e.g. Content
+      // Management, Offer Management). renderOptionGroupList() re-adds them when id is
+      // "option-master" (handled further below), so removing here is safe.
+      document.body.classList.remove("option-master-mode", "option-group-list-mode", "option-detail-mode");
       document.body.classList.toggle("article-list-mode", isArticleList);
       document.body.classList.toggle("category-list-mode", isCategoryList);
       document.body.classList.toggle("reported-board-mode", isReportedBoard);
