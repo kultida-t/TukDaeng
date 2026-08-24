@@ -2981,7 +2981,7 @@
     .option-editor-modal .article-editor-form label.option-field-identifier {
       grid-column: 1;
     }
-    .option-editor-modal .article-editor-form label.option-field-identifier .option-identifier-note {
+    .option-editor-modal .article-editor-form .option-identifier-note {
       display: block;
       margin-top: 4px;
       font-size: 12px;
@@ -21363,9 +21363,10 @@
                 <label class="option-field-status"><span>Status</span>
                   ${optionStatusToggle(isActiveValue === "true")}
                 </label>
-                <label><span>Key</span>
-                  <input name="key" value="${escapeOptionField(prevData?.key || "")}" placeholder="Key สร้างอัตโนมัติจาก Label (EN)" readonly data-option-key />
+                <label><span>Key <span class="article-required-mark">*</span></span>
+                  <input name="key" value="${escapeOptionField(prevData?.key || "")}" placeholder="สร้างอัตโนมัติจาก Label (EN)" data-option-key data-user-edited="${prevData?.key ? "true" : "false"}" autocomplete="off" />
                   <span class="article-field-error" data-option-key-error></span>
+                  <span class="option-identifier-note">ห้ามเปลี่ยนหลังสร้างแล้ว เพราะข้อมูลที่เกี่ยวข้องทั้งหมดอ้างอิงด้วยค่านี้</span>
                 </label>
                 <label><span>Label (EN) <span class="article-required-mark">*</span></span>
                   <input name="label_en" value="${escapeOptionField(prevData?.label_en || "")}" placeholder="New / Unworn" data-option-label-en autocomplete="off" />
@@ -21403,7 +21404,8 @@
       if (!modal || !modalCard || !modalBody) return;
       modalCard.classList.remove("article-preview-modal", "article-editor-confirm-modal", "category-editor-modal", "category-order-modal", "market-editor-modal", "board-report-phone-preview-modal", "option-order-modal", "option-audit-modal");
       modalCard.classList.add("option-editor-modal");
-      const keyField = `<input name="key" value="${escapeOptionField(src.key || option.key)}" readonly data-option-key />`;
+      const keyField = `<input name="key" value="${escapeOptionField(src.key || option.key)}" readonly data-option-key />
+        <span class="option-identifier-note">key ล็อกไว้ — เป็นรหัสอ้างอิงของระบบที่ข้อมูลทั้งหมดอ้างอิงด้วยค่านี้ ห้ามเปลี่ยน</span>`;
       modalBody.innerHTML = `
         <div class="user-action-layout">
           <div class="user-action-head">
@@ -21507,7 +21509,13 @@
         hasError = true;
       }
       if (!key) {
-        setOptionFieldError(form, "key", "Key สร้างอัตโนมัติไม่ได้ กรุณากรอก Label (EN) ที่เป็นภาษาอังกฤษ");
+        setOptionFieldError(form, "key", "กรุณากรอก Key หรือ Label (EN) เพื่อสร้างอัตโนมัติ");
+        hasError = true;
+      } else if (key.length > 64) {
+        setOptionFieldError(form, "key", "Key ต้องไม่เกิน 64 ตัวอักษร");
+        hasError = true;
+      } else if (!/^[a-z0-9_]+$/.test(key)) {
+        setOptionFieldError(form, "key", "Key ต้องเป็นตัวพิมพ์เล็กภาษาอังกฤษ ตัวเลข และ _ เท่านั้น");
         hasError = true;
       } else if (!isOptionKeyUnique(groupId, key, originalKey)) {
         setOptionFieldError(form, "key", "Key ซ้ำในกลุ่มนี้ กรุณาใช้ค่าอื่น");
@@ -28495,9 +28503,24 @@
         setOptionFieldError(form, "key");
         const mode = form.dataset.optionMode;
         const keyInput = form.querySelector("[data-option-key]");
-        if (keyInput && mode === "add") {
+        if (keyInput && mode === "add" && (!keyInput.dataset.userEdited || keyInput.dataset.userEdited === "false")) {
           keyInput.value = slugifyOptionKey(event.target.value);
+          setOptionFieldError(form, "key");
         }
+      }
+      // Option key — auto-lowercase + block invalid chars (add mode only, edit is read-only)
+      if (event.target.matches("[data-option-key]")) {
+        const form = event.target.closest("[data-option-form]");
+        if (!form) return;
+        if (event.target.hasAttribute("readonly")) return;
+        const cleaned = event.target.value.toLowerCase().replace(/[^a-z0-9_]/g, "");
+        if (cleaned !== event.target.value) {
+          event.target.value = cleaned;
+          setOptionFieldError(form, "key", "Key รับเฉพาะตัวพิมพ์เล็กภาษาอังกฤษ ตัวเลข และ _ เท่านั้น");
+        } else {
+          setOptionFieldError(form, "key");
+        }
+        event.target.dataset.userEdited = "true";
       }
       if (event.target.matches("[data-option-label-th]")) {
         const form = event.target.closest("[data-option-form]");
