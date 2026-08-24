@@ -1280,14 +1280,10 @@
       scrollbar-width: thin;
     }
     /* Option Group List: scroll on #table (not .panel) so filter bar stays full width */
-    /* BO-OPT-006a-R1: use display:block so .option-group-table and .footer-range share
-       the same content width (grid without grid-template-columns caused width mismatch
-       in responsive). Scoped to option-master-mode only — does not affect other modes. */
     body.option-master-mode.option-group-list-mode .panel {
       overflow: visible;
     }
     body.option-master-mode.option-group-list-mode #table {
-      display: block;
       overflow-x: auto;
       overflow-y: visible;
       scrollbar-width: thin;
@@ -1297,7 +1293,6 @@
       overflow: visible;
     }
     body.option-master-mode.option-detail-mode #table {
-      display: block;
       overflow-x: auto;
       overflow-y: visible;
       scrollbar-width: thin;
@@ -1309,16 +1304,16 @@
       min-width: 1132px;
     }
     body.option-master-mode #table .option-group-table {
-      min-width: 1264px;
+      min-width: 1294px;
     }
     body.option-master-mode #table .option-detail-table {
-      min-width: 1156px;
+      min-width: 1200px;
     }
     body.option-master-mode.option-group-list-mode #table > .footer-range {
-      min-width: 1264px;
+      min-width: 1294px;
     }
     body.option-master-mode.option-detail-mode #table > .footer-range {
-      min-width: 1156px;
+      min-width: 1200px;
     }
     body.offer-list-mode .layout > .panel {
       border-color: #d7e2f0;
@@ -8045,16 +8040,16 @@
         scrollbar-width: thin;
       }
       body.option-master-mode.option-group-list-mode #table .option-group-table {
-        min-width: 1264px;
+        min-width: 1294px;
       }
       body.option-master-mode.option-group-list-mode #table > .footer-range {
-        min-width: 1264px;
+        min-width: 1294px;
       }
       body.option-master-mode.option-detail-mode #table .option-detail-table {
-        min-width: 1084px;
+        min-width: 1200px;
       }
       body.option-master-mode.option-detail-mode #table > .footer-range {
-        min-width: 1084px;
+        min-width: 1200px;
       }
       body.user-accounts-mode:not(.user-detail-mode) .user-row:not(.report-row) {
         grid-template-columns: minmax(74px, .42fr) minmax(138px, 1.08fr) minmax(112px, .7fr) minmax(124px, .78fr) minmax(58px, .36fr) minmax(84px, .54fr) minmax(108px, .66fr) minmax(42px, .22fr);
