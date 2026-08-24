@@ -20642,16 +20642,16 @@
               ? `<span class="pill green">Active</span>`
               : `<span class="pill gray">Inactive</span>`;
             const usedInAssets = isGroupUsedInAssets(g.group_id);
-            // Action menu: View / Edit / Deactivate (Active + no asset usage) | Reactivate (Inactive) / Delete (Inactive + no asset usage)
+            // Action menu: ดูรายละเอียด / แก้ไข / ปิดใช้งาน (Active + no asset usage) | เปิดใช้งาน (Inactive) / ลบ (Inactive + no asset usage)
             // ปุ่มที่ทำไม่ได้จะไม่แสดง (ซ่อนแทน disabled) ตามมติผู้ใช้ BO-OPT-006a
             const deactivateButton = isActive && !usedInAssets
-              ? `<button type="button" data-option-group-deactivate="${g.group_id}">Deactivate</button>`
+              ? `<button type="button" data-option-group-deactivate="${g.group_id}">ปิดใช้งาน</button>`
               : "";
             const reactivateButton = !isActive
-              ? `<button type="button" data-option-group-reactivate="${g.group_id}">Reactivate</button>`
+              ? `<button type="button" data-option-group-reactivate="${g.group_id}">เปิดใช้งาน</button>`
               : "";
             const deleteButton = !isActive && !usedInAssets
-              ? `<button type="button" data-option-group-delete="${g.group_id}">Delete</button>`
+              ? `<button type="button" data-option-group-delete="${g.group_id}">ลบ</button>`
               : "";
             return `
               <div class="asset-row" data-option-group="${g.group_id}">
@@ -20684,8 +20684,8 @@
                   <details class="row-menu">
                     <summary title="Option group actions">...</summary>
                     <div class="row-menu-list">
-                      <button type="button" data-option-group-view="${g.group_id}">View detail</button>
-                      <button type="button" data-option-group-edit="${g.group_id}">Edit</button>
+                      <button type="button" data-option-group-view="${g.group_id}">ดูรายละเอียด</button>
+                      <button type="button" data-option-group-edit="${g.group_id}">แก้ไข</button>
                       ${deactivateButton}
                       ${reactivateButton}
                       ${deleteButton}
