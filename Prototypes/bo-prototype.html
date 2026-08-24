@@ -3348,15 +3348,28 @@
     .option-order-modal .user-detail-actions {
       justify-content: flex-end;
     }
-    /* Option Detail row-menu: hide until JS positions it as fixed to avoid clipping */
+    /* row-menu: hide until JS positions it as fixed to avoid clipping by #table overflow.
+       BO-OPT-006g: extended from Option Detail/Group List to all modes where #table has
+       overflow-x: auto (reported-board, article-list, category-list, asset-list,
+       user-list including User Accounts, Reported Users/Assets/Comments). */
     body.option-master-mode.option-detail-mode .row-menu-list,
-    body.option-master-mode.option-group-list-mode .row-menu-list {
+    body.option-master-mode.option-group-list-mode .row-menu-list,
+    body.reported-board-mode .row-menu-list,
+    body.article-list-mode .row-menu-list,
+    body.category-list-mode .row-menu-list,
+    body.asset-list-mode:not(.article-list-mode):not(.category-list-mode):not(.reported-board-mode) .row-menu-list,
+    body.user-list-mode .row-menu-list {
       visibility: hidden;
       opacity: 0;
       transition: opacity 120ms ease-out;
     }
     body.option-master-mode.option-detail-mode .row-menu-list.is-fixed,
-    body.option-master-mode.option-group-list-mode .row-menu-list.is-fixed {
+    body.option-master-mode.option-group-list-mode .row-menu-list.is-fixed,
+    body.reported-board-mode .row-menu-list.is-fixed,
+    body.article-list-mode .row-menu-list.is-fixed,
+    body.category-list-mode .row-menu-list.is-fixed,
+    body.asset-list-mode:not(.article-list-mode):not(.category-list-mode):not(.reported-board-mode) .row-menu-list.is-fixed,
+    body.user-list-mode .row-menu-list.is-fixed {
       visibility: visible;
       opacity: 1;
     }
@@ -26844,14 +26857,25 @@
       });
     }
 
-    // Option Master (Detail + Group List): position row-menu-list as fixed (viewport-relative)
-    // to avoid being clipped by the scrollable #table ancestor. Uses the native "toggle" event
+    // row-menu: position row-menu-list as fixed (viewport-relative) to avoid being
+    // clipped by the scrollable #table ancestor. Uses the native "toggle" event
     // (capture phase) so positioning runs only after <details> actually opens.
+    // BO-OPT-006g: extended from Option Detail/Group List to all modes where #table
+    // has overflow-x: auto (reported-board, article-list, category-list, asset-list).
+    function shouldFixRowMenu() {
+      const b = document.body;
+      if (b.classList.contains("option-master-mode") && (b.classList.contains("option-detail-mode") || b.classList.contains("option-group-list-mode"))) return true;
+      if (b.classList.contains("reported-board-mode")) return true;
+      if (b.classList.contains("article-list-mode")) return true;
+      if (b.classList.contains("category-list-mode")) return true;
+      if (b.classList.contains("asset-list-mode") && !b.classList.contains("article-list-mode") && !b.classList.contains("category-list-mode") && !b.classList.contains("reported-board-mode")) return true;
+      if (b.classList.contains("user-list-mode")) return true;
+      return false;
+    }
     document.addEventListener("toggle", event => {
       const rowMenu = event.target.closest && event.target.closest(".row-menu");
       if (!rowMenu || !rowMenu.open) return;
-      if (!document.body.classList.contains("option-master-mode")) return;
-      if (!document.body.classList.contains("option-detail-mode") && !document.body.classList.contains("option-group-list-mode")) return;
+      if (!shouldFixRowMenu()) return;
       const list = rowMenu.querySelector(".row-menu-list");
       const summary = rowMenu.querySelector("summary");
       if (!list || !summary) return;
