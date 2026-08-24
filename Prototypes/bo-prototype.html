@@ -3165,6 +3165,47 @@
       font-size: 13px;
       line-height: 1.55;
     }
+    .option-error-code {
+      display: inline-block;
+      margin-top: 6px;
+      padding: 2px 8px;
+      border-radius: 6px;
+      background: #fee2e2;
+      border: 1px solid #fecaca;
+      color: #991b1b;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: .02em;
+    }
+    .option-delete-step-indicator {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      margin: 0 0 4px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: #fef2f2;
+      border: 1px solid #fecaca;
+      color: #991b1b;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: .02em;
+    }
+    .option-delete-step-indicator .option-delete-step-current {
+      color: #dc2626;
+    }
+    .option-delete-impact-count {
+      margin: 10px 0 0;
+      padding: 10px 12px;
+      border-radius: 8px;
+      background: #fff7ed;
+      border: 1px solid #fed7aa;
+      color: #9a3412;
+      font-size: 12px;
+      font-weight: 600;
+      line-height: 1.5;
+    }
     .option-status-toggle {
       display: inline-flex;
       align-items: center;
@@ -22092,6 +22133,300 @@
       showSuccessToast(`${g.group_id}: บันทึกการแก้ไขกลุ่มแล้ว`);
     }
 
+    // ===== Option Group Deactivate / Reactivate / Delete (BO-OPT-006c, section 6.1.2-6.1.4) =====
+    function buildOptionGroupActionModalShell(modalCard, titleText, subtitleText) {
+      modalCard.classList.remove(
+        "article-preview-modal", "article-editor-confirm-modal", "category-editor-modal",
+        "category-order-modal", "market-editor-modal", "board-report-phone-preview-modal",
+        "option-order-modal", "option-audit-modal"
+      );
+      modalCard.classList.add("option-editor-modal");
+      return `
+        <div class="user-action-head">
+          <div>
+            <h2 id="user-action-modal-title">${titleText}</h2>
+            <p>${subtitleText}</p>
+          </div>
+          <button class="btn user-action-close" type="button" data-user-action-modal-close aria-label="Close modal" title="Close">${iconSvg.close}</button>
+        </div>
+      `;
+    }
+
+    function openOptionGroupDeactivateConfirmModal(groupId) {
+      const g = getOptionGroup(groupId);
+      if (!g) return;
+      const modal = document.querySelector("#user-action-modal");
+      const modalCard = modal?.querySelector(".user-action-modal");
+      const modalBody = document.querySelector("#user-action-modal-body");
+      if (!modal || !modalCard || !modalBody) return;
+      // Safeguard (section 6.1.5): ห้าม deactivate ถ้ามี asset ใช้ option ใน group นั้น
+      // Service-layer enforce จำลองใน prototype — UI ซ่อนปุ่มอยู่แล้ว แต่ตรวจซ้ำที่นี่
+      const blockedByAssetUsage = isGroupUsedInAssets(groupId);
+      const totalOptions = getOptionGroupTotalOptions(groupId);
+      const activeOptions = getOptionGroupActiveOptions(groupId);
+      modalBody.innerHTML = `
+        <div class="user-action-layout">
+          ${buildOptionGroupActionModalShell(
+            modalCard,
+            "Deactivate Group",
+            `${escapeOptionField(g.group_id)} (${escapeOptionField(g.group)}) — ${escapeOptionField(g.display_name_en)}`
+          )}
+          <div class="option-confirm-summary">
+            <div class="option-confirm-row"><span class="option-confirm-label">Group ID</span><span class="option-confirm-value">${escapeOptionField(g.group_id)}</span></div>
+            <div class="option-confirm-row"><span class="option-confirm-label">Identifier</span><span class="option-confirm-value">${escapeOptionField(g.group)}</span></div>
+            <div class="option-confirm-row"><span class="option-confirm-label">Label (EN)</span><span class="option-confirm-value">${escapeOptionField(g.display_name_en)}</span></div>
+            <div class="option-confirm-row"><span class="option-confirm-label">Label (TH)</span><span class="option-confirm-value">${escapeOptionField(g.display_name_th)}</span></div>
+            <div class="option-confirm-row"><span class="option-confirm-label">Options</span><span class="option-confirm-value">${activeOptions} active / ${totalOptions} total</span></div>
+            <div class="option-confirm-row option-confirm-changed"><span class="option-confirm-label">Status</span><span class="option-confirm-value"><span class="option-confirm-before">Active</span> → <span class="option-confirm-after">Inactive</span></span></div>
+          </div>
+          ${blockedByAssetUsage ? `
+            <div class="warning-note option-safeguard-error">
+              <strong>ไม่สามารถ deactivate group ได้</strong><br>
+              เนื่องจากยังมี asset ใช้ option ใน group ${escapeOptionField(g.group)} อยู่<br>
+              <span class="option-error-code">Error: GROUP_DEACTIVATE_BLOCKED_BY_ASSET_USAGE</span>
+            </div>
+            <div class="user-detail-actions">
+              <button class="user-detail-action-btn" type="button" data-user-action-modal-close>ปิด</button>
+            </div>
+          ` : `
+            <div class="option-confirm-impact">
+              <strong>ผลกระทบต่อ Front Office:</strong> Group นี้และ option ทั้งหมดใน group จะไม่แสดงใน FO Add/Edit Asset form ใหม่, FO Search Filter ใหม่ และ FO Watch Alert criteria ใหม่
+            </div>
+            <div class="option-action-existing-note">
+              <strong>หมายเหตุ:</strong> existing assets ที่ใช้ option ใน group นี้ยังแสดงค่าเดิมตามปกติ — การ deactivate group ไม่เปลี่ยนแปลงข้อมูล asset เดิม
+            </div>
+            <div class="option-action-reason">
+              <label><span>เหตุผลในการเปลี่ยน Status <span class="option-reason-required">*</span></span>
+                <textarea data-option-group-deactivate-reason rows="3" placeholder="ระบุเหตุผลในการ deactivate group นี้" autocomplete="off"></textarea>
+              </label>
+            </div>
+            <div class="user-detail-actions">
+              <button class="user-detail-action-btn" type="button" data-user-action-modal-close>ยกเลิก</button>
+              <button class="user-detail-action-btn danger" type="button" data-option-group-deactivate-confirm data-option-group-id="${escapeOptionField(g.group_id)}" disabled>ยืนยัน Deactivate</button>
+            </div>
+          `}
+        </div>
+      `;
+      showUserActionModal(true);
+      if (!blockedByAssetUsage) {
+        const reasonInput = modalBody.querySelector("[data-option-group-deactivate-reason]");
+        const confirmBtn = modalBody.querySelector("[data-option-group-deactivate-confirm]");
+        if (reasonInput && confirmBtn) {
+          reasonInput.addEventListener("input", () => {
+            confirmBtn.disabled = reasonInput.value.trim() === "";
+          });
+        }
+      }
+    }
+
+    function applyOptionGroupDeactivate(groupId, reason) {
+      const g = getOptionGroup(groupId);
+      if (!g) return;
+      // Safeguard double-check (service-layer enforce จำลอง)
+      if (isGroupUsedInAssets(groupId)) return;
+      g.is_active = false;
+      g.updated_at = formatOptionTimestamp(new Date());
+      addGroupAuditEntry(g, {
+        action: "GROUP_DEACTIVATE",
+        before: [{ field: "Status", value: "Active" }],
+        after: [{ field: "Status", value: "Inactive" }],
+        reason: reason
+      });
+      closeUserActionModal();
+      renderOptionGroupListRows();
+      showSuccessToast(`ปิดใช้งาน group ${g.group_id} (${g.group}) แล้ว`);
+    }
+
+    function openOptionGroupReactivateConfirmModal(groupId) {
+      const g = getOptionGroup(groupId);
+      if (!g) return;
+      const modal = document.querySelector("#user-action-modal");
+      const modalCard = modal?.querySelector(".user-action-modal");
+      const modalBody = document.querySelector("#user-action-modal-body");
+      if (!modal || !modalCard || !modalBody) return;
+      const totalOptions = getOptionGroupTotalOptions(groupId);
+      const activeOptions = getOptionGroupActiveOptions(groupId);
+      const inactiveOptions = totalOptions - activeOptions;
+      modalBody.innerHTML = `
+        <div class="user-action-layout">
+          ${buildOptionGroupActionModalShell(
+            modalCard,
+            "Reactivate Group",
+            `${escapeOptionField(g.group_id)} (${escapeOptionField(g.group)}) — ${escapeOptionField(g.display_name_en)}`
+          )}
+          <div class="option-confirm-summary">
+            <div class="option-confirm-row"><span class="option-confirm-label">Group ID</span><span class="option-confirm-value">${escapeOptionField(g.group_id)}</span></div>
+            <div class="option-confirm-row"><span class="option-confirm-label">Identifier</span><span class="option-confirm-value">${escapeOptionField(g.group)}</span></div>
+            <div class="option-confirm-row"><span class="option-confirm-label">Label (EN)</span><span class="option-confirm-value">${escapeOptionField(g.display_name_en)}</span></div>
+            <div class="option-confirm-row"><span class="option-confirm-label">Label (TH)</span><span class="option-confirm-value">${escapeOptionField(g.display_name_th)}</span></div>
+            <div class="option-confirm-row"><span class="option-confirm-label">Options</span><span class="option-confirm-value">${activeOptions} active / ${totalOptions} total</span></div>
+            <div class="option-confirm-row option-confirm-changed"><span class="option-confirm-label">Status</span><span class="option-confirm-value"><span class="option-confirm-before">Inactive</span> → <span class="option-confirm-after">Active</span></span></div>
+          </div>
+          <div class="option-confirm-impact">
+            <strong>ผลกระทบต่อ Front Office:</strong> Group นี้และ option ที่ยัง active ใน group จะกลับมาแสดงใน FO Add/Edit Asset form, FO Search Filter และ FO Watch Alert criteria
+          </div>
+          ${inactiveOptions > 0 ? `
+            <div class="option-action-existing-note">
+              <strong>หมายเหตุ:</strong> มี option ที่เป็น Inactive อยู่ ${inactiveOptions} รายการใน group — reactivate group ไม่ได้ reactivate option เหล่านั้นอัตโนมัติ option ยังคงสถานะเดิม ต้อง reactivate ทีละ option แยก
+            </div>
+          ` : ""}
+          <div class="user-detail-actions">
+            <button class="user-detail-action-btn" type="button" data-user-action-modal-close>ยกเลิก</button>
+            <button class="user-detail-action-btn primary" type="button" data-option-group-reactivate-confirm data-option-group-id="${escapeOptionField(g.group_id)}">ยืนยัน Reactivate</button>
+          </div>
+        </div>
+      `;
+      showUserActionModal(true);
+    }
+
+    function applyOptionGroupReactivate(groupId) {
+      const g = getOptionGroup(groupId);
+      if (!g) return;
+      g.is_active = true;
+      g.updated_at = formatOptionTimestamp(new Date());
+      // สำคัญ: reactivate group ไม่ได้ reactivate option ที่เป็น Inactive ใน group อัตโนมัติ
+      // option ยังคงสถานะเดิม (section 6.1.3)
+      addGroupAuditEntry(g, {
+        action: "GROUP_REACTIVATE",
+        before: [{ field: "Status", value: "Inactive" }],
+        after: [{ field: "Status", value: "Active" }]
+      });
+      closeUserActionModal();
+      renderOptionGroupListRows();
+      showSuccessToast(`เปิดใช้งาน group ${g.group_id} (${g.group}) แล้ว`);
+    }
+
+    function openOptionGroupDeleteConfirmModal(groupId) {
+      const g = getOptionGroup(groupId);
+      if (!g) return;
+      const modal = document.querySelector("#user-action-modal");
+      const modalCard = modal?.querySelector(".user-action-modal");
+      const modalBody = document.querySelector("#user-action-modal-body");
+      if (!modal || !modalCard || !modalBody) return;
+      // Safeguard (section 6.1.5): (1) ต้อง Inactive ก่อน (2) ไม่มี asset ใช้
+      const requiresInactiveFirst = g.is_active;
+      const blockedByAssetUsage = isGroupUsedInAssets(groupId);
+      const totalOptions = getOptionGroupTotalOptions(groupId);
+      const safeguardError = requiresInactiveFirst
+        ? { code: "GROUP_DELETE_REQUIRES_INACTIVE_FIRST", message: `ไม่สามารถ delete group ได้ เนื่องจาก group ยังเป็น Active อยู่ ต้อง deactivate group ก่อน` }
+        : blockedByAssetUsage
+          ? { code: "GROUP_DELETE_BLOCKED_BY_ASSET_USAGE", message: `ไม่สามารถ delete group ได้ เนื่องจากยังมี asset ใช้ option ใน group ${escapeOptionField(g.group)} อยู่` }
+          : null;
+      modalBody.innerHTML = `
+        <div class="user-action-layout">
+          ${buildOptionGroupActionModalShell(
+            modalCard,
+            "Delete Group",
+            `${escapeOptionField(g.group_id)} (${escapeOptionField(g.group)}) — ${escapeOptionField(g.display_name_en)}`
+          )}
+          ${safeguardError ? `
+            <div class="warning-note option-safeguard-error">
+              <strong>ไม่สามารถ delete group ได้</strong><br>
+              ${safeguardError.message}<br>
+              <span class="option-error-code">Error: ${escapeOptionField(safeguardError.code)}</span>
+            </div>
+            <div class="user-detail-actions">
+              <button class="user-detail-action-btn" type="button" data-user-action-modal-close>ปิด</button>
+            </div>
+          ` : `
+            <span class="option-delete-step-indicator">Step <span class="option-delete-step-current">1</span> of 2</span>
+            <div class="warning-note option-delete-warning">
+              <strong>คำเตือน: การกระทำนี้ไม่สามารถย้อนกลับได้</strong><br>
+              การลบ group เป็นการกระทำที่ไม่สามารถย้อนกลับได้ ข้อมูล group และ option ทั้งหมดใน group จะถูกลบออกจากระบบอย่างถาวร
+            </div>
+            <div class="option-confirm-summary">
+              <div class="option-confirm-row"><span class="option-confirm-label">Group ID</span><span class="option-confirm-value">${escapeOptionField(g.group_id)}</span></div>
+              <div class="option-confirm-row"><span class="option-confirm-label">Identifier</span><span class="option-confirm-value">${escapeOptionField(g.group)}</span></div>
+              <div class="option-confirm-row"><span class="option-confirm-label">Label (EN)</span><span class="option-confirm-value">${escapeOptionField(g.display_name_en)}</span></div>
+              <div class="option-confirm-row"><span class="option-confirm-label">Label (TH)</span><span class="option-confirm-value">${escapeOptionField(g.display_name_th)}</span></div>
+              <div class="option-confirm-row"><span class="option-confirm-label">Status</span><span class="option-confirm-value">Inactive</span></div>
+            </div>
+            <div class="option-delete-impact-count">
+              จะลบ option ใน group นี้ทั้งหมด <strong>${totalOptions}</strong> รายการ พร้อมข้อมูล group อย่างถาวร
+            </div>
+            <div class="user-detail-actions">
+              <button class="user-detail-action-btn" type="button" data-user-action-modal-close>ยกเลิก</button>
+              <button class="user-detail-action-btn danger" type="button" data-option-group-delete-advance data-option-group-id="${escapeOptionField(g.group_id)}">ยืนยัน Delete</button>
+            </div>
+          `}
+        </div>
+      `;
+      showUserActionModal(true);
+    }
+
+    function renderOptionGroupDeleteStep2(groupId) {
+      const g = getOptionGroup(groupId);
+      if (!g) return;
+      const modal = document.querySelector("#user-action-modal");
+      const modalCard = modal?.querySelector(".user-action-modal");
+      const modalBody = document.querySelector("#user-action-modal-body");
+      if (!modal || !modalCard || !modalBody) return;
+      const totalOptions = getOptionGroupTotalOptions(groupId);
+      modalBody.innerHTML = `
+        <div class="user-action-layout">
+          ${buildOptionGroupActionModalShell(
+            modalCard,
+            "Delete Group — Re-confirm",
+            `${escapeOptionField(g.group_id)} (${escapeOptionField(g.group)}) — ${escapeOptionField(g.display_name_en)}`
+          )}
+          <span class="option-delete-step-indicator">Step <span class="option-delete-step-current">2</span> of 2</span>
+          <div class="warning-note option-delete-warning">
+            <strong>ยืนยันการลบอีกครั้ง</strong><br>
+            การกระทำนี้ไม่สามารถย้อนกลับได้ ข้อมูล group และ option ทั้งหมด ${totalOptions} รายการจะถูกลบอย่างถาวร
+          </div>
+          <div class="option-delete-confirm-input">
+            <label><span>พิมพ์ <strong>${escapeOptionField(g.group)}</strong> เพื่อยืนยันการลบ</span>
+              <input type="text" data-option-group-delete-confirm-input placeholder="${escapeOptionField(g.group)}" autocomplete="off" />
+            </label>
+          </div>
+          <div class="user-detail-actions">
+            <button class="user-detail-action-btn" type="button" data-user-action-modal-close>ยกเลิก</button>
+            <button class="user-detail-action-btn danger" type="button" data-option-group-delete-confirm data-option-group-id="${escapeOptionField(g.group_id)}" disabled>ลบ Group ถาวร</button>
+          </div>
+        </div>
+      `;
+      const confirmInput = modalBody.querySelector("[data-option-group-delete-confirm-input]");
+      const confirmBtn = modalBody.querySelector("[data-option-group-delete-confirm]");
+      if (confirmInput && confirmBtn) {
+        confirmInput.focus();
+        confirmInput.addEventListener("input", () => {
+          confirmBtn.disabled = confirmInput.value.trim() !== g.group;
+        });
+      }
+    }
+
+    function applyOptionGroupDelete(groupId) {
+      const g = getOptionGroup(groupId);
+      if (!g) return;
+      // Safeguard double-check (service-layer enforce จำลอง)
+      if (g.is_active) return;
+      if (isGroupUsedInAssets(groupId)) return;
+      const totalOptions = g.options.length;
+      // บันทึก audit GROUP_DELETE ก่อน hard delete (เพื่อคง trail)
+      addGroupAuditEntry(g, {
+        action: "GROUP_DELETE",
+        before: [
+          { field: "Group ID", value: g.group_id },
+          { field: "Identifier", value: g.group },
+          { field: "Label (EN)", value: g.display_name_en },
+          { field: "Options", value: String(totalOptions) },
+          { field: "Status", value: "Inactive" }
+        ],
+        after: [{ field: "Status", value: "Deleted" }]
+      });
+      // Hard delete: ลบ group ออกจาก optionMasterGroups
+      const idx = optionMasterGroups.findIndex(gr => gr.group_id === groupId);
+      if (idx < 0) return;
+      const removed = optionMasterGroups.splice(idx, 1)[0];
+      // หาก activeOptionGroup ชี้ไป group ที่ถูกลบ ให้กลับไป list
+      if (activeOptionGroup === groupId) {
+        activeOptionGroup = "";
+      }
+      closeUserActionModal();
+      renderOptionGroupListRows();
+      showSuccessToast(`ลบ group ${removed.group_id} (${removed.group}) และ option ${totalOptions} รายการอย่างถาวรแล้ว`);
+    }
+
     // ===== Option Reorder Modal (BO-OPT-002d, section 12.1) =====
     function getOrderedActiveOptions(groupId) {
       const g = getOptionGroup(groupId);
@@ -27204,24 +27539,21 @@
       const optionGroupDeactivateButton = event.target.closest("[data-option-group-deactivate]:not([disabled])");
       if (optionGroupDeactivateButton) {
         const groupId = optionGroupDeactivateButton.dataset.optionGroupDeactivate;
-        // Placeholder — Deactivate Group modal จะ implement ใน BO-OPT-006c
-        showSuccessToast(`Deactivate group ${groupId} จะเปิดใช้งานในเร็ว ๆ นี้ (BO-OPT-006c)`, "Coming soon");
+        openOptionGroupDeactivateConfirmModal(groupId);
         closeRowMenus();
         return;
       }
       const optionGroupReactivateButton = event.target.closest("[data-option-group-reactivate]:not([disabled])");
       if (optionGroupReactivateButton) {
         const groupId = optionGroupReactivateButton.dataset.optionGroupReactivate;
-        // Placeholder — Reactivate Group modal จะ implement ใน BO-OPT-006c
-        showSuccessToast(`Reactivate group ${groupId} จะเปิดใช้งานในเร็ว ๆ นี้ (BO-OPT-006c)`, "Coming soon");
+        openOptionGroupReactivateConfirmModal(groupId);
         closeRowMenus();
         return;
       }
       const optionGroupDeleteButton = event.target.closest("[data-option-group-delete]:not([disabled])");
       if (optionGroupDeleteButton) {
         const groupId = optionGroupDeleteButton.dataset.optionGroupDelete;
-        // Placeholder — Delete Group modal จะ implement ใน BO-OPT-006c
-        showSuccessToast(`Delete group ${groupId} จะเปิดใช้งานในเร็ว ๆ นี้ (BO-OPT-006c)`, "Coming soon");
+        openOptionGroupDeleteConfirmModal(groupId);
         closeRowMenus();
         return;
       }
@@ -27399,6 +27731,29 @@
         if (pendingOptionGroupFormData && pendingOptionGroupOriginal) applyOptionGroupEdit(pendingOptionGroupFormData, pendingOptionGroupOriginal.group_id);
         pendingOptionGroupFormData = null;
         pendingOptionGroupOriginal = null;
+        return;
+      }
+      // BO-OPT-006c: Option Group Deactivate / Reactivate / Delete confirm handlers
+      const optionGroupDeactivateConfirm = event.target.closest("[data-option-group-deactivate-confirm]");
+      if (optionGroupDeactivateConfirm) {
+        const reason = document.querySelector("[data-option-group-deactivate-reason]")?.value?.trim() || "";
+        if (!reason) return;
+        applyOptionGroupDeactivate(optionGroupDeactivateConfirm.dataset.optionGroupId, reason);
+        return;
+      }
+      const optionGroupReactivateConfirm = event.target.closest("[data-option-group-reactivate-confirm]");
+      if (optionGroupReactivateConfirm) {
+        applyOptionGroupReactivate(optionGroupReactivateConfirm.dataset.optionGroupId);
+        return;
+      }
+      const optionGroupDeleteAdvance = event.target.closest("[data-option-group-delete-advance]");
+      if (optionGroupDeleteAdvance) {
+        renderOptionGroupDeleteStep2(optionGroupDeleteAdvance.dataset.optionGroupId);
+        return;
+      }
+      const optionGroupDeleteConfirm = event.target.closest("[data-option-group-delete-confirm]");
+      if (optionGroupDeleteConfirm) {
+        applyOptionGroupDelete(optionGroupDeleteConfirm.dataset.optionGroupId);
         return;
       }
 
