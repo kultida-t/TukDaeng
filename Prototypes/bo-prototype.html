@@ -2964,6 +2964,45 @@
     .option-form-banner {
       margin: 0;
     }
+    /* BO-OPT-006b: Group editor modal — reuse option-editor-modal layout, add group-specific fields */
+    .option-editor-modal .article-editor-form label.option-field-group-id {
+      grid-column: 1;
+    }
+    .option-editor-modal .article-editor-form label.option-field-multi-select {
+      grid-column: 2;
+      align-content: start;
+    }
+    .option-editor-modal .article-editor-form label.option-field-multi-select .option-status-toggle-box {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .option-editor-modal .article-editor-form label.option-field-identifier {
+      grid-column: 1 / -1;
+    }
+    .option-editor-modal .article-editor-form label.option-field-identifier .option-identifier-note {
+      display: block;
+      margin-top: 4px;
+      font-size: 12px;
+      color: #94a3b8;
+      line-height: 1.45;
+    }
+    .option-multiselect-toggle-box:has(input:not(:checked)) .option-status-toggle-text {
+      color: #94a3b8;
+    }
+    .option-multiselect-toggle-box:has(input:checked) .option-status-toggle-text {
+      color: #1f5f9f;
+    }
+    .option-group-warning {
+      margin: 14px 0 0;
+      padding: 12px 14px;
+      border-radius: 10px;
+      background: #fffbeb;
+      border: 1px solid #fde68a;
+      color: #92400e;
+      font-size: 13px;
+      line-height: 1.55;
+    }
     .option-delete-warning {
       margin: 14px 0 0;
       font-size: 13px;
@@ -20971,6 +21010,59 @@
       const normalized = labelTh.trim().toLowerCase();
       return !g.options.some(o => (o.label_th || "").trim().toLowerCase() === normalized && o.key !== excludeKey);
     }
+
+    // ===== Option Group modal helpers (BO-OPT-006b, section 6.1.1) =====
+    function getNextGroupId() {
+      let maxNum = 0;
+      optionMasterGroups.forEach(g => {
+        const match = /^OG-(\d+)$/.exec(g.group_id || "");
+        if (match) maxNum = Math.max(maxNum, Number(match[1]) || 0);
+      });
+      return "OG-" + String(maxNum + 1).padStart(3, "0");
+    }
+    function getNextGroupSortOrder() {
+      if (!optionMasterGroups.length) return 10;
+      return Math.max(...optionMasterGroups.map(g => g.sort_order || 0)) + 10;
+    }
+    function isGroupIdentifierUnique(identifier, excludeGroupId = "") {
+      const normalized = identifier.trim().toLowerCase();
+      return !optionMasterGroups.some(g => (g.group || "").trim().toLowerCase() === normalized && g.group_id !== excludeGroupId);
+    }
+    function isGroupNameThUnique(nameTh, excludeGroupId = "") {
+      const normalized = nameTh.trim().toLowerCase();
+      return !optionMasterGroups.some(g => (g.display_name_th || "").trim().toLowerCase() === normalized && g.group_id !== excludeGroupId);
+    }
+    function isGroupNameEnUnique(nameEn, excludeGroupId = "") {
+      const normalized = nameEn.trim().toLowerCase();
+      return !optionMasterGroups.some(g => (g.display_name_en || "").trim().toLowerCase() === normalized && g.group_id !== excludeGroupId);
+    }
+    function getGroupById(groupId) {
+      return getOptionGroup(groupId);
+    }
+    function addGroupAuditEntry(group, entry) {
+      if (!group) return;
+      if (!Array.isArray(group.groupAuditHistory)) group.groupAuditHistory = [];
+      group.groupAuditHistory.unshift({
+        action: entry.action,
+        actor: entry.actor || OPTION_AUDIT_ACTOR,
+        actor_access: entry.actor_access || OPTION_AUDIT_ACCESS,
+        before: entry.before || "",
+        after: entry.after || "",
+        reason: entry.reason || "",
+        timestamp: entry.timestamp || formatOptionTimestamp(new Date())
+      });
+    }
+    function groupMultiSelectToggle(checked) {
+      return `
+        <div class="option-status-toggle-box option-multiselect-toggle-box">
+          <label class="option-status-toggle">
+            <input type="checkbox" name="allows_multi_select" value="true" ${checked ? "checked" : ""} data-option-group-multi-select />
+            <span class="option-status-toggle-track"></span>
+          </label>
+          <span class="option-status-toggle-text">${checked ? "Yes" : "No"}</span>
+        </div>
+      `;
+    }
     function escapeOptionField(value = "") {
       return String(value)
         .replace(/&/g, "&amp;")
@@ -21600,6 +21692,367 @@
       showSuccessToast(`${g.group}: บันทึกการแก้ไข option "${option.id}" แล้ว${keyChanged ? ` (เปลี่ยน key จาก "${originalKey}")` : ""}`);
     }
 
+    // ===== Option Group Add/Edit Modal (BO-OPT-006b, section 6.1.1) =====
+    function openOptionGroupAddModal(prevData = null) {
+      const modal = document.querySelector("#user-action-modal");
+      const modalCard = modal?.querySelector(".user-action-modal");
+      const modalBody = document.querySelector("#user-action-modal-body");
+      if (!modal || !modalCard || !modalBody) return;
+      modalCard.classList.remove("article-preview-modal", "article-editor-confirm-modal", "category-editor-modal", "category-order-modal", "market-editor-modal", "board-report-phone-preview-modal", "option-order-modal", "option-audit-modal");
+      modalCard.classList.add("option-editor-modal");
+      const multiSelectValue = prevData ? prevData.allows_multi_select : false;
+      modalBody.innerHTML = `
+        <div class="user-action-layout">
+          <div class="user-action-head">
+            <div>
+              <h2 id="user-action-modal-title">Add Group</h2>
+              <p>สร้างกลุ่มตัวเลือกใหม่สำหรับใช้ใน FO Add/Edit Asset form และ Search Filter</p>
+            </div>
+            <button class="btn user-action-close" type="button" data-user-action-modal-close aria-label="Close modal" title="Close">${iconSvg.close}</button>
+          </div>
+          <form class="article-editor-form" data-option-group-form data-option-group-mode="add" novalidate>
+            <section class="article-editor-section">
+              <div class="article-editor-grid">
+                <label class="option-field-group-id"><span>Group ID</span>
+                  <input value="${getNextGroupId()}" readonly />
+                </label>
+                <label class="option-field-multi-select"><span>Multi-select</span>
+                  ${groupMultiSelectToggle(multiSelectValue)}
+                </label>
+                <label class="option-field-identifier"><span>Group Identifier <span class="article-required-mark">*</span></span>
+                  <input name="group" value="${escapeOptionField(prevData?.group || "")}" placeholder="เช่น condition, dial_color" data-option-group-identifier autocomplete="off" />
+                  <span class="article-field-error" data-option-group-identifier-error></span>
+                  <span class="option-identifier-note">identifier ใช้เป็น stable key ที่ FO/seed/migration อ้างอิง — ห้ามเปลี่ยนหลังสร้างแล้ว</span>
+                </label>
+                <label><span>Label (TH) <span class="article-required-mark">*</span></span>
+                  <input name="display_name_th" value="${escapeOptionField(prevData?.display_name_th || "")}" placeholder="สภาพ" data-option-group-name-th autocomplete="off" />
+                  <span class="article-field-error" data-option-group-name-th-error></span>
+                </label>
+                <label><span>Label (EN) <span class="article-required-mark">*</span></span>
+                  <input name="display_name_en" value="${escapeOptionField(prevData?.display_name_en || "")}" placeholder="Condition" data-option-group-name-en autocomplete="off" />
+                  <span class="article-field-error" data-option-group-name-en-error></span>
+                </label>
+                <label><span>Description</span>
+                  <textarea name="description" placeholder="คำอธิบายเพิ่มเติม (ไม่บังคับ)" data-option-group-description>${escapeOptionField(prevData?.description || "")}</textarea>
+                  <span class="article-field-error" aria-hidden="true"></span>
+                </label>
+              </div>
+            </section>
+            <div class="user-detail-actions">
+              <button class="user-detail-action-btn" type="button" data-user-action-modal-close>ยกเลิก</button>
+              <button class="user-detail-action-btn primary" type="submit">สร้าง Group</button>
+            </div>
+          </form>
+        </div>
+      `;
+      showUserActionModal(true);
+    }
+
+    function openOptionGroupEditModal(groupId, prevData = null) {
+      const g = getGroupById(groupId);
+      if (!g) return;
+      const src = prevData || g;
+      const modal = document.querySelector("#user-action-modal");
+      const modalCard = modal?.querySelector(".user-action-modal");
+      const modalBody = document.querySelector("#user-action-modal-body");
+      if (!modal || !modalCard || !modalBody) return;
+      modalCard.classList.remove("article-preview-modal", "article-editor-confirm-modal", "category-editor-modal", "category-order-modal", "market-editor-modal", "board-report-phone-preview-modal", "option-order-modal", "option-audit-modal");
+      modalCard.classList.add("option-editor-modal");
+      modalBody.innerHTML = `
+        <div class="user-action-layout">
+          <div class="user-action-head">
+            <div>
+              <h2 id="user-action-modal-title">Edit Group</h2>
+              <p>แก้ไขกลุ่ม ${escapeOptionField(g.group_id)} (${escapeOptionField(g.display_name_en)})</p>
+            </div>
+            <button class="btn user-action-close" type="button" data-user-action-modal-close aria-label="Close modal" title="Close">${iconSvg.close}</button>
+          </div>
+          <form class="article-editor-form" data-option-group-form data-option-group-mode="edit" data-option-group-id="${escapeOptionField(g.group_id)}" novalidate>
+            <section class="article-editor-section">
+              <div class="article-editor-grid">
+                <label class="option-field-group-id"><span>Group ID</span>
+                  <input value="${escapeOptionField(g.group_id)}" readonly />
+                </label>
+                <label class="option-field-multi-select"><span>Multi-select</span>
+                  ${groupMultiSelectToggle(Boolean(src.allows_multi_select ?? g.allows_multi_select))}
+                </label>
+                <label class="option-field-identifier"><span>Group Identifier</span>
+                  <input value="${escapeOptionField(g.group)}" readonly />
+                  <span class="option-identifier-note">identifier ล็อกห้าม rename หลังใช้งาน — เป็น stable key ที่ FO/seed/migration อ้างอิง</span>
+                </label>
+                <label><span>Label (TH) <span class="article-required-mark">*</span></span>
+                  <input name="display_name_th" value="${escapeOptionField(src.display_name_th ?? g.display_name_th)}" data-option-group-name-th autocomplete="off" />
+                  <span class="article-field-error" data-option-group-name-th-error></span>
+                </label>
+                <label><span>Label (EN) <span class="article-required-mark">*</span></span>
+                  <input name="display_name_en" value="${escapeOptionField(src.display_name_en ?? g.display_name_en)}" data-option-group-name-en autocomplete="off" />
+                  <span class="article-field-error" data-option-group-name-en-error></span>
+                </label>
+                <label><span>Description</span>
+                  <textarea name="description" data-option-group-description>${escapeOptionField(src.description ?? g.description ?? "")}</textarea>
+                  <span class="article-field-error" aria-hidden="true"></span>
+                </label>
+              </div>
+            </section>
+            <div class="user-detail-actions">
+              <button class="user-detail-action-btn" type="button" data-user-action-modal-close>ยกเลิก</button>
+              <button class="user-detail-action-btn primary" type="submit">บันทึกการแก้ไข</button>
+            </div>
+          </form>
+        </div>
+      `;
+      showUserActionModal(true);
+    }
+
+    function setOptionGroupFieldError(form, field, message = "") {
+      const node = form?.querySelector(`[data-option-group-${field}-error]`);
+      if (node) {
+        node.textContent = message;
+        node.classList.toggle("show", Boolean(message));
+      }
+      const controlMap = {
+        identifier: form?.querySelector("[data-option-group-identifier]"),
+        "name-th": form?.querySelector("[data-option-group-name-th]"),
+        "name-en": form?.querySelector("[data-option-group-name-en]")
+      };
+      controlMap[field]?.classList.toggle("article-field-invalid", Boolean(message));
+    }
+
+    function validateOptionGroupForm(form) {
+      const mode = form.dataset.optionGroupMode || "add";
+      const groupId = form.dataset.optionGroupId || "";
+      const formData = new FormData(form);
+      const groupIdentifier = String(formData.get("group") || "").trim();
+      const nameTh = String(formData.get("display_name_th") || "").trim();
+      const nameEn = String(formData.get("display_name_en") || "").trim();
+      const description = String(formData.get("description") || "").trim();
+      const multiSelectCheckbox = form.querySelector("[data-option-group-multi-select]");
+      const allowsMultiSelect = multiSelectCheckbox ? multiSelectCheckbox.checked : false;
+      ["identifier", "name-th", "name-en"].forEach(field => setOptionGroupFieldError(form, field));
+      let hasError = false;
+      // identifier validation (add mode only — edit mode is read-only)
+      if (mode === "add") {
+        if (!groupIdentifier) {
+          setOptionGroupFieldError(form, "identifier", "กรุณากรอก Group Identifier");
+          hasError = true;
+        } else if (groupIdentifier.length > 64) {
+          setOptionGroupFieldError(form, "identifier", "Group Identifier ต้องไม่เกิน 64 ตัวอักษร");
+          hasError = true;
+        } else if (!/^[a-z0-9_]+$/.test(groupIdentifier)) {
+          setOptionGroupFieldError(form, "identifier", "Group Identifier ต้องเป็นตัวพิมพ์เล็กภาษาอังกฤษ ตัวเลข และ _ เท่านั้น");
+          hasError = true;
+        } else if (!isGroupIdentifierUnique(groupIdentifier)) {
+          setOptionGroupFieldError(form, "identifier", "Group Identifier ซ้ำกับที่มีอยู่ กรุณาใช้ค่าอื่น");
+          hasError = true;
+        }
+      }
+      if (!nameTh) {
+        setOptionGroupFieldError(form, "name-th", "กรุณากรอก Label (TH)");
+        hasError = true;
+      } else if (nameTh.length > 128) {
+        setOptionGroupFieldError(form, "name-th", "Label (TH) ต้องไม่เกิน 128 ตัวอักษร");
+        hasError = true;
+      } else if (mode === "add" && !isGroupNameThUnique(nameTh)) {
+        setOptionGroupFieldError(form, "name-th", "Label (TH) ซ้ำกับกลุ่มอื่น กรุณาใช้ค่าอื่น");
+        hasError = true;
+      } else if (mode === "edit" && !isGroupNameThUnique(nameTh, groupId)) {
+        setOptionGroupFieldError(form, "name-th", "Label (TH) ซ้ำกับกลุ่มอื่น กรุณาใช้ค่าอื่น");
+        hasError = true;
+      }
+      if (!nameEn) {
+        setOptionGroupFieldError(form, "name-en", "กรุณากรอก Label (EN)");
+        hasError = true;
+      } else if (nameEn.length > 128) {
+        setOptionGroupFieldError(form, "name-en", "Label (EN) ต้องไม่เกิน 128 ตัวอักษร");
+        hasError = true;
+      } else if (/[^\x00-\x7F]/.test(nameEn)) {
+        setOptionGroupFieldError(form, "name-en", "Label (EN) ต้องเป็นภาษาอังกฤษเท่านั้น กรุณาใช้ Label (TH) สำหรับภาษาไทย");
+        hasError = true;
+      } else if (mode === "add" && !isGroupNameEnUnique(nameEn)) {
+        setOptionGroupFieldError(form, "name-en", "Label (EN) ซ้ำกับกลุ่มอื่น กรุณาใช้ค่าอื่น");
+        hasError = true;
+      } else if (mode === "edit" && !isGroupNameEnUnique(nameEn, groupId)) {
+        setOptionGroupFieldError(form, "name-en", "Label (EN) ซ้ำกับกลุ่มอื่น กรุณาใช้ค่าอื่น");
+        hasError = true;
+      }
+      if (description.length > 512) {
+        setOptionGroupFieldError(form, "description", "Description ต้องไม่เกิน 512 ตัวอักษร");
+        hasError = true;
+      }
+      if (hasError) return null;
+      return {
+        group: groupIdentifier,
+        display_name_th: nameTh,
+        display_name_en: nameEn,
+        description,
+        allows_multi_select: allowsMultiSelect
+      };
+    }
+
+    function openOptionGroupAddConfirmModal(data) {
+      const modal = document.querySelector("#user-action-modal");
+      const modalCard = modal?.querySelector(".user-action-modal");
+      const modalBody = document.querySelector("#user-action-modal-body");
+      if (!modal || !modalCard || !modalBody) return;
+      modalCard.classList.remove("article-preview-modal", "article-editor-confirm-modal", "category-editor-modal", "category-order-modal", "market-editor-modal", "board-report-phone-preview-modal", "option-order-modal", "option-audit-modal");
+      modalCard.classList.add("option-editor-modal");
+      const previewId = getNextGroupId();
+      modalBody.innerHTML = `
+        <div class="user-action-layout">
+          <div class="user-action-head">
+            <div>
+              <h2 id="user-action-modal-title">Confirm Create Group</h2>
+              <p>กรุณาตรวจสอบค่าที่จะบันทึกก่อนยืนยัน</p>
+            </div>
+            <button class="btn user-action-close" type="button" data-user-action-modal-close aria-label="Close modal" title="Close">${iconSvg.close}</button>
+          </div>
+          <div class="option-confirm-summary">
+            <div class="option-confirm-row"><span class="option-confirm-label">Group ID</span><span class="option-confirm-value">${previewId}</span></div>
+            <div class="option-confirm-row"><span class="option-confirm-label">Group Identifier</span><span class="option-confirm-value">${escapeOptionField(data.group)}</span></div>
+            <div class="option-confirm-row"><span class="option-confirm-label">Label (TH)</span><span class="option-confirm-value">${escapeOptionField(data.display_name_th)}</span></div>
+            <div class="option-confirm-row"><span class="option-confirm-label">Label (EN)</span><span class="option-confirm-value">${escapeOptionField(data.display_name_en)}</span></div>
+            <div class="option-confirm-row"><span class="option-confirm-label">Description</span><span class="option-confirm-value">${escapeOptionField(data.description) || "-"}</span></div>
+            <div class="option-confirm-row"><span class="option-confirm-label">Multi-select</span><span class="option-confirm-value">${data.allows_multi_select ? "Yes" : "No"}</span></div>
+          </div>
+          <div class="option-confirm-impact">
+            กลุ่มใหม่นี้จะปรากฏในฝั่ง FO (Add/Edit Asset form, Search Filter และ Watch Alert criteria) ทันทีเมื่อ FO อ่าน option master ล่าสุด — สร้างเป็นกลุ่มว่าง (ไม่มี option) Admin สามารถเพิ่ม option ภายหลังได้
+          </div>
+          <div class="user-detail-actions">
+            <button class="user-detail-action-btn" type="button" data-option-group-add-back>ย้อนกลับ</button>
+            <button class="user-detail-action-btn primary" type="button" data-option-group-add-confirm>ยืนยัน</button>
+          </div>
+        </div>
+      `;
+      showUserActionModal(true);
+    }
+
+    function openOptionGroupEditConfirmModal(data, original) {
+      const g = getGroupById(original.group_id);
+      if (!g) return;
+      const modal = document.querySelector("#user-action-modal");
+      const modalCard = modal?.querySelector(".user-action-modal");
+      const modalBody = document.querySelector("#user-action-modal-body");
+      if (!modal || !modalCard || !modalBody) return;
+      modalCard.classList.remove("article-preview-modal", "article-editor-confirm-modal", "category-editor-modal", "category-order-modal", "market-editor-modal", "board-report-phone-preview-modal", "option-order-modal", "option-audit-modal");
+      modalCard.classList.add("option-editor-modal");
+      const changed = (field) => String(original[field] ?? "") !== String(data[field] ?? "");
+      const row = (label, field, displayFn) => {
+        const isChanged = changed(field);
+        return `<div class="option-confirm-row ${isChanged ? "option-confirm-changed" : ""}">
+          <span class="option-confirm-label">${label}</span>
+          <span class="option-confirm-value">${isChanged
+            ? `<span class="option-confirm-before">${displayFn(original[field])}</span> → <span class="option-confirm-after">${displayFn(data[field])}</span>`
+            : displayFn(data[field])}</span>
+        </div>`;
+      };
+      const boolDisplay = (v) => v ? "Yes" : "No";
+      const textDisplay = (v) => escapeOptionField(v || "");
+      // Warning: multi-select true → false ขณะมี asset ใช้ option ใน group
+      const multiSelectChangedToFalse = original.allows_multi_select === true && data.allows_multi_select === false;
+      const groupUsedInAssets = isGroupUsedInAssets(original.group_id);
+      const warningHtml = (multiSelectChangedToFalse && groupUsedInAssets)
+        ? `<div class="option-group-warning">
+            <strong>คำเตือน:</strong> กลุ่มนี้มี asset ใช้ option อยู่ การเปลี่ยนจาก Multi-select เป็น Single-select จะไม่ตัดค่าที่เก็บใน existing assets (คง history) แต่ FO form ใหม่จะใช้โหมด Single-select ตามค่าใหม่
+          </div>`
+        : "";
+      modalBody.innerHTML = `
+        <div class="user-action-layout">
+          <div class="user-action-head">
+            <div>
+              <h2 id="user-action-modal-title">Confirm Edit Group</h2>
+              <p>กรุณาตรวจสอบค่าที่เปลี่ยนแปลงก่อนยืนยัน — ฟิลด์ที่เปลี่ยนแปลงจะมีไฮไลต์และแสดงค่าเดิม → ค่าใหม่</p>
+            </div>
+            <button class="btn user-action-close" type="button" data-user-action-modal-close aria-label="Close modal" title="Close">${iconSvg.close}</button>
+          </div>
+          <div class="option-confirm-summary">
+            <div class="option-confirm-row"><span class="option-confirm-label">Group ID</span><span class="option-confirm-value">${escapeOptionField(original.group_id || "")}</span></div>
+            <div class="option-confirm-row"><span class="option-confirm-label">Group Identifier</span><span class="option-confirm-value">${escapeOptionField(original.group || "")} (ล็อก)</span></div>
+            ${row("Label (TH)", "display_name_th", textDisplay)}
+            ${row("Label (EN)", "display_name_en", textDisplay)}
+            ${row("Description", "description", textDisplay)}
+            ${row("Multi-select", "allows_multi_select", boolDisplay)}
+          </div>
+          ${warningHtml}
+          <div class="option-confirm-impact">
+            การแก้ไข label จะไม่กระทบค่าที่เก็บใน existing assets เพราะ asset เก็บ relation id และ snapshot text แยก แต่ FO form/filter จะแสดง label ใหม่ทันทีเมื่ออ่าน option master ล่าสุด
+          </div>
+          <div class="user-detail-actions">
+            <button class="user-detail-action-btn" type="button" data-option-group-edit-back>ย้อนกลับ</button>
+            <button class="user-detail-action-btn primary" type="button" data-option-group-edit-confirm>ยืนยัน</button>
+          </div>
+        </div>
+      `;
+      showUserActionModal(true);
+    }
+
+    function applyOptionGroupAdd(data) {
+      const newGroup = {
+        group_id: getNextGroupId(),
+        group: data.group,
+        display_name_en: data.display_name_en,
+        display_name_th: data.display_name_th,
+        allows_multi_select: data.allows_multi_select,
+        description: data.description,
+        is_active: true,
+        is_system: false,
+        sort_order: getNextGroupSortOrder(),
+        used_in_assets: false,
+        updated_at: formatArticleActionTimestamp(),
+        options: []
+      };
+      optionMasterGroups.push(newGroup);
+      optionMasterGroups.sort((a, b) => (a.sort_order || 0) - (b.sort_order || 0));
+      addGroupAuditEntry(newGroup, {
+        action: "GROUP_CREATE",
+        before: [],
+        after: [
+          { field: "Group Identifier", value: data.group },
+          { field: "Label (TH)", value: data.display_name_th },
+          { field: "Label (EN)", value: data.display_name_en },
+          { field: "Description", value: data.description || "-" },
+          { field: "Multi-select", value: data.allows_multi_select ? "Yes" : "No" },
+          { field: "Sort Order", value: String(newGroup.sort_order) },
+          { field: "Status", value: "Active" }
+        ]
+      });
+      closeUserActionModal();
+      optionGroupListPage = 1;
+      renderOptionGroupListRows();
+      showSuccessToast(`สร้างกลุ่ม "${newGroup.group_id}" (${data.group}) แล้ว`);
+    }
+
+    function applyOptionGroupEdit(data, groupId) {
+      const g = getGroupById(groupId);
+      if (!g) return;
+      const before = [
+        { field: "Label (TH)", value: g.display_name_th },
+        { field: "Label (EN)", value: g.display_name_en },
+        { field: "Description", value: g.description || "" },
+        { field: "Multi-select", value: g.allows_multi_select ? "Yes" : "No" }
+      ];
+      Object.assign(g, {
+        display_name_th: data.display_name_th,
+        display_name_en: data.display_name_en,
+        description: data.description,
+        allows_multi_select: data.allows_multi_select,
+        updated_at: formatArticleActionTimestamp()
+      });
+      const after = [
+        { field: "Label (TH)", value: g.display_name_th },
+        { field: "Label (EN)", value: g.display_name_en },
+        { field: "Description", value: g.description || "" },
+        { field: "Multi-select", value: g.allows_multi_select ? "Yes" : "No" }
+      ];
+      addGroupAuditEntry(g, {
+        action: "GROUP_EDIT",
+        before,
+        after
+      });
+      closeUserActionModal();
+      renderOptionGroupListRows();
+      showSuccessToast(`${g.group_id}: บันทึกการแก้ไขกลุ่มแล้ว`);
+    }
+
     // ===== Option Reorder Modal (BO-OPT-002d, section 12.1) =====
     function getOrderedActiveOptions(groupId) {
       const g = getOptionGroup(groupId);
@@ -21839,6 +22292,8 @@
 
     let pendingOptionFormData = null;
     let pendingOptionOriginal = null;
+    let pendingOptionGroupFormData = null;
+    let pendingOptionGroupOriginal = null;
 
     function renderCategoryListRows() {
       const q = (document.querySelector("#category-search")?.value || "").trim().toLowerCase();
@@ -26694,18 +27149,16 @@
         resetTableScrollPosition();
         return;
       }
-      // BO-OPT-006a: Option Group List action menu + filter handlers
+      // BO-OPT-006a/006b: Option Group List action menu + filter handlers
       const optionGroupAddOpenButton = event.target.closest("[data-option-group-add-open]");
       if (optionGroupAddOpenButton) {
-        // Placeholder — Add/Edit Group modal จะ implement ใน BO-OPT-006b
-        showSuccessToast("ฟีเยร์ Add group จะเปิดใช้งานในเร็ว ๆ นี้ (BO-OPT-006b)", "Coming soon");
+        openOptionGroupAddModal();
         return;
       }
       const optionGroupEditButton = event.target.closest("[data-option-group-edit]");
       if (optionGroupEditButton) {
         const groupId = optionGroupEditButton.dataset.optionGroupEdit;
-        // Placeholder — Edit Group modal จะ implement ใน BO-OPT-006b
-        showSuccessToast(`Edit group ${groupId} จะเปิดใช้งานในเร็ว ๆ นี้ (BO-OPT-006b)`, "Coming soon");
+        openOptionGroupEditModal(groupId);
         closeRowMenus();
         return;
       }
@@ -26883,6 +27336,30 @@
         if (pendingOptionFormData && pendingOptionOriginal) applyOptionEdit(pendingOptionFormData, pendingOptionOriginal.key);
         pendingOptionFormData = null;
         pendingOptionOriginal = null;
+        return;
+      }
+      // BO-OPT-006b: Option Group confirmation modal buttons
+      const optionGroupAddBack = event.target.closest("[data-option-group-add-back]");
+      if (optionGroupAddBack) {
+        if (pendingOptionGroupFormData) openOptionGroupAddModal(pendingOptionGroupFormData);
+        return;
+      }
+      const optionGroupAddConfirm = event.target.closest("[data-option-group-add-confirm]");
+      if (optionGroupAddConfirm) {
+        if (pendingOptionGroupFormData) applyOptionGroupAdd(pendingOptionGroupFormData);
+        pendingOptionGroupFormData = null;
+        return;
+      }
+      const optionGroupEditBack = event.target.closest("[data-option-group-edit-back]");
+      if (optionGroupEditBack) {
+        if (pendingOptionGroupFormData && pendingOptionGroupOriginal) openOptionGroupEditModal(pendingOptionGroupOriginal.group_id, pendingOptionGroupFormData);
+        return;
+      }
+      const optionGroupEditConfirm = event.target.closest("[data-option-group-edit-confirm]");
+      if (optionGroupEditConfirm) {
+        if (pendingOptionGroupFormData && pendingOptionGroupOriginal) applyOptionGroupEdit(pendingOptionGroupFormData, pendingOptionGroupOriginal.group_id);
+        pendingOptionGroupFormData = null;
+        pendingOptionGroupOriginal = null;
         return;
       }
 
@@ -27995,6 +28472,32 @@
         const form = event.target.closest("[data-option-form]");
         if (form) setOptionFieldError(form, "label-th");
       }
+      // BO-OPT-006b: Group identifier — auto-lowercase + block invalid chars
+      if (event.target.matches("[data-option-group-identifier]")) {
+        const form = event.target.closest("[data-option-group-form]");
+        if (!form) return;
+        const cleaned = event.target.value.toLowerCase().replace(/[^a-z0-9_]/g, "");
+        if (cleaned !== event.target.value) {
+          event.target.value = cleaned;
+          setOptionGroupFieldError(form, "identifier", "Group Identifier รับเฉพาะตัวพิมพ์เล็กภาษาอังกฤษ ตัวเลข และ _ เท่านั้น");
+        } else {
+          setOptionGroupFieldError(form, "identifier");
+        }
+      }
+      if (event.target.matches("[data-option-group-name-en]")) {
+        const form = event.target.closest("[data-option-group-form]");
+        if (!form) return;
+        if (/[^\x00-\x7F]/.test(event.target.value)) {
+          event.target.value = event.target.value.replace(/[^\x00-\x7F]/g, "");
+          setOptionGroupFieldError(form, "name-en", "Label (EN) รับเฉพาะภาษาอังกฤษเท่านั้น");
+        } else {
+          setOptionGroupFieldError(form, "name-en");
+        }
+      }
+      if (event.target.matches("[data-option-group-name-th]")) {
+        const form = event.target.closest("[data-option-group-form]");
+        if (form) setOptionGroupFieldError(form, "name-th");
+      }
     });
     document.addEventListener("change", event => {
       if (event.target.matches("[data-option-is-active]")) {
@@ -28004,6 +28507,12 @@
         const form = event.target.closest("[data-option-form]");
         const banner = form?.querySelector("[data-option-status-banner]");
         if (banner) { banner.hidden = true; banner.textContent = ""; }
+      }
+      // BO-OPT-006b: Multi-select toggle for group form
+      if (event.target.matches("[data-option-group-multi-select]")) {
+        const box = event.target.closest(".option-status-toggle-box");
+        const text = box?.querySelector(".option-status-toggle-text");
+        if (text) text.textContent = event.target.checked ? "Yes" : "No";
       }
     });
     document.addEventListener("submit", event => {
@@ -28030,6 +28539,25 @@
         } else {
           pendingOptionFormData = validated;
           openOptionAddConfirmModal(validated);
+        }
+        return;
+      }
+      const optionGroupForm = event.target.closest("[data-option-group-form]");
+      if (optionGroupForm) {
+        event.preventDefault();
+        const validated = validateOptionGroupForm(optionGroupForm);
+        if (!validated) return;
+        const mode = optionGroupForm.dataset.optionGroupMode;
+        if (mode === "edit") {
+          const groupId = optionGroupForm.dataset.optionGroupId || "";
+          const original = getGroupById(groupId);
+          if (!original) return;
+          pendingOptionGroupFormData = validated;
+          pendingOptionGroupOriginal = { ...original };
+          openOptionGroupEditConfirmModal(validated, pendingOptionGroupOriginal);
+        } else {
+          pendingOptionGroupFormData = validated;
+          openOptionGroupAddConfirmModal(validated);
         }
         return;
       }
