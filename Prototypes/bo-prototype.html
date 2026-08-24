@@ -20578,14 +20578,14 @@
       );
       document.body.classList.add("option-master-mode", "option-group-list-mode");
       document.body.classList.remove("option-detail-mode");
-      setPageActions(`<button class="btn" type="button" data-option-group-add-open title="เพิ่ม group" aria-label="เพิ่ม group">${iconSvg.plus}<span>เพิ่ม group</span></button>`);
+      setPageActions(`<button class="btn" type="button" data-option-group-add-open title="เพิ่ม Group" aria-label="เพิ่ม Group">${iconSvg.plus}<span>เพิ่ม Group</span></button>`);
       syncExpandedNavForModule("option-master", "");
       document.querySelector("#crumb").textContent = "การดำเนินงาน / Option Master";
       document.querySelector("#page-title").textContent = "Option Master";
       document.querySelector("#page-meta").textContent = "";
       document.querySelector("#panel-title").textContent = "Option Groups";
       document.querySelector("#panel-subtitle").textContent = "";
-      document.querySelector("#primary-action").textContent = "เพิ่ม group";
+      document.querySelector("#primary-action").textContent = "เพิ่ม Group";
       document.querySelector("#user-panel-filter-actions").innerHTML = `
         <button class="btn user-filter-toggle" type="button" data-option-group-filter-toggle aria-expanded="${optionGroupFilterOpen}">${iconSvg.filter}<span>${optionGroupFilterOpen ? "ปิดตัวกรอง" : "เปิดตัวกรอง"}</span></button>
         <button class="btn" type="button" data-option-group-reset title="รีเซ็ตค่าทั้งหมด" aria-label="รีเซ็ตค่าทั้งหมด">${iconSvg.refresh}<span>รีเซ็ตค่าทั้งหมด</span></button>
