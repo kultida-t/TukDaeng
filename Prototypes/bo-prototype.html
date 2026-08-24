@@ -9198,7 +9198,7 @@
       body.option-master-mode.option-group-list-mode .row-menu-list {
         left: auto;
         right: 0;
-        width: min(224px, calc(100vw - 64px));
+        width: min(196px, calc(100vw - 64px));
         min-width: 0;
         max-width: calc(100vw - 64px);
       }
@@ -26892,6 +26892,10 @@
       list.style.right = "auto";
       list.style.bottom = "auto";
       requestAnimationFrame(() => {
+        // BO-OPT-006g: measure actual rendered width (CSS may set 196px on mobile)
+        // and reposition so the menu's right edge aligns with the summary's right edge.
+        const actualWidth = list.getBoundingClientRect().width;
+        list.style.left = `${rect.right - actualWidth}px`;
         const listRect = list.getBoundingClientRect();
         if (listRect.bottom > window.innerHeight - 8) {
           list.style.top = "auto";
