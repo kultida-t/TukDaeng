@@ -2978,7 +2978,7 @@
       gap: 10px;
     }
     .option-editor-modal .article-editor-form label.option-field-identifier {
-      grid-column: 1 / -1;
+      grid-column: 1;
     }
     .option-editor-modal .article-editor-form label.option-field-identifier .option-identifier-note {
       display: block;
@@ -21701,6 +21701,7 @@
       modalCard.classList.remove("article-preview-modal", "article-editor-confirm-modal", "category-editor-modal", "category-order-modal", "market-editor-modal", "board-report-phone-preview-modal", "option-order-modal", "option-audit-modal");
       modalCard.classList.add("option-editor-modal");
       const multiSelectValue = prevData ? prevData.allows_multi_select : false;
+      const isActiveValue = prevData ? String(prevData.is_active) : "true";
       modalBody.innerHTML = `
         <div class="user-action-layout">
           <div class="user-action-head">
@@ -21716,13 +21717,16 @@
                 <label class="option-field-group-id"><span>Group ID</span>
                   <input value="${getNextGroupId()}" readonly />
                 </label>
-                <label class="option-field-multi-select"><span>Multi-select</span>
-                  ${groupMultiSelectToggle(multiSelectValue)}
+                <label class="option-field-status"><span>Status</span>
+                  ${optionStatusToggle(isActiveValue === "true")}
                 </label>
                 <label class="option-field-identifier"><span>Group Identifier <span class="article-required-mark">*</span></span>
                   <input name="group" value="${escapeOptionField(prevData?.group || "")}" placeholder="เช่น condition, dial_color" data-option-group-identifier autocomplete="off" />
                   <span class="article-field-error" data-option-group-identifier-error></span>
                   <span class="option-identifier-note">identifier ใช้เป็น stable key ที่ FO/seed/migration อ้างอิง — ห้ามเปลี่ยนหลังสร้างแล้ว</span>
+                </label>
+                <label class="option-field-multi-select"><span>Multi-select</span>
+                  ${groupMultiSelectToggle(multiSelectValue)}
                 </label>
                 <label><span>Label (TH) <span class="article-required-mark">*</span></span>
                   <input name="display_name_th" value="${escapeOptionField(prevData?.display_name_th || "")}" placeholder="สภาพ" data-option-group-name-th autocomplete="off" />
@@ -21773,12 +21777,15 @@
                 <label class="option-field-group-id"><span>Group ID</span>
                   <input value="${escapeOptionField(g.group_id)}" readonly />
                 </label>
-                <label class="option-field-multi-select"><span>Multi-select</span>
-                  ${groupMultiSelectToggle(Boolean(src.allows_multi_select ?? g.allows_multi_select))}
+                <label class="option-field-status"><span>Status</span>
+                  ${optionStatusToggle(Boolean(src.is_active ?? g.is_active))}
                 </label>
                 <label class="option-field-identifier"><span>Group Identifier</span>
                   <input value="${escapeOptionField(g.group)}" readonly />
                   <span class="option-identifier-note">identifier ล็อกห้าม rename หลังใช้งาน — เป็น stable key ที่ FO/seed/migration อ้างอิง</span>
+                </label>
+                <label class="option-field-multi-select"><span>Multi-select</span>
+                  ${groupMultiSelectToggle(Boolean(src.allows_multi_select ?? g.allows_multi_select))}
                 </label>
                 <label><span>Label (TH) <span class="article-required-mark">*</span></span>
                   <input name="display_name_th" value="${escapeOptionField(src.display_name_th ?? g.display_name_th)}" data-option-group-name-th autocomplete="off" />
@@ -21794,6 +21801,7 @@
                 </label>
               </div>
             </section>
+            <div class="warning-note option-form-banner" data-option-group-status-banner hidden></div>
             <div class="user-detail-actions">
               <button class="user-detail-action-btn" type="button" data-user-action-modal-close>ยกเลิก</button>
               <button class="user-detail-action-btn primary" type="submit">บันทึกการแก้ไข</button>
@@ -21828,8 +21836,23 @@
       const description = String(formData.get("description") || "").trim();
       const multiSelectCheckbox = form.querySelector("[data-option-group-multi-select]");
       const allowsMultiSelect = multiSelectCheckbox ? multiSelectCheckbox.checked : false;
+      const isActiveCheckbox = form.querySelector("[data-option-is-active]");
+      const isActive = isActiveCheckbox ? isActiveCheckbox.checked : true;
       ["identifier", "name-th", "name-en"].forEach(field => setOptionGroupFieldError(form, field));
+      const statusBanner = form.querySelector("[data-option-group-status-banner]");
+      if (statusBanner) { statusBanner.hidden = true; statusBanner.textContent = ""; }
       let hasError = false;
+      // Edit mode: block status change Active → Inactive if group has assets using options in it (safeguard)
+      if (mode === "edit") {
+        const original = getGroupById(groupId);
+        if (original && original.is_active && !isActive && isGroupUsedInAssets(groupId)) {
+          if (statusBanner) {
+            statusBanner.hidden = false;
+            statusBanner.textContent = "ไม่สามารถเปลี่ยนสถานะเป็น Inactive ได้ เนื่องจากยังมี asset ใช้ option ในกลุ่มนี้อยู่ — กรุณาใช้ action ปิดใช้งานกลุ่มหลังจากไม่มี asset ใช้แล้ว";
+          }
+          hasError = true;
+        }
+      }
       // identifier validation (add mode only — edit mode is read-only)
       if (mode === "add") {
         if (!groupIdentifier) {
@@ -21885,7 +21908,8 @@
         display_name_th: nameTh,
         display_name_en: nameEn,
         description,
-        allows_multi_select: allowsMultiSelect
+        allows_multi_select: allowsMultiSelect,
+        is_active: isActive
       };
     }
 
@@ -21913,9 +21937,10 @@
             <div class="option-confirm-row"><span class="option-confirm-label">Label (EN)</span><span class="option-confirm-value">${escapeOptionField(data.display_name_en)}</span></div>
             <div class="option-confirm-row"><span class="option-confirm-label">Description</span><span class="option-confirm-value">${escapeOptionField(data.description) || "-"}</span></div>
             <div class="option-confirm-row"><span class="option-confirm-label">Multi-select</span><span class="option-confirm-value">${data.allows_multi_select ? "Yes" : "No"}</span></div>
+            <div class="option-confirm-row"><span class="option-confirm-label">Status</span><span class="option-confirm-value">${data.is_active ? "Active" : "Inactive"}</span></div>
           </div>
           <div class="option-confirm-impact">
-            กลุ่มใหม่นี้จะปรากฏในฝั่ง FO (Add/Edit Asset form, Search Filter และ Watch Alert criteria) ทันทีเมื่อ FO อ่าน option master ล่าสุด — สร้างเป็นกลุ่มว่าง (ไม่มี option) Admin สามารถเพิ่ม option ภายหลังได้
+            กลุ่มใหม่นี้จะปรากฏในฝั่ง FO (Add/Edit Asset form, Search Filter และ Watch Alert criteria) ทันทีเมื่อ FO อ่าน option master ล่าสุด${data.is_active ? "" : " — แต่เนื่องจากสถานะ Inactive จะไม่แสดงจนกว่าจะเปิดใช้งาน"} — สร้างเป็นกลุ่มว่าง (ไม่มี option) Admin สามารถเพิ่ม option ภายหลังได้
           </div>
           <div class="user-detail-actions">
             <button class="user-detail-action-btn" type="button" data-option-group-add-back>ย้อนกลับ</button>
@@ -21946,6 +21971,7 @@
         </div>`;
       };
       const boolDisplay = (v) => v ? "Yes" : "No";
+      const statusDisplay = (v) => v ? "Active" : "Inactive";
       const textDisplay = (v) => escapeOptionField(v || "");
       // Warning: multi-select true → false ขณะมี asset ใช้ option ใน group
       const multiSelectChangedToFalse = original.allows_multi_select === true && data.allows_multi_select === false;
@@ -21971,6 +21997,7 @@
             ${row("Label (EN)", "display_name_en", textDisplay)}
             ${row("Description", "description", textDisplay)}
             ${row("Multi-select", "allows_multi_select", boolDisplay)}
+            ${row("Status", "is_active", statusDisplay)}
           </div>
           ${warningHtml}
           <div class="option-confirm-impact">
@@ -21993,7 +22020,7 @@
         display_name_th: data.display_name_th,
         allows_multi_select: data.allows_multi_select,
         description: data.description,
-        is_active: true,
+        is_active: data.is_active,
         is_system: false,
         sort_order: getNextGroupSortOrder(),
         used_in_assets: false,
@@ -22012,7 +22039,7 @@
           { field: "Description", value: data.description || "-" },
           { field: "Multi-select", value: data.allows_multi_select ? "Yes" : "No" },
           { field: "Sort Order", value: String(newGroup.sort_order) },
-          { field: "Status", value: "Active" }
+          { field: "Status", value: data.is_active ? "Active" : "Inactive" }
         ]
       });
       closeUserActionModal();
@@ -22028,20 +22055,23 @@
         { field: "Label (TH)", value: g.display_name_th },
         { field: "Label (EN)", value: g.display_name_en },
         { field: "Description", value: g.description || "" },
-        { field: "Multi-select", value: g.allows_multi_select ? "Yes" : "No" }
+        { field: "Multi-select", value: g.allows_multi_select ? "Yes" : "No" },
+        { field: "Status", value: g.is_active ? "Active" : "Inactive" }
       ];
       Object.assign(g, {
         display_name_th: data.display_name_th,
         display_name_en: data.display_name_en,
         description: data.description,
         allows_multi_select: data.allows_multi_select,
+        is_active: data.is_active,
         updated_at: formatArticleActionTimestamp()
       });
       const after = [
         { field: "Label (TH)", value: g.display_name_th },
         { field: "Label (EN)", value: g.display_name_en },
         { field: "Description", value: g.description || "" },
-        { field: "Multi-select", value: g.allows_multi_select ? "Yes" : "No" }
+        { field: "Multi-select", value: g.allows_multi_select ? "Yes" : "No" },
+        { field: "Status", value: g.is_active ? "Active" : "Inactive" }
       ];
       addGroupAuditEntry(g, {
         action: "GROUP_EDIT",
@@ -28513,6 +28543,15 @@
         const box = event.target.closest(".option-status-toggle-box");
         const text = box?.querySelector(".option-status-toggle-text");
         if (text) text.textContent = event.target.checked ? "Yes" : "No";
+      }
+      // BO-OPT-006b: Status toggle for group form — clear safeguard banner on change
+      if (event.target.matches("[data-option-is-active]") && event.target.closest("[data-option-group-form]")) {
+        const box = event.target.closest(".option-status-toggle-box");
+        const text = box?.querySelector(".option-status-toggle-text");
+        if (text) text.textContent = event.target.checked ? "Active" : "Inactive";
+        const form = event.target.closest("[data-option-group-form]");
+        const banner = form?.querySelector("[data-option-group-status-banner]");
+        if (banner) { banner.hidden = true; banner.textContent = ""; }
       }
     });
     document.addEventListener("submit", event => {
