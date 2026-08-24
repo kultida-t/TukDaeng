@@ -1910,10 +1910,11 @@
       flex-wrap: wrap;
       justify-content: flex-end;
     }
-    /* BO-OPT-006a-R1: System tag styling for Option Group List desktop (tag classes are
-       mobile-only by default; scope to option-master-mode so the System column shows as
-       a colored tag on desktop too, matching the mobile card appearance). */
-    body.option-master-mode .option-group-table .asset-row .user-card-tag.asset-tag {
+    /* BO-OPT-006a-R1: System tag styling for Option Group List + Option Detail desktop
+       (tag classes are mobile-only by default; scope to option-master-mode so the System
+       column shows as a colored tag on desktop too, matching the mobile card appearance). */
+    body.option-master-mode .option-group-table .asset-row .user-card-tag.asset-tag,
+    body.option-master-mode .option-detail-table .asset-row .user-card-tag.asset-tag {
       min-height: 24px;
       display: inline-flex;
       align-items: center;
@@ -1927,12 +1928,14 @@
       line-height: 1.2;
       white-space: nowrap;
     }
-    body.option-master-mode .option-group-table .asset-row .user-card-tag.asset-tag.tag-purple {
+    body.option-master-mode .option-group-table .asset-row .user-card-tag.asset-tag.tag-purple,
+    body.option-master-mode .option-detail-table .asset-row .user-card-tag.asset-tag.tag-purple {
       background: #efe9ff;
       color: #6035ae;
       border-color: #d8ccff;
     }
-    body.option-master-mode .option-group-table .asset-row .user-card-tag.asset-tag.tag-teal {
+    body.option-master-mode .option-group-table .asset-row .user-card-tag.asset-tag.tag-teal,
+    body.option-master-mode .option-detail-table .asset-row .user-card-tag.asset-tag.tag-teal {
       background: #e6fffb;
       color: #0f766e;
       border-color: #99f6e4;
@@ -20895,7 +20898,7 @@
                 </div>
                 <div data-label="Label (TH)"><div class="main-text">${o.label_th}</div></div>
                 <div data-label="Sort Order"><div class="main-text">${o.sort_order}</div></div>
-                <div data-label="System"><div class="main-text">${systemLabel}</div></div>
+                <div data-label="System"><span class="user-card-tag asset-tag ${o.is_system ? "tag-purple" : "tag-teal"}">${o.is_system ? "System" : "Custom"}</span></div>
                 <div data-label="Status">${statusPill}</div>
                 <div data-label="Updated"><div class="main-text">${o.updated_at || "-"}</div></div>
                 <div class="user-row-actions">${actionMenu}</div>
