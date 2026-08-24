@@ -102,6 +102,8 @@ Baseline entity types:
 - ExportJob
 - ImportJob
 - SystemSetting
+- SpecOption
+- SpecOptionGroup
 
 ## 6. Action Groups
 
@@ -165,6 +167,18 @@ Baseline entity types:
 - Sensitive export download
 - Import dry-run/start/finish/fail
 - Background job retry/cancel
+
+### Option Master
+
+- Option add
+- Option edit (label/description/key/sort_order)
+- Option deactivate
+- Option reactivate
+- Option reorder
+- Group edit (display_name/description/allows_multi_select)
+- Group deactivate
+- Group reactivate
+- Group delete (destructive)
 
 ## 7. Immutable Rules
 
