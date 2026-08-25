@@ -1,6 +1,6 @@
 # 17 BO Option Master Module
 
-**เวอร์ชัน:** `BO-17-v0.9`
+**เวอร์ชัน:** `BO-17-v0.10`
 **วันที่:** 2026-08-25
 **สถานะ:** สเปกปัจจุบัน
 **แพลตฟอร์ม:** Responsive Web Back Office
@@ -63,7 +63,7 @@ Option Master เป็นเมนูสำหรับให้ Admin จั�
 - Bulk export option
 - Override provider data จาก The Watch API (เป็นหน้าที่ของ Market Data module)
 - แก้ไข `group` identifier ของ group ที่มีอยู่
-- แก้ไข `key` ของ option ที่เคยถูกใช้แล้ว
+- แก้ไข `key` ของ option หลังสร้าง
 - เชื่อม Option Master กับ provider sync
 
 ## 3. โครงสร้างเมนู
@@ -98,7 +98,7 @@ Admin ที่มีสิทธิ์เข้าถึง Option Master ส�
 | View Option Detail | Allowed by module access |
 | Add option | Allowed by write permission; confirmation + audit |
 | Edit option label/description | Allowed by write permission; confirmation + audit |
-| Edit option key | Not allowed หลัง option ถูกใช้ใน asset แล้ว |
+| Edit option key | Not allowed หลังสร้าง — key เป็น stable identifier ที่ FO/seed/migration อ้างอิงตั้งแต่ option active |
 | Deactivate option | Allowed by write permission; confirmation + reason + audit; ต้องผ่าน System Option Deactivate Policy ตาม section 10.1 |
 | Reactivate option | Allowed by write permission; confirmation + audit |
 | Reorder option | Allowed by write permission; audit |
@@ -458,7 +458,7 @@ Filter:
 
 | Field | Editable | Validation |
 | --- | --- | --- |
-| Key | Not editable หลัง option ถูกใช้ใน asset | แสดงเป็น read-only พร้อม note ว่า key ล็อกเพราะถูกใช้แล้ว |
+| Key | Not editable หลังสร้าง | แสดงเป็น read-only พร้อม note ว่า key ล็อกหลังสร้างเพราะเป็น stable identifier ที่ FO/seed/migration อ้างอิง |
 | Label (EN) | Editable | trim whitespace; ห้ามว่าง; ไม่เกินความยาวที่ระบบกำหนด |
 | Label (TH) | Editable | trim whitespace; ห้ามว่าง; ไม่เกินความยาวที่ระบบกำหนด |
 | Description (EN) | Editable | trim whitespace; ไม่เกินความยาวที่ระบบกำหนด |
@@ -467,8 +467,8 @@ Filter:
 
 กฎ:
 
-- Key แก้ไม่ได้หลัง option ถูกใช้ใน asset ใด asset หนึ่งแล้ว เพื่อคง referential integrity
-- ถ้า option ยังไม่เคยถูกใช้ใน asset เลย Admin สามารถแก้ key ได้ แต่ต้องมี confirmation เพราะ key เป็น stable identifier
+- Key แก้ไม่ได้หลังสร้าง เพราะเป็น stable identifier ที่ FO/seed/migration อ้างอิงตั้งแต่ option active ไม่ใช่รอจนมี asset ใช้
+- ถ้า admin พิมพ์ผิดตอนสร้าง ให้ deactivate option นั้น + add option ใหม่ (deactivate ได้ตามปกติตาม section 10)
 - การแก้ label ต้องไม่กระทบค่าที่เก็บใน existing assets เพราะ asset เก็บ relation id และ snapshot text แยก
 - ต้องมี confirmation modal ก่อน save จริง พร้อมแสดง before/after value
 - บันทึก audit `OPTION_EDIT`
@@ -608,7 +608,6 @@ Reorder ทำได้ 2 วิธี:
 | --- | --- | --- | --- | --- | --- |
 | Add option | Key ไม่ซ้ำใน group | Yes | No | `OPTION_ADD` | แสดงใน FO form/filter ใหม่ |
 | Edit label/description | Option มีอยู่ | Yes | No | `OPTION_EDIT` | แสดง label ใหม่ใน FO form/filter; existing assets ยังเก็บ snapshot เดิม |
-| Edit key | Option ยังไม่ถูกใช้ใน asset | Yes | No | `OPTION_EDIT` | ไม่มีผลต่อ existing assets |
 | Reorder (drag-and-drop) | มี active option ≥2 ในกลุ่ม | Yes (save ใน Reorder Modal) | No | `OPTION_REORDER` | ลำดับ FO form/filter เปลี่ยน |
 | Edit sort_order (via Edit Option) | Option มีอยู่ | Yes | No | `OPTION_EDIT` | ลำดับ FO form/filter เปลี่ยน |
 | Deactivate option | Option active; ผ่าน System Option Deactivate Policy (section 10.1) — system option ในกลุ่ม `condition` ล็อก, กลุ่มอื่นต้องมี ≥1 active option เหลือ | Yes | Yes | `OPTION_DEACTIVATE` | ไม่แสดงใน FO form/filter/Watch Alert ใหม่; existing assets ยังแสดงค่าเดิม |
@@ -666,7 +665,7 @@ Audit action types:
 | Action Type | Trigger | Before/After |
 | --- | --- | --- |
 | `OPTION_ADD` | เพิ่ม option ใหม่ใน group | After: option ใหม่ทั้งหมด |
-| `OPTION_EDIT` | แก้ label, description, key (ถ้ายังไม่ถูกใช้), is_active ผ่าน Edit modal | Before/After: field ที่เปลี่ยน |
+| `OPTION_EDIT` | แก้ label, description, is_active ผ่าน Edit modal | Before/After: field ที่เปลี่ยน |
 | `OPTION_DEACTIVATE` | Deactivate option | Before: active; After: inactive + reason |
 | `OPTION_REACTIVATE` | Reactivate option | Before: inactive; After: active |
 | `OPTION_REORDER` | เปลี่ยน sort_order ผ่าน Reorder Modal (drag-and-drop หรือ up/down) | Before/After: sort_order เดิม/ใหม่ ของทุก option ที่เปลี่ยนลำดับในการ save ครั้งนั้น |
@@ -791,7 +790,7 @@ CREATE TABLE spec_options (
 | --- | --- | --- |
 | `id` | BIGSERIAL | PK; เป็น FK target จาก `watch_assets` และ `asset_delivery_items` |
 | `group_id` | BIGINT | FK → `spec_option_groups.group_id` |
-| `option_key` | TEXT | Stable identifier ห้าม rename หลัง option ถูกใช้ใน asset; lowercase snake_case; unique ภายใน group |
+| `option_key` | TEXT | Stable identifier ห้าม rename หลังสร้าง; lowercase snake_case; unique ภายใน group |
 | `label_en` | TEXT | English label แก้ไขได้ |
 | `label_th` | TEXT | Thai label แก้ไขได้ |
 | `description_en` | TEXT | Internal description (optional) |
@@ -1059,7 +1058,7 @@ Visual rules:
 - [ ] Audit requirements ครบทุก action type
 - [ ] Acceptance Criteria ทดสอบได้
 - [ ] Confirmation modal ระบุผลกระทบต่อ FO ชัดเจน
-- [ ] Key lock rule หลัง option ถูกใช้ใน asset ระบุชัด
+- [ ] Key lock rule หลังสร้าง ระบุชัด (key ล็อกตั้งแต่สร้าง ไม่ใช่หลังถูกใช้ใน asset)
 - [ ] System option policy ระบุชัด
 - [ ] System Option Deactivate Policy (section 10.1) ระบุชัด: กลุ่ม `condition` ล็อก, กลุ่มอื่นอนุญาตพร้อม reason + safeguard (≥1 active option เหลือในกลุ่ม)
 - [ ] ปุ่ม Deactivate ในกลุ่ม `condition` (system option) disabled พร้อม tooltip อธิบายเหตุผล
@@ -1104,6 +1103,7 @@ Visual rules:
 | BO-OPT-003 ✅ | System option deactivate policy | **ตัดสินใจ: Tiered Deactivation Control** — กลุ่ม `condition` (required field สำหรับ Sale status) ล็อกไม่ให้ deactivate system option ผ่าน BO UI ต้องแก้ seed file + migration; กลุ่ม optional อื่น (`delivery`, `case_material`, `movement`, `dial_color`, `strap_bracelet_type`) อนุญาตพร้อม reason + safeguard (≥1 active option เหลือในกลุ่ม); custom option ทุกกลุ่ม deactivate ได้ปกติพร้อม reason + safeguard; รายละเอียดใน section 10.1 |
 | BO-OPT-004 ✅ | Reorder UI | **ตัดสินใจ: Drag-and-drop in Reorder Modal + Up/Down Fallback** — ใช้ Reorder Modal เป็นวิธีหลัก (drag-and-drop บน desktop + up/down arrow buttons บน touch device) ตาม pattern ของ Category Display Order ใน prototype เพื่อความสอดคล้อง; Edit Option modal ยังคงเป็นวิธีรองสำหรับแก้ sort_order รายตัว; บันทึก audit `OPTION_REORDER` ครั้งเดียวต่อการ save ใน Reorder Modal; รายละเอียดใน section 12 |
 | BO-OPT-005 ✅ | Group-level actions policy | **ตัดสินใจ: เพิ่ม group-level actions 4 ตัวบน Option Group List** — (1) **Edit group**: แก้ `display_name_th`/`display_name_en`/`description`/`allows_multi_select` พร้อม confirmation + audit `GROUP_EDIT`; ห้ามแก้ `group` identifier และ `group_id`; (2) **Deactivate group**: confirmation + reason (required) + audit `GROUP_DEACTIVATE`; safeguard ห้าม deactivate ถ้ามี asset ใช้ option ใน group นั้น; (3) **Reactivate group**: confirmation + audit `GROUP_REACTIVATE`; (4) **Delete group**: destructive — confirm 2 ครั้ง (type-to-confirm) + audit `GROUP_DELETE`; เงื่อนไข group Inactive + ไม่มี asset ใช้; ไม่สามารถย้อนกลับได้; เพิ่ม Status column + status filter + action menu ใน Option Group List; service layer enforce safeguard ทั้งสองข้อ; รายละเอียดใน section 6.1; `is_active` ของ group ใช้งานได้ใน Phase 1 |
+| BO-OPT-009 ✅ | Option key lock policy | **ตัดสินใจ: ล็อก `key` หลังสร้างเลย** — เปลี่ยน policy เดิม (ล็อกเฉพาะหลัง option ถูกใช้ใน asset) เป็นล็อกตั้งแต่สร้าง เพื่อให้สอดคล้องกับ group identifier ที่ล็อกหลังสร้างอยู่แล้ว; เหตุผล: FO อ้างอิง option key ตั้งแต่ option active ไม่ใช่รอจนมี asset ใช้ ดังนั้นช่วงที่ active แต่ยังไม่มี asset ใช้ FO cache/reference อ้างอิง key อยู่แล้ว การอนุญาตให้แก้ key ในช่วงนั้นทำให้ reference พังได้; กรณีพิมพ์ผิด: deactivate option + add option ใหม่; อัปเดต section 2, 4, 9, 13, 16, 17.3, 20 |
 
 ## 22. FO Integration Guidelines
 
