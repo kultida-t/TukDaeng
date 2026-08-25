@@ -5157,6 +5157,39 @@
       clip: rect(0, 0, 0, 0);
       white-space: nowrap;
     }
+    /* Custom tooltip สำหรับ filter-reset ที่เป็น icon-only (แทน native title ที่ชนขอบจอ) */
+    .user-filter-bar .filter-reset,
+    body.offer-list-mode .offer-filter-bar .filter-reset {
+      position: relative;
+    }
+    .user-filter-bar .filter-reset::after,
+    body.offer-list-mode .offer-filter-bar .filter-reset::after {
+      content: attr(aria-label);
+      position: absolute;
+      top: calc(100% + 6px);
+      right: 0;
+      z-index: 60;
+      background: var(--ink);
+      color: #fff;
+      font-size: 12px;
+      line-height: 1.2;
+      font-weight: 500;
+      padding: 5px 8px;
+      border-radius: 6px;
+      white-space: nowrap;
+      box-shadow: 0 4px 12px rgba(8, 21, 42, .22);
+      pointer-events: none;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity .15s ease, visibility .15s ease;
+    }
+    .user-filter-bar .filter-reset:hover::after,
+    body.offer-list-mode .offer-filter-bar .filter-reset:hover::after,
+    .user-filter-bar .filter-reset:focus-visible::after,
+    body.offer-list-mode .offer-filter-bar .filter-reset:focus-visible::after {
+      opacity: 1;
+      visibility: visible;
+    }
     body.user-accounts-mode:not(.user-detail-mode) .main {
       overflow-x: hidden;
     }
@@ -8589,8 +8622,96 @@
       body.option-master-mode.option-detail-mode .page-actions .btn[data-option-reorder-open] span,
       body.option-master-mode.option-detail-mode .page-actions .btn[data-option-add-open] span,
       body.option-master-mode.option-group-list-mode .page-actions .btn[data-option-group-reorder-open] span,
-      body.option-master-mode.option-group-list-mode .page-actions .btn[data-option-group-add-open] span {
+      body.option-master-mode.option-group-list-mode .page-actions .btn[data-option-group-add-open] span,
+      body.category-list-mode .page-actions .btn[data-category-order-open] span,
+      body.category-list-mode .page-actions .btn[data-category-add] span {
         display: none;
+      }
+      /* Custom tooltip สำหรับปุ่ม page action ที่เหลือ icon บน mobile (แทน native title ที่ชนขอบจอ) */
+      body.option-master-mode.option-detail-mode .page-actions .btn[data-option-reorder-open],
+      body.option-master-mode.option-detail-mode .page-actions .btn[data-option-add-open],
+      body.option-master-mode.option-group-list-mode .page-actions .btn[data-option-group-reorder-open],
+      body.option-master-mode.option-group-list-mode .page-actions .btn[data-option-group-add-open],
+      body.category-list-mode .page-actions .btn[data-category-order-open],
+      body.category-list-mode .page-actions .btn[data-category-add] {
+        position: relative;
+      }
+      body.option-master-mode.option-detail-mode .page-actions .btn[data-option-reorder-open]::after,
+      body.option-master-mode.option-detail-mode .page-actions .btn[data-option-add-open]::after,
+      body.option-master-mode.option-group-list-mode .page-actions .btn[data-option-group-reorder-open]::after,
+      body.option-master-mode.option-group-list-mode .page-actions .btn[data-option-group-add-open]::after,
+      body.category-list-mode .page-actions .btn[data-category-order-open]::after,
+      body.category-list-mode .page-actions .btn[data-category-add]::after {
+        content: attr(aria-label);
+        position: absolute;
+        top: calc(100% + 6px);
+        right: 0;
+        z-index: 60;
+        background: var(--ink);
+        color: #fff;
+        font-size: 12px;
+        line-height: 1.2;
+        font-weight: 500;
+        padding: 5px 8px;
+        border-radius: 6px;
+        white-space: nowrap;
+        box-shadow: 0 4px 12px rgba(8, 21, 42, .22);
+        pointer-events: none;
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity .15s ease, visibility .15s ease;
+      }
+      body.option-master-mode.option-detail-mode .page-actions .btn[data-option-reorder-open]:hover::after,
+      body.option-master-mode.option-detail-mode .page-actions .btn[data-option-add-open]:hover::after,
+      body.option-master-mode.option-group-list-mode .page-actions .btn[data-option-group-reorder-open]:hover::after,
+      body.option-master-mode.option-group-list-mode .page-actions .btn[data-option-group-add-open]:hover::after,
+      body.category-list-mode .page-actions .btn[data-category-order-open]:hover::after,
+      body.category-list-mode .page-actions .btn[data-category-add]:hover::after,
+      body.option-master-mode.option-detail-mode .page-actions .btn[data-option-reorder-open]:focus-visible::after,
+      body.option-master-mode.option-detail-mode .page-actions .btn[data-option-add-open]:focus-visible::after,
+      body.option-master-mode.option-group-list-mode .page-actions .btn[data-option-group-reorder-open]:focus-visible::after,
+      body.option-master-mode.option-group-list-mode .page-actions .btn[data-option-group-add-open]:focus-visible::after,
+      body.category-list-mode .page-actions .btn[data-category-order-open]:focus-visible::after,
+      body.category-list-mode .page-actions .btn[data-category-add]:focus-visible::after {
+        opacity: 1;
+        visibility: visible;
+      }
+      /* Custom tooltip สำหรับปุ่ม back และ filter-reset ที่เป็น icon-only บน mobile */
+      .page-actions .page-back-btn,
+      .report-detail-page .report-back-btn,
+      .user-detail-page .user-back-btn {
+        position: relative;
+      }
+      .page-actions .page-back-btn::after,
+      .report-detail-page .report-back-btn::after,
+      .user-detail-page .user-back-btn::after {
+        content: attr(aria-label);
+        position: absolute;
+        top: calc(100% + 6px);
+        left: 0;
+        z-index: 60;
+        background: var(--ink);
+        color: #fff;
+        font-size: 12px;
+        line-height: 1.2;
+        font-weight: 500;
+        padding: 5px 8px;
+        border-radius: 6px;
+        white-space: nowrap;
+        box-shadow: 0 4px 12px rgba(8, 21, 42, .22);
+        pointer-events: none;
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity .15s ease, visibility .15s ease;
+      }
+      .page-actions .page-back-btn:hover::after,
+      .report-detail-page .report-back-btn:hover::after,
+      .user-detail-page .user-back-btn:hover::after,
+      .page-actions .page-back-btn:focus-visible::after,
+      .report-detail-page .report-back-btn:focus-visible::after,
+      .user-detail-page .user-back-btn:focus-visible::after {
+        opacity: 1;
+        visibility: visible;
       }
       .page-title {
         font-size: 38px;
@@ -12456,7 +12577,7 @@
 
     function renderPageBackButton(dataAttribute, label, className = "user-back-btn") {
       return `
-        <button class="btn ${className} page-back-btn" type="button" ${dataAttribute} aria-label="Back" title="Back">
+        <button class="btn ${className} page-back-btn" type="button" ${dataAttribute} aria-label="Back">
           <svg class="mobile-back-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>
         </button>
       `;
@@ -13235,7 +13356,7 @@
     }
 
     function resetFilterButton(attrs) {
-      return `<button class="btn filter-reset user-advanced-filter" type="button" ${attrs} title="${filterCopy.resetAll}" aria-label="${filterCopy.resetAll}">${iconSvg.refresh}<span>${filterCopy.resetAll}</span></button>`;
+      return `<button class="btn filter-reset user-advanced-filter" type="button" ${attrs} aria-label="${filterCopy.resetAll}">${iconSvg.refresh}<span>${filterCopy.resetAll}</span></button>`;
     }
 
     function renderPager(currentPage, totalPages, dataAttr) {
@@ -15931,7 +16052,7 @@
       document.querySelector("#panel-subtitle").textContent = "";
       document.querySelector("#user-panel-filter-actions").innerHTML = `
         <button class="btn user-filter-toggle" type="button" data-user-filter-toggle aria-expanded="${userFilterOpen}">${iconSvg.filter}<span>${userFilterOpen ? "ปิดตัวกรอง" : "เปิดตัวกรอง"}</span></button>
-        <button class="btn" type="button" data-user-reset title="รีเซ็ตค่าทั้งหมด" aria-label="รีเซ็ตค่าทั้งหมด">${iconSvg.refresh}<span>รีเซ็ตค่าทั้งหมด</span></button>
+        <button class="btn" type="button" data-user-reset aria-label="รีเซ็ตค่าทั้งหมด">${iconSvg.refresh}<span>รีเซ็ตค่าทั้งหมด</span></button>
       `;
       document.querySelector("#summary-grid").innerHTML = isReports ? "" : getUserSummaryStats().map(stat => `
         <article class="stat">
@@ -15967,7 +16088,7 @@
             { value: "reports", label: "จำนวน report" },
             { value: "assets", label: "จำนวน asset" }
           ], "lastActive")}</div>
-          <button class="btn filter-reset user-advanced-filter" type="button" id="user-reset" title="รีเซ็ตค่าทั้งหมด" aria-label="รีเซ็ตค่าทั้งหมด">${iconSvg.refresh}<span>รีเซ็ตค่าทั้งหมด</span></button>
+          <button class="btn filter-reset user-advanced-filter" type="button" id="user-reset" aria-label="รีเซ็ตค่าทั้งหมด">${iconSvg.refresh}<span>รีเซ็ตค่าทั้งหมด</span></button>
         </div>
       `;
       document.querySelector("#cards").innerHTML = "";
@@ -17824,7 +17945,7 @@
         document.querySelector("#primary-action").textContent = data.action;
         document.querySelector("#user-panel-filter-actions").innerHTML = `
           <button class="btn user-filter-toggle" type="button" data-article-filter-toggle aria-expanded="${articleFilterOpen}">${iconSvg.filter}<span>${articleFilterOpen ? "ปิดตัวกรอง" : "เปิดตัวกรอง"}</span></button>
-          <button class="btn" type="button" data-article-reset title="รีเซ็ตค่าทั้งหมด" aria-label="รีเซ็ตค่าทั้งหมด">${iconSvg.refresh}<span>รีเซ็ตค่าทั้งหมด</span></button>
+          <button class="btn" type="button" data-article-reset aria-label="รีเซ็ตค่าทั้งหมด">${iconSvg.refresh}<span>รีเซ็ตค่าทั้งหมด</span></button>
         `;
         document.querySelector(".filters").innerHTML = `
           <div class="user-filter-bar content-mode" data-filter-open="${articleFilterOpen}">
@@ -17848,8 +17969,8 @@
       if (isCategoryList) {
         activeRow = null;
         setPageActions(`
-          <button class="btn" type="button" data-category-order-open title="จัดเรียง Category บน FO Board" aria-label="จัดเรียง Category บน FO Board">${iconSvg.sort}<span>จัดเรียง Category</span></button>
-          <button class="btn" type="button" data-category-add>${iconSvg.plus}<span>เพิ่มหมวดหมู่</span></button>
+          <button class="btn" type="button" data-category-order-open aria-label="จัดเรียง Category บน FO Board">${iconSvg.sort}<span>จัดเรียง Category</span></button>
+          <button class="btn" type="button" data-category-add aria-label="เพิ่มหมวดหมู่">${iconSvg.plus}<span>เพิ่มหมวดหมู่</span></button>
         `);
         document.querySelector("#crumb").textContent = `${data.crumb} / Categories`;
         document.querySelector("#page-title").textContent = "Categories";
@@ -17859,7 +17980,7 @@
         document.querySelector("#primary-action").textContent = "เพิ่มหมวดหมู่";
         document.querySelector("#user-panel-filter-actions").innerHTML = `
           <button class="btn user-filter-toggle" type="button" data-category-filter-toggle aria-expanded="${categoryFilterOpen}">${iconSvg.filter}<span>${categoryFilterOpen ? "ปิดตัวกรอง" : "เปิดตัวกรอง"}</span></button>
-          <button class="btn" type="button" data-category-reset title="รีเซ็ตค่าทั้งหมด" aria-label="รีเซ็ตค่าทั้งหมด">${iconSvg.refresh}<span>รีเซ็ตค่าทั้งหมด</span></button>
+          <button class="btn" type="button" data-category-reset aria-label="รีเซ็ตค่าทั้งหมด">${iconSvg.refresh}<span>รีเซ็ตค่าทั้งหมด</span></button>
         `;
         document.querySelector(".filters").innerHTML = `
           <div class="user-filter-bar category-mode" data-filter-open="${categoryFilterOpen}">
@@ -17891,7 +18012,7 @@
         document.querySelector("#panel-subtitle").textContent = "";
         document.querySelector("#user-panel-filter-actions").innerHTML = `
           <button class="btn user-filter-toggle" type="button" data-asset-report-filter-toggle aria-expanded="${assetReportFilterOpen}">${iconSvg.filter}<span>${assetReportFilterOpen ? "ปิดตัวกรอง" : "เปิดตัวกรอง"}</span></button>
-          <button class="btn" type="button" data-asset-report-reset title="รีเซ็ตค่าทั้งหมด" aria-label="รีเซ็ตค่าทั้งหมด">${iconSvg.refresh}<span>รีเซ็ตค่าทั้งหมด</span></button>
+          <button class="btn" type="button" data-asset-report-reset aria-label="รีเซ็ตค่าทั้งหมด">${iconSvg.refresh}<span>รีเซ็ตค่าทั้งหมด</span></button>
         `;
         document.querySelector(".filters").innerHTML = `
           <div class="user-filter-bar report-mode" data-filter-open="${assetReportFilterOpen}">
@@ -17919,7 +18040,7 @@
         document.querySelector("#primary-action").textContent = reportedCommentConfig.action;
         document.querySelector("#user-panel-filter-actions").innerHTML = `
           <button class="btn user-filter-toggle" type="button" data-reported-comment-filter-toggle aria-expanded="${reportedCommentFilterOpen}">${iconSvg.filter}<span>${reportedCommentFilterOpen ? "ปิดตัวกรอง" : "เปิดตัวกรอง"}</span></button>
-          <button class="btn" type="button" data-reported-comment-reset title="รีเซ็ตค่าทั้งหมด" aria-label="รีเซ็ตค่าทั้งหมด">${iconSvg.refresh}<span>รีเซ็ตค่าทั้งหมด</span></button>
+          <button class="btn" type="button" data-reported-comment-reset aria-label="รีเซ็ตค่าทั้งหมด">${iconSvg.refresh}<span>รีเซ็ตค่าทั้งหมด</span></button>
         `;
         document.querySelector(".filters").innerHTML = `
           <div class="user-filter-bar report-mode" data-filter-open="${reportedCommentFilterOpen}">
@@ -17947,7 +18068,7 @@
         document.querySelector("#primary-action").textContent = "เปิดรายงาน";
         document.querySelector("#user-panel-filter-actions").innerHTML = `
           <button class="btn user-filter-toggle" type="button" data-board-report-filter-toggle aria-expanded="${boardReportFilterOpen}">${iconSvg.filter}<span>${boardReportFilterOpen ? "ปิดตัวกรอง" : "เปิดตัวกรอง"}</span></button>
-          <button class="btn" type="button" data-board-report-reset title="รีเซ็ตค่าทั้งหมด" aria-label="รีเซ็ตค่าทั้งหมด">${iconSvg.refresh}<span>รีเซ็ตค่าทั้งหมด</span></button>
+          <button class="btn" type="button" data-board-report-reset aria-label="รีเซ็ตค่าทั้งหมด">${iconSvg.refresh}<span>รีเซ็ตค่าทั้งหมด</span></button>
         `;
         document.querySelector(".filters").innerHTML = `
           <div class="user-filter-bar content-mode" data-filter-open="${boardReportFilterOpen}">
@@ -17971,7 +18092,7 @@
         document.querySelector("#panel-subtitle").textContent = "";
         document.querySelector("#user-panel-filter-actions").innerHTML = `
           <button class="btn user-filter-toggle" type="button" data-asset-filter-toggle aria-expanded="${assetFilterOpen}">${iconSvg.filter}<span>${assetFilterOpen ? "ปิดตัวกรอง" : "เปิดตัวกรอง"}</span></button>
-          <button class="btn" type="button" data-asset-reset title="รีเซ็ตค่าทั้งหมด" aria-label="รีเซ็ตค่าทั้งหมด">${iconSvg.refresh}<span>รีเซ็ตค่าทั้งหมด</span></button>
+          <button class="btn" type="button" data-asset-reset aria-label="รีเซ็ตค่าทั้งหมด">${iconSvg.refresh}<span>รีเซ็ตค่าทั้งหมด</span></button>
         `;
         document.querySelector(".filters").innerHTML = `
           <div class="user-filter-bar asset-mode" data-filter-open="${assetFilterOpen}">
@@ -18003,7 +18124,7 @@
         document.querySelector("#primary-action").textContent = data.action;
         document.querySelector("#user-panel-filter-actions").innerHTML = `
           <button class="btn user-filter-toggle" type="button" data-offer-filter-toggle aria-expanded="${offerFilterOpen}">${iconSvg.filter}<span>${offerFilterOpen ? "ปิดตัวกรอง" : "เปิดตัวกรอง"}</span></button>
-          <button class="btn" type="button" data-offer-reset title="รีเซ็ตค่าทั้งหมด" aria-label="รีเซ็ตค่าทั้งหมด">${iconSvg.refresh}<span>รีเซ็ตค่าทั้งหมด</span></button>
+          <button class="btn" type="button" data-offer-reset aria-label="รีเซ็ตค่าทั้งหมด">${iconSvg.refresh}<span>รีเซ็ตค่าทั้งหมด</span></button>
         `;
         document.querySelector(".filters").innerHTML = `
           <div class="user-filter-bar offer-filter-bar" data-filter-open="${offerFilterOpen}">
@@ -20124,7 +20245,7 @@
       setPageActions("");
       document.querySelector("#user-panel-filter-actions").innerHTML = (activeSub === "Dashboard" || activeSub === "Brands & Models") ? "" : `
         <button class="btn user-filter-toggle" type="button" data-market-filter-toggle aria-expanded="${marketFilterOpen}">${iconSvg.filter}<span>${marketFilterOpen ? "ปิดตัวกรอง" : "เปิดตัวกรอง"}</span></button>
-        <button class="btn" type="button" data-market-reset title="รีเซ็ตค่าทั้งหมด" aria-label="รีเซ็ตค่าทั้งหมด">${iconSvg.refresh}<span>รีเซ็ตค่าทั้งหมด</span></button>
+        <button class="btn" type="button" data-market-reset aria-label="รีเซ็ตค่าทั้งหมด">${iconSvg.refresh}<span>รีเซ็ตค่าทั้งหมด</span></button>
       `;
       document.querySelector("#crumb").textContent = `${moduleData.market.crumb} / ${pageLabel}`;
       document.querySelector("#page-title").textContent = pageLabel;
@@ -20746,8 +20867,8 @@
       document.body.classList.remove("option-detail-mode");
       const activeGroupCountForReorder = optionMasterGroups.filter(g => g.is_active).length;
       setPageActions(`
-        ${activeGroupCountForReorder >= 2 ? `<button class="btn" type="button" data-option-group-reorder-open title="จัดเรียง" aria-label="จัดเรียง">${iconSvg.sort}<span>จัดเรียง</span></button>` : ""}
-        <button class="btn" type="button" data-option-group-add-open title="เพิ่ม Group" aria-label="เพิ่ม Group">${iconSvg.plus}<span>เพิ่ม Group</span></button>
+        ${activeGroupCountForReorder >= 2 ? `<button class="btn" type="button" data-option-group-reorder-open aria-label="จัดเรียง">${iconSvg.sort}<span>จัดเรียง</span></button>` : ""}
+        <button class="btn" type="button" data-option-group-add-open aria-label="เพิ่ม Group">${iconSvg.plus}<span>เพิ่ม Group</span></button>
       `);
       syncExpandedNavForModule("option-master", "");
       document.querySelector("#crumb").textContent = "การดำเนินงาน / Option Master";
@@ -20758,7 +20879,7 @@
       document.querySelector("#primary-action").textContent = "เพิ่ม Group";
       document.querySelector("#user-panel-filter-actions").innerHTML = `
         <button class="btn user-filter-toggle" type="button" data-option-group-filter-toggle aria-expanded="${optionGroupFilterOpen}">${iconSvg.filter}<span>${optionGroupFilterOpen ? "ปิดตัวกรอง" : "เปิดตัวกรอง"}</span></button>
-        <button class="btn" type="button" data-option-group-reset title="รีเซ็ตค่าทั้งหมด" aria-label="รีเซ็ตค่าทั้งหมด">${iconSvg.refresh}<span>รีเซ็ตค่าทั้งหมด</span></button>
+        <button class="btn" type="button" data-option-group-reset aria-label="รีเซ็ตค่าทั้งหมด">${iconSvg.refresh}<span>รีเซ็ตค่าทั้งหมด</span></button>
       `;
       document.querySelector(".filters").innerHTML = `
         <div class="user-filter-bar option-group-filter-bar" data-filter-open="${optionGroupFilterOpen}">
@@ -20783,8 +20904,8 @@
       if (!document.body.classList.contains("option-group-list-mode")) return;
       const activeGroupCount = optionMasterGroups.filter(g => g.is_active).length;
       setPageActions(`
-        ${activeGroupCount >= 2 ? `<button class="btn" type="button" data-option-group-reorder-open title="จัดเรียง" aria-label="จัดเรียง">${iconSvg.sort}<span>จัดเรียง</span></button>` : ""}
-        <button class="btn" type="button" data-option-group-add-open title="เพิ่ม Group" aria-label="เพิ่ม Group">${iconSvg.plus}<span>เพิ่ม Group</span></button>
+        ${activeGroupCount >= 2 ? `<button class="btn" type="button" data-option-group-reorder-open aria-label="จัดเรียง">${iconSvg.sort}<span>จัดเรียง</span></button>` : ""}
+        <button class="btn" type="button" data-option-group-add-open aria-label="เพิ่ม Group">${iconSvg.plus}<span>เพิ่ม Group</span></button>
       `);
     }
 
@@ -20896,8 +21017,8 @@
       const active = getOptionGroupActiveOptions(groupId);
       const activeCountForReorder = active;
       setPageActions(`
-        ${activeCountForReorder >= 2 ? `<button class="btn" type="button" data-option-reorder-open title="จัดเรียง" aria-label="จัดเรียง">${iconSvg.sort}<span>จัดเรียง</span></button>` : ""}
-        <button class="btn" type="button" data-option-add-open title="เพิ่ม Option" aria-label="เพิ่ม Option">${iconSvg.plus}<span>เพิ่ม Option</span></button>
+        ${activeCountForReorder >= 2 ? `<button class="btn" type="button" data-option-reorder-open aria-label="จัดเรียง">${iconSvg.sort}<span>จัดเรียง</span></button>` : ""}
+        <button class="btn" type="button" data-option-add-open aria-label="เพิ่ม Option">${iconSvg.plus}<span>เพิ่ม Option</span></button>
         ${renderPageBackButton("data-back-option-groups", "Back to Option Groups")}
       `);
       syncExpandedNavForModule("option-master", "");
@@ -20909,7 +21030,7 @@
       document.querySelector("#primary-action").textContent = "";
       document.querySelector("#user-panel-filter-actions").innerHTML = `
         <button class="btn user-filter-toggle" type="button" data-option-detail-filter-toggle aria-expanded="${optionDetailFilterOpen}">${iconSvg.filter}<span>${optionDetailFilterOpen ? "ปิดตัวกรอง" : "เปิดตัวกรอง"}</span></button>
-        <button class="btn" type="button" data-option-detail-reset title="รีเซ็ตค่าทั้งหมด" aria-label="รีเซ็ตค่าทั้งหมด">${iconSvg.refresh}<span>รีเซ็ตค่าทั้งหมด</span></button>
+        <button class="btn" type="button" data-option-detail-reset aria-label="รีเซ็ตค่าทั้งหมด">${iconSvg.refresh}<span>รีเซ็ตค่าทั้งหมด</span></button>
       `;
       document.querySelector(".filters").innerHTML = `
         <div class="user-filter-bar option-detail-filter-bar" data-filter-open="${optionDetailFilterOpen}">
