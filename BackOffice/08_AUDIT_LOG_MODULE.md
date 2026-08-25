@@ -175,7 +175,9 @@ Baseline entity types:
 - Option deactivate
 - Option reactivate
 - Option reorder
+- Group create
 - Group edit (display_name/description/allows_multi_select)
+- Group reorder
 - Group deactivate
 - Group reactivate
 - Group delete (destructive)
