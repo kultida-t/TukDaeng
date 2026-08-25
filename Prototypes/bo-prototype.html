@@ -20729,7 +20729,11 @@
       );
       document.body.classList.add("option-master-mode", "option-group-list-mode");
       document.body.classList.remove("option-detail-mode");
-      setPageActions(`<button class="btn" type="button" data-option-group-add-open title="เพิ่ม Group" aria-label="เพิ่ม Group">${iconSvg.plus}<span>เพิ่ม Group</span></button>`);
+      const activeGroupCountForReorder = optionMasterGroups.filter(g => g.is_active).length;
+      setPageActions(`
+        ${activeGroupCountForReorder >= 2 ? `<button class="btn" type="button" data-option-group-reorder-open title="จัดเรียง" aria-label="จัดเรียง">${iconSvg.sort}<span>จัดเรียง</span></button>` : ""}
+        <button class="btn" type="button" data-option-group-add-open title="เพิ่ม Group" aria-label="เพิ่ม Group">${iconSvg.plus}<span>เพิ่ม Group</span></button>
+      `);
       syncExpandedNavForModule("option-master", "");
       document.querySelector("#crumb").textContent = "การดำเนินงาน / Option Master";
       document.querySelector("#page-title").textContent = "Option Master";
@@ -20757,6 +20761,16 @@
       document.querySelector("#detail").innerHTML = "";
       renderOptionGroupListRows();
       updateActiveNav();
+    }
+
+    // Refresh page actions for Option Group List (BO-OPT-006d: reorder button visibility depends on active group count)
+    function refreshOptionGroupListPageActions() {
+      if (!document.body.classList.contains("option-group-list-mode")) return;
+      const activeGroupCount = optionMasterGroups.filter(g => g.is_active).length;
+      setPageActions(`
+        ${activeGroupCount >= 2 ? `<button class="btn" type="button" data-option-group-reorder-open title="จัดเรียง" aria-label="จัดเรียง">${iconSvg.sort}<span>จัดเรียง</span></button>` : ""}
+        <button class="btn" type="button" data-option-group-add-open title="เพิ่ม Group" aria-label="เพิ่ม Group">${iconSvg.plus}<span>เพิ่ม Group</span></button>
+      `);
     }
 
     function renderOptionGroupListRows() {
@@ -20832,6 +20846,7 @@
                       ${deactivateButton}
                       ${reactivateButton}
                       ${deleteButton}
+                      <button type="button" data-option-group-audit-open="${g.group_id}">ดู Audit Log</button>
                     </div>
                   </details>
                 </div>
@@ -22095,6 +22110,7 @@
       closeUserActionModal();
       optionGroupListPage = 1;
       renderOptionGroupListRows();
+      refreshOptionGroupListPageActions();
       showSuccessToast(`สร้างกลุ่ม "${newGroup.group_id}" (${data.group}) แล้ว`);
     }
 
@@ -22130,6 +22146,7 @@
       });
       closeUserActionModal();
       renderOptionGroupListRows();
+      refreshOptionGroupListPageActions();
       showSuccessToast(`${g.group_id}: บันทึกการแก้ไขกลุ่มแล้ว`);
     }
 
@@ -22231,6 +22248,7 @@
       });
       closeUserActionModal();
       renderOptionGroupListRows();
+      refreshOptionGroupListPageActions();
       showSuccessToast(`ปิดใช้งาน group ${g.group_id} (${g.group}) แล้ว`);
     }
 
@@ -22290,6 +22308,7 @@
       });
       closeUserActionModal();
       renderOptionGroupListRows();
+      refreshOptionGroupListPageActions();
       showSuccessToast(`เปิดใช้งาน group ${g.group_id} (${g.group}) แล้ว`);
     }
 
@@ -22394,7 +22413,211 @@
       }
       closeUserActionModal();
       renderOptionGroupListRows();
+      refreshOptionGroupListPageActions();
       showSuccessToast(`ลบ group ${removed.group_id} (${removed.group}) และ option ${totalOptions} รายการอย่างถาวรแล้ว`);
+    }
+
+    // ===== Option Group Reorder Modal (BO-OPT-006d, section 12.1 pattern) =====
+    function getOrderedActiveGroups() {
+      return optionMasterGroups
+        .filter(g => g.is_active)
+        .sort((a, b) => (a.sort_order || 0) - (b.sort_order || 0) || String(a.group_id).localeCompare(String(b.group_id)));
+    }
+    function renderOptionGroupReorderModal() {
+      const activeGroups = getOrderedActiveGroups();
+      if (activeGroups.length < 2) return; // safeguard: only show when ≥2 active groups
+      const modal = document.querySelector("#user-action-modal");
+      const modalCard = modal?.querySelector(".user-action-modal");
+      const modalBody = document.querySelector("#user-action-modal-body");
+      if (!modal || !modalCard || !modalBody) return;
+      modalCard.classList.remove(
+        "article-preview-modal", "article-editor-confirm-modal", "category-editor-modal",
+        "category-order-modal", "market-editor-modal", "board-report-phone-preview-modal", "option-editor-modal",
+        "option-audit-modal"
+      );
+      modalCard.classList.add("option-order-modal");
+      modalBody.innerHTML = `
+        <div class="user-action-head">
+          <div>
+            <h2 id="user-action-modal-title">Reorder Option Groups</h2>
+            <p>ลากเพื่อปรับลำดับการแสดงผลใน FO form/filter</p>
+          </div>
+          <button class="btn user-action-close" type="button" data-user-action-modal-close aria-label="Close modal" title="Close">${iconSvg.close}</button>
+        </div>
+        <div class="option-order-list" data-option-group-order-list>
+          ${activeGroups.map((g, index) => `
+            <div class="option-order-item" draggable="true" tabindex="0" data-option-group-order-item="${escapeOptionField(g.group_id)}">
+              <span class="option-order-handle" aria-hidden="true">${iconSvg.grip}</span>
+              <span class="option-order-copy">
+                <strong>${escapeOptionField(g.display_name_en)} (${escapeOptionField(g.group)})</strong>
+                <span>${escapeOptionField(g.display_name_th)} · Sort ${g.sort_order}</span>
+              </span>
+              <span class="option-order-arrows">
+                <button class="option-order-arrow" type="button" data-option-group-order-up aria-label="เลื่อนขึ้น" title="เลื่อนขึ้น"${index === 0 ? " disabled" : ""}>${iconSvg.arrowUp}</button>
+                <button class="option-order-arrow" type="button" data-option-group-order-down aria-label="เลื่อนลง" title="เลื่อนลง"${index === activeGroups.length - 1 ? " disabled" : ""}>${iconSvg.arrowDown}</button>
+              </span>
+              <span class="option-order-index">#${index + 1}</span>
+            </div>
+          `).join("")}
+        </div>
+        <div class="user-detail-actions">
+          <button class="user-detail-action-btn" type="button" data-user-action-modal-close>ยกเลิก</button>
+          <button class="user-detail-action-btn primary" type="button" data-option-group-order-save>บันทึกลำดับ</button>
+        </div>
+      `;
+      showUserActionModal();
+    }
+    function refreshOptionGroupOrderIndexes() {
+      document.querySelectorAll("[data-option-group-order-item]").forEach((item, index) => {
+        const indexNode = item.querySelector(".option-order-index");
+        if (indexNode) indexNode.textContent = `#${index + 1}`;
+        const upBtn = item.querySelector("[data-option-group-order-up]");
+        const downBtn = item.querySelector("[data-option-group-order-down]");
+        const total = document.querySelectorAll("[data-option-group-order-item]").length;
+        if (upBtn) upBtn.disabled = index === 0;
+        if (downBtn) downBtn.disabled = index === total - 1;
+      });
+    }
+    function getOptionGroupOrderDragAfterElement(list, y) {
+      const draggableItems = [...list.querySelectorAll("[data-option-group-order-item]:not(.dragging)")];
+      return draggableItems.reduce((closest, item) => {
+        const box = item.getBoundingClientRect();
+        const offset = y - box.top - box.height / 2;
+        if (offset < 0 && offset > closest.offset) return { offset, element: item };
+        return closest;
+      }, { offset: Number.NEGATIVE_INFINITY, element: null }).element;
+    }
+    function moveOptionGroupOrderItem(item, direction) {
+      if (!item) return;
+      const list = item.closest("[data-option-group-order-list]");
+      if (!list) return;
+      const items = [...list.querySelectorAll("[data-option-group-order-item]")];
+      const currentIndex = items.indexOf(item);
+      if (currentIndex < 0) return;
+      const targetIndex = direction === "up" ? currentIndex - 1 : currentIndex + 1;
+      if (targetIndex < 0 || targetIndex >= items.length) return;
+      const targetItem = items[targetIndex];
+      if (direction === "up") {
+        list.insertBefore(item, targetItem);
+      } else {
+        list.insertBefore(item, targetItem.nextSibling);
+      }
+      refreshOptionGroupOrderIndexes();
+    }
+    function saveOptionGroupReorderFromModal() {
+      const orderedIds = [...document.querySelectorAll("[data-option-group-order-item]")]
+        .map(item => item.dataset.optionGroupOrderItem)
+        .filter(Boolean);
+      if (!orderedIds.length) return;
+      // Capture before sort_order for audit diff
+      const beforeMap = new Map();
+      optionMasterGroups.forEach(g => beforeMap.set(g.group_id, g.sort_order));
+      const currentOrder = getOrderedActiveGroups().map(g => g.group_id);
+      const orderChanged = orderedIds.some((id, i) => currentOrder[i] !== id);
+      // Apply sequential sort_order (10, 20, 30, ...) to active groups only; inactive groups keep their sort_order
+      orderedIds.forEach((id, index) => {
+        const g = getOptionGroup(id);
+        if (g) {
+          g.sort_order = (index + 1) * 10;
+          g.updated_at = formatOptionTimestamp(new Date());
+        }
+      });
+      // Re-sort optionMasterGroups (active + inactive together) by sort_order then group_id
+      optionMasterGroups.sort((a, b) => (a.sort_order || 0) - (b.sort_order || 0) || String(a.group_id).localeCompare(String(b.group_id)));
+      // Audit: GROUP_REORDER once per save, only if order changed
+      if (orderChanged) {
+        const beforeFields = [];
+        const afterFields = [];
+        currentOrder.forEach((id) => {
+          const g = getOptionGroup(id);
+          if (g) beforeFields.push({ field: g.group, value: String(beforeMap.get(id)) });
+        });
+        orderedIds.forEach((id, i) => {
+          const g = getOptionGroup(id);
+          if (g) afterFields.push({ field: g.group, value: String((i + 1) * 10) });
+        });
+        // Record audit on the first group that moved (representative entry for the batch)
+        const firstMovedId = orderedIds.find((id, i) => currentOrder[i] !== id);
+        const firstMoved = firstMovedId ? getOptionGroup(firstMovedId) : null;
+        if (firstMoved) {
+          addGroupAuditEntry(firstMoved, {
+            action: "GROUP_REORDER",
+            before: beforeFields,
+            after: afterFields
+          });
+        }
+      }
+      closeUserActionModal();
+      optionGroupListPage = 1;
+      renderOptionGroupListRows();
+      showSuccessToast(orderChanged
+        ? `บันทึกลำดับ Option Groups แล้ว`
+        : `ไม่มีการเปลี่ยนลำดับ — ไม่บันทึก audit`);
+    }
+
+    // ===== Option Group Audit Log Modal (BO-OPT-006d, section 16) =====
+    const GROUP_AUDIT_ACTION_META = {
+      GROUP_CREATE: { label: "Group Create", cls: "add" },
+      GROUP_EDIT: { label: "Group Edit", cls: "edit" },
+      GROUP_DEACTIVATE: { label: "Group Deactivate", cls: "deactivate" },
+      GROUP_REACTIVATE: { label: "Group Reactivate", cls: "reactivate" },
+      GROUP_DELETE: { label: "Group Delete", cls: "deactivate" },
+      GROUP_REORDER: { label: "Group Reorder", cls: "reorder" }
+    };
+    function openOptionGroupAuditLogModal(groupId) {
+      const g = getOptionGroup(groupId);
+      if (!g) return;
+      const modal = document.querySelector("#user-action-modal");
+      const modalCard = modal?.querySelector(".user-action-modal");
+      const modalBody = document.querySelector("#user-action-modal-body");
+      if (!modal || !modalCard || !modalBody) return;
+      modalCard.classList.remove(
+        "article-preview-modal", "article-editor-confirm-modal", "category-editor-modal",
+        "category-order-modal", "market-editor-modal", "board-report-phone-preview-modal", "option-editor-modal",
+        "option-order-modal"
+      );
+      modalCard.classList.add("option-audit-modal");
+      const history = Array.isArray(g.groupAuditHistory) ? g.groupAuditHistory : [];
+      const statusPill = g.is_active
+        ? `<span class="pill green">Active</span>`
+        : `<span class="pill gray">Inactive</span>`;
+      modalBody.innerHTML = `
+        <div class="user-action-head">
+          <div>
+            <h2 id="user-action-modal-title">Audit Log</h2>
+            <p>${escapeOptionField(g.group_id)} (${escapeOptionField(g.group)}) — ${escapeOptionField(g.display_name_en)}</p>
+          </div>
+          <button class="btn user-action-close" type="button" data-user-action-modal-close aria-label="Close modal" title="Close">${iconSvg.close}</button>
+        </div>
+        <div class="option-audit-summary">
+          <div class="option-confirm-row"><span class="option-confirm-label">Group ID</span><span class="option-confirm-value">${escapeOptionField(g.group_id)}</span></div>
+          <div class="option-confirm-row"><span class="option-confirm-label">Identifier</span><span class="option-confirm-value">${escapeOptionField(g.group)}</span></div>
+          <div class="option-confirm-row"><span class="option-confirm-label">Label (EN)</span><span class="option-confirm-value">${escapeOptionField(g.display_name_en)}</span></div>
+          <div class="option-confirm-row"><span class="option-confirm-label">Status</span><span class="option-confirm-value">${statusPill}</span></div>
+        </div>
+        <div class="option-audit-list">
+          ${history.length ? history.map(entry => {
+            const meta = GROUP_AUDIT_ACTION_META[entry.action] || { label: entry.action, cls: "edit" };
+            return `
+              <div class="option-audit-entry">
+                <div class="option-audit-entry-head">
+                  <span class="option-audit-action ${meta.cls}"><span class="option-audit-dot"></span>${escapeOptionField(meta.label)}</span>
+                  <span class="option-audit-time">${escapeOptionField(entry.timestamp || "-")}</span>
+                </div>
+                <div class="option-audit-meta">
+                  <div class="option-audit-meta-inline"><span class="option-audit-meta-label">Actor :</span> <span class="option-audit-meta-value">${escapeOptionField(entry.actor || "-")} (${escapeOptionField(entry.actor_access || "-")})</span></div>
+                  ${entry.reason ? `<div class="option-audit-meta-inline"><span class="option-audit-meta-label">Reason :</span> <span class="option-audit-meta-value">${escapeOptionField(entry.reason)}</span></div>` : ""}
+                </div>
+                ${renderOptionAuditDiff(entry)}
+              </div>
+            `;
+          }).join("") : `<div class="option-audit-empty">ยังไม่มีประวัติ audit สำหรับ group นี้</div>`}
+        </div>
+        <div class="user-detail-actions">
+          <button class="user-detail-action-btn primary" type="button" data-user-action-modal-close>ปิด</button>
+        </div>
+      `;
+      showUserActionModal(true);
     }
 
     // ===== Option Reorder Modal (BO-OPT-002d, section 12.1) =====
@@ -27566,6 +27789,18 @@
         closeRowMenus();
         return;
       }
+      // BO-OPT-006d: Option Group Reorder + Audit Log open handlers
+      const optionGroupReorderOpen = event.target.closest("[data-option-group-reorder-open]");
+      if (optionGroupReorderOpen) {
+        renderOptionGroupReorderModal();
+        return;
+      }
+      const optionGroupAuditOpen = event.target.closest("[data-option-group-audit-open]");
+      if (optionGroupAuditOpen) {
+        openOptionGroupAuditLogModal(optionGroupAuditOpen.dataset.optionGroupAuditOpen);
+        closeRowMenus();
+        return;
+      }
       const optionGroupFilterToggle = event.target.closest("[data-option-group-filter-toggle]");
       if (optionGroupFilterToggle) {
         optionGroupFilterOpen = !optionGroupFilterOpen;
@@ -27636,6 +27871,25 @@
       const optionOrderSave = event.target.closest("[data-option-order-save]");
       if (optionOrderSave) {
         saveOptionReorderFromModal();
+        return;
+      }
+      // Option Group Reorder Modal: up/down arrow buttons (BO-OPT-006d)
+      const optionGroupOrderUp = event.target.closest("[data-option-group-order-up]");
+      if (optionGroupOrderUp) {
+        const item = optionGroupOrderUp.closest("[data-option-group-order-item]");
+        if (item) moveOptionGroupOrderItem(item, "up");
+        return;
+      }
+      const optionGroupOrderDown = event.target.closest("[data-option-group-order-down]");
+      if (optionGroupOrderDown) {
+        const item = optionGroupOrderDown.closest("[data-option-group-order-item]");
+        if (item) moveOptionGroupOrderItem(item, "down");
+        return;
+      }
+      // Option Group Reorder Modal: save button (BO-OPT-006d)
+      const optionGroupOrderSave = event.target.closest("[data-option-group-order-save]");
+      if (optionGroupOrderSave) {
+        saveOptionGroupReorderFromModal();
         return;
       }
       // Option Audit Log: open from view modal / action menu (BO-OPT-002d)
@@ -29194,6 +29448,44 @@
       item.classList.remove("dragging");
       document.querySelectorAll("[data-option-order-item].drag-over").forEach(row => row.classList.remove("drag-over"));
       refreshOptionOrderIndexes();
+    });
+    // Option Group Reorder Modal drag-and-drop (BO-OPT-006d, section 12.1 pattern)
+    document.addEventListener("dragstart", event => {
+      const item = event.target.closest("[data-option-group-order-item]");
+      if (!item) return;
+      item.classList.add("dragging");
+      event.dataTransfer.effectAllowed = "move";
+      event.dataTransfer.setData("text/plain", item.dataset.optionGroupOrderItem || "");
+    });
+    document.addEventListener("dragover", event => {
+      const list = event.target.closest("[data-option-group-order-list]");
+      if (!list) return;
+      event.preventDefault();
+      const dragging = list.querySelector(".dragging");
+      if (!dragging) return;
+      const afterElement = getOptionGroupOrderDragAfterElement(list, event.clientY);
+      list.querySelectorAll(".drag-over").forEach(item => item.classList.remove("drag-over"));
+      if (afterElement) {
+        afterElement.classList.add("drag-over");
+        list.insertBefore(dragging, afterElement);
+      } else {
+        list.appendChild(dragging);
+      }
+      refreshOptionGroupOrderIndexes();
+    });
+    document.addEventListener("drop", event => {
+      const list = event.target.closest("[data-option-group-order-list]");
+      if (!list) return;
+      event.preventDefault();
+      list.querySelectorAll(".drag-over").forEach(item => item.classList.remove("drag-over"));
+      refreshOptionGroupOrderIndexes();
+    });
+    document.addEventListener("dragend", event => {
+      const item = event.target.closest("[data-option-group-order-item]");
+      if (!item) return;
+      item.classList.remove("dragging");
+      document.querySelectorAll("[data-option-group-order-item].drag-over").forEach(row => row.classList.remove("drag-over"));
+      refreshOptionGroupOrderIndexes();
     });
     document.addEventListener("wheel", event => {
       if (event.target.matches("[data-calendar-only]")) event.preventDefault();
