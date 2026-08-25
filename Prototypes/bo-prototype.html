@@ -6157,6 +6157,7 @@
       line-height: 1.45;
     }
     .user-action-close {
+      position: relative;
       width: 38px;
       height: 38px;
       min-height: 38px;
@@ -6171,6 +6172,33 @@
       width: 18px;
       height: 18px;
       display: block;
+    }
+    /* Custom tooltip สำหรับปุ่ม X ปิด modal (แทน native title ที่ชนขอบจอ) */
+    .user-action-close::after {
+      content: attr(aria-label);
+      position: absolute;
+      top: calc(100% + 6px);
+      right: 0;
+      z-index: 60;
+      background: #ffffff;
+      border: 1px solid #d4deec;
+      color: #233a5c;
+      font-size: 13px;
+      line-height: 1.5;
+      font-weight: 400;
+      padding: 10px 14px;
+      border-radius: 8px;
+      white-space: nowrap;
+      box-shadow: 0 8px 24px rgba(15, 23, 42, .18);
+      pointer-events: none;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity .12s ease, visibility .12s ease;
+    }
+    .user-action-close:hover::after,
+    .user-action-close:focus-visible::after {
+      opacity: 1;
+      visibility: visible;
     }
     .user-action-layout {
       display: block;
@@ -14143,7 +14171,7 @@
               <h2 id="user-action-modal-title">Comments</h2>
               <p>${asset.id} · ${asset.name} · ${asset.owner}</p>
             </div>
-            <button class="btn user-action-close" type="button" data-user-action-modal-close aria-label="Close modal" title="Close">
+            <button class="btn user-action-close" type="button" data-user-action-modal-close aria-label="ปิด">
               ${iconSvg.close}
             </button>
           </div>
@@ -14171,7 +14199,7 @@
             <div>
               <h2 id="user-action-modal-title">${asset.id} : ${asset.name}</h2>
             </div>
-            <button class="btn user-action-close" type="button" data-user-action-modal-close aria-label="Close modal" title="Close">
+            <button class="btn user-action-close" type="button" data-user-action-modal-close aria-label="ปิด">
               ${iconSvg.close}
             </button>
           </div>
@@ -14527,7 +14555,7 @@
               <h2 id="user-action-modal-title">ยืนยันการปิดรายงาน</h2>
               <p>ใช้เมื่อผู้ดูแลตรวจหลักฐานของรายงานสินทรัพย์ครบแล้ว และยืนยันว่าไม่ต้องซ่อนหรือลบสินทรัพย์นี้</p>
             </div>
-            <button class="btn user-action-close" type="button" data-user-action-modal-close aria-label="Close modal" title="Close">
+            <button class="btn user-action-close" type="button" data-user-action-modal-close aria-label="ปิด">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                 <path d="M18 6 6 18"></path>
                 <path d="m6 6 12 12"></path>
@@ -14754,7 +14782,7 @@
               <h2 id="user-action-modal-title">${isConsignment ? "Consignment Details" : "Purchase History"}</h2>
               <p>${asset.id} · ${asset.name} · ${asset.owner}</p>
             </div>
-            <button class="btn user-action-close" type="button" data-user-action-modal-close aria-label="Close modal" title="Close">
+            <button class="btn user-action-close" type="button" data-user-action-modal-close aria-label="ปิด">
               ${iconSvg.close}
             </button>
           </div>
@@ -14839,7 +14867,7 @@
               <h2 id="user-action-modal-title">Sale History</h2>
               <p>${asset.id} · ${asset.name}</p>
             </div>
-            <button class="btn user-action-close" type="button" data-user-action-modal-close aria-label="Close modal" title="Close">
+            <button class="btn user-action-close" type="button" data-user-action-modal-close aria-label="ปิด">
               ${iconSvg.close}
             </button>
           </div>
@@ -15652,7 +15680,7 @@
               <h2 id="user-action-modal-title">${config.title}</h2>
               <p>${config.summary}</p>
             </div>
-            <button class="btn user-action-close" type="button" data-user-action-modal-close aria-label="Close modal" title="Close">
+            <button class="btn user-action-close" type="button" data-user-action-modal-close aria-label="ปิด">
               ${iconSvg.close}
             </button>
           </div>
@@ -15711,7 +15739,7 @@
               <h2 id="user-action-modal-title">${config.title}</h2>
               <p>${config.summary}</p>
             </div>
-            <button class="btn user-action-close" type="button" data-user-action-modal-close aria-label="Close modal" title="Close">
+            <button class="btn user-action-close" type="button" data-user-action-modal-close aria-label="ปิด">
               ${iconSvg.close}
             </button>
           </div>
@@ -15770,7 +15798,7 @@
               <h2 id="user-action-modal-title">${config.title}</h2>
               <p>${config.summary}</p>
             </div>
-            <button class="btn user-action-close" type="button" data-user-action-modal-close aria-label="Close modal" title="Close">
+            <button class="btn user-action-close" type="button" data-user-action-modal-close aria-label="ปิด">
               ${iconSvg.close}
             </button>
           </div>
@@ -15855,7 +15883,7 @@
               <h2 id="user-action-modal-title">${config.title}</h2>
               <p>${asset.id} · ${asset.name}</p>
             </div>
-            <button class="btn user-action-close" type="button" data-user-action-modal-close aria-label="Close modal" title="Close">
+            <button class="btn user-action-close" type="button" data-user-action-modal-close aria-label="ปิด">
               ${iconSvg.close}
             </button>
           </div>
@@ -17103,7 +17131,7 @@
               <h2 id="user-action-modal-title">${config.title}</h2>
               <p>${config.summary}</p>
             </div>
-            <button class="btn user-action-close" type="button" data-user-action-modal-close aria-label="Close modal" title="Close">
+            <button class="btn user-action-close" type="button" data-user-action-modal-close aria-label="ปิด">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                 <path d="M18 6 6 18"></path>
                 <path d="m6 6 12 12"></path>
@@ -17403,7 +17431,7 @@
               <h2 id="user-action-modal-title">ยืนยันการปิดรายงาน</h2>
               <p>ใช้เมื่อผู้ดูแลตรวจหลักฐานต้นทางครบแล้ว และต้องการทำเครื่องหมายรายงานนี้ว่าเสร็จสิ้น</p>
             </div>
-            <button class="btn user-action-close" type="button" data-user-action-modal-close aria-label="Close modal" title="Close">
+            <button class="btn user-action-close" type="button" data-user-action-modal-close aria-label="ปิด">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                 <path d="M18 6 6 18"></path>
                 <path d="m6 6 12 12"></path>
@@ -19461,7 +19489,7 @@
                 <h2 id="user-action-modal-title">Read-only in Phase 1</h2>
                 <p>Market Data is synced from API/backend source only.</p>
               </div>
-              <button class="btn user-action-close" type="button" data-user-action-modal-close aria-label="Close modal" title="Close">${iconSvg.close}</button>
+              <button class="btn user-action-close" type="button" data-user-action-modal-close aria-label="ปิด">${iconSvg.close}</button>
             </div>
             <div class="module-note"><strong>Rule:</strong> Add, edit, import, export, override and status changes are not available from BO Market Data in Phase 1.</div>
           </div>
@@ -19479,7 +19507,7 @@
               <h2 id="user-action-modal-title">Audit Trail</h2>
               <p>${target.title} · ${scope}</p>
             </div>
-            <button class="btn user-action-close" type="button" data-user-action-modal-close aria-label="Close modal" title="Close">${iconSvg.close}</button>
+            <button class="btn user-action-close" type="button" data-user-action-modal-close aria-label="ปิด">${iconSvg.close}</button>
           </div>
           ${renderMarketAuditSection(target.title)}
         </div>
@@ -19847,7 +19875,7 @@
               <h2 id="user-action-modal-title">${modelShortName}</h2>
               <p>Ref. ${reference.number}</p>
             </div>
-            <button class="btn user-action-close" type="button" data-user-action-modal-close aria-label="Close modal" title="Close">${iconSvg.close}</button>
+            <button class="btn user-action-close" type="button" data-user-action-modal-close aria-label="ปิด">${iconSvg.close}</button>
           </div>
           <div class="market-drawer-spec-grid">
             <div><span>Movement</span><strong>${reference.movement || model.movement}</strong></div>
@@ -20048,7 +20076,7 @@
               <h2 id="user-action-modal-title">Sync Market Data</h2>
               <p>${isSuccess ? "Catalog data was refreshed and Sync Log / Audit Log records were saved." : isError ? "Catalog data was not changed. Review the upstream response before retrying failed datasets." : "Start a new The Watch API sync for catalog source data. Available to permitted operations users only."}</p>
             </div>
-            ${isRunning ? "" : `<button class="btn user-action-close" type="button" data-user-action-modal-close aria-label="Close modal" title="Close">${iconSvg.close}</button>`}
+            ${isRunning ? "" : `<button class="btn user-action-close" type="button" data-user-action-modal-close aria-label="ปิด">${iconSvg.close}</button>`}
           </div>
           <div class="user-action-target">
             <div>
@@ -20752,7 +20780,7 @@
             <h2 id="user-action-modal-title">จัดเรียง Category</h2>
             <p>ลากเพื่อปรับลำดับการแสดงผลบน Tuk Daeng Board</p>
           </div>
-          <button class="btn user-action-close" type="button" data-user-action-modal-close aria-label="Close modal" title="Close">${iconSvg.close}</button>
+          <button class="btn user-action-close" type="button" data-user-action-modal-close aria-label="ปิด">${iconSvg.close}</button>
         </div>
         <div class="category-order-list" data-category-order-list>
           ${rows.map((category, index) => `
@@ -21302,7 +21330,7 @@
               <h2 id="user-action-modal-title">Option Detail</h2>
               <p>${escapeOptionField(option.id)} (${escapeOptionField(option.key)}) ในกลุ่ม ${escapeOptionField(g.display_name_en)}</p>
             </div>
-            <button class="btn user-action-close" type="button" data-user-action-modal-close aria-label="Close modal" title="Close">${iconSvg.close}</button>
+            <button class="btn user-action-close" type="button" data-user-action-modal-close aria-label="ปิด">${iconSvg.close}</button>
           </div>
           <div class="option-confirm-summary">
             <div class="option-confirm-row"><span class="option-confirm-label">Option ID</span><span class="option-confirm-value">${escapeOptionField(option.id)}</span></div>
@@ -21345,7 +21373,7 @@
               <h2 id="user-action-modal-title">Delete Option</h2>
               <p>${escapeOptionField(option.id)} (${escapeOptionField(option.key)}) ในกลุ่ม ${escapeOptionField(g.display_name_en)}</p>
             </div>
-            <button class="btn user-action-close" type="button" data-user-action-modal-close aria-label="Close modal" title="Close">${iconSvg.close}</button>
+            <button class="btn user-action-close" type="button" data-user-action-modal-close aria-label="ปิด">${iconSvg.close}</button>
           </div>
           <div class="warning-note option-delete-warning">
             <strong>คำเตือน: การกระทำนี้ไม่สามารถย้อนกลับได้</strong><br>
@@ -21415,7 +21443,7 @@
               <h2 id="user-action-modal-title">Deactivate Option</h2>
               <p>${escapeOptionField(option.id)} (${escapeOptionField(option.key)}) ในกลุ่ม ${escapeOptionField(g.display_name_en)}</p>
             </div>
-            <button class="btn user-action-close" type="button" data-user-action-modal-close aria-label="Close modal" title="Close">${iconSvg.close}</button>
+            <button class="btn user-action-close" type="button" data-user-action-modal-close aria-label="ปิด">${iconSvg.close}</button>
           </div>
           <div class="option-confirm-summary">
             <div class="option-confirm-row"><span class="option-confirm-label">Option ID</span><span class="option-confirm-value">${escapeOptionField(option.id)}</span></div>
@@ -21496,7 +21524,7 @@
               <h2 id="user-action-modal-title">Reactivate Option</h2>
               <p>${escapeOptionField(option.id)} (${escapeOptionField(option.key)}) ในกลุ่ม ${escapeOptionField(g.display_name_en)}</p>
             </div>
-            <button class="btn user-action-close" type="button" data-user-action-modal-close aria-label="Close modal" title="Close">${iconSvg.close}</button>
+            <button class="btn user-action-close" type="button" data-user-action-modal-close aria-label="ปิด">${iconSvg.close}</button>
           </div>
           <div class="option-confirm-summary">
             <div class="option-confirm-row"><span class="option-confirm-label">Option ID</span><span class="option-confirm-value">${escapeOptionField(option.id)}</span></div>
@@ -21549,7 +21577,7 @@
               <h2 id="user-action-modal-title">Add Option</h2>
               <p>สร้าง option ใหม่ในกลุ่ม ${escapeOptionField(g.display_name_en)}</p>
             </div>
-            <button class="btn user-action-close" type="button" data-user-action-modal-close aria-label="Close modal" title="Close">${iconSvg.close}</button>
+            <button class="btn user-action-close" type="button" data-user-action-modal-close aria-label="ปิด">${iconSvg.close}</button>
           </div>
           <form class="article-editor-form" data-option-form data-option-mode="add" data-option-group="${g.group_id}" novalidate>
             <section class="article-editor-section">
@@ -21610,7 +21638,7 @@
               <h2 id="user-action-modal-title">Edit Option</h2>
               <p>แก้ไข option ${escapeOptionField(option.id)} (${escapeOptionField(option.key)}) ในกลุ่ม ${escapeOptionField(g.display_name_en)}</p>
             </div>
-            <button class="btn user-action-close" type="button" data-user-action-modal-close aria-label="Close modal" title="Close">${iconSvg.close}</button>
+            <button class="btn user-action-close" type="button" data-user-action-modal-close aria-label="ปิด">${iconSvg.close}</button>
           </div>
           <form class="article-editor-form" data-option-form data-option-mode="edit" data-option-group="${g.group_id}" data-option-original-key="${escapeOptionField(option.key)}" data-option-id="${escapeOptionField(option.id)}" novalidate>
             <section class="article-editor-section">
@@ -21753,7 +21781,7 @@
               <h2 id="user-action-modal-title">Confirm Create Option</h2>
               <p>กรุณาตรวจสอบค่าที่จะบันทึกก่อนยืนยัน</p>
             </div>
-            <button class="btn user-action-close" type="button" data-user-action-modal-close aria-label="Close modal" title="Close">${iconSvg.close}</button>
+            <button class="btn user-action-close" type="button" data-user-action-modal-close aria-label="ปิด">${iconSvg.close}</button>
           </div>
           <div class="option-confirm-summary">
             <div class="option-confirm-row"><span class="option-confirm-label">Option ID</span><span class="option-confirm-value">${previewId}</span></div>
@@ -21803,7 +21831,7 @@
               <h2 id="user-action-modal-title">Confirm Edit Option</h2>
               <p>กรุณาตรวจสอบค่าที่เปลี่ยนแปลงก่อนยืนยัน — ฟิลด์ที่เปลี่ยนแปลงจะมีไฮไลต์และแสดงค่าเดิม → ค่าใหม่</p>
             </div>
-            <button class="btn user-action-close" type="button" data-user-action-modal-close aria-label="Close modal" title="Close">${iconSvg.close}</button>
+            <button class="btn user-action-close" type="button" data-user-action-modal-close aria-label="ปิด">${iconSvg.close}</button>
           </div>
           <div class="option-confirm-summary">
             <div class="option-confirm-row"><span class="option-confirm-label">Option ID</span><span class="option-confirm-value">${escapeOptionField(original.id || "")}</span></div>
@@ -21915,7 +21943,7 @@
               <h2 id="user-action-modal-title">Add Group</h2>
               <p>สร้างกลุ่มตัวเลือกใหม่สำหรับใช้ใน FO Add/Edit Asset form และ Search Filter</p>
             </div>
-            <button class="btn user-action-close" type="button" data-user-action-modal-close aria-label="Close modal" title="Close">${iconSvg.close}</button>
+            <button class="btn user-action-close" type="button" data-user-action-modal-close aria-label="ปิด">${iconSvg.close}</button>
           </div>
           <form class="article-editor-form" data-option-group-form data-option-group-mode="add" novalidate>
             <section class="article-editor-section">
@@ -21975,7 +22003,7 @@
               <h2 id="user-action-modal-title">Edit Group</h2>
               <p>แก้ไขกลุ่ม ${escapeOptionField(g.group_id)} (${escapeOptionField(g.display_name_en)})</p>
             </div>
-            <button class="btn user-action-close" type="button" data-user-action-modal-close aria-label="Close modal" title="Close">${iconSvg.close}</button>
+            <button class="btn user-action-close" type="button" data-user-action-modal-close aria-label="ปิด">${iconSvg.close}</button>
           </div>
           <form class="article-editor-form" data-option-group-form data-option-group-mode="edit" data-option-group-id="${escapeOptionField(g.group_id)}" novalidate>
             <section class="article-editor-section">
@@ -22134,7 +22162,7 @@
               <h2 id="user-action-modal-title">Confirm Create Group</h2>
               <p>กรุณาตรวจสอบค่าที่จะบันทึกก่อนยืนยัน</p>
             </div>
-            <button class="btn user-action-close" type="button" data-user-action-modal-close aria-label="Close modal" title="Close">${iconSvg.close}</button>
+            <button class="btn user-action-close" type="button" data-user-action-modal-close aria-label="ปิด">${iconSvg.close}</button>
           </div>
           <div class="option-confirm-summary">
             <div class="option-confirm-row"><span class="option-confirm-label">Group ID</span><span class="option-confirm-value">${previewId}</span></div>
@@ -22194,7 +22222,7 @@
               <h2 id="user-action-modal-title">Confirm Edit Group</h2>
               <p>กรุณาตรวจสอบค่าที่เปลี่ยนแปลงก่อนยืนยัน — ฟิลด์ที่เปลี่ยนแปลงจะมีไฮไลต์และแสดงค่าเดิม → ค่าใหม่</p>
             </div>
-            <button class="btn user-action-close" type="button" data-user-action-modal-close aria-label="Close modal" title="Close">${iconSvg.close}</button>
+            <button class="btn user-action-close" type="button" data-user-action-modal-close aria-label="ปิด">${iconSvg.close}</button>
           </div>
           <div class="option-confirm-summary">
             <div class="option-confirm-row"><span class="option-confirm-label">Group ID</span><span class="option-confirm-value">${escapeOptionField(original.group_id || "")}</span></div>
@@ -22305,7 +22333,7 @@
             <h2 id="user-action-modal-title">${titleText}</h2>
             <p>${subtitleText}</p>
           </div>
-          <button class="btn user-action-close" type="button" data-user-action-modal-close aria-label="Close modal" title="Close">${iconSvg.close}</button>
+          <button class="btn user-action-close" type="button" data-user-action-modal-close aria-label="ปิด">${iconSvg.close}</button>
         </div>
       `;
     }
@@ -22583,7 +22611,7 @@
             <h2 id="user-action-modal-title">Reorder Option Groups</h2>
             <p>ลากเพื่อปรับลำดับการแสดงผลใน FO form/filter</p>
           </div>
-          <button class="btn user-action-close" type="button" data-user-action-modal-close aria-label="Close modal" title="Close">${iconSvg.close}</button>
+          <button class="btn user-action-close" type="button" data-user-action-modal-close aria-label="ปิด">${iconSvg.close}</button>
         </div>
         <div class="option-order-list" data-option-group-order-list>
           ${activeGroups.map((g, index) => `
@@ -22728,7 +22756,7 @@
             <h2 id="user-action-modal-title">Audit Log</h2>
             <p>${escapeOptionField(g.group_id)} (${escapeOptionField(g.group)}) — ${escapeOptionField(g.display_name_en)}</p>
           </div>
-          <button class="btn user-action-close" type="button" data-user-action-modal-close aria-label="Close modal" title="Close">${iconSvg.close}</button>
+          <button class="btn user-action-close" type="button" data-user-action-modal-close aria-label="ปิด">${iconSvg.close}</button>
         </div>
         <div class="option-audit-summary">
           <div class="option-confirm-row"><span class="option-confirm-label">Group ID</span><span class="option-confirm-value">${escapeOptionField(g.group_id)}</span></div>
@@ -22787,7 +22815,7 @@
             <h2 id="user-action-modal-title">Reorder Options — ${escapeOptionField(g.display_name_en)}</h2>
             <p>ลากเพื่อปรับลำดับการแสดงผลใน FO form/filter</p>
           </div>
-          <button class="btn user-action-close" type="button" data-user-action-modal-close aria-label="Close modal" title="Close">${iconSvg.close}</button>
+          <button class="btn user-action-close" type="button" data-user-action-modal-close aria-label="ปิด">${iconSvg.close}</button>
         </div>
         <div class="option-order-list" data-option-order-list data-option-order-group="${escapeOptionField(g.group_id)}">
           ${rows.map((option, index) => `
@@ -22962,7 +22990,7 @@
             <h2 id="user-action-modal-title">Audit Log</h2>
             <p>${escapeOptionField(option.id)} (${escapeOptionField(option.key)}) ในกลุ่ม ${escapeOptionField(g.display_name_en)}</p>
           </div>
-          <button class="btn user-action-close" type="button" data-user-action-modal-close aria-label="Close modal" title="Close">${iconSvg.close}</button>
+          <button class="btn user-action-close" type="button" data-user-action-modal-close aria-label="ปิด">${iconSvg.close}</button>
         </div>
         <div class="option-audit-summary">
           <div class="option-confirm-row"><span class="option-confirm-label">Option ID</span><span class="option-confirm-value">${escapeOptionField(option.id)}</span></div>
@@ -23071,7 +23099,7 @@
               <h2 id="user-action-modal-title">รายละเอียดหมวดหมู่</h2>
               <p>ข้อมูลหมวดหมู่และการเลือกใช้ในบทความ</p>
             </div>
-            <button class="btn user-action-close" type="button" data-user-action-modal-close aria-label="Close modal" title="Close">${iconSvg.close}</button>
+            <button class="btn user-action-close" type="button" data-user-action-modal-close aria-label="ปิด">${iconSvg.close}</button>
           </div>
           <form class="article-editor-form" data-category-detail-form>
             <section class="article-editor-section">
@@ -23130,7 +23158,7 @@
               <h2 id="user-action-modal-title">${isEdit ? "แก้ไขหมวดหมู่" : "เพิ่มหมวดหมู่"}</h2>
               <p>${isEdit ? "แก้ไขข้อมูลหมวดหมู่และการเลือกใช้ในบทความ" : "สร้างหมวดหมู่สำหรับบอร์ดบทความ"}</p>
             </div>
-            <button class="btn user-action-close" type="button" data-user-action-modal-close aria-label="Close modal" title="Close">${iconSvg.close}</button>
+            <button class="btn user-action-close" type="button" data-user-action-modal-close aria-label="ปิด">${iconSvg.close}</button>
           </div>
           <form class="article-editor-form" data-category-form data-category-id="${draft.id}" novalidate>
             <section class="article-editor-section">
@@ -24162,7 +24190,7 @@
               <div>
                 <h2 id="user-action-modal-title">Preview article</h2>
               </div>
-              <button class="btn user-action-close" type="button" data-user-action-modal-close aria-label="Close modal" title="Close">
+              <button class="btn user-action-close" type="button" data-user-action-modal-close aria-label="ปิด">
                 ${iconSvg.close}
               </button>
             </div>
@@ -25748,7 +25776,7 @@
               <h2 id="user-action-modal-title">${config.title}</h2>
               <p>${config.detail}</p>
             </div>
-            <button class="btn user-action-close" type="button" data-user-action-modal-close aria-label="Close modal" title="Close">${iconSvg.close}</button>
+            <button class="btn user-action-close" type="button" data-user-action-modal-close aria-label="ปิด">${iconSvg.close}</button>
           </div>
           <div class="user-action-target">
             <div>
@@ -25856,7 +25884,7 @@
       modalBody.innerHTML = `
         <div class="board-report-phone-preview">
           <h2 class="board-report-phone-preview-title" id="user-action-modal-title">Preview article ${escapeArticleField(report.id)} ${escapeArticleField(report.articleId)}</h2>
-          <button class="btn user-action-close board-report-phone-preview-close" type="button" data-user-action-modal-close aria-label="Close modal" title="Close">${iconSvg.close}</button>
+          <button class="btn user-action-close board-report-phone-preview-close" type="button" data-user-action-modal-close aria-label="ปิด">${iconSvg.close}</button>
           ${renderArticleFoPreview(article)}
         </div>
       `;
@@ -26365,7 +26393,7 @@
               <h2 id="user-action-modal-title">${config.title}</h2>
               <p>${config.summary}</p>
             </div>
-            <button class="btn user-action-close" type="button" data-user-action-modal-close aria-label="Close modal" title="Close">
+            <button class="btn user-action-close" type="button" data-user-action-modal-close aria-label="ปิด">
               ${iconSvg.close}
             </button>
           </div>
