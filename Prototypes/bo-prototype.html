@@ -658,6 +658,44 @@
     .page-actions[hidden] {
       display: none;
     }
+    /* Custom tooltip สำหรับปุ่ม back ที่เป็น icon-only ทุก viewport (แทน native title ที่ชนขอบจอ) */
+    .page-actions .page-back-btn,
+    .report-detail-page .report-back-btn,
+    .user-detail-page .user-back-btn {
+      position: relative;
+    }
+    .page-actions .page-back-btn::after,
+    .report-detail-page .report-back-btn::after,
+    .user-detail-page .user-back-btn::after {
+      content: attr(aria-label);
+      position: absolute;
+      top: calc(100% + 6px);
+      right: 0;
+      z-index: 60;
+      background: #ffffff;
+      border: 1px solid #d4deec;
+      color: #233a5c;
+      font-size: 13px;
+      line-height: 1.5;
+      font-weight: 400;
+      padding: 10px 14px;
+      border-radius: 8px;
+      white-space: nowrap;
+      box-shadow: 0 8px 24px rgba(15, 23, 42, .18);
+      pointer-events: none;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity .12s ease, visibility .12s ease;
+    }
+    .page-actions .page-back-btn:hover::after,
+    .report-detail-page .report-back-btn:hover::after,
+    .user-detail-page .user-back-btn:hover::after,
+    .page-actions .page-back-btn:focus-visible::after,
+    .report-detail-page .report-back-btn:focus-visible::after,
+    .user-detail-page .user-back-btn:focus-visible::after {
+      opacity: 1;
+      visibility: visible;
+    }
     .crumb {
       color: var(--muted);
       font-size: 13px;
@@ -5597,6 +5635,7 @@
       position: relative;
     }
     .row-menu summary {
+      position: relative;
       width: 38px;
       height: 38px;
       border: 1px solid var(--line-strong);
@@ -8679,43 +8718,6 @@
         visibility: visible;
       }
       /* Custom tooltip สำหรับปุ่ม back และ filter-reset ที่เป็น icon-only บน mobile */
-      .page-actions .page-back-btn,
-      .report-detail-page .report-back-btn,
-      .user-detail-page .user-back-btn {
-        position: relative;
-      }
-      .page-actions .page-back-btn::after,
-      .report-detail-page .report-back-btn::after,
-      .user-detail-page .user-back-btn::after {
-        content: attr(aria-label);
-        position: absolute;
-        top: calc(100% + 6px);
-        right: 0;
-        z-index: 60;
-        background: #ffffff;
-        border: 1px solid #d4deec;
-        color: #233a5c;
-        font-size: 13px;
-        line-height: 1.5;
-        font-weight: 400;
-        padding: 10px 14px;
-        border-radius: 8px;
-        white-space: nowrap;
-        box-shadow: 0 8px 24px rgba(15, 23, 42, .18);
-        pointer-events: none;
-        opacity: 0;
-        visibility: hidden;
-        transition: opacity .12s ease, visibility .12s ease;
-      }
-      .page-actions .page-back-btn:hover::after,
-      .report-detail-page .report-back-btn:hover::after,
-      .user-detail-page .user-back-btn:hover::after,
-      .page-actions .page-back-btn:focus-visible::after,
-      .report-detail-page .report-back-btn:focus-visible::after,
-      .user-detail-page .user-back-btn:focus-visible::after {
-        opacity: 1;
-        visibility: visible;
-      }
       .page-title {
         font-size: 38px;
         overflow-wrap: anywhere;
@@ -15212,7 +15214,7 @@
     function renderAssetReportRowActionMenu(asset) {
       return `
         <details class="row-menu">
-          <summary title="Asset report actions">...</summary>
+          <summary aria-label="Asset report actions">...</summary>
           <div class="row-menu-list">
             <button type="button" data-asset-report-open="${asset.id}">ดูรายละเอียด</button>
             ${renderAssetReportStatusActionButtons(asset)}
@@ -15228,7 +15230,7 @@
         .join("");
       return `
         <details class="row-menu">
-          <summary title="Reported comment actions">...</summary>
+          <summary aria-label="Reported comment actions">...</summary>
           <div class="row-menu-list">
             <button type="button" data-reported-comment-open="${reportCase.id}">ดูรายละเอียด</button>
             ${statusActions}
@@ -15819,7 +15821,7 @@
     function renderAssetRowActionMenu(asset) {
       return `
         <details class="row-menu">
-          <summary title="Asset actions">...</summary>
+          <summary aria-label="Asset actions">...</summary>
           <div class="row-menu-list">
             <button type="button" data-asset-open="${asset.id}">ดูรายละเอียด</button>
             ${getAssetRowActions(asset).map(({ action, label }) => `<button type="button" data-asset-action="${action}" data-asset-id="${asset.id}">${label}</button>`).join("")}
@@ -17329,7 +17331,7 @@
       const actions = `${renderReportStatusActionButtons(report)}${renderReportAccountActionButtons(report)}`;
       return `
         <details class="row-menu">
-          <summary title="เมนูรายงาน">...</summary>
+          <summary aria-label="เมนูรายงาน">...</summary>
           <div class="row-menu-list">
             <button type="button" data-report-action="${report.id}">ดูรายละเอียด</button>
             ${actions}
@@ -17519,7 +17521,7 @@
               <div data-label="Date Joined"><div class="muted">${user.joined}</div></div>
               <div class="user-row-actions">
                 <details class="row-menu">
-                  <summary title="Account actions">...</summary>
+                  <summary aria-label="Account actions">...</summary>
                   <div class="row-menu-list">
                     <button type="button" data-user-open="${user.id}">ดูรายละเอียด</button>
                     ${rowActions.map(({ action, label }) => `<button type="button" data-user-action="${action}" data-user-id="${user.id}">${label}</button>`).join("")}
@@ -17767,7 +17769,7 @@
           <div class="detail-section">
             <div class="board-report-reference-head">
               <h4>Reported User</h4>
-              ${reportUser ? `<button class="btn asset-report-view-btn" type="button" data-user-open="${reportUser.id}" aria-label="View user ${reportUser.id}" title="View User"><span class="asset-report-view-label">View User</span></button>` : ""}
+              ${reportUser ? `<button class="btn asset-report-view-btn" type="button" data-user-open="${reportUser.id}" aria-label="View user ${reportUser.id}"><span class="asset-report-view-label">View User</span></button>` : ""}
             </div>
             <div class="detail-grid two report-reference-grid user-report-reference-grid">
               <div class="detail-tile"><span>Report ID</span><strong>${report.id}</strong></div>
@@ -17842,7 +17844,7 @@
           <div class="detail-section">
             <div class="board-report-reference-head">
               <h4>Reported Asset</h4>
-              <button class="btn asset-report-view-btn" type="button" data-asset-report-detail-modal="${asset.id}" aria-label="View asset ${asset.id}" title="View Asset"><span class="asset-report-view-label">View Asset</span></button>
+              <button class="btn asset-report-view-btn" type="button" data-asset-report-detail-modal="${asset.id}" aria-label="View asset ${asset.id}"><span class="asset-report-view-label">View Asset</span></button>
             </div>
             <div class="detail-grid two report-reference-grid">
               <div class="detail-tile"><span>Report ID</span><strong>${report.id}</strong></div>
@@ -18671,7 +18673,7 @@
               </div>
               <div data-label="Models"><div class="main-text">${modelCount.toLocaleString()} models</div></div>
               <div data-label="References"><div class="main-text">${referenceCount.toLocaleString()} references</div></div>
-              <div><button class="panel-action market-arrow-action" type="button" data-market-brand="${brand.id}" title="View ${brand.name} models" aria-label="View ${brand.name} models">View</button></div>
+              <div><button class="panel-action market-arrow-action" type="button" data-market-brand="${brand.id}" aria-label="View ${brand.name} models">View</button></div>
             </div>
           `}).join("") || `<div class="detail-empty user-empty">No brands found</div>`}
         </div>
@@ -18688,7 +18690,7 @@
     }
 
     function renderMarketSyncLogAction(row) {
-      return `<button class="panel-action market-arrow-action" type="button" data-market-record="${row.id}" title="View sync log for ${getMarketSyncTitleLabel(row)}" aria-label="View sync log for ${getMarketSyncTitleLabel(row)}">Detail</button>`;
+      return `<button class="panel-action market-arrow-action" type="button" data-market-record="${row.id}" aria-label="View sync log for ${getMarketSyncTitleLabel(row)}">Detail</button>`;
     }
 
     function getMarketSyncTitleLabel(row) {
@@ -18947,7 +18949,7 @@
                 </div>
               </div>
               <div data-label="References"><div class="main-text">${summary.references} references</div></div>
-              <div><button class="panel-action market-arrow-action" type="button" data-market-model="${index}" data-market-brand-id="${brand.id}" title="View ${model.name} references" aria-label="View ${model.name} references">View</button></div>
+              <div><button class="panel-action market-arrow-action" type="button" data-market-model="${index}" data-market-brand-id="${brand.id}" aria-label="View ${model.name} references">View</button></div>
             </div>
           `}).join("") || `<div class="detail-empty user-empty">No models found for this brand</div>`}
         </div>
@@ -20838,7 +20840,7 @@
       const canDeactivate = articleCount === 0;
       return `
         <details class="row-menu">
-          <summary title="Category actions">...</summary>
+          <summary aria-label="Category actions">...</summary>
           <div class="row-menu-list">
             <button type="button" data-category-open="${category.id}">View detail</button>
             <button type="button" data-category-edit="${category.id}">แก้ไขหมวดหมู่</button>
@@ -20978,7 +20980,7 @@
                 <div data-label="Updated"><div class="main-text">${g.updated_at || "-"}</div></div>
                 <div class="user-row-actions">
                   <details class="row-menu">
-                    <summary title="Option group actions">...</summary>
+                    <summary aria-label="Option group actions">...</summary>
                     <div class="row-menu-list">
                       <button type="button" data-option-group-view="${g.group_id}">ดูรายละเอียด</button>
                       <button type="button" data-option-group-edit="${g.group_id}">แก้ไข</button>
@@ -21090,7 +21092,7 @@
             const actionMenu = o.is_active
               ? `
                 <details class="row-menu">
-                  <summary title="Option actions">...</summary>
+                  <summary aria-label="Option actions">...</summary>
                   <div class="row-menu-list">
                     <button type="button" data-option-view-action="${o.id}">ดูรายละเอียด</button>
                     <button type="button" data-option-edit="${o.id}">แก้ไข</button>
@@ -21102,7 +21104,7 @@
               `
               : `
                 <details class="row-menu">
-                  <summary title="Option actions">...</summary>
+                  <summary aria-label="Option actions">...</summary>
                   <div class="row-menu-list">
                     <button type="button" data-option-view-action="${o.id}">ดูรายละเอียด</button>
                     <button type="button" data-option-edit="${o.id}">แก้ไข</button>
@@ -24560,7 +24562,7 @@
     function renderArticleRowActionMenu(article) {
       return `
         <details class="row-menu">
-          <summary title="Article actions">...</summary>
+          <summary aria-label="Article actions">...</summary>
           <div class="row-menu-list">
             <button type="button" data-article-open="${article.id}">View detail</button>
             <button type="button">Preview as FO</button>
@@ -25391,7 +25393,7 @@
     function renderBoardReportRowActionMenu(report) {
       return `
         <details class="row-menu">
-          <summary title="Board report actions">...</summary>
+          <summary aria-label="Board report actions">...</summary>
           <div class="row-menu-list">
             <button type="button" data-board-report-open="${report.id}">ดูรายละเอียด</button>
             <button type="button" data-board-report-preview="${report.id}">View Article</button>
@@ -25664,7 +25666,7 @@
           <div class="detail-section">
             <div class="board-report-reference-head">
               <h4>Reported Article</h4>
-              <button class="btn asset-report-view-btn" type="button" data-board-report-preview="${report.id}" aria-label="View article ${report.id}" title="View Article"><span class="asset-report-view-label">View Article</span></button>
+              <button class="btn asset-report-view-btn" type="button" data-board-report-preview="${report.id}" aria-label="View article ${report.id}"><span class="asset-report-view-label">View Article</span></button>
             </div>
             <div class="detail-grid two report-reference-grid">
               <div class="detail-tile"><span>Report ID</span><strong>${report.id}</strong></div>
@@ -26495,7 +26497,7 @@
           <div class="detail-section">
             <div class="board-report-reference-head">
               <h4>Reported Comment</h4>
-              ${asset ? `<button class="btn asset-report-view-btn" type="button" data-asset-report-detail-modal="${asset.id}" aria-label="View asset ${asset.id}" title="View Asset"><span class="asset-report-view-label">View Asset</span></button>` : ""}
+              ${asset ? `<button class="btn asset-report-view-btn" type="button" data-asset-report-detail-modal="${asset.id}" aria-label="View asset ${asset.id}"><span class="asset-report-view-label">View Asset</span></button>` : ""}
             </div>
             <div class="detail-grid two report-reference-grid">
               <div class="detail-tile"><span>Report ID</span><strong>${reportCase.id}</strong></div>
@@ -27122,7 +27124,7 @@
           <div class="detail-section">
             <div class="board-report-reference-head">
               <h4>Offered Asset</h4>
-              ${offerAsset ? `<button class="btn asset-report-view-btn" type="button" data-asset-open="${offerAsset.id}" aria-label="View asset ${offerAsset.id}" title="View Asset"><span class="asset-report-view-label">View Asset</span></button>` : ""}
+              ${offerAsset ? `<button class="btn asset-report-view-btn" type="button" data-asset-open="${offerAsset.id}" aria-label="View asset ${offerAsset.id}"><span class="asset-report-view-label">View Asset</span></button>` : ""}
             </div>
             <div class="detail-grid two report-reference-grid">
               <div class="detail-tile"><span>Offer ID</span><strong>${detail.offerSummary.offerId}</strong></div>
