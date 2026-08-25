@@ -12532,6 +12532,9 @@
       if (!context) return;
       const last = backNavigationStack[backNavigationStack.length - 1];
       if (last && JSON.stringify(last) === JSON.stringify(context)) return;
+      // BO-UX-001: save current list filter values before navigating to a detail
+      // page so they can be restored when the user navigates back.
+      saveCurrentListFilterState();
       backNavigationStack.push(context);
     }
 
@@ -12694,6 +12697,30 @@
     let activeOptionGroup = "";
     let optionDetailFilterOpen = false;
     let optionGroupFilterOpen = false;
+    // BO-UX-001: Per-list filter state persistence — saves search term + custom-select
+    // values so they can be restored when returning from a detail page to its list.
+    // Cleared on cross-module/sub navigation (via resetListFilterPanelsForNavigation)
+    // and on explicit "รีเซ็ตค่าทั้งหมด" button clicks.
+    const listFilterState = {};
+    const listFilterConfig = {
+      "user-list": { searchId: "user-search", filterIds: ["user-status-filter", "user-auth-filter", "user-sort"] },
+      "reported-user-list": { searchId: "user-search", filterIds: ["report-status-filter", "report-priority-filter", "report-sort"] },
+      "asset-list": { searchId: "search", filterIds: ["asset-type-filter", "asset-brand-filter", "asset-sort"] },
+      "asset-report-list": { searchId: "asset-report-search", filterIds: ["asset-report-status-filter", "asset-report-priority-filter", "asset-report-sort"] },
+      "reported-comment-list": { searchId: "reported-comment-search", filterIds: ["reported-comment-status-filter", "reported-comment-priority-filter", "reported-comment-sort"] },
+      "offer-list": { searchId: "offer-search", filterIds: ["offer-status-filter", "offer-sort"] },
+      "article-list": { searchId: "article-search", filterIds: ["article-status-filter", "article-category-filter", "article-sort"] },
+      "category-list": { searchId: "category-search", filterIds: ["category-status-filter", "category-sort"] },
+      "board-report-list": { searchId: "board-report-search", filterIds: ["board-report-status-filter", "board-report-priority-filter", "board-report-sort"] },
+      "option-group-list": { searchId: "option-group-search", filterIds: ["option-group-status-filter"] },
+      "option-detail": { searchId: "option-detail-search", filterIds: ["option-status-filter"] },
+      "market-dashboard": { searchId: "", filterIds: [] },
+      "market-catalog": { searchId: "market-search", filterIds: [] },
+      "market-brand-detail": { searchId: "market-model-search", filterIds: [] },
+      "market-model-detail": { searchId: "market-reference-search", filterIds: [] },
+      "market-sync": { searchId: "market-search", filterIds: ["market-status-filter"] },
+      "market-queue": { searchId: "market-search", filterIds: ["market-status-filter", "market-brand-filter"] }
+    };
     let activeAssetImageIndex = 0;
     let activeAssetReportModalImageIndex = 0;
     let activeAssetCommentsModalId = null;
@@ -13202,6 +13229,8 @@
       activeOptionGroup = "";
       optionDetailFilterOpen = false;
       optionGroupFilterOpen = false;
+      // BO-UX-001: clear all saved per-list filter values
+      for (const key in listFilterState) delete listFilterState[key];
       marketDashboardPage = 1;
       marketCatalogPage = 1;
       activeAssetImageIndex = 0;
@@ -13212,10 +13241,78 @@
       });
     }
 
+    // BO-UX-001: Helpers for per-list filter state persistence
+    function getMarketListKey(sub) {
+      if (sub === "Dashboard") return "market-dashboard";
+      if (sub === "Brands & Models") return "market-catalog";
+      if (sub === "Sync History") return "market-sync";
+      return "market-queue";
+    }
+
+    function getCurrentListKey() {
+      if (activeModule === "users") return activeSub === "Reported Users" ? "reported-user-list" : "user-list";
+      if (activeModule === "assets") {
+        if (activeSub === "Reported Assets") return "asset-report-list";
+        if (activeSub === "Reported Comments") return "reported-comment-list";
+        return "asset-list";
+      }
+      if (activeModule === "offers") return "offer-list";
+      if (activeModule === "content") {
+        if (activeSub === "Categories") return "category-list";
+        if (activeSub === "Reported Articles") return "board-report-list";
+        return "article-list";
+      }
+      if (activeModule === "option-master") return activeOptionGroup ? "option-detail" : "option-group-list";
+      if (activeModule === "market") {
+        if (activeSub === "Brands & Models") {
+          if (document.querySelector("#market-reference-search")) return "market-model-detail";
+          if (document.querySelector("#market-model-search")) return "market-brand-detail";
+          return "market-catalog";
+        }
+        return getMarketListKey(activeSub || "Dashboard");
+      }
+      return null;
+    }
+
+    function saveCurrentListFilterState() {
+      const listKey = getCurrentListKey();
+      if (!listKey) return;
+      const config = listFilterConfig[listKey];
+      if (!config) return;
+      const searchInput = config.searchId ? document.querySelector(`#${config.searchId}`) : null;
+      const filters = {};
+      for (const filterId of config.filterIds) {
+        const filterInput = document.querySelector(`#${filterId}`);
+        if (filterInput) filters[filterId] = filterInput.value;
+      }
+      listFilterState[listKey] = { search: searchInput ? searchInput.value : "", filters };
+    }
+
+    function restoreListFilterState(listKey) {
+      if (!listKey) return;
+      const config = listFilterConfig[listKey];
+      if (!config) return;
+      const state = listFilterState[listKey] || { search: "", filters: {} };
+      if (config.searchId) {
+        const searchInput = document.querySelector(`#${config.searchId}`);
+        if (searchInput) searchInput.value = state.search || "";
+      }
+      for (const filterId of config.filterIds) {
+        setCustomSelectValue(filterId, state.filters[filterId] || "");
+      }
+    }
+
+    function clearListFilterState(listKey) {
+      if (!listKey) return;
+      delete listFilterState[listKey];
+    }
+
     function resetListFilterPanelsForNavigation(nextModule, nextSub = "") {
       const currentRoute = `${activeModule}|${activeSub || ""}`;
       const nextRoute = `${nextModule}|${nextSub || ""}`;
       if (currentRoute === nextRoute) return;
+      // BO-UX-001: clear saved filter values for the list we're leaving
+      clearListFilterState(getCurrentListKey());
       userFilterOpen = false;
       assetFilterOpen = false;
       assetReportFilterOpen = false;
@@ -16125,6 +16222,8 @@
         </div>
       `;
       document.querySelector("#cards").innerHTML = "";
+      // BO-UX-001: restore saved filter values when returning from User Detail
+      restoreListFilterState(isReports ? "reported-user-list" : "user-list");
       if (isReports) {
         renderReportedUserRows();
         document.querySelector("#detail").innerHTML = "";
@@ -17995,6 +18094,8 @@
         document.querySelector("#summary-grid").innerHTML = "";
         document.querySelector("#cards").innerHTML = "";
         document.querySelector("#detail").innerHTML = "";
+        // BO-UX-001: restore saved filter values when returning from Article Detail
+        restoreListFilterState("article-list");
         renderArticleListRows();
         updateActiveNav();
         return;
@@ -18026,6 +18127,8 @@
         document.querySelector("#summary-grid").innerHTML = "";
         document.querySelector("#cards").innerHTML = "";
         document.querySelector("#detail").innerHTML = "";
+        // BO-UX-001: restore saved filter values when returning to Categories
+        restoreListFilterState("category-list");
         renderCategoryListRows();
         updateActiveNav();
         return;
@@ -18059,6 +18162,8 @@
         document.querySelector("#summary-grid").innerHTML = "";
         document.querySelector("#cards").innerHTML = "";
         document.querySelector("#detail").innerHTML = "";
+        // BO-UX-001: restore saved filter values when returning from Reported Asset Detail
+        restoreListFilterState("asset-report-list");
         renderReportedAssetRows();
         updateActiveNav();
         return;
@@ -18087,6 +18192,8 @@
         document.querySelector("#summary-grid").innerHTML = "";
         document.querySelector("#cards").innerHTML = "";
         document.querySelector("#detail").innerHTML = "";
+        // BO-UX-001: restore saved filter values when returning from Reported Comment Detail
+        restoreListFilterState("reported-comment-list");
         renderReportedCommentRows();
         updateActiveNav();
         return;
@@ -18115,6 +18222,8 @@
         document.querySelector("#summary-grid").innerHTML = "";
         document.querySelector("#cards").innerHTML = "";
         document.querySelector("#detail").innerHTML = "";
+        // BO-UX-001: restore saved filter values when returning from Reported Board Detail
+        restoreListFilterState("board-report-list");
         renderReportedBoardRows();
         updateActiveNav();
         return;
@@ -18142,6 +18251,8 @@
         document.querySelector("#summary-grid").innerHTML = getAssetSummaryStats().map(renderAssetSummaryCard).join("");
         document.querySelector("#cards").innerHTML = "";
         document.querySelector("#detail").innerHTML = "";
+        // BO-UX-001: restore saved filter values when returning from Asset Detail
+        restoreListFilterState("asset-list");
         renderRows();
         updateActiveNav();
         return;
@@ -18170,6 +18281,8 @@
         document.querySelector("#summary-grid").innerHTML = renderOfferStatusOverview(data.rows);
         document.querySelector("#cards").innerHTML = "";
         document.querySelector("#detail").innerHTML = "";
+        // BO-UX-001: restore saved filter values when returning from Offer Detail
+        restoreListFilterState("offer-list");
         renderOfferListRows();
         updateActiveNav();
         return;
@@ -19806,6 +19919,8 @@
       document.querySelector("#summary-grid").innerHTML = "";
       document.querySelector("#cards").innerHTML = "";
       document.querySelector("#detail").innerHTML = "";
+      // BO-UX-001: restore saved search when returning from Model Detail
+      restoreListFilterState("market-brand-detail");
       renderMarketModelRows(brand);
       updateActiveNav();
       scrollMainToTop();
@@ -19839,6 +19954,8 @@
       document.querySelector("#summary-grid").innerHTML = "";
       document.querySelector("#cards").innerHTML = "";
       document.querySelector("#detail").innerHTML = "";
+      // BO-UX-001: restore saved search when returning to Model Detail
+      restoreListFilterState("market-model-detail");
       renderMarketReferenceRows(brand, activeMarketModelIndex);
       updateActiveNav();
       scrollMainToTop();
@@ -20296,6 +20413,8 @@
       renderMarketSummaryCards(subLabel);
       renderMarketCards(subLabel);
       document.querySelector("#detail").innerHTML = "";
+      // BO-UX-001: restore saved filter values when returning from Market detail pages
+      restoreListFilterState(getMarketListKey(subLabel || "Dashboard"));
       if (subLabel === "Dashboard") {
         renderMarketDashboard();
       } else if (subLabel === "Brands & Models") {
@@ -20928,6 +21047,8 @@
       document.querySelector("#summary-grid").innerHTML = "";
       document.querySelector("#cards").innerHTML = "";
       document.querySelector("#detail").innerHTML = "";
+      // BO-UX-001: restore saved filter values when returning from Option Detail
+      restoreListFilterState("option-group-list");
       renderOptionGroupListRows();
       updateActiveNav();
     }
@@ -21079,6 +21200,8 @@
       document.querySelector("#summary-grid").innerHTML = "";
       document.querySelector("#cards").innerHTML = "";
       document.querySelector("#detail").innerHTML = "";
+      // BO-UX-001: restore saved filter values when returning to Option Detail
+      restoreListFilterState("option-detail");
       renderOptionDetailRows();
       updateActiveNav();
     }
@@ -27439,55 +27562,66 @@
         }
         if (["asset-report-status-filter", "asset-report-priority-filter", "asset-report-sort"].includes(hiddenInput.id) && activeModule === "assets" && activeSub === "Reported Assets") {
           assetListPage = 1;
+          saveCurrentListFilterState();
           renderReportedAssetRows();
           return;
         }
         if (["reported-comment-status-filter", "reported-comment-priority-filter", "reported-comment-sort"].includes(hiddenInput.id) && activeModule === "assets" && activeSub === "Reported Comments") {
           assetListPage = 1;
+          saveCurrentListFilterState();
           renderReportedCommentRows();
           return;
         }
         if (["asset-type-filter", "asset-brand-filter", "asset-sort"].includes(hiddenInput.id) && activeModule === "assets") {
           assetListPage = 1;
+          saveCurrentListFilterState();
           renderAssetListRows();
           return;
         }
         if (["offer-status-filter", "offer-sort"].includes(hiddenInput.id) && activeModule === "offers") {
           offerListPage = 1;
+          saveCurrentListFilterState();
           renderOfferListRows();
           return;
         }
         if (["article-status-filter", "article-category-filter", "article-sort"].includes(hiddenInput.id) && activeModule === "content" && (activeSub || "Articles") === "Articles") {
           articleListPage = 1;
+          saveCurrentListFilterState();
           renderArticleListRows();
           return;
         }
         if (["category-status-filter", "category-sort"].includes(hiddenInput.id) && activeModule === "content" && activeSub === "Categories") {
           categoryListPage = 1;
+          saveCurrentListFilterState();
           renderCategoryListRows();
           return;
         }
         if (["board-report-status-filter", "board-report-priority-filter", "board-report-sort"].includes(hiddenInput.id) && activeModule === "content" && activeSub === "Reported Articles") {
           boardReportListPage = 1;
+          saveCurrentListFilterState();
           renderReportedBoardRows();
           return;
         }
         if (["market-status-filter", "market-brand-filter"].includes(hiddenInput.id) && activeModule === "market") {
           if (activeSub === "Brands & Models" || activeSub === "Dashboard") marketCatalogPage = 1;
+          saveCurrentListFilterState();
           renderRows();
           return;
         }
         if (hiddenInput.id === "option-status-filter" && activeModule === "option-master" && activeOptionGroup) {
           optionDetailPage = 1;
+          saveCurrentListFilterState();
           renderOptionDetailRows();
           return;
         }
         if (hiddenInput.id === "option-group-status-filter" && activeModule === "option-master" && !activeOptionGroup) {
           optionGroupListPage = 1;
+          saveCurrentListFilterState();
           renderOptionGroupListRows();
           return;
         }
         userListPage = 1;
+        saveCurrentListFilterState();
         if (activeModule === "users" && (activeSub === "Report User" || activeSub === "Reported Users")) renderReportedUserRows();
         else if (activeModule === "users") renderUserRows();
         return;
@@ -27596,12 +27730,17 @@
       const marketBrandButton = event.target.closest("[data-market-brand]");
       if (marketBrandButton && activeModule === "market") {
         pushBackNavigationContext({ type: "module", module: "market", sub: activeSub || "Brands & Models", displaySub: activeSub || "Brands & Models" });
+        // BO-UX-001: forward navigation — clear destination state so it starts fresh
+        clearListFilterState("market-brand-detail");
+        clearListFilterState("market-model-detail");
         renderMarketBrandDetailPage(marketBrandButton.dataset.marketBrand);
         return;
       }
       const marketModelButton = event.target.closest("[data-market-model]");
       if (marketModelButton && activeModule === "market") {
         pushBackNavigationContext({ type: "market-brand-detail", brandId: marketModelButton.dataset.marketBrandId || activeMarketBrandId });
+        // BO-UX-001: forward navigation — clear destination state so it starts fresh
+        clearListFilterState("market-model-detail");
         renderMarketModelDetailPage(marketModelButton.dataset.marketBrandId || activeMarketBrandId, marketModelButton.dataset.marketModel);
         return;
       }
@@ -27647,6 +27786,7 @@
       }
       const marketResetButton = event.target.closest("[data-market-reset]");
       if (marketResetButton && activeModule === "market") {
+        clearListFilterState(getMarketListKey(activeSub || "Dashboard"));
         const search = document.querySelector("#market-search");
         const status = document.querySelector("#market-status-filter");
         const brand = document.querySelector("#market-brand-filter");
@@ -27896,6 +28036,9 @@
       if (optionGroupViewButton) {
         const groupId = optionGroupViewButton.dataset.optionGroupView;
         optionDetailPage = 1;
+        saveCurrentListFilterState();
+        // BO-UX-001: forward navigation — clear destination state so it starts fresh
+        clearListFilterState("option-detail");
         renderOptionDetailPage(groupId);
         scrollMainToTop();
         return;
@@ -27904,6 +28047,9 @@
       if (optionGroupRow && !event.target.closest(".row-menu, button, a, input, select, [data-custom-select]")) {
         const groupId = optionGroupRow.dataset.optionGroup;
         optionDetailPage = 1;
+        saveCurrentListFilterState();
+        // BO-UX-001: forward navigation — clear destination state so it starts fresh
+        clearListFilterState("option-detail");
         renderOptionDetailPage(groupId);
         scrollMainToTop();
         return;
@@ -27977,6 +28123,7 @@
       const optionGroupReset = event.target.closest("[data-option-group-reset]");
       if (optionGroupReset) {
         optionGroupListPage = 1;
+        clearListFilterState("option-group-list");
         const searchInput = document.querySelector("#option-group-search");
         if (searchInput) searchInput.value = "";
         setCustomSelectValue("option-group-status-filter", "");
@@ -28494,6 +28641,7 @@
       const userReset = event.target.closest("#user-reset, [data-user-reset]");
       if (userReset) {
         userListPage = 1;
+        clearListFilterState(activeSub === "Reported Users" ? "reported-user-list" : "user-list");
         renderUserManagement(activeSub || "User Accounts");
         return;
       }
@@ -28510,18 +28658,21 @@
       const assetReset = event.target.closest("[data-asset-reset]");
       if (assetReset) {
         assetListPage = 1;
+        clearListFilterState("asset-list");
         renderModule("assets", "Asset List", "Asset List");
         return;
       }
       const assetReportReset = event.target.closest("[data-asset-report-reset]");
       if (assetReportReset) {
         assetListPage = 1;
+        clearListFilterState("asset-report-list");
         renderModule("assets", "Reported Assets", "Reported Assets");
         return;
       }
       const offerReset = event.target.closest("[data-offer-reset]");
       if (offerReset) {
         offerListPage = 1;
+        clearListFilterState("offer-list");
         renderModule("offers");
         return;
       }
@@ -28578,12 +28729,14 @@
       const articleReset = event.target.closest("[data-article-reset]");
       if (articleReset) {
         articleListPage = 1;
+        clearListFilterState("article-list");
         renderModule("content", "Articles", "Articles");
         return;
       }
       const optionDetailReset = event.target.closest("[data-option-detail-reset]");
       if (optionDetailReset) {
         optionDetailPage = 1;
+        clearListFilterState("option-detail");
         const searchInput = document.querySelector("#option-detail-search");
         if (searchInput) searchInput.value = "";
         setCustomSelectValue("option-status-filter", "");
@@ -28593,12 +28746,14 @@
       const categoryReset = event.target.closest("[data-category-reset]");
       if (categoryReset) {
         categoryListPage = 1;
+        clearListFilterState("category-list");
         renderModule("content", "Categories", "Categories");
         return;
       }
       const boardReportReset = event.target.closest("[data-board-report-reset]");
       if (boardReportReset) {
         boardReportListPage = 1;
+        clearListFilterState("board-report-list");
         renderModule("content", "Reported Articles", "Reported Articles");
         return;
       }
@@ -28766,6 +28921,7 @@
       const resetReportedCommentFiltersButton = event.target.closest("[data-reported-comment-reset]");
       if (resetReportedCommentFiltersButton) {
         assetListPage = 1;
+        clearListFilterState("reported-comment-list");
         renderModule("assets", "Reported Comments", "Reported Comments");
         return;
       }
@@ -29171,60 +29327,73 @@
       }
       if (event.target.matches("#user-search")) {
         userListPage = 1;
+        saveCurrentListFilterState();
         if (activeModule === "users" && (activeSub === "Report User" || activeSub === "Reported Users")) renderReportedUserRows();
         else if (activeModule === "users") renderUserRows();
         return;
       }
       if (event.target.matches("#asset-report-search")) {
         assetListPage = 1;
+        saveCurrentListFilterState();
         renderReportedAssetRows();
         return;
       }
       if (event.target.matches("#reported-comment-search")) {
         assetListPage = 1;
+        saveCurrentListFilterState();
         renderReportedCommentRows();
         return;
       }
       if (event.target.matches("#board-report-search")) {
         boardReportListPage = 1;
+        saveCurrentListFilterState();
         renderReportedBoardRows();
         return;
       }
       if (event.target.matches("#offer-search")) {
         offerListPage = 1;
+        saveCurrentListFilterState();
         renderOfferListRows();
         return;
       }
       if (event.target.matches("#search")) {
         if (activeModule === "assets") assetListPage = 1;
+        saveCurrentListFilterState();
         renderRows();
       }
       if (event.target.matches("#market-search")) {
         if (activeModule === "market" && (activeSub === "Brands & Models" || activeSub === "Dashboard")) marketCatalogPage = 1;
+        saveCurrentListFilterState();
         renderRows();
       }
       if (event.target.matches("#market-model-search")) {
         marketModelPage = 1;
+        saveCurrentListFilterState();
         renderMarketModelRows(getMarketBrand(activeMarketBrandId));
       }
       if (event.target.matches("#market-reference-search")) {
         marketReferencePage = 1;
+        saveCurrentListFilterState();
         renderMarketReferenceRows(getMarketBrand(activeMarketBrandId), activeMarketModelIndex);
       }
       if (event.target.matches("#article-search")) {
         articleListPage = 1;
+        saveCurrentListFilterState();
         renderArticleListRows();
       }
       if (event.target.matches("#category-search")) {
         categoryListPage = 1;
+        saveCurrentListFilterState();
         renderCategoryListRows();
       }
       if (event.target.matches("#option-group-search")) {
         optionGroupListPage = 1;
+        saveCurrentListFilterState();
         renderOptionGroupListRows();
       }
       if (event.target.matches("#option-detail-search")) {
         optionDetailPage = 1;
+        saveCurrentListFilterState();
         renderOptionDetailRows();
       }
       if (event.target.matches("[data-category-name]")) {
@@ -29457,51 +29626,61 @@
       }
       if (event.target.matches("#user-status-filter, #user-auth-filter, #user-sort")) {
         userListPage = 1;
+        saveCurrentListFilterState();
         renderUserRows();
         return;
       }
       if (event.target.matches("#report-status-filter, #report-priority-filter, #report-sort")) {
+        saveCurrentListFilterState();
         renderReportedUserRows();
         return;
       }
       if (event.target.matches("#asset-report-status-filter, #asset-report-priority-filter, #asset-report-sort")) {
         assetListPage = 1;
+        saveCurrentListFilterState();
         renderReportedAssetRows();
         return;
       }
       if (event.target.matches("#reported-comment-status-filter, #reported-comment-priority-filter, #reported-comment-sort")) {
         assetListPage = 1;
+        saveCurrentListFilterState();
         renderReportedCommentRows();
         return;
       }
       if (event.target.matches("#board-report-status-filter, #board-report-priority-filter, #board-report-sort")) {
         boardReportListPage = 1;
+        saveCurrentListFilterState();
         renderReportedBoardRows();
         return;
       }
       if (event.target.matches("#article-status-filter, #article-category-filter, #article-sort")) {
         articleListPage = 1;
+        saveCurrentListFilterState();
         renderArticleListRows();
         return;
       }
       if (event.target.matches("#option-status-filter")) {
         optionDetailPage = 1;
+        saveCurrentListFilterState();
         renderOptionDetailRows();
         return;
       }
       if (event.target.matches("#option-group-status-filter")) {
         optionGroupListPage = 1;
+        saveCurrentListFilterState();
         renderOptionGroupListRows();
         return;
       }
       if (event.target.matches("#market-status-filter, #market-brand-filter")) {
         if (activeModule === "market" && (activeSub === "Brands & Models" || activeSub === "Dashboard")) marketCatalogPage = 1;
+        saveCurrentListFilterState();
         renderRows();
         return;
       }
       if (event.target.matches("#status-filter, #priority-filter, #asset-type-filter, #asset-brand-filter, #asset-sort")) {
         if (activeModule === "assets") assetListPage = 1;
         if (activeModule === "offers") offerListPage = 1;
+        saveCurrentListFilterState();
         renderRows();
       }
     });
