@@ -11578,7 +11578,7 @@
             actor_access: "Super Admin",
             before: [],
             after: [
-              { field: "Key", value: "new_old_stock" },
+              { field: "Option Key", value: "new_old_stock" },
               { field: "Label (EN)", value: "New Old Stock (NOS)" },
               { field: "Label (TH)", value: "ของเก่าสภาพใหม่ (NOS)" },
               { field: "Sort Order", value: "70" },
@@ -21082,7 +21082,7 @@
       const pageRows = filtered.slice(start, start + optionGroupListPageSize);
       document.querySelector("#table").innerHTML = `
         <div class="asset-table option-group-table">
-          <div class="asset-row head"><div>Group ID</div><div>Group</div><div>Label (TH)</div><div>Label (EN)</div><div>Active Options</div><div>Multi-select</div><div>System</div><div>Status</div><div>Updated</div><div>Action</div></div>
+          <div class="asset-row head"><div>Group ID</div><div>Group Key</div><div>Label (TH)</div><div>Label (EN)</div><div>Active Options</div><div>Multi-select</div><div>System</div><div>Status</div><div>Updated</div><div>Action</div></div>
           ${pageRows.map(g => {
             const total = getOptionGroupTotalOptions(g.group_id);
             const active = getOptionGroupActiveOptions(g.group_id);
@@ -21105,7 +21105,7 @@
             return `
               <div class="asset-row" data-option-group="${g.group_id}">
                 <div data-label="Group ID"><div class="main-text">${g.group_id}</div></div>
-                <div data-label="Group"><div class="main-text">${g.group}</div></div>
+                <div data-label="Group Key"><div class="main-text">${g.group}</div></div>
                 <div class="asset-cell-primary" data-label="Label (TH)">
                   <div class="main-text"><span class="desktop-user-name">${g.display_name_th}</span><span class="mobile-user-card-title">${g.group_id}</span></div>
                 </div>
@@ -21116,7 +21116,7 @@
                   <span class="user-card-tag asset-tag tag-amber">${g.allows_multi_select ? "Multi-select" : "Single-select"}</span>
                   <span class="user-card-tag asset-tag ${g.is_system ? "tag-purple" : "tag-teal"}">${g.is_system ? "System" : "Custom"}</span>
                   <div class="user-card-meta">
-                    <div class="user-card-meta-item comment-field-meta"><span>Group</span><strong>${g.group}</strong></div>
+                    <div class="user-card-meta-item comment-field-meta"><span>Group Key</span><strong>${g.group}</strong></div>
                     <div class="user-card-meta-item comment-field-meta"><span>Label (TH)</span><strong>${g.display_name_th}</strong></div>
                     <div class="user-card-meta-item comment-field-meta"><span>Label (EN)</span><strong>${g.display_name_en}</strong></div>
                     <div class="user-card-meta-item comment-field-meta"><span>Updated</span><strong>${g.updated_at || "-"}</strong></div>
@@ -21227,7 +21227,7 @@
       const pageRows = filtered.slice(start, start + optionDetailPageSize);
       document.querySelector("#table").innerHTML = `
         <div class="asset-table option-detail-table">
-          <div class="asset-row head"><div>Option ID</div><div>Key</div><div>Label (EN)</div><div>Label (TH)</div><div>Sort Order</div><div>System</div><div>Status</div><div>Updated</div><div>Action</div></div>
+          <div class="asset-row head"><div>Option ID</div><div>Option Key</div><div>Label (EN)</div><div>Label (TH)</div><div>Sort Order</div><div>System</div><div>Status</div><div>Updated</div><div>Action</div></div>
           ${pageRows.map(o => {
             const statusPill = o.is_active
               ? `<span class="pill green">Active</span>`
@@ -21268,7 +21268,7 @@
             return `
               <div class="asset-row" data-option-view="${o.id}" role="button" tabindex="0" aria-label="ดูรายละเอียด ${o.id}">
                 <div data-label="Option ID"><div class="main-text">${o.id}</div></div>
-                <div data-label="Key"><div class="main-text">${o.key}</div></div>
+                <div data-label="Option Key"><div class="main-text">${o.key}</div></div>
                 <div class="asset-cell-primary" data-label="Label (EN)">
                   <div class="main-text"><span class="desktop-user-name">${o.label_en}</span><span class="mobile-user-card-title">${o.id}</span></div>
                 </div>
@@ -21278,7 +21278,7 @@
                   <span class="user-card-tag asset-tag tag-slate">${o.key}</span>
                   <span class="user-card-tag asset-tag tag-slate">Sort ${o.sort_order}</span>
                   <div class="user-card-meta">
-                    <div class="user-card-meta-item comment-field-meta"><span>Key</span><strong>${o.key}</strong></div>
+                    <div class="user-card-meta-item comment-field-meta"><span>Option Key</span><strong>${o.key}</strong></div>
                     <div class="user-card-meta-item comment-field-meta"><span>Label (EN)</span><strong>${o.label_en}</strong></div>
                     <div class="user-card-meta-item comment-field-meta"><span>Label (TH)</span><strong>${o.label_th}</strong></div>
                     <div class="user-card-meta-item comment-field-meta"><span>Updated</span><strong>${o.updated_at || "-"}</strong></div>
@@ -21457,7 +21457,7 @@
           </div>
           <div class="option-confirm-summary">
             <div class="option-confirm-row"><span class="option-confirm-label">Option ID</span><span class="option-confirm-value">${escapeOptionField(option.id)}</span></div>
-            <div class="option-confirm-row"><span class="option-confirm-label">Key</span><span class="option-confirm-value">${escapeOptionField(option.key)}</span></div>
+            <div class="option-confirm-row"><span class="option-confirm-label">Option Key</span><span class="option-confirm-value">${escapeOptionField(option.key)}</span></div>
             <div class="option-confirm-row"><span class="option-confirm-label">Label (EN)</span><span class="option-confirm-value">${escapeOptionField(option.label_en)}</span></div>
             <div class="option-confirm-row"><span class="option-confirm-label">Label (TH)</span><span class="option-confirm-value">${escapeOptionField(option.label_th)}</span></div>
             <div class="option-confirm-row"><span class="option-confirm-label">Description</span><span class="option-confirm-value">${escapeOptionField(option.description_en || "") || "-"}</span></div>
@@ -21504,7 +21504,7 @@
           </div>
           <div class="option-confirm-summary">
             <div class="option-confirm-row"><span class="option-confirm-label">Option ID</span><span class="option-confirm-value">${escapeOptionField(option.id)}</span></div>
-            <div class="option-confirm-row"><span class="option-confirm-label">Key</span><span class="option-confirm-value">${escapeOptionField(option.key)}</span></div>
+            <div class="option-confirm-row"><span class="option-confirm-label">Option Key</span><span class="option-confirm-value">${escapeOptionField(option.key)}</span></div>
             <div class="option-confirm-row"><span class="option-confirm-label">Label (EN)</span><span class="option-confirm-value">${escapeOptionField(option.label_en)}</span></div>
             <div class="option-confirm-row"><span class="option-confirm-label">Label (TH)</span><span class="option-confirm-value">${escapeOptionField(option.label_th)}</span></div>
             <div class="option-confirm-row"><span class="option-confirm-label">Status</span><span class="option-confirm-value">${option.is_active ? "Active" : "Inactive"}</span></div>
@@ -21570,7 +21570,7 @@
           </div>
           <div class="option-confirm-summary">
             <div class="option-confirm-row"><span class="option-confirm-label">Option ID</span><span class="option-confirm-value">${escapeOptionField(option.id)}</span></div>
-            <div class="option-confirm-row"><span class="option-confirm-label">Key</span><span class="option-confirm-value">${escapeOptionField(option.key)}</span></div>
+            <div class="option-confirm-row"><span class="option-confirm-label">Option Key</span><span class="option-confirm-value">${escapeOptionField(option.key)}</span></div>
             <div class="option-confirm-row"><span class="option-confirm-label">Label (EN)</span><span class="option-confirm-value">${escapeOptionField(option.label_en)}</span></div>
             <div class="option-confirm-row"><span class="option-confirm-label">Label (TH)</span><span class="option-confirm-value">${escapeOptionField(option.label_th)}</span></div>
             <div class="option-confirm-row option-confirm-changed"><span class="option-confirm-label">Status</span><span class="option-confirm-value"><span class="option-confirm-before">Active</span> → <span class="option-confirm-after">Inactive</span></span></div>
@@ -21651,7 +21651,7 @@
           </div>
           <div class="option-confirm-summary">
             <div class="option-confirm-row"><span class="option-confirm-label">Option ID</span><span class="option-confirm-value">${escapeOptionField(option.id)}</span></div>
-            <div class="option-confirm-row"><span class="option-confirm-label">Key</span><span class="option-confirm-value">${escapeOptionField(option.key)}</span></div>
+            <div class="option-confirm-row"><span class="option-confirm-label">Option Key</span><span class="option-confirm-value">${escapeOptionField(option.key)}</span></div>
             <div class="option-confirm-row"><span class="option-confirm-label">Label (EN)</span><span class="option-confirm-value">${escapeOptionField(option.label_en)}</span></div>
             <div class="option-confirm-row"><span class="option-confirm-label">Label (TH)</span><span class="option-confirm-value">${escapeOptionField(option.label_th)}</span></div>
             <div class="option-confirm-row option-confirm-changed"><span class="option-confirm-label">Status</span><span class="option-confirm-value"><span class="option-confirm-before">Inactive</span> → <span class="option-confirm-after">Active</span></span></div>
@@ -21711,7 +21711,7 @@
                 <label class="option-field-status"><span>Status</span>
                   ${optionStatusToggle(isActiveValue === "true")}
                 </label>
-                <label><span>Key <span class="article-required-mark">*</span></span>
+                <label><span>Option Key <span class="article-required-mark">*</span></span>
                   <input name="key" value="${escapeOptionField(prevData?.key || "")}" placeholder="สร้างอัตโนมัติจาก Label (EN)" data-option-key data-user-edited="${prevData?.key ? "true" : "false"}" autocomplete="off" />
                   <span class="article-field-error" data-option-key-error></span>
                   <span class="option-identifier-note">ห้ามเปลี่ยนหลังสร้างแล้ว เพราะข้อมูลที่เกี่ยวข้องทั้งหมดอ้างอิงด้วยค่านี้</span>
@@ -21753,7 +21753,7 @@
       modalCard.classList.remove("article-preview-modal", "article-editor-confirm-modal", "category-editor-modal", "category-order-modal", "market-editor-modal", "board-report-phone-preview-modal", "option-order-modal", "option-audit-modal");
       modalCard.classList.add("option-editor-modal");
       const keyField = `<input name="key" value="${escapeOptionField(src.key || option.key)}" readonly data-option-key />
-        <span class="option-identifier-note">key ล็อกไว้ — เป็นรหัสอ้างอิงของระบบที่ข้อมูลทั้งหมดอ้างอิงด้วยค่านี้ ห้ามเปลี่ยน</span>`;
+        <span class="option-identifier-note">Option Key ล็อกไว้ — เป็นรหัสอ้างอิงของระบบที่ข้อมูลทั้งหมดอ้างอิงด้วยค่านี้ ห้ามเปลี่ยน</span>`;
       modalBody.innerHTML = `
         <div class="user-action-layout">
           <div class="user-action-head">
@@ -21772,7 +21772,7 @@
                 <label class="option-field-status"><span>Status</span>
                   ${optionStatusToggle(Boolean(src.is_active ?? option.is_active))}
                 </label>
-                <label><span>Key</span>
+                <label><span>Option Key</span>
                   ${keyField}
                 </label>
                 <label><span>Label (EN) <span class="article-required-mark">*</span></span>
@@ -21857,16 +21857,16 @@
         hasError = true;
       }
       if (!key) {
-        setOptionFieldError(form, "key", "กรุณากรอก Key หรือ Label (EN) เพื่อสร้างอัตโนมัติ");
+        setOptionFieldError(form, "key", "กรุณากรอก Option Key หรือ Label (EN) เพื่อสร้างอัตโนมัติ");
         hasError = true;
       } else if (key.length > 64) {
-        setOptionFieldError(form, "key", "Key ต้องไม่เกิน 64 ตัวอักษร");
+        setOptionFieldError(form, "key", "Option Key ต้องไม่เกิน 64 ตัวอักษร");
         hasError = true;
       } else if (!/^[a-z0-9_]+$/.test(key)) {
-        setOptionFieldError(form, "key", "Key ต้องเป็นตัวพิมพ์เล็กภาษาอังกฤษ ตัวเลข และ _ เท่านั้น");
+        setOptionFieldError(form, "key", "Option Key ต้องเป็นตัวพิมพ์เล็กภาษาอังกฤษ ตัวเลข และ _ เท่านั้น");
         hasError = true;
       } else if (!isOptionKeyUnique(groupId, key, originalKey)) {
-        setOptionFieldError(form, "key", "Key ซ้ำในกลุ่มนี้ กรุณาใช้ค่าอื่น");
+        setOptionFieldError(form, "key", "Option Key ซ้ำในกลุ่มนี้ กรุณาใช้ค่าอื่น");
         hasError = true;
       }
       if (!labelTh) {
@@ -21908,7 +21908,7 @@
           </div>
           <div class="option-confirm-summary">
             <div class="option-confirm-row"><span class="option-confirm-label">Option ID</span><span class="option-confirm-value">${previewId}</span></div>
-            <div class="option-confirm-row"><span class="option-confirm-label">Key</span><span class="option-confirm-value">${escapeOptionField(data.key)}</span></div>
+            <div class="option-confirm-row"><span class="option-confirm-label">Option Key</span><span class="option-confirm-value">${escapeOptionField(data.key)}</span></div>
             <div class="option-confirm-row"><span class="option-confirm-label">Label (EN)</span><span class="option-confirm-value">${escapeOptionField(data.label_en)}</span></div>
             <div class="option-confirm-row"><span class="option-confirm-label">Label (TH)</span><span class="option-confirm-value">${escapeOptionField(data.label_th)}</span></div>
             <div class="option-confirm-row"><span class="option-confirm-label">Description</span><span class="option-confirm-value">${escapeOptionField(data.description_en) || "-"}</span></div>
@@ -21997,7 +21997,7 @@
         action: "OPTION_ADD",
         before: [],
         after: [
-          { field: "Key", value: data.key },
+          { field: "Option Key", value: data.key },
           { field: "Label (EN)", value: data.label_en },
           { field: "Label (TH)", value: data.label_th },
           { field: "Sort Order", value: String(newOption.sort_order) },
@@ -22017,7 +22017,7 @@
       if (!option) return;
       const keyChanged = data.key !== originalKey;
       const before = [
-        { field: "Key", value: option.key },
+        { field: "Option Key", value: option.key },
         { field: "Label (EN)", value: option.label_en },
         { field: "Label (TH)", value: option.label_th },
         { field: "Description (EN)", value: option.description_en || "" },
@@ -22032,7 +22032,7 @@
         updated_at: formatArticleActionTimestamp()
       });
       const after = [
-        { field: "Key", value: option.key },
+        { field: "Option Key", value: option.key },
         { field: "Label (EN)", value: option.label_en },
         { field: "Label (TH)", value: option.label_th },
         { field: "Description (EN)", value: option.description_en || "" },
@@ -22077,7 +22077,7 @@
                 <label class="option-field-status"><span>Status</span>
                   ${optionStatusToggle(isActiveValue === "true")}
                 </label>
-                <label class="option-field-identifier"><span>Group Identifier <span class="article-required-mark">*</span></span>
+                <label class="option-field-identifier"><span>Group Key <span class="article-required-mark">*</span></span>
                   <input name="group" value="${escapeOptionField(prevData?.group || "")}" placeholder="สร้างอัตโนมัติจาก Label (EN)" data-option-group-identifier data-user-edited="${prevData?.group ? "true" : "false"}" autocomplete="off" />
                   <span class="article-field-error" data-option-group-identifier-error></span>
                   <span class="option-identifier-note">ห้ามเปลี่ยนหลังสร้างแล้ว เพราะข้อมูลที่เกี่ยวข้องทั้งหมดอ้างอิงด้วยค่านี้</span>
@@ -22137,9 +22137,9 @@
                 <label class="option-field-status"><span>Status</span>
                   ${optionStatusToggle(Boolean(src.is_active ?? g.is_active))}
                 </label>
-                <label class="option-field-identifier"><span>Group Identifier</span>
+                <label class="option-field-identifier"><span>Group Key</span>
                   <input value="${escapeOptionField(g.group)}" readonly />
-                  <span class="option-identifier-note">identifier ล็อกไว้ — เป็นรหัสอ้างอิงของระบบที่ข้อมูลทั้งหมดอ้างอิงด้วยค่านี้ ห้ามเปลี่ยน</span>
+                  <span class="option-identifier-note">Group Key ล็อกไว้ — เป็นรหัสอ้างอิงของระบบที่ข้อมูลทั้งหมดอ้างอิงด้วยค่านี้ ห้ามเปลี่ยน</span>
                 </label>
                 <label class="option-field-multi-select"><span>Multi-select</span>
                   ${groupMultiSelectToggle(Boolean(src.allows_multi_select ?? g.allows_multi_select))}
@@ -22213,16 +22213,16 @@
       // identifier validation (add mode only — edit mode is read-only)
       if (mode === "add") {
         if (!groupIdentifier) {
-          setOptionGroupFieldError(form, "identifier", "กรุณากรอก Group Identifier");
+          setOptionGroupFieldError(form, "identifier", "กรุณากรอก Group Key");
           hasError = true;
         } else if (groupIdentifier.length > 64) {
-          setOptionGroupFieldError(form, "identifier", "Group Identifier ต้องไม่เกิน 64 ตัวอักษร");
+          setOptionGroupFieldError(form, "identifier", "Group Key ต้องไม่เกิน 64 ตัวอักษร");
           hasError = true;
         } else if (!/^[a-z0-9_]+$/.test(groupIdentifier)) {
-          setOptionGroupFieldError(form, "identifier", "Group Identifier ต้องเป็นตัวพิมพ์เล็กภาษาอังกฤษ ตัวเลข และ _ เท่านั้น");
+          setOptionGroupFieldError(form, "identifier", "Group Key ต้องเป็นตัวพิมพ์เล็กภาษาอังกฤษ ตัวเลข และ _ เท่านั้น");
           hasError = true;
         } else if (!isGroupIdentifierUnique(groupIdentifier)) {
-          setOptionGroupFieldError(form, "identifier", "Group Identifier ซ้ำกับที่มีอยู่ กรุณาใช้ค่าอื่น");
+          setOptionGroupFieldError(form, "identifier", "Group Key ซ้ำกับที่มีอยู่ กรุณาใช้ค่าอื่น");
           hasError = true;
         }
       }
@@ -22289,7 +22289,7 @@
           </div>
           <div class="option-confirm-summary">
             <div class="option-confirm-row"><span class="option-confirm-label">Group ID</span><span class="option-confirm-value">${previewId}</span></div>
-            <div class="option-confirm-row"><span class="option-confirm-label">Group Identifier</span><span class="option-confirm-value">${escapeOptionField(data.group)}</span></div>
+            <div class="option-confirm-row"><span class="option-confirm-label">Group Key</span><span class="option-confirm-value">${escapeOptionField(data.group)}</span></div>
             <div class="option-confirm-row"><span class="option-confirm-label">Label (TH)</span><span class="option-confirm-value">${escapeOptionField(data.display_name_th)}</span></div>
             <div class="option-confirm-row"><span class="option-confirm-label">Label (EN)</span><span class="option-confirm-value">${escapeOptionField(data.display_name_en)}</span></div>
             <div class="option-confirm-row"><span class="option-confirm-label">Description</span><span class="option-confirm-value">${escapeOptionField(data.description) || "-"}</span></div>
@@ -22349,7 +22349,7 @@
           </div>
           <div class="option-confirm-summary">
             <div class="option-confirm-row"><span class="option-confirm-label">Group ID</span><span class="option-confirm-value">${escapeOptionField(original.group_id || "")}</span></div>
-            <div class="option-confirm-row"><span class="option-confirm-label">Group Identifier</span><span class="option-confirm-value">${escapeOptionField(original.group || "")} (ล็อก)</span></div>
+            <div class="option-confirm-row"><span class="option-confirm-label">Group Key</span><span class="option-confirm-value">${escapeOptionField(original.group || "")} (ล็อก)</span></div>
             ${row("Label (TH)", "display_name_th", textDisplay)}
             ${row("Label (EN)", "display_name_en", textDisplay)}
             ${row("Description", "description", textDisplay)}
@@ -22390,7 +22390,7 @@
         action: "GROUP_CREATE",
         before: [],
         after: [
-          { field: "Group Identifier", value: data.group },
+          { field: "Group Key", value: data.group },
           { field: "Label (TH)", value: data.display_name_th },
           { field: "Label (EN)", value: data.display_name_en },
           { field: "Description", value: data.description || "-" },
@@ -22482,7 +22482,7 @@
           )}
           <div class="option-confirm-summary">
             <div class="option-confirm-row"><span class="option-confirm-label">Group ID</span><span class="option-confirm-value">${escapeOptionField(g.group_id)}</span></div>
-            <div class="option-confirm-row"><span class="option-confirm-label">Identifier</span><span class="option-confirm-value">${escapeOptionField(g.group)}</span></div>
+            <div class="option-confirm-row"><span class="option-confirm-label">Group Key</span><span class="option-confirm-value">${escapeOptionField(g.group)}</span></div>
             <div class="option-confirm-row"><span class="option-confirm-label">Label (EN)</span><span class="option-confirm-value">${escapeOptionField(g.display_name_en)}</span></div>
             <div class="option-confirm-row"><span class="option-confirm-label">Label (TH)</span><span class="option-confirm-value">${escapeOptionField(g.display_name_th)}</span></div>
             <div class="option-confirm-row"><span class="option-confirm-label">Options</span><span class="option-confirm-value">${activeOptions} active / ${totalOptions} total</span></div>
@@ -22563,7 +22563,7 @@
           )}
           <div class="option-confirm-summary">
             <div class="option-confirm-row"><span class="option-confirm-label">Group ID</span><span class="option-confirm-value">${escapeOptionField(g.group_id)}</span></div>
-            <div class="option-confirm-row"><span class="option-confirm-label">Identifier</span><span class="option-confirm-value">${escapeOptionField(g.group)}</span></div>
+            <div class="option-confirm-row"><span class="option-confirm-label">Group Key</span><span class="option-confirm-value">${escapeOptionField(g.group)}</span></div>
             <div class="option-confirm-row"><span class="option-confirm-label">Label (EN)</span><span class="option-confirm-value">${escapeOptionField(g.display_name_en)}</span></div>
             <div class="option-confirm-row"><span class="option-confirm-label">Label (TH)</span><span class="option-confirm-value">${escapeOptionField(g.display_name_th)}</span></div>
             <div class="option-confirm-row"><span class="option-confirm-label">Options</span><span class="option-confirm-value">${activeOptions} active / ${totalOptions} total</span></div>
@@ -22643,7 +22643,7 @@
             </div>
             <div class="option-confirm-summary">
               <div class="option-confirm-row"><span class="option-confirm-label">Group ID</span><span class="option-confirm-value">${escapeOptionField(g.group_id)}</span></div>
-              <div class="option-confirm-row"><span class="option-confirm-label">Identifier</span><span class="option-confirm-value">${escapeOptionField(g.group)}</span></div>
+              <div class="option-confirm-row"><span class="option-confirm-label">Group Key</span><span class="option-confirm-value">${escapeOptionField(g.group)}</span></div>
               <div class="option-confirm-row"><span class="option-confirm-label">Label (EN)</span><span class="option-confirm-value">${escapeOptionField(g.display_name_en)}</span></div>
               <div class="option-confirm-row"><span class="option-confirm-label">Label (TH)</span><span class="option-confirm-value">${escapeOptionField(g.display_name_th)}</span></div>
               <div class="option-confirm-row"><span class="option-confirm-label">Status</span><span class="option-confirm-value">Inactive</span></div>
@@ -22688,7 +22688,7 @@
         action: "GROUP_DELETE",
         before: [
           { field: "Group ID", value: g.group_id },
-          { field: "Identifier", value: g.group },
+          { field: "Group Key", value: g.group },
           { field: "Label (EN)", value: g.display_name_en },
           { field: "Options", value: String(totalOptions) },
           { field: "Status", value: "Inactive" }
@@ -22883,7 +22883,7 @@
         </div>
         <div class="option-audit-summary">
           <div class="option-confirm-row"><span class="option-confirm-label">Group ID</span><span class="option-confirm-value">${escapeOptionField(g.group_id)}</span></div>
-          <div class="option-confirm-row"><span class="option-confirm-label">Identifier</span><span class="option-confirm-value">${escapeOptionField(g.group)}</span></div>
+          <div class="option-confirm-row"><span class="option-confirm-label">Group Key</span><span class="option-confirm-value">${escapeOptionField(g.group)}</span></div>
           <div class="option-confirm-row"><span class="option-confirm-label">Label (EN)</span><span class="option-confirm-value">${escapeOptionField(g.display_name_en)}</span></div>
           <div class="option-confirm-row"><span class="option-confirm-label">Status</span><span class="option-confirm-value">${statusPill}</span></div>
         </div>
@@ -23117,7 +23117,7 @@
         </div>
         <div class="option-audit-summary">
           <div class="option-confirm-row"><span class="option-confirm-label">Option ID</span><span class="option-confirm-value">${escapeOptionField(option.id)}</span></div>
-          <div class="option-confirm-row"><span class="option-confirm-label">Key</span><span class="option-confirm-value">${escapeOptionField(option.key)}</span></div>
+          <div class="option-confirm-row"><span class="option-confirm-label">Option Key</span><span class="option-confirm-value">${escapeOptionField(option.key)}</span></div>
           <div class="option-confirm-row"><span class="option-confirm-label">Label (EN)</span><span class="option-confirm-value">${escapeOptionField(option.label_en)}</span></div>
           <div class="option-confirm-row"><span class="option-confirm-label">Status</span><span class="option-confirm-value">${statusPill}</span></div>
         </div>
@@ -29435,7 +29435,7 @@
         const cleaned = event.target.value.toLowerCase().replace(/[^a-z0-9_]/g, "");
         if (cleaned !== event.target.value) {
           event.target.value = cleaned;
-          setOptionFieldError(form, "key", "Key รับเฉพาะตัวพิมพ์เล็กภาษาอังกฤษ ตัวเลข และ _ เท่านั้น");
+          setOptionFieldError(form, "key", "Option Key รับเฉพาะตัวพิมพ์เล็กภาษาอังกฤษ ตัวเลข และ _ เท่านั้น");
         } else {
           setOptionFieldError(form, "key");
         }
@@ -29452,7 +29452,7 @@
         const cleaned = event.target.value.toLowerCase().replace(/[^a-z0-9_]/g, "");
         if (cleaned !== event.target.value) {
           event.target.value = cleaned;
-          setOptionGroupFieldError(form, "identifier", "Group Identifier รับเฉพาะตัวพิมพ์เล็กภาษาอังกฤษ ตัวเลข และ _ เท่านั้น");
+          setOptionGroupFieldError(form, "identifier", "Group Key รับเฉพาะตัวพิมพ์เล็กภาษาอังกฤษ ตัวเลข และ _ เท่านั้น");
         } else {
           setOptionGroupFieldError(form, "identifier");
         }
@@ -29468,7 +29468,7 @@
         } else {
           setOptionGroupFieldError(form, "name-en");
         }
-        // Auto-generate Group Identifier from Label (EN) in add mode (only if identifier is empty or was auto-generated)
+        // Auto-generate Group Key from Label (EN) in add mode (only if identifier is empty or was auto-generated)
         const mode = form.dataset.optionGroupMode;
         if (mode === "add") {
           const idInput = form.querySelector("[data-option-group-identifier]");

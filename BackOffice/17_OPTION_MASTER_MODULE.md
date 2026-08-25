@@ -1,6 +1,6 @@
 # 17 BO Option Master Module
 
-**เวอร์ชัน:** `BO-17-v0.10`
+**เวอร์ชัน:** `BO-17-v0.11`
 **วันที่:** 2026-08-25
 **สถานะ:** สเปกปัจจุบัน
 **แพลตฟอร์ม:** Responsive Web Back Office
@@ -107,7 +107,7 @@ Admin ที่มีสิทธิ์เข้าถึง Option Master ส�
 | **Deactivate group** | Allowed by write permission; confirmation + reason (required) + audit; safeguard: ห้าม deactivate ถ้ามี asset ใช้ option ใน group นั้นอยู่ — รายละเอียด section 6.1 |
 | **Reactivate group** | Allowed by write permission; confirmation + audit — รายละเอียด section 6.1 |
 | **Delete group** | Allowed by write permission; **destructive — confirm 2 ครั้ง**; เงื่อนไข: (1) group เป็น Inactive แล้ว + (2) ไม่มี asset ใช้ option ใน group นั้น; audit; ไม่สามารถย้อนกลับได้ — รายละเอียด section 6.1 |
-| **Add group** | Allowed by write permission; confirmation + audit `GROUP_CREATE`; ต้องมี group identifier unique (lowercase snake_case); รายละเอียด section 6.1.6 |
+| **Add group** | Allowed by write permission; confirmation + audit `GROUP_CREATE`; ต้องมี Group Key unique (lowercase snake_case); รายละเอียด section 6.1.6 |
 | **Reorder groups** | Allowed by write permission; audit `GROUP_REORDER` ครั้งเดียวต่อการ save เมื่อลำดับเปลี่ยน; เฉพาะ active groups ≥2; รายละเอียด section 6.1.7 |
 | **View group audit log** | Allowed by module access; เปิดจาก action menu ของ group row; รายละเอียด section 6.1.8 |
 | Bulk import/export | Not available ใน Phase 1 |
@@ -143,7 +143,7 @@ Filter:
 
 - มี search field เดียว
 - Placeholder: `Search option group`
-- ค้นหาได้จาก group identifier และ label
+- ค้นหาได้จาก Group Key และ label
 - มี status filter: `ทั้งหมด`, `Active`, `Inactive` เพื่อรองรับ group-level Deactivate/Reactivate ตาม section 6.1
 
 > หมายเหตุ: Option Master ไม่แสดง summary cards และ side panel ทั้งใน Option Group List และ Option Detail เพื่อลดความซ้ำซ้อนของข้อมูลที่แสดงในตารางอยู่แล้ว การตัดสินใจนี้อนุมัติแล้วใน BO-17-v0.7
@@ -152,7 +152,7 @@ Filter:
 
 | Column | ข้อกำหนด |
 | --- | --- |
-| Group | group identifier เช่น `condition`, `case_material` |
+| Group Key | group key เช่น `condition`, `case_material` |
 | Label (TH/EN) | label ภาษาไทยและอังกฤษของ group ถ้ามี |
 | Options | จำนวน option ทั้งหมดใน group |
 | Active | จำนวน option ที่ active |
@@ -187,7 +187,7 @@ Filter:
 
 | Field | Editable | Validation |
 | --- | --- | --- |
-| `group` identifier | **Not editable** | แสดงเป็น read-only พร้อม note ว่า identifier ล็อกห้าม rename หลังใช้งาน |
+| `group` identifier (Group Key) | **Not editable** | แสดงเป็น read-only พร้อม note ว่า Group Key ล็อกห้าม rename หลังใช้งาน |
 | `group_id` | **Not editable** | ไม่แสดงในฟอร์ม (internal) |
 | `display_name_th` | Editable | trim whitespace; ห้ามว่าง; ไม่เกินความยาวที่ระบบกำหนด |
 | `display_name_en` | Editable | trim whitespace; ห้ามว่าง; ไม่เกินความยาวที่ระบบกำหนด |
@@ -196,7 +196,7 @@ Filter:
 
 กฎ:
 
-- ห้ามแก้ `group` identifier (เช่น `condition`) หลัง group ถูกใช้งานแล้ว เพราะเป็น stable identifier ที่ FO/seed/migration อ้างอิง
+- ห้ามแก้ `group` identifier / Group Key (เช่น `condition`) หลัง group ถูกใช้งานแล้ว เพราะเป็น stable identifier ที่ FO/seed/migration อ้างอิง
 - ห้ามแก้ `group_id`
 - การแก้ `display_name_th`/`display_name_en` ต้องไม่กระทบค่าที่เก็บใน existing assets เพราะ asset เก็บ relation id และ snapshot text แยก
 - ถ้าเปลี่ยน `allows_multi_select` จาก `true` → `false` ขณะมี asset ใช้หลาย option ใน group นั้น ต้องแสดง warning ใน confirmation modal และต้องไม่บังคับตัดค่าที่เก็บใน existing assets (คง history) — แต่ FO form ใหม่จะใช้โหมด single-select ตามค่าใหม่
@@ -211,7 +211,7 @@ Filter:
 
 Confirmation modal ต้องแสดง:
 
-- ชื่อ group ที่จะ deactivate (group identifier + display name)
+- ชื่อ group ที่จะ deactivate (Group Key + display name)
 - ผลกระทบ: group นี้และ option ทั้งหมดใน group จะไม่แสดงใน FO Add/Edit Asset form ใหม่, FO Search Filter ใหม่ และ FO Watch Alert criteria ใหม่
 - ข้อความชี้แจงว่า existing assets ที่ใช้ option ใน group นี้ยังแสดงค่าเดิมตามปกติ
 - Reason field (Required): เหตุผลในการ deactivate group
@@ -235,7 +235,7 @@ Confirmation modal ต้องแสดง:
 
 Confirmation modal ต้องแสดง:
 
-- ชื่อ group ที่จะ reactivate (group identifier + display name)
+- ชื่อ group ที่จะ reactivate (Group Key + display name)
 - ผลกระทบ: group นี้และ option ที่ยัง active ใน group จะกลับมาแสดงใน FO Add/Edit Asset form, FO Search Filter และ FO Watch Alert criteria
 - ปุ่ม `Cancel` และ `Confirm Reactivate`
 
@@ -259,14 +259,14 @@ Confirmation modal ต้องแสดง:
 
 Confirmation modal ครั้งที่ 1:
 
-- ชื่อ group ที่จะ delete (group identifier + display name)
+- ชื่อ group ที่จะ delete (Group Key + display name)
 - คำเตือน: `การลบ group เป็นการกระทำที่ไม่สามารถย้อนกลับได้ ข้อมูล group และ option ทั้งหมดใน group จะถูกลบออกจากระบบอย่างถาวร`
 - แสดงจำนวน option ใน group ที่จะถูกลบด้วย
 - ปุ่ม `Cancel` และ `Confirm Delete`
 
 Confirmation modal ครั้งที่ 2 (re-confirm):
 
-- ต้องพิมพ์ group identifier ซ้ำเพื่อยืนยัน (type-to-confirm pattern)
+- ต้องพิมพ์ Group Key ซ้ำเพื่อยืนยัน (type-to-confirm pattern)
 - ข้อความ: `พิมพ์ <group> เพื่อยืนยันการลบ`
 - ปุ่ม `Cancel` และ `Delete Permanently` (disabled จนกว่าจะพิมพ์ถูก)
 
@@ -308,7 +308,7 @@ Confirmation modal ครั้งที่ 2 (re-confirm):
 | Field | Editable | Validation |
 | --- | --- | --- |
 | `group_id` | **Not editable** | แสดงเป็น read-only; ค่าถัดไปจาก sequence (เช่น `OG-007`) สร้างอัตโนมัติ |
-| `group` identifier | Editable (required) | lowercase snake_case เท่านั้น (`^[a-z0-9_]+$`); ห้ามว่าง; ไม่เกิน 64 ตัวอักษร; ต้อง unique ในระบบ; ห้ามเปลี่ยนหลังสร้าง |
+| `group` identifier (Group Key) | Editable (required) | lowercase snake_case เท่านั้น (`^[a-z0-9_]+$`); ห้ามว่าง; ไม่เกิน 64 ตัวอักษร; ต้อง unique ในระบบ; ห้ามเปลี่ยนหลังสร้าง |
 | `display_name_en` | Editable (required) | trim whitespace; ห้ามว่าง; ไม่เกิน 128 ตัวอักษร; ต้องเป็นภาษาอังกฤษเท่านั้น (ห้ามอักขระที่ไม่ใช่ ASCII); ต้อง unique ในระบบ |
 | `display_name_th` | Editable (required) | trim whitespace; ห้ามว่าง; ไม่เกิน 128 ตัวอักษร; ต้อง unique ในระบบ |
 | `description` | Editable (optional) | trim whitespace; ไม่เกิน 512 ตัวอักษร |
@@ -318,7 +318,7 @@ Confirmation modal ครั้งที่ 2 (re-confirm):
 
 กฎ:
 
-- Group identifier ต้อง unique ทั้งระบบ ถ้าซ้ำต้องแสดง error ใกล้ field
+- Group Key ต้อง unique ทั้งระบบ ถ้าซ้ำต้องแสดง error ใกล้ field
 - Label (EN) และ Label (TH) ต้อง unique ทั้งระบบด้วย เพื่อป้องกันสับสนใน BO list และ FO form
 - หลัง save สำเร็จ group ใหม่ปรากฏในตาราง Option Group List ตาม sort_order
 - group ใหม่เป็น group ว่าง (ไม่มี option) Admin สามารถเข้าไปเพิ่ม option ภายหลังได้ผ่าน Option Detail
@@ -335,7 +335,7 @@ Confirmation modal ครั้งที่ 2 (re-confirm):
 
 - Header: `Reorder Option Groups` พร้อมคำอธิบาย `ลากเพื่อปรับลำดับการแสดงผลใน FO form/filter`
 - List ของ active group เรียงตาม sort_order ปัจจุบัน
-- แต่ละ row แสดง: drag handle, group display_name_en + identifier, display_name_th + sort_order ปัจจุบัน, index (#1, #2, ...)
+- แต่ละ row แสดง: drag handle, group display_name_en + Group Key, display_name_th + sort_order ปัจจุบัน, index (#1, #2, ...)
 - Desktop: ใช้ HTML5 drag-and-drop
 - Touch device: แสดง up/down arrow buttons ที่แต่ละ row เป็น fallback
 - ปุ่ม `ยกเลิก` และ `บันทึกลำดับ`
@@ -356,8 +356,8 @@ Confirmation modal ครั้งที่ 2 (re-confirm):
 
 โครงสร้าง Group Audit Log Modal:
 
-- Header: `Audit Log` พร้อม subtitle แสดง group_id, group identifier และ display_name_en
-- Summary section: แสดง Group ID, Identifier, Label (EN), Status (Active/Inactive pill)
+- Header: `Audit Log` พร้อม subtitle แสดง group_id, Group Key และ display_name_en
+- Summary section: แสดง Group ID, Group Key, Label (EN), Status (Active/Inactive pill)
 - Audit list: เรียงจากใหม่ไปเก่า แต่ละ entry แสดง:
   - Action type (badge พร้อมสีตามประเภท: add, edit, deactivate, reactivate, reorder)
   - Timestamp
@@ -395,7 +395,7 @@ Header:
 - Panel title: `<group> -- Options (<option count>)`
 - Page action หลัก: ปุ่ม `Add Option` และปุ่ม `Reorder` (เฉพาะ admin ที่มี write permission; ปุ่ม `Reorder` แสดงเฉพาะเมื่อมี active option ≥2 ในกลุ่ม)
 
-> หมายเหตุ: ไม่แสดง group summary section แยกต่างหาาก เพราะข้อมูล group identifier, multi-select และ option count แสดงใน panel title/subtitle และในตารางอยู่แล้ว การตัดสินใจนี้อนุมัติแล้วใน BO-17-v0.7
+> หมายเหตุ: ไม่แสดง group summary section แยกต่างหาาก เพราะข้อมูล Group Key, multi-select และ option count แสดงใน panel title/subtitle และในตารางอยู่แล้ว การตัดสินใจนี้อนุมัติแล้วใน BO-17-v0.7
 
 Filter:
 
@@ -408,7 +408,7 @@ Filter:
 
 | Column | ข้อกำหนด |
 | --- | --- |
-| Key | option key เช่น `new_unworn`, `stainless_steel` |
+| Option Key | option key เช่น `new_unworn`, `stainless_steel` |
 | Label (EN) | label ภาษาอังกฤษ |
 | Label (TH) | label ภาษาไทย |
 | Sort Order | ค่า sort_order |
@@ -434,7 +434,7 @@ Filter:
 
 | Field | Required | Validation |
 | --- | --- | --- |
-| Key | Required | ต้องไม่ซ้ำใน group เดียวกัน; เป็น lowercase snake_case; ห้าม whitespace; ไม่เกินความยาวที่ระบบกำหนด |
+| Option Key | Required | ต้องไม่ซ้ำใน group เดียวกัน; เป็น lowercase snake_case; ห้าม whitespace; ไม่เกินความยาวที่ระบบกำหนด |
 | Label (EN) | Required | trim whitespace; ห้ามว่าง; ไม่เกินความยาวที่ระบบกำหนด |
 | Label (TH) | Required | trim whitespace; ห้ามว่าง; ไม่เกินความยาวที่ระบบกำหนด |
 | Description (EN) | Optional | trim whitespace; ไม่เกินความยาวที่ระบบกำหนด |
@@ -443,7 +443,7 @@ Filter:
 
 กฎ:
 
-- Key ต้อง unique ภายใน group ถ้าซ้ำต้องแสดง error ใกล้ field
+- Option Key ต้อง unique ภายใน group ถ้าซ้ำต้องแสดง error ใกล้ field
 - หลัง save สำเร็จ option ใหม่ต้องปรากฏในตาราง Option list ตาม sort_order
 - ต้องมี confirmation modal ก่อน save จริง เพื่อสรุปค่าที่จะบันทึก
 - บันทึก audit `OPTION_ADD`
@@ -458,7 +458,7 @@ Filter:
 
 | Field | Editable | Validation |
 | --- | --- | --- |
-| Key | Not editable หลังสร้าง | แสดงเป็น read-only พร้อม note ว่า key ล็อกหลังสร้างเพราะเป็น stable identifier ที่ FO/seed/migration อ้างอิง |
+| Option Key | Not editable หลังสร้าง | แสดงเป็น read-only พร้อม note ว่า Option Key ล็อกหลังสร้างเพราะเป็น stable identifier ที่ FO/seed/migration อ้างอิง |
 | Label (EN) | Editable | trim whitespace; ห้ามว่าง; ไม่เกินความยาวที่ระบบกำหนด |
 | Label (TH) | Editable | trim whitespace; ห้ามว่าง; ไม่เกินความยาวที่ระบบกำหนด |
 | Description (EN) | Editable | trim whitespace; ไม่เกินความยาวที่ระบบกำหนด |
@@ -467,7 +467,7 @@ Filter:
 
 กฎ:
 
-- Key แก้ไม่ได้หลังสร้าง เพราะเป็น stable identifier ที่ FO/seed/migration อ้างอิงตั้งแต่ option active ไม่ใช่รอจนมี asset ใช้
+- Option Key แก้ไม่ได้หลังสร้าง เพราะเป็น stable identifier ที่ FO/seed/migration อ้างอิงตั้งแต่ option active ไม่ใช่รอจนมี asset ใช้
 - ถ้า admin พิมพ์ผิดตอนสร้าง ให้ deactivate option นั้น + add option ใหม่ (deactivate ได้ตามปกติตาม section 10)
 - การแก้ label ต้องไม่กระทบค่าที่เก็บใน existing assets เพราะ asset เก็บ relation id และ snapshot text แยก
 - ต้องมี confirmation modal ก่อน save จริง พร้อมแสดง before/after value
@@ -606,7 +606,7 @@ Reorder ทำได้ 2 วิธี:
 
 | Action | Pre-condition | Confirmation | Reason | Audit | FO Impact |
 | --- | --- | --- | --- | --- | --- |
-| Add option | Key ไม่ซ้ำใน group | Yes | No | `OPTION_ADD` | แสดงใน FO form/filter ใหม่ |
+| Add option | Option Key ไม่ซ้ำใน group | Yes | No | `OPTION_ADD` | แสดงใน FO form/filter ใหม่ |
 | Edit label/description | Option มีอยู่ | Yes | No | `OPTION_EDIT` | แสดง label ใหม่ใน FO form/filter; existing assets ยังเก็บ snapshot เดิม |
 | Reorder (drag-and-drop) | มี active option ≥2 ในกลุ่ม | Yes (save ใน Reorder Modal) | No | `OPTION_REORDER` | ลำดับ FO form/filter เปลี่ยน |
 | Edit sort_order (via Edit Option) | Option มีอยู่ | Yes | No | `OPTION_EDIT` | ลำดับ FO form/filter เปลี่ยน |
@@ -617,7 +617,7 @@ Reorder ทำได้ 2 วิธี:
 | **Deactivate group** | Group active; **ไม่มี asset ใช้ option ใน group นั้น** (safeguard) | Yes | Yes | `GROUP_DEACTIVATE` | group และ option ทั้งหมดใน group ไม่แสดงใน FO form/filter/Watch Alert ใหม่; existing assets ยังแสดงค่าเดิม |
 | **Reactivate group** | Group inactive | Yes | No | `GROUP_REACTIVATE` | group และ option ที่ยัง active กลับมาแสดงใน FO form/filter/Watch Alert; option ที่ inactive ยังคง inactive |
 | **Delete group** | (1) Group inactive + (2) **ไม่มี asset ใช้ option ใน group นั้น** (safeguard) | **Yes (2 ครั้ง — type-to-confirm)** | No | `GROUP_DELETE` | **Destructive — ไม่สามารถย้อนกลับได้**; ลบ group และ option ทั้งหมดใน group อย่างถาวร |
-| **Add group** | Write permission; group identifier unique | Yes | No | `GROUP_CREATE` | group ใหม่ปรากฏใน FO form/filter/Watch Alert ทันทีเมื่อ active; สร้างเป็น group ว่าง (ไม่มี option) |
+| **Add group** | Write permission; Group Key unique | Yes | No | `GROUP_CREATE` | group ใหม่ปรากฏใน FO form/filter/Watch Alert ทันทีเมื่อ active; สร้างเป็น group ว่าง (ไม่มี option) |
 | **Reorder groups** | มี active group ≥2 | Yes (save ใน Reorder Groups Modal) | No | `GROUP_REORDER` | ลำดับ FO form/filter เปลี่ยน; บันทึก audit เฉพาะเมื่อลำดับเปลี่ยนจริง |
 | **View group audit log** | Module access | No (read-only) | No | — | ไม่มีผลต่อ FO |
 
@@ -673,7 +673,7 @@ Audit action types:
 | `GROUP_DEACTIVATE` | Deactivate group (ทั้ง group) | Before: active; After: inactive + reason |
 | `GROUP_REACTIVATE` | Reactivate group (ทั้ง group) | Before: inactive; After: active |
 | `GROUP_DELETE` | Delete group อย่างถาวร (destructive) | Before: group + option ทั้งหมดใน group; After: (deleted) |
-| `GROUP_CREATE` | สร้าง group ใหม่ | After: group ใหม่ทั้งหมด (group_id, identifier, label, description, multi-select, status) |
+| `GROUP_CREATE` | สร้าง group ใหม่ | After: group ใหม่ทั้งหมด (group_id, Group Key, label, description, multi-select, status) |
 | `GROUP_REORDER` | เปลี่ยน sort_order ของ group ผ่าน Reorder Groups Modal (drag-and-drop หรือ up/down) | Before/After: sort_order เดิม/ใหม่ ของทุก group ที่เปลี่ยนลำดับในการ save ครั้งนั้น; บันทึกเฉพาะเมื่อลำดับเปลี่ยนจริง |
 
 Minimum audit fields ตาม `00_GLOBAL_RULES_MODULE.md`:
@@ -1077,7 +1077,7 @@ Visual rules:
 - [ ] Impact ต่อ existing assets เมื่อ deactivate ระบุชัด (คง relation, คง snapshot, ห้าม cascade delete)
 - [ ] Sync strategy ระหว่าง seed file และ database ชัดเจน (system vs custom option)
 - [ ] **Group-level actions (section 6.1) ระบุชัด: Edit, Deactivate, Reactivate, Delete group พร้อมเงื่อนไข การ confirm และ audit**
-- [ ] **Edit group แก้ได้เฉพาะ `display_name_th`, `display_name_en`, `description`, `allows_multi_select`; ห้ามแก้ `group` identifier และ `group_id`**
+- [ ] **Edit group แก้ได้เฉพาะ `display_name_th`, `display_name_en`, `description`, `allows_multi_select`; ห้ามแก้ `group` identifier (Group Key) และ `group_id`**
 - [ ] **Deactivate group มี safeguard: ห้าม deactivate ถ้ามี asset ใช้ option ใน group นั้น; service layer enforce safeguard**
 - [ ] **Delete group เป็น destructive action: ต้อง confirm 2 ครั้ง (type-to-confirm); เงื่อนไข group Inactive + ไม่มี asset ใช้; ไม่สามารถย้อนกลับได้**
 - [ ] **Option Group List มี Status column (Active/Inactive badge) และ status filter (ทั้งหมด/Active/Inactive)**
@@ -1085,7 +1085,7 @@ Visual rules:
 - [ ] **Audit actions ใหม่ 4 ตัว: `GROUP_EDIT`, `GROUP_DEACTIVATE`, `GROUP_REACTIVATE`, `GROUP_DELETE` ระบุใน section 16**
 - [ ] **`spec_option_audit.option_id` เป็น nullable เพื่อรองรับ group-level actions ที่ไม่มี option เฉพาะ**
 - [ ] **`is_active` ของ group ใช้งานได้ใน Phase 1 (ไม่ใช่ default true เท่านั้น) — รองรับ group-level Deactivate/Reactivate**
-- [ ] **Add Group (section 6.1.6) ระบุชัด: ฟอร์ม fields, validation (identifier lowercase snake_case unique ≤64, label EN/TH unique ≤128, description ≤512), confirmation modal, audit `GROUP_CREATE`**
+- [ ] **Add Group (section 6.1.6) ระบุชัด: ฟอร์ม fields, validation (Group Key lowercase snake_case unique ≤64, label EN/TH unique ≤128, description ≤512), confirmation modal, audit `GROUP_CREATE`**
 - [ ] **Add Group สร้าง group ว่าง (ไม่มี option) และ group ใหม่ปรากฏใน FO form/filter ทันทีเมื่อ active**
 - [ ] **Reorder Groups (section 6.1.7) ระบุชัด: drag-and-drop + up/down fallback, เฉพาะ active groups ≥2, sort_order sequential (10, 20, 30, ...), audit `GROUP_REORDER` ครั้งเดียวต่อ save เมื่อลำดับเปลี่ยน**
 - [ ] **Group Audit Log view (section 6.1.8) ระบุชัด: action types 6 ตัว (GROUP_CREATE/EDIT/DEACTIVATE/REACTIVATE/DELETE/REORDER), fields ที่แสดง (action, timestamp, actor, reason, before/after diff), read-only**
@@ -1102,8 +1102,8 @@ Visual rules:
 | BO-OPT-002 ✅ | Prototype screen | **Prototype สร้างและยืนยันแล้ว** — prototype Option Master ครบทุก screen/modal รวม Add Group, Edit Group, Deactivate/Reactivate/Delete Group, Reorder Groups และ Group Audit Log view; responsive 3 breakpoints ผ่าน QA; ไม่กระทบ protected screens; เอกสาร spec อัปเดตให้ตรง prototype แล้ว |
 | BO-OPT-003 ✅ | System option deactivate policy | **ตัดสินใจ: Tiered Deactivation Control** — กลุ่ม `condition` (required field สำหรับ Sale status) ล็อกไม่ให้ deactivate system option ผ่าน BO UI ต้องแก้ seed file + migration; กลุ่ม optional อื่น (`delivery`, `case_material`, `movement`, `dial_color`, `strap_bracelet_type`) อนุญาตพร้อม reason + safeguard (≥1 active option เหลือในกลุ่ม); custom option ทุกกลุ่ม deactivate ได้ปกติพร้อม reason + safeguard; รายละเอียดใน section 10.1 |
 | BO-OPT-004 ✅ | Reorder UI | **ตัดสินใจ: Drag-and-drop in Reorder Modal + Up/Down Fallback** — ใช้ Reorder Modal เป็นวิธีหลัก (drag-and-drop บน desktop + up/down arrow buttons บน touch device) ตาม pattern ของ Category Display Order ใน prototype เพื่อความสอดคล้อง; Edit Option modal ยังคงเป็นวิธีรองสำหรับแก้ sort_order รายตัว; บันทึก audit `OPTION_REORDER` ครั้งเดียวต่อการ save ใน Reorder Modal; รายละเอียดใน section 12 |
-| BO-OPT-005 ✅ | Group-level actions policy | **ตัดสินใจ: เพิ่ม group-level actions 4 ตัวบน Option Group List** — (1) **Edit group**: แก้ `display_name_th`/`display_name_en`/`description`/`allows_multi_select` พร้อม confirmation + audit `GROUP_EDIT`; ห้ามแก้ `group` identifier และ `group_id`; (2) **Deactivate group**: confirmation + reason (required) + audit `GROUP_DEACTIVATE`; safeguard ห้าม deactivate ถ้ามี asset ใช้ option ใน group นั้น; (3) **Reactivate group**: confirmation + audit `GROUP_REACTIVATE`; (4) **Delete group**: destructive — confirm 2 ครั้ง (type-to-confirm) + audit `GROUP_DELETE`; เงื่อนไข group Inactive + ไม่มี asset ใช้; ไม่สามารถย้อนกลับได้; เพิ่ม Status column + status filter + action menu ใน Option Group List; service layer enforce safeguard ทั้งสองข้อ; รายละเอียดใน section 6.1; `is_active` ของ group ใช้งานได้ใน Phase 1 |
-| BO-OPT-009 ✅ | Option key lock policy | **ตัดสินใจ: ล็อก `key` หลังสร้างเลย** — เปลี่ยน policy เดิม (ล็อกเฉพาะหลัง option ถูกใช้ใน asset) เป็นล็อกตั้งแต่สร้าง เพื่อให้สอดคล้องกับ group identifier ที่ล็อกหลังสร้างอยู่แล้ว; เหตุผล: FO อ้างอิง option key ตั้งแต่ option active ไม่ใช่รอจนมี asset ใช้ ดังนั้นช่วงที่ active แต่ยังไม่มี asset ใช้ FO cache/reference อ้างอิง key อยู่แล้ว การอนุญาตให้แก้ key ในช่วงนั้นทำให้ reference พังได้; กรณีพิมพ์ผิด: deactivate option + add option ใหม่; อัปเดต section 2, 4, 9, 13, 16, 17.3, 20 |
+| BO-OPT-005 ✅ | Group-level actions policy | **ตัดสินใจ: เพิ่ม group-level actions 4 ตัวบน Option Group List** — (1) **Edit group**: แก้ `display_name_th`/`display_name_en`/`description`/`allows_multi_select` พร้อม confirmation + audit `GROUP_EDIT`; ห้ามแก้ `group` identifier (Group Key) และ `group_id`; (2) **Deactivate group**: confirmation + reason (required) + audit `GROUP_DEACTIVATE`; safeguard ห้าม deactivate ถ้ามี asset ใช้ option ใน group นั้น; (3) **Reactivate group**: confirmation + audit `GROUP_REACTIVATE`; (4) **Delete group**: destructive — confirm 2 ครั้ง (type-to-confirm) + audit `GROUP_DELETE`; เงื่อนไข group Inactive + ไม่มี asset ใช้; ไม่สามารถย้อนกลับได้; เพิ่ม Status column + status filter + action menu ใน Option Group List; service layer enforce safeguard ทั้งสอดข้อ; รายละเอียดใน section 6.1; `is_active` ของ group ใช้งานได้ใน Phase 1 |
+| BO-OPT-009 ✅ | Option key lock policy | **ตัดสินใจ: ล็อก `key` หลังสร้างเลย** — เปลี่ยน policy เดิม (ล็อกเฉพาะหลัง option ถูกใช้ใน asset) เป็นล็อกตั้งแต่สร้าง เพื่อให้สอดคล้องกับ Group Key ที่ล็อกหลังสร้างอยู่แล้ว; เหตุผล: FO อ้างอิง option key ตั้งแต่ option active ไม่ใช่รอจนมี asset ใช้ ดังนั้นช่วงที่ active แต่ยังไม่มี asset ใช้ FO cache/reference อ้างอิง key อยู่แล้ว การอนุญาตให้แก้ key ในช่วงนั้นทำให้ reference พังได้; กรณีพิมพ์ผิด: deactivate option + add option ใหม่; อัปเดต section 2, 4, 9, 13, 16, 17.3, 20 |
 
 ## 22. FO Integration Guidelines
 
@@ -1245,7 +1245,7 @@ FO ดึง option list จาก backend ผ่าน API ต่อไปน�
 
 | Parameter | Type | Required | Description |
 | --- | --- | --- | --- |
-| `group` | string | Optional | กรองตาม group identifier เช่น `condition`, `delivery`; ถ้าไม่ส่งให้คืนทุก group |
+| `group` | string | Optional | กรองตาม Group Key เช่น `condition`, `delivery`; ถ้าไม่ส่งให้คืนทุก group |
 | `active` | boolean | Optional | ค่าเริ่มต้น `true`; ส่ง `false` เพื่อรวม inactive option (ใช้สำหรับ lookup asset เดิม) |
 | `lang` | string | Optional | `th` หรือ `en`; ค่าเริ่มต้นตาม FO language mode |
 
