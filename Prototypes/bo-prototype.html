@@ -2271,6 +2271,14 @@
       border: 1px solid #d7e2f0;
       border-radius: var(--radius);
     }
+    /* BO-MKT-FIX-001: ปรับ padding และ min-width ของ panel-head ให้ตรงกับ asset-row.head
+       ในตาราง Recently Updated Brands เพื่อให้เส้นคั่นยาวเท่ากันทุก viewport
+       scope เฉพาะ Market Data > Dashboard เพื่อไม่กระทบ protected screens อื่น */
+    body.market-list-mode.market-dashboard-mode .market-dashboard-table .panel-head {
+      padding-left: 20px;
+      padding-right: 20px;
+      min-width: 960px;
+    }
     body.market-list-mode .market-sync-body {
       display: flex;
       align-items: center;
@@ -10217,6 +10225,11 @@
       }
       body.market-list-mode .market-dashboard-table {
         overflow-x: hidden;
+      }
+      /* BO-MKT-FIX-001: รีเซ็ต min-width ของ panel-head บน mobile
+         กัน horizontal scroll เพราะบน mobile ตารางใช้ min-width: 0 และซ่อนหัวคอลัมน์แล้ว */
+      body.market-list-mode.market-dashboard-mode .market-dashboard-table .panel-head {
+        min-width: 0;
       }
       body.market-list-mode.market-dashboard-mode .market-dashboard-brand-table {
         min-width: 0;
