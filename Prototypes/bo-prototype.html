@@ -27810,23 +27810,10 @@
       const optionGroupReset = event.target.closest("[data-option-group-reset]");
       if (optionGroupReset) {
         optionGroupListPage = 1;
-        optionGroupFilterOpen = false;
         const searchInput = document.querySelector("#option-group-search");
         if (searchInput) searchInput.value = "";
-        const statusFilter = document.querySelector("#option-group-status-filter");
-        if (statusFilter) {
-          statusFilter.value = "";
-          statusFilter.dispatchEvent(new Event("change", { bubbles: true }));
-        }
+        setCustomSelectValue("option-group-status-filter", "");
         renderOptionGroupListRows();
-        const filterBar = document.querySelector(".user-filter-bar");
-        if (filterBar) filterBar.dataset.filterOpen = String(optionGroupFilterOpen);
-        const toggleBtn = document.querySelector("[data-option-group-filter-toggle]");
-        if (toggleBtn) {
-          toggleBtn.setAttribute("aria-expanded", String(optionGroupFilterOpen));
-          const label = toggleBtn.querySelector("span");
-          if (label) label.textContent = optionGroupFilterOpen ? "ปิดตัวกรอง" : "เปิดตัวกรอง";
-        }
         return;
       }
       const optionDetailPageButton = event.target.closest("[data-option-detail-page]");
@@ -28430,23 +28417,10 @@
       const optionDetailReset = event.target.closest("[data-option-detail-reset]");
       if (optionDetailReset) {
         optionDetailPage = 1;
-        optionDetailFilterOpen = false;
         const searchInput = document.querySelector("#option-detail-search");
         if (searchInput) searchInput.value = "";
-        const statusFilter = document.querySelector("#option-status-filter");
-        if (statusFilter) {
-          statusFilter.value = "";
-          statusFilter.dispatchEvent(new Event("change", { bubbles: true }));
-        }
+        setCustomSelectValue("option-status-filter", "");
         renderOptionDetailRows();
-        const filterBar = document.querySelector(".user-filter-bar");
-        if (filterBar) filterBar.dataset.filterOpen = String(optionDetailFilterOpen);
-        const toggleBtn = document.querySelector("[data-option-detail-filter-toggle]");
-        if (toggleBtn) {
-          toggleBtn.setAttribute("aria-expanded", String(optionDetailFilterOpen));
-          const label = toggleBtn.querySelector("span");
-          if (label) label.textContent = optionDetailFilterOpen ? "ปิดตัวกรอง" : "เปิดตัวกรอง";
-        }
         return;
       }
       const categoryReset = event.target.closest("[data-category-reset]");
