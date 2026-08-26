@@ -16,8 +16,6 @@ BO ต้องแยกจาก FO mobile app ชัดเจน Admin ไม�
 
 รายละเอียด trigger ข้ามระบบและผลลัพธ์ที่เกิดบน FO อยู่ในเอกสาร module ของ BO และ FO ที่เกี่ยวข้อง
 
-> **Note (BO-DOC-001a, 2026-08-26):** ไฟล์ `ProjectAdmin/FO_BO_INTEGRATION_MAP.md` ถูกตัดออกจากเอกสาร BO ทุกไฟล์แล้ว รอ decision ภายหลังว่าจะสร้าง integration map กลางขึ้นใหม่หรือกระจายข้อมูล trigger/result ไปไว้ในเอกสาร module ของ BO และ FO ที่เกี่ยวข้อง ในระหว่างนี้ให้อ้างอิงเอกสาร module ของ BO และ FO ที่เกี่ยวข้องแทน
-
 ## 2. Product Goals
 
 | Goal | Requirement |
@@ -121,4 +119,5 @@ Directory is postponed from Phase 1. Keep `07_DIRECTORY_MODULE.md` as a future r
 | BO-DEC-003 | Account deletion anonymization timing | ใช้ 30-day grace period ตาม FO decision เว้นแต่ legal เปลี่ยน |
 | BO-DEC-004 | Admin remove asset permission | ให้ remove ได้พร้อม required reason และ audit; high-value dispute อาจต้อง Admin approval |
 | BO-DEC-005 | Board public SEO web requirement | ถือเป็น mobile Board content ก่อน จนกว่าจะเพิ่ม web SEO scope ชัดเจน |
+| BO-DEC-006 | รูปแบบ integration map ระหว่าง FO และ BO หลังตัดไฟล์เดิม | กระจายข้อมูล trigger/result ไปไว้ในเอกสาร module ของ BO และ FO ที่เกี่ยวข้อง จนกว่าจะตัดสินใจว่าจะสร้าง integration map กลางขึ้นใหม่หรือไม่ |
 
