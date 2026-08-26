@@ -3,18 +3,34 @@
 **Version:** `BO-13-v0.1`  
 **Date:** 2026-07-06  
 **Status:** Draft baseline  
-**Platform:** Responsive Web Back Office  
-**Primary FO Sources:** `../FrontOffice/13_SETTINGS_MODULE.md`, `../FrontOffice/08_OFFER_MODULE.md`, `../FrontOffice/07_CHAT_MODULE.md`, `../FrontOffice/04_ASSET_MANAGEMENT_MODULE.md`, `../FrontOffice/06_PROFILE_MODULE.md`  
+**Platform:** Responsive Web Back Office
 
-## 1. วัตถุประสงค์
+## UI Standards And Prototype Reference
+
+เอกสารนี้ต้องใช้ร่วมกับ `00_GLOBAL_RULES_MODULE.md` และยึดรูปแบบหน้าจอ/พฤติกรรมที่ยืนยันแล้วใน `../Prototypes/bo-prototype.html` เป็นมาตรฐานหลัก
+
+เอกสารอ้างอิง: `../FrontOffice/13_SETTINGS_MODULE.md`, `../FrontOffice/08_OFFER_MODULE.md`, `../FrontOffice/07_CHAT_MODULE.md`, `../FrontOffice/04_ASSET_MANAGEMENT_MODULE.md`, `../FrontOffice/06_PROFILE_MODULE.md`
+
+## 1. Document Information
+
+| Field | Detail |
+| --- | --- |
+| Module Name | BO Account Deletion Requests |
+| Platform | Responsive Web Back Office |
+| Version | `BO-13-v0.1` |
+| Status | Draft baseline |
+| Owner | Product / UX / Engineering / Operations |
+| Document Type | Functional PRD |
+
+## 2. Objective
 
 Account Deletion Requests Module ใช้ให้ BO ตรวจสอบและติดตามคำขอลบบัญชีที่เริ่มจาก FO Settings > About your account > Delete account
 
 FO ทำหน้าที่รับ confirmation, soft delete/deactivate account, revoke session และพาผู้ใช้กลับ Sign In ส่วน BO ทำหน้าที่เป็น operational queue สำหรับ validation, blocked condition, archive, anonymization, retention และ audit trail
 
-## 2. ขอบเขต
+## 3. Scope
 
-### 2.1 In Scope
+### In Scope
 
 - Account deletion request queue
 - Request detail พร้อม user, offer, asset, chat และ retention context
@@ -28,7 +44,7 @@ FO ทำหน้าที่รับ confirmation, soft delete/deactivate acc
 - Audit log สำหรับทุก action สำคัญ
 - Responsive layout สำหรับ desktop, tablet และ mobile
 
-### 2.2 Out of Scope
+### Out Of Scope
 
 - FO Delete Account UI
 - Legal policy drafting
@@ -37,7 +53,7 @@ FO ทำหน้าที่รับ confirmation, soft delete/deactivate acc
 - User self-service restore ถ้า Product ยังไม่เปิด scope
 - External compliance tool integration
 
-## 3. FO Deletion Contract
+## 4. FO Deletion Contract
 
 FO Settings module กำหนด behavior หลักดังนี้:
 
@@ -54,19 +70,19 @@ FO Settings module กำหนด behavior หลักดังนี้:
 
 BO ต้องไม่เปลี่ยน copy หรือ flow ของ FO แต่ต้องรับข้อมูลคำขอและประมวลผลต่อหลัง FO ส่ง request สำเร็จ
 
-## 4. Admin Access & Permissions
+## 5. Admin Access And Permissions
 
-BO uses a single Admin account type only. Admin access is controlled by module access, action policy, sensitive-data policy, confirmation, reason, and audit requirements instead of separate BO admin account types.
-
+ระบบใช้ Admin access เดียว โดยตรวจสิทธิ์ตามเมนูและ action ที่ทำ ไม่แยกประเภทบัญชี Admin ในสเปกนี้
 
 | Access Area | Rule |
 | --- | --- |
-| Module access | Admin can use list/detail/search/filter when module access is granted. |
-| Write action | Create, update, status change, remove, restore, publish, archive, retry, and similar actions require permission check, confirmation for high-risk actions, reason when FO/user impact exists, and audit log. |
-| Sensitive data | Mask by default; reveal only with business reason, policy approval, and audit log. |
-| Export | Requires permission check, scope control, expiry/background job where needed, and audit export event. |
-| Direct URL/API | Enforce access at route, API, and service layers; never rely only on hidden UI. |
-## 5. Responsive Layout
+| Module access | Admin ที่มีสิทธิ์เข้าเมนูสามารถดู list, detail, search และ filter ได้ |
+| Write action | Action เช่น create, update, status change, remove, restore, publish, archive, retry และ action ทำนองนี้ ต้องตรวจ permission, แสดง confirmation สำหรับ action ที่มีความเสี่ยงสูง, บังคับกรอก reason เมื่อมีผลต่อ FO/user และบันทึก audit |
+| Sensitive data | แสดง masked โดยค่าเริ่มต้น; เปิดเฉพาะเมื่อมี business reason, ผ่าน policy approval และบันทึก audit |
+| Export | ต้องตรวจ permission, ควบคุม scope, กำหนด expiry/background job เมื่อจำเป็น และบันทึก audit event ของการ export |
+| Direct URL/API | ต้องตรวจสิทธิ์ที่ route, API และ service layer เสมอ; ห้ามพึ่งพาแค่การซ่อน UI |
+
+## 6. Responsive Layout
 
 | Breakpoint | Layout |
 | --- | --- |
@@ -76,7 +92,7 @@ BO uses a single Admin account type only. Admin access is controlled by module a
 
 Action ที่มีผล irreversible ต้องมี confirmation และต้องไม่อยู่ใน hover-only control
 
-## 6. Request List
+## 7. Request List
 
 Request list ต้องแสดงข้อมูลขั้นต่ำ:
 
@@ -94,7 +110,7 @@ Request list ต้องแสดงข้อมูลขั้นต่ำ:
 | Processed By | Admin/System ที่ดำเนินการล่าสุด |
 | Updated At | วันที่แก้ไขล่าสุด |
 
-## 7. Search & Filters
+## 8. Search & Filters
 
 ต้องค้นหาและกรองได้อย่างน้อย:
 
@@ -108,7 +124,7 @@ Request list ต้องแสดงข้อมูลขั้นต่ำ:
 - Requested date
 - Processed by
 
-## 8. Request Status Contract
+## 9. Request Status Contract
 
 ใช้ status กลางต่อไปนี้:
 
@@ -125,7 +141,7 @@ Request list ต้องแสดงข้อมูลขั้นต่ำ:
 - FO V1 ระบุ soft delete/deactivate หลัง confirm สำเร็จ ดังนั้น `Requested` ไม่ได้แปลว่ายังใช้งานบัญชีได้
 - `Cancelled` ไม่ใช่ action ปกติสำหรับผู้ใช้เอง เว้นแต่ Product/Policy เปิด restore flow หรือ Admin ยกเลิกตามเคสผิดพลาด
 
-## 9. Account Status Contract
+## 10. Account Status Contract
 
 BO ต้องแยก request status ออกจาก account status:
 
@@ -139,7 +155,7 @@ BO ต้องแยก request status ออกจาก account status:
 
 ใน flow ปกติหลัง FO confirm สำเร็จ account ควรเข้าสู่ `Deactivated` ทันที
 
-## 9.1 Deleted / Restore / Retention Policy
+### 10.1 Deleted / Restore / Retention Policy
 
 ตาม pattern ทั่วไปของเว็บที่ต้องรองรับ audit, dispute และ compliance ไม่ควร hard delete ทุก record ทันทีหลังผู้ใช้กดลบบัญชี
 
@@ -163,7 +179,7 @@ UI / Reporting rules:
 - Restore ควรเปิดได้เฉพาะก่อน anonymization และควรอยู่ในช่วง grace period เช่น 30 วัน พร้อม reason และ audit
 - หลัง anonymization แล้วไม่ควร restore เพราะข้อมูลส่วนตัวที่ใช้สร้าง account กลับมาอย่างถูกต้องไม่ควรมีอยู่แล้ว
 
-## 10. Validation Rules
+## 11. Validation Rules
 
 ก่อน approve archive/anonymization BO ต้องตรวจ:
 
@@ -182,11 +198,11 @@ Pending offer dependency ต้องใช้ source เดียวกับ `
 
 Pending user report หรือ offer/support dispute ต้อง block deletion เช่นเดียวกันจนกว่า Admin จะตรวจ source report และ dependency ให้จบก่อน การลบบัญชีไม่ควร cancel offer หรือปิด dispute อัตโนมัติ; ต้องให้ module ต้นทาง เช่น Offer Management, Asset Management หรือ Help & Support เป็นตัวบันทึกผลการตรวจ แล้ว Account Deletion จึงค่อย approve, keep blocked, หรือ cancel request ตาม policy
 
-## 11. Request Detail
+## 12. Request Detail
 
 Request detail ต้องมีส่วนข้อมูล:
 
-### 11.1 User Context
+### 12.1 User Context
 
 - User ID
 - Display name / username
@@ -198,7 +214,7 @@ Request detail ต้องมีส่วนข้อมูล:
 - Current request status
 - Support tickets ที่เกี่ยวข้อง
 
-### 11.2 Deletion Timeline
+### 12.2 Deletion Timeline
 
 - Requested at
 - Session revoked at
@@ -211,7 +227,7 @@ Request detail ต้องมีส่วนข้อมูล:
 - Anonymized at
 - Cancelled at ถ้ามี
 
-### 11.3 Dependency Summary
+### 12.3 Dependency Summary
 
 - Pending incoming offers
 - Pending outgoing offers
@@ -221,7 +237,7 @@ Request detail ต้องมีส่วนข้อมูล:
 - Reports/safety cases
 - Support tickets
 
-### 11.4 Archive / Anonymization Plan
+### 12.4 Archive / Anonymization Plan
 
 ต้องแสดงว่า field หรือ entity ใดจะถูก hide, retain, archive หรือ anonymize:
 
@@ -237,7 +253,7 @@ Request detail ต้องมีส่วนข้อมูล:
 | Reports | Retain ตาม safety/legal/audit policy |
 | Audit logs | Retain immutable |
 
-## 12. Admin Actions
+## 13. Admin Actions
 
 | Action | Permission | Requirement | Audit |
 | --- | --- | --- | --- |
@@ -250,7 +266,7 @@ Request detail ต้องมีส่วนข้อมูล:
 | Trigger Anonymization Job | Admin, System | ต้องถึง grace period/retention condition | Required |
 | Export Archive Report | Admin | ต้องมี reason และ export scope | Required |
 
-## 13. Grace Period Rules
+## 14. Grace Period Rules
 
 - Grace period baseline: 30 วัน
 - Start: เมื่อ Delete Account API สำเร็จและ account ถูก deactivated
@@ -260,7 +276,7 @@ Request detail ต้องมีส่วนข้อมูล:
 - เมื่อครบ grace period ระบบต้องพร้อม archive/anonymize ตาม validation และ retention policy
 - ถ้ามี blocking condition เช่น pending offer ให้ request เป็น `Blocked` และแสดง reason
 
-## 14. FO Visibility Impact
+## 15. FO Visibility Impact
 
 | BO / System State | FO Expected Behavior |
 | --- | --- |
@@ -271,7 +287,7 @@ Request detail ต้องมีส่วนข้อมูล:
 | Pending offer blocks archive | User ยัง login ไม่ได้ แต่ BO ยังไม่ archive/anonymize ขั้นสุดท้าย |
 | Request cancelled/restored by policy | Account status ต้อง sync กลับตาม policy ก่อนอนุญาต login |
 
-## 15. Cross-Module Integration
+## 16. Cross-Module Integration
 
 | Module | Integration |
 | --- | --- |
@@ -283,7 +299,7 @@ Request detail ต้องมีส่วนข้อมูล:
 | Audit Log | Deletion request, validation, archive, anonymization, export |
 | Reports & Analytics | Account deletion report, blocked count, archive completion |
 
-## 16. Audit Requirements
+## 17. Audit Requirements
 
 Audit log ต้องบันทึกอย่างน้อย:
 
@@ -315,7 +331,7 @@ Audit payload ต้องมี:
 - `user_agent`
 - `created_at`
 
-## 17. Error / Empty / Loading States
+## 18. Error, Empty, Loading States
 
 | State | Requirement |
 | --- | --- |
@@ -327,7 +343,13 @@ Audit payload ต้องมี:
 | Archive job failed | คง status เดิมหรือ mark failed ตาม job policy และต้อง audit |
 | Export failed | แสดง error และ audit attempt ถ้าเริ่ม export แล้ว |
 
-## 18. Acceptance Criteria
+## Module-Specific Exceptions
+
+ไม่มี
+
+Account Deletion Requests ต้องใช้ app shell, navigation, breakpoint, list toolbar, desktop table/grid, mobile card, pagination, reset และ detail ตาม `00_GLOBAL_RULES_MODULE.md` และ `../Prototypes/bo-prototype.html` โดยไม่มี UI/layout override เฉพาะโมดูล
+
+## 19. Acceptance Criteria
 
 | ID | Criteria |
 | --- | --- |
@@ -341,7 +363,7 @@ Audit payload ต้องมี:
 | AC-BO-DEL-008 | Sensitive reveal, status change, archive/anonymization และ export ต้องมี audit log |
 | AC-BO-DEL-009 | Account Deletion UI ต้อง responsive ที่ 375px, 768px, 1280px และ 1440px |
 
-## 19. Open Decisions
+## 20. Open Decisions
 
 | ID | Decision Needed | Impact |
 | --- | --- | --- |

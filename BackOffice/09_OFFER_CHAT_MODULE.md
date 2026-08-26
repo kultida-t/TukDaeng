@@ -3,16 +3,32 @@
 **Version:** `BO-09-v0.1`  
 **Date:** 2026-07-06  
 **Status:** Draft baseline  
-**Platform:** Responsive Web Back Office  
-**Primary FO Sources:** `../FrontOffice/08_OFFER_MODULE.md`, `../FrontOffice/07_CHAT_MODULE.md`, `../FrontOffice/09_NOTIFICATION_MODULE.md`, `../FrontOffice/04_ASSET_MANAGEMENT_MODULE.md`, `../FrontOffice/13_SETTINGS_MODULE.md`, `../FrontOffice/15_TRUST_SAFETY_MODULE.md`  
+**Platform:** Responsive Web Back Office
 
-## 1. วัตถุประสงค์
+## UI Standards And Prototype Reference
+
+เอกสารนี้ต้องใช้ร่วมกับ `00_GLOBAL_RULES_MODULE.md` และยึดรูปแบบหน้าจอ/พฤติกรรมที่ยืนยันแล้วใน `../Prototypes/bo-prototype.html` เป็นมาตรฐานหลัก
+
+เอกสารอ้างอิง: `../FrontOffice/08_OFFER_MODULE.md`, `../FrontOffice/07_CHAT_MODULE.md`, `../FrontOffice/09_NOTIFICATION_MODULE.md`, `../FrontOffice/04_ASSET_MANAGEMENT_MODULE.md`, `../FrontOffice/13_SETTINGS_MODULE.md`, `../FrontOffice/15_TRUST_SAFETY_MODULE.md`
+
+## 1. Document Information
+
+| Field | Detail |
+| --- | --- |
+| Module Name | BO Offer Management |
+| Platform | Responsive Web Back Office |
+| Version | `BO-09-v0.1` |
+| Status | Draft baseline |
+| Owner | Product / UX / Engineering / Operations |
+| Document Type | Functional PRD |
+
+## 2. Objective
 
 BO Offer Management Module คือหน้าจอสำหรับทีม Admin ใช้ดูรายการ offer แบบ read-only เพื่อเห็นความสนใจต่อ asset, buyer/seller, ราคา offer, สถานะ offer และ related chat context ที่เกิดจาก FO
 
 โมดูลนี้ไม่ได้ทำหน้าที่แทนผู้ซื้อหรือผู้ขายใน FO และไม่ใช่ moderation queue สำหรับ chat/report. ใน V1 Admin ใช้ดูข้อมูลและ drill-in เท่านั้น; การเปลี่ยนสถานะ offer ต้องเกิดจาก FO user action หรือ system rule ของ Asset/Account workflow ตาม policy
 
-## 2. Scope
+## 3. Scope
 
 ### In Scope
 
@@ -35,7 +51,7 @@ BO Offer Management Module คือหน้าจอสำหรับที�
 - Chat moderation queue, reported chat queue, dispute queue หรือ message/attachment moderation
 - การลบ chat/message แบบ hard delete โดยไม่มี retention/audit policy
 
-## 3. Canonical Terms
+## 4. Canonical Terms
 
 ให้ยึดคำจาก FO เป็นหลัก:
 
@@ -54,19 +70,19 @@ Offer action/copy ต้องแยกจาก status:
 
 เอกสาร legacy ที่ยังมีคำเก่าให้ถือเป็น historical source เท่านั้น ห้ามสร้าง enum ใหม่ซ้ำกับ canonical term
 
-## 4. Admin Access And Permissions
+## 5. Admin Access And Permissions
 
-BO uses a single Admin account type only. Admin access is controlled by module access, action policy, sensitive-data policy, confirmation, reason, and audit requirements instead of separate BO admin account types.
+ระบบใช้ Admin access เดียว โดยตรวจสิทธิ์ตามเมนูและ action ที่ทำ ไม่แยกประเภทบัญชี Admin ในสเปกนี้
 
 
-| Access Area | Rule |
+| Area | Rule |
 | --- | --- |
-| Module access | Admin can use list/detail/search/filter when module access is granted. |
-| Write action | Offer Management V1 is read-only. Any future write action requires Product approval, permission check, confirmation, reason when FO/user impact exists, and audit log. |
-| Sensitive data | Mask by default; reveal only with business reason, policy approval, and audit log. |
-| Export | Requires permission check, scope control, expiry/background job where needed, and audit export event. |
-| Direct URL/API | Enforce access at route, API, and service layers; never rely only on hidden UI. |
-## 5. Responsive Layout
+| Module access | Admin ที่มีสิทธิ์เข้าเมนูสามารถดู list, detail, search, filter ได้ |
+| Write action | Offer Management V1 เป็น read-only การเปิด write action ในอนาคตต้องได้รับ Product approval, ตรวจ permission, แสดง confirmation, กรอก reason เมื่อมีผลต่อ FO/user และบันทึก audit |
+| Sensitive data | แสดงแบบ mask เป็นค่าเริ่มต้น เปิดเฉพาะเมื่อมีเหตุผลทางธุรกิจ อนุมัติตาม policy และบันทึก audit |
+| Export | ต้องตรวจ permission, ควบคุม scope, กำหนด expiry/background job เมื่อจำเป็น และบันทึก audit export event |
+| Direct URL/API | ต้องตรวจสิทธิ์ที่ route, API และ service layer เสมอ ไม่พึ่งการซ่อนปุ่มบน UI อย่างเดียว |
+## 6. Responsive Layout
 
 | Width | Layout Requirement |
 | --- | --- |
@@ -76,7 +92,7 @@ BO uses a single Admin account type only. Admin access is controlled by module a
 
 Related chat context ต้องเปิดแบบ read-only เฉพาะเมื่อ Admin มี permission และต้อง mask sensitive content ตาม policy
 
-## 6. Offer List
+## 7. Offer List
 
 Offer list ต้องแสดงข้อมูลขั้นต่ำ:
 
@@ -128,7 +144,7 @@ Filter ขั้นต่ำ:
 - Invalidated Offers
 - Offers With Notification Failure
 
-## 7. Offer Status Contract
+## 8. Offer Status Contract
 
 | Status | Meaning | FO Required Behavior |
 | --- | --- | --- |
@@ -147,7 +163,7 @@ Filter ขั้นต่ำ:
 - `Paused` ไม่ใช่ final state; ถ้า review ผ่านต้องกลับเป็น `Pending`
 - `Invalidated` เป็น final state สำหรับ moderation outcome ถาวร ไม่ใช่ owner reject และไม่ใช่ owner delete
 
-## 8. Offer Lifecycle Rules
+## 9. Offer Lifecycle Rules
 
 FO สร้าง offer ได้จาก Asset Detail เท่านั้น ไม่สร้าง offer โดยตรงจาก Feed, Search, Profile list หรือ Chat list
 
@@ -172,7 +188,7 @@ Asset status rule:
 - `ซ่อนชั่วคราว` และ auto hidden จาก report ไม่รับ offer ใหม่ และ pending offer เดิมต้องอยู่ใน `Paused`
 - Existing chat room ยังดูได้หลัง asset sold/deleted แต่ asset card ต้องแสดง unavailable หรือ sold state ตาม FO rule
 
-## 9. Offer Detail
+## 10. Offer Detail
 
 Prototype baseline ปัจจุบันของ Offer Detail เป็น read-only detail view แบบย่อ โดยยึดหน้าจอ `Prototypes/bo-prototype.html` เป็น source of truth:
 
@@ -195,7 +211,7 @@ Prototype baseline ปัจจุบันของ Offer Detail เป็น r
 
 Admin ห้ามแก้ offer price, buyer, owner หรือ message content โดยตรง ถ้าต้องแก้ข้อมูลผิดพลาดให้ใช้ correction workflow ที่มี audit และ Product approval แยกต่างหาก
 
-## 10. Admin Actions
+## 11. Admin Actions
 
 | Action | Allowed Roles | Requirement |
 | --- | --- | --- |
@@ -206,7 +222,7 @@ Prototype ปัจจุบันยังไม่มี action/control สำ
 
 Bulk action สำหรับ offer ไม่เปิดใน V1 เพราะเมนูนี้เป็น read-only overview
 
-## 11. Chat Context And Report Routing
+## 12. Chat Context And Report Routing
 
 FO Chat V1 ไม่มี action `Report chat` หรือ `Report offer` โดยตรง มีเฉพาะ `Report user` จาก chat overflow menu ดังนั้น BO ต้องถือว่า report target คือ user และ chat/offer เป็น context ประกอบการตรวจสอบเท่านั้น
 
@@ -215,7 +231,7 @@ FO Chat V1 ไม่มี action `Report chat` หรือ `Report offer` โ�
 - Offer Management แสดง link ไป related chat เพื่อดูบริบทแบบ read-only เท่านั้น
 - Chat/message ไม่ควรถูกลบทันที เว้นแต่มี policy/system rule ชัดเจน
 
-## 12. Notification Delivery
+## 13. Notification Delivery
 
 Offer/chat events ที่ต้อง trace delivery:
 
@@ -229,7 +245,7 @@ Offer/chat events ที่ต้อง trace delivery:
 
 BO Offer Management ดู delivery status ได้ แต่การจัดการ template, retry, broadcast หรือ trigger configuration ต้องอยู่ใน Notification module
 
-## 13. Account Deletion Dependency
+## 14. Account Deletion Dependency
 
 FO account deletion ต้อง block ถ้ามี pending offer ตาม FO rule
 
@@ -240,7 +256,7 @@ BO ต้องรองรับ:
 - ห้าม archive/anonymize user จนกว่า pending offer dependency ถูก resolve ตาม policy
 - Audit ทุกครั้งที่ pending offer ถูกใช้เป็นเหตุผล block deletion
 
-## 14. Audit Requirements
+## 15. Audit Requirements
 
 Audit action ขั้นต่ำ:
 
@@ -261,7 +277,7 @@ Audit action ขั้นต่ำ:
 - IP address หรือ session context ถ้ามี
 - Timestamp เป็น `Asia/Bangkok`
 
-## 15. Error, Empty, Loading States
+## 16. Error, Empty, Loading States
 
 ต้องรองรับ:
 
@@ -271,7 +287,7 @@ Audit action ขั้นต่ำ:
 - Permission denied สำหรับ transcript, attachment, export หรือ sensitive reveal
 - Notification delivery section load fail โดยไม่ทำให้ offer detail ทั้งหน้าล่ม
 
-## 16. Integration With Other BO Modules
+## 17. Integration With Other BO Modules
 
 | Module | Integration |
 | --- | --- |
@@ -284,7 +300,13 @@ Audit action ขั้นต่ำ:
 | Help & Support | Chat/offer context สำหรับ ticket/dispute |
 | Reports & Analytics | Offer/chat aggregate และ export ตาม permission |
 
-## 17. Acceptance Criteria
+## Module-Specific Exceptions
+
+ไม่มี
+
+Offer Management ต้องใช้ app shell, navigation, breakpoint, list toolbar, desktop table/grid, mobile card, pagination, reset, detail และ action menu ตาม `00_GLOBAL_RULES_MODULE.md` และ `../Prototypes/bo-prototype.html` โดยไม่มี UI/layout override เฉพาะโมดูล
+
+## 18. Acceptance Criteria
 
 | ID | Criteria |
 | --- | --- |
@@ -299,7 +321,7 @@ Audit action ขั้นต่ำ:
 | AC-BO-OFFER-009 | Export offer history ยังไม่ปรากฏบน prototype Offer Detail ปัจจุบัน; ถ้าเพิ่มภายหลังต้องจำกัด permission และ audit export event |
 | AC-BO-OFFER-010 | Responsive layout ใช้งานได้ที่ mobile-width, tablet และ desktop |
 
-## 18. Open Decisions
+## 19. Open Decisions
 
 | ID | Decision Needed | Current Recommendation |
 | --- | --- | --- |
