@@ -100,7 +100,7 @@ Admin ที่มีสิทธิ์เข้าถึง Option Master ส�
 - View Option Group List และ Option Detail ใช้สิทธิ์ module access ปกติ
 - Write action (Add, Edit, Deactivate, Reactivate, Reorder) ต้องมี module access ที่อนุญาต write และต้องผ่าน confirmation + audit
 - API permission ต้อง enforce ที่ route, API และ service layer ไม่พึ่งเฉพาะการซ่อนปุ่มใน UI
-- System option (`is_system=true`) สามารถแก้ label และ sort_order ได้ แต่การ deactivate อยู่ภายใต้ System Option Deactivate Policy ตาม section 10.1 — แบ่งเป็นกลุ่มที่ล็อกไม่ให้ deactivate (กลุ่ม `condition`) และกลุ่มที่อนุญาตพร้อม reason และ safeguard (กลุ่ม optional อื่น)
+- System option (`is_system=true`) สามารถแก้ label และ sort_order ได้ แต่การ deactivate อยู่ภายใต้ System Option Deactivate Policy ตาม section 10.1 — อนุญาตพร้อม reason และ safeguard ทุกกลุ่ม
 - การเปลี่ยนแปลง option master มีผลต่อ FO form/filter/Watch Alert จึงต้อง audit ทุกครั้ง
 
 | Action | Rule |
@@ -511,32 +511,24 @@ Confirmation modal ต้องแสดง:
 
 ### 10.1 System Option Deactivate Policy
 
-ส่วนนี้กำหนด policy การ deactivate system option (`is_system=true`) แยกตามความสำคัญของกลุ่มต่อ FO form หลัก
+ส่วนนี้กำหนด policy การ deactivate system option (`is_system=true`) และ custom option (`is_system=false`) ทุกกลุ่ม
 
-เหตุผลของ policy: system option เป็น baseline option ที่ seed มาจาก seed file และเป็น source of truth ของ dropdown/filter ใน FO การ deactivate อาจทำให้ FO form สูญเสียตัวเลือกที่จำเป็น จึงต้องแบ่งระดับการควบคุมตามความสำคัญ
+เหตุผลของ policy: system option เป็น baseline option ที่ seed มาจาก seed file และเป็น source of truth ของ dropdown/filter ใน FO การ deactivate อาจทำให้ FO form สูญเสียตัวเลือก จึงต้องควบคุมด้วย reason + safeguard ทุกกลุ่ม
 
 #### System Option Group Classification
 
 | กลุ่ม | ระดับควบคุม | เหตุผล |
 | --- | --- | --- |
-| `condition` | **Locked** — ห้าม deactivate system option ผ่าน BO UI | `condition` เป็น required field เมื่อ asset status = `Sale` ใน FO Add/Edit Asset (ตาม section 22.2); การ deactivate อาจทำให้ Owner ไม่สามารถลิสต์นาฬิกาขายได้ ถ้า option ที่เหลือไม่ครบหรือไม่ตรงกับสภาพจริง |
+| `condition` | **Controlled** — อนุญาตพร้อม reason + safeguard | Required field เมื่อ asset status = `Sale` ใน FO Add/Edit Asset (ตาม section 22.2); safeguard ≥1 active option ป้องกัน dropdown ว่าง |
 | `delivery` | **Controlled** — อนุญาตพร้อม reason + safeguard | Optional multi-select; การ deactivate ไม่บล็อก FO form แต่ลดทอนตัวเลือกของ Owner |
 | `case_material` | **Controlled** — อนุญาตพร้อม reason + safeguard | Optional spec field; การ deactivate ไม่บล็อก FO form |
 | `movement` | **Controlled** — อนุญาตพร้อม reason + safeguard | Optional spec field; การ deactivate ไม่บล็อก FO form |
 | `dial_color` | **Controlled** — อนุญาตพร้อม reason + safeguard | Optional spec field; การ deactivate ไม่บล็อก FO form |
 | `strap_bracelet_type` | **Controlled** — อนุญาตพร้อม reason + safeguard | Optional spec field; การ deactivate ไม่บล็อก FO form |
 
-#### Rules For Locked Group (`condition`)
+#### Rules For Controlled Groups (System Option, All Groups)
 
-- ห้าม deactivate system option ในกลุ่ม `condition` ผ่าน BO UI และ API
-- ปุ่ม `Deactivate` ต้อง disabled หรือ hidden สำหรับ system option ในกลุ่ม `condition` พร้อม tooltip อธิบายว่า "กลุ่มนี้เป็น required field สำหรับ Sale status จึงไม่สามารถ deactivate ผ่าน BO ได้ ต้องแก้ไขผ่าน seed file และ migration"
-- ถ้ามีการเรียก API พยายาม deactivate system option ในกลุ่ม `condition` โดยตรง service layer ต้อง reject พร้อม error `OPTION_LOCKED_FOR_DEACTIVATION`
-- การ deactivate system option ในกลุ่ม `condition` ต้องทำผ่าน seed file update + migration script เท่านั้น (เป็น dev operation ไม่ใช่ BO UI action)
-- Custom option (`is_system=false`) ในกลุ่ม `condition` ถ้ามีเพิ่มในอนาคต ยังสามารถ deactivate ได้ปกติ เพราะ Admin เป็นคนสร้างและรับผิดชอบเอง
-
-#### Rules For Controlled Groups
-
-- อนุญาตให้ deactivate system option ได้ พร้อม reason (required) และ confirmation modal ตาม section 10
+- อนุญาตให้ deactivate system option ได้ทุกกลุ่ม พร้อม reason (required) และ confirmation modal ตาม section 10
 - **Safeguard: ห้าม deactivate ถ้าจะทำให้เหลือ active option น้อยกว่า 1 ในกลุ่ม** — เพื่อป้องกัน dropdown/filter ว่างใน FO form
   - Error message: `ไม่สามารถ deactivate ได้ เนื่องจากต้องมีอย่างน้อย 1 active option เหลือในกลุ่ม <group>`
   - Service layer ต้อง enforce safeguard นี้ด้วย ไม่พึ่งเฉพาะ UI
@@ -552,8 +544,7 @@ Confirmation modal ต้องแสดง:
 
 | ประเภท option | กลุ่ม | Deactivate ผ่าน BO UI | เงื่อนไข |
 | --- | --- | --- | --- |
-| System (`is_system=true`) | `condition` | ❌ ไม่ได้ | Locked — ต้องแก้ seed file + migration |
-| System (`is_system=true`) | `delivery`, `case_material`, `movement`, `dial_color`, `strap_bracelet_type` | ✅ ได้ | Reason + confirmation + safeguard (≥1 active option เหลือในกลุ่ม) |
+| System (`is_system=true`) | ทุกกลุ่ม (`condition`, `delivery`, `case_material`, `movement`, `dial_color`, `strap_bracelet_type`) | ✅ ได้ | Reason + confirmation + safeguard (≥1 active option เหลือในกลุ่ม) |
 | Custom (`is_system=false`) | ทุกกลุ่ม | ✅ ได้ | Reason + confirmation + safeguard (≥1 active option เหลือในกลุ่ม) |
 
 ## 11. Reactivate Option
@@ -626,7 +617,7 @@ Reorder ทำได้ 2 วิธี:
 | Edit label/description | Option มีอยู่ | Yes | No | `OPTION_EDIT` | แสดง label ใหม่ใน FO form/filter; existing assets ยังเก็บ snapshot เดิม |
 | Reorder (drag-and-drop) | มี active option ≥2 ในกลุ่ม | Yes (save ใน Reorder Modal) | No | `OPTION_REORDER` | ลำดับ FO form/filter เปลี่ยน |
 | Edit sort_order (via Edit Option) | Option มีอยู่ | Yes | No | `OPTION_EDIT` | ลำดับ FO form/filter เปลี่ยน |
-| Deactivate option | Option active; ผ่าน System Option Deactivate Policy (section 10.1) — system option ในกลุ่ม `condition` ล็อก, กลุ่มอื่นต้องมี ≥1 active option เหลือ | Yes | Yes | `OPTION_DEACTIVATE` | ไม่แสดงใน FO form/filter/Watch Alert ใหม่; existing assets ยังแสดงค่าเดิม |
+| Deactivate option | Option active; ผ่าน System Option Deactivate Policy (section 10.1) — ต้องมี ≥1 active option เหลือในกลุ่ม | Yes | Yes | `OPTION_DEACTIVATE` | ไม่แสดงใน FO form/filter/Watch Alert ใหม่; existing assets ยังแสดงค่าเดิม |
 | Reactivate option | Option inactive | Yes | No | `OPTION_REACTIVATE` | กลับมาแสดงใน FO form/filter/Watch Alert |
 | Delete option | Not available | - | - | - | ไม่รองรับใน Phase 1 |
 | **Edit group** | Group มีอยู่; write permission | Yes | No | `GROUP_EDIT` | แสดง label ใหม่ใน FO form/filter; existing assets ยังเก็บ snapshot เดิม; ถ้าเปลี่ยน `allows_multi_select` FO form ใหม่ใช้โหมดใหม่ |
@@ -719,8 +710,6 @@ Audit action group: เพิ่ม `Option Master` เป็น action group �
 - Group reactivate
 - Group delete (destructive)
 
-หมายเหตุ policy: การพยายาม deactivate system option ในกลุ่ม `condition` (locked) จะถูก service layer reject โดยไม่บันทึก `OPTION_DEACTIVATE` audit เพราะ action ไม่สำเร็จ — ควรบันทึกเป็น security event ใน audit log กลางแทน ถ้ามีความพยายาม bypass policy ผ่าน API
-
 หมายเหตุ policy สำหรับ group-level actions: การพยายาม deactivate/delete group ที่มี asset ใช้ option อยู่ จะถูก service layer reject โดยไม่บันทึก `GROUP_DEACTIVATE`/`GROUP_DELETE` audit เพราะ action ไม่สำเร็จ — ควรบันทึกเป็น security event ใน audit log กลางแทน ถ้ามีความพยายาม bypass safeguard ผ่าน API
 
 Target entity type เพิ่ม: `SpecOption` และ `SpecOptionGroup` ใน `08_AUDIT_LOG_MODULE.md` section 5
@@ -812,7 +801,7 @@ CREATE TABLE spec_options (
 | `description_en` | TEXT | Internal description (optional) |
 | `sort_order` | INTEGER | ลำดับการแสดงผลใน FO; ค่าน้อยกว่าแสดงก่อน; tie-break ด้วย `option_key` |
 | `is_active` | BOOLEAN | `false` = ไม่แสดงใน FO form/filter/Watch Alert ใหม่ แต่คง relation กับ existing assets |
-| `is_system` | BOOLEAN | `true` = seeded baseline option; การ deactivate อยู่ภายใต้ System Option Deactivate Policy ตาม section 10.1 — กลุ่ม `condition` ล็อก, กลุ่มอื่นอนุญาตพร้อม reason + safeguard |
+| `is_system` | BOOLEAN | `true` = seeded baseline option; การ deactivate อยู่ภายใต้ System Option Deactivate Policy ตาม section 10.1 — อนุญาตพร้อม reason + safeguard ทุกกลุ่ม |
 | `created_at` | TIMESTAMPTZ | auto |
 | `updated_at` | TIMESTAMPTZ | auto |
 | `deactivated_at` | TIMESTAMPTZ | เวลาที่ deactivate; `NULL` ถ้า active |
@@ -973,7 +962,6 @@ Seed file ครอบคลุม 6 groups ครบ:
 - Custom option ที่ Admin เพิ่มจาก BO → เก็บใน database เท่านั้น ไม่เขียนกลับ seed file
 - ถ้า seed file เปลี่ยน label ของ system option → migration script update label ใน database (แต่ไม่กระทบ snapshot text ใน existing assets)
 - ถ้า seed file เปลี่ยน `is_active` ของ system option → migration script update `is_active` ใน database และบันทึก audit `OPTION_DEACTIVATE`/`OPTION_REACTIVATE` อัตโนมัติ
-- กลุ่ม `condition` ที่ล็อกใน BO UI ตาม section 10.1 สามารถ deactivate ผ่าน seed file update + migration ได้ เพราะเป็น dev operation ที่ผ่าน code review ไม่ใช่ BO UI action ธรรมดา
 
 ### 17.8 Migration Strategy
 
@@ -1076,8 +1064,7 @@ Visual rules:
 - [ ] Confirmation modal ระบุผลกระทบต่อ FO ชัดเจน
 - [ ] Key lock rule หลังสร้าง ระบุชัด (key ล็อกตั้งแต่สร้าง ไม่ใช่หลังถูกใช้ใน asset)
 - [ ] System option policy ระบุชัด
-- [ ] System Option Deactivate Policy (section 10.1) ระบุชัด: กลุ่ม `condition` ล็อก, กลุ่มอื่นอนุญาตพร้อม reason + safeguard (≥1 active option เหลือในกลุ่ม)
-- [ ] ปุ่ม Deactivate ในกลุ่ม `condition` (system option) disabled พร้อม tooltip อธิบายเหตุผล
+- [ ] System Option Deactivate Policy (section 10.1) ระบุชัด: อนุญาตพร้อม reason + safeguard ทุกกลุ่ม (≥1 active option เหลือในกลุ่ม)
 - [ ] Reorder UX ระบุชัด: Reorder Modal (drag-and-drop + up/down fallback) เป็นวิธีหลัก, Edit Option modal เป็นวิธีรอง
 - [ ] Reorder Modal ใช้ pattern เดียวกับ Category Display Order ใน prototype
 - [ ] Touch device มี up/down arrow buttons เป็น fallback สำหรับ drag-and-drop
@@ -1116,7 +1103,7 @@ Visual rules:
 | --- | --- | --- |
 | BO-OPT-001 ✅ | Option Master phase | **ยืนยัน Phase 1** — เป็น foundational operational data ที่ FO ต้องใช้ตั้งแต่ launch (Add/Edit Asset, Search Filter, Watch Alert); มี seed data พร้อม 6 groups; scope จำกัดเหมาะ Phase 1 (ไม่มี bulk import/export, ไม่สร้าง group ใหม่, ไม่เชื่อม provider sync); baseline/index ระบุ Phase 1 อยู่แล้วและสอดคล้องกับผลตัดสินใจ |
 | BO-OPT-002 ✅ | Prototype screen | **Prototype สร้างและยืนยันแล้ว** — prototype Option Master ครบทุก screen/modal รวม Add Group, Edit Group, Deactivate/Reactivate/Delete Group, Reorder Groups และ Group Audit Log view; responsive 3 breakpoints ผ่าน QA; ไม่กระทบ protected screens; เอกสาร spec อัปเดตให้ตรง prototype แล้ว |
-| BO-OPT-003 ✅ | System option deactivate policy | **ตัดสินใจ: Tiered Deactivation Control** — กลุ่ม `condition` (required field สำหรับ Sale status) ล็อกไม่ให้ deactivate system option ผ่าน BO UI ต้องแก้ seed file + migration; กลุ่ม optional อื่น (`delivery`, `case_material`, `movement`, `dial_color`, `strap_bracelet_type`) อนุญาตพร้อม reason + safeguard (≥1 active option เหลือในกลุ่ม); custom option ทุกกลุ่ม deactivate ได้ปกติพร้อม reason + safeguard; รายละเอียดใน section 10.1 |
+| BO-OPT-003 ✅ | System option deactivate policy | **ตัดสินใจ: Controlled Deactivation** — system option (`is_system=true`) ทุกกลุ่ม (รวม `condition`) อนุญาตพร้อม reason + safeguard (≥1 active option เหลือในกลุ่ม); custom option ทุกกลุ่ม deactivate ได้ปกติพร้อม reason + safeguard; รายละเอียดใน section 10.1 |
 | BO-OPT-004 ✅ | Reorder UI | **ตัดสินใจ: Drag-and-drop in Reorder Modal + Up/Down Fallback** — ใช้ Reorder Modal เป็นวิธีหลัก (drag-and-drop บน desktop + up/down arrow buttons บน touch device) ตาม pattern ของ Category Display Order ใน prototype เพื่อความสอดคล้อง; Edit Option modal ยังคงเป็นวิธีรองสำหรับแก้ sort_order รายตัว; บันทึก audit `OPTION_REORDER` ครั้งเดียวต่อการ save ใน Reorder Modal; รายละเอียดใน section 12 |
 | BO-OPT-005 ✅ | Group-level actions policy | **ตัดสินใจ: เพิ่ม group-level actions 4 ตัวบน Option Group List** — (1) **Edit group**: แก้ `display_name_th`/`display_name_en`/`description`/`allows_multi_select` พร้อม confirmation + audit `GROUP_EDIT`; ห้ามแก้ `group` identifier (Group Key) และ `group_id`; (2) **Deactivate group**: confirmation + reason (required) + audit `GROUP_DEACTIVATE`; safeguard ห้าม deactivate ถ้ามี asset ใช้ option ใน group นั้น; (3) **Reactivate group**: confirmation + audit `GROUP_REACTIVATE`; (4) **Delete group**: destructive — confirm 2 ครั้ง (type-to-confirm) + audit `GROUP_DELETE`; เงื่อนไข group Inactive + ไม่มี asset ใช้; ไม่สามารถย้อนกลับได้; เพิ่ม Status column + status filter + action menu ใน Option Group List; service layer enforce safeguard ทั้งสอดข้อ; รายละเอียดใน section 6.1; `is_active` ของ group ใช้งานได้ใน Phase 1 |
 | BO-OPT-009 ✅ | Option key lock policy | **ตัดสินใจ: ล็อก `key` หลังสร้างเลย** — เปลี่ยน policy เดิม (ล็อกเฉพาะหลัง option ถูกใช้ใน asset) เป็นล็อกตั้งแต่สร้าง เพื่อให้สอดคล้องกับ Group Key ที่ล็อกหลังสร้างอยู่แล้ว; เหตุผล: FO อ้างอิง option key ตั้งแต่ option active ไม่ใช่รอจนมี asset ใช้ ดังนั้นช่วงที่ active แต่ยังไม่มี asset ใช้ FO cache/reference อ้างอิง key อยู่แล้ว การอนุญาตให้แก้ key ในช่วงนั้นทำให้ reference พังได้; กรณีพิมพ์ผิด: deactivate option + add option ใหม่; อัปเดต section 2, 4, 9, 13, 16, 17.3, 20 |

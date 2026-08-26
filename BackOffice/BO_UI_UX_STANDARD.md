@@ -394,9 +394,9 @@ Option Master มี safeguard 2 ระดับ:
 1. **Option-level safeguard** — ห้าม deactivate ถ้าจะทำให้เหลือ active option น้อยกว่า 1 ในกลุ่ม (ป้องกัน dropdown ว่าง)
 2. **Group-level safeguard** — ห้าม deactivate/delete group ถ้ามี asset ใช้ option ใน group นั้นอยู่
 
-นอกจากนี้มี **System Option Deactivate Policy** ที่แบ่งกลุ่มเป็น:
-- **Locked** — ห้าม deactivate ผ่าน BO UI และ API (ปุ่ม disabled พร้อม tooltip)
-- **Controlled** — อนุญาตพร้อม reason + safeguard
+นอกจากนี้มี **System Option Deactivate Policy** ที่แบ่งเป็น:
+- **Controlled** — system option (`is_system=true`) ทุกกลุ่ม อนุญาตพร้อม reason + safeguard
+- **Custom** — custom option (`is_system=false`) ทุกกลุ่ม อนุญาตพร้อม reason + safeguard
 
 มาตรฐานสำหรับ module ใหม่ที่มี safeguard/policy:
 

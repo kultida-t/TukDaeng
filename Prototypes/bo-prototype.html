@@ -11677,18 +11677,11 @@
       return optionMasterGroups.reduce((sum, g) => sum + g.options.filter(o => !o.is_active).length, 0);
     }
     // System Option Deactivate Policy (section 10.1)
-    // Locked: condition + is_system=true → cannot deactivate via BO UI
-    // Controlled: delivery, case_material, movement, dial_color, strap_bracelet_type + is_system=true → allowed with reason + safeguard
+    // Controlled: is_system=true (any group, including condition) → allowed with reason + safeguard
     // Custom: is_system=false (any group) → allowed with reason + safeguard
     function getOptionDeactivatePolicy(group, isSystem) {
       if (!isSystem) return "custom";
-      if (group === "condition") return "locked";
       return "controlled";
-    }
-    function isOptionDeactivateDisabled(groupId, isSystem) {
-      const g = getOptionGroup(groupId);
-      if (!g) return false;
-      return getOptionDeactivatePolicy(g.group, isSystem) === "locked";
     }
 
     const reportedCommentConfig = {

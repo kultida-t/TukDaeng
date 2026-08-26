@@ -440,7 +440,7 @@ Recommended note format:
 - [ ] Option Group List มีปุ่ม `เพิ่ม Group` และ `จัดเรียง` (Reorder Groups) ใน page actions; ปุ่ม `จัดเรียง` แสดงเฉพาะ active group ≥2
 - [ ] Option Detail แสดง option list table พร้อม panel title/subtitle, มีปุ่ม Add Option
 - [ ] Add/Edit Option modal: ฟอร์ม fields, Group Key/Option Key lock หลังสร้าง, validation, confirmation
-- [ ] Deactivate/Reactivate Option modal: reason selector, safeguard, System Option Deactivate Policy state (กลุ่ม `condition` ล็อก, กลุ่มอื่นอนุญาตพร้อม reason + safeguard ≥1 active option เหลือ)
+- [ ] Deactivate/Reactivate Option modal: reason selector, safeguard, System Option Deactivate Policy state (อนุญาตพร้อม reason + safeguard ≥1 active option เหลือในทุกกลุ่ม)
 - [ ] Reorder Option modal: drag-and-drop + up/down fallback
 - [ ] Add/Edit Group modal: ฟอร์ม fields, Group Key lock, validation, confirmation
 - [ ] Deactivate/Reactivate Group modal: reason selector, safeguard ห้าม deactivate ถ้ามี asset ใช้ option ใน group
