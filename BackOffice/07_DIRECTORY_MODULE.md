@@ -5,7 +5,6 @@
 **Status:** Postponed / future reference only
 **Platform:** Responsive Web Back Office  
 **Primary FO Sources:** `../FrontOffice/00_NAVIGATION_AND_CROSS_MODULE_FLOW.md`, `../FrontOffice/README_MODULE_INDEX.md`, `../FrontOffice/Figma_Gap_Checklist_Against_Master.md`  
-**Integration Map:** `../ProjectAdmin/FO_BO_INTEGRATION_MAP.md`
 
 **Phase 1 status:** Postponed. Do not expose the BO Directory menu, route, CRUD, publication controls, map/contact/image fields, import/export, or FO sync in Phase 1 because FO directory menu entries are placeholders and detail routes are not approved.
 

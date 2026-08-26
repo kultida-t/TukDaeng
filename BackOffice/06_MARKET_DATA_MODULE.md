@@ -692,7 +692,6 @@ Audit event ต้องมี:
 - `../FrontOffice/04_ASSET_MANAGEMENT_MODULE.md`
 - `../FrontOffice/10_WATCH_ALERT_MODULE.md`
 - `../FrontOffice/14_PORTFOLIO_MODULE.md`
-- `../ProjectAdmin/FO_BO_INTEGRATION_MAP.md`
 
 ## 25. Open Decisions
 

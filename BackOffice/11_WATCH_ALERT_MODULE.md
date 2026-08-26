@@ -5,7 +5,6 @@
 **Status:** Draft baseline  
 **Platform:** Responsive Web Back Office  
 **Primary FO Sources:** `../FrontOffice/10_WATCH_ALERT_MODULE.md`, `../FrontOffice/03_SEARCH_FILTER_MODULE.md`, `../FrontOffice/09_NOTIFICATION_MODULE.md`, `../FrontOffice/04_ASSET_MANAGEMENT_MODULE.md`, `../FrontOffice/15_TRUST_SAFETY_MODULE.md`  
-**Integration Map:** `../ProjectAdmin/FO_BO_INTEGRATION_MAP.md`
 
 ## 1. วัตถุประสงค์
 

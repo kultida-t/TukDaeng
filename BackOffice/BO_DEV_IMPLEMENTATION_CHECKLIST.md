@@ -30,7 +30,6 @@ Recommended note format:
 
 ## 0. Foundation
 
-- [ ] ใช้ `../ProjectAdmin/FO_BO_INTEGRATION_MAP.md` ตรวจทุก BO action ที่เปลี่ยน behavior บน FO
 - [ ] ใช้ `00_GLOBAL_RULES_MODULE.md` เป็น baseline กลางเรื่อง responsive layout, admin access control, audit, status, privacy และ FO sync
 - [ ] สร้าง BO web app shell พร้อม authenticated layout, left navigation, top bar และ access-aware menu visibility
 - [ ] กำหนด shared status constants สำหรับ users, assets, articles, offers, comments, tickets, alerts, notifications และ audit actions
@@ -109,7 +108,7 @@ Recommended note format:
 | Field | Detail |
 | --- | --- |
 | Prototype Reference | `Prototypes/bo-prototype.html` > `User Management` > `User List` and `Reported Users` submenu. |
-| Spec Reference | `03_USER_MANAGEMENT_MODULE.md` sections 4, 5, 8, 10, 12, 15, 16, 17, and 19; `08_AUDIT_LOG_MODULE.md`; `13_ACCOUNT_DELETION_MODULE.md`; `../ProjectAdmin/FO_BO_INTEGRATION_MAP.md`. |
+| Spec Reference | `03_USER_MANAGEMENT_MODULE.md` sections 4, 5, 8, 10, 12, 15, 16, 17, and 19; `08_AUDIT_LOG_MODULE.md`; `13_ACCOUNT_DELETION_MODULE.md`. |
 | Prototype / Spec Alignment | Prototype aligns with the Phase 1 spec for User List, User Detail, Reported Users, status/auth filters, sort modes, pagination, row action menu, reset-password eligibility, status-action confirmation views, Account Deletion routing, and no direct User List export. Production must add API-backed permission enforcement, masked/unmasked sensitive-field states, audit persistence, reason validation before mutation, and real FO sync/cache invalidation. |
 | Data Needed | Replace mock users with server-paginated API data: user id, display name, username, masked email, auth method, verification state, account status, joined date/rank, last active/rank, asset count, report count, support/deletion reference, latest activity, allowed actions, blocked actions, action note, and FO impact copy. Do not include Guest/Unauthenticated visitor rows because they are not account records. |
 | Route / Drill-in | Left nav route should support `User Management / User List` and `User Management / Reported Users` as sibling routes. Dashboard `New Users`, `Active Users Today`, and reported-user queue cards drill into the correct route with date/status/report context encoded in query params. User row actions open User Detail view, reset-password action view, status-action view, resend-verification context, or Account Deletion route when status is `Deletion Requested`; User List must not archive/delete directly. |
@@ -143,7 +142,7 @@ Recommended note format:
 | Field | Detail |
 | --- | --- |
 | Prototype Reference | `Prototypes/bo-prototype.html` > `Asset Management` > `Asset List`, `Asset Detail`, `Reported Assets`, and `Asset Report Detail`. |
-| Spec Reference | `04_ASSET_MANAGEMENT_MODULE.md` sections 3-16; `08_AUDIT_LOG_MODULE.md`; `09_OFFER_CHAT_MODULE.md`; `11_WATCH_ALERT_MODULE.md`; `../FrontOffice/02_FEED_MODULE.md`; `../FrontOffice/03_SEARCH_FILTER_MODULE.md`; `../FrontOffice/05_ASSET_DETAIL_MODULE.md`; `../ProjectAdmin/FO_BO_INTEGRATION_MAP.md`. |
+| Spec Reference | `04_ASSET_MANAGEMENT_MODULE.md` sections 3-16; `08_AUDIT_LOG_MODULE.md`; `09_OFFER_CHAT_MODULE.md`; `11_WATCH_ALERT_MODULE.md`; `../FrontOffice/02_FEED_MODULE.md`; `../FrontOffice/03_SEARCH_FILTER_MODULE.md`; `../FrontOffice/05_ASSET_DETAIL_MODULE.md`. |
 | Prototype / Spec Alignment | Prototype aligns with the Phase 1 Asset Management baseline for asset list/detail, canonical asset statuses `Sale`, `Show`, `Hide`, `Sold`, moderation states such as `Admin Hidden` / `Auto Hidden`, reported-asset queue, report detail, confirmation flows, before/after audit notes, FO impact messaging, and responsive operational layout. Production must add server/API permission enforcement, full sensitive-field masking/reveal workflow, required reason validation, persistent audit records, and real FO sync/cache invalidation. |
 | Data Needed | Replace mock asset rows with server-paginated API data: asset id, title, brand, model/reference, owner id/name/account status, status, moderation state, report count/report id, reporter count, report reason, priority, price or private-price state, created/updated timestamps, comment/favorite counts, uploaded images, technical specs, description, purchase/provenance proof, sale history, status history, moderation/audit history, allowed actions, blocked actions, and FO impact copy. |
 | Route / Drill-in | Left nav has sibling routes `Asset Management / Asset List` and `Asset Management / Reported Assets`. Asset row click or row action opens `Asset Detail` with breadcrumb `Asset Management / Asset List / {assetId}` and back to Asset List. Reported Assets row/action opens Asset Report Detail; `View Asset` opens the asset detail modal/context from the report. Dashboard asset KPI/status/report queue links should preserve equivalent route/filter context. |

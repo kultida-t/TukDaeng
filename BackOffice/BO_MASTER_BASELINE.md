@@ -14,7 +14,9 @@ BO ต้องช่วยให้ทีม Admin จัดการ moderatio
 
 BO ต้องแยกจาก FO mobile app ชัดเจน Admin ไม่ใช่ admin access ใน FO mobile app
 
-รายละเอียด trigger ข้ามระบบและผลลัพธ์ที่เกิดบน FO อยู่ใน `../ProjectAdmin/FO_BO_INTEGRATION_MAP.md`
+รายละเอียด trigger ข้ามระบบและผลลัพธ์ที่เกิดบน FO อยู่ในเอกสาร module ของ BO และ FO ที่เกี่ยวข้อง
+
+> **Note (BO-DOC-001a, 2026-08-26):** ไฟล์ `ProjectAdmin/FO_BO_INTEGRATION_MAP.md` ถูกตัดออกจากเอกสาร BO ทุกไฟล์แล้ว รอ decision ภายหลังว่าจะสร้าง integration map กลางขึ้นใหม่หรือกระจายข้อมูล trigger/result ไปไว้ในเอกสาร module ของ BO และ FO ที่เกี่ยวข้อง ในระหว่างนี้ให้อ้างอิงเอกสาร module ของ BO และ FO ที่เกี่ยวข้องแทน
 
 ## 2. Product Goals
 
@@ -72,7 +74,7 @@ Directory is postponed from Phase 1. Keep `07_DIRECTORY_MODULE.md` as a future r
 
 ## 7. Core BO/FO Action Mapping
 
-ส่วนนี้เป็น summary ระดับสูง รายละเอียดเต็มให้ใช้ `../ProjectAdmin/FO_BO_INTEGRATION_MAP.md` เป็น integration contract
+ส่วนนี้เป็น summary ระดับสูง รายละเอียดเต็มให้ดูในเอกสาร module ของ BO และ FO ที่เกี่ยวข้อง
 
 | BO Action | FO Result |
 | --- | --- |

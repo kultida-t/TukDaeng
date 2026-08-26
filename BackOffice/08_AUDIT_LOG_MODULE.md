@@ -4,7 +4,7 @@
 **Date:** 2026-07-06  
 **Status:** Draft baseline  
 **Platform:** Responsive Web Back Office  
-**Primary Sources:** `00_GLOBAL_RULES_MODULE.md`, `BO_PRD.md`, `BO_Spec.md`, `../ProjectAdmin/FO_BO_INTEGRATION_MAP.md`
+**Primary Sources:** `00_GLOBAL_RULES_MODULE.md`, `BO_PRD.md`, `BO_Spec.md`
 
 ## 1. วัตถุประสงค์
 

@@ -33,7 +33,7 @@
 | `BO-03-v0.3` | 2026-07-16 | Clarify account suspension policy: V1 has no `Restricted` account state, `>= 3 reports` is priority review only, `>= 5 reports/reporters` or high-risk evidence may suspend, suspend/ban must revoke FO session, email is the primary user notification channel, and delivery/audit must be traceable. |
 | `BO-03-v0.2` | 2026-07-13 | Lock User List prototype as display/interaction source of truth. Align responsive layout, route/filter behavior, Account Deletion handoff, no direct User List export, `Deleted / Archived` historical review visibility, and Prototype Handoff Notes. |
 | `BO-PRD-v0.1` | 2026-07-06 | เริ่มชุดเอกสาร Back Office baseline หลัง FO cleanup เพิ่ม reading order, source-of-truth rules, module map, sprint plan และ dev checklist |
-| `INT-MAP-v0.1` | 2026-07-06 | เพิ่ม shared FO/BO integration map ที่ `ProjectAdmin/FO_BO_INTEGRATION_MAP.md` เพื่อให้ FO/BO แยกเอกสารแต่ trace งานข้ามระบบได้ |
+| `INT-MAP-v0.1` | 2026-07-06 | เพิ่ม shared FO/BO integration map เพื่อให้ FO/BO แยกเอกสารแต่ trace งานข้ามระบบได้ (integration map ถูกตัดออกภายหลัง รอ decision ภายใน module docs) |
 | `BO-00-v0.1` | 2026-07-06 | เพิ่ม Back Office Global Rules module ครอบคลุม responsive web, admin access control, shared patterns, canonical statuses, FO sync, audit, privacy, exports และ responsive QA |
 | `BO-01-v0.1` | 2026-07-06 | เพิ่ม BO Authentication and Admin Accounts module ครอบคลุม login, Email OTP, session, lockout, admin lifecycle, permission enforcement, security audit และ responsive auth screens |
 | `BO-02-v0.1` | 2026-07-06 | เพิ่ม BO Dashboard module ครอบคลุม responsive dashboard, metric cards, pending queues, SLA signals, activity feed, policy-based views และ drill-in ไป module ที่เกี่ยวข้อง |
@@ -66,8 +66,7 @@ Exception: for completed prototype screens, `Prototypes/bo-prototype.html` is th
 4. `BackOffice/BO_FINAL_REVIEW_AND_HANDOFF.md`
 5. Existing Back Office source docs: `BO_PRD.md`, `BO_Spec.md`, `BO_Spec_Completion_Addendum.md`
 6. Front Office source docs ที่เกี่ยวข้อง โดยเฉพาะ `FrontOffice/18_ADMIN_SCOPE_NOTE.md`, `15_TRUST_SAFETY_MODULE.md`, `12_BOARD_MODULE.md`, `08_OFFER_MODULE.md`, `07_CHAT_MODULE.md`, `09_NOTIFICATION_MODULE.md`, `10_WATCH_ALERT_MODULE.md`, `13_SETTINGS_MODULE.md`
-7. Shared cross-system traceability: `ProjectAdmin/FO_BO_INTEGRATION_MAP.md`
-8. Prototype files และ legacy notes
+7. Prototype files และ legacy notes
 
 ## Baseline Rules
 

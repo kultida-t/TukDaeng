@@ -4,7 +4,6 @@
 
 - `BO_MASTER_BASELINE.md`
 - `README_MODULE_INDEX.md`
-- `../ProjectAdmin/FO_BO_INTEGRATION_MAP.md`
 - `../FrontOffice/18_ADMIN_SCOPE_NOTE.md`
 
 ---
@@ -256,7 +255,7 @@ Pattern ต่อไปนี้เป็นข้อบังคับสำห
 
 # 10. สัญญา Status กลาง
 
-BO ต้องใช้ state contract เดียวกับ `FO_BO_INTEGRATION_MAP.md`
+BO ต้องใช้ state contract เดียวกับเอกสาร module ของ BO และ FO ที่เกี่ยวข้อง
 
 ## 10.1 User Status
 
@@ -310,7 +309,7 @@ BO ต้องใช้ state contract เดียวกับ `FO_BO_INTEGRAT
 - ระบุเป็น future/backlog ชัดเจน
 - ระบุชัดว่าไม่ต้องมี BO action พร้อมเหตุผล
 
-Source of truth สำหรับ coverage นี้คือ `../ProjectAdmin/FO_BO_INTEGRATION_MAP.md`
+Source of truth สำหรับ coverage นี้คือเอกสาร module ของ BO และ FO ที่เกี่ยวข้อง
 
 FO functions ขั้นต่ำที่ BO ต้องรองรับ:
 
@@ -495,5 +494,4 @@ Responsive QA ต้องตรวจว่า:
 - `06_MARKET_DATA_MODULE.md`
 - `07_DIRECTORY_MODULE.md` (future/postponed; not Phase 1)
 - `08_AUDIT_LOG_MODULE.md`
-- `../ProjectAdmin/FO_BO_INTEGRATION_MAP.md`
 

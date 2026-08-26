@@ -6,7 +6,6 @@
 - `BO_MASTER_BASELINE.md`
 - `BO_PRD.md`
 - `BO_Spec.md`
-- `../ProjectAdmin/FO_BO_INTEGRATION_MAP.md`
 
 ---
 

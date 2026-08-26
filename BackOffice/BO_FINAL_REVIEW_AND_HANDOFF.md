@@ -28,10 +28,9 @@
 1. `BackOffice/DOCUMENT_VERSION.md`
 2. `BackOffice/README_MODULE_INDEX.md`
 3. `BackOffice/BO_MASTER_BASELINE.md`
-4. `ProjectAdmin/FO_BO_INTEGRATION_MAP.md`
-5. `BackOffice/00_GLOBAL_RULES_MODULE.md`
-6. Module spec ตามงานที่จะ implement
-7. `BackOffice/BO_DEV_IMPLEMENTATION_CHECKLIST.md`
+4. `BackOffice/00_GLOBAL_RULES_MODULE.md`
+5. Module spec ตามงานที่จะ implement
+6. `BackOffice/BO_DEV_IMPLEMENTATION_CHECKLIST.md`
 
 ถ้าเอกสาร BO ขัดกัน ให้ยึด source-of-truth order ใน `BackOffice/DOCUMENT_VERSION.md`
 
@@ -152,4 +151,4 @@
 2. Dev break down tickets จาก `BO_DEV_IMPLEMENTATION_CHECKLIST.md`
 3. QA สร้าง test cases ตาม module และ focus areas ใน section 7
 4. UX ตรวจ responsive wireframe/prototype สำหรับ BO modules ที่เป็น operation-heavy
-5. Engineering define API contracts สำหรับ FO/BO sync จาก `FO_BO_INTEGRATION_MAP.md`
+5. Engineering define API contracts สำหรับ FO/BO sync จากเอกสาร module ของ BO และ FO ที่เกี่ยวข้อง

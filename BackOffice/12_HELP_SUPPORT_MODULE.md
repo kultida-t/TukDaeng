@@ -5,7 +5,6 @@
 **Status:** Draft baseline  
 **Platform:** Responsive Web Back Office  
 **Primary FO Sources:** `../FrontOffice/13_SETTINGS_MODULE.md`, `../FrontOffice/01_AUTHENTICATION_MODULE.md`, `../FrontOffice/08_OFFER_MODULE.md`, `../FrontOffice/07_CHAT_MODULE.md`, `../FrontOffice/15_TRUST_SAFETY_MODULE.md`  
-**Integration Map:** `../ProjectAdmin/FO_BO_INTEGRATION_MAP.md`
 
 ## 1. วัตถุประสงค์
 

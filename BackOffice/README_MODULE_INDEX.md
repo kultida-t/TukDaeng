@@ -8,7 +8,7 @@ Version registry: `DOCUMENT_VERSION.md`
 
 ไฟล์นี้เป็น index สำหรับชุดเอกสาร Back Office ของ TukDaeng ใช้ให้ Product, UX, Dev, QA และ Operations เห็นลำดับการอ่าน ขอบเขต module และ phase ของงาน BO อย่างชัดเจน
 
-BO docs แยกจาก FO docs แต่เชื่อมโยงการทำงานข้ามระบบผ่าน `../ProjectAdmin/FO_BO_INTEGRATION_MAP.md`
+BO docs แยกจาก FO docs แต่เชื่อมโยงการทำงานข้ามระบบผ่านเอกสาร module ของ BO และ FO ที่เกี่ยวข้อง
 
 ## Recommended Reading Path
 
@@ -17,12 +17,11 @@ BO docs แยกจาก FO docs แต่เชื่อมโยงการ
 | 1 | `DOCUMENT_VERSION.md` | Current BO baseline และ source-of-truth rules |
 | 2 | `BO_MASTER_BASELINE.md` | Scope รวม, admin accesss, modules, phase plan และ open decisions |
 | 3 | `00_GLOBAL_RULES_MODULE.md` | Responsive layout, admin access control, status, audit, privacy, FO sync และ pattern กลาง |
-| 4 | `../ProjectAdmin/FO_BO_INTEGRATION_MAP.md` | แผนที่ trigger/result ระหว่าง FO และ BO |
-| 5 | `BO_DEV_IMPLEMENTATION_CHECKLIST.md` | Checklist สำหรับแตก ticket dev และเก็บ Prototype Handoff Notes ระหว่าง BA/UX ทำ prototype |
-| 6 | `BO_PRD.md` | Existing product requirement source |
-| 7 | `BO_Spec.md` | Existing screen/module specification source |
-| 8 | `BO_Spec_Completion_Addendum.md` | Coverage เพิ่มเติมเรื่อง offer/chat, watch alert, support, deletion, notifications |
-| 9 | `../FrontOffice/18_ADMIN_SCOPE_NOTE.md` | Boundary ว่า Admin อยู่ฝั่ง Web Back Office เท่านั้น |
+| 4 | `BO_DEV_IMPLEMENTATION_CHECKLIST.md` | Checklist สำหรับแตก ticket dev และเก็บ Prototype Handoff Notes ระหว่าง BA/UX ทำ prototype |
+| 5 | `BO_PRD.md` | Existing product requirement source |
+| 6 | `BO_Spec.md` | Existing screen/module specification source |
+| 7 | `BO_Spec_Completion_Addendum.md` | Coverage เพิ่มเติมเรื่อง offer/chat, watch alert, support, deletion, notifications |
+| 8 | `../FrontOffice/18_ADMIN_SCOPE_NOTE.md` | Boundary ว่า Admin อยู่ฝั่ง Web Back Office เท่านั้น |
 
 ## Prototype Handoff Notes Workflow
 
@@ -102,4 +101,4 @@ Phase 1 ยังไม่รวม real-time admin-user chat, AI moderation, ex
 - FO users เป็นคน report, block, create assets, make offers, chat, follow, comment, save watch alerts, read Board content และ request account deletion
 - BO admins เป็นคน review, moderate, publish, support, configure, export และ audit records เหล่านั้น
 - BO action results ต้อง sync กลับไปยัง FO public surfaces แบบทันทีหรือผ่าน async state ที่ระบุชัดเจน
-- Cross-system trigger/result ownership อยู่ใน `../ProjectAdmin/FO_BO_INTEGRATION_MAP.md`
+- Cross-system trigger/result ownership อยู่ในเอกสาร module ของ BO และ FO ที่เกี่ยวข้อง
