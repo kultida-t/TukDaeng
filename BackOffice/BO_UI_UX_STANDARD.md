@@ -2,6 +2,7 @@
 
 เอกสารนี้เป็นมาตรฐานกลางสำหรับออกแบบและปรับแก้หน้าจอ Back Office module ถัดไป โดยถอด pattern จากหน้าที่ทำเสร็จและล็อกแล้วใน `../Prototypes/bo-prototype.html`:
 
+- Login
 - Dashboard
 - User Management
 - Asset Management
@@ -19,6 +20,7 @@
 - `../PROTECTED_SCREENS.md`
 - `../Prototypes/bo-prototype.html`
 - `00_GLOBAL_RULES_MODULE.md`
+- `01_AUTHENTICATION_MODULE.md`
 - `02_DASHBOARD_MODULE.md`
 - `03_USER_MANAGEMENT_MODULE.md`
 - `04_ASSET_MANAGEMENT_MODULE.md`
@@ -491,6 +493,87 @@ Option Detail เปิดจาก group row ใน Option Group List เป็
 - Action ของ child entity ทำผ่านปุ่มในคอลัมน์ Action ไม่ต้อง drill-in อีกระดับ
 - Panel title แสดง count ของ child entity เพื่อให้ไม่ต้องมี summary card แยก
 
+## Login Pattern
+
+ส่วนนี้สรุป pattern ของหน้า Login และ auth-adjacent screens (Email OTP, reset password, session expired, access denied) ที่ล็อกแล้วใน prototype หน้า auth ใหม่ที่จะขึ้นในอนาคตให้ reuse pattern ที่นี่
+
+Login เป็นหน้าจอประเภทพิเศษที่ไม่ใช้ list/detail/dashboard pattern ของ module อื่น ไม่มี sidebar navigation, breadcrumb, KPI cards, table, filter หรือ pagination แต่ใช้ layout และ visual language ของตัวเองตาม prototype ที่ล็อกแล้ว
+
+### Split Layout (Desktop > 1180px)
+
+Login ใช้ split layout 2 คอลัมน์:
+
+- **ฝั่งซ้าย (visual)**: hero image เต็มพื้นที่ พร้อม overlay ตัวอักษร "BACK OFFICE" ขนาดใหญ่ที่มุมขวาล่าง เป็น `aria-hidden` decorative
+- **ฝั่งขวา (panel)**: form panel พื้นหลังเข้ม (#07172a) มี brand mark + name, title, copy, form และ state area
+
+สีพื้นหลังของ Login ใช้ dark theme (#061426 / #07172a) ต่างจาก module อื่นที่ใช้ light theme ห้ามเปลี่ยนเป็น light theme โดยไม่ได้รับ approval
+
+### Single Column (≤ 1180px)
+
+เมื่อ viewport ≤ 1180px Login เปลี่ยนเป็น single column:
+
+- Visual อยู่ด้านบน (order 1) สูง `clamp(170px, 34svh, 250px)`
+- Panel อยู่ด้านล่าง (order 2) content จำกัดความกว้าง `min(100%, 390px)` และ center
+
+เมื่อ viewport ≤ 760px (compact mobile):
+
+- Visual ลดเหลือ `clamp(150px, 32svh, 210px)`
+- Panel padding ลดเหลือ `34px 18px 44px`
+- Form input สูง 46px
+- OTP actions เปลี่ยนเป็น 1 column (Verify OTP → Resend → Back to login)
+
+### Brand Identity
+
+Login panel แสดง brand identity ด้านบน:
+
+- Brand mark (app icon) + brand name "Tuk Daeng" + label "Back Office"
+- ตามด้วย title และ copy ภาษาไทยที่อธิบายว่าหน้านี้สำหรับใคร
+
+### Login Form
+
+Login form มี:
+
+- Email field (type=email, autocomplete=username)
+- Password field พร้อม visibility toggle (ปุ่ม eye icon ขวาใน field)
+- "ลืมรหัสผ่าน?" link (ฝั่งซ้ายใน meta row)
+- Primary button "Send Email OTP" (เต็มความกว้าง)
+
+### Email OTP Form
+
+หลัง password ถูกต้อง ระบบสลับไป OTP form (ซ่อน login form, แสดง OTP form):
+
+- Title เปลี่ยนเป็น "Email OTP Verification"
+- OTP code field (6 หลัก, inputmode=numeric, maxlength=6, autocomplete=one-time-code)
+- Meta row: "Sent to <email>" + "Expires in MM:SS" (countdown จาก 05:00)
+- Action buttons: "← Back to login" (ghost), "Resend in 60s" (disabled ระหว่าง cooldown), "Verify OTP" (primary)
+- OTP หมดอายุ → ปุ่ม Verify disabled, แสดง error, เปิดให้ Resend ได้
+
+### Auth State And Error
+
+- **auth-state**: แสดง informational message (border อ่อน, พื้นหลังเข้ม)
+- **auth-error**: แสดง error message (border แดง, พื้นหลังแดงเข้ม, `role="alert"`)
+- Invalid credentials แสดง generic error ไม่เปิดเผยว่า email หรือ password ผิด
+- Lockout error ไม่เปิดเผย security detail เกินจำเป็น
+
+### Auth-Adjacent Screens
+
+หน้า auth อื่น ๆ (reset password, session expired, access denied) ที่จะขึ้นในอนาคตให้ reuse:
+
+- Dark theme และ split/single-column layout ของ Login
+- Brand identity section เดียวกัน
+- Form pattern เดียวกัน (label, input, primary button)
+- State/error pattern เดียวกัน (auth-state, auth-error)
+- ไม่ต้องมี sidebar, breadcrumb, KPI cards หรือ table
+
+### มาตรฐานสำหรับหน้า auth ใหม่
+
+- ใช้ dark theme ตาม Login prototype
+- ใช้ split layout บน desktop และ single column บน tablet/mobile
+- Form input สูง 44-46px, radius 7px
+- Primary button เต็มความกว้าง
+- Error message ใช้ `role="alert"` และไม่เปิดเผย security detail เกินจำเป็น
+- ทุก auth event (login, logout, OTP, lockout, password reset) ต้อง audit-log ตาม `01_AUTHENTICATION_MODULE.md` section 13
+
 ## Navigation And Context
 
 ทุกจุดที่คลิกได้ต้องไป destination ที่สัมพันธ์กับข้อมูลโดยตรง:
@@ -590,7 +673,7 @@ Manual QA สำหรับ module ที่นำมาตรฐานนี�
 
 ห้ามทำในงานที่อ้างเอกสารนี้:
 
-- เปลี่ยน Dashboard/User/Asset/Offer/Content/Market/Option Master behavior โดยไม่มี explicit approval
+- เปลี่ยน Login/Dashboard/User/Asset/Offer/Content/Market/Option Master behavior โดยไม่มี explicit approval
 - เปลี่ยน navigation/menu/route/shared shell ที่กระทบ protected screens
 - เพิ่ม write action ใน Offer Management V1
 - เปลี่ยน status/filter copy ที่ยืนยันแล้วโดยไม่มี requirement ใหม่

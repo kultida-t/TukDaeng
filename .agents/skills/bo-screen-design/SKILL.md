@@ -44,7 +44,7 @@ Skill นี้เป็น **มาตรฐานกลางสำหรั�
 ก่อนออกแบบ/ปรับแก้ ต้องอ่าน source of truth ต่อไปนี้ตามลำดับ:
 
 1. **`PROTECTED_SCREENS.md`** — นโยบายหน้าจอล็อก ห้ามแก้ protected screens โดยไม่ได้รับ approval
-2. **`Prototypes/bo-prototype.html`** — visual + interaction source of truth ของหน้าจอ BO ที่ล็อกแล้ว (Dashboard, User Management, Asset Management, Offer Management, Content Management, Market Data, Option Master)
+2. **`Prototypes/bo-prototype.html`** — visual + interaction source of truth ของหน้าจอ BO ที่ล็อกแล้ว (Login, Dashboard, User Management, Asset Management, Offer Management, Content Management, Market Data, Option Master)
 3. **`BackOffice/BO_UI_UX_STANDARD.md`** — มาตรฐานกลางที่ถอด pattern จาก prototype (เอกสารหลักที่ skill นี้สรุป)
 4. **`docs/responsive-table-standard.md`** — มาตรฐาน table-to-card responsive (breakpoint 760px, class ที่ใช้, โครงสร้าง HTML)
 5. **`AGENTS.md`** — กฎ protected screens + language conventions (UI copy เป็นไทย, คอมเมนต์ตามภาษาเดิมในไฟล์)
@@ -89,6 +89,7 @@ Skill นี้เป็น **มาตรฐานกลางสำหรั�
 
 | ประเภท module | Source pattern ที่ใช้อ้างอิง |
 | --- | --- |
+| Auth screen (login, OTP, reset password) | Login |
 | Dashboard-like / ภาพรวมระบบ | Dashboard |
 | List + detail (drill-in) | User Management, Asset Management |
 | Report queue + detail + action | Reported Users, Reported Assets, Reported Comments |
@@ -555,6 +556,35 @@ Action menu (`...` menu ที่คอลัมน์ Action) ที่เป�
 
 ---
 
+## Login Pattern
+
+Login เป็นหน้าจอประเภทพิเศษที่ไม่ใช้ list/detail/dashboard pattern ของ module อื่น ไม่มี sidebar, breadcrumb, KPI cards, table หรือ pagination ใช้ layout และ visual language ของตัวเองตาม prototype ที่ล็อกแล้ว
+
+### Layout
+
+- **Desktop (>1180px)**: Split layout 2 คอลัมน์ — hero visual (ซ้าย, decorative `aria-hidden`) + form panel (ขวา, dark theme #07172a)
+- **≤1180px**: Single column — visual บน (clamp 170-250px) + panel ล่าง (content จำกัด 390px, center)
+- **≤760px**: Compact — visual ลดเหลือ clamp 150-210px, padding ลด, OTP actions เป็น 1 column
+
+### ส่วนประกอบ
+
+- **Brand identity**: brand mark + name "Tuk Daeng" + label "Back Office"
+- **Title + copy**: ภาษาไทย อธิบายว่าหน้านี้สำหรับใคร
+- **Login form**: Email field, Password field พร้อม visibility toggle, "ลืมรหัสผ่าน?" link, primary button "Send Email OTP" (เต็มความกว้าง)
+- **OTP form**: 6 หลัก, countdown expiry (05:00), resend cooldown (60s), buttons: Back to login (ghost) / Resend / Verify OTP (primary)
+- **State/error**: auth-state (informational) + auth-error (`role="alert"`, ไม่เปิดเผย security detail เกินจำเป็น)
+
+### มาตรฐานสำหรับหน้า auth ใหม่
+
+- ใช้ dark theme ตาม Login prototype
+- ใช้ split layout บน desktop, single column บน tablet/mobile
+- Form input สูง 44-46px, radius 7px
+- Primary button เต็มความกว้าง
+- Error ใช้ `role="alert"` และไม่เปิดเผย security detail เกินจำเป็น
+- ทุก auth event ต้อง audit-log ตาม `01_AUTHENTICATION_MODULE.md` section 13
+
+---
+
 ## Navigation And Context
 
 ทุกจุดที่คลิกได้ต้องไป destination ที่สัมพันธ์กับข้อมูลโดยตรง:
@@ -673,7 +703,7 @@ Manual QA สำหรับ module ที่นำมาตรฐานนี�
 
 **ห้ามทำในงานที่อ้าง skill นี้:**
 
-- เปลี่ยน Dashboard/User/Asset/Offer/Content/Market/Option Master behavior โดยไม่มี explicit approval
+- เปลี่ยน Login/Dashboard/User/Asset/Offer/Content/Market/Option Master behavior โดยไม่มี explicit approval
 - เปลี่ยน navigation/menu/route/shared shell ที่กระทบ protected screens
 - เพิ่ม write action ใน Offer Management V1
 - เปลี่ยน status/filter copy ที่ยืนยันแล้วโดยไม่มี requirement ใหม่

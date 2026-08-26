@@ -7,9 +7,9 @@
 
 ## UI Standards And Prototype Reference
 
-เอกสารนี้ต้องใช้ร่วมกับ `00_GLOBAL_RULES_MODULE.md` และยึดรูปแบบหน้าจอ/พฤติกรรมที่ยืนยันแล้วใน `../Prototypes/bo-prototype.html` เป็นมาตรฐานหลัก
+เอกสารนี้ต้องใช้ร่วมกับ `00_GLOBAL_RULES_MODULE.md` และยึดรูปแบบหน้าจอ/พฤติกรรมที่ยืนยันแล้วใน `../Prototypes/bo-prototype.html` เป็นมาตรฐานหลัก โดยเฉพาะ Login screen ที่ล็อกแล้ว รวมถึง layout (split บน desktop, single column บน tablet/mobile), dark theme, brand identity, form pattern และ OTP flow ตาม Login Pattern ใน `BO_UI_UX_STANDARD.md`
 
-เอกสารอ้างอิง: `00_GLOBAL_RULES_MODULE.md`, `BO_MASTER_BASELINE.md`, `BO_PRD.md`, `BO_Spec.md`
+เอกสารอ้างอิง: `00_GLOBAL_RULES_MODULE.md`, `BO_UI_UX_STANDARD.md`, `BO_MASTER_BASELINE.md`, `BO_PRD.md`, `BO_Spec.md`
 
 ## 1. Document Information
 
@@ -60,15 +60,19 @@ BO uses exactly one admin account type: `Admin`. Authentication requirements do 
 | Admin | Email/password + mandatory Email OTP |
 ## 5. Responsive Screen Requirements
 
-| Screen | Mobile | Tablet | Desktop |
+Login และ auth-adjacent screens ใช้ layout และ breakpoint ตาม Login Pattern ใน `BO_UI_UX_STANDARD.md` โดย desktop ใช้ split layout (hero visual + form panel, dark theme) และเปลี่ยนเป็น single column เมื่อ viewport ≤ 1180px (ต่างจาก list/detail module ที่ใช้ breakpoint 760px เป็นหลัก) รายละเอียด layout/visual ยึด prototype ที่ล็อกแล้ว
+
+| Screen | Mobile (≤ 760px) | Tablet (761-1180px) | Desktop (> 1180px) |
 | --- | --- | --- | --- |
-| Login | Single-column form, input/action เต็มความกว้าง | Centered form card | Centered form panel พร้อม optional security/help content |
-| Email OTP Verify | Single-column code input | Centered form | Centered form |
-| Reset Password | Single-column form | Centered form | Centered form |
+| Login | Single column: hero visual บน (compact) + form panel ล่าง, OTP actions 1 column | Single column: hero visual บน + form panel ล่าง (content จำกัด 390px, center) | Split layout: hero visual ซ้าย (decorative) + form panel ขวา (dark theme) |
+| Email OTP Verify | Single-column code input, OTP actions 1 column | Centered form | อยู่ใน form panel ขวาของ split layout |
+| Reset Password | Single-column form | Centered form | Centered form หรือ reuse Login split layout |
 | Session Expired | Full-width message/action | Centered message | Centered message |
 | Access Denied | Message ชัดเจนและ back action | Same | Same |
 | Admin Account List | Card/list view พร้อม priority fields | Table หรือ cards | Dense table |
 | Admin Account Detail | Stacked sections | Two-column sections | Detail layout พร้อม audit/sidebar เมื่อเหมาะสม |
+
+Login form ต้องมี "ลืมรหัสผ่าน?" link ใน meta row ตาม prototype ที่ล็อกแล้ว
 
 Auth action ทุกอย่างต้องใช้งานได้บน mobile-width browser
 
@@ -101,6 +105,7 @@ Auth action ทุกอย่างต้องใช้งานได้บ�
 - Resend OTP ต้องมี cooldown อย่างน้อย 60 วินาที และต้อง invalidate หรือ supersede OTP เดิมตาม implementation policy
 - OTP verification ผิดครบ 5 ครั้งต้อง block challenge และให้เริ่ม login ใหม่ หรือ lock account ตาม risk policy
 - Email delivery failure ต้องแสดง state ให้ retry/resend ได้โดยไม่เปิดเผย security detail เกินจำเป็น
+- หน้าจอ Email OTP verification ต้องเปลี่ยน title เป็น "Email OTP Verification" และแสดง destination email + countdown expiry ตาม prototype ที่ล็อกแล้ว
 
 ### Email OTP Challenge States
 | State | Meaning | Required Behavior |
@@ -239,6 +244,7 @@ Admin ต้องไม่สามารถลบ/ระงับ/เปลี
 ## 16. Related Modules
 
 - `00_GLOBAL_RULES_MODULE.md`
+- `BO_UI_UX_STANDARD.md`
 - `02_DASHBOARD_MODULE.md`
 - `08_AUDIT_LOG_MODULE.md`
 - `16_ADMIN_SETTINGS_MODULE.md`

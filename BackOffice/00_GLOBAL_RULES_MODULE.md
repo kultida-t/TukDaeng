@@ -9,9 +9,11 @@
 
 เอกสารนี้เป็นกฎกลางของ BO ทุกโมดูล ยึดรูปแบบหน้าจอ/พฤติกรรมที่ยืนยันแล้วใน `../Prototypes/bo-prototype.html` เป็นมาตรฐานหลัก
 
-เอกสารอ้างอิง: `BO_MASTER_BASELINE.md`, `README_MODULE_INDEX.md`, `../FrontOffice/18_ADMIN_SCOPE_NOTE.md`
+เอกสารอ้างอิง: `BO_UI_UX_STANDARD.md`, `BO_MASTER_BASELINE.md`, `README_MODULE_INDEX.md`, `../FrontOffice/18_ADMIN_SCOPE_NOTE.md`
 
-รูปแบบหน้าจอและพฤติกรรมการใช้งานของ Dashboard, User Management, Asset Management และ Content Management ที่ยืนยันแล้ว ให้ยึดจาก `../Prototypes/bo-prototype.html` เป็นมาตรฐานหลัก เมื่อนำเอกสารชุดนี้ไปสร้างระบบใหม่ ต้องทำ app shell, navigation, breakpoint, list toolbar, table/card, pagination, action menu, detail page และ confirmation modal ให้ตรงกับ prototype ยกเว้นโมดูลนั้นระบุ override ที่อนุมัติแล้วไว้อย่างชัดเจน
+รูปแบบหน้าจอและพฤติกรรมการใช้งานของ Login, Dashboard, User Management, Asset Management, Content Management, Market Data, Offer Management และ Option Master ที่ยืนยันแล้ว ให้ยึดจาก `../Prototypes/bo-prototype.html` เป็นมาตรฐานหลัก เมื่อนำเอกสารชุดนี้ไปสร้างระบบใหม่ ต้องทำ app shell, navigation, breakpoint, list toolbar, table/card, pagination, action menu, detail page และ confirmation modal ให้ตรงกับ prototype ยกเว้นโมดูลนั้นระบุ override ที่อนุมัติแล้วไว้อย่างชัดเจน
+
+Login และ auth-adjacent screens ใช้ layout และ breakpoint ต่างจาก list/detail module ตาม Login Pattern ใน `BO_UI_UX_STANDARD.md` โดย desktop ใช้ split layout และเปลี่ยนเป็น single column เมื่อ viewport ≤ 1180px
 
 ## 1. Document Information
 
@@ -77,7 +79,7 @@ BO เป็น responsive web application สำหรับทีมภาย�
 
 ข้อกำหนด responsive:
 
-- Dashboard, User Management, Asset Management และ Content Management ต้องใช้รูปแบบหน้าจอและ interaction language เดียวกับ `../Prototypes/bo-prototype.html`
+- Login, Dashboard, User Management, Asset Management, Content Management, Market Data, Offer Management และ Option Master ต้องใช้รูปแบบหน้าจอและ interaction language เดียวกับ `../Prototypes/bo-prototype.html`
 - Mobile navigation ใช้ hamburger side drawer ตาม prototype พร้อม backdrop และปุ่มปิด
 - Filter ของหน้า list ต้องใช้ inline collapsible filter bar ตาม prototype ห้ามใช้ drawer หรือ bottom sheet แยกสำหรับโมดูลที่ยืนยันแล้ว
 - Action สำคัญต้องเข้าถึงได้บน mobile, tablet และ desktop
@@ -88,7 +90,7 @@ BO เป็น responsive web application สำหรับทีมภาย�
 
 ## 6. Navigation Rules
 
-Navigation ของ BO prototype ที่ยืนยันแล้วเป็น baseline สำหรับ Dashboard, User Management, Asset Management และ Content Management
+Navigation ของ BO prototype ที่ยืนยันแล้วเป็น baseline สำหรับ Dashboard, User Management, Asset Management, Content Management, Market Data, Offer Management และ Option Master (Login ไม่มี navigation เพราะเป็นหน้าจอก่อนเข้าระบบ)
 
 Navigation หลักที่ล็อกไว้:
 
@@ -101,10 +103,17 @@ Navigation หลักที่ล็อกไว้:
 - Asset Management
   - Asset List
   - Reported Assets
+  - Reported Comments
+- Offer Management
 - Content Management
   - Articles
   - Categories
   - Reported Articles
+- Market Data
+  - Dashboard
+  - Brands & Models
+  - Sync History
+- Option Master
 ```
 
 กฎ navigation กลาง:
@@ -135,7 +144,7 @@ Permission rules:
 
 ## 8. Shared Screen Patterns
 
-Pattern ต่อไปนี้เป็นข้อบังคับสำหรับ Dashboard, User Management, Asset Management และ Content Management เพราะยืนยันแล้วใน `../Prototypes/bo-prototype.html`
+Pattern ต่อไปนี้เป็นข้อบังคับสำหรับ Login, Dashboard, User Management, Asset Management, Content Management, Market Data, Offer Management และ Option Master เพราะยืนยันแล้วใน `../Prototypes/bo-prototype.html` (ยกเว้น Login ที่ใช้ pattern เฉพาะตาม Login Pattern ใน `BO_UI_UX_STANDARD.md`)
 
 ### 8.1 App Shell And Page Structure
 
@@ -445,13 +454,15 @@ Action ที่กระทบ FO visibility, user access หรือ public c
 
 ## 17. Responsive QA Requirements
 
-ทุก BO module ต้องตรวจที่ความกว้างมาตรฐานของ prototype:
+ทุก BO module ต้องตรวจที่ความกว้างมาตรฐานของ prototype (สอดคล้องกับ `BO_UI_UX_STANDARD.md`):
 
-- Mobile width: 375px
+- Mobile width: 390px
 - Mobile breakpoint edge: 760px
-- Tablet width: 1024px
-- Desktop width: 1366px
+- Tablet width: 768px
+- Desktop width: 1280px
 - Wide desktop width: 1440px
+
+Login และ auth-adjacent screens ตรวจเพิ่มที่ breakpoint 1180px (split → single column) ตาม Login Pattern ใน `BO_UI_UX_STANDARD.md`
 
 Responsive QA ต้องตรวจว่า:
 
