@@ -326,8 +326,10 @@ Side panel และ list/detail split เป็น **optional ไม่ใช�
 | Amber | Medium priority, waiting, warning, partial |
 | Green | Active, completed, published, success |
 | Blue | Informational, normal operational state |
-| Purple | Review, pending, moderated context |
+| Purple | Review, pending, moderated context, System tag |
+| Teal | Custom tag, custom-defined entity |
 | Gray/Slate | Inactive, archived, read-only, neutral state |
+| Charcoal | Invalidated, permanently unavailable state |
 
 **ห้ามสร้างสีใหม่** สำหรับ status เดิมถ้ามี semantic ที่ใช้อยู่แล้วใน prototype
 
@@ -363,7 +365,7 @@ Detail page มาตรฐานต้องมี:
 - Breadcrumb: `การดำเนินงาน / <module> / <parent>`
 - Page title: `<parent>`
 - Back button: `Back to <parent list>`
-- Panel title: `<parent> -- <child> (<count>)`
+- Panel title: `<child> (<count>)` — ไม่รวม parent name เพราะอยู่ใน page title/breadcrumb แล้ว
 - Page action: `Add <child>` และ `Reorder` (เฉพาะ active entity ≥2)
 - ไม่แสดง parent summary section แยกต่างหาก ถ้าข้อมูลแสดงใน panel title/subtitle และตารางแล้ว
 - คลิก row ไม่เปิดหน้าใหม่ เพราะ child ทั้งหมดอยู่ในตารางนี้แล้ว — action ทำผ่านปุ่มในคอลัมน์ Action
@@ -435,7 +437,7 @@ Detail page มาตรฐานต้องมี:
 มาตรฐานสำหรับ module ที่มี safeguard/policy:
 
 - Safeguard ต้อง enforce ที่ service layer ด้วย ไม่พึ่งเฉพาะการซ่อนปุ่มใน UI
-- ปุ่ม action ที่ไม่ผ่าน safeguard ต้อง disabled พร้อม tooltip อธิบายเหตุผล
+- ใน action menu ให้ซ่อนปุ่มที่ไม่ผ่าน safeguard ตามมติ BO-OPT-006a; ใน modal ให้ disabled ปุ่ม confirm และแสดง error message อธิบายเหตุผล (ไม่ใช่ tooltip)
 - Error message ต้องบอกเหตุผลและ next step ที่ชัดเจน
 - Policy ที่ล็อก action ทั้ง UI และ API ต้องระบุใน module spec ว่าเป็น dev operation (seed + migration) ไม่ใช่ BO UI action
 - การพยายาม bypass policy ผ่าน API ให้บันทึกเป็น security event ใน audit log กลาง
@@ -449,27 +451,20 @@ Detail page มาตรฐานต้องมี:
 1. entity เป็น Inactive แล้ว (ต้อง deactivate ก่อน)
 2. ผ่าน safeguard (ไม่มีข้อมูลอ้างอิงอยู่)
 
-**Confirmation modal 2 ครั้ง:**
-
-ครั้งที่ 1:
+**Confirmation modal 1 modal พร้อม type-to-confirm:**
 
 - ชื่อ entity ที่จะ delete
 - คำเตือนว่าเป็นการกระทำที่ไม่สามารถย้อนกลับได้
 - แสดงจำนวนรายการที่จะถูกลบด้วย
-- ปุ่ม `Cancel` และ `Confirm Delete`
-
-ครั้งที่ 2 (re-confirm):
-
-- ต้องพิมพ์ identifier ซ้ำเพื่อยืนยัน (type-to-confirm)
-- ข้อความ: `พิมพ์ <identifier> เพื่อยืนยันการลบ`
-- ปุ่ม `Delete Permanently` (disabled จนกว่าจะพิมพ์ถูก)
+- ต้องพิมพ์ identifier ซ้ำเพื่อยืนยัน (type-to-confirm) — ข้อความ: `พิมพ์ <identifier> เพื่อยืนยันการลบ`
+- ปุ่ม `Cancel` และ `Delete Permanently` (disabled จนกว่าจะพิมพ์ identifier ถูก)
 
 **มาตรฐาน:**
 
 - ใช้ type-to-confirm เฉพาะ action ที่ hard delete และไม่ย้อนกลับได้
 - ต้องมีเงื่อนไขก่อน (Inactive + ผ่าน safeguard)
 - บันทึก audit ก่อนทำ hard delete (เพื่อคง trail)
-- ปุ่ม delete ต้อง disabled หรือ hidden ถ้าไม่ผ่านเงื่อนไข
+- ปุ่ม delete ใน action menu ต้องซ่อน (hidden) ถ้าไม่ผ่านเงื่อนไข ตามมติ BO-OPT-006a
 
 ### Reorder Modal (Drag-and-drop + Up/down Fallback)
 
@@ -502,7 +497,7 @@ Reuse pattern ของ Category Display Order ใน `bo-prototype.html`
 - Header: `Audit Log` พร้อม subtitle แสดง entity ID, identifier และ label
 - Summary section: แสดง entity ID, identifier, label, status (pill)
 - Audit list: เรียงจากใหม่ไปเก่า แต่ละ entry แสดง:
-  - Action type (badge พร้อมสีตามประเภท: add เขียว, edit น้ำเงิน, deactivate แดง/เทา, reactivate เขียว, reorder ม่วง/น้ำเงิน)
+  - Action type (badge พร้อมสีตามประเภท: add เขียว, edit น้ำเงิน, deactivate แดง, reactivate น้ำเงิน, reorder เหลืองอำพัน (amber), delete แดง)
   - Timestamp
   - Actor (admin name + access context)
   - Reason (ถ้ามี — สำหรับ deactivate)
@@ -523,14 +518,14 @@ Action menu (`...` menu ที่คอลัมน์ Action) ที่เป�
 - `Edit` — เฉพาะ admin ที่มี write permission
 - `Deactivate` — เฉพาะ entity ที่ Active
 - `Reactivate` — เฉพาะ entity ที่ Inactive
-- `Delete` — เฉพาะ entity ที่ Inactive + ผ่าน safeguard (ถ้าไม่ผ่านให้ disabled พร้อม tooltip)
+- `Delete` — เฉพาะ entity ที่ Inactive + ผ่าน safeguard (ถ้าไม่ผ่านให้ซ่อน)
 - `ดู Audit Log` — เปิด audit log view ของ entity นั้น
 
 **มาตรฐานสำหรับ module ใหม่:**
 
 - Action menu ใช้ pattern `...` menu เดียวกับ row menu ใน BO prototype
 - รายการใน menu เปลี่ยนตามสถานะปัจจุบันของ entity (Active/Inactive)
-- Action ที่ไม่ผ่านเงื่อนไขต้อง disabled หรือ hidden พร้อม tooltip อธิบายเหตุผล ไม่ใช่แค่หายไป
+- Action ที่ไม่ผ่านเงื่อนไขให้ซ่อน (hidden) โดยไม่ต้องแสดง tooltip ตามมติผู้ใช้ BO-OPT-006a
 - Action ที่ต้อง write permission ต้องซ่อนถ้าไม่มีสิทธิ์
 - Row click และเมนู `View` ต้องเปิด detail เดียวกัน
 
