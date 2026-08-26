@@ -163,12 +163,15 @@ Filter:
 
 | Column | ข้อกำหนด |
 | --- | --- |
+| Group ID | group identifier เช่น `GRP-001` |
 | Group Key | group key เช่น `condition`, `case_material` |
-| Label (TH/EN) | label ภาษาไทยและอังกฤษของ group ถ้ามี |
-| Options | จำนวน option ทั้งหมดใน group |
-| Active | จำนวน option ที่ active |
+| Label (TH) | label ภาษาไทยของ group ถ้ามี |
+| Label (EN) | label ภาษาอังกฤษของ group ถ้ามี |
+| Active Options | แสดงเป็น `active/total` เช่น `5/8` |
 | Multi-select | แสดง `Yes` หรือ `No` ตาม `allows_multi_select` |
+| System | แสดง `System` หรือ `Custom` ตาม `is_system` |
 | Status | แสดง `Active` หรือ `Inactive` เป็น badge ตาม `spec_option_groups.is_active` |
+| Updated | วันที่/เวลาที่ group ถูกอัปเดตล่าสุด |
 | Action | action menu: `View`, `Edit`, `Deactivate`/`Reactivate` (ตามสถานะ), `Delete` (เฉพาะ Inactive + ไม่มี asset ใช้), `ดู Audit Log` (เปิด Group Audit Log ตาม section 6.1.8) — รายละเอียด section 6.1 |
 
 กฎการแสดงผล:
@@ -403,10 +406,10 @@ Header:
 - Breadcrumb: `การดำเนินงาน / Option Master / <group>`
 - Page title: `<group>` เช่น `condition`
 - Back button: `Back to Option Groups`
-- Panel title: `<group> -- Options (<option count>)`
+- Panel title: `Options (<total>)`
 - Page action หลัก: ปุ่ม `Add Option` และปุ่ม `Reorder` (เฉพาะ admin ที่มี write permission; ปุ่ม `Reorder` แสดงเฉพาะเมื่อมี active option ≥2 ในกลุ่ม)
 
-> หมายเหตุ: ไม่แสดง group summary section แยกต่างหาาก เพราะข้อมูล Group Key, multi-select และ option count แสดงใน panel title/subtitle และในตารางอยู่แล้ว การตัดสินใจนี้อนุมัติแล้วใน BO-17-v0.7
+> หมายเหตุ: ไม่แสดง group summary section แยกต่างหาก เพราะข้อมูล Group Key, multi-select และ option count แสดงใน panel title/subtitle และในตารางอยู่แล้ว การตัดสินใจนี้อนุมัติแล้วใน BO-17-v0.7
 
 Filter:
 
@@ -419,12 +422,14 @@ Filter:
 
 | Column | ข้อกำหนด |
 | --- | --- |
+| Option ID | option identifier เช่น `OPT-012` |
 | Option Key | option key เช่น `new_unworn`, `stainless_steel` |
 | Label (EN) | label ภาษาอังกฤษ |
 | Label (TH) | label ภาษาไทย |
 | Sort Order | ค่า sort_order |
+| System | แสดง `System` หรือ `Custom` ตาม `is_system` |
 | Status | `Active` หรือ `Inactive` แสดงเป็น badge |
-| System | แสดง `Yes` หรือ `No` ตาม `is_system` |
+| Updated | วันที่/เวลาที่ option ถูกอัปเดตล่าสุด |
 | Action | ปุ่ม `Edit`, `Deactivate` หรือ `Reactivate` ตามสถานะและสิทธิ์ |
 
 กฎการแสดงผล:

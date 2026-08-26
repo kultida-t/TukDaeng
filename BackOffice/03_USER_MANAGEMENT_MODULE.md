@@ -69,12 +69,12 @@ Submenu ภายใต้ User Management:
 
 | เมนู | หน้าที่ |
 | --- | --- |
-| User List | แสดงรายการบัญชีผู้ใช้ทั้งหมดที่เป็น registered user, ค้นหา/filter/sort, เปิดรายละเอียดผู้ใช้ และทำ account action ที่อนุญาต |
+| User Accounts | แสดงรายการบัญชีผู้ใช้ทั้งหมดที่เป็น registered user, ค้นหา/filter/sort, เปิดรายละเอียดผู้ใช้ และทำ account action ที่อนุญาต |
 | Reported Users | แสดงคิวรายงานผู้ใช้จากหน้าบ้าน, ค้นหา/filter/sort, เปิดรายละเอียดรายงาน และปิดรายงานหรือจัดการสถานะบัญชีเมื่อจำเป็น |
 
 พฤติกรรมการนำทาง:
 
-- เมื่อเข้า `User Management` ให้เปิด `User List` เป็นหน้าหลัก
+- เมื่อเข้า `User Management` ให้เปิด `User Accounts` เป็นหน้าหลัก
 - เมนูที่ถูกเลือกต้องแสดง active state ที่ submenu นั้น
 - `User Detail` เปิดจาก `User List` หรือจากปุ่ม `View User` ใน `Report Detail`
 - `Report Detail` เปิดจากรายการใน `Reported Users`
@@ -132,10 +132,10 @@ User List แสดง registered user ทั้งหมดที่ระบ�
 
 | Card | ความหมาย |
 | --- | --- |
-| Total Users | จำนวนผู้ใช้ทั้งหมดในระบบ |
-| Active Users | จำนวนผู้ใช้สถานะ Active |
-| Suspended / Banned | จำนวนผู้ใช้ที่ถูกระงับชั่วคราวหรือถาวร |
-| Pending Verification | จำนวนผู้ใช้ที่สมัครแล้วแต่ยังไม่ยืนยัน |
+| Active Users | จำนวนผู้ใช้สถานะ Active พร้อมสัดส่วน auth method |
+| Suspended | จำนวนผู้ใช้ที่ถูกระงับชั่วคราว ต้องมี reason และ audit |
+| Deletion Pending | จำนวนผู้ใช้ที่อยู่ระหว่างกระบวนการลบบัญชี รวม pending offer |
+| Exports | จำนวนงาน export ข้อมูลผู้ใช้ที่รอ background job |
 
 ### Search
 
@@ -158,8 +158,8 @@ Filter ที่ต้องมี:
 
 | Filter | ตัวเลือก |
 | --- | --- |
-| Account Status | All, Pending Verification, Active, Suspended, Banned, Deletion Requested, Deleted / Archived |
-| Auth Method | All, Email, Apple, Google |
+| สถานะบัญชี | ทุกสถานะ, ใช้งานได้, รอยืนยันตัวตน, ระงับชั่วคราว, ระงับบัญชีถาวร, รอลบบัญชี, ลบ/เก็บถาวร |
+| วิธีเข้าสู่ระบบ | ทั้งหมด, Email, Google, Apple |
 
 Filter ต้องมีปุ่ม reset เพื่อล้าง search/filter/sort/page กลับเป็นค่าเริ่มต้น
 
@@ -169,10 +169,10 @@ Sort mode ที่ต้องมี:
 
 | Sort | การเรียง |
 | --- | --- |
-| Last Active | ผู้ใช้ที่ active ล่าสุดขึ้นก่อน |
-| Date Joined | ผู้ใช้ที่สมัครล่าสุดขึ้นก่อน |
-| Report Count | ผู้ใช้ที่มีจำนวน report มากขึ้นก่อน |
-| Asset Count | ผู้ใช้ที่มีจำนวน asset มากขึ้นก่อน |
+| เรียงตามใช้งานล่าสุด | ผู้ใช้ที่ active ล่าสุดขึ้นก่อน |
+| เรียงตามวันที่สมัครล่าสุด | ผู้ใช้ที่สมัครล่าสุดขึ้นก่อน |
+| จำนวน report | ผู้ใช้ที่มีจำนวน report มากขึ้นก่อน |
+| จำนวน asset | ผู้ใช้ที่มีจำนวน asset มากขึ้นก่อน |
 
 ### Pagination
 
@@ -197,7 +197,7 @@ User List ต้องมี pagination ตามเงื่อนไข:
 | Status | สถานะบัญชี |
 | Last Active | เวลาที่ใช้งานล่าสุด |
 | Assets | จำนวน asset ทั้งหมด |
-| Auth Method | Email, Apple หรือ Google |
+| Auth | Email, Apple หรือ Google |
 | Date Joined | วันที่สมัคร |
 | Actions | ปุ่ม View และเมนู More |
 
@@ -263,10 +263,11 @@ Header ต้องแสดง:
 | Section | ข้อมูลที่ต้องแสดง |
 | --- | --- |
 | Account Summary | User ID, display name, username, status, date joined, last active, follower count, following count |
-| Contact / Auth | Email, auth method, SSO provider, email verification state, phone, Line, Facebook, Instagram ตามข้อมูลที่มีจริง |
 | Link Profile | Profile URL name และ public profile URL |
+| Contact / Auth | Email, auth method, SSO provider, email verification state, phone, Line, Facebook, Instagram ตามข้อมูลที่มีจริง |
 | Assets Summary | จำนวน asset ตามสถานะ Sale, Show, Hide, Sold, Removed/Hidden |
 | Reports | จำนวน report, เหตุผล report ล่าสุด, สถานะ report, เวลาที่ถูกรายงานล่าสุด |
+| Account Status History | ประวัติการเปลี่ยนแปลงสถานะบัญชี: action, timestamp, actor, reason, before/after status |
 | Account Actions | Action ที่อนุญาตตามสถานะบัญชี |
 
 กฎการแสดง contact:
@@ -424,18 +425,16 @@ Reported Users เป็นคิวสำหรับตรวจรายง�
 
 | Filter | ตัวเลือก |
 | --- | --- |
-| Status | All, Pending, Closed |
-| Priority | All, Normal, High |
-| Source | All, User Profile, Chat |
-| Reason | All, Fraud/Scam, Impersonation, Harassment, Inappropriate Content, Spam, Other |
+| สถานะรายงาน | ทุกสถานะ, Pending, Closed |
+| ความสำคัญ | ทุก Priority, High, Medium, Low |
 
 ### Sort
 
 | Sort | การเรียง |
 | --- | --- |
-| Latest | รายงานล่าสุดขึ้นก่อน |
-| Oldest | รายงานเก่าสุดขึ้นก่อน |
-| Reporters | จำนวน reporter มากขึ้นก่อน |
+| ล่าสุดก่อน | รายงานล่าสุดขึ้นก่อน |
+| เก่าสุดก่อน | รายงานเก่าสุดขึ้นก่อน |
+| จำนวน Reporter | จำนวน reporter มากขึ้นก่อน |
 
 ### Columns
 

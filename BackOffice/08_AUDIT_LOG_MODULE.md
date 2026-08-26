@@ -150,7 +150,7 @@ Baseline entity types:
 - Featured article update
 - Category activate/deactivate
 - Banner activate/deactivate
-- Reported Board Content resolve/archive
+- Reported Article Content resolve/archive
 
 ### Market Data / Directory
 

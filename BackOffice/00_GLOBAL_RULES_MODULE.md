@@ -96,7 +96,7 @@ Navigation หลักที่ล็อกไว้:
 การดำเนินงาน
 - Dashboard
 - User Management
-  - User List
+  - User Accounts
   - Reported Users
 - Asset Management
   - Asset List
@@ -104,7 +104,7 @@ Navigation หลักที่ล็อกไว้:
 - Content Management
   - Articles
   - Categories
-  - Reported Board
+  - Reported Articles
 ```
 
 กฎ navigation กลาง:

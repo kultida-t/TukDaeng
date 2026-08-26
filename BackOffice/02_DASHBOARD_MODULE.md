@@ -137,8 +137,8 @@ KPI Summary ต้องแสดง 8 cards ตามลำดับนี้:
 | New Users | `128` | `วันนี้เพิ่มขึ้น 8.2% เทียบกับเมื่อวาน` | `Today 128`, `This Week 642`, `This Month 2,840` | เปิด User Management / User Accounts |
 | Active Users Today | `8.4K` | `ผู้ใช้งานรายวันเฉลี่ย 7 วันเพิ่มขึ้น 4.1% เทียบกับ 7 วันก่อน` | `Today 8,420`, `This Week 24,700`, `This Month 38,900` | เปิด User Management / User Accounts |
 | New Assets | `94` | `สร้างวันนี้ 94 รายการ เทียบกับเมื่อวาน 340 รายการ` | `Sale 64`, `Show 17`, `Hide 9`, `Sold 4` | เปิด Asset Management / Asset List |
-| Reported Items | `33` | `มี 9 รายงานใกล้ครบกำหนดตรวจ` | `Assets 22`, `Users 5`, `Board 3`, `Comments 3` | Chip เปิด queue รายงานตามประเภท |
-| Offer Activity | `184` | `ข้อเสนอซื้อวันนี้เพิ่มขึ้น 12.6% เทียบกับเมื่อวาน` | `Made 184`, `Accepted 41`, `Rejected 19`, `Expired 12` | เปิด Offer / Offer Queue |
+| Reported Items | `33` | `มี 9 รายงานใกล้ครบกำหนดตรวจ` | `Assets 22`, `Users 5`, `Articles 3`, `Comments 3` | Chip เปิด queue รายงานตามประเภท |
+| Offer Activity | `12` | `อ้างอิงจาก Offer Management mock-up และสถานะ offer ล่าสุด` | `Pending 3`, `Paused 1`, `Accepted 3`, `Rejected 2`, `Cancelled 2`, `Invalidated 1` | เปิด Offer / Offer Queue |
 | Articles | `12` | `มี 4 บทความรอเผยแพร่` | `Published 8`, `Scheduled 4` | เปิด Content Management / Articles |
 | Watch Alert | `3.2K` | `มีการจับคู่รายการขาย 146 ครั้งวันนี้` | `Active 3,218`, `Triggered 146` | เปิด Watch Alert / Alert Criteria |
 | Support Cases | `18` | `มี 3 เคสใกล้ครบกำหนดตอบครั้งแรก` | `Open 18`, `Assigned 9`, `Urgent 3` | เปิด Help & Support / Tickets |
@@ -166,20 +166,21 @@ Work Queue ต้องแสดงเป็น action list โดยแต่�
 - Priority color bar ด้านซ้าย
 - Queue title
 - Detail text ภาษาไทยแบบกระชับ
+- Chips แสดงสถานะหรือจำนวนย่อยที่เกี่ยวข้องกับ queue นั้น
 - Count ด้านขวา
 - Chevron แสดงว่าเปิดต่อได้
 
 รายการ Work Queue ต้องแสดงตามลำดับนี้:
 
-| ลำดับ | Queue title | Count ตัวอย่าง | Priority | Detail text | Navigation |
-| --- | --- | --- | --- | --- | --- |
-| 1 | รายงานสินทรัพย์ | `22` | High | `รายการเก่าสุดรอตรวจ 22 ชม. / เหตุผลหลัก: รูปซ้ำและข้อมูลประกาศซ้ำ / ควรตรวจวันนี้` | Asset Management / Reported Assets |
-| 2 | รายงานผู้ใช้ | `5` | High | `มีรายงานโปรไฟล์ซ้ำและพฤติกรรมขายซ้ำ / ควรตรวจบัญชีที่ถูก report หลายครั้งก่อน` | User Management / Reported Users |
-| 3 | รายงานบทความ | `3` | High | `มีรายงานบทความจาก FO Board รอตรวจ / ตรวจเหตุผลและสถานะบทความก่อนปิดรายงานหรือ archive` | Content Management / Reported Board |
-| 4 | คำขอลบบัญชี | `8` | Medium | `มี 2 คำขอที่ยังลบไม่ได้ เพราะมีข้อเสนอซื้อค้างอยู่` | Account Deletion / Requests |
-| 5 | บทความรอเผยแพร่ | `4` | Normal | `บทความ Board ตั้งเวลาเผยแพร่แล้ว / ตรวจ preview และรูป cover ก่อนถึงเวลา` | Content Management / Articles |
-| 6 | ข้อมูลตลาดรอตรวจ | `6` | Normal | `brand, model และ price index จาก import มีข้อมูลซ้ำ / ควรแก้ก่อนใช้กับ Search และ Watch Alert` | Market Data / Import |
-| 7 | แจ้งเตือนส่งไม่สำเร็จ | `92` | Normal | `มี token หมดอายุและงานส่งซ้ำได้ / ตรวจ retry queue และ cleanup invalid token` | Notifications / Delivery Logs |
+| ลำดับ | Queue title | Count ตัวอย่าง | Priority | Detail text | Chips | Navigation |
+| --- | --- | --- | --- | --- | --- | --- |
+| 1 | รายงานสินทรัพย์ | `22` | High | `รายการเก่าสุดรอตรวจ 22 ชม. / เหตุผลหลัก: รูปซ้ำและข้อมูลประกาศซ้ำ / ควรตรวจวันนี้` | `ใกล้ครบกำหนด 6`, `ผู้ใช้กระทบสูง` | Asset Management / Reported Assets |
+| 2 | รายงานผู้ใช้ | `5` | High | `มีรายงานโปรไฟล์ซ้ำและพฤติกรรมขายซ้ำ / ควรตรวจบัญชีที่ถูก report หลายครั้งก่อน` | `ใกล้ครบกำหนด 3`, `ตรวจประวัติ login` | User Management / Reported Users |
+| 3 | รายงานบทความ | `3` | High | `มีรายงานบทความจาก FO Board รอตรวจ / ตรวจเหตุผลและสถานะบทความก่อนปิดรายงานหรือ archive` | `Articles 3`, `รอตรวจ` | Content Management / Reported Articles |
+| 4 | คำขอลบบัญชี | `8` | Medium | `มี 2 คำขอที่ยังลบไม่ได้ เพราะมีข้อเสนอซื้อค้างอยู่` | `Blocked 2`, `Grace period 4` | Account Deletion / Requests |
+| 5 | บทความรอเผยแพร่ | `4` | Normal | `บทความ Board ตั้งเวลาเผยแพร่แล้ว / ตรวจ preview และรูป cover ก่อนถึงเวลา` | `เผยแพร่วันนี้ 2`, `ต้อง preview` | Content Management / Articles |
+| 6 | ข้อมูลตลาดรอตรวจ | `6` | Normal | `brand, model และ price index จาก sync มีข้อมูลซ้ำ / ควรตรวจ Sync History ก่อนใช้กับ Search และ Watch Alert` | `Sync issue 6`, `Price index` | Market Data / Sync History |
+| 7 | แจ้งเตือนส่งไม่สำเร็จ | `92` | Normal | `มี token หมดอายุและงานส่งซ้ำได้ / ตรวจ retry queue และ cleanup invalid token` | `Retryable 81`, `Cleanup 11` | Notifications / Delivery Logs |
 
 กฎการจัดลำดับ:
 
@@ -213,7 +214,7 @@ Activity row ต้องมี:
 | Report | มีรายงานสินทรัพย์ใหม่ | `Rolex Submariner 16610 ถูกรายงานเรื่องรูปซ้ำและราคาเบี่ยงจากข้อมูลตลาด` | `15 นาทีที่แล้ว` | Asset Management / Reported Assets |
 | Offer | ข้อเสนอซื้อถูกปฏิเสธ | `ข้อเสนอซื้อ Omega Speedmaster ถูกปฏิเสธและยังมี chat ที่ผู้ใช้ถามต่อ` | `32 นาทีที่แล้ว` | Offer / Offer Queue |
 | Content | ตั้งเวลาเผยแพร่บทความแล้ว | `บทความ Vintage Watch Buying Guide ตั้งเวลาเผยแพร่วันนี้ 19:00` | `1 ชม.ที่แล้ว` | Content Management / Articles |
-| System | ข้อมูลตลาดอัปเดตแล้ว | `Price index ของ Speedmaster Reduced พบข้อมูลนำเข้าซ้ำ 3 แถว` | `2 ชม.ที่แล้ว` | Market Data / Import |
+| System | ข้อมูลตลาดอัปเดตแล้ว | `Sync History พบ duplicate price points ของ Omega Speedmaster Reduced 3 แถว` | `2 ชม.ที่แล้ว` | Market Data / Sync History |
 | System | แจ้งเตือนบางรายการส่งไม่สำเร็จ | `ระบบพบ invalid token ใน delivery batch ล่าสุดและแยกงาน retry แล้ว` | `3 ชม.ที่แล้ว` | Notifications / Delivery Logs |
 
 กฎการทำงาน:
@@ -237,7 +238,7 @@ Panel ที่ต้องมี:
 | Panel | Header meta | Row content | Navigation |
 | --- | --- | --- | --- |
 | Asset Status | `จาก Asset List ทั้งหมด` | Status label, description, count | เปิด Asset Management ตาม status/context |
-| Offer Status | `จาก Offer Queue วันนี้` | Offer status label, description, count | เปิด Offer / Offer Queue |
+| Offer Status | `จาก Offer Management ทั้งหมด` | Offer status label, description, count | เปิด Offer / Offer Queue |
 | Latest Articles | `จาก Articles ล่าสุด` | Article title, publish status, detail | เปิด Content Management / Articles |
 | Top Searched Brands | `จาก Search Report สัปดาห์นี้` | Brand, search count, trend, share bar | เปิด Reports / Search |
 
@@ -258,10 +259,12 @@ Rows:
 
 | Label | Value ตัวอย่าง | Detail | Navigation |
 | --- | --- | --- | --- |
-| Made | `184` | `ข้อเสนอซื้อที่ถูกสร้างวันนี้` | Offer / Offer Queue |
-| Accepted | `41` | `ข้อเสนอที่ผู้ขายยอมรับวันนี้` | Offer / Offer Queue |
-| Rejected | `19` | `ข้อเสนอที่ถูกปฏิเสธวันนี้และเก็บประวัติ` | Offer / Offer Queue |
-| Expired | `12` | `ข้อเสนอที่หมดเวลาวันนี้โดยไม่มีการตอบรับ` | Offer / Offer Queue |
+| Pending | `3` | `รอ owner ตอบตามรายการใน Offer Management` | Offer / Offer Queue |
+| Paused | `1` | `offer ถูกพักระหว่าง asset รอตรวจสอบ` | Offer / Offer Queue |
+| Accepted | `3` | `owner รับ offer แล้วแต่ยังเป็น read-only history` | Offer / Offer Queue |
+| Rejected | `2` | `owner ปฏิเสธและเก็บไว้ใน Offer History` | Offer / Offer Queue |
+| Cancelled | `2` | `asset ถูกลบหรือซ่อนโดย owner ระหว่าง offer` | Offer / Offer Queue |
+| Invalidated | `1` | `asset ถูกซ่อนถาวรและ offer ใช้งานไม่ได้` | Offer / Offer Queue |
 
 ### 11.3 Latest Articles
 
@@ -305,7 +308,7 @@ Rows:
 | New Assets card | Asset Management / Asset List |
 | Reported Items / Assets chip | Asset Management / Reported Assets |
 | Reported Items / Users chip | User Management / Reported Users |
-| Reported Items / Board chip | Content Management / Reported Board |
+| Reported Items / Articles chip | Content Management / Reported Articles |
 | Reported Items / Comments chip | Asset Management / Reported Comments |
 | Offer Activity card | Offer / Offer Queue |
 | Articles card | Content Management / Articles |

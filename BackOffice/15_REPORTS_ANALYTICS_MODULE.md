@@ -250,7 +250,7 @@ Chat transcript export ต้องจำกัด permission และ audit �
 | Scheduled publish | Upcoming and failed schedule |
 | Category performance | Article count and engagement by category |
 | Banner performance | Active/expired banner status and clicks if tracking exists |
-| Reported Board content | Count, reason, moderation status |
+| Reported Article content | Count, reason, moderation status |
 
 Filters:
 
