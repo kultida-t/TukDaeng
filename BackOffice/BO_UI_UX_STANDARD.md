@@ -8,6 +8,7 @@
 - Offer Management
 - Content Management
 - Market Data
+- Option Master
 
 ## Source Of Truth
 
@@ -24,6 +25,7 @@
 - `05_CONTENT_BOARD_MODULE.md`
 - `06_MARKET_DATA_MODULE.md`
 - `09_OFFER_CHAT_MODULE.md`
+- `17_OPTION_MASTER_MODULE.md`
 
 ## Protected Screen Boundary
 
@@ -42,11 +44,15 @@
 
 1. Sidebar/module navigation ตาม grouping ที่ยืนยันแล้ว
 2. Top page header พร้อม breadcrumb, page title, optional page meta และ optional page action
-3. Summary/KPI cards เฉพาะหน้าที่มีข้อมูลภาพรวมจริง
-4. Main panel สำหรับ list/table/card หรือ detail content
-5. Filter/search toolbar ภายใน panel สำหรับหน้ารายการ
-6. Pagination footer สำหรับ list ที่แบ่งหน้า
-7. Detail page, drawer-like modal, preview modal หรือ confirmation modal ตาม flow ของ module
+3. Main panel สำหรับ list/table/card หรือ detail content
+4. Filter/search toolbar ภายใน panel สำหรับหน้ารายการ
+5. Pagination footer สำหรับ list ที่แบ่งหน้า
+6. Detail page, drawer-like modal, preview modal หรือ confirmation modal ตาม flow ของ module
+
+ส่วนประกอบที่เป็น optional (ไม่ใช่ default — ตัดสินใจเป็นราย module ตามเกณฑ์ใน section ที่เกี่ยวข้อง):
+
+- Summary/KPI cards เหนือ main panel — เฉพาะหน้าที่มีข้อมูลภาพรวมจริงและช่วย admin ตัดสินใจ หน้าที่ข้อมูลภาพรวมซ้ำซ้อนกับตารางให้ตัดออก (ดูเกณฑ์ใน section KPI And Summary Cards)
+- Side panel / list-detail split — เฉพาะหน้าที่ต้องแสดง detail ควบคู่กับ list จริง หน้า list/detail ทั่วไปใช้ full-width panel อย่างเดียว (ดูเกณฑ์ใน section Side Panel And List/Detail Split)
 
 มาตรฐาน visual density:
 
@@ -70,9 +76,29 @@ Detail page ต้องมี back action ที่รักษา context เ�
 
 ## KPI And Summary Cards
 
-ใช้ KPI/summary cards เมื่อต้องสรุปสถานะระดับ module หรือ operational workload เท่านั้น
+KPI/summary cards เป็นส่วนประกอบ optional ไม่ใช่ default ของทุกหน้า ใช้เฉพาะเมื่อมีข้อมูลภาพรวมจริงที่ช่วย admin ตัดสินใจหรือกำกับงาน หน้าที่ข้อมูลภาพรวมซ้ำซ้อนกับตารางหรือไม่มี operational workload ให้สรุป ให้ตัด KPI cards ออกและแสดงเฉพาะตาราง/list
 
-มาตรฐาน card:
+### When To Use KPI Cards
+
+ใช้ KPI cards เมื่อตอบ "ใช่" ได้อย่างน้อย 1 ข้อ:
+
+- หน้านั้นมี operational workload ที่ admin ต้องกำกับ เช่น จำนวน report ที่รอตรวจ, จำนวนงานที่ค้าง
+- มีสถานะหลายประเภทที่ต้องแยกดูพร้อมกันเพื่อตัดสินใจ เช่น offer lifecycle 6 สถานะ
+- เป็น dashboard ที่หน้าที่หลักคือภาพรวม ไม่ใช่ list
+- ข้อมูลใน card นำไปสู่ action ได้ เช่น คลิก card เปิด list ที่กรองตามสถานะนั้น
+
+### When NOT To Use KPI Cards
+
+ตัด KPI cards ออกเมื่อตอบ "ใช่" ได้อย่างน้อย 1 ข้อ:
+
+- ข้อมูลที่จะสรุปใน card แสดงในตารางอยู่แล้ว เช่น จำนวน option ใน group, จำนวน active/inactive
+- หน้านั้นเป็น list-only ที่ admin แค่ดู/จัดการรายการ ไม่มีภาพรวมที่ต้องกำกับ
+- เป็น master data management ที่จำนวนทั้งหมดไม่ได้บอก workload หรือ urgency
+- card จะเป็น vanity metric เช่น "จำนวนทั้งหมด X รายการ" ที่คลิกต่อไม่ได้หรือไม่ช่วยตัดสินใจ
+
+ตัวอย่าง module ที่ไม่มี KPI cards: Option Master (ข้อมูลซ้ำซ้อนกับตาราง — อนุมัติแล้วใน `BO-17-v0.7`)
+
+### Card Standards (เมื่อตัดสินใจว่ามี KPI cards)
 
 - แสดงเป็น grid เหนือ main panel
 - Desktop ใช้ 4 cards ต่อแถวเป็น baseline
@@ -81,12 +107,42 @@ Detail page ต้องมี back action ที่รักษา context เ�
 - Accent สีต้องช่วยแยกสถานะ ไม่ทำให้ทั้งหน้าเป็น palette สีเดียว
 - Empty KPI ให้แสดง `0` หรือข้อความ empty ที่อ่านเข้าใจ ไม่ปล่อยช่องว่าง
 
-การใช้งาน:
+### ตัวอย่างการใช้งาน (อ้างอิง — ไม่ใช่ว่าทุก module ต้องมี)
 
 - Dashboard ใช้ KPI เป็นภาพรวมระบบและ queue summary
 - User/Asset/Content/Market ใช้ summary cards เพื่อบอกจำนวนตาม status หรือ workload
 - Offer ใช้ status cards เพื่อแยก lifecycle เช่น Pending/Paused/Accepted/Rejected/Cancelled/Invalidated
-- ห้ามใส่ KPI ที่เป็น vanity metric หรือข้อมูลที่คลิกต่อไม่ได้ถ้าไม่ได้ช่วยงาน admin
+- Option Master ไม่มี KPI cards เพราะข้อมูลซ้ำซ้อนกับตาราง
+
+## Side Panel And List/Detail Split
+
+Side panel (รายละเอียดข้างตาราง) และ list/detail split layout เป็นส่วนประกอบ optional ไม่ใช่ default ของทุกหน้า ใช้เฉพาะเมื่อ admin ต้องเห็น detail ควบคู่กับ list จริง หน้า list/detail ทั่วไปให้ใช้ full-width panel อย่างเดียว
+
+### When To Use Side Panel / List-Detail Split
+
+ใช้ side panel เมื่อตอบ "ใช่" ได้อย่างน้อย 1 ข้อ:
+
+- เป็น dashboard ที่หน้าที่หลักคือภาพรวม และมี activity/detail panel ที่ช่วย admin กำกับงานแบบ real-time
+- admin ต้องเปรียบเทียบหรือสลับดู detail หลายรายการจาก list โดยไม่ต้องกลับเข้าออก detail page ทีละรายการ
+- เป็น report queue ที่ต้องเห็นรายการและรายละเอียดพร้อมกันเพื่อตัดสินใจทำ action
+
+### When NOT To Use Side Panel / List-Detail Split
+
+ตัด side panel ออกและใช้ full-width panel เมื่อตอบ "ใช่" ได้อย่างน้อย 1 ข้อ:
+
+- หน้า list ที่ admin คลิก row เพื่อเปิด detail page เต็มหน้า ไม่ได้ดู detail ควบคู่กับ list
+- หน้า detail ที่เข้าจาก list แล้ว back กลับ list ได้ (drill-in pattern)
+- ข้อมูล detail ซ้ำซ้อนกับข้อมูลในตาราง
+- เป็น master data management ที่ detail แสดงในตารางอยู่แล้ว
+
+ตัวอย่าง module ที่ไม่มี side panel: User Management, Asset Management, Offer Management, Content Management, Market Data, Option Master — ทั้งหมดใช้ full-width panel ตาม prototype ที่ล็อกแล้ว มีเฉพาะ Dashboard ที่ใช้ side panel (แสดง activity)
+
+### Layout Standards (เมื่อตัดสินใจว่ามี side panel)
+
+- Desktop: list ฝั่งซ้าย, detail panel ฝั่งขวา ใช้ grid `minmax(0, 1fr) minmax(430px, 46%)`
+- Detail panel ต้อง sticky ตาม scroll ของ list
+- Mobile/Tablet: ซ่อน side panel ใช้ drill-in pattern แทน (คลิก row เปิด detail page)
+- Detail panel ต้องมี empty state เมื่อยังไม่ได้เลือก row เช่น `เลือกรายการจากตารางเพื่อดูรายละเอียด`
 
 ## Search Filter Sort Reset
 
@@ -249,6 +305,195 @@ Confirmation modal:
 
 สำหรับ module ใหม่ ห้ามใช้ modal เป็น full editor ยาวถ้า form มีหลาย section, upload, block builder หรือ preview หลาย surface
 
+## Option Master Pattern
+
+ส่วนนี้สรุป pattern ที่ Option Master นำมาซึ่งยังไม่มีใน section กลางด้านบน Module ใหม่ที่มีลักษณะคล้าย (master data management, internal option/config, reorder + audit) ให้ reuse pattern ที่นี่
+
+### No KPI And No Side Panel
+
+Option Master ไม่แสดง KPI/summary cards และไม่มี side panel ทั้งใน list และ detail ตามเกณฑ์ "When NOT To Use KPI Cards" ใน section KPI And Summary Cards และ "When NOT To Use Side Panel / List-Detail Split" ใน section Side Panel And List/Detail Split การตัดสินใจนี้อนุมัติแล้วใน `BO-17-v0.7`
+
+Module ใหม่ที่ข้อมูลภาพรวมซ้ำซ้อนกับตาราง ให้ตัด KPI cards และ side panel ตามเกณฑ์ใน section ที่เกี่ยวข้อง และอธิบายเหตุผลใน module spec ของ module นั้น
+
+### Action Menu With Conditional Actions
+
+Option Group List ใช้ action menu (`...` menu ที่คอลัมน์ Action) ที่เปลี่ยนรายการตามสถานะและ permission:
+
+- `View` — แสดงเสมอ เปิด detail
+- `Edit` — เฉพาะ admin ที่มี write permission
+- `Deactivate` — เฉพาะ entity ที่ Active
+- `Reactivate` — เฉพาะ entity ที่ Inactive
+- `Delete` — เฉพาะ entity ที่ Inactive + ผ่าน safeguard (ถ้าไม่ผ่านให้ disabled พร้อม tooltip)
+- `ดู Audit Log` — เปิด audit log view ของ entity นั้น
+
+มาตรฐานสำหรับ module ใหม่:
+
+- Action menu ใช้ pattern `...` menu เดียวกับ row menu ใน BO prototype
+- รายการใน menu เปลี่ยนตามสถานะปัจจุบันของ entity (Active/Inactive)
+- Action ที่ไม่ผ่านเงื่อนไขต้อง disabled หรือ hidden พร้อม tooltip อธิบายเหตุผล ไม่ใช่แค่หายไป
+- Action ที่ต้อง write permission ต้องซ่อนถ้าไม่มีสิทธิ์
+- Row click และเมนู `View` ต้องเปิด detail เดียวกัน
+
+### Stable Identifier Lock
+
+Option Master ใช้ stable identifier 2 ระดับ:
+
+- **Group Key** (`group` field) — lowercase snake_case, unique ทั้งระบบ, แก้ไม่ได้หลังสร้าง
+- **Option Key** (`key` field) — lowercase snake_case, unique ใน group, แก้ไม่ได้หลังสร้าง
+
+มาตรฐานสำหรับ module ใหม่ที่มี stable identifier:
+
+- ในหน้า Add ให้กรอก identifier ได้ (editable, required) พร้อม validation format + uniqueness
+- ในหน้า Edit แสดง identifier เป็น read-only พร้อม note อธิบายว่าล็อกหลังสร้างเพราะเป็น stable identifier ที่ระบบอื่นอ้างอิง
+- ถ้า admin พิมพ์ผิดตอนสร้าง ให้ deactivate + สร้างใหม่ แทนการแก้ identifier
+- Auto-generated ID (เช่น `group_id`, sequence ID) ไม่ต้องแสดงในฟอร์ม หรือแสดงเป็น read-only
+
+### Add/Edit Modal (Short Form)
+
+Option Master ใช้ modal สำหรับ Add/Edit Option และ Add/Edit Group เพราะเป็นฟอร์มสั้น (5-7 fields) ไม่ใช่ editor ยาว
+
+มาตรฐาน Add/Edit modal สำหรับ short form:
+
+- ใช้ modal ตาม prototype pattern (ไม่ใช่ full page)
+- Field label ชัด, validation อยู่ใกล้ field
+- Stable identifier แสดง read-only ใน mode Edit (พร้อม note)
+- Auto-generated ID แสดง read-only ใน mode Add (ถ้าต้องแสดง)
+- ต้องมี confirmation modal ก่อน save จริง พร้อมสรุปค่าที่จะบันทึก
+- ใน mode Edit ต้องแสดง before/after value ใน confirmation modal
+- หลัง save สำเร็จ refresh list/detail state แล้วปิด modal
+- บันทึก audit ทุกครั้ง
+
+### Deactivate/Reactivate Modal
+
+Option Master ใช้ confirmation modal สำหรับ deactivate/reactivate ที่ระดับ option และ group
+
+มาตรฐาน Deactivate modal:
+
+- แสดงชื่อ entity ที่จะ deactivate
+- แสดงผลกระทบต่อระบบอื่น (เช่น FO form/filter/Watch Alert)
+- ชี้แจงว่า existing data ยังแสดงค่าเดิมตามปกติ
+- Reason field (Required) — เหตุผลในการ deactivate
+- ปุ่ม `Cancel` และ `Confirm Deactivate` (warning style)
+- บันทึก audit พร้อม reason
+
+มาตรฐาน Reactivate modal:
+
+- แสดงชื่อ entity ที่จะ reactivate
+- แสดงผลกระทบ (กลับมาแสดงในระบบอื่น)
+- ปุ่ม `Cancel` และ `Confirm Reactivate` (primary style)
+- บันทึก audit
+
+### Safeguard And Policy-Gated Action
+
+Option Master มี safeguard 2 ระดับ:
+
+1. **Option-level safeguard** — ห้าม deactivate ถ้าจะทำให้เหลือ active option น้อยกว่า 1 ในกลุ่ม (ป้องกัน dropdown ว่าง)
+2. **Group-level safeguard** — ห้าม deactivate/delete group ถ้ามี asset ใช้ option ใน group นั้นอยู่
+
+นอกจากนี้มี **System Option Deactivate Policy** ที่แบ่งกลุ่มเป็น:
+- **Locked** — ห้าม deactivate ผ่าน BO UI และ API (ปุ่ม disabled พร้อม tooltip)
+- **Controlled** — อนุญาตพร้อม reason + safeguard
+
+มาตรฐานสำหรับ module ใหม่ที่มี safeguard/policy:
+
+- Safeguard ต้อง enforce ที่ service layer ด้วย ไม่พึ่งเฉพาะการซ่อนปุ่มใน UI
+- ปุ่ม action ที่ไม่ผ่าน safeguard ต้อง disabled พร้อม tooltip อธิบายเหตุผล
+- Error message ต้องบอกเหตุผลและ next step ที่ชัดเจน
+- Policy ที่ล็อก action ทั้ง UI และ API ต้องระบุใน module spec ว่าเป็น dev operation (seed + migration) ไม่ใช่ BO UI action
+- การพยายาม bypass policy ผ่าน API ให้บันทึกเป็น security event ใน audit log กลาง
+
+### Destructive Action With Type-to-confirm
+
+Option Master ใช้ type-to-confirm pattern สำหรับ Delete Group (destructive, ไม่ย้อนกลับได้)
+
+เงื่อนไขก่อนเปิดให้ delete ได้:
+1. entity เป็น Inactive แล้ว (ต้อง deactivate ก่อน)
+2. ผ่าน safeguard (ไม่มีข้อมูลอ้างอิงอยู่)
+
+Confirmation modal 2 ครั้ง:
+
+**ครั้งที่ 1:**
+- ชื่อ entity ที่จะ delete
+- คำเตือนว่าเป็นการกระทำที่ไม่สามารถย้อนกลับได้
+- แสดงจำนวนรายการที่จะถูกลบด้วย
+- ปุ่ม `Cancel` และ `Confirm Delete`
+
+**ครั้งที่ 2 (re-confirm):**
+- ต้องพิมพ์ identifier ซ้ำเพื่อยืนยัน (type-to-confirm)
+- ข้อความ: `พิมพ์ <identifier> เพื่อยืนยันการลบ`
+- ปุ่ม `Delete Permanently` (disabled จนกว่าจะพิมพ์ถูก)
+
+มาตรฐานสำหรับ module ใหม่ที่มี destructive action:
+
+- ใช้ type-to-confirm เฉพาะ action ที่ hard delete และไม่ย้อนกลับได้
+- ต้องมีเงื่อนไขก่อน (Inactive + ผ่าน safeguard)
+- บันทึก audit ก่อนทำ hard delete (เพื่อคง trail)
+- ปุ่ม delete ต้อง disabled หรือ hidden ถ้าไม่ผ่านเงื่อนไข
+
+### Reorder Modal (Drag-and-drop + Up/down Fallback)
+
+Option Master ใช้ Reorder Modal ที่ระดับ option และ group โดย reuse pattern ของ Category Display Order ใน `bo-prototype.html`
+
+โครงสร้าง Reorder Modal:
+
+- Header พร้อมคำอธิบาย `ลากเพื่อปรับลำดับการแสดงผล`
+- List ของ active entity เรียงตาม sort_order ปัจจุบัน
+- แต่ละ row แสดง: drag handle, identifier + label, index (#1, #2, ...)
+- Desktop: HTML5 drag-and-drop
+- Touch device: up/down arrow buttons ที่แต่ละ row เป็น fallback
+- ปุ่ม `Cancel` และ `บันทึกลำดับ`
+
+กฎการทำงาน:
+
+- แสดงเฉพาะ active entity เท่านั้น (inactive ไม่เข้าร่วม reorder)
+- แสดงปุ่ม Reorder เฉพาะเมื่อมี active entity ≥2
+- หลัง save ระบบคำนวณ sort_order ใหม่แบบ sequential (10, 20, 30, ...)
+- บันทึก audit ครั้งเดียวต่อการ save พร้อม before/after sort_order — เฉพาะเมื่อลำดับเปลี่ยนจริง
+- ถ้าไม่ได้เปลี่ยนลำดับและกด save ไม่ต้องบันทึก audit และแสดง toast แจ้งว่าไม่มีการเปลี่ยนลำดับ
+- การ reorder ไม่กระทบ existing data เพราะเก็บ relation id ไม่ใช่ sort_order
+
+### Audit Log View (Read-only Modal)
+
+Option Master มี audit log view ที่ระดับ option และ group เปิดจาก action menu `ดู Audit Log`
+
+โครงสร้าง Audit Log Modal:
+
+- Header: `Audit Log` พร้อม subtitle แสดง entity ID, identifier และ label
+- Summary section: แสดง entity ID, identifier, label, status (pill)
+- Audit list: เรียงจากใหม่ไปเก่า แต่ละ entry แสดง:
+  - Action type (badge พร้อมสีตามประเภท: add เขียว, edit น้ำเงิน, deactivate แดง/เทา, reactivate เขียว, reorder ม่วง/น้ำเงิน)
+  - Timestamp
+  - Actor (admin name + access context)
+  - Reason (ถ้ามี — สำหรับ deactivate)
+  - Before/after diff (เช่น sort_order เดิม/ใหม่ สำหรับ reorder หรือ field ที่เปลี่ยนสำหรับ edit)
+- Empty state: `ยังไม่มีประวัติ audit สำหรับ <entity> นี้`
+
+กฎ:
+
+- เป็น read-only view ไม่มี action ใด ๆ
+- กรองเฉพาะ action ของ entity ระดับนั้น (เช่น group audit log แสดงเฉพาะ GROUP_* ไม่แสดง OPTION_*)
+- ใช้ rendering เดียวกันสำหรับ before/after diff ทุกประเภท action
+
+### Option Detail Layout (Drill-in From Group List)
+
+Option Detail เปิดจาก group row ใน Option Group List เป็น drill-in ระดับเดียว
+
+โครงสร้าง:
+
+- Breadcrumb: `การดำเนินงาน / Option Master / <group>`
+- Page title: `<group>` (เช่น `condition`)
+- Back button: `Back to Option Groups`
+- Panel title: `<group> -- Options (<option count>)`
+- Page action: `Add Option` และ `Reorder` (เฉพาะ active entity ≥2)
+- ไม่แสดง group summary section แยกต่างหาก เพราะข้อมูลแสดงใน panel title/subtitle และตารางแล้ว
+- คลิก row ไม่เปิดหน้าใหม่ เพราะ option ทั้งหมดของ group อยู่ในตารางนี้แล้ว — action ทำผ่านปุ่มในคอลัมน์ Action
+
+มาตรฐานสำหรับ module ใหม่ที่มี drill-in list:
+
+- ถ้า detail เป็น list ของ child entity ทั้งหมด ให้แสดงในตารางเดียว ไม่ต้องเปิด detail รายตัว
+- Action ของ child entity ทำผ่านปุ่มในคอลัมน์ Action ไม่ต้อง drill-in อีกระดับ
+- Panel title แสดง count ของ child entity เพื่อให้ไม่ต้องมี summary card แยก
+
 ## Navigation And Context
 
 ทุกจุดที่คลิกได้ต้องไป destination ที่สัมพันธ์กับข้อมูลโดยตรง:
@@ -289,7 +534,7 @@ Breakpoint behavior:
 
 - Mobile: 1 column, stacked cards, inline collapsed filters, vertical detail sections
 - Tablet: 1 column shell เป็นหลัก, filter grid compact, table scroll เฉพาะจำเป็น
-- Desktop: ใช้ summary grid, list/detail split เฉพาะหน้าที่ต้องมี side detail, otherwise full-width panel
+- Desktop: ใช้ summary grid (เฉพาะหน้าที่มี KPI cards), list/detail split เฉพาะหน้าที่ตัดสินใจมี side panel ตามเกณฑ์ใน section Side Panel And List/Detail Split, otherwise full-width panel
 
 ทุก viewport ต้องตรวจ:
 
@@ -310,7 +555,8 @@ Breakpoint behavior:
 - กำหนด search field หลัก
 - กำหนด filter options และเรียงตามมาตรฐานกลาง
 - กำหนด sort options และ default sort
-- กำหนด KPI/summary cards เฉพาะที่มีประโยชน์ต่อ admin
+- ตัดสินใจว่าจะมี KPI/summary cards หรือไม่ ตามเกณฑ์ "When To Use" / "When NOT To Use" ใน section KPI And Summary Cards — ถ้าไม่มี operational workload หรือข้อมูลซ้ำซ้อนกับตาราง ให้ตัดออก
+- ตัดสินใจว่าจะมี side panel / list-detail split หรือไม่ ตามเกณฑ์ "When To Use" / "When NOT To Use" ใน section Side Panel And List/Detail Split — ถ้าหน้า list/detail ทั่วไปที่ใช้ drill-in pattern ให้ใช้ full-width panel อย่างเดียว
 - กำหนด list desktop columns และ mobile card metadata
 - กำหนด detail sections และ action placement
 - กำหนด modal/confirm/result states
@@ -345,7 +591,7 @@ Manual QA สำหรับ module ที่นำมาตรฐานนี�
 
 ห้ามทำในงานที่อ้างเอกสารนี้:
 
-- เปลี่ยน Dashboard/User/Asset/Offer/Content/Market behavior โดยไม่มี explicit approval
+- เปลี่ยน Dashboard/User/Asset/Offer/Content/Market/Option Master behavior โดยไม่มี explicit approval
 - เปลี่ยน navigation/menu/route/shared shell ที่กระทบ protected screens
 - เพิ่ม write action ใน Offer Management V1
 - เปลี่ยน status/filter copy ที่ยืนยันแล้วโดยไม่มี requirement ใหม่
