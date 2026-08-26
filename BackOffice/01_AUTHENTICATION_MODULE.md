@@ -1,34 +1,36 @@
 # 01 BO Authentication And Admin Accounts Module
 
-อ้างอิง:
+**เวอร์ชัน:** `BO-01-v1.0`  
+**วันที่:** 2026-08-26  
+**สถานะ:** สเปกปัจจุบัน  
+**แพลตฟอร์ม:** Responsive Web Back Office
 
-- `00_GLOBAL_RULES_MODULE.md`
-- `BO_MASTER_BASELINE.md`
-- `BO_PRD.md`
-- `BO_Spec.md`
+## มาตรฐาน UI และ Prototype อ้างอิง
 
----
+เอกสารนี้ต้องใช้ร่วมกับ `00_GLOBAL_RULES_MODULE.md` และยึดรูปแบบหน้าจอ/พฤติกรรมที่ยืนยันแล้วใน `../Prototypes/bo-prototype.html` เป็นมาตรฐานหลัก
 
-# 1. ข้อมูลเอกสาร
+เอกสารอ้างอิง: `00_GLOBAL_RULES_MODULE.md`, `BO_MASTER_BASELINE.md`, `BO_PRD.md`, `BO_Spec.md`
+
+## 1. ข้อมูลเอกสาร
 
 | Field | Detail |
 | --- | --- |
 | Module Name | BO Authentication And Admin Accounts |
-| Platform | Responsive Web Back Office |
-| Version | `BO-PRD-v0.1` |
-| Status | Draft |
+| แพลตฟอร์ม | Responsive Web Back Office |
+| เวอร์ชัน | `BO-01-v1.0` |
+| สถานะ | สเปกปัจจุบัน |
 | Owner | Product / UX / Engineering / Operations |
-| Document Type | Functional PRD |
+| ประเภทเอกสาร | Functional PRD |
 
-# 2. วัตถุประสงค์
+## 2. วัตถุประสงค์
 
 เอกสารนี้กำหนด authentication, session, Email OTP verification, admin account lifecycle และ permission enforcement สำหรับ Back Office web application
 
 BO authentication แยกจาก FO authentication โดยสมบูรณ์ FO user ไม่สามารถ login เข้า BO ได้ และ BO admin ไม่ใช้ Apple/Google SSO สำหรับ BO access ใน V1
 
-# 3. ขอบเขต
+## 3. ขอบเขต
 
-## In Scope
+### อยู่ในขอบเขต
 
 - BO login ด้วย email/password
 - Email OTP verification บังคับสำหรับ BO Admin login ทุกครั้ง
@@ -41,7 +43,7 @@ BO authentication แยกจาก FO authentication โดยสมบูร�
 - Login/security audit events
 - Responsive auth screens
 
-## Out Of Scope
+### นอกขอบเขต
 
 - FO user authentication
 - Apple/Google SSO สำหรับ BO
@@ -49,14 +51,14 @@ BO authentication แยกจาก FO authentication โดยสมบูร�
 - Fine-grained permission editor นอกเหนือจาก baseline Admin access context Model
 - Hardware security key support
 
-# 4. Admin Account Type
+## 4. Admin Account Type
 
 BO uses exactly one admin account type: `Admin`. Authentication requirements do not split Admin into sub-types.
 
 | Admin Account Type | Auth Requirement |
 | --- | --- |
 | Admin | Email/password + mandatory Email OTP |
-# 5. Responsive Screen Requirements
+## 5. Responsive Screen Requirements
 
 | Screen | Mobile | Tablet | Desktop |
 | --- | --- | --- | --- |
@@ -70,7 +72,7 @@ BO uses exactly one admin account type: `Admin`. Authentication requirements do 
 
 Auth action ทุกอย่างต้องใช้งานได้บน mobile-width browser
 
-# 6. Login Flow
+## 6. Login Flow
 
 1. Admin เปิด BO login
 2. Admin กรอก email และ password
@@ -82,18 +84,16 @@ Auth action ทุกอย่างต้องใช้งานได้บ�
 8. Admin เข้าสู่ Dashboard หรือ authorized deep link เดิม
 9. Login success และ OTP verified ถูก audit-log
 
-## Requirements
-
+### Requirements
 - Login ใช้ email/password เท่านั้น
 - Login form ต้องมี password visibility toggle
 - Invalid credentials ต้องแสดง generic error
 - Lockout error ต้องไม่เปิดเผย security detail เกินจำเป็น
 - ถ้า admin เปิด unauthorized deep link หลัง login ให้แสดง access denied ไม่ใช่ redirect เงียบ ๆ
 
-# 7. Email OTP Verification
+## 7. Email OTP Verification
 
-## Requirements
-
+### Requirements
 - Admin must pass Email OTP verification after password validation before entering BO
 - V1 ใช้ Email OTP แทนแอปยืนยันตัวตนภายนอก เพื่อลด friction สำหรับทีม BO ขนาดเล็ก
 - OTP ต้องเป็นรหัส 6 หลัก สร้างใหม่ต่อ login attempt และผูกกับ Admin account/session challenge
@@ -102,8 +102,7 @@ Auth action ทุกอย่างต้องใช้งานได้บ�
 - OTP verification ผิดครบ 5 ครั้งต้อง block challenge และให้เริ่ม login ใหม่ หรือ lock account ตาม risk policy
 - Email delivery failure ต้องแสดง state ให้ retry/resend ได้โดยไม่เปิดเผย security detail เกินจำเป็น
 
-## Email OTP Challenge States
-
+### Email OTP Challenge States
 | State | Meaning | Required Behavior |
 | --- | --- | --- |
 | Pending | Password ถูกต้องและระบบส่ง OTP แล้ว | แสดงหน้า Email OTP verification |
@@ -112,7 +111,7 @@ Auth action ทุกอย่างต้องใช้งานได้บ�
 | Expired | OTP หมดอายุ | ให้ resend OTP และไม่รับรหัสเดิม |
 | Delivery Failed | ส่ง email ไม่สำเร็จ | แสดง retry/resend state และ audit event ตาม risk policy |
 
-# 8. Session Rules
+## 8. Session Rules
 
 | Rule | Requirement |
 | --- | --- |
@@ -123,7 +122,7 @@ Auth action ทุกอย่างต้องใช้งานได้บ�
 | Admin access changed during session | Permission ต้องสะท้อน admin access ล่าสุดใน permission check หรือ token refresh ถัดไป |
 | Admin account suspended/banned | Session ต้องถูก revoke หรือ block ใน request ถัดไป |
 
-# 9. Failed Login And Lockout
+## 9. Failed Login And Lockout
 
 | Rule | Requirement |
 | --- | --- |
@@ -133,10 +132,9 @@ Auth action ทุกอย่างต้องใช้งานได้บ�
 | Message | แสดง lockout message ชัดเจนแต่ไม่เปิดเผยข้อมูลเกินจำเป็น |
 | Reset | Admin unlock account ได้ตาม policy |
 
-# 10. Admin Account Lifecycle
+## 10. Admin Account Lifecycle
 
-## Admin Account Status
-
+### Admin Account Status
 | Status | Meaning |
 | --- | --- |
 | Invited | สร้าง account แล้ว แต่ admin ยังไม่ได้ตั้ง password |
@@ -145,8 +143,7 @@ Auth action ทุกอย่างต้องใช้งานได้บ�
 | Suspended | ถูก disable โดย Admin |
 | Archived | เอาออกจาก active use แต่เก็บไว้เพื่อ audit history |
 
-## Admin Account Fields
-
+### Admin Account Fields
 | Field | Required | Notes |
 | --- | --- | --- |
 | Admin ID | Yes | System generated |
@@ -161,7 +158,7 @@ Auth action ทุกอย่างต้องใช้งานได้บ�
 | Created At | Yes | Audit |
 | Updated At | Yes | Audit |
 
-# 11. Admin Account Actions
+## 11. Admin Account Actions
 
 | Action | Permission | Audit Required |
 | --- | --- | --- |
@@ -177,7 +174,7 @@ Auth action ทุกอย่างต้องใช้งานได้บ�
 
 Admin ต้องไม่สามารถลบ/ระงับ/เปลี่ยน admin access ของ Admin คนสุดท้ายได้ ถ้ายังไม่มี Admin active คนอื่นรองรับ
 
-# 12. Permission Enforcement
+## 12. Permission Enforcement
 
 ต้องตรวจ permission ที่:
 
@@ -190,7 +187,7 @@ Admin ต้องไม่สามารถลบ/ระงับ/เปลี
 
 ถ้า UI permission กับ API permission ไม่ตรงกัน ให้ API permission เป็นตัวตัดสิน
 
-# 13. Security Events To Audit
+## 13. Security Events To Audit
 
 - Login success
 - Login failure
@@ -209,7 +206,7 @@ Admin ต้องไม่สามารถลบ/ระงับ/เปลี
 - Admin archived
 - Access denied for restricted route/action
 
-# 14. Error And Empty States
+## 14. Error And Empty States
 
 | Case | Required State |
 | --- | --- |
@@ -223,7 +220,7 @@ Admin ต้องไม่สามารถลบ/ระงับ/เปลี
 | Unauthorized route | แสดง access denied state |
 | No admin accounts found | แสดง empty state พร้อม invite action สำหรับ Admin |
 
-# 15. Acceptance Criteria
+## 15. Acceptance Criteria
 
 | ID | Criteria |
 | --- | --- |
@@ -239,7 +236,7 @@ Admin ต้องไม่สามารถลบ/ระงับ/เปลี
 | AC-BO-AUTH-010 | Login, logout, failed login, lockout, password, Email OTP, admin access และ admin account changes ต้อง audit-log |
 | AC-BO-AUTH-011 | Auth screens ใช้งานได้บน mobile, tablet, desktop และ wide desktop widths |
 
-# 16. Related Modules
+## 16. Related Modules
 
 - `00_GLOBAL_RULES_MODULE.md`
 - `02_DASHBOARD_MODULE.md`

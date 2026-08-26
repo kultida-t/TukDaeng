@@ -5,22 +5,32 @@
 **สถานะ:** สเปกปัจจุบัน  
 **แพลตฟอร์ม:** Responsive Web Back Office
 
-
 ## มาตรฐาน UI และ Prototype อ้างอิง
 
 เอกสารนี้ต้องใช้ร่วมกับ `00_GLOBAL_RULES_MODULE.md` และยึดรูปแบบหน้าจอ/พฤติกรรมที่ยืนยันแล้วใน `../Prototypes/bo-prototype.html` เป็นมาตรฐานหลัก
 
 ห้ามออกแบบ pattern แยกเองสำหรับ list toolbar, breakpoint, table/card layout, pagination, reset, action menu, detail layout หรือ confirmation modal ยกเว้นเอกสารนี้ระบุไว้ชัดเจนว่าเป็น override ที่อนุมัติแล้ว
 
-## 1. วัตถุประสงค์
+## 1. ข้อมูลเอกสาร
+
+| Field | Detail |
+| --- | --- |
+| Module Name | BO User Management |
+| แพลตฟอร์ม | Responsive Web Back Office |
+| เวอร์ชัน | `BO-03-v1.0` |
+| สถานะ | สเปกปัจจุบัน |
+| Owner | Product / UX / Engineering / Operations |
+| ประเภทเอกสาร | Functional PRD |
+
+## 2. วัตถุประสงค์
 
 User Management เป็นเมนูสำหรับให้ Admin ตรวจสอบ ค้นหา และจัดการบัญชีผู้ใช้ของระบบหน้าบ้าน รวมถึงตรวจสอบรายงานผู้ใช้ที่ถูกร้องเรียน จัดการสถานะบัญชี และบันทึกเหตุผลของการดำเนินการที่มีผลต่อผู้ใช้
 
 เอกสารนี้ระบุข้อกำหนดปัจจุบันของเมนู User Management ให้ครบพอสำหรับนำไปสร้างหน้าจอและ flow ได้จากเนื้อหาในไฟล์นี้
 
-## 2. ขอบเขต
+## 3. ขอบเขต
 
-อยู่ในขอบเขต:
+### อยู่ในขอบเขต
 
 - แสดงรายการผู้ใช้ที่มี account record แล้วเท่านั้น
 - ค้นหา, filter, sort และ pagination ใน User List
@@ -40,7 +50,7 @@ User Management เป็นเมนูสำหรับให้ Admin ตร
 - บันทึก audit/action note สำหรับ action สำคัญ
 - รองรับ prototype QA widths และ shared responsive standard
 
-อยู่นอกขอบเขต:
+### นอกขอบเขต
 
 - สร้างบัญชีผู้ใช้ใหม่จาก BO
 - แก้ไขข้อมูลโปรไฟล์แทนผู้ใช้
@@ -51,7 +61,7 @@ User Management เป็นเมนูสำหรับให้ Admin ตร
 - ระบบอุทธรณ์การถูกแบน
 - ระบบให้คะแนนความเสี่ยงอัตโนมัติ
 
-## 3. โครงสร้างเมนู
+## 4. โครงสร้างเมนู
 
 เมนูหลัก: `User Management`
 
@@ -71,7 +81,7 @@ Submenu ภายใต้ User Management:
 - ปุ่มย้อนกลับจาก `User Detail` ต้องกลับไป context เดิมที่เปิดมา
 - ปุ่มย้อนกลับจาก `Report Detail` ต้องกลับไป `Reported Users` พร้อมคง search/filter/sort/page เดิม
 
-## 4. สิทธิ์และกฎการเข้าถึง
+## 5. สิทธิ์และกฎการเข้าถึง
 
 Admin ที่เข้าถึงเมนูนี้ได้สามารถดูรายการผู้ใช้ รายละเอียดผู้ใช้ รายงานผู้ใช้ และทำ action ตามเงื่อนไขของแต่ละสถานะบัญชี
 
@@ -95,7 +105,7 @@ Admin ที่เข้าถึงเมนูนี้ได้สามา�
 - Login/activity detail
 - รายละเอียดที่เกี่ยวข้องกับการลบหรือ archive บัญชี
 
-## 5. รูปแบบ Responsive
+## 6. รูปแบบ Responsive
 
 User Management ต้องใช้กฎ responsive กลางจาก `00_GLOBAL_RULES_MODULE.md` และยึดพฤติกรรมที่ยืนยันแล้วใน `../Prototypes/bo-prototype.html`
 
@@ -112,7 +122,7 @@ User Management ต้องใช้กฎ responsive กลางจาก `00
 - Action สำคัญต้องเข้าถึงได้บน mobile และ desktop
 - Filter บน mobile ต้องเปิด/ปิดแบบ inline ในพื้นที่ list และห้ามใช้ drawer หรือ bottom sheet แยก
 
-## 6. รายการผู้ใช้ (User List)
+## 7. รายการผู้ใช้ (User List)
 
 User List แสดง registered user ทั้งหมดที่ระบบมี account record แล้ว ไม่รวม guest หรือ visitor ที่ยังไม่สมัคร/ยังไม่สร้างบัญชี
 
@@ -231,7 +241,7 @@ Action ในแต่ละ user row ต้องแสดงตามสถา
 
 User List ต้องไม่แสดง action delete/archive โดยตรง
 
-## 7. รายละเอียดผู้ใช้ (User Detail)
+## 8. รายละเอียดผู้ใช้ (User Detail)
 
 User Detail แสดงรายละเอียดของผู้ใช้หนึ่งคน และเป็นจุดเริ่มต้นของ account action ที่อนุญาต
 
@@ -267,7 +277,7 @@ Header ต้องแสดง:
 - Social/contact เพิ่มเติมแสดงเฉพาะเมื่อมีข้อมูลที่ผู้ใช้ให้ไว้
 - ระบบจริงต้องรองรับ masked/unmasked state ตามสิทธิ์
 
-## 8. โมเดลสถานะผู้ใช้
+## 9. โมเดลสถานะผู้ใช้
 
 | Status | ความหมายใน BO | ผลกระทบต่อหน้าบ้าน |
 | --- | --- | --- |
@@ -286,7 +296,7 @@ Header ต้องแสดง:
 - Report user ไม่เปลี่ยนสถานะบัญชีอัตโนมัติ ต้องรอ Admin action
 - Deleted / Archived เป็นสถานะอ่านย้อนหลัง ไม่ใช่สถานะที่ User List ทำ action ลบโดยตรง
 
-## 9. กฎ Action ของบัญชี
+## 10. กฎ Action ของบัญชี
 
 ### Send Password Reset
 
@@ -379,7 +389,7 @@ UI ต้องมี:
 - บันทึก audit log
 - แสดง success toast
 
-## 10. ผู้ใช้ที่ถูกรายงาน (Reported Users)
+## 11. ผู้ใช้ที่ถูกรายงาน (Reported Users)
 
 Reported Users เป็นคิวสำหรับตรวจรายงานผู้ใช้จากหน้าบ้าน ไม่ใช่หน้า analytics
 
@@ -463,7 +473,7 @@ Reported Users ต้องมี pagination ตามเงื่อนไข:
 - Footer ต้องแสดงช่วงรายการที่กำลังเห็นและจำนวนผลลัพธ์ทั้งหมดหลัง filter
 - เมื่อเปลี่ยน search/filter/sort ให้กลับไปหน้าแรก
 
-## 11. รายละเอียดรายงานผู้ใช้
+## 12. รายละเอียดรายงานผู้ใช้
 
 Report Detail แสดงรายละเอียดรายงานหนึ่งรายการและ action ที่ Admin ทำได้กับรายงานนั้น
 
@@ -510,7 +520,7 @@ Report Detail ต้องไม่อ้าง source ประเภท asset,
 - การปิดรายงานต้องไม่ลบหรือ archive บัญชีทันที
 - Action ที่เปลี่ยนสถานะบัญชีต้องใช้กฎเดียวกับ account action กลาง
 
-## 12. สถานะ Error, Empty และ Loading
+## 13. สถานะ Error, Empty และ Loading
 
 ### User List
 
@@ -530,7 +540,7 @@ Report Detail ต้องไม่อ้าง source ประเภท asset,
 | Empty after filter/search | แสดง empty state `ไม่พบข้อมูล` และให้ reset filter |
 | Error | แจ้งว่าโหลดคิวรายงานไม่สำเร็จและมีปุ่ม retry |
 
-## 13. ข้อกำหนด Audit
+## 14. ข้อกำหนด Audit
 
 ต้องบันทึก audit log สำหรับ action ต่อไปนี้:
 
@@ -556,7 +566,7 @@ Report Detail ต้องไม่อ้าง source ประเภท asset,
 | Timestamp | วันและเวลาที่ดำเนินการ |
 | Result | Success หรือ Failed |
 
-## 14. ข้อกำหนด Performance
+## 15. ข้อกำหนด Performance
 
 - User List ต้องรองรับข้อมูลจำนวนมากด้วย server-side pagination
 - Search/filter/sort ต้องทำงานร่วมกับ pagination
@@ -571,7 +581,7 @@ Report Detail ต้องไม่อ้าง source ประเภท asset,
 
 User Management ต้องใช้ app shell, navigation, breakpoint, list toolbar, desktop table/grid, mobile card, pagination, reset, detail, action menu และ confirmation modal ตาม `00_GLOBAL_RULES_MODULE.md` และ `../Prototypes/bo-prototype.html` โดยไม่มี UI/layout override เฉพาะโมดูล
 
-## 15. เกณฑ์การยอมรับ
+## 16. เกณฑ์การยอมรับ
 
 | ID | เกณฑ์การยอมรับ |
 | --- | --- |

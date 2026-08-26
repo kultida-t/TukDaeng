@@ -5,7 +5,24 @@
 **สถานะ:** สเปกปัจจุบัน  
 **แพลตฟอร์ม:** Responsive Web Back Office
 
-## 1. วัตถุประสงค์
+## มาตรฐาน UI และ Prototype อ้างอิง
+
+เอกสารนี้ต้องใช้ร่วมกับ `00_GLOBAL_RULES_MODULE.md` และยึดรูปแบบหน้าจอ/พฤติกรรมที่ยืนยันแล้วใน `../Prototypes/bo-prototype.html` เป็นมาตรฐานหลัก
+
+ห้ามออกแบบ pattern แยกเองสำหรับ list toolbar, breakpoint, table/card layout, pagination, reset, action menu, detail layout หรือ confirmation modal ยกเว้นเอกสารนี้ระบุไว้ชัดเจนว่าเป็น override ที่อนุมัติแล้ว
+
+## 1. ข้อมูลเอกสาร
+
+| Field | Detail |
+| --- | --- |
+| Module Name | BO Dashboard |
+| แพลตฟอร์ม | Responsive Web Back Office |
+| เวอร์ชัน | `BO-02-v1.0` |
+| สถานะ | สเปกปัจจุบัน |
+| Owner | Product / UX / Engineering / Operations |
+| ประเภทเอกสาร | Functional PRD |
+
+## 2. วัตถุประสงค์
 
 Dashboard เป็นหน้าแรกของ Back Office สำหรับให้ Admin เห็นภาพรวมสถานะระบบ งานที่ต้องจัดการ และเหตุการณ์ล่าสุดที่ควรติดตามต่อ
 
@@ -17,9 +34,9 @@ Dashboard เป็นหน้าแรกของ Back Office สำหรั
 - เห็นความสดใหม่ของข้อมูลผ่าน `Last updated`
 - ใช้งานได้ครบทั้ง desktop, tablet และ mobile-width browser
 
-## 2. ขอบเขต
+## 3. ขอบเขต
 
-อยู่ในขอบเขต:
+### อยู่ในขอบเขต
 
 - Dashboard header
 - KPI summary cards
@@ -30,7 +47,7 @@ Dashboard เป็นหน้าแรกของ Back Office สำหรั
 - Empty, loading, partial error, full error และ stale data states
 - Responsive layout สำหรับ desktop, tablet และ mobile
 
-อยู่นอกขอบเขต:
+### นอกขอบเขต
 
 - Full analytics report detail
 - Custom dashboard builder
@@ -43,7 +60,7 @@ Dashboard เป็นหน้าแรกของ Back Office สำหรั
 - Chart-heavy BI dashboard
 - Predictive analytics
 
-## 3. โครงสร้างเมนู
+## 4. โครงสร้างเมนู
 
 เมนูหลัก: `Dashboard`
 
@@ -57,7 +74,7 @@ Dashboard ไม่มี submenu
 - Dashboard ต้องไม่มี list toolbar แบบหน้ารายการ
 - การคลิกแต่ละส่วนต้องเปิด module/submodule ปลายทางที่เกี่ยวข้องโดยตรง
 
-## 4. สิทธิ์และกฎการเข้าถึง
+## 5. สิทธิ์และกฎการเข้าถึง
 
 ระบบใช้ Admin access เดียว โดยตรวจสิทธิ์ตาม module/action ที่ปลายทาง
 
@@ -69,7 +86,7 @@ Dashboard ไม่มี submenu
 - ข้อมูล sensitive ต้องแสดงเท่าที่จำเป็นต่อการตัดสินใจบน Dashboard
 - Dashboard ห้ามแสดงข้อมูล guest/public analytics เพราะไม่มี User Management drill-in ที่ถูกต้อง
 
-## 5. รูปแบบ Responsive
+## 6. รูปแบบ Responsive
 
 | Breakpoint | ความกว้าง | ข้อกำหนดของ Dashboard |
 | --- | --- | --- |
@@ -86,7 +103,7 @@ Dashboard ไม่มี submenu
 - ข้อความ, ตัวเลข, chip, button และ row ต้องไม่ล้นหรือซ้อนกัน
 - Card และ row ที่คลิกได้ต้องมี hit area ชัดเจนทั้ง mobile และ desktop
 
-## 6. Header
+## 7. Header
 
 Dashboard header ต้องแสดง:
 
@@ -111,7 +128,7 @@ Dashboard header ต้องไม่แสดง:
 - ใช้เวลาตาม Asia/Bangkok
 - ตัวอย่าง: `Last updated: 01 Aug 2026, 14:35 GMT+7`
 
-## 7. KPI Summary Cards
+## 8. KPI Summary Cards
 
 KPI Summary ต้องแสดง 8 cards ตามลำดับนี้:
 
@@ -135,7 +152,7 @@ KPI Summary ต้องแสดง 8 cards ตามลำดับนี้:
 - `Reported Items` ใช้ chip ย่อยเป็น navigation หลัก เพราะปลายทางแยกตามประเภท report
 - ถ้า card ไม่มีข้อมูล ให้แสดง empty value ที่อ่านเข้าใจ เช่น `0` และคำอธิบายที่เหมาะสม
 
-## 8. Work Queue
+## 9. Work Queue
 
 Work Queue เป็นรายการงานที่ Admin ควรจัดการก่อน ไม่ใช่ metric card
 
@@ -172,7 +189,7 @@ Work Queue ต้องแสดงเป็น action list โดยแต่�
 - Priority normal ใช้สี blue หรือ neutral accent
 - ห้ามใช้คำ technical `SLA` ใน UI ให้ใช้คำว่า `ใกล้ครบกำหนด`, `ครบกำหนดตอบ`, `กำหนดตอบครั้งแรก` หรือข้อความที่ผู้ใช้เข้าใจได้
 
-## 9. Recent Activity
+## 10. Recent Activity
 
 Recent Activity แสดงเหตุการณ์ล่าสุดที่ Admin ควรรู้หรือต้องติดตามต่อ
 
@@ -211,7 +228,7 @@ Activity row ต้องมี:
 - Activity row ต้องไม่แสดง badge เช่น `linked` หรือ `ติดตามต่อ`
 - ถ้าไม่มี activity ใน filter ที่เลือก ให้แสดง empty state
 
-## 10. Dashboard Panels
+## 11. Dashboard Panels
 
 Dashboard Panels อยู่ด้านล่าง Recent Activity และต้องใช้งานได้ทุก row
 
@@ -224,7 +241,7 @@ Panel ที่ต้องมี:
 | Latest Articles | `จาก Articles ล่าสุด` | Article title, publish status, detail | เปิด Content Management / Articles |
 | Top Searched Brands | `จาก Search Report สัปดาห์นี้` | Brand, search count, trend, share bar | เปิด Reports / Search |
 
-### 10.1 Asset Status
+### 11.1 Asset Status
 
 Rows:
 
@@ -235,7 +252,7 @@ Rows:
 | Hide | `76` | `ยอดทั้งหมดที่ owner/Admin เห็นตามสิทธิ์` | Asset Management / Asset List พร้อม context Hide |
 | Sold | `214` | `ยอดทั้งหมดที่คงประวัติและปิดรับ offer` | Asset Management / Asset List |
 
-### 10.2 Offer Status
+### 11.2 Offer Status
 
 Rows:
 
@@ -246,7 +263,7 @@ Rows:
 | Rejected | `19` | `ข้อเสนอที่ถูกปฏิเสธวันนี้และเก็บประวัติ` | Offer / Offer Queue |
 | Expired | `12` | `ข้อเสนอที่หมดเวลาวันนี้โดยไม่มีการตอบรับ` | Offer / Offer Queue |
 
-### 10.3 Latest Articles
+### 11.3 Latest Articles
 
 Rows:
 
@@ -256,7 +273,7 @@ Rows:
 | How to Check Provenance | `Published` | `เผยแพร่แล้วและแสดงบน Board` | Content Management / Articles |
 | Market Notes July | `Draft` | `ยังไม่แสดงบน FO / รอรูป cover` | Content Management / Articles |
 
-### 10.4 Top Searched Brands
+### 11.4 Top Searched Brands
 
 Rows:
 
@@ -277,7 +294,7 @@ Rows:
 - ห้ามแสดง copy ที่เป็น placeholder เช่น `Back Office demo`, `Sample data` หรือ `Next action`
 - ถ้าไม่มีข้อมูลใน panel ให้แสดง empty state เฉพาะ panel นั้น
 
-## 11. Direct Navigation
+## 12. Direct Navigation
 
 ทุกจุดที่เปิดต่อได้ต้องไปปลายทางที่สัมพันธ์กับเนื้อหานั้นโดยตรง
 
@@ -304,7 +321,7 @@ Rows:
 - ถ้าปลายทางรองรับ filter/context ให้ส่ง context ไปพร้อม navigation
 - ถ้าปลายทางยังไม่พร้อมใช้งาน ให้แสดง disabled state หรือ empty destination ที่อธิบายได้ชัดเจน ห้ามคลิกแล้วไม่เกิดผล
 
-## 12. Empty / Loading / Error States
+## 13. Empty / Loading / Error States
 
 | State | ข้อกำหนด |
 | --- | --- |
@@ -318,7 +335,7 @@ Rows:
 | Unauthorized Section | ซ่อน section หรือข้อมูลนั้น ไม่แสดง technical error |
 | Stale Data | แสดง `Last updated` และ warning ว่าข้อมูลอาจไม่ล่าสุด |
 
-## 13. Data Freshness
+## 14. Data Freshness
 
 Dashboard ต้องแสดง `Last updated` ชัดเจนบน header
 
@@ -331,7 +348,7 @@ Dashboard ต้องแสดง `Last updated` ชัดเจนบน heade
 
 Dashboard ไม่มี manual refresh control ในสเปกปัจจุบัน
 
-## 14. Copy และ Visual Rules
+## 15. Copy และ Visual Rules
 
 Copy rules:
 
@@ -358,7 +375,7 @@ Typography:
 - Heading font: `Bebas Neue`
 - Fallback font stack: `IBM Plex Sans Thai`, `Segoe UI`, `Tahoma`, `Arial`, `sans-serif`
 
-## 15. ข้อกำหนด Performance
+## 16. ข้อกำหนด Performance
 
 - Dashboard initial load หลัง auth ควรไม่เกิน 3 วินาทีสำหรับข้อมูลหลัก
 - KPI Summary และ Work Queue ต้องโหลดก่อน chart/visual เสริม
@@ -366,7 +383,7 @@ Typography:
 - Responsive render ต้องไม่ทำให้ลำดับ section เปลี่ยน
 - Interaction filter ของ Recent Activity ต้องตอบสนองทันทีบนข้อมูลที่โหลดแล้ว
 
-## 16. เกณฑ์การยอมรับ
+## 17. เกณฑ์การยอมรับ
 
 | ID | Criteria |
 | --- | --- |

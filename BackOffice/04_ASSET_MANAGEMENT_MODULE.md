@@ -5,14 +5,24 @@
 **สถานะ:** สเปกปัจจุบัน  
 **แพลตฟอร์ม:** Responsive Web Back Office
 
-
 ## มาตรฐาน UI และ Prototype อ้างอิง
 
 เอกสารนี้ต้องใช้ร่วมกับ `00_GLOBAL_RULES_MODULE.md` และยึดรูปแบบหน้าจอ/พฤติกรรมที่ยืนยันแล้วใน `../Prototypes/bo-prototype.html` เป็นมาตรฐานหลัก
 
 ห้ามออกแบบ pattern แยกเองสำหรับ list toolbar, breakpoint, table/card layout, pagination, reset, action menu, detail layout หรือ confirmation modal ยกเว้นเอกสารนี้ระบุไว้ชัดเจนว่าเป็น override ที่อนุมัติแล้ว
 
-## 1. วัตถุประสงค์
+## 1. ข้อมูลเอกสาร
+
+| Field | Detail |
+| --- | --- |
+| Module Name | BO Asset Management |
+| แพลตฟอร์ม | Responsive Web Back Office |
+| เวอร์ชัน | `BO-04-v1.1` |
+| สถานะ | สเปกปัจจุบัน |
+| Owner | Product / UX / Engineering / Operations |
+| ประเภทเอกสาร | Functional PRD |
+
+## 2. วัตถุประสงค์
 
 Asset Management คือเมนูสำหรับ Admin ใช้ตรวจสอบรายการ asset, รายละเอียด asset, รายงาน asset, รายงานความคิดเห็นบน asset และดำเนินการ moderation ที่มีผลต่อการมองเห็นของ asset หรือความคิดเห็นในระบบ
 
@@ -33,7 +43,7 @@ Asset Management คือเมนูสำหรับ Admin ใช้ตร�
 - ซ่อนความคิดเห็นชั่วคราว, ยกเลิกการซ่อนชั่วคราว, ซ่อนความคิดเห็นถาวร หรือปิดรายงานความคิดเห็น
 - บันทึก audit log สำหรับทุก action ที่เปลี่ยน state หรือ visibility
 
-## 2. ขอบเขต
+## 3. ขอบเขต
 
 ### อยู่ในขอบเขต
 
@@ -70,7 +80,7 @@ Asset Management คือเมนูสำหรับ Admin ใช้ตร�
 - ลบข้อมูล asset จริงจาก Back Office
 - ลบข้อมูลความคิดเห็นจริงจาก Back Office
 
-## 3. โครงสร้างเมนู
+## 4. โครงสร้างเมนู
 
 เมนูหลัก: `Asset Management`
 
@@ -93,7 +103,7 @@ Submenu ภายใต้ Asset Management:
 - ปุ่มย้อนกลับจาก `Asset Report Detail` ต้องกลับไป `Reported Assets` พร้อมคง search/filter/sort/page เดิม
 - ปุ่มย้อนกลับจาก `Comment Report Detail` ต้องกลับไป `Reported Comments` พร้อมคง search/filter/sort/page เดิม
 
-## 4. สิทธิ์และกฎการเข้าถึง
+## 5. สิทธิ์และกฎการเข้าถึง
 
 ระบบใช้ Admin access เดียว โดยตรวจสิทธิ์ตามเมนูและ action ที่ทำ ไม่แยกประเภทบัญชี Admin ในสเปกนี้
 
@@ -104,7 +114,7 @@ Submenu ภายใต้ Asset Management:
 | Sensitive data | แสดงเฉพาะรูปแบบ read-only/masked/summarized |
 | Direct URL/API | ต้องตรวจสิทธิ์ที่ route, API และ service layer เสมอ |
 
-## 5. รูปแบบ Responsive
+## 6. รูปแบบ Responsive
 
 Asset Management ต้องใช้กฎ responsive กลางจาก `00_GLOBAL_RULES_MODULE.md` และยึดพฤติกรรมที่ยืนยันแล้วใน `../Prototypes/bo-prototype.html`
 
@@ -121,7 +131,7 @@ Asset Management ต้องใช้กฎ responsive กลางจาก `0
 - Action สำคัญด้าน moderation/report ต้องเข้าถึงได้บน mobile และ desktop
 - Filter บน mobile ต้องเปิด/ปิดแบบ inline ในพื้นที่ list และห้ามใช้ drawer หรือ bottom sheet แยก
 
-## 6. รายการ Asset (Asset List)
+## 7. รายการ Asset (Asset List)
 
 Asset List ใช้สำหรับ scan asset ทั้งหมดและเปิดรายละเอียดหรือ action ที่ทำได้ตาม state
 
@@ -179,7 +189,7 @@ Asset List ต้องมี pagination ตามเงื่อนไข:
 - ต้องคงค่า search/filter/sort ระหว่างเปลี่ยนหน้า
 - เมื่อไม่พบข้อมูลให้แสดง empty state `ไม่พบข้อมูล`
 
-## 7. รายละเอียด Asset
+## 8. รายละเอียด Asset
 
 Asset Detail ใช้สำหรับตรวจสอบข้อมูล Asset แบบ read-only และแสดง action สำหรับการตรวจสอบและจัดการตามสถานะปัจจุบันของ Asset
 
@@ -263,7 +273,7 @@ Asset Detail ต้องแสดง Asset Status History เมื่อมี
 - Reference (อ้างอิง Report ID เมื่อเกี่ยวข้อง)
 - Reason / Note
 
-## 8. โมเดลสถานะ Asset
+## 9. โมเดลสถานะ Asset
 
 ระบบต้องแยก owner-controlled status ออกจาก moderation state
 
@@ -294,7 +304,7 @@ Admin ห้ามเปลี่ยน owner-controlled status โดยตร�
 
 Moderation state เป็น overlay บน owner-controlled status และไม่เปลี่ยนค่า owner-controlled status เดิม
 
-## 9. ตารางผลต่อการมองเห็น (Visibility Matrix)
+## 10. ตารางผลต่อการมองเห็น (Visibility Matrix)
 
 | State | Public Marketplace | Public Profile/Detail | Owner View | Offer Availability |
 | --- | --- | --- | --- | --- |
@@ -316,7 +326,7 @@ Offer impact เพิ่มเติมสำหรับ owner-controlled stat
 
 Asset ที่เป็น `Consignment` ต้องไม่ถูกนับใน portfolio value หรือ asset value summary เพราะเป็นของฝากขาย ไม่ใช่ทรัพย์สินที่ owner ถือครองเอง
 
-## 10. กฎ Action ของ Asset
+## 11. กฎ Action ของ Asset
 
 ### ข้อกำหนดทั่วไป
 
@@ -381,7 +391,7 @@ Asset ที่เป็น `Consignment` ต้องไม่ถูกนั�
 - ต้องมี history/audit row ระบุ actor เป็น owner, action เป็น `Asset Deleted By Owner`, before state, after state `ลบโดยเจ้าของ` และ timestamp
 - Pending offer ที่เกี่ยวข้องต้องถูกตั้งเป็น `Cancelled`
 
-## 11. Asset ที่ถูกรายงาน
+## 12. Asset ที่ถูกรายงาน
 
 Reported Assets เป็น queue แยกจาก Asset List สำหรับจัดการ report case
 
@@ -439,7 +449,7 @@ Reported Assets ต้องมี pagination ตามเงื่อนไข:
 
 Report ที่ `Closed` เป็น final state และไม่มี reopen action ในเมนูนี้
 
-## 12. รายละเอียดรายงาน Asset
+## 13. รายละเอียดรายงาน Asset
 
 Asset Report Detail ใช้สำหรับตรวจสอบ report case และ action ที่เกี่ยวข้อง
 
@@ -493,7 +503,7 @@ Action buttons ต้องแสดงเฉพาะที่ทำได้�
 - ยกเลิกซ่อนชั่วคราว
 - ซ่อนถาวร
 
-## 13. กฎการจัดการรายงาน
+## 14. กฎการจัดการรายงาน
 
 เมื่อ user report asset:
 
@@ -522,7 +532,7 @@ Action buttons ต้องแสดงเฉพาะที่ทำได้�
 - Restore visibility ต้องถูก block ถ้า asset ไม่ได้อยู่ใน moderation state `ซ่อนชั่วคราว`
 - Admin ทำได้เฉพาะปิดรายงานหรือซ่อนถาวร เมื่อ current state และ permission อนุญาต
 
-## 14. โมเดลข้อมูลรายงาน
+## 15. โมเดลข้อมูลรายงาน
 
 Reported Assets queue ต้องใช้ report case เป็น source of truth และ join กับ asset เพื่อแสดง current asset state ล่าสุด
 
@@ -535,7 +545,7 @@ Reported Assets queue ต้องใช้ report case เป็น source of t
 
 ห้าม infer รายการใน Reported Assets queue จาก asset status, moderation pill หรือข้อความใน asset row เพียงอย่างเดียว
 
-## 15. ความคิดเห็นที่ถูกรายงาน (Reported Comments)
+## 16. ความคิดเห็นที่ถูกรายงาน (Reported Comments)
 
 Reported Comments เป็น queue แยกจาก Asset List และ Reported Assets สำหรับจัดการ report case ของความคิดเห็น (comment และ reply) บน asset
 
@@ -593,7 +603,7 @@ Reported Comments ต้องมี pagination ตามเงื่อนไ�
 
 Report ที่ `Closed` เป็น final state และไม่มี reopen action ในเมนูนี้
 
-## 16. รายละเอียดรายงาน Comment
+## 17. รายละเอียดรายงาน Comment
 
 Comment Report Detail ใช้สำหรับตรวจสอบ report case ของความคิดเห็นและ action ที่เกี่ยวข้อง
 
@@ -658,7 +668,7 @@ Action buttons ต้องแสดงเฉพาะที่ทำได้�
 - ยกเลิกการซ่อนชั่วคราว (Restore comment)
 - ซ่อนความคิดเห็นถาวร (Remove comment)
 
-## 17. Comment Status Contract
+## 18. Comment Status Contract
 
 ระบบต้องแยก comment status ออกจาก report status และ moderation action
 
@@ -672,7 +682,7 @@ Action buttons ต้องแสดงเฉพาะที่ทำได้�
 
 Comment status เป็น overlay บน comment record และไม่เปลี่ยนแปลงเนื้อหาต้นฉบับ
 
-## 18. กฎ Action ของ Comment Moderation
+## 19. กฎ Action ของ Comment Moderation
 
 ### ข้อกำหนดทั่วไป
 
@@ -742,7 +752,7 @@ Comment status เป็น overlay บน comment record และไม่เ�
 - ต้องมี confirmation และ reason
 - ไม่ต้องส่งอีเมลแจ้ง author
 
-## 19. กฎการจัดการรายงานความคิดเห็น
+## 20. กฎการจัดการรายงานความคิดเห็น
 
 เมื่อ user report comment:
 
@@ -754,7 +764,7 @@ Comment status เป็น overlay บน comment record และไม่เ�
 - Report case ต้องผูกกับ comment current state ล่าสุดเสมอ
 - SLA baseline 24 ชั่วโมงสำหรับ comment report ตาม Trust & Safety baseline
 
-## 20. กฎ FO Sync สำหรับ Comment Moderation
+## 21. กฎ FO Sync สำหรับ Comment Moderation
 
 | Action | FO Comment Section | Comment Count |
 | --- | --- | --- |
@@ -765,7 +775,7 @@ Comment status เป็น overlay บน comment record และไม่เ�
 
 Comment count ที่แสดงใน FO ต้องสะท้อนจำนวนความคิดเห็นที่ user มีสิทธิ์เห็นเท่านั้น ไม่นับ comment ที่ถูก `Hidden`, `Removed` หรือ `User Deleted` ในจำนวนที่แสดง
 
-## 21. กฎข้อมูลอ่อนไหว
+## 22. กฎข้อมูลอ่อนไหว
 
 | Data | Default Behavior |
 | --- | --- |
@@ -779,7 +789,7 @@ Comment count ที่แสดงใน FO ต้องสะท้อนจ�
 
 Sensitive data ต้องเป็น read-only เสมอในเมนูนี้
 
-## 22. สถานะ Error, Empty และ Loading
+## 23. สถานะ Error, Empty และ Loading
 
 ต้องรองรับ state ต่อไปนี้:
 
@@ -803,7 +813,7 @@ Sensitive data ต้องเป็น read-only เสมอในเมนู
 
 เมื่อ action ล้มเหลว ห้ามเปลี่ยน UI เป็น success state และต้องให้ Admin retry หรือปิด modal ได้
 
-## 23. ข้อกำหนด Audit
+## 24. ข้อกำหนด Audit
 
 ทุก write action ต้องบันทึก:
 
@@ -848,7 +858,7 @@ Audit history ต้องแสดงใน Asset Detail, Asset Report Detail �
 
 Asset Management ต้องใช้ app shell, navigation, breakpoint, list toolbar, desktop table/grid, mobile card, pagination, reset, detail, action menu และ confirmation modal ตาม `00_GLOBAL_RULES_MODULE.md` และ `../Prototypes/bo-prototype.html` โดยไม่มี UI/layout override เฉพาะโมดูล
 
-## 24. เกณฑ์การยอมรับ
+## 25. เกณฑ์การยอมรับ
 
 | ID | Criteria |
 | --- | --- |
