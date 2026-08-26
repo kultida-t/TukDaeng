@@ -1,28 +1,28 @@
 # 02 BO Dashboard Module
 
-**เวอร์ชัน:** `BO-02-v1.0`  
-**วันที่:** 2026-07-31  
-**สถานะ:** สเปกปัจจุบัน  
-**แพลตฟอร์ม:** Responsive Web Back Office
+**Version:** `BO-02-v1.0`  
+**Date:** 2026-07-31  
+**Status:** สเปกปัจจุบัน  
+**Platform:** Responsive Web Back Office
 
-## มาตรฐาน UI และ Prototype อ้างอิง
+## UI Standards And Prototype Reference
 
 เอกสารนี้ต้องใช้ร่วมกับ `00_GLOBAL_RULES_MODULE.md` และยึดรูปแบบหน้าจอ/พฤติกรรมที่ยืนยันแล้วใน `../Prototypes/bo-prototype.html` เป็นมาตรฐานหลัก
 
 ห้ามออกแบบ pattern แยกเองสำหรับ list toolbar, breakpoint, table/card layout, pagination, reset, action menu, detail layout หรือ confirmation modal ยกเว้นเอกสารนี้ระบุไว้ชัดเจนว่าเป็น override ที่อนุมัติแล้ว
 
-## 1. ข้อมูลเอกสาร
+## 1. Document Information
 
 | Field | Detail |
 | --- | --- |
 | Module Name | BO Dashboard |
-| แพลตฟอร์ม | Responsive Web Back Office |
-| เวอร์ชัน | `BO-02-v1.0` |
-| สถานะ | สเปกปัจจุบัน |
+| Platform | Responsive Web Back Office |
+| Version | `BO-02-v1.0` |
+| Status | สเปกปัจจุบัน |
 | Owner | Product / UX / Engineering / Operations |
-| ประเภทเอกสาร | Functional PRD |
+| Document Type | Functional PRD |
 
-## 2. วัตถุประสงค์
+## 2. Objective
 
 Dashboard เป็นหน้าแรกของ Back Office สำหรับให้ Admin เห็นภาพรวมสถานะระบบ งานที่ต้องจัดการ และเหตุการณ์ล่าสุดที่ควรติดตามต่อ
 
@@ -34,9 +34,9 @@ Dashboard เป็นหน้าแรกของ Back Office สำหรั
 - เห็นความสดใหม่ของข้อมูลผ่าน `Last updated`
 - ใช้งานได้ครบทั้ง desktop, tablet และ mobile-width browser
 
-## 3. ขอบเขต
+## 3. Scope
 
-### อยู่ในขอบเขต
+### In Scope
 
 - Dashboard header
 - KPI summary cards
@@ -47,7 +47,7 @@ Dashboard เป็นหน้าแรกของ Back Office สำหรั
 - Empty, loading, partial error, full error และ stale data states
 - Responsive layout สำหรับ desktop, tablet และ mobile
 
-### นอกขอบเขต
+### Out Of Scope
 
 - Full analytics report detail
 - Custom dashboard builder
@@ -60,7 +60,7 @@ Dashboard เป็นหน้าแรกของ Back Office สำหรั
 - Chart-heavy BI dashboard
 - Predictive analytics
 
-## 4. โครงสร้างเมนู
+## 4. Menu Structure
 
 เมนูหลัก: `Dashboard`
 
@@ -74,7 +74,7 @@ Dashboard ไม่มี submenu
 - Dashboard ต้องไม่มี list toolbar แบบหน้ารายการ
 - การคลิกแต่ละส่วนต้องเปิด module/submodule ปลายทางที่เกี่ยวข้องโดยตรง
 
-## 5. สิทธิ์และกฎการเข้าถึง
+## 5. Admin Access And Permissions
 
 ระบบใช้ Admin access เดียว โดยตรวจสิทธิ์ตาม module/action ที่ปลายทาง
 
@@ -86,7 +86,7 @@ Dashboard ไม่มี submenu
 - ข้อมูล sensitive ต้องแสดงเท่าที่จำเป็นต่อการตัดสินใจบน Dashboard
 - Dashboard ห้ามแสดงข้อมูล guest/public analytics เพราะไม่มี User Management drill-in ที่ถูกต้อง
 
-## 6. รูปแบบ Responsive
+## 6. Responsive Layout
 
 | Breakpoint | ความกว้าง | ข้อกำหนดของ Dashboard |
 | --- | --- | --- |
@@ -348,7 +348,7 @@ Dashboard ต้องแสดง `Last updated` ชัดเจนบน heade
 
 Dashboard ไม่มี manual refresh control ในสเปกปัจจุบัน
 
-## 15. Copy และ Visual Rules
+## 15. Copy And Visual Rules
 
 Copy rules:
 
@@ -375,7 +375,7 @@ Typography:
 - Heading font: `Bebas Neue`
 - Fallback font stack: `IBM Plex Sans Thai`, `Segoe UI`, `Tahoma`, `Arial`, `sans-serif`
 
-## 16. ข้อกำหนด Performance
+## 16. Performance
 
 - Dashboard initial load หลัง auth ควรไม่เกิน 3 วินาทีสำหรับข้อมูลหลัก
 - KPI Summary และ Work Queue ต้องโหลดก่อน chart/visual เสริม
@@ -383,7 +383,7 @@ Typography:
 - Responsive render ต้องไม่ทำให้ลำดับ section เปลี่ยน
 - Interaction filter ของ Recent Activity ต้องตอบสนองทันทีบนข้อมูลที่โหลดแล้ว
 
-## 17. เกณฑ์การยอมรับ
+## 17. Acceptance Criteria
 
 | ID | Criteria |
 | --- | --- |

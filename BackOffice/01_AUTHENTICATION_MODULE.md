@@ -1,36 +1,36 @@
 # 01 BO Authentication And Admin Accounts Module
 
-**เวอร์ชัน:** `BO-01-v1.0`  
-**วันที่:** 2026-08-26  
-**สถานะ:** สเปกปัจจุบัน  
-**แพลตฟอร์ม:** Responsive Web Back Office
+**Version:** `BO-01-v1.0`  
+**Date:** 2026-08-26  
+**Status:** สเปกปัจจุบัน  
+**Platform:** Responsive Web Back Office
 
-## มาตรฐาน UI และ Prototype อ้างอิง
+## UI Standards And Prototype Reference
 
 เอกสารนี้ต้องใช้ร่วมกับ `00_GLOBAL_RULES_MODULE.md` และยึดรูปแบบหน้าจอ/พฤติกรรมที่ยืนยันแล้วใน `../Prototypes/bo-prototype.html` เป็นมาตรฐานหลัก
 
 เอกสารอ้างอิง: `00_GLOBAL_RULES_MODULE.md`, `BO_MASTER_BASELINE.md`, `BO_PRD.md`, `BO_Spec.md`
 
-## 1. ข้อมูลเอกสาร
+## 1. Document Information
 
 | Field | Detail |
 | --- | --- |
 | Module Name | BO Authentication And Admin Accounts |
-| แพลตฟอร์ม | Responsive Web Back Office |
-| เวอร์ชัน | `BO-01-v1.0` |
-| สถานะ | สเปกปัจจุบัน |
+| Platform | Responsive Web Back Office |
+| Version | `BO-01-v1.0` |
+| Status | สเปกปัจจุบัน |
 | Owner | Product / UX / Engineering / Operations |
-| ประเภทเอกสาร | Functional PRD |
+| Document Type | Functional PRD |
 
-## 2. วัตถุประสงค์
+## 2. Objective
 
 เอกสารนี้กำหนด authentication, session, Email OTP verification, admin account lifecycle และ permission enforcement สำหรับ Back Office web application
 
 BO authentication แยกจาก FO authentication โดยสมบูรณ์ FO user ไม่สามารถ login เข้า BO ได้ และ BO admin ไม่ใช้ Apple/Google SSO สำหรับ BO access ใน V1
 
-## 3. ขอบเขต
+## 3. Scope
 
-### อยู่ในขอบเขต
+### In Scope
 
 - BO login ด้วย email/password
 - Email OTP verification บังคับสำหรับ BO Admin login ทุกครั้ง
@@ -43,7 +43,7 @@ BO authentication แยกจาก FO authentication โดยสมบูร�
 - Login/security audit events
 - Responsive auth screens
 
-### นอกขอบเขต
+### Out Of Scope
 
 - FO user authentication
 - Apple/Google SSO สำหรับ BO
