@@ -178,7 +178,7 @@ UI / Reporting rules:
 | Reports/safety records | เก็บตาม legal/safety/audit policy |
 | Support tickets | Link ไว้เพื่อให้ Admin ตอบ account-deleted support state ได้ |
 
-Pending offer dependency ต้องใช้ source เดียวกับ `BackOffice/09_OFFER_CHAT_MODULE.md` และต้อง audit ทุกครั้งที่ใช้เป็นเหตุผล block
+Pending offer dependency ต้องใช้ source เดียวกับ `09_OFFER_CHAT_MODULE.md` และต้อง audit ทุกครั้งที่ใช้เป็นเหตุผล block
 
 Pending user report หรือ offer/support dispute ต้อง block deletion เช่นเดียวกันจนกว่า Admin จะตรวจ source report และ dependency ให้จบก่อน การลบบัญชีไม่ควร cancel offer หรือปิด dispute อัตโนมัติ; ต้องให้ module ต้นทาง เช่น Offer Management, Asset Management หรือ Help & Support เป็นตัวบันทึกผลการตรวจ แล้ว Account Deletion จึงค่อย approve, keep blocked, หรือ cancel request ตาม policy
 

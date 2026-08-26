@@ -1183,7 +1183,7 @@ Visual rules:
 
 วิธีดึง option ไปใช้ใน FO Watch Alert criteria:
 
-- Watch Alert criteria ใช้ schema เดียวกับ Search Filter ตาม `10_WATCH_ALERT_MODULE.md` Filter Logic Rule และ Validation Rules
+- Watch Alert criteria ใช้ schema เดียวกับ Search Filter ตาม `11_WATCH_ALERT_MODULE.md` Filter Logic Rule และ Validation Rules
 - แสดงเฉพาะ option ที่ `is_active=true` เป็น criteria ใหม่
 - Watch Alert ใช้ filter logic เดียวกับ Search Module รวม dependent filter และ AND Logic
 - Watch Alert match เฉพาะ Asset สถานะ `Sale` ตาม Match Rule; option criteria ทำงานร่วมกับเงื่อนไขอื่นใน criteria
