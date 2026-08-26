@@ -12,7 +12,7 @@ BO_Spec v1.1 รองรับ flow หลักของ FO แล้วใน
 
 Addendum นี้เสนอให้เพิ่ม module และ business rules ต่อไปนี้:
 
-1. Offer & Chat Management
+1. Offer Management (read-only ใน V1)
 2. Watch Alert Management
 3. Account Deletion & Data Archive
 4. Help & Support Ticket Management
@@ -32,34 +32,57 @@ BO Dashboard
 ├── Dashboard
 ├── User Management
 ├── Asset Management
-├── Offer & Chat Management
-│   ├── Offers
-│   ├── Chat Rooms
-│   └── Chat Reports
+├── Offer Management (read-only ใน V1; หน้าเดียว ไม่มี submenu)
 ├── Content Management
 │   ├── Articles
 │   ├── Categories
-│   └── Banners (Future scope; not used for Phase 1 Board Main)
+│   └── Reported Articles
 ├── Market Data
-│   ├── Watch Brands
-│   ├── Watch Models
-│   └── Price Index
-├── Watch Alert Management
+│   ├── Dashboard
+│   ├── Brands & Models
+│   └── Sync History
+├── Option Master
 ├── Directory (future/postponed; not Phase 1)
+├── Watch Alert
+│   ├── Alert Criteria
+│   ├── Trigger History
+│   └── Disabled Alerts
 ├── Help & Support
-├── Account Deletion Requests
-├── Reports & Analytics
-├── Push Notifications
-├── System Notification Triggers
-├── Audit Log
-└── Admin Settings
+│   ├── Tickets
+│   ├── Assignment
+│   └── SLA
+├── Account Deletion
+│   ├── Requests
+│   ├── Grace Period
+│   └── Anonymization
+├── Reports
+│   ├── User
+│   ├── Asset
+│   ├── Offer
+│   ├── Search
+│   └── Export Jobs
+├── Notifications
+│   ├── Broadcast
+│   ├── System Templates
+│   └── Delivery Logs
+└── Settings
+    ├── Admin Accounts
+    ├── Roles & Permissions
+    ├── Security
+    ├── Retention
+    ├── Terms of Use
+    ├── Privacy Policy
+    ├── Version History
+    ├── Support Center
+    ├── Contact Support
+    └── Audit Log
 ```
 
 Admin Settings updated submenu baseline includes `Admin Accounts`, `Roles & Permissions`, `Security`, `Retention`, policy/legal content sections, support settings, and Audit Log handoff. `Roles & Permissions` manages role templates and module/action policy for the single BO account type `Admin`; it does not introduce separate BO admin account types.
 
 ---
 
-## 3. Offer & Chat Management
+## 3. Offer Management (read-only ใน V1)
 
 ### 3.1 Purpose
 
@@ -119,14 +142,16 @@ Current prototype Offer Detail ไม่มี Force Expire Offer, Mark Invalida
 
 ### 3.5 Chat Rooms
 
-**Features**
+**Phase 1 status:** Chat Rooms submenu ไม่ได้แสดงใน prototype V1 Offer Management เป็น read-only หน้าเดียว ส่วน Chat Rooms list/columns/moderation ด้านล่างเป็น future scope สำหรับเมื่อ Product เปิดใช้งาน chat moderation workflow
+
+**Features (future scope)**
 - ดูรายการ chat rooms
 - Search ด้วย user, asset, keyword
 - Filter ด้วย asset, unread report, file attached, date range
 - ดูเฉพาะ chat ที่ถูก report
 - Export conversation เฉพาะ Admin
 
-**Columns**
+**Columns (future scope)**
 
 | Column | Description |
 |---|---|
@@ -141,10 +166,12 @@ Current prototype Offer Detail ไม่มี Force Expire Offer, Mark Invalida
 
 ### 3.6 Chat Moderation Rules
 
+**Phase 1 status:** Chat moderation workflow เป็น future scope ตามที่ prototype Offer Management เป็น read-only หน้าเดียว กฎด้านล่างเป็น baseline สำหรับเมื่อ Product เปิดใช้งาน chat moderation workflow
+
 - Admin ไม่ควรแก้ไขข้อความผู้ใช้โดยตรง
 - การลบ chat ของผู้ใช้ใน FO เป็น user-level deletion ไม่ใช่ hard delete จากระบบ
-- Admin สามารถ export conversation เพื่อ audit/dispute ได้
-- Admin สามารถ hide/remove ข้อความที่ผิด policy ได้
+- Admin สามารถ export conversation เพื่อ audit/dispute ได้ (future scope)
+- Admin สามารถ hide/remove ข้อความที่ผิด policy ได้ (future scope)
 - ไฟล์แนบต้องมี virus/malware scan status
 - Chat ที่เกี่ยวข้องกับ accepted offer ต้องถูกเก็บตาม retention policy
 
@@ -297,18 +324,20 @@ BO_Spec v1.1 ระบุว่า Admin ตอบ Help ได้ แต่ย�
 
 ### 7.2 Notification Types
 
+Phase 1 system triggers (ตาม `14_NOTIFICATIONS_MODULE.md`):
+
 | Type | Trigger | Recipient | Deep Link |
 |---|---|---|---|
 | New Offer | Buyer sends offer | Asset Owner | Chat Room / Offer |
 | Offer Accepted | Owner accepts offer | Buyer | Chat Room |
 | Offer Rejected | Owner declines offer | Buyer | Chat Room |
+| Offer Cancelled | Buyer/owner cancels offer | Counterparty | Chat Room / Offer |
+| Like | User likes content | Owner | Asset / Valuation |
 | Comment | User comments on asset | Asset Owner | Asset Detail |
-| New Follower | User follows another user | Followed User | Follower Profile |
-| Group Follow | Multiple follows in short window | Followed User | Followers List |
-| Like Valuation | User likes valuation/content | Owner | Asset/Valuation |
-| Market Update | Price Index changed | Interested Users | Price Index / Asset Value |
-| Sale Success | Asset marked Sold | Owner / Buyer | Sale History |
+| Follow | User follows another user | Followed User | Follower Profile |
 | Watch Alert | Asset matches alert criteria | Alert Owner | Watch Alert Result List |
+
+Future scope (ยังไม่เปิดใน Phase 1): Group Follow, Like Valuation, Market Update, Sale Success
 
 ### 7.3 Admin Features
 
@@ -627,6 +656,8 @@ Content role split baseline:
 
 ## 11. Expanded BO/FO Action Mapping
 
+Phase 1 actions (ตรง prototype ที่ล็อกแล้ว):
+
 | Action in BO | Result in FO |
 |---|---|
 | Hide Comment | Comment หายจาก Asset Detail |
@@ -634,13 +665,18 @@ Content role split baseline:
 | Soft Delete Comment | Comment ไม่แสดง หรือแสดงเป็น deleted ตาม UX policy |
 | Disable Watch Alert | Alert ไม่ trigger notification ใหม่ |
 | Enable Watch Alert | Alert กลับมา trigger ตาม criteria |
-| Force Expire Offer | Offer ใช้งานไม่ได้และหายจาก Incoming Offers |
-| Mark Offer Invalidated | Chat/Offer แสดงว่า asset unavailable |
-| Remove Chat Message | ข้อความหายจาก chat หรือแสดงเป็น removed |
 | Approve Account Archive | User login ไม่ได้, profile/assets ถูกซ่อนหรือ anonymized |
 | Resolve Support Ticket | ผู้ใช้เห็น ticket status เป็น Resolved/Closed |
 | Disable System Notification Type | FO จะไม่ได้รับ notification ประเภทนั้น |
 | Update Notification Template | ข้อความ notification ใหม่ใช้ template ล่าสุด |
+
+Future scope (ยังไม่เปิดใน V1 Offer Management ที่เป็น read-only):
+
+| Action in BO | Result in FO |
+|---|---|
+| Force Expire Offer | Offer ใช้งานไม่ได้และหายจาก Incoming Offers |
+| Mark Offer Invalidated | Chat/Offer แสดงว่า asset unavailable |
+| Remove Chat Message | ข้อความหายจาก chat หรือแสดงเป็น removed |
 
 ---
 
@@ -696,12 +732,12 @@ Baseline role templates include `Super Admin`, `Content Editor`, `Content Publis
 
 | Module | Admin access rule |
 |---|---|
-| Offer & Chat Management | Admin can view/review/moderate by policy with privacy masking and audit. |
+| Offer Management | Admin can view/review by policy with privacy masking and audit. Chat moderation เป็น future scope |
 | Asset Management (Reported Comments) | Admin can view aggregate data and moderate reported comments by policy. |
 | Watch Alert Management | Admin can view, disable/enable by policy, and audit changes. |
 | Help & Support | Admin can manage tickets, internal notes, linked entities, SLA status, and replies by policy. |
 | Account Deletion Requests | Admin can view/recheck/approve/cancel/archive by policy with dependency checks, confirmation, reason, and audit. |
-| System Notification Triggers / Templates | Admin can manage templates and broadcasts with approval, preview, and audit policy. |
+| Notifications (Broadcast & System Templates) | Admin can manage templates and broadcasts with approval, preview, and audit policy. |
 ## 14. Recommended Acceptance Criteria
 
 BO จะถือว่ารองรับ FO ครบถ้วนเมื่อผ่านเงื่อนไขต่อไปนี้:

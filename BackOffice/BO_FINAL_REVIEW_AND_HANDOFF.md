@@ -3,16 +3,16 @@
 **Version:** `BO-HANDOFF-v0.1`  
 **Date:** 2026-07-06  
 **Status:** Draft handoff  
-**Scope:** Back Office documentation baseline `00` - `16`
+**Scope:** Back Office documentation baseline `00` - `17`
 
 ## 1. Overall Status
 
-เอกสาร Back Office baseline ครบตาม module index แล้ว ตั้งแต่ `00_GLOBAL_RULES_MODULE.md` ถึง `16_ADMIN_SETTINGS_MODULE.md`
+เอกสาร Back Office baseline ครบตาม module index แล้ว ตั้งแต่ `00_GLOBAL_RULES_MODULE.md` ถึง `17_OPTION_MASTER_MODULE.md`
 
 | Area | Status |
 | --- | --- |
 | Module coverage | Complete for current BO index |
-| FO/BO separation | Complete; FO และ BO อยู่คนละ folder และเชื่อมผ่าน integration map |
+| FO/BO separation | Complete; FO และ BO อยู่คนละ folder และเชื่อมผ่านเอกสาร module ของ BO และ FO ที่เกี่ยวข้อง |
 | Thai-primary documentation | Complete; ใช้ภาษาไทยเป็นหลักและใช้ English technical term เมื่อจำเป็น |
 | Responsive web requirement | Covered in every BO module |
 | admin access control / Admin Permission | Covered in Global Rules, Auth, module specs, Admin Settings |
@@ -47,13 +47,14 @@
 | 06 | Market Data | 1 | Complete |
 | 07 | Directory | Future | Postponed from Phase 1 |
 | 08 | Audit Log | 1 | Complete |
-| 09 | Offer / Chat | 2 | Complete |
-| 11 | Watch Alert | 2 | Complete |
-| 12 | Help / Support | 2 | Complete |
-| 13 | Account Deletion Requests | 2 | Complete |
-| 14 | Notifications | 2 | Complete |
-| 15 | Reports & Analytics | 2 | Complete |
-| 16 | Admin Settings | 3 | Complete |
+| 09 | Offer Management | 1 | Complete |
+| 11 | Watch Alert | 1 | Complete |
+| 12 | Help / Support | 1 | Complete |
+| 13 | Account Deletion Requests | 1 | Complete |
+| 14 | Notifications | 1 | Complete |
+| 15 | Reports & Analytics | 1 | Complete |
+| 16 | Admin Settings | 1 | Complete |
+| 17 | Option Master | 1 | Complete |
 
 ## 4. Recommended Implementation Order
 
@@ -72,23 +73,27 @@
 2. Asset Management
 3. Content / Board
 4. Market Data
-5. Audit Log
-6. Dashboard drill-in and queue summary
+5. Option Master
+6. Offer Management (read-only)
+7. Watch Alert
+8. Help & Support
+9. Account Deletion Requests
+10. Notifications
+11. Reports & Analytics
+12. Admin Settings
+13. Audit Log
+14. Dashboard drill-in and queue summary
 
 ### 4.3 Phase 2 Build
 
-1. Offer / Chat
-2. Watch Alert
-3. Help / Support
-4. Account Deletion Requests
-5. Notifications
-6. Reports & Analytics
+1. Directory (รอ FO directory detail routes และ taxonomy approval)
+2. Chat moderation workflow (remove/hide chat message, reported chat queue)
+3. Offer write actions (force expire, invalidate, accept/decline จาก BO)
 
 ### 4.4 Phase 3 Build
 
-1. Admin Settings
-2. Fine-grained permission changes only if Product approves
-3. Retention/export policy controls after legal/compliance decision
+1. Fine-grained permission changes only if Product approves
+2. Retention/export policy controls after legal/compliance decision
 
 ## 5. Critical Contract Decisions Already Locked
 
@@ -109,15 +114,15 @@
 
 | Priority | Decision | Source | Why It Matters |
 | --- | --- | --- | --- |
-| P0 | Chat / offer retention period | `INT-DEC-003`, `BO-OFFER-DEC-001`, `DEL-DEC-002` | กระทบ chat export, dispute, account deletion, anonymization |
+| P0 | Chat / offer retention period | `BO-OFFER-DEC-001`, `DEL-DEC-002` | กระทบ chat export, dispute, account deletion, anonymization |
 | P0 | Account deletion anonymization timing หลัง 30-day grace period | `BO-DEC-003`, `DEL-DEC-003` | กระทบ data model, archive job, privacy/compliance |
-| P0 | The Watch API production plan/quota และ FX source USD -> THB | `BO-MARKET-DEC-005`, `BO-MARKET-DEC-006` | กระทบ market data sync, price index, fallback |
-| P0 | Sync timing จาก BO moderation ไป FO surfaces | `INT-DEC-001` | กระทบ cache invalidation และ user-visible behavior |
-| P1 | Directory future activation level | `INT-DEC-005`, `BO-DIR-DEC-001` | Directory is postponed from Phase 1 while FO menu entries remain placeholder-only without detail routes |
-| P1 | FO support ticket history หรือ contact-only | `INT-DEC-004`, `SUP-DEC-001` | กระทบ Help / Support API, BO reply sync, FO UX |
+| P0 | The Watch API production plan/quota และ FX source USD -> THB | `BO-MARKET-DEC-004`, `BO-MARKET-DEC-002` | กระทบ market data sync, price index, fallback |
+| P0 | Sync timing จาก BO moderation ไป FO surfaces | `00_GLOBAL_RULES_MODULE.md` sync timing section | กระทบ cache invalidation และ user-visible behavior |
+| P1 | Directory future activation level | `BO-DIR-DEC-001` | Directory is postponed from Phase 1 while FO menu entries remain placeholder-only without detail routes |
+| P1 | FO support ticket history หรือ contact-only | `SUP-DEC-001` | กระทบ Help / Support API, BO reply sync, FO UX |
 | P1 | Broadcast แสดงใน FO Notification Center หรือ push-only | `NOTI-DEC-001` | กระทบ FO notification type list และ payload |
 | P1 | Sensitive export ต้องมี approval เพิ่มหรือไม่ | `REP-DEC-004`, `SET-DEC-004` | กระทบ Admin Settings, Reports, Audit |
-| P2 | Board public SEO web requirement | `BO-DEC-005`, `BO-CONTENT-DEC-001` | กระทบ Board content delivery และ routing |
+| P2 | Board public SEO web requirement | `BO-DEC-005` | กระทบ Board content delivery และ routing |
 | P2 | Fine-grained permission editor หรือ fixed admin access matrix | `SET-DEC-001` | กระทบ Admin Settings data model และ QA scope |
 
 ## 7. QA Focus Areas

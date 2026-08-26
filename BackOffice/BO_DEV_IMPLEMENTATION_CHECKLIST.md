@@ -433,3 +433,40 @@ Recommended note format:
 | Permission / Audit | Permission changes, admin lifecycle actions, security/retention/export policy changes, feature flags, and sensitive/export settings must require confirmation, reason where needed, before/after diff, and audit. |
 | FO Sync Impact | Settings changes can alter BO access, FO/BO feature flags, retention/export behavior, public legal/support content, and security defaults. Changes must surface FO/BO impact before save and link history to Audit Log where permitted. |
 
+## 17. Option Master
+
+- [ ] Option Group List รองรับ search, status filter (ทั้งหมด/Active/Inactive), sort และ pagination
+- [ ] Option Group List มี Status column (Active/Inactive badge) และ action menu (View, Edit, Deactivate/Reactivate, Delete, ดู Audit Log)
+- [ ] Option Group List มีปุ่ม `เพิ่ม Group` และ `จัดเรียง` (Reorder Groups) ใน page actions; ปุ่ม `จัดเรียง` แสดงเฉพาะ active group ≥2
+- [ ] Option Detail แสดง option list table พร้อม panel title/subtitle, มีปุ่ม Add Option
+- [ ] Add/Edit Option modal: ฟอร์ม fields, Group Key/Option Key lock หลังสร้าง, validation, confirmation
+- [ ] Deactivate/Reactivate Option modal: reason selector, safeguard, System Option Deactivate Policy state (กลุ่ม `condition` ล็อก, กลุ่มอื่นอนุญาตพร้อม reason + safeguard ≥1 active option เหลือ)
+- [ ] Reorder Option modal: drag-and-drop + up/down fallback
+- [ ] Add/Edit Group modal: ฟอร์ม fields, Group Key lock, validation, confirmation
+- [ ] Deactivate/Reactivate Group modal: reason selector, safeguard ห้าม deactivate ถ้ามี asset ใช้ option ใน group
+- [ ] Delete Group modal: reason selector, type-to-confirm, safeguard (group Inactive + ไม่มี asset ใช้)
+- [ ] Group Audit Log view: read-only, แสดง action/timestamp/actor/reason/before-after diff
+- [ ] Reorder Groups: drag-and-drop + up/down fallback, เฉพาะ active groups ≥2, sort_order sequential
+- [ ] Key lock rule: key ล็อกตั้งแต่สร้าง ไม่ใช่หลังถูกใช้ใน asset
+- [ ] ตาราง `spec_option_groups`, `spec_options`, `spec_option_audit` มี field ครบ
+- [ ] Audit actions ครบ: `OPTION_ADD`, `OPTION_EDIT`, `OPTION_DEACTIVATE`, `OPTION_REACTIVATE`, `OPTION_REORDER`, `GROUP_CREATE`, `GROUP_EDIT`, `GROUP_DEACTIVATE`, `GROUP_REACTIVATE`, `GROUP_DELETE`, `GROUP_REORDER`
+- [ ] Seed data 6 groups พร้อมใช้งาน
+- [ ] FO Integration: Add/Edit Asset form, Search Filter, Watch Alert criteria ใช้ option จาก Option Master
+- [ ] Option Master UI ต้อง responsive ที่ 375px, 768px, 1280px และ 1440px
+
+### Option Master Prototype Handoff Notes
+
+| Field | Detail |
+| --- | --- |
+| Prototype Reference | `Prototypes/bo-prototype.html` > `Option Master` > `Option Group List` and `Option Detail`. |
+| Spec Reference | `17_OPTION_MASTER_MODULE.md` sections 5-22; `08_AUDIT_LOG_MODULE.md`; `06_MARKET_DATA_MODULE.md` section 15 (FO integration). |
+| Prototype / Spec Alignment | Prototype aligns with the Phase 1 Option Master baseline for Option Group List (table, status filter, action menu, page actions), Option Detail (option list table, Add Option), Add/Edit Option modal, Deactivate/Reactivate Option modal, Reorder Option modal, Add/Edit Group modal, Deactivate/Reactivate/Delete Group modal, Group Audit Log view, and Reorder Groups. Production must add server/API permission enforcement, persistent audit records, required reason validation, safeguard enforcement at service layer, and real FO sync/cache invalidation. |
+| Data Needed | Replace mock option groups/options with server-paginated API data: group id, Group Key, display_name_th/en, description, allows_multi_select, is_active, sort_order, option id, Option Key, display_name_th/en, is_active, sort_order, used_in_asset_count, audit history. |
+| Route / Drill-in | Left nav route `Option Master` opens Option Group List; row click opens Option Detail with breadcrumb `Option Master / {Group Key}` and back to Option Group List. Action menu opens related modal/view (Edit, Deactivate/Reactivate, Delete, Audit Log). |
+| Route / Filter | Option Group List filters: search, status (ทั้งหมด/Active/Inactive), sort, page, reset. Reset clears search/filter/sort/page and should update query params. Logout/login should return to Dashboard and must not retain Option Master submenu, active subroute, filter toggle state, custom select, query params, selected group/option, or pagination state. |
+| State Handling | Implement loading, empty, no-result, partial-error, unauthorized, stale-data, policy-blocked (safeguard), audit-failed, session-expired, and unavailable states for Option Group List, Option Detail, all modals, and Group Audit Log view. |
+| Permission / Audit | BO has one `Admin` account type; enforce module/action permission at route, UI, API, and service layers. Separate permission keys are needed for module view, option add/edit/deactivate/reactivate/reorder, group add/edit/deactivate/reactivate/delete/reorder, audit log view, and export. All 11 audit action types must be logged with before/after values and reason. UI hiding is not sufficient, and direct URL/API access must be rejected server-side. |
+| Responsive QA | Verify 375px, 768px, 1280px, and 1440px against the prototype behavior. Desktop/wide desktop use dense operational rows, top filter controls, row action menus, and full Option Detail layout. Tablet/mobile use stacked card rows, hidden table headers, hamburger navigation, filter toggle with advanced filters expanding in the list area, reachable row action menus, and detail/modal views that stack without clipped Thai text. |
+| FO Sync Impact | Option changes must invalidate FO Add Asset form (control type, required rule, sort order), Search Filter (Filter Visibility Rule, Filter Dependency Rule, multi-select), Watch Alert criteria (schema เดียวกับ Search Filter, warning สำหรับ inactive option), and caching strategy. Deactivated option must trigger fallback behavior on all FO surfaces. |
+| Open Question | Confirm final route names/query params, exact permission key names, safeguard enforcement level (service vs API), final FO sync/cache invalidation SLA, and seed data versioning strategy. |
+

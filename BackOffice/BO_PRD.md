@@ -61,13 +61,14 @@ FO users have a single account type: `User`. BO must support activity from the s
 - Dashboard
 - User Management
 - Asset Management
-- Offer & Chat Management
+- Offer Management (read-only ใน V1)
 - Content / Board Management
 - Market Data Management
+- Option Master Management
 - Watch Alert Management
 - Directory Management (future/postponed; not Phase 1)
 - Help & Support Ticket
-- Push Notification และ System Notification Trigger
+- Notifications
 - Reports & Analytics
 - Audit Log
 - Admin Settings
@@ -208,7 +209,7 @@ Admin ต้องสามารถ:
 
 ---
 
-## 4.5 Offer & Chat Management
+## 4.5 Offer Management
 
 ### Requirements
 
@@ -217,11 +218,10 @@ Admin ต้องสามารถ:
 - ดูรายการ offer ทั้งหมด
 - Filter ตาม status: Pending, Accepted, Rejected, Cancelled, Expired, Invalidated
 - ดู offer detail
-- ดู chat room ที่เกี่ยวข้องกับ offer
-- ดู notification delivery ของ offer
-- Force expire offer เฉพาะ Admin
-- ดู reported chat
-- Remove/hide chat message ที่ผิด policy
+
+Offer Management V1 เป็น read-only ไม่มี accept/decline/cancel/force-expire/invalidate/remove-chat-message action ถ้าเพิ่มภายหลังต้องมี Product approval, permission check, confirmation/reason เมื่อกระทบ FO/user และ audit log
+
+Future scope (ยังไม่ render ใน prototype V1): chat room context ที่เกี่ยวข้องกับ offer, notification delivery ของ offer, force expire offer, remove/hide chat message
 
 ### Business Rules
 
@@ -266,7 +266,7 @@ Admin ต้องสามารถ:
 - Admin สร้างบทความพร้อมรูปและเนื้อหาได้จาก BO
 - บทความ published ต้องปรากฏใน FO Board
 - บทความ archived ต้องหายจาก FO
-- Featured article ต้องแสดงในพื้นที่ Board hero ตามลำดับ
+- Main Hero ต้องเลือกจาก eligible Published Article ล่าสุดอัตโนมัติ ไม่ใช้ Featured toggle ใน Phase 1
 
 ---
 
@@ -460,6 +460,8 @@ Reports ที่ต้องมี:
 - SupportTicket
 - Notification
 - AdminAccount
+- SpecOption
+- SpecOptionGroup
 
 ---
 
@@ -516,18 +518,23 @@ Reports ที่ต้องมี:
 - Dashboard
 - User Management
 - Asset Management
+- Offer Management (read-only ใน V1)
 - Content / Board Management
 - Market Data
+- Option Master
+- Watch Alert Management
+- Help & Support Ticket
+- Account Deletion Requests
+- Notifications
+- Reports & Analytics
 - Audit Log
+- Admin Settings
 
 ### Phase 2
 
-- Offer & Chat Management
-- Asset Reported Comments Moderation
-- Watch Alert Management
-- Support Ticket
-- Notifications
-- Expanded Reports
+- Directory (รอ FO directory detail routes และ taxonomy approval)
+- Chat moderation workflow (remove/hide chat message, reported chat queue)
+- Offer write actions (force expire, invalidate, accept/decline จาก BO)
 
 ### Phase 3
 
@@ -535,6 +542,8 @@ Reports ที่ต้องมี:
 - SLA dashboard
 - External integrations
 - Automated compliance tools
+- External CRM integration
+- Full workflow automation สำหรับ legal/compliance
 
 ---
 

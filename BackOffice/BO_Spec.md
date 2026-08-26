@@ -27,14 +27,16 @@ BO Dashboard
 ├── Dashboard (ภาพรวมระบบ)
 ├── User Management (จัดการผู้ใช้)
 ├── Asset Management (จัดการสินทรัพย์)
+├── Offer Management (การดำเนินงาน / Offer Management — read-only ใน V1)
 ├── Content Management (จัดการเนื้อหา)
 │   ├── Articles (บทความ Board)
 │   ├── Categories (หมวดหมู่บทความ)
-│   └── Banners (Future scope; not used for Phase 1 Board Main)
+│   └── Reported Articles (รายงานบทความที่ถูกแจ้ง)
 ├── Market Data (ข้อมูลตลาด)
-│   ├── Watch Brands
-│   ├── Watch Models
-│   └── Price Index
+│   ├── Dashboard
+│   ├── Brands & Models
+│   └── Sync History
+├── Option Master (จัดการ option master สำหรับ FO)
 ├── Directory (future/postponed; not Phase 1)
 │   ├── Watch Shops
 │   ├── Accessories Shops
@@ -42,10 +44,39 @@ BO Dashboard
 │   ├── Auction Centers
 │   ├── Consignment Centers
 │   └── Authentication Centers
-├── Reports & Analytics
-├── Push Notifications
-├── Audit Log
-└── Admin Settings
+├── Watch Alert
+│   ├── Alert Criteria
+│   ├── Trigger History
+│   └── Disabled Alerts
+├── Help & Support
+│   ├── Tickets
+│   ├── Assignment
+│   └── SLA
+├── Account Deletion
+│   ├── Requests
+│   ├── Grace Period
+│   └── Anonymization
+├── Reports
+│   ├── User
+│   ├── Asset
+│   ├── Offer
+│   ├── Search
+│   └── Export Jobs
+├── Notifications
+│   ├── Broadcast
+│   ├── System Templates
+│   └── Delivery Logs
+└── Settings
+    ├── Admin Accounts
+    ├── Roles & Permissions
+    ├── Security
+    ├── Retention
+    ├── Terms of Use
+    ├── Privacy Policy
+    ├── Version History
+    ├── Support Center
+    ├── Contact Support
+    └── Audit Log
 ```
 
 ---
@@ -345,8 +376,13 @@ Watch Shops, Accessories Shops, Repair Shops, Auction Centers, Consignment Cente
 | Asset Report | Assets by Status (Sale/Show/Hide/Sold), Assets by Brand, Avg Price, New Assets per Day |
 | Transaction Report | Offers Made, Offers Accepted, Offers Rejected, Acceptance Rate, Avg Deal Value |
 | Content Report | Article Views, Top 10 Articles, Category Performance, Avg Read Time |
+| Chat Report | Active Chat Rooms, Messages Sent, Attachments Sent, Reported Chats |
+| Asset Reported Comments Report | Total Comments, Reported Comments, Hidden Comments, Top Commented Assets |
 | Search Report | Top Search Keywords, Top Filter Combinations, Watch Alert Volume by Brand |
 | Watch Alert Report | Total Active Alerts, Trigger Rate (Alert → Click), Top Alert Brands |
+| Support Report | Open Tickets, SLA, Resolution Time, Ticket Types |
+| Notification Report | Sent, Delivered, Opened, Failed, Retry Count by Notification Type |
+| Account Deletion Report | Requests, Blocked, Archived, Avg Processing Time |
 
 **Export:** CSV และ Excel สำหรับทุก Report  
 **Date Range Filter:** ทุก Report มี Date Range Picker (วันนี้ / 7 วัน / 30 วัน / Custom)
@@ -428,7 +464,7 @@ BO uses exactly one admin account type: `Admin`. There are no BO sub-types. The 
 | Admin ID | รหัส Admin ที่ทำ Action |
 | Admin Access | Admin access ของ Admin ขณะนั้น |
 | Action Type | Create / Update / Delete / Approve / Reject / Suspend / Ban / Flag / Send Notification / etc. |
-| Target Entity Type | User / Asset / Article / Brand / Model / Price / Directory / Notification |
+| Target Entity Type | User / Asset / Article / Brand / Model / Price / Directory / Notification / SpecOption / SpecOptionGroup |
 | Target Entity ID | ID ของ Entity ที่ถูกกระทำ |
 | Before Value | ค่าก่อนแก้ไข (JSON) — สำหรับ Update |
 | After Value | ค่าหลังแก้ไข (JSON) — สำหรับ Update |
