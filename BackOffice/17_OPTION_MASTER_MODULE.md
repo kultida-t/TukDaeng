@@ -1,11 +1,11 @@
 # 17 BO Option Master Module
 
-**เวอร์ชัน:** `BO-17-v0.11`
-**วันที่:** 2026-08-25
-**สถานะ:** สเปกปัจจุบัน
-**แพลตฟอร์ม:** Responsive Web Back Office
+**Version:** `BO-17-v0.11`  
+**Date:** 2026-08-25  
+**Status:** สเปกปัจจุบัน  
+**Platform:** Responsive Web Back Office
 
-## มาตรฐาน UI และ Prototype อ้างอิง
+## UI Standards And Prototype Reference
 
 เอกสารนี้ต้องใช้ร่วมกับ `00_GLOBAL_RULES_MODULE.md` และยึดรูปแบบหน้าจอ/พฤติกรรมที่ยืนยันแล้วใน `../Prototypes/bo-prototype.html` เป็นมาตรฐานหลัก
 
@@ -13,7 +13,18 @@
 
 หมายเหตุ prototype: หน้าจอ Option Master ถูกสร้างและยืนยันใน `../Prototypes/bo-prototype.html` แล้ว เอกสารนี้ได้รับการอัปเดตให้ตรงกับ prototype สุดท้าย รวมถึง Add Group, Reorder Groups และ Group Audit Log view
 
-## 1. วัตถุประสงค์
+## Document Information
+
+| Field | Detail |
+| --- | --- |
+| Module Name | BO Option Master |
+| Platform | Responsive Web Back Office |
+| Version | `BO-17-v0.11` |
+| Status | สเปกปัจจุบัน |
+| Owner | Product / UX / Engineering / Operations |
+| Document Type | Functional PRD |
+
+## 1. Objective
 
 Option Master เป็นเมนูสำหรับให้ Admin จัดการ internal option master ที่ระบบ TukDaeng ใช้เอง ไม่ใช่ provider catalog จาก The Watch API ข้อมูลเหล่านี้ถูกใช้ใน FO Add/Edit Asset, FO Search Filter และ FO Watch Alert criteria
 
@@ -35,9 +46,9 @@ Option Master เป็นเมนูสำหรับให้ Admin จั�
 - เรียงลำดับ option ใหม่ให้ตรงลำดับการแสดงผลที่ต้องการ
 - ตรวจสอบ audit trail ของทุกการเปลี่ยนแปลง
 
-## 2. ขอบเขต
+## 2. Scope
 
-อยู่ในขอบเขต:
+### In Scope
 
 - Option Group List
 - Option Detail (รายการ option ภายใน group)
@@ -56,7 +67,7 @@ Option Master เป็นเมนูสำหรับให้ Admin จั�
 - Audit log สำหรับทุก action
 - Responsive layout ตาม `00_GLOBAL_RULES_MODULE.md`
 
-อยู่นอกขอบเขต:
+### Out Of Scope
 
 - Delete option ที่เคยถูกใช้ใน asset แล้ว (ใช้ deactivate แทน เพื่อคง history)
 - Bulk import option
@@ -66,7 +77,7 @@ Option Master เป็นเมนูสำหรับให้ Admin จั�
 - แก้ไข `key` ของ option หลังสร้าง
 - เชื่อม Option Master กับ provider sync
 
-## 3. โครงสร้างเมนู
+## 3. Menu Structure
 
 เมนูหลัก: `Option Master`
 
@@ -80,7 +91,7 @@ Option Master เป็นเมนูหลักระดับเดียว
 - ปุ่มกลับจาก Option Detail ต้องกลับ `Option Group List`
 - Option Master เป็นโมดูลใหม่ที่ยังไม่ได้ล็อกใน navigation จึงเพิ่มต่อท้าย navigation ที่ล็อกไว้ใน `00_GLOBAL_RULES_MODULE.md` ได้ โดยห้ามเปลี่ยนลำดับ ชื่อ หรือ active state ของเมนูที่ล็อกไว้
 
-## 4. สิทธิ์และกฎการเข้าถึง
+## 4. Admin Access And Permissions
 
 Admin ที่มีสิทธิ์เข้าถึง Option Master สามารถดู list/detail และทำ write action ได้ตามสิทธิ์ module access
 
@@ -112,7 +123,7 @@ Admin ที่มีสิทธิ์เข้าถึง Option Master ส�
 | **View group audit log** | Allowed by module access; เปิดจาก action menu ของ group row; รายละเอียด section 6.1.8 |
 | Bulk import/export | Not available ใน Phase 1 |
 
-## 5. รูปแบบ Responsive
+## 5. Responsive Layout
 
 | Breakpoint | ความกว้าง | ข้อกำหนดของ Option Master |
 | --- | --- | --- |
@@ -280,7 +291,7 @@ Confirmation modal ครั้งที่ 2 (re-confirm):
 - บันทึก audit `GROUP_DELETE` ก่อนทำ hard delete (เพื่อคง trail ว่าเคยมี group นี้อยู่)
 - ปุ่ม `Delete` ต้อง disabled หรือ hidden ถ้าไม่ผ่านเงื่อนไข (1) หรือ (2) พร้อม tooltip อธิบายเหตุผล
 
-#### 6.1.5 Safeguard Rules สำหรับ Group-level Actions
+#### 6.1.5 Safeguard Rules For Group-level Actions
 
 สรุป safeguard ที่ service layer ต้อง enforce (ไม่พึ่งเฉพาะ UI):
 
@@ -499,7 +510,7 @@ Confirmation modal ต้องแสดง:
 
 เหตุผลของ policy: system option เป็น baseline option ที่ seed มาจาก seed file และเป็น source of truth ของ dropdown/filter ใน FO การ deactivate อาจทำให้ FO form สูญเสียตัวเลือกที่จำเป็น จึงต้องแบ่งระดับการควบคุมตามความสำคัญ
 
-#### การจัดประเภทกลุ่ม system option
+#### System Option Group Classification
 
 | กลุ่ม | ระดับควบคุม | เหตุผล |
 | --- | --- | --- |
@@ -510,7 +521,7 @@ Confirmation modal ต้องแสดง:
 | `dial_color` | **Controlled** — อนุญาตพร้อม reason + safeguard | Optional spec field; การ deactivate ไม่บล็อก FO form |
 | `strap_bracelet_type` | **Controlled** — อนุญาตพร้อม reason + safeguard | Optional spec field; การ deactivate ไม่บล็อก FO form |
 
-#### กฎสำหรับกลุ่ม Locked (`condition`)
+#### Rules For Locked Group (`condition`)
 
 - ห้าม deactivate system option ในกลุ่ม `condition` ผ่าน BO UI และ API
 - ปุ่ม `Deactivate` ต้อง disabled หรือ hidden สำหรับ system option ในกลุ่ม `condition` พร้อม tooltip อธิบายว่า "กลุ่มนี้เป็น required field สำหรับ Sale status จึงไม่สามารถ deactivate ผ่าน BO ได้ ต้องแก้ไขผ่าน seed file และ migration"
@@ -518,7 +529,7 @@ Confirmation modal ต้องแสดง:
 - การ deactivate system option ในกลุ่ม `condition` ต้องทำผ่าน seed file update + migration script เท่านั้น (เป็น dev operation ไม่ใช่ BO UI action)
 - Custom option (`is_system=false`) ในกลุ่ม `condition` ถ้ามีเพิ่มในอนาคต ยังสามารถ deactivate ได้ปกติ เพราะ Admin เป็นคนสร้างและรับผิดชอบเอง
 
-#### กฎสำหรับกลุ่ม Controlled
+#### Rules For Controlled Groups
 
 - อนุญาตให้ deactivate system option ได้ พร้อม reason (required) และ confirmation modal ตาม section 10
 - **Safeguard: ห้าม deactivate ถ้าจะทำให้เหลือ active option น้อยกว่า 1 ในกลุ่ม** — เพื่อป้องกัน dropdown/filter ว่างใน FO form
@@ -526,13 +537,13 @@ Confirmation modal ต้องแสดง:
   - Service layer ต้อง enforce safeguard นี้ด้วย ไม่พึ่งเฉพาะ UI
 - หลัง deactivate สถานะ option เปลี่ยนเป็น `Inactive` และบันทึก audit `OPTION_DEACTIVATE` พร้อม reason ตามปกติ
 
-#### กฎสำหรับ Custom option (`is_system=false`) ทุกกลุ่ม
+#### Rules For Custom Option (`is_system=false`) All Groups
 
 - Admin สามารถ deactivate custom option ได้ทุกกลุ่ม รวมถึงกลุ่ม `condition` พร้อม reason + confirmation
 - มี safeguard เดียวกัน: ห้าม deactivate ถ้าจะทำให้เหลือ active option น้อยกว่า 1 ในกลุ่ม
 - บันทึก audit `OPTION_DEACTIVATE` พร้อม reason
 
-#### สรุป policy ในตาราง
+#### Policy Summary Table
 
 | ประเภท option | กลุ่ม | Deactivate ผ่าน BO UI | เงื่อนไข |
 | --- | --- | --- | --- |
@@ -588,13 +599,13 @@ Reorder ทำได้ 2 วิธี:
 - บันทึก audit `OPTION_REORDER` ครั้งเดียวต่อการ save พร้อม before/after sort_order ของทุก option ที่เปลี่ยนลำดับ
 - ถ้า admin ไม่ได้เปลี่ยนลำดับเลยและกด save ไม่ต้องบันทึก audit
 
-### 12.2 Edit Option Modal (รอง)
+### 12.2 Edit Option Modal (Secondary)
 
 - Admin สามารถแก้ sort_order ของ option เดียวผ่าน Edit Option modal ตาม section 9
 - เหมาะสำหรับการปรับลำดับแบบ precise หรือกรณีแก้ option เดียวพร้อม label
 - บันทึก audit `OPTION_EDIT` (ไม่ใช่ `OPTION_REORDER` เพราะเป็นการแก้ field เดียวใน Edit modal)
 
-### 12.3 กฎทั่วไป
+### 12.3 General Rules
 
 - sort_order เป็นตัวเลขจำนวนเต็มที่กำหนดลำดับการแสดงผลใน FO form/filter
 - ค่าน้อยกว่าแสดงก่อน
@@ -621,7 +632,7 @@ Reorder ทำได้ 2 วิธี:
 | **Reorder groups** | มี active group ≥2 | Yes (save ใน Reorder Groups Modal) | No | `GROUP_REORDER` | ลำดับ FO form/filter เปลี่ยน; บันทึก audit เฉพาะเมื่อลำดับเปลี่ยนจริง |
 | **View group audit log** | Module access | No (read-only) | No | — | ไม่มีผลต่อ FO |
 
-## 14. Impact ต่อระบบ
+## 14. System Impact
 
 ผลกระทบของการเปลี่ยนแปลง option master ต่อระบบอื่น:
 
@@ -646,7 +657,7 @@ Reorder ทำได้ 2 วิธี:
 - Cached FO form/filter option ต้อง validate active status ก่อนแสดงหรือเมื่อ refresh
 - รายละเอียด cache invalidation/API timing ให้สรุปอีกครั้งตอนออกแบบ backend
 
-## 15. Integration กับ Module อื่น
+## 15. Module Integration
 
 | Module | Integration |
 | --- | --- |
@@ -709,7 +720,7 @@ Audit action group: เพิ่ม `Option Master` เป็น action group �
 
 Target entity type เพิ่ม: `SpecOption` และ `SpecOptionGroup` ใน `08_AUDIT_LOG_MODULE.md` section 5
 
-## 17. Data Model และ Seed Data Strategy
+## 17. Data Model And Seed Data Strategy
 
 ส่วนนี้กำหนด data model เชิงกายภาพ ความสัมพันธ์กับตารางอื่น และกลยุทธ์ seed/migration/versioning ของ Option Master
 
@@ -719,7 +730,7 @@ Target entity type เพิ่ม: `SpecOption` และ `SpecOptionGroup` ใ
 - `../SeedData/asset-spec-options.csv`
 - `../SeedData/README.md`
 
-### 17.1 ตาราง `spec_option_groups`
+### 17.1 Table `spec_option_groups`
 
 เก็บข้อมูลกลุ่ม option ทั้งหมด ใน Phase 1 group เกิดจาก seed/development หรือจากการ Add Group ผ่าน BO UI Admin สามารถ add/edit/deactivate/reactivate/delete/reorder group ได้ตาม section 6.1
 
@@ -762,7 +773,7 @@ Seed groups (6 กลุ่ม):
 | `dial_color` | false | Dial Color | สีหน้าปัด |
 | `strap_bracelet_type` | false | Strap / Bracelet Type | ประเภทสาย |
 
-### 17.2 ตาราง `spec_options`
+### 17.2 Table `spec_options`
 
 เก็บรายการ option ภายในแต่ละกลุ่ม เป็นตารางหลักที่ FO อ่านเพื่อ render dropdown/filter/Watch Alert criteria
 
@@ -805,7 +816,7 @@ CREATE TABLE spec_options (
 
 Unique constraint: `UNIQUE (group_id, option_key)` ป้องกัน key ซ้ำใน group เดียวกัน
 
-### 17.3 ตาราง `spec_option_audit`
+### 17.3 Table `spec_option_audit`
 
 เก็บ audit trail เฉพาะ Option Master แยกจาก audit log กลาง เพื่อให้ query ประวัติการเปลี่ยนแปลง option ได้โดยตรง ข้อมูลเดียวกันต้อง sync ไป audit log กลาง (`08_AUDIT_LOG_MODULE.md`) ด้วย
 
@@ -841,7 +852,7 @@ CREATE TABLE spec_option_audit (
 
 Audit record ต้องไม่ถูกแก้ไขหรือลบผ่าน BO UI ตาม `08_AUDIT_LOG_MODULE.md` section 7
 
-### 17.4 ความสัมพันธ์กับตารางอื่น
+### 17.4 Relationship With Other Tables
 
 Option Master เป็นแหล่งข้อมูลอ้างอิง (lookup) ของ asset specifications ที่ Owner กรอกใน FO Add/Edit Asset ความสัมพันธ์เป็น nullable เพราะ asset สามารถไม่มี option ได้ (optional fields)
 
@@ -880,7 +891,7 @@ FK columns ใน `asset_delivery_items`:
 - `asset_delivery_items` อ้างอิงเฉพาะ option ใน group `delivery` (enforce ที่ application/service layer)
 - Asset ต้องเก็บ snapshot text (`condition_snapshot`, `case_material_snapshot`, ฯลฯ) คู่กับ relation id เพื่อคง display history แม้ option label เปลี่ยนหรือ deactivate
 
-### 17.5 Indexes และ Constraints
+### 17.5 Indexes And Constraints
 
 ```sql
 -- ค้นหา option ตาม group และ active status (FO form/filter ใช้บ่อย)
@@ -995,7 +1006,7 @@ asset-spec-options-v3  (next change)
 - Database ต้องเก็บ seed version ล่าสุดที่ sync แล้ว เพื่อตรวจสอบว่า migration ทำครบหรือไม่
 - ถ้า database seed version ต่ำกว่า seed file version → รัน migration script ใหม่
 
-### 17.10 Impact ต่อ Existing Assets เมื่อ Option ถูก Deactivate
+### 17.10 Impact On Existing Assets When Option Is Deactivated
 
 เมื่อ option ถูก deactivate (`is_active=false`):
 
@@ -1017,7 +1028,7 @@ asset-spec-options-v3  (next change)
 - FO/BO ต้อง lookup label จาก `spec_options` โดยไม่กรอง `is_active` เมื่อแสดงข้อมูล asset เดิม
 - FO form/filter/Watch Alert ใหม่ ต้องกรอง `is_active=true` เท่านั้น
 
-## 18. Empty / Loading / Error States
+## 18. Empty, Loading, Error States
 
 | State | ข้อกำหนด |
 | --- | --- |
@@ -1031,7 +1042,7 @@ asset-spec-options-v3  (next change)
 | Permission Denied | แสดง access denied ตาม global BO rule |
 | Session Expired | กลับไป login พร้อม message ชัดเจน |
 
-## 19. Copy และ Visual Rules
+## 19. Copy And Visual Rules
 
 Copy rules:
 
@@ -1115,7 +1126,7 @@ Visual rules:
 - `../FrontOffice/10_WATCH_ALERT_MODULE.md` Filter Logic Rule, Match Rule, Validation Rules
 - `06_MARKET_DATA_MODULE.md` section 15 (FO Usage Rules)
 
-### 22.1 หลักการทั่วไป
+### 22.1 General Principles
 
 - Option Master เป็น single source of truth ของ `spec_options` domain ที่ FO ใช้ในทุก surface ที่เกี่ยวข้องกับ option ของ condition, delivery, case_material, movement, dial_color และ strap_bracelet_type
 - FO ต้องอ่าน option จาก API ที่อ้างอิง `spec_options` ใน database ไม่ hardcode option list ใน FO client
@@ -1195,7 +1206,7 @@ Visual rules:
 - ไม่ควร trigger match ใหม่ถ้า criteria อ้าง option ที่ inactive ตาม policy ใน `06_MARKET_DATA_MODULE.md` section 15 (Inactive หรือ unmapped market data)
 - Watch Alert เดิมที่อ้าง inactive option ต้องไม่ถูกลบโดยอัตโนมัติ เพราะ User อาจต้องการแก้ไข criteria หรือลบด้วยตัวเอง
 
-### 22.5 Caching Strategy สำหรับ FO
+### 22.5 Caching Strategy For FO
 
 FO client ต้อง cache option list เพื่อลด API call และรองรับ offline/fallback scenario:
 
@@ -1215,7 +1226,7 @@ FO client ต้อง cache option list เพื่อลด API call แล�
 - รายละเอียด cache invalidation/API timing ให้สรุปอีกครั้งตอนออกแบบ backend ตาม section 14 กฎการ sync
 - Cache version ต้องตรงกับ seed version ใน `asset-spec-options.json` เพื่อให้ trace ได้ว่า FO ใช้ option master version ใด
 
-### 22.6 Fallback Behavior เมื่อ Option ถูก Deactivate
+### 22.6 Fallback Behavior When Option Is Deactivated
 
 | FO/BO Surface | พฤติกรรมเมื่อ option ถูก deactivate |
 | --- | --- |
@@ -1237,7 +1248,7 @@ FO client ต้อง cache option list เพื่อลด API call แล�
 - FO form/filter/Watch Alert ใหม่ ต้องกรอง `is_active=true` เท่านั้น
 - Asset snapshot text ไม่กระทบเพราะ asset เก็บ snapshot text คู่กับ relation id แยกต่างหาก
 
-### 22.7 API Contract สำหรับ FO ดึง Option List
+### 22.7 API Contract For FO Option List Retrieval
 
 FO ดึง option list จาก backend ผ่าน API ต่อไปนี้:
 
@@ -1305,7 +1316,7 @@ FO ดึง option list จาก backend ผ่าน API ต่อไปน�
 - API ต้องรองรับ caching header (`Cache-Control`, `ETag`) เพื่อให้ FO client หรือ CDN cache ได้
 - ถ้า FO ต้องการ lookup label ของ option id เฉพาะ สามารถใช้ `GET /api/spec-options/{id}` หรือ lookup จาก cache ที่โหลดทั้งหมดแล้ว
 
-### 22.8 Prefill Behavior จาก Market Data Reference Selection
+### 22.8 Prefill Behavior From Market Data Reference Selection
 
 เมื่อ Owner เลือก Reference จาก Market Data ใน FO Add/Edit Asset form ระบบสามารถ prefill spec ได้:
 
@@ -1324,7 +1335,7 @@ FO ดึง option list จาก backend ผ่าน API ต่อไปน�
 - Prefill ต้องไม่บันทึกอัตโนมัติ ต้องรอ Owner กด Save ใน Add/Edit Asset form
 - Prefill ทำเฉพาะตอนเลือก Reference ครั้งแรกใน Add Asset; ใน Edit Asset ถ้า Owner เปลี่ยน Reference ใหม่ ระบบอาจเสนอ prefill ใหม่ แต่ต้องไม่ overwrite ค่าที่ Owner แก้ไว้แล้วโดยไม่ได้รับการยืนยัน
 
-### 22.9 Interaction ระหว่าง Market Data และ Option Master
+### 22.9 Interaction Between Market Data And Option Master
 
 Market Data และ Option Master เป็นสองระบบแยกกัน แต่ต้องมี interaction ที่ชัดเจน:
 

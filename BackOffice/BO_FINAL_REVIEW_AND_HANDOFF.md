@@ -5,7 +5,7 @@
 **Status:** Draft handoff  
 **Scope:** Back Office documentation baseline `00` - `16`
 
-## 1. สถานะโดยรวม
+## 1. Overall Status
 
 เอกสาร Back Office baseline ครบตาม module index แล้ว ตั้งแต่ `00_GLOBAL_RULES_MODULE.md` ถึง `16_ADMIN_SETTINGS_MODULE.md`
 

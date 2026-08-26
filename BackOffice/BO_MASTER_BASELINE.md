@@ -6,7 +6,7 @@
 **Platform:** Responsive Web Back Office  
 **Audience:** Admin  
 
-## 1. วัตถุประสงค์
+## 1. Objective
 
 Back Office คือ responsive internal web system สำหรับทีมภายใน ใช้ดูแลและปฏิบัติการระบบ TukDaeng หลังจากผู้ใช้ FO สร้างข้อมูลหรือกิจกรรมต่าง ๆ เช่น marketplace, social, support, content และ notification
 
