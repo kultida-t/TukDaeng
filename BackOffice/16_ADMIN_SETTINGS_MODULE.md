@@ -4,18 +4,34 @@
 **Date:** 2026-07-06  
 **Status:** Draft baseline  
 **Platform:** Responsive Web Back Office  
-**Primary BO Sources:** `00_GLOBAL_RULES_MODULE.md`, `01_AUTHENTICATION_MODULE.md`, `08_AUDIT_LOG_MODULE.md`, `15_REPORTS_ANALYTICS_MODULE.md`  
-**Integration Map:** `../ProjectAdmin/FO_BO_INTEGRATION_MAP.md`
+**Primary BO Sources:** `00_GLOBAL_RULES_MODULE.md`, `01_AUTHENTICATION_MODULE.md`, `08_AUDIT_LOG_MODULE.md`, `15_REPORTS_ANALYTICS_MODULE.md`
 
-## 1. วัตถุประสงค์
+## UI Standards And Prototype Reference
+
+เอกสารนี้ต้องใช้ร่วมกับ `00_GLOBAL_RULES_MODULE.md` และยึดรูปแบบหน้าจอ/พฤติกรรมที่ยืนยันแล้วใน `../Prototypes/bo-prototype.html` เป็นมาตรฐานหลัก
+
+ห้ามออกแบบ pattern แยกเองสำหรับ list toolbar, breakpoint, table/card layout, pagination, reset, drill-down, drawer, modal หรือ detail layout ยกเว้นเอกสารนี้ระบุไว้ชัดเจนว่าเป็น override ที่อนุมัติแล้ว
+
+## 1. Document Information
+
+| Field | Detail |
+| --- | --- |
+| Module Name | BO Admin Settings |
+| Platform | Responsive Web Back Office |
+| Version | `BO-16-v0.1` |
+| Status | Draft baseline |
+| Owner | Product / UX / Engineering / Operations |
+| Document Type | Functional PRD |
+
+## 2. Objective
 
 Admin Settings Module ใช้สำหรับตั้งค่าและตรวจสอบ configuration ระดับ Back Office ได้แก่ admin account settings, Roles & Permissions matrix, security settings, system defaults, retention/export policy และ operational settings ที่มีผลต่อการทำงานของ BO
 
 Module นี้ต้องไม่เป็นทางลัดเพื่อข้าม admin access control, audit, privacy หรือ FO sync rule ที่ระบุใน Global Rules และแต่ละ module
 
-## 2. ขอบเขต
+## 3. Scope
 
-### 2.1 In Scope
+### In Scope
 
 - Admin profile และ own security settings
 - Admin account management shortcut / settings view
@@ -31,7 +47,7 @@ Module นี้ต้องไม่เป็นทางลัดเพื่�
 - Audit log สำหรับทุก settings change
 - Responsive layout สำหรับ desktop, tablet และ mobile
 
-### 2.2 Out of Scope
+### Out Of Scope
 
 - FO user settings
 - FO notification preference center
@@ -42,7 +58,7 @@ Module นี้ต้องไม่เป็นทางลัดเพื่�
 - Secret management UI สำหรับ production credentials
 - Manual audit log deletion
 
-## 3. Admin Access & Permissions
+## 4. Admin Access And Permissions
 
 BO uses exactly one admin account type: `Admin`. Admin Settings may define role templates and a Roles & Permissions matrix, but it must not define separate BO admin account types. It controls account lifecycle, security policy, module/action policy, retention/export settings, feature flags, and integration metadata through policy-based access rules.
 
@@ -56,7 +72,7 @@ BO uses exactly one admin account type: `Admin`. Admin Settings may define role 
 | Export settings/audit summary | Requires export policy, scope control, and audit. |
 
 The last active Admin account must be protected from suspension/archive or access downgrade unless another active Admin account can maintain BO access.
-## 4. Responsive Layout
+## 5. Responsive Layout
 
 | Breakpoint | Layout |
 | --- | --- |
@@ -67,7 +83,7 @@ The last active Admin account must be protected from suspension/archive or acces
 
 High-risk action ต้องใช้ confirmation modal ที่อ่านง่ายบน mobile และต้องไม่ใช้ hover-only action
 
-## 5. Settings Sections
+## 6. Settings Sections
 
 | Section | Purpose |
 | --- | --- |
@@ -82,7 +98,7 @@ High-risk action ต้องใช้ confirmation modal ที่อ่าน�
 | Integration Settings | Provider status/config metadata แบบ non-secret |
 | Audit & Change History | Settings change history and permission change history |
 
-## 6. My Account
+## 7. My Account
 
 Admin ทุก admin access ต้องเข้าถึง own settings ได้:
 
@@ -99,11 +115,11 @@ Admin ทุก admin access ต้องเข้าถึง own settings ไ�
 
 Admin must pass mandatory Email OTP verification according to Auth baseline
 
-## 7. Admin Accounts
+## 8. Admin Accounts
 
 Admin Accounts section ต้อง reuse contract จาก `01_AUTHENTICATION_MODULE.md`
 
-### 7.1 Admin Account Status
+### 8.1 Admin Account Status
 
 | Status | Meaning |
 | --- | --- |
@@ -113,7 +129,7 @@ Admin Accounts section ต้อง reuse contract จาก `01_AUTHENTICATION_
 | `Suspended` | ถูก disable โดย Admin |
 | `Archived` | เอาออกจาก active use แต่ยังเก็บ audit history |
 
-### 7.2 Admin Account Actions
+### 8.2 Admin Account Actions
 
 | Action | Requirement |
 | --- | --- |
@@ -124,13 +140,13 @@ Admin Accounts section ต้อง reuse contract จาก `01_AUTHENTICATION_
 | Archive Admin | Admin access required, reason required |
 | Export Admin List | Admin access required, audit required |
 
-ต้องป้องกันการเปลี่ยนแปลง Admin คนสุดท้ายตาม rule ใน section 3
+ต้องป้องกันการเปลี่ยนแปลง Admin คนสุดท้ายตาม rule ใน section 4
 
-## 8. Roles & Permissions Policy Catalog
+## 9. Roles & Permissions Policy Catalog
 
 The previous multi-Admin access policy catalog is replaced by a single Admin account type with role templates and module/action policy. The UI may show a `Roles & Permissions` policy catalog, but it must not show separate BO admin account types.
 
-### 8.1 Baseline Role Templates
+### 9.1 Baseline Role Templates
 
 | Role template | Baseline permissions |
 | --- | --- |
@@ -142,7 +158,7 @@ The previous multi-Admin access policy catalog is replaced by a single Admin acc
 
 Role templates are presets. Production enforcement must use explicit permission keys at route, UI, API, and service layers.
 
-### 8.2 Module / Action Policy Catalog
+### 9.2 Module / Action Policy Catalog
 
 | Module | Admin access rule |
 | --- | --- |
@@ -157,13 +173,13 @@ Role templates are presets. Production enforcement must use explicit permission 
 | Notifications / Reports | Admin can manage templates, broadcasts, reports, and exports according to approval/export/sensitive-data policy. |
 | Admin Settings | Admin can manage BO settings through high-risk policy controls and audit. |
 
-### 8.3 Permission Change Rules
+### 9.3 Permission Change Rules
 
 - Permission changes are policy changes for the single Admin account type and its role templates.
 - Require confirmation, reason, before/after diff, and audit.
 - Direct API/service enforcement is required for every changed policy.
 - Changes affecting the current session must be reflected on the next request or token/session refresh.
-## 9. Security Policy Settings
+## 10. Security Policy Settings
 
 | Setting | Baseline | Editable In BO |
 | --- | --- | --- |
@@ -182,7 +198,7 @@ Role templates are presets. Production enforcement must use explicit permission 
 
 Security policy change ต้อง audit และควร require re-authentication
 
-## 10. System Defaults
+## 11. System Defaults
 
 | Setting | Baseline |
 | --- | --- |
@@ -196,7 +212,7 @@ Security policy change ต้อง audit และควร require re-authenti
 
 System defaults ที่กระทบทุก module ต้องแสดง impacted modules ก่อนบันทึก
 
-## 11. Retention Policy Settings
+## 12. Retention Policy Settings
 
 Retention settings ต้องแสดงเป็น policy/config โดยไม่ให้ admin ลบข้อมูลสำคัญแบบ manual
 
@@ -212,7 +228,7 @@ Retention settings ต้องแสดงเป็น policy/config โดย�
 
 Retention cleanup ต้องเป็น system job ที่ audit ตัวเอง ห้าม admin ลบ audit record จาก UI ปกติ
 
-## 12. Export Policy Settings
+## 13. Export Policy Settings
 
 | Setting | Requirement |
 | --- | --- |
@@ -225,7 +241,7 @@ Retention cleanup ต้องเป็น system job ที่ audit ตัว�
 
 Export policy ต้อง sync กับ `15_REPORTS_ANALYTICS_MODULE.md` และ `08_AUDIT_LOG_MODULE.md`
 
-## 13. Feature Flags / Module Availability
+## 14. Feature Flags / Module Availability
 
 Feature flag ใช้เพื่อควบคุม phase/decision เท่านั้น ไม่ใช่เพื่อ bypass business rule
 
@@ -240,7 +256,7 @@ Feature flag ใช้เพื่อควบคุม phase/decision เท่
 
 Feature flag change ต้อง audit และต้องแสดง FO/BO impact ก่อนบันทึก
 
-## 14. Integration Settings
+## 15. Integration Settings
 
 Integration settings ต้องแสดง metadata และสถานะ ไม่เก็บหรือเปิดเผย secret ใน BO UI ปกติ
 
@@ -254,7 +270,7 @@ Integration settings ต้องแสดง metadata และสถานะ 
 
 Secret เช่น API key, provider token, database credentials ต้องอยู่ใน secure secret manager ไม่ใช่ Admin Settings UI
 
-## 15. Audit & Change History
+## 16. Audit & Change History
 
 Admin Settings ต้องมี change history สำหรับ:
 
@@ -269,7 +285,7 @@ Admin Settings ต้องมี change history สำหรับ:
 
 Change history ต้อง link ไป Audit Log detail ตาม permission
 
-## 16. Admin Actions
+## 17. Admin Actions
 
 | Action | Permission | Confirmation | Reason | Audit |
 | --- | --- | --- | --- | --- |
@@ -283,7 +299,7 @@ Change history ต้อง link ไป Audit Log detail ตาม permission
 | Update feature flag | Admin | Yes | Required | Yes |
 | Export settings | Admin | Yes | Required if sensitive | Yes |
 
-## 17. Audit Requirements
+## 18. Audit Requirements
 
 Audit log ต้องบันทึกอย่างน้อย:
 
@@ -319,7 +335,7 @@ Audit payload ต้องมี:
 
 Sensitive settings value ต้อง mask ใน audit payload ถ้าเป็น secret หรือ high-risk data
 
-## 18. Error / Empty / Loading States
+## 19. Error, Empty, Loading States
 
 | State | Requirement |
 | --- | --- |
@@ -332,7 +348,7 @@ Sensitive settings value ต้อง mask ใน audit payload ถ้าเป�
 | Audit write failed | Block high-risk settings change หรือเข้าคิว reliable retry ตาม risk policy |
 | Feature flag impact warning | แสดง impacted modules ก่อน confirm |
 
-## 19. Acceptance Criteria
+## 20. Acceptance Criteria
 
 | ID | Criteria |
 | --- | --- |
@@ -347,7 +363,7 @@ Sensitive settings value ต้อง mask ใน audit payload ถ้าเป�
 | AC-BO-SET-009 | Integration settings ต้องไม่เปิดเผย secrets ใน BO UI |
 | AC-BO-SET-010 | Admin Settings UI ต้อง responsive ที่ 375px, 768px, 1280px และ 1440px |
 
-## 20. Open Decisions
+## 21. Open Decisions
 
 | ID | Decision Needed | Impact |
 | --- | --- | --- |

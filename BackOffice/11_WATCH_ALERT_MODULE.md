@@ -3,17 +3,32 @@
 **Version:** `BO-11-v0.1`  
 **Date:** 2026-07-06  
 **Status:** Draft baseline  
-**Platform:** Responsive Web Back Office  
-**Primary FO Sources:** `../FrontOffice/10_WATCH_ALERT_MODULE.md`, `../FrontOffice/03_SEARCH_FILTER_MODULE.md`, `../FrontOffice/09_NOTIFICATION_MODULE.md`, `../FrontOffice/04_ASSET_MANAGEMENT_MODULE.md`, `../FrontOffice/15_TRUST_SAFETY_MODULE.md`  
-**Integration Map:** `../ProjectAdmin/FO_BO_INTEGRATION_MAP.md`
+**Platform:** Responsive Web Back Office
 
-## 1. วัตถุประสงค์
+## UI Standards And Prototype Reference
+
+เอกสารนี้ต้องใช้ร่วมกับ `00_GLOBAL_RULES_MODULE.md` และยึดรูปแบบหน้าจอ/พฤติกรรมที่ยืนยันแล้วใน `../Prototypes/bo-prototype.html` เป็นมาตรฐานหลัก
+
+เอกสารอ้างอิง: `../FrontOffice/10_WATCH_ALERT_MODULE.md`, `../FrontOffice/03_SEARCH_FILTER_MODULE.md`, `../FrontOffice/09_NOTIFICATION_MODULE.md`, `../FrontOffice/04_ASSET_MANAGEMENT_MODULE.md`, `../FrontOffice/15_TRUST_SAFETY_MODULE.md`
+
+## 1. Document Information
+
+| Field | Detail |
+| --- | --- |
+| Module Name | BO Watch Alert |
+| Platform | Responsive Web Back Office |
+| Version | `BO-11-v0.1` |
+| Status | Draft baseline |
+| Owner | Product / UX / Engineering / Operations |
+| Document Type | Functional PRD |
+
+## 2. Objective
 
 BO Watch Alert Module คือหน้าจอสำหรับ Admin ใช้ตรวจสอบ watch alert ที่ user สร้างจาก FO Search Filter, ดู criteria, trigger history, notification delivery, abuse/risk signals และปิด/เปิด alert ตาม permission
 
 โมดูลนี้ไม่ใช่หน้าจอสร้าง alert แทน user เป็นหลัก แต่เป็น operational view สำหรับ support, moderation, analytics และ troubleshooting
 
-## 2. Scope
+## 3. Scope
 
 ### In Scope
 
@@ -37,7 +52,7 @@ BO Watch Alert Module คือหน้าจอสำหรับ Admin ใช
 - Notification template/retry management ซึ่งอยู่ใน Notification module
 - เปิด Asset Detail โดยตรงจาก Watch Alert notification
 
-## 3. FO Rules ที่ BO ต้องยึด
+## 4. FO Rules BO Must Follow
 
 | Area | FO Rule | BO Requirement |
 | --- | --- | --- |
@@ -51,19 +66,19 @@ BO Watch Alert Module คือหน้าจอสำหรับ Admin ใช
 
 หาก legacy BO source ระบุว่า Watch Alert notification เปิด Asset Detail ให้ถือว่า outdated และให้ยึด FO rule คือ `Watch Alert Result List`
 
-## 4. Admin Access And Permissions
+## 5. Admin Access And Permissions
 
-BO uses a single Admin account type only. Admin access is controlled by module access, action policy, sensitive-data policy, confirmation, reason, and audit requirements instead of separate BO admin account types.
+ระบบใช้ Admin access เดียว โดยตรวจสิทธิ์ตามเมนูและ action ที่ทำ ไม่แยกประเภทบัญชี Admin ในสเปกนี้
 
 
 | Access Area | Rule |
 | --- | --- |
-| Module access | Admin can use list/detail/search/filter when module access is granted. |
-| Write action | Create, update, status change, remove, restore, publish, archive, retry, and similar actions require permission check, confirmation for high-risk actions, reason when FO/user impact exists, and audit log. |
-| Sensitive data | Mask by default; reveal only with business reason, policy approval, and audit log. |
-| Export | Requires permission check, scope control, expiry/background job where needed, and audit export event. |
-| Direct URL/API | Enforce access at route, API, and service layers; never rely only on hidden UI. |
-## 5. Responsive Layout
+| Module access | Admin ที่มีสิทธิ์เข้าเมนูสามารถดู list, detail, search, filter, sort และ pagination ได้ |
+| Write action | Action ที่เปลี่ยน state หรือกระทบ user/FO ต้องตรวจ permission, แสดง confirmation สำหรับ high-risk action, บังคับกรอก reason เมื่อมีผลต่อ FO/user และบันทึก audit |
+| Sensitive data | แสดงแบบ mask เป็นค่าเริ่มต้น เปิดเฉพาะกรณีมี business reason, อนุมัติตาม policy และบันทึก audit |
+| Export | ต้องตรวจ permission, ควบคุม scope, ใช้ expiry/background job เมื่อจำเป็น และบันทึก audit export event |
+| Direct URL/API | ต้องตรวจสิทธิ์ที่ route, API และ service layer เสมอ ห้ามพึ่งพาการซ่อน UI เพียงอย่างเดียว |
+## 6. Responsive Layout
 
 | Width | Layout Requirement |
 | --- | --- |
@@ -73,7 +88,7 @@ BO uses a single Admin account type only. Admin access is controlled by module a
 
 Criteria ที่ยาวต้องแสดงแบบ structured chips/rows ไม่ใช่ JSON ดิบอย่างเดียว
 
-## 6. Watch Alert List
+## 7. Watch Alert List
 
 ข้อมูลขั้นต่ำ:
 
@@ -111,7 +126,7 @@ Criteria ที่ยาวต้องแสดงแบบ structured chips/ro
 - Market data inactive dependency
 - Abuse/risk flagged
 
-## 7. Watch Alert Status Contract
+## 8. Watch Alert Status Contract
 
 | Status | Meaning | FO Required Behavior |
 | --- | --- | --- |
@@ -122,7 +137,7 @@ Criteria ที่ยาวต้องแสดงแบบ structured chips/ro
 
 BO ต้องเก็บ actor/source ของ status change แยกให้ชัด เช่น user action, admin action, system action
 
-## 8. Criteria Schema
+## 9. Criteria Schema
 
 Watch Alert criteria ต้องใช้ schema เดียวกับ Search Filter:
 
@@ -147,7 +162,7 @@ Rules:
 - Brand -> Model dependency ต้องเหมือน Search
 - Criteria ที่อ้าง inactive brand/model/reference ต้องไม่หายจาก history แต่ต้องมี dependency warning
 
-## 9. Match And Trigger Rules
+## 10. Match And Trigger Rules
 
 Match ต้องใช้ rule เดียวกับ FO Search:
 
@@ -168,7 +183,7 @@ Lifecycle impact:
 | `Show` -> `Sale` | Match ได้ถ้าตรง criteria |
 | Any -> `ลบโดยเจ้าของ` หรือ `ซ่อนถาวร` | ไม่ match และ direct/result surface ต้อง unavailable |
 
-## 10. Trigger History
+## 11. Trigger History
 
 Trigger history ต้องแสดง:
 
@@ -184,7 +199,7 @@ Trigger history ต้องแสดง:
 
 Criteria snapshot สำคัญ เพราะ criteria อาจถูก user แก้หลัง trigger แล้ว
 
-## 11. Notification Delivery
+## 12. Notification Delivery
 
 Watch Alert delivery trace ต้องยึด destination:
 
@@ -209,7 +224,7 @@ Delivery fields ขั้นต่ำ:
 - Opened timestamp ถ้ามี
 - Failure reason ถ้ามี
 
-## 12. Admin Actions
+## 13. Admin Actions
 
 | Action | Allowed Roles | Requirement |
 | --- | --- | --- |
@@ -222,7 +237,7 @@ Delivery fields ขั้นต่ำ:
 
 Bulk disable ต้องเปิดเฉพาะกรณี abuse/risk policy ชัดเจน และต้องมี confirmation + reason
 
-## 13. FO Sync Rules
+## 14. FO Sync Rules
 
 | BO/System Action | FO Result |
 | --- | --- |
@@ -232,7 +247,7 @@ Bulk disable ต้องเปิดเฉพาะกรณี abuse/risk poli
 | Asset status no longer Sale | Asset หายจาก Watch Alert Result List |
 | User block relation changes | Result list ต้อง filter blocked asset ทันทีเมื่อโหลดใหม่ |
 
-## 14. Analytics
+## 15. Analytics
 
 Analytics ขั้นต่ำ:
 
@@ -247,7 +262,7 @@ Analytics ขั้นต่ำ:
 
 Analytics ต้องไม่ expose sensitive user data ให้ admin access ที่ไม่มี permission
 
-## 15. Audit Requirements
+## 16. Audit Requirements
 
 Audit action ขั้นต่ำ:
 
@@ -270,7 +285,7 @@ Audit action ขั้นต่ำ:
 - IP address หรือ session context ถ้ามี
 - Timestamp เป็น `Asia/Bangkok`
 
-## 16. Error, Empty, Loading States
+## 17. Error, Empty, Loading States
 
 ต้องรองรับ:
 
@@ -282,7 +297,7 @@ Audit action ขั้นต่ำ:
 - Permission denied สำหรับ user detail/export/sensitive reveal
 - Stale trigger warning เมื่อ background job ยังประมวลผลไม่เสร็จ
 
-## 17. Integration With Other BO Modules
+## 18. Integration With Other BO Modules
 
 | Module | Integration |
 | --- | --- |
@@ -295,7 +310,13 @@ Audit action ขั้นต่ำ:
 | Audit Log | Disable/enable/export/job events searchable |
 | Reports & Analytics | Watch Alert report and search trend report |
 
-## 18. Acceptance Criteria
+## Module-Specific Exceptions
+
+ไม่มี
+
+Watch Alert ต้องใช้ app shell, navigation, breakpoint, list toolbar, desktop table/grid, mobile card, pagination, reset และ detail ตาม `00_GLOBAL_RULES_MODULE.md` และ `../Prototypes/bo-prototype.html` โดยไม่มี UI/layout override เฉพาะโมดูล
+
+## 19. Acceptance Criteria
 
 | ID | Criteria |
 | --- | --- |
@@ -310,7 +331,7 @@ Audit action ขั้นต่ำ:
 | AC-BO-WA-009 | Block relation ต้องถูกใช้เป็น exclusion context ใน trigger/result review |
 | AC-BO-WA-010 | Responsive layout ใช้งานได้ที่ mobile-width, tablet และ desktop |
 
-## 19. Open Decisions
+## 20. Open Decisions
 
 | ID | Decision Needed | Current Recommendation |
 | --- | --- | --- |

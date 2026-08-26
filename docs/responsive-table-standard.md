@@ -747,7 +747,7 @@ const pagerHtml = renderPager(currentPage, pageCount, "data-user-page");
 </div>`
 ```
 
-### 10.7 จุดที่ใช้ helper (14 จุด)
+### 10.7 จุดที่ใช้ helper (16 จุด)
 
 | # | หน้า                              | data-attr                       |
 | - | --------------------------------- | ------------------------------- |
@@ -765,6 +765,8 @@ const pagerHtml = renderPager(currentPage, pageCount, "data-user-page");
 | 12 | Reported Assets                  | `data-asset-page`               |
 | 13 | Asset List                       | `data-asset-page`               |
 | 14 | Offer List                       | `data-offer-page`               |
+| 15 | Option Group List                | `data-option-group-page`        |
+| 16 | Option Detail (option list)      | `data-option-detail-page`       |
 
 > หมายเหตุ: Market Sync History ใช้ static pager (disabled, 1 หน้า) ไม่ต้องใช้ helper
 

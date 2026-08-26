@@ -3,19 +3,34 @@
 **Version:** `BO-12-v0.1`  
 **Date:** 2026-07-06  
 **Status:** Draft baseline  
-**Platform:** Responsive Web Back Office  
-**Primary FO Sources:** `../FrontOffice/13_SETTINGS_MODULE.md`, `../FrontOffice/01_AUTHENTICATION_MODULE.md`, `../FrontOffice/08_OFFER_MODULE.md`, `../FrontOffice/07_CHAT_MODULE.md`, `../FrontOffice/15_TRUST_SAFETY_MODULE.md`  
-**Integration Map:** `../ProjectAdmin/FO_BO_INTEGRATION_MAP.md`
+**Platform:** Responsive Web Back Office
 
-## 1. วัตถุประสงค์
+## UI Standards And Prototype Reference
+
+เอกสารนี้ต้องใช้ร่วมกับ `00_GLOBAL_RULES_MODULE.md` และยึดรูปแบบหน้าจอ/พฤติกรรมที่ยืนยันแล้วใน `../Prototypes/bo-prototype.html` เป็นมาตรฐานหลัก
+
+เอกสารอ้างอิง: `../FrontOffice/13_SETTINGS_MODULE.md`, `../FrontOffice/01_AUTHENTICATION_MODULE.md`, `../FrontOffice/08_OFFER_MODULE.md`, `../FrontOffice/07_CHAT_MODULE.md`, `../FrontOffice/15_TRUST_SAFETY_MODULE.md`
+
+## 1. Document Information
+
+| Field | Detail |
+| --- | --- |
+| Module Name | BO Help / Support |
+| Platform | Responsive Web Back Office |
+| Version | `BO-12-v0.1` |
+| Status | Draft baseline |
+| Owner | Product / UX / Engineering / Operations |
+| Document Type | Functional PRD |
+
+## 2. Objective
 
 Help / Support Module ใช้สำหรับให้ทีม Support และ Admin จัดการคำขอช่วยเหลือของผู้ใช้ที่เริ่มจาก FO Settings > Help, About > Contact support, สถานะบัญชีที่ต้องติดต่อ support, หรือเคสที่ทีมงานสร้างแทนผู้ใช้จากช่องทาง LINE / Phone / Email
 
 BO ต้องเป็นศูนย์กลางของ support ticket เพื่อให้ทีมงานเห็นบริบทผู้ใช้, ticket history, related asset / offer / chat / report, SLA และ audit trail ได้ครบ โดยไม่บังคับให้ FO V1 ต้องมี ticket history เต็มรูปแบบทันที
 
-## 2. ขอบเขต
+## 3. Scope
 
-### 2.1 In Scope
+### In Scope
 
 - Ticket queue สำหรับคำขอช่วยเหลือ
 - Ticket detail พร้อม user context และ related entity
@@ -27,7 +42,7 @@ BO ต้องเป็นศูนย์กลางของ support ticket �
 - Audit log สำหรับ action สำคัญ
 - Responsive layout สำหรับ desktop, tablet และ mobile
 
-### 2.2 Out of Scope
+### Out Of Scope
 
 - External CRM integration แบบเต็ม
 - Live chat ระหว่าง Admin กับผู้ใช้
@@ -36,7 +51,7 @@ BO ต้องเป็นศูนย์กลางของ support ticket �
 - Payment dispute workflow
 - FO ticket history UI ถ้า Product ยังไม่เปิด scope
 
-## 3. FO Help State และ BO Responsibility
+## 4. FO Help State And BO Responsibility
 
 FO Settings > Help ตาม baseline ปัจจุบันเป็นหน้าช่องทางติดต่อ support โดยแสดง:
 
@@ -61,19 +76,19 @@ FO interaction:
 | Contact-only V1 | ผู้ใช้ติดต่อผ่าน LINE / Phone / Email | Admin สร้างหรือรับ ticket ใน BO และบันทึก source channel |
 | In-app ticket future | ผู้ใช้ submit ticket หรือเห็น ticket history ใน FO | Ticket, reply และ status sync กลับ FO ตาม API contract |
 
-## 4. Admin Access & Permissions
+## 5. Admin Access And Permissions
 
-BO uses a single Admin account type only. Admin access is controlled by module access, action policy, sensitive-data policy, confirmation, reason, and audit requirements instead of separate BO admin account types.
+ระบบใช้ Admin access เดียว โดยตรวจสิทธิ์ตามเมนูและ action ที่ทำ ไม่แยกประเภทบัญชี Admin ในสเปกนี้
 
 
 | Access Area | Rule |
 | --- | --- |
-| Module access | Admin can use list/detail/search/filter when module access is granted. |
-| Write action | Create, update, status change, remove, restore, publish, archive, retry, and similar actions require permission check, confirmation for high-risk actions, reason when FO/user impact exists, and audit log. |
-| Sensitive data | Mask by default; reveal only with business reason, policy approval, and audit log. |
-| Export | Requires permission check, scope control, expiry/background job where needed, and audit export event. |
-| Direct URL/API | Enforce access at route, API, and service layers; never rely only on hidden UI. |
-## 5. Responsive Layout
+| Module access | Admin ที่มีสิทธิ์เข้าเมนูสามารถดู list, detail, search, filter ได้ |
+| Write action | Create, update, status change, remove, restore, publish, archive, retry และ action ที่คล้ายกัน ต้องตรวจ permission, แสดง confirmation สำหรับ action ที่มีความเสี่ยงสูง, บังคับกรอก reason เมื่อมีผลต่อ FO/user และบันทึก audit |
+| Sensitive data | แสดงแบบ mask เป็นค่าเริ่มต้น เปิดเฉพาะเมื่อมี business reason, อนุมัติตาม policy และบันทึก audit |
+| Export | ต้องตรวจ permission, ควบคุม scope, ใช้ expiry/background job เมื่อจำเป็น และบันทึก audit สำหรับ export event |
+| Direct URL/API | ต้องตรวจสิทธิ์ที่ route, API และ service layer เสมอ ห้ามพึ่งแค่การซ่อน UI |
+## 6. Responsive Layout
 
 | Breakpoint | Layout |
 | --- | --- |
@@ -83,7 +98,7 @@ BO uses a single Admin account type only. Admin access is controlled by module a
 
 ทุกหน้าต้องไม่พึ่ง hover-only action และต้องมี touch target ที่เหมาะกับ mobile
 
-## 6. Ticket List
+## 7. Ticket List
 
 Ticket list ต้องแสดงข้อมูลขั้นต่ำ:
 
@@ -102,7 +117,7 @@ Ticket list ต้องแสดงข้อมูลขั้นต่ำ:
 | Last Response | ข้อความล่าสุดมาจาก User หรือ Admin |
 | Created At / Updated At | วันที่สร้างและแก้ไขล่าสุด |
 
-## 7. Search & Filters
+## 8. Search & Filters
 
 ต้องค้นหาและกรองได้อย่างน้อย:
 
@@ -118,7 +133,7 @@ Ticket list ต้องแสดงข้อมูลขั้นต่ำ:
 - Related entity type
 - Created date / updated date
 
-## 8. Ticket Status Contract
+## 9. Ticket Status Contract
 
 ใช้ status กลางต่อไปนี้ใน BO:
 
@@ -137,7 +152,7 @@ Ticket list ต้องแสดงข้อมูลขั้นต่ำ:
 - `Resolved` = มีผลลัพธ์แล้ว แต่ยังอาจ reopen ได้ถ้าผู้ใช้ตอบกลับ
 - `Closed` = จบกระบวนการแล้ว และไม่อยู่ใน active queue
 
-## 9. Ticket Types
+## 10. Ticket Types
 
 Ticket type ต้องครอบคลุม flow ของ FO:
 
@@ -154,11 +169,11 @@ Ticket type ต้องครอบคลุม flow ของ FO:
 | Technical Issue | Bug, loading fail, app crash |
 | Other | เรื่องอื่นที่ยังไม่เข้าประเภท |
 
-## 10. Ticket Detail
+## 11. Ticket Detail
 
 Ticket detail ต้องมีส่วนข้อมูล:
 
-### 10.1 Requester Context
+### 11.1 Requester Context
 
 - User ID
 - Display name / username
@@ -168,7 +183,7 @@ Ticket detail ต้องมีส่วนข้อมูล:
 - Joined date และ last active
 - Warning ถ้าผู้ใช้ถูก ban/suspend หรืออยู่ใน deletion grace period
 
-### 10.2 Ticket Content
+### 11.2 Ticket Content
 
 - Subject
 - Original message
@@ -179,7 +194,7 @@ Ticket detail ต้องมีส่วนข้อมูล:
 - Status / priority / assignee
 - SLA timer
 
-### 10.3 Related Entity
+### 11.3 Related Entity
 
 Ticket หนึ่งรายการสามารถ link entity ได้มากกว่า 1 รายการ:
 
@@ -196,7 +211,7 @@ Ticket หนึ่งรายการสามารถ link entity ได้
 
 Related entity ต้องเปิดไป module ต้นทางได้ตาม permission ของ admin
 
-## 11. Priority & SLA
+## 12. Priority & SLA
 
 Priority baseline:
 
@@ -214,7 +229,7 @@ SLA baseline:
 - BO ต้องแสดง SLA state: On track, Near breach, Breached
 - ต้องมี open decision ว่า SLA clock นับตาม business hours หรือ calendar hours
 
-## 12. Reply & Internal Note Rules
+## 13. Reply & Internal Note Rules
 
 | Item | Rule |
 | --- | --- |
@@ -225,7 +240,7 @@ SLA baseline:
 | Sensitive data | Mask by default; reveal only with business reason, policy approval, and audit log. |
 | Attachment | ต้องแสดง scan status ถ้ามี file upload |
 
-## 13. Admin Actions
+## 14. Admin Actions
 
 | Action | Requirement | Audit |
 | --- | --- | --- |
@@ -238,7 +253,7 @@ SLA baseline:
 | Link entity | ต้องบันทึก entity type/id | Required |
 | Export ticket | ต้องบันทึก filter, scope, file metadata | Required |
 
-## 14. Cross-Module Integration
+## 15. Cross-Module Integration
 
 | Module | Integration |
 | --- | --- |
@@ -254,7 +269,7 @@ SLA baseline:
 | Audit Log | Ticket actions and sensitive reveal events |
 | Reports & Analytics | Ticket volume, SLA, resolution time, type breakdown |
 
-## 15. Audit Requirements
+## 16. Audit Requirements
 
 Audit log ต้องบันทึกอย่างน้อย:
 
@@ -279,7 +294,7 @@ Audit payload ต้องมี:
 - `user_agent`
 - `created_at`
 
-## 16. Error / Empty / Loading States
+## 17. Error, Empty, Loading States
 
 | State | Requirement |
 | --- | --- |
@@ -291,7 +306,13 @@ Audit payload ต้องมี:
 | Reply failed | เก็บ draft และให้ retry |
 | Export failed | แสดง error พร้อม audit เฉพาะ attempt ที่เริ่มแล้วตาม policy |
 
-## 17. Acceptance Criteria
+## Module-Specific Exceptions
+
+ไม่มี
+
+Help / Support ต้องใช้ app shell, navigation, breakpoint, list toolbar, desktop table/grid, mobile card, pagination, reset และ detail ตาม `00_GLOBAL_RULES_MODULE.md` และ `../Prototypes/bo-prototype.html` โดยไม่มี UI/layout override เฉพาะโมดูล
+
+## 18. Acceptance Criteria
 
 | ID | Criteria |
 | --- | --- |
@@ -305,7 +326,7 @@ Audit payload ต้องมี:
 | AC-BO-SUPPORT-008 | Sensitive reveal, export และ status change ต้องมี audit log |
 | AC-BO-SUPPORT-009 | Help / Support UI ต้อง responsive ที่ 375px, 768px, 1280px และ 1440px |
 
-## 18. Open Decisions
+## 19. Open Decisions
 
 | ID | Decision Needed | Impact |
 | --- | --- | --- |

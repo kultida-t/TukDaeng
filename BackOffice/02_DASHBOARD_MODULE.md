@@ -1,11 +1,28 @@
 # 02 BO Dashboard Module
 
-**เวอร์ชัน:** `BO-02-v1.0`  
-**วันที่:** 2026-07-31  
-**สถานะ:** สเปกปัจจุบัน  
-**แพลตฟอร์ม:** Responsive Web Back Office
+**Version:** `BO-02-v1.0`  
+**Date:** 2026-07-31  
+**Status:** สเปกปัจจุบัน  
+**Platform:** Responsive Web Back Office
 
-## 1. วัตถุประสงค์
+## UI Standards And Prototype Reference
+
+เอกสารนี้ต้องใช้ร่วมกับ `00_GLOBAL_RULES_MODULE.md` และยึดรูปแบบหน้าจอ/พฤติกรรมที่ยืนยันแล้วใน `../Prototypes/bo-prototype.html` เป็นมาตรฐานหลัก
+
+ห้ามออกแบบ pattern แยกเองสำหรับ list toolbar, breakpoint, table/card layout, pagination, reset, action menu, detail layout หรือ confirmation modal ยกเว้นเอกสารนี้ระบุไว้ชัดเจนว่าเป็น override ที่อนุมัติแล้ว
+
+## 1. Document Information
+
+| Field | Detail |
+| --- | --- |
+| Module Name | BO Dashboard |
+| Platform | Responsive Web Back Office |
+| Version | `BO-02-v1.0` |
+| Status | สเปกปัจจุบัน |
+| Owner | Product / UX / Engineering / Operations |
+| Document Type | Functional PRD |
+
+## 2. Objective
 
 Dashboard เป็นหน้าแรกของ Back Office สำหรับให้ Admin เห็นภาพรวมสถานะระบบ งานที่ต้องจัดการ และเหตุการณ์ล่าสุดที่ควรติดตามต่อ
 
@@ -17,9 +34,9 @@ Dashboard เป็นหน้าแรกของ Back Office สำหรั
 - เห็นความสดใหม่ของข้อมูลผ่าน `Last updated`
 - ใช้งานได้ครบทั้ง desktop, tablet และ mobile-width browser
 
-## 2. ขอบเขต
+## 3. Scope
 
-อยู่ในขอบเขต:
+### In Scope
 
 - Dashboard header
 - KPI summary cards
@@ -30,7 +47,7 @@ Dashboard เป็นหน้าแรกของ Back Office สำหรั
 - Empty, loading, partial error, full error และ stale data states
 - Responsive layout สำหรับ desktop, tablet และ mobile
 
-อยู่นอกขอบเขต:
+### Out Of Scope
 
 - Full analytics report detail
 - Custom dashboard builder
@@ -43,7 +60,7 @@ Dashboard เป็นหน้าแรกของ Back Office สำหรั
 - Chart-heavy BI dashboard
 - Predictive analytics
 
-## 3. โครงสร้างเมนู
+## 4. Menu Structure
 
 เมนูหลัก: `Dashboard`
 
@@ -57,7 +74,7 @@ Dashboard ไม่มี submenu
 - Dashboard ต้องไม่มี list toolbar แบบหน้ารายการ
 - การคลิกแต่ละส่วนต้องเปิด module/submodule ปลายทางที่เกี่ยวข้องโดยตรง
 
-## 4. สิทธิ์และกฎการเข้าถึง
+## 5. Admin Access And Permissions
 
 ระบบใช้ Admin access เดียว โดยตรวจสิทธิ์ตาม module/action ที่ปลายทาง
 
@@ -69,7 +86,7 @@ Dashboard ไม่มี submenu
 - ข้อมูล sensitive ต้องแสดงเท่าที่จำเป็นต่อการตัดสินใจบน Dashboard
 - Dashboard ห้ามแสดงข้อมูล guest/public analytics เพราะไม่มี User Management drill-in ที่ถูกต้อง
 
-## 5. รูปแบบ Responsive
+## 6. Responsive Layout
 
 | Breakpoint | ความกว้าง | ข้อกำหนดของ Dashboard |
 | --- | --- | --- |
@@ -86,7 +103,7 @@ Dashboard ไม่มี submenu
 - ข้อความ, ตัวเลข, chip, button และ row ต้องไม่ล้นหรือซ้อนกัน
 - Card และ row ที่คลิกได้ต้องมี hit area ชัดเจนทั้ง mobile และ desktop
 
-## 6. Header
+## 7. Header
 
 Dashboard header ต้องแสดง:
 
@@ -111,7 +128,7 @@ Dashboard header ต้องไม่แสดง:
 - ใช้เวลาตาม Asia/Bangkok
 - ตัวอย่าง: `Last updated: 01 Aug 2026, 14:35 GMT+7`
 
-## 7. KPI Summary Cards
+## 8. KPI Summary Cards
 
 KPI Summary ต้องแสดง 8 cards ตามลำดับนี้:
 
@@ -120,8 +137,8 @@ KPI Summary ต้องแสดง 8 cards ตามลำดับนี้:
 | New Users | `128` | `วันนี้เพิ่มขึ้น 8.2% เทียบกับเมื่อวาน` | `Today 128`, `This Week 642`, `This Month 2,840` | เปิด User Management / User Accounts |
 | Active Users Today | `8.4K` | `ผู้ใช้งานรายวันเฉลี่ย 7 วันเพิ่มขึ้น 4.1% เทียบกับ 7 วันก่อน` | `Today 8,420`, `This Week 24,700`, `This Month 38,900` | เปิด User Management / User Accounts |
 | New Assets | `94` | `สร้างวันนี้ 94 รายการ เทียบกับเมื่อวาน 340 รายการ` | `Sale 64`, `Show 17`, `Hide 9`, `Sold 4` | เปิด Asset Management / Asset List |
-| Reported Items | `33` | `มี 9 รายงานใกล้ครบกำหนดตรวจ` | `Assets 22`, `Users 5`, `Board 3`, `Comments 3` | Chip เปิด queue รายงานตามประเภท |
-| Offer Activity | `184` | `ข้อเสนอซื้อวันนี้เพิ่มขึ้น 12.6% เทียบกับเมื่อวาน` | `Made 184`, `Accepted 41`, `Rejected 19`, `Expired 12` | เปิด Offer / Offer Queue |
+| Reported Items | `33` | `มี 9 รายงานใกล้ครบกำหนดตรวจ` | `Assets 22`, `Users 5`, `Articles 3`, `Comments 3` | Chip เปิด queue รายงานตามประเภท |
+| Offer Activity | `12` | `อ้างอิงจาก Offer Management mock-up และสถานะ offer ล่าสุด` | `Pending 3`, `Paused 1`, `Accepted 3`, `Rejected 2`, `Cancelled 2`, `Invalidated 1` | เปิด Offer / Offer Queue |
 | Articles | `12` | `มี 4 บทความรอเผยแพร่` | `Published 8`, `Scheduled 4` | เปิด Content Management / Articles |
 | Watch Alert | `3.2K` | `มีการจับคู่รายการขาย 146 ครั้งวันนี้` | `Active 3,218`, `Triggered 146` | เปิด Watch Alert / Alert Criteria |
 | Support Cases | `18` | `มี 3 เคสใกล้ครบกำหนดตอบครั้งแรก` | `Open 18`, `Assigned 9`, `Urgent 3` | เปิด Help & Support / Tickets |
@@ -135,7 +152,7 @@ KPI Summary ต้องแสดง 8 cards ตามลำดับนี้:
 - `Reported Items` ใช้ chip ย่อยเป็น navigation หลัก เพราะปลายทางแยกตามประเภท report
 - ถ้า card ไม่มีข้อมูล ให้แสดง empty value ที่อ่านเข้าใจ เช่น `0` และคำอธิบายที่เหมาะสม
 
-## 8. Work Queue
+## 9. Work Queue
 
 Work Queue เป็นรายการงานที่ Admin ควรจัดการก่อน ไม่ใช่ metric card
 
@@ -149,20 +166,21 @@ Work Queue ต้องแสดงเป็น action list โดยแต่�
 - Priority color bar ด้านซ้าย
 - Queue title
 - Detail text ภาษาไทยแบบกระชับ
+- Chips แสดงสถานะหรือจำนวนย่อยที่เกี่ยวข้องกับ queue นั้น
 - Count ด้านขวา
 - Chevron แสดงว่าเปิดต่อได้
 
 รายการ Work Queue ต้องแสดงตามลำดับนี้:
 
-| ลำดับ | Queue title | Count ตัวอย่าง | Priority | Detail text | Navigation |
-| --- | --- | --- | --- | --- | --- |
-| 1 | รายงานสินทรัพย์ | `22` | High | `รายการเก่าสุดรอตรวจ 22 ชม. / เหตุผลหลัก: รูปซ้ำและข้อมูลประกาศซ้ำ / ควรตรวจวันนี้` | Asset Management / Reported Assets |
-| 2 | รายงานผู้ใช้ | `5` | High | `มีรายงานโปรไฟล์ซ้ำและพฤติกรรมขายซ้ำ / ควรตรวจบัญชีที่ถูก report หลายครั้งก่อน` | User Management / Reported Users |
-| 3 | รายงานบทความ | `3` | High | `มีรายงานบทความจาก FO Board รอตรวจ / ตรวจเหตุผลและสถานะบทความก่อนปิดรายงานหรือ archive` | Content Management / Reported Board |
-| 4 | คำขอลบบัญชี | `8` | Medium | `มี 2 คำขอที่ยังลบไม่ได้ เพราะมีข้อเสนอซื้อค้างอยู่` | Account Deletion / Requests |
-| 5 | บทความรอเผยแพร่ | `4` | Normal | `บทความ Board ตั้งเวลาเผยแพร่แล้ว / ตรวจ preview และรูป cover ก่อนถึงเวลา` | Content Management / Articles |
-| 6 | ข้อมูลตลาดรอตรวจ | `6` | Normal | `brand, model และ price index จาก import มีข้อมูลซ้ำ / ควรแก้ก่อนใช้กับ Search และ Watch Alert` | Market Data / Import |
-| 7 | แจ้งเตือนส่งไม่สำเร็จ | `92` | Normal | `มี token หมดอายุและงานส่งซ้ำได้ / ตรวจ retry queue และ cleanup invalid token` | Notifications / Delivery Logs |
+| ลำดับ | Queue title | Count ตัวอย่าง | Priority | Detail text | Chips | Navigation |
+| --- | --- | --- | --- | --- | --- | --- |
+| 1 | รายงานสินทรัพย์ | `22` | High | `รายการเก่าสุดรอตรวจ 22 ชม. / เหตุผลหลัก: รูปซ้ำและข้อมูลประกาศซ้ำ / ควรตรวจวันนี้` | `ใกล้ครบกำหนด 6`, `ผู้ใช้กระทบสูง` | Asset Management / Reported Assets |
+| 2 | รายงานผู้ใช้ | `5` | High | `มีรายงานโปรไฟล์ซ้ำและพฤติกรรมขายซ้ำ / ควรตรวจบัญชีที่ถูก report หลายครั้งก่อน` | `ใกล้ครบกำหนด 3`, `ตรวจประวัติ login` | User Management / Reported Users |
+| 3 | รายงานบทความ | `3` | High | `มีรายงานบทความจาก FO Board รอตรวจ / ตรวจเหตุผลและสถานะบทความก่อนปิดรายงานหรือ archive` | `Articles 3`, `รอตรวจ` | Content Management / Reported Articles |
+| 4 | คำขอลบบัญชี | `8` | Medium | `มี 2 คำขอที่ยังลบไม่ได้ เพราะมีข้อเสนอซื้อค้างอยู่` | `Blocked 2`, `Grace period 4` | Account Deletion / Requests |
+| 5 | บทความรอเผยแพร่ | `4` | Normal | `บทความ Board ตั้งเวลาเผยแพร่แล้ว / ตรวจ preview และรูป cover ก่อนถึงเวลา` | `เผยแพร่วันนี้ 2`, `ต้อง preview` | Content Management / Articles |
+| 6 | ข้อมูลตลาดรอตรวจ | `6` | Normal | `brand, model และ price index จาก sync มีข้อมูลซ้ำ / ควรตรวจ Sync History ก่อนใช้กับ Search และ Watch Alert` | `Sync issue 6`, `Price index` | Market Data / Sync History |
+| 7 | แจ้งเตือนส่งไม่สำเร็จ | `92` | Normal | `มี token หมดอายุและงานส่งซ้ำได้ / ตรวจ retry queue และ cleanup invalid token` | `Retryable 81`, `Cleanup 11` | Notifications / Delivery Logs |
 
 กฎการจัดลำดับ:
 
@@ -172,7 +190,7 @@ Work Queue ต้องแสดงเป็น action list โดยแต่�
 - Priority normal ใช้สี blue หรือ neutral accent
 - ห้ามใช้คำ technical `SLA` ใน UI ให้ใช้คำว่า `ใกล้ครบกำหนด`, `ครบกำหนดตอบ`, `กำหนดตอบครั้งแรก` หรือข้อความที่ผู้ใช้เข้าใจได้
 
-## 9. Recent Activity
+## 10. Recent Activity
 
 Recent Activity แสดงเหตุการณ์ล่าสุดที่ Admin ควรรู้หรือต้องติดตามต่อ
 
@@ -196,7 +214,7 @@ Activity row ต้องมี:
 | Report | มีรายงานสินทรัพย์ใหม่ | `Rolex Submariner 16610 ถูกรายงานเรื่องรูปซ้ำและราคาเบี่ยงจากข้อมูลตลาด` | `15 นาทีที่แล้ว` | Asset Management / Reported Assets |
 | Offer | ข้อเสนอซื้อถูกปฏิเสธ | `ข้อเสนอซื้อ Omega Speedmaster ถูกปฏิเสธและยังมี chat ที่ผู้ใช้ถามต่อ` | `32 นาทีที่แล้ว` | Offer / Offer Queue |
 | Content | ตั้งเวลาเผยแพร่บทความแล้ว | `บทความ Vintage Watch Buying Guide ตั้งเวลาเผยแพร่วันนี้ 19:00` | `1 ชม.ที่แล้ว` | Content Management / Articles |
-| System | ข้อมูลตลาดอัปเดตแล้ว | `Price index ของ Speedmaster Reduced พบข้อมูลนำเข้าซ้ำ 3 แถว` | `2 ชม.ที่แล้ว` | Market Data / Import |
+| System | ข้อมูลตลาดอัปเดตแล้ว | `Sync History พบ duplicate price points ของ Omega Speedmaster Reduced 3 แถว` | `2 ชม.ที่แล้ว` | Market Data / Sync History |
 | System | แจ้งเตือนบางรายการส่งไม่สำเร็จ | `ระบบพบ invalid token ใน delivery batch ล่าสุดและแยกงาน retry แล้ว` | `3 ชม.ที่แล้ว` | Notifications / Delivery Logs |
 
 กฎการทำงาน:
@@ -211,7 +229,7 @@ Activity row ต้องมี:
 - Activity row ต้องไม่แสดง badge เช่น `linked` หรือ `ติดตามต่อ`
 - ถ้าไม่มี activity ใน filter ที่เลือก ให้แสดง empty state
 
-## 10. Dashboard Panels
+## 11. Dashboard Panels
 
 Dashboard Panels อยู่ด้านล่าง Recent Activity และต้องใช้งานได้ทุก row
 
@@ -220,11 +238,11 @@ Panel ที่ต้องมี:
 | Panel | Header meta | Row content | Navigation |
 | --- | --- | --- | --- |
 | Asset Status | `จาก Asset List ทั้งหมด` | Status label, description, count | เปิด Asset Management ตาม status/context |
-| Offer Status | `จาก Offer Queue วันนี้` | Offer status label, description, count | เปิด Offer / Offer Queue |
+| Offer Status | `จาก Offer Management ทั้งหมด` | Offer status label, description, count | เปิด Offer / Offer Queue |
 | Latest Articles | `จาก Articles ล่าสุด` | Article title, publish status, detail | เปิด Content Management / Articles |
 | Top Searched Brands | `จาก Search Report สัปดาห์นี้` | Brand, search count, trend, share bar | เปิด Reports / Search |
 
-### 10.1 Asset Status
+### 11.1 Asset Status
 
 Rows:
 
@@ -235,18 +253,20 @@ Rows:
 | Hide | `76` | `ยอดทั้งหมดที่ owner/Admin เห็นตามสิทธิ์` | Asset Management / Asset List พร้อม context Hide |
 | Sold | `214` | `ยอดทั้งหมดที่คงประวัติและปิดรับ offer` | Asset Management / Asset List |
 
-### 10.2 Offer Status
+### 11.2 Offer Status
 
 Rows:
 
 | Label | Value ตัวอย่าง | Detail | Navigation |
 | --- | --- | --- | --- |
-| Made | `184` | `ข้อเสนอซื้อที่ถูกสร้างวันนี้` | Offer / Offer Queue |
-| Accepted | `41` | `ข้อเสนอที่ผู้ขายยอมรับวันนี้` | Offer / Offer Queue |
-| Rejected | `19` | `ข้อเสนอที่ถูกปฏิเสธวันนี้และเก็บประวัติ` | Offer / Offer Queue |
-| Expired | `12` | `ข้อเสนอที่หมดเวลาวันนี้โดยไม่มีการตอบรับ` | Offer / Offer Queue |
+| Pending | `3` | `รอ owner ตอบตามรายการใน Offer Management` | Offer / Offer Queue |
+| Paused | `1` | `offer ถูกพักระหว่าง asset รอตรวจสอบ` | Offer / Offer Queue |
+| Accepted | `3` | `owner รับ offer แล้วแต่ยังเป็น read-only history` | Offer / Offer Queue |
+| Rejected | `2` | `owner ปฏิเสธและเก็บไว้ใน Offer History` | Offer / Offer Queue |
+| Cancelled | `2` | `asset ถูกลบหรือซ่อนโดย owner ระหว่าง offer` | Offer / Offer Queue |
+| Invalidated | `1` | `asset ถูกซ่อนถาวรและ offer ใช้งานไม่ได้` | Offer / Offer Queue |
 
-### 10.3 Latest Articles
+### 11.3 Latest Articles
 
 Rows:
 
@@ -256,7 +276,7 @@ Rows:
 | How to Check Provenance | `Published` | `เผยแพร่แล้วและแสดงบน Board` | Content Management / Articles |
 | Market Notes July | `Draft` | `ยังไม่แสดงบน FO / รอรูป cover` | Content Management / Articles |
 
-### 10.4 Top Searched Brands
+### 11.4 Top Searched Brands
 
 Rows:
 
@@ -277,7 +297,7 @@ Rows:
 - ห้ามแสดง copy ที่เป็น placeholder เช่น `Back Office demo`, `Sample data` หรือ `Next action`
 - ถ้าไม่มีข้อมูลใน panel ให้แสดง empty state เฉพาะ panel นั้น
 
-## 11. Direct Navigation
+## 12. Direct Navigation
 
 ทุกจุดที่เปิดต่อได้ต้องไปปลายทางที่สัมพันธ์กับเนื้อหานั้นโดยตรง
 
@@ -288,7 +308,7 @@ Rows:
 | New Assets card | Asset Management / Asset List |
 | Reported Items / Assets chip | Asset Management / Reported Assets |
 | Reported Items / Users chip | User Management / Reported Users |
-| Reported Items / Board chip | Content Management / Reported Board |
+| Reported Items / Articles chip | Content Management / Reported Articles |
 | Reported Items / Comments chip | Asset Management / Reported Comments |
 | Offer Activity card | Offer / Offer Queue |
 | Articles card | Content Management / Articles |
@@ -304,7 +324,7 @@ Rows:
 - ถ้าปลายทางรองรับ filter/context ให้ส่ง context ไปพร้อม navigation
 - ถ้าปลายทางยังไม่พร้อมใช้งาน ให้แสดง disabled state หรือ empty destination ที่อธิบายได้ชัดเจน ห้ามคลิกแล้วไม่เกิดผล
 
-## 12. Empty / Loading / Error States
+## 13. Empty / Loading / Error States
 
 | State | ข้อกำหนด |
 | --- | --- |
@@ -318,7 +338,7 @@ Rows:
 | Unauthorized Section | ซ่อน section หรือข้อมูลนั้น ไม่แสดง technical error |
 | Stale Data | แสดง `Last updated` และ warning ว่าข้อมูลอาจไม่ล่าสุด |
 
-## 13. Data Freshness
+## 14. Data Freshness
 
 Dashboard ต้องแสดง `Last updated` ชัดเจนบน header
 
@@ -331,7 +351,7 @@ Dashboard ต้องแสดง `Last updated` ชัดเจนบน heade
 
 Dashboard ไม่มี manual refresh control ในสเปกปัจจุบัน
 
-## 14. Copy และ Visual Rules
+## 15. Copy And Visual Rules
 
 Copy rules:
 
@@ -358,7 +378,7 @@ Typography:
 - Heading font: `Bebas Neue`
 - Fallback font stack: `IBM Plex Sans Thai`, `Segoe UI`, `Tahoma`, `Arial`, `sans-serif`
 
-## 15. ข้อกำหนด Performance
+## 16. Performance
 
 - Dashboard initial load หลัง auth ควรไม่เกิน 3 วินาทีสำหรับข้อมูลหลัก
 - KPI Summary และ Work Queue ต้องโหลดก่อน chart/visual เสริม
@@ -366,7 +386,7 @@ Typography:
 - Responsive render ต้องไม่ทำให้ลำดับ section เปลี่ยน
 - Interaction filter ของ Recent Activity ต้องตอบสนองทันทีบนข้อมูลที่โหลดแล้ว
 
-## 16. เกณฑ์การยอมรับ
+## 17. Acceptance Criteria
 
 | ID | Criteria |
 | --- | --- |

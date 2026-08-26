@@ -1,12 +1,11 @@
 # 06 BO Market Data Module
 
-**เวอร์ชัน:** `BO-06-v1.0`  
-**วันที่:** 2026-08-10  
-**สถานะ:** สเปกปัจจุบัน  
-**แพลตฟอร์ม:** Responsive Web Back Office
+**Version:** `BO-06-v1.0`  
+**Date:** 2026-08-10  
+**Status:** สเปกปัจจุบัน  
+**Platform:** Responsive Web Back Office
 
-
-## มาตรฐาน UI และ Prototype อ้างอิง
+## UI Standards And Prototype Reference
 
 เอกสารนี้ต้องใช้ร่วมกับ `00_GLOBAL_RULES_MODULE.md` และยึดรูปแบบหน้าจอ/พฤติกรรมที่ยืนยันแล้วใน `../Prototypes/bo-prototype.html` เป็นมาตรฐานหลัก
 
@@ -14,7 +13,18 @@
 
 Market Data ใน prototype เป็นเมนูอ่านข้อมูลอ้างอิงตลาดนาฬิกาแบบ read-only สำหรับ Phase 1 โดย Admin ใช้เพื่อตรวจดู Brand, Model, Reference, ราคาอ้างอิง, source metadata, sync status และ sync history ที่มาจาก API/backend sync เท่านั้น
 
-## 1. วัตถุประสงค์
+## 1. Document Information
+
+| Field | Detail |
+| --- | --- |
+| Module Name | BO Market Data |
+| Platform | Responsive Web Back Office |
+| Version | `BO-06-v1.0` |
+| Status | สเปกปัจจุบัน |
+| Owner | Product / UX / Engineering / Operations |
+| Document Type | Functional PRD |
+
+## 2. Objective
 
 Market Data เป็นเมนูสำหรับให้ Admin ตรวจสอบข้อมูลกลางของนาฬิกาที่ระบบใช้ร่วมกันระหว่าง BO และ FO ได้แก่ Brand, Model, Reference, Watch Detail และ Price Index
 
@@ -29,9 +39,9 @@ Market Data เป็นเมนูสำหรับให้ Admin ตรว�
 - ตรวจ sync history, endpoint, result, error และ cache impact
 - เห็น data quality / mapping warning โดยไม่แก้ master data โดยตรงใน Phase 1
 
-## 2. ขอบเขต
+## 3. Scope
 
-อยู่ในขอบเขต:
+### In Scope
 
 - Market Data Dashboard
 - Brands & Models catalog
@@ -47,7 +57,7 @@ Market Data เป็นเมนูสำหรับให้ Admin ตรว�
 - Provider sync status, endpoint, result, retry, rate-limit และ cache action visibility
 - Responsive layout ตาม prototype
 
-อยู่นอกขอบเขต:
+### Out Of Scope
 
 - เพิ่ม Brand จาก BO
 - เพิ่ม Model จาก BO
@@ -62,7 +72,7 @@ Market Data เป็นเมนูสำหรับให้ Admin ตรว�
 - Portfolio benchmark analytics แบบลึก
 - Payment, offer, escrow หรือ settlement data
 
-## 3. โครงสร้างเมนู
+## 4. Menu Structure
 
 เมนูหลัก: `Market Data`
 
@@ -86,7 +96,7 @@ Submenu ภายใต้ Market Data:
 - ปุ่มกลับจาก Model detail ต้องกลับ Brand detail เดิม
 - ปุ่มกลับจาก Sync History detail ต้องกลับ `Sync History`
 
-## 4. สิทธิ์และกฎการเข้าถึง
+## 5. Admin Access And Permissions
 
 Admin ที่มีสิทธิ์เข้าถึง Market Data สามารถดู list/detail/search/filter และ sync history ได้ตามสิทธิ์ module access
 
@@ -110,7 +120,7 @@ Admin ที่มีสิทธิ์เข้าถึง Market Data สา�
 | Manual Sync Trigger | Operations-only if enabled; audit required |
 | Add/Edit/Delete/Import/Export/Override/Status Change | Not available from BO Market Data |
 
-## 5. รูปแบบ Responsive
+## 6. Responsive Layout
 
 | Breakpoint | ความกว้าง | ข้อกำหนดของ Market Data |
 | --- | --- | --- |
@@ -125,7 +135,7 @@ Admin ที่มีสิทธิ์เข้าถึง Market Data สา�
 - Row ที่คลิกได้ต้องมี hit area ชัดเจนทั้ง mobile และ desktop
 - Reference drawer ต้อง scroll ได้เมื่อเนื้อหายาว
 
-## 6. Dashboard
+## 7. Dashboard
 
 Header:
 
@@ -170,7 +180,7 @@ Pagination:
 - มีปุ่มก่อนหน้า, เลขหน้า และถัดไป
 - ปุ่มที่ใช้งานไม่ได้ต้อง disabled
 
-## 7. Brands & Models
+## 8. Brands & Models
 
 Header:
 
@@ -217,7 +227,7 @@ Info cards:
 - Empty state: `No brands found`
 - Pagination ต้องทำงานและ reset ไปหน้าแรกเมื่อ search เปลี่ยน
 
-## 8. Brand Detail
+## 9. Brand Detail
 
 เปิดจาก Brand row ใน `Brands & Models`
 
@@ -249,7 +259,7 @@ Mobile metadata ต้องมีอย่างน้อย:
 
 Empty state: `No models found for this brand`
 
-## 9. Model Detail
+## 10. Model Detail
 
 เปิดจาก Model row ใน Brand detail
 
@@ -283,7 +293,7 @@ Filter:
 - Empty state: `No references found for this model`
 - Pagination ต้องทำงานและ reset เมื่อ search เปลี่ยน
 
-## 10. Reference Detail Drawer
+## 11. Reference Detail Drawer
 
 Reference detail เปิดเป็น drawer/modal จาก Model detail ไม่ใช่หน้าใหม่
 
@@ -322,7 +332,7 @@ Source copy:
 - ข้อมูลราคาเป็น indicative market data ไม่ใช่ราคาขายจริงของ asset
 - หากแสดง USD ต้องเก็บ conversion metadata แยกใน backend ก่อนนำไปใช้กับ FO ที่ต้องแสดง THB
 
-## 11. Sync History
+## 12. Sync History
 
 Header:
 
@@ -369,7 +379,7 @@ Info cards:
 | `JOB-PATEK-LIST` | `/v1/model/list?brand=patek+philippe` | Completed | refresh Patek Philippe model options |
 | `JOB-SEIKO-REF` | `/v1/reference/list?brand=seiko` | Failed | `too_many_results`; ไม่ replace current Seiko cache |
 
-## 12. Sync History Detail
+## 13. Sync History Detail
 
 เปิดจาก row หรือปุ่ม `Detail` ใน Sync History
 
@@ -411,7 +421,7 @@ Section สำหรับ Failed:
 - Cache impact ต้องระบุว่าไม่แทนที่ cache เดิม
 - Processing timeline ต้องแสดง step ที่ล้มเหลว
 
-## 13. Provider และ Data Rules
+## 14. Provider And Data Rules
 
 External provider ปัจจุบัน: The Watch API / `thewatchapi`
 
@@ -438,9 +448,9 @@ Supported provider areas:
 - Provider price ที่เป็น USD ต้องเก็บ `source_currency`, `source_price`, `converted_price_thb`, `fx_rate`, `fx_rate_date`, `provider_updated_at`, `synced_at`
 - ถ้า provider unavailable, rate limit หรือ usage limit ให้ FO ใช้ cached data ล่าสุดตาม fallback policy
 
-## 14. Data Domains
+## 15. Data Domains
 
-### 14.1 Watch Brand
+### 15.1 Watch Brand
 
 ขั้นต่ำต้องมี:
 
@@ -454,7 +464,7 @@ Supported provider areas:
 - Last sync
 - Quality/mapping status
 
-### 14.2 Watch Model / Series
+### 15.2 Watch Model / Series
 
 ขั้นต่ำต้องมี:
 
@@ -468,7 +478,7 @@ Supported provider areas:
 - Active status จาก provider/backend policy
 - Last sync
 
-### 14.3 Reference Number
+### 15.3 Reference Number
 
 ขั้นต่ำต้องมี:
 
@@ -486,7 +496,7 @@ Supported provider areas:
 - Provider name/key
 - Mapping status
 
-### 14.4 Price Index
+### 15.4 Price Index
 
 ขั้นต่ำต้องมี:
 
@@ -502,7 +512,7 @@ Supported provider areas:
 - Effective date
 - Quality status
 
-## 15. FO Usage Rules
+## 16. FO Usage Rules
 
 | FO Area | Market Data Usage |
 | --- | --- |
@@ -528,7 +538,7 @@ Inactive หรือ unmapped market data:
 - ต้องไม่ลบ relation/history ของ asset เดิม
 - Watch Alert เดิมต้องเก็บ history ได้ แต่ไม่ควร trigger match ใหม่ถ้า criteria อ้าง option ที่ inactive ตาม policy
 
-## 16. Data Quality
+## 17. Data Quality
 
 ต้องตรวจอย่างน้อย:
 
@@ -544,7 +554,7 @@ Inactive หรือ unmapped market data:
 
 Data quality warning ไม่จำเป็นต้อง block ทุกกรณี แต่ต้องแสดงชัดก่อน backend นำข้อมูลไปใช้กับ FO autocomplete, Search, Watch Alert หรือ Portfolio
 
-## 17. Sync และ Cache
+## 18. Sync And Cache
 
 Backend sync jobs ที่ต้องรองรับ:
 
@@ -573,7 +583,7 @@ Cache invalidation ต้องกระทบ:
 - Portfolio valuation
 - Watch Price / Price Index surfaces
 
-## 18. Empty / Loading / Error States
+## 19. Error, Empty, Loading States
 
 | State | ข้อกำหนด |
 | --- | --- |
@@ -588,7 +598,7 @@ Cache invalidation ต้องกระทบ:
 | Permission Denied | แสดง access denied ตาม global BO rule |
 | Read-only Action | แสดง modal `Read-only in Phase 1` |
 
-## 19. Copy และ Visual Rules
+## 20. Copy And Visual Rules
 
 Copy rules:
 
@@ -608,7 +618,7 @@ Visual rules:
 - Card shadow/border ต้องเบาและไม่ซ้อน card ใน card
 - Typography ต้องตาม global/prototype style
 
-## 20. Performance
+## 21. Performance
 
 - Dashboard initial load หลังเข้าเมนูควรไม่เกิน 3 วินาทีสำหรับข้อมูลหลัก
 - Catalog list ต้องใช้ pagination และ server-side filtering เมื่อข้อมูลจริงมีปริมาณมาก
@@ -617,7 +627,7 @@ Visual rules:
 - Sync History detail ต้องโหลด timeline/metadata เฉพาะ job ที่เปิด
 - Provider sync ต้องทำใน backend job ไม่ block UI
 
-## 21. Audit Requirements
+## 22. Audit Requirements
 
 ต้อง audit:
 
@@ -639,7 +649,7 @@ Audit event ต้องมี:
 - Timestamp
 - Session/IP context ตาม global audit policy
 
-## 22. Integration With Other Modules
+## 23. Integration With Other Modules
 
 | Module | Integration |
 | --- | --- |
@@ -652,7 +662,13 @@ Audit event ต้องมี:
 | Audit Log | ค้น provider sync trigger/result/error/retry ได้ |
 | Settings / Permissions | ควบคุม module access และ operations sync permission |
 
-## 23. เกณฑ์การยอมรับ
+## Module-Specific Exceptions
+
+ไม่มี
+
+Market Data ต้องใช้ app shell, navigation, breakpoint, list toolbar, desktop table/grid, mobile card, pagination, reset, detail/drawer และ confirmation modal ตาม `00_GLOBAL_RULES_MODULE.md` และ `../Prototypes/bo-prototype.html` โดยไม่มี UI/layout override เฉพาะโมดูล
+
+## 24. Acceptance Criteria
 
 | ID | Criteria |
 | --- | --- |
@@ -679,22 +695,21 @@ Audit event ต้องมี:
 | AC-BO-MARKET-021 | Empty, loading, failed, rate limit และ permission denied states ต้องแสดงตามที่กำหนด |
 | AC-BO-MARKET-022 | Responsive ต้องใช้งานได้ที่ 375px, 760px, 1024px, 1366px และ 1440px โดยข้อความ/ปุ่ม/ตารางไม่ล้นหรือซ้อนกัน |
 
-## 24. Related Modules
+## 25. Related Modules
 
 - `00_GLOBAL_RULES_MODULE.md`
 - `02_DASHBOARD_MODULE.md`
 - `04_ASSET_MANAGEMENT_MODULE.md`
 - `08_AUDIT_LOG_MODULE.md`
-- `10_WATCH_ALERT_MODULE.md`
-- `13_REPORTS_MODULE.md`
+- `11_WATCH_ALERT_MODULE.md`
+- `15_REPORTS_ANALYTICS_MODULE.md`
 - `16_ADMIN_SETTINGS_MODULE.md`
 - `../FrontOffice/03_SEARCH_FILTER_MODULE.md`
 - `../FrontOffice/04_ASSET_MANAGEMENT_MODULE.md`
 - `../FrontOffice/10_WATCH_ALERT_MODULE.md`
 - `../FrontOffice/14_PORTFOLIO_MODULE.md`
-- `../ProjectAdmin/FO_BO_INTEGRATION_MAP.md`
 
-## 25. Open Decisions
+## 26. Open Decisions
 
 | ID | Decision Needed | Current Recommendation |
 | --- | --- | --- |

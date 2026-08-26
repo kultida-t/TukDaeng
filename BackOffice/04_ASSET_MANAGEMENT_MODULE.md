@@ -1,18 +1,28 @@
 # 04 BO Asset Management Module
 
-**เวอร์ชัน:** `BO-04-v1.1`  
-**วันที่:** 2026-08-19  
-**สถานะ:** สเปกปัจจุบัน  
-**แพลตฟอร์ม:** Responsive Web Back Office
+**Version:** `BO-04-v1.1`  
+**Date:** 2026-08-19  
+**Status:** สเปกปัจจุบัน  
+**Platform:** Responsive Web Back Office
 
-
-## มาตรฐาน UI และ Prototype อ้างอิง
+## UI Standards And Prototype Reference
 
 เอกสารนี้ต้องใช้ร่วมกับ `00_GLOBAL_RULES_MODULE.md` และยึดรูปแบบหน้าจอ/พฤติกรรมที่ยืนยันแล้วใน `../Prototypes/bo-prototype.html` เป็นมาตรฐานหลัก
 
 ห้ามออกแบบ pattern แยกเองสำหรับ list toolbar, breakpoint, table/card layout, pagination, reset, action menu, detail layout หรือ confirmation modal ยกเว้นเอกสารนี้ระบุไว้ชัดเจนว่าเป็น override ที่อนุมัติแล้ว
 
-## 1. วัตถุประสงค์
+## 1. Document Information
+
+| Field | Detail |
+| --- | --- |
+| Module Name | BO Asset Management |
+| Platform | Responsive Web Back Office |
+| Version | `BO-04-v1.1` |
+| Status | สเปกปัจจุบัน |
+| Owner | Product / UX / Engineering / Operations |
+| Document Type | Functional PRD |
+
+## 2. Objective
 
 Asset Management คือเมนูสำหรับ Admin ใช้ตรวจสอบรายการ asset, รายละเอียด asset, รายงาน asset, รายงานความคิดเห็นบน asset และดำเนินการ moderation ที่มีผลต่อการมองเห็นของ asset หรือความคิดเห็นในระบบ
 
@@ -33,9 +43,9 @@ Asset Management คือเมนูสำหรับ Admin ใช้ตร�
 - ซ่อนความคิดเห็นชั่วคราว, ยกเลิกการซ่อนชั่วคราว, ซ่อนความคิดเห็นถาวร หรือปิดรายงานความคิดเห็น
 - บันทึก audit log สำหรับทุก action ที่เปลี่ยน state หรือ visibility
 
-## 2. ขอบเขต
+## 3. Scope
 
-### อยู่ในขอบเขต
+### In Scope
 
 - Asset List
 - Asset Detail
@@ -53,7 +63,7 @@ Asset Management คือเมนูสำหรับ Admin ใช้ตร�
 - Confirmation, reason และ audit สำหรับ action ที่กระทบ visibility หรือ report outcome
 - Responsive layout สำหรับ desktop, tablet และ mobile-width browser
 
-### นอกขอบเขต
+### Out Of Scope
 
 - การสร้าง asset แทน user
 - การแก้ไข business data ของ asset แทน owner
@@ -70,7 +80,7 @@ Asset Management คือเมนูสำหรับ Admin ใช้ตร�
 - ลบข้อมูล asset จริงจาก Back Office
 - ลบข้อมูลความคิดเห็นจริงจาก Back Office
 
-## 3. โครงสร้างเมนู
+## 4. Menu Structure
 
 เมนูหลัก: `Asset Management`
 
@@ -93,7 +103,7 @@ Submenu ภายใต้ Asset Management:
 - ปุ่มย้อนกลับจาก `Asset Report Detail` ต้องกลับไป `Reported Assets` พร้อมคง search/filter/sort/page เดิม
 - ปุ่มย้อนกลับจาก `Comment Report Detail` ต้องกลับไป `Reported Comments` พร้อมคง search/filter/sort/page เดิม
 
-## 4. สิทธิ์และกฎการเข้าถึง
+## 5. Admin Access And Permissions
 
 ระบบใช้ Admin access เดียว โดยตรวจสิทธิ์ตามเมนูและ action ที่ทำ ไม่แยกประเภทบัญชี Admin ในสเปกนี้
 
@@ -104,7 +114,7 @@ Submenu ภายใต้ Asset Management:
 | Sensitive data | แสดงเฉพาะรูปแบบ read-only/masked/summarized |
 | Direct URL/API | ต้องตรวจสิทธิ์ที่ route, API และ service layer เสมอ |
 
-## 5. รูปแบบ Responsive
+## 6. Responsive Layout
 
 Asset Management ต้องใช้กฎ responsive กลางจาก `00_GLOBAL_RULES_MODULE.md` และยึดพฤติกรรมที่ยืนยันแล้วใน `../Prototypes/bo-prototype.html`
 
@@ -121,11 +131,11 @@ Asset Management ต้องใช้กฎ responsive กลางจาก `0
 - Action สำคัญด้าน moderation/report ต้องเข้าถึงได้บน mobile และ desktop
 - Filter บน mobile ต้องเปิด/ปิดแบบ inline ในพื้นที่ list และห้ามใช้ drawer หรือ bottom sheet แยก
 
-## 6. รายการ Asset (Asset List)
+## 7. Asset List
 
 Asset List ใช้สำหรับ scan asset ทั้งหมดและเปิดรายละเอียดหรือ action ที่ทำได้ตาม state
 
-### Field ที่ต้องแสดง
+### Required Fields
 
 - Asset ID
 - Asset name
@@ -135,7 +145,7 @@ Asset List ใช้สำหรับ scan asset ทั้งหมดและ
 - Moderation/Context pill เมื่อมี เช่น `Consignment`, `ซ่อนชั่วคราว`, `ซ่อนถาวร`, `ลบโดยเจ้าของ`
 - Row action menu
 
-### Action ในแต่ละแถว
+### Row Actions
 
 Action ในแต่ละ row ต้องแสดงเฉพาะรายการที่ทำได้ตาม current state และ permission
 
@@ -146,7 +156,7 @@ Action ในแต่ละ row ต้องแสดงเฉพาะรา�
 
 ห้ามมี action สำหรับเปลี่ยน asset status เป็น `Sale`, `Show`, `Hide` หรือ `Sold` โดยตรง
 
-### การค้นหา (Search)
+### Search
 
 Asset List ต้องค้นหาได้จาก:
 
@@ -157,7 +167,7 @@ Asset List ต้องค้นหาได้จาก:
 - Description keyword
 - Status หรือ context keyword ที่แสดงในรายการ
 
-### ตัวกรอง (Filters)
+### Filters
 
 Asset List ต้องมี filter ขั้นต่ำ:
 
@@ -168,7 +178,7 @@ Asset List ต้องมี filter ขั้นต่ำ:
 
 `Sale + Consignment` เป็นตัวเลือกย่อยใน Status filter สำหรับกรอง asset ประเภท consignment ที่เป็น `Sale`
 
-### การแบ่งหน้า (Pagination)
+### Pagination
 
 Asset List ต้องมี pagination ตามเงื่อนไข:
 
@@ -179,11 +189,11 @@ Asset List ต้องมี pagination ตามเงื่อนไข:
 - ต้องคงค่า search/filter/sort ระหว่างเปลี่ยนหน้า
 - เมื่อไม่พบข้อมูลให้แสดง empty state `ไม่พบข้อมูล`
 
-## 7. รายละเอียด Asset
+## 8. Asset Detail
 
 Asset Detail ใช้สำหรับตรวจสอบข้อมูล Asset แบบ read-only และแสดง action สำหรับการตรวจสอบและจัดการตามสถานะปัจจุบันของ Asset
 
-### Field หลัก
+### Core Fields
 
 - Gallery images สูงสุด 10 รูป
 - Asset ID
@@ -211,21 +221,21 @@ Asset Detail ใช้สำหรับตรวจสอบข้อมูล 
 - Created timestamp
 - Updated timestamp
 
-### กฎการแสดง Field หลัก
+### Core Field Display Rules
 
 - ข้อมูลรายละเอียด asset/specifications ให้แสดงเฉพาะ field ที่มีข้อมูลจากผู้ใช้หรือจากระบบ
 - ถ้า field ใดไม่มีข้อมูล ไม่ต้องแสดง field นั้นบน Asset Detail
 - ห้ามสร้าง placeholder เช่น `N/A` สำหรับ field ที่ไม่มีข้อมูล
 - ข้อยกเว้นคือ field ที่มี rule แยกเฉพาะ เช่น `Price` ซึ่งต้องแสดงตาม Price Display Rules
 
-### Field ด้านการซื้อขาย
+### Commerce Fields
 
 - Price
 - Offer summary ถ้ามี
 - Sold status ถ้ามี
 - Sold history ถ้ามี
 
-### กฎการแสดงราคา
+### Price Display Rules
 
 - Asset Detail ต้องแสดง field `Price` เสมอ
 - Asset Report Detail ต้องเข้าถึง field `Price` ผ่าน View Asset modal/reference ได้เสมอ
@@ -234,7 +244,7 @@ Asset Detail ใช้สำหรับตรวจสอบข้อมูล 
 - ห้ามสร้าง placeholder เช่น `N/A`
 - ราคาเป็นข้อมูล read-only ใน Back Office
 
-### ข้อมูลอ่อนไหวที่เกี่ยวข้อง
+### Related Sensitive Data
 
 ข้อมูลต่อไปนี้ต้องแสดงแบบ read-only/masked/summarized เท่านั้น:
 
@@ -250,7 +260,7 @@ Asset Detail ใช้สำหรับตรวจสอบข้อมูล 
 
 Sensitive context ต้องเปิดผ่าน modal หรือ section ที่แยกจากข้อมูลหลัก และต้องไม่แสดงข้อมูลเต็มแบบเปิดโล่ง
 
-### ส่วนประวัติ
+### History Section
 
 Asset Detail ต้องแสดง Asset Status History เมื่อมีข้อมูล โดยรวมการเปลี่ยนสถานะ asset, การดำเนินการ moderation, การอ้างอิงรายงาน และ admin action ไว้ในตารางเดียว
 
@@ -263,11 +273,11 @@ Asset Detail ต้องแสดง Asset Status History เมื่อมี
 - Reference (อ้างอิง Report ID เมื่อเกี่ยวข้อง)
 - Reason / Note
 
-## 8. โมเดลสถานะ Asset
+## 9. Asset Status Model
 
 ระบบต้องแยก owner-controlled status ออกจาก moderation state
 
-### สถานะที่เจ้าของควบคุม
+### Owner-Controlled Status
 
 | Status | Meaning |
 | --- | --- |
@@ -278,13 +288,13 @@ Asset Detail ต้องแสดง Asset Status History เมื่อมี
 
 Admin ห้ามเปลี่ยน owner-controlled status โดยตรงจาก Back Office
 
-### สถานะระบบ/การเก็บรักษาข้อมูล
+### System / Retention State
 
 | State | Meaning |
 | --- | --- |
 | `ลบโดยเจ้าของ` | Owner ลบ asset จากฝั่งผู้ใช้งานแล้ว ไม่แสดงใน owner list ปกติหรือ public surfaces แต่ Back Office ยังเก็บ record ตาม retention rule ของระบบ |
 
-### สถานะ Moderation
+### Moderation State
 
 | State | Meaning |
 | --- | --- |
@@ -294,7 +304,7 @@ Admin ห้ามเปลี่ยน owner-controlled status โดยตร�
 
 Moderation state เป็น overlay บน owner-controlled status และไม่เปลี่ยนค่า owner-controlled status เดิม
 
-## 9. ตารางผลต่อการมองเห็น (Visibility Matrix)
+## 10. Visibility Matrix
 
 | State | Public Marketplace | Public Profile/Detail | Owner View | Offer Availability |
 | --- | --- | --- | --- | --- |
@@ -316,9 +326,9 @@ Offer impact เพิ่มเติมสำหรับ owner-controlled stat
 
 Asset ที่เป็น `Consignment` ต้องไม่ถูกนับใน portfolio value หรือ asset value summary เพราะเป็นของฝากขาย ไม่ใช่ทรัพย์สินที่ owner ถือครองเอง
 
-## 10. กฎ Action ของ Asset
+## 11. Asset Action Rules
 
-### ข้อกำหนดทั่วไป
+### General Requirements
 
 ทุก action สำหรับการตรวจสอบและจัดการต้องมี:
 
@@ -332,7 +342,7 @@ Asset ที่เป็น `Consignment` ต้องไม่ถูกนั�
 - Audit log
 - ผลลัพธ์ที่อัปเดตไปยัง public surfaces ที่เกี่ยวข้อง
 
-### ซ่อนชั่วคราว
+### Hide Temporarily
 
 ใช้เพื่อซ่อน asset จาก public surfaces ชั่วคราว
 
@@ -344,7 +354,7 @@ Asset ที่เป็น `Consignment` ต้องไม่ถูกนั�
 - ต้องตั้ง moderation state เป็น `ซ่อนชั่วคราว`
 - Pending offer ที่เกี่ยวข้องต้องถูกตั้งเป็น `Paused`
 
-### ยกเลิกซ่อนชั่วคราว
+### Restore Visibility
 
 ใช้เพื่อยกเลิกการซ่อนชั่วคราวเมื่อ review แล้วไม่พบปัญหา
 
@@ -356,7 +366,7 @@ Asset ที่เป็น `Consignment` ต้องไม่ถูกนั�
 - ต้องบันทึก reason และ audit
 - Offer ที่ถูก `Paused` จากการซ่อนชั่วคราวต้องกลับเป็น `Pending` เมื่อ asset กลับเป็น `Sale` หรือ `Show`
 
-### ซ่อนถาวร
+### Hide Permanently
 
 ใช้เพื่อซ่อน asset จาก public surfaces ถาวรตาม moderation outcome
 
@@ -371,7 +381,7 @@ Asset ที่เป็น `Consignment` ต้องไม่ถูกนั�
 - Asset ไม่ถูกนับใน portfolio value หรือ asset value summary
 - Pending offer ที่เกี่ยวข้องต้องถูกตั้งเป็น `Invalidated`
 
-### ลบโดยเจ้าของ
+### Asset Deleted By Owner
 
 เมื่อ owner ลบ asset จากฝั่งผู้ใช้งาน:
 
@@ -381,11 +391,11 @@ Asset ที่เป็น `Consignment` ต้องไม่ถูกนั�
 - ต้องมี history/audit row ระบุ actor เป็น owner, action เป็น `Asset Deleted By Owner`, before state, after state `ลบโดยเจ้าของ` และ timestamp
 - Pending offer ที่เกี่ยวข้องต้องถูกตั้งเป็น `Cancelled`
 
-## 11. Asset ที่ถูกรายงาน
+## 12. Reported Assets
 
 Reported Assets เป็น queue แยกจาก Asset List สำหรับจัดการ report case
 
-### Field ที่ต้องแสดง
+### Required Fields
 
 - Report ID
 - Asset
@@ -400,7 +410,7 @@ Reported Assets เป็น queue แยกจาก Asset List สำหรั
 
 Asset ID และ Owner ไม่จำเป็นต้องเป็น column หลักในตาราง Reported Assets แต่ต้องค้นหาได้ และต้องแสดงใน Asset Report Detail หรือ reported asset reference context
 
-### การค้นหารายงาน
+### Report Search
 
 Reported Assets ต้องค้นหาได้จาก:
 
@@ -410,7 +420,7 @@ Reported Assets ต้องค้นหาได้จาก:
 - Owner name
 - Report reason
 
-### ตัวกรองรายงาน
+### Report Filters
 
 Reported Assets ต้องมี filter ขั้นต่ำ:
 
@@ -419,7 +429,7 @@ Reported Assets ต้องมี filter ขั้นต่ำ:
 - Sort: newest first, oldest first, reporter count
 - Reset filter
 
-### การแบ่งหน้ารายงาน
+### Report Pagination
 
 Reported Assets ต้องมี pagination ตามเงื่อนไข:
 
@@ -430,7 +440,7 @@ Reported Assets ต้องมี pagination ตามเงื่อนไข:
 - ต้องคงค่า search/filter/sort ระหว่างเปลี่ยนหน้า
 - เมื่อไม่พบข้อมูลให้แสดง empty state `ไม่พบข้อมูล`
 
-### สถานะรายงาน
+### Report Status
 
 | Status | Meaning |
 | --- | --- |
@@ -439,11 +449,11 @@ Reported Assets ต้องมี pagination ตามเงื่อนไข:
 
 Report ที่ `Closed` เป็น final state และไม่มี reopen action ในเมนูนี้
 
-## 12. รายละเอียดรายงาน Asset
+## 13. Asset Report Detail
 
 Asset Report Detail ใช้สำหรับตรวจสอบ report case และ action ที่เกี่ยวข้อง
 
-### ส่วนข้อมูลที่ต้องมี
+### Required Sections
 
 - Reported Asset reference
 - Reporter History
@@ -451,7 +461,7 @@ Asset Report Detail ใช้สำหรับตรวจสอบ report case
 
 ข้อมูลสรุปของ report case แสดงผ่าน header, status pill, moderation/context pill และข้อมูลใน Reported Asset reference
 
-### ข้อมูลอ้างอิง Asset ที่ถูกรายงาน
+### Reported Asset Reference
 
 - Report ID
 - Asset ID
@@ -463,7 +473,7 @@ Asset Report Detail ใช้สำหรับตรวจสอบ report case
 
 View Asset action ต้องเปิดรายละเอียด asset แบบ read-only และต้องแสดงข้อมูล asset ที่เกี่ยวข้องกับ report context เช่น Price, description, specifications, provenance summary, image gallery และ asset context อื่นที่จำเป็นต่อการตรวจสอบ
 
-### ประวัติผู้รายงาน
+### Reporter History
 
 Reporter History ต้องแสดง:
 
@@ -473,7 +483,7 @@ Reporter History ต้องแสดง:
 - Report reason
 - Additional details
 
-### ประวัติการดำเนินการของ Admin
+### Admin Action History
 
 Admin Action History ต้องแสดง:
 
@@ -484,7 +494,7 @@ Admin Action History ต้องแสดง:
 - ส่งอีเมล (สถานะการส่งอีเมลแจ้งผู้ใช้ ถ้ามี)
 - รายละเอียด
 
-### Action ในหน้ารายละเอียด
+### Detail Page Actions
 
 Action buttons ต้องแสดงเฉพาะที่ทำได้ตาม current asset state, report status และ permission:
 
@@ -493,7 +503,7 @@ Action buttons ต้องแสดงเฉพาะที่ทำได้�
 - ยกเลิกซ่อนชั่วคราว
 - ซ่อนถาวร
 
-## 13. กฎการจัดการรายงาน
+## 14. Report Handling Rules
 
 เมื่อ user report asset:
 
@@ -503,7 +513,7 @@ Action buttons ต้องแสดงเฉพาะที่ทำได้�
 - Report ซ้ำจาก user เดิมต้องไม่เพิ่ม unique reporter count
 - Report case ต้องผูกกับ asset current state ล่าสุดเสมอ
 
-### กฎตามจำนวนผู้รายงาน
+### Rules By Reporter Count
 
 | Condition | Required Behavior |
 | --- | --- |
@@ -522,7 +532,7 @@ Action buttons ต้องแสดงเฉพาะที่ทำได้�
 - Restore visibility ต้องถูก block ถ้า asset ไม่ได้อยู่ใน moderation state `ซ่อนชั่วคราว`
 - Admin ทำได้เฉพาะปิดรายงานหรือซ่อนถาวร เมื่อ current state และ permission อนุญาต
 
-## 14. โมเดลข้อมูลรายงาน
+## 15. Report Data Model
 
 Reported Assets queue ต้องใช้ report case เป็น source of truth และ join กับ asset เพื่อแสดง current asset state ล่าสุด
 
@@ -535,11 +545,11 @@ Reported Assets queue ต้องใช้ report case เป็น source of t
 
 ห้าม infer รายการใน Reported Assets queue จาก asset status, moderation pill หรือข้อความใน asset row เพียงอย่างเดียว
 
-## 15. ความคิดเห็นที่ถูกรายงาน (Reported Comments)
+## 16. Reported Comments
 
 Reported Comments เป็น queue แยกจาก Asset List และ Reported Assets สำหรับจัดการ report case ของความคิดเห็น (comment และ reply) บน asset
 
-### Field ที่ต้องแสดง
+### Required Fields
 
 - Report ID
 - Comment excerpt
@@ -553,7 +563,7 @@ Reported Comments เป็น queue แยกจาก Asset List และ Rep
 
 Comment ID และ Comment Type แสดงใน Comment Report Detail ไม่ใช่ column หลักใน list
 
-### การค้นหารายงานความคิดเห็น
+### Comment Report Search
 
 Reported Comments ต้องค้นหาได้จาก:
 
@@ -564,7 +574,7 @@ Reported Comments ต้องค้นหาได้จาก:
 - Author
 - Report reason
 
-### ตัวกรองรายงานความคิดเห็น
+### Comment Report Filters
 
 Reported Comments ต้องมี filter ขั้นต่ำ:
 
@@ -573,7 +583,7 @@ Reported Comments ต้องมี filter ขั้นต่ำ:
 - Sort: newest first, oldest first, reporter count
 - Reset filter
 
-### การแบ่งหน้ารายงานความคิดเห็น
+### Comment Report Pagination
 
 Reported Comments ต้องมี pagination ตามเงื่อนไข:
 
@@ -584,7 +594,7 @@ Reported Comments ต้องมี pagination ตามเงื่อนไ�
 - ต้องคงค่า search/filter/sort ระหว่างเปลี่ยนหน้า
 - เมื่อไม่พบข้อมูลให้แสดง empty state `ไม่พบข้อมูล`
 
-### สถานะรายงาน
+### Report Status
 
 | Status | Meaning |
 | --- | --- |
@@ -593,11 +603,11 @@ Reported Comments ต้องมี pagination ตามเงื่อนไ�
 
 Report ที่ `Closed` เป็น final state และไม่มี reopen action ในเมนูนี้
 
-## 16. รายละเอียดรายงาน Comment
+## 17. Comment Report Detail
 
 Comment Report Detail ใช้สำหรับตรวจสอบ report case ของความคิดเห็นและ action ที่เกี่ยวข้อง
 
-### ส่วนข้อมูลที่ต้องมี
+### Required Sections
 
 - Reported Comment reference
 - Comment Detail
@@ -606,7 +616,7 @@ Comment Report Detail ใช้สำหรับตรวจสอบ report ca
 
 ข้อมูลสรุปของ report case แสดงผ่าน header, Report Status pill, Comment Status pill และข้อมูลใน Reported Comment reference
 
-### ข้อมูลอ้างอิง Comment ที่ถูกรายงาน
+### Reported Comment Reference
 
 - Report ID
 - Comment ID
@@ -618,7 +628,7 @@ Comment Report Detail ใช้สำหรับตรวจสอบ report ca
 
 View Asset action ต้องเปิดรายละเอียด asset แบบ read-only ผ่าน modal และต้องแสดงข้อมูล asset ที่เกี่ยวข้องกับ report context เช่น Price, description, specifications, provenance summary, image gallery และ asset context อื่นที่จำเป็นต่อการตรวจสอบ
 
-### รายละเอียดความคิดเห็น
+### Comment Detail
 
 Comment Detail ต้องแสดง:
 
@@ -629,7 +639,7 @@ Comment Detail ต้องแสดง:
 
 View all comments action ต้องเปิด modal แสดงความคิดเห็นทั้งหมดของ asset ที่เกี่ยวข้อง เพื่อให้ Admin เห็น context รอบด้านของความคิดเห็นที่ถูกรายงาน
 
-### ประวัติผู้รายงาน
+### Reporter History
 
 Reporter History ต้องแสดง:
 
@@ -639,7 +649,7 @@ Reporter History ต้องแสดง:
 - Report Reason
 - Additional Details
 
-### ประวัติการดำเนินการของ Admin
+### Admin Action History
 
 Admin Action History ต้องแสดง:
 
@@ -649,7 +659,7 @@ Admin Action History ต้องแสดง:
 - ส่งอีเมล (สถานะการส่งอีเมลแจ้งผู้ใช้)
 - รายละเอียด
 
-### Action ในหน้ารายละเอียด
+### Detail Page Actions
 
 Action buttons ต้องแสดงเฉพาะที่ทำได้ตาม current comment status, report status และ permission:
 
@@ -658,7 +668,7 @@ Action buttons ต้องแสดงเฉพาะที่ทำได้�
 - ยกเลิกการซ่อนชั่วคราว (Restore comment)
 - ซ่อนความคิดเห็นถาวร (Remove comment)
 
-## 17. Comment Status Contract
+## 18. Comment Status Contract
 
 ระบบต้องแยก comment status ออกจาก report status และ moderation action
 
@@ -672,9 +682,9 @@ Action buttons ต้องแสดงเฉพาะที่ทำได้�
 
 Comment status เป็น overlay บน comment record และไม่เปลี่ยนแปลงเนื้อหาต้นฉบับ
 
-## 18. กฎ Action ของ Comment Moderation
+## 19. Comment Moderation Action Rules
 
-### ข้อกำหนดทั่วไป
+### General Requirements
 
 ทุก action สำหรับ comment moderation ต้องมี:
 
@@ -689,7 +699,7 @@ Comment status เป็น overlay บน comment record และไม่เ�
 - ผลลัพธ์ที่อัปเดตไปยัง FO comment section ที่เกี่ยวข้อง
 - การส่งอีเมลแจ้ง author ผ่าน registered email (ยกเว้น `Close no violation`)
 
-### ซ่อนความคิดเห็นชั่วคราว (Hide comment)
+### Hide Comment
 
 ใช้เพื่อซ่อนความคิดเห็นจาก public comment section ชั่วคราวระหว่างตรวจสอบ
 
@@ -702,7 +712,7 @@ Comment status เป็น overlay บน comment record และไม่เ�
 - ต้องมี confirmation, reason และ audit
 - ต้องส่งอีเมลแจ้ง author ผ่าน registered email
 
-### ยกเลิกการซ่อนชั่วคราว (Restore comment)
+### Restore Comment
 
 ใช้เพื่อยกเลิกการซ่อนชั่วคราวเมื่อ review แล้วไม่พบปัญหา
 
@@ -715,7 +725,7 @@ Comment status เป็น overlay บน comment record และไม่เ�
 - ต้องมี confirmation, reason และ audit
 - ต้องส่งอีเมลแจ้ง author ผ่าน registered email
 
-### ซ่อนความคิดเห็นถาวร (Remove comment)
+### Remove Comment
 
 ใช้เพื่อซ่อนความคิดเห็นจาก public comment section ถาวรหลังตรวจสอบ
 
@@ -729,7 +739,7 @@ Comment status เป็น overlay บน comment record และไม่เ�
 - ต้องมี confirmation, reason และ audit
 - ต้องส่งอีเมลแจ้ง author ผ่าน registered email
 
-### ปิดรายงานไม่พบการละเมิด (Close no violation)
+### Close No Violation
 
 ใช้เพื่อปิดรายงานหลังตรวจสอบแล้วไม่พบการละเมิด
 
@@ -742,7 +752,7 @@ Comment status เป็น overlay บน comment record และไม่เ�
 - ต้องมี confirmation และ reason
 - ไม่ต้องส่งอีเมลแจ้ง author
 
-## 19. กฎการจัดการรายงานความคิดเห็น
+## 20. Comment Report Handling Rules
 
 เมื่อ user report comment:
 
@@ -754,7 +764,7 @@ Comment status เป็น overlay บน comment record และไม่เ�
 - Report case ต้องผูกกับ comment current state ล่าสุดเสมอ
 - SLA baseline 24 ชั่วโมงสำหรับ comment report ตาม Trust & Safety baseline
 
-## 20. กฎ FO Sync สำหรับ Comment Moderation
+## 21. FO Sync Rules For Comment Moderation
 
 | Action | FO Comment Section | Comment Count |
 | --- | --- | --- |
@@ -765,7 +775,7 @@ Comment status เป็น overlay บน comment record และไม่เ�
 
 Comment count ที่แสดงใน FO ต้องสะท้อนจำนวนความคิดเห็นที่ user มีสิทธิ์เห็นเท่านั้น ไม่นับ comment ที่ถูก `Hidden`, `Removed` หรือ `User Deleted` ในจำนวนที่แสดง
 
-## 21. กฎข้อมูลอ่อนไหว
+## 22. Sensitive Data Rules
 
 | Data | Default Behavior |
 | --- | --- |
@@ -779,7 +789,7 @@ Comment count ที่แสดงใน FO ต้องสะท้อนจ�
 
 Sensitive data ต้องเป็น read-only เสมอในเมนูนี้
 
-## 22. สถานะ Error, Empty และ Loading
+## 23. Error, Empty, Loading States
 
 ต้องรองรับ state ต่อไปนี้:
 
@@ -803,7 +813,7 @@ Sensitive data ต้องเป็น read-only เสมอในเมนู
 
 เมื่อ action ล้มเหลว ห้ามเปลี่ยน UI เป็น success state และต้องให้ Admin retry หรือปิด modal ได้
 
-## 23. ข้อกำหนด Audit
+## 24. Audit Requirements
 
 ทุก write action ต้องบันทึก:
 
@@ -819,7 +829,7 @@ Sensitive data ต้องเป็น read-only เสมอในเมนู
 - IP address หรือ session context ถ้ามี
 - Timestamp เป็น `Asia/Bangkok`
 
-### ประเภท Action ที่ต้องบันทึก
+### Action Types To Audit
 
 Action ของ asset:
 
@@ -842,13 +852,13 @@ Action ของ comment moderation:
 
 Audit history ต้องแสดงใน Asset Detail, Asset Report Detail หรือ Comment Report Detail ตาม context ที่เกี่ยวข้อง
 
-## ข้อยกเว้นเฉพาะโมดูล
+## Module-Specific Exceptions
 
 ไม่มี
 
 Asset Management ต้องใช้ app shell, navigation, breakpoint, list toolbar, desktop table/grid, mobile card, pagination, reset, detail, action menu และ confirmation modal ตาม `00_GLOBAL_RULES_MODULE.md` และ `../Prototypes/bo-prototype.html` โดยไม่มี UI/layout override เฉพาะโมดูล
 
-## 24. เกณฑ์การยอมรับ
+## 25. Acceptance Criteria
 
 | ID | Criteria |
 | --- | --- |

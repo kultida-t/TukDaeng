@@ -4,10 +4,26 @@
 **Date:** 2026-07-06  
 **Status:** Draft baseline  
 **Platform:** Responsive Web Back Office  
-**Primary FO Sources:** `../FrontOffice/09_NOTIFICATION_MODULE.md`, `../FrontOffice/00_NAVIGATION_AND_CROSS_MODULE_FLOW.md`, `../FrontOffice/08_OFFER_MODULE.md`, `../FrontOffice/10_WATCH_ALERT_MODULE.md`, `../FrontOffice/11_SOCIAL_MODULE.md`  
-**Integration Map:** `../ProjectAdmin/FO_BO_INTEGRATION_MAP.md`
+**Primary FO Sources:** `../FrontOffice/09_NOTIFICATION_MODULE.md`, `../FrontOffice/00_NAVIGATION_AND_CROSS_MODULE_FLOW.md`, `../FrontOffice/08_OFFER_MODULE.md`, `../FrontOffice/10_WATCH_ALERT_MODULE.md`, `../FrontOffice/11_SOCIAL_MODULE.md`
 
-## 1. วัตถุประสงค์
+## UI Standards And Prototype Reference
+
+เอกสารนี้ต้องใช้ร่วมกับ `00_GLOBAL_RULES_MODULE.md` และยึดรูปแบบหน้าจอ/พฤติกรรมที่ยืนยันแล้วใน `../Prototypes/bo-prototype.html` เป็นมาตรฐานหลัก
+
+ห้ามออกแบบ pattern แยกเองสำหรับ list toolbar, breakpoint, table/card layout, pagination, reset, drill-down, drawer, modal หรือ detail layout ยกเว้นเอกสารนี้ระบุไว้ชัดเจนว่าเป็น override ที่อนุมัติแล้ว
+
+## 1. Document Information
+
+| Field | Detail |
+| --- | --- |
+| Module Name | BO Notifications |
+| Platform | Responsive Web Back Office |
+| Version | `BO-14-v0.1` |
+| Status | Draft baseline |
+| Owner | Product / UX / Engineering / Operations |
+| Document Type | Functional PRD |
+
+## 2. Objective
 
 Notifications Module ใช้ให้ BO จัดการ notification ที่เกี่ยวข้องกับ FO ทั้ง 2 กลุ่ม:
 
@@ -16,9 +32,9 @@ Notifications Module ใช้ให้ BO จัดการ notification ท�
 
 เอกสารนี้ยึด FO Notification V1 เป็นหลัก: FO Notification Center รองรับเฉพาะ `Like`, `Comment`, `Follow`, `Offer`, `Watch Alert` เท่านั้น จึงห้ามเพิ่ม type ใหม่เข้า FO list โดยไม่มี master decision
 
-## 2. ขอบเขต
+## 3. Scope
 
-### 2.1 In Scope
+### In Scope
 
 - Broadcast notification create / draft / schedule / send
 - Target audience selection
@@ -31,7 +47,7 @@ Notifications Module ใช้ให้ BO จัดการ notification ท�
 - Audit log สำหรับ template, broadcast, retry และ export
 - Responsive layout สำหรับ desktop, tablet และ mobile
 
-### 2.2 Out of Scope
+### Out Of Scope
 
 - FO Notification Center UI
 - Push provider implementation เช่น Firebase Cloud Messaging setup
@@ -41,7 +57,7 @@ Notifications Module ใช้ให้ BO จัดการ notification ท�
 - Retention policy ฉบับสมบูรณ์
 - Marketing automation/CDP integration
 
-## 3. FO Notification Contract
+## 4. FO Notification Contract
 
 FO V1 รองรับ Notification Center types:
 
@@ -72,7 +88,7 @@ Account suspension/ban messaging is handled as account-status communication, not
 - Delivery log ของ email/account-status message ต้อง trace กลับไปยัง User Management action และ audit event ได้
 - ห้ามเพิ่ม `Account Action` เข้า FO Notification Center V1 โดยไม่มี master decision ใหม่
 
-## 4. Broadcast vs System Trigger
+## 5. Broadcast vs System Trigger
 
 | Area | Broadcast Notification | System Notification Trigger |
 | --- | --- | --- |
@@ -84,7 +100,7 @@ Account suspension/ban messaging is handled as account-status communication, not
 | Retry | ตาม delivery job policy | Retry failed system notification ได้ |
 | FO V1 Constraint | In-app list ต้องรอ decision ถ้าใช้ type `Broadcast` | ต้อง map เป็น supported FO type เท่านั้น |
 
-## 5. Admin Access & Permissions
+## 6. Admin Access And Permissions
 
 BO uses a single Admin account type only. Admin access is controlled by module access, action policy, sensitive-data policy, confirmation, reason, and audit requirements instead of separate BO admin account types.
 
@@ -96,7 +112,7 @@ BO uses a single Admin account type only. Admin access is controlled by module a
 | Sensitive data | Mask by default; reveal only with business reason, policy approval, and audit log. |
 | Export | Requires permission check, scope control, expiry/background job where needed, and audit export event. |
 | Direct URL/API | Enforce access at route, API, and service layers; never rely only on hidden UI. |
-## 6. Responsive Layout
+## 7. Responsive Layout
 
 | Breakpoint | Layout |
 | --- | --- |
@@ -106,9 +122,9 @@ BO uses a single Admin account type only. Admin access is controlled by module a
 
 Editor ต้องมี preview และ validation ที่ใช้งานได้บน mobile โดย action สำคัญเช่น Send Now ต้องมี confirmation
 
-## 7. Broadcast Notification
+## 8. Broadcast Notification
 
-### 7.1 Broadcast List Fields
+### 8.1 Broadcast List Fields
 
 | Field | Requirement |
 | --- | --- |
@@ -125,7 +141,7 @@ Editor ต้องมี preview และ validation ที่ใช้งา�
 | Delivery Stats | Sent, delivered, opened, failed |
 | Created At / Updated At | วันที่สร้างและแก้ไขล่าสุด |
 
-### 7.2 Broadcast Status
+### 8.2 Broadcast Status
 
 | Status | Meaning |
 | --- | --- |
@@ -137,7 +153,7 @@ Editor ต้องมี preview และ validation ที่ใช้งา�
 | `Cancelled` | ยกเลิกก่อนส่ง |
 | `Failed` | job ส่งไม่สำเร็จ |
 
-### 7.3 Broadcast Form
+### 8.3 Broadcast Form
 
 Broadcast form ต้องมี:
 
@@ -152,7 +168,7 @@ Broadcast form ต้องมี:
 - Test send เฉพาะ admin/test device ถ้า implementation รองรับ
 - Approval note
 
-### 7.4 Target Audience
+### 8.4 Target Audience
 
 Target audience baseline:
 
@@ -166,7 +182,7 @@ Target audience baseline:
 
 ห้ามส่งไปยัง account ที่ `Banned`, `Archived`, `Anonymized` หรืออยู่ใน deletion state
 
-### 7.5 Broadcast FO Constraint
+### 8.5 Broadcast FO Constraint
 
 ถ้า Broadcast ต้องแสดงใน FO Notification Center ต้องมี master decision เพิ่ม type `Broadcast` หรือ mapping ที่ชัดเจนก่อน Dev implement
 
@@ -176,9 +192,9 @@ Target audience baseline:
 - Push-only broadcast ทำได้ถ้า Product อนุมัติ channel และ payload
 - In-app Notification Center ห้ามแสดง generic broadcast เป็น V1 supported type ปลอม
 
-## 8. System Notification Trigger
+## 9. System Notification Trigger
 
-### 8.1 Supported Trigger Types
+### 9.1 Supported Trigger Types
 
 System trigger ที่ BO จัดการได้สำหรับ FO V1:
 
@@ -193,7 +209,7 @@ System trigger ที่ BO จัดการได้สำหรับ FO V1:
 | Offer Cancelled | System/user cancels offer | Related buyer/owner | Offer | Chat Room + Focus Offer Card |
 | Watch Alert | Sale asset matches alert criteria | Alert owner | Watch Alert | Watch Alert Result List |
 
-### 8.2 Explicitly Disabled / Future Types
+### 9.2 Explicitly Disabled / Future Types
 
 | Type | BO Rule |
 | --- | --- |
@@ -204,7 +220,7 @@ System trigger ที่ BO จัดการได้สำหรับ FO V1:
 | Moderation Action | Future; ถ้าต้องแจ้ง user ให้เปิด decision แยก |
 | Account Action | Future for FO Notification Center; account suspension/ban uses email as primary channel and Auth account-status state when user opens app/signs in |
 
-## 9. Template Management
+## 10. Template Management
 
 System template fields:
 
@@ -233,7 +249,7 @@ Template variables ต้องใช้ allowlist เท่านั้น เ�
 
 ห้ามใส่ sensitive data เช่น phone, email, LINE, full chat content หรือ internal admin note ลง notification template
 
-## 10. Deep Link / Destination Rules
+## 11. Deep Link / Destination Rules
 
 | Destination | Validation |
 | --- | --- |
@@ -245,7 +261,7 @@ Template variables ต้องใช้ allowlist เท่านั้น เ�
 
 ถ้า destination ถูกลบหรือไม่มีสิทธิ์ FO ต้องแสดง safe unavailable state ตาม FO module
 
-## 11. Delivery Log
+## 12. Delivery Log
 
 Delivery log ต้องเก็บ:
 
@@ -265,7 +281,7 @@ Delivery log ต้องเก็บ:
 
 Delivery tracking target ตาม BO PRD: มากกว่า 95% ของ notification ต้องมี delivery status
 
-## 12. Retry Rules
+## 13. Retry Rules
 
 | Case | Rule |
 | --- | --- |
@@ -279,7 +295,7 @@ Delivery tracking target ตาม BO PRD: มากกว่า 95% ของ n
 
 Retry action ต้องมี audit log และต้องไม่สร้าง notification ซ้ำใน FO list โดยไม่มี idempotency guard
 
-## 13. Admin Actions
+## 14. Admin Actions
 
 | Action | Requirement | Audit |
 | --- | --- | --- |
@@ -295,7 +311,7 @@ Retry action ต้องมี audit log และต้องไม่สร�
 | Export delivery log | Scope and reason required | Required |
 | Retry account-status email | Scope, reason, target account action reference required | Required |
 
-## 14. Cross-Module Integration
+## 15. Cross-Module Integration
 
 | Module | Integration |
 | --- | --- |
@@ -310,7 +326,7 @@ Retry action ต้องมี audit log และต้องไม่สร�
 | Audit Log | Template, broadcast, retry, export audit events |
 | Reports & Analytics | Notification report metrics |
 
-## 15. Audit Requirements
+## 16. Audit Requirements
 
 Audit log ต้องบันทึกอย่างน้อย:
 
@@ -340,7 +356,7 @@ Audit payload ต้องมี:
 - `user_agent`
 - `created_at`
 
-## 16. Error / Empty / Loading States
+## 17. Error, Empty, Loading States
 
 | State | Requirement |
 | --- | --- |
@@ -353,7 +369,7 @@ Audit payload ต้องมี:
 | Provider failed | แสดง failed state และ retry option ตาม permission |
 | Template validation failed | แสดง field-level error |
 
-## 17. Acceptance Criteria
+## 18. Acceptance Criteria
 
 | ID | Criteria |
 | --- | --- |
@@ -369,7 +385,7 @@ Audit payload ต้องมี:
 | AC-BO-NOTI-010 | Template update, broadcast approval/send/cancel และ export ต้องมี audit log |
 | AC-BO-NOTI-011 | Notifications UI ต้อง responsive ที่ 375px, 768px, 1280px และ 1440px |
 
-## 18. Open Decisions
+## 19. Open Decisions
 
 | ID | Decision Needed | Impact |
 | --- | --- | --- |
