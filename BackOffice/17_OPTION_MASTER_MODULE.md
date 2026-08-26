@@ -1,7 +1,7 @@
 # 17 BO Option Master Module
 
-**Version:** `BO-17-v0.11`  
-**Date:** 2026-08-25  
+**Version:** `BO-17-v0.13`  
+**Date:** 2026-08-26  
 **Status:** สเปกปัจจุบัน  
 **Platform:** Responsive Web Back Office
 
@@ -19,7 +19,7 @@
 | --- | --- |
 | Module Name | BO Option Master |
 | Platform | Responsive Web Back Office |
-| Version | `BO-17-v0.11` |
+| Version | `BO-17-v0.13` |
 | Status | สเปกปัจจุบัน |
 | Owner | Product / UX / Engineering / Operations |
 | Document Type | Functional PRD |
@@ -56,6 +56,7 @@ Option Master เป็นเมนูสำหรับให้ Admin จั�
 - Edit option label (TH/EN) และ description
 - Deactivate option
 - Reactivate option
+- Delete option (เฉพาะ option ที่ไม่มี asset ใช้ — destructive, type-to-confirm)
 - Reorder option (sort_order)
 - Add group
 - Edit group (display_name_th/en, description, allows_multi_select)
@@ -69,7 +70,7 @@ Option Master เป็นเมนูสำหรับให้ Admin จั�
 
 ### Out Of Scope
 
-- Delete option ที่เคยถูกใช้ใน asset แล้ว (ใช้ deactivate แทน เพื่อคง history)
+- Delete option ที่เคยถูกใช้ใน asset แล้ว (ใช้ deactivate แทน เพื่อคง history); Delete option ใน Phase 1 อนุญาตเฉพาะ option ที่ยังไม่มี asset ใช้ ตาม section 11.1
 - Bulk import option
 - Bulk export option
 - Override provider data จาก The Watch API (เป็นหน้าที่ของ Market Data module)
@@ -113,7 +114,7 @@ Admin ที่มีสิทธิ์เข้าถึง Option Master ส�
 | Deactivate option | Allowed by write permission; confirmation + reason + audit; ต้องผ่าน System Option Deactivate Policy ตาม section 10.1 |
 | Reactivate option | Allowed by write permission; confirmation + audit |
 | Reorder option | Allowed by write permission; audit |
-| Delete option | Not available ใน Phase 1 |
+| Delete option | Allowed by write permission; **destructive — type-to-confirm**; เฉพาะ option ที่ไม่มี asset ใช้ (safeguard); confirmation + audit `OPTION_DELETE` — รายละเอียด section 11.1 |
 | **Edit group** | Allowed by write permission; confirmation + audit; แก้ได้เฉพาะ `display_name_th`, `display_name_en`, `description`, `allows_multi_select`; ห้ามแก้ `group` identifier และ `group_id` — รายละเอียด section 6.1 |
 | **Deactivate group** | Allowed by write permission; confirmation + reason (required) + audit; safeguard: ห้าม deactivate ถ้ามี asset ใช้ option ใน group นั้นอยู่ — รายละเอียด section 6.1 |
 | **Reactivate group** | Allowed by write permission; confirmation + audit — รายละเอียด section 6.1 |
@@ -430,7 +431,7 @@ Filter:
 | System | แสดง `System` หรือ `Custom` ตาม `is_system` |
 | Status | `Active` หรือ `Inactive` แสดงเป็น badge |
 | Updated | วันที่/เวลาที่ option ถูกอัปเดตล่าสุด |
-| Action | ปุ่ม `Edit`, `Deactivate` หรือ `Reactivate` ตามสถานะและสิทธิ์ |
+| Action | action menu: `ดูรายละเอียด`, `Edit`, `Deactivate`/`Reactivate` (ตามสถานะ), `ลบ` (Delete — เฉพาะ option ที่ไม่มี asset ใช้), `ดู Audit Log` ตามสิทธิ์ — รายละเอียด section 11.1 |
 
 กฎการแสดงผล:
 
@@ -565,6 +566,50 @@ Confirmation modal ต้องแสดง:
 - ปุ่ม action เปลี่ยนจาก `Reactivate` เป็น `Deactivate`
 - บันทึก audit `OPTION_REACTIVATE`
 
+### 11.1 Delete Option
+
+เปิดจากปุ่ม `ลบ` (Delete) ใน action menu ของ Option Detail (เฉพาะ admin ที่มี write permission; แสดงเฉพาะ option ที่ไม่มี asset ใช้ — `used_in_assets=false`)
+
+ใช้ confirmation modal ตาม prototype pattern (`openOptionDeleteConfirmModal` ใน `bo-prototype.html`)
+
+เงื่อนไขก่อนเปิด modal:
+
+- ปุ่ม `ลบ` แสดงเฉพาะ option ที่ `used_in_assets=false` เท่านั้น ถ้า option ถูกใช้ใน asset แล้ว ปุ่มจะถูกซ่อน (เป็น destructive action ที่ห้ามกระทบ existing assets)
+- ปุ่ม `ลบ` แสดงทั้ง option active และ inactive ตรงตาม prototype
+- Service layer ต้อง re-check `used_in_assets` อีกครั้งก่อน execute delete ไม่พึ่งเฉพาะการซ่อนปุ่มใน UI
+
+Confirmation modal ต้องแสดง:
+
+- หัวข้อ: `Delete Option`
+- ชื่อ option ที่จะ delete (Option ID + Option Key + group ที่อยู่)
+- คำเตือน: `การกระทำนี้ไม่สามารถย้อนกลับได้` — Option นี้จะถูกลบออกจากระบบอย่างถาวร หากต้องการเพิ่มกลับมา ต้องสร้างใหม่อีกครั้ง
+- Option summary: Option ID, Option Key, Label (EN), Label (TH), Status (Active/Inactive)
+- Type-to-confirm: ต้องพิมพ์ Option Key ซ้ำเพื่อยืนยัน — ข้อความ: `พิมพ์ <option_key> เพื่อยืนยันการลบ`
+- ปุ่ม `ยกเลิก` และ `ลบ Option` (disabled จนกว่าจะพิมพ์ Option Key ถูกต้อง)
+
+กฎ:
+
+- **Safeguard: ห้าม delete option ถ้ามี asset ใดใช้ option นั้นอยู่** (`used_in_assets=true`)
+  - Error message: `ไม่สามารถ delete option ได้ เนื่องจากยังมี asset ใช้ option นี้อยู่` — ใช้ deactivate แทนเพื่อคง history
+  - Service layer ต้อง enforce safeguard นี้ด้วย ไม่พึ่งเฉพาะ UI
+- **Destructive — ไม่สามารถย้อนกลับได้** — ลบ record ใน `spec_options` อย่างถาวร (hard delete); ไม่มี undo
+- บันทึก audit `OPTION_DELETE` ก่อนทำ hard delete (เก็บ snapshot ของ option ที่จะถูกลบใน `before_value`) เพื่อคง trail ว่าเคยมี option นี้อยู่
+- หลัง delete: option หายไปจากตาราง Option list และไม่ปรากฏใน FO form/filter/Watch Alert อีก (เพราะไม่มี asset ใช้อยู่แล้วจึงไม่มี existing reference ที่จะได้รับผลกระทบ)
+- กรณีพิมพ์ผิดตอนสร้าง option: ใช้ Delete (ถ้ายังไม่มี asset ใช้) หรือ deactivate + add option ใหม่ (ถ้ามี asset ใช้แล้ว) ตาม BO-OPT-009
+- การ delete option ไม่กระทบ seed file — seed file เป็น source of truth ของ system option การ delete ผ่าน BO UI เป็น database-level delete เท่านั้น ถ้า seed file ยังมี option นั้นอยู่ migration ครั้งถัดไปจะ insert กลับเป็น system option ใหม่ (ดู section 17.7) — Admin ควร deactivate ใน seed file ด้วยถ้าต้องการให้ option นั้นไม่กลับมา
+
+#### 11.1.1 Safeguard Rules For Delete Option
+
+| Action | Safeguard | Error |
+| --- | --- | --- |
+| Delete option | ไม่มี asset ใช้ option นั้นอยู่ (`used_in_assets=false`) | `OPTION_DELETE_BLOCKED_BY_ASSET_USAGE` |
+
+กฎการตรวจสอบ asset usage:
+
+- ตรวจว่ามี `watch_assets` ใดที่ `condition_id`/`case_material_id`/`movement_id`/`dial_color_id`/`strap_bracelet_type_id` อ้างถึง option นั้น หรือ `asset_delivery_items.option_id` อ้างถึง option ใน group `delivery`
+- ตรวจที่ service layer ทุกครั้งก่อน execute delete ไม่พึ่งเฉพาะการซ่อนปุ่มใน UI
+- ถ้ามี asset ใช้ ต้อง reject พร้อม error code ข้างต้น
+
 ## 12. Reorder Option
 
 Reorder ทำได้ 2 วิธี:
@@ -619,7 +664,7 @@ Reorder ทำได้ 2 วิธี:
 | Edit sort_order (via Edit Option) | Option มีอยู่ | Yes | No | `OPTION_EDIT` | ลำดับ FO form/filter เปลี่ยน |
 | Deactivate option | Option active; ผ่าน System Option Deactivate Policy (section 10.1) — ต้องมี ≥1 active option เหลือในกลุ่ม | Yes | Yes | `OPTION_DEACTIVATE` | ไม่แสดงใน FO form/filter/Watch Alert ใหม่; existing assets ยังแสดงค่าเดิม |
 | Reactivate option | Option inactive | Yes | No | `OPTION_REACTIVATE` | กลับมาแสดงใน FO form/filter/Watch Alert |
-| Delete option | Not available | - | - | - | ไม่รองรับใน Phase 1 |
+| Delete option | **ไม่มี asset ใช้ option นั้น** (`used_in_assets=false`) (safeguard) | **Yes (type-to-confirm ด้วย Option Key)** | No | `OPTION_DELETE` | **Destructive — ลบ option อย่างถาวร**; ไม่มี existing asset ที่ได้รับผลกระทบเพราะเงื่อนไขบังคับให้ไม่มี asset ใช้; บันทึก audit ก่อน hard delete |
 | **Edit group** | Group มีอยู่; write permission | Yes | No | `GROUP_EDIT` | แสดง label ใหม่ใน FO form/filter; existing assets ยังเก็บ snapshot เดิม; ถ้าเปลี่ยน `allows_multi_select` FO form ใหม่ใช้โหมดใหม่ |
 | **Deactivate group** | Group active; **ไม่มี asset ใช้ option ใน group นั้น** (safeguard) | Yes | Yes | `GROUP_DEACTIVATE` | group และ option ทั้งหมดใน group ไม่แสดงใน FO form/filter/Watch Alert ใหม่; existing assets ยังแสดงค่าเดิม |
 | **Reactivate group** | Group inactive | Yes | No | `GROUP_REACTIVATE` | group และ option ที่ยัง active กลับมาแสดงใน FO form/filter/Watch Alert; option ที่ inactive ยังคง inactive |
@@ -644,6 +689,7 @@ Reorder ทำได้ 2 วิธี:
 | Audit Log | ทุก action บันทึก audit ตาม section 16 |
 | **Group-level Deactivate** | เมื่อ group ถูก deactivate ทั้ง group และ option ทั้งหมดใน group ไม่แสดงใน FO form/filter/Watch Alert ใหม่ (FO กรองด้วย group `is_active=true`); existing assets ยังแสดงค่าเดิมเพราะ lookup ไม่กรอง `is_active` |
 | **Group-level Delete** | Destructive — ลบ group และ option ทั้งหมดใน group อย่างถาวร; อนุญาตเฉพาะเมื่อ group Inactive และไม่มี asset ใช้ option ใน group นั้น; บันทึก audit `GROUP_DELETE` ก่อน hard delete |
+| **Option-level Delete** | Destructive — ลบ option อย่างถาวร; อนุญาตเฉพาะเมื่อไม่มี asset ใช้ option นั้น (`used_in_assets=false`); บันทึก audit `OPTION_DELETE` ก่อน hard delete; ไม่กระทบ FO form/filter/Watch Alert ใหม่เพราะ option ที่ถูก delete ไม่มี asset ใช้อยู่แล้ว; seed file ไม่ถูกลบ — migration ครั้งถัดไปอาจ insert กลับถ้า seed file ยังมี option นั้น |
 | **Group-level Create** | group ใหม่ปรากฏใน FO form/filter/Watch Alert ทันทีเมื่อ active; สร้างเป็น group ว่าง (ไม่มี option) Admin ต้องเพิ่ม option ภายหลังก่อนใช้งานจริงใน FO |
 | **Group-level Reorder** | ลำดับ group ใน BO list และ FO form/filter เปลี่ยนตาม sort_order ใหม่; ไม่กระทบ existing assets เพราะ asset เก็บ relation id ไม่ใช่ sort_order |
 
@@ -675,6 +721,7 @@ Audit action types:
 | `OPTION_EDIT` | แก้ label, description, is_active ผ่าน Edit modal | Before/After: field ที่เปลี่ยน |
 | `OPTION_DEACTIVATE` | Deactivate option | Before: active; After: inactive + reason |
 | `OPTION_REACTIVATE` | Reactivate option | Before: inactive; After: active |
+| `OPTION_DELETE` | Delete option อย่างถาวร (destructive) | Before: option ทั้งหมด (snapshot); After: (deleted) |
 | `OPTION_REORDER` | เปลี่ยน sort_order ผ่าน Reorder Modal (drag-and-drop หรือ up/down) | Before/After: sort_order เดิม/ใหม่ ของทุก option ที่เปลี่ยนลำดับในการ save ครั้งนั้น |
 | `GROUP_EDIT` | แก้ `display_name_th`, `display_name_en`, `description`, `allows_multi_select` ของ group ผ่าน Edit Group modal | Before/After: field ที่เปลี่ยน |
 | `GROUP_DEACTIVATE` | Deactivate group (ทั้ง group) | Before: active; After: inactive + reason |
@@ -702,6 +749,7 @@ Audit action group: เพิ่ม `Option Master` เป็น action group �
 - Option edit (label/description/key/sort_order)
 - Option deactivate
 - Option reactivate
+- Option delete (destructive)
 - Option reorder
 - Group create
 - Group edit (display_name/description/allows_multi_select)
@@ -833,13 +881,13 @@ CREATE TABLE spec_option_audit (
 | Column | Type | Rule |
 | --- | --- | --- |
 | `id` | BIGSERIAL | PK |
-| `action_type` | TEXT | enum: `OPTION_ADD`, `OPTION_EDIT`, `OPTION_DEACTIVATE`, `OPTION_REACTIVATE`, `OPTION_REORDER`, `GROUP_CREATE`, `GROUP_EDIT`, `GROUP_DEACTIVATE`, `GROUP_REACTIVATE`, `GROUP_DELETE`, `GROUP_REORDER` |
+| `action_type` | TEXT | enum: `OPTION_ADD`, `OPTION_EDIT`, `OPTION_DEACTIVATE`, `OPTION_REACTIVATE`, `OPTION_DELETE`, `OPTION_REORDER`, `GROUP_CREATE`, `GROUP_EDIT`, `GROUP_DEACTIVATE`, `GROUP_REACTIVATE`, `GROUP_DELETE`, `GROUP_REORDER` |
 | `option_id` | BIGINT | FK → `spec_options.id`; **nullable** — `NULL` สำหรับ group-level actions (`GROUP_CREATE`, `GROUP_EDIT`, `GROUP_DEACTIVATE`, `GROUP_REACTIVATE`, `GROUP_DELETE`, `GROUP_REORDER`) ที่ไม่มี option เฉพาะ |
 | `group_id` | BIGINT | FK → `spec_option_groups.group_id` (denormalized สำหรับ query สะดวก); required ทุก action เพราะทุก action เกี่ยวข้องกับ group |
 | `actor_admin_id` | BIGINT | Admin ที่ทำ action |
-| `before_value` | JSONB | ค่าก่อนเปลี่ยน (JSON ของ field ที่เปลี่ยน); `NULL` สำหรับ `GROUP_CREATE` (สร้างใหม่); สำหรับ `GROUP_DELETE` เก็บ snapshot ของ group + option ทั้งหมดที่จะถูกลบ; สำหรับ `GROUP_REORDER` เก็บ sort_order เดิมของทุก group ที่เปลี่ยนลำดับ |
-| `after_value` | JSONB | ค่าหลังเปลี่ยน; `NULL` สำหรับ `GROUP_DELETE` (deleted); สำหรับ `GROUP_CREATE` เก็บ group ใหม่ทั้งหมด; สำหรับ `GROUP_REORDER` เก็บ sort_order ใหม่ของทุก group ที่เปลี่ยนลำดับ |
-| `reason` | TEXT | เหตุผล (required สำหรับ `OPTION_DEACTIVATE` และ `GROUP_DEACTIVATE`) |
+| `before_value` | JSONB | ค่าก่อนเปลี่ยน (JSON ของ field ที่เปลี่ยน); `NULL` สำหรับ `GROUP_CREATE` (สร้างใหม่); สำหรับ `GROUP_DELETE` เก็บ snapshot ของ group + option ทั้งหมดที่จะถูกลบ; สำหรับ `OPTION_DELETE` เก็บ snapshot ของ option ที่จะถูกลบ; สำหรับ `GROUP_REORDER` เก็บ sort_order เดิมของทุก group ที่เปลี่ยนลำดับ |
+| `after_value` | JSONB | ค่าหลังเปลี่ยน; `NULL` สำหรับ `GROUP_DELETE` และ `OPTION_DELETE` (deleted); สำหรับ `GROUP_CREATE` เก็บ group ใหม่ทั้งหมด; สำหรับ `GROUP_REORDER` เก็บ sort_order ใหม่ของทุก group ที่เปลี่ยนลำดับ |
+| `reason` | TEXT | เหตุผล (required สำหรับ `OPTION_DEACTIVATE` และ `GROUP_DEACTIVATE`); optional สำหรับ `OPTION_DELETE`/`GROUP_DELETE` (destructive action ใช้ type-to-confirm แทน reason) |
 | `ip_address` | TEXT | ถ้ามี |
 | `session_context` | TEXT | ถ้ามี |
 | `created_at` | TIMESTAMPTZ | auto |
@@ -972,7 +1020,7 @@ Seed file ครอบคลุม 6 groups ครบ:
 | แก้ sort_order | update `sort_order` ใน seed file | update ใน `spec_options` | update sort_order | `OPTION_REORDER` |
 | Deactivate option | update `is_active=false` ใน seed file | update `is_active=false`, `deactivated_at=now()` ใน `spec_options` | update | `OPTION_DEACTIVATE` (reason = "seed file update") |
 | Reactivate option | update `is_active=true` ใน seed file | update `is_active=true`, `deactivated_at=null` | update | `OPTION_REACTIVATE` |
-| Delete option | ห้าม | ไม่รองรับ | ไม่ลบ | — |
+| Delete option | ห้ามลบผ่าน migration | ไม่รองรับ (migration ไม่ลบ option) | ไม่ลบโดย migration | — | (BO UI delete เป็น database-level delete เท่านั้น ตาม section 11.1; migration ไม่ลบ option แม้ seed file จะลด option เพราะอาจเป็น system option ที่ Admin เคยใช้) |
 
 กฎ migration:
 
@@ -1016,7 +1064,7 @@ asset-spec-options-v3  (next change)
 
 กฎสำคัญ:
 
-- ห้าม hard delete option ที่ถูกใช้ใน asset แล้ว — deactivate เท่านั้น
+- ห้าม hard delete option ที่ถูกใช้ใน asset แล้ว — ใช้ deactivate เท่านั้น; Delete option (section 11.1) อนุญาตเฉพาะ option ที่ `used_in_assets=false`
 - ห้าม cascade delete หรือ set null FK ใน `watch_assets` และ `asset_delivery_items` เมื่อ deactivate
 - FO/BO ต้อง lookup label จาก `spec_options` โดยไม่กรอง `is_active` เมื่อแสดงข้อมูล asset เดิม
 - FO form/filter/Watch Alert ใหม่ ต้องกรอง `is_active=true` เท่านั้น
@@ -1057,7 +1105,7 @@ Visual rules:
 
 - [ ] เอกสารมี scope ชัดเจน แยกจาก Market Data module
 - [ ] มีหน้าจอ Option Group List และ Option Detail ครบ
-- [ ] Action Rules ครอบคลุม Add, Edit, Deactivate, Reactivate, Reorder
+- [ ] Action Rules ครอบคลุม Add, Edit, Deactivate, Reactivate, Delete, Reorder
 - [ ] Impact ต่อ FO และ existing assets ระบุชัด
 - [ ] Audit requirements ครบทุก action type
 - [ ] Acceptance Criteria ทดสอบได้
@@ -1073,7 +1121,9 @@ Visual rules:
 - [ ] Responsive layout ตาม `00_GLOBAL_RULES_MODULE.md`
 - [ ] ตาราง `spec_option_groups`, `spec_options` และ `spec_option_audit` มี field ครบ
 - [ ] ความสัมพันธ์กับ `watch_assets` และ `asset_delivery_items` ระบุชัด พร้อม nullable rule
-- [ ] Audit table มี action_type ครบ 5 ตัว
+- [ ] Audit table มี action_type ครบ 12 ตัว (6 option-level: ADD/EDIT/DEACTIVATE/REACTIVATE/DELETE/REORDER + 6 group-level: CREATE/EDIT/DEACTIVATE/REACTIVATE/DELETE/REORDER)
+- [ ] **Delete option (section 11.1) ระบุชัด: destructive, type-to-confirm ด้วย Option Key, safeguard ห้าม delete ถ้ามี asset ใช้ (`used_in_assets=false`), audit `OPTION_DELETE` ก่อน hard delete, ไม่สามารถย้อนกลับได้**
+- [ ] **Audit action ใหม่ `OPTION_DELETE` ระบุใน section 13, 16, 17.3**
 - [ ] Seed file schema ตรงกับ data model
 - [ ] Migration strategy ครอบคลุม add/edit/deactivate/reactivate
 - [ ] Versioning strategy ชัดเจน (bump version ทุก migration)
@@ -1107,6 +1157,7 @@ Visual rules:
 | BO-OPT-004 ✅ | Reorder UI | **ตัดสินใจ: Drag-and-drop in Reorder Modal + Up/Down Fallback** — ใช้ Reorder Modal เป็นวิธีหลัก (drag-and-drop บน desktop + up/down arrow buttons บน touch device) ตาม pattern ของ Category Display Order ใน prototype เพื่อความสอดคล้อง; Edit Option modal ยังคงเป็นวิธีรองสำหรับแก้ sort_order รายตัว; บันทึก audit `OPTION_REORDER` ครั้งเดียวต่อการ save ใน Reorder Modal; รายละเอียดใน section 12 |
 | BO-OPT-005 ✅ | Group-level actions policy | **ตัดสินใจ: เพิ่ม group-level actions 4 ตัวบน Option Group List** — (1) **Edit group**: แก้ `display_name_th`/`display_name_en`/`description`/`allows_multi_select` พร้อม confirmation + audit `GROUP_EDIT`; ห้ามแก้ `group` identifier (Group Key) และ `group_id`; (2) **Deactivate group**: confirmation + reason (required) + audit `GROUP_DEACTIVATE`; safeguard ห้าม deactivate ถ้ามี asset ใช้ option ใน group นั้น; (3) **Reactivate group**: confirmation + audit `GROUP_REACTIVATE`; (4) **Delete group**: destructive — confirm 2 ครั้ง (type-to-confirm) + audit `GROUP_DELETE`; เงื่อนไข group Inactive + ไม่มี asset ใช้; ไม่สามารถย้อนกลับได้; เพิ่ม Status column + status filter + action menu ใน Option Group List; service layer enforce safeguard ทั้งสอดข้อ; รายละเอียดใน section 6.1; `is_active` ของ group ใช้งานได้ใน Phase 1 |
 | BO-OPT-009 ✅ | Option key lock policy | **ตัดสินใจ: ล็อก `key` หลังสร้างเลย** — เปลี่ยน policy เดิม (ล็อกเฉพาะหลัง option ถูกใช้ใน asset) เป็นล็อกตั้งแต่สร้าง เพื่อให้สอดคล้องกับ Group Key ที่ล็อกหลังสร้างอยู่แล้ว; เหตุผล: FO อ้างอิง option key ตั้งแต่ option active ไม่ใช่รอจนมี asset ใช้ ดังนั้นช่วงที่ active แต่ยังไม่มี asset ใช้ FO cache/reference อ้างอิง key อยู่แล้ว การอนุญาตให้แก้ key ในช่วงนั้นทำให้ reference พังได้; กรณีพิมพ์ผิด: deactivate option + add option ใหม่; อัปเดต section 2, 4, 9, 13, 16, 17.3, 20 |
+| BO-OPT-010 ✅ | Delete option policy | **ตัดสินใจ: รองรับ Delete option ใน Phase 1** — อัปเดต spec ให้ตรง prototype ที่มีปุ่ม `ลบ` (Delete) ใน action menu ของ Option Detail; เงื่อนไข: (1) เฉพาะ option ที่ `used_in_assets=false` (safeguard ห้าม delete ถ้ามี asset ใช้ — ใช้ deactivate แทน), (2) destructive — type-to-confirm ด้วย Option Key, (3) บันทึก audit `OPTION_DELETE` ก่อน hard delete, (4) ไม่สามารถย้อนกลับได้; เหตุผล: prototype ล็อกแล้วมี Delete option flow ครบ (ปุ่ม, modal, type-to-confirm, function) การเลือกทางเลือก 2 (อัปเดต spec ให้รองรับ) ไม่กระทบ prototype และสอดคล้องกับ pattern ของ Delete group ที่มีอยู่แล้ว; migration ไม่ลบ option (เฉพาะ BO UI delete เท่านั้น); รายละเอียดใน section 11.1 |
 
 ## 22. FO Integration Guidelines
 
@@ -1232,6 +1283,7 @@ FO client ต้อง cache option list เพื่อลด API call แล�
 | BO Asset List filter | แสดงเฉพาะ active option เป็นตัวเลือก filter ใหม่; asset ที่มี inactive option ยังปรากฏในผลลัพธ์ถ้าตรงเงื่อนไขอื่น |
 | **Group-level Deactivate** | เมื่อ group ถูก deactivate ทั้ง group และ option ทั้งหมดใน group ไม่แสดงใน FO form/filter/Watch Alert ใหม่; existing assets ยังแสดงค่าเดิมเพราะ lookup จาก `spec_options` โดยไม่กรอง `is_active` หรืออ่านจาก snapshot text; เงื่อนไขเดียวกับ option-level deactivate แต่กระทบทุก option ใน group พร้อมกัน |
 | **Group-level Delete** | Destructive — อนุญาตเฉพาะเมื่อไม่มี asset ใช้ option ใน group นั้น จึงไม่มี existing asset ที่ได้รับผลกระทบ; บันทึก audit `GROUP_DELETE` ก่อน hard delete เพื่อคง trail |
+| **Option-level Delete** | Destructive — อนุญาตเฉพาะเมื่อ `used_in_assets=false` จึงไม่มี existing asset ที่ได้รับผลกระทบ; บันทึก audit `OPTION_DELETE` ก่อน hard delete; FO form/filter/Watch Alert ใหม่ไม่แสดง option นั้นอีก (option หายไปจากระบบ); cache invalidation ตาม section 22.5 |
 
 กฎสำคัญ:
 

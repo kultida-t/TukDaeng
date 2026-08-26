@@ -389,10 +389,11 @@ Option Master ใช้ confirmation modal สำหรับ deactivate/reactiv
 
 ### Safeguard And Policy-Gated Action
 
-Option Master มี safeguard 2 ระดับ:
+Option Master มี safeguard 3 ระดับ:
 
-1. **Option-level safeguard** — ห้าม deactivate ถ้าจะทำให้เหลือ active option น้อยกว่า 1 ในกลุ่ม (ป้องกัน dropdown ว่าง)
-2. **Group-level safeguard** — ห้าม deactivate/delete group ถ้ามี asset ใช้ option ใน group นั้นอยู่
+1. **Option-level deactivate safeguard** — ห้าม deactivate ถ้าจะทำให้เหลือ active option น้อยกว่า 1 ในกลุ่ม (ป้องกัน dropdown ว่าง)
+2. **Option-level delete safeguard** — ห้าม delete option ถ้ามี asset ใช้ option นั้นอยู่ (`used_in_assets=true`) — ใช้ deactivate แทนเพื่อคง history; อนุญาตเฉพาะ option ที่ไม่มี asset ใช้ ตาม section 11.1 ของ module 17
+3. **Group-level safeguard** — ห้าม deactivate/delete group ถ้ามี asset ใช้ option ใน group นั้นอยู่
 
 นอกจากนี้มี **System Option Deactivate Policy** ที่แบ่งเป็น:
 - **Controlled** — system option (`is_system=true`) ทุกกลุ่ม อนุญาตพร้อม reason + safeguard
@@ -408,24 +409,24 @@ Option Master มี safeguard 2 ระดับ:
 
 ### Destructive Action With Type-to-confirm
 
-Option Master ใช้ type-to-confirm pattern สำหรับ Delete Group (destructive, ไม่ย้อนกลับได้)
+Option Master ใช้ type-to-confirm pattern สำหรับ Delete Group และ Delete Option (destructive, ไม่ย้อนกลับได้)
 
 เงื่อนไขก่อนเปิดให้ delete ได้:
-1. entity เป็น Inactive แล้ว (ต้อง deactivate ก่อน)
-2. ผ่าน safeguard (ไม่มีข้อมูลอ้างอิงอยู่)
+1. **Delete Group**: entity เป็น Inactive แล้ว (ต้อง deactivate ก่อน) + ผ่าน safeguard (ไม่มี asset ใช้ option ใน group นั้น)
+2. **Delete Option**: ผ่าน safeguard (ไม่มี asset ใช้ option นั้น — `used_in_assets=false`); **ไม่ต้องเป็น Inactive ก่อน** — อนุญาตทั้ง active และ inactive option ตรงตาม prototype
 
 Confirmation modal 1 modal พร้อม type-to-confirm:
 
 - ชื่อ entity ที่จะ delete
 - คำเตือนว่าเป็นการกระทำที่ไม่สามารถย้อนกลับได้
-- แสดงจำนวนรายการที่จะถูกลบด้วย
-- ต้องพิมพ์ identifier ซ้ำเพื่อยืนยัน (type-to-confirm) — ข้อความ: `พิมพ์ <identifier> เพื่อยืนยันการลบ`
-- ปุ่ม `Cancel` และ `Delete Permanently` (disabled จนกว่าจะพิมพ์ identifier ถูก)
+- แสดงจำนวนรายการที่จะถูกลบด้วย (สำหรับ Delete Group แสดงจำนวน option ใน group; สำหรับ Delete Option แสดง option summary)
+- ต้องพิมพ์ identifier ซ้ำเพื่อยืนยัน (type-to-confirm) — ข้อความ: `พิมพ์ <identifier> เพื่อยืนยันการลบ` (Group Key สำหรับ Delete Group; Option Key สำหรับ Delete Option)
+- ปุ่ม `Cancel` และ `Delete Permanently`/`ลบ Option` (disabled จนกว่าจะพิมพ์ identifier ถูก)
 
 มาตรฐานสำหรับ module ใหม่ที่มี destructive action:
 
 - ใช้ type-to-confirm เฉพาะ action ที่ hard delete และไม่ย้อนกลับได้
-- ต้องมีเงื่อนไขก่อน (Inactive + ผ่าน safeguard)
+- ต้องมีเงื่อนไขก่อน (ผ่าน safeguard; บาง entity ต้อง Inactive ก่อน เช่น group; บาง entity ไม่ต้อง เช่น option ที่ไม่มี asset ใช้)
 - บันทึก audit ก่อนทำ hard delete (เพื่อคง trail)
 - ปุ่ม delete ใน action menu ต้องซ่อน (hidden) ถ้าไม่ผ่านเงื่อนไข ตามมติ BO-OPT-006a
 

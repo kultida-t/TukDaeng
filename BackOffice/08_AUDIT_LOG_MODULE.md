@@ -190,6 +190,7 @@ Baseline entity types:
 - Option edit (label/description/key/sort_order)
 - Option deactivate
 - Option reactivate
+- Option delete (destructive)
 - Option reorder
 - Group create
 - Group edit (display_name/description/allows_multi_select)

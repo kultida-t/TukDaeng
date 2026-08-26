@@ -49,7 +49,7 @@ Phase 1 คือ BO foundation ที่ล็อกใน prototype แล้�
 | Offer Management | `09_OFFER_CHAT_MODULE.md` - Read-only offer list/detail, buyer/seller and asset interest overview, pending-offer dependency |
 | Content / Board | `05_CONTENT_BOARD_MODULE.md` - Article/category CRUD, preview as FO, draft/publish/schedule/archive, automatic Board Main placement from Published Articles; banner/featured ordering is future scope |
 | Market Data | `06_MARKET_DATA_MODULE.md` - Brand/model/reference/price index management และ active/inactive status |
-| Option Master | `17_OPTION_MASTER_MODULE.md` - Internal option master management สำหรับ FO Add/Edit Asset, Search Filter, Watch Alert criteria; option group list/detail, option add/edit/deactivate/reactivate/reorder, group add/edit/deactivate/reactivate/delete/reorder, group audit log, audit |
+| Option Master | `17_OPTION_MASTER_MODULE.md` - Internal option master management สำหรับ FO Add/Edit Asset, Search Filter, Watch Alert criteria; option group list/detail, option add/edit/deactivate/reactivate/delete/reorder, group add/edit/deactivate/reactivate/delete/reorder, group audit log, audit |
 | Watch Alert | `11_WATCH_ALERT_MODULE.md` - Alert criteria view, trigger history, notification on/off, disable abuse alerts |
 | Help & Support | `12_HELP_SUPPORT_MODULE.md` - Ticket queue, manual ticket จาก LINE/Phone/Email, assignment, reply history, status, priority, SLA, related entity |
 | Account Deletion | `13_ACCOUNT_DELETION_MODULE.md` - Request queue, pending-offer validation, 30-day grace period, archive/anonymization tracking |
