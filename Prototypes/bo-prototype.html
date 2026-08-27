@@ -3165,6 +3165,12 @@
       body.watch-alert-mode .summary-grid {
         grid-template-columns: repeat(2, minmax(0, 1fr));
       }
+      /* จอง 2 บรรทัดให้ label เสมอ กัน card เตี้ย/สูงไม่เท่ากันเมื่อชื่อ card สั้น/ยาวต่างกัน */
+      body.watch-alert-mode .stat-label {
+        min-height: calc(22px * .95 * 2);
+        display: flex;
+        align-items: flex-start;
+      }
       .wa-overview-stack { grid-template-columns: 1fr; }
       .wa-criteria-columns { grid-template-columns: 1fr; }
       .wa-notif-summary { grid-template-columns: repeat(2, minmax(0, 1fr)); }
