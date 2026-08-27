@@ -2898,6 +2898,8 @@
       color: #b6c2d4;
     }
     .wa-criteria-modal .wa-stat-bar-list { gap: 16px; }
+    /* เพิ่ม padding ด้านล่างของ modal body ให้ระยะห่างตอนท้ายไม่ชิดเกินไป */
+    .wa-criteria-modal .user-action-card { padding-bottom: 24px; }
 
     /* 2.5 Joint Criteria Patterns */
     .wa-joint-list {
@@ -12793,6 +12795,16 @@
             { label: "Pilot Mark XVIII", value: 60, references: [
               { label: "IW3270", value: 20 }
             ]}
+          ]},
+          { label: "Audemars Piguet", value: 95, models: [
+            { label: "Royal Oak", value: 55, references: [
+              { label: "15500ST", value: 18 }
+            ]}
+          ]},
+          { label: "Panerai", value: 75, models: [
+            { label: "Luminor", value: 40, references: [
+              { label: "PAM00372", value: 12 }
+            ]}
           ]}
         ],
         topDialColors: [
@@ -21517,13 +21529,19 @@
         const items = getCriteriaLevelItems(path);
         const childKey = getCriteriaChildKey(path);
         const total = statTotal(items);
-        const crumbs = ["Top Brands", ...path];
-        const breadcrumbHtml = crumbs.map((label, i) => {
-          const isLast = i === crumbs.length - 1;
-          return isLast
-            ? `<span class="wa-criteria-crumb-current">${esc(label)}</span>`
-            : `<button type="button" class="wa-criteria-crumb-link" data-wa-criteria-crumb="${i}">${esc(label)}</button>`;
-        }).join(`<span class="wa-criteria-crumb-sep">›</span>`);
+        // root: title = "Top 10 Brands", ไม่มี breadcrumb (ไม่ให้ซ้ำ)
+        // drill: title = "Top Models" / "Top References", breadcrumb แสดง brand/model ที่เข้าไป
+        const isRoot = path.length === 0;
+        const title = isRoot ? "Top 10 Brands" : path.length === 1 ? "Top Models" : "Top References";
+        const crumbs = isRoot ? [] : [...path];
+        const breadcrumbHtml = crumbs.length
+          ? `<p class="wa-criteria-breadcrumb">${crumbs.map((label, i) => {
+              const isLast = i === crumbs.length - 1;
+              return isLast
+                ? `<span class="wa-criteria-crumb-current">${esc(label)}</span>`
+                : `<button type="button" class="wa-criteria-crumb-link" data-wa-criteria-crumb="${i}">${esc(label)}</button>`;
+            }).join(`<span class="wa-criteria-crumb-sep">›</span>`)}</p>`
+          : "";
         const rowsHtml = items.length
           ? items.map((item, idx) => {
               const clickable = childKey && item[childKey] && item[childKey].length > 0;
@@ -21535,8 +21553,8 @@
           <div class="user-action-page wa-criteria-modal">
             <div class="user-action-head">
               <div>
-                <h2 id="user-action-modal-title">Top Criteria by Dimension</h2>
-                <p class="wa-criteria-breadcrumb">${breadcrumbHtml}</p>
+                <h2 id="user-action-modal-title">${title}</h2>
+                ${breadcrumbHtml}
               </div>
               <button class="btn user-action-close" type="button" data-user-action-modal-close aria-label="ปิด">${iconSvg.close}</button>
             </div>
@@ -21554,7 +21572,8 @@
         modalBody.querySelectorAll("[data-wa-criteria-crumb]").forEach(btn => {
           btn.addEventListener("click", () => {
             const idx = parseInt(btn.getAttribute("data-wa-criteria-crumb"), 10);
-            watchAlertCriteriaModalPath = watchAlertCriteriaModalPath.slice(0, idx);
+            // crumbs = [...path] ดังนั้น crumb ที่ idx = path[idx] ต้องการย้อนไปที่ path[idx] เป็นตัวสุดท้าย
+            watchAlertCriteriaModalPath = watchAlertCriteriaModalPath.slice(0, idx + 1);
             renderCriteriaModalBody();
           });
         });
