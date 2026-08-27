@@ -21501,9 +21501,9 @@
       // 2.1 Top Criteria — flat Top 5 Brands (หน้าหลัก) + Dial Colors, drill-down (Model/Reference) เปิดเป็น modal แทน expand inline
       // dot + label + count + percent + full-width bar (Family Office composition pattern), percent = share ของผลรวมในกลุ่มเดียวกัน
       const statTotal = (items) => items.reduce((s, i) => s + i.value, 0) || 1;
-      const statBarRow = (item, idx, total, dataAttr = "", chevron = false) => {
+      const statBarRow = (item, idx, total, dataAttr = "", chevron = false, fixedColor = null) => {
         const pct = Math.round((item.value / total) * 100);
-        const color = brandColors[idx % brandColors.length];
+        const color = fixedColor || brandColors[idx % brandColors.length];
         const clickable = !!dataAttr;
         const Tag = clickable ? "button" : "div";
         return `
@@ -21556,12 +21556,15 @@
           : path.length === 1
             ? "แสดงสูงสุด 10 models"
             : "แสดงสูงสุด 10 references";
+        // สีของคำว่า brand/model ใน title สืบทอดจากสีของ brand แม่ (เช่น Rolex น้ำเงิน, Omega เขียว)
+        const titleColor = isRoot ? null : brandColors[ov.topCriteriaTree.findIndex(b => b.label === path[0]) % brandColors.length];
         // ส่วนท้ายของ title (brand/model) เป็นปุ่มคลิกย้อนกลับได้
         const backLabel = isRoot ? "" : path[path.length - 1];
         const backLevel = isRoot ? 0 : path.length - 1; // ย้อนไประดับก่อนหน้า
         const titleHtml = backLabel
-          ? `${levelLabel} - <button type="button" class="wa-criteria-title-back" data-wa-criteria-back="${backLevel}">${esc(backLabel)}</button>`
+          ? `${levelLabel} - <button type="button" class="wa-criteria-title-back" data-wa-criteria-back="${backLevel}"${titleColor ? ` style="color: ${titleColor}"` : ""}>${esc(backLabel)}</button>`
           : levelLabel;
+        // bar list รายละเอียดยังคงหลายสีตาม index ปกติ (ไม่สืบทอดสีจากแม่)
         const rowsHtml = items.length
           ? items.map((item, idx) => {
               const clickable = childKey && item[childKey] && item[childKey].length > 0;
