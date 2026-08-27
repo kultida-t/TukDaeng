@@ -2474,6 +2474,8 @@
       line-height: 1.45;
     }
     .wa-trend-arrow svg { width: 13px; height: 13px; }
+    /* min-width คงที่ให้ label ("เทียบสัปดาห์ก่อน" ฯลฯ) เริ่มตำแหน่งเดียวกันทุก card แม้ตัวเลข trend ยาวไม่เท่ากัน */
+    .wa-trend-value { min-width: 34px; }
     .wa-trend-positive { color: var(--green); }
     .wa-trend-negative { color: var(--red); }
     .wa-trend-neutral { color: #6d7f98; }
@@ -3176,7 +3178,7 @@
       .wa-notif-summary { grid-template-columns: repeat(2, minmax(0, 1fr)); }
       .wa-trend-chart { height: 100px; }
       .wa-trend-bars { height: 76px; }
-      .wa-trend-label { font-size: 7px; }
+      .wa-trend-chart .wa-trend-label { font-size: 7px; }
       .wa-alert-mini-table .asset-row {
         grid-template-columns: 1fr;
         gap: 4px;
