@@ -2491,29 +2491,11 @@
       font-size: 13px;
     }
 
-    /* Price Range Histogram — vertical bar chart (จำนวน alert ต่อช่วงราคา) พร้อมแกน Y + เส้นแนวโน้ม */
+    /* Price Range Histogram — vertical bar chart (จำนวน alert ต่อช่วงราคา) พร้อมแกน Y + ค่าบนหัวแท่ง */
     .wa-price-hist-wrap { display: flex; flex-direction: column; }
-    .wa-price-hist-values {
-      display: grid;
-      grid-template-columns: repeat(6, minmax(0, 1fr));
-      gap: 8px;
-      margin-left: 34px;
-      height: 20px;
-      align-items: end;
-    }
-    .wa-price-hist-value {
-      text-align: center;
-      color: #071b36;
-      font-size: 12px;
-      font-weight: 800;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-    .wa-price-hist-value.wa-price-hist-peak { color: var(--brand); }
     .wa-price-hist-track {
       position: relative;
-      height: 150px;
+      height: 170px;
       margin-left: 34px;
       margin-top: 4px;
       border-left: 1px solid #cbd5e1;
@@ -2548,6 +2530,23 @@
       align-items: end;
       height: 100%;
     }
+    .wa-price-hist-col {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-end;
+      height: 100%;
+      min-width: 0;
+    }
+    .wa-price-hist-value {
+      color: #071b36;
+      font-size: 12px;
+      font-weight: 800;
+      white-space: nowrap;
+      margin-bottom: 4px;
+      line-height: 1;
+    }
+    .wa-price-hist-value.wa-price-hist-peak { color: var(--brand); }
     .wa-price-hist-bar {
       width: 100%;
       max-width: 44px;
@@ -3195,8 +3194,7 @@
         white-space: normal;
       }
       /* Price Range Histogram: ลดความสูง + font + ความกว้างแกน Y บน mobile */
-      .wa-price-hist-track { height: 120px; margin-left: 28px; }
-      .wa-price-hist-values { margin-left: 28px; }
+      .wa-price-hist-track { height: 140px; margin-left: 28px; }
       .wa-price-hist-axis { margin-left: 28px; }
       .wa-price-hist-yaxis { left: -28px; width: 24px; }
       .wa-price-hist-yaxis span { font-size: 8px; }
@@ -21735,20 +21733,24 @@
             const niceMax = niceStep * 4;
             const yTicks = [4, 3, 2, 1, 0].map(i => i * niceStep);
             const n = ov.priceRanges.length;
-            const valuesHtml = ov.priceRanges.map((p, i) => `<div class="wa-price-hist-value${i === peakIdx ? " wa-price-hist-peak" : ""}">${p.value.toLocaleString()}</div>`).join("");
-            const barsHtml = ov.priceRanges.map((p, i) => {
-              const h = Math.max(1, (p.value / niceMax) * 100);
-              return `<div class="wa-price-hist-bar${i === peakIdx ? " wa-price-hist-peak" : ""}" style="height: ${h}%"></div>`;
+            const colsHtml = ov.priceRanges.map((p, i) => {
+              const h = Math.max(1, (p.value / niceMax) * 82);
+              const isPeak = i === peakIdx;
+              return `
+                <div class="wa-price-hist-col">
+                  <div class="wa-price-hist-value${isPeak ? " wa-price-hist-peak" : ""}">${p.value.toLocaleString()}</div>
+                  <div class="wa-price-hist-bar${isPeak ? " wa-price-hist-peak" : ""}" style="height: ${h}%"></div>
+                </div>
+              `;
             }).join("");
             const yaxisHtml = yTicks.map(v => `<span>${v.toLocaleString()}</span>`).join("");
             const axisHtml = ov.priceRanges.map(p => `<div class="wa-price-hist-label">${esc(p.label)}</div>`).join("");
 
             return `
               <div class="wa-price-hist-wrap">
-                <div class="wa-price-hist-values">${valuesHtml}</div>
                 <div class="wa-price-hist-track">
                   <div class="wa-price-hist-yaxis">${yaxisHtml}</div>
-                  <div class="wa-price-hist-chart">${barsHtml}</div>
+                  <div class="wa-price-hist-chart">${colsHtml}</div>
                 </div>
                 <div class="wa-price-hist-axis">${axisHtml}</div>
                 <div class="wa-price-hist-summary">
