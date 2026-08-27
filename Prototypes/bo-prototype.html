@@ -12857,14 +12857,6 @@
           { label: "< 50k", value: 420 }, { label: "50k-100k", value: 680 }, { label: "100k-300k", value: 1240 },
           { label: "300k-500k", value: 580 }, { label: "500k-1M", value: 220 }, { label: "> 1M", value: 78 }
         ],
-        conditions: [
-          { label: "New", value: 380 }, { label: "Like New", value: 720 }, { label: "Very Good", value: 980 },
-          { label: "Good", value: 560 }, { label: "Fair", value: 180 }, { label: "Unspecified", value: 400 }
-        ],
-        caseSizes: [
-          { label: "< 36mm", value: 220 }, { label: "36-39mm", value: 680 }, { label: "40-42mm", value: 1420 },
-          { label: "43-45mm", value: 580 }, { label: "> 45mm", value: 180 }, { label: "Unspecified", value: 138 }
-        ],
         jointCriteria: [
           { label: "Brand + Model", value: 1820, percent: 56.6 },
           { label: "Brand + Price Range", value: 1240, percent: 38.5 },
@@ -21806,8 +21798,6 @@
         <div class="wa-overview-stack">
           ${panel("Top Brands", "แบรนด์ที่ผู้ใช้ตั้ง alert บ่อย — กดแถบเพื่อดูรุ่น/เลขอ้างอิง", topCriteriaHtml, "wa-panel-criteria", "ดูทั้งหมด", `data-wa-criteria-viewall`, false)}
           ${panel("Price Range", "ช่วงราคาที่ user สนใจ", donutChart(ov.priceRanges, "Total Alerts"), "wa-panel-donut")}
-          ${panel("Condition Distribution", "สภาพที่ user ตั้ง alert", donutChart(ov.conditions, "Total Alerts"), "wa-panel-donut")}
-          ${panel("Case Size Distribution", "ขนาดเคสที่ user สนใจ", donutChart(ov.caseSizes, "Total Alerts"), "wa-panel-donut")}
           ${panel("Joint Criteria Patterns", "combination ของ criteria ที่มักตั้งร่วมกัน — intensity = frequency", jointHtml, "wa-panel-heatmap")}
           ${panel("Trigger Trend (30 วันล่าสุด)", "จำนวน trigger ย้อนหลัง 30 วัน", trendHtml, "wa-panel-trend")}
           ${panel("Frequently Triggered Alerts", "alert ที่ trigger บ่อยสุด (top 8)", freqTriggerHtml, "", "View All")}
