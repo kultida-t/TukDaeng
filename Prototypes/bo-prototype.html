@@ -2716,8 +2716,8 @@
       padding: 16px 20px 18px;
     }
 
-    /* 2.1 Top Criteria — 2x2 sub-panel grid */
-    .wa-criteria-grid {
+    /* 2.1 Top Criteria — flat Top 5 Brands + Dial Color panel (drill-down อยู่ใน modal แทน expand inline) */
+    .wa-criteria-columns {
       display: grid;
       grid-template-columns: repeat(2, minmax(0, 1fr));
       gap: 14px;
@@ -2739,38 +2739,159 @@
       letter-spacing: .03em;
       text-transform: uppercase;
     }
-    .wa-bar-list {
+    /* หัวข้อ + ดูทั้งหมด บรรทัดเดียวกัน */
+    .wa-criteria-sub-head {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 12px;
+      margin: 0 0 10px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid #e2eaf5;
+    }
+    .wa-criteria-sub-head h4 {
+      margin: 0;
       padding: 0;
-      gap: 8px;
+      border: 0;
     }
-    .wa-bar-list .brand-ranking-row {
-      min-height: 32px;
-      gap: 3px;
+    .wa-criteria-sub-head .wa-view-all-link {
+      margin: 0;
     }
-    /* barList ไม่มี trend/share → ปรับ grid ให้ name และ count วางชิดขอบ ไม่มีคอลัมน์ว่าง */
-    .wa-bar-list .brand-ranking-top {
-      grid-template-columns: 20px minmax(0, 1fr) auto;
+
+    /* Stat bar list — dot + label + count + percent, full-width bar (Family Office composition pattern) */
+    .wa-stat-bar-list {
+      display: grid;
+      gap: 14px;
+    }
+    .wa-stat-bar-row {
+      display: grid;
       gap: 8px;
+      width: 100%;
+      padding: 4px 6px;
+      margin: -4px -6px;
+      border: 0;
+      border-radius: 6px;
+      background: transparent;
+      text-align: left;
+      cursor: default;
+      font: inherit;
+    }
+    button.wa-stat-bar-row:not(.wa-stat-bar-row-static) {
+      cursor: pointer;
+      transition: background 120ms ease;
+    }
+    button.wa-stat-bar-row:not(.wa-stat-bar-row-static):hover {
+      background: #eef4fc;
+    }
+    /* ชื่อ + จำนวน ชิดซ้ายเป็นกลุ่มเดียวกัน, percent + chevron ชิดขวาเป็นอีกกลุ่ม (ดันด้วย margin-left: auto) */
+    .wa-stat-bar-top {
+      display: flex;
       align-items: center;
+      gap: 8px;
     }
-    .wa-bar-list .wa-rank-num {
-      color: #8595ad;
+    .wa-stat-bar-left {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      min-width: 0;
+    }
+    .wa-stat-bar-right {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-left: auto;
+      flex: 0 0 auto;
+    }
+    .wa-stat-bar-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      flex: 0 0 auto;
+    }
+    .wa-stat-bar-label {
+      overflow: hidden;
+      color: #071b36;
+      font-size: 14px;
+      font-weight: 800;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .wa-stat-bar-count {
+      color: #6d7f98;
+      font-size: 12px;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+    .wa-stat-bar-percent {
       font-family: var(--font-heading);
-      font-size: 11px;
+      font-size: 16px;
+      font-weight: 800;
+      white-space: nowrap;
+      text-align: right;
+    }
+    .wa-stat-bar-chevron {
+      display: inline-flex;
+      color: #8595ad;
+      flex: 0 0 auto;
+    }
+    .wa-stat-bar-chevron svg { width: 14px; height: 14px; }
+    .wa-stat-bar-track {
+      height: 9px;
+      margin-left: 18px; /* ตรงกับจุดเริ่มของชื่อ (dot 10px + gap 8px) */
+      border-radius: 999px;
+      background: #eef2f7;
+      overflow: hidden;
+    }
+    .wa-stat-bar-fill {
+      display: block;
+      height: 100%;
+      border-radius: 999px;
+    }
+
+    /* View all link — ท้าย Top Brands list */
+    .wa-view-all-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      margin-top: 12px;
+      padding: 0;
+      border: 0;
+      background: transparent;
+      color: var(--blue);
+      font-size: 12px;
       font-weight: 700;
-      text-align: center;
+      cursor: pointer;
     }
-    .wa-bar-list .ranking-brand-name { font-size: 12px; }
-    .wa-bar-list .brand-searches { font-size: 14px; }
-    /* barList ไม่มี share → ให้ bar กินเต็มความกว้าง ไม่ตัด 34px ทางขวา */
-    .wa-bar-list .brand-bar-line {
-      grid-template-columns: minmax(0, 1fr);
+    .wa-view-all-link:hover { text-decoration: underline; }
+    .wa-view-all-link svg { width: 14px; height: 14px; }
+
+    /* Criteria drill-down modal — breadcrumb */
+    .wa-criteria-breadcrumb {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 4px;
+      margin: 4px 0 0;
+      font-size: 12px;
     }
-    .wa-bar-list .brand-bar-track { height: 5px; }
-    /* read-only: ไม่เปลี่ยนสี hover ให้ดูเหมือนกดได้ */
-    .wa-bar-list .brand-ranking-row:hover .brand-bar-fill {
-      background: var(--brand);
+    .wa-criteria-crumb-link {
+      padding: 0;
+      border: 0;
+      background: transparent;
+      color: var(--blue);
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
     }
+    .wa-criteria-crumb-link:hover { text-decoration: underline; }
+    .wa-criteria-crumb-current {
+      color: #43546d;
+      font-weight: 700;
+    }
+    .wa-criteria-crumb-sep {
+      color: #b6c2d4;
+    }
+    .wa-criteria-modal .wa-stat-bar-list { gap: 16px; }
 
     /* 2.5 Joint Criteria Patterns */
     .wa-joint-list {
@@ -2989,9 +3110,9 @@
       .wa-overview-stack { grid-template-columns: repeat(2, minmax(0, 1fr)); }
     }
 
-    /* Responsive — Small tablet (≤1024px) — criteria-grid stack ภายใน panel ที่แคบลง */
+    /* Responsive — Small tablet (≤1024px) — criteria-tree stack ภายใน panel ที่แคบลง */
     @media (max-width: 1024px) {
-      .wa-criteria-grid { grid-template-columns: 1fr; }
+      .wa-criteria-columns { grid-template-columns: 1fr; }
     }
 
     /* Responsive — Mobile (≤760px) */
@@ -3000,7 +3121,7 @@
         grid-template-columns: repeat(2, minmax(0, 1fr));
       }
       .wa-overview-stack { grid-template-columns: 1fr; }
-      .wa-criteria-grid { grid-template-columns: 1fr; }
+      .wa-criteria-columns { grid-template-columns: 1fr; }
       .wa-notif-summary { grid-template-columns: repeat(2, minmax(0, 1fr)); }
       .wa-trend-chart { height: 100px; }
       .wa-trend-bars { height: 76px; }
@@ -12608,20 +12729,65 @@
           { label: "Unmet Demand", value: "371", detail: "ยังไม่มี Assets ตรงตามเงื่อนไข", trend: "+24", trendDirection: "up", trendLabel: "เทียบสัปดาห์ก่อน", trendType: "negative", sparkline: [280, 295, 310, 320, 335, 345, 355, 360, 365, 371], accent: "amber" },
           { label: "Notification Success Rate", value: "94.2%", detail: "% การส่งสำเร็จ (7 วันล่าสุด)", trend: "+1.4%", trendDirection: "up", trendLabel: "เทียบสัปดาห์ก่อน", trendType: "positive", sparkline: [92.1, 92.4, 92.8, 93.0, 93.3, 93.6, 93.9, 94.0, 94.1, 94.2], accent: "purple" }
         ],
-        topBrands: [
-          { label: "Rolex", value: 1420 }, { label: "Omega", value: 680 }, { label: "Seiko", value: 420 },
-          { label: "Tudor", value: 280 }, { label: "Patek Philippe", value: 180 }, { label: "Cartier", value: 160 },
-          { label: "Grand Seiko", value: 140 }, { label: "IWC", value: 120 }
-        ],
-        topModels: [
-          { label: "Submariner", value: 380 }, { label: "Speedmaster", value: 240 }, { label: "Datejust", value: 220 },
-          { label: "GMT-Master II", value: 180 }, { label: "Black Bay", value: 160 }, { label: "Seamaster", value: 140 },
-          { label: "Tank", value: 120 }, { label: "Snowflake", value: 100 }
-        ],
-        topReferences: [
-          { label: "16610", value: 85 }, { label: "116610LN", value: 72 }, { label: "126610LV", value: 68 },
-          { label: "116500LN", value: 55 }, { label: "15500ST", value: 48 }, { label: "3824", value: 42 },
-          { label: "SPB143", value: 38 }, { label: "6139", value: 35 }
+        // Top Criteria — hierarchy: brand → models → references (drill-down tree)
+        // แต่ละ brand มี top models ของแบรนด์นั้น, แต่ละ model มี top references ของรุ่นนั้น
+        // value = จำนวน alert ที่ตั้ง criteria นี้ (รวมที่ตั้งเฉพาะระดับนี้และระดับลูก)
+        topCriteriaTree: [
+          { label: "Rolex", value: 1420, models: [
+            { label: "Submariner", value: 380, references: [
+              { label: "16610", value: 85 }, { label: "116610LN", value: 72 }, { label: "126610LV", value: 68 }
+            ]},
+            { label: "Datejust", value: 220, references: [
+              { label: "116200", value: 45 }, { label: "126300", value: 38 }
+            ]},
+            { label: "GMT-Master II", value: 180, references: [
+              { label: "126710BLRO", value: 42 }, { label: "116710LN", value: 35 }
+            ]}
+          ]},
+          { label: "Omega", value: 680, models: [
+            { label: "Speedmaster", value: 240, references: [
+              { label: "3824", value: 42 }, { label: "311.30.42.30.01.005", value: 35 }
+            ]},
+            { label: "Seamaster", value: 140, references: [
+              { label: "222.30.42.20.01.001", value: 28 }
+            ]}
+          ]},
+          { label: "Seiko", value: 420, models: [
+            { label: "Snowflake", value: 100, references: [
+              { label: "SPB143", value: 38 }, { label: "SBGA211", value: 32 }
+            ]},
+            { label: "6139", value: 80, references: [
+              { label: "6139-6000", value: 35 }, { label: "6139-6005", value: 28 }
+            ]}
+          ]},
+          { label: "Tudor", value: 280, models: [
+            { label: "Black Bay", value: 160, references: [
+              { label: "M79030", value: 32 }, { label: "M79230", value: 28 }
+            ]}
+          ]},
+          { label: "Patek Philippe", value: 180, models: [
+            { label: "Calatrava", value: 80, references: [
+              { label: "5227", value: 30 }
+            ]},
+            { label: "Nautilus", value: 60, references: [
+              { label: "5711", value: 25 }
+            ]}
+          ]},
+          { label: "Cartier", value: 160, models: [
+            { label: "Tank", value: 120, references: [
+              { label: "WSTA0041", value: 28 }
+            ]}
+          ]},
+          { label: "Grand Seiko", value: 140, models: [
+            { label: "SBGA211", value: 70, references: [
+              { label: "SBGA211G", value: 22 }
+            ]}
+          ]},
+          { label: "IWC", value: 120, models: [
+            { label: "Pilot Mark XVIII", value: 60, references: [
+              { label: "IW3270", value: 20 }
+            ]}
+          ]}
         ],
         topDialColors: [
           { label: "Black", value: 1820 }, { label: "Blue", value: 680 }, { label: "Green", value: 320 },
@@ -13526,6 +13692,8 @@
     let activeAssetCommentsModalId = null;
     let expandedAssetCommentReplies = new Set();
     let activeReportContextId = null;
+    // WA-PTO-001b: Watch Alert Demand Overview — Top Criteria drill-down modal (Brand → Model → Reference)
+    let watchAlertCriteriaModalPath = [];
     const userListPageSize = 10;
     const assetListPageSize = 10;
     const articleListPageSize = 10;
@@ -21244,23 +21412,6 @@
       `;
       }).join("");
 
-      // Bar list helper (reuse brand-ranking pattern) — read-only ranking with rank number
-      const barList = (items, opts = {}) => {
-        const max = Math.max(...items.map(i => i.value), 1);
-        return items.map((i, idx) => `
-          <div class="brand-ranking-row">
-            <span class="brand-ranking-top">
-              <span class="wa-rank-num">${idx + 1}</span>
-              <span class="ranking-brand-name">${esc(i.label)}</span>
-              <span class="brand-searches">${i.value.toLocaleString()}</span>
-            </span>
-            <span class="brand-bar-line">
-              <span class="brand-bar-track"><span class="brand-bar-fill" style="width: ${Math.round((i.value / max) * 100)}%"></span></span>
-            </span>
-          </div>
-        `).join("");
-      };
-
       // Donut chart helper — Family Office UI Rulebook Composition pattern
       const donutColors = ["#1a365f", "#1463d9", "#08875d", "#a96500", "#6b46c1", "#c8212b", "#0f766e", "#925500"];
       const donutChart = (items, totalLabel) => {
@@ -21310,27 +21461,115 @@
         </article>
       `;
 
-      // 2.1 Top Criteria by Dimension (4 sub-panels)
+      // 2.1 Top Criteria — flat Top 5 Brands (หน้าหลัก) + Dial Colors, drill-down (Model/Reference) เปิดเป็น modal แทน expand inline
+      // dot + label + count + percent + full-width bar (Family Office composition pattern), percent = share ของผลรวมในกลุ่มเดียวกัน
+      const statTotal = (items) => items.reduce((s, i) => s + i.value, 0) || 1;
+      const statBarRow = (item, idx, total, dataAttr = "", chevron = false) => {
+        const pct = Math.round((item.value / total) * 100);
+        const color = donutColors[idx % donutColors.length];
+        const clickable = !!dataAttr;
+        const Tag = clickable ? "button" : "div";
+        return `
+          <${Tag} class="wa-stat-bar-row${clickable ? "" : " wa-stat-bar-row-static"}" ${clickable ? `type="button" ${dataAttr}` : ""}>
+            <span class="wa-stat-bar-top">
+              <span class="wa-stat-bar-left">
+                <span class="wa-stat-bar-dot" style="background: ${color}"></span>
+                <span class="wa-stat-bar-label">${esc(item.label)}</span>
+                <span class="wa-stat-bar-count">(${item.value.toLocaleString()})</span>
+              </span>
+              <span class="wa-stat-bar-right">
+                <span class="wa-stat-bar-percent" style="color: ${color}">${pct}%</span>
+                ${clickable && chevron ? `<span class="wa-stat-bar-chevron">${iconSvg.chevron}</span>` : ""}
+              </span>
+            </span>
+            <span class="wa-stat-bar-track"><span class="wa-stat-bar-fill" style="width: ${pct}%; background: ${color}"></span></span>
+          </${Tag}>
+        `;
+      };
+
+      const top5Brands = ov.topCriteriaTree.slice(0, 5);
+      const allBrandsTotal = statTotal(ov.topCriteriaTree);
       const topCriteriaHtml = `
-        <div class="wa-criteria-grid">
+        <div class="wa-criteria-columns">
           <div class="wa-criteria-sub">
-            <h4>Top Brands</h4>
-            <div class="brand-ranking-list wa-bar-list">${barList(ov.topBrands)}</div>
-          </div>
-          <div class="wa-criteria-sub">
-            <h4>Top Models</h4>
-            <div class="brand-ranking-list wa-bar-list">${barList(ov.topModels)}</div>
-          </div>
-          <div class="wa-criteria-sub">
-            <h4>Top References</h4>
-            <div class="brand-ranking-list wa-bar-list">${barList(ov.topReferences)}</div>
+            <div class="wa-criteria-sub-head">
+              <h4>Top Brands</h4>
+              <button class="wa-view-all-link" type="button" data-wa-criteria-viewall>ดูทั้งหมด ${iconSvg.chevron}</button>
+            </div>
+            <div class="wa-stat-bar-list">
+              ${top5Brands.map((b, idx) => statBarRow(b, idx, allBrandsTotal, `data-wa-criteria-open="${esc(b.label)}"`, true)).join("")}
+            </div>
           </div>
           <div class="wa-criteria-sub">
             <h4>Top Dial Colors</h4>
-            <div class="brand-ranking-list wa-bar-list">${barList(ov.topDialColors)}</div>
+            <div class="wa-stat-bar-list">
+              ${ov.topDialColors.map((d, idx) => statBarRow(d, idx, statTotal(ov.topDialColors))).join("")}
+            </div>
           </div>
         </div>
       `;
+
+      // Criteria drill-down modal — Brand → Model → Reference, สลับ content ใน modal เดิมพร้อม breadcrumb
+      const getCriteriaLevelItems = (path) => {
+        if (path.length === 0) return ov.topCriteriaTree;
+        const brand = ov.topCriteriaTree.find(b => b.label === path[0]);
+        if (path.length === 1) return (brand && brand.models) || [];
+        const model = brand && (brand.models || []).find(m => m.label === path[1]);
+        return (model && model.references) || [];
+      };
+      const getCriteriaChildKey = (path) => path.length === 0 ? "models" : path.length === 1 ? "references" : null;
+      const renderCriteriaModalBody = () => {
+        const path = watchAlertCriteriaModalPath;
+        const items = getCriteriaLevelItems(path);
+        const childKey = getCriteriaChildKey(path);
+        const total = statTotal(items);
+        const crumbs = ["Top Brands", ...path];
+        const breadcrumbHtml = crumbs.map((label, i) => {
+          const isLast = i === crumbs.length - 1;
+          return isLast
+            ? `<span class="wa-criteria-crumb-current">${esc(label)}</span>`
+            : `<button type="button" class="wa-criteria-crumb-link" data-wa-criteria-crumb="${i}">${esc(label)}</button>`;
+        }).join(`<span class="wa-criteria-crumb-sep">›</span>`);
+        const rowsHtml = items.length
+          ? items.map((item, idx) => {
+              const clickable = childKey && item[childKey] && item[childKey].length > 0;
+              return statBarRow(item, idx, total, clickable ? `data-wa-criteria-drill="${esc(item.label)}"` : "", true);
+            }).join("")
+          : `<div class="detail-empty">ไม่มีข้อมูล</div>`;
+        const modalBody = document.querySelector("#user-action-modal-body");
+        modalBody.innerHTML = `
+          <div class="user-action-page wa-criteria-modal">
+            <div class="user-action-head">
+              <div>
+                <h2 id="user-action-modal-title">Top Criteria by Dimension</h2>
+                <p class="wa-criteria-breadcrumb">${breadcrumbHtml}</p>
+              </div>
+              <button class="btn user-action-close" type="button" data-user-action-modal-close aria-label="ปิด">${iconSvg.close}</button>
+            </div>
+            <div class="user-action-card">
+              <div class="wa-stat-bar-list">${rowsHtml}</div>
+            </div>
+          </div>
+        `;
+        modalBody.querySelectorAll("[data-wa-criteria-drill]").forEach(btn => {
+          btn.addEventListener("click", () => {
+            watchAlertCriteriaModalPath = [...watchAlertCriteriaModalPath, btn.getAttribute("data-wa-criteria-drill")];
+            renderCriteriaModalBody();
+          });
+        });
+        modalBody.querySelectorAll("[data-wa-criteria-crumb]").forEach(btn => {
+          btn.addEventListener("click", () => {
+            const idx = parseInt(btn.getAttribute("data-wa-criteria-crumb"), 10);
+            watchAlertCriteriaModalPath = watchAlertCriteriaModalPath.slice(0, idx);
+            renderCriteriaModalBody();
+          });
+        });
+      };
+      const openCriteriaModal = (initialPath) => {
+        watchAlertCriteriaModalPath = initialPath;
+        renderCriteriaModalBody();
+        showUserActionModal(true);
+      };
 
       // 2.5 Joint Criteria Patterns — heatmap-style intensity grid (Family Office Risk Heatmap pattern)
       const jointMax = Math.max(...ov.jointCriteria.map(j => j.value), 1);
@@ -21491,7 +21730,7 @@
       // Assemble all panels into #table
       document.querySelector("#table").innerHTML = `
         <div class="wa-overview-stack">
-          ${panel("Top Criteria by Dimension", "criteria ที่ user ตั้งบ่อย แยก 4 dimensions", topCriteriaHtml, "wa-panel-criteria")}
+          ${panel("Top Criteria by Dimension", "เงื่อนไขที่ผู้ใช้ตั้งบ่อย แยกตามมิติ", topCriteriaHtml, "wa-panel-criteria")}
           ${panel("Price Range Distribution", "ช่วงราคาที่ user สนใจ", donutChart(ov.priceRanges, "Total Alerts"), "wa-panel-donut")}
           ${panel("Condition Distribution", "สภาพที่ user ตั้ง alert", donutChart(ov.conditions, "Total Alerts"), "wa-panel-donut")}
           ${panel("Case Size Distribution", "ขนาดเคสที่ user สนใจ", donutChart(ov.caseSizes, "Total Alerts"), "wa-panel-donut")}
@@ -21503,6 +21742,14 @@
           ${panel("Notification Delivery Summary", "สรุปการส่งแจ้งเตือน 7 วันล่าสุด", ndHtml)}
         </div>
       `;
+
+      // Top Brands row คลิก → เปิด modal drilled ตรงไป models ของ brand นั้น
+      document.querySelectorAll("[data-wa-criteria-open]").forEach(btn => {
+        btn.addEventListener("click", () => openCriteriaModal([btn.getAttribute("data-wa-criteria-open")]));
+      });
+      // "ดูทั้งหมด" → เปิด modal ที่ root (brand ทั้งหมด)
+      const viewAllBtn = document.querySelector("[data-wa-criteria-viewall]");
+      if (viewAllBtn) viewAllBtn.addEventListener("click", () => openCriteriaModal([]));
     }
 
     // WA-PTO-002 placeholder — Alert List (read-only) will be implemented in next task
