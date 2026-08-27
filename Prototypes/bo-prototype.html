@@ -2516,6 +2516,8 @@
       height: 150px;
       margin-left: 34px;
       margin-top: 4px;
+      border-left: 1px solid #cbd5e1;
+      border-bottom: 1px solid #cbd5e1;
     }
     .wa-price-hist-yaxis {
       position: absolute;
@@ -2537,14 +2539,6 @@
     }
     .wa-price-hist-yaxis span:first-child { transform: translateY(-2px); }
     .wa-price-hist-yaxis span:last-child { transform: translateY(2px); }
-    .wa-price-hist-gridlines { position: absolute; inset: 0; z-index: 1; }
-    .wa-price-hist-gridline {
-      position: absolute;
-      left: 0;
-      right: 0;
-      height: 1px;
-      background: var(--line);
-    }
     .wa-price-hist-chart {
       position: relative;
       z-index: 2;
@@ -21732,7 +21726,7 @@
             const priceTotal = ov.priceRanges.reduce((s, p) => s + p.value, 0);
             const rawMax = Math.max(...ov.priceRanges.map(p => p.value), 1);
             const peakIdx = ov.priceRanges.reduce((best, p, i, arr) => p.value > arr[best].value ? i : best, 0);
-            // Nice-number Y-axis scale: ปัดค่าสูงสุดขึ้นเป็นเลขกลม แบ่ง 4 ช่วง (5 gridlines: niceMax..0)
+            // Nice-number Y-axis scale: ปัดค่าสูงสุดขึ้นเป็นเลขกลม แบ่ง 4 ช่วง (5 ticks: niceMax..0)
             const rawStep = rawMax / 4;
             const magnitude = Math.pow(10, Math.floor(Math.log10(rawStep)));
             const residual = rawStep / magnitude;
@@ -21746,15 +21740,14 @@
               const h = Math.max(1, (p.value / niceMax) * 100);
               return `<div class="wa-price-hist-bar${i === peakIdx ? " wa-price-hist-peak" : ""}" style="height: ${h}%"></div>`;
             }).join("");
-            const gridlinesHtml = [0, 25, 50, 75, 100].map(top => `<div class="wa-price-hist-gridline" style="top: ${top}%"></div>`).join("");
             const yaxisHtml = yTicks.map(v => `<span>${v.toLocaleString()}</span>`).join("");
             const axisHtml = ov.priceRanges.map(p => `<div class="wa-price-hist-label">${esc(p.label)}</div>`).join("");
+
             return `
               <div class="wa-price-hist-wrap">
                 <div class="wa-price-hist-values">${valuesHtml}</div>
                 <div class="wa-price-hist-track">
                   <div class="wa-price-hist-yaxis">${yaxisHtml}</div>
-                  <div class="wa-price-hist-gridlines">${gridlinesHtml}</div>
                   <div class="wa-price-hist-chart">${barsHtml}</div>
                 </div>
                 <div class="wa-price-hist-axis">${axisHtml}</div>
