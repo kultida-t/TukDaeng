@@ -21556,8 +21556,18 @@
           : path.length === 1
             ? "แสดงสูงสุด 10 models"
             : "แสดงสูงสุด 10 references";
-        // สีของคำว่า brand/model ใน title สืบทอดจากสีของ brand แม่ (เช่น Rolex น้ำเงิน, Omega เขียว)
-        const titleColor = isRoot ? null : brandColors[ov.topCriteriaTree.findIndex(b => b.label === path[0]) % brandColors.length];
+        // สีของคำว่า brand/model ใน title สืบทอดจากสีของรายการที่กดเข้ามา (level 1 = สี brand, level 2 = สี model ใน brand นั้น)
+        const titleColor = isRoot ? null : (() => {
+          const brand = ov.topCriteriaTree.find(b => b.label === path[0]);
+          if (path.length === 1) {
+            // Top Models - {brand}: ใช้สีของ brand ในรายการ Top Brands
+            return brandColors[ov.topCriteriaTree.findIndex(b => b.label === path[0]) % brandColors.length];
+          }
+          // Top References - {model}: ใช้สีของ model ในรายการ Top Models ของ brand นั้น
+          const brandModels = (brand && brand.models) || [];
+          const modelIdx = brandModels.findIndex(m => m.label === path[1]);
+          return modelIdx >= 0 ? brandColors[modelIdx % brandColors.length] : null;
+        })();
         // ส่วนท้ายของ title (brand/model) เป็นปุ่มคลิกย้อนกลับได้
         const backLabel = isRoot ? "" : path[path.length - 1];
         const backLevel = isRoot ? 0 : path.length - 1; // ย้อนไประดับก่อนหน้า
