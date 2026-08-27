@@ -2490,61 +2490,62 @@
     }
 
     /* Donut chart — Composition pattern (Family Office UI Rulebook) */
+    /* อ้างอิง: Prakan Go รายงานค่าการตลาด > สัดส่วนตามสถานะ — segment gap, legend ล่างแบบ horizontal, tooltip ตอน hover */
     .wa-donut-wrap {
-      display: grid;
-      grid-template-columns: 160px minmax(0, 1fr);
-      gap: 20px;
+      display: flex;
+      flex-direction: column;
       align-items: center;
+      gap: 16px;
     }
-    .wa-donut { width: 160px; height: 160px; }
-    .wa-donut-total {
-      font-family: var(--font-heading);
-      font-size: 22px;
-      font-weight: 400;
-      fill: #071b36;
-      letter-spacing: .04em;
+    .wa-donut-chart-area {
+      position: relative;
+      width: 190px;
+      height: 190px;
     }
-    .wa-donut-label {
-      font-size: 9px;
+    .wa-donut { width: 190px; height: 190px; display: block; }
+    .wa-donut-seg { cursor: default; }
+    .wa-donut-tooltip {
+      position: absolute;
+      left: 0;
+      top: 0;
+      transform: translate(-50%, -115%);
+      background: #fff;
+      border: 1px solid #e2e8f0;
+      border-radius: 10px;
+      padding: 10px 18px;
+      font-size: 14px;
       font-weight: 700;
-      fill: #6d7f98;
-      letter-spacing: .06em;
-      text-transform: uppercase;
+      white-space: nowrap;
+      box-shadow: 0 8px 20px rgba(15, 23, 42, .16);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 120ms ease;
+      z-index: 5;
     }
+    .wa-donut-tooltip.visible { opacity: 1; }
     .wa-donut-legend {
-      display: grid;
-      gap: 6px;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 6px 18px;
     }
     .wa-donut-legend .wa-legend-item {
-      display: grid;
-      grid-template-columns: 14px minmax(0, 1fr) auto auto;
-      gap: 8px;
+      display: flex;
       align-items: center;
+      gap: 6px;
       font-size: 12px;
     }
     .wa-donut-legend .wa-legend-dot {
       width: 10px;
       height: 10px;
-      border-radius: 3px;
+      border-radius: 50%;
+      flex-shrink: 0;
     }
     .wa-donut-legend .wa-legend-text {
-      color: #071b36;
-      font-weight: 600;
+      font-weight: 700;
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
-    }
-    .wa-donut-legend .wa-legend-value {
-      color: #43546d;
-      font-family: var(--font-heading);
-      font-size: 13px;
-    }
-    .wa-donut-legend .wa-legend-pct {
-      color: #8595ad;
-      font-size: 11px;
-      font-weight: 700;
-      min-width: 36px;
-      text-align: right;
     }
 
     /* Heatmap grid — Risk Heatmap pattern (Family Office UI Rulebook) */
@@ -3188,13 +3189,10 @@
       .wa-overview-panel .dashboard-card-meta {
         white-space: normal;
       }
-      /* Donut: stack vertically on mobile */
-      .wa-donut-wrap {
-        grid-template-columns: 1fr;
-        justify-items: center;
-        gap: 12px;
-      }
-      .wa-donut { width: 140px; height: 140px; }
+      /* Donut: ลดขนาดบน mobile */
+      .wa-donut-wrap { gap: 12px; }
+      .wa-donut-chart-area { width: 165px; height: 165px; }
+      .wa-donut { width: 165px; height: 165px; }
       /* Heatmap: 2 columns on mobile */
       .wa-heatmap-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
       /* Alert cards: 1 column on mobile */
@@ -3210,7 +3208,8 @@
       }
       .wa-notif-summary { grid-template-columns: 1fr; }
       .wa-heatmap-grid { grid-template-columns: 1fr; }
-      .wa-donut { width: 120px; height: 120px; }
+      .wa-donut-chart-area { width: 145px; height: 145px; }
+      .wa-donut { width: 145px; height: 145px; }
     }
 
     #user-action-modal:has(.market-reference-drawer) {
@@ -21448,35 +21447,37 @@
       }).join("");
 
       // Donut chart helper — Family Office UI Rulebook Composition pattern
-      const donutColors = ["#1a365f", "#1463d9", "#08875d", "#a96500", "#6b46c1", "#c8212b", "#0f766e", "#925500"];
+      // Segment gap + hover tooltip แบบอ้างอิง Prakan Go (รายงานค่าการตลาด > สัดส่วนตามสถานะ)
+      const donutColors = ["#10b981", "#3b82f6", "#f59e0b", "#8b5cf6", "#ec4899", "#06b6d4", "#ef4444", "#84cc16"];
       // Top Brands palette — สีกลาง 8 เฉด แยกจากตัวอักษร #071b36 ชัดเจน (ไม่กลืนกัน)
       const brandColors = ["#2b6cb0", "#2f855a", "#c05621", "#b83280", "#6b46c1", "#2c7a7b", "#b7791f", "#c53030"];
+      let donutInstanceSeq = 0;
       const donutChart = (items, totalLabel) => {
-        const total = items.reduce((s, i) => s + i.value, 0);
+        const total = items.reduce((s, i) => s + i.value, 0) || 1;
+        const instanceId = `wa-donut-${donutInstanceSeq++}`;
         let offset = 0;
-        const radius = 60, circumference = 2 * Math.PI * radius;
+        const radius = 66, strokeWidth = 36, circumference = 2 * Math.PI * radius, gapLen = 2.5;
         const segments = items.map((item, i) => {
-          const pct = item.value / total;
-          const dash = pct * circumference;
-          const seg = `<circle cx="80" cy="80" r="${radius}" fill="none" stroke="${donutColors[i % donutColors.length]}" stroke-width="22" stroke-dasharray="${dash.toFixed(1)} ${(circumference - dash).toFixed(1)}" stroke-dashoffset="${(-offset).toFixed(1)}" transform="rotate(-90 80 80)" />`;
-          offset += dash;
+          const fullDash = (item.value / total) * circumference;
+          const dash = Math.max(fullDash - gapLen, 0);
+          const seg = `<circle class="wa-donut-seg" data-label="${esc(item.label)}" data-value="${item.value}" cx="100" cy="100" r="${radius}" fill="none" stroke="${donutColors[i % donutColors.length]}" stroke-width="${strokeWidth}" stroke-dasharray="${dash.toFixed(1)} ${(circumference - dash).toFixed(1)}" stroke-dashoffset="${(-offset).toFixed(1)}" transform="rotate(-90 100 100)" />`;
+          offset += fullDash;
           return seg;
         }).join("");
         return `
           <div class="wa-donut-wrap">
-            <svg class="wa-donut" viewBox="0 0 160 160" role="img" aria-label="${esc(totalLabel)}">
-              <circle cx="80" cy="80" r="${radius}" fill="none" stroke="#eef2f7" stroke-width="22" />
-              ${segments}
-              <text x="80" y="74" text-anchor="middle" class="wa-donut-total">${total.toLocaleString()}</text>
-              <text x="80" y="92" text-anchor="middle" class="wa-donut-label">${esc(totalLabel)}</text>
-            </svg>
+            <div class="wa-donut-chart-area" data-donut-id="${instanceId}">
+              <svg class="wa-donut" viewBox="0 0 200 200" role="img" aria-label="${esc(totalLabel)}">
+                <circle cx="100" cy="100" r="${radius}" fill="none" stroke="#eef2f7" stroke-width="${strokeWidth}" />
+                ${segments}
+              </svg>
+              <div class="wa-donut-tooltip" id="${instanceId}-tooltip"></div>
+            </div>
             <div class="wa-donut-legend">
               ${items.map((item, i) => `
                 <div class="wa-legend-item">
                   <span class="wa-legend-dot" style="background: ${donutColors[i % donutColors.length]}"></span>
-                  <span class="wa-legend-text">${esc(item.label)}</span>
-                  <span class="wa-legend-value">${item.value.toLocaleString()}</span>
-                  <span class="wa-legend-pct">${Math.round((item.value / total) * 100)}%</span>
+                  <span class="wa-legend-text" style="color: ${donutColors[i % donutColors.length]}">${esc(item.label)}</span>
                 </div>
               `).join("")}
             </div>
@@ -21789,6 +21790,24 @@
           ${panel("Notification Delivery Summary", "สรุปการส่งแจ้งเตือน 7 วันล่าสุด", ndHtml)}
         </div>
       `;
+
+      // Donut segment hover → tooltip แบบอ้างอิง Prakan Go (label : จำนวน)
+      document.querySelectorAll(".wa-donut-chart-area").forEach(area => {
+        const tooltip = area.querySelector(".wa-donut-tooltip");
+        area.querySelectorAll(".wa-donut-seg").forEach(seg => {
+          const show = e => {
+            tooltip.textContent = `${seg.getAttribute("data-label")} : ${Number(seg.getAttribute("data-value")).toLocaleString()} รายการ`;
+            tooltip.style.color = seg.getAttribute("stroke");
+            const rect = area.getBoundingClientRect();
+            tooltip.style.left = `${e.clientX - rect.left}px`;
+            tooltip.style.top = `${e.clientY - rect.top}px`;
+            tooltip.classList.add("visible");
+          };
+          seg.addEventListener("mouseenter", show);
+          seg.addEventListener("mousemove", show);
+          seg.addEventListener("mouseleave", () => tooltip.classList.remove("visible"));
+        });
+      });
 
       // Top Brands row คลิก → เปิด modal drilled ตรงไป models ของ brand นั้น
       document.querySelectorAll("[data-wa-criteria-open]").forEach(btn => {
