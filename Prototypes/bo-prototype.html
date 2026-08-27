@@ -2418,39 +2418,66 @@
       margin-bottom: 22px;
     }
     body.watch-alert-mode .stat {
-      padding: 17px 15px 16px;
+      padding: 16px 16px 15px;
     }
-    body.watch-alert-mode .stat-top { margin-bottom: 12px; }
-    body.watch-alert-mode .stat-icon { background: var(--brand); }
+    body.watch-alert-mode .stat-top { margin-bottom: 10px; }
+    /* KPI legibility — ตัวอักษรชัดเจน คนแก่อ่านง่าย สมดุล (scope เฉพาะ watch-alert-mode) */
+    body.watch-alert-mode .stat-label {
+      font-size: 22px;
+      letter-spacing: .04em;
+      line-height: .95;
+      margin-bottom: 12px;
+      color: var(--muted);
+    }
+    body.watch-alert-mode .stat-value {
+      font-size: 39px;
+      line-height: .9;
+      margin-bottom: 0;
+      letter-spacing: .01em;
+    }
+    body.watch-alert-mode .stat-note {
+      font-size: 13px;
+      line-height: 1.45;
+      color: #43546d;
+    }
 
-    /* KPI cards — trend + sparkline + accent (Family Office UI Rulebook) */
+    /* KPI cards — label + value + icon บน, trend ล่างแทนที่ detail */
     .wa-kpi-card { display: flex; flex-direction: column; gap: 8px; }
-    .wa-kpi-accent-blue .stat-icon { background: var(--blue); }
-    .wa-kpi-accent-green .stat-icon { background: var(--green); }
-    .wa-kpi-accent-amber .stat-icon { background: var(--amber); }
+    /* แถบสีซ้าย + สีไอคอนตาม accent — โทนสีเดียวกับ asset status row */
+    .wa-kpi-accent-blue::before { background: #2f7be5; }
+    .wa-kpi-accent-blue .stat-icon { background: #2f7be5; }
+    .wa-kpi-accent-green::before { background: #0ea576; }
+    .wa-kpi-accent-green .stat-icon { background: #0ea576; }
+    .wa-kpi-accent-amber::before { background: #d28a10; }
+    .wa-kpi-accent-amber .stat-icon { background: #d28a10; }
+    .wa-kpi-accent-purple::before { background: #7557d8; }
+    .wa-kpi-accent-purple .stat-icon { background: #7557d8; }
+    .wa-kpi-accent-red::before { background: var(--red); }
     .wa-kpi-accent-red .stat-icon { background: var(--red); }
+    /* trend ใช้ขนาดเท่า stat-note (13px) แต่เป็น flex inline */
     .wa-kpi-trend {
       display: flex;
       align-items: center;
-      gap: 4px;
-      font-size: 12px;
+      gap: 5px;
+      font-size: 13px;
       font-weight: 700;
+      line-height: 1.45;
     }
-    .wa-trend-arrow svg { width: 14px; height: 14px; }
+    .wa-trend-arrow svg { width: 13px; height: 13px; }
     .wa-trend-positive { color: var(--green); }
     .wa-trend-negative { color: var(--red); }
     .wa-trend-neutral { color: #6d7f98; }
-    .wa-trend-label { color: #8595ad; font-weight: 400; }
-    .wa-sparkline {
-      width: 100%;
-      height: 28px;
-      margin-top: 2px;
-      color: var(--blue);
-      opacity: .7;
+    .wa-trend-positive .wa-trend-value,
+    .wa-trend-positive .wa-trend-arrow { color: var(--green); }
+    .wa-trend-negative .wa-trend-value,
+    .wa-trend-negative .wa-trend-arrow { color: var(--red); }
+    .wa-trend-neutral .wa-trend-value,
+    .wa-trend-neutral .wa-trend-arrow { color: #6d7f98; }
+    .wa-trend-label {
+      color: #8595ad;
+      font-weight: 400;
+      font-size: 13px;
     }
-    .wa-kpi-accent-green .wa-sparkline { color: var(--green); }
-    .wa-kpi-accent-amber .wa-sparkline { color: var(--amber); }
-    .wa-kpi-accent-red .wa-sparkline { color: var(--red); }
 
     /* Donut chart — Composition pattern (Family Office UI Rulebook) */
     .wa-donut-wrap {
@@ -2756,7 +2783,7 @@
     }
     .wa-trend-success { background: var(--green); }
     .wa-trend-skipped { background: #cbd5e1; }
-    .wa-trend-label {
+    .wa-trend-chart .wa-trend-label {
       color: #8595ad;
       font-size: 8px;
       font-weight: 700;
@@ -11743,7 +11770,12 @@
       chevron: '<svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>',
       option: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 6h10"/><path d="M18 6h2"/><circle cx="16" cy="6" r="2"/><path d="M4 12h4"/><path d="M12 12h8"/><circle cx="10" cy="12" r="2"/><path d="M4 18h10"/><path d="M18 18h2"/><circle cx="16" cy="18" r="2"/></svg>',
       arrowUp: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 19V5"/><path d="m5 12 7-7 7 7"/></svg>',
-      arrowDown: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14"/><path d="m19 12-7 7-7-7"/></svg>'
+      arrowDown: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14"/><path d="m19 12-7 7-7-7"/></svg>',
+      // KPI icons — แยกตามการ์ด Watch Alert Demand Overview
+      waActive: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 7 3 9H3c0-2 3-2 3-9"/><path d="M10 21h4"/></svg>',
+      waMatch: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.5" fill="currentColor"/></svg>',
+      waUnmet: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 9v4"/><path d="M12 17h.01"/><path d="M10.3 3.9 2.4 17.6a2 2 0 0 0 1.7 3h15.8a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z"/></svg>',
+      waNotif: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M22 2 11 13"/><path d="M22 2 15 22l-4-9-9-4Z"/></svg>'
     };
 
     const navGroups = [
@@ -12497,10 +12529,10 @@
       // KPI cards อ้างอิง Family Office UI Rulebook: value + trend + sparkline + color-coded
       overview: {
         kpi: [
-          { label: "Active Alerts", value: "3,218", detail: "ใช้งานได้ + notification on", trend: "+142", trendDirection: "up", trendLabel: "vs last week", trendType: "positive", sparkline: [2950, 2980, 3010, 3050, 3080, 3120, 3150, 3180, 3200, 3218], accent: "blue" },
-          { label: "Alerts with Matches", value: "2,847", detail: "มีอย่างน้อย 1 match (met demand)", trend: "+89", trendDirection: "up", trendLabel: "vs last week", trendType: "positive", sparkline: [2620, 2650, 2680, 2720, 2750, 2780, 2810, 2830, 2840, 2847], accent: "green" },
-          { label: "Unmet Demand", value: "371", detail: "ไม่มี match เลย", trend: "+24", trendDirection: "up", trendLabel: "vs last week", trendType: "negative", sparkline: [280, 295, 310, 320, 335, 345, 355, 360, 365, 371], accent: "amber" },
-          { label: "Notification Success Rate", value: "94.2%", detail: "delivered / attempted (7 วันล่าสุด)", trend: "+1.4%", trendDirection: "up", trendLabel: "vs last week", trendType: "positive", sparkline: [92.1, 92.4, 92.8, 93.0, 93.3, 93.6, 93.9, 94.0, 94.1, 94.2], accent: "green" }
+          { label: "Active Alerts", value: "3,218", detail: "ใช้งานได้และเปิดแจ้งเตือน", trend: "+142", trendDirection: "up", trendLabel: "เทียบสัปดาห์ก่อน", trendType: "positive", sparkline: [2950, 2980, 3010, 3050, 3080, 3120, 3150, 3180, 3200, 3218], accent: "blue" },
+          { label: "Alerts with Matches", value: "2,847", detail: "มี Assets ตรงตามเงื่อนไข", trend: "+89", trendDirection: "up", trendLabel: "เทียบสัปดาห์ก่อน", trendType: "positive", sparkline: [2620, 2650, 2680, 2720, 2750, 2780, 2810, 2830, 2840, 2847], accent: "green" },
+          { label: "Unmet Demand", value: "371", detail: "ยังไม่มี Assets ตรงตามเงื่อนไข", trend: "+24", trendDirection: "up", trendLabel: "เทียบสัปดาห์ก่อน", trendType: "negative", sparkline: [280, 295, 310, 320, 335, 345, 355, 360, 365, 371], accent: "amber" },
+          { label: "Notification Success Rate", value: "94.2%", detail: "% การส่งสำเร็จ (7 วันล่าสุด)", trend: "+1.4%", trendDirection: "up", trendLabel: "เทียบสัปดาห์ก่อน", trendType: "positive", sparkline: [92.1, 92.4, 92.8, 93.0, 93.3, 93.6, 93.9, 94.0, 94.1, 94.2], accent: "purple" }
         ],
         topBrands: [
           { label: "Rolex", value: 1420 }, { label: "Omega", value: 680 }, { label: "Seiko", value: 420 },
@@ -21108,17 +21140,18 @@
       document.querySelector("#panel-subtitle").textContent = "ภาพรวมความต้องการตลาดจาก Watch Alert — read-only";
       document.querySelector("#primary-action").textContent = "";
 
-      // KPI cards — Family Office UI Rulebook pattern: value + trend + sparkline + accent color
-      const sparklinePath = (data, w = 80, h = 24) => {
-        const min = Math.min(...data), max = Math.max(...data);
-        const range = max - min || 1;
-        const step = w / (data.length - 1);
-        return data.map((v, i) => `${i === 0 ? "M" : "L"} ${(i * step).toFixed(1)} ${(h - ((v - min) / range) * h).toFixed(1)}`).join(" ");
+      // KPI cards — label + value + icon บน, trend ล่างแทนที่ detail (read-only, ไม่มี sparkline)
+      const kpiIconByKey = {
+        "Active Alerts": iconSvg.waActive,
+        "Alerts with Matches": iconSvg.waMatch,
+        "Unmet Demand": iconSvg.waUnmet,
+        "Notification Success Rate": iconSvg.waNotif
       };
       document.querySelector("#summary-grid").innerHTML = ov.kpi.map(k => {
         const trendIcon = k.trendDirection === "up" ? iconSvg.arrowUp : iconSvg.arrowDown;
         const trendClass = k.trendType === "positive" ? "wa-trend-positive" : k.trendType === "negative" ? "wa-trend-negative" : "wa-trend-neutral";
         const accentClass = `wa-kpi-accent-${k.accent || "blue"}`;
+        const kpiIcon = kpiIconByKey[k.label] || iconSvg.alert;
         return `
         <article class="stat wa-kpi-card ${accentClass}">
           <div class="stat-top">
@@ -21126,17 +21159,13 @@
               <div class="stat-label">${esc(k.label)}</div>
               <div class="stat-value">${esc(k.value)}</div>
             </div>
-            <span class="stat-icon">${iconSvg.alert}</span>
+            <span class="stat-icon">${kpiIcon}</span>
           </div>
           <div class="wa-kpi-trend ${trendClass}">
             <span class="wa-trend-arrow">${trendIcon}</span>
             <span class="wa-trend-value">${esc(k.trend)}</span>
             <span class="wa-trend-label">${esc(k.trendLabel)}</span>
           </div>
-          <svg class="wa-sparkline" viewBox="0 0 80 24" preserveAspectRatio="none" aria-hidden="true">
-            <path d="${sparklinePath(k.sparkline)}" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
-          </svg>
-          <div class="stat-note">${esc(k.detail)}</div>
         </article>
       `;
       }).join("");
