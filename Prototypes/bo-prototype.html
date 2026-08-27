@@ -2385,6 +2385,587 @@
       justify-content: flex-start;
       padding-left: 36px;
     }
+
+    /* WA-PTO-001: Watch Alert BO — Demand Overview (read-only, no admin action)
+       scope เฉพาะ body.watch-alert-mode เพื่อไม่กระทบ protected screens */
+    body.watch-alert-mode .filters { display: none; }
+    body.watch-alert-mode .user-panel-filter-actions { display: none; }
+    body.watch-alert-mode #primary-action { display: none; }
+    body.watch-alert-mode .layout {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 18px;
+      margin-top: 4px;
+    }
+    body.watch-alert-mode .layout > .panel {
+      border-color: #d7e2f0;
+      box-shadow: none;
+      overflow: visible;
+    }
+    body.watch-alert-mode .layout > .panel > .panel-head {
+      border: 1px solid #d7e2f0;
+      border-bottom: 1px solid var(--line);
+      border-radius: var(--radius) var(--radius) 0 0;
+      background: #fff;
+    }
+    body.watch-alert-mode #table {
+      padding: 0;
+      background: transparent;
+    }
+    body.watch-alert-mode .detail { display: none; }
+    body.watch-alert-mode .summary-grid {
+      display: grid;
+      gap: 18px 16px;
+      margin-bottom: 22px;
+    }
+    body.watch-alert-mode .stat {
+      padding: 17px 15px 16px;
+    }
+    body.watch-alert-mode .stat-top { margin-bottom: 12px; }
+    body.watch-alert-mode .stat-icon { background: var(--brand); }
+
+    /* KPI cards — trend + sparkline + accent (Family Office UI Rulebook) */
+    .wa-kpi-card { display: flex; flex-direction: column; gap: 8px; }
+    .wa-kpi-accent-blue .stat-icon { background: var(--blue); }
+    .wa-kpi-accent-green .stat-icon { background: var(--green); }
+    .wa-kpi-accent-amber .stat-icon { background: var(--amber); }
+    .wa-kpi-accent-red .stat-icon { background: var(--red); }
+    .wa-kpi-trend {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 12px;
+      font-weight: 700;
+    }
+    .wa-trend-arrow svg { width: 14px; height: 14px; }
+    .wa-trend-positive { color: var(--green); }
+    .wa-trend-negative { color: var(--red); }
+    .wa-trend-neutral { color: #6d7f98; }
+    .wa-trend-label { color: #8595ad; font-weight: 400; }
+    .wa-sparkline {
+      width: 100%;
+      height: 28px;
+      margin-top: 2px;
+      color: var(--blue);
+      opacity: .7;
+    }
+    .wa-kpi-accent-green .wa-sparkline { color: var(--green); }
+    .wa-kpi-accent-amber .wa-sparkline { color: var(--amber); }
+    .wa-kpi-accent-red .wa-sparkline { color: var(--red); }
+
+    /* Donut chart — Composition pattern (Family Office UI Rulebook) */
+    .wa-donut-wrap {
+      display: grid;
+      grid-template-columns: 160px minmax(0, 1fr);
+      gap: 20px;
+      align-items: center;
+    }
+    .wa-donut { width: 160px; height: 160px; }
+    .wa-donut-total {
+      font-family: var(--font-heading);
+      font-size: 22px;
+      font-weight: 400;
+      fill: #071b36;
+      letter-spacing: .04em;
+    }
+    .wa-donut-label {
+      font-size: 9px;
+      font-weight: 700;
+      fill: #6d7f98;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+    }
+    .wa-donut-legend {
+      display: grid;
+      gap: 6px;
+    }
+    .wa-donut-legend .wa-legend-item {
+      display: grid;
+      grid-template-columns: 14px minmax(0, 1fr) auto auto;
+      gap: 8px;
+      align-items: center;
+      font-size: 12px;
+    }
+    .wa-donut-legend .wa-legend-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 3px;
+    }
+    .wa-donut-legend .wa-legend-text {
+      color: #071b36;
+      font-weight: 600;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .wa-donut-legend .wa-legend-value {
+      color: #43546d;
+      font-family: var(--font-heading);
+      font-size: 13px;
+    }
+    .wa-donut-legend .wa-legend-pct {
+      color: #8595ad;
+      font-size: 11px;
+      font-weight: 700;
+      min-width: 36px;
+      text-align: right;
+    }
+
+    /* Heatmap grid — Risk Heatmap pattern (Family Office UI Rulebook) */
+    .wa-heatmap-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 8px;
+    }
+    .wa-heat-cell {
+      padding: 14px 12px;
+      border-radius: 6px;
+      border: 1px solid transparent;
+      text-align: center;
+      transition: transform 120ms ease;
+    }
+    .wa-heat-cell:hover { transform: scale(1.03); }
+    .wa-heat-high { background: #c8212b; color: #fff; border-color: #a71420; }
+    .wa-heat-medium { background: #f3d493; color: #925500; border-color: #e0b870; }
+    .wa-heat-low { background: #e4f8f0; color: #07734f; border-color: #bcebd7; }
+    .wa-heat-minimal { background: #f1f5f9; color: #475569; border-color: #cbd5e1; }
+    .wa-heat-label {
+      font-size: 11px;
+      font-weight: 700;
+      line-height: 1.3;
+      margin-bottom: 6px;
+    }
+    .wa-heat-value {
+      font-family: var(--font-heading);
+      font-size: 20px;
+      line-height: 1;
+      margin-bottom: 4px;
+    }
+    .wa-heat-percent {
+      font-size: 10px;
+      font-weight: 700;
+      opacity: .8;
+    }
+
+    /* Alert cards — Risk & Alert pattern (Family Office UI Rulebook) */
+    .wa-alert-banner {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 12px 16px;
+      border-radius: 6px;
+      margin-bottom: 14px;
+      font-size: 13px;
+    }
+    .wa-alert-banner-icon { flex: 0 0 auto; padding-top: 2px; }
+    .wa-alert-banner-icon svg { width: 20px; height: 20px; }
+    .wa-alert-warning { background: #fff8eb; border: 1px solid #f3d493; color: #925500; }
+    .wa-alert-danger { background: #ffe8ea; border: 1px solid #ffc8ce; color: #a71420; }
+    .wa-alert-banner strong { font-family: var(--font-heading); font-size: 16px; }
+    .wa-alert-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 10px;
+    }
+    .wa-alert-card {
+      padding: 12px 14px;
+      border-radius: 6px;
+      border: 1px solid var(--line);
+      border-left: 4px solid #cbd5e1;
+      background: #fff;
+    }
+    .wa-alert-sev-critical { border-left-color: var(--red); background: #fff5f6; }
+    .wa-alert-sev-high { border-left-color: var(--amber); background: #fffbf2; }
+    .wa-alert-sev-medium { border-left-color: var(--blue); background: #f6faff; }
+    .wa-alert-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 6px;
+    }
+    .wa-alert-card-id {
+      font-family: var(--font-heading);
+      font-size: 13px;
+      font-weight: 700;
+      color: #071b36;
+    }
+    .wa-alert-card-sev {
+      font-size: 10px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: .04em;
+      padding: 2px 8px;
+      border-radius: 999px;
+      background: #eef2f7;
+      color: #475569;
+    }
+    .wa-alert-sev-critical .wa-alert-card-sev { background: #ffe8ea; color: #a71420; }
+    .wa-alert-sev-high .wa-alert-card-sev { background: #fff3d8; color: #925500; }
+    .wa-alert-sev-medium .wa-alert-card-sev { background: #e8f1ff; color: #0f52b8; }
+    .wa-alert-card-name {
+      font-size: 13px;
+      font-weight: 600;
+      color: #071b36;
+      margin-bottom: 6px;
+    }
+    .wa-alert-card-meta {
+      display: grid;
+      gap: 2px;
+      font-size: 11px;
+      color: #6d7f98;
+    }
+
+    /* Overview panel stack */
+    .wa-overview-stack {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 18px;
+      padding: 18px 0 0;
+    }
+    .wa-overview-panel {
+      border: 1px solid #d7e2f0;
+      border-radius: var(--radius);
+      padding: 0;
+      overflow: hidden;
+      background: #fff;
+      min-height: 0;
+    }
+    .wa-overview-panel .dashboard-card-head {
+      min-height: 56px;
+      padding: 14px 20px 12px;
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    .wa-overview-panel .dashboard-card-head h3 {
+      font-size: 18px;
+      letter-spacing: .06em;
+    }
+    .wa-panel-head-text { min-width: 0; }
+    .wa-view-all {
+      display: inline-flex;
+      align-items: center;
+      gap: 2px;
+      padding: 4px 10px;
+      border: 1px solid #d7e2f0;
+      border-radius: 999px;
+      background: #fff;
+      color: var(--blue);
+      font-size: 11px;
+      font-weight: 700;
+      white-space: nowrap;
+      flex: 0 0 auto;
+      transition: background 120ms ease;
+    }
+    .wa-view-all:hover { background: #f0f6ff; }
+    .wa-view-all svg { width: 14px; height: 14px; }
+    .wa-overview-body {
+      padding: 16px 20px 18px;
+    }
+
+    /* 2.1 Top Criteria — 2x2 sub-panel grid */
+    .wa-criteria-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+    }
+    .wa-criteria-sub h4 {
+      margin: 0 0 10px;
+      color: #43546d;
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+    }
+    .wa-bar-list {
+      padding: 0;
+      gap: 8px;
+    }
+    .wa-bar-list .brand-ranking-row {
+      min-height: 36px;
+    }
+    .wa-bar-list .ranking-brand-name { font-size: 12px; }
+    .wa-bar-list .brand-searches { font-size: 16px; }
+    .wa-bar-list .brand-bar-track { height: 5px; }
+
+    /* 2.5 Joint Criteria Patterns */
+    .wa-joint-list {
+      display: grid;
+      gap: 8px;
+    }
+    .wa-joint-row {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto auto;
+      gap: 12px;
+      align-items: center;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--line);
+    }
+    .wa-joint-row:last-child { border-bottom: 0; }
+    .wa-joint-label {
+      color: #071b36;
+      font-size: 13px;
+      font-weight: 700;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .wa-joint-value {
+      font-family: var(--font-heading);
+      color: #071b36;
+      font-size: 18px;
+      white-space: nowrap;
+    }
+    .wa-joint-percent {
+      color: #43546d;
+      font-size: 11px;
+      font-weight: 700;
+      min-width: 42px;
+      text-align: right;
+    }
+
+    /* 2.6 Trigger Trend — 30-day bar chart */
+    .wa-trend-chart {
+      display: grid;
+      grid-template-columns: repeat(30, minmax(0, 1fr));
+      gap: 2px;
+      height: 140px;
+      align-items: end;
+      padding-bottom: 4px;
+    }
+    .wa-trend-col {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      min-width: 0;
+    }
+    .wa-trend-bars {
+      display: flex;
+      flex-direction: column-reverse;
+      gap: 1px;
+      width: 100%;
+      height: 110px;
+      justify-content: flex-end;
+    }
+    .wa-trend-bar {
+      display: block;
+      width: 100%;
+      min-height: 2px;
+      border-radius: 2px;
+    }
+    .wa-trend-success { background: var(--green); }
+    .wa-trend-skipped { background: #cbd5e1; }
+    .wa-trend-label {
+      color: #8595ad;
+      font-size: 8px;
+      font-weight: 700;
+      line-height: 1;
+    }
+    .wa-trend-legend {
+      display: flex;
+      gap: 18px;
+      margin-top: 12px;
+      padding-top: 10px;
+      border-top: 1px solid var(--line);
+    }
+    .wa-legend-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      color: #43546d;
+      font-size: 11px;
+      font-weight: 700;
+    }
+    .wa-legend-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 3px;
+    }
+    .wa-legend-dot.wa-trend-success { background: var(--green); }
+    .wa-legend-dot.wa-trend-skipped { background: #cbd5e1; }
+
+    /* Mini tables (Frequently Triggered, Stale) */
+    .wa-alert-mini-table {
+      border: 0;
+      background: transparent;
+    }
+    .wa-alert-mini-table .asset-row {
+      grid-template-columns: minmax(80px, .8fr) minmax(120px, 1.5fr) minmax(100px, 1fr) minmax(70px, .5fr) minmax(100px, .7fr);
+      column-gap: 14px;
+      align-items: center;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--line);
+    }
+    .wa-alert-mini-table .asset-row.head {
+      padding: 8px 0;
+      border-bottom: 2px solid #d7e2f0;
+    }
+    .wa-alert-mini-table .asset-row.head > div {
+      color: #43546d;
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+    }
+    .wa-alert-mini-table .asset-row:not(.head):hover {
+      background: #f8fbff;
+      cursor: pointer;
+    }
+    .wa-alert-mini-table .main-text {
+      color: #071b36;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    /* Stale alerts total */
+    .wa-stale-total {
+      margin-bottom: 12px;
+      padding: 10px 14px;
+      border-radius: 6px;
+      background: #fff8eb;
+      border: 1px solid #f3d493;
+      color: #925500;
+      font-size: 12px;
+    }
+    .wa-stale-total strong { font-family: var(--font-heading); font-size: 16px; }
+
+    /* Inactive market data list */
+    .wa-inactive-list {
+      display: grid;
+      gap: 8px;
+    }
+    .wa-inactive-row {
+      display: grid;
+      grid-template-columns: minmax(80px, .6fr) minmax(140px, 1.5fr) minmax(100px, 1fr) auto;
+      gap: 12px;
+      align-items: center;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--line);
+    }
+    .wa-inactive-row:last-child { border-bottom: 0; }
+    .wa-inactive-id {
+      color: #071b36;
+      font-size: 12px;
+      font-weight: 800;
+    }
+    .wa-inactive-name {
+      color: #071b36;
+      font-size: 12px;
+      font-weight: 600;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .wa-inactive-owner {
+      color: #43546d;
+      font-size: 11px;
+    }
+
+    /* Notification delivery summary */
+    .wa-notif-summary {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+    .wa-notif-stat {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      padding: 12px 14px;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      background: #f8fbff;
+    }
+    .wa-notif-label {
+      color: #43546d;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .04em;
+    }
+    .wa-notif-value {
+      font-family: var(--font-heading);
+      color: #071b36;
+      font-size: 22px;
+      line-height: 1;
+    }
+    .wa-notif-delivered { color: var(--green); }
+    .wa-notif-failed { color: var(--red); }
+    .wa-notif-pending { color: var(--amber); }
+    .wa-notif-trend {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    /* Responsive — Tablet (≤1280px) */
+    @media (max-width: 1280px) {
+      .wa-overview-stack { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+
+    /* Responsive — Mobile (≤760px) */
+    @media (max-width: 760px) {
+      body.watch-alert-mode .summary-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+      .wa-overview-stack { grid-template-columns: 1fr; }
+      .wa-criteria-grid { grid-template-columns: 1fr; }
+      .wa-notif-summary { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .wa-trend-chart { height: 100px; }
+      .wa-trend-bars { height: 76px; }
+      .wa-trend-label { font-size: 7px; }
+      .wa-alert-mini-table .asset-row {
+        grid-template-columns: 1fr;
+        gap: 4px;
+        padding: 12px 0;
+      }
+      .wa-alert-mini-table .asset-row.head { display: none; }
+      .wa-alert-mini-table .asset-row > div {
+        display: flex;
+        justify-content: space-between;
+        gap: 8px;
+      }
+      .wa-alert-mini-table .asset-row > div::before {
+        content: attr(data-label);
+        color: #43546d;
+        font-size: 10px;
+        font-weight: 800;
+        text-transform: uppercase;
+      }
+      .wa-inactive-row {
+        grid-template-columns: 1fr;
+        gap: 4px;
+        padding: 12px 0;
+      }
+      .wa-overview-body { padding: 12px 16px 14px; }
+      .wa-overview-panel .dashboard-card-head { padding: 12px 16px 10px; }
+      /* Donut: stack vertically on mobile */
+      .wa-donut-wrap {
+        grid-template-columns: 1fr;
+        justify-items: center;
+        gap: 12px;
+      }
+      .wa-donut { width: 140px; height: 140px; }
+      /* Heatmap: 2 columns on mobile */
+      .wa-heatmap-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      /* Alert cards: 1 column on mobile */
+      .wa-alert-cards { grid-template-columns: 1fr; }
+      /* Sparkline: shorter on mobile */
+      .wa-sparkline { height: 22px; }
+    }
+
+    /* Responsive — Small mobile (≤390px) */
+    @media (max-width: 390px) {
+      body.watch-alert-mode .summary-grid {
+        grid-template-columns: 1fr;
+      }
+      .wa-notif-summary { grid-template-columns: 1fr; }
+      .wa-heatmap-grid { grid-template-columns: 1fr; }
+      .wa-donut { width: 120px; height: 120px; }
+    }
+
     #user-action-modal:has(.market-reference-drawer) {
       place-items: stretch end;
       padding: 0;
@@ -11176,7 +11757,7 @@
         { id: "option-master", label: "Option Master", icon: "option" },
       ]},
       { section: "งานตรวจสอบและบริการ", items: [
-        { id: "watch-alerts", label: "Watch Alert", icon: "alert", subs: ["Alert Criteria", "Trigger History", "Disabled Alerts"] },
+        { id: "watch-alerts", label: "Watch Alert", icon: "alert", subs: ["Demand Overview", "Alert List"] },
         { id: "support", label: "Help & Support", icon: "support", subs: ["Tickets", "Assignment", "SLA"] },
         { id: "deletions", label: "Account Deletion", icon: "delete", subs: ["Requests", "Grace Period", "Anonymization"] }
       ]},
@@ -11305,11 +11886,10 @@
         item("OFR-381", "Offer THB 305,000", "AST-8536", "Offer", "กลาง", "Paused", "asset ถูก auto hidden จาก report ระหว่าง review ทำให้ offer ถูกพักชั่วคราว", ["Buyer U-1088", "Owner Daily Watch Hunter"], "Read-only: paused ระหว่าง asset review; FO ไม่แสดง Accept/Decline จนกว่า review จบ"),
         item("OFR-366", "Offer THB 1,020,000", "AST-8581", "Offer", "สูง", "Invalidated", "asset ถูกซ่อนถาวรหลัง moderation ทำให้ pending offer ใช้งานไม่ได้ถาวร", ["Buyer U-1161", "Owner Rolex Rama9"], "Read-only: invalidated จาก permanent hide; FO แสดง Offer Unavailable และไม่มี action")
       ]),
-      "watch-alerts": mod("Watch Alert", "งานตรวจสอบและบริการ / Watch Alert", "Alert Criteria & Trigger History", "ดู criteria, trigger history, notification on/off และ disable alert ที่ abuse", "Disable selected", [["Active Alerts", "3,218", "Sale-only match"], ["Triggered Today", "146", "ส่ง notification 139"], ["Disabled", "12", "โดย Admin"], ["Failed Delivery", "7", "retry pending"]], [
-        item("WAL-1440", "Rolex Submariner <= 320k", "U-1042", "Criteria", "ปกติ", "Active", "Sale-only match และแจ้งเตือนเมื่อราคาเข้าเกณฑ์", ["Push on"], "ดู trigger history และ related listing"),
-        item("WAL-1228", "Omega Speedmaster Bangkok", "Omega Club TH", "Criteria", "กลาง", "Active", "trigger บ่อยจาก listing ซ้ำ", ["12 triggers"], "ปรับ source หรือ disable หาก abuse"),
-        item("WAL-1199", "Inactive model alert", "Archive Collector", "Criteria", "กลาง", "Disabled", "model ถูก inactive ใน Market Data", ["No new trigger"], "คง history แต่หยุด notification ใหม่")
-      ]),
+      // WA-PTO-001: Watch Alert BO — read-only overview (no admin action).
+      // moduleData["watch-alerts"] เก็บเฉพาะ metadata สำหรับ fallback;
+      // ข้อมูลจริงและการ render อยู่ใน watchAlertData + renderWatchAlert()
+      "watch-alerts": mod("Watch Alert", "งานตรวจสอบและบริการ / Watch Alert", "Demand Overview", "ภาพรวมความต้องการตลาดจาก Watch Alert — read-only", "", [], []),
       support: mod("Help & Support", "งานตรวจสอบและบริการ / Help & Support", "Ticket Queue", "คิว ticket, assignment, reply history, priority และ SLA", "สร้าง ticket", [["Open", "18", "รอตอบกลับ 7"], ["Assigned", "9", "มีเจ้าของงาน"], ["SLA Risk", "4", "เหลือ < 4 ชม."], ["Resolved", "126", "เดือนนี้"]], [
         item("SUP-188", "Proof of payment visibility", "Nattapol P.", "Email", "กลาง", "Assigned", "ถามว่าหลักฐานการชำระเงินแสดงให้ใครเห็น", ["Owner/Admin"], "ตอบว่าเป็น private data เห็นเฉพาะ owner และ Admin"),
         item("SUP-182", "Cannot reset password", "Apple user", "App", "ปกติ", "Open", "บัญชี Apple reset password จาก BO ไม่ได้", ["Auth method Apple"], "แจ้งให้จัดการผ่าน Apple ID"),
@@ -11846,7 +12426,7 @@
         ], icon: "audit" },
         { label: "Offer Activity", value: "12", trend: "อ้างอิงจาก Offer Management mock-up และสถานะ offer ล่าสุด", chips: ["Pending 3", "Paused 1", "Accepted 3", "Rejected 2", "Cancelled 2", "Invalidated 1"], module: "offers", sub: "Offer Queue", icon: "offer" },
         { label: "Articles", value: "12", trend: "มี 4 บทความรอเผยแพร่", chips: ["Published 8", "Scheduled 4"], module: "content", sub: "Articles", icon: "content" },
-        { label: "Watch Alert", value: "3.2K", trend: "มีการจับคู่รายการขาย 146 ครั้งวันนี้", chips: ["Active 3,218", "Triggered 146"], module: "watch-alerts", sub: "Alert Criteria", icon: "alert" },
+        { label: "Watch Alert", value: "3.2K", trend: "มีการจับคู่รายการขาย 146 ครั้งวันนี้", chips: ["Active 3,218", "Triggered 146"], module: "watch-alerts", sub: "Demand Overview", icon: "alert" },
         { label: "Support Cases", value: "18", trend: "มี 3 เคสใกล้ครบกำหนดตอบครั้งแรก", chips: ["Open 18", "Assigned 9", "Urgent 3"], module: "support", sub: "Tickets", icon: "support" }
       ],
       queues: [
@@ -11893,6 +12473,126 @@
           { label: "Tudor", value: "3.6K", share: 9, trend: "+5%", module: "reports", sub: "Search" }
         ]}
       ]
+    };
+
+    // WA-PTO-001: Watch Alert BO mock data — read-only overview (no admin action).
+    // อ้างอิง BackOffice/WatchAlert_Prototype_Blueprint.md section 5
+    const watchAlertData = {
+      // 5.1 Alert records (12 รายการ ครอบคลุมทุก status/scenario)
+      alerts: [
+        { id: "WAL-1440", name: "Rolex Submariner <= 320k", owner: { id: "U-1042", displayName: "Nattapol P." }, status: "Active", notificationEnabled: true, criteria: { brand: "Rolex", model: "Submariner", reference: "16610", priceMin: 0, priceMax: 320000, condition: ["Very Good", "Good"], caseSize: ["40-42mm"], dialColor: ["Black"] }, marketDataInactive: false, inactiveFields: [], matchCount: 8, triggerCount: 12, lastTriggered: "2026-08-25T14:30:00+07:00", created: "2026-06-15T09:00:00+07:00", updated: "2026-08-20T10:00:00+07:00" },
+        { id: "WAL-1228", name: "Omega Speedmaster Bangkok", owner: { id: "U-1017", displayName: "Crown Time BKK" }, status: "Active", notificationEnabled: true, criteria: { brand: "Omega", model: "Speedmaster", reference: "", priceMin: 100000, priceMax: 250000, condition: ["Like New"], caseSize: ["40-42mm"], dialColor: ["Black"] }, marketDataInactive: false, inactiveFields: [], matchCount: 3, triggerCount: 45, lastTriggered: "2026-08-26T09:12:00+07:00", created: "2026-05-02T11:30:00+07:00", updated: "2026-08-26T09:12:00+07:00" },
+        { id: "WAL-1199", name: "Inactive model alert", owner: { id: "U-1079", displayName: "Archive Collector" }, status: "User Disabled", notificationEnabled: false, criteria: { brand: "Seiko", model: "6139-6000", reference: "6139", priceMin: 0, priceMax: 80000, condition: [], caseSize: [], dialColor: [] }, marketDataInactive: true, inactiveFields: ["model"], matchCount: 0, triggerCount: 0, lastTriggered: null, created: "2026-04-10T08:00:00+07:00", updated: "2026-07-18T16:20:00+07:00" },
+        { id: "WAL-1180", name: "Seiko 6139 vintage", owner: { id: "U-1104", displayName: "Seiko Corner" }, status: "Active", notificationEnabled: true, criteria: { brand: "Seiko", model: "6139", reference: "6139-6000", priceMin: 0, priceMax: 60000, condition: ["Fair", "Good"], caseSize: ["<36mm"], dialColor: ["Blue"] }, marketDataInactive: false, inactiveFields: [], matchCount: 0, triggerCount: 0, lastTriggered: null, created: "2026-07-01T10:00:00+07:00", updated: "2026-07-01T10:00:00+07:00" },
+        { id: "WAL-1150", name: "Patek Calatrava 5227", owner: { id: "U-1144", displayName: "The Collector" }, status: "Active", notificationEnabled: true, criteria: { brand: "Patek Philippe", model: "Calatrava", reference: "5227", priceMin: 800000, priceMax: 1500000, condition: ["Like New"], caseSize: ["36-39mm"], dialColor: ["White"] }, marketDataInactive: false, inactiveFields: [], matchCount: 1, triggerCount: 2, lastTriggered: "2026-08-19T11:00:00+07:00", created: "2026-06-28T14:00:00+07:00", updated: "2026-08-19T11:00:00+07:00" },
+        { id: "WAL-1100", name: "Tudor Black Bay 58", owner: { id: "U-1088", displayName: "Daily Watch Hunter" }, status: "Active", notificationEnabled: true, criteria: { brand: "Tudor", model: "Black Bay 58", reference: "M79030", priceMin: 80000, priceMax: 130000, condition: ["Like New", "Very Good"], caseSize: ["36-39mm"], dialColor: ["Black"] }, marketDataInactive: false, inactiveFields: [], matchCount: 5, triggerCount: 8, lastTriggered: "2026-08-22T16:45:00+07:00", created: "2026-06-10T09:30:00+07:00", updated: "2026-08-22T16:45:00+07:00" },
+        { id: "WAL-1080", name: "Grand Seiko Snowflake", owner: { id: "U-1161", displayName: "Minimal Dial" }, status: "Admin Disabled", notificationEnabled: false, criteria: { brand: "Grand Seiko", model: "SBGA211", reference: "SBGA211", priceMin: 150000, priceMax: 250000, condition: ["New"], caseSize: ["40-42mm"], dialColor: ["White"] }, marketDataInactive: false, inactiveFields: [], matchCount: 0, triggerCount: 0, lastTriggered: null, created: "2026-05-20T13:00:00+07:00", updated: "2026-07-30T10:00:00+07:00" },
+        { id: "WAL-1050", name: "Old Rolex GMT alert", owner: { id: "U-1042", displayName: "Nattapol P." }, status: "Active", notificationEnabled: true, criteria: { brand: "Rolex", model: "GMT-Master II", reference: "126710BLRO", priceMin: 400000, priceMax: 700000, condition: ["Very Good"], caseSize: ["40-42mm"], dialColor: ["Blue", "Red"] }, marketDataInactive: false, inactiveFields: [], matchCount: 2, triggerCount: 1, lastTriggered: "2026-06-28T10:00:00+07:00", created: "2026-05-29T08:00:00+07:00", updated: "2026-06-28T10:00:00+07:00" },
+        { id: "WAL-1020", name: "Cartier Tank Must", owner: { id: "U-1161", displayName: "Minimal Dial" }, status: "Deleted", notificationEnabled: false, criteria: { brand: "Cartier", model: "Tank Must", reference: "", priceMin: 60000, priceMax: 100000, condition: ["Very Good"], caseSize: ["<36mm"], dialColor: ["Black"] }, marketDataInactive: false, inactiveFields: [], matchCount: 0, triggerCount: 3, lastTriggered: "2026-07-15T14:00:00+07:00", created: "2026-05-15T09:00:00+07:00", updated: "2026-08-01T18:00:00+07:00" },
+        { id: "WAL-0990", name: "Vintage Seiko 6105", owner: { id: "U-1104", displayName: "Seiko Corner" }, status: "Active", notificationEnabled: true, criteria: { brand: "Seiko", model: "6105-8110", reference: "6105", priceMin: 30000, priceMax: 70000, condition: ["Fair", "Good", "Very Good"], caseSize: ["40-42mm", "43-45mm"], dialColor: ["Black"] }, marketDataInactive: false, inactiveFields: [], matchCount: 4, triggerCount: 6, lastTriggered: "2026-08-21T13:20:00+07:00", created: "2026-04-25T11:00:00+07:00", updated: "2026-08-21T13:20:00+07:00" },
+        { id: "WAL-0950", name: "IWC Pilot Mark XVIII", owner: { id: "U-1088", displayName: "Daily Watch Hunter" }, status: "Active", notificationEnabled: false, criteria: { brand: "IWC", model: "Pilot Mark XVIII", reference: "IW3270", priceMin: 90000, priceMax: 140000, condition: ["Like New"], caseSize: ["40-42mm"], dialColor: ["Black"] }, marketDataInactive: false, inactiveFields: [], matchCount: 2, triggerCount: 4, lastTriggered: "2026-08-18T15:00:00+07:00", created: "2026-06-05T10:00:00+07:00", updated: "2026-08-18T15:00:00+07:00" },
+        { id: "WAL-0900", name: "AP Royal Oak 15500", owner: { id: "U-1144", displayName: "The Collector" }, status: "Active", notificationEnabled: true, criteria: { brand: "Audemars Piguet", model: "Royal Oak", reference: "15500ST", priceMin: 1200000, priceMax: 2000000, condition: ["New", "Like New"], caseSize: ["40-42mm"], dialColor: ["Black", "Blue"] }, marketDataInactive: true, inactiveFields: ["reference"], matchCount: 0, triggerCount: 0, lastTriggered: null, created: "2026-04-20T09:00:00+07:00", updated: "2026-04-20T09:00:00+07:00" }
+      ],
+      // 5.6 Demand Overview aggregation (คำนวณจาก mock alerts ทั้งระบบ)
+      // KPI cards อ้างอิง Family Office UI Rulebook: value + trend + sparkline + color-coded
+      overview: {
+        kpi: [
+          { label: "Active Alerts", value: "3,218", detail: "ใช้งานได้ + notification on", trend: "+142", trendDirection: "up", trendLabel: "vs last week", trendType: "positive", sparkline: [2950, 2980, 3010, 3050, 3080, 3120, 3150, 3180, 3200, 3218], accent: "blue" },
+          { label: "Alerts with Matches", value: "2,847", detail: "มีอย่างน้อย 1 match (met demand)", trend: "+89", trendDirection: "up", trendLabel: "vs last week", trendType: "positive", sparkline: [2620, 2650, 2680, 2720, 2750, 2780, 2810, 2830, 2840, 2847], accent: "green" },
+          { label: "Unmet Demand", value: "371", detail: "ไม่มี match เลย", trend: "+24", trendDirection: "up", trendLabel: "vs last week", trendType: "negative", sparkline: [280, 295, 310, 320, 335, 345, 355, 360, 365, 371], accent: "amber" },
+          { label: "Notification Success Rate", value: "94.2%", detail: "delivered / attempted (7 วันล่าสุด)", trend: "+1.4%", trendDirection: "up", trendLabel: "vs last week", trendType: "positive", sparkline: [92.1, 92.4, 92.8, 93.0, 93.3, 93.6, 93.9, 94.0, 94.1, 94.2], accent: "green" }
+        ],
+        topBrands: [
+          { label: "Rolex", value: 1420 }, { label: "Omega", value: 680 }, { label: "Seiko", value: 420 },
+          { label: "Tudor", value: 280 }, { label: "Patek Philippe", value: 180 }, { label: "Cartier", value: 160 },
+          { label: "Grand Seiko", value: 140 }, { label: "IWC", value: 120 }
+        ],
+        topModels: [
+          { label: "Submariner", value: 380 }, { label: "Speedmaster", value: 240 }, { label: "Datejust", value: 220 },
+          { label: "GMT-Master II", value: 180 }, { label: "Black Bay", value: 160 }, { label: "Seamaster", value: 140 },
+          { label: "Tank", value: 120 }, { label: "Snowflake", value: 100 }
+        ],
+        topReferences: [
+          { label: "16610", value: 85 }, { label: "116610LN", value: 72 }, { label: "126610LV", value: 68 },
+          { label: "116500LN", value: 55 }, { label: "15500ST", value: 48 }, { label: "3824", value: 42 },
+          { label: "SPB143", value: 38 }, { label: "6139", value: 35 }
+        ],
+        topDialColors: [
+          { label: "Black", value: 1820 }, { label: "Blue", value: 680 }, { label: "Green", value: 320 },
+          { label: "White", value: 280 }, { label: "Silver", value: 220 }, { label: "Champagne", value: 180 }
+        ],
+        priceRanges: [
+          { label: "< 50k", value: 420 }, { label: "50k-100k", value: 680 }, { label: "100k-300k", value: 1240 },
+          { label: "300k-500k", value: 580 }, { label: "500k-1M", value: 220 }, { label: "> 1M", value: 78 }
+        ],
+        conditions: [
+          { label: "New", value: 380 }, { label: "Like New", value: 720 }, { label: "Very Good", value: 980 },
+          { label: "Good", value: 560 }, { label: "Fair", value: 180 }, { label: "Unspecified", value: 400 }
+        ],
+        caseSizes: [
+          { label: "< 36mm", value: 220 }, { label: "36-39mm", value: 680 }, { label: "40-42mm", value: 1420 },
+          { label: "43-45mm", value: 580 }, { label: "> 45mm", value: 180 }, { label: "Unspecified", value: 138 }
+        ],
+        jointCriteria: [
+          { label: "Brand + Model", value: 1820, percent: 56.6 },
+          { label: "Brand + Price Range", value: 1240, percent: 38.5 },
+          { label: "Brand + Condition", value: 890, percent: 27.6 },
+          { label: "Brand + Model + Price Range", value: 670, percent: 20.8 },
+          { label: "Brand + Model + Condition", value: 420, percent: 13.0 },
+          { label: "Brand + Dial Color", value: 360, percent: 11.2 },
+          { label: "Model + Price Range", value: 280, percent: 8.7 },
+          { label: "Brand + Case Size", value: 220, percent: 6.8 }
+        ],
+        // Trigger trend 30 วันล่าสุด (mock คำนวณสั้น ๆ)
+        triggerTrend: (() => {
+          const days = [];
+          const base = new Date("2026-08-27T00:00:00+07:00");
+          for (let i = 29; i >= 0; i--) {
+            const d = new Date(base.getTime() - i * 86400000);
+            const day = d.getDate();
+            const successful = 80 + ((day * 7) % 90);
+            const skipped = 10 + ((day * 3) % 25);
+            days.push({ date: d, successful, skipped });
+          }
+          return days;
+        })(),
+        frequentlyTriggered: [
+          { id: "WAL-1228", name: "Omega Speedmaster Bangkok", owner: "Crown Time BKK", triggerCount: 45, lastTriggered: "2026-08-26T09:12:00+07:00" },
+          { id: "WAL-1440", name: "Rolex Submariner <= 320k", owner: "Nattapol P.", triggerCount: 12, lastTriggered: "2026-08-25T14:30:00+07:00" },
+          { id: "WAL-1100", name: "Tudor Black Bay 58", owner: "Daily Watch Hunter", triggerCount: 8, lastTriggered: "2026-08-22T16:45:00+07:00" },
+          { id: "WAL-0990", name: "Vintage Seiko 6105", owner: "Seiko Corner", triggerCount: 6, lastTriggered: "2026-08-21T13:20:00+07:00" },
+          { id: "WAL-0950", name: "IWC Pilot Mark XVIII", owner: "Daily Watch Hunter", triggerCount: 4, lastTriggered: "2026-08-18T15:00:00+07:00" },
+          { id: "WAL-1150", name: "Patek Calatrava 5227", owner: "The Collector", triggerCount: 2, lastTriggered: "2026-08-19T11:00:00+07:00" },
+          { id: "WAL-1050", name: "Old Rolex GMT alert", owner: "Nattapol P.", triggerCount: 1, lastTriggered: "2026-06-28T10:00:00+07:00" },
+          { id: "WAL-1020", name: "Cartier Tank Must", owner: "Minimal Dial", triggerCount: 3, lastTriggered: "2026-07-15T14:00:00+07:00" }
+        ],
+        staleAlerts: {
+          total: 486,
+          sample: [
+            { id: "WAL-1050", name: "Old Rolex GMT alert", owner: "Nattapol P.", created: "2026-05-29", lastTriggered: "2026-06-28", daysSinceTrigger: 60 },
+            { id: "WAL-0900", name: "AP Royal Oak 15500", owner: "The Collector", created: "2026-04-20", lastTriggered: null, daysSinceTrigger: null },
+            { id: "WAL-1180", name: "Seiko 6139 vintage", owner: "Seiko Corner", created: "2026-07-01", lastTriggered: null, daysSinceTrigger: null },
+            { id: "WAL-1199", name: "Inactive model alert", owner: "Archive Collector", created: "2026-04-10", lastTriggered: null, daysSinceTrigger: null },
+            { id: "WAL-1080", name: "Grand Seiko Snowflake", owner: "Minimal Dial", created: "2026-05-20", lastTriggered: null, daysSinceTrigger: null }
+          ]
+        },
+        inactiveMarketData: {
+          total: 128,
+          sample: [
+            { id: "WAL-1199", name: "Inactive model alert", owner: "Archive Collector", inactiveFields: ["model"] },
+            { id: "WAL-0900", name: "AP Royal Oak 15500", owner: "The Collector", inactiveFields: ["reference"] }
+          ]
+        },
+        notificationDelivery: {
+          delivered: 1284,
+          failed: 79,
+          pending: 12,
+          successRate: 94.2,
+          previousWeekSuccessRate: 92.8,
+          trend: "+1.4%"
+        }
+      },
+      lastUpdated: "2026-08-27T10:30:00+07:00"
     };
 
     function formatBangkokTimestamp(date = new Date()) {
@@ -12590,6 +13290,7 @@
       if (activeModule === "offers") return { type: "module", module: "offers", sub: "", displaySub: "" };
       if (activeModule === "content") return { type: "module", module: "content", sub: activeSub === "Reported Articles" ? "Reported Articles" : "Articles", displaySub: activeSub === "Reported Articles" ? "Reported Articles" : "Articles" };
       if (activeModule === "market") return { type: "module", module: "market", sub: activeSub || "Dashboard", displaySub: activeSub || "Dashboard" };
+      if (activeModule === "watch-alerts") return { type: "module", module: "watch-alerts", sub: activeSub || "Demand Overview", displaySub: activeSub || "Demand Overview" };
       return null;
     }
 
@@ -18026,6 +18727,9 @@
       document.body.classList.toggle("reported-board-mode", isReportedBoard);
       document.body.classList.toggle("market-list-mode", id === "market");
       document.body.classList.toggle("market-dashboard-mode", id === "market" && (subLabel || "Dashboard") === "Dashboard");
+      document.body.classList.toggle("watch-alert-mode", id === "watch-alerts");
+      document.body.classList.toggle("watch-alert-overview-mode", id === "watch-alerts" && (subLabel || "Demand Overview") === "Demand Overview");
+      document.body.classList.toggle("watch-alert-list-mode", id === "watch-alerts" && subLabel === "Alert List");
       document.body.classList.toggle("user-list-mode", id === "users" || isReportedAssets || isReportedBoard || isReportedComments);
       document.body.classList.toggle("user-accounts-mode", id === "users" && (subLabel || "User Accounts") === "User Accounts");
       document.body.classList.remove("asset-detail-mode");
@@ -18051,6 +18755,11 @@
       }
       if (id === "option-master") {
         renderOptionGroupList();
+        updateActiveNav();
+        return;
+      }
+      if (id === "watch-alerts") {
+        renderWatchAlert(subLabel || "Demand Overview");
         updateActiveNav();
         return;
       }
@@ -20372,6 +21081,342 @@
       `;
     }
 
+    // WA-PTO-001: Watch Alert BO — read-only overview + alert list placeholder.
+    // อ้างอิง BackOffice/WatchAlert_Prototype_Blueprint.md
+    function renderWatchAlert(subLabel = "Demand Overview") {
+      activeModule = "watch-alerts";
+      activeSub = subLabel;
+      setPageActions("");
+      document.querySelector("#user-panel-filter-actions").innerHTML = "";
+      document.querySelector(".filters").innerHTML = "";
+      document.querySelector("#detail").innerHTML = "";
+      document.querySelector("#cards").innerHTML = "";
+      if (subLabel === "Alert List") {
+        renderWatchAlertList();
+        return;
+      }
+      renderWatchAlertOverview();
+    }
+
+    function renderWatchAlertOverview() {
+      const ov = watchAlertData.overview;
+      const esc = v => String(v).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+      document.querySelector("#crumb").textContent = "งานตรวจสอบและบริการ / Watch Alert / Demand Overview";
+      document.querySelector("#page-title").textContent = "Demand Overview";
+      document.querySelector("#page-meta").textContent = `Last updated ${formatBangkokTimestamp(new Date(watchAlertData.lastUpdated))}`;
+      document.querySelector("#panel-title").textContent = "Demand Overview";
+      document.querySelector("#panel-subtitle").textContent = "ภาพรวมความต้องการตลาดจาก Watch Alert — read-only";
+      document.querySelector("#primary-action").textContent = "";
+
+      // KPI cards — Family Office UI Rulebook pattern: value + trend + sparkline + accent color
+      const sparklinePath = (data, w = 80, h = 24) => {
+        const min = Math.min(...data), max = Math.max(...data);
+        const range = max - min || 1;
+        const step = w / (data.length - 1);
+        return data.map((v, i) => `${i === 0 ? "M" : "L"} ${(i * step).toFixed(1)} ${(h - ((v - min) / range) * h).toFixed(1)}`).join(" ");
+      };
+      document.querySelector("#summary-grid").innerHTML = ov.kpi.map(k => {
+        const trendIcon = k.trendDirection === "up" ? iconSvg.arrowUp : iconSvg.arrowDown;
+        const trendClass = k.trendType === "positive" ? "wa-trend-positive" : k.trendType === "negative" ? "wa-trend-negative" : "wa-trend-neutral";
+        const accentClass = `wa-kpi-accent-${k.accent || "blue"}`;
+        return `
+        <article class="stat wa-kpi-card ${accentClass}">
+          <div class="stat-top">
+            <div>
+              <div class="stat-label">${esc(k.label)}</div>
+              <div class="stat-value">${esc(k.value)}</div>
+            </div>
+            <span class="stat-icon">${iconSvg.alert}</span>
+          </div>
+          <div class="wa-kpi-trend ${trendClass}">
+            <span class="wa-trend-arrow">${trendIcon}</span>
+            <span class="wa-trend-value">${esc(k.trend)}</span>
+            <span class="wa-trend-label">${esc(k.trendLabel)}</span>
+          </div>
+          <svg class="wa-sparkline" viewBox="0 0 80 24" preserveAspectRatio="none" aria-hidden="true">
+            <path d="${sparklinePath(k.sparkline)}" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+          <div class="stat-note">${esc(k.detail)}</div>
+        </article>
+      `;
+      }).join("");
+
+      // Bar list helper (reuse brand-ranking pattern)
+      const barList = (items, opts = {}) => {
+        const max = Math.max(...items.map(i => i.value), 1);
+        return items.map(i => `
+          <div class="brand-ranking-row" type="button">
+            <span class="brand-ranking-top">
+              <span class="ranking-brand-name">${esc(i.label)}</span>
+              <span class="brand-searches">${i.value.toLocaleString()}</span>
+            </span>
+            <span class="brand-bar-line">
+              <span class="brand-bar-track"><span class="brand-bar-fill" style="width: ${Math.round((i.value / max) * 100)}%"></span></span>
+            </span>
+          </div>
+        `).join("");
+      };
+
+      // Donut chart helper — Family Office UI Rulebook Composition pattern
+      const donutColors = ["#1a365f", "#1463d9", "#08875d", "#a96500", "#6b46c1", "#c8212b", "#0f766e", "#925500"];
+      const donutChart = (items, totalLabel) => {
+        const total = items.reduce((s, i) => s + i.value, 0);
+        let offset = 0;
+        const radius = 60, circumference = 2 * Math.PI * radius;
+        const segments = items.map((item, i) => {
+          const pct = item.value / total;
+          const dash = pct * circumference;
+          const seg = `<circle cx="80" cy="80" r="${radius}" fill="none" stroke="${donutColors[i % donutColors.length]}" stroke-width="22" stroke-dasharray="${dash.toFixed(1)} ${(circumference - dash).toFixed(1)}" stroke-dashoffset="${(-offset).toFixed(1)}" transform="rotate(-90 80 80)" />`;
+          offset += dash;
+          return seg;
+        }).join("");
+        return `
+          <div class="wa-donut-wrap">
+            <svg class="wa-donut" viewBox="0 0 160 160" role="img" aria-label="${esc(totalLabel)}">
+              <circle cx="80" cy="80" r="${radius}" fill="none" stroke="#eef2f7" stroke-width="22" />
+              ${segments}
+              <text x="80" y="74" text-anchor="middle" class="wa-donut-total">${total.toLocaleString()}</text>
+              <text x="80" y="92" text-anchor="middle" class="wa-donut-label">${esc(totalLabel)}</text>
+            </svg>
+            <div class="wa-donut-legend">
+              ${items.map((item, i) => `
+                <div class="wa-legend-item">
+                  <span class="wa-legend-dot" style="background: ${donutColors[i % donutColors.length]}"></span>
+                  <span class="wa-legend-text">${esc(item.label)}</span>
+                  <span class="wa-legend-value">${item.value.toLocaleString()}</span>
+                  <span class="wa-legend-pct">${Math.round((item.value / total) * 100)}%</span>
+                </div>
+              `).join("")}
+            </div>
+          </div>
+        `;
+      };
+
+      // Panel card helper
+      const panel = (title, meta, bodyHtml, extraClass = "", viewAllLabel = "") => `
+        <article class="mini-card dashboard-status-card wa-overview-panel ${extraClass}">
+          <div class="dashboard-card-head">
+            <div class="wa-panel-head-text">
+              <h3>${esc(title)}</h3>
+              ${meta ? `<div class="dashboard-card-meta">${esc(meta)}</div>` : ""}
+            </div>
+            ${viewAllLabel ? `<button class="wa-view-all" type="button" data-module-jump="watch-alerts" data-sub-jump="Alert List">${esc(viewAllLabel)} ${iconSvg.chevron}</button>` : ""}
+          </div>
+          <div class="wa-overview-body">${bodyHtml}</div>
+        </article>
+      `;
+
+      // 2.1 Top Criteria by Dimension (4 sub-panels)
+      const topCriteriaHtml = `
+        <div class="wa-criteria-grid">
+          <div class="wa-criteria-sub">
+            <h4>Top Brands</h4>
+            <div class="brand-ranking-list wa-bar-list">${barList(ov.topBrands)}</div>
+          </div>
+          <div class="wa-criteria-sub">
+            <h4>Top Models</h4>
+            <div class="brand-ranking-list wa-bar-list">${barList(ov.topModels)}</div>
+          </div>
+          <div class="wa-criteria-sub">
+            <h4>Top References</h4>
+            <div class="brand-ranking-list wa-bar-list">${barList(ov.topReferences)}</div>
+          </div>
+          <div class="wa-criteria-sub">
+            <h4>Top Dial Colors</h4>
+            <div class="brand-ranking-list wa-bar-list">${barList(ov.topDialColors)}</div>
+          </div>
+        </div>
+      `;
+
+      // 2.5 Joint Criteria Patterns — heatmap-style intensity grid (Family Office Risk Heatmap pattern)
+      const jointMax = Math.max(...ov.jointCriteria.map(j => j.value), 1);
+      const jointHtml = `
+        <div class="wa-heatmap-grid">
+          ${ov.jointCriteria.map(j => {
+            const intensity = j.value / jointMax;
+            const heatClass = intensity > 0.7 ? "wa-heat-high" : intensity > 0.4 ? "wa-heat-medium" : intensity > 0.2 ? "wa-heat-low" : "wa-heat-minimal";
+            return `
+              <div class="wa-heat-cell ${heatClass}">
+                <div class="wa-heat-label">${esc(j.label)}</div>
+                <div class="wa-heat-value">${j.value.toLocaleString()}</div>
+                <div class="wa-heat-percent">${j.percent}%</div>
+              </div>
+            `;
+          }).join("")}
+        </div>
+      `;
+
+      // 2.6 Trigger Trend (30-day bar chart)
+      const trendMax = Math.max(...ov.triggerTrend.map(d => d.successful + d.skipped), 1);
+      const trendHtml = `
+        <div class="wa-trend-chart">
+          ${ov.triggerTrend.map(d => {
+            const sH = Math.max(2, Math.round((d.successful / trendMax) * 100));
+            const kH = Math.max(1, Math.round((d.skipped / trendMax) * 100));
+            const label = d.date.toLocaleDateString("en-GB", { day: "2-digit", month: "short", timeZone: "Asia/Bangkok" });
+            return `
+              <div class="wa-trend-col" title="${label}: ${d.successful} successful, ${d.skipped} skipped">
+                <div class="wa-trend-bars">
+                  <span class="wa-trend-bar wa-trend-success" style="height: ${sH}%"></span>
+                  <span class="wa-trend-bar wa-trend-skipped" style="height: ${kH}%"></span>
+                </div>
+                <span class="wa-trend-label">${d.date.getDate()}</span>
+              </div>
+            `;
+          }).join("")}
+        </div>
+        <div class="wa-trend-legend">
+          <span class="wa-legend-item"><span class="wa-legend-dot wa-trend-success"></span>Successful trigger</span>
+          <span class="wa-legend-item"><span class="wa-legend-dot wa-trend-skipped"></span>Skipped (block/inactive/disabled)</span>
+        </div>
+      `;
+
+      // Mini table helper for alert references (row click → Alert Detail in WA-PTO-003)
+      const alertMiniTable = (rows, columns) => `
+        <div class="asset-table wa-alert-mini-table">
+          <div class="asset-row head">${columns.map(c => `<div>${esc(c.label)}</div>`).join("")}</div>
+          ${rows.map(r => `
+            <div class="asset-row" data-wa-alert-row="${esc(r.id)}">
+              ${columns.map(c => `<div data-label="${esc(c.label)}"><div class="main-text">${esc(r[c.key] ?? "—")}</div></div>`).join("")}
+            </div>
+          `).join("")}
+        </div>
+      `;
+
+      // 2.7 Frequently Triggered Alerts
+      const freqTriggerHtml = alertMiniTable(
+        ov.frequentlyTriggered.map(a => ({
+          ...a,
+          lastTriggeredDisplay: a.lastTriggered ? a.lastTriggered.slice(0, 10) : "—"
+        })),
+        [
+          { label: "Alert ID", key: "id" },
+          { label: "Name", key: "name" },
+          { label: "Owner", key: "owner" },
+          { label: "Triggers", key: "triggerCount" },
+          { label: "Last Triggered", key: "lastTriggeredDisplay" }
+        ]
+      );
+
+      // 2.8 Stale Alerts — alert card pattern with severity (Family Office Risk & Alert pattern)
+      const staleHtml = `
+        <div class="wa-alert-banner wa-alert-warning">
+          <div class="wa-alert-banner-icon">${iconSvg.alert}</div>
+          <div class="wa-alert-banner-body">
+            <strong>${ov.staleAlerts.total.toLocaleString()}</strong> alert เก่ากว่า 30 วันและไม่ trigger
+            <span class="muted">· ควรตรวจสอบว่า criteria ยังเกี่ยวข้องหรือควรปรับ</span>
+          </div>
+        </div>
+        <div class="wa-alert-cards">
+          ${ov.staleAlerts.sample.map(a => {
+            const severity = a.daysSinceTrigger == null ? "critical" : a.daysSinceTrigger > 45 ? "high" : "medium";
+            const sevLabel = severity === "critical" ? "Never triggered" : severity === "high" ? "Stale > 45d" : "Stale > 30d";
+            const sevClass = `wa-alert-sev-${severity}`;
+            return `
+              <div class="wa-alert-card ${sevClass}">
+                <div class="wa-alert-card-header">
+                  <span class="wa-alert-card-id">${esc(a.id)}</span>
+                  <span class="wa-alert-card-sev">${sevLabel}</span>
+                </div>
+                <div class="wa-alert-card-name">${esc(a.name)}</div>
+                <div class="wa-alert-card-meta">
+                  <span>Owner: ${esc(a.owner)}</span>
+                  <span>Created: ${esc(a.created)}</span>
+                  <span>Last trigger: ${a.lastTriggered || "Never"}</span>
+                </div>
+              </div>
+            `;
+          }).join("")}
+        </div>
+      `;
+
+      // 2.9 Inactive Market Data Dependency — alert card pattern with severity
+      const inactiveHtml = `
+        <div class="wa-alert-banner wa-alert-danger">
+          <div class="wa-alert-banner-icon">${iconSvg.alert}</div>
+          <div class="wa-alert-banner-body">
+            <strong>${ov.inactiveMarketData.total.toLocaleString()}</strong> alert อ้าง inactive market data
+            <span class="muted">· criteria อ้าง brand/model/reference ที่ไม่ใช้งานแล้ว ทำให้ match ไม่ได้</span>
+          </div>
+        </div>
+        <div class="wa-alert-cards">
+          ${ov.inactiveMarketData.sample.map(a => `
+            <div class="wa-alert-card wa-alert-sev-high">
+              <div class="wa-alert-card-header">
+                <span class="wa-alert-card-id">${esc(a.id)}</span>
+                <span class="wa-alert-card-sev">Inactive: ${esc(a.inactiveFields.join(", "))}</span>
+              </div>
+              <div class="wa-alert-card-name">${esc(a.name)}</div>
+              <div class="wa-alert-card-meta">
+                <span>Owner: ${esc(a.owner)}</span>
+                <span>Fields: ${esc(a.inactiveFields.join(", "))}</span>
+              </div>
+            </div>
+          `).join("")}
+        </div>
+      `;
+
+      // 2.10 Notification Delivery Summary
+      const nd = ov.notificationDelivery;
+      const ndTotal = nd.delivered + nd.failed + nd.pending;
+      const ndHtml = `
+        <div class="wa-notif-summary">
+          <div class="wa-notif-stat">
+            <span class="wa-notif-label">Delivered</span>
+            <strong class="wa-notif-value wa-notif-delivered">${nd.delivered.toLocaleString()}</strong>
+          </div>
+          <div class="wa-notif-stat">
+            <span class="wa-notif-label">Failed</span>
+            <strong class="wa-notif-value wa-notif-failed">${nd.failed.toLocaleString()}</strong>
+          </div>
+          <div class="wa-notif-stat">
+            <span class="wa-notif-label">Pending</span>
+            <strong class="wa-notif-value wa-notif-pending">${nd.pending.toLocaleString()}</strong>
+          </div>
+          <div class="wa-notif-stat">
+            <span class="wa-notif-label">Success Rate</span>
+            <strong class="wa-notif-value">${nd.successRate}%</strong>
+          </div>
+        </div>
+        <div class="wa-notif-trend">
+          <span class="pill green">${nd.trend}</span>
+          <span class="muted">สัปดาห์ก่อน ${nd.previousWeekSuccessRate}% · รวม ${ndTotal.toLocaleString()} ครั้ง (7 วันล่าสุด)</span>
+        </div>
+      `;
+
+      // Assemble all panels into #table
+      document.querySelector("#table").innerHTML = `
+        <div class="wa-overview-stack">
+          ${panel("Top Criteria by Dimension", "criteria ที่ user ตั้งบ่อย แยก 4 dimensions", topCriteriaHtml, "wa-panel-criteria")}
+          ${panel("Price Range Distribution", "ช่วงราคาที่ user สนใจ", donutChart(ov.priceRanges, "Total Alerts"), "wa-panel-donut")}
+          ${panel("Condition Distribution", "สภาพที่ user ตั้ง alert", donutChart(ov.conditions, "Total Alerts"), "wa-panel-donut")}
+          ${panel("Case Size Distribution", "ขนาดเคสที่ user สนใจ", donutChart(ov.caseSizes, "Total Alerts"), "wa-panel-donut")}
+          ${panel("Joint Criteria Patterns", "combination ของ criteria ที่มักตั้งร่วมกัน — intensity = frequency", jointHtml, "wa-panel-heatmap")}
+          ${panel("Trigger Trend (30 วันล่าสุด)", "จำนวน trigger ย้อนหลัง 30 วัน", trendHtml, "wa-panel-trend")}
+          ${panel("Frequently Triggered Alerts", "alert ที่ trigger บ่อยสุด (top 8)", freqTriggerHtml, "", "View All")}
+          ${panel("Stale Alerts", "เก่า + ไม่ trigger (top 5 ตัวอย่าง)", staleHtml, "", "View All")}
+          ${panel("Inactive Market Data Dependency", "alert ที่ criteria อ้าง inactive brand/model/reference", inactiveHtml, "", "View All")}
+          ${panel("Notification Delivery Summary", "สรุปการส่งแจ้งเตือน 7 วันล่าสุด", ndHtml)}
+        </div>
+      `;
+    }
+
+    // WA-PTO-002 placeholder — Alert List (read-only) will be implemented in next task
+    function renderWatchAlertList() {
+      document.querySelector("#crumb").textContent = "งานตรวจสอบและบริการ / Watch Alert / Alert List";
+      document.querySelector("#page-title").textContent = "Alert List";
+      document.querySelector("#page-meta").textContent = "";
+      document.querySelector("#panel-title").textContent = "Alert List";
+      document.querySelector("#panel-subtitle").textContent = "รายการ Watch Alert ทั้งหมด (รวมที่ user ลบแล้ว) — read-only";
+      document.querySelector("#primary-action").textContent = "";
+      document.querySelector("#summary-grid").innerHTML = "";
+      document.querySelector("#table").innerHTML = `
+        <div class="detail-empty">
+          Alert List (read-only) จะสร้างใน task WA-PTO-002
+        </div>
+      `;
+    }
+
     function renderMarketData(subLabel = "Dashboard") {
       activeModule = "market";
       const nextSub = subLabel || "Dashboard";
@@ -20462,6 +21507,10 @@
       }
       if (activeModule === "assets" && activeSub === "Reported Comments") {
         renderReportedCommentRows();
+        return;
+      }
+      if (activeModule === "watch-alerts") {
+        renderWatchAlert(activeSub || "Demand Overview");
         return;
       }
       const data = moduleData[activeModule];
