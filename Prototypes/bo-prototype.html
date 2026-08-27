@@ -2492,10 +2492,24 @@
     }
 
     /* Price Range Histogram — vertical bar chart (จำนวน alert ต่อช่วงราคา) พร้อมแกน Y + ค่าบนหัวแท่ง */
-    .wa-price-hist-wrap { display: flex; flex-direction: column; }
+    .wa-price-hist-wrap { display: flex; flex-direction: column; flex: 1 1 auto; min-height: 0; }
+    .wa-price-hist-plot {
+      display: flex;
+      flex: 1 1 auto;
+      min-height: 180px;
+    }
+    .wa-price-hist-ytitle {
+      color: #43546d;
+      font-size: 10px;
+      font-weight: 800;
+      text-align: left;
+      margin-left: 34px;
+      margin-bottom: 4px;
+      white-space: nowrap;
+    }
     .wa-price-hist-track {
       position: relative;
-      height: 170px;
+      flex: 1 1 auto;
       margin-left: 34px;
       margin-top: 4px;
       border-left: 1px solid #cbd5e1;
@@ -2546,7 +2560,6 @@
       margin-bottom: 4px;
       line-height: 1;
     }
-    .wa-price-hist-value.wa-price-hist-peak { color: var(--brand); }
     .wa-price-hist-bar {
       width: 100%;
       max-width: 44px;
@@ -2555,7 +2568,6 @@
       border-radius: 4px 4px 0 0;
       background: var(--blue);
     }
-    .wa-price-hist-bar.wa-price-hist-peak { background: var(--brand); }
     .wa-price-hist-axis {
       display: grid;
       grid-template-columns: repeat(6, minmax(0, 1fr));
@@ -2572,40 +2584,15 @@
       overflow: hidden;
       text-overflow: ellipsis;
     }
-    .wa-price-hist-summary {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      margin-top: 16px;
-    }
-    .wa-price-hist-stat {
-      flex: 1 1 140px;
-      background: #f8fafc;
-      border: 1px solid var(--line);
-      border-radius: 8px;
-      padding: 10px 14px;
-    }
-    .wa-price-hist-stat-label {
-      display: block;
+    .wa-price-hist-xtitle {
       color: #43546d;
       font-size: 10px;
       font-weight: 800;
-      text-transform: uppercase;
-      letter-spacing: .4px;
-      margin-bottom: 4px;
+      text-align: center;
+      margin-left: 34px;
+      margin-top: 8px;
+      padding-top: 6px;
     }
-    .wa-price-hist-stat-value {
-      display: block;
-      color: #071b36;
-      font-family: var(--font-heading);
-      font-size: 18px;
-      letter-spacing: .3px;
-    }
-    .wa-price-hist-stat.wa-price-hist-stat-peak {
-      background: #fff5f5;
-      border-color: #f8d7da;
-    }
-    .wa-price-hist-stat.wa-price-hist-stat-peak .wa-price-hist-stat-value { color: var(--brand); }
 
     /* Alert cards — Risk & Alert pattern (Family Office UI Rulebook) */
     .wa-alert-banner {
@@ -3193,16 +3180,16 @@
       .wa-overview-panel .dashboard-card-meta {
         white-space: normal;
       }
-      /* Price Range Histogram: ลดความสูง + font + ความกว้างแกน Y บน mobile */
-      .wa-price-hist-track { height: 140px; margin-left: 28px; }
+      /* Price Range Histogram: ลด font + ความกว้างแกน Y บน mobile */
+      .wa-price-hist-plot { min-height: 140px; }
+      .wa-price-hist-track { margin-left: 28px; }
       .wa-price-hist-axis { margin-left: 28px; }
+      .wa-price-hist-xtitle { margin-left: 28px; }
+      .wa-price-hist-ytitle { margin-left: 28px; }
       .wa-price-hist-yaxis { left: -28px; width: 24px; }
       .wa-price-hist-yaxis span { font-size: 8px; }
       .wa-price-hist-value { font-size: 10px; }
       .wa-price-hist-label { font-size: 9px; }
-      .wa-price-hist-summary { gap: 8px; }
-      .wa-price-hist-stat { flex: 1 1 120px; padding: 8px 12px; }
-      .wa-price-hist-stat-value { font-size: 14px; }
       /* Alert cards: 1 column on mobile */
       .wa-alert-cards { grid-template-columns: 1fr; }
       /* Sparkline: shorter on mobile */
@@ -3222,7 +3209,6 @@
         white-space: nowrap;
         margin: 0 auto;
       }
-      .wa-price-hist-summary { flex-direction: column; gap: 6px; }
     }
 
     #user-action-modal:has(.market-reference-drawer) {
@@ -21720,10 +21706,8 @@
       document.querySelector("#table").innerHTML = `
         <div class="wa-overview-stack">
           ${panel("Top Brands", "แบรนด์ที่ผู้ใช้ตั้ง alert บ่อย — กดแถบเพื่อดูรุ่น/เลขอ้างอิง", topCriteriaHtml, "wa-panel-criteria", "ดูทั้งหมด", `data-wa-criteria-viewall`, false)}
-          ${panel("Price Range", "ช่วงราคาที่ user สนใจ", (() => {
-            const priceTotal = ov.priceRanges.reduce((s, p) => s + p.value, 0);
+          ${panel(`Price Range (${ov.priceRanges.reduce((s, p) => s + p.value, 0).toLocaleString()})`, "ช่วงราคาที่ user สนใจ", (() => {
             const rawMax = Math.max(...ov.priceRanges.map(p => p.value), 1);
-            const peakIdx = ov.priceRanges.reduce((best, p, i, arr) => p.value > arr[best].value ? i : best, 0);
             // Nice-number Y-axis scale: ปัดค่าสูงสุดขึ้นเป็นเลขกลม แบ่ง 4 ช่วง (5 ticks: niceMax..0)
             const rawStep = rawMax / 4;
             const magnitude = Math.pow(10, Math.floor(Math.log10(rawStep)));
@@ -21733,13 +21717,12 @@
             const niceMax = niceStep * 4;
             const yTicks = [4, 3, 2, 1, 0].map(i => i * niceStep);
             const n = ov.priceRanges.length;
-            const colsHtml = ov.priceRanges.map((p, i) => {
-              const h = Math.max(1, (p.value / niceMax) * 82);
-              const isPeak = i === peakIdx;
+            const colsHtml = ov.priceRanges.map((p) => {
+              const h = Math.max(1, (p.value / niceMax) * 88);
               return `
                 <div class="wa-price-hist-col">
-                  <div class="wa-price-hist-value${isPeak ? " wa-price-hist-peak" : ""}">${p.value.toLocaleString()}</div>
-                  <div class="wa-price-hist-bar${isPeak ? " wa-price-hist-peak" : ""}" style="height: ${h}%"></div>
+                  <div class="wa-price-hist-value">${p.value.toLocaleString()}</div>
+                  <div class="wa-price-hist-bar" style="height: ${h}%"></div>
                 </div>
               `;
             }).join("");
@@ -21748,21 +21731,15 @@
 
             return `
               <div class="wa-price-hist-wrap">
-                <div class="wa-price-hist-track">
-                  <div class="wa-price-hist-yaxis">${yaxisHtml}</div>
-                  <div class="wa-price-hist-chart">${colsHtml}</div>
+                <div class="wa-price-hist-ytitle">จำนวนรายการ</div>
+                <div class="wa-price-hist-plot">
+                  <div class="wa-price-hist-track">
+                    <div class="wa-price-hist-yaxis">${yaxisHtml}</div>
+                    <div class="wa-price-hist-chart">${colsHtml}</div>
+                  </div>
                 </div>
                 <div class="wa-price-hist-axis">${axisHtml}</div>
-                <div class="wa-price-hist-summary">
-                  <div class="wa-price-hist-stat">
-                    <span class="wa-price-hist-stat-label">รวมทั้งหมด</span>
-                    <span class="wa-price-hist-stat-value">${priceTotal.toLocaleString()} รายการ</span>
-                  </div>
-                  <div class="wa-price-hist-stat wa-price-hist-stat-peak">
-                    <span class="wa-price-hist-stat-label">ช่วงที่สนใจสูงสุด</span>
-                    <span class="wa-price-hist-stat-value">${esc(ov.priceRanges[peakIdx].label)}</span>
-                  </div>
-                </div>
+                <div class="wa-price-hist-xtitle">ช่วงราคา (บาท)</div>
               </div>
             `;
           })(), "wa-panel-price")}
