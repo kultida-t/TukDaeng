@@ -57,10 +57,10 @@
 | Top References | top 8 reference numbers | bar list พร้อมจำนวน alert |
 | Top Dial Colors | top 6 dial colors | bar list พร้อมจำนวน alert |
 
-#### 2.2 Price Range Distribution
+#### 2.2 Price Range
 แสดงการกระจายช่วงราคาที่ user สนใจ:
 - ช่วง: <50k, 50k-100k, 100k-300k, 300k-500k, 500k-1M, >1M
-- Format: bar chart (แนวนอน) พร้อมจำนวน alert ต่อช่วง
+- Format: donut chart พร้อม segment gap, legend ด้านล่างแบบ horizontal (จุดสี + label สีตาม segment), tooltip ตอน hover segment (อ้างอิง Prakan Go รายงานค่าการตลาด)
 
 #### 2.3 Condition Distribution
 - ค่า: New, Like New, Very Good, Good, Fair, Unspecified
