@@ -2900,6 +2900,23 @@
     .wa-criteria-modal .wa-stat-bar-list { gap: 16px; }
     /* เพิ่ม padding ด้านล่างของ modal body ให้ระยะห่างตอนท้ายไม่ชิดเกินไป */
     .wa-criteria-modal .user-action-card { padding-bottom: 24px; }
+    .wa-criteria-modal-subtitle {
+      margin: 4px 0 0;
+      color: #6d7f98;
+      font-size: 13px;
+      font-weight: 400;
+    }
+    /* ปุ่มย้อนกลับใน title — "Top Models - [Rolex]" Rolex คลิกได้ */
+    .wa-criteria-title-back {
+      padding: 0;
+      border: 0;
+      background: transparent;
+      color: var(--blue);
+      font: inherit;
+      font-weight: 800;
+      cursor: pointer;
+    }
+    .wa-criteria-title-back:hover { text-decoration: underline; }
 
     /* 2.5 Joint Criteria Patterns */
     .wa-joint-list {
@@ -21529,19 +21546,22 @@
         const items = getCriteriaLevelItems(path);
         const childKey = getCriteriaChildKey(path);
         const total = statTotal(items);
-        // root: title = "Top 10 Brands", ไม่มี breadcrumb (ไม่ให้ซ้ำ)
-        // drill: title = "Top Models" / "Top References", breadcrumb แสดง brand/model ที่เข้าไป
+        // root: title = "Top Brands" + subtitle บอกจำนวนสูงสุด
+        // drill level 1: title = "Top Models - {brand}" (brand คลิกกลับ root ได้), subtitle = "แสดงสูงสุด 10 models"
+        // drill level 2: title = "Top References - {model}" (model คลิกกลับ level 1 ได้), subtitle = "แสดงสูงสุด 10 references"
         const isRoot = path.length === 0;
-        const title = isRoot ? "Top 10 Brands" : path.length === 1 ? "Top Models" : "Top References";
-        const crumbs = isRoot ? [] : [...path];
-        const breadcrumbHtml = crumbs.length
-          ? `<p class="wa-criteria-breadcrumb">${crumbs.map((label, i) => {
-              const isLast = i === crumbs.length - 1;
-              return isLast
-                ? `<span class="wa-criteria-crumb-current">${esc(label)}</span>`
-                : `<button type="button" class="wa-criteria-crumb-link" data-wa-criteria-crumb="${i}">${esc(label)}</button>`;
-            }).join(`<span class="wa-criteria-crumb-sep">›</span>`)}</p>`
-          : "";
+        const levelLabel = isRoot ? "Top Brands" : path.length === 1 ? "Top Models" : "Top References";
+        const subtitle = isRoot
+          ? "แบรนด์ที่ผู้ใช้ตั้ง alert บ่อย — แสดงสูงสุด 10 brands"
+          : path.length === 1
+            ? "แสดงสูงสุด 10 models"
+            : "แสดงสูงสุด 10 references";
+        // ส่วนท้ายของ title (brand/model) เป็นปุ่มคลิกย้อนกลับได้
+        const backLabel = isRoot ? "" : path[path.length - 1];
+        const backLevel = isRoot ? 0 : path.length - 1; // ย้อนไประดับก่อนหน้า
+        const titleHtml = backLabel
+          ? `${levelLabel} - <button type="button" class="wa-criteria-title-back" data-wa-criteria-back="${backLevel}">${esc(backLabel)}</button>`
+          : levelLabel;
         const rowsHtml = items.length
           ? items.map((item, idx) => {
               const clickable = childKey && item[childKey] && item[childKey].length > 0;
@@ -21553,8 +21573,8 @@
           <div class="user-action-page wa-criteria-modal">
             <div class="user-action-head">
               <div>
-                <h2 id="user-action-modal-title">${title}</h2>
-                ${breadcrumbHtml}
+                <h2 id="user-action-modal-title">${titleHtml}</h2>
+                <p class="wa-criteria-modal-subtitle">${subtitle}</p>
               </div>
               <button class="btn user-action-close" type="button" data-user-action-modal-close aria-label="ปิด">${iconSvg.close}</button>
             </div>
@@ -21569,14 +21589,15 @@
             renderCriteriaModalBody();
           });
         });
-        modalBody.querySelectorAll("[data-wa-criteria-crumb]").forEach(btn => {
+        modalBody.querySelectorAll("[data-wa-criteria-back]").forEach(btn => {
           btn.addEventListener("click", () => {
-            const idx = parseInt(btn.getAttribute("data-wa-criteria-crumb"), 10);
-            // crumbs = [...path] ดังนั้น crumb ที่ idx = path[idx] ต้องการย้อนไปที่ path[idx] เป็นตัวสุดท้าย
-            watchAlertCriteriaModalPath = watchAlertCriteriaModalPath.slice(0, idx + 1);
+            const level = parseInt(btn.getAttribute("data-wa-criteria-back"), 10);
+            watchAlertCriteriaModalPath = watchAlertCriteriaModalPath.slice(0, level);
             renderCriteriaModalBody();
           });
         });
+        // ปรับฟ้อนต์ heading ทุกครั้งที่ re-render (drill down/back) ไม่ใช่เฉพาะตอนเปิด modal ครั้งแรก
+        applyModalHeadingFonts(document.querySelector("#user-action-modal"));
       };
       const openCriteriaModal = (initialPath) => {
         watchAlertCriteriaModalPath = initialPath;
