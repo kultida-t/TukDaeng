@@ -2496,13 +2496,18 @@
       flex-direction: column;
       align-items: center;
       gap: 16px;
+      min-height: 100%;
     }
     .wa-donut-chart-area {
       position: relative;
-      width: 190px;
-      height: 190px;
+      width: 220px;
+      height: 220px;
+      flex: 1 1 auto;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
-    .wa-donut { width: 190px; height: 190px; display: block; }
+    .wa-donut { width: 220px; height: 220px; display: block; }
     .wa-donut-seg { cursor: default; }
     .wa-donut-tooltip {
       position: absolute;
@@ -2528,6 +2533,8 @@
       flex-wrap: wrap;
       justify-content: center;
       gap: 6px 18px;
+      margin-top: auto;
+      padding-top: 8px;
     }
     .wa-donut-legend .wa-legend-item {
       display: flex;
@@ -2658,6 +2665,7 @@
       grid-template-columns: repeat(2, minmax(0, 1fr));
       gap: 18px;
       padding: 18px 0 0;
+      align-items: stretch;
     }
     .wa-overview-panel {
       border: 1px solid #d7e2f0;
@@ -2666,6 +2674,8 @@
       overflow: hidden;
       background: #fff;
       min-height: 0;
+      display: flex;
+      flex-direction: column;
     }
     .wa-overview-panel .dashboard-card-head {
       min-height: 62px;
@@ -2715,6 +2725,15 @@
     .wa-view-all svg { width: 14px; height: 14px; }
     .wa-overview-body {
       padding: 18px 20px;
+    }
+    .wa-overview-panel.wa-panel-donut .wa-overview-body {
+      display: flex;
+      flex-direction: column;
+      flex: 1 1 auto;
+    }
+    .wa-overview-panel.wa-panel-donut {
+      display: flex;
+      flex-direction: column;
     }
 
     /* 2.1 Top Criteria — flat Top 5 Brands + Dial Color panel (drill-down อยู่ใน modal แทน expand inline) */
@@ -3177,9 +3196,8 @@
       }
       .wa-overview-body { padding: 12px 16px 14px; }
       .wa-overview-panel .dashboard-card-head { padding: 12px 16px 10px; }
-      /* mobile: title ยาวให้ wrap และลดขนาด เพราะใช้ nowrap เหมือน Dashboard ไม่ได้ */
+      /* mobile: title ยาวให้ wrap เพราะใช้ nowrap เหมือน Dashboard ไม่ได้ */
       .wa-overview-panel .dashboard-card-head h3 {
-        font-size: 18px;
         white-space: normal;
       }
       .wa-panel-head-text {
@@ -3191,8 +3209,8 @@
       }
       /* Donut: ลดขนาดบน mobile */
       .wa-donut-wrap { gap: 12px; }
-      .wa-donut-chart-area { width: 165px; height: 165px; }
-      .wa-donut { width: 165px; height: 165px; }
+      .wa-donut-chart-area { width: 180px; height: 180px; }
+      .wa-donut { width: 180px; height: 180px; }
       /* Heatmap: 2 columns on mobile */
       .wa-heatmap-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
       /* Alert cards: 1 column on mobile */
@@ -3208,8 +3226,8 @@
       }
       .wa-notif-summary { grid-template-columns: 1fr; }
       .wa-heatmap-grid { grid-template-columns: 1fr; }
-      .wa-donut-chart-area { width: 145px; height: 145px; }
-      .wa-donut { width: 145px; height: 145px; }
+      .wa-donut-chart-area { width: 160px; height: 160px; }
+      .wa-donut { width: 160px; height: 160px; }
     }
 
     #user-action-modal:has(.market-reference-drawer) {
@@ -21779,7 +21797,7 @@
       document.querySelector("#table").innerHTML = `
         <div class="wa-overview-stack">
           ${panel("Top Brands", "แบรนด์ที่ผู้ใช้ตั้ง alert บ่อย — กดแถบเพื่อดูรุ่น/เลขอ้างอิง", topCriteriaHtml, "wa-panel-criteria", "ดูทั้งหมด", `data-wa-criteria-viewall`, false)}
-          ${panel("Price Range Distribution", "ช่วงราคาที่ user สนใจ", donutChart(ov.priceRanges, "Total Alerts"), "wa-panel-donut")}
+          ${panel("Price Range", "ช่วงราคาที่ user สนใจ", donutChart(ov.priceRanges, "Total Alerts"), "wa-panel-donut")}
           ${panel("Condition Distribution", "สภาพที่ user ตั้ง alert", donutChart(ov.conditions, "Total Alerts"), "wa-panel-donut")}
           ${panel("Case Size Distribution", "ขนาดเคสที่ user สนใจ", donutChart(ov.caseSizes, "Total Alerts"), "wa-panel-donut")}
           ${panel("Joint Criteria Patterns", "combination ของ criteria ที่มักตั้งร่วมกัน — intensity = frequency", jointHtml, "wa-panel-heatmap")}
