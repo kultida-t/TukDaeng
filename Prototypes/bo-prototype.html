@@ -2667,18 +2667,34 @@
       min-height: 0;
     }
     .wa-overview-panel .dashboard-card-head {
-      min-height: 56px;
-      padding: 14px 20px 12px;
+      min-height: 62px;
+      padding: 18px 20px;
       flex-direction: row;
       align-items: center;
       justify-content: space-between;
       gap: 12px;
     }
     .wa-overview-panel .dashboard-card-head h3 {
-      font-size: 18px;
-      letter-spacing: .06em;
+      color: #071b36;
+      font-size: 24px;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      white-space: nowrap;
     }
-    .wa-panel-head-text { min-width: 0; }
+    /* title + subtitle บรรทัดเดียวกัน เหมือน Dashboard Work Queue (flex baseline) */
+    .wa-panel-head-text {
+      min-width: 0;
+      display: flex;
+      align-items: baseline;
+      gap: 10px;
+    }
+    .wa-overview-panel .dashboard-card-meta {
+      margin: 0;
+      overflow: hidden;
+      color: #6d7f98;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
     .wa-view-all {
       display: inline-flex;
       align-items: center;
@@ -3014,6 +3030,18 @@
       }
       .wa-overview-body { padding: 12px 16px 14px; }
       .wa-overview-panel .dashboard-card-head { padding: 12px 16px 10px; }
+      /* mobile: title ยาวให้ wrap และลดขนาด เพราะใช้ nowrap เหมือน Dashboard ไม่ได้ */
+      .wa-overview-panel .dashboard-card-head h3 {
+        font-size: 18px;
+        white-space: normal;
+      }
+      .wa-panel-head-text {
+        flex-wrap: wrap;
+        gap: 4px 10px;
+      }
+      .wa-overview-panel .dashboard-card-meta {
+        white-space: normal;
+      }
       /* Donut: stack vertically on mobile */
       .wa-donut-wrap {
         grid-template-columns: 1fr;
