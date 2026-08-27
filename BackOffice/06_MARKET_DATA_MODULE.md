@@ -518,8 +518,8 @@ Supported provider areas:
 | --- | --- |
 | Add Asset | Brand/model/reference autocomplete, structured selection และ prefill ค่า specification ที่ provider มีให้ |
 | Search / Filter | Brand, model, reference, case size, movement และ filter ที่เกี่ยวข้อง |
-| Search Autocomplete | แสดง option ที่ active และเกี่ยวข้องกับ Sale/public visibility rule |
-| Watch Alert | ใช้ criteria schema เดียวกับ Search Filter และ active market data |
+| Search Autocomplete | แสดงทุก entity ที่ `is_active=true` พร้อมจำนวน Asset Sale ปัจจุบันข้างชื่อ (แม้จำนวนเป็น `0` = no current listing) เพื่อรองรับ Watch Alert use case — entity ที่ `is_active=false` เท่านั้นที่ไม่แสดง |
+| Watch Alert | ใช้ criteria schema เดียวกับ Search Filter และ active market data; criteria สามารถอ้าง entity ที่มี no current listing ได้ (ถือเป็น unmet demand ปกติ ไม่ใช่ inactive market data) |
 | Portfolio | ใช้ Price Index เป็น valuation source priority แรกเมื่อมีข้อมูลเพียงพอ |
 | Watch Price / Integrations | ใช้ latest active price data ตาม brand/model/reference |
 
@@ -531,12 +531,14 @@ Market Data boundary สำหรับ FO Add/Edit Asset:
 - Asset ต้องเก็บ relation id ไป Market Data เมื่อเลือก option ที่ match ได้ และต้องเก็บ snapshot text ของ Brand / Model / Reference ไว้กับ Asset เพื่อคง display history
 - ถ้า Owner กรอก free-text ที่ยังไม่มีใน Market Data ให้ asset relation เป็น `null` และเก็บ snapshot text ได้ โดยไม่สร้าง Brand / Model / Reference ใหม่ใน BO Market Data Phase 1
 - Internal option master เช่น condition, delivery item, case material, movement, dial color และ strap/bracelet type เป็น option สำหรับ Asset form/search filter ไม่ใช่ provider catalog ที่ BO Market Data แก้ไขได้ใน Phase 1; จัดการโดย Admin ผ่าน `17_OPTION_MASTER_MODULE.md` section 22 (FO Integration Guidelines) ซึ่งกำหนด prefill behavior, mapping rule ระหว่าง provider text และ `spec_options` และ fallback behavior เมื่อ option ถูก deactivate
+- FO API ที่ให้บริการ Brand/Model/Reference autocomplete และ filter dropdown ต้อง return `listing_count` (จำนวน Asset Sale ปัจจุบันที่ User มีสิทธิ์เห็น) ข้างชื่อ entity ด้วย เพื่อรองรับ Filter Visibility Rule ของ `03_SEARCH_FILTER_MODULE.md` — ค่านี้เปลี่ยนแปลงบ่อย ต้อง cache แยกจาก Market Data catalog หรือดึง on-demand ตอนเปิด dropdown
 
 Inactive หรือ unmapped market data:
 
-- ไม่ควรเป็น option ใหม่ใน FO autocomplete/filter
+- ไม่ควรเป็น option ใหม่ใน FO autocomplete/filter (entity ที่ `is_active=false`)
 - ต้องไม่ลบ relation/history ของ asset เดิม
 - Watch Alert เดิมต้องเก็บ history ได้ แต่ไม่ควร trigger match ใหม่ถ้า criteria อ้าง option ที่ inactive ตาม policy
+- กรณี entity/option `is_active=true` แต่ไม่มี Asset Sale ตอนนั้น (no current listing) ไม่ใช่ inactive market data — entity/option ยังแสดงใน autocomplete/filter พร้อมจำนวน `(0)` และ Watch Alert ที่อ้างถือเป็น unmet demand ปกติ ทำงานต่อได้
 
 ## 17. Data Quality
 

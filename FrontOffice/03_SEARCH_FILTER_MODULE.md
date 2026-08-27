@@ -63,6 +63,7 @@ Search & Filter Module ต้องยึด master baseline ต่อไปน�
 | Medium | ยังไม่เห็น state ของ no result / error / retry ครบ | Empty State ใช้ `ไม่พบข้อมูล` / `No data found`; error ต้องมี retry | เพิ่ม no result และ error state พร้อมปุ่ม retry |
 | Medium | ยังไม่เห็น clear filter / result count ชัดเจน | Search รองรับ Result Count, Apply Filters, Clear Filters | เพิ่ม result count และ clear filter control |
 | Medium | ยังไม่เห็น sort options ครบ | Search รองรับ Relevance, Price Low to High, Price High to Low, Newest, Popularity | เพิ่ม sort option set ให้ครบตาม master |
+| Medium | Filter dropdown ยังไม่แสดงจำนวน listing ข้างชื่อ option | Filter Visibility Rule กำหนดให้แสดงจำนวน Asset Sale ปัจจุบันข้างชื่อทุก entity/option แม้จำนวนเป็น 0 | เพิ่ม count label ข้างชื่อใน autocomplete และ filter dropdown เช่น `Rolex (212)`, `Daytona (0)` |
 
 ---
 
@@ -251,7 +252,11 @@ Keyword ต้องรองรับ:
 
 Autocomplete ใช้เพื่อช่วยเลือก keyword หรือ entity ที่มีอยู่ในระบบ
 
-Autocomplete ต้องไม่แสดงตัวเลือกที่ไม่มี Asset สถานะ `Sale` ให้ค้นหาได้จริง
+Autocomplete ต้องแสดงทุก entity ที่ `is_active=true` จาก Market Data (Brand, Model, Reference Number) และทุก active option จาก internal option master (Condition, Delivery Contents, Case Material, Movement, Dial Color, Strap / Bracelet) — พร้อมแสดงจำนวน Asset Sale ปัจจุบันที่ User มีสิทธิ์เห็นข้างชื่อ entity/option เช่น `Rolex (212)`, `Daytona (0)`, `New (380)`, `Fair (0)`
+
+จำนวน listing เป็นข้อมูลอ้างอิงเท่านั้น ไม่ใช่เกณฑ์ตัด entity/option ออกจากรายการ — entity/option ที่มีจำนวน `0` (no current listing) ยังเลือกได้ เพื่อรองรับ Watch Alert use case ที่ผู้ซื้อหานาฬิกาตรงเงื่อนไขที่ต้องการ ไม่ว่าจะยังไม่มีรุ่นนั้นลงขาย หรือเคยมีลงขายแต่ไม่ตรงเงื่อนไข (เช่น ราคา/สภาพ/สี)
+
+Entity/option ที่ `is_active=false` (inactive market data หรือ deactivated option) ต้องไม่แสดงเป็นตัวเลือกใหม่ใน autocomplete
 
 ## Filter Fields
 
@@ -276,14 +281,24 @@ Filter data source rule:
 - Condition, Delivery Contents, Case Material, Movement, Dial Color และ Strap / Bracelet option ต้องอ่านจาก internal option master เดียวกับ Add/Edit Asset
 - Provider/API specification ใช้ช่วย prefill ตอน Add/Edit Asset ได้ แต่ Search/Filter ต้องอิงค่าที่ถูก save กับ Asset จริง
 - ถ้า Asset ใช้ free-text Brand/Model/Reference ที่ไม่มี relation id ต้องยังค้นหา keyword จาก snapshot text ได้
+- จำนวน listing ที่แสดงข้างชื่อ entity/option ใน autocomplete/filter dropdown คำนวณจาก Asset สถานะ `Sale` ที่ User มีสิทธิ์เห็นและไม่ได้ถูก Block เท่านั้น (ไม่รวม Show, Hide, Sold, Deleted)
 
 ## Filter Visibility Rule
 
-Filter option ควรแสดงเฉพาะข้อมูลที่มี Asset อยู่จริงในระบบตาม visibility ของ Search
+Filter option ต้องแสดงทุก entity/option ที่ `is_active=true` จาก Market Data และ internal option master พร้อมจำนวน Asset Sale ปัจจุบันที่ User มีสิทธิ์เห็นข้างชื่อ — เพื่อให้ User เห็นก่อนกด Search ว่าตัวเลือกนี้มี listing หรือไม่ และให้ตั้ง Watch Alert สำหรับนาฬิกาที่ตรงเงื่อนไขที่ต้องการ ไม่ว่าจะยังไม่มีรุ่นนั้นลงขาย หรือเคยมีลงขายแต่ไม่ตรงเงื่อนไข (เช่น ราคา/สภาพ/สี)
 
 ตัวอย่าง:
 
-- หากไม่มี Asset Sale ของ `Rolex Daytona` ที่ User มีสิทธิ์เห็น ต้องไม่แสดง `Daytona` เป็น option ที่ทำให้เกิดผลลัพธ์หลอก
+- หากไม่มี Asset Sale ของ `Rolex Daytona` ที่ User มีสิทธิ์เห็น ต้องแสดง `Daytona (0)` ใน dropdown ให้เลือกได้ (ไม่ใช่ผลลัพธ์หลอก เพราะ User อาจตั้ง Watch Alert รอนาฬิกาที่ตรงเงื่อนไขที่ต้องการ ทั้งกรณีที่ยังไม่มีรุ่นนี้ลงขาย หรือเคยมีลงขายแต่ไม่ตรงเงื่อนไขที่ต้องการ เช่น ราคา/สภาพ/สี)
+- หาก `Rolex Daytona` ถูก deactivate ใน Market Data แล้ว ต้องไม่แสดงเป็นตัวเลือกใหม่ใน filter (เป็น inactive market data ไม่ใช่ no current listing)
+
+การแยกความหมาย:
+
+| สถานะ | ความหมาย | การแสดงใน filter |
+| --- | --- | --- |
+| no current listing | มีใน Market Data/Option Master (`is_active=true`) แต่ไม่มี Asset Sale ตอนนั้น | แสดง พร้อมจำนวน `(0)` ยังเลือกได้ |
+| inactive market data | Brand/Model/Reference ถูก deactivate ใน Market Data (`is_active=false`) | ไม่แสดงเป็นตัวเลือกใหม่ |
+| deactivated option | Option master ถูก deactivate (`is_active=false`) | ไม่แสดงเป็นตัวเลือกใหม่ |
 
 ## Filter Dependency Rule
 
@@ -412,6 +427,8 @@ Create Watch Alert ต้องสร้างจาก Search Filter เท่�
 - Alert Name ต้องไม่ว่างตอนกด Save this search
 - Watch Alert Notification ต้องเปิดไปที่ Watch Alert Result List
 - Watch Alert Notification ต้องไม่เปิด Asset Detail โดยตรง
+- Watch Alert criteria สามารถอ้าง Brand/Model/Reference หรือ option master ที่มี no current listing (จำนวน listing = 0 ตอนสร้าง) ได้ — เพราะ Watch Alert ใช้หานาฬิกาที่ผู้ซื้อต้องการ ไม่ว่าจะยังไม่มีรุ่นที่ต้องการลงขาย หรือเคยมีลงขายแต่ไม่ตรงเงื่อนไขที่ต้องการ (เช่น ราคา/สภาพ/สี)
+- Alert ที่ criteria อ้าง entity/option ที่มี no current listing ถือเป็น unmet demand ปกติ ไม่ใช่ inactive market data (ดู Filter Visibility Rule สำหรับความแตกต่าง)
 
 ## Watch Alert Name Rule
 
@@ -617,6 +634,8 @@ Search Result ต้องรองรับ:
 |---|---|
 | AC-SEARCH-008 | Search Keyword ต้องค้นหาจาก Brand, Model และ Reference Number ได้ |
 | AC-SEARCH-009 | Filter ต้องรองรับ Brand, Model, Price Range, Year of Production, Reference Number, Delivery Contents, Condition, Case Size, Movement, Dial Color และ Strap / Bracelet |
+| AC-SEARCH-009A | Filter option (Brand, Model, Reference, option master) ต้องแสดงทุก entity/option ที่ `is_active=true` พร้อมจำนวน Asset Sale ปัจจุบันข้างชื่อ แม้จำนวนเป็น `0` (no current listing) |
+| AC-SEARCH-009B | Entity/option ที่ `is_active=false` (inactive market data หรือ deactivated option) ต้องไม่แสดงเป็นตัวเลือกใหม่ใน filter |
 | AC-SEARCH-010 | Brand → Model ต้องเป็น Dependent Filter |
 | AC-SEARCH-011 | Multiple Filter ต้องใช้ AND Logic |
 | AC-SEARCH-012 | Apply Filters ต้องอัปเดต Search Result ตามเงื่อนไขที่เลือก |
@@ -657,6 +676,7 @@ Search Result ต้องรองรับ:
 |---|---|
 | AC-SEARCH-028 | Create Watch Alert ต้องสร้างจาก Search Filter ได้ |
 | AC-SEARCH-029 | Watch Alert criteria ต้องไม่มี Required Field แต่ Alert Name ต้องไม่ว่างตอนบันทึก |
+| AC-SEARCH-029A | Watch Alert criteria สามารถอ้าง Brand/Model/Reference หรือ option master ที่มี no current listing (จำนวน listing = 0 ตอนสร้าง) ได้ และถือเป็น unmet demand ปกติ ไม่ใช่ inactive market data |
 | AC-SEARCH-030 | Watch Alert ต้อง Match เฉพาะ Asset สถานะ Sale |
 | AC-SEARCH-031 | เมื่อเปิด Save to Watch Alert ระบบต้องเติมชื่อเริ่มต้นจาก Filter หรือ default name ให้ user แก้ไขได้ |
 | AC-SEARCH-031A | หาก User ลบ Alert Name จนว่างแล้วกด Save this search ระบบต้องแจ้งเตือนให้กรอกชื่อและไม่สร้าง Watch Alert |

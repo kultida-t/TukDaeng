@@ -2407,6 +2407,16 @@
       border-radius: var(--radius) var(--radius) 0 0;
       background: #fff;
     }
+    /* Demand Overview: เอากรอบ/หัวกรอบนอกออก — ชื่อซ้ำกับ page title และกรอบซ้อนกรอบ
+       แต่ละส่วนมีหัวข้อของตัวเองอยู่แล้ว จึงไม่ต้องมี panel-head นอกครอบอีกที
+       scope เฉพาะ watch-alert-overview-mode เพื่อไม่กระทบ Alert List / Alert Detail */
+    body.watch-alert-overview-mode .layout > .panel {
+      border: 0;
+      background: transparent;
+    }
+    body.watch-alert-overview-mode .layout > .panel > .panel-head {
+      display: none;
+    }
     body.watch-alert-mode #table {
       padding: 0;
       background: transparent;
@@ -2694,27 +2704,36 @@
     .wa-criteria-grid {
       display: grid;
       grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 16px;
+      gap: 14px;
+    }
+    .wa-criteria-sub {
+      border: 1px solid #e2eaf5;
+      border-radius: 6px;
+      background: #f8fafd;
+      padding: 12px 14px 14px;
+      min-width: 0;
     }
     .wa-criteria-sub h4 {
       margin: 0 0 10px;
-      color: #43546d;
-      font-size: 12px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid #e2eaf5;
+      color: #3a4d68;
+      font-size: 13px;
       font-weight: 800;
-      letter-spacing: .04em;
+      letter-spacing: .03em;
       text-transform: uppercase;
     }
     .wa-bar-list {
       padding: 0;
-      gap: 10px;
+      gap: 8px;
     }
     .wa-bar-list .brand-ranking-row {
-      min-height: 34px;
-      gap: 4px;
+      min-height: 32px;
+      gap: 3px;
     }
     /* barList ไม่มี trend/share → ปรับ grid ให้ name และ count วางชิดขอบ ไม่มีคอลัมน์ว่าง */
     .wa-bar-list .brand-ranking-top {
-      grid-template-columns: 22px minmax(0, 1fr) auto;
+      grid-template-columns: 20px minmax(0, 1fr) auto;
       gap: 8px;
       align-items: center;
     }
@@ -2726,7 +2745,7 @@
       text-align: center;
     }
     .wa-bar-list .ranking-brand-name { font-size: 12px; }
-    .wa-bar-list .brand-searches { font-size: 15px; }
+    .wa-bar-list .brand-searches { font-size: 14px; }
     /* barList ไม่มี share → ให้ bar กินเต็มความกว้าง ไม่ตัด 34px ทางขวา */
     .wa-bar-list .brand-bar-line {
       grid-template-columns: minmax(0, 1fr);
@@ -2952,6 +2971,11 @@
     /* Responsive — Tablet (≤1280px) */
     @media (max-width: 1280px) {
       .wa-overview-stack { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+
+    /* Responsive — Small tablet (≤1024px) — criteria-grid stack ภายใน panel ที่แคบลง */
+    @media (max-width: 1024px) {
+      .wa-criteria-grid { grid-template-columns: 1fr; }
     }
 
     /* Responsive — Mobile (≤760px) */

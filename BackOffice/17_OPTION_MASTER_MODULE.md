@@ -1220,8 +1220,8 @@ Visual rules:
 
 กฎการแสดงผล:
 
-- แสดงเฉพาะ option ที่ `is_active=true`
-- ใช้ Filter Visibility Rule ของ `03_SEARCH_FILTER_MODULE.md`: แสดงเฉพาะ option ที่มี asset อยู่จริงในระบบตาม visibility ของ Search (ไม่แสดง option ที่ทำให้เกิดผลลัพธ์ว่าง)
+- แสดงทุก option ที่ `is_active=true` พร้อมจำนวน Asset Sale ปัจจุบันที่ User มีสิทธิ์เห็นข้างชื่อ เช่น `New (380)`, `Fair (0)`
+- ใช้ Filter Visibility Rule ของ `03_SEARCH_FILTER_MODULE.md`: แสดงทุก active option แม้จำนวน Asset Sale เป็น `0` (no current listing) เพื่อรองรับ Watch Alert use case ที่ผู้ซื้อหานาฬิกาตรงเงื่อนไขที่ต้องการ ไม่ว่าจะยังไม่มีรุ่นนั้นลงขาย หรือเคยมีลงขายแต่ไม่ตรงเงื่อนไข — entity/option ที่ `is_active=false` เท่านั้นที่ไม่แสดงเป็นตัวเลือกใหม่
 - ใช้ Filter Dependency Rule: Brand → Model เป็น dependent filter; option filter ไม่ dependent กับ Brand/Model แต่ทำงานร่วมกันแบบ AND Logic ตาม Multiple Filter Rule
 - รองรับ multi-select filter สำหรับ group ที่ `allows_multi_select=true` และสามารถขยายเป็น multi-select สำหรับ group อื่นถ้า implementation กำหนด
 - เรียงตาม `sort_order` เช่นเดียวกับ Add/Edit Asset form
@@ -1238,9 +1238,10 @@ Visual rules:
 วิธีดึง option ไปใช้ใน FO Watch Alert criteria:
 
 - Watch Alert criteria ใช้ schema เดียวกับ Search Filter ตาม `11_WATCH_ALERT_MODULE.md` Filter Logic Rule และ Validation Rules
-- แสดงเฉพาะ option ที่ `is_active=true` เป็น criteria ใหม่
+- แสดงทุก option ที่ `is_active=true` เป็น criteria ใหม่ พร้อมจำนวน Asset Sale ปัจจุบันข้างชื่อ — รวม option ที่มีจำนวน `0` (no current listing) เพื่อรองรับ use case ที่ผู้ซื้อหานาฬิกาตรงเงื่อนไขที่ต้องการ ไม่ว่าจะยังไม่มีรุ่นนั้นลงขาย หรือเคยมีลงขายแต่ไม่ตรงเงื่อนไข
 - Watch Alert ใช้ filter logic เดียวกับ Search Module รวม dependent filter และ AND Logic
 - Watch Alert match เฉพาะ Asset สถานะ `Sale` ตาม Match Rule; option criteria ทำงานร่วมกับเงื่อนไขอื่นใน criteria
+- Watch Alert criteria ที่อ้าง option ที่มี no current listing (จำนวน = 0 ตอนสร้าง) ถือเป็น unmet demand ปกติ ไม่ใช่ inactive option — ดู `../FrontOffice/10_WATCH_ALERT_MODULE.md` No Current Listing vs Inactive Market Data Rule
 
 กฎสำหรับ Watch Alert เดิมที่อ้างถึง option ที่ถูก deactivate ภายหลัง:
 
@@ -1268,6 +1269,7 @@ FO client ต้อง cache option list เพื่อลด API call แล�
 - ถ้าใช้ push-based invalidation, BO action ที่เปลี่ยน option master ต้อง trigger event ไปยัง FO client เพื่อ refresh cache
 - รายละเอียด cache invalidation/API timing ให้สรุปอีกครั้งตอนออกแบบ backend ตาม section 14 กฎการ sync
 - Cache version ต้องตรงกับ seed version ใน `asset-spec-options.json` เพื่อให้ trace ได้ว่า FO ใช้ option master version ใด
+- Listing counts (จำนวน Asset Sale ต่อ option) เปลี่ยนแปลงบ่อยกว่า option master status — ไม่ควร cache ด้วย TTL 24 ชม. เหมือน option list ให้แยก cache สั้นกว่า (เช่น 5-15 นาที) หรือดึง on-demand ตอน user เปิด dropdown/autocomplete เพื่อให้ตัวเลขใกล้เคียงสถานะปัจจุบัน
 
 ### 22.6 Fallback Behavior When Option Is Deactivated
 
@@ -1325,13 +1327,16 @@ FO ดึง option list จาก backend ผ่าน API ต่อไปน�
           "description_en": "Never worn or no visible usage",
           "sort_order": 10,
           "is_active": true,
-          "is_system": true
+          "is_system": true,
+          "listing_count": 380
         }
       ]
     }
   ]
 }
 ```
+
+`listing_count` คือจำนวน Asset สถานะ `Sale` ที่ User ปัจจุบันมีสิทธิ์เห็นและใช้ option นี้ — ค่านี้เปลี่ยนแปลงบ่อย ต้อง cache แยกจาก option master ตาม section 22.5 หรือดึง on-demand ตอนเปิด dropdown
 
 #### Response 404 Not Found
 
@@ -1405,8 +1410,8 @@ Market Data และ Option Master เป็นสองระบบแยก�
 เพิ่มเติมจาก section 20:
 
 - [ ] วิธีดึง option ไปใช้ใน FO Add/Edit Asset form ระบุชัดสำหรับแต่ละ group (control type, required rule, sort order)
-- [ ] FO Search Filter ระบุชัด รวม Filter Visibility Rule และ Filter Dependency Rule
-- [ ] FO Watch Alert criteria ระบุชัด รวม schema เดียวกับ Search Filter และ warning สำหรับ inactive option
+- [ ] FO Search Filter ระบุชัด รวม Filter Visibility Rule (แสดงทุก active option พร้อมจำนวน listing แม้เป็น 0) และ Filter Dependency Rule
+- [ ] FO Watch Alert criteria ระบุชัด รวม schema เดียวกับ Search Filter, รองรับ no current listing criteria และ warning สำหรับ inactive option
 - [ ] Caching strategy มี storage, cache key, TTL, refresh trigger และ fallback
 - [ ] Fallback behavior สำหรับ deactivate option ครบทุก surface (FO form, FO Edit asset เดิม, FO Asset Detail, FO Search Filter, FO Watch Alert, BO Asset Detail, BO Asset List filter)
 - [ ] API contract มี endpoint, parameter, response format, error response และ caching header
