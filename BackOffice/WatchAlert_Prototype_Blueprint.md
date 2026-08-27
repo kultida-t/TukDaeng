@@ -60,34 +60,29 @@
 #### 2.2 Price Range
 แสดงการกระจายช่วงราคาที่ user สนใจ:
 - ช่วง: <50k, 50k-100k, 100k-300k, 300k-500k, 500k-1M, >1M
-- Format: donut chart พร้อม segment gap, legend ด้านล่างแบบ horizontal (จุดสี + label สีตาม segment), tooltip ตอน hover segment (อ้างอิง Prakan Go รายงานค่าการตลาด)
+- Format: vertical bar chart (histogram) พร้อมแกน Y (nice-number scale + gridline), แท่งตามลำดับช่วงราคา, ตัวเลขจำนวนแสดงบนหัวแท่ง, label ช่วงราคาอยู่ใต้แกน X, เส้นแนวโน้ม (dashed) ลากผ่านยอดแท่งแต่ละแท่งเพื่อดู shape การกระจายตัว, ไฮไลต์แท่งที่มีจำนวนมากสุดด้วยสี brand, สรุปท้ายกราฟเป็นกล่อง: รวมทั้งหมด + ช่วงที่สนใจสูงสุด
 
-#### 2.3 Joint Criteria Patterns
-แสดง combination ของ criteria ที่ user มักตั้งร่วมกัน (top 8):
-- เช่น Brand+Model (1,820), Brand+Price Range (1,240), Brand+Condition (890), Brand+Model+Price Range (670)
-- Format: list พร้อมจำนวน alert และ percentage
-
-#### 2.4 Trigger Trend (30 วันล่าสุด)
+#### 2.3 Trigger Trend (30 วันล่าสุด)
 - กราฟแท่งรายวัน แสดงจำนวน trigger ย้อนหลัง 30 วัน
 - แยกสี: successful trigger (เขียว) vs skipped (เทา — block/inactive/disabled)
 - แกน X: วันที่, แกน Y: จำนวน trigger
 
-#### 2.5 Frequently Triggered Alerts (top 8)
+#### 2.4 Frequently Triggered Alerts (top 8)
 - Alert ที่ trigger บ่อยสุด
 - แสดงเป็น mini table: Alert ID, Name, Owner, Trigger Count, Last Triggered
 - Row click → Alert Detail
 
-#### 2.6 Stale Alerts (เก่า + ไม่ trigger)
+#### 2.5 Stale Alerts (เก่า + ไม่ trigger)
 - Alert ที่ created > 30 days และ (last trigger > 30 days หรือ never triggered)
 - แสดงจำนวนรวม + ตัวอย่าง top 5 (mini table)
 - Row click → Alert Detail
 
-#### 2.7 Inactive Market Data Dependency
+#### 2.6 Inactive Market Data Dependency
 - จำนวน alert ที่ criteria อ้าง brand/model/reference ที่ inactive
 - แสดง list ของ affected alerts (top 8) พร้อม warning badge
 - Row click → Alert Detail
 
-#### 2.8 Notification Delivery Summary
+#### 2.7 Notification Delivery Summary
 - สรุป: Delivered / Failed / Pending (7 วันล่าสุด)
 - Success rate trend (เปรียบเทียบสัปดาห์ก่อน)
 
@@ -322,7 +317,6 @@
 | Top References | 16610 (85), 116610LN (72), 126610LV (68), 116500LN (55), 15500ST (48), 3824 (42), SPB143 (38), 6139 (35) |
 | Top Dial Colors | Black (1,820), Blue (680), Green (320), White (280), Silver (220), Champagne (180) |
 | Price Ranges | <50k: 420, 50k-100k: 680, 100k-300k: 1,240, 300k-500k: 580, 500k-1M: 220, >1M: 78 |
-| Joint Criteria | Brand+Model (1,820), Brand+Price (1,240), Brand+Condition (890), Brand+Model+Price (670), Brand+Model+Condition (420) |
 | Frequently Triggered | WAL-1228 (45), WAL-1440 (12), WAL-1100 (8), WAL-0990 (6), WAL-0950 (4) |
 | Stale Alerts | WAL-1050 (created 90d, last trigger 60d), WAL-0900 (created 120d, never triggered) |
 | Inactive Market Data | WAL-1199 (model inactive), WAL-0900 (reference inactive) |

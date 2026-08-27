@@ -2491,107 +2491,128 @@
       font-size: 13px;
     }
 
-    /* Donut chart — Composition pattern (Family Office UI Rulebook) */
-    /* อ้างอิง: Prakan Go รายงานค่าการตลาด > สัดส่วนตามสถานะ — segment gap, legend ล่างแบบ horizontal, tooltip ตอน hover */
-    .wa-donut-wrap {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 16px;
-      min-height: 100%;
+    /* Price Range Histogram — vertical bar chart (จำนวน alert ต่อช่วงราคา) พร้อมแกน Y + เส้นแนวโน้ม */
+    .wa-price-hist-wrap { display: flex; flex-direction: column; }
+    .wa-price-hist-values {
+      display: grid;
+      grid-template-columns: repeat(6, minmax(0, 1fr));
+      gap: 8px;
+      margin-left: 34px;
+      height: 20px;
+      align-items: end;
     }
-    .wa-donut-chart-area {
-      position: relative;
-      width: 220px;
-      height: 220px;
-      flex: 1 1 auto;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    .wa-donut { width: 220px; height: 220px; display: block; }
-    .wa-donut-seg { cursor: default; }
-    .wa-donut-tooltip {
-      position: absolute;
-      left: 0;
-      top: 0;
-      transform: translate(-50%, -115%);
-      background: #fff;
-      border: 1px solid #e2e8f0;
-      border-radius: 10px;
-      padding: 10px 18px;
-      font-size: 14px;
-      font-weight: 700;
-      white-space: nowrap;
-      box-shadow: 0 8px 20px rgba(15, 23, 42, .16);
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity 120ms ease;
-      z-index: 5;
-    }
-    .wa-donut-tooltip.visible { opacity: 1; }
-    .wa-donut-legend {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 6px 18px;
-      margin-top: auto;
-      padding-top: 8px;
-    }
-    .wa-donut-legend .wa-legend-item {
-      display: flex;
-      align-items: center;
-      gap: 6px;
+    .wa-price-hist-value {
+      text-align: center;
+      color: #071b36;
       font-size: 12px;
-    }
-    .wa-donut-legend .wa-legend-dot {
-      width: 10px;
-      height: 10px;
-      border-radius: 50%;
-      flex-shrink: 0;
-    }
-    .wa-donut-legend .wa-legend-text {
-      font-weight: 700;
+      font-weight: 800;
+      white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
-      white-space: nowrap;
     }
-
-    /* Heatmap grid — Risk Heatmap pattern (Family Office UI Rulebook) */
-    .wa-heatmap-grid {
-      display: grid;
-      grid-template-columns: repeat(4, minmax(0, 1fr));
-      gap: 8px;
+    .wa-price-hist-value.wa-price-hist-peak { color: var(--brand); }
+    .wa-price-hist-track {
+      position: relative;
+      height: 150px;
+      margin-left: 34px;
+      margin-top: 4px;
     }
-    .wa-heat-cell {
-      padding: 14px 12px;
-      border-radius: 6px;
-      border: 1px solid transparent;
-      text-align: center;
-      transition: transform 120ms ease;
+    .wa-price-hist-yaxis {
+      position: absolute;
+      left: -34px;
+      top: 0;
+      width: 28px;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      text-align: right;
+      padding-right: 6px;
     }
-    .wa-heat-cell:hover { transform: scale(1.03); }
-    .wa-heat-high { background: #c8212b; color: #fff; border-color: #a71420; }
-    .wa-heat-medium { background: #f3d493; color: #925500; border-color: #e0b870; }
-    .wa-heat-low { background: #e4f8f0; color: #07734f; border-color: #bcebd7; }
-    .wa-heat-minimal { background: #f1f5f9; color: #475569; border-color: #cbd5e1; }
-    .wa-heat-label {
-      font-size: 11px;
+    .wa-price-hist-yaxis span {
+      color: #8595ad;
+      font-size: 9px;
       font-weight: 700;
-      line-height: 1.3;
-      margin-bottom: 6px;
-    }
-    .wa-heat-value {
-      font-family: var(--font-heading);
-      font-size: 20px;
       line-height: 1;
-      margin-bottom: 4px;
     }
-    .wa-heat-percent {
+    .wa-price-hist-yaxis span:first-child { transform: translateY(-2px); }
+    .wa-price-hist-yaxis span:last-child { transform: translateY(2px); }
+    .wa-price-hist-gridlines { position: absolute; inset: 0; z-index: 1; }
+    .wa-price-hist-gridline {
+      position: absolute;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: var(--line);
+    }
+    .wa-price-hist-chart {
+      position: relative;
+      z-index: 2;
+      display: grid;
+      grid-template-columns: repeat(6, minmax(0, 1fr));
+      gap: 8px;
+      align-items: end;
+      height: 100%;
+    }
+    .wa-price-hist-bar {
+      width: 100%;
+      max-width: 44px;
+      min-height: 2px;
+      margin: 0 auto;
+      border-radius: 4px 4px 0 0;
+      background: var(--blue);
+    }
+    .wa-price-hist-bar.wa-price-hist-peak { background: var(--brand); }
+    .wa-price-hist-axis {
+      display: grid;
+      grid-template-columns: repeat(6, minmax(0, 1fr));
+      gap: 8px;
+      margin-left: 34px;
+      margin-top: 6px;
+    }
+    .wa-price-hist-label {
+      color: #43546d;
       font-size: 10px;
       font-weight: 700;
-      opacity: .8;
+      text-align: center;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
+    .wa-price-hist-summary {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 16px;
+    }
+    .wa-price-hist-stat {
+      flex: 1 1 140px;
+      background: #f8fafc;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 10px 14px;
+    }
+    .wa-price-hist-stat-label {
+      display: block;
+      color: #43546d;
+      font-size: 10px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: .4px;
+      margin-bottom: 4px;
+    }
+    .wa-price-hist-stat-value {
+      display: block;
+      color: #071b36;
+      font-family: var(--font-heading);
+      font-size: 18px;
+      letter-spacing: .3px;
+    }
+    .wa-price-hist-stat.wa-price-hist-stat-peak {
+      background: #fff5f5;
+      border-color: #f8d7da;
+    }
+    .wa-price-hist-stat.wa-price-hist-stat-peak .wa-price-hist-stat-value { color: var(--brand); }
 
     /* Alert cards — Risk & Alert pattern (Family Office UI Rulebook) */
     .wa-alert-banner {
@@ -2728,12 +2749,12 @@
     .wa-overview-body {
       padding: 18px 20px;
     }
-    .wa-overview-panel.wa-panel-donut .wa-overview-body {
+    .wa-overview-panel.wa-panel-price .wa-overview-body {
       display: flex;
       flex-direction: column;
       flex: 1 1 auto;
     }
-    .wa-overview-panel.wa-panel-donut {
+    .wa-overview-panel.wa-panel-price {
       display: flex;
       flex-direction: column;
     }
@@ -2939,42 +2960,6 @@
       cursor: pointer;
     }
     .wa-criteria-title-back:hover { text-decoration: underline; }
-
-    /* 2.5 Joint Criteria Patterns */
-    .wa-joint-list {
-      display: grid;
-      gap: 8px;
-    }
-    .wa-joint-row {
-      display: grid;
-      grid-template-columns: minmax(0, 1fr) auto auto;
-      gap: 12px;
-      align-items: center;
-      padding: 10px 0;
-      border-bottom: 1px solid var(--line);
-    }
-    .wa-joint-row:last-child { border-bottom: 0; }
-    .wa-joint-label {
-      color: #071b36;
-      font-size: 13px;
-      font-weight: 700;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-    }
-    .wa-joint-value {
-      font-family: var(--font-heading);
-      color: #071b36;
-      font-size: 18px;
-      white-space: nowrap;
-    }
-    .wa-joint-percent {
-      color: #43546d;
-      font-size: 11px;
-      font-weight: 700;
-      min-width: 42px;
-      text-align: right;
-    }
 
     /* 2.6 Trigger Trend — 30-day bar chart */
     .wa-trend-chart {
@@ -3215,12 +3200,17 @@
       .wa-overview-panel .dashboard-card-meta {
         white-space: normal;
       }
-      /* Donut: ลดขนาดบน mobile */
-      .wa-donut-wrap { gap: 12px; }
-      .wa-donut-chart-area { width: 180px; height: 180px; }
-      .wa-donut { width: 180px; height: 180px; }
-      /* Heatmap: 2 columns on mobile */
-      .wa-heatmap-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      /* Price Range Histogram: ลดความสูง + font + ความกว้างแกน Y บน mobile */
+      .wa-price-hist-track { height: 120px; margin-left: 28px; }
+      .wa-price-hist-values { margin-left: 28px; }
+      .wa-price-hist-axis { margin-left: 28px; }
+      .wa-price-hist-yaxis { left: -28px; width: 24px; }
+      .wa-price-hist-yaxis span { font-size: 8px; }
+      .wa-price-hist-value { font-size: 10px; }
+      .wa-price-hist-label { font-size: 9px; }
+      .wa-price-hist-summary { gap: 8px; }
+      .wa-price-hist-stat { flex: 1 1 120px; padding: 8px 12px; }
+      .wa-price-hist-stat-value { font-size: 14px; }
       /* Alert cards: 1 column on mobile */
       .wa-alert-cards { grid-template-columns: 1fr; }
       /* Sparkline: shorter on mobile */
@@ -3233,9 +3223,14 @@
         grid-template-columns: 1fr;
       }
       .wa-notif-summary { grid-template-columns: 1fr; }
-      .wa-heatmap-grid { grid-template-columns: 1fr; }
-      .wa-donut-chart-area { width: 160px; height: 160px; }
-      .wa-donut { width: 160px; height: 160px; }
+      /* Price Range Histogram: label แนวตั้งกัน overflow บนจอแคบมาก */
+      .wa-price-hist-label {
+        writing-mode: vertical-rl;
+        transform: rotate(180deg);
+        white-space: nowrap;
+        margin: 0 auto;
+      }
+      .wa-price-hist-summary { flex-direction: column; gap: 6px; }
     }
 
     #user-action-modal:has(.market-reference-drawer) {
@@ -12857,16 +12852,6 @@
           { label: "< 50k", value: 420 }, { label: "50k-100k", value: 680 }, { label: "100k-300k", value: 1240 },
           { label: "300k-500k", value: 580 }, { label: "500k-1M", value: 220 }, { label: "> 1M", value: 78 }
         ],
-        jointCriteria: [
-          { label: "Brand + Model", value: 1820, percent: 56.6 },
-          { label: "Brand + Price Range", value: 1240, percent: 38.5 },
-          { label: "Brand + Condition", value: 890, percent: 27.6 },
-          { label: "Brand + Model + Price Range", value: 670, percent: 20.8 },
-          { label: "Brand + Model + Condition", value: 420, percent: 13.0 },
-          { label: "Brand + Dial Color", value: 360, percent: 11.2 },
-          { label: "Model + Price Range", value: 280, percent: 8.7 },
-          { label: "Brand + Case Size", value: 220, percent: 6.8 }
-        ],
         // Trigger trend 30 วันล่าสุด (mock คำนวณสั้น ๆ)
         triggerTrend: (() => {
           const days = [];
@@ -21464,44 +21449,8 @@
       `;
       }).join("");
 
-      // Donut chart helper — Family Office UI Rulebook Composition pattern
-      // Segment gap + hover tooltip แบบอ้างอิง Prakan Go (รายงานค่าการตลาด > สัดส่วนตามสถานะ)
-      const donutColors = ["#10b981", "#3b82f6", "#f59e0b", "#8b5cf6", "#ec4899", "#06b6d4", "#ef4444", "#84cc16"];
       // Top Brands palette — สีกลาง 8 เฉด แยกจากตัวอักษร #071b36 ชัดเจน (ไม่กลืนกัน)
       const brandColors = ["#2b6cb0", "#2f855a", "#c05621", "#b83280", "#6b46c1", "#2c7a7b", "#b7791f", "#c53030"];
-      let donutInstanceSeq = 0;
-      const donutChart = (items, totalLabel) => {
-        const total = items.reduce((s, i) => s + i.value, 0) || 1;
-        const instanceId = `wa-donut-${donutInstanceSeq++}`;
-        let offset = 0;
-        const radius = 66, strokeWidth = 36, circumference = 2 * Math.PI * radius, gapLen = 2.5;
-        const segments = items.map((item, i) => {
-          const fullDash = (item.value / total) * circumference;
-          const dash = Math.max(fullDash - gapLen, 0);
-          const seg = `<circle class="wa-donut-seg" data-label="${esc(item.label)}" data-value="${item.value}" cx="100" cy="100" r="${radius}" fill="none" stroke="${donutColors[i % donutColors.length]}" stroke-width="${strokeWidth}" stroke-dasharray="${dash.toFixed(1)} ${(circumference - dash).toFixed(1)}" stroke-dashoffset="${(-offset).toFixed(1)}" transform="rotate(-90 100 100)" />`;
-          offset += fullDash;
-          return seg;
-        }).join("");
-        return `
-          <div class="wa-donut-wrap">
-            <div class="wa-donut-chart-area" data-donut-id="${instanceId}">
-              <svg class="wa-donut" viewBox="0 0 200 200" role="img" aria-label="${esc(totalLabel)}">
-                <circle cx="100" cy="100" r="${radius}" fill="none" stroke="#eef2f7" stroke-width="${strokeWidth}" />
-                ${segments}
-              </svg>
-              <div class="wa-donut-tooltip" id="${instanceId}-tooltip"></div>
-            </div>
-            <div class="wa-donut-legend">
-              ${items.map((item, i) => `
-                <div class="wa-legend-item">
-                  <span class="wa-legend-dot" style="background: ${donutColors[i % donutColors.length]}"></span>
-                  <span class="wa-legend-text" style="color: ${donutColors[i % donutColors.length]}">${esc(item.label)}</span>
-                </div>
-              `).join("")}
-            </div>
-          </div>
-        `;
-      };
 
       // Panel card helper
       const panel = (title, meta, bodyHtml, extraClass = "", viewAllLabel = "", viewAllAttr = `data-module-jump="watch-alerts" data-sub-jump="Alert List"`, viewAllChevron = true) => `
@@ -21636,24 +21585,6 @@
         renderCriteriaModalBody();
         showUserActionModal(true);
       };
-
-      // 2.5 Joint Criteria Patterns — heatmap-style intensity grid (Family Office Risk Heatmap pattern)
-      const jointMax = Math.max(...ov.jointCriteria.map(j => j.value), 1);
-      const jointHtml = `
-        <div class="wa-heatmap-grid">
-          ${ov.jointCriteria.map(j => {
-            const intensity = j.value / jointMax;
-            const heatClass = intensity > 0.7 ? "wa-heat-high" : intensity > 0.4 ? "wa-heat-medium" : intensity > 0.2 ? "wa-heat-low" : "wa-heat-minimal";
-            return `
-              <div class="wa-heat-cell ${heatClass}">
-                <div class="wa-heat-label">${esc(j.label)}</div>
-                <div class="wa-heat-value">${j.value.toLocaleString()}</div>
-                <div class="wa-heat-percent">${j.percent}%</div>
-              </div>
-            `;
-          }).join("")}
-        </div>
-      `;
 
       // 2.6 Trigger Trend (30-day bar chart)
       const trendMax = Math.max(...ov.triggerTrend.map(d => d.successful + d.skipped), 1);
@@ -21797,8 +21728,49 @@
       document.querySelector("#table").innerHTML = `
         <div class="wa-overview-stack">
           ${panel("Top Brands", "แบรนด์ที่ผู้ใช้ตั้ง alert บ่อย — กดแถบเพื่อดูรุ่น/เลขอ้างอิง", topCriteriaHtml, "wa-panel-criteria", "ดูทั้งหมด", `data-wa-criteria-viewall`, false)}
-          ${panel("Price Range", "ช่วงราคาที่ user สนใจ", donutChart(ov.priceRanges, "Total Alerts"), "wa-panel-donut")}
-          ${panel("Joint Criteria Patterns", "combination ของ criteria ที่มักตั้งร่วมกัน — intensity = frequency", jointHtml, "wa-panel-heatmap")}
+          ${panel("Price Range", "ช่วงราคาที่ user สนใจ", (() => {
+            const priceTotal = ov.priceRanges.reduce((s, p) => s + p.value, 0);
+            const rawMax = Math.max(...ov.priceRanges.map(p => p.value), 1);
+            const peakIdx = ov.priceRanges.reduce((best, p, i, arr) => p.value > arr[best].value ? i : best, 0);
+            // Nice-number Y-axis scale: ปัดค่าสูงสุดขึ้นเป็นเลขกลม แบ่ง 4 ช่วง (5 gridlines: niceMax..0)
+            const rawStep = rawMax / 4;
+            const magnitude = Math.pow(10, Math.floor(Math.log10(rawStep)));
+            const residual = rawStep / magnitude;
+            const niceResidual = residual > 5 ? 10 : residual > 2 ? 5 : residual > 1 ? 2 : 1;
+            const niceStep = niceResidual * magnitude;
+            const niceMax = niceStep * 4;
+            const yTicks = [4, 3, 2, 1, 0].map(i => i * niceStep);
+            const n = ov.priceRanges.length;
+            const valuesHtml = ov.priceRanges.map((p, i) => `<div class="wa-price-hist-value${i === peakIdx ? " wa-price-hist-peak" : ""}">${p.value.toLocaleString()}</div>`).join("");
+            const barsHtml = ov.priceRanges.map((p, i) => {
+              const h = Math.max(1, (p.value / niceMax) * 100);
+              return `<div class="wa-price-hist-bar${i === peakIdx ? " wa-price-hist-peak" : ""}" style="height: ${h}%"></div>`;
+            }).join("");
+            const gridlinesHtml = [0, 25, 50, 75, 100].map(top => `<div class="wa-price-hist-gridline" style="top: ${top}%"></div>`).join("");
+            const yaxisHtml = yTicks.map(v => `<span>${v.toLocaleString()}</span>`).join("");
+            const axisHtml = ov.priceRanges.map(p => `<div class="wa-price-hist-label">${esc(p.label)}</div>`).join("");
+            return `
+              <div class="wa-price-hist-wrap">
+                <div class="wa-price-hist-values">${valuesHtml}</div>
+                <div class="wa-price-hist-track">
+                  <div class="wa-price-hist-yaxis">${yaxisHtml}</div>
+                  <div class="wa-price-hist-gridlines">${gridlinesHtml}</div>
+                  <div class="wa-price-hist-chart">${barsHtml}</div>
+                </div>
+                <div class="wa-price-hist-axis">${axisHtml}</div>
+                <div class="wa-price-hist-summary">
+                  <div class="wa-price-hist-stat">
+                    <span class="wa-price-hist-stat-label">รวมทั้งหมด</span>
+                    <span class="wa-price-hist-stat-value">${priceTotal.toLocaleString()} รายการ</span>
+                  </div>
+                  <div class="wa-price-hist-stat wa-price-hist-stat-peak">
+                    <span class="wa-price-hist-stat-label">ช่วงที่สนใจสูงสุด</span>
+                    <span class="wa-price-hist-stat-value">${esc(ov.priceRanges[peakIdx].label)}</span>
+                  </div>
+                </div>
+              </div>
+            `;
+          })(), "wa-panel-price")}
           ${panel("Trigger Trend (30 วันล่าสุด)", "จำนวน trigger ย้อนหลัง 30 วัน", trendHtml, "wa-panel-trend")}
           ${panel("Frequently Triggered Alerts", "alert ที่ trigger บ่อยสุด (top 8)", freqTriggerHtml, "", "View All")}
           ${panel("Stale Alerts", "เก่า + ไม่ trigger (top 5 ตัวอย่าง)", staleHtml, "", "View All")}
@@ -21806,24 +21778,6 @@
           ${panel("Notification Delivery Summary", "สรุปการส่งแจ้งเตือน 7 วันล่าสุด", ndHtml)}
         </div>
       `;
-
-      // Donut segment hover → tooltip แบบอ้างอิง Prakan Go (label : จำนวน)
-      document.querySelectorAll(".wa-donut-chart-area").forEach(area => {
-        const tooltip = area.querySelector(".wa-donut-tooltip");
-        area.querySelectorAll(".wa-donut-seg").forEach(seg => {
-          const show = e => {
-            tooltip.textContent = `${seg.getAttribute("data-label")} : ${Number(seg.getAttribute("data-value")).toLocaleString()} รายการ`;
-            tooltip.style.color = seg.getAttribute("stroke");
-            const rect = area.getBoundingClientRect();
-            tooltip.style.left = `${e.clientX - rect.left}px`;
-            tooltip.style.top = `${e.clientY - rect.top}px`;
-            tooltip.classList.add("visible");
-          };
-          seg.addEventListener("mouseenter", show);
-          seg.addEventListener("mousemove", show);
-          seg.addEventListener("mouseleave", () => tooltip.classList.remove("visible"));
-        });
-      });
 
       // Top Brands row คลิก → เปิด modal drilled ตรงไป models ของ brand นั้น
       document.querySelectorAll("[data-wa-criteria-open]").forEach(btn => {
