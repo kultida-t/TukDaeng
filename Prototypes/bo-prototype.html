@@ -21420,6 +21420,8 @@
 
       // Donut chart helper — Family Office UI Rulebook Composition pattern
       const donutColors = ["#1a365f", "#1463d9", "#08875d", "#a96500", "#6b46c1", "#c8212b", "#0f766e", "#925500"];
+      // Top Brands palette — สีกลาง 8 เฉด แยกจากตัวอักษร #071b36 ชัดเจน (ไม่กลืนกัน)
+      const brandColors = ["#2b6cb0", "#2f855a", "#c05621", "#b83280", "#6b46c1", "#2c7a7b", "#b7791f", "#c53030"];
       const donutChart = (items, totalLabel) => {
         const total = items.reduce((s, i) => s + i.value, 0);
         let offset = 0;
@@ -21472,7 +21474,7 @@
       const statTotal = (items) => items.reduce((s, i) => s + i.value, 0) || 1;
       const statBarRow = (item, idx, total, dataAttr = "", chevron = false) => {
         const pct = Math.round((item.value / total) * 100);
-        const color = donutColors[idx % donutColors.length];
+        const color = brandColors[idx % brandColors.length];
         const clickable = !!dataAttr;
         const Tag = clickable ? "button" : "div";
         return `
