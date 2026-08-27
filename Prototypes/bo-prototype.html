@@ -2706,14 +2706,36 @@
     }
     .wa-bar-list {
       padding: 0;
-      gap: 8px;
+      gap: 10px;
     }
     .wa-bar-list .brand-ranking-row {
-      min-height: 36px;
+      min-height: 34px;
+      gap: 4px;
+    }
+    /* barList ไม่มี trend/share → ปรับ grid ให้ name และ count วางชิดขอบ ไม่มีคอลัมน์ว่าง */
+    .wa-bar-list .brand-ranking-top {
+      grid-template-columns: 22px minmax(0, 1fr) auto;
+      gap: 8px;
+      align-items: center;
+    }
+    .wa-bar-list .wa-rank-num {
+      color: #8595ad;
+      font-family: var(--font-heading);
+      font-size: 11px;
+      font-weight: 700;
+      text-align: center;
     }
     .wa-bar-list .ranking-brand-name { font-size: 12px; }
-    .wa-bar-list .brand-searches { font-size: 16px; }
+    .wa-bar-list .brand-searches { font-size: 15px; }
+    /* barList ไม่มี share → ให้ bar กินเต็มความกว้าง ไม่ตัด 34px ทางขวา */
+    .wa-bar-list .brand-bar-line {
+      grid-template-columns: minmax(0, 1fr);
+    }
     .wa-bar-list .brand-bar-track { height: 5px; }
+    /* read-only: ไม่เปลี่ยนสี hover ให้ดูเหมือนกดได้ */
+    .wa-bar-list .brand-ranking-row:hover .brand-bar-fill {
+      background: var(--brand);
+    }
 
     /* 2.5 Joint Criteria Patterns */
     .wa-joint-list {
@@ -21170,12 +21192,13 @@
       `;
       }).join("");
 
-      // Bar list helper (reuse brand-ranking pattern)
+      // Bar list helper (reuse brand-ranking pattern) — read-only ranking with rank number
       const barList = (items, opts = {}) => {
         const max = Math.max(...items.map(i => i.value), 1);
-        return items.map(i => `
-          <div class="brand-ranking-row" type="button">
+        return items.map((i, idx) => `
+          <div class="brand-ranking-row">
             <span class="brand-ranking-top">
+              <span class="wa-rank-num">${idx + 1}</span>
               <span class="ranking-brand-name">${esc(i.label)}</span>
               <span class="brand-searches">${i.value.toLocaleString()}</span>
             </span>
