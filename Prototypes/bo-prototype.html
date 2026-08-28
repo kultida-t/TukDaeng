@@ -3216,6 +3216,13 @@
       letter-spacing: .03em;
       text-transform: uppercase;
     }
+    /* override .asset-row.head > div:last-child ที่บังคับชิดขวา — mini table ชิดซ้ายทั้งหมด */
+    .wa-alert-mini-table .asset-row.head > div:last-child {
+      display: block;
+      justify-content: flex-start;
+      justify-self: start;
+      text-align: left;
+    }
     .wa-alert-mini-table .asset-row:not(.head):hover {
       background: #f8fbff;
       cursor: pointer;
@@ -3250,19 +3257,6 @@
     }
     .wa-alert-mini-table .asset-row .wa-cell-right .main-text {
       font-variant-numeric: tabular-nums;
-    }
-    /* Mini bar ในคอลัมน์ Triggers — แสดงสัดส่วนเทียบกับอันดับ 1 */
-    .wa-alert-mini-table .wa-trigger-bar {
-      margin-top: 4px;
-      height: 3px;
-      border-radius: 2px;
-      background: #e2e8f0;
-      overflow: hidden;
-    }
-    .wa-alert-mini-table .wa-trigger-bar-fill {
-      height: 100%;
-      border-radius: 2px;
-      background: var(--blue);
     }
 
     /* Stale alerts total */
@@ -3405,8 +3399,6 @@
         text-align: left;
         justify-self: stretch;
       }
-      /* mobile: ซ่อน mini bar เพราะพื้นที่แคบ แสดงแค่ตัวเลข */
-      .wa-alert-mini-table .wa-trigger-bar { display: none; }
       .wa-inactive-row {
         grid-template-columns: 1fr;
         gap: 4px;
@@ -21893,8 +21885,7 @@
         </div>
       `;
 
-      // 2.7 Frequently Triggered Alerts — top 8, mini bar สัดส่วนเทียบกับอันดับ 1
-      const freqMaxTriggers = Math.max(...ov.frequentlyTriggered.map(a => a.triggerCount), 1);
+      // 2.7 Frequently Triggered Alerts — top 8
       const freqTriggerHtml = alertMiniTable(
         ov.frequentlyTriggered.map(a => ({
           ...a,
@@ -21904,11 +21895,8 @@
           { label: "Alert ID", key: "id", render: r => `<div class="main-text wa-alert-id">${esc(r.id)}</div>` },
           { label: "Name", key: "name", render: r => `<div class="main-text wa-alert-name">${esc(r.name)}</div>` },
           { label: "Owner", key: "owner" },
-          { label: "Triggers", key: "triggerCount", align: "right", render: r => `
-            <div class="main-text">${r.triggerCount.toLocaleString()}</div>
-            <div class="wa-trigger-bar"><div class="wa-trigger-bar-fill" style="width:${Math.round((r.triggerCount / freqMaxTriggers) * 100)}%"></div></div>
-          ` },
-          { label: "Last Triggered", key: "lastTriggeredDisplay", align: "right" }
+          { label: "Triggers", key: "triggerCount" },
+          { label: "Last Triggered", key: "lastTriggeredDisplay" }
         ],
         true
       );
