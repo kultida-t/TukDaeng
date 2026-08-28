@@ -13089,7 +13089,9 @@
           { id: "WAL-0950", name: "IWC Pilot Mark XVIII", owner: "Daily Watch Hunter", triggerCount: 3, lastTriggered: "2026-08-18T15:00:00+07:00" },
           { id: "WAL-1150", name: "Patek Calatrava 5227", owner: "The Collector", triggerCount: 2, lastTriggered: "2026-08-19T11:00:00+07:00" },
           { id: "WAL-1050", name: "Old Rolex GMT alert", owner: "Nattapol P.", triggerCount: 1, lastTriggered: "2026-06-28T10:00:00+07:00" },
-          { id: "WAL-1020", name: "Cartier Tank Must", owner: "Minimal Dial", triggerCount: 2, lastTriggered: "2026-07-15T14:00:00+07:00" }
+          { id: "WAL-1020", name: "Cartier Tank Must", owner: "Minimal Dial", triggerCount: 2, lastTriggered: "2026-07-15T14:00:00+07:00" },
+          { id: "WAL-1310", name: "Grand Seiko Snowflake", owner: "The Collector", triggerCount: 1, lastTriggered: "2026-08-12T09:30:00+07:00" },
+          { id: "WAL-0870", name: "Tudor Pelagos FXD", owner: "Seiko Corner", triggerCount: 1, lastTriggered: "2026-08-05T18:20:00+07:00" }
         ],
         staleAlerts: {
           total: 45,
@@ -22029,7 +22031,7 @@
             `;
           })(), "wa-panel-price", "", "", true, "แสดงจำนวน Watch Alert ที่ผู้ใช้ตั้งไว้แยกตามช่วงราคาที่สนใจ 6 ช่วง ตั้งแต่ต่ำกว่า 50,000 บาท ถึงมากกว่า 1 ล้านบาท")}
           ${panel("Trigger Trend", "ย้อนหลัง 12 เดือน", trendHtml, "wa-panel-trend", "", "", true, "แสดงแนวโน้มจำนวนการแจ้งเตือนรายเดือนย้อนหลัง 12 เดือน แยกการแจ้งเตือนที่สำเร็จและที่ถูกข้าม")}
-          ${panel("Frequently Triggered Alerts", "alert ที่ trigger บ่อยสุด (top 8)", freqTriggerHtml, "wa-panel-frequent", "View All", `data-module-jump="watch-alerts" data-sub-jump="Alert List"`, true, "แสดง Watch Alert ที่ trigger บ่อยที่สุด 8 อันดับแรก พร้อมจำนวนครั้งและเวลาที่ trigger ล่าสุด")}
+          ${panel("Frequently Triggered Alerts", "alert ที่ trigger บ่อยสุด (top 10)", freqTriggerHtml, "wa-panel-frequent", "View All", `data-module-jump="watch-alerts" data-sub-jump="Alert List"`, true, "แสดง Watch Alert ที่ trigger บ่อยที่สุด 10 อันดับแรก พร้อมจำนวนครั้งและเวลาที่ trigger ล่าสุด")}
           ${panel("Stale Alerts", "เก่า + ไม่ trigger (top 5 ตัวอย่าง)", staleHtml, "", "View All", `data-module-jump="watch-alerts" data-sub-jump="Alert List"`, true, "แสดง Watch Alert ที่สร้างมานานกว่า 30 วันและไม่ trigger หรือไม่เคย trigger พร้อมระดับความเร่งด่วน")}
           ${panel("Inactive Market Data Dependency", "alert ที่ criteria อ้าง inactive brand/model/reference", inactiveHtml, "", "View All", `data-module-jump="watch-alerts" data-sub-jump="Alert List"`, true, "แสดง Watch Alert ที่เงื่อนไขอ้างอิงถึงแบรนด์ รุ่น หรือเลขอ้างอิงที่ถูกปิดใช้งานใน Market Data ทำให้ alert ไม่สามารถ trigger ได้")}
           ${panel("Notification Delivery Summary", "สรุปการส่งแจ้งเตือน 7 วันล่าสุด", ndHtml, "", "", "", true, "สรุปผลการส่งการแจ้งเตือน 7 วันล่าสุด แยกส่งสำเร็จ ล้มเหลว และค้างส่ง พร้อมอัตราการส่งสำเร็จเทียบกับสัปดาห์ก่อน")}

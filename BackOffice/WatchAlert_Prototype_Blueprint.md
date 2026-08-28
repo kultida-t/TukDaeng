@@ -69,13 +69,12 @@
 - แกน X: เดือน (ชื่อเดือนย่อ + ปี 2 หลัก), แกน Y: จำนวนการแจ้งเตือน (ครั้ง) พร้อม nice-number scale + gridlines แบบเส้นประ
 - legend 2 รายการ พร้อมคำอธิบาย; tooltip ต่อคอลัมน์ (เดือน • สำเร็จ X • ข้าม Y)
 
-#### 2.4 Frequently Triggered Alerts (top 8)
+#### 2.4 Frequently Triggered Alerts (top 10)
 - Alert ที่ trigger บ่อยสุด
-- แสดงเป็น mini table 6 คอลัมน์: # (ลำดับ 1-8), Alert ID, Name, Owner, Triggers, Last Triggered
-- Alert ID ใช้ heading font + สี muted ให้เห็นชัดเป็น identifier
-- Triggers และ Last Triggered ชิดขวา (numeric/date)
-- คอลัมน์ Triggers มี mini bar ใต้ตัวเลข แสดงสัดส่วนการ trigger เทียบกับอันดับ 1 (100%)
-- Mobile (≤760px): ซ่อนคอลัมน์ # และ mini bar แสดงเป็น stacked card พร้อม label
+- แสดงเป็น mini table 6 คอลัมน์: # (ลำดับ 1-10), Alert ID, Name, Owner, Triggers, Last Triggered
+- ใช้สไตล์เดียวกับตารางมาตรฐาน (Option Group): header bg #f1f5fb, data 12px/400/#516683, Name เป็น primary (700/#061426)
+- ทุกคอลัมน์ชิดซ้าย
+- Mobile (≤760px): ซ่อนคอลัมน์ # แสดงเป็น stacked card พร้อม label
 - Row click → Alert List (read-only drill-in; Alert Detail จะต่อใน WA-PTO-003)
 
 #### 2.5 Stale Alerts (เก่า + ไม่ trigger)
