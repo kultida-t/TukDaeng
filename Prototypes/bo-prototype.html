@@ -3196,52 +3196,60 @@
     }
     .wa-alert-mini-table .asset-row {
       grid-template-columns: 30px minmax(80px, .8fr) minmax(120px, 1.5fr) minmax(100px, 1fr) minmax(92px, .7fr) minmax(100px, .7fr);
-      column-gap: 14px;
+      column-gap: 24px;
       align-items: center;
-      padding: 14px 0;
+      min-height: 66px;
+      padding: 10px 22px;
       border-bottom: 1px solid var(--line);
     }
     .wa-alert-mini-table .asset-row.head {
-      padding: 10px 0;
-      border-bottom: 2px solid #d7e2f0;
+      min-height: 44px;
+      padding: 12px 22px;
+      background: #f1f5fb;
+      color: #485b75;
+      border-bottom: 0;
     }
     .wa-alert-mini-table .asset-row.head > div {
-      color: #43546d;
-      font-size: 10px;
-      font-weight: 800;
-      letter-spacing: .04em;
+      color: #485b75;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: .03em;
       text-transform: uppercase;
     }
     .wa-alert-mini-table .asset-row:not(.head):hover {
       background: #f8fbff;
       cursor: pointer;
     }
-    .wa-alert-mini-table .main-text {
-      color: #071b36;
+    .wa-alert-mini-table .asset-row:not(.head) .main-text {
+      color: #516683;
       font-size: 12px;
-      font-weight: 600;
+      font-weight: 400;
+      line-height: 1.5;
     }
     /* Rank column — ลำดับ top 8 */
-    .wa-alert-mini-table .wa-rank {
+    .wa-alert-mini-table .asset-row .wa-rank {
       color: #94a3b8;
-      font-size: 11px;
-      font-weight: 700;
+      font-size: 12px;
+      font-weight: 600;
       text-align: center;
     }
-    /* Alert ID — identifier ใช้ฟอนต์เดียวกับตาราง + สี muted */
-    .wa-alert-mini-table .wa-alert-id {
-      font-size: 12px;
-      font-weight: 700;
-      color: #43546d;
+    /* Alert ID — identifier น้ำหนักปกติ สีเดียวกับตารางมาตรฐาน */
+    .wa-alert-mini-table .asset-row .wa-alert-id {
+      color: #516683;
       letter-spacing: .02em;
     }
+    /* Name — primary identity ของแถว ใช้น้ำหนัก 700 ตามมาตรฐาน .asset-cell-primary */
+    .wa-alert-mini-table .asset-row .wa-alert-name {
+      color: #061426;
+      font-weight: 700;
+    }
     /* Numeric/date columns — ชิดขวา */
-    .wa-alert-mini-table .wa-cell-right {
+    .wa-alert-mini-table .asset-row .wa-cell-right {
       text-align: right;
       justify-self: end;
     }
-    .wa-alert-mini-table .wa-cell-right .main-text {
-      font-weight: 700;
+    .wa-alert-mini-table .asset-row .wa-cell-right .main-text {
+      font-variant-numeric: tabular-nums;
     }
     /* Mini bar ในคอลัมน์ Triggers — แสดงสัดส่วนเทียบกับอันดับ 1 */
     .wa-alert-mini-table .wa-trigger-bar {
@@ -21894,7 +21902,7 @@
         })),
         [
           { label: "Alert ID", key: "id", render: r => `<div class="main-text wa-alert-id">${esc(r.id)}</div>` },
-          { label: "Name", key: "name" },
+          { label: "Name", key: "name", render: r => `<div class="main-text wa-alert-name">${esc(r.name)}</div>` },
           { label: "Owner", key: "owner" },
           { label: "Triggers", key: "triggerCount", align: "right", render: r => `
             <div class="main-text">${r.triggerCount.toLocaleString()}</div>
