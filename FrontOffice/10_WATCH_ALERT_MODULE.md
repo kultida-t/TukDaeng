@@ -19,7 +19,7 @@
 
 # 2. Objective
 
-Watch Alert Module ใช้สำหรับให้ Member ตั้งเงื่อนไขติดตาม Asset ที่สนใจจาก Search Filter และรับ Notification เมื่อมี Asset สถานะ Sale ที่ตรง criteria
+Watch Alert Module ใช้สำหรับให้ Member ตั้งเงื่อนไขติดตามนาฬิกาที่ตนต้องการจาก Search Filter และรับ Notification เมื่อมี Asset สถานะ Sale ที่ตรง criteria — ไม่ว่าตอนตั้ง alert จะมีรุ่นที่ต้องการลงขายอยู่หรือไม่ หรือเคยมีลงขายแต่ไม่ตรงเงื่อนไขที่ต้องการ (เช่น ราคา/สภาพ/สี)
 
 Watch Alert ต้องใช้ logic เดียวกับ Search และต้องเปิดผลลัพธ์ผ่าน Watch Alert Result List ไม่เปิด Asset Detail โดยตรงจาก notification
 
@@ -213,6 +213,24 @@ Watch Alert List
 - Watch Alert ใช้ filter logic เดียวกับ Search Module
 - Dependent filter ต้องทำงานเหมือน Search เช่น Brand = Rolex แล้ว Model แสดงเฉพาะ model ของ Rolex
 - Clear / update criteria ต้องส่งผลต่อ match result ถัดไป
+- Watch Alert criteria สามารถอ้าง Brand/Model/Reference หรือ option master ที่มี no current listing (จำนวน Asset Sale = 0 ตอนสร้าง) ได้ เพราะ Watch Alert ใช้หานาฬิกาที่ผู้ซื้อต้องการ ไม่ว่าจะยังไม่มีรุ่นที่ต้องการลงขาย หรือเคยมีลงขายแต่ไม่ตรงเงื่อนไขที่ต้องการ (เช่น ราคา/สภาพ/สี) — ดู `03_SEARCH_FILTER_MODULE.md` Filter Visibility Rule สำหรับรายละเอียด
+- Alert ที่ criteria อ้าง entity/option ที่มี no current listing ถือเป็น unmet demand ปกติ ไม่ใช่ inactive market data
+
+## No Current Listing vs Inactive Market Data Rule
+
+ระบบต้องแยกความแตกต่างระหว่าง 2 สถานะนี้ให้ชัด เพราะกระทบ behavior ต่างกัน:
+
+| สถานะ | ความหมาย | ผลต่อ Watch Alert |
+| --- | --- | --- |
+| no current listing | entity/option `is_active=true` ใน Market Data/Option Master แต่ไม่มี Asset Sale ตอนนั้น | Alert ทำงานปกติ รอ match ในอนาคต ไม่มี warning |
+| inactive market data | Brand/Model/Reference ถูก deactivate ใน Market Data (`is_active=false`) | Alert เดิมยังเก็บ history ได้ แต่หยุด trigger match ใหม่ตาม policy และแสดง dependency warning |
+| deactivated option | Option master ถูก deactivate (`is_active=false`) | Alert เดิมยังเก็บ history ได้ แต่หยุด trigger match ใหม่ตาม policy และแสดง dependency warning |
+
+ตัวอย่าง:
+
+- User ตั้ง alert `Rolex Daytona to ฿500,000` ตอนที่ไม่มี Daytona ลง Sale เลย → เป็น no current listing Alert ทำงานปกติ รอ match ในอนาคต
+- User เคยเห็น Daytona ลง Sale แต่ราคาสูงกว่า ฿500,000 หมด เลยตั้ง alert `Rolex Daytona to ฿500,000` เพื่อรอของที่ตรงเงื่อนไขราคา → Alert ทำงานปกติ รอ match เมื่อมี Daytona ลง Sale ในราคาที่ต้องการ
+- User ตั้ง alert `Rolex Daytona` แล้วภายหลัง `Daytona` ถูก deactivate ใน Market Data → เป็น inactive market data Alert เดิมยังเก็บ history แต่หยุด trigger ใหม่
 
 ## Match Rule
 
@@ -439,6 +457,18 @@ Then Asset ของ user ที่ถูก block ต้องไม่แส�
 Given Brand filter ถูกเลือกเป็น Rolex  
 When Member เลือก Model filter ใน Watch Alert criteria  
 Then Model list ต้องแสดงเฉพาะ model ของ Rolex เหมือน Search Module
+
+## AC-WA-014: No Current Listing Criteria Allowed
+
+Given Member เลือก Brand/Model/Reference หรือ option master ที่มีจำนวน Asset Sale = 0 ตอนนี้ (no current listing)  
+When Member สร้าง Watch Alert จาก criteria นั้น  
+Then ระบบต้องบันทึก Watch Alert ได้ และถือเป็น unmet demand ปกติ ไม่ใช่ inactive market data
+
+## AC-WA-015: Inactive Market Data Stops New Trigger
+
+Given Watch Alert ที่ criteria อ้าง Brand/Model/Reference ที่ถูก deactivate ใน Market Data (`is_active=false`)  
+When ระบบตรวจสอบ criteria สำหรับ trigger ใหม่  
+Then ระบบต้องหยุด trigger match ใหม่ตาม policy และแสดง dependency warning แต่ยังเก็บ alert/history เดิมได้
 
 ---
 

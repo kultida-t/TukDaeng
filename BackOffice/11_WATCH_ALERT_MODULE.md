@@ -161,6 +161,7 @@ Rules:
 - ถ้าไม่มี alert name ให้ใช้ generated name จาก criteria หรือ default เช่น `Watch Alert`
 - Brand -> Model dependency ต้องเหมือน Search
 - Criteria ที่อ้าง inactive brand/model/reference ต้องไม่หายจาก history แต่ต้องมี dependency warning
+- Criteria สามารถอ้าง brand/model/reference หรือ option master ที่มี no current listing (จำนวน Asset Sale = 0 ตอนสร้าง) ได้ — ถือเป็น unmet demand ปกติ ไม่ใช่ inactive market data (ดู `../FrontOffice/10_WATCH_ALERT_MODULE.md` No Current Listing vs Inactive Market Data Rule)
 
 ## 10. Match And Trigger Rules
 
@@ -182,6 +183,18 @@ Lifecycle impact:
 | `Hide` -> `Sale` | Match ได้ถ้าตรง criteria |
 | `Show` -> `Sale` | Match ได้ถ้าตรง criteria |
 | Any -> `ลบโดยเจ้าของ` หรือ `ซ่อนถาวร` | ไม่ match และ direct/result surface ต้อง unavailable |
+
+## 10.1 No Current Listing vs Inactive Market Data
+
+BO ต้องแยกความแตกต่างระหว่าง 2 สถานะนี้ให้ชัด เพราะกระทบ admin review และ analytics ต่างกัน:
+
+| สถานะ | ความหมาย | ผลต่อ Watch Alert | สิ่งที่ BO ต้องแสดง |
+| --- | --- | --- | --- |
+| no current listing | entity/option `is_active=true` ใน Market Data/Option Master แต่ไม่มี Asset Sale ตอนนั้น | Alert ทำงานปกติ รอ match ในอนาคต ไม่มี warning | ไม่ต้อง flag เป็น inactive; นับเป็น unmet demand ปกติ |
+| inactive market data | Brand/Model/Reference ถูก deactivate ใน Market Data (`is_active=false`) | Alert เดิมยังเก็บ history ได้ แต่หยุด trigger match ใหม่ตาม policy | แสดง dependency warning ใน Alert List (Warning icon + filter Market data: Inactive dependency) และ Alert Detail (warning badge ข้าง field) |
+| deactivated option | Option master ถูก deactivate (`is_active=false`) | Alert เดิมยังเก็บ history ได้ แต่หยุด trigger match ใหม่ตาม policy | แสดง dependency warning เหมือน inactive market data |
+
+Alert ที่ criteria อ้าง entity/option ที่มี no current listing ตอนสร้าง ถือเป็น unmet demand ปกติ ไม่ใช่ inactive market data — ดู `../FrontOffice/10_WATCH_ALERT_MODULE.md` No Current Listing vs Inactive Market Data Rule สำหรับรายละเอียด
 
 ## 11. Trigger History
 
@@ -328,6 +341,7 @@ Watch Alert ต้องใช้ app shell, navigation, breakpoint, list toolba
 | AC-BO-WA-006 | Admin disable alert ได้ตาม permission พร้อม confirmation, reason และ audit |
 | AC-BO-WA-007 | Disabled alert ต้องหยุด trigger notification ใหม่ |
 | AC-BO-WA-008 | Market data inactive dependency ต้องแสดง warning และไม่ลบ history เดิม |
+| AC-BO-WA-008A | Alert ที่ criteria อ้าง entity/option ที่มี no current listing (จำนวน Asset Sale = 0 ตอนสร้าง) ต้องไม่ถูก flag เป็น inactive market data และต้องนับเป็น unmet demand ปกติ |
 | AC-BO-WA-009 | Block relation ต้องถูกใช้เป็น exclusion context ใน trigger/result review |
 | AC-BO-WA-010 | Responsive layout ใช้งานได้ที่ mobile-width, tablet และ desktop |
 
@@ -336,6 +350,6 @@ Watch Alert ต้องใช้ app shell, navigation, breakpoint, list toolba
 | ID | Decision Needed | Current Recommendation |
 | --- | --- | --- |
 | BO-WA-DEC-001 | FO แสดง Admin Disabled alert เป็น disabled state หรือซ่อนจาก list | ให้ FO UX ตัดสิน แต่ BO ต้องส่ง state ชัดเจน |
-| BO-WA-DEC-002 | Inactive market data ทำให้ alert เดิม disabled หรือแค่หยุด trigger ใหม่ | แนะนำหยุด trigger ใหม่ แต่ยังเก็บ alert/history เดิม |
+| BO-WA-DEC-002 (resolved) | Inactive market data ทำให้ alert เดิม disabled หรือแค่หยุด trigger ใหม่ | **ตัดสินใจ:** หยุด trigger match ใหม่ตาม policy แต่ยังเก็บ alert/history เดิม — สอดคล้องกับ section 10 และ 10.1 |
 | BO-WA-DEC-003 | เปิด bulk disable alert หรือไม่ | ยังไม่เปิด default; เปิดเฉพาะ abuse/risk policy พร้อม audit |
 
