@@ -2438,6 +2438,9 @@
       line-height: .95;
       margin-bottom: 12px;
       color: var(--muted);
+      display: flex;
+      align-items: center;
+      gap: 6px;
     }
     body.watch-alert-mode .stat-value {
       font-size: 39px;
@@ -2694,7 +2697,50 @@
       letter-spacing: .04em;
       text-transform: uppercase;
       white-space: nowrap;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
     }
+    .wa-panel-info {
+      display: inline-flex;
+      align-items: center;
+      position: relative;
+      color: #94a3b8;
+      cursor: help;
+      flex-shrink: 0;
+      line-height: 1;
+      vertical-align: middle;
+    }
+    .wa-panel-info svg { width: 16px; height: 16px; display: block; }
+    .wa-kpi-card .wa-panel-info { align-self: flex-start; margin-top: 1px; }
+    .wa-panel-info:hover, .wa-panel-info:focus { color: var(--blue); }
+    .wa-panel-info-tip {
+      position: absolute;
+      top: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+      margin-top: 8px;
+      padding: 10px 14px;
+      border: 1px solid #d4deec;
+      border-radius: 8px;
+      background: #ffffff;
+      box-shadow: 0 8px 24px rgba(15, 23, 42, .18);
+      color: #233a5c;
+      font-size: 13px;
+      font-weight: 400;
+      line-height: 1.5;
+      width: 240px;
+      text-align: left;
+      text-transform: none;
+      letter-spacing: normal;
+      white-space: normal;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity .12s ease;
+      z-index: 20;
+    }
+    .wa-panel-info:hover .wa-panel-info-tip,
+    .wa-panel-info:focus .wa-panel-info-tip { opacity: 1; }
     /* title + subtitle บรรทัดเดียวกัน เหมือน Dashboard Work Queue (flex baseline) */
     .wa-panel-head-text {
       min-width: 0;
@@ -12132,7 +12178,8 @@
       waActive: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 7 3 9H3c0-2 3-2 3-9"/><path d="M10 21h4"/></svg>',
       waMatch: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.5" fill="currentColor"/></svg>',
       waUnmet: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 9v4"/><path d="M12 17h.01"/><path d="M10.3 3.9 2.4 17.6a2 2 0 0 0 1.7 3h15.8a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z"/></svg>',
-      waNotif: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M22 2 11 13"/><path d="M22 2 15 22l-4-9-9-4Z"/></svg>'
+      waNotif: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M22 2 11 13"/><path d="M22 2 15 22l-4-9-9-4Z"/></svg>',
+      info: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="9.5"/><path d="M12 16.5v-5.5"/><circle cx="12" cy="7.8" r="1.1" fill="currentColor" stroke="none"/></svg>'
     };
 
     const navGroups = [
@@ -21552,7 +21599,7 @@
         <article class="stat wa-kpi-card ${accentClass}">
           <div class="stat-top">
             <div>
-              <div class="stat-label">${esc(k.label)}</div>
+              <div class="stat-label">${esc(k.label)}${k.detail ? `<span class="wa-panel-info" tabindex="0" role="img" aria-label="${esc(k.detail)}">${iconSvg.info}<span class="wa-panel-info-tip">${esc(k.detail)}</span></span>` : ""}</div>
               <div class="stat-value">${esc(k.value)}</div>
             </div>
             <span class="stat-icon">${kpiIcon}</span>
@@ -21570,11 +21617,11 @@
       const brandColors = ["#2b6cb0", "#2f855a", "#c05621", "#b83280", "#6b46c1", "#2c7a7b", "#b7791f", "#c53030"];
 
       // Panel card helper
-      const panel = (title, meta, bodyHtml, extraClass = "", viewAllLabel = "", viewAllAttr = `data-module-jump="watch-alerts" data-sub-jump="Alert List"`, viewAllChevron = true) => `
+      const panel = (title, meta, bodyHtml, extraClass = "", viewAllLabel = "", viewAllAttr = `data-module-jump="watch-alerts" data-sub-jump="Alert List"`, viewAllChevron = true, infoTip = "") => `
         <article class="mini-card dashboard-status-card wa-overview-panel ${extraClass}">
           <div class="dashboard-card-head">
             <div class="wa-panel-head-text">
-              <h3>${esc(title)}</h3>
+              <h3>${esc(title)}${infoTip ? `<span class="wa-panel-info" tabindex="0" role="img" aria-label="${esc(infoTip)}">${iconSvg.info}<span class="wa-panel-info-tip">${esc(infoTip)}</span></span>` : ""}</h3>
               ${meta ? `<div class="dashboard-card-meta">${esc(meta)}</div>` : ""}
             </div>
             ${viewAllLabel ? `<button class="wa-view-all" type="button" ${viewAllAttr}>${esc(viewAllLabel)}${viewAllChevron ? ` ${iconSvg.chevron}` : ""}</button>` : ""}
@@ -21881,7 +21928,7 @@
       // Assemble all panels into #table
       document.querySelector("#table").innerHTML = `
         <div class="wa-overview-stack">
-          ${panel("Top Brands", "แบรนด์ที่ผู้ใช้ตั้ง alert บ่อย — กดแถบเพื่อดูรุ่น/เลขอ้างอิง", topCriteriaHtml, "wa-panel-criteria", "View All", `data-wa-criteria-viewall`, true)}
+          ${panel("Top Brands", "แบรนด์ที่ผู้ใช้ตั้ง alert บ่อย — กดแถบเพื่อดูรุ่น/เลขอ้างอิง", topCriteriaHtml, "wa-panel-criteria", "View All", `data-wa-criteria-viewall`, true, "แสดงแบรนด์ รุ่น เลขอ้างอิง และสีหน้าปัดที่ผู้ใช้ตั้ง Watch Alert ไว้บ่อยที่สุด พร้อมสัดส่วนและจำนวนรายการ")}
           ${panel("Price Range", "ช่วงราคาที่ user สนใจ", (() => {
             const rawMax = Math.max(...ov.priceRanges.map(p => p.value), 1);
             // Nice-number Y-axis scale: ปัดค่าสูงสุดขึ้นเป็นเลขกลม แบ่ง 4 ช่วง (5 ticks: niceMax..0)
@@ -21918,12 +21965,12 @@
                 <div class="wa-price-hist-xtitle">ช่วงราคา (บาท)</div>
               </div>
             `;
-          })(), "wa-panel-price")}
-          ${panel("Trigger Trend", "ย้อนหลัง 12 เดือน", trendHtml, "wa-panel-trend")}
-          ${panel("Frequently Triggered Alerts", "alert ที่ trigger บ่อยสุด (top 8)", freqTriggerHtml, "", "View All")}
-          ${panel("Stale Alerts", "เก่า + ไม่ trigger (top 5 ตัวอย่าง)", staleHtml, "", "View All")}
-          ${panel("Inactive Market Data Dependency", "alert ที่ criteria อ้าง inactive brand/model/reference", inactiveHtml, "", "View All")}
-          ${panel("Notification Delivery Summary", "สรุปการส่งแจ้งเตือน 7 วันล่าสุด", ndHtml)}
+          })(), "wa-panel-price", "", "", "", true, "แสดงการกระจายจำนวน Watch Alert ตามช่วงราคาที่ผู้ใช้สนใจ จากต่ำกว่า 50k ถึงมากกว่า 1 ล้านบาท")}
+          ${panel("Trigger Trend", "ย้อนหลัง 12 เดือน", trendHtml, "wa-panel-trend", "", "", true, "แสดงแนวโน้มจำนวนการแจ้งเตือนรายเดือนย้อนหลัง 12 เดือน แยกการแจ้งเตือนที่สำเร็จและที่ถูกข้าม")}
+          ${panel("Frequently Triggered Alerts", "alert ที่ trigger บ่อยสุด (top 8)", freqTriggerHtml, "", "View All", `data-module-jump="watch-alerts" data-sub-jump="Alert List"`, true, "แสดง Watch Alert ที่ trigger บ่อยที่สุด 8 อันดับแรก พร้อมจำนวนครั้งและเวลาที่ trigger ล่าสุด")}
+          ${panel("Stale Alerts", "เก่า + ไม่ trigger (top 5 ตัวอย่าง)", staleHtml, "", "View All", `data-module-jump="watch-alerts" data-sub-jump="Alert List"`, true, "แสดง Watch Alert ที่สร้างมานานกว่า 30 วันและไม่ trigger หรือไม่เคย trigger พร้อมระดับความเร่งด่วน")}
+          ${panel("Inactive Market Data Dependency", "alert ที่ criteria อ้าง inactive brand/model/reference", inactiveHtml, "", "View All", `data-module-jump="watch-alerts" data-sub-jump="Alert List"`, true, "แสดง Watch Alert ที่เงื่อนไขอ้างอิงถึงแบรนด์ รุ่น หรือเลขอ้างอิงที่ถูกปิดใช้งานใน Market Data ทำให้ alert ไม่สามารถ trigger ได้")}
+          ${panel("Notification Delivery Summary", "สรุปการส่งแจ้งเตือน 7 วันล่าสุด", ndHtml, "", "", "", true, "สรุปผลการส่งการแจ้งเตือน 7 วันล่าสุด แยกส่งสำเร็จ ล้มเหลว และค้างส่ง พร้อมอัตราการส่งสำเร็จเทียบกับสัปดาห์ก่อน")}
         </div>
       `;
 
