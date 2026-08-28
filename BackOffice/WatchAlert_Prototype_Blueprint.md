@@ -103,7 +103,7 @@
 ### Filters
 | Filter | Options |
 |--------|---------|
-| Status | ทุกสถานะ, Active, User Disabled, Admin Disabled, Deleted |
+| Status | ทุกสถานะ, Active, User Disabled, Deleted |
 | Notification | ทุกสถานะ, เปิด, ปิด |
 | Match status | ทุกสถานะ, มี match, ไม่มี match (Unmet Demand) |
 | Trigger history | ทุกสถานะ, เคย trigger, ไม่เคย trigger |
@@ -122,7 +122,7 @@
 | 2 | Alert Name | text | |
 | 3 | Owner | text + link | User ID + display name, link → User Management detail |
 | 4 | Criteria Summary | structured chips | brand, model, price range, condition (top 3-4 chips) |
-| 5 | Status | badge | Active=เขียว, User Disabled=เทา, Admin Disabled=ส้ม, Deleted=charcoal |
+| 5 | Status | badge | Active=เขียว, User Disabled=เทา, Deleted=charcoal |
 | 6 | Notification | badge | On=เขียว, Off=เทา |
 | 7 | Matches | count | current matched Sale assets |
 | 8 | Triggers | count | total trigger count |
@@ -159,7 +159,7 @@
 ### Header Section
 - Alert ID (WAL-XXXX)
 - Alert Name
-- Status badge (Active / User Disabled / Admin Disabled / Deleted)
+- Status badge (Active / User Disabled / Deleted)
 - Owner: User ID + display name (link → User Management detail, read-only drill-in)
 - Created date, Updated date
 - Notification enabled badge (On/Off)
@@ -213,7 +213,7 @@
   id: "WAL-1440",
   name: "Rolex Submariner <= 320k",
   owner: { id: "U-1042", displayName: "Nattapol P." },
-  status: "Active",           // Active | User Disabled | Admin Disabled | Deleted
+  status: "Active",           // Active | User Disabled | Deleted
   notificationEnabled: true,
   criteria: {
     keyword: "",
@@ -298,7 +298,7 @@
 | WAL-1180 | Seiko 6139 vintage | Active | On | 0 | 0 | Active | unmet demand (ไม่มี match) |
 | WAL-1150 | Patek Calatrava 5227 | Active | On | 1 | 2 | Active | match น้อย ราคาสูง |
 | WAL-1100 | Tudor Black Bay 58 | Active | On | 5 | 8 | Active | ปกติ |
-| WAL-1080 | Grand Seiko Snowflake | Admin Disabled | Off | 0 | 0 | Active | admin disabled (read-only, ไม่มี action) |
+| WAL-1080 | Grand Seiko Snowflake | User Disabled | Off | 0 | 0 | Active | user disabled (read-only, ไม่มี action) |
 | WAL-1050 | Old Rolex GMT alert | Active | On | 2 | 1 | Active | stale alert (เก่า + ไม่ trigger ล่าสุด) |
 | WAL-1020 | Cartier Tank Must | Deleted | Off | 0 | 3 | Active | user ลบแล้ว (soft delete) |
 | WAL-0990 | Vintage Seiko 6105 | Active | On | 4 | 6 | Active | ปกติ |
