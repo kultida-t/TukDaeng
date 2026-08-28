@@ -2950,79 +2950,190 @@
     }
     .wa-criteria-title-back:hover { text-decoration: underline; }
 
-    /* 2.6 Trigger Trend — 3 KPI cards (pattern เดียวกับ KPI cards ด้านบน) + sparkline */
-    .wa-trend-cards {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 12px;
-    }
-    .wa-trend-card {
+    /* 2.6 Trigger Trend — filled area chart 2 ซีรีส์ (สำเร็จ/ข้าม) + แถวสรุปตัวเลขรวม */
+    .wa-trend-wrap { display: flex; flex-direction: column; gap: 10px; }
+    .wa-trend-summary {
       display: flex;
-      flex-direction: column;
-      gap: 6px;
-      padding: 12px 14px;
+      flex-wrap: wrap;
+      gap: 8px 20px;
+      padding: 10px 12px;
       border-radius: 6px;
       border: 1px solid #d7e2f0;
-      background: #fff;
-      position: relative;
-      overflow: hidden;
+      background: #f8fafc;
     }
-    .wa-trend-card::before {
-      content: "";
-      position: absolute;
-      left: 0; top: 0; bottom: 0;
-      width: 3px;
-    }
-    .wa-trend-card.is-success::before { background: var(--green); }
-    .wa-trend-card.is-skip::before { background: #94a3b8; }
-    .wa-trend-card.is-peak::before { background: var(--blue); }
-    .wa-trend-card-head {
-      display: flex;
-      align-items: flex-start;
-      justify-content: space-between;
-      gap: 8px;
-    }
-    .wa-trend-card-label {
+    .wa-trend-stat { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+    .wa-trend-stat-label {
       color: #43546d;
-      font-size: 11px;
+      font-size: 10px;
       font-weight: 800;
-      line-height: 1.3;
+      line-height: 1.2;
     }
-    .wa-trend-card-value {
+    .wa-trend-stat-value {
       color: #071b36;
       font-family: var(--font-heading);
-      font-size: 22px;
+      font-size: 18px;
       font-weight: 800;
-      line-height: 1.1;
+      line-height: 1.05;
     }
-    .wa-trend-card.is-success .wa-trend-card-value { color: var(--green); }
-    .wa-trend-card.is-skip .wa-trend-card-value { color: #6d7f98; }
-    .wa-trend-card.is-peak .wa-trend-card-value { color: var(--blue); }
-    .wa-trend-card-sub {
+    .wa-trend-stat.is-success .wa-trend-stat-value { color: var(--green); }
+    .wa-trend-stat.is-skip .wa-trend-stat-value { color: #6d7f98; }
+    .wa-trend-stat.is-peak .wa-trend-stat-value { color: var(--blue); }
+    .wa-trend-stat-sub {
       color: #8595ad;
-      font-size: 10px;
+      font-size: 9px;
       font-weight: 700;
-      line-height: 1.3;
+      line-height: 1.2;
     }
-    .wa-trend-spark {
+    .wa-trend-legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px 16px;
+      align-items: center;
+    }
+    .wa-trend-legend-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      color: #43546d;
+      font-size: 10px;
+      font-weight: 800;
+    }
+    .wa-trend-swatch {
+      width: 14px;
+      height: 8px;
+      border-radius: 2px;
+    }
+    .wa-trend-swatch.is-success { background: var(--green); }
+    .wa-trend-swatch.is-skip { background: #94a3b8; }
+    .wa-trend-chart-wrap { display: flex; flex-direction: column; flex: 1 1 auto; min-height: 0; }
+    .wa-trend-ytitle {
+      color: #43546d;
+      font-size: 10px;
+      font-weight: 800;
+      text-align: left;
+      margin-left: 34px;
+      margin-bottom: 4px;
+      white-space: nowrap;
+    }
+    .wa-trend-plot {
+      display: flex;
+      flex: 1 1 auto;
+      min-height: 180px;
+    }
+    .wa-trend-track {
+      position: relative;
+      flex: 1 1 auto;
+      margin-left: 34px;
+      margin-top: 4px;
+      border-left: 1px solid #cbd5e1;
+      border-bottom: 1px solid #cbd5e1;
+    }
+    .wa-trend-yaxis {
+      position: absolute;
+      left: -34px;
+      top: 0;
+      width: 28px;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      text-align: right;
+      padding-right: 6px;
+    }
+    .wa-trend-yaxis span {
+      color: #8595ad;
+      font-size: 9px;
+      font-weight: 700;
+      line-height: 1;
+    }
+    .wa-trend-yaxis span:first-child { transform: translateY(-2px); }
+    .wa-trend-yaxis span:last-child { transform: translateY(2px); }
+    .wa-trend-gridlines {
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+    }
+    .wa-trend-gridline {
+      position: absolute;
+      left: 0;
+      right: 0;
+      border-top: 1px dashed #dbe4f0;
+    }
+    .wa-trend-svg {
       display: block;
       width: 100%;
-      height: 28px;
-      margin-top: 2px;
+      height: 100%;
+      position: relative;
+      z-index: 1;
     }
-    .wa-trend-spark-line {
+    .wa-trend-svg .wa-trend-line {
       fill: none;
       stroke-width: 1.6;
       stroke-linejoin: round;
       stroke-linecap: round;
+      vector-effect: non-scaling-stroke;
     }
-    .wa-trend-spark-area { opacity: .15; }
-    .wa-trend-card.is-success .wa-trend-spark-line { stroke: var(--green); }
-    .wa-trend-card.is-success .wa-trend-spark-area { fill: var(--green); }
-    .wa-trend-card.is-skip .wa-trend-spark-line { stroke: #94a3b8; }
-    .wa-trend-card.is-skip .wa-trend-spark-area { fill: #94a3b8; }
-    .wa-trend-card.is-peak .wa-trend-spark-line { stroke: var(--blue); }
-    .wa-trend-card.is-peak .wa-trend-spark-area { fill: var(--blue); }
+    .wa-trend-svg .is-success-line { stroke: var(--green); }
+    .wa-trend-svg .is-skip-line { stroke: #94a3b8; }
+    .wa-trend-overlay {
+      position: absolute;
+      inset: 0;
+      z-index: 3;
+      display: grid;
+      grid-template-columns: repeat(12, minmax(0, 1fr));
+    }
+    .wa-trend-col {
+      position: relative;
+      cursor: pointer;
+    }
+    .wa-trend-col:hover { background: rgba(20, 99, 217, .06); }
+    .wa-trend-tip {
+      position: absolute;
+      bottom: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+      margin-bottom: 6px;
+      padding: 6px 8px;
+      border-radius: 4px;
+      background: #071b36;
+      color: #fff;
+      font-size: 10px;
+      font-weight: 700;
+      line-height: 1.4;
+      white-space: nowrap;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 120ms ease;
+      z-index: 5;
+    }
+    .wa-trend-col:hover .wa-trend-tip { opacity: 1; }
+    .wa-trend-tip b { color: #9fd0b8; }
+    .wa-trend-tip i { color: #c7d2e0; font-style: normal; }
+    .wa-trend-axis {
+      display: grid;
+      grid-template-columns: repeat(12, minmax(0, 1fr));
+      gap: 0;
+      margin-left: 34px;
+      margin-top: 6px;
+    }
+    .wa-trend-axis span {
+      color: #8595ad;
+      font-size: 9px;
+      font-weight: 700;
+      text-align: center;
+      white-space: nowrap;
+    }
+    .wa-trend-axis span.is-hidden { visibility: hidden; }
+    .wa-trend-xtitle {
+      color: #43546d;
+      font-size: 10px;
+      font-weight: 800;
+      text-align: center;
+      margin-left: 34px;
+      margin-top: 8px;
+      padding-top: 6px;
+    }
 
     /* Mini tables (Frequently Triggered, Stale) */
     .wa-alert-mini-table {
@@ -3163,10 +3274,16 @@
       .wa-overview-stack { grid-template-columns: 1fr; }
       .wa-criteria-columns { grid-template-columns: 1fr; }
       .wa-notif-summary { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-      /* Trigger Trend: 3 cards stack เป็น 1 คอลัมน์บน mobile */
-      .wa-trend-cards { grid-template-columns: 1fr; gap: 8px; }
-      .wa-trend-card-value { font-size: 20px; }
-      .wa-trend-spark { height: 24px; }
+      /* Trigger Trend: กราฟ area — ลดแกน Y + font บน mobile */
+      .wa-trend-plot { min-height: 140px; }
+      .wa-trend-track { margin-left: 28px; }
+      .wa-trend-axis { margin-left: 28px; }
+      .wa-trend-xtitle { margin-left: 28px; }
+      .wa-trend-ytitle { margin-left: 28px; }
+      .wa-trend-yaxis { left: -28px; width: 24px; }
+      .wa-trend-yaxis span { font-size: 8px; }
+      .wa-trend-axis span { font-size: 8px; }
+      .wa-trend-stat-value { font-size: 16px; }
       .wa-alert-mini-table .asset-row {
         grid-template-columns: 1fr;
         gap: 4px;
@@ -12853,18 +12970,18 @@
           { label: "< 50k", value: 38 }, { label: "50k-100k", value: 62 }, { label: "100k-300k", value: 112 },
           { label: "300k-500k", value: 52 }, { label: "500k-1M", value: 22 }, { label: "> 1M", value: 8 }
         ],
-        // Trigger trend 30 วันล่าสุด (mock คำนวณสั้น ๆ)
+        // Trigger trend 12 เดือนล่าสุด (mock คำนวณสั้น ๆ)
         triggerTrend: (() => {
-          const days = [];
+          const months = [];
           const base = new Date("2026-08-27T00:00:00+07:00");
-          for (let i = 29; i >= 0; i--) {
-            const d = new Date(base.getTime() - i * 86400000);
-            const day = d.getDate();
-            const successful = 12 + ((day * 7) % 18);
-            const skipped = 2 + ((day * 3) % 5);
-            days.push({ date: d, successful, skipped });
+          for (let i = 11; i >= 0; i--) {
+            const d = new Date(base.getFullYear(), base.getMonth() - i, 1);
+            const m = d.getMonth();
+            const successful = 280 + ((m * 53) % 220);
+            const skipped = 40 + ((m * 17) % 60);
+            months.push({ date: d, successful, skipped });
           }
-          return days;
+          return months;
         })(),
         frequentlyTriggered: [
           { id: "WAL-1228", name: "Omega Speedmaster Bangkok", owner: "Crown Time BKK", triggerCount: 28, lastTriggered: "2026-08-26T09:12:00+07:00" },
@@ -21587,65 +21704,121 @@
         showUserActionModal(true);
       };
 
-      // 2.6 Trigger Trend — 3 KPI cards + sparkline (pattern เดียวกับ KPI cards ด้านบน)
+      // 2.6 Trigger Trend — filled area chart 2 ซีรีส์ (สำเร็จ/ข้าม) + แถวสรุปตัวเลขรวม
       const trendN = ov.triggerTrend.length;
       const trendTotals = ov.triggerTrend.map(d => d.successful + d.skipped);
       const trendSuccessTotal = ov.triggerTrend.reduce((s, d) => s + d.successful, 0);
       const trendSkipTotal = ov.triggerTrend.reduce((s, d) => s + d.skipped, 0);
       const trendPeakIdx = trendTotals.indexOf(Math.max(...trendTotals));
       const trendPeak = ov.triggerTrend[trendPeakIdx];
-      const trendPeakDateLabel = trendPeak.date.toLocaleDateString("th-TH", { day: "2-digit", month: "short", timeZone: "Asia/Bangkok" });
+      const trendPeakDateLabel = trendPeak.date.toLocaleDateString("th-TH", { month: "short", year: "numeric", timeZone: "Asia/Bangkok" });
       const trendFirst = ov.triggerTrend[0].date;
       const trendLast = ov.triggerTrend[trendN - 1].date;
-      const trendRangeTitle = `${trendFirst.toLocaleDateString("th-TH", { day: "2-digit", month: "short", timeZone: "Asia/Bangkok" })} – ${trendLast.toLocaleDateString("th-TH", { day: "2-digit", month: "short", year: "numeric", timeZone: "Asia/Bangkok" })}`;
-      // Sparkline helper: สร้าง SVG path จาก array ของตัวเลข (viewBox 0 0 100 30)
-      const trendSpark = (vals) => {
-        const max = Math.max(...vals, 1);
-        const min = Math.min(...vals, 0);
-        const range = max - min || 1;
-        const pts = vals.map((v, i) => {
-          const x = vals.length === 1 ? 50 : (i / (vals.length - 1)) * 100;
-          const y = 28 - ((v - min) / range) * 24;
-          return [x, y];
-        });
-        const line = pts.map((p, i) => `${i === 0 ? "M" : "L"}${p[0].toFixed(2)} ${p[1].toFixed(2)}`).join(" ");
-        const area = `${line} L100 30 L0 30 Z`;
-        return `<svg class="wa-trend-spark" viewBox="0 0 100 30" preserveAspectRatio="none"><path class="wa-trend-spark-area" d="${area}"/><path class="wa-trend-spark-line" d="${line}"/></svg>`;
-      };
+      const trendRangeTitle = `${trendFirst.toLocaleDateString("th-TH", { month: "short", year: "numeric", timeZone: "Asia/Bangkok" })} – ${trendLast.toLocaleDateString("th-TH", { month: "short", year: "numeric", timeZone: "Asia/Bangkok" })}`;
       const trendSuccessSeries = ov.triggerTrend.map(d => d.successful);
       const trendSkipSeries = ov.triggerTrend.map(d => d.skipped);
-      const trendTotalSeries = trendTotals;
+      // แกน Y — ค่าสูงสุดแบบนnice (ใช้ร่วม 2 ซีรีส์ เพราะ area ซ้อนทับไม่ stack)
+      const trendMaxRaw = Math.max(...trendSuccessSeries, ...trendSkipSeries, 1);
+      const trendNiceMax = (() => {
+        const m = trendMaxRaw;
+        if (m <= 5) return 5;
+        if (m <= 10) return 10;
+        if (m <= 20) return 20;
+        if (m <= 50) return 50;
+        return Math.ceil(m / 10) * 10;
+      })();
+      const trendYTicks = [trendNiceMax, Math.round(trendNiceMax * 2 / 3), Math.round(trendNiceMax / 3), 0];
+      // เส้นกริดแนวนอนแบบเส้นประ (ตำแหน่ง % จากบน ตรงกับแกน Y แต่ละระดับ ยกเว้น 0 เพราะซ้อนกับเส้นแกนล่างอยู่แล้ว)
+      const trendGridHtml = trendYTicks.filter(v => v > 0).map(v => {
+        const top = 100 - (v / trendNiceMax) * 96;
+        return `<div class="wa-trend-gridline" style="top:${top.toFixed(2)}%"></div>`;
+      }).join("");
+      // SVG path helper: สร้างเส้นโค้ง smooth ด้วย Catmull-Rom → Bezier (viewBox 0 0 100 100, preserveAspectRatio none)
+      const trendPath = (vals) => {
+        const n = vals.length;
+        const pts = vals.map((v, i) => {
+          const x = n === 1 ? 50 : (i / (n - 1)) * 100;
+          const y = 100 - (v / trendNiceMax) * 96;
+          return [x, y];
+        });
+        let line = `M${pts[0][0].toFixed(2)} ${pts[0][1].toFixed(2)}`;
+        for (let i = 0; i < pts.length - 1; i++) {
+          const p0 = pts[i - 1] || pts[i];
+          const p1 = pts[i];
+          const p2 = pts[i + 1];
+          const p3 = pts[i + 2] || p2;
+          const c1x = p1[0] + (p2[0] - p0[0]) / 6;
+          const c1y = p1[1] + (p2[1] - p0[1]) / 6;
+          const c2x = p2[0] - (p3[0] - p1[0]) / 6;
+          const c2y = p2[1] - (p3[1] - p1[1]) / 6;
+          line += ` C${c1x.toFixed(2)} ${c1y.toFixed(2)} ${c2x.toFixed(2)} ${c2y.toFixed(2)} ${p2[0].toFixed(2)} ${p2[1].toFixed(2)}`;
+        }
+        const area = `${line} L100 100 L0 100 Z`;
+        return { line, area };
+      };
+      const trendSuccessPath = trendPath(trendSuccessSeries);
+      const trendSkipPath = trendPath(trendSkipSeries);
+      // x-axis label ทุกเดือน (12 จุด พอดี)
+      const trendAxisHtml = ov.triggerTrend.map((d) => {
+        const lbl = d.date.toLocaleDateString("th-TH", { month: "short", year: "2-digit", timeZone: "Asia/Bangkok" });
+        return `<span>${lbl}</span>`;
+      }).join("");
+      // tooltip overlay 12 คอลัมน์ (hover แสดง เดือน • สำเร็จ • ข้าม)
+      const trendOverlayHtml = ov.triggerTrend.map((d) => {
+        const lbl = d.date.toLocaleDateString("th-TH", { month: "short", year: "numeric", timeZone: "Asia/Bangkok" });
+        return `<div class="wa-trend-col"><div class="wa-trend-tip">${esc(lbl)} • <b>สำเร็จ ${d.successful.toLocaleString()}</b> • <i>ข้าม ${d.skipped.toLocaleString()}</i></div></div>`;
+      }).join("");
+      const trendYAxisHtml = trendYTicks.map(v => `<span>${v.toLocaleString()}</span>`).join("");
       const trendHtml = `
-        <div class="wa-trend-cards">
-          <div class="wa-trend-card is-success">
-            <div class="wa-trend-card-head">
-              <div>
-                <div class="wa-trend-card-label">Trigger สำเร็จ</div>
-                <div class="wa-trend-card-value">${trendSuccessTotal.toLocaleString()}</div>
-                <div class="wa-trend-card-sub">ครั้ง • 30 วันล่าสุด</div>
-              </div>
+        <div class="wa-trend-wrap">
+          <div class="wa-trend-summary">
+            <div class="wa-trend-stat is-success">
+              <div class="wa-trend-stat-label">Trigger สำเร็จ</div>
+              <div class="wa-trend-stat-value">${trendSuccessTotal.toLocaleString()}</div>
+              <div class="wa-trend-stat-sub">ครั้ง • 12 เดือนล่าสุด</div>
             </div>
-            ${trendSpark(trendSuccessSeries)}
+            <div class="wa-trend-stat is-skip">
+              <div class="wa-trend-stat-label">Trigger ที่ถูกข้าม</div>
+              <div class="wa-trend-stat-value">${trendSkipTotal.toLocaleString()}</div>
+              <div class="wa-trend-stat-sub">ครั้ง • บล็อก/ไม่ใช้งาน/ปิดใช้งาน</div>
+            </div>
+            <div class="wa-trend-stat is-peak">
+              <div class="wa-trend-stat-label">วันที่ trigger สูงสุด</div>
+              <div class="wa-trend-stat-value">${trendTotals[trendPeakIdx].toLocaleString()}</div>
+              <div class="wa-trend-stat-sub">${trendPeakDateLabel} • ${trendRangeTitle}</div>
+            </div>
           </div>
-          <div class="wa-trend-card is-skip">
-            <div class="wa-trend-card-head">
-              <div>
-                <div class="wa-trend-card-label">Trigger ที่ถูกข้าม</div>
-                <div class="wa-trend-card-value">${trendSkipTotal.toLocaleString()}</div>
-                <div class="wa-trend-card-sub">ครั้ง • บล็อก/ไม่ใช้งาน/ปิดใช้งาน</div>
-              </div>
-            </div>
-            ${trendSpark(trendSkipSeries)}
+          <div class="wa-trend-legend">
+            <div class="wa-trend-legend-item"><span class="wa-trend-swatch is-success"></span>Trigger สำเร็จ</div>
+            <div class="wa-trend-legend-item"><span class="wa-trend-swatch is-skip"></span>Trigger ที่ถูกข้าม</div>
           </div>
-          <div class="wa-trend-card is-peak">
-            <div class="wa-trend-card-head">
-              <div>
-                <div class="wa-trend-card-label">วันที่ trigger สูงสุด</div>
-                <div class="wa-trend-card-value">${trendTotals[trendPeakIdx].toLocaleString()}</div>
-                <div class="wa-trend-card-sub">${trendPeakDateLabel} • ${trendRangeTitle}</div>
+          <div class="wa-trend-chart-wrap">
+            <div class="wa-trend-ytitle">จำนวน trigger (ครั้ง)</div>
+            <div class="wa-trend-plot">
+              <div class="wa-trend-track">
+                <div class="wa-trend-yaxis">${trendYAxisHtml}</div>
+                <div class="wa-trend-gridlines">${trendGridHtml}</div>
+                <svg class="wa-trend-svg" viewBox="0 0 100 100" preserveAspectRatio="none">
+                  <defs>
+                    <linearGradient id="wa-trend-grad-success" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stop-color="#08875d" stop-opacity=".32"/>
+                      <stop offset="100%" stop-color="#08875d" stop-opacity="0"/>
+                    </linearGradient>
+                    <linearGradient id="wa-trend-grad-skip" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stop-color="#94a3b8" stop-opacity=".32"/>
+                      <stop offset="100%" stop-color="#94a3b8" stop-opacity="0"/>
+                    </linearGradient>
+                  </defs>
+                  <path class="wa-trend-area" fill="url(#wa-trend-grad-skip)" d="${trendSkipPath.area}"/>
+                  <path class="wa-trend-area" fill="url(#wa-trend-grad-success)" d="${trendSuccessPath.area}"/>
+                  <path class="wa-trend-line is-skip-line" d="${trendSkipPath.line}"/>
+                  <path class="wa-trend-line is-success-line" d="${trendSuccessPath.line}"/>
+                </svg>
+                <div class="wa-trend-overlay">${trendOverlayHtml}</div>
               </div>
             </div>
-            ${trendSpark(trendTotalSeries)}
+            <div class="wa-trend-axis">${trendAxisHtml}</div>
+            <div class="wa-trend-xtitle">เดือน</div>
           </div>
         </div>
       `;
@@ -21804,7 +21977,7 @@
               </div>
             `;
           })(), "wa-panel-price")}
-          ${panel("Trigger Trend (30 วันล่าสุด)", "จำนวน trigger ย้อนหลัง 30 วัน", trendHtml, "wa-panel-trend")}
+          ${panel("Trigger Trend (12 เดือนล่าสุด)", "จำนวน trigger ย้อนหลัง 12 เดือน", trendHtml, "wa-panel-trend")}
           ${panel("Frequently Triggered Alerts", "alert ที่ trigger บ่อยสุด (top 8)", freqTriggerHtml, "", "View All")}
           ${panel("Stale Alerts", "เก่า + ไม่ trigger (top 5 ตัวอย่าง)", staleHtml, "", "View All")}
           ${panel("Inactive Market Data Dependency", "alert ที่ criteria อ้าง inactive brand/model/reference", inactiveHtml, "", "View All")}
