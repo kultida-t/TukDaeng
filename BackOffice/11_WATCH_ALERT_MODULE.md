@@ -191,7 +191,7 @@ BO ต้องแยกความแตกต่างระหว่าง 2
 | สถานะ | ความหมาย | ผลต่อ Watch Alert | สิ่งที่ BO ต้องแสดง |
 | --- | --- | --- | --- |
 | no current listing | entity/option `is_active=true` ใน Market Data/Option Master แต่ไม่มี Asset Sale ตอนนั้น | Alert ทำงานปกติ รอ match ในอนาคต ไม่มี warning | ไม่ต้อง flag เป็น inactive; นับเป็น unmet demand ปกติ |
-| inactive market data | Brand/Model/Reference ถูก deactivate ใน Market Data (`is_active=false`) | Alert เดิมยังเก็บ history ได้ แต่หยุด trigger match ใหม่ตาม policy | แสดง dependency warning + flag ใน Inactive Market Data Dependency section |
+| inactive market data | Brand/Model/Reference ถูก deactivate ใน Market Data (`is_active=false`) | Alert เดิมยังเก็บ history ได้ แต่หยุด trigger match ใหม่ตาม policy | แสดง dependency warning ใน Alert List (Warning icon + filter Market data: Inactive dependency) และ Alert Detail (warning badge ข้าง field) |
 | deactivated option | Option master ถูก deactivate (`is_active=false`) | Alert เดิมยังเก็บ history ได้ แต่หยุด trigger match ใหม่ตาม policy | แสดง dependency warning เหมือน inactive market data |
 
 Alert ที่ criteria อ้าง entity/option ที่มี no current listing ตอนสร้าง ถือเป็น unmet demand ปกติ ไม่ใช่ inactive market data — ดู `../FrontOffice/10_WATCH_ALERT_MODULE.md` No Current Listing vs Inactive Market Data Rule สำหรับรายละเอียด

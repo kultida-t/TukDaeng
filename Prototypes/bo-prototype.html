@@ -3259,88 +3259,6 @@
       font-variant-numeric: tabular-nums;
     }
 
-    /* Stale alerts total */
-    .wa-stale-total {
-      margin-bottom: 12px;
-      padding: 10px 14px;
-      border-radius: 6px;
-      background: #fff8eb;
-      border: 1px solid #f3d493;
-      color: #925500;
-      font-size: 12px;
-    }
-    .wa-stale-total strong { font-family: var(--font-heading); font-size: 16px; }
-
-    /* Inactive market data list */
-    .wa-inactive-list {
-      display: grid;
-      gap: 8px;
-    }
-    .wa-inactive-row {
-      display: grid;
-      grid-template-columns: minmax(80px, .6fr) minmax(140px, 1.5fr) minmax(100px, 1fr) auto;
-      gap: 12px;
-      align-items: center;
-      padding: 10px 0;
-      border-bottom: 1px solid var(--line);
-    }
-    .wa-inactive-row:last-child { border-bottom: 0; }
-    .wa-inactive-id {
-      color: #071b36;
-      font-size: 12px;
-      font-weight: 800;
-    }
-    .wa-inactive-name {
-      color: #071b36;
-      font-size: 12px;
-      font-weight: 600;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-    }
-    .wa-inactive-owner {
-      color: #43546d;
-      font-size: 11px;
-    }
-
-    /* Notification delivery summary */
-    .wa-notif-summary {
-      display: grid;
-      grid-template-columns: repeat(4, minmax(0, 1fr));
-      gap: 12px;
-      margin-bottom: 14px;
-    }
-    .wa-notif-stat {
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-      padding: 12px 14px;
-      border: 1px solid var(--line);
-      border-radius: 6px;
-      background: #f8fbff;
-    }
-    .wa-notif-label {
-      color: #43546d;
-      font-size: 11px;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: .04em;
-    }
-    .wa-notif-value {
-      font-family: var(--font-heading);
-      color: #071b36;
-      font-size: 22px;
-      line-height: 1;
-    }
-    .wa-notif-delivered { color: var(--green); }
-    .wa-notif-failed { color: var(--red); }
-    .wa-notif-pending { color: var(--amber); }
-    .wa-notif-trend {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
     /* Responsive — Tablet (≤1280px) */
     @media (max-width: 1280px) {
       .wa-overview-stack { grid-template-columns: repeat(2, minmax(0, 1fr)); }
@@ -3364,7 +3282,6 @@
       }
       .wa-overview-stack { grid-template-columns: 1fr; }
       .wa-criteria-columns { grid-template-columns: 1fr; }
-      .wa-notif-summary { grid-template-columns: repeat(2, minmax(0, 1fr)); }
       /* Trigger Trend: กราฟ area — ลดแกน Y + font บน mobile */
       .wa-trend-plot { min-height: 140px; }
       .wa-trend-track { margin-left: 28px; }
@@ -3398,11 +3315,6 @@
       .wa-alert-mini-table .wa-cell-right {
         text-align: left;
         justify-self: stretch;
-      }
-      .wa-inactive-row {
-        grid-template-columns: 1fr;
-        gap: 4px;
-        padding: 12px 0;
       }
       .wa-overview-body { padding: 12px 16px 14px; }
       .wa-overview-panel .dashboard-card-head { padding: 12px 16px 10px; }
@@ -3438,7 +3350,6 @@
       body.watch-alert-mode .summary-grid {
         grid-template-columns: 1fr;
       }
-      .wa-notif-summary { grid-template-columns: 1fr; }
       /* Price Range Histogram: label แนวตั้งกัน overflow บนจอแคบมาก */
       .wa-price-hist-label {
         writing-mode: vertical-rl;
@@ -13092,32 +13003,7 @@
           { id: "WAL-1020", name: "Cartier Tank Must", owner: "Minimal Dial", triggerCount: 2, lastTriggered: "2026-07-15T14:00:00+07:00" },
           { id: "WAL-1310", name: "Grand Seiko Snowflake", owner: "The Collector", triggerCount: 1, lastTriggered: "2026-08-12T09:30:00+07:00" },
           { id: "WAL-0870", name: "Tudor Pelagos FXD", owner: "Seiko Corner", triggerCount: 1, lastTriggered: "2026-08-05T18:20:00+07:00" }
-        ],
-        staleAlerts: {
-          total: 45,
-          sample: [
-            { id: "WAL-1050", name: "Old Rolex GMT alert", owner: "Nattapol P.", created: "2026-05-29", lastTriggered: "2026-06-28", daysSinceTrigger: 60 },
-            { id: "WAL-0900", name: "AP Royal Oak 15500", owner: "The Collector", created: "2026-04-20", lastTriggered: null, daysSinceTrigger: null },
-            { id: "WAL-1180", name: "Seiko 6139 vintage", owner: "Seiko Corner", created: "2026-07-01", lastTriggered: null, daysSinceTrigger: null },
-            { id: "WAL-1199", name: "Inactive model alert", owner: "Archive Collector", created: "2026-04-10", lastTriggered: null, daysSinceTrigger: null },
-            { id: "WAL-1080", name: "Grand Seiko Snowflake", owner: "Minimal Dial", created: "2026-05-20", lastTriggered: null, daysSinceTrigger: null }
-          ]
-        },
-        inactiveMarketData: {
-          total: 12,
-          sample: [
-            { id: "WAL-1199", name: "Inactive model alert", owner: "Archive Collector", inactiveFields: ["model"] },
-            { id: "WAL-0900", name: "AP Royal Oak 15500", owner: "The Collector", inactiveFields: ["reference"] }
-          ]
-        },
-        notificationDelivery: {
-          delivered: 278,
-          failed: 15,
-          pending: 2,
-          successRate: 94.2,
-          previousWeekSuccessRate: 92.8,
-          trend: "+1.4%"
-        }
+        ]
       },
       lastUpdated: "2026-08-27T10:30:00+07:00"
     };
@@ -21903,92 +21789,6 @@
         true
       );
 
-      // 2.8 Stale Alerts — alert card pattern with severity (Family Office Risk & Alert pattern)
-      const staleHtml = `
-        <div class="wa-alert-banner wa-alert-warning">
-          <div class="wa-alert-banner-icon">${iconSvg.alert}</div>
-          <div class="wa-alert-banner-body">
-            <strong>${ov.staleAlerts.total.toLocaleString()}</strong> alert เก่ากว่า 30 วันและไม่ trigger
-            <span class="muted">· ควรตรวจสอบว่า criteria ยังเกี่ยวข้องหรือควรปรับ</span>
-          </div>
-        </div>
-        <div class="wa-alert-cards">
-          ${ov.staleAlerts.sample.map(a => {
-            const severity = a.daysSinceTrigger == null ? "critical" : a.daysSinceTrigger > 45 ? "high" : "medium";
-            const sevLabel = severity === "critical" ? "Never triggered" : severity === "high" ? "Stale > 45d" : "Stale > 30d";
-            const sevClass = `wa-alert-sev-${severity}`;
-            return `
-              <div class="wa-alert-card ${sevClass}">
-                <div class="wa-alert-card-header">
-                  <span class="wa-alert-card-id">${esc(a.id)}</span>
-                  <span class="wa-alert-card-sev">${sevLabel}</span>
-                </div>
-                <div class="wa-alert-card-name">${esc(a.name)}</div>
-                <div class="wa-alert-card-meta">
-                  <span>Owner: ${esc(a.owner)}</span>
-                  <span>Created: ${esc(a.created)}</span>
-                  <span>Last trigger: ${a.lastTriggered || "Never"}</span>
-                </div>
-              </div>
-            `;
-          }).join("")}
-        </div>
-      `;
-
-      // 2.9 Inactive Market Data Dependency — alert card pattern with severity
-      const inactiveHtml = `
-        <div class="wa-alert-banner wa-alert-danger">
-          <div class="wa-alert-banner-icon">${iconSvg.alert}</div>
-          <div class="wa-alert-banner-body">
-            <strong>${ov.inactiveMarketData.total.toLocaleString()}</strong> alert อ้าง inactive market data
-            <span class="muted">· criteria อ้าง brand/model/reference ที่ไม่ใช้งานแล้ว ทำให้ match ไม่ได้</span>
-          </div>
-        </div>
-        <div class="wa-alert-cards">
-          ${ov.inactiveMarketData.sample.map(a => `
-            <div class="wa-alert-card wa-alert-sev-high">
-              <div class="wa-alert-card-header">
-                <span class="wa-alert-card-id">${esc(a.id)}</span>
-                <span class="wa-alert-card-sev">Inactive: ${esc(a.inactiveFields.join(", "))}</span>
-              </div>
-              <div class="wa-alert-card-name">${esc(a.name)}</div>
-              <div class="wa-alert-card-meta">
-                <span>Owner: ${esc(a.owner)}</span>
-                <span>Fields: ${esc(a.inactiveFields.join(", "))}</span>
-              </div>
-            </div>
-          `).join("")}
-        </div>
-      `;
-
-      // 2.10 Notification Delivery Summary
-      const nd = ov.notificationDelivery;
-      const ndTotal = nd.delivered + nd.failed + nd.pending;
-      const ndHtml = `
-        <div class="wa-notif-summary">
-          <div class="wa-notif-stat">
-            <span class="wa-notif-label">Delivered</span>
-            <strong class="wa-notif-value wa-notif-delivered">${nd.delivered.toLocaleString()}</strong>
-          </div>
-          <div class="wa-notif-stat">
-            <span class="wa-notif-label">Failed</span>
-            <strong class="wa-notif-value wa-notif-failed">${nd.failed.toLocaleString()}</strong>
-          </div>
-          <div class="wa-notif-stat">
-            <span class="wa-notif-label">Pending</span>
-            <strong class="wa-notif-value wa-notif-pending">${nd.pending.toLocaleString()}</strong>
-          </div>
-          <div class="wa-notif-stat">
-            <span class="wa-notif-label">Success Rate</span>
-            <strong class="wa-notif-value">${nd.successRate}%</strong>
-          </div>
-        </div>
-        <div class="wa-notif-trend">
-          <span class="pill green">${nd.trend}</span>
-          <span class="muted">สัปดาห์ก่อน ${nd.previousWeekSuccessRate}% · รวม ${ndTotal.toLocaleString()} ครั้ง (7 วันล่าสุด)</span>
-        </div>
-      `;
-
       // Assemble all panels into #table
       document.querySelector("#table").innerHTML = `
         <div class="wa-overview-stack">
@@ -22032,9 +21832,6 @@
           })(), "wa-panel-price", "", "", true, "แสดงจำนวน Watch Alert ที่ผู้ใช้ตั้งไว้แยกตามช่วงราคาที่สนใจ 6 ช่วง ตั้งแต่ต่ำกว่า 50,000 บาท ถึงมากกว่า 1 ล้านบาท")}
           ${panel("Trigger Trend", "ย้อนหลัง 12 เดือน", trendHtml, "wa-panel-trend", "", "", true, "แสดงแนวโน้มจำนวนการแจ้งเตือนรายเดือนย้อนหลัง 12 เดือน แยกการแจ้งเตือนที่สำเร็จและที่ถูกข้าม")}
           ${panel("Frequently Triggered Alerts", "alert ที่ trigger บ่อยสุด (top 10)", freqTriggerHtml, "wa-panel-frequent", "View All", `data-module-jump="watch-alerts" data-sub-jump="Alert List"`, true, "แสดง Watch Alert ที่ trigger บ่อยที่สุด 10 อันดับแรก พร้อมจำนวนครั้งและเวลาที่ trigger ล่าสุด")}
-          ${panel("Stale Alerts", "เก่า + ไม่ trigger (top 5 ตัวอย่าง)", staleHtml, "", "View All", `data-module-jump="watch-alerts" data-sub-jump="Alert List"`, true, "แสดง Watch Alert ที่สร้างมานานกว่า 30 วันและไม่ trigger หรือไม่เคย trigger พร้อมระดับความเร่งด่วน")}
-          ${panel("Inactive Market Data Dependency", "alert ที่ criteria อ้าง inactive brand/model/reference", inactiveHtml, "", "View All", `data-module-jump="watch-alerts" data-sub-jump="Alert List"`, true, "แสดง Watch Alert ที่เงื่อนไขอ้างอิงถึงแบรนด์ รุ่น หรือเลขอ้างอิงที่ถูกปิดใช้งานใน Market Data ทำให้ alert ไม่สามารถ trigger ได้")}
-          ${panel("Notification Delivery Summary", "สรุปการส่งแจ้งเตือน 7 วันล่าสุด", ndHtml, "", "", "", true, "สรุปผลการส่งการแจ้งเตือน 7 วันล่าสุด แยกส่งสำเร็จ ล้มเหลว และค้างส่ง พร้อมอัตราการส่งสำเร็จเทียบกับสัปดาห์ก่อน")}
         </div>
       `;
 

@@ -77,20 +77,6 @@
 - Mobile (≤760px): ซ่อนคอลัมน์ # แสดงเป็น stacked card พร้อม label
 - Row click → Alert List (read-only drill-in; Alert Detail จะต่อใน WA-PTO-003)
 
-#### 2.5 Stale Alerts (เก่า + ไม่ trigger)
-- Alert ที่ created > 30 days และ (last trigger > 30 days หรือ never triggered)
-- แสดงจำนวนรวม + ตัวอย่าง top 5 (mini table)
-- Row click → Alert Detail
-
-#### 2.6 Inactive Market Data Dependency
-- จำนวน alert ที่ criteria อ้าง brand/model/reference ที่ inactive
-- แสดง list ของ affected alerts (top 8) พร้อม warning badge
-- Row click → Alert Detail
-
-#### 2.7 Notification Delivery Summary
-- สรุป: Delivered / Failed / Pending (7 วันล่าสุด)
-- Success rate trend (เปรียบเทียบสัปดาห์ก่อน)
-
 ---
 
 ## 3. Screen 2: Alert List (Read-only)
@@ -323,8 +309,6 @@
 | Top Dial Colors | Black (1,820), Blue (680), Green (320), White (280), Silver (220), Champagne (180) |
 | Price Ranges | <50k: 420, 50k-100k: 680, 100k-300k: 1,240, 300k-500k: 580, 500k-1M: 220, >1M: 78 |
 | Frequently Triggered | WAL-1228 (45), WAL-1440 (12), WAL-1100 (8), WAL-0990 (6), WAL-0950 (4) |
-| Stale Alerts | WAL-1050 (created 90d, last trigger 60d), WAL-0900 (created 120d, never triggered) |
-| Inactive Market Data | WAL-1199 (model inactive), WAL-0900 (reference inactive) |
 
 ---
 
