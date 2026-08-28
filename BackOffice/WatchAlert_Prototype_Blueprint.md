@@ -63,10 +63,11 @@
 - ชื่อการ์ด: "Price Range (จำนวนรายการทั้งหมด)" — แสดง total รวมทุกช่วงในวงเล็บ (ไม่มีคำว่า "รายการ")
 - Format: vertical bar chart (histogram) พร้อมแกน Y (nice-number scale, ชื่อแกน "จำนวนรายการ" อยู่ด้านบนเส้นแกน Y) + แกน X (ชื่อแกน "ช่วงราคา (บาท)"), กราฟเต็มพื้นที่การ์ด, แท่งตามลำดับช่วงราคา, ตัวเลขจำนวนแสดงบนหัวแท่ง, label ช่วงราคาอยู่ใต้แกน X
 
-#### 2.3 Trigger Trend (30 วันล่าสุด)
-- กราฟแท่งรายวัน แสดงจำนวน trigger ย้อนหลัง 30 วัน
-- แยกสี: successful trigger (เขียว) vs skipped (เทา — block/inactive/disabled)
-- แกน X: วันที่, แกน Y: จำนวน trigger
+#### 2.3 Trigger Trend (12 เดือนล่าสุด)
+- grouped bar chart รายเดือน แสดงจำนวน trigger ย้อนหลัง 12 เดือน (2 ซีรีส์ต่อเดือน: สำเร็จ/ข้าม)
+- แยกสี: successful trigger (เขียว) vs skipped (เทา — ปิด alert/ปิดแจ้งเตือน/ลบแล้ว หรือ asset ไม่แสดง)
+- แกน X: เดือน (ชื่อเดือนย่อ + ปี 2 หลัก), แกน Y: จำนวนการแจ้งเตือน (ครั้ง) พร้อม nice-number scale + gridlines แบบเส้นประ
+- legend 2 รายการ พร้อมคำอธิบาย; tooltip ต่อคอลัมน์ (เดือน • สำเร็จ X • ข้าม Y)
 
 #### 2.4 Frequently Triggered Alerts (top 8)
 - Alert ที่ trigger บ่อยสุด

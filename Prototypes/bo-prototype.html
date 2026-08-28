@@ -2952,38 +2952,6 @@
 
     /* 2.6 Trigger Trend — grouped bar chart 2 ซีรีส์ (สำเร็จ/ข้าม) รายเดือน + แถวสรุปตัวเลขรวม */
     .wa-trend-wrap { display: flex; flex-direction: column; gap: 10px; }
-    .wa-trend-summary {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px 20px;
-      padding: 10px 12px;
-      border-radius: 6px;
-      border: 1px solid #d7e2f0;
-      background: #f8fafc;
-    }
-    .wa-trend-stat { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
-    .wa-trend-stat-label {
-      color: #43546d;
-      font-size: 10px;
-      font-weight: 800;
-      line-height: 1.2;
-    }
-    .wa-trend-stat-value {
-      color: #071b36;
-      font-family: var(--font-heading);
-      font-size: 18px;
-      font-weight: 800;
-      line-height: 1.05;
-    }
-    .wa-trend-stat.is-success .wa-trend-stat-value { color: var(--green); }
-    .wa-trend-stat.is-skip .wa-trend-stat-value { color: #6d7f98; }
-    .wa-trend-stat.is-peak .wa-trend-stat-value { color: var(--blue); }
-    .wa-trend-stat-sub {
-      color: #8595ad;
-      font-size: 9px;
-      font-weight: 700;
-      line-height: 1.2;
-    }
     .wa-trend-legend {
       display: flex;
       flex-wrap: wrap;
@@ -3003,9 +2971,9 @@
     }
     .wa-trend-legend-tip {
       position: absolute;
-      bottom: 100%;
+      top: 100%;
       right: 0;
-      margin-bottom: 6px;
+      margin-top: 6px;
       padding: 10px 14px;
       border: 1px solid #d4deec;
       border-radius: 8px;
@@ -3310,7 +3278,6 @@
       .wa-trend-yaxis { left: -28px; width: 24px; }
       .wa-trend-yaxis span { font-size: 8px; }
       .wa-trend-axis span { font-size: 8px; }
-      .wa-trend-stat-value { font-size: 16px; }
       .wa-alert-mini-table .asset-row {
         grid-template-columns: 1fr;
         gap: 4px;
@@ -21731,17 +21698,7 @@
         showUserActionModal(true);
       };
 
-      // 2.6 Trigger Trend — grouped bar chart 2 ซีรีส์ (สำเร็จ/ข้าม) รายเดือน + แถวสรุปตัวเลขรวม
-      const trendN = ov.triggerTrend.length;
-      const trendTotals = ov.triggerTrend.map(d => d.successful + d.skipped);
-      const trendSuccessTotal = ov.triggerTrend.reduce((s, d) => s + d.successful, 0);
-      const trendSkipTotal = ov.triggerTrend.reduce((s, d) => s + d.skipped, 0);
-      const trendPeakIdx = trendTotals.indexOf(Math.max(...trendTotals));
-      const trendPeak = ov.triggerTrend[trendPeakIdx];
-      const trendPeakDateLabel = trendPeak.date.toLocaleDateString("th-TH", { month: "short", year: "numeric", timeZone: "Asia/Bangkok" });
-      const trendFirst = ov.triggerTrend[0].date;
-      const trendLast = ov.triggerTrend[trendN - 1].date;
-      const trendRangeTitle = `${trendFirst.toLocaleDateString("th-TH", { month: "short", year: "numeric", timeZone: "Asia/Bangkok" })} – ${trendLast.toLocaleDateString("th-TH", { month: "short", year: "numeric", timeZone: "Asia/Bangkok" })}`;
+      // 2.6 Trigger Trend — grouped bar chart 2 ซีรีส์ (สำเร็จ/ข้าม) รายเดือน
       const trendSuccessSeries = ov.triggerTrend.map(d => d.successful);
       const trendSkipSeries = ov.triggerTrend.map(d => d.skipped);
       // แกน Y — ค่าสูงสุดแบบ nice (ใช้ร่วม 2 ซีรีส์)
