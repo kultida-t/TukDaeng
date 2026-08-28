@@ -21931,7 +21931,7 @@
       // Assemble all panels into #table
       document.querySelector("#table").innerHTML = `
         <div class="wa-overview-stack">
-          ${panel("Top Brands", "แบรนด์ที่ผู้ใช้ตั้ง alert บ่อย — กดแถบเพื่อดูรุ่น/เลขอ้างอิง", topCriteriaHtml, "wa-panel-criteria", "View All", `data-wa-criteria-viewall`, true, "แสดงแบรนด์ รุ่น เลขอ้างอิง และสีหน้าปัดที่ผู้ใช้ตั้ง Watch Alert ไว้บ่อยที่สุด พร้อมสัดส่วนและจำนวนรายการ")}
+          ${panel("Top Brands", "แบรนด์ที่ผู้ใช้ตั้ง alert บ่อย — กดแถบเพื่อดูรุ่น/เลขอ้างอิง", topCriteriaHtml, "wa-panel-criteria", "View All", `data-wa-criteria-viewall`, true, "แสดงแบรนด์ที่ผู้ใช้ตั้ง Watch Alert ไว้บ่อยที่สุด 5 อันดับแรก พร้อมสัดส่วนและจำนวนรายการ กดแถบเพื่อดูรุ่นและเลขอ้างอิงที่ตั้งภายใต้แบรนด์นั้น")}
           ${panel("Price Range", "ช่วงราคาที่ user สนใจ", (() => {
             const rawMax = Math.max(...ov.priceRanges.map(p => p.value), 1);
             // Nice-number Y-axis scale: ปัดค่าสูงสุดขึ้นเป็นเลขกลม แบ่ง 4 ช่วง (5 ticks: niceMax..0)
