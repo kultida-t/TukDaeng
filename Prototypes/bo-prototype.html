@@ -2673,6 +2673,11 @@
       padding: 0;
       align-items: stretch;
     }
+    /* Trigger Trend (กราฟ 12 เดือน) และ Frequently Triggered (ตาราง 6 คอลัมน์) ต้องการความกว้าง → ยืนเต็มแถวทุก viewport */
+    .wa-overview-stack .wa-panel-trend,
+    .wa-overview-stack .wa-panel-frequent {
+      grid-column: 1 / -1;
+    }
     .wa-overview-panel {
       border: 1px solid #d7e2f0;
       border-radius: var(--radius);
@@ -3184,20 +3189,20 @@
       padding-top: 6px;
     }
 
-    /* Mini tables (Frequently Triggered, Stale) */
+    /* Mini tables (Frequently Triggered) */
     .wa-alert-mini-table {
       border: 0;
       background: transparent;
     }
     .wa-alert-mini-table .asset-row {
-      grid-template-columns: minmax(80px, .8fr) minmax(120px, 1.5fr) minmax(100px, 1fr) minmax(70px, .5fr) minmax(100px, .7fr);
+      grid-template-columns: 30px minmax(80px, .8fr) minmax(120px, 1.5fr) minmax(100px, 1fr) minmax(92px, .7fr) minmax(100px, .7fr);
       column-gap: 14px;
       align-items: center;
-      padding: 10px 0;
+      padding: 14px 0;
       border-bottom: 1px solid var(--line);
     }
     .wa-alert-mini-table .asset-row.head {
-      padding: 8px 0;
+      padding: 10px 0;
       border-bottom: 2px solid #d7e2f0;
     }
     .wa-alert-mini-table .asset-row.head > div {
@@ -3215,6 +3220,41 @@
       color: #071b36;
       font-size: 12px;
       font-weight: 600;
+    }
+    /* Rank column — ลำดับ top 8 */
+    .wa-alert-mini-table .wa-rank {
+      color: #94a3b8;
+      font-size: 11px;
+      font-weight: 700;
+      text-align: center;
+    }
+    /* Alert ID — identifier ใช้ฟอนต์เดียวกับตาราง + สี muted */
+    .wa-alert-mini-table .wa-alert-id {
+      font-size: 12px;
+      font-weight: 700;
+      color: #43546d;
+      letter-spacing: .02em;
+    }
+    /* Numeric/date columns — ชิดขวา */
+    .wa-alert-mini-table .wa-cell-right {
+      text-align: right;
+      justify-self: end;
+    }
+    .wa-alert-mini-table .wa-cell-right .main-text {
+      font-weight: 700;
+    }
+    /* Mini bar ในคอลัมน์ Triggers — แสดงสัดส่วนเทียบกับอันดับ 1 */
+    .wa-alert-mini-table .wa-trigger-bar {
+      margin-top: 4px;
+      height: 3px;
+      border-radius: 2px;
+      background: #e2e8f0;
+      overflow: hidden;
+    }
+    .wa-alert-mini-table .wa-trigger-bar-fill {
+      height: 100%;
+      border-radius: 2px;
+      background: var(--blue);
     }
 
     /* Stale alerts total */
@@ -3350,6 +3390,15 @@
         font-weight: 800;
         text-transform: uppercase;
       }
+      /* mobile: ซ่อน rank column เพราะลำดับเห็นได้จากการเรียง card */
+      .wa-alert-mini-table .asset-row .wa-rank { display: none; }
+      /* mobile: reset right-align เพราะใช้ flex space-between ของ label/value */
+      .wa-alert-mini-table .wa-cell-right {
+        text-align: left;
+        justify-self: stretch;
+      }
+      /* mobile: ซ่อน mini bar เพราะพื้นที่แคบ แสดงแค่ตัวเลข */
+      .wa-alert-mini-table .wa-trigger-bar { display: none; }
       .wa-inactive-row {
         grid-template-columns: 1fr;
         gap: 4px;
@@ -21816,30 +21865,44 @@
       `;
 
       // Mini table helper for alert references (row click → Alert Detail in WA-PTO-003)
-      const alertMiniTable = (rows, columns) => `
+      // รองรับ showRank (คอลัมน์ #), column.align ("right"), column.render (custom cell html)
+      const alertMiniTable = (rows, columns, showRank = false) => `
         <div class="asset-table wa-alert-mini-table">
-          <div class="asset-row head">${columns.map(c => `<div>${esc(c.label)}</div>`).join("")}</div>
-          ${rows.map(r => `
+          <div class="asset-row head">
+            ${showRank ? `<div class="wa-rank">#</div>` : ""}
+            ${columns.map(c => `<div class="${c.align === "right" ? "wa-cell-right" : ""}">${esc(c.label)}</div>`).join("")}
+          </div>
+          ${rows.map((r, idx) => `
             <div class="asset-row" data-wa-alert-row="${esc(r.id)}">
-              ${columns.map(c => `<div data-label="${esc(c.label)}"><div class="main-text">${esc(r[c.key] ?? "—")}</div></div>`).join("")}
+              ${showRank ? `<div class="wa-rank" data-label="#">${idx + 1}</div>` : ""}
+              ${columns.map(c => {
+                const cellClass = c.align === "right" ? "wa-cell-right" : "";
+                const content = c.render ? c.render(r) : `<div class="main-text">${esc(r[c.key] ?? "—")}</div>`;
+                return `<div data-label="${esc(c.label)}" class="${cellClass}">${content}</div>`;
+              }).join("")}
             </div>
           `).join("")}
         </div>
       `;
 
-      // 2.7 Frequently Triggered Alerts
+      // 2.7 Frequently Triggered Alerts — top 8, mini bar สัดส่วนเทียบกับอันดับ 1
+      const freqMaxTriggers = Math.max(...ov.frequentlyTriggered.map(a => a.triggerCount), 1);
       const freqTriggerHtml = alertMiniTable(
         ov.frequentlyTriggered.map(a => ({
           ...a,
           lastTriggeredDisplay: a.lastTriggered ? a.lastTriggered.slice(0, 10) : "—"
         })),
         [
-          { label: "Alert ID", key: "id" },
+          { label: "Alert ID", key: "id", render: r => `<div class="main-text wa-alert-id">${esc(r.id)}</div>` },
           { label: "Name", key: "name" },
           { label: "Owner", key: "owner" },
-          { label: "Triggers", key: "triggerCount" },
-          { label: "Last Triggered", key: "lastTriggeredDisplay" }
-        ]
+          { label: "Triggers", key: "triggerCount", align: "right", render: r => `
+            <div class="main-text">${r.triggerCount.toLocaleString()}</div>
+            <div class="wa-trigger-bar"><div class="wa-trigger-bar-fill" style="width:${Math.round((r.triggerCount / freqMaxTriggers) * 100)}%"></div></div>
+          ` },
+          { label: "Last Triggered", key: "lastTriggeredDisplay", align: "right" }
+        ],
+        true
       );
 
       // 2.8 Stale Alerts — alert card pattern with severity (Family Office Risk & Alert pattern)
@@ -21970,7 +22033,7 @@
             `;
           })(), "wa-panel-price", "", "", true, "แสดงจำนวน Watch Alert ที่ผู้ใช้ตั้งไว้แยกตามช่วงราคาที่สนใจ 6 ช่วง ตั้งแต่ต่ำกว่า 50,000 บาท ถึงมากกว่า 1 ล้านบาท")}
           ${panel("Trigger Trend", "ย้อนหลัง 12 เดือน", trendHtml, "wa-panel-trend", "", "", true, "แสดงแนวโน้มจำนวนการแจ้งเตือนรายเดือนย้อนหลัง 12 เดือน แยกการแจ้งเตือนที่สำเร็จและที่ถูกข้าม")}
-          ${panel("Frequently Triggered Alerts", "alert ที่ trigger บ่อยสุด (top 8)", freqTriggerHtml, "", "View All", `data-module-jump="watch-alerts" data-sub-jump="Alert List"`, true, "แสดง Watch Alert ที่ trigger บ่อยที่สุด 8 อันดับแรก พร้อมจำนวนครั้งและเวลาที่ trigger ล่าสุด")}
+          ${panel("Frequently Triggered Alerts", "alert ที่ trigger บ่อยสุด (top 8)", freqTriggerHtml, "wa-panel-frequent", "View All", `data-module-jump="watch-alerts" data-sub-jump="Alert List"`, true, "แสดง Watch Alert ที่ trigger บ่อยที่สุด 8 อันดับแรก พร้อมจำนวนครั้งและเวลาที่ trigger ล่าสุด")}
           ${panel("Stale Alerts", "เก่า + ไม่ trigger (top 5 ตัวอย่าง)", staleHtml, "", "View All", `data-module-jump="watch-alerts" data-sub-jump="Alert List"`, true, "แสดง Watch Alert ที่สร้างมานานกว่า 30 วันและไม่ trigger หรือไม่เคย trigger พร้อมระดับความเร่งด่วน")}
           ${panel("Inactive Market Data Dependency", "alert ที่ criteria อ้าง inactive brand/model/reference", inactiveHtml, "", "View All", `data-module-jump="watch-alerts" data-sub-jump="Alert List"`, true, "แสดง Watch Alert ที่เงื่อนไขอ้างอิงถึงแบรนด์ รุ่น หรือเลขอ้างอิงที่ถูกปิดใช้งานใน Market Data ทำให้ alert ไม่สามารถ trigger ได้")}
           ${panel("Notification Delivery Summary", "สรุปการส่งแจ้งเตือน 7 วันล่าสุด", ndHtml, "", "", "", true, "สรุปผลการส่งการแจ้งเตือน 7 วันล่าสุด แยกส่งสำเร็จ ล้มเหลว และค้างส่ง พร้อมอัตราการส่งสำเร็จเทียบกับสัปดาห์ก่อน")}
@@ -29320,6 +29383,12 @@
       if (marketSyncLogsButton) {
         closeUserActionModal();
         jumpToModule("market", "Sync History");
+        return;
+      }
+      // Watch Alert mini table row click → Alert List (read-only drill-in; Alert Detail จะต่อใน WA-PTO-003)
+      const waAlertRow = event.target.closest("[data-wa-alert-row]");
+      if (waAlertRow) {
+        jumpToModule("watch-alerts", "Alert List");
         return;
       }
       const moduleJump = event.target.closest("[data-module-jump], [data-jump]");
