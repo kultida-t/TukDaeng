@@ -21899,35 +21899,30 @@
       `;
       }).join("");
 
-      // Aggregate data — 7 วันล่าสุด (mock)
+      // Aggregate data — 7 วันล่าสุด (mock) — 10 รายการต่อหมวด, panel แสดง 5 รายการแรก, modal แสดง 10 รายการ
       const insights = {
         keywords: [
-          { label: "Rolex", value: 4820 },
-          { label: "Submariner", value: 2940 },
-          { label: "GMT-Master II", value: 2180 },
-          { label: "Datejust", value: 1760 },
-          { label: "Speedmaster", value: 1420 }
+          { label: "Rolex", value: 4820 }, { label: "Submariner", value: 2940 }, { label: "GMT-Master II", value: 2180 }, { label: "Datejust", value: 1760 }, { label: "Speedmaster", value: 1420 },
+          { label: "Daytona", value: 1180 }, { label: "Aquanaut", value: 940 }, { label: "Royal Oak", value: 820 }, { label: "Nautilus", value: 760 }, { label: "Moonwatch", value: 620 }
         ],
         brands: [
-          { label: "Rolex", value: 3218 },
-          { label: "Omega", value: 1684 },
-          { label: "Seiko", value: 1205 },
-          { label: "Tudor", value: 892 },
-          { label: "Cartier", value: 640 }
+          { label: "Rolex", value: 3218 }, { label: "Omega", value: 1684 }, { label: "Seiko", value: 1205 }, { label: "Tudor", value: 892 }, { label: "Cartier", value: 640 },
+          { label: "Patek Philippe", value: 584 }, { label: "Audemars Piguet", value: 520 }, { label: "Grand Seiko", value: 416 }, { label: "IWC", value: 368 }, { label: "Breitling", value: 312 }
         ],
         filters: [
-          { label: "Price: ฿100,000–฿300,000", value: 2480 },
-          { label: "Condition: Like New", value: 1920 },
-          { label: "Dial color: Black", value: 1680 },
-          { label: "Reference: 16610", value: 1120 },
-          { label: "Case size: 40–42mm", value: 980 }
+          { label: "Price: ฿100,000–฿300,000", value: 2480 }, { label: "Condition: Like New", value: 1920 }, { label: "Dial color: Black", value: 1680 }, { label: "Reference: 16610", value: 1120 }, { label: "Case size: 40–42mm", value: 980 },
+          { label: "Year: 2020–2024", value: 840 }, { label: "Box & Papers", value: 720 }, { label: "Automatic", value: 680 }, { label: "Condition: Unworn", value: 590 }, { label: "Dial color: Blue", value: 520 }
         ],
         noResult: [
-          { label: "Rolex Daytona / ฿300,000", value: 428 },
-          { label: "Seiko 6139 / Blue dial", value: 286 },
-          { label: "Patek Calatrava / ฿1M", value: 194 },
-          { label: "GMT-Master II / 126710", value: 118 }
+          { label: "Rolex Daytona / ฿300,000", value: 428 }, { label: "Seiko 6139 / Blue dial", value: 286 }, { label: "Patek Calatrava / ฿1M", value: 194 }, { label: "GMT-Master II / 126710", value: 118 },
+          { label: "Submariner / Green bezel", value: 104 }, { label: "Royal Oak / 39mm", value: 92 }, { label: "Speedmaster / Snoopy", value: 76 }, { label: "Cartier Tank / Gold", value: 64 }, { label: "Tudor / Burgundy", value: 52 }, { label: "IWC Pilot / Blue", value: 41 }
         ]
+      };
+      const insightsMeta = {
+        keywords: { title: "Popular Keywords", subtitle: "คำค้นหาที่ผู้ใช้พิมพ์บ่อยที่สุด — แสดงสูงสุด 10 รายการ" },
+        brands: { title: "Popular Brands", subtitle: "แบรนด์ที่ผู้ใช้เลือกบ่อยจากการค้นหา/กรอง — แสดงสูงสุด 10 รายการ" },
+        filters: { title: "Popular Filters", subtitle: "ตัวกรองที่ผู้ใช้เลือกบ่อยที่สุด — แสดงสูงสุด 10 รายการ" },
+        noResult: { title: "No-result Searches", subtitle: "คำค้นหา/ตัวกรองที่ไม่พบผลลัพธ์ — แสดงสูงสุด 10 รายการ" }
       };
 
       // สีกลาง 8 เฉด (ใช้ชุดเดียวกับ Demand Overview)
@@ -21968,21 +21963,59 @@
           </div>
         `;
       };
-      const barListHtml = (items) => {
+      const barListHtml = (items, limit = 0) => {
+        const list = limit > 0 ? items.slice(0, limit) : items;
         const total = statTotal(items);
-        return `<div class="wa-stat-bar-list">${items.map((item, idx) => statBarRow(item, idx, total)).join("")}</div>`;
+        return `<div class="wa-stat-bar-list">${list.map((item, idx) => statBarRow(item, idx, total)).join("")}</div>`;
+      };
+
+      // Search Insights View All modal — reuse user-action-modal เหมือน Demand Overview
+      let siModalSection = null;
+      const renderSiModalBody = () => {
+        const meta = insightsMeta[siModalSection];
+        const items = insights[siModalSection] || [];
+        const total = statTotal(items);
+        const rowsHtml = items.length
+          ? items.map((item, idx) => statBarRow(item, idx, total)).join("")
+          : `<div class="detail-empty">ไม่มีข้อมูล</div>`;
+        const modalBody = document.querySelector("#user-action-modal-body");
+        modalBody.innerHTML = `
+          <div class="user-action-page wa-criteria-modal">
+            <div class="user-action-head">
+              <div>
+                <h2 id="user-action-modal-title">${esc(meta.title)}</h2>
+                <p class="wa-criteria-modal-subtitle">${esc(meta.subtitle)}</p>
+              </div>
+              <button class="btn user-action-close" type="button" data-user-action-modal-close aria-label="ปิด">${iconSvg.close}</button>
+            </div>
+            <div class="user-action-card">
+              <div class="wa-stat-bar-list">${rowsHtml}</div>
+            </div>
+          </div>
+        `;
+        applyModalHeadingFonts(document.querySelector("#user-action-modal"));
+      };
+      const openSiModal = (section) => {
+        siModalSection = section;
+        renderSiModalBody();
+        showUserActionModal(true);
       };
 
       // Assemble all panels into #table
       document.querySelector("#table").innerHTML = `
         <div class="wa-overview-stack">
-          ${panel("Popular Keywords", "คำค้นหาที่ผู้ใช้พิมพ์บ่อยที่สุด — 7 วันล่าสุด", barListHtml(insights.keywords), "wa-panel-keywords", "", "", true, "แสดงคำค้นหาที่ผู้ใช้พิมพ์ในช่องค้นหาบ่อยที่สุด 5 อันดับแรก พร้อมจำนวนครั้งและสัดส่วนการค้นหา นับแบบ aggregate ในช่วง 7 วันล่าสุด")}
-          ${panel("Popular Brands", "แบรนด์ที่ผู้ใช้เลือกบ่อยจากการค้นหา/กรอง — 7 วันล่าสุด", barListHtml(insights.brands), "wa-panel-brands", "", "", true, "แสดงแบรนด์ที่ผู้ใช้เลือกจากการค้นหาและตัวกรองบ่อยที่สุด 5 อันดับแรก พร้อมจำนวนครั้งและสัดส่วนการเลือก นับแบบ aggregate ในช่วง 7 วันล่าสุด")}
-          ${panel("Popular Filters", "ตัวกรองที่ผู้ใช้เลือกบ่อยที่สุด — 7 วันล่าสุด", barListHtml(insights.filters), "wa-panel-filters", "", "", true, "แสดงตัวกรองที่ผู้ใช้เลือกบ่อยที่สุด 5 อันดับแรก เช่น ช่วงราคา สภาพ สีหน้าปัด เลขอ้างอิง ขนาดเคส พร้อมจำนวนครั้งและสัดส่วน นับแบบ aggregate ในช่วง 7 วันล่าสุด")}
-          ${panel("No-result Searches", "คำค้นหา/ตัวกรองที่ไม่พบผลลัพธ์ — 7 วันล่าสุด", barListHtml(insights.noResult), "wa-panel-noresult", "", "", true, "แสดงคำค้นหาหรือการกรองที่ไม่พบผลลัพธ์บ่อยที่สุด 4 อันดับแรก ใช้สำหรับวิเคราะห์ความต้องการที่ยังไม่มีสินค้าตรง นับแบบ aggregate ในช่วง 7 วันล่าสุด")}
+          ${panel("Popular Keywords", "คำค้นหาที่ผู้ใช้พิมพ์บ่อยที่สุด — 7 วันล่าสุด", barListHtml(insights.keywords, 5), "wa-panel-keywords", "View All", `data-si-viewall="keywords"`, true, "แสดงคำค้นหาที่ผู้ใช้พิมพ์ในช่องค้นหาบ่อยที่สุด 5 อันดับแรก กด View All เพื่อดูสูงสุด 10 รายการ นับแบบ aggregate ในช่วง 7 วันล่าสุด")}
+          ${panel("Popular Brands", "แบรนด์ที่ผู้ใช้เลือกบ่อยจากการค้นหา/กรอง — 7 วันล่าสุด", barListHtml(insights.brands, 5), "wa-panel-brands", "View All", `data-si-viewall="brands"`, true, "แสดงแบรนด์ที่ผู้ใช้เลือกจากการค้นหาและตัวกรองบ่อยที่สุด 5 อันดับแรก กด View All เพื่อดูสูงสุด 10 รายการ นับแบบ aggregate ในช่วง 7 วันล่าสุด")}
+          ${panel("Popular Filters", "ตัวกรองที่ผู้ใช้เลือกบ่อยที่สุด — 7 วันล่าสุด", barListHtml(insights.filters, 5), "wa-panel-filters", "View All", `data-si-viewall="filters"`, true, "แสดงตัวกรองที่ผู้ใช้เลือกบ่อยที่สุด 5 อันดับแรก กด View All เพื่อดูสูงสุด 10 รายการ นับแบบ aggregate ในช่วง 7 วันล่าสุด")}
+          ${panel("No-result Searches", "คำค้นหา/ตัวกรองที่ไม่พบผลลัพธ์ — 7 วันล่าสุด", barListHtml(insights.noResult, 5), "wa-panel-noresult", "View All", `data-si-viewall="noResult"`, true, "แสดงคำค้นหาหรือการกรองที่ไม่พบผลลัพธ์บ่อยที่สุด 5 อันดับแรก กด View All เพื่อดูสูงสุด 10 รายการ ใช้สำหรับวิเคราะห์ความต้องการที่ยังไม่มีสินค้าตรง นับแบบ aggregate ในช่วง 7 วันล่าสุด")}
         </div>
       `;
       document.querySelector("#cards").innerHTML = "";
+
+      // View All buttons → เปิด modal แสดง 10 รายการของหมวดนั้น
+      document.querySelectorAll("[data-si-viewall]").forEach(btn => {
+        btn.addEventListener("click", () => openSiModal(btn.getAttribute("data-si-viewall")));
+      });
     }
 
     // WA-PTO-002 placeholder — Alert List (read-only) will be implemented in next task
