@@ -10774,6 +10774,11 @@
         background: #f8fbff;
         overflow: visible;
       }
+      body.watch-alert-list-mode #table {
+        padding: 12px 14px 16px;
+        background: #f8fbff;
+        overflow-x: hidden;
+      }
       body.offer-detail-mode #table {
         padding: 0;
         background: transparent;
@@ -10817,7 +10822,8 @@
       body.article-list-mode .footer-range,
       body.category-list-mode .footer-range,
       body.reported-board-mode .footer-range,
-      body.option-master-mode .footer-range {
+      body.option-master-mode .footer-range,
+      body.watch-alert-list-mode .footer-range {
         margin-top: 12px;
         padding: 13px 16px;
         background: transparent;
@@ -10846,7 +10852,8 @@
       body.category-list-mode .category-table .asset-row:not(.head),
       body.reported-board-mode .reported-board-table .asset-row:not(.head),
       body.option-master-mode .option-group-table .asset-row:not(.head),
-      body.option-master-mode .option-detail-table .asset-row:not(.head) {
+      body.option-master-mode .option-detail-table .asset-row:not(.head),
+      body.watch-alert-list-mode .watch-alert-list-table .asset-row:not(.head) {
         grid-template-columns: minmax(0, 1fr) 34px;
         column-gap: 14px;
         row-gap: 14px;
@@ -10862,14 +10869,16 @@
       body.category-list-mode .category-table .asset-row:not(.head) > div[data-label]:not(.asset-cell-primary),
       body.reported-board-mode .reported-board-table .asset-row:not(.head) > div[data-label]:not(.asset-cell-primary),
       body.option-master-mode .option-group-table .asset-row:not(.head) > div[data-label]:not(.asset-cell-primary),
-      body.option-master-mode .option-detail-table .asset-row:not(.head) > div[data-label]:not(.asset-cell-primary) {
+      body.option-master-mode .option-detail-table .asset-row:not(.head) > div[data-label]:not(.asset-cell-primary),
+      body.watch-alert-list-mode .watch-alert-list-table .asset-row:not(.head) > div[data-label]:not(.asset-cell-primary) {
         display: none;
       }
       body.article-list-mode .article-table .asset-row:not(.head) > div[data-label]:first-child,
       body.category-list-mode .category-table .asset-row:not(.head) > div[data-label]:first-child,
       body.reported-board-mode .reported-board-table .asset-row:not(.head) > div[data-label]:first-child,
       body.option-master-mode .option-group-table .asset-row:not(.head) > div[data-label]:first-child,
-      body.option-master-mode .option-detail-table .asset-row:not(.head) > div[data-label]:first-child {
+      body.option-master-mode .option-detail-table .asset-row:not(.head) > div[data-label]:first-child,
+      body.watch-alert-list-mode .watch-alert-list-table .asset-row:not(.head) > div[data-label]:first-child {
         display: none;
       }
       body.article-list-mode .article-table .asset-row:not(.head) > .user-row-actions,
@@ -10890,7 +10899,8 @@
       body.category-list-mode .category-table .asset-row:not(.head) > .asset-cell-primary,
       body.reported-board-mode .reported-board-table .asset-row:not(.head) > .asset-cell-primary,
       body.option-master-mode .option-group-table .asset-row:not(.head) > .asset-cell-primary,
-      body.option-master-mode .option-detail-table .asset-row:not(.head) > .asset-cell-primary {
+      body.option-master-mode .option-detail-table .asset-row:not(.head) > .asset-cell-primary,
+      body.watch-alert-list-mode .watch-alert-list-table .asset-row:not(.head) > .asset-cell-primary {
         grid-column: 1;
         grid-row: 1;
         min-height: 30px;
@@ -10904,7 +10914,8 @@
       body.category-list-mode .category-table .asset-row:not(.head) > .asset-cell-primary .main-text,
       body.reported-board-mode .reported-board-table .asset-row:not(.head) > .asset-cell-primary .main-text,
       body.option-master-mode .option-group-table .asset-row:not(.head) > .asset-cell-primary .main-text,
-      body.option-master-mode .option-detail-table .asset-row:not(.head) > .asset-cell-primary .main-text {
+      body.option-master-mode .option-detail-table .asset-row:not(.head) > .asset-cell-primary .main-text,
+      body.watch-alert-list-mode .watch-alert-list-table .asset-row:not(.head) > .asset-cell-primary .main-text {
         max-width: 100%;
         overflow: hidden;
         text-overflow: ellipsis;
@@ -10919,15 +10930,18 @@
       body.article-list-mode .article-table .asset-row:not(.head) .desktop-user-name,
       body.category-list-mode .category-table .asset-row:not(.head) .desktop-user-name,
       body.reported-board-mode .reported-board-table .asset-row:not(.head) .desktop-user-name,
-      body.user-accounts-mode .comment-list-table .asset-row:not(.head) .desktop-user-name { display: none; }
+      body.user-accounts-mode .comment-list-table .asset-row:not(.head) .desktop-user-name,
+      body.watch-alert-list-mode .watch-alert-list-table .asset-row:not(.head) .desktop-user-name { display: none; }
       body.article-list-mode .article-table .asset-row:not(.head) .mobile-user-card-title,
       body.category-list-mode .category-table .asset-row:not(.head) .mobile-user-card-title,
       body.reported-board-mode .reported-board-table .asset-row:not(.head) .mobile-user-card-title,
-      body.user-accounts-mode .comment-list-table .asset-row:not(.head) .mobile-user-card-title { display: inline; }
+      body.user-accounts-mode .comment-list-table .asset-row:not(.head) .mobile-user-card-title,
+      body.watch-alert-list-mode .watch-alert-list-table .asset-row:not(.head) .mobile-user-card-title { display: inline; }
       body.article-list-mode .article-table .asset-card-tags,
       body.category-list-mode .category-table .asset-card-tags,
       body.reported-board-mode .reported-board-table .asset-card-tags,
-      body.user-accounts-mode .comment-list-table .asset-card-tags {
+      body.user-accounts-mode .comment-list-table .asset-card-tags,
+      body.watch-alert-list-mode .watch-alert-list-table .asset-row:not(.head) > .asset-card-tags {
         grid-column: 1 / -1;
         grid-row: 2;
         display: flex;
@@ -10941,7 +10955,8 @@
       body.reported-board-mode .reported-board-table .asset-card-tags .user-card-meta,
       body.user-accounts-mode .comment-list-table .asset-card-tags .user-card-meta,
       body.option-master-mode .option-group-table .asset-card-tags .user-card-meta,
-      body.option-master-mode .option-detail-table .asset-card-tags .user-card-meta {
+      body.option-master-mode .option-detail-table .asset-card-tags .user-card-meta,
+      body.watch-alert-list-mode .watch-alert-list-table .asset-card-tags .user-card-meta {
         flex: 1 0 100%;
         display: grid;
         gap: 3px;
@@ -10955,7 +10970,8 @@
       body.reported-board-mode .reported-board-table .asset-card-tags .user-card-meta-item,
       body.user-accounts-mode .comment-list-table .asset-card-tags .user-card-meta-item,
       body.option-master-mode .option-group-table .asset-card-tags .user-card-meta-item,
-      body.option-master-mode .option-detail-table .asset-card-tags .user-card-meta-item {
+      body.option-master-mode .option-detail-table .asset-card-tags .user-card-meta-item,
+      body.watch-alert-list-mode .watch-alert-list-table .asset-card-tags .user-card-meta-item {
         display: flex;
         align-items: baseline;
         justify-content: space-between;
@@ -10969,7 +10985,8 @@
       body.reported-board-mode .reported-board-table .asset-card-tags .user-card-meta-item span,
       body.user-accounts-mode .comment-list-table .asset-card-tags .user-card-meta-item span,
       body.option-master-mode .option-group-table .asset-card-tags .user-card-meta-item span,
-      body.option-master-mode .option-detail-table .asset-card-tags .user-card-meta-item span {
+      body.option-master-mode .option-detail-table .asset-card-tags .user-card-meta-item span,
+      body.watch-alert-list-mode .watch-alert-list-table .asset-card-tags .user-card-meta-item span {
         color: #485b75;
         font-size: 12px;
         font-weight: 700;
@@ -10980,7 +10997,8 @@
       body.reported-board-mode .reported-board-table .asset-card-tags .user-card-meta-item strong,
       body.user-accounts-mode .comment-list-table .asset-card-tags .user-card-meta-item strong,
       body.option-master-mode .option-group-table .asset-card-tags .user-card-meta-item strong,
-      body.option-master-mode .option-detail-table .asset-card-tags .user-card-meta-item strong {
+      body.option-master-mode .option-detail-table .asset-card-tags .user-card-meta-item strong,
+      body.watch-alert-list-mode .watch-alert-list-table .asset-card-tags .user-card-meta-item strong {
         color: #233a5c;
         font-size: 12px;
         font-weight: 400;
@@ -10992,14 +11010,16 @@
         white-space: nowrap;
       }
       body.option-master-mode .option-group-table .asset-card-tags .user-card-meta-item.comment-field-meta,
-      body.option-master-mode .option-detail-table .asset-card-tags .user-card-meta-item.comment-field-meta {
+      body.option-master-mode .option-detail-table .asset-card-tags .user-card-meta-item.comment-field-meta,
+      body.watch-alert-list-mode .watch-alert-list-table .asset-card-tags .user-card-meta-item.comment-field-meta {
         display: grid;
         grid-template-columns: max-content minmax(0, 50%);
         align-items: baseline;
         gap: 8px;
       }
       body.option-master-mode .option-group-table .asset-card-tags .user-card-meta-item.comment-field-meta strong,
-      body.option-master-mode .option-detail-table .asset-card-tags .user-card-meta-item.comment-field-meta strong {
+      body.option-master-mode .option-detail-table .asset-card-tags .user-card-meta-item.comment-field-meta strong,
+      body.watch-alert-list-mode .watch-alert-list-table .asset-card-tags .user-card-meta-item.comment-field-meta strong {
         width: 100%;
         max-width: 100%;
         min-width: 0;
@@ -11658,63 +11678,6 @@
         font-weight: 500;
         letter-spacing: .04em;
         line-height: 1;
-      }
-      body.watch-alert-list-mode .watch-alert-list-table .asset-row:not(.head) .desktop-user-name { display: none; }
-      body.watch-alert-list-mode .watch-alert-list-table .asset-row:not(.head) .mobile-user-card-title { display: inline; }
-      body.watch-alert-list-mode .watch-alert-list-table .asset-row:not(.head) .asset-card-tags {
-        grid-column: 1 / -1;
-        grid-row: 2;
-        display: flex;
-        flex-wrap: wrap;
-        gap: 9px;
-        padding-top: 0;
-      }
-      body.watch-alert-list-mode .watch-alert-list-table .asset-card-tags .user-card-meta {
-        flex: 1 0 100%;
-        display: grid;
-        gap: 3px;
-        width: 100%;
-        margin-top: 8px;
-        padding-top: 11px;
-        border-top: 1px solid #edf2f7;
-      }
-      body.watch-alert-list-mode .watch-alert-list-table .asset-card-tags .user-card-meta-item {
-        display: flex;
-        align-items: baseline;
-        justify-content: space-between;
-        gap: 8px;
-        color: #34445b;
-        font-size: 12px;
-        line-height: 1.35;
-      }
-      body.watch-alert-list-mode .watch-alert-list-table .asset-card-tags .user-card-meta-item span {
-        color: #485b75;
-        font-size: 12px;
-        font-weight: 700;
-        white-space: nowrap;
-      }
-      body.watch-alert-list-mode .watch-alert-list-table .asset-card-tags .user-card-meta-item strong {
-        color: #233a5c;
-        font-size: 12px;
-        font-weight: 400;
-        min-width: 0;
-        text-align: right;
-      }
-      body.watch-alert-list-mode .watch-alert-list-table .user-card-meta-item.comment-field-meta {
-        display: grid;
-        grid-template-columns: max-content minmax(0, 50%);
-        align-items: baseline;
-        gap: 8px;
-      }
-      body.watch-alert-list-mode .watch-alert-list-table .user-card-meta-item.comment-field-meta strong {
-        width: 100%;
-        max-width: 100%;
-        min-width: 0;
-        display: block;
-        overflow: hidden;
-        text-align: right;
-        text-overflow: ellipsis;
-        white-space: nowrap;
       }
       body.market-list-mode .panel-head {
         align-items: center;
