@@ -2849,7 +2849,7 @@
     }
 
     /* Search Insights trend chart — 7-day area chart (search volume + no-result), scoped to SI only */
-    .si-trend-wrap { display: flex; flex-direction: column; gap: 10px; }
+    .si-trend-wrap { display: flex; flex-direction: column; gap: 8px; }
     .si-trend-legend { display: flex; flex-wrap: wrap; gap: 14px; }
     .si-trend-legend-item {
       display: inline-flex; align-items: center; gap: 6px;
@@ -2859,7 +2859,7 @@
     .si-trend-swatch.is-volume { background: #2b6cb0; }
     .si-trend-swatch.is-noresult { background: #c53030; }
     .si-trend-plot {
-      display: flex; flex: 1 1 auto; min-height: 180px;
+      display: flex; flex: 1 1 auto; min-height: 140px;
     }
     .si-trend-track {
       position: relative; flex: 1 1 auto;
@@ -2952,8 +2952,9 @@
       border-radius: 999px;
     }
 
+    /* Search Insights — Trend และ Funnel อยู่แถวเดียวกันเป็น 2 คอลัมน์เหมือน panel อื่น */
     @media (max-width: 760px) {
-      .si-trend-plot { min-height: 140px; }
+      .si-trend-plot { min-height: 120px; }
       .si-trend-track { padding-left: 28px; }
       .si-trend-yaxis { width: 24px; }
       .si-trend-yaxis span { font-size: 8px; }
@@ -21983,15 +21984,13 @@
         "Search Volume": iconSvg.siSearch,
         "Popular Selections": iconSvg.siTag,
         "No-result Searches": iconSvg.siNoResult,
-        "Search-to-result": iconSvg.siConvert,
-        "Avg Results/Search": iconSvg.siSearch
+        "Search-to-result": iconSvg.siConvert
       };
       const siKpis = [
         { label: "Search Volume", value: "9,860", detail: "keyword submit + filter apply (7 วันล่าสุด)", trend: "+8.2%", trendLabel: "vs สัปดาห์ก่อน", trendDirection: "up", trendType: "positive", accent: "blue" },
         { label: "Popular Selections", value: "3,420", detail: "การเลือก Popular Filter tags (7 วันล่าสุด)", trend: "+12.4%", trendLabel: "vs สัปดาห์ก่อน", trendDirection: "up", trendType: "positive", accent: "green" },
         { label: "No-result Searches", value: "1,126", detail: "search/filter ที่ไม่พบผลลัพธ์ (7 วันล่าสุด)", trend: "-3.1%", trendLabel: "vs สัปดาห์ก่อน", trendDirection: "down", trendType: "positive", accent: "orange" },
-        { label: "Search-to-result", value: "88.6%", detail: "search ที่มีผลลัพธ์อย่างน้อย 1 รายการ", trend: "+1.8%", trendLabel: "vs สัปดาห์ก่อน", trendDirection: "up", trendType: "positive", accent: "purple" },
-        { label: "Avg Results/Search", value: "18.4", detail: "จำนวนผลลัพธ์เฉลี่ยต่อการค้นหา (7 วันล่าสุด)", trend: "+2.1", trendLabel: "vs สัปดาห์ก่อน", trendDirection: "up", trendType: "positive", accent: "blue" }
+        { label: "Search-to-result", value: "88.6%", detail: "search ที่มีผลลัพธ์อย่างน้อย 1 รายการ", trend: "+1.8%", trendLabel: "vs สัปดาห์ก่อน", trendDirection: "up", trendType: "positive", accent: "purple" }
       ];
       document.querySelector("#summary-grid").innerHTML = siKpis.map(k => {
         const trendIcon = k.trendDirection === "up" ? iconSvg.arrowUp : iconSvg.arrowDown;
@@ -22142,22 +22141,48 @@
         return `<div class="si-trend-gridline" style="top:${top.toFixed(2)}%"></div>`;
       }).join("");
       const trendYAxisHtml = trendYTicks.map(v => `<span>${v.toLocaleString()}</span>`).join("");
-      // SVG area chart — 2 series (volume + no-result)
-      const trendW = 700, trendH = 180, trendPad = 4;
+      // SVG area chart — 2 series (volume + no-result) พร้อม gradient และ smooth curve
+      const trendW = 700, trendH = 140, trendPad = 6;
       const trendX = (i) => trendPad + (i / (trendData.length - 1)) * (trendW - trendPad * 2);
       const trendY = (v) => trendH - trendPad - (v / trendNiceMax) * (trendH - trendPad * 2);
-      const volumePts = trendData.map((d, i) => `${trendX(i)},${trendY(d.volume)}`).join(" ");
-      const noResultPts = trendData.map((d, i) => `${trendX(i)},${trendY(d.noResult)}`).join(" ");
-      const volumeArea = `${trendPad},${trendH - trendPad} ${volumePts} ${trendW - trendPad},${trendH - trendPad}`;
-      const noResultArea = `${trendPad},${trendH - trendPad} ${noResultPts} ${trendW - trendPad},${trendH - trendPad}`;
+      // Smooth curve using Catmull-Rom-ish path (quadratic bezier through midpoints)
+      const smoothPath = (pts) => {
+        if (pts.length < 2) return "";
+        let d = `M ${pts[0].x} ${pts[0].y}`;
+        for (let i = 1; i < pts.length; i++) {
+          const prev = pts[i - 1];
+          const curr = pts[i];
+          const midX = (prev.x + curr.x) / 2;
+          const midY = (prev.y + curr.y) / 2;
+          d += ` Q ${prev.x} ${prev.y} ${midX} ${midY}`;
+        }
+        d += ` T ${pts[pts.length - 1].x} ${pts[pts.length - 1].y}`;
+        return d;
+      };
+      const volumePtsArr = trendData.map((d, i) => ({ x: trendX(i), y: trendY(d.volume) }));
+      const noResultPtsArr = trendData.map((d, i) => ({ x: trendX(i), y: trendY(d.noResult) }));
+      const volumePath = smoothPath(volumePtsArr);
+      const noResultPath = smoothPath(noResultPtsArr);
+      const volumeAreaPath = `${volumePath} L ${trendW - trendPad} ${trendH - trendPad} L ${trendPad} ${trendH - trendPad} Z`;
+      const noResultAreaPath = `${noResultPath} L ${trendW - trendPad} ${trendH - trendPad} L ${trendPad} ${trendH - trendPad} Z`;
       const trendSvgHtml = `
         <svg class="si-trend-svg" viewBox="0 0 ${trendW} ${trendH}" preserveAspectRatio="none" role="img" aria-label="Search volume and no-result trend over 7 days">
-          <polygon points="${volumeArea}" fill="rgba(43,108,176,.18)"></polygon>
-          <polyline points="${volumePts}" fill="none" stroke="#2b6cb0" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"></polyline>
-          <polygon points="${noResultArea}" fill="rgba(197,48,48,.14)"></polygon>
-          <polyline points="${noResultPts}" fill="none" stroke="#c53030" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" stroke-dasharray="4 3"></polyline>
-          ${trendData.map((d, i) => `<circle cx="${trendX(i)}" cy="${trendY(d.volume)}" r="3" fill="#2b6cb0"></circle>`).join("")}
-          ${trendData.map((d, i) => `<circle cx="${trendX(i)}" cy="${trendY(d.noResult)}" r="2.5" fill="#c53030"></circle>`).join("")}
+          <defs>
+            <linearGradient id="siVolGrad" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#2b6cb0" stop-opacity="0.28"></stop>
+              <stop offset="100%" stop-color="#2b6cb0" stop-opacity="0.04"></stop>
+            </linearGradient>
+            <linearGradient id="siNoResGrad" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#c53030" stop-opacity="0.22"></stop>
+              <stop offset="100%" stop-color="#c53030" stop-opacity="0.03"></stop>
+            </linearGradient>
+          </defs>
+          <path d="${volumeAreaPath}" fill="url(#siVolGrad)"></path>
+          <path d="${volumePath}" fill="none" stroke="#2b6cb0" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round"></path>
+          <path d="${noResultAreaPath}" fill="url(#siNoResGrad)"></path>
+          <path d="${noResultPath}" fill="none" stroke="#c53030" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round" stroke-dasharray="5 4"></path>
+          ${volumePtsArr.map(p => `<circle cx="${p.x}" cy="${p.y}" r="3" fill="#fff" stroke="#2b6cb0" stroke-width="1.8"></circle>`).join("")}
+          ${noResultPtsArr.map(p => `<circle cx="${p.x}" cy="${p.y}" r="2.5" fill="#fff" stroke="#c53030" stroke-width="1.5"></circle>`).join("")}
         </svg>
       `;
       const trendAxisHtml = trendData.map(d => `<span>${d.day}</span>`).join("");
@@ -22207,8 +22232,8 @@
       // Assemble all panels into #table
       document.querySelector("#table").innerHTML = `
         <div class="wa-overview-stack">
-          ${panel("Search Trend", "ปริมาณการค้นหาและ no-result รายวัน — 7 วันล่าสุด", trendChartHtml, "wa-panel-trend", "", "", true, "กราฟแสดงปริมาณการค้นหารวมและการค้นหาที่ไม่พบผลลัพธ์รายวัน ในช่วง 7 วันล่าสุด ใช้สำหรับดู trend และเปรียบเทียบช่วงเวลา")}
-          ${panel("Search Funnel", "Conversion จาก Search สู่ Action — 7 วันล่าสุด", funnelHtml, "wa-panel-funnel", "", "", true, "Funnel แสดงอัตราการเปลี่ยนผ่านจากการค้นหาสู่การคลิกผลลัพธ์ เปิด Asset Detail และสร้าง Watch Alert หรือ Make Offer เพื่อวัด quality ของ search result")}
+          ${panel("Search Trend", "ปริมาณการค้นหาและ no-result รายวัน — 7 วันล่าสุด • เฉลี่ย 18.4 ผลลัพธ์/การค้นหา", trendChartHtml, "si-panel-trend", "", "", true, "กราฟแสดงปริมาณการค้นหารวมและการค้นหาที่ไม่พบผลลัพธ์รายวัน ในช่วง 7 วันล่าสุด พร้อมค่าเฉลี่ยผลลัพธ์ต่อการค้นหา ใช้สำหรับดู trend และเปรียบเทียบช่วงเวลา")}
+          ${panel("Search Funnel", "Conversion จาก Search สู่ Action — 7 วันล่าสุด", funnelHtml, "si-panel-funnel", "", "", true, "Funnel แสดงอัตราการเปลี่ยนผ่านจากการค้นหาสู่การคลิกผลลัพธ์ เปิด Asset Detail และสร้าง Watch Alert หรือ Make Offer เพื่อวัด quality ของ search result")}
           ${panel("Popular Keywords", "คำค้นหาที่ผู้ใช้พิมพ์บ่อยที่สุด — 7 วันล่าสุด", barListHtml(insights.keywords, 5, siAccent.keywords), "wa-panel-keywords", "View All", `data-si-viewall="keywords"`, true, "แสดงคำค้นหาที่ผู้ใช้พิมพ์ในช่องค้นหาบ่อยที่สุด 5 อันดับแรก กด View All เพื่อดูสูงสุด 10 รายการ นับแบบ aggregate ในช่วง 7 วันล่าสุด")}
           ${panel("Popular Brands", "แบรนด์ที่ผู้ใช้เลือกบ่อยจากการค้นหา/กรอง — 7 วันล่าสุด", barListHtml(insights.brands, 5, siAccent.brands), "wa-panel-brands", "View All", `data-si-viewall="brands"`, true, "แสดงแบรนด์ที่ผู้ใช้เลือกจากการค้นหาและตัวกรองบ่อยที่สุด 5 อันดับแรก กด View All เพื่อดูสูงสุด 10 รายการ นับแบบ aggregate ในช่วง 7 วันล่าสุด")}
           ${panel("Popular Filters", "ตัวกรองที่ผู้ใช้เลือกบ่อยที่สุด — 7 วันล่าสุด", barListHtml(insights.filters, 5, siAccent.filters), "wa-panel-filters", "View All", `data-si-viewall="filters"`, true, "แสดงตัวกรองที่ผู้ใช้เลือกบ่อยที่สุด 5 อันดับแรก กด View All เพื่อดูสูงสุด 10 รายการ นับแบบ aggregate ในช่วง 7 วันล่าสุด")}
