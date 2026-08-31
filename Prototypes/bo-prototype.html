@@ -2900,6 +2900,32 @@
       width: 100%; height: 100%;
       display: block;
     }
+    .si-trend-dot { cursor: pointer; transition: r .15s ease; }
+    .si-trend-dot:hover { r: 6.5; }
+    .si-trend-tooltip {
+      position: absolute; z-index: 20;
+      padding: 10px 14px;
+      border: 1px solid #d4deec;
+      border-radius: 8px;
+      background: #ffffff;
+      box-shadow: 0 8px 24px rgba(15, 23, 42, .18);
+      color: #233a5c;
+      font-family: var(--font-main);
+      font-size: 13px; font-weight: 400; line-height: 1.5;
+      pointer-events: none; opacity: 0;
+      transition: opacity .12s ease;
+      transform: translate(-50%, -100%); margin-top: -10px;
+      white-space: nowrap;
+    }
+    .si-trend-tooltip.is-visible { opacity: 1; }
+    .si-trend-tooltip-day { font-size: 11px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; color: var(--muted); margin-bottom: 6px; }
+    .si-trend-tooltip-row { display: flex; align-items: center; gap: 8px; }
+    .si-trend-tooltip-row + .si-trend-tooltip-row { margin-top: 3px; }
+    .si-trend-tooltip-swatch { width: 8px; height: 8px; border-radius: 2px; flex: 0 0 auto; }
+    .si-trend-tooltip-swatch.is-volume { background: #2b6cb0; }
+    .si-trend-tooltip-swatch.is-noresult { background: #c53030; }
+    .si-trend-tooltip-label { font-size: 11px; color: #43546d; }
+    .si-trend-tooltip-val { font-family: var(--font-main); font-size: 11px; font-weight: 700; color: #08152a; margin-left: auto; }
     .si-trend-axis {
       display: grid; grid-template-columns: repeat(7, minmax(0, 1fr));
       gap: 4px; margin-left: 38px; margin-right: 8px;
@@ -22199,8 +22225,8 @@
           <path d="${volumePath}" fill="none" stroke="#2b6cb0" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round" vector-effect="non-scaling-stroke"></path>
           <path d="${noResultAreaPath}" fill="url(#siNoResGrad)"></path>
           <path d="${noResultPath}" fill="none" stroke="#c53030" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round" stroke-dasharray="5 4" vector-effect="non-scaling-stroke"></path>
-          ${volumePtsArr.map(p => `<circle cx="${p.x}" cy="${p.y}" r="4.5" fill="#fff" stroke="#2b6cb0" stroke-width="2" vector-effect="non-scaling-stroke"></circle>`).join("")}
-          ${noResultPtsArr.map(p => `<circle cx="${p.x}" cy="${p.y}" r="3.5" fill="#fff" stroke="#c53030" stroke-width="1.8" vector-effect="non-scaling-stroke"></circle>`).join("")}
+          ${volumePtsArr.map((p, i) => `<circle cx="${p.x}" cy="${p.y}" r="4.5" fill="#fff" stroke="#2b6cb0" stroke-width="2" vector-effect="non-scaling-stroke" class="si-trend-dot" data-si-day="${i}" role="img" aria-label="${trendData[i].day}: Search Volume ${trendData[i].volume.toLocaleString()}, No-result ${trendData[i].noResult.toLocaleString()}"></circle>`).join("")}
+          ${noResultPtsArr.map((p, i) => `<circle cx="${p.x}" cy="${p.y}" r="3.5" fill="#fff" stroke="#c53030" stroke-width="1.8" vector-effect="non-scaling-stroke" class="si-trend-dot" data-si-day="${i}"></circle>`).join("")}
         </svg>
       `;
       const trendAxisHtml = trendData.map(d => `<span>${d.day}</span>`).join("");
@@ -22215,6 +22241,7 @@
               <div class="si-trend-yaxis">${trendYAxisHtml}</div>
               <div class="si-trend-gridlines">${trendGridHtml}</div>
               ${trendSvgHtml}
+              <div class="si-trend-tooltip" id="siTrendTooltip" role="tooltip" aria-hidden="true"></div>
             </div>
           </div>
           <div class="si-trend-axis">${trendAxisHtml}</div>
@@ -22261,6 +22288,44 @@
         </div>
       `;
       document.querySelector("#cards").innerHTML = "";
+
+      // Trend chart tooltip — hover จุดกราฟเพื่อดูรายละเอียดของวันนั้น
+      const siTooltip = document.querySelector("#siTrendTooltip");
+      const siTrack = document.querySelector(".si-trend-track");
+      if (siTooltip && siTrack) {
+        const dayLabels = ["จันทร์", "อังคาร", "พุธ", "พฤหัสบดี", "ศุกร์", "เสาร์", "อาทิตย์"];
+        document.querySelectorAll(".si-trend-dot").forEach(dot => {
+          dot.addEventListener("mouseenter", () => {
+            const i = parseInt(dot.getAttribute("data-si-day"), 10);
+            const d = trendData[i];
+            const trackRect = siTrack.getBoundingClientRect();
+            const dotRect = dot.getBoundingClientRect();
+            const left = dotRect.left - trackRect.left + dotRect.width / 2;
+            const top = dotRect.top - trackRect.top;
+            siTooltip.style.left = `${left}px`;
+            siTooltip.style.top = `${top}px`;
+            siTooltip.innerHTML = `
+              <div class="si-trend-tooltip-day">${dayLabels[i]}</div>
+              <div class="si-trend-tooltip-row">
+                <span class="si-trend-tooltip-swatch is-volume"></span>
+                <span class="si-trend-tooltip-label">Search Volume</span>
+                <span class="si-trend-tooltip-val">${d.volume.toLocaleString()}</span>
+              </div>
+              <div class="si-trend-tooltip-row">
+                <span class="si-trend-tooltip-swatch is-noresult"></span>
+                <span class="si-trend-tooltip-label">No-result</span>
+                <span class="si-trend-tooltip-val">${d.noResult.toLocaleString()}</span>
+              </div>
+            `;
+            siTooltip.classList.add("is-visible");
+            siTooltip.setAttribute("aria-hidden", "false");
+          });
+          dot.addEventListener("mouseleave", () => {
+            siTooltip.classList.remove("is-visible");
+            siTooltip.setAttribute("aria-hidden", "true");
+          });
+        });
+      }
 
       // View All buttons → เปิด modal แสดง 10 รายการของหมวดนั้น
       document.querySelectorAll("[data-si-viewall]").forEach(btn => {
