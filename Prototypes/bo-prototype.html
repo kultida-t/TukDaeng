@@ -1856,15 +1856,18 @@
       overflow-y: visible;
     }
     body.watch-alert-list-mode .watch-alert-list-table {
+      width: 100%;
       min-width: 1280px;
     }
     body.watch-alert-list-mode #table > .footer-range {
+      width: 100%;
       min-width: 1280px;
     }
-    /* 10 คอลัมน์ — เอา Created ออก (มี Updated อยู่แล้ว)
+    /* 10 คอลัมน์ — balance ใหม่: ทุกคอลัมน์ขยายตามสัดส่วน (fr)
+       Alert Name/Criteria ไม่ดูดพื้นที่มากเกินไป เพราะมี tooltip สำรอง
        ผลรวม min (1010px) + 9 gaps (126px) + padding (40px) = 1176px ≤ min-width 1280px */
     body.watch-alert-list-mode .watch-alert-list-table .asset-row {
-      grid-template-columns: minmax(80px, .5fr) minmax(180px, 1.1fr) minmax(110px, .65fr) minmax(230px, 1.5fr) minmax(110px, .6fr) minmax(90px, .5fr) minmax(56px, .3fr) minmax(56px, .3fr) minmax(96px, .55fr) minmax(96px, .55fr);
+      grid-template-columns: minmax(80px, .6fr) minmax(150px, 1fr) minmax(100px, .7fr) minmax(170px, 1.1fr) minmax(110px, .75fr) minmax(84px, .55fr) minmax(56px, .35fr) minmax(56px, .35fr) minmax(96px, .6fr) minmax(96px, .6fr);
       column-gap: 14px;
     }
     body.watch-alert-list-mode .watch-alert-list-table .asset-row.head {
