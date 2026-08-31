@@ -1853,7 +1853,16 @@
        override กฎ body.watch-alert-mode ที่ซ่อน .filters
        ส่วน #user-panel-filter-actions (toggle + reset) แสดงเฉพาะ mobile ใน media query ด้านล่าง
        ใช้ body.watch-alert-mode.watch-alert-list-mode (specificity 0,2,1 > 0,1,1) */
-    body.watch-alert-mode.watch-alert-list-mode .filters { display: flex; }
+    body.watch-alert-mode.watch-alert-list-mode .filters {
+      display: flex;
+    }
+    /* WA-PTO-002b: ยกเลิกกรอบรอบ panel-head ที่มาจาก body.watch-alert-mode (border: 1px solid #d7e2f0)
+       ใน list mode ใช้แค่ border-bottom เหมือน panel-head ปกติ ไม่งั้นเห็นกรอบซ้อนกรอบ */
+    body.watch-alert-mode.watch-alert-list-mode .layout > .panel > .panel-head {
+      border: 0;
+      border-bottom: 1px solid var(--line);
+      border-radius: var(--radius) var(--radius) 0 0;
+    }
     body.watch-alert-list-mode #table {
       overflow-x: auto;
       overflow-y: visible;
@@ -22800,7 +22809,7 @@
       document.querySelector("#page-title").textContent = "Watch Alert List";
       document.querySelector("#page-meta").textContent = `Last updated ${formatBangkokTimestamp()}`;
       document.querySelector("#panel-title").textContent = "Watch Alert List";
-      document.querySelector("#panel-subtitle").textContent = "รายการ Watch Alert ทั้งหมด (รวมที่ user ลบแล้ว) — read-only";
+      document.querySelector("#panel-subtitle").textContent = "";
       document.querySelector("#primary-action").textContent = "";
       document.querySelector("#summary-grid").innerHTML = "";
 
