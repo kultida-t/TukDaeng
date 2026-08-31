@@ -1990,25 +1990,22 @@
     body.watch-alert-list-mode .watch-alert-list-table .wa-notif-on { color: #07734f; }
     body.watch-alert-list-mode .watch-alert-list-table .wa-notif-off { color: #6d7f98; }
 
-    /* WA-PTO-002b: Alert List toolbar — filter bar ใช้ flex-wrap เหมือน Option Master
-       รองรับ filter หลายตัว (7 select + 4 date input + search + reset)
+    /* WA-PTO-002b: Alert List toolbar — filter bar ใช้ flex-wrap
+       รองรับ filter 5 select + 2 date range + reset
        scope เฉพาะ body.watch-alert-list-mode เพื่อไม่กระทบ protected screens */
     body.watch-alert-list-mode .user-filter-bar.wa-alert-filter-bar {
       display: flex;
-      gap: 8px;
+      gap: 10px 12px;
       flex-wrap: wrap;
       width: 100%;
       align-items: stretch;
     }
-    body.watch-alert-list-mode .user-filter-bar.wa-alert-filter-bar .search {
-      flex: 1 1 220px;
-      min-width: 220px;
-    }
     body.watch-alert-list-mode .user-filter-bar.wa-alert-filter-bar .user-advanced-filter {
-      flex: 0 0 auto;
+      flex: 1 1 150px;
+      min-width: 140px;
     }
     body.watch-alert-list-mode .user-filter-bar.wa-alert-filter-bar .custom-select {
-      min-width: 130px;
+      min-width: 140px;
     }
     body.watch-alert-list-mode .user-filter-bar.wa-alert-filter-bar .custom-select,
     body.watch-alert-list-mode .user-filter-bar.wa-alert-filter-bar .custom-select-trigger {
@@ -2028,10 +2025,10 @@
       white-space: nowrap;
     }
     body.watch-alert-list-mode .user-filter-bar.wa-alert-filter-bar .filter-reset {
-      width: 42px;
+      width: 48px;
       height: 48px;
       min-height: 48px;
-      flex: 0 0 42px;
+      flex: 0 0 48px;
       padding: 0;
       border-color: #cfdbea;
       background: #fff;
@@ -2046,15 +2043,15 @@
       clip: rect(0, 0, 0, 0);
       white-space: nowrap;
     }
-    /* WA-PTO-002b: date range filter — 2 date inputs + sep ใน wrapper .wa-alert-date-range */
+    /* WA-PTO-002b: date range filter — label + 2 date inputs + sep ใน wrapper .wa-alert-date-range */
     body.watch-alert-list-mode .user-filter-bar.wa-alert-filter-bar .wa-alert-date-range {
       display: flex;
-      gap: 4px;
+      gap: 6px;
       align-items: center;
       flex: 0 0 auto;
     }
     body.watch-alert-list-mode .user-filter-bar.wa-alert-filter-bar .wa-alert-date-range input[type="date"] {
-      width: 140px;
+      width: 138px;
       min-height: 48px;
       border: 1px solid #cfdbea;
       border-radius: 7px;
@@ -2086,6 +2083,7 @@
       font-size: 12px;
       font-weight: 700;
       white-space: nowrap;
+      margin-right: 2px;
     }
 
     body.article-list-mode #primary-action,
