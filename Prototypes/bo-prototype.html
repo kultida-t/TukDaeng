@@ -2849,8 +2849,18 @@
     }
 
     /* Search Insights trend chart — 7-day area chart (search volume + no-result), scoped to SI only */
-    .si-trend-wrap { display: flex; flex-direction: column; gap: 8px; }
-    .si-trend-legend { display: flex; flex-wrap: wrap; gap: 14px; justify-content: flex-end; }
+    .si-trend-wrap { display: flex; flex-direction: column; gap: 6px; }
+    /* Trend panel อยู่ใน grid 2 คอลัมน์กับ Funnel — legend กึ่งกลางระหว่าง panel head กับกราฟ */
+    .si-panel-trend .wa-overview-body {
+      display: flex; flex-direction: column;
+      flex: 1 1 auto;
+    }
+    .si-panel-trend .si-trend-wrap { flex: 1 1 auto; }
+    .si-trend-legend {
+      flex: 1 1 auto; display: flex; align-items: center;
+      flex-wrap: wrap; gap: 14px; justify-content: flex-end;
+    }
+    .si-trend-plot { flex: 0 0 auto; }
     .si-trend-legend-item {
       display: inline-flex; align-items: center; gap: 6px;
       color: #43546d; font-size: 12px; font-weight: 600;
@@ -2860,7 +2870,7 @@
     .si-trend-swatch.is-noresult { background: #c53030; }
     .si-trend-plot {
       display: flex; flex: 1 1 auto; min-height: 140px;
-      padding-top: 12px;
+      padding-top: 6px;
     }
     .si-trend-track {
       position: relative; flex: 1 1 auto;
@@ -2892,7 +2902,7 @@
     }
     .si-trend-axis {
       display: grid; grid-template-columns: repeat(7, minmax(0, 1fr));
-      gap: 4px; margin-top: 6px; margin-left: 38px; margin-right: 8px;
+      gap: 4px; margin-left: 38px; margin-right: 8px;
     }
     .si-trend-axis span {
       color: #8595ad; font-size: 10px; font-weight: 600;
@@ -2901,7 +2911,7 @@
     }
     .si-trend-xtitle {
       color: #43546d; font-size: 10px; font-weight: 700;
-      text-align: center; margin-top: 4px; margin-left: 38px;
+      text-align: center; margin-left: 38px;
     }
 
     /* Search Insights funnel — Search → Result Click → Asset Detail → Watch Alert/Offer */
