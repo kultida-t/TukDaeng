@@ -1861,11 +1861,10 @@
     body.watch-alert-list-mode #table > .footer-range {
       min-width: 1280px;
     }
-    /* 11 คอลัมน์ — ปรับ balance ให้อ่านง่ายไม่เบียด
-       Alert Name ให้พื้นที่มากขึ้น, Criteria มี tooltip สำรองจึงใช้ ellipsis ได้
-       ผลรวม min (1100px) + 10 gaps (140px) + padding (40px) = 1280px = min-width */
+    /* 10 คอลัมน์ — เอา Created ออก (มี Updated อยู่แล้ว)
+       ผลรวม min (1010px) + 9 gaps (126px) + padding (40px) = 1176px ≤ min-width 1280px */
     body.watch-alert-list-mode .watch-alert-list-table .asset-row {
-      grid-template-columns: minmax(80px, .45fr) minmax(170px, 1.05fr) minmax(100px, .6fr) minmax(200px, 1.3fr) minmax(100px, .55fr) minmax(84px, .45fr) minmax(48px, .25fr) minmax(48px, .25fr) minmax(90px, .5fr) minmax(90px, .5fr) minmax(90px, .5fr);
+      grid-template-columns: minmax(80px, .5fr) minmax(180px, 1.1fr) minmax(110px, .65fr) minmax(230px, 1.5fr) minmax(110px, .6fr) minmax(90px, .5fr) minmax(56px, .3fr) minmax(56px, .3fr) minmax(96px, .55fr) minmax(96px, .55fr);
       column-gap: 14px;
     }
     body.watch-alert-list-mode .watch-alert-list-table .asset-row.head {
@@ -22699,7 +22698,6 @@
           <div>Matches</div>
           <div>Triggers</div>
           <div>Last Triggered</div>
-          <div>Created</div>
           <div>Updated</div>
         </div>
       `;
@@ -22707,7 +22705,6 @@
       const rowsHtml = pageRows.map(alert => {
         const ownerName = alert.owner?.displayName || "—";
         const lastTriggered = alert.lastTriggered ? formatWaDate(alert.lastTriggered) : "—";
-        const created = formatWaDate(alert.created);
         const updated = formatWaDate(alert.updated);
         return `
           <div class="asset-row" data-wa-alert-open="${esc(alert.id)}" data-wa-alert-card="${esc(alert.id)}">
@@ -22727,7 +22724,6 @@
                 <div class="user-card-meta-item comment-field-meta"><span>Matches</span><strong>${alert.matchCount}</strong></div>
                 <div class="user-card-meta-item comment-field-meta"><span>Triggers</span><strong>${alert.triggerCount}</strong></div>
                 <div class="user-card-meta-item comment-field-meta"><span>Last Triggered</span><strong>${lastTriggered}</strong></div>
-                <div class="user-card-meta-item comment-field-meta"><span>Created</span><strong>${created}</strong></div>
                 <div class="user-card-meta-item comment-field-meta"><span>Updated</span><strong>${updated}</strong></div>
               </div>
             </div>
@@ -22740,7 +22736,6 @@
             <div data-label="Matches"><div class="main-text">${alert.matchCount}</div></div>
             <div data-label="Triggers"><div class="main-text">${alert.triggerCount}</div></div>
             <div data-label="Last Triggered"><div class="main-text">${lastTriggered}</div></div>
-            <div data-label="Created"><div class="main-text">${created}</div></div>
             <div data-label="Updated"><div class="main-text">${updated}</div></div>
           </div>
         `;
