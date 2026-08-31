@@ -2407,9 +2407,9 @@
       border-radius: var(--radius) var(--radius) 0 0;
       background: #fff;
     }
-    /* Demand Overview: เอากรอบ/หัวกรอบนอกออก — ชื่อซ้ำกับ page title และกรอบซ้อนกรอบ
+    /* Demand Overview + Search Insights: เอากรอบ/หัวกรอบนอกออก — ชื่อซ้ำกับ page title และกรอบซ้อนกรอบ
        แต่ละส่วนมีหัวข้อของตัวเองอยู่แล้ว จึงไม่ต้องมี panel-head นอกครอบอีกที
-       scope เฉพาะ watch-alert-overview-mode เพื่อไม่กระทบ Alert List / Alert Detail */
+       scope เฉพาะ watch-alert-overview-mode (Demand Overview + Search Insights) เพื่อไม่กระทบ Alert List / Alert Detail */
     body.watch-alert-overview-mode .layout > .panel {
       border: 0;
       background: transparent;
@@ -19148,7 +19148,7 @@
       document.body.classList.toggle("market-list-mode", id === "market");
       document.body.classList.toggle("market-dashboard-mode", id === "market" && (subLabel || "Dashboard") === "Dashboard");
       document.body.classList.toggle("watch-alert-mode", id === "watch-alerts");
-      document.body.classList.toggle("watch-alert-overview-mode", id === "watch-alerts" && (subLabel || "Demand Overview") === "Demand Overview");
+      document.body.classList.toggle("watch-alert-overview-mode", id === "watch-alerts" && ((subLabel || "Demand Overview") === "Demand Overview" || subLabel === "Search Insights"));
       document.body.classList.toggle("watch-alert-list-mode", id === "watch-alerts" && (subLabel === "Watch Alert List" || subLabel === "Alert List"));
       document.body.classList.toggle("user-list-mode", id === "users" || isReportedAssets || isReportedBoard || isReportedComments);
       document.body.classList.toggle("user-accounts-mode", id === "users" && (subLabel || "User Accounts") === "User Accounts");
