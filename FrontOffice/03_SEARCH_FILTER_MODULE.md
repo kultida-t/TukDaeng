@@ -275,6 +275,7 @@ Entity/option ที่ `is_active=false` (inactive market data หรือ dea
 
 - หน้า Search แสดง quick-selection tags ที่เกี่ยวข้องกับการค้นหาหรือหมวดที่ระบบกำหนด โดยจำกัดจำนวนตามพื้นที่ของหน้าจอ (prototype ปัจจุบันแสดงประมาณ 10 รายการ)
 - หน้า Filter แสดง Popular Filter tags แยกตามหมวด เช่น Brand, Model หรือ option master ก่อนรายการเต็ม
+- ในหมวด Model หาก User เลือก Brand ไปแล้ว ให้แสดง Popular Model ของ Brand ที่เลือก (context-aware) สูงสุด 10 อันดับแรก ก่อนรายการ Model เต็มของ Brand นั้น — ดูรายละเอียดเพิ่มเติมที่ Filter Dependency Rule
 - User เลือกจาก tag ได้โดยตรง หรือเลือกจากรายการเต็มและค้นหาด้วยช่อง Search ได้เหมือนเดิม
 - Popular Filter ต้องไม่ตัดตัวเลือกอื่นออกจากรายการเต็ม และต้องไม่เปลี่ยนผลลัพธ์ของ Search/Filter logic
 - การจัดอันดับต้องใช้ข้อมูล aggregate และไม่แสดงข้อมูลที่ระบุตัว user รายบุคคล
@@ -335,6 +336,22 @@ Filter ทำงานแบบ dependent
 Brand = Rolex
 → Model แสดงเฉพาะ Model ของ Rolex
 ```
+
+กรณีเลือกหลาย Brand:
+
+```text
+Brand = Rolex + Omega
+→ Model แสดงเฉพาะ Model ของ Rolex และ Omega รวมกัน
+→ ในบรรดา Model ที่เข้าเงื่อนไข ให้เรียงตามความนิยม (Popular Model) แสดงสูงสุด 10 อันดับแรกก่อน ตามด้วยรายการเต็มตามลำดับปกติ
+```
+
+กฎเพิ่มเติมสำหรับ Popular Model ใน context ที่เลือก Brand แล้ว:
+
+- ระบบคำนวณ Popular Model จากข้อมูล aggregate ของการเลือก Model ในหมวด Brand ที่ผู้ใช้เลือก (เช่น Rolex + Omega) เท่านั้น ไม่ใช่ Popular Model รวมทุกแบรนด์
+- การจัดอันดับ Popular Model ต้องใช้ข้อมูล aggregate และไม่แสดงข้อมูลที่ระบุตัว user รายบุคคล
+- หากยังไม่มีข้อมูลเพียงพอ ให้แสดงรายการ Model ตามลำดับปกติโดยไม่แสดง Popular Model section
+- Popular Model ต้องไม่ตัด Model อื่นออกจากรายการเต็ม และต้องไม่เปลี่ยนผลลัพธ์ของ Search/Filter logic
+- Model ที่มี no current listing (จำนวน `(0)`) ยังเลือกได้ตาม Filter Visibility Rule หากเป็น active market data
 
 ## Multiple Filter Rule
 
@@ -629,10 +646,12 @@ Search Result ต้องรองรับ:
 - Clear Filter
 - Sort Search Result
 - Search Result Click
+- Search Result Impression (สำหรับคำนวณ click-through rate ใน Search Insights)
 - Open Asset Detail From Search
 - Open Public Profile From Search
 - Create Watch Alert
 - Watch Alert Result Open
+- Make Offer From Search (สำหรับคำนวณ Search Funnel ใน Search Insights)
 
 ---
 
@@ -666,6 +685,9 @@ Search Result ต้องรองรับ:
 | AC-SEARCH-009C | หน้า Search และหน้า Filter ต้องแสดง Popular Filter/Popular Selection tags จากข้อมูล aggregate ตามหมวดที่เกี่ยวข้อง โดย user ยังเลือกจากรายการเต็มได้ |
 | AC-SEARCH-009D | Popular Filter ต้องไม่ตัดตัวเลือกอื่นออก ไม่เปลี่ยน Search/Filter logic และไม่เปิดเผยข้อมูลที่ระบุตัว user รายบุคคล |
 | AC-SEARCH-010 | Brand → Model ต้องเป็น Dependent Filter |
+| AC-SEARCH-010A | เมื่อเลือกหลาย Brand (เช่น Rolex + Omega) Model filter ต้องแสดงเฉพาะ Model ของ Brand ที่เลือกทั้งหมดรวมกัน |
+| AC-SEARCH-010B | ใน Model filter ที่กรองตาม Brand แล้ว ต้องแสดง Popular Model สูงสุด 10 อันดับแรกของ Brand ที่เลือก (context-aware aggregate) ก่อนรายการเต็ม โดยไม่ตัด Model อื่นออก |
+| AC-SEARCH-010C | Popular Model ใน Model filter ต้องใช้ข้อมูล aggregate ของ Brand ที่เลือกเท่านั้น ไม่ใช่ Popular Model รวมทุกแบรนด์ และต้องไม่เปิดเผยข้อมูลที่ระบุตัว user รายบุคคล |
 | AC-SEARCH-011 | Multiple Filter ต้องใช้ AND Logic |
 | AC-SEARCH-012 | Apply Filters ต้องอัปเดต Search Result ตามเงื่อนไขที่เลือก |
 | AC-SEARCH-013 | Clear Filters ต้องล้างเงื่อนไขทั้งหมดและอัปเดต Search Result |

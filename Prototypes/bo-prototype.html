@@ -2848,6 +2848,121 @@
       margin: 0;
     }
 
+    /* Search Insights trend chart — 7-day area chart (search volume + no-result), scoped to SI only */
+    .si-trend-wrap { display: flex; flex-direction: column; gap: 10px; }
+    .si-trend-legend { display: flex; flex-wrap: wrap; gap: 14px; }
+    .si-trend-legend-item {
+      display: inline-flex; align-items: center; gap: 6px;
+      color: #43546d; font-size: 12px; font-weight: 600;
+    }
+    .si-trend-swatch { width: 12px; height: 12px; border-radius: 3px; flex: 0 0 auto; }
+    .si-trend-swatch.is-volume { background: #2b6cb0; }
+    .si-trend-swatch.is-noresult { background: #c53030; }
+    .si-trend-plot {
+      display: flex; flex: 1 1 auto; min-height: 180px;
+    }
+    .si-trend-track {
+      position: relative; flex: 1 1 auto;
+      padding-left: 38px; padding-right: 8px;
+      border-bottom: 1px solid #cbd5e1;
+    }
+    .si-trend-yaxis {
+      position: absolute; left: 0; top: 0; bottom: 0;
+      width: 32px; display: flex; flex-direction: column;
+      justify-content: space-between; align-items: flex-end;
+      padding-right: 6px;
+    }
+    .si-trend-yaxis span {
+      color: #8595ad; font-size: 9px; font-weight: 600;
+      line-height: 1; white-space: nowrap;
+    }
+    .si-trend-gridlines {
+      position: absolute; left: 38px; right: 8px; top: 0; bottom: 0;
+      pointer-events: none;
+    }
+    .si-trend-gridline {
+      position: absolute; left: 0; right: 0;
+      border-top: 1px dashed #e2e8f0;
+    }
+    .si-trend-svg {
+      position: relative; z-index: 2;
+      width: 100%; height: 100%;
+      display: block;
+    }
+    .si-trend-axis {
+      display: grid; grid-template-columns: repeat(7, minmax(0, 1fr));
+      gap: 4px; margin-top: 6px; margin-left: 38px; margin-right: 8px;
+    }
+    .si-trend-axis span {
+      color: #8595ad; font-size: 10px; font-weight: 600;
+      text-align: center; overflow: hidden;
+      text-overflow: ellipsis; white-space: nowrap;
+    }
+    .si-trend-xtitle {
+      color: #43546d; font-size: 10px; font-weight: 700;
+      text-align: center; margin-top: 4px; margin-left: 38px;
+    }
+
+    /* Search Insights funnel — Search → Result Click → Asset Detail → Watch Alert/Offer */
+    .si-funnel-wrap { display: flex; flex-direction: column; gap: 8px; }
+    .si-funnel-row {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 12px; align-items: center;
+      padding: 10px 14px;
+      border-radius: 7px;
+      background: #f2f5f9;
+      border: 1px solid #d5dfeb;
+    }
+    .si-funnel-row.is-step-1 { background: #2b6cb0; border-color: #2461a6; color: #fff; }
+    .si-funnel-row.is-step-2 { background: #2f855a; border-color: #276749; color: #fff; }
+    .si-funnel-row.is-step-3 { background: #c05621; border-color: #9c4a1c; color: #fff; }
+    .si-funnel-row.is-step-4 { background: #6b46c1; border-color: #553c9a; color: #fff; }
+    .si-funnel-label {
+      display: flex; flex-direction: column; gap: 2px;
+      min-width: 0;
+    }
+    .si-funnel-step {
+      font-size: 11px; font-weight: 700;
+      opacity: .82; letter-spacing: .04em; text-transform: uppercase;
+    }
+    .si-funnel-name {
+      font-size: 14px; font-weight: 700;
+      overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+    }
+    .si-funnel-metric {
+      display: flex; flex-direction: column; align-items: flex-end; gap: 2px;
+      flex: 0 0 auto;
+    }
+    .si-funnel-value {
+      font-family: var(--font-heading);
+      font-size: 22px; font-weight: 800; line-height: 1;
+    }
+    .si-funnel-pct {
+      font-size: 11px; font-weight: 700; opacity: .82;
+    }
+    .si-funnel-bar {
+      height: 6px; border-radius: 999px;
+      background: rgba(255,255,255,.25);
+      overflow: hidden; margin-top: 6px;
+    }
+    .si-funnel-bar-fill {
+      display: block; height: 100%;
+      background: rgba(255,255,255,.85);
+      border-radius: 999px;
+    }
+
+    @media (max-width: 760px) {
+      .si-trend-plot { min-height: 140px; }
+      .si-trend-track { padding-left: 28px; }
+      .si-trend-yaxis { width: 24px; }
+      .si-trend-yaxis span { font-size: 8px; }
+      .si-trend-axis { margin-left: 28px; }
+      .si-trend-xtitle { margin-left: 28px; }
+      .si-funnel-value { font-size: 18px; }
+      .si-funnel-name { font-size: 13px; }
+    }
+
     /* Stat bar list — dot + label + count + percent, full-width bar (Family Office composition pattern) */
     .wa-stat-bar-list {
       display: grid;
@@ -21868,13 +21983,15 @@
         "Search Volume": iconSvg.siSearch,
         "Popular Selections": iconSvg.siTag,
         "No-result Searches": iconSvg.siNoResult,
-        "Search-to-result": iconSvg.siConvert
+        "Search-to-result": iconSvg.siConvert,
+        "Avg Results/Search": iconSvg.siSearch
       };
       const siKpis = [
-        { label: "Search Volume", value: "18,420", detail: "keyword submit + filter apply (7 วันล่าสุด)", trend: "+8.2%", trendLabel: "vs สัปดาห์ก่อน", trendDirection: "up", trendType: "positive", accent: "blue" },
-        { label: "Popular Selections", value: "12,860", detail: "การเลือก Popular Filter tags (7 วันล่าสุด)", trend: "+12.4%", trendLabel: "vs สัปดาห์ก่อน", trendDirection: "up", trendType: "positive", accent: "green" },
+        { label: "Search Volume", value: "9,860", detail: "keyword submit + filter apply (7 วันล่าสุด)", trend: "+8.2%", trendLabel: "vs สัปดาห์ก่อน", trendDirection: "up", trendType: "positive", accent: "blue" },
+        { label: "Popular Selections", value: "3,420", detail: "การเลือก Popular Filter tags (7 วันล่าสุด)", trend: "+12.4%", trendLabel: "vs สัปดาห์ก่อน", trendDirection: "up", trendType: "positive", accent: "green" },
         { label: "No-result Searches", value: "1,126", detail: "search/filter ที่ไม่พบผลลัพธ์ (7 วันล่าสุด)", trend: "-3.1%", trendLabel: "vs สัปดาห์ก่อน", trendDirection: "down", trendType: "positive", accent: "orange" },
-        { label: "Search-to-result", value: "82.4%", detail: "search ที่มีผลลัพธ์อย่างน้อย 1 รายการ", trend: "+1.8%", trendLabel: "vs สัปดาห์ก่อน", trendDirection: "up", trendType: "positive", accent: "purple" }
+        { label: "Search-to-result", value: "88.6%", detail: "search ที่มีผลลัพธ์อย่างน้อย 1 รายการ", trend: "+1.8%", trendLabel: "vs สัปดาห์ก่อน", trendDirection: "up", trendType: "positive", accent: "purple" },
+        { label: "Avg Results/Search", value: "18.4", detail: "จำนวนผลลัพธ์เฉลี่ยต่อการค้นหา (7 วันล่าสุด)", trend: "+2.1", trendLabel: "vs สัปดาห์ก่อน", trendDirection: "up", trendType: "positive", accent: "blue" }
       ];
       document.querySelector("#summary-grid").innerHTML = siKpis.map(k => {
         const trendIcon = k.trendDirection === "up" ? iconSvg.arrowUp : iconSvg.arrowDown;
@@ -21902,20 +22019,20 @@
       // Aggregate data — 7 วันล่าสุด (mock) — 10 รายการต่อหมวด, panel แสดง 5 รายการแรก, modal แสดง 10 รายการ
       const insights = {
         keywords: [
-          { label: "Rolex", value: 4820 }, { label: "Submariner", value: 2940 }, { label: "GMT-Master II", value: 2180 }, { label: "Datejust", value: 1760 }, { label: "Speedmaster", value: 1420 },
-          { label: "Daytona", value: 1180 }, { label: "Aquanaut", value: 940 }, { label: "Royal Oak", value: 820 }, { label: "Nautilus", value: 760 }, { label: "Moonwatch", value: 620 }
+          { label: "Rolex", value: 2480 }, { label: "Submariner", value: 1620 }, { label: "GMT-Master II", value: 1180 }, { label: "Datejust", value: 940 }, { label: "Speedmaster", value: 760 },
+          { label: "Daytona", value: 620 }, { label: "Aquanaut", value: 480 }, { label: "Royal Oak", value: 420 }, { label: "Nautilus", value: 380 }, { label: "Moonwatch", value: 310 }
         ],
         brands: [
-          { label: "Rolex", value: 3218 }, { label: "Omega", value: 1684 }, { label: "Seiko", value: 1205 }, { label: "Tudor", value: 892 }, { label: "Cartier", value: 640 },
-          { label: "Patek Philippe", value: 584 }, { label: "Audemars Piguet", value: 520 }, { label: "Grand Seiko", value: 416 }, { label: "IWC", value: 368 }, { label: "Breitling", value: 312 }
+          { label: "Rolex", value: 1684 }, { label: "Omega", value: 892 }, { label: "Seiko", value: 620 }, { label: "Tudor", value: 480 }, { label: "Cartier", value: 340 },
+          { label: "Patek Philippe", value: 296 }, { label: "Audemars Piguet", value: 264 }, { label: "Grand Seiko", value: 218 }, { label: "IWC", value: 184 }, { label: "Breitling", value: 156 }
         ],
         filters: [
-          { label: "Price: ฿100,000–฿300,000", value: 2480 }, { label: "Condition: Like New", value: 1920 }, { label: "Dial color: Black", value: 1680 }, { label: "Reference: 16610", value: 1120 }, { label: "Case size: 40–42mm", value: 980 },
-          { label: "Year: 2020–2024", value: 840 }, { label: "Box & Papers", value: 720 }, { label: "Automatic", value: 680 }, { label: "Condition: Unworn", value: 590 }, { label: "Dial color: Blue", value: 520 }
+          { label: "Price: ฿100,000–฿300,000", value: 1280 }, { label: "Condition: Like New", value: 980 }, { label: "Dial color: Black", value: 840 }, { label: "Reference: 16610", value: 560 }, { label: "Case size: 40–42mm", value: 480 },
+          { label: "Year: 2020–2024", value: 420 }, { label: "Box & Papers", value: 360 }, { label: "Automatic", value: 340 }, { label: "Condition: Unworn", value: 296 }, { label: "Dial color: Blue", value: 264 }
         ],
         noResult: [
-          { label: "Rolex Daytona / ฿300,000", value: 428 }, { label: "Seiko 6139 / Blue dial", value: 286 }, { label: "Patek Calatrava / ฿1M", value: 194 }, { label: "GMT-Master II / 126710", value: 118 },
-          { label: "Submariner / Green bezel", value: 104 }, { label: "Royal Oak / 39mm", value: 92 }, { label: "Speedmaster / Snoopy", value: 76 }, { label: "Cartier Tank / Gold", value: 64 }, { label: "Tudor / Burgundy", value: 52 }, { label: "IWC Pilot / Blue", value: 41 }
+          { label: "Rolex Daytona / ฿300,000", value: 218 }, { label: "Seiko 6139 / Blue dial", value: 142 }, { label: "Patek Calatrava / ฿1M", value: 96 }, { label: "GMT-Master II / 126710", value: 58 },
+          { label: "Submariner / Green bezel", value: 52 }, { label: "Royal Oak / 39mm", value: 46 }, { label: "Speedmaster / Snoopy", value: 38 }, { label: "Cartier Tank / Gold", value: 32 }, { label: "Tudor / Burgundy", value: 26 }, { label: "IWC Pilot / Blue", value: 21 }
         ]
       };
       const insightsMeta = {
@@ -21942,11 +22059,17 @@
         </article>
       `;
 
-      // statBarRow helper (เดียวกับ Demand Overview) — dot + label + count + percent + full-width bar
+      // statBarRow helper — dot + label + count + percent + full-width bar
+      // Search Insights: ใช้สีเดียวต่อ panel (semantic) แทนการวน 8 สี เพื่อให้สายตาแยกหมวดได้ทันที
+      //   keywords → น้ำเงิน (informational)
+      //   brands   → เขียว (positive)
+      //   filters  → อำพัน (action)
+      //   noResult → แดง (problem)
       const statTotal = (items) => items.reduce((s, i) => s + i.value, 0) || 1;
-      const statBarRow = (item, idx, total) => {
+      const siAccent = { keywords: "#2b6cb0", brands: "#2f855a", filters: "#c05621", noResult: "#c53030" };
+      const statBarRow = (item, idx, total, accent) => {
         const pct = Math.round((item.value / total) * 100);
-        const color = brandColors[idx % brandColors.length];
+        const color = accent || brandColors[idx % brandColors.length];
         return `
           <div class="wa-stat-bar-row wa-stat-bar-row-static">
             <span class="wa-stat-bar-top">
@@ -21963,10 +22086,10 @@
           </div>
         `;
       };
-      const barListHtml = (items, limit = 0) => {
+      const barListHtml = (items, limit = 0, accent) => {
         const list = limit > 0 ? items.slice(0, limit) : items;
         const total = statTotal(items);
-        return `<div class="wa-stat-bar-list">${list.map((item, idx) => statBarRow(item, idx, total)).join("")}</div>`;
+        return `<div class="wa-stat-bar-list">${list.map((item, idx) => statBarRow(item, idx, total, accent)).join("")}</div>`;
       };
 
       // Search Insights View All modal — reuse user-action-modal เหมือน Demand Overview
@@ -21976,7 +22099,7 @@
         const items = insights[siModalSection] || [];
         const total = statTotal(items);
         const rowsHtml = items.length
-          ? items.map((item, idx) => statBarRow(item, idx, total)).join("")
+          ? items.map((item, idx) => statBarRow(item, idx, total, siAccent[siModalSection])).join("")
           : `<div class="detail-empty">ไม่มีข้อมูล</div>`;
         const modalBody = document.querySelector("#user-action-modal-body");
         modalBody.innerHTML = `
@@ -22001,13 +22124,95 @@
         showUserActionModal(true);
       };
 
+      // Search Trend — 7 วันล่าสุด (mock)
+      const trendData = [
+        { day: "จ", volume: 1280, noResult: 168 },
+        { day: "อ", volume: 1140, noResult: 142 },
+        { day: "พ", volume: 1520, noResult: 196 },
+        { day: "พฤ", volume: 1380, noResult: 174 },
+        { day: "ศ", volume: 1640, noResult: 218 },
+        { day: "ส", volume: 1420, noResult: 142 },
+        { day: "อา", volume: 1480, noResult: 86 }
+      ];
+      const trendMax = Math.max(...trendData.map(d => d.volume)) * 1.15;
+      const trendNiceMax = Math.ceil(trendMax / 500) * 500;
+      const trendYTicks = [4, 3, 2, 1, 0].map(i => Math.round(trendNiceMax * i / 4));
+      const trendGridHtml = trendYTicks.filter(v => v > 0).map(v => {
+        const top = 100 - (v / trendNiceMax) * 96;
+        return `<div class="si-trend-gridline" style="top:${top.toFixed(2)}%"></div>`;
+      }).join("");
+      const trendYAxisHtml = trendYTicks.map(v => `<span>${v.toLocaleString()}</span>`).join("");
+      // SVG area chart — 2 series (volume + no-result)
+      const trendW = 700, trendH = 180, trendPad = 4;
+      const trendX = (i) => trendPad + (i / (trendData.length - 1)) * (trendW - trendPad * 2);
+      const trendY = (v) => trendH - trendPad - (v / trendNiceMax) * (trendH - trendPad * 2);
+      const volumePts = trendData.map((d, i) => `${trendX(i)},${trendY(d.volume)}`).join(" ");
+      const noResultPts = trendData.map((d, i) => `${trendX(i)},${trendY(d.noResult)}`).join(" ");
+      const volumeArea = `${trendPad},${trendH - trendPad} ${volumePts} ${trendW - trendPad},${trendH - trendPad}`;
+      const noResultArea = `${trendPad},${trendH - trendPad} ${noResultPts} ${trendW - trendPad},${trendH - trendPad}`;
+      const trendSvgHtml = `
+        <svg class="si-trend-svg" viewBox="0 0 ${trendW} ${trendH}" preserveAspectRatio="none" role="img" aria-label="Search volume and no-result trend over 7 days">
+          <polygon points="${volumeArea}" fill="rgba(43,108,176,.18)"></polygon>
+          <polyline points="${volumePts}" fill="none" stroke="#2b6cb0" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"></polyline>
+          <polygon points="${noResultArea}" fill="rgba(197,48,48,.14)"></polygon>
+          <polyline points="${noResultPts}" fill="none" stroke="#c53030" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" stroke-dasharray="4 3"></polyline>
+          ${trendData.map((d, i) => `<circle cx="${trendX(i)}" cy="${trendY(d.volume)}" r="3" fill="#2b6cb0"></circle>`).join("")}
+          ${trendData.map((d, i) => `<circle cx="${trendX(i)}" cy="${trendY(d.noResult)}" r="2.5" fill="#c53030"></circle>`).join("")}
+        </svg>
+      `;
+      const trendAxisHtml = trendData.map(d => `<span>${d.day}</span>`).join("");
+      const trendChartHtml = `
+        <div class="si-trend-wrap">
+          <div class="si-trend-legend">
+            <div class="si-trend-legend-item"><span class="si-trend-swatch is-volume"></span>Search Volume (รวม)</div>
+            <div class="si-trend-legend-item"><span class="si-trend-swatch is-noresult"></span>No-result Searches</div>
+          </div>
+          <div class="si-trend-plot">
+            <div class="si-trend-track">
+              <div class="si-trend-yaxis">${trendYAxisHtml}</div>
+              <div class="si-trend-gridlines">${trendGridHtml}</div>
+              ${trendSvgHtml}
+            </div>
+          </div>
+          <div class="si-trend-axis">${trendAxisHtml}</div>
+          <div class="si-trend-xtitle">วัน (7 วันล่าสุด)</div>
+        </div>
+      `;
+
+      // Search Funnel — Search → Result Click → Asset Detail → Watch Alert/Offer (mock)
+      const funnel = [
+        { step: "Step 1", name: "Search Submit", value: 9860, pct: 100, cls: "is-step-1" },
+        { step: "Step 2", name: "Result Click", value: 5916, pct: 60, cls: "is-step-2" },
+        { step: "Step 3", name: "Asset Detail Open", value: 3648, pct: 37, cls: "is-step-3" },
+        { step: "Step 4", name: "Watch Alert / Offer", value: 78, pct: 8, cls: "is-step-4" }
+      ];
+      const funnelHtml = `
+        <div class="si-funnel-wrap">
+          ${funnel.map(f => `
+            <div class="si-funnel-row ${f.cls}">
+              <div class="si-funnel-label">
+                <span class="si-funnel-step">${esc(f.step)}</span>
+                <span class="si-funnel-name">${esc(f.name)}</span>
+                <div class="si-funnel-bar"><span class="si-funnel-bar-fill" style="width:${f.pct}%"></span></div>
+              </div>
+              <div class="si-funnel-metric">
+                <span class="si-funnel-value">${f.value.toLocaleString()}</span>
+                <span class="si-funnel-pct">${f.pct}%</span>
+              </div>
+            </div>
+          `).join("")}
+        </div>
+      `;
+
       // Assemble all panels into #table
       document.querySelector("#table").innerHTML = `
         <div class="wa-overview-stack">
-          ${panel("Popular Keywords", "คำค้นหาที่ผู้ใช้พิมพ์บ่อยที่สุด — 7 วันล่าสุด", barListHtml(insights.keywords, 5), "wa-panel-keywords", "View All", `data-si-viewall="keywords"`, true, "แสดงคำค้นหาที่ผู้ใช้พิมพ์ในช่องค้นหาบ่อยที่สุด 5 อันดับแรก กด View All เพื่อดูสูงสุด 10 รายการ นับแบบ aggregate ในช่วง 7 วันล่าสุด")}
-          ${panel("Popular Brands", "แบรนด์ที่ผู้ใช้เลือกบ่อยจากการค้นหา/กรอง — 7 วันล่าสุด", barListHtml(insights.brands, 5), "wa-panel-brands", "View All", `data-si-viewall="brands"`, true, "แสดงแบรนด์ที่ผู้ใช้เลือกจากการค้นหาและตัวกรองบ่อยที่สุด 5 อันดับแรก กด View All เพื่อดูสูงสุด 10 รายการ นับแบบ aggregate ในช่วง 7 วันล่าสุด")}
-          ${panel("Popular Filters", "ตัวกรองที่ผู้ใช้เลือกบ่อยที่สุด — 7 วันล่าสุด", barListHtml(insights.filters, 5), "wa-panel-filters", "View All", `data-si-viewall="filters"`, true, "แสดงตัวกรองที่ผู้ใช้เลือกบ่อยที่สุด 5 อันดับแรก กด View All เพื่อดูสูงสุด 10 รายการ นับแบบ aggregate ในช่วง 7 วันล่าสุด")}
-          ${panel("No-result Searches", "คำค้นหา/ตัวกรองที่ไม่พบผลลัพธ์ — 7 วันล่าสุด", barListHtml(insights.noResult, 5), "wa-panel-noresult", "View All", `data-si-viewall="noResult"`, true, "แสดงคำค้นหาหรือการกรองที่ไม่พบผลลัพธ์บ่อยที่สุด 5 อันดับแรก กด View All เพื่อดูสูงสุด 10 รายการ ใช้สำหรับวิเคราะห์ความต้องการที่ยังไม่มีสินค้าตรง นับแบบ aggregate ในช่วง 7 วันล่าสุด")}
+          ${panel("Search Trend", "ปริมาณการค้นหาและ no-result รายวัน — 7 วันล่าสุด", trendChartHtml, "wa-panel-trend", "", "", true, "กราฟแสดงปริมาณการค้นหารวมและการค้นหาที่ไม่พบผลลัพธ์รายวัน ในช่วง 7 วันล่าสุด ใช้สำหรับดู trend และเปรียบเทียบช่วงเวลา")}
+          ${panel("Search Funnel", "Conversion จาก Search สู่ Action — 7 วันล่าสุด", funnelHtml, "wa-panel-funnel", "", "", true, "Funnel แสดงอัตราการเปลี่ยนผ่านจากการค้นหาสู่การคลิกผลลัพธ์ เปิด Asset Detail และสร้าง Watch Alert หรือ Make Offer เพื่อวัด quality ของ search result")}
+          ${panel("Popular Keywords", "คำค้นหาที่ผู้ใช้พิมพ์บ่อยที่สุด — 7 วันล่าสุด", barListHtml(insights.keywords, 5, siAccent.keywords), "wa-panel-keywords", "View All", `data-si-viewall="keywords"`, true, "แสดงคำค้นหาที่ผู้ใช้พิมพ์ในช่องค้นหาบ่อยที่สุด 5 อันดับแรก กด View All เพื่อดูสูงสุด 10 รายการ นับแบบ aggregate ในช่วง 7 วันล่าสุด")}
+          ${panel("Popular Brands", "แบรนด์ที่ผู้ใช้เลือกบ่อยจากการค้นหา/กรอง — 7 วันล่าสุด", barListHtml(insights.brands, 5, siAccent.brands), "wa-panel-brands", "View All", `data-si-viewall="brands"`, true, "แสดงแบรนด์ที่ผู้ใช้เลือกจากการค้นหาและตัวกรองบ่อยที่สุด 5 อันดับแรก กด View All เพื่อดูสูงสุด 10 รายการ นับแบบ aggregate ในช่วง 7 วันล่าสุด")}
+          ${panel("Popular Filters", "ตัวกรองที่ผู้ใช้เลือกบ่อยที่สุด — 7 วันล่าสุด", barListHtml(insights.filters, 5, siAccent.filters), "wa-panel-filters", "View All", `data-si-viewall="filters"`, true, "แสดงตัวกรองที่ผู้ใช้เลือกบ่อยที่สุด 5 อันดับแรก กด View All เพื่อดูสูงสุด 10 รายการ นับแบบ aggregate ในช่วง 7 วันล่าสุด")}
+          ${panel("No-result Searches", "คำค้นหา/ตัวกรองที่ไม่พบผลลัพธ์ — 7 วันล่าสุด", barListHtml(insights.noResult, 5, siAccent.noResult), "wa-panel-noresult", "View All", `data-si-viewall="noResult"`, true, "แสดงคำค้นหาหรือการกรองที่ไม่พบผลลัพธ์บ่อยที่สุด 5 อันดับแรก กด View All เพื่อดูสูงสุด 10 รายการ ใช้สำหรับวิเคราะห์ความต้องการที่ยังไม่มีสินค้าตรง นับแบบ aggregate ในช่วง 7 วันล่าสุด")}
         </div>
       `;
       document.querySelector("#cards").innerHTML = "";

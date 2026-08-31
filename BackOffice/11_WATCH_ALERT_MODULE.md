@@ -313,6 +313,9 @@ Analytics ขั้นต่ำ:
 - Popular filter combination
 - No-result search count และ rate
 - Search-to-result conversion
+- Search trend over time (รายวัน/รายสัปดาห์) สำหรับดู trend ของ search volume และ no-result rate
+- Search funnel: Search Submit → Result Click → Asset Detail Open → Watch Alert/Offer เพื่อวัด conversion จาก search สู่ action
+- Average results per search เพื่อวัด quality ของ search result
 - Popular Filter tag impression/select สำหรับวัดการใช้งาน quick selection
 
 ### Watch Alert Demand
@@ -397,7 +400,7 @@ Watch Alert ต้องใช้ app shell, navigation, breakpoint, list toolba
 | AC-BO-WA-008A | Alert ที่ criteria อ้าง entity/option ที่มี no current listing (จำนวน Asset Sale = 0 ตอนสร้าง) ต้องไม่ถูก flag เป็น inactive market data และต้องนับเป็น unmet demand ปกติ |
 | AC-BO-WA-009 | Block relation ต้องถูกใช้เป็น exclusion context ใน trigger/result review |
 | AC-BO-WA-010 | Responsive layout ใช้งานได้ที่ mobile-width, tablet และ desktop
-| AC-BO-WA-011 | Search Insights แสดง popular keyword/filter, no-result search และ trend แบบ aggregate โดยไม่เปิดเผยข้อมูลระบุตัว user
+| AC-BO-WA-011 | Search Insights แสดง popular keyword/filter, no-result search, search trend over time, search funnel (Search → Result Click → Asset Detail → Watch Alert/Offer) และ average results per search แบบ aggregate โดยไม่เปิดเผยข้อมูลระบุตัว user
 | AC-BO-WA-012 | Demand Overview แยก Search demand, Watch Alert demand, Unmet Search Demand และ Unmet Watch Alert ได้ชัดเจน |
 
 ## 20. Open Decisions
