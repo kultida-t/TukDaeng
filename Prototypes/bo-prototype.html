@@ -1861,10 +1861,11 @@
     body.watch-alert-list-mode #table > .footer-range {
       min-width: 1280px;
     }
-    /* 11 คอลัมน์ — ผลรวม min (1100px) + 10 gaps (140px) + padding (40px) = 1280px = min-width
-       fr จะขยายเติมพื้นที่ว่างเมื่อตารางกว้างกว่า 1280px */
+    /* 11 คอลัมน์ — ปรับ balance ให้อ่านง่ายไม่เบียด
+       Alert Name ให้พื้นที่มากขึ้น, Criteria มี tooltip สำรองจึงใช้ ellipsis ได้
+       ผลรวม min (1100px) + 10 gaps (140px) + padding (40px) = 1280px = min-width */
     body.watch-alert-list-mode .watch-alert-list-table .asset-row {
-      grid-template-columns: minmax(80px, .5fr) minmax(140px, .9fr) minmax(110px, .7fr) minmax(170px, 1.1fr) minmax(100px, .55fr) minmax(90px, .5fr) minmax(60px, .35fr) minmax(60px, .35fr) minmax(110px, .6fr) minmax(100px, .55fr) minmax(80px, .3fr);
+      grid-template-columns: minmax(80px, .45fr) minmax(170px, 1.05fr) minmax(100px, .6fr) minmax(200px, 1.3fr) minmax(100px, .55fr) minmax(84px, .45fr) minmax(48px, .25fr) minmax(48px, .25fr) minmax(90px, .5fr) minmax(90px, .5fr) minmax(90px, .5fr);
       column-gap: 14px;
     }
     body.watch-alert-list-mode .watch-alert-list-table .asset-row.head {
@@ -1898,6 +1899,11 @@
       line-height: 1.5;
       min-width: 0;
       overflow: hidden;
+    }
+    /* asset-card-tags ใช้เฉพาะบน mobile (เป็นคอนเทนเนอร์ meta ของ card)
+       บน desktop ซ่อนเพื่อไม่ให้กิน grid column */
+    body.watch-alert-list-mode .watch-alert-list-table .asset-row:not(.head) > .asset-card-tags {
+      display: none;
     }
     body.watch-alert-list-mode .watch-alert-list-table .asset-row:not(.head) > .asset-cell-primary .main-text {
       color: #516683;
