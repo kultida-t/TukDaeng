@@ -1990,22 +1990,21 @@
     body.watch-alert-list-mode .watch-alert-list-table .wa-notif-on { color: #07734f; }
     body.watch-alert-list-mode .watch-alert-list-table .wa-notif-off { color: #6d7f98; }
 
-    /* WA-PTO-002b: Alert List toolbar — filter bar ใช้ flex-wrap
-       รองรับ filter 5 select + 2 date range + reset
+    /* WA-PTO-002b: Alert List toolbar — filter bar ใช้ grid เหมือนหน้าอื่น
+       5 custom-select + 1 date range + 1 reset = 7 คอลัมน์
        scope เฉพาะ body.watch-alert-list-mode เพื่อไม่กระทบ protected screens */
     body.watch-alert-list-mode .user-filter-bar.wa-alert-filter-bar {
-      display: flex;
-      gap: 10px 12px;
-      flex-wrap: wrap;
-      width: 100%;
+      display: grid;
+      grid-template-columns: repeat(5, minmax(130px, 1fr)) minmax(280px, 1.6fr) 42px;
       align-items: stretch;
+      gap: 8px;
+      width: 100%;
     }
-    body.watch-alert-list-mode .user-filter-bar.wa-alert-filter-bar .user-advanced-filter {
-      flex: 1 1 150px;
-      min-width: 140px;
+    body.watch-alert-list-mode .user-filter-bar.wa-alert-filter-bar .user-advanced-filter:not(.filter-reset) {
+      min-width: 0;
     }
     body.watch-alert-list-mode .user-filter-bar.wa-alert-filter-bar .custom-select {
-      min-width: 140px;
+      min-width: 0;
     }
     body.watch-alert-list-mode .user-filter-bar.wa-alert-filter-bar .custom-select,
     body.watch-alert-list-mode .user-filter-bar.wa-alert-filter-bar .custom-select-trigger {
@@ -2025,10 +2024,10 @@
       white-space: nowrap;
     }
     body.watch-alert-list-mode .user-filter-bar.wa-alert-filter-bar .filter-reset {
-      width: 48px;
+      width: 42px;
       height: 48px;
       min-height: 48px;
-      flex: 0 0 48px;
+      flex: 0 0 42px;
       padding: 0;
       border-color: #cfdbea;
       background: #fff;
@@ -2048,10 +2047,12 @@
       display: flex;
       gap: 6px;
       align-items: center;
-      flex: 0 0 auto;
+      min-width: 0;
     }
     body.watch-alert-list-mode .user-filter-bar.wa-alert-filter-bar .wa-alert-date-range input[type="date"] {
-      width: 138px;
+      flex: 1 1 0;
+      min-width: 0;
+      width: 100%;
       min-height: 48px;
       border: 1px solid #cfdbea;
       border-radius: 7px;
@@ -11738,7 +11739,7 @@
          รีเซ็ต min-width ให้ตารางและ footer, แปลง row เป็น card,
          ซ่อนคอลัมน์ที่ไม่ใช่ cell-primary, จัด tags+meta ในแถว 2
          specificity เท่ากับกฎฐาน (body.watch-alert-list-mode) */
-      /* WA-PTO-002b: filter bar บน mobile — stack 1 คอลัมน์, search และ reset เต็มกว้าง */
+      /* WA-PTO-002b: filter bar บน mobile — stack 1 คอลัมน์, reset เต็มกว้าง */
       body.watch-alert-list-mode .filters {
         padding: 12px 14px;
         background: #f8fbff;
@@ -14334,7 +14335,7 @@
       "board-report-list": { searchId: "board-report-search", filterIds: ["board-report-status-filter", "board-report-priority-filter", "board-report-sort"] },
       "option-group-list": { searchId: "option-group-search", filterIds: ["option-group-status-filter"] },
       "option-detail": { searchId: "option-detail-search", filterIds: ["option-status-filter"] },
-      "watch-alert-list": { searchId: "", filterIds: ["wa-alert-status-filter", "wa-alert-notif-filter", "wa-alert-trigger-filter", "wa-alert-zero-match-filter", "wa-alert-sort"], dateIds: ["wa-alert-created-from", "wa-alert-created-to", "wa-alert-last-triggered-from", "wa-alert-last-triggered-to"] },
+      "watch-alert-list": { searchId: "", filterIds: ["wa-alert-status-filter", "wa-alert-notif-filter", "wa-alert-trigger-filter", "wa-alert-zero-match-filter", "wa-alert-sort"], dateIds: ["wa-alert-last-triggered-from", "wa-alert-last-triggered-to"] },
       "market-dashboard": { searchId: "", filterIds: [] },
       "market-catalog": { searchId: "market-search", filterIds: [] },
       "market-brand-detail": { searchId: "market-model-search", filterIds: [] },
@@ -22851,12 +22852,6 @@
             { value: "name-asc", label: "ชื่อ A-Z" }
           ])}</div>
           <div class="user-advanced-filter wa-alert-date-range">
-            <span class="wa-alert-date-label">Created:</span>
-            <input type="date" id="wa-alert-created-from" aria-label="สร้างจากวันที่" />
-            <span class="wa-alert-date-sep">—</span>
-            <input type="date" id="wa-alert-created-to" aria-label="สร้างถึงวันที่" />
-          </div>
-          <div class="user-advanced-filter wa-alert-date-range">
             <span class="wa-alert-date-label">Triggered:</span>
             <input type="date" id="wa-alert-last-triggered-from" aria-label="trigger จากวันที่" />
             <span class="wa-alert-date-sep">—</span>
@@ -22881,15 +22876,11 @@
       const triggerFilter = document.querySelector("#wa-alert-trigger-filter")?.value || "";
       const zeroMatchFilter = document.querySelector("#wa-alert-zero-match-filter")?.value || "";
       const sortValue = document.querySelector("#wa-alert-sort")?.value || "updated-desc";
-      const createdFrom = document.querySelector("#wa-alert-created-from")?.value || "";
-      const createdTo = document.querySelector("#wa-alert-created-to")?.value || "";
       const lastTriggeredFrom = document.querySelector("#wa-alert-last-triggered-from")?.value || "";
       const lastTriggeredTo = document.querySelector("#wa-alert-last-triggered-to")?.value || "";
 
       const toStartOfDay = s => s ? new Date(s + "T00:00:00+07:00").getTime() : null;
       const toEndOfDay = s => s ? new Date(s + "T23:59:59+07:00").getTime() : null;
-      const createdFromTs = toStartOfDay(createdFrom);
-      const createdToTs = toEndOfDay(createdTo);
       const lastTriggeredFromTs = toStartOfDay(lastTriggeredFrom);
       const lastTriggeredToTs = toEndOfDay(lastTriggeredTo);
 
@@ -22901,11 +22892,6 @@
         if (triggerFilter === "none" && alert.triggerCount > 0) return false;
         if (zeroMatchFilter === "zero" && alert.matchCount > 0) return false;
         if (zeroMatchFilter === "has" && alert.matchCount === 0) return false;
-        if (createdFromTs || createdToTs) {
-          const createdTs = new Date(alert.created).getTime();
-          if (createdFromTs && createdTs < createdFromTs) return false;
-          if (createdToTs && createdTs > createdToTs) return false;
-        }
         if (lastTriggeredFromTs || lastTriggeredToTs) {
           if (!alert.lastTriggered) return false;
           const ts = new Date(alert.lastTriggered).getTime();
@@ -31724,7 +31710,7 @@
         ["wa-alert-status-filter", "wa-alert-notif-filter", "wa-alert-trigger-filter", "wa-alert-zero-match-filter"].forEach(id => setCustomSelectValue(id, ""));
         // sort reset กลับเป็น default (updated-desc) เพราะไม่มี option value=""
         setCustomSelectValue("wa-alert-sort", "updated-desc");
-        ["wa-alert-created-from", "wa-alert-created-to", "wa-alert-last-triggered-from", "wa-alert-last-triggered-to"].forEach(id => {
+        ["wa-alert-last-triggered-from", "wa-alert-last-triggered-to"].forEach(id => {
           const el = document.querySelector(`#${id}`);
           if (el) el.value = "";
         });
@@ -32165,7 +32151,7 @@
         renderOptionDetailRows();
       }
       // WA-PTO-002b: Watch Alert List — date range inputs
-      if (event.target.matches("#wa-alert-created-from, #wa-alert-created-to, #wa-alert-last-triggered-from, #wa-alert-last-triggered-to")) {
+      if (event.target.matches("#wa-alert-last-triggered-from, #wa-alert-last-triggered-to")) {
         watchAlertListPage = 1;
         saveCurrentListFilterState();
         renderWatchAlertListRows();
