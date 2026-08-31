@@ -1847,7 +1847,7 @@
     /* WA-PTO-002a: Watch Alert List (read-only, no admin action)
        scope เฉพาะ body.watch-alert-list-mode เพื่อไม่กระทบ protected screens
        ตาราง 11 คอลัมน์: Alert ID, Alert Name, Owner, Criteria, Status, Notification,
-       Matches, Triggers, Last Triggered, Created, Warning */
+       Matches, Triggers, Last Triggered, Created, Updated */
     body.watch-alert-list-mode #primary-action { display: none; }
     body.watch-alert-list-mode .user-panel-filter-actions { display: none; }
     body.watch-alert-list-mode .filters { display: none; }
@@ -1882,8 +1882,8 @@
       font-weight: 700;
     }
     body.watch-alert-list-mode .watch-alert-list-table .asset-row.head > div:last-child {
-      justify-self: center;
-      text-align: center;
+      justify-self: start;
+      text-align: left;
     }
     body.watch-alert-list-mode .watch-alert-list-table .asset-row:not(.head) {
       min-height: 66px;
@@ -1914,59 +1914,45 @@
       margin-bottom: 0;
     }
     /* Owner — plain text (ไม่มี drill-in, จะดู owner info ใน Alert Detail) */
-    /* Criteria chips — top 3-4 chips แสดง brand/model/price/condition */
-    body.watch-alert-list-mode .watch-alert-list-table .wa-criteria-chips {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 4px;
-    }
-    body.watch-alert-list-mode .watch-alert-list-table .wa-criteria-chip {
-      display: inline-flex;
-      align-items: center;
-      padding: 2px 8px;
-      font-size: 11px;
-      font-weight: 600;
+    /* Criteria summary บรรทัดเดียว + fixed tooltip (เทียบกับ .comment-hover-tooltip)
+       ใช้ position: fixed + append เข้า body เพื่อไม่ถูก clip จาก overflow ของ #table */
+    body.watch-alert-list-mode .watch-alert-list-table .wa-criteria-summary {
+      display: block;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
       color: #43546d;
-      background: #eef3f9;
-      border: 1px solid #d7e2f0;
-      border-radius: 999px;
-      white-space: nowrap;
-      line-height: 1.4;
+      font-size: 12px;
+      line-height: 1.5;
+      cursor: help;
     }
-    /* Warning icon คอลัมน์สุดท้าย — inactive market data */
-    body.watch-alert-list-mode .watch-alert-list-table .wa-warning-icon {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      color: #925500;
-    }
-    body.watch-alert-list-mode .watch-alert-list-table .wa-warning-icon svg {
-      width: 16px;
-      height: 16px;
-    }
-    body.watch-alert-list-mode .watch-alert-list-table .wa-warning-tip {
-      position: absolute;
-      background: #1f2937;
-      color: #fff;
-      font-size: 11px;
-      font-weight: 500;
-      padding: 5px 9px;
-      border-radius: 5px;
-      white-space: nowrap;
-      opacity: 0;
+    .wa-criteria-tooltip {
+      position: fixed;
+      z-index: 9999;
+      max-width: 320px;
+      padding: 8px 12px;
+      border: 1px solid #d4deec;
+      border-radius: 8px;
+      background: #ffffff;
+      box-shadow: 0 8px 24px rgba(15, 23, 42, .18);
+      color: #233a5c;
+      font-size: 12px;
+      font-weight: 400;
+      line-height: 1.5;
       pointer-events: none;
-      transform: translateY(-2px);
-      transition: opacity .15s, transform .15s;
-      z-index: 5;
+      opacity: 0;
+      transition: opacity .12s ease;
     }
-    body.watch-alert-list-mode .watch-alert-list-table .wa-warning-wrap {
-      position: relative;
-      display: inline-flex;
-    }
-    body.watch-alert-list-mode .watch-alert-list-table .wa-warning-wrap:hover .wa-warning-tip,
-    body.watch-alert-list-mode .watch-alert-list-table .wa-warning-wrap:focus .wa-warning-tip {
+    .wa-criteria-tooltip.is-visible {
       opacity: 1;
-      transform: translateY(0);
+    }
+    .wa-criteria-tooltip-row {
+      display: block;
+      white-space: nowrap;
+    }
+    .wa-criteria-tooltip-row strong {
+      color: #485b75;
+      font-weight: 700;
     }
     /* Notification badge ใช้ pill green/gray */
     body.watch-alert-list-mode .watch-alert-list-table .wa-notif-on { color: #07734f; }
@@ -11655,15 +11641,6 @@
       }
       body.watch-alert-list-mode .watch-alert-list-table .asset-row:not(.head) .desktop-user-name { display: none; }
       body.watch-alert-list-mode .watch-alert-list-table .asset-row:not(.head) .mobile-user-card-title { display: inline; }
-      /* warning icon คอลัมน์ 2 แถว 1 บน mobile (มุมขวาบนของ card) */
-      body.watch-alert-list-mode .watch-alert-list-table .asset-row:not(.head) > .wa-warning-cell {
-        grid-column: 2;
-        grid-row: 1;
-        align-self: center;
-        justify-self: end;
-        display: inline-flex;
-        align-items: center;
-      }
       body.watch-alert-list-mode .watch-alert-list-table .asset-row:not(.head) .asset-card-tags {
         grid-column: 1 / -1;
         grid-row: 2;
@@ -11718,12 +11695,6 @@
         text-align: right;
         text-overflow: ellipsis;
         white-space: nowrap;
-      }
-      /* criteria chips บน mobile — อยู่ใน asset-card-tags ก่อน meta */
-      body.watch-alert-list-mode .watch-alert-list-table .asset-card-tags .wa-criteria-chips {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 5px;
       }
       body.market-list-mode .panel-head {
         align-items: center;
@@ -22636,36 +22607,44 @@
         : `<span class="pill gray wa-notif-off">Off</span>`;
     }
 
-    // helper: criteria chips — top 3-4 chips แสดง brand/model/price/condition
-    function getWaCriteriaChips(criteria) {
+    // helper: criteria summary บรรทัดเดียว + data attribute เก็บ criteria ครบ
+    // tooltip แสดงผ่าน JS handler (position: fixed) เทียบกับ .comment-hover-tooltip
+    // สรุป: brand · model · reference · price · N conditions · N case sizes · N dial colors
+    function getWaCriteriaSummary(criteria) {
       if (!criteria) return `<span class="muted">ไม่มี criteria</span>`;
-      const chips = [];
-      if (criteria.brand) chips.push(criteria.brand);
-      if (criteria.model) chips.push(criteria.model);
+      const fmtTHB = v => v >= 1000000 ? `${(v / 1000000).toFixed(v % 1000000 ? 1 : 0)}M` : v >= 1000 ? `${Math.round(v / 1000)}k` : String(v);
+      const parts = [];
+      if (criteria.brand) parts.push(criteria.brand);
+      if (criteria.model) parts.push(criteria.model);
+      if (criteria.reference) parts.push(criteria.reference);
       if (criteria.priceMin != null && criteria.priceMax != null && (criteria.priceMin > 0 || criteria.priceMax > 0)) {
-        const fmtTHB = v => v >= 1000000 ? `${(v / 1000000).toFixed(v % 1000000 ? 1 : 0)}M` : v >= 1000 ? `${Math.round(v / 1000)}k` : String(v);
-        chips.push(`${fmtTHB(criteria.priceMin)}-${fmtTHB(criteria.priceMax)}`);
+        parts.push(`${fmtTHB(criteria.priceMin)}-${fmtTHB(criteria.priceMax)}`);
       }
       if (Array.isArray(criteria.condition) && criteria.condition.length) {
-        chips.push(criteria.condition[0]);
+        parts.push(`${criteria.condition.length} condition${criteria.condition.length > 1 ? "s" : ""}`);
       }
-      const top = chips.slice(0, 4);
-      return `<div class="wa-criteria-chips">${top.map(c => `<span class="wa-criteria-chip">${c}</span>`).join("")}</div>`;
-    }
+      if (Array.isArray(criteria.caseSize) && criteria.caseSize.length) {
+        parts.push(`${criteria.caseSize.length} case size${criteria.caseSize.length > 1 ? "s" : ""}`);
+      }
+      if (Array.isArray(criteria.dialColor) && criteria.dialColor.length) {
+        parts.push(`${criteria.dialColor.length} dial${criteria.dialColor.length > 1 ? "s" : ""}`);
+      }
+      const summary = parts.length ? parts.join(" · ") : "ไม่มี criteria";
 
-    // helper: warning icon สำหรับ inactive market data (ถ้ามี)
-    function getWaWarningIcon(alert) {
-      if (!alert.marketDataInactive || !Array.isArray(alert.inactiveFields) || !alert.inactiveFields.length) {
-        return `<span class="muted">—</span>`;
-      }
-      const fields = alert.inactiveFields.join(", ");
-      const tip = `Inactive market data: ${fields}`;
-      return `
-        <span class="wa-warning-wrap" tabindex="0" role="img" aria-label="${tip}">
-          <span class="wa-warning-icon">${iconSvg.waUnmet}</span>
-          <span class="wa-warning-tip">${tip}</span>
-        </span>
-      `;
+      // เก็บ criteria ครบไว้ใน data attribute (JSON) สำหรับ tooltip
+      const tipData = {
+        brand: criteria.brand || "",
+        model: criteria.model || "",
+        reference: criteria.reference || "",
+        price: (criteria.priceMin != null && criteria.priceMax != null && (criteria.priceMin > 0 || criteria.priceMax > 0))
+          ? `${fmtTHB(criteria.priceMin)}-${fmtTHB(criteria.priceMax)} THB` : "",
+        condition: Array.isArray(criteria.condition) && criteria.condition.length ? criteria.condition.join(", ") : "",
+        caseSize: Array.isArray(criteria.caseSize) && criteria.caseSize.length ? criteria.caseSize.join(", ") : "",
+        dialColor: Array.isArray(criteria.dialColor) && criteria.dialColor.length ? criteria.dialColor.join(", ") : ""
+      };
+      const tipJson = JSON.stringify(tipData).replace(/"/g, "&quot;");
+
+      return `<span class="wa-criteria-summary" data-wa-criteria-full="${tipJson}">${summary}</span>`;
     }
 
     // pagination state สำหรับ Alert List
@@ -22703,7 +22682,7 @@
           <div>Triggers</div>
           <div>Last Triggered</div>
           <div>Created</div>
-          <div>Warning</div>
+          <div>Updated</div>
         </div>
       `;
 
@@ -22711,6 +22690,7 @@
         const ownerName = alert.owner?.displayName || "—";
         const lastTriggered = alert.lastTriggered ? formatWaDate(alert.lastTriggered) : "—";
         const created = formatWaDate(alert.created);
+        const updated = formatWaDate(alert.updated);
         return `
           <div class="asset-row" data-wa-alert-open="${esc(alert.id)}" data-wa-alert-card="${esc(alert.id)}">
             <div data-label="Alert ID"><div class="main-text">${esc(alert.id)}</div></div>
@@ -22730,19 +22710,20 @@
                 <div class="user-card-meta-item comment-field-meta"><span>Triggers</span><strong>${alert.triggerCount}</strong></div>
                 <div class="user-card-meta-item comment-field-meta"><span>Last Triggered</span><strong>${lastTriggered}</strong></div>
                 <div class="user-card-meta-item comment-field-meta"><span>Created</span><strong>${created}</strong></div>
+                <div class="user-card-meta-item comment-field-meta"><span>Updated</span><strong>${updated}</strong></div>
               </div>
             </div>
             <div data-label="Owner">
               <div class="main-text">${esc(ownerName)}</div>
             </div>
-            <div data-label="Criteria">${getWaCriteriaChips(alert.criteria)}</div>
+            <div data-label="Criteria">${getWaCriteriaSummary(alert.criteria)}</div>
             <div data-label="Status">${getWaStatusPill(alert.status)}</div>
             <div data-label="Notification">${getWaNotifPill(alert.notificationEnabled)}</div>
             <div data-label="Matches"><div class="main-text">${alert.matchCount}</div></div>
             <div data-label="Triggers"><div class="main-text">${alert.triggerCount}</div></div>
             <div data-label="Last Triggered"><div class="main-text">${lastTriggered}</div></div>
             <div data-label="Created"><div class="main-text">${created}</div></div>
-            <div class="wa-warning-cell" data-label="Warning">${getWaWarningIcon(alert)}</div>
+            <div data-label="Updated"><div class="main-text">${updated}</div></div>
           </div>
         `;
       }).join("");
@@ -29898,6 +29879,64 @@
       const cell = event.target.closest(".reported-comment-table .user-row.reported-comment-row:not(.head) > div[data-label='Comment'][data-comment-full]");
       if (!cell) return;
       commentHoverHideTimer = setTimeout(hideCommentHoverTooltip, 120);
+    });
+
+    // WA-PTO-002a: Criteria tooltip (position: fixed) — เทียบกับ .comment-hover-tooltip
+    // ไม่ถูก clip จาก overflow ของ #table เพราะ append เข้า body
+    let waCriteriaTooltipEl = null;
+    let waCriteriaHideTimer = null;
+    function ensureWaCriteriaTooltip() {
+      if (!waCriteriaTooltipEl) {
+        waCriteriaTooltipEl = document.createElement("div");
+        waCriteriaTooltipEl.className = "wa-criteria-tooltip";
+        waCriteriaTooltipEl.setAttribute("role", "tooltip");
+        document.body.appendChild(waCriteriaTooltipEl);
+      }
+      return waCriteriaTooltipEl;
+    }
+    function showWaCriteriaTooltip(cell) {
+      const raw = cell.getAttribute("data-wa-criteria-full");
+      if (!raw) return;
+      let data;
+      try { data = JSON.parse(raw.replace(/&quot;/g, '"')); } catch { return; }
+      const rows = [];
+      if (data.brand) rows.push(`<span class="wa-criteria-tooltip-row"><strong>Brand:</strong> ${data.brand}</span>`);
+      if (data.model) rows.push(`<span class="wa-criteria-tooltip-row"><strong>Model:</strong> ${data.model}</span>`);
+      if (data.reference) rows.push(`<span class="wa-criteria-tooltip-row"><strong>Reference:</strong> ${data.reference}</span>`);
+      if (data.price) rows.push(`<span class="wa-criteria-tooltip-row"><strong>Price:</strong> ${data.price}</span>`);
+      if (data.condition) rows.push(`<span class="wa-criteria-tooltip-row"><strong>Condition:</strong> ${data.condition}</span>`);
+      if (data.caseSize) rows.push(`<span class="wa-criteria-tooltip-row"><strong>Case size:</strong> ${data.caseSize}</span>`);
+      if (data.dialColor) rows.push(`<span class="wa-criteria-tooltip-row"><strong>Dial color:</strong> ${data.dialColor}</span>`);
+      if (!rows.length) return;
+      const tooltip = ensureWaCriteriaTooltip();
+      tooltip.innerHTML = rows.join("");
+      tooltip.classList.add("is-visible");
+      const rect = cell.getBoundingClientRect();
+      const tooltipRect = tooltip.getBoundingClientRect();
+      let top = rect.bottom + 8;
+      let left = rect.left;
+      if (left + tooltipRect.width > window.innerWidth - 12) {
+        left = Math.max(12, window.innerWidth - tooltipRect.width - 12);
+      }
+      if (top + tooltipRect.height > window.innerHeight - 12) {
+        top = Math.max(12, rect.top - tooltipRect.height - 8);
+      }
+      tooltip.style.top = `${top}px`;
+      tooltip.style.left = `${left}px`;
+    }
+    function hideWaCriteriaTooltip() {
+      if (waCriteriaTooltipEl) waCriteriaTooltipEl.classList.remove("is-visible");
+    }
+    document.addEventListener("mouseover", event => {
+      const cell = event.target.closest(".watch-alert-list-table .wa-criteria-summary[data-wa-criteria-full]");
+      if (!cell) return;
+      clearTimeout(waCriteriaHideTimer);
+      showWaCriteriaTooltip(cell);
+    });
+    document.addEventListener("mouseout", event => {
+      const cell = event.target.closest(".watch-alert-list-table .wa-criteria-summary[data-wa-criteria-full]");
+      if (!cell) return;
+      waCriteriaHideTimer = setTimeout(hideWaCriteriaTooltip, 120);
     });
 
     document.addEventListener("click", event => {
