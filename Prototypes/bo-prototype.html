@@ -1932,6 +1932,18 @@
       line-height: 1.5;
       cursor: help;
     }
+    /* Criteria summary บรรทัดเดียว + fixed tooltip (เทียบกับ .comment-hover-tooltip)
+       ใช้ position: fixed + append เข้า body เพื่อไม่ถูก clip จาก overflow ของ #table */
+    body.watch-alert-list-mode .watch-alert-list-table .wa-criteria-summary {
+      display: block;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      color: #43546d;
+      font-size: 12px;
+      line-height: 1.5;
+      cursor: help;
+    }
     .wa-criteria-tooltip {
       position: fixed;
       z-index: 9999;
