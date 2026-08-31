@@ -10351,7 +10351,8 @@
       body.offer-list-mode .user-panel-filter-actions,
       body.market-list-mode .user-panel-filter-actions,
       body.user-accounts-mode .user-panel-filter-actions,
-      body.option-master-mode .user-panel-filter-actions {
+      body.option-master-mode .user-panel-filter-actions,
+      body.watch-alert-mode.watch-alert-list-mode .user-panel-filter-actions {
         display: flex;
         align-items: center;
         justify-content: flex-end;
@@ -11744,8 +11745,7 @@
         padding: 12px 14px;
         background: #f8fbff;
       }
-      /* WA-PTO-002b: แสดง toolbar (toggle + reset) เฉพาะ mobile — desktop แสดง filter bar เต็มอยู่แล้ว */
-      body.watch-alert-mode.watch-alert-list-mode .user-panel-filter-actions { display: flex; }
+      /* WA-PTO-002b: filter bar บน mobile — stack 1 คอลัมน์, reset เต็มกว้าง */
       body.watch-alert-list-mode .user-filter-bar.wa-alert-filter-bar {
         grid-template-columns: 1fr;
         gap: 8px;
@@ -11762,6 +11762,10 @@
       }
       body.watch-alert-list-mode .user-filter-bar.wa-alert-filter-bar .wa-alert-date-range {
         justify-content: space-between;
+      }
+      /* WA-PTO-002b: ซ่อน date range เมื่อ filter panel ปิด (เหมือน .user-advanced-filter อื่น) */
+      body.watch-alert-list-mode .user-filter-bar.wa-alert-filter-bar[data-filter-open="false"] .wa-alert-date-range {
+        display: none;
       }
       body.watch-alert-list-mode .user-filter-bar.wa-alert-filter-bar .wa-alert-date-range input[type="date"] {
         flex: 1 1 0;
@@ -22845,8 +22849,6 @@
           <div class="user-advanced-filter">${customSelect("wa-alert-sort", "Sort", [
             { value: "updated-desc", label: "อัปเดตล่าสุดก่อน" },
             { value: "updated-asc", label: "อัปเดตเก่าสุดก่อน" },
-            { value: "created-desc", label: "สร้างล่าสุดก่อน" },
-            { value: "created-asc", label: "สร้างเก่าสุดก่อน" },
             { value: "trigger-desc", label: "trigger มากสุดก่อน" },
             { value: "last-triggered-desc", label: "trigger ล่าสุดก่อน" },
             { value: "name-asc", label: "ชื่อ A-Z" }
@@ -22904,8 +22906,6 @@
       const sorters = {
         "updated-desc": (a, b) => new Date(b.updated).getTime() - new Date(a.updated).getTime(),
         "updated-asc": (a, b) => new Date(a.updated).getTime() - new Date(b.updated).getTime(),
-        "created-desc": (a, b) => new Date(b.created).getTime() - new Date(a.created).getTime(),
-        "created-asc": (a, b) => new Date(a.created).getTime() - new Date(b.created).getTime(),
         "trigger-desc": (a, b) => b.triggerCount - a.triggerCount,
         "last-triggered-desc": (a, b) => {
           const ats = a.lastTriggered ? new Date(a.lastTriggered).getTime() : 0;
