@@ -22157,7 +22157,8 @@
       // SVG area chart — 2 series (volume + no-result) พร้อม gradient และ smooth curve
       // viewBox สมดุลกับ container ใน 2 คอลัมน์ (aspect ratio ~3:1)
       const trendW = 700, trendH = 230, trendPad = 8;
-      const trendX = (i) => trendPad + (i / (trendData.length - 1)) * (trendW - trendPad * 2);
+      // จุดกราฟวางกลางคอลัมน์เหมือน day labels — ไม่ใช้ trendPad ฝั่ง X เพื่อให้ตรงกับ axis grid
+      const trendX = (i) => ((i + 0.5) / trendData.length) * trendW;
       const trendY = (v) => trendH - trendPad - (v / trendNiceMax) * (trendH - trendPad * 2);
       // Smooth curve using Catmull-Rom spline → cubic bezier (เส้นโค้งผ่านทุกจุดจริง)
       const smoothPath = (pts) => {
@@ -22180,8 +22181,8 @@
       const noResultPtsArr = trendData.map((d, i) => ({ x: trendX(i), y: trendY(d.noResult) }));
       const volumePath = smoothPath(volumePtsArr);
       const noResultPath = smoothPath(noResultPtsArr);
-      const volumeAreaPath = `${volumePath} L ${trendW - trendPad} ${trendH - trendPad} L ${trendPad} ${trendH - trendPad} Z`;
-      const noResultAreaPath = `${noResultPath} L ${trendW - trendPad} ${trendH - trendPad} L ${trendPad} ${trendH - trendPad} Z`;
+      const volumeAreaPath = `${volumePath} L ${volumePtsArr[volumePtsArr.length - 1].x} ${trendH - trendPad} L ${volumePtsArr[0].x} ${trendH - trendPad} Z`;
+      const noResultAreaPath = `${noResultPath} L ${noResultPtsArr[noResultPtsArr.length - 1].x} ${trendH - trendPad} L ${noResultPtsArr[0].x} ${trendH - trendPad} Z`;
       const trendSvgHtml = `
         <svg class="si-trend-svg" viewBox="0 0 ${trendW} ${trendH}" preserveAspectRatio="none" role="img" aria-label="Search volume and no-result trend over 7 days">
           <defs>
