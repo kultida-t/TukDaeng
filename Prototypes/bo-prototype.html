@@ -2907,50 +2907,52 @@
     /* Search Insights funnel — Search → Result Click → Asset Detail → Watch Alert/Offer */
     .si-funnel-wrap { display: flex; flex-direction: column; gap: 8px; }
     .si-funnel-row {
-      display: grid;
-      grid-template-columns: minmax(0, 1fr) auto;
-      gap: 12px; align-items: center;
+      display: flex; flex-direction: column; gap: 6px;
       padding: 10px 14px;
       border-radius: 7px;
       background: #f2f5f9;
       border: 1px solid #d5dfeb;
     }
-    .si-funnel-row.is-step-1 { background: #2b6cb0; border-color: #2461a6; color: #fff; }
-    .si-funnel-row.is-step-2 { background: #2f855a; border-color: #276749; color: #fff; }
-    .si-funnel-row.is-step-3 { background: #c05621; border-color: #9c4a1c; color: #fff; }
-    .si-funnel-row.is-step-4 { background: #6b46c1; border-color: #553c9a; color: #fff; }
-    .si-funnel-label {
-      display: flex; flex-direction: column; gap: 2px;
-      min-width: 0;
+    .si-funnel-row.is-step-1 { background: #e8f1ff; border-color: #c6ddff; color: #0f52b8; }
+    .si-funnel-row.is-step-2 { background: #e4f8f0; border-color: #bcebd7; color: #07734f; }
+    .si-funnel-row.is-step-3 { background: #fff3d8; border-color: #f3d493; color: #925500; }
+    .si-funnel-row.is-step-4 { background: #efe9ff; border-color: #d8ccff; color: #6035ae; }
+    .si-funnel-head {
+      display: flex; flex-direction: column; gap: 2px; min-width: 0;
     }
     .si-funnel-step {
       font-size: 11px; font-weight: 700;
-      opacity: .82; letter-spacing: .04em; text-transform: uppercase;
+      color: var(--muted); letter-spacing: .04em; text-transform: uppercase;
+    }
+    .si-funnel-name-row {
+      display: flex; align-items: baseline; gap: 8px; min-width: 0;
     }
     .si-funnel-name {
-      font-size: 14px; font-weight: 700;
+      font-size: 14px; font-weight: 700; color: var(--ink);
       overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
-    }
-    .si-funnel-metric {
-      display: flex; flex-direction: column; align-items: flex-end; gap: 2px;
-      flex: 0 0 auto;
+      flex: 1 1 auto; min-width: 0;
     }
     .si-funnel-value {
       font-family: var(--font-heading);
-      font-size: 22px; font-weight: 800; line-height: 1;
+      font-size: 22px; font-weight: 800; line-height: 1; color: var(--ink);
+      flex: 0 0 auto;
     }
-    .si-funnel-pct {
-      font-size: 11px; font-weight: 700; opacity: .82;
+    .si-funnel-track {
+      display: flex; align-items: center; gap: 10px;
     }
     .si-funnel-bar {
-      height: 6px; border-radius: 999px;
-      background: rgba(255,255,255,.25);
-      overflow: hidden; margin-top: 6px;
+      flex: 1 1 auto; height: 6px; border-radius: 999px;
+      background: rgba(8,21,42,.08);
+      overflow: hidden;
     }
     .si-funnel-bar-fill {
       display: block; height: 100%;
-      background: rgba(255,255,255,.85);
+      background: currentColor;
       border-radius: 999px;
+    }
+    .si-funnel-pct {
+      font-size: 12px; font-weight: 700; color: currentColor;
+      flex: 0 0 auto; min-width: 34px; text-align: right;
     }
 
     /* Search Insights — Trend และ Funnel อยู่แถวเดียวกันเป็น 2 คอลัมน์เหมือน panel อื่น */
@@ -22220,13 +22222,15 @@
         <div class="si-funnel-wrap">
           ${funnel.map(f => `
             <div class="si-funnel-row ${f.cls}">
-              <div class="si-funnel-label">
+              <div class="si-funnel-head">
                 <span class="si-funnel-step">${esc(f.step)}</span>
-                <span class="si-funnel-name">${esc(f.name)}</span>
-                <div class="si-funnel-bar"><span class="si-funnel-bar-fill" style="width:${f.pct}%"></span></div>
+                <div class="si-funnel-name-row">
+                  <span class="si-funnel-name">${esc(f.name)}</span>
+                  <span class="si-funnel-value">${f.value.toLocaleString()}</span>
+                </div>
               </div>
-              <div class="si-funnel-metric">
-                <span class="si-funnel-value">${f.value.toLocaleString()}</span>
+              <div class="si-funnel-track">
+                <span class="si-funnel-bar"><span class="si-funnel-bar-fill" style="width:${f.pct}%"></span></span>
                 <span class="si-funnel-pct">${f.pct}%</span>
               </div>
             </div>
