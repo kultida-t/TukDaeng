@@ -21682,7 +21682,7 @@
       const esc = v => String(v).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
       document.querySelector("#crumb").textContent = "งานตรวจสอบและบริการ / Market Demand / Demand Overview";
       document.querySelector("#page-title").textContent = "Demand Overview";
-      document.querySelector("#page-meta").textContent = `Last updated ${formatBangkokTimestamp(new Date(watchAlertData.lastUpdated))}`;
+      document.querySelector("#page-meta").textContent = `Last updated ${formatBangkokTimestamp()}`;
       document.querySelector("#panel-title").textContent = "Demand Overview";
       document.querySelector("#panel-subtitle").textContent = "ภาพรวมความต้องการตลาดจาก Search/Filter และ Watch Alert — read-only";
       document.querySelector("#primary-action").textContent = "";
@@ -22013,9 +22013,9 @@
 
       document.querySelector("#crumb").textContent = "งานตรวจสอบและบริการ / Market Demand / Search Insights";
       document.querySelector("#page-title").textContent = "Search Insights";
-      document.querySelector("#page-meta").textContent = `Last updated ${formatBangkokTimestamp(new Date(watchAlertData.lastUpdated))}`;
+      document.querySelector("#page-meta").textContent = `Last updated ${formatBangkokTimestamp()}`;
       document.querySelector("#panel-title").textContent = "Search Insights";
-      document.querySelector("#panel-subtitle").textContent = "คำค้นหาและตัวกรองที่ผู้ใช้เลือกบ่อยแบบ aggregate — read-only";
+      document.querySelector("#panel-subtitle").textContent = "คำค้นหาและตัวกรองที่ผู้ใช้เลือกบ่อยแบบ aggregate (7 วันล่าสุด) — read-only";
       document.querySelector("#primary-action").textContent = "";
 
       // KPI cards — label + value + icon บน, trend ล่านแทนที่ detail (read-only, ไม่มี sparkline)
@@ -22026,10 +22026,10 @@
         "Search-to-result": iconSvg.siConvert
       };
       const siKpis = [
-        { label: "Search Volume", value: "9,860", detail: "keyword submit + filter apply (7 วันล่าสุด)", trend: "+8.2%", trendLabel: "vs สัปดาห์ก่อน", trendDirection: "up", trendType: "positive", accent: "blue" },
-        { label: "Popular Selections", value: "3,420", detail: "การเลือก Popular Filter tags (7 วันล่าสุด)", trend: "+12.4%", trendLabel: "vs สัปดาห์ก่อน", trendDirection: "up", trendType: "positive", accent: "green" },
-        { label: "No-result Searches", value: "1,126", detail: "search/filter ที่ไม่พบผลลัพธ์ (7 วันล่าสุด)", trend: "-3.1%", trendLabel: "vs สัปดาห์ก่อน", trendDirection: "down", trendType: "positive", accent: "orange" },
-        { label: "Search-to-result", value: "88.6%", detail: "search ที่มีผลลัพธ์อย่างน้อย 1 รายการ", trend: "+1.8%", trendLabel: "vs สัปดาห์ก่อน", trendDirection: "up", trendType: "positive", accent: "purple" }
+        { label: "Search Volume", value: "9,860", detail: "การค้นหาและใช้ตัวกรองรวม 7 วันล่าสุด", trend: "+8.2%", trendLabel: "vs สัปดาห์ก่อน", trendDirection: "up", trendType: "positive", accent: "blue" },
+        { label: "Popular Selections", value: "3,420", detail: "การเลือก Popular Filter 7 วันล่าสุด", trend: "+12.4%", trendLabel: "vs สัปดาห์ก่อน", trendDirection: "up", trendType: "positive", accent: "green" },
+        { label: "No-result Searches", value: "1,126", detail: "ค้นหาไม่พบผลลัพธ์ 7 วันล่าสุด", trend: "-3.1%", trendLabel: "vs สัปดาห์ก่อน", trendDirection: "down", trendType: "positive", accent: "orange" },
+        { label: "Search-to-result", value: "88.6%", detail: "การค้นหาที่พบผลลัพธ์อย่างน้อย 1 รายการ", trend: "+1.8%", trendLabel: "vs สัปดาห์ก่อน", trendDirection: "up", trendType: "positive", accent: "purple" }
       ];
       document.querySelector("#summary-grid").innerHTML = siKpis.map(k => {
         const trendIcon = k.trendDirection === "up" ? iconSvg.arrowUp : iconSvg.arrowDown;
@@ -22104,7 +22104,7 @@
       //   filters  → อำพัน (action)
       //   noResult → แดง (problem)
       const statTotal = (items) => items.reduce((s, i) => s + i.value, 0) || 1;
-      const siAccent = { keywords: "#2b6cb0", brands: "#2f855a", filters: "#c05621", noResult: "#c53030" };
+      const siAccent = { keywords: "#2b6cb0", brands: "#2f855a", filters: "#6b46c1", noResult: "#c53030" };
       const statBarRow = (item, idx, total, accent) => {
         const pct = Math.round((item.value / total) * 100);
         const color = accent || brandColors[idx % brandColors.length];
@@ -22279,12 +22279,12 @@
       // Assemble all panels into #table
       document.querySelector("#table").innerHTML = `
         <div class="wa-overview-stack">
-          ${panel("Search Trend", "ปริมาณการค้นหาและ no-result รายวัน — 7 วันล่าสุด • เฉลี่ย 18.4 ผลลัพธ์/การค้นหา", trendChartHtml, "si-panel-trend", "", "", true, "กราฟแสดงปริมาณการค้นหารวมและการค้นหาที่ไม่พบผลลัพธ์รายวัน ในช่วง 7 วันล่าสุด พร้อมค่าเฉลี่ยผลลัพธ์ต่อการค้นหา ใช้สำหรับดู trend และเปรียบเทียบช่วงเวลา")}
-          ${panel("Search Funnel", "Conversion จาก Search สู่ Action — 7 วันล่าสุด", funnelHtml, "si-panel-funnel", "", "", true, "Funnel แสดงอัตราการเปลี่ยนผ่านจากการค้นหาสู่การคลิกผลลัพธ์ เปิด Asset Detail และสร้าง Watch Alert หรือ Make Offer เพื่อวัด quality ของ search result")}
-          ${panel("Popular Keywords", "คำค้นหาที่ผู้ใช้พิมพ์บ่อยที่สุด — 7 วันล่าสุด", barListHtml(insights.keywords, 5, siAccent.keywords), "wa-panel-keywords", "View All", `data-si-viewall="keywords"`, true, "แสดงคำค้นหาที่ผู้ใช้พิมพ์ในช่องค้นหาบ่อยที่สุด 5 อันดับแรก กด View All เพื่อดูสูงสุด 10 รายการ นับแบบ aggregate ในช่วง 7 วันล่าสุด")}
-          ${panel("Popular Brands", "แบรนด์ที่ผู้ใช้เลือกบ่อยจากการค้นหา/กรอง — 7 วันล่าสุด", barListHtml(insights.brands, 5, siAccent.brands), "wa-panel-brands", "View All", `data-si-viewall="brands"`, true, "แสดงแบรนด์ที่ผู้ใช้เลือกจากการค้นหาและตัวกรองบ่อยที่สุด 5 อันดับแรก กด View All เพื่อดูสูงสุด 10 รายการ นับแบบ aggregate ในช่วง 7 วันล่าสุด")}
-          ${panel("Popular Filters", "ตัวกรองที่ผู้ใช้เลือกบ่อยที่สุด — 7 วันล่าสุด", barListHtml(insights.filters, 5, siAccent.filters), "wa-panel-filters", "View All", `data-si-viewall="filters"`, true, "แสดงตัวกรองที่ผู้ใช้เลือกบ่อยที่สุด 5 อันดับแรก กด View All เพื่อดูสูงสุด 10 รายการ นับแบบ aggregate ในช่วง 7 วันล่าสุด")}
-          ${panel("No-result Searches", "คำค้นหา/ตัวกรองที่ไม่พบผลลัพธ์ — 7 วันล่าสุด", barListHtml(insights.noResult, 5, siAccent.noResult), "wa-panel-noresult", "View All", `data-si-viewall="noResult"`, true, "แสดงคำค้นหาหรือการกรองที่ไม่พบผลลัพธ์บ่อยที่สุด 5 อันดับแรก กด View All เพื่อดูสูงสุด 10 รายการ ใช้สำหรับวิเคราะห์ความต้องการที่ยังไม่มีสินค้าตรง นับแบบ aggregate ในช่วง 7 วันล่าสุด")}
+          ${panel("Search Trend", "เฉลี่ย 18.4 ผลลัพธ์/การค้นหา", trendChartHtml, "si-panel-trend", "", "", true, "ปริมาณการค้นหารวมและที่ไม่พบผลลัพธ์ รายวัน 7 วันล่าสุด")}
+          ${panel("Search Funnel", "", funnelHtml, "si-panel-funnel", "", "", true, "อัตราการเปลี่ยนผ่านจากค้นหา สู่คลิกผลลัพธ์ เปิดดูสินค้า และตั้ง Watch Alert หรือ Make Offer (7 วันล่าสุด)")}
+          ${panel("Popular Keywords", "", barListHtml(insights.keywords, 5, siAccent.keywords), "wa-panel-keywords", "View All", `data-si-viewall="keywords"`, true, "คำค้นหาที่ผู้ใช้พิมพ์บ่อย 5 อันดับแรก กด View All ดู 10 รายการ (7 วันล่าสุด)")}
+          ${panel("Popular Brands", "", barListHtml(insights.brands, 5, siAccent.brands), "wa-panel-brands", "View All", `data-si-viewall="brands"`, true, "แบรนด์ที่ผู้ใช้เลือกจากการค้นหาและกรองบ่อย 5 อันดับแรก กด View All ดู 10 รายการ (7 วันล่าสุด)")}
+          ${panel("Popular Filters", "", barListHtml(insights.filters, 5, siAccent.filters), "wa-panel-filters", "View All", `data-si-viewall="filters"`, true, "ตัวกรองที่ผู้ใช้เลือกบ่อย 5 อันดับแรก กด View All ดู 10 รายการ (7 วันล่าสุด)")}
+          ${panel("No-result Searches", "", barListHtml(insights.noResult, 5, siAccent.noResult), "wa-panel-noresult", "View All", `data-si-viewall="noResult"`, true, "คำค้นหาที่ไม่พบผลลัพธ์บ่อย 5 อันดับแรก บ่งบอกความต้องการที่ยังไม่มีสินค้าตรง (7 วันล่าสุด)")}
         </div>
       `;
       document.querySelector("#cards").innerHTML = "";
