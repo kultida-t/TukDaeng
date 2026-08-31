@@ -11746,7 +11746,10 @@
          รีเซ็ต min-width ให้ตารางและ footer, แปลง row เป็น card,
          ซ่อนคอลัมน์ที่ไม่ใช่ cell-primary, จัด tags+meta ในแถว 2
          specificity เท่ากับกฎฐาน (body.watch-alert-list-mode) */
-      /* WA-PTO-002b: filter bar บน mobile — stack 1 คอลัมน์, reset เต็มกว้าง */
+      /* WA-PTO-002b: filter bar บน mobile — ซ่อนทั้งหมดเมื่อปิดตัวกรอง (ไม่มี search ที่ต้องแสดงเสมอ) */
+      body.watch-alert-list-mode .filters:has(.wa-alert-filter-bar[data-filter-open="false"]) {
+        display: none;
+      }
       body.watch-alert-list-mode .filters {
         padding: 12px 14px;
         background: #f8fbff;
