@@ -22304,6 +22304,7 @@
             const top = dotRect.top - trackRect.top;
             siTooltip.style.left = `${left}px`;
             siTooltip.style.top = `${top}px`;
+            siTooltip.style.transform = "translate(-50%, -100%)";
             siTooltip.innerHTML = `
               <div class="si-trend-tooltip-day">${dayLabels[i]}</div>
               <div class="si-trend-tooltip-row">
@@ -22319,6 +22320,18 @@
             `;
             siTooltip.classList.add("is-visible");
             siTooltip.setAttribute("aria-hidden", "false");
+            // ตรวจขอบ: ถ้า tooltip หลุดขอบ track ให้ขยับเข้ามา
+            requestAnimationFrame(() => {
+              const tipRect = siTooltip.getBoundingClientRect();
+              const margin = 4;
+              if (tipRect.left < trackRect.left + margin) {
+                const shift = trackRect.left + margin - tipRect.left;
+                siTooltip.style.transform = `translate(calc(-50% + ${shift}px), -100%)`;
+              } else if (tipRect.right > trackRect.right - margin) {
+                const shift = tipRect.right - (trackRect.right - margin);
+                siTooltip.style.transform = `translate(calc(-50% - ${shift}px), -100%)`;
+              }
+            });
           });
           dot.addEventListener("mouseleave", () => {
             siTooltip.classList.remove("is-visible");
