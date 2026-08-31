@@ -2023,6 +2023,19 @@
       height: 48px;
       min-height: 48px;
       flex: 0 0 42px;
+      padding: 0;
+      border-color: #cfdbea;
+      background: #fff;
+      justify-content: center;
+    }
+    /* WA-PTO-002b: ซ่อนข้อความใน reset ปุ่ม เหลือแค่ icon เหมือนหน้าอื่น */
+    body.watch-alert-list-mode .user-filter-bar.wa-alert-filter-bar .filter-reset span {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
     }
     /* WA-PTO-002b: date range filter — 2 date inputs + sep ใน wrapper .wa-alert-date-range */
     body.watch-alert-list-mode .user-filter-bar.wa-alert-filter-bar .wa-alert-date-range {
