@@ -1909,22 +1909,7 @@
       line-height: 1.5;
       margin-bottom: 0;
     }
-    /* Owner link — read-only drill-in ไป User Management */
-    body.watch-alert-list-mode .watch-alert-list-table .wa-owner-link {
-      color: var(--blue);
-      font-weight: 600;
-      text-decoration: none;
-      background: transparent;
-      border: 0;
-      padding: 0;
-      cursor: pointer;
-      font-size: 12px;
-      line-height: 1.5;
-    }
-    body.watch-alert-list-mode .watch-alert-list-table .wa-owner-link:hover {
-      color: #0047c7;
-      text-decoration: underline;
-    }
+    /* Owner — plain text (ไม่มี drill-in, จะดู owner info ใน Alert Detail) */
     /* Criteria chips — top 3-4 chips แสดง brand/model/price/condition */
     body.watch-alert-list-mode .watch-alert-list-table .wa-criteria-chips {
       display: flex;
@@ -22720,7 +22705,6 @@
 
       const rowsHtml = pageRows.map(alert => {
         const ownerName = alert.owner?.displayName || "—";
-        const ownerId = alert.owner?.id || "";
         const lastTriggered = alert.lastTriggered ? formatWaDate(alert.lastTriggered) : "—";
         const created = formatWaDate(alert.created);
         return `
@@ -22745,10 +22729,7 @@
               </div>
             </div>
             <div data-label="Owner">
-              <div class="main-text">
-                <button class="wa-owner-link" type="button" data-wa-owner-jump="${esc(ownerId)}" data-wa-owner-name="${esc(ownerName)}">${esc(ownerName)}</button>
-              </div>
-              <div class="muted">${esc(ownerId)}</div>
+              <div class="main-text">${esc(ownerName)}</div>
             </div>
             <div data-label="Criteria">${getWaCriteriaChips(alert.criteria)}</div>
             <div data-label="Status">${getWaStatusPill(alert.status)}</div>
@@ -30261,22 +30242,12 @@
         return;
       }
       // WA-PTO-002a: Watch Alert List — row click → Alert Detail (read-only drill-in)
-      // ไม่เปิด detail ถ้าคลิกที่ owner link (เป็นปุ่มแยก ไป User Management)
       const waAlertOpen = event.target.closest("[data-wa-alert-open], .asset-row[data-wa-alert-card]");
       if (waAlertOpen && activeModule === "watch-alerts" && (activeSub === "Watch Alert List" || activeSub === "Alert List")) {
-        if (event.target.closest("[data-wa-owner-jump]")) return;
         if (event.target.closest("button") && !event.target.closest("[data-wa-alert-open]")) return;
         const id = waAlertOpen.dataset.waAlertOpen || waAlertOpen.dataset.waAlertCard;
         pushBackNavigationContext();
         renderWatchAlertDetail(id);
-        return;
-      }
-      // WA-PTO-002a: Owner link → User Management (read-only drill-in)
-      // ใน prototype นี้ยังไม่มี user lookup ที่แมป U-XXXX ตรง ใช้ jumpToModule ไป User List
-      const waOwnerJump = event.target.closest("[data-wa-owner-jump]");
-      if (waOwnerJump && activeModule === "watch-alerts") {
-        pushBackNavigationContext();
-        jumpToModule("users", "User Accounts");
         return;
       }
       const articleOpenButton = event.target.closest("[data-article-open]");
