@@ -1,6 +1,6 @@
-﻿# 11 BO Watch Alert Module
+﻿# 11 BO Market Demand & Watch Alert Module
 
-**Version:** `BO-11-v0.1`  
+**Version:** `BO-11-v0.2`
 **Date:** 2026-07-06  
 **Status:** Draft baseline  
 **Platform:** Responsive Web Back Office
@@ -15,23 +15,32 @@
 
 | Field | Detail |
 | --- | --- |
-| Module Name | BO Watch Alert |
+| Module Name | BO Market Demand & Watch Alert |
 | Platform | Responsive Web Back Office |
-| Version | `BO-11-v0.1` |
+| Version | `BO-11-v0.2` |
 | Status | Draft baseline |
 | Owner | Product / UX / Engineering / Operations |
 | Document Type | Functional PRD |
 
 ## 2. Objective
 
-BO Watch Alert Module คือหน้าจอสำหรับ Admin ใช้ตรวจสอบ watch alert ที่ user สร้างจาก FO Search Filter, ดู criteria, trigger history, notification delivery, abuse/risk signals และปิด/เปิด alert ตาม permission
+BO Market Demand & Watch Alert Module คือพื้นที่สำหรับ Admin ใช้ดูภาพรวมความต้องการของตลาดจาก 2 แหล่งข้อมูลที่แยกกันชัดเจน:
 
-โมดูลนี้ไม่ใช่หน้าจอสร้าง alert แทน user เป็นหลัก แต่เป็น operational view สำหรับ support, moderation, analytics และ troubleshooting
+- Search Insights: พฤติกรรมการค้นหาและการเลือก filter แบบ aggregate เช่น popular keyword, popular brand/model/option, popular filter combination และ no-result search
+- Watch Alert Demand: criteria ที่ user บันทึกเป็น Watch Alert, สถานะ match/unmet demand, trigger และ notification history
+
+โมดูลนี้ใช้เพื่อช่วยให้ทีม Product, Operations, Analytics และ Support เข้าใจความต้องการของผู้ใช้และความสัมพันธ์ระหว่าง demand กับ asset supply โดยไม่ซ้ำกับ Asset List ซึ่งเป็นมุมมองรายการ asset ฝั่ง supply
+
+โมดูลนี้ไม่ใช่หน้าจอสร้าง alert แทน user และ Search Insights ต้องไม่เปิดเผยข้อมูลที่ระบุตัว user รายบุคคล
 
 ## 3. Scope
 
 ### In Scope
 
+- Market Demand parent menu พร้อม Demand Overview, Search Insights และ Watch Alert List
+- Demand Overview ที่รวม market demand จาก Search/Filter behavior และ Watch Alert criteria แบบ aggregate
+- Search Insights สำหรับ popular keyword, popular filter selection, popular filter combination และ no-result search แบบ aggregate
+- Popular Filter data definition และการเชื่อมโยงกับ quick-selection tags ใน FO
 - Watch Alert list พร้อม search, filter, sort, pagination และ export ตาม permission
 - Watch Alert detail พร้อม owner, alert name, criteria, active/disabled state, notification toggle และ trigger history
 - Trigger history สำหรับ asset ที่ match criteria
@@ -46,6 +55,10 @@ BO Watch Alert Module คือหน้าจอสำหรับ Admin ใช
 
 ### Out Of Scope
 
+- Recent Search ส่วนตัวของ user
+- Saved Search ในฐานะ feature แยกจาก Watch Alert
+- Search History Sync
+- AI Search Suggestion
 - Admin สร้าง Watch Alert ใหม่แทน user ใน Phase 2 baseline
 - Alert frequency setting, daily digest, weekly digest
 - Market Price Alert, Watch Price Alert, Saved Search
@@ -87,6 +100,35 @@ BO Watch Alert Module คือหน้าจอสำหรับ Admin ใช
 | Desktop | Full table, side filters, split detail panel, trigger history table |
 
 Criteria ที่ยาวต้องแสดงแบบ structured chips/rows ไม่ใช่ JSON ดิบอย่างเดียว
+
+## 6.1 Search Insights And Popular Filter
+
+Search Insights เป็นข้อมูล aggregate จาก Search & Filter events ไม่ใช่รายการค้นหาส่วนตัวของ user โดยต้องรองรับข้อมูลอย่างน้อย:
+
+- Keyword ที่ถูก submit บ่อย
+- Brand, Model และ Reference ที่ถูกเลือกบ่อย
+- Filter option ที่ถูกเลือกบ่อยแยกตามหมวด
+- Filter combination ที่ถูกใช้บ่อย หากระบบรองรับการจัดอันดับแบบหลายเงื่อนไข
+- Search/filter ที่ไม่พบผลลัพธ์
+- Trend ของ search และ filter selection ตามช่วงเวลา
+
+กฎสำคัญ:
+
+- ต้องแยก Search volume, Filter selection volume และ Watch Alert count ออกจากกัน
+- Popular Filter ที่ส่งกลับไปแสดงใน FO ต้องเป็น aggregate และไม่เปิดเผยตัวตนหรือประวัติส่วนตัวของ user
+- Popular Filter เป็น quick-selection layer ไม่ตัด option อื่นออกจากรายการเต็ม และไม่เปลี่ยน Search/Filter logic
+- Search Insights ต้องแสดงช่วงเวลาและเกณฑ์การจัดอันดับให้ชัดเจน เพื่อป้องกันการตีความว่าเป็นยอดขายหรือจำนวน Asset
+- No-result search นับเป็นสัญญาณ demand ได้ แต่ต้องแยกจาก unmet demand ของ Watch Alert
+
+คำจำกัดความ:
+
+| ข้อมูล | แหล่งข้อมูล | ความหมาย |
+| --- | --- | --- |
+| Popular Search/Filter | Search keyword และ filter events | สิ่งที่ user สนใจหรือเลือกบ่อย แม้ยังไม่ได้สร้าง alert |
+| Watch Alert Demand | Watch Alert criteria | ความต้องการที่ user บันทึกไว้เพื่อติดตาม |
+| Unmet Search Demand | Search/filter ที่ไม่มีผลลัพธ์ | ความต้องการจากการค้นหาที่ supply ปัจจุบันยังไม่ตอบสนอง |
+| Unmet Watch Alert | Active Watch Alert ที่ไม่มี current match | Alert ที่กำลังรอ asset ตรง criteria |
+| Asset Supply | Asset Management / Asset List | จำนวน asset ที่มีและมองเห็นได้ตาม rule |
 
 ## 7. Watch Alert List
 
@@ -264,6 +306,17 @@ Bulk disable ต้องเปิดเฉพาะกรณี abuse/risk poli
 
 Analytics ขั้นต่ำ:
 
+### Search Insights
+
+- Search volume by keyword และ date range
+- Popular filter selection by dimension
+- Popular filter combination
+- No-result search count และ rate
+- Search-to-result conversion
+- Popular Filter tag impression/select สำหรับวัดการใช้งาน quick selection
+
+### Watch Alert Demand
+
 - Total active alerts
 - Notification enabled vs disabled
 - Trigger count by date range
@@ -333,8 +386,8 @@ Watch Alert ต้องใช้ app shell, navigation, breakpoint, list toolba
 
 | ID | Criteria |
 | --- | --- |
-| AC-BO-WA-001 | Admin เห็น Watch Alert list พร้อม search/filter/status/pagination |
-| AC-BO-WA-002 | Alert detail แสดง owner, criteria, status, notification toggle และ trigger history |
+| AC-BO-WA-001 | Admin เห็น Market Demand parent menu พร้อม Demand Overview, Search Insights และ Watch Alert List |
+| AC-BO-WA-002 | Alert List แสดง alert รายรายการ และ Alert Detail แสดง owner, criteria, status, notification toggle และ trigger history |
 | AC-BO-WA-003 | Criteria schema ต้องตรง Search Filter และทุก field optional |
 | AC-BO-WA-004 | Trigger/match ต้องใช้เฉพาะ asset status `Sale` และไม่รวม Show/Hide/Sold/Deleted/Removed |
 | AC-BO-WA-005 | Watch Alert notification destination ต้องเป็น `Watch Alert Result List` ไม่ใช่ Asset Detail |
@@ -343,7 +396,9 @@ Watch Alert ต้องใช้ app shell, navigation, breakpoint, list toolba
 | AC-BO-WA-008 | Market data inactive dependency ต้องแสดง warning และไม่ลบ history เดิม |
 | AC-BO-WA-008A | Alert ที่ criteria อ้าง entity/option ที่มี no current listing (จำนวน Asset Sale = 0 ตอนสร้าง) ต้องไม่ถูก flag เป็น inactive market data และต้องนับเป็น unmet demand ปกติ |
 | AC-BO-WA-009 | Block relation ต้องถูกใช้เป็น exclusion context ใน trigger/result review |
-| AC-BO-WA-010 | Responsive layout ใช้งานได้ที่ mobile-width, tablet และ desktop |
+| AC-BO-WA-010 | Responsive layout ใช้งานได้ที่ mobile-width, tablet และ desktop
+| AC-BO-WA-011 | Search Insights แสดง popular keyword/filter, no-result search และ trend แบบ aggregate โดยไม่เปิดเผยข้อมูลระบุตัว user
+| AC-BO-WA-012 | Demand Overview แยก Search demand, Watch Alert demand, Unmet Search Demand และ Unmet Watch Alert ได้ชัดเจน |
 
 ## 20. Open Decisions
 

@@ -1,22 +1,24 @@
 # Watch Alert BO Prototype Blueprint
 
-> Blueprint สำหรับสร้าง prototype Watch Alert BO Module (3 หน้าจอ)
-> อ้างอิง: `BackOffice/11_WATCH_ALERT_MODULE.md`, `FrontOffice/10_WATCH_ALERT_MODULE.md`, `.agents/skills/bo-screen-design/SKILL.md`
+> Blueprint สำหรับสร้าง prototype Market Demand & Watch Alert BO Module (4 หน้าจอ)
+> อ้างอิง: `BackOffice/11_WATCH_ALERT_MODULE.md`, `FrontOffice/10_WATCH_ALERT_MODULE.md`, `FrontOffice/03_SEARCH_FILTER_MODULE.md`, `.agents/skills/bo-screen-design/SKILL.md`
 > ทิศทางที่ confirm กับ user: **read-only overview ไม่มี admin action** (ไม่มี disable/enable/bulk action)
 > สร้างใน task: WA-PLAN-001
 
 ---
 
-## 1. Screen List สุดท้าย (3 หน้า)
+## 1. Screen List สุดท้าย (4 หน้า)
 
 | # | Screen | ประเภท | Source Pattern | บทบาท |
 |---|--------|--------|----------------|-------|
-| 1 | Demand Overview | Dashboard-like | Dashboard (KPI cards + sections) | ภาพรวมความต้องการตลาดจาก Watch Alert |
-| 2 | Alert List | List-only (read-only) | User List / Offer List (read-only) | รายการ alert ทั้งหมด รวมที่ user ลบแล้ว |
-| 3 | Alert Detail | Read-only detail + history | Offer Detail (read-only) | รายละเอียด alert + ประวัติ user action |
+| 1 | Demand Overview | Dashboard-like | Dashboard (KPI cards + sections) | ภาพรวมความต้องการตลาดจาก Search/Filter และ Watch Alert |
+| 2 | Search Insights | Analytics read-only | Reports / Analytics | ภาพรวม keyword และ filter ที่ผู้ใช้เลือกบ่อย รวมถึง no-result search |
+| 3 | Watch Alert List | List-only (read-only) | User List / Offer List (read-only) | รายการ alert ทั้งหมด รวมที่ user ลบแล้ว |
+| 4 | Alert Detail | Read-only detail + history | Offer Detail (read-only) | รายละเอียด alert + ประวัติ user action |
 
-**เมนูนำทาง:** Watch Alert (parent) > subs: Demand Overview, Alert List
-- Alert Detail เข้าจาก Alert List (drill-in) ไม่มี sub menu ตรง
+**เมนูนำทาง:** Market Demand (parent) > subs: Demand Overview, Search Insights, Watch Alert List
+- Alert Detail เข้าจาก Watch Alert List (drill-in) ไม่มี sub menu ตรง
+- Search Insights และ Demand Overview เป็น read-only analytics view
 - ไม่มี "Disabled Alerts" sub menu เดิม (รวมเข้า Alert List ผ่าน filter Status)
 
 **กฎ read-only (ทิศใหม่):**
@@ -36,7 +38,7 @@
 - **Page meta:** Last updated (freshness timestamp)
 - **Page action:** ไม่มี (read-only)
 
-### KPI Cards (4 cards, desktop 4/row)
+### KPI Cards (6 cards, desktop responsive grid)
 
 | Card | Value | Detail |
 |------|-------|--------|
@@ -44,6 +46,8 @@
 | Alerts with Matches | 2,847 | มีอย่างน้อย 1 match (met demand) |
 | Unmet Demand | 371 | ไม่มี match เลย |
 | Notification Success Rate | 94.2% | delivered / attempted (7 วันล่าสุด) |
+| Search Volume | 18,420 | จำนวน keyword submit และ filter apply (7 วันล่าสุด) |
+| No-result Searches | 1,126 | จำนวน search/filter ที่ไม่พบผลลัพธ์ (7 วันล่าสุด) |
 
 ### Main Content Sections
 
@@ -79,7 +83,30 @@
 
 ---
 
-## 3. Screen 2: Alert List (Read-only)
+## 3. Screen 2: Search Insights (Read-only)
+
+### Header
+- **Breadcrumb:** งานตรวจสอบและบริการ / Market Demand / Search Insights
+- **Page title:** Search Insights
+- **Subtitle:** คำค้นหาและตัวกรองที่ผู้ใช้เลือกบ่อยแบบ aggregate — read-only
+- **Page action:** ไม่มี (read-only)
+
+### Main Sections
+- Popular Keywords: keyword ที่ถูก submit บ่อยตามช่วงเวลาที่เลือก
+- Popular Filters by Dimension: Brand, Model, Reference และ filter option ที่ถูกเลือกบ่อย
+- Popular Filter Combinations: เงื่อนไขที่ถูกใช้ร่วมกันบ่อย หากมีข้อมูลเพียงพอ
+- No-result Searches: คำค้นหาหรือเงื่อนไขที่ไม่พบผลลัพธ์ แยกจาก Unmet Watch Alert
+- Search/Filter Trend: แนวโน้มตามช่วงเวลา
+
+### Rules
+- แสดงเฉพาะข้อมูล aggregate ไม่แสดง search history ของ user รายบุคคล
+- Popular Filter ใช้ช่วยวิเคราะห์และเป็นแหล่งข้อมูลของ quick-selection tags ใน FO
+- ต้องแสดงช่วงเวลาและฐานการนับให้ชัดเจน
+- Search Insights ไม่ใช่ยอดขาย จำนวน Asset หรือจำนวน Watch Alert โดยตรง
+
+---
+
+## 4. Screen 3: Alert List (Read-only)
 
 ### Header
 - **Breadcrumb:** งานตรวจสอบและบริการ / Watch Alert / Alert List
@@ -138,7 +165,7 @@
 
 ---
 
-## 4. Screen 3: Alert Detail (Read-only)
+## 5. Screen 4: Alert Detail (Read-only)
 
 ### Header
 - **Breadcrumb:** งานตรวจสอบและบริการ / Watch Alert / Alert List / WAL-XXXX
@@ -194,9 +221,9 @@
 
 ---
 
-## 5. Mock Data Structure
+## 6. Mock Data Structure
 
-### 5.1 Alert Record (หน่วยข้อมูลหลัก)
+### 6.1 Alert Record (หน่วยข้อมูลหลัก)
 
 ```javascript
 {
@@ -231,7 +258,7 @@
 }
 ```
 
-### 5.2 Trigger Record
+### 6.2 Trigger Record
 
 ```javascript
 {
@@ -247,7 +274,7 @@
 }
 ```
 
-### 5.3 Notification Delivery Record
+### 6.3 Notification Delivery Record
 
 ```javascript
 {
@@ -264,7 +291,7 @@
 }
 ```
 
-### 5.4 User Action Record
+### 6.4 User Action Record
 
 ```javascript
 {
@@ -278,7 +305,7 @@
 }
 ```
 
-### 5.5 Mock Data Coverage (ตัวอย่าง alerts ที่ต้องมี)
+### 6.5 Mock Data Coverage (ตัวอย่าง alerts ที่ต้องมี)
 
 | Alert ID | Name | Status | Notification | Matches | Triggers | Market Data | วัตถุประสงค์ mock |
 |----------|------|--------|--------------|---------|----------|-------------|-------------------|
@@ -295,7 +322,7 @@
 | WAL-0950 | IWC Pilot Mark XVIII | Active | Off | 2 | 4 | Active | notification off แต่ยัง active |
 | WAL-0900 | AP Royal Oak 15500 | Active | On | 0 | 0 | Inactive (reference) | unmet + inactive ref |
 
-### 5.6 Demand Overview Aggregation (คำนวณจาก mock alerts)
+### 6.6 Demand Overview Aggregation (คำนวณจาก mock alerts)
 
 | Dimension | ค่าที่ใช้ mock |
 |-----------|---------------|
@@ -312,22 +339,25 @@
 
 ---
 
-## 6. การเปลี่ยนแปลงจาก Prototype เดิม
+## 7. การเปลี่ยนแปลงจาก Prototype เดิม
 
-| จุด | เดิม (บรรทัด 11308) | ใหม่ |
-|-----|---------------------|------|
-| เมนู subs | Alert Criteria, Trigger History, Disabled Alerts | Demand Overview, Alert List |
-| Panel title | Alert Criteria & Trigger History | (เปลี่ยนตามหน้า) |
-| Subtitle | "ดู criteria, trigger history, notification on/off และ disable alert ที่ abuse" | "ภาพรวมความต้องการตลาดจาก Watch Alert" (Overview) / "รายการ Watch Alert ทั้งหมด — read-only" (List) |
+| จุด | เดิม | ใหม่ |
+|-----|-----|-----|
+| Parent menu | Watch Alert | Market Demand |
+| เมนู subs | Alert Criteria, Trigger History, Disabled Alerts | Demand Overview, Search Insights, Watch Alert List |
+| Screen count | 3 หน้า | 4 หน้า |
+| Demand source | Watch Alert เป็นหลัก | Search/Filter behavior + Watch Alert criteria โดยแยก metric ชัดเจน |
+| Panel title | Alert Criteria & Trigger History | เปลี่ยนตามหน้า |
 | Page action | "Disable selected" | ไม่มี (read-only) |
 | KPI cards | Active Alerts, Triggered Today, Disabled, Failed Delivery | Active Alerts, Alerts with Matches, Unmet Demand, Notification Success Rate |
-| Mock items | 3 รายการ | 12 รายการ (ครอบคลุมทุก status + scenario) |
 | Admin action | มี disable | ไม่มี (read-only) |
 
 ---
 
-## 7. ข้อกำหนดที่ต้องตรงตาม FO Rules
+## 8. ข้อกำหนดที่ต้องตรงตาม FO Rules
 
+- Popular Filter tags ต้องมาจากข้อมูล aggregate และ user ยังเลือกจากรายการเต็มได้
+- Search Insights ต้องแยกจาก Watch Alert Demand และไม่แสดงข้อมูลระบุตัว user
 - Match เฉพาะ Asset สถานะ Sale (ไม่ match Show/Hide/Sold/Deleted)
 - Notification destination = Watch Alert Result List (ไม่ใช่ Asset Detail)
 - Criteria schema ใช้ร่วมกับ Search Filter (ทุก field optional)
@@ -337,10 +367,10 @@
 
 ---
 
-## 8. ขอบเขตที่ห้ามแก้ใน task ถัดไป
+## 9. ขอบเขตที่ห้ามแก้ใน task ถัดไป
 
 - ห้ามแก้ protected screens (Login, Dashboard, User/Asset/Content/Market/Offer/Option Master)
 - ห้ามแก้ shared CSS/helper/route ที่กระทบ protected screens
 - ห้ามเพิ่ม admin action ใด ๆ (disable/enable/bulk/export)
-- ห้ามเปลี่ยน FO rules (match rule, destination, criteria schema)
-- ห้ามแก้ FO spec
+- ห้ามเปลี่ยน FO rules ที่ยืนยันแล้ว (match rule, destination, criteria schema)
+- การปรับ FO spec ต้องจำกัดเฉพาะ Popular Filter/Popular Selection requirement ที่ได้รับการยืนยัน

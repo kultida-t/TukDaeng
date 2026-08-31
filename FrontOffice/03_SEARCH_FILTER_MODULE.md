@@ -82,15 +82,19 @@ Search & Filter Module ใน V1 ครอบคลุม:
 - Open Asset Detail
 - Open Public Profile
 - Create Watch Alert from Search Filter
+- Popular Filter / Popular Selection tags สำหรับช่วยเลือก Brand, Model, Reference และ filter option ที่ถูกเลือกบ่อยแบบ aggregate
+- Quick selection จาก Popular Filter tags ในหน้า Search และหน้า Filter
 
 ไม่รวมใน V1:
 
-- Saved Search
-- Recent Search
-- Trending Search
+- Saved Search เป็น feature แยก
+- Recent Search หรือประวัติการค้นหาส่วนตัวของ user
+- Trending Search แบบหน้าแยกหรือประสบการณ์ค้นหาเต็มรูปแบบ
 - AI Search Suggestion
 - Search History Sync
 - Natural Language Search
+
+Popular Filter ที่อยู่ใน V1 ไม่ถือเป็น Saved Search, Recent Search หรือ Search History ส่วนตัว แต่เป็นข้อมูล aggregate ของการเลือก keyword/filter เพื่อช่วยให้ user เลือกเงื่อนไขที่นิยมได้เร็วขึ้น
 
 ---
 
@@ -257,6 +261,27 @@ Autocomplete ต้องแสดงทุก entity ที่ `is_active=true`
 จำนวน listing เป็นข้อมูลอ้างอิงเท่านั้น ไม่ใช่เกณฑ์ตัด entity/option ออกจากรายการ — entity/option ที่มีจำนวน `0` (no current listing) ยังเลือกได้ เพื่อรองรับ Watch Alert use case ที่ผู้ซื้อหานาฬิกาตรงเงื่อนไขที่ต้องการ ไม่ว่าจะยังไม่มีรุ่นนั้นลงขาย หรือเคยมีลงขายแต่ไม่ตรงเงื่อนไข (เช่น ราคา/สภาพ/สี)
 
 Entity/option ที่ `is_active=false` (inactive market data หรือ deactivated option) ต้องไม่แสดงเป็นตัวเลือกใหม่ใน autocomplete
+
+## Popular Filter / Popular Selection Rule
+
+หน้า Search และหน้า Filter ต้องรองรับการแสดง Popular Filter tags เพื่อช่วยให้ user เลือกเงื่อนไขที่นิยมได้รวดเร็วขึ้น โดยระบบคำนวณจากข้อมูล aggregate ของพฤติกรรมการใช้งาน เช่น:
+
+- Keyword ที่ถูก submit บ่อย
+- Brand, Model และ Reference ที่ถูกเลือกบ่อย
+- Filter option ที่ถูกเลือกบ่อยในแต่ละหมวด
+- Filter combination ที่ถูกใช้บ่อย หากระบบรองรับการจัดอันดับแบบหลายเงื่อนไข
+
+กฎการแสดงผล:
+
+- หน้า Search แสดง quick-selection tags ที่เกี่ยวข้องกับการค้นหาหรือหมวดที่ระบบกำหนด โดยจำกัดจำนวนตามพื้นที่ของหน้าจอ (prototype ปัจจุบันแสดงประมาณ 10 รายการ)
+- หน้า Filter แสดง Popular Filter tags แยกตามหมวด เช่น Brand, Model หรือ option master ก่อนรายการเต็ม
+- User เลือกจาก tag ได้โดยตรง หรือเลือกจากรายการเต็มและค้นหาด้วยช่อง Search ได้เหมือนเดิม
+- Popular Filter ต้องไม่ตัดตัวเลือกอื่นออกจากรายการเต็ม และต้องไม่เปลี่ยนผลลัพธ์ของ Search/Filter logic
+- การจัดอันดับต้องใช้ข้อมูล aggregate และไม่แสดงข้อมูลที่ระบุตัว user รายบุคคล
+- ตัวเลือกที่ไม่มี Asset Sale ปัจจุบันยังเลือกได้ตาม Filter Visibility Rule หากเป็น active market data/option; จำนวน `(0)` ยังคงแสดงตามเดิม
+- หากยังไม่มีข้อมูลเพียงพอ ให้แสดงรายการเริ่มต้นตาม implementation หรือไม่แสดง Popular Filter โดยไม่ทำให้การเลือกจากรายการเต็มใช้งานไม่ได้
+
+Popular Filter เป็น convenience layer สำหรับ Search & Filter ไม่ใช่ Saved Search, Recent Search, Search History หรือ AI Search Suggestion
 
 ## Filter Fields
 
@@ -598,6 +623,8 @@ Search Result ต้องรองรับ:
 - Search Open
 - Search Keyword Submit
 - Search Autocomplete Select
+- Popular Filter Tag Impression
+- Popular Filter Tag Select
 - Apply Filter
 - Clear Filter
 - Sort Search Result
@@ -636,6 +663,8 @@ Search Result ต้องรองรับ:
 | AC-SEARCH-009 | Filter ต้องรองรับ Brand, Model, Price Range, Year of Production, Reference Number, Delivery Contents, Condition, Case Size, Movement, Dial Color และ Strap / Bracelet |
 | AC-SEARCH-009A | Filter option (Brand, Model, Reference, option master) ต้องแสดงทุก entity/option ที่ `is_active=true` พร้อมจำนวน Asset Sale ปัจจุบันข้างชื่อ แม้จำนวนเป็น `0` (no current listing) |
 | AC-SEARCH-009B | Entity/option ที่ `is_active=false` (inactive market data หรือ deactivated option) ต้องไม่แสดงเป็นตัวเลือกใหม่ใน filter |
+| AC-SEARCH-009C | หน้า Search และหน้า Filter ต้องแสดง Popular Filter/Popular Selection tags จากข้อมูล aggregate ตามหมวดที่เกี่ยวข้อง โดย user ยังเลือกจากรายการเต็มได้ |
+| AC-SEARCH-009D | Popular Filter ต้องไม่ตัดตัวเลือกอื่นออก ไม่เปลี่ยน Search/Filter logic และไม่เปิดเผยข้อมูลที่ระบุตัว user รายบุคคล |
 | AC-SEARCH-010 | Brand → Model ต้องเป็น Dependent Filter |
 | AC-SEARCH-011 | Multiple Filter ต้องใช้ AND Logic |
 | AC-SEARCH-012 | Apply Filters ต้องอัปเดต Search Result ตามเงื่อนไขที่เลือก |

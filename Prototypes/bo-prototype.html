@@ -12156,7 +12156,7 @@
         { id: "option-master", label: "Option Master", icon: "option" },
       ]},
       { section: "งานตรวจสอบและบริการ", items: [
-        { id: "watch-alerts", label: "Watch Alert", icon: "alert", subs: ["Demand Overview", "Alert List"] },
+        { id: "watch-alerts", label: "Market Demand", icon: "alert", subs: ["Demand Overview", "Search Insights", "Watch Alert List"] },
         { id: "support", label: "Help & Support", icon: "support", subs: ["Tickets", "Assignment", "SLA"] },
         { id: "deletions", label: "Account Deletion", icon: "delete", subs: ["Requests", "Grace Period", "Anonymization"] }
       ]},
@@ -12288,7 +12288,7 @@
       // WA-PTO-001: Watch Alert BO — read-only overview (no admin action).
       // moduleData["watch-alerts"] เก็บเฉพาะ metadata สำหรับ fallback;
       // ข้อมูลจริงและการ render อยู่ใน watchAlertData + renderWatchAlert()
-      "watch-alerts": mod("Watch Alert", "งานตรวจสอบและบริการ / Watch Alert", "Demand Overview", "ภาพรวมความต้องการตลาดจาก Watch Alert — read-only", "", [], []),
+      "watch-alerts": mod("Market Demand", "งานตรวจสอบและบริการ / Market Demand", "Demand Overview", "ภาพรวมความต้องการตลาดจาก Search/Filter และ Watch Alert — read-only", "", [], []),
       support: mod("Help & Support", "งานตรวจสอบและบริการ / Help & Support", "Ticket Queue", "คิว ticket, assignment, reply history, priority และ SLA", "สร้าง ticket", [["Open", "18", "รอตอบกลับ 7"], ["Assigned", "9", "มีเจ้าของงาน"], ["SLA Risk", "4", "เหลือ < 4 ชม."], ["Resolved", "126", "เดือนนี้"]], [
         item("SUP-188", "Proof of payment visibility", "Nattapol P.", "Email", "กลาง", "Assigned", "ถามว่าหลักฐานการชำระเงินแสดงให้ใครเห็น", ["Owner/Admin"], "ตอบว่าเป็น private data เห็นเฉพาะ owner และ Admin"),
         item("SUP-182", "Cannot reset password", "Apple user", "App", "ปกติ", "Open", "บัญชี Apple reset password จาก BO ไม่ได้", ["Auth method Apple"], "แจ้งให้จัดการผ่าน Apple ID"),
@@ -12875,9 +12875,9 @@
     };
 
     // WA-PTO-001: Watch Alert BO mock data — read-only overview (no admin action).
-    // อ้างอิง BackOffice/WatchAlert_Prototype_Blueprint.md section 5
+    // อ้างอิง BackOffice/WatchAlert_Prototype_Blueprint.md section 6
     const watchAlertData = {
-      // 5.1 Alert records (12 รายการ ครอบคลุมทุก status/scenario)
+      // 6.1 Alert records (12 รายการ ครอบคลุมทุก status/scenario)
       alerts: [
         { id: "WAL-1440", name: "Rolex Submariner <= 320k", owner: { id: "U-1042", displayName: "Nattapol P." }, status: "Active", notificationEnabled: true, criteria: { brand: "Rolex", model: "Submariner", reference: "16610", priceMin: 0, priceMax: 320000, condition: ["Very Good", "Good"], caseSize: ["40-42mm"], dialColor: ["Black"] }, marketDataInactive: false, inactiveFields: [], matchCount: 8, triggerCount: 12, lastTriggered: "2026-08-25T14:30:00+07:00", created: "2026-06-15T09:00:00+07:00", updated: "2026-08-20T10:00:00+07:00" },
         { id: "WAL-1228", name: "Omega Speedmaster Bangkok", owner: { id: "U-1017", displayName: "Crown Time BKK" }, status: "Active", notificationEnabled: true, criteria: { brand: "Omega", model: "Speedmaster", reference: "", priceMin: 100000, priceMax: 250000, condition: ["Like New"], caseSize: ["40-42mm"], dialColor: ["Black"] }, marketDataInactive: false, inactiveFields: [], matchCount: 3, triggerCount: 28, lastTriggered: "2026-08-26T09:12:00+07:00", created: "2026-05-02T11:30:00+07:00", updated: "2026-08-26T09:12:00+07:00" },
@@ -19144,7 +19144,7 @@
       document.body.classList.toggle("market-dashboard-mode", id === "market" && (subLabel || "Dashboard") === "Dashboard");
       document.body.classList.toggle("watch-alert-mode", id === "watch-alerts");
       document.body.classList.toggle("watch-alert-overview-mode", id === "watch-alerts" && (subLabel || "Demand Overview") === "Demand Overview");
-      document.body.classList.toggle("watch-alert-list-mode", id === "watch-alerts" && subLabel === "Alert List");
+      document.body.classList.toggle("watch-alert-list-mode", id === "watch-alerts" && (subLabel === "Watch Alert List" || subLabel === "Alert List"));
       document.body.classList.toggle("user-list-mode", id === "users" || isReportedAssets || isReportedBoard || isReportedComments);
       document.body.classList.toggle("user-accounts-mode", id === "users" && (subLabel || "User Accounts") === "User Accounts");
       document.body.classList.remove("asset-detail-mode");
@@ -21506,7 +21506,11 @@
       document.querySelector(".filters").innerHTML = "";
       document.querySelector("#detail").innerHTML = "";
       document.querySelector("#cards").innerHTML = "";
-      if (subLabel === "Alert List") {
+      if (subLabel === "Search Insights") {
+        renderSearchInsights();
+        return;
+      }
+      if (subLabel === "Watch Alert List" || subLabel === "Alert List") {
         renderWatchAlertList();
         return;
       }
@@ -21516,11 +21520,11 @@
     function renderWatchAlertOverview() {
       const ov = watchAlertData.overview;
       const esc = v => String(v).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
-      document.querySelector("#crumb").textContent = "งานตรวจสอบและบริการ / Watch Alert / Demand Overview";
+      document.querySelector("#crumb").textContent = "งานตรวจสอบและบริการ / Market Demand / Demand Overview";
       document.querySelector("#page-title").textContent = "Demand Overview";
       document.querySelector("#page-meta").textContent = `Last updated ${formatBangkokTimestamp(new Date(watchAlertData.lastUpdated))}`;
       document.querySelector("#panel-title").textContent = "Demand Overview";
-      document.querySelector("#panel-subtitle").textContent = "ภาพรวมความต้องการตลาดจาก Watch Alert — read-only";
+      document.querySelector("#panel-subtitle").textContent = "ภาพรวมความต้องการตลาดจาก Search/Filter และ Watch Alert — read-only";
       document.querySelector("#primary-action").textContent = "";
 
       // KPI cards — label + value + icon บน, trend ล่างแทนที่ detail (read-only, ไม่มี sparkline)
@@ -21557,7 +21561,7 @@
       const brandColors = ["#2b6cb0", "#2f855a", "#c05621", "#b83280", "#6b46c1", "#2c7a7b", "#b7791f", "#c53030"];
 
       // Panel card helper
-      const panel = (title, meta, bodyHtml, extraClass = "", viewAllLabel = "", viewAllAttr = `data-module-jump="watch-alerts" data-sub-jump="Alert List"`, viewAllChevron = true, infoTip = "") => `
+      const panel = (title, meta, bodyHtml, extraClass = "", viewAllLabel = "", viewAllAttr = `data-module-jump="watch-alerts" data-sub-jump="Watch Alert List"`, viewAllChevron = true, infoTip = "") => `
         <article class="mini-card dashboard-status-card wa-overview-panel ${extraClass}">
           <div class="dashboard-card-head">
             <div class="wa-panel-head-text">
@@ -21831,7 +21835,7 @@
             `;
           })(), "wa-panel-price", "", "", true, "แสดงจำนวน Watch Alert ที่ผู้ใช้ตั้งไว้แยกตามช่วงราคาที่สนใจ 6 ช่วง ตั้งแต่ต่ำกว่า 50,000 บาท ถึงมากกว่า 1 ล้านบาท")}
           ${panel("Trigger Trend", "ย้อนหลัง 12 เดือน", trendHtml, "wa-panel-trend", "", "", true, "แสดงแนวโน้มจำนวนการแจ้งเตือนรายเดือนย้อนหลัง 12 เดือน แยกการแจ้งเตือนที่สำเร็จและที่ถูกข้าม")}
-          ${panel("Frequently Triggered Alerts", "alert ที่ trigger บ่อยสุด (top 10)", freqTriggerHtml, "wa-panel-frequent", "View All", `data-module-jump="watch-alerts" data-sub-jump="Alert List"`, true, "แสดง Watch Alert ที่ trigger บ่อยที่สุด 10 อันดับแรก พร้อมจำนวนครั้งและเวลาที่ trigger ล่าสุด")}
+          ${panel("Frequently Triggered Alerts", "alert ที่ trigger บ่อยสุด (top 10)", freqTriggerHtml, "wa-panel-frequent", "View All", `data-module-jump="watch-alerts" data-sub-jump="Watch Alert List"`, true, "แสดง Watch Alert ที่ trigger บ่อยที่สุด 10 อันดับแรก พร้อมจำนวนครั้งและเวลาที่ trigger ล่าสุด")}
         </div>
       `;
 
@@ -21844,12 +21848,36 @@
       if (viewAllBtn) viewAllBtn.addEventListener("click", () => openCriteriaModal([]));
     }
 
+    function renderSearchInsights() {
+      const esc = v => String(v).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+      const insights = {
+        keywords: [["Rolex", "4,820"], ["Submariner", "2,940"], ["GMT-Master II", "2,180"], ["Datejust", "1,760"], ["Speedmaster", "1,420"]],
+        brands: [["Rolex", "3,218"], ["Omega", "1,684"], ["Seiko", "1,205"], ["Tudor", "892"], ["Cartier", "640"]],
+        filters: [["Price: ฿100,000–฿300,000", "2,480"], ["Condition: Like New", "1,920"], ["Dial color: Black", "1,680"], ["Reference: 16610", "1,120"], ["Case size: 40–42mm", "980"]]
+      };
+      document.querySelector("#crumb").textContent = "งานตรวจสอบและบริการ / Market Demand / Search Insights";
+      document.querySelector("#page-title").textContent = "Search Insights";
+      document.querySelector("#page-meta").textContent = `Last updated ${formatBangkokTimestamp(new Date(watchAlertData.lastUpdated))}`;
+      document.querySelector("#panel-title").textContent = "Search Insights";
+      document.querySelector("#panel-subtitle").textContent = "คำค้นหาและตัวกรองที่ผู้ใช้เลือกบ่อยแบบ aggregate — read-only";
+      document.querySelector("#table").innerHTML = "";
+      document.querySelector("#primary-action").textContent = "";
+      document.querySelector("#summary-grid").innerHTML = [
+        ["Search Volume", "18,420", "keyword submit + filter apply (7 วันล่าสุด)"],
+        ["Popular Selections", "12,860", "การเลือก Popular Filter tags (7 วันล่าสุด)"],
+        ["No-result Searches", "1,126", "search/filter ที่ไม่พบผลลัพธ์ (7 วันล่าสุด)"],
+        ["Search-to-result", "82.4%", "search ที่มีผลลัพธ์อย่างน้อย 1 รายการ"]
+      ].map(([label, value, detail]) => `<article class="stat"><div class="stat-label">${esc(label)}</div><div class="stat-value">${esc(value)}</div><div class="stat-meta">${esc(detail)}</div></article>`).join("");
+      const section = (title, rows) => `<section class="panel" style="margin-top:16px"><div class="panel-head"><div><h3>${esc(title)}</h3><p>นับแบบ aggregate ในช่วง 7 วันล่าสุด</p></div></div><div class="table-wrap"><table><thead><tr><th>รายการ</th><th>จำนวนครั้ง</th></tr></thead><tbody>${rows.map(([label, value]) => `<tr><td>${esc(label)}</td><td>${esc(value)}</td></tr>`).join("")}</tbody></table></div></section>`;
+      document.querySelector("#cards").innerHTML = section("Popular Keywords", insights.keywords) + section("Popular Brands", insights.brands) + section("Popular Filters", insights.filters) + section("No-result Searches", [["Rolex Daytona / ฿300,000", "428"], ["Seiko 6139 / Blue dial", "286"], ["Patek Calatrava / ฿1M", "194"], ["GMT-Master II / 126710", "118"]]);
+    }
+
     // WA-PTO-002 placeholder — Alert List (read-only) will be implemented in next task
     function renderWatchAlertList() {
-      document.querySelector("#crumb").textContent = "งานตรวจสอบและบริการ / Watch Alert / Alert List";
-      document.querySelector("#page-title").textContent = "Alert List";
+      document.querySelector("#crumb").textContent = "งานตรวจสอบและบริการ / Market Demand / Watch Alert List";
+      document.querySelector("#page-title").textContent = "Watch Alert List";
       document.querySelector("#page-meta").textContent = "";
-      document.querySelector("#panel-title").textContent = "Alert List";
+      document.querySelector("#panel-title").textContent = "Watch Alert List";
       document.querySelector("#panel-subtitle").textContent = "รายการ Watch Alert ทั้งหมด (รวมที่ user ลบแล้ว) — read-only";
       document.querySelector("#primary-action").textContent = "";
       document.querySelector("#summary-grid").innerHTML = "";
