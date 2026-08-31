@@ -2850,7 +2850,7 @@
 
     /* Search Insights trend chart — 7-day area chart (search volume + no-result), scoped to SI only */
     .si-trend-wrap { display: flex; flex-direction: column; gap: 8px; }
-    .si-trend-legend { display: flex; flex-wrap: wrap; gap: 14px; }
+    .si-trend-legend { display: flex; flex-wrap: wrap; gap: 14px; justify-content: flex-end; }
     .si-trend-legend-item {
       display: inline-flex; align-items: center; gap: 6px;
       color: #43546d; font-size: 12px; font-weight: 600;
@@ -2860,6 +2860,7 @@
     .si-trend-swatch.is-noresult { background: #c53030; }
     .si-trend-plot {
       display: flex; flex: 1 1 auto; min-height: 140px;
+      padding-top: 12px;
     }
     .si-trend-track {
       position: relative; flex: 1 1 auto;
@@ -22142,21 +22143,25 @@
       }).join("");
       const trendYAxisHtml = trendYTicks.map(v => `<span>${v.toLocaleString()}</span>`).join("");
       // SVG area chart — 2 series (volume + no-result) พร้อม gradient และ smooth curve
-      const trendW = 700, trendH = 140, trendPad = 6;
+      // viewBox สมดุลกับ container ใน 2 คอลัมน์ (aspect ratio ~3:1)
+      const trendW = 700, trendH = 230, trendPad = 8;
       const trendX = (i) => trendPad + (i / (trendData.length - 1)) * (trendW - trendPad * 2);
       const trendY = (v) => trendH - trendPad - (v / trendNiceMax) * (trendH - trendPad * 2);
-      // Smooth curve using Catmull-Rom-ish path (quadratic bezier through midpoints)
+      // Smooth curve using Catmull-Rom spline → cubic bezier (เส้นโค้งผ่านทุกจุดจริง)
       const smoothPath = (pts) => {
-        if (pts.length < 2) return "";
+        if (pts.length < 2) return `M ${pts[0].x} ${pts[0].y} L ${pts[1].x} ${pts[1].y}`;
         let d = `M ${pts[0].x} ${pts[0].y}`;
-        for (let i = 1; i < pts.length; i++) {
-          const prev = pts[i - 1];
-          const curr = pts[i];
-          const midX = (prev.x + curr.x) / 2;
-          const midY = (prev.y + curr.y) / 2;
-          d += ` Q ${prev.x} ${prev.y} ${midX} ${midY}`;
+        for (let i = 0; i < pts.length - 1; i++) {
+          const p0 = pts[i - 1] || pts[i];
+          const p1 = pts[i];
+          const p2 = pts[i + 1];
+          const p3 = pts[i + 2] || p2;
+          const cp1x = p1.x + (p2.x - p0.x) / 6;
+          const cp1y = p1.y + (p2.y - p0.y) / 6;
+          const cp2x = p2.x - (p3.x - p1.x) / 6;
+          const cp2y = p2.y - (p3.y - p1.y) / 6;
+          d += ` C ${cp1x} ${cp1y} ${cp2x} ${cp2y} ${p2.x} ${p2.y}`;
         }
-        d += ` T ${pts[pts.length - 1].x} ${pts[pts.length - 1].y}`;
         return d;
       };
       const volumePtsArr = trendData.map((d, i) => ({ x: trendX(i), y: trendY(d.volume) }));
@@ -22178,11 +22183,11 @@
             </linearGradient>
           </defs>
           <path d="${volumeAreaPath}" fill="url(#siVolGrad)"></path>
-          <path d="${volumePath}" fill="none" stroke="#2b6cb0" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round"></path>
+          <path d="${volumePath}" fill="none" stroke="#2b6cb0" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round" vector-effect="non-scaling-stroke"></path>
           <path d="${noResultAreaPath}" fill="url(#siNoResGrad)"></path>
-          <path d="${noResultPath}" fill="none" stroke="#c53030" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round" stroke-dasharray="5 4"></path>
-          ${volumePtsArr.map(p => `<circle cx="${p.x}" cy="${p.y}" r="3" fill="#fff" stroke="#2b6cb0" stroke-width="1.8"></circle>`).join("")}
-          ${noResultPtsArr.map(p => `<circle cx="${p.x}" cy="${p.y}" r="2.5" fill="#fff" stroke="#c53030" stroke-width="1.5"></circle>`).join("")}
+          <path d="${noResultPath}" fill="none" stroke="#c53030" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round" stroke-dasharray="5 4" vector-effect="non-scaling-stroke"></path>
+          ${volumePtsArr.map(p => `<circle cx="${p.x}" cy="${p.y}" r="4.5" fill="#fff" stroke="#2b6cb0" stroke-width="2" vector-effect="non-scaling-stroke"></circle>`).join("")}
+          ${noResultPtsArr.map(p => `<circle cx="${p.x}" cy="${p.y}" r="3.5" fill="#fff" stroke="#c53030" stroke-width="1.8" vector-effect="non-scaling-stroke"></circle>`).join("")}
         </svg>
       `;
       const trendAxisHtml = trendData.map(d => `<span>${d.day}</span>`).join("");
