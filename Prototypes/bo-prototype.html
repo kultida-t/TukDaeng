@@ -1843,6 +1843,146 @@
       background: transparent;
       color: #0047c7;
     }
+
+    /* WA-PTO-002a: Watch Alert List (read-only, no admin action)
+       scope เฉพาะ body.watch-alert-list-mode เพื่อไม่กระทบ protected screens
+       ตาราง 11 คอลัมน์: Alert ID, Alert Name, Owner, Criteria, Status, Notification,
+       Matches, Triggers, Last Triggered, Created, Warning */
+    body.watch-alert-list-mode #primary-action { display: none; }
+    body.watch-alert-list-mode .user-panel-filter-actions { display: none; }
+    body.watch-alert-list-mode .filters { display: none; }
+    body.watch-alert-list-mode #table {
+      overflow-x: auto;
+      overflow-y: visible;
+    }
+    body.watch-alert-list-mode .watch-alert-list-table {
+      min-width: 1280px;
+    }
+    body.watch-alert-list-mode #table > .footer-range {
+      min-width: 1280px;
+    }
+    body.watch-alert-list-mode .watch-alert-list-table .asset-row {
+      grid-template-columns: minmax(96px, .5fr) minmax(180px, .9fr) minmax(150px, .72fr) minmax(220px, 1.1fr) minmax(120px, .58fr) minmax(112px, .54fr) minmax(78px, .38fr) minmax(78px, .38fr) minmax(132px, .64fr) minmax(120px, .58fr) minmax(56px, .28fr);
+      column-gap: 14px;
+    }
+    body.watch-alert-list-mode .watch-alert-list-table .asset-row.head {
+      min-height: 44px;
+      background: #f1f5fb;
+      color: #485b75;
+      font-size: 12px;
+      font-weight: 700;
+      padding-top: 12px;
+      padding-bottom: 12px;
+    }
+    body.watch-alert-list-mode .watch-alert-list-table .asset-row.head > div {
+      color: #485b75;
+      font-size: 12px;
+      font-weight: 700;
+    }
+    body.watch-alert-list-mode .watch-alert-list-table .asset-row.head > div:last-child {
+      justify-self: center;
+      text-align: center;
+    }
+    body.watch-alert-list-mode .watch-alert-list-table .asset-row:not(.head) {
+      min-height: 66px;
+      padding-top: 10px;
+      padding-bottom: 10px;
+      cursor: pointer;
+    }
+    body.watch-alert-list-mode .watch-alert-list-table .asset-row:not(.head) > div {
+      color: #516683;
+      font-size: 12px;
+      font-weight: 400;
+      line-height: 1.5;
+    }
+    body.watch-alert-list-mode .watch-alert-list-table .asset-row:not(.head) > .asset-cell-primary .main-text {
+      color: #516683;
+      font-size: 12px;
+      font-weight: 400;
+      line-height: 1.5;
+    }
+    body.watch-alert-list-mode .watch-alert-list-table .asset-row:not(.head) .main-text,
+    body.watch-alert-list-mode .watch-alert-list-table .asset-row:not(.head) .muted {
+      color: #516683;
+      font-size: 12px;
+      font-weight: 400;
+      line-height: 1.5;
+      margin-bottom: 0;
+    }
+    /* Owner link — read-only drill-in ไป User Management */
+    body.watch-alert-list-mode .watch-alert-list-table .wa-owner-link {
+      color: var(--blue);
+      font-weight: 600;
+      text-decoration: none;
+      background: transparent;
+      border: 0;
+      padding: 0;
+      cursor: pointer;
+      font-size: 12px;
+      line-height: 1.5;
+    }
+    body.watch-alert-list-mode .watch-alert-list-table .wa-owner-link:hover {
+      color: #0047c7;
+      text-decoration: underline;
+    }
+    /* Criteria chips — top 3-4 chips แสดง brand/model/price/condition */
+    body.watch-alert-list-mode .watch-alert-list-table .wa-criteria-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+    }
+    body.watch-alert-list-mode .watch-alert-list-table .wa-criteria-chip {
+      display: inline-flex;
+      align-items: center;
+      padding: 2px 8px;
+      font-size: 11px;
+      font-weight: 600;
+      color: #43546d;
+      background: #eef3f9;
+      border: 1px solid #d7e2f0;
+      border-radius: 999px;
+      white-space: nowrap;
+      line-height: 1.4;
+    }
+    /* Warning icon คอลัมน์สุดท้าย — inactive market data */
+    body.watch-alert-list-mode .watch-alert-list-table .wa-warning-icon {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: #925500;
+    }
+    body.watch-alert-list-mode .watch-alert-list-table .wa-warning-icon svg {
+      width: 16px;
+      height: 16px;
+    }
+    body.watch-alert-list-mode .watch-alert-list-table .wa-warning-tip {
+      position: absolute;
+      background: #1f2937;
+      color: #fff;
+      font-size: 11px;
+      font-weight: 500;
+      padding: 5px 9px;
+      border-radius: 5px;
+      white-space: nowrap;
+      opacity: 0;
+      pointer-events: none;
+      transform: translateY(-2px);
+      transition: opacity .15s, transform .15s;
+      z-index: 5;
+    }
+    body.watch-alert-list-mode .watch-alert-list-table .wa-warning-wrap {
+      position: relative;
+      display: inline-flex;
+    }
+    body.watch-alert-list-mode .watch-alert-list-table .wa-warning-wrap:hover .wa-warning-tip,
+    body.watch-alert-list-mode .watch-alert-list-table .wa-warning-wrap:focus .wa-warning-tip {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    /* Notification badge ใช้ pill green/gray */
+    body.watch-alert-list-mode .watch-alert-list-table .wa-notif-on { color: #07734f; }
+    body.watch-alert-list-mode .watch-alert-list-table .wa-notif-off { color: #6d7f98; }
+
     body.article-list-mode #primary-action,
     body.category-list-mode #primary-action,
     body.reported-board-mode #primary-action,
@@ -11470,6 +11610,131 @@
         flex-wrap: wrap;
         gap: 9px;
         padding-top: 0;
+      }
+      /* WA-PTO-002a: Watch Alert List — mobile card (≤760px)
+         รีเซ็ต min-width ให้ตารางและ footer, แปลง row เป็น card,
+         ซ่อนคอลัมน์ที่ไม่ใช่ cell-primary, จัด tags+meta ในแถว 2
+         specificity เท่ากับกฎฐาน (body.watch-alert-list-mode) */
+      body.watch-alert-list-mode #table .watch-alert-list-table {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 12px;
+        min-width: 0;
+      }
+      body.watch-alert-list-mode #table > .footer-range {
+        min-width: 0;
+      }
+      body.watch-alert-list-mode .watch-alert-list-table .asset-row.head {
+        display: none;
+      }
+      body.watch-alert-list-mode .watch-alert-list-table .asset-row:not(.head) {
+        grid-template-columns: minmax(0, 1fr) 34px;
+        column-gap: 14px;
+        row-gap: 14px;
+        min-height: 0;
+        padding: 18px 18px 16px;
+        border: 1px solid #cfdbd2;
+        border-radius: 10px;
+        background: #fff;
+        box-shadow: 0 1px 2px rgba(15, 23, 42, .05);
+        cursor: pointer;
+        overflow: visible;
+      }
+      body.watch-alert-list-mode .watch-alert-list-table .asset-row:not(.head) > div[data-label]:not(.asset-cell-primary) {
+        display: none;
+      }
+      body.watch-alert-list-mode .watch-alert-list-table .asset-row:not(.head) > .asset-cell-primary {
+        grid-column: 1;
+        grid-row: 1;
+        min-height: 30px;
+        display: flex;
+        align-items: center;
+        align-self: center;
+        border-bottom: 0;
+        padding-bottom: 0;
+      }
+      body.watch-alert-list-mode .watch-alert-list-table .asset-row:not(.head) > .asset-cell-primary .main-text {
+        max-width: 100%;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        color: #061426;
+        font-family: var(--font-heading);
+        font-size: 22px;
+        font-weight: 500;
+        letter-spacing: .04em;
+        line-height: 1;
+      }
+      body.watch-alert-list-mode .watch-alert-list-table .asset-row:not(.head) .desktop-user-name { display: none; }
+      body.watch-alert-list-mode .watch-alert-list-table .asset-row:not(.head) .mobile-user-card-title { display: inline; }
+      /* warning icon คอลัมน์ 2 แถว 1 บน mobile (มุมขวาบนของ card) */
+      body.watch-alert-list-mode .watch-alert-list-table .asset-row:not(.head) > .wa-warning-cell {
+        grid-column: 2;
+        grid-row: 1;
+        align-self: center;
+        justify-self: end;
+        display: inline-flex;
+        align-items: center;
+      }
+      body.watch-alert-list-mode .watch-alert-list-table .asset-row:not(.head) .asset-card-tags {
+        grid-column: 1 / -1;
+        grid-row: 2;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 9px;
+        padding-top: 0;
+      }
+      body.watch-alert-list-mode .watch-alert-list-table .asset-card-tags .user-card-meta {
+        flex: 1 0 100%;
+        display: grid;
+        gap: 3px;
+        width: 100%;
+        margin-top: 8px;
+        padding-top: 11px;
+        border-top: 1px solid #edf2f7;
+      }
+      body.watch-alert-list-mode .watch-alert-list-table .asset-card-tags .user-card-meta-item {
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        gap: 8px;
+        color: #34445b;
+        font-size: 12px;
+        line-height: 1.35;
+      }
+      body.watch-alert-list-mode .watch-alert-list-table .asset-card-tags .user-card-meta-item span {
+        color: #485b75;
+        font-size: 12px;
+        font-weight: 700;
+        white-space: nowrap;
+      }
+      body.watch-alert-list-mode .watch-alert-list-table .asset-card-tags .user-card-meta-item strong {
+        color: #233a5c;
+        font-size: 12px;
+        font-weight: 400;
+        min-width: 0;
+        text-align: right;
+      }
+      body.watch-alert-list-mode .watch-alert-list-table .user-card-meta-item.comment-field-meta {
+        display: grid;
+        grid-template-columns: max-content minmax(0, 50%);
+        align-items: baseline;
+        gap: 8px;
+      }
+      body.watch-alert-list-mode .watch-alert-list-table .user-card-meta-item.comment-field-meta strong {
+        width: 100%;
+        max-width: 100%;
+        min-width: 0;
+        display: block;
+        overflow: hidden;
+        text-align: right;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+      /* criteria chips บน mobile — อยู่ใน asset-card-tags ก่อน meta */
+      body.watch-alert-list-mode .watch-alert-list-table .asset-card-tags .wa-criteria-chips {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 5px;
       }
       body.market-list-mode .panel-head {
         align-items: center;
@@ -22346,20 +22611,191 @@
       });
     }
 
-    // WA-PTO-002 placeholder — Alert List (read-only) will be implemented in next task
+    // WA-PTO-002a: Watch Alert List (read-only, no admin action)
+    // อ้างอิง BackOffice/WatchAlert_Prototype_Blueprint.md section 4
+    // ตาราง 11 คอลัมน์: Alert ID, Alert Name, Owner, Criteria, Status, Notification,
+    // Matches, Triggers, Last Triggered, Created, Warning
+    // row click → Alert Detail (renderWatchAlertDetail — WA-PTO-003)
+    // ไม่มี admin action ใด ๆ (ไม่มี Disable/Enable/Bulk/row action menu เปลี่ยน state)
+
+    // helper: format ISO date → "DD Mon YYYY" (Asia/Bangkok, ภาษาอังกฤษย่อ เทียบกับ Demand Overview)
+    function formatWaDate(iso) {
+      if (!iso) return "—";
+      const d = new Date(iso);
+      if (isNaN(d.getTime())) return "—";
+      const fmt = new Intl.DateTimeFormat("en-GB", {
+        timeZone: "Asia/Bangkok",
+        day: "2-digit",
+        month: "short",
+        year: "numeric"
+      });
+      return fmt.format(d);
+    }
+
+    // helper: status pill — Active=เขียว, User Disabled=เทา, Deleted=charcoal
+    function getWaStatusPill(status) {
+      if (status === "Active") return `<span class="pill green">Active</span>`;
+      if (status === "User Disabled") return `<span class="pill gray">User Disabled</span>`;
+      if (status === "Deleted") return `<span class="pill charcoal">Deleted</span>`;
+      return `<span class="pill gray">${status}</span>`;
+    }
+
+    // helper: notification pill — On=เขียว, Off=เทา
+    function getWaNotifPill(enabled) {
+      return enabled
+        ? `<span class="pill green wa-notif-on">On</span>`
+        : `<span class="pill gray wa-notif-off">Off</span>`;
+    }
+
+    // helper: criteria chips — top 3-4 chips แสดง brand/model/price/condition
+    function getWaCriteriaChips(criteria) {
+      if (!criteria) return `<span class="muted">ไม่มี criteria</span>`;
+      const chips = [];
+      if (criteria.brand) chips.push(criteria.brand);
+      if (criteria.model) chips.push(criteria.model);
+      if (criteria.priceMin != null && criteria.priceMax != null && (criteria.priceMin > 0 || criteria.priceMax > 0)) {
+        const fmtTHB = v => v >= 1000000 ? `${(v / 1000000).toFixed(v % 1000000 ? 1 : 0)}M` : v >= 1000 ? `${Math.round(v / 1000)}k` : String(v);
+        chips.push(`${fmtTHB(criteria.priceMin)}-${fmtTHB(criteria.priceMax)}`);
+      }
+      if (Array.isArray(criteria.condition) && criteria.condition.length) {
+        chips.push(criteria.condition[0]);
+      }
+      const top = chips.slice(0, 4);
+      return `<div class="wa-criteria-chips">${top.map(c => `<span class="wa-criteria-chip">${c}</span>`).join("")}</div>`;
+    }
+
+    // helper: warning icon สำหรับ inactive market data (ถ้ามี)
+    function getWaWarningIcon(alert) {
+      if (!alert.marketDataInactive || !Array.isArray(alert.inactiveFields) || !alert.inactiveFields.length) {
+        return `<span class="muted">—</span>`;
+      }
+      const fields = alert.inactiveFields.join(", ");
+      const tip = `Inactive market data: ${fields}`;
+      return `
+        <span class="wa-warning-wrap" tabindex="0" role="img" aria-label="${tip}">
+          <span class="wa-warning-icon">${iconSvg.waUnmet}</span>
+          <span class="wa-warning-tip">${tip}</span>
+        </span>
+      `;
+    }
+
+    // pagination state สำหรับ Alert List
+    let watchAlertListPage = 1;
+    const watchAlertListPageSize = 10;
+
     function renderWatchAlertList() {
+      const esc = v => String(v).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
       document.querySelector("#crumb").textContent = "งานตรวจสอบและบริการ / Market Demand / Watch Alert List";
       document.querySelector("#page-title").textContent = "Watch Alert List";
-      document.querySelector("#page-meta").textContent = "";
+      document.querySelector("#page-meta").textContent = `Last updated ${formatBangkokTimestamp()}`;
       document.querySelector("#panel-title").textContent = "Watch Alert List";
       document.querySelector("#panel-subtitle").textContent = "รายการ Watch Alert ทั้งหมด (รวมที่ user ลบแล้ว) — read-only";
       document.querySelector("#primary-action").textContent = "";
       document.querySelector("#summary-grid").innerHTML = "";
-      document.querySelector("#table").innerHTML = `
-        <div class="detail-empty">
-          Alert List (read-only) จะสร้างใน task WA-PTO-002
+
+      // ใช้ mock data 12 รายการจาก watchAlertData.alerts (รวม alert ที่ลบแล้ว)
+      // WA-PTO-002b จะเพิ่ม search/filter/sort/reset ทีหลัง — ตอนนี้แสดงทั้งหมด
+      const allAlerts = watchAlertData.alerts;
+      const pageSize = watchAlertListPageSize;
+      const pageCount = Math.max(1, Math.ceil(allAlerts.length / pageSize));
+      watchAlertListPage = Math.min(watchAlertListPage, pageCount);
+      const start = (watchAlertListPage - 1) * pageSize;
+      const pageRows = allAlerts.slice(start, start + pageSize);
+
+      const headRow = `
+        <div class="asset-row head">
+          <div>Alert ID</div>
+          <div>Alert Name</div>
+          <div>Owner</div>
+          <div>Criteria</div>
+          <div>Status</div>
+          <div>Notification</div>
+          <div>Matches</div>
+          <div>Triggers</div>
+          <div>Last Triggered</div>
+          <div>Created</div>
+          <div>Warning</div>
         </div>
       `;
+
+      const rowsHtml = pageRows.map(alert => {
+        const ownerName = alert.owner?.displayName || "—";
+        const ownerId = alert.owner?.id || "";
+        const lastTriggered = alert.lastTriggered ? formatWaDate(alert.lastTriggered) : "—";
+        const created = formatWaDate(alert.created);
+        return `
+          <div class="asset-row" data-wa-alert-open="${esc(alert.id)}" data-wa-alert-card="${esc(alert.id)}">
+            <div data-label="Alert ID"><div class="main-text">${esc(alert.id)}</div></div>
+            <div class="asset-cell-primary" data-label="Alert Name">
+              <div class="main-text">
+                <span class="desktop-user-name">${esc(alert.name)}</span>
+                <span class="mobile-user-card-title">${esc(alert.id)}</span>
+              </div>
+            </div>
+            <div class="asset-card-tags">
+              ${getWaStatusPill(alert.status)}
+              ${getWaNotifPill(alert.notificationEnabled)}
+              <div class="user-card-meta">
+                <div class="user-card-meta-item comment-field-meta"><span>Alert Name</span><strong>${esc(alert.name)}</strong></div>
+                <div class="user-card-meta-item comment-field-meta"><span>Owner</span><strong>${esc(ownerName)}</strong></div>
+                <div class="user-card-meta-item comment-field-meta"><span>Matches</span><strong>${alert.matchCount}</strong></div>
+                <div class="user-card-meta-item comment-field-meta"><span>Triggers</span><strong>${alert.triggerCount}</strong></div>
+                <div class="user-card-meta-item comment-field-meta"><span>Last Triggered</span><strong>${lastTriggered}</strong></div>
+                <div class="user-card-meta-item comment-field-meta"><span>Created</span><strong>${created}</strong></div>
+              </div>
+            </div>
+            <div data-label="Owner">
+              <div class="main-text">
+                <button class="wa-owner-link" type="button" data-wa-owner-jump="${esc(ownerId)}" data-wa-owner-name="${esc(ownerName)}">${esc(ownerName)}</button>
+              </div>
+              <div class="muted">${esc(ownerId)}</div>
+            </div>
+            <div data-label="Criteria">${getWaCriteriaChips(alert.criteria)}</div>
+            <div data-label="Status">${getWaStatusPill(alert.status)}</div>
+            <div data-label="Notification">${getWaNotifPill(alert.notificationEnabled)}</div>
+            <div data-label="Matches"><div class="main-text">${alert.matchCount}</div></div>
+            <div data-label="Triggers"><div class="main-text">${alert.triggerCount}</div></div>
+            <div data-label="Last Triggered"><div class="main-text">${lastTriggered}</div></div>
+            <div data-label="Created"><div class="main-text">${created}</div></div>
+            <div class="wa-warning-cell" data-label="Warning">${getWaWarningIcon(alert)}</div>
+          </div>
+        `;
+      }).join("");
+
+      const emptyHtml = allAlerts.length
+        ? ""
+        : `<div class="detail-empty user-empty">ไม่พบข้อมูล</div>`;
+
+      document.querySelector("#table").innerHTML = `
+        <div class="asset-table watch-alert-list-table">
+          ${headRow}
+          ${rowsHtml || emptyHtml}
+        </div>
+        <div class="footer-range">
+          <span>แสดง ${allAlerts.length ? `${start + 1}-${Math.min(start + pageSize, allAlerts.length)}` : "0"} จาก ${allAlerts.length}</span>
+          ${renderPager(watchAlertListPage, pageCount, "data-wa-alert-page")}
+        </div>
+      `;
+    }
+
+    // WA-PTO-003 placeholder — Alert Detail จะสร้างใน task ถัดไป
+    // ตอนนี้แสดงข้อความว่าจะสร้างต่อ เพื่อให้ row click มี destination ไม่ใช่ no-op
+    function renderWatchAlertDetail(alertId) {
+      const alert = watchAlertData.alerts.find(a => a.id === alertId);
+      const name = alert ? alert.name : alertId;
+      document.querySelector("#crumb").textContent = `งานตรวจสอบและบริการ / Market Demand / Watch Alert List / ${alertId}`;
+      document.querySelector("#page-title").textContent = name;
+      document.querySelector("#page-meta").textContent = alert ? `${alertId} · ${alert.status}` : alertId;
+      document.querySelector("#panel-title").textContent = name;
+      document.querySelector("#panel-subtitle").textContent = `${alertId} — Alert Detail (read-only)`;
+      document.querySelector("#primary-action").textContent = "";
+      document.querySelector("#summary-grid").innerHTML = "";
+      document.querySelector("#table").innerHTML = `
+        <div class="detail-empty">
+          Alert Detail (read-only) จะสร้างใน task WA-PTO-003
+        </div>
+      `;
+      document.querySelector("#detail").innerHTML = "";
     }
 
     function renderMarketData(subLabel = "Dashboard") {
@@ -29824,6 +30260,25 @@
         renderOfferDetailPage(offer);
         return;
       }
+      // WA-PTO-002a: Watch Alert List — row click → Alert Detail (read-only drill-in)
+      // ไม่เปิด detail ถ้าคลิกที่ owner link (เป็นปุ่มแยก ไป User Management)
+      const waAlertOpen = event.target.closest("[data-wa-alert-open], .asset-row[data-wa-alert-card]");
+      if (waAlertOpen && activeModule === "watch-alerts" && (activeSub === "Watch Alert List" || activeSub === "Alert List")) {
+        if (event.target.closest("[data-wa-owner-jump]")) return;
+        if (event.target.closest("button") && !event.target.closest("[data-wa-alert-open]")) return;
+        const id = waAlertOpen.dataset.waAlertOpen || waAlertOpen.dataset.waAlertCard;
+        pushBackNavigationContext();
+        renderWatchAlertDetail(id);
+        return;
+      }
+      // WA-PTO-002a: Owner link → User Management (read-only drill-in)
+      // ใน prototype นี้ยังไม่มี user lookup ที่แมป U-XXXX ตรง ใช้ jumpToModule ไป User List
+      const waOwnerJump = event.target.closest("[data-wa-owner-jump]");
+      if (waOwnerJump && activeModule === "watch-alerts") {
+        pushBackNavigationContext();
+        jumpToModule("users", "User Accounts");
+        return;
+      }
       const articleOpenButton = event.target.closest("[data-article-open]");
       if (articleOpenButton) {
         const article = getArticleById(articleOpenButton.dataset.articleOpen);
@@ -30953,6 +31408,17 @@
         else if (target === "next") offerListPage += 1;
         else offerListPage = Number(target) || 1;
         renderOfferListRows();
+        resetTableScrollPosition();
+        return;
+      }
+      // WA-PTO-002a: Watch Alert List pagination
+      const waAlertPageButton = event.target.closest("[data-wa-alert-page]");
+      if (waAlertPageButton) {
+        const target = waAlertPageButton.dataset.waAlertPage;
+        if (target === "prev") watchAlertListPage = Math.max(1, watchAlertListPage - 1);
+        else if (target === "next") watchAlertListPage += 1;
+        else watchAlertListPage = Number(target) || 1;
+        renderWatchAlertList();
         resetTableScrollPosition();
         return;
       }
