@@ -1861,8 +1861,10 @@
     body.watch-alert-list-mode #table > .footer-range {
       min-width: 1280px;
     }
+    /* 11 คอลัมน์ — ผลรวม min (1100px) + 10 gaps (140px) + padding (40px) = 1280px = min-width
+       fr จะขยายเติมพื้นที่ว่างเมื่อตารางกว้างกว่า 1280px */
     body.watch-alert-list-mode .watch-alert-list-table .asset-row {
-      grid-template-columns: minmax(96px, .5fr) minmax(180px, .9fr) minmax(150px, .72fr) minmax(220px, 1.1fr) minmax(120px, .58fr) minmax(112px, .54fr) minmax(78px, .38fr) minmax(78px, .38fr) minmax(132px, .64fr) minmax(120px, .58fr) minmax(56px, .28fr);
+      grid-template-columns: minmax(80px, .5fr) minmax(140px, .9fr) minmax(110px, .7fr) minmax(170px, 1.1fr) minmax(100px, .55fr) minmax(90px, .5fr) minmax(60px, .35fr) minmax(60px, .35fr) minmax(110px, .6fr) minmax(100px, .55fr) minmax(80px, .3fr);
       column-gap: 14px;
     }
     body.watch-alert-list-mode .watch-alert-list-table .asset-row.head {
@@ -1894,6 +1896,8 @@
       font-size: 12px;
       font-weight: 400;
       line-height: 1.5;
+      min-width: 0;
+      overflow: hidden;
     }
     body.watch-alert-list-mode .watch-alert-list-table .asset-row:not(.head) > .asset-cell-primary .main-text {
       color: #516683;
