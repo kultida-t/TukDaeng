@@ -132,41 +132,90 @@ Search Insights เป็นข้อมูล aggregate จาก Search & Filt
 
 ## 7. Watch Alert List
 
-ข้อมูลขั้นต่ำ:
+Watch Alert List เป็นหน้าจอ read-only สำหรับดูรายการ Watch Alert ทั้งหมด รวมที่ user ลบแล้ว (soft delete) ไม่มี admin action ใด ๆ ในหน้า List (ไม่มี disable/enable/bulk/export) การเข้าถึงรายละเอียดทำผ่าน row click เข้า Alert Detail เท่านั้น
+
+### Header
+
+- Breadcrumb: งานตรวจสอบและบริการ / Market Demand / Watch Alert List
+- Page title: Watch Alert List
+- Page action: ไม่มี (read-only)
+
+### ข้อมูลขั้นต่ำที่แสดงต่อรายการ
 
 - Alert ID
-- Alert owner
-- Alert name
-- Criteria summary
-- Status
-- Notification enabled
-- Trigger count
-- Last triggered date
-- Created date
-- Updated date
-- Disabled by admin flag ถ้ามี
-
-### Search
-
-ค้นหาได้จาก:
-
-- Alert ID
-- User ID / username / display name
-- Alert name
-- Brand
-- Model
-- Reference number
+- Alert Name
+- Owner (display name)
+- Criteria Summary (structured summary + tooltip แสดง criteria ครบ)
+- Status (Active / User Disabled / Deleted)
+- Notification (On / Off)
+- Matches (current matched Sale assets)
+- Triggers (total trigger count)
+- Last Triggered (ถ้าไม่เคย trigger แสดง "—")
+- Updated
 
 ### Filters
 
-- Status: `Active`, `User Disabled`, `Admin Disabled`, `Deleted`
-- Notification enabled: on/off
-- Has trigger history
-- Brand/model/reference
-- Created date range
-- Last triggered date range
-- Market data inactive dependency
-- Abuse/risk flagged
+Alert List ใช้ filter bar สำหรับคัดกรอง ไม่มี search box แยกต่างหากใน confirmed prototype
+
+| Filter | Options |
+| --- | --- |
+| Status | ทุกสถานะ, Active, User Disabled, Deleted |
+| Notification | ทุกการแจ้งเตือน, เปิดแจ้งเตือน, ปิดแจ้งเตือน |
+| Trigger history | ทุกประวัติ trigger, เคย trigger, ไม่เคย trigger |
+| Match status | ทุกสถานะ match, ไม่มี match (unmet), มี match |
+| Last Triggered | date range (from - to) |
+
+หมายเหตุ: Status filter ใน List แสดงเฉพาะสถานะที่ปรากฏใน read-only list คือ Active, User Disabled และ Deleted (soft delete) — สถานะ Admin Disabled และ admin action ที่เกี่ยวข้องอยู่ใน section 13 ซึ่งอยู่นอกขอบเขต read-only List
+
+### Sort
+
+- อัปเดตล่าสุดก่อน (default)
+- อัปเดตเก่าสุดก่อน
+- trigger มากสุดก่อน
+- trigger ล่าสุดก่อน
+- ชื่อ A-Z
+
+### Table Columns (Desktop)
+
+| # | Column | ประเภท | หมายเหตุ |
+| --- | --- | --- | --- |
+| 1 | Alert ID | primary identity | WAL-XXXX |
+| 2 | Alert Name | text | |
+| 3 | Owner | text | display name |
+| 4 | Criteria | structured summary | brand · model · reference · price · N conditions · N case sizes · N dial colors + tooltip แสดง criteria ครบ |
+| 5 | Status | badge | Active=เขียว, User Disabled=เทา, Deleted=charcoal |
+| 6 | Notification | badge | On=เขียว, Off=เทา |
+| 7 | Matches | count | current matched Sale assets |
+| 8 | Triggers | count | total trigger count |
+| 9 | Last Triggered | date | ถ้าไม่เคย trigger แสดง "—" |
+| 10 | Updated | date | |
+
+### Mobile Card (≤760px)
+
+- Title: Alert ID
+- Status badge + Notification badge
+- Metadata ที่ label: Alert Name, Owner, Matches, Triggers, Last Triggered, Updated
+
+### Row Behavior
+
+- Row click → Alert Detail (drill-in)
+- ไม่มี action menu (read-only)
+- ไม่มี admin action (disable/enable/bulk/export)
+
+### Toolbar
+
+- ปุ่มเปิด/ปิดตัวกรอง (toggle filter panel)
+- ปุ่มรีเซ็ตค่าทั้งหมด (reset all filters)
+- Filter state คงอยู่เมื่อ drill-in ไป Alert Detail แล้วกลับมา List
+
+### Pagination
+
+- 10 รายการต่อหน้า
+- แสดงช่วงรายการ (แสดง X-Y จาก Z)
+
+### Empty State
+
+- ไม่มีข้อมูลตรงเงื่อนไข: "ไม่พบข้อมูลที่ตรงกับเงื่อนไข ลองรีเซ็ตตัวกรองแล้วลองใหม่"
 
 ## 8. Watch Alert Status Contract
 
@@ -390,7 +439,9 @@ Watch Alert ต้องใช้ app shell, navigation, breakpoint, list toolba
 | ID | Criteria |
 | --- | --- |
 | AC-BO-WA-001 | Admin เห็น Market Demand parent menu พร้อม Demand Overview, Search Insights และ Watch Alert List |
-| AC-BO-WA-002 | Alert List แสดง alert รายรายการ และ Alert Detail แสดง owner, criteria, status, notification toggle และ trigger history |
+| AC-BO-WA-002 | Watch Alert List แสดง alert รายการแบบ read-only รวมที่ user ลบแล้ว (soft delete) ครบคอลัมน์ขั้นต่ำ (Alert ID, Alert Name, Owner, Criteria, Status, Notification, Matches, Triggers, Last Triggered, Updated) พร้อม filter, sort และ pagination; Alert Detail แสดง owner, criteria, status, notification toggle และ trigger history |
+| AC-BO-WA-002A | Watch Alert List เป็น read-only ไม่มี admin action ในหน้า List (disable/enable/bulk/export) และไม่มี action menu; การเข้าถึงรายละเอียดทำผ่าน row click เข้า Alert Detail |
+| AC-BO-WA-002B | Watch Alert List มี filter Match status สำหรับคัดกรอง unmet demand (ไม่มี match) แยกจาก alert ที่มี match และ filter Trigger history สำหรับคัดกรอง alert ที่เคย/ไม่เคย trigger |
 | AC-BO-WA-003 | Criteria schema ต้องตรง Search Filter และทุก field optional |
 | AC-BO-WA-004 | Trigger/match ต้องใช้เฉพาะ asset status `Sale` และไม่รวม Show/Hide/Sold/Deleted/Removed |
 | AC-BO-WA-005 | Watch Alert notification destination ต้องเป็น `Watch Alert Result List` ไม่ใช่ Asset Detail |
