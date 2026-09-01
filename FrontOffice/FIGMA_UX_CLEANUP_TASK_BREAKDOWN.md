@@ -187,7 +187,7 @@
 - [x] Share sheet / copy link fallback
 - [x] Permission denied / unavailable state
 
-Current review status: Asset Detail / Profile coverage is complete, including Share sheet / copy link fallback and Permission denied / unavailable state.
+Current review status: Asset Detail / Profile coverage is complete, including Share sheet / copy link fallback and Permission denied / unavailable state. Visitor asset-card `...` menu pending Figma verification per v1.5 spec update.
 
 ### Required Figma Changes
 
@@ -203,6 +203,9 @@ Current review status: Asset Detail / Profile coverage is complete, including Sh
 - Public Profile ต้องไม่มี `Hide`, `Sold`, Sold History, purchase data, provenance, consignment หรือ Portfolio Value Detail
 - Public Profile more menu ต้องมี `Share profile`, `Report user`, `Block user`
 - Owner Profile more menu ต้องใช้ `...` มุมขวาบน และมี `Share profile`, `Settings`
+- Public Profile / Visitor asset card ต้องแสดงปุ่ม `...` บนรูปสำหรับ Asset สถานะ `Sale` และ `Show` เท่านั้น (ไม่แสดงบน `Hide` และ `Sold`)
+- Visitor `...` menu ต้องมีเฉพาะ `Share asset` และ `Report asset`; ต้องไม่มี Edit/Delete/Mark as sold/Change status/View sale history
+- Guest กด `Share asset` จาก Visitor `...` menu ได้โดยไม่ต้อง Login; Guest กด `Report asset` ต้องเปิด Global Login Required Dialog
 - Profile share sheet ต้องมี profile preview card, share channel options และ `Copy Link`
 - Guest ต้อง Share Public Profile ได้โดยไม่ต้อง Login ผ่าน Profile Share Sheet แต่ Guest ยังต้องถูก block จาก Follow, Report User, Block User, Chat และ Make Offer
 - Report User flow ต้องใช้ title `Report this user`, reason list ตาม Trust & Safety และ success copy ว่า profile remains visible until moderation is complete
@@ -212,8 +215,8 @@ Current review status: Asset Detail / Profile coverage is complete, including Sh
 - Delete comment confirmation ต้องใช้ copy เฉพาะ comment และไม่มี Undo
 - Report Comment flow ต้องใช้ title `Report this comment`; success copy ว่า comment remains visible until moderation is complete
 - Comments sheet สามารถเปิด comment action sheet ซ้อนเป็นชั้นบนสุดได้ โดยปิด action sheet แล้วต้องไม่ปิด Comments sheet
-- Asset Detail Market Comparison ต้องใช้ `Asking Price` เทียบ Watch Price API Market Price เท่านั้น
-- Expected Profit ต้องเป็น Owner-only เพราะใช้ purchase/private data
+- Asset Detail ไม่แสดง Market Comparison (product decision: ไม่เพิ่ม; analytics อยู่ใน Portfolio / Assets Value เท่านั้น)
+- Asset Detail ไม่แสดง Expected Profit (product decision: ไม่เพิ่ม; analytics อยู่ใน Portfolio / Assets Value เท่านั้น)
 - Shared deep link ของ `Hide`, `Sold`, Deleted หรือ blocked asset ต้องไป unavailable / permission state ไม่ใช่เปิด private detail
 - Permission denied / unavailable state ต้องใช้ CTA `Go back` และไม่ใช้ `Back to feed` บน shared fallback screen
 - Share บน Asset Detail ต้องใช้ system share sheet เป็น primary channel และ copy public deep link เป็น fallback พร้อม copy success state
@@ -250,7 +253,7 @@ Current review status: Asset Detail / Profile coverage is complete, including Sh
 - Public Profile `All` แสดงเฉพาะ `Sale` + `Show`
 - `Show` มี action จาก Detail/Public Profile แต่ไม่ถูกสื่อเป็น Feed/Search listing
 - Viewer/Public ไม่เห็น private financial fields
-- Market Comparison ไม่ใช้ Purchase Price fallback
+- Market Comparison ไม่ใช้ Purchase Price fallback (สูตรใช้ใน Portfolio / Assets Value เท่านั้น)
 - Deep link ของ non-public asset ไม่เปิด private detail
 - Permission denied / unavailable screen ใช้ CTA `Go back` พร้อม fallback ไป Feed เมื่อไม่มี navigation history
 - Back button บน normal Asset Detail ที่เปิดจาก external deep link ต้อง fallback ไป Feed
@@ -448,7 +451,7 @@ Required annotation:
 - Portfolio เป็น Owner-only
 - Portfolio คำนวณจาก `Sale`, `Show`, `Hide` และไม่รวม `Sold`
 - เพิ่ม valuation source label: Watch Price API -> Purchase Price fallback -> No Valuation
-- เพิ่ม Gain/Loss, Realized Gain/Loss, Expected Profit และ Market Comparison states
+- เพิ่ม Gain/Loss, Realized Gain/Loss, Expected Profit และ Market Comparison states ใน Portfolio / Assets Value (Product decision: ไม่เพิ่มใน Asset Detail)
 - Report submit ต้องไม่ทำให้ content หายทันที
 - Report type ต้องตรง master: Asset, User, Comment, Board Content
 - Apple compliance coverage ต้องครบ Report, Block, Terms, Privacy, Moderation Flow

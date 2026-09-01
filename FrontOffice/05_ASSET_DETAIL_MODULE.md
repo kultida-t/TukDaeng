@@ -71,7 +71,7 @@ Asset Detail Module ต้องยึด master baseline ต่อไปนี�
 | Medium | Image/gallery ยังอาจสื่อว่าสูงสุด 3 รูป | Asset Management รองรับ Gallery สูงสุด 10 รูป และ Detail ต้องรองรับ Gallery / Swipe / Full Screen | ปรับ gallery indicator/viewer ให้รองรับได้ถึง 10 รูป |
 | Medium | Guest restriction state ยังไม่ครบ | Guest ดูได้ แต่ Like, Follow, Comment, Chat, Offer ต้อง Login | เพิ่ม Global Login Required Dialog สำหรับ guest action |
 | Medium | Detail ของ Asset สถานะ Show ต้องรองรับ `Make an Offer` / `Contact seller` | Master อนุญาตให้ `Show` เสนอราคา/ติดต่อได้จาก Detail แต่ยังไม่ขึ้น Feed, Search หรือ Watch Alert | คง Make Offer / Contact Seller บน `Show` และ annotate ว่า entry มาจาก Detail/Public Profile เท่านั้น |
-| High | Market Comparison / Expected Profit ยังไม่ชัด | Market Comparison ใช้ Asking Price เทียบ Watch Price API Market Price, Expected Profit เป็น Owner-only เพราะใช้ Purchase Price | เพิ่ม Above/At/Below state และ Owner-only Expected Profit |
+| Resolved | Market Comparison / Expected Profit ไม่เพิ่มใน Asset Detail | Master อนุญาตให้ Asset Detail แสดง price analytics ได้ แต่ Figma ออกแบบไว้เฉพาะ Portfolio / Assets Value | Product decision: ไม่เพิ่มใน Asset Detail; analytics อยู่ใน Portfolio / Assets Value เท่านั้น |
 
 ---
 
@@ -488,52 +488,13 @@ Provenance edit behavior:
 
 ## Price Analytics Rule
 
-Asset Detail สามารถแสดง price analytics ได้ตามสิทธิ์และข้อมูลที่มี:
+Asset Detail **ไม่แสดง** Market Comparison หรือ Expected Profit ส่วน analytics ทั้งสองนี้อยู่ใน Portfolio / Assets Value เท่านั้น (อ้างอิง [14_PORTFOLIO_MODULE.md](14_PORTFOLIO_MODULE.md) Market Comparison และ Expected Profit)
 
-- Market Comparison แสดงได้ใน Public Asset Detail หากมี Asking Price และ Watch Price API Market Price
-- Expected Profit แสดงเฉพาะ Owner view เพราะใช้ Purchase Price
+Product decision: ไม่เพิ่ม Market Comparison / Expected Profit ใน Asset Detail
+
+สิทธิ์การแสดงผลข้อมูล private ที่เกี่ยวกับ price analytics ยังคงยึดตาม Private Data Rule:
+
 - Purchase Price, Purchase Date และ Portfolio Value Detail ต้องไม่แสดงใน Viewer/Public mode
-
-### Market Comparison
-
-```text
-Market Comparison = Asking Price - Market Price
-```
-
-```text
-Market Comparison % = (Market Comparison / Market Price) * 100
-```
-
-Display state:
-
-| Condition | Label |
-| --- | --- |
-| Market Comparison % > 1% | `Above Market` |
-| Market Comparison % >= -1% และ <= 1% | `At Market` |
-| Market Comparison % < -1% | `Below Market` |
-
-Rules:
-
-- ใช้ Watch Price API Market Price เท่านั้น
-- ไม่ใช้ Purchase Price fallback เพื่อแสดง Above/At/Below
-- หากไม่มี Market Price ให้แสดง `ไม่มีราคาตลาด` / `No market price`
-- หากไม่มี Asking Price ให้ซ่อนหรือแสดง `—` ตาม layout
-
-### Expected Profit
-
-```text
-Expected Profit = Asking Price - Purchase Price
-```
-
-```text
-Expected Profit % = (Expected Profit / Purchase Price) * 100
-```
-
-Rules:
-
-- แสดงเฉพาะ Owner view
-- หากไม่มี Asking Price, Purchase Price หรือ Purchase Price <= 0 ให้แสดง `—`
-- Expected Profit เป็นกำไรคาดการณ์ ไม่ใช่ Realized Gain/Loss
 
 ## Like Rule
 
@@ -895,8 +856,6 @@ Comment empty state ต้องใช้ copy และ behavior ตาม `Com
 | AC-DETAIL-008 | Asset Detail ต้องรองรับ Swipe รูป |
 | AC-DETAIL-009 | Gallery ใน Asset Detail ต้องรองรับจำนวนรูปสูงสุด 10 รูปตาม Asset Management |
 | AC-DETAIL-010 | Asset Detail V1 ต้องไม่ใช้ Location เป็น field หลัก เว้นแต่ master จะตัดสินใจเพิ่มภายหลัง |
-| AC-DETAIL-010A | Market Comparison ต้องใช้ Asking Price เทียบกับ Watch Price API Market Price เท่านั้น และต้องไม่ใช้ Purchase Price fallback เพื่อแสดง Above/At/Below |
-| AC-DETAIL-010B | Expected Profit ต้องแสดงเฉพาะ Owner view และต้องไม่แสดง Purchase Price หรือ expected profit ให้ Viewer/Public mode |
 | AC-DETAIL-010C | Owner Asset Detail ต้องแยก Purchase Information / Owner Provenance ออกจาก Consignment Information และแสดงเฉพาะ Owner หรือ Admin |
 | AC-DETAIL-010D | Optional private fields ที่ไม่ได้กรอกต้องไม่แสดง label หรือ placeholder ใน Viewer/Public mode และ Owner private section ควรซ่อน field ว่าง |
 | AC-DETAIL-010E | Sold Asset ต้องแสดง Provenance / Consignment เป็น read-only และไม่ให้แก้ผ่าน Edit Asset ปกติ |
