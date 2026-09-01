@@ -173,6 +173,12 @@ Purpose:
 - [ ] Block User จาก Public Profile ต้องเปิด confirmation `Block this user?` และ cancel/dismiss ต้องไม่ apply block
 - [ ] Owner Profile tabs รองรับ `All`, `Sale`, `Show`, `Hide`, `Sold`
 - [ ] Public Profile tabs รองรับเฉพาะ public status
+- [ ] Owner Profile asset card แสดงปุ่ม `...` บนรูปเพื่อเปิด quick action menu โดยไม่ trigger Asset Detail
+- [ ] Public Profile / Visitor asset card แสดงปุ่ม `...` บนรูปสำหรับ Asset สถานะ `Sale` และ `Show` เท่านั้น (ไม่แสดงบน `Hide` และ `Sold`)
+- [ ] Visitor `...` menu มีเฉพาะ `Share asset` และ `Report asset`; ต้องไม่แสดง Edit/Delete/Mark as sold/Change status/View sale history
+- [ ] Guest กด `Share asset` จาก Public Profile `...` menu ได้โดยไม่ต้อง Login
+- [ ] Guest กด `Report asset` จาก Public Profile `...` menu ต้องเปิด Global Login Required Dialog
+- [ ] `Report asset` จาก Public Profile `...` menu เปิด Trust & Safety Report Asset flow และไม่ซ่อน asset ทันทีจนกว่า Admin จะดำเนินการ
 - [ ] Total Asset Value เป็น entry point เข้า Portfolio เฉพาะ Owner
 - [ ] Follow/Unfollow ทำงานเฉพาะ Member
 - [ ] Guest Follow ต้องเปิด Login Required Dialog

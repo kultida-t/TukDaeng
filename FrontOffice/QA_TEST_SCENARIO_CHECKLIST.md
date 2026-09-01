@@ -981,28 +981,57 @@ Then menu ต้องแสดง `Share profile` และ `Settings`
 And ต้องไม่แสดง `Report user` หรือ `Block user`
 And label ต้องใช้ `Settings`
 
-## QA-PROFILE-002A: Owner Profile Asset Card Quick Actions
+## QA-PROFILE-002A: Profile Asset Card Quick Actions
 
 Given Owner เปิด Owner Profile asset grid
 When Asset card แสดง
-Then แต่ละ asset card ต้องแสดงปุ่ม `...` บนรูปเฉพาะ Owner view
-And Public / Visitor Profile ต้องไม่แสดงปุ่ม `...` บน asset card
+Then แต่ละ asset card ต้องแสดงปุ่ม `...` บนรูป
 When Owner tap ที่ card หรือรูป asset
 Then ระบบต้องเปิด Asset Detail
 When Owner tap ปุ่ม `...`
 Then ระบบต้องเปิด quick action menu และต้องไม่เปิด Asset Detail
 
+## QA-PROFILE-002A-PUB: Public Profile Asset Card Quick Actions
+
+Given Member เปิด Public Profile ของ user อื่น
+When Asset card สถานะ `Sale` หรือ `Show` แสดง
+Then แต่ละ asset card ต้องแสดงปุ่ม `...` บนรูป
+When Member tap ปุ่ม `...`
+Then ระบบต้องเปิด quick action menu และต้องไม่เปิด Asset Detail
+And menu ต้องแสดงเฉพาะ `Share asset` และ `Report asset`
+And ต้องไม่แสดง `Edit asset`, `Edit provenance`, `Edit purchase history`, `Mark as sold`, `Change status`, `Delete asset` หรือ `View sale history`
+When Member tap `Report asset` และ submit report
+Then report ต้องส่งเข้า Trust & Safety Report Asset flow
+And Asset ต้องไม่หายจาก Public Profile ทันทีจนกว่า Admin จะดำเนินการ
+When Asset card สถานะ `Hide` หรือ `Sold` แสดง
+Then ต้องไม่แสดงปุ่ม `...` บน asset card เพราะไม่ใช่ public content
+
+## QA-PROFILE-002A-GUEST: Guest Public Profile Asset Card Quick Actions
+
+Given Guest เปิด Public Profile ของ user อื่น
+When Asset card สถานะ `Sale` หรือ `Show` แสดง
+Then แต่ละ asset card ต้องแสดงปุ่ม `...` บนรูป
+When Guest tap `Share asset`
+Then ระบบต้องเปิด share sheet โดยไม่บังคับ Login
+When Guest tap `Report asset`
+Then ระบบต้องแสดง Global Login Required Dialog
+When Asset card สถานะ `Hide` หรือ `Sold` แสดง
+Then ต้องไม่แสดงปุ่ม `...` บน asset card เพราะไม่ใช่ public content
+
 ## QA-PROFILE-002B: Owner Profile Quick Actions By Status
 
 Given Owner เปิด quick action menu ของ asset card
 When Asset status เป็น `Sale`
-Then menu ต้องแสดง `Edit asset`, `Edit provenance`, `Mark as sold`, `Change status`, `Delete asset`
-When Asset status เป็น `Show` หรือ `Hide`
-Then menu ต้องแสดง `Edit asset`, `Edit purchase history`, `Change status`, `Delete asset`
+Then menu ต้องแสดง `Share asset`, `Edit asset`, `Edit provenance`, `Mark as sold`, `Change status`, `Delete asset`
+When Asset status เป็น `Show`
+Then menu ต้องแสดง `Share asset`, `Edit asset`, `Edit purchase history`, `Change status`, `Delete asset`
 And ต้องไม่แสดง `Mark as sold`
+When Asset status เป็น `Hide`
+Then menu ต้องแสดง `Edit asset`, `Edit purchase history`, `Change status`, `Delete asset`
+And ต้องไม่แสดง `Share asset` หรือ `Mark as sold`
 When Asset status เป็น `Sold`
 Then menu ต้องแสดงเฉพาะ `View sale history` และ `View provenance`
-And ต้องไม่แสดง `Delete asset`, `Edit asset`, `Change status` หรือ `Mark as sold`
+And ต้องไม่แสดง `Share asset`, `Delete asset`, `Edit asset`, `Change status` หรือ `Mark as sold`
 
 ## QA-PROFILE-003: Share Profile Sheet
 

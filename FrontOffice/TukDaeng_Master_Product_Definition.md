@@ -201,17 +201,20 @@ Full Back Office PRD ยังไม่เริ่มระหว่าง FO c
 
 - Public Profile เห็นเฉพาะ Sale และ Show
 - Public Profile ไม่เห็น Hide และ Sold
+- Public Profile / Visitor view แสดงปุ่ม `...` บน asset card สำหรับ Asset สถานะ `Sale` และ `Show` เท่านั้น
+- Public Profile / Visitor quick actions:
+  - Sale: Share asset, Report asset
+  - Show: Share asset, Report asset
 
 ### Owner Profile
 
 - Owner Profile เห็น Asset ของตัวเองทุกสถานะ
 - Owner Profile มีแท็บสำหรับ All, Sale, Show, Hide, Sold และ Asset Value
-- Owner Profile asset card แสดงปุ่ม `...` เฉพาะ Owner view เพื่อเปิด quick actions
-- Public Profile / Visitor view ไม่แสดงปุ่ม `...` บน asset card
+- Owner Profile asset card แสดงปุ่ม `...` เพื่อเปิด quick actions
 - Tap asset card เปิด Asset Detail; tap `...` เปิด quick action menu และต้องไม่เปิด Asset Detail
-- Quick actions:
-  - Sale: Edit asset, Edit provenance, Mark as sold, Change status, Delete asset
-  - Show: Edit asset, Edit purchase history, Change status, Delete asset
+- Owner quick actions:
+  - Sale: Share asset, Edit asset, Edit provenance, Mark as sold, Change status, Delete asset
+  - Show: Share asset, Edit asset, Edit purchase history, Change status, Delete asset
   - Hide: Edit asset, Edit purchase history, Change status, Delete asset
   - Sold: View sale history, View provenance แบบ read-only
   - ซ่อนถาวร: View detail แบบ read-only เท่านั้น

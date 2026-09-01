@@ -187,7 +187,7 @@
 - [x] Share sheet / copy link fallback
 - [x] Permission denied / unavailable state
 
-Current review status: Asset Detail / Profile coverage is complete, including Share sheet / copy link fallback and Permission denied / unavailable state.
+Current review status: Asset Detail / Profile coverage is complete, including Share sheet / copy link fallback and Permission denied / unavailable state. Visitor asset-card `...` menu pending Figma verification per v1.5 spec update.
 
 ### Required Figma Changes
 
@@ -203,6 +203,9 @@ Current review status: Asset Detail / Profile coverage is complete, including Sh
 - Public Profile ต้องไม่มี `Hide`, `Sold`, Sold History, purchase data, provenance, consignment หรือ Portfolio Value Detail
 - Public Profile more menu ต้องมี `Share profile`, `Report user`, `Block user`
 - Owner Profile more menu ต้องใช้ `...` มุมขวาบน และมี `Share profile`, `Settings`
+- Public Profile / Visitor asset card ต้องแสดงปุ่ม `...` บนรูปสำหรับ Asset สถานะ `Sale` และ `Show` เท่านั้น (ไม่แสดงบน `Hide` และ `Sold`)
+- Visitor `...` menu ต้องมีเฉพาะ `Share asset` และ `Report asset`; ต้องไม่มี Edit/Delete/Mark as sold/Change status/View sale history
+- Guest กด `Share asset` จาก Visitor `...` menu ได้โดยไม่ต้อง Login; Guest กด `Report asset` ต้องเปิด Global Login Required Dialog
 - Profile share sheet ต้องมี profile preview card, share channel options และ `Copy Link`
 - Guest ต้อง Share Public Profile ได้โดยไม่ต้อง Login ผ่าน Profile Share Sheet แต่ Guest ยังต้องถูก block จาก Follow, Report User, Block User, Chat และ Make Offer
 - Report User flow ต้องใช้ title `Report this user`, reason list ตาม Trust & Safety และ success copy ว่า profile remains visible until moderation is complete

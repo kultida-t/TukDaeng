@@ -1,7 +1,7 @@
 # TukDaeng Document Version
 
-**Current Baseline Version:** `FO-PRD-v1.4`
-**Release Date:** 2026-08-21
+**Current Baseline Version:** `FO-PRD-v1.5`
+**Release Date:** 2026-09-01
 **Branch:** `docs-frontoffice-spec-updates`  
 **Status:** Product-reviewed baseline update for Dev / QA / Figma
 
@@ -27,6 +27,23 @@ FO-PRD-vX.Y
 ---
 
 # 2. Current Baseline Scope
+
+`FO-PRD-v1.5` covers all of `FO-PRD-v1.4` and aligns Profile asset-card quick action `...` with Figma design for Public / Visitor view:
+
+- Public Profile / Visitor view แสดงปุ่ม `...` บน asset card สำหรับ Asset สถานะ `Sale` และ `Show` (เดิมห้ามแสดง)
+- Visitor quick action menu มีเฉพาะ `Share asset` และ `Report asset` สำหรับ `Sale` และ `Show`
+- Visitor ต้องไม่เห็น `Edit asset`, `Edit provenance`, `Edit purchase history`, `Mark as sold`, `Change status`, `Delete asset` หรือ `View sale history` ใน asset-card quick action
+- Guest กด `Share asset` ได้โดยไม่ต้อง Login; Guest กด `Report asset` ต้องเจอ Global Login Required Dialog
+- `Report asset` เปิด Trust & Safety Report Asset flow และไม่ซ่อน asset ทันทีจนกว่า Admin จะดำเนินการ
+- เดิม AC-PROFILE-007C ห้าม `...` บน Public/Visitor view → เปลี่ยนเป็นอนุญาตเฉพาะ `Sale` และ `Show`
+- อัปเดต AC-PROFILE-007A ถอดคำว่า "เฉพาะ Owner view" เพราะ `...` แสดงทั้ง Owner และ Visitor (ต่างแค่ action set)
+- เพิ่ม AC-PROFILE-007J, 007K, 007L และ QA-PROFILE-002A-PUB, QA-PROFILE-002A-GUEST
+- แก้ QA-PROFILE-002B ให้รวม `Share asset` ใน Sale และ Show ของ Owner และแยก Show กับ Hide ให้ชัด เพื่อสอดคล้องกับ AC-PROFILE-007B
+- เพิ่ม negative test case ใน QA-PROFILE-002A-PUB และ QA-PROFILE-002A-GUEST สำหรับ `Hide` และ `Sold` (ต้องไม่แสดง `...`)
+- อัปเดต AC-PROFILE-007I ให้รวม `Report asset` ในรายการ action ที่ Guest ต้อง Login ก่อน
+- แก้ consistency: เพิ่ม "เท่านั้น" ใน AC-PROFILE-007E, AC-PROFILE-007J และ Share Asset rule ของ Public Profile
+- เพิ่ม DEV_IMPLEMENTATION_CHECKLIST items สำหรับ Visitor `...` menu และ Guest policy
+- อัปเดต Figma Gap Checklist Profile section ทั้งใน `06_PROFILE_MODULE.md` section 5 และ `Figma_Gap_Checklist_Against_Master.md`: เพิ่ม gap entry สำหรับการตรวจ Figma Visitor `...` menu หลังสเปก v1.5 อัปเดต
 
 `FO-PRD-v1.4` covers all of `FO-PRD-v1.3` and clarifies Share Asset Deep Link, Share Profile Deep Link, Share Article Deep Link, and navigation-after-deep-link behavior for Dev / QA / Figma:
 
@@ -78,6 +95,7 @@ Baseline scope หลักยังครอบคลุม:
 
 | Version | Date | Summary | Key Files |
 | --- | --- | --- | --- |
+| `FO-PRD-v1.5` | 2026-09-01 | Aligns Profile asset-card quick action `...` with Figma for Public / Visitor view. Changes AC-PROFILE-007C from prohibiting `...` to allowing it for `Sale` and `Show` only. Updates AC-PROFILE-007A to remove "เฉพาะ Owner view" qualifier. Updates AC-PROFILE-007I to include `Report asset` in Guest login-required actions. Adds Visitor quick action menu (`Share asset`, `Report asset`) with Guest policy (Share without Login, Report requires Login). Adds AC-PROFILE-007J, 007K, 007L, QA scenarios QA-PROFILE-002A-PUB, QA-PROFILE-002A-GUEST with negative test cases for `Hide`/`Sold`. Fixes QA-PROFILE-002B to include `Share asset` in Owner Sale/Show and split Show/Hide for AC-PROFILE-007B consistency. Fixes consistency: adds "เท่านั้น" to AC-PROFILE-007E, AC-PROFILE-007J and Share Asset rule. Adds DEV_IMPLEMENTATION_CHECKLIST items. Updates Figma Gap Checklist Profile section with Visitor `...` menu verification gap. Adds Visitor `...` menu tasks to FIGMA_UX_CLEANUP_TASK_BREAKDOWN. | `06_PROFILE_MODULE.md`, `TukDaeng_Master_Product_Definition.md`, `QA_TEST_SCENARIO_CHECKLIST.md`, `DEV_IMPLEMENTATION_CHECKLIST.md`, `Figma_Gap_Checklist_Against_Master.md`, `FIGMA_UX_CLEANUP_TASK_BREAKDOWN.md` |
 | `FO-PRD-v1.4` | 2026-08-21 | Clarifies Share Asset Deep Link, Share Profile Deep Link, Share Article Deep Link, and navigation-after-deep-link behavior. Expands Share Asset entry points to Feed Card, Asset Detail, and Profile asset grid (master override). Adds Share Profile entry points (Owner Profile, Public Profile). Locks Article Share channel (system share sheet primary, copy public Article deep link fallback). Syncs Asset Detail Share Rule with master and Social Module. Adds shared deep link display state matrix by status and user context for Asset, Profile, and Article. Adds back button fallback to Feed for normal screen opened from external deep link. Adds main navigation availability after deep link for Guest and Login. Adds Hide/Sold stale deep link Permission Denied / Unavailable state for non-owner and Owner-only detail for owner. | `TukDaeng_Master_Product_Definition.md`, `00_NAVIGATION_AND_CROSS_MODULE_FLOW.md`, `02_FEED_MODULE.md`, `05_ASSET_DETAIL_MODULE.md`, `06_PROFILE_MODULE.md`, `11_SOCIAL_MODULE.md`, `12_BOARD_MODULE.md`, `Figma_Gap_Checklist_Against_Master.md`, `FIGMA_UX_CLEANUP_TASK_BREAKDOWN.md`, `QA_TEST_SCENARIO_CHECKLIST.md`, `DEV_IMPLEMENTATION_CHECKLIST.md` |
 | `FO-PRD-v1.3` | 2026-07-16 | Clarifies suspended/banned account handling: no `Restricted` account state in V1, active session revocation, account status state on app entry/sign-in, email as primary suspend/ban notification, no Account Action type in FO Notification Center, and Apple/Google email handling. | `01_AUTHENTICATION_MODULE.md`, `00_NAVIGATION_AND_CROSS_MODULE_FLOW.md`, `09_NOTIFICATION_MODULE.md`, `15_TRUST_SAFETY_MODULE.md`, `16_INTEGRATIONS_MODULE.md`, `QA_TEST_SCENARIO_CHECKLIST.md` |
 | `FO-PRD-v1.2` | 2026-07-02 | Final error-state UI copy and retry-scope handoff for Front Office. Locks Feed refresh failure, load-more failure, image failure, owner fallback, shared section/unavailable/empty-state behavior, and QA coverage before moving to Back Office work. | `ERROR_STATE_UI_COPY_CATALOG.md`, `02_FEED_MODULE.md`, `QA_TEST_SCENARIO_CHECKLIST.md`, `README_MODULE_INDEX.md`, `FINAL_HANDOFF_SUMMARY.md`, `DEV_IMPLEMENTATION_CHECKLIST.md` |
@@ -91,6 +109,6 @@ Baseline scope หลักยังครอบคลุม:
 When sending documents to Dev, include both:
 
 - Branch: `docs-frontoffice-spec-updates`
-- Version: `FO-PRD-v1.4`
+- Version: `FO-PRD-v1.5`
 
 If Dev reports a gap or builds against this baseline, ask them to cite the version number in their response.
