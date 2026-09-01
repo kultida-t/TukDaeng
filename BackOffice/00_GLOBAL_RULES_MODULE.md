@@ -356,7 +356,6 @@ Guest public access rule:
 | Price index updated | FO price index และ asset value surfaces ต้องใช้ active value ล่าสุด |
 | Directory item inactive | Future/postponed; FO directory surfaces ต้องซ่อน item เมื่อ Directory scope ถูกเปิดใช้งาน |
 | Comment hidden/removed | FO Asset Detail ต้องซ่อนหรือแสดง removed state ตาม policy |
-| Watch Alert disabled | Alert ต้องไม่ trigger notification ใหม่ |
 | Offer expired/invalidated | FO offer/chat state ต้องเป็น unavailable หรือ not actionable |
 | Notification type disabled/template changed | Notification ใหม่ใน FO ต้องใช้ enabled template ล่าสุด |
 
@@ -439,7 +438,6 @@ Action ที่กระทบ FO visibility, user access หรือ public c
 - Remove chat message
 - Publish/archive article
 - Activate/deactivate brand/model/banner; directory item activation is future/postponed
-- Disable watch alert
 - Force expire/invalidate offer
 - Approve account archive
 - Send broadcast notification

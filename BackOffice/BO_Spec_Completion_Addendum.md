@@ -43,10 +43,10 @@ BO Dashboard
 │   └── Sync History
 ├── Option Master
 ├── Directory (future/postponed; not Phase 1)
-├── Watch Alert
-│   ├── Alert Criteria
-│   ├── Trigger History
-│   └── Disabled Alerts
+├── Market Demand
+│   ├── Demand Overview
+│   ├── Search Insights
+│   └── Watch Alert List
 ├── Help & Support
 │   ├── Tickets
 │   ├── Assignment
@@ -190,7 +190,7 @@ BO_Spec v1.1 มี Watch Alert report แล้ว แต่ FO ต้องม
 - Filter ด้วย Active, Notification On/Off, Triggered, Date Range
 - ดู criteria ที่ผู้ใช้ save จาก Search
 - ดู trigger history และ click-through history
-- Disable alert โดย admin กรณี abuse
+- Watch Alert BO เป็น read-only — Admin ไม่ disable/enable/export/bulk alert ของ user ใด ๆ
 
 ### 4.3 Fields
 
@@ -214,7 +214,7 @@ BO_Spec v1.1 มี Watch Alert report แล้ว แต่ FO ต้องม
 
 - เมื่อมี asset ใหม่สถานะ Sale ที่ตรง criteria ให้สร้าง notification ประเภท Watch Alert
 - Alert ที่ Notification Enabled = Off ยังถูกเก็บไว้ แต่ไม่ส่ง push
-- Alert ที่ Disabled โดย admin จะไม่ trigger และผู้ใช้ควรเห็นสถานะ unavailable หรือถูกซ่อนตาม UX policy
+- Watch Alert BO เป็น read-only — ไม่มี admin disable/enable alert ของ user
 - ถ้า brand/model ถูก inactive ใน Market Data ต้องไม่ trigger alert ใหม่จากข้อมูลนั้น
 
 ---
@@ -663,8 +663,6 @@ Phase 1 actions (ตรง prototype ที่ล็อกแล้ว):
 | Hide Comment | Comment หายจาก Asset Detail |
 | Unhide Comment | Comment กลับมาแสดงใน Asset Detail |
 | Soft Delete Comment | Comment ไม่แสดง หรือแสดงเป็น deleted ตาม UX policy |
-| Disable Watch Alert | Alert ไม่ trigger notification ใหม่ |
-| Enable Watch Alert | Alert กลับมา trigger ตาม criteria |
 | Approve Account Archive | User login ไม่ได้, profile/assets ถูกซ่อนหรือ anonymized |
 | Resolve Support Ticket | ผู้ใช้เห็น ticket status เป็น Resolved/Closed |
 | Disable System Notification Type | FO จะไม่ได้รับ notification ประเภทนั้น |
@@ -713,8 +711,6 @@ Future scope (ยังไม่เปิดใน V1 Offer Management ที่
 - HideComment
 - UnhideComment
 - RemoveChatMessage
-- DisableWatchAlert
-- EnableWatchAlert
 - ApproveAccountArchive
 - CancelAccountDeletion
 - AssignTicket
@@ -734,7 +730,7 @@ Baseline role templates include `Super Admin`, `Content Editor`, `Content Publis
 |---|---|
 | Offer Management | Admin can view/review by policy with privacy masking and audit. Chat moderation เป็น future scope |
 | Asset Management (Reported Comments) | Admin can view aggregate data and moderate reported comments by policy. |
-| Watch Alert Management | Admin can view, disable/enable by policy, and audit changes. |
+| Watch Alert Management | Admin can view by policy (read-only — no disable/enable/export/bulk action on user alerts). Audit covers sensitive reveal and trigger job run only. |
 | Help & Support | Admin can manage tickets, internal notes, linked entities, SLA status, and replies by policy. |
 | Account Deletion Requests | Admin can view/recheck/approve/cancel/archive by policy with dependency checks, confirmation, reason, and audit. |
 | Notifications (Broadcast & System Templates) | Admin can manage templates and broadcasts with approval, preview, and audit policy. |

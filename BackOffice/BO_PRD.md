@@ -302,13 +302,12 @@ Admin ต้องสามารถ:
 - ดู criteria: brand, model, reference, price range, condition
 - ดู notification on/off
 - ดู trigger history
-- Disable alert ที่ผิด policy
 - ดู Watch Alert analytics
 
 ### Business Rules
 
+- Watch Alert BO เป็น read-only — Admin ไม่ disable/enable/export/bulk alert ของ user ใด ๆ
 - Alert ที่ notification off ยังเก็บไว้แต่ไม่ส่ง push
-- Alert disabled โดย Admin ต้องไม่ trigger
 - Brand/model inactive ต้องไม่ trigger alert ใหม่
 
 ---

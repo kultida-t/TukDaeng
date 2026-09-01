@@ -50,7 +50,7 @@ Phase 1 คือ BO foundation ที่ล็อกใน prototype แล้�
 | Content / Board | `05_CONTENT_BOARD_MODULE.md` - Article/category CRUD, preview as FO, draft/publish/schedule/archive, automatic Board Main placement from Published Articles; banner/featured ordering is future scope |
 | Market Data | `06_MARKET_DATA_MODULE.md` - Brand/model/reference/price index management และ active/inactive status |
 | Option Master | `17_OPTION_MASTER_MODULE.md` - Internal option master management สำหรับ FO Add/Edit Asset, Search Filter, Watch Alert criteria; option group list/detail, option add/edit/deactivate/reactivate/delete/reorder, group add/edit/deactivate/reactivate/delete/reorder, group audit log, audit |
-| Watch Alert | `11_WATCH_ALERT_MODULE.md` - Alert criteria view, trigger history, notification on/off, disable abuse alerts |
+| Watch Alert | `11_WATCH_ALERT_MODULE.md` - Alert criteria view, trigger history, notification on/off (read-only, no admin disable/enable/export) |
 | Help & Support | `12_HELP_SUPPORT_MODULE.md` - Ticket queue, manual ticket จาก LINE/Phone/Email, assignment, reply history, status, priority, SLA, related entity |
 | Account Deletion | `13_ACCOUNT_DELETION_MODULE.md` - Request queue, pending-offer validation, 30-day grace period, archive/anonymization tracking |
 | Notifications | `14_NOTIFICATIONS_MODULE.md` - Broadcast notifications, system trigger templates, delivery logs, retry failed notifications, FO-supported type constraints |
@@ -94,7 +94,6 @@ Phase 3 คือ advanced workflow และ external integration ที่ย�
 | Publish article | Article แสดงใน Board, category, search และ detail เมื่อถึง publish time |
 | Archive article | Article หายจาก Board/search/category และ direct link แสดง unavailable behavior |
 | Hide comment | Comment หายจาก Asset Detail |
-| Disable watch alert | Alert ไม่ trigger notification ใหม่ |
 | View offer status | Admin ดู offer list/detail แบบ read-only; offer status เปลี่ยนจาก FO user action หรือ system rule ของ Asset/Account workflow |
 | Resolve support ticket | User เห็น ticket status update ถ้า FO expose ticket history |
 

@@ -44,10 +44,10 @@ BO Dashboard
 │   ├── Auction Centers
 │   ├── Consignment Centers
 │   └── Authentication Centers
-├── Watch Alert
-│   ├── Alert Criteria
-│   ├── Trigger History
-│   └── Disabled Alerts
+├── Market Demand
+│   ├── Demand Overview
+│   ├── Search Insights
+│   └── Watch Alert List
 ├── Help & Support
 │   ├── Tickets
 │   ├── Assignment

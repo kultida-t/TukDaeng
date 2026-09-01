@@ -305,7 +305,8 @@ Search report ต้องช่วย Admin ตรวจ gap ของ brand/mo
 | Metric / Data | Requirement |
 | --- | --- |
 | Active alerts | Count by period |
-| Created/deleted/disabled alerts | Count and reason |
+| Created/deleted alerts | Count and reason |
+| User-disabled alerts | Count (user ปิด notification เอง) |
 | Trigger volume | Match count by brand/model/reference |
 | Notification delivery | Sent/delivered/opened/failed |
 | Criteria breakdown | Price range, brand/model/reference, condition |

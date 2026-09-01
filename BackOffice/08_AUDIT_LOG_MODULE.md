@@ -166,7 +166,7 @@ Baseline entity types:
 - Offer force expire/invalidate
 - Chat message hide/remove/export
 - Comment hide/unhide/delete
-- Watch Alert disable/enable
+- Watch Alert sensitive reveal / trigger job run (read-only module — no admin disable/enable/export)
 
 ### Support / Notification / Settings
 

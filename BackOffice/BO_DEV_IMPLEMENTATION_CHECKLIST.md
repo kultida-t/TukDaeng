@@ -278,7 +278,7 @@ Recommended note format:
 
 ## 11. Watch Alert Management
 
-- [ ] Watch Alert list ต้องรองรับ search/filter/sort/pagination และ export ตาม permission
+- [ ] Watch Alert list ต้องรองรับ filter/sort/pagination (read-only ไม่มี export)
 - [ ] Alert detail ต้องแสดง owner, alert name, criteria, status, notification toggle และ trigger history
 - [ ] Criteria schema ต้องใช้ schema เดียวกับ Search Filter และทุก field ต้อง optional
 - [ ] Alert name ต้อง optional และรองรับ generated/default name
@@ -288,9 +288,7 @@ Recommended note format:
 - [ ] Trigger history ต้องเก็บ criteria snapshot, matched asset, trigger time, notification event และ exclusion reason ถ้ามี
 - [ ] Block relation ต้องเป็น exclusion context สำหรับ trigger/result review
 - [ ] Market data inactive dependency ต้องแสดง warning และหยุด new trigger ตาม policy แต่ไม่ลบ history เดิม
-- [ ] Admin disable alert ได้ตาม permission พร้อม confirmation, reason และ audit
-- [ ] Disabled alert ต้องหยุด trigger notification ใหม่
-- [ ] Admin enable alert ได้ตาม permission พร้อม criteria revalidation และ audit
+- [ ] Watch Alert BO เป็น read-only ทั้ง List และ Detail — Admin ไม่ disable/enable/export/bulk alert ของ user ใด ๆ
 - [ ] Notification delivery trace ดูได้ แต่ template/retry อยู่ใน Notification module
 - [ ] Watch Alert UI ต้อง responsive ที่ 375px, 768px, 1280px และ 1440px
 
@@ -298,9 +296,9 @@ Recommended note format:
 
 | Area | Notes |
 | --- | --- |
-| Prototype / Spec Alignment | The prototype exposes `Alert Criteria`, `Trigger History`, and `Disabled Alerts`, which matches the spec-level Watch Alert operating areas. It does not yet include full alert detail, criteria revalidation, or disable/enable confirmation flows. |
+| Prototype / Spec Alignment | The prototype exposes `Alert Criteria`, `Trigger History`, and `Disabled Alerts`, which matches the spec-level Watch Alert operating areas. Watch Alert BO is read-only — no admin disable/enable/export/bulk action on user alerts. |
 | Implementation Gap | Production still needs owner/criteria detail, optional/generated alert name handling, trigger-history snapshots, exclusion reasons, inactive market-data warnings, and notification-delivery trace. |
-| Permission / Audit | Disable/enable/export and criteria-sensitive reveal need separate permission checks and audit. Enable must revalidate criteria before saving. |
+| Permission / Audit | Watch Alert BO is read-only. Only sensitive-reveal and trigger-job-run audit events apply (see `11_WATCH_ALERT_MODULE.md` section 16). |
 | FO Sync Impact | Matching must remain Sale-only. `Show`, `Hide`, `Sold`, owner-deleted, permanently hidden, blocked relation, and inactive market-data cases must not generate new FO Watch Alert notifications. Notification destination must remain `Watch Alert Result List`. |
 
 ## 12. Help & Support
