@@ -151,10 +151,7 @@ Purpose:
 - [ ] Comments sheet เปิด comment action sheet ซ้อนแล้วปิด action sheet ต้องไม่ปิด Comments sheet
 - [ ] Show Asset เปิด Public Detail ได้แต่ไม่ขึ้น Feed/Search/Watch Alert
 - [ ] Show Asset สามารถ Make Offer / Contact Seller / Chat จาก Detail ได้
-- [ ] Market Comparison ใช้ Asking Price เทียบ Watch Price API Market Price เท่านั้น
-- [ ] Market Comparison ไม่ใช้ Purchase Price fallback
-- [ ] Expected Profit แสดงเฉพาะ Owner view
-- [ ] Expected Profit ห้ามแสดงให้ Viewer/Public mode
+- [ ] Asset Detail ไม่แสดง Market Comparison / Expected Profit (product decision: ไม่เพิ่ม; analytics อยู่ใน Portfolio / Assets Value เท่านั้น)
 - [ ] Purchase data, Sold History, Portfolio Value Detail เป็น Owner-only
 
 ---
@@ -173,6 +170,12 @@ Purpose:
 - [ ] Block User จาก Public Profile ต้องเปิด confirmation `Block this user?` และ cancel/dismiss ต้องไม่ apply block
 - [ ] Owner Profile tabs รองรับ `All`, `Sale`, `Show`, `Hide`, `Sold`
 - [ ] Public Profile tabs รองรับเฉพาะ public status
+- [ ] Owner Profile asset card แสดงปุ่ม `...` บนรูปเพื่อเปิด quick action menu โดยไม่ trigger Asset Detail
+- [ ] Public Profile / Visitor asset card แสดงปุ่ม `...` บนรูปสำหรับ Asset สถานะ `Sale` และ `Show` เท่านั้น (ไม่แสดงบน `Hide` และ `Sold`)
+- [ ] Visitor `...` menu มีเฉพาะ `Share asset` และ `Report asset`; ต้องไม่แสดง Edit/Delete/Mark as sold/Change status/View sale history
+- [ ] Guest กด `Share asset` จาก Public Profile `...` menu ได้โดยไม่ต้อง Login
+- [ ] Guest กด `Report asset` จาก Public Profile `...` menu ต้องเปิด Global Login Required Dialog
+- [ ] `Report asset` จาก Public Profile `...` menu เปิด Trust & Safety Report Asset flow และไม่ซ่อน asset ทันทีจนกว่า Admin จะดำเนินการ
 - [ ] Total Asset Value เป็น entry point เข้า Portfolio เฉพาะ Owner
 - [ ] Follow/Unfollow ทำงานเฉพาะ Member
 - [ ] Guest Follow ต้องเปิด Login Required Dialog
@@ -402,9 +405,9 @@ Purpose:
 - [ ] Unrealized Gain/Loss = Current Value - Purchase Price
 - [ ] Unrealized Gain/Loss % = Unrealized Gain/Loss / Purchase Price * 100
 - [ ] Gain/Loss ไม่คำนวณเมื่อใช้ Purchase Price fallback
-- [ ] Expected Profit = Asking Price - Purchase Price
+- [ ] Expected Profit = Asking Price - Purchase Price (Portfolio / Assets Value เท่านั้น)
 - [ ] Expected Profit แสดงเฉพาะ Owner view
-- [ ] Market Comparison ใช้ Asking Price เทียบ Watch Price API Market Price
+- [ ] Market Comparison ใช้ Asking Price เทียบ Watch Price API Market Price (Portfolio / Assets Value เท่านั้น)
 - [ ] Above/At/Below ใช้ threshold ตาม Portfolio PRD
 - [ ] Realized Gain/Loss = Sale Price - Purchase Price สำหรับ Sold Asset
 - [ ] Realized Gain/Loss แสดงใน Sold History

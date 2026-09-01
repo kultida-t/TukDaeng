@@ -4,18 +4,34 @@
 **Date:** 2026-07-06  
 **Status:** Draft baseline  
 **Platform:** Responsive Web Back Office  
-**Primary FO Sources:** `../FrontOffice/02_FEED_MODULE.md`, `../FrontOffice/03_SEARCH_FILTER_MODULE.md`, `../FrontOffice/04_ASSET_MANAGEMENT_MODULE.md`, `../FrontOffice/07_CHAT_MODULE.md`, `../FrontOffice/08_OFFER_MODULE.md`, `../FrontOffice/09_NOTIFICATION_MODULE.md`, `../FrontOffice/10_WATCH_ALERT_MODULE.md`, `../FrontOffice/11_SOCIAL_MODULE.md`, `../FrontOffice/12_BOARD_MODULE.md`, `../FrontOffice/13_SETTINGS_MODULE.md`, `../FrontOffice/15_TRUST_SAFETY_MODULE.md`  
-**Integration Map:** `../ProjectAdmin/FO_BO_INTEGRATION_MAP.md`
+**Primary FO Sources:** `../FrontOffice/02_FEED_MODULE.md`, `../FrontOffice/03_SEARCH_FILTER_MODULE.md`, `../FrontOffice/04_ASSET_MANAGEMENT_MODULE.md`, `../FrontOffice/07_CHAT_MODULE.md`, `../FrontOffice/08_OFFER_MODULE.md`, `../FrontOffice/09_NOTIFICATION_MODULE.md`, `../FrontOffice/10_WATCH_ALERT_MODULE.md`, `../FrontOffice/11_SOCIAL_MODULE.md`, `../FrontOffice/12_BOARD_MODULE.md`, `../FrontOffice/13_SETTINGS_MODULE.md`, `../FrontOffice/15_TRUST_SAFETY_MODULE.md`
 
-## 1. วัตถุประสงค์
+## UI Standards And Prototype Reference
+
+เอกสารนี้ต้องใช้ร่วมกับ `00_GLOBAL_RULES_MODULE.md` และยึดรูปแบบหน้าจอ/พฤติกรรมที่ยืนยันแล้วใน `../Prototypes/bo-prototype.html` เป็นมาตรฐานหลัก
+
+ห้ามออกแบบ pattern แยกเองสำหรับ list toolbar, breakpoint, table/card layout, pagination, reset, drill-down, drawer, modal หรือ detail layout ยกเว้นเอกสารนี้ระบุไว้ชัดเจนว่าเป็น override ที่อนุมัติแล้ว
+
+## 1. Document Information
+
+| Field | Detail |
+| --- | --- |
+| Module Name | BO Reports & Analytics |
+| Platform | Responsive Web Back Office |
+| Version | `BO-15-v0.1` |
+| Status | Draft baseline |
+| Owner | Product / UX / Engineering / Operations |
+| Document Type | Functional PRD |
+
+## 2. Objective
 
 Reports & Analytics Module ใช้เป็นศูนย์กลางสำหรับดูข้อมูลสรุป, trend, performance, SLA, operational report และ export ข้อมูลจาก BO/FO workflows หลัก
 
 Dashboard ใช้สำหรับภาพรวมและ queue ที่ต้องทำทันที ส่วน Reports & Analytics ใช้สำหรับวิเคราะห์เชิงลึก, export, ตรวจย้อนหลัง และส่งต่อข้อมูลให้ Product / Operation / Management / QA
 
-## 2. ขอบเขต
+## 3. Scope
 
-### 2.1 In Scope
+### In Scope
 
 - Report catalog ตาม module หลัก
 - Date range, filter, sort และ drill-down
@@ -28,7 +44,7 @@ Dashboard ใช้สำหรับภาพรวมและ queue ที่
 - Audit log สำหรับ export และ sensitive report access
 - Responsive layout สำหรับ desktop, tablet และ mobile
 
-### 2.2 Out of Scope
+### Out Of Scope
 
 - External BI/data warehouse integration
 - Predictive analytics / AI analytics
@@ -37,7 +53,7 @@ Dashboard ใช้สำหรับภาพรวมและ queue ที่
 - Real-time streaming analytics แบบเต็ม
 - Editing source data จาก report screen
 
-## 3. Relationship With Dashboard
+## 4. Relationship With Dashboard
 
 | Area | Dashboard | Reports & Analytics |
 | --- | --- | --- |
@@ -49,7 +65,7 @@ Dashboard ใช้สำหรับภาพรวมและ queue ที่
 
 Reports summary อาจมี delay ได้ แต่ต้องแสดง `Last updated` ชัดเจน
 
-## 4. Admin Access & Permissions
+## 5. Admin Access And Permissions
 
 BO uses a single Admin account type only. Admin access is controlled by module access, action policy, sensitive-data policy, confirmation, reason, and audit requirements instead of separate BO admin account types.
 
@@ -61,7 +77,7 @@ BO uses a single Admin account type only. Admin access is controlled by module a
 | Sensitive data | Mask by default; reveal only with business reason, policy approval, and audit log. |
 | Export | Requires permission check, scope control, expiry/background job where needed, and audit export event. |
 | Direct URL/API | Enforce access at route, API, and service layers; never rely only on hidden UI. |
-## 5. Responsive Layout
+## 6. Responsive Layout
 
 | Breakpoint | Layout |
 | --- | --- |
@@ -72,7 +88,7 @@ BO uses a single Admin account type only. Admin access is controlled by module a
 
 ทุก report ต้องมี fallback เป็น table summary ถ้า chart load fail
 
-## 6. Global Controls
+## 7. Global Controls
 
 | Control | Requirement |
 | --- | --- |
@@ -88,7 +104,7 @@ BO uses a single Admin account type only. Admin access is controlled by module a
 
 Timezone ต้องแสดงเป็น `Asia/Bangkok` และราคาแสดงเป็น THB
 
-## 7. Report Catalog
+## 8. Report Catalog
 
 Reports ที่ต้องมี:
 
@@ -105,7 +121,7 @@ Reports ที่ต้องมี:
 11. Account Deletion Report
 12. Export Job / Report Access History
 
-## 8. User Report
+## 9. User Report
 
 | Metric / Data | Requirement |
 | --- | --- |
@@ -157,7 +173,7 @@ Filters:
 
 Export sensitive fields เช่น email/phone ต้องจำกัดเฉพาะ Admin หรือ policy ที่อนุญาต
 
-## 9. Asset Report
+## 10. Asset Report
 
 | Metric / Data | Requirement |
 | --- | --- |
@@ -180,7 +196,7 @@ Filters:
 
 Asset report ต้องใช้คำ `Show` / `Hide` ตาม FO เป็นหลัก ไม่ใช้ legacy `Collection Show` / `Collection Hide`
 
-## 10. Offer Report
+## 11. Offer Report
 
 | Metric / Data | Requirement |
 | --- | --- |
@@ -202,7 +218,7 @@ Filters:
 
 Report UI ต้องใช้ `Rejected` เป็น status กลาง ส่วน FO action copy `Decline` เป็น action ที่เปลี่ยน status เป็น `Rejected`
 
-## 11. Chat Report
+## 12. Chat Report
 
 | Metric / Data | Requirement |
 | --- | --- |
@@ -225,7 +241,7 @@ Filters:
 
 Chat transcript export ต้องจำกัด permission และ audit ทุกครั้ง
 
-## 12. Content / Board Report
+## 13. Content / Board Report
 
 | Metric / Data | Requirement |
 | --- | --- |
@@ -234,7 +250,7 @@ Chat transcript export ต้องจำกัด permission และ audit �
 | Scheduled publish | Upcoming and failed schedule |
 | Category performance | Article count and engagement by category |
 | Banner performance | Active/expired banner status and clicks if tracking exists |
-| Reported Board content | Count, reason, moderation status |
+| Reported Article content | Count, reason, moderation status |
 
 Filters:
 
@@ -247,7 +263,7 @@ Filters:
 
 Preview as FO ต้องไม่เพิ่ม view count
 
-## 13. Asset Reported Comments Report
+## 14. Asset Reported Comments Report
 
 | Metric / Data | Requirement |
 | --- | --- |
@@ -263,7 +279,7 @@ Filters:
 - Asset/owner
 - Date range
 
-## 14. Search Report
+## 15. Search Report
 
 | Metric / Data | Requirement |
 | --- | --- |
@@ -284,7 +300,7 @@ Filters:
 
 Search report ต้องช่วย Admin ตรวจ gap ของ brand/model/reference/price index ได้
 
-## 15. Watch Alert Report
+## 16. Watch Alert Report
 
 | Metric / Data | Requirement |
 | --- | --- |
@@ -305,7 +321,7 @@ Filters:
 
 Watch Alert match ต้องใช้เฉพาะ asset status `Sale` และ notification destination ต้องเป็น `Watch Alert Result List`
 
-## 16. Support Report
+## 17. Support Report
 
 | Metric / Data | Requirement |
 | --- | --- |
@@ -328,7 +344,7 @@ Filters:
 
 Internal notes ต้องไม่ export ใน report ทั่วไป เว้นแต่ Admin export แบบ sensitive พร้อม audit
 
-## 17. Notification Report
+## 18. Notification Report
 
 | Metric / Data | Requirement |
 | --- | --- |
@@ -350,7 +366,7 @@ Filters:
 
 Generic Broadcast in FO in-app list ต้องยังถือเป็น open decision ตาม Notifications module
 
-## 18. Account Deletion Report
+## 19. Account Deletion Report
 
 | Metric / Data | Requirement |
 | --- | --- |
@@ -371,7 +387,7 @@ Filters:
 
 Sensitive personal data ต้อง mask และ export จำกัดเฉพาะ Admin
 
-## 19. Export Requirements
+## 20. Export Requirements
 
 | Requirement | Rule |
 | --- | --- |
@@ -392,7 +408,7 @@ Export job status:
 - `Expired`
 - `Cancelled`
 
-## 20. Report Access & Audit
+## 21. Report Access & Audit
 
 ต้อง audit อย่างน้อย:
 
@@ -419,7 +435,7 @@ Audit payload:
 - `user_agent`
 - `created_at`
 
-## 21. Data Freshness
+## 22. Data Freshness
 
 | Data | Freshness Expectation |
 | --- | --- |
@@ -431,7 +447,7 @@ Audit payload:
 
 ทุก report ต้องแสดง `Last updated`
 
-## 22. Error / Empty / Loading States
+## 23. Error, Empty, Loading States
 
 | State | Requirement |
 | --- | --- |
@@ -443,7 +459,7 @@ Audit payload:
 | Permission denied | ไม่แสดง report หรือ field ที่ไม่มีสิทธิ์ |
 | Stale data | แสดง warning เมื่อ last updated เก่าเกิน threshold |
 
-## 23. Acceptance Criteria
+## 24. Acceptance Criteria
 
 | ID | Criteria |
 | --- | --- |
@@ -463,7 +479,7 @@ Audit payload:
 | AC-BO-REPORT-012 | Account Deletion Report ต้องแสดง blocked reason, grace period และ archive/anonymization status |
 | AC-BO-REPORT-013 | Reports UI ต้อง responsive ที่ 375px, 768px, 1280px และ 1440px |
 
-## 24. Open Decisions
+## 25. Open Decisions
 
 | ID | Decision Needed | Impact |
 | --- | --- | --- |

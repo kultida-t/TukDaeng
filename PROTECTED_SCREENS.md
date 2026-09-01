@@ -24,6 +24,7 @@ These screens have been confirmed by the user and are locked from incidental cha
 - Content Management > Board Report Detail, confirmed and locked as of 2026-07-31
 - Market Data, including the Market Data menu entry, submenu/active states, routing, market data screens, lists, tables, cards, filters, charts, detail views/panels, import/export or refresh actions, breadcrumbs, mock data, and navigation state, confirmed and locked as of 2026-08-10
 - Offer Management, including Offer Management menu entry, active state, routing, offer list/table/card layout, summary metrics, filters, search, sorting, pagination, row/card open behavior, Offer Detail, breadcrumbs, mock data, and navigation state, confirmed and locked as of 2026-08-13
+- Option Master, including the Option Master menu entry, active state, routing, Option Group List (table, summary, filters, search, sorting, pagination, row actions, action menu), Option Detail (header, breadcrumb, option list table, panel title/subtitle, Add Option entry, action menu with Delete option), Add/Edit Option modal (form fields, Group Key/Option Key lock, validation, confirmation), Deactivate/Reactivate Option modal (reason selector, safeguard, System Option Deactivate Policy state), Delete Option modal (destructive, type-to-confirm with Option Key, used_in_assets safeguard, irreversible warning), Reorder Option modal (drag-and-drop + up/down fallback), Add/Edit Group modal (form fields, group identifier lock, validation, confirmation), Deactivate/Reactivate/Delete Group modal (reason selector, type-to-confirm for delete, safeguard), Group Audit Log view (read-only, action/timestamp/actor/reason/before-after diff), Reorder Groups (drag-and-drop + up/down fallback), breadcrumbs, back navigation, mock data, helper/data/CSS paths, and navigation state, confirmed and locked as of 2026-08-25
 
 ## Protected Prototype Files
 
@@ -35,7 +36,7 @@ The current confirmed prototype implementation is in:
 - `Prototypes/assets/user-avatars/*`
 - `Prototypes/assets/fonts/*`
 
-Do not edit these files for unrelated work if the edit can change Login, Dashboard, User Management menu behavior, User List, Reported Users, user/report detail views, any user/report action flows, Asset Management menu behavior, Asset List, Asset Detail, Reported Assets, Asset Report Detail, any asset report detail modal, any asset status/action flows, Asset Management > Reported Comments, Comment Report Detail, any comment report detail modal, any comment moderation action flow, any Content Management screen, submenu, navigation state, article/category/report flow, or content action flow, any Market Data screen, menu behavior, submenu, navigation state, data view, chart, filter, detail panel, import/export action, or refresh flow, or any Offer Management screen, menu behavior, routing, offer list, filter, detail page, data, helper functions, CSS, or back/drill-in behavior.
+Do not edit these files for unrelated work if the edit can change Login, Dashboard, User Management menu behavior, User List, Reported Users, user/report detail views, any user/report action flows, Asset Management menu behavior, Asset List, Asset Detail, Reported Assets, Asset Report Detail, any asset report detail modal, any asset status/action flows, Asset Management > Reported Comments, Comment Report Detail, any comment report detail modal, any comment moderation action flow, any Content Management screen, submenu, navigation state, article/category/report flow, or content action flow, any Market Data screen, menu behavior, submenu, navigation state, data view, chart, filter, detail panel, import/export action, or refresh flow, any Offer Management screen, menu behavior, routing, offer list, filter, detail page, data, helper functions, CSS, or back/drill-in behavior, or any Option Master screen, menu behavior, routing, Option Group List, Option Detail, option/group CRUD modal, reorder modal, audit log view, filter, helper functions, CSS, or back navigation.
 
 ## Login Protected Scope
 
@@ -147,10 +148,28 @@ The protected Offer Management scope includes:
 - Read-only behavior and absence of BO write actions such as accept, decline, cancel, force-expire, invalidate, edit price, edit message, export, related chat action, or notification delivery action unless explicitly approved.
 - Offer Management mock data, route/render helpers, data mapping helpers, CSS selectors, responsive rules, and shared state that directly support Offer list or Offer Detail rendering or navigation.
 
+## Option Master Protected Scope
+
+The protected Option Master scope includes:
+
+- Option Master menu entry, active state, breadcrumbs, titles, panel labels, routing, navigation state, and back navigation connected to Option Master.
+- Option Group List screen, including table layout, summary row, filters, search, sorting, pagination, row actions, action menu (Edit Group, Deactivate Group, Reactivate Group, Delete Group, View Audit Log), Status column, Status filter, page actions (`เพิ่ม Group`, `จัดเรียง`), and empty/loading/error states.
+- Option Detail screen, including header, breadcrumb, panel title/subtitle, option list table (Option Key, Display Name TH/EN, Status, Sort Order, Action menu with Edit, Deactivate/Reactivate, Delete, Audit Log), Add Option entry, filter, search, sorting, pagination, and back navigation to Option Group List.
+- Add/Edit Option modal, including form fields (group_id readonly, Option Key required lowercase snake_case unique ≤64 locked after create, Display Name TH/EN required unique, description optional, is_active toggle, sort_order), validation, error notes, confirmation, and audit `OPTION_ADD`/`OPTION_EDIT`.
+- Delete Option modal (destructive), including type-to-confirm with Option Key, used_in_assets safeguard (button hidden when option is used in assets), irreversible warning, option summary, confirmation, and audit `OPTION_DELETE`.
+- Deactivate/Reactivate Option modal, including reason selector, safeguard (≥1 active option remaining for all groups), System Option Deactivate Policy state, confirmation, and audit `OPTION_DEACTIVATE`/`OPTION_REACTIVATE`.
+- Reorder Option modal, including drag-and-drop + up/down fallback, active options only ≥2, sort_order sequential, audit `OPTION_REORDER` once per save when order changes.
+- Add/Edit Group modal, including form fields (group_id readonly, Group Key required lowercase snake_case unique ≤64 locked after create, Display Name EN/TH required unique, description optional, allows_multi_select toggle, is_active toggle), validation, confirmation, and audit `GROUP_CREATE`/`GROUP_EDIT`.
+- Deactivate/Reactivate Group modal, including reason selector, safeguard (no asset using option in group), confirmation, and audit `GROUP_DEACTIVATE`/`GROUP_REACTIVATE`.
+- Delete Group modal (destructive), including type-to-confirm, group must be Inactive + no asset using option, irreversible warning, confirmation, and audit `GROUP_DELETE`.
+- Group Audit Log view, read-only, action types 6 (GROUP_CREATE/EDIT/DEACTIVATE/REACTIVATE/DELETE/REORDER), columns (action, timestamp, actor, reason, before-after diff), and back navigation.
+- Reorder Groups, including drag-and-drop + up/down fallback, active groups only ≥2, sort_order sequential 10/20/30..., audit `GROUP_REORDER` once per save when order changes.
+- Option Master mock data, route/render helpers, data mapping helpers, CSS selectors, responsive rules, and shared state that directly support Option Group List, Option Detail, any option/group CRUD modal, reorder modal, or audit log view rendering or navigation.
+
 ## Rules
 
 - Do not change layout, styling, behavior, routing, copy, mock data, or component structure for the protected screens unless the user explicitly asks for that exact change.
-- Do not change navigation labels, menu order, active states, breadcrumbs, or route behavior for Dashboard, User Management, Asset Management, Content Management, or Market Data unless the user explicitly approves that exact change.
+- Do not change navigation labels, menu order, active states, breadcrumbs, or route behavior for Dashboard, User Management, Asset Management, Content Management, Market Data, or Option Master unless the user explicitly approves that exact change.
 - Treat shared files as high risk when they are used by protected screens. This includes layout shells, navigation, route guards, theme files, global CSS, common components, shared hooks, stores, API mocks, fixtures, and assets.
 - If a requested change to another screen requires editing shared code that may affect a protected screen, pause and ask the user for approval first.
 - Do not perform broad refactors, formatting-only rewrites, or dependency upgrades that touch protected-screen files as part of unrelated work.
@@ -159,7 +178,7 @@ The protected Offer Management scope includes:
 ## Review Checklist Before Editing
 
 - Identify the files and routes involved in the requested change.
-- Check whether any target file is part of Login, Dashboard, Dashboard menu, User Management menu, User Management > User List, User Management > Reported Users, User Detail, Report Detail, any user/report action modal, Asset Management menu, Asset Management > Asset List, Asset Detail, Asset Management > Reported Assets, Asset Report Detail, any asset report detail modal, any asset action modal, Asset Management > Reported Comments, Comment Report Detail, any comment report detail modal, any comment moderation action modal, any Content Management screen, submenu, modal, detail view, or action flow, any Market Data screen, menu behavior, submenu, modal, detail view, chart, filter, data action, or refresh flow, or any Offer Management screen, menu behavior, list, filter, detail view, route, or data flow.
+- Check whether any target file is part of Login, Dashboard, Dashboard menu, User Management menu, User Management > User List, User Management > Reported Users, User Detail, Report Detail, any user/report action modal, Asset Management menu, Asset Management > Asset List, Asset Detail, Asset Management > Reported Assets, Asset Report Detail, any asset report detail modal, any asset action modal, Asset Management > Reported Comments, Comment Report Detail, any comment report detail modal, any comment moderation action modal, any Content Management screen, submenu, modal, detail view, or action flow, any Market Data screen, menu behavior, submenu, modal, detail view, chart, filter, data action, or refresh flow, any Offer Management screen, menu behavior, list, filter, detail view, route, or data flow, or any Option Master screen, menu behavior, Option Group List, Option Detail, option/group CRUD modal, reorder modal, audit log view, filter, route, or data flow.
 - Check whether any shared file is used by those protected screens.
 - If protected impact is possible, ask for confirmation before editing.
 - Keep changes scoped to the requested screen or feature.

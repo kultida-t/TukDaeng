@@ -6,7 +6,7 @@
 **Platform:** Responsive Web Back Office  
 **Audience:** Admin  
 
-## 1. วัตถุประสงค์
+## 1. Objective
 
 Back Office คือ responsive internal web system สำหรับทีมภายใน ใช้ดูแลและปฏิบัติการระบบ TukDaeng หลังจากผู้ใช้ FO สร้างข้อมูลหรือกิจกรรมต่าง ๆ เช่น marketplace, social, support, content และ notification
 
@@ -14,7 +14,7 @@ BO ต้องช่วยให้ทีม Admin จัดการ moderatio
 
 BO ต้องแยกจาก FO mobile app ชัดเจน Admin ไม่ใช่ admin access ใน FO mobile app
 
-รายละเอียด trigger ข้ามระบบและผลลัพธ์ที่เกิดบน FO อยู่ใน `../ProjectAdmin/FO_BO_INTEGRATION_MAP.md`
+รายละเอียด trigger ข้ามระบบและผลลัพธ์ที่เกิดบน FO อยู่ในเอกสาร module ของ BO และ FO ที่เกี่ยวข้อง
 
 ## 2. Product Goals
 
@@ -36,7 +36,7 @@ BO has exactly one admin account type: `Admin`. There are no BO sub-types. Respo
 | Admin | Operates BO modules according to module/action policy, sensitive-data policy, confirmation, reason, and audit rules. |
 ## 4. Phase 1 Scope
 
-Phase 1 คือ BO foundation ขั้นต่ำที่จำเป็นสำหรับรองรับ FO launch และการควบคุม content/data หลัก
+Phase 1 คือ BO foundation ที่ล็อกใน prototype แล้ว ครอบคลุม modules ที่จำเป็นสำหรับรองรับ FO launch และการควบคุม content/data หลัก
 
 | Module | Phase 1 Scope |
 | --- | --- |
@@ -46,33 +46,43 @@ Phase 1 คือ BO foundation ขั้นต่ำที่จำเป็น
 | Dashboard | Key metrics, pending queues, recent activity, last updated snapshot |
 | User Management | User list, search/filter/sort, profile/detail view, login history, suspend/ban/restore, reset password, Account Deletion handoff, no direct User List export |
 | Asset Management | `04_ASSET_MANAGEMENT_MODULE.md` - Asset list/detail, status visibility, reports, flag/unflag, temporary hide/unhide, permanent hide, ลบโดยเจ้าของ retained record, force status change, sensitive-field control |
+| Offer Management | `09_OFFER_CHAT_MODULE.md` - Read-only offer list/detail, buyer/seller and asset interest overview, pending-offer dependency |
 | Content / Board | `05_CONTENT_BOARD_MODULE.md` - Article/category CRUD, preview as FO, draft/publish/schedule/archive, automatic Board Main placement from Published Articles; banner/featured ordering is future scope |
 | Market Data | `06_MARKET_DATA_MODULE.md` - Brand/model/reference/price index management และ active/inactive status |
-| Option Master | `17_OPTION_MASTER_MODULE.md` - Internal option master management สำหรับ FO Add/Edit Asset, Search Filter, Watch Alert criteria; option group list/detail, add/edit/deactivate/reactivate/reorder, audit |
-| Audit Log | `08_AUDIT_LOG_MODULE.md` - Immutable event capture, search/filter, export, Admin visibility |
-
-Directory is postponed from Phase 1. Keep `07_DIRECTORY_MODULE.md` as a future reference only; do not expose the BO Directory menu, route, CRUD, publication controls, map/contact fields, or FO sync behavior in Phase 1 unless Product explicitly reopens the scope.
-
-## 5. Phase 2 Scope
-
-| Module | Phase 2 Scope |
-| --- | --- |
-| Offer Management | `09_OFFER_CHAT_MODULE.md` - Read-only offer list/detail, buyer/seller and asset interest overview, related chat context, notification delivery, pending-offer dependency |
+| Option Master | `17_OPTION_MASTER_MODULE.md` - Internal option master management สำหรับ FO Add/Edit Asset, Search Filter, Watch Alert criteria; option group list/detail, option add/edit/deactivate/reactivate/delete/reorder, group add/edit/deactivate/reactivate/delete/reorder, group audit log, audit |
 | Watch Alert | `11_WATCH_ALERT_MODULE.md` - Alert criteria view, trigger history, notification on/off, disable abuse alerts |
 | Help & Support | `12_HELP_SUPPORT_MODULE.md` - Ticket queue, manual ticket จาก LINE/Phone/Email, assignment, reply history, status, priority, SLA, related entity |
 | Account Deletion | `13_ACCOUNT_DELETION_MODULE.md` - Request queue, pending-offer validation, 30-day grace period, archive/anonymization tracking |
 | Notifications | `14_NOTIFICATIONS_MODULE.md` - Broadcast notifications, system trigger templates, delivery logs, retry failed notifications, FO-supported type constraints |
 | Reports | `15_REPORTS_ANALYTICS_MODULE.md` - User, asset, offer, chat, board, asset reported comments, search, watch alert, support, notification, account deletion reports, export jobs |
+| Audit Log | `08_AUDIT_LOG_MODULE.md` - Immutable event capture, search/filter, export, Admin visibility |
+| Admin Settings | `16_ADMIN_SETTINGS_MODULE.md` - Admin own settings, admin account lifecycle, Admin Access Matrix, security/system defaults, retention/export policy, feature flags, integration metadata |
+
+Directory is postponed from Phase 1. Keep `07_DIRECTORY_MODULE.md` as a future reference only; do not expose the BO Directory menu, route, CRUD, publication controls, map/contact fields, or FO sync behavior in Phase 1 unless Product explicitly reopens the scope.
+
+## 5. Phase 2 Scope
+
+Phase 2 คือ modules และ flows ที่ยังไม่ล็อกใน prototype ต้องทำ prototype ส่วนนั้นเสร็จก่อน แล้วจึงปรับข้อมูลเป็น Phase 1
+
+| Module | Phase 2 Scope |
+| --- | --- |
+| Directory | `07_DIRECTORY_MODULE.md` - รอ FO directory detail routes และ taxonomy approval |
+| Chat moderation workflow | Remove/hide chat message, reported chat queue (prototype Offer Management เป็น read-only ไม่มี chat moderation) |
+| Offer write actions | Force expire, invalidate, accept/decline จาก BO (prototype Offer Management เป็น read-only) |
 
 ## 6. Phase 3 Scope
 
+Phase 3 คือ advanced workflow และ external integration ที่ยังไม่อยู่ใน prototype
+
 | Module | Phase 3 Scope |
 | --- | --- |
-| Admin Settings | `16_ADMIN_SETTINGS_MODULE.md` - Admin own settings, admin account lifecycle, Admin Access Matrix, security/system defaults, retention/export policy, feature flags, integration metadata |
+| Advanced moderation workflow | Automated compliance tools, AI moderation, advanced dispute workflow |
+| SLA dashboard | Dedicated SLA monitoring dashboard |
+| External integrations | CRM integration, external compliance tools |
 
 ## 7. Core BO/FO Action Mapping
 
-ส่วนนี้เป็น summary ระดับสูง รายละเอียดเต็มให้ใช้ `../ProjectAdmin/FO_BO_INTEGRATION_MAP.md` เป็น integration contract
+ส่วนนี้เป็น summary ระดับสูง รายละเอียดเต็มให้ดูในเอกสาร module ของ BO และ FO ที่เกี่ยวข้อง
 
 | BO Action | FO Result |
 | --- | --- |
@@ -119,4 +129,5 @@ Directory is postponed from Phase 1. Keep `07_DIRECTORY_MODULE.md` as a future r
 | BO-DEC-003 | Account deletion anonymization timing | ใช้ 30-day grace period ตาม FO decision เว้นแต่ legal เปลี่ยน |
 | BO-DEC-004 | Admin remove asset permission | ให้ remove ได้พร้อม required reason และ audit; high-value dispute อาจต้อง Admin approval |
 | BO-DEC-005 | Board public SEO web requirement | ถือเป็น mobile Board content ก่อน จนกว่าจะเพิ่ม web SEO scope ชัดเจน |
+| BO-DEC-006 | รูปแบบ integration map ระหว่าง FO และ BO หลังตัดไฟล์เดิม | กระจายข้อมูล trigger/result ไปไว้ในเอกสาร module ของ BO และ FO ที่เกี่ยวข้อง จนกว่าจะตัดสินใจว่าจะสร้าง integration map กลางขึ้นใหม่หรือไม่ |
 

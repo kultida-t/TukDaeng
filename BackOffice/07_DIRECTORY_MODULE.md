@@ -2,20 +2,35 @@
 
 **Version:** `BO-07-v0.1`  
 **Date:** 2026-07-06  
-**Status:** Postponed / future reference only
-**Platform:** Responsive Web Back Office  
-**Primary FO Sources:** `../FrontOffice/00_NAVIGATION_AND_CROSS_MODULE_FLOW.md`, `../FrontOffice/README_MODULE_INDEX.md`, `../FrontOffice/Figma_Gap_Checklist_Against_Master.md`  
-**Integration Map:** `../ProjectAdmin/FO_BO_INTEGRATION_MAP.md`
+**Status:** Postponed / future reference only  
+**Platform:** Responsive Web Back Office
 
-**Phase 1 status:** Postponed. Do not expose the BO Directory menu, route, CRUD, publication controls, map/contact/image fields, import/export, or FO sync in Phase 1 because FO directory menu entries are placeholders and detail routes are not approved.
+## UI Standards And Prototype Reference
 
-## 1. วัตถุประสงค์
+เอกสารนี้ต้องใช้ร่วมกับ `00_GLOBAL_RULES_MODULE.md` และยึดรูปแบบหน้าจอ/พฤติกรรมที่ยืนยันแล้วใน `../Prototypes/bo-prototype.html` เป็นมาตรฐานหลัก
+
+เอกสารอ้างอิง: `../FrontOffice/00_NAVIGATION_AND_CROSS_MODULE_FLOW.md`, `../FrontOffice/README_MODULE_INDEX.md`, `../FrontOffice/Figma_Gap_Checklist_Against_Master.md`
+
+Phase 1 status: Postponed. ห้ามเปิดเมนู BO Directory, route, CRUD, publication controls, map/contact/image fields, import/export หรือ FO sync ใน Phase 1 เพราะ FO directory menu entries เป็น placeholder และ detail routes ยังไม่ได้รับการอนุมัติ
+
+## 1. Document Information
+
+| Field | Detail |
+| --- | --- |
+| Module Name | BO Directory |
+| Platform | Responsive Web Back Office |
+| Version | `BO-07-v0.1` |
+| Status | Postponed / future reference only |
+| Owner | Product / UX / Engineering / Operations |
+| Document Type | Functional PRD |
+
+## 2. Objective
 
 BO Directory Module คือเครื่องมือสำหรับ Admin ใช้จัดการรายชื่อร้านค้าและบริการที่เกี่ยวข้องกับนาฬิกา เช่น ร้านนาฬิกา ร้านซ่อม ศูนย์รับฝากขาย ศูนย์ตรวจแท้ และบริการอื่นที่อาจแสดงใน FO Directory หรือเมนูที่เกี่ยวข้อง
 
 ข้อควรระวัง: FO documents ปัจจุบันยังจัด Directory menu หลายรายการเป็น future/placeholder สำหรับ production V1 ดังนั้น BO ต้องรองรับข้อมูลและ publication control ไว้ก่อน แต่การเปิด FO route จริงต้องอิง Product decision
 
-## 2. Scope
+## 3. Scope
 
 ### In Scope
 
@@ -38,19 +53,19 @@ BO Directory Module คือเครื่องมือสำหรับ Ad
 - Public SEO web listing เว้นแต่มี decision เพิ่ม
 - เปิด FO Directory route อัตโนมัติ โดยไม่มี Product decision
 
-## 3. Admin Access And Permissions
+## 4. Admin Access And Permissions
 
-BO uses a single Admin account type only. Admin access is controlled by module access, action policy, sensitive-data policy, confirmation, reason, and audit requirements instead of separate BO admin account types.
+ระบบใช้ Admin access เดียว โดยตรวจสิทธิ์ตามเมนูและ action ที่ทำ ไม่แยกประเภทบัญชี Admin ในสเปกนี้
 
 
 | Access Area | Rule |
 | --- | --- |
-| Module access | Admin can use list/detail/search/filter when module access is granted. |
-| Write action | Create, update, status change, remove, restore, publish, archive, retry, and similar actions require permission check, confirmation for high-risk actions, reason when FO/user impact exists, and audit log. |
-| Sensitive data | Mask by default; reveal only with business reason, policy approval, and audit log. |
-| Export | Requires permission check, scope control, expiry/background job where needed, and audit export event. |
-| Direct URL/API | Enforce access at route, API, and service layers; never rely only on hidden UI. |
-## 4. Responsive Layout
+| Module access | Admin ที่มีสิทธิ์เข้าเมนูสามารถดู list, detail, search, filter ได้ |
+| Write action | Create, update, status change, remove, restore, publish, archive, retry และ action ที่คล้ายกัน ต้องตรวจ permission, แสดง confirmation สำหรับ high-risk action, บังคับกรอก reason เมื่อมีผลต่อ FO/user และบันทึก audit |
+| Sensitive data | Mask เป็นค่าเริ่มต้น เปิดเฉพาะเมื่อมี business reason, อนุมัติตาม policy และบันทึก audit |
+| Export | ต้องตรวจ permission, ควบคุม scope, กำหนด expiry/background job เมื่อจำเป็น และบันทึก audit export event |
+| Direct URL/API | ต้องตรวจสิทธิ์ที่ route, API และ service layer เสมอ ห้ามพึ่งพาแค่ hidden UI |
+## 5. Responsive Layout
 
 | Width | Requirement |
 | --- | --- |
@@ -60,7 +75,7 @@ BO uses a single Admin account type only. Admin access is controlled by module a
 
 Form ต้องป้องกันรูปภาพ/map/contact fields ล้นหน้าจอ และ action หลักต้องเข้าถึงได้บนทุก breakpoint
 
-## 5. Directory Categories
+## 6. Directory Categories
 
 Baseline categories:
 
@@ -84,7 +99,7 @@ Category fields:
 
 ถ้า `Community` หมายถึง Board/Social scope ต้อง map ให้ชัดเจนก่อนเปิดใน FO เพื่อไม่ให้ซ้ำกับ Board module
 
-## 6. Directory Item Fields
+## 7. Directory Item Fields
 
 ### Required Fields
 
@@ -116,7 +131,7 @@ Category fields:
 - Display order
 - Internal note
 
-## 7. Status Rules
+## 8. Status Rules
 
 | Status | BO Meaning | FO Result |
 | --- | --- | --- |
@@ -127,7 +142,7 @@ Category fields:
 
 ห้าม hard delete record ที่เคยถูกใช้เป็น FK, consignment center, report, audit หรือ analytics แล้ว ให้ใช้ Inactive/Archived เป็นหลัก
 
-## 8. FO Publication Rules
+## 9. FO Publication Rules
 
 | BO Action | FO Result |
 | --- | --- |
@@ -140,7 +155,7 @@ Category fields:
 
 ถ้า FO Directory ยังเป็น placeholder, BO ต้องไม่ถือว่า Active item แปลว่า FO production route เปิดแล้ว ให้ตรวจ `INT-DEC-005` ก่อน implementation
 
-## 9. Map And Contact Rules
+## 10. Map And Contact Rules
 
 - Map location ต้องเก็บ latitude/longitude แบบ structured field
 - Address text และ map pin ต้องแก้ไขแยกกันได้
@@ -151,7 +166,7 @@ Category fields:
 
 Google Maps หรือ map provider เป็น implementation detail แต่ต้องไม่ทำให้ BO form ใช้งานไม่ได้ถ้า map provider error
 
-## 10. Image Rules
+## 11. Image Rules
 
 - Logo/profile image เป็น optional
 - Cover photos สูงสุด 5 รูป
@@ -159,7 +174,7 @@ Google Maps หรือ map provider เป็น implementation detail แต�
 - ต้องมี alt text หรือ fallback label ถ้านำไปแสดงใน FO
 - ถ้ารูปถูกลบ ต้องไม่ทำให้ item หายทั้ง record
 
-## 11. Import / Export
+## 12. Import / Export
 
 Future scope should support:
 
@@ -171,7 +186,7 @@ Future scope should support:
 
 Import ต้องไม่ activate item อัตโนมัติถ้ายังขาด field สำคัญต่อ FO display
 
-## 12. Validation And Data Quality
+## 13. Validation And Data Quality
 
 ต้องตรวจ:
 
@@ -186,7 +201,7 @@ Import ต้องไม่ activate item อัตโนมัติถ้า�
 
 Warning บางรายการไม่จำเป็นต้อง block save แต่ต้องเห็นชัดก่อน activate
 
-## 13. Error, Empty, Loading States
+## 14. Error, Empty, Loading States
 
 ต้องรองรับ:
 
@@ -200,7 +215,7 @@ Warning บางรายการไม่จำเป็นต้อง block
 - Image upload failed
 - Concurrent update warning
 
-## 14. Audit Requirements
+## 15. Audit Requirements
 
 ต้อง audit:
 
@@ -212,7 +227,7 @@ Warning บางรายการไม่จำเป็นต้อง block
 
 Audit event ต้องมี admin ID, admin access, target type, target ID, before/after value, reason ถ้ามี, timestamp และ session/IP context ถ้ามี
 
-## 15. Integration With Other Modules
+## 16. Integration With Other Modules
 
 | Module | Integration |
 | --- | --- |
@@ -223,7 +238,13 @@ Audit event ต้องมี admin ID, admin access, target type, target ID, b
 | Reports | Export directory list และ status summary |
 | FO Navigation | เปิด/ซ่อน Directory surfaces ตาม Product decision |
 
-## 16. Acceptance Criteria
+## Module-Specific Exceptions
+
+ไม่มี
+
+Directory Module เป็น postponed module ใน Phase 1 ห้ามเปิดเมนู, route, CRUD หรือ FO sync จนกว่า Product จะอนุมัติ
+
+## 17. Acceptance Criteria
 
 | ID | Criteria |
 | --- | --- |
@@ -238,7 +259,7 @@ Audit event ต้องมี admin ID, admin access, target type, target ID, b
 | AC-BO-DIR-009 | Directory mutations และ export ต้อง audit-log |
 | AC-BO-DIR-010 | UI responsive ใช้งานได้ที่ mobile-width, tablet และ desktop |
 
-## 17. Open Decisions
+## 18. Open Decisions
 
 | ID | Decision Needed | Current Recommendation |
 | --- | --- | --- |

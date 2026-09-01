@@ -1,22 +1,46 @@
-﻿# 11 BO Watch Alert Module
+﻿# 11 BO Market Demand & Watch Alert Module
 
-**Version:** `BO-11-v0.1`  
+**Version:** `BO-11-v0.2`
 **Date:** 2026-07-06  
 **Status:** Draft baseline  
-**Platform:** Responsive Web Back Office  
-**Primary FO Sources:** `../FrontOffice/10_WATCH_ALERT_MODULE.md`, `../FrontOffice/03_SEARCH_FILTER_MODULE.md`, `../FrontOffice/09_NOTIFICATION_MODULE.md`, `../FrontOffice/04_ASSET_MANAGEMENT_MODULE.md`, `../FrontOffice/15_TRUST_SAFETY_MODULE.md`  
-**Integration Map:** `../ProjectAdmin/FO_BO_INTEGRATION_MAP.md`
+**Platform:** Responsive Web Back Office
 
-## 1. วัตถุประสงค์
+## UI Standards And Prototype Reference
 
-BO Watch Alert Module คือหน้าจอสำหรับ Admin ใช้ตรวจสอบ watch alert ที่ user สร้างจาก FO Search Filter, ดู criteria, trigger history, notification delivery, abuse/risk signals และปิด/เปิด alert ตาม permission
+เอกสารนี้ต้องใช้ร่วมกับ `00_GLOBAL_RULES_MODULE.md` และยึดรูปแบบหน้าจอ/พฤติกรรมที่ยืนยันแล้วใน `../Prototypes/bo-prototype.html` เป็นมาตรฐานหลัก
 
-โมดูลนี้ไม่ใช่หน้าจอสร้าง alert แทน user เป็นหลัก แต่เป็น operational view สำหรับ support, moderation, analytics และ troubleshooting
+เอกสารอ้างอิง: `../FrontOffice/10_WATCH_ALERT_MODULE.md`, `../FrontOffice/03_SEARCH_FILTER_MODULE.md`, `../FrontOffice/09_NOTIFICATION_MODULE.md`, `../FrontOffice/04_ASSET_MANAGEMENT_MODULE.md`, `../FrontOffice/15_TRUST_SAFETY_MODULE.md`
 
-## 2. Scope
+## 1. Document Information
+
+| Field | Detail |
+| --- | --- |
+| Module Name | BO Market Demand & Watch Alert |
+| Platform | Responsive Web Back Office |
+| Version | `BO-11-v0.2` |
+| Status | Draft baseline |
+| Owner | Product / UX / Engineering / Operations |
+| Document Type | Functional PRD |
+
+## 2. Objective
+
+BO Market Demand & Watch Alert Module คือพื้นที่สำหรับ Admin ใช้ดูภาพรวมความต้องการของตลาดจาก 2 แหล่งข้อมูลที่แยกกันชัดเจน:
+
+- Search Insights: พฤติกรรมการค้นหาและการเลือก filter แบบ aggregate เช่น popular keyword, popular brand/model/option, popular filter combination และ no-result search
+- Watch Alert Demand: criteria ที่ user บันทึกเป็น Watch Alert, สถานะ match/unmet demand, trigger และ notification history
+
+โมดูลนี้ใช้เพื่อช่วยให้ทีม Product, Operations, Analytics และ Support เข้าใจความต้องการของผู้ใช้และความสัมพันธ์ระหว่าง demand กับ asset supply โดยไม่ซ้ำกับ Asset List ซึ่งเป็นมุมมองรายการ asset ฝั่ง supply
+
+โมดูลนี้ไม่ใช่หน้าจอสร้าง alert แทน user และ Search Insights ต้องไม่เปิดเผยข้อมูลที่ระบุตัว user รายบุคคล
+
+## 3. Scope
 
 ### In Scope
 
+- Market Demand parent menu พร้อม Demand Overview, Search Insights และ Watch Alert List
+- Demand Overview ที่รวม market demand จาก Search/Filter behavior และ Watch Alert criteria แบบ aggregate
+- Search Insights สำหรับ popular keyword, popular filter selection, popular filter combination และ no-result search แบบ aggregate
+- Popular Filter data definition และการเชื่อมโยงกับ quick-selection tags ใน FO
 - Watch Alert list พร้อม search, filter, sort, pagination และ export ตาม permission
 - Watch Alert detail พร้อม owner, alert name, criteria, active/disabled state, notification toggle และ trigger history
 - Trigger history สำหรับ asset ที่ match criteria
@@ -31,13 +55,17 @@ BO Watch Alert Module คือหน้าจอสำหรับ Admin ใช
 
 ### Out Of Scope
 
+- Recent Search ส่วนตัวของ user
+- Saved Search ในฐานะ feature แยกจาก Watch Alert
+- Search History Sync
+- AI Search Suggestion
 - Admin สร้าง Watch Alert ใหม่แทน user ใน Phase 2 baseline
 - Alert frequency setting, daily digest, weekly digest
 - Market Price Alert, Watch Price Alert, Saved Search
 - Notification template/retry management ซึ่งอยู่ใน Notification module
 - เปิด Asset Detail โดยตรงจาก Watch Alert notification
 
-## 3. FO Rules ที่ BO ต้องยึด
+## 4. FO Rules BO Must Follow
 
 | Area | FO Rule | BO Requirement |
 | --- | --- | --- |
@@ -51,19 +79,19 @@ BO Watch Alert Module คือหน้าจอสำหรับ Admin ใช
 
 หาก legacy BO source ระบุว่า Watch Alert notification เปิด Asset Detail ให้ถือว่า outdated และให้ยึด FO rule คือ `Watch Alert Result List`
 
-## 4. Admin Access And Permissions
+## 5. Admin Access And Permissions
 
-BO uses a single Admin account type only. Admin access is controlled by module access, action policy, sensitive-data policy, confirmation, reason, and audit requirements instead of separate BO admin account types.
+ระบบใช้ Admin access เดียว โดยตรวจสิทธิ์ตามเมนูและ action ที่ทำ ไม่แยกประเภทบัญชี Admin ในสเปกนี้
 
 
 | Access Area | Rule |
 | --- | --- |
-| Module access | Admin can use list/detail/search/filter when module access is granted. |
-| Write action | Create, update, status change, remove, restore, publish, archive, retry, and similar actions require permission check, confirmation for high-risk actions, reason when FO/user impact exists, and audit log. |
-| Sensitive data | Mask by default; reveal only with business reason, policy approval, and audit log. |
-| Export | Requires permission check, scope control, expiry/background job where needed, and audit export event. |
-| Direct URL/API | Enforce access at route, API, and service layers; never rely only on hidden UI. |
-## 5. Responsive Layout
+| Module access | Admin ที่มีสิทธิ์เข้าเมนูสามารถดู list, detail, search, filter, sort และ pagination ได้ |
+| Write action | Action ที่เปลี่ยน state หรือกระทบ user/FO ต้องตรวจ permission, แสดง confirmation สำหรับ high-risk action, บังคับกรอก reason เมื่อมีผลต่อ FO/user และบันทึก audit |
+| Sensitive data | แสดงแบบ mask เป็นค่าเริ่มต้น เปิดเฉพาะกรณีมี business reason, อนุมัติตาม policy และบันทึก audit |
+| Export | ต้องตรวจ permission, ควบคุม scope, ใช้ expiry/background job เมื่อจำเป็น และบันทึก audit export event |
+| Direct URL/API | ต้องตรวจสิทธิ์ที่ route, API และ service layer เสมอ ห้ามพึ่งพาการซ่อน UI เพียงอย่างเดียว |
+## 6. Responsive Layout
 
 | Width | Layout Requirement |
 | --- | --- |
@@ -73,45 +101,206 @@ BO uses a single Admin account type only. Admin access is controlled by module a
 
 Criteria ที่ยาวต้องแสดงแบบ structured chips/rows ไม่ใช่ JSON ดิบอย่างเดียว
 
-## 6. Watch Alert List
+## 6.1 Search Insights And Popular Filter
 
-ข้อมูลขั้นต่ำ:
+Search Insights เป็นข้อมูล aggregate จาก Search & Filter events ไม่ใช่รายการค้นหาส่วนตัวของ user โดยต้องรองรับข้อมูลอย่างน้อย:
+
+- Keyword ที่ถูก submit บ่อย
+- Brand, Model และ Reference ที่ถูกเลือกบ่อย
+- Filter option ที่ถูกเลือกบ่อยแยกตามหมวด
+- Filter combination ที่ถูกใช้บ่อย หากระบบรองรับการจัดอันดับแบบหลายเงื่อนไข
+- Search/filter ที่ไม่พบผลลัพธ์
+- Trend ของ search และ filter selection ตามช่วงเวลา
+
+กฎสำคัญ:
+
+- ต้องแยก Search volume, Filter selection volume และ Watch Alert count ออกจากกัน
+- Popular Filter ที่ส่งกลับไปแสดงใน FO ต้องเป็น aggregate และไม่เปิดเผยตัวตนหรือประวัติส่วนตัวของ user
+- Popular Filter เป็น quick-selection layer ไม่ตัด option อื่นออกจากรายการเต็ม และไม่เปลี่ยน Search/Filter logic
+- Search Insights ต้องแสดงช่วงเวลาและเกณฑ์การจัดอันดับให้ชัดเจน เพื่อป้องกันการตีความว่าเป็นยอดขายหรือจำนวน Asset
+- No-result search นับเป็นสัญญาณ demand ได้ แต่ต้องแยกจาก unmet demand ของ Watch Alert
+
+คำจำกัดความ:
+
+| ข้อมูล | แหล่งข้อมูล | ความหมาย |
+| --- | --- | --- |
+| Popular Search/Filter | Search keyword และ filter events | สิ่งที่ user สนใจหรือเลือกบ่อย แม้ยังไม่ได้สร้าง alert |
+| Watch Alert Demand | Watch Alert criteria | ความต้องการที่ user บันทึกไว้เพื่อติดตาม |
+| Unmet Search Demand | Search/filter ที่ไม่มีผลลัพธ์ | ความต้องการจากการค้นหาที่ supply ปัจจุบันยังไม่ตอบสนอง |
+| Unmet Watch Alert | Active Watch Alert ที่ไม่มี current match | Alert ที่กำลังรอ asset ตรง criteria |
+| Asset Supply | Asset Management / Asset List | จำนวน asset ที่มีและมองเห็นได้ตาม rule |
+
+## 7. Watch Alert List
+
+Watch Alert List เป็นหน้าจอ read-only สำหรับดูรายการ Watch Alert ทั้งหมด รวมที่ user ลบแล้ว (soft delete) ไม่มี admin action ใด ๆ ในหน้า List (ไม่มี disable/enable/bulk/export) การเข้าถึงรายละเอียดทำผ่าน row click เข้า Alert Detail เท่านั้น
+
+### Header
+
+- Breadcrumb: งานตรวจสอบและบริการ / Market Demand / Watch Alert List
+- Page title: Watch Alert List
+- Page action: ไม่มี (read-only)
+
+### ข้อมูลขั้นต่ำที่แสดงต่อรายการ
 
 - Alert ID
-- Alert owner
-- Alert name
-- Criteria summary
-- Status
-- Notification enabled
-- Trigger count
-- Last triggered date
-- Created date
-- Updated date
-- Disabled by admin flag ถ้ามี
-
-### Search
-
-ค้นหาได้จาก:
-
-- Alert ID
-- User ID / username / display name
-- Alert name
-- Brand
-- Model
-- Reference number
+- Alert Name
+- Owner (display name)
+- Criteria Summary (structured summary + tooltip แสดง criteria ครบ)
+- Status (Active / User Disabled / Deleted)
+- Notification (On / Off)
+- Matches (current matched Sale assets)
+- Triggers (total trigger count)
+- Last Triggered (ถ้าไม่เคย trigger แสดง "—")
+- Updated
 
 ### Filters
 
-- Status: `Active`, `User Disabled`, `Admin Disabled`, `Deleted`
-- Notification enabled: on/off
-- Has trigger history
-- Brand/model/reference
-- Created date range
-- Last triggered date range
-- Market data inactive dependency
-- Abuse/risk flagged
+Alert List ใช้ filter bar สำหรับคัดกรอง ไม่มี search box แยกต่างหากใน confirmed prototype
 
-## 7. Watch Alert Status Contract
+| Filter | Options |
+| --- | --- |
+| Status | ทุกสถานะ, Active, User Disabled, Deleted |
+| Notification | ทุกการแจ้งเตือน, เปิดแจ้งเตือน, ปิดแจ้งเตือน |
+| Trigger history | ทุกประวัติ trigger, เคย trigger, ไม่เคย trigger |
+| Match status | ทุกสถานะ match, ไม่มี match (unmet), มี match |
+| Last Triggered | date range (from - to) |
+
+หมายเหตุ: Status filter ใน List แสดงเฉพาะสถานะที่ปรากฏใน read-only list คือ Active, User Disabled และ Deleted (soft delete) — สถานะ Admin Disabled และ admin action ที่เกี่ยวข้องอยู่ใน section 13 ซึ่งอยู่นอกขอบเขต read-only List
+
+### Sort
+
+- อัปเดตล่าสุดก่อน (default)
+- อัปเดตเก่าสุดก่อน
+- trigger มากสุดก่อน
+- trigger ล่าสุดก่อน
+- ชื่อ A-Z
+
+### Table Columns (Desktop)
+
+| # | Column | ประเภท | หมายเหตุ |
+| --- | --- | --- | --- |
+| 1 | Alert ID | primary identity | WAL-XXXX |
+| 2 | Alert Name | text | |
+| 3 | Owner | text | display name |
+| 4 | Criteria | structured summary | brand · model · reference · price · N conditions · N case sizes · N dial colors + tooltip แสดง criteria ครบ |
+| 5 | Status | badge | Active=เขียว, User Disabled=เทา, Deleted=charcoal |
+| 6 | Notification | badge | On=เขียว, Off=เทา |
+| 7 | Matches | count | current matched Sale assets |
+| 8 | Triggers | count | total trigger count |
+| 9 | Last Triggered | date | ถ้าไม่เคย trigger แสดง "—" |
+| 10 | Updated | date | |
+
+### Mobile Card (≤760px)
+
+- Title: Alert ID
+- Status badge + Notification badge
+- Metadata ที่ label: Alert Name, Owner, Matches, Triggers, Last Triggered, Updated
+
+### Row Behavior
+
+- Row click → Alert Detail (drill-in)
+- ไม่มี action menu (read-only)
+- ไม่มี admin action (disable/enable/bulk/export)
+
+### Toolbar
+
+- ปุ่มเปิด/ปิดตัวกรอง (toggle filter panel)
+- ปุ่มรีเซ็ตค่าทั้งหมด (reset all filters)
+- Filter state คงอยู่เมื่อ drill-in ไป Alert Detail แล้วกลับมา List
+
+### Pagination
+
+- 10 รายการต่อหน้า
+- แสดงช่วงรายการ (แสดง X-Y จาก Z)
+
+### Empty State
+
+- ไม่มีข้อมูลตรงเงื่อนไข: "ไม่พบข้อมูลที่ตรงกับเงื่อนไข ลองรีเซ็ตตัวกรองแล้วลองใหม่"
+
+## 7.1 Watch Alert Detail
+
+Watch Alert Detail เป็นหน้าจอ read-only สำหรับดูรายละเอียดของ alert แต่ละรายการ เข้าผ่าน row click จาก Watch Alert List ไม่มี admin action ใด ๆ ในหน้า Detail (ไม่มี disable/enable/export) หน้าจอแสดงข้อมูล 6 sections ตามลำดับ โดย reuse โครงสร้าง detail page เดียวกับ Offer Detail และ report pages อื่น ๆ
+
+### Header
+
+- Breadcrumb: งานตรวจสอบและบริการ / Market Demand / Watch Alert List / {Alert ID}
+- Page title: Alert Detail
+- Page action: ปุ่มกลับไป Watch Alert List (back button)
+- Panel title: Alert Name
+- Panel subtitle: {Alert ID} — Alert Detail (read-only)
+
+### Detail Head
+
+แสดง head เหมือนหน้า detail อื่น ปรากฏเหนือ Section 1:
+
+- `Alert ID : Alert Name` พร้อม Status badge (Active=เขียว, User Disabled=เทา, Deleted=charcoal) และ Notification badge (On=เขียว, Off=เทา)
+
+### Section 1: Alert Summary
+
+แสดง summary tiles 4 ช่อง:
+
+- Created, Updated, Matches (current matched Sale assets), Triggers (total trigger count)
+
+### Section 2: Owner Summary
+
+แสดงข้อมูลเจ้าของ alert แบบ read-only:
+
+- User ID
+- Display Name
+- Account Status (Active=เขียว, Suspended=แดง, Banned=charcoal, อื่น ๆ=เทา)
+
+### Section 3: Criteria
+
+แสดง criteria แบบ structured chips/rows ไม่ใช่ JSON ดิบ ใช้ grid 3 คอลัมน์:
+
+- แต่ละ field ที่มีค่าแสดงเป็น tile พร้อม chip: Brand, Model, Reference, Price Range, Condition, Case Size, Dial Color
+- Field ที่ไม่มีค่าไม่แสดง tile นั้น
+- ถ้าไม่มี criteria ที่กำหนดเลย แสดง empty state "ไม่มี criteria ที่กำหนด"
+- ถ้า criteria อ้างถึง market data ที่ inactive แสดง warning box ใต้ criteria: "Criteria อ้างถึง market data ที่ inactive: {fields} — alert จะไม่ match asset ใหม่จนกว่า market data จะกลับมา active"
+
+### Section 4: Matched Assets
+
+แสดงรายการ asset สถานะ Sale ที่ match criteria ปัจจุบัน:
+
+- ตาราง 8 คอลัมน์: Asset ID, Asset Name, Price, Condition, Case Size, Dial Color, Listed At, Asset Status
+- Asset ID เป็น link ไป Asset Management (drill-in ไป Asset Detail)
+- Asset Status badge: Active=เขียว, Closed (Sold)=น้ำเงิน, Admin Hidden/Auto Hidden=amber, อื่น ๆ=เทา
+- ถ้าไม่มี asset ที่ match แสดง empty row ในตาราง: "ยังไม่มี asset ที่ตรงตามเงื่อนไข" (หรือ "criteria อ้างถึง market data ที่ inactive" ถ้าเกี่ยวข้อง)
+- Pagination 10 รายการต่อหน้า (แสดงช่วงรายการ + pager)
+
+### Section 5: Trigger & Notification History
+
+แสดงประวัติการตรวจจับและการแจ้งเตือน:
+
+- ตาราง 4 คอลัมน์: Trigger ID, Triggered At, Matches (new · total), Delivery Status
+- Delivery Status badge: Delivered=เขียว, Skipped=เทา, Failed=แดง, Pending=amber
+- แสดงเฉพาะ trigger ที่มี new matches > 0 (trigger ที่เกิดการตรวจจับจริง)
+- ถ้าไม่มีประวัติ แสดง empty row: "ยังไม่มีประวัติการตรวจจับ" (หรือ "criteria อ้างถึง market data ที่ inactive" ถ้าเกี่ยวข้อง)
+- Pagination 10 รายการต่อหน้า
+
+### Soft Delete Handling (Section 5)
+
+- ถ้า alert ถูกลบโดย user (status = Deleted) แสดง notice box สีเหลืองเหนือตาราง Trigger & Notification History: "alert ถูกลบโดย user — ยกเลิกการตรวจจับและการแจ้งเตือน ไม่มี trigger ใหม่หลังจากวันที่ลบ"
+- ประวัติ trigger/notification เดิมยังแสดงให้ดูได้
+- ไม่มี trigger ใหม่หลังจากวันที่ลบ
+
+### Section 6: User Action History
+
+แสดงประวัติการกระทำของ user ที่เกี่ยวข้องกับ alert:
+
+- ตาราง 5 คอลัมน์: Timestamp, Actor, Action, Changes, Note
+- Action type แสดงเป็นภาษาไทย: สร้าง alert, แก้ไขเงื่อนไข, เปลี่ยนชื่อ alert, เปิด/ปิดการแจ้งเตือน, ลบ alert
+- Changes แสดง before → after เมื่อมีการเปลี่ยนแปลง หรือ after value เมื่อไม่มี before
+- ยังเห็น history แม้ alert ถูกลบ
+- ถ้าไม่มีประวัติ แสดง empty row: "ไม่มีประวัติการกระทำของ user"
+- Pagination 10 รายการต่อหน้า
+
+### Responsive Layout
+
+- Mobile-width browser (≤760px): ตารางใน Section 4-6 เปลี่ยนเป็น stacked cards (table-to-card) เหมือนหน้า detail อื่น
+- Tablet และ Desktop: แสดงตารางเต็มพร้อม horizontal scroll เมื่อคอลัมน์เกินความกว้าง
+
+## 8. Watch Alert Status Contract
 
 | Status | Meaning | FO Required Behavior |
 | --- | --- | --- |
@@ -122,7 +311,7 @@ Criteria ที่ยาวต้องแสดงแบบ structured chips/ro
 
 BO ต้องเก็บ actor/source ของ status change แยกให้ชัด เช่น user action, admin action, system action
 
-## 8. Criteria Schema
+## 9. Criteria Schema
 
 Watch Alert criteria ต้องใช้ schema เดียวกับ Search Filter:
 
@@ -146,8 +335,9 @@ Rules:
 - ถ้าไม่มี alert name ให้ใช้ generated name จาก criteria หรือ default เช่น `Watch Alert`
 - Brand -> Model dependency ต้องเหมือน Search
 - Criteria ที่อ้าง inactive brand/model/reference ต้องไม่หายจาก history แต่ต้องมี dependency warning
+- Criteria สามารถอ้าง brand/model/reference หรือ option master ที่มี no current listing (จำนวน Asset Sale = 0 ตอนสร้าง) ได้ — ถือเป็น unmet demand ปกติ ไม่ใช่ inactive market data (ดู `../FrontOffice/10_WATCH_ALERT_MODULE.md` No Current Listing vs Inactive Market Data Rule)
 
-## 9. Match And Trigger Rules
+## 10. Match And Trigger Rules
 
 Match ต้องใช้ rule เดียวกับ FO Search:
 
@@ -168,7 +358,19 @@ Lifecycle impact:
 | `Show` -> `Sale` | Match ได้ถ้าตรง criteria |
 | Any -> `ลบโดยเจ้าของ` หรือ `ซ่อนถาวร` | ไม่ match และ direct/result surface ต้อง unavailable |
 
-## 10. Trigger History
+## 10.1 No Current Listing vs Inactive Market Data
+
+BO ต้องแยกความแตกต่างระหว่าง 2 สถานะนี้ให้ชัด เพราะกระทบ admin review และ analytics ต่างกัน:
+
+| สถานะ | ความหมาย | ผลต่อ Watch Alert | สิ่งที่ BO ต้องแสดง |
+| --- | --- | --- | --- |
+| no current listing | entity/option `is_active=true` ใน Market Data/Option Master แต่ไม่มี Asset Sale ตอนนั้น | Alert ทำงานปกติ รอ match ในอนาคต ไม่มี warning | ไม่ต้อง flag เป็น inactive; นับเป็น unmet demand ปกติ |
+| inactive market data | Brand/Model/Reference ถูก deactivate ใน Market Data (`is_active=false`) | Alert เดิมยังเก็บ history ได้ แต่หยุด trigger match ใหม่ตาม policy | แสดง dependency warning ใน Alert List (Warning icon + filter Market data: Inactive dependency) และ Alert Detail (warning badge ข้าง field) |
+| deactivated option | Option master ถูก deactivate (`is_active=false`) | Alert เดิมยังเก็บ history ได้ แต่หยุด trigger match ใหม่ตาม policy | แสดง dependency warning เหมือน inactive market data |
+
+Alert ที่ criteria อ้าง entity/option ที่มี no current listing ตอนสร้าง ถือเป็น unmet demand ปกติ ไม่ใช่ inactive market data — ดู `../FrontOffice/10_WATCH_ALERT_MODULE.md` No Current Listing vs Inactive Market Data Rule สำหรับรายละเอียด
+
+## 11. Trigger History
 
 Trigger history ต้องแสดง:
 
@@ -184,7 +386,7 @@ Trigger history ต้องแสดง:
 
 Criteria snapshot สำคัญ เพราะ criteria อาจถูก user แก้หลัง trigger แล้ว
 
-## 11. Notification Delivery
+## 12. Notification Delivery
 
 Watch Alert delivery trace ต้องยึด destination:
 
@@ -209,7 +411,7 @@ Delivery fields ขั้นต่ำ:
 - Opened timestamp ถ้ามี
 - Failure reason ถ้ามี
 
-## 12. Admin Actions
+## 13. Admin Actions
 
 | Action | Allowed Roles | Requirement |
 | --- | --- | --- |
@@ -222,7 +424,7 @@ Delivery fields ขั้นต่ำ:
 
 Bulk disable ต้องเปิดเฉพาะกรณี abuse/risk policy ชัดเจน และต้องมี confirmation + reason
 
-## 13. FO Sync Rules
+## 14. FO Sync Rules
 
 | BO/System Action | FO Result |
 | --- | --- |
@@ -232,9 +434,23 @@ Bulk disable ต้องเปิดเฉพาะกรณี abuse/risk poli
 | Asset status no longer Sale | Asset หายจาก Watch Alert Result List |
 | User block relation changes | Result list ต้อง filter blocked asset ทันทีเมื่อโหลดใหม่ |
 
-## 14. Analytics
+## 15. Analytics
 
 Analytics ขั้นต่ำ:
+
+### Search Insights
+
+- Search volume by keyword และ date range
+- Popular filter selection by dimension
+- Popular filter combination
+- No-result search count และ rate
+- Search-to-result conversion
+- Search trend over time (รายวัน/รายสัปดาห์) สำหรับดู trend ของ search volume และ no-result rate
+- Search funnel: Search Submit → Result Click → Asset Detail Open → Watch Alert/Offer เพื่อวัด conversion จาก search สู่ action
+- Average results per search เพื่อวัด quality ของ search result
+- Popular Filter tag impression/select สำหรับวัดการใช้งาน quick selection
+
+### Watch Alert Demand
 
 - Total active alerts
 - Notification enabled vs disabled
@@ -247,7 +463,7 @@ Analytics ขั้นต่ำ:
 
 Analytics ต้องไม่ expose sensitive user data ให้ admin access ที่ไม่มี permission
 
-## 15. Audit Requirements
+## 16. Audit Requirements
 
 Audit action ขั้นต่ำ:
 
@@ -270,7 +486,7 @@ Audit action ขั้นต่ำ:
 - IP address หรือ session context ถ้ามี
 - Timestamp เป็น `Asia/Bangkok`
 
-## 16. Error, Empty, Loading States
+## 17. Error, Empty, Loading States
 
 ต้องรองรับ:
 
@@ -282,39 +498,58 @@ Audit action ขั้นต่ำ:
 - Permission denied สำหรับ user detail/export/sensitive reveal
 - Stale trigger warning เมื่อ background job ยังประมวลผลไม่เสร็จ
 
-## 17. Integration With Other BO Modules
+## 18. Integration With Other BO Modules
 
 | Module | Integration |
 | --- | --- |
-| Dashboard | Active alert count, trigger volume, failed delivery count |
-| User Management | Alert owner profile, account status, support context |
-| Asset Management | Asset status/visibility changes affect match/result |
-| Market Data | Brand/model/reference active status affects criteria and trigger |
+| Demand Overview (same module) | Demand Overview ใช้ alert data ตัวเดียวกัน aggregate เป็น KPI (Active Alerts, Alerts with Matches, Unmet Demand, Notification Success Rate) พร้อม trigger trend chart และ frequently triggered list; เป็น sibling screen ใน Market Demand menu ไม่ใช่ module อื่น |
+| Dashboard | Dashboard card "Watch Alert" แสดง active alert count และ trigger count วันนี้; drill-in ไป Demand Overview |
+| User Management | Alert Detail Section 2 Owner Summary แสดง owner info (User ID, Display Name, Account Status) แบบ read-only ไม่มี drill-in link ไป User Detail ใน prototype; account status อ้างอิง User Management state |
+| Asset Management | Alert Detail Section 4 Matched Assets: Asset ID เป็น link (drill-in) ไป Asset Detail; asset status/visibility changes affect match/result |
+| Market Data | Alert Detail Section 3 Criteria: แสดง inactive market data warning เมื่อ criteria อ้างถึง brand/model/reference ที่ inactive; brand/model/reference active status affects criteria and trigger |
 | Asset Management (Reported Comments) | Block relation affects result visibility |
-| Notification | Delivery logs, templates, retry policy |
-| Audit Log | Disable/enable/export/job events searchable |
+| Notification | Alert Detail Section 5 Trigger & Notification History: แสดง delivery status (Delivered/Skipped/Failed/Pending) แบบ read-only; delivery logs, templates, retry policy อยู่ใน Notification module |
+| Audit Log | Watch Alert event types: `WATCH_ALERT_DISABLE`, `WATCH_ALERT_ENABLE`, `WATCH_ALERT_EXPORT`, `WATCH_ALERT_SENSITIVE_REVEAL`, `WATCH_ALERT_TRIGGER_JOB_RUN` (ดู section 16) |
 | Reports & Analytics | Watch Alert report and search trend report |
 
-## 18. Acceptance Criteria
+## Module-Specific Exceptions
+
+ไม่มี
+
+Watch Alert ต้องใช้ app shell, navigation, breakpoint, list toolbar, desktop table/grid, mobile card, pagination, reset และ detail ตาม `00_GLOBAL_RULES_MODULE.md` และ `../Prototypes/bo-prototype.html` โดยไม่มี UI/layout override เฉพาะโมดูล
+
+## 19. Acceptance Criteria
 
 | ID | Criteria |
 | --- | --- |
-| AC-BO-WA-001 | Admin เห็น Watch Alert list พร้อม search/filter/status/pagination |
-| AC-BO-WA-002 | Alert detail แสดง owner, criteria, status, notification toggle และ trigger history |
+| AC-BO-WA-001 | Admin เห็น Market Demand parent menu พร้อม Demand Overview, Search Insights และ Watch Alert List |
+| AC-BO-WA-002 | Watch Alert List แสดง alert รายการแบบ read-only รวมที่ user ลบแล้ว (soft delete) ครบคอลัมน์ขั้นต่ำ (Alert ID, Alert Name, Owner, Criteria, Status, Notification, Matches, Triggers, Last Triggered, Updated) พร้อม filter, sort และ pagination; Alert Detail แสดง 6 sections ครบ: Alert Summary, Owner Summary, Criteria, Matched Assets, Trigger & Notification History และ User Action History |
+| AC-BO-WA-002A | Watch Alert List เป็น read-only ไม่มี admin action ในหน้า List (disable/enable/bulk/export) และไม่มี action menu; การเข้าถึงรายละเอียดทำผ่าน row click เข้า Alert Detail |
+| AC-BO-WA-002B | Watch Alert List มี filter Match status สำหรับคัดกรอง unmet demand (ไม่มี match) แยกจาก alert ที่มี match และ filter Trigger history สำหรับคัดกรอง alert ที่เคย/ไม่เคย trigger |
+| AC-BO-WA-002C | Alert Detail เป็น read-only ไม่มี admin action ในหน้า Detail (disable/enable/export) เข้าผ่าน row click จาก Watch Alert List พร้อมปุ่มกลับไป List |
+| AC-BO-WA-002D | Alert Detail แสดง Detail Head (Alert ID : Alert Name + Status badge + Notification badge) เหนือ Section 1 และ Section 1 Alert Summary แสดง summary tiles 4 ช่อง (Created, Updated, Matches, Triggers) |
+| AC-BO-WA-002E | Alert Detail Section 2 Owner Summary แสดง User ID, Display Name และ Account Status แบบ read-only |
+| AC-BO-WA-002F | Alert Detail Section 3 Criteria แสดง criteria แบบ structured chips/rows ไม่ใช่ JSON ดิบ แสดงเฉพาะ field ที่มีค่า และแสดง inactive market data warning เมื่อ criteria อ้างถึง market data ที่ inactive |
+| AC-BO-WA-002G | Alert Detail Section 4 Matched Assets แสดงตาราง asset สถานะ Sale ที่ match criteria พร้อม link ไป Asset Management และ pagination 10 รายการต่อหน้า |
+| AC-BO-WA-002H | Alert Detail Section 5 Trigger & Notification History แสดงตาราง trigger ที่มี new matches > 0 พร้อม delivery status และ pagination 10 รายการต่อหน้า; ถ้า alert ถูกลบ ยังแสดงประวัติเดิมพร้อม notice box แจ้งว่าไม่มี trigger ใหม่หลังวันที่ลบ |
+| AC-BO-WA-002I | Alert Detail Section 6 User Action History แสดงตารางประวัติ user สร้าง/แก้ criteria/แก้ชื่อ/เปิด-ปิด notification/ลบ alert พร้อม pagination 10 รายการต่อหน้า และยังเห็น history แม้ alert ถูกลบ |
 | AC-BO-WA-003 | Criteria schema ต้องตรง Search Filter และทุก field optional |
 | AC-BO-WA-004 | Trigger/match ต้องใช้เฉพาะ asset status `Sale` และไม่รวม Show/Hide/Sold/Deleted/Removed |
 | AC-BO-WA-005 | Watch Alert notification destination ต้องเป็น `Watch Alert Result List` ไม่ใช่ Asset Detail |
 | AC-BO-WA-006 | Admin disable alert ได้ตาม permission พร้อม confirmation, reason และ audit |
 | AC-BO-WA-007 | Disabled alert ต้องหยุด trigger notification ใหม่ |
 | AC-BO-WA-008 | Market data inactive dependency ต้องแสดง warning และไม่ลบ history เดิม |
+| AC-BO-WA-008A | Alert ที่ criteria อ้าง entity/option ที่มี no current listing (จำนวน Asset Sale = 0 ตอนสร้าง) ต้องไม่ถูก flag เป็น inactive market data และต้องนับเป็น unmet demand ปกติ |
 | AC-BO-WA-009 | Block relation ต้องถูกใช้เป็น exclusion context ใน trigger/result review |
-| AC-BO-WA-010 | Responsive layout ใช้งานได้ที่ mobile-width, tablet และ desktop |
+| AC-BO-WA-010 | Responsive layout ใช้งานได้ที่ mobile-width, tablet และ desktop
+| AC-BO-WA-011 | Search Insights แสดง popular keyword/filter, no-result search, search trend over time, search funnel (Search → Result Click → Asset Detail → Watch Alert/Offer) และ average results per search แบบ aggregate โดยไม่เปิดเผยข้อมูลระบุตัว user
+| AC-BO-WA-012 | Demand Overview แยก Search demand, Watch Alert demand, Unmet Search Demand และ Unmet Watch Alert ได้ชัดเจน |
 
-## 19. Open Decisions
+## 20. Open Decisions
 
 | ID | Decision Needed | Current Recommendation |
 | --- | --- | --- |
 | BO-WA-DEC-001 | FO แสดง Admin Disabled alert เป็น disabled state หรือซ่อนจาก list | ให้ FO UX ตัดสิน แต่ BO ต้องส่ง state ชัดเจน |
-| BO-WA-DEC-002 | Inactive market data ทำให้ alert เดิม disabled หรือแค่หยุด trigger ใหม่ | แนะนำหยุด trigger ใหม่ แต่ยังเก็บ alert/history เดิม |
+| BO-WA-DEC-002 (resolved) | Inactive market data ทำให้ alert เดิม disabled หรือแค่หยุด trigger ใหม่ | **ตัดสินใจ:** หยุด trigger match ใหม่ตาม policy แต่ยังเก็บ alert/history เดิม — สอดคล้องกับ section 10 และ 10.1 |
 | BO-WA-DEC-003 | เปิด bulk disable alert หรือไม่ | ยังไม่เปิด default; เปิดเฉพาะ abuse/risk policy พร้อม audit |
 
