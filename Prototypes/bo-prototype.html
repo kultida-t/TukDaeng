@@ -2630,6 +2630,79 @@
       padding-left: 36px;
     }
 
+    /* WA-PTO-003a: Watch Alert Detail — Section 1-3 (read-only, no admin action)
+       scope เฉพาะ body.watch-alert-detail-mode เพื่อไม่กระทบ protected screens
+       โครงสร้าง reuse: .user-detail-page.report-detail-page + shared .detail-section/.detail-grid/.detail-tile
+       เหมือน Offer Detail — ไม่ redefine shared styles เพื่อรักษาความสวยงามเหมือนหน้า detail อื่น */
+    body.watch-alert-detail-mode .filters { display: none; }
+    body.watch-alert-detail-mode .user-panel-filter-actions { display: none; }
+    body.watch-alert-detail-mode #primary-action { display: none; }
+    body.watch-alert-detail-mode .layout {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 18px;
+      margin-top: 4px;
+    }
+    body.watch-alert-detail-mode .layout > .panel {
+      border-color: #d7e2f0;
+      box-shadow: none;
+      overflow: visible;
+    }
+    body.watch-alert-detail-mode .layout > .panel > .panel-head {
+      border: 0;
+      border-bottom: 1px solid var(--line);
+      border-radius: var(--radius) var(--radius) 0 0;
+      background: #fff;
+    }
+    body.watch-alert-detail-mode #table {
+      padding: 0;
+      background: transparent;
+      overflow: visible;
+    }
+    body.watch-alert-detail-mode .detail { display: none; }
+    body.watch-alert-detail-mode .summary-grid { display: none; }
+    /* Owner summary — link ไป User Management ได้ (read-only) */
+    body.watch-alert-detail-mode .watch-alert-detail-page .wa-owner-link {
+      color: #2563eb;
+      text-decoration: none;
+      cursor: pointer;
+    }
+    body.watch-alert-detail-mode .watch-alert-detail-page .wa-owner-link:hover {
+      text-decoration: underline;
+    }
+    /* Criteria chips — structured display ไม่ใช่ JSON ดิบ
+       ใช้ .detail-tile pattern เดียวกับหน้าอื่น เพิ่ม chip style เฉพาะ */
+    body.watch-alert-detail-mode .watch-alert-detail-page .wa-criteria-chip {
+      display: inline-flex;
+      align-items: center;
+      padding: 2px 10px;
+      border: 1px solid #c8d6ea;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 500;
+      color: #36507a;
+      background: #eef3fb;
+    }
+    /* Inactive market data warning — เทียบกับ .warning-note ของ report pages */
+    body.watch-alert-detail-mode .watch-alert-detail-page .wa-inactive-warning {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      margin-top: 4px;
+      padding: 10px 14px;
+      border: 1px solid #f0c674;
+      border-radius: var(--radius);
+      background: #fff9e6;
+      font-size: 13px;
+      color: #8a6d1f;
+      line-height: 1.5;
+    }
+    body.watch-alert-detail-mode .watch-alert-detail-page .wa-inactive-warning svg {
+      flex-shrink: 0;
+      width: 18px;
+      height: 18px;
+      margin-top: 1px;
+    }
+
     /* WA-PTO-001: Watch Alert BO — Demand Overview (read-only, no admin action)
        scope เฉพาะ body.watch-alert-mode เพื่อไม่กระทบ protected screens */
     body.watch-alert-mode .filters { display: none; }
@@ -3742,6 +3815,10 @@
       .wa-alert-cards { grid-template-columns: 1fr; }
       /* Sparkline: shorter on mobile */
       .wa-sparkline { height: 22px; }
+      /* WA-PTO-003a: Alert Detail — stack grids to 1 column on mobile */
+      body.watch-alert-detail-mode .watch-alert-detail-page .detail-grid.two {
+        grid-template-columns: 1fr;
+      }
     }
 
     /* Responsive — Small mobile (≤390px) */
@@ -9888,11 +9965,13 @@
         align-items: stretch;
       }
       body.user-detail-mode .user-detail-page,
-      body.asset-detail-mode .user-detail-page {
+      body.asset-detail-mode .user-detail-page,
+      body.watch-alert-detail-mode .user-detail-page {
         padding: 14px 10px 18px;
       }
       body.user-detail-mode .user-detail-head,
-      body.asset-detail-mode .user-detail-head {
+      body.asset-detail-mode .user-detail-head,
+      body.watch-alert-detail-mode .user-detail-head {
         flex-direction: row;
         align-items: flex-start;
         gap: 10px;
@@ -12287,6 +12366,7 @@
         display: block;
       }
       body.user-detail-mode .report-detail-page .detail-grid.two,
+      body.watch-alert-detail-mode .report-detail-page .detail-grid.two,
       .report-detail-page .report-detail-grid {
         grid-template-columns: 1fr;
       }
@@ -13406,18 +13486,18 @@
     const watchAlertData = {
       // 6.1 Alert records (12 รายการ ครอบคลุมทุก status/scenario)
       alerts: [
-        { id: "WAL-1440", name: "Rolex Submariner <= 320k", owner: { id: "U-1042", displayName: "Nattapol P." }, status: "Active", notificationEnabled: true, criteria: { brand: "Rolex", model: "Submariner", reference: "16610", priceMin: 0, priceMax: 320000, condition: ["Very Good", "Good"], caseSize: ["40-42mm"], dialColor: ["Black"] }, marketDataInactive: false, inactiveFields: [], matchCount: 8, triggerCount: 12, lastTriggered: "2026-08-25T14:30:00+07:00", created: "2026-06-15T09:00:00+07:00", updated: "2026-08-20T10:00:00+07:00" },
-        { id: "WAL-1228", name: "Omega Speedmaster Bangkok", owner: { id: "U-1017", displayName: "Crown Time BKK" }, status: "Active", notificationEnabled: true, criteria: { brand: "Omega", model: "Speedmaster", reference: "", priceMin: 100000, priceMax: 250000, condition: ["Like New"], caseSize: ["40-42mm"], dialColor: ["Black"] }, marketDataInactive: false, inactiveFields: [], matchCount: 3, triggerCount: 28, lastTriggered: "2026-08-26T09:12:00+07:00", created: "2026-05-02T11:30:00+07:00", updated: "2026-08-26T09:12:00+07:00" },
-        { id: "WAL-1199", name: "Inactive model alert", owner: { id: "U-1079", displayName: "Archive Collector" }, status: "User Disabled", notificationEnabled: false, criteria: { brand: "Seiko", model: "6139-6000", reference: "6139", priceMin: 0, priceMax: 80000, condition: [], caseSize: [], dialColor: [] }, marketDataInactive: true, inactiveFields: ["model"], matchCount: 0, triggerCount: 0, lastTriggered: null, created: "2026-04-10T08:00:00+07:00", updated: "2026-07-18T16:20:00+07:00" },
-        { id: "WAL-1180", name: "Seiko 6139 vintage", owner: { id: "U-1104", displayName: "Seiko Corner" }, status: "Active", notificationEnabled: true, criteria: { brand: "Seiko", model: "6139", reference: "6139-6000", priceMin: 0, priceMax: 60000, condition: ["Fair", "Good"], caseSize: ["<36mm"], dialColor: ["Blue"] }, marketDataInactive: false, inactiveFields: [], matchCount: 0, triggerCount: 0, lastTriggered: null, created: "2026-07-01T10:00:00+07:00", updated: "2026-07-01T10:00:00+07:00" },
-        { id: "WAL-1150", name: "Patek Calatrava 5227", owner: { id: "U-1144", displayName: "The Collector" }, status: "Active", notificationEnabled: true, criteria: { brand: "Patek Philippe", model: "Calatrava", reference: "5227", priceMin: 800000, priceMax: 1500000, condition: ["Like New"], caseSize: ["36-39mm"], dialColor: ["White"] }, marketDataInactive: false, inactiveFields: [], matchCount: 1, triggerCount: 2, lastTriggered: "2026-08-19T11:00:00+07:00", created: "2026-06-28T14:00:00+07:00", updated: "2026-08-19T11:00:00+07:00" },
-        { id: "WAL-1100", name: "Tudor Black Bay 58", owner: { id: "U-1088", displayName: "Daily Watch Hunter" }, status: "Active", notificationEnabled: true, criteria: { brand: "Tudor", model: "Black Bay 58", reference: "M79030", priceMin: 80000, priceMax: 130000, condition: ["Like New", "Very Good"], caseSize: ["36-39mm"], dialColor: ["Black"] }, marketDataInactive: false, inactiveFields: [], matchCount: 5, triggerCount: 5, lastTriggered: "2026-08-22T16:45:00+07:00", created: "2026-06-10T09:30:00+07:00", updated: "2026-08-22T16:45:00+07:00" },
-        { id: "WAL-1080", name: "Grand Seiko Snowflake", owner: { id: "U-1161", displayName: "Minimal Dial" }, status: "User Disabled", notificationEnabled: false, criteria: { brand: "Grand Seiko", model: "SBGA211", reference: "SBGA211", priceMin: 150000, priceMax: 250000, condition: ["New"], caseSize: ["40-42mm"], dialColor: ["White"] }, marketDataInactive: false, inactiveFields: [], matchCount: 0, triggerCount: 0, lastTriggered: null, created: "2026-05-20T13:00:00+07:00", updated: "2026-07-30T10:00:00+07:00" },
-        { id: "WAL-1050", name: "Old Rolex GMT alert", owner: { id: "U-1042", displayName: "Nattapol P." }, status: "Active", notificationEnabled: true, criteria: { brand: "Rolex", model: "GMT-Master II", reference: "126710BLRO", priceMin: 400000, priceMax: 700000, condition: ["Very Good"], caseSize: ["40-42mm"], dialColor: ["Blue", "Red"] }, marketDataInactive: false, inactiveFields: [], matchCount: 2, triggerCount: 1, lastTriggered: "2026-06-28T10:00:00+07:00", created: "2026-05-29T08:00:00+07:00", updated: "2026-06-28T10:00:00+07:00" },
-        { id: "WAL-1020", name: "Cartier Tank Must", owner: { id: "U-1161", displayName: "Minimal Dial" }, status: "Deleted", notificationEnabled: false, criteria: { brand: "Cartier", model: "Tank Must", reference: "", priceMin: 60000, priceMax: 100000, condition: ["Very Good"], caseSize: ["<36mm"], dialColor: ["Black"] }, marketDataInactive: false, inactiveFields: [], matchCount: 0, triggerCount: 2, lastTriggered: "2026-07-15T14:00:00+07:00", created: "2026-05-15T09:00:00+07:00", updated: "2026-08-01T18:00:00+07:00" },
-        { id: "WAL-0990", name: "Vintage Seiko 6105", owner: { id: "U-1104", displayName: "Seiko Corner" }, status: "Active", notificationEnabled: true, criteria: { brand: "Seiko", model: "6105-8110", reference: "6105", priceMin: 30000, priceMax: 70000, condition: ["Fair", "Good", "Very Good"], caseSize: ["40-42mm", "43-45mm"], dialColor: ["Black"] }, marketDataInactive: false, inactiveFields: [], matchCount: 4, triggerCount: 4, lastTriggered: "2026-08-21T13:20:00+07:00", created: "2026-04-25T11:00:00+07:00", updated: "2026-08-21T13:20:00+07:00" },
-        { id: "WAL-0950", name: "IWC Pilot Mark XVIII", owner: { id: "U-1088", displayName: "Daily Watch Hunter" }, status: "Active", notificationEnabled: false, criteria: { brand: "IWC", model: "Pilot Mark XVIII", reference: "IW3270", priceMin: 90000, priceMax: 140000, condition: ["Like New"], caseSize: ["40-42mm"], dialColor: ["Black"] }, marketDataInactive: false, inactiveFields: [], matchCount: 2, triggerCount: 3, lastTriggered: "2026-08-18T15:00:00+07:00", created: "2026-06-05T10:00:00+07:00", updated: "2026-08-18T15:00:00+07:00" },
-        { id: "WAL-0900", name: "AP Royal Oak 15500", owner: { id: "U-1144", displayName: "The Collector" }, status: "Active", notificationEnabled: true, criteria: { brand: "Audemars Piguet", model: "Royal Oak", reference: "15500ST", priceMin: 1200000, priceMax: 2000000, condition: ["New", "Like New"], caseSize: ["40-42mm"], dialColor: ["Black", "Blue"] }, marketDataInactive: true, inactiveFields: ["reference"], matchCount: 0, triggerCount: 0, lastTriggered: null, created: "2026-04-20T09:00:00+07:00", updated: "2026-04-20T09:00:00+07:00" }
+        { id: "WAL-1440", name: "Rolex Submariner <= 320k", owner: { id: "U-1042", displayName: "Nattapol P.", accountStatus: "Active" }, status: "Active", notificationEnabled: true, criteria: { brand: "Rolex", model: "Submariner", reference: "16610", priceMin: 0, priceMax: 320000, condition: ["Very Good", "Good"], caseSize: ["40-42mm"], dialColor: ["Black"] }, marketDataInactive: false, inactiveFields: [], matchCount: 8, triggerCount: 12, lastTriggered: "2026-08-25T14:30:00+07:00", created: "2026-06-15T09:00:00+07:00", updated: "2026-08-20T10:00:00+07:00" },
+        { id: "WAL-1228", name: "Omega Speedmaster Bangkok", owner: { id: "U-1017", displayName: "Crown Time BKK", accountStatus: "Active" }, status: "Active", notificationEnabled: true, criteria: { brand: "Omega", model: "Speedmaster", reference: "", priceMin: 100000, priceMax: 250000, condition: ["Like New"], caseSize: ["40-42mm"], dialColor: ["Black"] }, marketDataInactive: false, inactiveFields: [], matchCount: 3, triggerCount: 28, lastTriggered: "2026-08-26T09:12:00+07:00", created: "2026-05-02T11:30:00+07:00", updated: "2026-08-26T09:12:00+07:00" },
+        { id: "WAL-1199", name: "Inactive model alert", owner: { id: "U-1079", displayName: "Archive Collector", accountStatus: "Suspended" }, status: "User Disabled", notificationEnabled: false, criteria: { brand: "Seiko", model: "6139-6000", reference: "6139", priceMin: 0, priceMax: 80000, condition: [], caseSize: [], dialColor: [] }, marketDataInactive: true, inactiveFields: ["model"], matchCount: 0, triggerCount: 0, lastTriggered: null, created: "2026-04-10T08:00:00+07:00", updated: "2026-07-18T16:20:00+07:00" },
+        { id: "WAL-1180", name: "Seiko 6139 vintage", owner: { id: "U-1104", displayName: "Seiko Corner", accountStatus: "Active" }, status: "Active", notificationEnabled: true, criteria: { brand: "Seiko", model: "6139", reference: "6139-6000", priceMin: 0, priceMax: 60000, condition: ["Fair", "Good"], caseSize: ["<36mm"], dialColor: ["Blue"] }, marketDataInactive: false, inactiveFields: [], matchCount: 0, triggerCount: 0, lastTriggered: null, created: "2026-07-01T10:00:00+07:00", updated: "2026-07-01T10:00:00+07:00" },
+        { id: "WAL-1150", name: "Patek Calatrava 5227", owner: { id: "U-1144", displayName: "The Collector", accountStatus: "Active" }, status: "Active", notificationEnabled: true, criteria: { brand: "Patek Philippe", model: "Calatrava", reference: "5227", priceMin: 800000, priceMax: 1500000, condition: ["Like New"], caseSize: ["36-39mm"], dialColor: ["White"] }, marketDataInactive: false, inactiveFields: [], matchCount: 1, triggerCount: 2, lastTriggered: "2026-08-19T11:00:00+07:00", created: "2026-06-28T14:00:00+07:00", updated: "2026-08-19T11:00:00+07:00" },
+        { id: "WAL-1100", name: "Tudor Black Bay 58", owner: { id: "U-1088", displayName: "Daily Watch Hunter", accountStatus: "Active" }, status: "Active", notificationEnabled: true, criteria: { brand: "Tudor", model: "Black Bay 58", reference: "M79030", priceMin: 80000, priceMax: 130000, condition: ["Like New", "Very Good"], caseSize: ["36-39mm"], dialColor: ["Black"] }, marketDataInactive: false, inactiveFields: [], matchCount: 5, triggerCount: 5, lastTriggered: "2026-08-22T16:45:00+07:00", created: "2026-06-10T09:30:00+07:00", updated: "2026-08-22T16:45:00+07:00" },
+        { id: "WAL-1080", name: "Grand Seiko Snowflake", owner: { id: "U-1161", displayName: "Minimal Dial", accountStatus: "Active" }, status: "User Disabled", notificationEnabled: false, criteria: { brand: "Grand Seiko", model: "SBGA211", reference: "SBGA211", priceMin: 150000, priceMax: 250000, condition: ["New"], caseSize: ["40-42mm"], dialColor: ["White"] }, marketDataInactive: false, inactiveFields: [], matchCount: 0, triggerCount: 0, lastTriggered: null, created: "2026-05-20T13:00:00+07:00", updated: "2026-07-30T10:00:00+07:00" },
+        { id: "WAL-1050", name: "Old Rolex GMT alert", owner: { id: "U-1042", displayName: "Nattapol P.", accountStatus: "Active" }, status: "Active", notificationEnabled: true, criteria: { brand: "Rolex", model: "GMT-Master II", reference: "126710BLRO", priceMin: 400000, priceMax: 700000, condition: ["Very Good"], caseSize: ["40-42mm"], dialColor: ["Blue", "Red"] }, marketDataInactive: false, inactiveFields: [], matchCount: 2, triggerCount: 1, lastTriggered: "2026-06-28T10:00:00+07:00", created: "2026-05-29T08:00:00+07:00", updated: "2026-06-28T10:00:00+07:00" },
+        { id: "WAL-1020", name: "Cartier Tank Must", owner: { id: "U-1161", displayName: "Minimal Dial", accountStatus: "Active" }, status: "Deleted", notificationEnabled: false, criteria: { brand: "Cartier", model: "Tank Must", reference: "", priceMin: 60000, priceMax: 100000, condition: ["Very Good"], caseSize: ["<36mm"], dialColor: ["Black"] }, marketDataInactive: false, inactiveFields: [], matchCount: 0, triggerCount: 2, lastTriggered: "2026-07-15T14:00:00+07:00", created: "2026-05-15T09:00:00+07:00", updated: "2026-08-01T18:00:00+07:00" },
+        { id: "WAL-0990", name: "Vintage Seiko 6105", owner: { id: "U-1104", displayName: "Seiko Corner", accountStatus: "Active" }, status: "Active", notificationEnabled: true, criteria: { brand: "Seiko", model: "6105-8110", reference: "6105", priceMin: 30000, priceMax: 70000, condition: ["Fair", "Good", "Very Good"], caseSize: ["40-42mm", "43-45mm"], dialColor: ["Black"] }, marketDataInactive: false, inactiveFields: [], matchCount: 4, triggerCount: 4, lastTriggered: "2026-08-21T13:20:00+07:00", created: "2026-04-25T11:00:00+07:00", updated: "2026-08-21T13:20:00+07:00" },
+        { id: "WAL-0950", name: "IWC Pilot Mark XVIII", owner: { id: "U-1088", displayName: "Daily Watch Hunter", accountStatus: "Active" }, status: "Active", notificationEnabled: false, criteria: { brand: "IWC", model: "Pilot Mark XVIII", reference: "IW3270", priceMin: 90000, priceMax: 140000, condition: ["Like New"], caseSize: ["40-42mm"], dialColor: ["Black"] }, marketDataInactive: false, inactiveFields: [], matchCount: 2, triggerCount: 3, lastTriggered: "2026-08-18T15:00:00+07:00", created: "2026-06-05T10:00:00+07:00", updated: "2026-08-18T15:00:00+07:00" },
+        { id: "WAL-0900", name: "AP Royal Oak 15500", owner: { id: "U-1144", displayName: "The Collector", accountStatus: "Active" }, status: "Active", notificationEnabled: true, criteria: { brand: "Audemars Piguet", model: "Royal Oak", reference: "15500ST", priceMin: 1200000, priceMax: 2000000, condition: ["New", "Like New"], caseSize: ["40-42mm"], dialColor: ["Black", "Blue"] }, marketDataInactive: true, inactiveFields: ["reference"], matchCount: 0, triggerCount: 0, lastTriggered: null, created: "2026-04-20T09:00:00+07:00", updated: "2026-04-20T09:00:00+07:00" }
       ],
       // 5.6 Demand Overview aggregation (คำนวณจาก mock alerts ทั้งระบบ)
       // KPI cards อ้างอิง Family Office UI Rulebook: value + trend + sparkline + color-coded
@@ -19664,6 +19744,7 @@
       }
       activeModule = id;
       activeSub = subLabel;
+      hideWaCriteriaTooltip();
       setPageActions("");
       syncExpandedNavForModule(id, subLabel);
       const data = moduleData[id];
@@ -19679,6 +19760,8 @@
       document.body.classList.toggle("asset-list-mode", isAssetList || isArticleList || isCategoryList || isReportedBoard);
       document.body.classList.toggle("offer-list-mode", isOfferList);
       document.body.classList.remove("offer-detail-mode");
+      // WA-PTO-003a: remove watch-alert-detail-mode when navigating away from Alert Detail
+      document.body.classList.remove("watch-alert-detail-mode");
       // BO-OPT-006a-R1: option-master-mode classes were only ever added, never removed,
       // so they leaked into other modules navigated to via renderModule (e.g. Content
       // Management, Offer Management). renderOptionGroupList() re-adds them when id is
@@ -22048,6 +22131,7 @@
     function renderWatchAlert(subLabel = "Demand Overview") {
       activeModule = "watch-alerts";
       activeSub = subLabel;
+      hideWaCriteriaTooltip();
       setPageActions("");
       document.querySelector("#user-panel-filter-actions").innerHTML = "";
       document.querySelector(".filters").innerHTML = "";
@@ -23001,24 +23085,164 @@
       `;
     }
 
-    // WA-PTO-003 placeholder — Alert Detail จะสร้างใน task ถัดไป
-    // ตอนนี้แสดงข้อความว่าจะสร้างต่อ เพื่อให้ row click มี destination ไม่ใช่ no-op
+    // WA-PTO-003a: Alert Detail Section 1-3 + breadcrumb/back (read-only, no admin action)
+    // Section 4-6 + responsive + soft delete handling อยู่ใน WA-PTO-003b
     function renderWatchAlertDetail(alertId) {
+      const esc = v => String(v).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
       const alert = watchAlertData.alerts.find(a => a.id === alertId);
-      const name = alert ? alert.name : alertId;
-      document.querySelector("#crumb").textContent = `งานตรวจสอบและบริการ / Market Demand / Watch Alert List / ${alertId}`;
-      document.querySelector("#page-title").textContent = name;
-      document.querySelector("#page-meta").textContent = alert ? `${alertId} · ${alert.status}` : alertId;
-      document.querySelector("#panel-title").textContent = name;
-      document.querySelector("#panel-subtitle").textContent = `${alertId} — Alert Detail (read-only)`;
-      document.querySelector("#primary-action").textContent = "";
+      if (!alert) {
+        renderWatchAlertList();
+        return;
+      }
+      activeModule = "watch-alerts";
+      activeSub = "Watch Alert List";
+      activeRow = { id: alert.id };
+      hideWaCriteriaTooltip();
+      // body class: keep watch-alert-mode, add watch-alert-detail-mode, remove list/overview modes
+      document.body.classList.add("watch-alert-mode", "watch-alert-detail-mode");
+      document.body.classList.remove("watch-alert-list-mode", "watch-alert-overview-mode");
+      document.body.classList.remove("dashboard-mode", "user-management-mode", "asset-list-mode", "article-list-mode", "category-list-mode", "reported-board-mode", "market-list-mode", "market-dashboard-mode", "user-list-mode", "user-detail-mode", "asset-detail-mode", "offer-list-mode", "offer-detail-mode", "option-master-mode", "option-group-list-mode", "option-detail-mode");
+
+      // breadcrumb + page header + back button
+      document.querySelector("#crumb").textContent = `งานตรวจสอบและบริการ / Market Demand / Watch Alert List / ${alert.id}`;
+      document.querySelector("#page-title").textContent = "Alert Detail";
+      document.querySelector("#page-meta").textContent = `${alert.id} · ${alert.status}`;
+      setPageActions(renderPageBackButton("data-back-wa-alert-list", "กลับไป Watch Alert List"));
+      document.querySelector("#panel-title").textContent = alert.name;
+      document.querySelector("#panel-subtitle").textContent = `${alert.id} — Alert Detail (read-only)`;
+      document.querySelector("#user-panel-filter-actions").innerHTML = "";
+      document.querySelector(".filters").innerHTML = "";
       document.querySelector("#summary-grid").innerHTML = "";
-      document.querySelector("#table").innerHTML = `
-        <div class="detail-empty">
-          Alert Detail (read-only) จะสร้างใน task WA-PTO-003
+      document.querySelector("#cards").innerHTML = "";
+      document.querySelector("#detail").innerHTML = "";
+
+      // helper: format THB price
+      const fmtTHB = v => v >= 1000000 ? `${(v / 1000000).toFixed(v % 1000000 ? 1 : 0)}M` : v >= 1000 ? `${Math.round(v / 1000)}k` : String(v);
+
+      // helper: account status pill
+      const getAccountStatusPill = (status) => {
+        if (status === "Active") return `<span class="pill green">${esc(status)}</span>`;
+        if (status === "Suspended") return `<span class="pill red">${esc(status)}</span>`;
+        if (status === "Banned") return `<span class="pill charcoal">${esc(status)}</span>`;
+        return `<span class="pill gray">${esc(status)}</span>`;
+      };
+
+      // Section 1: Alert header — head + summary tiles (เหมือน Offer Detail)
+      const section1Head = `
+        <div class="user-detail-head">
+          <div class="user-detail-title">
+            <div>
+              <h2 class="asset-report-heading"><span class="asset-report-id">${esc(alert.id)}</span><span class="user-detail-separator"> : </span><span class="asset-report-name user-display-name">${esc(alert.name)}</span></h2>
+              <div class="chips">
+                ${getWaStatusPill(alert.status)}
+                ${getWaNotifPill(alert.notificationEnabled)}
+              </div>
+            </div>
+          </div>
         </div>
       `;
-      document.querySelector("#detail").innerHTML = "";
+
+      const section1 = `
+        <div class="detail-section">
+          <h4>Alert Summary</h4>
+          <div class="detail-grid two report-reference-grid">
+            <div class="detail-tile"><span>Alert ID</span><strong>${esc(alert.id)}</strong></div>
+            <div class="detail-tile"><span>Alert Name</span><strong>${esc(alert.name)}</strong></div>
+            <div class="detail-tile"><span>Status</span><strong>${getWaStatusPill(alert.status)}</strong></div>
+            <div class="detail-tile"><span>Notification</span><strong>${getWaNotifPill(alert.notificationEnabled)}</strong></div>
+            <div class="detail-tile"><span>Created</span><strong>${formatWaDate(alert.created)}</strong></div>
+            <div class="detail-tile"><span>Updated</span><strong>${formatWaDate(alert.updated)}</strong></div>
+            <div class="detail-tile"><span>Matches</span><strong>${alert.matchCount}</strong></div>
+            <div class="detail-tile"><span>Triggers</span><strong>${alert.triggerCount}</strong></div>
+          </div>
+        </div>
+      `;
+
+      // Section 2: Owner summary (read-only, link ไป User Management ได้)
+      const owner = alert.owner || {};
+      const ownerName = owner.displayName || "—";
+      const ownerId = owner.id || "—";
+      const ownerStatus = owner.accountStatus || "Active";
+      const section2 = `
+        <div class="detail-section">
+          <h4>Owner Summary</h4>
+          <div class="detail-grid two report-reference-grid">
+            <div class="detail-tile"><span>User ID</span><strong><span class="wa-owner-link" data-wa-owner-link="${esc(ownerId)}">${esc(ownerId)}</span></strong></div>
+            <div class="detail-tile"><span>Display Name</span><strong>${esc(ownerName)}</strong></div>
+            <div class="detail-tile"><span>Account Status</span><strong>${getAccountStatusPill(ownerStatus)}</strong></div>
+            <div class="detail-tile"><span>Context</span><strong>Read-only — ดูรายละเอียดใน User Management</strong></div>
+          </div>
+        </div>
+      `;
+
+      // Section 3: Criteria (structured chips/rows ไม่ใช่ JSON ดิบ) + warning ถ้าอ้าง inactive market data
+      const c = alert.criteria || {};
+      const conditionChips = Array.isArray(c.condition) && c.condition.length
+        ? c.condition.map(v => `<span class="wa-criteria-chip">${esc(v)}</span>`).join("")
+        : `<span class="muted">ไม่กำหนด</span>`;
+      const caseSizeChips = Array.isArray(c.caseSize) && c.caseSize.length
+        ? c.caseSize.map(v => `<span class="wa-criteria-chip">${esc(v)}</span>`).join("")
+        : `<span class="muted">ไม่กำหนด</span>`;
+      const dialColorChips = Array.isArray(c.dialColor) && c.dialColor.length
+        ? c.dialColor.map(v => `<span class="wa-criteria-chip">${esc(v)}</span>`).join("")
+        : `<span class="muted">ไม่กำหนด</span>`;
+      const priceText = (c.priceMin != null && c.priceMax != null && (c.priceMin > 0 || c.priceMax > 0))
+        ? `${fmtTHB(c.priceMin)}-${fmtTHB(c.priceMax)} THB`
+        : "ไม่กำหนด";
+
+      const inactiveWarning = alert.marketDataInactive && Array.isArray(alert.inactiveFields) && alert.inactiveFields.length
+        ? `
+          <div class="wa-inactive-warning">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+            <span>Criteria อ้างถึง market data ที่ inactive: <strong>${alert.inactiveFields.map(f => esc(f)).join(", ")}</strong> — alert จะไม่ match asset ใหม่จนกว่า market data จะกลับมา active</span>
+          </div>
+        `
+        : "";
+
+      const section3 = `
+        <div class="detail-section">
+          <h4>Criteria</h4>
+          <div class="detail-grid two report-reference-grid">
+            <div class="detail-tile"><span>Brand</span><strong>${c.brand ? `<span class="wa-criteria-chip">${esc(c.brand)}</span>` : `<span class="muted">ไม่กำหนด</span>`}</strong></div>
+            <div class="detail-tile"><span>Model</span><strong>${c.model ? `<span class="wa-criteria-chip">${esc(c.model)}</span>` : `<span class="muted">ไม่กำหนด</span>`}</strong></div>
+            <div class="detail-tile"><span>Reference</span><strong>${c.reference ? `<span class="wa-criteria-chip">${esc(c.reference)}</span>` : `<span class="muted">ไม่กำหนด</span>`}</strong></div>
+            <div class="detail-tile"><span>Price Range</span><strong><span class="wa-criteria-chip">${esc(priceText)}</span></strong></div>
+            <div class="detail-tile"><span>Condition</span><strong>${conditionChips}</strong></div>
+            <div class="detail-tile"><span>Case Size</span><strong>${caseSizeChips}</strong></div>
+            <div class="detail-tile"><span>Dial Color</span><strong>${dialColorChips}</strong></div>
+          </div>
+          ${inactiveWarning}
+        </div>
+      `;
+
+      // WA-PTO-003b placeholder: Section 4-6 จะสร้างใน task ถัดไป
+      const sectionPlaceholder = `
+        <div class="detail-section">
+          <h4>Matched Assets</h4>
+          <div class="detail-empty">Section 4 — Matched Assets จะสร้างใน task WA-PTO-003b</div>
+        </div>
+        <div class="detail-section">
+          <h4>Trigger &amp; Notification History</h4>
+          <div class="detail-empty">Section 5 — Trigger &amp; Notification History จะสร้างใน task WA-PTO-003b</div>
+        </div>
+        <div class="detail-section">
+          <h4>User Action History</h4>
+          <div class="detail-empty">Section 6 — User Action History จะสร้างใน task WA-PTO-003b</div>
+        </div>
+      `;
+
+      document.querySelector("#table").innerHTML = `
+        <div class="user-detail-page report-detail-page watch-alert-detail-page">
+          ${section1Head}
+          ${section1}
+          ${section2}
+          ${section3}
+          ${sectionPlaceholder}
+        </div>
+      `;
+
+      updateActiveNav();
+      scrollMainToTop();
     }
 
     function renderMarketData(subLabel = "Dashboard") {
@@ -31794,6 +32018,23 @@
       const backOfferList = event.target.closest("[data-back-offer-list]");
       if (backOfferList) {
         renderModule("offers");
+        return;
+      }
+      // WA-PTO-003a: Alert Detail back button → Watch Alert List (restore filter state)
+      const backWaAlertList = event.target.closest("[data-back-wa-alert-list]");
+      if (backWaAlertList) {
+        renderModule("watch-alerts", "Watch Alert List", "Watch Alert List");
+        return;
+      }
+      // WA-PTO-003a: Alert Detail owner link → User Management (read-only drill-in)
+      const waOwnerLink = event.target.closest("[data-wa-owner-link]");
+      if (waOwnerLink) {
+        const ownerId = waOwnerLink.dataset.waOwnerLink;
+        const user = userManagementData.users.find(u => u.id === ownerId);
+        if (user) {
+          pushBackNavigationContext();
+          renderUserDetailPage(user);
+        }
         return;
       }
       const backArticleList = event.target.closest("[data-back-article-list]");
