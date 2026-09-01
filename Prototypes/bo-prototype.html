@@ -2756,6 +2756,16 @@
       color: var(--muted);
       font-style: italic;
     }
+    /* Empty row — โครงตารางเปล่า + ข้อความ "ยังไม่มีข้อมูล" แทน detail-empty */
+    body.watch-alert-detail-mode .watch-alert-detail-page .history-empty-row td {
+      padding: 24px 12px;
+      text-align: center;
+    }
+    body.watch-alert-detail-mode .watch-alert-detail-page .history-empty-row .history-empty-cell {
+      color: var(--muted);
+      font-size: 13px;
+      font-style: italic;
+    }
     /* Matched assets table — 10 columns, ต้องการ min-width ใหญ่ขึ้นเพื่อไม่ให้ตารางแคบเกินไป */
     body.watch-alert-detail-mode .watch-alert-detail-page .wa-matched-assets-table {
       min-width: 960px;
@@ -3967,6 +3977,15 @@
       body.watch-alert-detail-mode .watch-alert-detail-page .history-table .history-note {
         min-width: 0;
         max-width: none;
+      }
+      /* Empty row ใน mobile card mode — แสดงเป็น cell เดียวเต็มกว้าง */
+      body.watch-alert-detail-mode .watch-alert-detail-page .history-table .history-empty-row td {
+        display: block;
+        padding: 20px 12px;
+        text-align: center;
+      }
+      body.watch-alert-detail-mode .watch-alert-detail-page .history-table .history-empty-row td::before {
+        content: none;
       }
       /* Matched assets count badge: stack below heading on mobile */
       body.watch-alert-detail-mode .watch-alert-detail-page .board-report-reference-head {
@@ -13826,7 +13845,15 @@
             { triggerId: "WAT-1228-28", triggeredAt: "2026-08-26T09:12:00+07:00", newMatches: 1, totalMatches: 3, notification: { sent: true, channel: "Push + Email", destination: "Watch Alert Result List", deliveryStatus: "Delivered", sentAt: "2026-08-26T09:12:10+07:00" } },
             { triggerId: "WAT-1228-27", triggeredAt: "2026-08-22T15:30:00+07:00", newMatches: 1, totalMatches: 2, notification: { sent: true, channel: "Push + Email", destination: "Watch Alert Result List", deliveryStatus: "Delivered", sentAt: "2026-08-22T15:30:08+07:00" } },
             { triggerId: "WAT-1228-26", triggeredAt: "2026-08-19T10:00:00+07:00", newMatches: 1, totalMatches: 1, notification: { sent: true, channel: "Push + Email", destination: "Watch Alert Result List", deliveryStatus: "Delivered", sentAt: "2026-08-19T10:00:06+07:00" } },
-            { triggerId: "WAT-1228-25", triggeredAt: "2026-08-14T08:00:00+07:00", newMatches: 0, totalMatches: 0, notification: { sent: false, channel: "—", destination: "—", deliveryStatus: "Skipped (no new matches)", sentAt: "—" } }
+            { triggerId: "WAT-1228-25", triggeredAt: "2026-08-14T08:00:00+07:00", newMatches: 0, totalMatches: 0, notification: { sent: false, channel: "—", destination: "—", deliveryStatus: "Skipped (no new matches)", sentAt: "—" } },
+            { triggerId: "WAT-1228-24", triggeredAt: "2026-08-12T11:20:00+07:00", newMatches: 0, totalMatches: 0, notification: { sent: false, channel: "—", destination: "—", deliveryStatus: "Skipped (no new matches)", sentAt: "—" } },
+            { triggerId: "WAT-1228-23", triggeredAt: "2026-08-10T14:00:00+07:00", newMatches: 0, totalMatches: 0, notification: { sent: false, channel: "—", destination: "—", deliveryStatus: "Skipped (no new matches)", sentAt: "—" } },
+            { triggerId: "WAT-1228-22", triggeredAt: "2026-08-08T09:30:00+07:00", newMatches: 0, totalMatches: 0, notification: { sent: false, channel: "—", destination: "—", deliveryStatus: "Skipped (no new matches)", sentAt: "—" } },
+            { triggerId: "WAT-1228-21", triggeredAt: "2026-08-05T16:00:00+07:00", newMatches: 0, totalMatches: 0, notification: { sent: false, channel: "—", destination: "—", deliveryStatus: "Skipped (no new matches)", sentAt: "—" } },
+            { triggerId: "WAT-1228-20", triggeredAt: "2026-08-03T10:15:00+07:00", newMatches: 0, totalMatches: 0, notification: { sent: false, channel: "—", destination: "—", deliveryStatus: "Skipped (no new matches)", sentAt: "—" } },
+            { triggerId: "WAT-1228-19", triggeredAt: "2026-07-30T13:45:00+07:00", newMatches: 0, totalMatches: 0, notification: { sent: false, channel: "—", destination: "—", deliveryStatus: "Skipped (no new matches)", sentAt: "—" } },
+            { triggerId: "WAT-1228-18", triggeredAt: "2026-07-25T08:00:00+07:00", newMatches: 0, totalMatches: 0, notification: { sent: false, channel: "—", destination: "—", deliveryStatus: "Skipped (no new matches)", sentAt: "—" } },
+            { triggerId: "WAT-1228-17", triggeredAt: "2026-07-20T11:30:00+07:00", newMatches: 0, totalMatches: 0, notification: { sent: false, channel: "—", destination: "—", deliveryStatus: "Skipped (no new matches)", sentAt: "—" } }
           ],
           userActionHistory: [
             { actionId: "WAU-1228-03", timestamp: "2026-08-26T09:12:00+07:00", actor: "Crown Time BKK", actionType: "edit_criteria", before: "Price 100-200k THB", after: "Price 100-250k THB", note: "ขยายช่วงราคา" },
@@ -23253,6 +23280,11 @@
     const watchAlertListPageSize = 10;
     // WA-PTO-002b: filter panel open state สำหรับ Alert List (เหมือน optionGroupFilterOpen)
     let watchAlertListFilterOpen = false;
+    // WA-PTO-003b: pagination state สำหรับ Alert Detail Section 4-6 (10 รายการต่อหน้า)
+    let waDetailMatchedPage = 1;
+    let waDetailTriggerPage = 1;
+    let waDetailUserActionPage = 1;
+    const waDetailPageSize = 10;
 
     function renderWatchAlertList() {
       const esc = v => String(v).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
@@ -23449,6 +23481,10 @@
         renderWatchAlertList();
         return;
       }
+      // WA-PTO-003b: reset pagination state เมื่อเปิด alert ใหม่
+      waDetailMatchedPage = 1;
+      waDetailTriggerPage = 1;
+      waDetailUserActionPage = 1;
       activeModule = "watch-alerts";
       activeSub = "Watch Alert List";
       activeRow = { id: alert.id };
@@ -23597,8 +23633,38 @@
       const isDeleted = alert.status === "Deleted";
       const detail = (watchAlertData.detail && watchAlertData.detail[alert.id]) || {};
       const matchedAssets = detail.matchedAssets || [];
-      const triggerHistory = detail.triggerHistory || [];
+      // trigger history แสดงเฉพาะรายการที่มี new matches > 0 (trigger ที่เกิดการตรวจจับจริง)
+      const triggerHistory = (detail.triggerHistory || []).filter(t => t.newMatches > 0);
       const userActionHistory = detail.userActionHistory || [];
+      const pageSize = waDetailPageSize;
+
+      // helper: paginate array
+      const paginate = (arr, page) => {
+        const totalPages = Math.max(1, Math.ceil(arr.length / pageSize));
+        const currentPage = Math.min(Math.max(1, page), totalPages);
+        const start = (currentPage - 1) * pageSize;
+        return { rows: arr.slice(start, start + pageSize), totalPages, currentPage, start };
+      };
+
+      // helper: render pagination footer (range + pager)
+      const renderWaDetailPagination = (total, page, totalPages, dataAttr) => {
+        if (totalPages <= 1) return "";
+        const start = (page - 1) * pageSize;
+        const showing = `${start + 1}-${Math.min(start + pageSize, total)} จาก ${total}`;
+        return `
+          <div class="footer-range">
+            <span>แสดง ${showing}</span>
+            ${renderPager(page, totalPages, dataAttr)}
+          </div>
+        `;
+      };
+
+      // Section 4 pagination
+      const matchedPaginated = paginate(matchedAssets, waDetailMatchedPage);
+      // Section 5 pagination (เฉพาะ alert ที่ไม่ใช่ Deleted)
+      const triggerPaginated = isDeleted ? { rows: [], totalPages: 1, currentPage: 1, start: 0 } : paginate(triggerHistory, waDetailTriggerPage);
+      // Section 6 pagination
+      const userActionPaginated = paginate(userActionHistory, waDetailUserActionPage);
 
       // helper: asset status pill สำหรับ matched assets
       const getWaAssetStatusPill = (status) => {
@@ -23629,36 +23695,45 @@
         return labels[actionType] || actionType;
       };
 
+      // helper: render empty table row (โครงตารางเปล่า + row "ยังไม่มีข้อมูล" แทนข้อความกลางจอ)
+      const renderWaEmptyRow = (colCount, message) => `
+        <tr class="history-empty-row">
+          <td colspan="${colCount}" data-label="">
+            <div class="history-empty-cell">${esc(message)}</div>
+          </td>
+        </tr>
+      `;
+
       // Section 4: Matched Assets — จำนวน asset ที่ match criteria + รายการ asset สถานะ Sale ที่ match
       // read-only, link ไป Asset Management ได้ (data-asset-open)
       const section4 = `
         <div class="detail-section">
           <h4>Matched Assets</h4>
-          ${matchedAssets.length
-            ? `<div class="history-table-wrap">
-                <table class="history-table wa-detail-table wa-matched-assets-table">
-                  <thead>
-                    <tr><th>Asset ID</th><th>Asset Name</th><th>Price</th><th>Condition</th><th>Case Size</th><th>Dial Color</th><th>Listed At</th><th>Asset Status</th></tr>
-                  </thead>
-                  <tbody>
-                    ${matchedAssets.map(a => `
-                      <tr>
-                        <td data-label="Asset ID"><button class="history-delivery-link" type="button" data-asset-open="${esc(a.assetId)}">${esc(a.assetId)}</button></td>
-                        <td data-label="Asset Name">${esc(a.assetName)}${a.reference ? `<br><small class="muted">${esc(a.reference)}</small>` : ""}</td>
-                        <td data-label="Price">${fmtTHB(a.price)} THB</td>
-                        <td data-label="Condition">${esc(a.condition || "—")}</td>
-                        <td data-label="Case Size">${esc(a.caseSize || "—")}</td>
-                        <td data-label="Dial Color">${esc(a.dialColor || "—")}</td>
-                        <td data-label="Listed At">${formatWaDateTime(a.listedAt)}</td>
-                        <td data-label="Asset Status">${getWaAssetStatusPill(a.assetStatus)}</td>
-                      </tr>
-                    `).join("")}
-                  </tbody>
-                </table>
-              </div>`
-            : `<div class="detail-empty">ยังไม่มี asset ที่ตรงตามเงื่อนไข${alert.marketDataInactive ? " (criteria อ้างถึง market data ที่ inactive)" : ""}</div>`
-          }
-          ${matchedAssets.length && matchedAssets.length < alert.matchCount ? `<p class="wa-table-note">แสดง ${matchedAssets.length} รายการล่าสุด จากทั้งหมด ${alert.matchCount} รายการ</p>` : ""}
+          <div class="history-table-wrap">
+            <table class="history-table wa-detail-table wa-matched-assets-table">
+              <thead>
+                <tr><th>Asset ID</th><th>Asset Name</th><th>Price</th><th>Condition</th><th>Case Size</th><th>Dial Color</th><th>Listed At</th><th>Asset Status</th></tr>
+              </thead>
+              <tbody>
+                ${matchedAssets.length
+                  ? matchedPaginated.rows.map(a => `
+                    <tr>
+                      <td data-label="Asset ID"><button class="history-delivery-link" type="button" data-asset-open="${esc(a.assetId)}">${esc(a.assetId)}</button></td>
+                      <td data-label="Asset Name">${esc(a.assetName)}${a.reference ? `<br><small class="muted">${esc(a.reference)}</small>` : ""}</td>
+                      <td data-label="Price">${fmtTHB(a.price)} THB</td>
+                      <td data-label="Condition">${esc(a.condition || "—")}</td>
+                      <td data-label="Case Size">${esc(a.caseSize || "—")}</td>
+                      <td data-label="Dial Color">${esc(a.dialColor || "—")}</td>
+                      <td data-label="Listed At">${formatWaDateTime(a.listedAt)}</td>
+                      <td data-label="Asset Status">${getWaAssetStatusPill(a.assetStatus)}</td>
+                    </tr>
+                  `).join("")
+                  : renderWaEmptyRow(8, alert.marketDataInactive ? "ยังไม่มี asset ที่ตรงตามเงื่อนไข (criteria อ้างถึง market data ที่ inactive)" : "ยังไม่มี asset ที่ตรงตามเงื่อนไข")
+                }
+              </tbody>
+            </table>
+          </div>
+          ${renderWaDetailPagination(matchedAssets.length, matchedPaginated.currentPage, matchedPaginated.totalPages, "data-wa-detail-matched-page")}
         </div>
       `;
 
@@ -23675,27 +23750,27 @@
         : `
         <div class="detail-section">
           <h4>Trigger &amp; Notification History</h4>
-          ${triggerHistory.length
-            ? `<div class="history-table-wrap">
-                <table class="history-table wa-detail-table wa-trigger-history-table">
-                  <thead>
-                    <tr><th>Trigger ID</th><th>Triggered At</th><th>Matches</th><th>Delivery Status</th></tr>
-                  </thead>
-                  <tbody>
-                    ${triggerHistory.map(t => `
-                      <tr>
-                        <td data-label="Trigger ID">${esc(t.triggerId)}</td>
-                        <td data-label="Triggered At">${formatWaDateTime(t.triggeredAt)}</td>
-                        <td data-label="Matches">${t.newMatches} new · ${t.totalMatches} total</td>
-                        <td data-label="Delivery Status">${getWaDeliveryPill(t.notification.deliveryStatus)}</td>
-                      </tr>
-                    `).join("")}
-                  </tbody>
-                </table>
-              </div>`
-            : `<div class="detail-empty">ยังไม่มีประวัติการตรวจจับ${alert.marketDataInactive ? " (criteria อ้างถึง market data ที่ inactive — alert จะไม่ trigger จนกว่า market data จะกลับมา active)" : ""}</div>`
-          }
-          ${triggerHistory.length && triggerHistory.length < alert.triggerCount ? `<p class="wa-table-note">แสดง ${triggerHistory.length} รายการล่าสุด จากทั้งหมด ${alert.triggerCount} รายการ</p>` : ""}
+          <div class="history-table-wrap">
+            <table class="history-table wa-detail-table wa-trigger-history-table">
+              <thead>
+                <tr><th>Trigger ID</th><th>Triggered At</th><th>Matches</th><th>Delivery Status</th></tr>
+              </thead>
+              <tbody>
+                ${triggerHistory.length
+                  ? triggerPaginated.rows.map(t => `
+                    <tr>
+                      <td data-label="Trigger ID">${esc(t.triggerId)}</td>
+                      <td data-label="Triggered At">${formatWaDateTime(t.triggeredAt)}</td>
+                      <td data-label="Matches">${t.newMatches} new · ${t.totalMatches} total</td>
+                      <td data-label="Delivery Status">${getWaDeliveryPill(t.notification.deliveryStatus)}</td>
+                    </tr>
+                  `).join("")
+                  : renderWaEmptyRow(4, alert.marketDataInactive ? "ยังไม่มีประวัติการตรวจจับ (criteria อ้างถึง market data ที่ inactive — alert จะไม่ trigger จนกว่า market data จะกลับมา active)" : "ยังไม่มีประวัติการตรวจจับ")
+                }
+              </tbody>
+            </table>
+          </div>
+          ${renderWaDetailPagination(triggerHistory.length, triggerPaginated.currentPage, triggerPaginated.totalPages, "data-wa-detail-trigger-page")}
         </div>
       `;
 
@@ -23704,27 +23779,28 @@
       const section6 = `
         <div class="detail-section">
           <h4>User Action History</h4>
-          ${userActionHistory.length
-            ? `<div class="history-table-wrap">
-                <table class="history-table wa-detail-table wa-user-action-history-table">
-                  <thead>
-                    <tr><th>Timestamp</th><th>Actor</th><th>Action</th><th>Changes</th><th>Note</th></tr>
-                  </thead>
-                  <tbody>
-                    ${userActionHistory.map(u => `
-                      <tr>
-                        <td data-label="Timestamp">${formatWaDateTime(u.timestamp)}</td>
-                        <td data-label="Actor">${esc(u.actor)}</td>
-                        <td data-label="Action">${esc(getWaActionTypeLabel(u.actionType))}</td>
-                        <td data-label="Changes" class="history-note">${u.before && u.before !== "—" ? `${esc(u.before)} → ${esc(u.after)}` : esc(u.after || "—")}</td>
-                        <td data-label="Note" class="history-note">${esc(u.note || "—")}</td>
-                      </tr>
-                    `).join("")}
-                  </tbody>
-                </table>
-              </div>`
-            : `<div class="detail-empty">ไม่มีประวัติการกระทำของ user</div>`
-          }
+          <div class="history-table-wrap">
+            <table class="history-table wa-detail-table wa-user-action-history-table">
+              <thead>
+                <tr><th>Timestamp</th><th>Actor</th><th>Action</th><th>Changes</th><th>Note</th></tr>
+              </thead>
+              <tbody>
+                ${userActionHistory.length
+                  ? userActionPaginated.rows.map(u => `
+                    <tr>
+                      <td data-label="Timestamp">${formatWaDateTime(u.timestamp)}</td>
+                      <td data-label="Actor">${esc(u.actor)}</td>
+                      <td data-label="Action">${esc(getWaActionTypeLabel(u.actionType))}</td>
+                      <td data-label="Changes" class="history-note">${u.before && u.before !== "—" ? `${esc(u.before)} → ${esc(u.after)}` : esc(u.after || "—")}</td>
+                      <td data-label="Note" class="history-note">${esc(u.note || "—")}</td>
+                    </tr>
+                  `).join("")
+                  : renderWaEmptyRow(5, "ไม่มีประวัติการกระทำของ user")
+                }
+              </tbody>
+            </table>
+          </div>
+          ${renderWaDetailPagination(userActionHistory.length, userActionPaginated.currentPage, userActionPaginated.totalPages, "data-wa-detail-user-action-page")}
         </div>
       `;
 
@@ -32421,6 +32497,34 @@
         else watchAlertListPage = Number(target) || 1;
         renderWatchAlertListRows();
         resetTableScrollPosition();
+        return;
+      }
+      // WA-PTO-003b: Alert Detail Section 4-6 pagination (10 รายการต่อหน้า)
+      const waDetailMatchedPageBtn = event.target.closest("[data-wa-detail-matched-page]");
+      if (waDetailMatchedPageBtn) {
+        const target = waDetailMatchedPageBtn.dataset.waDetailMatchedPage;
+        if (target === "prev") waDetailMatchedPage = Math.max(1, waDetailMatchedPage - 1);
+        else if (target === "next") waDetailMatchedPage += 1;
+        else waDetailMatchedPage = Number(target) || 1;
+        renderWatchAlertDetail(activeRow?.id);
+        return;
+      }
+      const waDetailTriggerPageBtn = event.target.closest("[data-wa-detail-trigger-page]");
+      if (waDetailTriggerPageBtn) {
+        const target = waDetailTriggerPageBtn.dataset.waDetailTriggerPage;
+        if (target === "prev") waDetailTriggerPage = Math.max(1, waDetailTriggerPage - 1);
+        else if (target === "next") waDetailTriggerPage += 1;
+        else waDetailTriggerPage = Number(target) || 1;
+        renderWatchAlertDetail(activeRow?.id);
+        return;
+      }
+      const waDetailUserActionPageBtn = event.target.closest("[data-wa-detail-user-action-page]");
+      if (waDetailUserActionPageBtn) {
+        const target = waDetailUserActionPageBtn.dataset.waDetailUserActionPage;
+        if (target === "prev") waDetailUserActionPage = Math.max(1, waDetailUserActionPage - 1);
+        else if (target === "next") waDetailUserActionPage += 1;
+        else waDetailUserActionPage = Number(target) || 1;
+        renderWatchAlertDetail(activeRow?.id);
         return;
       }
       // WA-PTO-002b: Watch Alert List filter toggle
