@@ -67,7 +67,7 @@ Portfolio เป็นข้อมูล private เห็นเฉพาะ Own
 | High | Market Value source / formula ยังไม่ชัด | Current Value ใช้ Watch Price API -> Purchase Price fallback -> No Valuation | Annotate สูตรและ fallback ใน Portfolio dashboard/list |
 | High | Gain/Loss calculation ยังไม่ชัด | Unrealized Gain/Loss = Current Value - Purchase Price เฉพาะรายการที่มีข้อมูลพอ | เพิ่ม Gain/Loss display state และ no-calculation state |
 | High | Realized Gain/Loss ของ Sold History ยังไม่ชัด | Realized Gain/Loss = Sale Price - Purchase Price และแยกจาก Portfolio Value | เพิ่มสูตรและ unavailable state ใน Sold History |
-| High | Expected Profit / Market Comparison ยังไม่ชัด | Expected Profit ใช้ Asking Price - Purchase Price, Market Comparison ใช้ Asking Price เทียบ Watch Price API Market Price | เพิ่ม Owner-only expected profit และ public-safe market comparison state |
+| High | Expected Profit / Market Comparison ใน Portfolio ยังไม่ชัด | Expected Profit ใช้ Asking Price - Purchase Price, Market Comparison ใช้ Asking Price เทียบ Watch Price API Market Price; Figma ปัจจุบันออกแบบไว้เฉพาะใน Portfolio / Assets Value เท่านั้น | เพิ่ม Owner-only expected profit และ public-safe market comparison state ใน Portfolio; การเพิ่มใน Asset Detail เป็น pending product decision |
 | Medium | Holding Period / Top Brand / YTD ยังไม่ชัด | V1 รองรับ Holding Period, Top 3 Brand Holdings และ YTD วิธี A | เพิ่มสูตร, fallback และ note เมื่อข้อมูล snapshot ไม่พอ |
 
 ---
@@ -375,7 +375,7 @@ Rules:
 - ใช้ช่วง `-1%` ถึง `+1%` เป็น `At Market` เพื่อกันเคสส่วนต่างเล็กน้อยจากการปัดเศษราคา
 - หากไม่มี Market Price ให้แสดง `ไม่มีราคาตลาด` / `No market price`
 - หากไม่มี Asking Price ให้แสดง `—`
-- Market Comparison สามารถแสดงใน Asset Detail ได้โดยไม่เปิดเผย Purchase Price
+- Market Comparison สามารถแสดงใน Asset Detail ได้โดยไม่เปิดเผย Purchase Price (เป็นสิทธิ์ตาม master แต่ V1 Asset Detail ตาม Figma ปัจจุบันยังไม่ออกแบบส่วนนี้ — ดู Pending Figma / Out of V1 Asset Detail Scope ใน `05_ASSET_DETAIL_MODULE.md`)
 
 ### Realized Gain/Loss For Sold Asset
 

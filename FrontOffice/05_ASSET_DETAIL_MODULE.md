@@ -71,7 +71,7 @@ Asset Detail Module ต้องยึด master baseline ต่อไปนี�
 | Medium | Image/gallery ยังอาจสื่อว่าสูงสุด 3 รูป | Asset Management รองรับ Gallery สูงสุด 10 รูป และ Detail ต้องรองรับ Gallery / Swipe / Full Screen | ปรับ gallery indicator/viewer ให้รองรับได้ถึง 10 รูป |
 | Medium | Guest restriction state ยังไม่ครบ | Guest ดูได้ แต่ Like, Follow, Comment, Chat, Offer ต้อง Login | เพิ่ม Global Login Required Dialog สำหรับ guest action |
 | Medium | Detail ของ Asset สถานะ Show ต้องรองรับ `Make an Offer` / `Contact seller` | Master อนุญาตให้ `Show` เสนอราคา/ติดต่อได้จาก Detail แต่ยังไม่ขึ้น Feed, Search หรือ Watch Alert | คง Make Offer / Contact Seller บน `Show` และ annotate ว่า entry มาจาก Detail/Public Profile เท่านั้น |
-| High | Market Comparison / Expected Profit ยังไม่ชัด | Market Comparison ใช้ Asking Price เทียบ Watch Price API Market Price, Expected Profit เป็น Owner-only เพราะใช้ Purchase Price | เพิ่ม Above/At/Below state และ Owner-only Expected Profit |
+| High | Market Comparison / Expected Profit ยังไม่มีใน Asset Detail ของ Figma | Master อนุญาตให้ Asset Detail แสดง price analytics ได้ แต่ Figma ปัจจุบันออกแบบไว้เฉพาะ Portfolio / Assets Value เท่านั้น | รอ product decision ว่าจะเพิ่มใน Asset Detail ใน V1 หรือทำใน V2 ก่อนส่งต่อ Figma; หากทำ V1 ต้องเพิ่ม Above/At/Below state และ Owner-only Expected Profit ใน Asset Detail |
 
 ---
 
@@ -488,13 +488,25 @@ Provenance edit behavior:
 
 ## Price Analytics Rule
 
-Asset Detail สามารถแสดง price analytics ได้ตามสิทธิ์และข้อมูลที่มี:
+Asset Detail ใน V1 ตาม Figma ปัจจุบัน **ไม่มีส่วนแสดงผล Market Comparison หรือ Expected Profit** ส่วน analytics ทั้งสองนี้ถูกออกแบบไว้ใน Portfolio / Assets Value เท่านั้น (อ้างอิง [14_PORTFOLIO_MODULE.md](14_PORTFOLIO_MODULE.md) Market Comparison และ Expected Profit)
 
-- Market Comparison แสดงได้ใน Public Asset Detail หากมี Asking Price และ Watch Price API Market Price
-- Expected Profit แสดงเฉพาะ Owner view เพราะใช้ Purchase Price
+สิทธิ์การแสดงผลข้อมูล private ที่เกี่ยวกับ price analytics ยังคงยึดตาม Private Data Rule:
+
 - Purchase Price, Purchase Date และ Portfolio Value Detail ต้องไม่แสดงใน Viewer/Public mode
+- หาก Figma ส่วน Asset Detail มีการออกแบบ price analytics ในอนาคต ให้ยึดสูตรและ permission ในส่วน Pending Figma / Out of V1 Asset Detail Scope ด้านล่าง
 
-### Market Comparison
+### Pending Figma / Out of V1 Asset Detail Scope
+
+Master Product Definition กำหนดว่า Asset Detail **สามารถ** แสดง price analytics ได้ตามสิทธิ์ แต่ Figma ปัจจุบันยังไม่ได้ออกแบบส่วนนี้ไว้ใน Asset Detail จึงถือเป็นขอกำหนดที่ยังไม่อยู่ใน V1 Asset Detail scope จนกว่าจะมี Figma update และ product decision ยืนยัน
+
+รายการที่ยังไม่อยู่ใน V1 Asset Detail scope:
+
+- Market Comparison (Above Market / At Market / Below Market)
+- Expected Profit / Expected Profit %
+
+หากนำไปใช้ใน Asset Detail ภายหลัง ให้ยึดสูตรและ permission ต่อไปนี้:
+
+#### Market Comparison (pending Figma)
 
 ```text
 Market Comparison = Asking Price - Market Price
@@ -518,8 +530,9 @@ Rules:
 - ไม่ใช้ Purchase Price fallback เพื่อแสดง Above/At/Below
 - หากไม่มี Market Price ให้แสดง `ไม่มีราคาตลาด` / `No market price`
 - หากไม่มี Asking Price ให้ซ่อนหรือแสดง `—` ตาม layout
+- สูตรและ threshold ต้องตรงกับ Portfolio Module เพื่อความสอดคล้องของตัวเลข
 
-### Expected Profit
+#### Expected Profit (pending Figma)
 
 ```text
 Expected Profit = Asking Price - Purchase Price
@@ -531,9 +544,10 @@ Expected Profit % = (Expected Profit / Purchase Price) * 100
 
 Rules:
 
-- แสดงเฉพาะ Owner view
+- แสดงเฉพาะ Owner view เพราะใช้ Purchase Price ซึ่งเป็น private data
 - หากไม่มี Asking Price, Purchase Price หรือ Purchase Price <= 0 ให้แสดง `—`
 - Expected Profit เป็นกำไรคาดการณ์ ไม่ใช่ Realized Gain/Loss
+- สูตรและ permission ต้องตรงกับ Portfolio Module
 
 ## Like Rule
 
@@ -895,8 +909,8 @@ Comment empty state ต้องใช้ copy และ behavior ตาม `Com
 | AC-DETAIL-008 | Asset Detail ต้องรองรับ Swipe รูป |
 | AC-DETAIL-009 | Gallery ใน Asset Detail ต้องรองรับจำนวนรูปสูงสุด 10 รูปตาม Asset Management |
 | AC-DETAIL-010 | Asset Detail V1 ต้องไม่ใช้ Location เป็น field หลัก เว้นแต่ master จะตัดสินใจเพิ่มภายหลัง |
-| AC-DETAIL-010A | Market Comparison ต้องใช้ Asking Price เทียบกับ Watch Price API Market Price เท่านั้น และต้องไม่ใช้ Purchase Price fallback เพื่อแสดง Above/At/Below |
-| AC-DETAIL-010B | Expected Profit ต้องแสดงเฉพาะ Owner view และต้องไม่แสดง Purchase Price หรือ expected profit ให้ Viewer/Public mode |
+| AC-DETAIL-010A | (Pending Figma) หาก Asset Detail มีส่วน Market Comparison ในอนาคต ต้องใช้ Asking Price เทียบกับ Watch Price API Market Price เท่านั้น และต้องไม่ใช้ Purchase Price fallback เพื่อแสดง Above/At/Below; V1 Asset Detail ตาม Figma ปัจจุบันยังไม่แสดง Market Comparison |
+| AC-DETAIL-010B | (Pending Figma) หาก Asset Detail มีส่วน Expected Profit ในอนาคต ต้องแสดงเฉพาะ Owner view และต้องไม่แสดง Purchase Price หรือ expected profit ให้ Viewer/Public mode; V1 Asset Detail ตาม Figma ปัจจุบันยังไม่แสดง Expected Profit |
 | AC-DETAIL-010C | Owner Asset Detail ต้องแยก Purchase Information / Owner Provenance ออกจาก Consignment Information และแสดงเฉพาะ Owner หรือ Admin |
 | AC-DETAIL-010D | Optional private fields ที่ไม่ได้กรอกต้องไม่แสดง label หรือ placeholder ใน Viewer/Public mode และ Owner private section ควรซ่อน field ว่าง |
 | AC-DETAIL-010E | Sold Asset ต้องแสดง Provenance / Consignment เป็น read-only และไม่ให้แก้ผ่าน Edit Asset ปกติ |

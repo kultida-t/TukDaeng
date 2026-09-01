@@ -151,10 +151,10 @@ Purpose:
 - [ ] Comments sheet เปิด comment action sheet ซ้อนแล้วปิด action sheet ต้องไม่ปิด Comments sheet
 - [ ] Show Asset เปิด Public Detail ได้แต่ไม่ขึ้น Feed/Search/Watch Alert
 - [ ] Show Asset สามารถ Make Offer / Contact Seller / Chat จาก Detail ได้
-- [ ] Market Comparison ใช้ Asking Price เทียบ Watch Price API Market Price เท่านั้น
-- [ ] Market Comparison ไม่ใช้ Purchase Price fallback
-- [ ] Expected Profit แสดงเฉพาะ Owner view
-- [ ] Expected Profit ห้ามแสดงให้ Viewer/Public mode
+- [ ] (Pending Figma / pending product decision) หาก Asset Detail มี Market Comparison ใน V1 ต้องใช้ Asking Price เทียบ Watch Price API Market Price เท่านั้น; Figma ปัจจุบันยังไม่ออกแบบส่วนนี้ใน Asset Detail
+- [ ] (Pending Figma / pending product decision) หาก Asset Detail มี Market Comparison ใน V1 ต้องไม่ใช้ Purchase Price fallback
+- [ ] (Pending Figma / pending product decision) หาก Asset Detail มี Expected Profit ใน V1 ต้องแสดงเฉพาะ Owner view
+- [ ] (Pending Figma / pending product decision) หาก Asset Detail มี Expected Profit ใน V1 ต้องห้ามแสดงให้ Viewer/Public mode
 - [ ] Purchase data, Sold History, Portfolio Value Detail เป็น Owner-only
 
 ---
@@ -408,10 +408,10 @@ Purpose:
 - [ ] Unrealized Gain/Loss = Current Value - Purchase Price
 - [ ] Unrealized Gain/Loss % = Unrealized Gain/Loss / Purchase Price * 100
 - [ ] Gain/Loss ไม่คำนวณเมื่อใช้ Purchase Price fallback
-- [ ] Expected Profit = Asking Price - Purchase Price
-- [ ] Expected Profit แสดงเฉพาะ Owner view
-- [ ] Market Comparison ใช้ Asking Price เทียบ Watch Price API Market Price
-- [ ] Above/At/Below ใช้ threshold ตาม Portfolio PRD
+- [ ] Expected Profit = Asking Price - Purchase Price (Portfolio; สูตรเดียวกันใช้ใน Asset Detail เมื่อ Figma ออกแบบเพิ่ม)
+- [ ] Expected Profit แสดงเฉพาะ Owner view (Portfolio; เช่นเดียวกับ Asset Detail pending)
+- [ ] Market Comparison ใช้ Asking Price เทียบ Watch Price API Market Price (Portfolio; สูตรเดียวกันใช้ใน Asset Detail เมื่อ Figma ออกแบบเพิ่ม)
+- [ ] Above/At/Below ใช้ threshold ตาม Portfolio PRD (ใช้ร่วมกับ Asset Detail เมื่อทำเพิ่ม)
 - [ ] Realized Gain/Loss = Sale Price - Purchase Price สำหรับ Sold Asset
 - [ ] Realized Gain/Loss แสดงใน Sold History
 - [ ] Holding Period ใช้ Today - Purchase Date หรือ Sale Date - Purchase Date

@@ -947,14 +947,18 @@ When Member กด `...` บน comment
 Then comment action sheet ต้องเปิดเป็นชั้นบนสุด
 And เมื่อปิด comment action sheet ต้องไม่ปิด Comments bottom sheet
 
-## QA-DETAIL-005: Market Comparison
+## QA-DETAIL-005: Market Comparison (Pending Figma)
+
+> V1 Asset Detail ตาม Figma ปัจจุบันยังไม่ออกแบบส่วน Market Comparison (ออกแบบไว้เฉพาะ Portfolio / Assets Value) — scenario นี้เก็บไว้ทดสอบเมื่อมีการเพิ่มส่วนนี้ใน Asset Detail ภายหลัง product decision
 
 Given Asset มี Asking Price และ Watch Price API Market Price  
 When Asset Detail แสดง price analytics  
 Then ต้องแสดง Above Market / At Market / Below Market ตาม threshold  
 And ต้องไม่ใช้ Purchase Price fallback
 
-## QA-DETAIL-006: Expected Profit Owner Only
+## QA-DETAIL-006: Expected Profit Owner Only (Pending Figma)
+
+> V1 Asset Detail ตาม Figma ปัจจุบันยังไม่ออกแบบส่วน Expected Profit (ออกแบบไว้เฉพาะ Portfolio / Assets Value) — scenario นี้เก็บไว้ทดสอบเมื่อมีการเพิ่มส่วนนี้ใน Asset Detail ภายหลัง product decision
 
 Given Asset มี Asking Price และ Purchase Price  
 When Owner เปิด Detail  
@@ -1344,7 +1348,7 @@ And Expected Profit แสดงเฉพาะ Owner
 ## QA-PORT-008: Market Comparison No Market Price
 
 Given Asset ไม่มี Watch Price API Market Price  
-When Portfolio หรือ Asset Detail แสดง Market Comparison  
+When Portfolio แสดง Market Comparison (Asset Detail เป็น pending Figma / pending product decision)  
 Then ต้องแสดง `ไม่มีราคาตลาด` / `No market price`  
 And ต้องไม่แสดง Above/At/Below จาก fallback source
 
