@@ -22916,7 +22916,7 @@
       const esc = v => String(v).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
       document.querySelector("#crumb").textContent = "งานตรวจสอบและบริการ / Market Demand / Watch Alert List";
       document.querySelector("#page-title").textContent = "Watch Alert List";
-      document.querySelector("#page-meta").textContent = `Last updated ${formatBangkokTimestamp()}`;
+      document.querySelector("#page-meta").textContent = "";
       document.querySelector("#panel-title").textContent = "Watch Alert List";
       document.querySelector("#panel-subtitle").textContent = "";
       document.querySelector("#primary-action").textContent = "";
@@ -23119,7 +23119,7 @@
       // breadcrumb + page header + back button
       document.querySelector("#crumb").textContent = `งานตรวจสอบและบริการ / Market Demand / Watch Alert List / ${alert.id}`;
       document.querySelector("#page-title").textContent = "Alert Detail";
-      document.querySelector("#page-meta").textContent = `${alert.id} · ${alert.status}`;
+      document.querySelector("#page-meta").textContent = "";
       setPageActions(renderPageBackButton("data-back-wa-alert-list", "กลับไป Watch Alert List"));
       document.querySelector("#panel-title").textContent = alert.name;
       document.querySelector("#panel-subtitle").textContent = `${alert.id} — Alert Detail (read-only)`;
