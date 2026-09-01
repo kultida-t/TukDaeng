@@ -1865,9 +1865,29 @@
       border-bottom: 1px solid var(--line);
       border-radius: var(--radius) var(--radius) 0 0;
     }
+    /* WA-PTO-002b: ลดช่องว่างระหว่าง header กับตารางให้เท่ากับหน้า list อื่น (option master)
+       body.watch-alert-mode .layout มี gap:18px + margin-top:4px สำหรับ overview
+       ใน list mode ใช้ gap และ margin-top แบบปกติ */
+    body.watch-alert-mode.watch-alert-list-mode .layout {
+      gap: 14px;
+      margin-top: 0;
+    }
+    body.watch-alert-mode.watch-alert-list-mode .topbar,
+    body.watch-alert-detail-mode .topbar {
+      margin-bottom: 6px;
+    }
+    /* WA-PTO-002b: ยกเลิก panel overrides จาก body.watch-alert-mode ใน list mode
+       ให้ panel ใช้ค่า default เหมือน Option Master (มี box-shadow, overflow:hidden, border-color ปกติ) */
+    body.watch-alert-mode.watch-alert-list-mode .layout > .panel {
+      border-color: var(--line);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
     body.watch-alert-list-mode #table {
       overflow-x: auto;
       overflow-y: visible;
+      padding: 12px 14px 16px;
+      background: #f8fbff;
     }
     body.watch-alert-list-mode .watch-alert-list-table {
       width: 100%;
