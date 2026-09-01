@@ -1110,7 +1110,8 @@
       line-height: 1.35;
     }
     body.asset-detail-mode .user-detail-page:not(.report-detail-page) .user-detail-head h2.asset-detail-heading,
-    body.user-detail-mode .asset-report-detail-page .user-detail-head h2.asset-report-heading {
+    body.user-detail-mode .asset-report-detail-page .user-detail-head h2.asset-report-heading,
+    body.watch-alert-detail-mode .user-detail-page .user-detail-head h2.asset-report-heading {
       font-family: var(--font-main);
       font-size: 24px !important;
       font-weight: 600;
@@ -1126,7 +1127,8 @@
       letter-spacing: inherit;
     }
     body.asset-detail-mode .user-detail-page:not(.report-detail-page) .user-detail-head h2.asset-detail-heading span,
-    body.user-detail-mode .asset-report-detail-page .user-detail-head h2.asset-report-heading span {
+    body.user-detail-mode .asset-report-detail-page .user-detail-head h2.asset-report-heading span,
+    body.watch-alert-detail-mode .user-detail-page .user-detail-head h2.asset-report-heading span {
       font: inherit;
       letter-spacing: inherit;
     }
@@ -2648,10 +2650,12 @@
       overflow: visible;
     }
     body.watch-alert-detail-mode .layout > .panel > .panel-head {
-      border: 0;
-      border-bottom: 1px solid var(--line);
-      border-radius: var(--radius) var(--radius) 0 0;
-      background: #fff;
+      display: none !important;
+      min-height: 0 !important;
+      height: 0 !important;
+      padding: 0 !important;
+      margin: 0 !important;
+      border: 0 !important;
     }
     body.watch-alert-detail-mode #table {
       padding: 0;
@@ -10011,7 +10015,8 @@
         font-size: 18px !important;
       }
       body.asset-detail-mode .user-detail-page:not(.report-detail-page) .user-detail-head h2.asset-detail-heading,
-      body.user-detail-mode .asset-report-detail-page .user-detail-head h2.asset-report-heading {
+      body.user-detail-mode .asset-report-detail-page .user-detail-head h2.asset-report-heading,
+      body.watch-alert-detail-mode .user-detail-page .user-detail-head h2.asset-report-heading {
         font-size: 18px !important;
       }
       body.asset-detail-mode .article-detail-page .user-detail-head h2.article-detail-heading {
@@ -23146,10 +23151,6 @@
         <div class="detail-section">
           <h4>Alert Summary</h4>
           <div class="detail-grid two report-reference-grid">
-            <div class="detail-tile"><span>Alert ID</span><strong>${esc(alert.id)}</strong></div>
-            <div class="detail-tile"><span>Alert Name</span><strong>${esc(alert.name)}</strong></div>
-            <div class="detail-tile"><span>Status</span><strong>${getWaStatusPill(alert.status)}</strong></div>
-            <div class="detail-tile"><span>Notification</span><strong>${getWaNotifPill(alert.notificationEnabled)}</strong></div>
             <div class="detail-tile"><span>Created</span><strong>${formatWaDate(alert.created)}</strong></div>
             <div class="detail-tile"><span>Updated</span><strong>${formatWaDate(alert.updated)}</strong></div>
             <div class="detail-tile"><span>Matches</span><strong>${alert.matchCount}</strong></div>
