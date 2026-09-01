@@ -2749,6 +2749,13 @@
       margin-top: 1px;
       color: #6b7280;
     }
+    /* Table note — แสดงใต้ตารางเมื่อ mock data ตัดทอน */
+    body.watch-alert-detail-mode .watch-alert-detail-page .wa-table-note {
+      margin: 8px 0 0;
+      font-size: 11px;
+      color: var(--muted);
+      font-style: italic;
+    }
     /* Matched assets table — 10 columns, ต้องการ min-width ใหญ่ขึ้นเพื่อไม่ให้ตารางแคบเกินไป */
     body.watch-alert-detail-mode .watch-alert-detail-page .wa-matched-assets-table {
       min-width: 960px;
@@ -13903,6 +13910,51 @@
           userActionHistory: [
             { actionId: "WAU-0900-01", timestamp: "2026-04-20T09:00:00+07:00", actor: "The Collector", actionType: "create", before: "—", after: "AP Royal Oak 15500ST, Price 1.2-2M", note: "สร้าง alert" }
           ]
+        },
+        // WAL-1180: Seiko 6139 vintage — Active, 0 matches, 0 triggers
+        "WAL-1180": {
+          matchedAssets: [],
+          triggerHistory: [],
+          userActionHistory: [
+            { actionId: "WAU-1180-01", timestamp: "2026-07-01T10:00:00+07:00", actor: "Seiko Corner", actionType: "create", before: "—", after: "Seiko 6139-6000, Price 0-60k", note: "สร้าง alert" }
+          ]
+        },
+        // WAL-1150: Patek Calatrava 5227 — Active, 1 match, 2 triggers
+        "WAL-1150": {
+          matchedAssets: [
+            { assetId: "AST-8755", assetName: "Patek Philippe Calatrava", reference: "5227", price: 1200000, condition: "Like New", caseSize: "37mm", dialColor: "White", listedAt: "2026-08-19T11:00:00+07:00", assetStatus: "Active", matchReason: "Brand + Model + Reference + Price 800k-1.5M" }
+          ],
+          triggerHistory: [
+            { triggerId: "WAT-1150-02", triggeredAt: "2026-08-19T11:00:00+07:00", newMatches: 1, totalMatches: 1, notification: { sent: true, channel: "Push + Email", destination: "Watch Alert Result List", deliveryStatus: "Delivered", sentAt: "2026-08-19T11:00:08+07:00" } },
+            { triggerId: "WAT-1150-01", triggeredAt: "2026-07-25T14:00:00+07:00", newMatches: 0, totalMatches: 0, notification: { sent: false, channel: "—", destination: "—", deliveryStatus: "Skipped (no new matches)", sentAt: "—" } }
+          ],
+          userActionHistory: [
+            { actionId: "WAU-1150-02", timestamp: "2026-07-15T10:00:00+07:00", actor: "The Collector", actionType: "edit_criteria", before: "Price 800k-1.2M THB", after: "Price 800k-1.5M THB", note: "ขยายช่วงราคา" },
+            { actionId: "WAU-1150-01", timestamp: "2026-06-28T14:00:00+07:00", actor: "The Collector", actionType: "create", before: "—", after: "Patek Calatrava 5227, Price 800k-1.2M", note: "สร้าง alert" }
+          ]
+        },
+        // WAL-1050: Old Rolex GMT alert — Active, 2 matches, 1 trigger
+        "WAL-1050": {
+          matchedAssets: [
+            { assetId: "AST-8579", assetName: "Rolex GMT-Master II Pepsi", reference: "126710BLRO", price: 612000, condition: "Very Good", caseSize: "40mm", dialColor: "Blue", listedAt: "2026-06-28T10:00:00+07:00", assetStatus: "Active", matchReason: "Brand + Model + Reference + Price 400-700k" }
+          ],
+          triggerHistory: [
+            { triggerId: "WAT-1050-01", triggeredAt: "2026-06-28T10:00:00+07:00", newMatches: 1, totalMatches: 2, notification: { sent: true, channel: "Push + Email", destination: "Watch Alert Result List", deliveryStatus: "Delivered", sentAt: "2026-06-28T10:00:07+07:00" } }
+          ],
+          userActionHistory: [
+            { actionId: "WAU-1050-02", timestamp: "2026-06-15T09:00:00+07:00", actor: "Nattapol P.", actionType: "toggle_notification", before: "Off", after: "On", note: "เปิดการแจ้งเตือน" },
+            { actionId: "WAU-1050-01", timestamp: "2026-05-29T08:00:00+07:00", actor: "Nattapol P.", actionType: "create", before: "—", after: "Rolex GMT-Master II, Price 400-700k", note: "สร้าง alert" }
+          ]
+        },
+        // WAL-1080: Grand Seiko Snowflake — User Disabled, 0 matches, 0 triggers
+        "WAL-1080": {
+          matchedAssets: [],
+          triggerHistory: [],
+          userActionHistory: [
+            { actionId: "WAU-1080-03", timestamp: "2026-07-30T10:00:00+07:00", actor: "Minimal Dial", actionType: "toggle_notification", before: "On", after: "Off", note: "ปิดการแจ้งเตือน" },
+            { actionId: "WAU-1080-02", timestamp: "2026-06-15T12:00:00+07:00", actor: "Minimal Dial", actionType: "edit_criteria", before: "Price 150-200k THB", after: "Price 150-250k THB", note: "ขยายช่วงราคา" },
+            { actionId: "WAU-1080-01", timestamp: "2026-05-20T13:00:00+07:00", actor: "Minimal Dial", actionType: "create", before: "—", after: "Grand Seiko SBGA211, Price 150-200k", note: "สร้าง alert" }
+          ]
         }
       },
       lastUpdated: "2026-08-27T10:30:00+07:00"
@@ -23422,6 +23474,23 @@
       // helper: format THB price
       const fmtTHB = v => v >= 1000000 ? `${(v / 1000000).toFixed(v % 1000000 ? 1 : 0)}M` : v >= 1000 ? `${Math.round(v / 1000)}k` : String(v);
 
+      // helper: format date + time (เช่น 25 Aug 2026 14:30) — ใช้ใน Section 1 และ Section 4-6
+      const formatWaDateTime = (iso) => {
+        if (!iso || iso === "—") return "—";
+        const d = new Date(iso);
+        if (isNaN(d.getTime())) return "—";
+        const fmt = new Intl.DateTimeFormat("en-GB", {
+          timeZone: "Asia/Bangkok",
+          day: "2-digit",
+          month: "short",
+          year: "numeric",
+          hour: "2-digit",
+          minute: "2-digit",
+          hourCycle: "h23"
+        });
+        return fmt.format(d);
+      };
+
       // helper: account status pill
       const getAccountStatusPill = (status) => {
         if (status === "Active") return `<span class="pill green">${esc(status)}</span>`;
@@ -23531,23 +23600,6 @@
       const triggerHistory = detail.triggerHistory || [];
       const userActionHistory = detail.userActionHistory || [];
 
-      // helper: format date + time (เช่น 25 Aug 2026 14:30)
-      const formatWaDateTime = (iso) => {
-        if (!iso || iso === "—") return "—";
-        const d = new Date(iso);
-        if (isNaN(d.getTime())) return "—";
-        const fmt = new Intl.DateTimeFormat("en-GB", {
-          timeZone: "Asia/Bangkok",
-          day: "2-digit",
-          month: "short",
-          year: "numeric",
-          hour: "2-digit",
-          minute: "2-digit",
-          hourCycle: "h23"
-        });
-        return fmt.format(d);
-      };
-
       // helper: asset status pill สำหรับ matched assets
       const getWaAssetStatusPill = (status) => {
         if (status === "Active") return `<span class="pill green">${esc(status)}</span>`;
@@ -23606,6 +23658,7 @@
               </div>`
             : `<div class="detail-empty">ยังไม่มี asset ที่ตรงตามเงื่อนไข${alert.marketDataInactive ? " (criteria อ้างถึง market data ที่ inactive)" : ""}</div>`
           }
+          ${matchedAssets.length && matchedAssets.length < alert.matchCount ? `<p class="wa-table-note">แสดง ${matchedAssets.length} รายการล่าสุด จากทั้งหมด ${alert.matchCount} รายการ</p>` : ""}
         </div>
       `;
 
@@ -23642,6 +23695,7 @@
               </div>`
             : `<div class="detail-empty">ยังไม่มีประวัติการตรวจจับ${alert.marketDataInactive ? " (criteria อ้างถึง market data ที่ inactive — alert จะไม่ trigger จนกว่า market data จะกลับมา active)" : ""}</div>`
           }
+          ${triggerHistory.length && triggerHistory.length < alert.triggerCount ? `<p class="wa-table-note">แสดง ${triggerHistory.length} รายการล่าสุด จากทั้งหมด ${alert.triggerCount} รายการ</p>` : ""}
         </div>
       `;
 
