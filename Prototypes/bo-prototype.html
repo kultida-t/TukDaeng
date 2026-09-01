@@ -2664,21 +2664,13 @@
     }
     body.watch-alert-detail-mode .detail { display: none; }
     body.watch-alert-detail-mode .summary-grid { display: none; }
-    /* Owner summary — link ไป User Management ได้ (read-only) */
-    body.watch-alert-detail-mode .watch-alert-detail-page .wa-owner-link {
-      color: #2563eb;
-      text-decoration: none;
-      cursor: pointer;
-    }
-    body.watch-alert-detail-mode .watch-alert-detail-page .wa-owner-link:hover {
-      text-decoration: underline;
-    }
     /* Criteria chips — structured display ไม่ใช่ JSON ดิบ
        ใช้ .detail-tile pattern เดียวกับหน้าอื่น เพิ่ม chip style เฉพาะ */
     body.watch-alert-detail-mode .watch-alert-detail-page .wa-criteria-chip {
       display: inline-flex;
       align-items: center;
-      padding: 2px 10px;
+      padding: 3px 12px;
+      margin: 2px 4px 2px 0;
       border: 1px solid #c8d6ea;
       border-radius: 999px;
       font-size: 12px;
@@ -3820,8 +3812,12 @@
       /* Sparkline: shorter on mobile */
       .wa-sparkline { height: 22px; }
       /* WA-PTO-003a: Alert Detail — stack grids to 1 column on mobile */
-      body.watch-alert-detail-mode .watch-alert-detail-page .detail-grid.two {
+      body.watch-alert-detail-mode .watch-alert-detail-page .detail-grid.two,
+      body.watch-alert-detail-mode .watch-alert-detail-page .detail-grid.three {
         grid-template-columns: 1fr;
+      }
+      body.watch-alert-detail-mode .watch-alert-detail-page .detail-grid.four {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
       }
     }
 
@@ -7174,6 +7170,12 @@
     .detail-grid.two {
       grid-template-columns: repeat(2, minmax(0, 1fr));
     }
+    .detail-grid.three {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+    .detail-grid.four {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
     .detail-grid-item {
       display: flex;
       flex-direction: column;
@@ -7703,6 +7705,12 @@
     }
     .report-detail-page .report-reference-grid {
       grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    .report-detail-page .detail-grid.three.report-reference-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+    .report-detail-page .detail-grid.four.report-reference-grid {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
     }
     body.user-detail-mode .report-detail-page .detail-grid.two.user-report-reference-grid {
       grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -23150,7 +23158,7 @@
       const section1 = `
         <div class="detail-section">
           <h4>Alert Summary</h4>
-          <div class="detail-grid two report-reference-grid">
+          <div class="detail-grid four report-reference-grid">
             <div class="detail-tile"><span>Created</span><strong>${formatWaDate(alert.created)}</strong></div>
             <div class="detail-tile"><span>Updated</span><strong>${formatWaDate(alert.updated)}</strong></div>
             <div class="detail-tile"><span>Matches</span><strong>${alert.matchCount}</strong></div>
@@ -23167,29 +23175,38 @@
       const section2 = `
         <div class="detail-section">
           <h4>Owner Summary</h4>
-          <div class="detail-grid two report-reference-grid">
-            <div class="detail-tile"><span>User ID</span><strong><span class="wa-owner-link" data-wa-owner-link="${esc(ownerId)}">${esc(ownerId)}</span></strong></div>
+          <div class="detail-grid three report-reference-grid">
+            <div class="detail-tile"><span>User ID</span><strong>${esc(ownerId)}</strong></div>
             <div class="detail-tile"><span>Display Name</span><strong>${esc(ownerName)}</strong></div>
             <div class="detail-tile"><span>Account Status</span><strong>${getAccountStatusPill(ownerStatus)}</strong></div>
-            <div class="detail-tile"><span>Context</span><strong>Read-only — ดูรายละเอียดใน User Management</strong></div>
           </div>
         </div>
       `;
 
       // Section 3: Criteria (structured chips/rows ไม่ใช่ JSON ดิบ) + warning ถ้าอ้าง inactive market data
+      // ถ้า field ไม่มีค่า ไม่แสดง tile นั้น
       const c = alert.criteria || {};
+      const hasPrice = (c.priceMin != null && c.priceMax != null && (c.priceMin > 0 || c.priceMax > 0));
+      const priceText = hasPrice ? `${fmtTHB(c.priceMin)}-${fmtTHB(c.priceMax)} THB` : "";
       const conditionChips = Array.isArray(c.condition) && c.condition.length
         ? c.condition.map(v => `<span class="wa-criteria-chip">${esc(v)}</span>`).join("")
-        : `<span class="muted">ไม่กำหนด</span>`;
+        : "";
       const caseSizeChips = Array.isArray(c.caseSize) && c.caseSize.length
         ? c.caseSize.map(v => `<span class="wa-criteria-chip">${esc(v)}</span>`).join("")
-        : `<span class="muted">ไม่กำหนด</span>`;
+        : "";
       const dialColorChips = Array.isArray(c.dialColor) && c.dialColor.length
         ? c.dialColor.map(v => `<span class="wa-criteria-chip">${esc(v)}</span>`).join("")
-        : `<span class="muted">ไม่กำหนด</span>`;
-      const priceText = (c.priceMin != null && c.priceMax != null && (c.priceMin > 0 || c.priceMax > 0))
-        ? `${fmtTHB(c.priceMin)}-${fmtTHB(c.priceMax)} THB`
-        : "ไม่กำหนด";
+        : "";
+
+      const criteriaTiles = [
+        c.brand ? `<div class="detail-tile"><span>Brand</span><strong><span class="wa-criteria-chip">${esc(c.brand)}</span></strong></div>` : "",
+        c.model ? `<div class="detail-tile"><span>Model</span><strong><span class="wa-criteria-chip">${esc(c.model)}</span></strong></div>` : "",
+        c.reference ? `<div class="detail-tile"><span>Reference</span><strong><span class="wa-criteria-chip">${esc(c.reference)}</span></strong></div>` : "",
+        hasPrice ? `<div class="detail-tile"><span>Price Range</span><strong><span class="wa-criteria-chip">${esc(priceText)}</span></strong></div>` : "",
+        conditionChips ? `<div class="detail-tile"><span>Condition</span><strong>${conditionChips}</strong></div>` : "",
+        caseSizeChips ? `<div class="detail-tile"><span>Case Size</span><strong>${caseSizeChips}</strong></div>` : "",
+        dialColorChips ? `<div class="detail-tile"><span>Dial Color</span><strong>${dialColorChips}</strong></div>` : "",
+      ].filter(Boolean).join("");
 
       const inactiveWarning = alert.marketDataInactive && Array.isArray(alert.inactiveFields) && alert.inactiveFields.length
         ? `
@@ -23200,19 +23217,20 @@
         `
         : "";
 
-      const section3 = `
+      const section3 = criteriaTiles
+        ? `
         <div class="detail-section">
           <h4>Criteria</h4>
-          <div class="detail-grid two report-reference-grid">
-            <div class="detail-tile"><span>Brand</span><strong>${c.brand ? `<span class="wa-criteria-chip">${esc(c.brand)}</span>` : `<span class="muted">ไม่กำหนด</span>`}</strong></div>
-            <div class="detail-tile"><span>Model</span><strong>${c.model ? `<span class="wa-criteria-chip">${esc(c.model)}</span>` : `<span class="muted">ไม่กำหนด</span>`}</strong></div>
-            <div class="detail-tile"><span>Reference</span><strong>${c.reference ? `<span class="wa-criteria-chip">${esc(c.reference)}</span>` : `<span class="muted">ไม่กำหนด</span>`}</strong></div>
-            <div class="detail-tile"><span>Price Range</span><strong><span class="wa-criteria-chip">${esc(priceText)}</span></strong></div>
-            <div class="detail-tile"><span>Condition</span><strong>${conditionChips}</strong></div>
-            <div class="detail-tile"><span>Case Size</span><strong>${caseSizeChips}</strong></div>
-            <div class="detail-tile"><span>Dial Color</span><strong>${dialColorChips}</strong></div>
+          <div class="detail-grid three report-reference-grid">
+            ${criteriaTiles}
           </div>
           ${inactiveWarning}
+        </div>
+      `
+        : `
+        <div class="detail-section">
+          <h4>Criteria</h4>
+          <div class="detail-empty">ไม่มี criteria ที่กำหนด</div>
         </div>
       `;
 
@@ -32025,17 +32043,6 @@
       const backWaAlertList = event.target.closest("[data-back-wa-alert-list]");
       if (backWaAlertList) {
         renderModule("watch-alerts", "Watch Alert List", "Watch Alert List");
-        return;
-      }
-      // WA-PTO-003a: Alert Detail owner link → User Management (read-only drill-in)
-      const waOwnerLink = event.target.closest("[data-wa-owner-link]");
-      if (waOwnerLink) {
-        const ownerId = waOwnerLink.dataset.waOwnerLink;
-        const user = userManagementData.users.find(u => u.id === ownerId);
-        if (user) {
-          pushBackNavigationContext();
-          renderUserDetailPage(user);
-        }
         return;
       }
       const backArticleList = event.target.closest("[data-back-article-list]");
