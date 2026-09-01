@@ -2719,6 +2719,66 @@
       margin-top: 1px;
     }
 
+    /* WA-PTO-003b: Alert Detail Section 4-6 — Matched Assets, Trigger & Notification, User Action History
+       scope เฉพาะ body.watch-alert-detail-mode เพื่อไม่กระทบ protected screens
+       reuse .history-table + .history-table-wrap pattern เหมือน Offer Detail */
+    body.watch-alert-detail-mode .watch-alert-detail-page .wa-match-count {
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--muted);
+      white-space: nowrap;
+    }
+    /* Deleted alert notice — แสดงแทน trigger/notification section เมื่อ alert ถูกลบ */
+    body.watch-alert-detail-mode .watch-alert-detail-page .wa-deleted-notice {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      margin-top: 4px;
+      padding: 10px 14px;
+      border: 1px solid #d1d5db;
+      border-radius: var(--radius);
+      background: #f3f4f6;
+      font-size: 13px;
+      color: #4b5563;
+      line-height: 1.5;
+    }
+    body.watch-alert-detail-mode .watch-alert-detail-page .wa-deleted-notice svg {
+      flex-shrink: 0;
+      width: 18px;
+      height: 18px;
+      margin-top: 1px;
+      color: #6b7280;
+    }
+    /* Matched assets table — 10 columns, ต้องการ min-width ใหญ่ขึ้นเพื่อไม่ให้ตารางแคบเกินไป */
+    body.watch-alert-detail-mode .watch-alert-detail-page .wa-matched-assets-table {
+      min-width: 960px;
+    }
+    /* Trigger history table — 4 columns, table-layout fixed เพื่อความสมดุล */
+    body.watch-alert-detail-mode .watch-alert-detail-page .wa-trigger-history-table {
+      min-width: 720px;
+      table-layout: fixed;
+    }
+    body.watch-alert-detail-mode .watch-alert-detail-page .wa-trigger-history-table th:nth-child(1),
+    body.watch-alert-detail-mode .watch-alert-detail-page .wa-trigger-history-table td:nth-child(1) {
+      width: 22%;
+    }
+    body.watch-alert-detail-mode .watch-alert-detail-page .wa-trigger-history-table th:nth-child(2),
+    body.watch-alert-detail-mode .watch-alert-detail-page .wa-trigger-history-table td:nth-child(2) {
+      width: 28%;
+    }
+    body.watch-alert-detail-mode .watch-alert-detail-page .wa-trigger-history-table th:nth-child(3),
+    body.watch-alert-detail-mode .watch-alert-detail-page .wa-trigger-history-table td:nth-child(3) {
+      width: 22%;
+    }
+    body.watch-alert-detail-mode .watch-alert-detail-page .wa-trigger-history-table th:nth-child(4),
+    body.watch-alert-detail-mode .watch-alert-detail-page .wa-trigger-history-table td:nth-child(4) {
+      width: 28%;
+    }
+    /* User action history table — 7 columns */
+    body.watch-alert-detail-mode .watch-alert-detail-page .wa-user-action-history-table {
+      min-width: 760px;
+    }
+
     /* WA-PTO-001: Watch Alert BO — Demand Overview (read-only, no admin action)
        scope เฉพาะ body.watch-alert-mode เพื่อไม่กระทบ protected screens */
     body.watch-alert-mode .filters { display: none; }
@@ -3839,6 +3899,74 @@
       body.watch-alert-detail-mode .watch-alert-detail-page .detail-grid.four {
         grid-template-columns: repeat(2, minmax(0, 1fr));
       }
+      /* WA-PTO-003b: Alert Detail Section 4-6 — table-to-card responsive
+         ใช้ pattern เดียวกับ Offer Detail (body.offer-list-mode .offer-detail-page .history-table)
+         scope เฉพาะ watch-alert-detail-mode เพื่อไม่กระทบ protected screens */
+      body.watch-alert-detail-mode .watch-alert-detail-page .history-table-wrap {
+        overflow: visible;
+        border: 0;
+        background: transparent;
+      }
+      body.watch-alert-detail-mode .watch-alert-detail-page .history-table,
+      body.watch-alert-detail-mode .watch-alert-detail-page .history-table tbody,
+      body.watch-alert-detail-mode .watch-alert-detail-page .history-table tr,
+      body.watch-alert-detail-mode .watch-alert-detail-page .history-table td {
+        display: block;
+        width: 100%;
+      }
+      body.watch-alert-detail-mode .watch-alert-detail-page .history-table thead {
+        display: none;
+      }
+      body.watch-alert-detail-mode .watch-alert-detail-page .history-table {
+        border-collapse: separate;
+        border-spacing: 0 8px;
+        background: transparent;
+        min-width: 0;
+      }
+      body.watch-alert-detail-mode .watch-alert-detail-page .history-table tr {
+        border: 1px solid #dce6f2;
+        border-radius: 8px;
+        background: #fff;
+        padding: 12px 10px;
+      }
+      body.watch-alert-detail-mode .watch-alert-detail-page .history-table tr + tr {
+        margin-top: 10px;
+      }
+      body.watch-alert-detail-mode .watch-alert-detail-page .history-table td {
+        display: grid;
+        grid-template-columns: 96px minmax(0, 1fr);
+        gap: 10px;
+        border: 0;
+        padding: 7px 0;
+        font-size: 12px;
+        line-height: 1.45;
+        overflow-wrap: anywhere;
+      }
+      body.watch-alert-detail-mode .watch-alert-detail-page .history-table td::before {
+        content: attr(data-label);
+        color: #66758d;
+        font-size: 11px;
+        font-weight: 800;
+      }
+      body.watch-alert-detail-mode .watch-alert-detail-page .history-table td .pill {
+        width: max-content;
+        max-width: 100%;
+      }
+      body.watch-alert-detail-mode .watch-alert-detail-page .history-table td .history-delivery-link {
+        width: max-content;
+        max-width: 100%;
+        justify-self: start;
+      }
+      body.watch-alert-detail-mode .watch-alert-detail-page .history-table .history-note {
+        min-width: 0;
+        max-width: none;
+      }
+      /* Matched assets count badge: stack below heading on mobile */
+      body.watch-alert-detail-mode .watch-alert-detail-page .board-report-reference-head {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 4px;
+      }
     }
 
     /* Responsive — Small mobile (≤390px) */
@@ -3852,6 +3980,14 @@
         transform: rotate(180deg);
         white-space: nowrap;
         margin: 0 auto;
+      }
+      /* WA-PTO-003b: Alert Detail — 4-column grid stack to 1 column on very small mobile */
+      body.watch-alert-detail-mode .watch-alert-detail-page .detail-grid.four {
+        grid-template-columns: 1fr;
+      }
+      /* WA-PTO-003b: table card label column narrower on very small mobile */
+      body.watch-alert-detail-mode .watch-alert-detail-page .history-table td {
+        grid-template-columns: 84px minmax(0, 1fr);
       }
     }
 
@@ -13645,6 +13781,130 @@
           { id: "WAL-0870", name: "Tudor Pelagos FXD", owner: "Seiko Corner", triggerCount: 1, lastTriggered: "2026-08-05T18:20:00+07:00" }
         ]
       },
+      // WA-PTO-003b: Mock data สำหรับ Alert Detail Section 4-6
+      // Section 4: Matched assets — asset สถานะ Sale ที่ match criteria (read-only, link ไป Asset Management)
+      // Section 5: Trigger & Notification history — trigger ที่เคยเกิด + notification ที่ส่ง (destination = Watch Alert Result List)
+      // Section 6: User action history — ประวัติ user สร้าง/แก้ criteria/แก้ชื่อ/เปิด-ปิด notification/ลบ alert
+      // เก็บแยก keyed by alert ID เพื่อไม่ให้ alerts array ยาวเกินไป
+      detail: {
+        // WAL-1440: Rolex Submariner <= 320k — Active, 8 matches, 12 triggers
+        "WAL-1440": {
+          matchedAssets: [
+            { assetId: "AST-8831", assetName: "Rolex Submariner 16610", reference: "16610", price: 318000, condition: "Very Good", caseSize: "40mm", dialColor: "Black", listedAt: "2026-08-25T14:30:00+07:00", assetStatus: "Auto Hidden", matchReason: "Brand + Model + Reference + Price 0-320k" },
+            { assetId: "AST-8566", assetName: "Rolex Submariner 126610LV", reference: "126610LV", price: 268000, condition: "Very Good", caseSize: "41mm", dialColor: "Black", listedAt: "2026-08-20T09:15:00+07:00", assetStatus: "Active", matchReason: "Brand + Model family + Price 0-320k" },
+            { assetId: "AST-8579", assetName: "Rolex GMT-Master II Pepsi", reference: "126710BLRO", price: 305000, condition: "Very Good", caseSize: "40mm", dialColor: "Blue", listedAt: "2026-08-18T11:00:00+07:00", assetStatus: "Active", matchReason: "Brand + Price 0-320k + Case size" }
+          ],
+          triggerHistory: [
+            { triggerId: "WAT-1440-12", triggeredAt: "2026-08-25T14:30:00+07:00", newMatches: 1, totalMatches: 8, notification: { sent: true, channel: "Push + Email", destination: "Watch Alert Result List", deliveryStatus: "Delivered", sentAt: "2026-08-25T14:30:05+07:00" } },
+            { triggerId: "WAT-1440-11", triggeredAt: "2026-08-20T10:00:00+07:00", newMatches: 1, totalMatches: 7, notification: { sent: true, channel: "Push + Email", destination: "Watch Alert Result List", deliveryStatus: "Delivered", sentAt: "2026-08-20T10:00:08+07:00" } },
+            { triggerId: "WAT-1440-10", triggeredAt: "2026-08-15T16:20:00+07:00", newMatches: 0, totalMatches: 6, notification: { sent: false, channel: "—", destination: "—", deliveryStatus: "Skipped (no new matches)", sentAt: "—" } },
+            { triggerId: "WAT-1440-09", triggeredAt: "2026-08-10T09:45:00+07:00", newMatches: 2, totalMatches: 6, notification: { sent: true, channel: "Push + Email", destination: "Watch Alert Result List", deliveryStatus: "Delivered", sentAt: "2026-08-10T09:45:12+07:00" } }
+          ],
+          userActionHistory: [
+            { actionId: "WAU-1440-05", timestamp: "2026-08-20T10:00:00+07:00", actor: "Nattapol P.", actionType: "edit_criteria", before: "Price 0-300k THB", after: "Price 0-320k THB", note: "ขยายช่วงราคาเพื่อรองรับ asset ใหม่" },
+            { actionId: "WAU-1440-04", timestamp: "2026-07-15T13:00:00+07:00", actor: "Nattapol P.", actionType: "toggle_notification", before: "Off", after: "On", note: "เปิดการแจ้งเตือน" },
+            { actionId: "WAU-1440-03", timestamp: "2026-07-01T11:00:00+07:00", actor: "Nattapol P.", actionType: "edit_name", before: "Rolex Sub 320k", after: "Rolex Submariner <= 320k", note: "เปลี่ยนชื่อ alert ให้ชัดขึ้น" },
+            { actionId: "WAU-1440-02", timestamp: "2026-06-20T08:30:00+07:00", actor: "Nattapol P.", actionType: "toggle_notification", before: "On", after: "Off", note: "ปิดการแจ้งเตือนชั่วคราว" },
+            { actionId: "WAU-1440-01", timestamp: "2026-06-15T09:00:00+07:00", actor: "Nattapol P.", actionType: "create", before: "—", after: "Rolex Submariner 16610, Price 0-300k", note: "สร้าง alert" }
+          ]
+        },
+        // WAL-1228: Omega Speedmaster Bangkok — Active, 3 matches, 28 triggers
+        "WAL-1228": {
+          matchedAssets: [
+            { assetId: "AST-8802", assetName: "Omega Speedmaster", reference: "3824", price: 210000, condition: "Like New", caseSize: "42mm", dialColor: "Black", listedAt: "2026-08-26T09:12:00+07:00", assetStatus: "Active", matchReason: "Brand + Model + Price 100-250k + Condition" },
+            { assetId: "AST-8548", assetName: "Omega Seamaster Diver 300M", reference: "222.30.42.20.01.001", price: 142000, condition: "Like New", caseSize: "42mm", dialColor: "Black", listedAt: "2026-08-22T15:30:00+07:00", assetStatus: "Active", matchReason: "Brand + Price 100-250k + Case size + Dial color" },
+            { assetId: "AST-8536", assetName: "Omega Speedmaster Reduced", reference: "3824", price: 165000, condition: "Like New", caseSize: "42mm", dialColor: "Black", listedAt: "2026-08-19T10:00:00+07:00", assetStatus: "Admin Hidden", matchReason: "Brand + Model + Price 100-250k + Condition" }
+          ],
+          triggerHistory: [
+            { triggerId: "WAT-1228-28", triggeredAt: "2026-08-26T09:12:00+07:00", newMatches: 1, totalMatches: 3, notification: { sent: true, channel: "Push + Email", destination: "Watch Alert Result List", deliveryStatus: "Delivered", sentAt: "2026-08-26T09:12:10+07:00" } },
+            { triggerId: "WAT-1228-27", triggeredAt: "2026-08-22T15:30:00+07:00", newMatches: 1, totalMatches: 2, notification: { sent: true, channel: "Push + Email", destination: "Watch Alert Result List", deliveryStatus: "Delivered", sentAt: "2026-08-22T15:30:08+07:00" } },
+            { triggerId: "WAT-1228-26", triggeredAt: "2026-08-19T10:00:00+07:00", newMatches: 1, totalMatches: 1, notification: { sent: true, channel: "Push + Email", destination: "Watch Alert Result List", deliveryStatus: "Delivered", sentAt: "2026-08-19T10:00:06+07:00" } },
+            { triggerId: "WAT-1228-25", triggeredAt: "2026-08-14T08:00:00+07:00", newMatches: 0, totalMatches: 0, notification: { sent: false, channel: "—", destination: "—", deliveryStatus: "Skipped (no new matches)", sentAt: "—" } }
+          ],
+          userActionHistory: [
+            { actionId: "WAU-1228-03", timestamp: "2026-08-26T09:12:00+07:00", actor: "Crown Time BKK", actionType: "edit_criteria", before: "Price 100-200k THB", after: "Price 100-250k THB", note: "ขยายช่วงราคา" },
+            { actionId: "WAU-1228-02", timestamp: "2026-06-10T14:00:00+07:00", actor: "Crown Time BKK", actionType: "toggle_notification", before: "Off", after: "On", note: "เปิดการแจ้งเตือน" },
+            { actionId: "WAU-1228-01", timestamp: "2026-05-02T11:30:00+07:00", actor: "Crown Time BKK", actionType: "create", before: "—", after: "Omega Speedmaster, Price 100-200k", note: "สร้าง alert" }
+          ]
+        },
+        // WAL-1100: Tudor Black Bay 58 — Active, 5 matches, 5 triggers
+        "WAL-1100": {
+          matchedAssets: [
+            { assetId: "AST-8720", assetName: "Tudor Black Bay 58", reference: "M79030", price: 118000, condition: "Like New", caseSize: "39mm", dialColor: "Black", listedAt: "2026-08-22T16:45:00+07:00", assetStatus: "Closed (Sold)", matchReason: "Brand + Model + Reference + Price 80-130k" }
+          ],
+          triggerHistory: [
+            { triggerId: "WAT-1100-05", triggeredAt: "2026-08-22T16:45:00+07:00", newMatches: 1, totalMatches: 5, notification: { sent: true, channel: "Push + Email", destination: "Watch Alert Result List", deliveryStatus: "Delivered", sentAt: "2026-08-22T16:45:09+07:00" } },
+            { triggerId: "WAT-1100-04", triggeredAt: "2026-08-15T10:30:00+07:00", newMatches: 1, totalMatches: 4, notification: { sent: true, channel: "Push", destination: "Watch Alert Result List", deliveryStatus: "Delivered", sentAt: "2026-08-15T10:30:07+07:00" } },
+            { triggerId: "WAT-1100-03", triggeredAt: "2026-08-08T14:00:00+07:00", newMatches: 1, totalMatches: 3, notification: { sent: true, channel: "Push + Email", destination: "Watch Alert Result List", deliveryStatus: "Delivered", sentAt: "2026-08-08T14:00:05+07:00" } }
+          ],
+          userActionHistory: [
+            { actionId: "WAU-1100-02", timestamp: "2026-07-20T09:00:00+07:00", actor: "Daily Watch Hunter", actionType: "edit_criteria", before: "Condition: Like New", after: "Condition: Like New, Very Good", note: "เพิ่มเงื่อนไข Very Good" },
+            { actionId: "WAU-1100-01", timestamp: "2026-06-10T09:30:00+07:00", actor: "Daily Watch Hunter", actionType: "create", before: "—", after: "Tudor Black Bay 58, Price 80-130k", note: "สร้าง alert" }
+          ]
+        },
+        // WAL-1020: Cartier Tank Must — Deleted (soft delete handling)
+        // alert ที่ลบแล้ว: แสดงสถานะ Deleted, ปิด trigger/notification section, ยังเห็น user action history
+        "WAL-1020": {
+          matchedAssets: [],
+          triggerHistory: [
+            { triggerId: "WAT-1020-02", triggeredAt: "2026-07-15T14:00:00+07:00", newMatches: 1, totalMatches: 2, notification: { sent: true, channel: "Push + Email", destination: "Watch Alert Result List", deliveryStatus: "Delivered", sentAt: "2026-07-15T14:00:08+07:00" } },
+            { triggerId: "WAT-1020-01", triggeredAt: "2026-07-10T10:00:00+07:00", newMatches: 1, totalMatches: 1, notification: { sent: true, channel: "Push + Email", destination: "Watch Alert Result List", deliveryStatus: "Delivered", sentAt: "2026-07-10T10:00:06+07:00" } }
+          ],
+          userActionHistory: [
+            { actionId: "WAU-1020-04", timestamp: "2026-08-01T18:00:00+07:00", actor: "Minimal Dial", actionType: "delete", before: "Active", after: "Deleted", note: "ลบ alert ของตัวเอง — ยกเลิกการแจ้งเตือนทั้งหมด" },
+            { actionId: "WAU-1020-03", timestamp: "2026-07-20T11:00:00+07:00", actor: "Minimal Dial", actionType: "toggle_notification", before: "On", after: "Off", note: "ปิดการแจ้งเตือนชั่วคราว" },
+            { actionId: "WAU-1020-02", timestamp: "2026-06-10T14:00:00+07:00", actor: "Minimal Dial", actionType: "toggle_notification", before: "Off", after: "On", note: "เปิดการแจ้งเตือน" },
+            { actionId: "WAU-1020-01", timestamp: "2026-05-15T09:00:00+07:00", actor: "Minimal Dial", actionType: "create", before: "—", after: "Cartier Tank Must, Price 60-100k", note: "สร้าง alert" }
+          ]
+        },
+        // WAL-1199: Inactive model alert — User Disabled, market data inactive, 0 matches, 0 triggers
+        "WAL-1199": {
+          matchedAssets: [],
+          triggerHistory: [],
+          userActionHistory: [
+            { actionId: "WAU-1199-03", timestamp: "2026-07-18T16:20:00+07:00", actor: "Archive Collector", actionType: "toggle_notification", before: "On", after: "Off", note: "ปิดการแจ้งเตือนเพราะ market data inactive" },
+            { actionId: "WAU-1199-02", timestamp: "2026-05-10T10:00:00+07:00", actor: "Archive Collector", actionType: "edit_criteria", before: "Price 0-100k THB", after: "Price 0-80k THB", note: "ปรับช่วงราคา" },
+            { actionId: "WAU-1199-01", timestamp: "2026-04-10T08:00:00+07:00", actor: "Archive Collector", actionType: "create", before: "—", after: "Seiko 6139-6000, Price 0-100k", note: "สร้าง alert" }
+          ]
+        },
+        // WAL-0990: Vintage Seiko 6105 — Active, 4 matches, 4 triggers
+        "WAL-0990": {
+          matchedAssets: [
+            { assetId: "AST-8518", assetName: "Seiko Prospex SPB143", reference: "SPB143", price: 31500, condition: "Good", caseSize: "42mm", dialColor: "Black", listedAt: "2026-08-21T13:20:00+07:00", assetStatus: "Active", matchReason: "Brand + Price 30-70k + Case size + Dial color" }
+          ],
+          triggerHistory: [
+            { triggerId: "WAT-0990-04", triggeredAt: "2026-08-21T13:20:00+07:00", newMatches: 1, totalMatches: 4, notification: { sent: true, channel: "Push + Email", destination: "Watch Alert Result List", deliveryStatus: "Delivered", sentAt: "2026-08-21T13:20:08+07:00" } },
+            { triggerId: "WAT-0990-03", triggeredAt: "2026-08-14T09:00:00+07:00", newMatches: 1, totalMatches: 3, notification: { sent: true, channel: "Push + Email", destination: "Watch Alert Result List", deliveryStatus: "Delivered", sentAt: "2026-08-14T09:00:05+07:00" } }
+          ],
+          userActionHistory: [
+            { actionId: "WAU-0990-02", timestamp: "2026-06-15T10:00:00+07:00", actor: "Seiko Corner", actionType: "edit_criteria", before: "Condition: Fair, Good", after: "Condition: Fair, Good, Very Good", note: "เพิ่มเงื่อนไข Very Good" },
+            { actionId: "WAU-0990-01", timestamp: "2026-04-25T11:00:00+07:00", actor: "Seiko Corner", actionType: "create", before: "—", after: "Seiko 6105-8110, Price 30-70k", note: "สร้าง alert" }
+          ]
+        },
+        // WAL-0950: IWC Pilot Mark XVIII — Active, notification Off, 2 matches, 3 triggers
+        "WAL-0950": {
+          matchedAssets: [
+            { assetId: "AST-8576", assetName: "IWC Pilot Mark XVIII", reference: "IW3270", price: 125000, condition: "Like New", caseSize: "40mm", dialColor: "Black", listedAt: "2026-08-18T15:00:00+07:00", assetStatus: "Active", matchReason: "Brand + Model + Reference + Price 90-140k" }
+          ],
+          triggerHistory: [
+            { triggerId: "WAT-0950-03", triggeredAt: "2026-08-18T15:00:00+07:00", newMatches: 1, totalMatches: 2, notification: { sent: false, channel: "—", destination: "—", deliveryStatus: "Skipped (notification off)", sentAt: "—" } },
+            { triggerId: "WAT-0950-02", triggeredAt: "2026-08-10T11:00:00+07:00", newMatches: 1, totalMatches: 1, notification: { sent: false, channel: "—", destination: "—", deliveryStatus: "Skipped (notification off)", sentAt: "—" } }
+          ],
+          userActionHistory: [
+            { actionId: "WAU-0950-03", timestamp: "2026-07-25T08:00:00+07:00", actor: "Daily Watch Hunter", actionType: "toggle_notification", before: "On", after: "Off", note: "ปิดการแจ้งเตือน" },
+            { actionId: "WAU-0950-02", timestamp: "2026-06-20T12:00:00+07:00", actor: "Daily Watch Hunter", actionType: "edit_name", before: "IWC Pilot", after: "IWC Pilot Mark XVIII", note: "เปลี่ยนชื่อ alert" },
+            { actionId: "WAU-0950-01", timestamp: "2026-06-05T10:00:00+07:00", actor: "Daily Watch Hunter", actionType: "create", before: "—", after: "IWC Pilot Mark XVIII, Price 90-140k", note: "สร้าง alert" }
+          ]
+        },
+        // WAL-0900: AP Royal Oak 15500 — Active, market data inactive (reference), 0 matches, 0 triggers
+        "WAL-0900": {
+          matchedAssets: [],
+          triggerHistory: [],
+          userActionHistory: [
+            { actionId: "WAU-0900-01", timestamp: "2026-04-20T09:00:00+07:00", actor: "The Collector", actionType: "create", before: "—", after: "AP Royal Oak 15500ST, Price 1.2-2M", note: "สร้าง alert" }
+          ]
+        }
+      },
       lastUpdated: "2026-08-27T10:30:00+07:00"
     };
 
@@ -14271,6 +14531,12 @@
       if (activeModule === "market") {
         return { type: "module", module: "market", sub: activeSub || "Dashboard", displaySub: activeSub || "Dashboard" };
       }
+      if (activeModule === "watch-alerts") {
+        if (document.body.classList.contains("watch-alert-detail-mode") && activeRow?.id) {
+          return { type: "watch-alert-detail", id: activeRow.id };
+        }
+        return { type: "module", module: "watch-alerts", sub: activeSub || "Demand Overview", displaySub: activeSub || "Demand Overview" };
+      }
       return activeModule ? { type: "module", module: activeModule, sub: activeSub || "", displaySub: activeSub || "" } : null;
     }
 
@@ -14332,6 +14598,10 @@
       }
       if (context.type === "market-record-detail") {
         renderMarketRecordDetailPage(context.recordId, context.subLabel);
+        return true;
+      }
+      if (context.type === "watch-alert-detail") {
+        renderWatchAlertDetail(context.id);
         return true;
       }
       return false;
@@ -23254,19 +23524,153 @@
         </div>
       `;
 
-      // WA-PTO-003b placeholder: Section 4-6 จะสร้างใน task ถัดไป
-      const sectionPlaceholder = `
+      // WA-PTO-003b: Section 4-6 + responsive + soft delete handling
+      const isDeleted = alert.status === "Deleted";
+      const detail = (watchAlertData.detail && watchAlertData.detail[alert.id]) || {};
+      const matchedAssets = detail.matchedAssets || [];
+      const triggerHistory = detail.triggerHistory || [];
+      const userActionHistory = detail.userActionHistory || [];
+
+      // helper: format date + time (เช่น 25 Aug 2026 14:30)
+      const formatWaDateTime = (iso) => {
+        if (!iso || iso === "—") return "—";
+        const d = new Date(iso);
+        if (isNaN(d.getTime())) return "—";
+        const fmt = new Intl.DateTimeFormat("en-GB", {
+          timeZone: "Asia/Bangkok",
+          day: "2-digit",
+          month: "short",
+          year: "numeric",
+          hour: "2-digit",
+          minute: "2-digit",
+          hourCycle: "h23"
+        });
+        return fmt.format(d);
+      };
+
+      // helper: asset status pill สำหรับ matched assets
+      const getWaAssetStatusPill = (status) => {
+        if (status === "Active") return `<span class="pill green">${esc(status)}</span>`;
+        if (status === "Closed (Sold)") return `<span class="pill blue">${esc(status)}</span>`;
+        if (status === "Admin Hidden" || status === "Auto Hidden") return `<span class="pill amber">${esc(status)}</span>`;
+        return `<span class="pill gray">${esc(status)}</span>`;
+      };
+
+      // helper: delivery status pill สำหรับ trigger history
+      const getWaDeliveryPill = (status) => {
+        if (status === "Delivered") return `<span class="pill green">${esc(status)}</span>`;
+        if (status.startsWith("Skipped")) return `<span class="pill gray">${esc(status)}</span>`;
+        if (status === "Failed") return `<span class="pill red">${esc(status)}</span>`;
+        if (status === "Pending") return `<span class="pill amber">${esc(status)}</span>`;
+        return `<span class="pill gray">${esc(status)}</span>`;
+      };
+
+      // helper: user action type label ภาษาไทย
+      const getWaActionTypeLabel = (actionType) => {
+        const labels = {
+          create: "สร้าง alert",
+          edit_criteria: "แก้ไขเงื่อนไข",
+          edit_name: "เปลี่ยนชื่อ alert",
+          toggle_notification: "เปิด/ปิดการแจ้งเตือน",
+          delete: "ลบ alert"
+        };
+        return labels[actionType] || actionType;
+      };
+
+      // Section 4: Matched Assets — จำนวน asset ที่ match criteria + รายการ asset สถานะ Sale ที่ match
+      // read-only, link ไป Asset Management ได้ (data-asset-open)
+      const section4 = `
         <div class="detail-section">
           <h4>Matched Assets</h4>
-          <div class="detail-empty">Section 4 — Matched Assets จะสร้างใน task WA-PTO-003b</div>
+          ${matchedAssets.length
+            ? `<div class="history-table-wrap">
+                <table class="history-table wa-detail-table wa-matched-assets-table">
+                  <thead>
+                    <tr><th>Asset ID</th><th>Asset Name</th><th>Price</th><th>Condition</th><th>Case Size</th><th>Dial Color</th><th>Listed At</th><th>Asset Status</th></tr>
+                  </thead>
+                  <tbody>
+                    ${matchedAssets.map(a => `
+                      <tr>
+                        <td data-label="Asset ID"><button class="history-delivery-link" type="button" data-asset-open="${esc(a.assetId)}">${esc(a.assetId)}</button></td>
+                        <td data-label="Asset Name">${esc(a.assetName)}${a.reference ? `<br><small class="muted">${esc(a.reference)}</small>` : ""}</td>
+                        <td data-label="Price">${fmtTHB(a.price)} THB</td>
+                        <td data-label="Condition">${esc(a.condition || "—")}</td>
+                        <td data-label="Case Size">${esc(a.caseSize || "—")}</td>
+                        <td data-label="Dial Color">${esc(a.dialColor || "—")}</td>
+                        <td data-label="Listed At">${formatWaDateTime(a.listedAt)}</td>
+                        <td data-label="Asset Status">${getWaAssetStatusPill(a.assetStatus)}</td>
+                      </tr>
+                    `).join("")}
+                  </tbody>
+                </table>
+              </div>`
+            : `<div class="detail-empty">ยังไม่มี asset ที่ตรงตามเงื่อนไข${alert.marketDataInactive ? " (criteria อ้างถึง market data ที่ inactive)" : ""}</div>`
+          }
         </div>
+      `;
+
+      // Section 5: Trigger & Notification History — verification, delivery status, destination = Watch Alert Result List
+      // read-only — ปิด section นี้ถ้า alert ถูกลบแล้ว (soft delete handling)
+      const section5 = isDeleted
+        ? `<div class="detail-section">
+            <h4>Trigger &amp; Notification History</h4>
+            <div class="wa-deleted-notice">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
+              <span>alert ถูกลบโดย user — ยกเลิกการตรวจจับและการแจ้งเตือนทั้งหมด ไม่มี trigger ใหม่หลังจากวันที่ลบ</span>
+            </div>
+          </div>`
+        : `
         <div class="detail-section">
           <h4>Trigger &amp; Notification History</h4>
-          <div class="detail-empty">Section 5 — Trigger &amp; Notification History จะสร้างใน task WA-PTO-003b</div>
+          ${triggerHistory.length
+            ? `<div class="history-table-wrap">
+                <table class="history-table wa-detail-table wa-trigger-history-table">
+                  <thead>
+                    <tr><th>Trigger ID</th><th>Triggered At</th><th>Matches</th><th>Delivery Status</th></tr>
+                  </thead>
+                  <tbody>
+                    ${triggerHistory.map(t => `
+                      <tr>
+                        <td data-label="Trigger ID">${esc(t.triggerId)}</td>
+                        <td data-label="Triggered At">${formatWaDateTime(t.triggeredAt)}</td>
+                        <td data-label="Matches">${t.newMatches} new · ${t.totalMatches} total</td>
+                        <td data-label="Delivery Status">${getWaDeliveryPill(t.notification.deliveryStatus)}</td>
+                      </tr>
+                    `).join("")}
+                  </tbody>
+                </table>
+              </div>`
+            : `<div class="detail-empty">ยังไม่มีประวัติการตรวจจับ${alert.marketDataInactive ? " (criteria อ้างถึง market data ที่ inactive — alert จะไม่ trigger จนกว่า market data จะกลับมา active)" : ""}</div>`
+          }
         </div>
+      `;
+
+      // Section 6: User Action History — ประวัติ user สร้าง/แก้ criteria/แก้ชื่อ/เปิด-ปิด notification/ลบ alert
+      // แสดง actor = user, timestamp, action type, before/after เมื่อเกี่ยวข้อง — ยังเห็น history แม้ alert ถูกลบ
+      const section6 = `
         <div class="detail-section">
           <h4>User Action History</h4>
-          <div class="detail-empty">Section 6 — User Action History จะสร้างใน task WA-PTO-003b</div>
+          ${userActionHistory.length
+            ? `<div class="history-table-wrap">
+                <table class="history-table wa-detail-table wa-user-action-history-table">
+                  <thead>
+                    <tr><th>Timestamp</th><th>Actor</th><th>Action</th><th>Changes</th><th>Note</th></tr>
+                  </thead>
+                  <tbody>
+                    ${userActionHistory.map(u => `
+                      <tr>
+                        <td data-label="Timestamp">${formatWaDateTime(u.timestamp)}</td>
+                        <td data-label="Actor">${esc(u.actor)}</td>
+                        <td data-label="Action">${esc(getWaActionTypeLabel(u.actionType))}</td>
+                        <td data-label="Changes" class="history-note">${u.before && u.before !== "—" ? `${esc(u.before)} → ${esc(u.after)}` : esc(u.after || "—")}</td>
+                        <td data-label="Note" class="history-note">${esc(u.note || "—")}</td>
+                      </tr>
+                    `).join("")}
+                  </tbody>
+                </table>
+              </div>`
+            : `<div class="detail-empty">ไม่มีประวัติการกระทำของ user</div>`
+          }
         </div>
       `;
 
@@ -23276,7 +23680,9 @@
           ${section1}
           ${section2}
           ${section3}
-          ${sectionPlaceholder}
+          ${section4}
+          ${section5}
+          ${section6}
         </div>
       `;
 
