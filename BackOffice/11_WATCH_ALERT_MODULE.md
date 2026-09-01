@@ -217,6 +217,89 @@ Alert List ใช้ filter bar สำหรับคัดกรอง ไม�
 
 - ไม่มีข้อมูลตรงเงื่อนไข: "ไม่พบข้อมูลที่ตรงกับเงื่อนไข ลองรีเซ็ตตัวกรองแล้วลองใหม่"
 
+## 7.1 Watch Alert Detail
+
+Watch Alert Detail เป็นหน้าจอ read-only สำหรับดูรายละเอียดของ alert แต่ละรายการ เข้าผ่าน row click จาก Watch Alert List ไม่มี admin action ใด ๆ ในหน้า Detail (ไม่มี disable/enable/export) หน้าจอแสดงข้อมูล 6 sections ตามลำดับ โดย reuse โครงสร้าง detail page เดียวกับ Offer Detail และ report pages อื่น ๆ
+
+### Header
+
+- Breadcrumb: งานตรวจสอบและบริการ / Market Demand / Watch Alert List / {Alert ID}
+- Page title: Alert Detail
+- Page action: ปุ่มกลับไป Watch Alert List (back button)
+- Panel title: Alert Name
+- Panel subtitle: {Alert ID} — Alert Detail (read-only)
+
+### Detail Head
+
+แสดง head เหมือนหน้า detail อื่น ปรากฏเหนือ Section 1:
+
+- `Alert ID : Alert Name` พร้อม Status badge (Active=เขียว, User Disabled=เทา, Deleted=charcoal) และ Notification badge (On=เขียว, Off=เทา)
+
+### Section 1: Alert Summary
+
+แสดง summary tiles 4 ช่อง:
+
+- Created, Updated, Matches (current matched Sale assets), Triggers (total trigger count)
+
+### Section 2: Owner Summary
+
+แสดงข้อมูลเจ้าของ alert แบบ read-only:
+
+- User ID
+- Display Name
+- Account Status (Active=เขียว, Suspended=แดง, Banned=charcoal, อื่น ๆ=เทา)
+
+### Section 3: Criteria
+
+แสดง criteria แบบ structured chips/rows ไม่ใช่ JSON ดิบ ใช้ grid 3 คอลัมน์:
+
+- แต่ละ field ที่มีค่าแสดงเป็น tile พร้อม chip: Brand, Model, Reference, Price Range, Condition, Case Size, Dial Color
+- Field ที่ไม่มีค่าไม่แสดง tile นั้น
+- ถ้าไม่มี criteria ที่กำหนดเลย แสดง empty state "ไม่มี criteria ที่กำหนด"
+- ถ้า criteria อ้างถึง market data ที่ inactive แสดง warning box ใต้ criteria: "Criteria อ้างถึง market data ที่ inactive: {fields} — alert จะไม่ match asset ใหม่จนกว่า market data จะกลับมา active"
+
+### Section 4: Matched Assets
+
+แสดงรายการ asset สถานะ Sale ที่ match criteria ปัจจุบัน:
+
+- ตาราง 8 คอลัมน์: Asset ID, Asset Name, Price, Condition, Case Size, Dial Color, Listed At, Asset Status
+- Asset ID เป็น link ไป Asset Management (drill-in ไป Asset Detail)
+- Asset Status badge: Active=เขียว, Closed (Sold)=น้ำเงิน, Admin Hidden/Auto Hidden=amber, อื่น ๆ=เทา
+- ถ้าไม่มี asset ที่ match แสดง empty row ในตาราง: "ยังไม่มี asset ที่ตรงตามเงื่อนไข" (หรือ "criteria อ้างถึง market data ที่ inactive" ถ้าเกี่ยวข้อง)
+- Pagination 10 รายการต่อหน้า (แสดงช่วงรายการ + pager)
+
+### Section 5: Trigger & Notification History
+
+แสดงประวัติการตรวจจับและการแจ้งเตือน:
+
+- ตาราง 4 คอลัมน์: Trigger ID, Triggered At, Matches (new · total), Delivery Status
+- Delivery Status badge: Delivered=เขียว, Skipped=เทา, Failed=แดง, Pending=amber
+- แสดงเฉพาะ trigger ที่มี new matches > 0 (trigger ที่เกิดการตรวจจับจริง)
+- ถ้าไม่มีประวัติ แสดง empty row: "ยังไม่มีประวัติการตรวจจับ" (หรือ "criteria อ้างถึง market data ที่ inactive" ถ้าเกี่ยวข้อง)
+- Pagination 10 รายการต่อหน้า
+
+### Soft Delete Handling (Section 5)
+
+- ถ้า alert ถูกลบโดย user (status = Deleted) แสดง notice box สีเหลืองเหนือตาราง Trigger & Notification History: "alert ถูกลบโดย user — ยกเลิกการตรวจจับและการแจ้งเตือน ไม่มี trigger ใหม่หลังจากวันที่ลบ"
+- ประวัติ trigger/notification เดิมยังแสดงให้ดูได้
+- ไม่มี trigger ใหม่หลังจากวันที่ลบ
+
+### Section 6: User Action History
+
+แสดงประวัติการกระทำของ user ที่เกี่ยวข้องกับ alert:
+
+- ตาราง 5 คอลัมน์: Timestamp, Actor, Action, Changes, Note
+- Action type แสดงเป็นภาษาไทย: สร้าง alert, แก้ไขเงื่อนไข, เปลี่ยนชื่อ alert, เปิด/ปิดการแจ้งเตือน, ลบ alert
+- Changes แสดง before → after เมื่อมีการเปลี่ยนแปลง หรือ after value เมื่อไม่มี before
+- ยังเห็น history แม้ alert ถูกลบ
+- ถ้าไม่มีประวัติ แสดง empty row: "ไม่มีประวัติการกระทำของ user"
+- Pagination 10 รายการต่อหน้า
+
+### Responsive Layout
+
+- Mobile-width browser (≤760px): ตารางใน Section 4-6 เปลี่ยนเป็น stacked cards (table-to-card) เหมือนหน้า detail อื่น
+- Tablet และ Desktop: แสดงตารางเต็มพร้อม horizontal scroll เมื่อคอลัมน์เกินความกว้าง
+
 ## 8. Watch Alert Status Contract
 
 | Status | Meaning | FO Required Behavior |
@@ -419,13 +502,14 @@ Audit action ขั้นต่ำ:
 
 | Module | Integration |
 | --- | --- |
-| Dashboard | Active alert count, trigger volume, failed delivery count |
-| User Management | Alert owner profile, account status, support context |
-| Asset Management | Asset status/visibility changes affect match/result |
-| Market Data | Brand/model/reference active status affects criteria and trigger |
+| Demand Overview (same module) | Demand Overview ใช้ alert data ตัวเดียวกัน aggregate เป็น KPI (Active Alerts, Alerts with Matches, Unmet Demand, Notification Success Rate) พร้อม trigger trend chart และ frequently triggered list; เป็น sibling screen ใน Market Demand menu ไม่ใช่ module อื่น |
+| Dashboard | Dashboard card "Watch Alert" แสดง active alert count และ trigger count วันนี้; drill-in ไป Demand Overview |
+| User Management | Alert Detail Section 2 Owner Summary แสดง owner info (User ID, Display Name, Account Status) แบบ read-only ไม่มี drill-in link ไป User Detail ใน prototype; account status อ้างอิง User Management state |
+| Asset Management | Alert Detail Section 4 Matched Assets: Asset ID เป็น link (drill-in) ไป Asset Detail; asset status/visibility changes affect match/result |
+| Market Data | Alert Detail Section 3 Criteria: แสดง inactive market data warning เมื่อ criteria อ้างถึง brand/model/reference ที่ inactive; brand/model/reference active status affects criteria and trigger |
 | Asset Management (Reported Comments) | Block relation affects result visibility |
-| Notification | Delivery logs, templates, retry policy |
-| Audit Log | Disable/enable/export/job events searchable |
+| Notification | Alert Detail Section 5 Trigger & Notification History: แสดง delivery status (Delivered/Skipped/Failed/Pending) แบบ read-only; delivery logs, templates, retry policy อยู่ใน Notification module |
+| Audit Log | Watch Alert event types: `WATCH_ALERT_DISABLE`, `WATCH_ALERT_ENABLE`, `WATCH_ALERT_EXPORT`, `WATCH_ALERT_SENSITIVE_REVEAL`, `WATCH_ALERT_TRIGGER_JOB_RUN` (ดู section 16) |
 | Reports & Analytics | Watch Alert report and search trend report |
 
 ## Module-Specific Exceptions
@@ -439,9 +523,16 @@ Watch Alert ต้องใช้ app shell, navigation, breakpoint, list toolba
 | ID | Criteria |
 | --- | --- |
 | AC-BO-WA-001 | Admin เห็น Market Demand parent menu พร้อม Demand Overview, Search Insights และ Watch Alert List |
-| AC-BO-WA-002 | Watch Alert List แสดง alert รายการแบบ read-only รวมที่ user ลบแล้ว (soft delete) ครบคอลัมน์ขั้นต่ำ (Alert ID, Alert Name, Owner, Criteria, Status, Notification, Matches, Triggers, Last Triggered, Updated) พร้อม filter, sort และ pagination; Alert Detail แสดง owner, criteria, status, notification toggle และ trigger history |
+| AC-BO-WA-002 | Watch Alert List แสดง alert รายการแบบ read-only รวมที่ user ลบแล้ว (soft delete) ครบคอลัมน์ขั้นต่ำ (Alert ID, Alert Name, Owner, Criteria, Status, Notification, Matches, Triggers, Last Triggered, Updated) พร้อม filter, sort และ pagination; Alert Detail แสดง 6 sections ครบ: Alert Summary, Owner Summary, Criteria, Matched Assets, Trigger & Notification History และ User Action History |
 | AC-BO-WA-002A | Watch Alert List เป็น read-only ไม่มี admin action ในหน้า List (disable/enable/bulk/export) และไม่มี action menu; การเข้าถึงรายละเอียดทำผ่าน row click เข้า Alert Detail |
 | AC-BO-WA-002B | Watch Alert List มี filter Match status สำหรับคัดกรอง unmet demand (ไม่มี match) แยกจาก alert ที่มี match และ filter Trigger history สำหรับคัดกรอง alert ที่เคย/ไม่เคย trigger |
+| AC-BO-WA-002C | Alert Detail เป็น read-only ไม่มี admin action ในหน้า Detail (disable/enable/export) เข้าผ่าน row click จาก Watch Alert List พร้อมปุ่มกลับไป List |
+| AC-BO-WA-002D | Alert Detail แสดง Detail Head (Alert ID : Alert Name + Status badge + Notification badge) เหนือ Section 1 และ Section 1 Alert Summary แสดง summary tiles 4 ช่อง (Created, Updated, Matches, Triggers) |
+| AC-BO-WA-002E | Alert Detail Section 2 Owner Summary แสดง User ID, Display Name และ Account Status แบบ read-only |
+| AC-BO-WA-002F | Alert Detail Section 3 Criteria แสดง criteria แบบ structured chips/rows ไม่ใช่ JSON ดิบ แสดงเฉพาะ field ที่มีค่า และแสดง inactive market data warning เมื่อ criteria อ้างถึง market data ที่ inactive |
+| AC-BO-WA-002G | Alert Detail Section 4 Matched Assets แสดงตาราง asset สถานะ Sale ที่ match criteria พร้อม link ไป Asset Management และ pagination 10 รายการต่อหน้า |
+| AC-BO-WA-002H | Alert Detail Section 5 Trigger & Notification History แสดงตาราง trigger ที่มี new matches > 0 พร้อม delivery status และ pagination 10 รายการต่อหน้า; ถ้า alert ถูกลบ ยังแสดงประวัติเดิมพร้อม notice box แจ้งว่าไม่มี trigger ใหม่หลังวันที่ลบ |
+| AC-BO-WA-002I | Alert Detail Section 6 User Action History แสดงตารางประวัติ user สร้าง/แก้ criteria/แก้ชื่อ/เปิด-ปิด notification/ลบ alert พร้อม pagination 10 รายการต่อหน้า และยังเห็น history แม้ alert ถูกลบ |
 | AC-BO-WA-003 | Criteria schema ต้องตรง Search Filter และทุก field optional |
 | AC-BO-WA-004 | Trigger/match ต้องใช้เฉพาะ asset status `Sale` และไม่รวม Show/Hide/Sold/Deleted/Removed |
 | AC-BO-WA-005 | Watch Alert notification destination ต้องเป็น `Watch Alert Result List` ไม่ใช่ Asset Detail |
