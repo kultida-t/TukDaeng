@@ -383,11 +383,9 @@ Asset Detail Action Rules:
 
 Asset Detail Price Analytics:
 
-- Market Comparison แสดงได้เมื่อมี Asking Price และ Watch Price API Market Price
-- Market Comparison ใช้ Asking Price เทียบกับ Watch Price API Market Price เท่านั้น
-- Market Comparison ไม่ใช้ Purchase Price fallback เพื่อแสดง Above/At/Below
-- Expected Profit แสดงเฉพาะ Owner view เพราะใช้ Purchase Price
-- Expected Profit ต้องไม่แสดงใน Viewer/Public mode
+- Market Comparison และ Expected Profit ไม่แสดงใน Asset Detail (product decision: ไม่เพิ่ม)
+- Analytics ทั้งสองอยู่ใน Portfolio / Assets Value เท่านั้น
+- สูตรและ permission ของ analytics ทั้งสองอยู่ใน Portfolio Module
 
 Owner ไม่เห็นปุ่ม Follow ตัวเอง
 

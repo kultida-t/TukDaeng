@@ -215,8 +215,8 @@ Current review status: Asset Detail / Profile coverage is complete, including Sh
 - Delete comment confirmation ต้องใช้ copy เฉพาะ comment และไม่มี Undo
 - Report Comment flow ต้องใช้ title `Report this comment`; success copy ว่า comment remains visible until moderation is complete
 - Comments sheet สามารถเปิด comment action sheet ซ้อนเป็นชั้นบนสุดได้ โดยปิด action sheet แล้วต้องไม่ปิด Comments sheet
-- Asset Detail Market Comparison (pending Figma / pending product decision) หากทำใน V1 ต้องใช้ `Asking Price` เทียบ Watch Price API Market Price เท่านั้น; Figma ปัจจุบันออกแบบไว้เฉพาะ Portfolio / Assets Value
-- Expected Profit (pending Figma / pending product decision) หากทำใน V1 ต้องเป็น Owner-only เพราะใช้ purchase/private data; Figma ปัจจุบันออกแบบไว้เฉพาะ Portfolio / Assets Value
+- Asset Detail ไม่แสดง Market Comparison (product decision: ไม่เพิ่ม; analytics อยู่ใน Portfolio / Assets Value เท่านั้น)
+- Asset Detail ไม่แสดง Expected Profit (product decision: ไม่เพิ่ม; analytics อยู่ใน Portfolio / Assets Value เท่านั้น)
 - Shared deep link ของ `Hide`, `Sold`, Deleted หรือ blocked asset ต้องไป unavailable / permission state ไม่ใช่เปิด private detail
 - Permission denied / unavailable state ต้องใช้ CTA `Go back` และไม่ใช้ `Back to feed` บน shared fallback screen
 - Share บน Asset Detail ต้องใช้ system share sheet เป็น primary channel และ copy public deep link เป็น fallback พร้อม copy success state
@@ -253,7 +253,7 @@ Current review status: Asset Detail / Profile coverage is complete, including Sh
 - Public Profile `All` แสดงเฉพาะ `Sale` + `Show`
 - `Show` มี action จาก Detail/Public Profile แต่ไม่ถูกสื่อเป็น Feed/Search listing
 - Viewer/Public ไม่เห็น private financial fields
-- Market Comparison ไม่ใช้ Purchase Price fallback (สูตรใช้ได้ทั้งใน Portfolio และ Asset Detail เมื่อ Figma ออกแบบเพิ่ม)
+- Market Comparison ไม่ใช้ Purchase Price fallback (สูตรใช้ใน Portfolio / Assets Value เท่านั้น)
 - Deep link ของ non-public asset ไม่เปิด private detail
 - Permission denied / unavailable screen ใช้ CTA `Go back` พร้อม fallback ไป Feed เมื่อไม่มี navigation history
 - Back button บน normal Asset Detail ที่เปิดจาก external deep link ต้อง fallback ไป Feed
@@ -451,7 +451,7 @@ Required annotation:
 - Portfolio เป็น Owner-only
 - Portfolio คำนวณจาก `Sale`, `Show`, `Hide` และไม่รวม `Sold`
 - เพิ่ม valuation source label: Watch Price API -> Purchase Price fallback -> No Valuation
-- เพิ่ม Gain/Loss, Realized Gain/Loss, Expected Profit และ Market Comparison states ใน Portfolio / Assets Value (การเพิ่มใน Asset Detail เป็น pending product decision)
+- เพิ่ม Gain/Loss, Realized Gain/Loss, Expected Profit และ Market Comparison states ใน Portfolio / Assets Value (Product decision: ไม่เพิ่มใน Asset Detail)
 - Report submit ต้องไม่ทำให้ content หายทันที
 - Report type ต้องตรง master: Asset, User, Comment, Board Content
 - Apple compliance coverage ต้องครบ Report, Block, Terms, Privacy, Moderation Flow
