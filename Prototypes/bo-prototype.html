@@ -12928,14 +12928,24 @@
       display: grid;
       gap: 20px;
     }
-    .policy-editor-form { display: grid; gap: 20px; }
-    .policy-editor-form .article-editor-section {
+    .policy-editor-form {
       display: grid;
-      gap: 18px;
+      gap: 20px;
       padding: 20px;
       border: 1px solid #e3ebf5;
       border-radius: 8px;
       background: #fff;
+    }
+    .policy-editor-form .article-editor-section {
+      display: grid;
+      gap: 16px;
+      padding: 0;
+      border: 0;
+      background: transparent;
+    }
+    .policy-editor-form .article-editor-section + .article-editor-section {
+      padding-top: 0;
+      border-top: 0;
     }
     .policy-editor-form .article-editor-section h4 {
       margin: 0;
@@ -12945,7 +12955,7 @@
       font-weight: 700;
       letter-spacing: 0;
     }
-    .policy-editor-form .support-center-field-row { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+    .policy-editor-form .support-center-field-row { grid-template-columns: 220px minmax(0, 1fr); gap: 16px; }
     .policy-editor-form label {
       display: flex;
       flex-direction: column;
@@ -12959,28 +12969,32 @@
     .policy-editor-form textarea { resize: vertical; line-height: 1.6; }
     .policy-editor-toolbar {
       display: flex;
+      align-items: center;
       flex-wrap: wrap;
-      gap: 6px;
-      padding: 10px 12px;
+      gap: 2px;
+      padding: 8px 12px;
       border: 1px solid #e3ebf5;
       border-bottom: 0;
       border-radius: 8px 8px 0 0;
       background: #f7faff;
     }
     .policy-editor-tool {
-      min-width: 34px;
-      min-height: 34px;
-      padding: 5px 10px;
-      border: 1px solid #d7e5f4;
-      border-radius: 6px;
-      background: #fff;
-      color: #0f2748;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 28px;
+      min-width: 28px;
+      height: 28px;
+      padding: 5px;
+      border: 0;
+      border-radius: 4px;
+      background: transparent;
+      color: #526276;
       cursor: pointer;
-      font-size: 12px;
-      font-weight: 800;
     }
     .policy-editor-tool:hover,
-    .policy-editor-tool:focus-visible { border-color: #9db6d2; background: #eef5fd; outline: 0; }
+    .policy-editor-tool:focus-visible { background: #e8f0fa; color: #0f2748; outline: 0; }
+    .policy-editor-tool svg { width: 16px; height: 16px; }
     .policy-editor-canvas {
       min-height: 360px;
       max-height: 480px;
@@ -13011,14 +13025,7 @@
     .policy-editor-canvas ul:last-child, .policy-editor-canvas ol:last-child { margin-bottom: 0; }
     .policy-editor-canvas a { color: #2563eb; text-decoration: underline; }
     .policy-editor-language-note { margin: 0; color: #71829a; font-size: 12px; }
-    .policy-editor-sidebar {
-      display: grid;
-      gap: 16px;
-      padding: 20px;
-      border: 1px solid #e3ebf5;
-      border-radius: 8px;
-      background: #f9fbfe;
-    }
+    .policy-editor-sidebar { display: none; }
     .policy-editor-sidebar h4 {
       margin: 0;
       color: #0f2748;
@@ -13385,6 +13392,18 @@
       siNoResult: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/><path d="m8 8 6 6M14 8l-6 6"/></svg>',
       siConvert: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><path d="m9 12 2 2 4-4"/></svg>',
       info: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="9.5"/><path d="M12 16.5v-5.5"/><circle cx="12" cy="7.8" r="1.1" fill="currentColor" stroke="none"/></svg>'
+    };
+
+    const policyEditorToolIcons = {
+      bold: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 4h7a3.5 3.5 0 0 1 0 7H6z"/><path d="M6 11h8a3.5 3.5 0 0 1 0 7H6z"/></svg>',
+      italic: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4h6"/><path d="M7 20h6"/><path d="M14 4 10 20"/></svg>',
+      underline: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 4v6a6 6 0 0 0 12 0V4"/><path d="M5 20h14"/></svg>',
+      insertUnorderedList: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="4.5" cy="6" r="1" fill="currentColor" stroke="none"/><circle cx="4.5" cy="12" r="1" fill="currentColor" stroke="none"/><circle cx="4.5" cy="18" r="1" fill="currentColor" stroke="none"/><path d="M9 6h11M9 12h11M9 18h11"/></svg>',
+      insertOrderedList: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 6h11M9 12h11M9 18h11"/><path d="M4 5.5h1.3V9"/><path d="M4 13h1.8l-1.8 2h1.8"/></svg>',
+      justifyLeft: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h10M4 18h13"/></svg>',
+      justifyCenter: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M7 12h10M5.5 18h13"/></svg>',
+      justifyRight: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M10 12h10M7 18h13"/></svg>',
+      createLink: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9.5 14.5 14.5 9.5"/><path d="M11 6.5 12.5 5a3.5 3.5 0 1 1 5 5L16 11.5"/><path d="M13 17.5 11.5 19a3.5 3.5 0 1 1-5-5L8 12.5"/></svg>'
     };
 
     const navGroups = [
@@ -21522,7 +21541,7 @@
             <div class="detail-section">
               <form class="policy-editor-form" data-policy-editor data-policy-id="${policy.id}" data-policy-mode="${isNewDraft ? "new-draft" : "edit-draft"}" novalidate>
                 <section class="article-editor-section">
-                  <h4>ข้อมูลเวอร์ชัน</h4>
+                  <label><span>Title</span><input class="field" type="text" value="${policy.typeLabel}" readonly /></label>
                   <div class="support-center-field-row">
                     <label><span>เลขเวอร์ชัน <span class="article-required-mark">*</span></span><input class="field" type="text" value="${draftVersion}" data-policy-version-field readonly /></label>
                     <label><span>สถานะ</span><input class="field" type="text" value="Draft" readonly /></label>
@@ -21530,30 +21549,17 @@
                   <label class="article-editor-field"><span>สรุปการเปลี่ยนแปลง <span class="article-required-mark">*</span></span><textarea class="field" rows="2" data-policy-change-summary placeholder="อธิบายสิ่งที่เปลี่ยนแปลงในเวอร์ชันนี้">${escapeHtml(initialSummary)}</textarea></label>
                 </section>
                 <section class="article-editor-section">
-                  <h4>เนื้อหา Policy</h4>
+                  <label class="article-editor-field"><span>Content <span class="article-required-mark">*</span></span></label>
                   <div class="policy-content-tabs" role="tablist" aria-label="ภาษาเนื้อหา">
                     <button class="segmented active" type="button" data-policy-editor-lang-tab="th" role="tab" aria-selected="true">ภาษาไทย</button>
                     <button class="segmented" type="button" data-policy-editor-lang-tab="en" role="tab" aria-selected="false">English</button>
                   </div>
-                  <p class="policy-editor-language-note">ใช้เครื่องมือจัดรูปแบบด้านล่างเพื่อจัดโครงสร้างเนื้อหาก่อนบันทึก Draft</p>
                   <div data-policy-editor-lang="th">
-                    <div class="policy-editor-toolbar" role="toolbar" aria-label="เครื่องมือจัดรูปแบบภาษาไทย">
-                      <button class="policy-editor-tool" type="button" data-policy-editor-command="formatBlock" data-policy-editor-value="h2">H2</button>
-                      <button class="policy-editor-tool" type="button" data-policy-editor-command="formatBlock" data-policy-editor-value="p">P</button>
-                      <button class="policy-editor-tool" type="button" data-policy-editor-command="insertUnorderedList">• List</button>
-                      <button class="policy-editor-tool" type="button" data-policy-editor-command="insertOrderedList">1. List</button>
-                      <button class="policy-editor-tool" type="button" data-policy-editor-command="createLink">Link</button>
-                    </div>
+                    <div class="policy-editor-toolbar" role="toolbar" aria-label="เครื่องมือจัดรูปแบบภาษาไทย">${renderPolicyEditorToolbarButtons()}</div>
                     <div class="policy-editor-canvas" contenteditable="true" role="textbox" aria-multiline="true" data-policy-content-th>${toEditorHtml(initialTh)}</div>
                   </div>
                   <div data-policy-editor-lang="en" hidden>
-                    <div class="policy-editor-toolbar" role="toolbar" aria-label="Formatting tools in English">
-                      <button class="policy-editor-tool" type="button" data-policy-editor-command="formatBlock" data-policy-editor-value="h2">H2</button>
-                      <button class="policy-editor-tool" type="button" data-policy-editor-command="formatBlock" data-policy-editor-value="p">P</button>
-                      <button class="policy-editor-tool" type="button" data-policy-editor-command="insertUnorderedList">• List</button>
-                      <button class="policy-editor-tool" type="button" data-policy-editor-command="insertOrderedList">1. List</button>
-                      <button class="policy-editor-tool" type="button" data-policy-editor-command="createLink">Link</button>
-                    </div>
+                    <div class="policy-editor-toolbar" role="toolbar" aria-label="Formatting tools in English">${renderPolicyEditorToolbarButtons()}</div>
                     <div class="policy-editor-canvas" contenteditable="true" role="textbox" aria-multiline="true" data-policy-content-en>${toEditorHtml(initialEn)}</div>
                   </div>
                 </section>
@@ -21610,6 +21616,21 @@
         }
       });
       return template.innerHTML;
+    }
+
+    function renderPolicyEditorToolbarButtons() {
+      const tools = [
+        { command: "bold", label: "ตัวหนา" },
+        { command: "italic", label: "ตัวเอียง" },
+        { command: "underline", label: "ขีดเส้นใต้" },
+        { command: "insertUnorderedList", label: "รายการแบบจุด" },
+        { command: "insertOrderedList", label: "รายการแบบตัวเลข" },
+        { command: "justifyLeft", label: "จัดชิดซ้าย" },
+        { command: "justifyCenter", label: "จัดกึ่งกลาง" },
+        { command: "justifyRight", label: "จัดชิดขวา" },
+        { command: "createLink", label: "เพิ่มลิงก์" }
+      ];
+      return tools.map(tool => `<button class="policy-editor-tool" type="button" data-policy-editor-command="${tool.command}" aria-label="${tool.label}" title="${tool.label}">${policyEditorToolIcons[tool.command]}</button>`).join("");
     }
 
     function runPolicyEditorCommand(button) {
