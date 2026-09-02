@@ -12956,6 +12956,14 @@
       letter-spacing: 0;
     }
     .policy-editor-form .support-center-field-row { grid-template-columns: 220px minmax(0, 1fr); gap: 16px; }
+    .policy-editor-form .policy-metadata {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+    }
+    @media (max-width: 760px) {
+      .policy-editor-form .policy-metadata { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
     .policy-editor-form label {
       display: flex;
       flex-direction: column;
@@ -21330,7 +21338,7 @@
       document.querySelector("#summary-grid").innerHTML = "";
       document.querySelector("#table").innerHTML = `
         <div class="asset-table policy-list-table">
-          <div class="asset-row head"><div>Policy</div><div>Description</div><div>สถานะ</div><div>เวอร์ชันปัจจุบัน</div><div>Updated</div><div>Updated By</div><div>Action</div></div>
+          <div class="asset-row head"><div>Policy</div><div>Description</div><div>สถานะ</div><div>Version</div><div>Updated</div><div>Updated By</div><div>Action</div></div>
           ${policyVersioningData.policies.map(policy => renderPolicyRow(policy)).join("")}
         </div>
       `;
@@ -21355,7 +21363,7 @@
               ${draftBadge}
             </div>
           </div>
-          <div data-label="เวอร์ชันปัจจุบัน"><span class="pill slate policy-version-pill">${policy.currentVersion}</span></div>
+          <div data-label="Version"><span class="pill slate policy-version-pill">${policy.currentVersion}</span></div>
           <div data-label="Updated"><div class="main-text">${policy.lastEdited}</div></div>
           <div data-label="Updated By"><div class="main-text">${policy.lastEditor}</div></div>
           <div class="user-row-actions">
@@ -21528,8 +21536,8 @@
       syncExpandedNavForModule("settings", "Policy & Versioning");
       document.body.classList.remove("policy-versioning-mode", "policy-detail-mode", "policy-version-history-mode");
       document.body.classList.add("policy-editor-mode");
-      document.querySelector("#crumb").textContent = `เครื่องมือ & รายงาน / Settings / Policy & Versioning / ${policy.type} / Editor`;
-      document.querySelector("#page-title").textContent = `${policy.typeLabel} — Editor`;
+      document.querySelector("#crumb").textContent = `เครื่องมือ & รายงาน / Settings / Policy & Versioning / ${policy.type} / Draft`;
+      document.querySelector("#page-title").textContent = `${policy.typeLabel} — Draft`;
       document.querySelector("#page-meta").textContent = "";
       document.querySelector("#primary-action").textContent = "";
       document.querySelector("#user-panel-filter-actions").innerHTML = "";
@@ -21541,12 +21549,11 @@
             <div class="detail-section">
               <form class="policy-editor-form" data-policy-editor data-policy-id="${policy.id}" data-policy-mode="${isNewDraft ? "new-draft" : "edit-draft"}" novalidate>
                 <section class="article-editor-section">
-                  <label><span>Title</span><input class="field" type="text" value="${policy.typeLabel}" readonly /></label>
-                  <div class="support-center-field-row">
-                    <label><span>เลขเวอร์ชัน <span class="article-required-mark">*</span></span><input class="field" type="text" value="${draftVersion}" data-policy-version-field readonly /></label>
-                    <label><span>สถานะ</span><input class="field" type="text" value="Draft" readonly /></label>
+                  <div class="policy-metadata">
+                    <div class="detail-tile"><span class="muted">Policy</span><strong>${policy.typeLabel}</strong></div>
+                    <div class="detail-tile"><span class="muted">Version</span><strong>${draftVersion}</strong></div>
+                    <div class="detail-tile"><span class="muted">สถานะ</span><strong><span class="pill gray">Draft</span></strong></div>
                   </div>
-                  <label class="article-editor-field"><span>สรุปการเปลี่ยนแปลง <span class="article-required-mark">*</span></span><textarea class="field" rows="2" data-policy-change-summary placeholder="อธิบายสิ่งที่เปลี่ยนแปลงในเวอร์ชันนี้">${escapeHtml(initialSummary)}</textarea></label>
                 </section>
                 <section class="article-editor-section">
                   <label class="article-editor-field"><span>Content <span class="article-required-mark">*</span></span></label>
@@ -21562,6 +21569,7 @@
                     <div class="policy-editor-toolbar" role="toolbar" aria-label="Formatting tools in English">${renderPolicyEditorToolbarButtons()}</div>
                     <div class="policy-editor-canvas" contenteditable="true" role="textbox" aria-multiline="true" data-policy-content-en>${toEditorHtml(initialEn)}</div>
                   </div>
+                  <label class="article-editor-field"><span>สรุปการเปลี่ยนแปลง <span class="article-required-mark">*</span></span><textarea class="field" rows="2" data-policy-change-summary placeholder="อธิบายสิ่งที่เปลี่ยนแปลงในเวอร์ชันนี้">${escapeHtml(initialSummary)}</textarea></label>
                 </section>
                 <div class="policy-editor-actions">
                   <button class="user-detail-action-btn" type="button" data-policy-back>ยกเลิก</button>
@@ -21657,7 +21665,7 @@
       modalBody.innerHTML = `
         <div class="user-action-page policy-editor-preview-content">
           <div class="user-action-head">
-            <div><h2 id="user-action-modal-title">Preview — ${policy.typeLabel}</h2><p>${form.querySelector("[data-policy-version-field]")?.value || "Draft"}</p></div>
+            <div><h2 id="user-action-modal-title">Preview — ${policy.typeLabel}</h2><p>${form.querySelector(".policy-metadata .detail-tile:nth-child(2) strong")?.textContent || "Draft"}</p></div>
             <button class="btn user-action-close" type="button" data-user-action-modal-close aria-label="ปิด">${iconSvg.close}</button>
           </div>
           <div class="policy-preview-language"><h4>ภาษาไทย</h4><div class="policy-editor-canvas">${th}</div></div>
