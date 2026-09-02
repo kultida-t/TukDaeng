@@ -21869,12 +21869,7 @@
           <div data-label="Updated"><div class="main-text">${policy.lastEdited}</div></div>
           <div data-label="Updated By"><div class="main-text">${policy.lastEditor}</div></div>
           <div class="user-row-actions">
-            <details class="row-menu">
-              <summary aria-label="Policy actions">${iconSvg.chevron}</summary>
-              <div class="row-menu-list">
-                <button type="button" data-policy-open="${policy.id}">ดูรายละเอียด</button>
-              </div>
-            </details>
+            <button class="panel-action" type="button" data-policy-open="${policy.id}" aria-label="ดูรายละเอียด">${iconSvg.chevron}</button>
           </div>
         </div>
       `;
@@ -33575,6 +33570,14 @@
       const policyEditorTool = event.target.closest("[data-policy-editor-command]");
       if (policyEditorTool) {
         runPolicyEditorCommand(policyEditorTool);
+        return;
+      }
+      const policyActionButton = event.target.closest(".policy-list-table .user-row-actions [data-policy-open]");
+      if (policyActionButton) {
+        const policy = policyVersioningData.policies.find(p => p.id === policyActionButton.dataset.policyOpen);
+        if (!policy) return;
+        pushBackNavigationContext();
+        renderPolicyDetailPage(policy);
         return;
       }
       const policyCard = event.target.closest("[data-policy-open]");
