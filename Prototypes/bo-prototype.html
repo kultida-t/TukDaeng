@@ -12828,13 +12828,18 @@
     body.policy-version-history-mode #primary-action { display: none; }
     body.policy-detail-mode #table,
     body.policy-version-history-mode #table { min-width: 0; }
-    .policy-detail-page { display: grid; gap: 20px; padding: 4px 0 12px; }
-    .policy-detail-page .policy-detail-badges {
+    .policy-detail-page { display: grid; gap: 18px; padding: 18px; }
+    .panel-title-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 12px;
+    }
+    .panel-title-badges {
       display: flex;
       flex-wrap: wrap;
       align-items: center;
       gap: 8px;
-      padding: 0 4px;
     }
     .policy-detail-page .policy-version {
       padding: 3px 10px;
@@ -12847,15 +12852,12 @@
     }
     .policy-detail-page .policy-detail-layout {
       display: grid;
-      gap: 20px;
+      gap: 18px;
     }
     .policy-detail-page .detail-section {
       display: grid;
-      gap: 16px;
-      padding: 22px 24px;
-      border: 1px solid #e3ebf5;
-      border-radius: 10px;
-      background: #fff;
+      gap: 14px;
+      padding: 18px 0;
     }
     .policy-detail-page .policy-content-tabs {
       display: flex;
@@ -12864,8 +12866,8 @@
     }
     .policy-detail-page .policy-content-body {
       min-height: 120px;
-      padding: 18px 20px;
-      border: 1px solid #d7e5f4;
+      padding: 16px 18px;
+      border: 1px solid #e3ebf5;
       border-radius: 8px;
       background: #f9fbfe;
       color: #1f334d;
@@ -12895,7 +12897,10 @@
       display: flex;
       flex-wrap: wrap;
       gap: 10px;
-      padding: 0 4px;
+      padding-top: 4px;
+    }
+    @media (max-width: 760px) {
+      .policy-detail-page { padding: 14px 10px 18px; }
     }
 
     /* ===== Policy Editor (HS-PTO-002a) ===== */
@@ -21287,13 +21292,20 @@
       document.querySelector("#user-panel-filter-actions").innerHTML = "";
       document.querySelector(".filters").innerHTML = "";
       document.querySelector("#summary-grid").innerHTML = "";
+      const policyTitleBadges = `
+        <span class="pill ${policy.status === "Published" ? "green" : "gray"}">${policy.status}</span>
+        <span class="pill slate">${policy.currentVersion}</span>
+        ${hasDraft ? `<span class="pill amber">มี Draft ${policy.draftVersion}</span>` : ""}
+      `;
+      document.querySelector(".panel-head > div").innerHTML = `
+        <div class="panel-title-row">
+          <h2 id="panel-title">${policy.typeLabel}</h2>
+          <div class="panel-title-badges">${policyTitleBadges}</div>
+        </div>
+        <p id="panel-subtitle">${policy.description}</p>
+      `;
       document.querySelector("#table").innerHTML = `
         <div class="user-detail-page policy-detail-page">
-          <div class="policy-detail-badges">
-            <span class="pill ${policy.status === "Published" ? "green" : "gray"}">${policy.status}</span>
-            <span class="policy-version">${policy.currentVersion}</span>
-            ${hasDraft ? `<span class="pill amber">มี Draft ${policy.draftVersion}</span>` : ""}
-          </div>
           <div class="policy-detail-layout">
             <div class="detail-section">
               <div class="panel-head">
