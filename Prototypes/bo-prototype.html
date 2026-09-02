@@ -13295,6 +13295,14 @@
     .policy-restore-confirm-modal .modal-body {
       padding: 30px 28px 26px;
     }
+    .policy-restore-confirm-modal .article-editor-confirm-summary {
+      width: fit-content;
+      max-width: 100%;
+      margin: 0 auto;
+      text-align: center;
+      font-size: 12px;
+      white-space: nowrap;
+    }
     .policy-publish-confirm-page {
       gap: 12px;
     }
@@ -13459,6 +13467,10 @@
     @media (max-width: 760px) {
       .policy-version-view-body { padding: 16px; max-height: 280px; }
       .policy-version-view-meta { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .policy-restore-confirm-modal .article-editor-confirm-summary {
+        width: min(100%, 300px);
+        white-space: normal;
+      }
       .policy-version-view-meta > div { padding: 10px 12px; }
       .policy-version-view-footer { justify-content: stretch; }
       .policy-version-view-footer .user-detail-action-btn { flex: 1 1 0; min-width: 0; }
@@ -22289,7 +22301,6 @@
 
     // HS-PTO-002b: Restore confirmation modal — creates a new draft from an archived version
     function openPolicyVersionRestoreConfirmModal(policy, version) {
-      const nextDraftNumber = `v${getNextPolicyVersionNumber(policy)}.0-draft`;
       const modalCard = document.querySelector("#user-action-modal .user-action-modal");
       const modalBody = document.querySelector("#user-action-modal-body");
       modalCard?.classList.remove("article-preview-modal", "category-editor-modal", "policy-publish-confirm-modal");
@@ -22304,8 +22315,8 @@
             </span>
           </div>
           <h2 id="user-action-modal-title">ยืนยันการ Restore</h2>
-          <p class="article-editor-confirm-question">คุณต้องการนำเวอร์ชัน ${version.version} กลับมาแก้ไขเป็น Draft ใหม่ใช่หรือไม่?</p>
-          <p class="article-editor-confirm-summary">ระบบจะสร้าง Draft เวอร์ชันใหม่ (${nextDraftNumber}) โดยคัดลอกเนื้อหาจากเวอร์ชัน ${version.version} เพื่อให้คุณแก้ไขก่อนเผยแพร่ เวอร์ชันเดิมยังคงอยู่ในประวัติ</p>
+          <p class="article-editor-confirm-question">Restore เวอร์ชัน ${version.version} เป็น Draft ใหม่ใช่หรือไม่?</p>
+          <p class="article-editor-confirm-summary">ระบบจะสร้าง Draft ใหม่จากเวอร์ชันนี้ โดยเวอร์ชันเดิมยังคงอยู่ในประวัติ</p>
           <div class="article-editor-confirm-actions">
             <button class="user-detail-action-btn" type="button" data-user-action-modal-close>ยกเลิก</button>
             <button class="user-detail-action-btn user-action-confirm" type="button" data-policy-version-restore-confirm="${policy.id}" data-policy-version-restore-source="${version.version}">Restore</button>
