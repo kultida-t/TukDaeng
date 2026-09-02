@@ -1874,7 +1874,7 @@
     }
     body.watch-alert-mode.watch-alert-list-mode .topbar,
     body.watch-alert-detail-mode .topbar {
-      margin-bottom: 6px;
+      margin-bottom: 10px;
     }
     /* WA-PTO-002b: ยกเลิก panel overrides จาก body.watch-alert-mode ใน list mode
        ให้ panel ใช้ค่า default เหมือน Option Master (มี box-shadow, overflow:hidden, border-color ปกติ) */
@@ -1886,8 +1886,6 @@
     body.watch-alert-list-mode #table {
       overflow-x: auto;
       overflow-y: visible;
-      padding: 12px 14px 16px;
-      background: #f8fbff;
     }
     body.watch-alert-list-mode .watch-alert-list-table {
       width: 100%;
@@ -2661,8 +2659,8 @@
     body.watch-alert-detail-mode #primary-action { display: none; }
     body.watch-alert-detail-mode .layout {
       grid-template-columns: minmax(0, 1fr);
-      gap: 18px;
-      margin-top: 4px;
+      gap: 14px;
+      margin-top: 0;
     }
     body.watch-alert-detail-mode .layout > .panel {
       border-color: #d7e2f0;
@@ -12784,6 +12782,9 @@
     body.policy-versioning-mode .cards {
       display: none;
     }
+    body.policy-versioning-mode #primary-action {
+      display: none;
+    }
     .policy-list-table .policy-row-badges {
       display: flex;
       flex-wrap: wrap;
@@ -12804,6 +12805,9 @@
     body.support-center-mode .detail,
     body.support-center-mode .summary-grid,
     body.support-center-mode .cards {
+      display: none;
+    }
+    body.support-center-mode #primary-action {
       display: none;
     }
     .support-center-form {
