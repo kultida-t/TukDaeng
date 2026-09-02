@@ -15818,6 +15818,10 @@
         renderPolicyDetailPage(policyVersioningData.policies.find(entry => entry.id === context.id));
         return true;
       }
+      if (context.type === "policy-version-history") {
+        renderPolicyVersionHistoryPage(policyVersioningData.policies.find(entry => entry.id === context.id));
+        return true;
+      }
       if (context.type === "reported-board-detail") {
         renderReportedBoardDetail(getBoardReportById(context.id));
         return true;
@@ -22293,6 +22297,10 @@
             <div class="policy-version-view-footer">
               <button class="user-detail-action-btn primary" type="button" data-policy-version-restore="${policy.id}" data-policy-version="${version.version}">Restore เวอร์ชันนี้</button>
             </div>
+          ` : version.status === "Draft" ? `
+            <div class="policy-version-view-footer">
+              <button class="user-detail-action-btn primary" type="button" data-policy-version-edit="${policy.id}" data-policy-version="${version.version}">แก้ไข Draft</button>
+            </div>
           ` : ""}
         </div>
       `;
@@ -22405,6 +22413,7 @@
                 <details class="row-menu">
                   <summary aria-label="Version actions"><span class="policy-version-action-dots" aria-hidden="true">...</span></summary>
                   <div class="row-menu-list">
+                    ${v.status === "Draft" ? `<button type="button" data-policy-version-edit="${policy.id}" data-policy-version="${v.version}">แก้ไข Draft</button>` : ""}
                     <button type="button" data-policy-version-view="${policy.id}" data-policy-version="${v.version}">ดูเวอร์ชัน</button>
                     ${v.status === "Archived" ? `<button type="button" data-policy-version-restore="${policy.id}" data-policy-version="${v.version}">Restore เป็น Draft</button>` : ""}
                   </div>
@@ -33557,6 +33566,18 @@
       if (policyPublishButton) {
         const form = policyPublishButton.closest("[data-policy-editor]");
         if (form) openPolicyPublishConfirmModal(form);
+        return;
+      }
+      // HS-PTO-002b: Edit an existing Draft from Version History
+      const policyVersionEditButton = event.target.closest("[data-policy-version-edit]");
+      if (policyVersionEditButton) {
+        const policy = policyVersioningData.policies.find(p => p.id === policyVersionEditButton.dataset.policyVersionEdit);
+        const version = policy?.versions.find(v => v.version === policyVersionEditButton.dataset.policyVersion);
+        if (policy && version?.status === "Draft") {
+          if (policyVersionEditButton.closest(".policy-version-view-modal")) closeUserActionModal();
+          pushBackNavigationContext({ type: "policy-version-history", id: policy.id });
+          renderPolicyEditorPage(policy, "edit-draft");
+        }
         return;
       }
       // HS-PTO-002b: Row click on version history table opens View modal (same pattern as policy list row click)
