@@ -12793,9 +12793,20 @@
     }
     .policy-list-table .policy-row-badges {
       display: flex;
-      flex-wrap: wrap;
+      flex-direction: column;
       gap: 6px;
-      align-items: center;
+      align-items: flex-start;
+    }
+    .policy-list-table .policy-draft-pill {
+      font-size: 11px;
+    }
+    .policy-list-table .policy-version-pill {
+      font-size: 11px;
+    }
+    .policy-list-table .policy-draft-hint {
+      margin-top: 4px;
+      font-size: 11px;
+      color: #925500;
     }
     .policy-list-table .asset-row[data-policy-open] {
       cursor: pointer;
@@ -20950,7 +20961,7 @@
     function renderPolicyRow(policy) {
       const statusClass = policy.status === "Published" ? "green" : policy.draftVersion ? "amber" : "gray";
       const draftBadge = policy.draftVersion
-        ? `<span class="pill amber">มี Draft ${policy.draftVersion}</span>`
+        ? `<span class="pill amber policy-draft-pill">Draft ${policy.draftVersion.replace("-draft", "")}</span>`
         : "";
       return `
         <div class="asset-row" data-policy-open="${policy.id}">
@@ -20964,7 +20975,7 @@
               ${draftBadge}
             </div>
           </div>
-          <div data-label="เวอร์ชันปัจจุบัน"><div class="main-text">${policy.currentVersion}</div></div>
+          <div data-label="เวอร์ชันปัจจุบัน"><span class="pill slate policy-version-pill">${policy.currentVersion}</span></div>
           <div data-label="Updated"><div class="main-text">${policy.lastEdited}</div></div>
           <div data-label="Updated By"><div class="main-text">${policy.lastEditor}</div></div>
           <div class="user-row-actions">
