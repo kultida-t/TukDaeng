@@ -12828,6 +12828,75 @@
     body.policy-version-history-mode #primary-action { display: none; }
     body.policy-detail-mode #table,
     body.policy-version-history-mode #table { min-width: 0; }
+    .policy-detail-page { display: grid; gap: 20px; padding: 4px 0 12px; }
+    .policy-detail-page .policy-detail-badges {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 8px;
+      padding: 0 4px;
+    }
+    .policy-detail-page .policy-version {
+      padding: 3px 10px;
+      border: 1px solid #d7e5f4;
+      border-radius: 999px;
+      background: #eef5fd;
+      color: #0f2748;
+      font-size: 12px;
+      font-weight: 800;
+    }
+    .policy-detail-page .policy-detail-layout {
+      display: grid;
+      gap: 20px;
+    }
+    .policy-detail-page .detail-section {
+      display: grid;
+      gap: 16px;
+      padding: 22px 24px;
+      border: 1px solid #e3ebf5;
+      border-radius: 10px;
+      background: #fff;
+    }
+    .policy-detail-page .policy-content-tabs {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+    .policy-detail-page .policy-content-body {
+      min-height: 120px;
+      padding: 18px 20px;
+      border: 1px solid #d7e5f4;
+      border-radius: 8px;
+      background: #f9fbfe;
+      color: #1f334d;
+      font-size: 14px;
+      line-height: 1.7;
+    }
+    .policy-detail-page .policy-content-body h2,
+    .policy-detail-page .policy-content-body h3 { margin: 14px 0 6px; color: #0f2748; }
+    .policy-detail-page .policy-content-body p { margin: 0 0 10px; }
+    .policy-detail-page .policy-content-body ul,
+    .policy-detail-page .policy-content-body ol { padding-left: 24px; }
+    .policy-detail-page .policy-metadata {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+    .policy-detail-page .policy-change-summary {
+      display: grid;
+      gap: 6px;
+      padding: 14px 16px;
+      border: 1px solid #e3ebf5;
+      border-radius: 8px;
+      background: #f9fbfe;
+    }
+    .policy-detail-page .policy-change-summary p { margin: 0; color: #1f334d; font-size: 13px; }
+    .policy-detail-page .user-detail-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      padding: 0 4px;
+    }
 
     /* ===== Policy Editor (HS-PTO-002a) ===== */
     body.policy-editor-mode .layout { grid-template-columns: minmax(0, 1fr); }
@@ -21212,7 +21281,7 @@
       document.querySelector("#crumb").textContent = `เครื่องมือ & รายงาน / Settings / Policy & Versioning / ${policy.type}`;
       document.querySelector("#page-title").textContent = policy.typeLabel;
       document.querySelector("#page-meta").textContent = publishedVersion ? `เผยแพร่ ${publishedVersion.publishedDate}` : "";
-      document.querySelector("#panel-title").textContent = policy.type.toUpperCase();
+      document.querySelector("#panel-title").textContent = policy.typeLabel;
       document.querySelector("#panel-subtitle").textContent = policy.description;
       document.querySelector("#primary-action").textContent = "";
       document.querySelector("#user-panel-filter-actions").innerHTML = "";
@@ -21220,16 +21289,10 @@
       document.querySelector("#summary-grid").innerHTML = "";
       document.querySelector("#table").innerHTML = `
         <div class="user-detail-page policy-detail-page">
-          <div class="user-detail-head">
-            <div class="user-detail-head-info">
-              <h2>${policy.typeLabel}</h2>
-              <div class="policy-detail-badges">
-                <span class="pill ${policy.status === "Published" ? "green" : "gray"}">${policy.status}</span>
-                <span class="policy-version">${policy.currentVersion}</span>
-                ${hasDraft ? `<span class="pill amber">มี Draft ${policy.draftVersion}</span>` : ""}
-              </div>
-              <p class="muted">${policy.description}</p>
-            </div>
+          <div class="policy-detail-badges">
+            <span class="pill ${policy.status === "Published" ? "green" : "gray"}">${policy.status}</span>
+            <span class="policy-version">${policy.currentVersion}</span>
+            ${hasDraft ? `<span class="pill amber">มี Draft ${policy.draftVersion}</span>` : ""}
           </div>
           <div class="policy-detail-layout">
             <div class="detail-section">
@@ -21250,10 +21313,8 @@
                 ${publishedVersion ? sanitizePolicyContent(publishedVersion.contentEn) : "— No published version yet —"}
               </div>
               <div class="policy-metadata">
-                <div class="detail-tile"><span class="muted">เวอร์ชัน</span><strong>${policy.currentVersion}</strong></div>
                 <div class="detail-tile"><span class="muted">แก้ไขล่าสุด</span><strong>${policy.lastEdited}</strong></div>
                 <div class="detail-tile"><span class="muted">บทแก้ไข</span><strong>${policy.lastEditor}</strong></div>
-                <div class="detail-tile"><span class="muted">เผยแพร่เมื่อ</span><strong>${publishedVersion ? publishedVersion.publishedDate : "—"}</strong></div>
               </div>
               <div class="policy-change-summary">
                 <span class="muted">สรุปการเปลี่ยนแปลง:</span>
@@ -21294,10 +21355,10 @@
       document.body.classList.remove("policy-versioning-mode", "policy-detail-mode", "policy-version-history-mode");
       document.body.classList.add("policy-editor-mode");
       document.querySelector("#crumb").textContent = `เครื่องมือ & รายงาน / Settings / Policy & Versioning / ${policy.type} / Editor`;
-      document.querySelector("#page-title").textContent = `${policy.typeLabel} — Editor`;
-      document.querySelector("#page-meta").textContent = `Draft ${draftVersion}`;
-      document.querySelector("#panel-title").textContent = "POLICY EDITOR";
-      document.querySelector("#panel-subtitle").textContent = "แก้ไขเนื้อหา draft พร้อมรองรับภาษาไทยและอังกฤษ";
+      document.querySelector("#page-title").textContent = "Policy Editor";
+      document.querySelector("#page-meta").textContent = editorDate;
+      document.querySelector("#panel-title").textContent = policy.typeLabel;
+      document.querySelector("#panel-subtitle").textContent = `Draft ${draftVersion}`;
       document.querySelector("#primary-action").textContent = "";
       document.querySelector("#user-panel-filter-actions").innerHTML = "";
       document.querySelector(".filters").innerHTML = "";
@@ -21352,11 +21413,8 @@
               </form>
             </div>
             <aside class="policy-editor-sidebar" aria-label="ข้อมูล Policy">
-              <h4>ข้อมูล Policy</h4>
+              <h4>ข้อมูลการแก้ไข</h4>
               <dl class="policy-editor-meta-list">
-                <div><dt>Policy</dt><dd>${policy.typeLabel}</dd></div>
-                <div><dt>Version</dt><dd>${draftVersion}</dd></div>
-                <div><dt>สถานะ</dt><dd><span class="pill amber">Draft</span></dd></div>
                 <div><dt>ผู้แก้ไข</dt><dd>Admin</dd></div>
                 <div><dt>วันที่แก้ไข</dt><dd>${editorDate}</dd></div>
               </dl>
@@ -21444,9 +21502,9 @@
       document.body.classList.remove("policy-versioning-mode", "policy-detail-mode", "policy-editor-mode");
       document.body.classList.add("policy-version-history-mode");
       document.querySelector("#crumb").textContent = `เครื่องมือ & รายงาน / Settings / Policy & Versioning / ${policy.type} / Version History`;
-      document.querySelector("#page-title").textContent = `${policy.typeLabel} — Version History`;
+      document.querySelector("#page-title").textContent = "Version History";
       document.querySelector("#page-meta").textContent = `${policy.versions.length} เวอร์ชัน`;
-      document.querySelector("#panel-title").textContent = "VERSION HISTORY";
+      document.querySelector("#panel-title").textContent = policy.typeLabel;
       document.querySelector("#panel-subtitle").textContent = "ประวัติทุกเวอร์ชันของเนื้อหา เรียงจากใหม่ไปเก่า";
       document.querySelector("#primary-action").textContent = "";
       document.querySelector("#user-panel-filter-actions").innerHTML = "";
