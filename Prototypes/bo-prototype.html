@@ -13660,7 +13660,7 @@
         {
           id: "POL-PP",
           type: "Privacy Policy",
-          typeLabel: "นโยบายความเป็นส่วนตัว",
+          typeLabel: "PRIVACY POLICY",
           status: "Published",
           currentVersion: "v2.0",
           lastEdited: "20 Aug 2026 16:00",
@@ -21424,7 +21424,7 @@
       const hasDraft = !!policy.draftVersion;
       document.querySelector("#crumb").textContent = `เครื่องมือ & รายงาน / Settings / Policy & Versioning / ${policy.type}`;
       document.querySelector("#page-title").textContent = policy.typeLabel;
-      document.querySelector("#page-meta").textContent = policy.description;
+      document.querySelector("#page-meta").textContent = "";
       document.querySelector("#primary-action").textContent = "";
       document.querySelector("#user-panel-filter-actions").innerHTML = "";
       document.querySelector(".filters").innerHTML = "";
