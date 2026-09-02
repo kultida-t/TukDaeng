@@ -11212,10 +11212,16 @@
       }
       body.article-list-mode #table .article-table,
       body.category-list-mode #table .category-table,
-      body.reported-board-mode #table .reported-board-table {
+      body.reported-board-mode #table .reported-board-table,
+      body.policy-versioning-mode #table .policy-list-table {
         grid-template-columns: 1fr;
         gap: 12px;
         min-width: 0;
+      }
+      body.policy-versioning-mode #table {
+        padding: 12px 14px 16px;
+        background: #f8fbff;
+        overflow-x: hidden;
       }
       body.option-master-mode.option-group-list-mode #table .option-group-table,
       body.option-master-mode.option-detail-mode #table .option-detail-table {
@@ -11229,7 +11235,8 @@
       body.asset-list-mode:not(.article-list-mode):not(.category-list-mode):not(.reported-board-mode) #table > .footer-range,
       body.offer-list-mode #table > .footer-range,
       body.option-master-mode.option-group-list-mode #table > .footer-range,
-      body.option-master-mode.option-detail-mode #table > .footer-range {
+      body.option-master-mode.option-detail-mode #table > .footer-range,
+      body.policy-versioning-mode #table > .footer-range {
         min-width: 0;
       }
       body.offer-list-mode .asset-table {
@@ -11244,7 +11251,8 @@
       body.category-list-mode .footer-range,
       body.reported-board-mode .footer-range,
       body.option-master-mode .footer-range,
-      body.watch-alert-list-mode .footer-range {
+      body.watch-alert-list-mode .footer-range,
+      body.policy-versioning-mode .footer-range {
         margin-top: 12px;
         padding: 13px 16px;
         background: transparent;
@@ -11266,7 +11274,8 @@
       body.category-list-mode .category-table .asset-row.head,
       body.reported-board-mode .reported-board-table .asset-row.head,
       body.option-master-mode .option-group-table .asset-row.head,
-      body.option-master-mode .option-detail-table .asset-row.head {
+      body.option-master-mode .option-detail-table .asset-row.head,
+      body.policy-versioning-mode .policy-list-table .asset-row.head {
         display: none;
       }
       body.article-list-mode .article-table .asset-row:not(.head),
@@ -11274,6 +11283,7 @@
       body.reported-board-mode .reported-board-table .asset-row:not(.head),
       body.option-master-mode .option-group-table .asset-row:not(.head),
       body.option-master-mode .option-detail-table .asset-row:not(.head),
+      body.policy-versioning-mode .policy-list-table .asset-row:not(.head),
       body.watch-alert-list-mode .watch-alert-list-table .asset-row:not(.head) {
         grid-template-columns: minmax(0, 1fr) 34px;
         column-gap: 14px;
@@ -11291,7 +11301,8 @@
       body.reported-board-mode .reported-board-table .asset-row:not(.head) > div[data-label]:not(.asset-cell-primary),
       body.option-master-mode .option-group-table .asset-row:not(.head) > div[data-label]:not(.asset-cell-primary),
       body.option-master-mode .option-detail-table .asset-row:not(.head) > div[data-label]:not(.asset-cell-primary),
-      body.watch-alert-list-mode .watch-alert-list-table .asset-row:not(.head) > div[data-label]:not(.asset-cell-primary) {
+      body.watch-alert-list-mode .watch-alert-list-table .asset-row:not(.head) > div[data-label]:not(.asset-cell-primary),
+      body.policy-versioning-mode .policy-list-table .asset-row:not(.head) > div[data-label]:not(.asset-cell-primary) {
         display: none;
       }
       body.article-list-mode .article-table .asset-row:not(.head) > div[data-label]:first-child,
@@ -11306,7 +11317,8 @@
       body.category-list-mode .category-table .asset-row:not(.head) > .user-row-actions,
       body.reported-board-mode .reported-board-table .asset-row:not(.head) > .user-row-actions,
       body.option-master-mode .option-group-table .asset-row:not(.head) > .user-row-actions,
-      body.option-master-mode .option-detail-table .asset-row:not(.head) > .user-row-actions {
+      body.option-master-mode .option-detail-table .asset-row:not(.head) > .user-row-actions,
+      body.policy-versioning-mode .policy-list-table .asset-row:not(.head) > .user-row-actions {
         grid-column: 2;
         grid-row: 1;
         align-self: center;
@@ -11321,7 +11333,8 @@
       body.reported-board-mode .reported-board-table .asset-row:not(.head) > .asset-cell-primary,
       body.option-master-mode .option-group-table .asset-row:not(.head) > .asset-cell-primary,
       body.option-master-mode .option-detail-table .asset-row:not(.head) > .asset-cell-primary,
-      body.watch-alert-list-mode .watch-alert-list-table .asset-row:not(.head) > .asset-cell-primary {
+      body.watch-alert-list-mode .watch-alert-list-table .asset-row:not(.head) > .asset-cell-primary,
+      body.policy-versioning-mode .policy-list-table .asset-row:not(.head) > .asset-cell-primary {
         grid-column: 1;
         grid-row: 1;
         min-height: 30px;
@@ -11336,7 +11349,8 @@
       body.reported-board-mode .reported-board-table .asset-row:not(.head) > .asset-cell-primary .main-text,
       body.option-master-mode .option-group-table .asset-row:not(.head) > .asset-cell-primary .main-text,
       body.option-master-mode .option-detail-table .asset-row:not(.head) > .asset-cell-primary .main-text,
-      body.watch-alert-list-mode .watch-alert-list-table .asset-row:not(.head) > .asset-cell-primary .main-text {
+      body.watch-alert-list-mode .watch-alert-list-table .asset-row:not(.head) > .asset-cell-primary .main-text,
+      body.policy-versioning-mode .policy-list-table .asset-row:not(.head) > .asset-cell-primary .main-text {
         max-width: 100%;
         overflow: hidden;
         text-overflow: ellipsis;
@@ -11357,12 +11371,23 @@
       body.category-list-mode .category-table .asset-row:not(.head) .mobile-user-card-title,
       body.reported-board-mode .reported-board-table .asset-row:not(.head) .mobile-user-card-title,
       body.user-accounts-mode .comment-list-table .asset-row:not(.head) .mobile-user-card-title,
-      body.watch-alert-list-mode .watch-alert-list-table .asset-row:not(.head) .mobile-user-card-title { display: inline; }
+      body.watch-alert-list-mode .watch-alert-list-table .asset-row:not(.head) .mobile-user-card-title,
+      body.policy-versioning-mode .policy-list-table .asset-row:not(.head) .mobile-user-card-title {
+        display: inline !important;
+        color: #061426;
+        font-family: var(--font-heading);
+        font-size: 22px;
+        font-weight: 500;
+        letter-spacing: .04em;
+        line-height: 1;
+      }
+      body.policy-versioning-mode .policy-list-table .asset-row:not(.head) > .asset-cell-primary > .pill { display: none; }
       body.article-list-mode .article-table .asset-card-tags,
       body.category-list-mode .category-table .asset-card-tags,
       body.reported-board-mode .reported-board-table .asset-card-tags,
       body.user-accounts-mode .comment-list-table .asset-card-tags,
-      body.watch-alert-list-mode .watch-alert-list-table .asset-row:not(.head) > .asset-card-tags {
+      body.watch-alert-list-mode .watch-alert-list-table .asset-row:not(.head) > .asset-card-tags,
+      body.policy-versioning-mode .policy-list-table .asset-row:not(.head) > .asset-card-tags {
         grid-column: 1 / -1;
         grid-row: 2;
         display: flex;
@@ -11377,7 +11402,8 @@
       body.user-accounts-mode .comment-list-table .asset-card-tags .user-card-meta,
       body.option-master-mode .option-group-table .asset-card-tags .user-card-meta,
       body.option-master-mode .option-detail-table .asset-card-tags .user-card-meta,
-      body.watch-alert-list-mode .watch-alert-list-table .asset-card-tags .user-card-meta {
+      body.watch-alert-list-mode .watch-alert-list-table .asset-card-tags .user-card-meta,
+      body.policy-versioning-mode .policy-list-table .asset-card-tags .user-card-meta {
         flex: 1 0 100%;
         display: grid;
         gap: 3px;
@@ -11392,7 +11418,8 @@
       body.user-accounts-mode .comment-list-table .asset-card-tags .user-card-meta-item,
       body.option-master-mode .option-group-table .asset-card-tags .user-card-meta-item,
       body.option-master-mode .option-detail-table .asset-card-tags .user-card-meta-item,
-      body.watch-alert-list-mode .watch-alert-list-table .asset-card-tags .user-card-meta-item {
+      body.watch-alert-list-mode .watch-alert-list-table .asset-card-tags .user-card-meta-item,
+      body.policy-versioning-mode .policy-list-table .asset-card-tags .user-card-meta-item {
         display: flex;
         align-items: baseline;
         justify-content: space-between;
@@ -11407,7 +11434,8 @@
       body.user-accounts-mode .comment-list-table .asset-card-tags .user-card-meta-item span,
       body.option-master-mode .option-group-table .asset-card-tags .user-card-meta-item span,
       body.option-master-mode .option-detail-table .asset-card-tags .user-card-meta-item span,
-      body.watch-alert-list-mode .watch-alert-list-table .asset-card-tags .user-card-meta-item span {
+      body.watch-alert-list-mode .watch-alert-list-table .asset-card-tags .user-card-meta-item span,
+      body.policy-versioning-mode .policy-list-table .asset-card-tags .user-card-meta-item span {
         color: #485b75;
         font-size: 12px;
         font-weight: 700;
@@ -11419,7 +11447,8 @@
       body.user-accounts-mode .comment-list-table .asset-card-tags .user-card-meta-item strong,
       body.option-master-mode .option-group-table .asset-card-tags .user-card-meta-item strong,
       body.option-master-mode .option-detail-table .asset-card-tags .user-card-meta-item strong,
-      body.watch-alert-list-mode .watch-alert-list-table .asset-card-tags .user-card-meta-item strong {
+      body.watch-alert-list-mode .watch-alert-list-table .asset-card-tags .user-card-meta-item strong,
+      body.policy-versioning-mode .policy-list-table .asset-card-tags .user-card-meta-item strong {
         color: #233a5c;
         font-size: 12px;
         font-weight: 400;
@@ -11432,7 +11461,8 @@
       }
       body.option-master-mode .option-group-table .asset-card-tags .user-card-meta-item.comment-field-meta,
       body.option-master-mode .option-detail-table .asset-card-tags .user-card-meta-item.comment-field-meta,
-      body.watch-alert-list-mode .watch-alert-list-table .asset-card-tags .user-card-meta-item.comment-field-meta {
+      body.watch-alert-list-mode .watch-alert-list-table .asset-card-tags .user-card-meta-item.comment-field-meta,
+      body.policy-versioning-mode .policy-list-table .asset-card-tags .user-card-meta-item.comment-field-meta {
         display: grid;
         grid-template-columns: max-content minmax(0, 50%);
         align-items: baseline;
@@ -11440,7 +11470,8 @@
       }
       body.option-master-mode .option-group-table .asset-card-tags .user-card-meta-item.comment-field-meta strong,
       body.option-master-mode .option-detail-table .asset-card-tags .user-card-meta-item.comment-field-meta strong,
-      body.watch-alert-list-mode .watch-alert-list-table .asset-card-tags .user-card-meta-item.comment-field-meta strong {
+      body.watch-alert-list-mode .watch-alert-list-table .asset-card-tags .user-card-meta-item.comment-field-meta strong,
+      body.policy-versioning-mode .policy-list-table .asset-card-tags .user-card-meta-item.comment-field-meta strong {
         width: 100%;
         max-width: 100%;
         min-width: 0;
@@ -12780,6 +12811,24 @@
     body.policy-versioning-mode .layout {
       grid-template-columns: minmax(0, 1fr);
     }
+    body.policy-versioning-mode .layout > .panel {
+      overflow: hidden;
+    }
+    body.policy-versioning-mode .main {
+      overflow-x: hidden;
+    }
+    body.policy-versioning-mode #table {
+      max-width: 100%;
+      overflow-x: auto;
+      overflow-y: visible;
+      scrollbar-width: thin;
+    }
+    body.policy-versioning-mode #table .policy-list-table {
+      min-width: 1100px;
+    }
+    body.policy-versioning-mode #table > .footer-range {
+      min-width: 1100px;
+    }
     body.policy-versioning-mode .detail,
     body.policy-versioning-mode .summary-grid,
     body.policy-versioning-mode .cards {
@@ -12813,6 +12862,23 @@
     }
     .policy-list-table .asset-row[data-policy-open]:hover {
       background: var(--hover-bg, #f9fafb);
+    }
+    @media (max-width: 760px) {
+      body.policy-versioning-mode #table,
+      body.policy-versioning-mode #table .policy-list-table,
+      body.policy-versioning-mode #table > .footer-range {
+        width: 100%;
+        max-width: 100%;
+        min-width: 0 !important;
+        overflow-x: hidden;
+      }
+      body.policy-versioning-mode .policy-list-table .asset-row:not(.head) {
+        grid-template-columns: minmax(0, 1fr);
+        cursor: pointer;
+      }
+      body.policy-versioning-mode .policy-list-table .asset-row:not(.head) > .user-row-actions {
+        display: none;
+      }
     }
 
     /* ===== Policy Detail & Version History (HS-PTO-001/002a) ===== */
@@ -13046,7 +13112,7 @@
     .policy-editor-meta-list div { display: grid; gap: 4px; }
     .policy-editor-meta-list dt { color: #71829a; font-size: 12px; font-weight: 700; }
     .policy-editor-meta-list dd { margin: 0; color: #1f334d; font-size: 13px; font-weight: 400; }
-    .policy-editor-actions { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 10px; }
+    .policy-editor-actions { display: flex; flex-wrap: wrap; gap: 10px; }
     .policy-editor-actions .user-detail-action-btn[disabled] { cursor: not-allowed; opacity: .5; }
     .policy-editor-preview-content { display: grid; gap: 18px; }
     .policy-editor-preview-content .policy-preview-language { display: grid; gap: 8px; padding: 20px; border: 1px solid #e3ebf5; border-radius: 8px; background: #fff; }
@@ -21356,6 +21422,18 @@
         <div class="asset-row" data-policy-open="${policy.id}">
           <div class="asset-cell-primary" data-label="Policy">
             <span class="pill ${policy.id === "POL-TOU" ? "blue" : "purple"}">${policy.type.toUpperCase()}</span>
+            <div class="main-text"><span class="mobile-user-card-title">${policy.type.toUpperCase()}</span></div>
+          </div>
+          <div class="asset-card-tags">
+            <span class="pill ${statusClass}">${policy.status}</span>
+            ${draftBadge}
+            <span class="pill slate policy-version-pill">${policy.currentVersion}</span>
+            <div class="user-card-meta">
+              <div class="user-card-meta-item comment-field-meta"><span>Description</span><strong>${policy.description}</strong></div>
+              <div class="user-card-meta-item"><span>Version</span><strong>${policy.currentVersion}</strong></div>
+              <div class="user-card-meta-item"><span>Updated</span><strong>${policy.lastEdited}</strong></div>
+              <div class="user-card-meta-item"><span>Updated By</span><strong>${policy.lastEditor}</strong></div>
+            </div>
           </div>
           <div data-label="Description"><div class="main-text">${policy.description}</div></div>
           <div data-label="Status">
@@ -21570,11 +21648,11 @@
                     <div class="policy-editor-toolbar" role="toolbar" aria-label="Formatting tools in English">${renderPolicyEditorToolbarButtons()}</div>
                     <div class="policy-editor-canvas" contenteditable="true" role="textbox" aria-multiline="true" data-policy-content-en>${toEditorHtml(initialEn)}</div>
                   </div>
-                  <label class="article-editor-field"><span>สรุปการเปลี่ยนแปลง <span class="article-required-mark">*</span></span><textarea class="field" rows="2" data-policy-change-summary placeholder="อธิบายสิ่งที่เปลี่ยนแปลงในเวอร์ชันนี้">${escapeHtml(initialSummary)}</textarea></label>
+                  <span class="article-field-error" data-policy-content-error></span>
+                  <label class="article-editor-field"><span>สรุปการเปลี่ยนแปลง <span class="article-required-mark">*</span></span><textarea class="field" rows="2" data-policy-change-summary placeholder="อธิบายสิ่งที่เปลี่ยนแปลงในเวอร์ชันนี้">${escapeHtml(initialSummary)}</textarea><span class="article-field-error" data-policy-change-summary-error></span></label>
                 </section>
                 <div class="policy-editor-actions">
                   <button class="user-detail-action-btn" type="button" data-policy-back>ยกเลิก</button>
-                  <button class="user-detail-action-btn" type="button" data-policy-preview>Preview</button>
                   <button class="user-detail-action-btn" type="button" data-policy-publish disabled title="Publish จะเปิดใช้ในขั้นตอนถัดไป">Publish</button>
                   <button class="user-detail-action-btn primary" type="submit">บันทึก Draft</button>
                 </div>
@@ -21595,6 +21673,69 @@
       document.querySelector("#cards").innerHTML = "";
       updateActiveNav();
       scrollMainToTop();
+    }
+
+    function setPolicyEditorFieldError(form, field, message = "") {
+      if (!form) return;
+      const errorNode = form.querySelector(`[data-policy-${field}-error]`);
+      if (errorNode) {
+        errorNode.textContent = message;
+        errorNode.classList.toggle("show", Boolean(message));
+      }
+      const controlMap = {
+        "content": form.querySelector("[data-policy-content-th]"),
+        "change-summary": form.querySelector("[data-policy-change-summary]")
+      };
+      controlMap[field]?.classList.toggle("article-field-invalid", Boolean(message));
+    }
+
+    function clearPolicyEditorErrors(form) {
+      setPolicyEditorFieldError(form, "content");
+      setPolicyEditorFieldError(form, "change-summary");
+    }
+
+    function isPolicyEditorContentEmpty(editor) {
+      if (!editor) return true;
+      const text = (editor.textContent || "").trim();
+      if (text) return false;
+      const hasMedia = editor.querySelector("img, video, iframe");
+      return !hasMedia;
+    }
+
+    function validatePolicyEditorForm(form) {
+      clearPolicyEditorErrors(form);
+      const errors = [];
+      const thEditor = form.querySelector("[data-policy-content-th]");
+      const enEditor = form.querySelector("[data-policy-content-en]");
+      const summary = form.querySelector("[data-policy-change-summary]");
+      const thEmpty = isPolicyEditorContentEmpty(thEditor);
+      const enEmpty = isPolicyEditorContentEmpty(enEditor);
+      if (thEmpty) {
+        setPolicyEditorFieldError(form, "content", "กรุณากรอกเนื้อหาภาษาไทย");
+        errors.push("content");
+      }
+      if (enEmpty) {
+        setPolicyEditorFieldError(form, "content", thEmpty ? "กรุณากรอกเนื้อหาทั้งภาษาไทยและภาษาอังกฤษ" : "กรุณากรอกเนื้อหาภาษาอังกฤษ");
+        errors.push("content");
+      }
+      if (summary && !summary.value.trim()) {
+        setPolicyEditorFieldError(form, "change-summary", "กรุณากรอกสรุปการเปลี่ยนแปลง");
+        errors.push("change-summary");
+      }
+      if (errors.length) {
+        const firstError = errors[0];
+        if (firstError === "content") {
+          thEmpty ? thEditor?.focus() : enEditor?.focus();
+        } else if (firstError === "change-summary") {
+          summary?.focus();
+        }
+        return null;
+      }
+      return {
+        contentTh: thEditor?.innerHTML || "",
+        contentEn: enEditor?.innerHTML || "",
+        changeSummary: summary?.value.trim() || ""
+      };
     }
 
     function getNextPolicyVersionNumber(policy) {
@@ -32773,11 +32914,6 @@
         runPolicyEditorCommand(policyEditorTool);
         return;
       }
-      const policyPreviewButton = event.target.closest("[data-policy-preview]");
-      if (policyPreviewButton) {
-        openPolicyPreviewModal(policyPreviewButton.closest("[data-policy-editor]"));
-        return;
-      }
       const policyCard = event.target.closest("[data-policy-open]");
       if (policyCard && !event.target.closest(".row-menu summary, .row-menu-list, button, a, input, select, [data-custom-select]")) {
         const policy = policyVersioningData.policies.find(p => p.id === policyCard.dataset.policyOpen);
@@ -34267,6 +34403,17 @@
         updateArticleEditorPreview(form);
         return;
       }
+      if (event.target.matches("[data-policy-content-th], [data-policy-content-en], [data-policy-change-summary]")) {
+        const form = event.target.closest("[data-policy-editor]");
+        if (!form) return;
+        if (event.target.matches("[data-policy-content-th], [data-policy-content-en]")) {
+          setPolicyEditorFieldError(form, "content");
+        }
+        if (event.target.matches("[data-policy-change-summary]")) {
+          setPolicyEditorFieldError(form, "change-summary");
+        }
+        return;
+      }
       if (event.target.matches("#user-search")) {
         userListPage = 1;
         saveCurrentListFilterState();
@@ -34466,19 +34613,9 @@
         const policyId = policyForm.dataset.policyId;
         const policy = policyVersioningData.policies.find(p => p.id === policyId);
         if (!policy) return;
-        const changeSummary = policyForm.querySelector("[data-policy-change-summary]").value.trim();
-        const contentTh = policyForm.querySelector("[data-policy-content-th]").innerHTML.trim();
-        const contentEn = policyForm.querySelector("[data-policy-content-en]").innerHTML.trim();
-        const plainContentTh = policyForm.querySelector("[data-policy-content-th]").textContent.trim();
-        const plainContentEn = policyForm.querySelector("[data-policy-content-en]").textContent.trim();
-        if (!changeSummary) {
-          showSuccessToast("กรุณากรอกสรุปการเปลี่ยนแปลง");
-          return;
-        }
-        if (!plainContentTh || !plainContentEn) {
-          showSuccessToast("กรุณากรอกเนื้อหาทั้งภาษาไทยและอังกฤษ");
-          return;
-        }
+        const validated = validatePolicyEditorForm(policyForm);
+        if (!validated) return;
+        const { contentTh, contentEn, changeSummary } = validated;
         const versionNumber = policyForm.dataset.policyMode === "new-draft"
           ? `v${getNextPolicyVersionNumber(policy)}.0-draft`
           : (policy.draftVersion || `v${getNextPolicyVersionNumber(policy)}.0-draft`);
