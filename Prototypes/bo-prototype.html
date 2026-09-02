@@ -12828,19 +12828,9 @@
     body.policy-version-history-mode #primary-action { display: none; }
     body.policy-detail-mode #table,
     body.policy-version-history-mode #table { min-width: 0; }
-    .policy-detail-page { display: grid; gap: 18px; padding: 18px; }
-    .panel-title-row {
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      gap: 12px;
-    }
-    .panel-title-badges {
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      gap: 8px;
-    }
+    body.policy-detail-mode .layout > .panel > .panel-head,
+    body.policy-version-history-mode .layout > .panel > .panel-head { display: none !important; min-height: 0 !important; height: 0 !important; padding: 0 !important; border: 0 !important; margin: 0 !important; }
+    .policy-detail-page { display: grid; gap: 20px; padding: 20px; }
     .policy-detail-page .policy-version {
       padding: 3px 10px;
       border: 1px solid #d7e5f4;
@@ -12852,12 +12842,11 @@
     }
     .policy-detail-page .policy-detail-layout {
       display: grid;
-      gap: 18px;
+      gap: 20px;
     }
     .policy-detail-page .detail-section {
       display: grid;
-      gap: 14px;
-      padding: 18px 0;
+      gap: 18px;
     }
     .policy-detail-page .policy-content-tabs {
       display: flex;
@@ -12865,48 +12854,63 @@
       flex-wrap: wrap;
     }
     .policy-detail-page .policy-content-body {
-      min-height: 120px;
-      padding: 16px 18px;
+      max-height: 420px;
+      overflow-y: auto;
+      padding: 20px 22px;
       border: 1px solid #e3ebf5;
       border-radius: 8px;
       background: #f9fbfe;
       color: #1f334d;
       font-size: 14px;
-      line-height: 1.7;
+      line-height: 1.8;
     }
     .policy-detail-page .policy-content-body h2,
     .policy-detail-page .policy-content-body h3 {
-      margin: 14px 0 6px;
+      margin: 18px 0 8px;
       color: #0f2748;
       font-family: var(--font-main);
       font-size: 18px;
       font-weight: 700;
       letter-spacing: 0;
-      line-height: 1.35;
+      line-height: 1.4;
     }
-    .policy-detail-page .policy-content-body p { margin: 0 0 10px; }
+    .policy-detail-page .policy-content-body h2:first-child,
+    .policy-detail-page .policy-content-body h3:first-child { margin-top: 0; }
+    .policy-detail-page .policy-content-body p { margin: 0 0 12px; }
+    .policy-detail-page .policy-content-body p:last-child { margin-bottom: 0; }
     .policy-detail-page .policy-content-body ul,
-    .policy-detail-page .policy-content-body ol { padding-left: 24px; }
+    .policy-detail-page .policy-content-body ol { padding-left: 24px; margin: 0 0 12px; }
     .policy-detail-page .policy-content-body a { color: #2563eb; text-decoration: underline; }
     .policy-detail-page .policy-metadata {
       display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
+      grid-template-columns: repeat(4, minmax(0, 1fr));
       gap: 12px;
     }
     .policy-detail-page .policy-change-summary {
       display: grid;
       gap: 6px;
-      padding: 14px 16px;
+      padding: 16px 18px;
       border: 1px solid #e3ebf5;
       border-radius: 8px;
       background: #f9fbfe;
     }
-    .policy-detail-page .policy-change-summary p { margin: 0; color: #1f334d; font-size: 13px; }
+    .policy-detail-page .policy-change-summary .muted {
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 700;
+    }
+    .policy-detail-page .policy-change-summary p { margin: 0; color: #1f334d; font-size: 13px; font-weight: 400; }
     .policy-detail-page .user-detail-actions {
       display: flex;
       flex-wrap: wrap;
       gap: 10px;
-      padding-top: 4px;
+      padding-top: 2px;
+    }
+    @media (max-width: 760px) {
+      .policy-detail-page { padding: 14px 12px 18px; gap: 16px; }
+      .policy-detail-page .detail-section { gap: 14px; }
+      .policy-detail-page .policy-content-body { padding: 16px; }
+      .policy-detail-page .policy-metadata { grid-template-columns: repeat(2, minmax(0, 1fr)); }
     }
     @media (max-width: 760px) {
       .policy-detail-page { padding: 14px 10px 18px; }
@@ -21420,25 +21424,11 @@
       const hasDraft = !!policy.draftVersion;
       document.querySelector("#crumb").textContent = `เครื่องมือ & รายงาน / Settings / Policy & Versioning / ${policy.type}`;
       document.querySelector("#page-title").textContent = policy.typeLabel;
-      document.querySelector("#page-meta").textContent = publishedVersion ? `เผยแพร่ ${publishedVersion.publishedDate}` : "";
-      document.querySelector("#panel-title").textContent = policy.typeLabel;
-      document.querySelector("#panel-subtitle").textContent = policy.description;
+      document.querySelector("#page-meta").textContent = policy.description;
       document.querySelector("#primary-action").textContent = "";
       document.querySelector("#user-panel-filter-actions").innerHTML = "";
       document.querySelector(".filters").innerHTML = "";
       document.querySelector("#summary-grid").innerHTML = "";
-      const policyTitleBadges = `
-        <span class="pill ${policy.status === "Published" ? "green" : "gray"}">${policy.status}</span>
-        <span class="pill slate">${policy.currentVersion}</span>
-        ${hasDraft ? `<span class="pill amber">มี Draft ${policy.draftVersion}</span>` : ""}
-      `;
-      document.querySelector(".panel-head > div").innerHTML = `
-        <div class="panel-title-row">
-          <h2 id="panel-title">${policy.typeLabel}</h2>
-          <div class="panel-title-badges">${policyTitleBadges}</div>
-        </div>
-        <p id="panel-subtitle">${policy.description}</p>
-      `;
       document.querySelector("#table").innerHTML = `
         <div class="user-detail-page policy-detail-page">
           <div class="policy-detail-layout">
@@ -21454,11 +21444,13 @@
                 ${publishedVersion ? sanitizePolicyContent(publishedVersion.contentEn) : "— No published version yet —"}
               </div>
               <div class="policy-metadata">
-                <div class="detail-tile"><span class="muted">แก้ไขล่าสุด</span><strong>${policy.lastEdited}</strong></div>
-                <div class="detail-tile"><span class="muted">บทแก้ไข</span><strong>${policy.lastEditor}</strong></div>
+                <div class="detail-tile"><span class="muted">Status</span><strong><span class="pill ${policy.status === "Published" ? "green" : "gray"}">${policy.status}</span></strong></div>
+                <div class="detail-tile"><span class="muted">Version</span><strong><span class="pill slate">${policy.currentVersion}</span></strong></div>
+                <div class="detail-tile"><span class="muted">Updated</span><strong>${policy.lastEdited}</strong></div>
+                <div class="detail-tile"><span class="muted">Updated By</span><strong>${policy.lastEditor}</strong></div>
               </div>
               <div class="policy-change-summary">
-                <span class="muted">สรุปการเปลี่ยนแปลง:</span>
+                <span class="muted">Change Summary</span>
                 <p>${publishedVersion ? escapeHtml(publishedVersion.changeSummary) : "—"}</p>
               </div>
             </div>
