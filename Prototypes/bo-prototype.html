@@ -12922,17 +12922,16 @@
     body.policy-editor-mode .cards,
     body.policy-editor-mode #primary-action { display: none; }
     body.policy-editor-mode #table { min-width: 0; }
-    .policy-editor-page { padding: 4px 0 12px; }
+    body.policy-editor-mode .layout > .panel > .panel-head { display: none !important; min-height: 0 !important; height: 0 !important; padding: 0 !important; border: 0 !important; margin: 0 !important; }
+    .policy-editor-page { display: grid; gap: 20px; padding: 20px; }
     .policy-editor-page .policy-detail-layout {
       display: grid;
-      grid-template-columns: minmax(0, 1fr) minmax(280px, 340px);
-      gap: 24px;
-      align-items: start;
+      gap: 20px;
     }
     .policy-editor-form { display: grid; gap: 20px; }
     .policy-editor-form .article-editor-section {
       display: grid;
-      gap: 14px;
+      gap: 18px;
       padding: 20px;
       border: 1px solid #e3ebf5;
       border-radius: 8px;
@@ -12941,10 +12940,12 @@
     .policy-editor-form .article-editor-section h4 {
       margin: 0;
       color: #0f2748;
+      font-family: var(--font-main);
       font-size: 15px;
-      font-weight: 800;
+      font-weight: 700;
+      letter-spacing: 0;
     }
-    .policy-editor-form .support-center-field-row { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .policy-editor-form .support-center-field-row { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
     .policy-editor-form label {
       display: flex;
       flex-direction: column;
@@ -12954,12 +12955,14 @@
       font-weight: 700;
       line-height: 1.35;
     }
+    .policy-editor-form .article-editor-field { gap: 8px; }
+    .policy-editor-form textarea { resize: vertical; line-height: 1.6; }
     .policy-editor-toolbar {
       display: flex;
       flex-wrap: wrap;
       gap: 6px;
-      padding: 8px;
-      border: 1px solid #d7e5f4;
+      padding: 10px 12px;
+      border: 1px solid #e3ebf5;
       border-bottom: 0;
       border-radius: 8px 8px 0 0;
       background: #f7faff;
@@ -12967,7 +12970,7 @@
     .policy-editor-tool {
       min-width: 34px;
       min-height: 34px;
-      padding: 5px 9px;
+      padding: 5px 10px;
       border: 1px solid #d7e5f4;
       border-radius: 6px;
       background: #fff;
@@ -12980,49 +12983,69 @@
     .policy-editor-tool:focus-visible { border-color: #9db6d2; background: #eef5fd; outline: 0; }
     .policy-editor-canvas {
       min-height: 360px;
-      padding: 16px;
-      border: 1px solid #d7e5f4;
+      max-height: 480px;
+      overflow-y: auto;
+      padding: 20px;
+      border: 1px solid #e3ebf5;
       border-radius: 0 0 8px 8px;
       background: #fff;
       color: #1f334d;
       font-size: 14px;
-      line-height: 1.7;
+      line-height: 1.8;
       outline: 0;
     }
     .policy-editor-canvas:focus { border-color: #9db6d2; box-shadow: 0 0 0 3px rgba(91, 132, 177, .12); }
-    .policy-editor-canvas h2, .policy-editor-canvas h3 { margin: 14px 0 6px; color: #0f2748; }
-    .policy-editor-canvas p { margin: 0 0 10px; }
-    .policy-editor-canvas ul, .policy-editor-canvas ol { padding-left: 24px; }
-    .policy-editor-language-note { margin: -4px 0 0; color: #71829a; font-size: 12px; }
+    .policy-editor-canvas h2, .policy-editor-canvas h3 {
+      margin: 20px 0 10px;
+      color: #0f2748;
+      font-family: var(--font-main);
+      font-size: 18px;
+      font-weight: 700;
+      letter-spacing: 0;
+      line-height: 1.4;
+    }
+    .policy-editor-canvas h2:first-child, .policy-editor-canvas h3:first-child { margin-top: 0; }
+    .policy-editor-canvas p { margin: 0 0 14px; }
+    .policy-editor-canvas p:last-child { margin-bottom: 0; }
+    .policy-editor-canvas ul, .policy-editor-canvas ol { padding-left: 24px; margin: 0 0 14px; }
+    .policy-editor-canvas ul:last-child, .policy-editor-canvas ol:last-child { margin-bottom: 0; }
+    .policy-editor-canvas a { color: #2563eb; text-decoration: underline; }
+    .policy-editor-language-note { margin: 0; color: #71829a; font-size: 12px; }
     .policy-editor-sidebar {
-      position: sticky;
-      top: 20px;
       display: grid;
       gap: 16px;
-      padding: 18px;
+      padding: 20px;
       border: 1px solid #e3ebf5;
       border-radius: 8px;
       background: #f9fbfe;
     }
-    .policy-editor-sidebar h4 { margin: 0; color: #0f2748; font-size: 15px; font-weight: 800; }
-    .policy-editor-meta-list { display: grid; gap: 12px; margin: 0; }
-    .policy-editor-meta-list div { display: grid; gap: 3px; }
-    .policy-editor-meta-list dt { color: #71829a; font-size: 11px; font-weight: 700; }
-    .policy-editor-meta-list dd { margin: 0; color: #1f334d; font-size: 13px; font-weight: 700; }
+    .policy-editor-sidebar h4 {
+      margin: 0;
+      color: #0f2748;
+      font-family: var(--font-main);
+      font-size: 15px;
+      font-weight: 700;
+      letter-spacing: 0;
+    }
+    .policy-editor-meta-list { display: grid; gap: 14px; margin: 0; }
+    .policy-editor-meta-list div { display: grid; gap: 4px; }
+    .policy-editor-meta-list dt { color: #71829a; font-size: 12px; font-weight: 700; }
+    .policy-editor-meta-list dd { margin: 0; color: #1f334d; font-size: 13px; font-weight: 400; }
     .policy-editor-actions { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 10px; }
     .policy-editor-actions .user-detail-action-btn[disabled] { cursor: not-allowed; opacity: .5; }
     .policy-editor-preview-content { display: grid; gap: 18px; }
-    .policy-editor-preview-content .policy-preview-language { display: grid; gap: 8px; padding: 18px; border: 1px solid #e3ebf5; border-radius: 8px; background: #fff; }
-    .policy-editor-preview-content h4 { margin: 0; color: #0f2748; font-size: 15px; }
+    .policy-editor-preview-content .policy-preview-language { display: grid; gap: 8px; padding: 20px; border: 1px solid #e3ebf5; border-radius: 8px; background: #fff; }
+    .policy-editor-preview-content h4 { margin: 0; color: #0f2748; font-family: var(--font-main); font-size: 15px; font-weight: 700; }
     @media (max-width: 980px) {
       .policy-editor-page .policy-detail-layout { grid-template-columns: minmax(0, 1fr); }
-      .policy-editor-sidebar { position: static; }
     }
     @media (max-width: 760px) {
-      .policy-editor-page { padding-bottom: 76px; }
-      .policy-editor-form .article-editor-section { padding: 16px; }
+      .policy-editor-page { padding: 14px 12px 76px; gap: 16px; }
+      .policy-editor-form { gap: 16px; }
+      .policy-editor-form .article-editor-section { padding: 16px; gap: 14px; }
       .policy-editor-form .support-center-field-row { grid-template-columns: 1fr; }
-      .policy-editor-canvas { min-height: 300px; }
+      .policy-editor-canvas { min-height: 300px; max-height: 400px; padding: 16px; }
+      .policy-editor-sidebar { padding: 16px; }
       .policy-editor-actions { position: fixed; z-index: 8; right: 0; bottom: 0; left: 0; padding: 10px 14px; border-top: 1px solid #dce6f2; background: rgba(255, 255, 255, .97); box-shadow: 0 -8px 20px rgba(15, 39, 72, .08); }
       .policy-editor-actions .user-detail-action-btn { flex: 1 1 0; min-width: 0; }
     }
@@ -21487,10 +21510,8 @@
       document.body.classList.remove("policy-versioning-mode", "policy-detail-mode", "policy-version-history-mode");
       document.body.classList.add("policy-editor-mode");
       document.querySelector("#crumb").textContent = `เครื่องมือ & รายงาน / Settings / Policy & Versioning / ${policy.type} / Editor`;
-      document.querySelector("#page-title").textContent = "Policy Editor";
-      document.querySelector("#page-meta").textContent = editorDate;
-      document.querySelector("#panel-title").textContent = policy.typeLabel;
-      document.querySelector("#panel-subtitle").textContent = `Draft ${draftVersion}`;
+      document.querySelector("#page-title").textContent = `${policy.typeLabel} — Editor`;
+      document.querySelector("#page-meta").textContent = "";
       document.querySelector("#primary-action").textContent = "";
       document.querySelector("#user-panel-filter-actions").innerHTML = "";
       document.querySelector(".filters").innerHTML = "";
@@ -21537,14 +21558,14 @@
                   </div>
                 </section>
                 <div class="policy-editor-actions">
+                  <button class="user-detail-action-btn" type="button" data-policy-back>ยกเลิก</button>
                   <button class="user-detail-action-btn" type="button" data-policy-preview>Preview</button>
                   <button class="user-detail-action-btn" type="button" data-policy-publish disabled title="Publish จะเปิดใช้ในขั้นตอนถัดไป">Publish</button>
                   <button class="user-detail-action-btn primary" type="submit">บันทึก Draft</button>
-                  <button class="user-detail-action-btn" type="button" data-policy-back>ยกเลิก</button>
                 </div>
               </form>
             </div>
-            <aside class="policy-editor-sidebar" aria-label="ข้อมูล Policy">
+            <aside class="policy-editor-sidebar" aria-label="ข้อมูลการแก้ไข">
               <h4>ข้อมูลการแก้ไข</h4>
               <dl class="policy-editor-meta-list">
                 <div><dt>ผู้แก้ไข</dt><dd>Admin</dd></div>
