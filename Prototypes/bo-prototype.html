@@ -15469,6 +15469,10 @@
         renderArticleDetailPage(getArticleById(context.id));
         return true;
       }
+      if (context.type === "policy-detail") {
+        renderPolicyDetailPage(policyVersioningData.policies.find(entry => entry.id === context.id));
+        return true;
+      }
       if (context.type === "reported-board-detail") {
         renderReportedBoardDetail(getBoardReportById(context.id));
         return true;
@@ -32924,26 +32928,39 @@
       }
       const policyBackButton = event.target.closest("[data-policy-back]");
       if (policyBackButton) {
-        renderPolicyVersioningList();
+        if (policyBackButton.closest("[data-policy-editor]") || document.body.classList.contains("policy-version-history-mode")) {
+          goBackToPreviousPage();
+        } else {
+          renderPolicyVersioningList();
+        }
         updateActiveNav();
         return;
       }
       const policyEditButton = event.target.closest("[data-policy-edit]");
       if (policyEditButton) {
         const policy = policyVersioningData.policies.find(p => p.id === policyEditButton.dataset.policyEdit);
-        if (policy) renderPolicyEditorPage(policy);
+        if (policy) {
+          pushBackNavigationContext({ type: "policy-detail", id: policy.id });
+          renderPolicyEditorPage(policy);
+        }
         return;
       }
       const policyVersionHistoryButton = event.target.closest("[data-policy-version-history]");
       if (policyVersionHistoryButton) {
         const policy = policyVersioningData.policies.find(p => p.id === policyVersionHistoryButton.dataset.policyVersionHistory);
-        if (policy) renderPolicyVersionHistoryPage(policy);
+        if (policy) {
+          pushBackNavigationContext({ type: "policy-detail", id: policy.id });
+          renderPolicyVersionHistoryPage(policy);
+        }
         return;
       }
       const policyCreateDraftButton = event.target.closest("[data-policy-create-draft]");
       if (policyCreateDraftButton) {
         const policy = policyVersioningData.policies.find(p => p.id === policyCreateDraftButton.dataset.policyCreateDraft);
-        if (policy) renderPolicyEditorPage(policy, "new-draft");
+        if (policy) {
+          pushBackNavigationContext({ type: "policy-detail", id: policy.id });
+          renderPolicyEditorPage(policy, "new-draft");
+        }
         return;
       }
       // ===== Support Center event handlers (HS-PTO-004) =====
