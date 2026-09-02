@@ -31966,6 +31966,25 @@
           expandedMenus.clear();
           if (!wasExpanded) expandedMenus.add(menuId);
           updateActiveNav();
+          // เลื่อนพื้นที่ submenu ทั้งหมดเข้าสู่มุมมองเมื่อกางเมนูย่อย
+          // โดยเฉพาะ Settings ที่อยู่ล่างสุดและมีรายการย่อยหลายรายการ
+          if (!wasExpanded) {
+            requestAnimationFrame(() => {
+              const nav = document.querySelector("#nav");
+              const submenu = nav?.querySelector(`[data-submenu="${menuId}"]`);
+              if (!nav || !submenu) return;
+              const navRect = nav.getBoundingClientRect();
+              const submenuRect = submenu.getBoundingClientRect();
+              const bottomGap = submenuRect.bottom - navRect.bottom;
+              const topGap = submenuRect.top - navRect.top;
+              const scrollPadding = 12;
+              if (bottomGap > 0) {
+                nav.scrollBy({ top: bottomGap + scrollPadding, behavior: "smooth" });
+              } else if (topGap < 0) {
+                nav.scrollBy({ top: topGap - scrollPadding, behavior: "smooth" });
+              }
+            });
+          }
           return;
         }
         const parentId = navButton.dataset.parent;
