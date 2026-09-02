@@ -13117,6 +13117,44 @@
     .policy-editor-preview-content { display: grid; gap: 18px; }
     .policy-editor-preview-content .policy-preview-language { display: grid; gap: 8px; padding: 20px; border: 1px solid #e3ebf5; border-radius: 8px; background: #fff; }
     .policy-editor-preview-content h4 { margin: 0; color: #0f2748; font-family: var(--font-main); font-size: 15px; font-weight: 700; }
+    .policy-preview-body {
+      padding: 20px;
+      border: 1px solid #e3ebf5;
+      border-radius: 8px;
+      background: #fff;
+      color: #1f334d;
+      font-family: var(--font-main);
+      font-size: 14px;
+      font-weight: 400;
+      line-height: 1.8;
+      letter-spacing: 0;
+      text-transform: none;
+      overflow-y: auto;
+      max-height: 480px;
+    }
+    .policy-preview-body h2,
+    .policy-preview-body h3 {
+      margin: 20px 0 10px;
+      color: #0f2748;
+      font-family: var(--font-main);
+      font-size: 18px;
+      font-weight: 700;
+      letter-spacing: 0;
+      line-height: 1.4;
+      text-transform: none;
+    }
+    .policy-preview-body h2:first-child,
+    .policy-preview-body h3:first-child { margin-top: 0; }
+    .policy-preview-body p { margin: 0 0 14px; font-family: var(--font-main); }
+    .policy-preview-body p:last-child { margin-bottom: 0; }
+    .policy-preview-body ul,
+    .policy-preview-body ol { padding-left: 24px; margin: 0 0 14px; font-family: var(--font-main); }
+    .policy-preview-body ul:last-child,
+    .policy-preview-body ol:last-child { margin-bottom: 0; }
+    .policy-preview-body li { font-family: var(--font-main); }
+    .policy-preview-body a { color: #2563eb; text-decoration: underline; font-family: var(--font-main); }
+    .policy-preview-body strong,
+    .policy-preview-body em { font-family: var(--font-main); }
     @media (max-width: 980px) {
       .policy-editor-page .policy-detail-layout { grid-template-columns: minmax(0, 1fr); }
     }
@@ -13129,6 +13167,114 @@
       .policy-editor-sidebar { padding: 16px; }
       .policy-editor-actions { position: static; padding: 0; border-top: 0; background: transparent; box-shadow: none; }
       .policy-editor-actions .user-detail-action-btn { flex: 1 1 0; min-width: 0; }
+    }
+
+    /* ===== Policy version history + publish/restore (HS-PTO-002b) ===== */
+    .policy-version-table .asset-row.head > div:last-child,
+    .policy-version-table .asset-row:not(.head) > .user-row-actions {
+      min-width: 120px;
+    }
+    .policy-version-table .asset-row:not(.head) > .user-row-actions {
+      gap: 14px;
+    }
+    .policy-publish-confirm-meta {
+      display: grid;
+      gap: 8px;
+      width: 100%;
+      max-width: 320px;
+      margin-top: 14px;
+      padding: 14px 16px;
+      border: 1px solid #e3ebf5;
+      border-radius: 10px;
+      background: #f7faff;
+      text-align: left;
+    }
+    .policy-publish-confirm-meta > div {
+      display: grid;
+      gap: 2px;
+    }
+    .policy-publish-confirm-meta .muted {
+      color: #71829a;
+      font-size: 11px;
+      font-weight: 700;
+    }
+    .policy-publish-confirm-meta strong {
+      color: #1f334d;
+      font-size: 13px;
+      font-weight: 600;
+      line-height: 1.45;
+      word-break: break-word;
+    }
+    .modal.user-action-modal.policy-version-view-modal {
+      width: min(1040px, 100%);
+    }
+    .policy-version-view-content { display: grid; gap: 18px; }
+    .policy-version-view-summary {
+      padding: 14px 16px;
+      border: 1px solid #e3ebf5;
+      border-radius: 10px;
+      background: #f7faff;
+    }
+    .policy-version-view-summary .muted {
+      color: #71829a;
+      font-size: 11px;
+      font-weight: 700;
+    }
+    .policy-version-view-summary p {
+      margin: 4px 0 0;
+      color: #1f334d;
+      font-size: 13px;
+      font-weight: 400;
+      line-height: 1.6;
+    }
+    .policy-version-view-tabs {
+      display: inline-flex;
+      gap: 4px;
+      padding: 4px;
+      border: 1px solid #e3ebf5;
+      border-radius: 8px;
+      background: #f1f5fb;
+      width: fit-content;
+    }
+    .policy-version-view-body {
+      padding: 20px;
+      border: 1px solid #e3ebf5;
+      border-radius: 10px;
+      background: #fff;
+      color: #1f334d;
+      font-size: 14px;
+      line-height: 1.8;
+      max-height: 360px;
+      overflow-y: auto;
+    }
+    .policy-version-view-body h2,
+    .policy-version-view-body h3 {
+      margin: 20px 0 10px;
+      color: #0f2748;
+      font-family: var(--font-main);
+      font-size: 18px;
+      font-weight: 700;
+      line-height: 1.4;
+    }
+    .policy-version-view-body h2:first-child,
+    .policy-version-view-body h3:first-child { margin-top: 0; }
+    .policy-version-view-body p { margin: 0 0 14px; }
+    .policy-version-view-body p:last-child { margin-bottom: 0; }
+    .policy-version-view-body ul,
+    .policy-version-view-body ol { padding-left: 24px; margin: 0 0 14px; }
+    .policy-version-view-body ul:last-child,
+    .policy-version-view-body ol:last-child { margin-bottom: 0; }
+    .policy-version-view-body a { color: #2563eb; text-decoration: underline; }
+    .policy-version-view-footer {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: flex-end;
+    }
+    @media (max-width: 760px) {
+      .policy-version-view-body { padding: 16px; max-height: 280px; }
+      .policy-version-view-footer { justify-content: stretch; }
+      .policy-version-view-footer .user-detail-action-btn { flex: 1 1 0; min-width: 0; }
     }
 
     /* ===== Support Center (HS-PTO-004) ===== */
@@ -20018,7 +20164,9 @@
 
     function applyModalHeadingFonts(modal) {
       if (!modal) return;
+      // HS-PTO-002b: ข้าม heading ใน policy preview/version view body เพราะใช้ font-main ทั้ง TH/EN อยู่แล้ว
       modal.querySelectorAll(".modal-body h1, .modal-body h2, .modal-body h3, .modal-body h4, .modal-body h5, .modal-body h6").forEach(heading => {
+        if (heading.closest(".policy-preview-body, .policy-version-view-body")) return;
         const hasThai = /[\u0E00-\u0E7F]/.test(heading.textContent || "");
         heading.classList.toggle("modal-heading-th", hasThai);
         heading.classList.toggle("modal-heading-en", !hasThai);
@@ -20059,7 +20207,7 @@
       }
       modal.classList.remove("show");
       modal.classList.remove("market-reference-drawer-open", "market-reference-drawer-closing");
-      modalCard?.classList.remove("article-preview-modal", "article-editor-confirm-modal", "category-editor-modal", "category-order-modal", "market-editor-modal", "market-reference-drawer", "board-report-phone-preview-modal", "option-editor-modal", "option-order-modal", "option-audit-modal");
+      modalCard?.classList.remove("article-preview-modal", "article-editor-confirm-modal", "category-editor-modal", "category-order-modal", "market-editor-modal", "market-reference-drawer", "board-report-phone-preview-modal", "option-editor-modal", "option-order-modal", "option-audit-modal", "policy-version-view-modal");
       document.body.classList.remove("asset-action-modal-open");
       document.querySelector("#user-action-modal-body").innerHTML = "";
     }
@@ -21657,7 +21805,8 @@
                 </section>
                 <div class="policy-editor-actions">
                   <button class="user-detail-action-btn" type="button" data-policy-back>ยกเลิก</button>
-                  <button class="user-detail-action-btn" type="button" data-policy-publish disabled title="Publish จะเปิดใช้ในขั้นตอนถัดไป">Publish</button>
+                  <button class="user-detail-action-btn" type="button" data-policy-preview>Preview</button>
+                  <button class="user-detail-action-btn" type="button" data-policy-publish>Publish</button>
                   <button class="user-detail-action-btn primary" type="submit">บันทึก Draft</button>
                 </div>
               </form>
@@ -21668,7 +21817,7 @@
                 <div><dt>ผู้แก้ไข</dt><dd>Admin</dd></div>
                 <div><dt>วันที่แก้ไข</dt><dd>${editorDate}</dd></div>
               </dl>
-              <p class="muted">การเผยแพร่และการจัดการ Version History จะดำเนินการใน flow ถัดไป</p>
+              <p class="muted">กด Preview เพื่อดูตัวอย่าง 2 ภาษา ก่อนเผยแพร่ หรือกด Publish เพื่อเผยแพร่เวอร์ชันนี้ (เวอร์ชันที่เผยแพร่แล้วจะถูกเก็บเป็น Archived อัตโนมัติ)</p>
             </aside>
           </div>
         </div>
@@ -21821,11 +21970,186 @@
             <div><h2 id="user-action-modal-title">Preview — ${policy.typeLabel}</h2><p>${form.querySelector(".policy-metadata .detail-tile:nth-child(2) strong")?.textContent || "Draft"}</p></div>
             <button class="btn user-action-close" type="button" data-user-action-modal-close aria-label="ปิด">${iconSvg.close}</button>
           </div>
-          <div class="policy-preview-language"><h4>ภาษาไทย</h4><div class="policy-editor-canvas">${th}</div></div>
-          <div class="policy-preview-language"><h4>English</h4><div class="policy-editor-canvas">${en}</div></div>
+          <div class="policy-preview-language"><h4>ภาษาไทย</h4><div class="policy-preview-body">${th}</div></div>
+          <div class="policy-preview-language"><h4>English</h4><div class="policy-preview-body">${en}</div></div>
         </div>
       `;
       showUserActionModal(true);
+    }
+
+    // HS-PTO-002b: Publish confirmation modal
+    function openPolicyPublishConfirmModal(form) {
+      const policy = policyVersioningData.policies.find(item => item.id === form.dataset.policyId);
+      if (!policy) return;
+      const validated = validatePolicyEditorForm(form);
+      if (!validated) return;
+      const isNewDraft = form.dataset.policyMode === "new-draft";
+      const draftVersion = isNewDraft
+        ? `v${getNextPolicyVersionNumber(policy)}.0`
+        : (policy.draftVersion || `v${getNextPolicyVersionNumber(policy)}.0`).replace(/-draft$/, "");
+      const publishedVersion = policy.versions.find(v => v.status === "Published");
+      const modalCard = document.querySelector("#user-action-modal .user-action-modal");
+      const modalBody = document.querySelector("#user-action-modal-body");
+      modalCard?.classList.remove("article-preview-modal", "category-editor-modal");
+      modalCard?.classList.add("article-editor-confirm-modal");
+      modalBody.innerHTML = `
+        <div class="article-editor-confirm-page">
+          <div class="article-editor-confirm-icon" aria-hidden="true">
+            <span>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+                <path d="m7.9 12.2 2.7 2.7 5.8-6"></path>
+              </svg>
+            </span>
+          </div>
+          <h2 id="user-action-modal-title">ยืนยันการเผยแพร่</h2>
+          <p class="article-editor-confirm-question">คุณต้องการเผยแพร่ ${policy.typeLabel} เวอร์ชัน ${draftVersion} ใช่หรือไม่?</p>
+          <p class="article-editor-confirm-summary">เวอร์ชันที่เผยแพร่อยู่ (${publishedVersion ? publishedVersion.version : "—"}) จะถูกเก็บเป็น Archived อัตโนมัติ และเนื้อหาใหม่จะแสดงบนแอปทันที</p>
+          <div class="policy-publish-confirm-meta">
+            <div><span class="muted">Policy</span><strong>${policy.typeLabel}</strong></div>
+            <div><span class="muted">Version</span><strong>${draftVersion}</strong></div>
+            <div><span class="muted">สรุปการเปลี่ยนแปลง</span><strong>${escapeHtml(validated.changeSummary)}</strong></div>
+          </div>
+          <div class="article-editor-confirm-actions">
+            <button class="user-detail-action-btn" type="button" data-user-action-modal-close>ยกเลิก</button>
+            <button class="user-detail-action-btn user-action-confirm" type="button" data-policy-publish-confirm="${policy.id}" data-policy-publish-version="${draftVersion}">เผยแพร่</button>
+          </div>
+        </div>
+      `;
+      showUserActionModal(true);
+    }
+
+    // HS-PTO-002b: Apply publish — archive old published, promote draft to Published
+    function applyPolicyPublish(policyId, newVersionNumber) {
+      const policy = policyVersioningData.policies.find(p => p.id === policyId);
+      if (!policy) return;
+      const form = document.querySelector("[data-policy-editor]");
+      const th = form?.querySelector("[data-policy-content-th]")?.innerHTML || "";
+      const en = form?.querySelector("[data-policy-content-en]")?.innerHTML || "";
+      const summary = form?.querySelector("[data-policy-change-summary]")?.value.trim() || "";
+      const now = new Date().toISOString().slice(0, 16).replace("T", " ");
+      // Archive the currently published version
+      const currentPublished = policy.versions.find(v => v.status === "Published");
+      if (currentPublished) currentPublished.status = "Archived";
+      // Remove existing draft with same version number (if any)
+      const draftLabel = `${newVersionNumber}-draft`;
+      policy.versions = policy.versions.filter(v => v.version !== draftLabel && v.version !== newVersionNumber);
+      // Promote new published version
+      const newPublished = {
+        version: newVersionNumber,
+        status: "Published",
+        editor: "Admin",
+        editedDate: now,
+        publishedDate: now,
+        changeSummary: summary,
+        contentTh: th,
+        contentEn: en
+      };
+      policy.versions.unshift(newPublished);
+      policy.status = "Published";
+      policy.currentVersion = newVersionNumber;
+      policy.lastEdited = now;
+      policy.lastEditor = "Admin";
+      policy.publishedDate = now;
+      policy.draftVersion = null;
+      closeUserActionModal();
+      showSuccessToast(`เผยแพร่ ${policy.typeLabel} เวอร์ชัน ${newVersionNumber} เรียบร้อย`);
+      renderPolicyDetailPage(policy);
+    }
+
+    // HS-PTO-002b: Version view modal (read-only content TH/EN)
+    function openPolicyVersionViewModal(policy, version) {
+      const modalCard = document.querySelector("#user-action-modal .user-action-modal");
+      const modalBody = document.querySelector("#user-action-modal-body");
+      modalCard?.classList.remove("article-editor-confirm-modal", "category-editor-modal");
+      modalCard?.classList.add("article-preview-modal", "policy-version-view-modal");
+      modalBody.innerHTML = `
+        <div class="user-action-layout article-preview-modal-content policy-version-view-content">
+          <div class="user-action-head">
+            <div>
+              <h2 id="user-action-modal-title">${policy.typeLabel} — ${version.version}</h2>
+              <p>${version.status === "Published" ? "เวอร์ชันที่เผยแพร่" : version.status === "Draft" ? "ฉบับร่าง" : "เวอร์ชันที่เก็บถาวร"} • แก้ไข ${version.editedDate} • ${version.editor}</p>
+            </div>
+            <button class="btn user-action-close" type="button" data-user-action-modal-close aria-label="ปิด">${iconSvg.close}</button>
+          </div>
+          <div class="policy-version-view-summary">
+            <span class="muted">สรุปการเปลี่ยนแปลง</span>
+            <p>${escapeHtml(version.changeSummary || "—")}</p>
+          </div>
+          <div class="policy-version-view-tabs" role="tablist" aria-label="ภาษาเนื้อหา">
+            <button class="segmented active" type="button" data-policy-version-view-lang="th" role="tab" aria-selected="true">ภาษาไทย</button>
+            <button class="segmented" type="button" data-policy-version-view-lang="en" role="tab" aria-selected="false">English</button>
+          </div>
+          <div class="policy-version-view-body" data-policy-version-view-lang-panel="th">${sanitizePolicyContent(version.contentTh || "")}</div>
+          <div class="policy-version-view-body" data-policy-version-view-lang-panel="en" hidden>${sanitizePolicyContent(version.contentEn || "")}</div>
+          ${version.status === "Archived" ? `
+            <div class="policy-version-view-footer">
+              <button class="user-detail-action-btn" type="button" data-user-action-modal-close>ปิด</button>
+              <button class="user-detail-action-btn primary" type="button" data-policy-version-restore="${policy.id}" data-policy-version="${version.version}">Restore เวอร์ชันนี้</button>
+            </div>
+          ` : `
+            <div class="policy-version-view-footer">
+              <button class="user-detail-action-btn" type="button" data-user-action-modal-close>ปิด</button>
+            </div>
+          `}
+        </div>
+      `;
+      showUserActionModal(true);
+    }
+
+    // HS-PTO-002b: Restore confirmation modal — creates a new draft from an archived version
+    function openPolicyVersionRestoreConfirmModal(policy, version) {
+      const nextDraftNumber = `v${getNextPolicyVersionNumber(policy)}.0-draft`;
+      const modalCard = document.querySelector("#user-action-modal .user-action-modal");
+      const modalBody = document.querySelector("#user-action-modal-body");
+      modalCard?.classList.remove("article-preview-modal", "category-editor-modal");
+      modalCard?.classList.add("article-editor-confirm-modal");
+      modalBody.innerHTML = `
+        <div class="article-editor-confirm-page">
+          <div class="article-editor-confirm-icon" aria-hidden="true">
+            <span>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+                <path d="m7.9 12.2 2.7 2.7 5.8-6"></path>
+              </svg>
+            </span>
+          </div>
+          <h2 id="user-action-modal-title">ยืนยันการ Restore</h2>
+          <p class="article-editor-confirm-question">คุณต้องการนำเวอร์ชัน ${version.version} กลับมาแก้ไขเป็น Draft ใหม่ใช่หรือไม่?</p>
+          <p class="article-editor-confirm-summary">ระบบจะสร้าง Draft เวอร์ชันใหม่ (${nextDraftNumber}) โดยคัดลอกเนื้อหาจากเวอร์ชัน ${version.version} เพื่อให้คุณแก้ไขก่อนเผยแพร่ เวอร์ชันเดิมยังคงอยู่ในประวัติ</p>
+          <div class="article-editor-confirm-actions">
+            <button class="user-detail-action-btn" type="button" data-user-action-modal-close>ยกเลิก</button>
+            <button class="user-detail-action-btn user-action-confirm" type="button" data-policy-version-restore-confirm="${policy.id}" data-policy-version-restore-source="${version.version}">Restore</button>
+          </div>
+        </div>
+      `;
+      showUserActionModal(true);
+    }
+
+    // HS-PTO-002b: Apply restore — create a new draft version from an archived version
+    function applyPolicyVersionRestore(policyId, sourceVersionLabel) {
+      const policy = policyVersioningData.policies.find(p => p.id === policyId);
+      if (!policy) return;
+      const source = policy.versions.find(v => v.version === sourceVersionLabel);
+      if (!source) return;
+      const newDraftNumber = `v${getNextPolicyVersionNumber(policy)}.0-draft`;
+      const now = new Date().toISOString().slice(0, 16).replace("T", " ");
+      const draftVersion = {
+        version: newDraftNumber,
+        status: "Draft",
+        editor: "Admin",
+        editedDate: now,
+        publishedDate: "",
+        changeSummary: `Restore จากเวอร์ชัน ${sourceVersionLabel}`,
+        contentTh: source.contentTh || "",
+        contentEn: source.contentEn || ""
+      };
+      // Replace any existing draft with the same label
+      const existingIdx = policy.versions.findIndex(v => v.version === newDraftNumber);
+      if (existingIdx >= 0) policy.versions[existingIdx] = draftVersion;
+      else policy.versions.unshift(draftVersion);
+      policy.draftVersion = newDraftNumber;
+      closeUserActionModal();
+      showSuccessToast(`Restore เวอร์ชัน ${sourceVersionLabel} เป็น Draft ${newDraftNumber} เรียบร้อย`);
+      renderPolicyEditorPage(policy, "edit-draft");
     }
 
     // ===== Policy version history page (HS-PTO-002b) =====
@@ -21847,15 +22171,19 @@
       document.querySelector("#summary-grid").innerHTML = "";
       document.querySelector("#table").innerHTML = `
         <div class="asset-table policy-version-table">
-          <div class="asset-row head"><div>เวอร์ชัน</div><div>สถานะ</div><div>แก้ไขโดย</div><div>วันที่แก้ไข</div><div>วันที่เผยแพร่</div><div>สรุปการเปลี่ยนแปลง</div></div>
+          <div class="asset-row head"><div>เวอร์ชัน</div><div>สถานะ</div><div>แก้ไขโดย</div><div>วันที่แก้ไข</div><div>วันที่เผยแพร่</div><div>สรุปการเปลี่ยนแปลง</div><div>Action</div></div>
           ${policy.versions.map(v => `
             <div class="asset-row" data-policy-version-row="${v.version}">
               <div data-label="เวอร์ชัน"><div class="main-text">${v.version}</div></div>
-              <div data-label="สถานะ"><span class="pill ${v.status === "Published" ? "green" : "gray"}">${v.status}</span></div>
+              <div data-label="สถานะ"><span class="pill ${v.status === "Published" ? "green" : v.status === "Draft" ? "amber" : "gray"}">${v.status}</span></div>
               <div data-label="แก้ไขโดย"><div class="main-text">${v.editor}</div></div>
               <div data-label="วันที่แก้ไข"><div class="main-text">${v.editedDate}</div></div>
               <div data-label="วันที่เผยแพร่"><div class="main-text">${v.publishedDate || "—"}</div></div>
               <div data-label="สรุปการเปลี่ยนแปลง"><div class="main-text">${escapeHtml(v.changeSummary)}</div></div>
+              <div class="user-row-actions" data-label="Action">
+                <button class="panel-action" type="button" data-policy-version-view="${policy.id}" data-policy-version="${v.version}">View</button>
+                ${v.status === "Archived" ? `<button class="panel-action" type="button" data-policy-version-restore="${policy.id}" data-policy-version="${v.version}">Restore</button>` : ""}
+              </div>
             </div>
           `).join("")}
         </div>
@@ -32806,6 +33134,31 @@
         cancelArticleEditor(form);
         return;
       }
+      // HS-PTO-002b: Confirm publish
+      const policyPublishConfirmButton = event.target.closest("[data-policy-publish-confirm]");
+      if (policyPublishConfirmButton) {
+        applyPolicyPublish(policyPublishConfirmButton.dataset.policyPublishConfirm, policyPublishConfirmButton.dataset.policyPublishVersion);
+        return;
+      }
+      // HS-PTO-002b: Confirm restore (from archived version)
+      const policyVersionRestoreConfirmButton = event.target.closest("[data-policy-version-restore-confirm]");
+      if (policyVersionRestoreConfirmButton) {
+        applyPolicyVersionRestore(policyVersionRestoreConfirmButton.dataset.policyVersionRestoreConfirm, policyVersionRestoreConfirmButton.dataset.policyVersionRestoreSource);
+        return;
+      }
+      // HS-PTO-002b: Language tabs inside version view modal
+      const policyVersionViewLangTab = event.target.closest("[data-policy-version-view-lang]");
+      if (policyVersionViewLangTab) {
+        const lang = policyVersionViewLangTab.dataset.policyVersionViewLang;
+        document.querySelectorAll("[data-policy-version-view-lang]").forEach(btn => {
+          btn.classList.toggle("active", btn === policyVersionViewLangTab);
+          btn.setAttribute("aria-selected", btn === policyVersionViewLangTab ? "true" : "false");
+        });
+        document.querySelectorAll("[data-policy-version-view-lang-panel]").forEach(panel => {
+          panel.hidden = panel.dataset.policyVersionViewLangPanel !== lang;
+        });
+        return;
+      }
       const articleEditSaveConfirmButton = event.target.closest("[data-article-edit-save-confirm]");
       if (articleEditSaveConfirmButton) {
         const form = document.querySelector(`[data-article-editor][data-article-id="${articleEditSaveConfirmButton.dataset.articleEditSaveConfirm}"]`);
@@ -32961,6 +33314,36 @@
           pushBackNavigationContext({ type: "policy-detail", id: policy.id });
           renderPolicyEditorPage(policy, "new-draft");
         }
+        return;
+      }
+      // HS-PTO-002b: Preview draft content (TH/EN) in modal
+      const policyPreviewButton = event.target.closest("[data-policy-preview]");
+      if (policyPreviewButton) {
+        const form = policyPreviewButton.closest("[data-policy-editor]");
+        if (form) openPolicyPreviewModal(form);
+        return;
+      }
+      // HS-PTO-002b: Open Publish confirmation modal (validates form first)
+      const policyPublishButton = event.target.closest("[data-policy-publish]");
+      if (policyPublishButton) {
+        const form = policyPublishButton.closest("[data-policy-editor]");
+        if (form) openPolicyPublishConfirmModal(form);
+        return;
+      }
+      // HS-PTO-002b: View a specific version (read-only modal)
+      const policyVersionViewButton = event.target.closest("[data-policy-version-view]");
+      if (policyVersionViewButton) {
+        const policy = policyVersioningData.policies.find(p => p.id === policyVersionViewButton.dataset.policyVersionView);
+        const version = policy?.versions.find(v => v.version === policyVersionViewButton.dataset.policyVersion);
+        if (policy && version) openPolicyVersionViewModal(policy, version);
+        return;
+      }
+      // HS-PTO-002b: Restore an archived version (creates a new draft from it)
+      const policyVersionRestoreButton = event.target.closest("[data-policy-version-restore]");
+      if (policyVersionRestoreButton) {
+        const policy = policyVersioningData.policies.find(p => p.id === policyVersionRestoreButton.dataset.policyVersionRestore);
+        const version = policy?.versions.find(v => v.version === policyVersionRestoreButton.dataset.policyVersion);
+        if (policy && version) openPolicyVersionRestoreConfirmModal(policy, version);
         return;
       }
       // ===== Support Center event handlers (HS-PTO-004) =====
