@@ -13115,8 +13115,16 @@
     .policy-editor-actions { display: flex; flex-wrap: wrap; gap: 10px; }
     .policy-editor-actions .user-detail-action-btn[disabled] { cursor: not-allowed; opacity: .5; }
     .policy-editor-preview-content { display: grid; gap: 18px; }
-    .policy-editor-preview-content .policy-preview-language { display: grid; gap: 8px; padding: 20px; border: 1px solid #e3ebf5; border-radius: 8px; background: #fff; }
-    .policy-editor-preview-content h4 { margin: 0; color: #0f2748; font-family: var(--font-main); font-size: 15px; font-weight: 700; }
+    .policy-editor-preview-content .policy-preview-language { display: grid; gap: 8px; }
+    .policy-editor-preview-content h4 { margin: 0; color: #0f2748; font-family: var(--font-main) !important; font-size: 15px; font-weight: 700; letter-spacing: 0; text-transform: none; }
+    .policy-preview-title-row {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .policy-preview-title-row h2 { margin: 0; line-height: 1.2; }
+    .policy-preview-version-pill { white-space: nowrap; }
     .policy-preview-body {
       padding: 20px;
       border: 1px solid #e3ebf5;
@@ -20166,7 +20174,7 @@
       if (!modal) return;
       // HS-PTO-002b: ข้าม heading ใน policy preview/version view body เพราะใช้ font-main ทั้ง TH/EN อยู่แล้ว
       modal.querySelectorAll(".modal-body h1, .modal-body h2, .modal-body h3, .modal-body h4, .modal-body h5, .modal-body h6").forEach(heading => {
-        if (heading.closest(".policy-preview-body, .policy-version-view-body")) return;
+        if (heading.closest(".policy-preview-body, .policy-version-view-body, .policy-preview-language")) return;
         const hasThai = /[\u0E00-\u0E7F]/.test(heading.textContent || "");
         heading.classList.toggle("modal-heading-th", hasThai);
         heading.classList.toggle("modal-heading-en", !hasThai);
@@ -21964,10 +21972,14 @@
       const modalBody = document.querySelector("#user-action-modal-body");
       const modalCard = document.querySelector("#user-action-modal .user-action-modal");
       modalCard?.classList.add("article-preview-modal");
+      const previewVersionLabel = form.querySelector(".policy-metadata .detail-tile:nth-child(2) strong")?.textContent || "Draft";
       modalBody.innerHTML = `
         <div class="user-action-page policy-editor-preview-content">
           <div class="user-action-head">
-            <div><h2 id="user-action-modal-title">Preview — ${policy.typeLabel}</h2><p>${form.querySelector(".policy-metadata .detail-tile:nth-child(2) strong")?.textContent || "Draft"}</p></div>
+            <div class="policy-preview-title-row">
+              <h2 id="user-action-modal-title">Preview — ${policy.typeLabel}</h2>
+              <span class="pill slate policy-preview-version-pill">${previewVersionLabel}</span>
+            </div>
             <button class="btn user-action-close" type="button" data-user-action-modal-close aria-label="ปิด">${iconSvg.close}</button>
           </div>
           <div class="policy-preview-language"><h4>ภาษาไทย</h4><div class="policy-preview-body">${th}</div></div>
