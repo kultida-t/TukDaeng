@@ -20955,7 +20955,7 @@
       return `
         <div class="asset-row" data-policy-open="${policy.id}">
           <div class="asset-cell-primary" data-label="Policy">
-            <div class="main-text">${policy.typeLabel}</div>
+            <span class="pill ${policy.id === "POL-TOU" ? "blue" : "purple"}">${policy.type.toUpperCase()}</span>
           </div>
           <div data-label="Description"><div class="main-text">${policy.description}</div></div>
           <div data-label="สถานะ">
