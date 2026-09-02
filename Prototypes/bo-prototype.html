@@ -13476,6 +13476,20 @@
       .policy-version-view-footer .user-detail-action-btn { flex: 1 1 0; min-width: 0; }
     }
 
+    @media (min-width: 761px) and (max-width: 1100px) {
+      body.policy-version-history-mode #table {
+        overflow-x: auto;
+      }
+      body.policy-version-history-mode #table .policy-version-table {
+        min-width: 1000px;
+      }
+    }
+    @media (max-width: 760px) {
+      body.policy-version-history-mode #table {
+        overflow-x: hidden;
+      }
+    }
+
     /* ===== Support Center (HS-PTO-004) ===== */
     body.support-center-mode .layout {
       grid-template-columns: minmax(0, 1fr);
