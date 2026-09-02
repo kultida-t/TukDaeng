@@ -12774,6 +12774,159 @@
         grid-column: 1;
       }
     }
+
+    /* ===== Policy & Versioning (HS-PTO-001) ===== */
+    body.policy-versioning-mode .layout {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    body.policy-versioning-mode .detail,
+    body.policy-versioning-mode .summary-grid,
+    body.policy-versioning-mode .cards {
+      display: none;
+    }
+    .policy-list-table .policy-row-badges {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      align-items: center;
+    }
+    .policy-list-table .asset-row[data-policy-open] {
+      cursor: pointer;
+    }
+    .policy-list-table .asset-row[data-policy-open]:hover {
+      background: var(--hover-bg, #f9fafb);
+    }
+
+    /* ===== Support Center (HS-PTO-004) ===== */
+    body.support-center-mode .layout {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    body.support-center-mode .detail,
+    body.support-center-mode .summary-grid,
+    body.support-center-mode .cards {
+      display: none;
+    }
+    .support-center-form {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+      padding: 4px 0;
+    }
+    .support-center-section h4 {
+      margin: 0 0 4px;
+      font-size: 15px;
+      font-weight: 700;
+    }
+    .support-center-section > .muted {
+      margin: 0 0 12px;
+      font-size: 13px;
+    }
+    .support-channel-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .support-channel-row {
+      display: grid;
+      grid-template-columns: 48px 180px 1fr 100px;
+      gap: 16px;
+      align-items: center;
+      padding: 16px;
+      background: var(--card-bg, #fff);
+      border: 1px solid var(--border, #e5e7eb);
+      border-radius: 8px;
+    }
+    .support-channel-row.inactive {
+      opacity: 0.6;
+    }
+    .support-channel-toggle {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .toggle-switch {
+      width: 44px;
+      height: 24px;
+      border-radius: 12px;
+      border: none;
+      background: var(--border, #d1d5db);
+      position: relative;
+      cursor: pointer;
+      padding: 0;
+      transition: background 0.15s;
+    }
+    .toggle-switch.on {
+      background: var(--green, #16a34a);
+    }
+    .toggle-knob {
+      position: absolute;
+      top: 2px;
+      left: 2px;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: #fff;
+      transition: transform 0.15s;
+    }
+    .toggle-switch.on .toggle-knob {
+      transform: translateX(20px);
+    }
+    .support-channel-type {
+      font-size: 14px;
+      font-weight: 700;
+    }
+    .support-channel-value {
+      font-size: 13px;
+      color: var(--text-secondary, #6b7280);
+      word-break: break-all;
+    }
+    .support-channel-desc {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+    .support-channel-desc label {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      font-size: 12px;
+      color: var(--text-secondary, #6b7280);
+    }
+    .support-channel-desc .field {
+      font-size: 13px;
+    }
+    .support-channel-status {
+      display: flex;
+      justify-content: flex-end;
+    }
+    .support-center-field-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 16px;
+    }
+    .support-center-field-row label {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      font-size: 13px;
+      color: var(--text-secondary, #6b7280);
+    }
+    @media (max-width: 760px) {
+      .support-channel-row {
+        grid-template-columns: 48px 1fr;
+        gap: 12px;
+      }
+      .support-channel-desc,
+      .support-channel-status {
+        grid-column: 1 / -1;
+      }
+      .support-channel-desc {
+        grid-template-columns: 1fr;
+      }
+      .support-channel-status {
+        justify-content: flex-start;
+      }
+    }
   </style>
 </head>
 <body class="logged-out">
@@ -12947,6 +13100,7 @@
       social: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 1 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8Z"/></svg>',
       alert: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>',
       support: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 14a8 8 0 1 1 16 0"/><path d="M4 14v3a2 2 0 0 0 2 2h2v-7H6a2 2 0 0 0-2 2Z"/><path d="M20 14v3a2 2 0 0 1-2 2h-2v-7h2a2 2 0 0 1 2 2Z"/><path d="M16 19a4 4 0 0 1-4 2"/></svg>',
+      policy: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><path d="M14 2v6h6"/><path d="M9 13h6M9 17h4"/><circle cx="16" cy="15" r="2.5"/><path d="M16 12.5V15M16 15v2.5"/></svg>',
       delete: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 6h18"/><path d="M8 6V4h8v2"/><path d="M19 6l-1 15H6L5 6"/><path d="M10 11v6M14 11v6"/></svg>',
       reports: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 19V5"/><path d="M4 19h17"/><path d="M8 16V9M13 16V6M18 16v-4"/></svg>',
       notifications: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 7 3 9H3c0-2 3-2 3-9"/><path d="M10 21h4"/></svg>',
@@ -12989,13 +13143,12 @@
       ]},
       { section: "งานตรวจสอบและบริการ", items: [
         { id: "watch-alerts", label: "Market Demand", icon: "alert", subs: ["Demand Overview", "Search Insights", "Watch Alert List"] },
-        { id: "support", label: "Help & Support", icon: "support", subs: ["Tickets", "Assignment", "SLA"] },
         { id: "deletions", label: "Account Deletion", icon: "delete", subs: ["Requests", "Grace Period", "Anonymization"] }
       ]},
       { section: "เครื่องมือ & รายงาน", items: [
         { id: "reports", label: "Reports", icon: "reports", subs: ["User", "Asset", "Offer", "Search", "Export Jobs"] },
         { id: "notifications", label: "Notifications", icon: "notifications", subs: ["Broadcast", "System Templates", "Delivery Logs"] },
-        { id: "settings", label: "Settings", icon: "settings", subs: ["Admin Accounts", "Roles & Permissions", "Security", "Retention", "Terms of Use", "Privacy Policy", "Version History", "Support Center", "Contact Support", { label: "Audit Log", module: "audit" }] }
+        { id: "settings", label: "Settings", icon: "settings", subs: ["Admin Accounts", "Roles & Permissions", "Security", "Retention", "Policy & Versioning", "Support Center", { label: "Audit Log", module: "audit" }] }
       ]}
     ];
 
@@ -13121,11 +13274,6 @@
       // moduleData["watch-alerts"] เก็บเฉพาะ metadata สำหรับ fallback;
       // ข้อมูลจริงและการ render อยู่ใน watchAlertData + renderWatchAlert()
       "watch-alerts": mod("Market Demand", "งานตรวจสอบและบริการ / Market Demand", "Demand Overview", "ภาพรวมความต้องการตลาดจาก Search/Filter และ Watch Alert — read-only", "", [], []),
-      support: mod("Help & Support", "งานตรวจสอบและบริการ / Help & Support", "Ticket Queue", "คิว ticket, assignment, reply history, priority และ SLA", "สร้าง ticket", [["Open", "18", "รอตอบกลับ 7"], ["Assigned", "9", "มีเจ้าของงาน"], ["SLA Risk", "4", "เหลือ < 4 ชม."], ["Resolved", "126", "เดือนนี้"]], [
-        item("SUP-188", "Proof of payment visibility", "Nattapol P.", "Email", "กลาง", "Assigned", "ถามว่าหลักฐานการชำระเงินแสดงให้ใครเห็น", ["Owner/Admin"], "ตอบว่าเป็น private data เห็นเฉพาะ owner และ Admin"),
-        item("SUP-182", "Cannot reset password", "Apple user", "App", "ปกติ", "Open", "บัญชี Apple reset password จาก BO ไม่ได้", ["Auth method Apple"], "แจ้งให้จัดการผ่าน Apple ID"),
-        item("SUP-177", "Report follow-up", "Crown Time BKK", "LINE", "สูง", "SLA Risk", "ผู้ใช้ถามผลการ report duplicate asset", ["RPU-505"], "ตอบสถานะโดยไม่เปิดเผยข้อมูล reporter")
-      ]),
       deletions: mod("Account Deletion", "งานตรวจสอบและบริการ / Account Deletion", "Deletion Requests", "ตรวจคำขอลบบัญชี, pending dependency, 30-day grace period และ anonymization", "ตรวจ dependency", [["Requests", "8", "รอ validation"], ["Blocked", "3", "มี pending offer"], ["Grace Period", "11", "นับ 30 วัน"], ["Anonymized", "42", "เดือนนี้"]], [
         item("DEL-033", "Delete account request", "Archive Collector", "Account", "กลาง", "Blocked", "มี pending offer และ report context ค้างอยู่", ["Offer 1", "Report 1"], "ห้าม hard delete จนกว่า dependency ปิด"),
         item("DEL-029", "Grace period day 12", "The Collector", "Account", "ปกติ", "Grace", "session revoked แล้ว profile public unavailable", ["30-day"], "รอครบกำหนด anonymization"),
@@ -13151,6 +13299,156 @@
         item("SEC-EMAIL-OTP", "Mandatory Email OTP", "Security", "Auth", "สูง", "Enabled", "Admin ทุกบัญชีต้อง verify Email OTP หลังผ่าน password", ["No bypass"], "ล็อกตาม baseline"),
         item("RET-AUDIT", "Audit retention", "Retention", "System", "กลาง", "365 days", "เก็บ audit อย่างน้อย 1 ปี", ["Export policy"], "แก้ค่าต้อง approval")
       ])
+    };
+
+    // ===== Policy & Versioning mock data (HS-PTO-001) =====
+    // 2 policy types: Terms of Use, Privacy Policy
+    // Each policy has versions (Draft/Published/Archived), bilingual content (th/en),
+    // editor metadata, and change summary per version.
+    const policyVersioningData = {
+      policies: [
+        {
+          id: "POL-TOU",
+          type: "Terms of Use",
+          typeLabel: "เงื่อนไขการใช้งาน",
+          status: "Published",
+          currentVersion: "v1.3",
+          lastEdited: "2026-08-28 14:32",
+          lastEditor: "Admin",
+          publishedDate: "2026-08-28 14:35",
+          draftVersion: null,
+          description: "เงื่อนไขการใช้งานแพลตฟอร์ม TukDaeng สำหรับผู้ใช้และพันธมิตร",
+          versions: [
+            {
+              version: "v1.3",
+              status: "Published",
+              editor: "Admin",
+              editedDate: "2026-08-28 14:32",
+              publishedDate: "2026-08-28 14:35",
+              changeSummary: "เพิ่มข้อกำหนดเกี่ยวกับการใช้ Watch Alert และ Market Data",
+              contentTh: "เงื่อนไขการใช้งานเวอร์ชัน 1.3 — เพิ่มข้อกำหนด Watch Alert และ Market Data",
+              contentEn: "Terms of Use version 1.3 — Added Watch Alert and Market Data provisions"
+            },
+            {
+              version: "v1.2",
+              status: "Archived",
+              editor: "Admin",
+              editedDate: "2026-07-15 10:20",
+              publishedDate: "2026-07-15 10:25",
+              changeSummary: "ปรับปรุงนโยบายความเป็นส่วนตัวและการเก็บข้อมูล",
+              contentTh: "เงื่อนไขการใช้งานเวอร์ชัน 1.2 — ปรับปรุงนโยบายความเป็นส่วนตัว",
+              contentEn: "Terms of Use version 1.2 — Updated privacy policy references"
+            },
+            {
+              version: "v1.1",
+              status: "Archived",
+              editor: "Admin",
+              editedDate: "2026-06-01 09:00",
+              publishedDate: "2026-06-01 09:10",
+              changeSummary: "เริ่มต้นเวอร์ชัน หลังจาก prototype approved",
+              contentTh: "เงื่อนไขการใช้งานเวอร์ชัน 1.1 — เริ่มต้น",
+              contentEn: "Terms of Use version 1.1 — Initial version"
+            }
+          ]
+        },
+        {
+          id: "POL-PP",
+          type: "Privacy Policy",
+          typeLabel: "นโยบายความเป็นส่วนตัว",
+          status: "Published",
+          currentVersion: "v2.0",
+          lastEdited: "2026-08-20 16:00",
+          lastEditor: "Admin",
+          publishedDate: "2026-08-20 16:05",
+          draftVersion: "v2.1-draft",
+          description: "นโยบายความเป็นส่วนตัวและการจัดการข้อมูลส่วนบุคคลของผู้ใช้",
+          versions: [
+            {
+              version: "v2.0",
+              status: "Published",
+              editor: "Admin",
+              editedDate: "2026-08-20 16:00",
+              publishedDate: "2026-08-20 16:05",
+              changeSummary: "ปรับปรุงตาม PDPA และเพิ่มสิทธิ์ผู้ใช้ในการขอลบข้อมูล",
+              contentTh: "นโยบายความเป็นส่วนตัวเวอร์ชัน 2.0 — ปรับปรุงตาม PDPA",
+              contentEn: "Privacy Policy version 2.0 — Updated per PDPA"
+            },
+            {
+              version: "v1.5",
+              status: "Archived",
+              editor: "Admin",
+              editedDate: "2026-07-10 11:00",
+              publishedDate: "2026-07-10 11:15",
+              changeSummary: "เพิ่มข้อกำหนดการเก็บ chat log และระยะเวลาเก็บข้อมูล",
+              contentTh: "นโยบายความเป็นส่วนตัวเวอร์ชัน 1.5 — เพิ่ม chat log retention",
+              contentEn: "Privacy Policy version 1.5 — Added chat log retention"
+            }
+          ]
+        }
+      ]
+    };
+
+    // ===== Support Center mock data (HS-PTO-004) =====
+    // Admin-managed contact information displayed in FO Help screen.
+    // Fixed channel types — admin cannot create new channel types.
+    const supportCenterData = {
+      channels: [
+        {
+          id: "ch-line",
+          channelType: "LINE",
+          label: "LINE",
+          value: "@mrfoxthailand",
+          url: "https://line.me/ti/p/@mrfoxthailand",
+          active: true,
+          descriptionTh: "ทักไลน์เพื่อสอบถามข้อมูลหรือรายงานปัญหา",
+          descriptionEn: "Message us on LINE for inquiries or issue reports"
+        },
+        {
+          id: "ch-phone",
+          channelType: "Phone",
+          label: "โทรศัพท์",
+          value: "(+66) 80-008-8088",
+          url: "",
+          active: true,
+          descriptionTh: "โทรสอบถามได้ในเวลาทำการ",
+          descriptionEn: "Call us during business hours"
+        },
+        {
+          id: "ch-email",
+          channelType: "Email",
+          label: "อีเมล",
+          value: "service@mrfox.com",
+          url: "mailto:service@mrfox.com",
+          active: true,
+          descriptionTh: "ส่งอีเมลสำหรับปัญหาที่ต้องการเอกสารประกอบ",
+          descriptionEn: "Email us for issues requiring documentation"
+        },
+        {
+          id: "ch-facebook",
+          channelType: "Facebook",
+          label: "Facebook",
+          value: "MrFox Thailand",
+          url: "https://www.facebook.com/mrfoxthailand",
+          active: true,
+          descriptionTh: "ติดตามข่าวสารและอัปเดตจากเพจ Facebook",
+          descriptionEn: "Follow our Facebook page for news and updates"
+        },
+        {
+          id: "ch-website",
+          channelType: "Website",
+          label: "เว็บไซต์",
+          value: "www.mrfox.com",
+          url: "https://www.mrfox.com",
+          active: true,
+          descriptionTh: "เว็บไซต์หลักของ TukDaeng",
+          descriptionEn: "TukDaeng official website"
+        }
+      ],
+      businessHours: "09:00 - 22:00 (GMT+7)",
+      availabilityTh: "ให้บริการทุกวัน",
+      availabilityEn: "Available daily",
+      lastUpdated: "2026-08-30 10:00",
+      lastEditor: "Admin"
     };
 
     // ===== Option Master mock data (BO-OPT-002a) =====
@@ -20233,6 +20531,16 @@
         updateActiveNav();
         return;
       }
+      if (id === "settings" && (subLabel || "Admin Accounts") === "Policy & Versioning") {
+        renderPolicyVersioningList();
+        updateActiveNav();
+        return;
+      }
+      if (id === "settings" && (subLabel || "Admin Accounts") === "Support Center") {
+        renderSupportCenterPage();
+        updateActiveNav();
+        return;
+      }
       if (isArticleList) {
         activeRow = null;
         setPageActions(`<button class="btn" type="button" data-article-add>${iconSvg.plus}<span>สร้างบทความ</span></button>`);
@@ -20600,6 +20908,399 @@
       `;
     }
 
+    // ===== Policy & Versioning rendering (HS-PTO-001) =====
+    function renderPolicyVersioningList() {
+      activeModule = "settings";
+      activeSub = "Policy & Versioning";
+      activeRow = null;
+      setPageActions("");
+      syncExpandedNavForModule("settings", "Policy & Versioning");
+      document.body.classList.remove("dashboard-mode", "user-management-mode", "user-list-mode", "asset-list-mode", "article-list-mode", "category-list-mode", "reported-board-mode", "asset-detail-mode", "user-detail-mode");
+      document.body.classList.add("policy-versioning-mode");
+      document.querySelector("#crumb").textContent = "เครื่องมือ & รายงาน / Settings / Policy & Versioning";
+      document.querySelector("#page-title").textContent = "Policy & Versioning";
+      document.querySelector("#page-meta").textContent = "";
+      document.querySelector("#panel-title").textContent = "Policy List";
+      document.querySelector("#panel-subtitle").textContent = "จัดการเนื้อหาเงื่อนไขการใช้งานและนโยบายความเป็นส่วนตัว พร้อมระบบ versioning";
+      document.querySelector("#primary-action").textContent = "";
+      document.querySelector("#user-panel-filter-actions").innerHTML = "";
+      document.querySelector(".filters").innerHTML = "";
+      // ไม่ใช้ KPI cards เพราะมี policy เพียง 2 ตัว จำนวนซ้ำซ้อนกับตารางและไม่บอก workload (ตามเกณฑ์ When NOT To Use)
+      document.querySelector("#summary-grid").innerHTML = "";
+      document.querySelector("#table").innerHTML = `
+        <div class="asset-table policy-list-table">
+          <div class="asset-row head"><div>Policy</div><div>สถานะ</div><div>เวอร์ชันปัจจุบัน</div><div>แก้ไขล่าสุด</div><div></div></div>
+          ${policyVersioningData.policies.map(policy => renderPolicyRow(policy)).join("")}
+        </div>
+      `;
+      document.querySelector("#detail").innerHTML = "";
+      document.querySelector("#cards").innerHTML = "";
+    }
+
+    function renderPolicyRow(policy) {
+      const statusClass = policy.status === "Published" ? "green" : policy.draftVersion ? "amber" : "gray";
+      const draftBadge = policy.draftVersion
+        ? `<span class="pill amber">มี Draft ${policy.draftVersion}</span>`
+        : "";
+      return `
+        <div class="asset-row" data-policy-open="${policy.id}">
+          <div class="asset-cell-primary" data-label="Policy">
+            <div class="main-text">${policy.typeLabel}</div>
+            <div class="muted">${policy.description}</div>
+          </div>
+          <div data-label="สถานะ">
+            <div class="policy-row-badges">
+              <span class="pill ${statusClass}">${policy.status}</span>
+              ${draftBadge}
+            </div>
+          </div>
+          <div data-label="เวอร์ชันปัจจุบัน"><div class="main-text">${policy.currentVersion}</div></div>
+          <div data-label="แก้ไขล่าสุด"><div class="main-text">${policy.lastEdited}</div><div class="muted">โดย ${policy.lastEditor}</div></div>
+          <div class="user-row-actions"><div class="row-menu"><details><summary>${iconSvg.chevron}</summary><div class="row-menu-list"><button type="button" data-policy-open="${policy.id}">ดูรายละเอียด</button></div></details></div></div>
+        </div>
+      `;
+    }
+
+    // ===== Support Center rendering (HS-PTO-004) =====
+    function renderSupportCenterPage() {
+      activeModule = "settings";
+      activeSub = "Support Center";
+      activeRow = null;
+      setPageActions(`<button class="btn" type="button" data-support-preview>${iconSvg.eye || ""}<span>Preview</span></button>`);
+      syncExpandedNavForModule("settings", "Support Center");
+      document.body.classList.remove("dashboard-mode", "user-management-mode", "user-list-mode", "asset-list-mode", "article-list-mode", "category-list-mode", "reported-board-mode", "asset-detail-mode", "user-detail-mode");
+      document.body.classList.add("support-center-mode");
+      document.querySelector("#crumb").textContent = "เครื่องมือ & รายงาน / Settings / Support Center";
+      document.querySelector("#page-title").textContent = "Support Center";
+      document.querySelector("#page-meta").textContent = `อัปเดตล่าสุด: ${supportCenterData.lastUpdated} โดย ${supportCenterData.lastEditor}`;
+      document.querySelector("#panel-title").textContent = "SUPPORT CONTACTS";
+      document.querySelector("#panel-subtitle").textContent = "จัดการข้อมูลช่องทางติดต่อที่แสดงในหน้า Help ของแอป";
+      document.querySelector("#primary-action").textContent = "";
+      document.querySelector("#user-panel-filter-actions").innerHTML = "";
+      document.querySelector(".filters").innerHTML = "";
+      document.querySelector("#summary-grid").innerHTML = "";
+      document.querySelector("#table").innerHTML = renderSupportCenterForm();
+      document.querySelector("#detail").innerHTML = "";
+      document.querySelector("#cards").innerHTML = "";
+    }
+
+    function renderSupportCenterForm() {
+      return `
+        <div class="support-center-form">
+          <div class="support-center-section">
+            <h4>ช่องทางติดต่อ</h4>
+            <p class="muted">เปิด/ปิดการแสดงผลแต่ละช่องทางได้ด้วย toggle Active/Inactive</p>
+            <div class="support-channel-list">
+              ${supportCenterData.channels.map(ch => renderSupportChannelRow(ch)).join("")}
+            </div>
+          </div>
+          <div class="support-center-section">
+            <h4>เวลาทำการ</h4>
+            <div class="support-center-field-row">
+              <label><span>ช่วงเวลา <span class="article-required-mark">*</span></span>
+                <input class="field" type="text" value="${supportCenterData.businessHours}" data-support-business-hours />
+              </label>
+              <label><span>ความพร้อมให้บริการ (ไทย)</span>
+                <input class="field" type="text" value="${supportCenterData.availabilityTh}" data-support-availability-th />
+              </label>
+              <label><span>ความพร้อมให้บริการ (English)</span>
+                <input class="field" type="text" value="${supportCenterData.availabilityEn}" data-support-availability-en />
+              </label>
+            </div>
+          </div>
+          <div class="user-detail-actions">
+            <button class="user-detail-action-btn" type="button" data-support-save>บันทึกการเปลี่ยนแปลง</button>
+            <button class="user-detail-action-btn" type="button" data-support-preview>Preview</button>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderSupportChannelRow(ch) {
+      const activeClass = ch.active ? "active" : "inactive";
+      return `
+        <div class="support-channel-row ${activeClass}" data-channel-id="${ch.id}">
+          <div class="support-channel-toggle">
+            <button type="button" class="toggle-switch ${ch.active ? "on" : ""}" data-channel-toggle="${ch.id}" aria-label="${ch.active ? "ปิดการแสดงผล" : "เปิดการแสดงผล"}">
+              <span class="toggle-knob"></span>
+            </button>
+          </div>
+          <div class="support-channel-info">
+            <div class="support-channel-type">${ch.channelType}</div>
+            <div class="support-channel-value">${ch.value}</div>
+          </div>
+          <div class="support-channel-desc">
+            <label><span>คำอธิบาย (ไทย)</span>
+              <input class="field" type="text" value="${ch.descriptionTh}" data-channel-desc-th="${ch.id}" />
+            </label>
+            <label><span>Description (English)</span>
+              <input class="field" type="text" value="${ch.descriptionEn}" data-channel-desc-en="${ch.id}" />
+            </label>
+          </div>
+          <div class="support-channel-status">
+            <span class="pill ${ch.active ? "green" : "gray"}">${ch.active ? "Active" : "Inactive"}</span>
+          </div>
+        </div>
+      `;
+    }
+
+    // ===== Policy detail page (HS-PTO-002a) =====
+    function renderPolicyDetailPage(policy) {
+      activeModule = "settings";
+      activeSub = "Policy & Versioning";
+      setPageActions(renderPageBackButton("data-policy-back", "กลับไป Policy & Versioning"));
+      syncExpandedNavForModule("settings", "Policy & Versioning");
+      document.body.classList.remove("policy-versioning-mode");
+      document.body.classList.add("policy-detail-mode");
+      const publishedVersion = policy.versions.find(v => v.status === "Published");
+      const hasDraft = !!policy.draftVersion;
+      document.querySelector("#crumb").textContent = `เครื่องมือ & รายงาน / Settings / Policy & Versioning / ${policy.type}`;
+      document.querySelector("#page-title").textContent = policy.typeLabel;
+      document.querySelector("#page-meta").textContent = publishedVersion ? `เผยแพร่ ${publishedVersion.publishedDate}` : "";
+      document.querySelector("#panel-title").textContent = policy.type.toUpperCase();
+      document.querySelector("#panel-subtitle").textContent = policy.description;
+      document.querySelector("#primary-action").textContent = "";
+      document.querySelector("#user-panel-filter-actions").innerHTML = "";
+      document.querySelector(".filters").innerHTML = "";
+      document.querySelector("#summary-grid").innerHTML = "";
+      document.querySelector("#table").innerHTML = `
+        <div class="user-detail-page policy-detail-page">
+          <div class="user-detail-head">
+            <div class="user-detail-head-info">
+              <h2>${policy.typeLabel}</h2>
+              <div class="policy-detail-badges">
+                <span class="pill ${policy.status === "Published" ? "green" : "gray"}">${policy.status}</span>
+                <span class="policy-version">${policy.currentVersion}</span>
+                ${hasDraft ? `<span class="pill amber">มี Draft ${policy.draftVersion}</span>` : ""}
+              </div>
+              <p class="muted">${policy.description}</p>
+            </div>
+          </div>
+          <div class="policy-detail-layout">
+            <div class="detail-section">
+              <div class="panel-head">
+                <div>
+                  <h3>เนื้อหาเวอร์ชันปัจจุบัน (${policy.currentVersion})</h3>
+                  <p class="muted">เนื้อหาที่เผยแพร่อยู่ — read-only หากต้องการแก้ไขให้สร้าง draft เวอร์ชันใหม่</p>
+                </div>
+              </div>
+              <div class="policy-content-tabs">
+                <button class="segmented active" type="button" data-policy-lang-tab="th">ภาษาไทย</button>
+                <button class="segmented" type="button" data-policy-lang-tab="en">English</button>
+              </div>
+              <div class="policy-content-body" data-policy-content-lang="th">
+                ${publishedVersion ? escapeHtml(publishedVersion.contentTh) : "— ยังไม่มีเวอร์ชันที่เผยแพร่ —"}
+              </div>
+              <div class="policy-content-body" data-policy-content-lang="en" hidden>
+                ${publishedVersion ? escapeHtml(publishedVersion.contentEn) : "— No published version yet —"}
+              </div>
+              <div class="policy-metadata">
+                <div class="detail-tile"><span class="muted">เวอร์ชัน</span><strong>${policy.currentVersion}</strong></div>
+                <div class="detail-tile"><span class="muted">แก้ไขล่าสุด</span><strong>${policy.lastEdited}</strong></div>
+                <div class="detail-tile"><span class="muted">บทแก้ไข</span><strong>${policy.lastEditor}</strong></div>
+                <div class="detail-tile"><span class="muted">เผยแพร่เมื่อ</span><strong>${publishedVersion ? publishedVersion.publishedDate : "—"}</strong></div>
+              </div>
+              <div class="policy-change-summary">
+                <span class="muted">สรุปการเปลี่ยนแปลง:</span>
+                <p>${publishedVersion ? escapeHtml(publishedVersion.changeSummary) : "—"}</p>
+              </div>
+            </div>
+            <div class="user-detail-actions">
+              ${hasDraft
+                ? `<button class="user-detail-action-btn" type="button" data-policy-edit="${policy.id}">แก้ไข Draft</button>`
+                : `<button class="user-detail-action-btn" type="button" data-policy-create-draft="${policy.id}">สร้าง Draft เวอร์ชันใหม่</button>`
+              }
+              <button class="user-detail-action-btn" type="button" data-policy-version-history="${policy.id}">ดู Version History</button>
+            </div>
+          </div>
+        </div>
+      `;
+      document.querySelector("#detail").innerHTML = "";
+      document.querySelector("#cards").innerHTML = "";
+      updateActiveNav();
+      scrollMainToTop();
+    }
+
+    // ===== Policy editor page (HS-PTO-002a) =====
+    function renderPolicyEditorPage(policy, mode = "edit-draft") {
+      activeModule = "settings";
+      activeSub = "Policy & Versioning";
+      const isNewDraft = mode === "new-draft";
+      const draftVersion = isNewDraft ? `v${getNextPolicyVersionNumber(policy)}.0-draft` : (policy.draftVersion || policy.currentVersion);
+      setPageActions(renderPageBackButton("data-policy-back", "กลับไป Policy & Versioning"));
+      syncExpandedNavForModule("settings", "Policy & Versioning");
+      document.body.classList.remove("policy-versioning-mode", "policy-detail-mode");
+      document.body.classList.add("policy-editor-mode");
+      document.querySelector("#crumb").textContent = `เครื่องมือ & รายงาน / Settings / Policy & Versioning / ${policy.type} / Editor`;
+      document.querySelector("#page-title").textContent = `${policy.typeLabel} — Editor`;
+      document.querySelector("#page-meta").textContent = `Draft ${draftVersion}`;
+      document.querySelector("#panel-title").textContent = "POLICY EDITOR";
+      document.querySelector("#panel-subtitle").textContent = "แก้ไขเนื้อหา draft พร้อมรองรับภาษาไทยและอังกฤษ";
+      document.querySelector("#primary-action").textContent = "";
+      document.querySelector("#user-panel-filter-actions").innerHTML = "";
+      document.querySelector(".filters").innerHTML = "";
+      document.querySelector("#summary-grid").innerHTML = "";
+      const publishedVersion = policy.versions.find(v => v.status === "Published");
+      const initialTh = isNewDraft ? (publishedVersion?.contentTh || "") : (publishedVersion?.contentTh || "");
+      const initialEn = isNewDraft ? (publishedVersion?.contentEn || "") : (publishedVersion?.contentEn || "");
+      document.querySelector("#table").innerHTML = `
+        <div class="user-detail-page policy-editor-page">
+          <div class="policy-detail-layout">
+            <div class="detail-section">
+              <form class="policy-editor-form" data-policy-editor data-policy-id="${policy.id}" data-policy-mode="${isNewDraft ? "new-draft" : "edit-draft"}" novalidate>
+                <section class="article-editor-section">
+                  <h4>ข้อมูลเวอร์ชัน</h4>
+                  <div class="support-center-field-row">
+                    <label><span>เลขเวอร์ชัน <span class="article-required-mark">*</span></span>
+                      <input class="field" type="text" value="${draftVersion}" data-policy-version-field readonly />
+                    </label>
+                    <label><span>สถานะ</span>
+                      <input class="field" type="text" value="Draft" readonly />
+                    </label>
+                  </div>
+                  <label class="article-editor-field">
+                    <span>สรุปการเปลี่ยนแปลง <span class="article-required-mark">*</span></span>
+                    <textarea class="field" rows="2" data-policy-change-summary placeholder="อธิบายสิ่งที่เปลี่ยนแปลงในเวอร์ชันนี้"></textarea>
+                  </label>
+                </section>
+                <section class="article-editor-section">
+                  <h4>เนื้อหา</h4>
+                  <div class="policy-content-tabs">
+                    <button class="segmented active" type="button" data-policy-editor-lang-tab="th">ภาษาไทย</button>
+                    <button class="segmented" type="button" data-policy-editor-lang-tab="en">English</button>
+                  </div>
+                  <div data-policy-editor-lang="th">
+                    <textarea class="field policy-editor-textarea" rows="12" data-policy-content-th placeholder="เนื้อหาเงื่อนไขการใช้งาน (ภาษาไทย)">${escapeHtml(initialTh)}</textarea>
+                  </div>
+                  <div data-policy-editor-lang="en" hidden>
+                    <textarea class="field policy-editor-textarea" rows="12" data-policy-content-en placeholder="Terms of Use content (English)">${escapeHtml(initialEn)}</textarea>
+                  </div>
+                </section>
+                <div class="user-detail-actions">
+                  <button class="user-detail-action-btn" type="button" data-policy-preview>Preview</button>
+                  <button class="user-detail-action-btn" type="submit">บันทึก Draft</button>
+                  <button class="user-detail-action-btn" type="button" data-policy-back>ยกเลิก</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      `;
+      document.querySelector("#detail").innerHTML = "";
+      document.querySelector("#cards").innerHTML = "";
+      updateActiveNav();
+      scrollMainToTop();
+    }
+
+    function getNextPolicyVersionNumber(policy) {
+      const maxVersion = policy.versions.reduce((max, v) => {
+        const match = v.version.match(/v(\d+)/);
+        return match ? Math.max(max, parseInt(match[1], 10)) : max;
+      }, 0);
+      return maxVersion + 1;
+    }
+
+    // ===== Policy version history page (HS-PTO-002b) =====
+    function renderPolicyVersionHistoryPage(policy) {
+      activeModule = "settings";
+      activeSub = "Policy & Versioning";
+      setPageActions(renderPageBackButton("data-policy-back", "กลับไป Policy & Versioning"));
+      syncExpandedNavForModule("settings", "Policy & Versioning");
+      document.body.classList.remove("policy-versioning-mode", "policy-detail-mode", "policy-editor-mode");
+      document.body.classList.add("policy-version-history-mode");
+      document.querySelector("#crumb").textContent = `เครื่องมือ & รายงาน / Settings / Policy & Versioning / ${policy.type} / Version History`;
+      document.querySelector("#page-title").textContent = `${policy.typeLabel} — Version History`;
+      document.querySelector("#page-meta").textContent = `${policy.versions.length} เวอร์ชัน`;
+      document.querySelector("#panel-title").textContent = "VERSION HISTORY";
+      document.querySelector("#panel-subtitle").textContent = "ประวัติทุกเวอร์ชันของเนื้อหา เรียงจากใหม่ไปเก่า";
+      document.querySelector("#primary-action").textContent = "";
+      document.querySelector("#user-panel-filter-actions").innerHTML = "";
+      document.querySelector(".filters").innerHTML = "";
+      document.querySelector("#summary-grid").innerHTML = "";
+      document.querySelector("#table").innerHTML = `
+        <div class="asset-table policy-version-table">
+          <div class="asset-row head"><div>เวอร์ชัน</div><div>สถานะ</div><div>แก้ไขโดย</div><div>วันที่แก้ไข</div><div>วันที่เผยแพร่</div><div>สรุปการเปลี่ยนแปลง</div></div>
+          ${policy.versions.map(v => `
+            <div class="asset-row" data-policy-version-row="${v.version}">
+              <div data-label="เวอร์ชัน"><div class="main-text">${v.version}</div></div>
+              <div data-label="สถานะ"><span class="pill ${v.status === "Published" ? "green" : "gray"}">${v.status}</span></div>
+              <div data-label="แก้ไขโดย"><div class="main-text">${v.editor}</div></div>
+              <div data-label="วันที่แก้ไข"><div class="main-text">${v.editedDate}</div></div>
+              <div data-label="วันที่เผยแพร่"><div class="main-text">${v.publishedDate || "—"}</div></div>
+              <div data-label="สรุปการเปลี่ยนแปลง"><div class="main-text">${escapeHtml(v.changeSummary)}</div></div>
+            </div>
+          `).join("")}
+        </div>
+      `;
+      document.querySelector("#detail").innerHTML = "";
+      document.querySelector("#cards").innerHTML = "";
+      updateActiveNav();
+      scrollMainToTop();
+    }
+
+    // ===== Support Center preview modal (HS-PTO-005) =====
+    function openSupportCenterPreviewModal() {
+      const activeChannels = supportCenterData.channels.filter(c => c.active);
+      const modalContent = `
+        <div class="user-action-modal-content support-center-preview-modal">
+          <div class="user-action-modal-head">
+            <h3>Preview — หน้า Help (FO)</h3>
+            <button class="user-action-modal-close" type="button" data-user-action-modal-close aria-label="ปิด">${iconSvg.close}</button>
+          </div>
+          <div class="user-action-modal-body">
+            <div class="support-preview-screen">
+              <div class="support-preview-header">
+                <h4>ช่องทางติดต่อ</h4>
+                <p class="muted">${supportCenterData.availabilityTh}</p>
+              </div>
+              <div class="support-preview-channels">
+                ${activeChannels.map(ch => `
+                  <div class="support-preview-channel">
+                    <div class="support-preview-channel-icon">${getSupportChannelIcon(ch.channelType)}</div>
+                    <div class="support-preview-channel-info">
+                      <div class="support-preview-channel-type">${ch.channelType}</div>
+                      <div class="support-preview-channel-value">${ch.value}</div>
+                      <div class="muted">${ch.descriptionTh}</div>
+                    </div>
+                  </div>
+                `).join("")}
+              </div>
+              <div class="support-preview-hours">
+                <div class="support-preview-hours-label">เวลาทำการ</div>
+                <div class="support-preview-hours-value">${supportCenterData.businessHours}</div>
+              </div>
+            </div>
+          </div>
+          <div class="user-action-modal-footer">
+            <button class="user-detail-action-btn" type="button" data-user-action-modal-close>ปิด</button>
+          </div>
+        </div>
+      `;
+      const modalBody = document.querySelector("#user-action-modal-body");
+      if (modalBody) {
+        modalBody.innerHTML = modalContent;
+        showUserActionModal(true);
+      }
+    }
+
+    function getSupportChannelIcon(channelType) {
+      const icons = {
+        LINE: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.5 2 2 5.6 2 10c0 4 3.5 7.3 8.3 7.9.3.1.7.3.7.6v1.7c0 .3.3.6.6.5C16.7 19.8 22 16.5 22 10c0-4.4-4.5-8-10-8Z"/></svg>',
+        Phone: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2 4.2 2 2 0 0 1 4 2h3a2 2 0 0 1 2 1.7c.1.9.3 1.8.6 2.6a2 2 0 0 1-.5 2.1L7.9 9.8a16 16 0 0 0 6 6l1.4-1.2a2 2 0 0 1 2.1-.5c.8.3 1.7.5 2.6.6a2 2 0 0 1 1.7 2Z"/></svg>',
+        Email: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m2 7 10 6 10-6"/></svg>',
+        Facebook: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M22 12a10 10 0 1 0-11.6 9.9v-7H7.9V12h2.5V9.8c0-2.5 1.5-3.9 3.8-3.9 1.1 0 2.2.2 2.2.2v2.5h-1.3c-1.2 0-1.6.8-1.6 1.6V12h2.8l-.5 2.9h-2.3v7A10 10 0 0 0 22 12Z"/></svg>',
+        Website: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><path d="M2 12h20"/><path d="M12 2a15 15 0 0 1 0 20M12 2a15 15 0 0 0 0 20"/></svg>'
+      };
+      return icons[channelType] || icons.Website;
+    }
+
+    function escapeHtml(text) {
+      if (!text) return "";
+      const div = document.createElement("div");
+      div.textContent = text;
+      return div.innerHTML;
+    }
+
     function renderDashboard() {
       activeRow = null;
       setPageActions("");
@@ -20725,6 +21426,9 @@
 
     function jumpToModule(moduleId, subLabel = "") {
       if (!moduleId) return;
+      // HS-PTO-001: guard against removed modules (e.g. legacy "support")
+      // so Dashboard cards / chips don't crash when clicked.
+      if (!moduleData[moduleId] && moduleId !== "dashboard") return;
       const targetSubLabel = subLabel || (moduleId !== "dashboard" ? defaultSubByModule[moduleId] || "" : "");
       resetListFilterPanelsForNavigation(moduleId, targetSubLabel);
       renderModule(moduleId, targetSubLabel, targetSubLabel);
@@ -31540,6 +32244,96 @@
         closeRowMenus();
         return;
       }
+      // ===== Policy & Versioning event handlers (HS-PTO-001) =====
+      const policyLangTab = event.target.closest("[data-policy-lang-tab]");
+      if (policyLangTab) {
+        const lang = policyLangTab.dataset.policyLangTab;
+        document.querySelectorAll("[data-policy-lang-tab]").forEach(btn => btn.classList.toggle("active", btn === policyLangTab));
+        document.querySelectorAll("[data-policy-content-lang]").forEach(panel => {
+          panel.hidden = panel.dataset.policyContentLang !== lang;
+        });
+        return;
+      }
+      const policyEditorLangTab = event.target.closest("[data-policy-editor-lang-tab]");
+      if (policyEditorLangTab) {
+        const lang = policyEditorLangTab.dataset.policyEditorLangTab;
+        document.querySelectorAll("[data-policy-editor-lang-tab]").forEach(btn => btn.classList.toggle("active", btn === policyEditorLangTab));
+        document.querySelectorAll("[data-policy-editor-lang]").forEach(panel => {
+          panel.hidden = panel.dataset.policyEditorLang !== lang;
+        });
+        return;
+      }
+      const policyCard = event.target.closest("[data-policy-open]");
+      if (policyCard && !event.target.closest(".row-menu summary, .row-menu-list, button, a, input, select, [data-custom-select]")) {
+        const policy = policyVersioningData.policies.find(p => p.id === policyCard.dataset.policyOpen);
+        if (!policy) return;
+        pushBackNavigationContext();
+        renderPolicyDetailPage(policy);
+        return;
+      }
+      const policyBackButton = event.target.closest("[data-policy-back]");
+      if (policyBackButton) {
+        renderPolicyVersioningList();
+        updateActiveNav();
+        return;
+      }
+      const policyEditButton = event.target.closest("[data-policy-edit]");
+      if (policyEditButton) {
+        const policy = policyVersioningData.policies.find(p => p.id === policyEditButton.dataset.policyEdit);
+        if (policy) renderPolicyEditorPage(policy);
+        return;
+      }
+      const policyVersionHistoryButton = event.target.closest("[data-policy-version-history]");
+      if (policyVersionHistoryButton) {
+        const policy = policyVersioningData.policies.find(p => p.id === policyVersionHistoryButton.dataset.policyVersionHistory);
+        if (policy) renderPolicyVersionHistoryPage(policy);
+        return;
+      }
+      const policyCreateDraftButton = event.target.closest("[data-policy-create-draft]");
+      if (policyCreateDraftButton) {
+        const policy = policyVersioningData.policies.find(p => p.id === policyCreateDraftButton.dataset.policyCreateDraft);
+        if (policy) renderPolicyEditorPage(policy, "new-draft");
+        return;
+      }
+      // ===== Support Center event handlers (HS-PTO-004) =====
+      const channelToggle = event.target.closest("[data-channel-toggle]");
+      if (channelToggle) {
+        const channelId = channelToggle.dataset.channelToggle;
+        const channel = supportCenterData.channels.find(c => c.id === channelId);
+        if (channel) {
+          channel.active = !channel.active;
+          renderSupportCenterPage();
+        }
+        return;
+      }
+      const supportPreviewButton = event.target.closest("[data-support-preview]");
+      if (supportPreviewButton) {
+        openSupportCenterPreviewModal();
+        return;
+      }
+      const supportSaveButton = event.target.closest("[data-support-save]");
+      if (supportSaveButton) {
+        // Read form values into data
+        document.querySelectorAll("[data-channel-desc-th]").forEach(input => {
+          const ch = supportCenterData.channels.find(c => c.id === input.dataset.channelDescTh);
+          if (ch) ch.descriptionTh = input.value;
+        });
+        document.querySelectorAll("[data-channel-desc-en]").forEach(input => {
+          const ch = supportCenterData.channels.find(c => c.id === input.dataset.channelDescEn);
+          if (ch) ch.descriptionEn = input.value;
+        });
+        const hoursInput = document.querySelector("[data-support-business-hours]");
+        if (hoursInput) supportCenterData.businessHours = hoursInput.value;
+        const availThInput = document.querySelector("[data-support-availability-th]");
+        if (availThInput) supportCenterData.availabilityTh = availThInput.value;
+        const availEnInput = document.querySelector("[data-support-availability-en]");
+        if (availEnInput) supportCenterData.availabilityEn = availEnInput.value;
+        supportCenterData.lastUpdated = new Date().toISOString().slice(0, 16).replace("T", " ");
+        supportCenterData.lastEditor = "Admin";
+        showSuccessToast("บันทึกการเปลี่ยนแปลงเรียบร้อย");
+        renderSupportCenterPage();
+        return;
+      }
       const articleCard = event.target.closest("[data-article-card]");
       if (articleCard && !event.target.closest(".row-menu, button, a, input, select, [data-custom-select]")) {
         const article = getArticleById(articleCard.dataset.articleCard);
@@ -33151,6 +33945,48 @@
       }
     });
     document.addEventListener("submit", event => {
+      const policyForm = event.target.closest("[data-policy-editor]");
+      if (policyForm) {
+        event.preventDefault();
+        const policyId = policyForm.dataset.policyId;
+        const policy = policyVersioningData.policies.find(p => p.id === policyId);
+        if (!policy) return;
+        const changeSummary = policyForm.querySelector("[data-policy-change-summary]").value.trim();
+        const contentTh = policyForm.querySelector("[data-policy-content-th]").value.trim();
+        const contentEn = policyForm.querySelector("[data-policy-content-en]").value.trim();
+        if (!changeSummary) {
+          showSuccessToast("กรุณากรอกสรุปการเปลี่ยนแปลง");
+          return;
+        }
+        if (!contentTh || !contentEn) {
+          showSuccessToast("กรุณากรอกเนื้อหาทั้งภาษาไทยและอังกฤษ");
+          return;
+        }
+        const versionNumber = policyForm.dataset.policyMode === "new-draft"
+          ? `v${getNextPolicyVersionNumber(policy)}.0-draft`
+          : (policy.draftVersion || `v${getNextPolicyVersionNumber(policy)}.0-draft`);
+        // Save as draft version
+        const existingDraftIdx = policy.versions.findIndex(v => v.version === versionNumber);
+        const draftVersion = {
+          version: versionNumber,
+          status: "Draft",
+          editor: "Admin",
+          editedDate: new Date().toISOString().slice(0, 16).replace("T", " "),
+          publishedDate: "",
+          changeSummary,
+          contentTh,
+          contentEn
+        };
+        if (existingDraftIdx >= 0) {
+          policy.versions[existingDraftIdx] = draftVersion;
+        } else {
+          policy.versions.unshift(draftVersion);
+        }
+        policy.draftVersion = versionNumber;
+        showSuccessToast("บันทึก Draft เรียบร้อย");
+        renderPolicyDetailPage(policy);
+        return;
+      }
       const categoryForm = event.target.closest("[data-category-form]");
       if (categoryForm) {
         event.preventDefault();
