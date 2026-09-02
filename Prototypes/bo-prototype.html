@@ -1791,7 +1791,8 @@
     body.market-list-mode .market-table .asset-row:not(.head),
     body.option-master-mode .option-group-table .asset-row:not(.head),
     body.option-master-mode .option-detail-table .asset-row:not(.head),
-    body.policy-versioning-mode .policy-list-table .asset-row:not(.head) {
+    body.policy-versioning-mode .policy-list-table .asset-row:not(.head),
+    body.policy-version-history-mode .policy-version-table .asset-row:not(.head) {
       min-height: 66px;
       padding-top: 10px;
       padding-bottom: 10px;
@@ -1813,7 +1814,9 @@
     body.option-master-mode .option-detail-table .asset-row:not(.head) .main-text,
     body.option-master-mode .option-detail-table .asset-row:not(.head) .muted,
     body.policy-versioning-mode .policy-list-table .asset-row:not(.head) .main-text,
-    body.policy-versioning-mode .policy-list-table .asset-row:not(.head) .muted {
+    body.policy-versioning-mode .policy-list-table .asset-row:not(.head) .muted,
+    body.policy-version-history-mode .policy-version-table .asset-row:not(.head) .main-text,
+    body.policy-version-history-mode .policy-version-table .asset-row:not(.head) .muted {
       color: #516683;
       font-size: 12px;
       font-weight: 400;
@@ -11177,7 +11180,8 @@
       }
       body.article-list-mode #table,
       body.category-list-mode #table,
-      body.reported-board-mode #table {
+      body.reported-board-mode #table,
+      body.policy-version-history-mode #table {
         padding: 12px 14px 16px;
         background: #f8fbff;
         overflow-x: hidden;
@@ -11205,7 +11209,8 @@
         background: transparent;
         overflow: visible;
       }
-      body.asset-list-mode:not(.article-list-mode):not(.category-list-mode):not(.reported-board-mode) #table .asset-list-table {
+      body.asset-list-mode:not(.article-list-mode):not(.category-list-mode):not(.reported-board-mode) #table .asset-list-table,
+      body.policy-version-history-mode #table .policy-version-table {
         grid-template-columns: 1fr;
         gap: 12px;
         min-width: 0;
@@ -11236,7 +11241,8 @@
       body.offer-list-mode #table > .footer-range,
       body.option-master-mode.option-group-list-mode #table > .footer-range,
       body.option-master-mode.option-detail-mode #table > .footer-range,
-      body.policy-versioning-mode #table > .footer-range {
+      body.policy-versioning-mode #table > .footer-range,
+      body.policy-version-history-mode #table > .footer-range {
         min-width: 0;
       }
       body.offer-list-mode .asset-table {
@@ -11252,7 +11258,8 @@
       body.reported-board-mode .footer-range,
       body.option-master-mode .footer-range,
       body.watch-alert-list-mode .footer-range,
-      body.policy-versioning-mode .footer-range {
+      body.policy-versioning-mode .footer-range,
+      body.policy-version-history-mode .footer-range {
         margin-top: 12px;
         padding: 13px 16px;
         background: transparent;
@@ -11275,7 +11282,8 @@
       body.reported-board-mode .reported-board-table .asset-row.head,
       body.option-master-mode .option-group-table .asset-row.head,
       body.option-master-mode .option-detail-table .asset-row.head,
-      body.policy-versioning-mode .policy-list-table .asset-row.head {
+      body.policy-versioning-mode .policy-list-table .asset-row.head,
+      body.policy-version-history-mode .policy-version-table .asset-row.head {
         display: none;
       }
       body.article-list-mode .article-table .asset-row:not(.head),
@@ -11284,6 +11292,7 @@
       body.option-master-mode .option-group-table .asset-row:not(.head),
       body.option-master-mode .option-detail-table .asset-row:not(.head),
       body.policy-versioning-mode .policy-list-table .asset-row:not(.head),
+      body.policy-version-history-mode .policy-version-table .asset-row:not(.head),
       body.watch-alert-list-mode .watch-alert-list-table .asset-row:not(.head) {
         grid-template-columns: minmax(0, 1fr) 34px;
         column-gap: 14px;
@@ -11302,7 +11311,8 @@
       body.option-master-mode .option-group-table .asset-row:not(.head) > div[data-label]:not(.asset-cell-primary),
       body.option-master-mode .option-detail-table .asset-row:not(.head) > div[data-label]:not(.asset-cell-primary),
       body.watch-alert-list-mode .watch-alert-list-table .asset-row:not(.head) > div[data-label]:not(.asset-cell-primary),
-      body.policy-versioning-mode .policy-list-table .asset-row:not(.head) > div[data-label]:not(.asset-cell-primary) {
+      body.policy-versioning-mode .policy-list-table .asset-row:not(.head) > div[data-label]:not(.asset-cell-primary),
+      body.policy-version-history-mode .policy-version-table .asset-row:not(.head) > div[data-label]:not(.asset-cell-primary) {
         display: none;
       }
       body.article-list-mode .article-table .asset-row:not(.head) > div[data-label]:first-child,
@@ -11318,7 +11328,8 @@
       body.reported-board-mode .reported-board-table .asset-row:not(.head) > .user-row-actions,
       body.option-master-mode .option-group-table .asset-row:not(.head) > .user-row-actions,
       body.option-master-mode .option-detail-table .asset-row:not(.head) > .user-row-actions,
-      body.policy-versioning-mode .policy-list-table .asset-row:not(.head) > .user-row-actions {
+      body.policy-versioning-mode .policy-list-table .asset-row:not(.head) > .user-row-actions,
+      body.policy-version-history-mode .policy-version-table .asset-row:not(.head) > .user-row-actions {
         grid-column: 2;
         grid-row: 1;
         align-self: center;
@@ -11334,7 +11345,8 @@
       body.option-master-mode .option-group-table .asset-row:not(.head) > .asset-cell-primary,
       body.option-master-mode .option-detail-table .asset-row:not(.head) > .asset-cell-primary,
       body.watch-alert-list-mode .watch-alert-list-table .asset-row:not(.head) > .asset-cell-primary,
-      body.policy-versioning-mode .policy-list-table .asset-row:not(.head) > .asset-cell-primary {
+      body.policy-versioning-mode .policy-list-table .asset-row:not(.head) > .asset-cell-primary,
+      body.policy-version-history-mode .policy-version-table .asset-row:not(.head) > .asset-cell-primary {
         grid-column: 1;
         grid-row: 1;
         min-height: 30px;
@@ -11350,7 +11362,8 @@
       body.option-master-mode .option-group-table .asset-row:not(.head) > .asset-cell-primary .main-text,
       body.option-master-mode .option-detail-table .asset-row:not(.head) > .asset-cell-primary .main-text,
       body.watch-alert-list-mode .watch-alert-list-table .asset-row:not(.head) > .asset-cell-primary .main-text,
-      body.policy-versioning-mode .policy-list-table .asset-row:not(.head) > .asset-cell-primary .main-text {
+      body.policy-versioning-mode .policy-list-table .asset-row:not(.head) > .asset-cell-primary .main-text,
+      body.policy-version-history-mode .policy-version-table .asset-row:not(.head) > .asset-cell-primary .main-text {
         max-width: 100%;
         overflow: hidden;
         text-overflow: ellipsis;
@@ -11372,7 +11385,8 @@
       body.reported-board-mode .reported-board-table .asset-row:not(.head) .mobile-user-card-title,
       body.user-accounts-mode .comment-list-table .asset-row:not(.head) .mobile-user-card-title,
       body.watch-alert-list-mode .watch-alert-list-table .asset-row:not(.head) .mobile-user-card-title,
-      body.policy-versioning-mode .policy-list-table .asset-row:not(.head) .mobile-user-card-title {
+      body.policy-versioning-mode .policy-list-table .asset-row:not(.head) .mobile-user-card-title,
+      body.policy-version-history-mode .policy-version-table .asset-row:not(.head) .mobile-user-card-title {
         display: inline !important;
         color: #061426;
         font-family: var(--font-heading);
@@ -11381,13 +11395,15 @@
         letter-spacing: .04em;
         line-height: 1;
       }
-      body.policy-versioning-mode .policy-list-table .asset-row:not(.head) > .asset-cell-primary > .pill { display: none; }
+      body.policy-versioning-mode .policy-list-table .asset-row:not(.head) > .asset-cell-primary > .pill,
+      body.policy-version-history-mode .policy-version-table .asset-row:not(.head) > .asset-cell-primary > .pill { display: none; }
       body.article-list-mode .article-table .asset-card-tags,
       body.category-list-mode .category-table .asset-card-tags,
       body.reported-board-mode .reported-board-table .asset-card-tags,
       body.user-accounts-mode .comment-list-table .asset-card-tags,
       body.watch-alert-list-mode .watch-alert-list-table .asset-row:not(.head) > .asset-card-tags,
-      body.policy-versioning-mode .policy-list-table .asset-row:not(.head) > .asset-card-tags {
+      body.policy-versioning-mode .policy-list-table .asset-row:not(.head) > .asset-card-tags,
+      body.policy-version-history-mode .policy-version-table .asset-row:not(.head) > .asset-card-tags {
         grid-column: 1 / -1;
         grid-row: 2;
         display: flex;
@@ -11403,7 +11419,8 @@
       body.option-master-mode .option-group-table .asset-card-tags .user-card-meta,
       body.option-master-mode .option-detail-table .asset-card-tags .user-card-meta,
       body.watch-alert-list-mode .watch-alert-list-table .asset-card-tags .user-card-meta,
-      body.policy-versioning-mode .policy-list-table .asset-card-tags .user-card-meta {
+      body.policy-versioning-mode .policy-list-table .asset-card-tags .user-card-meta,
+      body.policy-version-history-mode .policy-version-table .asset-card-tags .user-card-meta {
         flex: 1 0 100%;
         display: grid;
         gap: 3px;
@@ -11419,7 +11436,8 @@
       body.option-master-mode .option-group-table .asset-card-tags .user-card-meta-item,
       body.option-master-mode .option-detail-table .asset-card-tags .user-card-meta-item,
       body.watch-alert-list-mode .watch-alert-list-table .asset-card-tags .user-card-meta-item,
-      body.policy-versioning-mode .policy-list-table .asset-card-tags .user-card-meta-item {
+      body.policy-versioning-mode .policy-list-table .asset-card-tags .user-card-meta-item,
+      body.policy-version-history-mode .policy-version-table .asset-card-tags .user-card-meta-item {
         display: flex;
         align-items: baseline;
         justify-content: space-between;
@@ -11435,7 +11453,8 @@
       body.option-master-mode .option-group-table .asset-card-tags .user-card-meta-item span,
       body.option-master-mode .option-detail-table .asset-card-tags .user-card-meta-item span,
       body.watch-alert-list-mode .watch-alert-list-table .asset-card-tags .user-card-meta-item span,
-      body.policy-versioning-mode .policy-list-table .asset-card-tags .user-card-meta-item span {
+      body.policy-versioning-mode .policy-list-table .asset-card-tags .user-card-meta-item span,
+      body.policy-version-history-mode .policy-version-table .asset-card-tags .user-card-meta-item span {
         color: #485b75;
         font-size: 12px;
         font-weight: 700;
@@ -11448,7 +11467,8 @@
       body.option-master-mode .option-group-table .asset-card-tags .user-card-meta-item strong,
       body.option-master-mode .option-detail-table .asset-card-tags .user-card-meta-item strong,
       body.watch-alert-list-mode .watch-alert-list-table .asset-card-tags .user-card-meta-item strong,
-      body.policy-versioning-mode .policy-list-table .asset-card-tags .user-card-meta-item strong {
+      body.policy-versioning-mode .policy-list-table .asset-card-tags .user-card-meta-item strong,
+      body.policy-version-history-mode .policy-version-table .asset-card-tags .user-card-meta-item strong {
         color: #233a5c;
         font-size: 12px;
         font-weight: 400;
@@ -11462,7 +11482,8 @@
       body.option-master-mode .option-group-table .asset-card-tags .user-card-meta-item.comment-field-meta,
       body.option-master-mode .option-detail-table .asset-card-tags .user-card-meta-item.comment-field-meta,
       body.watch-alert-list-mode .watch-alert-list-table .asset-card-tags .user-card-meta-item.comment-field-meta,
-      body.policy-versioning-mode .policy-list-table .asset-card-tags .user-card-meta-item.comment-field-meta {
+      body.policy-versioning-mode .policy-list-table .asset-card-tags .user-card-meta-item.comment-field-meta,
+      body.policy-version-history-mode .policy-version-table .asset-card-tags .user-card-meta-item.comment-field-meta {
         display: grid;
         grid-template-columns: max-content minmax(0, 50%);
         align-items: baseline;
@@ -11471,7 +11492,8 @@
       body.option-master-mode .option-group-table .asset-card-tags .user-card-meta-item.comment-field-meta strong,
       body.option-master-mode .option-detail-table .asset-card-tags .user-card-meta-item.comment-field-meta strong,
       body.watch-alert-list-mode .watch-alert-list-table .asset-card-tags .user-card-meta-item.comment-field-meta strong,
-      body.policy-versioning-mode .policy-list-table .asset-card-tags .user-card-meta-item.comment-field-meta strong {
+      body.policy-versioning-mode .policy-list-table .asset-card-tags .user-card-meta-item.comment-field-meta strong,
+      body.policy-version-history-mode .policy-version-table .asset-card-tags .user-card-meta-item.comment-field-meta strong {
         width: 100%;
         max-width: 100%;
         min-width: 0;
@@ -12866,18 +12888,30 @@
     @media (max-width: 760px) {
       body.policy-versioning-mode #table,
       body.policy-versioning-mode #table .policy-list-table,
-      body.policy-versioning-mode #table > .footer-range {
+      body.policy-versioning-mode #table > .footer-range,
+      body.policy-version-history-mode #table,
+      body.policy-version-history-mode #table .policy-version-table,
+      body.policy-version-history-mode #table > .footer-range {
         width: 100%;
         max-width: 100%;
         min-width: 0 !important;
         overflow-x: hidden;
       }
-      body.policy-versioning-mode .policy-list-table .asset-row:not(.head) {
+      body.policy-versioning-mode .policy-list-table .asset-row:not(.head),
+      body.policy-version-history-mode .policy-version-table .asset-row:not(.head) {
         grid-template-columns: minmax(0, 1fr);
         cursor: pointer;
       }
       body.policy-versioning-mode .policy-list-table .asset-row:not(.head) > .user-row-actions {
         display: none;
+      }
+      body.policy-version-history-mode .policy-version-table .asset-row:not(.head) {
+        grid-template-columns: minmax(0, 1fr) 34px;
+      }
+      body.policy-version-history-mode .policy-version-table .asset-row:not(.head) > .user-row-actions {
+        display: flex;
+        width: 38px;
+        min-width: 38px;
       }
     }
 
@@ -12892,10 +12926,20 @@
     body.policy-version-history-mode .summary-grid,
     body.policy-version-history-mode .cards,
     body.policy-version-history-mode #primary-action { display: none; }
-    body.policy-detail-mode #table,
-    body.policy-version-history-mode #table { min-width: 0; }
-    body.policy-detail-mode .layout > .panel > .panel-head,
-    body.policy-version-history-mode .layout > .panel > .panel-head { display: none !important; min-height: 0 !important; height: 0 !important; padding: 0 !important; border: 0 !important; margin: 0 !important; }
+    body.policy-detail-mode #table { min-width: 0; }
+    body.policy-detail-mode .layout > .panel > .panel-head { display: none !important; min-height: 0 !important; height: 0 !important; padding: 0 !important; border: 0 !important; margin: 0 !important; }
+    /* HS-PTO-002b: Version History ใช้ table layout เดียวกับ Policy & Versioning list */
+    body.policy-version-history-mode .layout > .panel { overflow: hidden; }
+    body.policy-version-history-mode .main { overflow-x: hidden; }
+    body.policy-version-history-mode #table {
+      max-width: 100%;
+      overflow-x: hidden;
+      overflow-y: visible;
+    }
+    body.policy-version-history-mode #table .policy-version-table,
+    body.policy-version-history-mode #table > .footer-range {
+      min-width: 0;
+    }
     .policy-detail-page { display: grid; gap: 20px; padding: 20px; }
     .policy-detail-page .policy-version {
       padding: 3px 10px;
@@ -13179,12 +13223,69 @@
     }
 
     /* ===== Policy version history + publish/restore (HS-PTO-002b) ===== */
+    .policy-version-table .asset-row {
+      grid-template-columns: minmax(72px, .5fr) minmax(82px, .6fr) minmax(100px, .8fr) minmax(116px, .9fr) minmax(116px, .9fr) minmax(180px, 1.6fr) minmax(56px, 56px);
+      width: 100%;
+      box-sizing: border-box;
+    }
+    body.policy-version-history-mode .policy-version-table .asset-row > div {
+      min-width: 0;
+    }
+    body.policy-version-history-mode .policy-version-table .asset-row.head {
+      min-height: 44px;
+      padding: 12px 20px;
+      column-gap: 14px;
+      background: #f1f5fb;
+      color: #485b75;
+      font-size: 12px;
+      font-weight: 700;
+    }
+    body.policy-version-history-mode .policy-version-table .asset-row:not(.head) {
+      min-height: 66px;
+      padding: 10px 20px;
+      column-gap: 14px;
+    }
     .policy-version-table .asset-row.head > div:last-child,
     .policy-version-table .asset-row:not(.head) > .user-row-actions {
-      min-width: 120px;
+      min-width: 0;
+      width: 56px;
+      box-sizing: border-box;
+    }
+    .policy-version-table .asset-row.head > div:last-child {
+      justify-content: center;
+      text-align: center;
     }
     .policy-version-table .asset-row:not(.head) > .user-row-actions {
-      gap: 14px;
+      gap: 0;
+      justify-self: center;
+      justify-content: center;
+    }
+    .policy-version-action-dots {
+      display: inline-block;
+      transform: translateY(-2px);
+      font-size: 16px;
+      font-weight: 800;
+      letter-spacing: 2px;
+      line-height: 1;
+    }
+    @media (max-width: 760px) {
+      body.policy-version-history-mode .policy-version-table .asset-row:not(.head) > .user-row-actions {
+        width: 38px;
+        min-width: 38px;
+      }
+    }
+    .policy-version-table .asset-row[data-policy-version-open] {
+      cursor: pointer;
+    }
+    .policy-version-table .asset-row[data-policy-version-open]:hover {
+      background: var(--hover-bg, #f9fafb);
+    }
+    @media (max-width: 760px) {
+      body.policy-version-history-mode .policy-version-table .asset-row:not(.head) {
+        min-height: 0;
+        column-gap: 14px;
+        padding: 18px 18px 16px;
+      }
     }
     .policy-publish-confirm-modal {
       width: min(480px, calc(100vw - 36px)) !important;
@@ -22216,35 +22317,62 @@
       document.body.classList.add("policy-version-history-mode");
       document.querySelector("#crumb").textContent = `เครื่องมือ & รายงาน / Settings / Policy & Versioning / ${policy.type} / Version History`;
       document.querySelector("#page-title").textContent = "Version History";
-      document.querySelector("#page-meta").textContent = `${policy.versions.length} เวอร์ชัน`;
-      document.querySelector("#panel-title").textContent = policy.typeLabel;
-      document.querySelector("#panel-subtitle").textContent = "ประวัติทุกเวอร์ชันของเนื้อหา เรียงจากใหม่ไปเก่า";
+      document.querySelector("#page-meta").textContent = "";
+      document.querySelector("#panel-title").textContent = "Version History List";
+      document.querySelector("#panel-subtitle").textContent = "";
       document.querySelector("#primary-action").textContent = "";
       document.querySelector("#user-panel-filter-actions").innerHTML = "";
       document.querySelector(".filters").innerHTML = "";
       document.querySelector("#summary-grid").innerHTML = "";
       document.querySelector("#table").innerHTML = `
         <div class="asset-table policy-version-table">
-          <div class="asset-row head"><div>เวอร์ชัน</div><div>สถานะ</div><div>แก้ไขโดย</div><div>วันที่แก้ไข</div><div>วันที่เผยแพร่</div><div>สรุปการเปลี่ยนแปลง</div><div>Action</div></div>
-          ${policy.versions.map(v => `
-            <div class="asset-row" data-policy-version-row="${v.version}">
-              <div data-label="เวอร์ชัน"><div class="main-text">${v.version}</div></div>
-              <div data-label="สถานะ"><span class="pill ${v.status === "Published" ? "green" : v.status === "Draft" ? "amber" : "gray"}">${v.status}</span></div>
-              <div data-label="แก้ไขโดย"><div class="main-text">${v.editor}</div></div>
-              <div data-label="วันที่แก้ไข"><div class="main-text">${v.editedDate}</div></div>
-              <div data-label="วันที่เผยแพร่"><div class="main-text">${v.publishedDate || "—"}</div></div>
-              <div data-label="สรุปการเปลี่ยนแปลง"><div class="main-text">${escapeHtml(v.changeSummary)}</div></div>
-              <div class="user-row-actions" data-label="Action">
-                <button class="panel-action" type="button" data-policy-version-view="${policy.id}" data-policy-version="${v.version}">View</button>
-                ${v.status === "Archived" ? `<button class="panel-action" type="button" data-policy-version-restore="${policy.id}" data-policy-version="${v.version}">Restore</button>` : ""}
+          <div class="asset-row head"><div>Version</div><div>Status</div><div>Edited By</div><div>Edited Date</div><div>Published Date</div><div>Change Summary</div><div>Action</div></div>
+          ${policy.versions.map(v => {
+            const statusClass = v.status === "Published" ? "green" : v.status === "Draft" ? "amber" : "gray";
+            return `
+            <div class="asset-row" data-policy-version-open="${policy.id}" data-policy-version="${v.version}">
+              <div class="asset-cell-primary" data-label="Version">
+                <span class="pill slate policy-version-pill">${v.version}</span>
+                <div class="main-text"><span class="mobile-user-card-title">${v.version}</span></div>
+              </div>
+              <div class="asset-card-tags">
+                <span class="pill ${statusClass}">${v.status}</span>
+                <div class="user-card-meta">
+                  <div class="user-card-meta-item"><span>Status</span><strong>${v.status}</strong></div>
+                  <div class="user-card-meta-item"><span>Edited By</span><strong>${v.editor}</strong></div>
+                  <div class="user-card-meta-item"><span>Edited Date</span><strong>${v.editedDate}</strong></div>
+                  <div class="user-card-meta-item"><span>Published Date</span><strong>${v.publishedDate || "—"}</strong></div>
+                  <div class="user-card-meta-item comment-field-meta"><span>Change Summary</span><strong>${escapeHtml(v.changeSummary)}</strong></div>
+                </div>
+              </div>
+              <div data-label="Status">
+                <div class="policy-row-badges">
+                  <span class="pill ${statusClass}">${v.status}</span>
+                </div>
+              </div>
+              <div data-label="Edited By"><div class="main-text">${v.editor}</div></div>
+              <div data-label="Edited Date"><div class="main-text">${v.editedDate}</div></div>
+              <div data-label="Published Date"><div class="main-text">${v.publishedDate || "—"}</div></div>
+              <div data-label="Change Summary"><div class="main-text">${escapeHtml(v.changeSummary)}</div></div>
+              <div class="user-row-actions">
+                <details class="row-menu">
+                  <summary aria-label="Version actions"><span class="policy-version-action-dots" aria-hidden="true">...</span></summary>
+                  <div class="row-menu-list">
+                    <button type="button" data-policy-version-view="${policy.id}" data-policy-version="${v.version}">ดูเวอร์ชัน</button>
+                    ${v.status === "Archived" ? `<button type="button" data-policy-version-restore="${policy.id}" data-policy-version="${v.version}">Restore เป็น Draft</button>` : ""}
+                  </div>
+                </details>
               </div>
             </div>
-          `).join("")}
+            `;
+          }).join("")}
         </div>
       `;
       document.querySelector("#detail").innerHTML = "";
       document.querySelector("#cards").innerHTML = "";
       updateActiveNav();
+      const versionHistoryTable = document.querySelector("#table");
+      if (versionHistoryTable) versionHistoryTable.scrollLeft = 0;
       scrollMainToTop();
     }
 
@@ -33382,6 +33510,14 @@
       if (policyPublishButton) {
         const form = policyPublishButton.closest("[data-policy-editor]");
         if (form) openPolicyPublishConfirmModal(form);
+        return;
+      }
+      // HS-PTO-002b: Row click on version history table opens View modal (same pattern as policy list row click)
+      const policyVersionRow = event.target.closest("[data-policy-version-open]");
+      if (policyVersionRow && !event.target.closest(".row-menu summary, .row-menu-list, button, a, input, select, [data-custom-select]")) {
+        const policy = policyVersioningData.policies.find(p => p.id === policyVersionRow.dataset.policyVersionOpen);
+        const version = policy?.versions.find(v => v.version === policyVersionRow.dataset.policyVersion);
+        if (policy && version) openPolicyVersionViewModal(policy, version);
         return;
       }
       // HS-PTO-002b: View a specific version (read-only modal)
