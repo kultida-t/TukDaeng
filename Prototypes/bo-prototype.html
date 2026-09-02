@@ -13411,7 +13411,8 @@
       justifyLeft: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h10M4 18h13"/></svg>',
       justifyCenter: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M7 12h10M5.5 18h13"/></svg>',
       justifyRight: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M10 12h10M7 18h13"/></svg>',
-      createLink: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9.5 14.5 14.5 9.5"/><path d="M11 6.5 12.5 5a3.5 3.5 0 1 1 5 5L16 11.5"/><path d="M13 17.5 11.5 19a3.5 3.5 0 1 1-5-5L8 12.5"/></svg>'
+      createLink: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9.5 14.5 14.5 9.5"/><path d="M11 6.5 12.5 5a3.5 3.5 0 1 1 5 5L16 11.5"/><path d="M13 17.5 11.5 19a3.5 3.5 0 1 1-5-5L8 12.5"/></svg>',
+      heading: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 5v14"/><path d="M19 5v14"/><path d="M5 12h14"/></svg>'
     };
 
     const navGroups = [
@@ -21338,7 +21339,7 @@
       document.querySelector("#summary-grid").innerHTML = "";
       document.querySelector("#table").innerHTML = `
         <div class="asset-table policy-list-table">
-          <div class="asset-row head"><div>Policy</div><div>Description</div><div>สถานะ</div><div>Version</div><div>Updated</div><div>Updated By</div><div>Action</div></div>
+          <div class="asset-row head"><div>Policy</div><div>Description</div><div>Status</div><div>Version</div><div>Updated</div><div>Updated By</div><div>Action</div></div>
           ${policyVersioningData.policies.map(policy => renderPolicyRow(policy)).join("")}
         </div>
       `;
@@ -21357,7 +21358,7 @@
             <span class="pill ${policy.id === "POL-TOU" ? "blue" : "purple"}">${policy.type.toUpperCase()}</span>
           </div>
           <div data-label="Description"><div class="main-text">${policy.description}</div></div>
-          <div data-label="สถานะ">
+          <div data-label="Status">
             <div class="policy-row-badges">
               <span class="pill ${statusClass}">${policy.status}</span>
               ${draftBadge}
@@ -21550,9 +21551,9 @@
               <form class="policy-editor-form" data-policy-editor data-policy-id="${policy.id}" data-policy-mode="${isNewDraft ? "new-draft" : "edit-draft"}" novalidate>
                 <section class="article-editor-section">
                   <div class="policy-metadata">
-                    <div class="detail-tile"><span class="muted">Policy</span><strong>${policy.typeLabel}</strong></div>
-                    <div class="detail-tile"><span class="muted">Version</span><strong>${draftVersion}</strong></div>
-                    <div class="detail-tile"><span class="muted">สถานะ</span><strong><span class="pill gray">Draft</span></strong></div>
+                    <div class="detail-tile"><span class="muted">Policy</span><strong><span class="pill ${policy.id === "POL-TOU" ? "blue" : "purple"}">${policy.typeLabel}</span></strong></div>
+                    <div class="detail-tile"><span class="muted">Version</span><strong><span class="pill slate">${draftVersion}</span></strong></div>
+                    <div class="detail-tile"><span class="muted">Status</span><strong><span class="pill amber">Draft</span></strong></div>
                   </div>
                 </section>
                 <section class="article-editor-section">
@@ -21631,6 +21632,7 @@
         { command: "bold", label: "ตัวหนา" },
         { command: "italic", label: "ตัวเอียง" },
         { command: "underline", label: "ขีดเส้นใต้" },
+        { command: "formatBlock", value: "H2", iconKey: "heading", label: "หัวข้อ H2" },
         { command: "insertUnorderedList", label: "รายการแบบจุด" },
         { command: "insertOrderedList", label: "รายการแบบตัวเลข" },
         { command: "justifyLeft", label: "จัดชิดซ้าย" },
@@ -21638,19 +21640,25 @@
         { command: "justifyRight", label: "จัดชิดขวา" },
         { command: "createLink", label: "เพิ่มลิงก์" }
       ];
-      return tools.map(tool => `<button class="policy-editor-tool" type="button" data-policy-editor-command="${tool.command}" aria-label="${tool.label}" title="${tool.label}">${policyEditorToolIcons[tool.command]}</button>`).join("");
+      return tools.map(tool => `<button class="policy-editor-tool" type="button" data-policy-editor-command="${tool.command}"${tool.value ? ` data-policy-editor-value="${tool.value}"` : ""} aria-label="${tool.label}" title="${tool.label}">${policyEditorToolIcons[tool.iconKey || tool.command]}</button>`).join("");
     }
 
     function runPolicyEditorCommand(button) {
       const editor = button.closest("[data-policy-editor-lang]")?.querySelector("[contenteditable]");
       if (!editor) return;
       editor.focus();
-      if (button.dataset.policyEditorCommand === "createLink") {
+      const command = button.dataset.policyEditorCommand;
+      if (command === "createLink") {
         const url = window.prompt("ใส่ URL ของลิงก์");
         if (!url) return;
         document.execCommand("createLink", false, url);
+      } else if (command === "formatBlock") {
+        const target = button.dataset.policyEditorValue;
+        const current = (document.queryCommandValue("formatBlock") || "").toLowerCase();
+        const next = current === target.toLowerCase() ? "p" : target;
+        document.execCommand("formatBlock", false, `<${next}>`);
       } else {
-        document.execCommand(button.dataset.policyEditorCommand, false, button.dataset.policyEditorValue || null);
+        document.execCommand(command, false, button.dataset.policyEditorValue || null);
       }
     }
 
