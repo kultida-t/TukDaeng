@@ -262,15 +262,14 @@
 #### Happy Path
 1. กดไอคอนค้นหา
 2. พิมพ์ Keyword (เช่น "Rolex")
-3. Autocomplete แสดงตัวเลือก: "Rolex — All listings", "Rolex Datejust", "Rolex GMT-Master II"
+3. Autocomplete แสดงตัวเลือกพร้อมจำนวน Asset Sale ปัจจุบันข้างชื่อ entity/option เช่น "Rolex (212)", "Rolex Datejust (45)", "Rolex GMT-Master II (0)"
 4. เลือก Suggestion หรือ กด Enter
-5. แสดงผลลัพธ์พร้อมจำนวน "256 results"
+5. แสดงผลลัพธ์พร้อม Result Count เช่น "256 results"
 
 #### Error Cases
 | ID | เงื่อนไข | ผลลัพธ์ |
 |---|---|---|
-| E01 | ไม่พบผลลัพธ์ | แสดง "No results found for '[keyword]'" |
-| E02 | Keyword สั้นเกิน (< 2 ตัว) | ไม่แสดง Autocomplete |
+| E01 | ไม่พบผลลัพธ์ | แสดง Empty State "ไม่พบข้อมูล" / "No data found" |
 
 ---
 
@@ -289,8 +288,8 @@
 #### Error Cases
 | ID | เงื่อนไข | ผลลัพธ์ |
 |---|---|---|
-| E01 | Min Price > Max Price | แสดง "Minimum price cannot exceed maximum price" |
-| E02 | Filter ผสมกันแล้วไม่มีผล | แสดง Empty State + ปุ่ม "Clear filters" |
+| E01 | Min Price > Max Price | แสดง "ราคาต่ำสุดต้องไม่มากกว่าราคาสูงสุด" |
+| E02 | Filter ผสมกันแล้วไม่มีผล | แสดง Empty State "ไม่พบข้อมูล" / "No data found" |
 
 ---
 
@@ -300,7 +299,7 @@
 
 #### Happy Path
 1. ตั้ง Filter (เช่น Brand: Rolex)
-2. กดปุ่ม "Save to Watch Alert"
+2. กดปุ่ม "Create Watch Alert" (entry point จาก Search Filter)
 3. ระบบเติมชื่อ Alert เริ่มต้นจาก Filter ให้ เช่น "Rolex" และผู้ใช้สามารถแก้ไขชื่อได้
 4. เปิด Notification Toggle
 5. กด "Save this search"
@@ -310,8 +309,21 @@
 #### Error Cases
 | ID | เงื่อนไข | ผลลัพธ์ |
 |---|---|---|
-| E01 | User ลบชื่อ Alert จนว่างแล้วกด Save | ไม่บันทึก และแสดงข้อความให้กรอกชื่อ Watch Alert |
-| E02 | Alert ซ้ำ Criteria เดิม | แสดง "A similar alert already exists. Create anyway?" |
+| E01 | User ลบชื่อ Alert จนว่างแล้วกด Save this search | ไม่บันทึก และแสดง validation "กรุณากรอกชื่อ Watch Alert" / "Please enter a watch alert name." พร้อม focus กลับไปที่ช่อง Alert Name |
+
+---
+
+### UC-SEARCH-004: Guest กด Create Watch Alert
+
+**Actor:** Guest (ผู้ใช้ที่ยังไม่ Login)
+
+#### Happy Path
+1. Guest ตั้ง Filter บนหน้า Search
+2. Guest กดปุ่ม "Create Watch Alert"
+3. ระบบแสดง Global Login Required Dialog (ไม่เปิด Create Watch Alert modal)
+
+#### Error Cases
+ไม่มี — ทุกกรณีของ Guest กด Create Watch Alert ต้องแสดง Global Login Required Dialog เสมอ
 
 ---
 
@@ -807,7 +819,117 @@
 | ID | เงื่อนไข | ผลลัพธ์ |
 |---|---|---|
 | E01 | กด Cancel ตอน Delete | ยกเลิก Alert ยังอยู่ |
-| E02 | ชื่อ Alert ว่าง | ไม่ Save พร้อมแสดง "Name is required" |
+| E02 | ชื่อ Alert ว่าง (trim แล้ว) | ไม่ Save พร้อมแสดง "กรุณากรอกชื่อ Watch Alert" / "Please enter a watch alert name." และ focus กลับไปที่ช่อง Alert Name |
+
+---
+
+### UC-ALERT-004: แก้ไข Criteria ของ Watch Alert
+
+**Actor:** เจ้าของ Watch Alert (Member)
+
+#### Happy Path
+1. เข้า Watch Alert Management
+2. กด "Edit" บน Alert ที่ต้องการ
+3. แก้ไข criteria (Brand, Model, Price Range ฯลฯ) โดยใช้ filter logic เดียวกับ Search (รวม dependent filter เช่น Brand → Model)
+4. กด "Save"
+5. ระบบใช้ criteria ใหม่ทันที — Result List หลังแก้ไขต้องอ้าง criteria ล่าสุด
+
+#### Error Cases
+| ID | เงื่อนไข | ผลลัพธ์ |
+|---|---|---|
+| E01 | บันทึกไม่สำเร็จ | แสดง "ไม่สามารถบันทึกได้" / "Unable to save." |
+
+---
+
+### UC-ALERT-005: เปิด Watch Alert จาก Notification
+
+**Actor:** เจ้าของ Watch Alert (Member)
+
+#### Happy Path
+1. ระบบพบ Asset สถานะ Sale ที่ตรง criteria ของ Alert
+2. ระบบส่ง Watch Alert Notification ไปยัง Alert Owner
+3. Member กด Notification
+4. ระบบเปิด Watch Alert Result List (ไม่เปิด Asset Detail โดยตรง)
+5. หากมีหลาย Asset ที่ match ต้องแสดงรวมใน Result List ของ Alert นั้น
+
+#### Error Cases
+| ID | เงื่อนไข | ผลลัพธ์ |
+|---|---|---|
+| E01 | Alert ถูกลบไปแล้วหลังส่ง Notification | แสดง "ไม่พบ Watch Alert" / "Watch Alert not found." |
+
+---
+
+### UC-ALERT-006: เปิด Asset Detail จาก Watch Alert Result List
+
+**Actor:** เจ้าของ Watch Alert (Member)
+
+#### Happy Path
+1. Member อยู่ที่ Watch Alert Result List
+2. Member กด Asset Card ที่ match
+3. ระบบเปิด Asset Detail ของ Asset นั้น
+
+#### Error Cases
+| ID | เงื่อนไข | ผลลัพธ์ |
+|---|---|---|
+| E01 | Asset ถูกลบ/เปลี่ยนสถานะหลังโหลด Result List | แสดง "รายการนี้ไม่พร้อมใช้งานแล้ว" / "This item is no longer available." |
+| E02 | โหลด Result List ไม่สำเร็จ | แสดง "ไม่สามารถโหลดข้อมูลได้" / "Unable to load data." พร้อมปุ่ม "ลองใหม่" |
+
+---
+
+### UC-ALERT-007: Lifecycle ของ Asset กระทบ Watch Alert Result
+
+**Actor:** ระบบ (background process)
+
+#### พฤติกรรม
+| Asset Transition | ผลต่อ Watch Alert Result |
+|---|---|
+| Sale → Sold | Asset หายจาก Result ทันที |
+| Sale → Hide | Asset หายจาก Result ทันที |
+| Sale → Show | Asset หายจาก Result ทันที |
+| Hide → Sale | Asset match ได้ทันทีหากตรง criteria |
+| Show → Sale | Asset match ได้ทันทีหากตรง criteria |
+| Deleted | Asset หายจาก Result และ public surfaces |
+
+#### ข้อยกเว้น
+- Asset สถานะ Show, Hide, Sold และ Deleted ต้องไม่ match Watch Alert
+- Asset ต้องผ่าน visibility และ permission filtering เหมือน Search/Feed
+
+---
+
+### UC-ALERT-008: Block User กระทบ Watch Alert Result
+
+**Actor:** เจ้าของ Watch Alert (Member)
+
+#### Happy Path
+1. Member block user รายหนึ่ง
+2. Asset ของ user ที่ถูก block ต้องหายจาก Watch Alert Result ทันทีเมื่อโหลด Result List
+3. ถ้ามี result เดิมแล้วเกิด block ภายหลัง ต้องถูกกรองออกทันทีเมื่อโหลด Result List ครั้งถัดไป
+
+#### ข้อยกเว้น
+- Asset ของ user ที่ถูก block หรือ block กันอยู่ต้องไม่ถูกนำมาคำนวณ Alert ใหม่
+
+---
+
+### UC-ALERT-009: ตั้ง Watch Alert จาก Criteria ที่มี No Current Listing / Inactive Market Data
+
+**Actor:** เจ้าของ Watch Alert (Member)
+
+#### Happy Path (No Current Listing)
+1. Member เลือก Brand/Model/Reference หรือ option master ที่มีจำนวน Asset Sale = 0 ตอนสร้าง (no current listing)
+2. Member กด "Save this search"
+3. ระบบบันทึก Watch Alert ได้ และถือเป็น unmet demand ปกติ — Alert ทำงานปกติ รอ match ในอนาคต ไม่มี warning
+
+#### Happy Path (Inactive Market Data ภายหลัง)
+1. Member เคยตั้ง Alert ที่ criteria อ้าง Brand/Model/Reference ที่ active อยู่
+2. ภายหลัง entity นั้นถูก deactivate ใน Market Data (`is_active=false`)
+3. Alert เดิมยังเก็บ history ได้ แต่ระบบหยุด trigger match ใหม่ตาม policy และแสดง dependency warning
+
+#### ความแตกต่างระหว่าง 2 สถานะ
+| สถานะ | ความหมาย | ผลต่อ Watch Alert |
+|---|---|---|
+| no current listing | entity/option `is_active=true` แต่ไม่มี Asset Sale ตอนนั้น | Alert ทำงานปกติ รอ match ในอนาคต ไม่มี warning |
+| inactive market data | Brand/Model/Reference ถูก deactivate (`is_active=false`) | Alert เดิมเก็บ history ได้ แต่หยุด trigger ใหม่ และแสดง dependency warning |
+| deactivated option | Option master ถูก deactivate (`is_active=false`) | Alert เดิมเก็บ history ได้ แต่หยุด trigger ใหม่ และแสดง dependency warning |
 
 ---
 
