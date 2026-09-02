@@ -20933,7 +20933,7 @@
       document.querySelector("#summary-grid").innerHTML = "";
       document.querySelector("#table").innerHTML = `
         <div class="asset-table policy-list-table">
-          <div class="asset-row head"><div>Policy</div><div>สถานะ</div><div>เวอร์ชันปัจจุบัน</div><div>แก้ไขล่าสุด</div><div></div></div>
+          <div class="asset-row head"><div>Policy</div><div>สถานะ</div><div>เวอร์ชันปัจจุบัน</div><div>แก้ไขล่าสุด</div><div>Action</div></div>
           ${policyVersioningData.policies.map(policy => renderPolicyRow(policy)).join("")}
         </div>
       `;
