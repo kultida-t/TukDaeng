@@ -13818,6 +13818,204 @@
         flex: 1 1 0;
       }
     }
+
+    /* ===== Support Center Preview modal (HS-PTO-005) ===== */
+    .modal.user-action-modal.support-center-preview-modal {
+      width: min(480px, 100%);
+      max-height: calc(100vh - 28px);
+    }
+    .support-center-preview-modal .modal-body {
+      padding: 0;
+      overflow: hidden;
+    }
+    .support-center-preview-content {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+    .support-center-preview-content .user-action-head {
+      padding: 18px 20px 14px;
+      border-bottom: 1px solid #dce6f3;
+      align-items: center;
+    }
+    .support-preview-lang-toggle {
+      display: flex;
+      gap: 0;
+      padding: 12px 20px;
+      border-bottom: 1px solid #eef2f7;
+    }
+    .support-preview-lang-btn {
+      flex: 1;
+      padding: 8px 12px;
+      border: 1px solid #dce6f3;
+      background: #fff;
+      color: #4b5f78;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background .15s, color .15s, border-color .15s;
+    }
+    .support-preview-lang-btn:first-child {
+      border-radius: 7px 0 0 7px;
+    }
+    .support-preview-lang-btn:last-child {
+      border-radius: 0 7px 7px 0;
+      border-left: none;
+    }
+    .support-preview-lang-btn.active {
+      background: #102c50;
+      color: #fff;
+      border-color: #102c50;
+    }
+    .support-preview-body {
+      padding: 20px;
+      max-height: calc(100vh - 200px);
+      overflow-y: auto;
+    }
+    .support-preview-phone {
+      width: 100%;
+      max-width: 380px;
+      margin: 0 auto;
+      border: 9px solid #111;
+      border-radius: 34px;
+      overflow: hidden;
+      background: #f7f8fa;
+      box-shadow: 0 14px 30px rgba(15, 23, 42, .16);
+    }
+    .support-preview-phone-screen {
+      background: #fff;
+      min-height: 480px;
+      display: flex;
+      flex-direction: column;
+    }
+    .support-preview-fo-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 14px 16px;
+      background: #fff;
+      border-bottom: 1px solid #eef2f7;
+    }
+    .support-preview-fo-back {
+      color: #16385f;
+      font-size: 20px;
+      line-height: 1;
+      flex-shrink: 0;
+    }
+    .support-preview-fo-title {
+      font-size: 16px;
+      font-weight: 800;
+      color: #102c50;
+    }
+    .support-preview-fo-content {
+      flex: 1;
+      padding: 20px 16px 24px;
+    }
+    .support-preview-fo-heading {
+      font-size: 18px;
+      font-weight: 800;
+      color: #102c50;
+      margin: 0 0 4px;
+    }
+    .support-preview-fo-availability {
+      font-size: 13px;
+      color: #64748b;
+      margin: 0 0 18px;
+      line-height: 1.4;
+    }
+    .support-preview-fo-channels {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .support-preview-fo-channel {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      padding: 14px 14px;
+      background: #f8fafc;
+      border: 1px solid #e8edf3;
+      border-radius: 10px;
+    }
+    .support-preview-fo-channel-icon {
+      flex-shrink: 0;
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 10px;
+      background: #102c50;
+      color: #fff;
+    }
+    .support-preview-fo-channel-icon svg {
+      width: 20px;
+      height: 20px;
+    }
+    .support-preview-fo-channel-info {
+      flex: 1;
+      min-width: 0;
+    }
+    .support-preview-fo-channel-type {
+      font-size: 12px;
+      font-weight: 700;
+      color: #64748b;
+      text-transform: uppercase;
+      letter-spacing: .03em;
+      margin-bottom: 2px;
+    }
+    .support-preview-fo-channel-value {
+      font-size: 15px;
+      font-weight: 700;
+      color: #102c50;
+      word-break: break-all;
+      line-height: 1.3;
+    }
+    .support-preview-fo-channel-desc {
+      font-size: 12px;
+      color: #64748b;
+      margin-top: 4px;
+      line-height: 1.4;
+    }
+    .support-preview-fo-hours {
+      margin-top: 20px;
+      padding: 14px;
+      background: #f0f5ff;
+      border: 1px solid #d6e4ff;
+      border-radius: 10px;
+    }
+    .support-preview-fo-hours-label {
+      font-size: 12px;
+      font-weight: 700;
+      color: #4b5f78;
+      text-transform: uppercase;
+      letter-spacing: .03em;
+      margin-bottom: 4px;
+    }
+    .support-preview-fo-hours-value {
+      font-size: 15px;
+      font-weight: 700;
+      color: #102c50;
+    }
+    .support-preview-empty {
+      text-align: center;
+      padding: 40px 20px;
+      color: #94a3b8;
+      font-size: 13px;
+    }
+    @media (max-width: 520px) {
+      .modal.user-action-modal.support-center-preview-modal {
+        width: 100%;
+        max-width: none;
+      }
+      .support-preview-body {
+        padding: 14px;
+      }
+      .support-preview-phone {
+        border-width: 7px;
+        border-radius: 26px;
+      }
+    }
   </style>
 </head>
 <body class="logged-out">
@@ -20673,7 +20871,7 @@
       }
       modal.classList.remove("show");
       modal.classList.remove("market-reference-drawer-open", "market-reference-drawer-closing");
-      modalCard?.classList.remove("article-preview-modal", "article-editor-confirm-modal", "category-editor-modal", "category-order-modal", "market-editor-modal", "market-reference-drawer", "board-report-phone-preview-modal", "option-editor-modal", "option-order-modal", "option-audit-modal", "policy-version-view-modal", "policy-publish-confirm-modal", "policy-restore-confirm-modal");
+      modalCard?.classList.remove("article-preview-modal", "article-editor-confirm-modal", "category-editor-modal", "category-order-modal", "market-editor-modal", "market-reference-drawer", "board-report-phone-preview-modal", "option-editor-modal", "option-order-modal", "option-audit-modal", "policy-version-view-modal", "policy-publish-confirm-modal", "policy-restore-confirm-modal", "support-center-preview-modal");
       document.body.classList.remove("asset-action-modal-open");
       document.querySelector("#user-action-modal-body").innerHTML = "";
     }
@@ -22874,47 +23072,119 @@
     }
 
     // ===== Support Center preview modal (HS-PTO-005) =====
+    let supportPreviewLang = "th"; // "th" | "en"
     function openSupportCenterPreviewModal() {
-      const activeChannels = supportCenterData.channels.filter(c => c.active);
-      const modalContent = `
-        <div class="user-action-modal-content support-center-preview-modal">
-          <div class="user-action-modal-head">
-            <h3>Preview — หน้า Help (FO)</h3>
-            <button class="user-action-modal-close" type="button" data-user-action-modal-close aria-label="ปิด">${iconSvg.close}</button>
+      supportPreviewLang = "th";
+      const modalBody = document.querySelector("#user-action-modal-body");
+      const modalCard = document.querySelector("#user-action-modal .user-action-modal");
+      if (modalBody) {
+        modalCard?.classList.remove("article-preview-modal", "article-editor-confirm-modal", "category-editor-modal", "category-order-modal", "market-editor-modal", "market-reference-drawer", "board-report-phone-preview-modal", "option-editor-modal", "option-order-modal", "option-audit-modal", "policy-version-view-modal", "policy-publish-confirm-modal", "policy-restore-confirm-modal");
+        modalCard?.classList.add("support-center-preview-modal");
+        modalBody.innerHTML = renderSupportCenterPreviewModalContent();
+        showUserActionModal(true);
+      }
+    }
+
+    function getSupportPreviewFormData() {
+      // Read live values from the edit form so preview reflects unsaved edits
+      const data = {
+        channels: supportCenterData.channels.map(ch => ({ ...ch })),
+        businessHours: supportCenterData.businessHours,
+        availabilityTh: supportCenterData.availabilityTh,
+        availabilityEn: supportCenterData.availabilityEn
+      };
+      const form = document.querySelector("[data-support-form]");
+      if (form) {
+        form.querySelectorAll("[data-channel-value]").forEach(input => {
+          const ch = data.channels.find(c => c.id === input.dataset.channelValue);
+          if (ch) ch.value = input.value;
+        });
+        form.querySelectorAll("[data-channel-desc-th]").forEach(input => {
+          const ch = data.channels.find(c => c.id === input.dataset.channelDescTh);
+          if (ch) ch.descriptionTh = input.value;
+        });
+        form.querySelectorAll("[data-channel-desc-en]").forEach(input => {
+          const ch = data.channels.find(c => c.id === input.dataset.channelDescEn);
+          if (ch) ch.descriptionEn = input.value;
+        });
+        const hoursInput = form.querySelector("[data-support-business-hours]");
+        if (hoursInput) data.businessHours = hoursInput.value;
+        const availThInput = form.querySelector("[data-support-availability-th]");
+        if (availThInput) data.availabilityTh = availThInput.value;
+        const availEnInput = form.querySelector("[data-support-availability-en]");
+        if (availEnInput) data.availabilityEn = availEnInput.value;
+      }
+      return data;
+    }
+
+    function renderSupportCenterPreviewModalContent() {
+      const data = getSupportPreviewFormData();
+      const activeChannels = data.channels.filter(c => c.active);
+      const isTh = supportPreviewLang === "th";
+      const availability = isTh ? data.availabilityTh : data.availabilityEn;
+      const channelsHtml = activeChannels.length > 0
+        ? activeChannels.map(ch => {
+            const desc = isTh ? ch.descriptionTh : ch.descriptionEn;
+            return `
+              <div class="support-preview-fo-channel">
+                <div class="support-preview-fo-channel-icon">${getSupportChannelIcon(ch.channelType)}</div>
+                <div class="support-preview-fo-channel-info">
+                  <div class="support-preview-fo-channel-type">${ch.channelType}</div>
+                  <div class="support-preview-fo-channel-value">${escapeHtml(ch.value)}</div>
+                  ${desc ? `<div class="support-preview-fo-channel-desc">${escapeHtml(desc)}</div>` : ""}
+                </div>
+              </div>
+            `;
+          }).join("")
+        : `<div class="support-preview-empty">ไม่มีช่องทางที่เปิดใช้งาน</div>`;
+      return `
+        <div class="user-action-page support-center-preview-content">
+          <div class="user-action-head">
+            <div>
+              <h2 id="user-action-modal-title">Preview</h2>
+            </div>
+            <button class="btn user-action-close" type="button" data-user-action-modal-close aria-label="ปิด">${iconSvg.close}</button>
           </div>
-          <div class="user-action-modal-body">
-            <div class="support-preview-screen">
-              <div class="support-preview-header">
-                <h4>ช่องทางติดต่อ</h4>
-                <p class="muted">${supportCenterData.availabilityTh}</p>
-              </div>
-              <div class="support-preview-channels">
-                ${activeChannels.map(ch => `
-                  <div class="support-preview-channel">
-                    <div class="support-preview-channel-icon">${getSupportChannelIcon(ch.channelType)}</div>
-                    <div class="support-preview-channel-info">
-                      <div class="support-preview-channel-type">${ch.channelType}</div>
-                      <div class="support-preview-channel-value">${ch.value}</div>
-                      <div class="muted">${ch.descriptionTh}</div>
-                    </div>
+          <div class="support-preview-lang-toggle">
+            <button class="support-preview-lang-btn ${isTh ? "active" : ""}" type="button" data-support-preview-lang="th">ภาษาไทย</button>
+            <button class="support-preview-lang-btn ${!isTh ? "active" : ""}" type="button" data-support-preview-lang="en">English</button>
+          </div>
+          <div class="support-preview-body">
+            <div class="support-preview-phone">
+              <div class="support-preview-phone-screen">
+                <div class="support-preview-fo-header">
+                  <span class="support-preview-fo-back">‹</span>
+                  <span class="support-preview-fo-title">Help</span>
+                </div>
+                <div class="support-preview-fo-content">
+                  <h4 class="support-preview-fo-heading">${isTh ? "ติดต่อเรา" : "Contact support"}</h4>
+                  <p class="support-preview-fo-availability">${escapeHtml(availability)}</p>
+                  <div class="support-preview-fo-channels">
+                    ${channelsHtml}
                   </div>
-                `).join("")}
-              </div>
-              <div class="support-preview-hours">
-                <div class="support-preview-hours-label">เวลาทำการ</div>
-                <div class="support-preview-hours-value">${supportCenterData.businessHours}</div>
+                  <div class="support-preview-fo-hours">
+                    <div class="support-preview-fo-hours-label">${isTh ? "เวลาทำการ" : "Business hours"}</div>
+                    <div class="support-preview-fo-hours-value">${escapeHtml(data.businessHours)}</div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
-          <div class="user-action-modal-footer">
-            <button class="user-detail-action-btn" type="button" data-user-action-modal-close>ปิด</button>
-          </div>
         </div>
       `;
+    }
+
+    function switchSupportPreviewLang(lang) {
+      supportPreviewLang = lang;
       const modalBody = document.querySelector("#user-action-modal-body");
+      const modal = document.querySelector("#user-action-modal");
       if (modalBody) {
-        modalBody.innerHTML = modalContent;
-        showUserActionModal(true);
+        const oldScroll = modalBody.querySelector(".support-preview-body");
+        const savedScroll = oldScroll ? oldScroll.scrollTop : 0;
+        modalBody.innerHTML = renderSupportCenterPreviewModalContent();
+        if (modal) applyModalHeadingFonts(modal);
+        const newScroll = modalBody.querySelector(".support-preview-body");
+        if (newScroll) newScroll.scrollTop = savedScroll;
       }
     }
 
@@ -34067,6 +34337,11 @@
       const supportPreviewButton = event.target.closest("[data-support-preview]");
       if (supportPreviewButton) {
         openSupportCenterPreviewModal();
+        return;
+      }
+      const supportPreviewLangBtn = event.target.closest("[data-support-preview-lang]");
+      if (supportPreviewLangBtn) {
+        switchSupportPreviewLang(supportPreviewLangBtn.dataset.supportPreviewLang);
         return;
       }
       const supportSaveButton = event.target.closest("[data-support-save]");
