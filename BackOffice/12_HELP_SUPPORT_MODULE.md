@@ -187,142 +187,385 @@ Support Center เป็นหน้า form เดียว ไม่มี lis
 - ทั้งสองภาษาต้องกรอกให้ครบก่อน Publish (validation บังคับ)
 - Policy ID เป็น stable identifier ที่ FO/API อ้างอิง ห้ามเปลี่ยน
 
-## 11. Ticket Detail
+## 11. Policy Detail
 
-Ticket detail ต้องมีส่วนข้อมูล:
+เมนู: `Settings > Policy & Versioning > {policy type}`
 
-### 11.1 Requester Context
+Breadcrumb: `เครื่องมือ & รายงาน / Settings / Policy & Versioning / {policy type}`
 
-- User ID
-- Display name / username
-- Email / phone / LINE ถ้ามี
-- Account status: Active, Suspended, Banned, Scheduled for deletion, Archived
-- Auth method: Email, Apple, Google
-- Joined date และ last active
-- Warning ถ้าผู้ใช้ถูก ban/suspend หรืออยู่ใน deletion grace period
+Policy Detail แสดงเนื้อหาเวอร์ชัน Published ปัจจุบันของ policy type ที่เลือก พร้อมข้อมูล metadata และปุ่มเข้า Editor หรือ Version History
 
-### 11.2 Ticket Content
+### Header
 
-- Subject
-- Original message
-- Source channel
-- Attachments ถ้ามี
-- Conversation / reply history
-- Internal notes
-- Status / priority / assignee
-- SLA timer
+- Page title: ชื่อ policy type (เช่น `TERMS OF USE`, `PRIVACY POLICY`)
+- Back button: กลับไป Policy & Versioning List
 
-### 11.3 Related Entity
+### Language Tabs
 
-Ticket หนึ่งรายการสามารถ link entity ได้มากกว่า 1 รายการ:
+- แสดง tab `ภาษาไทย` และ `English` เพื่อสลับเนื้อหา Published ระหว่าง 2 ภาษา
+- tab ที่เลือกแสดงเนื้อหาของภาษานั้น อีก tab ซ่อนไว้
 
-- User
-- Asset
-- Offer
-- Chat room / message
-- Comment / reply
-- Report case
-- Watch Alert
-- Notification delivery log
-- Market data record
-- Account deletion request
+### Content Body
 
-Related entity ต้องเปิดไป module ต้นทางได้ตาม permission ของ admin
+- แสดงเนื้อหาเวอร์ชัน Published แบบ read-only (rendered HTML)
+- ถ้ายังไม่มีเวอร์ชัน Published แสดงข้อความ `— ยังไม่มีเวอร์ชันที่เผยแพร่ —` (TH) / `— No published version yet —` (EN)
 
-## 12. Priority & SLA
+### Metadata Tiles
 
-Priority baseline:
-
-| Priority | Use Case |
+| Tile | ข้อกำหนด |
 | --- | --- |
-| Urgent | Account lockout จำนวนมาก, safety risk, legal/safety escalation |
-| High | Offer/chat dispute, report/safety issue, account deletion mistake |
-| Medium | Asset/listing issue, notification/watch alert issue, technical issue ที่มี workaround |
-| Low | คำถามทั่วไป, profile/settings, request ข้อมูลทั่วไป |
+| Status | badge `Published` (green) หรือ badge อื่นตามสถานะจริง |
+| Version | badge slate แสดงเวอร์ชันปัจจุบัน (เช่น `v1.3`) |
+| Updated | วันที่/เวลาที่แก้ไขล่าสุด |
+| Updated By | ผู้แก้ไขล่าสุด |
 
-SLA baseline:
+### Change Summary
 
-- First response target: ภายใน 8 ชั่วโมง
-- Support availability ที่ FO แสดง: `09:00 - 22:00 (GMT+7)`
-- BO ต้องแสดง SLA state: On track, Near breach, Breached
-- ต้องมี open decision ว่า SLA clock นับตาม business hours หรือ calendar hours
+- แสดงสรุปการเปลี่ยนแปลงของเวอร์ชัน Published ปัจจุบัน
+- ถ้าไม่มี แสดง `—`
 
-## 13. Reply & Internal Note Rules
+### Actions
 
-| Item | Rule |
+| Action | เงื่อนไขแสดง | พฤติกรรม |
+| --- | --- | --- |
+| แก้ไข Draft | มี Draft อยู่แล้ว | เปิด Policy Editor ในโหมด edit-draft |
+| สร้าง Draft เวอร์ชันใหม่ | ไม่มี Draft | เปิด Policy Editor ในโหมด new-draft |
+| ดู Version History | แสดงเสมอ | เปิด Policy Version History |
+
+### Responsive Layout
+
+- Mobile: content body และ metadata tiles เรียงแนวตั้ง; language tabs อยู่บนสุดของ content
+- Tablet/Desktop: content body กินพื้นที่หลัก; metadata tiles อยู่ใต้ content
+
+## 12. Policy Editor
+
+เมนู: `Settings > Policy & Versioning > {policy type} / Draft`
+
+Breadcrumb: `เครื่องมือ & รายงาน / Settings / Policy & Versioning / {policy type} / Draft`
+
+Policy Editor ใช้สำหรับสร้างหรือแก้ไข Draft ของ policy version พร้อม rich text editor 2 ภาษา และ change summary
+
+### Header
+
+- Page title: `{policy type} — Draft`
+- Back button: กลับไป Policy & Versioning List
+
+### Draft Metadata Tiles
+
+| Tile | ข้อกำหนด |
 | --- | --- |
-| Reply to user | Admin access policy required |
-| Internal note | เห็นเฉพาะ admin ตาม permission และไม่ส่งให้ผู้ใช้ |
-| FO contact-only mode | Reply ออกผ่าน channel ต้นทาง เช่น LINE / Phone / Email และบันทึก summary ใน BO |
-| FO in-app ticket mode | Reply และ status sync กลับ FO ticket history |
-| Sensitive data | Mask by default; reveal only with business reason, policy approval, and audit log. |
-| Attachment | ต้องแสดง scan status ถ้ามี file upload |
+| Policy | badge สีตาม policy type (Terms of Use = blue, Privacy Policy = purple) |
+| Version | badge slate แสดงเวอร์ชัน Draft (เช่น `v2.1-draft`) |
+| Status | badge amber `Draft` |
+
+### Language Tabs
+
+- แสดง tab `ภาษาไทย` และ `English` เพื่อสลับ editor ระหว่าง 2 ภาษา
+- แต่ละ tab มี formatting toolbar และ contenteditable canvas ของตัวเอง
+
+### Formatting Toolbar
+
+toolbar สำหรับจัดรูปแบบเนื้อหาใน contenteditable canvas:
+
+| Tool | พฤติกรรม |
+| --- | --- |
+| Bold | ตัวหนา |
+| Italic | ตัวเอียง |
+| Underline | ขีดเส้นใต้ |
+| H2 | สลับ heading H2 / paragraph |
+| Unordered List | รายการแบบจุด |
+| Ordered List | รายการแบบตัวเลข |
+| Align Left | จัดชิดซ้าย |
+| Align Center | จัดกึ่งกลาง |
+| Align Right | จัดชิดขวา |
+| Insert Link | เพิ่มลิงก์ (prompt URL, ต้องเป็น `http://` หรือ `https://` เท่านั้น) |
+
+### Content Canvas
+
+- contenteditable สำหรับเนื้อหา TH และ EN แยกกัน
+- เนื้อหาต้อง scroll ได้เมื่อยาว
+- allowed HTML tags: `P`, `H2`, `H3`, `UL`, `OL`, `LI`, `A`, `STRONG`, `EM`, `BR` — tag อื่นถูก strip ออกอัตโนมัติ
+- ลิงก์ต้องเป็น `http://` หรือ `https://` เท่านั้น, เปิดใน tab ใหม่พร้อม `rel="noreferrer noopener"`
+
+### Change Summary Field
+
+- textarea สำหรับอธิบายสิ่งที่เปลี่ยนแปลงในเวอร์ชันนี้
+- required — ต้องกรอกก่อน Save Draft หรือ Publish
+
+### Editor Sidebar
+
+- แสดงข้อมูลการแก้ไข: ผู้แก้ไข, วันที่แก้ไข
+- คำอธิบาย: กด Preview เพื่อดูตัวอย่าง 2 ภาษา ก่อนเผยแพร่ หรือกด Publish เพื่อเผยแพร่เวอร์ชันนี้ (เวอร์ชันที่เผยแพร่แล้วจะถูกเก็บเป็น Archived อัตโนมัติ)
+
+### Actions
+
+| Action | พฤติกรรม |
+| --- | --- |
+| บันทึก Draft | บันทึกเนื้อหาและ change summary เป็น Draft (ยังไม่เผยแพร่) |
+| Preview | เปิด Policy Preview modal แสดงเนื้อหา 2 ภาษา |
+| Publish | ตรวจสอบ validation ก่อน แล้วเปิด Policy Publish confirmation modal |
+| ยกเลิก | กลับไป Policy & Versioning List โดยไม่บันทึก |
+
+### Validation
+
+| Field | Rule |
+| --- | --- |
+| Content TH | required — ต้องไม่ว่าง |
+| Content EN | required — ต้องไม่ว่าง |
+| Change Summary | required — ต้องไม่ว่าง |
+
+ถ้า validation ไม่ผ่าน:
+- แสดง error message ใต้ field ที่ผิด
+- focus ไปที่ field แรกที่ผิด
+- ไม่เปิด Publish confirmation modal
+
+### 12.1 Policy Preview Modal
+
+modal แสดงตัวอย่างเนื้อหา Draft 2 ภาษา ก่อนเผยแพร่:
+
+| ส่วน | ข้อกำหนด |
+| --- | --- |
+| Title | `Preview — {policy type}` |
+| Version pill | badge slate แสดงเวอร์ชัน Draft |
+| ภาษาไทย | heading `ภาษาไทย` + content body (rendered HTML) |
+| English | heading `English` + content body (rendered HTML) |
+| Close | ปุ่มปิด modal |
+
+### 12.2 Policy Publish Confirmation Modal
+
+modal ยืนยันการเผยแพร่ Draft เป็น Published:
+
+| ส่วน | ข้อกำหนด |
+| --- | --- |
+| Icon | checkmark icon |
+| Title | `ยืนยันการเผยแพร่` |
+| Question | `ต้องการเผยแพร่ {policy type} เวอร์ชัน {version} หรือไม่?` |
+| Summary | `เวอร์ชัน {published version} จะถูกเก็บเป็น Archived และเนื้อหาใหม่จะแสดงทันที` |
+| Meta | Policy, Version (badge slate), สรุปการเปลี่ยนแปลง |
+| ยกเลิก | ปิด modal โดยไม่เผยแพร่ |
+| เผยแพร่ | ยืนยันการเผยแพร่ — archive เวอร์ชัน Published เดิม, ส่ง Draft ใหม่เป็น Published, กลับไป Policy Detail |
+
+หลัง Publish สำเร็จ:
+- แสดง success toast `เผยแพร่ {policy type} เวอร์ชัน {version} เรียบร้อย`
+- กลับไป Policy Detail ของ policy นั้น
+
+### 12.3 Policy Version History
+
+เมนู: `Settings > Policy & Versioning > {policy type} / Version History`
+
+Breadcrumb: `เครื่องมือ & รายงาน / Settings / Policy & Versioning / {policy type} / Version History`
+
+แสดงประวัติทุกเวอร์ชันของ policy type ที่เลือก:
+
+| Column | ข้อกำหนด |
+| --- | --- |
+| Version | badge slate (เช่น `v1.3`, `v2.1-draft`) |
+| Status | badge ตามสถานะ (Published = green, Draft = amber, Archived = gray) |
+| Updated By | ผู้แก้ไข |
+| Updated | วันที่/เวลาแก้ไข |
+| Published Date | วันที่/เวลาเผยแพร่ หรือ `—` ถ้าไม่เคย Published |
+| Change Summary | สรุปการเปลี่ยนแปลง |
+| Action | action menu (chevron) |
+
+### Row Behavior
+
+- Row ทั้ง row และ action menu เปิด Version View modal ของเวอร์ชันนั้น
+
+### Action Menu
+
+| Action | เงื่อนไขแสดง |
+| --- | --- |
+| แก้ไข Draft | เฉพาะเวอร์ชันที่เป็น Draft |
+| ดูเวอร์ชัน | ทุกเวอร์ชัน |
+| Restore เป็น Draft | เฉพาะเวอร์ชันที่เป็น Archived |
+
+### Mobile Card
+
+- Mobile แสดง metadata (Status, Updated By, Updated, Published Date, Change Summary) ใน card row พร้อม label/value
+- Action menu ยังคงแสดง
+
+### 12.4 Policy Version View Modal
+
+modal แสดงเนื้อหาเวอร์ชันที่เลือกแบบ read-only:
+
+| ส่วน | ข้อกำหนด |
+| --- | --- |
+| Title | `{policy type} — {version}` |
+| Language tabs | `ภาษาไทย` / `English` สลับเนื้อหา |
+| Content body | เนื้อหา TH/EN แบบ read-only (rendered HTML) |
+| Meta tiles | Status, Version, Updated, Updated By |
+| Change Summary | สรุปการเปลี่ยนแปลง หรือ `—` |
+| Footer — Restore | ปุ่ม `Restore เวอร์ชันนี้` (เฉพาะ Archived) |
+| Footer — Edit Draft | ปุ่ม `แก้ไข Draft` (เฉพาะ Draft) |
+
+### 12.5 Policy Restore Confirmation Modal
+
+modal ยืนยันการ Restore เวอร์ชัน Archived เป็น Draft ใหม่:
+
+| ส่วน | ข้อกำหนด |
+| --- | --- |
+| Icon | checkmark icon |
+| Title | `ยืนยันการ Restore` |
+| Question | `Restore เวอร์ชัน {version} เป็น Draft ใหม่ใช่หรือไม่?` |
+| Summary | `ระบบจะสร้าง Draft ใหม่จากเวอร์ชันนี้ โดยเวอร์ชันเดิมยังคงอยู่ในประวัติ` |
+| ยกเลิก | ปิด modal โดยไม่ Restore |
+| Restore | ยืนยันการ Restore — สร้าง Draft ใหม่จากเวอร์ชันที่เลือก, เปิด Policy Editor |
+
+หลัง Restore สำเร็จ:
+- แสดง success toast `Restore เวอร์ชัน {source version} เป็น Draft {new version} เรียบร้อย`
+- เปิด Policy Editor ในโหมด edit-draft
+
+## 13. Support Center
+
+เมนู: `Settings > Support Center`
+
+Breadcrumb: `เครื่องมือ & รายงาน / Settings / Support Center`
+
+Support Center เป็นหน้า form เดียวสำหรับจัดการช่องทางติดต่อและเวลาทำการที่ FO Help screen แสดง
+
+### Channel List
+
+แสดงช่องทางติดต่อทั้ง 5 ประเภท (fixed list — Admin ไม่สามารถเพิ่ม/ลบ channel type ได้):
+
+| Channel Type | Value Label | Input Type | Format Validation |
+| --- | --- | --- | --- |
+| LINE | LINE URL | text | `@handle` หรือ URL, สูงสุด 200 ตัวอักษร |
+| Phone | เบอร์โทรศัพท์ | text | ตัวเลขและ `+ - ( )` ช่องว่าง, อย่างน้อย 7 หลัก, ไม่เกิน 15 หลัก |
+| Email | อีเมล | email | รูปแบบอีเมลมาตรฐาน, สูงสุด 254 ตัวอักษร |
+| Facebook | Facebook URL | text | ชื่อเพจหรือ URL, สูงสุด 200 ตัวอักษร |
+| Website | Website URL | text | URL หรือโดเมน, สูงสุด 200 ตัวอักษร |
+
+### Channel Row Layout
+
+แต่ละ channel row ประกอบด้วย:
+
+| ส่วน | ข้อกำหนด |
+| --- | --- |
+| Toggle Active/Inactive | toggle switch เปิด/ปิดการแสดงผลช่องทางนั้น |
+| Channel Type + Value | label ชื่อ channel type + input field สำหรับค่า (required เมื่อ Active, disabled เมื่อ Inactive) |
+| Description TH | คำอธิบายช่องทางภาษาไทย (optional, สูงสุด 200 ตัวอักษร, disabled เมื่อ Inactive) |
+| Description EN | คำอธิบายช่องทางภาษาอังกฤษ (optional, สูงสุด 200 ตัวอักษร, disabled เมื่อ Inactive) |
+| Status badge | `Active` (green) หรือ `Inactive` (gray) |
+
+### Business Hours Section
+
+| Field | Rule |
+| --- | --- |
+| ช่วงเวลา | required, สูงสุด 80 ตัวอักษร, ต้องมี time range รูปแบบ `HH:MM - HH:MM` (เช่น `09:00 - 22:00 (GMT+7)`) |
+| ความพร้อมให้บริการ (ไทย) | required, สูงสุด 120 ตัวอักษร |
+| ความพร้อมให้บริการ (English) | required, สูงสุด 120 ตัวอักษร |
+
+### Actions
+
+| Action | พฤติกรรม |
+| --- | --- |
+| Preview | เปิด Support Center Preview modal แสดงตัวอย่าง FO Help screen |
+| บันทึกการเปลี่ยนแปลง | ตรวจสอบ validation ก่อน แล้วบันทึกข้อมูล + บันทึก audit |
+
+### Validation
+
+| Field | Rule |
+| --- | --- |
+| Channel value (Active) | required + format validation ตาม channel type |
+| Channel description TH (Active) | optional, สูงสุด 200 ตัวอักษร |
+| Channel description EN (Active) | optional, สูงสุด 200 ตัวอักษร |
+| Business Hours | required + format `HH:MM - HH:MM` + สูงสุด 80 ตัวอักษร |
+| Availability TH | required + สูงสุด 120 ตัวอักษร |
+| Availability EN | required + สูงสุด 120 ตัวอักษร |
+
+ถ้า validation ไม่ผ่าน:
+- แสดง error message ใต้ field ที่ผิด
+- focus ไปที่ field แรกที่ผิด
+- ไม่บันทึกข้อมูล
+
+### 13.1 Support Center Preview Modal
+
+modal แสดงตัวอย่าง FO Help screen ใน phone frame:
+
+| ส่วน | ข้อกำหนด |
+| --- | --- |
+| Title | `Preview` |
+| Language toggle | `ภาษาไทย` / `English` สลับเนื้อหาตามภาษา |
+| Phone frame | กรอบโทรศัพท์แสดง FO Help screen |
+| FO header | `Help` |
+| FO heading | `ติดต่อเรา` (TH) / `Contact support` (EN) |
+| FO availability | ความพร้อมให้บริการตามภาษาที่เลือก |
+| FO channels | แสดงเฉพาะ channel ที่ Active — icon, channel type, value, description (ตามภาษา) |
+| FO business hours | label `เวลาทำการ` (TH) / `Business hours` (EN) + ค่าจาก form |
+| Empty state | ถ้าไม่มี channel ที่ Active แสดง `ไม่มีช่องทางที่เปิดใช้งาน` |
+| Close | ปุ่มปิด modal |
+
+Preview อ่านค่าจาก form แบบ live (รวมค่าที่ยังไม่ได้บันทึก) เพื่อให้เห็นผลลัพธ์ก่อนกดบันทึก
+
+### Responsive Layout
+
+- Mobile: channel row เรียงแนวตั้ง (toggle, value, description, status); business hours field เรียงแนวตั้ง
+- Tablet/Desktop: channel row ใช้ field row เต็มความกว้าง; business hours ใช้ 2-column field row ได้
 
 ## 14. Admin Actions
 
-| Action | Requirement | Audit |
-| --- | --- | --- |
-| Create manual ticket | ต้องเลือก user หรือระบุ external contact, channel, type, subject | Required |
-| Assign ticket | ต้องเลือก assignee และ optional note | Required |
-| Change priority | ต้องบันทึก old/new priority | Required |
-| Change status | ต้องบันทึก old/new status และ reason เมื่อปิด ticket | Required |
-| Reply to user | Admin access policy required |
-| Add internal note | ต้องบันทึก admin, timestamp, visibility | Required |
-| Link entity | ต้องบันทึก entity type/id | Required |
-| Export ticket | ต้องบันทึก filter, scope, file metadata | Required |
+| Action | Sub-module | Requirement | Audit |
+| --- | --- | --- | --- |
+| Create Draft | Policy & Versioning | ต้องตรวจ permission; ถ้ามี Draft อยู่แล้วให้เปลี่ยนเป็น "แก้ไข Draft" | Required |
+| Save Draft | Policy & Versioning | บันทึกเนื้อหา TH/EN และ change summary; validation บังคับ content ทั้ง 2 ภาษาและ change summary | Required |
+| Preview Draft | Policy & Versioning | ดูตัวอย่าง 2 ภาษาก่อนเผยแพร่; ไม่บันทึก audit (เป็นการดูตัวอย่างเท่านั้น) | Not required |
+| Publish | Policy & Versioning | ตรวจ validation ก่อน, แสดง confirmation modal, archive เวอร์ชัน Published เดิมอัตโนมัติ | Required |
+| Restore version | Policy & Versioning | สร้าง Draft ใหม่จากเวอร์ชัน Archived; แสดง confirmation modal; เวอร์ชันต้นทางยังคงอยู่ | Required |
+| View version | Policy & Versioning | ดูเนื้อหาเวอร์ชันเก่าแบบ read-only; ไม่บันทึก audit | Not required |
+| Save changes | Support Center | ตรวจ validation ก่อน, บันทึก channel values, descriptions, business hours, availability | Required |
+| Preview | Support Center | ดูตัวอย่าง FO Help screen ก่อนบันทึก; ไม่บันทึก audit | Not required |
+| Toggle channel Active/Inactive | Support Center | เปิด/ปิดการแสดงผลช่องทาง; บันทึกพร้อม Save changes | Required (พร้อม Save) |
 
 ## 15. Cross-Module Integration
 
 | Module | Integration |
 | --- | --- |
-| Dashboard | Open support tickets, SLA risk, oldest ticket |
-| User Management | Requester profile, account status, login/auth context |
-| Asset Management | Related asset/listing context |
-| Offer Management | Dispute context, offer status, related chat room |
-| Asset Management (Reported Comments) | Reported comments/replies linked to support case |
-| Watch Alert | Alert criteria and trigger history for notification issue |
-| Market Data | Brand/model/reference/price index issue |
-| Account Deletion Requests | Deletion mistake/support escalation |
-| Notifications | Delivery log when support reply or system update sends notification |
-| Audit Log | Ticket actions and sensitive reveal events |
-| Reports & Analytics | Ticket volume, SLA, resolution time, type breakdown |
+| Dashboard | ไม่มี card เฉพาะสำหรับ Help/Support ใน Phase 1 (policy มีเพียง 2 ตัว และ support center เป็น form เดียว ไม่ใช่ workload ที่ต้อง monitor) |
+| Audit Log | Policy actions (`POLICY_DRAFT_CREATE`, `POLICY_DRAFT_SAVE`, `POLICY_PUBLISH`, `POLICY_ARCHIVE`, `POLICY_RESTORE`) และ Support Center actions (`SUPPORT_CENTER_UPDATE`) บันทึกใน Audit Log module |
+| Reports & Analytics | ไม่มี report เฉพาะสำหรับ Help/Support ใน Phase 1 |
+| FO Help screen | Support Center data ส่งไป FO Settings > Help ผ่าน API — แสดง channels (Active เท่านั้น), business hours, availability ตามภาษาที่ผู้ใช้เลือก |
+| FO Settings — Privacy Policy / Terms of Use | Policy & Versioning data ส่งไป FO Settings ผ่าน API — แสดงเนื้อหาเวอร์ชัน Published ตามภาษาที่ผู้ใช้เลือก |
+| Notifications | ไม่มี integration ใน Phase 1 (policy publish ไม่ส่ง notification ให้ผู้ใช้โดยอัตโนมัติ) |
 
 ## 16. Audit Requirements
 
 Audit log ต้องบันทึกอย่างน้อย:
 
-- `SUPPORT_TICKET_CREATE`
-- `SUPPORT_TICKET_ASSIGN`
-- `SUPPORT_TICKET_REPLY`
-- `SUPPORT_TICKET_INTERNAL_NOTE`
-- `SUPPORT_TICKET_STATUS_CHANGE`
-- `SUPPORT_TICKET_PRIORITY_CHANGE`
-- `SUPPORT_TICKET_LINK_ENTITY`
-- `SUPPORT_TICKET_EXPORT`
-- `SUPPORT_SENSITIVE_REVEAL`
+- `POLICY_DRAFT_CREATE` — สร้าง Draft ใหม่
+- `POLICY_DRAFT_SAVE` — บันทึก Draft (Save Draft)
+- `POLICY_PUBLISH` — เผยแพร่ Draft เป็น Published
+- `POLICY_ARCHIVE` — archive เวอร์ชัน Published เดิม (เกิดอัตโนมัติพร้อม `POLICY_PUBLISH`)
+- `POLICY_RESTORE` — Restore เวอร์ชัน Archived เป็น Draft ใหม่
+- `SUPPORT_CENTER_UPDATE` — บันทึกการเปลี่ยนแปลง Support Center (channel values, descriptions, business hours, availability, toggle Active/Inactive)
 
 Audit payload ต้องมี:
 
-- `ticket_id`
 - `admin_id`
-- `target_user_id` ถ้ามี
-- `old_value` / `new_value` สำหรับ status, priority, assignee
-- `reason` เมื่อ close, mark spam/invalid หรือ export
+- `action_type`
+- `target_id` — policy ID (เช่น `POL-TOU`, `POL-PP`) หรือ `support-center` สำหรับ Support Center
+- `version` — เวอร์ชันที่เกี่ยวข้อง (สำหรับ Policy actions)
+- `old_value` / `new_value` สำหรับ field ที่เปลี่ยนแปลง (สำหรับ Support Center)
+- `change_summary` — สรุปการเปลี่ยนแปลง (สำหรับ Policy actions)
 - `ip_address`
 - `user_agent`
-- `created_at`
+- `created_at` เป็น `Asia/Bangkok`
 
 ## 17. Error, Empty, Loading States
 
 | State | Requirement |
 | --- | --- |
-| Empty queue | แสดงข้อความว่าไม่มี ticket ที่ตรง filter และมีปุ่ม clear filter |
-| Loading | Skeleton สำหรับ table/card และ detail |
-| Permission denied | แสดง error ชัดเจนและไม่โหลด sensitive data |
-| Ticket not found | แสดง not found พร้อมกลับไป queue |
-| Related entity unavailable | แสดง unavailable state โดยไม่ทำให้ ticket detail พัง |
-| Reply failed | เก็บ draft และให้ retry |
-| Export failed | แสดง error พร้อม audit เฉพาะ attempt ที่เริ่มแล้วตาม policy |
+| Policy List ว่าง | ไม่เกิดใน Phase 1 เพราะมี policy คงที่ 2 ตัว แต่ต้องรองรับ graceful empty state ถ้าข้อมูลยังไม่ seed |
+| Policy Detail — ไม่มี Published version | แสดงข้อความ `— ยังไม่มีเวอร์ชันที่เผยแพร่ —` (TH) / `— No published version yet —` (EN) แทน content body |
+| Policy Editor — validation ไม่ผ่าน | แสดง error message ใต้ field ที่ผิด + focus ไป field แรกที่ผิด |
+| Policy Publish — validation ไม่ผ่าน | ไม่เปิด confirmation modal, แสดง error ใน Editor |
+| Policy Version History ว่าง | ไม่เกิดใน Phase 1 เพราะมี seed data แต่ต้องรองรับ graceful empty state |
+| Policy Version View — content ว่าง | แสดง content body เป็นค่าว่าง ไม่พัง |
+| Support Center — validation ไม่ผ่าน | แสดง error message ใต้ field ที่ผิด + focus ไป field แรกที่ผิด |
+| Support Center Preview — ไม่มี Active channel | แสดง `ไม่มีช่องทางที่เปิดใช้งาน` ใน phone frame |
+| Loading | Skeleton สำหรับ Policy List, Policy Detail, Version History; form skeleton สำหรับ Support Center |
+| Permission denied | แสดง error ชัดเจนและไม่โหลดข้อมูล |
+| Save ล้มเหลว | เก็บค่าใน form ไม่หาย, แสดง error message, ให้ retry ได้ |
+| Publish ล้มเหลว | แสดง error message, ไม่ archive เวอร์ชันเดิม, ให้ retry ได้ |
 
 ## Module-Specific Exceptions
 
@@ -330,25 +573,92 @@ Audit payload ต้องมี:
 
 Help / Support ต้องใช้ app shell, navigation, breakpoint, list toolbar, desktop table/grid, mobile card, pagination, reset และ detail ตาม `00_GLOBAL_RULES_MODULE.md` และ `../Prototypes/bo-prototype.html` โดยไม่มี UI/layout override เฉพาะโมดูล
 
+ข้อยกเว้นเฉพาะโมดูล:
+
+- Policy & Versioning List ไม่แสดง summary cards, search, filter และ pagination เพราะมี policy เพียง 2 ตัว (อนุมัติแล้วตาม `BO_UI_UX_STANDARD.md` เกณฑ์ When NOT To Use)
+- Support Center เป็น form เดียว ไม่มี list จึงไม่ใช้ list toolbar, table/card, pagination
+- Policy Editor ใช้ contenteditable canvas แทน textarea เพราะต้องรองรับ rich text formatting (อนุมัติแล้วเพราะเนื้อหา policy ต้องมี heading, list, link)
+
 ## 18. Acceptance Criteria
 
 | ID | Criteria |
 | --- | --- |
-| AC-BO-SUPPORT-001 | Admin sees ticket queue with complete search/filter/status/priority/SLA controls according to action policy |
-| AC-BO-SUPPORT-002 | BO รองรับ manual ticket จาก LINE / Phone / Email ตาม FO Help contact-only baseline |
-| AC-BO-SUPPORT-003 | Ticket detail แสดง requester context, conversation, internal note, related entity และ audit context ได้ |
-| AC-BO-SUPPORT-004 | Admin assign, reply, add note, change priority และ change status ได้ตาม permission |
-| AC-BO-SUPPORT-005 | First response SLA 8 ชั่วโมงต้องแสดงใน list/detail และ highlight near breach/breached |
-| AC-BO-SUPPORT-006 | Internal note ต้องไม่ sync ไป FO หรือ user-facing channel |
-| AC-BO-SUPPORT-007 | ถ้า FO เปิด in-app ticket history ในอนาคต BO status/reply ต้อง sync กลับ FO ตาม contract |
-| AC-BO-SUPPORT-008 | Sensitive reveal, export และ status change ต้องมี audit log |
-| AC-BO-SUPPORT-009 | Help / Support UI ต้อง responsive ที่ 375px, 768px, 1280px และ 1440px |
+| AC-BO-SUPPORT-001 | Admin เห็น Policy & Versioning List ใต้เมนู Settings แสดง policy 2 ตัว (Terms of Use, Privacy Policy) ครบคอลัมน์ (Policy, Description, Status, Version, Updated, Updated By, Action) โดยไม่มี summary cards, search, filter และ pagination |
+| AC-BO-SUPPORT-002 | Policy Detail แสดงเนื้อหาเวอร์ชัน Published พร้อม language tabs TH/EN, metadata tiles (Status, Version, Updated, Updated By), change summary และปุ่ม (แก้ไข Draft / สร้าง Draft เวอร์ชันใหม่, ดู Version History) |
+| AC-BO-SUPPORT-003 | Policy Editor แสดง Draft metadata tiles, language tabs TH/EN, formatting toolbar (Bold, Italic, Underline, H2, UL, OL, Align Left/Center/Right, Insert Link), contenteditable canvas 2 ภาษา, change summary field และ actions (บันทึก Draft, Preview, Publish, ยกเลิก) พร้อม sidebar ข้อมูลการแก้ไข |
+| AC-BO-SUPPORT-004 | Policy Editor validation บังคับ content TH, content EN และ change summary ต้องไม่ว่าง; ถ้าไม่ผ่านต้องแสดง error ใต้ field และ focus ไป field แรกที่ผิด |
+| AC-BO-SUPPORT-005 | Policy Preview modal แสดงตัวอย่างเนื้อหา Draft 2 ภาษา พร้อม version pill ก่อนเผยแพร่ |
+| AC-BO-SUPPORT-006 | Policy Publish confirmation modal แสดง policy type, version, change summary และแจ้งว่าเวอร์ชันเดิมจะถูก Archived; หลังยืนยันต้อง archive เวอร์ชัน Published เดิม, ส่ง Draft เป็น Published, แสดง success toast และกลับไป Policy Detail |
+| AC-BO-SUPPORT-007 | Policy Version History แสดงตารางทุกเวอร์ชัน (Version, Status, Updated By, Updated, Published Date, Change Summary, Action) พร้อม row click เปิด Version View modal และ action menu (แก้ไข Draft / ดูเวอร์ชัน / Restore เป็น Draft) |
+| AC-BO-SUPPORT-008 | Policy Version View modal แสดงเนื้อหา 2 ภาษาแบบ read-only, metadata tiles, change summary และปุ่ม Restore (Archived) หรือ แก้ไข Draft (Draft) |
+| AC-BO-SUPPORT-009 | Policy Restore confirmation modal แสดงยืนยันก่อนสร้าง Draft ใหม่จากเวอร์ชัน Archived; หลังยืนยันต้องสร้าง Draft ใหม่, แสดง success toast และเปิด Policy Editor |
+| AC-BO-SUPPORT-010 | Support Center edit form แสดง channel list 5 ประเภท (LINE, Phone, Email, Facebook, Website) พร้อม toggle Active/Inactive, channel value, description TH/EN, status badge และ business hours section (ช่วงเวลา, ความพร้อมให้บริการ TH/EN) |
+| AC-BO-SUPPORT-011 | Support Center validation บังคับ channel value (เมื่อ Active) + format validation ตาม channel type, business hours (required + format `HH:MM - HH:MM`), availability TH/EN (required); ถ้าไม่ผ่านต้องแสดง error ใต้ field และ focus ไป field แรกที่ผิด |
+| AC-BO-SUPPORT-012 | Support Center Preview modal แสดง FO Help screen ใน phone frame พร้อม language toggle TH/EN, แสดงเฉพาะ channel Active, business hours, availability ตามภาษา และ empty state เมื่อไม่มี Active channel |
+| AC-BO-SUPPORT-013 | Support Center Preview อ่านค่าจาก form แบบ live (รวมค่าที่ยังไม่ได้บันทึก) |
+| AC-BO-SUPPORT-014 | Audit log บันทึก `POLICY_DRAFT_CREATE`, `POLICY_DRAFT_SAVE`, `POLICY_PUBLISH`, `POLICY_ARCHIVE`, `POLICY_RESTORE` และ `SUPPORT_CENTER_UPDATE` พร้อม payload ครบ (admin_id, action_type, target_id, version/old-new value, change_summary, ip_address, user_agent, created_at) |
+| AC-BO-SUPPORT-015 | Help / Support UI ต้อง responsive ที่ 375px, 768px, 1280px และ 1440px |
 
 ## 19. Open Decisions
 
-| ID | Decision Needed | Impact |
+| ID | Decision Needed | Current Recommendation |
 | --- | --- | --- |
-| SUP-DEC-001 | FO จะมี support ticket submit/history ใน V1 หรือใช้ contact-only ตาม Help screen ปัจจุบัน | กระทบ API, FO UI และ BO reply sync |
-| SUP-DEC-002 | SLA 8 ชั่วโมงนับตาม business hours `09:00 - 22:00 (GMT+7)` หรือ calendar hours | กระทบ SLA timer และ dashboard |
-| SUP-DEC-003 | LINE / Email จะ integrate เข้า BO อัตโนมัติหรือให้ Admin create manual ticket | กระทบ implementation และ operation workload |
-| SUP-DEC-004 | Support reply จะส่ง notification ใน FO หรือส่งผ่าน channel ต้นทางเท่านั้น | กระทบ Notification module และ FO notification center |
+| SUP-DEC-001 | Policy publish จะส่ง notification ให้ผู้ใช้ทราบหรือไม่ | แนะนำไม่ส่งใน Phase 1 — ผู้ใช้เห็นเวอร์ชันใหม่เมื่อเปิด Settings อ่านอีกครั้ง; ถ้าต้องการแจ้ง ให้เป็น task ใหม่ใน Notification module |
+| SUP-DEC-002 | Support Center จะรองรับ channel type นอกจาก 5 ประเภท (LINE, Phone, Email, Facebook, Website) ในอนาคตหรือไม่ | แนะนำ fixed list ใน Phase 1 — ถ้าต้องการเพิ่ม ให้เป็น task ใหม่พร้อมเพิ่ม format validation และ icon |
+| SUP-DEC-003 | Policy content จะรองรับ HTML tag นอกเหนือจาก allowed list (P, H2, H3, UL, OL, LI, A, STRONG, EM, BR) หรือไม่ | แนะนำใช้ allowed list ใน Phase 1 — ถ้าต้องการ tag เพิ่ม (เช่น IMG, TABLE) ให้เป็น task ใหม่พร้อมปรับ sanitizer |
+| SUP-DEC-004 | Policy version จะเก็บ Archived ไว้ตลอดหรือมี retention policy ลบเวอร์ชันเก่า | แนะนำเก็บตลอดใน Phase 1 เพราะ policy มีเพียง 2 ตัวและเวอร์ชันไม่เยอะ; ถ้าต้องการ retention ให้เป็น task ใหม่ |
+
+## 20. Data Model
+
+### Policy
+
+| Field | Type | ข้อกำหนด |
+| --- | --- | --- |
+| id | string | stable identifier (เช่น `POL-TOU`, `POL-PP`) — ห้ามเปลี่ยน |
+| type | string | policy type label (เช่น `Terms of Use`, `Privacy Policy`) |
+| typeLabel | string | display label สำหรับหัวข้อ (เช่น `TERMS OF USE`, `PRIVACY POLICY`) |
+| status | enum | `Published` |
+| currentVersion | string | เวอร์ชัน Published ปัจจุบัน (เช่น `v1.3`) |
+| lastEdited | datetime | วันที่/เวลาแก้ไขล่าสุด |
+| lastEditor | string | ผู้แก้ไขล่าสุด |
+| publishedDate | datetime | วันที่/เวลาเผยแพร่ล่าสุด |
+| draftVersion | string \| null | เวอร์ชัน Draft ปัจจุบัน หรือ `null` ถ้าไม่มี Draft |
+| description | string | คำอธิบายสั้น ๆ ของ policy |
+| versions | array | รายการ PolicyVersion |
+
+### PolicyVersion
+
+| Field | Type | ข้อกำหนด |
+| --- | --- | --- |
+| version | string | เวอร์ชัน label (เช่น `v1.3`, `v2.1-draft`) |
+| status | enum | `Draft`, `Published`, `Archived` |
+| editor | string | ผู้แก้ไข |
+| editedDate | datetime | วันที่/เวลาแก้ไข |
+| publishedDate | datetime \| null | วันที่/เวลาเผยแพร่ หรือ `null` ถ้าไม่เคย Published |
+| changeSummary | string | สรุปการเปลี่ยนแปลง |
+| contentTh | string (HTML) | เนื้อหาภาษาไทย (allowed tags: P, H2, H3, UL, OL, LI, A, STRONG, EM, BR) |
+| contentEn | string (HTML) | เนื้อหาภาษาอังกฤษ (allowed tags: เหมือน contentTh) |
+
+### SupportCenter
+
+| Field | Type | ข้อกำหนด |
+| --- | --- | --- |
+| channels | array | รายการ SupportChannel (fixed 5 ประเภท) |
+| businessHours | string | ช่วงเวลาทำการ (เช่น `09:00 - 22:00 (GMT+7)`) |
+| availabilityTh | string | ความพร้อมให้บริการภาษาไทย |
+| availabilityEn | string | ความพร้อมให้บริการภาษาอังกฤษ |
+| lastUpdated | datetime | วันที่/เวลาแก้ไขล่าสุด |
+| lastEditor | string | ผู้แก้ไขล่าสุด |
+
+### SupportChannel
+
+| Field | Type | ข้อกำหนด |
+| --- | --- | --- |
+| id | string | stable identifier (เช่น `ch-line`, `ch-phone`) |
+| channelType | enum | `LINE`, `Phone`, `Email`, `Facebook`, `Website` |
+| label | string | label สำหรับแสดง |
+| value | string | ค่าช่องทาง (เช่น `@mrfoxthailand`, `(+66) 80-008-8088`) |
+| url | string | URL สำหรับเปิดใน FO (ถ้ามี) |
+| active | boolean | สถานะการแสดงผล |
+| descriptionTh | string | คำอธิบายภาษาไทย |
+| descriptionEn | string | คำอธิบายภาษาอังกฤษ |
