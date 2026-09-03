@@ -16313,6 +16313,7 @@
       if (activeModule === "content") return { type: "module", module: "content", sub: activeSub === "Reported Articles" ? "Reported Articles" : "Articles", displaySub: activeSub === "Reported Articles" ? "Reported Articles" : "Articles" };
       if (activeModule === "market") return { type: "module", module: "market", sub: activeSub || "Dashboard", displaySub: activeSub || "Dashboard" };
       if (activeModule === "watch-alerts") return { type: "module", module: "watch-alerts", sub: activeSub || "Demand Overview", displaySub: activeSub || "Demand Overview" };
+      if (activeModule === "settings") return { type: "module", module: "settings", sub: activeSub || "Policy & Versioning", displaySub: activeSub || "Policy & Versioning" };
       return null;
     }
 
@@ -22207,7 +22208,7 @@
       activeRow = null;
       setPageActions("");
       syncExpandedNavForModule("settings", "Policy & Versioning");
-      document.body.classList.remove("dashboard-mode", "user-management-mode", "user-list-mode", "asset-list-mode", "article-list-mode", "category-list-mode", "reported-board-mode", "asset-detail-mode", "user-detail-mode", "policy-detail-mode", "policy-editor-mode", "policy-version-history-mode");
+      document.body.classList.remove("dashboard-mode", "user-management-mode", "user-list-mode", "asset-list-mode", "article-list-mode", "category-list-mode", "reported-board-mode", "asset-detail-mode", "user-detail-mode", "policy-detail-mode", "policy-editor-mode", "policy-version-history-mode", "support-center-mode");
       document.body.classList.add("policy-versioning-mode");
       document.querySelector("#crumb").textContent = "เครื่องมือ & รายงาน / Settings / Policy & Versioning";
       document.querySelector("#page-title").textContent = "Policy & Versioning";
@@ -22275,7 +22276,7 @@
       activeRow = null;
       setPageActions("");
       syncExpandedNavForModule("settings", "Support Center");
-      document.body.classList.remove("dashboard-mode", "user-management-mode", "user-list-mode", "asset-list-mode", "article-list-mode", "category-list-mode", "reported-board-mode", "asset-detail-mode", "user-detail-mode");
+      document.body.classList.remove("dashboard-mode", "user-management-mode", "user-list-mode", "asset-list-mode", "article-list-mode", "category-list-mode", "reported-board-mode", "asset-detail-mode", "user-detail-mode", "policy-versioning-mode", "policy-detail-mode", "policy-editor-mode", "policy-version-history-mode");
       document.body.classList.add("support-center-mode");
       document.querySelector("#crumb").textContent = "เครื่องมือ & รายงาน / Settings / Support Center";
       document.querySelector("#page-title").textContent = "Support Center";
@@ -22329,7 +22330,10 @@
     function renderSupportChannelRow(ch) {
       const activeClass = ch.active ? "active" : "inactive";
       const valueLabel = supportChannelValueLabel(ch.channelType);
-      const inputType = ch.channelType === "Email" ? "email" : "text";
+      // Use type="text" for all channels — type="email" causes the browser to
+      // convert internationalized domain names to punycode when reading .value,
+      // which corrupts user input on re-render. Email format is validated separately.
+      const inputMode = ch.channelType === "Email" ? ` inputmode="email"` : "";
       const requiredMark = ch.active ? ` <span class="article-required-mark">*</span>` : "";
       const disabledAttr = ch.active ? "" : "disabled";
       return `
@@ -22342,7 +22346,7 @@
           <div class="support-channel-info">
             <label class="support-channel-value-field">
               <span class="support-channel-type">${ch.channelType}${requiredMark}</span>
-              <input class="field" type="${inputType}" value="${ch.value}" data-channel-value="${ch.id}" aria-label="${valueLabel}" ${disabledAttr} />
+              <input class="field" type="text"${inputMode} value="${ch.value}" data-channel-value="${ch.id}" aria-label="${valueLabel}" ${disabledAttr} />
               <span class="article-field-error" data-channel-value-error="${ch.id}"></span>
             </label>
           </div>
@@ -22373,6 +22377,30 @@
     }
 
     // ===== Support Center validation (HS-PTO-004) =====
+    // Sync live input values from the edit form into supportCenterData so re-renders
+    // (e.g. after toggling a channel) preserve unsaved edits in other fields.
+    function syncSupportCenterFormToData(form) {
+      if (!form) return;
+      form.querySelectorAll("[data-channel-value]").forEach(input => {
+        const ch = supportCenterData.channels.find(c => c.id === input.dataset.channelValue);
+        if (ch) ch.value = input.value;
+      });
+      form.querySelectorAll("[data-channel-desc-th]").forEach(input => {
+        const ch = supportCenterData.channels.find(c => c.id === input.dataset.channelDescTh);
+        if (ch) ch.descriptionTh = input.value;
+      });
+      form.querySelectorAll("[data-channel-desc-en]").forEach(input => {
+        const ch = supportCenterData.channels.find(c => c.id === input.dataset.channelDescEn);
+        if (ch) ch.descriptionEn = input.value;
+      });
+      const hoursInput = form.querySelector("[data-support-business-hours]");
+      if (hoursInput) supportCenterData.businessHours = hoursInput.value;
+      const availThInput = form.querySelector("[data-support-availability-th]");
+      if (availThInput) supportCenterData.availabilityTh = availThInput.value;
+      const availEnInput = form.querySelector("[data-support-availability-en]");
+      if (availEnInput) supportCenterData.availabilityEn = availEnInput.value;
+    }
+
     // Required fields: channel value (when Active), Business Hours, Availability (TH), Availability (EN)
     // Optional fields: channel descriptions (TH/EN)
     function setSupportFieldError(form, field, message = "") {
@@ -22501,7 +22529,8 @@
         }
         case "Email": {
           if (value.length > 254) return "อีเมลต้องไม่เกิน 254 ตัวอักษร";
-          if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) return "รูปแบบอีเมลไม่ถูกต้อง";
+          // ASCII-only email format (local@domain.tld) — rejects Thai/Unicode chars
+          if (!/^[A-Za-z0-9.!#$%&'*+/=?^_`{|}~-]+@[A-Za-z0-9-]+(?:\.[A-Za-z0-9-]+)*\.[A-Za-z]{2,}$/.test(value)) return "รูปแบบอีเมลไม่ถูกต้อง";
           return "";
         }
         case "LINE": {
@@ -22540,7 +22569,7 @@
       activeSub = "Policy & Versioning";
       setPageActions(renderPageBackButton("data-policy-back", "กลับไป Policy & Versioning"));
       syncExpandedNavForModule("settings", "Policy & Versioning");
-      document.body.classList.remove("policy-versioning-mode", "policy-editor-mode", "policy-version-history-mode");
+      document.body.classList.remove("policy-versioning-mode", "policy-editor-mode", "policy-version-history-mode", "support-center-mode");
       document.body.classList.add("policy-detail-mode");
       const publishedVersion = policy.versions.find(v => v.status === "Published");
       const hasDraft = !!policy.draftVersion;
@@ -22607,7 +22636,7 @@
       const toEditorHtml = value => value ? (/<[a-z][\s\S]*>/i.test(value) ? sanitizePolicyContent(value) : `<p>${escapeHtml(value)}</p>`) : "<p><br></p>";
       setPageActions(renderPageBackButton("data-policy-back", "กลับไป Policy & Versioning"));
       syncExpandedNavForModule("settings", "Policy & Versioning");
-      document.body.classList.remove("policy-versioning-mode", "policy-detail-mode", "policy-version-history-mode");
+      document.body.classList.remove("policy-versioning-mode", "policy-detail-mode", "policy-version-history-mode", "support-center-mode");
       document.body.classList.add("policy-editor-mode");
       document.querySelector("#crumb").textContent = `เครื่องมือ & รายงาน / Settings / Policy & Versioning / ${policy.type} / Draft`;
       document.querySelector("#page-title").textContent = `${policy.typeLabel} — Draft`;
@@ -22947,11 +22976,16 @@
     }
 
     // HS-PTO-002b: Restore confirmation modal — creates a new draft from an archived version
+    // Warns the user when an existing draft will be replaced by the restore action.
     function openPolicyVersionRestoreConfirmModal(policy, version) {
       const modalCard = document.querySelector("#user-action-modal .user-action-modal");
       const modalBody = document.querySelector("#user-action-modal-body");
       modalCard?.classList.remove("article-preview-modal", "category-editor-modal", "policy-publish-confirm-modal");
       modalCard?.classList.add("article-editor-confirm-modal", "policy-restore-confirm-modal");
+      const hasExistingDraft = !!policy.draftVersion;
+      const draftWarning = hasExistingDraft
+        ? `<p class="article-editor-confirm-summary" style="color: var(--amber, #b45309);">Draft ปัจจุบัน (${policy.draftVersion}) จะถูกแทนที่โดย Draft ใหม่จากการ Restore</p>`
+        : "";
       modalBody.innerHTML = `
         <div class="article-editor-confirm-page">
           <div class="article-editor-confirm-icon" aria-hidden="true">
@@ -22964,6 +22998,7 @@
           <h2 id="user-action-modal-title">ยืนยันการ Restore</h2>
           <p class="article-editor-confirm-question">Restore เวอร์ชัน ${version.version} เป็น Draft ใหม่ใช่หรือไม่?</p>
           <p class="article-editor-confirm-summary">ระบบจะสร้าง Draft ใหม่จากเวอร์ชันนี้ โดยเวอร์ชันเดิมยังคงอยู่ในประวัติ</p>
+          ${draftWarning}
           <div class="article-editor-confirm-actions">
             <button class="user-detail-action-btn" type="button" data-user-action-modal-close>ยกเลิก</button>
             <button class="user-detail-action-btn user-action-confirm" type="button" data-policy-version-restore-confirm="${policy.id}" data-policy-version-restore-source="${version.version}">Restore</button>
@@ -22991,10 +23026,9 @@
         contentTh: source.contentTh || "",
         contentEn: source.contentEn || ""
       };
-      // Replace any existing draft with the same label
-      const existingIdx = policy.versions.findIndex(v => v.version === newDraftNumber);
-      if (existingIdx >= 0) policy.versions[existingIdx] = draftVersion;
-      else policy.versions.unshift(draftVersion);
+      // Remove any existing draft(s) so restore produces a single Draft entry
+      policy.versions = policy.versions.filter(v => !(v.status === "Draft"));
+      policy.versions.unshift(draftVersion);
       policy.draftVersion = newDraftNumber;
       closeUserActionModal();
       showSuccessToast(`Restore เวอร์ชัน ${sourceVersionLabel} เป็น Draft ${newDraftNumber} เรียบร้อย`);
@@ -23007,7 +23041,7 @@
       activeSub = "Policy & Versioning";
       setPageActions(renderPageBackButton("data-policy-back", "กลับไป Policy & Versioning"));
       syncExpandedNavForModule("settings", "Policy & Versioning");
-      document.body.classList.remove("policy-versioning-mode", "policy-detail-mode", "policy-editor-mode");
+      document.body.classList.remove("policy-versioning-mode", "policy-detail-mode", "policy-editor-mode", "support-center-mode");
       document.body.classList.add("policy-version-history-mode");
       document.querySelector("#crumb").textContent = `เครื่องมือ & รายงาน / Settings / Policy & Versioning / ${policy.type} / Version History`;
       document.querySelector("#page-title").textContent = "Version History";
@@ -34329,6 +34363,8 @@
         const channelId = channelToggle.dataset.channelToggle;
         const channel = supportCenterData.channels.find(c => c.id === channelId);
         if (channel) {
+          // Sync current input values into data before re-render so unsaved edits are preserved
+          syncSupportCenterFormToData(document.querySelector("[data-support-form]"));
           channel.active = !channel.active;
           renderSupportCenterPage();
         }
@@ -34348,24 +34384,7 @@
       if (supportSaveButton) {
         const form = document.querySelector("[data-support-form]");
         // Sync input values into data before validation so checks see current values
-        document.querySelectorAll("[data-channel-value]").forEach(input => {
-          const ch = supportCenterData.channels.find(c => c.id === input.dataset.channelValue);
-          if (ch) ch.value = input.value;
-        });
-        document.querySelectorAll("[data-channel-desc-th]").forEach(input => {
-          const ch = supportCenterData.channels.find(c => c.id === input.dataset.channelDescTh);
-          if (ch) ch.descriptionTh = input.value;
-        });
-        document.querySelectorAll("[data-channel-desc-en]").forEach(input => {
-          const ch = supportCenterData.channels.find(c => c.id === input.dataset.channelDescEn);
-          if (ch) ch.descriptionEn = input.value;
-        });
-        const hoursInput = document.querySelector("[data-support-business-hours]");
-        if (hoursInput) supportCenterData.businessHours = hoursInput.value;
-        const availThInput = document.querySelector("[data-support-availability-th]");
-        if (availThInput) supportCenterData.availabilityTh = availThInput.value;
-        const availEnInput = document.querySelector("[data-support-availability-en]");
-        if (availEnInput) supportCenterData.availabilityEn = availEnInput.value;
+        syncSupportCenterFormToData(form);
         // Validate — block save when invalid
         if (!validateSupportCenterForm(form)) {
           return;
