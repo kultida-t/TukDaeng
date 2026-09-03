@@ -9524,14 +9524,19 @@
     /* BO-DASH-001: Top Searched Brands ใช้ wa-stat-bar-row pattern เหมือน Popular Brands ใน Search Insights
        ปรับ padding/gap ให้เข้ากับ dashboard card */
     body.dashboard-mode .dashboard-status-card .wa-stat-bar-list {
-      padding: 14px 0 18px;
-      gap: 14px;
+      padding: 0;
+      gap: 0;
     }
     body.dashboard-mode .dashboard-status-card .wa-stat-bar-row {
       width: 100%;
-      margin: -6px 0;
-      padding: 6px 20px;
+      min-height: 68px;
+      margin: 0;
+      padding: 14px 20px;
+      gap: 4px;
       border-radius: 0;
+    }
+    body.dashboard-mode .dashboard-status-card .wa-stat-bar-percent {
+      line-height: 1;
     }
     .brand-ranking-row {
       width: 100%;
