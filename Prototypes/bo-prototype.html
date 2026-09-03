@@ -9516,6 +9516,9 @@
       text-align: right;
       white-space: nowrap;
     }
+    body.dashboard-mode .dashboard-status-card .status-value.status-scheduled { color: #1463d9; }
+    body.dashboard-mode .dashboard-status-card .status-value.status-published { color: #087853; }
+    body.dashboard-mode .dashboard-status-card .status-value.status-draft { color: #66758d; }
     .brand-ranking-list {
       display: grid;
       padding: 12px 20px 16px;
@@ -23444,7 +23447,7 @@
                   <span class="main-text">${row.label}</span>
                   <span class="muted">${row.detail}</span>
                 </span>
-                <span class="status-value">${row.value}</span>
+                <span class="status-value${panel.title === "Latest Articles" ? ` status-${String(row.value).toLowerCase()}` : ""}">${row.value}</span>
               </button>
             `).join("")}
           </div>
