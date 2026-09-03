@@ -13572,8 +13572,8 @@
     }
     .support-channel-toggle,
     .support-channel-status {
-      align-self: end;
-      padding-bottom: 7px;
+      align-self: start;
+      padding-top: 30px;
     }
     .support-channel-toggle {
       display: flex;
@@ -13643,6 +13643,8 @@
       flex-direction: column;
       gap: 6px;
       min-width: 0;
+      padding-bottom: 19px;
+      position: relative;
       font-size: 12px;
       line-height: 1.3;
       font-weight: 600;
@@ -13697,6 +13699,30 @@
     .support-channel-info {
       min-width: 0;
     }
+    .support-center-form .article-field-error {
+      display: block;
+      min-height: 17px;
+      margin-top: 0;
+      visibility: hidden;
+      position: absolute;
+      right: 0;
+      bottom: 0;
+      left: 0;
+    }
+    .support-center-form .article-field-error.show {
+      visibility: visible;
+    }
+    .support-channel-value-field,
+    .support-center-field-row label {
+      position: relative;
+      padding-bottom: 19px;
+    }
+    .support-channel-value-field .article-field-error {
+      font-size: 11px;
+    }
+    .support-center-field-row .article-field-error {
+      margin-top: 0;
+    }
     @media (max-width: 760px) {
       body.support-center-mode .panel-head {
         min-height: 64px;
@@ -13719,6 +13745,14 @@
       }
       .support-channel-status {
         justify-content: flex-start;
+      }
+      .support-channel-toggle,
+      .support-channel-status {
+        padding-top: 0;
+        align-self: start;
+      }
+      .support-channel-toggle {
+        padding-top: 6px;
       }
       .support-center-form .user-detail-actions {
         flex-direction: column-reverse;
@@ -22004,10 +22038,10 @@
 
     function renderSupportCenterForm() {
       return `
-        <div class="support-center-form">
+        <div class="support-center-form" data-support-form novalidate>
           <div class="support-center-section">
             <h4>ช่องทางติดต่อ</h4>
-            <p class="muted">เปิด/ปิดการแสดงผลแต่ละช่องทางได้ด้วย toggle Active/Inactive</p>
+            <p class="muted">เปิด/ปิดการแสดงผลแต่ละช่องทางได้ด้วย toggle Active/Inactive — ช่องทางที่เปิดใช้งานต้องกรอกค่า</p>
             <div class="support-channel-list">
               ${supportCenterData.channels.map(ch => renderSupportChannelRow(ch)).join("")}
             </div>
@@ -22017,12 +22051,15 @@
             <div class="support-center-field-row">
               <label><span>ช่วงเวลา <span class="article-required-mark">*</span></span>
                 <input class="field" type="text" value="${supportCenterData.businessHours}" data-support-business-hours />
+                <span class="article-field-error" data-support-business-hours-error></span>
               </label>
-              <label><span>ความพร้อมให้บริการ (ไทย)</span>
+              <label><span>ความพร้อมให้บริการ (ไทย) <span class="article-required-mark">*</span></span>
                 <input class="field" type="text" value="${supportCenterData.availabilityTh}" data-support-availability-th />
+                <span class="article-field-error" data-support-availability-th-error></span>
               </label>
-              <label><span>ความพร้อมให้บริการ (English)</span>
+              <label><span>ความพร้อมให้บริการ (English) <span class="article-required-mark">*</span></span>
                 <input class="field" type="text" value="${supportCenterData.availabilityEn}" data-support-availability-en />
+                <span class="article-field-error" data-support-availability-en-error></span>
               </label>
             </div>
           </div>
@@ -22038,6 +22075,7 @@
       const activeClass = ch.active ? "active" : "inactive";
       const valueLabel = supportChannelValueLabel(ch.channelType);
       const inputType = ch.channelType === "Email" ? "email" : "text";
+      const requiredMark = ch.active ? ` <span class="article-required-mark">*</span>` : "";
       return `
         <div class="support-channel-row ${activeClass}" data-channel-id="${ch.id}">
           <div class="support-channel-toggle">
@@ -22047,8 +22085,9 @@
           </div>
           <div class="support-channel-info">
             <label class="support-channel-value-field">
-              <span class="support-channel-type">${ch.channelType}</span>
+              <span class="support-channel-type">${ch.channelType}${requiredMark}</span>
               <input class="field" type="${inputType}" value="${ch.value}" data-channel-value="${ch.id}" aria-label="${valueLabel}" />
+              <span class="article-field-error" data-channel-value-error="${ch.id}"></span>
             </label>
           </div>
           <div class="support-channel-desc">
@@ -22075,6 +22114,167 @@
         Website: "Website URL"
       };
       return labels[channelType] || channelType;
+    }
+
+    // ===== Support Center validation (HS-PTO-004) =====
+    // Required fields: channel value (when Active), Business Hours, Availability (TH), Availability (EN)
+    // Optional fields: channel descriptions (TH/EN)
+    function setSupportFieldError(form, field, message = "") {
+      const errorNode = form?.querySelector(`[data-support-${field}-error]`);
+      if (errorNode) {
+        errorNode.textContent = message;
+        errorNode.classList.toggle("show", Boolean(message));
+      }
+      const controlMap = {
+        "business-hours": form?.querySelector("[data-support-business-hours]"),
+        "availability-th": form?.querySelector("[data-support-availability-th]"),
+        "availability-en": form?.querySelector("[data-support-availability-en]")
+      };
+      controlMap[field]?.classList.toggle("article-field-invalid", Boolean(message));
+    }
+
+    function setSupportChannelError(form, channelId, message = "") {
+      const errorNode = form?.querySelector(`[data-channel-value-error="${channelId}"]`);
+      if (errorNode) {
+        errorNode.textContent = message;
+        errorNode.classList.toggle("show", Boolean(message));
+      }
+      const input = form?.querySelector(`[data-channel-value="${channelId}"]`);
+      input?.classList.toggle("article-field-invalid", Boolean(message));
+    }
+
+    function clearSupportCenterErrors(form) {
+      form?.querySelectorAll("[data-channel-value-error]").forEach(node => {
+        node.textContent = "";
+        node.classList.remove("show");
+      });
+      form?.querySelectorAll("[data-channel-value]").forEach(input => input.classList.remove("article-field-invalid"));
+      ["business-hours", "availability-th", "availability-en"].forEach(field => setSupportFieldError(form, field));
+    }
+
+    function validateSupportCenterForm(form) {
+      clearSupportCenterErrors(form);
+      const errors = [];
+      // Channel values — required only when channel is Active, with format checks
+      // Channel descriptions (TH/EN) — optional but max length applies to all channels
+      supportCenterData.channels.forEach(ch => {
+        const valueInput = form?.querySelector(`[data-channel-value="${ch.id}"]`);
+        const value = (valueInput?.value || "").trim();
+        if (ch.active) {
+          if (!value) {
+            const channelLabel = supportChannelValueLabel(ch.channelType);
+            const requiredPrefix = /[A-Za-z]/.test(channelLabel) ? "กรุณากรอก " : "กรุณากรอก";
+            setSupportChannelError(form, ch.id, `${requiredPrefix}${channelLabel}`);
+            errors.push({ id: ch.id, input: valueInput });
+            return;
+          }
+          const formatError = validateSupportChannelValue(ch.channelType, value);
+          if (formatError) {
+            setSupportChannelError(form, ch.id, formatError);
+            errors.push({ id: ch.id, input: valueInput });
+          }
+        }
+        // Channel descriptions — optional, max 200 chars
+        const descThInput = form?.querySelector(`[data-channel-desc-th="${ch.id}"]`);
+        const descThValue = (descThInput?.value || "").trim();
+        if (descThValue.length > 200) {
+          setSupportChannelError(form, ch.id, "คำอธิบายช่องทาง (ไทย) ต้องไม่เกิน 200 ตัวอักษร");
+          errors.push({ id: ch.id, input: descThInput });
+        }
+        const descEnInput = form?.querySelector(`[data-channel-desc-en="${ch.id}"]`);
+        const descEnValue = (descEnInput?.value || "").trim();
+        if (descEnValue.length > 200) {
+          setSupportChannelError(form, ch.id, "Channel description (English) must be 200 characters or fewer");
+          errors.push({ id: ch.id, input: descEnInput });
+        }
+      });
+      // Business Hours — required + format + max length
+      const hoursInput = form?.querySelector("[data-support-business-hours]");
+      const hoursValue = (hoursInput?.value || "").trim();
+      if (!hoursValue) {
+        setSupportFieldError(form, "business-hours", "กรุณากรอกช่วงเวลาทำการ");
+        errors.push({ field: "business-hours", input: hoursInput });
+      } else if (hoursValue.length > 80) {
+        setSupportFieldError(form, "business-hours", "ช่วงเวลาต้องไม่เกิน 80 ตัวอักษร");
+        errors.push({ field: "business-hours", input: hoursInput });
+      } else {
+        const hoursFormatError = validateBusinessHoursFormat(hoursValue);
+        if (hoursFormatError) {
+          setSupportFieldError(form, "business-hours", hoursFormatError);
+          errors.push({ field: "business-hours", input: hoursInput });
+        }
+      }
+      // Availability TH — required + max length
+      const availThInput = form?.querySelector("[data-support-availability-th]");
+      const availThValue = (availThInput?.value || "").trim();
+      if (!availThValue) {
+        setSupportFieldError(form, "availability-th", "กรุณากรอกความพร้อมให้บริการ (ไทย)");
+        errors.push({ field: "availability-th", input: availThInput });
+      } else if (availThValue.length > 120) {
+        setSupportFieldError(form, "availability-th", "ความพร้อมให้บริการ (ไทย) ต้องไม่เกิน 120 ตัวอักษร");
+        errors.push({ field: "availability-th", input: availThInput });
+      }
+      // Availability EN — required + max length
+      const availEnInput = form?.querySelector("[data-support-availability-en]");
+      const availEnValue = (availEnInput?.value || "").trim();
+      if (!availEnValue) {
+        setSupportFieldError(form, "availability-en", "กรุณากรอกความพร้อมให้บริการ (English)");
+        errors.push({ field: "availability-en", input: availEnInput });
+      } else if (availEnValue.length > 120) {
+        setSupportFieldError(form, "availability-en", "Availability (English) must be 120 characters or fewer");
+        errors.push({ field: "availability-en", input: availEnInput });
+      }
+      if (errors.length) {
+        errors[0].input?.focus();
+        return null;
+      }
+      return true;
+    }
+
+    // Format validation per channel type. Returns error message string or "" when valid.
+    function validateSupportChannelValue(channelType, value) {
+      switch (channelType) {
+        case "Phone": {
+          // Allow digits, spaces, +, -, (), and must contain at least 7 digits
+          const digits = value.replace(/[^\d]/g, "");
+          if (!/^[\d+()\s-]+$/.test(value)) return "เบอร์โทรศัพท์ใช้ได้เฉพาะตัวเลขและ + - ( ) ช่องว่าง";
+          if (digits.length < 7) return "เบอร์โทรศัพท์ต้องมีตัวเลขอย่างน้อย 7 หลัก";
+          if (digits.length > 15) return "เบอร์โทรศัพท์ต้องไม่เกิน 15 หลัก";
+          return "";
+        }
+        case "Email": {
+          if (value.length > 254) return "อีเมลต้องไม่เกิน 254 ตัวอักษร";
+          if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) return "รูปแบบอีเมลไม่ถูกต้อง";
+          return "";
+        }
+        case "LINE": {
+          if (value.length > 200) return "LINE ต้องไม่เกิน 200 ตัวอักษร";
+          if (!/^(https?:\/\/|@|[A-Za-z0-9._-]+)/.test(value)) return "รูปแบบ LINE ไม่ถูกต้อง (ใช้ @handle หรือ URL)";
+          return "";
+        }
+        case "Facebook": {
+          if (value.length > 200) return "Facebook ต้องไม่เกิน 200 ตัวอักษร";
+          if (!/^(https?:\/\/|[A-Za-z0-9._-]+)/.test(value)) return "รูปแบบ Facebook ไม่ถูกต้อง (ใช้ชื่อเพจหรือ URL)";
+          return "";
+        }
+        case "Website": {
+          if (value.length > 200) return "Website ต้องไม่เกิน 200 ตัวอักษร";
+          if (!/^(https?:\/\/|www\.|[A-Za-z0-9.-]+\.[A-Za-z]{2,})/.test(value)) return "รูปแบบ Website ไม่ถูกต้อง (ใช้ URL หรือโดเมน)";
+          return "";
+        }
+        default:
+          return "";
+      }
+    }
+
+    // Business Hours format — accept patterns like "09:00 - 22:00", "09:00-22:00 (GMT+7)", "ทุกวัน 09:00-22:00"
+    // Must contain at least one time range in HH:MM format
+    function validateBusinessHoursFormat(value) {
+      const timeRangePattern = /\d{1,2}:\d{2}\s*[-–~ถึง]\s*\d{1,2}:\d{2}/;
+      if (!timeRangePattern.test(value)) {
+        return "รูปแบบเวลาไม่ถูกต้อง เช่น 09:00 - 22:00";
+      }
+      return "";
     }
 
     // ===== Policy detail page (HS-PTO-002a) =====
@@ -33812,7 +34012,8 @@
       }
       const supportSaveButton = event.target.closest("[data-support-save]");
       if (supportSaveButton) {
-        // Read form values into data
+        const form = document.querySelector("[data-support-form]");
+        // Sync input values into data before validation so checks see current values
         document.querySelectorAll("[data-channel-value]").forEach(input => {
           const ch = supportCenterData.channels.find(c => c.id === input.dataset.channelValue);
           if (ch) ch.value = input.value;
@@ -33831,6 +34032,10 @@
         if (availThInput) supportCenterData.availabilityTh = availThInput.value;
         const availEnInput = document.querySelector("[data-support-availability-en]");
         if (availEnInput) supportCenterData.availabilityEn = availEnInput.value;
+        // Validate — block save when invalid
+        if (!validateSupportCenterForm(form)) {
+          return;
+        }
         supportCenterData.lastUpdated = new Date().toISOString().slice(0, 16).replace("T", " ");
         supportCenterData.lastEditor = "Admin";
         showSuccessToast("บันทึกการเปลี่ยนแปลงเรียบร้อย");
