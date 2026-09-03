@@ -248,7 +248,7 @@ Policy Editor ใช้สำหรับสร้างหรือแก้ไ
 ### Header
 
 - Page title: `{policy type} — Draft`
-- Back button: กลับไป Policy & Versioning List
+- Back button: กลับไปหน้าก่อนหน้า (ปกติคือ Policy Detail)
 
 ### Draft Metadata Tiles
 
@@ -301,10 +301,14 @@ toolbar สำหรับจัดรูปแบบเนื้อหาใน
 
 | Action | พฤติกรรม |
 | --- | --- |
-| บันทึก Draft | บันทึกเนื้อหาและ change summary เป็น Draft (ยังไม่เผยแพร่) |
+| บันทึก Draft | บันทึกเนื้อหาและ change summary เป็น Draft (ยังไม่เผยแพร่) แล้วกลับไป Policy Detail |
 | Preview | เปิด Policy Preview modal แสดงเนื้อหา 2 ภาษา |
 | Publish | ตรวจสอบ validation ก่อน แล้วเปิด Policy Publish confirmation modal |
-| ยกเลิก | กลับไป Policy & Versioning List โดยไม่บันทึก |
+| ยกเลิก | กลับไปหน้าก่อนหน้า โดยไม่บันทึก |
+
+หลัง Save Draft สำเร็จ:
+- แสดง success toast `บันทึก Draft เรียบร้อย`
+- กลับไป Policy Detail ของ policy นั้น
 
 ### Validation
 
@@ -354,6 +358,11 @@ modal ยืนยันการเผยแพร่ Draft เป็น Publis
 เมนู: `Settings > Policy & Versioning > {policy type} / Version History`
 
 Breadcrumb: `เครื่องมือ & รายงาน / Settings / Policy & Versioning / {policy type} / Version History`
+
+### Header
+
+- Page title: `Version History`
+- Back button: กลับไปหน้าก่อนหน้า (ปกติคือ Policy Detail)
 
 แสดงประวัติทุกเวอร์ชันของ policy type ที่เลือก:
 
@@ -408,8 +417,9 @@ modal ยืนยันการ Restore เวอร์ชัน Archived เ�
 | Title | `ยืนยันการ Restore` |
 | Question | `Restore เวอร์ชัน {version} เป็น Draft ใหม่ใช่หรือไม่?` |
 | Summary | `ระบบจะสร้าง Draft ใหม่จากเวอร์ชันนี้ โดยเวอร์ชันเดิมยังคงอยู่ในประวัติ` |
+| Existing draft warning | ถ้ามี Draft อยู่แล้ว แสดง warning `Draft ปัจจุบัน ({draft version}) จะถูกแทนที่โดย Draft ใหม่จากการ Restore` |
 | ยกเลิก | ปิด modal โดยไม่ Restore |
-| Restore | ยืนยันการ Restore — สร้าง Draft ใหม่จากเวอร์ชันที่เลือก, เปิด Policy Editor |
+| Restore | ยืนยันการ Restore — สร้าง Draft ใหม่จากเวอร์ชันที่เลือก (แทนที่ Draft เดิมถ้ามี), เปิด Policy Editor |
 
 หลัง Restore สำเร็จ:
 - แสดง success toast `Restore เวอร์ชัน {source version} เป็น Draft {new version} เรียบร้อย`
@@ -461,6 +471,11 @@ Support Center เป็นหน้า form เดียวสำหรับ�
 | --- | --- |
 | Preview | เปิด Support Center Preview modal แสดงตัวอย่าง FO Help screen |
 | บันทึกการเปลี่ยนแปลง | ตรวจสอบ validation ก่อน แล้วบันทึกข้อมูล + บันทึก audit |
+
+หลังบันทึกการเปลี่ยนแปลงสำเร็จ:
+- แสดง success toast `บันทึกการเปลี่ยนแปลงเรียบร้อย`
+- อัปเดต `lastUpdated` และ `lastEditor` ของ SupportCenter
+- กลับไป Support Center form (re-render)
 
 ### Validation
 
@@ -520,7 +535,7 @@ Preview อ่านค่าจาก form แบบ live (รวมค่า�
 
 | Module | Integration |
 | --- | --- |
-| Dashboard | Help & Support card แสดง policy count (Published/Draft) และเปิดไป Settings / Policy & Versioning |
+| Dashboard | Policies card แสดง policy count (Published/Draft) และเปิดไป Settings / Policy & Versioning |
 | Audit Log | Policy actions (`POLICY_DRAFT_CREATE`, `POLICY_DRAFT_SAVE`, `POLICY_PUBLISH`, `POLICY_ARCHIVE`, `POLICY_RESTORE`) และ Support Center actions (`SUPPORT_CENTER_UPDATE`) บันทึกใน Audit Log module |
 | Reports & Analytics | ไม่มี report เฉพาะสำหรับ Help/Support ใน Phase 1 |
 | FO Help screen | Support Center data ส่งไป FO Settings > Help ผ่าน API — แสดง channels (Active เท่านั้น), business hours, availability ตามภาษาที่ผู้ใช้เลือก |
