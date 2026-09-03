@@ -13670,21 +13670,49 @@
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
       gap: 16px;
+      padding: 17px 16px 22px;
+      background: #fbfdff;
+      border: 1px solid #dce6f3;
+      border-radius: 8px;
+      position: relative;
+      transition: border-color .15s ease, box-shadow .15s ease, background .15s ease;
+    }
+    .support-center-field-row:hover {
+      background: #fff;
+      border-color: #b8cbe1;
+      box-shadow: 0 3px 10px rgba(16, 44, 80, .06);
     }
     .support-center-field-row label {
       display: flex;
       flex-direction: column;
       gap: 6px;
+      position: relative;
       font-size: 12px;
       line-height: 1.3;
       font-weight: 600;
       color: #4b5f78;
     }
+    .support-center-field-row .article-field-error {
+      position: absolute;
+      bottom: -22px;
+      left: 0;
+      right: 0;
+    }
     .support-center-field-row .field {
       min-height: 40px;
+      padding: 8px 10px;
+      background: #fff;
+      border: 1px solid #dce6f3;
+      border-radius: 8px;
       color: var(--ink);
       font-size: 13px;
       font-weight: 400;
+    }
+    .support-center-field-row .field:focus,
+    .support-center-field-row .field:focus-visible {
+      background: #fff;
+      border-color: #b8c6d8;
+      box-shadow: 0 0 0 3px rgba(118, 135, 158, .10);
     }
     .support-center-form .user-detail-actions {
       justify-content: flex-end;
@@ -35421,6 +35449,28 @@
     document.addEventListener("touchstart", startArticlePreviewTouch, { passive: true });
     document.addEventListener("touchmove", containArticlePreviewTouch, { passive: false });
     document.addEventListener("input", event => {
+      // ===== Support Center — clear field error on edit (HS-PTO-004) =====
+      if (event.target.matches("[data-channel-value]")) {
+        const form = event.target.closest("[data-support-form]");
+        const channelId = event.target.dataset.channelValue;
+        if (form && channelId) setSupportChannelError(form, channelId);
+        return;
+      }
+      if (event.target.matches("[data-support-business-hours]")) {
+        const form = event.target.closest("[data-support-form]");
+        if (form) setSupportFieldError(form, "business-hours");
+        return;
+      }
+      if (event.target.matches("[data-support-availability-th]")) {
+        const form = event.target.closest("[data-support-form]");
+        if (form) setSupportFieldError(form, "availability-th");
+        return;
+      }
+      if (event.target.matches("[data-support-availability-en]")) {
+        const form = event.target.closest("[data-support-form]");
+        if (form) setSupportFieldError(form, "availability-en");
+        return;
+      }
       if (event.target.matches("[data-calendar-only]")) {
         normalizeSuspensionEndDate(event.target);
         if (event.target.matches("#user-action-suspend-until")) updateAccountStatusEmailPreview();
