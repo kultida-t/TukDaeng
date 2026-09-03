@@ -13645,7 +13645,7 @@
     .support-channel-desc {
       display: grid;
       grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 12px;
+      gap: 16px;
       min-width: 0;
     }
     .support-channel-desc label {
@@ -13761,7 +13761,7 @@
     .support-center-field-row .article-field-error {
       margin-top: 0;
     }
-    @media (max-width: 760px) {
+    @media (max-width: 900px) {
       body.support-center-mode .panel-head {
         min-height: 64px;
         padding: 15px 16px 13px;
@@ -13776,7 +13776,7 @@
           "toggle status"
           "info info"
           "desc desc";
-        gap: 10px 12px;
+        gap: 16px;
         padding: 14px;
         align-items: start;
       }
@@ -13806,11 +13806,16 @@
       .support-channel-desc {
         grid-template-columns: 1fr;
       }
+      .support-center-field-row {
+        grid-template-columns: 1fr;
+      }
       .support-center-form .user-detail-actions {
-        flex-direction: column-reverse;
+        flex-direction: row;
       }
       .support-center-form .user-detail-action-btn {
-        width: 100%;
+        width: auto;
+        min-width: 0;
+        flex: 1 1 0;
       }
     }
   </style>
