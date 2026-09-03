@@ -13770,27 +13770,41 @@
         padding: 18px 16px 20px;
       }
       .support-channel-row {
-        grid-template-columns: 42px minmax(0, 1fr);
-        gap: 12px;
+        display: grid;
+        grid-template-columns: 1fr auto;
+        grid-template-areas:
+          "toggle status"
+          "info info"
+          "desc desc";
+        gap: 10px 12px;
         padding: 14px;
+        align-items: start;
       }
-      .support-channel-desc,
+      .support-channel-toggle {
+        grid-area: toggle;
+        justify-self: end;
+        padding-top: 0;
+      }
       .support-channel-status {
-        grid-column: 1 / -1;
+        grid-area: status;
+        justify-content: flex-start;
+        padding-top: 0;
+      }
+      .support-channel-info {
+        grid-area: info;
+        padding-top: 0;
+      }
+      .support-channel-value-field {
+        padding-top: 0;
+      }
+      .support-channel-type {
+        position: static;
+      }
+      .support-channel-desc {
+        grid-area: desc;
       }
       .support-channel-desc {
         grid-template-columns: 1fr;
-      }
-      .support-channel-status {
-        justify-content: flex-start;
-      }
-      .support-channel-toggle,
-      .support-channel-status {
-        padding-top: 0;
-        align-self: start;
-      }
-      .support-channel-toggle {
-        padding-top: 6px;
       }
       .support-center-form .user-detail-actions {
         flex-direction: column-reverse;
