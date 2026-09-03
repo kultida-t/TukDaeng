@@ -297,7 +297,7 @@ Audit action ขั้นต่ำ:
 | Audit Log | Offer export/sensitive-view actions ต้อง searchable |
 | Notification | Delivery logs, templates, retry policy |
 | Account Deletion | Pending offer validation ก่อน archive/anonymize |
-| Help & Support | Chat/offer context สำหรับ ticket/dispute |
+| Help & Support | ไม่มี ticket ใน Phase 1 — module 12 เป็น Policy & Versioning + Support Center; chat/offer context สำหรับ dispute เป็น future scope |
 | Reports & Analytics | Offer/chat aggregate และ export ตาม permission |
 
 ## Module-Specific Exceptions

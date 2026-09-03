@@ -105,7 +105,7 @@
 | Watch Alert matching | Match เฉพาะ asset status `Sale` |
 | Chat / New Message | ไม่เข้า FO Notification Center; ใช้ Chat badge/count เท่านั้น |
 | FO notification types | V1 รองรับ `Like`, `Comment`, `Follow`, `Offer`, `Watch Alert` |
-| Help / Support V1 | FO Help เป็น contact-only: LINE / Phone / Email; BO รองรับ manual/support ticket และ future in-app ticket history |
+| Help / Support V1 | FO Help เป็น contact-only: LINE / Phone / Email; BO Phase 1 เป็น Policy & Versioning + Support Center — ticket queue/assignment/SLA ย้ายไป Phase 2 |
 | Account Deletion | FO soft delete/deactivate, revoke session, 30-day grace period; BO track request, validation, archive/anonymization |
 | The Watch API | Backend sync/cache เท่านั้น, เก็บลง TukDaeng database ก่อน BO/FO ใช้งาน, BO CRUD/manual override ได้ตาม permission |
 | Audit | Mutation/export/sensitive reveal/destructive/public-impact actions ต้อง audit |
@@ -119,7 +119,7 @@
 | P0 | The Watch API production plan/quota และ FX source USD -> THB | `BO-MARKET-DEC-004`, `BO-MARKET-DEC-002` | กระทบ market data sync, price index, fallback |
 | P0 | Sync timing จาก BO moderation ไป FO surfaces | `00_GLOBAL_RULES_MODULE.md` sync timing section | กระทบ cache invalidation และ user-visible behavior |
 | P1 | Directory future activation level | `BO-DIR-DEC-001` | Directory is postponed from Phase 1 while FO menu entries remain placeholder-only without detail routes |
-| P1 | FO support ticket history หรือ contact-only | `SUP-DEC-001` | กระทบ Help / Support API, BO reply sync, FO UX |
+| P1 | FO support ticket history หรือ contact-only (Phase 1 ยึด Support Center contact-only — ticket queue ย้ายไป Phase 2) | `SUP-DEC-001` | กระทบ Help / Support API, BO reply sync, FO UX |
 | P1 | Broadcast แสดงใน FO Notification Center หรือ push-only | `NOTI-DEC-001` | กระทบ FO notification type list และ payload |
 | P1 | Sensitive export ต้องมี approval เพิ่มหรือไม่ | `REP-DEC-004`, `SET-DEC-004` | กระทบ Admin Settings, Reports, Audit |
 | P2 | Board public SEO web requirement | `BO-DEC-005` | กระทบ Board content delivery และ routing |

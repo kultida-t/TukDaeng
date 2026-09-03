@@ -141,7 +141,7 @@ KPI Summary ต้องแสดง 8 cards ตามลำดับนี้:
 | Offer Activity | `12` | `อ้างอิงจาก Offer Management mock-up และสถานะ offer ล่าสุด` | `Pending 3`, `Paused 1`, `Accepted 3`, `Rejected 2`, `Cancelled 2`, `Invalidated 1` | เปิด Offer / Offer Queue |
 | Articles | `12` | `มี 4 บทความรอเผยแพร่` | `Published 8`, `Scheduled 4` | เปิด Content Management / Articles |
 | Watch Alert | `3.2K` | `มีการจับคู่รายการขาย 146 ครั้งวันนี้` | `Active 3,218`, `Triggered 146` | เปิด Watch Alert / Alert Criteria |
-| Support Cases | `18` | `มี 3 เคสใกล้ครบกำหนดตอบครั้งแรก` | `Open 18`, `Assigned 9`, `Urgent 3` | เปิด Help & Support / Tickets |
+| Help & Support | `3` | `มี policy 1 ฉบับรอเผยแพร่` | `Published 2`, `Draft 1` | เปิด Settings / Policy & Versioning |
 
 กฎการแสดง KPI:
 
@@ -313,7 +313,7 @@ Rows:
 | Offer Activity card | Offer / Offer Queue |
 | Articles card | Content Management / Articles |
 | Watch Alert card | Watch Alert / Alert Criteria |
-| Support Cases card | Help & Support / Tickets |
+| Help & Support card | Settings / Policy & Versioning |
 | Work Queue row | Module/submodule ตาม queue นั้น |
 | Recent Activity row | Module/submodule ตาม event นั้น |
 | Dashboard Panel row | Module/submodule ตาม row นั้น |

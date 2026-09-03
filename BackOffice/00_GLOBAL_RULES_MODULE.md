@@ -333,7 +333,7 @@ FO functions ขั้นต่ำที่ BO ต้องรองรับ:
 - Comment moderation
 - Like/favorite/follow analytics
 - Watch Alert criteria และ trigger history
-- Help/support ticket
+- Policy & Versioning และ Support Center (module 12 Phase 1 scope)
 - Account deletion/archive validation
 - Broadcast และ system notifications
 - Audit trail สำหรับทุก admin action
@@ -342,7 +342,7 @@ Guest public access rule:
 
 - FO Guest สามารถดูและแชร์ public surface ที่ระบบอนุญาตได้ เช่น public asset/detail, public profile/detail หรือ published article ตาม status/visibility ของ entity นั้น
 - Guest action ที่เป็น public view/share ไม่สร้าง User Management record และไม่เปิด BO account action
-- Action ที่สร้างข้อมูลหรือเปลี่ยน state ของระบบ เช่น like, follow, comment, report, offer, chat, watch alert, add/edit/delete asset หรือ support ticket ต้อง login ตาม FO Auth rule ก่อน จึงจะเข้า BO workflow ที่เกี่ยวข้องได้
+- Action ที่สร้างข้อมูลหรือเปลี่ยน state ของระบบ เช่น like, follow, comment, report, offer, chat, watch alert, add/edit/delete asset ต้อง login ตาม FO Auth rule ก่อน จึงจะเข้า BO workflow ที่เกี่ยวข้องได้
 - BO modules ที่ควบคุม public visibility เช่น Asset, Content/Board, Market Data และ Directory ในอนาคต ต้องทำให้ public deep link ที่ Guest เปิดหรือแชร์ไว้สะท้อนสถานะล่าสุด เช่น unavailable, removed, archived หรือ inactive
 
 ## 12. BO-to-FO Sync Rules

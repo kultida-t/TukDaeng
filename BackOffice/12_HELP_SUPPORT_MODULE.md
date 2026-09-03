@@ -520,7 +520,7 @@ Preview อ่านค่าจาก form แบบ live (รวมค่า�
 
 | Module | Integration |
 | --- | --- |
-| Dashboard | ไม่มี card เฉพาะสำหรับ Help/Support ใน Phase 1 (policy มีเพียง 2 ตัว และ support center เป็น form เดียว ไม่ใช่ workload ที่ต้อง monitor) |
+| Dashboard | Help & Support card แสดง policy count (Published/Draft) และเปิดไป Settings / Policy & Versioning |
 | Audit Log | Policy actions (`POLICY_DRAFT_CREATE`, `POLICY_DRAFT_SAVE`, `POLICY_PUBLISH`, `POLICY_ARCHIVE`, `POLICY_RESTORE`) และ Support Center actions (`SUPPORT_CENTER_UPDATE`) บันทึกใน Audit Log module |
 | Reports & Analytics | ไม่มี report เฉพาะสำหรับ Help/Support ใน Phase 1 |
 | FO Help screen | Support Center data ส่งไป FO Settings > Help ผ่าน API — แสดง channels (Active เท่านั้น), business hours, availability ตามภาษาที่ผู้ใช้เลือก |

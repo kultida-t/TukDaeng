@@ -169,7 +169,7 @@ Role templates are presets. Production enforcement must use explicit permission 
 | Market Data / Directory | Admin can manage brand/model/reference/price data with provider-source, inactive/restore, and audit controls; Directory is future/postponed from Phase 1. |
 | Audit Log | Admin can view/export audit data according to audit visibility and sensitive-payload policy. |
 | Offer Management / Asset Reported Comments / Watch Alert | Admin can review permitted records by policy with privacy masking and audit. Offer Management V1 remains read-only. |
-| Help / Support / Account Deletion | Admin can process support and deletion workflows with dependency checks, confirmation, reason, and audit. |
+| Help / Support / Account Deletion | Admin can manage Policy & Versioning, Support Center และ deletion workflows with dependency checks, confirmation, reason, and audit. |
 | Notifications / Reports | Admin can manage templates, broadcasts, reports, and exports according to approval/export/sensitive-data policy. |
 | Admin Settings | Admin can manage BO settings through high-risk policy controls and audit. |
 
@@ -221,7 +221,6 @@ Retention settings ต้องแสดงเป็น policy/config โดย�
 | Audit log | เก็บอย่างน้อย 1 ปี |
 | Security/permission/export events | ควรเก็บนานกว่า 1 ปีถ้า policy อนุญาต |
 | Chat / offer records | Open decision ตาม legal/compliance |
-| Support tickets | ต้องกำหนด retention ตาม policy |
 | Account deletion archive | ใช้ 30-day grace period ก่อน hard delete/anonymization ตาม FO baseline เว้นแต่ legal เปลี่ยน |
 | Export files | ต้องมี expiry |
 | Notification delivery logs | ต้องกำหนด retention ตาม report/provider policy |
@@ -249,7 +248,7 @@ Feature flag ใช้เพื่อควบคุม phase/decision เท่
 | --- | --- |
 | Directory FO route | Future/postponed from Phase 1; ถ้า FO ยังเป็น placeholder ต้องไม่เปิด production route โดยไม่มี Product decision |
 | Broadcast in FO Notification Center | ต้องรอ master decision ก่อนเพิ่ม generic Broadcast type |
-| FO Support ticket history | ต้องรอ Product decision; contact-only mode ยังรองรับใน BO |
+| FO Support ticket history | Future scope — module 12 Phase 1 เป็น Policy & Versioning + Support Center; ticket history กลับเข้า Phase ถัดไปเมื่อ ticket queue เปิด scope |
 | Market Update notification | Future; ไม่ส่ง FO V1 จนกว่า master เพิ่ม scope |
 | Scheduled reports | Future unless Product opens scope |
 | Fine-grained permission editor | Future unless Product opens scope |
@@ -369,5 +368,5 @@ Sensitive settings value ต้อง mask ใน audit payload ถ้าเป�
 | --- | --- | --- |
 | SET-DEC-001 | Fine-grained permission editor จะเปิดใน V1 หรือใช้ fixed role template matrix | กระทบ data model และ QA scope |
 | SET-DEC-002 | Security policy fields ใดให้ Admin แก้ได้จริงใน production | กระทบ compliance และ operation |
-| SET-DEC-003 | Retention period ราย entity เช่น chat, offer, support ticket, export file ต้องเก็บกี่วัน/ปี | กระทบ archive/export/report jobs |
+| SET-DEC-003 | Retention period ราย entity เช่น chat, offer, export file ต้องเก็บกี่วัน/ปี | กระทบ archive/export/report jobs |
 | SET-DEC-004 | ต้องมี approval workflow สำหรับ high-risk setting change หรือไม่ | กระทบ admin operation และ audit |

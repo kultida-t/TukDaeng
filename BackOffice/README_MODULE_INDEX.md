@@ -67,10 +67,10 @@ Codex ต้องทำ 3 อย่าง:
 | 08 | `08_AUDIT_LOG_MODULE.md` | Immutable audit events, schema, search/filter, export, retention, sensitive/destructive/provider-sync trace | 1 |
 | 09 | `09_OFFER_CHAT_MODULE.md` | Read-only offer list/detail, buyer/seller and asset interest overview, related chat context, notification delivery | 1 |
 | 11 | `11_WATCH_ALERT_MODULE.md` | Market Demand & Watch Alert: Demand Overview, Search Insights (popular keyword/filter, no-result, trend, funnel), Watch Alert List (read-only) + Alert Detail (6 sections, read-only), trigger history, Sale-only match, notification delivery, inactive market data warning | 1 |
-| 12 | `12_HELP_SUPPORT_MODULE.md` | Help/support ticket queue, manual contact-channel tickets, assignment, reply history, SLA tracking | 1 |
+| 12 | `12_HELP_SUPPORT_MODULE.md` | Settings > Policy & Versioning (Terms of Use, Privacy Policy — Draft/Published/Archived, bilingual TH/EN, version history, restore) และ Settings > Support Center (channels, business hours, availability TH/EN, preview) | 1 |
 | 13 | `13_ACCOUNT_DELETION_MODULE.md` | Delete-account request queue, pending offer validation, 30-day grace period, archive/anonymization workflow | 1 |
 | 14 | `14_NOTIFICATIONS_MODULE.md` | Broadcast notification และ system trigger templates/logs | 1 |
-| 15 | `15_REPORTS_ANALYTICS_MODULE.md` | Exportable reports across user, asset, offer, chat, content, asset reported comments, search, watch alert, support, notifications, account deletion | 1 |
+| 15 | `15_REPORTS_ANALYTICS_MODULE.md` | Exportable reports across user, asset, offer, chat, content, asset reported comments, search, watch alert, notifications, account deletion | 1 |
 | 16 | `16_ADMIN_SETTINGS_MODULE.md` | Admin own settings, admin account lifecycle, Admin Permission config, security/system settings, retention/export policy | 1 |
 | 17 | `17_OPTION_MASTER_MODULE.md` | Internal option master management for FO Add/Edit Asset, Search Filter, Watch Alert criteria; option group list/detail, option add/edit/deactivate/reactivate/delete/reorder, group add/edit/deactivate/reactivate/delete/reorder, group audit log, audit | 1 |
 

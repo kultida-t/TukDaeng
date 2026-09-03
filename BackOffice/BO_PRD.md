@@ -19,7 +19,7 @@ BO ต้องช่วยให้ทีม Admin สามารถ:
 - Moderate สินทรัพย์ คอมเมนต์ แชท และข้อเสนอที่ผิด policy
 - จัดการบทความและเนื้อหาที่แสดงในเมนู Board ของ FO
 - จัดการ master data เช่น Watch Brand, Model และ Price Index; Directory เป็น future/postponed scope ไม่รวม Phase 1
-- ช่วยเหลือผู้ใช้ผ่าน Support Ticket
+- จัดการเนื้อหา policy (Terms of Use, Privacy Policy) และช่องทางติดต่อ Support Center
 - ตรวจสอบรายงานและ performance ของระบบ
 - บันทึก audit log ทุก action สำคัญของ Admin
 
@@ -34,7 +34,7 @@ FO มีหลาย flow ที่สร้างข้อมูลและ i
 | Operational Control | ให้ Admin จัดการข้อมูลหลักและข้อมูลที่เกิดจาก FO ได้ครบ |
 | Trust & Safety | รองรับ moderation, report handling, suspend/ban, audit |
 | Content Publishing | ให้ Admin จัดการบทความ Board และ Banner ได้จาก BO |
-| Support Efficiency | ให้ Admin ติดตามและตอบ ticket ได้ |
+| Support Efficiency | ให้ Admin จัดการเนื้อหา policy และข้อมูล Support Center ที่ FO แสดงได้ |
 | Market Data Quality | ให้ทีม Market จัดการ Brand, Model และ Price Index; Directory เป็น future/postponed scope |
 | Traceability | ทุก action สำคัญต้องมี audit log และตรวจสอบย้อนหลังได้ |
 
@@ -67,7 +67,7 @@ FO users have a single account type: `User`. BO must support activity from the s
 - Option Master Management
 - Watch Alert Management
 - Directory Management (future/postponed; not Phase 1)
-- Help & Support Ticket
+- Help & Support (Policy & Versioning + Support Center)
 - Notifications
 - Reports & Analytics
 - Audit Log
@@ -350,18 +350,21 @@ Fields ที่ต้องรองรับ:
 
 Admin ต้องสามารถ:
 
-- ดู ticket จาก FO Help
-- Filter ตาม status, type, priority
-- Assign ticket
-- ตอบกลับผู้ใช้
-- เปลี่ยนสถานะ Open / In Progress / Waiting User / Resolved / Closed
-- เชื่อม ticket กับ user, asset, offer หรือ chat
+- จัดการเนื้อหา Terms of Use และ Privacy Policy แบบ versioned (Draft/Published/Archived) 2 ภาษา
+- สร้าง Draft, preview, publish และ restore เวอร์ชันเก่าได้
+- จัดการช่องทางติดต่อ Support Center (LINE, Phone, Email, Facebook, Website), เวลาทำการ และความพร้อมให้บริการ 2 ภาษา
+- Preview Support Center ก่อนบันทึก
 
 ### Acceptance Criteria
 
-- Ticket ต้องมี owner และ status ชัดเจน
-- การตอบกลับต้องบันทึก history
-- การ resolve ต้องมี timestamp และ admin ผู้ดำเนินการ
+- Policy ต้องมีได้ไม่เกิน 1 Published และ 1 Draft ต่อ policy type
+- การ publish ต้อง archive เวอร์ชัน Published เดิมอัตโนมัติ
+- Support Center ต้อง validate ค่า channel ที่ Active และ format ตาม channel type
+- ทุก action สำคัญต้องบันทึก audit log
+
+### Out Of Scope (Phase 1)
+
+Ticket queue, assignment, SLA, reply history, internal notes และ manual ticket creation จาก LINE/Phone/Email ไม่อยู่ใน Phase 1 — รายละเอียดเต็มอยู่ใน `12_HELP_SUPPORT_MODULE.md`
 
 ---
 
@@ -409,7 +412,6 @@ Reports ที่ต้องมี:
 - Asset Reported Comments Report
 - Search Report
 - Watch Alert Report
-- Support Report
 - Notification Report
 - Account Deletion Report
 
@@ -456,7 +458,9 @@ Reports ที่ต้องมี:
 - PriceIndex
 - WatchAlert
 - Directory
-- SupportTicket
+- Policy
+- PolicyVersion
+- SupportCenter
 - Notification
 - AdminAccount
 - SpecOption
@@ -501,7 +505,6 @@ Reports ที่ต้องมี:
 | Metric | Target |
 |---|---|
 | Pending report response time | < 24 ชั่วโมง |
-| Support ticket first response | < 8 ชั่วโมง |
 | Article publish success | 100% แสดงบน FO ตาม schedule |
 | Asset moderation audit completeness | 100% มี audit log |
 | Notification delivery tracking | > 95% มี delivery status |
@@ -522,7 +525,7 @@ Reports ที่ต้องมี:
 - Market Data
 - Option Master
 - Watch Alert Management
-- Help & Support Ticket
+- Help & Support (Policy & Versioning + Support Center)
 - Account Deletion Requests
 - Notifications
 - Reports & Analytics
@@ -534,6 +537,7 @@ Reports ที่ต้องมี:
 - Directory (รอ FO directory detail routes และ taxonomy approval)
 - Chat moderation workflow (remove/hide chat message, reported chat queue)
 - Offer write actions (force expire, invalidate, accept/decline จาก BO)
+- Help & Support ticket queue, assignment, SLA, reply/internal note (ย้ายจาก Phase 1 ไป Phase 2 — รายละเอียดอยู่ใน `12_HELP_SUPPORT_MODULE.md` section 3 Out Of Scope)
 
 ### Phase 3
 

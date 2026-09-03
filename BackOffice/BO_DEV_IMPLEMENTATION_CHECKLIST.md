@@ -32,7 +32,7 @@ Recommended note format:
 
 - [ ] ใช้ `00_GLOBAL_RULES_MODULE.md` เป็น baseline กลางเรื่อง responsive layout, admin access control, audit, status, privacy และ FO sync
 - [ ] สร้าง BO web app shell พร้อม authenticated layout, left navigation, top bar และ access-aware menu visibility
-- [ ] กำหนด shared status constants สำหรับ users, assets, articles, offers, comments, tickets, alerts, notifications และ audit actions
+- [ ] กำหนด shared status constants สำหรับ users, assets, articles, offers, comments, policy versions, alerts, notifications และ audit actions
 - [ ] ห้ามเพิ่ม `Guest / Unauthenticated` เป็น user status constant ของ BO; ให้ถือเป็น FO access state และใช้เฉพาะ public access/analytics context
 - [ ] ทำ shared table pattern: server pagination, search, filters, sort, column visibility ตามความเหมาะสม และ CSV/Excel export hook
 - [ ] ทำ shared confirmation modal สำหรับ destructive actions พร้อม reason input เมื่อจำเป็น
@@ -303,36 +303,41 @@ Recommended note format:
 
 ## 12. Help & Support
 
-- [ ] Ticket queue ต้องรองรับ search/filter ตาม Ticket ID, user, channel, type, priority, status, assignee, SLA และ date range
-- [ ] BO ต้องรองรับ manual ticket จาก LINE / Phone / Email ตาม FO Help contact-only baseline
-- [ ] Ticket detail ต้องแสดง requester context, account status, source channel, conversation, internal note และ related entity
-- [ ] Status ต้องใช้ `New`, `Open`, `In Progress`, `Waiting User`, `Resolved`, `Closed`, `Spam / Invalid`
-- [ ] Priority ต้องใช้ `Urgent`, `High`, `Medium`, `Low`
-- [ ] First response SLA ต้องตั้ง baseline 8 ชั่วโมง และแสดง On track / Near breach / Breached
-- [ ] Admin must assign, reply, add internal note, link entity, and change priority/status according to action policy
-- [ ] Internal note ต้องไม่แสดงให้ผู้ใช้และไม่ sync ไป FO
-- [ ] ถ้า FO เปิด in-app ticket history ในอนาคต BO reply/status ต้อง sync กลับ FO ตาม contract
-- [ ] Ticket ต้อง link ไป User, Asset, Offer, Chat, Report, Watch Alert, Notification, Market Data หรือ Account Deletion ได้ตาม permission
-- [ ] Sensitive reveal, export, status change, reply และ assignment ต้องมี audit log
+### Phase 1 — Policy & Versioning + Support Center
+
+- [ ] Policy & Versioning List แสดง policy 2 ตัว (Terms of Use, Privacy Policy) ครบคอลัมน์ ไม่มี summary cards/search/filter/pagination
+- [ ] Policy Detail แสดงเนื้อหา Published พร้อม language tabs TH/EN, metadata tiles, change summary และปุ่ม (แก้ไข Draft / สร้าง Draft, ดู Version History)
+- [ ] Policy Editor แสดง Draft metadata tiles, language tabs TH/EN, formatting toolbar (Bold/Italic/Underline/H2/UL/OL/Align/Insert Link), contenteditable canvas 2 ภาษา, change summary field และ actions (บันทึก Draft, Preview, Publish, ยกเลิก)
+- [ ] Policy Editor validation บังคับ content TH, content EN และ change summary ต้องไม่ว่าง
+- [ ] Policy Preview modal แสดงตัวอย่างเนื้อหา Draft 2 ภาษา พร้อม version pill
+- [ ] Policy Publish confirmation modal แสดง policy type, version, change summary และแจ้ง archive; หลังยืนยันต้อง archive เวอร์ชัน Published เดิม, ส่ง Draft เป็น Published, แสดง success toast และกลับไป Policy Detail
+- [ ] Policy Version History แสดงตารางทุกเวอร์ชัน พร้อม row click เปิด Version View modal และ action menu (แก้ไข Draft / ดูเวอร์ชัน / Restore เป็น Draft)
+- [ ] Policy Version View modal แสดงเนื้อหา 2 ภาษา read-only, metadata tiles, change summary และปุ่ม Restore (Archived) หรือ แก้ไข Draft (Draft)
+- [ ] Policy Restore confirmation modal แสดงยืนยันก่อนสร้าง Draft ใหม่จาก Archived; หลังยืนยันต้องสร้าง Draft ใหม่, แสดง success toast และเปิด Policy Editor
+- [ ] Support Center edit form แสดง channel list 5 ประเภท (LINE, Phone, Email, Facebook, Website) พร้อม toggle Active/Inactive, channel value, description TH/EN, status badge และ business hours section
+- [ ] Support Center validation บังคับ channel value (เมื่อ Active) + format validation ตาม channel type, business hours (required + format HH:MM - HH:MM), availability TH/EN (required)
+- [ ] Support Center Preview modal แสดง FO Help screen ใน phone frame พร้อม language toggle TH/EN, แสดงเฉพาะ channel Active, business hours, availability ตามภาษา และ empty state เมื่อไม่มี Active channel
+- [ ] Support Center Preview อ่านค่าจาก form แบบ live (รวมค่าที่ยังไม่ได้บันทึก)
+- [ ] Audit log บันทึก `POLICY_DRAFT_CREATE`, `POLICY_DRAFT_SAVE`, `POLICY_PUBLISH`, `POLICY_ARCHIVE`, `POLICY_RESTORE` และ `SUPPORT_CENTER_UPDATE` พร้อม payload ครบ
 - [ ] Help / Support UI ต้อง responsive ที่ 375px, 768px, 1280px และ 1440px
 
 ### Help & Support Prototype Handoff Notes
 
 | Area | Notes |
 | --- | --- |
-| Prototype / Spec Alignment | The prototype exposes `Tickets`, `Assignment`, and `SLA`, and Dashboard includes support-ticket counts. This aligns with the support operating model, but it is not yet a complete ticket detail/reply/manual-ticket workflow. |
-| Implementation Gap | Production still needs ticket detail, requester context, related entity links, reply history, internal notes, assignment/change-priority/status flows, manual ticket creation from LINE/Phone/Email, and full SLA states. |
-| Permission / Audit | Assignment, reply, internal note, link entity, priority/status change, sensitive reveal, and export require permission checks and audit. Internal notes must never sync to FO/user-facing channels. |
-| FO Sync Impact | FO V1 remains contact-only unless Product opens in-app ticket history. If in-app ticket history is enabled later, BO status/reply sync needs a separate contract. First response SLA baseline remains 8 hours. |
+| Prototype / Spec Alignment | Prototype ล็อกแล้วสำหรับ Settings > Policy & Versioning และ Settings > Support Center ตาม `12_HELP_SUPPORT_MODULE.md` — ไม่มี Tickets/Assignment/SLA ใน prototype ปัจจุบัน |
+| Implementation Gap | Production ต้องสร้าง Policy & Versioning flow (list, detail, editor, version history, modals) และ Support Center form + preview ตาม `12_HELP_SUPPORT_MODULE.md` |
+| Permission / Audit | Policy draft/publish/restore และ Support Center update ต้องมี permission check + audit log; Preview ไม่บันทึก audit |
+| FO Sync Impact | Policy content ส่งไป FO Settings ผ่าน API (แสดงเวอร์ชัน Published ตามภาษา); Support Center data ส่งไป FO Help screen (Active channels เท่านั้น) |
 
 ## 13. Account Deletion Requests
 
 - [ ] Deletion request queue ต้องรองรับ search/filter ตาม Request ID, user, status, account status, pending offer, grace period และ requested date
-- [ ] Request detail ต้องแสดง user context, deletion timeline, pending offers, assets, chats, reports และ support tickets
+- [ ] Request detail ต้องแสดง user context, deletion timeline, pending offers, assets, chats และ reports
 - [ ] หลัง FO Delete Account สำเร็จ account ต้องเข้าสู่ deactivated/login blocked state และ public profile/assets ต้องถูกซ่อน
 - [ ] Grace period ต้องใช้ baseline 30 วันและแสดง active / ending soon / expired
 - [ ] Pending incoming/outgoing offer ต้อง block archive/anonymization ได้
-- [ ] Recheck blocking conditions ต้อง query dependency ล่าสุดจาก Offer Management, Asset, Report และ Support modules
+- [ ] Recheck blocking conditions ต้อง query dependency ล่าสุดจาก Offer Management, Asset และ Report modules
 - [ ] Archive approval, request cancellation, anonymization trigger, and archive report export require Admin access policy, confirmation, reason, and audit
 - [ ] Admin ดู request และ recheck blocking conditions ได้ แต่ approve/cancel/export ไม่ได้
 - [ ] Archive/anonymization plan ต้องแยก hide, retain, archive และ anonymize ต่อ entity ให้ชัด
@@ -344,7 +349,7 @@ Recommended note format:
 | Area | Notes |
 | --- | --- |
 | Prototype / Spec Alignment | The prototype exposes `Requests`, `Grace Period`, and `Anonymization`, and user records can route deletion-requested users toward the Account Deletion context. This aligns with the module boundary, but full dependency review and archive/anonymization workflows are still implementation gaps. |
-| Implementation Gap | Production needs request detail, dependency recheck across Offer/Chat, Asset, Report, and Support modules, 30-day grace-period state, archive/anonymization plan, cancellation, export, and stale dependency handling. |
+| Implementation Gap | Production needs request detail, dependency recheck across Offer/Chat, Asset, and Report modules, 30-day grace-period state, archive/anonymization plan, cancellation, export, and stale dependency handling. |
 | Permission / Audit | Recheck, approve archive, cancel, anonymize, sensitive reveal, and export must be permission-gated and audit-logged with before/after values and reason. |
 | FO Sync Impact | Successful FO delete-account flow must block login/deactivate account, hide public profile/assets, preserve required records for retention, and only anonymize/archive after blocking dependencies are resolved. |
 
@@ -377,12 +382,12 @@ Recommended note format:
 
 ## 15. Reports & Analytics
 
-- [ ] Report catalog ต้องมี User, Asset, Offer, Chat, Content / Board, Asset Reported Comments, Search, Watch Alert, Support, Notification และ Account Deletion reports
+- [ ] Report catalog ต้องมี User, Asset, Offer, Chat, Content / Board, Asset Reported Comments, Search, Watch Alert, Notification และ Account Deletion reports (ไม่มี Support Report ใน Phase 1)
 - [ ] ทุก report ต้องรองรับ date range, filter, sort, policy-based visibility และ last updated
 - [ ] ทุก report ที่ export ได้ต้องรองรับ CSV และ Excel ตาม permission
 - [ ] Large export ต้องใช้ background job พร้อม status Queued / Processing / Completed / Failed / Expired / Cancelled
 - [ ] Sensitive data ต้อง mask เป็น default และ sensitive view/export ต้อง audit-log
-- [ ] User Report ต้องแสดง new users, DAU/MAU, auth method, account status และ support/deletion signals
+- [ ] User Report ต้องแสดง new users, DAU/MAU, auth method, account status และ deletion signals
 - [ ] User Report ต้องแยก Guest public view/share analytics ออกจาก registered-user metrics และต้องไม่ใช้ Guest เป็น account status/filter
 - [ ] User Report ต้องรองรับ explicit guest/public metrics ได้แก่ Guest Visitors, Public Asset Views, Public Article Views, Public Profile Views, Public Shares และ Guest-to-Signup Conversion เมื่อ tracking เปิดใช้
 - [ ] Asset Report ต้องใช้ status `Show` / `Hide` ตาม FO และไม่ใช้ legacy collection wording
@@ -390,7 +395,6 @@ Recommended note format:
 - [ ] Chat Report ต้องจำกัด transcript export ตาม permission และ audit ทุกครั้ง
 - [ ] Search Report ต้องแสดง top searched keywords/brands/models, no-result searches และ save-as-watch-alert conversion ถ้ามี tracking
 - [ ] Watch Alert Report ต้องยืนยัน Sale-only match และ destination `Watch Alert Result List`
-- [ ] Support Report ต้องวัด first response SLA 8 ชั่วโมง
 - [ ] Notification Report ต้องแสดง queued/sent/delivered/opened/failed/skipped และ failure reason
 - [ ] Account Deletion Report ต้องแสดง blocked reason, grace period และ archive/anonymization status
 - [ ] Reports UI ต้อง responsive ที่ 375px, 768px, 1280px และ 1440px
@@ -399,10 +403,10 @@ Recommended note format:
 
 | Area | Notes |
 | --- | --- |
-| Prototype / Spec Alignment | The prototype exposes Reports with `User`, `Asset`, `Offer`, `Search`, and `Export Jobs`. This covers the visible shell, but the spec requires the full report catalog: User, Asset, Offer, Chat, Content/Board, Asset Reported Comments, Search, Watch Alert, Support, Notification, Account Deletion, and Export Job/Access History. |
+| Prototype / Spec Alignment | The prototype exposes Reports with `User`, `Asset`, `Offer`, `Search`, and `Export Jobs`. This covers the visible shell, but the spec requires the full report catalog: User, Asset, Offer, Chat, Content/Board, Asset Reported Comments, Search, Watch Alert, Notification, Account Deletion, and Export Job/Access History (ไม่มี Support Report ใน Phase 1). |
 | Implementation Gap | Production still needs report catalog/detail views, date range/filter/sort controls, last-updated timestamps, chart/table fallbacks, CSV/Excel exports, background export job states, and sensitive report-access handling. |
 | Permission / Audit | Report access must be policy-based. Sensitive report views/exports require masking by default, explicit permission, reason where required, and audit events for request/complete/fail/download. |
-| FO Sync Impact | Reports must use canonical FO terms: asset `Show`/`Hide`, offer status `Rejected`, Watch Alert Sale-only matching and `Watch Alert Result List` destination, first-response support SLA 8 hours, and guest/public analytics separated from registered-user metrics. |
+| FO Sync Impact | Reports must use canonical FO terms: asset `Show`/`Hide`, offer status `Rejected`, Watch Alert Sale-only matching and `Watch Alert Result List` destination, and guest/public analytics separated from registered-user metrics. ไม่มี Support Report/first-response SLA ใน Phase 1 |
 
 ## 16. Admin Settings
 
@@ -426,8 +430,8 @@ Recommended note format:
 
 | Area | Notes |
 | --- | --- |
-| Prototype / Spec Alignment | The prototype exposes `Admin Accounts`, `Roles & Permissions`, `Security`, `Retention`, policy/support content entries, `Version History`, and an `Audit Log` route from Settings. This matches the high-level Settings scope, but the full admin-account lifecycle and permission matrix are not yet implemented in detail. |
-| Implementation Gap | Production still needs own-profile/password settings, admin invite/suspend/reactivate/unlock/archive, last-active-admin guard, role template matrix, security/retention/export policies, feature flags, integration metadata, version history, and settings change history. |
+| Prototype / Spec Alignment | The prototype exposes `Admin Accounts`, `Roles & Permissions`, `Security`, `Retention`, `Policy & Versioning`, `Support Center`, and an `Audit Log` route from Settings. This matches the high-level Settings scope, but the full admin-account lifecycle and permission matrix are not yet implemented in detail. |
+| Implementation Gap | Production still needs own-profile/password settings, admin invite/suspend/reactivate/unlock/archive, last-active-admin guard, role template matrix, security/retention/export policies, feature flags, integration metadata, and settings change history. |
 | Permission / Audit | Permission changes, admin lifecycle actions, security/retention/export policy changes, feature flags, and sensitive/export settings must require confirmation, reason where needed, before/after diff, and audit. |
 | FO Sync Impact | Settings changes can alter BO access, FO/BO feature flags, retention/export behavior, public legal/support content, and security defaults. Changes must surface FO/BO impact before save and link history to Audit Log where permitted. |
 
