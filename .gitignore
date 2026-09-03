@@ -1,1 +1,6 @@
 Prototypes/server*.log
+node_modules/
+package-lock.json
+.DS_Store
+._*
+__MACOSX/

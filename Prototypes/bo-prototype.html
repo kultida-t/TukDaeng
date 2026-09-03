@@ -990,14 +990,33 @@
       box-shadow: none;
     }
     body.dashboard-mode .layout {
-      grid-template-columns: minmax(0, 1fr) minmax(430px, 46%);
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
       gap: 18px;
       margin-top: 4px;
+      align-items: stretch;
     }
     body.dashboard-mode .layout > .panel {
       border-color: #d7e2f0;
       box-shadow: none;
       overflow: hidden;
+    }
+    /* BO-DASH-001: บังคับความสูง Work Queue = Recent Activity บน desktop/tablet (2 คอลัมน์)
+       ใช้ align-items: stretch (grid default) ให้ panel ยืดเต็ม grid row สูงเท่ากัน
+       ไม่จำกัดความสูงและไม่ดัก scroll เพื่อให้ scroll หน้าหลักได้ปกติเมื่อเลื่อนเมาส์ผ่าน
+       บน mobile (≤760px) ยกเลิก stretch แสดงตามเนื้อข้อมูลจริง (ดู reset ใน media query ด้านล่าง) */
+    body.dashboard-mode .layout > .panel,
+    body.dashboard-mode .detail {
+      display: flex;
+      flex-direction: column;
+    }
+    body.dashboard-mode .layout > .panel .panel-head,
+    body.dashboard-mode .detail .panel-head {
+      flex: 0 0 auto;
+    }
+    body.dashboard-mode #table,
+    body.dashboard-mode .activity-list {
+      flex: 1 1 auto;
+      min-height: 0;
     }
     body.dashboard-mode .layout > .panel .panel-head {
       min-height: 62px;
@@ -1790,7 +1809,9 @@
     body.reported-board-mode .reported-board-table .asset-row:not(.head),
     body.market-list-mode .market-table .asset-row:not(.head),
     body.option-master-mode .option-group-table .asset-row:not(.head),
-    body.option-master-mode .option-detail-table .asset-row:not(.head) {
+    body.option-master-mode .option-detail-table .asset-row:not(.head),
+    body.policy-versioning-mode .policy-list-table .asset-row:not(.head),
+    body.policy-version-history-mode .policy-version-table .asset-row:not(.head) {
       min-height: 66px;
       padding-top: 10px;
       padding-bottom: 10px;
@@ -1810,7 +1831,11 @@
     body.option-master-mode .option-group-table .asset-row:not(.head) .main-text,
     body.option-master-mode .option-group-table .asset-row:not(.head) .muted,
     body.option-master-mode .option-detail-table .asset-row:not(.head) .main-text,
-    body.option-master-mode .option-detail-table .asset-row:not(.head) .muted {
+    body.option-master-mode .option-detail-table .asset-row:not(.head) .muted,
+    body.policy-versioning-mode .policy-list-table .asset-row:not(.head) .main-text,
+    body.policy-versioning-mode .policy-list-table .asset-row:not(.head) .muted,
+    body.policy-version-history-mode .policy-version-table .asset-row:not(.head) .main-text,
+    body.policy-version-history-mode .policy-version-table .asset-row:not(.head) .muted {
       color: #516683;
       font-size: 12px;
       font-weight: 400;
@@ -1874,7 +1899,7 @@
     }
     body.watch-alert-mode.watch-alert-list-mode .topbar,
     body.watch-alert-detail-mode .topbar {
-      margin-bottom: 6px;
+      margin-bottom: 10px;
     }
     /* WA-PTO-002b: ยกเลิก panel overrides จาก body.watch-alert-mode ใน list mode
        ให้ panel ใช้ค่า default เหมือน Option Master (มี box-shadow, overflow:hidden, border-color ปกติ) */
@@ -1886,8 +1911,6 @@
     body.watch-alert-list-mode #table {
       overflow-x: auto;
       overflow-y: visible;
-      padding: 12px 14px 16px;
-      background: #f8fbff;
     }
     body.watch-alert-list-mode .watch-alert-list-table {
       width: 100%;
@@ -2661,8 +2684,8 @@
     body.watch-alert-detail-mode #primary-action { display: none; }
     body.watch-alert-detail-mode .layout {
       grid-template-columns: minmax(0, 1fr);
-      gap: 18px;
-      margin-top: 4px;
+      gap: 14px;
+      margin-top: 0;
     }
     body.watch-alert-detail-mode .layout > .panel {
       border-color: #d7e2f0;
@@ -3439,6 +3462,14 @@
     button.wa-stat-bar-row:not(.wa-stat-bar-row-static):hover {
       background: #eef4fc;
     }
+    body.dashboard-mode .dashboard-status-card .wa-stat-bar-row:hover,
+    body.dashboard-mode .dashboard-status-card .wa-stat-bar-row:focus-visible {
+      background: #f8fbff;
+    }
+    body.dashboard-mode .dashboard-status-card .wa-stat-bar-row:focus-visible {
+      outline: 2px solid rgba(20, 99, 217, .28);
+      outline-offset: -2px;
+    }
     /* ชื่อ + จำนวน ชิดซ้ายเป็นกลุ่มเดียวกัน, percent + chevron ชิดขวาเป็นอีกกลุ่ม (ดันด้วย margin-left: auto) */
     .wa-stat-bar-top {
       display: flex;
@@ -3480,8 +3511,8 @@
     }
     .wa-stat-bar-percent {
       font-family: var(--font-heading);
-      font-size: 20px;
-      font-weight: 800;
+      font-size: 23px;
+      font-weight: 400;
       white-space: nowrap;
       text-align: right;
     }
@@ -9271,6 +9302,12 @@
     .status-list {
       display: grid;
     }
+    /* BO-DASH-001: จัด rows ชิดบน ไม่ให้ record เดียวขยายเต็ม panel
+       เมื่อ list อยู่ใน flex container ที่ stretch สูง */
+    body.dashboard-mode .dashboard-work-list,
+    body.dashboard-mode .activity-list {
+      align-content: start;
+    }
     .work-row,
     .activity-row,
     .status-row {
@@ -9479,10 +9516,97 @@
       text-align: right;
       white-space: nowrap;
     }
+    body.dashboard-mode .dashboard-status-card .status-value.status-scheduled { color: #1463d9; }
+    body.dashboard-mode .dashboard-status-card .status-value.status-published { color: #087853; }
+    body.dashboard-mode .dashboard-status-card .status-value.status-draft { color: #66758d; }
+    body.dashboard-mode .dashboard-status-card .asset-status-list {
+      display: grid;
+      gap: 8px;
+      padding: 14px 20px 16px;
+    }
+    body.dashboard-mode .dashboard-status-card .asset-status-row {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 16px;
+      align-items: center;
+      min-height: 44px;
+      padding: 9px 12px 9px 13px;
+      border: 1px solid #e2ebf5;
+      border-left: 4px solid #9fb1c7;
+      border-radius: 7px;
+      background: #fff;
+      color: inherit;
+      text-align: left;
+      font: inherit;
+      cursor: pointer;
+    }
+    body.dashboard-mode .dashboard-status-card .asset-status-row:hover,
+    body.dashboard-mode .dashboard-status-card .asset-status-row:focus-visible { background: #f8fbff; }
+    body.dashboard-mode .dashboard-status-card .asset-status-row.sale { border-left-color: #0ea576; background: #f7fffb; }
+    body.dashboard-mode .dashboard-status-card .asset-status-row.show { border-left-color: #2f7be5; background: #f8fbff; }
+    body.dashboard-mode .dashboard-status-card .asset-status-row.hide { border-left-color: #7557d8; background: #fbf9ff; }
+    body.dashboard-mode .dashboard-status-card .asset-status-row.sold { border-left-color: #d28a10; background: #fffdf7; }
+    body.dashboard-mode .dashboard-status-card .asset-status-row.sale .asset-status-value { color: #087853; }
+    body.dashboard-mode .dashboard-status-card .asset-status-row.show .asset-status-value { color: #155ab8; }
+    body.dashboard-mode .dashboard-status-card .asset-status-row.hide .asset-status-value { color: #5a3abb; }
+    body.dashboard-mode .dashboard-status-card .asset-status-row.sold .asset-status-value { color: #8a5700; }
+    body.dashboard-mode .dashboard-status-card .asset-status-copy { min-width: 0; }
+    body.dashboard-mode .dashboard-status-card .asset-status-name {
+      display: block;
+      color: #061426;
+      font-size: 13px;
+      font-weight: 800;
+      line-height: 1.2;
+    }
+    body.dashboard-mode .dashboard-status-card .asset-status-detail {
+      display: block;
+      margin-top: 4px;
+      color: #43546d;
+      font-size: 12px;
+      line-height: 1.35;
+    }
+    body.dashboard-mode .dashboard-status-card .asset-status-value {
+      color: #061426;
+      font-family: var(--font-heading);
+      font-size: 26px;
+      font-weight: 400;
+      line-height: 1;
+      text-align: right;
+      white-space: nowrap;
+    }
+    body.dashboard-mode .dashboard-status-card .offer-status-row.pending { border-left-color: #d28a10; background: #fffdf7; }
+    body.dashboard-mode .dashboard-status-card .offer-status-row.paused { border-left-color: #9aa9bb; background: #f8fafc; }
+    body.dashboard-mode .dashboard-status-card .offer-status-row.accepted { border-left-color: #0ea576; background: #f7fffb; }
+    body.dashboard-mode .dashboard-status-card .offer-status-row.rejected { border-left-color: #d60012; background: #fff7f7; }
+    body.dashboard-mode .dashboard-status-card .offer-status-row.cancelled { border-left-color: #66758d; background: #f8fafc; }
+    body.dashboard-mode .dashboard-status-card .offer-status-row.invalidated { border-left-color: #7557d8; background: #fbf9ff; }
+    body.dashboard-mode .dashboard-status-card .offer-status-row.pending .asset-status-value { color: #8a5700; }
+    body.dashboard-mode .dashboard-status-card .offer-status-row.paused .asset-status-value { color: #66758d; }
+    body.dashboard-mode .dashboard-status-card .offer-status-row.accepted .asset-status-value { color: #087853; }
+    body.dashboard-mode .dashboard-status-card .offer-status-row.rejected .asset-status-value { color: #b40010; }
+    body.dashboard-mode .dashboard-status-card .offer-status-row.cancelled .asset-status-value { color: #43546d; }
+    body.dashboard-mode .dashboard-status-card .offer-status-row.invalidated .asset-status-value { color: #5a3abb; }
     .brand-ranking-list {
       display: grid;
       padding: 12px 20px 16px;
       gap: 11px;
+    }
+    /* BO-DASH-001: Top Searched Brands ใช้ wa-stat-bar-row pattern เหมือน Popular Brands ใน Search Insights
+       ปรับ padding/gap ให้เข้ากับ dashboard card */
+    body.dashboard-mode .dashboard-status-card .wa-stat-bar-list {
+      padding: 0;
+      gap: 0;
+    }
+    body.dashboard-mode .dashboard-status-card .wa-stat-bar-row {
+      width: 100%;
+      min-height: 68px;
+      margin: 0;
+      padding: 14px 20px;
+      gap: 4px;
+      border-radius: 0;
+    }
+    body.dashboard-mode .dashboard-status-card .wa-stat-bar-percent {
+      line-height: 1;
     }
     .brand-ranking-row {
       width: 100%;
@@ -9761,7 +9885,10 @@
       }
       .main { height: 100vh; }
       .layout { grid-template-columns: 1fr; }
-      body.dashboard-mode .layout { grid-template-columns: 1fr; }
+      /* BO-DASH-001: dashboard ยังคง 2 คอลัมน์ในช่วง tablet (761-1180px)
+         ปรับคอลัมน์ขวาให้แคบลงเหมาะกับ tablet แทน minmax(430px, 46%) ของ desktop
+         1 คอลัมน์จะถูกบังคับที่ ≤760px (mobile) ใน media query ด้านล่าง */
+      body.dashboard-mode .layout { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
       body.user-management-mode .layout { grid-template-columns: 1fr; }
       .detail { position: static; }
       .summary-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
@@ -10480,6 +10607,18 @@
         line-height: 1.35;
       }
       body.dashboard-mode .cards { grid-template-columns: 1fr; }
+      /* BO-DASH-001: mobile (≤760px) — dashboard 1 คอลัมน์ ยกเลิก stretch
+         แสดงตามเนื้อข้อมูลจริง */
+      body.dashboard-mode .layout { grid-template-columns: 1fr; }
+      body.dashboard-mode .layout > .panel,
+      body.dashboard-mode .detail {
+        display: block;
+      }
+      body.dashboard-mode #table,
+      body.dashboard-mode .activity-list {
+        flex: none;
+        min-height: 0;
+      }
       body.user-management-mode .cards { grid-template-columns: 1fr; }
       .panel-head {
         align-items: flex-start;
@@ -11176,7 +11315,8 @@
       }
       body.article-list-mode #table,
       body.category-list-mode #table,
-      body.reported-board-mode #table {
+      body.reported-board-mode #table,
+      body.policy-version-history-mode #table {
         padding: 12px 14px 16px;
         background: #f8fbff;
         overflow-x: hidden;
@@ -11204,17 +11344,24 @@
         background: transparent;
         overflow: visible;
       }
-      body.asset-list-mode:not(.article-list-mode):not(.category-list-mode):not(.reported-board-mode) #table .asset-list-table {
+      body.asset-list-mode:not(.article-list-mode):not(.category-list-mode):not(.reported-board-mode) #table .asset-list-table,
+      body.policy-version-history-mode #table .policy-version-table {
         grid-template-columns: 1fr;
         gap: 12px;
         min-width: 0;
       }
       body.article-list-mode #table .article-table,
       body.category-list-mode #table .category-table,
-      body.reported-board-mode #table .reported-board-table {
+      body.reported-board-mode #table .reported-board-table,
+      body.policy-versioning-mode #table .policy-list-table {
         grid-template-columns: 1fr;
         gap: 12px;
         min-width: 0;
+      }
+      body.policy-versioning-mode #table {
+        padding: 12px 14px 16px;
+        background: #f8fbff;
+        overflow-x: hidden;
       }
       body.option-master-mode.option-group-list-mode #table .option-group-table,
       body.option-master-mode.option-detail-mode #table .option-detail-table {
@@ -11228,7 +11375,9 @@
       body.asset-list-mode:not(.article-list-mode):not(.category-list-mode):not(.reported-board-mode) #table > .footer-range,
       body.offer-list-mode #table > .footer-range,
       body.option-master-mode.option-group-list-mode #table > .footer-range,
-      body.option-master-mode.option-detail-mode #table > .footer-range {
+      body.option-master-mode.option-detail-mode #table > .footer-range,
+      body.policy-versioning-mode #table > .footer-range,
+      body.policy-version-history-mode #table > .footer-range {
         min-width: 0;
       }
       body.offer-list-mode .asset-table {
@@ -11243,7 +11392,9 @@
       body.category-list-mode .footer-range,
       body.reported-board-mode .footer-range,
       body.option-master-mode .footer-range,
-      body.watch-alert-list-mode .footer-range {
+      body.watch-alert-list-mode .footer-range,
+      body.policy-versioning-mode .footer-range,
+      body.policy-version-history-mode .footer-range {
         margin-top: 12px;
         padding: 13px 16px;
         background: transparent;
@@ -11265,7 +11416,9 @@
       body.category-list-mode .category-table .asset-row.head,
       body.reported-board-mode .reported-board-table .asset-row.head,
       body.option-master-mode .option-group-table .asset-row.head,
-      body.option-master-mode .option-detail-table .asset-row.head {
+      body.option-master-mode .option-detail-table .asset-row.head,
+      body.policy-versioning-mode .policy-list-table .asset-row.head,
+      body.policy-version-history-mode .policy-version-table .asset-row.head {
         display: none;
       }
       body.article-list-mode .article-table .asset-row:not(.head),
@@ -11273,6 +11426,8 @@
       body.reported-board-mode .reported-board-table .asset-row:not(.head),
       body.option-master-mode .option-group-table .asset-row:not(.head),
       body.option-master-mode .option-detail-table .asset-row:not(.head),
+      body.policy-versioning-mode .policy-list-table .asset-row:not(.head),
+      body.policy-version-history-mode .policy-version-table .asset-row:not(.head),
       body.watch-alert-list-mode .watch-alert-list-table .asset-row:not(.head) {
         grid-template-columns: minmax(0, 1fr) 34px;
         column-gap: 14px;
@@ -11290,7 +11445,9 @@
       body.reported-board-mode .reported-board-table .asset-row:not(.head) > div[data-label]:not(.asset-cell-primary),
       body.option-master-mode .option-group-table .asset-row:not(.head) > div[data-label]:not(.asset-cell-primary),
       body.option-master-mode .option-detail-table .asset-row:not(.head) > div[data-label]:not(.asset-cell-primary),
-      body.watch-alert-list-mode .watch-alert-list-table .asset-row:not(.head) > div[data-label]:not(.asset-cell-primary) {
+      body.watch-alert-list-mode .watch-alert-list-table .asset-row:not(.head) > div[data-label]:not(.asset-cell-primary),
+      body.policy-versioning-mode .policy-list-table .asset-row:not(.head) > div[data-label]:not(.asset-cell-primary),
+      body.policy-version-history-mode .policy-version-table .asset-row:not(.head) > div[data-label]:not(.asset-cell-primary) {
         display: none;
       }
       body.article-list-mode .article-table .asset-row:not(.head) > div[data-label]:first-child,
@@ -11305,7 +11462,9 @@
       body.category-list-mode .category-table .asset-row:not(.head) > .user-row-actions,
       body.reported-board-mode .reported-board-table .asset-row:not(.head) > .user-row-actions,
       body.option-master-mode .option-group-table .asset-row:not(.head) > .user-row-actions,
-      body.option-master-mode .option-detail-table .asset-row:not(.head) > .user-row-actions {
+      body.option-master-mode .option-detail-table .asset-row:not(.head) > .user-row-actions,
+      body.policy-versioning-mode .policy-list-table .asset-row:not(.head) > .user-row-actions,
+      body.policy-version-history-mode .policy-version-table .asset-row:not(.head) > .user-row-actions {
         grid-column: 2;
         grid-row: 1;
         align-self: center;
@@ -11320,7 +11479,9 @@
       body.reported-board-mode .reported-board-table .asset-row:not(.head) > .asset-cell-primary,
       body.option-master-mode .option-group-table .asset-row:not(.head) > .asset-cell-primary,
       body.option-master-mode .option-detail-table .asset-row:not(.head) > .asset-cell-primary,
-      body.watch-alert-list-mode .watch-alert-list-table .asset-row:not(.head) > .asset-cell-primary {
+      body.watch-alert-list-mode .watch-alert-list-table .asset-row:not(.head) > .asset-cell-primary,
+      body.policy-versioning-mode .policy-list-table .asset-row:not(.head) > .asset-cell-primary,
+      body.policy-version-history-mode .policy-version-table .asset-row:not(.head) > .asset-cell-primary {
         grid-column: 1;
         grid-row: 1;
         min-height: 30px;
@@ -11335,7 +11496,9 @@
       body.reported-board-mode .reported-board-table .asset-row:not(.head) > .asset-cell-primary .main-text,
       body.option-master-mode .option-group-table .asset-row:not(.head) > .asset-cell-primary .main-text,
       body.option-master-mode .option-detail-table .asset-row:not(.head) > .asset-cell-primary .main-text,
-      body.watch-alert-list-mode .watch-alert-list-table .asset-row:not(.head) > .asset-cell-primary .main-text {
+      body.watch-alert-list-mode .watch-alert-list-table .asset-row:not(.head) > .asset-cell-primary .main-text,
+      body.policy-versioning-mode .policy-list-table .asset-row:not(.head) > .asset-cell-primary .main-text,
+      body.policy-version-history-mode .policy-version-table .asset-row:not(.head) > .asset-cell-primary .main-text {
         max-width: 100%;
         overflow: hidden;
         text-overflow: ellipsis;
@@ -11356,12 +11519,26 @@
       body.category-list-mode .category-table .asset-row:not(.head) .mobile-user-card-title,
       body.reported-board-mode .reported-board-table .asset-row:not(.head) .mobile-user-card-title,
       body.user-accounts-mode .comment-list-table .asset-row:not(.head) .mobile-user-card-title,
-      body.watch-alert-list-mode .watch-alert-list-table .asset-row:not(.head) .mobile-user-card-title { display: inline; }
+      body.watch-alert-list-mode .watch-alert-list-table .asset-row:not(.head) .mobile-user-card-title,
+      body.policy-versioning-mode .policy-list-table .asset-row:not(.head) .mobile-user-card-title,
+      body.policy-version-history-mode .policy-version-table .asset-row:not(.head) .mobile-user-card-title {
+        display: inline !important;
+        color: #061426;
+        font-family: var(--font-heading);
+        font-size: 22px;
+        font-weight: 500;
+        letter-spacing: .04em;
+        line-height: 1;
+      }
+      body.policy-versioning-mode .policy-list-table .asset-row:not(.head) > .asset-cell-primary > .pill,
+      body.policy-version-history-mode .policy-version-table .asset-row:not(.head) > .asset-cell-primary > .pill { display: none; }
       body.article-list-mode .article-table .asset-card-tags,
       body.category-list-mode .category-table .asset-card-tags,
       body.reported-board-mode .reported-board-table .asset-card-tags,
       body.user-accounts-mode .comment-list-table .asset-card-tags,
-      body.watch-alert-list-mode .watch-alert-list-table .asset-row:not(.head) > .asset-card-tags {
+      body.watch-alert-list-mode .watch-alert-list-table .asset-row:not(.head) > .asset-card-tags,
+      body.policy-versioning-mode .policy-list-table .asset-row:not(.head) > .asset-card-tags,
+      body.policy-version-history-mode .policy-version-table .asset-row:not(.head) > .asset-card-tags {
         grid-column: 1 / -1;
         grid-row: 2;
         display: flex;
@@ -11376,7 +11553,9 @@
       body.user-accounts-mode .comment-list-table .asset-card-tags .user-card-meta,
       body.option-master-mode .option-group-table .asset-card-tags .user-card-meta,
       body.option-master-mode .option-detail-table .asset-card-tags .user-card-meta,
-      body.watch-alert-list-mode .watch-alert-list-table .asset-card-tags .user-card-meta {
+      body.watch-alert-list-mode .watch-alert-list-table .asset-card-tags .user-card-meta,
+      body.policy-versioning-mode .policy-list-table .asset-card-tags .user-card-meta,
+      body.policy-version-history-mode .policy-version-table .asset-card-tags .user-card-meta {
         flex: 1 0 100%;
         display: grid;
         gap: 3px;
@@ -11391,7 +11570,9 @@
       body.user-accounts-mode .comment-list-table .asset-card-tags .user-card-meta-item,
       body.option-master-mode .option-group-table .asset-card-tags .user-card-meta-item,
       body.option-master-mode .option-detail-table .asset-card-tags .user-card-meta-item,
-      body.watch-alert-list-mode .watch-alert-list-table .asset-card-tags .user-card-meta-item {
+      body.watch-alert-list-mode .watch-alert-list-table .asset-card-tags .user-card-meta-item,
+      body.policy-versioning-mode .policy-list-table .asset-card-tags .user-card-meta-item,
+      body.policy-version-history-mode .policy-version-table .asset-card-tags .user-card-meta-item {
         display: flex;
         align-items: baseline;
         justify-content: space-between;
@@ -11406,7 +11587,9 @@
       body.user-accounts-mode .comment-list-table .asset-card-tags .user-card-meta-item span,
       body.option-master-mode .option-group-table .asset-card-tags .user-card-meta-item span,
       body.option-master-mode .option-detail-table .asset-card-tags .user-card-meta-item span,
-      body.watch-alert-list-mode .watch-alert-list-table .asset-card-tags .user-card-meta-item span {
+      body.watch-alert-list-mode .watch-alert-list-table .asset-card-tags .user-card-meta-item span,
+      body.policy-versioning-mode .policy-list-table .asset-card-tags .user-card-meta-item span,
+      body.policy-version-history-mode .policy-version-table .asset-card-tags .user-card-meta-item span {
         color: #485b75;
         font-size: 12px;
         font-weight: 700;
@@ -11418,7 +11601,9 @@
       body.user-accounts-mode .comment-list-table .asset-card-tags .user-card-meta-item strong,
       body.option-master-mode .option-group-table .asset-card-tags .user-card-meta-item strong,
       body.option-master-mode .option-detail-table .asset-card-tags .user-card-meta-item strong,
-      body.watch-alert-list-mode .watch-alert-list-table .asset-card-tags .user-card-meta-item strong {
+      body.watch-alert-list-mode .watch-alert-list-table .asset-card-tags .user-card-meta-item strong,
+      body.policy-versioning-mode .policy-list-table .asset-card-tags .user-card-meta-item strong,
+      body.policy-version-history-mode .policy-version-table .asset-card-tags .user-card-meta-item strong {
         color: #233a5c;
         font-size: 12px;
         font-weight: 400;
@@ -11431,7 +11616,9 @@
       }
       body.option-master-mode .option-group-table .asset-card-tags .user-card-meta-item.comment-field-meta,
       body.option-master-mode .option-detail-table .asset-card-tags .user-card-meta-item.comment-field-meta,
-      body.watch-alert-list-mode .watch-alert-list-table .asset-card-tags .user-card-meta-item.comment-field-meta {
+      body.watch-alert-list-mode .watch-alert-list-table .asset-card-tags .user-card-meta-item.comment-field-meta,
+      body.policy-versioning-mode .policy-list-table .asset-card-tags .user-card-meta-item.comment-field-meta,
+      body.policy-version-history-mode .policy-version-table .asset-card-tags .user-card-meta-item.comment-field-meta {
         display: grid;
         grid-template-columns: max-content minmax(0, 50%);
         align-items: baseline;
@@ -11439,7 +11626,9 @@
       }
       body.option-master-mode .option-group-table .asset-card-tags .user-card-meta-item.comment-field-meta strong,
       body.option-master-mode .option-detail-table .asset-card-tags .user-card-meta-item.comment-field-meta strong,
-      body.watch-alert-list-mode .watch-alert-list-table .asset-card-tags .user-card-meta-item.comment-field-meta strong {
+      body.watch-alert-list-mode .watch-alert-list-table .asset-card-tags .user-card-meta-item.comment-field-meta strong,
+      body.policy-versioning-mode .policy-list-table .asset-card-tags .user-card-meta-item.comment-field-meta strong,
+      body.policy-version-history-mode .policy-version-table .asset-card-tags .user-card-meta-item.comment-field-meta strong {
         width: 100%;
         max-width: 100%;
         min-width: 0;
@@ -12774,6 +12963,1194 @@
         grid-column: 1;
       }
     }
+
+    /* ===== Policy & Versioning (HS-PTO-001) ===== */
+    body.policy-versioning-mode .layout {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    body.policy-versioning-mode .layout > .panel {
+      overflow: hidden;
+    }
+    body.policy-versioning-mode .main {
+      overflow-x: hidden;
+    }
+    body.policy-versioning-mode #table {
+      max-width: 100%;
+      overflow-x: auto;
+      overflow-y: visible;
+      scrollbar-width: thin;
+    }
+    body.policy-versioning-mode #table .policy-list-table {
+      min-width: 1100px;
+    }
+    body.policy-versioning-mode #table > .footer-range {
+      min-width: 1100px;
+    }
+    body.policy-versioning-mode .detail,
+    body.policy-versioning-mode .summary-grid,
+    body.policy-versioning-mode .cards {
+      display: none;
+    }
+    body.policy-versioning-mode #primary-action {
+      display: none;
+    }
+    .policy-list-table .asset-row {
+      grid-template-columns: minmax(100px, .7fr) minmax(220px, 1.6fr) minmax(100px, .6fr) minmax(100px, .6fr) minmax(145px, 1fr) minmax(100px, .7fr) minmax(56px, .35fr);
+    }
+    .policy-list-table .policy-row-badges {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      align-items: flex-start;
+    }
+    .policy-list-table .policy-draft-pill {
+      font-size: 11px;
+    }
+    .policy-list-table .policy-version-pill {
+      font-size: 11px;
+    }
+    .policy-list-table .asset-row.head > div:last-child {
+      justify-content: center;
+      text-align: center;
+    }
+    .policy-list-table .asset-row:not(.head) > .user-row-actions {
+      justify-self: center;
+      justify-content: center;
+    }
+    .policy-list-table .asset-row:not(.head) > .user-row-actions .panel-action {
+      margin: 0 auto;
+    }
+    .policy-list-table .policy-draft-hint {
+      margin-top: 4px;
+      font-size: 11px;
+      color: #925500;
+    }
+    .policy-list-table .asset-row[data-policy-open] {
+      cursor: pointer;
+    }
+    .policy-list-table .asset-row[data-policy-open]:hover {
+      background: var(--hover-bg, #f9fafb);
+    }
+    @media (max-width: 760px) {
+      body.policy-versioning-mode #table,
+      body.policy-versioning-mode #table .policy-list-table,
+      body.policy-versioning-mode #table > .footer-range,
+      body.policy-version-history-mode #table,
+      body.policy-version-history-mode #table .policy-version-table,
+      body.policy-version-history-mode #table > .footer-range {
+        width: 100%;
+        max-width: 100%;
+        min-width: 0 !important;
+        overflow-x: hidden;
+      }
+      body.policy-versioning-mode .policy-list-table .asset-row:not(.head),
+      body.policy-version-history-mode .policy-version-table .asset-row:not(.head) {
+        grid-template-columns: minmax(0, 1fr);
+        cursor: pointer;
+      }
+      body.policy-versioning-mode .policy-list-table .asset-row:not(.head) > .user-row-actions {
+        display: none;
+      }
+      body.policy-version-history-mode .policy-version-table .asset-row:not(.head) {
+        grid-template-columns: minmax(0, 1fr) 34px;
+      }
+      body.policy-version-history-mode .policy-version-table .asset-row:not(.head) > .user-row-actions {
+        display: flex;
+        width: 38px;
+        min-width: 38px;
+      }
+    }
+
+    /* ===== Policy Detail & Version History (HS-PTO-001/002a) ===== */
+    body.policy-detail-mode .layout,
+    body.policy-version-history-mode .layout { grid-template-columns: minmax(0, 1fr); }
+    body.policy-detail-mode .detail,
+    body.policy-detail-mode .summary-grid,
+    body.policy-detail-mode .cards,
+    body.policy-detail-mode #primary-action,
+    body.policy-version-history-mode .detail,
+    body.policy-version-history-mode .summary-grid,
+    body.policy-version-history-mode .cards,
+    body.policy-version-history-mode #primary-action { display: none; }
+    body.policy-detail-mode #table { min-width: 0; }
+    body.policy-detail-mode .layout > .panel > .panel-head { display: none !important; min-height: 0 !important; height: 0 !important; padding: 0 !important; border: 0 !important; margin: 0 !important; }
+    /* HS-PTO-002b: Version History ใช้ table layout เดียวกับ Policy & Versioning list */
+    body.policy-version-history-mode .layout > .panel { overflow: hidden; }
+    body.policy-version-history-mode .main { overflow-x: hidden; }
+    body.policy-version-history-mode #table {
+      max-width: 100%;
+      overflow-x: hidden;
+      overflow-y: visible;
+    }
+    body.policy-version-history-mode #table .policy-version-table,
+    body.policy-version-history-mode #table > .footer-range {
+      min-width: 0;
+    }
+    .policy-detail-page { display: grid; gap: 20px; padding: 20px; }
+    .policy-detail-page .policy-version {
+      padding: 3px 10px;
+      border: 1px solid #d7e5f4;
+      border-radius: 999px;
+      background: #eef5fd;
+      color: #0f2748;
+      font-size: 12px;
+      font-weight: 800;
+    }
+    .policy-detail-page .policy-detail-layout {
+      display: grid;
+      gap: 20px;
+    }
+    .policy-detail-page .detail-section {
+      display: grid;
+      gap: 20px;
+    }
+    .policy-detail-page .policy-content-tabs {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+    .policy-detail-page .policy-content-body {
+      max-height: 420px;
+      overflow-y: auto;
+      padding: 20px;
+      border: 1px solid #e3ebf5;
+      border-radius: 8px;
+      background: #f9fbfe;
+      color: #1f334d;
+      font-size: 14px;
+      line-height: 1.8;
+    }
+    .policy-detail-page .policy-content-body h2,
+    .policy-detail-page .policy-content-body h3 {
+      margin: 20px 0 10px;
+      color: #0f2748;
+      font-family: var(--font-main);
+      font-size: 18px;
+      font-weight: 700;
+      letter-spacing: 0;
+      line-height: 1.4;
+    }
+    .policy-detail-page .policy-content-body h2:first-child,
+    .policy-detail-page .policy-content-body h3:first-child { margin-top: 0; }
+    .policy-detail-page .policy-content-body p { margin: 0 0 14px; }
+    .policy-detail-page .policy-content-body p:last-child { margin-bottom: 0; }
+    .policy-detail-page .policy-content-body ul,
+    .policy-detail-page .policy-content-body ol { padding-left: 24px; margin: 0 0 14px; }
+    .policy-detail-page .policy-content-body ul:last-child,
+    .policy-detail-page .policy-content-body ol:last-child { margin-bottom: 0; }
+    .policy-detail-page .policy-content-body a { color: #2563eb; text-decoration: underline; }
+    .policy-detail-page .policy-metadata {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+    }
+    .policy-detail-page .policy-change-summary {
+      display: grid;
+      gap: 8px;
+      padding: 20px;
+      border: 1px solid #e3ebf5;
+      border-radius: 8px;
+      background: #f9fbfe;
+    }
+    .policy-detail-page .policy-change-summary .muted {
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 700;
+    }
+    .policy-detail-page .policy-change-summary p { margin: 0; color: #1f334d; font-size: 13px; font-weight: 400; line-height: 1.6; }
+    .policy-detail-page .user-detail-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    @media (max-width: 760px) {
+      .policy-detail-page { padding: 14px 12px 18px; gap: 16px; }
+      .policy-detail-page .detail-section { gap: 16px; }
+      .policy-detail-page .policy-content-body { padding: 16px; max-height: 360px; }
+      .policy-detail-page .policy-change-summary { padding: 16px; }
+      .policy-detail-page .policy-metadata { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+
+    /* ===== Policy Editor (HS-PTO-002a) ===== */
+    body.policy-editor-mode .layout { grid-template-columns: minmax(0, 1fr); }
+    body.policy-editor-mode .detail,
+    body.policy-editor-mode .summary-grid,
+    body.policy-editor-mode .cards,
+    body.policy-editor-mode #primary-action { display: none; }
+    body.policy-editor-mode #table { min-width: 0; }
+    body.policy-editor-mode .layout > .panel > .panel-head { display: none !important; min-height: 0 !important; height: 0 !important; padding: 0 !important; border: 0 !important; margin: 0 !important; }
+    .policy-editor-page { display: grid; gap: 20px; padding: 20px; }
+    .policy-editor-page .policy-detail-layout {
+      display: grid;
+      gap: 20px;
+    }
+    .policy-editor-form {
+      display: grid;
+      gap: 20px;
+      padding: 0;
+      border: 0;
+      border-radius: 0;
+      background: transparent;
+    }
+    .policy-editor-form .article-editor-section {
+      display: grid;
+      gap: 16px;
+      padding: 0;
+      border: 0;
+      background: transparent;
+    }
+    .policy-editor-form .article-editor-section + .article-editor-section {
+      padding-top: 0;
+      border-top: 0;
+    }
+    .policy-editor-form .article-editor-section h4 {
+      margin: 0;
+      color: #0f2748;
+      font-family: var(--font-main);
+      font-size: 15px;
+      font-weight: 700;
+      letter-spacing: 0;
+    }
+    .policy-editor-form .support-center-field-row { grid-template-columns: 220px minmax(0, 1fr); gap: 16px; }
+    .policy-editor-form .policy-metadata {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+    }
+    @media (max-width: 760px) {
+      .policy-editor-form .policy-metadata { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+    .policy-editor-form label {
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+      color: #334155;
+      font-size: 13px;
+      font-weight: 700;
+      line-height: 1.35;
+    }
+    .policy-editor-form .article-editor-field { gap: 8px; }
+    .policy-editor-form textarea { resize: vertical; line-height: 1.6; }
+    .policy-editor-toolbar {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 2px;
+      padding: 8px 12px;
+      border: 1px solid #e3ebf5;
+      border-bottom: 0;
+      border-radius: 8px 8px 0 0;
+      background: #f7faff;
+    }
+    .policy-editor-tool {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 28px;
+      min-width: 28px;
+      height: 28px;
+      padding: 5px;
+      border: 0;
+      border-radius: 4px;
+      background: transparent;
+      color: #526276;
+      cursor: pointer;
+    }
+    .policy-editor-tool:hover,
+    .policy-editor-tool:focus-visible { background: #e8f0fa; color: #0f2748; outline: 0; }
+    .policy-editor-tool svg { width: 16px; height: 16px; }
+    .policy-editor-canvas {
+      min-height: 360px;
+      max-height: 480px;
+      overflow-y: auto;
+      padding: 20px;
+      border: 1px solid #e3ebf5;
+      border-radius: 0 0 8px 8px;
+      background: #fff;
+      color: #1f334d;
+      font-size: 14px;
+      line-height: 1.8;
+      outline: 0;
+    }
+    .policy-editor-canvas:focus { border-color: #9db6d2; box-shadow: 0 0 0 3px rgba(91, 132, 177, .12); }
+    .policy-editor-canvas h2, .policy-editor-canvas h3 {
+      margin: 20px 0 10px;
+      color: #0f2748;
+      font-family: var(--font-main);
+      font-size: 18px;
+      font-weight: 700;
+      letter-spacing: 0;
+      line-height: 1.4;
+    }
+    .policy-editor-canvas h2:first-child, .policy-editor-canvas h3:first-child { margin-top: 0; }
+    .policy-editor-canvas p { margin: 0 0 14px; }
+    .policy-editor-canvas p:last-child { margin-bottom: 0; }
+    .policy-editor-canvas ul, .policy-editor-canvas ol { padding-left: 24px; margin: 0 0 14px; }
+    .policy-editor-canvas ul:last-child, .policy-editor-canvas ol:last-child { margin-bottom: 0; }
+    .policy-editor-canvas a { color: #2563eb; text-decoration: underline; }
+    .policy-editor-language-note { margin: 0; color: #71829a; font-size: 12px; }
+    .policy-editor-sidebar { display: none; }
+    .policy-editor-sidebar h4 {
+      margin: 0;
+      color: #0f2748;
+      font-family: var(--font-main);
+      font-size: 15px;
+      font-weight: 700;
+      letter-spacing: 0;
+    }
+    .policy-editor-meta-list { display: grid; gap: 14px; margin: 0; }
+    .policy-editor-meta-list div { display: grid; gap: 4px; }
+    .policy-editor-meta-list dt { color: #71829a; font-size: 12px; font-weight: 700; }
+    .policy-editor-meta-list dd { margin: 0; color: #1f334d; font-size: 13px; font-weight: 400; }
+    .policy-editor-actions { display: flex; flex-wrap: wrap; gap: 10px; }
+    .policy-editor-actions .user-detail-action-btn[disabled] { cursor: not-allowed; opacity: .5; }
+    .policy-editor-preview-content { display: grid; gap: 20px; }
+    .policy-editor-preview-content .user-action-head { margin-bottom: 4px; padding-bottom: 14px; }
+    .policy-editor-preview-content .policy-preview-language { display: grid; gap: 12px; }
+    .policy-editor-preview-content h4 { margin: 0; color: #0f2748; font-family: var(--font-main) !important; font-size: 17px; font-weight: 700; letter-spacing: 0; text-transform: none; }
+    .policy-preview-title-row {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .policy-preview-title-row h2 { margin: 0; line-height: 1.2; }
+    .policy-preview-version-pill { white-space: nowrap; }
+    .policy-preview-body {
+      padding: 24px;
+      border: 1px solid #e3ebf5;
+      border-radius: 10px;
+      background: #fff;
+      color: #1f334d;
+      font-family: var(--font-main);
+      font-size: 14px;
+      font-weight: 400;
+      line-height: 1.8;
+      letter-spacing: 0;
+      text-transform: none;
+      overflow-y: auto;
+      max-height: 440px;
+    }
+    .policy-preview-body h2,
+    .policy-preview-body h3 {
+      margin: 20px 0 10px;
+      color: #0f2748;
+      font-family: var(--font-main);
+      font-size: 18px;
+      font-weight: 700;
+      letter-spacing: 0;
+      line-height: 1.4;
+      text-transform: none;
+    }
+    .policy-preview-body h2:first-child,
+    .policy-preview-body h3:first-child { margin-top: 0; }
+    .policy-preview-body p { margin: 0 0 14px; font-family: var(--font-main); }
+    .policy-preview-body p:last-child { margin-bottom: 0; }
+    .policy-preview-body ul,
+    .policy-preview-body ol { padding-left: 24px; margin: 0 0 14px; font-family: var(--font-main); }
+    .policy-preview-body ul:last-child,
+    .policy-preview-body ol:last-child { margin-bottom: 0; }
+    .policy-preview-body li { font-family: var(--font-main); }
+    .policy-preview-body a { color: #2563eb; text-decoration: underline; font-family: var(--font-main); }
+    .policy-preview-body strong,
+    .policy-preview-body em { font-family: var(--font-main); }
+    @media (max-width: 980px) {
+      .policy-editor-page .policy-detail-layout { grid-template-columns: minmax(0, 1fr); }
+    }
+    @media (max-width: 760px) {
+      .policy-editor-page { padding: 14px 12px 18px; gap: 16px; }
+      .policy-editor-form { gap: 16px; padding: 0; }
+      .policy-editor-form .article-editor-section { padding: 0; gap: 14px; }
+      .policy-editor-form .support-center-field-row { grid-template-columns: 1fr; }
+      .policy-editor-canvas { min-height: 300px; max-height: 400px; padding: 16px; }
+      .policy-editor-sidebar { padding: 16px; }
+      .policy-editor-actions { position: static; padding: 0; border-top: 0; background: transparent; box-shadow: none; }
+      .policy-editor-actions .user-detail-action-btn { flex: 1 1 0; min-width: 0; }
+    }
+
+    /* ===== Policy version history + publish/restore (HS-PTO-002b) ===== */
+    .policy-version-table .asset-row {
+      grid-template-columns: minmax(72px, .5fr) minmax(82px, .6fr) minmax(100px, .8fr) minmax(116px, .9fr) minmax(116px, .9fr) minmax(180px, 1.6fr) minmax(56px, 56px);
+      width: 100%;
+      box-sizing: border-box;
+    }
+    body.policy-version-history-mode .policy-version-table .asset-row > div {
+      min-width: 0;
+    }
+    body.policy-version-history-mode .policy-version-table .asset-row.head {
+      min-height: 44px;
+      padding: 12px 20px;
+      column-gap: 14px;
+      background: #f1f5fb;
+      color: #485b75;
+      font-size: 12px;
+      font-weight: 700;
+    }
+    body.policy-version-history-mode .policy-version-table .asset-row:not(.head) {
+      min-height: 66px;
+      padding: 10px 20px;
+      column-gap: 14px;
+    }
+    .policy-version-table .asset-row.head > div:last-child,
+    .policy-version-table .asset-row:not(.head) > .user-row-actions {
+      min-width: 0;
+      width: 56px;
+      box-sizing: border-box;
+    }
+    .policy-version-table .asset-row.head > div:last-child {
+      justify-content: center;
+      text-align: center;
+    }
+    .policy-version-table .asset-row:not(.head) > .user-row-actions {
+      gap: 0;
+      justify-self: center;
+      justify-content: center;
+    }
+    .policy-version-action-dots {
+      display: inline-block;
+      transform: translateY(-2px);
+      font-size: 16px;
+      font-weight: 800;
+      letter-spacing: 2px;
+      line-height: 1;
+    }
+    @media (max-width: 760px) {
+      body.policy-version-history-mode .policy-version-table .asset-row:not(.head) > .user-row-actions {
+        width: 38px;
+        min-width: 38px;
+      }
+    }
+    .policy-version-table .asset-row[data-policy-version-open] {
+      cursor: pointer;
+    }
+    .policy-version-table .asset-row[data-policy-version-open]:hover {
+      background: var(--hover-bg, #f9fafb);
+    }
+    @media (max-width: 760px) {
+      body.policy-version-history-mode .policy-version-table .asset-row:not(.head) {
+        min-height: 0;
+        column-gap: 14px;
+        padding: 18px 18px 16px;
+      }
+    }
+    .policy-publish-confirm-modal,
+    .policy-restore-confirm-modal {
+      width: min(480px, calc(100vw - 36px)) !important;
+    }
+    .policy-publish-confirm-modal .modal-body,
+    .policy-restore-confirm-modal .modal-body {
+      padding: 30px 28px 26px;
+    }
+    .policy-restore-confirm-modal .article-editor-confirm-summary {
+      width: fit-content;
+      max-width: 100%;
+      margin: 0 auto;
+      text-align: center;
+      font-size: 12px;
+      white-space: nowrap;
+    }
+    .policy-publish-confirm-page {
+      gap: 12px;
+    }
+    .policy-publish-confirm-page .article-editor-confirm-question {
+      width: 100%;
+      max-width: 360px;
+      margin: 4px 0 0;
+      color: #1f334d;
+      font-size: 15px;
+      font-weight: 600;
+      line-height: 1.5;
+    }
+    .policy-publish-confirm-page .article-editor-confirm-summary {
+      width: 100%;
+      max-width: 360px;
+      margin: 0;
+      color: #71829a;
+      font-size: 13px;
+      font-weight: 400;
+      line-height: 1.55;
+    }
+    .policy-publish-confirm-meta {
+      display: grid;
+      gap: 14px;
+      width: 100%;
+      max-width: 380px;
+      margin-top: 6px;
+      padding: 18px 20px;
+      border: 1px solid #e3ebf5;
+      border-radius: 12px;
+      background: #f7faff;
+      text-align: left;
+    }
+    .policy-publish-confirm-meta > div {
+      display: grid;
+      gap: 4px;
+    }
+    .policy-publish-confirm-meta .muted {
+      color: #71829a;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    .policy-publish-confirm-meta strong {
+      color: #1f334d;
+      font-size: 14px;
+      font-weight: 600;
+      line-height: 1.5;
+      word-break: break-word;
+    }
+    .policy-publish-confirm-meta > div:last-child strong {
+      font-size: 13px;
+      font-weight: 500;
+      line-height: 1.5;
+    }
+    .policy-publish-version-value {
+      width: fit-content;
+      margin-top: 1px;
+    }
+    .policy-publish-confirm-page .article-editor-confirm-actions {
+      margin-top: 20px;
+    }
+    .modal.user-action-modal.policy-version-view-modal {
+      width: min(760px, calc(100vw - 36px));
+    }
+    .policy-version-view-content { display: grid; gap: 14px; }
+    .policy-version-view-summary {
+      padding: 14px 16px;
+      border: 1px solid #e3ebf5;
+      border-radius: 10px;
+      background: #f7faff;
+    }
+    .policy-version-view-summary .muted {
+      color: #71829a;
+      font-size: 11px;
+      font-weight: 700;
+    }
+    .policy-version-view-summary p {
+      margin: 4px 0 0;
+      color: #1f334d;
+      font-size: 13px;
+      font-weight: 400;
+      line-height: 1.6;
+    }
+    .policy-version-view-tabs {
+      display: inline-flex;
+      gap: 6px;
+      padding: 0;
+      border: 0;
+      border-radius: 0;
+      background: transparent;
+      width: fit-content;
+    }
+    .policy-version-view-meta {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 10px;
+    }
+    .policy-version-view-meta > div {
+      display: grid;
+      gap: 4px;
+      min-width: 0;
+      padding: 12px 14px;
+      border: 1px solid #e3ebf5;
+      border-radius: 8px;
+      background: #f7faff;
+    }
+    .policy-version-view-meta .muted {
+      color: #71829a;
+      font-size: 11px;
+      font-weight: 700;
+    }
+    .policy-version-view-meta strong {
+      min-width: 0;
+      color: #1f334d;
+      font-size: 13px;
+      font-weight: 500;
+      line-height: 1.4;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .policy-version-view-meta .pill {
+      vertical-align: middle;
+    }
+    .policy-version-view-body {
+      padding: 18px;
+      border: 1px solid #e3ebf5;
+      border-radius: 10px;
+      background: #fff;
+      color: #1f334d;
+      font-size: 14px;
+      line-height: 1.8;
+      max-height: 320px;
+      overflow-y: auto;
+    }
+    .policy-version-view-body h2,
+    .policy-version-view-body h3 {
+      margin: 20px 0 10px;
+      color: #0f2748;
+      font-family: var(--font-main);
+      font-size: 18px;
+      font-weight: 700;
+      line-height: 1.4;
+    }
+    .policy-version-view-body h2:first-child,
+    .policy-version-view-body h3:first-child { margin-top: 0; }
+    .policy-version-view-body p { margin: 0 0 14px; }
+    .policy-version-view-body p:last-child { margin-bottom: 0; }
+    .policy-version-view-body ul,
+    .policy-version-view-body ol { padding-left: 24px; margin: 0 0 14px; }
+    .policy-version-view-body ul:last-child,
+    .policy-version-view-body ol:last-child { margin-bottom: 0; }
+    .policy-version-view-body a { color: #2563eb; text-decoration: underline; }
+    .policy-version-view-footer {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: flex-end;
+    }
+    @media (max-width: 760px) {
+      .policy-version-view-body { padding: 16px; max-height: 280px; }
+      .policy-version-view-meta { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .policy-restore-confirm-modal .article-editor-confirm-summary {
+        width: min(100%, 300px);
+        white-space: normal;
+      }
+      .policy-version-view-meta > div { padding: 10px 12px; }
+      .policy-version-view-footer { justify-content: stretch; }
+      .policy-version-view-footer .user-detail-action-btn { flex: 1 1 0; min-width: 0; }
+    }
+
+    @media (min-width: 761px) and (max-width: 1100px) {
+      body.policy-version-history-mode #table {
+        overflow-x: auto;
+      }
+      body.policy-version-history-mode #table .policy-version-table {
+        min-width: 1000px;
+      }
+    }
+    @media (max-width: 760px) {
+      body.policy-version-history-mode #table {
+        overflow-x: hidden;
+      }
+    }
+
+    /* ===== Support Center (HS-PTO-004) ===== */
+    body.support-center-mode .layout {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    body.support-center-mode .detail,
+    body.support-center-mode .summary-grid,
+    body.support-center-mode .cards {
+      display: none;
+    }
+    body.support-center-mode #primary-action,
+    body.support-center-mode #page-meta {
+      display: none;
+    }
+    body.support-center-mode .panel-head {
+      display: none;
+    }
+    body.support-center-mode #table {
+      padding: 24px 22px 28px;
+      overflow: visible;
+    }
+    .support-center-form {
+      display: flex;
+      flex-direction: column;
+      gap: 30px;
+      padding: 0;
+      color: var(--text, #172b4d);
+    }
+    .support-center-section {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .support-center-section h4 {
+      margin: 0;
+      font-size: 15px;
+      line-height: 1.35;
+      font-weight: 800;
+      color: #102c50;
+    }
+    .support-center-section > .muted {
+      margin: -3px 0 4px;
+      font-size: 12px;
+      line-height: 1.5;
+    }
+    .support-channel-list {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+    .support-channel-row {
+      display: grid;
+      grid-template-columns: 42px minmax(190px, 220px) minmax(0, 1fr) 82px;
+      gap: 16px;
+      align-items: center;
+      padding: 17px 16px;
+      background: #fbfdff;
+      border: 1px solid #dce6f3;
+      border-radius: 8px;
+      transition: border-color .15s ease, box-shadow .15s ease, background .15s ease;
+    }
+    .support-channel-row:hover {
+      background: #fff;
+      border-color: #b8cbe1;
+      box-shadow: 0 3px 10px rgba(16, 44, 80, .06);
+    }
+    .support-channel-row.inactive {
+      background: #fbfdff;
+    }
+    .support-channel-row.inactive .field {
+      background: #eef2f7;
+      border-color: #e2e8f0;
+      color: #94a3b8;
+      cursor: not-allowed;
+    }
+    .support-channel-row.inactive .field:focus,
+    .support-channel-row.inactive .field:focus-visible {
+      border-color: #e2e8f0;
+      box-shadow: none;
+    }
+    .support-channel-toggle,
+    .support-channel-status {
+      align-self: start;
+      padding-top: 30px;
+    }
+    .support-channel-toggle {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .toggle-switch {
+      width: 44px;
+      height: 24px;
+      border-radius: 12px;
+      border: none;
+      background: var(--border, #d1d5db);
+      position: relative;
+      cursor: pointer;
+      padding: 0;
+      transition: background 0.15s;
+    }
+    .toggle-switch.on {
+      background: var(--green, #16a34a);
+      box-shadow: inset 0 0 0 1px rgba(0, 0, 0, .08);
+    }
+    .toggle-knob {
+      position: absolute;
+      top: 2px;
+      left: 2px;
+      width: 20px;
+      height: 20px;
+      box-sizing: border-box;
+      border: 1px solid #d3dde8;
+      border-radius: 50%;
+      background: #fff;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, .15);
+      transition: transform 0.15s;
+    }
+    .toggle-switch.on .toggle-knob {
+      transform: translateX(20px);
+    }
+    .support-channel-type {
+      font-size: 13px;
+      line-height: 1.3;
+      font-weight: 800;
+      color: #16385f;
+    }
+    .support-channel-value-field {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      min-width: 0;
+    }
+    .support-channel-value-field .field {
+      width: 100%;
+      min-height: 40px;
+      padding: 8px 10px;
+      color: var(--ink);
+      font-size: 13px;
+      font-weight: 400;
+      word-break: break-all;
+    }
+    .support-channel-desc {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+      min-width: 0;
+    }
+    .support-channel-desc label {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      min-width: 0;
+      padding-bottom: 19px;
+      position: relative;
+      font-size: 12px;
+      line-height: 1.3;
+      font-weight: 600;
+      color: #4b5f78;
+    }
+    .support-channel-desc .field {
+      width: 100%;
+      min-height: 40px;
+      padding: 8px 10px;
+      color: var(--ink);
+      font-size: 13px;
+      font-weight: 400;
+    }
+    .support-channel-status {
+      display: flex;
+      justify-content: flex-end;
+    }
+    .support-channel-status .pill {
+      min-width: 68px;
+      justify-content: center;
+    }
+    .support-center-field-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 16px;
+      padding: 17px 16px 22px;
+      background: #fbfdff;
+      border: 1px solid #dce6f3;
+      border-radius: 8px;
+      position: relative;
+      transition: border-color .15s ease, box-shadow .15s ease, background .15s ease;
+    }
+    .support-center-field-row:hover {
+      background: #fff;
+      border-color: #b8cbe1;
+      box-shadow: 0 3px 10px rgba(16, 44, 80, .06);
+    }
+    .support-center-field-row label {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      position: relative;
+      font-size: 12px;
+      line-height: 1.3;
+      font-weight: 600;
+      color: #4b5f78;
+    }
+    .support-center-field-row .article-field-error {
+      position: absolute;
+      bottom: -22px;
+      left: 0;
+      right: 0;
+    }
+    .support-center-field-row .field {
+      min-height: 40px;
+      padding: 8px 10px;
+      background: #fff;
+      border: 1px solid #dce6f3;
+      border-radius: 8px;
+      color: var(--ink);
+      font-size: 13px;
+      font-weight: 400;
+    }
+    .support-center-field-row .field:focus,
+    .support-center-field-row .field:focus-visible {
+      background: #fff;
+      border-color: #b8c6d8;
+      box-shadow: 0 0 0 3px rgba(118, 135, 158, .10);
+    }
+    .support-center-form .user-detail-actions {
+      justify-content: flex-end;
+      gap: 10px;
+      padding-top: 16px;
+      border-top: 1px solid #dce6f3;
+    }
+    .support-center-form .user-detail-action-btn {
+      min-width: 150px;
+      min-height: 40px;
+    }
+    .support-channel-info {
+      min-width: 0;
+    }
+    .support-center-form .article-field-error {
+      display: block;
+      min-height: 17px;
+      margin-top: 0;
+      visibility: hidden;
+      position: absolute;
+      right: 0;
+      bottom: 0;
+      left: 0;
+    }
+    .support-center-form .article-field-error.show {
+      visibility: visible;
+    }
+    .support-channel-value-field,
+    .support-center-field-row label {
+      position: relative;
+      padding-bottom: 19px;
+    }
+    .support-channel-value-field .article-field-error {
+      font-size: 11px;
+    }
+    .support-center-field-row .article-field-error {
+      margin-top: 0;
+    }
+    @media (max-width: 900px) {
+      body.support-center-mode .panel-head {
+        min-height: 64px;
+        padding: 15px 16px 13px;
+      }
+      body.support-center-mode #table {
+        padding: 18px 16px 20px;
+      }
+      .support-channel-row {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        grid-template-areas:
+          "toggle status"
+          "info info"
+          "desc desc";
+        gap: 16px;
+        padding: 14px;
+        align-items: start;
+      }
+      .support-channel-toggle {
+        grid-area: toggle;
+        justify-self: end;
+        padding-top: 0;
+      }
+      .support-channel-status {
+        grid-area: status;
+        justify-content: flex-start;
+        padding-top: 0;
+      }
+      .support-channel-info {
+        grid-area: info;
+        padding-top: 0;
+      }
+      .support-channel-value-field {
+        padding-top: 0;
+      }
+      .support-channel-type {
+        position: static;
+      }
+      .support-channel-desc {
+        grid-area: desc;
+      }
+      .support-channel-desc {
+        grid-template-columns: 1fr;
+      }
+      .support-center-field-row {
+        grid-template-columns: 1fr;
+      }
+      .support-center-form .user-detail-actions {
+        flex-direction: row;
+      }
+      .support-center-form .user-detail-action-btn {
+        width: auto;
+        min-width: 0;
+        flex: 1 1 0;
+      }
+    }
+
+    /* ===== Support Center Preview modal (HS-PTO-005) ===== */
+    .modal.user-action-modal.support-center-preview-modal {
+      width: min(480px, 100%);
+      max-height: calc(100vh - 28px);
+    }
+    .support-center-preview-modal .modal-body {
+      padding: 0;
+      overflow: hidden;
+    }
+    .support-center-preview-content {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+    .support-center-preview-content .user-action-head {
+      padding: 18px 20px 14px;
+      border-bottom: 1px solid #dce6f3;
+      align-items: center;
+    }
+    .support-preview-lang-toggle {
+      display: flex;
+      gap: 0;
+      padding: 12px 20px;
+      border-bottom: 1px solid #eef2f7;
+    }
+    .support-preview-lang-btn {
+      flex: 1;
+      padding: 8px 12px;
+      border: 1px solid #dce6f3;
+      background: #fff;
+      color: #4b5f78;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background .15s, color .15s, border-color .15s;
+    }
+    .support-preview-lang-btn:first-child {
+      border-radius: 7px 0 0 7px;
+    }
+    .support-preview-lang-btn:last-child {
+      border-radius: 0 7px 7px 0;
+      border-left: none;
+    }
+    .support-preview-lang-btn.active {
+      background: #102c50;
+      color: #fff;
+      border-color: #102c50;
+    }
+    .support-preview-body {
+      padding: 20px;
+      max-height: calc(100vh - 200px);
+      overflow-y: auto;
+    }
+    .support-preview-phone {
+      width: 100%;
+      max-width: 380px;
+      margin: 0 auto;
+      border: 9px solid #111;
+      border-radius: 34px;
+      overflow: hidden;
+      background: #f7f8fa;
+      box-shadow: 0 14px 30px rgba(15, 23, 42, .16);
+    }
+    .support-preview-phone-screen {
+      background: #fff;
+      min-height: 480px;
+      display: flex;
+      flex-direction: column;
+    }
+    .support-preview-fo-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 14px 16px;
+      background: #fff;
+      border-bottom: 1px solid #eef2f7;
+    }
+    .support-preview-fo-back {
+      color: #16385f;
+      font-size: 20px;
+      line-height: 1;
+      flex-shrink: 0;
+    }
+    .support-preview-fo-title {
+      font-size: 16px;
+      font-weight: 800;
+      color: #102c50;
+    }
+    .support-preview-fo-content {
+      flex: 1;
+      padding: 20px 16px 24px;
+    }
+    .support-preview-fo-heading {
+      font-size: 18px;
+      font-weight: 800;
+      color: #102c50;
+      margin: 0 0 4px;
+    }
+    .support-preview-fo-availability {
+      font-size: 13px;
+      color: #64748b;
+      margin: 0 0 18px;
+      line-height: 1.4;
+    }
+    .support-preview-fo-channels {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .support-preview-fo-channel {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      padding: 14px 14px;
+      background: #f8fafc;
+      border: 1px solid #e8edf3;
+      border-radius: 10px;
+    }
+    .support-preview-fo-channel-icon {
+      flex-shrink: 0;
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 10px;
+      background: #102c50;
+      color: #fff;
+    }
+    .support-preview-fo-channel-icon svg {
+      width: 20px;
+      height: 20px;
+    }
+    .support-preview-fo-channel-info {
+      flex: 1;
+      min-width: 0;
+    }
+    .support-preview-fo-channel-type {
+      font-size: 12px;
+      font-weight: 700;
+      color: #64748b;
+      text-transform: uppercase;
+      letter-spacing: .03em;
+      margin-bottom: 2px;
+    }
+    .support-preview-fo-channel-value {
+      font-size: 15px;
+      font-weight: 700;
+      color: #102c50;
+      word-break: break-all;
+      line-height: 1.3;
+    }
+    .support-preview-fo-channel-desc {
+      font-size: 12px;
+      color: #64748b;
+      margin-top: 4px;
+      line-height: 1.4;
+    }
+    .support-preview-fo-hours {
+      margin-top: 20px;
+      padding: 14px;
+      background: #f0f5ff;
+      border: 1px solid #d6e4ff;
+      border-radius: 10px;
+    }
+    .support-preview-fo-hours-label {
+      font-size: 12px;
+      font-weight: 700;
+      color: #4b5f78;
+      text-transform: uppercase;
+      letter-spacing: .03em;
+      margin-bottom: 4px;
+    }
+    .support-preview-fo-hours-value {
+      font-size: 15px;
+      font-weight: 700;
+      color: #102c50;
+    }
+    .support-preview-empty {
+      text-align: center;
+      padding: 40px 20px;
+      color: #94a3b8;
+      font-size: 13px;
+    }
+    @media (max-width: 520px) {
+      .modal.user-action-modal.support-center-preview-modal {
+        width: 100%;
+        max-width: none;
+      }
+      .support-preview-body {
+        padding: 14px;
+      }
+      .support-preview-phone {
+        border-width: 7px;
+        border-radius: 26px;
+      }
+    }
   </style>
 </head>
 <body class="logged-out">
@@ -12947,6 +14324,7 @@
       social: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 1 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8Z"/></svg>',
       alert: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>',
       support: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 14a8 8 0 1 1 16 0"/><path d="M4 14v3a2 2 0 0 0 2 2h2v-7H6a2 2 0 0 0-2 2Z"/><path d="M20 14v3a2 2 0 0 1-2 2h-2v-7h2a2 2 0 0 1 2 2Z"/><path d="M16 19a4 4 0 0 1-4 2"/></svg>',
+      policy: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><path d="M14 2v6h6"/><path d="M9 13h6M9 17h4"/><circle cx="16" cy="15" r="2.5"/><path d="M16 12.5V15M16 15v2.5"/></svg>',
       delete: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 6h18"/><path d="M8 6V4h8v2"/><path d="M19 6l-1 15H6L5 6"/><path d="M10 11v6M14 11v6"/></svg>',
       reports: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 19V5"/><path d="M4 19h17"/><path d="M8 16V9M13 16V6M18 16v-4"/></svg>',
       notifications: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 7 3 9H3c0-2 3-2 3-9"/><path d="M10 21h4"/></svg>',
@@ -12977,6 +14355,19 @@
       info: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="9.5"/><path d="M12 16.5v-5.5"/><circle cx="12" cy="7.8" r="1.1" fill="currentColor" stroke="none"/></svg>'
     };
 
+    const policyEditorToolIcons = {
+      bold: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 4h7a3.5 3.5 0 0 1 0 7H6z"/><path d="M6 11h8a3.5 3.5 0 0 1 0 7H6z"/></svg>',
+      italic: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4h6"/><path d="M7 20h6"/><path d="M14 4 10 20"/></svg>',
+      underline: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 4v6a6 6 0 0 0 12 0V4"/><path d="M5 20h14"/></svg>',
+      insertUnorderedList: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="4.5" cy="6" r="1" fill="currentColor" stroke="none"/><circle cx="4.5" cy="12" r="1" fill="currentColor" stroke="none"/><circle cx="4.5" cy="18" r="1" fill="currentColor" stroke="none"/><path d="M9 6h11M9 12h11M9 18h11"/></svg>',
+      insertOrderedList: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 6h11M9 12h11M9 18h11"/><path d="M4 5.5h1.3V9"/><path d="M4 13h1.8l-1.8 2h1.8"/></svg>',
+      justifyLeft: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h10M4 18h13"/></svg>',
+      justifyCenter: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M7 12h10M5.5 18h13"/></svg>',
+      justifyRight: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M10 12h10M7 18h13"/></svg>',
+      createLink: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9.5 14.5 14.5 9.5"/><path d="M11 6.5 12.5 5a3.5 3.5 0 1 1 5 5L16 11.5"/><path d="M13 17.5 11.5 19a3.5 3.5 0 1 1-5-5L8 12.5"/></svg>',
+      heading: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 5v14"/><path d="M19 5v14"/><path d="M5 12h14"/></svg>'
+    };
+
     const navGroups = [
       { section: "การดำเนินงาน", items: [
         { id: "dashboard", label: "Dashboard", icon: "dashboard" },
@@ -12989,13 +14380,12 @@
       ]},
       { section: "งานตรวจสอบและบริการ", items: [
         { id: "watch-alerts", label: "Market Demand", icon: "alert", subs: ["Demand Overview", "Search Insights", "Watch Alert List"] },
-        { id: "support", label: "Help & Support", icon: "support", subs: ["Tickets", "Assignment", "SLA"] },
         { id: "deletions", label: "Account Deletion", icon: "delete", subs: ["Requests", "Grace Period", "Anonymization"] }
       ]},
       { section: "เครื่องมือ & รายงาน", items: [
         { id: "reports", label: "Reports", icon: "reports", subs: ["User", "Asset", "Offer", "Search", "Export Jobs"] },
         { id: "notifications", label: "Notifications", icon: "notifications", subs: ["Broadcast", "System Templates", "Delivery Logs"] },
-        { id: "settings", label: "Settings", icon: "settings", subs: ["Admin Accounts", "Roles & Permissions", "Security", "Retention", "Terms of Use", "Privacy Policy", "Version History", "Support Center", "Contact Support", { label: "Audit Log", module: "audit" }] }
+        { id: "settings", label: "Settings", icon: "settings", subs: ["Admin Accounts", "Roles & Permissions", "Security", "Retention", "Policy & Versioning", "Support Center", { label: "Audit Log", module: "audit" }] }
       ]}
     ];
 
@@ -13121,11 +14511,6 @@
       // moduleData["watch-alerts"] เก็บเฉพาะ metadata สำหรับ fallback;
       // ข้อมูลจริงและการ render อยู่ใน watchAlertData + renderWatchAlert()
       "watch-alerts": mod("Market Demand", "งานตรวจสอบและบริการ / Market Demand", "Demand Overview", "ภาพรวมความต้องการตลาดจาก Search/Filter และ Watch Alert — read-only", "", [], []),
-      support: mod("Help & Support", "งานตรวจสอบและบริการ / Help & Support", "Ticket Queue", "คิว ticket, assignment, reply history, priority และ SLA", "สร้าง ticket", [["Open", "18", "รอตอบกลับ 7"], ["Assigned", "9", "มีเจ้าของงาน"], ["SLA Risk", "4", "เหลือ < 4 ชม."], ["Resolved", "126", "เดือนนี้"]], [
-        item("SUP-188", "Proof of payment visibility", "Nattapol P.", "Email", "กลาง", "Assigned", "ถามว่าหลักฐานการชำระเงินแสดงให้ใครเห็น", ["Owner/Admin"], "ตอบว่าเป็น private data เห็นเฉพาะ owner และ Admin"),
-        item("SUP-182", "Cannot reset password", "Apple user", "App", "ปกติ", "Open", "บัญชี Apple reset password จาก BO ไม่ได้", ["Auth method Apple"], "แจ้งให้จัดการผ่าน Apple ID"),
-        item("SUP-177", "Report follow-up", "Crown Time BKK", "LINE", "สูง", "SLA Risk", "ผู้ใช้ถามผลการ report duplicate asset", ["RPU-505"], "ตอบสถานะโดยไม่เปิดเผยข้อมูล reporter")
-      ]),
       deletions: mod("Account Deletion", "งานตรวจสอบและบริการ / Account Deletion", "Deletion Requests", "ตรวจคำขอลบบัญชี, pending dependency, 30-day grace period และ anonymization", "ตรวจ dependency", [["Requests", "8", "รอ validation"], ["Blocked", "3", "มี pending offer"], ["Grace Period", "11", "นับ 30 วัน"], ["Anonymized", "42", "เดือนนี้"]], [
         item("DEL-033", "Delete account request", "Archive Collector", "Account", "กลาง", "Blocked", "มี pending offer และ report context ค้างอยู่", ["Offer 1", "Report 1"], "ห้าม hard delete จนกว่า dependency ปิด"),
         item("DEL-029", "Grace period day 12", "The Collector", "Account", "ปกติ", "Grace", "session revoked แล้ว profile public unavailable", ["30-day"], "รอครบกำหนด anonymization"),
@@ -13151,6 +14536,336 @@
         item("SEC-EMAIL-OTP", "Mandatory Email OTP", "Security", "Auth", "สูง", "Enabled", "Admin ทุกบัญชีต้อง verify Email OTP หลังผ่าน password", ["No bypass"], "ล็อกตาม baseline"),
         item("RET-AUDIT", "Audit retention", "Retention", "System", "กลาง", "365 days", "เก็บ audit อย่างน้อย 1 ปี", ["Export policy"], "แก้ค่าต้อง approval")
       ])
+    };
+
+    // ===== Policy & Versioning mock data (HS-PTO-001) =====
+    // 2 policy types: Terms of Use, Privacy Policy
+    // Each policy has versions (Draft/Published/Archived), bilingual content (th/en),
+    // editor metadata, and change summary per version.
+    const policyVersioningData = {
+      policies: [
+        {
+          id: "POL-TOU",
+          type: "Terms of Use",
+          typeLabel: "TERMS OF USE",
+          status: "Published",
+          currentVersion: "v1.3",
+          lastEdited: "28 Aug 2026 14:32",
+          lastEditor: "Admin",
+          publishedDate: "2026-08-28 14:35",
+          draftVersion: null,
+          description: "เงื่อนไขการใช้งานแพลตฟอร์ม TukDaeng สำหรับผู้ใช้และพันธมิตร",
+          versions: [
+            {
+              version: "v1.3",
+              status: "Published",
+              editor: "Admin",
+              editedDate: "2026-08-28 14:32",
+              publishedDate: "2026-08-28 14:35",
+              changeSummary: "เพิ่มข้อกำหนดเกี่ยวกับการใช้ Watch Alert และ Market Data",
+              contentTh: `<h2>เงื่อนไขการใช้งาน</h2>
+<p>เงื่อนไขการใช้งานนี้ครอบคลุมการใช้งานแพลตฟอร์ม TukDaeng ของผู้ใช้และพันธมิตรทุกประเภท การใช้งานแพลตฟอร์มถือว่าผู้ใช้ยอมรับเงื่อนไขทั้งหมดในเอกสารนี้</p>
+<h2>1. บัญชีผู้ใช้</h2>
+<p>ผู้ใช้ต้องลงทะเบียนด้วยข้อมูลที่ถูกต้องและรักษาความปลอดภัยของบัญชี ห้ามแชร์บัญชีหรือให้บุคคลอื่นเข้าถึงรหัสผ่าน</p>
+<h2>2. การลงประกาศและสินทรัพย์</h2>
+<ul>
+<li>ผู้ใช้ต้องเป็นเจ้าของสินทรัพย์จริงและมีสิทธิ์นำมาลงประกาศ</li>
+<li>ห้ามลงประกาศสินค้าปลอม สินค้าที่ละเมิดลิขสิทธิ์ หรือสินค้าที่ผิดกฎหมาย</li>
+<li>ผู้ใช้ต้องให้ข้อมูลและรูปภาพที่ถูกต้องตรงกับสินค้าจริง</li>
+</ul>
+<h2>3. Watch Alert และ Market Data</h2>
+<p>ผู้ใช้สามารถตั้งค่า Watch Alert เพื่อรับการแจ้งเตือนเมื่อมีสินทรัพย์ที่ตรงเกณฑ์เข้ามาในระบบ การใช้งาน Watch Alert และข้อมูล Market Data มีวัตถุประสงค์เพื่อการอ้างอิงเท่านั้น ไม่ใช่คำแนะนำในการลงทุน</p>
+<h2>4. ข้อห้าม</h2>
+<ul>
+<li>ห้ามใช้ระบบเพื่อฉ้อโกง หลอกลวง หรือกระทำความผิด</li>
+<li>ห้ามพยายามเข้าถึงข้อมูลผู้ใช้อื่นโดยไม่ได้รับอนุญาต</li>
+<li>ห้ามใช้ bot หรือเครื่องมืออัตโนมัติเพื่อเก็บข้อมูลโดยไม่ได้รับอนุญาต</li>
+</ul>
+<h2>5. การเปลี่ยนแปลงเงื่อนไข</h2>
+<p>TukDaeng ขอสงวนสิทธิ์ในการปรับปรุงเงื่อนไขการใช้งานโดยจะแจ้งให้ผู้ใช้ทราบล่วงหน้า การใช้งานต่อหลังจากมีการเปลี่ยนแปลงถือว่าผู้ใช้ยอมรับเงื่อนไขใหม่</p>
+<p>หากมีข้อสงสัยเพิ่มเติม สามารถติดต่อได้ที่ <a href="https://help.tukdaeng.app">ศูนย์ช่วยเหลือ</a></p>`,
+              contentEn: `<h2>Terms of Use</h2>
+<p>These Terms of Use govern the use of the TukDaeng platform by all user and partner types. By using the platform, users agree to all terms set out in this document.</p>
+<h2>1. User Accounts</h2>
+<p>Users must register with accurate information and maintain account security. Sharing accounts or allowing others to access passwords is prohibited.</p>
+<h2>2. Listings and Assets</h2>
+<ul>
+<li>Users must be the legitimate owner of the asset and have the right to list it</li>
+<li>Counterfeit, copyright-infringing, or illegal goods are prohibited</li>
+<li>Users must provide accurate information and images matching the actual item</li>
+</ul>
+<h2>3. Watch Alert and Market Data</h2>
+<p>Users may configure Watch Alerts to receive notifications when assets matching their criteria enter the system. Watch Alert and Market Data are provided for reference only and do not constitute investment advice.</p>
+<h2>4. Prohibited Conduct</h2>
+<ul>
+<li>Do not use the system to defraud, deceive, or commit unlawful acts</li>
+<li>Do not attempt to access other users' data without authorization</li>
+<li>Do not use bots or automated tools to scrape data without permission</li>
+</ul>
+<h2>5. Changes to Terms</h2>
+<p>TukDaeng reserves the right to update these Terms of Use and will notify users in advance. Continued use after changes constitutes acceptance of the new terms.</p>
+<p>For further inquiries, please contact the <a href="https://help.tukdaeng.app">Help Center</a></p>`
+            },
+            {
+              version: "v1.2",
+              status: "Archived",
+              editor: "Admin",
+              editedDate: "2026-07-15 10:20",
+              publishedDate: "2026-07-15 10:25",
+              changeSummary: "ปรับปรุงนโยบายความเป็นส่วนตัวและการเก็บข้อมูล",
+              contentTh: `<h2>เงื่อนไขการใช้งาน</h2>
+<p>เงื่อนไขการใช้งานนี้ครอบคลุมการใช้งานแพลตฟอร์ม TukDaeng ของผู้ใช้และพันธมิตรทุกประเภท</p>
+<h2>1. บัญชีผู้ใช้</h2>
+<p>ผู้ใช้ต้องลงทะเบียนด้วยข้อมูลที่ถูกต้องและรักษาความปลอดภัยของบัญชี</p>
+<h2>2. การลงประกาศและสินทรัพย์</h2>
+<ul>
+<li>ผู้ใช้ต้องเป็นเจ้าของสินทรัพย์จริง</li>
+<li>ห้ามลงประกาศสินค้าปลอม</li>
+</ul>
+<h2>3. ข้อห้าม</h2>
+<ul>
+<li>ห้ามใช้ระบบเพื่อฉ้อโกง</li>
+<li>ห้ามเข้าถึงข้อมูลผู้ใช้อื่นโดยไม่ได้รับอนุญาต</li>
+</ul>`,
+              contentEn: `<h2>Terms of Use</h2>
+<p>These Terms of Use govern the use of the TukDaeng platform by all user and partner types.</p>
+<h2>1. User Accounts</h2>
+<p>Users must register with accurate information and maintain account security.</p>
+<h2>2. Listings and Assets</h2>
+<ul>
+<li>Users must be the legitimate owner of the asset</li>
+<li>Counterfeit goods are prohibited</li>
+</ul>
+<h2>3. Prohibited Conduct</h2>
+<ul>
+<li>Do not use the system to defraud</li>
+<li>Do not access other users' data without authorization</li>
+</ul>`
+            },
+            {
+              version: "v1.1",
+              status: "Archived",
+              editor: "Admin",
+              editedDate: "2026-06-01 09:00",
+              publishedDate: "2026-06-01 09:10",
+              changeSummary: "เริ่มต้นเวอร์ชัน หลังจาก prototype approved",
+              contentTh: `<h2>เงื่อนไขการใช้งาน</h2>
+<p>เงื่อนไขการใช้งานนี้ครอบคลุมการใช้งานแพลตฟอร์ม TukDaeng ของผู้ใช้และพันธมิตรทุกประเภท การใช้งานแพลตฟอร์มถือว่าผู้ใช้ยอมรับเงื่อนไขทั้งหมดในเอกสารนี้</p>
+<h2>1. บัญชีผู้ใช้</h2>
+<p>ผู้ใช้ต้องลงทะเบียนด้วยข้อมูลที่ถูกต้องและรักษาความปลอดภัยของบัญชี</p>`,
+              contentEn: `<h2>Terms of Use</h2>
+<p>These Terms of Use govern the use of the TukDaeng platform by all user and partner types. By using the platform, users agree to all terms set out in this document.</p>
+<h2>1. User Accounts</h2>
+<p>Users must register with accurate information and maintain account security.</p>`
+            }
+          ]
+        },
+        {
+          id: "POL-PP",
+          type: "Privacy Policy",
+          typeLabel: "PRIVACY POLICY",
+          status: "Published",
+          currentVersion: "v2.0",
+          lastEdited: "20 Aug 2026 16:00",
+          lastEditor: "Admin",
+          publishedDate: "2026-08-20 16:05",
+          draftVersion: "v2.1-draft",
+          description: "นโยบายความเป็นส่วนตัวและการจัดการข้อมูลส่วนบุคคลของผู้ใช้",
+          versions: [
+            {
+              version: "v2.1-draft",
+              status: "Draft",
+              editor: "Admin",
+              editedDate: "2026-09-01 10:30",
+              publishedDate: null,
+              changeSummary: "เพิ่มข้อกำหนดการใช้คุกกี้และการติดตามผู้ใช้",
+              contentTh: `<h2>นโยบายความเป็นส่วนตัว</h2>
+<p>นโยบายนี้อธิบายการเก็บรวบรวม การใช้ และการเปิดเผยข้อมูลส่วนบุคคลของผู้ใช้บนแพลตฟอร์ม TukDaeng ตามพระราชบัญญัติคุ้มครองข้อมูลส่วนบุคคล (PDPA)</p>
+<h2>1. ข้อมูลที่เก็บรวบรวม</h2>
+<ul>
+<li>ข้อมูลบัญชี: ชื่อ อีเมล เบร์โทร และรหัสผ่าน (เข้ารหัส)</li>
+<li>ข้อมูลการใช้งาน: ประวัติการลงประกาศ การเสนอราคา และการแชท</li>
+<li>ข้อมูลอุปกรณ์: IP address ประเภทอุปกรณ์ และระบบปฏิบัติการ</li>
+<li>คุกกี้และการติดตาม: ใช้คุกกี้เพื่อปรับปรุงประสบการณ์ผู้ใช้และวิเคราะห์การใช้งาน</li>
+</ul>
+<h2>2. วัตถุประสงค์การใช้ข้อมูล</h2>
+<p>ข้อมูลส่วนบุคคลถูกใช้เพื่อการให้บริการ การรักษาความปลอดภัย การป้องกันการทุจริต และการปฏิบัติตามกฎหมาย</p>
+<h2>3. สิทธิ์ของผู้ใช้</h2>
+<ul>
+<li>สิทธิ์ในการเข้าถึงและขอสำเนาข้อมูล</li>
+<li>สิทธิ์ในการขอแก้ไขข้อมูลที่ไม่ถูกต้อง</li>
+<li>สิทธิ์ในการขอลบข้อมูล ยกเว้นข้อมูลที่กฎหมายกำหนดให้เก็บไว้</li>
+<li>สิทธิ์ในการเพิกถอนความยินยอม</li>
+</ul>
+<h2>4. การเก็บรักษาข้อมูล</h2>
+<p>ข้อมูลจะถูกเก็บรักษาตามระยะเวลาที่กฎหมายกำหนด หรือตามความจำเป็นในการให้บริการ หลังจากนั้นจะทำลายหรือทำให้ไม่สามารถระบุตัวบุคคลได้</p>
+<h2>5. คุกกี้และการติดตาม</h2>
+<p>เราใช้คุกกี้เพื่อจดจำการตั้งค่าของผู้ใช้ วิเคราะห์พฤติกรรมการใช้งาน และปรับปรุงบริการ ผู้ใช้สามารถจัดการคุกกี้ได้ผ่านการตั้งค่าเบราว์เซอร์</p>
+<p>หากมีข้อสงสัยเกี่ยวกับนโยบายความเป็นส่วนตัว สามารถติดต่อได้ที่ <a href="https://help.tukdaeng.app">ศูนย์ช่วยเหลือ</a></p>`,
+              contentEn: `<h2>Privacy Policy</h2>
+<p>This policy explains the collection, use, and disclosure of personal data on the TukDaeng platform in accordance with the Personal Data Protection Act (PDPA).</p>
+<h2>1. Data We Collect</h2>
+<ul>
+<li>Account data: name, email, phone, and password (encrypted)</li>
+<li>Usage data: listing history, offers, and chat records</li>
+<li>Device data: IP address, device type, and operating system</li>
+<li>Cookies and tracking: cookies used to improve user experience and analyze usage</li>
+</ul>
+<h2>2. Purpose of Use</h2>
+<p>Personal data is used to provide services, maintain security, prevent fraud, and comply with legal obligations.</p>
+<h2>3. User Rights</h2>
+<ul>
+<li>Right to access and request a copy of data</li>
+<li>Right to correct inaccurate data</li>
+<li>Right to request deletion, except where retention is required by law</li>
+<li>Right to withdraw consent</li>
+</ul>
+<h2>4. Data Retention</h2>
+<p>Data is retained for the period required by law or as necessary for service provision, after which it is destroyed or anonymized.</p>
+<h2>5. Cookies and Tracking</h2>
+<p>We use cookies to remember user preferences, analyze usage behavior, and improve services. Users can manage cookies through browser settings.</p>
+<p>For questions about this Privacy Policy, please contact the <a href="https://help.tukdaeng.app">Help Center</a></p>`
+            },
+            {
+              version: "v2.0",
+              status: "Published",
+              editor: "Admin",
+              editedDate: "2026-08-20 16:00",
+              publishedDate: "2026-08-20 16:05",
+              changeSummary: "ปรับปรุงตาม PDPA และเพิ่มสิทธิ์ผู้ใช้ในการขอลบข้อมูล",
+              contentTh: `<h2>นโยบายความเป็นส่วนตัว</h2>
+<p>นโยบายนี้อธิบายการเก็บรวบรวม การใช้ และการเปิดเผยข้อมูลส่วนบุคคลของผู้ใช้บนแพลตฟอร์ม TukDaeng ตามพระราชบัญญัติคุ้มครองข้อมูลส่วนบุคคล (PDPA)</p>
+<h2>1. ข้อมูลที่เก็บรวบรวม</h2>
+<ul>
+<li>ข้อมูลบัญชี: ชื่อ อีเมล เบอร์โทร และรหัสผ่าน (เข้ารหัส)</li>
+<li>ข้อมูลการใช้งาน: ประวัติการลงประกาศ การเสนอราคา และการแชท</li>
+<li>ข้อมูลอุปกรณ์: IP address ประเภทอุปกรณ์ และระบบปฏิบัติการ</li>
+</ul>
+<h2>2. วัตถุประสงค์การใช้ข้อมูล</h2>
+<p>ข้อมูลส่วนบุคคลถูกใช้เพื่อการให้บริการ การรักษาความปลอดภัย การป้องกันการทุจริต และการปฏิบัติตามกฎหมาย</p>
+<h2>3. สิทธิ์ของผู้ใช้</h2>
+<ul>
+<li>สิทธิ์ในการเข้าถึงและขอสำเนาข้อมูล</li>
+<li>สิทธิ์ในการขอแก้ไขข้อมูลที่ไม่ถูกต้อง</li>
+<li>สิทธิ์ในการขอลบข้อมูล ยกเว้นข้อมูลที่กฎหมายกำหนดให้เก็บไว้</li>
+<li>สิทธิ์ในการเพิกถอนความยินยอม</li>
+</ul>
+<h2>4. การเก็บรักษาข้อมูล</h2>
+<p>ข้อมูลจะถูกเก็บรักษาตามระยะเวลาที่กฎหมายกำหนด หรือตามความจำเป็นในการให้บริการ หลังจากนั้นจะทำลายหรือทำให้ไม่สามารถระบุตัวบุคคลได้</p>
+<p>หากมีข้อสงสัยเกี่ยวกับนโยบายความเป็นส่วนตัว สามารถติดต่อได้ที่ <a href="https://help.tukdaeng.app">ศูนย์ช่วยเหลือ</a></p>`,
+              contentEn: `<h2>Privacy Policy</h2>
+<p>This policy explains the collection, use, and disclosure of personal data on the TukDaeng platform in accordance with the Personal Data Protection Act (PDPA).</p>
+<h2>1. Data We Collect</h2>
+<ul>
+<li>Account data: name, email, phone, and password (encrypted)</li>
+<li>Usage data: listing history, offers, and chat records</li>
+<li>Device data: IP address, device type, and operating system</li>
+</ul>
+<h2>2. Purpose of Use</h2>
+<p>Personal data is used to provide services, maintain security, prevent fraud, and comply with legal obligations.</p>
+<h2>3. User Rights</h2>
+<ul>
+<li>Right to access and request a copy of data</li>
+<li>Right to correct inaccurate data</li>
+<li>Right to request deletion, except where retention is required by law</li>
+<li>Right to withdraw consent</li>
+</ul>
+<h2>4. Data Retention</h2>
+<p>Data is retained for the period required by law or as necessary for service provision, after which it is destroyed or anonymized.</p>
+<p>For questions about this Privacy Policy, please contact the <a href="https://help.tukdaeng.app">Help Center</a></p>`
+            },
+            {
+              version: "v1.5",
+              status: "Archived",
+              editor: "Admin",
+              editedDate: "2026-07-10 11:00",
+              publishedDate: "2026-07-10 11:15",
+              changeSummary: "เพิ่มข้อกำหนดการเก็บ chat log และระยะเวลาเก็บข้อมูล",
+              contentTh: `<h2>นโยบายความเป็นส่วนตัว</h2>
+<p>นโยบายนี้อธิบายการเก็บรวบรวมและการใช้ข้อมูลส่วนบุคคลของผู้ใช้บนแพลตฟอร์ม TukDaeng</p>
+<h2>1. ข้อมูลที่เก็บรวบรวม</h2>
+<ul>
+<li>ข้อมูลบัญชี: ชื่อ อีเมล เบอร์โทร</li>
+<li>ข้อมูลการใช้งาน: ประวัติการลงประกาศและการแชท</li>
+</ul>
+<h2>2. การเก็บ chat log</h2>
+<p>ระบบเก็บ chat log เพื่อการรักษาความปลอดภัยและการตรวจสอบกรณีมีรายงาน โดยเก็บรักษาตามระยะเวลาที่กฎหมายกำหนด</p>`,
+              contentEn: `<h2>Privacy Policy</h2>
+<p>This policy explains the collection and use of personal data on the TukDaeng platform.</p>
+<h2>1. Data We Collect</h2>
+<ul>
+<li>Account data: name, email, phone</li>
+<li>Usage data: listing history and chat records</li>
+</ul>
+<h2>2. Chat Log Retention</h2>
+<p>The system retains chat logs for security and investigation purposes, stored for the period required by law.</p>`
+            }
+          ]
+        }
+      ]
+    };
+
+    // ===== Support Center mock data (HS-PTO-004) =====
+    // Admin-managed contact information displayed in FO Help screen.
+    // Fixed channel types — admin cannot create new channel types.
+    const supportCenterData = {
+      channels: [
+        {
+          id: "ch-line",
+          channelType: "LINE",
+          label: "LINE",
+          value: "@mrfoxthailand",
+          url: "https://line.me/ti/p/@mrfoxthailand",
+          active: true,
+          descriptionTh: "ทักไลน์เพื่อสอบถามข้อมูลหรือรายงานปัญหา",
+          descriptionEn: "Message us on LINE for inquiries or issue reports"
+        },
+        {
+          id: "ch-phone",
+          channelType: "Phone",
+          label: "โทรศัพท์",
+          value: "(+66) 80-008-8088",
+          url: "",
+          active: true,
+          descriptionTh: "โทรสอบถามได้ในเวลาทำการ",
+          descriptionEn: "Call us during business hours"
+        },
+        {
+          id: "ch-email",
+          channelType: "Email",
+          label: "อีเมล",
+          value: "service@mrfox.com",
+          url: "mailto:service@mrfox.com",
+          active: true,
+          descriptionTh: "ส่งอีเมลสำหรับปัญหาที่ต้องการเอกสารประกอบ",
+          descriptionEn: "Email us for issues requiring documentation"
+        },
+        {
+          id: "ch-facebook",
+          channelType: "Facebook",
+          label: "Facebook",
+          value: "MrFox Thailand",
+          url: "https://www.facebook.com/mrfoxthailand",
+          active: true,
+          descriptionTh: "ติดตามข่าวสารและอัปเดตจากเพจ Facebook",
+          descriptionEn: "Follow our Facebook page for news and updates"
+        },
+        {
+          id: "ch-website",
+          channelType: "Website",
+          label: "เว็บไซต์",
+          value: "www.mrfox.com",
+          url: "https://www.mrfox.com",
+          active: true,
+          descriptionTh: "เว็บไซต์หลักของ TukDaeng",
+          descriptionEn: "TukDaeng official website"
+        }
+      ],
+      businessHours: "09:00 - 22:00 (GMT+7)",
+      availabilityTh: "ให้บริการทุกวัน",
+      availabilityEn: "Available daily",
+      lastUpdated: "2026-08-30 10:00",
+      lastEditor: "Admin"
     };
 
     // ===== Option Master mock data (BO-OPT-002a) =====
@@ -13644,6 +15359,29 @@
       user.profileImage = userProfileImages[user.id] || user.profileImage;
     });
 
+    // Shared search insights data — 7 วันล่าสุด (mock) — 10 รายการต่อหมวด
+    // Dashboard "Top Searched Brands" แสดง 5 รายการแรกจาก brands (slice)
+    // Search Insights "Popular Brands" แสดง 5 รายการแรกใน panel + 10 รายการใน modal
+    // ทั้งสองหน้าคำนวณ % จาก total ของแบรนด์ทั้งหมดใน array เดียวกัน
+    const searchInsightsData = {
+      keywords: [
+        { label: "Rolex", value: 2480 }, { label: "Submariner", value: 1620 }, { label: "GMT-Master II", value: 1180 }, { label: "Datejust", value: 940 }, { label: "Speedmaster", value: 760 },
+        { label: "Daytona", value: 620 }, { label: "Aquanaut", value: 480 }, { label: "Royal Oak", value: 420 }, { label: "Nautilus", value: 380 }, { label: "Moonwatch", value: 310 }
+      ],
+      brands: [
+        { label: "Rolex", value: 1684, trend: "+6%" }, { label: "Omega", value: 892, trend: "+3%" }, { label: "Seiko", value: 620, trend: "+9%" }, { label: "Tudor", value: 480, trend: "+5%" }, { label: "Cartier", value: 340, trend: "+14%" },
+        { label: "Patek Philippe", value: 296 }, { label: "Audemars Piguet", value: 264 }, { label: "Grand Seiko", value: 218 }, { label: "IWC", value: 184 }, { label: "Breitling", value: 156 }
+      ],
+      filters: [
+        { label: "Price: ฿100,000–฿300,000", value: 1280 }, { label: "Condition: Like New", value: 980 }, { label: "Dial color: Black", value: 840 }, { label: "Reference: 16610", value: 560 }, { label: "Case size: 40–42mm", value: 480 },
+        { label: "Year: 2020–2024", value: 420 }, { label: "Box & Papers", value: 360 }, { label: "Automatic", value: 340 }, { label: "Condition: Unworn", value: 296 }, { label: "Dial color: Blue", value: 264 }
+      ],
+      noResult: [
+        { label: "Rolex Daytona / ฿300,000", value: 218 }, { label: "Seiko 6139 / Blue dial", value: 142 }, { label: "Patek Calatrava / ฿1M", value: 96 }, { label: "GMT-Master II / 126710", value: 58 },
+        { label: "Submariner / Green bezel", value: 52 }, { label: "Royal Oak / 39mm", value: 46 }, { label: "Speedmaster / Snoopy", value: 38 }, { label: "Cartier Tank / Gold", value: 32 }, { label: "Tudor / Burgundy", value: 26 }, { label: "IWC Pilot / Blue", value: 21 }
+      ]
+    };
+
     const dashboardData = {
       metrics: [
         { label: "New Users", value: "128", trend: "วันนี้เพิ่มขึ้น 8.2% เทียบกับเมื่อวาน", chips: ["Today 128", "This Week 642", "This Month 2,840"], module: "users", sub: "User Accounts", icon: "users" },
@@ -13658,7 +15396,7 @@
         { label: "Offer Activity", value: "12", trend: "อ้างอิงจาก Offer Management mock-up และสถานะ offer ล่าสุด", chips: ["Pending 3", "Paused 1", "Accepted 3", "Rejected 2", "Cancelled 2", "Invalidated 1"], module: "offers", sub: "Offer Queue", icon: "offer" },
         { label: "Articles", value: "12", trend: "มี 4 บทความรอเผยแพร่", chips: ["Published 8", "Scheduled 4"], module: "content", sub: "Articles", icon: "content" },
         { label: "Watch Alert", value: "298", trend: "มีการจับคู่รายการขาย 18 ครั้งวันนี้", chips: ["Active 298", "Triggered 18"], module: "watch-alerts", sub: "Demand Overview", icon: "alert" },
-        { label: "Support Cases", value: "18", trend: "มี 3 เคสใกล้ครบกำหนดตอบครั้งแรก", chips: ["Open 18", "Assigned 9", "Urgent 3"], module: "support", sub: "Tickets", icon: "support" }
+        { label: "Policies", value: "2", trend: "Privacy Policy มี Draft v2.1-draft รอเผยแพร่", chips: ["Published 2", "Draft 1"], module: "settings", sub: "Policy & Versioning", icon: "policy" }
       ],
       queues: [
         { title: "รายงานสินทรัพย์", count: 22, priority: "high", detail: "รายการเก่าสุดรอตรวจ 22 ชม. / เหตุผลหลัก: รูปซ้ำและข้อมูลประกาศซ้ำ / ควรตรวจวันนี้", chips: ["ใกล้ครบกำหนด 6", "ผู้ใช้กระทบสูง"], module: "assets", sub: "Reported Assets" },
@@ -13677,12 +15415,7 @@
         { category: "System", title: "แจ้งเตือนบางรายการส่งไม่สำเร็จ", summary: "ระบบพบ invalid token ใน delivery batch ล่าสุดและแยกงาน retry แล้ว", time: "3 ชม.ที่แล้ว", action: "เปิด Delivery Logs เพื่อตรวจรายการ retry และ cleanup", module: "notifications", sub: "Delivery Logs" }
       ],
       panels: [
-        { title: "Asset Status", meta: "จาก Asset List ทั้งหมด", rows: [
-          { label: "Sale", value: "2,816", detail: "ยอดทั้งหมดที่แสดงใน Feed และ Search", module: "assets", sub: "Asset List" },
-          { label: "Show", value: "428", detail: "ยอดทั้งหมดที่แสดงใน collection และ profile", module: "assets", sub: "Asset List" },
-          { label: "Hide", value: "76", detail: "ยอดทั้งหมดที่ owner/Admin เห็นตามสิทธิ์", module: "assets", sub: "Asset List" },
-          { label: "Sold", value: "214", detail: "ยอดทั้งหมดที่คงประวัติและปิดรับ offer", module: "assets", sub: "Asset List" }
-        ]},
+        { title: "Asset Status", meta: "จาก Asset List ทั้งหมด", rows: [] },
         { title: "Offer Status", meta: "จาก Offer Management ทั้งหมด", rows: [
           { label: "Pending", value: "3", detail: "รอ owner ตอบตามรายการใน Offer Management", module: "offers", sub: "Offer Queue" },
           { label: "Paused", value: "1", detail: "offer ถูกพักระหว่าง asset รอตรวจสอบ", module: "offers", sub: "Offer Queue" },
@@ -13696,13 +15429,10 @@
           { label: "How to Check Provenance", value: "Published", detail: "เผยแพร่แล้วและแสดงบน Board", module: "content", sub: "Articles" },
           { label: "Market Notes July", value: "Draft", detail: "ยังไม่แสดงบน FO / รอรูป cover", module: "content", sub: "Articles" }
         ]},
-        { title: "Top Searched Brands", meta: "จาก Search Report สัปดาห์นี้", type: "brand-ranking", rows: [
-          { label: "Rolex", value: "12.4K", share: 32, trend: "+6%", module: "reports", sub: "Search" },
-          { label: "Omega", value: "8.7K", share: 22, trend: "+3%", module: "reports", sub: "Search" },
-          { label: "Seiko", value: "6.1K", share: 16, trend: "+9%", module: "reports", sub: "Search" },
-          { label: "Cartier", value: "4.2K", share: 11, trend: "+14%", module: "reports", sub: "Search" },
-          { label: "Tudor", value: "3.6K", share: 9, trend: "+5%", module: "reports", sub: "Search" }
-        ]}
+        { title: "Top Searched Brands", meta: "จาก Search Insights สัปดาห์นี้", type: "brand-ranking",
+          rows: searchInsightsData.brands.slice(0, 5).map(b => ({
+            label: b.label, value: b.value, trend: b.trend, module: "watch-alerts", sub: "Search Insights"
+          })) }
       ]
     };
 
@@ -14695,6 +16425,14 @@
         renderArticleDetailPage(getArticleById(context.id));
         return true;
       }
+      if (context.type === "policy-detail") {
+        renderPolicyDetailPage(policyVersioningData.policies.find(entry => entry.id === context.id));
+        return true;
+      }
+      if (context.type === "policy-version-history") {
+        renderPolicyVersionHistoryPage(policyVersioningData.policies.find(entry => entry.id === context.id));
+        return true;
+      }
       if (context.type === "reported-board-detail") {
         renderReportedBoardDetail(getBoardReportById(context.id));
         return true;
@@ -14725,6 +16463,7 @@
       if (activeModule === "content") return { type: "module", module: "content", sub: activeSub === "Reported Articles" ? "Reported Articles" : "Articles", displaySub: activeSub === "Reported Articles" ? "Reported Articles" : "Articles" };
       if (activeModule === "market") return { type: "module", module: "market", sub: activeSub || "Dashboard", displaySub: activeSub || "Dashboard" };
       if (activeModule === "watch-alerts") return { type: "module", module: "watch-alerts", sub: activeSub || "Demand Overview", displaySub: activeSub || "Demand Overview" };
+      if (activeModule === "settings") return { type: "module", module: "settings", sub: activeSub || "Policy & Versioning", displaySub: activeSub || "Policy & Versioning" };
       return null;
     }
 
@@ -19240,7 +20979,9 @@
 
     function applyModalHeadingFonts(modal) {
       if (!modal) return;
+      // HS-PTO-002b: ข้าม heading ใน policy preview/version view body เพราะใช้ font-main ทั้ง TH/EN อยู่แล้ว
       modal.querySelectorAll(".modal-body h1, .modal-body h2, .modal-body h3, .modal-body h4, .modal-body h5, .modal-body h6").forEach(heading => {
+        if (heading.closest(".policy-preview-body, .policy-version-view-body, .policy-preview-language")) return;
         const hasThai = /[\u0E00-\u0E7F]/.test(heading.textContent || "");
         heading.classList.toggle("modal-heading-th", hasThai);
         heading.classList.toggle("modal-heading-en", !hasThai);
@@ -19281,7 +21022,7 @@
       }
       modal.classList.remove("show");
       modal.classList.remove("market-reference-drawer-open", "market-reference-drawer-closing");
-      modalCard?.classList.remove("article-preview-modal", "article-editor-confirm-modal", "category-editor-modal", "category-order-modal", "market-editor-modal", "market-reference-drawer", "board-report-phone-preview-modal", "option-editor-modal", "option-order-modal", "option-audit-modal");
+      modalCard?.classList.remove("article-preview-modal", "article-editor-confirm-modal", "category-editor-modal", "category-order-modal", "market-editor-modal", "market-reference-drawer", "board-report-phone-preview-modal", "option-editor-modal", "option-order-modal", "option-audit-modal", "policy-version-view-modal", "policy-publish-confirm-modal", "policy-restore-confirm-modal", "support-center-preview-modal");
       document.body.classList.remove("asset-action-modal-open");
       document.querySelector("#user-action-modal-body").innerHTML = "";
     }
@@ -20187,6 +21928,12 @@
       // Management, Offer Management). renderOptionGroupList() re-adds them when id is
       // "option-master" (handled further below), so removing here is safe.
       document.body.classList.remove("option-master-mode", "option-group-list-mode", "option-detail-mode");
+      // HS-QA-001: Settings mode classes (Policy & Versioning, Support Center) were only ever
+      // added by their own render functions, never removed by renderModule, so they leaked into
+      // other modules (e.g. Dashboard) and hid .detail/.summary-grid/.cards via CSS. The
+      // settings render functions re-add the appropriate class when id is "settings", so
+      // removing here is safe.
+      document.body.classList.remove("policy-versioning-mode", "policy-detail-mode", "policy-editor-mode", "policy-version-history-mode", "support-center-mode");
       document.body.classList.toggle("article-list-mode", isArticleList);
       document.body.classList.toggle("category-list-mode", isCategoryList);
       document.body.classList.toggle("reported-board-mode", isReportedBoard);
@@ -20230,6 +21977,16 @@
       }
       if (id === "settings" && ((subLabel || "Admin Accounts") === "Roles & Permissions" || subLabel === "Permissions")) {
         renderSettingsPermissionsPage();
+        updateActiveNav();
+        return;
+      }
+      if (id === "settings" && (subLabel || "Admin Accounts") === "Policy & Versioning") {
+        renderPolicyVersioningList();
+        updateActiveNav();
+        return;
+      }
+      if (id === "settings" && (subLabel || "Admin Accounts") === "Support Center") {
+        renderSupportCenterPage();
         updateActiveNav();
         return;
       }
@@ -20600,6 +22357,1045 @@
       `;
     }
 
+    // ===== Policy & Versioning rendering (HS-PTO-001) =====
+    function renderPolicyVersioningList() {
+      activeModule = "settings";
+      activeSub = "Policy & Versioning";
+      activeRow = null;
+      setPageActions("");
+      syncExpandedNavForModule("settings", "Policy & Versioning");
+      document.body.classList.remove("dashboard-mode", "user-management-mode", "user-list-mode", "asset-list-mode", "article-list-mode", "category-list-mode", "reported-board-mode", "asset-detail-mode", "user-detail-mode", "policy-detail-mode", "policy-editor-mode", "policy-version-history-mode", "support-center-mode");
+      document.body.classList.add("policy-versioning-mode");
+      document.querySelector("#crumb").textContent = "เครื่องมือ & รายงาน / Settings / Policy & Versioning";
+      document.querySelector("#page-title").textContent = "Policy & Versioning";
+      document.querySelector("#page-meta").textContent = "";
+      document.querySelector("#panel-title").textContent = "Policy List";
+      document.querySelector("#panel-subtitle").textContent = "";
+      document.querySelector("#primary-action").textContent = "";
+      document.querySelector("#user-panel-filter-actions").innerHTML = "";
+      document.querySelector(".filters").innerHTML = "";
+      // ไม่ใช้ KPI cards เพราะมี policy เพียง 2 ตัว จำนวนซ้ำซ้อนกับตารางและไม่บอก workload (ตามเกณฑ์ When NOT To Use)
+      document.querySelector("#summary-grid").innerHTML = "";
+      document.querySelector("#table").innerHTML = `
+        <div class="asset-table policy-list-table">
+          <div class="asset-row head"><div>Policy</div><div>Description</div><div>Status</div><div>Version</div><div>Updated</div><div>Updated By</div><div>Action</div></div>
+          ${policyVersioningData.policies.map(policy => renderPolicyRow(policy)).join("")}
+        </div>
+      `;
+      document.querySelector("#detail").innerHTML = "";
+      document.querySelector("#cards").innerHTML = "";
+    }
+
+    function renderPolicyRow(policy) {
+      const statusClass = policy.status === "Published" ? "green" : policy.draftVersion ? "amber" : "gray";
+      const draftBadge = policy.draftVersion
+        ? `<span class="pill amber policy-draft-pill">Draft ${policy.draftVersion.replace("-draft", "")}</span>`
+        : "";
+      return `
+        <div class="asset-row" data-policy-open="${policy.id}">
+          <div class="asset-cell-primary" data-label="Policy">
+            <span class="pill ${policy.id === "POL-TOU" ? "blue" : "purple"}">${policy.type.toUpperCase()}</span>
+            <div class="main-text"><span class="mobile-user-card-title">${policy.type.toUpperCase()}</span></div>
+          </div>
+          <div class="asset-card-tags">
+            <span class="pill ${statusClass}">${policy.status}</span>
+            ${draftBadge}
+            <span class="pill slate policy-version-pill">${policy.currentVersion}</span>
+            <div class="user-card-meta">
+              <div class="user-card-meta-item comment-field-meta"><span>Description</span><strong>${policy.description}</strong></div>
+              <div class="user-card-meta-item"><span>Version</span><strong>${policy.currentVersion}</strong></div>
+              <div class="user-card-meta-item"><span>Updated</span><strong>${policy.lastEdited}</strong></div>
+              <div class="user-card-meta-item"><span>Updated By</span><strong>${policy.lastEditor}</strong></div>
+            </div>
+          </div>
+          <div data-label="Description"><div class="main-text">${policy.description}</div></div>
+          <div data-label="Status">
+            <div class="policy-row-badges">
+              <span class="pill ${statusClass}">${policy.status}</span>
+              ${draftBadge}
+            </div>
+          </div>
+          <div data-label="Version"><span class="pill slate policy-version-pill">${policy.currentVersion}</span></div>
+          <div data-label="Updated"><div class="main-text">${policy.lastEdited}</div></div>
+          <div data-label="Updated By"><div class="main-text">${policy.lastEditor}</div></div>
+          <div class="user-row-actions">
+            <button class="panel-action" type="button" data-policy-open="${policy.id}" aria-label="ดูรายละเอียด">${iconSvg.chevron}</button>
+          </div>
+        </div>
+      `;
+    }
+
+    // ===== Support Center rendering (HS-PTO-004) =====
+    function renderSupportCenterPage() {
+      activeModule = "settings";
+      activeSub = "Support Center";
+      activeRow = null;
+      setPageActions("");
+      syncExpandedNavForModule("settings", "Support Center");
+      document.body.classList.remove("dashboard-mode", "user-management-mode", "user-list-mode", "asset-list-mode", "article-list-mode", "category-list-mode", "reported-board-mode", "asset-detail-mode", "user-detail-mode", "policy-versioning-mode", "policy-detail-mode", "policy-editor-mode", "policy-version-history-mode");
+      document.body.classList.add("support-center-mode");
+      document.querySelector("#crumb").textContent = "เครื่องมือ & รายงาน / Settings / Support Center";
+      document.querySelector("#page-title").textContent = "Support Center";
+      document.querySelector("#page-meta").textContent = "";
+      document.querySelector("#panel-title").textContent = "";
+      document.querySelector("#panel-subtitle").textContent = "";
+      document.querySelector("#primary-action").textContent = "";
+      document.querySelector("#user-panel-filter-actions").innerHTML = "";
+      document.querySelector(".filters").innerHTML = "";
+      document.querySelector("#summary-grid").innerHTML = "";
+      document.querySelector("#table").innerHTML = renderSupportCenterForm();
+      document.querySelector("#detail").innerHTML = "";
+      document.querySelector("#cards").innerHTML = "";
+    }
+
+    function renderSupportCenterForm() {
+      return `
+        <div class="support-center-form" data-support-form novalidate>
+          <div class="support-center-section">
+            <h4>ช่องทางติดต่อ</h4>
+            <p class="muted">เปิด/ปิดการแสดงผลแต่ละช่องทางได้ด้วย toggle Active/Inactive — ช่องทางที่เปิดใช้งานต้องกรอกค่า</p>
+            <div class="support-channel-list">
+              ${supportCenterData.channels.map(ch => renderSupportChannelRow(ch)).join("")}
+            </div>
+          </div>
+          <div class="support-center-section">
+            <h4>เวลาทำการ</h4>
+            <div class="support-center-field-row">
+              <label><span>ช่วงเวลา <span class="article-required-mark">*</span></span>
+                <input class="field" type="text" value="${supportCenterData.businessHours}" data-support-business-hours />
+                <span class="article-field-error" data-support-business-hours-error></span>
+              </label>
+              <label><span>ความพร้อมให้บริการ (ไทย) <span class="article-required-mark">*</span></span>
+                <input class="field" type="text" value="${supportCenterData.availabilityTh}" data-support-availability-th />
+                <span class="article-field-error" data-support-availability-th-error></span>
+              </label>
+              <label><span>ความพร้อมให้บริการ (English) <span class="article-required-mark">*</span></span>
+                <input class="field" type="text" value="${supportCenterData.availabilityEn}" data-support-availability-en />
+                <span class="article-field-error" data-support-availability-en-error></span>
+              </label>
+            </div>
+          </div>
+          <div class="user-detail-actions">
+            <button class="user-detail-action-btn" type="button" data-support-preview>Preview</button>
+            <button class="user-detail-action-btn primary" type="button" data-support-save>บันทึกการเปลี่ยนแปลง</button>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderSupportChannelRow(ch) {
+      const activeClass = ch.active ? "active" : "inactive";
+      const valueLabel = supportChannelValueLabel(ch.channelType);
+      // Use type="text" for all channels — type="email" causes the browser to
+      // convert internationalized domain names to punycode when reading .value,
+      // which corrupts user input on re-render. Email format is validated separately.
+      const inputMode = ch.channelType === "Email" ? ` inputmode="email"` : "";
+      const requiredMark = ch.active ? ` <span class="article-required-mark">*</span>` : "";
+      const disabledAttr = ch.active ? "" : "disabled";
+      return `
+        <div class="support-channel-row ${activeClass}" data-channel-id="${ch.id}">
+          <div class="support-channel-toggle">
+            <button type="button" class="toggle-switch ${ch.active ? "on" : ""}" data-channel-toggle="${ch.id}" aria-label="${ch.active ? "ปิดการแสดงผล" : "เปิดการแสดงผล"}">
+              <span class="toggle-knob"></span>
+            </button>
+          </div>
+          <div class="support-channel-info">
+            <label class="support-channel-value-field">
+              <span class="support-channel-type">${ch.channelType}${requiredMark}</span>
+              <input class="field" type="text"${inputMode} value="${ch.value}" data-channel-value="${ch.id}" aria-label="${valueLabel}" ${disabledAttr} />
+              <span class="article-field-error" data-channel-value-error="${ch.id}"></span>
+            </label>
+          </div>
+          <div class="support-channel-desc">
+            <label><span>คำอธิบายช่องทาง (ไทย)</span>
+              <input class="field" type="text" value="${ch.descriptionTh}" data-channel-desc-th="${ch.id}" ${disabledAttr} />
+            </label>
+            <label><span>คำอธิบายช่องทาง (English)</span>
+              <input class="field" type="text" value="${ch.descriptionEn}" data-channel-desc-en="${ch.id}" ${disabledAttr} />
+            </label>
+          </div>
+          <div class="support-channel-status">
+            <span class="pill ${ch.active ? "green" : "gray"}">${ch.active ? "Active" : "Inactive"}</span>
+          </div>
+        </div>
+      `;
+    }
+
+    function supportChannelValueLabel(channelType) {
+      const labels = {
+        Phone: "เบอร์โทรศัพท์",
+        Email: "อีเมล",
+        LINE: "LINE URL",
+        Facebook: "Facebook URL",
+        Website: "Website URL"
+      };
+      return labels[channelType] || channelType;
+    }
+
+    // ===== Support Center validation (HS-PTO-004) =====
+    // Sync live input values from the edit form into supportCenterData so re-renders
+    // (e.g. after toggling a channel) preserve unsaved edits in other fields.
+    function syncSupportCenterFormToData(form) {
+      if (!form) return;
+      form.querySelectorAll("[data-channel-value]").forEach(input => {
+        const ch = supportCenterData.channels.find(c => c.id === input.dataset.channelValue);
+        if (ch) ch.value = input.value;
+      });
+      form.querySelectorAll("[data-channel-desc-th]").forEach(input => {
+        const ch = supportCenterData.channels.find(c => c.id === input.dataset.channelDescTh);
+        if (ch) ch.descriptionTh = input.value;
+      });
+      form.querySelectorAll("[data-channel-desc-en]").forEach(input => {
+        const ch = supportCenterData.channels.find(c => c.id === input.dataset.channelDescEn);
+        if (ch) ch.descriptionEn = input.value;
+      });
+      const hoursInput = form.querySelector("[data-support-business-hours]");
+      if (hoursInput) supportCenterData.businessHours = hoursInput.value;
+      const availThInput = form.querySelector("[data-support-availability-th]");
+      if (availThInput) supportCenterData.availabilityTh = availThInput.value;
+      const availEnInput = form.querySelector("[data-support-availability-en]");
+      if (availEnInput) supportCenterData.availabilityEn = availEnInput.value;
+    }
+
+    // Required fields: channel value (when Active), Business Hours, Availability (TH), Availability (EN)
+    // Optional fields: channel descriptions (TH/EN)
+    function setSupportFieldError(form, field, message = "") {
+      const errorNode = form?.querySelector(`[data-support-${field}-error]`);
+      if (errorNode) {
+        errorNode.textContent = message;
+        errorNode.classList.toggle("show", Boolean(message));
+      }
+      const controlMap = {
+        "business-hours": form?.querySelector("[data-support-business-hours]"),
+        "availability-th": form?.querySelector("[data-support-availability-th]"),
+        "availability-en": form?.querySelector("[data-support-availability-en]")
+      };
+      controlMap[field]?.classList.toggle("article-field-invalid", Boolean(message));
+    }
+
+    function setSupportChannelError(form, channelId, message = "") {
+      const errorNode = form?.querySelector(`[data-channel-value-error="${channelId}"]`);
+      if (errorNode) {
+        errorNode.textContent = message;
+        errorNode.classList.toggle("show", Boolean(message));
+      }
+      const input = form?.querySelector(`[data-channel-value="${channelId}"]`);
+      input?.classList.toggle("article-field-invalid", Boolean(message));
+    }
+
+    function clearSupportCenterErrors(form) {
+      form?.querySelectorAll("[data-channel-value-error]").forEach(node => {
+        node.textContent = "";
+        node.classList.remove("show");
+      });
+      form?.querySelectorAll("[data-channel-value]").forEach(input => input.classList.remove("article-field-invalid"));
+      ["business-hours", "availability-th", "availability-en"].forEach(field => setSupportFieldError(form, field));
+    }
+
+    function validateSupportCenterForm(form) {
+      clearSupportCenterErrors(form);
+      const errors = [];
+      // Channel values — required only when channel is Active, with format checks
+      // Channel descriptions (TH/EN) — optional but max length applies to all channels
+      supportCenterData.channels.forEach(ch => {
+        const valueInput = form?.querySelector(`[data-channel-value="${ch.id}"]`);
+        const value = (valueInput?.value || "").trim();
+        if (ch.active) {
+          if (!value) {
+            const channelLabel = supportChannelValueLabel(ch.channelType);
+            const requiredPrefix = /[A-Za-z]/.test(channelLabel) ? "กรุณากรอก " : "กรุณากรอก";
+            setSupportChannelError(form, ch.id, `${requiredPrefix}${channelLabel}`);
+            errors.push({ id: ch.id, input: valueInput });
+            return;
+          }
+          const formatError = validateSupportChannelValue(ch.channelType, value);
+          if (formatError) {
+            setSupportChannelError(form, ch.id, formatError);
+            errors.push({ id: ch.id, input: valueInput });
+          }
+        }
+        // Channel descriptions — optional, max 200 chars (only validate when Active)
+        if (!ch.active) return;
+        const descThInput = form?.querySelector(`[data-channel-desc-th="${ch.id}"]`);
+        const descThValue = (descThInput?.value || "").trim();
+        if (descThValue.length > 200) {
+          setSupportChannelError(form, ch.id, "คำอธิบายช่องทาง (ไทย) ต้องไม่เกิน 200 ตัวอักษร");
+          errors.push({ id: ch.id, input: descThInput });
+        }
+        const descEnInput = form?.querySelector(`[data-channel-desc-en="${ch.id}"]`);
+        const descEnValue = (descEnInput?.value || "").trim();
+        if (descEnValue.length > 200) {
+          setSupportChannelError(form, ch.id, "Channel description (English) must be 200 characters or fewer");
+          errors.push({ id: ch.id, input: descEnInput });
+        }
+      });
+      // Business Hours — required + format + max length
+      const hoursInput = form?.querySelector("[data-support-business-hours]");
+      const hoursValue = (hoursInput?.value || "").trim();
+      if (!hoursValue) {
+        setSupportFieldError(form, "business-hours", "กรุณากรอกช่วงเวลาทำการ");
+        errors.push({ field: "business-hours", input: hoursInput });
+      } else if (hoursValue.length > 80) {
+        setSupportFieldError(form, "business-hours", "ช่วงเวลาต้องไม่เกิน 80 ตัวอักษร");
+        errors.push({ field: "business-hours", input: hoursInput });
+      } else {
+        const hoursFormatError = validateBusinessHoursFormat(hoursValue);
+        if (hoursFormatError) {
+          setSupportFieldError(form, "business-hours", hoursFormatError);
+          errors.push({ field: "business-hours", input: hoursInput });
+        }
+      }
+      // Availability TH — required + max length
+      const availThInput = form?.querySelector("[data-support-availability-th]");
+      const availThValue = (availThInput?.value || "").trim();
+      if (!availThValue) {
+        setSupportFieldError(form, "availability-th", "กรุณากรอกความพร้อมให้บริการ (ไทย)");
+        errors.push({ field: "availability-th", input: availThInput });
+      } else if (availThValue.length > 120) {
+        setSupportFieldError(form, "availability-th", "ความพร้อมให้บริการ (ไทย) ต้องไม่เกิน 120 ตัวอักษร");
+        errors.push({ field: "availability-th", input: availThInput });
+      }
+      // Availability EN — required + max length
+      const availEnInput = form?.querySelector("[data-support-availability-en]");
+      const availEnValue = (availEnInput?.value || "").trim();
+      if (!availEnValue) {
+        setSupportFieldError(form, "availability-en", "กรุณากรอกความพร้อมให้บริการ (English)");
+        errors.push({ field: "availability-en", input: availEnInput });
+      } else if (availEnValue.length > 120) {
+        setSupportFieldError(form, "availability-en", "Availability (English) must be 120 characters or fewer");
+        errors.push({ field: "availability-en", input: availEnInput });
+      }
+      if (errors.length) {
+        errors[0].input?.focus();
+        return null;
+      }
+      return true;
+    }
+
+    // Format validation per channel type. Returns error message string or "" when valid.
+    function validateSupportChannelValue(channelType, value) {
+      switch (channelType) {
+        case "Phone": {
+          // Allow digits, spaces, +, -, (), and must contain at least 7 digits
+          const digits = value.replace(/[^\d]/g, "");
+          if (!/^[\d+()\s-]+$/.test(value)) return "เบอร์โทรศัพท์ใช้ได้เฉพาะตัวเลขและ + - ( ) ช่องว่าง";
+          if (digits.length < 7) return "เบอร์โทรศัพท์ต้องมีตัวเลขอย่างน้อย 7 หลัก";
+          if (digits.length > 15) return "เบอร์โทรศัพท์ต้องไม่เกิน 15 หลัก";
+          return "";
+        }
+        case "Email": {
+          if (value.length > 254) return "อีเมลต้องไม่เกิน 254 ตัวอักษร";
+          // ASCII-only email format (local@domain.tld) — rejects Thai/Unicode chars
+          if (!/^[A-Za-z0-9.!#$%&'*+/=?^_`{|}~-]+@[A-Za-z0-9-]+(?:\.[A-Za-z0-9-]+)*\.[A-Za-z]{2,}$/.test(value)) return "รูปแบบอีเมลไม่ถูกต้อง";
+          return "";
+        }
+        case "LINE": {
+          if (value.length > 200) return "LINE ต้องไม่เกิน 200 ตัวอักษร";
+          if (!/^(https?:\/\/|@|[A-Za-z0-9._-]+)/.test(value)) return "รูปแบบ LINE ไม่ถูกต้อง (ใช้ @handle หรือ URL)";
+          return "";
+        }
+        case "Facebook": {
+          if (value.length > 200) return "Facebook ต้องไม่เกิน 200 ตัวอักษร";
+          if (!/^(https?:\/\/|[A-Za-z0-9._-]+)/.test(value)) return "รูปแบบ Facebook ไม่ถูกต้อง (ใช้ชื่อเพจหรือ URL)";
+          return "";
+        }
+        case "Website": {
+          if (value.length > 200) return "Website ต้องไม่เกิน 200 ตัวอักษร";
+          if (!/^(https?:\/\/|www\.|[A-Za-z0-9.-]+\.[A-Za-z]{2,})/.test(value)) return "รูปแบบ Website ไม่ถูกต้อง (ใช้ URL หรือโดเมน)";
+          return "";
+        }
+        default:
+          return "";
+      }
+    }
+
+    // Business Hours format — accept patterns like "09:00 - 22:00", "09:00-22:00 (GMT+7)", "ทุกวัน 09:00-22:00"
+    // Must contain at least one time range in HH:MM format
+    function validateBusinessHoursFormat(value) {
+      const timeRangePattern = /\d{1,2}:\d{2}\s*[-–~ถึง]\s*\d{1,2}:\d{2}/;
+      if (!timeRangePattern.test(value)) {
+        return "รูปแบบเวลาไม่ถูกต้อง เช่น 09:00 - 22:00";
+      }
+      return "";
+    }
+
+    // ===== Policy detail page (HS-PTO-002a) =====
+    function renderPolicyDetailPage(policy) {
+      activeModule = "settings";
+      activeSub = "Policy & Versioning";
+      setPageActions(renderPageBackButton("data-policy-back", "กลับไป Policy & Versioning"));
+      syncExpandedNavForModule("settings", "Policy & Versioning");
+      document.body.classList.remove("policy-versioning-mode", "policy-editor-mode", "policy-version-history-mode", "support-center-mode");
+      document.body.classList.add("policy-detail-mode");
+      const publishedVersion = policy.versions.find(v => v.status === "Published");
+      const hasDraft = !!policy.draftVersion;
+      document.querySelector("#crumb").textContent = `เครื่องมือ & รายงาน / Settings / Policy & Versioning / ${policy.type}`;
+      document.querySelector("#page-title").textContent = policy.typeLabel;
+      document.querySelector("#page-meta").textContent = "";
+      document.querySelector("#primary-action").textContent = "";
+      document.querySelector("#user-panel-filter-actions").innerHTML = "";
+      document.querySelector(".filters").innerHTML = "";
+      document.querySelector("#summary-grid").innerHTML = "";
+      document.querySelector("#table").innerHTML = `
+        <div class="user-detail-page policy-detail-page">
+          <div class="policy-detail-layout">
+            <div class="detail-section">
+              <div class="policy-content-tabs">
+                <button class="segmented active" type="button" data-policy-lang-tab="th">ภาษาไทย</button>
+                <button class="segmented" type="button" data-policy-lang-tab="en">English</button>
+              </div>
+              <div class="policy-content-body" data-policy-content-lang="th">
+                ${publishedVersion ? sanitizePolicyContent(publishedVersion.contentTh) : "— ยังไม่มีเวอร์ชันที่เผยแพร่ —"}
+              </div>
+              <div class="policy-content-body" data-policy-content-lang="en" hidden>
+                ${publishedVersion ? sanitizePolicyContent(publishedVersion.contentEn) : "— No published version yet —"}
+              </div>
+              <div class="policy-metadata">
+                <div class="detail-tile"><span class="muted">Status</span><strong><span class="pill ${policy.status === "Published" ? "green" : "gray"}">${policy.status}</span></strong></div>
+                <div class="detail-tile"><span class="muted">Version</span><strong><span class="pill slate">${policy.currentVersion}</span></strong></div>
+                <div class="detail-tile"><span class="muted">Updated</span><strong>${policy.lastEdited}</strong></div>
+                <div class="detail-tile"><span class="muted">Updated By</span><strong>${policy.lastEditor}</strong></div>
+              </div>
+              <div class="policy-change-summary">
+                <span class="muted">สรุปการเปลี่ยนแปลง</span>
+                <p>${publishedVersion ? escapeHtml(publishedVersion.changeSummary) : "—"}</p>
+              </div>
+            </div>
+            <div class="user-detail-actions">
+              ${hasDraft
+                ? `<button class="user-detail-action-btn" type="button" data-policy-edit="${policy.id}">แก้ไข Draft</button>`
+                : `<button class="user-detail-action-btn" type="button" data-policy-create-draft="${policy.id}">สร้าง Draft เวอร์ชันใหม่</button>`
+              }
+              <button class="user-detail-action-btn" type="button" data-policy-version-history="${policy.id}">ดู Version History</button>
+            </div>
+          </div>
+        </div>
+      `;
+      document.querySelector("#detail").innerHTML = "";
+      document.querySelector("#cards").innerHTML = "";
+      updateActiveNav();
+      scrollMainToTop();
+    }
+
+    // ===== Policy editor page (HS-PTO-002a) =====
+    function renderPolicyEditorPage(policy, mode = "edit-draft") {
+      activeModule = "settings";
+      activeSub = "Policy & Versioning";
+      const isNewDraft = mode === "new-draft";
+      const draftVersion = isNewDraft ? `v${getNextPolicyVersionNumber(policy)}.0-draft` : (policy.draftVersion || policy.currentVersion);
+      const publishedVersion = policy.versions.find(v => v.status === "Published");
+      const draft = policy.versions.find(v => v.version === draftVersion);
+      const initialTh = draft?.contentTh || publishedVersion?.contentTh || "";
+      const initialEn = draft?.contentEn || publishedVersion?.contentEn || "";
+      const initialSummary = draft?.changeSummary || "";
+      const editorDate = draft?.editedDate || policy.lastEdited;
+      const toEditorHtml = value => value ? (/<[a-z][\s\S]*>/i.test(value) ? sanitizePolicyContent(value) : `<p>${escapeHtml(value)}</p>`) : "<p><br></p>";
+      setPageActions(renderPageBackButton("data-policy-back", "กลับไป Policy & Versioning"));
+      syncExpandedNavForModule("settings", "Policy & Versioning");
+      document.body.classList.remove("policy-versioning-mode", "policy-detail-mode", "policy-version-history-mode", "support-center-mode");
+      document.body.classList.add("policy-editor-mode");
+      document.querySelector("#crumb").textContent = `เครื่องมือ & รายงาน / Settings / Policy & Versioning / ${policy.type} / Draft`;
+      document.querySelector("#page-title").textContent = `${policy.typeLabel} — Draft`;
+      document.querySelector("#page-meta").textContent = "";
+      document.querySelector("#primary-action").textContent = "";
+      document.querySelector("#user-panel-filter-actions").innerHTML = "";
+      document.querySelector(".filters").innerHTML = "";
+      document.querySelector("#summary-grid").innerHTML = "";
+      document.querySelector("#table").innerHTML = `
+        <div class="user-detail-page policy-editor-page">
+          <div class="policy-detail-layout">
+            <div class="detail-section">
+              <form class="policy-editor-form" data-policy-editor data-policy-id="${policy.id}" data-policy-mode="${isNewDraft ? "new-draft" : "edit-draft"}" novalidate>
+                <section class="article-editor-section">
+                  <div class="policy-metadata">
+                    <div class="detail-tile"><span class="muted">Policy</span><strong><span class="pill ${policy.id === "POL-TOU" ? "blue" : "purple"}">${policy.typeLabel}</span></strong></div>
+                    <div class="detail-tile"><span class="muted">Version</span><strong><span class="pill slate">${draftVersion}</span></strong></div>
+                    <div class="detail-tile"><span class="muted">Status</span><strong><span class="pill amber">Draft</span></strong></div>
+                  </div>
+                </section>
+                <section class="article-editor-section">
+                  <label class="article-editor-field"><span>Content <span class="article-required-mark">*</span></span></label>
+                  <div class="policy-content-tabs" role="tablist" aria-label="ภาษาเนื้อหา">
+                    <button class="segmented active" type="button" data-policy-editor-lang-tab="th" role="tab" aria-selected="true">ภาษาไทย</button>
+                    <button class="segmented" type="button" data-policy-editor-lang-tab="en" role="tab" aria-selected="false">English</button>
+                  </div>
+                  <div data-policy-editor-lang="th">
+                    <div class="policy-editor-toolbar" role="toolbar" aria-label="เครื่องมือจัดรูปแบบภาษาไทย">${renderPolicyEditorToolbarButtons()}</div>
+                    <div class="policy-editor-canvas" contenteditable="true" role="textbox" aria-multiline="true" data-policy-content-th>${toEditorHtml(initialTh)}</div>
+                  </div>
+                  <div data-policy-editor-lang="en" hidden>
+                    <div class="policy-editor-toolbar" role="toolbar" aria-label="Formatting tools in English">${renderPolicyEditorToolbarButtons()}</div>
+                    <div class="policy-editor-canvas" contenteditable="true" role="textbox" aria-multiline="true" data-policy-content-en>${toEditorHtml(initialEn)}</div>
+                  </div>
+                  <span class="article-field-error" data-policy-content-error></span>
+                  <label class="article-editor-field"><span>สรุปการเปลี่ยนแปลง <span class="article-required-mark">*</span></span><textarea class="field" rows="2" data-policy-change-summary placeholder="อธิบายสิ่งที่เปลี่ยนแปลงในเวอร์ชันนี้">${escapeHtml(initialSummary)}</textarea><span class="article-field-error" data-policy-change-summary-error></span></label>
+                </section>
+                <div class="policy-editor-actions">
+                  <button class="user-detail-action-btn" type="button" data-policy-back>ยกเลิก</button>
+                  <button class="user-detail-action-btn" type="button" data-policy-preview>Preview</button>
+                  <button class="user-detail-action-btn" type="button" data-policy-publish>Publish</button>
+                  <button class="user-detail-action-btn primary" type="submit">บันทึก Draft</button>
+                </div>
+              </form>
+            </div>
+            <aside class="policy-editor-sidebar" aria-label="ข้อมูลการแก้ไข">
+              <h4>ข้อมูลการแก้ไข</h4>
+              <dl class="policy-editor-meta-list">
+                <div><dt>ผู้แก้ไข</dt><dd>Admin</dd></div>
+                <div><dt>วันที่แก้ไข</dt><dd>${editorDate}</dd></div>
+              </dl>
+              <p class="muted">กด Preview เพื่อดูตัวอย่าง 2 ภาษา ก่อนเผยแพร่ หรือกด Publish เพื่อเผยแพร่เวอร์ชันนี้ (เวอร์ชันที่เผยแพร่แล้วจะถูกเก็บเป็น Archived อัตโนมัติ)</p>
+            </aside>
+          </div>
+        </div>
+      `;
+      document.querySelector("#detail").innerHTML = "";
+      document.querySelector("#cards").innerHTML = "";
+      updateActiveNav();
+      scrollMainToTop();
+    }
+
+    function setPolicyEditorFieldError(form, field, message = "") {
+      if (!form) return;
+      const errorNode = form.querySelector(`[data-policy-${field}-error]`);
+      if (errorNode) {
+        errorNode.textContent = message;
+        errorNode.classList.toggle("show", Boolean(message));
+      }
+      const controlMap = {
+        "content": form.querySelector("[data-policy-content-th]"),
+        "change-summary": form.querySelector("[data-policy-change-summary]")
+      };
+      controlMap[field]?.classList.toggle("article-field-invalid", Boolean(message));
+    }
+
+    function clearPolicyEditorErrors(form) {
+      setPolicyEditorFieldError(form, "content");
+      setPolicyEditorFieldError(form, "change-summary");
+    }
+
+    function isPolicyEditorContentEmpty(editor) {
+      if (!editor) return true;
+      const text = (editor.textContent || "").trim();
+      if (text) return false;
+      const hasMedia = editor.querySelector("img, video, iframe");
+      return !hasMedia;
+    }
+
+    function validatePolicyEditorForm(form) {
+      clearPolicyEditorErrors(form);
+      const errors = [];
+      const thEditor = form.querySelector("[data-policy-content-th]");
+      const enEditor = form.querySelector("[data-policy-content-en]");
+      const summary = form.querySelector("[data-policy-change-summary]");
+      const thEmpty = isPolicyEditorContentEmpty(thEditor);
+      const enEmpty = isPolicyEditorContentEmpty(enEditor);
+      if (thEmpty) {
+        setPolicyEditorFieldError(form, "content", "กรุณากรอกเนื้อหาภาษาไทย");
+        errors.push("content");
+      }
+      if (enEmpty) {
+        setPolicyEditorFieldError(form, "content", thEmpty ? "กรุณากรอกเนื้อหาทั้งภาษาไทยและภาษาอังกฤษ" : "กรุณากรอกเนื้อหาภาษาอังกฤษ");
+        errors.push("content");
+      }
+      if (summary && !summary.value.trim()) {
+        setPolicyEditorFieldError(form, "change-summary", "กรุณากรอกสรุปการเปลี่ยนแปลง");
+        errors.push("change-summary");
+      }
+      if (errors.length) {
+        const firstError = errors[0];
+        if (firstError === "content") {
+          thEmpty ? thEditor?.focus() : enEditor?.focus();
+        } else if (firstError === "change-summary") {
+          summary?.focus();
+        }
+        return null;
+      }
+      return {
+        contentTh: thEditor?.innerHTML || "",
+        contentEn: enEditor?.innerHTML || "",
+        changeSummary: summary?.value.trim() || ""
+      };
+    }
+
+    function getNextPolicyVersionNumber(policy) {
+      const maxVersion = policy.versions.reduce((max, v) => {
+        const match = v.version.match(/v(\d+)/);
+        return match ? Math.max(max, parseInt(match[1], 10)) : max;
+      }, 0);
+      return maxVersion + 1;
+    }
+
+    function sanitizePolicyContent(value) {
+      const allowedTags = new Set(["P", "H2", "H3", "UL", "OL", "LI", "A", "STRONG", "EM", "BR"]);
+      const template = document.createElement("template");
+      template.innerHTML = value;
+      template.content.querySelectorAll("*").forEach(node => {
+        if (!allowedTags.has(node.tagName)) {
+          node.replaceWith(...node.childNodes);
+          return;
+        }
+        [...node.attributes].forEach(attribute => {
+          if (node.tagName !== "A" || !["href", "target", "rel"].includes(attribute.name)) node.removeAttribute(attribute.name);
+        });
+        if (node.tagName === "A") {
+          const href = node.getAttribute("href") || "";
+          if (!/^https?:\/\//i.test(href)) node.removeAttribute("href");
+          node.setAttribute("target", "_blank");
+          node.setAttribute("rel", "noreferrer noopener");
+        }
+      });
+      return template.innerHTML;
+    }
+
+    function renderPolicyEditorToolbarButtons() {
+      const tools = [
+        { command: "bold", label: "ตัวหนา" },
+        { command: "italic", label: "ตัวเอียง" },
+        { command: "underline", label: "ขีดเส้นใต้" },
+        { command: "formatBlock", value: "H2", iconKey: "heading", label: "หัวข้อ H2" },
+        { command: "insertUnorderedList", label: "รายการแบบจุด" },
+        { command: "insertOrderedList", label: "รายการแบบตัวเลข" },
+        { command: "justifyLeft", label: "จัดชิดซ้าย" },
+        { command: "justifyCenter", label: "จัดกึ่งกลาง" },
+        { command: "justifyRight", label: "จัดชิดขวา" },
+        { command: "createLink", label: "เพิ่มลิงก์" }
+      ];
+      return tools.map(tool => `<button class="policy-editor-tool" type="button" data-policy-editor-command="${tool.command}"${tool.value ? ` data-policy-editor-value="${tool.value}"` : ""} aria-label="${tool.label}" title="${tool.label}">${policyEditorToolIcons[tool.iconKey || tool.command]}</button>`).join("");
+    }
+
+    function runPolicyEditorCommand(button) {
+      const editor = button.closest("[data-policy-editor-lang]")?.querySelector("[contenteditable]");
+      if (!editor) return;
+      editor.focus();
+      const command = button.dataset.policyEditorCommand;
+      if (command === "createLink") {
+        const url = window.prompt("ใส่ URL ของลิงก์");
+        if (!url) return;
+        document.execCommand("createLink", false, url);
+      } else if (command === "formatBlock") {
+        const target = button.dataset.policyEditorValue;
+        const current = (document.queryCommandValue("formatBlock") || "").toLowerCase();
+        const next = current === target.toLowerCase() ? "p" : target;
+        document.execCommand("formatBlock", false, `<${next}>`);
+      } else {
+        document.execCommand(command, false, button.dataset.policyEditorValue || null);
+      }
+    }
+
+    function openPolicyPreviewModal(form) {
+      const policy = policyVersioningData.policies.find(item => item.id === form.dataset.policyId);
+      if (!policy) return;
+      const th = sanitizePolicyContent(form.querySelector("[data-policy-content-th]")?.innerHTML || "");
+      const en = sanitizePolicyContent(form.querySelector("[data-policy-content-en]")?.innerHTML || "");
+      const modalBody = document.querySelector("#user-action-modal-body");
+      const modalCard = document.querySelector("#user-action-modal .user-action-modal");
+      modalCard?.classList.add("article-preview-modal");
+      const previewVersionLabel = form.querySelector(".policy-metadata .detail-tile:nth-child(2) strong")?.textContent || "Draft";
+      modalBody.innerHTML = `
+        <div class="user-action-page policy-editor-preview-content">
+          <div class="user-action-head">
+            <div class="policy-preview-title-row">
+              <h2 id="user-action-modal-title">Preview — ${policy.typeLabel}</h2>
+              <span class="pill slate policy-preview-version-pill">${previewVersionLabel}</span>
+            </div>
+            <button class="btn user-action-close" type="button" data-user-action-modal-close aria-label="ปิด">${iconSvg.close}</button>
+          </div>
+          <div class="policy-preview-language"><h4>ภาษาไทย</h4><div class="policy-preview-body">${th}</div></div>
+          <div class="policy-preview-language"><h4>English</h4><div class="policy-preview-body">${en}</div></div>
+        </div>
+      `;
+      showUserActionModal(true);
+    }
+
+    // HS-PTO-002b: Publish confirmation modal
+    function openPolicyPublishConfirmModal(form) {
+      const policy = policyVersioningData.policies.find(item => item.id === form.dataset.policyId);
+      if (!policy) return;
+      const validated = validatePolicyEditorForm(form);
+      if (!validated) return;
+      const isNewDraft = form.dataset.policyMode === "new-draft";
+      const draftVersion = isNewDraft
+        ? `v${getNextPolicyVersionNumber(policy)}.0`
+        : (policy.draftVersion || `v${getNextPolicyVersionNumber(policy)}.0`).replace(/-draft$/, "");
+      const publishedVersion = policy.versions.find(v => v.status === "Published");
+      const modalCard = document.querySelector("#user-action-modal .user-action-modal");
+      const modalBody = document.querySelector("#user-action-modal-body");
+      modalCard?.classList.remove("article-preview-modal", "category-editor-modal", "policy-restore-confirm-modal");
+      modalCard?.classList.add("article-editor-confirm-modal", "policy-publish-confirm-modal");
+      modalBody.innerHTML = `
+        <div class="article-editor-confirm-page policy-publish-confirm-page">
+          <div class="article-editor-confirm-icon" aria-hidden="true">
+            <span>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+                <path d="m7.9 12.2 2.7 2.7 5.8-6"></path>
+              </svg>
+            </span>
+          </div>
+          <h2 id="user-action-modal-title">ยืนยันการเผยแพร่</h2>
+          <p class="article-editor-confirm-question">ต้องการเผยแพร่ ${policy.typeLabel} เวอร์ชัน ${draftVersion} หรือไม่?</p>
+          <p class="article-editor-confirm-summary">เวอร์ชัน ${publishedVersion ? publishedVersion.version : "—"} จะถูกเก็บเป็น Archived และเนื้อหาใหม่จะแสดงทันที</p>
+          <div class="policy-publish-confirm-meta">
+            <div><span class="muted">Policy</span><strong>${policy.typeLabel}</strong></div>
+            <div><span class="muted">Version</span><span class="pill slate policy-publish-version-value">${draftVersion}</span></div>
+            <div><span class="muted">สรุปการเปลี่ยนแปลง</span><strong>${escapeHtml(validated.changeSummary)}</strong></div>
+          </div>
+          <div class="article-editor-confirm-actions">
+            <button class="user-detail-action-btn" type="button" data-user-action-modal-close>ยกเลิก</button>
+            <button class="user-detail-action-btn user-action-confirm" type="button" data-policy-publish-confirm="${policy.id}" data-policy-publish-version="${draftVersion}">เผยแพร่</button>
+          </div>
+        </div>
+      `;
+      showUserActionModal(true);
+    }
+
+    // HS-PTO-002b: Apply publish — archive old published, promote draft to Published
+    function applyPolicyPublish(policyId, newVersionNumber) {
+      const policy = policyVersioningData.policies.find(p => p.id === policyId);
+      if (!policy) return;
+      const form = document.querySelector("[data-policy-editor]");
+      const th = form?.querySelector("[data-policy-content-th]")?.innerHTML || "";
+      const en = form?.querySelector("[data-policy-content-en]")?.innerHTML || "";
+      const summary = form?.querySelector("[data-policy-change-summary]")?.value.trim() || "";
+      const now = new Date().toISOString().slice(0, 16).replace("T", " ");
+      // Archive the currently published version
+      const currentPublished = policy.versions.find(v => v.status === "Published");
+      if (currentPublished) currentPublished.status = "Archived";
+      // Remove existing draft with same version number (if any)
+      const draftLabel = `${newVersionNumber}-draft`;
+      policy.versions = policy.versions.filter(v => v.version !== draftLabel && v.version !== newVersionNumber);
+      // Promote new published version
+      const newPublished = {
+        version: newVersionNumber,
+        status: "Published",
+        editor: "Admin",
+        editedDate: now,
+        publishedDate: now,
+        changeSummary: summary,
+        contentTh: th,
+        contentEn: en
+      };
+      policy.versions.unshift(newPublished);
+      policy.status = "Published";
+      policy.currentVersion = newVersionNumber;
+      policy.lastEdited = now;
+      policy.lastEditor = "Admin";
+      policy.publishedDate = now;
+      policy.draftVersion = null;
+      closeUserActionModal();
+      showSuccessToast(`เผยแพร่ ${policy.typeLabel} เวอร์ชัน ${newVersionNumber} เรียบร้อย`);
+      renderPolicyDetailPage(policy);
+    }
+
+    // HS-PTO-002b: Version view modal (read-only content TH/EN)
+    function openPolicyVersionViewModal(policy, version) {
+      const modalCard = document.querySelector("#user-action-modal .user-action-modal");
+      const modalBody = document.querySelector("#user-action-modal-body");
+      modalCard?.classList.remove("article-editor-confirm-modal", "category-editor-modal", "policy-publish-confirm-modal", "policy-restore-confirm-modal");
+      modalCard?.classList.add("article-preview-modal", "policy-version-view-modal");
+      modalBody.innerHTML = `
+        <div class="user-action-layout article-preview-modal-content policy-version-view-content">
+          <div class="user-action-head">
+            <div>
+              <h2 id="user-action-modal-title">${policy.typeLabel} — ${version.version}</h2>
+            </div>
+            <button class="btn user-action-close" type="button" data-user-action-modal-close aria-label="ปิด">${iconSvg.close}</button>
+          </div>
+          <div class="policy-version-view-tabs" role="tablist" aria-label="ภาษาเนื้อหา">
+            <button class="segmented active" type="button" data-policy-version-view-lang="th" role="tab" aria-selected="true">ภาษาไทย</button>
+            <button class="segmented" type="button" data-policy-version-view-lang="en" role="tab" aria-selected="false">English</button>
+          </div>
+          <div class="policy-version-view-body" data-policy-version-view-lang-panel="th">${sanitizePolicyContent(version.contentTh || "")}</div>
+          <div class="policy-version-view-body" data-policy-version-view-lang-panel="en" hidden>${sanitizePolicyContent(version.contentEn || "")}</div>
+          <div class="policy-version-view-meta">
+            <div><span class="muted">Status</span><strong><span class="pill ${version.status === "Published" ? "green" : version.status === "Draft" ? "amber" : "gray"}">${version.status}</span></strong></div>
+            <div><span class="muted">Version</span><strong><span class="pill slate">${version.version}</span></strong></div>
+            <div><span class="muted">Updated</span><strong>${version.editedDate}</strong></div>
+            <div><span class="muted">Updated By</span><strong>${version.editor}</strong></div>
+          </div>
+          <div class="policy-version-view-summary">
+            <span class="muted">สรุปการเปลี่ยนแปลง</span>
+            <p>${escapeHtml(version.changeSummary || "—")}</p>
+          </div>
+          ${version.status === "Archived" ? `
+            <div class="policy-version-view-footer">
+              <button class="user-detail-action-btn primary" type="button" data-policy-version-restore="${policy.id}" data-policy-version="${version.version}">Restore เวอร์ชันนี้</button>
+            </div>
+          ` : version.status === "Draft" ? `
+            <div class="policy-version-view-footer">
+              <button class="user-detail-action-btn primary" type="button" data-policy-version-edit="${policy.id}" data-policy-version="${version.version}">แก้ไข Draft</button>
+            </div>
+          ` : ""}
+        </div>
+      `;
+      showUserActionModal(true);
+    }
+
+    // HS-PTO-002b: Restore confirmation modal — creates a new draft from an archived version
+    // Warns the user when an existing draft will be replaced by the restore action.
+    function openPolicyVersionRestoreConfirmModal(policy, version) {
+      const modalCard = document.querySelector("#user-action-modal .user-action-modal");
+      const modalBody = document.querySelector("#user-action-modal-body");
+      modalCard?.classList.remove("article-preview-modal", "category-editor-modal", "policy-publish-confirm-modal");
+      modalCard?.classList.add("article-editor-confirm-modal", "policy-restore-confirm-modal");
+      const hasExistingDraft = !!policy.draftVersion;
+      const draftWarning = hasExistingDraft
+        ? `<p class="article-editor-confirm-summary" style="color: var(--amber, #b45309);">Draft ปัจจุบัน (${policy.draftVersion}) จะถูกแทนที่โดย Draft ใหม่จากการ Restore</p>`
+        : "";
+      modalBody.innerHTML = `
+        <div class="article-editor-confirm-page">
+          <div class="article-editor-confirm-icon" aria-hidden="true">
+            <span>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+                <path d="m7.9 12.2 2.7 2.7 5.8-6"></path>
+              </svg>
+            </span>
+          </div>
+          <h2 id="user-action-modal-title">ยืนยันการ Restore</h2>
+          <p class="article-editor-confirm-question">Restore เวอร์ชัน ${version.version} เป็น Draft ใหม่ใช่หรือไม่?</p>
+          <p class="article-editor-confirm-summary">ระบบจะสร้าง Draft ใหม่จากเวอร์ชันนี้ โดยเวอร์ชันเดิมยังคงอยู่ในประวัติ</p>
+          ${draftWarning}
+          <div class="article-editor-confirm-actions">
+            <button class="user-detail-action-btn" type="button" data-user-action-modal-close>ยกเลิก</button>
+            <button class="user-detail-action-btn user-action-confirm" type="button" data-policy-version-restore-confirm="${policy.id}" data-policy-version-restore-source="${version.version}">Restore</button>
+          </div>
+        </div>
+      `;
+      showUserActionModal(true);
+    }
+
+    // HS-PTO-002b: Apply restore — create a new draft version from an archived version
+    function applyPolicyVersionRestore(policyId, sourceVersionLabel) {
+      const policy = policyVersioningData.policies.find(p => p.id === policyId);
+      if (!policy) return;
+      const source = policy.versions.find(v => v.version === sourceVersionLabel);
+      if (!source) return;
+      const newDraftNumber = `v${getNextPolicyVersionNumber(policy)}.0-draft`;
+      const now = new Date().toISOString().slice(0, 16).replace("T", " ");
+      const draftVersion = {
+        version: newDraftNumber,
+        status: "Draft",
+        editor: "Admin",
+        editedDate: now,
+        publishedDate: "",
+        changeSummary: `Restore จากเวอร์ชัน ${sourceVersionLabel}`,
+        contentTh: source.contentTh || "",
+        contentEn: source.contentEn || ""
+      };
+      // Remove any existing draft(s) so restore produces a single Draft entry
+      policy.versions = policy.versions.filter(v => !(v.status === "Draft"));
+      policy.versions.unshift(draftVersion);
+      policy.draftVersion = newDraftNumber;
+      closeUserActionModal();
+      showSuccessToast(`Restore เวอร์ชัน ${sourceVersionLabel} เป็น Draft ${newDraftNumber} เรียบร้อย`);
+      renderPolicyEditorPage(policy, "edit-draft");
+    }
+
+    // ===== Policy version history page (HS-PTO-002b) =====
+    function renderPolicyVersionHistoryPage(policy) {
+      activeModule = "settings";
+      activeSub = "Policy & Versioning";
+      setPageActions(renderPageBackButton("data-policy-back", "กลับไป Policy & Versioning"));
+      syncExpandedNavForModule("settings", "Policy & Versioning");
+      document.body.classList.remove("policy-versioning-mode", "policy-detail-mode", "policy-editor-mode", "support-center-mode");
+      document.body.classList.add("policy-version-history-mode");
+      document.querySelector("#crumb").textContent = `เครื่องมือ & รายงาน / Settings / Policy & Versioning / ${policy.type} / Version History`;
+      document.querySelector("#page-title").textContent = "Version History";
+      document.querySelector("#page-meta").textContent = "";
+      document.querySelector("#panel-title").textContent = "Version History List";
+      document.querySelector("#panel-subtitle").textContent = "";
+      document.querySelector("#primary-action").textContent = "";
+      document.querySelector("#user-panel-filter-actions").innerHTML = "";
+      document.querySelector(".filters").innerHTML = "";
+      document.querySelector("#summary-grid").innerHTML = "";
+      document.querySelector("#table").innerHTML = `
+        <div class="asset-table policy-version-table">
+          <div class="asset-row head"><div>Version</div><div>Status</div><div>Updated By</div><div>Updated</div><div>Published Date</div><div>Change Summary</div><div>Action</div></div>
+          ${policy.versions.map(v => {
+            const statusClass = v.status === "Published" ? "green" : v.status === "Draft" ? "amber" : "gray";
+            return `
+            <div class="asset-row" data-policy-version-open="${policy.id}" data-policy-version="${v.version}">
+              <div class="asset-cell-primary" data-label="Version">
+                <span class="pill slate policy-version-pill">${v.version}</span>
+                <div class="main-text"><span class="mobile-user-card-title">${v.version}</span></div>
+              </div>
+              <div class="asset-card-tags">
+                <span class="pill ${statusClass}">${v.status}</span>
+                <div class="user-card-meta">
+                  <div class="user-card-meta-item"><span>Status</span><strong>${v.status}</strong></div>
+                  <div class="user-card-meta-item"><span>Updated By</span><strong>${v.editor}</strong></div>
+                  <div class="user-card-meta-item"><span>Updated</span><strong>${v.editedDate}</strong></div>
+                  <div class="user-card-meta-item"><span>Published Date</span><strong>${v.publishedDate || "—"}</strong></div>
+                  <div class="user-card-meta-item comment-field-meta"><span>Change Summary</span><strong>${escapeHtml(v.changeSummary)}</strong></div>
+                </div>
+              </div>
+              <div data-label="Status">
+                <div class="policy-row-badges">
+                  <span class="pill ${statusClass}">${v.status}</span>
+                </div>
+              </div>
+              <div data-label="Updated By"><div class="main-text">${v.editor}</div></div>
+              <div data-label="Updated"><div class="main-text">${v.editedDate}</div></div>
+              <div data-label="Published Date"><div class="main-text">${v.publishedDate || "—"}</div></div>
+              <div data-label="Change Summary"><div class="main-text">${escapeHtml(v.changeSummary)}</div></div>
+              <div class="user-row-actions">
+                <details class="row-menu">
+                  <summary aria-label="Version actions"><span class="policy-version-action-dots" aria-hidden="true">...</span></summary>
+                  <div class="row-menu-list">
+                    ${v.status === "Draft" ? `<button type="button" data-policy-version-edit="${policy.id}" data-policy-version="${v.version}">แก้ไข Draft</button>` : ""}
+                    <button type="button" data-policy-version-view="${policy.id}" data-policy-version="${v.version}">ดูเวอร์ชัน</button>
+                    ${v.status === "Archived" ? `<button type="button" data-policy-version-restore="${policy.id}" data-policy-version="${v.version}">Restore เป็น Draft</button>` : ""}
+                  </div>
+                </details>
+              </div>
+            </div>
+            `;
+          }).join("")}
+        </div>
+      `;
+      document.querySelector("#detail").innerHTML = "";
+      document.querySelector("#cards").innerHTML = "";
+      updateActiveNav();
+      const versionHistoryTable = document.querySelector("#table");
+      if (versionHistoryTable) versionHistoryTable.scrollLeft = 0;
+      scrollMainToTop();
+    }
+
+    // ===== Support Center preview modal (HS-PTO-005) =====
+    let supportPreviewLang = "th"; // "th" | "en"
+    function openSupportCenterPreviewModal() {
+      supportPreviewLang = "th";
+      const modalBody = document.querySelector("#user-action-modal-body");
+      const modalCard = document.querySelector("#user-action-modal .user-action-modal");
+      if (modalBody) {
+        modalCard?.classList.remove("article-preview-modal", "article-editor-confirm-modal", "category-editor-modal", "category-order-modal", "market-editor-modal", "market-reference-drawer", "board-report-phone-preview-modal", "option-editor-modal", "option-order-modal", "option-audit-modal", "policy-version-view-modal", "policy-publish-confirm-modal", "policy-restore-confirm-modal");
+        modalCard?.classList.add("support-center-preview-modal");
+        modalBody.innerHTML = renderSupportCenterPreviewModalContent();
+        showUserActionModal(true);
+      }
+    }
+
+    function getSupportPreviewFormData() {
+      // Read live values from the edit form so preview reflects unsaved edits
+      const data = {
+        channels: supportCenterData.channels.map(ch => ({ ...ch })),
+        businessHours: supportCenterData.businessHours,
+        availabilityTh: supportCenterData.availabilityTh,
+        availabilityEn: supportCenterData.availabilityEn
+      };
+      const form = document.querySelector("[data-support-form]");
+      if (form) {
+        form.querySelectorAll("[data-channel-value]").forEach(input => {
+          const ch = data.channels.find(c => c.id === input.dataset.channelValue);
+          if (ch) ch.value = input.value;
+        });
+        form.querySelectorAll("[data-channel-desc-th]").forEach(input => {
+          const ch = data.channels.find(c => c.id === input.dataset.channelDescTh);
+          if (ch) ch.descriptionTh = input.value;
+        });
+        form.querySelectorAll("[data-channel-desc-en]").forEach(input => {
+          const ch = data.channels.find(c => c.id === input.dataset.channelDescEn);
+          if (ch) ch.descriptionEn = input.value;
+        });
+        const hoursInput = form.querySelector("[data-support-business-hours]");
+        if (hoursInput) data.businessHours = hoursInput.value;
+        const availThInput = form.querySelector("[data-support-availability-th]");
+        if (availThInput) data.availabilityTh = availThInput.value;
+        const availEnInput = form.querySelector("[data-support-availability-en]");
+        if (availEnInput) data.availabilityEn = availEnInput.value;
+      }
+      return data;
+    }
+
+    function renderSupportCenterPreviewModalContent() {
+      const data = getSupportPreviewFormData();
+      const activeChannels = data.channels.filter(c => c.active);
+      const isTh = supportPreviewLang === "th";
+      const availability = isTh ? data.availabilityTh : data.availabilityEn;
+      const channelsHtml = activeChannels.length > 0
+        ? activeChannels.map(ch => {
+            const desc = isTh ? ch.descriptionTh : ch.descriptionEn;
+            return `
+              <div class="support-preview-fo-channel">
+                <div class="support-preview-fo-channel-icon">${getSupportChannelIcon(ch.channelType)}</div>
+                <div class="support-preview-fo-channel-info">
+                  <div class="support-preview-fo-channel-type">${ch.channelType}</div>
+                  <div class="support-preview-fo-channel-value">${escapeHtml(ch.value)}</div>
+                  ${desc ? `<div class="support-preview-fo-channel-desc">${escapeHtml(desc)}</div>` : ""}
+                </div>
+              </div>
+            `;
+          }).join("")
+        : `<div class="support-preview-empty">ไม่มีช่องทางที่เปิดใช้งาน</div>`;
+      return `
+        <div class="user-action-page support-center-preview-content">
+          <div class="user-action-head">
+            <div>
+              <h2 id="user-action-modal-title">Preview</h2>
+            </div>
+            <button class="btn user-action-close" type="button" data-user-action-modal-close aria-label="ปิด">${iconSvg.close}</button>
+          </div>
+          <div class="support-preview-lang-toggle">
+            <button class="support-preview-lang-btn ${isTh ? "active" : ""}" type="button" data-support-preview-lang="th">ภาษาไทย</button>
+            <button class="support-preview-lang-btn ${!isTh ? "active" : ""}" type="button" data-support-preview-lang="en">English</button>
+          </div>
+          <div class="support-preview-body">
+            <div class="support-preview-phone">
+              <div class="support-preview-phone-screen">
+                <div class="support-preview-fo-header">
+                  <span class="support-preview-fo-back">‹</span>
+                  <span class="support-preview-fo-title">Help</span>
+                </div>
+                <div class="support-preview-fo-content">
+                  <h4 class="support-preview-fo-heading">${isTh ? "ติดต่อเรา" : "Contact support"}</h4>
+                  <p class="support-preview-fo-availability">${escapeHtml(availability)}</p>
+                  <div class="support-preview-fo-channels">
+                    ${channelsHtml}
+                  </div>
+                  <div class="support-preview-fo-hours">
+                    <div class="support-preview-fo-hours-label">${isTh ? "เวลาทำการ" : "Business hours"}</div>
+                    <div class="support-preview-fo-hours-value">${escapeHtml(data.businessHours)}</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function switchSupportPreviewLang(lang) {
+      supportPreviewLang = lang;
+      const modalBody = document.querySelector("#user-action-modal-body");
+      const modal = document.querySelector("#user-action-modal");
+      if (modalBody) {
+        const oldScroll = modalBody.querySelector(".support-preview-body");
+        const savedScroll = oldScroll ? oldScroll.scrollTop : 0;
+        modalBody.innerHTML = renderSupportCenterPreviewModalContent();
+        if (modal) applyModalHeadingFonts(modal);
+        const newScroll = modalBody.querySelector(".support-preview-body");
+        if (newScroll) newScroll.scrollTop = savedScroll;
+      }
+    }
+
+    function getSupportChannelIcon(channelType) {
+      const icons = {
+        LINE: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.5 2 2 5.6 2 10c0 4 3.5 7.3 8.3 7.9.3.1.7.3.7.6v1.7c0 .3.3.6.6.5C16.7 19.8 22 16.5 22 10c0-4.4-4.5-8-10-8Z"/></svg>',
+        Phone: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2 4.2 2 2 0 0 1 4 2h3a2 2 0 0 1 2 1.7c.1.9.3 1.8.6 2.6a2 2 0 0 1-.5 2.1L7.9 9.8a16 16 0 0 0 6 6l1.4-1.2a2 2 0 0 1 2.1-.5c.8.3 1.7.5 2.6.6a2 2 0 0 1 1.7 2Z"/></svg>',
+        Email: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m2 7 10 6 10-6"/></svg>',
+        Facebook: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M22 12a10 10 0 1 0-11.6 9.9v-7H7.9V12h2.5V9.8c0-2.5 1.5-3.9 3.8-3.9 1.1 0 2.2.2 2.2.2v2.5h-1.3c-1.2 0-1.6.8-1.6 1.6V12h2.8l-.5 2.9h-2.3v7A10 10 0 0 0 22 12Z"/></svg>',
+        Website: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><path d="M2 12h20"/><path d="M12 2a15 15 0 0 1 0 20M12 2a15 15 0 0 0 0 20"/></svg>'
+      };
+      return icons[channelType] || icons.Website;
+    }
+
+    function escapeHtml(text) {
+      if (!text) return "";
+      const div = document.createElement("div");
+      div.textContent = text;
+      return div.innerHTML;
+    }
+
     function renderDashboard() {
       activeRow = null;
       setPageActions("");
@@ -20678,23 +23474,51 @@
 
     function renderDashboardPanels() {
       const renderPanelRows = panel => {
-        if (panel.type === "brand-ranking") {
-          const maxShare = Math.max(...panel.rows.map(row => row.share));
+        if (panel.title === "Asset Status" || panel.title === "Offer Status") {
+          const isOfferStatus = panel.title === "Offer Status";
+          const rowClass = isOfferStatus ? "asset-status-row offer-status-row" : "asset-status-row";
           return `
-            <div class="brand-ranking-list">
-              ${panel.rows.map(row => `
-                <button class="brand-ranking-row" type="button" data-module-jump="${row.module}" data-sub-jump="${row.sub || ""}">
-                  <span class="brand-ranking-top">
-                    <span class="ranking-brand-name">${row.label}</span>
-                    <span class="brand-searches">${row.value}</span>
-                    <span class="brand-trend">${row.trend}</span>
+            <div class="asset-status-list">
+              ${panel.rows.map(row => {
+                const [label, value, detail] = isOfferStatus
+                  ? [row.label, row.value, row.detail]
+                  : row;
+                return `
+                <button class="${rowClass} ${label.toLowerCase()}" type="button" data-module-jump="${isOfferStatus ? "offers" : "assets"}" data-sub-jump="${isOfferStatus ? "Offer Queue" : "Asset List"}">
+                  <span class="asset-status-copy">
+                    <span class="asset-status-name">${label}</span>
+                    <span class="asset-status-detail">${detail}</span>
                   </span>
-                  <span class="brand-bar-line">
-                    <span class="brand-bar-track"><span class="brand-bar-fill" style="width: ${Math.round((row.share / maxShare) * 100)}%"></span></span>
-                    <span class="brand-share">${row.share}%</span>
-                  </span>
+                  <strong class="asset-status-value">${value.toLocaleString()}</strong>
                 </button>
-              `).join("")}
+              `}).join("")}
+            </div>
+          `;
+        }
+        if (panel.type === "brand-ranking") {
+          // total คำนวณจากแบรนด์ทั้งหมดใน searchInsightsData.brands (10 รายการ)
+          // ไม่ใช่จากเฉพาะ 5 รายการที่แสดง — เพื่อให้ตรงกับ Search Insights
+          const total = searchInsightsData.brands.reduce((s, b) => s + b.value, 0) || 1;
+          const accent = "#2f855a";
+          return `
+            <div class="wa-stat-bar-list brand-ranking-list">
+              ${panel.rows.map(row => {
+                const pct = Math.round((row.value / total) * 100);
+                return `
+                <button class="wa-stat-bar-row" type="button" data-module-jump="${row.module}" data-sub-jump="${row.sub || ""}">
+                  <span class="wa-stat-bar-top">
+                    <span class="wa-stat-bar-left">
+                      <span class="wa-stat-bar-dot" style="background: ${accent}"></span>
+                      <span class="wa-stat-bar-label">${row.label}</span>
+                      <span class="wa-stat-bar-count">(${row.value.toLocaleString()})</span>
+                    </span>
+                    <span class="wa-stat-bar-right">
+                      <span class="wa-stat-bar-percent" style="color: ${accent}">${pct}%</span>
+                    </span>
+                  </span>
+                  <span class="wa-stat-bar-track"><span class="wa-stat-bar-fill" style="width: ${pct}%; background: ${accent}"></span></span>
+                </button>
+              `}).join("")}
             </div>
           `;
         }
@@ -20706,17 +23530,22 @@
                   <span class="main-text">${row.label}</span>
                   <span class="muted">${row.detail}</span>
                 </span>
-                <span class="status-value">${row.value}</span>
+                <span class="status-value${panel.title === "Latest Articles" ? ` status-${String(row.value).toLowerCase()}` : ""}">${row.value}</span>
               </button>
             `).join("")}
           </div>
         `;
       };
-      document.querySelector("#cards").innerHTML = dashboardData.panels.map(panel => `
-        <article class="mini-card dashboard-status-card">
+      const dashboardPanels = dashboardData.panels.map(panel => panel.title === "Asset Status"
+        ? { ...panel, ...getAssetSummaryStats()[0], meta: panel.meta }
+        : panel);
+      document.querySelector("#cards").innerHTML = dashboardPanels.map(panel => `
+        <article class="mini-card dashboard-status-card${panel.title === "Asset Status" ? " asset-status-dashboard-card" : ""}">
           <div class="dashboard-card-head">
-            <h3>${panel.title}</h3>
-            ${panel.meta ? `<div class="dashboard-card-meta">${panel.meta}</div>` : ""}
+            <div>
+              <h3>${panel.title}</h3>
+              ${panel.meta ? `<div class="dashboard-card-meta">${panel.meta}</div>` : ""}
+            </div>
           </div>
           ${renderPanelRows(panel)}
         </article>
@@ -20725,6 +23554,11 @@
 
     function jumpToModule(moduleId, subLabel = "") {
       if (!moduleId) return;
+      // HS-PTO-001: guard against removed modules (e.g. legacy "support")
+      // so Dashboard cards / chips don't crash when clicked.
+      // "settings" has no moduleData entry but is a valid module rendered via
+      // renderModule (Policy & Versioning, Support Center, etc.), so allow it.
+      if (!moduleData[moduleId] && moduleId !== "dashboard" && moduleId !== "settings") return;
       const targetSubLabel = subLabel || (moduleId !== "dashboard" ? defaultSubByModule[moduleId] || "" : "");
       resetListFilterPanelsForNavigation(moduleId, targetSubLabel);
       renderModule(moduleId, targetSubLabel, targetSubLabel);
@@ -22945,25 +25779,8 @@
       `;
       }).join("");
 
-      // Aggregate data — 7 วันล่าสุด (mock) — 10 รายการต่อหมวด, panel แสดง 5 รายการแรก, modal แสดง 10 รายการ
-      const insights = {
-        keywords: [
-          { label: "Rolex", value: 2480 }, { label: "Submariner", value: 1620 }, { label: "GMT-Master II", value: 1180 }, { label: "Datejust", value: 940 }, { label: "Speedmaster", value: 760 },
-          { label: "Daytona", value: 620 }, { label: "Aquanaut", value: 480 }, { label: "Royal Oak", value: 420 }, { label: "Nautilus", value: 380 }, { label: "Moonwatch", value: 310 }
-        ],
-        brands: [
-          { label: "Rolex", value: 1684 }, { label: "Omega", value: 892 }, { label: "Seiko", value: 620 }, { label: "Tudor", value: 480 }, { label: "Cartier", value: 340 },
-          { label: "Patek Philippe", value: 296 }, { label: "Audemars Piguet", value: 264 }, { label: "Grand Seiko", value: 218 }, { label: "IWC", value: 184 }, { label: "Breitling", value: 156 }
-        ],
-        filters: [
-          { label: "Price: ฿100,000–฿300,000", value: 1280 }, { label: "Condition: Like New", value: 980 }, { label: "Dial color: Black", value: 840 }, { label: "Reference: 16610", value: 560 }, { label: "Case size: 40–42mm", value: 480 },
-          { label: "Year: 2020–2024", value: 420 }, { label: "Box & Papers", value: 360 }, { label: "Automatic", value: 340 }, { label: "Condition: Unworn", value: 296 }, { label: "Dial color: Blue", value: 264 }
-        ],
-        noResult: [
-          { label: "Rolex Daytona / ฿300,000", value: 218 }, { label: "Seiko 6139 / Blue dial", value: 142 }, { label: "Patek Calatrava / ฿1M", value: 96 }, { label: "GMT-Master II / 126710", value: 58 },
-          { label: "Submariner / Green bezel", value: 52 }, { label: "Royal Oak / 39mm", value: 46 }, { label: "Speedmaster / Snoopy", value: 38 }, { label: "Cartier Tank / Gold", value: 32 }, { label: "Tudor / Burgundy", value: 26 }, { label: "IWC Pilot / Blue", value: 21 }
-        ]
-      };
+      // ใช้ shared data จาก searchInsightsData (top-level) — Dashboard และ Search Insights ดึงจากแหล่งเดียวกัน
+      const insights = searchInsightsData;
       const insightsMeta = {
         keywords: { title: "Popular Keywords", subtitle: "คำค้นหาที่ผู้ใช้พิมพ์บ่อยที่สุด — แสดงสูงสุด 10 รายการ" },
         brands: { title: "Popular Brands", subtitle: "แบรนด์ที่ผู้ใช้เลือกบ่อยจากการค้นหา/กรอง — แสดงสูงสุด 10 รายการ" },
@@ -31262,6 +34079,25 @@
           expandedMenus.clear();
           if (!wasExpanded) expandedMenus.add(menuId);
           updateActiveNav();
+          // เลื่อนพื้นที่ submenu ทั้งหมดเข้าสู่มุมมองเมื่อกางเมนูย่อย
+          // โดยเฉพาะ Settings ที่อยู่ล่างสุดและมีรายการย่อยหลายรายการ
+          if (!wasExpanded) {
+            requestAnimationFrame(() => {
+              const nav = document.querySelector("#nav");
+              const submenu = nav?.querySelector(`[data-submenu="${menuId}"]`);
+              if (!nav || !submenu) return;
+              const navRect = nav.getBoundingClientRect();
+              const submenuRect = submenu.getBoundingClientRect();
+              const bottomGap = submenuRect.bottom - navRect.bottom;
+              const topGap = submenuRect.top - navRect.top;
+              const scrollPadding = 12;
+              if (bottomGap > 0) {
+                nav.scrollBy({ top: bottomGap + scrollPadding, behavior: "smooth" });
+              } else if (topGap < 0) {
+                nav.scrollBy({ top: topGap - scrollPadding, behavior: "smooth" });
+              }
+            });
+          }
           return;
         }
         const parentId = navButton.dataset.parent;
@@ -31455,6 +34291,31 @@
         cancelArticleEditor(form);
         return;
       }
+      // HS-PTO-002b: Confirm publish
+      const policyPublishConfirmButton = event.target.closest("[data-policy-publish-confirm]");
+      if (policyPublishConfirmButton) {
+        applyPolicyPublish(policyPublishConfirmButton.dataset.policyPublishConfirm, policyPublishConfirmButton.dataset.policyPublishVersion);
+        return;
+      }
+      // HS-PTO-002b: Confirm restore (from archived version)
+      const policyVersionRestoreConfirmButton = event.target.closest("[data-policy-version-restore-confirm]");
+      if (policyVersionRestoreConfirmButton) {
+        applyPolicyVersionRestore(policyVersionRestoreConfirmButton.dataset.policyVersionRestoreConfirm, policyVersionRestoreConfirmButton.dataset.policyVersionRestoreSource);
+        return;
+      }
+      // HS-PTO-002b: Language tabs inside version view modal
+      const policyVersionViewLangTab = event.target.closest("[data-policy-version-view-lang]");
+      if (policyVersionViewLangTab) {
+        const lang = policyVersionViewLangTab.dataset.policyVersionViewLang;
+        document.querySelectorAll("[data-policy-version-view-lang]").forEach(btn => {
+          btn.classList.toggle("active", btn === policyVersionViewLangTab);
+          btn.setAttribute("aria-selected", btn === policyVersionViewLangTab ? "true" : "false");
+        });
+        document.querySelectorAll("[data-policy-version-view-lang-panel]").forEach(panel => {
+          panel.hidden = panel.dataset.policyVersionViewLangPanel !== lang;
+        });
+        return;
+      }
       const articleEditSaveConfirmButton = event.target.closest("[data-article-edit-save-confirm]");
       if (articleEditSaveConfirmButton) {
         const form = document.querySelector(`[data-article-editor][data-article-id="${articleEditSaveConfirmButton.dataset.articleEditSaveConfirm}"]`);
@@ -31538,6 +34399,174 @@
           articleStatusActionButton.dataset.articleActionContext || "detail"
         );
         closeRowMenus();
+        return;
+      }
+      // ===== Policy & Versioning event handlers (HS-PTO-001) =====
+      const policyLangTab = event.target.closest("[data-policy-lang-tab]");
+      if (policyLangTab) {
+        const lang = policyLangTab.dataset.policyLangTab;
+        document.querySelectorAll("[data-policy-lang-tab]").forEach(btn => btn.classList.toggle("active", btn === policyLangTab));
+        document.querySelectorAll("[data-policy-content-lang]").forEach(panel => {
+          panel.hidden = panel.dataset.policyContentLang !== lang;
+        });
+        return;
+      }
+      const policyEditorLangTab = event.target.closest("[data-policy-editor-lang-tab]");
+      if (policyEditorLangTab) {
+        const lang = policyEditorLangTab.dataset.policyEditorLangTab;
+        document.querySelectorAll("[data-policy-editor-lang-tab]").forEach(btn => {
+          btn.classList.toggle("active", btn === policyEditorLangTab);
+          btn.setAttribute("aria-selected", btn === policyEditorLangTab ? "true" : "false");
+        });
+        document.querySelectorAll("[data-policy-editor-lang]").forEach(panel => {
+          panel.hidden = panel.dataset.policyEditorLang !== lang;
+        });
+        return;
+      }
+      const policyEditorTool = event.target.closest("[data-policy-editor-command]");
+      if (policyEditorTool) {
+        runPolicyEditorCommand(policyEditorTool);
+        return;
+      }
+      const policyActionButton = event.target.closest(".policy-list-table .user-row-actions [data-policy-open]");
+      if (policyActionButton) {
+        const policy = policyVersioningData.policies.find(p => p.id === policyActionButton.dataset.policyOpen);
+        if (!policy) return;
+        pushBackNavigationContext();
+        renderPolicyDetailPage(policy);
+        return;
+      }
+      const policyCard = event.target.closest("[data-policy-open]");
+      if (policyCard && !event.target.closest(".row-menu summary, .row-menu-list, button, a, input, select, [data-custom-select]")) {
+        const policy = policyVersioningData.policies.find(p => p.id === policyCard.dataset.policyOpen);
+        if (!policy) return;
+        pushBackNavigationContext();
+        renderPolicyDetailPage(policy);
+        return;
+      }
+      const policyBackButton = event.target.closest("[data-policy-back]");
+      if (policyBackButton) {
+        if (policyBackButton.closest("[data-policy-editor]") || document.body.classList.contains("policy-version-history-mode")) {
+          goBackToPreviousPage();
+        } else {
+          renderPolicyVersioningList();
+        }
+        updateActiveNav();
+        return;
+      }
+      const policyEditButton = event.target.closest("[data-policy-edit]");
+      if (policyEditButton) {
+        const policy = policyVersioningData.policies.find(p => p.id === policyEditButton.dataset.policyEdit);
+        if (policy) {
+          pushBackNavigationContext({ type: "policy-detail", id: policy.id });
+          renderPolicyEditorPage(policy);
+        }
+        return;
+      }
+      const policyVersionHistoryButton = event.target.closest("[data-policy-version-history]");
+      if (policyVersionHistoryButton) {
+        const policy = policyVersioningData.policies.find(p => p.id === policyVersionHistoryButton.dataset.policyVersionHistory);
+        if (policy) {
+          pushBackNavigationContext({ type: "policy-detail", id: policy.id });
+          renderPolicyVersionHistoryPage(policy);
+        }
+        return;
+      }
+      const policyCreateDraftButton = event.target.closest("[data-policy-create-draft]");
+      if (policyCreateDraftButton) {
+        const policy = policyVersioningData.policies.find(p => p.id === policyCreateDraftButton.dataset.policyCreateDraft);
+        if (policy) {
+          pushBackNavigationContext({ type: "policy-detail", id: policy.id });
+          renderPolicyEditorPage(policy, "new-draft");
+        }
+        return;
+      }
+      // HS-PTO-002b: Preview draft content (TH/EN) in modal
+      const policyPreviewButton = event.target.closest("[data-policy-preview]");
+      if (policyPreviewButton) {
+        const form = policyPreviewButton.closest("[data-policy-editor]");
+        if (form) openPolicyPreviewModal(form);
+        return;
+      }
+      // HS-PTO-002b: Open Publish confirmation modal (validates form first)
+      const policyPublishButton = event.target.closest("[data-policy-publish]");
+      if (policyPublishButton) {
+        const form = policyPublishButton.closest("[data-policy-editor]");
+        if (form) openPolicyPublishConfirmModal(form);
+        return;
+      }
+      // HS-PTO-002b: Edit an existing Draft from Version History
+      const policyVersionEditButton = event.target.closest("[data-policy-version-edit]");
+      if (policyVersionEditButton) {
+        const policy = policyVersioningData.policies.find(p => p.id === policyVersionEditButton.dataset.policyVersionEdit);
+        const version = policy?.versions.find(v => v.version === policyVersionEditButton.dataset.policyVersion);
+        if (policy && version?.status === "Draft") {
+          if (policyVersionEditButton.closest(".policy-version-view-modal")) closeUserActionModal();
+          pushBackNavigationContext({ type: "policy-version-history", id: policy.id });
+          renderPolicyEditorPage(policy, "edit-draft");
+        }
+        return;
+      }
+      // HS-PTO-002b: Row click on version history table opens View modal (same pattern as policy list row click)
+      const policyVersionRow = event.target.closest("[data-policy-version-open]");
+      if (policyVersionRow && !event.target.closest(".row-menu summary, .row-menu-list, button, a, input, select, [data-custom-select]")) {
+        const policy = policyVersioningData.policies.find(p => p.id === policyVersionRow.dataset.policyVersionOpen);
+        const version = policy?.versions.find(v => v.version === policyVersionRow.dataset.policyVersion);
+        if (policy && version) openPolicyVersionViewModal(policy, version);
+        return;
+      }
+      // HS-PTO-002b: View a specific version (read-only modal)
+      const policyVersionViewButton = event.target.closest("[data-policy-version-view]");
+      if (policyVersionViewButton) {
+        const policy = policyVersioningData.policies.find(p => p.id === policyVersionViewButton.dataset.policyVersionView);
+        const version = policy?.versions.find(v => v.version === policyVersionViewButton.dataset.policyVersion);
+        if (policy && version) openPolicyVersionViewModal(policy, version);
+        return;
+      }
+      // HS-PTO-002b: Restore an archived version (creates a new draft from it)
+      const policyVersionRestoreButton = event.target.closest("[data-policy-version-restore]");
+      if (policyVersionRestoreButton) {
+        const policy = policyVersioningData.policies.find(p => p.id === policyVersionRestoreButton.dataset.policyVersionRestore);
+        const version = policy?.versions.find(v => v.version === policyVersionRestoreButton.dataset.policyVersion);
+        if (policy && version) openPolicyVersionRestoreConfirmModal(policy, version);
+        return;
+      }
+      // ===== Support Center event handlers (HS-PTO-004) =====
+      const channelToggle = event.target.closest("[data-channel-toggle]");
+      if (channelToggle) {
+        const channelId = channelToggle.dataset.channelToggle;
+        const channel = supportCenterData.channels.find(c => c.id === channelId);
+        if (channel) {
+          // Sync current input values into data before re-render so unsaved edits are preserved
+          syncSupportCenterFormToData(document.querySelector("[data-support-form]"));
+          channel.active = !channel.active;
+          renderSupportCenterPage();
+        }
+        return;
+      }
+      const supportPreviewButton = event.target.closest("[data-support-preview]");
+      if (supportPreviewButton) {
+        openSupportCenterPreviewModal();
+        return;
+      }
+      const supportPreviewLangBtn = event.target.closest("[data-support-preview-lang]");
+      if (supportPreviewLangBtn) {
+        switchSupportPreviewLang(supportPreviewLangBtn.dataset.supportPreviewLang);
+        return;
+      }
+      const supportSaveButton = event.target.closest("[data-support-save]");
+      if (supportSaveButton) {
+        const form = document.querySelector("[data-support-form]");
+        // Sync input values into data before validation so checks see current values
+        syncSupportCenterFormToData(form);
+        // Validate — block save when invalid
+        if (!validateSupportCenterForm(form)) {
+          return;
+        }
+        supportCenterData.lastUpdated = new Date().toISOString().slice(0, 16).replace("T", " ");
+        supportCenterData.lastEditor = "Admin";
+        showSuccessToast("บันทึกการเปลี่ยนแปลงเรียบร้อย");
+        renderSupportCenterPage();
         return;
       }
       const articleCard = event.target.closest("[data-article-card]");
@@ -32919,6 +35948,28 @@
     document.addEventListener("touchstart", startArticlePreviewTouch, { passive: true });
     document.addEventListener("touchmove", containArticlePreviewTouch, { passive: false });
     document.addEventListener("input", event => {
+      // ===== Support Center — clear field error on edit (HS-PTO-004) =====
+      if (event.target.matches("[data-channel-value]")) {
+        const form = event.target.closest("[data-support-form]");
+        const channelId = event.target.dataset.channelValue;
+        if (form && channelId) setSupportChannelError(form, channelId);
+        return;
+      }
+      if (event.target.matches("[data-support-business-hours]")) {
+        const form = event.target.closest("[data-support-form]");
+        if (form) setSupportFieldError(form, "business-hours");
+        return;
+      }
+      if (event.target.matches("[data-support-availability-th]")) {
+        const form = event.target.closest("[data-support-form]");
+        if (form) setSupportFieldError(form, "availability-th");
+        return;
+      }
+      if (event.target.matches("[data-support-availability-en]")) {
+        const form = event.target.closest("[data-support-form]");
+        if (form) setSupportFieldError(form, "availability-en");
+        return;
+      }
       if (event.target.matches("[data-calendar-only]")) {
         normalizeSuspensionEndDate(event.target);
         if (event.target.matches("#user-action-suspend-until")) updateAccountStatusEmailPreview();
@@ -32956,6 +36007,17 @@
           setArticleBlockUrlError(event.target.closest("[data-article-content-block]"));
         }
         updateArticleEditorPreview(form);
+        return;
+      }
+      if (event.target.matches("[data-policy-content-th], [data-policy-content-en], [data-policy-change-summary]")) {
+        const form = event.target.closest("[data-policy-editor]");
+        if (!form) return;
+        if (event.target.matches("[data-policy-content-th], [data-policy-content-en]")) {
+          setPolicyEditorFieldError(form, "content");
+        }
+        if (event.target.matches("[data-policy-change-summary]")) {
+          setPolicyEditorFieldError(form, "change-summary");
+        }
         return;
       }
       if (event.target.matches("#user-search")) {
@@ -33151,6 +36213,40 @@
       }
     });
     document.addEventListener("submit", event => {
+      const policyForm = event.target.closest("[data-policy-editor]");
+      if (policyForm) {
+        event.preventDefault();
+        const policyId = policyForm.dataset.policyId;
+        const policy = policyVersioningData.policies.find(p => p.id === policyId);
+        if (!policy) return;
+        const validated = validatePolicyEditorForm(policyForm);
+        if (!validated) return;
+        const { contentTh, contentEn, changeSummary } = validated;
+        const versionNumber = policyForm.dataset.policyMode === "new-draft"
+          ? `v${getNextPolicyVersionNumber(policy)}.0-draft`
+          : (policy.draftVersion || `v${getNextPolicyVersionNumber(policy)}.0-draft`);
+        // Save as draft version
+        const existingDraftIdx = policy.versions.findIndex(v => v.version === versionNumber);
+        const draftVersion = {
+          version: versionNumber,
+          status: "Draft",
+          editor: "Admin",
+          editedDate: new Date().toISOString().slice(0, 16).replace("T", " "),
+          publishedDate: "",
+          changeSummary,
+          contentTh,
+          contentEn
+        };
+        if (existingDraftIdx >= 0) {
+          policy.versions[existingDraftIdx] = draftVersion;
+        } else {
+          policy.versions.unshift(draftVersion);
+        }
+        policy.draftVersion = versionNumber;
+        showSuccessToast("บันทึก Draft เรียบร้อย");
+        renderPolicyDetailPage(policy);
+        return;
+      }
       const categoryForm = event.target.closest("[data-category-form]");
       if (categoryForm) {
         event.preventDefault();

@@ -90,9 +90,9 @@ Dashboard ไม่มี submenu
 
 | Breakpoint | ความกว้าง | ข้อกำหนดของ Dashboard |
 | --- | --- | --- |
-| Mobile | `<= 760px` | แสดงเป็น 1 column ตามลำดับ Header -> KPI Summary -> Work Queue -> Recent Activity -> Dashboard Panels |
-| Tablet | `761px - 1365px` | KPI Summary แสดง 2 columns เมื่อพื้นที่พอ และ section หลัก stack เป็น 1 column เมื่อพื้นที่จำกัด |
-| Desktop | `> 1365px` | KPI Summary แสดง 4 columns, Work Queue และ Recent Activity อยู่ในแถวเดียวกัน, Dashboard Panels แสดงเป็น grid ด้านล่าง |
+| Mobile | `<= 760px` | แสดงเป็น 1 column ตามลำดับ Header -> KPI Summary -> Work Queue -> Recent Activity -> Dashboard Panels; Work Queue และ Recent Activity แสดงตามเนื้อข้อมูลจริง ไม่บังคับความสูงเท่ากัน |
+| Tablet | `761px - 1365px` | KPI Summary แสดง 2 columns; Work Queue และ Recent Activity อยู่ในแถวเดียวกัน (2 columns 50/50) สูงเท่ากัน; Dashboard Panels แสดงเป็น grid 2 columns |
+| Desktop | `> 1365px` | KPI Summary แสดง 4 columns, Work Queue และ Recent Activity อยู่ในแถวเดียวกัน (2 columns 50/50) สูงเท่ากัน, Dashboard Panels แสดงเป็น grid ด้านล่าง |
 
 ข้อกำหนดเพิ่มเติม:
 
@@ -100,6 +100,8 @@ Dashboard ไม่มี submenu
 - Work Queue ต้องอยู่ถัดจาก KPI Summary เสมอ
 - Recent Activity ต้องอยู่ถัดจาก Work Queue เสมอ
 - Dashboard Panels ต้องอยู่หลัง Recent Activity
+- บน tablet/desktop (>`760px`) Work Queue และ Recent Activity ต้องสูงเท่ากัน โดยใช้ grid stretch ให้ panel ยืดเต็ม grid row และไม่จำกัดความสูงสูงสุด เพื่อให้ scroll หน้าหลักได้ปกติเมื่อเลื่อนเมาส์ผ่าน
+- บน mobile (`<=760px`) ยกเลิก stretch แสดงตามเนื้อข้อมูลจริง ไม่บังคับความสูงเท่ากัน
 - ข้อความ, ตัวเลข, chip, button และ row ต้องไม่ล้นหรือซ้อนกัน
 - Card และ row ที่คลิกได้ต้องมี hit area ชัดเจนทั้ง mobile และ desktop
 
@@ -140,8 +142,8 @@ KPI Summary ต้องแสดง 8 cards ตามลำดับนี้:
 | Reported Items | `33` | `มี 9 รายงานใกล้ครบกำหนดตรวจ` | `Assets 22`, `Users 5`, `Articles 3`, `Comments 3` | Chip เปิด queue รายงานตามประเภท |
 | Offer Activity | `12` | `อ้างอิงจาก Offer Management mock-up และสถานะ offer ล่าสุด` | `Pending 3`, `Paused 1`, `Accepted 3`, `Rejected 2`, `Cancelled 2`, `Invalidated 1` | เปิด Offer / Offer Queue |
 | Articles | `12` | `มี 4 บทความรอเผยแพร่` | `Published 8`, `Scheduled 4` | เปิด Content Management / Articles |
-| Watch Alert | `3.2K` | `มีการจับคู่รายการขาย 146 ครั้งวันนี้` | `Active 3,218`, `Triggered 146` | เปิด Watch Alert / Alert Criteria |
-| Support Cases | `18` | `มี 3 เคสใกล้ครบกำหนดตอบครั้งแรก` | `Open 18`, `Assigned 9`, `Urgent 3` | เปิด Help & Support / Tickets |
+| Watch Alert | `298` | `มีการจับคู่รายการขาย 18 ครั้งวันนี้` | `Active 298`, `Triggered 18` | เปิด Watch Alert / Demand Overview |
+| Policies | `2` | `Privacy Policy มี Draft v2.1-draft รอเผยแพร่` | `Published 2`, `Draft 1` | เปิด Settings / Policy & Versioning |
 
 กฎการแสดง KPI:
 
@@ -212,7 +214,7 @@ Activity row ต้องมี:
 | Category | Event title | Summary | Time | Navigation |
 | --- | --- | --- | --- | --- |
 | Report | มีรายงานสินทรัพย์ใหม่ | `Rolex Submariner 16610 ถูกรายงานเรื่องรูปซ้ำและราคาเบี่ยงจากข้อมูลตลาด` | `15 นาทีที่แล้ว` | Asset Management / Reported Assets |
-| Offer | ข้อเสนอซื้อถูกปฏิเสธ | `ข้อเสนอซื้อ Omega Speedmaster ถูกปฏิเสธและยังมี chat ที่ผู้ใช้ถามต่อ` | `32 นาทีที่แล้ว` | Offer / Offer Queue |
+| Offer | ข้อเสนอซื้อถูกปฏิเสธ | `OFR-472 ของ Audemars Piguet Royal Oak ถูก owner ปฏิเสธและยังเก็บ history ไว้ใน Offer Detail` | `32 นาทีที่แล้ว` | Offer / Offer Queue |
 | Content | ตั้งเวลาเผยแพร่บทความแล้ว | `บทความ Vintage Watch Buying Guide ตั้งเวลาเผยแพร่วันนี้ 19:00` | `1 ชม.ที่แล้ว` | Content Management / Articles |
 | System | ข้อมูลตลาดอัปเดตแล้ว | `Sync History พบ duplicate price points ของ Omega Speedmaster Reduced 3 แถว` | `2 ชม.ที่แล้ว` | Market Data / Sync History |
 | System | แจ้งเตือนบางรายการส่งไม่สำเร็จ | `ระบบพบ invalid token ใน delivery batch ล่าสุดและแยกงาน retry แล้ว` | `3 ชม.ที่แล้ว` | Notifications / Delivery Logs |
@@ -240,20 +242,26 @@ Panel ที่ต้องมี:
 | Asset Status | `จาก Asset List ทั้งหมด` | Status label, description, count | เปิด Asset Management ตาม status/context |
 | Offer Status | `จาก Offer Management ทั้งหมด` | Offer status label, description, count | เปิด Offer / Offer Queue |
 | Latest Articles | `จาก Articles ล่าสุด` | Article title, publish status, detail | เปิด Content Management / Articles |
-| Top Searched Brands | `จาก Search Report สัปดาห์นี้` | Brand, search count, trend, share bar | เปิด Reports / Search |
+| Top Searched Brands | `จาก Search Insights สัปดาห์นี้` | Brand, search count, trend, share bar | เปิด Market Demand / Search Insights |
 
 ### 11.1 Asset Status
+
+ใช้ข้อมูลชุดเดียวกับหน้า Asset Management / Asset List โดยนับจำนวน asset ตามสถานะจากรายการ asset ชุดเดียวกัน ไม่มีการแสดงยอดรวมที่หัวการ์ด เพื่อให้สมดุลกับการ์ด Dashboard Panel อื่นในแถวเดียวกัน
+
+การแสดงผลต้องใช้รูปแบบเดียวกับ Asset Status card ในหน้า Asset List: แถวสถานะแยกสี มีกรอบและแถบสีด้านซ้าย พร้อมค่า status count ด้านขวา
 
 Rows:
 
 | Label | Value ตัวอย่าง | Detail | Navigation |
 | --- | --- | --- | --- |
-| Sale | `2,816` | `ยอดทั้งหมดที่แสดงใน Feed และ Search` | Asset Management / Asset List |
-| Show | `428` | `ยอดทั้งหมดที่แสดงใน collection และ profile` | Asset Management / Asset List |
-| Hide | `76` | `ยอดทั้งหมดที่ owner/Admin เห็นตามสิทธิ์` | Asset Management / Asset List พร้อม context Hide |
-| Sold | `214` | `ยอดทั้งหมดที่คงประวัติและปิดรับ offer` | Asset Management / Asset List |
+| Sale | `12` | `ยอดทั้งหมดที่แสดงใน Feed และ Search` | Asset Management / Asset List |
+| Show | `4` | `ยอดทั้งหมดที่แสดงใน collection และ profile` | Asset Management / Asset List |
+| Hide | `2` | `ยอดทั้งหมดที่ owner/Admin เห็นตามสิทธิ์` | Asset Management / Asset List พร้อม context Hide |
+| Sold | `2` | `ยอดทั้งหมดที่คงประวัติและปิดรับ offer` | Asset Management / Asset List |
 
 ### 11.2 Offer Status
+
+ใช้รูปแบบ status card เดียวกับ Asset Status: แต่ละแถวมีกรอบ แถบสีด้านซ้าย สีพื้นหลังอ่อน และจำนวนด้านขวา โดยเลือกสีตามความหมายของ Offer status; ไม่มีการแสดงยอดรวมที่หัวการ์ด
 
 Rows:
 
@@ -278,15 +286,17 @@ Rows:
 
 ### 11.4 Top Searched Brands
 
+แสดง Top 5 แบรนด์ที่ถูกค้นหา/เลือกบ่อยที่สุดจาก Search Report สัปดาห์นี้ — Share คำนวณจากผลรวมของแบรนด์ทั้งหมดใน Search Insights (10 แบรนด์) ไม่ใช่จากเฉพาะ 5 แบรนด์ที่แสดง เพื่อให้ตรงกับ Popular Brands ใน Search Insights
+
 Rows:
 
 | Brand | Searches | Share | Trend | Navigation |
 | --- | --- | --- | --- | --- |
-| Rolex | `12.4K` | `32%` | `+6%` | Reports / Search |
-| Omega | `8.7K` | `22%` | `+3%` | Reports / Search |
-| Seiko | `6.1K` | `16%` | `+9%` | Reports / Search |
-| Cartier | `4.2K` | `11%` | `+14%` | Reports / Search |
-| Tudor | `3.6K` | `9%` | `+5%` | Reports / Search |
+| Rolex | `1,684` | `33%` | `+6%` | Market Demand / Search Insights |
+| Omega | `892` | `17%` | `+3%` | Market Demand / Search Insights |
+| Seiko | `620` | `12%` | `+9%` | Market Demand / Search Insights |
+| Tudor | `480` | `9%` | `+5%` | Market Demand / Search Insights |
+| Cartier | `340` | `7%` | `+14%` | Market Demand / Search Insights |
 
 กฎการแสดง Panels:
 
@@ -312,8 +322,8 @@ Rows:
 | Reported Items / Comments chip | Asset Management / Reported Comments |
 | Offer Activity card | Offer / Offer Queue |
 | Articles card | Content Management / Articles |
-| Watch Alert card | Watch Alert / Alert Criteria |
-| Support Cases card | Help & Support / Tickets |
+| Watch Alert card | Watch Alert / Demand Overview |
+| Policies card | Settings / Policy & Versioning |
 | Work Queue row | Module/submodule ตาม queue นั้น |
 | Recent Activity row | Module/submodule ตาม event นั้น |
 | Dashboard Panel row | Module/submodule ตาม row นั้น |

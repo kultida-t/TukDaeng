@@ -25,7 +25,7 @@
 
 ## 2. Objective
 
-Reports & Analytics Module ใช้เป็นศูนย์กลางสำหรับดูข้อมูลสรุป, trend, performance, SLA, operational report และ export ข้อมูลจาก BO/FO workflows หลัก
+Reports & Analytics Module ใช้เป็นศูนย์กลางสำหรับดูข้อมูลสรุป, trend, performance, operational report และ export ข้อมูลจาก BO/FO workflows หลัก
 
 Dashboard ใช้สำหรับภาพรวมและ queue ที่ต้องทำทันที ส่วน Reports & Analytics ใช้สำหรับวิเคราะห์เชิงลึก, export, ตรวจย้อนหลัง และส่งต่อข้อมูลให้ Product / Operation / Management / QA
 
@@ -39,7 +39,7 @@ Dashboard ใช้สำหรับภาพรวมและ queue ที่
 - Background export job สำหรับข้อมูลขนาดใหญ่
 - policy-based visibility
 - Sensitive data masking
-- SLA reports สำหรับ moderation และ support
+- SLA reports สำหรับ moderation (Trust & Safety baseline)
 - Delivery / trigger / operation metrics
 - Audit log สำหรับ export และ sensitive report access
 - Responsive layout สำหรับ desktop, tablet และ mobile
@@ -52,6 +52,7 @@ Dashboard ใช้สำหรับภาพรวมและ queue ที่
 - Public dashboard สำหรับ FO users
 - Real-time streaming analytics แบบเต็ม
 - Editing source data จาก report screen
+- Help / Support Report — module 12 เป็น Policy & Versioning + Support Center ไม่มี ticket/SLA metric รายละเอียดอยู่ใน `12_HELP_SUPPORT_MODULE.md` section 3 Out Of Scope และ section 15 Cross-Module Integration
 
 ## 4. Relationship With Dashboard
 
@@ -106,7 +107,7 @@ Timezone ต้องแสดงเป็น `Asia/Bangkok` และราค�
 
 ## 8. Report Catalog
 
-Reports ที่ต้องมี:
+Reports หลักที่ต้องมี (10 report):
 
 1. User Report
 2. Asset Report
@@ -116,10 +117,12 @@ Reports ที่ต้องมี:
 6. Asset Reported Comments Report
 7. Search Report
 8. Watch Alert Report
-9. Support Report
-10. Notification Report
-11. Account Deletion Report
-12. Export Job / Report Access History
+9. Notification Report
+10. Account Deletion Report
+
+นอกจากนี้ต้องมี:
+
+11. Export Job / Report Access History
 
 ## 9. User Report
 
@@ -137,7 +140,7 @@ Reports ที่ต้องมี:
 | Auth method | Email, Apple, Google |
 | Account status | Active, Suspended, Banned, Deactivated, Archived |
 | Retention / activity | Last active, active users by period |
-| Support/account issues | Open tickets, deletion state |
+| Account issues | Deletion state, archived/anonymized |
 | Moderation signal | Reported users, ban/suspend trend |
 
 Guest/public analytics metrics:
@@ -154,7 +157,7 @@ Guest/public analytics metrics:
 User Report rules:
 
 - `Guest / Unauthenticated` is not a user account status and must not appear in account status filters or registered-user breakdowns.
-- `New users`, `DAU`, `MAU`, auth method breakdown, account status breakdown, retention, and support/deletion signals count registered account records only.
+- `New users`, `DAU`, `MAU`, auth method breakdown, account status breakdown, retention, and deletion signals count registered account records only.
 - Guest public view/share analytics can appear as separate metrics only when tracking exists, and must be labeled separately from registered-user activity.
 - Guest public view/share events do not create User Management records and do not create BO account actions.
 - Public view/share metrics must include `surface_type`, `entity_id`, `user_state`, `timestamp`, and attribution fields needed for guest-to-signup conversion when tracking is enabled.
@@ -166,7 +169,7 @@ Filters:
 - Auth method
 - Last active range
 - Has report
-- Has support ticket
+- Account deletion state
 - User state: Guest / logged-in user for public analytics only
 - Public surface type: asset, article, profile
 - Conversion state: converted / not converted when tracking exists
@@ -305,7 +308,8 @@ Search report ต้องช่วย Admin ตรวจ gap ของ brand/mo
 | Metric / Data | Requirement |
 | --- | --- |
 | Active alerts | Count by period |
-| Created/deleted/disabled alerts | Count and reason |
+| Created/deleted alerts | Count and reason |
+| User-disabled alerts | Count (user ปิด notification เอง) |
 | Trigger volume | Match count by brand/model/reference |
 | Notification delivery | Sent/delivered/opened/failed |
 | Criteria breakdown | Price range, brand/model/reference, condition |
@@ -321,30 +325,7 @@ Filters:
 
 Watch Alert match ต้องใช้เฉพาะ asset status `Sale` และ notification destination ต้องเป็น `Watch Alert Result List`
 
-## 17. Support Report
-
-| Metric / Data | Requirement |
-| --- | --- |
-| Open tickets | New, Open, In Progress, Waiting User |
-| Resolved/closed tickets | Count and resolution time |
-| First response SLA | Target 8 hours |
-| Ticket type breakdown | Account/Login, Asset, Offer/Chat, Report/Safety, Watch Alert, Market Data, Technical, Other |
-| Priority breakdown | Urgent, High, Medium, Low |
-| Assigned admin workload | Ticket count by admin |
-
-Filters:
-
-- Ticket status
-- Type
-- Priority
-- Assigned admin
-- SLA state
-- Contact channel
-- Date range
-
-Internal notes ต้องไม่ export ใน report ทั่วไป เว้นแต่ Admin export แบบ sensitive พร้อม audit
-
-## 18. Notification Report
+## 17. Notification Report
 
 | Metric / Data | Requirement |
 | --- | --- |
@@ -366,7 +347,7 @@ Filters:
 
 Generic Broadcast in FO in-app list ต้องยังถือเป็น open decision ตาม Notifications module
 
-## 19. Account Deletion Report
+## 18. Account Deletion Report
 
 | Metric / Data | Requirement |
 | --- | --- |
@@ -387,7 +368,7 @@ Filters:
 
 Sensitive personal data ต้อง mask และ export จำกัดเฉพาะ Admin
 
-## 20. Export Requirements
+## 19. Export Requirements
 
 | Requirement | Rule |
 | --- | --- |
@@ -408,7 +389,7 @@ Export job status:
 - `Expired`
 - `Cancelled`
 
-## 21. Report Access & Audit
+## 20. Report Access & Audit
 
 ต้อง audit อย่างน้อย:
 
@@ -435,7 +416,7 @@ Audit payload:
 - `user_agent`
 - `created_at`
 
-## 22. Data Freshness
+## 21. Data Freshness
 
 | Data | Freshness Expectation |
 | --- | --- |
@@ -447,7 +428,7 @@ Audit payload:
 
 ทุก report ต้องแสดง `Last updated`
 
-## 23. Error, Empty, Loading States
+## 22. Error, Empty, Loading States
 
 | State | Requirement |
 | --- | --- |
@@ -459,11 +440,11 @@ Audit payload:
 | Permission denied | ไม่แสดง report หรือ field ที่ไม่มีสิทธิ์ |
 | Stale data | แสดง warning เมื่อ last updated เก่าเกิน threshold |
 
-## 24. Acceptance Criteria
+## 23. Acceptance Criteria
 
 | ID | Criteria |
 | --- | --- |
-| AC-BO-REPORT-001 | Reports & Analytics มี report catalog ครบ 11 report หลักและ export history |
+| AC-BO-REPORT-001 | Reports & Analytics มี report catalog ครบ 10 report หลักและ export history (User, Asset, Offer, Chat, Content/Board, Asset Reported Comments, Search, Watch Alert, Notification, Account Deletion) — ไม่มี Support Report ใน Phase 1 เพราะ module 12 เป็น Policy & Versioning + Support Center |
 | AC-BO-REPORT-002 | ทุก report รองรับ date range, filter, access visibility และ last updated |
 | AC-BO-REPORT-003 | ทุก report ที่ export ได้ต้องรองรับ CSV และ Excel ตาม permission |
 | AC-BO-REPORT-004 | Large export ต้องใช้ background job และมี status tracking |
@@ -474,12 +455,12 @@ Audit payload:
 | AC-BO-REPORT-007 | Asset Report ใช้ status `Show` / `Hide` ตาม FO และไม่ใช้ legacy collection wording |
 | AC-BO-REPORT-008 | Offer Report ใช้ status `Rejected` ไม่ใช้ `Declined` |
 | AC-BO-REPORT-009 | Watch Alert Report ต้องยืนยัน Sale-only match และ destination `Watch Alert Result List` |
-| AC-BO-REPORT-010 | Support Report ต้องวัด first response SLA 8 ชั่วโมง |
+| AC-BO-REPORT-010 | Support Report ไม่อยู่ใน Phase 1 เพราะ module 12 เป็น Policy & Versioning + Support Center ไม่มี ticket/SLA metric |
 | AC-BO-REPORT-011 | Notification Report ต้องแสดง delivery status และ failure reason |
 | AC-BO-REPORT-012 | Account Deletion Report ต้องแสดง blocked reason, grace period และ archive/anonymization status |
 | AC-BO-REPORT-013 | Reports UI ต้อง responsive ที่ 375px, 768px, 1280px และ 1440px |
 
-## 25. Open Decisions
+## 24. Open Decisions
 
 | ID | Decision Needed | Impact |
 | --- | --- | --- |

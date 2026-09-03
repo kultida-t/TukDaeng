@@ -321,7 +321,7 @@ Retry action ต้องมี audit log และต้องไม่สร�
 | Offer Management | Offer trigger, chat room destination, rejected/accepted/cancelled events |
 | Asset Management (Reported Comments) | Comment, like, follow triggers |
 | Watch Alert | Match trigger, result list destination, notification enabled/off |
-| Help / Support | Delivery log context for user support tickets |
+| Help / Support | ไม่มี ticket ใน Phase 1 — module 12 เป็น Policy & Versioning + Support Center; notification integration เป็น future scope |
 | Account Deletion | Exclude deletion/archived users from broadcast |
 | Audit Log | Template, broadcast, retry, export audit events |
 | Reports & Analytics | Notification report metrics |

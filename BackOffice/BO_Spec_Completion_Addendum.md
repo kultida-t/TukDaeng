@@ -15,7 +15,7 @@ Addendum นี้เสนอให้เพิ่ม module และ business
 1. Offer Management (read-only ใน V1)
 2. Watch Alert Management
 3. Account Deletion & Data Archive
-4. Help & Support Ticket Management
+4. Help & Support (Policy & Versioning + Support Center)
 5. System Notification Trigger Management
 6. Content / Board Management Completion
 7. Asset Detail Field Completion
@@ -43,14 +43,13 @@ BO Dashboard
 │   └── Sync History
 ├── Option Master
 ├── Directory (future/postponed; not Phase 1)
-├── Watch Alert
-│   ├── Alert Criteria
-│   ├── Trigger History
-│   └── Disabled Alerts
+├── Market Demand
+│   ├── Demand Overview
+│   ├── Search Insights
+│   └── Watch Alert List
 ├── Help & Support
-│   ├── Tickets
-│   ├── Assignment
-│   └── SLA
+│   ├── Policy & Versioning
+│   └── Support Center
 ├── Account Deletion
 │   ├── Requests
 │   ├── Grace Period
@@ -70,15 +69,12 @@ BO Dashboard
     ├── Roles & Permissions
     ├── Security
     ├── Retention
-    ├── Terms of Use
-    ├── Privacy Policy
-    ├── Version History
+    ├── Policy & Versioning
     ├── Support Center
-    ├── Contact Support
     └── Audit Log
 ```
 
-Admin Settings updated submenu baseline includes `Admin Accounts`, `Roles & Permissions`, `Security`, `Retention`, policy/legal content sections, support settings, and Audit Log handoff. `Roles & Permissions` manages role templates and module/action policy for the single BO account type `Admin`; it does not introduce separate BO admin account types.
+Admin Settings updated submenu baseline includes `Admin Accounts`, `Roles & Permissions`, `Security`, `Retention`, `Policy & Versioning`, `Support Center`, and Audit Log handoff. `Roles & Permissions` manages role templates and module/action policy for the single BO account type `Admin`; it does not introduce separate BO admin account types.
 
 ---
 
@@ -190,7 +186,7 @@ BO_Spec v1.1 มี Watch Alert report แล้ว แต่ FO ต้องม
 - Filter ด้วย Active, Notification On/Off, Triggered, Date Range
 - ดู criteria ที่ผู้ใช้ save จาก Search
 - ดู trigger history และ click-through history
-- Disable alert โดย admin กรณี abuse
+- Watch Alert BO เป็น read-only — Admin ไม่ disable/enable/export/bulk alert ของ user ใด ๆ
 
 ### 4.3 Fields
 
@@ -214,7 +210,7 @@ BO_Spec v1.1 มี Watch Alert report แล้ว แต่ FO ต้องม
 
 - เมื่อมี asset ใหม่สถานะ Sale ที่ตรง criteria ให้สร้าง notification ประเภท Watch Alert
 - Alert ที่ Notification Enabled = Off ยังถูกเก็บไว้ แต่ไม่ส่ง push
-- Alert ที่ Disabled โดย admin จะไม่ trigger และผู้ใช้ควรเห็นสถานะ unavailable หรือถูกซ่อนตาม UX policy
+- Watch Alert BO เป็น read-only — ไม่มี admin disable/enable alert ของ user
 - ถ้า brand/model ถูก inactive ใน Market Data ต้องไม่ trigger alert ใหม่จากข้อมูลนั้น
 
 ---
@@ -270,49 +266,33 @@ BO_Spec v1.1 มี Watch Alert report แล้ว แต่ FO ต้องม
 
 ---
 
-## 6. Help & Support Ticket Management
+## 6. Help & Support
 
 ### 6.1 Purpose
 
-BO_Spec v1.1 ระบุว่า Admin ตอบ Help ได้ แต่ยังไม่มี module รายละเอียด จึงเพิ่ม Help & Support เพื่อรองรับ Settings > Help ใน FO
+รองรับ Settings > Help ใน FO โดยให้ Admin จัดการเนื้อหา policy และช่องทางติดต่อ Support Center รายละเอียดเต็มอยู่ใน `12_HELP_SUPPORT_MODULE.md`
 
-### 6.2 Ticket Types
+### 6.2 Phase 1 Scope
 
-| Type | Description |
+Phase 1 ครอบคลุม 2 sub-module:
+
+| Sub-module | Description |
 |---|---|
-| Account | ปัญหา login, reset password, suspended account |
-| Asset | ปัญหาเพิ่ม/แก้ไขสินทรัพย์ |
-| Offer | ปัญหา offer หรือ transaction |
-| Chat | ปัญหา chat/file |
-| Report | รายงานผู้ใช้หรือ asset |
-| General | เรื่องทั่วไป |
+| Policy & Versioning | Terms of Use, Privacy Policy — Draft/Published/Archived, bilingual TH/EN, version history, restore, preview, publish confirmation |
+| Support Center | Channels 5 ประเภท (LINE, Phone, Email, Facebook, Website), business hours, availability TH/EN, preview |
 
-### 6.3 Ticket Status
+### 6.3 Out Of Scope (Phase 1)
 
-| Status | Description |
-|---|---|
-| Open | รอ admin รับเรื่อง |
-| In Progress | กำลังดำเนินการ |
-| Waiting User | รอข้อมูลจากผู้ใช้ |
-| Resolved | แก้ไขแล้ว |
-| Closed | ปิดเรื่อง |
+Ticket queue, ticket detail, ticket assignment, priority, SLA tracking, reply history, internal notes และ manual ticket creation จาก LINE/Phone/Email ไม่อยู่ใน Phase 1
 
-### 6.4 Fields
+### 6.4 Audit Actions
 
-| Field | Type | Required |
-|---|---|---|
-| Ticket ID | ID | Yes |
-| User | FK User | Yes |
-| Type | Dropdown | Yes |
-| Subject | Text | Yes |
-| Message | Textarea | Yes |
-| Attachment | File Upload | Optional |
-| Related Entity | User / Asset / Offer / Chat | Optional |
-| Priority | Low / Medium / High / Critical | Yes |
-| Status | Ticket Status | Yes |
-| Assigned Admin | FK Admin | Optional |
-| Created At | DateTime | Yes |
-| Updated At | DateTime | Yes |
+- `POLICY_DRAFT_CREATE`
+- `POLICY_DRAFT_SAVE`
+- `POLICY_PUBLISH`
+- `POLICY_ARCHIVE`
+- `POLICY_RESTORE`
+- `SUPPORT_CENTER_UPDATE`
 
 ---
 
@@ -649,7 +629,6 @@ Content role split baseline:
 | Chat Report | Active Chat Rooms, Messages Sent, Attachments Sent, Reported Chats |
 | Asset Reported Comments Report | Total Comments, Reported Comments, Hidden Comments, Top Commented Assets |
 | Account Deletion Report | Requests, Blocked, Archived, Avg Processing Time |
-| Support Report | Open Tickets, SLA, Resolution Time, Ticket Types |
 | System Notification Report | Sent, Delivered, Opened, Failed, Retry Count by Notification Type |
 
 ---
@@ -663,10 +642,9 @@ Phase 1 actions (ตรง prototype ที่ล็อกแล้ว):
 | Hide Comment | Comment หายจาก Asset Detail |
 | Unhide Comment | Comment กลับมาแสดงใน Asset Detail |
 | Soft Delete Comment | Comment ไม่แสดง หรือแสดงเป็น deleted ตาม UX policy |
-| Disable Watch Alert | Alert ไม่ trigger notification ใหม่ |
-| Enable Watch Alert | Alert กลับมา trigger ตาม criteria |
 | Approve Account Archive | User login ไม่ได้, profile/assets ถูกซ่อนหรือ anonymized |
-| Resolve Support Ticket | ผู้ใช้เห็น ticket status เป็น Resolved/Closed |
+| Publish Policy | FO แสดงเนื้อหา Terms of Use / Privacy Policy เวอร์ชันใหม่ทันที |
+| Update Support Center | FO Help screen แสดงช่องทางติดต่อและเวลาทำการล่าสุด |
 | Disable System Notification Type | FO จะไม่ได้รับ notification ประเภทนั้น |
 | Update Notification Template | ข้อความ notification ใหม่ใช้ template ล่าสุด |
 
@@ -694,7 +672,9 @@ Future scope (ยังไม่เปิดใน V1 Offer Management ที่
 - Like
 - Follow
 - WatchAlert
-- SupportTicket
+- Policy
+- PolicyVersion
+- SupportCenter
 - AccountDeletionRequest
 - NotificationTemplate
 - NotificationDelivery
@@ -713,12 +693,14 @@ Future scope (ยังไม่เปิดใน V1 Offer Management ที่
 - HideComment
 - UnhideComment
 - RemoveChatMessage
-- DisableWatchAlert
-- EnableWatchAlert
 - ApproveAccountArchive
 - CancelAccountDeletion
-- AssignTicket
-- ResolveTicket
+- PolicyDraftCreate
+- PolicyDraftSave
+- PolicyPublish
+- PolicyArchive
+- PolicyRestore
+- SupportCenterUpdate
 - UpdateNotificationTemplate
 - RetryNotification
 
@@ -734,8 +716,8 @@ Baseline role templates include `Super Admin`, `Content Editor`, `Content Publis
 |---|---|
 | Offer Management | Admin can view/review by policy with privacy masking and audit. Chat moderation เป็น future scope |
 | Asset Management (Reported Comments) | Admin can view aggregate data and moderate reported comments by policy. |
-| Watch Alert Management | Admin can view, disable/enable by policy, and audit changes. |
-| Help & Support | Admin can manage tickets, internal notes, linked entities, SLA status, and replies by policy. |
+| Watch Alert Management | Admin can view by policy (read-only — no disable/enable/export/bulk action on user alerts). Audit covers sensitive reveal and trigger job run only. |
+| Help & Support | Admin can manage Policy & Versioning (draft/publish/restore) and Support Center (channels, business hours, availability) by policy. Ticket queue/SLA/internal notes เป็น future scope. |
 | Account Deletion Requests | Admin can view/recheck/approve/cancel/archive by policy with dependency checks, confirmation, reason, and audit. |
 | Notifications (Broadcast & System Templates) | Admin can manage templates and broadcasts with approval, preview, and audit policy. |
 ## 14. Recommended Acceptance Criteria
@@ -748,7 +730,7 @@ BO จะถือว่ารองรับ FO ครบถ้วนเมื�
 4. Watch Alert ที่ผู้ใช้สร้างจาก Search สามารถดู criteria และ trigger history ใน BO ได้
 5. System notification ทุกประเภทใน PRD มี template, trigger log และ delivery status
 6. Provenance, Consignment และ Proof of Payment ถูกจำกัดสิทธิ์ตาม privacy rule
-7. Admin สามารถรับ ticket จาก Help และตอบกลับผู้ใช้ได้
+7. Admin สามารถจัดการ Policy & Versioning และ Support Center ได้
 8. Audit Log บันทึกทุก action สำคัญของ admin ครบ target entity และ before/after value
 9. Admin สามารถสร้างบทความพร้อมรูปปก เนื้อหา หมวดหมู่ และ publish/schedule จาก BO ได้
 10. FO Board แสดงเฉพาะบทความ Published ที่ถึงเวลาเผยแพร่แล้ว
