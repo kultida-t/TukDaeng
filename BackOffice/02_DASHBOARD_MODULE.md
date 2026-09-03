@@ -90,9 +90,9 @@ Dashboard ไม่มี submenu
 
 | Breakpoint | ความกว้าง | ข้อกำหนดของ Dashboard |
 | --- | --- | --- |
-| Mobile | `<= 760px` | แสดงเป็น 1 column ตามลำดับ Header -> KPI Summary -> Work Queue -> Recent Activity -> Dashboard Panels |
-| Tablet | `761px - 1365px` | KPI Summary แสดง 2 columns เมื่อพื้นที่พอ และ section หลัก stack เป็น 1 column เมื่อพื้นที่จำกัด |
-| Desktop | `> 1365px` | KPI Summary แสดง 4 columns, Work Queue และ Recent Activity อยู่ในแถวเดียวกัน, Dashboard Panels แสดงเป็น grid ด้านล่าง |
+| Mobile | `<= 760px` | แสดงเป็น 1 column ตามลำดับ Header -> KPI Summary -> Work Queue -> Recent Activity -> Dashboard Panels; Work Queue และ Recent Activity แสดงตามเนื้อข้อมูลจริง ไม่บังคับความสูงเท่ากัน |
+| Tablet | `761px - 1365px` | KPI Summary แสดง 2 columns; Work Queue และ Recent Activity อยู่ในแถวเดียวกัน (2 columns 50/50) สูงเท่ากัน; Dashboard Panels แสดงเป็น grid 2 columns |
+| Desktop | `> 1365px` | KPI Summary แสดง 4 columns, Work Queue และ Recent Activity อยู่ในแถวเดียวกัน (2 columns 50/50) สูงเท่ากัน, Dashboard Panels แสดงเป็น grid ด้านล่าง |
 
 ข้อกำหนดเพิ่มเติม:
 
@@ -100,6 +100,8 @@ Dashboard ไม่มี submenu
 - Work Queue ต้องอยู่ถัดจาก KPI Summary เสมอ
 - Recent Activity ต้องอยู่ถัดจาก Work Queue เสมอ
 - Dashboard Panels ต้องอยู่หลัง Recent Activity
+- บน tablet/desktop (>`760px`) Work Queue และ Recent Activity ต้องสูงเท่ากัน โดยใช้ grid stretch ให้ panel ยืดเต็ม grid row และไม่จำกัดความสูงสูงสุด เพื่อให้ scroll หน้าหลักได้ปกติเมื่อเลื่อนเมาส์ผ่าน
+- บน mobile (`<=760px`) ยกเลิก stretch แสดงตามเนื้อข้อมูลจริง ไม่บังคับความสูงเท่ากัน
 - ข้อความ, ตัวเลข, chip, button และ row ต้องไม่ล้นหรือซ้อนกัน
 - Card และ row ที่คลิกได้ต้องมี hit area ชัดเจนทั้ง mobile และ desktop
 
@@ -244,7 +246,7 @@ Panel ที่ต้องมี:
 
 ### 11.1 Asset Status
 
-ใช้ข้อมูลชุดเดียวกับหน้า Asset Management / Asset List โดยนับจำนวน asset ตามสถานะจากรายการ asset ชุดเดียวกัน และแสดงยอดรวมของทั้ง 4 สถานะที่หัวการ์ด Dashboard
+ใช้ข้อมูลชุดเดียวกับหน้า Asset Management / Asset List โดยนับจำนวน asset ตามสถานะจากรายการ asset ชุดเดียวกัน ไม่มีการแสดงยอดรวมที่หัวการ์ด เพื่อให้สมดุลกับการ์ด Dashboard Panel อื่นในแถวเดียวกัน
 
 การแสดงผลต้องใช้รูปแบบเดียวกับ Asset Status card ในหน้า Asset List: แถวสถานะแยกสี มีกรอบและแถบสีด้านซ้าย พร้อมค่า status count ด้านขวา
 
