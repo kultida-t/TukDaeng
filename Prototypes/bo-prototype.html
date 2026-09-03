@@ -21778,6 +21778,12 @@
       // Management, Offer Management). renderOptionGroupList() re-adds them when id is
       // "option-master" (handled further below), so removing here is safe.
       document.body.classList.remove("option-master-mode", "option-group-list-mode", "option-detail-mode");
+      // HS-QA-001: Settings mode classes (Policy & Versioning, Support Center) were only ever
+      // added by their own render functions, never removed by renderModule, so they leaked into
+      // other modules (e.g. Dashboard) and hid .detail/.summary-grid/.cards via CSS. The
+      // settings render functions re-add the appropriate class when id is "settings", so
+      // removing here is safe.
+      document.body.classList.remove("policy-versioning-mode", "policy-detail-mode", "policy-editor-mode", "policy-version-history-mode", "support-center-mode");
       document.body.classList.toggle("article-list-mode", isArticleList);
       document.body.classList.toggle("category-list-mode", isCategoryList);
       document.body.classList.toggle("reported-board-mode", isReportedBoard);
