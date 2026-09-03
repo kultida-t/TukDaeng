@@ -66,4 +66,4 @@ When a Kanban task involves editing files, do not move the task to `done` immedi
 
 ## Time Display Format
 
-When showing work hours in summaries or reports, display in `X ชม. Y นาที` format (e.g. `1 ชม. 37 นาที`) instead of decimal hours (e.g. `1.62 ชม.`). Convert decimal hours by splitting the integer part as hours and multiplying the fractional part by 60 for minutes. Apply this to all time displays including per-task hours, totals, and running timers.
+When showing work hours in summaries or reports, display in `X ชม. Y นาที (D.D ชม.)` format (e.g. `1 ชม. 37 นาที (1.6 ชม.)`, `0 ชม. 39 นาที (0.7 ชม.)`) — showing both hours-minutes and decimal hours rounded to 1 decimal place in parentheses. Convert decimal hours by splitting the integer part as hours and multiplying the fractional part by 60 for minutes for the first part, and compute the parenthesized decimal as `(X × 60 + Y) ÷ 60` rounded to 1 decimal place. Apply this to all time displays including per-task hours, totals, and running timers.
