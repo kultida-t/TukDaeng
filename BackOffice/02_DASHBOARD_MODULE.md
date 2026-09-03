@@ -240,7 +240,7 @@ Panel ที่ต้องมี:
 | Asset Status | `จาก Asset List ทั้งหมด` | Status label, description, count | เปิด Asset Management ตาม status/context |
 | Offer Status | `จาก Offer Management ทั้งหมด` | Offer status label, description, count | เปิด Offer / Offer Queue |
 | Latest Articles | `จาก Articles ล่าสุด` | Article title, publish status, detail | เปิด Content Management / Articles |
-| Top Searched Brands | `จาก Search Report สัปดาห์นี้` | Brand, search count, trend, share bar | เปิด Reports / Search |
+| Top Searched Brands | `จาก Search Insights สัปดาห์นี้` | Brand, search count, trend, share bar | เปิด Market Demand / Search Insights |
 
 ### 11.1 Asset Status
 
@@ -284,11 +284,11 @@ Rows:
 
 | Brand | Searches | Share | Trend | Navigation |
 | --- | --- | --- | --- | --- |
-| Rolex | `1,684` | `33%` | `+6%` | Reports / Search |
-| Omega | `892` | `17%` | `+3%` | Reports / Search |
-| Seiko | `620` | `12%` | `+9%` | Reports / Search |
-| Tudor | `480` | `9%` | `+5%` | Reports / Search |
-| Cartier | `340` | `7%` | `+14%` | Reports / Search |
+| Rolex | `1,684` | `33%` | `+6%` | Market Demand / Search Insights |
+| Omega | `892` | `17%` | `+3%` | Market Demand / Search Insights |
+| Seiko | `620` | `12%` | `+9%` | Market Demand / Search Insights |
+| Tudor | `480` | `9%` | `+5%` | Market Demand / Search Insights |
+| Cartier | `340` | `7%` | `+14%` | Market Demand / Search Insights |
 
 กฎการแสดง Panels:
 

@@ -3462,6 +3462,14 @@
     button.wa-stat-bar-row:not(.wa-stat-bar-row-static):hover {
       background: #eef4fc;
     }
+    body.dashboard-mode .dashboard-status-card .wa-stat-bar-row:hover,
+    body.dashboard-mode .dashboard-status-card .wa-stat-bar-row:focus-visible {
+      background: #f8fbff;
+    }
+    body.dashboard-mode .dashboard-status-card .wa-stat-bar-row:focus-visible {
+      outline: 2px solid rgba(20, 99, 217, .28);
+      outline-offset: -2px;
+    }
     /* ชื่อ + จำนวน ชิดซ้ายเป็นกลุ่มเดียวกัน, percent + chevron ชิดขวาเป็นอีกกลุ่ม (ดันด้วย margin-left: auto) */
     .wa-stat-bar-top {
       display: flex;
@@ -9516,8 +9524,14 @@
     /* BO-DASH-001: Top Searched Brands ใช้ wa-stat-bar-row pattern เหมือน Popular Brands ใน Search Insights
        ปรับ padding/gap ให้เข้ากับ dashboard card */
     body.dashboard-mode .dashboard-status-card .wa-stat-bar-list {
-      padding: 14px 6px 18px 20px;
+      padding: 14px 0 18px;
       gap: 14px;
+    }
+    body.dashboard-mode .dashboard-status-card .wa-stat-bar-row {
+      width: 100%;
+      margin: -6px 0;
+      padding: 6px 20px;
+      border-radius: 0;
     }
     .brand-ranking-row {
       width: 100%;
@@ -15347,7 +15361,7 @@
         ]},
         { title: "Top Searched Brands", meta: "จาก Search Report สัปดาห์นี้", type: "brand-ranking",
           rows: searchInsightsData.brands.slice(0, 5).map(b => ({
-            label: b.label, value: b.value, trend: b.trend, module: "reports", sub: "Search"
+            label: b.label, value: b.value, trend: b.trend, module: "watch-alerts", sub: "Search Insights"
           })) }
       ]
     };
