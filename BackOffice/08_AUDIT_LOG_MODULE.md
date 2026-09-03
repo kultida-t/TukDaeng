@@ -111,7 +111,9 @@ Baseline entity types:
 - MarketDataProviderSync
 - WatchAlert
 - Directory (future/postponed)
-- SupportTicket
+- Policy
+- PolicyVersion
+- SupportCenter
 - AccountDeletionRequest
 - Notification
 - RolePermission
@@ -166,11 +168,14 @@ Baseline entity types:
 - Offer force expire/invalidate
 - Chat message hide/remove/export
 - Comment hide/unhide/delete
-- Watch Alert disable/enable
+- Watch Alert sensitive reveal / trigger job run (read-only module — no admin disable/enable/export)
 
-### Support / Notification / Settings
+### Help / Support / Notification / Settings
 
-- Ticket assign/reply/resolve/close
+- Policy draft create/save
+- Policy publish (archive เวอร์ชัน Published เดิมอัตโนมัติ)
+- Policy restore (Archived → Draft ใหม่)
+- Support Center update (channels, business hours, availability)
 - Account deletion approve/reject/archive
 - Notification template update
 - Broadcast send/retry/cancel
@@ -292,6 +297,7 @@ Before/after JSON diff ต้อง wrap และ scroll ภายใน contai
 | Content / Board | Publish/archive/category/banner audit |
 | Market Data | Provider sync, manual override, price index audit |
 | Directory | Future/postponed; activate/inactivate/import/export audit only when Directory scope is reopened |
+| Help / Support | Policy draft/publish/archive/restore และ Support Center update audit |
 | Dashboard | Recent activity feed และ SLA/queue context |
 | Reports | Export audit events และ report export history |
 | Admin Settings | Permission/system setting changes audit |

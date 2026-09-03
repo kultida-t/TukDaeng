@@ -192,11 +192,11 @@ UI / Reporting rules:
 | Show/Hide/Sold asset | ต้องไม่เปิด public surface ที่ขัดกับ account deletion state |
 | Chat history | เก็บตาม retention policy แต่ต้อง mask personal profile fields เมื่อถึงขั้น anonymization |
 | Reports/safety records | เก็บตาม legal/safety/audit policy |
-| Support tickets | Link ไว้เพื่อให้ Admin ตอบ account-deleted support state ได้ |
+| Help / Support context | ไม่มี ticket ใน Phase 1 — module 12 เป็น Policy & Versioning + Support Center; support ticket linkage เป็น future scope |
 
 Pending offer dependency ต้องใช้ source เดียวกับ `09_OFFER_CHAT_MODULE.md` และต้อง audit ทุกครั้งที่ใช้เป็นเหตุผล block
 
-Pending user report หรือ offer/support dispute ต้อง block deletion เช่นเดียวกันจนกว่า Admin จะตรวจ source report และ dependency ให้จบก่อน การลบบัญชีไม่ควร cancel offer หรือปิด dispute อัตโนมัติ; ต้องให้ module ต้นทาง เช่น Offer Management, Asset Management หรือ Help & Support เป็นตัวบันทึกผลการตรวจ แล้ว Account Deletion จึงค่อย approve, keep blocked, หรือ cancel request ตาม policy
+Pending user report หรือ offer dispute ต้อง block deletion เช่นเดียวกันจนกว่า Admin จะตรวจ source report และ dependency ให้จบก่อน การลบบัญชีไม่ควร cancel offer หรือปิด dispute อัตโนมัติ; ต้องให้ module ต้นทาง เช่น Offer Management หรือ Asset Management เป็นตัวบันทึกผลการตรวจ แล้ว Account Deletion จึงค่อย approve, keep blocked, หรือ cancel request ตาม policy
 
 ## 12. Request Detail
 
@@ -212,7 +212,6 @@ Request detail ต้องมีส่วนข้อมูล:
 - Last active
 - Current account status
 - Current request status
-- Support tickets ที่เกี่ยวข้อง
 
 ### 12.2 Deletion Timeline
 
@@ -235,7 +234,6 @@ Request detail ต้องมีส่วนข้อมูล:
 - Assets by status: Sale, Show, Hide, Sold, Removed/Hidden
 - Chat rooms
 - Reports/safety cases
-- Support tickets
 
 ### 12.4 Archive / Anonymization Plan
 
@@ -294,7 +292,7 @@ Request detail ต้องมีส่วนข้อมูล:
 | User Management | Account status, profile/contact masking, login block |
 | Offer Management | Pending offer validation, accepted offer retention, related chat retention |
 | Asset Management | Hide assets from FO surfaces and Watch Alert matching |
-| Help / Support | Account-deleted support state, mistake/escalation ticket |
+| Help / Support | ไม่มี ticket ใน Phase 1 — module 12 เป็น Policy & Versioning + Support Center; support ticket linkage เป็น future scope |
 | Notification | Optional system notification/log for account deletion events ถ้า Product เปิด scope |
 | Audit Log | Deletion request, validation, archive, anonymization, export |
 | Reports & Analytics | Account deletion report, blocked count, archive completion |
@@ -354,7 +352,7 @@ Account Deletion Requests ต้องใช้ app shell, navigation, breakpoin
 | ID | Criteria |
 | --- | --- |
 | AC-BO-DEL-001 | BO แสดง deletion request queue พร้อม search/filter/status/grace period/dependency summary ครบ |
-| AC-BO-DEL-002 | Request detail แสดง user context, timeline, pending offers, assets, chats, reports และ support tickets ได้ |
+| AC-BO-DEL-002 | Request detail แสดง user context, timeline, pending offers, assets, chats และ reports ได้ |
 | AC-BO-DEL-003 | Pending incoming/outgoing offer ต้อง block archive/anonymization ได้จริง |
 | AC-BO-DEL-004 | Recheck blocking conditions ต้อง query dependency ล่าสุดและบันทึก audit |
 | AC-BO-DEL-005 | Approve archive, cancel request, trigger anonymization, and export archive report require Admin access policy, confirmation, reason, and audit |

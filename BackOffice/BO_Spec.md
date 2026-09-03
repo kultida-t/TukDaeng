@@ -44,14 +44,13 @@ BO Dashboard
 │   ├── Auction Centers
 │   ├── Consignment Centers
 │   └── Authentication Centers
-├── Watch Alert
-│   ├── Alert Criteria
-│   ├── Trigger History
-│   └── Disabled Alerts
+├── Market Demand
+│   ├── Demand Overview
+│   ├── Search Insights
+│   └── Watch Alert List
 ├── Help & Support
-│   ├── Tickets
-│   ├── Assignment
-│   └── SLA
+│   ├── Policy & Versioning
+│   └── Support Center
 ├── Account Deletion
 │   ├── Requests
 │   ├── Grace Period
@@ -71,11 +70,8 @@ BO Dashboard
     ├── Roles & Permissions
     ├── Security
     ├── Retention
-    ├── Terms of Use
-    ├── Privacy Policy
-    ├── Version History
+    ├── Policy & Versioning
     ├── Support Center
-    ├── Contact Support
     └── Audit Log
 ```
 
@@ -380,7 +376,6 @@ Watch Shops, Accessories Shops, Repair Shops, Auction Centers, Consignment Cente
 | Asset Reported Comments Report | Total Comments, Reported Comments, Hidden Comments, Top Commented Assets |
 | Search Report | Top Search Keywords, Top Filter Combinations, Watch Alert Volume by Brand |
 | Watch Alert Report | Total Active Alerts, Trigger Rate (Alert → Click), Top Alert Brands |
-| Support Report | Open Tickets, SLA, Resolution Time, Ticket Types |
 | Notification Report | Sent, Delivered, Opened, Failed, Retry Count by Notification Type |
 | Account Deletion Report | Requests, Blocked, Archived, Avg Processing Time |
 

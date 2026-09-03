@@ -1,8 +1,8 @@
 ﻿# 11 BO Market Demand & Watch Alert Module
 
-**Version:** `BO-11-v0.2`
-**Date:** 2026-07-06  
-**Status:** Draft baseline  
+**Version:** `BO-11-v0.3`
+**Date:** 2026-09-01
+**Status:** สเปกปัจจุบัน
 **Platform:** Responsive Web Back Office
 
 ## UI Standards And Prototype Reference
@@ -17,8 +17,8 @@
 | --- | --- |
 | Module Name | BO Market Demand & Watch Alert |
 | Platform | Responsive Web Back Office |
-| Version | `BO-11-v0.2` |
-| Status | Draft baseline |
+| Version | `BO-11-v0.3` |
+| Status | สเปกปัจจุบัน |
 | Owner | Product / UX / Engineering / Operations |
 | Document Type | Functional PRD |
 
@@ -41,16 +41,15 @@ BO Market Demand & Watch Alert Module คือพื้นที่สำหร
 - Demand Overview ที่รวม market demand จาก Search/Filter behavior และ Watch Alert criteria แบบ aggregate
 - Search Insights สำหรับ popular keyword, popular filter selection, popular filter combination และ no-result search แบบ aggregate
 - Popular Filter data definition และการเชื่อมโยงกับ quick-selection tags ใน FO
-- Watch Alert list พร้อม search, filter, sort, pagination และ export ตาม permission
-- Watch Alert detail พร้อม owner, alert name, criteria, active/disabled state, notification toggle และ trigger history
+- Watch Alert list พร้อม filter, sort และ pagination (read-only)
+- Watch Alert detail พร้อม owner, alert name, criteria, active/disabled state, notification toggle และ trigger history (read-only)
 - Trigger history สำหรับ asset ที่ match criteria
 - Notification delivery trace สำหรับ Watch Alert
-- Admin disable/enable alert ตาม permission
-- Criteria validation ว่าใช้ schema เดียวกับ Search Filter
+- Criteria validation ว่าใช้ schema เดียวกันกับ Search Filter
 - Match rule เฉพาะ asset status `Sale`
 - Block/user visibility context ที่ส่งผลต่อ result
 - Market data dependency เช่น brand/model/reference active/inactive
-- Audit log สำหรับ disable/enable/export/sensitive reveal
+- Audit log สำหรับ sensitive reveal
 - Responsive layout สำหรับ desktop, tablet และ mobile-width browser
 
 ### Out Of Scope
@@ -86,16 +85,15 @@ BO Market Demand & Watch Alert Module คือพื้นที่สำหร
 
 | Access Area | Rule |
 | --- | --- |
-| Module access | Admin ที่มีสิทธิ์เข้าเมนูสามารถดู list, detail, search, filter, sort และ pagination ได้ |
-| Write action | Action ที่เปลี่ยน state หรือกระทบ user/FO ต้องตรวจ permission, แสดง confirmation สำหรับ high-risk action, บังคับกรอก reason เมื่อมีผลต่อ FO/user และบันทึก audit |
+| Module access | Admin ที่มีสิทธิ์เข้าเมนูสามารถดู list, detail, filter, sort และ pagination ได้ |
+| Write action | ไม่มี — Watch Alert BO เป็น read-only ทั้ง List และ Detail, Admin ไม่จัดการ alert ของ user ใด ๆ (ไม่ disable/enable/export/bulk) |
 | Sensitive data | แสดงแบบ mask เป็นค่าเริ่มต้น เปิดเฉพาะกรณีมี business reason, อนุมัติตาม policy และบันทึก audit |
-| Export | ต้องตรวจ permission, ควบคุม scope, ใช้ expiry/background job เมื่อจำเป็น และบันทึก audit export event |
 | Direct URL/API | ต้องตรวจสิทธิ์ที่ route, API และ service layer เสมอ ห้ามพึ่งพาการซ่อน UI เพียงอย่างเดียว |
 ## 6. Responsive Layout
 
 | Width | Layout Requirement |
 | --- | --- |
-| Mobile-width browser | Alert table เปลี่ยนเป็น stacked cards, filter อยู่ใน drawer/bottom sheet, disable/enable action ต้องไม่ล้นจอ |
+| Mobile-width browser | Alert table เปลี่ยนเป็น stacked cards, filter อยู่ใน drawer/bottom sheet |
 | Tablet | List + detail drawer พร้อม criteria summary |
 | Desktop | Full table, side filters, split detail panel, trigger history table |
 
@@ -165,7 +163,7 @@ Alert List ใช้ filter bar สำหรับคัดกรอง ไม�
 | Match status | ทุกสถานะ match, ไม่มี match (unmet), มี match |
 | Last Triggered | date range (from - to) |
 
-หมายเหตุ: Status filter ใน List แสดงเฉพาะสถานะที่ปรากฏใน read-only list คือ Active, User Disabled และ Deleted (soft delete) — สถานะ Admin Disabled และ admin action ที่เกี่ยวข้องอยู่ใน section 13 ซึ่งอยู่นอกขอบเขต read-only List
+หมายเหตุ: Status filter ใน List แสดงเฉพาะสถานะที่ปรากฏใน read-only list คือ Active, User Disabled และ Deleted (soft delete) — Watch Alert BO เป็น read-only ไม่มี Admin Disabled state หรือ admin action ใด ๆ (ดู section 13)
 
 ### Sort
 
@@ -306,10 +304,9 @@ Watch Alert Detail เป็นหน้าจอ read-only สำหรับ�
 | --- | --- | --- |
 | `Active` | Alert ยังใช้งานได้ | Trigger notification ได้ถ้า notification enabled และมี match |
 | `User Disabled` | User ปิด notification หรือ disable เอง | เก็บ alert ไว้ แต่ไม่ส่ง notification ตาม toggle |
-| `Admin Disabled` | Admin ปิด alert ตาม policy | ไม่ trigger notification ใหม่; FO ควรเห็น unavailable/disabled state หรือซ่อนตาม UX policy |
-| `Deleted` | User ลบ alert | หายจาก Watch Alert List และหยุด notification ทันที |
+| `Deleted` | User ลบ alert | หายจาก Watch Alert List ของ user และหยุด notification ทันที |
 
-BO ต้องเก็บ actor/source ของ status change แยกให้ชัด เช่น user action, admin action, system action
+BO ต้องเก็บ actor/source ของ status change แยกให้ชัด เช่น user action, system action
 
 ## 9. Criteria Schema
 
@@ -413,23 +410,18 @@ Delivery fields ขั้นต่ำ:
 
 ## 13. Admin Actions
 
+Watch Alert BO เป็น read-only ทั้ง List และ Detail — Admin ไม่จัดการ alert ของ user ใด ๆ (ไม่ disable/enable/export/bulk)
+
 | Action | Allowed Roles | Requirement |
 | --- | --- | --- |
 | View alert | Admin | Module permission required |
 | View trigger history | Admin | policy-based visibility |
-| Disable alert | Admin ตาม policy | Confirmation, reason, audit, stop new triggers |
-| Enable alert | Admin | Reason, audit, criteria revalidation |
-| Export alerts/history | Admin | Audit export event และ controlled access |
 | View delivery status | Admin | Read-only; retry อยู่ใน Notification module |
-
-Bulk disable ต้องเปิดเฉพาะกรณี abuse/risk policy ชัดเจน และต้องมี confirmation + reason
 
 ## 14. FO Sync Rules
 
 | BO/System Action | FO Result |
 | --- | --- |
-| Admin disables alert | Alert ไม่ trigger notification ใหม่; FO แสดง disabled/unavailable หรือซ่อนตาม UX policy |
-| Admin enables alert | Alert กลับมา trigger ตาม criteria หาก notification enabled |
 | Market data inactive | หยุด new trigger สำหรับ criteria ที่พึ่งพา inactive option ตาม policy |
 | Asset status no longer Sale | Asset หายจาก Watch Alert Result List |
 | User block relation changes | Result list ต้อง filter blocked asset ทันทีเมื่อโหลดใหม่ |
@@ -458,7 +450,6 @@ Analytics ขั้นต่ำ:
 - Top alert brands/models/reference
 - Alert open rate
 - Trigger-to-open rate
-- Disabled by admin count
 - Inactive market data dependency count
 
 Analytics ต้องไม่ expose sensitive user data ให้ admin access ที่ไม่มี permission
@@ -467,10 +458,7 @@ Analytics ต้องไม่ expose sensitive user data ให้ admin acces
 
 Audit action ขั้นต่ำ:
 
-- `WATCH_ALERT_DISABLE`
-- `WATCH_ALERT_ENABLE`
-- `WATCH_ALERT_EXPORT`
-- `WATCH_ALERT_SENSITIVE_REVEAL`
+- `WATCH_ALERT_SENSITIVE_REVEAL` ถ้ามีการเปิดดูข้อมูลที่ mask ไว้
 - `WATCH_ALERT_TRIGGER_JOB_RUN` ถ้า background job ต้อง trace
 
 ทุก event ต้องมี:
@@ -495,7 +483,7 @@ Audit action ขั้นต่ำ:
 - Alert ถูก user ลบระหว่าง admin เปิดหน้า
 - Criteria อ้าง market data ที่ inactive แล้ว
 - Notification delivery section load fail โดยไม่ทำให้ alert detail ทั้งหน้าล่ม
-- Permission denied สำหรับ user detail/export/sensitive reveal
+- Permission denied สำหรับ user detail/sensitive reveal
 - Stale trigger warning เมื่อ background job ยังประมวลผลไม่เสร็จ
 
 ## 18. Integration With Other BO Modules
@@ -509,7 +497,7 @@ Audit action ขั้นต่ำ:
 | Market Data | Alert Detail Section 3 Criteria: แสดง inactive market data warning เมื่อ criteria อ้างถึง brand/model/reference ที่ inactive; brand/model/reference active status affects criteria and trigger |
 | Asset Management (Reported Comments) | Block relation affects result visibility |
 | Notification | Alert Detail Section 5 Trigger & Notification History: แสดง delivery status (Delivered/Skipped/Failed/Pending) แบบ read-only; delivery logs, templates, retry policy อยู่ใน Notification module |
-| Audit Log | Watch Alert event types: `WATCH_ALERT_DISABLE`, `WATCH_ALERT_ENABLE`, `WATCH_ALERT_EXPORT`, `WATCH_ALERT_SENSITIVE_REVEAL`, `WATCH_ALERT_TRIGGER_JOB_RUN` (ดู section 16) |
+| Audit Log | Watch Alert event types: `WATCH_ALERT_SENSITIVE_REVEAL`, `WATCH_ALERT_TRIGGER_JOB_RUN` (ดู section 16) |
 | Reports & Analytics | Watch Alert report and search trend report |
 
 ## Module-Specific Exceptions
@@ -536,8 +524,6 @@ Watch Alert ต้องใช้ app shell, navigation, breakpoint, list toolba
 | AC-BO-WA-003 | Criteria schema ต้องตรง Search Filter และทุก field optional |
 | AC-BO-WA-004 | Trigger/match ต้องใช้เฉพาะ asset status `Sale` และไม่รวม Show/Hide/Sold/Deleted/Removed |
 | AC-BO-WA-005 | Watch Alert notification destination ต้องเป็น `Watch Alert Result List` ไม่ใช่ Asset Detail |
-| AC-BO-WA-006 | Admin disable alert ได้ตาม permission พร้อม confirmation, reason และ audit |
-| AC-BO-WA-007 | Disabled alert ต้องหยุด trigger notification ใหม่ |
 | AC-BO-WA-008 | Market data inactive dependency ต้องแสดง warning และไม่ลบ history เดิม |
 | AC-BO-WA-008A | Alert ที่ criteria อ้าง entity/option ที่มี no current listing (จำนวน Asset Sale = 0 ตอนสร้าง) ต้องไม่ถูก flag เป็น inactive market data และต้องนับเป็น unmet demand ปกติ |
 | AC-BO-WA-009 | Block relation ต้องถูกใช้เป็น exclusion context ใน trigger/result review |
@@ -549,7 +535,7 @@ Watch Alert ต้องใช้ app shell, navigation, breakpoint, list toolba
 
 | ID | Decision Needed | Current Recommendation |
 | --- | --- | --- |
-| BO-WA-DEC-001 | FO แสดง Admin Disabled alert เป็น disabled state หรือซ่อนจาก list | ให้ FO UX ตัดสิน แต่ BO ต้องส่ง state ชัดเจน |
+| BO-WA-DEC-001 (resolved) | FO แสดง Admin Disabled alert เป็น disabled state หรือซ่อนจาก list | **ตัดสินใจ:** ไม่มี Admin Disabled state — Watch Alert BO เป็น read-only ทั้ง List และ Detail, Admin ไม่ disable/enable alert ของ user ใด ๆ (ดู section 13) |
 | BO-WA-DEC-002 (resolved) | Inactive market data ทำให้ alert เดิม disabled หรือแค่หยุด trigger ใหม่ | **ตัดสินใจ:** หยุด trigger match ใหม่ตาม policy แต่ยังเก็บ alert/history เดิม — สอดคล้องกับ section 10 และ 10.1 |
-| BO-WA-DEC-003 | เปิด bulk disable alert หรือไม่ | ยังไม่เปิด default; เปิดเฉพาะ abuse/risk policy พร้อม audit |
+| BO-WA-DEC-003 (resolved) | เปิด bulk disable alert หรือไม่ | **ตัดสินใจ:** ไม่เปิด — Watch Alert BO เป็น read-only ไม่มี admin action ใด ๆ ต่อ alert ของ user (ดู section 13) |
 
