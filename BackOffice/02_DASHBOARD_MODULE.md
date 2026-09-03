@@ -244,16 +244,22 @@ Panel ที่ต้องมี:
 
 ### 11.1 Asset Status
 
+ใช้ข้อมูลชุดเดียวกับหน้า Asset Management / Asset List โดยนับจำนวน asset ตามสถานะจากรายการ asset ชุดเดียวกัน และแสดงยอดรวมของทั้ง 4 สถานะที่หัวการ์ด Dashboard
+
+การแสดงผลต้องใช้รูปแบบเดียวกับ Asset Status card ในหน้า Asset List: แถวสถานะแยกสี มีกรอบและแถบสีด้านซ้าย พร้อมค่า status count ด้านขวา
+
 Rows:
 
 | Label | Value ตัวอย่าง | Detail | Navigation |
 | --- | --- | --- | --- |
-| Sale | `2,816` | `ยอดทั้งหมดที่แสดงใน Feed และ Search` | Asset Management / Asset List |
-| Show | `428` | `ยอดทั้งหมดที่แสดงใน collection และ profile` | Asset Management / Asset List |
-| Hide | `76` | `ยอดทั้งหมดที่ owner/Admin เห็นตามสิทธิ์` | Asset Management / Asset List พร้อม context Hide |
-| Sold | `214` | `ยอดทั้งหมดที่คงประวัติและปิดรับ offer` | Asset Management / Asset List |
+| Sale | `12` | `ยอดทั้งหมดที่แสดงใน Feed และ Search` | Asset Management / Asset List |
+| Show | `4` | `ยอดทั้งหมดที่แสดงใน collection และ profile` | Asset Management / Asset List |
+| Hide | `2` | `ยอดทั้งหมดที่ owner/Admin เห็นตามสิทธิ์` | Asset Management / Asset List พร้อม context Hide |
+| Sold | `2` | `ยอดทั้งหมดที่คงประวัติและปิดรับ offer` | Asset Management / Asset List |
 
 ### 11.2 Offer Status
+
+ใช้รูปแบบ status card เดียวกับ Asset Status: แต่ละแถวมีกรอบ แถบสีด้านซ้าย สีพื้นหลังอ่อน และจำนวนด้านขวา โดยเลือกสีตามความหมายของ Offer status; ไม่มีการแสดงยอดรวมที่หัวการ์ด
 
 Rows:
 

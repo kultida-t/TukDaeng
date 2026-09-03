@@ -9519,6 +9519,93 @@
     body.dashboard-mode .dashboard-status-card .status-value.status-scheduled { color: #1463d9; }
     body.dashboard-mode .dashboard-status-card .status-value.status-published { color: #087853; }
     body.dashboard-mode .dashboard-status-card .status-value.status-draft { color: #66758d; }
+    body.dashboard-mode .asset-status-dashboard-card .dashboard-card-head {
+      min-height: 70px;
+      padding: 18px 20px 16px;
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+    body.dashboard-mode .asset-status-dashboard-card h3 {
+      font-size: 26px;
+      letter-spacing: .035em;
+    }
+    body.dashboard-mode .dashboard-status-card .dashboard-status-total {
+      color: #061426;
+      font-family: var(--font-heading);
+      font-size: 30px;
+      font-weight: 400;
+      line-height: 1;
+      white-space: nowrap;
+    }
+    body.dashboard-mode .dashboard-status-card .asset-status-list {
+      display: grid;
+      gap: 8px;
+      padding: 14px 20px 16px;
+    }
+    body.dashboard-mode .dashboard-status-card .asset-status-row {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 16px;
+      align-items: center;
+      min-height: 44px;
+      padding: 9px 12px 9px 13px;
+      border: 1px solid #e2ebf5;
+      border-left: 4px solid #9fb1c7;
+      border-radius: 7px;
+      background: #fff;
+      color: inherit;
+      text-align: left;
+      font: inherit;
+      cursor: pointer;
+    }
+    body.dashboard-mode .dashboard-status-card .asset-status-row:hover,
+    body.dashboard-mode .dashboard-status-card .asset-status-row:focus-visible { background: #f8fbff; }
+    body.dashboard-mode .dashboard-status-card .asset-status-row.sale { border-left-color: #0ea576; background: #f7fffb; }
+    body.dashboard-mode .dashboard-status-card .asset-status-row.show { border-left-color: #2f7be5; background: #f8fbff; }
+    body.dashboard-mode .dashboard-status-card .asset-status-row.hide { border-left-color: #7557d8; background: #fbf9ff; }
+    body.dashboard-mode .dashboard-status-card .asset-status-row.sold { border-left-color: #d28a10; background: #fffdf7; }
+    body.dashboard-mode .dashboard-status-card .asset-status-row.sale .asset-status-value { color: #087853; }
+    body.dashboard-mode .dashboard-status-card .asset-status-row.show .asset-status-value { color: #155ab8; }
+    body.dashboard-mode .dashboard-status-card .asset-status-row.hide .asset-status-value { color: #5a3abb; }
+    body.dashboard-mode .dashboard-status-card .asset-status-row.sold .asset-status-value { color: #8a5700; }
+    body.dashboard-mode .dashboard-status-card .asset-status-copy { min-width: 0; }
+    body.dashboard-mode .dashboard-status-card .asset-status-name {
+      display: block;
+      color: #061426;
+      font-size: 13px;
+      font-weight: 800;
+      line-height: 1.2;
+    }
+    body.dashboard-mode .dashboard-status-card .asset-status-detail {
+      display: block;
+      margin-top: 4px;
+      color: #43546d;
+      font-size: 12px;
+      line-height: 1.35;
+    }
+    body.dashboard-mode .dashboard-status-card .asset-status-value {
+      color: #061426;
+      font-family: var(--font-heading);
+      font-size: 26px;
+      font-weight: 400;
+      line-height: 1;
+      text-align: right;
+      white-space: nowrap;
+    }
+    body.dashboard-mode .dashboard-status-card .offer-status-row.pending { border-left-color: #d28a10; background: #fffdf7; }
+    body.dashboard-mode .dashboard-status-card .offer-status-row.paused { border-left-color: #9aa9bb; background: #f8fafc; }
+    body.dashboard-mode .dashboard-status-card .offer-status-row.accepted { border-left-color: #0ea576; background: #f7fffb; }
+    body.dashboard-mode .dashboard-status-card .offer-status-row.rejected { border-left-color: #d60012; background: #fff7f7; }
+    body.dashboard-mode .dashboard-status-card .offer-status-row.cancelled { border-left-color: #66758d; background: #f8fafc; }
+    body.dashboard-mode .dashboard-status-card .offer-status-row.invalidated { border-left-color: #7557d8; background: #fbf9ff; }
+    body.dashboard-mode .dashboard-status-card .offer-status-row.pending .asset-status-value { color: #8a5700; }
+    body.dashboard-mode .dashboard-status-card .offer-status-row.paused .asset-status-value { color: #66758d; }
+    body.dashboard-mode .dashboard-status-card .offer-status-row.accepted .asset-status-value { color: #087853; }
+    body.dashboard-mode .dashboard-status-card .offer-status-row.rejected .asset-status-value { color: #b40010; }
+    body.dashboard-mode .dashboard-status-card .offer-status-row.cancelled .asset-status-value { color: #43546d; }
+    body.dashboard-mode .dashboard-status-card .offer-status-row.invalidated .asset-status-value { color: #5a3abb; }
     .brand-ranking-list {
       display: grid;
       padding: 12px 20px 16px;
@@ -15348,12 +15435,7 @@
         { category: "System", title: "แจ้งเตือนบางรายการส่งไม่สำเร็จ", summary: "ระบบพบ invalid token ใน delivery batch ล่าสุดและแยกงาน retry แล้ว", time: "3 ชม.ที่แล้ว", action: "เปิด Delivery Logs เพื่อตรวจรายการ retry และ cleanup", module: "notifications", sub: "Delivery Logs" }
       ],
       panels: [
-        { title: "Asset Status", meta: "จาก Asset List ทั้งหมด", rows: [
-          { label: "Sale", value: "2,816", detail: "ยอดทั้งหมดที่แสดงใน Feed และ Search", module: "assets", sub: "Asset List" },
-          { label: "Show", value: "428", detail: "ยอดทั้งหมดที่แสดงใน collection และ profile", module: "assets", sub: "Asset List" },
-          { label: "Hide", value: "76", detail: "ยอดทั้งหมดที่ owner/Admin เห็นตามสิทธิ์", module: "assets", sub: "Asset List" },
-          { label: "Sold", value: "214", detail: "ยอดทั้งหมดที่คงประวัติและปิดรับ offer", module: "assets", sub: "Asset List" }
-        ]},
+        { title: "Asset Status", meta: "จาก Asset List ทั้งหมด", rows: [] },
         { title: "Offer Status", meta: "จาก Offer Management ทั้งหมด", rows: [
           { label: "Pending", value: "3", detail: "รอ owner ตอบตามรายการใน Offer Management", module: "offers", sub: "Offer Queue" },
           { label: "Paused", value: "1", detail: "offer ถูกพักระหว่าง asset รอตรวจสอบ", module: "offers", sub: "Offer Queue" },
@@ -15367,7 +15449,7 @@
           { label: "How to Check Provenance", value: "Published", detail: "เผยแพร่แล้วและแสดงบน Board", module: "content", sub: "Articles" },
           { label: "Market Notes July", value: "Draft", detail: "ยังไม่แสดงบน FO / รอรูป cover", module: "content", sub: "Articles" }
         ]},
-        { title: "Top Searched Brands", meta: "จาก Search Report สัปดาห์นี้", type: "brand-ranking",
+        { title: "Top Searched Brands", meta: "จาก Search Insights สัปดาห์นี้", type: "brand-ranking",
           rows: searchInsightsData.brands.slice(0, 5).map(b => ({
             label: b.label, value: b.value, trend: b.trend, module: "watch-alerts", sub: "Search Insights"
           })) }
@@ -23412,6 +23494,27 @@
 
     function renderDashboardPanels() {
       const renderPanelRows = panel => {
+        if (panel.title === "Asset Status" || panel.title === "Offer Status") {
+          const isOfferStatus = panel.title === "Offer Status";
+          const rowClass = isOfferStatus ? "asset-status-row offer-status-row" : "asset-status-row";
+          return `
+            <div class="asset-status-list">
+              ${panel.rows.map(row => {
+                const [label, value, detail] = isOfferStatus
+                  ? [row.label, row.value, row.detail]
+                  : row;
+                return `
+                <button class="${rowClass} ${label.toLowerCase()}" type="button" data-module-jump="${isOfferStatus ? "offers" : "assets"}" data-sub-jump="${isOfferStatus ? "Offer Queue" : "Asset List"}">
+                  <span class="asset-status-copy">
+                    <span class="asset-status-name">${label}</span>
+                    <span class="asset-status-detail">${detail}</span>
+                  </span>
+                  <strong class="asset-status-value">${value.toLocaleString()}</strong>
+                </button>
+              `}).join("")}
+            </div>
+          `;
+        }
         if (panel.type === "brand-ranking") {
           // total คำนวณจากแบรนด์ทั้งหมดใน searchInsightsData.brands (10 รายการ)
           // ไม่ใช่จากเฉพาะ 5 รายการที่แสดง — เพื่อให้ตรงกับ Search Insights
@@ -23453,11 +23556,16 @@
           </div>
         `;
       };
-      document.querySelector("#cards").innerHTML = dashboardData.panels.map(panel => `
-        <article class="mini-card dashboard-status-card">
+      const dashboardPanels = dashboardData.panels.map(panel => panel.title === "Asset Status"
+        ? { ...panel, ...getAssetSummaryStats()[0], meta: panel.meta }
+        : panel);
+      document.querySelector("#cards").innerHTML = dashboardPanels.map(panel => `
+        <article class="mini-card dashboard-status-card${panel.title === "Asset Status" ? " asset-status-dashboard-card" : ""}">
           <div class="dashboard-card-head">
-            <h3>${panel.title}</h3>
-            ${panel.meta ? `<div class="dashboard-card-meta">${panel.meta}</div>` : ""}
+            <div>
+              <h3>${panel.title}</h3>
+              ${panel.meta ? `<div class="dashboard-card-meta">${panel.meta}</div>` : ""}
+            </div>
           </div>
           ${renderPanelRows(panel)}
         </article>
