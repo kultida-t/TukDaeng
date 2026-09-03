@@ -990,14 +990,33 @@
       box-shadow: none;
     }
     body.dashboard-mode .layout {
-      grid-template-columns: minmax(0, 1fr) minmax(430px, 46%);
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
       gap: 18px;
       margin-top: 4px;
+      align-items: stretch;
     }
     body.dashboard-mode .layout > .panel {
       border-color: #d7e2f0;
       box-shadow: none;
       overflow: hidden;
+    }
+    /* BO-DASH-001: บังคับความสูง Work Queue = Recent Activity บน desktop/tablet (2 คอลัมน์)
+       ใช้ align-items: stretch (grid default) ให้ panel ยืดเต็ม grid row สูงเท่ากัน
+       ไม่จำกัดความสูงและไม่ดัก scroll เพื่อให้ scroll หน้าหลักได้ปกติเมื่อเลื่อนเมาส์ผ่าน
+       บน mobile (≤760px) ยกเลิก stretch แสดงตามเนื้อข้อมูลจริง (ดู reset ใน media query ด้านล่าง) */
+    body.dashboard-mode .layout > .panel,
+    body.dashboard-mode .detail {
+      display: flex;
+      flex-direction: column;
+    }
+    body.dashboard-mode .layout > .panel .panel-head,
+    body.dashboard-mode .detail .panel-head {
+      flex: 0 0 auto;
+    }
+    body.dashboard-mode #table,
+    body.dashboard-mode .activity-list {
+      flex: 1 1 auto;
+      min-height: 0;
     }
     body.dashboard-mode .layout > .panel .panel-head {
       min-height: 62px;
@@ -3484,8 +3503,8 @@
     }
     .wa-stat-bar-percent {
       font-family: var(--font-heading);
-      font-size: 20px;
-      font-weight: 800;
+      font-size: 23px;
+      font-weight: 400;
       white-space: nowrap;
       text-align: right;
     }
@@ -9275,6 +9294,12 @@
     .status-list {
       display: grid;
     }
+    /* BO-DASH-001: จัด rows ชิดบน ไม่ให้ record เดียวขยายเต็ม panel
+       เมื่อ list อยู่ใน flex container ที่ stretch สูง */
+    body.dashboard-mode .dashboard-work-list,
+    body.dashboard-mode .activity-list {
+      align-content: start;
+    }
     .work-row,
     .activity-row,
     .status-row {
@@ -9487,6 +9512,12 @@
       display: grid;
       padding: 12px 20px 16px;
       gap: 11px;
+    }
+    /* BO-DASH-001: Top Searched Brands ใช้ wa-stat-bar-row pattern เหมือน Popular Brands ใน Search Insights
+       ปรับ padding/gap ให้เข้ากับ dashboard card */
+    body.dashboard-mode .dashboard-status-card .wa-stat-bar-list {
+      padding: 14px 6px 18px 20px;
+      gap: 14px;
     }
     .brand-ranking-row {
       width: 100%;
@@ -9765,7 +9796,10 @@
       }
       .main { height: 100vh; }
       .layout { grid-template-columns: 1fr; }
-      body.dashboard-mode .layout { grid-template-columns: 1fr; }
+      /* BO-DASH-001: dashboard ยังคง 2 คอลัมน์ในช่วง tablet (761-1180px)
+         ปรับคอลัมน์ขวาให้แคบลงเหมาะกับ tablet แทน minmax(430px, 46%) ของ desktop
+         1 คอลัมน์จะถูกบังคับที่ ≤760px (mobile) ใน media query ด้านล่าง */
+      body.dashboard-mode .layout { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
       body.user-management-mode .layout { grid-template-columns: 1fr; }
       .detail { position: static; }
       .summary-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
@@ -10484,6 +10518,18 @@
         line-height: 1.35;
       }
       body.dashboard-mode .cards { grid-template-columns: 1fr; }
+      /* BO-DASH-001: mobile (≤760px) — dashboard 1 คอลัมน์ ยกเลิก stretch
+         แสดงตามเนื้อข้อมูลจริง */
+      body.dashboard-mode .layout { grid-template-columns: 1fr; }
+      body.dashboard-mode .layout > .panel,
+      body.dashboard-mode .detail {
+        display: block;
+      }
+      body.dashboard-mode #table,
+      body.dashboard-mode .activity-list {
+        flex: none;
+        min-height: 0;
+      }
       body.user-management-mode .cards { grid-template-columns: 1fr; }
       .panel-head {
         align-items: flex-start;
@@ -15224,6 +15270,29 @@
       user.profileImage = userProfileImages[user.id] || user.profileImage;
     });
 
+    // Shared search insights data — 7 วันล่าสุด (mock) — 10 รายการต่อหมวด
+    // Dashboard "Top Searched Brands" แสดง 5 รายการแรกจาก brands (slice)
+    // Search Insights "Popular Brands" แสดง 5 รายการแรกใน panel + 10 รายการใน modal
+    // ทั้งสองหน้าคำนวณ % จาก total ของแบรนด์ทั้งหมดใน array เดียวกัน
+    const searchInsightsData = {
+      keywords: [
+        { label: "Rolex", value: 2480 }, { label: "Submariner", value: 1620 }, { label: "GMT-Master II", value: 1180 }, { label: "Datejust", value: 940 }, { label: "Speedmaster", value: 760 },
+        { label: "Daytona", value: 620 }, { label: "Aquanaut", value: 480 }, { label: "Royal Oak", value: 420 }, { label: "Nautilus", value: 380 }, { label: "Moonwatch", value: 310 }
+      ],
+      brands: [
+        { label: "Rolex", value: 1684, trend: "+6%" }, { label: "Omega", value: 892, trend: "+3%" }, { label: "Seiko", value: 620, trend: "+9%" }, { label: "Tudor", value: 480, trend: "+5%" }, { label: "Cartier", value: 340, trend: "+14%" },
+        { label: "Patek Philippe", value: 296 }, { label: "Audemars Piguet", value: 264 }, { label: "Grand Seiko", value: 218 }, { label: "IWC", value: 184 }, { label: "Breitling", value: 156 }
+      ],
+      filters: [
+        { label: "Price: ฿100,000–฿300,000", value: 1280 }, { label: "Condition: Like New", value: 980 }, { label: "Dial color: Black", value: 840 }, { label: "Reference: 16610", value: 560 }, { label: "Case size: 40–42mm", value: 480 },
+        { label: "Year: 2020–2024", value: 420 }, { label: "Box & Papers", value: 360 }, { label: "Automatic", value: 340 }, { label: "Condition: Unworn", value: 296 }, { label: "Dial color: Blue", value: 264 }
+      ],
+      noResult: [
+        { label: "Rolex Daytona / ฿300,000", value: 218 }, { label: "Seiko 6139 / Blue dial", value: 142 }, { label: "Patek Calatrava / ฿1M", value: 96 }, { label: "GMT-Master II / 126710", value: 58 },
+        { label: "Submariner / Green bezel", value: 52 }, { label: "Royal Oak / 39mm", value: 46 }, { label: "Speedmaster / Snoopy", value: 38 }, { label: "Cartier Tank / Gold", value: 32 }, { label: "Tudor / Burgundy", value: 26 }, { label: "IWC Pilot / Blue", value: 21 }
+      ]
+    };
+
     const dashboardData = {
       metrics: [
         { label: "New Users", value: "128", trend: "วันนี้เพิ่มขึ้น 8.2% เทียบกับเมื่อวาน", chips: ["Today 128", "This Week 642", "This Month 2,840"], module: "users", sub: "User Accounts", icon: "users" },
@@ -15276,13 +15345,10 @@
           { label: "How to Check Provenance", value: "Published", detail: "เผยแพร่แล้วและแสดงบน Board", module: "content", sub: "Articles" },
           { label: "Market Notes July", value: "Draft", detail: "ยังไม่แสดงบน FO / รอรูป cover", module: "content", sub: "Articles" }
         ]},
-        { title: "Top Searched Brands", meta: "จาก Search Report สัปดาห์นี้", type: "brand-ranking", rows: [
-          { label: "Rolex", value: "12.4K", share: 32, trend: "+6%", module: "reports", sub: "Search" },
-          { label: "Omega", value: "8.7K", share: 22, trend: "+3%", module: "reports", sub: "Search" },
-          { label: "Seiko", value: "6.1K", share: 16, trend: "+9%", module: "reports", sub: "Search" },
-          { label: "Cartier", value: "4.2K", share: 11, trend: "+14%", module: "reports", sub: "Search" },
-          { label: "Tudor", value: "3.6K", share: 9, trend: "+5%", module: "reports", sub: "Search" }
-        ]}
+        { title: "Top Searched Brands", meta: "จาก Search Report สัปดาห์นี้", type: "brand-ranking",
+          rows: searchInsightsData.brands.slice(0, 5).map(b => ({
+            label: b.label, value: b.value, trend: b.trend, module: "reports", sub: "Search"
+          })) }
       ]
     };
 
@@ -23325,22 +23391,29 @@
     function renderDashboardPanels() {
       const renderPanelRows = panel => {
         if (panel.type === "brand-ranking") {
-          const maxShare = Math.max(...panel.rows.map(row => row.share));
+          // total คำนวณจากแบรนด์ทั้งหมดใน searchInsightsData.brands (10 รายการ)
+          // ไม่ใช่จากเฉพาะ 5 รายการที่แสดง — เพื่อให้ตรงกับ Search Insights
+          const total = searchInsightsData.brands.reduce((s, b) => s + b.value, 0) || 1;
+          const accent = "#2f855a";
           return `
-            <div class="brand-ranking-list">
-              ${panel.rows.map(row => `
-                <button class="brand-ranking-row" type="button" data-module-jump="${row.module}" data-sub-jump="${row.sub || ""}">
-                  <span class="brand-ranking-top">
-                    <span class="ranking-brand-name">${row.label}</span>
-                    <span class="brand-searches">${row.value}</span>
-                    <span class="brand-trend">${row.trend}</span>
+            <div class="wa-stat-bar-list brand-ranking-list">
+              ${panel.rows.map(row => {
+                const pct = Math.round((row.value / total) * 100);
+                return `
+                <button class="wa-stat-bar-row" type="button" data-module-jump="${row.module}" data-sub-jump="${row.sub || ""}">
+                  <span class="wa-stat-bar-top">
+                    <span class="wa-stat-bar-left">
+                      <span class="wa-stat-bar-dot" style="background: ${accent}"></span>
+                      <span class="wa-stat-bar-label">${row.label}</span>
+                      <span class="wa-stat-bar-count">(${row.value.toLocaleString()})</span>
+                    </span>
+                    <span class="wa-stat-bar-right">
+                      <span class="wa-stat-bar-percent" style="color: ${accent}">${pct}%</span>
+                    </span>
                   </span>
-                  <span class="brand-bar-line">
-                    <span class="brand-bar-track"><span class="brand-bar-fill" style="width: ${Math.round((row.share / maxShare) * 100)}%"></span></span>
-                    <span class="brand-share">${row.share}%</span>
-                  </span>
+                  <span class="wa-stat-bar-track"><span class="wa-stat-bar-fill" style="width: ${pct}%; background: ${accent}"></span></span>
                 </button>
-              `).join("")}
+              `}).join("")}
             </div>
           `;
         }
@@ -25596,25 +25669,8 @@
       `;
       }).join("");
 
-      // Aggregate data — 7 วันล่าสุด (mock) — 10 รายการต่อหมวด, panel แสดง 5 รายการแรก, modal แสดง 10 รายการ
-      const insights = {
-        keywords: [
-          { label: "Rolex", value: 2480 }, { label: "Submariner", value: 1620 }, { label: "GMT-Master II", value: 1180 }, { label: "Datejust", value: 940 }, { label: "Speedmaster", value: 760 },
-          { label: "Daytona", value: 620 }, { label: "Aquanaut", value: 480 }, { label: "Royal Oak", value: 420 }, { label: "Nautilus", value: 380 }, { label: "Moonwatch", value: 310 }
-        ],
-        brands: [
-          { label: "Rolex", value: 1684 }, { label: "Omega", value: 892 }, { label: "Seiko", value: 620 }, { label: "Tudor", value: 480 }, { label: "Cartier", value: 340 },
-          { label: "Patek Philippe", value: 296 }, { label: "Audemars Piguet", value: 264 }, { label: "Grand Seiko", value: 218 }, { label: "IWC", value: 184 }, { label: "Breitling", value: 156 }
-        ],
-        filters: [
-          { label: "Price: ฿100,000–฿300,000", value: 1280 }, { label: "Condition: Like New", value: 980 }, { label: "Dial color: Black", value: 840 }, { label: "Reference: 16610", value: 560 }, { label: "Case size: 40–42mm", value: 480 },
-          { label: "Year: 2020–2024", value: 420 }, { label: "Box & Papers", value: 360 }, { label: "Automatic", value: 340 }, { label: "Condition: Unworn", value: 296 }, { label: "Dial color: Blue", value: 264 }
-        ],
-        noResult: [
-          { label: "Rolex Daytona / ฿300,000", value: 218 }, { label: "Seiko 6139 / Blue dial", value: 142 }, { label: "Patek Calatrava / ฿1M", value: 96 }, { label: "GMT-Master II / 126710", value: 58 },
-          { label: "Submariner / Green bezel", value: 52 }, { label: "Royal Oak / 39mm", value: 46 }, { label: "Speedmaster / Snoopy", value: 38 }, { label: "Cartier Tank / Gold", value: 32 }, { label: "Tudor / Burgundy", value: 26 }, { label: "IWC Pilot / Blue", value: 21 }
-        ]
-      };
+      // ใช้ shared data จาก searchInsightsData (top-level) — Dashboard และ Search Insights ดึงจากแหล่งเดียวกัน
+      const insights = searchInsightsData;
       const insightsMeta = {
         keywords: { title: "Popular Keywords", subtitle: "คำค้นหาที่ผู้ใช้พิมพ์บ่อยที่สุด — แสดงสูงสุด 10 รายการ" },
         brands: { title: "Popular Brands", subtitle: "แบรนด์ที่ผู้ใช้เลือกบ่อยจากการค้นหา/กรอง — แสดงสูงสุด 10 รายการ" },

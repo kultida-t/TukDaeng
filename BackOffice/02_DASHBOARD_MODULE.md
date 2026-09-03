@@ -140,7 +140,7 @@ KPI Summary ต้องแสดง 8 cards ตามลำดับนี้:
 | Reported Items | `33` | `มี 9 รายงานใกล้ครบกำหนดตรวจ` | `Assets 22`, `Users 5`, `Articles 3`, `Comments 3` | Chip เปิด queue รายงานตามประเภท |
 | Offer Activity | `12` | `อ้างอิงจาก Offer Management mock-up และสถานะ offer ล่าสุด` | `Pending 3`, `Paused 1`, `Accepted 3`, `Rejected 2`, `Cancelled 2`, `Invalidated 1` | เปิด Offer / Offer Queue |
 | Articles | `12` | `มี 4 บทความรอเผยแพร่` | `Published 8`, `Scheduled 4` | เปิด Content Management / Articles |
-| Watch Alert | `298` | `มีการจับคู่รายการขาย 18 ครั้งวันนี้` | `Active 298`, `Triggered 18` | เปิด Watch Alert / Alert Criteria |
+| Watch Alert | `298` | `มีการจับคู่รายการขาย 18 ครั้งวันนี้` | `Active 298`, `Triggered 18` | เปิด Watch Alert / Demand Overview |
 | Policies | `2` | `Privacy Policy มี Draft v2.1-draft รอเผยแพร่` | `Published 2`, `Draft 1` | เปิด Settings / Policy & Versioning |
 
 กฎการแสดง KPI:
@@ -212,7 +212,7 @@ Activity row ต้องมี:
 | Category | Event title | Summary | Time | Navigation |
 | --- | --- | --- | --- | --- |
 | Report | มีรายงานสินทรัพย์ใหม่ | `Rolex Submariner 16610 ถูกรายงานเรื่องรูปซ้ำและราคาเบี่ยงจากข้อมูลตลาด` | `15 นาทีที่แล้ว` | Asset Management / Reported Assets |
-| Offer | ข้อเสนอซื้อถูกปฏิเสธ | `ข้อเสนอซื้อ Omega Speedmaster ถูกปฏิเสธและยังมี chat ที่ผู้ใช้ถามต่อ` | `32 นาทีที่แล้ว` | Offer / Offer Queue |
+| Offer | ข้อเสนอซื้อถูกปฏิเสธ | `OFR-472 ของ Audemars Piguet Royal Oak ถูก owner ปฏิเสธและยังเก็บ history ไว้ใน Offer Detail` | `32 นาทีที่แล้ว` | Offer / Offer Queue |
 | Content | ตั้งเวลาเผยแพร่บทความแล้ว | `บทความ Vintage Watch Buying Guide ตั้งเวลาเผยแพร่วันนี้ 19:00` | `1 ชม.ที่แล้ว` | Content Management / Articles |
 | System | ข้อมูลตลาดอัปเดตแล้ว | `Sync History พบ duplicate price points ของ Omega Speedmaster Reduced 3 แถว` | `2 ชม.ที่แล้ว` | Market Data / Sync History |
 | System | แจ้งเตือนบางรายการส่งไม่สำเร็จ | `ระบบพบ invalid token ใน delivery batch ล่าสุดและแยกงาน retry แล้ว` | `3 ชม.ที่แล้ว` | Notifications / Delivery Logs |
@@ -278,15 +278,17 @@ Rows:
 
 ### 11.4 Top Searched Brands
 
+แสดง Top 5 แบรนด์ที่ถูกค้นหา/เลือกบ่อยที่สุดจาก Search Report สัปดาห์นี้ — Share คำนวณจากผลรวมของแบรนด์ทั้งหมดใน Search Insights (10 แบรนด์) ไม่ใช่จากเฉพาะ 5 แบรนด์ที่แสดง เพื่อให้ตรงกับ Popular Brands ใน Search Insights
+
 Rows:
 
 | Brand | Searches | Share | Trend | Navigation |
 | --- | --- | --- | --- | --- |
-| Rolex | `12.4K` | `32%` | `+6%` | Reports / Search |
-| Omega | `8.7K` | `22%` | `+3%` | Reports / Search |
-| Seiko | `6.1K` | `16%` | `+9%` | Reports / Search |
-| Cartier | `4.2K` | `11%` | `+14%` | Reports / Search |
-| Tudor | `3.6K` | `9%` | `+5%` | Reports / Search |
+| Rolex | `1,684` | `33%` | `+6%` | Reports / Search |
+| Omega | `892` | `17%` | `+3%` | Reports / Search |
+| Seiko | `620` | `12%` | `+9%` | Reports / Search |
+| Tudor | `480` | `9%` | `+5%` | Reports / Search |
+| Cartier | `340` | `7%` | `+14%` | Reports / Search |
 
 กฎการแสดง Panels:
 
@@ -312,7 +314,7 @@ Rows:
 | Reported Items / Comments chip | Asset Management / Reported Comments |
 | Offer Activity card | Offer / Offer Queue |
 | Articles card | Content Management / Articles |
-| Watch Alert card | Watch Alert / Alert Criteria |
+| Watch Alert card | Watch Alert / Demand Overview |
 | Policies card | Settings / Policy & Versioning |
 | Work Queue row | Module/submodule ตาม queue นั้น |
 | Recent Activity row | Module/submodule ตาม event นั้น |
