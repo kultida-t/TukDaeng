@@ -13510,41 +13510,70 @@
     body.support-center-mode .cards {
       display: none;
     }
-    body.support-center-mode #primary-action {
+    body.support-center-mode #primary-action,
+    body.support-center-mode #page-meta {
       display: none;
+    }
+    body.support-center-mode .panel-head {
+      display: none;
+    }
+    body.support-center-mode #table {
+      padding: 24px 22px 28px;
+      overflow: visible;
     }
     .support-center-form {
       display: flex;
       flex-direction: column;
-      gap: 24px;
-      padding: 4px 0;
+      gap: 30px;
+      padding: 0;
+      color: var(--text, #172b4d);
+    }
+    .support-center-section {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
     }
     .support-center-section h4 {
-      margin: 0 0 4px;
+      margin: 0;
       font-size: 15px;
-      font-weight: 700;
+      line-height: 1.35;
+      font-weight: 800;
+      color: #102c50;
     }
     .support-center-section > .muted {
-      margin: 0 0 12px;
-      font-size: 13px;
+      margin: -3px 0 4px;
+      font-size: 12px;
+      line-height: 1.5;
     }
     .support-channel-list {
       display: flex;
       flex-direction: column;
-      gap: 12px;
+      gap: 14px;
     }
     .support-channel-row {
       display: grid;
-      grid-template-columns: 48px 180px 1fr 100px;
+      grid-template-columns: 42px minmax(190px, 220px) minmax(0, 1fr) 82px;
       gap: 16px;
       align-items: center;
-      padding: 16px;
-      background: var(--card-bg, #fff);
-      border: 1px solid var(--border, #e5e7eb);
+      padding: 17px 16px;
+      background: #fbfdff;
+      border: 1px solid #dce6f3;
       border-radius: 8px;
+      transition: border-color .15s ease, box-shadow .15s ease, background .15s ease;
+    }
+    .support-channel-row:hover {
+      background: #fff;
+      border-color: #b8cbe1;
+      box-shadow: 0 3px 10px rgba(16, 44, 80, .06);
     }
     .support-channel-row.inactive {
-      opacity: 0.6;
+      opacity: 0.62;
+      background: #f5f7fa;
+    }
+    .support-channel-toggle,
+    .support-channel-status {
+      align-self: end;
+      padding-bottom: 7px;
     }
     .support-channel-toggle {
       display: flex;
@@ -13552,7 +13581,7 @@
       justify-content: center;
     }
     .toggle-switch {
-      width: 44px;
+      width: 42px;
       height: 24px;
       border-radius: 12px;
       border: none;
@@ -13579,32 +13608,57 @@
       transform: translateX(20px);
     }
     .support-channel-type {
-      font-size: 14px;
-      font-weight: 700;
-    }
-    .support-channel-value {
       font-size: 13px;
-      color: var(--text-secondary, #6b7280);
+      line-height: 1.3;
+      font-weight: 800;
+      color: #16385f;
+    }
+    .support-channel-value-field {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      min-width: 0;
+    }
+    .support-channel-value-field .field {
+      width: 100%;
+      min-height: 38px;
+      padding: 8px 10px;
+      color: var(--ink);
+      font-size: 13px;
+      font-weight: 400;
       word-break: break-all;
     }
     .support-channel-desc {
       display: grid;
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
       gap: 12px;
+      min-width: 0;
     }
     .support-channel-desc label {
       display: flex;
       flex-direction: column;
-      gap: 4px;
+      gap: 6px;
+      min-width: 0;
       font-size: 12px;
-      color: var(--text-secondary, #6b7280);
+      line-height: 1.3;
+      font-weight: 600;
+      color: #4b5f78;
     }
     .support-channel-desc .field {
+      width: 100%;
+      min-height: 38px;
+      padding: 8px 10px;
+      color: var(--ink);
       font-size: 13px;
+      font-weight: 400;
     }
     .support-channel-status {
       display: flex;
       justify-content: flex-end;
+    }
+    .support-channel-status .pill {
+      min-width: 68px;
+      justify-content: center;
     }
     .support-center-field-row {
       display: grid;
@@ -13614,14 +13668,43 @@
     .support-center-field-row label {
       display: flex;
       flex-direction: column;
-      gap: 4px;
+      gap: 6px;
+      font-size: 12px;
+      line-height: 1.3;
+      font-weight: 600;
+      color: #4b5f78;
+    }
+    .support-center-field-row .field {
+      min-height: 40px;
+      color: var(--ink);
       font-size: 13px;
-      color: var(--text-secondary, #6b7280);
+      font-weight: 400;
+    }
+    .support-center-form .user-detail-actions {
+      justify-content: flex-end;
+      gap: 10px;
+      padding-top: 16px;
+      border-top: 1px solid #dce6f3;
+    }
+    .support-center-form .user-detail-action-btn {
+      min-width: 150px;
+      min-height: 40px;
+    }
+    .support-channel-info {
+      min-width: 0;
     }
     @media (max-width: 760px) {
+      body.support-center-mode .panel-head {
+        min-height: 64px;
+        padding: 15px 16px 13px;
+      }
+      body.support-center-mode #table {
+        padding: 18px 16px 20px;
+      }
       .support-channel-row {
-        grid-template-columns: 48px 1fr;
+        grid-template-columns: 42px minmax(0, 1fr);
         gap: 12px;
+        padding: 14px;
       }
       .support-channel-desc,
       .support-channel-status {
@@ -13632,6 +13715,12 @@
       }
       .support-channel-status {
         justify-content: flex-start;
+      }
+      .support-center-form .user-detail-actions {
+        flex-direction: column-reverse;
+      }
+      .support-center-form .user-detail-action-btn {
+        width: 100%;
       }
     }
   </style>
@@ -21897,9 +21986,9 @@
       document.body.classList.add("support-center-mode");
       document.querySelector("#crumb").textContent = "เครื่องมือ & รายงาน / Settings / Support Center";
       document.querySelector("#page-title").textContent = "Support Center";
-      document.querySelector("#page-meta").textContent = `อัปเดตล่าสุด: ${supportCenterData.lastUpdated} โดย ${supportCenterData.lastEditor}`;
-      document.querySelector("#panel-title").textContent = "SUPPORT CONTACTS";
-      document.querySelector("#panel-subtitle").textContent = "จัดการข้อมูลช่องทางติดต่อที่แสดงในหน้า Help ของแอป";
+      document.querySelector("#page-meta").textContent = "";
+      document.querySelector("#panel-title").textContent = "";
+      document.querySelector("#panel-subtitle").textContent = "";
       document.querySelector("#primary-action").textContent = "";
       document.querySelector("#user-panel-filter-actions").innerHTML = "";
       document.querySelector(".filters").innerHTML = "";
@@ -21934,8 +22023,8 @@
             </div>
           </div>
           <div class="user-detail-actions">
-            <button class="user-detail-action-btn" type="button" data-support-save>บันทึกการเปลี่ยนแปลง</button>
             <button class="user-detail-action-btn" type="button" data-support-preview>Preview</button>
+            <button class="user-detail-action-btn primary" type="button" data-support-save>บันทึกการเปลี่ยนแปลง</button>
           </div>
         </div>
       `;
@@ -21943,6 +22032,8 @@
 
     function renderSupportChannelRow(ch) {
       const activeClass = ch.active ? "active" : "inactive";
+      const valueLabel = supportChannelValueLabel(ch.channelType);
+      const inputType = ch.channelType === "Email" ? "email" : "text";
       return `
         <div class="support-channel-row ${activeClass}" data-channel-id="${ch.id}">
           <div class="support-channel-toggle">
@@ -21951,14 +22042,16 @@
             </button>
           </div>
           <div class="support-channel-info">
-            <div class="support-channel-type">${ch.channelType}</div>
-            <div class="support-channel-value">${ch.value}</div>
+            <label class="support-channel-value-field">
+              <span class="support-channel-type">${ch.channelType}</span>
+              <input class="field" type="${inputType}" value="${ch.value}" data-channel-value="${ch.id}" aria-label="${valueLabel}" />
+            </label>
           </div>
           <div class="support-channel-desc">
-            <label><span>คำอธิบาย (ไทย)</span>
+            <label><span>คำอธิบายช่องทาง (ไทย)</span>
               <input class="field" type="text" value="${ch.descriptionTh}" data-channel-desc-th="${ch.id}" />
             </label>
-            <label><span>Description (English)</span>
+            <label><span>คำอธิบายช่องทาง (English)</span>
               <input class="field" type="text" value="${ch.descriptionEn}" data-channel-desc-en="${ch.id}" />
             </label>
           </div>
@@ -21967,6 +22060,17 @@
           </div>
         </div>
       `;
+    }
+
+    function supportChannelValueLabel(channelType) {
+      const labels = {
+        Phone: "เบอร์โทรศัพท์",
+        Email: "อีเมล",
+        LINE: "LINE URL",
+        Facebook: "Facebook URL",
+        Website: "Website URL"
+      };
+      return labels[channelType] || channelType;
     }
 
     // ===== Policy detail page (HS-PTO-002a) =====
@@ -33705,6 +33809,10 @@
       const supportSaveButton = event.target.closest("[data-support-save]");
       if (supportSaveButton) {
         // Read form values into data
+        document.querySelectorAll("[data-channel-value]").forEach(input => {
+          const ch = supportCenterData.channels.find(c => c.id === input.dataset.channelValue);
+          if (ch) ch.value = input.value;
+        });
         document.querySelectorAll("[data-channel-desc-th]").forEach(input => {
           const ch = supportCenterData.channels.find(c => c.id === input.dataset.channelDescTh);
           if (ch) ch.descriptionTh = input.value;
