@@ -3,7 +3,7 @@
 **Version:** 1.0  
 **Product:** Tuk Daeng Back Office (BO)  
 **Audience:** Admin  
-**Related Documents:** BO_Spec v1.1, BO_Spec_Completion_Addendum v1.2, FO PRD v1.0, Use Cases v1.0
+**Related Documents:** BO_Spec v1.2, BO_Spec_Completion_Addendum v1.3, FO PRD v1.0, Use Cases v1.0
 
 ---
 

@@ -1,14 +1,14 @@
 # BO Specification Addendum - Tuk Daeng Back Office Coverage for FO
 
-**Version:** 1.2 Addendum  
+**Version:** 1.3 Addendum  
 **Purpose:** เติมรายละเอียด Back Office ให้รองรับ Front Office flows จาก PRD และ Use Cases ครบถ้วนขึ้น  
-**Reference:** BO_Spec v1.1, PRD v1.0, Use_Cases v1.0
+**Reference:** BO_Spec v1.2, PRD v1.0, Use_Cases v1.0
 
 ---
 
 ## 1. Summary
 
-BO_Spec v1.1 รองรับ flow หลักของ FO แล้วในส่วน User, Asset, Content, Market Data, Reports, Push Notification และ Audit Log; Directory ถูกเลื่อนเป็น future/postponed scope เพราะ FO directory menu ยังเป็น placeholder แต่ยังขาดรายละเอียดสำหรับ flow ที่เกิดจากการใช้งานจริงของผู้ใช้ใน FO ได้แก่ Offer/Chat, Comment, Like/Favorite, Follow, Watch Alert ราย user, Help/Support, Delete Account และ System Notification Trigger
+BO_Spec v1.2 รองรับ flow หลักของ FO แล้วในส่วน User, Asset, Content, Market Data, Reports, Push Notification, Help & Support, Account Deletion และ Audit Log; Directory ถูกเลื่อนเป็น future/postponed scope เพราะ FO directory menu ยังเป็น placeholder แต่ยังขาดรายละเอียดสำหรับ flow ที่เกิดจากการใช้งานจริงของผู้ใช้ใน FO ได้แก่ Offer/Chat, Comment, Like/Favorite, Follow, Watch Alert ราย user และ System Notification Trigger
 
 Addendum นี้เสนอให้เพิ่ม module และ business rules ต่อไปนี้:
 
@@ -177,7 +177,7 @@ Current prototype Offer Detail ไม่มี Force Expire Offer, Mark Invalida
 
 ### 4.1 Purpose
 
-BO_Spec v1.1 มี Watch Alert report แล้ว แต่ FO ต้องมีการ create, rename, delete, toggle notification และ trigger alert จาก search criteria จึงควรมี management view ราย alert
+BO_Spec v1.2 มี Watch Alert report แล้ว แต่ FO ต้องมีการ create, rename, delete, toggle notification และ trigger alert จาก search criteria จึงควรมี management view ราย alert
 
 ### 4.2 Features
 
@@ -620,7 +620,7 @@ Content role split baseline:
 
 ## 10. Expanded Reports & Analytics
 
-เพิ่ม report ต่อไปนี้จาก BO_Spec v1.1
+เพิ่ม report ต่อไปนี้จาก BO_Spec v1.2
 
 | Report | Data |
 |---|---|
@@ -641,7 +641,7 @@ Phase 1 actions (ตรง prototype ที่ล็อกแล้ว):
 |---|---|
 | Hide Comment | Comment หายจาก Asset Detail |
 | Unhide Comment | Comment กลับมาแสดงใน Asset Detail |
-| Soft Delete Comment | Comment ไม่แสดง หรือแสดงเป็น deleted ตาม UX policy |
+| Remove comment (ซ่อนถาวร) | Comment ถูกซ่อนถาวรจาก public surfaces ตามผล moderation (comment status → `Removed`) |
 | Approve Account Archive | User login ไม่ได้, profile/assets ถูกซ่อนหรือ anonymized |
 | Publish Policy | FO แสดงเนื้อหา Terms of Use / Privacy Policy เวอร์ชันใหม่ทันที |
 | Update Support Center | FO Help screen แสดงช่องทางติดต่อและเวลาทำการล่าสุด |
@@ -681,28 +681,29 @@ Future scope (ยังไม่เปิดใน V1 Offer Management ที่
 
 เพิ่ม Action Type:
 
-- PreviewArticle
-- PublishArticle
-- ScheduleArticle
-- ArchiveArticle
-- SetFeaturedArticle
-- ActivateBanner
-- DeactivateBanner
-- ForceExpireOffer
-- InvalidateOffer
-- HideComment
-- UnhideComment
-- RemoveChatMessage
-- ApproveAccountArchive
-- CancelAccountDeletion
-- PolicyDraftCreate
-- PolicyDraftSave
-- PolicyPublish
-- PolicyArchive
-- PolicyRestore
-- SupportCenterUpdate
-- UpdateNotificationTemplate
-- RetryNotification
+- `ARTICLE_PREVIEW`
+- `ARTICLE_PUBLISH`
+- `ARTICLE_SCHEDULE`
+- `ARTICLE_ARCHIVE`
+- `ARTICLE_SET_FEATURED`
+- `BANNER_ACTIVATE`
+- `BANNER_DEACTIVATE`
+- `OFFER_FORCE_EXPIRE`
+- `OFFER_INVALIDATE`
+- `COMMENT_HIDE`
+- `COMMENT_UNHIDE`
+- `COMMENT_REMOVE`
+- `CHAT_MESSAGE_REMOVE`
+- `ACCOUNT_DELETION_APPROVE_ARCHIVE`
+- `ACCOUNT_DELETION_CANCEL`
+- `POLICY_DRAFT_CREATE`
+- `POLICY_DRAFT_SAVE`
+- `POLICY_PUBLISH`
+- `POLICY_ARCHIVE`
+- `POLICY_RESTORE`
+- `SUPPORT_CENTER_UPDATE`
+- `NOTIFICATION_TEMPLATE_UPDATE`
+- `NOTIFICATION_DELIVERY_RETRY`
 
 ---
 
