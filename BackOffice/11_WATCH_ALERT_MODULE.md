@@ -127,6 +127,8 @@ Search Funnel ในหน้า Search Insights แสดงเป็นกา�
 - ใช้กรอบอ่อนและแถบสีด้านซ้ายเพื่อแยกแต่ละขั้น โดยสีเป็น visual accent เท่านั้น ไม่ใช่สถานะของข้อมูล
 - จำนวนเหตุการณ์ใช้ตัวเลขขนาดใหญ่ชิดขวา ส่วนชื่อและรายละเอียดอยู่ทางซ้าย
 - ไม่ใช้ progress bar ซ้อนในแต่ละแถว เพื่อให้โครงสร้างสอดคล้องกับ Asset Status และลด visual noise
+- สี KPI `No-result Searches` ใช้สีแดงเดียวกับเส้น No-result ใน Search Trend และรายการ No-result Searches เพื่อให้ metric เดียวกันมี visual semantic เดียวกัน
+- สีของ Search Funnel ใช้เป็น visual accent แยกขั้น: น้ำเงิน, เขียว, อำพัน และม่วง ตามลำดับ ไม่ตีความเป็นสถานะของข้อมูล
 - ต้องคงค่า conversion เดิมและแสดงข้อมูลครบใน desktop, tablet และ mobile-width
 
 ### 6.2 Demand Overview Top Criteria Visual Standard

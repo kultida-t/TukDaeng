@@ -97,6 +97,14 @@
 - Popular Filter Combinations: เงื่อนไขที่ถูกใช้ร่วมกันบ่อย หากมีข้อมูลเพียงพอ
 - No-result Searches: คำค้นหาหรือเงื่อนไขที่ไม่พบผลลัพธ์ แยกจาก Unmet Watch Alert
 - Search/Filter Trend: แนวโน้มตามช่วงเวลา
+- Search Funnel: Search Submit → Result Click → Asset Detail Open → Watch Alert/Offer พร้อมจำนวนและเปอร์เซ็นต์เทียบกับ Search Submit
+
+### Search Funnel Visual Standard
+- แสดงเป็นรายการแนวตั้งใน card เดียว โดยใช้ composition เดียวกับ Asset Status
+- แต่ละแถวแสดง Step, ชื่อขั้น, จำนวนเหตุการณ์ชิดขวา และเปอร์เซ็นต์เทียบกับ Search Submit
+- ใช้กรอบอ่อนและแถบสีด้านซ้ายเป็น visual accent ของแต่ละขั้น ไม่ใช่ status ของข้อมูล
+- ไม่ใช้ progress bar ซ้อนในแต่ละแถว
+- ต้องแสดงข้อมูลครบและไม่เกิด overflow ที่ 390px, 768px, 1280px และ 1440px
 
 ### Rules
 - แสดงเฉพาะข้อมูล aggregate ไม่แสดง search history ของ user รายบุคคล
