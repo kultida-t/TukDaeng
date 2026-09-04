@@ -3420,55 +3420,69 @@
     }
 
     /* Search Insights funnel — Search → Result Click → Asset Detail → Watch Alert/Offer */
-    .si-funnel-wrap { display: flex; flex-direction: column; gap: 8px; }
+    .si-funnel-wrap {
+      display: grid;
+      gap: 8px;
+      padding: 0;
+    }
     .si-funnel-row {
-      display: flex; flex-direction: column; gap: 6px;
-      padding: 10px 14px;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 16px;
+      align-items: center;
+      min-height: 44px;
+      padding: 9px 12px 9px 13px;
+      border: 1px solid #e2ebf5;
+      border-left: 4px solid #9fb1c7;
       border-radius: 7px;
-      background: #f2f5f9;
-      border: 1px solid #d5dfeb;
+      background: #fff;
     }
-    .si-funnel-row.is-step-1 { background: #e8f1ff; border-color: #c6ddff; color: #0f52b8; }
-    .si-funnel-row.is-step-2 { background: #e4f8f0; border-color: #bcebd7; color: #07734f; }
-    .si-funnel-row.is-step-3 { background: #fff3d8; border-color: #f3d493; color: #925500; }
-    .si-funnel-row.is-step-4 { background: #efe9ff; border-color: #d8ccff; color: #6035ae; }
-    .si-funnel-head {
-      display: flex; flex-direction: column; gap: 2px; min-width: 0;
-    }
+    .si-funnel-row.is-step-1 { border-left-color: #2f7be5; background: #f8fbff; }
+    .si-funnel-row.is-step-2 { border-left-color: #0ea576; background: #f7fffb; }
+    .si-funnel-row.is-step-3 { border-left-color: #d28a10; background: #fffdf7; }
+    .si-funnel-row.is-step-4 { border-left-color: #7557d8; background: #fbf9ff; }
+    .si-funnel-row:hover { background: #f8fbff; }
+    .si-funnel-copy { min-width: 0; }
     .si-funnel-step {
-      font-size: 11px; font-weight: 700;
-      color: var(--muted); letter-spacing: .04em; text-transform: uppercase;
-    }
-    .si-funnel-name-row {
-      display: flex; align-items: baseline; gap: 8px; min-width: 0;
+      display: block;
+      color: #6d7f98;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: .04em;
+      line-height: 1.2;
+      text-transform: uppercase;
     }
     .si-funnel-name {
-      font-size: 14px; font-weight: 700; color: var(--ink);
-      overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
-      flex: 1 1 auto; min-width: 0;
+      display: block;
+      margin-top: 3px;
+      color: #061426;
+      font-size: 13px;
+      font-weight: 800;
+      line-height: 1.2;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .si-funnel-detail {
+      display: block;
+      margin-top: 4px;
+      color: #536983;
+      font-size: 12px;
+      line-height: 1.35;
     }
     .si-funnel-value {
+      color: #061426;
       font-family: var(--font-heading);
-      font-size: 22px; font-weight: 800; line-height: 1; color: var(--ink);
-      flex: 0 0 auto;
+      font-size: 26px;
+      font-weight: 400;
+      line-height: 1;
+      text-align: right;
+      white-space: nowrap;
     }
-    .si-funnel-track {
-      display: flex; align-items: center; gap: 10px;
-    }
-    .si-funnel-bar {
-      flex: 1 1 auto; height: 6px; border-radius: 999px;
-      background: rgba(8,21,42,.08);
-      overflow: hidden;
-    }
-    .si-funnel-bar-fill {
-      display: block; height: 100%;
-      background: currentColor;
-      border-radius: 999px;
-    }
-    .si-funnel-pct {
-      font-size: 12px; font-weight: 700; color: currentColor;
-      flex: 0 0 auto; min-width: 34px; text-align: right;
-    }
+    .si-funnel-row.is-step-1 .si-funnel-value { color: #155ab8; }
+    .si-funnel-row.is-step-2 .si-funnel-value { color: #087853; }
+    .si-funnel-row.is-step-3 .si-funnel-value { color: #8a5700; }
+    .si-funnel-row.is-step-4 .si-funnel-value { color: #5a3abb; }
 
     /* Search Insights — Trend และ Funnel อยู่แถวเดียวกันเป็น 2 คอลัมน์เหมือน panel อื่น */
     @media (max-width: 760px) {
@@ -3478,7 +3492,9 @@
       .si-trend-yaxis span { font-size: 8px; }
       .si-trend-axis { margin-left: 28px; }
       .si-trend-xtitle { margin-left: 28px; }
-      .si-funnel-value { font-size: 18px; }
+      .si-funnel-wrap { padding: 0; }
+      .si-funnel-row { gap: 12px; padding-left: 10px; }
+      .si-funnel-value { font-size: 24px; }
       .si-funnel-name { font-size: 13px; }
     }
 
@@ -26051,17 +26067,12 @@
         <div class="si-funnel-wrap">
           ${funnel.map(f => `
             <div class="si-funnel-row ${f.cls}">
-              <div class="si-funnel-head">
+              <div class="si-funnel-copy">
                 <span class="si-funnel-step">${esc(f.step)}</span>
-                <div class="si-funnel-name-row">
-                  <span class="si-funnel-name">${esc(f.name)}</span>
-                  <span class="si-funnel-value">${f.value.toLocaleString()}</span>
-                </div>
+                <span class="si-funnel-name">${esc(f.name)}</span>
+                <span class="si-funnel-detail">${f.pct}% ของการค้นหาเริ่มต้น</span>
               </div>
-              <div class="si-funnel-track">
-                <span class="si-funnel-bar"><span class="si-funnel-bar-fill" style="width:${f.pct}%"></span></span>
-                <span class="si-funnel-pct">${f.pct}%</span>
-              </div>
+              <strong class="si-funnel-value">${f.value.toLocaleString()}</strong>
             </div>
           `).join("")}
         </div>

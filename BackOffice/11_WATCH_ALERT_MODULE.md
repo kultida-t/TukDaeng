@@ -1,6 +1,6 @@
 ﻿# 11 BO Market Demand & Watch Alert Module
 
-**Version:** `BO-11-v0.4`
+**Version:** `BO-11-v0.5`
 **Date:** 2026-09-04
 **Status:** สเปกปัจจุบัน
 **Platform:** Responsive Web Back Office
@@ -17,7 +17,7 @@
 | --- | --- |
 | Module Name | BO Market Demand & Watch Alert |
 | Platform | Responsive Web Back Office |
-| Version | `BO-11-v0.3` |
+| Version | `BO-11-v0.5` |
 | Status | สเปกปัจจุบัน |
 | Owner | Product / UX / Engineering / Operations |
 | Document Type | Functional PRD |
@@ -117,6 +117,17 @@ Search Insights เป็นข้อมูล aggregate จาก Search & Filt
 - Popular Filter เป็น quick-selection layer ไม่ตัด option อื่นออกจากรายการเต็ม และไม่เปลี่ยน Search/Filter logic
 - Search Insights ต้องแสดงช่วงเวลาและเกณฑ์การจัดอันดับให้ชัดเจน เพื่อป้องกันการตีความว่าเป็นยอดขายหรือจำนวน Asset
 - No-result search นับเป็นสัญญาณ demand ได้ แต่ต้องแยกจาก unmet demand ของ Watch Alert
+
+### 6.1.1 Search Funnel Visual Standard
+
+Search Funnel ในหน้า Search Insights แสดงเป็นการ์ดรายการแนวตั้ง โดยใช้ composition เดียวกับ Asset Status เพื่อให้ Admin สแกนลำดับและค่าของแต่ละขั้นได้เร็ว:
+
+- แสดง 4 ขั้นตามลำดับ `Search Submit` → `Result Click` → `Asset Detail Open` → `Watch Alert / Offer`
+- แต่ละแถวแสดง Step, ชื่อขั้น, จำนวนเหตุการณ์ และเปอร์เซ็นต์เมื่อเทียบกับ Search Submit
+- ใช้กรอบอ่อนและแถบสีด้านซ้ายเพื่อแยกแต่ละขั้น โดยสีเป็น visual accent เท่านั้น ไม่ใช่สถานะของข้อมูล
+- จำนวนเหตุการณ์ใช้ตัวเลขขนาดใหญ่ชิดขวา ส่วนชื่อและรายละเอียดอยู่ทางซ้าย
+- ไม่ใช้ progress bar ซ้อนในแต่ละแถว เพื่อให้โครงสร้างสอดคล้องกับ Asset Status และลด visual noise
+- ต้องคงค่า conversion เดิมและแสดงข้อมูลครบใน desktop, tablet และ mobile-width
 
 ### 6.2 Demand Overview Top Criteria Visual Standard
 
@@ -540,6 +551,7 @@ Watch Alert ต้องใช้ app shell, navigation, breakpoint, list toolba
 | AC-BO-WA-009 | Block relation ต้องถูกใช้เป็น exclusion context ใน trigger/result review |
 | AC-BO-WA-010 | Responsive layout ใช้งานได้ที่ mobile-width, tablet และ desktop
 | AC-BO-WA-011 | Search Insights แสดง popular keyword/filter, no-result search, search trend over time, search funnel (Search → Result Click → Asset Detail → Watch Alert/Offer) และ average results per search แบบ aggregate โดยไม่เปิดเผยข้อมูลระบุตัว user
+| AC-BO-WA-011A | Search Funnel แสดงเป็นรายการแนวตั้งรูปแบบเดียวกับ Asset Status โดยแต่ละแถวมี Step, ชื่อขั้น, จำนวนเหตุการณ์ และเปอร์เซ็นต์เทียบกับ Search Submit ครบทั้ง 4 ขั้น และไม่มี progress bar ซ้อนในแถว |
 | AC-BO-WA-012 | Demand Overview แยก Search demand, Watch Alert demand, Unmet Search Demand และ Unmet Watch Alert ได้ชัดเจน |
 | AC-BO-WA-013 | Demand Overview Top Criteria ใช้สี `#2b6cb0` เดียวกันสำหรับ indicator dot, progress bar และ percentage ในการ์ดหลัก, View All modal และ drill-down ระดับ Top Brands, Top Models และ Top References โดยใช้ความยาวแถบและค่าตัวเลขเป็นตัวสื่อสัดส่วน |
 
