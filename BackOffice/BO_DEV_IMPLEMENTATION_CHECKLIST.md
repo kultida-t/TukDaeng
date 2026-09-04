@@ -276,29 +276,44 @@ Recommended note format:
 | Permission / Audit | Offer list/detail is read-only. Sensitive reveal, related-chat view, and offer export must be permission-gated and audit-logged. No V1 write action should appear in this module. |
 | FO Sync Impact | Offer status must reflect FO/system events: seller accept/decline, asset deleted or owner hide -> `Cancelled`, asset sold -> other pending offers `Rejected`, asset auto-hidden/temp-hidden -> `Paused`, review passed -> `Pending`, permanent hide -> `Invalidated`, notification delivery context, and account-deletion dependency checks. |
 
-## 11. Watch Alert Management
+## 11. Market Demand (Watch Alert)
 
-- [ ] Watch Alert list ต้องรองรับ filter/sort/pagination (read-only ไม่มี export)
-- [ ] Alert detail ต้องแสดง owner, alert name, criteria, status, notification toggle และ trigger history
+### Demand Overview
+- [ ] Demand Overview แสดง 4 KPI tiles: Active Alerts, Alerts with Matches, Unmet Demand, Notification Success Rate
+- [ ] Top Brands panel แสดง top 5 brands พร้อม drill-down ไป Model/Reference ใน modal
+- [ ] Price Range histogram แสดงการกระจายช่วงราคา
+- [ ] Trigger Trend แสดง 12 เดือนย้อนหลัง (สำเร็จ/ข้าม)
+- [ ] Frequently Triggered Alerts แสดง top 10
+- [ ] Demand Overview เป็น read-only ไม่มี admin action
+
+### Search Insights
+- [ ] Search Insights แสดง Popular Keywords, Popular Filters by Dimension, Popular Filter Combinations
+- [ ] No-result Searches แยกจาก Unmet Watch Alert
+- [ ] Search Funnel แสดง Search Submit → Result Click → Asset Detail Open → Watch Alert/Offer
+- [ ] Search Insights เป็น aggregate only — ไม่มี user-identifying data
+
+### Watch Alert List & Detail
+- [ ] Watch Alert list ต้องรองรับ filter (Status/Notification/Trigger history/Match status/Last Triggered date range) + sort + pagination 10/page (read-only ไม่มี export ไม่มี search)
+- [ ] Alert detail ต้องแสดง Alert Summary, Owner, Criteria (structured chips), Matched Assets, Trigger & Notification History, User Action History
 - [ ] Criteria schema ต้องใช้ schema เดียวกับ Search Filter และทุก field ต้อง optional
 - [ ] Alert name ต้อง optional และรองรับ generated/default name
 - [ ] Watch Alert match ต้องใช้เฉพาะ asset status `Sale`
-- [ ] Watch Alert ต้องไม่ match `Show`, `Hide`, `Sold`, `ลบโดยเจ้าของ`, `ซ่อนถาวร`
+- [ ] Watch Alert ต้องไม่ match `Show`, `Hide`, `Sold`, `ลบโดยเจ้าของ`, `Permanently Hidden`
 - [ ] Watch Alert notification destination ต้องเป็น `Watch Alert Result List` ห้ามเปิด Asset Detail โดยตรง
 - [ ] Trigger history ต้องเก็บ criteria snapshot, matched asset, trigger time, notification event และ exclusion reason ถ้ามี
 - [ ] Block relation ต้องเป็น exclusion context สำหรับ trigger/result review
 - [ ] Market data inactive dependency ต้องแสดง warning และหยุด new trigger ตาม policy แต่ไม่ลบ history เดิม
-- [ ] Watch Alert BO เป็น read-only ทั้ง List และ Detail — Admin ไม่ disable/enable/export/bulk alert ของ user ใด ๆ
+- [ ] Market Demand BO เป็น read-only ทั้ง List และ Detail — Admin ไม่ disable/enable/export/bulk alert ของ user ใด ๆ
 - [ ] Notification delivery trace ดูได้ แต่ template/retry อยู่ใน Notification module
-- [ ] Watch Alert UI ต้อง responsive ที่ 375px, 768px, 1280px และ 1440px
+- [ ] Market Demand UI ต้อง responsive ที่ 375px, 768px, 1280px และ 1440px
 
-### Watch Alert Prototype Handoff Notes
+### Market Demand Prototype Handoff Notes
 
 | Area | Notes |
 | --- | --- |
-| Prototype / Spec Alignment | The prototype exposes `Alert Criteria`, `Trigger History`, and `Disabled Alerts`, which matches the spec-level Watch Alert operating areas. Watch Alert BO is read-only — no admin disable/enable/export/bulk action on user alerts. |
-| Implementation Gap | Production still needs owner/criteria detail, optional/generated alert name handling, trigger-history snapshots, exclusion reasons, inactive market-data warnings, and notification-delivery trace. |
-| Permission / Audit | Watch Alert BO is read-only. Only sensitive-reveal and trigger-job-run audit events apply (see `11_WATCH_ALERT_MODULE.md` section 16). |
+| Prototype / Spec Alignment | Prototype ล็อกแล้วสำหรับ Market Demand ทั้ง 3 หน้า (Demand Overview, Search Insights, Watch Alert List & Detail) ตาม `WatchAlert_Prototype_Blueprint.md` และ `11_WATCH_ALERT_MODULE.md` — read-only ทั้งระบบ |
+| Implementation Gap | Production still needs owner/criteria detail, optional/generated alert name handling, trigger-history snapshots, exclusion reasons, inactive market-data warnings, notification-delivery trace, Demand Overview aggregation, and Search Insights pipeline. |
+| Permission / Audit | Market Demand BO is read-only. Only sensitive-reveal and trigger-job-run audit events apply (see `11_WATCH_ALERT_MODULE.md` section 16). |
 | FO Sync Impact | Matching must remain Sale-only. `Show`, `Hide`, `Sold`, owner-deleted, permanently hidden, blocked relation, and inactive market-data cases must not generate new FO Watch Alert notifications. Notification destination must remain `Watch Alert Result List`. |
 
 ## 12. Help & Support

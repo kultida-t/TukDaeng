@@ -237,7 +237,7 @@ Header:
 - Breadcrumb: `การดำเนินงาน / Market Data / Brands & Models / <Brand>`
 - Page title: `<Brand>`
 - Back button: `Back to Brands`
-- Panel title: `<Brand> -- All Models (<model count>)`
+- Panel title: `<Brand> — All Models (<model count>)`
 - ไม่มี summary cards, info cards และ right detail panel
 
 Filter:
@@ -682,7 +682,7 @@ Market Data ต้องใช้ app shell, navigation, breakpoint, list toolba
 | AC-BO-MARKET-005 | Dashboard brand row คลิกไป Brand detail ได้ |
 | AC-BO-MARKET-006 | `Brands & Models` แสดง panel title `All Brands [<count>]` และมี search field `Search brand / model / reference` |
 | AC-BO-MARKET-007 | Brand list แสดง column Brand, Models, References, Action และปุ่ม `View` เปิด Brand detail ได้ |
-| AC-BO-MARKET-008 | Brand detail แสดง `<Brand> -- All Models (<count>)`, search model และปุ่มกลับ `Back to Brands` |
+| AC-BO-MARKET-008 | Brand detail แสดง `<Brand> — All Models (<count>)`, search model และปุ่มกลับ `Back to Brands` |
 | AC-BO-MARKET-009 | Model detail แสดง `<Model> -- All References (<count>)`, search reference และปุ่มกลับ `Back to <Brand>` |
 | AC-BO-MARKET-010 | Reference row เปิด Reference detail drawer พร้อม spec grid, USD price card, chart, description และ source note |
 | AC-BO-MARKET-011 | `Sync History` แสดง summary cards Log Entries Today, Completed, Running, Failed |

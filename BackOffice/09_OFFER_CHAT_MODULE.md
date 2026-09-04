@@ -121,16 +121,21 @@ Related chat context ต้องเปิดแบบ read-only เฉพาะ
 
 ## 8. Offer List
 
-Offer list ต้องแสดงข้อมูลขั้นต่ำ:
+Offer list desktop table ต้องแสดง columns ตามลำดับนี้:
 
 - Offer ID
-- Asset ID / Asset name
-- Asset status ปัจจุบัน
+- Offer (offer price + asset asking price summary)
+- Asset (Asset ID / Asset name)
 - Buyer
 - Owner
-- Offer price
+- Status (Offer status)
+- Action (row action menu)
+
+ข้อมูลเพิ่มเติมที่ไม่แสดงใน list table แต่อยู่ใน Offer Detail:
+
+- Asset status ปัจจุบัน
+- Offer price (แยก field)
 - Asset asking price หรือ `Price on Request`
-- Offer status
 - Created date
 - Updated date
 - Last action/source

@@ -146,7 +146,7 @@ KPI Summary ต้องแสดง 8 cards ตามลำดับนี้:
 | Reported Items | จำนวนรายงานค้างตรวจทั้งหมด | `Assets` / `Users` / `Articles` / `Comments` — จำนวนรายงานตามประเภท (chip เป็น navigation หลัก) | Chip เปิด queue รายงานตามประเภท |
 | Offer Activity | จำนวน offer ที่มี activity ล่าสุด | `Pending` / `Paused` / `Accepted` / `Rejected` / `Cancelled` / `Invalidated` — จำนวน offer ตามสถานะ | เปิด Offer / Offer Queue |
 | Articles | จำนวนบทความทั้งหมด | `Published` / `Scheduled` — จำนวนบทความตามสถานะเผยแพร่ | เปิด Content Management / Articles |
-| Watch Alert | จำนวน watch alert ที่ active | `Active` / `Triggered` — จำนวน alert ตามสถานะ | เปิด Watch Alert / Demand Overview |
+| Watch Alert | จำนวน watch alert ที่ active | `Active` / `Triggered` — จำนวน alert ตามสถานะ | เปิด Market Demand / Demand Overview |
 | Policies | จำนวน policy ทั้งหมด | `Published` / `Draft` — จำนวน policy ตามสถานะ | เปิด Settings / Policy & Versioning |
 
 ### 8.2 ค่าตัวอย่างจาก prototype (Mock — ไม่ใช่ production value)
@@ -343,7 +343,7 @@ Rows:
 | Reported Items / Comments chip | Asset Management / Reported Comments |
 | Offer Activity card | Offer / Offer Queue |
 | Articles card | Content Management / Articles |
-| Watch Alert card | Watch Alert / Demand Overview |
+| Watch Alert card | Market Demand / Demand Overview |
 | Policies card | Settings / Policy & Versioning |
 | Work Queue row | Module/submodule ตาม queue นั้น |
 | Recent Activity row | Module/submodule ตาม event นั้น |

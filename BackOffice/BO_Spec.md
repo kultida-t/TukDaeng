@@ -90,7 +90,7 @@ BO Dashboard
 - จำนวน Transactions (Offer Accepted) วันนี้
 - จำนวน Pending Reports (สินทรัพย์ที่ถูก Flag รอ Review)
 - บทความที่เผยแพร่ล่าสุด 3 รายการ
-- Watch Alerts ที่ Active ทั้งหมด
+- Watch Alerts ที่ Active ทั้งหมด (อ้างอิง Market Demand / Demand Overview)
 - กราฟแนวโน้ม User Growth (30 วัน)
 - Top 10 Brand ที่ค้นหามากที่สุด
 - Activity Feed ล่าสุด (User Registered, Asset Added, Offer Accepted, User Suspended)
@@ -363,7 +363,37 @@ Watch Shops, Accessories Shops, Repair Shops, Auction Centers, Consignment Cente
 
 ---
 
-### 3.10 Reports & Analytics
+### 3.10 Market Demand (Watch Alert)
+
+**Phase 1 status:** Read-only — Admin ดูภาพรวมความต้องการตลาดและ Watch Alert ของ user ทั้งระบบ ไม่มี admin action ใด ๆ
+
+Module นี้ครอบคลุม 3 หน้าย่อย:
+
+#### Demand Overview
+- KPI tiles: Active Alerts, Alerts with Matches, Unmet Demand, Notification Success Rate
+- Top Brands (drill-down ไป Model/Reference ใน modal)
+- Price Range histogram
+- Trigger Trend (12 เดือน, สำเร็จ/ข้าม)
+- Frequently Triggered Alerts (top 10)
+
+#### Search Insights
+- Popular Keywords, Popular Filters by Dimension, Popular Filter Combinations
+- No-result Searches (แยกจาก Unmet Watch Alert)
+- Search/Filter Trend
+- Search Funnel (Search Submit → Result Click → Asset Detail Open → Watch Alert/Offer)
+- Aggregate only — ไม่มี user-identifying data
+
+#### Watch Alert List & Detail
+- List: filter (Status/Notification/Trigger history/Match status/Last Triggered date range), sort, pagination 10/page, row click → Detail
+- Detail: Alert Summary, Owner Summary, Criteria (structured chips), Matched Assets (link → Asset Detail), Trigger & Notification History, User Action History
+- Read-only ทั้ง List และ Detail — Admin ไม่ disable/enable/export/bulk alert
+- Matching เฉพาะ asset status `Sale`; notification destination เป็น `Watch Alert Result List`
+
+ดูรายละเอียดเต็มใน `WatchAlert_Prototype_Blueprint.md` และ `11_WATCH_ALERT_MODULE.md`
+
+---
+
+### 3.11 Reports & Analytics
 
 **Reports ที่มี:**
 | Report | ข้อมูลที่แสดง |
@@ -384,7 +414,7 @@ Watch Shops, Accessories Shops, Repair Shops, Auction Centers, Consignment Cente
 
 ---
 
-### 3.11 Push Notification Management
+### 3.12 Push Notification Management
 
 **ฟีเจอร์:**
 - สร้าง Broadcast Notification ส่งหาผู้ใช้ทั้งหมดหรือกลุ่มเป้าหมาย
@@ -413,7 +443,7 @@ Watch Shops, Accessories Shops, Repair Shops, Auction Centers, Consignment Cente
 
 ---
 
-### 3.12 Help & Support
+### 3.13 Help & Support
 
 Help & Support Module ใช้สำหรับให้ Admin จัดการเนื้อหาเอกสารกฎหมาย (Terms of Use, Privacy Policy) และข้อมูลช่องทางติดต่อ support ที่แสดงใน FO Settings > Help โดยทั้งสองส่วนนี้เป็น submenu ภายใต้เมนู Settings ของ BO (รายละเอียดเต็ม: `12_HELP_SUPPORT_MODULE.md`)
 
@@ -449,7 +479,7 @@ Help & Support Module ใช้สำหรับให้ Admin จัดกา
 
 ---
 
-### 3.13 Account Deletion Requests
+### 3.14 Account Deletion Requests
 
 Account Deletion Requests Module ใช้ให้ BO ตรวจสอบและติดตามคำขอลบบัญชีที่เริ่มจาก FO Settings > About your account > Delete account (รายละเอียดเต็ม: `13_ACCOUNT_DELETION_MODULE.md`)
 
@@ -472,7 +502,7 @@ FO ทำหน้าที่รับ confirmation, soft delete/deactivate acc
 
 ---
 
-### 3.14 Admin Access & Permissions
+### 3.15 Admin Access & Permissions
 
 BO uses exactly one admin account type: `Admin`. There are no BO sub-types. The former multi-column policy catalog is replaced by module/action policy.
 

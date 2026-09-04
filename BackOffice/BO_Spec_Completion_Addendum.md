@@ -13,7 +13,7 @@ BO_Spec v1.2 รองรับ flow หลักของ FO แล้วใน
 Addendum นี้เสนอให้เพิ่ม module และ business rules ต่อไปนี้:
 
 1. Offer Management (read-only ใน V1)
-2. Watch Alert Management
+2. Market Demand (Watch Alert)
 3. Account Deletion & Data Archive
 4. Help & Support (Policy & Versioning + Support Center)
 5. System Notification Trigger Management
@@ -173,20 +173,21 @@ Current prototype Offer Detail ไม่มี Force Expire Offer, Mark Invalida
 
 ---
 
-## 4. Watch Alert Management
+## 4. Market Demand (Watch Alert)
 
 ### 4.1 Purpose
 
-BO_Spec v1.2 มี Watch Alert report แล้ว แต่ FO ต้องมีการ create, rename, delete, toggle notification และ trigger alert จาก search criteria จึงควรมี management view ราย alert
+BO_Spec v1.2 มี Watch Alert report แล้ว แต่ FO ต้องมีการ create, rename, delete, toggle notification และ trigger alert จาก search criteria จึงควรมี management view ราย alert พร้อม Demand Overview และ Search Insights ระดับระบบ
 
 ### 4.2 Features
 
-- ดู Watch Alert ทั้งหมด
-- Search ด้วย User, Alert Name, Brand, Model, Reference No.
-- Filter ด้วย Active, Notification On/Off, Triggered, Date Range
+- ดู Demand Overview: KPI tiles, Top Brands (drill-down), Price Range, Trigger Trend, Frequently Triggered Alerts
+- ดู Search Insights: Popular Keywords/Filters/Combinations, No-result Searches, Search Funnel (aggregate only)
+- ดู Watch Alert List ทั้งหมด (filter: Status, Notification, Trigger history, Match status, Last Triggered date range — ไม่มี search)
+- ดู Watch Alert Detail: Alert Summary, Owner, Criteria, Matched Assets, Trigger & Notification History, User Action History
 - ดู criteria ที่ผู้ใช้ save จาก Search
-- ดู trigger history และ click-through history
-- Watch Alert BO เป็น read-only — Admin ไม่ disable/enable/export/bulk alert ของ user ใด ๆ
+- ดู trigger history และ delivery status
+- Market Demand BO เป็น read-only — Admin ไม่ disable/enable/export/bulk alert ของ user ใด ๆ
 
 ### 4.3 Fields
 
@@ -201,17 +202,23 @@ BO_Spec v1.2 มี Watch Alert report แล้ว แต่ FO ต้องม
 | Price Min | Number | Optional |
 | Price Max | Number | Optional |
 | Condition | Multi-select | Optional |
+| Case Size | Multi-select | Optional |
+| Dial Color | Multi-select | Optional |
 | Notification Enabled | Boolean | Yes |
-| Status | Active / Disabled / Deleted | Yes |
+| Status | Active / User Disabled / Deleted (soft delete) | Yes |
+| Match Count | Number | Yes |
+| Trigger Count | Number | Yes |
 | Last Triggered At | DateTime | Optional |
 | Created At | DateTime | Yes |
+| Updated At | DateTime | Yes |
 
 ### 4.4 Trigger Rules
 
 - เมื่อมี asset ใหม่สถานะ Sale ที่ตรง criteria ให้สร้าง notification ประเภท Watch Alert
 - Alert ที่ Notification Enabled = Off ยังถูกเก็บไว้ แต่ไม่ส่ง push
-- Watch Alert BO เป็น read-only — ไม่มี admin disable/enable alert ของ user
+- Market Demand BO เป็น read-only — ไม่มี admin disable/enable alert ของ user (User Disabled เป็น action ของ user เท่านั้น)
 - ถ้า brand/model ถูก inactive ใน Market Data ต้องไม่ trigger alert ใหม่จากข้อมูลนั้น
+- Notification destination ต้องเป็น `Watch Alert Result List` ห้ามเปิด Asset Detail โดยตรง
 
 ---
 
@@ -717,7 +724,7 @@ Baseline role templates include `Super Admin`, `Content Editor`, `Content Publis
 |---|---|
 | Offer Management | Admin can view/review by policy with privacy masking and audit. Chat moderation เป็น future scope |
 | Asset Management (Reported Comments) | Admin can view aggregate data and moderate reported comments by policy. |
-| Watch Alert Management | Admin can view by policy (read-only — no disable/enable/export/bulk action on user alerts). Audit covers sensitive reveal and trigger job run only. |
+| Market Demand (Watch Alert) | Admin can view by policy (read-only — no disable/enable/export/bulk action on user alerts). Audit covers sensitive reveal and trigger job run only. |
 | Help & Support | Admin can manage Policy & Versioning (draft/publish/restore) and Support Center (channels, business hours, availability) by policy. Ticket queue/SLA/internal notes เป็น future scope. |
 | Account Deletion Requests | Admin can view/recheck/approve/cancel/archive by policy with dependency checks, confirmation, reason, and audit. |
 | Notifications (Broadcast & System Templates) | Admin can manage templates and broadcasts with approval, preview, and audit policy. |

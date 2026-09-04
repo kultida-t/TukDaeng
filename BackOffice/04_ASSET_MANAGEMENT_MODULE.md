@@ -56,8 +56,8 @@ Asset Management คือเมนูสำหรับ Admin ใช้ตร�
 - Search, filter, sort, pagination และ reset filter
 - Owner-controlled asset status: `Sale`, `Show`, `Hide`, `Sold`
 - System/retention state: `ลบโดยเจ้าของ`
-- Moderation state: `ซ่อนชั่วคราว`, `ซ่อนถาวร`
-- Comment status: `Visible`, `Reported`, `Hidden`, `Removed`, `User Deleted`
+- Moderation state: `Admin Hidden`, `Auto Hidden`, `Permanently Hidden` (UI label: ซ่อนชั่วคราว / ซ่อนถาวร)
+- Comment status: `Visible`, `Hidden`, `Removed`, `User Deleted`
 - Action สำหรับการตรวจสอบและจัดการ asset: ซ่อนชั่วคราว, ยกเลิกซ่อนชั่วคราว, ซ่อนถาวร, ปิดรายงาน
 - Action สำหรับการตรวจสอบและจัดการความคิดเห็น: ซ่อนความคิดเห็นชั่วคราว, ยกเลิกการซ่อนชั่วคราว, ซ่อนความคิดเห็นถาวร, ปิดรายงานไม่พบการละเมิด
 - Confirmation, reason และ audit สำหรับ action ที่กระทบ visibility หรือ report outcome
@@ -138,11 +138,11 @@ Asset List ใช้สำหรับ scan asset ทั้งหมดและ
 ### Required Fields
 
 - Asset ID
-- Asset name
+- Asset (name + thumbnail)
 - Brand
 - Owner
-- Asset Status
-- Moderation/Context pill เมื่อมี เช่น `Consignment`, `ซ่อนชั่วคราว`, `ซ่อนถาวร`, `ลบโดยเจ้าของ`
+- Created At
+- Asset Status (รวม Moderation/Context pill เมื่อมี เช่น `Consignment`, `Admin Hidden` (ซ่อนชั่วคราว), `Auto Hidden` (ซ่อนชั่วคราว), `Permanently Hidden` (ซ่อนถาวร), `ลบโดยเจ้าของ`)
 - Row action menu
 
 ### Row Actions
@@ -171,7 +171,7 @@ Asset List ต้องค้นหาได้จาก:
 
 Asset List ต้องมี filter ขั้นต่ำ:
 
-- Status: `Sale`, `Sale + Consignment`, `Show`, `Hide`, `Sold`, `ซ่อนชั่วคราว`, `ซ่อนถาวร`, `ลบโดยเจ้าของ`
+- Status: `Sale`, `Sale + Consignment`, `Show`, `Hide`, `Sold`, `Temporarily Hidden` (label: ซ่อนชั่วคราว — ครอบ `Admin Hidden` + `Auto Hidden`), `Permanently Hidden` (label: ซ่อนถาวร), `ลบโดยเจ้าของ`
 - Brand
 - Sort: newest first, oldest first
 - Reset filter
@@ -239,8 +239,8 @@ Asset Detail ใช้สำหรับตรวจสอบข้อมูล 
 - Owner Account Status
 - Comment Count
 - Favorite Count
-- Asset Status
-- Moderation State
+- Post Type (`Sale` / `Show` / `Hide` / `Sold`)
+- Moderation State (แสดงเป็น header pills ร่วมกับ Asset ID และ brand — ไม่ใช่ Listing Summary tile แยก)
 - Created timestamp
 - Updated timestamp
 
@@ -319,11 +319,14 @@ Admin ห้ามเปลี่ยน owner-controlled status โดยตร�
 
 ### Moderation State
 
-| State | Meaning |
-| --- | --- |
-| None | ไม่มี moderation overlay |
-| `ซ่อนชั่วคราว` | Asset ถูกซ่อนจาก public surfaces ระหว่างรอหรือตามผล review |
-| `ซ่อนถาวร` | Asset ถูกซ่อนจาก public surfaces ถาวรตาม moderation outcome |
+| State | Meaning | UI Label |
+| --- | --- | --- |
+| None | ไม่มี moderation overlay | — |
+| `Admin Hidden` | Asset ถูกซ่อนจาก public surfaces โดย Admin ระหว่างรอหรือตามผล review | ซ่อนชั่วคราว |
+| `Auto Hidden` | Asset ถูกซ่อนจาก public surfaces อัตโนมัติจาก report trigger ระหว่างรอ review | ซ่อนชั่วคราว |
+| `Permanently Hidden` | Asset ถูกซ่อนจาก public surfaces ถาวรตาม moderation outcome | ซ่อนถาวร |
+
+`Admin Hidden` และ `Auto Hidden` ถูกกรอกภายใต้ตัวเลือก `Temporarily Hidden` (label: ซ่อนชั่วคราว) ใน Asset List filter
 
 Moderation state เป็น overlay บน owner-controlled status และไม่เปลี่ยนค่า owner-controlled status เดิม
 
@@ -335,11 +338,11 @@ Moderation state เป็น overlay บน owner-controlled status และ�
 | `Show` | ไม่แสดง | แสดง | แสดง | ใช้ได้เฉพาะกรณีที่ระบบอนุญาตจาก detail/profile |
 | `Hide` | ไม่แสดง | ไม่แสดง | แสดง | ใช้งานไม่ได้ |
 | `Sold` | ไม่แสดง | ไม่แสดง | แสดงใน sold history | ใช้งานไม่ได้ |
-| `ซ่อนชั่วคราว` | ไม่แสดง | ไม่แสดง | แสดงพร้อมสถานะถูกซ่อนชั่วคราว | Pending offer ต้องถูก pause และห้ามสร้าง offer ใหม่ |
-| `ซ่อนถาวร` | ไม่แสดง | ไม่แสดง | แสดงแบบ read-only พร้อมสถานะถูกซ่อนถาวร | Pending offer ต้องถูกตั้งเป็น `Invalidated` และห้ามสร้าง offer ใหม่ |
+| `Admin Hidden` / `Auto Hidden` (ซ่อนชั่วคราว) | ไม่แสดง | ไม่แสดง | แสดงพร้อมสถานะถูกซ่อนชั่วคราว | Pending offer ต้องถูก pause และห้ามสร้าง offer ใหม่ |
+| `Permanently Hidden` (ซ่อนถาวร) | ไม่แสดง | ไม่แสดง | แสดงแบบ read-only พร้อมสถานะถูกซ่อนถาวร | Pending offer ต้องถูกตั้งเป็น `Invalidated` และห้ามสร้าง offer ใหม่ |
 | `ลบโดยเจ้าของ` | ไม่แสดง | ไม่แสดง | ไม่แสดงใน owner list ปกติ | Pending offer ต้องถูกตั้งเป็น `Cancelled` และห้ามสร้าง offer ใหม่ |
 
-Asset ที่มี state `ซ่อนถาวร` หรือ `ลบโดยเจ้าของ` ต้องไม่ถูกนับใน portfolio value หรือ asset value summary
+Asset ที่มี state `Permanently Hidden` หรือ `ลบโดยเจ้าของ` ต้องไม่ถูกนับใน portfolio value หรือ asset value summary
 
 Offer impact เพิ่มเติมสำหรับ owner-controlled status:
 
@@ -372,9 +375,9 @@ Asset ที่เป็น `Consignment` ต้องไม่ถูกนั�
 เงื่อนไข:
 
 - ทำได้กับ asset ที่ current owner-controlled status เป็น `Sale` หรือ `Show`
-- ทำไม่ได้กับ `Hide`, `Sold`, `ซ่อนถาวร` หรือ `ลบโดยเจ้าของ`
+- ทำไม่ได้กับ `Hide`, `Sold`, `Permanently Hidden` หรือ `ลบโดยเจ้าของ`
 - ต้องคง owner-controlled status เดิมไว้
-- ต้องตั้ง moderation state เป็น `ซ่อนชั่วคราว`
+- ต้องตั้ง moderation state เป็น `Admin Hidden` (Admin ซ่อน) หรือ `Auto Hidden` (ระบบซ่อนจาก report trigger)
 - Pending offer ที่เกี่ยวข้องต้องถูกตั้งเป็น `Paused`
 
 ### Restore Visibility
@@ -383,9 +386,9 @@ Asset ที่เป็น `Consignment` ต้องไม่ถูกนั�
 
 เงื่อนไข:
 
-- ทำได้เฉพาะ asset ที่อยู่ใน moderation state `ซ่อนชั่วคราว`
+- ทำได้เฉพาะ asset ที่อยู่ใน moderation state `Admin Hidden` หรือ `Auto Hidden`
 - ต้อง restore visibility กลับตาม owner-controlled status เดิม
-- ทำไม่ได้กับ `ซ่อนถาวร`
+- ทำไม่ได้กับ `Permanently Hidden`
 - ต้องบันทึก reason และ audit
 - Offer ที่ถูก `Paused` จากการซ่อนชั่วคราวต้องกลับเป็น `Pending` เมื่อ asset กลับเป็น `Sale` หรือ `Show`
 
@@ -395,10 +398,10 @@ Asset ที่เป็น `Consignment` ต้องไม่ถูกนั�
 
 เงื่อนไข:
 
-- ทำได้กับ asset ที่ current owner-controlled status เป็น `Sale` หรือ `Show` รวมถึง asset ที่อยู่ใน moderation state `ซ่อนชั่วคราว` อยู่แล้ว
-- ทำไม่ได้กับ `Hide`, `Sold`, `ลบโดยเจ้าของ` หรือ asset ที่เป็น `ซ่อนถาวร` อยู่แล้ว
+- ทำได้กับ asset ที่ current owner-controlled status เป็น `Sale` หรือ `Show` รวมถึง asset ที่อยู่ใน moderation state `Admin Hidden` หรือ `Auto Hidden` อยู่แล้ว
+- ทำไม่ได้กับ `Hide`, `Sold`, `ลบโดยเจ้าของ` หรือ asset ที่เป็น `Permanently Hidden` อยู่แล้ว
 - ต้องใช้ confirmation และ reason
-- ต้องตั้ง moderation state เป็น `ซ่อนถาวร`
+- ต้องตั้ง moderation state เป็น `Permanently Hidden`
 - Owner ยังเห็น asset แบบ read-only พร้อมสถานะถูกซ่อนถาวร
 - Owner แก้ไข publish ใหม่ ยกเลิกซ่อน boost mark sold หรือลบเองไม่ได้
 - Asset ไม่ถูกนับใน portfolio value หรือ asset value summary
@@ -521,7 +524,7 @@ Admin Action History ต้องแสดง:
 
 Action buttons ต้องแสดงเฉพาะที่ทำได้ตาม current asset state, report status และ permission:
 
-- ปิดรายงาน
+- ปิดรายงาน — แสดงเฉพาะเมื่อ report status เป็น `Pending` และ asset ไม่ได้อยู่ใน moderation state `Admin Hidden` หรือ `Auto Hidden` (asset ที่ถูกซ่อนชั่วคราวต้อง restore หรือซ่อนถาวรก่อน จึงจะปิดรายงานได้)
 - ซ่อนชั่วคราว
 - ยกเลิกซ่อนชั่วคราว
 - ซ่อนถาวร
@@ -542,7 +545,7 @@ Action buttons ต้องแสดงเฉพาะที่ทำได้�
 | --- | --- |
 | 1 unique reporter | สร้าง report case เป็น `Pending`; asset ยังแสดงตาม status เดิม |
 | 3 unique reporters | ยกระดับ priority เป็น review priority; asset ยังแสดงตาม status เดิม |
-| 5 unique reporters และ asset ยังเป็น `Sale` หรือ `Show` | ระบบซ่อนชั่วคราวได้ โดยคง owner-controlled status เดิมและตั้ง moderation state เป็น `ซ่อนชั่วคราว`; ต้องมี audit |
+| 5 unique reporters และ asset ยังเป็น `Sale` หรือ `Show` | ระบบซ่อนชั่วคราวได้ โดยคง owner-controlled status เดิมและตั้ง moderation state เป็น `Auto Hidden`; ต้องมี audit |
 | 5 unique reporters แต่ asset เป็น `Hide` หรือ `Sold` แล้ว | ไม่ซ่อนอัตโนมัติ, ห้ามซ่อนชั่วคราว, เก็บ report ใน queue/history และให้ Admin ปิดรายงานได้ |
 
 การซ่อนชั่วคราวจาก report ใช้ได้เฉพาะ asset ที่ current owner-controlled status เป็น `Sale` หรือ `Show`
@@ -552,7 +555,7 @@ Action buttons ต้องแสดงเฉพาะที่ทำได้�
 - Report ต้องยังอยู่ใน queue/history ตาม report status
 - UI ต้องแสดง current asset status ล่าสุด
 - ต้องห้ามซ่อนชั่วคราว
-- Restore visibility ต้องถูก block ถ้า asset ไม่ได้อยู่ใน moderation state `ซ่อนชั่วคราว`
+- Restore visibility ต้องถูก block ถ้า asset ไม่ได้อยู่ใน moderation state `Admin Hidden` หรือ `Auto Hidden`
 - Admin ทำได้เฉพาะปิดรายงานหรือซ่อนถาวร เมื่อ current state และ permission อนุญาต
 
 ## 15. Report Data Model
@@ -562,7 +565,7 @@ Reported Assets queue ต้องใช้ report case เป็น source of t
 ขั้นต่ำต้องแยกข้อมูลดังนี้:
 
 - Asset Status: `Sale`, `Show`, `Hide`, `Sold`
-- Moderation State: None, `ซ่อนชั่วคราว`, `ซ่อนถาวร`
+- Moderation State: None, `Admin Hidden`, `Auto Hidden`, `Permanently Hidden`
 - Report Status: `Pending`, `Closed`
 - Report Case: reportId, assetId, reportStatus, uniqueReporterCount, reporter history, reason summary, priority, created timestamp, closed timestamp, audit references
 
@@ -574,15 +577,17 @@ Reported Comments เป็น queue แยกจาก Asset List และ Rep
 
 ### Required Fields
 
+Desktop table columns:
+
 - Report ID
 - Comment excerpt
 - Asset ID และ Asset name
 - Report Status (`Pending`, `Closed`)
-- Comment Status (`Visible`, `Hidden`, `Removed`, `User Deleted`)
 - Report Reason
-- Reporters หรือ unique reporter count
 - Priority
 - Row action menu
+
+Comment Status (`Visible`, `Hidden`, `Removed`, `User Deleted`) แสดงเป็น pill เฉพาะใน mobile card view ไม่ใช่ desktop column
 
 Comment ID และ Comment Type แสดงใน Comment Report Detail ไม่ใช่ column หลักใน list
 
@@ -697,13 +702,14 @@ Action buttons ต้องแสดงเฉพาะที่ทำได้�
 
 | Status | Meaning | แสดงใน FO |
 | --- | --- | --- |
-| `Visible` | แสดงปกติ ไม่มี moderation overlay | แสดงปกติ |
-| `Reported` | มี report รอ review แต่ยังแสดงอยู่ | แสดงปกติ |
+| `Visible` | แสดงปกติ ไม่มี moderation overlay (รวม comment ที่อยู่ใน report ที่ยัง `Pending` — comment ยังแสดงปกติจนกว่า admin จะดำเนินการ) | แสดงปกติ |
 | `Hidden` | Admin ซ่อนชั่วคราวระหว่างตรวจสอบ | ไม่แสดง หรือแสดง hidden state |
 | `Removed` | Admin ซ่อนถาวรหลังตรวจสอบ | ไม่แสดง หรือแสดง removed state |
 | `User Deleted` | User ลบ comment เอง | ไม่แสดง หรือแสดงตาม retention rule |
 
 Comment status เป็น overlay บน comment record และไม่เปลี่ยนแปลงเนื้อหาต้นฉบับ
+
+หมายเหตุ: report status (`Pending` / `Closed`) แยกจาก comment status — comment ใน report ที่ pending ยังคงเป็น `Visible` จนกว่า admin จะ hidden หรือ remove
 
 ## 19. Comment Moderation Action Rules
 
@@ -728,7 +734,7 @@ Comment status เป็น overlay บน comment record และไม่เ�
 
 เงื่อนไข:
 
-- ทำได้กับ comment ที่ current comment status เป็น `Visible` หรือ `Reported`
+- ทำได้กับ comment ที่ current comment status เป็น `Visible`
 - ทำไม่ได้กับ `Hidden`, `Removed` หรือ `User Deleted`
 - ต้องตั้ง comment status เป็น `Hidden`
 - Report status ยังคงเป็น `Pending` (ไม่ปิดรายงานอัตโนมัติ)
@@ -742,7 +748,7 @@ Comment status เป็น overlay บน comment record และไม่เ�
 เงื่อนไข:
 
 - ทำได้เฉพาะ comment ที่อยู่ใน comment status `Hidden`
-- ทำไม่ได้กับ `Visible`, `Reported`, `Removed` หรือ `User Deleted`
+- ทำไม่ได้กับ `Visible`, `Removed` หรือ `User Deleted`
 - ต้อง restore comment status กลับเป็น `Visible`
 - ต้องตั้ง report status เป็น `Closed` (ปิดรายงานอัตโนมัติ)
 - ต้องมี confirmation, reason และ audit
@@ -754,7 +760,7 @@ Comment status เป็น overlay บน comment record และไม่เ�
 
 เงื่อนไข:
 
-- ทำได้กับ comment ที่ current comment status เป็น `Visible`, `Reported` หรือ `Hidden`
+- ทำได้กับ comment ที่ current comment status เป็น `Visible` หรือ `Hidden`
 - ทำไม่ได้กับ `Removed` หรือ `User Deleted`
 - ต้องตั้ง comment status เป็น `Removed`
 - ต้องตั้ง report status เป็น `Closed` (ปิดรายงานอัตโนมัติ)
@@ -890,9 +896,9 @@ Asset Management ต้องใช้ app shell, navigation, breakpoint, list t
 | AC-BO-ASSET-003 | Asset Detail แสดง core fields, commerce fields, sensitive context แบบ masked/summarized และ history ที่เกี่ยวข้อง |
 | AC-BO-ASSET-004 | Admin ไม่สามารถเปลี่ยน owner-controlled status `Sale`, `Show`, `Hide`, `Sold` จาก Back Office ได้โดยตรง |
 | AC-BO-ASSET-005 | ซ่อนชั่วคราวได้เฉพาะ asset ที่เป็น `Sale` หรือ `Show` และต้องคง owner-controlled status เดิมไว้ |
-| AC-BO-ASSET-006 | ยกเลิกซ่อนชั่วคราวได้เฉพาะ asset ที่อยู่ใน moderation state `ซ่อนชั่วคราว` |
+| AC-BO-ASSET-006 | ยกเลิกซ่อนชั่วคราวได้เฉพาะ asset ที่อยู่ใน moderation state `Admin Hidden` หรือ `Auto Hidden` |
 | AC-BO-ASSET-007 | ซ่อนถาวรทำให้ asset ถูกซ่อนจาก public surfaces ถาวร และ owner เห็นได้เฉพาะ read-only |
-| AC-BO-ASSET-008 | Asset ที่ `ซ่อนถาวร`, `ลบโดยเจ้าของ` หรือเป็น `Consignment` ไม่ถูกนับใน portfolio value หรือ asset value summary |
+| AC-BO-ASSET-008 | Asset ที่ `Permanently Hidden`, `ลบโดยเจ้าของ` หรือเป็น `Consignment` ไม่ถูกนับใน portfolio value หรือ asset value summary |
 | AC-BO-ASSET-009 | Asset ที่ลบโดยเจ้าของต้องมี history/audit row พร้อม actor, before state, after state และ timestamp |
 | AC-BO-ASSET-010 | Reported Assets queue แสดง report case จาก report source of truth ไม่ infer จาก asset row |
 | AC-BO-ASSET-011 | Report threshold 1/3/5 unique reporters ทำงานตาม rule ที่กำหนด |
@@ -905,10 +911,10 @@ Asset Management ต้องใช้ app shell, navigation, breakpoint, list t
 | AC-BO-ASSET-018 | Reported Comments queue แสดง report case ของความคิดเห็น พร้อม search, filter, sort, pagination และ reset filter |
 | AC-BO-ASSET-019 | Reported Comments List แสดง field หลัก (Report ID, Comment ID, Asset, Comment excerpt, Comment Type, Comment Status, Report Status, Report Reason, Reporters, Priority) และ row action ตาม current state ได้ถูกต้อง |
 | AC-BO-ASSET-020 | Comment Report Detail แสดง 4 ส่วนครบ: Reported Comment reference, Comment Detail, Reporter History และ Admin Action History |
-| AC-BO-ASSET-021 | Comment Status Contract มี 5 สถานะครบ: `Visible`, `Reported`, `Hidden`, `Removed`, `User Deleted` |
-| AC-BO-ASSET-022 | Hide comment ได้เฉพาะ comment ที่เป็น `Visible` หรือ `Reported` และต้องตั้ง comment status เป็น `Hidden` โดยไม่ปิดรายงานอัตโนมัติ |
+| AC-BO-ASSET-021 | Comment Status Contract มี 4 สถานะครบ: `Visible`, `Hidden`, `Removed`, `User Deleted` |
+| AC-BO-ASSET-022 | Hide comment ได้เฉพาะ comment ที่เป็น `Visible` และต้องตั้ง comment status เป็น `Hidden` โดยไม่ปิดรายงานอัตโนมัติ |
 | AC-BO-ASSET-023 | Restore comment ได้เฉพาะ comment ที่เป็น `Hidden` และต้องตั้ง comment status กลับเป็น `Visible` พร้อมปิดรายงานอัตโนมัติ |
-| AC-BO-ASSET-024 | Remove comment ได้กับ comment ที่เป็น `Visible`, `Reported` หรือ `Hidden` และต้องตั้ง comment status เป็น `Removed` พร้อมปิดรายงานอัตโนมัติ ไม่สามารถกู้คืนได้ |
+| AC-BO-ASSET-024 | Remove comment ได้กับ comment ที่เป็น `Visible` หรือ `Hidden` และต้องตั้ง comment status เป็น `Removed` พร้อมปิดรายงานอัตโนมัติ ไม่สามารถกู้คืนได้ |
 | AC-BO-ASSET-025 | Close no violation ได้เฉพาะ report ที่เป็น `Pending` และต้องไม่เปลี่ยน comment status ใน FO |
 | AC-BO-ASSET-026 | Report comment ต้องเข้า queue โดยไม่ทำให้ comment หายจาก FO ทันที และนับ reporter แบบ unique |
 | AC-BO-ASSET-027 | FO Sync Rules ครอบคลุมทุก comment moderation action: Hide, Restore, Remove และ Close no violation |
