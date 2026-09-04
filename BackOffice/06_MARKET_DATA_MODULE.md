@@ -159,6 +159,7 @@ Dashboard content:
 - KPI row คงไว้ 4 cards โดย `Last Sync` เป็นข้อมูลเวลาซิงก์ล่าสุด ไม่ใช่สถานะงานที่กำลังทำ
 - เมื่อมี sync ที่กำลังทำงานหรือมีข้อผิดพลาดที่ต้องติดตาม ให้แสดง `Latest Sync Status` เป็น status strip เต็มความกว้างใต้ KPI row ในกลุ่มเดียวกัน
 - เมื่อไม่มี active sync หรือสถานะที่ต้องติดตาม ให้ซ่อน status strip ทั้งส่วนและยุบพื้นที่ทันที โดยไม่แสดง empty card
+- ใช้สีน้ำเงินสำหรับ progress ring ขณะกำลัง Sync และใช้สีแดงเฉพาะกรณี Sync ล้มเหลว เพื่อไม่ให้สถานะกำลังทำงานถูกตีความเป็นข้อผิดพลาด
 - Status strip ต้องแสดง progress ring, ข้อความสถานะ, จำนวน synced brands เทียบ total brands, จำนวนรุ่นที่ยังต้องตรวจ price / mapping validation และปุ่ม `ดูรายละเอียดใน Sync History`
 - กดปุ่มจาก status strip ต้องพา Admin ไปหน้า `Sync History` เพื่อดูรายการงานที่กำลังทำงานและเปิดรายละเอียด job ได้
 - กรณี sync ผิดพลาด ให้แจ้งผลกระทบว่า catalog ล่าสุดยังถูกใช้งาน และให้ Admin ไปตรวจรายละเอียดใน `Sync History`
