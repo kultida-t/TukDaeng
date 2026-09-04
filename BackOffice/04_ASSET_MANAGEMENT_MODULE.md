@@ -1,7 +1,7 @@
 # 04 BO Asset Management Module
 
-**Version:** `BO-04-v1.1`  
-**Date:** 2026-08-19  
+**Version:** `BO-04-v1.2`  
+**Date:** 2026-09-04  
 **Status:** สเปกปัจจุบัน  
 **Platform:** Responsive Web Back Office
 
@@ -17,7 +17,7 @@
 | --- | --- |
 | Module Name | BO Asset Management |
 | Platform | Responsive Web Back Office |
-| Version | `BO-04-v1.1` |
+| Version | `BO-04-v1.2` |
 | Status | สเปกปัจจุบัน |
 | Owner | Product / UX / Engineering / Operations |
 | Document Type | Functional PRD |
@@ -188,6 +188,29 @@ Asset List ต้องมี pagination ตามเงื่อนไข:
 - มี numbered page buttons
 - ต้องคงค่า search/filter/sort ระหว่างเปลี่ยนหน้า
 - เมื่อไม่พบข้อมูลให้แสดง empty state `ไม่พบข้อมูล`
+
+### Summary Cards
+
+Asset List แสดง summary cards 2 ใบในแถวเดียวกันบนทุก viewport โดยใช้ grid `minmax(0, 1fr) minmax(0, 2fr)` — Asset Status กว้าง 1/3 และ Top Asset Brands กว้าง 2/3 ของแถว
+
+ที่ breakpoint `<= 760px` summary grid กลับเป็น 1 column (การ์ดเรียงเป็นแถวเดียว)
+
+#### Asset Status Card
+
+- หัวการ์ดแสดงเฉพาะชื่อการ์ด `ASSET STATUS` ไม่มีจำนวนรวมที่หัวการ์ด เพราะมีจำนวนแยกตามสถานะอยู่แล้วใน body
+- Body แสดง 4 status rows แยกสีตามสถานะ มีกรอบ แถบสีด้านซ้าย สีพื้นหลังอ่อน และจำนวนด้านขวา
+- สีตามสถานะ: Sale เขียว, Show น้ำเงิน, Hide ม่วง, Sold อำพัน
+- แต่ละ row แสดง label, detail อธิบายสถานะ และจำนวน asset ของสถานะนั้น
+- การ์ดนี้เป็น source of truth ของโครงสร้าง Asset Status card — Dashboard Asset Status card อ้างอิงการ์ดนี้ (ดู `02_DASHBOARD_MODULE.md` section 11.1)
+
+#### Top Asset Brands Card
+
+- หัวการ์ดแสดงเฉพาะชื่อการ์ด `TOP ASSET BRANDS`
+- Body แสดง 8 แบรนด์สูงสุดเรียงตามจำนวน asset มากไปน้อย ใน 2 column × 4 row
+- ใช้ wa-stat-bar-list pattern เหมือน Popular Keywords ใน Search Insights: แต่ละ row มี dot + ชื่อแบรนด์ + (จำนวน) ชิดซ้าย, % ชิดขวา, และ bar เต็มความกว้างด้านล่าง
+- ใช้สีเดียวทั้งการ์ด `#2b6cb0` (น้ำเงิน informational) สำหรับ dot, % และ bar fill เพื่อสื่อ composition/ranking ไม่ใช่ alert
+- % และ bar width คำนวณจาก total assets ในหน้า
+- ที่ breakpoint `<= 760px` wa-stat-bar-list กลับเป็น 1 column เพื่อให้ bar ยาวพออ่านได้
 
 ## 8. Asset Detail
 
