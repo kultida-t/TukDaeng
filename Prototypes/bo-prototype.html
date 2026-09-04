@@ -25525,6 +25525,7 @@
 
       // Top Brands palette — สีกลาง 8 เฉด แยกจากตัวอักษร #071b36 ชัดเจน (ไม่กลืนกัน)
       const brandColors = ["#2b6cb0", "#2f855a", "#c05621", "#b83280", "#6b46c1", "#2c7a7b", "#b7791f", "#c53030"];
+      const topCriteriaColor = "#2b6cb0";
 
       // Panel card helper
       const panel = (title, meta, bodyHtml, extraClass = "", viewAllLabel = "", viewAllAttr = `data-module-jump="watch-alerts" data-sub-jump="Watch Alert List"`, viewAllChevron = true, infoTip = "") => `
@@ -25543,16 +25544,17 @@
       // 2.1 Top Criteria — flat Top 5 Brands (หน้าหลัก) + Dial Colors, drill-down (Model/Reference) เปิดเป็น modal แทน expand inline
       // dot + label + count + percent + full-width bar (Family Office composition pattern), percent = share ของผลรวมในกลุ่มเดียวกัน
       const statTotal = (items) => items.reduce((s, i) => s + i.value, 0) || 1;
-      const statBarRow = (item, idx, total, dataAttr = "", chevron = false, fixedColor = null) => {
+      const statBarRow = (item, idx, total, dataAttr = "", chevron = false, fixedColor = null, dotColor = null) => {
         const pct = Math.round((item.value / total) * 100);
         const color = fixedColor || brandColors[idx % brandColors.length];
+        const dot = dotColor || color;
         const clickable = !!dataAttr;
         const Tag = clickable ? "button" : "div";
         return `
           <${Tag} class="wa-stat-bar-row${clickable ? "" : " wa-stat-bar-row-static"}" ${clickable ? `type="button" ${dataAttr}` : ""}>
             <span class="wa-stat-bar-top">
               <span class="wa-stat-bar-left">
-                <span class="wa-stat-bar-dot" style="background: ${color}"></span>
+                <span class="wa-stat-bar-dot" style="background: ${dot}"></span>
                 <span class="wa-stat-bar-label">${esc(item.label)}</span>
                 <span class="wa-stat-bar-count">(${item.value.toLocaleString()})</span>
               </span>
@@ -25570,7 +25572,7 @@
       const allBrandsTotal = statTotal(ov.topCriteriaTree);
       const topCriteriaHtml = `
         <div class="wa-stat-bar-list">
-          ${top5Brands.map((b, idx) => statBarRow(b, idx, allBrandsTotal, `data-wa-criteria-open="${esc(b.label)}"`, true)).join("")}
+          ${top5Brands.map((b, idx) => statBarRow(b, idx, allBrandsTotal, `data-wa-criteria-open="${esc(b.label)}"`, true, topCriteriaColor, topCriteriaColor)).join("")}
         </div>
       `;
 
@@ -25603,12 +25605,12 @@
           const brand = ov.topCriteriaTree.find(b => b.label === path[0]);
           if (path.length === 1) {
             // Top Models - {brand}: ใช้สีของ brand ในรายการ Top Brands
-            return brandColors[ov.topCriteriaTree.findIndex(b => b.label === path[0]) % brandColors.length];
+            return topCriteriaColor;
           }
           // Top References - {model}: ใช้สีของ model ในรายการ Top Models ของ brand นั้น
           const brandModels = (brand && brand.models) || [];
           const modelIdx = brandModels.findIndex(m => m.label === path[1]);
-          return modelIdx >= 0 ? brandColors[modelIdx % brandColors.length] : null;
+          return modelIdx >= 0 ? topCriteriaColor : null;
         })();
         // ส่วนท้ายของ title (brand/model) เป็นปุ่มคลิกย้อนกลับได้
         const backLabel = isRoot ? "" : path[path.length - 1];
@@ -25616,11 +25618,11 @@
         const titleHtml = backLabel
           ? `${levelLabel} - <button type="button" class="wa-criteria-title-back" data-wa-criteria-back="${backLevel}"${titleColor ? ` style="color: ${titleColor}"` : ""}>${esc(backLabel)}</button>`
           : levelLabel;
-        // bar list รายละเอียดยังคงหลายสีตาม index ปกติ (ไม่สืบทอดสีจากแม่)
+        // bar list รายละเอียดใช้สีเดียวกันทุกระดับ เพื่อให้ลำดับและสัดส่วนเป็นจุดสนใจหลัก
         const rowsHtml = items.length
           ? items.map((item, idx) => {
               const clickable = childKey && item[childKey] && item[childKey].length > 0;
-              return statBarRow(item, idx, total, clickable ? `data-wa-criteria-drill="${esc(item.label)}"` : "", true);
+              return statBarRow(item, idx, total, clickable ? `data-wa-criteria-drill="${esc(item.label)}"` : "", true, topCriteriaColor, topCriteriaColor);
             }).join("")
           : `<div class="detail-empty">ไม่มีข้อมูล</div>`;
         const modalBody = document.querySelector("#user-action-modal-body");

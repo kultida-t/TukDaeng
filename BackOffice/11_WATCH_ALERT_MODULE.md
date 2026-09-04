@@ -1,7 +1,7 @@
 ﻿# 11 BO Market Demand & Watch Alert Module
 
-**Version:** `BO-11-v0.3`
-**Date:** 2026-09-01
+**Version:** `BO-11-v0.4`
+**Date:** 2026-09-04
 **Status:** สเปกปัจจุบัน
 **Platform:** Responsive Web Back Office
 
@@ -117,6 +117,17 @@ Search Insights เป็นข้อมูล aggregate จาก Search & Filt
 - Popular Filter เป็น quick-selection layer ไม่ตัด option อื่นออกจากรายการเต็ม และไม่เปลี่ยน Search/Filter logic
 - Search Insights ต้องแสดงช่วงเวลาและเกณฑ์การจัดอันดับให้ชัดเจน เพื่อป้องกันการตีความว่าเป็นยอดขายหรือจำนวน Asset
 - No-result search นับเป็นสัญญาณ demand ได้ แต่ต้องแยกจาก unmet demand ของ Watch Alert
+
+### 6.2 Demand Overview Top Criteria Visual Standard
+
+Demand Overview ส่วน Top Criteria ใช้แสดงสัดส่วนของ Brand, Model และ Reference ที่ถูกตั้ง Watch Alert บ่อย โดยต้องใช้ visual rule เดียวกันทั้งการ์ดหลัก, View All modal และ drill-down ทุกระดับ:
+
+- จุด indicator, progress bar และ percentage ใช้สีเดียวกัน `#2b6cb0` (informational blue)
+- ใช้ความยาว progress bar และค่าตัวเลขเป็นตัวสื่ออันดับและสัดส่วนหลัก ไม่ใช้สีหลายสีเพื่อแบ่งลำดับรายการ
+- ชื่อรายการและจำนวนใช้สีข้อความตามมาตรฐาน BO เพื่อคง contrast และ readability
+- การคลิกจาก Top Brands ไป Top Models และ Top References ต้องคงสีหลักเดียวกันตลอด hierarchy
+- สีหลายชุดไม่ควรถูกใช้กับ Top Criteria เว้นแต่มีความหมายเชิงสถานะหรือมี brand identity ที่กำหนดไว้อย่างเป็นทางการ
+- View All และ drill-down ต้องแสดงข้อมูลและ visual hierarchy สอดคล้องกับการ์ด Top Criteria บนหน้า Demand Overview
 
 คำจำกัดความ:
 
@@ -530,6 +541,7 @@ Watch Alert ต้องใช้ app shell, navigation, breakpoint, list toolba
 | AC-BO-WA-010 | Responsive layout ใช้งานได้ที่ mobile-width, tablet และ desktop
 | AC-BO-WA-011 | Search Insights แสดง popular keyword/filter, no-result search, search trend over time, search funnel (Search → Result Click → Asset Detail → Watch Alert/Offer) และ average results per search แบบ aggregate โดยไม่เปิดเผยข้อมูลระบุตัว user
 | AC-BO-WA-012 | Demand Overview แยก Search demand, Watch Alert demand, Unmet Search Demand และ Unmet Watch Alert ได้ชัดเจน |
+| AC-BO-WA-013 | Demand Overview Top Criteria ใช้สี `#2b6cb0` เดียวกันสำหรับ indicator dot, progress bar และ percentage ในการ์ดหลัก, View All modal และ drill-down ระดับ Top Brands, Top Models และ Top References โดยใช้ความยาวแถบและค่าตัวเลขเป็นตัวสื่อสัดส่วน |
 
 ## 20. Open Decisions
 
