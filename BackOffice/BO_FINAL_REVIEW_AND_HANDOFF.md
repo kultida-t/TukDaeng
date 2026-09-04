@@ -48,7 +48,7 @@
 | 07 | Directory | Future | Postponed from Phase 1 |
 | 08 | Audit Log | 1 | Complete |
 | 09 | Offer Management | 1 | Complete |
-| 11 | Watch Alert | 1 | Complete |
+| 11 | Market Demand | 1 | Complete |
 | 12 | Help / Support | 1 | Complete |
 | 13 | Account Deletion Requests | 1 | Complete |
 | 14 | Notifications | 1 | Complete |
@@ -75,7 +75,7 @@
 4. Market Data
 5. Option Master
 6. Offer Management (read-only)
-7. Watch Alert
+7. Market Demand (Watch Alert)
 8. Help & Support
 9. Account Deletion Requests
 10. Notifications

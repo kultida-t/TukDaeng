@@ -33,33 +33,30 @@
 ## 2. Screen 1: Demand Overview
 
 ### Header
-- **Breadcrumb:** งานตรวจสอบและบริการ / Watch Alert / Demand Overview
+- **Breadcrumb:** งานตรวจสอบและบริการ / Market Demand / Demand Overview
 - **Page title:** Demand Overview
 - **Page meta:** Last updated (freshness timestamp)
 - **Page action:** ไม่มี (read-only)
 
-### KPI Cards (6 cards, desktop responsive grid)
+### KPI Cards (4 cards, desktop responsive grid)
 
 | Card | Value | Detail |
 |------|-------|--------|
-| Active Alerts | 3,218 | ใช้งานได้ + notification on |
-| Alerts with Matches | 2,847 | มีอย่างน้อย 1 match (met demand) |
-| Unmet Demand | 371 | ไม่มี match เลย |
-| Notification Success Rate | 94.2% | delivered / attempted (7 วันล่าสุด) |
-| Search Volume | 18,420 | จำนวน keyword submit และ filter apply (7 วันล่าสุด) |
-| No-result Searches | 1,126 | จำนวน search/filter ที่ไม่พบผลลัพธ์ (7 วันล่าสุด) |
+| Active Alerts | 298 | ใช้งานได้และเปิดแจ้งเตือน |
+| Alerts with Matches | 262 | มี Assets ตรงตามเงื่อนไข |
+| Unmet Demand | 36 | ยังไม่มี Assets ตรงตามเงื่อนไข |
+| Notification Success Rate | 94.2% | % การส่งสำเร็จ (7 วันล่าสุด) |
+
+Search Volume และ No-result Searches แสดงใน Search Insights ไม่ใช่ Demand Overview
 
 ### Main Content Sections
 
-#### 2.1 Top Criteria by Dimension
-แสดง criteria ที่ user ตั้งบ่อย แยก 4 dimensions เป็น 4 sub-panel (2x2 grid บน desktop, stack บน mobile):
-
-| Dimension | แสดง | Format |
-|-----------|------|--------|
-| Top Brands | top 8 brands | bar list พร้อมจำนวน alert |
-| Top Models | top 8 models | bar list พร้อมจำนวน alert |
-| Top References | top 8 reference numbers | bar list พร้อมจำนวน alert |
-| Top Dial Colors | top 6 dial colors | bar list พร้อมจำนวน alert |
+#### 2.1 Top Brands (with drill-down)
+แสดง top 5 brands ที่ user ตั้ง alert บ่อย เป็น bar list พร้อมจำนวน alert และสัดส่วน:
+- กดแถบ brand เพื่อ drill-down ไปดู models ของแบรนด์นั้น (modal)
+- กด model ใน drill-down เพื่อดู references ของรุ่นนั้น (modal สลับ content ใน modal เดิม พร้อม breadcrumb)
+- มี "View All" link เปิดไป Watch Alert List
+- ไม่มี Top Models / Top References / Top Dial Colors เป็น standalone panels (ข้อมูลเหล่านี้อยู่ใน drill-down ของ Top Brands)
 
 #### 2.2 Price Range
 แสดงการกระจายช่วงราคาที่ user สนใจ:
@@ -97,6 +94,14 @@
 - Popular Filter Combinations: เงื่อนไขที่ถูกใช้ร่วมกันบ่อย หากมีข้อมูลเพียงพอ
 - No-result Searches: คำค้นหาหรือเงื่อนไขที่ไม่พบผลลัพธ์ แยกจาก Unmet Watch Alert
 - Search/Filter Trend: แนวโน้มตามช่วงเวลา
+- Search Funnel: Search Submit → Result Click → Asset Detail Open → Watch Alert/Offer พร้อมจำนวนและเปอร์เซ็นต์เทียบกับ Search Submit
+
+### Search Funnel Visual Standard
+- แสดงเป็นรายการแนวตั้งใน card เดียว โดยใช้ composition เดียวกับ Asset Status
+- แต่ละแถวแสดง Step, ชื่อขั้น, จำนวนเหตุการณ์ชิดขวา และเปอร์เซ็นต์เทียบกับ Search Submit
+- ใช้กรอบอ่อนและแถบสีด้านซ้ายเป็น visual accent ของแต่ละขั้น ไม่ใช่ status ของข้อมูล
+- ไม่ใช้ progress bar ซ้อนในแต่ละแถว
+- ต้องแสดงข้อมูลครบและไม่เกิด overflow ที่ 390px, 768px, 1280px และ 1440px
 
 ### Rules
 - แสดงเฉพาะข้อมูล aggregate ไม่แสดง search history ของ user รายบุคคล
@@ -109,27 +114,22 @@
 ## 4. Screen 3: Alert List (Read-only)
 
 ### Header
-- **Breadcrumb:** งานตรวจสอบและบริการ / Watch Alert / Alert List
-- **Page title:** Alert List
-- **Subtitle:** รายการ Watch Alert ทั้งหมด (รวมที่ user ลบแล้ว) — read-only
+- **Breadcrumb:** งานตรวจสอบและบริการ / Market Demand / Watch Alert List
+- **Page title:** Watch Alert List
+- **Subtitle:** (ไม่มี subtitle ใน prototype)
 - **Page action:** ไม่มี (read-only)
 
-### Search
-- Alert ID, User ID / username / display name, Alert name, Brand, Model, Reference number
-
-### Filters
+### Filters (ไม่มี search — filter bar อย่างเดียว)
 | Filter | Options |
 |--------|---------|
 | Status | ทุกสถานะ, Active, User Disabled, Deleted |
-| Notification | ทุกสถานะ, เปิด, ปิด |
-| Match status | ทุกสถานะ, มี match, ไม่มี match (Unmet Demand) |
-| Trigger history | ทุกสถานะ, เคย trigger, ไม่เคย trigger |
-| Market data | ทุกสถานะ, Active dependency, Inactive dependency |
-| Created date | date range |
-| Last triggered | date range |
+| Notification | ทุกการแจ้งเตือน, เปิดแจ้งเตือน, ปิดแจ้งเตือน |
+| Trigger history | ทุกประวัติ trigger, เคย trigger, ไม่เคย trigger |
+| Match status | ทุกสถานะ match, ไม่มี match (unmet), มี match |
+| Last Triggered | date range (from — to) |
 
 ### Sort
-- ล่าสุดก่อน (default), เก่าสุดก่อน, Trigger มากสุด, Trigger น้อยสุด, Trigger ล่าสุด
+- อัปเดตล่าสุดก่อน (default), อัปเดตเก่าสุดก่อน, trigger มากสุดก่อน, trigger ล่าสุดก่อน, ชื่อ A-Z
 
 ### Table Columns (Desktop)
 
@@ -144,16 +144,16 @@
 | 7 | Matches | count | current matched Sale assets |
 | 8 | Triggers | count | total trigger count |
 | 9 | Last Triggered | date | ถ้าไม่เคย trigger แสดง "—" |
-| 10 | Created | date | |
-| 11 | Warning | icon | inactive market data flag (ถ้ามี) |
+| 10 | Updated | date | last updated timestamp |
+
+Inactive market data warning แสดงเป็น info icon ใน Criteria column (ไม่ใช่ column แยก)
 
 ### Mobile Card (≤760px)
 - Title: Alert ID + Alert Name
 - Status badge + Notification badge
 - Criteria chips (top 3-4)
 - Owner (display name)
-- Matches / Triggers / Last Triggered / Created (labeled metadata)
-- Warning icon (ถ้ามี)
+- Matches / Triggers / Last Triggered / Updated (labeled metadata)
 
 ### Row Behavior
 - Row click → Alert Detail (drill-in)
@@ -168,7 +168,7 @@
 ## 5. Screen 4: Alert Detail (Read-only)
 
 ### Header
-- **Breadcrumb:** งานตรวจสอบและบริการ / Watch Alert / Alert List / WAL-XXXX
+- **Breadcrumb:** งานตรวจสอบและบริการ / Market Demand / Watch Alert List / WAL-XXXX
 - **Page title:** <Alert Name>
 - **Page meta:** Alert ID, status badge, owner, created/updated
 - **Back button:** Back to Alert List
@@ -183,25 +183,28 @@
 - Market data dependency warning (ถ้า criteria อ้าง inactive data)
 
 ### Section 1: Criteria Snapshot
-- แสดง criteria ปัจจุบันเป็น structured rows/chips (ไม่ใช่ JSON)
-- Fields ตาม Search Filter schema:
-  - Keyword, Brand, Model, Price range (min-max), Year (min-max), Reference, Delivery contents, Condition, Case size, Movement, Dial color, Strap/bracelet
-- แต่ละ field ที่มีค่าแสดงเป็น row พร้อม label + value
+- แสดง criteria ปัจจุบันเป็น structured tiles/chips (ไม่ใช่ JSON)
+- Fields ที่แสดง (ถ้ามีค่า):
+  - Brand, Model, Reference, Price Range (min-max THB), Condition, Case Size, Dial Color
+- แต่ละ field ที่มีค่าแสดงเป็น tile พร้อม label + value (chips สำหรับ multi-value fields เช่น Condition/Case Size/Dial Color)
+- ถ้า field ไม่มีค่า ไม่แสดง tile นั้น
 - ถ้า field อ้าง inactive market data → warning badge ข้าง field นั้น
 - Empty state: "ไม่มี criteria" (กรณี alert ที่ criteria ว่าง)
 
 ### Section 2: Current Matches
 - จำนวน matched Sale assets (current)
-- Mini table: Asset ID, Asset Name, Brand, Model, Price, Listed Date
+- Table columns: Asset ID, Asset Name, Price, Condition, Case Size, Dial Color, Listed At, Asset Status
 - Asset ID เป็น link → Asset Management detail (read-only drill-in)
+- Pagination ถ้าเกินจำนวนที่กำหนด
 - Empty state: "ไม่มี match ในขณะนี้" (unmet demand)
 
-### Section 3: Trigger History
-- Table: Trigger ID, Matched Asset ID, Asset Status at Trigger, Match Timestamp, Notification Event ID, Delivery Status, Exclusion Reason (ถ้า skip)
+### Section 3: Trigger & Notification History
+- Table columns: Trigger ID, Triggered At, Matches (new · total), Delivery Status
+- Delivery Status แสดงเป็น badge (สำเร็จ/ล้มเหลว/ข้าม)
 - เรียงจากใหม่ไปเก่า
-- Pagination ถ้าเกิน 20 รายการ
+- Pagination ถ้าเกินจำนวนที่กำหนด
 - Empty state: "ยังไม่มีประวัติการ trigger"
-- Criteria Snapshot ref: ระบุ snapshot version ที่ใช้ตอน trigger (เพราะ criteria อาจถูกแก้หลัง trigger)
+- Soft delete notice: รายการ trigger ของ alert ที่ถูกลบ (Deleted) ยังคงเก็บไว้ตาม retention rule
 
 ### Section 4: Notification Delivery Trace
 - Table: Notification ID, Recipient, Trigger ID, Destination (Watch Alert Result List), Delivery Status, Sent Timestamp, Opened Timestamp, Failure Reason
@@ -209,7 +212,8 @@
 - Empty state: "ยังไม่มีประวัติการส่งแจ้งเตือน"
 
 ### Section 5: User Action History
-- Table: Action Type (Created / Edited / Renamed / Notification Toggled / Deleted), Timestamp, Actor (user), Details/Snapshot
+- Table columns: Timestamp, Actor, Action, Changes, Note
+- Action ครอบคลุม: Created / Edited / Renamed / Notification Toggled / Deleted
 - เรียงจากใหม่ไปเก่า
 - แสดงเฉพาะ user-driven actions (ไม่มี admin action ในทิศใหม่)
 - Empty state: "ยังไม่มีประวัติการกระทำของ user"

@@ -141,7 +141,7 @@ Header:
 
 - Breadcrumb: `การดำเนินงาน / Market Data / Dashboard`
 - Page title: `Dashboard`
-- Panel title: `Latest Sync Status`
+- Panel title: `Recently Updated Brands`
 - Page action หลักว่างตาม prototype
 - Filter bar ว่างตาม prototype
 
@@ -156,12 +156,13 @@ Summary cards ต้องแสดง 4 cards ตามลำดับ:
 
 Dashboard content:
 
-- แสดง `Latest Sync Status` mini card
-- แสดง progress ring เป็นเปอร์เซ็นต์ synced
-- แสดงข้อความสถานะ sync ล่าสุด เช่นกำลัง sync reference ของ Omega
-- แสดงจำนวน synced brands เทียบ total brands
-- แสดงจำนวนรุ่นที่ยังต้องตรวจ price / mapping validation
-- แสดงข้อความว่าไม่มี error ใน 24 ชั่วโมงที่ผ่านมาเมื่อไม่มี error ล่าสุด
+- KPI row คงไว้ 4 cards โดย `Last Sync` เป็นข้อมูลเวลาซิงก์ล่าสุด ไม่ใช่สถานะงานที่กำลังทำ
+- เมื่อมี sync ที่กำลังทำงานหรือมีข้อผิดพลาดที่ต้องติดตาม ให้แสดง `Latest Sync Status` เป็น status strip เต็มความกว้างใต้ KPI row ในกลุ่มเดียวกัน
+- เมื่อไม่มี active sync หรือสถานะที่ต้องติดตาม ให้ซ่อน status strip ทั้งส่วนและยุบพื้นที่ทันที โดยไม่แสดง empty card
+- ใช้สีน้ำเงินสำหรับ progress ring ขณะกำลัง Sync และใช้สีแดงเฉพาะกรณี Sync ล้มเหลว เพื่อไม่ให้สถานะกำลังทำงานถูกตีความเป็นข้อผิดพลาด
+- Status strip ต้องแสดง progress ring, ข้อความสถานะ, จำนวน synced brands เทียบ total brands, จำนวนรุ่นที่ยังต้องตรวจ price / mapping validation และปุ่ม `ดูรายละเอียดใน Sync History`
+- กดปุ่มจาก status strip ต้องพา Admin ไปหน้า `Sync History` เพื่อดูรายการงานที่กำลังทำงานและเปิดรายละเอียด job ได้
+- กรณี sync ผิดพลาด ให้แจ้งผลกระทบว่า catalog ล่าสุดยังถูกใช้งาน และให้ Admin ไปตรวจรายละเอียดใน `Sync History`
 - แสดงตาราง `Recently Updated Brands`
 
 ตาราง `Recently Updated Brands`:
@@ -236,7 +237,7 @@ Header:
 - Breadcrumb: `การดำเนินงาน / Market Data / Brands & Models / <Brand>`
 - Page title: `<Brand>`
 - Back button: `Back to Brands`
-- Panel title: `<Brand> -- All Models (<model count>)`
+- Panel title: `<Brand> — All Models (<model count>)`
 - ไม่มี summary cards, info cards และ right detail panel
 
 Filter:
@@ -677,11 +678,11 @@ Market Data ต้องใช้ app shell, navigation, breakpoint, list toolba
 | AC-BO-MARKET-001 | เข้าเมนู `Market Data` แล้วเปิด `Dashboard` เป็นหน้าแรก และ active state ของเมนู/submenu ถูกต้อง |
 | AC-BO-MARKET-002 | Market Data แสดง submenu ครบ `Dashboard`, `Brands & Models`, `Sync History` ตาม prototype |
 | AC-BO-MARKET-003 | Dashboard แสดง summary cards ครบ `Total Brands`, `Total Models`, `Total References`, `Last Sync` |
-| AC-BO-MARKET-004 | Dashboard แสดง Latest Sync Status, progress ring และตาราง Recently Updated Brands |
+| AC-BO-MARKET-004 | Dashboard แสดง Latest Sync Status แบบ conditional status strip เมื่อมี sync ที่กำลังทำงาน/ต้องติดตาม พร้อม progress ring, ปุ่มไป Sync History และแสดงตาราง Recently Updated Brands เสมอ |
 | AC-BO-MARKET-005 | Dashboard brand row คลิกไป Brand detail ได้ |
 | AC-BO-MARKET-006 | `Brands & Models` แสดง panel title `All Brands [<count>]` และมี search field `Search brand / model / reference` |
 | AC-BO-MARKET-007 | Brand list แสดง column Brand, Models, References, Action และปุ่ม `View` เปิด Brand detail ได้ |
-| AC-BO-MARKET-008 | Brand detail แสดง `<Brand> -- All Models (<count>)`, search model และปุ่มกลับ `Back to Brands` |
+| AC-BO-MARKET-008 | Brand detail แสดง `<Brand> — All Models (<count>)`, search model และปุ่มกลับ `Back to Brands` |
 | AC-BO-MARKET-009 | Model detail แสดง `<Model> -- All References (<count>)`, search reference และปุ่มกลับ `Back to <Brand>` |
 | AC-BO-MARKET-010 | Reference row เปิด Reference detail drawer พร้อม spec grid, USD price card, chart, description และ source note |
 | AC-BO-MARKET-011 | `Sync History` แสดง summary cards Log Entries Today, Completed, Running, Failed |

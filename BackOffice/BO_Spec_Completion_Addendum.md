@@ -1,19 +1,19 @@
 # BO Specification Addendum - Tuk Daeng Back Office Coverage for FO
 
-**Version:** 1.2 Addendum  
+**Version:** 1.3 Addendum  
 **Purpose:** เติมรายละเอียด Back Office ให้รองรับ Front Office flows จาก PRD และ Use Cases ครบถ้วนขึ้น  
-**Reference:** BO_Spec v1.1, PRD v1.0, Use_Cases v1.0
+**Reference:** BO_Spec v1.2, PRD v1.0, Use_Cases v1.0
 
 ---
 
 ## 1. Summary
 
-BO_Spec v1.1 รองรับ flow หลักของ FO แล้วในส่วน User, Asset, Content, Market Data, Reports, Push Notification และ Audit Log; Directory ถูกเลื่อนเป็น future/postponed scope เพราะ FO directory menu ยังเป็น placeholder แต่ยังขาดรายละเอียดสำหรับ flow ที่เกิดจากการใช้งานจริงของผู้ใช้ใน FO ได้แก่ Offer/Chat, Comment, Like/Favorite, Follow, Watch Alert ราย user, Help/Support, Delete Account และ System Notification Trigger
+BO_Spec v1.2 รองรับ flow หลักของ FO แล้วในส่วน User, Asset, Content, Market Data, Reports, Push Notification, Help & Support, Account Deletion และ Audit Log; Directory ถูกเลื่อนเป็น future/postponed scope เพราะ FO directory menu ยังเป็น placeholder แต่ยังขาดรายละเอียดสำหรับ flow ที่เกิดจากการใช้งานจริงของผู้ใช้ใน FO ได้แก่ Offer/Chat, Comment, Like/Favorite, Follow, Watch Alert ราย user และ System Notification Trigger
 
 Addendum นี้เสนอให้เพิ่ม module และ business rules ต่อไปนี้:
 
 1. Offer Management (read-only ใน V1)
-2. Watch Alert Management
+2. Market Demand (Watch Alert)
 3. Account Deletion & Data Archive
 4. Help & Support (Policy & Versioning + Support Center)
 5. System Notification Trigger Management
@@ -173,20 +173,21 @@ Current prototype Offer Detail ไม่มี Force Expire Offer, Mark Invalida
 
 ---
 
-## 4. Watch Alert Management
+## 4. Market Demand (Watch Alert)
 
 ### 4.1 Purpose
 
-BO_Spec v1.1 มี Watch Alert report แล้ว แต่ FO ต้องมีการ create, rename, delete, toggle notification และ trigger alert จาก search criteria จึงควรมี management view ราย alert
+BO_Spec v1.2 มี Watch Alert report แล้ว แต่ FO ต้องมีการ create, rename, delete, toggle notification และ trigger alert จาก search criteria จึงควรมี management view ราย alert พร้อม Demand Overview และ Search Insights ระดับระบบ
 
 ### 4.2 Features
 
-- ดู Watch Alert ทั้งหมด
-- Search ด้วย User, Alert Name, Brand, Model, Reference No.
-- Filter ด้วย Active, Notification On/Off, Triggered, Date Range
+- ดู Demand Overview: KPI tiles, Top Brands (drill-down), Price Range, Trigger Trend, Frequently Triggered Alerts
+- ดู Search Insights: Popular Keywords/Filters/Combinations, No-result Searches, Search Funnel (aggregate only)
+- ดู Watch Alert List ทั้งหมด (filter: Status, Notification, Trigger history, Match status, Last Triggered date range — ไม่มี search)
+- ดู Watch Alert Detail: Alert Summary, Owner, Criteria, Matched Assets, Trigger & Notification History, User Action History
 - ดู criteria ที่ผู้ใช้ save จาก Search
-- ดู trigger history และ click-through history
-- Watch Alert BO เป็น read-only — Admin ไม่ disable/enable/export/bulk alert ของ user ใด ๆ
+- ดู trigger history และ delivery status
+- Market Demand BO เป็น read-only — Admin ไม่ disable/enable/export/bulk alert ของ user ใด ๆ
 
 ### 4.3 Fields
 
@@ -201,17 +202,23 @@ BO_Spec v1.1 มี Watch Alert report แล้ว แต่ FO ต้องม
 | Price Min | Number | Optional |
 | Price Max | Number | Optional |
 | Condition | Multi-select | Optional |
+| Case Size | Multi-select | Optional |
+| Dial Color | Multi-select | Optional |
 | Notification Enabled | Boolean | Yes |
-| Status | Active / Disabled / Deleted | Yes |
+| Status | Active / User Disabled / Deleted (soft delete) | Yes |
+| Match Count | Number | Yes |
+| Trigger Count | Number | Yes |
 | Last Triggered At | DateTime | Optional |
 | Created At | DateTime | Yes |
+| Updated At | DateTime | Yes |
 
 ### 4.4 Trigger Rules
 
 - เมื่อมี asset ใหม่สถานะ Sale ที่ตรง criteria ให้สร้าง notification ประเภท Watch Alert
 - Alert ที่ Notification Enabled = Off ยังถูกเก็บไว้ แต่ไม่ส่ง push
-- Watch Alert BO เป็น read-only — ไม่มี admin disable/enable alert ของ user
+- Market Demand BO เป็น read-only — ไม่มี admin disable/enable alert ของ user (User Disabled เป็น action ของ user เท่านั้น)
 - ถ้า brand/model ถูก inactive ใน Market Data ต้องไม่ trigger alert ใหม่จากข้อมูลนั้น
+- Notification destination ต้องเป็น `Watch Alert Result List` ห้ามเปิด Asset Detail โดยตรง
 
 ---
 
@@ -620,7 +627,7 @@ Content role split baseline:
 
 ## 10. Expanded Reports & Analytics
 
-เพิ่ม report ต่อไปนี้จาก BO_Spec v1.1
+เพิ่ม report ต่อไปนี้จาก BO_Spec v1.2
 
 | Report | Data |
 |---|---|
@@ -641,7 +648,7 @@ Phase 1 actions (ตรง prototype ที่ล็อกแล้ว):
 |---|---|
 | Hide Comment | Comment หายจาก Asset Detail |
 | Unhide Comment | Comment กลับมาแสดงใน Asset Detail |
-| Soft Delete Comment | Comment ไม่แสดง หรือแสดงเป็น deleted ตาม UX policy |
+| Remove comment (ซ่อนถาวร) | Comment ถูกซ่อนถาวรจาก public surfaces ตามผล moderation (comment status → `Removed`) |
 | Approve Account Archive | User login ไม่ได้, profile/assets ถูกซ่อนหรือ anonymized |
 | Publish Policy | FO แสดงเนื้อหา Terms of Use / Privacy Policy เวอร์ชันใหม่ทันที |
 | Update Support Center | FO Help screen แสดงช่องทางติดต่อและเวลาทำการล่าสุด |
@@ -681,28 +688,29 @@ Future scope (ยังไม่เปิดใน V1 Offer Management ที่
 
 เพิ่ม Action Type:
 
-- PreviewArticle
-- PublishArticle
-- ScheduleArticle
-- ArchiveArticle
-- SetFeaturedArticle
-- ActivateBanner
-- DeactivateBanner
-- ForceExpireOffer
-- InvalidateOffer
-- HideComment
-- UnhideComment
-- RemoveChatMessage
-- ApproveAccountArchive
-- CancelAccountDeletion
-- PolicyDraftCreate
-- PolicyDraftSave
-- PolicyPublish
-- PolicyArchive
-- PolicyRestore
-- SupportCenterUpdate
-- UpdateNotificationTemplate
-- RetryNotification
+- `ARTICLE_PREVIEW`
+- `ARTICLE_PUBLISH`
+- `ARTICLE_SCHEDULE`
+- `ARTICLE_ARCHIVE`
+- `ARTICLE_SET_FEATURED`
+- `BANNER_ACTIVATE`
+- `BANNER_DEACTIVATE`
+- `OFFER_FORCE_EXPIRE`
+- `OFFER_INVALIDATE`
+- `COMMENT_HIDE`
+- `COMMENT_UNHIDE`
+- `COMMENT_REMOVE`
+- `CHAT_MESSAGE_REMOVE`
+- `ACCOUNT_DELETION_APPROVE_ARCHIVE`
+- `ACCOUNT_DELETION_CANCEL`
+- `POLICY_DRAFT_CREATE`
+- `POLICY_DRAFT_SAVE`
+- `POLICY_PUBLISH`
+- `POLICY_ARCHIVE`
+- `POLICY_RESTORE`
+- `SUPPORT_CENTER_UPDATE`
+- `NOTIFICATION_TEMPLATE_UPDATE`
+- `NOTIFICATION_DELIVERY_RETRY`
 
 ---
 
@@ -716,7 +724,7 @@ Baseline role templates include `Super Admin`, `Content Editor`, `Content Publis
 |---|---|
 | Offer Management | Admin can view/review by policy with privacy masking and audit. Chat moderation เป็น future scope |
 | Asset Management (Reported Comments) | Admin can view aggregate data and moderate reported comments by policy. |
-| Watch Alert Management | Admin can view by policy (read-only — no disable/enable/export/bulk action on user alerts). Audit covers sensitive reveal and trigger job run only. |
+| Market Demand (Watch Alert) | Admin can view by policy (read-only — no disable/enable/export/bulk action on user alerts). Audit covers sensitive reveal and trigger job run only. |
 | Help & Support | Admin can manage Policy & Versioning (draft/publish/restore) and Support Center (channels, business hours, availability) by policy. Ticket queue/SLA/internal notes เป็น future scope. |
 | Account Deletion Requests | Admin can view/recheck/approve/cancel/archive by policy with dependency checks, confirmation, reason, and audit. |
 | Notifications (Broadcast & System Templates) | Admin can manage templates and broadcasts with approval, preview, and audit policy. |
