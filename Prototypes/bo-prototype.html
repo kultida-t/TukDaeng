@@ -2584,6 +2584,41 @@
       border: 1px solid #d7e2f0;
       border-radius: var(--radius);
     }
+    body.market-list-mode.market-dashboard-mode .summary-grid .market-dashboard-sync-status {
+      grid-column: 1 / -1;
+      border: 1px solid #d7e2f0;
+      border-radius: var(--radius);
+      overflow: hidden;
+      box-shadow: 0 8px 20px rgba(15, 42, 74, .05);
+    }
+    body.market-list-mode.market-dashboard-mode .summary-grid .market-dashboard-sync-status .market-sync-body {
+      min-height: 92px;
+      padding: 14px 18px;
+      gap: 16px;
+    }
+    body.market-list-mode.market-dashboard-mode .summary-grid .market-dashboard-sync-status .market-progress-ring {
+      width: 88px;
+      height: 88px;
+    }
+    body.market-list-mode.market-dashboard-mode .summary-grid .market-dashboard-sync-status .market-progress-ring span {
+      font-size: 22px;
+    }
+    body.market-list-mode.market-dashboard-mode .summary-grid .market-dashboard-sync-status .market-sync-detail-link {
+      min-height: 34px;
+      margin-top: 10px;
+      padding: 0 12px;
+      font-size: 12px;
+    }
+    body.market-list-mode.market-dashboard-mode .summary-grid .market-dashboard-sync-status.is-error {
+      border-color: #f0c2c8;
+      background: #fffafa;
+    }
+    body.market-list-mode.market-dashboard-mode .summary-grid .market-dashboard-sync-status.is-error .market-progress-ring {
+      color: #b42332;
+    }
+    body.market-list-mode.market-dashboard-mode .layout > .panel > .panel-head {
+      display: none;
+    }
     /* BO-MKT-FIX-001: ปรับ padding และ min-width ของ panel-head ให้ตรงกับ asset-row.head
        ในตาราง Recently Updated Brands เพื่อให้เส้นคั่นยาวเท่ากันทุก viewport
        scope เฉพาะ Market Data > Dashboard เพื่อไม่กระทบ protected screens อื่น */
@@ -2617,19 +2652,40 @@
       padding: 0;
     }
     body.market-list-mode .market-progress-ring {
+      position: relative;
+      display: grid;
+      place-items: center;
+      width: 96px;
+      height: 96px;
+      flex: 0 0 auto;
+      color: #d60012;
+    }
+    body.market-list-mode .market-progress-ring svg {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      transform: rotate(-90deg);
+      overflow: visible;
+    }
+    body.market-list-mode .market-progress-ring circle {
+      fill: none;
+      stroke-width: 5;
+    }
+    body.market-list-mode .market-progress-track {
+      stroke: #e5edf6;
+    }
+    body.market-list-mode .market-progress-value {
+      stroke: currentColor;
+      stroke-linecap: butt;
+    }
+    body.market-list-mode .market-progress-label {
+      position: relative;
+      z-index: 1;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      width: 96px;
-      height: 96px;
-      flex: 0 0 auto;
-      border-radius: 999px;
-      background:
-        radial-gradient(circle at center, #fff 56%, transparent 57%),
-        conic-gradient(from 0deg, #d60012 0 81%, #e5edf6 81% 100%);
-      box-shadow: inset 0 0 0 1px rgba(215, 226, 240, .85);
-      color: #d60012;
     }
     body.market-list-mode .market-progress-ring span {
       font-family: var(--font-heading);
@@ -23694,6 +23750,13 @@
       return fileName;
     }
 
+    function getMarketActiveSyncJob() {
+      if (activeMarketSyncJob) {
+        return activeMarketSyncJob.status === "running" || activeMarketSyncJob.status === "error" ? activeMarketSyncJob : null;
+      }
+      return getMarketSyncJobs().find(job => job.status === "Running" || job.status === "Failed") || null;
+    }
+
     function renderMarketSummaryCards(subLabel) {
       if (subLabel === "Dashboard") {
         const marketMetrics = getMarketMetricCards();
@@ -23703,7 +23766,15 @@
           { label: "Total References", value: marketMetrics.references, trend: "ข้อมูลจาก Reference catalog" },
           { label: "Last Sync", value: marketMetrics.lastSyncRelative, trend: marketMetrics.lastSyncTimestamp }
         ];
-        document.querySelector("#summary-grid").innerHTML = metrics.map(metric => `
+        const activeSyncJob = getMarketActiveSyncJob();
+        const syncState = activeSyncJob?.status === "Failed" || activeSyncJob?.status === "error" ? "error" : activeSyncJob ? "running" : "";
+        const hasSyncStatus = Boolean(activeSyncJob);
+        const syncPercent = Math.round((marketMetricTotals.syncedBrands / marketMetricTotals.brands) * 100);
+        const syncTitle = syncState === "error" ? "การซิงก์ข้อมูลหยุดชั่วคราว" : "กำลังซิงก์เลขอ้างอิงของ Omega";
+        const syncMessage = syncState === "error"
+          ? "การซิงก์ไม่สำเร็จ ระบบยังคงใช้ข้อมูล catalog ล่าสุด และสามารถตรวจสอบรายละเอียดได้ที่ Sync History"
+          : `ซิงก์แบรนด์แล้ว <b>${marketMetrics.syncedBrands}/${marketMetrics.brands}</b> แบรนด์ · เหลือ <b>${marketMetrics.pendingPriceValidation}</b> รุ่นที่ต้องตรวจสอบราคากลาง`;
+        document.querySelector("#summary-grid").innerHTML = `${metrics.map(metric => `
           <article class="stat">
             <div class="stat-top">
               <div>
@@ -23713,7 +23784,24 @@
             </div>
             <div class="stat-note">${metric.trend}</div>
           </article>
-        `).join("");
+        `).join("")}${hasSyncStatus ? `
+          <section class="market-sync-current market-dashboard-sync-status ${syncState === "error" ? "is-error" : "is-running"}" aria-live="polite">
+            <div class="market-sync-body">
+              <div class="market-progress-ring" role="img" aria-label="${syncPercent}% Synced">
+                <svg viewBox="0 0 42 42" aria-hidden="true" focusable="false">
+                  <circle class="market-progress-track" cx="21" cy="21" r="18" pathLength="100"></circle>
+                  <circle class="market-progress-value" cx="21" cy="21" r="18" pathLength="100" stroke-dasharray="${syncPercent} 100"></circle>
+                </svg>
+                <div class="market-progress-label"><span>${syncPercent}%</span><small>Synced</small></div>
+              </div>
+              <div class="market-sync-main">
+                <strong>${syncTitle}</strong>
+                <p>${syncMessage}</p>
+                <button class="btn market-sync-detail-link" type="button" data-market-sync-view-logs>ดูรายละเอียดใน Sync History</button>
+              </div>
+            </div>
+          </section>
+        ` : ""}`;
         return;
       }
       const marketMetrics = getMarketMetricCards();
@@ -25263,6 +25351,10 @@
       if (!marketCatalogData.syncLogs.some(log => log.id === newLog.id)) marketCatalogData.syncLogs.unshift(newLog);
       if (activeModule === "market" && activeSub === "Brands & Models") renderMarketCatalogRows();
       job.status = "success";
+      if (activeModule === "market" && activeSub === "Dashboard") {
+        renderMarketSummaryCards("Dashboard");
+        renderMarketDashboard();
+      }
       renderMarketSyncModal("success");
       showSuccessToast(`${job.id}: Sync completed`);
     }
@@ -25280,6 +25372,10 @@
         models: marketMetricTotals.models,
         references: marketMetricTotals.references
       };
+      if (activeModule === "market" && activeSub === "Dashboard") {
+        renderMarketSummaryCards("Dashboard");
+        renderMarketDashboard();
+      }
       renderMarketSyncModal("running", scenario);
       marketSyncTimer = window.setTimeout(() => finishMarketSyncJob(scenario), 1200);
     }
@@ -25289,6 +25385,7 @@
       marketSyncTimer = null;
       if (scenario === "rate_limit") {
         activeMarketSyncJob.status = "error";
+        if (activeModule === "market" && activeSub === "Dashboard") renderMarketSummaryCards("Dashboard");
         renderMarketSyncModal("error", scenario);
         return;
       }
@@ -25302,9 +25399,8 @@
     }
 
     function renderMarketCards(subLabel) {
-      const marketMetrics = getMarketMetricCards();
       const cards = subLabel === "Dashboard"
-        ? [["Latest Sync Status", `กำลังอัปเดตข้อมูลอ้างอิงของ Omega เหลือ ${marketMetrics.pendingPriceValidation} รุ่นที่ต้องตรวจสอบราคากลาง`]]
+        ? []
         : [["Brand-first workflow", "Admins start from brands, drill into models, then open references to review detail and price data."], ["API source", "Data comes from The Watch API through backend sync for Brand, Model and Reference catalog."], ["Read-only", "Add, edit, delete and provider master-data overrides are not available."]];
       document.querySelector("#cards").innerHTML = cards.map(card => `
         <article class="mini-card">
@@ -25315,8 +25411,7 @@
     }
 
     function renderMarketDashboard() {
-      const marketMetrics = getMarketMetricCards();
-      const syncPercent = Math.round((marketMetricTotals.syncedBrands / marketMetricTotals.brands) * 100);
+      const hasActiveSync = Boolean(getMarketActiveSyncJob());
       const rows = getMarketCatalogBrands();
       const pageCount = Math.max(1, Math.ceil(rows.length / marketDashboardPageSize));
       marketDashboardPage = Math.min(marketDashboardPage, pageCount);
@@ -25324,15 +25419,6 @@
       const visibleRows = rows.slice(start, start + marketDashboardPageSize);
       document.querySelector("#table").innerHTML = `
         <div class="market-dashboard-stack">
-          <section class="market-sync-current">
-            <div class="market-sync-body">
-              <div class="market-progress-ring"><span>${syncPercent}%</span><small>Synced</small></div>
-              <div class="market-sync-main">
-                <strong>กำลังซิงก์เลขอ้างอิงของ Omega</strong>
-                <p>ซิงก์แบรนด์แล้ว <b>${marketMetrics.syncedBrands}/${marketMetrics.brands}</b> แบรนด์ · เหลือ <b>${marketMetrics.pendingPriceValidation}</b> รุ่นที่ต้องตรวจสอบราคากลาง · ไม่มีข้อผิดพลาดใน 24 ชั่วโมงที่ผ่านมา</p>
-              </div>
-            </div>
-          </section>
           <section class="market-dashboard-table">
             <div class="panel-head"><div><h2>Recently Updated Brands</h2></div></div>
             <div class="asset-table category-table market-table market-dashboard-brand-table">
@@ -25340,8 +25426,10 @@
               ${visibleRows.map((brand, index) => {
                 const modelCount = getMarketSampleModelCount(brand);
                 const referenceCount = getMarketSampleReferenceCount(brand);
-                const running = brand.id === "omega";
+                const running = hasActiveSync && brand.id === "omega";
                 const times = ["06 Aug 2026 08:14", "Syncing...", "06 Aug 2026 07:40", "06 Aug 2026 07:38", "06 Aug 2026 06:55"];
+                const mockLastUpdated = times[start + index];
+                const lastUpdated = running ? "Syncing..." : mockLastUpdated === "Syncing..." ? brand.lastSync : mockLastUpdated || brand.lastSync;
                 return `
                   <div class="asset-row" data-market-brand="${brand.id}">
                     <div data-label="Brand"><div class="main-text">${brand.name}</div></div>
@@ -25350,12 +25438,12 @@
                         <div class="user-card-meta-item"><span>Models</span><strong>${modelCount.toLocaleString()}</strong></div>
                         <div class="user-card-meta-item"><span>References</span><strong>${referenceCount.toLocaleString()}</strong></div>
                         <div class="user-card-meta-item"><span>Status</span><strong>${running ? "Syncing" : "Completed"}</strong></div>
-                        <div class="user-card-meta-item"><span>Last Sync</span><strong>${times[start + index] || brand.lastSync}</strong></div>
+                        <div class="user-card-meta-item"><span>Last Sync</span><strong>${lastUpdated}</strong></div>
                       </div>
                     </div>
                     <div data-label="Models"><div class="main-text">${modelCount.toLocaleString()}</div></div>
                     <div data-label="References"><div class="main-text">${referenceCount.toLocaleString()}</div></div>
-                    <div data-label="Last Updated"><div class="main-text">${times[start + index] || brand.lastSync}</div></div>
+                    <div data-label="Last Updated"><div class="main-text">${lastUpdated}</div></div>
                     <div data-label="Status">${statusPill(running ? "Syncing" : "Completed", running ? "Medium" : "Normal")}</div>
                   </div>
                 `;
@@ -26688,7 +26776,7 @@
       document.querySelector("#panel-title").innerHTML = subLabel === "Brands & Models"
         ? `All Brands <span class="panel-title-count">[${getMarketMetricCards().brands}]</span>`
         : subLabel === "Dashboard"
-          ? "Latest Sync Status"
+          ? "Recently Updated Brands"
           : subLabel === "Sync History"
             ? "Sync Run History"
             : subLabel;
