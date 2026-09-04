@@ -3,7 +3,7 @@
 **Version:** 1.0  
 **Product:** Tuk Daeng Back Office (BO)  
 **Audience:** Admin  
-**Related Documents:** BO_Spec v1.1, BO_Spec_Completion_Addendum v1.2, FO PRD v1.0, Use Cases v1.0
+**Related Documents:** BO_Spec v1.2, BO_Spec_Completion_Addendum v1.3, FO PRD v1.0, Use Cases v1.0
 
 ---
 
@@ -65,7 +65,7 @@ FO users have a single account type: `User`. BO must support activity from the s
 - Content / Board Management
 - Market Data Management
 - Option Master Management
-- Watch Alert Management
+- Market Demand (Watch Alert)
 - Directory Management (future/postponed; not Phase 1)
 - Help & Support (Policy & Versioning + Support Center)
 - Notifications
@@ -292,23 +292,29 @@ Phase 1 ไม่ให้ Admin เพิ่ม แก้ไข ลบ ปิ�
 
 ---
 
-## 4.8 Watch Alert Management
+## 4.8 Market Demand (Watch Alert)
 
 ### Requirements
 
 Admin ต้องสามารถ:
 
-- ดู Watch Alert ราย user
-- ดู criteria: brand, model, reference, price range, condition
+- ดู Demand Overview: KPI tiles (Active Alerts, Alerts with Matches, Unmet Demand, Notification Success Rate), Top Brands (drill-down ไป Model/Reference), Price Range histogram, Trigger Trend 12 เดือน, Frequently Triggered Alerts
+- ดู Search Insights: Popular Keywords, Popular Filters by Dimension, Popular Filter Combinations, No-result Searches, Search/Filter Trend, Search Funnel
+- ดู Watch Alert List: filter (Status/Notification/Trigger history/Match status/Last Triggered date range), sort, pagination, row click → Alert Detail
+- ดู Watch Alert Detail: Alert Summary, Owner Summary, Criteria (structured chips), Matched Assets, Trigger & Notification History, User Action History
+- ดู criteria: brand, model, reference, price range, condition, case size, dial color
 - ดู notification on/off
 - ดู trigger history
 - ดู Watch Alert analytics
 
 ### Business Rules
 
-- Watch Alert BO เป็น read-only — Admin ไม่ disable/enable/export/bulk alert ของ user ใด ๆ
+- Market Demand BO เป็น read-only ทั้ง List และ Detail — Admin ไม่ disable/enable/export/bulk alert ของ user ใด ๆ
 - Alert ที่ notification off ยังเก็บไว้แต่ไม่ส่ง push
 - Brand/model inactive ต้องไม่ trigger alert ใหม่
+- Watch Alert matching เฉพาะ asset status `Sale`
+- Notification destination ต้องเป็น `Watch Alert Result List` ห้ามเปิด Asset Detail โดยตรง
+- Search Insights เป็น aggregate only ไม่มี user-identifying data
 
 ---
 
@@ -524,7 +530,7 @@ Reports ที่ต้องมี:
 - Content / Board Management
 - Market Data
 - Option Master
-- Watch Alert Management
+- Market Demand (Watch Alert)
 - Help & Support (Policy & Versioning + Support Center)
 - Account Deletion Requests
 - Notifications

@@ -134,8 +134,8 @@ User List แสดง registered user ทั้งหมดที่ระบ�
 | --- | --- |
 | Active Users | จำนวนผู้ใช้สถานะ Active พร้อมสัดส่วน auth method |
 | Suspended | จำนวนผู้ใช้ที่ถูกระงับชั่วคราว ต้องมี reason และ audit |
-| Deletion Pending | จำนวนผู้ใช้ที่อยู่ระหว่างกระบวนการลบบัญชี รวม pending offer |
-| Exports | จำนวนงาน export ข้อมูลผู้ใช้ที่รอ background job |
+| Deletion Requested | จำนวนผู้ใช้ที่อยู่ระหว่างกระบวนการลบบัญชี รวมรายงานที่เกี่ยวข้อง ตรวจเงื่อนไขก่อนลบ |
+| Reported | จำนวนผู้ใช้ที่ถูกรายงาน รวมจำนวนรายงานทั้งหมดและผู้ใช้เร่งด่วน |
 
 ### Search
 
@@ -233,10 +233,12 @@ Action ในแต่ละ user row ต้องแสดงตามสถา
 | --- | --- |
 | View Detail | แสดงทุก user |
 | Send Password Reset | แสดงเฉพาะบัญชี Email/Password ที่สถานะ Active |
-| Suspend Account | แสดงเมื่อบัญชีอยู่ในสถานะ Active |
+| Suspend Account | แสดงเมื่อบัญชีอยู่ในสถานะ Active หรือ Pending Verification |
 | Ban Account | แสดงเมื่อบัญชีอยู่ในสถานะ Active หรือ Suspended |
 | Unsuspend Account | แสดงเมื่อบัญชีอยู่ในสถานะ Suspended |
 | Unban Account | แสดงเมื่อบัญชีอยู่ในสถานะ Banned |
+| Resend verification context | แสดงเมื่อบัญชีอยู่ในสถานะ Pending Verification — ส่งข้อมูลยืนยันตัวตนซ้ำ ไม่เปลี่ยนสถานะบัญชี |
+| Open Account Deletion | แสดงเมื่อบัญชีอยู่ในสถานะ Deletion Requested — เปิดไปยัง Account Deletion module |
 | View Archived Summary | แสดงเมื่อบัญชีอยู่ในสถานะ Deleted / Archived |
 
 User List ต้องไม่แสดง action delete/archive โดยตรง
@@ -447,15 +449,15 @@ Reported Users เป็นคิวสำหรับตรวจรายง�
 | Reported At | วันที่/เวลาที่ถูกรายงาน |
 | Reason | เหตุผลรายงาน |
 | Reporter Count | จำนวนผู้รายงาน |
-| Priority | Normal หรือ High |
+| Priority | High, Medium หรือ Low |
 | Sources | User Profile หรือ Chat |
 | Actions | เปิดรายละเอียดรายงาน |
 
 ### Priority Rules
 
-- รายงานจาก 1-2 reporters เป็น Normal priority
-- รายงานจาก 3-4 reporters เป็น High priority เพื่อเร่ง review
-- รายงานจาก 5 reporters ขึ้นไป หรือมี evidence รุนแรง สามารถใช้เป็นเงื่อนไขประกอบการ suspend ระหว่างตรวจสอบ
+- รายงานจาก 1-2 reporters เป็น Low priority (Thai label: ปกติ)
+- รายงานจาก 3-4 reporters เป็น Medium priority (Thai label: กลาง) เพื่อเร่ง review
+- รายงานจาก 5 reporters ขึ้นไป หรือมี evidence รุนแรง เป็น High priority (Thai label: สูง) สามารถใช้เป็นเงื่อนไขประกอบการ suspend ระหว่างตรวจสอบ
 - Priority ไม่เปลี่ยนสถานะบัญชีอัตโนมัติ
 
 ### Pagination

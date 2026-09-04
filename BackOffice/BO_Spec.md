@@ -1,8 +1,8 @@
 # BO Specification — ตึกแดง Back Office System
-**เวอร์ชัน:** 1.1  
-**วันที่:** พฤษภาคม 2568  
+**เวอร์ชัน:** 1.2  
+**วันที่:** กันยายน 2568  
 **ผู้ใช้งาน:** Admin ของระบบตึกแดง
-**อัปเดตจาก:** v1.0 → สอดคล้องกับ FO ล่าสุด (Admin access ผู้ใช้, Asset Status, Auth SSO, Profile Tabs)
+**อัปเดตจาก:** v1.1 → v1.2 (ปรับชื่อ "Offer Report" ตาม module spec หลัก, เพิ่ม section Help & Support และ Account Deletion Requests)
 
 ---
 
@@ -90,7 +90,7 @@ BO Dashboard
 - จำนวน Transactions (Offer Accepted) วันนี้
 - จำนวน Pending Reports (สินทรัพย์ที่ถูก Flag รอ Review)
 - บทความที่เผยแพร่ล่าสุด 3 รายการ
-- Watch Alerts ที่ Active ทั้งหมด
+- Watch Alerts ที่ Active ทั้งหมด (อ้างอิง Market Demand / Demand Overview)
 - กราฟแนวโน้ม User Growth (30 วัน)
 - Top 10 Brand ที่ค้นหามากที่สุด
 - Activity Feed ล่าสุด (User Registered, Asset Added, Offer Accepted, User Suspended)
@@ -363,14 +363,44 @@ Watch Shops, Accessories Shops, Repair Shops, Auction Centers, Consignment Cente
 
 ---
 
-### 3.10 Reports & Analytics
+### 3.10 Market Demand (Watch Alert)
+
+**Phase 1 status:** Read-only — Admin ดูภาพรวมความต้องการตลาดและ Watch Alert ของ user ทั้งระบบ ไม่มี admin action ใด ๆ
+
+Module นี้ครอบคลุม 3 หน้าย่อย:
+
+#### Demand Overview
+- KPI tiles: Active Alerts, Alerts with Matches, Unmet Demand, Notification Success Rate
+- Top Brands (drill-down ไป Model/Reference ใน modal)
+- Price Range histogram
+- Trigger Trend (12 เดือน, สำเร็จ/ข้าม)
+- Frequently Triggered Alerts (top 10)
+
+#### Search Insights
+- Popular Keywords, Popular Filters by Dimension, Popular Filter Combinations
+- No-result Searches (แยกจาก Unmet Watch Alert)
+- Search/Filter Trend
+- Search Funnel (Search Submit → Result Click → Asset Detail Open → Watch Alert/Offer)
+- Aggregate only — ไม่มี user-identifying data
+
+#### Watch Alert List & Detail
+- List: filter (Status/Notification/Trigger history/Match status/Last Triggered date range), sort, pagination 10/page, row click → Detail
+- Detail: Alert Summary, Owner Summary, Criteria (structured chips), Matched Assets (link → Asset Detail), Trigger & Notification History, User Action History
+- Read-only ทั้ง List และ Detail — Admin ไม่ disable/enable/export/bulk alert
+- Matching เฉพาะ asset status `Sale`; notification destination เป็น `Watch Alert Result List`
+
+ดูรายละเอียดเต็มใน `WatchAlert_Prototype_Blueprint.md` และ `11_WATCH_ALERT_MODULE.md`
+
+---
+
+### 3.11 Reports & Analytics
 
 **Reports ที่มี:**
 | Report | ข้อมูลที่แสดง |
 |---|---|
 | User Report | User Growth (รายวัน/สัปดาห์/เดือน), Active Users (DAU/MAU), Auth Method Breakdown (Email/Apple/Google), Retention Rate |
 | Asset Report | Assets by Status (Sale/Show/Hide/Sold), Assets by Brand, Avg Price, New Assets per Day |
-| Transaction Report | Offers Made, Offers Accepted, Offers Rejected, Acceptance Rate, Avg Deal Value |
+| Offer Report | Offers Made, Pending, Accepted, Rejected, Expired, Avg Offer Price, Avg Response Time |
 | Content Report | Article Views, Top 10 Articles, Category Performance, Avg Read Time |
 | Chat Report | Active Chat Rooms, Messages Sent, Attachments Sent, Reported Chats |
 | Asset Reported Comments Report | Total Comments, Reported Comments, Hidden Comments, Top Commented Assets |
@@ -384,7 +414,7 @@ Watch Shops, Accessories Shops, Repair Shops, Auction Centers, Consignment Cente
 
 ---
 
-### 3.11 Push Notification Management
+### 3.12 Push Notification Management
 
 **ฟีเจอร์:**
 - สร้าง Broadcast Notification ส่งหาผู้ใช้ทั้งหมดหรือกลุ่มเป้าหมาย
@@ -413,7 +443,66 @@ Watch Shops, Accessories Shops, Repair Shops, Auction Centers, Consignment Cente
 
 ---
 
-### 3.12 Admin Access & Permissions
+### 3.13 Help & Support
+
+Help & Support Module ใช้สำหรับให้ Admin จัดการเนื้อหาเอกสารกฎหมาย (Terms of Use, Privacy Policy) และข้อมูลช่องทางติดต่อ support ที่แสดงใน FO Settings > Help โดยทั้งสองส่วนนี้เป็น submenu ภายใต้เมนู Settings ของ BO (รายละเอียดเต็ม: `12_HELP_SUPPORT_MODULE.md`)
+
+ประกอบด้วย 2 sub-module:
+
+#### 3.12.1 Policy & Versioning
+
+จัดการเนื้อหา Terms of Use และ Privacy Policy แบบ versioned (Draft / Published / Archived) พร้อม bilingual content (TH/EN), change summary, preview และ version history เพื่อให้ FO แสดงเอกสารกฎหมายเวอร์ชันล่าสุดได้ และ Admin สามารถย้อนดูเวอร์ชันเก่าได้
+
+**ฟีเจอร์:**
+| ฟีเจอร์ | คำอธิบาย |
+|---|---|
+| Policy List | ตาราง Policy (Terms of Use, Privacy Policy) แสดง Policy/Description/Status/Version/Updated/Updated By/Action |
+| Policy Detail | ดูเนื้อหาเวอร์ชัน Published, metadata, change summary พร้อม language tabs TH/EN |
+| Policy Editor | สร้าง/แก้ไข Draft, bilingual content TH/EN, formatting toolbar, change summary, Save Draft / Preview / Publish / Cancel |
+| Policy Publish | เผยแพร่ Draft → Published, เวอร์ชันเดิมกลายเป็น Archived อัตโนมัติ พร้อม confirmation modal |
+| Policy Version History | ดูประวัติทุกเวอร์ชัน, view version, restore archived → Draft |
+| Policy Preview | ดูตัวอย่างเนื้อหา Draft 2 ภาษา ก่อนเผยแพร่ |
+
+**Audit actions:** `POLICY_DRAFT_CREATE`, `POLICY_DRAFT_SAVE`, `POLICY_PUBLISH`, `POLICY_ARCHIVE`, `POLICY_RESTORE`
+
+#### 3.12.2 Support Center
+
+จัดการช่องทางติดต่อ support (LINE, Phone, Email, Facebook, Website), เวลาทำการ และความพร้อมให้บริการ (TH/EN) ที่แสดงใน FO Help screen พร้อม preview ก่อนบันทึก
+
+**ฟีเจอร์:**
+| ฟีเจอร์ | คำอธิบาย |
+|---|---|
+| Support Center edit form | Toggle channel Active/Inactive, channel value, description TH/EN, business hours, availability TH/EN |
+| Support Center Preview | ดูตัวอย่าง FO Help screen ใน phone frame, สลับภาษา TH/EN, แสดงเฉพาะ channel Active |
+
+**Audit actions:** `SUPPORT_CENTER_UPDATE`
+
+---
+
+### 3.14 Account Deletion Requests
+
+Account Deletion Requests Module ใช้ให้ BO ตรวจสอบและติดตามคำขอลบบัญชีที่เริ่มจาก FO Settings > About your account > Delete account (รายละเอียดเต็ม: `13_ACCOUNT_DELETION_MODULE.md`)
+
+FO ทำหน้าที่รับ confirmation, soft delete/deactivate account, revoke session ส่วน BO ทำหน้าที่เป็น operational queue สำหรับ validation, blocked condition, archive, anonymization, retention และ audit trail
+
+**ฟีเจอร์:**
+| ฟีเจอร์ | คำอธิบาย |
+|---|---|
+| Request Queue | ตารางคำขอลบบัญชี พร้อม filter ตาม status, date range |
+| Request Detail | ดู user, offer, asset, chat และ retention context |
+| Pending Offer Validation | ตรวจสอบ pending offer ก่อน archive/anonymize |
+| Recheck Blocking Conditions | ตรวจสอบเงื่อนไขที่บล็อกการลบซ้ำ |
+| Approve Archive | Admin อนุมัติ archive บัญชี |
+| 30-day Grace Period Tracking | ติดตาม grace period 30 วันก่อน hard delete/anonymization |
+| Archive/Anonymization Tracking | ติดตามสถานะ archive/anonymization |
+| Cancel Request | ยกเลิกคำขอตาม policy |
+| Export Archive Report | Export รายงาน archive ตาม permission |
+
+**Audit actions:** `ACCOUNT_DELETION_REQUEST_CREATE`, `ACCOUNT_DELETION_SESSION_REVOKE`, `ACCOUNT_DELETION_RECHECK`, `ACCOUNT_DELETION_BLOCKED`, `ACCOUNT_DELETION_APPROVE_ARCHIVE`, `ACCOUNT_DELETION_ARCHIVE_START`, `ACCOUNT_DELETION_ARCHIVE_COMPLETE`, `ACCOUNT_DELETION_ANONYMIZE_START`, `ACCOUNT_DELETION_ANONYMIZE_COMPLETE`, `ACCOUNT_DELETION_CANCEL`, `ACCOUNT_DELETION_EXPORT`, `ACCOUNT_DELETION_SENSITIVE_REVEAL`
+
+---
+
+### 3.15 Admin Access & Permissions
 
 BO uses exactly one admin account type: `Admin`. There are no BO sub-types. The former multi-column policy catalog is replaced by module/action policy.
 

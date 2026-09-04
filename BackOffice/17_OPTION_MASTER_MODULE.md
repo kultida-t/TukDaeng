@@ -164,7 +164,7 @@ Filter:
 
 | Column | ข้อกำหนด |
 | --- | --- |
-| Group ID | group identifier เช่น `GRP-001` |
+| Group ID | group identifier เช่น `OG-001` |
 | Group Key | group key เช่น `condition`, `case_material` |
 | Label (TH) | label ภาษาไทยของ group ถ้ามี |
 | Label (EN) | label ภาษาอังกฤษของ group ถ้ามี |

@@ -809,6 +809,8 @@
     .offer-status-card {
       --offer-status-color: var(--brand);
       min-width: 0;
+      padding: 14px 12px 12px;
+      min-height: 112px;
     }
     .offer-status-card::before {
       background: var(--offer-status-color);
@@ -818,6 +820,19 @@
       align-items: center;
       justify-content: space-between;
       gap: 8px;
+      margin-bottom: 9px;
+      font-size: 19px;
+    }
+    .offer-status-card .stat-value {
+      font-size: 39px;
+      line-height: .9;
+      margin-bottom: 8px;
+    }
+    .offer-status-card .stat-note {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      font-size: 11px;
     }
 
     .layout {
@@ -1482,7 +1497,7 @@
       padding-top: 0;
     }
     body.asset-list-mode .summary-grid {
-      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
       gap: 14px;
     }
     body.asset-list-mode .stat {
@@ -1497,11 +1512,10 @@
     }
     body.asset-list-mode .asset-kpi-head {
       display: grid;
-      grid-template-columns: minmax(0, 1fr) auto;
+      grid-template-columns: minmax(0, 1fr);
       gap: 16px;
       align-items: center;
-      min-height: 70px;
-      padding: 18px 32px 16px 20px;
+      padding: 14px 20px 12px;
       border-bottom: 1px solid #d8e4f1;
     }
     body.asset-list-mode .asset-kpi-title {
@@ -1576,64 +1590,36 @@
       line-height: 1;
       text-align: right;
     }
+    /* BO-ASSET-TOPBRAND-001: Top Asset Brands ใช้ wa-stat-bar-row pattern เหมือน Popular Keywords ใน Search Insights
+       สีเดียว #2b6cb0 (informational) ทั้งการ์ด — 2 column × 4 brand, ปรับ padding/gap ให้เข้ากับ asset-kpi-card body */
     body.asset-list-mode .asset-brand-ranking {
-      display: grid;
-      gap: 8px;
       padding: 14px 20px 16px;
     }
-    body.asset-list-mode .asset-brand-ranking .brand-ranking-row {
-      min-height: 36px;
+    body.asset-list-mode .asset-brand-ranking .wa-stat-bar-list {
+      padding: 0;
+      gap: 10px 18px;
+      grid-template-columns: 1fr 1fr;
       display: grid;
-      grid-template-columns: minmax(0, 1fr) minmax(86px, auto);
-      grid-template-rows: auto auto;
-      gap: 6px 16px;
-      align-items: end;
-      padding: 5px 0;
     }
-    body.asset-list-mode .asset-brand-ranking .ranking-brand-name {
-      grid-column: 1;
-      grid-row: 1;
-      align-self: baseline;
+    body.asset-list-mode .asset-brand-ranking .wa-stat-bar-row {
+      width: 100%;
+      min-height: 42px;
+      margin: 0;
+      padding: 6px 0;
+      gap: 6px;
+      border-radius: 0;
     }
-    body.asset-list-mode .asset-brand-ranking .brand-searches {
-      color: #061426;
-      font-family: var(--font-heading);
-      font-size: 24px;
+    body.asset-list-mode .asset-brand-ranking .wa-stat-bar-percent {
       line-height: 1;
-      text-align: right;
     }
-    body.asset-list-mode .asset-brand-ranking .brand-bar-line {
-      display: grid;
-      align-items: center;
-      grid-column: 1 / -1;
-      grid-row: 2;
-      grid-template-columns: minmax(0, 1fr) 42px;
-      gap: 12px;
-    }
-    body.asset-list-mode .asset-brand-ranking .brand-bar-track {
-      height: 6px;
-      border-radius: 999px;
-      background: #e8eef6;
-      overflow: hidden;
-    }
-    body.asset-list-mode .asset-brand-ranking .brand-bar-fill {
-      display: block;
-      height: 100%;
-      border-radius: inherit;
-      background: var(--brand);
-    }
-    body.asset-list-mode .asset-brand-meta {
-      display: grid;
-      justify-content: end;
-      align-items: baseline;
-      grid-column: 2;
-      grid-row: 1;
-    }
-    body.asset-list-mode .asset-brand-share {
-      color: #536983;
-      font-size: 11px;
-      font-weight: 700;
-      text-align: right;
+    /* Tablet/Mobile: กลับเป็น 1 column เพื่อให้ bar ยาวพออ่านได้ */
+    @media (max-width: 760px) {
+      body.asset-list-mode .summary-grid {
+        grid-template-columns: 1fr;
+      }
+      body.asset-list-mode .asset-brand-ranking .wa-stat-bar-list {
+        grid-template-columns: 1fr;
+      }
     }
     body.asset-list-mode .filters {
       display: flex;
@@ -2598,6 +2584,44 @@
       border: 1px solid #d7e2f0;
       border-radius: var(--radius);
     }
+    body.market-list-mode.market-dashboard-mode .summary-grid .market-dashboard-sync-status {
+      grid-column: 1 / -1;
+      border: 1px solid #d7e2f0;
+      border-radius: var(--radius);
+      overflow: hidden;
+      box-shadow: 0 8px 20px rgba(15, 42, 74, .05);
+    }
+    body.market-list-mode.market-dashboard-mode .summary-grid .market-dashboard-sync-status .market-sync-body {
+      min-height: 92px;
+      padding: 14px 18px;
+      gap: 16px;
+    }
+    body.market-list-mode.market-dashboard-mode .summary-grid .market-dashboard-sync-status .market-progress-ring {
+      width: 88px;
+      height: 88px;
+    }
+    body.market-list-mode.market-dashboard-mode .summary-grid .market-dashboard-sync-status .market-progress-ring span {
+      font-size: 22px;
+    }
+    body.market-list-mode.market-dashboard-mode .summary-grid .market-dashboard-sync-status .market-sync-detail-link {
+      min-height: 34px;
+      margin-top: 10px;
+      padding: 0 12px;
+      font-size: 12px;
+    }
+    body.market-list-mode.market-dashboard-mode .summary-grid .market-dashboard-sync-status.is-running .market-progress-ring {
+      color: #3b82b6;
+    }
+    body.market-list-mode.market-dashboard-mode .summary-grid .market-dashboard-sync-status.is-error {
+      border-color: #f0c2c8;
+      background: #fffafa;
+    }
+    body.market-list-mode.market-dashboard-mode .summary-grid .market-dashboard-sync-status.is-error .market-progress-ring {
+      color: #b42332;
+    }
+    body.market-list-mode.market-dashboard-mode .layout > .panel > .panel-head {
+      display: none;
+    }
     /* BO-MKT-FIX-001: ปรับ padding และ min-width ของ panel-head ให้ตรงกับ asset-row.head
        ในตาราง Recently Updated Brands เพื่อให้เส้นคั่นยาวเท่ากันทุก viewport
        scope เฉพาะ Market Data > Dashboard เพื่อไม่กระทบ protected screens อื่น */
@@ -2631,19 +2655,40 @@
       padding: 0;
     }
     body.market-list-mode .market-progress-ring {
+      position: relative;
+      display: grid;
+      place-items: center;
+      width: 96px;
+      height: 96px;
+      flex: 0 0 auto;
+      color: #d60012;
+    }
+    body.market-list-mode .market-progress-ring svg {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      transform: rotate(-90deg);
+      overflow: visible;
+    }
+    body.market-list-mode .market-progress-ring circle {
+      fill: none;
+      stroke-width: 5;
+    }
+    body.market-list-mode .market-progress-track {
+      stroke: #e5edf6;
+    }
+    body.market-list-mode .market-progress-value {
+      stroke: currentColor;
+      stroke-linecap: butt;
+    }
+    body.market-list-mode .market-progress-label {
+      position: relative;
+      z-index: 1;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      width: 96px;
-      height: 96px;
-      flex: 0 0 auto;
-      border-radius: 999px;
-      background:
-        radial-gradient(circle at center, #fff 56%, transparent 57%),
-        conic-gradient(from 0deg, #d60012 0 81%, #e5edf6 81% 100%);
-      box-shadow: inset 0 0 0 1px rgba(215, 226, 240, .85);
-      color: #d60012;
     }
     body.market-list-mode .market-progress-ring span {
       font-family: var(--font-heading);
@@ -3375,55 +3420,69 @@
     }
 
     /* Search Insights funnel — Search → Result Click → Asset Detail → Watch Alert/Offer */
-    .si-funnel-wrap { display: flex; flex-direction: column; gap: 8px; }
+    .si-funnel-wrap {
+      display: grid;
+      gap: 8px;
+      padding: 0;
+    }
     .si-funnel-row {
-      display: flex; flex-direction: column; gap: 6px;
-      padding: 10px 14px;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 16px;
+      align-items: center;
+      min-height: 44px;
+      padding: 9px 12px 9px 13px;
+      border: 1px solid #e2ebf5;
+      border-left: 4px solid #9fb1c7;
       border-radius: 7px;
-      background: #f2f5f9;
-      border: 1px solid #d5dfeb;
+      background: #fff;
     }
-    .si-funnel-row.is-step-1 { background: #e8f1ff; border-color: #c6ddff; color: #0f52b8; }
-    .si-funnel-row.is-step-2 { background: #e4f8f0; border-color: #bcebd7; color: #07734f; }
-    .si-funnel-row.is-step-3 { background: #fff3d8; border-color: #f3d493; color: #925500; }
-    .si-funnel-row.is-step-4 { background: #efe9ff; border-color: #d8ccff; color: #6035ae; }
-    .si-funnel-head {
-      display: flex; flex-direction: column; gap: 2px; min-width: 0;
-    }
+    .si-funnel-row.is-step-1 { border-left-color: #2f7be5; background: #f8fbff; }
+    .si-funnel-row.is-step-2 { border-left-color: #0ea576; background: #f7fffb; }
+    .si-funnel-row.is-step-3 { border-left-color: #d28a10; background: #fffdf7; }
+    .si-funnel-row.is-step-4 { border-left-color: #7557d8; background: #fbf9ff; }
+    .si-funnel-row:hover { background: #f8fbff; }
+    .si-funnel-copy { min-width: 0; }
     .si-funnel-step {
-      font-size: 11px; font-weight: 700;
-      color: var(--muted); letter-spacing: .04em; text-transform: uppercase;
-    }
-    .si-funnel-name-row {
-      display: flex; align-items: baseline; gap: 8px; min-width: 0;
+      display: block;
+      color: #6d7f98;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: .04em;
+      line-height: 1.2;
+      text-transform: uppercase;
     }
     .si-funnel-name {
-      font-size: 14px; font-weight: 700; color: var(--ink);
-      overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
-      flex: 1 1 auto; min-width: 0;
+      display: block;
+      margin-top: 3px;
+      color: #061426;
+      font-size: 13px;
+      font-weight: 800;
+      line-height: 1.2;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .si-funnel-detail {
+      display: block;
+      margin-top: 4px;
+      color: #536983;
+      font-size: 12px;
+      line-height: 1.35;
     }
     .si-funnel-value {
+      color: #061426;
       font-family: var(--font-heading);
-      font-size: 22px; font-weight: 800; line-height: 1; color: var(--ink);
-      flex: 0 0 auto;
+      font-size: 26px;
+      font-weight: 400;
+      line-height: 1;
+      text-align: right;
+      white-space: nowrap;
     }
-    .si-funnel-track {
-      display: flex; align-items: center; gap: 10px;
-    }
-    .si-funnel-bar {
-      flex: 1 1 auto; height: 6px; border-radius: 999px;
-      background: rgba(8,21,42,.08);
-      overflow: hidden;
-    }
-    .si-funnel-bar-fill {
-      display: block; height: 100%;
-      background: currentColor;
-      border-radius: 999px;
-    }
-    .si-funnel-pct {
-      font-size: 12px; font-weight: 700; color: currentColor;
-      flex: 0 0 auto; min-width: 34px; text-align: right;
-    }
+    .si-funnel-row.is-step-1 .si-funnel-value { color: #155ab8; }
+    .si-funnel-row.is-step-2 .si-funnel-value { color: #087853; }
+    .si-funnel-row.is-step-3 .si-funnel-value { color: #8a5700; }
+    .si-funnel-row.is-step-4 .si-funnel-value { color: #5a3abb; }
 
     /* Search Insights — Trend และ Funnel อยู่แถวเดียวกันเป็น 2 คอลัมน์เหมือน panel อื่น */
     @media (max-width: 760px) {
@@ -3433,7 +3492,9 @@
       .si-trend-yaxis span { font-size: 8px; }
       .si-trend-axis { margin-left: 28px; }
       .si-trend-xtitle { margin-left: 28px; }
-      .si-funnel-value { font-size: 18px; }
+      .si-funnel-wrap { padding: 0; }
+      .si-funnel-row { gap: 12px; padding-left: 10px; }
+      .si-funnel-value { font-size: 24px; }
       .si-funnel-name { font-size: 13px; }
     }
 
@@ -17542,7 +17603,7 @@
       }, {});
       const topBrands = Object.entries(brandCounts)
         .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))
-        .slice(0, 4);
+        .slice(0, 8);
       return [
         {
           title: "Asset Status",
@@ -17566,7 +17627,6 @@
               <div>
                 <div class="asset-kpi-title">${stat.title}</div>
               </div>
-              <strong class="asset-kpi-total">${stat.total.toLocaleString()}</strong>
             </div>
             <div class="asset-status-list">
               ${stat.rows.map(([label, value, detail]) => `
@@ -17584,27 +17644,32 @@
       }
       if (stat.type === "brand-ranking") {
         const total = moduleData.assets.rows.length || 1;
+        const accent = "#2b6cb0";
         return `
           <article class="stat asset-kpi-card">
             <div class="asset-kpi-head">
               <div class="asset-kpi-title">${stat.title}</div>
             </div>
             <div class="asset-brand-ranking">
-              ${stat.rows.map(([brand, count]) => {
-                const share = Math.round((count / total) * 100);
-                const barWidth = Math.max(10, share);
-                return `
-                <span class="brand-ranking-row">
-                  <span class="ranking-brand-name">${brand}</span>
-                  <span class="brand-bar-line">
-                    <span class="brand-bar-track"><span class="brand-bar-fill" style="width: ${barWidth}%"></span></span>
-                    <span class="asset-brand-share">${share}%</span>
-                  </span>
-                  <span class="asset-brand-meta">
-                    <span class="brand-searches">${count.toLocaleString()}</span>
-                  </span>
-                </span>
-              `}).join("")}
+              <div class="wa-stat-bar-list">
+                ${stat.rows.map(([brand, count]) => {
+                  const share = Math.round((count / total) * 100);
+                  return `
+                  <div class="wa-stat-bar-row wa-stat-bar-row-static">
+                    <span class="wa-stat-bar-top">
+                      <span class="wa-stat-bar-left">
+                        <span class="wa-stat-bar-dot" style="background: ${accent}"></span>
+                        <span class="wa-stat-bar-label">${brand}</span>
+                        <span class="wa-stat-bar-count">(${count.toLocaleString()})</span>
+                      </span>
+                      <span class="wa-stat-bar-right">
+                        <span class="wa-stat-bar-percent" style="color: ${accent}">${share}%</span>
+                      </span>
+                    </span>
+                    <span class="wa-stat-bar-track"><span class="wa-stat-bar-fill" style="width: ${share}%; background: ${accent}"></span></span>
+                  </div>
+                `}).join("")}
+              </div>
             </div>
           </article>
         `;
@@ -23704,6 +23769,13 @@
       return fileName;
     }
 
+    function getMarketActiveSyncJob() {
+      if (activeMarketSyncJob) {
+        return activeMarketSyncJob.status === "running" || activeMarketSyncJob.status === "error" ? activeMarketSyncJob : null;
+      }
+      return getMarketSyncJobs().find(job => job.status === "Running" || job.status === "Failed") || null;
+    }
+
     function renderMarketSummaryCards(subLabel) {
       if (subLabel === "Dashboard") {
         const marketMetrics = getMarketMetricCards();
@@ -23713,7 +23785,15 @@
           { label: "Total References", value: marketMetrics.references, trend: "ข้อมูลจาก Reference catalog" },
           { label: "Last Sync", value: marketMetrics.lastSyncRelative, trend: marketMetrics.lastSyncTimestamp }
         ];
-        document.querySelector("#summary-grid").innerHTML = metrics.map(metric => `
+        const activeSyncJob = getMarketActiveSyncJob();
+        const syncState = activeSyncJob?.status === "Failed" || activeSyncJob?.status === "error" ? "error" : activeSyncJob ? "running" : "";
+        const hasSyncStatus = Boolean(activeSyncJob);
+        const syncPercent = Math.round((marketMetricTotals.syncedBrands / marketMetricTotals.brands) * 100);
+        const syncTitle = syncState === "error" ? "การซิงก์ข้อมูลหยุดชั่วคราว" : "กำลังซิงก์เลขอ้างอิงของ Omega";
+        const syncMessage = syncState === "error"
+          ? "การซิงก์ไม่สำเร็จ ระบบยังคงใช้ข้อมูล catalog ล่าสุด และสามารถตรวจสอบรายละเอียดได้ที่ Sync History"
+          : `ซิงก์แบรนด์แล้ว <b>${marketMetrics.syncedBrands}/${marketMetrics.brands}</b> แบรนด์ · เหลือ <b>${marketMetrics.pendingPriceValidation}</b> รุ่นที่ต้องตรวจสอบราคากลาง`;
+        document.querySelector("#summary-grid").innerHTML = `${metrics.map(metric => `
           <article class="stat">
             <div class="stat-top">
               <div>
@@ -23723,7 +23803,24 @@
             </div>
             <div class="stat-note">${metric.trend}</div>
           </article>
-        `).join("");
+        `).join("")}${hasSyncStatus ? `
+          <section class="market-sync-current market-dashboard-sync-status ${syncState === "error" ? "is-error" : "is-running"}" aria-live="polite">
+            <div class="market-sync-body">
+              <div class="market-progress-ring" role="img" aria-label="${syncPercent}% Synced">
+                <svg viewBox="0 0 42 42" aria-hidden="true" focusable="false">
+                  <circle class="market-progress-track" cx="21" cy="21" r="18" pathLength="100"></circle>
+                  <circle class="market-progress-value" cx="21" cy="21" r="18" pathLength="100" stroke-dasharray="${syncPercent} 100"></circle>
+                </svg>
+                <div class="market-progress-label"><span>${syncPercent}%</span><small>Synced</small></div>
+              </div>
+              <div class="market-sync-main">
+                <strong>${syncTitle}</strong>
+                <p>${syncMessage}</p>
+                <button class="btn market-sync-detail-link" type="button" data-market-sync-view-logs>ดูรายละเอียดใน Sync History</button>
+              </div>
+            </div>
+          </section>
+        ` : ""}`;
         return;
       }
       const marketMetrics = getMarketMetricCards();
@@ -25273,6 +25370,10 @@
       if (!marketCatalogData.syncLogs.some(log => log.id === newLog.id)) marketCatalogData.syncLogs.unshift(newLog);
       if (activeModule === "market" && activeSub === "Brands & Models") renderMarketCatalogRows();
       job.status = "success";
+      if (activeModule === "market" && activeSub === "Dashboard") {
+        renderMarketSummaryCards("Dashboard");
+        renderMarketDashboard();
+      }
       renderMarketSyncModal("success");
       showSuccessToast(`${job.id}: Sync completed`);
     }
@@ -25290,6 +25391,10 @@
         models: marketMetricTotals.models,
         references: marketMetricTotals.references
       };
+      if (activeModule === "market" && activeSub === "Dashboard") {
+        renderMarketSummaryCards("Dashboard");
+        renderMarketDashboard();
+      }
       renderMarketSyncModal("running", scenario);
       marketSyncTimer = window.setTimeout(() => finishMarketSyncJob(scenario), 1200);
     }
@@ -25299,6 +25404,7 @@
       marketSyncTimer = null;
       if (scenario === "rate_limit") {
         activeMarketSyncJob.status = "error";
+        if (activeModule === "market" && activeSub === "Dashboard") renderMarketSummaryCards("Dashboard");
         renderMarketSyncModal("error", scenario);
         return;
       }
@@ -25312,9 +25418,8 @@
     }
 
     function renderMarketCards(subLabel) {
-      const marketMetrics = getMarketMetricCards();
       const cards = subLabel === "Dashboard"
-        ? [["Latest Sync Status", `กำลังอัปเดตข้อมูลอ้างอิงของ Omega เหลือ ${marketMetrics.pendingPriceValidation} รุ่นที่ต้องตรวจสอบราคากลาง`]]
+        ? []
         : [["Brand-first workflow", "Admins start from brands, drill into models, then open references to review detail and price data."], ["API source", "Data comes from The Watch API through backend sync for Brand, Model and Reference catalog."], ["Read-only", "Add, edit, delete and provider master-data overrides are not available."]];
       document.querySelector("#cards").innerHTML = cards.map(card => `
         <article class="mini-card">
@@ -25325,8 +25430,7 @@
     }
 
     function renderMarketDashboard() {
-      const marketMetrics = getMarketMetricCards();
-      const syncPercent = Math.round((marketMetricTotals.syncedBrands / marketMetricTotals.brands) * 100);
+      const hasActiveSync = Boolean(getMarketActiveSyncJob());
       const rows = getMarketCatalogBrands();
       const pageCount = Math.max(1, Math.ceil(rows.length / marketDashboardPageSize));
       marketDashboardPage = Math.min(marketDashboardPage, pageCount);
@@ -25334,15 +25438,6 @@
       const visibleRows = rows.slice(start, start + marketDashboardPageSize);
       document.querySelector("#table").innerHTML = `
         <div class="market-dashboard-stack">
-          <section class="market-sync-current">
-            <div class="market-sync-body">
-              <div class="market-progress-ring"><span>${syncPercent}%</span><small>Synced</small></div>
-              <div class="market-sync-main">
-                <strong>กำลังซิงก์เลขอ้างอิงของ Omega</strong>
-                <p>ซิงก์แบรนด์แล้ว <b>${marketMetrics.syncedBrands}/${marketMetrics.brands}</b> แบรนด์ · เหลือ <b>${marketMetrics.pendingPriceValidation}</b> รุ่นที่ต้องตรวจสอบราคากลาง · ไม่มีข้อผิดพลาดใน 24 ชั่วโมงที่ผ่านมา</p>
-              </div>
-            </div>
-          </section>
           <section class="market-dashboard-table">
             <div class="panel-head"><div><h2>Recently Updated Brands</h2></div></div>
             <div class="asset-table category-table market-table market-dashboard-brand-table">
@@ -25350,8 +25445,10 @@
               ${visibleRows.map((brand, index) => {
                 const modelCount = getMarketSampleModelCount(brand);
                 const referenceCount = getMarketSampleReferenceCount(brand);
-                const running = brand.id === "omega";
+                const running = hasActiveSync && brand.id === "omega";
                 const times = ["06 Aug 2026 08:14", "Syncing...", "06 Aug 2026 07:40", "06 Aug 2026 07:38", "06 Aug 2026 06:55"];
+                const mockLastUpdated = times[start + index];
+                const lastUpdated = running ? "Syncing..." : mockLastUpdated === "Syncing..." ? brand.lastSync : mockLastUpdated || brand.lastSync;
                 return `
                   <div class="asset-row" data-market-brand="${brand.id}">
                     <div data-label="Brand"><div class="main-text">${brand.name}</div></div>
@@ -25360,12 +25457,12 @@
                         <div class="user-card-meta-item"><span>Models</span><strong>${modelCount.toLocaleString()}</strong></div>
                         <div class="user-card-meta-item"><span>References</span><strong>${referenceCount.toLocaleString()}</strong></div>
                         <div class="user-card-meta-item"><span>Status</span><strong>${running ? "Syncing" : "Completed"}</strong></div>
-                        <div class="user-card-meta-item"><span>Last Sync</span><strong>${times[start + index] || brand.lastSync}</strong></div>
+                        <div class="user-card-meta-item"><span>Last Sync</span><strong>${lastUpdated}</strong></div>
                       </div>
                     </div>
                     <div data-label="Models"><div class="main-text">${modelCount.toLocaleString()}</div></div>
                     <div data-label="References"><div class="main-text">${referenceCount.toLocaleString()}</div></div>
-                    <div data-label="Last Updated"><div class="main-text">${times[start + index] || brand.lastSync}</div></div>
+                    <div data-label="Last Updated"><div class="main-text">${lastUpdated}</div></div>
                     <div data-label="Status">${statusPill(running ? "Syncing" : "Completed", running ? "Medium" : "Normal")}</div>
                   </div>
                 `;
@@ -25444,6 +25541,7 @@
 
       // Top Brands palette — สีกลาง 8 เฉด แยกจากตัวอักษร #071b36 ชัดเจน (ไม่กลืนกัน)
       const brandColors = ["#2b6cb0", "#2f855a", "#c05621", "#b83280", "#6b46c1", "#2c7a7b", "#b7791f", "#c53030"];
+      const topCriteriaColor = "#2b6cb0";
 
       // Panel card helper
       const panel = (title, meta, bodyHtml, extraClass = "", viewAllLabel = "", viewAllAttr = `data-module-jump="watch-alerts" data-sub-jump="Watch Alert List"`, viewAllChevron = true, infoTip = "") => `
@@ -25462,16 +25560,17 @@
       // 2.1 Top Criteria — flat Top 5 Brands (หน้าหลัก) + Dial Colors, drill-down (Model/Reference) เปิดเป็น modal แทน expand inline
       // dot + label + count + percent + full-width bar (Family Office composition pattern), percent = share ของผลรวมในกลุ่มเดียวกัน
       const statTotal = (items) => items.reduce((s, i) => s + i.value, 0) || 1;
-      const statBarRow = (item, idx, total, dataAttr = "", chevron = false, fixedColor = null) => {
+      const statBarRow = (item, idx, total, dataAttr = "", chevron = false, fixedColor = null, dotColor = null) => {
         const pct = Math.round((item.value / total) * 100);
         const color = fixedColor || brandColors[idx % brandColors.length];
+        const dot = dotColor || color;
         const clickable = !!dataAttr;
         const Tag = clickable ? "button" : "div";
         return `
           <${Tag} class="wa-stat-bar-row${clickable ? "" : " wa-stat-bar-row-static"}" ${clickable ? `type="button" ${dataAttr}` : ""}>
             <span class="wa-stat-bar-top">
               <span class="wa-stat-bar-left">
-                <span class="wa-stat-bar-dot" style="background: ${color}"></span>
+                <span class="wa-stat-bar-dot" style="background: ${dot}"></span>
                 <span class="wa-stat-bar-label">${esc(item.label)}</span>
                 <span class="wa-stat-bar-count">(${item.value.toLocaleString()})</span>
               </span>
@@ -25489,7 +25588,7 @@
       const allBrandsTotal = statTotal(ov.topCriteriaTree);
       const topCriteriaHtml = `
         <div class="wa-stat-bar-list">
-          ${top5Brands.map((b, idx) => statBarRow(b, idx, allBrandsTotal, `data-wa-criteria-open="${esc(b.label)}"`, true)).join("")}
+          ${top5Brands.map((b, idx) => statBarRow(b, idx, allBrandsTotal, `data-wa-criteria-open="${esc(b.label)}"`, true, topCriteriaColor, topCriteriaColor)).join("")}
         </div>
       `;
 
@@ -25522,12 +25621,12 @@
           const brand = ov.topCriteriaTree.find(b => b.label === path[0]);
           if (path.length === 1) {
             // Top Models - {brand}: ใช้สีของ brand ในรายการ Top Brands
-            return brandColors[ov.topCriteriaTree.findIndex(b => b.label === path[0]) % brandColors.length];
+            return topCriteriaColor;
           }
           // Top References - {model}: ใช้สีของ model ในรายการ Top Models ของ brand นั้น
           const brandModels = (brand && brand.models) || [];
           const modelIdx = brandModels.findIndex(m => m.label === path[1]);
-          return modelIdx >= 0 ? brandColors[modelIdx % brandColors.length] : null;
+          return modelIdx >= 0 ? topCriteriaColor : null;
         })();
         // ส่วนท้ายของ title (brand/model) เป็นปุ่มคลิกย้อนกลับได้
         const backLabel = isRoot ? "" : path[path.length - 1];
@@ -25535,11 +25634,11 @@
         const titleHtml = backLabel
           ? `${levelLabel} - <button type="button" class="wa-criteria-title-back" data-wa-criteria-back="${backLevel}"${titleColor ? ` style="color: ${titleColor}"` : ""}>${esc(backLabel)}</button>`
           : levelLabel;
-        // bar list รายละเอียดยังคงหลายสีตาม index ปกติ (ไม่สืบทอดสีจากแม่)
+        // bar list รายละเอียดใช้สีเดียวกันทุกระดับ เพื่อให้ลำดับและสัดส่วนเป็นจุดสนใจหลัก
         const rowsHtml = items.length
           ? items.map((item, idx) => {
               const clickable = childKey && item[childKey] && item[childKey].length > 0;
-              return statBarRow(item, idx, total, clickable ? `data-wa-criteria-drill="${esc(item.label)}"` : "", true);
+              return statBarRow(item, idx, total, clickable ? `data-wa-criteria-drill="${esc(item.label)}"` : "", true, topCriteriaColor, topCriteriaColor);
             }).join("")
           : `<div class="detail-empty">ไม่มีข้อมูล</div>`;
         const modalBody = document.querySelector("#user-action-modal-body");
@@ -25753,7 +25852,7 @@
       const siKpis = [
         { label: "Search Volume", value: "9,860", detail: "การค้นหาและใช้ตัวกรองรวม 7 วันล่าสุด", trend: "+8.2%", trendLabel: "vs สัปดาห์ก่อน", trendDirection: "up", trendType: "positive", accent: "blue" },
         { label: "Popular Selections", value: "3,420", detail: "การเลือก Popular Filter 7 วันล่าสุด", trend: "+12.4%", trendLabel: "vs สัปดาห์ก่อน", trendDirection: "up", trendType: "positive", accent: "green" },
-        { label: "No-result Searches", value: "1,126", detail: "ค้นหาไม่พบผลลัพธ์ 7 วันล่าสุด", trend: "-3.1%", trendLabel: "vs สัปดาห์ก่อน", trendDirection: "down", trendType: "positive", accent: "orange" },
+        { label: "No-result Searches", value: "1,126", detail: "ค้นหาไม่พบผลลัพธ์ 7 วันล่าสุด", trend: "-3.1%", trendLabel: "vs สัปดาห์ก่อน", trendDirection: "down", trendType: "positive", accent: "red" },
         { label: "Search-to-result", value: "88.6%", detail: "การค้นหาที่พบผลลัพธ์อย่างน้อย 1 รายการ", trend: "+1.8%", trendLabel: "vs สัปดาห์ก่อน", trendDirection: "up", trendType: "positive", accent: "purple" }
       ];
       document.querySelector("#summary-grid").innerHTML = siKpis.map(k => {
@@ -25968,17 +26067,12 @@
         <div class="si-funnel-wrap">
           ${funnel.map(f => `
             <div class="si-funnel-row ${f.cls}">
-              <div class="si-funnel-head">
+              <div class="si-funnel-copy">
                 <span class="si-funnel-step">${esc(f.step)}</span>
-                <div class="si-funnel-name-row">
-                  <span class="si-funnel-name">${esc(f.name)}</span>
-                  <span class="si-funnel-value">${f.value.toLocaleString()}</span>
-                </div>
+                <span class="si-funnel-name">${esc(f.name)}</span>
+                <span class="si-funnel-detail">${f.pct}% ของการค้นหาเริ่มต้น</span>
               </div>
-              <div class="si-funnel-track">
-                <span class="si-funnel-bar"><span class="si-funnel-bar-fill" style="width:${f.pct}%"></span></span>
-                <span class="si-funnel-pct">${f.pct}%</span>
-              </div>
+              <strong class="si-funnel-value">${f.value.toLocaleString()}</strong>
             </div>
           `).join("")}
         </div>
@@ -26698,7 +26792,7 @@
       document.querySelector("#panel-title").innerHTML = subLabel === "Brands & Models"
         ? `All Brands <span class="panel-title-count">[${getMarketMetricCards().brands}]</span>`
         : subLabel === "Dashboard"
-          ? "Latest Sync Status"
+          ? "Recently Updated Brands"
           : subLabel === "Sync History"
             ? "Sync Run History"
             : subLabel;
@@ -33188,6 +33282,7 @@
           <article class="stat offer-status-card" style="--offer-status-color:${item.color}">
             <div class="stat-label">${item.label}</div>
             <div class="stat-value">${item.count}</div>
+            <div class="stat-note">${item.note}</div>
           </article>
         `;
       }).join("");
