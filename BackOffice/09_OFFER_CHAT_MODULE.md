@@ -1,8 +1,8 @@
 ﻿# 09 BO Offer Management Module
 
-**Version:** `BO-09-v0.1`  
-**Date:** 2026-07-06  
-**Status:** Draft baseline  
+**Version:** `BO-09-v0.2`
+**Date:** 2026-09-04
+**Status:** Current prototype-aligned baseline
 **Platform:** Responsive Web Back Office
 
 ## UI Standards And Prototype Reference
@@ -17,8 +17,8 @@
 | --- | --- |
 | Module Name | BO Offer Management |
 | Platform | Responsive Web Back Office |
-| Version | `BO-09-v0.1` |
-| Status | Draft baseline |
+| Version | `BO-09-v0.2` |
+| Status | Current prototype-aligned baseline |
 | Owner | Product / UX / Engineering / Operations |
 | Document Type | Functional PRD |
 
@@ -92,7 +92,34 @@ Offer action/copy ต้องแยกจาก status:
 
 Related chat context ต้องเปิดแบบ read-only เฉพาะเมื่อ Admin มี permission และต้อง mask sensitive content ตาม policy
 
-## 7. Offer List
+## 7. Offer Status Summary
+
+หน้า Offer Management ควรแสดง status summary เหนือ Offer List เพื่อให้ Admin เห็นภาพรวมของ offer lifecycle ก่อนอ่านรายการ โดยใช้ข้อมูลชุดเดียวกับ Offer List และไม่สร้างข้อมูลสรุปแยกชุด
+
+### Summary Cards
+
+แสดง 6 สถานะตามลำดับ lifecycle และ semantic color ที่กำหนดใน prototype:
+
+| Status | ข้อมูลที่แสดง | คำอธิบายสั้น |
+| --- | --- | --- |
+| `Pending` | จำนวน offer | รอ owner ตอบ |
+| `Paused` | จำนวน offer | asset รอตรวจสอบ |
+| `Accepted` | จำนวน offer | owner รับ offer แล้ว |
+| `Rejected` | จำนวน offer | owner ปฏิเสธ |
+| `Cancelled` | จำนวน offer | owner ลบ/ซ่อน asset |
+| `Invalidated` | จำนวน offer | ใช้ไม่ได้ถาวร |
+
+### Display Rules
+
+- Summary แสดงเป็น compact cards เหนือ Offer List พร้อม label, จำนวน และคำอธิบายสั้น
+- Desktop และ wide tablet แสดง 6 cards ต่อแถวเมื่อพื้นที่เพียงพอ; mobile ที่ความกว้างไม่เกิน 760px จัดเป็น 2 cards ต่อแถวตาม responsive layout ของ prototype
+- จำนวนในแต่ละ card ต้องคำนวณจาก offer dataset เดียวกับ Offer List แต่ไม่เปลี่ยนตาม search/filter ของตาราง เพื่อให้เป็นภาพรวมของทั้ง lifecycle
+- ค่าใน summary ต้องไม่ใช้ค่า mock ที่แยกจาก source data ของ Offer List
+- Summary เป็นข้อมูลแบบ read-only ไม่มี accept, reject, cancel, force-expire, invalidate หรือ action อื่นของ BO
+- การแสดง summary ต้องไม่เปลี่ยน search, filter, sort, pagination หรือ Offer Detail behavior
+- หากไม่มีข้อมูลในสถานะใด ให้แสดง `0` ไม่เว้นพื้นที่หรือซ่อน card
+
+## 8. Offer List
 
 Offer list ต้องแสดงข้อมูลขั้นต่ำ:
 
@@ -144,7 +171,7 @@ Filter ขั้นต่ำ:
 - Invalidated Offers
 - Offers With Notification Failure
 
-## 8. Offer Status Contract
+## 9. Offer Status Contract
 
 | Status | Meaning | FO Required Behavior |
 | --- | --- | --- |
@@ -163,7 +190,7 @@ Filter ขั้นต่ำ:
 - `Paused` ไม่ใช่ final state; ถ้า review ผ่านต้องกลับเป็น `Pending`
 - `Invalidated` เป็น final state สำหรับ moderation outcome ถาวร ไม่ใช่ owner reject และไม่ใช่ owner delete
 
-## 9. Offer Lifecycle Rules
+## 10. Offer Lifecycle Rules
 
 FO สร้าง offer ได้จาก Asset Detail เท่านั้น ไม่สร้าง offer โดยตรงจาก Feed, Search, Profile list หรือ Chat list
 
@@ -188,7 +215,7 @@ Asset status rule:
 - `ซ่อนชั่วคราว` และ auto hidden จาก report ไม่รับ offer ใหม่ และ pending offer เดิมต้องอยู่ใน `Paused`
 - Existing chat room ยังดูได้หลัง asset sold/deleted แต่ asset card ต้องแสดง unavailable หรือ sold state ตาม FO rule
 
-## 10. Offer Detail
+## 11. Offer Detail
 
 Prototype baseline ปัจจุบันของ Offer Detail เป็น read-only detail view แบบย่อ โดยยึดหน้าจอ `Prototypes/bo-prototype.html` เป็น source of truth:
 
@@ -211,7 +238,7 @@ Prototype baseline ปัจจุบันของ Offer Detail เป็น r
 
 Admin ห้ามแก้ offer price, buyer, owner หรือ message content โดยตรง ถ้าต้องแก้ข้อมูลผิดพลาดให้ใช้ correction workflow ที่มี audit และ Product approval แยกต่างหาก
 
-## 11. Admin Actions
+## 12. Admin Actions
 
 | Action | Allowed Roles | Requirement |
 | --- | --- | --- |
@@ -222,7 +249,7 @@ Prototype ปัจจุบันยังไม่มี action/control สำ
 
 Bulk action สำหรับ offer ไม่เปิดใน V1 เพราะเมนูนี้เป็น read-only overview
 
-## 12. Chat Context And Report Routing
+## 13. Chat Context And Report Routing
 
 FO Chat V1 ไม่มี action `Report chat` หรือ `Report offer` โดยตรง มีเฉพาะ `Report user` จาก chat overflow menu ดังนั้น BO ต้องถือว่า report target คือ user และ chat/offer เป็น context ประกอบการตรวจสอบเท่านั้น
 
@@ -231,7 +258,7 @@ FO Chat V1 ไม่มี action `Report chat` หรือ `Report offer` โ�
 - Offer Management แสดง link ไป related chat เพื่อดูบริบทแบบ read-only เท่านั้น
 - Chat/message ไม่ควรถูกลบทันที เว้นแต่มี policy/system rule ชัดเจน
 
-## 13. Notification Delivery
+## 14. Notification Delivery
 
 Offer/chat events ที่ต้อง trace delivery:
 
@@ -245,7 +272,7 @@ Offer/chat events ที่ต้อง trace delivery:
 
 BO Offer Management ดู delivery status ได้ แต่การจัดการ template, retry, broadcast หรือ trigger configuration ต้องอยู่ใน Notification module
 
-## 14. Account Deletion Dependency
+## 15. Account Deletion Dependency
 
 FO account deletion ต้อง block ถ้ามี pending offer ตาม FO rule
 
@@ -256,7 +283,7 @@ BO ต้องรองรับ:
 - ห้าม archive/anonymize user จนกว่า pending offer dependency ถูก resolve ตาม policy
 - Audit ทุกครั้งที่ pending offer ถูกใช้เป็นเหตุผล block deletion
 
-## 15. Audit Requirements
+## 16. Audit Requirements
 
 Audit action ขั้นต่ำ:
 
@@ -277,7 +304,7 @@ Audit action ขั้นต่ำ:
 - IP address หรือ session context ถ้ามี
 - Timestamp เป็น `Asia/Bangkok`
 
-## 16. Error, Empty, Loading States
+## 17. Error, Empty, Loading States
 
 ต้องรองรับ:
 
@@ -287,7 +314,7 @@ Audit action ขั้นต่ำ:
 - Permission denied สำหรับ transcript, attachment, export หรือ sensitive reveal
 - Notification delivery section load fail โดยไม่ทำให้ offer detail ทั้งหน้าล่ม
 
-## 17. Integration With Other BO Modules
+## 18. Integration With Other BO Modules
 
 | Module | Integration |
 | --- | --- |
@@ -306,7 +333,7 @@ Audit action ขั้นต่ำ:
 
 Offer Management ต้องใช้ app shell, navigation, breakpoint, list toolbar, desktop table/grid, mobile card, pagination, reset, detail และ action menu ตาม `00_GLOBAL_RULES_MODULE.md` และ `../Prototypes/bo-prototype.html` โดยไม่มี UI/layout override เฉพาะโมดูล
 
-## 18. Acceptance Criteria
+## 19. Acceptance Criteria
 
 | ID | Criteria |
 | --- | --- |
@@ -321,7 +348,7 @@ Offer Management ต้องใช้ app shell, navigation, breakpoint, list t
 | AC-BO-OFFER-009 | Export offer history ยังไม่ปรากฏบน prototype Offer Detail ปัจจุบัน; ถ้าเพิ่มภายหลังต้องจำกัด permission และ audit export event |
 | AC-BO-OFFER-010 | Responsive layout ใช้งานได้ที่ mobile-width, tablet และ desktop |
 
-## 19. Open Decisions
+## 20. Open Decisions
 
 | ID | Decision Needed | Current Recommendation |
 | --- | --- | --- |
