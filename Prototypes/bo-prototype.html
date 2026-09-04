@@ -1482,7 +1482,7 @@
       padding-top: 0;
     }
     body.asset-list-mode .summary-grid {
-      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
       gap: 14px;
     }
     body.asset-list-mode .stat {
@@ -1497,7 +1497,7 @@
     }
     body.asset-list-mode .asset-kpi-head {
       display: grid;
-      grid-template-columns: minmax(0, 1fr) auto;
+      grid-template-columns: minmax(0, 1fr);
       gap: 16px;
       align-items: center;
       min-height: 70px;
@@ -1577,13 +1577,15 @@
       text-align: right;
     }
     /* BO-ASSET-TOPBRAND-001: Top Asset Brands ใช้ wa-stat-bar-row pattern เหมือน Popular Keywords ใน Search Insights
-       สีเดียว #2b6cb0 (informational) ทั้งการ์ด — ปรับ padding/gap ให้เข้ากับ asset-kpi-card body */
+       สีเดียว #2b6cb0 (informational) ทั้งการ์ด — 2 column × 4 brand, ปรับ padding/gap ให้เข้ากับ asset-kpi-card body */
     body.asset-list-mode .asset-brand-ranking {
       padding: 14px 20px 16px;
     }
     body.asset-list-mode .asset-brand-ranking .wa-stat-bar-list {
       padding: 0;
-      gap: 10px;
+      gap: 10px 18px;
+      grid-template-columns: 1fr 1fr;
+      display: grid;
     }
     body.asset-list-mode .asset-brand-ranking .wa-stat-bar-row {
       width: 100%;
@@ -1595,6 +1597,15 @@
     }
     body.asset-list-mode .asset-brand-ranking .wa-stat-bar-percent {
       line-height: 1;
+    }
+    /* Tablet/Mobile: กลับเป็น 1 column เพื่อให้ bar ยาวพออ่านได้ */
+    @media (max-width: 760px) {
+      body.asset-list-mode .summary-grid {
+        grid-template-columns: 1fr;
+      }
+      body.asset-list-mode .asset-brand-ranking .wa-stat-bar-list {
+        grid-template-columns: 1fr;
+      }
     }
     body.asset-list-mode .filters {
       display: flex;
@@ -17503,7 +17514,7 @@
       }, {});
       const topBrands = Object.entries(brandCounts)
         .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))
-        .slice(0, 4);
+        .slice(0, 8);
       return [
         {
           title: "Asset Status",
@@ -17527,7 +17538,6 @@
               <div>
                 <div class="asset-kpi-title">${stat.title}</div>
               </div>
-              <strong class="asset-kpi-total">${stat.total.toLocaleString()}</strong>
             </div>
             <div class="asset-status-list">
               ${stat.rows.map(([label, value, detail]) => `
