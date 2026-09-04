@@ -1,7 +1,7 @@
 # 02 BO Dashboard Module
 
-**Version:** `BO-02-v1.0`  
-**Date:** 2026-07-31  
+**Version:** `BO-02-v1.1`  
+**Date:** 2026-09-04  
 **Status:** สเปกปัจจุบัน  
 **Platform:** Responsive Web Back Office
 
@@ -17,7 +17,7 @@
 | --- | --- |
 | Module Name | BO Dashboard |
 | Platform | Responsive Web Back Office |
-| Version | `BO-02-v1.0` |
+| Version | `BO-02-v1.1` |
 | Status | สเปกปัจจุบัน |
 | Owner | Product / UX / Engineering / Operations |
 | Document Type | Functional PRD |
@@ -134,16 +134,37 @@ Dashboard header ต้องไม่แสดง:
 
 KPI Summary ต้องแสดง 8 cards ตามลำดับนี้:
 
-| Card | Value ตัวอย่าง | Trend / คำอธิบาย | Detail chips | Navigation |
-| --- | --- | --- | --- | --- |
-| New Users | `128` | `วันนี้เพิ่มขึ้น 8.2% เทียบกับเมื่อวาน` | `Today 128`, `This Week 642`, `This Month 2,840` | เปิด User Management / User Accounts |
-| Active Users Today | `8.4K` | `ผู้ใช้งานรายวันเฉลี่ย 7 วันเพิ่มขึ้น 4.1% เทียบกับ 7 วันก่อน` | `Today 8,420`, `This Week 24,700`, `This Month 38,900` | เปิด User Management / User Accounts |
-| New Assets | `94` | `สร้างวันนี้ 94 รายการ เทียบกับเมื่อวาน 340 รายการ` | `Sale 64`, `Show 17`, `Hide 9`, `Sold 4` | เปิด Asset Management / Asset List |
-| Reported Items | `33` | `มี 9 รายงานใกล้ครบกำหนดตรวจ` | `Assets 22`, `Users 5`, `Articles 3`, `Comments 3` | Chip เปิด queue รายงานตามประเภท |
-| Offer Activity | `12` | `อ้างอิงจาก Offer Management mock-up และสถานะ offer ล่าสุด` | `Pending 3`, `Paused 1`, `Accepted 3`, `Rejected 2`, `Cancelled 2`, `Invalidated 1` | เปิด Offer / Offer Queue |
-| Articles | `12` | `มี 4 บทความรอเผยแพร่` | `Published 8`, `Scheduled 4` | เปิด Content Management / Articles |
-| Watch Alert | `298` | `มีการจับคู่รายการขาย 18 ครั้งวันนี้` | `Active 298`, `Triggered 18` | เปิด Watch Alert / Demand Overview |
-| Policies | `2` | `Privacy Policy มี Draft v2.1-draft รอเผยแพร่` | `Published 2`, `Draft 1` | เปิด Settings / Policy & Versioning |
+### 8.1 โครงสร้าง KPI Cards (Spec ล็อคส่วนนี้)
+
+ตารางนี้ระบุโครงสร้างและพฤติกรรมของแต่ละ card เป็นหลัก — เป็นส่วนที่ spec ล็อค ค่าตัวอย่างอยู่ในตาราง 8.2
+
+| Card | ข้อมูลที่นับ/แสดง | Detail chips | Navigation |
+| --- | --- | --- | --- |
+| New Users | จำนวนผู้ใช้ใหม่ที่สมัครสมาชิกวันนี้ (registered users เท่านั้น) | `Today` / `This Week` / `This Month` — จำนวนผู้ใช้ใหม่รายช่วงเวลา | เปิด User Management / User Accounts |
+| Active Users Today | จำนวนผู้ใช้ registered ที่ใช้งานวันนี้ | `Today` / `This Week` / `This Month` — จำนวน active users รายช่วงเวลา | เปิด User Management / User Accounts |
+| New Assets | จำนวน asset ที่สร้างวันนี้ แยกตามสถานะ | `Sale` / `Show` / `Hide` / `Sold` — จำนวน asset ใหม่ตามสถานะ | เปิด Asset Management / Asset List |
+| Reported Items | จำนวนรายงานค้างตรวจทั้งหมด | `Assets` / `Users` / `Articles` / `Comments` — จำนวนรายงานตามประเภท (chip เป็น navigation หลัก) | Chip เปิด queue รายงานตามประเภท |
+| Offer Activity | จำนวน offer ที่มี activity ล่าสุด | `Pending` / `Paused` / `Accepted` / `Rejected` / `Cancelled` / `Invalidated` — จำนวน offer ตามสถานะ | เปิด Offer / Offer Queue |
+| Articles | จำนวนบทความทั้งหมด | `Published` / `Scheduled` — จำนวนบทความตามสถานะเผยแพร่ | เปิด Content Management / Articles |
+| Watch Alert | จำนวน watch alert ที่ active | `Active` / `Triggered` — จำนวน alert ตามสถานะ | เปิด Watch Alert / Demand Overview |
+| Policies | จำนวน policy ทั้งหมด | `Published` / `Draft` — จำนวน policy ตามสถานะ | เปิด Settings / Policy & Versioning |
+
+### 8.2 ค่าตัวอย่างจาก prototype (Mock — ไม่ใช่ production value)
+
+ตารางนี้แสดงค่า mock จาก `Prototypes/bo-prototype.html` (บรรทัด 15387-15399) เพื่อให้เห็นภาพ ค่าเหล่านี้เป็นตัวอย่างจาก prototype ไม่ใช่ production value และเปลี่ยนได้ตาม prototype โดยไม่ต้องแก้ spec
+
+| Card | Value (Mock) | Trend (Mock) | Chips (Mock) |
+| --- | --- | --- | --- |
+| New Users | `128` | `วันนี้เพิ่มขึ้น 8.2% เทียบกับเมื่อวาน` | `Today 128`, `This Week 642`, `This Month 2,840` |
+| Active Users Today | `8.4K` | `ผู้ใช้งานรายวันเฉลี่ย 7 วันเพิ่มขึ้น 4.1% เทียบกับ 7 วันก่อน` | `Today 8,420`, `This Week 24,700`, `This Month 38,900` |
+| New Assets | `94` | `สร้างวันนี้ 94 รายการ เทียบกับเมื่อวาน 340 รายการ` | `Sale 64`, `Show 17`, `Hide 9`, `Sold 4` |
+| Reported Items | `33` | `มี 9 รายงานใกล้ครบกำหนดตรวจ` | `Assets 22`, `Users 5`, `Articles 3`, `Comments 3` |
+| Offer Activity | `12` | `อ้างอิงจาก Offer Management mock-up และสถานะ offer ล่าสุด` | `Pending 3`, `Paused 1`, `Accepted 3`, `Rejected 2`, `Cancelled 2`, `Invalidated 1` |
+| Articles | `12` | `มี 4 บทความรอเผยแพร่` | `Published 8`, `Scheduled 4` |
+| Watch Alert | `298` | `มีการจับคู่รายการขาย 18 ครั้งวันนี้` | `Active 298`, `Triggered 18` |
+| Policies | `2` | `Privacy Policy มี Draft v2.1-draft รอเผยแพร่` | `Published 2`, `Draft 1` |
+
+> **Note:** Spec ล็อคโครงสร้างและพฤติกรรมของ KPI cards (ชื่อ card, ข้อมูลที่นับ/แสดง, chips, navigation) ตามตาราง 8.1 ไม่ได้ล็อคค่า mock ในตาราง 8.2 ค่า mock อ้างอิงจาก `Prototypes/bo-prototype.html` และเปลี่ยนได้ตาม prototype โดยไม่ต้อง sync spec ถ้า prototype เปลี่ยนเฉพาะค่า mock แต่โครงสร้าง card ไม่เปลี่ยน
 
 กฎการแสดง KPI:
 
@@ -403,7 +424,7 @@ Typography:
 | AC-BO-DASH-001 | หลัง login สำเร็จ ระบบเปิด Dashboard เป็นหน้าแรก และเมนู Dashboard แสดง active state |
 | AC-BO-DASH-002 | Header แสดง breadcrumb, title และ `Last updated` โดยไม่มี Date Range, Refresh, Export, global search, notification popup หรือ admin switcher |
 | AC-BO-DASH-003 | Dashboard แสดง KPI Summary ครบ 8 cards ตามลำดับที่กำหนด |
-| AC-BO-DASH-004 | `Reported Items` แสดง chips แยก `Assets`, `Users`, `Board`, `Comments` และแต่ละ chip ไป queue ที่ถูกต้อง |
+| AC-BO-DASH-004 | `Reported Items` แสดง chips แยก `Assets`, `Users`, `Articles`, `Comments` และแต่ละ chip ไป queue ที่ถูกต้อง |
 | AC-BO-DASH-005 | Work Queue แสดงครบ 7 rows ตามลำดับและ priority ที่กำหนด |
 | AC-BO-DASH-006 | Work Queue row ทุก row คลิกไป module/submodule ที่เกี่ยวข้องได้ |
 | AC-BO-DASH-007 | Recent Activity แสดง filter `ทั้งหมด`, `Report`, `Offer`, `Content`, `System` และ filter ทำงานจริง |
