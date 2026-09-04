@@ -1576,64 +1576,25 @@
       line-height: 1;
       text-align: right;
     }
+    /* BO-ASSET-TOPBRAND-001: Top Asset Brands ใช้ wa-stat-bar-row pattern เหมือน Popular Keywords ใน Search Insights
+       สีเดียว #2b6cb0 (informational) ทั้งการ์ด — ปรับ padding/gap ให้เข้ากับ asset-kpi-card body */
     body.asset-list-mode .asset-brand-ranking {
-      display: grid;
-      gap: 8px;
       padding: 14px 20px 16px;
     }
-    body.asset-list-mode .asset-brand-ranking .brand-ranking-row {
-      min-height: 36px;
-      display: grid;
-      grid-template-columns: minmax(0, 1fr) minmax(86px, auto);
-      grid-template-rows: auto auto;
-      gap: 6px 16px;
-      align-items: end;
-      padding: 5px 0;
+    body.asset-list-mode .asset-brand-ranking .wa-stat-bar-list {
+      padding: 0;
+      gap: 10px;
     }
-    body.asset-list-mode .asset-brand-ranking .ranking-brand-name {
-      grid-column: 1;
-      grid-row: 1;
-      align-self: baseline;
+    body.asset-list-mode .asset-brand-ranking .wa-stat-bar-row {
+      width: 100%;
+      min-height: 42px;
+      margin: 0;
+      padding: 6px 0;
+      gap: 6px;
+      border-radius: 0;
     }
-    body.asset-list-mode .asset-brand-ranking .brand-searches {
-      color: #061426;
-      font-family: var(--font-heading);
-      font-size: 24px;
+    body.asset-list-mode .asset-brand-ranking .wa-stat-bar-percent {
       line-height: 1;
-      text-align: right;
-    }
-    body.asset-list-mode .asset-brand-ranking .brand-bar-line {
-      display: grid;
-      align-items: center;
-      grid-column: 1 / -1;
-      grid-row: 2;
-      grid-template-columns: minmax(0, 1fr) 42px;
-      gap: 12px;
-    }
-    body.asset-list-mode .asset-brand-ranking .brand-bar-track {
-      height: 6px;
-      border-radius: 999px;
-      background: #e8eef6;
-      overflow: hidden;
-    }
-    body.asset-list-mode .asset-brand-ranking .brand-bar-fill {
-      display: block;
-      height: 100%;
-      border-radius: inherit;
-      background: var(--brand);
-    }
-    body.asset-list-mode .asset-brand-meta {
-      display: grid;
-      justify-content: end;
-      align-items: baseline;
-      grid-column: 2;
-      grid-row: 1;
-    }
-    body.asset-list-mode .asset-brand-share {
-      color: #536983;
-      font-size: 11px;
-      font-weight: 700;
-      text-align: right;
     }
     body.asset-list-mode .filters {
       display: flex;
@@ -17584,27 +17545,32 @@
       }
       if (stat.type === "brand-ranking") {
         const total = moduleData.assets.rows.length || 1;
+        const accent = "#2b6cb0";
         return `
           <article class="stat asset-kpi-card">
             <div class="asset-kpi-head">
               <div class="asset-kpi-title">${stat.title}</div>
             </div>
             <div class="asset-brand-ranking">
-              ${stat.rows.map(([brand, count]) => {
-                const share = Math.round((count / total) * 100);
-                const barWidth = Math.max(10, share);
-                return `
-                <span class="brand-ranking-row">
-                  <span class="ranking-brand-name">${brand}</span>
-                  <span class="brand-bar-line">
-                    <span class="brand-bar-track"><span class="brand-bar-fill" style="width: ${barWidth}%"></span></span>
-                    <span class="asset-brand-share">${share}%</span>
-                  </span>
-                  <span class="asset-brand-meta">
-                    <span class="brand-searches">${count.toLocaleString()}</span>
-                  </span>
-                </span>
-              `}).join("")}
+              <div class="wa-stat-bar-list">
+                ${stat.rows.map(([brand, count]) => {
+                  const share = Math.round((count / total) * 100);
+                  return `
+                  <div class="wa-stat-bar-row wa-stat-bar-row-static">
+                    <span class="wa-stat-bar-top">
+                      <span class="wa-stat-bar-left">
+                        <span class="wa-stat-bar-dot" style="background: ${accent}"></span>
+                        <span class="wa-stat-bar-label">${brand}</span>
+                        <span class="wa-stat-bar-count">(${count.toLocaleString()})</span>
+                      </span>
+                      <span class="wa-stat-bar-right">
+                        <span class="wa-stat-bar-percent" style="color: ${accent}">${share}%</span>
+                      </span>
+                    </span>
+                    <span class="wa-stat-bar-track"><span class="wa-stat-bar-fill" style="width: ${share}%; background: ${accent}"></span></span>
+                  </div>
+                `}).join("")}
+              </div>
             </div>
           </article>
         `;
