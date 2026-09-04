@@ -809,6 +809,8 @@
     .offer-status-card {
       --offer-status-color: var(--brand);
       min-width: 0;
+      padding: 14px 12px 12px;
+      min-height: 112px;
     }
     .offer-status-card::before {
       background: var(--offer-status-color);
@@ -818,6 +820,19 @@
       align-items: center;
       justify-content: space-between;
       gap: 8px;
+      margin-bottom: 9px;
+      font-size: 19px;
+    }
+    .offer-status-card .stat-value {
+      font-size: 39px;
+      line-height: .9;
+      margin-bottom: 8px;
+    }
+    .offer-status-card .stat-note {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      font-size: 11px;
     }
 
     .layout {
@@ -33163,6 +33178,7 @@
           <article class="stat offer-status-card" style="--offer-status-color:${item.color}">
             <div class="stat-label">${item.label}</div>
             <div class="stat-value">${item.count}</div>
+            <div class="stat-note">${item.note}</div>
           </article>
         `;
       }).join("");
