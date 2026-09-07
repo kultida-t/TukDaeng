@@ -967,6 +967,12 @@
     .pill.gray { color: #475569; background: #f1f5f9; border-color: #cbd5e1; }
     .pill.slate { color: #334155; background: #f8fafc; border-color: #94a3b8; }
     .pill.charcoal { color: #111827; background: #e5e7eb; border-color: #9ca3af; }
+    .pill > svg {
+      flex: 0 0 auto;
+      width: 13px;
+      height: 13px;
+      margin-right: 4px;
+    }
     .asset-status-pills {
       display: inline-flex;
       align-items: center;
@@ -21085,7 +21091,7 @@
 
       // helper: serious flag pill
       const seriousFlagPill = req.seriousFlag
-        ? `<span class="pill red">ธงร้ายแรง</span>`
+        ? `<span class="pill red deletion-serious-pill"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg><span>Serious flag</span></span>`
         : "";
 
       // helper: timeline row — แสดงเฉพาะ field ที่มีค่า (null = ยังไม่ถึงขั้นนั้น)
@@ -21163,20 +21169,18 @@
         `;
       };
 
-      const graceSub = tl.graceStart && tl.graceEnd ? `${tl.graceStart} → ${tl.graceEnd} (30 วัน)` : "";
+      const graceSub = tl.graceStart && tl.graceEnd ? `${tl.graceStart} → ${tl.graceEnd}` : "";
       const archivedSub = tl.approvedAt && tl.archivedAt && tl.approvedAt !== tl.archivedAt ? `Approved: ${tl.approvedAt}` : "";
 
       const timelineSteps = [
         stepNode("requested", "คำขอลบบัญชี", req.requestedAt, ""),
-        stepNode("deactivated", "ระงับบัญชี + เริ่ม Grace Period", tl.deactivatedAt, ""),
-        stepNode("grace", "ช่วง Grace Period (30 วัน)", graceSub, ""),
+        stepNode("deactivated", "ระงับบัญชี + เริ่มช่วงรอเก็บถาวร", tl.deactivatedAt, ""),
+        stepNode("grace", "ช่วงรอเก็บถาวร (30 วัน)", graceSub, ""),
         stepNode("archived", "เก็บถาวรอัตโนมัติ", tl.archivedAt, ""),
         stepNode("anonymized", "ลบตัวตนอัตโนมัติ", tl.anonymizedAt, "")
       ].filter(Boolean).join("");
 
-      const validationNote = tl.lastValidation
-        ? `<div class="deletion-timeline-meta">Last validation run: ${tl.lastValidation}${tl.cancelledAt ? ` · Cancelled: ${tl.cancelledAt}` : ""}</div>`
-        : tl.cancelledAt ? `<div class="deletion-timeline-meta">Cancelled: ${tl.cancelledAt}</div>` : "";
+      const validationNote = tl.cancelledAt ? `<div class="deletion-timeline-meta">Cancelled: ${tl.cancelledAt}</div>` : "";
 
       const section2 = `
         <div class="detail-section">
