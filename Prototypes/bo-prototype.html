@@ -7243,6 +7243,405 @@
       color: #8194ab;
       letter-spacing: .02em;
     }
+
+    /* ============================================================
+       DEL-PTO-002: Account Deletion Request Detail page
+       pattern: Reported Users Report Detail + Offer Detail
+       body class: deletion-detail-mode (ไม่ใช้ user-detail-mode เพื่อไม่กระทบ protected screens)
+       ============================================================ */
+    /* layout: single column full-width (เหมือน offer-detail-mode) — ซ่อน panel-head/filters/summary/cards/detail */
+    body.deletion-detail-mode .layout {
+      grid-template-columns: minmax(0, 1fr);
+      margin-top: 0;
+      padding-top: 0;
+    }
+    body.deletion-detail-mode .layout > .panel {
+      border-color: #d7e2f0;
+      box-shadow: none;
+      overflow: visible;
+    }
+    body.deletion-detail-mode .layout > .panel > .panel-head {
+      display: none !important;
+      min-height: 0 !important;
+      height: 0 !important;
+      padding: 0 !important;
+      border: 0 !important;
+      overflow: hidden !important;
+    }
+    body.deletion-detail-mode .filters {
+      display: none !important;
+      min-height: 0 !important;
+      height: 0 !important;
+      padding: 0 !important;
+      border: 0 !important;
+      overflow: hidden !important;
+    }
+    body.deletion-detail-mode .summary-grid,
+    body.deletion-detail-mode #cards,
+    body.deletion-detail-mode #detail {
+      display: none;
+    }
+    body.deletion-detail-mode #table {
+      padding: 0;
+      background: transparent;
+      overflow: visible;
+    }
+    body.deletion-detail-mode .main {
+      overflow-x: hidden;
+    }
+    /* reuse .user-detail-page.report-detail-page shell + .detail-section/.detail-grid/.detail-tile */
+    body.deletion-detail-mode .deletion-detail-page .detail-section {
+      display: grid;
+      gap: 14px;
+      padding: 18px 0;
+    }
+    body.deletion-detail-mode .deletion-detail-page .detail-section h4 {
+      margin: 0;
+      color: #061426;
+      font-family: var(--font-heading);
+      font-size: 24px;
+      font-weight: 400;
+      line-height: .95;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+    body.deletion-detail-mode .deletion-detail-page .detail-grid.three {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+    body.deletion-detail-mode .deletion-detail-page .detail-tile {
+      min-width: 0;
+    }
+    body.deletion-detail-mode .deletion-detail-page .detail-tile strong {
+      display: block;
+      overflow-wrap: anywhere;
+    }
+
+    /* link button ใน detail-tile (คลิกชื่อผู้ใช้ → User Detail) — ขนาด/น้ำหนักเท่าหน้า list */
+    body.deletion-detail-mode .deletion-detail-page .detail-tile .link-btn {
+      padding: 0;
+      border: 0;
+      background: transparent;
+      color: var(--blue);
+      font-size: 12px;
+      font-weight: 700;
+      text-align: left;
+      cursor: pointer;
+      text-decoration: none;
+    }
+    body.deletion-detail-mode .deletion-detail-page .detail-tile .link-btn:hover {
+      text-decoration: underline;
+    }
+
+    /* vertical timeline — ลำดับขั้น lifecycle พร้อมสถานะ done/current/pending */
+    .deletion-timeline {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      padding: 4px 0 0;
+    }
+    .deletion-timeline-step {
+      display: grid;
+      grid-template-columns: 28px minmax(0, 1fr);
+      gap: 12px;
+      padding: 0 0 18px;
+      position: relative;
+    }
+    .deletion-timeline-step:last-child {
+      padding-bottom: 0;
+    }
+    .deletion-timeline-step::before {
+      content: "";
+      position: absolute;
+      left: 13px;
+      top: 18px;
+      bottom: 0;
+      width: 2px;
+      background: #e1e9f3;
+    }
+    .deletion-timeline-step:last-child::before {
+      display: none;
+    }
+    .deletion-timeline-step.done::before {
+      background: #a7e4c6;
+    }
+    .deletion-timeline-step.current::before {
+      background: linear-gradient(180deg, #f3d493 0%, #e1e9f3 100%);
+    }
+    .deletion-timeline-marker {
+      width: 14px;
+      height: 14px;
+      margin: 4px 0 0 7px;
+      border-radius: 50%;
+      border: 2px solid #e1e9f3;
+      background: #fff;
+      position: relative;
+      z-index: 1;
+    }
+    .deletion-timeline-step.done .deletion-timeline-marker {
+      border-color: #087853;
+      background: #087853;
+    }
+    .deletion-timeline-step.current .deletion-timeline-marker {
+      border-color: #b78628;
+      background: #fff7e6;
+      box-shadow: 0 0 0 4px rgba(183, 134, 40, .15);
+    }
+    .deletion-timeline-step.pending .deletion-timeline-marker {
+      border-color: #d7e2f0;
+      background: #fff;
+    }
+    .deletion-timeline-content {
+      display: grid;
+      gap: 2px;
+      min-width: 0;
+    }
+    .deletion-timeline-label {
+      color: #061426;
+      font-size: 13px;
+      font-weight: 700;
+      line-height: 1.4;
+    }
+    .deletion-timeline-step.pending .deletion-timeline-label {
+      color: #8194ab;
+      font-weight: 600;
+    }
+    .deletion-timeline-date {
+      color: #516683;
+      font-size: 12px;
+      font-weight: 600;
+      line-height: 1.4;
+    }
+    .deletion-timeline-sub {
+      color: var(--muted);
+      font-size: 11px;
+      line-height: 1.5;
+    }
+    .deletion-timeline-state {
+      margin-top: 2px;
+      display: inline-block;
+      width: fit-content;
+      padding: 2px 8px;
+      border-radius: 999px;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+    }
+    .deletion-timeline-step.done .deletion-timeline-state {
+      background: #effdf5;
+      color: #087853;
+    }
+    .deletion-timeline-step.current .deletion-timeline-state {
+      background: #fff7e6;
+      color: #925500;
+    }
+    .deletion-timeline-step.pending .deletion-timeline-state {
+      background: #f4f6fa;
+      color: #8194ab;
+    }
+    .deletion-timeline-meta {
+      margin-top: 10px;
+      padding: 8px 10px;
+      border: 1px solid #e1e9f3;
+      border-radius: 7px;
+      background: #f8fbff;
+      color: var(--muted);
+      font-size: 11px;
+      line-height: 1.5;
+    }
+
+    /* countdown — เหลือ X วัน ถึงเก็บถาวรอัตโนมัติ */
+    .deletion-countdown {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 12px;
+      border: 1px solid #c7d6e8;
+      border-radius: 8px;
+      background: #f8fbff;
+      color: #061426;
+      font-size: 13px;
+      font-weight: 600;
+      line-height: 1.4;
+    }
+    .deletion-countdown svg {
+      flex: 0 0 auto;
+      width: 16px;
+      height: 16px;
+      color: var(--blue);
+    }
+    .deletion-countdown.deletion-countdown-ending {
+      border-color: #f3d493;
+      background: #fff7e6;
+      color: #925500;
+    }
+    .deletion-countdown.deletion-countdown-ending svg {
+      color: #b78628;
+    }
+    .deletion-countdown.deletion-countdown-expired {
+      border-color: #ffc8ce;
+      background: #fff1f2;
+      color: #9f1722;
+    }
+    .deletion-countdown.deletion-countdown-expired svg {
+      color: #b91c1c;
+    }
+
+    /* restore request / reject notes — info + danger variants */
+    .deletion-restore-note {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      padding: 10px 12px;
+      border-radius: 8px;
+      font-size: 12px;
+      line-height: 1.5;
+      margin: 4px 0 0;
+    }
+    .deletion-restore-note svg {
+      flex: 0 0 auto;
+      width: 16px;
+      height: 16px;
+      margin-top: 1px;
+    }
+    .deletion-restore-request-note {
+      border: 1px solid #c7d6e8;
+      background: #f8fbff;
+      color: #061426;
+    }
+    .deletion-restore-request-note svg { color: var(--blue); }
+    .deletion-restore-reject-note {
+      border: 1px solid #ffc8ce;
+      background: #fff1f2;
+      color: #9f1722;
+    }
+    .deletion-restore-reject-note svg { color: #b91c1c; }
+
+    /* dependency link — reuse .link-btn pattern */
+    .deletion-dep-link {
+      padding: 0;
+      border: 0;
+      background: transparent;
+      color: var(--blue);
+      font-size: 14px;
+      font-weight: 700;
+      text-align: left;
+      cursor: pointer;
+      text-decoration: none;
+    }
+    .deletion-dep-link:hover { text-decoration: underline; }
+
+    /* assets by status sub-grid */
+    .deletion-asset-status-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 8px;
+      padding: 10px 12px;
+      border: 1px solid #e1e9f3;
+      border-radius: 8px;
+      background: #f8fbff;
+    }
+    .deletion-asset-status-grid .deletion-asset-status-label {
+      grid-column: 1 / -1;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 700;
+    }
+    .deletion-asset-status-grid .detail-tile {
+      border: 0;
+      background: transparent;
+      padding: 4px 0;
+    }
+
+    /* archive/anonymization plan table — 2 columns (Data / Action) */
+    .deletion-archive-plan-table {
+      display: flex;
+      flex-direction: column;
+      border: 1px solid #e1e9f3;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    .deletion-archive-plan-row {
+      display: grid;
+      grid-template-columns: minmax(180px, 0.8fr) minmax(0, 1.2fr);
+      gap: 12px;
+      padding: 10px 12px;
+      border-top: 1px solid #e1e9f3;
+      font-size: 12px;
+      line-height: 1.5;
+    }
+    .deletion-archive-plan-row:first-child {
+      border-top: 0;
+    }
+    .deletion-archive-plan-head {
+      background: #f1f5fb;
+      color: var(--muted);
+      font-weight: 700;
+      font-size: 11px;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+    }
+    .deletion-archive-plan-data {
+      color: #061426;
+      font-weight: 700;
+    }
+    .deletion-archive-plan-action {
+      color: #516683;
+    }
+
+    /* action area note */
+    .deletion-action-note {
+      padding: 10px 12px;
+      border: 1px solid #c7d6e8;
+      border-radius: 8px;
+      background: #f8fbff;
+      color: #061426;
+      font-size: 12px;
+      line-height: 1.5;
+    }
+    .deletion-action-note.deletion-action-note-locked {
+      border-color: #e1e9f3;
+      background: #f4f6fa;
+      color: var(--muted);
+    }
+    body.deletion-detail-mode .deletion-action-section .user-detail-actions {
+      padding-top: 2px;
+    }
+
+    /* responsive — tablet 768px: detail-grid 3 → 2, archive plan ยัง 2 columns */
+    @media (max-width: 1180px) {
+      body.deletion-detail-mode .deletion-detail-page .detail-grid.three,
+      body.deletion-detail-mode .deletion-asset-status-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+    /* responsive — mobile 760px: detail-grid → 1 column, archive plan → stacked, action buttons full width */
+    @media (max-width: 760px) {
+      body.deletion-detail-mode .deletion-detail-page .detail-grid.three,
+      body.deletion-detail-mode .deletion-asset-status-grid {
+        grid-template-columns: 1fr;
+      }
+      body.deletion-detail-mode .deletion-archive-plan-row {
+        grid-template-columns: 1fr;
+        gap: 4px;
+      }
+      body.deletion-detail-mode .deletion-archive-plan-head {
+        display: none;
+      }
+      body.deletion-detail-mode .deletion-archive-plan-row:not(.deletion-archive-plan-head) .deletion-archive-plan-data::before {
+        content: "Data: ";
+        color: var(--muted);
+        font-weight: 700;
+      }
+      body.deletion-detail-mode .deletion-archive-plan-row:not(.deletion-archive-plan-head) .deletion-archive-plan-action::before {
+        content: "Action: ";
+        color: var(--muted);
+        font-weight: 700;
+      }
+      body.deletion-detail-mode .deletion-action-section .user-detail-actions .user-detail-action-btn {
+        flex: 1 1 100%;
+      }
+    }
     .user-row:not(.report-row) > div {
       min-width: 0;
     }
@@ -15563,7 +15962,99 @@
         { id: "DEL-026", userId: "U-1082", displayName: "Crown Time BKK", accountStatus: "Archived", requestStatus: "เก็บถาวรแล้ว", pendingOffers: 0, acceptedOffers: 1, assets: 18, chats: 12, reports: 4, requestedAt: "10 Jul 2026 16:44", requestedRank: 202607101644, graceEnds: "09 Aug 2026", graceEndsRank: 20260809, graceState: "archived", daysLeft: null, processedBy: "System (auto)", processedAt: "09 Aug 2026 00:00", updatedAt: "09 Aug 2026 00:00", seriousFlag: false, detail: "ครบ grace period ระบบเก็บถาวรอัตโนมัติ" },
         { id: "DEL-020", userId: "U-1222", displayName: "old.user", accountStatus: "Anonymized", requestStatus: "ลบตัวตนแล้ว", pendingOffers: 0, acceptedOffers: 0, assets: 0, chats: 0, reports: 0, requestedAt: "17 Jan 2026 07:44", requestedRank: 202601170744, graceEnds: "16 Feb 2026", graceEndsRank: 20260216, graceState: "anonymized", daysLeft: null, processedBy: "System (auto)", processedAt: "17 Jul 2026 00:00", updatedAt: "17 Jul 2026 00:00", seriousFlag: false, detail: "ครบ retention period ระบบลบตัวตนอัตโนมัติ — personal fields ถูกแทนที่ด้วย anonymous value" },
         { id: "DEL-021", userId: "U-1199", displayName: "Minimal Dial", accountStatus: "Anonymized", requestStatus: "ลบตัวตนแล้ว", pendingOffers: 0, acceptedOffers: 1, assets: 3, chats: 1, reports: 0, requestedAt: "05 Feb 2026 09:00", requestedRank: 202602050900, graceEnds: "07 Mar 2026", graceEndsRank: 20260307, graceState: "anonymized", daysLeft: null, processedBy: "System (auto)", processedAt: "05 Aug 2026 00:00", updatedAt: "05 Aug 2026 00:00", seriousFlag: false, detail: "ครบ retention period ระบบลบตัวตนอัตโนมัติ" }
-      ]
+      ],
+      // DEL-PTO-002: Request Detail mock data — keyed by request id
+      // userContext: masked sensitive fields (email/phone/line) + auth/joined/lastActive
+      // timeline: deletion lifecycle timestamps (null = ยังไม่ถึงขั้นนั้น)
+      // dependency: offer/asset/chat/report snapshot ตอนเปิด detail
+      // restoreRequest: ข้อมูลการขอคืนบัญชี (ถ้ามี) — null = ผู้ใช้ยังไม่ได้ขอคืน
+      // restoreReject: ข้อมูลการปฏิเสธคืนบัญชี (ถ้ามี) — null = ยังไม่ปฏิเสธ
+      detail: {
+        "DEL-033": {
+          userContext: { username: "@archivecollector", email: "ar***@mail.com", phone: "08x-xxx-x104", line: "archive***", auth: "Email", joined: "15 May 2026", lastActive: "08 Jul 2026 09:15" },
+          timeline: { sessionRevokedAt: "07 Sep 2026 09:15", deactivatedAt: "07 Sep 2026 09:15", graceStart: "07 Sep 2026", graceEnd: "07 Oct 2026", lastValidation: "07 Sep 2026 09:15", approvedAt: null, archivedAt: null, anonymizedAt: null, cancelledAt: null, restoredAt: null, restoreRejectedAt: null },
+          dependency: { pendingIncomingOffers: 0, pendingOutgoingOffers: 0, acceptedOffersInRetention: 1, assetsByStatus: { sale: 3, show: 2, hide: 0, sold: 1, removed: 0 }, chatRooms: 3, reportsSafetyCases: 1 },
+          restoreRequest: null,
+          restoreReject: null
+        },
+        "DEL-034": {
+          userContext: { username: "@timecraftbkk", email: "ti***@mail.com", phone: "—", line: "—", auth: "Google", joined: "22 Jun 2026", lastActive: "05 Sep 2026 14:22" },
+          timeline: { sessionRevokedAt: "05 Sep 2026 14:22", deactivatedAt: "05 Sep 2026 14:22", graceStart: "05 Sep 2026", graceEnd: "05 Oct 2026", lastValidation: "05 Sep 2026 14:22", approvedAt: null, archivedAt: null, anonymizedAt: null, cancelledAt: null, restoredAt: null, restoreRejectedAt: null },
+          dependency: { pendingIncomingOffers: 0, pendingOutgoingOffers: 0, acceptedOffersInRetention: 0, assetsByStatus: { sale: 1, show: 1, hide: 0, sold: 0, removed: 0 }, chatRooms: 1, reportsSafetyCases: 0 },
+          restoreRequest: null,
+          restoreReject: null
+        },
+        "DEL-035": {
+          userContext: { username: "@vintageindex", email: "vi***@mail.com", phone: "08x-xxx-x155", line: "—", auth: "Email", joined: "10 Apr 2026", lastActive: "02 Sep 2026 10:08" },
+          timeline: { sessionRevokedAt: "02 Sep 2026 10:08", deactivatedAt: "02 Sep 2026 10:08", graceStart: "02 Sep 2026", graceEnd: "02 Oct 2026", lastValidation: "06 Sep 2026 11:20", approvedAt: null, archivedAt: null, anonymizedAt: null, cancelledAt: null, restoredAt: null, restoreRejectedAt: null },
+          dependency: { pendingIncomingOffers: 0, pendingOutgoingOffers: 0, acceptedOffersInRetention: 2, assetsByStatus: { sale: 5, show: 4, hide: 1, sold: 1, removed: 0 }, chatRooms: 5, reportsSafetyCases: 0 },
+          restoreRequest: null,
+          restoreReject: null
+        },
+        "DEL-036": {
+          userContext: { username: "@seikocorner", email: "se***@watchmail.com", phone: "—", line: "seiko***", auth: "Email", joined: "01 Jul 2026", lastActive: "01 Sep 2026 18:30" },
+          timeline: { sessionRevokedAt: "01 Sep 2026 18:30", deactivatedAt: "01 Sep 2026 18:30", graceStart: "01 Sep 2026", graceEnd: "01 Oct 2026", lastValidation: "06 Sep 2026 09:00", approvedAt: null, archivedAt: null, anonymizedAt: null, cancelledAt: null, restoredAt: null, restoreRejectedAt: null },
+          dependency: { pendingIncomingOffers: 0, pendingOutgoingOffers: 0, acceptedOffersInRetention: 0, assetsByStatus: { sale: 2, show: 2, hide: 0, sold: 1, removed: 0 }, chatRooms: 2, reportsSafetyCases: 0 },
+          restoreRequest: null,
+          restoreReject: null
+        },
+        "DEL-031": {
+          userContext: { username: "@omegaclubth", email: "om***@mail.com", phone: "092-345-8820", line: "—", auth: "Email", joined: "22 Jun 2026", lastActive: "20 Aug 2026 11:00" },
+          timeline: { sessionRevokedAt: "20 Aug 2026 11:00", deactivatedAt: "20 Aug 2026 11:00", graceStart: "20 Aug 2026", graceEnd: "19 Sep 2026", lastValidation: "25 Aug 2026 16:45", approvedAt: null, archivedAt: null, anonymizedAt: null, cancelledAt: null, restoredAt: "25 Aug 2026 16:45", restoreRejectedAt: null },
+          dependency: { pendingIncomingOffers: 0, pendingOutgoingOffers: 0, acceptedOffersInRetention: 1, assetsByStatus: { sale: 4, show: 3, hide: 0, sold: 2, removed: 0 }, chatRooms: 4, reportsSafetyCases: 0 },
+          restoreRequest: { requestedAt: "24 Aug 2026 10:30", channel: "Support email", note: "ผู้ใช้ติดต่อ support ขอคืนบัญชี อ้างว่ากดผิด" },
+          restoreReject: null
+        },
+        "DEL-032": {
+          userContext: { username: "@dailyhunter", email: "da***@gmail.com", phone: "—", line: "—", auth: "Google", joined: "09 Jul 2026", lastActive: "18 Aug 2026 08:04" },
+          timeline: { sessionRevokedAt: "18 Aug 2026 08:04", deactivatedAt: "18 Aug 2026 08:04", graceStart: "18 Aug 2026", graceEnd: "17 Sep 2026", lastValidation: "22 Aug 2026 10:15", approvedAt: null, archivedAt: null, anonymizedAt: null, cancelledAt: null, restoredAt: "22 Aug 2026 10:15", restoreRejectedAt: null },
+          dependency: { pendingIncomingOffers: 0, pendingOutgoingOffers: 0, acceptedOffersInRetention: 0, assetsByStatus: { sale: 1, show: 0, hide: 0, sold: 0, removed: 0 }, chatRooms: 0, reportsSafetyCases: 0 },
+          restoreRequest: { requestedAt: "21 Aug 2026 09:00", channel: "In-app support", note: "ผู้ใช้ติดต่อ support ขอคืนบัญชี" },
+          restoreReject: null
+        },
+        "DEL-028": {
+          userContext: { username: "@thecollector", email: "tc***@icloud.com", phone: "081-777-0090", line: "—", auth: "Apple", joined: "02 Apr 2026", lastActive: "10 Aug 2026 13:12" },
+          timeline: { sessionRevokedAt: "10 Aug 2026 13:12", deactivatedAt: "10 Aug 2026 13:12", graceStart: "10 Aug 2026", graceEnd: "09 Sep 2026", lastValidation: "28 Aug 2026 14:20", approvedAt: null, archivedAt: null, anonymizedAt: null, cancelledAt: null, restoredAt: null, restoreRejectedAt: "28 Aug 2026 14:20" },
+          dependency: { pendingIncomingOffers: 0, pendingOutgoingOffers: 0, acceptedOffersInRetention: 3, assetsByStatus: { sale: 4, show: 3, hide: 2, sold: 2, removed: 0 }, chatRooms: 6, reportsSafetyCases: 8 },
+          restoreRequest: { requestedAt: "26 Aug 2026 15:00", channel: "Support email", note: "ผู้ใช้ขอคืนบัญชี อ้างว่ารายงานไม่เป็นธรรม" },
+          restoreReject: { rejectedAt: "28 Aug 2026 14:20", rejectedBy: "อรนุช แก้วใส", reason: "รายงานร้ายแรง 8 รายงาน — พฤติกรรมละเมิดซ้ำ ไม่สมควรคืนบัญชี" }
+        },
+        "DEL-029": {
+          userContext: { username: "@seikocorner", email: "se***@watchmail.com", phone: "—", line: "seiko***", auth: "Email", joined: "01 Jul 2026", lastActive: "08 Aug 2026 09:30" },
+          timeline: { sessionRevokedAt: "08 Aug 2026 09:30", deactivatedAt: "08 Aug 2026 09:30", graceStart: "08 Aug 2026", graceEnd: "07 Sep 2026", lastValidation: "30 Aug 2026 11:00", approvedAt: null, archivedAt: null, anonymizedAt: null, cancelledAt: null, restoredAt: null, restoreRejectedAt: "30 Aug 2026 11:00" },
+          dependency: { pendingIncomingOffers: 0, pendingOutgoingOffers: 0, acceptedOffersInRetention: 0, assetsByStatus: { sale: 2, show: 2, hide: 0, sold: 1, removed: 0 }, chatRooms: 2, reportsSafetyCases: 2 },
+          restoreRequest: { requestedAt: "27 Aug 2026 12:00", channel: "In-app support", note: "ผู้ใช้ขอคืนบัญชี" },
+          restoreReject: { rejectedAt: "30 Aug 2026 11:00", rejectedBy: "มะลิ จันทร์ดี", reason: "มีรายงาน 2 รายงานค้างตรวจ — รอตรวจสอบให้จบก่อนคืนบัญชี" }
+        },
+        "DEL-025": {
+          userContext: { username: "@rolexrama9", email: "rr***@mail.com", phone: "086-555-4444", line: "—", auth: "Email", joined: "18 Jun 2026", lastActive: "15 Jul 2026 12:00" },
+          timeline: { sessionRevokedAt: "15 Jul 2026 12:00", deactivatedAt: "15 Jul 2026 12:00", graceStart: "15 Jul 2026", graceEnd: "14 Aug 2026", lastValidation: "14 Aug 2026 00:00", approvedAt: "14 Aug 2026 00:00", archivedAt: "14 Aug 2026 00:00", anonymizedAt: null, cancelledAt: null, restoredAt: null, restoreRejectedAt: null },
+          dependency: { pendingIncomingOffers: 0, pendingOutgoingOffers: 0, acceptedOffersInRetention: 2, assetsByStatus: { sale: 5, show: 4, hide: 2, sold: 3, removed: 0 }, chatRooms: 8, reportsSafetyCases: 3 },
+          restoreRequest: null,
+          restoreReject: null
+        },
+        "DEL-026": {
+          userContext: { username: "@crowntimebkk", email: "cr***@tukdaeng.example", phone: "081-234-2210", line: "crowntimebkk", auth: "Email", joined: "29 Jun 2026", lastActive: "10 Jul 2026 16:44" },
+          timeline: { sessionRevokedAt: "10 Jul 2026 16:44", deactivatedAt: "10 Jul 2026 16:44", graceStart: "10 Jul 2026", graceEnd: "09 Aug 2026", lastValidation: "09 Aug 2026 00:00", approvedAt: "09 Aug 2026 00:00", archivedAt: "09 Aug 2026 00:00", anonymizedAt: null, cancelledAt: null, restoredAt: null, restoreRejectedAt: null },
+          dependency: { pendingIncomingOffers: 0, pendingOutgoingOffers: 0, acceptedOffersInRetention: 1, assetsByStatus: { sale: 6, show: 5, hide: 3, sold: 4, removed: 0 }, chatRooms: 12, reportsSafetyCases: 4 },
+          restoreRequest: null,
+          restoreReject: null
+        },
+        "DEL-020": {
+          userContext: { username: "@olduser", email: "ol***@mail.com", phone: "—", line: "—", auth: "Email", joined: "17 Jan 2026", lastActive: "15 May 2026 07:44" },
+          timeline: { sessionRevokedAt: "17 Jan 2026 07:44", deactivatedAt: "17 Jan 2026 07:44", graceStart: "17 Jan 2026", graceEnd: "16 Feb 2026", lastValidation: "17 Jul 2026 00:00", approvedAt: "16 Feb 2026 00:00", archivedAt: "16 Feb 2026 00:00", anonymizedAt: "17 Jul 2026 00:00", cancelledAt: null, restoredAt: null, restoreRejectedAt: null },
+          dependency: { pendingIncomingOffers: 0, pendingOutgoingOffers: 0, acceptedOffersInRetention: 0, assetsByStatus: { sale: 0, show: 0, hide: 0, sold: 0, removed: 0 }, chatRooms: 0, reportsSafetyCases: 0 },
+          restoreRequest: null,
+          restoreReject: null
+        },
+        "DEL-021": {
+          userContext: { username: "@minimaldial", email: "mi***@mail.com", phone: "—", line: "—", auth: "Email", joined: "03 Jan 2026", lastActive: "05 Feb 2026 09:00" },
+          timeline: { sessionRevokedAt: "05 Feb 2026 09:00", deactivatedAt: "05 Feb 2026 09:00", graceStart: "05 Feb 2026", graceEnd: "07 Mar 2026", lastValidation: "05 Aug 2026 00:00", approvedAt: "07 Mar 2026 00:00", archivedAt: "07 Mar 2026 00:00", anonymizedAt: "05 Aug 2026 00:00", cancelledAt: null, restoredAt: null, restoreRejectedAt: null },
+          dependency: { pendingIncomingOffers: 0, pendingOutgoingOffers: 0, acceptedOffersInRetention: 1, assetsByStatus: { sale: 1, show: 1, hide: 0, sold: 1, removed: 0 }, chatRooms: 1, reportsSafetyCases: 0 },
+          restoreRequest: null,
+          restoreReject: null
+        }
+      }
     };
 
     const userManagementData = {
@@ -16756,6 +17247,10 @@
         renderWatchAlertDetail(context.id);
         return true;
       }
+      if (context.type === "deletion-detail") {
+        renderDeletionDetail(context.id);
+        return true;
+      }
       return false;
     }
 
@@ -16767,6 +17262,7 @@
       if (activeModule === "market") return { type: "module", module: "market", sub: activeSub || "Dashboard", displaySub: activeSub || "Dashboard" };
       if (activeModule === "watch-alerts") return { type: "module", module: "watch-alerts", sub: activeSub || "Demand Overview", displaySub: activeSub || "Demand Overview" };
       if (activeModule === "settings") return { type: "module", module: "settings", sub: activeSub || "Policy & Versioning", displaySub: activeSub || "Policy & Versioning" };
+      if (activeModule === "deletions") return { type: "module", module: "deletions", sub: "Deletion Requests", displaySub: "Deletion Requests" };
       return null;
     }
 
@@ -20547,6 +21043,276 @@
           ${renderPager(deletionListPage, pageCount, "data-deletion-page")}
         </div>
       `;
+    }
+
+    // DEL-PTO-002: Account Deletion Request Detail renderer
+    // pattern: Reported Users Report Detail + Offer Detail (full-width, section-based, back nav)
+    // body class: deletion-detail-mode (ไม่ใช้ user-detail-mode เพื่อไม่กระทบ protected screens)
+    // 4 sections: User Context / Deletion Timeline / Dependency Summary / Archive & Anonymization Plan
+    // action area: 5 ปุ่ม (คืนบัญชี / ปฏิเสธคืนบัญชี / ดูสถานะล่าสุด / ดูประวัติ / ส่งออกรายงาน)
+    // ปุ่ม คืนบัญชี + ปฏิเสธคืนบัญชี แสดงเฉพาะช่วง grace period (graceState: active/ending/expired)
+    function renderDeletionDetail(requestId) {
+      const req = deletionRequestData.requests.find(r => r.id === requestId);
+      if (!req) {
+        renderDeletionRequests();
+        return;
+      }
+      const d = (deletionRequestData.detail && deletionRequestData.detail[req.id]) || {};
+      const uc = d.userContext || {};
+      const tl = d.timeline || {};
+      const dep = d.dependency || {};
+      const restoreReq = d.restoreRequest || null;
+      const restoreRej = d.restoreReject || null;
+
+      activeModule = "deletions";
+      activeSub = "";
+      activeRow = { id: req.id };
+      document.body.classList.add("deletion-detail-mode");
+      document.body.classList.remove("deletion-list-mode", "user-list-mode", "user-detail-mode", "asset-detail-mode", "offer-list-mode", "offer-detail-mode", "watch-alert-detail-mode");
+
+      // breadcrumb + page header + back button
+      document.querySelector("#crumb").textContent = `งานตรวจสอบและบริการ / Account Deletion / Requests / ${req.id}`;
+      document.querySelector("#page-title").textContent = "Request Detail";
+      document.querySelector("#page-meta").textContent = "";
+      setPageActions(renderPageBackButton("data-back-deletion-list", "กลับไป Deletion Requests", "report-back-btn"));
+      document.querySelector("#panel-title").textContent = req.id;
+      document.querySelector("#panel-subtitle").textContent = `${req.userId} · ${req.displayName} · sensitive fields masked`;
+      document.querySelector("#user-panel-filter-actions").innerHTML = "";
+      document.querySelector(".filters").innerHTML = "";
+      document.querySelector("#summary-grid").innerHTML = "";
+      document.querySelector("#cards").innerHTML = "";
+      document.querySelector("#detail").innerHTML = "";
+
+      // helper: serious flag pill
+      const seriousFlagPill = req.seriousFlag
+        ? `<span class="pill red">ธงร้ายแรง</span>`
+        : "";
+
+      // helper: timeline row — แสดงเฉพาะ field ที่มีค่า (null = ยังไม่ถึงขั้นนั้น)
+      const tlRow = (label, value) => value
+        ? `<div class="detail-tile"><span>${label}</span><strong>${value}</strong></div>`
+        : "";
+
+      // Section 1: User Context — ข้อมูลพื้นฐานเท่านั้น (ไม่มี email/phone/LINE)
+      // ข้อมูล sensitive ดูได้ที่ User Detail (คลิกชื่อผู้ใช้ → เปิด User Detail)
+      const section1 = `
+        <div class="detail-section deletion-user-context-section">
+          <h4>User Context</h4>
+          <div class="detail-grid three report-reference-grid">
+            <div class="detail-tile"><span>User ID</span><strong>${req.userId}</strong></div>
+            <div class="detail-tile"><span>Display Name</span><strong><button class="link-btn" type="button" data-user-open="${req.userId}">${req.displayName}</button></strong></div>
+            <div class="detail-tile"><span>Username</span><strong>${uc.username || "—"}</strong></div>
+            <div class="detail-tile"><span>Auth Method</span><strong>${uc.auth || "—"}</strong></div>
+            <div class="detail-tile"><span>Joined Date</span><strong>${uc.joined || "—"}</strong></div>
+            <div class="detail-tile"><span>Last Active</span><strong>${uc.lastActive || "—"}</strong></div>
+          </div>
+        </div>
+      `;
+
+      // Section 2: Deletion Timeline + countdown
+      // countdown: 'เหลือ X วัน ถึงเก็บถาวรอัตโนมัติ' — เฉพาะ grace period ยังนับอยู่
+      const showCountdown = ["active", "ending", "expired"].includes(req.graceState) && req.daysLeft != null;
+      const countdownText = req.graceState === "expired"
+        ? "ครบกำหนดเก็บถาวรอัตโนมัติแล้ว — ระบบจะเก็บถาวรในรอบถัดไป"
+        : `เหลือ ${req.daysLeft} วัน ถึงเก็บถาวรอัตโนมัติ`;
+      const countdownClass = req.graceState === "expired" ? "deletion-countdown-expired" : req.graceState === "ending" ? "deletion-countdown-ending" : "";
+      const countdown = showCountdown
+        ? `<div class="deletion-countdown ${countdownClass}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg><span>${countdownText}</span></div>`
+        : "";
+
+      // Section 2: Deletion Timeline — vertical timeline ตามลำดับขั้น lifecycle
+      // รวมฟิลด์ที่เกิดพร้อมกัน (Session Revoked = Deactivated = Grace Start; Approved = Archived)
+      // สถานะ: done (มีวันที่) / current (ขั้นปัจจุบันตาม request status) / pending (ยังไม่ถึง)
+      // Restored/Restore Rejected ย้ายไป notes ด้านล่าง (มีอยู่แล้ว)
+      const currentStep = req.requestStatus === "ลบตัวตนแล้ว" ? "anonymized"
+        : req.requestStatus === "เก็บถาวรแล้ว" ? "archived"
+        : req.requestStatus === "คืนบัญชีแล้ว" ? "restored"
+        : "grace"; // รอดำเนินการ / ปฏิเสธคืนบัญชี → ยังอยู่ใน grace period
+
+      const stepState = (step) => {
+        if (currentStep === "restored") {
+          // คืนบัญชีแล้ว: requested + deactivated เป็น done, grace เป็น current (หยุดที่นี่) ส่วน archived/anonymized ไม่แสดง
+          if (step === "requested" || step === "deactivated") return "done";
+          if (step === "grace") return "current";
+          return "skipped";
+        }
+        if (currentStep === "anonymized") return "done";
+        if (currentStep === "archived") return step === "anonymized" ? "pending" : "done";
+        // grace
+        if (step === "requested" || step === "deactivated") return "done";
+        if (step === "grace") return "current";
+        return "pending";
+      };
+
+      const stepNode = (key, label, date, sub) => {
+        const state = stepState(key);
+        if (state === "skipped") return "";
+        const stateLabel = state === "done" ? "เสร็จสิ้น" : state === "current" ? "ปัจจุบัน" : "รอดำเนินการ";
+        return `
+          <div class="deletion-timeline-step ${state}">
+            <div class="deletion-timeline-marker"></div>
+            <div class="deletion-timeline-content">
+              <div class="deletion-timeline-label">${label}</div>
+              <div class="deletion-timeline-date">${date || "—"}</div>
+              ${sub ? `<div class="deletion-timeline-sub">${sub}</div>` : ""}
+              <div class="deletion-timeline-state">${stateLabel}</div>
+            </div>
+          </div>
+        `;
+      };
+
+      const graceSub = tl.graceStart && tl.graceEnd ? `${tl.graceStart} → ${tl.graceEnd} (30 วัน)` : "";
+      const archivedSub = tl.approvedAt && tl.archivedAt && tl.approvedAt !== tl.archivedAt ? `Approved: ${tl.approvedAt}` : "";
+
+      const timelineSteps = [
+        stepNode("requested", "คำขอลบบัญชี", req.requestedAt, "ผู้ใช้ส่งคำขอจาก FO"),
+        stepNode("deactivated", "ระงับบัญชี + เริ่ม Grace Period", tl.deactivatedAt, "Logout + deactivate + ยกเลิก offer/ปิดรายงานอัตโนมัติ"),
+        stepNode("grace", "ช่วง Grace Period (30 วัน)", graceSub, "รอเก็บถาวรอัตโนมัติ — แอดมินคืน/ปฏิเสธคืนบัญชีได้"),
+        stepNode("archived", "เก็บถาวรอัตโนมัติ", tl.archivedAt, archivedSub),
+        stepNode("anonymized", "ลบตัวตนอัตโนมัติ", tl.anonymizedAt, "ครบ retention period — ลบ/มาส์กข้อมูลส่วนบุคคล")
+      ].filter(Boolean).join("");
+
+      const validationNote = tl.lastValidation
+        ? `<div class="deletion-timeline-meta">Last validation run: ${tl.lastValidation}${tl.cancelledAt ? ` · Cancelled: ${tl.cancelledAt}` : ""}</div>`
+        : tl.cancelledAt ? `<div class="deletion-timeline-meta">Cancelled: ${tl.cancelledAt}</div>` : "";
+
+      const section2 = `
+        <div class="detail-section">
+          <h4>Deletion Timeline</h4>
+          <div class="deletion-timeline">
+            ${timelineSteps}
+          </div>
+          ${countdown}
+          ${validationNote}
+        </div>
+      `;
+
+      // เงื่อนไขเพิ่ม: ผู้ใช้ขอคืนบัญชีเมื่อ X (ถ้ามี)
+      const restoreRequestNote = restoreReq
+        ? `<div class="deletion-restore-note deletion-restore-request-note"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg><span>ผู้ใช้ขอคืนบัญชีเมื่อ <strong>${restoreReq.requestedAt}</strong> ผ่าน ${restoreReq.channel}${restoreReq.note ? ` — ${restoreReq.note}` : ""}</span></div>`
+        : "";
+
+      // เงื่อนไขเพิ่ม: ปฏิเสธคืนบัญชีเมื่อ X เหตุผล: ... (ถ้ามี)
+      const restoreRejectNote = restoreRej
+        ? `<div class="deletion-restore-note deletion-restore-reject-note"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg><span>ปฏิเสธคืนบัญชีเมื่อ <strong>${restoreRej.rejectedAt}</strong> โดย ${restoreRej.rejectedBy} — เหตุผล: ${restoreRej.reason}</span></div>`
+        : "";
+
+      // Section 3: Dependency Summary
+      // offer ค้าง (ตัวเลข + ลิงก์), offer ตกลงแล้ว (ตัวเลข + ลิงก์), สินทรัพย์ (ตัวเลข + สถานะแยก), ห้องแชท (ตัวเลข), รายงาน (ตัวเลข + สถานะ)
+      const assetsByStatus = dep.assetsByStatus || {};
+      const assetStatusTiles = [
+        assetsByStatus.sale ? `<div class="detail-tile"><span>Sale</span><strong>${assetsByStatus.sale}</strong></div>` : "",
+        assetsByStatus.show ? `<div class="detail-tile"><span>Show</span><strong>${assetsByStatus.show}</strong></div>` : "",
+        assetsByStatus.hide ? `<div class="detail-tile"><span>Hide</span><strong>${assetsByStatus.hide}</strong></div>` : "",
+        assetsByStatus.sold ? `<div class="detail-tile"><span>Sold</span><strong>${assetsByStatus.sold}</strong></div>` : "",
+        assetsByStatus.removed ? `<div class="detail-tile"><span>Removed/Hidden</span><strong>${assetsByStatus.removed}</strong></div>` : ""
+      ].filter(Boolean).join("");
+
+      const depLink = (label, count, dataAttr) => count > 0
+        ? `<div class="detail-tile"><span>${label}</span><strong><button class="link-btn deletion-dep-link" type="button" ${dataAttr}>${count}</button></strong></div>`
+        : `<div class="detail-tile"><span>${label}</span><strong>${count}</strong></div>`;
+
+      const section3 = `
+        <div class="detail-section">
+          <h4>Dependency Summary</h4>
+          <div class="detail-grid three report-reference-grid">
+            ${depLink("Pending Incoming Offers", dep.pendingIncomingOffers || 0, 'data-deletion-dep="offers-incoming"')}
+            ${depLink("Pending Outgoing Offers", dep.pendingOutgoingOffers || 0, 'data-deletion-dep="offers-outgoing"')}
+            ${depLink("Accepted Offers (Retention)", dep.acceptedOffersInRetention || 0, 'data-deletion-dep="offers-accepted"')}
+            ${depLink("Assets (Total)", req.assets, 'data-deletion-dep="assets"')}
+            ${depLink("Chat Rooms", dep.chatRooms || 0, 'data-deletion-dep="chats"')}
+            ${depLink("Reports / Safety Cases", dep.reportsSafetyCases || 0, 'data-deletion-dep="reports"')}
+          </div>
+          ${assetStatusTiles ? `<div class="deletion-asset-status-grid"><span class="deletion-asset-status-label">Assets by status:</span> ${assetStatusTiles}</div>` : ""}
+        </div>
+      `;
+
+      // Section 4: Archive / Anonymization Plan
+      // ตารางบอกว่าข้อมูลแต่ละอย่างจะถูกทำอย่างไร
+      const archivePlanRows = [
+        { data: "Public profile", action: "Hide from public surfaces" },
+        { data: "Profile image", action: "Hide or replace placeholder ตาม policy" },
+        { data: "Username / display name", action: "Mask/anonymize เมื่อถึงขั้น policy" },
+        { data: "Email / phone / LINE", action: "Retain masked แล้ว anonymize เมื่อพ้น retention" },
+        { data: "Assets", action: "Hide from Feed/Search/Public Profile/Watch Alert results" },
+        { data: "Offers", action: "Retain status/timeline ตาม audit/dispute policy" },
+        { data: "Chats", action: "Retain content ตาม retention แต่ mask profile identity" },
+        { data: "Reports", action: "Retain ตาม safety/legal/audit policy" },
+        { data: "Audit logs", action: "Retain immutable" }
+      ];
+
+      const section4 = `
+        <div class="detail-section">
+          <h4>Archive / Anonymization Plan</h4>
+          <div class="deletion-archive-plan-table">
+            <div class="deletion-archive-plan-row deletion-archive-plan-head">
+              <div>Data</div>
+              <div>Action</div>
+            </div>
+            ${archivePlanRows.map(row => `
+              <div class="deletion-archive-plan-row">
+                <div class="deletion-archive-plan-data">${row.data}</div>
+                <div class="deletion-archive-plan-action">${row.action}</div>
+              </div>
+            `).join("")}
+          </div>
+        </div>
+      `;
+
+      // action area: 5 ปุ่ม
+      // ปุ่ม คืนบัญชี + ปฏิเสธคืนบัญชี แสดงเฉพาะช่วง grace period (graceState: active/ending/expired)
+      // หลังเก็บถาวร (archived/anonymized/restored) ไม่แสดง
+      const inGracePeriod = ["active", "ending", "expired"].includes(req.graceState);
+      const restoreBtn = inGracePeriod
+        ? `<button class="user-detail-action-btn primary" type="button" data-deletion-action="restore" data-deletion-id="${req.id}">คืนบัญชี</button>`
+        : "";
+      const rejectBtn = inGracePeriod
+        ? `<button class="user-detail-action-btn danger" type="button" data-deletion-action="reject-restore" data-deletion-id="${req.id}">ปฏิเสธคืนบัญชี</button>`
+        : "";
+      const viewStatusBtn = `<button class="user-detail-action-btn" type="button" data-deletion-action="view-status" data-deletion-id="${req.id}">ดูสถานะล่าสุด</button>`;
+      const viewHistoryBtn = `<button class="user-detail-action-btn" type="button" data-deletion-action="view-history" data-deletion-id="${req.id}">ดูประวัติ</button>`;
+      const exportBtn = `<button class="user-detail-action-btn" type="button" data-deletion-action="export" data-deletion-id="${req.id}">ส่งออกรายงาน</button>`;
+
+      const gracePeriodNote = inGracePeriod
+        ? `<div class="deletion-action-note">ปุ่ม คืนบัญชี และ ปฏิเสธคืนบัญชี แสดงตลอดช่วง grace period 30 วัน — กดได้เมื่อรับเรื่องจาก support</div>`
+        : `<div class="deletion-action-note deletion-action-note-locked">คำขอนี้ผ่าน grace period แล้ว — ปุ่ม คืนบัญชี และ ปฏิเสธคืนบัญชี ไม่แสดง</div>`;
+
+      const actionArea = `
+        <div class="detail-section deletion-action-section">
+          <h4>Admin Actions</h4>
+          ${gracePeriodNote}
+          <div class="user-detail-actions">
+            ${restoreBtn}${rejectBtn}${viewStatusBtn}${viewHistoryBtn}${exportBtn}
+          </div>
+        </div>
+      `;
+
+      // ประกอบทั้งหน้า
+      document.querySelector("#table").innerHTML = `
+        <div class="user-detail-page report-detail-page deletion-detail-page">
+          <div class="user-detail-head">
+            <div class="user-detail-title">
+              <div>
+                <h2 class="asset-report-heading"><span class="asset-report-id">${req.id}</span><span class="user-detail-separator"> : </span><span class="asset-report-name user-display-name">${req.displayName}</span></h2>
+                <div class="chips">
+                  ${deletionRequestStatusPill(req.requestStatus)}
+                  ${deletionAccountStatusPill(req.accountStatus)}
+                  ${seriousFlagPill}
+                </div>
+              </div>
+            </div>
+          </div>
+          ${section1}
+          ${section2}
+          ${restoreRequestNote}
+          ${restoreRejectNote}
+          ${section3}
+          ${section4}
+          ${actionArea}
+        </div>
+      `;
+      updateActiveNav();
+      scrollMainToTop();
     }
 
     function renderUserManagement(subLabel = "User Accounts") {
@@ -34762,8 +35528,7 @@
         renderWatchAlertDetail(id);
         return;
       }
-      // DEL-PTO-001: Account Deletion Requests — row click placeholder
-      // (detail page จะต่อใน DEL-PTO-002)
+      // DEL-PTO-001 + DEL-PTO-002: Account Deletion Requests — row click เปิด Request Detail
       const deletionOpen = event.target.closest("[data-deletion-open], .user-row[data-deletion-card]");
       if (deletionOpen && activeModule === "deletions") {
         // ปุ่ม data-user-open ในคอลัมน์ User ให้ไปที่ user-open handler แทน
@@ -34773,8 +35538,9 @@
           return;
         } else {
           const id = deletionOpen.dataset.deletionOpen || deletionOpen.dataset.deletionCard;
-          // TODO DEL-PTO-002: renderDeletionDetail(id)
-          console.log("DEL-PTO-001: open deletion detail", id);
+          pushBackNavigationContext();
+          renderDeletionDetail(id);
+          closeRowMenus();
           return;
         }
       }
@@ -36275,6 +37041,49 @@
       const backArticleList = event.target.closest("[data-back-article-list]");
       if (backArticleList) {
         renderModule("content", "Articles", "Articles");
+        return;
+      }
+      // DEL-PTO-002: Request Detail back button → Deletion Requests list (restore filter state)
+      const backDeletionList = event.target.closest("[data-back-deletion-list]");
+      if (backDeletionList) {
+        renderModule("deletions", "Deletion Requests", "Deletion Requests");
+        return;
+      }
+    });
+
+    // DEL-PTO-002: Request Detail — action button handlers (delegated)
+    document.addEventListener("click", (event) => {
+      // action buttons (5 ปุ่ม) — prototype: แสดง toast/placeholder (modals จะทำใน DEL-PTO-003)
+      const actionBtn = event.target.closest("[data-deletion-action]");
+      if (actionBtn) {
+        const action = actionBtn.dataset.deletionAction;
+        const id = actionBtn.dataset.deletionId;
+        const labels = {
+          "restore": "คืนบัญชี",
+          "reject-restore": "ปฏิเสธคืนบัญชี",
+          "view-status": "ดูสถานะล่าสุด",
+          "view-history": "ดูประวัติ",
+          "export": "ส่งออกรายงาน"
+        };
+        // prototype placeholder — modals จะทำใน DEL-PTO-003
+        console.log(`DEL-PTO-002: action "${action}" on ${id}`);
+        showSuccessToast(`${labels[action] || action} — จะเปิด modal ใน DEL-PTO-003 (prototype)`, "Account Deletion");
+        return;
+      }
+      // dependency link (offer/asset/chat/report) — prototype: แสดง toast (cross-module links จะทำใน DEL-PTO-004)
+      const depLink = event.target.closest("[data-deletion-dep]");
+      if (depLink) {
+        const dep = depLink.dataset.deletionDep;
+        const labels = {
+          "offers-incoming": "Pending Incoming Offers",
+          "offers-outgoing": "Pending Outgoing Offers",
+          "offers-accepted": "Accepted Offers (Retention)",
+          "assets": "Assets",
+          "chats": "Chat Rooms",
+          "reports": "Reports / Safety Cases"
+        };
+        console.log(`DEL-PTO-002: dependency link "${dep}"`);
+        showSuccessToast(`${labels[dep] || dep} — cross-module link จะทำใน DEL-PTO-004 (prototype)`, "Account Deletion");
         return;
       }
     });

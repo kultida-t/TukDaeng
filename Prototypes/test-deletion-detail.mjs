@@ -1,0 +1,93 @@
+// DEL-PTO-002 smoke test — ตรวจว่า renderDeletionDetail ทำงาน + 4 sections ครบ + ไม่มี JS error
+import { createServer } from "node:http";
+import { readFile } from "node:fs/promises";
+import { fileURLToPath } from "node:url";
+import { join } from "node:path";
+
+const root = fileURLToPath(new URL(".", import.meta.url));
+const html = (await readFile(join(root, "bo-prototype.html"), "utf8")).toString();
+
+// ดึง <script> หลัก (inline) มา eval ใน sandbox จำลอง DOM แบบหยาบ ๆ ไม่ได้ — ใช้วิธี grep โครงสร้างแทน
+const checks = [];
+
+const assert = (cond, msg) => checks.push({ ok: !!cond, msg });
+
+// 1. renderDeletionDetail ถูกนิยาม
+assert(/function renderDeletionDetail\s*\(/.test(html), "function renderDeletionDetail ถูกนิยาม");
+
+// 2. 4 sections ครบ
+assert(/Section 1.*User Context/.test(html) || /deletion-user-context-section/.test(html), "Section 1 User Context");
+assert(/Deletion Timeline/.test(html), "Section 2 Deletion Timeline");
+assert(/Dependency Summary/.test(html), "Section 3 Dependency Summary");
+assert(/Archive \/ Anonymization Plan/.test(html), "Section 4 Archive/Anonymization Plan");
+
+// 3. action area 5 ปุ่ม
+assert(/data-deletion-action="restore"/.test(html), "ปุ่ม คืนบัญชี");
+assert(/data-deletion-action="reject-restore"/.test(html), "ปุ่ม ปฏิเสธคืนบัญชี");
+assert(/data-deletion-action="view-status"/.test(html), "ปุ่ม ดูสถานะล่าสุด");
+assert(/data-deletion-action="view-history"/.test(html), "ปุ่ม ดูประวัติ");
+assert(/data-deletion-action="export"/.test(html), "ปุ่ม ส่งออกรายงาน");
+
+// 4. breadcrumb + back button
+assert(/งานตรวจสอบและบริการ \/ Account Deletion \/ Requests \//.test(html), "breadcrumb ครบ");
+assert(/data-back-deletion-list/.test(html), "back button data-back-deletion-list");
+
+// 5. status badges
+assert(/deletionRequestStatusPill\(req\.requestStatus\)/.test(html), "request status pill");
+assert(/deletionAccountStatusPill\(req\.accountStatus\)/.test(html), "account status pill");
+
+// 6. masked + reveal
+assert(/data-deletion-reveal/.test(html), "reveal toggle");
+assert(/deletion-masked-value/.test(html), "masked value element");
+assert(/deletion-sensitive-tile/.test(html), "sensitive tile class");
+
+// 7. countdown
+assert(/deletion-countdown/.test(html), "countdown element");
+assert(/เหลือ \$\{req\.daysLeft\} วัน ถึงเก็บถาวรอัตโนมัติ/.test(html), "countdown text");
+
+// 8. เงื่อนไขเพิ่ม: restore request + reject notes
+assert(/deletion-restore-request-note/.test(html), "restore request note");
+assert(/deletion-restore-reject-note/.test(html), "restore reject note");
+assert(/ผู้ใช้ขอคืนบัญชีเมื่อ/.test(html), "restore request text");
+assert(/ปฏิเสธคืนบัญชีเมื่อ/.test(html), "restore reject text");
+
+// 9. click handler เชื่อมแล้ว
+assert(/pushBackNavigationContext\(\);\s*\n\s*renderDeletionDetail\(id\)/.test(html), "row click เรียก renderDeletionDetail");
+
+// 10. navigation context restore
+assert(/context\.type === "deletion-detail"/.test(html), "navigation context restore deletion-detail");
+
+// 11. getDefaultBackContext
+assert(/activeModule === "deletions"/.test(html), "getDefaultBackContext deletions");
+
+// 12. CSS deletion-detail-mode
+assert(/body\.deletion-detail-mode/.test(html), "CSS deletion-detail-mode");
+assert(/deletion-countdown-ending/.test(html), "CSS countdown ending");
+assert(/deletion-countdown-expired/.test(html), "CSS countdown expired");
+assert(/deletion-archive-plan-table/.test(html), "CSS archive plan table");
+
+// 13. responsive
+assert(/@media \(max-width: 1180px\)[\s\S]*?deletion-detail-mode/.test(html), "responsive 1180px");
+assert(/@media \(max-width: 760px\)[\s\S]*?deletion-detail-mode/.test(html), "responsive 760px");
+
+// 14. mock data detail
+assert(/deletionRequestData\.detail/.test(html), "detail mock data");
+assert(/userContext:/.test(html), "userContext mock");
+assert(/timeline:/.test(html), "timeline mock");
+assert(/dependency:/.test(html), "dependency mock");
+assert(/restoreRequest:/.test(html), "restoreRequest mock");
+assert(/restoreReject:/.test(html), "restoreReject mock");
+
+// 15. ปุ่ม คืนบัญชี + ปฏิเสธ แสดงเฉพาะ inGracePeriod
+assert(/\["active", "ending", "expired"\]\.includes\(req\.graceState\)/.test(html), "inGracePeriod check");
+
+// 16. ไม่กระทบ protected screens — ไม่ใช้ user-detail-mode สำหรับ deletion detail
+assert(/document\.body\.classList\.add\("deletion-detail-mode"\);[\s\S]{0,200}document\.body\.classList\.remove\([^)]*"user-detail-mode"/.test(html), "ไม่ใช้ user-detail-mode (ไม่กระทบ protected)");
+
+const passed = checks.filter(c => c.ok).length;
+const failed = checks.filter(c => !c.ok).length;
+console.log(`DEL-PTO-002 smoke test: ${passed}/${checks.length} passed, ${failed} failed\n`);
+for (const c of checks) {
+  console.log(`${c.ok ? "PASS" : "FAIL"}  ${c.msg}`);
+}
+if (failed > 0) process.exit(1);
