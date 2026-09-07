@@ -21147,13 +21147,15 @@
       const stepNode = (key, label, date, sub) => {
         const state = stepState(key);
         if (state === "skipped") return "";
+        // ขั้นที่ยังไม่มี log เวลา (pending) ไม่ต้องแสดง
+        if (state === "pending" && !date) return "";
         const stateLabel = state === "done" ? "เสร็จสิ้น" : state === "current" ? "ปัจจุบัน" : "รอดำเนินการ";
         return `
           <div class="deletion-timeline-step ${state}">
             <div class="deletion-timeline-marker"></div>
             <div class="deletion-timeline-content">
               <div class="deletion-timeline-label">${label}</div>
-              <div class="deletion-timeline-date">${date || "—"}</div>
+              ${date ? `<div class="deletion-timeline-date">${date}</div>` : ""}
               ${sub ? `<div class="deletion-timeline-sub">${sub}</div>` : ""}
               <div class="deletion-timeline-state">${stateLabel}</div>
             </div>
@@ -21165,11 +21167,11 @@
       const archivedSub = tl.approvedAt && tl.archivedAt && tl.approvedAt !== tl.archivedAt ? `Approved: ${tl.approvedAt}` : "";
 
       const timelineSteps = [
-        stepNode("requested", "คำขอลบบัญชี", req.requestedAt, "ผู้ใช้ส่งคำขอจาก FO"),
-        stepNode("deactivated", "ระงับบัญชี + เริ่ม Grace Period", tl.deactivatedAt, "Logout + deactivate + ยกเลิก offer/ปิดรายงานอัตโนมัติ"),
-        stepNode("grace", "ช่วง Grace Period (30 วัน)", graceSub, "รอเก็บถาวรอัตโนมัติ — แอดมินคืน/ปฏิเสธคืนบัญชีได้"),
-        stepNode("archived", "เก็บถาวรอัตโนมัติ", tl.archivedAt, archivedSub),
-        stepNode("anonymized", "ลบตัวตนอัตโนมัติ", tl.anonymizedAt, "ครบ retention period — ลบ/มาส์กข้อมูลส่วนบุคคล")
+        stepNode("requested", "คำขอลบบัญชี", req.requestedAt, ""),
+        stepNode("deactivated", "ระงับบัญชี + เริ่ม Grace Period", tl.deactivatedAt, ""),
+        stepNode("grace", "ช่วง Grace Period (30 วัน)", graceSub, ""),
+        stepNode("archived", "เก็บถาวรอัตโนมัติ", tl.archivedAt, ""),
+        stepNode("anonymized", "ลบตัวตนอัตโนมัติ", tl.anonymizedAt, "")
       ].filter(Boolean).join("");
 
       const validationNote = tl.lastValidation
