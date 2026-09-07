@@ -7188,16 +7188,20 @@
     body.deletion-list-mode .deletion-request-table .user-row > div {
       min-width: 0;
     }
-    /* DEL-PTO-001c: scroll ในกรอบตารางเดียวเหมือนหน้า list ที่ล็อก — แถวต้องไม่ล้น panel */
+    /* DEL-PTO-001c: scroll เฉพาะ #table (ไม่ใช่ panel) เหมือน Option Master Group List
+       เพื่อให้ filter bar อยู่กับที่ ไม่เลื่อนไปพร้อมตาราง */
     body.deletion-list-mode .main {
       overflow-x: hidden;
     }
     body.deletion-list-mode .layout > .panel {
-      overflow: hidden;
+      overflow: visible;
     }
     body.deletion-list-mode #table {
       max-width: 100%;
-      overflow: visible;
+      min-width: 0;
+      overflow-x: auto;
+      overflow-y: visible;
+      scrollbar-width: thin;
       position: relative;
     }
     body.deletion-list-mode #table .deletion-request-table {
@@ -10066,6 +10070,10 @@
       }
       .main { height: 100vh; }
       .layout { grid-template-columns: 1fr; }
+      /* DEL-PTO-001e: บังคับ grid track ให้จำกัดที่ 0px ต่ำสุด (ไม่ขยายตามเนื้อหาตาราง)
+         ถ้าไม่มีกฎนี้ panel จะขยายกว้างตาม min-width ของตาราง (1004px) แล้วถูก .main ตัด
+         ทำให้ไม่เกิด scrollbar ใน panel */
+      body.deletion-list-mode .layout { grid-template-columns: minmax(0, 1fr); }
       /* BO-DASH-001: dashboard ยังคง 2 คอลัมน์ในช่วง tablet (761-1180px)
          ปรับคอลัมน์ขวาให้แคบลงเหมาะกับ tablet แทน minmax(430px, 46%) ของ desktop
          1 คอลัมน์จะถูกบังคับที่ ≤760px (mobile) ใน media query ด้านล่าง */
@@ -10095,13 +10103,6 @@
       }
       body.deletion-list-mode .deletion-filter-bar .user-advanced-filter {
         min-width: 0;
-      }
-      /* DEL-PTO-001e: tablet table scroll — เหมือน Option Master (scroll เฉพาะ container เดียว) */
-      body.deletion-list-mode #table {
-        max-width: 100%;
-        overflow-x: auto;
-        overflow-y: visible;
-        scrollbar-width: thin;
       }
       body.deletion-list-mode .deletion-request-table .user-row {
         overflow-x: visible;
