@@ -1312,6 +1312,13 @@
     body.user-detail-mode .detail {
       display: none;
     }
+    /* DEL-PTO-001: Account Deletion Requests — full-width list layout */
+    body.deletion-list-mode .layout {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    body.deletion-list-mode .detail {
+      display: none;
+    }
     body.asset-list-mode .layout,
     body.asset-detail-mode .layout {
       grid-template-columns: minmax(0, 1fr);
@@ -6692,6 +6699,52 @@
       grid-template-columns: minmax(320px, 1.85fr) minmax(190px, .95fr) minmax(190px, .95fr) 42px;
       align-items: stretch;
     }
+    /* DEL-PTO-001: Account Deletion Requests — 3 filters + reset */
+    body.deletion-list-mode .deletion-filter-bar {
+      grid-template-columns: minmax(220px, 1.3fr) repeat(3, minmax(118px, .62fr)) 42px;
+    }
+    /* DEL-PTO-001c: reset เป็น icon-only 42px เหมือนหน้า list ที่ล็อก (label ซ่อน + tooltip + กรอบ) */
+    body.deletion-list-mode .deletion-filter-bar .filter-reset {
+      position: relative;
+      width: 42px;
+      min-width: 42px;
+      height: 48px;
+      min-height: 48px;
+      padding: 0;
+      border-color: #cfdbea;
+      background: #fff;
+      justify-content: center;
+    }
+    body.deletion-list-mode .deletion-filter-bar .filter-reset span {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+    }
+    /* DEL-PTO-001f: filter controls ต้องสูงเท่ากัน และ label ยาวต้อง ellipsis บรรทัดเดียว */
+    body.deletion-list-mode .deletion-filter-bar .user-advanced-filter,
+    body.deletion-list-mode .deletion-filter-bar .custom-select,
+    body.deletion-list-mode .deletion-filter-bar .custom-select-trigger {
+      min-width: 0;
+      height: 48px;
+      min-height: 48px;
+      max-height: 48px;
+    }
+    body.deletion-list-mode .deletion-filter-bar .custom-select-trigger {
+      display: flex;
+      align-items: center;
+      flex-wrap: nowrap;
+      overflow: hidden;
+    }
+    body.deletion-list-mode .deletion-filter-bar .custom-select-trigger [data-custom-select-label] {
+      display: block;
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
     .user-filter-actions {
       display: none;
     }
@@ -7118,6 +7171,70 @@
     body.user-list-mode .reported-comment-table .user-row.report-row:not(.head) {
       min-height: 66px;
       padding: 10px 22px;
+    }
+    /* DEL-PTO-001: Account Deletion Requests table grid (7 columns + action) */
+    body.deletion-list-mode .deletion-request-table .user-row {
+      grid-template-columns: minmax(88px, .5fr) minmax(160px, 1fr) minmax(64px, .38fr) minmax(128px, .74fr) minmax(128px, .74fr) minmax(128px, .74fr) minmax(132px, .76fr) minmax(56px, .28fr);
+      gap: 12px;
+    }
+    body.deletion-list-mode .deletion-request-table .user-row:not(.head) {
+      min-height: 66px;
+      padding: 10px 18px;
+      cursor: pointer;
+    }
+    body.deletion-list-mode .deletion-request-table .user-row > div {
+      min-width: 0;
+    }
+    /* DEL-PTO-001c: scroll ในกรอบตารางเดียวเหมือนหน้า list ที่ล็อก — แถวต้องไม่ล้น panel */
+    body.deletion-list-mode .main {
+      overflow-x: hidden;
+    }
+    body.deletion-list-mode .layout > .panel {
+      overflow: hidden;
+    }
+    body.deletion-list-mode #table {
+      max-width: 100%;
+      overflow: visible;
+      position: relative;
+    }
+    body.deletion-list-mode #table .deletion-request-table {
+      min-width: 1004px;
+    }
+    body.deletion-list-mode #table > .footer-range {
+      min-width: 1004px;
+      padding: 11px 18px;
+    }
+    /* DEL-PTO-001a: font size match Reported Users — 12px, weight 400, not bold */
+    body.deletion-list-mode .deletion-request-table .user-row.deletion-row:not(.head) .main-text,
+    body.deletion-list-mode .deletion-request-table .user-row.deletion-row:not(.head) .muted {
+      color: #516683;
+      font-size: 12px;
+      font-weight: 400;
+      line-height: 1.5;
+      margin-bottom: 0;
+    }
+    /* DEL-PTO-001a: link button สำหรับคอลัมน์ User — คลิกเปิด User Detail */
+    body.deletion-list-mode .deletion-request-table .link-btn {
+      padding: 0;
+      border: 0;
+      background: transparent;
+      color: var(--blue);
+      font-size: 12px;
+      font-weight: 700;
+      text-align: left;
+      cursor: pointer;
+      text-decoration: none;
+    }
+    body.deletion-list-mode .deletion-request-table .link-btn:hover {
+      text-decoration: underline;
+    }
+    /* DEL-PTO-001d: User ID ใต้ชื่อในคอลัมน์ User — muted 11px, match Reported Users secondary line */
+    body.deletion-list-mode .deletion-request-table .user-id-line {
+      margin-top: 2px;
+      font-size: 11px;
+      font-weight: 400;
+      color: #8194ab;
+      letter-spacing: .02em;
     }
     .user-row:not(.report-row) > div {
       min-width: 0;
@@ -9965,6 +10082,27 @@
       body.reported-board-mode .user-filter-bar.content-mode {
         grid-template-columns: minmax(0, 1fr) repeat(3, minmax(112px, .5fr)) 42px;
       }
+      /* DEL-PTO-001e: tablet filter bar — search + 3 filters + reset บรรทัดเดียว (เหมือน Articles List) */
+      body.deletion-list-mode .deletion-filter-bar {
+        grid-template-columns: minmax(0, 1fr) repeat(3, minmax(112px, .5fr)) 42px;
+      }
+      body.deletion-list-mode .deletion-filter-bar .search {
+        grid-column: auto;
+        min-width: 0;
+      }
+      body.deletion-list-mode .deletion-filter-bar .user-advanced-filter {
+        min-width: 0;
+      }
+      /* DEL-PTO-001e: tablet table scroll — เหมือน Option Master (scroll เฉพาะ container เดียว) */
+      body.deletion-list-mode #table {
+        max-width: 100%;
+        overflow-x: auto;
+        overflow-y: visible;
+        scrollbar-width: thin;
+      }
+      body.deletion-list-mode .deletion-request-table .user-row {
+        overflow-x: visible;
+      }
       body.market-list-mode .user-filter-bar.market-mode {
         grid-template-columns: minmax(0, 1fr) minmax(132px, .5fr) minmax(132px, .5fr) 42px;
       }
@@ -10158,6 +10296,10 @@
       body.article-list-mode .user-filter-bar.content-mode,
       body.reported-board-mode .user-filter-bar.content-mode {
         grid-template-columns: minmax(0, 1fr) repeat(3, minmax(112px, .5fr)) 42px;
+      }
+      /* DEL-PTO-001e: small tablet filter bar — search + 3 filters + reset บรรทัดเดียว */
+      body.deletion-list-mode .deletion-filter-bar {
+        grid-template-columns: minmax(0, 1fr) repeat(3, minmax(100px, .46fr)) 42px;
       }
       body.market-list-mode .user-filter-bar.market-mode {
         grid-template-columns: minmax(0, 1fr) minmax(132px, .5fr) minmax(132px, .5fr) 42px;
@@ -10862,7 +11004,8 @@
       body.market-list-mode .user-panel-filter-actions,
       body.user-accounts-mode .user-panel-filter-actions,
       body.option-master-mode .user-panel-filter-actions,
-      body.watch-alert-mode.watch-alert-list-mode .user-panel-filter-actions {
+      body.watch-alert-mode.watch-alert-list-mode .user-panel-filter-actions,
+      body.deletion-list-mode .user-panel-filter-actions {
         display: flex;
         align-items: center;
         justify-content: flex-end;
@@ -11097,6 +11240,75 @@
         display: none;
       }
       .user-row:not(.head).report-row > .user-row-actions {
+        grid-column: 2;
+        grid-row: 1;
+        align-self: center;
+        justify-self: end;
+        justify-content: flex-end;
+      }
+      /* DEL-PTO-001: Account Deletion Requests — mobile card layout */
+      body.deletion-list-mode .main {
+        overflow-x: hidden;
+      }
+      body.deletion-list-mode .layout > .panel {
+        overflow: hidden;
+      }
+      body.deletion-list-mode #table {
+        padding: 12px 14px 16px;
+        background: #f8fbff;
+        overflow-x: hidden;
+      }
+      body.deletion-list-mode #table .deletion-request-table {
+        min-width: 0;
+      }
+      body.deletion-list-mode #table > .footer-range {
+        min-width: 0;
+        margin-top: 12px;
+        padding: 13px 16px;
+        background: transparent;
+      }
+      /* DEL-PTO-001g: mobile card gap + pagination spacing ให้ตรงกับ Option Master */
+      body.deletion-list-mode #table .deletion-request-table {
+        grid-template-columns: 1fr;
+        gap: 12px;
+      }
+      /* DEL-PTO-001c: filter bar collapse เป็น 1 คอลัมน์ + search เต็มความกว้าง (เหมือนหน้าล็อก) */
+      body.deletion-list-mode .user-filter-bar.deletion-filter-bar {
+        grid-template-columns: 1fr;
+        width: 100%;
+      }
+      body.deletion-list-mode .user-filter-bar.deletion-filter-bar .search {
+        grid-column: 1 / -1;
+        width: 100%;
+      }
+      body.deletion-list-mode .deletion-request-table .user-row.deletion-row:not(.head) {
+        grid-template-columns: minmax(0, 1fr) 34px;
+        column-gap: 14px;
+        row-gap: 14px;
+        min-height: 0;
+        padding: 18px 18px 16px;
+        border-color: #cfdbd2;
+        border-radius: 10px;
+        box-shadow: 0 1px 2px rgba(15, 23, 42, .05);
+        cursor: pointer;
+        overflow: visible;
+      }
+      body.deletion-list-mode .deletion-request-table .user-row.deletion-row:not(.head) > div.user-cell-primary[data-label="Request ID"] .main-text {
+        max-width: 100%;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        color: #061426;
+        font-family: var(--font-heading);
+        font-size: 22px;
+        font-weight: 500;
+        letter-spacing: .04em;
+        line-height: 1;
+      }
+      body.deletion-list-mode .deletion-request-table .user-row.deletion-row:not(.head) > div[data-label]:not(.user-cell-primary) {
+        display: none;
+      }
+      body.deletion-list-mode .deletion-request-table .user-row.deletion-row:not(.head) > .user-row-actions {
         grid-column: 2;
         grid-row: 1;
         align-self: center;
@@ -14441,7 +14653,7 @@
       ]},
       { section: "งานตรวจสอบและบริการ", items: [
         { id: "watch-alerts", label: "Market Demand", icon: "alert", subs: ["Demand Overview", "Search Insights", "Watch Alert List"] },
-        { id: "deletions", label: "Account Deletion", icon: "delete", subs: ["Requests", "Grace Period", "Anonymization"] }
+        { id: "deletions", label: "Account Deletion", icon: "delete" }
       ]},
       { section: "เครื่องมือ & รายงาน", items: [
         { id: "reports", label: "Reports", icon: "reports", subs: ["User", "Asset", "Offer", "Search", "Export Jobs"] },
@@ -14572,11 +14784,10 @@
       // moduleData["watch-alerts"] เก็บเฉพาะ metadata สำหรับ fallback;
       // ข้อมูลจริงและการ render อยู่ใน watchAlertData + renderWatchAlert()
       "watch-alerts": mod("Market Demand", "งานตรวจสอบและบริการ / Market Demand", "Demand Overview", "ภาพรวมความต้องการตลาดจาก Search/Filter และ Watch Alert — read-only", "", [], []),
-      deletions: mod("Account Deletion", "งานตรวจสอบและบริการ / Account Deletion", "Deletion Requests", "ตรวจคำขอลบบัญชี, pending dependency, 30-day grace period และ anonymization", "ตรวจ dependency", [["Requests", "8", "รอ validation"], ["Blocked", "3", "มี pending offer"], ["Grace Period", "11", "นับ 30 วัน"], ["Anonymized", "42", "เดือนนี้"]], [
-        item("DEL-033", "Delete account request", "Archive Collector", "Account", "กลาง", "Blocked", "มี pending offer และ report context ค้างอยู่", ["Offer 1", "Report 1"], "ห้าม hard delete จนกว่า dependency ปิด"),
-        item("DEL-029", "Grace period day 12", "The Collector", "Account", "ปกติ", "Grace", "session revoked แล้ว profile public unavailable", ["30-day"], "รอครบกำหนด anonymization"),
-        item("DEL-020", "Archived summary", "old.user", "Account", "สูง", "Anonymized", "ครบ grace period และทำ anonymization แล้ว", ["PII masked"], "ดู audit summary และข้อมูลที่ถูกเก็บถาวร")
-      ]),
+      // DEL-PTO-001: Account Deletion Requests — mock data อยู่ใน deletionRequestData
+      // moduleData.deletions เก็บเฉพาะ metadata สำหรับ fallback;
+      // ข้อมูลจริงและการ render อยู่ใน deletionRequestData + renderDeletionRequests()
+      deletions: mod("Account Deletion", "งานตรวจสอบและบริการ / Account Deletion", "Deletion Requests", "ตรวจคำขอลบบัญชี, pending dependency, 30-day grace period และ anonymization", "ตรวจ dependency", [], []),
       reports: mod("Reports", "เครื่องมือ & รายงาน / Reports", "Reports & Analytics", "รายงาน user, asset, offer, chat, board, social, search, support, notification และ deletion", "สร้าง export", [["Dashboards", "12", "พร้อมใช้งาน"], ["Scheduled", "6", "ส่งประจำสัปดาห์"], ["Export Jobs", "5", "background"], ["Failed", "1", "retry needed"]], [
         item("RPT-USER", "User Risk Report", "Trust & Safety", "User", "สูง", "Ready", "รวม suspended, report count และ deletion state", ["CSV/PDF"], "Export ต้อง mask sensitive data"),
         item("RPT-ASSET", "Asset Moderation Report", "Operations", "Asset", "สูง", "Ready", "รวม reported assets และ force status change", ["Audit linked"], "ใช้ตรวจ SLA"),
@@ -15324,6 +15535,27 @@
       }
     ];
 
+    // DEL-PTO-001: Account Deletion Requests mock data
+    // 12 รายการ ครอบคลุม 5 สถานะคำขอ: รอดำเนินการ / คืนบัญชีแล้ว / ปฏิเสธคืนบัญชี / เก็บถาวรแล้ว / ลบตัวตนแล้ว
+    // และ 4 สถานะบัญชี: Deactivated / Active / Archived / Anonymized
+    // requestedRank/graceEndRank ใช้สำหรับ sort (YYYYMMDD)
+    const deletionRequestData = {
+      requests: [
+        { id: "DEL-033", userId: "U-1104", displayName: "Archive Collector", accountStatus: "Deactivated", requestStatus: "รอดำเนินการ", pendingOffers: 0, acceptedOffers: 1, assets: 6, chats: 3, reports: 1, requestedAt: "07 Sep 2026 09:15", requestedRank: 202609070915, graceEnds: "07 Oct 2026", graceEndsRank: 20261007, graceState: "active", daysLeft: 23, processedBy: "System", processedAt: "07 Sep 2026 09:15", updatedAt: "07 Sep 2026 09:15", seriousFlag: true, detail: "มี accepted offer และ report context ค้างอยู่ — ระบบยกเลิก offer Pending และปิดรายงานอัตโนมัติแล้ว" },
+        { id: "DEL-034", userId: "U-1130", displayName: "TimeCraft BKK", accountStatus: "Deactivated", requestStatus: "รอดำเนินการ", pendingOffers: 0, acceptedOffers: 0, assets: 2, chats: 1, reports: 0, requestedAt: "05 Sep 2026 14:22", requestedRank: 202609051422, graceEnds: "05 Oct 2026", graceEndsRank: 20261005, graceState: "active", daysLeft: 21, processedBy: "System", processedAt: "05 Sep 2026 14:22", updatedAt: "05 Sep 2026 14:22", seriousFlag: false, detail: "session revoked แล้ว profile public unavailable" },
+        { id: "DEL-035", userId: "U-1155", displayName: "Vintage Index", accountStatus: "Deactivated", requestStatus: "รอดำเนินการ", pendingOffers: 0, acceptedOffers: 2, assets: 11, chats: 5, reports: 0, requestedAt: "02 Sep 2026 10:08", requestedRank: 202609021008, graceEnds: "02 Oct 2026", graceEndsRank: 20261002, graceState: "ending", daysLeft: 3, processedBy: "อรนุช แก้วใส", processedAt: "02 Sep 2026 10:08", updatedAt: "06 Sep 2026 11:20", seriousFlag: false, detail: "ใกล้ครบ grace period — มี accepted offer 2 รายการใน retention" },
+        { id: "DEL-036", userId: "U-1170", displayName: "Seiko Corner", accountStatus: "Deactivated", requestStatus: "รอดำเนินการ", pendingOffers: 0, acceptedOffers: 0, assets: 5, chats: 2, reports: 0, requestedAt: "01 Sep 2026 18:30", requestedRank: 202609011830, graceEnds: "01 Oct 2026", graceEndsRank: 20261001, graceState: "ending", daysLeft: 2, processedBy: "System", processedAt: "01 Sep 2026 18:30", updatedAt: "06 Sep 2026 09:00", seriousFlag: false, detail: "ใกล้ครบ grace period" },
+        { id: "DEL-031", userId: "U-1090", displayName: "Omega Club TH", accountStatus: "Active", requestStatus: "คืนบัญชีแล้ว", pendingOffers: 0, acceptedOffers: 1, assets: 9, chats: 4, reports: 0, requestedAt: "20 Aug 2026 11:00", requestedRank: 202608201100, graceEnds: "19 Sep 2026", graceEndsRank: 20260919, graceState: "restored", daysLeft: null, processedBy: "มะลิ จันทร์ดี", processedAt: "25 Aug 2026 16:45", updatedAt: "25 Aug 2026 16:45", seriousFlag: false, detail: "แอดมินคืนบัญชีในช่วง grace period — account sync กลับ Active แล้ว" },
+        { id: "DEL-032", userId: "U-1101", displayName: "Daily Watch Hunter", accountStatus: "Active", requestStatus: "คืนบัญชีแล้ว", pendingOffers: 0, acceptedOffers: 0, assets: 1, chats: 0, reports: 0, requestedAt: "18 Aug 2026 08:04", requestedRank: 202608180804, graceEnds: "17 Sep 2026", graceEndsRank: 20260917, graceState: "restored", daysLeft: null, processedBy: "กิตติ Content", processedAt: "22 Aug 2026 10:15", updatedAt: "22 Aug 2026 10:15", seriousFlag: false, detail: "ผู้ใช้ติดต่อ support ขอคืนบัญชี — แอดมินคืนในช่วง grace period" },
+        { id: "DEL-028", userId: "U-1120", displayName: "The Collector", accountStatus: "Deactivated", requestStatus: "ปฏิเสธคืนบัญชี", pendingOffers: 0, acceptedOffers: 3, assets: 11, chats: 6, reports: 8, requestedAt: "10 Aug 2026 13:12", requestedRank: 202608101312, graceEnds: "09 Sep 2026", graceEndsRank: 20260909, graceState: "ending", daysLeft: 2, processedBy: "อรนุช แก้วใส", processedAt: "28 Aug 2026 14:20", updatedAt: "28 Aug 2026 14:20", seriousFlag: true, detail: "รายงานร้ายแรง 8 รายงาน — แอดมินปฏิเสธคืนบัญชี รอเก็บถาวรอัตโนมัติเมื่อครบ 30 วัน" },
+        { id: "DEL-029", userId: "U-1144", displayName: "Seiko Corner", accountStatus: "Deactivated", requestStatus: "ปฏิเสธคืนบัญชี", pendingOffers: 0, acceptedOffers: 0, assets: 5, chats: 2, reports: 2, requestedAt: "08 Aug 2026 09:30", requestedRank: 202608080930, graceEnds: "07 Sep 2026", graceEndsRank: 20260907, graceState: "expired", daysLeft: 0, processedBy: "มะลิ จันทร์ดี", processedAt: "30 Aug 2026 11:00", updatedAt: "30 Aug 2026 11:00", seriousFlag: false, detail: "ปฏิเสธคืนบัญชี — grace period ครบแล้ว รอระบบเก็บถาวรอัตโนมัติ" },
+        { id: "DEL-025", userId: "U-1075", displayName: "Rolex Rama9", accountStatus: "Archived", requestStatus: "เก็บถาวรแล้ว", pendingOffers: 0, acceptedOffers: 2, assets: 14, chats: 8, reports: 3, requestedAt: "15 Jul 2026 12:00", requestedRank: 202607151200, graceEnds: "14 Aug 2026", graceEndsRank: 20260814, graceState: "archived", daysLeft: null, processedBy: "System (auto)", processedAt: "14 Aug 2026 00:00", updatedAt: "14 Aug 2026 00:00", seriousFlag: false, detail: "ครบ grace period 30 วัน ระบบเก็บถาวรอัตโนมัติ — personal fields เริ่มถูก mask" },
+        { id: "DEL-026", userId: "U-1082", displayName: "Crown Time BKK", accountStatus: "Archived", requestStatus: "เก็บถาวรแล้ว", pendingOffers: 0, acceptedOffers: 1, assets: 18, chats: 12, reports: 4, requestedAt: "10 Jul 2026 16:44", requestedRank: 202607101644, graceEnds: "09 Aug 2026", graceEndsRank: 20260809, graceState: "archived", daysLeft: null, processedBy: "System (auto)", processedAt: "09 Aug 2026 00:00", updatedAt: "09 Aug 2026 00:00", seriousFlag: false, detail: "ครบ grace period ระบบเก็บถาวรอัตโนมัติ" },
+        { id: "DEL-020", userId: "U-1222", displayName: "old.user", accountStatus: "Anonymized", requestStatus: "ลบตัวตนแล้ว", pendingOffers: 0, acceptedOffers: 0, assets: 0, chats: 0, reports: 0, requestedAt: "17 Jan 2026 07:44", requestedRank: 202601170744, graceEnds: "16 Feb 2026", graceEndsRank: 20260216, graceState: "anonymized", daysLeft: null, processedBy: "System (auto)", processedAt: "17 Jul 2026 00:00", updatedAt: "17 Jul 2026 00:00", seriousFlag: false, detail: "ครบ retention period ระบบลบตัวตนอัตโนมัติ — personal fields ถูกแทนที่ด้วย anonymous value" },
+        { id: "DEL-021", userId: "U-1199", displayName: "Minimal Dial", accountStatus: "Anonymized", requestStatus: "ลบตัวตนแล้ว", pendingOffers: 0, acceptedOffers: 1, assets: 3, chats: 1, reports: 0, requestedAt: "05 Feb 2026 09:00", requestedRank: 202602050900, graceEnds: "07 Mar 2026", graceEndsRank: 20260307, graceState: "anonymized", daysLeft: null, processedBy: "System (auto)", processedAt: "05 Aug 2026 00:00", updatedAt: "05 Aug 2026 00:00", seriousFlag: false, detail: "ครบ retention period ระบบลบตัวตนอัตโนมัติ" }
+      ]
+    };
+
     const userManagementData = {
       users: [
         { id: "U-1002", displayName: "horology.king", username: "@horology.king", email: "ho***@gmail.com", auth: "Google", status: "Suspended", joined: "03 Jul 2026", joinedBucket: "7d", joinedRank: 20260703, lastActive: "10 Jul 2026 18:10", lastActiveBucket: "24h", lastActiveRank: 202607101810, assets: 2, assetBucket: "1-5", reports: 5, verification: "Google verified", contact: ["Line: horology.king"], support: "SUP-177", latest: "Report follow-up", reportState: "ตรวจแล้ว 5 รายงาน - บัญชีถูกระงับอยู่", statusLabel: "เข้าสู่ระบบไม่ได้", allowed: ["Restore", "Ban"], blocked: ["Reset password", "Deletion from list"], foImpact: "ผู้ใช้เข้าสู่ระบบไม่ได้ระหว่างถูกระงับบัญชีชั่วคราว", actionNote: "การเปลี่ยนสถานะต้องระบุเหตุผล แสดงผลกระทบ และบันทึกการดำเนินการ" },
@@ -15463,7 +15695,7 @@
         { title: "รายงานสินทรัพย์", count: 22, priority: "high", detail: "รายการเก่าสุดรอตรวจ 22 ชม. / เหตุผลหลัก: รูปซ้ำและข้อมูลประกาศซ้ำ / ควรตรวจวันนี้", chips: ["ใกล้ครบกำหนด 6", "ผู้ใช้กระทบสูง"], module: "assets", sub: "Reported Assets" },
         { title: "รายงานผู้ใช้", count: 5, priority: "high", detail: "มีรายงานโปรไฟล์ซ้ำและพฤติกรรมขายซ้ำ / ควรตรวจบัญชีที่ถูก report หลายครั้งก่อน", chips: ["ใกล้ครบกำหนด 3", "ตรวจประวัติ login"], module: "users", sub: "Reported Users" },
         { title: "รายงานบทความ", count: 3, priority: "high", detail: "มีรายงานบทความจาก FO Board รอตรวจ / ตรวจเหตุผลและสถานะบทความก่อนปิดรายงานหรือ archive", chips: ["Articles 3", "รอตรวจ"], module: "content", sub: "Reported Articles" },
-        { title: "คำขอลบบัญชี", count: 8, priority: "medium", detail: "มี 2 คำขอที่ยังลบไม่ได้ เพราะมีข้อเสนอซื้อค้างอยู่", chips: ["Blocked 2", "Grace period 4"], module: "deletions", sub: "Requests" },
+        { title: "คำขอลบบัญชี", count: 8, priority: "medium", detail: "มี 2 คำขอที่ยังลบไม่ได้ เพราะมีข้อเสนอซื้อค้างอยู่", chips: ["Blocked 2", "Grace period 4"], module: "deletions", sub: "" },
         { title: "บทความรอเผยแพร่", count: 4, priority: "normal", detail: "บทความ Board ตั้งเวลาเผยแพร่แล้ว / ตรวจ preview และรูป cover ก่อนถึงเวลา", chips: ["เผยแพร่วันนี้ 2", "ต้อง preview"], module: "content", sub: "Articles" },
         { title: "ข้อมูลตลาดรอตรวจ", count: 6, priority: "normal", detail: "brand, model และ price index จาก sync มีข้อมูลซ้ำ / ควรตรวจ Sync History ก่อนใช้กับ Search และ Watch Alert", chips: ["Sync issue 6", "Price index"], module: "market", sub: "Sync History" },
         { title: "แจ้งเตือนส่งไม่สำเร็จ", count: 92, priority: "normal", detail: "มี token หมดอายุและงานส่งซ้ำได้ / ตรวจ retry queue และ cleanup invalid token", chips: ["Retryable 81", "Cleanup 11"], module: "notifications", sub: "Delivery Logs" }
@@ -16620,6 +16852,10 @@
     let boardReportListPage = 1;
     let boardReportFilterOpen = false;
     let reportedCommentFilterOpen = false;
+    // DEL-PTO-001: Account Deletion Requests list state
+    let deletionListPage = 1;
+    let deletionFilterOpen = false;
+    const deletionListPageSize = 10;
     let optionGroupListPage = 1;
     let optionDetailPage = 1;
     let activeOptionGroup = "";
@@ -16648,7 +16884,8 @@
       "market-brand-detail": { searchId: "market-model-search", filterIds: [] },
       "market-model-detail": { searchId: "market-reference-search", filterIds: [] },
       "market-sync": { searchId: "market-search", filterIds: ["market-status-filter"] },
-      "market-queue": { searchId: "market-search", filterIds: ["market-status-filter", "market-brand-filter"] }
+      "market-queue": { searchId: "market-search", filterIds: ["market-status-filter", "market-brand-filter"] },
+      "deletion-list": { searchId: "deletion-search", filterIds: ["deletion-status-filter", "deletion-grace-filter", "deletion-sort"] }
     };
     let activeAssetImageIndex = 0;
     let activeAssetReportModalImageIndex = 0;
@@ -17197,6 +17434,7 @@
       }
       if (activeModule === "option-master") return activeOptionGroup ? "option-detail" : "option-group-list";
       if (activeModule === "watch-alerts") return activeSub === "Watch Alert List" || activeSub === "Alert List" ? "watch-alert-list" : null;
+      if (activeModule === "deletions") return "deletion-list";
       if (activeModule === "market") {
         if (activeSub === "Brands & Models") {
           if (document.querySelector("#market-reference-search")) return "market-model-detail";
@@ -17279,6 +17517,7 @@
       optionDetailFilterOpen = false;
       optionGroupFilterOpen = false;
       watchAlertListFilterOpen = false;
+      deletionFilterOpen = false;
     }
 
     function renderNav() {
@@ -17434,6 +17673,36 @@
         { value: "Failed", label: "ล้มเหลว" },
         { value: "Partial", label: "สำเร็จบางส่วน" },
         { value: "Completed", label: "สำเร็จ" }
+      ],
+      deletionRequestStatus: [
+        { value: "", label: "สถานะคำขอทั้งหมด" },
+        { value: "รอดำเนินการ", label: "รอดำเนินการ" },
+        { value: "คืนบัญชีแล้ว", label: "คืนบัญชีแล้ว" },
+        { value: "ปฏิเสธคืนบัญชี", label: "ปฏิเสธคืนบัญชี" },
+        { value: "เก็บถาวรแล้ว", label: "เก็บถาวรแล้ว" },
+        { value: "ลบตัวตนแล้ว", label: "ลบตัวตนแล้ว" }
+      ],
+      deletionAccountStatus: [
+        { value: "", label: "สถานะบัญชีทั้งหมด" },
+        { value: "Deactivated", label: "Deactivated" },
+        { value: "Active", label: "Active" },
+        { value: "Archived", label: "Archived" },
+        { value: "Anonymized", label: "Anonymized" }
+      ],
+      deletionGraceState: [
+        { value: "", label: "สถานะระยะผ่อนผันทั้งหมด" },
+        { value: "active", label: "ยังนับอยู่" },
+        { value: "ending", label: "ใกล้ครบกำหนด" },
+        { value: "expired", label: "ครบแล้ว" },
+        { value: "restored", label: "คืนบัญชีแล้ว" },
+        { value: "archived", label: "เก็บถาวรแล้ว" },
+        { value: "anonymized", label: "ลบตัวตนแล้ว" }
+      ],
+      deletionSort: [
+        { value: "latest", label: filterCopy.latestFirst },
+        { value: "oldest", label: filterCopy.oldestFirst },
+        { value: "graceEnds", label: "วันครบกำหนด" },
+        { value: "status", label: "สถานะคำขอ" }
       ]
     };
 
@@ -20125,6 +20394,147 @@
       if (!options.preserveScroll) scrollMainToTop();
     }
 
+    // DEL-PTO-001: Account Deletion Requests — list page renderer
+    // pattern: Reported Users (full-width panel, filter bar, table + mobile card, pagination)
+    // body class: deletion-list-mode (ไม่ใช้ user-list-mode เพื่อไม่กระทบ protected screens)
+    function deletionRequestStatusPill(status) {
+      const map = {
+        "รอดำเนินการ": "amber",
+        "คืนบัญชีแล้ว": "green",
+        "ปฏิเสธคืนบัญชี": "red",
+        "เก็บถาวรแล้ว": "gray",
+        "ลบตัวตนแล้ว": "charcoal"
+      };
+      return `<span class="pill ${map[status] || "blue"}">${status}</span>`;
+    }
+
+    function deletionAccountStatusPill(status) {
+      const map = {
+        "Active": "green",
+        "Deactivated": "amber",
+        "Archived": "gray",
+        "Anonymized": "charcoal"
+      };
+      return `<span class="pill ${map[status] || "blue"}">${status}</span>`;
+    }
+
+    function deletionGracePill(state, daysLeft) {
+      const map = {
+        "active": { cls: "blue", label: daysLeft != null ? `เหลือ ${daysLeft} วัน` : "ยังนับอยู่" },
+        "ending": { cls: "amber", label: daysLeft != null ? `เหลือ ${daysLeft} วัน` : "ใกล้ครบกำหนด" },
+        "expired": { cls: "red", label: "ครบแล้ว" },
+        "restored": { cls: "green", label: "คืนบัญชีแล้ว" },
+        "archived": { cls: "gray", label: "เก็บถาวรแล้ว" },
+        "anonymized": { cls: "charcoal", label: "ลบตัวตนแล้ว" }
+      };
+      const entry = map[state] || { cls: "blue", label: state };
+      return `<span class="pill ${entry.cls}">${entry.label}</span>`;
+    }
+
+    // DEL-PTO-001a: Grace Period cell — countdown pill เท่านั้น
+    function deletionGraceCell(r) {
+      return deletionGracePill(r.graceState, r.daysLeft);
+    }
+
+    function getDeletionSearchText(request) {
+      return [request.id, request.userId, request.displayName, request.requestStatus, request.accountStatus, request.detail].join(" ").toLowerCase();
+    }
+
+    function renderDeletionRequests() {
+      setPageActions("");
+      document.body.classList.add("deletion-list-mode");
+      document.body.classList.remove("user-list-mode", "user-detail-mode", "asset-detail-mode");
+      activeRow = null;
+      document.querySelector("#crumb").textContent = "งานตรวจสอบและบริการ / Account Deletion";
+      document.querySelector("#page-title").textContent = "Account Deletion Requests";
+      document.querySelector("#page-meta").textContent = "";
+      document.querySelector("#panel-title").textContent = "Deletion Requests List";
+      document.querySelector("#panel-subtitle").textContent = "";
+      document.querySelector("#primary-action").textContent = "ตรวจ dependency";
+      document.querySelector("#user-panel-filter-actions").innerHTML = `
+        <button class="btn user-filter-toggle" type="button" data-deletion-filter-toggle aria-expanded="${deletionFilterOpen}">${iconSvg.filter}<span>${deletionFilterOpen ? "ปิดตัวกรอง" : "เปิดตัวกรอง"}</span></button>
+        <button class="btn" type="button" data-deletion-reset aria-label="รีเซ็ตค่าทั้งหมด">${iconSvg.refresh}<span>รีเซ็ตค่าทั้งหมด</span></button>
+      `;
+      document.querySelector(".filters").innerHTML = `
+        <div class="user-filter-bar deletion-filter-bar" data-filter-open="${deletionFilterOpen}">
+          <input class="field search" id="deletion-search" type="search" placeholder="ค้นหา Request ID, User ID, ชื่อ" />
+          <div class="user-advanced-filter">${customSelect("deletion-status-filter", "Filter request status", filterOptions("deletionRequestStatus"))}</div>
+          <div class="user-advanced-filter">${customSelect("deletion-grace-filter", "Filter grace period state", filterOptions("deletionGraceState"))}</div>
+          <div class="user-advanced-filter">${customSelect("deletion-sort", "Sort deletion requests", filterOptions("deletionSort"), "latest")}</div>
+          ${resetFilterButton("data-deletion-reset")}
+        </div>
+      `;
+      // DEL-PTO-001a: ไม่แสดง KPI cards — ตาม source pattern (Reported Users) ที่ไม่มี summary cards
+      // ข้อมูลที่จะสรุปซ้ำซ้อนกับตารางและ filter ได้แล้ว; archive/anonymize เป็น system job อัตโนมัติ (vanity metric)
+      document.querySelector("#summary-grid").innerHTML = "";
+      document.querySelector("#cards").innerHTML = "";
+      document.querySelector("#detail").innerHTML = "";
+      restoreListFilterState("deletion-list");
+      renderDeletionRows();
+    }
+
+    function renderDeletionRows() {
+      const q = (document.querySelector("#deletion-search")?.value || "").trim().toLowerCase();
+      const status = document.querySelector("#deletion-status-filter")?.value || "";
+      const grace = document.querySelector("#deletion-grace-filter")?.value || "";
+      const sort = document.querySelector("#deletion-sort")?.value || "latest";
+      const sorted = [...deletionRequestData.requests].filter(r => {
+        return (!q || getDeletionSearchText(r).includes(q))
+          && (!status || r.requestStatus === status)
+          && (!grace || r.graceState === grace);
+      }).sort((a, b) => {
+        if (sort === "oldest") return a.requestedRank - b.requestedRank;
+        if (sort === "graceEnds") return a.graceEndsRank - b.graceEndsRank;
+        if (sort === "status") return a.requestStatus.localeCompare(b.requestStatus, "th");
+        return b.requestedRank - a.requestedRank;
+      });
+      const pageCount = Math.max(1, Math.ceil(sorted.length / deletionListPageSize));
+      deletionListPage = Math.min(deletionListPage, pageCount);
+      const start = (deletionListPage - 1) * deletionListPageSize;
+      const pageRows = sorted.slice(start, start + deletionListPageSize);
+      document.querySelector("#table").innerHTML = `
+        <div class="user-table deletion-request-table">
+          <div class="user-row head"><div>Request ID</div><div>User</div><div>Assets</div><div>Request Status</div><div>Account Status</div><div>Grace Period</div><div>Requested At</div><div>Action</div></div>
+          ${pageRows.map(r => {
+            return `
+            <div class="user-row deletion-row" data-deletion-card="${r.id}">
+              <div class="user-cell-primary" data-label="Request ID"><div class="main-text">${r.id}</div></div>
+              <div class="user-card-tags">
+                ${deletionRequestStatusPill(r.requestStatus)}
+                ${deletionAccountStatusPill(r.accountStatus)}
+                ${deletionGracePill(r.graceState, r.daysLeft)}
+                ${r.seriousFlag ? `<span class="pill red">ธงร้ายแรง</span>` : ""}
+                <span class="user-card-tag asset-tag">${r.assets} assets</span>
+                <div class="user-card-meta">
+                  <div class="user-card-meta-item comment-field-meta"><span>Grace ends</span><strong>${r.graceEnds}</strong></div>
+                  <div class="user-card-meta-item comment-field-meta"><span>Requested at</span><strong>${r.requestedAt}</strong></div>
+                </div>
+              </div>
+              <div data-label="User"><button class="link-btn" type="button" data-user-open="${r.userId}">${r.displayName}</button><div class="muted user-id-line">${r.userId}</div></div>
+              <div data-label="Assets"><div class="main-text">${r.assets}</div></div>
+              <div data-label="Request Status">${deletionRequestStatusPill(r.requestStatus)}</div>
+              <div data-label="Account Status">${deletionAccountStatusPill(r.accountStatus)}</div>
+              <div data-label="Grace Period">${deletionGraceCell(r)}</div>
+              <div data-label="Requested At"><div class="muted">${r.requestedAt}</div></div>
+              <div class="user-row-actions">
+                <details class="row-menu">
+                  <summary aria-label="Deletion request actions">...</summary>
+                  <div class="row-menu-list">
+                    <button type="button" data-deletion-open="${r.id}">ดูรายละเอียด</button>
+                  </div>
+                </details>
+              </div>
+            </div>
+          `;
+          }).join("") || `<div class="detail-empty user-empty">ไม่มีคำขอลบบัญชี</div>`}
+        </div>
+        <div class="footer-range">
+          <span>แสดง ${sorted.length ? `${start + 1}-${Math.min(start + deletionListPageSize, sorted.length)}` : "0"} จาก ${sorted.length}</span>
+          ${renderPager(deletionListPage, pageCount, "data-deletion-page")}
+        </div>
+      `;
+    }
+
     function renderUserManagement(subLabel = "User Accounts") {
       const mode = subLabel === "Report User" || subLabel === "Reported Users" ? "reports" : "list";
       const isReports = mode === "reports";
@@ -21302,15 +21712,13 @@
       showSuccessToast(config.success(user));
     }
 
-    function openAccountDeletionRequest(user, subLabel = "Requests") {
+    function openAccountDeletionRequest(user, subLabel = "") {
       const deletionId = user?.support?.startsWith("DEL-") ? user.support : "";
       renderModule("deletions", subLabel, subLabel);
       if (deletionId) {
-        document.querySelector("#search").value = deletionId;
-        const deletionRow = moduleData.deletions.rows.find(row => row.id === deletionId);
-        activeRow = deletionRow || moduleData.deletions.rows[0];
-        renderRows();
-        renderDetail(activeRow);
+        const searchInput = document.querySelector("#deletion-search");
+        if (searchInput) searchInput.value = deletionId;
+        renderDeletionRows();
       }
       scrollMainToTop();
     }
@@ -21323,7 +21731,7 @@
         return;
       }
       if (action === "View archived summary") {
-        openAccountDeletionRequest(user, "Anonymization");
+        openAccountDeletionRequest(user, "");
         return;
       }
       if (userActionConfig[action]) {
@@ -22007,6 +22415,8 @@
       document.body.classList.toggle("watch-alert-mode", id === "watch-alerts");
       document.body.classList.toggle("watch-alert-overview-mode", id === "watch-alerts" && ((subLabel || "Demand Overview") === "Demand Overview" || subLabel === "Search Insights"));
       document.body.classList.toggle("watch-alert-list-mode", id === "watch-alerts" && (subLabel === "Watch Alert List" || subLabel === "Alert List"));
+      // DEL-PTO-001: Account Deletion Requests list mode
+      document.body.classList.toggle("deletion-list-mode", id === "deletions");
       document.body.classList.toggle("user-list-mode", id === "users" || isReportedAssets || isReportedBoard || isReportedComments);
       document.body.classList.toggle("user-accounts-mode", id === "users" && (subLabel || "User Accounts") === "User Accounts");
       document.body.classList.remove("asset-detail-mode");
@@ -22037,6 +22447,12 @@
       }
       if (id === "watch-alerts") {
         renderWatchAlert(subLabel || "Demand Overview");
+        updateActiveNav();
+        return;
+      }
+      // DEL-PTO-001: Account Deletion Requests — list page (detail จะต่อใน DEL-PTO-002)
+      if (id === "deletions") {
+        renderDeletionRequests();
         updateActiveNav();
         return;
       }
@@ -26441,7 +26857,7 @@
       // body class: keep watch-alert-mode, add watch-alert-detail-mode, remove list/overview modes
       document.body.classList.add("watch-alert-mode", "watch-alert-detail-mode");
       document.body.classList.remove("watch-alert-list-mode", "watch-alert-overview-mode");
-      document.body.classList.remove("dashboard-mode", "user-management-mode", "asset-list-mode", "article-list-mode", "category-list-mode", "reported-board-mode", "market-list-mode", "market-dashboard-mode", "user-list-mode", "user-detail-mode", "asset-detail-mode", "offer-list-mode", "offer-detail-mode", "option-master-mode", "option-group-list-mode", "option-detail-mode");
+      document.body.classList.remove("dashboard-mode", "user-management-mode", "asset-list-mode", "article-list-mode", "category-list-mode", "reported-board-mode", "market-list-mode", "market-dashboard-mode", "user-list-mode", "user-detail-mode", "asset-detail-mode", "offer-list-mode", "offer-detail-mode", "option-master-mode", "option-group-list-mode", "option-detail-mode", "deletion-list-mode");
 
       // breadcrumb + page header + back button
       document.querySelector("#crumb").textContent = `งานตรวจสอบและบริการ / Market Demand / Watch Alert List / ${alert.id}`;
@@ -33639,7 +34055,7 @@
       activeSub = "";
       activeRow = offer;
       document.body.classList.add("offer-list-mode", "offer-detail-mode");
-      document.body.classList.remove("dashboard-mode", "user-management-mode", "asset-list-mode", "article-list-mode", "category-list-mode", "reported-board-mode", "market-list-mode", "market-dashboard-mode", "user-list-mode", "user-detail-mode", "asset-detail-mode");
+      document.body.classList.remove("dashboard-mode", "user-management-mode", "asset-list-mode", "article-list-mode", "category-list-mode", "reported-board-mode", "market-list-mode", "market-dashboard-mode", "user-list-mode", "user-detail-mode", "asset-detail-mode", "deletion-list-mode");
       document.querySelector("#crumb").textContent = `การดำเนินงาน / Offer Management / Offer Detail / ${offer.id}`;
       document.querySelector("#page-title").textContent = "Offer Detail";
       document.querySelector("#page-meta").textContent = "";
@@ -33777,6 +34193,7 @@
       if (b.classList.contains("category-list-mode")) return true;
       if (b.classList.contains("asset-list-mode") && !b.classList.contains("article-list-mode") && !b.classList.contains("category-list-mode") && !b.classList.contains("reported-board-mode")) return true;
       if (b.classList.contains("user-list-mode")) return true;
+      if (b.classList.contains("deletion-list-mode")) return true;
       return false;
     }
     document.addEventListener("toggle", event => {
@@ -34079,6 +34496,13 @@
           renderWatchAlertListRows();
           return;
         }
+        // DEL-PTO-001: Account Deletion Requests filter selects
+        if (["deletion-status-filter", "deletion-grace-filter", "deletion-sort"].includes(hiddenInput.id) && activeModule === "deletions") {
+          deletionListPage = 1;
+          saveCurrentListFilterState();
+          renderDeletionRows();
+          return;
+        }
         userListPage = 1;
         saveCurrentListFilterState();
         if (activeModule === "users" && (activeSub === "Report User" || activeSub === "Reported Users")) renderReportedUserRows();
@@ -34323,6 +34747,22 @@
         pushBackNavigationContext();
         renderWatchAlertDetail(id);
         return;
+      }
+      // DEL-PTO-001: Account Deletion Requests — row click placeholder
+      // (detail page จะต่อใน DEL-PTO-002)
+      const deletionOpen = event.target.closest("[data-deletion-open], .user-row[data-deletion-card]");
+      if (deletionOpen && activeModule === "deletions") {
+        // ปุ่ม data-user-open ในคอลัมน์ User ให้ไปที่ user-open handler แทน
+        if (event.target.closest("[data-user-open]")) {
+          // ปล่อยไปยัง user-open handler ด้านล่าง
+        } else if (event.target.closest("button") && !event.target.closest("[data-deletion-open]")) {
+          return;
+        } else {
+          const id = deletionOpen.dataset.deletionOpen || deletionOpen.dataset.deletionCard;
+          // TODO DEL-PTO-002: renderDeletionDetail(id)
+          console.log("DEL-PTO-001: open deletion detail", id);
+          return;
+        }
       }
       const articleOpenButton = event.target.closest("[data-article-open]");
       if (articleOpenButton) {
@@ -35483,6 +35923,34 @@
         if (label) label.textContent = reportedCommentFilterOpen ? "ปิดตัวกรอง" : "เปิดตัวกรอง";
         return;
       }
+      // DEL-PTO-001: Account Deletion Requests — filter toggle + reset
+      const deletionFilterToggle = event.target.closest("[data-deletion-filter-toggle]");
+      if (deletionFilterToggle) {
+        deletionFilterOpen = !deletionFilterOpen;
+        const filterBar = document.querySelector(".user-filter-bar.deletion-filter-bar");
+        if (filterBar) filterBar.dataset.filterOpen = String(deletionFilterOpen);
+        deletionFilterToggle.setAttribute("aria-expanded", String(deletionFilterOpen));
+        const label = deletionFilterToggle.querySelector("span");
+        if (label) label.textContent = deletionFilterOpen ? "ปิดตัวกรอง" : "เปิดตัวกรอง";
+        return;
+      }
+      const deletionReset = event.target.closest("[data-deletion-reset]");
+      if (deletionReset) {
+        deletionListPage = 1;
+        clearListFilterState("deletion-list");
+        renderDeletionRequests();
+        return;
+      }
+      const deletionPageButton = event.target.closest("[data-deletion-page]");
+      if (deletionPageButton) {
+        const target = deletionPageButton.dataset.deletionPage;
+        if (target === "prev") deletionListPage = Math.max(1, deletionListPage - 1);
+        else if (target === "next") deletionListPage += 1;
+        else deletionListPage = Number(target) || 1;
+        saveCurrentListFilterState();
+        renderDeletionRows();
+        return;
+      }
       const articlePageButton = event.target.closest("[data-article-page]");
       if (articlePageButton) {
         const target = articlePageButton.dataset.articlePage;
@@ -36144,6 +36612,13 @@
         offerListPage = 1;
         saveCurrentListFilterState();
         renderOfferListRows();
+        return;
+      }
+      // DEL-PTO-001: Account Deletion Requests search
+      if (event.target.matches("#deletion-search")) {
+        deletionListPage = 1;
+        saveCurrentListFilterState();
+        renderDeletionRows();
         return;
       }
       if (event.target.matches("#search")) {
