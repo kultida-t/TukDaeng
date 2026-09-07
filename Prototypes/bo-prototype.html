@@ -2130,7 +2130,8 @@
     body.reported-board-mode #primary-action,
     body.market-list-mode #primary-action,
     body.user-list-mode #primary-action,
-    body.option-master-mode #primary-action {
+    body.option-master-mode #primary-action,
+    body.deletion-list-mode #primary-action {
       display: none;
     }
     body.article-list-mode .panel-head,
@@ -5158,14 +5159,15 @@
     /* row-menu: hide until JS positions it as fixed to avoid clipping by #table overflow.
        BO-OPT-006g: extended from Option Detail/Group List to all modes where #table has
        overflow-x: auto (reported-board, article-list, category-list, asset-list,
-       user-list including User Accounts, Reported Users/Assets/Comments). */
+       user-list including User Accounts, Reported Users/Assets/Comments, Account Deletion). */
     body.option-master-mode.option-detail-mode .row-menu-list,
     body.option-master-mode.option-group-list-mode .row-menu-list,
     body.reported-board-mode .row-menu-list,
     body.article-list-mode .row-menu-list,
     body.category-list-mode .row-menu-list,
     body.asset-list-mode:not(.article-list-mode):not(.category-list-mode):not(.reported-board-mode) .row-menu-list,
-    body.user-list-mode .row-menu-list {
+    body.user-list-mode .row-menu-list,
+    body.deletion-list-mode .row-menu-list {
       visibility: hidden;
       opacity: 0;
       transition: opacity 120ms ease-out;
@@ -5176,7 +5178,8 @@
     body.article-list-mode .row-menu-list.is-fixed,
     body.category-list-mode .row-menu-list.is-fixed,
     body.asset-list-mode:not(.article-list-mode):not(.category-list-mode):not(.reported-board-mode) .row-menu-list.is-fixed,
-    body.user-list-mode .row-menu-list.is-fixed {
+    body.user-list-mode .row-menu-list.is-fixed,
+    body.deletion-list-mode .row-menu-list.is-fixed {
       visibility: visible;
       opacity: 1;
     }
@@ -10857,6 +10860,12 @@
         justify-content: space-between;
         gap: 10px;
       }
+      body.deletion-list-mode .panel-head {
+        align-items: center;
+        flex-direction: row;
+        justify-content: space-between;
+        gap: 10px;
+      }
       body.offer-detail-mode .layout > .panel > .panel-head {
         display: none !important;
         min-height: 0 !important;
@@ -14787,7 +14796,7 @@
       // DEL-PTO-001: Account Deletion Requests — mock data อยู่ใน deletionRequestData
       // moduleData.deletions เก็บเฉพาะ metadata สำหรับ fallback;
       // ข้อมูลจริงและการ render อยู่ใน deletionRequestData + renderDeletionRequests()
-      deletions: mod("Account Deletion", "งานตรวจสอบและบริการ / Account Deletion", "Deletion Requests", "ตรวจคำขอลบบัญชี, pending dependency, 30-day grace period และ anonymization", "ตรวจ dependency", [], []),
+      deletions: mod("Account Deletion", "งานตรวจสอบและบริการ / Account Deletion", "Deletion Requests", "ตรวจคำขอลบบัญชี, pending dependency, 30-day grace period และ anonymization", "", [], []),
       reports: mod("Reports", "เครื่องมือ & รายงาน / Reports", "Reports & Analytics", "รายงาน user, asset, offer, chat, board, social, search, support, notification และ deletion", "สร้าง export", [["Dashboards", "12", "พร้อมใช้งาน"], ["Scheduled", "6", "ส่งประจำสัปดาห์"], ["Export Jobs", "5", "background"], ["Failed", "1", "retry needed"]], [
         item("RPT-USER", "User Risk Report", "Trust & Safety", "User", "สูง", "Ready", "รวม suspended, report count และ deletion state", ["CSV/PDF"], "Export ต้อง mask sensitive data"),
         item("RPT-ASSET", "Asset Moderation Report", "Operations", "Asset", "สูง", "Ready", "รวม reported assets และ force status change", ["Audit linked"], "ใช้ตรวจ SLA"),
@@ -20431,8 +20440,12 @@
       return `<span class="pill ${entry.cls}">${entry.label}</span>`;
     }
 
-    // DEL-PTO-001a: Grace Period cell — countdown pill เท่านั้น
+    // DEL-PTO-001a: Grace Period cell — countdown pill เฉพาะตอนยังนับอยู่
+    // terminal states (restored/archived/anonymized) ซ้ำกับ request status → แสดง "—"
     function deletionGraceCell(r) {
+      if (["restored", "archived", "anonymized"].includes(r.graceState)) {
+        return `<span class="muted">—</span>`;
+      }
       return deletionGracePill(r.graceState, r.daysLeft);
     }
 
@@ -20450,7 +20463,7 @@
       document.querySelector("#page-meta").textContent = "";
       document.querySelector("#panel-title").textContent = "Deletion Requests List";
       document.querySelector("#panel-subtitle").textContent = "";
-      document.querySelector("#primary-action").textContent = "ตรวจ dependency";
+      document.querySelector("#primary-action").textContent = "";
       document.querySelector("#user-panel-filter-actions").innerHTML = `
         <button class="btn user-filter-toggle" type="button" data-deletion-filter-toggle aria-expanded="${deletionFilterOpen}">${iconSvg.filter}<span>${deletionFilterOpen ? "ปิดตัวกรอง" : "เปิดตัวกรอง"}</span></button>
         <button class="btn" type="button" data-deletion-reset aria-label="รีเซ็ตค่าทั้งหมด">${iconSvg.refresh}<span>รีเซ็ตค่าทั้งหมด</span></button>
@@ -20501,13 +20514,13 @@
               <div class="user-cell-primary" data-label="Request ID"><div class="main-text">${r.id}</div></div>
               <div class="user-card-tags">
                 ${deletionRequestStatusPill(r.requestStatus)}
-                ${deletionAccountStatusPill(r.accountStatus)}
-                ${deletionGracePill(r.graceState, r.daysLeft)}
-                ${r.seriousFlag ? `<span class="pill red">ธงร้ายแรง</span>` : ""}
+                ${["restored", "archived", "anonymized"].includes(r.graceState) ? "" : deletionGracePill(r.graceState, r.daysLeft)}
                 <span class="user-card-tag asset-tag">${r.assets} assets</span>
                 <div class="user-card-meta">
-                  <div class="user-card-meta-item comment-field-meta"><span>Grace ends</span><strong>${r.graceEnds}</strong></div>
-                  <div class="user-card-meta-item comment-field-meta"><span>Requested at</span><strong>${r.requestedAt}</strong></div>
+                  <div class="user-card-meta-item comment-field-meta"><span>User ID</span><strong>${r.userId}</strong></div>
+                  <div class="user-card-meta-item comment-field-meta"><span>User</span><strong>${r.displayName}</strong></div>
+                  <div class="user-card-meta-item comment-field-meta"><span>Account Status</span><strong>${r.accountStatus}</strong></div>
+                  <div class="user-card-meta-item comment-field-meta"><span>Requested At</span><strong>${r.requestedAt}</strong></div>
                 </div>
               </div>
               <div data-label="User"><button class="link-btn" type="button" data-user-open="${r.userId}">${r.displayName}</button><div class="muted user-id-line">${r.userId}</div></div>
