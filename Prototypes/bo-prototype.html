@@ -7537,28 +7537,6 @@
     }
     .deletion-dep-link:hover { text-decoration: underline; }
 
-    /* assets by status sub-grid */
-    .deletion-asset-status-grid {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 8px;
-      padding: 10px 12px;
-      border: 1px solid #e1e9f3;
-      border-radius: 8px;
-      background: #f8fbff;
-    }
-    .deletion-asset-status-grid .deletion-asset-status-label {
-      grid-column: 1 / -1;
-      color: var(--muted);
-      font-size: 12px;
-      font-weight: 700;
-    }
-    .deletion-asset-status-grid .detail-tile {
-      border: 0;
-      background: transparent;
-      padding: 4px 0;
-    }
-
     /* archive/anonymization plan table — 2 columns (Data / Action) */
     .deletion-archive-plan-table {
       display: flex;
@@ -7616,15 +7594,13 @@
 
     /* responsive — tablet 768px: detail-grid 3 → 2, archive plan ยัง 2 columns */
     @media (max-width: 1180px) {
-      body.deletion-detail-mode .deletion-detail-page .detail-grid.three,
-      body.deletion-detail-mode .deletion-asset-status-grid {
+      body.deletion-detail-mode .deletion-detail-page .detail-grid.three {
         grid-template-columns: repeat(2, minmax(0, 1fr));
       }
     }
     /* responsive — mobile 760px: detail-grid → 1 column, archive plan → stacked, action buttons full width */
     @media (max-width: 760px) {
-      body.deletion-detail-mode .deletion-detail-page .detail-grid.three,
-      body.deletion-detail-mode .deletion-asset-status-grid {
+      body.deletion-detail-mode .deletion-detail-page .detail-grid.three {
         grid-template-columns: 1fr;
       }
       body.deletion-detail-mode .deletion-archive-plan-row {
@@ -15956,7 +15932,7 @@
     // requestedRank/graceEndRank ใช้สำหรับ sort (YYYYMMDD)
     const deletionRequestData = {
       requests: [
-        { id: "DEL-033", userId: "U-1104", displayName: "Archive Collector", accountStatus: "Deactivated", requestStatus: "รอดำเนินการ", pendingOffers: 0, acceptedOffers: 1, assets: 6, chats: 3, reports: 1, requestedAt: "07 Sep 2026 09:15", requestedRank: 202609070915, graceEnds: "07 Oct 2026", graceEndsRank: 20261007, graceState: "active", daysLeft: 23, processedBy: "System", processedAt: "07 Sep 2026 09:15", updatedAt: "07 Sep 2026 09:15", seriousFlag: true, detail: "มี accepted offer และ report context ค้างอยู่ — ระบบยกเลิก offer Pending และปิดรายงานอัตโนมัติแล้ว" },
+        { id: "DEL-033", userId: "U-1104", displayName: "Archive Collector", accountStatus: "Deactivated", requestStatus: "รอดำเนินการ", pendingOffers: 0, acceptedOffers: 1, assets: 6, chats: 3, reports: 1, requestedAt: "07 Sep 2026 09:15", requestedRank: 202609070915, graceEnds: "07 Oct 2026", graceEndsRank: 20261007, graceState: "active", daysLeft: 23, processedBy: "System", processedAt: "07 Sep 2026 09:15", updatedAt: "07 Sep 2026 09:15", seriousFlag: true, detail: "มี accepted offer และ serious report (ฉ้อโกง) 1 รายงาน — ระบบยกเลิก offer Pending และปิดรายงานอัตโนมัติแล้ว" },
         { id: "DEL-034", userId: "U-1130", displayName: "TimeCraft BKK", accountStatus: "Deactivated", requestStatus: "รอดำเนินการ", pendingOffers: 0, acceptedOffers: 0, assets: 2, chats: 1, reports: 0, requestedAt: "05 Sep 2026 14:22", requestedRank: 202609051422, graceEnds: "05 Oct 2026", graceEndsRank: 20261005, graceState: "active", daysLeft: 21, processedBy: "System", processedAt: "05 Sep 2026 14:22", updatedAt: "05 Sep 2026 14:22", seriousFlag: false, detail: "session revoked แล้ว profile public unavailable" },
         { id: "DEL-035", userId: "U-1155", displayName: "Vintage Index", accountStatus: "Deactivated", requestStatus: "รอดำเนินการ", pendingOffers: 0, acceptedOffers: 2, assets: 11, chats: 5, reports: 0, requestedAt: "02 Sep 2026 10:08", requestedRank: 202609021008, graceEnds: "02 Oct 2026", graceEndsRank: 20261002, graceState: "ending", daysLeft: 3, processedBy: "อรนุช แก้วใส", processedAt: "02 Sep 2026 10:08", updatedAt: "06 Sep 2026 11:20", seriousFlag: false, detail: "ใกล้ครบ grace period — มี accepted offer 2 รายการใน retention" },
         { id: "DEL-036", userId: "U-1170", displayName: "Seiko Corner", accountStatus: "Deactivated", requestStatus: "รอดำเนินการ", pendingOffers: 0, acceptedOffers: 0, assets: 5, chats: 2, reports: 0, requestedAt: "01 Sep 2026 18:30", requestedRank: 202609011830, graceEnds: "01 Oct 2026", graceEndsRank: 20261001, graceState: "ending", daysLeft: 2, processedBy: "System", processedAt: "01 Sep 2026 18:30", updatedAt: "06 Sep 2026 09:00", seriousFlag: false, detail: "ใกล้ครบ grace period" },
@@ -21203,17 +21179,7 @@
         ? `<div class="deletion-restore-note deletion-restore-reject-note"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg><span>ปฏิเสธคืนบัญชีเมื่อ <strong>${restoreRej.rejectedAt}</strong> โดย ${restoreRej.rejectedBy} — เหตุผล: ${restoreRej.reason}</span></div>`
         : "";
 
-      // Section 3: Dependency Summary
-      // offer ค้าง (ตัวเลข + ลิงก์), offer ตกลงแล้ว (ตัวเลข + ลิงก์), สินทรัพย์ (ตัวเลข + สถานะแยก), ห้องแชท (ตัวเลข), รายงาน (ตัวเลข + สถานะ)
-      const assetsByStatus = dep.assetsByStatus || {};
-      const assetStatusTiles = [
-        assetsByStatus.sale ? `<div class="detail-tile"><span>Sale</span><strong>${assetsByStatus.sale}</strong></div>` : "",
-        assetsByStatus.show ? `<div class="detail-tile"><span>Show</span><strong>${assetsByStatus.show}</strong></div>` : "",
-        assetsByStatus.hide ? `<div class="detail-tile"><span>Hide</span><strong>${assetsByStatus.hide}</strong></div>` : "",
-        assetsByStatus.sold ? `<div class="detail-tile"><span>Sold</span><strong>${assetsByStatus.sold}</strong></div>` : "",
-        assetsByStatus.removed ? `<div class="detail-tile"><span>Removed/Hidden</span><strong>${assetsByStatus.removed}</strong></div>` : ""
-      ].filter(Boolean).join("");
-
+      // Section 3: Dependency Summary — ภาพรวมเท่านั้น (รายละเอียดแยกตามสถานะดูที่ module ต้นทาง)
       const depLink = (label, count, dataAttr) => count > 0
         ? `<div class="detail-tile"><span>${label}</span><strong><button class="link-btn deletion-dep-link" type="button" ${dataAttr}>${count}</button></strong></div>`
         : `<div class="detail-tile"><span>${label}</span><strong>${count}</strong></div>`;
@@ -21229,7 +21195,6 @@
             ${depLink("Chat Rooms", dep.chatRooms || 0, 'data-deletion-dep="chats"')}
             ${depLink("Reports / Safety Cases", dep.reportsSafetyCases || 0, 'data-deletion-dep="reports"')}
           </div>
-          ${assetStatusTiles ? `<div class="deletion-asset-status-grid"><span class="deletion-asset-status-label">Assets by status:</span> ${assetStatusTiles}</div>` : ""}
         </div>
       `;
 
