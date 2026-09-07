@@ -21201,15 +21201,15 @@
       // Section 4: Archive / Anonymization Plan
       // ตารางบอกว่าข้อมูลแต่ละอย่างจะถูกทำอย่างไร
       const archivePlanRows = [
-        { data: "Public profile", action: "Hide from public surfaces" },
-        { data: "Profile image", action: "Hide or replace placeholder ตาม policy" },
-        { data: "Username / display name", action: "Mask/anonymize เมื่อถึงขั้น policy" },
-        { data: "Email / phone / LINE", action: "Retain masked แล้ว anonymize เมื่อพ้น retention" },
-        { data: "Assets", action: "Hide from Feed/Search/Public Profile/Watch Alert results" },
-        { data: "Offers", action: "Retain status/timeline ตาม audit/dispute policy" },
-        { data: "Chats", action: "Retain content ตาม retention แต่ mask profile identity" },
-        { data: "Reports", action: "Retain ตาม safety/legal/audit policy" },
-        { data: "Audit logs", action: "Retain immutable" }
+        { data: "Public profile", action: "ซ่อนจากหน้าสาธารณะทันที" },
+        { data: "Profile image", action: "ซ่อนหรือแทนด้วยรูป placeholder ตาม policy" },
+        { data: "Username / display name", action: "มาส์กและลบตัวตนเมื่อถึงขั้นที่ policy กำหนด" },
+        { data: "Email / phone / LINE", action: "เก็บแบบมาส์กไว้ แล้วลบตัวตนเมื่อพ้น retention" },
+        { data: "Assets", action: "ซ่อนจาก Feed / ค้นหา / โปรไฟล์สาธารณะ / Watch Alert" },
+        { data: "Offers", action: "เก็บสถานะและ timeline ตาม policy การตรวจสอบ/ข้อพิพาท" },
+        { data: "Chats", action: "เก็บเนื้อหาตาม retention แต่มาส์กตัวตนผู้ใช้" },
+        { data: "Reports", action: "เก็บตาม policy ด้านความปลอดภัย/กฎหมาย/การตรวจสอบ" },
+        { data: "Audit logs", action: "เก็บถาวรไม่สามารถแก้ไขได้" }
       ];
 
       const section4 = `
