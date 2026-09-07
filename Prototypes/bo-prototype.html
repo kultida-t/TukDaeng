@@ -1151,7 +1151,8 @@
     }
     body.asset-detail-mode .user-detail-page:not(.report-detail-page) .user-detail-head h2.asset-detail-heading,
     body.user-detail-mode .asset-report-detail-page .user-detail-head h2.asset-report-heading,
-    body.watch-alert-detail-mode .user-detail-page .user-detail-head h2.asset-report-heading {
+    body.watch-alert-detail-mode .user-detail-page .user-detail-head h2.asset-report-heading,
+    body.deletion-detail-mode .user-detail-page .user-detail-head h2.asset-report-heading {
       font-family: var(--font-main);
       font-size: 24px !important;
       font-weight: 600;
@@ -1168,7 +1169,8 @@
     }
     body.asset-detail-mode .user-detail-page:not(.report-detail-page) .user-detail-head h2.asset-detail-heading span,
     body.user-detail-mode .asset-report-detail-page .user-detail-head h2.asset-report-heading span,
-    body.watch-alert-detail-mode .user-detail-page .user-detail-head h2.asset-report-heading span {
+    body.watch-alert-detail-mode .user-detail-page .user-detail-head h2.asset-report-heading span,
+    body.deletion-detail-mode .user-detail-page .user-detail-head h2.asset-report-heading span {
       font: inherit;
       letter-spacing: inherit;
     }
@@ -7373,6 +7375,10 @@
     .deletion-timeline-step.current::before {
       background: linear-gradient(180deg, #f3d493 0%, #e1e9f3 100%);
     }
+    /* หยุดเส้น timeline ที่ current — ไม่ลากต่อไป pending */
+    .deletion-timeline-step.current ~ .deletion-timeline-step.pending::before {
+      display: none;
+    }
     .deletion-timeline-marker {
       width: 14px;
       height: 14px;
@@ -7557,6 +7563,12 @@
     .deletion-archive-plan-row:first-child {
       border-top: 0;
     }
+    /* mobile: head ถูกซ่อน ต้อง reset border-top ของ row แรกที่เห็น */
+    @media (max-width: 760px) {
+      body.deletion-detail-mode .deletion-archive-plan-head + .deletion-archive-plan-row {
+        border-top: 0;
+      }
+    }
     .deletion-archive-plan-head {
       background: #f1f5fb;
       color: var(--muted);
@@ -7605,23 +7617,78 @@
       }
       body.deletion-detail-mode .deletion-archive-plan-row {
         grid-template-columns: 1fr;
-        gap: 4px;
+        gap: 2px;
+        padding: 12px 14px;
       }
       body.deletion-detail-mode .deletion-archive-plan-head {
         display: none;
       }
-      body.deletion-detail-mode .deletion-archive-plan-row:not(.deletion-archive-plan-head) .deletion-archive-plan-data::before {
-        content: "Data: ";
-        color: var(--muted);
-        font-weight: 700;
+      body.deletion-detail-mode .deletion-archive-plan-row:not(.deletion-archive-plan-head) .deletion-archive-plan-data {
+        font-size: 13px;
+        margin-bottom: 4px;
       }
       body.deletion-detail-mode .deletion-archive-plan-row:not(.deletion-archive-plan-head) .deletion-archive-plan-action::before {
-        content: "Action: ";
+        content: "→ ";
         color: var(--muted);
         font-weight: 700;
       }
       body.deletion-detail-mode .deletion-action-section .user-detail-actions .user-detail-action-btn {
-        flex: 1 1 100%;
+        flex: 1 1 0;
+        min-width: 0;
+      }
+      /* history table → card stack (pattern: user-detail-mode) */
+      body.deletion-detail-mode .deletion-detail-page .history-table-wrap {
+        overflow: visible;
+        border: 0;
+        background: transparent;
+      }
+      body.deletion-detail-mode .deletion-detail-page .history-table,
+      body.deletion-detail-mode .deletion-detail-page .history-table tbody,
+      body.deletion-detail-mode .deletion-detail-page .history-table tr,
+      body.deletion-detail-mode .deletion-detail-page .history-table td {
+        display: block;
+        width: 100%;
+      }
+      body.deletion-detail-mode .deletion-detail-page .history-table thead {
+        display: none;
+      }
+      body.deletion-detail-mode .deletion-detail-page .history-table {
+        min-width: 0;
+        border-collapse: separate;
+        border-spacing: 0 8px;
+        background: transparent;
+      }
+      body.deletion-detail-mode .deletion-detail-page .history-table .history-note {
+        min-width: 0;
+        max-width: none;
+      }
+      body.deletion-detail-mode .deletion-detail-page .history-table tr {
+        border: 1px solid #dce6f2;
+        border-radius: 8px;
+        background: #fff;
+        padding: 12px 10px;
+      }
+      body.deletion-detail-mode .deletion-detail-page .history-table tr + tr {
+        margin-top: 10px;
+      }
+      body.deletion-detail-mode .deletion-detail-page .history-table td {
+        display: grid;
+        grid-template-columns: 92px minmax(0, 1fr);
+        column-gap: 10px;
+        row-gap: 0;
+        align-items: baseline;
+        border: 0;
+        padding: 7px 0;
+        font-size: 12px;
+        line-height: 1.45;
+        overflow-wrap: anywhere;
+      }
+      body.deletion-detail-mode .deletion-detail-page .history-table td::before {
+        content: attr(data-label);
+        color: #66758d;
+        font-size: 11px;
+        font-weight: 800;
+        line-height: inherit;
       }
     }
     .user-row:not(.report-row) > div {
@@ -15939,7 +16006,7 @@
         { id: "DEL-031", userId: "U-1090", displayName: "Omega Club TH", accountStatus: "Active", requestStatus: "คืนบัญชีแล้ว", pendingOffers: 0, acceptedOffers: 1, assets: 9, chats: 4, reports: 0, requestedAt: "20 Aug 2026 11:00", requestedRank: 202608201100, graceEnds: "19 Sep 2026", graceEndsRank: 20260919, graceState: "restored", daysLeft: null, processedBy: "มะลิ จันทร์ดี", processedAt: "25 Aug 2026 16:45", updatedAt: "25 Aug 2026 16:45", seriousFlag: false, detail: "แอดมินคืนบัญชีในช่วง grace period — account sync กลับ Active แล้ว" },
         { id: "DEL-032", userId: "U-1101", displayName: "Daily Watch Hunter", accountStatus: "Active", requestStatus: "คืนบัญชีแล้ว", pendingOffers: 0, acceptedOffers: 0, assets: 1, chats: 0, reports: 0, requestedAt: "18 Aug 2026 08:04", requestedRank: 202608180804, graceEnds: "17 Sep 2026", graceEndsRank: 20260917, graceState: "restored", daysLeft: null, processedBy: "กิตติ Content", processedAt: "22 Aug 2026 10:15", updatedAt: "22 Aug 2026 10:15", seriousFlag: false, detail: "ผู้ใช้ติดต่อ support ขอคืนบัญชี — แอดมินคืนในช่วง grace period" },
         { id: "DEL-028", userId: "U-1120", displayName: "The Collector", accountStatus: "Deactivated", requestStatus: "ปฏิเสธคืนบัญชี", pendingOffers: 0, acceptedOffers: 3, assets: 11, chats: 6, reports: 8, requestedAt: "10 Aug 2026 13:12", requestedRank: 202608101312, graceEnds: "09 Sep 2026", graceEndsRank: 20260909, graceState: "ending", daysLeft: 2, processedBy: "อรนุช แก้วใส", processedAt: "28 Aug 2026 14:20", updatedAt: "28 Aug 2026 14:20", seriousFlag: true, detail: "รายงานร้ายแรง 8 รายงาน — แอดมินปฏิเสธคืนบัญชี รอเก็บถาวรอัตโนมัติเมื่อครบ 30 วัน" },
-        { id: "DEL-029", userId: "U-1144", displayName: "Seiko Corner", accountStatus: "Deactivated", requestStatus: "ปฏิเสธคืนบัญชี", pendingOffers: 0, acceptedOffers: 0, assets: 5, chats: 2, reports: 2, requestedAt: "08 Aug 2026 09:30", requestedRank: 202608080930, graceEnds: "07 Sep 2026", graceEndsRank: 20260907, graceState: "expired", daysLeft: 0, processedBy: "มะลิ จันทร์ดี", processedAt: "30 Aug 2026 11:00", updatedAt: "30 Aug 2026 11:00", seriousFlag: false, detail: "ปฏิเสธคืนบัญชี — grace period ครบแล้ว รอระบบเก็บถาวรอัตโนมัติ" },
+        { id: "DEL-029", userId: "U-1144", displayName: "Seiko Corner", accountStatus: "Deactivated", requestStatus: "ปฏิเสธคืนบัญชี", pendingOffers: 0, acceptedOffers: 0, assets: 5, chats: 2, reports: 2, requestedAt: "08 Aug 2026 09:30", requestedRank: 202608080930, graceEnds: "07 Sep 2026", graceEndsRank: 20260907, graceState: "expired", daysLeft: 0, processedBy: "มะลิ จันทร์ดี", processedAt: "30 Aug 2026 11:00", updatedAt: "30 Aug 2026 11:00", seriousFlag: true, detail: "ปฏิเสธคืนบัญชี — ประวัติมีรายงานเสี่ยงสูง 2 รายงาน รอระบบเก็บถาวรอัตโนมัติ" },
         { id: "DEL-025", userId: "U-1075", displayName: "Rolex Rama9", accountStatus: "Archived", requestStatus: "เก็บถาวรแล้ว", pendingOffers: 0, acceptedOffers: 2, assets: 14, chats: 8, reports: 3, requestedAt: "15 Jul 2026 12:00", requestedRank: 202607151200, graceEnds: "14 Aug 2026", graceEndsRank: 20260814, graceState: "archived", daysLeft: null, processedBy: "System (auto)", processedAt: "14 Aug 2026 00:00", updatedAt: "14 Aug 2026 00:00", seriousFlag: false, detail: "ครบ grace period 30 วัน ระบบเก็บถาวรอัตโนมัติ — personal fields เริ่มถูก mask" },
         { id: "DEL-026", userId: "U-1082", displayName: "Crown Time BKK", accountStatus: "Archived", requestStatus: "เก็บถาวรแล้ว", pendingOffers: 0, acceptedOffers: 1, assets: 18, chats: 12, reports: 4, requestedAt: "10 Jul 2026 16:44", requestedRank: 202607101644, graceEnds: "09 Aug 2026", graceEndsRank: 20260809, graceState: "archived", daysLeft: null, processedBy: "System (auto)", processedAt: "09 Aug 2026 00:00", updatedAt: "09 Aug 2026 00:00", seriousFlag: false, detail: "ครบ grace period ระบบเก็บถาวรอัตโนมัติ" },
         { id: "DEL-020", userId: "U-1222", displayName: "old.user", accountStatus: "Anonymized", requestStatus: "ลบตัวตนแล้ว", pendingOffers: 0, acceptedOffers: 0, assets: 0, chats: 0, reports: 0, requestedAt: "17 Jan 2026 07:44", requestedRank: 202601170744, graceEnds: "16 Feb 2026", graceEndsRank: 20260216, graceState: "anonymized", daysLeft: null, processedBy: "System (auto)", processedAt: "17 Jul 2026 00:00", updatedAt: "17 Jul 2026 00:00", seriousFlag: false, detail: "ครบ retention period ระบบลบตัวตนอัตโนมัติ — personal fields ถูกแทนที่ด้วย anonymous value" },
@@ -16006,7 +16073,7 @@
           timeline: { sessionRevokedAt: "08 Aug 2026 09:30", deactivatedAt: "08 Aug 2026 09:30", graceStart: "08 Aug 2026", graceEnd: "07 Sep 2026", lastValidation: "30 Aug 2026 11:00", approvedAt: null, archivedAt: null, anonymizedAt: null, cancelledAt: null, restoredAt: null, restoreRejectedAt: "30 Aug 2026 11:00" },
           dependency: { pendingIncomingOffers: 0, pendingOutgoingOffers: 0, acceptedOffersInRetention: 0, assetsByStatus: { sale: 2, show: 2, hide: 0, sold: 1, removed: 0 }, chatRooms: 2, reportsSafetyCases: 2 },
           restoreRequest: { requestedAt: "27 Aug 2026 12:00", channel: "In-app support", note: "ผู้ใช้ขอคืนบัญชี" },
-          restoreReject: { rejectedAt: "30 Aug 2026 11:00", rejectedBy: "มะลิ จันทร์ดี", reason: "มีรายงาน 2 รายงานค้างตรวจ — รอตรวจสอบให้จบก่อนคืนบัญชี" }
+          restoreReject: { rejectedAt: "30 Aug 2026 11:00", rejectedBy: "มะลิ จันทร์ดี", reason: "ประวัติรายงานมีความผิดร้ายแรง (2 รายงานเสี่ยงสูง) — ไม่สมควรคืนบัญชี" }
         },
         "DEL-025": {
           userContext: { username: "@rolexrama9", email: "rr***@mail.com", phone: "086-555-4444", line: "—", auth: "Email", joined: "18 Jun 2026", lastActive: "15 Jul 2026 12:00" },
@@ -21104,8 +21171,10 @@
 
       // Section 2: Deletion Timeline — vertical timeline ตามลำดับขั้น lifecycle
       // รวมฟิลด์ที่เกิดพร้อมกัน (Session Revoked = Deactivated = Grace Start; Approved = Archived)
-      // สถานะ: done (มีวันที่) / current (ขั้นปัจจุบันตาม request status) / pending (ยังไม่ถึง)
+      // สถานะ: done (มีวันที่) / current (ขั้นปัจจุบันตาม request status) / pending (ยังไม่ถึง) / skipped (จบก่อนถึง)
       // Restored/Restore Rejected ย้ายไป notes ด้านล่าง (มีอยู่แล้ว)
+      // คืนบัญชีแล้ว → หยุดที่ grace (archived/anonymized ไม่แสดง)
+      // ปฏิเสธคืนบัญชี → ยังอยู่ใน grace รอเก็บถาวร (archived/anonymized pending แต่ไม่ลากเส้นไป)
       const currentStep = req.requestStatus === "ลบตัวตนแล้ว" ? "anonymized"
         : req.requestStatus === "เก็บถาวรแล้ว" ? "archived"
         : req.requestStatus === "คืนบัญชีแล้ว" ? "restored"
@@ -21120,9 +21189,11 @@
         }
         if (currentStep === "anonymized") return "done";
         if (currentStep === "archived") return step === "anonymized" ? "pending" : "done";
-        // grace
+        // grace (รอดำเนินการ / ปฏิเสธคืนบัญชี)
+        // graceState "expired" → ช่วง 30 วันผ่านแล้ว grace เป็น done และขั้น "รอเก็บถาวรอัตโนมัติ" เป็น current
         if (step === "requested" || step === "deactivated") return "done";
-        if (step === "grace") return "current";
+        if (step === "grace") return req.graceState === "expired" ? "done" : "current";
+        if (step === "pendingArchive") return req.graceState === "expired" ? "current" : "skipped";
         return "pending";
       };
 
@@ -21152,11 +21223,22 @@
         stepNode("requested", "คำขอลบบัญชี", req.requestedAt, ""),
         stepNode("deactivated", "ระงับบัญชี + เริ่มช่วงรอเก็บถาวร", tl.deactivatedAt, ""),
         stepNode("grace", "ช่วงรอเก็บถาวร (30 วัน)", graceSub, ""),
+        stepNode("pendingArchive", "รอเก็บถาวรอัตโนมัติ", "", ""),
         stepNode("archived", "เก็บถาวรอัตโนมัติ", tl.archivedAt, ""),
         stepNode("anonymized", "ลบตัวตนอัตโนมัติ", tl.anonymizedAt, "")
       ].filter(Boolean).join("");
 
       const validationNote = tl.cancelledAt ? `<div class="deletion-timeline-meta">Cancelled: ${tl.cancelledAt}</div>` : "";
+
+      // เงื่อนไขเพิ่ม: ผู้ใช้ขอคืนบัญชีเมื่อ X (ถ้ามี และยังไม่ถูกปฏิเสธ)
+      const restoreRequestNote = restoreReq && !restoreRej
+        ? `<div class="deletion-restore-note deletion-restore-request-note"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg><span>ผู้ใช้ขอคืนบัญชีเมื่อ <strong>${restoreReq.requestedAt}</strong> ผ่าน ${restoreReq.channel}${restoreReq.note ? ` — ${restoreReq.note}` : ""}</span></div>`
+        : "";
+
+      // เงื่อนไขเพิ่ม: ปฏิเสธคืนบัญชีเมื่อ X เหตุผล: ... (ถ้ามี — แสดงรวมขอคืนด้วย)
+      const restoreRejectNote = restoreRej
+        ? `<div class="deletion-restore-note deletion-restore-reject-note"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg><span>ปฏิเสธคืนบัญชีเมื่อ <strong>${restoreRej.rejectedAt}</strong> โดย ${restoreRej.rejectedBy} — เหตุผล: ${restoreRej.reason}</span></div>`
+        : "";
 
       const section2 = `
         <div class="detail-section">
@@ -21165,19 +21247,11 @@
             ${timelineSteps}
           </div>
           ${countdown}
+          ${restoreRequestNote}
+          ${restoreRejectNote}
           ${validationNote}
         </div>
       `;
-
-      // เงื่อนไขเพิ่ม: ผู้ใช้ขอคืนบัญชีเมื่อ X (ถ้ามี)
-      const restoreRequestNote = restoreReq
-        ? `<div class="deletion-restore-note deletion-restore-request-note"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg><span>ผู้ใช้ขอคืนบัญชีเมื่อ <strong>${restoreReq.requestedAt}</strong> ผ่าน ${restoreReq.channel}${restoreReq.note ? ` — ${restoreReq.note}` : ""}</span></div>`
-        : "";
-
-      // เงื่อนไขเพิ่ม: ปฏิเสธคืนบัญชีเมื่อ X เหตุผล: ... (ถ้ามี)
-      const restoreRejectNote = restoreRej
-        ? `<div class="deletion-restore-note deletion-restore-reject-note"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg><span>ปฏิเสธคืนบัญชีเมื่อ <strong>${restoreRej.rejectedAt}</strong> โดย ${restoreRej.rejectedBy} — เหตุผล: ${restoreRej.reason}</span></div>`
-        : "";
 
       // Section 3: Dependency Summary — ภาพรวมเท่านั้น (รายละเอียดแยกตามสถานะดูที่ module ต้นทาง)
       const depLink = (label, count, dataAttr) => count > 0
@@ -21230,7 +21304,7 @@
         </div>
       `;
 
-      // action area: 5 ปุ่ม
+      // action area: history log table + 5 ปุ่ม
       // ปุ่ม คืนบัญชี + ปฏิเสธคืนบัญชี แสดงเฉพาะช่วง grace period (graceState: active/ending/expired)
       // หลังเก็บถาวร (archived/anonymized/restored) ไม่แสดง
       const inGracePeriod = ["active", "ending", "expired"].includes(req.graceState);
@@ -21240,29 +21314,66 @@
       const rejectBtn = inGracePeriod
         ? `<button class="user-detail-action-btn danger" type="button" data-deletion-action="reject-restore" data-deletion-id="${req.id}">ปฏิเสธคืนบัญชี</button>`
         : "";
-      const viewStatusBtn = `<button class="user-detail-action-btn" type="button" data-deletion-action="view-status" data-deletion-id="${req.id}">ดูสถานะล่าสุด</button>`;
-      const viewHistoryBtn = `<button class="user-detail-action-btn" type="button" data-deletion-action="view-history" data-deletion-id="${req.id}">ดูประวัติ</button>`;
-      const exportBtn = `<button class="user-detail-action-btn" type="button" data-deletion-action="export" data-deletion-id="${req.id}">ส่งออกรายงาน</button>`;
+      const viewStatusBtn = "";
+      const exportBtn = "";
 
       const gracePeriodNote = inGracePeriod
-        ? `<div class="deletion-action-note">ปุ่ม คืนบัญชี และ ปฏิเสธคืนบัญชี แสดงตลอดช่วง grace period 30 วัน — กดได้เมื่อรับเรื่องจาก support</div>`
+        ? ""
         : `<div class="deletion-action-note deletion-action-note-locked">คำขอนี้ผ่าน grace period แล้ว — ปุ่ม คืนบัญชี และ ปฏิเสธคืนบัญชี ไม่แสดง</div>`;
+
+      // สร้าง audit log จากข้อมูลที่มี (timeline + restoreRequest + restoreReject + processedBy/processedAt)
+      const auditLogs = [];
+      auditLogs.push({ at: req.requestedAt, actor: req.displayName, action: "ส่งคำขอลบบัญชี", note: "จาก FO" });
+      if (tl.sessionRevokedAt) auditLogs.push({ at: tl.sessionRevokedAt, actor: "System", action: "ยกเลิก session", note: "Sign out ผู้ใช้ทันที" });
+      if (tl.deactivatedAt) auditLogs.push({ at: tl.deactivatedAt, actor: "System", action: "ระงับบัญชี + ยกเลิก offer/ปิดรายงานอัตโนมัติ", note: "เริ่มช่วงรอเก็บถาวร 30 วัน" });
+      if (restoreReq) auditLogs.push({ at: restoreReq.requestedAt, actor: `${req.displayName} (ผ่าน support)`, action: "ขอคืนบัญชี", note: restoreReq.note || "" });
+      if (restoreRej) auditLogs.push({ at: restoreRej.rejectedAt, actor: restoreRej.rejectedBy, action: "ปฏิเสธคืนบัญชี", note: restoreRej.reason || "" });
+      if (tl.restoredAt) auditLogs.push({ at: tl.restoredAt, actor: req.processedBy || "Admin", action: "คืนบัญชี", note: "สถานะบัญชีกลับเป็น Active" });
+      if (tl.archivedAt) auditLogs.push({ at: tl.archivedAt, actor: "System", action: "เก็บถาวรอัตโนมัติ", note: "ครบช่วงรอเก็บถาวร 30 วัน" });
+      if (tl.anonymizedAt) auditLogs.push({ at: tl.anonymizedAt, actor: "System", action: "ลบตัวตนอัตโนมัติ", note: "ครบ retention period" });
+      if (tl.cancelledAt) auditLogs.push({ at: tl.cancelledAt, actor: req.processedBy || "Admin", action: "ยกเลิกคำขอ", note: "" });
+
+      const auditRows = auditLogs.map(log => `
+        <tr>
+          <td data-label="วันที่ / เวลา">${log.at || "—"}</td>
+          <td data-label="ผู้ดำเนินการ">${log.actor}</td>
+          <td data-label="Action">${log.action}</td>
+          <td data-label="รายละเอียด" class="history-note">${log.note || "—"}</td>
+        </tr>
+      `).join("");
 
       const actionArea = `
         <div class="detail-section deletion-action-section">
-          <h4>Admin Actions</h4>
+          <h4>History & Actions</h4>
           ${gracePeriodNote}
+          <div class="history-table-wrap">
+            <table class="history-table">
+              <thead>
+                <tr>
+                  <th>วันที่ / เวลา</th>
+                  <th>ผู้ดำเนินการ</th>
+                  <th>Action</th>
+                  <th>รายละเอียด</th>
+                </tr>
+              </thead>
+              <tbody>${auditRows}</tbody>
+            </table>
+          </div>
           <div class="user-detail-actions">
-            ${restoreBtn}${rejectBtn}${viewStatusBtn}${viewHistoryBtn}${exportBtn}
+            ${restoreBtn}${rejectBtn}${viewStatusBtn}${exportBtn}
           </div>
         </div>
       `;
+
+      // หา user จาก userManagementData เพื่อแสดงรูป profile
+      const deletionUser = userManagementData.users.find(u => u.id === req.userId);
 
       // ประกอบทั้งหน้า
       document.querySelector("#table").innerHTML = `
         <div class="user-detail-page report-detail-page deletion-detail-page">
           <div class="user-detail-head">
             <div class="user-detail-title">
+              ${deletionUser ? renderUserProfileImage(deletionUser) : ""}
               <div>
                 <h2 class="asset-report-heading"><span class="asset-report-id">${req.id}</span><span class="user-detail-separator"> : </span><span class="asset-report-name user-display-name">${req.displayName}</span></h2>
                 <div class="chips">
@@ -21275,8 +21386,6 @@
           </div>
           ${section1}
           ${section2}
-          ${restoreRequestNote}
-          ${restoreRejectNote}
           ${section3}
           ${section4}
           ${actionArea}

@@ -21,12 +21,9 @@ assert(/Deletion Timeline/.test(html), "Section 2 Deletion Timeline");
 assert(/Dependency Summary/.test(html), "Section 3 Dependency Summary");
 assert(/Archive \/ Anonymization Plan/.test(html), "Section 4 Archive/Anonymization Plan");
 
-// 3. action area 5 ปุ่ม
+// 3. action area 2 ปุ่ม (ปรับตามการเปลี่ยนแปลง — เอา ดูสถานะล่าสุด/ดูประวัติ/ส่งออกรายงาน ออก)
 assert(/data-deletion-action="restore"/.test(html), "ปุ่ม คืนบัญชี");
 assert(/data-deletion-action="reject-restore"/.test(html), "ปุ่ม ปฏิเสธคืนบัญชี");
-assert(/data-deletion-action="view-status"/.test(html), "ปุ่ม ดูสถานะล่าสุด");
-assert(/data-deletion-action="view-history"/.test(html), "ปุ่ม ดูประวัติ");
-assert(/data-deletion-action="export"/.test(html), "ปุ่ม ส่งออกรายงาน");
 
 // 4. breadcrumb + back button
 assert(/งานตรวจสอบและบริการ \/ Account Deletion \/ Requests \//.test(html), "breadcrumb ครบ");
@@ -36,10 +33,10 @@ assert(/data-back-deletion-list/.test(html), "back button data-back-deletion-lis
 assert(/deletionRequestStatusPill\(req\.requestStatus\)/.test(html), "request status pill");
 assert(/deletionAccountStatusPill\(req\.accountStatus\)/.test(html), "account status pill");
 
-// 6. masked + reveal
-assert(/data-deletion-reveal/.test(html), "reveal toggle");
-assert(/deletion-masked-value/.test(html), "masked value element");
-assert(/deletion-sensitive-tile/.test(html), "sensitive tile class");
+// 6. masked + reveal — เอาออกแล้ว (ผู้ใช้ตัดสินใจ: ดู sensitive ที่ User Detail แทน)
+assert(!/data-deletion-reveal/.test(html), "ไม่มี reveal toggle (ย้ายไป User Detail)");
+assert(!/deletion-masked-value/.test(html), "ไม่มี masked value element");
+assert(!/deletion-sensitive-tile/.test(html), "ไม่มี sensitive tile class");
 
 // 7. countdown
 assert(/deletion-countdown/.test(html), "countdown element");
