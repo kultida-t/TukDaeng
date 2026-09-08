@@ -1,0 +1,26 @@
+{
+  "name": "tukdaeng",
+  "version": "1.0.0",
+  "description": "Repository นี้จัดเอกสารตามขอบเขตงาน เพื่อให้ Product, UX, Dev และ QA หา source of truth ได้ชัดเจน",
+  "main": "mcp-server.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kultida-t/TukDaeng.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/kultida-t/TukDaeng/issues"
+  },
+  "homepage": "https://github.com/kultida-t/TukDaeng#readme",
+  "devDependencies": {
+    "@playwright/test": "^1.63.0"
+  }
+}
