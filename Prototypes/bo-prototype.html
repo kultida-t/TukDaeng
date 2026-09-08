@@ -15996,7 +15996,7 @@
     // DEL-PTO-001: Account Deletion Requests mock data
     // 12 รายการ ครอบคลุม 4 สถานะคำขอ: รอดำเนินการ / คืนบัญชีแล้ว / ปฏิเสธคืนบัญชี / ลบตัวตนแล้ว
     // และ 3 สถานะบัญชี: Deactivated / Active / Anonymized
-    // ลบบัญชีอัตโนมัติ = เก็บถาวร + ลบตัวตนในขั้นเดียวกัน (เกิดพร้อมกันเมื่อครบ grace period)
+    // ลบบัญชีอัตโนมัติ = ลบบัญชี + ลบตัวตนในขั้นเดียวกัน (เกิดพร้อมกันเมื่อครบ grace period)
     // requestedRank/graceEndRank ใช้สำหรับ sort (YYYYMMDD)
     const deletionRequestData = {
       requests: [
@@ -16053,28 +16053,34 @@
           timeline: { sessionRevokedAt: "20 Aug 2026 11:00", deactivatedAt: "20 Aug 2026 11:00", graceStart: "20 Aug 2026", graceEnd: "19 Sep 2026", lastValidation: "25 Aug 2026 16:45", approvedAt: null, archivedAt: null, anonymizedAt: null, cancelledAt: null, restoredAt: "25 Aug 2026 16:45", restoreRejectedAt: null },
           dependency: { pendingIncomingOffers: 0, pendingOutgoingOffers: 0, acceptedOffersInRetention: 1, assetsByStatus: { sale: 4, show: 3, hide: 0, sold: 2, removed: 0 }, chatRooms: 4, reportsSafetyCases: 0 },
           restoreRequest: { requestedAt: "24 Aug 2026 10:30", channel: "Support email", note: "ผู้ใช้ติดต่อ support ขอคืนบัญชี" },
-          restoreReject: null
+          restoreReject: null,
+          restoreReason: "ผู้ใช้ติดต่อ support และยืนยันตัวตนแล้ว",
+          restoreNote: "ตรวจสอบเคสเรียบร้อย ไม่พบความเสี่ยงเพิ่มเติม"
         },
         "DEL-032": {
           userContext: { username: "@dailyhunter", email: "da***@gmail.com", phone: "—", line: "—", auth: "Google", joined: "09 Jul 2026", lastActive: "18 Aug 2026 08:04" },
           timeline: { sessionRevokedAt: "18 Aug 2026 08:04", deactivatedAt: "18 Aug 2026 08:04", graceStart: "18 Aug 2026", graceEnd: "17 Sep 2026", lastValidation: "22 Aug 2026 10:15", approvedAt: null, archivedAt: null, anonymizedAt: null, cancelledAt: null, restoredAt: "22 Aug 2026 10:15", restoreRejectedAt: null },
           dependency: { pendingIncomingOffers: 0, pendingOutgoingOffers: 0, acceptedOffersInRetention: 0, assetsByStatus: { sale: 1, show: 0, hide: 0, sold: 0, removed: 0 }, chatRooms: 0, reportsSafetyCases: 0 },
           restoreRequest: { requestedAt: "21 Aug 2026 09:00", channel: "In-app support", note: "ผู้ใช้ติดต่อ support ขอคืนบัญชี" },
-          restoreReject: null
+          restoreReject: null,
+          restoreReason: "ตรวจสอบแล้วไม่พบความเสี่ยงเพิ่มเติม",
+          restoreNote: "ผู้ใช้ยืนยันตัวตนผ่าน Google แล้ว"
         },
         "DEL-028": {
           userContext: { username: "@thecollector", email: "tc***@icloud.com", phone: "081-777-0090", line: "—", auth: "Apple", joined: "02 Apr 2026", lastActive: "10 Aug 2026 13:12" },
           timeline: { sessionRevokedAt: "10 Aug 2026 13:12", deactivatedAt: "10 Aug 2026 13:12", graceStart: "10 Aug 2026", graceEnd: "09 Sep 2026", lastValidation: "28 Aug 2026 14:20", approvedAt: null, archivedAt: null, anonymizedAt: null, cancelledAt: null, restoredAt: null, restoreRejectedAt: "28 Aug 2026 14:20" },
           dependency: { pendingIncomingOffers: 0, pendingOutgoingOffers: 0, acceptedOffersInRetention: 3, assetsByStatus: { sale: 4, show: 3, hide: 2, sold: 2, removed: 0 }, chatRooms: 6, reportsSafetyCases: 8 },
           restoreRequest: { requestedAt: "26 Aug 2026 15:00", channel: "Support email", note: "ผู้ใช้ติดต่อ support ขอคืนบัญชี" },
-          restoreReject: { rejectedAt: "28 Aug 2026 14:20", rejectedBy: "อรนุช แก้วใส", reason: "รายงานร้ายแรง 8 รายงาน — พฤติกรรมละเมิดซ้ำ ไม่สมควรคืนบัญชี" }
+          restoreRejects: [{ rejectedAt: "28 Aug 2026 14:20", rejectedBy: "อรนุช แก้วใส", reason: "พฤติกรรมละเมิดซ้ำ ไม่สมควรคืนบัญชี", note: "มีรายงานร้ายแรง 8 รายงาน พฤติกรรมละเมิดซ้ำ" }],
+          restoreReject: { rejectedAt: "28 Aug 2026 14:20", rejectedBy: "อรนุช แก้วใส", reason: "พฤติกรรมละเมิดซ้ำ ไม่สมควรคืนบัญชี", note: "มีรายงานร้ายแรง 8 รายงาน พฤติกรรมละเมิดซ้ำ" }
         },
         "DEL-029": {
           userContext: { username: "@seikocorner", email: "se***@watchmail.com", phone: "—", line: "seiko***", auth: "Email", joined: "01 Jul 2026", lastActive: "08 Aug 2026 09:30" },
           timeline: { sessionRevokedAt: "08 Aug 2026 09:30", deactivatedAt: "08 Aug 2026 09:30", graceStart: "08 Aug 2026", graceEnd: "07 Sep 2026", lastValidation: "30 Aug 2026 11:00", approvedAt: null, archivedAt: null, anonymizedAt: null, cancelledAt: null, restoredAt: null, restoreRejectedAt: "30 Aug 2026 11:00" },
           dependency: { pendingIncomingOffers: 0, pendingOutgoingOffers: 0, acceptedOffersInRetention: 0, assetsByStatus: { sale: 2, show: 2, hide: 0, sold: 1, removed: 0 }, chatRooms: 2, reportsSafetyCases: 2 },
           restoreRequest: { requestedAt: "27 Aug 2026 12:00", channel: "In-app support", note: "ผู้ใช้ติดต่อ support ขอคืนบัญชี" },
-          restoreReject: { rejectedAt: "30 Aug 2026 11:00", rejectedBy: "มะลิ จันทร์ดี", reason: "ประวัติรายงานมีความผิดร้ายแรง (2 รายงานเสี่ยงสูง) — ไม่สมควรคืนบัญชี" }
+          restoreRejects: [{ rejectedAt: "30 Aug 2026 11:00", rejectedBy: "มะลิ จันทร์ดี", reason: "รายงานร้ายแรงยังไม่ได้รับการแก้ไข", note: "ประวัติรายงานมีความผิดร้ายแรง (2 รายงานเสี่ยงสูง)" }],
+          restoreReject: { rejectedAt: "30 Aug 2026 11:00", rejectedBy: "มะลิ จันทร์ดี", reason: "รายงานร้ายแรงยังไม่ได้รับการแก้ไข", note: "ประวัติรายงานมีความผิดร้ายแรง (2 รายงานเสี่ยงสูง)" }
         },
         "DEL-025": {
           userContext: { username: "@rolexrama9", email: "rr***@mail.com", phone: "086-555-4444", line: "—", auth: "Email", joined: "18 Jun 2026", lastActive: "15 Jul 2026 12:00" },
@@ -21110,7 +21116,7 @@
     // DEL-PTO-002: Account Deletion Request Detail renderer
     // pattern: Reported Users Report Detail + Offer Detail (full-width, section-based, back nav)
     // body class: deletion-detail-mode (ไม่ใช้ user-detail-mode เพื่อไม่กระทบ protected screens)
-    // 4 sections: User Context / Deletion Timeline / Dependency Summary / Archive & Anonymization Plan
+    // 4 sections: User Context / Deletion Timeline / Dependency Summary / แผนการลบบัญชี
     // action area: 5 ปุ่ม (คืนบัญชี / ปฏิเสธคืนบัญชี / ดูสถานะล่าสุด / ดูประวัติ / ส่งออกรายงาน)
     // ปุ่ม คืนบัญชี + ปฏิเสธคืนบัญชี แสดงเฉพาะช่วง grace period (graceState: active/ending/expired)
     function renderDeletionDetail(requestId) {
@@ -21187,8 +21193,8 @@
       // สถานะ: done (มีวันที่) / current (ขั้นปัจจุบันตาม request status) / pending (ยังไม่ถึง) / skipped (จบก่อนถึง)
       // Restored/Restore Rejected ย้ายไป notes ด้านล่าง (มีอยู่แล้ว)
       // คืนบัญชีแล้ว → หยุดที่ grace (archived/anonymized ไม่แสดง)
-      // ปฏิเสธคืนบัญชี → ยังอยู่ใน grace รอเก็บถาวร (archived pending แต่ไม่ลากเส้นไป)
-      // ลบบัญชีอัตโนมัติ = เก็บถาวร + ลบตัวตนในขั้นเดียวกัน (เกิดพร้อมกันเมื่อครบ grace period)
+      // ปฏิเสธคืนบัญชี → ยังอยู่ใน grace รอลบบัญชี (archived pending แต่ไม่ลากเส้นไป)
+      // ลบบัญชีอัตโนมัติ = ลบบัญชี + ลบตัวตนในขั้นเดียวกัน (เกิดพร้อมกันเมื่อครบ grace period)
       const currentStep = req.requestStatus === "ลบตัวตนแล้ว" ? "anonymized"
         : req.requestStatus === "คืนบัญชีแล้ว" ? "restored"
         : "grace"; // รอดำเนินการ / ปฏิเสธคืนบัญชี → ยังอยู่ใน grace period
@@ -21232,8 +21238,8 @@
 
       const timelineSteps = [
         stepNode("requested", "คำขอลบบัญชี", req.requestedAt, ""),
-        stepNode("deactivated", "ระงับบัญชี + เริ่มช่วงรอเก็บถาวร", tl.deactivatedAt, ""),
-        stepNode("grace", "ช่วงรอเก็บถาวร (30 วัน)", graceSub, ""),
+        stepNode("deactivated", "ระงับบัญชี + เริ่มช่วงรอลบบัญชี", tl.deactivatedAt, ""),
+        stepNode("grace", "ช่วงรอลบบัญชี (30 วัน)", graceSub, ""),
         stepNode("restored", "คืนบัญชี", tl.restoredAt, ""),
         stepNode("pendingArchive", "รอลบบัญชีอัตโนมัติ", "", ""),
         stepNode("archived", "ลบบัญชีอัตโนมัติ", tl.archivedAt, "")
@@ -21243,12 +21249,16 @@
 
       // เงื่อนไขเพิ่ม: ผู้ใช้ขอคืนบัญชี (ถ้ามี และยังไม่ถูกปฏิเสธ)
       // ไม่แสดงวันที่และช่องทาง เพราะไม่สามารถยืนยันเวลา/ช่องทางจริงที่ support request เข้ามาได้
-      const restoreRequestNote = restoreReq && !restoreRej
+      // ซ่อนถ้าคืนบัญชีแล้ว (tl.restoredAt มีค่า) — เพราะไม่ใช่สถานะปัจจุบัน แต่ audit log ยังเก็บอยู่
+      const showRestoreRequestNote = restoreReq && !restoreRej && !tl.restoredAt;
+      const restoreRequestNote = showRestoreRequestNote
         ? `<div class="deletion-restore-note deletion-restore-request-note"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg><span>ผู้ใช้ขอคืนบัญชีผ่านช่องทาง support${restoreReq.note ? ` — ${restoreReq.note}` : ""}</span></div>`
         : "";
 
       // เงื่อนไขเพิ่ม: ปฏิเสธคืนบัญชีเมื่อ X เหตุผล: ... (ถ้ามี — แสดงรวมขอคืนด้วย)
-      const restoreRejectNote = restoreRej
+      // ซ่อนถ้าคืนบัญชีแล้ว (tl.restoredAt มีค่า) — เพราะไม่ใช่สถานะปัจจุบัน แต่ audit log ยังเก็บอยู่
+      const showRestoreRejectNote = restoreRej && !tl.restoredAt;
+      const restoreRejectNote = showRestoreRejectNote
         ? `<div class="deletion-restore-note deletion-restore-reject-note"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg><span>ปฏิเสธคืนบัญชีเมื่อ <strong>${restoreRej.rejectedAt}</strong> โดย ${restoreRej.rejectedBy} — เหตุผล: ${restoreRej.reason}</span></div>`
         : "";
 
@@ -21284,7 +21294,7 @@
         </div>
       `;
 
-      // Section 4: Anonymization Plan
+      // Section 4: แผนการลบบัญชี
       // ตารางบอกว่าข้อมูลแต่ละอย่างจะถูกทำอย่างไรเมื่อครบ grace period (ลบบัญชีอัตโนมัติ)
       const archivePlanRows = [
         { data: "Public profile", action: "ซ่อนจากหน้าสาธารณะทันที" },
@@ -21295,12 +21305,12 @@
         { data: "Offers", action: "เก็บสถานะและ timeline ตาม policy การตรวจสอบ/ข้อพิพาท" },
         { data: "Chats", action: "เก็บเนื้อหาตาม retention แต่มาส์กตัวตนผู้ใช้" },
         { data: "Reports", action: "เก็บตาม policy ด้านความปลอดภัย/กฎหมาย/การตรวจสอบ" },
-        { data: "Audit logs", action: "เก็บถาวรไม่สามารถแก้ไขได้" }
+        { data: "Audit logs", action: "ลบบัญชีแล้วไม่สามารถแก้ไขได้" }
       ];
 
       const section4 = `
         <div class="detail-section">
-          <h4>Anonymization Plan</h4>
+          <h4>แผนการลบบัญชี</h4>
           <div class="deletion-archive-plan-table">
             <div class="deletion-archive-plan-row deletion-archive-plan-head">
               <div>Data</div>
@@ -21318,7 +21328,7 @@
 
       // action area: history log table + 5 ปุ่ม
       // ปุ่ม คืนบัญชี + ปฏิเสธคืนบัญชี แสดงเฉพาะช่วง grace period (graceState: active/ending/expired)
-      // หลังเก็บถาวร (archived/anonymized/restored) ไม่แสดง
+      // หลังลบบัญชี (archived/anonymized/restored) ไม่แสดง
       const inGracePeriod = ["active", "ending", "expired"].includes(req.graceState);
       const restoreBtn = inGracePeriod
         ? `<button class="user-detail-action-btn primary" type="button" data-deletion-action="restore" data-deletion-id="${req.id}">คืนบัญชี</button>`
@@ -21326,7 +21336,10 @@
       const rejectBtn = inGracePeriod
         ? `<button class="user-detail-action-btn danger" type="button" data-deletion-action="reject-restore" data-deletion-id="${req.id}">ปฏิเสธคืนบัญชี</button>`
         : "";
+      // DEL-PTO-003: เหลือ 2 ปุ่ม admin action (คืนบัญชี + ปฏิเสธคืนบัญชี) ตามที่ตกลงกับผู้ใช้
+      // ดูสถานะล่าสุด / ดูประวัติ / ส่งออกรายงาน ไม่แสดงเป็นปุ่มแยก (ข้อมูลอยู่ในหน้า detail แล้ว)
       const viewStatusBtn = "";
+      const viewHistoryBtn = "";
       const exportBtn = "";
 
       const gracePeriodNote = inGracePeriod
@@ -21334,18 +21347,29 @@
         : `<div class="deletion-action-note deletion-action-note-locked">คำขอนี้ผ่าน grace period แล้ว — ปุ่ม คืนบัญชี และ ปฏิเสธคืนบัญชี ไม่แสดง</div>`;
 
       // สร้าง audit log จากข้อมูลที่มี (timeline + restoreRequest + restoreReject + processedBy/processedAt)
+      // รายละเอียดของ action: เหตุผลแสดงก่อน (ไม่มี label) + หมายเหตุแยกบรรทัด (ถ้ามี)
+      const formatActionNote = (reason, note) => {
+        const parts = [];
+        if (reason) parts.push(reason);
+        if (note) parts.push(`หมายเหตุ: ${note}`);
+        return parts.join("<br>") || "—";
+      };
       const auditLogs = [];
       auditLogs.push({ at: req.requestedAt, actor: req.displayName, action: "ส่งคำขอลบบัญชี", note: "จาก FO" });
       if (tl.sessionRevokedAt) auditLogs.push({ at: tl.sessionRevokedAt, actor: "System", action: "ยกเลิก session", note: "Sign out ผู้ใช้ทันที" });
-      if (tl.deactivatedAt) auditLogs.push({ at: tl.deactivatedAt, actor: "System", action: "ระงับบัญชี + ยกเลิก offer/ปิดรายงานอัตโนมัติ", note: "เริ่มช่วงรอเก็บถาวร 30 วัน" });
+      if (tl.deactivatedAt) auditLogs.push({ at: tl.deactivatedAt, actor: "System", action: "ระงับบัญชี + ยกเลิก offer/ปิดรายงานอัตโนมัติ", note: "เริ่มช่วงรอลบบัญชี 30 วัน" });
       // restoreReq: ระบบไม่สามารถระบุเวลาจริงที่ support request เข้ามาได้
       // ไม่ใส่วันที่เวลาใน audit log เพราะยืนยันไม่ได้ ใช้ "—" แทน
       if (restoreReq) {
         auditLogs.push({ at: "—", actor: "System", action: "รับคำขอคืนบัญชี (ผ่าน support)", note: restoreReq.note || "" });
       }
-      if (restoreRej) auditLogs.push({ at: restoreRej.rejectedAt, actor: restoreRej.rejectedBy, action: "ปฏิเสธคืนบัญชี", note: restoreRej.reason || "" });
-      if (tl.restoredAt) auditLogs.push({ at: tl.restoredAt, actor: req.processedBy || "Admin", action: "คืนบัญชี", note: "สถานะบัญชีกลับเป็น Active" });
-      if (tl.archivedAt) auditLogs.push({ at: tl.archivedAt, actor: "System", action: "ลบบัญชีอัตโนมัติ", note: "ครบช่วงรอเก็บถาวร 30 วัน — personal fields ถูกแทนที่ด้วย anonymous value" });
+      // ปฏิเสธคืนบัญชี: แสดงทุกครั้ง (รองรับการปฏิเสธซ้ำ) — เรียงตามเวลา
+      const restoreRejects = Array.isArray(d.restoreRejects) ? d.restoreRejects : (restoreRej ? [restoreRej] : []);
+      restoreRejects.forEach(rej => {
+        auditLogs.push({ at: rej.rejectedAt, actor: rej.rejectedBy, action: "ปฏิเสธคืนบัญชี", note: formatActionNote(rej.reason, rej.note) });
+      });
+      if (tl.restoredAt) auditLogs.push({ at: tl.restoredAt, actor: req.processedBy || "Admin", action: "คืนบัญชี", note: formatActionNote(d.restoreReason, d.restoreNote) });
+      if (tl.archivedAt) auditLogs.push({ at: tl.archivedAt, actor: "System", action: "ลบบัญชีอัตโนมัติ", note: "ครบช่วงรอลบบัญชี 30 วัน — personal fields ถูกแทนที่ด้วย anonymous value" });
       if (tl.cancelledAt) auditLogs.push({ at: tl.cancelledAt, actor: req.processedBy || "Admin", action: "ยกเลิกคำขอ", note: "" });
 
       const auditRows = auditLogs.map(log => `
@@ -21375,7 +21399,7 @@
             </table>
           </div>
           <div class="user-detail-actions">
-            ${restoreBtn}${rejectBtn}${viewStatusBtn}${exportBtn}
+            ${restoreBtn}${rejectBtn}
           </div>
         </div>
       `;
@@ -21939,7 +21963,7 @@
       "Unban user": "ยกเลิกระงับบัญชีถาวร",
       "Open Account Deletion": "ดูคำขอลบบัญชี",
       "Resend verification context": "ส่งข้อมูลยืนยันตัวตนอีกครั้ง",
-      "View archived summary": "ดูสรุปบัญชีที่เก็บถาวร"
+      "View archived summary": "ดูสรุปบัญชีที่ลบแล้ว"
     };
 
     const USER_ACTION_CONFIRM_LABEL = "ยืนยัน";
@@ -22589,6 +22613,237 @@
       pendingReportActionAudit = null;
       closeUserActionModal();
       showSuccessToast(config.success(user));
+    }
+
+    // DEL-PTO-003: Account Deletion admin action modals (2 actions: restore + reject-restore)
+    // pattern: Reported Users action flow (reason + impact + confirm + result state + audit)
+    // ใช้ #user-action-modal container เดียวกับ User Management เพื่อ reuse CSS + a11y
+
+    // รูปแบบวันที่สำหรับ deletion audit log — ตรงกับ mock data: "DD MMM YYYY HH:MM"
+    function formatDeletionTimestamp(date = new Date()) {
+      const formatter = new Intl.DateTimeFormat("en-GB", {
+        timeZone: "Asia/Bangkok",
+        day: "2-digit",
+        month: "short",
+        year: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+        hourCycle: "h23"
+      });
+      // Intl กับ en-GB จะได้ "08 Sep 2026, 10:42" — เอา comma ออก และไม่ต่อ GMT+7
+      return formatter.format(date).replace(",", "");
+    }
+
+    const deletionActionConfig = {
+      "restore": {
+        title: "Restore Account",
+        tone: "primary",
+        summary: "คืนบัญชีให้ผู้ใช้กลับมาใช้งานได้ทันที ระบบจะยกเลิกคำขอลบบัญชีและคืนสถานะบัญชีเป็น Active",
+        reasonLabel: "เหตุผลการคืนบัญชี",
+        reasons: [
+          "ผู้ใช้ติดต่อ support และยืนยันตัวตนแล้ว",
+          "ตรวจสอบแล้วไม่พบความเสี่ยงเพิ่มเติม",
+          "ทีมช่วยเหลืออนุมัติให้กลับมาใช้งานได้",
+          "คำขอลบบัญชีเกิดจากความผิดพลาด"
+        ],
+        notePlaceholder: "สรุปผลการตรวจสอบ เหตุผลที่คืนบัญชี และข้อมูลอ้างอิงที่เกี่ยวข้อง",
+        success: req => `${req.displayName} คืนบัญชีแล้ว — สถานะกลับเป็น Active`,
+        checklist: [
+          "หลังยืนยัน สถานะบัญชีกลับเป็น Active และผู้ใช้เข้าสู่ระบบได้ทันที",
+          "คำขอลบบัญชีถูกยกเลิก และไม่เริ่มนับ grace period ใหม่",
+          "บันทึก audit พร้อม admin, reason และเวลาดำเนินการ"
+        ]
+      },
+      "reject-restore": {
+        title: "Reject Restore",
+        tone: "danger",
+        summary: "ปฏิเสธคำขอคืนบัญชี ระบบจะยังคง grace period เดิมไว้และรอลบบัญชีอัตโนมัติเมื่อครบ 30 วัน (ไม่เริ่มนับใหม่)",
+        reasonLabel: "เหตุผลการปฏิเสธคืนบัญชี",
+        reasons: [
+          "รายงานร้ายแรงยังไม่ได้รับการแก้ไข",
+          "พฤติกรรมละเมิดซ้ำ ไม่สมควรคืนบัญชี",
+          "หลักฐานไม่เพียงพอที่จะยืนยันตัวตน",
+          "ทีมที่รับผิดชอบไม่อนุมัติให้คืนบัญชี"
+        ],
+        notePlaceholder: "ระบุหลักฐาน รายงาน หรือข้อมูลอ้างอิงที่เกี่ยวข้องกับการปฏิเสธ",
+        success: req => `ปฏิเสธคืนบัญชี ${req.displayName} แล้ว — รอลบบัญชีอัตโนมัติเมื่อครบ grace period`,
+        checklist: [
+          "หลังยืนยัน ปุ่ม คืนบัญชี และ ปฏิเสธคืนบัญชี ยังแสดง (รอรับเรื่องซ้ำได้)",
+          "grace period ไม่เริ่มนับใหม่ — รอลบบัญชีอัตโนมัติเมื่อครบ 30 วันเดิม",
+          "บันทึก audit พร้อม admin, reason และเวลาดำเนินการ"
+        ]
+      }
+    };
+
+    const DELETION_ACTION_CONFIRM_LABEL = "ยืนยัน";
+
+    function getDeletionActionConfirmClass(config) {
+      if (config.tone === "danger") return "danger user-action-confirm";
+      if (config.tone === "warning") return "warning user-action-confirm";
+      return "primary user-action-confirm";
+    }
+
+    function renderDeletionActionImpactNote(req, action) {
+      const isRestore = action === "restore";
+      const text = isRestore
+        ? "บัญชีกลับเป็น Active ผู้ใช้เข้าสู่ระบบได้ทันที และคำขอลบบัญชีถูกยกเลิก"
+        : "บัญชียังคงถูกระงับ รอลบอัตโนมัติเมื่อครบช่วงรอลบบัญชีเดิม (ไม่เริ่มนับใหม่) ผู้ใช้ติดต่อขอคืนบัญชีใหม่ได้";
+      return `
+        <div class="module-note user-action-impact user-action-impact-card user-action-impact-warning">
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 3.2c.7 0 1.35.37 1.7.98l8.05 13.95A1.95 1.95 0 0 1 20.05 21H3.95a1.95 1.95 0 0 1-1.7-2.87L10.3 4.18A1.95 1.95 0 0 1 12 3.2Zm0 4.6a1 1 0 0 0-1 1v4.4a1 1 0 1 0 2 0V8.8a1 1 0 0 0-1-1Zm0 8.45a1.15 1.15 0 1 0 0 2.3 1.15 1.15 0 0 0 0-2.3Z"/></svg>
+          <p><strong>ผลกระทบต่อผู้ใช้:</strong> ${text}</p>
+        </div>
+      `;
+    }
+
+    function renderDeletionRestoreContextNote(req) {
+      // แสดงข้อมูล restore request ของผู้ใช้ (ถ้ามี) ใน modal คืนบัญชี
+      const d = (deletionRequestData.detail && deletionRequestData.detail[req.id]) || {};
+      const restoreReq = d.restoreRequest || null;
+      if (!restoreReq) return "";
+      return `
+        <div class="module-note user-action-impact user-action-impact-card user-action-impact-notice">
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M4.5 5h15A2.5 2.5 0 0 1 22 7.5v9A2.5 2.5 0 0 1 19.5 19h-15A2.5 2.5 0 0 1 2 16.5v-9A2.5 2.5 0 0 1 4.5 5Zm0 2a.5.5 0 0 0-.5.5v.3l8 4.9 8-4.9v-.3a.5.5 0 0 0-.5-.5h-15Zm15 10a.5.5 0 0 0 .5-.5v-6.35l-7.48 4.57a1 1 0 0 1-1.04 0L4 10.15v6.35a.5.5 0 0 0 .5.5h15Z"/></svg>
+          <p><strong>ผู้ใช้ขอคืนบัญชี:</strong> ${restoreReq.note || "ผู้ใช้ติดต่อ support ขอคืนบัญชี"}${restoreReq.channel ? ` (ช่องทาง: ${restoreReq.channel})` : ""}</p>
+        </div>
+      `;
+    }
+
+    function renderDeletionRejectContextNote(req) {
+      // แสดงประวัติการปฏิเสธคืนบัญชีก่อนหน้า (ถ้ามี) ใน modal ปฏิเสธคืนบัญชี
+      const d = (deletionRequestData.detail && deletionRequestData.detail[req.id]) || {};
+      const restoreRej = d.restoreReject || null;
+      if (!restoreRej) return "";
+      return `
+        <div class="module-note user-action-impact user-action-impact-card user-action-impact-warning">
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 3.2c.7 0 1.35.37 1.7.98l8.05 13.95A1.95 1.95 0 0 1 20.05 21H3.95a1.95 1.95 0 0 1-1.7-2.87L10.3 4.18A1.95 1.95 0 0 1 12 3.2Zm0 4.6a1 1 0 0 0-1 1v4.4a1 1 0 1 0 2 0V8.8a1 1 0 0 0-1-1Zm0 8.45a1.15 1.15 0 1 0 0 2.3 1.15 1.15 0 0 0 0-2.3Z"/></svg>
+          <p><strong>ปฏิเสธคืนบัญชีครั้งก่อน:</strong> ${restoreRej.rejectedAt} โดย ${restoreRej.rejectedBy} — ${restoreRej.reason}</p>
+        </div>
+      `;
+    }
+
+    function renderDeletionActionModal(req, action, completed = false, resultMessage = "", resultDetail = "", resultType = "") {
+      const config = deletionActionConfig[action];
+      if (!req || !config) return;
+      const hasResult = Boolean(resultMessage);
+      const modal = document.querySelector("#user-action-modal");
+      const modalBody = document.querySelector("#user-action-modal-body");
+      const isRestore = action === "restore";
+      modalBody.innerHTML = `
+        <div class="user-action-page deletion-action-page">
+          <div class="user-action-head">
+            <div>
+              <h2 id="user-action-modal-title">${config.title}</h2>
+              <p>${config.summary}</p>
+            </div>
+            <button class="btn user-action-close" type="button" data-user-action-modal-close aria-label="ปิด">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M18 6 6 18"></path>
+                <path d="m6 6 12 12"></path>
+              </svg>
+            </button>
+          </div>
+          <div class="user-action-target">
+            <div>
+              <strong>${req.displayName}</strong>
+              <span>${req.id} · ${req.userId}</span>
+            </div>
+            ${deletionRequestStatusPill(req.requestStatus)}
+          </div>
+          <div class="user-action-layout">
+            <div class="detail-section">
+              <div class="user-action-form">
+                ${isRestore ? renderDeletionRestoreContextNote(req) : renderDeletionRejectContextNote(req)}
+                <label>
+                  ${config.reasonLabel}
+                  ${customSelect("deletion-action-reason", config.reasonLabel, config.reasons.map(reason => ({ value: reason, label: reason })), "", "data-custom-select-silent", completed)}
+                </label>
+                <label>
+                  Note / หมายเหตุ
+                  <textarea id="deletion-action-note" placeholder="${config.notePlaceholder}" ${completed ? "disabled" : ""}></textarea>
+                </label>
+                ${renderDeletionActionImpactNote(req, action)}
+                <div class="user-detail-actions user-action-footer">
+                  <button class="user-detail-action-btn ${getDeletionActionConfirmClass(config)}" type="button" data-deletion-action-confirm="${action}" data-deletion-id="${req.id}" ${completed ? "disabled" : ""}>${DELETION_ACTION_CONFIRM_LABEL}</button>
+                  <button class="user-detail-action-btn" type="button" data-user-action-modal-close>${completed ? "ปิด" : "ยกเลิก"}</button>
+                </div>
+                <div class="warning-note action-feedback user-action-result ${hasResult ? "show" : ""} ${resultType}">
+                  <strong>${resultMessage}</strong><br>
+                  <span>${resultDetail || `บันทึกการดำเนินการ: ${formatBangkokTimestamp()}`}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+      applyModalHeadingFonts(modal);
+      modal.classList.add("show");
+    }
+
+    function confirmDeletionAction(req, action) {
+      const config = deletionActionConfig[action];
+      if (!req || !config) return;
+      const selectedReason = document.querySelector("#deletion-action-reason")?.value || "";
+      const actionNote = document.querySelector("#deletion-action-note")?.value.trim() || "";
+      // ใช้รูปแบบวันที่เดียวกับ mock data: "DD MMM YYYY HH:MM" (ไม่มี comma, ไม่มี GMT+7)
+      const now = formatDeletionTimestamp();
+      const detail = deletionRequestData.detail[req.id] || (deletionRequestData.detail[req.id] = {});
+      const adminName = (auth.admin && auth.admin.username) || "Admin";
+
+      if (action === "restore") {
+        // คืนบัญชี: สถานะเป็น Active + requestStatus เป็น "คืนบัญชีแล้ว" + graceState "restored"
+        const beforeStatus = req.requestStatus;
+        req.accountStatus = "Active";
+        req.requestStatus = "คืนบัญชีแล้ว";
+        req.graceState = "restored";
+        req.daysLeft = null;
+        req.processedBy = adminName;
+        req.processedAt = now;
+        req.updatedAt = now;
+        if (!detail.timeline) detail.timeline = {};
+        detail.timeline.restoredAt = now;
+        // เก็บเหตุผล + หมายเหตุแยกกันเพื่อแสดงใน audit log
+        detail.restoreReason = selectedReason || config.reasonLabel;
+        detail.restoreNote = actionNote;
+        // ไม่เคลียร์ restoreReject — audit log ต้องเก็บทุก action (ปฏิเสธก่อนหน้ายังอยู่ในประวัติ)
+      } else if (action === "reject-restore") {
+        // ปฏิเสธคืนบัญชี: เพิ่มประวัติ + ยังอยู่ใน grace + ปุ่มยังแสดง + ไม่เริ่มนับใหม่
+        // เก็บเป็น array เพื่อรองรับการปฏิเสธซ้ำหลายครั้ง (audit log แสดงทุกครั้ง)
+        const beforeStatus = req.requestStatus;
+        req.requestStatus = "ปฏิเสธคืนบัญชี";
+        req.processedBy = adminName;
+        req.processedAt = now;
+        req.updatedAt = now;
+        if (!detail.timeline) detail.timeline = {};
+        detail.timeline.restoreRejectedAt = now;
+        if (!Array.isArray(detail.restoreRejects)) detail.restoreRejects = [];
+        detail.restoreRejects.push({
+          rejectedAt: now,
+          rejectedBy: adminName,
+          reason: selectedReason || config.reasonLabel,
+          note: actionNote
+        });
+        // เก็บ reference ล่าสุดไว้ใช้ใน detail page note (สถานะปัจจุบัน)
+        detail.restoreReject = detail.restoreRejects[detail.restoreRejects.length - 1];
+      }
+
+      // สร้าง success result message
+      const successMsg = config.success(req);
+      const resultDetail = `${selectedReason || config.reasonLabel}${actionNote ? ` — ${actionNote}` : ""} · ${now}`;
+
+      // รีเฟรช detail page
+      renderDeletionDetail(req.id);
+
+      // แสดง success toast
+      closeUserActionModal();
+      showSuccessToast(successMsg, "Account Deletion");
+    }
+
+    function handleDeletionAction(req, action) {
+      if (!req || !action) return;
+      const config = deletionActionConfig[action];
+      if (!config) return;
+      renderDeletionActionModal(req, action);
     }
 
     function openAccountDeletionRequest(user, subLabel = "") {
@@ -36334,6 +36589,14 @@
         confirmUserAction(user, userActionConfirmButton.dataset.userActionConfirm);
         return;
       }
+      // DEL-PTO-003: Account Deletion action confirm (คืนบัญชี + ปฏิเสธคืนบัญชี)
+      const deletionActionConfirmButton = event.target.closest("[data-deletion-action-confirm]");
+      if (deletionActionConfirmButton) {
+        const id = deletionActionConfirmButton.dataset.deletionId;
+        const req = deletionRequestData.requests.find(r => r.id === id);
+        confirmDeletionAction(req, deletionActionConfirmButton.dataset.deletionActionConfirm);
+        return;
+      }
       const reportStatusConfirmButton = event.target.closest("[data-report-status-confirm]");
       if (reportStatusConfirmButton) {
         const report = userManagementData.reports.find(entry => entry.id === reportStatusConfirmButton.dataset.reportId);
@@ -37152,23 +37415,26 @@
       }
     });
 
-    // DEL-PTO-002: Request Detail — action button handlers (delegated)
+    // DEL-PTO-003: Request Detail — action button handlers (delegated)
     document.addEventListener("click", (event) => {
-      // action buttons (5 ปุ่ม) — prototype: แสดง toast/placeholder (modals จะทำใน DEL-PTO-003)
+      // action buttons (2 ปุ่ม: คืนบัญชี + ปฏิเสธคืนบัญชี) — เปิด confirmation modal
       const actionBtn = event.target.closest("[data-deletion-action]");
       if (actionBtn) {
         const action = actionBtn.dataset.deletionAction;
         const id = actionBtn.dataset.deletionId;
-        const labels = {
-          "restore": "คืนบัญชี",
-          "reject-restore": "ปฏิเสธคืนบัญชี",
-          "view-status": "ดูสถานะล่าสุด",
-          "view-history": "ดูประวัติ",
-          "export": "ส่งออกรายงาน"
-        };
-        // prototype placeholder — modals จะทำใน DEL-PTO-003
-        console.log(`DEL-PTO-002: action "${action}" on ${id}`);
-        showSuccessToast(`${labels[action] || action} — จะเปิด modal ใน DEL-PTO-003 (prototype)`, "Account Deletion");
+        const req = deletionRequestData.requests.find(r => r.id === id);
+        if (!req) return;
+        if (deletionActionConfig[action]) {
+          handleDeletionAction(req, action);
+        } else {
+          // action อื่น ๆ (view-status / view-history / export) — ไม่มีปุ่มแล้ว แต่เก็บไว้เผื่อ
+          const labels = {
+            "view-status": "View Latest Status",
+            "view-history": "View History",
+            "export": "Export Report"
+          };
+          showSuccessToast(`${labels[action] || action} — ไม่ได้แสดงเป็นปุ่มแล้ว (prototype)`, "Account Deletion");
+        }
         return;
       }
       // dependency link (offer/asset/chat/report) — prototype: แสดง toast (cross-module links จะทำใน DEL-PTO-004)
