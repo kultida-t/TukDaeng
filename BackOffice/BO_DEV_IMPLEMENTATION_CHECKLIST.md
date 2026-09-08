@@ -348,14 +348,14 @@ Recommended note format:
 ## 13. Account Deletion Requests
 
 - [ ] Deletion request queue ต้องรองรับ search/filter ตาม Request ID, user, สถานะคำขอ, account status, grace period state และ requested date
-- [ ] Request detail ต้องแสดง user context, deletion timeline, dependency summary, แผนการลบบัญชี และ history & actions
+- [ ] Request detail ต้องแสดง user context, deletion timeline, dependency summary, Deletion Plan และ history & actions
 - [ ] หลัง FO Delete Account สำเร็จ account ต้องเข้าสู่ deactivated/login blocked state และ public profile/assets ต้องถูกซ่อนทันที (ไม่รอครบ 30 วัน)
 - [ ] ยกเลิก offer ที่ Pending และปิดรายงานอัตโนมัติเมื่อ FO confirm สำเร็จ พร้อมบันทึก audit — ไม่มี block ที่ต้องรอ Admin
 - [ ] Grace period ต้องใช้ baseline 30 วันและแสดง active / ending soon / expired
 - [ ] Dependency check ระหว่างช่วงรอลบบัญชีต้อง query dependency ล่าสุดจาก Offer Management, Asset และ Report modules เป็น system job พร้อมบันทึก audit
 - [ ] คืนบัญชี / ปฏิเสธคืนบัญชี ใช้ได้เฉพาะช่วง grace period 30 วัน ต้องมี confirmation, reason และ audit; คืนบัญชีต้อง sync account status กลับ `Active` และบันทึกใน Account Status History ของ User Management
 - [ ] ครบ grace period ระบบลบบัญชีอัตโนมัติ (เก็บถาวร + ลบตัวตน ในขั้นเดียว) เป็น system job ไม่ใช่ manual action ของแอดมิน
-- [ ] แผนการลบบัญชีต้องแยก hide, retain และ anonymize ต่อ entity ให้ชัด
+- [ ] Deletion Plan ต้องแยก hide, retain และ anonymize ต่อ entity ให้ชัด
 - [ ] Sensitive reveal, restore, reject restore และ export ต้องมี audit log; system actions (request create, session revoke, offer cancel auto, report close auto, dependency check, auto delete) ต้องบันทึก audit โดย system job
 - [ ] Account Deletion UI ต้อง responsive ที่ 375px, 768px, 1280px และ 1440px
 
@@ -363,7 +363,7 @@ Recommended note format:
 
 | Area | Notes |
 | --- | --- |
-| Prototype / Spec Alignment | Prototype ล็อกแล้วตาม `13_ACCOUNT_DELETION_MODULE.md` BO-13-v0.3 — Request List (7 คอลัมน์ + row menu, mobile card), Request Detail 5 sections (User Context / Deletion Timeline / Dependency Summary / แผนการลบบัญชี / History & Actions), modal คืนบัญชี + ปฏิเสธคืนบัญชี, cross-module drill-in, Audit Log view และ Account Status History ของ User Management |
+| Prototype / Spec Alignment | Prototype ล็อกแล้วตาม `13_ACCOUNT_DELETION_MODULE.md` BO-13-v0.4 — Request List (7 คอลัมน์ + row menu, mobile card), Request Detail 5 sections (User Context / Deletion Timeline / Dependency Summary / Deletion Plan / History & Actions), modal คืนบัญชี + ปฏิเสธคืนบัญชี, cross-module drill-in, Audit Log view และ Account Status History ของ User Management |
 | Implementation Gap | Production needs API-backed permission enforcement, real FO sync (session revoke, hide profile/assets, auto-cancel offers, auto-close reports), system job สำหรับลบบัญชีอัตโนมัติเมื่อครบ grace period 30 วัน, audit persistence และ sensitive-data masking ตาม policy |
 | Permission / Audit | Restore, reject restore, sensitive reveal และ export ต้อง permission-gated และ audit-logged พร้อม before/after values และ reason; system actions บันทึก audit อัตโนมัติทุกครั้ง |
 | FO Sync Impact | Successful FO delete-account flow must revoke session/deactivate account, hide public profile/assets immediately, auto-cancel pending offers and auto-close open reports with audit, keep required records for retention, and auto-delete (archive + anonymize in one step) when the 30-day grace period ends; restore by admin syncs account status back to Active within the grace period. |

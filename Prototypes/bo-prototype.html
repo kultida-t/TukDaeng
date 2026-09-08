@@ -7585,21 +7585,6 @@
       color: #516683;
     }
 
-    /* action area note */
-    .deletion-action-note {
-      padding: 10px 12px;
-      border: 1px solid #c7d6e8;
-      border-radius: 8px;
-      background: #f8fbff;
-      color: #061426;
-      font-size: 12px;
-      line-height: 1.5;
-    }
-    .deletion-action-note.deletion-action-note-locked {
-      border-color: #e1e9f3;
-      background: #f4f6fa;
-      color: var(--muted);
-    }
     body.deletion-detail-mode .deletion-action-section .user-detail-actions {
       padding-top: 2px;
     }
@@ -11864,8 +11849,9 @@
         grid-column: 1 / -1;
         width: 100%;
       }
+      /* DEL-PTO-001g: mobile card ไม่แสดงปุ่ม ... — เมนูมีรายการเดียวซ้ำกับการคลิกการ์ดที่เปิด Request Detail อยู่แล้ว */
       body.deletion-list-mode .deletion-request-table .user-row.deletion-row:not(.head) {
-        grid-template-columns: minmax(0, 1fr) 34px;
+        grid-template-columns: minmax(0, 1fr);
         column-gap: 14px;
         row-gap: 14px;
         min-height: 0;
@@ -11892,11 +11878,7 @@
         display: none;
       }
       body.deletion-list-mode .deletion-request-table .user-row.deletion-row:not(.head) > .user-row-actions {
-        grid-column: 2;
-        grid-row: 1;
-        align-self: center;
-        justify-self: end;
-        justify-content: flex-end;
+        display: none;
       }
       .user-card-tags {
         grid-column: 1 / -1;
@@ -21408,7 +21390,7 @@
     // DEL-PTO-002: Account Deletion Request Detail renderer
     // pattern: Reported Users Report Detail + Offer Detail (full-width, section-based, back nav)
     // body class: deletion-detail-mode (ไม่ใช้ user-detail-mode เพื่อไม่กระทบ protected screens)
-    // 4 sections: User Context / Deletion Timeline / Dependency Summary / แผนการลบบัญชี
+    // 4 sections: User Context / Deletion Timeline / Dependency Summary / Deletion Plan
     // action area: 5 ปุ่ม (คืนบัญชี / ปฏิเสธคืนบัญชี / ดูสถานะล่าสุด / ดูประวัติ / ส่งออกรายงาน)
     // ปุ่ม คืนบัญชี + ปฏิเสธคืนบัญชี แสดงเฉพาะช่วง grace period (graceState: active/ending/expired)
     function renderDeletionDetail(requestId) {
@@ -21588,7 +21570,7 @@
         </div>
       `;
 
-      // Section 4: แผนการลบบัญชี
+      // Section 4: Deletion Plan
       // ตารางบอกว่าข้อมูลแต่ละอย่างจะถูกทำอย่างไรเมื่อครบ grace period (ลบบัญชีอัตโนมัติ)
       const archivePlanRows = [
         { data: "Public profile", action: "ซ่อนจากหน้าสาธารณะทันที" },
@@ -21604,7 +21586,7 @@
 
       const section4 = `
         <div class="detail-section">
-          <h4>แผนการลบบัญชี</h4>
+          <h4>Deletion Plan</h4>
           <div class="deletion-archive-plan-table">
             <div class="deletion-archive-plan-row deletion-archive-plan-head">
               <div>Data</div>
@@ -21635,10 +21617,6 @@
       const viewStatusBtn = "";
       const viewHistoryBtn = "";
       const exportBtn = "";
-
-      const gracePeriodNote = inGracePeriod
-        ? ""
-        : `<div class="deletion-action-note deletion-action-note-locked">คำขอนี้ผ่านช่วงรอลบบัญชีแล้ว — ปุ่ม คืนบัญชี และ ปฏิเสธคืนบัญชี ไม่แสดง</div>`;
 
       // สร้าง audit log จากข้อมูลที่มี (timeline + restoreRequest + restoreReject + processedBy/processedAt)
       // รายละเอียดของ action: เหตุผลแสดงก่อน (ไม่มี label) + หมายเหตุแยกบรรทัด (ถ้ามี)
@@ -21678,7 +21656,6 @@
       const actionArea = `
         <div class="detail-section deletion-action-section">
           <h4>History & Actions</h4>
-          ${gracePeriodNote}
           <div class="history-table-wrap">
             <table class="history-table">
               <thead>
@@ -36260,7 +36237,8 @@
         // ปุ่ม data-user-open ในคอลัมน์ User ให้ไปที่ user-open handler แทน
         if (event.target.closest("[data-user-open]")) {
           // ปล่อยไปยัง user-open handler ด้านล่าง
-        } else if (event.target.closest("button") && !event.target.closest("[data-deletion-open]")) {
+        } else if (event.target.closest(".row-menu, button") && !event.target.closest("[data-deletion-open]")) {
+          // ปุ่ม ... เป็น <summary> ไม่ใช่ <button> — ต้องกันด้วย .row-menu ด้วย ไม่งั้นกด ... แล้วโดนพาไป detail
           return;
         } else {
           const id = deletionOpen.dataset.deletionOpen || deletionOpen.dataset.deletionCard;

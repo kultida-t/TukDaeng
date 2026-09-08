@@ -489,7 +489,7 @@ FO ทำหน้าที่รับ confirmation, soft delete/deactivate acc
 | ฟีเจอร์ | คำอธิบาย |
 |---|---|
 | Request Queue | ตารางคำขอลบบัญชี พร้อม filter ตาม status, grace period, date range |
-| Request Detail | ดู user, deletion timeline, dependency summary, แผนการลบบัญชี และ history |
+| Request Detail | ดู user, deletion timeline, dependency summary, Deletion Plan และ history |
 | System Auto Actions | ยกเลิก offer ที่ Pending + ปิดรายงานอัตโนมัติเมื่อ FO confirm สำเร็จ (ไม่มี block รอ Admin) |
 | Restore / Reject Restore | แอดมินคืน/ปฏิเสธคืนบัญชีในช่วง grace period 30 วัน (มีเหตุผล + audit) |
 | 30-day Grace Period Tracking | ติดตาม grace period 30 วันก่อนระบบลบบัญชีอัตโนมัติ |

@@ -1,6 +1,6 @@
 # 13 BO Account Deletion Requests Module
 
-**Version:** `BO-13-v0.3`  
+**Version:** `BO-13-v0.4`  
 **Date:** 2026-09-08  
 **Status:** Screen layer synced with prototype (`DEL-PTO-001` ถึง `DEL-PTO-004`)  
 **Platform:** Responsive Web Back Office
@@ -17,7 +17,7 @@
 | --- | --- |
 | Module Name | BO Account Deletion Requests |
 | Platform | Responsive Web Back Office |
-| Version | `BO-13-v0.3` |
+| Version | `BO-13-v0.4` |
 | Status | Screen layer synced with prototype (`DEL-PTO-001` ถึง `DEL-PTO-004`) |
 | Owner | Product / UX / Engineering / Operations |
 | Document Type | Functional PRD |
@@ -112,9 +112,9 @@ Request list เป็น full-width panel ตาม pattern ของ Reported 
 | Account Status | Pill สถานะบัญชี: `Active` (เขียว), `Deactivated` (อำพัน), `Anonymized` (ถ่าน) |
 | Grace Period | Countdown pill เฉพาะช่วงที่ยังนับอยู่ — `เหลือ X วัน` (น้ำเงิน/อำพันตามความใกล้ครบกำหนด), `ครบแล้ว` (แดง); คำขอที่จบแล้ว (คืนบัญชี/ลบตัวตน) แสดง `—` เพราะซ้ำกับ request status |
 | Requested At | วันที่ผู้ใช้กด Delete account |
-| Action | Row menu `...` มี 1 รายการ: ดูรายละเอียด; คลิกแถวเปิด Request Detail |
+| Action | Row menu `...` มี 1 รายการ: ดูรายละเอียด (desktop/tablet เท่านั้น); คลิกแถวเปิด Request Detail |
 
-Responsive: desktop/tablet เป็นตาราง, mobile <= 767px เป็น card stack — Request ID เป็นพาดหัว ตามด้วย pills สถานะคำขอ + grace period (แสดงเฉพาะช่วงที่ยังนับอยู่), tag จำนวน assets และ meta (User ID, User, Account Status, Requested At)
+Responsive: desktop/tablet เป็นตาราง, mobile <= 767px เป็น card stack — Request ID เป็นพาดหัว ตามด้วย pills สถานะคำขอ + grace period (แสดงเฉพาะช่วงที่ยังนับอยู่), tag จำนวน assets และ meta (User ID, User, Account Status, Requested At); การ์ดบน mobile ไม่แสดงปุ่ม `...` เพราะเมนูมีรายการเดียวซ้ำกับการคลิกการ์ดที่เปิด Request Detail อยู่แล้ว
 
 หัวหน้า list: breadcrumb `งานตรวจสอบและบริการ / Account Deletion`, page title `Account Deletion Requests`, panel title `Deletion Requests List` — ไม่มี primary action ที่หัวหน้า (admin action ทำใน Request Detail)
 
@@ -272,7 +272,7 @@ Vertical timeline ตามลำดับขั้น lifecycle แต่ละ
 | Chat Rooms | ไม่มีโมดูลแชทใน BO — แสดงข้อความว่าเนื้อหาแชทเก็บตาม retention policy และ mask ตัวตนผู้ใช้ |
 | Reports / Safety Cases | User Management > Reported Users (กรองด้วย userId) |
 
-### 12.4 แผนการลบบัญชี (Archive / Anonymization Plan)
+### 12.4 Deletion Plan
 
 ตาราง Data / Action บอกว่าข้อมูลแต่ละอย่างจะถูกจัดการอย่างไรเมื่อครบช่วงรอลบบัญชี:
 
@@ -293,7 +293,7 @@ Vertical timeline ตามลำดับขั้น lifecycle แต่ละ
 ส่วน action area ด้านท้ายประกอบด้วย:
 
 - ตารางประวัติการดำเนินการ (read-only): วันที่ / เวลา, ผู้ดำเนินการ, Action, รายละเอียด — รวม event ขอลบบัญชี, ยกเลิก session, ระงับบัญชี + ยกเลิก offer/ปิดรายงานอัตโนมัติ, รับคำขอคืนบัญชี (ผ่าน support — ไม่แสดงวันที่เพราะยืนยันเวลาจริงไม่ได้ ใช้ `—`), ปฏิเสธคืนบัญชี (ทุกครั้ง), คืนบัญชี, ลบบัญชีอัตโนมัติ และยกเลิกคำขอ (ถ้ามี)
-- ปุ่ม action 2 ปุ่ม: `คืนบัญชี` (primary) และ `ปฏิเสธคืนบัญชี` (danger) — แสดงเฉพาะช่วง grace period (สถานะ `รอดำเนินการ` / `ปฏิเสธคืนบัญชี` ที่ยังนับหรือครบกำหนด) หลังคำขอจบ (คืนบัญชีแล้ว / ลบตัวตนแล้ว) ปุ่มไม่แสดง พร้อม note `คำขอนี้ผ่านช่วงรอลบบัญชีแล้ว — ปุ่ม คืนบัญชี และ ปฏิเสธคืนบัญชี ไม่แสดง`
+- ปุ่ม action 2 ปุ่ม: `คืนบัญชี` (primary) และ `ปฏิเสธคืนบัญชี` (danger) — แสดงเฉพาะช่วง grace period (สถานะ `รอดำเนินการ` / `ปฏิเสธคืนบัญชี` ที่ยังนับหรือครบกำหนด) หลังคำขอจบ (คืนบัญชีแล้ว / ลบตัวตนแล้ว) ปุ่มไม่แสดง และไม่แสดง note อธิบาย — สถานะคำขอใน Detail Head และตารางประวัติ (event คืนบัญชี / ลบบัญชีอัตโนมัติ) บอกเหตุผลอยู่แล้ว
 
 ## 13. Admin Actions
 

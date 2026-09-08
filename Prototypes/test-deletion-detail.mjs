@@ -19,7 +19,7 @@ assert(/function renderDeletionDetail\s*\(/.test(html), "function renderDeletion
 assert(/Section 1.*User Context/.test(html) || /deletion-user-context-section/.test(html), "Section 1 User Context");
 assert(/Deletion Timeline/.test(html), "Section 2 Deletion Timeline");
 assert(/Dependency Summary/.test(html), "Section 3 Dependency Summary");
-assert(/Archive \/ Anonymization Plan/.test(html), "Section 4 Archive/Anonymization Plan");
+assert(/<h4>Deletion Plan<\/h4>/.test(html), "Section 4 Deletion Plan");
 
 // 3. action area 2 ปุ่ม (ปรับตามการเปลี่ยนแปลง — เอา ดูสถานะล่าสุด/ดูประวัติ/ส่งออกรายงาน ออก)
 assert(/data-deletion-action="restore"/.test(html), "ปุ่ม คืนบัญชี");
@@ -40,16 +40,19 @@ assert(!/deletion-sensitive-tile/.test(html), "ไม่มี sensitive tile cl
 
 // 7. countdown
 assert(/deletion-countdown/.test(html), "countdown element");
-assert(/เหลือ \$\{req\.daysLeft\} วัน ถึงเก็บถาวรอัตโนมัติ/.test(html), "countdown text");
+assert(/เหลือ \$\{req\.daysLeft\} วัน ถึงลบบัญชีอัตโนมัติ/.test(html), "countdown text");
 
 // 8. เงื่อนไขเพิ่ม: restore request + reject notes
 assert(/deletion-restore-request-note/.test(html), "restore request note");
 assert(/deletion-restore-reject-note/.test(html), "restore reject note");
-assert(/ผู้ใช้ขอคืนบัญชีเมื่อ/.test(html), "restore request text");
+assert(/ผู้ใช้ขอคืนบัญชีผ่านช่องทาง support/.test(html), "restore request text");
 assert(/ปฏิเสธคืนบัญชีเมื่อ/.test(html), "restore reject text");
 
 // 9. click handler เชื่อมแล้ว
 assert(/pushBackNavigationContext\(\);\s*\n\s*renderDeletionDetail\(id\)/.test(html), "row click เรียก renderDeletionDetail");
+
+// 9b. ปุ่ม ... (row-menu summary) ต้องไม่พาไป detail — guard ต้องครอบคลุม .row-menu (summary ไม่ใช่ button)
+assert(/event\.target\.closest\("\.row-menu, button"\) && !event\.target\.closest\("\[data-deletion-open\]"\)/.test(html), "guard ปุ่ม ... ไม่พาไป detail");
 
 // 10. navigation context restore
 assert(/context\.type === "deletion-detail"/.test(html), "navigation context restore deletion-detail");
@@ -67,6 +70,9 @@ assert(/deletion-archive-plan-table/.test(html), "CSS archive plan table");
 assert(/@media \(max-width: 1180px\)[\s\S]*?deletion-detail-mode/.test(html), "responsive 1180px");
 assert(/@media \(max-width: 760px\)[\s\S]*?deletion-detail-mode/.test(html), "responsive 760px");
 
+// 13b. mobile card ซ่อนปุ่ม ... — เมนูมีรายการเดียวซ้ำกับการคลิกการ์ด
+assert(/body\.deletion-list-mode \.deletion-request-table \.user-row\.deletion-row:not\(\.head\) > \.user-row-actions \{\s*\n\s*display: none;/.test(html), "mobile card ซ่อนปุ่ม ...");
+
 // 14. mock data detail
 assert(/deletionRequestData\.detail/.test(html), "detail mock data");
 assert(/userContext:/.test(html), "userContext mock");
@@ -77,6 +83,9 @@ assert(/restoreReject:/.test(html), "restoreReject mock");
 
 // 15. ปุ่ม คืนบัญชี + ปฏิเสธ แสดงเฉพาะ inGracePeriod
 assert(/\["active", "ending", "expired"\]\.includes\(req\.graceState\)/.test(html), "inGracePeriod check");
+
+// 16b. ห้ามแสดง note "คำขอนี้ผ่านช่วงรอลบบัญชีแล้ว ..." ใน action area — ทุกสถานะ (restored/anonymized) ต้องไม่แสดง
+assert(!/คำขอนี้ผ่านช่วงรอลบบัญชีแล้ว/.test(html), "ไม่แสดง note ผ่านช่วงรอลบบัญชี");
 
 // 16. ไม่กระทบ protected screens — ไม่ใช้ user-detail-mode สำหรับ deletion detail
 assert(/document\.body\.classList\.add\("deletion-detail-mode"\);[\s\S]{0,200}document\.body\.classList\.remove\([^)]*"user-detail-mode"/.test(html), "ไม่ใช้ user-detail-mode (ไม่กระทบ protected)");
