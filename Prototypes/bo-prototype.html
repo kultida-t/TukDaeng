@@ -7691,6 +7691,131 @@
         line-height: inherit;
       }
     }
+
+    /* DEL-PTO-004: Audit Log view — read-only immutable admin events */
+    body.audit-log-mode .layout {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    body.audit-log-mode .layout > .panel {
+      grid-column: 1 / -1;
+    }
+    body.audit-log-mode .detail,
+    body.audit-log-mode #cards {
+      display: none;
+    }
+    body.audit-log-mode #table {
+      grid-column: 1 / -1;
+    }
+    body.audit-log-mode .main {
+      padding: 0 16px 16px;
+    }
+    body.audit-log-mode .audit-filter-bar {
+      grid-template-columns: minmax(180px, 1fr) minmax(160px, auto) minmax(160px, auto) minmax(160px, auto) auto;
+      gap: 10px;
+      align-items: center;
+    }
+    body.audit-log-mode .audit-filter-bar .search {
+      grid-column: 1 / -1;
+    }
+    body.audit-log-mode .audit-log-table .user-row {
+      grid-template-columns: minmax(90px, .4fr) minmax(120px, .5fr) minmax(110px, .48fr) minmax(130px, .56fr) minmax(100px, .44fr) minmax(70px, .32fr) minmax(140px, .6fr) minmax(80px, .36fr) minmax(200px, .86fr);
+      gap: 8px;
+      padding: 10px 12px;
+      align-items: center;
+    }
+    body.audit-log-mode .audit-log-table .user-row.head {
+      position: sticky;
+      top: 0;
+      z-index: 2;
+      background: #f4f7fb;
+      font-size: 11px;
+      font-weight: 800;
+      color: #475569;
+      text-transform: uppercase;
+      letter-spacing: 0.02em;
+    }
+    body.audit-log-mode .audit-log-table .user-row:not(.head):not(.empty) {
+      border-top: 1px solid #e1e9f3;
+      cursor: default;
+    }
+    body.audit-log-mode .audit-log-table .user-row:not(.head):not(.empty):hover {
+      background: #f8fafc;
+    }
+    body.audit-log-mode .audit-log-table .audit-diff-cell {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 12px;
+      flex-wrap: wrap;
+    }
+    body.audit-log-mode .audit-log-table .audit-before {
+      color: #66758d;
+      text-decoration: line-through;
+      text-decoration-color: #cbd5e1;
+    }
+    body.audit-log-mode .audit-log-table .audit-after {
+      color: #0f172a;
+      font-weight: 700;
+    }
+    body.audit-log-mode .audit-log-table .audit-arrow {
+      color: #94a3b8;
+      font-size: 11px;
+    }
+    body.audit-log-mode .audit-log-table .audit-no-change {
+      color: #66758d;
+    }
+    body.audit-log-mode .audit-log-table .history-note {
+      font-size: 12px;
+      color: #475569;
+      line-height: 1.4;
+      overflow-wrap: anywhere;
+    }
+    body.audit-log-mode .audit-log-table .empty-icon {
+      width: 40px;
+      height: 40px;
+      margin: 0 auto 8px;
+      color: #cbd5e1;
+    }
+    body.audit-log-mode .audit-log-table .empty-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: #475569;
+      margin-bottom: 4px;
+    }
+    body.audit-log-mode .audit-log-table .empty-subtitle {
+      font-size: 12px;
+      color: #94a3b8;
+    }
+    @media (max-width: 768px) {
+      body.audit-log-mode .audit-filter-bar {
+        grid-template-columns: 1fr;
+      }
+      body.audit-log-mode .audit-filter-bar .search {
+        grid-column: 1;
+      }
+      body.audit-log-mode .audit-log-table .user-row.head {
+        display: none;
+      }
+      body.audit-log-mode .audit-log-table .user-row:not(.head):not(.empty) {
+        grid-template-columns: 1fr;
+        gap: 4px;
+        padding: 12px;
+      }
+      body.audit-log-mode .audit-log-table .user-row:not(.head):not(.empty) > div {
+        display: flex;
+        align-items: baseline;
+        gap: 8px;
+        font-size: 12px;
+      }
+      body.audit-log-mode .audit-log-table .user-row:not(.head):not(.empty) > div::before {
+        content: attr(data-label);
+        color: #66758d;
+        font-size: 11px;
+        font-weight: 800;
+        min-width: 80px;
+        flex-shrink: 0;
+      }
+    }
     .user-row:not(.report-row) > div {
       min-width: 0;
     }
@@ -15245,7 +15370,7 @@
       // DEL-PTO-001: Account Deletion Requests — mock data อยู่ใน deletionRequestData
       // moduleData.deletions เก็บเฉพาะ metadata สำหรับ fallback;
       // ข้อมูลจริงและการ render อยู่ใน deletionRequestData + renderDeletionRequests()
-      deletions: mod("Account Deletion", "งานตรวจสอบและบริการ / Account Deletion", "Deletion Requests", "ตรวจคำขอลบบัญชี, pending dependency, 30-day grace period และ anonymization", "", [], []),
+      deletions: mod("Account Deletion", "งานตรวจสอบและบริการ / Account Deletion", "Deletion Requests", "ตรวจคำขอลบบัญชี, pending dependency, ช่วงรอลบบัญชี 30 วัน และ anonymization", "", [], []),
       reports: mod("Reports", "เครื่องมือ & รายงาน / Reports", "Reports & Analytics", "รายงาน user, asset, offer, chat, board, social, search, support, notification และ deletion", "สร้าง export", [["Dashboards", "12", "พร้อมใช้งาน"], ["Scheduled", "6", "ส่งประจำสัปดาห์"], ["Export Jobs", "5", "background"], ["Failed", "1", "retry needed"]], [
         item("RPT-USER", "User Risk Report", "Trust & Safety", "User", "สูง", "Ready", "รวม suspended, report count และ deletion state", ["CSV/PDF"], "Export ต้อง mask sensitive data"),
         item("RPT-ASSET", "Asset Moderation Report", "Operations", "Asset", "สูง", "Ready", "รวม reported assets และ force status change", ["Audit linked"], "ใช้ตรวจ SLA"),
@@ -16002,16 +16127,16 @@
       requests: [
         { id: "DEL-033", userId: "U-1104", displayName: "Archive Collector", accountStatus: "Deactivated", requestStatus: "รอดำเนินการ", pendingOffers: 0, acceptedOffers: 1, assets: 6, chats: 3, reports: 1, requestedAt: "07 Sep 2026 09:15", requestedRank: 202609070915, graceEnds: "07 Oct 2026", graceEndsRank: 20261007, graceState: "active", daysLeft: 23, processedBy: "System", processedAt: "07 Sep 2026 09:15", updatedAt: "07 Sep 2026 09:15", seriousFlag: true, detail: "มี accepted offer และ serious report (ฉ้อโกง) 1 รายงาน — ระบบยกเลิก offer Pending และปิดรายงานอัตโนมัติแล้ว" },
         { id: "DEL-034", userId: "U-1130", displayName: "TimeCraft BKK", accountStatus: "Deactivated", requestStatus: "รอดำเนินการ", pendingOffers: 0, acceptedOffers: 0, assets: 2, chats: 1, reports: 0, requestedAt: "05 Sep 2026 14:22", requestedRank: 202609051422, graceEnds: "05 Oct 2026", graceEndsRank: 20261005, graceState: "active", daysLeft: 21, processedBy: "System", processedAt: "05 Sep 2026 14:22", updatedAt: "05 Sep 2026 14:22", seriousFlag: false, detail: "session revoked แล้ว profile public unavailable" },
-        { id: "DEL-035", userId: "U-1155", displayName: "Vintage Index", accountStatus: "Deactivated", requestStatus: "รอดำเนินการ", pendingOffers: 0, acceptedOffers: 2, assets: 11, chats: 5, reports: 0, requestedAt: "02 Sep 2026 10:08", requestedRank: 202609021008, graceEnds: "02 Oct 2026", graceEndsRank: 20261002, graceState: "ending", daysLeft: 3, processedBy: "อรนุช แก้วใส", processedAt: "02 Sep 2026 10:08", updatedAt: "06 Sep 2026 11:20", seriousFlag: false, detail: "ใกล้ครบ grace period — มี accepted offer 2 รายการใน retention" },
-        { id: "DEL-036", userId: "U-1170", displayName: "Seiko Corner", accountStatus: "Deactivated", requestStatus: "รอดำเนินการ", pendingOffers: 0, acceptedOffers: 0, assets: 5, chats: 2, reports: 0, requestedAt: "01 Sep 2026 18:30", requestedRank: 202609011830, graceEnds: "01 Oct 2026", graceEndsRank: 20261001, graceState: "ending", daysLeft: 2, processedBy: "System", processedAt: "01 Sep 2026 18:30", updatedAt: "06 Sep 2026 09:00", seriousFlag: false, detail: "ใกล้ครบ grace period" },
-        { id: "DEL-031", userId: "U-1090", displayName: "Omega Club TH", accountStatus: "Active", requestStatus: "คืนบัญชีแล้ว", pendingOffers: 0, acceptedOffers: 1, assets: 9, chats: 4, reports: 0, requestedAt: "20 Aug 2026 11:00", requestedRank: 202608201100, graceEnds: "19 Sep 2026", graceEndsRank: 20260919, graceState: "restored", daysLeft: null, processedBy: "มะลิ จันทร์ดี", processedAt: "25 Aug 2026 16:45", updatedAt: "25 Aug 2026 16:45", seriousFlag: false, detail: "แอดมินคืนบัญชีในช่วง grace period — account sync กลับ Active แล้ว" },
-        { id: "DEL-032", userId: "U-1101", displayName: "Daily Watch Hunter", accountStatus: "Active", requestStatus: "คืนบัญชีแล้ว", pendingOffers: 0, acceptedOffers: 0, assets: 1, chats: 0, reports: 0, requestedAt: "18 Aug 2026 08:04", requestedRank: 202608180804, graceEnds: "17 Sep 2026", graceEndsRank: 20260917, graceState: "restored", daysLeft: null, processedBy: "กิตติ Content", processedAt: "22 Aug 2026 10:15", updatedAt: "22 Aug 2026 10:15", seriousFlag: false, detail: "ผู้ใช้ติดต่อ support ขอคืนบัญชี — แอดมินคืนในช่วง grace period" },
-        { id: "DEL-028", userId: "U-1120", displayName: "The Collector", accountStatus: "Deactivated", requestStatus: "ปฏิเสธคืนบัญชี", pendingOffers: 0, acceptedOffers: 3, assets: 11, chats: 6, reports: 8, requestedAt: "10 Aug 2026 13:12", requestedRank: 202608101312, graceEnds: "09 Sep 2026", graceEndsRank: 20260909, graceState: "ending", daysLeft: 2, processedBy: "อรนุช แก้วใส", processedAt: "28 Aug 2026 14:20", updatedAt: "28 Aug 2026 14:20", seriousFlag: true, detail: "รายงานร้ายแรง 8 รายงาน — แอดมินปฏิเสธคืนบัญชี รอลบบัญชีอัตโนมัติเมื่อครบ 30 วัน" },
-        { id: "DEL-029", userId: "U-1144", displayName: "Seiko Corner", accountStatus: "Deactivated", requestStatus: "ปฏิเสธคืนบัญชี", pendingOffers: 0, acceptedOffers: 0, assets: 5, chats: 2, reports: 2, requestedAt: "08 Aug 2026 09:30", requestedRank: 202608080930, graceEnds: "07 Sep 2026", graceEndsRank: 20260907, graceState: "expired", daysLeft: 0, processedBy: "มะลิ จันทร์ดี", processedAt: "30 Aug 2026 11:00", updatedAt: "30 Aug 2026 11:00", seriousFlag: true, detail: "ปฏิเสธคืนบัญชี — ประวัติมีรายงานเสี่ยงสูง 2 รายงาน รอระบบลบบัญชีอัตโนมัติ" },
-        { id: "DEL-025", userId: "U-1075", displayName: "Rolex Rama9", accountStatus: "Anonymized", requestStatus: "ลบตัวตนแล้ว", pendingOffers: 0, acceptedOffers: 2, assets: 14, chats: 8, reports: 3, requestedAt: "15 Jul 2026 12:00", requestedRank: 202607151200, graceEnds: "14 Aug 2026", graceEndsRank: 20260814, graceState: "anonymized", daysLeft: null, processedBy: "System (auto)", processedAt: "14 Aug 2026 00:00", updatedAt: "14 Aug 2026 00:00", seriousFlag: false, detail: "ครบ grace period 30 วัน ระบบลบบัญชีอัตโนมัติ — personal fields ถูกแทนที่ด้วย anonymous value" },
-        { id: "DEL-026", userId: "U-1082", displayName: "Crown Time BKK", accountStatus: "Anonymized", requestStatus: "ลบตัวตนแล้ว", pendingOffers: 0, acceptedOffers: 1, assets: 18, chats: 12, reports: 4, requestedAt: "10 Jul 2026 16:44", requestedRank: 202607101644, graceEnds: "09 Aug 2026", graceEndsRank: 20260809, graceState: "anonymized", daysLeft: null, processedBy: "System (auto)", processedAt: "09 Aug 2026 00:00", updatedAt: "09 Aug 2026 00:00", seriousFlag: false, detail: "ครบ grace period 30 วัน ระบบลบบัญชีอัตโนมัติ — personal fields ถูกแทนที่ด้วย anonymous value" },
-        { id: "DEL-020", userId: "U-1222", displayName: "old.user", accountStatus: "Anonymized", requestStatus: "ลบตัวตนแล้ว", pendingOffers: 0, acceptedOffers: 0, assets: 0, chats: 0, reports: 0, requestedAt: "17 Jan 2026 07:44", requestedRank: 202601170744, graceEnds: "16 Feb 2026", graceEndsRank: 20260216, graceState: "anonymized", daysLeft: null, processedBy: "System (auto)", processedAt: "16 Feb 2026 00:00", updatedAt: "16 Feb 2026 00:00", seriousFlag: false, detail: "ครบ grace period 30 วัน ระบบลบบัญชีอัตโนมัติ — personal fields ถูกแทนที่ด้วย anonymous value" },
-        { id: "DEL-021", userId: "U-1199", displayName: "Minimal Dial", accountStatus: "Anonymized", requestStatus: "ลบตัวตนแล้ว", pendingOffers: 0, acceptedOffers: 1, assets: 3, chats: 1, reports: 0, requestedAt: "05 Feb 2026 09:00", requestedRank: 202602050900, graceEnds: "07 Mar 2026", graceEndsRank: 20260307, graceState: "anonymized", daysLeft: null, processedBy: "System (auto)", processedAt: "07 Mar 2026 00:00", updatedAt: "07 Mar 2026 00:00", seriousFlag: false, detail: "ครบ grace period 30 วัน ระบบลบบัญชีอัตโนมัติ — personal fields ถูกแทนที่ด้วย anonymous value" }
+        { id: "DEL-035", userId: "U-1155", displayName: "Vintage Index", accountStatus: "Deactivated", requestStatus: "รอดำเนินการ", pendingOffers: 0, acceptedOffers: 2, assets: 11, chats: 5, reports: 0, requestedAt: "02 Sep 2026 10:08", requestedRank: 202609021008, graceEnds: "02 Oct 2026", graceEndsRank: 20261002, graceState: "ending", daysLeft: 3, processedBy: "อรนุช แก้วใส", processedAt: "02 Sep 2026 10:08", updatedAt: "06 Sep 2026 11:20", seriousFlag: false, detail: "ใกล้ครบช่วงรอลบบัญชี — มี accepted offer 2 รายการใน retention" },
+        { id: "DEL-036", userId: "U-1170", displayName: "Seiko Corner Rangsit", accountStatus: "Deactivated", requestStatus: "รอดำเนินการ", pendingOffers: 0, acceptedOffers: 0, assets: 5, chats: 2, reports: 0, requestedAt: "01 Sep 2026 18:30", requestedRank: 202609011830, graceEnds: "01 Oct 2026", graceEndsRank: 20261001, graceState: "ending", daysLeft: 2, processedBy: "System", processedAt: "01 Sep 2026 18:30", updatedAt: "06 Sep 2026 09:00", seriousFlag: false, detail: "ใกล้ครบช่วงรอลบบัญชี" },
+        { id: "DEL-031", userId: "U-1090", displayName: "Omega Society TH", accountStatus: "Active", requestStatus: "คืนบัญชีแล้ว", pendingOffers: 0, acceptedOffers: 1, assets: 9, chats: 4, reports: 0, requestedAt: "20 Aug 2026 11:00", requestedRank: 202608201100, graceEnds: "19 Sep 2026", graceEndsRank: 20260919, graceState: "restored", daysLeft: null, processedBy: "มะลิ จันทร์ดี", processedAt: "25 Aug 2026 16:45", updatedAt: "25 Aug 2026 16:45", seriousFlag: false, detail: "แอดมินคืนบัญชีในช่วงรอลบบัญชี — สถานะบัญชีกลับเป็น Active แล้ว" },
+        { id: "DEL-032", userId: "U-1101", displayName: "Watch Hunter Daily", accountStatus: "Active", requestStatus: "คืนบัญชีแล้ว", pendingOffers: 0, acceptedOffers: 0, assets: 1, chats: 0, reports: 0, requestedAt: "18 Aug 2026 08:04", requestedRank: 202608180804, graceEnds: "17 Sep 2026", graceEndsRank: 20260917, graceState: "restored", daysLeft: null, processedBy: "กิตติ Content", processedAt: "22 Aug 2026 10:15", updatedAt: "22 Aug 2026 10:15", seriousFlag: false, detail: "ผู้ใช้ติดต่อ support ขอคืนบัญชี — แอดมินคืนในช่วงรอลบบัญชี" },
+        { id: "DEL-028", userId: "U-1121", displayName: "Collector Zone TH", accountStatus: "Deactivated", requestStatus: "ปฏิเสธคืนบัญชี", pendingOffers: 0, acceptedOffers: 3, assets: 11, chats: 6, reports: 8, requestedAt: "10 Aug 2026 13:12", requestedRank: 202608101312, graceEnds: "09 Sep 2026", graceEndsRank: 20260909, graceState: "ending", daysLeft: 2, processedBy: "อรนุช แก้วใส", processedAt: "28 Aug 2026 14:20", updatedAt: "28 Aug 2026 14:20", seriousFlag: true, detail: "รายงานร้ายแรง 8 รายงาน — แอดมินปฏิเสธคืนบัญชี รอลบบัญชีอัตโนมัติเมื่อครบ 30 วัน" },
+        { id: "DEL-029", userId: "U-1146", displayName: "Seiko Corner Phuket", accountStatus: "Deactivated", requestStatus: "ปฏิเสธคืนบัญชี", pendingOffers: 0, acceptedOffers: 0, assets: 5, chats: 2, reports: 2, requestedAt: "08 Aug 2026 09:30", requestedRank: 202608080930, graceEnds: "07 Sep 2026", graceEndsRank: 20260907, graceState: "expired", daysLeft: 0, processedBy: "มะลิ จันทร์ดี", processedAt: "30 Aug 2026 11:00", updatedAt: "30 Aug 2026 11:00", seriousFlag: true, detail: "ปฏิเสธคืนบัญชี — ประวัติมีรายงานเสี่ยงสูง 2 รายงาน รอระบบลบบัญชีอัตโนมัติ" },
+        { id: "DEL-025", userId: "U-1075", displayName: "Rolex Rama9 Club", accountStatus: "Anonymized", requestStatus: "ลบตัวตนแล้ว", pendingOffers: 0, acceptedOffers: 2, assets: 14, chats: 8, reports: 3, requestedAt: "15 Jul 2026 12:00", requestedRank: 202607151200, graceEnds: "14 Aug 2026", graceEndsRank: 20260814, graceState: "anonymized", daysLeft: null, processedBy: "System (auto)", processedAt: "14 Aug 2026 00:00", updatedAt: "14 Aug 2026 00:00", seriousFlag: false, detail: "ครบช่วงรอลบบัญชี 30 วัน ระบบลบบัญชีอัตโนมัติ — personal fields ถูกแทนที่ด้วย anonymous value" },
+        { id: "DEL-026", userId: "U-1082", displayName: "Crown Time Watch", accountStatus: "Anonymized", requestStatus: "ลบตัวตนแล้ว", pendingOffers: 0, acceptedOffers: 1, assets: 18, chats: 12, reports: 4, requestedAt: "10 Jul 2026 16:44", requestedRank: 202607101644, graceEnds: "09 Aug 2026", graceEndsRank: 20260809, graceState: "anonymized", daysLeft: null, processedBy: "System (auto)", processedAt: "09 Aug 2026 00:00", updatedAt: "09 Aug 2026 00:00", seriousFlag: false, detail: "ครบช่วงรอลบบัญชี 30 วัน ระบบลบบัญชีอัตโนมัติ — personal fields ถูกแทนที่ด้วย anonymous value" },
+        { id: "DEL-020", userId: "U-1222", displayName: "old.user", accountStatus: "Anonymized", requestStatus: "ลบตัวตนแล้ว", pendingOffers: 0, acceptedOffers: 0, assets: 0, chats: 0, reports: 0, requestedAt: "17 Jan 2026 07:44", requestedRank: 202601170744, graceEnds: "16 Feb 2026", graceEndsRank: 20260216, graceState: "anonymized", daysLeft: null, processedBy: "System (auto)", processedAt: "16 Feb 2026 00:00", updatedAt: "16 Feb 2026 00:00", seriousFlag: false, detail: "ครบช่วงรอลบบัญชี 30 วัน ระบบลบบัญชีอัตโนมัติ — personal fields ถูกแทนที่ด้วย anonymous value" },
+        { id: "DEL-021", userId: "U-1199", displayName: "Minimal Dial Club", accountStatus: "Anonymized", requestStatus: "ลบตัวตนแล้ว", pendingOffers: 0, acceptedOffers: 1, assets: 3, chats: 1, reports: 0, requestedAt: "05 Feb 2026 09:00", requestedRank: 202602050900, graceEnds: "07 Mar 2026", graceEndsRank: 20260307, graceState: "anonymized", daysLeft: null, processedBy: "System (auto)", processedAt: "07 Mar 2026 00:00", updatedAt: "07 Mar 2026 00:00", seriousFlag: false, detail: "ครบช่วงรอลบบัญชี 30 วัน ระบบลบบัญชีอัตโนมัติ — personal fields ถูกแทนที่ด้วย anonymous value" }
       ],
       // DEL-PTO-002: Request Detail mock data — keyed by request id
       // userContext: masked sensitive fields (email/phone/line) + auth/joined/lastActive
@@ -16042,14 +16167,14 @@
           restoreReject: null
         },
         "DEL-036": {
-          userContext: { username: "@seikocorner", email: "se***@watchmail.com", phone: "—", line: "seiko***", auth: "Email", joined: "01 Jul 2026", lastActive: "01 Sep 2026 18:30" },
+          userContext: { username: "@seikorangsit", email: "sr***@rangsitwatch.com", phone: "—", line: "seikorangsit", auth: "Email", joined: "01 Jul 2026", lastActive: "01 Sep 2026 18:30" },
           timeline: { sessionRevokedAt: "01 Sep 2026 18:30", deactivatedAt: "01 Sep 2026 18:30", graceStart: "01 Sep 2026", graceEnd: "01 Oct 2026", lastValidation: "06 Sep 2026 09:00", approvedAt: null, archivedAt: null, anonymizedAt: null, cancelledAt: null, restoredAt: null, restoreRejectedAt: null },
           dependency: { pendingIncomingOffers: 0, pendingOutgoingOffers: 0, acceptedOffersInRetention: 0, assetsByStatus: { sale: 2, show: 2, hide: 0, sold: 1, removed: 0 }, chatRooms: 2, reportsSafetyCases: 0 },
           restoreRequest: null,
           restoreReject: null
         },
         "DEL-031": {
-          userContext: { username: "@omegaclubth", email: "om***@mail.com", phone: "092-345-8820", line: "—", auth: "Email", joined: "22 Jun 2026", lastActive: "20 Aug 2026 11:00" },
+          userContext: { username: "@omegasociety", email: "os***@omegasociety.com", phone: "089-345-8820", line: "—", auth: "Email", joined: "22 Jun 2026", lastActive: "20 Aug 2026 11:00" },
           timeline: { sessionRevokedAt: "20 Aug 2026 11:00", deactivatedAt: "20 Aug 2026 11:00", graceStart: "20 Aug 2026", graceEnd: "19 Sep 2026", lastValidation: "25 Aug 2026 16:45", approvedAt: null, archivedAt: null, anonymizedAt: null, cancelledAt: null, restoredAt: "25 Aug 2026 16:45", restoreRejectedAt: null },
           dependency: { pendingIncomingOffers: 0, pendingOutgoingOffers: 0, acceptedOffersInRetention: 1, assetsByStatus: { sale: 4, show: 3, hide: 0, sold: 2, removed: 0 }, chatRooms: 4, reportsSafetyCases: 0 },
           restoreRequest: { requestedAt: "24 Aug 2026 10:30", channel: "Support email", note: "ผู้ใช้ติดต่อ support ขอคืนบัญชี" },
@@ -16058,7 +16183,7 @@
           restoreNote: "ตรวจสอบเคสเรียบร้อย ไม่พบความเสี่ยงเพิ่มเติม"
         },
         "DEL-032": {
-          userContext: { username: "@dailyhunter", email: "da***@gmail.com", phone: "—", line: "—", auth: "Google", joined: "09 Jul 2026", lastActive: "18 Aug 2026 08:04" },
+          userContext: { username: "@watchhunterdaily", email: "wh***@hunterdaily.com", phone: "—", line: "—", auth: "Google", joined: "09 Jul 2026", lastActive: "18 Aug 2026 08:04" },
           timeline: { sessionRevokedAt: "18 Aug 2026 08:04", deactivatedAt: "18 Aug 2026 08:04", graceStart: "18 Aug 2026", graceEnd: "17 Sep 2026", lastValidation: "22 Aug 2026 10:15", approvedAt: null, archivedAt: null, anonymizedAt: null, cancelledAt: null, restoredAt: "22 Aug 2026 10:15", restoreRejectedAt: null },
           dependency: { pendingIncomingOffers: 0, pendingOutgoingOffers: 0, acceptedOffersInRetention: 0, assetsByStatus: { sale: 1, show: 0, hide: 0, sold: 0, removed: 0 }, chatRooms: 0, reportsSafetyCases: 0 },
           restoreRequest: { requestedAt: "21 Aug 2026 09:00", channel: "In-app support", note: "ผู้ใช้ติดต่อ support ขอคืนบัญชี" },
@@ -16067,7 +16192,7 @@
           restoreNote: "ผู้ใช้ยืนยันตัวตนผ่าน Google แล้ว"
         },
         "DEL-028": {
-          userContext: { username: "@thecollector", email: "tc***@icloud.com", phone: "081-777-0090", line: "—", auth: "Apple", joined: "02 Apr 2026", lastActive: "10 Aug 2026 13:12" },
+          userContext: { username: "@collectorzone", email: "cz***@collectorzone.com", phone: "089-222-3344", line: "—", auth: "Apple", joined: "02 Apr 2026", lastActive: "10 Aug 2026 13:12" },
           timeline: { sessionRevokedAt: "10 Aug 2026 13:12", deactivatedAt: "10 Aug 2026 13:12", graceStart: "10 Aug 2026", graceEnd: "09 Sep 2026", lastValidation: "28 Aug 2026 14:20", approvedAt: null, archivedAt: null, anonymizedAt: null, cancelledAt: null, restoredAt: null, restoreRejectedAt: "28 Aug 2026 14:20" },
           dependency: { pendingIncomingOffers: 0, pendingOutgoingOffers: 0, acceptedOffersInRetention: 3, assetsByStatus: { sale: 4, show: 3, hide: 2, sold: 2, removed: 0 }, chatRooms: 6, reportsSafetyCases: 8 },
           restoreRequest: { requestedAt: "26 Aug 2026 15:00", channel: "Support email", note: "ผู้ใช้ติดต่อ support ขอคืนบัญชี" },
@@ -16075,7 +16200,7 @@
           restoreReject: { rejectedAt: "28 Aug 2026 14:20", rejectedBy: "อรนุช แก้วใส", reason: "พฤติกรรมละเมิดซ้ำ ไม่สมควรคืนบัญชี", note: "มีรายงานร้ายแรง 8 รายงาน พฤติกรรมละเมิดซ้ำ" }
         },
         "DEL-029": {
-          userContext: { username: "@seikocorner", email: "se***@watchmail.com", phone: "—", line: "seiko***", auth: "Email", joined: "01 Jul 2026", lastActive: "08 Aug 2026 09:30" },
+          userContext: { username: "@seikophuket", email: "sp***@seikophuket.com", phone: "—", line: "seikophuket", auth: "Email", joined: "01 Jul 2026", lastActive: "08 Aug 2026 09:30" },
           timeline: { sessionRevokedAt: "08 Aug 2026 09:30", deactivatedAt: "08 Aug 2026 09:30", graceStart: "08 Aug 2026", graceEnd: "07 Sep 2026", lastValidation: "30 Aug 2026 11:00", approvedAt: null, archivedAt: null, anonymizedAt: null, cancelledAt: null, restoredAt: null, restoreRejectedAt: "30 Aug 2026 11:00" },
           dependency: { pendingIncomingOffers: 0, pendingOutgoingOffers: 0, acceptedOffersInRetention: 0, assetsByStatus: { sale: 2, show: 2, hide: 0, sold: 1, removed: 0 }, chatRooms: 2, reportsSafetyCases: 2 },
           restoreRequest: { requestedAt: "27 Aug 2026 12:00", channel: "In-app support", note: "ผู้ใช้ติดต่อ support ขอคืนบัญชี" },
@@ -16083,14 +16208,14 @@
           restoreReject: { rejectedAt: "30 Aug 2026 11:00", rejectedBy: "มะลิ จันทร์ดี", reason: "รายงานร้ายแรงยังไม่ได้รับการแก้ไข", note: "ประวัติรายงานมีความผิดร้ายแรง (2 รายงานเสี่ยงสูง)" }
         },
         "DEL-025": {
-          userContext: { username: "@rolexrama9", email: "rr***@mail.com", phone: "086-555-4444", line: "—", auth: "Email", joined: "18 Jun 2026", lastActive: "15 Jul 2026 12:00" },
+          userContext: { username: "@rolexrama9club", email: "rc***@rama9club.com", phone: "086-555-4545", line: "—", auth: "Email", joined: "18 Jun 2026", lastActive: "15 Jul 2026 12:00" },
           timeline: { sessionRevokedAt: "15 Jul 2026 12:00", deactivatedAt: "15 Jul 2026 12:00", graceStart: "15 Jul 2026", graceEnd: "14 Aug 2026", lastValidation: "14 Aug 2026 00:00", approvedAt: "14 Aug 2026 00:00", archivedAt: "14 Aug 2026 00:00", anonymizedAt: "14 Aug 2026 00:00", cancelledAt: null, restoredAt: null, restoreRejectedAt: null },
           dependency: { pendingIncomingOffers: 0, pendingOutgoingOffers: 0, acceptedOffersInRetention: 2, assetsByStatus: { sale: 5, show: 4, hide: 2, sold: 3, removed: 0 }, chatRooms: 8, reportsSafetyCases: 3 },
           restoreRequest: null,
           restoreReject: null
         },
         "DEL-026": {
-          userContext: { username: "@crowntimebkk", email: "cr***@tukdaeng.example", phone: "081-234-2210", line: "crowntimebkk", auth: "Email", joined: "29 Jun 2026", lastActive: "10 Jul 2026 16:44" },
+          userContext: { username: "@crowntimewatch", email: "cw***@crowntimewatch.com", phone: "081-234-3311", line: "crowntimewatch", auth: "Email", joined: "29 Jun 2026", lastActive: "10 Jul 2026 16:44" },
           timeline: { sessionRevokedAt: "10 Jul 2026 16:44", deactivatedAt: "10 Jul 2026 16:44", graceStart: "10 Jul 2026", graceEnd: "09 Aug 2026", lastValidation: "09 Aug 2026 00:00", approvedAt: "09 Aug 2026 00:00", archivedAt: "09 Aug 2026 00:00", anonymizedAt: "09 Aug 2026 00:00", cancelledAt: null, restoredAt: null, restoreRejectedAt: null },
           dependency: { pendingIncomingOffers: 0, pendingOutgoingOffers: 0, acceptedOffersInRetention: 1, assetsByStatus: { sale: 6, show: 5, hide: 3, sold: 4, removed: 0 }, chatRooms: 12, reportsSafetyCases: 4 },
           restoreRequest: null,
@@ -16104,13 +16229,33 @@
           restoreReject: null
         },
         "DEL-021": {
-          userContext: { username: "@minimaldial", email: "mi***@mail.com", phone: "—", line: "—", auth: "Email", joined: "03 Jan 2026", lastActive: "05 Feb 2026 09:00" },
+          userContext: { username: "@minimaldialclub", email: "mc***@minimalclub.com", phone: "—", line: "—", auth: "Email", joined: "03 Jan 2026", lastActive: "05 Feb 2026 09:00" },
           timeline: { sessionRevokedAt: "05 Feb 2026 09:00", deactivatedAt: "05 Feb 2026 09:00", graceStart: "05 Feb 2026", graceEnd: "07 Mar 2026", lastValidation: "07 Mar 2026 00:00", approvedAt: "07 Mar 2026 00:00", archivedAt: "07 Mar 2026 00:00", anonymizedAt: "07 Mar 2026 00:00", cancelledAt: null, restoredAt: null, restoreRejectedAt: null },
           dependency: { pendingIncomingOffers: 0, pendingOutgoingOffers: 0, acceptedOffersInRetention: 1, assetsByStatus: { sale: 1, show: 1, hide: 0, sold: 1, removed: 0 }, chatRooms: 1, reportsSafetyCases: 0 },
           restoreRequest: null,
           restoreReject: null
         }
       }
+    };
+
+    // DEL-PTO-004: Audit Log mock data — รายการ audit events สำคัญของระบบ
+    // ครอบคลุม module ต่าง ๆ: Asset, Content, Users, Account Deletion, Offers, Settings
+    // แต่ละ entry มี before/after diff, reason และ actor (read-only view)
+    const auditLogData = {
+      events: [
+        { id: "AUD-88201", createdAt: "08 Sep 2026 14:22 GMT+7", actor: "Somchai Admin", action: "Force Hide Asset", module: "Asset", risk: "สูง", before: "Sale", after: "Hide", reason: "รายงานเนื้อหาไม่เหมาะสม 3 รายงาน", reference: "AST-8831", note: "ตรวจ reason และ FO sync event" },
+        { id: "AUD-88198", createdAt: "08 Sep 2026 11:05 GMT+7", actor: "อรนุช แก้วใส", action: "ปฏิเสธคืนบัญชี", module: "Account Deletion", risk: "สูง", before: "Deletion Requested", after: "Deletion Requested", reason: "พฤติกรรมละเมิดซ้ำ ไม่สมควรคืนบัญชี", reference: "DEL-028", note: "มีรายงานร้ายแรง 8 รายงาน" },
+        { id: "AUD-88195", createdAt: "08 Sep 2026 09:15 GMT+7", actor: "System (auto)", action: "ขอลบบัญชี", module: "Account Deletion", risk: "กลาง", before: "Active", after: "Deletion Requested", reason: "ผู้ใช้ยืนยันคำขอผ่านแอป (FO)", reference: "DEL-033", note: "เริ่มช่วงรอลบบัญชี 30 วัน" },
+        { id: "AUD-88172", createdAt: "07 Sep 2026 16:30 GMT+7", actor: "Orn Admin", action: "Publish Article", module: "Content", risk: "กลาง", before: "Draft", after: "Scheduled", reason: "ตั้งเวลาเผยแพร่ 10 Jul 2026 19:00", reference: "ART-044", note: "ตรวจ timestamp Asia/Bangkok" },
+        { id: "AUD-88168", createdAt: "07 Sep 2026 10:15 GMT+7", actor: "มะลิ จันทร์ดี", action: "คืนบัญชี", module: "Account Deletion", risk: "สูง", before: "Deletion Requested", after: "Active", reason: "ผู้ใช้ติดต่อ support และยืนยันตัวตนแล้ว", reference: "DEL-031", note: "คืนบัญชีในช่วงรอลบบัญชี" },
+        { id: "AUD-88120", createdAt: "06 Sep 2026 18:44 GMT+7", actor: "Somchai Admin", action: "Export User CSV", module: "Users", risk: "สูง", before: "-", after: "Exported", reason: "Export ข้อมูลผู้ใช้สำหรับ compliance review", reference: "RPT-USER", note: "Export มี sensitive-data masking" },
+        { id: "AUD-88115", createdAt: "06 Sep 2026 11:20 GMT+7", actor: "System (auto)", action: "ตรวจเงื่อนไขก่อนลบบัญชี", module: "Account Deletion", risk: "กลาง", before: "Deletion Requested", after: "Deletion Requested", reason: "ตรวจเงื่อนไขก่อนลบบัญชีระหว่างช่วงรอลบบัญชี", reference: "DEL-035", note: "ยังมี dependency ที่ต้องตรวจสอบ" },
+        { id: "AUD-88098", createdAt: "06 Sep 2026 09:00 GMT+7", actor: "กิตติ Content", action: "ปิดรายงานไม่พบการละเมิด", module: "Reported Comments", risk: "ต่ำ", before: "In Review", after: "Closed", reason: "ตรวจหลักฐานแล้วไม่พบการละเมิด", reference: "RCO-690", note: "ปิดรายงานโดยไม่เปลี่ยน FO visibility" },
+        { id: "AUD-88085", createdAt: "05 Sep 2026 14:22 GMT+7", actor: "System (auto)", action: "ขอลบบัญชี", module: "Account Deletion", risk: "กลาง", before: "Active", after: "Deletion Requested", reason: "ผู้ใช้ยืนยันคำขอผ่านแอป (FO)", reference: "DEL-034", note: "เริ่มช่วงรอลบบัญชี 30 วัน" },
+        { id: "AUD-88072", createdAt: "04 Sep 2026 20:10 GMT+7", actor: "Somchai Admin", action: "Suspend User", module: "Users", risk: "สูง", before: "Active", after: "Suspended", reason: "รายงาน 5 รายงาน พฤติกรรมผู้ขายที่ต้องตรวจสอบ", reference: "U-1002", note: "ระงับชั่วคราวระหว่างตรวจสอบ" },
+        { id: "AUD-88068", createdAt: "14 Aug 2026 00:00 GMT+7", actor: "System (auto)", action: "ลบบัญชีอัตโนมัติ", module: "Account Deletion", risk: "สูง", before: "Deletion Requested", after: "Anonymized", reason: "ครบช่วงรอลบบัญชี 30 วัน ระบบลบบัญชีอัตโนมัติ", reference: "DEL-025", note: "personal fields ถูกแทนที่ด้วย anonymous value" },
+        { id: "AUD-88051", createdAt: "09 Aug 2026 00:00 GMT+7", actor: "System (auto)", action: "ลบบัญชีอัตโนมัติ", module: "Account Deletion", risk: "สูง", before: "Deletion Requested", after: "Anonymized", reason: "ครบช่วงรอลบบัญชี 30 วัน ระบบลบบัญชีอัตโนมัติ", reference: "DEL-026", note: "personal fields ถูกแทนที่ด้วย anonymous value" }
+      ]
     };
 
     const userManagementData = {
@@ -16147,7 +16292,7 @@
         { id: "AUD-RPU-566-001", action: "REPORT_CREATED", actor: "System", createdAt: "14 Jul 2026 08:10 GMT+7", entityType: "reported_user", entityId: "RPU-566", sourceModule: "User Profile", detail: "เปิดรายงานผู้ใช้จากหน้าโปรไฟล์", before: null, after: { reportStatus: "Open", accountStatus: "Active" }, reason: "รับรายงานจากหน้าโปรไฟล์ผู้ใช้", metadata: { reference: "User ID U-1144", userId: "U-1144" } }
       ],
       "RPU-579": [
-        { id: "AUD-RPU-579-001", action: "REPORT_CREATED", actor: "System", createdAt: "14 Jul 2026 10:25 GMT+7", entityType: "reported_user", entityId: "RPU-579", sourceModule: "User Profile", detail: "เปิดรายงานผู้ใช้จากหน้าโปรไฟล์", before: null, after: { reportStatus: "Open", accountStatus: "Deletion Requested" }, reason: "รับรายงานจากหน้าโปรไฟล์ผู้ใช้", metadata: { reference: "User ID U-1104", userId: "U-1104" } }
+        { id: "AUD-RPU-579-001", action: "REPORT_CREATED", actor: "System", createdAt: "14 Jul 2026 10:25 GMT+7", entityType: "reported_user", entityId: "RPU-579", sourceModule: "User Profile", detail: "เปิดรายงานผู้ใช้จากหน้าโปรไฟล์", before: null, after: { reportStatus: "Open", accountStatus: "Active" }, reason: "รับรายงานจากหน้าโปรไฟล์ผู้ใช้", metadata: { reference: "User ID U-1104", userId: "U-1104" } }
       ],
       "RPU-588": [
         { id: "AUD-RPU-588-002", action: "REPORT_STATUS_UPDATED", actor: "Somchai Admin", createdAt: "14 Jul 2026 12:10 GMT+7", entityType: "reported_user", entityId: "RPU-588", sourceModule: "Reported Users", detail: "ปิดรายงานโดยไม่เปลี่ยนสถานะบัญชี", before: { reportStatus: "Open", accountStatus: "Active" }, after: { reportStatus: "Closed", accountStatus: "Active" }, reason: "ปิดรายงานโดยไม่เปลี่ยนสถานะบัญชี", metadata: { reference: "User ID U-1161", userId: "U-1161" } },
@@ -16618,16 +16763,19 @@
     };
 
     function formatBangkokTimestamp(date = new Date()) {
-      const formatter = new Intl.DateTimeFormat("en-GB", {
+      const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+      const parts = new Intl.DateTimeFormat("en-GB", {
         timeZone: "Asia/Bangkok",
         day: "2-digit",
-        month: "short",
+        month: "numeric",
         year: "numeric",
         hour: "2-digit",
         minute: "2-digit",
         hourCycle: "h23"
-      });
-      return `${formatter.format(date)} GMT+7`;
+      }).formatToParts(date);
+      const part = (type) => parts.find(p => p.type === type)?.value || "";
+      // บังคับเดือนเป็นตัวย่อ 3 ตัวอักษร ("Sep") — en-GB short บน ICU ใหม่ให้ "Sept" ซึ่ง parseBangkokAuditTime อ่านไม่ได้
+      return `${part("day")} ${months[Number(part("month")) - 1]} ${part("year")}, ${part("hour")}:${part("minute")} GMT+7`;
     }
 
     const reportAuditActionLabels = {
@@ -16795,11 +16943,13 @@
     function parseBangkokAuditTime(value) {
       if (!value) return null;
       const monthMap = { Jan: 0, Feb: 1, Mar: 2, Apr: 3, May: 4, Jun: 5, Jul: 6, Aug: 7, Sep: 8, Oct: 9, Nov: 10, Dec: 11 };
-      const match = String(value).match(/(\d{1,2})\s+([A-Za-z]{3})\s+(\d{4}),?\s+(\d{2}):(\d{2})/);
+      // รับทั้ง "Sep" และ "Sept" (en-GB short บน ICU ใหม่) — เทียบด้วย 3 ตัวอักษรแรก
+      const match = String(value).match(/(\d{1,2})\s+([A-Za-z]{3,4})\s+(\d{4}),?\s+(\d{2}):(\d{2})/);
       if (!match) return null;
       const [, day, month, year, hour, minute] = match;
-      if (monthMap[month] === undefined) return null;
-      return Date.UTC(Number(year), monthMap[month], Number(day), Number(hour), Number(minute));
+      const monthIndex = monthMap[month.slice(0, 3)];
+      if (monthIndex === undefined) return null;
+      return Date.UTC(Number(year), monthIndex, Number(day), Number(hour), Number(minute));
     }
 
     function formatReporterSubmissionTime(timestamp) {
@@ -17436,6 +17586,10 @@
     let deletionListPage = 1;
     let deletionFilterOpen = false;
     const deletionListPageSize = 10;
+    // DEL-PTO-004: Audit Log list state
+    let auditLogPage = 1;
+    let auditLogFilterOpen = false;
+    const auditLogPageSize = 10;
     let optionGroupListPage = 1;
     let optionDetailPage = 1;
     let activeOptionGroup = "";
@@ -17465,7 +17619,8 @@
       "market-model-detail": { searchId: "market-reference-search", filterIds: [] },
       "market-sync": { searchId: "market-search", filterIds: ["market-status-filter"] },
       "market-queue": { searchId: "market-search", filterIds: ["market-status-filter", "market-brand-filter"] },
-      "deletion-list": { searchId: "deletion-search", filterIds: ["deletion-status-filter", "deletion-grace-filter", "deletion-sort"] }
+      "deletion-list": { searchId: "deletion-search", filterIds: ["deletion-status-filter", "deletion-grace-filter", "deletion-sort"] },
+      "audit-log": { searchId: "audit-search", filterIds: ["audit-module-filter", "audit-risk-filter", "audit-sort"] }
     };
     let activeAssetImageIndex = 0;
     let activeAssetReportModalImageIndex = 0;
@@ -18098,6 +18253,7 @@
       optionGroupFilterOpen = false;
       watchAlertListFilterOpen = false;
       deletionFilterOpen = false;
+      auditLogFilterOpen = false;
     }
 
     function renderNav() {
@@ -18129,6 +18285,7 @@
       "Banned": "ระงับบัญชีถาวร",
       "Deletion Requested": "รอลบบัญชี",
       "Deleted": "ลบแล้ว",
+      "Anonymized": "ลบตัวตนแล้ว",
       "Open": "รอตรวจ",
       "In Review": "กำลังตรวจ",
       "Closed": "ปิดแล้ว"
@@ -18280,6 +18437,26 @@
         { value: "oldest", label: filterCopy.oldestFirst },
         { value: "graceEnds", label: "วันครบกำหนด" },
         { value: "status", label: "สถานะคำขอ" }
+      ],
+      auditModule: [
+        { value: "", label: "Module ทั้งหมด" },
+        { value: "Asset", label: "Asset" },
+        { value: "Content", label: "Content" },
+        { value: "Users", label: "Users" },
+        { value: "Account Deletion", label: "Account Deletion" },
+        { value: "Reported Comments", label: "Reported Comments" },
+        { value: "Offers", label: "Offers" },
+        { value: "Settings", label: "Settings" }
+      ],
+      auditRisk: [
+        { value: "", label: "Risk ทั้งหมด" },
+        { value: "สูง", label: "สูง" },
+        { value: "กลาง", label: "กลาง" },
+        { value: "ต่ำ", label: "ต่ำ" }
+      ],
+      auditSort: [
+        { value: "latest", label: filterCopy.latestFirst },
+        { value: "oldest", label: filterCopy.oldestFirst }
       ]
     };
 
@@ -18367,6 +18544,7 @@
         "Banned": "red",
         "Deletion Requested": "purple",
         "Deleted": "gray",
+        "Anonymized": "gray",
         "Open": "red",
         "In Review": "amber",
         "Closed": "green"
@@ -21018,10 +21196,124 @@
       return [request.id, request.userId, request.displayName, request.requestStatus, request.accountStatus, request.detail].join(" ").toLowerCase();
     }
 
+    // DEL-PTO-004: Audit Log view — read-only immutable admin events (action type badge + timestamp + actor + reason + before/after diff)
+    function getAuditLogSearchText(entry) {
+      return [entry.id, entry.actor, entry.action, entry.module, entry.risk, entry.reason, entry.reference, entry.note].join(" ").toLowerCase();
+    }
+
+    function getAuditLogSortRank(entry) {
+      return parseBangkokAuditTime(entry.createdAt) || 0;
+    }
+
+    function auditRiskPill(risk) {
+      const map = { "สูง": "red", "กลาง": "amber", "ต่ำ": "green" };
+      return `<span class="pill ${map[risk] || "blue"}">${risk}</span>`;
+    }
+
+    function auditModuleBadge(module) {
+      const map = {
+        "Asset": "blue",
+        "Content": "green",
+        "Users": "purple",
+        "Account Deletion": "purple",
+        "Reported Comments": "amber",
+        "Offers": "blue",
+        "Settings": "gray"
+      };
+      return `<span class="pill ${map[module] || "blue"}">${module}</span>`;
+    }
+
+    function renderAuditLog() {
+      setPageActions("");
+      document.body.classList.add("audit-log-mode");
+      document.body.classList.remove("user-list-mode", "user-detail-mode", "asset-detail-mode", "deletion-list-mode", "deletion-detail-mode");
+      activeRow = null;
+      document.querySelector("#crumb").textContent = "เครื่องมือ & รายงาน / Settings / Audit Log";
+      document.querySelector("#page-title").textContent = "Audit Log";
+      document.querySelector("#page-meta").textContent = "";
+      document.querySelector("#panel-title").textContent = "Immutable Admin Events";
+      document.querySelector("#panel-subtitle").textContent = "ค้นหา action สำคัญ และตรวจ before/after value";
+      document.querySelector("#primary-action").textContent = "";
+      document.querySelector("#user-panel-filter-actions").innerHTML = `
+        <button class="btn user-filter-toggle" type="button" data-audit-filter-toggle aria-expanded="${auditLogFilterOpen}">${iconSvg.filter}<span>${auditLogFilterOpen ? "ปิดตัวกรอง" : "เปิดตัวกรอง"}</span></button>
+        <button class="btn" type="button" data-audit-reset aria-label="รีเซ็ตค่าทั้งหมด">${iconSvg.refresh}<span>รีเซ็ตค่าทั้งหมด</span></button>
+      `;
+      document.querySelector(".filters").innerHTML = `
+        <div class="user-filter-bar audit-filter-bar" data-filter-open="${auditLogFilterOpen}">
+          <input class="field search" id="audit-search" type="search" placeholder="ค้นหา Event ID, Actor, Action, Reference" />
+          <div class="user-advanced-filter">${customSelect("audit-module-filter", "Filter module", filterOptions("auditModule"))}</div>
+          <div class="user-advanced-filter">${customSelect("audit-risk-filter", "Filter risk level", filterOptions("auditRisk"))}</div>
+          <div class="user-advanced-filter">${customSelect("audit-sort", "Sort audit log", filterOptions("auditSort"), "latest")}</div>
+          ${resetFilterButton("data-audit-reset")}
+        </div>
+      `;
+      // KPI cards
+      const events = auditLogData.events;
+      const highRisk = events.filter(e => e.risk === "สูง").length;
+      const accountDeletionEvents = events.filter(e => e.module === "Account Deletion").length;
+      document.querySelector("#summary-grid").innerHTML = `
+        <div class="summary-card"><div class="summary-label">Total Events</div><div class="summary-value">${events.length}</div><div class="summary-note">ในระบบทั้งหมด</div></div>
+        <div class="summary-card"><div class="summary-label">High Risk</div><div class="summary-value">${highRisk}</div><div class="summary-note">ต้องมี reason</div></div>
+        <div class="summary-card"><div class="summary-label">Account Deletion</div><div class="summary-value">${accountDeletionEvents}</div><div class="summary-note">lifecycle events</div></div>
+        <div class="summary-card"><div class="summary-label">Retention</div><div class="summary-value">365d</div><div class="summary-note">baseline ขั้นต่ำ</div></div>
+      `;
+      document.querySelector("#cards").innerHTML = "";
+      document.querySelector("#detail").innerHTML = "";
+      restoreListFilterState("audit-log");
+      renderAuditLogRows();
+    }
+
+    function renderAuditLogRows() {
+      const q = (document.querySelector("#audit-search")?.value || "").trim().toLowerCase();
+      const moduleFilter = document.querySelector("#audit-module-filter")?.value || "";
+      const riskFilter = document.querySelector("#audit-risk-filter")?.value || "";
+      const sort = document.querySelector("#audit-sort")?.value || "latest";
+      const sorted = [...auditLogData.events].filter(e => {
+        return (!q || getAuditLogSearchText(e).includes(q))
+          && (!moduleFilter || e.module === moduleFilter)
+          && (!riskFilter || e.risk === riskFilter);
+      }).sort((a, b) => {
+        if (sort === "oldest") return getAuditLogSortRank(a) - getAuditLogSortRank(b);
+        return getAuditLogSortRank(b) - getAuditLogSortRank(a);
+      });
+      const pageCount = Math.max(1, Math.ceil(sorted.length / auditLogPageSize));
+      auditLogPage = Math.min(auditLogPage, pageCount);
+      const start = (auditLogPage - 1) * auditLogPageSize;
+      const pageRows = sorted.slice(start, start + auditLogPageSize);
+      const beforeAfterCell = (entry) => {
+        if (entry.before === "-" && entry.after === "-") return `<span class="muted">-</span>`;
+        if (entry.before === entry.after) return `<span class="audit-no-change">${entry.after}</span>`;
+        return `<span class="audit-before">${entry.before}</span> <span class="audit-arrow">→</span> <span class="audit-after">${entry.after}</span>`;
+      };
+      document.querySelector("#table").innerHTML = `
+        <div class="user-table audit-log-table">
+          <div class="user-row head"><div>Event ID</div><div>Date / Time</div><div>Actor</div><div>Action</div><div>Module</div><div>Risk</div><div>Before → After</div><div>Reference</div><div>Note</div></div>
+          ${pageRows.length === 0 ? `<div class="user-row empty"><div class="audit-empty-state" style="grid-column: 1 / -1; text-align: center; padding: 2.5rem 1rem;"><div class="empty-icon">${iconSvg.siSearch}</div><div class="empty-title">ไม่พบ audit event</div><div class="empty-subtitle">ลองปรับคำค้นหรือตัวกรอง แล้วลองใหม่</div></div></div>` : pageRows.map(e => `
+            <div class="user-row" data-audit-event="${e.id}">
+              <div data-label="Event ID"><div class="main-text">${e.id}</div></div>
+              <div data-label="Date / Time">${formatAuditDisplayTime(e.createdAt)}</div>
+              <div data-label="Actor">${e.actor}</div>
+              <div data-label="Action"><div class="main-text">${e.action}</div></div>
+              <div data-label="Module">${auditModuleBadge(e.module)}</div>
+              <div data-label="Risk">${auditRiskPill(e.risk)}</div>
+              <div data-label="Before → After" class="audit-diff-cell">${beforeAfterCell(e)}</div>
+              <div data-label="Reference">${e.reference || "-"}</div>
+              <div data-label="Note" class="history-note">${e.note || ""}</div>
+            </div>
+          `).join("")}
+        </div>
+        ${renderPager(auditLogPage, pageCount, "data-audit-page")}
+        <div class="user-list-footer">
+          <span>แสดง ${sorted.length ? `${start + 1}-${Math.min(start + auditLogPageSize, sorted.length)}` : "0"} จาก ${sorted.length}</span>
+          <span class="muted">Audit Log เป็น read-only — ไม่สามารถแก้ไขหรือลบรายการได้</span>
+        </div>
+      `;
+    }
+
     function renderDeletionRequests() {
       setPageActions("");
       document.body.classList.add("deletion-list-mode");
-      document.body.classList.remove("user-list-mode", "user-detail-mode", "asset-detail-mode");
+      document.body.classList.remove("user-list-mode", "user-detail-mode", "asset-detail-mode", "audit-log-mode");
       activeRow = null;
       document.querySelector("#crumb").textContent = "งานตรวจสอบและบริการ / Account Deletion";
       document.querySelector("#page-title").textContent = "Account Deletion Requests";
@@ -21152,7 +21444,9 @@
       document.querySelector("#detail").innerHTML = "";
 
       // helper: serious flag pill
-      const seriousFlagPill = req.seriousFlag
+      // แสดงเฉพาะคำขอที่ยังอยู่ใน grace period (active/ending/expired) — เป็นสัญญาณสำหรับการตัดสินใจ reject/restore
+      // เมื่อคำขอจบแล้ว (คืนบัญชี/ลบบัญชีอัตโนมัติ) บริบทรายงานร้ายแรงอยู่ใน detail text และ History & Actions แล้ว
+      const seriousFlagPill = req.seriousFlag && ["active", "ending", "expired"].includes(req.graceState)
         ? `<span class="pill red deletion-serious-pill"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg><span>Serious flag</span></span>`
         : "";
 
@@ -21276,8 +21570,9 @@
       `;
 
       // Section 3: Dependency Summary — ภาพรวมเท่านั้น (รายละเอียดแยกตามสถานะดูที่ module ต้นทาง)
+      // DEL-PTO-004: dependency link มี data-deletion-req-id เพื่อให้ cross-module drill-in หา userId ของ request ปัจจุบันได้
       const depLink = (label, count, dataAttr) => count > 0
-        ? `<div class="detail-tile"><span>${label}</span><strong><button class="link-btn deletion-dep-link" type="button" ${dataAttr}>${count}</button></strong></div>`
+        ? `<div class="detail-tile"><span>${label}</span><strong><button class="link-btn deletion-dep-link" type="button" ${dataAttr} data-deletion-req-id="${req.id}">${count}</button></strong></div>`
         : `<div class="detail-tile"><span>${label}</span><strong>${count}</strong></div>`;
 
       const section3 = `
@@ -21299,8 +21594,8 @@
       const archivePlanRows = [
         { data: "Public profile", action: "ซ่อนจากหน้าสาธารณะทันที" },
         { data: "Profile image", action: "ซ่อนหรือแทนด้วยรูป placeholder ตาม policy" },
-        { data: "Username / display name", action: "แทนที่ด้วย anonymous value เมื่อครบ grace period" },
-        { data: "Email / phone / LINE", action: "แทนที่ด้วย anonymous value เมื่อครบ grace period" },
+        { data: "Username / display name", action: "แทนที่ด้วย anonymous value เมื่อครบช่วงรอลบบัญชี" },
+        { data: "Email / phone / LINE", action: "แทนที่ด้วย anonymous value เมื่อครบช่วงรอลบบัญชี" },
         { data: "Assets", action: "ซ่อนจาก Feed / ค้นหา / โปรไฟล์สาธารณะ / Watch Alert" },
         { data: "Offers", action: "เก็บสถานะและ timeline ตาม policy การตรวจสอบ/ข้อพิพาท" },
         { data: "Chats", action: "เก็บเนื้อหาตาม retention แต่มาส์กตัวตนผู้ใช้" },
@@ -21344,7 +21639,7 @@
 
       const gracePeriodNote = inGracePeriod
         ? ""
-        : `<div class="deletion-action-note deletion-action-note-locked">คำขอนี้ผ่าน grace period แล้ว — ปุ่ม คืนบัญชี และ ปฏิเสธคืนบัญชี ไม่แสดง</div>`;
+        : `<div class="deletion-action-note deletion-action-note-locked">คำขอนี้ผ่านช่วงรอลบบัญชีแล้ว — ปุ่ม คืนบัญชี และ ปฏิเสธคืนบัญชี ไม่แสดง</div>`;
 
       // สร้าง audit log จากข้อมูลที่มี (timeline + restoreRequest + restoreReject + processedBy/processedAt)
       // รายละเอียดของ action: เหตุผลแสดงก่อน (ไม่มี label) + หมายเหตุแยกบรรทัด (ถ้ามี)
@@ -21355,8 +21650,8 @@
         return parts.join("<br>") || "—";
       };
       const auditLogs = [];
-      auditLogs.push({ at: req.requestedAt, actor: req.displayName, action: "ส่งคำขอลบบัญชี", note: "จาก FO" });
-      if (tl.sessionRevokedAt) auditLogs.push({ at: tl.sessionRevokedAt, actor: "System", action: "ยกเลิก session", note: "Sign out ผู้ใช้ทันที" });
+      auditLogs.push({ at: req.requestedAt, actor: req.displayName, action: "ขอลบบัญชี", note: "ผู้ใช้ยืนยันคำขอผ่านแอป (FO)" });
+      if (tl.sessionRevokedAt) auditLogs.push({ at: tl.sessionRevokedAt, actor: "System", action: "ยกเลิก session", note: "ระบบยกเลิก session ทั้งหมดของผู้ใช้" });
       if (tl.deactivatedAt) auditLogs.push({ at: tl.deactivatedAt, actor: "System", action: "ระงับบัญชี + ยกเลิก offer/ปิดรายงานอัตโนมัติ", note: "เริ่มช่วงรอลบบัญชี 30 วัน" });
       // restoreReq: ระบบไม่สามารถระบุเวลาจริงที่ support request เข้ามาได้
       // ไม่ใส่วันที่เวลาใน audit log เพราะยืนยันไม่ได้ ใช้ "—" แทน
@@ -21695,29 +21990,70 @@
             });
           });
       });
-      if (user.status === "Deletion Requested" || user.status === "Deleted") {
-        if (user.status === "Deleted") {
+      // DEL-PTO-004: แสดง deletion lifecycle rows สำหรับ user ที่อยู่ใน deletion workflow
+      // (status "Deletion Requested"/"Deleted" หรือมี support link ไปยัง DEL- request)
+      if (user.status === "Deletion Requested" || user.status === "Deleted" || (user.support && user.support.startsWith("DEL-"))) {
+        // DEL-PTO-004: ขยาย deletion rows ให้ครบ lifecycle 4 ประเภท ดึงจาก deletion request timeline
+        // (ขอลบบัญชี / คืนบัญชี / ปฏิเสธคืนบัญชี / ลบบัญชีอัตโนมัติ — เก็บถาวร+ลบตัวตนรวมเป็นขั้นเดียว)
+        // (เพิ่ม row เท่านั้น — ไม่เปลี่ยน layout ของตาราง Account Status History)
+        const delReq = deletionRequestData.requests.find(r => r.id === user.support);
+        const delDetail = deletionRequestData.detail && deletionRequestData.detail[user.support];
+        const tl = delDetail?.timeline || {};
+        const refId = user.support || "Account Deletion";
+        // 1. ขอลบบัญชี — ใช้ requestedAt หรือ deactivatedAt
+        const requestTime = delReq?.requestedAt || tl.deactivatedAt || user.lastActive;
+        deletionRows.push({
+          id: `${user.id}-DEL-REQUEST`,
+          createdAt: requestTime,
+          actor: user.displayName,
+          action: "ขอลบบัญชี",
+          before: "Active",
+          after: "Deletion Requested",
+          reference: refId,
+          note: "ผู้ใช้ยืนยันคำขอผ่านแอป (FO) — เริ่มช่วงรอลบบัญชี 30 วัน"
+        });
+        // 2. คืนบัญชี — ถ้ามี restoredAt (note แสดงเหตุผลตรง ๆ — actor แสดงชื่อแอดมินในคอลัมน์ Actor แล้ว)
+        if (tl.restoredAt) {
           deletionRows.push({
-            id: `${user.id}-DELETION-REQUESTED`,
-            createdAt: user.lastActive,
-            actor: user.displayName,
-            action: "User requested account deletion",
-            before: "Active",
-            after: "Deletion Requested",
-            reference: user.support || "Account Deletion",
-            note: "User requested account deletion. Dependencies were checked before archive."
+            id: `${user.id}-DEL-RESTORE`,
+            createdAt: tl.restoredAt,
+            actor: delReq?.processedBy || "Admin",
+            action: "คืนบัญชี",
+            before: "Deletion Requested",
+            after: "Active",
+            reference: refId,
+            note: delDetail?.restoreReason || "แอดมินคืนบัญชีในช่วงรอลบบัญชี"
           });
         }
-        deletionRows.push({
-          id: `${user.id}-DELETION-STATE`,
-          createdAt: user.status === "Deleted" ? "15 May 2026 08:10 GMT+7" : user.lastActive,
-          actor: user.status === "Deleted" ? "System" : user.displayName,
-          action: user.status === "Deleted" ? "Account deleted" : "User requested account deletion",
-          before: user.status === "Deleted" ? "Deletion Requested" : "Active",
-          after: user.status,
-          reference: user.support || "Account Deletion",
-          note: getDeletionContext(user)
-        });
+        // 3. ปฏิเสธคืนบัญชี — ถ้ามี restoreRejectedAt
+        if (tl.restoreRejectedAt) {
+          const rejectReason = delDetail?.restoreReject?.reason || "";
+          deletionRows.push({
+            id: `${user.id}-DEL-REJECT`,
+            createdAt: tl.restoreRejectedAt,
+            actor: delDetail?.restoreReject?.rejectedBy || delReq?.processedBy || "Admin",
+            action: "ปฏิเสธคืนบัญชี",
+            before: "Deletion Requested",
+            after: "Deletion Requested",
+            reference: refId,
+            note: rejectReason || "แอดมินปฏิเสธคืนบัญชี รอลบบัญชีอัตโนมัติ"
+          });
+        }
+        // 4. ลบบัญชีอัตโนมัติ — ขั้นรวม (เก็บถาวร + ลบตัวตน เกิดพร้อมกันเมื่อครบช่วงรอลบบัญชี)
+        // ใช้ archivedAt (fallback anonymizedAt) ตาม lifecycle เดียวกับ Deletion Timeline
+        const autoDeleteTime = tl.archivedAt || tl.anonymizedAt;
+        if (autoDeleteTime) {
+          deletionRows.push({
+            id: `${user.id}-DEL-AUTO-DELETE`,
+            createdAt: autoDeleteTime,
+            actor: "System (auto)",
+            action: "ลบบัญชีอัตโนมัติ",
+            before: "Deletion Requested",
+            after: "Anonymized",
+            reference: refId,
+            note: "ครบช่วงรอลบบัญชี 30 วัน — personal fields ถูกแทนที่ด้วย anonymous value"
+          });
+        }
       }
       return [...user.accountHistory, ...deletionRows, ...statusRows, ...generatedRows]
         .sort((a, b) => {
@@ -21963,7 +22299,7 @@
       "Unban user": "ยกเลิกระงับบัญชีถาวร",
       "Open Account Deletion": "ดูคำขอลบบัญชี",
       "Resend verification context": "ส่งข้อมูลยืนยันตัวตนอีกครั้ง",
-      "View archived summary": "ดูสรุปบัญชีที่ลบแล้ว"
+      "View deleted summary": "ดูสรุปบัญชีที่ลบแล้ว"
     };
 
     const USER_ACTION_CONFIRM_LABEL = "ยืนยัน";
@@ -22621,17 +22957,19 @@
 
     // รูปแบบวันที่สำหรับ deletion audit log — ตรงกับ mock data: "DD MMM YYYY HH:MM"
     function formatDeletionTimestamp(date = new Date()) {
-      const formatter = new Intl.DateTimeFormat("en-GB", {
+      const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+      const parts = new Intl.DateTimeFormat("en-GB", {
         timeZone: "Asia/Bangkok",
         day: "2-digit",
-        month: "short",
+        month: "numeric",
         year: "numeric",
         hour: "2-digit",
         minute: "2-digit",
         hourCycle: "h23"
-      });
-      // Intl กับ en-GB จะได้ "08 Sep 2026, 10:42" — เอา comma ออก และไม่ต่อ GMT+7
-      return formatter.format(date).replace(",", "");
+      }).formatToParts(date);
+      const part = (type) => parts.find(p => p.type === type)?.value || "";
+      // รูปแบบ "DD MMM YYYY HH:MM" (ไม่มี comma, ไม่มี GMT+7) — บังคับเดือน 3 ตัวอักษรให้ตรง mock data
+      return `${part("day")} ${months[Number(part("month")) - 1]} ${part("year")} ${part("hour")}:${part("minute")}`;
     }
 
     const deletionActionConfig = {
@@ -22650,14 +22988,14 @@
         success: req => `${req.displayName} คืนบัญชีแล้ว — สถานะกลับเป็น Active`,
         checklist: [
           "หลังยืนยัน สถานะบัญชีกลับเป็น Active และผู้ใช้เข้าสู่ระบบได้ทันที",
-          "คำขอลบบัญชีถูกยกเลิก และไม่เริ่มนับ grace period ใหม่",
+          "คำขอลบบัญชีถูกยกเลิก และไม่เริ่มนับช่วงรอลบบัญชีใหม่",
           "บันทึก audit พร้อม admin, reason และเวลาดำเนินการ"
         ]
       },
       "reject-restore": {
         title: "Reject Restore",
         tone: "danger",
-        summary: "ปฏิเสธคำขอคืนบัญชี ระบบจะยังคง grace period เดิมไว้และรอลบบัญชีอัตโนมัติเมื่อครบ 30 วัน (ไม่เริ่มนับใหม่)",
+        summary: "ปฏิเสธคำขอคืนบัญชี ระบบยังคงช่วงรอลบบัญชีเดิมไว้ และรอลบบัญชีอัตโนมัติเมื่อครบ 30 วัน (ไม่เริ่มนับใหม่)",
         reasonLabel: "เหตุผลการปฏิเสธคืนบัญชี",
         reasons: [
           "รายงานร้ายแรงยังไม่ได้รับการแก้ไข",
@@ -22666,10 +23004,10 @@
           "ทีมที่รับผิดชอบไม่อนุมัติให้คืนบัญชี"
         ],
         notePlaceholder: "ระบุหลักฐาน รายงาน หรือข้อมูลอ้างอิงที่เกี่ยวข้องกับการปฏิเสธ",
-        success: req => `ปฏิเสธคืนบัญชี ${req.displayName} แล้ว — รอลบบัญชีอัตโนมัติเมื่อครบ grace period`,
+        success: req => `ปฏิเสธคืนบัญชี ${req.displayName} แล้ว — รอลบบัญชีอัตโนมัติเมื่อครบช่วงรอลบบัญชี`,
         checklist: [
           "หลังยืนยัน ปุ่ม คืนบัญชี และ ปฏิเสธคืนบัญชี ยังแสดง (รอรับเรื่องซ้ำได้)",
-          "grace period ไม่เริ่มนับใหม่ — รอลบบัญชีอัตโนมัติเมื่อครบ 30 วันเดิม",
+          "ช่วงรอลบบัญชีไม่เริ่มนับใหม่ — รอลบบัญชีอัตโนมัติเมื่อครบ 30 วันเดิม",
           "บันทึก audit พร้อม admin, reason และเวลาดำเนินการ"
         ]
       }
@@ -22806,6 +23144,17 @@
         detail.restoreReason = selectedReason || config.reasonLabel;
         detail.restoreNote = actionNote;
         // ไม่เคลียร์ restoreReject — audit log ต้องเก็บทุก action (ปฏิเสธก่อนหน้ายังอยู่ในประวัติ)
+        // DEL-PTO-004: sync สถานะกลับไปยัง User Management (list + detail แสดง Active ตามจริง)
+        // ใช้ updateUserActionsForStatus เดียวกับ flow Suspend/Ban/Restore ของ User Management
+        const restoredUser = userManagementData.users.find(u => u.id === req.userId);
+        if (restoredUser && restoredUser.status === "Deletion Requested") {
+          restoredUser.status = "Active";
+          updateUserActionsForStatus(restoredUser);
+          // sync accountStatus ของรายงานที่ผูกกับ user นี้ (pattern เดียวกับ flow Suspend/Ban ใน report context)
+          userManagementData.reports.forEach(report => {
+            if (report.userId === restoredUser.id) report.accountStatus = "Active";
+          });
+        }
       } else if (action === "reject-restore") {
         // ปฏิเสธคืนบัญชี: เพิ่มประวัติ + ยังอยู่ใน grace + ปุ่มยังแสดง + ไม่เริ่มนับใหม่
         // เก็บเป็น array เพื่อรองรับการปฏิเสธซ้ำหลายครั้ง (audit log แสดงทุกครั้ง)
@@ -22850,9 +23199,15 @@
       const deletionId = user?.support?.startsWith("DEL-") ? user.support : "";
       renderModule("deletions", subLabel, subLabel);
       if (deletionId) {
-        const searchInput = document.querySelector("#deletion-search");
-        if (searchInput) searchInput.value = deletionId;
-        renderDeletionRows();
+        // DEL-PTO-004: drill-in จาก User Management → เปิด Request Detail ตรง (เจตนาคือดูคำขอนี้ ไม่ใช่เบราว์ list)
+        // fallback: ไม่พบคำขอในระบบ → คง behavior เดิม (list กรองด้วย deletion id)
+        if (deletionRequestData.requests.some(r => r.id === deletionId)) {
+          renderDeletionDetail(deletionId);
+        } else {
+          const searchInput = document.querySelector("#deletion-search");
+          if (searchInput) searchInput.value = deletionId;
+          renderDeletionRows();
+        }
       }
       scrollMainToTop();
     }
@@ -22864,8 +23219,9 @@
         openAccountDeletionRequest(user);
         return;
       }
-      if (action === "View archived summary") {
-        openAccountDeletionRequest(user, "");
+      if (action === "Open Account Deletion" || action === "View deleted summary") {
+        // DEL-PTO-004: บัญชี Deleted (U-1222) กด "View deleted summary" → เปิด deletion request detail (DEL-020)
+        openAccountDeletionRequest(user);
         return;
       }
       if (userActionConfig[action]) {
@@ -23553,6 +23909,8 @@
       // DEL-PTO-002: remove deletion-detail-mode when navigating away from detail (e.g. back to list)
       document.body.classList.remove("deletion-detail-mode");
       document.body.classList.toggle("deletion-list-mode", id === "deletions");
+      // DEL-PTO-004: Audit Log mode
+      document.body.classList.toggle("audit-log-mode", id === "audit" || (id === "settings" && subLabel === "Audit Log"));
       document.body.classList.toggle("user-list-mode", id === "users" || isReportedAssets || isReportedBoard || isReportedComments);
       document.body.classList.toggle("user-accounts-mode", id === "users" && (subLabel || "User Accounts") === "User Accounts");
       document.body.classList.remove("asset-detail-mode");
@@ -23604,6 +23962,12 @@
       }
       if (id === "settings" && (subLabel || "Admin Accounts") === "Support Center") {
         renderSupportCenterPage();
+        updateActiveNav();
+        return;
+      }
+      // DEL-PTO-004: Audit Log view — read-only immutable admin events
+      if (id === "audit" || (id === "settings" && subLabel === "Audit Log")) {
+        renderAuditLog();
         updateActiveNav();
         return;
       }
@@ -27993,7 +28357,7 @@
       // body class: keep watch-alert-mode, add watch-alert-detail-mode, remove list/overview modes
       document.body.classList.add("watch-alert-mode", "watch-alert-detail-mode");
       document.body.classList.remove("watch-alert-list-mode", "watch-alert-overview-mode");
-      document.body.classList.remove("dashboard-mode", "user-management-mode", "asset-list-mode", "article-list-mode", "category-list-mode", "reported-board-mode", "market-list-mode", "market-dashboard-mode", "user-list-mode", "user-detail-mode", "asset-detail-mode", "offer-list-mode", "offer-detail-mode", "option-master-mode", "option-group-list-mode", "option-detail-mode", "deletion-list-mode", "deletion-detail-mode");
+      document.body.classList.remove("dashboard-mode", "user-management-mode", "asset-list-mode", "article-list-mode", "category-list-mode", "reported-board-mode", "market-list-mode", "market-dashboard-mode", "user-list-mode", "user-detail-mode", "asset-detail-mode", "offer-list-mode", "offer-detail-mode", "option-master-mode", "option-group-list-mode", "option-detail-mode", "deletion-list-mode", "deletion-detail-mode", "audit-log-mode");
 
       // breadcrumb + page header + back button
       document.querySelector("#crumb").textContent = `งานตรวจสอบและบริการ / Market Demand / Watch Alert List / ${alert.id}`;
@@ -35191,7 +35555,7 @@
       activeSub = "";
       activeRow = offer;
       document.body.classList.add("offer-list-mode", "offer-detail-mode");
-      document.body.classList.remove("dashboard-mode", "user-management-mode", "asset-list-mode", "article-list-mode", "category-list-mode", "reported-board-mode", "market-list-mode", "market-dashboard-mode", "user-list-mode", "user-detail-mode", "asset-detail-mode", "deletion-list-mode", "deletion-detail-mode");
+      document.body.classList.remove("dashboard-mode", "user-management-mode", "asset-list-mode", "article-list-mode", "category-list-mode", "reported-board-mode", "market-list-mode", "market-dashboard-mode", "user-list-mode", "user-detail-mode", "asset-detail-mode", "deletion-list-mode", "deletion-detail-mode", "audit-log-mode");
       document.querySelector("#crumb").textContent = `การดำเนินงาน / Offer Management / Offer Detail / ${offer.id}`;
       document.querySelector("#page-title").textContent = "Offer Detail";
       document.querySelector("#page-meta").textContent = "";
@@ -35637,6 +36001,13 @@
           deletionListPage = 1;
           saveCurrentListFilterState();
           renderDeletionRows();
+          return;
+        }
+        // DEL-PTO-004: Audit Log filter selects
+        if (["audit-module-filter", "audit-risk-filter", "audit-sort"].includes(hiddenInput.id) && (activeModule === "audit" || (activeModule === "settings" && activeSub === "Audit Log"))) {
+          auditLogPage = 1;
+          saveCurrentListFilterState();
+          renderAuditLogRows();
           return;
         }
         userListPage = 1;
@@ -36898,13 +37269,15 @@
       if (reportActionButton || (reportRow && !event.target.closest(".row-menu, button, a, input, select, [data-custom-select]"))) {
         const id = reportActionButton?.dataset.reportAction || reportRow.dataset.reportId;
         const report = userManagementData.reports.find(entry => entry.id === id);
+        // capture back context ก่อนสลับหน้า — ปุ่ม back ต้องกลับหน้าที่คลิกจาก (เช่น User Detail) ไม่ใช่ Reported Users list เสมอ
+        const backContext = getCurrentNavigationContext();
         if (document.body.classList.contains("user-detail-mode")) {
           renderModule("users", "Reported Users");
         }
         activeRow = report;
         reporterHistoryPage = 1;
         reportAuditHistoryPage = 1;
-        pushBackNavigationContext();
+        pushBackNavigationContext(backContext);
         renderReportedUserDetail(report);
         return;
       }
@@ -37093,6 +37466,34 @@
         else deletionListPage = Number(target) || 1;
         saveCurrentListFilterState();
         renderDeletionRows();
+        return;
+      }
+      // DEL-PTO-004: Audit Log — filter toggle + reset + pagination
+      const auditFilterToggle = event.target.closest("[data-audit-filter-toggle]");
+      if (auditFilterToggle) {
+        auditLogFilterOpen = !auditLogFilterOpen;
+        const filterBar = document.querySelector(".user-filter-bar.audit-filter-bar");
+        if (filterBar) filterBar.dataset.filterOpen = String(auditLogFilterOpen);
+        auditFilterToggle.setAttribute("aria-expanded", String(auditLogFilterOpen));
+        const label = auditFilterToggle.querySelector("span");
+        if (label) label.textContent = auditLogFilterOpen ? "ปิดตัวกรอง" : "เปิดตัวกรอง";
+        return;
+      }
+      const auditReset = event.target.closest("[data-audit-reset]");
+      if (auditReset) {
+        auditLogPage = 1;
+        clearListFilterState("audit-log");
+        renderAuditLog();
+        return;
+      }
+      const auditPageButton = event.target.closest("[data-audit-page]");
+      if (auditPageButton) {
+        const target = auditPageButton.dataset.auditPage;
+        if (target === "prev") auditLogPage = Math.max(1, auditLogPage - 1);
+        else if (target === "next") auditLogPage += 1;
+        else auditLogPage = Number(target) || 1;
+        saveCurrentListFilterState();
+        renderAuditLogRows();
         return;
       }
       const articlePageButton = event.target.closest("[data-article-page]");
@@ -37437,10 +37838,14 @@
         }
         return;
       }
-      // dependency link (offer/asset/chat/report) — prototype: แสดง toast (cross-module links จะทำใน DEL-PTO-004)
+      // DEL-PTO-004: dependency link (offer/asset/chat/report) — cross-module drill-in (read-only)
+      // นำทางไป module ต้นทางพร้อมกรองรายการด้วย userId ของ request ปัจจุบัน
       const depLink = event.target.closest("[data-deletion-dep]");
       if (depLink) {
         const dep = depLink.dataset.deletionDep;
+        const reqId = depLink.dataset.deletionReqId;
+        const req = deletionRequestData.requests.find(r => r.id === reqId);
+        const userId = req?.userId || "";
         const labels = {
           "offers-incoming": "Pending Incoming Offers",
           "offers-outgoing": "Pending Outgoing Offers",
@@ -37449,8 +37854,38 @@
           "chats": "Chat Rooms",
           "reports": "Reports / Safety Cases"
         };
-        console.log(`DEL-PTO-002: dependency link "${dep}"`);
-        showSuccessToast(`${labels[dep] || dep} — cross-module link จะทำใน DEL-PTO-004 (prototype)`, "Account Deletion");
+        // Chat ไม่มี module ใน BO — เนื้อหาเก็บตาม retention policy และ mask ตัวตน (read-only context แสดงใน Dependency Summary แล้ว)
+        if (dep === "chats") {
+          showSuccessToast(`${labels[dep]} — เนื้อหาแชทเก็บตาม retention policy และ mask ตัวตนผู้ใช้ (ดูใน user context)`, "Account Deletion");
+          return;
+        }
+        // Offers → Offer Management (read-only) กรองด้วย userId
+        if (dep === "offers-incoming" || dep === "offers-outgoing" || dep === "offers-accepted") {
+          resetListFilterPanelsForNavigation("offers");
+          renderModule("offers");
+          const search = document.querySelector("#offer-search");
+          if (search && userId) { search.value = userId; renderOfferListRows(); }
+          showSuccessToast(`${labels[dep]} — กรอง offer ของ ${userId}`, "Account Deletion");
+          return;
+        }
+        // Assets → Asset Management (read-only) กรองด้วย userId
+        if (dep === "assets") {
+          resetListFilterPanelsForNavigation("assets", "Asset List");
+          renderModule("assets", "Asset List", "Asset List");
+          const search = document.querySelector("#search");
+          if (search && userId) { search.value = userId; renderAssetListRows(); }
+          showSuccessToast(`${labels[dep]} — กรองสินทรัพย์ของ ${userId}`, "Account Deletion");
+          return;
+        }
+        // Reports → User Management > Reported Users กรองด้วย userId
+        if (dep === "reports") {
+          resetListFilterPanelsForNavigation("users", "Reported Users");
+          renderModule("users", "Reported Users", "Reported Users");
+          const search = document.querySelector("#user-search");
+          if (search && userId) { search.value = userId; renderReportedUserRows(); }
+          showSuccessToast(`${labels[dep]} — กรองรายงานของ ${userId}`, "Account Deletion");
+          return;
+        }
         return;
       }
     });
@@ -37809,6 +38244,13 @@
         deletionListPage = 1;
         saveCurrentListFilterState();
         renderDeletionRows();
+        return;
+      }
+      // DEL-PTO-004: Audit Log search
+      if (event.target.matches("#audit-search")) {
+        auditLogPage = 1;
+        saveCurrentListFilterState();
+        renderAuditLogRows();
         return;
       }
       if (event.target.matches("#search")) {
