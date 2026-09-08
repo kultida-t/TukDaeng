@@ -138,9 +138,9 @@ Reports หลักที่ต้องมี (10 report):
 | Guest public share | Public share events from unauthenticated users must be separated from logged-in share/member activity when tracking exists |
 | Guest-to-signup conversion | Percentage/count of guest visitors or public viewers who complete registration within the attribution window when tracking exists |
 | Auth method | Email, Apple, Google |
-| Account status | Active, Suspended, Banned, Deactivated, Archived |
+| Account status | Active, Suspended, Banned, Deletion Requested, Deleted |
 | Retention / activity | Last active, active users by period |
-| Account issues | Deletion state, archived/anonymized |
+| Account issues | Deletion state, auto-delete completion (เก็บถาวร + ลบตัวตน ในขั้นเดียว) |
 | Moderation signal | Reported users, ban/suspend trend |
 
 Guest/public analytics metrics:
@@ -352,17 +352,18 @@ Generic Broadcast in FO in-app list ต้องยังถือเป็น o
 | Metric / Data | Requirement |
 | --- | --- |
 | Requests | Requested count by period |
-| Blocked requests | Count and blocking reason |
-| Pending offer dependency | Incoming/outgoing pending offer count |
+| Restored | Count by period (คืนบัญชีในช่วง grace period) |
+| Restore rejected | Count and reason |
+| Auto-cancelled offers | ระบบยกเลิก offer ที่ Pending อัตโนมัติเมื่อ delete request สำเร็จ (count) |
 | Grace period | Active, ending soon, expired |
-| Archived/anonymized | Completed count and processing time |
+| Auto-deleted (Archive + Anonymize) | Completed count and processing time — เก็บถาวร + ลบตัวตน ในขั้นเดียวเมื่อครบ grace period |
 | Cancelled requests | Count and reason |
 
 Filters:
 
 - Request status
 - Account status
-- Blocking reason
+- Reject restore reason
 - Grace period state
 - Date range
 
@@ -457,7 +458,7 @@ Audit payload:
 | AC-BO-REPORT-009 | Watch Alert Report ต้องยืนยัน Sale-only match และ destination `Watch Alert Result List` |
 | AC-BO-REPORT-010 | Support Report ไม่อยู่ใน Phase 1 เพราะ module 12 เป็น Policy & Versioning + Support Center ไม่มี ticket/SLA metric |
 | AC-BO-REPORT-011 | Notification Report ต้องแสดง delivery status และ failure reason |
-| AC-BO-REPORT-012 | Account Deletion Report ต้องแสดง blocked reason, grace period และ archive/anonymization status |
+| AC-BO-REPORT-012 | Account Deletion Report ต้องแสดง restore/reject restore reason, grace period และ auto-delete completion (เก็บถาวร + ลบตัวตน ในขั้นเดียว) |
 | AC-BO-REPORT-013 | Reports UI ต้อง responsive ที่ 375px, 768px, 1280px และ 1440px |
 
 ## 24. Open Decisions

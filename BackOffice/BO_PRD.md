@@ -164,9 +164,9 @@ Admin ต้องสามารถ:
 - User reports ตั้งแต่ 3 ครั้งขึ้นไปภายในช่วงเวลาสั้น หรือมีหลาย reporter ต้องถูกยกระดับเป็น high-risk review เท่านั้น ไม่ suspend อัตโนมัติจากจำนวน report เพียงอย่างเดียว
 - User reports ตั้งแต่ 5 ครั้งขึ้นไป หรือมี evidence เสี่ยงสูง เช่น scam, impersonation, spam offer, duplicate fraud pattern สามารถเข้าสู่ `Suspended` ชั่วคราวตาม policy เพื่อรอ Admin review
 - `Banned` ต้องเกิดหลัง Admin review แล้วพบว่าผิดจริงหรือมีความเสี่ยงสูง พร้อม reason และ audit
-- Account deletion ต้องมี lifecycle อย่างน้อย `Deletion Requested` -> `Deactivated` -> `Deleted/Archived` -> `Anonymized`
-- Prototype ปัจจุบันแสดง `Deleted / Archived` ได้ใน User List/filter เพื่อ review historical summary ตาม permission; production ต้อง mask/anonymize personal data, จำกัด action และยังต้องดูย้อนหลังได้ใน Account Deletion / Reports / Audit ตาม retention policy
-- Restore หลัง deletion ทำได้เฉพาะก่อน anonymization และควรจำกัดใน grace period เช่น 30 วัน พร้อม reason และ audit
+- Account deletion ต้องมี lifecycle รวมขั้นเดียว `Deletion Requested` -> `Deactivated` -> ครบ grace period 30 วัน ระบบลบบัญชีอัตโนมัติ = เก็บถาวร + ลบตัวตน ในขั้นเดียว (`Anonymized`) หรือ `คืนบัญชีแล้ว` ถ้าแอดมินคืนในช่วง grace period (ตาม `13_ACCOUNT_DELETION_MODULE.md` DEL-DEC-006)
+- Prototype ปัจจุบันแสดง `Deletion Requested` (รอลบบัญชี) และ `Deleted` (ลบแล้ว) ใน User List/filter เพื่อ review historical summary ตาม permission; production ต้อง mask/anonymize personal data, จำกัด action และยังต้องดูย้อนหลังได้ใน Account Deletion / Reports / Audit ตาม retention policy
+- Restore หลัง deletion ทำได้เฉพาะใน grace period 30 วัน โดยแอดมิน พร้อม reason และ audit; หลังระบบลบบัญชีอัตโนมัติแล้ว restore ไม่ได้
 
 ---
 

@@ -279,14 +279,15 @@ BO Offer Management ดู delivery status ได้ แต่การจัด
 
 ## 15. Account Deletion Dependency
 
-FO account deletion ต้อง block ถ้ามี pending offer ตาม FO rule
+FO account deletion ไม่มี block — ระบบยกเลิก offer ที่ยัง `Pending` (incoming/outgoing) อัตโนมัติเมื่อ FO confirm Delete Account สำเร็จ ตาม Account Deletion module (DEL-DEC-006)
 
 BO ต้องรองรับ:
 
-- Query pending offer ของ user เพื่อให้ Account Deletion module ตรวจได้
-- Link จาก user/account deletion request กลับมาดู offer context
-- ห้าม archive/anonymize user จนกว่า pending offer dependency ถูก resolve ตาม policy
-- Audit ทุกครั้งที่ pending offer ถูกใช้เป็นเหตุผล block deletion
+- Query pending offer ของ user เพื่อให้ Account Deletion module แสดง dependency snapshot ได้
+- ระบบยกเลิก offer ที่ยัง `Pending` อัตโนมัติเมื่อ delete request สำเร็จ พร้อมบันทึก audit (ไม่มี block ที่ต้องรอ Admin ตรวจสอบ)
+- Link จาก user/account deletion request กลับมาดู offer context (drill-in แบบ read-only กรองด้วย userId)
+- เก็บ accepted offer/chat record ตาม retention policy และ mask personal fields เมื่อถึงขั้นลบบัญชีอัตโนมัติ
+- Audit ทุกครั้งที่ offer ถูกยกเลิกด้วย system action (`ACCOUNT_DELETION_OFFER_CANCEL_AUTO`)
 
 ## 16. Audit Requirements
 
@@ -328,7 +329,7 @@ Audit action ขั้นต่ำ:
 | Asset Management | Asset sold/delete/hide/auto-hide/permanent-hide impact ต่อ offer status; asset card state in chat |
 | Audit Log | Offer export/sensitive-view actions ต้อง searchable |
 | Notification | Delivery logs, templates, retry policy |
-| Account Deletion | Pending offer validation ก่อน archive/anonymize |
+| Account Deletion | ระบบยกเลิก offer ที่ Pending อัตโนมัติเมื่อ delete request สำเร็จ; accepted offer เก็บตาม retention policy; dependency drill-in แบบ read-only กรองด้วย userId |
 | Help & Support | ไม่มี ticket ใน Phase 1 — module 12 เป็น Policy & Versioning + Support Center; chat/offer context สำหรับ dispute เป็น future scope |
 | Reports & Analytics | Offer/chat aggregate และ export ตาม permission |
 
@@ -349,7 +350,7 @@ Offer Management ต้องใช้ app shell, navigation, breakpoint, list t
 | AC-BO-OFFER-005 | User report ที่มาจาก chat ต้องอยู่ใน `User Management > Reported Users` และแสดง chat/offer เป็น context โดยไม่สื่อว่า FO มี `Report chat` แยกต่างหาก |
 | AC-BO-OFFER-006 | Admin ไม่สามารถ edit user message หรือ offer price โดยตรง |
 | AC-BO-OFFER-007 | FO Delete Chat เป็น user-level visibility เท่านั้น BO ยัง retain record ตาม retention policy |
-| AC-BO-OFFER-008 | Pending offer dependency ใช้ block account deletion ได้ |
+| AC-BO-OFFER-008 | ระบบยกเลิก offer ที่ Pending อัตโนมัติเมื่อ FO delete request สำเร็จ พร้อม audit (ไม่มี block) |
 | AC-BO-OFFER-009 | Export offer history ยังไม่ปรากฏบน prototype Offer Detail ปัจจุบัน; ถ้าเพิ่มภายหลังต้องจำกัด permission และ audit export event |
 | AC-BO-OFFER-010 | Responsive layout ใช้งานได้ที่ mobile-width, tablet และ desktop |
 

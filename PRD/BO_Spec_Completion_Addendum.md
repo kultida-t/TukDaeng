@@ -196,25 +196,25 @@ BO_Spec v1.1 มี Watch Alert report แล้ว แต่ FO ต้องม
 
 ### 5.1 Purpose
 
-รองรับ UC-SETTING-004: ผู้ใช้ลบบัญชีจาก FO โดยต้อง archive data และต้องไม่มี pending offer
+รองรับ UC-SETTING-004: ผู้ใช้ลบบัญชีจาก FO — ระบบระงับบัญชี ซ่อน public surfaces ยกเลิก offer ที่ Pending และปิดรายงานอัตโนมัติ (ไม่มี block) แล้วคำขอเข้าคิวตรวจสอบใน BO (รายละเอียดเต็ม: `13_ACCOUNT_DELETION_MODULE.md`)
 
 ### 5.2 Request Status
 
 | Status | Description |
 |---|---|
-| Requested | ผู้ใช้กด delete account แล้ว |
-| Blocked | มี pending offer หรือเงื่อนไขอื่นที่ยังปิดไม่ได้ |
-| Approved | ผ่านเงื่อนไข archive แล้ว |
-| Archived | archive data สำเร็จ |
-| Cancelled | ผู้ใช้ยกเลิกหรือ admin reject |
+| รอดำเนินการ | ผู้ใช้ confirm Delete Account สำเร็จ ระบบระงับ+ซ่อน+ยกเลิก offer+ปิดรายงานอัตโนมัติ และคำขอเข้าคิว BO |
+| คืนบัญชีแล้ว | แอดมินกู้คืนบัญชีให้ผู้ใช้ในช่วง grace period 30 วัน ตาม policy (มีเหตุผล + audit) |
+| ปฏิเสธคืนบัญชี | แอดมินปฏิเสธคำขอคืนบัญชี รอครบ 30 วันแล้วระบบลบบัญชีอัตโนมัติ (ไม่เริ่มนับใหม่) |
+| ลบตัวตนแล้ว | ครบ grace period 30 วัน ระบบลบบัญชีอัตโนมัติ — เก็บถาวร + ลบตัวตน ในขั้นเดียว |
 
 ### 5.3 Validation Rules
 
-- ถ้ามี pending incoming offer หรือ outgoing offer ให้ block deletion
-- ถ้ามี accepted offer ที่ยังอยู่ใน retention window ให้ archive แทน hard delete
-- Asset ของผู้ใช้ต้องถูกซ่อนจาก FO หลัง account archived
+- ยกเลิก offer ที่ยัง Pending (incoming/outgoing) อัตโนมัติ พร้อมบันทึก audit — ไม่มี block ที่ต้องรอ Admin ตรวจสอบ
+- ปิดรายงานที่ยังเปิดอยู่อัตโนมัติตาม policy พร้อมบันทึก audit
+- Asset ของผู้ใช้ถูกซ่อนจาก FO ทันทีเมื่อ delete request สำเร็จ (ไม่รอครบ 30 วัน)
+- Accepted offer เก็บตาม retention policy และ mask personal fields ตาม policy
 - Chat history เก็บตาม retention policy แต่ต้อง mask personal profile fields ตาม privacy policy
-- Username/email/phone/line ต้องถูก anonymize เมื่อพ้น retention policy
+- Username/email/phone/line ถูกแทนที่ด้วย anonymous value เมื่อครบ grace period 30 วัน ระบบลบบัญชีอัตโนมัติ (เก็บถาวร + ลบตัวตน ในขั้นเดียว ตาม DEL-DEC-006)
 
 ### 5.4 Admin View
 
@@ -224,10 +224,10 @@ BO_Spec v1.1 มี Watch Alert report แล้ว แต่ FO ต้องม
 |---|---|
 | Request ID | รหัสคำขอ |
 | User | ผู้ขอลบบัญชี |
-| Pending Offers | จำนวน offer ที่ยัง pending |
 | Assets | จำนวน asset |
-| Chats | จำนวน chat rooms |
-| Status | Requested / Blocked / Approved / Archived / Cancelled |
+| Request Status | รอดำเนินการ / คืนบัญชีแล้ว / ปฏิเสธคืนบัญชี / ลบตัวตนแล้ว |
+| Account Status | Active / Deactivated / Anonymized |
+| Grace Period | Countdown ช่วงรอลบบัญชี (เหลือ X วัน / ครบแล้ว) |
 | Requested At | วันที่ขอ |
 | Processed By | Admin/System ที่ดำเนินการ |
 
@@ -236,10 +236,9 @@ BO_Spec v1.1 มี Watch Alert report แล้ว แต่ FO ต้องม
 | Action | Permission |
 |---|---|
 | View Request | Admin |
-| Recheck Blocking Conditions | Admin |
-| Approve Archive | Admin |
-| Cancel Request | Admin |
-| Export Archive Report | Admin |
+| Restore Account (คืนบัญชี) | Admin — เฉพาะช่วง grace period 30 วัน |
+| Reject Restore (ปฏิเสธคืนบัญชี) | Admin — เฉพาะช่วง grace period 30 วัน |
+| Export Archive Report | Admin — future scope (ไม่แสดงใน prototype Phase 1) |
 
 ---
 
@@ -611,7 +610,7 @@ Content permissions use the single BO account type `Admin`. There are no BO sub-
 | Offer Report | Offers Made, Pending, Accepted, Rejected, Expired, Avg Offer Price, Avg Response Time |
 | Chat Report | Active Chat Rooms, Messages Sent, Attachments Sent, Reported Chats |
 | Asset Reported Comments Report | Total Comments, Reported Comments, Hidden Comments, Top Commented Assets |
-| Account Deletion Report | Requests, Blocked, Archived, Avg Processing Time |
+| Account Deletion Report | Requests, Restored, Restore Rejected, Auto-Deleted (Archive + Anonymize), Avg Processing Time |
 | Support Report | Open Tickets, SLA, Resolution Time, Ticket Types |
 | System Notification Report | Sent, Delivered, Opened, Failed, Retry Count by Notification Type |
 
@@ -690,7 +689,7 @@ BO uses a single `Admin` account type. Module behavior is controlled by module/a
 | Asset Management (Reported Comments) | Admin can view aggregate data and moderate reported comments by policy. |
 | Watch Alert Management | Admin can view, disable/enable by policy, and audit changes. |
 | Help & Support | Admin can manage tickets, internal notes, linked entities, SLA status, and replies by policy. |
-| Account Deletion Requests | Admin can view/recheck/approve/cancel/archive by policy with dependency checks, confirmation, reason, and audit. |
+| Account Deletion Requests | Admin can view requests and restore/reject restore within the 30-day grace period by policy with confirmation, reason, and audit; auto-delete (archive + anonymize) is a system job, not an admin action. |
 | System Notification Triggers / Templates | Admin can manage templates and broadcasts with approval, preview, and audit policy. |
 ## 14. Recommended Acceptance Criteria
 

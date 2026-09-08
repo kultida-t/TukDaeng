@@ -52,7 +52,7 @@ Phase 1 คือ BO foundation ที่ล็อกใน prototype แล้�
 | Option Master | `17_OPTION_MASTER_MODULE.md` - Internal option master management สำหรับ FO Add/Edit Asset, Search Filter, Watch Alert criteria; option group list/detail, option add/edit/deactivate/reactivate/delete/reorder, group add/edit/deactivate/reactivate/delete/reorder, group audit log, audit |
 | Market Demand | `11_WATCH_ALERT_MODULE.md` + `WatchAlert_Prototype_Blueprint.md` - Demand Overview (KPI, Top Brands drill-down, Price Range, Trigger Trend, Frequently Triggered), Search Insights (Popular Keywords/Filters/Combinations, No-result Searches, Search Funnel), Watch Alert List & Detail (read-only, no admin disable/enable/export) |
 | Help & Support | `12_HELP_SUPPORT_MODULE.md` - Policy & Versioning (Terms of Use, Privacy Policy — Draft/Published/Archived, bilingual TH/EN, version history, restore) และ Support Center (channels, business hours, availability TH/EN, preview) |
-| Account Deletion | `13_ACCOUNT_DELETION_MODULE.md` - Request queue, pending-offer validation, 30-day grace period, archive/anonymization tracking |
+| Account Deletion | `13_ACCOUNT_DELETION_MODULE.md` - Request queue, restore/reject restore ใน grace period, 30-day grace period, ลบบัญชีอัตโนมัติเมื่อครบกำหนด (เก็บถาวร + ลบตัวตน ในขั้นเดียว) |
 | Notifications | `14_NOTIFICATIONS_MODULE.md` - Broadcast notifications, system trigger templates, delivery logs, retry failed notifications, FO-supported type constraints |
 | Reports | `15_REPORTS_ANALYTICS_MODULE.md` - User, asset, offer, chat, board, asset reported comments, search, watch alert, notification, account deletion reports, export jobs |
 | Audit Log | `08_AUDIT_LOG_MODULE.md` - Immutable event capture, search/filter, export, Admin visibility |

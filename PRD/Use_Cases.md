@@ -1050,16 +1050,18 @@
 **Actor:** ผู้ใช้ที่ Login แล้ว
 
 #### Happy Path
-1. Settings → About → About your account
+1. Settings → About your account
 2. กด "Delete account"
 3. Confirm (กรอก Password ยืนยัน)
-4. บัญชีถูกลบ ข้อมูลทั้งหมดถูก Archive
+4. ระบบระงับบัญชี + revoke session ทันที ซ่อน public profile/assets ยกเลิก offer ที่ Pending และปิดรายงานอัตโนมัติ (ไม่มี block)
+5. แสดง "Account deletion started" แล้วพากลับหน้า Sign In
+6. คำขอเข้าคิว Back Office สถานะ `รอดำเนินการ` เริ่มนับ grace period 30 วัน เมื่อครบกำหนดระบบลบบัญชีอัตโนมัติ (เก็บถาวร + ลบตัวตน ในขั้นเดียว)
 
 #### Error Cases
 | ID | เงื่อนไข | ผลลัพธ์ |
 |---|---|---|
 | E01 | Password ยืนยันผิด | แสดง "Incorrect password" |
-| E02 | มี Pending Offer ที่ยังไม่ได้ตอบ | แสดง "Please resolve all pending offers before deleting your account" |
+| E02 | API fail | ไม่ revoke session, ไม่ sign out และแสดง retry/error state |
 
 ---
 

@@ -176,7 +176,7 @@ Baseline entity types:
 - Policy publish (archive เวอร์ชัน Published เดิมอัตโนมัติ)
 - Policy restore (Archived → Draft ใหม่)
 - Support Center update (channels, business hours, availability)
-- Account deletion approve/reject/archive
+- Account deletion restore / reject restore / auto delete (เก็บถาวร + ลบตัวตน ขั้นเดียว) / dependency check / request create / session revoke / offer cancel auto / report close auto
 - Notification template update
 - Broadcast send/retry/cancel
 - Permission/access update

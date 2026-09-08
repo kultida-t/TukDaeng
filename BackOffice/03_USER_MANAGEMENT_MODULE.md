@@ -158,7 +158,7 @@ Filter ที่ต้องมี:
 
 | Filter | ตัวเลือก |
 | --- | --- |
-| สถานะบัญชี | ทุกสถานะ, ใช้งานได้, รอยืนยันตัวตน, ระงับชั่วคราว, ระงับบัญชีถาวร, รอลบบัญชี, ลบ/เก็บถาวร |
+| สถานะบัญชี | ทุกสถานะ, ใช้งานได้, รอยืนยันตัวตน, ระงับชั่วคราว, ระงับบัญชีถาวร, รอลบบัญชี, ลบแล้ว |
 | วิธีเข้าสู่ระบบ | ทั้งหมด, Email, Google, Apple |
 
 Filter ต้องมีปุ่ม reset เพื่อล้าง search/filter/sort/page กลับเป็นค่าเริ่มต้น
@@ -239,7 +239,7 @@ Action ในแต่ละ user row ต้องแสดงตามสถา
 | Unban Account | แสดงเมื่อบัญชีอยู่ในสถานะ Banned |
 | Resend verification context | แสดงเมื่อบัญชีอยู่ในสถานะ Pending Verification — ส่งข้อมูลยืนยันตัวตนซ้ำ ไม่เปลี่ยนสถานะบัญชี |
 | Open Account Deletion | แสดงเมื่อบัญชีอยู่ในสถานะ Deletion Requested — เปิดไปยัง Account Deletion module |
-| View Archived Summary | แสดงเมื่อบัญชีอยู่ในสถานะ Deleted / Archived |
+| View deleted summary (ดูสรุปบัญชีที่ลบแล้ว) | แสดงเมื่อบัญชีอยู่ในสถานะ Deleted (ลบแล้ว) — เปิดไปยัง Account Deletion Request Detail ของคำขอนั้น |
 
 User List ต้องไม่แสดง action delete/archive โดยตรง
 
@@ -289,7 +289,7 @@ Header ต้องแสดง:
 | Suspended | ระงับชั่วคราวระหว่างตรวจสอบหรือจาก policy violation | Login ไม่ได้หรือถูกจำกัดการใช้งานตาม policy |
 | Banned | ระงับถาวรจากเหตุร้ายแรง | Login ไม่ได้และ profile/content อาจถูกซ่อนตาม policy |
 | Deletion Requested | ผู้ใช้ร้องขอลบบัญชีและอยู่ระหว่างตรวจ dependency | ต้องจำกัด action ที่ทำให้ข้อมูลเปลี่ยนเพิ่มโดยไม่จำเป็น |
-| Deleted / Archived | บัญชีถูกลบหรือเก็บถาวรแล้ว | Login ไม่ได้และข้อมูลสาธารณะไม่ควรแสดงตาม policy |
+| Deleted | บัญชีถูกลบแล้ว — ครบ grace period 30 วัน ระบบลบบัญชีอัตโนมัติ (เก็บถาวร + ลบตัวตน ในขั้นเดียว ตาม Account Deletion module) | Login ไม่ได้และข้อมูลสาธารณะไม่ควรแสดงตาม policy |
 
 กฎสถานะ:
 
@@ -297,7 +297,7 @@ Header ต้องแสดง:
 - Pending Verification ไม่ใช่ Active
 - Suspended และ Banned ต้อง login หน้าบ้านไม่ได้
 - Report user ไม่เปลี่ยนสถานะบัญชีอัตโนมัติ ต้องรอ Admin action
-- Deleted / Archived เป็นสถานะอ่านย้อนหลัง ไม่ใช่สถานะที่ User List ทำ action ลบโดยตรง
+- Deleted เป็นสถานะอ่านย้อนหลัง ไม่ใช่สถานะที่ User List ทำ action ลบโดยตรง
 
 ## 10. Account Action Rules
 
@@ -308,7 +308,7 @@ Header ต้องแสดง:
 - ใช้ได้เฉพาะบัญชี Email/Password
 - ใช้ได้เฉพาะบัญชีสถานะ Active
 - บัญชี Apple/Google ไม่แสดง action นี้
-- Pending Verification, Suspended, Banned, Deletion Requested และ Deleted / Archived ไม่แสดง action นี้
+- Pending Verification, Suspended, Banned, Deletion Requested และ Deleted ไม่แสดง action นี้
 
 UI ต้องมี:
 
@@ -510,7 +510,7 @@ Report Detail ต้องไม่อ้าง source ประเภท asset,
 | --- | --- | --- |
 | Close Report | Report status เป็น Pending | เปลี่ยน report status เป็น Closed, คงสถานะบัญชีเดิม, บันทึก audit log |
 | View User | มี target user | เปิด User Detail ของผู้ถูกรายงาน |
-| Manage Account Status | บัญชียังไม่ Deleted / Archived | เปิด modal/action view สำหรับ suspend, ban, unsuspend หรือ unban ตามสถานะปัจจุบัน |
+| Manage Account Status | บัญชียังไม่ Deleted | เปิด modal/action view สำหรับ suspend, ban, unsuspend หรือ unban ตามสถานะปัจจุบัน |
 
 ### Reports Of Deletion Requested Users
 
