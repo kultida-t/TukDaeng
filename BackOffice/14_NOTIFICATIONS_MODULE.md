@@ -180,7 +180,7 @@ Target audience baseline:
 | Segment by Watch Alert | เช่น user ที่มี active Watch Alert |
 | Manual user IDs | จำกัดเฉพาะ Admin |
 
-ห้ามส่งไปยัง account ที่ `Banned`, `Archived`, `Anonymized` หรืออยู่ใน deletion state
+ห้ามส่งไปยัง account ที่ `Banned`, `Deleted` (ลบแล้ว), `Anonymized` หรืออยู่ใน deletion state (`Deletion Requested` — บัญชีถูกระงับระหว่าง grace period ตาม Account Deletion module)
 
 ### 8.5 Broadcast FO Constraint
 

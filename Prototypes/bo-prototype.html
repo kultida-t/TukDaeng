@@ -15370,7 +15370,7 @@
       // DEL-PTO-001: Account Deletion Requests — mock data อยู่ใน deletionRequestData
       // moduleData.deletions เก็บเฉพาะ metadata สำหรับ fallback;
       // ข้อมูลจริงและการ render อยู่ใน deletionRequestData + renderDeletionRequests()
-      deletions: mod("Account Deletion", "งานตรวจสอบและบริการ / Account Deletion", "Deletion Requests", "ตรวจคำขอลบบัญชี, pending dependency, ช่วงรอลบบัญชี 30 วัน และ anonymization", "", [], []),
+      deletions: mod("Account Deletion", "งานตรวจสอบและบริการ / Account Deletion", "Deletion Requests", "ตรวจคำขอลบบัญชี, คืน/ปฏิเสธคืนบัญชีในช่วงรอลบบัญชี 30 วัน และลบบัญชีอัตโนมัติ (เก็บถาวร + ลบตัวตน)", "", [], []),
       reports: mod("Reports", "เครื่องมือ & รายงาน / Reports", "Reports & Analytics", "รายงาน user, asset, offer, chat, board, social, search, support, notification และ deletion", "สร้าง export", [["Dashboards", "12", "พร้อมใช้งาน"], ["Scheduled", "6", "ส่งประจำสัปดาห์"], ["Export Jobs", "5", "background"], ["Failed", "1", "retry needed"]], [
         item("RPT-USER", "User Risk Report", "Trust & Safety", "User", "สูง", "Ready", "รวม suspended, report count และ deletion state", ["CSV/PDF"], "Export ต้อง mask sensitive data"),
         item("RPT-ASSET", "Asset Moderation Report", "Operations", "Asset", "สูง", "Ready", "รวม reported assets และ force status change", ["Audit linked"], "ใช้ตรวจ SLA"),
@@ -16415,7 +16415,7 @@
         { title: "รายงานสินทรัพย์", count: 22, priority: "high", detail: "รายการเก่าสุดรอตรวจ 22 ชม. / เหตุผลหลัก: รูปซ้ำและข้อมูลประกาศซ้ำ / ควรตรวจวันนี้", chips: ["ใกล้ครบกำหนด 6", "ผู้ใช้กระทบสูง"], module: "assets", sub: "Reported Assets" },
         { title: "รายงานผู้ใช้", count: 5, priority: "high", detail: "มีรายงานโปรไฟล์ซ้ำและพฤติกรรมขายซ้ำ / ควรตรวจบัญชีที่ถูก report หลายครั้งก่อน", chips: ["ใกล้ครบกำหนด 3", "ตรวจประวัติ login"], module: "users", sub: "Reported Users" },
         { title: "รายงานบทความ", count: 3, priority: "high", detail: "มีรายงานบทความจาก FO Board รอตรวจ / ตรวจเหตุผลและสถานะบทความก่อนปิดรายงานหรือ archive", chips: ["Articles 3", "รอตรวจ"], module: "content", sub: "Reported Articles" },
-        { title: "คำขอลบบัญชี", count: 8, priority: "medium", detail: "มี 2 คำขอที่ยังลบไม่ได้ เพราะมีข้อเสนอซื้อค้างอยู่", chips: ["Blocked 2", "Grace period 4"], module: "deletions", sub: "" },
+        { title: "คำขอลบบัญชี", count: 8, priority: "medium", detail: "มี 2 คำขอใกล้ครบกำหนดลบบัญชีอัตโนมัติ", chips: ["ใกล้ครบกำหนด 2", "Grace period 4"], module: "deletions", sub: "" },
         { title: "บทความรอเผยแพร่", count: 4, priority: "normal", detail: "บทความ Board ตั้งเวลาเผยแพร่แล้ว / ตรวจ preview และรูป cover ก่อนถึงเวลา", chips: ["เผยแพร่วันนี้ 2", "ต้อง preview"], module: "content", sub: "Articles" },
         { title: "ข้อมูลตลาดรอตรวจ", count: 6, priority: "normal", detail: "brand, model และ price index จาก sync มีข้อมูลซ้ำ / ควรตรวจ Sync History ก่อนใช้กับ Search และ Watch Alert", chips: ["Sync issue 6", "Price index"], module: "market", sub: "Sync History" },
         { title: "แจ้งเตือนส่งไม่สำเร็จ", count: 92, priority: "normal", detail: "มี token หมดอายุและงานส่งซ้ำได้ / ตรวจ retry queue และ cleanup invalid token", chips: ["Retryable 81", "Cleanup 11"], module: "notifications", sub: "Delivery Logs" }
@@ -21528,7 +21528,6 @@
       };
 
       const graceSub = tl.graceStart && tl.graceEnd ? `${tl.graceStart} → ${tl.graceEnd}` : "";
-      const archivedSub = tl.approvedAt && tl.archivedAt && tl.approvedAt !== tl.archivedAt ? `Approved: ${tl.approvedAt}` : "";
 
       const timelineSteps = [
         stepNode("requested", "คำขอลบบัญชี", req.requestedAt, ""),

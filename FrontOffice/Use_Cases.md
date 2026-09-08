@@ -931,13 +931,13 @@
 1. Settings → About → About your account
 2. กด "Delete account"
 3. Confirm (กรอก Password ยืนยัน)
-4. บัญชีถูกลบ ข้อมูลทั้งหมดถูก Archive
+4. ระบบ soft delete/deactivate account, revoke session และ clear local token ทันที — ยกเลิก offer ที่ Pending และปิดรายงานอัตโนมัติ ซ่อน public profile/assets ทันที (ไม่มี block) แล้วแสดง "Account deletion started" พากลับหน้า Sign In; เริ่มนับ grace period 30 วันก่อนระบบลบบัญชีอัตโนมัติ
 
 #### Error Cases
 | ID | เงื่อนไข | ผลลัพธ์ |
 |---|---|---|
 | E01 | Password ยืนยันผิด | แสดง "Incorrect password" |
-| E02 | มี Pending Offer ที่ยังไม่ได้ตอบ | แสดง "Please resolve all pending offers before deleting your account" |
+| E02 | API fail | ไม่ revoke session, ไม่ sign out และแสดง retry/error state |
 
 ---
 
