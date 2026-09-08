@@ -269,14 +269,15 @@ BO ต้องใช้ state contract เดียวกับเอกสา�
 
 ### 10.1 User Status
 
-`Guest / Unauthenticated` เป็น access state ของ FO เท่านั้น ไม่ใช่ BO user status, ไม่ใช่ account record และไม่ต้องแสดงเป็น filter/status ใน User Management. BO จะเห็นผู้ใช้ใน User Management เฉพาะเมื่อมี account record แล้ว เช่น `Pending Verification`, `Active`, `Suspended`, `Banned` หรือสถานะ deletion/archive ตาม policy.
+`Guest / Unauthenticated` เป็น access state ของ FO เท่านั้น ไม่ใช่ BO user status, ไม่ใช่ account record และไม่ต้องแสดงเป็น filter/status ใน User Management. BO จะเห็นผู้ใช้ใน User Management เฉพาะเมื่อมี account record แล้ว เช่น `Pending Verification`, `Active`, `Suspended`, `Banned` หรือสถานะ deletion ตาม policy.
 
 | Status | BO Meaning | FO Impact |
 | --- | --- | --- |
 | Active | User ใช้ FO ได้ปกติ | Login และ action ปกติทำได้ |
 | Suspended | ระงับบัญชีชั่วคราวโดย Admin หรือ policy ที่มี guardrail ชัดเจน | Session ปัจจุบันต้องถูก revoke/block, login blocked และแสดง account status state ตาม FO Auth rule |
 | Banned | ระงับบัญชีถาวรจนกว่า Admin จะปลด | Session ปัจจุบันต้องถูก revoke/block, login blocked และสร้าง activity ใหม่ใน FO ไม่ได้ |
-| Soft Deleted / Archived | ผ่าน account deletion/archive workflow | Login blocked; profile/assets ถูกซ่อนหรือ anonymized ตาม policy |
+| Deletion Requested | ผู้ใช้ร้องขอลบบัญชี อยู่ใน grace period 30 วัน (ระงับบัญชี + ซ่อน public surfaces แล้ว) | Login blocked; profile/assets ถูกซ่อนทันที; restore ได้เฉพาะโดยแอดมินในช่วง grace period |
+| Deleted | ครบ grace period ระบบลบบัญชีอัตโนมัติ — เก็บถาวร + ลบตัวตน ในขั้นเดียว | Login blocked; profile/assets anonymized ตาม policy; restore ไม่ได้ |
 
 ### 10.2 Asset Status
 

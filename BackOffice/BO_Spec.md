@@ -407,7 +407,7 @@ Module นี้ครอบคลุม 3 หน้าย่อย:
 | Search Report | Top Search Keywords, Top Filter Combinations, Watch Alert Volume by Brand |
 | Watch Alert Report | Total Active Alerts, Trigger Rate (Alert → Click), Top Alert Brands |
 | Notification Report | Sent, Delivered, Opened, Failed, Retry Count by Notification Type |
-| Account Deletion Report | Requests, Blocked, Archived, Avg Processing Time |
+| Account Deletion Report | Requests, Restored, Restore Rejected, Auto-Deleted (Archive + Anonymize), Avg Processing Time |
 
 **Export:** CSV และ Excel สำหรับทุก Report  
 **Date Range Filter:** ทุก Report มี Date Range Picker (วันนี้ / 7 วัน / 30 วัน / Custom)
@@ -483,22 +483,20 @@ Help & Support Module ใช้สำหรับให้ Admin จัดกา
 
 Account Deletion Requests Module ใช้ให้ BO ตรวจสอบและติดตามคำขอลบบัญชีที่เริ่มจาก FO Settings > About your account > Delete account (รายละเอียดเต็ม: `13_ACCOUNT_DELETION_MODULE.md`)
 
-FO ทำหน้าที่รับ confirmation, soft delete/deactivate account, revoke session ส่วน BO ทำหน้าที่เป็น operational queue สำหรับ validation, blocked condition, archive, anonymization, retention และ audit trail
+FO ทำหน้าที่รับ confirmation, soft delete/deactivate account, revoke session ส่วน BO ทำหน้าที่เป็น operational queue สำหรับติดตามคำขอ, คืน/ปฏิเสธคืนบัญชีในช่วง grace period, ลบบัญชีอัตโนมัติ (เก็บถาวร + ลบตัวตน ในขั้นเดียว), retention และ audit trail
 
 **ฟีเจอร์:**
 | ฟีเจอร์ | คำอธิบาย |
 |---|---|
-| Request Queue | ตารางคำขอลบบัญชี พร้อม filter ตาม status, date range |
-| Request Detail | ดู user, offer, asset, chat และ retention context |
-| Pending Offer Validation | ตรวจสอบ pending offer ก่อน archive/anonymize |
-| Recheck Blocking Conditions | ตรวจสอบเงื่อนไขที่บล็อกการลบซ้ำ |
-| Approve Archive | Admin อนุมัติ archive บัญชี |
-| 30-day Grace Period Tracking | ติดตาม grace period 30 วันก่อน hard delete/anonymization |
-| Archive/Anonymization Tracking | ติดตามสถานะ archive/anonymization |
-| Cancel Request | ยกเลิกคำขอตาม policy |
-| Export Archive Report | Export รายงาน archive ตาม permission |
+| Request Queue | ตารางคำขอลบบัญชี พร้อม filter ตาม status, grace period, date range |
+| Request Detail | ดู user, deletion timeline, dependency summary, Deletion Plan และ history |
+| System Auto Actions | ยกเลิก offer ที่ Pending + ปิดรายงานอัตโนมัติเมื่อ FO confirm สำเร็จ (ไม่มี block รอ Admin) |
+| Restore / Reject Restore | แอดมินคืน/ปฏิเสธคืนบัญชีในช่วง grace period 30 วัน (มีเหตุผล + audit) |
+| 30-day Grace Period Tracking | ติดตาม grace period 30 วันก่อนระบบลบบัญชีอัตโนมัติ |
+| Auto Delete (Archive + Anonymize) | ครบ grace period ระบบลบบัญชีอัตโนมัติ — เก็บถาวร + ลบตัวตน ในขั้นเดียว |
+| Export Archive Report | Export รายงานตาม permission (future scope — ไม่แสดงใน prototype Phase 1) |
 
-**Audit actions:** `ACCOUNT_DELETION_REQUEST_CREATE`, `ACCOUNT_DELETION_SESSION_REVOKE`, `ACCOUNT_DELETION_RECHECK`, `ACCOUNT_DELETION_BLOCKED`, `ACCOUNT_DELETION_APPROVE_ARCHIVE`, `ACCOUNT_DELETION_ARCHIVE_START`, `ACCOUNT_DELETION_ARCHIVE_COMPLETE`, `ACCOUNT_DELETION_ANONYMIZE_START`, `ACCOUNT_DELETION_ANONYMIZE_COMPLETE`, `ACCOUNT_DELETION_CANCEL`, `ACCOUNT_DELETION_EXPORT`, `ACCOUNT_DELETION_SENSITIVE_REVEAL`
+**Audit actions:** `ACCOUNT_DELETION_REQUEST_CREATE`, `ACCOUNT_DELETION_SESSION_REVOKE`, `ACCOUNT_DELETION_OFFER_CANCEL_AUTO`, `ACCOUNT_DELETION_REPORT_CLOSE_AUTO`, `ACCOUNT_DELETION_DEPENDENCY_CHECK_AUTO`, `ACCOUNT_DELETION_RESTORE`, `ACCOUNT_DELETION_RESTORE_REJECT`, `ACCOUNT_DELETION_AUTO_DELETE`, `ACCOUNT_DELETION_EXPORT`, `ACCOUNT_DELETION_SENSITIVE_REVEAL`
 
 ---
 

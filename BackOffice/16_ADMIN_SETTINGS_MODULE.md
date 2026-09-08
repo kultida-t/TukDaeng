@@ -221,7 +221,7 @@ Retention settings ต้องแสดงเป็น policy/config โดย�
 | Audit log | เก็บอย่างน้อย 1 ปี |
 | Security/permission/export events | ควรเก็บนานกว่า 1 ปีถ้า policy อนุญาต |
 | Chat / offer records | Open decision ตาม legal/compliance |
-| Account deletion archive | ใช้ 30-day grace period ก่อน hard delete/anonymization ตาม FO baseline เว้นแต่ legal เปลี่ยน |
+| Account deletion archive | ใช้ 30-day grace period ก่อนระบบลบบัญชีอัตโนมัติ (เก็บถาวร + ลบตัวตน ในขั้นเดียว) ตาม FO baseline เว้นแต่ legal เปลี่ยน |
 | Export files | ต้องมี expiry |
 | Notification delivery logs | ต้องกำหนด retention ตาม report/provider policy |
 
