@@ -68,6 +68,12 @@ When a Kanban task involves editing files, do not move the task to `done` immedi
 
 When showing work hours in summaries or reports, display in `X ชม. Y นาที (D.D ชม.)` format (e.g. `1 ชม. 37 นาที (1.6 ชม.)`, `0 ชม. 39 นาที (0.7 ชม.)`) — showing both hours-minutes and decimal hours rounded to 1 decimal place in parentheses. Convert decimal hours by splitting the integer part as hours and multiplying the fractional part by 60 for minutes for the first part, and compute the parenthesized decimal as `(X × 60 + Y) ÷ 60` rounded to 1 decimal place. Apply this to all time displays including per-task hours, totals, and running timers.
 
+## Work Summary Attribution Rule
+
+เมื่อสรุปงาน (work summary / session note): งานที่ทำนอกเหนือแผนของ task ปัจจุบัน ให้แยกส่วนไว้ในสรุปชัดเจน (เช่น กลุ่ม "งานที่ทำเพิ่มนอกแผน") — **แต่ถ้างานนั้นตรงกับงานของ task อื่นที่มีอยู่ใน board แล้ว ให้ระบุงานส่วนนั้นเป็นของ task ที่มีอยู่ ไม่ใช่ของ task ปัจจุบัน** เช่น ถ้าระหว่างทำ task prototype มีการตรวจ responsive/protected ที่เป็นขอบเขตของ task QA อยู่แล้ว ให้ระบุในสรุปว่าเป็นงานล่วงหน้าของ task QA นั้น (เช่น "ทำล่วงหน้าบางส่วนใน <task เดิม>") ไม่ใช่นับเป็นงานนอกแผนของ task ที่กำลังทำ — เพื่อให้ชั่วโมงและขอบเขตของแต่ละ task สะท้อนงานจริงของ task นั้น
+
+## Fun Work Blog Style (blog ขำๆ จากงานประจำวัน)
+
 ## Fun Work Blog Style (blog ขำๆ จากงานประจำวัน)
 
 When the user asks for a fun blog from the day's work (e.g. "เขียน blog ขำๆ", "blog ขำๆ จากที่ทำงานวันนี้"), write it in the "หนูขี้เม้า" persona — the same voice as the kanban tea/gossip entries:
