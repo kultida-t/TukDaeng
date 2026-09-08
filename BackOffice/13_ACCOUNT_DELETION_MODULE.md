@@ -1,8 +1,8 @@
 # 13 BO Account Deletion Requests Module
 
-**Version:** `BO-13-v0.2`  
-**Date:** 2026-09-07  
-**Status:** Logic/contract layer reviewed against confirmed decisions  
+**Version:** `BO-13-v0.3`  
+**Date:** 2026-09-08  
+**Status:** Screen layer synced with prototype (`DEL-PTO-001` ถึง `DEL-PTO-004`)  
 **Platform:** Responsive Web Back Office
 
 ## UI Standards And Prototype Reference
@@ -17,8 +17,8 @@
 | --- | --- |
 | Module Name | BO Account Deletion Requests |
 | Platform | Responsive Web Back Office |
-| Version | `BO-13-v0.2` |
-| Status | Logic/contract layer reviewed against confirmed decisions |
+| Version | `BO-13-v0.3` |
+| Status | Screen layer synced with prototype (`DEL-PTO-001` ถึง `DEL-PTO-004`) |
 | Owner | Product / UX / Engineering / Operations |
 | Document Type | Functional PRD |
 
@@ -26,7 +26,7 @@
 
 Account Deletion Requests Module ใช้ให้ BO ตรวจสอบและติดตามคำขอลบบัญชีที่เริ่มจาก FO Settings > About your account > Delete account
 
-FO ทำหน้าที่รับ confirmation, soft delete/deactivate account, revoke session และพาผู้ใช้กลับ Sign In ส่วน BO ทำหน้าที่เป็น operational queue สำหรับติดตามคำขอ, ดูสถานะล่าสุด, ดูประวัติ, คืน/ปฏิเสธคืนบัญชีในช่วง grace period, archive/anonymization อัตโนมัติ, retention และ audit trail
+FO ทำหน้าที่รับ confirmation, soft delete/deactivate account, revoke session และพาผู้ใช้กลับ Sign In ส่วน BO ทำหน้าที่เป็น operational queue สำหรับติดตามคำขอ, ดูสถานะล่าสุด, ดูประวัติ, คืน/ปฏิเสธคืนบัญชีในช่วง grace period, ลบบัญชีอัตโนมัติ (เก็บถาวร + ลบตัวตน ในขั้นเดียวเมื่อครบ grace period), retention และ audit trail
 
 ## 3. Scope
 
@@ -38,8 +38,8 @@ FO ทำหน้าที่รับ confirmation, soft delete/deactivate acc
 - ดูสถานะล่าสุด (dependency snapshot) และดูประวัติ
 - คืนบัญชี / ปฏิเสธคืนบัญชี โดยแอดมินในช่วง grace period 30 วัน
 - Track 30-day grace period
-- Archive/anonymization อัตโนมัติตามช่วงเวลา (grace period / retention)
-- Export archive report ตาม permission
+- ลบบัญชีอัตโนมัติเมื่อครบ grace period 30 วัน (เก็บถาวร + ลบตัวตน ในขั้นเดียว); retention ของข้อมูลแยกตาม policy
+- Export archive report ตาม permission (ไม่แสดงเป็นปุ่มใน prototype Phase 1 — future scope)
 - Audit log สำหรับทุก action สำคัญ
 - Responsive layout สำหรับ desktop, tablet และ mobile
 
@@ -63,7 +63,7 @@ FO Settings module กำหนด behavior หลักดังนี้:
 - ต้อง revoke session และ clear local token ทันที
 - ต้องแสดง `Account deletion started` success modal
 - ปุ่ม `Back to sign in` พาไปหน้า Sign In / pre-auth
-- ใช้ grace period 30 วันก่อน archive อัตโนมัติ และ anonymization หลัง retention ตาม policy
+- ใช้ grace period 30 วัน ก่อนระบบลบบัญชีอัตโนมัติ (เก็บถาวร + ลบตัวตน ในขั้นเดียว) เมื่อครบกำหนด
 - ระหว่าง grace period user login ไม่ได้ หรือเห็น account-deleted support state
 - ถ้า API fail ต้องไม่ revoke session, ไม่ sign out และแสดง retry/error state
 
@@ -101,35 +101,35 @@ Action ที่มีผล irreversible ต้องมี confirmation แล
 
 ## 7. Request List
 
-Request list ต้องแสดงข้อมูลขั้นต่ำ:
+Request list เป็น full-width panel ตาม pattern ของ Reported Users — ไม่มี KPI summary cards (ข้อมูลสรุปซ้ำซ้อนกับตารางและ filter; archive/anonymize เป็น system job อัตโนมัติ) แสดงตาราง 7 คอลัมน์ + action ดังนี้
 
-| Field | Requirement |
+| Column | Requirement |
 | --- | --- |
-| Request ID | รหัสคำขอลบบัญชี |
-| User | User ID, display name, username/email masked ตาม permission |
-| Account Status | Active, Deletion Requested, Deactivated, Archived, Anonymized |
-| Request Status | Requested, Blocked, Approved, Archived, Cancelled |
-| Pending Offers | จำนวน incoming/outgoing pending offer |
-| Assets | จำนวน asset ที่ต้อง hide/archive |
-| Chat Rooms | จำนวน chat room ที่ต้อง retain/mask |
-| Grace Period Ends | วันที่ครบ 30 วัน |
+| Request ID | รหัสคำขอลบบัญชี (เช่น `DEL-033`) เป็นคอลัมน์หลักและ title ของ mobile card |
+| User | Display name เป็น link button เปิด User Detail พร้อม User ID แสดงบรรทัดรองใต้ชื่อ |
+| Assets | จำนวน asset ที่ผูกกับคำขอ |
+| Request Status | Pill สถานะคำขอ: `รอดำเนินการ` (อำพัน), `คืนบัญชีแล้ว` (เขียว), `ปฏิเสธคืนบัญชี` (แดง), `ลบตัวตนแล้ว` (ถ่าน) |
+| Account Status | Pill สถานะบัญชี: `Active` (เขียว), `Deactivated` (อำพัน), `Anonymized` (ถ่าน) |
+| Grace Period | Countdown pill เฉพาะช่วงที่ยังนับอยู่ — `เหลือ X วัน` (น้ำเงิน/อำพันตามความใกล้ครบกำหนด), `ครบแล้ว` (แดง); คำขอที่จบแล้ว (คืนบัญชี/ลบตัวตน) แสดง `—` เพราะซ้ำกับ request status |
 | Requested At | วันที่ผู้ใช้กด Delete account |
-| Processed By | Admin/System ที่ดำเนินการล่าสุด |
-| Updated At | วันที่แก้ไขล่าสุด |
+| Action | Row menu `...` มี 1 รายการ: ดูรายละเอียด; คลิกแถวเปิด Request Detail |
+
+Responsive: desktop/tablet เป็นตาราง, mobile <= 767px เป็น card stack — Request ID เป็นพาดหัว ตามด้วย pills สถานะคำขอ + grace period (แสดงเฉพาะช่วงที่ยังนับอยู่), tag จำนวน assets และ meta (User ID, User, Account Status, Requested At)
+
+หัวหน้า list: breadcrumb `งานตรวจสอบและบริการ / Account Deletion`, page title `Account Deletion Requests`, panel title `Deletion Requests List` — ไม่มี primary action ที่หัวหน้า (admin action ทำใน Request Detail)
+
+Pagination 10 รายการ/หน้า พร้อม footer แสดงช่วงรายการ (เช่น `แสดง 1-10 จาก 12`) และ empty state `ไม่มีคำขอลบบัญชี` เมื่อไม่มีรายการที่ตรงเงื่อนไข
 
 ## 8. Search & Filters
 
-ต้องค้นหาและกรองได้อย่างน้อย:
+Filter bar ใช้รูปแบบเดียวกับหน้า list ที่ล็อก — ปุ่มเปิด/ปิดตัวกรอง + ปุ่มรีเซ็ตค่าทั้งหมด (icon-only) ประกอบด้วย:
 
-- Request ID
-- User ID / username / email / phone
-- Request status
-- Account status
-- Has pending offer
-- Has accepted offer in retention window
-- Grace period state: Active, Ending soon, Expired
-- Requested date
-- Processed by
+- Search box — ค้นหา Request ID, User ID, ชื่อ (ครอบคลุมสถานะคำขอ สถานะบัญชี และ detail ของคำขอ)
+- Filter request status — สถานะคำขอทั้งหมด / `รอดำเนินการ` / `คืนบัญชีแล้ว` / `ปฏิเสธคืนบัญชี` / `ลบตัวตนแล้ว`
+- Filter grace period state — สถานะระยะผ่อนผันทั้งหมด / ยังนับอยู่ / ใกล้ครบกำหนด / ครบแล้ว / คืนบัญชีแล้ว / ลบตัวตนแล้ว
+- Sort — ล่าสุดก่อน (default) / เก่าสุดก่อน / วันครบกำหนด / สถานะคำขอ
+
+ตัวกรองและคำค้นต้องคงสถานะไว้เมื่อ drill-in ไป Request Detail แล้วกลับมาที่ list
 
 ## 9. Request Status Contract
 
@@ -139,15 +139,14 @@ Request list ต้องแสดงข้อมูลขั้นต่ำ:
 | --- | --- | --- |
 | `รอดำเนินการ` | ผู้ใช้ confirm Delete Account สำเร็จ ระบบระงับ+ไล่ออก+ซ่อน+ยกเลิก offer+ปิดรายงานอัตโนมัติ และคำขอเข้าคิว | FO revoke session แล้วและ user กลับ Sign In; public profile/assets ถูกซ่อนทันที |
 | `คืนบัญชีแล้ว` | แอดมินกู้คืนบัญชีให้ผู้ใช้ในช่วง grace period 30 วัน ตาม policy (มีเหตุผล + audit) | บัญชีกลับใช้งานได้ (Active) ต้อง sync account status กลับ + log ใน User Management |
-| `ปฏิเสธคืนบัญชี` | แอดมินปฏิเสธคำขอคืนบัญชี (เช่น รายงานร้ายแรง) รอครบ 30 วัน เก็บถาวรอัตโนมัติ (ไม่เริ่มนับใหม่) | User ยัง login ไม่ได้; รอระบบเก็บถาวรอัตโนมัติเมื่อครบ grace period |
-| `เก็บถาวรแล้ว` | ครบ grace period 30 วัน ระบบเก็บถาวร (archive) อัตโนมัติ ข้อมูลถูกจัดเก็บตาม retention policy | ไม่มี FO access; public surfaces ยังซ่อน/anonymized ตาม policy |
-| `ลบตัวตนแล้ว` | ครบ retention period ระบบลบตัวตน (anonymize) อัตโนมัติ personal fields ถูกแทนที่ด้วย anonymous value | ไม่มี FO access; สมัครใหม่ด้วยอีเมลเดิมได้เป็นบัญชีใหม่ |
+| `ปฏิเสธคืนบัญชี` | แอดมินปฏิเสธคำขอคืนบัญชี (เช่น รายงานร้ายแรง) รอครบ 30 วันแล้วระบบลบบัญชีอัตโนมัติ (ไม่เริ่มนับใหม่) | User ยัง login ไม่ได้; รอระบบลบบัญชีอัตโนมัติเมื่อครบ grace period |
+| `ลบตัวตนแล้ว` | ครบ grace period 30 วัน ระบบลบบัญชีอัตโนมัติ — เก็บถาวร + ลบตัวตน ในขั้นเดียว personal fields ถูกแทนที่ด้วย anonymous value | ไม่มี FO access; public surfaces ยังซ่อน; สมัครใหม่ด้วยอีเมลเดิมได้เป็นบัญชีใหม่ |
 
 หมายเหตุ:
 
 - ไม่มี status `Blocked` หรือ `Approved` เพราะ validation เป็น system action อัตโนมัติ (ยกเลิก offer + ปิดรายงาน) ไม่มี block ที่ต้องรอ Admin ตรวจสอบ
-- การเก็บถาวรและลบตัวตนเป็น system job อัตโนมัติตามช่วงเวลา (grace period 30 วัน / retention period) ไม่ใช่ action ที่แอดมินกดทำเอง
-- `คืนบัญชีแล้ว` และ `ปฏิเสธคืนบัญชี` เป็น action ของแอดมินในช่วง grace period เท่านั้น หลังเก็บถาวรแล้วไม่สามารถคืนบัญชีได้
+- การลบบัญชีอัตโนมัติ (เก็บถาวร + ลบตัวตน ในขั้นเดียว) เป็น system job เมื่อครบ grace period 30 วัน ไม่ใช่ action ที่แอดมินกดทำเอง
+- `คืนบัญชีแล้ว` และ `ปฏิเสธคืนบัญชี` เป็น action ของแอดมินในช่วง grace period เท่านั้น หลังลบบัญชีอัตโนมัติแล้วไม่สามารถคืนบัญชีได้
 - ปุ่ม `คืนบัญชี` และ `ปฏิเสธคืนบัญชี` แสดงตลอดช่วง 30 วัน เพราะผู้ใช้ติดต่อขอคืนผ่านช่องทางภายนอก (support) ระบบ BO ไม่มีทางรู้อัตโนมัติว่าผู้ใช้ขอคืนแล้ว
 
 ## 10. Account Status Contract
@@ -158,8 +157,7 @@ BO ต้องแยก request status ออกจาก account status:
 | --- | --- |
 | `Active` | ใช้งาน FO ได้ตามปกติ |
 | `Deactivated` | Login/session ถูก block ระหว่าง grace period หลังผู้ใช้กดลบบัญชี |
-| `Archived` | ครบ grace period 30 วัน ข้อมูลถูกจัดเก็บตาม retention policy |
-| `Anonymized` | ครบ retention period personal fields ถูก anonymize ตาม policy |
+| `Anonymized` | ครบ grace period 30 วัน ระบบลบบัญชีอัตโนมัติ (เก็บถาวร + ลบตัวตน ในขั้นเดียว) personal fields ถูก anonymize ตาม policy |
 
 ใน flow ปกติหลัง FO confirm สำเร็จ account เข้าสู่ `Deactivated` ทันทีพร้อมการยกเลิก offer/ปิดรายงานอัตโนมัติ ถ้าแอดมินคืนบัญชีในช่วง grace period account ต้อง sync กลับเป็น `Active` พร้อมบันทึกใน Account Status History ของ User Management
 
@@ -172,26 +170,25 @@ Recommended lifecycle:
 | Account State | When It Happens | Data Handling | Can Restore? |
 | --- | --- | --- | --- |
 | `Deactivated` | User confirm delete account จาก FO และระบบระงับ+ไล่ออก+ซ่อน+ยกเลิก offer+ปิดรายงานอัตโนมัติ | ซ่อน public profile/assets ทันที; retain data สำหรับ dependency, support และ audit | กู้คืนได้ภายใน grace period 30 วัน โดยแอดมินตาม policy (มีเหตุผล + audit) |
-| `Archived` | ครบ grace period 30 วัน ระบบเก็บถาวรอัตโนมัติ | เก็บเฉพาะข้อมูลที่จำเป็น เช่น transaction, offer, chat, report, audit reference; personal fields เริ่มถูก mask ตาม policy | ไม่ควร restore ตรงเป็นบัญชีใช้งาน |
-| `Anonymized` | ครบ retention period ระบบลบตัวตนอัตโนมัติ | ลบหรือแทนที่ personal fields เช่น email, phone, display name, profile image ด้วย anonymous value | กู้คืนไม่ได้ |
+| `Anonymized` | ครบ grace period 30 วัน ระบบลบบัญชีอัตโนมัติ — เก็บถาวร + ลบตัวตน ในขั้นเดียว | เก็บเฉพาะข้อมูลที่จำเป็น เช่น transaction, offer, chat, report, audit reference; personal fields ถูกแทนที่ด้วย anonymous value ตาม policy | กู้คืนไม่ได้ |
 
 UI / Reporting rules:
 
-- ใน Account Deletion module สามารถแสดง `ลบตัวตนแล้ว` เป็น label ที่อ่านง่ายสำหรับ deletion สำเร็จสูงสุด
-- ใน backend/audit ควรเก็บสถานะละเอียดเป็น `Archived` และ `Anonymized` เพื่อรู้ว่าข้อมูลถูกจัดการถึงขั้นไหนแล้ว
-- Prototype ปัจจุบันแสดง `Deleted / Archived` ได้ใน User List/filter เพื่อ historical review ตาม permission; production ต้อง mask/anonymize personal data, จำกัด action และยังต้องค้นย้อนหลังได้ใน Account Deletion, Reports และ Audit ตาม permission
+- ใน Account Deletion module แสดง `ลบตัวตนแล้ว` เป็นสถานะปลายทางของ deletion (เก็บถาวร + ลบตัวตน เกิดพร้อมกันเมื่อครบ grace period)
+- ใน backend/audit บันทึก event ลบบัญชีอัตโนมัติเป็นขั้นเดียว; retention ของข้อมูลแต่ละประเภท (chat, offer, report, audit log) ยังอ้าง DEL-DEC-002
+- Prototype ปัจจุบันแสดงสถานะ `Deletion Requested` (รอลบบัญชี) และ `Deleted` ใน User List/filter เพื่อ historical review ตาม permission; production ต้อง mask/anonymize personal data, จำกัด action และยังต้องค้นย้อนหลังได้ใน Account Deletion, Reports และ Audit ตาม permission
 - ข้อมูลย้อนหลังที่เรียกดูได้ต้องเป็นข้อมูลที่จำเป็น เช่น user ID, deletion request ID, dates, processed by, retained offer/chat/report references และ audit event
 - Personal data หลัง deletion ต้องถูก mask/anonymize ตาม retention policy และ Admin Permission
-- Restore เปิดได้เฉพาะในช่วง grace period 30 วัน โดยแอดมิน พร้อม reason และ audit; หลังเก็บถาวรแล้วไม่สามารถ restore ได้
-- หลัง anonymization แล้วไม่ควร restore เพราะข้อมูลส่วนตัวที่ใช้สร้าง account กลับมาอย่างถูกต้องไม่ควรมีอยู่แล้ว
+- Restore เปิดได้เฉพาะในช่วง grace period 30 วัน โดยแอดมิน พร้อม reason และ audit; หลังลบบัญชีอัตโนมัติแล้วไม่สามารถ restore ได้
+- หลังลบบัญชีอัตโนมัติ (anonymize รวมในขั้นเดียว) แล้วไม่ควร restore เพราะข้อมูลส่วนตัวที่ใช้สร้าง account กลับมาอย่างถูกต้องไม่ควรมีอยู่แล้ว
 
 ### 10.2 Restore Policy
 
 - Phase 1 เปิดให้แอดมินกู้คืน/ยกเลิกคำขอให้ผู้ใช้ในช่วง grace period 30 วัน โดยมีเหตุผล + บันทึก audit; ไม่มี user self-service (อนาคตเปิดทีหลังได้)
 - ปุ่ม `คืนบัญชี` และ `ปฏิเสธคืนบัญชี` แสดงตลอดช่วง 30 วัน เพราะผู้ใช้ติดต่อขอคืนผ่านช่องทางภายนอก (support) ระบบ BO ไม่มีทางรู้อัตโนมัติว่าผู้ใช้ขอคืนแล้ว
-- กรณีรายงานร้ายแรง (serious safety/legal report) แอดมินควรปฏิเสธคืนบัญชี และให้ระบบเก็บถาวรอัตโนมัติเมื่อครบ grace period
-- การคืนบัญชีต้อง sync account status กลับเป็น `Active` และบันทึก row ใน Account Status History ของ User Management (ขอลบบัญชี / คืนบัญชี / เก็บถาวร / ลบตัวตน)
-- การปฏิเสธคืนบัญชีไม่เริ่มนับ grace period ใหม่ ให้รอครบ 30 วันตามเดิมแล้วเก็บถาวรอัตโนมัติ
+- กรณีรายงานร้ายแรง (serious safety/legal report) แอดมินควรปฏิเสธคืนบัญชี และให้ระบบลบบัญชีอัตโนมัติเมื่อครบ grace period
+- การคืนบัญชีต้อง sync account status กลับเป็น `Active` และบันทึก row ใน Account Status History ของ User Management (ขอลบบัญชี / คืนบัญชี / ปฏิเสธคืนบัญชี / ลบบัญชีอัตโนมัติ)
+- การปฏิเสธคืนบัญชีไม่เริ่มนับ grace period ใหม่ ให้รอครบ 30 วันตามเดิมแล้วระบบลบบัญชีอัตโนมัติ
 
 ### 10.3 Re-registration Policy
 
@@ -221,80 +218,134 @@ UI / Reporting rules:
 | Reports/safety records | ปิดรายงานที่ยังเปิดอยู่อัตโนมัติตาม policy พร้อมบันทึก audit; เก็บ record ตาม legal/safety/audit policy |
 | Help / Support context | ไม่มี ticket ใน Phase 1 — module 12 เป็น Policy & Versioning + Support Center; support ticket linkage เป็น future scope |
 
-การยกเลิก offer และปิดรายงานเป็น system action ที่บันทึก audit ทุกครั้ง ไม่ใช่ block ที่ต้องรอ Admin ตรวจสอบ แอดมินสามารถตรวจสอบ dependency snapshot ใน request detail ได้แต่ไม่ต้องกด approve เพื่อ archive เพราะ archive เป็น system job อัตโนมัติเมื่อครบ grace period
+การยกเลิก offer และปิดรายงานเป็น system action ที่บันทึก audit ทุกครั้ง ไม่ใช่ block ที่ต้องรอ Admin ตรวจสอบ แอดมินสามารถตรวจสอบ dependency snapshot ใน request detail ได้แต่ไม่ต้องกด approve เพราะการลบบัญชีเป็น system job อัตโนมัติเมื่อครบ grace period
 
 Offer dependency ต้องใช้ source เดียวกับ `09_OFFER_CHAT_MODULE.md` และต้อง audit ทุกครั้งที่ยกเลิก offer ด้วย system action รายงาน (report) dependency ต้องใช้ source เดียวกับ User Management > Reported Users / Asset Management > Reported Assets และต้อง audit ทุกครั้งที่ปิดรายงานด้วย system action การลบบัญชีไม่ cancel offer หรือปิด dispute โดยไม่มี audit; ต้องให้ module ต้นทางเป็นตัวบันทึกผลและ audit event
 
 ## 12. Request Detail
 
-Request detail ต้องมีส่วนข้อมูล:
+Request detail เป็น full-width page ตาม pattern ของ Report Detail + Offer Detail — เปิดจากการคลิกแถวใน list หรือ drill-in ข้ามโมดูล มี back button `กลับไป Deletion Requests` และ breadcrumb `งานตรวจสอบและบริการ / Account Deletion / Requests / <Request ID>`
+
+Detail Head แสดง profile image + `<Request ID> : <Display Name>` พร้อม chips: สถานะคำขอ, สถานะบัญชี และ `Serious flag` pill (แดง — แสดงเฉพาะคำขอที่มีรายงานร้ายแรงและยังอยู่ในช่วง grace period เป็นสัญญาณประกอบการตัดสินใจ reject/restore) — ส่วนหัว panel แสดง panel title เป็น Request ID พร้อม subtitle `<User ID> · <Display Name> · sensitive fields masked`
 
 ### 12.1 User Context
 
+ข้อมูลพื้นฐานเท่านั้น — ไม่แสดง email/phone/LINE บนหน้า detail (sensitive fields masked; ดูข้อมูลติดต่อที่ User Detail ผ่านลิงก์ชื่อผู้ใช้ ตาม Sensitive Reveal Policy ใน section 10.4)
+
 - User ID
-- Display name / username
-- Email / phone / LINE แบบ masked ตาม permission
+- Display Name (link เปิด User Detail)
+- Username
 - Auth method
 - Joined date
 - Last active
-- Current account status
-- Current request status
 
 ### 12.2 Deletion Timeline
 
-- Requested at
-- Session revoked at
-- Deactivated at
-- Grace period start
-- Grace period end
-- Last validation run
-- Approved at
-- Archived at
-- Anonymized at
-- Cancelled at ถ้ามี
+Vertical timeline ตามลำดับขั้น lifecycle แต่ละขั้นแสดง label + วันที่ (ถ้ามี) + สถานะขั้น (`เสร็จสิ้น` / `ปัจจุบัน` / `รอดำเนินการ`) — ขั้นที่ยังไม่ถึงหรือข้าม (เช่น คืนบัญชีก่อนครบกำหนด) ไม่แสดง:
+
+| Step | แสดงเมื่อ |
+| --- | --- |
+| คำขอลบบัญชี | มีวันที่ requested at |
+| ระงับบัญชี + เริ่มช่วงรอลบบัญชี | ระบบ deactivate + revoke session แล้ว (รวม session revoked = deactivated = grace start ไว้ในขั้นเดียว) |
+| ช่วงรอลบบัญชี (30 วัน) | แสดงช่วง `grace start → grace end`; ครบกำหนดแล้วเป็น `เสร็จสิ้น` |
+| คืนบัญชี | เฉพาะคำขอที่แอดมินคืนบัญชี (restored at) |
+| รอลบบัญชีอัตโนมัติ | เฉพาะเมื่อครบ 30 วันแล้วรอ system job รอบถัดไป |
+| ลบบัญชีอัตโนมัติ | ครบ grace period — ลบบัญชี + ลบตัวตนเกิดพร้อมกันในขั้นเดียว |
+
+ส่วนเสริมใต้ timeline:
+
+- Countdown `เหลือ X วัน ถึงลบบัญชีอัตโนมัติ` — เฉพาะช่วง grace period ที่ยังนับอยู่; เมื่อครบกำหนดแสดง `ครบกำหนดลบบัญชีอัตโนมัติแล้ว — ระบบจะลบบัญชีในรอบถัดไป`
+- Note `ผู้ใช้ขอคืนบัญชีผ่านช่องทาง support` (ถ้ามี — ไม่แสดงวันที่/ช่องทางเพราะยืนยันเวลาจริงไม่ได้; ซ่อนเมื่อคืนบัญชีแล้ว)
+- Note ปฏิเสธคืนบัญชี `ปฏิเสธคืนบัญชีเมื่อ <วันที่> โดย <แอดมิน> — เหตุผล: ...` (ถ้ามี; รองรับการปฏิเสธซ้ำ)
+- Note `Cancelled: <วันที่>` กรณีคำขอถูกยกเลิก
 
 ### 12.3 Dependency Summary
 
-- Pending incoming offers
-- Pending outgoing offers
-- Accepted offers in retention
-- Assets by status: Sale, Show, Hide, Sold, Removed/Hidden
-- Chat rooms
-- Reports/safety cases
+ภาพรวม 6 ช่อง — รายละเอียดแยกตามสถานะดูที่โมดูลต้นทาง จำนวนที่มากกว่า 0 เป็น link เปิด drill-in แบบ read-only ไปยังโมดูลต้นทางพร้อมกรองด้วย User ID ของคำขอ:
 
-### 12.4 Archive / Anonymization Plan
+| Tile | Drill-in |
+| --- | --- |
+| Pending Incoming Offers | Offer Management (กรองด้วย userId) |
+| Pending Outgoing Offers | Offer Management (read-only) |
+| Accepted Offers (Retention) | Offer Management (read-only) |
+| Assets (Total) | Asset Management > Asset List (กรองด้วย userId) |
+| Chat Rooms | ไม่มีโมดูลแชทใน BO — แสดงข้อความว่าเนื้อหาแชทเก็บตาม retention policy และ mask ตัวตนผู้ใช้ |
+| Reports / Safety Cases | User Management > Reported Users (กรองด้วย userId) |
 
-ต้องแสดงว่า field หรือ entity ใดจะถูก hide, retain, archive หรือ anonymize:
+### 12.4 แผนการลบบัญชี (Archive / Anonymization Plan)
+
+ตาราง Data / Action บอกว่าข้อมูลแต่ละอย่างจะถูกจัดการอย่างไรเมื่อครบช่วงรอลบบัญชี:
 
 | Data | Action |
 | --- | --- |
-| Public profile | Hide from public surfaces |
-| Profile image | Hide or replace placeholder ตาม policy |
-| Username / display name | Mask/anonymize เมื่อถึงขั้น policy |
-| Email / phone / LINE | Retain masked แล้ว anonymize เมื่อพ้น retention |
-| Assets | Hide from Feed/Search/Public Profile/Watch Alert results |
-| Offers | Retain status/timeline ตาม audit/dispute policy |
-| Chats | Retain content ตาม retention แต่ mask profile identity ตาม policy |
-| Reports | Retain ตาม safety/legal/audit policy |
-| Audit logs | Retain immutable |
+| Public profile | ซ่อนจากหน้าสาธารณะทันที |
+| Profile image | ซ่อนหรือแทนด้วยรูป placeholder ตาม policy |
+| Username / display name | แทนที่ด้วย anonymous value เมื่อครบช่วงรอลบบัญชี |
+| Email / phone / LINE | แทนที่ด้วย anonymous value เมื่อครบช่วงรอลบบัญชี |
+| Assets | ซ่อนจาก Feed / ค้นหา / โปรไฟล์สาธารณะ / Watch Alert |
+| Offers | เก็บสถานะและ timeline ตาม policy การตรวจสอบ/ข้อพิพาท |
+| Chats | เก็บเนื้อหาตาม retention แต่ mask ตัวตนผู้ใช้ |
+| Reports | เก็บตาม policy ด้านความปลอดภัย/กฎหมาย/การตรวจสอบ |
+| Audit logs | ลบบัญชีแล้วไม่สามารถแก้ไขได้ |
+
+### 12.5 History & Actions
+
+ส่วน action area ด้านท้ายประกอบด้วย:
+
+- ตารางประวัติการดำเนินการ (read-only): วันที่ / เวลา, ผู้ดำเนินการ, Action, รายละเอียด — รวม event ขอลบบัญชี, ยกเลิก session, ระงับบัญชี + ยกเลิก offer/ปิดรายงานอัตโนมัติ, รับคำขอคืนบัญชี (ผ่าน support — ไม่แสดงวันที่เพราะยืนยันเวลาจริงไม่ได้ ใช้ `—`), ปฏิเสธคืนบัญชี (ทุกครั้ง), คืนบัญชี, ลบบัญชีอัตโนมัติ และยกเลิกคำขอ (ถ้ามี)
+- ปุ่ม action 2 ปุ่ม: `คืนบัญชี` (primary) และ `ปฏิเสธคืนบัญชี` (danger) — แสดงเฉพาะช่วง grace period (สถานะ `รอดำเนินการ` / `ปฏิเสธคืนบัญชี` ที่ยังนับหรือครบกำหนด) หลังคำขอจบ (คืนบัญชีแล้ว / ลบตัวตนแล้ว) ปุ่มไม่แสดง พร้อม note `คำขอนี้ผ่านช่วงรอลบบัญชีแล้ว — ปุ่ม คืนบัญชี และ ปฏิเสธคืนบัญชี ไม่แสดง`
 
 ## 13. Admin Actions
 
-แอดมินเปิด Request Detail จาก list เพื่อดูข้อมูลคำขอ (sensitive fields masked ตาม default; reveal ตาม Sensitive Reveal Policy ใน section 10.4 — audit required สำหรับ sensitive reveal) และมี action 5 ปุ่ม:
+แอดมินเปิด Request Detail จาก list เพื่อดูข้อมูลคำขอ (sensitive fields masked ตาม default; ข้อมูล sensitive ดูได้ที่ User Detail ผ่านลิงก์ชื่อผู้ใช้ ตาม Sensitive Reveal Policy ใน section 10.4) และมี action 2 ปุ่ม แสดงเฉพาะช่วง grace period (สถานะ `รอดำเนินการ` / `ปฏิเสธคืนบัญชี` ที่ยังนับหรือครบกำหนด):
 
 | Action | Permission | Requirement | Audit |
 | --- | --- | --- | --- |
 | คืนบัญชี (Restore) | Admin | ใช้ได้เฉพาะในช่วง grace period 30 วัน ต้องมี reason + confirmation; sync account status กลับ `Active` + บันทึกใน Account Status History ของ User Management | Required |
-| ปฏิเสธคืนบัญชี (Reject Restore) | Admin | ใช้ได้เฉพาะในช่วง grace period 30 วัน ต้องมี reason (เช่น รายงานร้ายแรง); ไม่เริ่มนับ grace period ใหม่ รอเก็บถาวรอัตโนมัติเมื่อครบ 30 วัน | Required |
-| ดูสถานะล่าสุด (View Latest Status) | Admin | ดู dependency snapshot ล่าสุด (offer/asset/chat/report) แบบ read-only | Not required (read-only) |
-| ดูประวัติ (View History) | Admin | ดู timeline และ audit history ของคำขอแบบ read-only | Not required (read-only) |
-| ส่งออกรายงาน (Export Archive Report) | Admin | ต้องมี reason และ export scope; ควบคุม scope, expiry/background job เมื่อจำเป็น | Required |
+| ปฏิเสธคืนบัญชี (Reject Restore) | Admin | ใช้ได้เฉพาะในช่วง grace period 30 วัน ต้องมี reason (เช่น รายงานร้ายแรง); ไม่เริ่มนับ grace period ใหม่ รอลบบัญชีอัตโนมัติเมื่อครบ 30 วัน; ปฏิเสธซ้ำได้ — ปุ่มยังแสดงหลังปฏิเสธ | Required |
+
+ข้อมูล `ดูสถานะล่าสุด` (dependency snapshot) และ `ดูประวัติ` (timeline + audit history) ไม่แสดงเป็นปุ่มแยก เพราะข้อมูลอยู่ในหน้า detail แล้ว (Dependency Summary ใน section 12.3 และ Deletion Timeline + History & Actions ใน section 12.2/12.5) ส่วน `ส่งออกรายงาน` ไม่แสดงเป็นปุ่มใน prototype Phase 1 (export เป็น future scope — ดู state Export failed ใน section 18)
+
+### 13.1 Modal คืนบัญชี (Restore Account)
+
+Confirmation modal ตาม pattern ของ Reported Users action flow (context note + reason + note + impact + confirm + result + audit):
+
+| ส่วน | Copy |
+| --- | --- |
+| Title | `Restore Account` |
+| Summary | คืนบัญชีให้ผู้ใช้กลับมาใช้งานได้ทันที ระบบจะยกเลิกคำขอลบบัญชีและคืนสถานะบัญชีเป็น Active |
+| Target | ชื่อผู้ใช้ + `<Request ID> · <User ID>` + pill สถานะคำขอ |
+| Context note (ถ้ามี) | `ผู้ใช้ขอคืนบัญชี: <รายละเอียดจาก support>` (แสดงเฉพาะเมื่อมี restore request) |
+| Reason (required) | label `เหตุผลการคืนบัญชี` — ตัวเลือก: `ผู้ใช้ติดต่อ support และยืนยันตัวตนแล้ว` / `ตรวจสอบแล้วไม่พบความเสี่ยงเพิ่มเติม` / `ทีมช่วยเหลืออนุมัติให้กลับมาใช้งานได้` / `คำขอลบบัญชีเกิดจากความผิดพลาด` |
+| Note / หมายเหตุ (optional) | placeholder: สรุปผลการตรวจสอบ เหตุผลที่คืนบัญชี และข้อมูลอ้างอิงที่เกี่ยวข้อง |
+| Impact note | `ผลกระทบต่อผู้ใช้: บัญชีกลับเป็น Active ผู้ใช้เข้าสู่ระบบได้ทันที และคำขอลบบัญชีถูกยกเลิก` |
+| Confirm / Cancel | `ยืนยัน` (primary) / `ยกเลิก` |
+| Result | `<Display Name> คืนบัญชีแล้ว — สถานะกลับเป็น Active` + บรรทัดบันทึก `บันทึกการดำเนินการ: <วันที่เวลา>` + success toast; sync สถานะบัญชีกลับ `Active` ใน User Management (list + detail + รายงานที่ผูกกับผู้ใช้) และบันทึก row ใน Account Status History |
+
+หลังยืนยัน: สถานะบัญชีกลับเป็น `Active` และผู้ใช้เข้าสู่ระบบได้ทันที; คำขอลบบัญชีถูกยกเลิกและไม่เริ่มนับช่วงรอลบบัญชีใหม่; ปุ่ม action หายไปจาก detail; บันทึก audit พร้อม admin, reason และเวลาดำเนินการ (ปฏิเสธก่อนหน้ายังอยู่ในประวัติ)
+
+### 13.2 Modal ปฏิเสธคืนบัญชี (Reject Restore)
+
+| ส่วน | Copy |
+| --- | --- |
+| Title | `Reject Restore` |
+| Summary | ปฏิเสธคำขอคืนบัญชี ระบบยังคงช่วงรอลบบัญชีเดิมไว้ และรอลบบัญชีอัตโนมัติเมื่อครบ 30 วัน (ไม่เริ่มนับใหม่) |
+| Target | ชื่อผู้ใช้ + `<Request ID> · <User ID>` + pill สถานะคำขอ |
+| Context note (ถ้ามี) | `ปฏิเสธคืนบัญชีครั้งก่อน: <วันที่> โดย <แอดมิน> — <เหตุผล>` |
+| Reason (required) | label `เหตุผลการปฏิเสธคืนบัญชี` — ตัวเลือก: `รายงานร้ายแรงยังไม่ได้รับการแก้ไข` / `พฤติกรรมละเมิดซ้ำ ไม่สมควรคืนบัญชี` / `หลักฐานไม่เพียงพอที่จะยืนยันตัวตน` / `ทีมที่รับผิดชอบไม่อนุมัติให้คืนบัญชี` |
+| Note / หมายเหตุ (optional) | placeholder: ระบุหลักฐาน รายงาน หรือข้อมูลอ้างอิงที่เกี่ยวข้องกับการปฏิเสธ |
+| Impact note | `ผลกระทบต่อผู้ใช้: บัญชียังคงถูกระงับ รอลบอัตโนมัติเมื่อครบช่วงรอลบบัญชีเดิม (ไม่เริ่มนับใหม่) ผู้ใช้ติดต่อขอคืนบัญชีใหม่ได้` |
+| Confirm / Cancel | `ยืนยัน` (danger) / `ยกเลิก` |
+| Result | `ปฏิเสธคืนบัญชี <Display Name> แล้ว — รอลบบัญชีอัตโนมัติเมื่อครบช่วงรอลบบัญชี` + บรรทัดบันทึก + success toast |
+
+หลังยืนยัน: คำขอเปลี่ยนเป็น `ปฏิเสธคืนบัญชี`; ปุ่ม `คืนบัญชี` และ `ปฏิเสธคืนบัญชี` ยังแสดง (รับเรื่องซ้ำได้ — ประวัติการปฏิเสธแสดงทุกครั้งใน History & Actions); ช่วงรอลบบัญชีไม่เริ่มนับใหม่; บันทึก audit พร้อม admin, reason และเวลาดำเนินการ
 
 หมายเหตุ:
 
-- ปุ่ม `คืนบัญชี` และ `ปฏิเสธคืนบัญชี` แสดงตลอดช่วง grace period 30 วัน (สถานะ `รอดำเนินการ`) ไม่ใช่แสดงเฉพาะเมื่อผู้ใช้ขอคืน
-- หลังเก็บถาวร (สถานะ `เก็บถาวรแล้ว`) ปุ่ม `คืนบัญชี` และ `ปฏิเสธคืนบัญชี` ต้องไม่แสดง
-- การเก็บถาวรและลบตัวตนเป็น system job อัตโนมัติตามช่วงเวลา ไม่ใช่ manual action ของแอดมิน
+- ปุ่ม `คืนบัญชี` และ `ปฏิเสธคืนบัญชี` แสดงตลอดช่วง grace period 30 วัน (สถานะ `รอดำเนินการ` / `ปฏิเสธคืนบัญชี`) ไม่ใช่แสดงเฉพาะเมื่อผู้ใช้ขอคืน — กรณีผู้ใช้ขอคืนผ่าน support จะแสดง context note เพิ่มใน modal
+- หลังลบบัญชีอัตโนมัติ (สถานะ `ลบตัวตนแล้ว`) หรือคืนบัญชีแล้ว ปุ่ม action ทั้งสองต้องไม่แสดง พร้อม note `คำขอนี้ผ่านช่วงรอลบบัญชีแล้ว — ปุ่ม คืนบัญชี และ ปฏิเสธคืนบัญชี ไม่แสดง`
+- การลบบัญชีอัตโนมัติ (เก็บถาวร + ลบตัวตน ในขั้นเดียว) เป็น system job เมื่อครบ grace period ไม่ใช่ manual action ของแอดมิน
+- ข้อมูลดูสถานะล่าสุดและดูประวัติอยู่ในหน้า detail แล้ว (Dependency Summary + Deletion Timeline + History & Actions) จึงไม่มีปุ่มแยก
 
 ## 14. Grace Period Rules
 
@@ -304,9 +355,9 @@ Request detail ต้องมีส่วนข้อมูล:
 - ระหว่าง grace period user login ไม่ได้
 - Public profile/assets ต้องถูกซ่อนทันที ไม่ต้องรอครบ 30 วัน
 - ระหว่าง grace period แอดมินเห็นปุ่ม `คืนบัญชี` และ `ปฏิเสธคืนบัญชี` ตลอด กดได้เมื่อรับเรื่องจาก support
-- เมื่อครบ grace period ระบบเก็บถาวร (archive) อัตโนมัติ — ไม่ใช่ manual action ของแอดมิน
-- เมื่อครบ retention period (แยกจาก grace period ตาม DEL-DEC-002 รอ Legal/Product) ระบบลบตัวตน (anonymize) อัตโนมัติ
-- ถ้าแอดมินปฏิเสธคืนบัญชี ไม่เริ่มนับ grace period ใหม่ ให้รอครบ 30 วันตามเดิมแล้วเก็บถาวรอัตโนมัติ
+- เมื่อครบ grace period ระบบลบบัญชีอัตโนมัติ (เก็บถาวร + ลบตัวตน ในขั้นเดียว) — ไม่ใช่ manual action ของแอดมิน
+- Retention period ของข้อมูล (chat, offer, report, audit log) แยกจาก account lifecycle ตาม DEL-DEC-002 รอ Legal/Product
+- ถ้าแอดมินปฏิเสธคืนบัญชี ไม่เริ่มนับ grace period ใหม่ ให้รอครบ 30 วันตามเดิมแล้วระบบลบบัญชีอัตโนมัติ
 - ถ้าแอดมินคืนบัญชีในช่วง grace period account กลับเป็น `Active` และคำขอเปลี่ยนเป็น `คืนบัญชีแล้ว`
 
 ## 15. FO Visibility Impact
@@ -318,22 +369,21 @@ Request detail ต้องมีส่วนข้อมูล:
 | Public profile hidden | Public Profile ต้องไม่แสดงข้อมูลผู้ใช้ปกติ |
 | Assets hidden | Asset ไม่ขึ้น Feed, Search, Watch Alert results, Public Profile |
 | Account restored by admin | Account status ต้อง sync กลับ `Active` ก่อนอนุญาต login |
-| Account archived (auto) | ไม่มี FO access; public surfaces ยังซ่อน/anonymized ตาม policy |
-| Account anonymized (auto) | ไม่มี FO access; สมัครใหม่ด้วยอีเมลเดิมได้เป็นบัญชีใหม่ |
+| Account auto-deleted (auto) | ไม่มี FO access; public surfaces ยังซ่อน/anonymized ตาม policy; สมัครใหม่ด้วยอีเมลเดิมได้เป็นบัญชีใหม่ |
 
 ## 16. Cross-Module Integration
 
 | Module | Integration |
 | --- | --- |
-| User Management | Account status sync (`Active`/`Deactivated`/`Archived`/`Anonymized`), profile/contact masking, login block; drill-in จาก User List > action `Open Account Deletion` (protected scope); เพิ่ม row ใน Account Status History ของ User Management บันทึก ขอลบบัญชี / คืนบัญชี / เก็บถาวร / ลบตัวตน (ต้องขอ approval ก่อนแก้ protected scope) |
-| Offer Management | ระบบยกเลิก offer ที่ยัง `Pending` อัตโนมัติเมื่อ delete request สำเร็จ; accepted offer เก็บตาม retention policy และ mask personal fields; related chat retention |
-| Asset Management | ระบบซ่อน assets จาก FO surfaces (Feed/Search/Watch Alert/Public Profile) ทันทีเมื่อ delete request สำเร็จ |
-| Chat | เก็บ chat history ตาม retention policy และ mask personal profile fields เมื่อถึงขั้น anonymization |
-| Report (User/Asset) | ระบบปิดรายงานที่ยังเปิดอยู่อัตโนมัติเมื่อ delete request สำเร็จ; เก็บ record ตาม legal/safety/audit policy |
+| User Management | Account status sync (`Active`/`Deactivated`/`Anonymized`), profile/contact masking, login block; drill-in จาก User List > action `Open Account Deletion` เปิด Request Detail ของคำขอนั้นตรง (ถ้าไม่พบคำขอในระบบ fallback เป็น list กรองด้วย deletion id); User List แสดงสถานะ `Deletion Requested` พร้อม block action ที่ไม่อนุญาต (เช่น Archive from User List, Reset after deletion starts); บัญชีที่ลบแล้วปุ่ม `View deleted summary` เปิด deletion request detail; เพิ่ม row ใน Account Status History ของ User Management ครบ lifecycle 4 ประเภท — ขอลบบัญชี / คืนบัญชี / ปฏิเสธคืนบัญชี / ลบบัญชีอัตโนมัติ (เก็บถาวร + ลบตัวตนรวมเป็นขั้นเดียว); การคืนบัญชี sync สถานะกลับ `Active` ทั้ง list, detail และรายงานที่ผูกกับผู้ใช้ |
+| Offer Management | ระบบยกเลิก offer ที่ยัง `Pending` อัตโนมัติเมื่อ delete request สำเร็จ; accepted offer เก็บตาม retention policy และ mask personal fields; related chat retention; dependency link จาก Dependency Summary (Pending Incoming / Pending Outgoing / Accepted Offers) drill-in ไป Offer Management แบบ read-only กรองด้วย userId ของคำขอ |
+| Asset Management | ระบบซ่อน assets จาก FO surfaces (Feed/Search/Watch Alert/Public Profile) ทันทีเมื่อ delete request สำเร็จ; dependency link จาก Dependency Summary เปิด Asset List แบบ read-only กรองด้วย userId |
+| Chat | เก็บ chat history ตาม retention policy และ mask personal profile fields เมื่อถึงขั้น anonymization; ไม่มีโมดูลแชทใน BO — tile Chat Rooms ใน Dependency Summary เป็น read-only context (แสดงข้อความว่าเนื้อหาแชทเก็บตาม retention policy และ mask ตัวตนผู้ใช้) |
+| Report (User/Asset) | ระบบปิดรายงานที่ยังเปิดอยู่อัตโนมัติเมื่อ delete request สำเร็จ; เก็บ record ตาม legal/safety/audit policy; dependency link จาก Dependency Summary เปิด Reported Users กรองด้วย userId; report context ของ user ที่ `Deletion Requested` แสดง warning ให้ review รายงานก่อนแล้วจัดการ Account Deletion แยก ห้าม delete/archive ทันทีจากคิวรายงาน |
 | Help / Support | ไม่มี ticket ใน Phase 1 — module 12 เป็น Policy & Versioning + Support Center; support ticket linkage เป็น future scope |
 | Notification | Optional system notification/log for account deletion events ถ้า Product เปิด scope |
-| Audit Log | Request create, session revoke, offer cancel auto, report close auto, restore, restore reject, archive auto, anonymize auto, export, sensitive reveal |
-| Reports & Analytics | Account deletion report, restore/reject count, archive completion, anonymization completion |
+| Audit Log | Request create, session revoke, offer cancel auto, report close auto, dependency check ระหว่างช่วงรอลบบัญชี, restore, restore reject, auto delete (archive + anonymize), export, sensitive reveal |
+| Reports & Analytics | Account deletion report, restore/reject count, auto-delete completion |
 
 ## 17. Audit Requirements
 
@@ -347,11 +397,11 @@ Admin actions:
 
 System actions (อัตโนมัติ บันทึกโดย system job):
 - `ACCOUNT_DELETION_REQUEST_CREATE` — คำขอถูกสร้างหลัง FO confirm สำเร็จ
+- `ACCOUNT_DELETION_DEPENDENCY_CHECK_AUTO` — ระบบตรวจเงื่อนไข dependency (offer/asset/chat/report) ระหว่างช่วงรอลบบัญชี
 - `ACCOUNT_DELETION_SESSION_REVOKE` — ระบบ revoke session และ deactivate account
 - `ACCOUNT_DELETION_OFFER_CANCEL_AUTO` — ระบบยกเลิก offer ที่ยัง Pending อัตโนมัติ
 - `ACCOUNT_DELETION_REPORT_CLOSE_AUTO` — ระบบปิดรายงานที่ยังเปิดอยู่อัตโนมัติ
-- `ACCOUNT_DELETION_ARCHIVE_AUTO` — ระบบเก็บถาวรอัตโนมัติเมื่อครบ grace period 30 วัน
-- `ACCOUNT_DELETION_ANONYMIZE_AUTO` — ระบบลบตัวตนอัตโนมัติเมื่อครบ retention period
+- `ACCOUNT_DELETION_AUTO_DELETE` — ระบบลบบัญชีอัตโนมัติ (เก็บถาวร + ลบตัวตน ในขั้นเดียว) เมื่อครบ grace period 30 วัน
 
 Audit payload ต้องมี:
 
@@ -371,13 +421,12 @@ Audit payload ต้องมี:
 
 | State | Requirement |
 | --- | --- |
-| Empty queue | แสดงว่าไม่มี deletion request ที่ตรง filter และมีปุ่ม clear filter |
-| Loading | Skeleton สำหรับ queue/detail/validation summary |
-| Permission denied | ไม่โหลด sensitive archive data |
-| Request not found | แสดง not found และกลับ queue ได้ |
-| Recheck failed | แสดง error พร้อม retry โดยไม่เปลี่ยน status |
-| Archive job failed | คง status เดิมหรือ mark failed ตาม job policy และต้อง audit |
-| Export failed | แสดง error และ audit attempt ถ้าเริ่ม export แล้ว |
+| Empty queue | แสดงข้อความ `ไม่มีคำขอลบบัญชี` เมื่อไม่มีรายการหรือไม่มีรายการที่ตรง filter — ล้างตัวกรองด้วยปุ่ม `รีเซ็ตค่าทั้งหมด` ที่ filter bar |
+| Loading | Skeleton สำหรับ list/detail ตามมาตรฐานกลาง |
+| Permission denied | ไม่โหลด sensitive archive data; sensitive fields masked ตาม default และดูข้อมูลติดต่อที่ User Detail ตาม Sensitive Reveal Policy |
+| Request not found | ไม่แสดง detail ว่าง — กลับไปหน้า list ทันที (คง filter state เดิม) |
+| Auto-delete job failed | คง status เดิมหรือ mark failed ตาม job policy และต้อง audit; countdown ยังแสดง `ครบกำหนดลบบัญชีอัตโนมัติแล้ว — ระบบจะลบบัญชีในรอบถัดไป` |
+| Export failed | ไม่แสดงใน prototype — export ยังไม่เปิดเป็นปุ่ม (Phase 1); เมื่อเปิด scope ต้องแสดง error และ audit attempt ถ้าเริ่ม export แล้ว |
 
 ## Module-Specific Exceptions
 
@@ -396,7 +445,7 @@ Account Deletion Requests ต้องใช้ app shell, navigation, breakpoin
 | AC-BO-DEL-005 | คืนบัญชีต้อง sync account status กลับ `Active` และบันทึกใน Account Status History ของ User Management |
 | AC-BO-DEL-006 | หลัง FO delete สำเร็จ account ต้อง login ไม่ได้และ public profile/assets ต้องถูกซ่อนทันทีตาม contract |
 | AC-BO-DEL-007 | Grace period 30 วันต้องแสดงใน queue/detail และมี state active/ending soon/expired |
-| AC-BO-DEL-008 | ครบ grace period ระบบเก็บถาวรอัตโนมัติ และครบ retention ระบบลบตัวตนอัตโนมัติ พร้อม audit |
+| AC-BO-DEL-008 | ครบ grace period ระบบลบบัญชีอัตโนมัติ (เก็บถาวร + ลบตัวตน ในขั้นเดียว) พร้อม audit |
 | AC-BO-DEL-009 | Sensitive reveal, restore, reject restore และ export ต้องมี audit log |
 | AC-BO-DEL-010 | Account Deletion UI ต้อง responsive ที่ 375px, 768px, 1280px และ 1440px |
 | AC-BO-DEL-011 | หลังลบตัวตน สมัครใหม่ด้วยอีเมลเดิมได้เป็นบัญชีใหม่ (คนละรหัส) ไม่เชื่อมประวัติเดิม |
@@ -406,7 +455,8 @@ Account Deletion Requests ต้องใช้ app shell, navigation, breakpoin
 | ID | Decision Needed | Current Recommendation |
 | --- | --- | --- |
 | DEL-DEC-001 ✅ | Restore policy | **ยืนยัน Phase 1** — แอดมินยกเลิก/กู้คืนให้ผู้ใช้ในช่วง grace period 30 วัน โดยมีเหตุผล + audit; ไม่มี user self-service (อนาคตเปิดทีหลังได้); รายละเอียดใน section 10.2 |
-| DEL-DEC-002 | Retention period ของ chat, offer, report และ audit log ต้องเก็บกี่ปีก่อนลบตัวตน (anonymize) | รอ Legal/Product; กระทบ anonymization job และ data model |
-| DEL-DEC-003 ✅ | Anonymization timing | **ยืนยัน: แยก 2 จังหวะ** — Archive หลัง grace period 30 วัน (อัตโนมัติ) / Anonymize หลัง retention period แยก (อัตโนมัติ); รายละเอียดใน section 10.1 และ 14 |
+| DEL-DEC-002 | Retention period ของ chat, offer, report และ audit log ต้องเก็บกี่ปีก่อนลบข้อมูล (purge) | รอ Legal/Product; แยกจาก account lifecycle (ลบบัญชีอัตโนมัติเกิดที่ grace period ตาม DEL-DEC-006); กระทบ data purge job และ data model |
+| DEL-DEC-003 ✅ | Anonymization timing | **ปรับใหม่ตาม prototype (supersede คำตัดสินเดิม "แยก 2 จังหวะ")** — ลบบัญชีอัตโนมัติ = เก็บถาวร + ลบตัวตน ในขั้นเดียวเมื่อครบ grace period 30 วัน; รายละเอียดใน section 10.1 และ 14; ดู DEL-DEC-006 |
 | DEL-DEC-004 ✅ | Sensitive reveal policy | **ยืนยัน: masked default + ปุ่ม reveal on-demand + permission + audit**; รายละเอียดใน section 10.4 |
 | DEL-DEC-005 | ถ้าอนาคตต้องการกันคนไม่ดีสมัครใหม่ด้วยอีเมลเดิม ใช้แฮชอีเมลเช็คซ้ำหรือไม่ | รอ Legal; กระทบ re-registration policy และ privacy/compliance; Phase 1 สมัครใหม่ด้วยอีเมลเดิมได้เป็นบัญชีใหม่ตาม section 10.3 |
+| DEL-DEC-006 ✅ | Lifecycle รวมขั้นเดียว — ลบบัญชีอัตโนมัติ = เก็บถาวร + ลบตัวตน เกิดพร้อมกันเมื่อครบ grace period (สถานะคำขอ 4 ค่า ไม่มี `เก็บถาวรแล้ว`; สถานะบัญชี 3 ค่า ไม่มี `Archived`) | **ยืนยันตาม prototype (2026-09-08)** — supersede DEL-DEC-003 เดิม (แยก 2 จังหวะ); section 9/10/10.1/14/15/17 และ AC-BO-DEL-008 ปรับตามแล้ว; retention period ของข้อมูลยังอ้าง DEL-DEC-002 |
