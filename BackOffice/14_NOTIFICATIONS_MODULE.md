@@ -1,8 +1,8 @@
 # 14 BO Notifications Module
 
-**Version:** `BO-14-v0.1`  
-**Date:** 2026-07-06  
-**Status:** Draft baseline  
+**Version:** `BO-14-v0.2`  
+**Date:** 2026-09-09  
+**Status:** Draft baseline — Account Deletion lifecycle emails added  
 **Platform:** Responsive Web Back Office  
 **Primary FO Sources:** `../FrontOffice/09_NOTIFICATION_MODULE.md`, `../FrontOffice/00_NAVIGATION_AND_CROSS_MODULE_FLOW.md`, `../FrontOffice/08_OFFER_MODULE.md`, `../FrontOffice/10_WATCH_ALERT_MODULE.md`, `../FrontOffice/11_SOCIAL_MODULE.md`
 
@@ -18,8 +18,8 @@
 | --- | --- |
 | Module Name | BO Notifications |
 | Platform | Responsive Web Back Office |
-| Version | `BO-14-v0.1` |
-| Status | Draft baseline |
+| Version | `BO-14-v0.2` |
+| Status | Draft baseline — Account Deletion lifecycle emails added |
 | Owner | Product / UX / Engineering / Operations |
 | Document Type | Functional PRD |
 
@@ -87,6 +87,13 @@ Account suspension/ban messaging is handled as account-status communication, not
 - In-app notification สำหรับ account action เป็น optional/secondary เท่านั้น และห้ามใช้เป็นช่องทางเดียว เพราะผู้ใช้อาจถูก revoke session หรือ login ไม่ได้แล้ว
 - Delivery log ของ email/account-status message ต้อง trace กลับไปยัง User Management action และ audit event ได้
 - ห้ามเพิ่ม `Account Action` เข้า FO Notification Center V1 โดยไม่มี master decision ใหม่
+
+Account Deletion lifecycle messaging ใช้แนวทางเดียวกับ account-status communication ข้างต้น — ส่งเป็นอีเมลเป็นช่องทางหลัก ไม่ใช่ FO Notification Center type:
+
+- Account Deletion lifecycle มีอีเมลแจ้งเตือน 5 จุดตาม `13_ACCOUNT_DELETION_MODULE.md` — ยืนยันลบบัญชี / เตือนใกล้ครบ grace period / คืนบัญชีแล้ว / ปฏิเสธคืนบัญชี / ลบตัวตนแล้ว (รายละเอียดใน section 9.3)
+- อีเมลทั้ง 5 จุดส่งไปยัง registered email ของเจ้าของบัญชี ไม่เข้า FO Notification Center
+- Delivery log ของอีเมล lifecycle ใช้รหัส `DLV-DEL-<request-id>-<event>` ตาม pattern `DLV-ACCT-xxx` และต้อง trace กลับไปยัง History & Actions ของ Account Deletion Request Detail ได้
+- ห้ามเพิ่ม `Account Deletion` เข้า FO Notification Center V1 โดยไม่มี master decision ใหม่
 
 ## 5. Broadcast vs System Trigger
 
@@ -220,6 +227,36 @@ System trigger ที่ BO จัดการได้สำหรับ FO V1:
 | Moderation Action | Future; ถ้าต้องแจ้ง user ให้เปิด decision แยก |
 | Account Action | Future for FO Notification Center; account suspension/ban uses email as primary channel and Auth account-status state when user opens app/signs in |
 
+### 9.3 Account Deletion Lifecycle Emails
+
+Account Deletion lifecycle มีอีเมลแจ้งเตือน 5 จุด ส่งไปยัง registered email ของเจ้าของบัญชีเป็นช่องทางหลัก ตาม pattern Account Status Email (`TPL-ACCT-009`) ของ Suspend/Ban — ไม่เข้า FO Notification Center รายละเอียด lifecycle และ no-send rules อ้างอิง `13_ACCOUNT_DELETION_MODULE.md`
+
+| # | Email | Trigger | Recipient | Audit Event | Delivery ID Pattern |
+| --- | --- | --- | --- | --- | --- |
+| 1 | ยืนยันลบบัญชี (Account deletion confirmation) | FO confirm Delete Account สำเร็จ — ส่งครั้งเดียวหลังคำขอเข้าคิว | registered email | `ACCOUNT_DELETION_REQUEST_CREATE` | `DLV-DEL-<req>-REQ` |
+| 2 | เตือนใกล้ครบ grace period (Account deletion reminder) | เหลือ 7 วัน และ 3 วันก่อนครบ grace period — ส่งอัตโนมัติโดย system job | registered email | system job (reminder) | `DLV-DEL-<req>-GR7` / `DLV-DEL-<req>-GR3` |
+| 3 | คืนบัญชีแล้ว (Account restore) | Admin confirm restore action ในช่วง grace period | registered email | `ACCOUNT_DELETION_RESTORE` | `DLV-DEL-<req>-RES` |
+| 4 | ปฏิเสธคืนบัญชี (Account restore rejection) | Admin confirm reject restore action ในช่วง grace period | registered email | `ACCOUNT_DELETION_RESTORE_REJECT` | `DLV-DEL-<req>-REJ` |
+| 5 | ลบตัวตนแล้ว (Account auto-deletion) | ครบ grace period 30 วัน — system job ลบบัญชีอัตโนมัติ (เก็บถาวร + ลบตัวตนในขั้นเดียว) — ส่งก่อน anonymize personal fields | registered email | `ACCOUNT_DELETION_AUTO_DELETE` | `DLV-DEL-<req>-DEL` |
+
+กฎห้ามส่ง (No-Send Rules):
+
+| Email | ห้ามส่งเมื่อ |
+| --- | --- |
+| ยืนยันลบบัญชี | ส่งครั้งเดียวหลัง FO confirm สำเร็จเท่านั้น — ห้ามส่งซ้ำ |
+| เตือนใกล้ครบ grace period | คำขอที่จบแล้ว (`คืนบัญชีแล้ว` / `ลบตัวตนแล้ว`) หรือบัญชีที่ `Anonymized` แล้ว |
+| คืนบัญชีแล้ว | บัญชีที่ `Anonymized` แล้ว (หลังลบตัวตน ไม่สามารถคืนบัญชีได้) |
+| ปฏิเสธคืนบัญชี | บัญชีที่ `Anonymized` แล้ว หรือคำขอที่ `คืนบัญชีแล้ว` |
+| ลบตัวตนแล้ว | คำขอที่ `คืนบัญชีแล้ว` — ส่งเฉพาะคำขอที่ครบ grace period และระบบลบบัญชีอัตโนมัติ; ต้องส่งก่อน anonymize personal fields ตามกฎห้ามส่ง broadcast ใน section 8.4 |
+
+Delivery log และ audit linkage:
+
+- Delivery log ใช้รหัส `DLV-DEL-<request-id>-<event>` ตาม pattern `DLV-ACCT-xxx` ของ Account Status Email
+- ทุก delivery log ต้อง reference กลับไปยัง Account Deletion Request ID และ audit event ที่เกี่ยวข้อง
+- History & Actions ของ Request Detail ต้องแสดงคอลัมน์ ส่งอีเมล พร้อมสถานะการส่งและลิงก์ไปยัง delivery log ใน Notifications (ตาม pattern Admin Action History ของ Report Detail)
+- อีเมลคืนบัญชีและปฏิเสธคืนบัญชีต้องมี email preview ใน modal ของ action (ตาม pattern email-preview ของ asset actions) พร้อมข้อความแจ้งช่องทางหลักเป็นอีเมล
+- ถ้าอีเมล lifecycle ส่งไม่สำเร็จ ต้อง mark failed ใน delivery log และ expose retry/admin-visible failure state ตามกฎ retry ใน section 13 — ไม่ block account status mutation ยกเว้น product policy กำหนดเป็นอย่างอื่น
+
 ## 10. Template Management
 
 System template fields:
@@ -246,6 +283,11 @@ Template variables ต้องใช้ allowlist เท่านั้น เ�
 | Watch Alert | alert_name, matched_count, brand, model |
 | Account Suspension Email | account_status, public_reason, suspension_end_at, support_contact |
 | Account Ban Email | account_status, public_reason, support_contact |
+| Account Deletion Confirmation Email | display_name, request_id, grace_end_at, support_contact |
+| Account Deletion Reminder Email | display_name, request_id, days_remaining, grace_end_at, support_contact |
+| Account Restore Email | display_name, request_id, action_reason, support_contact |
+| Account Restore Rejection Email | display_name, request_id, action_reason, grace_end_at, support_contact |
+| Account Auto-Deletion Email | display_name, request_id, support_contact |
 
 ห้ามใส่ sensitive data เช่น phone, email, LINE, full chat content หรือ internal admin note ลง notification template
 
@@ -292,6 +334,7 @@ Delivery tracking target ตาม BO PRD: มากกว่า 95% ของ n
 | Broadcast already sent | Retry เฉพาะ failed recipients ถ้า policy อนุญาต |
 | System notification duplicate | ต้องมี idempotency key ป้องกันส่งซ้ำ |
 | Account suspension email failed | Mark failed, expose retry/admin-visible failure state, and keep account status mutation intact unless product policy requires blocking mutation on delivery failure |
+| Account Deletion lifecycle email failed | Mark failed, expose retry/admin-visible failure state, and keep deletion action mutation intact; อีเมลลบตัวตนแล้วต้องส่งก่อน anonymize — ถ้าส่งไม่สำเร็จต้อง retry ก่อน anonymize personal fields หรือตาม product policy |
 
 Retry action ต้องมี audit log และต้องไม่สร้าง notification ซ้ำใน FO list โดยไม่มี idempotency guard
 
@@ -310,6 +353,7 @@ Retry action ต้องมี audit log และต้องไม่สร�
 | Retry failed notification | Scope and reason required | Required |
 | Export delivery log | Scope and reason required | Required |
 | Retry account-status email | Scope, reason, target account action reference required | Required |
+| Retry Account Deletion lifecycle email | Scope, reason, target deletion request reference required | Required |
 
 ## 15. Cross-Module Integration
 
@@ -322,7 +366,7 @@ Retry action ต้องมี audit log และต้องไม่สร�
 | Asset Management (Reported Comments) | Comment, like, follow triggers |
 | Watch Alert | Match trigger, result list destination, notification enabled/off |
 | Help / Support | ไม่มี ticket ใน Phase 1 — module 12 เป็น Policy & Versioning + Support Center; notification integration เป็น future scope |
-| Account Deletion | Exclude deletion/archived users from broadcast |
+| Account Deletion | Exclude deletion/archived users from broadcast; lifecycle email 5 จุด (section 9.3) ส่งไปยัง registered email พร้อม delivery log `DLV-DEL-xxx` ที่ trace กลับไปยัง History & Actions ของ Request Detail; อีเมลลบตัวตนต้องส่งก่อน anonymize personal fields |
 | Audit Log | Template, broadcast, retry, export audit events |
 | Reports & Analytics | Notification report metrics |
 
@@ -342,6 +386,7 @@ Audit log ต้องบันทึกอย่างน้อย:
 - `NOTIFICATION_TYPE_DISABLE`
 - `NOTIFICATION_DELIVERY_RETRY`
 - `NOTIFICATION_DELIVERY_EXPORT`
+- `NOTIFICATION_DELETION_EMAIL_DELIVERY` — การส่งอีเมล lifecycle ของ Account Deletion (reference ไปยัง `ACCOUNT_DELETION_*` audit event ของ `13_ACCOUNT_DELETION_MODULE.md`)
 
 Audit payload ต้องมี:
 
@@ -384,6 +429,9 @@ Audit payload ต้องมี:
 | AC-BO-NOTI-009 | Retry failed notification ต้องมี idempotency guard และ audit log |
 | AC-BO-NOTI-010 | Template update, broadcast approval/send/cancel และ export ต้องมี audit log |
 | AC-BO-NOTI-011 | Notifications UI ต้อง responsive ที่ 375px, 768px, 1280px และ 1440px |
+| AC-BO-NOTI-012 | Account Deletion lifecycle email 5 จุด (section 9.3) ต้องส่งไปยัง registered email พร้อม delivery log `DLV-DEL-xxx` ที่ trace กลับไปยัง History & Actions ของ Request Detail และ audit event ได้ |
+| AC-BO-NOTI-013 | อีเมล Account Deletion lifecycle ต้องเคารพกฎห้ามส่งใน section 9.3 — ไม่ส่งซ้ำ ไม่ส่งเมื่อคำขอจบแล้ว และอีเมลลบตัวตนต้องส่งก่อน anonymize personal fields |
+| AC-BO-NOTI-014 | อีเมลคืนบัญชีและปฏิเสธคืนบัญชีต้องมี email preview ใน modal ของ action พร้อมข้อความแจ้งช่องทางหลักเป็นอีเมล ตาม pattern โมดูลอื่น |
 
 ## 19. Open Decisions
 

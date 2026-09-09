@@ -740,7 +740,7 @@ Baseline role templates include `Super Admin`, `Content Editor`, `Content Publis
 BO จะถือว่ารองรับ FO ครบถ้วนเมื่อผ่านเงื่อนไขต่อไปนี้:
 
 1. Admin สามารถ trace offer จาก Asset Detail, Chat และ Notification ได้ครบ lifecycle
-2. Pending offer ถูกนำไปใช้ block account deletion ได้จริง
+2. Pending offer ถูกยกเลิกอัตโนมัติเมื่อ FO confirm delete account สำเร็จ (system auto action — ไม่มี block รอ Admin ตาม `13_ACCOUNT_DELETION_MODULE.md` DEL-DEC-006)
 3. Comment ที่ถูก hide/remove ใน BO หายจาก FO ทันที
 4. Watch Alert ที่ผู้ใช้สร้างจาก Search สามารถดู criteria และ trigger history ใน BO ได้
 5. System notification ทุกประเภทใน PRD มี template, trigger log และ delivery status

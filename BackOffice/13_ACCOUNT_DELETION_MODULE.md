@@ -1,8 +1,8 @@
 # 13 BO Account Deletion Requests Module
 
-**Version:** `BO-13-v0.4`  
-**Date:** 2026-09-08  
-**Status:** Screen layer synced with prototype (`DEL-PTO-001` ถึง `DEL-PTO-004`)  
+**Version:** `BO-13-v0.5`  
+**Date:** 2026-09-09  
+**Status:** Screen layer synced with prototype (`DEL-PTO-001` ถึง `DEL-PTO-006`) — lifecycle emails added  
 **Platform:** Responsive Web Back Office
 
 ## UI Standards And Prototype Reference
@@ -17,8 +17,8 @@
 | --- | --- |
 | Module Name | BO Account Deletion Requests |
 | Platform | Responsive Web Back Office |
-| Version | `BO-13-v0.4` |
-| Status | Screen layer synced with prototype (`DEL-PTO-001` ถึง `DEL-PTO-004`) |
+| Version | `BO-13-v0.5` |
+| Status | Screen layer synced with prototype (`DEL-PTO-001` ถึง `DEL-PTO-006`) — lifecycle emails added |
 | Owner | Product / UX / Engineering / Operations |
 | Document Type | Functional PRD |
 
@@ -292,7 +292,7 @@ Vertical timeline ตามลำดับขั้น lifecycle แต่ละ
 
 ส่วน action area ด้านท้ายประกอบด้วย:
 
-- ตารางประวัติการดำเนินการ (read-only): วันที่ / เวลา, ผู้ดำเนินการ, Action, รายละเอียด — รวม event ขอลบบัญชี, ยกเลิก session, ระงับบัญชี + ยกเลิก offer/ปิดรายงานอัตโนมัติ, รับคำขอคืนบัญชี (ผ่าน support — ไม่แสดงวันที่เพราะยืนยันเวลาจริงไม่ได้ ใช้ `—`), ปฏิเสธคืนบัญชี (ทุกครั้ง), คืนบัญชี, ลบบัญชีอัตโนมัติ และยกเลิกคำขอ (ถ้ามี)
+- ตารางประวัติการดำเนินการ (read-only): วันที่ / เวลา, ผู้ดำเนินการ, Action, ส่งอีเมล, รายละเอียด — รวม event ขอลบบัญชี, ยกเลิก session, ระงับบัญชี + ยกเลิก offer/ปิดรายงานอัตโนมัติ, รับคำขอคืนบัญชี (ผ่าน support — ไม่แสดงวันที่เพราะยืนยันเวลาจริงไม่ได้ ใช้ `—`), ปฏิเสธคืนบัญชี (ทุกครั้ง), คืนบัญชี, ลบบัญชีอัตโนมัติ และยกเลิกคำขอ (ถ้ามี) — คอลัมน์ ส่งอีเมล แสดงสถานะการส่งอีเมล lifecycle (pill `ส่งแล้ว` + ลิงก์ไป delivery log ใน Notifications) ตาม pattern Admin Action History ของ Report Detail; event ที่ไม่มีอีเมล lifecycle แสดง `—`
 - ปุ่ม action 2 ปุ่ม: `คืนบัญชี` (primary) และ `ปฏิเสธคืนบัญชี` (danger) — แสดงเฉพาะช่วง grace period (สถานะ `รอดำเนินการ` / `ปฏิเสธคืนบัญชี` ที่ยังนับหรือครบกำหนด) หลังคำขอจบ (คืนบัญชีแล้ว / ลบตัวตนแล้ว) ปุ่มไม่แสดง และไม่แสดง note อธิบาย — สถานะคำขอใน Detail Head และตารางประวัติ (event คืนบัญชี / ลบบัญชีอัตโนมัติ) บอกเหตุผลอยู่แล้ว
 
 ## 13. Admin Actions
@@ -319,6 +319,8 @@ Confirmation modal ตาม pattern ของ Reported Users action flow (conte
 | Reason (required) | label `เหตุผลการคืนบัญชี` — ตัวเลือก: `ผู้ใช้ติดต่อ support และยืนยันตัวตนแล้ว` / `ตรวจสอบแล้วไม่พบความเสี่ยงเพิ่มเติม` / `ทีมช่วยเหลืออนุมัติให้กลับมาใช้งานได้` / `คำขอลบบัญชีเกิดจากความผิดพลาด` |
 | Note / หมายเหตุ (optional) | placeholder: สรุปผลการตรวจสอบ เหตุผลที่คืนบัญชี และข้อมูลอ้างอิงที่เกี่ยวข้อง |
 | Impact note | `ผลกระทบต่อผู้ใช้: บัญชีกลับเป็น Active ผู้ใช้เข้าสู่ระบบได้ทันที และคำขอลบบัญชีถูกยกเลิก` |
+| Email note | `แจ้งผู้ใช้: ระบบจะส่งอีเมลแจ้งผลไปที่ <registered owner email> (registered owner email)` — ช่องทางหลักเป็นอีเมล ตาม pattern Account Status Email |
+| Email preview | `details > ดูตัวอย่างอีเมลแจ้งเตือน` แสดงหัวข้อ + เนื้อหาอีเมล (TH/EN) ตาม action + reason — ตาม pattern email-preview ของ asset actions; อัปเดตตาม reason ที่เลือกแบบ live |
 | Confirm / Cancel | `ยืนยัน` (primary) / `ยกเลิก` |
 | Result | `<Display Name> คืนบัญชีแล้ว — สถานะกลับเป็น Active` + บรรทัดบันทึก `บันทึกการดำเนินการ: <วันที่เวลา>` + success toast; sync สถานะบัญชีกลับ `Active` ใน User Management (list + detail + รายงานที่ผูกกับผู้ใช้) และบันทึก row ใน Account Status History |
 
@@ -335,6 +337,8 @@ Confirmation modal ตาม pattern ของ Reported Users action flow (conte
 | Reason (required) | label `เหตุผลการปฏิเสธคืนบัญชี` — ตัวเลือก: `รายงานร้ายแรงยังไม่ได้รับการแก้ไข` / `พฤติกรรมละเมิดซ้ำ ไม่สมควรคืนบัญชี` / `หลักฐานไม่เพียงพอที่จะยืนยันตัวตน` / `ทีมที่รับผิดชอบไม่อนุมัติให้คืนบัญชี` |
 | Note / หมายเหตุ (optional) | placeholder: ระบุหลักฐาน รายงาน หรือข้อมูลอ้างอิงที่เกี่ยวข้องกับการปฏิเสธ |
 | Impact note | `ผลกระทบต่อผู้ใช้: บัญชียังคงถูกระงับ รอลบอัตโนมัติเมื่อครบช่วงรอลบบัญชีเดิม (ไม่เริ่มนับใหม่) ผู้ใช้ติดต่อขอคืนบัญชีใหม่ได้` |
+| Email note | `แจ้งผู้ใช้: ระบบจะส่งอีเมลแจ้งผลไปที่ <registered owner email> (registered owner email)` — ช่องทางหลักเป็นอีเมล ตาม pattern Account Status Email |
+| Email preview | `details > ดูตัวอย่างอีเมลแจ้งเตือน` แสดงหัวข้อ + เนื้อหาอีเมล (TH/EN) ตาม action + reason — ตาม pattern email-preview ของ asset actions; อัปเดตตาม reason ที่เลือกแบบ live |
 | Confirm / Cancel | `ยืนยัน` (danger) / `ยกเลิก` |
 | Result | `ปฏิเสธคืนบัญชี <Display Name> แล้ว — รอลบบัญชีอัตโนมัติเมื่อครบช่วงรอลบบัญชี` + บรรทัดบันทึก + success toast |
 
@@ -343,7 +347,7 @@ Confirmation modal ตาม pattern ของ Reported Users action flow (conte
 หมายเหตุ:
 
 - ปุ่ม `คืนบัญชี` และ `ปฏิเสธคืนบัญชี` แสดงตลอดช่วง grace period 30 วัน (สถานะ `รอดำเนินการ` / `ปฏิเสธคืนบัญชี`) ไม่ใช่แสดงเฉพาะเมื่อผู้ใช้ขอคืน — กรณีผู้ใช้ขอคืนผ่าน support จะแสดง context note เพิ่มใน modal
-- หลังลบบัญชีอัตโนมัติ (สถานะ `ลบตัวตนแล้ว`) หรือคืนบัญชีแล้ว ปุ่ม action ทั้งสองต้องไม่แสดง พร้อม note `คำขอนี้ผ่านช่วงรอลบบัญชีแล้ว — ปุ่ม คืนบัญชี และ ปฏิเสธคืนบัญชี ไม่แสดง`
+- หลังลบบัญชีอัตโนมัติ (สถานะ `ลบตัวตนแล้ว`) หรือคืนบัญชีแล้ว ปุ่ม action ทั้งสองต้องไม่แสดง และไม่แสดง note อธิบาย — สถานะคำขอใน Detail Head และตารางประวัติ (event คืนบัญชี / ลบบัญชีอัตโนมัติ) บอกเหตุผลอยู่แล้ว (ตัด note `คำขอนี้ผ่านช่วงรอลบบัญชีแล้ว` ออกตั้งแต่ BO-13-v0.4)
 - การลบบัญชีอัตโนมัติ (เก็บถาวร + ลบตัวตน ในขั้นเดียว) เป็น system job เมื่อครบ grace period ไม่ใช่ manual action ของแอดมิน
 - ข้อมูลดูสถานะล่าสุดและดูประวัติอยู่ในหน้า detail แล้ว (Dependency Summary + Deletion Timeline + History & Actions) จึงไม่มีปุ่มแยก
 
@@ -359,6 +363,7 @@ Confirmation modal ตาม pattern ของ Reported Users action flow (conte
 - Retention period ของข้อมูล (chat, offer, report, audit log) แยกจาก account lifecycle ตาม DEL-DEC-002 รอ Legal/Product
 - ถ้าแอดมินปฏิเสธคืนบัญชี ไม่เริ่มนับ grace period ใหม่ ให้รอครบ 30 วันตามเดิมแล้วระบบลบบัญชีอัตโนมัติ
 - ถ้าแอดมินคืนบัญชีในช่วง grace period account กลับเป็น `Active` และคำขอเปลี่ยนเป็น `คืนบัญชีแล้ว`
+- ระบบส่งอีเมลเตือนใกล้ครบ grace period อัตโนมัติเมื่อเหลือ 7 วัน และ 3 วันก่อนครบกำหนด (ไปยัง registered email) — ตาม lifecycle email ใน `14_NOTIFICATIONS_MODULE.md` section 9.3; ไม่ส่งถ้าคำขอจบแล้ว (คืนบัญชี/ลบตัวตน)
 
 ## 15. FO Visibility Impact
 
@@ -381,7 +386,7 @@ Confirmation modal ตาม pattern ของ Reported Users action flow (conte
 | Chat | เก็บ chat history ตาม retention policy และ mask personal profile fields เมื่อถึงขั้น anonymization; ไม่มีโมดูลแชทใน BO — tile Chat Rooms ใน Dependency Summary เป็น read-only context (แสดงข้อความว่าเนื้อหาแชทเก็บตาม retention policy และ mask ตัวตนผู้ใช้) |
 | Report (User/Asset) | ระบบปิดรายงานที่ยังเปิดอยู่อัตโนมัติเมื่อ delete request สำเร็จ; เก็บ record ตาม legal/safety/audit policy; dependency link จาก Dependency Summary เปิด Reported Users กรองด้วย userId; report context ของ user ที่ `Deletion Requested` แสดง warning ให้ review รายงานก่อนแล้วจัดการ Account Deletion แยก ห้าม delete/archive ทันทีจากคิวรายงาน |
 | Help / Support | ไม่มี ticket ใน Phase 1 — module 12 เป็น Policy & Versioning + Support Center; support ticket linkage เป็น future scope |
-| Notification | Optional system notification/log for account deletion events ถ้า Product เปิด scope |
+| Notification | Lifecycle email 5 จุด (ยืนยันลบบัญชี / เตือนใกล้ครบ grace period / คืนบัญชีแล้ว / ปฏิเสธคืนบัญชี / ลบตัวตนแล้ว) ส่งไปยัง registered email เป็นช่องทางหลัก ตาม `14_NOTIFICATIONS_MODULE.md` section 9.3; delivery log `DLV-DEL-<req>-<event>` trace กลับไปยัง History & Actions ของ Request Detail; อีเมลลบตัวตนต้องส่งก่อน anonymize personal fields; ไม่เข้า FO Notification Center |
 | Audit Log | Request create, session revoke, offer cancel auto, report close auto, dependency check ระหว่างช่วงรอลบบัญชี, restore, restore reject, auto delete (archive + anonymize), export, sensitive reveal |
 | Reports & Analytics | Account deletion report, restore/reject count, auto-delete completion |
 
@@ -403,6 +408,10 @@ System actions (อัตโนมัติ บันทึกโดย system j
 - `ACCOUNT_DELETION_REPORT_CLOSE_AUTO` — ระบบปิดรายงานที่ยังเปิดอยู่อัตโนมัติ
 - `ACCOUNT_DELETION_AUTO_DELETE` — ระบบลบบัญชีอัตโนมัติ (เก็บถาวร + ลบตัวตน ในขั้นเดียว) เมื่อครบ grace period 30 วัน
 
+อีเมล lifecycle (reference ไปยัง `14_NOTIFICATIONS_MODULE.md` section 9.3):
+- ทุก audit event ของ admin/system action ที่มีอีเมล lifecycle (REQUEST_CREATE / RESTORE / RESTORE_REJECT / AUTO_DELETE) ต้อง reference ไปยัง delivery log `DLV-DEL-<req>-<event>` ใน Notifications
+- อีเมลเตือนใกล้ครบ grace period (เหลือ 7/3 วัน) เป็น system job แยก ไม่ใช่ audit event ของ deletion action — บันทึกเป็น delivery log เท่านั้น
+
 Audit payload ต้องมี:
 
 - `request_id`
@@ -413,6 +422,7 @@ Audit payload ต้องมี:
 - `reason`
 - `dependency_snapshot` (offer/asset/chat/report counts ณ เวลา action)
 - `retention_policy_version`
+- `notification_email_delivery_id` (reference ไปยัง `DLV-DEL-<req>-<event>` ถ้า action มีอีเมล lifecycle ตาม `14_NOTIFICATIONS_MODULE.md` section 9.3)
 - `ip_address`
 - `user_agent`
 - `created_at`
@@ -449,6 +459,8 @@ Account Deletion Requests ต้องใช้ app shell, navigation, breakpoin
 | AC-BO-DEL-009 | Sensitive reveal, restore, reject restore และ export ต้องมี audit log |
 | AC-BO-DEL-010 | Account Deletion UI ต้อง responsive ที่ 375px, 768px, 1280px และ 1440px |
 | AC-BO-DEL-011 | หลังลบตัวตน สมัครใหม่ด้วยอีเมลเดิมได้เป็นบัญชีใหม่ (คนละรหัส) ไม่เชื่อมประวัติเดิม |
+| AC-BO-DEL-012 | Account Deletion lifecycle email 5 จุด (ยืนยันลบบัญชี / เตือนใกล้ครบ grace period / คืนบัญชีแล้ว / ปฏิเสธคืนบัญชี / ลบตัวตนแล้ว) ต้องส่งไปยัง registered email พร้อม delivery log `DLV-DEL-xxx` ที่ trace กลับไปยัง History & Actions ของ Request Detail และ audit event ได้ ตาม `14_NOTIFICATIONS_MODULE.md` section 9.3 |
+| AC-BO-DEL-013 | modal คืนบัญชี/ปฏิเสธคืนบัญชี ต้องมีข้อความแจ้งช่องทางหลักเป็นอีเมล + email preview ตาม pattern โมดูลอื่น; History & Actions ต้องแสดงคอลัมน์ ส่งอีเมล พร้อมสถานะและลิงก์ไป delivery log |
 
 ## 20. Open Decisions
 
