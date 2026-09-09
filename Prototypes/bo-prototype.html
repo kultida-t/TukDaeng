@@ -1152,7 +1152,8 @@
     body.asset-detail-mode .user-detail-page:not(.report-detail-page) .user-detail-head h2.asset-detail-heading,
     body.user-detail-mode .asset-report-detail-page .user-detail-head h2.asset-report-heading,
     body.watch-alert-detail-mode .user-detail-page .user-detail-head h2.asset-report-heading,
-    body.deletion-detail-mode .user-detail-page .user-detail-head h2.asset-report-heading {
+    body.deletion-detail-mode .user-detail-page .user-detail-head h2.asset-report-heading,
+    body.offer-detail-mode .offer-detail-page .user-detail-head h2.asset-report-heading {
       font-family: var(--font-main);
       font-size: 24px !important;
       font-weight: 600;
@@ -1170,7 +1171,8 @@
     body.asset-detail-mode .user-detail-page:not(.report-detail-page) .user-detail-head h2.asset-detail-heading span,
     body.user-detail-mode .asset-report-detail-page .user-detail-head h2.asset-report-heading span,
     body.watch-alert-detail-mode .user-detail-page .user-detail-head h2.asset-report-heading span,
-    body.deletion-detail-mode .user-detail-page .user-detail-head h2.asset-report-heading span {
+    body.deletion-detail-mode .user-detail-page .user-detail-head h2.asset-report-heading span,
+    body.offer-detail-mode .offer-detail-page .user-detail-head h2.asset-report-heading span {
       font: inherit;
       letter-spacing: inherit;
     }
@@ -7675,6 +7677,12 @@
         font-weight: 800;
         line-height: inherit;
       }
+      /* DEL-PTO-006: ปุ่ม Email ส่งแล้ว บน mobile card ให้พอดีข้อความเหมือน pill (scope เฉพาะ deletion detail) */
+      body.deletion-detail-mode .deletion-detail-page .history-table td .history-delivery-link {
+        width: max-content;
+        max-width: 100%;
+        justify-self: start;
+      }
     }
 
     /* DEL-PTO-004: Audit Log view — read-only immutable admin events */
@@ -8470,6 +8478,23 @@
       font-size: 12px;
       line-height: 1.2;
       white-space: nowrap;
+    }
+    /* BO-UX-002: link button ใน detail-tile ของ Report Detail + Offer Detail (คลิก identifier → เปิด detail ของ entity) — pattern เดียวกับ Deletion Detail */
+    body.user-detail-mode .report-detail-page .detail-tile .link-btn,
+    body.offer-detail-mode .offer-detail-page .detail-tile .link-btn {
+      padding: 0;
+      border: 0;
+      background: transparent;
+      color: var(--blue);
+      font-size: 12px;
+      font-weight: 700;
+      text-align: left;
+      cursor: pointer;
+      text-decoration: none;
+    }
+    body.user-detail-mode .report-detail-page .detail-tile .link-btn:hover,
+    body.offer-detail-mode .offer-detail-page .detail-tile .link-btn:hover {
+      text-decoration: underline;
     }
     .report-detail-page .history-table-wrap,
     body.user-detail-mode .user-detail-page:not(.report-detail-page) .history-table-wrap,
@@ -11128,7 +11153,9 @@
       }
       body.asset-detail-mode .user-detail-page:not(.report-detail-page) .user-detail-head h2.asset-detail-heading,
       body.user-detail-mode .asset-report-detail-page .user-detail-head h2.asset-report-heading,
-      body.watch-alert-detail-mode .user-detail-page .user-detail-head h2.asset-report-heading {
+      body.watch-alert-detail-mode .user-detail-page .user-detail-head h2.asset-report-heading,
+      body.offer-detail-mode .offer-detail-page .user-detail-head h2.asset-report-heading,
+      body.deletion-detail-mode .deletion-detail-page .user-detail-head h2.asset-report-heading {
         font-size: 18px !important;
       }
       body.asset-detail-mode .article-detail-page .user-detail-head h2.article-detail-heading {
@@ -11173,7 +11200,12 @@
         height: 76px;
         border-radius: 12px;
       }
-      body.asset-detail-mode .user-detail-page:not(.report-detail-page) .asset-title-image {
+      body.offer-detail-mode .offer-detail-page .asset-title-image {
+        width: 76px;
+        height: 76px;
+        border-radius: 12px;
+      }
+      body.deletion-detail-mode .deletion-detail-page .profile-image {
         width: 76px;
         height: 76px;
         border-radius: 12px;
@@ -15366,6 +15398,12 @@
         item("DLV-ACCT-010", "Account suspension email", "RPU-505 / U-1002", "Delivery", "สูง", "Sent", "ส่งอีเมลแจ้งระงับบัญชีให้ U-1002 หลัง Admin confirm status action", ["Email", "Status action", "Audit linked"], "ตรวจ delivery trace และ reference ไปยัง account status audit"),
         item("DLV-ACCT-011", "Account suspension email", "RPU-541 / U-1186", "Delivery", "สูง", "Sent", "ส่งอีเมลแจ้งระงับบัญชีให้ U-1186 ระหว่างตรวจสอบรายงานแชท", ["Email", "Status action", "Audit linked"], "reference ต้องตรงกับ Admin Action History ของรายงาน"),
         item("DLV-ACCT-012", "Account ban email", "RPU-560 / U-1120", "Delivery", "สูง", "Sent", "ส่งอีเมลแจ้งระงับบัญชีถาวรให้ U-1120 หลังยืนยันหลักฐานรวม", ["Email", "Status action", "Audit linked"], "reference ต้องตรงกับ Admin Action History ของรายงาน"),
+        // DEL-PTO-006: Account Deletion lifecycle email delivery logs — ตรงกับ History & Actions ของ Request Detail
+        item("DLV-DEL-033-REQ", "Account deletion confirmation email", "DEL-033 / U-1104", "Delivery", "สูง", "Sent", "ส่งอีเมลยืนยันคำขอลบบัญชีให้ U-1104 หลังผู้ใช้ยืนยันคำขอผ่านแอป (FO)", ["Email", "Lifecycle", "Audit linked"], "reference ต้องตรงกับ History & Actions ของ Request Detail"),
+        item("DLV-DEL-035-GR3", "Account deletion reminder email", "DEL-035 / U-1155", "Delivery", "สูง", "Sent", "ส่งอีเมลเตือนใกล้ครบช่วงรอลบบัญชีให้ U-1155 (เหลือ 3 วัน)", ["Email", "Grace period", "Audit linked"], "ส่งอัตโนมัติเมื่อเหลือ 7 และ 3 วันก่อนลบบัญชี"),
+        item("DLV-DEL-031-RES", "Account restore email", "DEL-031 / U-1090", "Delivery", "สูง", "Sent", "ส่งอีเมลแจ้งคืนบัญชีให้ U-1090 หลัง Admin confirm restore action", ["Email", "Status action", "Audit linked"], "reference ต้องตรงกับ History & Actions ของ Request Detail"),
+        item("DLV-DEL-028-REJ", "Account restore rejection email", "DEL-028 / U-1121", "Delivery", "สูง", "Sent", "ส่งอีเมลแจ้งผลปฏิเสธคืนบัญชีให้ U-1121 หลัง Admin confirm reject action", ["Email", "Status action", "Audit linked"], "reference ต้องตรงกับ History & Actions ของ Request Detail"),
+        item("DLV-DEL-025-DEL", "Account auto-deletion email", "DEL-025 / U-1075", "Delivery", "สูง", "Sent", "ส่งอีเมลแจ้งลบบัญชีอัตโนมัติและลบตัวตนให้ U-1075 หลังครบช่วงรอลบบัญชี 30 วัน", ["Email", "Auto delete", "Audit linked"], "ส่งก่อน anonymize personal fields ตาม section 8.4"),
         item("DLV-882", "Failed delivery batch", "FCM", "Delivery", "กลาง", "Retry", "token expired 92 รายการ", ["Retry queue"], "retry และ cleanup invalid token")
       ]),
       settings: mod("Settings", "เครื่องมือ & รายงาน / Settings", "Admin Settings", "ตั้งค่า admin account, permission policy, security, retention/export และ feature flags", "บันทึก policy", [["Admin Accounts", "6", "ใช้ account type Admin"], ["Email OTP", "Required", "mandatory"], ["Policies", "34", "module/action"], ["Feature Flags", "7", "2 enabled"]], [
@@ -17377,6 +17415,14 @@
           return { type: "watch-alert-detail", id: activeRow.id };
         }
         return { type: "module", module: "watch-alerts", sub: activeSub || "Demand Overview", displaySub: activeSub || "Demand Overview" };
+      }
+      if (activeModule === "deletions") {
+        // DEL-PTO-006: Request Detail → กดชื่อ user ไป User Detail แล้ว back ต้องกลับมา Request Detail เดิม
+        // (ไม่งั้น context ถูก capture เป็นโมดูล ทำให้ back พาไปหน้า Deletion Requests list)
+        if (document.body.classList.contains("deletion-detail-mode") && activeRow?.id) {
+          return { type: "deletion-detail", id: activeRow.id };
+        }
+        return { type: "module", module: "deletions", sub: activeSub || "Deletion Requests", displaySub: activeSub || "Deletion Requests" };
       }
       return activeModule ? { type: "module", module: activeModule, sub: activeSub || "", displaySub: activeSub || "" } : null;
     }
@@ -21627,21 +21673,38 @@
         return parts.join("<br>") || "—";
       };
       const auditLogs = [];
-      auditLogs.push({ at: req.requestedAt, actor: req.displayName, action: "ขอลบบัญชี", note: "ผู้ใช้ยืนยันคำขอผ่านแอป (FO)" });
+      // DEL-PTO-006: คอลัมน์ ส่งอีเมล ตาม pattern Admin Action History ของ Report Detail (pill สถานะ + jump ไป delivery log)
+      // สถานะการส่งอีเมลแสดงในคอลัมน์ ส่งอีเมล แล้ว รายละเอียดจึงไม่แนบ "notification email sent to" ซ้ำ
+      // แนบ deliveryId ให้ jump ไป Notifications ได้เฉพาะเมื่อมี delivery log จริง ไม่งั้นแสดง pill ธรรมดา
+      const deletionEmailDelivery = eventPart => {
+        const deliveryId = `DLV-DEL-${String(req.id).replace(/^DEL-/, "")}-${eventPart}`;
+        if (moduleData.notifications.rows.some(row => row.id === deliveryId)) {
+          return { status: "sent", channel: "Email", deliveryId };
+        }
+        return { status: "sent", channel: "Email" };
+      };
+      auditLogs.push({ at: req.requestedAt, actor: req.displayName, action: "ขอลบบัญชี", note: "ผู้ใช้ยืนยันคำขอผ่านแอป (FO)", emailDelivery: deletionEmailDelivery("REQ") });
       if (tl.sessionRevokedAt) auditLogs.push({ at: tl.sessionRevokedAt, actor: "System", action: "ยกเลิก session", note: "ระบบยกเลิก session ทั้งหมดของผู้ใช้" });
       if (tl.deactivatedAt) auditLogs.push({ at: tl.deactivatedAt, actor: "System", action: "ระงับบัญชี + ยกเลิก offer/ปิดรายงานอัตโนมัติ", note: "เริ่มช่วงรอลบบัญชี 30 วัน" });
-      // restoreReq: ระบบไม่สามารถระบุเวลาจริงที่ support request เข้ามาได้
-      // ไม่ใส่วันที่เวลาใน audit log เพราะยืนยันไม่ได้ ใช้ "—" แทน
-      if (restoreReq) {
-        auditLogs.push({ at: "—", actor: "System", action: "รับคำขอคืนบัญชี (ผ่าน support)", note: restoreReq.note || "" });
-      }
-      // ปฏิเสธคืนบัญชี: แสดงทุกครั้ง (รองรับการปฏิเสธซ้ำ) — เรียงตามเวลา
+      // รับคำขอคืนบัญชี (ผ่าน support): แต่ละ action ของ admin (ปฏิเสธ/คืนบัญชี) ต้องมีผู้ใช้ยื่นขอใหม่ก่อนเสมอ
+      // จึงแสดง record นี้นำหน้าทุก action — เวลาที่ support request เข้ามายืนยันไม่ได้ ใช้ "—" ตาม convention
       const restoreRejects = Array.isArray(d.restoreRejects) ? d.restoreRejects : (restoreRej ? [restoreRej] : []);
+      const restoreInboundNote = (restoreReq && restoreReq.note) || "ผู้ใช้ติดต่อ support ขอคืนบัญชี";
+      const pushRestoreInbound = () => auditLogs.push({ at: "—", actor: "System", action: "รับคำขอคืนบัญชี (ผ่าน support)", note: restoreInboundNote });
+      // คำขอที่ยังรอ admin ดำเนินการ (ยังไม่มี reject/restore) — แสดง record เดียว
+      if (restoreReq && !restoreRejects.length && !tl.restoredAt) {
+        pushRestoreInbound();
+      }
+      // ปฏิเสธคืนบัญชี: แสดงทุกครั้ง (รองรับการปฏิเสธซ้ำ) — แต่ละครั้งมี record รับคำขอนำหน้า
       restoreRejects.forEach(rej => {
-        auditLogs.push({ at: rej.rejectedAt, actor: rej.rejectedBy, action: "ปฏิเสธคืนบัญชี", note: formatActionNote(rej.reason, rej.note) });
+        pushRestoreInbound();
+        auditLogs.push({ at: rej.rejectedAt, actor: rej.rejectedBy, action: "ปฏิเสธคืนบัญชี", note: formatActionNote(rej.reason, rej.note), emailDelivery: deletionEmailDelivery("REJ") });
       });
-      if (tl.restoredAt) auditLogs.push({ at: tl.restoredAt, actor: req.processedBy || "Admin", action: "คืนบัญชี", note: formatActionNote(d.restoreReason, d.restoreNote) });
-      if (tl.archivedAt) auditLogs.push({ at: tl.archivedAt, actor: "System", action: "ลบบัญชีอัตโนมัติ", note: "ครบช่วงรอลบบัญชี 30 วัน — personal fields ถูกแทนที่ด้วย anonymous value" });
+      if (tl.restoredAt) {
+        pushRestoreInbound();
+        auditLogs.push({ at: tl.restoredAt, actor: req.processedBy || "Admin", action: "คืนบัญชี", note: formatActionNote(d.restoreReason, d.restoreNote), emailDelivery: deletionEmailDelivery("RES") });
+      }
+      if (tl.archivedAt) auditLogs.push({ at: tl.archivedAt, actor: "System", action: "ลบบัญชีอัตโนมัติ", note: "ครบช่วงรอลบบัญชี 30 วัน", emailDelivery: deletionEmailDelivery("DEL") });
       if (tl.cancelledAt) auditLogs.push({ at: tl.cancelledAt, actor: req.processedBy || "Admin", action: "ยกเลิกคำขอ", note: "" });
 
       const auditRows = auditLogs.map(log => `
@@ -21649,6 +21712,7 @@
           <td data-label="วันที่ / เวลา">${log.at || "—"}</td>
           <td data-label="ผู้ดำเนินการ">${log.actor}</td>
           <td data-label="Action">${log.action}</td>
+          <td data-label="ส่งอีเมล">${log.emailDelivery ? renderReportAuditEmailDelivery(log) : "—"}</td>
           <td data-label="รายละเอียด" class="history-note">${log.note || "—"}</td>
         </tr>
       `).join("");
@@ -21663,6 +21727,7 @@
                   <th>วันที่ / เวลา</th>
                   <th>ผู้ดำเนินการ</th>
                   <th>Action</th>
+                  <th>ส่งอีเมล</th>
                   <th>รายละเอียด</th>
                 </tr>
               </thead>
@@ -22001,20 +22066,21 @@
             note: delDetail?.restoreReason || "แอดมินคืนบัญชีในช่วงรอลบบัญชี"
           });
         }
-        // 3. ปฏิเสธคืนบัญชี — ถ้ามี restoreRejectedAt
-        if (tl.restoreRejectedAt) {
-          const rejectReason = delDetail?.restoreReject?.reason || "";
+        // 3. ปฏิเสธคืนบัญชี — แสดงทุกครั้ง (restoreRejects เก็บทุกรายการ รองรับการปฏิเสธซ้ำ)
+        // ต้องสัมพันธ์กับ History & Actions ของ Request Detail ที่แสดงการปฏิเสธทุกครั้ง
+        const restoreRejects = Array.isArray(delDetail?.restoreRejects) ? delDetail.restoreRejects : (delDetail?.restoreReject ? [delDetail.restoreReject] : []);
+        restoreRejects.forEach(rej => {
           deletionRows.push({
-            id: `${user.id}-DEL-REJECT`,
-            createdAt: tl.restoreRejectedAt,
-            actor: delDetail?.restoreReject?.rejectedBy || delReq?.processedBy || "Admin",
+            id: `${user.id}-DEL-REJECT-${rej.rejectedAt}`,
+            createdAt: rej.rejectedAt,
+            actor: rej.rejectedBy || delReq?.processedBy || "Admin",
             action: "ปฏิเสธคืนบัญชี",
             before: "Deletion Requested",
             after: "Deletion Requested",
             reference: refId,
-            note: rejectReason || "แอดมินปฏิเสธคืนบัญชี รอลบบัญชีอัตโนมัติ"
+            note: rej.reason || "แอดมินปฏิเสธคืนบัญชี รอลบบัญชีอัตโนมัติ"
           });
-        }
+        });
         // 4. ลบบัญชีอัตโนมัติ — ขั้นรวม (เก็บถาวร + ลบตัวตน เกิดพร้อมกันเมื่อครบช่วงรอลบบัญชี)
         // ใช้ archivedAt (fallback anonymizedAt) ตาม lifecycle เดียวกับ Deletion Timeline
         const autoDeleteTime = tl.archivedAt || tl.anonymizedAt;
@@ -23036,6 +23102,123 @@
       `;
     }
 
+    // DEL-PTO-006: email note + preview ของ deletion action (คืนบัญชี/ปฏิเสธคืนบัญชี)
+    // pattern: renderAssetHideEmailNote + renderAccountStatusEmailPreview — แจ้งช่องทางหลักคืออีเมล (registered owner email)
+    function getDeletionOwnerEmail(req) {
+      const d = (deletionRequestData.detail && deletionRequestData.detail[req.id]) || {};
+      const uc = d.userContext || {};
+      if (!uc.username || !uc.email) return "owner@example.com";
+      const domain = uc.email.split("@")[1] || "mail.com";
+      const local = uc.username.replace("@", "").replace(/[^a-z0-9.]/gi, ".");
+      return `${local}@${domain}`.toLowerCase();
+    }
+
+    function getDeletionActionEmailCopy(req, action, reason = "") {
+      const isRestore = action === "restore";
+      const subject = isRestore
+        ? "[TukDaeng] บัญชีของคุณกลับมาใช้งานได้แล้ว / Your account has been restored"
+        : "[TukDaeng] คำขอคืนบัญชีของคุณถูกปฏิเสธ / Your account restore request has been declined";
+      const thaiReason = reason || (isRestore ? "ตรวจสอบแล้วไม่พบความเสี่ยงเพิ่มเติม" : "ตรวจสอบตามนโยบายการรายงานผู้ใช้");
+      const englishReason = reason || (isRestore ? "No further risk found after review" : "User report policy review");
+      return {
+        subject: subject,
+        lines: isRestore ? [
+          `สวัสดีคุณ ${req.displayName},`,
+          `คำขอลบบัญชี ${req.displayName} ของคุณถูกยกเลิก และบัญชีกลับมาใช้งานได้ตามปกติแล้ว`,
+          `เหตุผลการดำเนินการ: ${thaiReason}`,
+          "คุณสามารถเข้าสู่ระบบด้วยข้อมูลเดิมของคุณได้ทันที",
+          "---",
+          `Hello ${req.displayName},`,
+          `Your account deletion request for ${req.displayName} has been cancelled and your account is active again.`,
+          `Action reason: ${englishReason}`,
+          "You can sign in again with your existing credentials.",
+          `Reference: ${req.id}`,
+          "Contact support: support@tukdaeng.example"
+        ] : [
+          `สวัสดีคุณ ${req.displayName},`,
+          `คำขอคืนบัญชี ${req.displayName} ของคุณได้รับการพิจารณาแล้ว แต่ถูกปฏิเสธ`,
+          `เหตุผลการดำเนินการ: ${thaiReason}`,
+          `บัญชียังคงอยู่ในช่วงรอลบบัญชีและจะถูกลบอัตโนมัติเมื่อครบ ${req.graceEnds} (ไม่เริ่มนับใหม่)`,
+          "หากไม่เห็นด้วยกับผลการพิจารณา สามารถติดต่อ support เพื่ออุทธรณ์โดยแนบหมายเลขอ้างอิงด้านล่าง",
+          "---",
+          `Hello ${req.displayName},`,
+          `Your account restore request for ${req.displayName} has been reviewed and declined.`,
+          `Action reason: ${englishReason}`,
+          `The grace period continues and the account will be automatically deleted on ${req.graceEnds} (the countdown is not reset).`,
+          "If you want to appeal this decision, please contact TukDaeng support and include the reference number below.",
+          `Reference: ${req.id}`,
+          "Contact support: support@tukdaeng.example"
+        ]
+      };
+    }
+
+    function renderDeletionActionEmailNote(req) {
+      return `
+        <div class="module-note user-action-impact user-action-impact-card user-action-impact-notice">
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M4.5 5h15A2.5 2.5 0 0 1 22 7.5v9A2.5 2.5 0 0 1 19.5 19h-15A2.5 2.5 0 0 1 2 16.5v-9A2.5 2.5 0 0 1 4.5 5Zm0 2a.5.5 0 0 0-.5.5v.3l8 4.9 8-4.9v-.3a.5.5 0 0 0-.5-.5h-15Zm15 10a.5.5 0 0 0 .5-.5v-6.35l-7.48 4.57a1 1 0 0 1-1.04 0L4 10.15v6.35a.5.5 0 0 0 .5.5h15Z"/></svg>
+          <p><strong>แจ้งผู้ใช้:</strong> ระบบจะส่งอีเมลแจ้งผลไปที่ ${getDeletionOwnerEmail(req)} (registered owner email)</p>
+        </div>
+      `;
+    }
+
+    function renderDeletionActionEmailPreview(req, action, reason = "") {
+      const emailCopy = getDeletionActionEmailCopy(req, action, reason);
+      return `
+        <details class="email-preview" data-deletion-email-preview data-deletion-id="${req.id}" data-action="${action}">
+          <summary>ดูตัวอย่างอีเมลแจ้งเตือน</summary>
+          <div class="email-preview-body">
+            <div class="email-preview-subject"><strong>หัวข้อ:</strong> <span data-email-preview-subject>${emailCopy.subject}</span></div>
+            <div class="email-preview-message" data-email-preview-message>
+              ${emailCopy.lines.map(line => `<p>${line}</p>`).join("")}
+            </div>
+          </div>
+        </details>
+      `;
+    }
+
+    function updateDeletionActionEmailPreview() {
+      const preview = document.querySelector("[data-deletion-email-preview]");
+      if (!preview) return;
+      const req = deletionRequestData.requests.find(entry => entry.id === preview.dataset.deletionId);
+      const action = preview.dataset.action;
+      if (!req || (action !== "restore" && action !== "reject-restore")) return;
+      const reason = document.querySelector("#deletion-action-reason")?.value || "";
+      const emailCopy = getDeletionActionEmailCopy(req, action, reason);
+      const subject = preview.querySelector("[data-email-preview-subject]");
+      const message = preview.querySelector("[data-email-preview-message]");
+      if (subject) subject.textContent = emailCopy.subject;
+      if (message) message.innerHTML = emailCopy.lines.map(line => `<p>${line}</p>`).join("");
+    }
+
+    // DEL-PTO-006: เพิ่ม delivery log (DLV-DEL-xxx) ใน Notifications หลัง admin action — pattern เดียวกับ ensureAccountStatusDeliveryLog
+    function getDeletionDeliveryId(req, action) {
+      const reqPart = String(req.id || "").replace(/^DEL-/, "");
+      const actionPart = action === "restore" ? "RES" : "REJ";
+      return `DLV-DEL-${reqPart}-${actionPart}`;
+    }
+
+    function ensureDeletionDeliveryLog(req, action) {
+      if (!req || !moduleData.notifications) return;
+      const deliveryId = getDeletionDeliveryId(req, action);
+      if (moduleData.notifications.rows.some(row => row.id === deliveryId)) return;
+      const isRestore = action === "restore";
+      moduleData.notifications.rows.splice(moduleData.notifications.rows.length - 1, 0,
+        item(
+          deliveryId,
+          isRestore ? "Account restore email" : "Account restore rejection email",
+          `${req.id} / ${req.userId}`,
+          "Delivery",
+          "สูง",
+          "Sent",
+          isRestore
+            ? `ส่งอีเมลแจ้งคืนบัญชีให้ ${req.userId} หลัง Admin confirm restore action`
+            : `ส่งอีเมลแจ้งผลปฏิเสธคืนบัญชีให้ ${req.userId} หลัง Admin confirm reject action`,
+          ["Email", "Status action", "Audit linked"],
+          "reference ต้องตรงกับ History & Actions ของ Request Detail"
+        )
+      );
+    }
+
     function renderDeletionActionModal(req, action, completed = false, resultMessage = "", resultDetail = "", resultType = "") {
       const config = deletionActionConfig[action];
       if (!req || !config) return;
@@ -23077,6 +23260,8 @@
                   <textarea id="deletion-action-note" placeholder="${config.notePlaceholder}" ${completed ? "disabled" : ""}></textarea>
                 </label>
                 ${renderDeletionActionImpactNote(req, action)}
+                ${renderDeletionActionEmailNote(req)}
+                ${renderDeletionActionEmailPreview(req, action, config.reasons?.[0] || "")}
                 <div class="user-detail-actions user-action-footer">
                   <button class="user-detail-action-btn ${getDeletionActionConfirmClass(config)}" type="button" data-deletion-action-confirm="${action}" data-deletion-id="${req.id}" ${completed ? "disabled" : ""}>${DELETION_ACTION_CONFIRM_LABEL}</button>
                   <button class="user-detail-action-btn" type="button" data-user-action-modal-close>${completed ? "ปิด" : "ยกเลิก"}</button>
@@ -23103,6 +23288,13 @@
       const now = formatDeletionTimestamp();
       const detail = deletionRequestData.detail[req.id] || (deletionRequestData.detail[req.id] = {});
       const adminName = (auth.admin && auth.admin.username) || "Admin";
+
+      // DEL-PTO-006: การคืนบัญชี/ปฏิเสธคืนบัญชีย่อมมีที่มาจากผู้ใช้ติดต่อ support เสมอ
+      // ถ้ายังไม่มี record คำขอคืนบัญชี ให้สร้างอัตโนมัติเพื่อให้ History & Actions แสดงที่มาครบ
+      // (เวลา/ช่องทางที่ support request เข้ามายืนยันไม่ได้ ใช้ "—" ตาม convention ของ record นี้)
+      if (!detail.restoreRequest) {
+        detail.restoreRequest = { requestedAt: "—", channel: "", note: "ผู้ใช้ติดต่อ support ขอคืนบัญชี" };
+      }
 
       if (action === "restore") {
         // คืนบัญชี: สถานะเป็น Active + requestStatus เป็น "คืนบัญชีแล้ว" + graceState "restored"
@@ -23155,6 +23347,9 @@
       // สร้าง success result message
       const successMsg = config.success(req);
       const resultDetail = `${selectedReason || config.reasonLabel}${actionNote ? ` — ${actionNote}` : ""} · ${now}`;
+
+      // DEL-PTO-006: log การส่งอีเมลแจ้งผลลง delivery log ของ Notifications (pattern เดียวกับ Account Status Email)
+      ensureDeletionDeliveryLog(req, action);
 
       // รีเฟรช detail page
       renderDeletionDetail(req.id);
@@ -23732,12 +23927,11 @@
           <div class="detail-section">
             <div class="board-report-reference-head">
               <h4>Reported User</h4>
-              ${reportUser ? `<button class="btn asset-report-view-btn" type="button" data-user-open="${reportUser.id}" aria-label="View user ${reportUser.id}"><span class="asset-report-view-label">View User</span></button>` : ""}
             </div>
             <div class="detail-grid two report-reference-grid user-report-reference-grid">
               <div class="detail-tile"><span>Report ID</span><strong>${report.id}</strong></div>
               <div class="detail-tile"><span>User ID</span><strong>${report.userId}</strong></div>
-              <div class="detail-tile"><span>User</span><strong>${report.user}</strong></div>
+              <div class="detail-tile"><span>User</span><strong>${reportUser ? `<button class="link-btn" type="button" data-user-open="${reportUser.id}">${report.user}</button>` : report.user}</strong></div>
               <div class="detail-tile"><span>Account Status</span><strong>${userStatusLabels[getReportAccountStatus(report)] || getReportAccountStatus(report)}</strong></div>
             </div>
           </div>
@@ -35561,11 +35755,10 @@
           <div class="detail-section">
             <div class="board-report-reference-head">
               <h4>Offered Asset</h4>
-              ${offerAsset ? `<button class="btn asset-report-view-btn" type="button" data-asset-open="${offerAsset.id}" aria-label="View asset ${offerAsset.id}"><span class="asset-report-view-label">View Asset</span></button>` : ""}
             </div>
             <div class="detail-grid two report-reference-grid">
               <div class="detail-tile"><span>Offer ID</span><strong>${detail.offerSummary.offerId}</strong></div>
-              <div class="detail-tile"><span>Asset ID</span><strong>${detail.assetSummary.assetId}</strong></div>
+              <div class="detail-tile"><span>Asset ID</span><strong>${offerAsset ? `<button class="link-btn" type="button" data-asset-open="${offerAsset.id}">${detail.assetSummary.assetId}</button>` : detail.assetSummary.assetId}</strong></div>
               <div class="detail-tile"><span>Asset Name</span><strong>${detail.assetSummary.reference}</strong></div>
               <div class="detail-tile"><span>Offer Amount</span><strong>${detail.offerSummary.amount}</strong></div>
               <div class="detail-tile"><span>Asking Price</span><strong>${detail.assetSummary.askingPrice}</strong></div>
@@ -35878,6 +36071,7 @@
         select.classList.remove("open");
         select.querySelector("[data-custom-select-trigger]").setAttribute("aria-expanded", "false");
         if (hiddenInput.id === "user-action-reason") updateAccountStatusEmailPreview();
+        if (hiddenInput.id === "deletion-action-reason") updateDeletionActionEmailPreview();
         if (hiddenInput.id === "asset-hide-reason") updateAssetHideEmailPreview();
         if (hiddenInput.id === "asset-restore-reason") updateAssetRestoreVisibilityEmailPreview();
         if (hiddenInput.id === "asset-delete-reason") updateAssetDeletePostEmailPreview();

@@ -583,7 +583,8 @@ Login form มี:
 - List row เปิด detail ของ entity นั้น
 - Report detail link เปิด linked user/asset/content ด้วย back context ที่กลับมารายงานเดิมได้
 - Market drilldown ต้องรักษา brand/model/reference context
-- Offer detail `View Asset` ต้องเปิด asset context แบบ read-only/drill-in ตาม prototype
+- การลิงก์ไปยัง entity อื่นจากหน้า detail ให้วางลิงก์บน identifier ของ entity นั้น (เช่น Display Name, Asset ID) ไม่ใช้ปุ่มแยกใน section head — link ใช้กับการนำทาง, button ใช้กับ action ที่กระทบข้อมูล
+- Offer detail เปิด asset context แบบ read-only/drill-in ผ่านลิงก์ `Asset ID` ตาม prototype
 
 ห้ามคลิกแล้วไม่เกิดผลโดยไม่มี disabled state หรือ unavailable explanation ที่ชัดเจน
 

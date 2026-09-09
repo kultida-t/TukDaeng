@@ -363,7 +363,7 @@ Recommended note format:
 
 | Area | Notes |
 | --- | --- |
-| Prototype / Spec Alignment | Prototype ล็อกแล้วตาม `13_ACCOUNT_DELETION_MODULE.md` BO-13-v0.4 — Request List (7 คอลัมน์ + row menu, mobile card), Request Detail 5 sections (User Context / Deletion Timeline / Dependency Summary / Deletion Plan / History & Actions), modal คืนบัญชี + ปฏิเสธคืนบัญชี, cross-module drill-in, Audit Log view และ Account Status History ของ User Management |
+| Prototype / Spec Alignment | Prototype ล็อกแล้วตาม `13_ACCOUNT_DELETION_MODULE.md` BO-13-v0.5 — Request List (7 คอลัมน์ + row menu, mobile card), Request Detail 5 sections (User Context / Deletion Timeline / Dependency Summary / Deletion Plan / History & Actions พร้อมคอลัมน์ ส่งอีเมล), modal คืนบัญชี + ปฏิเสธคืนบัญชี (มี email note + email preview), cross-module drill-in, Audit Log view และ Account Status History ของ User Management; lifecycle email 5 จุด sync กับ `14_NOTIFICATIONS_MODULE.md` BO-14-v0.2 section 9.3 |
 | Implementation Gap | Production needs API-backed permission enforcement, real FO sync (session revoke, hide profile/assets, auto-cancel offers, auto-close reports), system job สำหรับลบบัญชีอัตโนมัติเมื่อครบ grace period 30 วัน, audit persistence และ sensitive-data masking ตาม policy |
 | Permission / Audit | Restore, reject restore, sensitive reveal และ export ต้อง permission-gated และ audit-logged พร้อม before/after values และ reason; system actions บันทึก audit อัตโนมัติทุกครั้ง |
 | FO Sync Impact | Successful FO delete-account flow must revoke session/deactivate account, hide public profile/assets immediately, auto-cancel pending offers and auto-close open reports with audit, keep required records for retention, and auto-delete (archive + anonymize in one step) when the 30-day grace period ends; restore by admin syncs account status back to Active within the grace period. |
@@ -385,12 +385,14 @@ Recommended note format:
 - [ ] Retry failed notification ต้องมี idempotency guard และ audit log
 - [ ] Template update, type enable/disable, broadcast approve/send/cancel, retry และ export ต้องมี audit log
 - [ ] Notifications UI ต้อง responsive ที่ 375px, 768px, 1280px และ 1440px
+- [ ] Account Deletion lifecycle email 5 จุด (ยืนยันลบบัญชี / เตือนใกล้ครบ grace period / คืนบัญชีแล้ว / ปฏิเสธคืนบัญชี / ลบตัวตนแล้ว) ต้องส่งไปยัง registered email พร้อม delivery log `DLV-DEL-xxx` ที่ trace กลับไปยัง History & Actions ของ Request Detail และ audit event ได้ ตาม `14_NOTIFICATIONS_MODULE.md` section 9.3
+- [ ] อีเมล Account Deletion lifecycle ต้องเคารพกฎห้ามส่ง (ไม่ส่งซ้ำ, ไม่ส่งเมื่อคำขอจบแล้ว, อีเมลลบตัวตนต้องส่งก่อน anonymize personal fields)
 
 ### Notifications Prototype Handoff Notes
 
 | Area | Notes |
 | --- | --- |
-| Prototype / Spec Alignment | The prototype exposes `Broadcast`, `System Templates`, and `Delivery Logs`, plus Dashboard `Broadcast Ready` counts. This matches the module split but not the full broadcast approval/template/retry implementation. |
+| Prototype / Spec Alignment | The prototype exposes `Broadcast`, `System Templates`, and `Delivery Logs`, plus Dashboard `Broadcast Ready` counts. This matches the module split but not the full broadcast approval/template/retry implementation. Account Deletion lifecycle email delivery logs (`DLV-DEL-xxx`) are mocked in the prototype and sync with History & Actions of Request Detail per `14_NOTIFICATIONS_MODULE.md` BO-14-v0.2 section 9.3. |
 | Implementation Gap | Production still needs broadcast draft/approval/schedule/send/cancel, preview, system trigger template configuration, delivery log detail, retry/idempotency, failed/skipped reason handling, and export. |
 | Permission / Audit | Template update, type enable/disable, broadcast approve/send/cancel, retry, sensitive reveal, and export require permission checks and audit. |
 | FO Sync Impact | FO Notification Center V1 must remain limited to Like, Comment, Follow, Offer, and Watch Alert. Generic Broadcast must not appear in the FO in-app list until Product confirms scope. Watch Alert notification destination must remain `Watch Alert Result List`; Chat/New Message uses chat badge/count, not Notification Center. |

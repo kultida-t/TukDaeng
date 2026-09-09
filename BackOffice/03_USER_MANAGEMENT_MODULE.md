@@ -1,7 +1,7 @@
 # 03 BO User Management Module
 
-**Version:** `BO-03-v1.0`  
-**Date:** 2026-07-31  
+**Version:** `BO-03-v1.1`  
+**Date:** 2026-09-09  
 **Status:** สเปกปัจจุบัน  
 **Platform:** Responsive Web Back Office
 
@@ -17,7 +17,7 @@
 | --- | --- |
 | Module Name | BO User Management |
 | Platform | Responsive Web Back Office |
-| Version | `BO-03-v1.0` |
+| Version | `BO-03-v1.1` |
 | Status | สเปกปัจจุบัน |
 | Owner | Product / UX / Engineering / Operations |
 | Document Type | Functional PRD |
@@ -76,7 +76,7 @@ Submenu ภายใต้ User Management:
 
 - เมื่อเข้า `User Management` ให้เปิด `User Accounts` เป็นหน้าหลัก
 - เมนูที่ถูกเลือกต้องแสดง active state ที่ submenu นั้น
-- `User Detail` เปิดจาก `User List` หรือจากปุ่ม `View User` ใน `Report Detail`
+- `User Detail` เปิดจาก `User List` หรือจากลิงก์ display name ใน section `Reported User` ของ `Report Detail` (ลิงก์บน identifier ตาม pattern เดียวกับ Request Detail ของ Account Deletion)
 - `Report Detail` เปิดจากรายการใน `Reported Users`
 - ปุ่มย้อนกลับจาก `User Detail` ต้องกลับไป context เดิมที่เปิดมา
 - ปุ่มย้อนกลับจาก `Report Detail` ต้องกลับไป `Reported Users` พร้อมคง search/filter/sort/page เดิม
@@ -492,10 +492,10 @@ Report Detail แสดงรายละเอียดรายงานหน
 
 | Section | ข้อมูลที่ต้องแสดง |
 | --- | --- |
-| Reported User | User ID, display name, account status และปุ่ม View User |
+| Reported User | User ID, display name (ลิงก์เปิด User Detail), account status |
 | Reporter History | แหล่งที่มา, เหตุผล, สถานะ report, additional details จากผู้รายงาน |
 | Admin Action History | ประวัติการรับรายงาน, การปิดรายงาน, การเปลี่ยนสถานะบัญชี และ note ที่เกี่ยวข้อง |
-| Actions | Close Report, View User, Manage Account Status ตามเงื่อนไข |
+| Actions | Close Report, Manage Account Status ตามเงื่อนไข |
 
 Source ของรายงานผู้ใช้มีได้เฉพาะ:
 
@@ -509,7 +509,7 @@ Report Detail ต้องไม่อ้าง source ประเภท asset,
 | Action | เงื่อนไข | ผลลัพธ์ |
 | --- | --- | --- |
 | Close Report | Report status เป็น Pending | เปลี่ยน report status เป็น Closed, คงสถานะบัญชีเดิม, บันทึก audit log |
-| View User | มี target user | เปิด User Detail ของผู้ถูกรายงาน |
+| View User | มี target user | คลิก display name ใน section Reported User เพื่อเปิด User Detail ของผู้ถูกรายงาน |
 | Manage Account Status | บัญชียังไม่ Deleted | เปิด modal/action view สำหรับ suspend, ban, unsuspend หรือ unban ตามสถานะปัจจุบัน |
 
 ### Reports Of Deletion Requested Users

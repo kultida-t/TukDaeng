@@ -43,18 +43,19 @@ async function countActionButtons(page) {
   return await page.locator('[data-deletion-action]').count();
 }
 
-// helper: ดึงรายการ audit log rows
+// helper: ดึงรายการ audit log rows — map คอลัมน์จาก data-label ของ td (ทนต่อการเพิ่ม/สลับคอลัมน์ เช่น คอลัมน์ ส่งอีเมล จาก BO-13-v0.5)
 async function getAuditLogRows(page) {
   const rows = page.locator('.deletion-action-section .history-table tbody tr');
   const count = await rows.count();
   const logs = [];
   for (let i = 0; i < count; i++) {
-    const cells = rows.nth(i).locator('td');
-    const at = (await cells.nth(0).textContent()) || "";
-    const actor = (await cells.nth(1).textContent()) || "";
-    const action = (await cells.nth(2).textContent()) || "";
-    const note = (await cells.nth(3).innerHTML()) || "";
-    logs.push({ at: at.trim(), actor: actor.trim(), action: action.trim(), note: note.trim() });
+    const cell = label => rows.nth(i).locator(`td[data-label="${label}"]`);
+    const at = (await cell("วันที่ / เวลา").textContent()) || "";
+    const actor = (await cell("ผู้ดำเนินการ").textContent()) || "";
+    const action = (await cell("Action").textContent()) || "";
+    const email = (await cell("ส่งอีเมล").innerHTML()) || "";
+    const note = (await cell("รายละเอียด").innerHTML()) || "";
+    logs.push({ at: at.trim(), actor: actor.trim(), action: action.trim(), email: email.trim(), note: note.trim() });
   }
   return logs;
 }
@@ -156,6 +157,9 @@ test.describe("DEL-PTO-003: Account Deletion admin action modals", () => {
     expect(restoreLog).toBeTruthy();
     // note ควรมีเหตุผล + หมายเหตุแยกบรรทัด (มี <br>)
     expect(restoreLog.note).toContain("หมายเหตุ: ทดสอบ audit log");
+    // คอลัมน์ ส่งอีเมล (BO-13-v0.5): คืนบัญชีมี delivery log jump ได้
+    expect(restoreLog.email).toContain("Email ส่งแล้ว");
+    expect(restoreLog.email).toContain("DLV-DEL-035-RES");
   });
 
   test("8. ปฏิเสธคืนบัญชี: เปลี่ยนสถานะ + ปุ่มยังแสดง", async ({ page }) => {
@@ -177,6 +181,8 @@ test.describe("DEL-PTO-003: Account Deletion admin action modals", () => {
     const logs = await getAuditLogRows(page);
     const rejectLog = logs.find(l => l.action === "ปฏิเสธคืนบัญชี");
     expect(rejectLog).toBeTruthy();
+    expect(rejectLog.email).toContain("Email ส่งแล้ว");
+    expect(rejectLog.email).toContain("DLV-DEL-035-REJ");
     expect(rejectLog.note).toContain("หมายเหตุ: ทดสอบปฏิเสธ audit");
   });
 
@@ -192,6 +198,7 @@ test.describe("DEL-PTO-003: Account Deletion admin action modals", () => {
     const logs = await getAuditLogRows(page);
     const rejectLogs = logs.filter(l => l.action === "ปฏิเสธคืนบัญชี");
     expect(rejectLogs.length).toBe(2);
+    expect(rejectLogs[0].email).toContain("DLV-DEL-036-REJ");
     expect(rejectLogs[0].note).toContain("ปฏิเสธครั้งที่ 1");
     expect(rejectLogs[1].note).toContain("ปฏิเสธครั้งที่ 2");
   });
@@ -210,6 +217,8 @@ test.describe("DEL-PTO-003: Account Deletion admin action modals", () => {
     const restoreLog = logs.find(l => l.action === "คืนบัญชี");
     expect(rejectLog).toBeTruthy();
     expect(restoreLog).toBeTruthy();
+    expect(rejectLog.email).toContain("DLV-DEL-036-REJ");
+    expect(restoreLog.email).toContain("DLV-DEL-036-RES");
     expect(rejectLog.note).toContain("ปฏิเสธก่อนคืน");
     expect(restoreLog.note).toContain("คืนหลังปฏิเสธ");
   });
@@ -235,6 +244,7 @@ test.describe("DEL-PTO-003: Account Deletion admin action modals", () => {
     // mock data ควรมีเหตุผล + หมายเหตุ
     expect(restoreLog.note).toContain("ผู้ใช้ติดต่อ support และยืนยันตัวตนแล้ว");
     expect(restoreLog.note).toContain("หมายเหตุ:");
+    expect(restoreLog.email).toContain("Email ส่งแล้ว");
   });
 
   test("14. mock data DEL-028 (ปฏิเสธคืนบัญชี) มี audit log ปฏิเสธพร้อมเหตุผล + หมายเหตุ", async ({ page }) => {
@@ -242,6 +252,7 @@ test.describe("DEL-PTO-003: Account Deletion admin action modals", () => {
     const logs = await getAuditLogRows(page);
     const rejectLog = logs.find(l => l.action === "ปฏิเสธคืนบัญชี");
     expect(rejectLog).toBeTruthy();
+    expect(rejectLog.email).toContain("Email ส่งแล้ว");
     expect(rejectLog.note).toContain("พฤติกรรมละเมิดซ้ำ");
     expect(rejectLog.note).toContain("หมายเหตุ:");
   });
