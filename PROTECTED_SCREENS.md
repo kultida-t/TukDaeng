@@ -146,7 +146,7 @@ The protected Offer Management scope includes:
 - Offer Management menu entry, active state, breadcrumbs, titles, panel labels, routing, navigation state, and back navigation connected to Offer Management.
 - Offer list/table/card layout, summary metrics, filters, search, sorting, pagination, row/card open behavior, empty states, and visible status/amount/asset/buyer/owner display.
 - Offer Detail page layout, header, breadcrumb, page title, panel title/subtitle, status/amount chips, and back navigation to Offer Management.
-- Offered Asset section, including Offer ID, Asset ID, Asset Name, Offer Amount, Asking Price, Asset Status, Created time, and the `View Asset` drill-in.
+- Offered Asset section, including Offer ID, Asset ID (link drill-in to Asset Detail), Asset Name, Offer Amount, Asking Price, Asset Status, Created time, and the `Asset ID` link drill-in.
 - Buyer / Owner section, including User ID/name display and any helper functions or mock data that directly support these values.
 - Offer History section, including table/card structure, Date / Time, Actor, Action, Status, Reason / Note, row ordering, and responsive behavior.
 - Read-only behavior and absence of BO write actions such as accept, decline, cancel, force-expire, invalidate, edit price, edit message, export, related chat action, or notification delivery action unless explicitly approved.

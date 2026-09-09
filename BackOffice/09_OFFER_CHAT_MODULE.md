@@ -1,7 +1,7 @@
 ﻿# 09 BO Offer Management Module
 
-**Version:** `BO-09-v0.2`
-**Date:** 2026-09-04
+**Version:** `BO-09-v0.3`
+**Date:** 2026-09-09
 **Status:** Current prototype-aligned baseline
 **Platform:** Responsive Web Back Office
 
@@ -17,7 +17,7 @@
 | --- | --- |
 | Module Name | BO Offer Management |
 | Platform | Responsive Web Back Office |
-| Version | `BO-09-v0.2` |
+| Version | `BO-09-v0.3` |
 | Status | Current prototype-aligned baseline |
 | Owner | Product / UX / Engineering / Operations |
 | Document Type | Functional PRD |
@@ -226,7 +226,7 @@ Prototype baseline ปัจจุบันของ Offer Detail เป็น r
 
 - Header แสดง Offer ID, asset reference, offer status และ offer amount
 - Offered Asset section แสดง Offer ID, Asset ID, Asset Name, Offer Amount, Asking Price, Asset Status และ Created time
-- Offered Asset section มีปุ่ม `View Asset` เพื่อ drill-in ไป Asset Detail ตาม permission
+- Offered Asset section ให้คลิก `Asset ID` เพื่อ drill-in ไป Asset Detail ตาม permission (ลิงก์บน identifier ตาม pattern เดียวกับหน้า detail อื่น เช่น Request Detail และ Watch Alert Detail)
 - Buyer / Owner section แสดง Buyer User ID, Buyer name, Owner User ID และ Owner name
 - Offer History section แสดง Date / Time, Actor, Action, Status และ Reason / Note
 
@@ -248,7 +248,7 @@ Admin ห้ามแก้ offer price, buyer, owner หรือ message conte
 | Action | Allowed Roles | Requirement |
 | --- | --- | --- |
 | View offer | Admin | Module permission required |
-| Open asset detail | Admin | Prototype exposes `View Asset`; route to Asset Management detail ตาม permission |
+| Open asset detail | Admin | Prototype ให้คลิกลิงก์ `Asset ID` ใน Offered Asset section เพื่อเปิด Asset Detail ตาม permission |
 
 Prototype ปัจจุบันยังไม่มี action/control สำหรับ related chat context, buyer/owner detail drill-in, export offer history หรือ notification delivery บน Offer Detail
 

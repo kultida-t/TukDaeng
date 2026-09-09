@@ -8477,6 +8477,23 @@
       line-height: 1.2;
       white-space: nowrap;
     }
+    /* BO-UX-002: link button ใน detail-tile ของ Report Detail + Offer Detail (คลิก identifier → เปิด detail ของ entity) — pattern เดียวกับ Deletion Detail */
+    body.user-detail-mode .report-detail-page .detail-tile .link-btn,
+    body.offer-detail-mode .offer-detail-page .detail-tile .link-btn {
+      padding: 0;
+      border: 0;
+      background: transparent;
+      color: var(--blue);
+      font-size: 12px;
+      font-weight: 700;
+      text-align: left;
+      cursor: pointer;
+      text-decoration: none;
+    }
+    body.user-detail-mode .report-detail-page .detail-tile .link-btn:hover,
+    body.offer-detail-mode .offer-detail-page .detail-tile .link-btn:hover {
+      text-decoration: underline;
+    }
     .report-detail-page .history-table-wrap,
     body.user-detail-mode .user-detail-page:not(.report-detail-page) .history-table-wrap,
     body.asset-detail-mode .user-detail-page:not(.report-detail-page) .history-table-wrap {
@@ -23901,12 +23918,11 @@
           <div class="detail-section">
             <div class="board-report-reference-head">
               <h4>Reported User</h4>
-              ${reportUser ? `<button class="btn asset-report-view-btn" type="button" data-user-open="${reportUser.id}" aria-label="View user ${reportUser.id}"><span class="asset-report-view-label">View User</span></button>` : ""}
             </div>
             <div class="detail-grid two report-reference-grid user-report-reference-grid">
               <div class="detail-tile"><span>Report ID</span><strong>${report.id}</strong></div>
               <div class="detail-tile"><span>User ID</span><strong>${report.userId}</strong></div>
-              <div class="detail-tile"><span>User</span><strong>${report.user}</strong></div>
+              <div class="detail-tile"><span>User</span><strong>${reportUser ? `<button class="link-btn" type="button" data-user-open="${reportUser.id}">${report.user}</button>` : report.user}</strong></div>
               <div class="detail-tile"><span>Account Status</span><strong>${userStatusLabels[getReportAccountStatus(report)] || getReportAccountStatus(report)}</strong></div>
             </div>
           </div>
@@ -35730,11 +35746,10 @@
           <div class="detail-section">
             <div class="board-report-reference-head">
               <h4>Offered Asset</h4>
-              ${offerAsset ? `<button class="btn asset-report-view-btn" type="button" data-asset-open="${offerAsset.id}" aria-label="View asset ${offerAsset.id}"><span class="asset-report-view-label">View Asset</span></button>` : ""}
             </div>
             <div class="detail-grid two report-reference-grid">
               <div class="detail-tile"><span>Offer ID</span><strong>${detail.offerSummary.offerId}</strong></div>
-              <div class="detail-tile"><span>Asset ID</span><strong>${detail.assetSummary.assetId}</strong></div>
+              <div class="detail-tile"><span>Asset ID</span><strong>${offerAsset ? `<button class="link-btn" type="button" data-asset-open="${offerAsset.id}">${detail.assetSummary.assetId}</button>` : detail.assetSummary.assetId}</strong></div>
               <div class="detail-tile"><span>Asset Name</span><strong>${detail.assetSummary.reference}</strong></div>
               <div class="detail-tile"><span>Offer Amount</span><strong>${detail.offerSummary.amount}</strong></div>
               <div class="detail-tile"><span>Asking Price</span><strong>${detail.assetSummary.askingPrice}</strong></div>

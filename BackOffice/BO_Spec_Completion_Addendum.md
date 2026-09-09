@@ -1,6 +1,6 @@
 # BO Specification Addendum - Tuk Daeng Back Office Coverage for FO
 
-**Version:** 1.3 Addendum  
+**Version:** 1.4 Addendum  
 **Purpose:** เติมรายละเอียด Back Office ให้รองรับ Front Office flows จาก PRD และ Use Cases ครบถ้วนขึ้น  
 **Reference:** BO_Spec v1.2, PRD v1.0, Use_Cases v1.0
 
@@ -132,7 +132,7 @@ Admin Settings updated submenu baseline includes `Admin Accounts`, `Roles & Perm
 | Action | Permission | Rule |
 |---|---|---|
 | View Offer | Admin | Read-only detail view ตาม prototype ปัจจุบัน |
-| Open Asset Detail | Admin | Prototype มีปุ่ม `View Asset` สำหรับ drill-in ตาม permission |
+| Open Asset Detail | Admin | Prototype ให้คลิกลิงก์ `Asset ID` ใน Offered Asset section เพื่อ drill-in ตาม permission |
 
 Current prototype Offer Detail ไม่มี Force Expire Offer, Mark Invalidated, Export Offer History, related chat action หรือ notification delivery action. ถ้าเพิ่มภายหลังต้องมี Product approval, permission check, confirmation/reason เมื่อกระทบ FO/user และ audit log.
 
