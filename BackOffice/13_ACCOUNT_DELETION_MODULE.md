@@ -1,8 +1,8 @@
 # 13 BO Account Deletion Requests Module
 
-**Version:** `BO-13-v0.5`  
+**Version:** `BO-13-v0.6`  
 **Date:** 2026-09-09  
-**Status:** Screen layer synced with prototype (`DEL-PTO-001` ถึง `DEL-PTO-006`) — lifecycle emails added  
+**Status:** Screen layer synced with prototype (`DEL-PTO-001` ถึง `DEL-PTO-007`) — lifecycle emails added + mobile Detail Head aligned with other detail pages  
 **Platform:** Responsive Web Back Office
 
 ## UI Standards And Prototype Reference
@@ -17,8 +17,8 @@
 | --- | --- |
 | Module Name | BO Account Deletion Requests |
 | Platform | Responsive Web Back Office |
-| Version | `BO-13-v0.5` |
-| Status | Screen layer synced with prototype (`DEL-PTO-001` ถึง `DEL-PTO-006`) — lifecycle emails added |
+| Version | `BO-13-v0.6` |
+| Status | Screen layer synced with prototype (`DEL-PTO-001` ถึง `DEL-PTO-007`) — lifecycle emails added + mobile Detail Head aligned with other detail pages |
 | Owner | Product / UX / Engineering / Operations |
 | Document Type | Functional PRD |
 

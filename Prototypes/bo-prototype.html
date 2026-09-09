@@ -1152,7 +1152,8 @@
     body.asset-detail-mode .user-detail-page:not(.report-detail-page) .user-detail-head h2.asset-detail-heading,
     body.user-detail-mode .asset-report-detail-page .user-detail-head h2.asset-report-heading,
     body.watch-alert-detail-mode .user-detail-page .user-detail-head h2.asset-report-heading,
-    body.deletion-detail-mode .user-detail-page .user-detail-head h2.asset-report-heading {
+    body.deletion-detail-mode .user-detail-page .user-detail-head h2.asset-report-heading,
+    body.offer-detail-mode .offer-detail-page .user-detail-head h2.asset-report-heading {
       font-family: var(--font-main);
       font-size: 24px !important;
       font-weight: 600;
@@ -1170,7 +1171,8 @@
     body.asset-detail-mode .user-detail-page:not(.report-detail-page) .user-detail-head h2.asset-detail-heading span,
     body.user-detail-mode .asset-report-detail-page .user-detail-head h2.asset-report-heading span,
     body.watch-alert-detail-mode .user-detail-page .user-detail-head h2.asset-report-heading span,
-    body.deletion-detail-mode .user-detail-page .user-detail-head h2.asset-report-heading span {
+    body.deletion-detail-mode .user-detail-page .user-detail-head h2.asset-report-heading span,
+    body.offer-detail-mode .offer-detail-page .user-detail-head h2.asset-report-heading span {
       font: inherit;
       letter-spacing: inherit;
     }
@@ -11151,7 +11153,9 @@
       }
       body.asset-detail-mode .user-detail-page:not(.report-detail-page) .user-detail-head h2.asset-detail-heading,
       body.user-detail-mode .asset-report-detail-page .user-detail-head h2.asset-report-heading,
-      body.watch-alert-detail-mode .user-detail-page .user-detail-head h2.asset-report-heading {
+      body.watch-alert-detail-mode .user-detail-page .user-detail-head h2.asset-report-heading,
+      body.offer-detail-mode .offer-detail-page .user-detail-head h2.asset-report-heading,
+      body.deletion-detail-mode .deletion-detail-page .user-detail-head h2.asset-report-heading {
         font-size: 18px !important;
       }
       body.asset-detail-mode .article-detail-page .user-detail-head h2.article-detail-heading {
@@ -11196,7 +11200,12 @@
         height: 76px;
         border-radius: 12px;
       }
-      body.asset-detail-mode .user-detail-page:not(.report-detail-page) .asset-title-image {
+      body.offer-detail-mode .offer-detail-page .asset-title-image {
+        width: 76px;
+        height: 76px;
+        border-radius: 12px;
+      }
+      body.deletion-detail-mode .deletion-detail-page .profile-image {
         width: 76px;
         height: 76px;
         border-radius: 12px;
