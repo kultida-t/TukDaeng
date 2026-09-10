@@ -29688,6 +29688,8 @@
     function renderOptionDetailRows() {
       const g = getOptionGroup(activeOptionGroup);
       if (!g) return;
+      // คง panel title ให้ตรงจำนวน option ล่าสุด (ครอบทุก mutation: add/delete/deactivate/reactivate/reorder)
+      document.querySelector("#panel-title").textContent = `Options (${getOptionGroupTotalOptions(g.group_id)})`;
       const q = (document.querySelector("#option-detail-search")?.value || "").trim().toLowerCase();
       const statusFilter = document.querySelector("#option-status-filter")?.value || "";
       const filtered = g.options.filter(o => {
@@ -29778,6 +29780,19 @@
           ${renderPager(optionDetailPage, pageCount, "data-option-detail-page")}
         </div>
       `;
+    }
+
+    // Refresh page actions for Option Detail (ปุ่มจัดเรียงแสดงเมื่อ active option ≥ 2 — เรียกหลัง mutation)
+    function refreshOptionDetailPageActions() {
+      if (!document.body.classList.contains("option-detail-mode")) return;
+      const g = getOptionGroup(activeOptionGroup);
+      if (!g) return;
+      const activeCount = getOptionGroupActiveOptions(g.group_id);
+      setPageActions(`
+        ${activeCount >= 2 ? `<button class="btn" type="button" data-option-reorder-open aria-label="จัดเรียง">${iconSvg.sort}<span>จัดเรียง</span></button>` : ""}
+        <button class="btn" type="button" data-option-add-open aria-label="เพิ่ม Option">${iconSvg.plus}<span>เพิ่ม Option</span></button>
+        ${renderPageBackButton("data-back-option-groups", "Back to Option Groups")}
+      `);
     }
 
     // ===== Option Master modal helpers (BO-OPT-002b) =====
@@ -30018,6 +30033,7 @@
       g.options.splice(idx, 1);
       closeUserActionModal();
       renderOptionDetailRows();
+      refreshOptionDetailPageActions();
       showSuccessToast(`ลบ option ${option.id} (${option.key}) แล้ว`);
     }
 
@@ -30105,6 +30121,7 @@
       });
       closeUserActionModal();
       renderOptionDetailRows();
+      refreshOptionDetailPageActions();
       showSuccessToast(`ปิดใช้งาน option ${option.id} (${option.key}) แล้ว`);
     }
 
@@ -30159,6 +30176,7 @@
       });
       closeUserActionModal();
       renderOptionDetailRows();
+      refreshOptionDetailPageActions();
       showSuccessToast(`เปิดใช้งาน option ${option.id} (${option.key}) แล้ว`);
     }
 
@@ -30486,6 +30504,7 @@
       closeUserActionModal();
       optionDetailPage = 1;
       renderOptionDetailRows();
+      refreshOptionDetailPageActions();
       showSuccessToast(`${g.group}: สร้าง option "${newOption.id}" (${data.key}) แล้ว`);
     }
 
@@ -30525,6 +30544,7 @@
       g.options.sort((a, b) => (a.sort_order || 0) - (b.sort_order || 0) || a.key.localeCompare(b.key));
       closeUserActionModal();
       renderOptionDetailRows();
+      refreshOptionDetailPageActions();
       showSuccessToast(`${g.group}: บันทึกการแก้ไข option "${option.id}" แล้ว${keyChanged ? ` (เปลี่ยน key จาก "${originalKey}")` : ""}`);
     }
 
