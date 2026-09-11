@@ -61,6 +61,15 @@ Use Thai as the default language for Kanban task descriptions and related task d
 
 When a Kanban task involves editing files, do not move the task to `done` immediately after implementation or verification. Keep the task in `in_progress` and wait for explicit user confirmation that the result is accepted. Only move the task to `done` after the user confirms the edited result is OK.
 
+## Kanban Time Tracking Rule
+
+ห้ามเรียก `log_time` ด้วยมือเพื่อบวกเวลาเข้า task โดยเด็ดขาด — ระบบ kanban มี auto-timer ที่บันทึกเวลาอัตโนมัติเมื่อย้าย task เข้า/ออก `in_progress` การเรียก `log_time` ด้วยมือจะทำให้ `hours_spent` สูงกว่าเวลาจริง (double-count) กฎนี้บังคับเสมอ ไม่มีข้อยกเว้น
+
+- ห้ามเรียก `log_time` ก่อน `move_task` เป็น `done` — auto-timer บันทึกเวลาอัตโนมัติอยู่แล้ว
+- ห้ามเรียก `log_time` หลัง `move_task` เป็น `done` — เว้นแต่ `get_time_summary` flag ว่าค่าผิดปกติและผู้ใช้สั่งชัดเจนว่าให้ปรับ
+- ใช้ค่า `hours_spent` จากระบบเป็นค่าจริงเสมอ — ห้ามบวก/ลด/ปรับเอง
+- ถ้า `hours_spent` ดูผิดปกติ (เช่น สูงกว่าเวลาจริงมากเพราะเคยเรียก `log_time` ด้วยมือ) → แจ้งผู้ใช้และถามว่าจะให้ปรับผ่าน `update_task` หรือไม่ ห้ามปรับเองโดยไม่ได้รับอนุญาต
+
 ## Documentation Standard Rule
 
 ห้ามแทรก note แบบ meta-commentary (เช่น "Note (BO-XXX, วันที่): ...") ในเนื้อหาเอกสารปกติ เพราะไม่ใช่มาตรฐานของเอกสาร ห้ามใช้รูปแบบนี้ในเอกสาร baseline/module spec เว้นแต่จะเป็นเอกสารที่มีไว้สำหรับบันทึกการเปลี่ยนแปลงโดยเฉพาะ (เช่น DOCUMENT_VERSION.md) เรื่องที่ต้องรอ decision ให้ไปไว้ใน section Open Decisions ของเอกสารนั้น ๆ แทน
