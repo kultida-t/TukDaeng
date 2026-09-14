@@ -824,12 +824,13 @@ test.describe("QA-BO-012: Nav structure — module grouping consistency", () => 
     expect(await sections.count()).toBe(3);
   });
 
-  test("80. nav มี module items ครบ (dashboard, users, assets, offers, content, market, option-master, watch-alerts, deletions, notifications, settings)", async ({ page }) => {
+  test("80. nav มี module items ครบ (dashboard, users, assets, offers, content, market, option-master, watch-alerts, deletions, settings)", async ({ page }) => {
     await page.goto(PROTOTYPE_URL);
     await page.waitForLoadState("networkidle");
     await loginIfNeeded(page);
     await ensureNavOpen(page);
-    const expectedModules = ["dashboard", "users", "assets", "offers", "content", "market", "option-master", "watch-alerts", "deletions", "notifications", "settings"];
+    // NTF-RSTR-001: notifications module ถูกตัดออกจาก sidebar (Phase 2) — Delivery Logs ย้ายเข้า Settings
+    const expectedModules = ["dashboard", "users", "assets", "offers", "content", "market", "option-master", "watch-alerts", "deletions", "settings"];
     for (const mod of expectedModules) {
       const navItem = page.locator(`.nav-item[data-module='${mod}']`);
       await expect(navItem).toBeVisible();
@@ -841,8 +842,8 @@ test.describe("QA-BO-012: Nav structure — module grouping consistency", () => 
     await page.waitForLoadState("networkidle");
     await loginIfNeeded(page);
     await ensureNavOpen(page);
-    // users, assets, content, market, watch-alerts, notifications, settings มี submenu
-    const modulesWithSubs = ["users", "assets", "content", "market", "watch-alerts", "notifications", "settings"];
+    // users, assets, content, market, watch-alerts, settings มี submenu (notifications ถูกตัดออก — NTF-RSTR-001)
+    const modulesWithSubs = ["users", "assets", "content", "market", "watch-alerts", "settings"];
     for (const mod of modulesWithSubs) {
       const navItem = page.locator(`.nav-item[data-module='${mod}']`);
       await expect(navItem).toHaveAttribute("data-toggle-menu", mod);

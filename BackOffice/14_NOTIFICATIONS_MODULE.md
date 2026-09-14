@@ -1,10 +1,14 @@
 # 14 BO Notifications Module
 
-**Version:** `BO-14-v0.2`  
-**Date:** 2026-09-09  
-**Status:** Draft baseline — Account Deletion lifecycle emails added  
+**Version:** `BO-14-v0.3`  
+**Date:** 2026-09-14  
+**Status:** Phase 2 deferral — Broadcast & System Templates moved to future; Delivery Logs moved to Settings  
 **Platform:** Responsive Web Back Office  
 **Primary FO Sources:** `../FrontOffice/09_NOTIFICATION_MODULE.md`, `../FrontOffice/00_NAVIGATION_AND_CROSS_MODULE_FLOW.md`, `../FrontOffice/08_OFFER_MODULE.md`, `../FrontOffice/10_WATCH_ALERT_MODULE.md`, `../FrontOffice/11_SOCIAL_MODULE.md`
+
+> **NTF-RSTR-001 (2026-09-14):** Notifications module ถูกแบ่งเป็น 2 phase แล้ว
+> - **Phase 1 (ปัจจุบัน):** Delivery Logs, retry, Account Deletion lifecycle email, audit — ย้ายไปอยู่ใต้ **Settings > Delivery Logs** (ดู `16_ADMIN_SETTINGS_MODULE.md`) และไม่มี Notifications menu entry ใน sidebar อีก
+> - **Phase 2/future:** Broadcast Notification (create/schedule/send), target audience, System Notification Trigger enable/disable, Template Management, notification report metrics — เก็บเนื้อหาไว้ในเอกสารนี้เป็น future spec
 
 ## UI Standards And Prototype Reference
 
@@ -18,8 +22,8 @@
 | --- | --- |
 | Module Name | BO Notifications |
 | Platform | Responsive Web Back Office |
-| Version | `BO-14-v0.2` |
-| Status | Draft baseline — Account Deletion lifecycle emails added |
+| Version | `BO-14-v0.3` |
+| Status | Phase 2 deferral — Broadcast & System Templates moved to future; Delivery Logs moved to Settings |
 | Owner | Product / UX / Engineering / Operations |
 | Document Type | Functional PRD |
 
@@ -34,18 +38,23 @@ Notifications Module ใช้ให้ BO จัดการ notification ท�
 
 ## 3. Scope
 
-### In Scope
+### In Scope — Phase 1 (ปัจจุบัน)
+
+- Delivery log และ failed delivery review — ย้ายไปอยู่ใต้ **Settings > Delivery Logs** (ดู `16_ADMIN_SETTINGS_MODULE.md`)
+- Retry failed system notification และ account-status / Account Deletion lifecycle email ตาม rule
+- Account Deletion lifecycle email 5 จุด (section 9.3) ส่งไปยัง registered email พร้อม delivery log `DLV-DEL-xxx`
+- Audit log สำหรับ retry และ export ของ delivery log
+- Responsive layout สำหรับ desktop, tablet และ mobile
+
+### In Scope — Phase 2/future
 
 - Broadcast notification create / draft / schedule / send
 - Target audience selection
 - Deep link validation ตาม destination ที่ FO รองรับ
 - System notification type enable/disable
 - Template title/body สำหรับ system trigger
-- Delivery log และ failed delivery review
-- Retry failed system notification ตาม rule
 - Notification report metrics
-- Audit log สำหรับ template, broadcast, retry และ export
-- Responsive layout สำหรับ desktop, tablet และ mobile
+- Audit log สำหรับ template และ broadcast
 
 ### Out Of Scope
 
@@ -131,6 +140,8 @@ Editor ต้องมี preview และ validation ที่ใช้งา�
 
 ## 8. Broadcast Notification
 
+> **Phase 2/future scope** — เนื้อหา section 8 ทั้งหมดเป็น future spec ไม่ implement ใน Phase 1 ไม่มี Broadcast menu entry และไม่มี broadcast list/form/audience UI
+
 ### 8.1 Broadcast List Fields
 
 | Field | Requirement |
@@ -201,6 +212,9 @@ Target audience baseline:
 
 ## 9. System Notification Trigger
 
+> **Phase 2/future scope** — section 9.1 (Supported Trigger Types) และ 9.2 (Explicitly Disabled/Future Types) เป็น future spec สำหรับการ enable/disable system trigger และ template management ไม่ implement ใน Phase 1
+> **ข้อยกเว้น:** section 9.3 Account Deletion Lifecycle Emails เป็น **Phase 1** เพราะเป็นอีเมล lifecycle ที่ส่งเป็นช่องทางหลัก ไม่ใช่ FO Notification Center type
+
 ### 9.1 Supported Trigger Types
 
 System trigger ที่ BO จัดการได้สำหรับ FO V1:
@@ -229,6 +243,8 @@ System trigger ที่ BO จัดการได้สำหรับ FO V1:
 
 ### 9.3 Account Deletion Lifecycle Emails
 
+> **Phase 1 scope** — section นี้เป็น Phase 1 เพราะเป็นอีเมล lifecycle ที่ส่งเป็นช่องทางหลัก ไม่ใช่ FO Notification Center type; delivery log ของอีเมล lifecycle แสดงใน **Settings > Delivery Logs** (ดู `16_ADMIN_SETTINGS_MODULE.md`)
+
 Account Deletion lifecycle มีอีเมลแจ้งเตือน 5 จุด ส่งไปยัง registered email ของเจ้าของบัญชีเป็นช่องทางหลัก ตาม pattern Account Status Email (`TPL-ACCT-009`) ของ Suspend/Ban — ไม่เข้า FO Notification Center รายละเอียด lifecycle และ no-send rules อ้างอิง `13_ACCOUNT_DELETION_MODULE.md`
 
 | # | Email | Trigger | Recipient | Audit Event | Delivery ID Pattern |
@@ -247,17 +263,19 @@ Account Deletion lifecycle มีอีเมลแจ้งเตือน 5 �
 | เตือนใกล้ครบ grace period | คำขอที่จบแล้ว (`คืนบัญชีแล้ว` / `ลบตัวตนแล้ว`) หรือบัญชีที่ `Anonymized` แล้ว |
 | คืนบัญชีแล้ว | บัญชีที่ `Anonymized` แล้ว (หลังลบตัวตน ไม่สามารถคืนบัญชีได้) |
 | ปฏิเสธคืนบัญชี | บัญชีที่ `Anonymized` แล้ว หรือคำขอที่ `คืนบัญชีแล้ว` |
-| ลบตัวตนแล้ว | คำขอที่ `คืนบัญชีแล้ว` — ส่งเฉพาะคำขอที่ครบ grace period และระบบลบบัญชีอัตโนมัติ; ต้องส่งก่อน anonymize personal fields ตามกฎห้ามส่ง broadcast ใน section 8.4 |
+| ลบตัวตนแล้ว | คำขอที่ `คืนบัญชีแล้ว` — ส่งเฉพาะคำขอที่ครบ grace period และระบบลบบัญชีอัตโนมัติ; ต้องส่งก่อน anonymize personal fields ตามกฎ Account Deletion ใน `13_ACCOUNT_DELETION_MODULE.md` |
 
 Delivery log และ audit linkage:
 
 - Delivery log ใช้รหัส `DLV-DEL-<request-id>-<event>` ตาม pattern `DLV-ACCT-xxx` ของ Account Status Email
 - ทุก delivery log ต้อง reference กลับไปยัง Account Deletion Request ID และ audit event ที่เกี่ยวข้อง
-- History & Actions ของ Request Detail ต้องแสดงคอลัมน์ ส่งอีเมล พร้อมสถานะการส่งและลิงก์ไปยัง delivery log ใน Notifications (ตาม pattern Admin Action History ของ Report Detail)
+- History & Actions ของ Request Detail ต้องแสดงคอลัมน์ ส่งอีเมล พร้อมสถานะการส่งและลิงก์ไปยัง delivery log ใน Settings > Delivery Logs (ตาม pattern Admin Action History ของ Report Detail)
 - อีเมลคืนบัญชีและปฏิเสธคืนบัญชีต้องมี email preview ใน modal ของ action (ตาม pattern email-preview ของ asset actions) พร้อมข้อความแจ้งช่องทางหลักเป็นอีเมล
 - ถ้าอีเมล lifecycle ส่งไม่สำเร็จ ต้อง mark failed ใน delivery log และ expose retry/admin-visible failure state ตามกฎ retry ใน section 13 — ไม่ block account status mutation ยกเว้น product policy กำหนดเป็นอย่างอื่น
 
 ## 10. Template Management
+
+> **Phase 2/future scope** — section 10 ทั้งหมดเป็น future spec สำหรับ template title/body ของ system trigger ไม่ implement ใน Phase 1 ไม่มี template editor UI
 
 System template fields:
 
@@ -293,6 +311,8 @@ Template variables ต้องใช้ allowlist เท่านั้น เ�
 
 ## 11. Deep Link / Destination Rules
 
+> **Phase 2/future scope** — deep link validation ใช้กับ broadcast และ system trigger notification ที่ส่งเป็น push/in-app ใน Phase 1 ไม่มี deep link เพราะอีเมล lifecycle และ account-status email ส่งไปยัง registered email ไม่ใช้ deep link
+
 | Destination | Validation |
 | --- | --- |
 | Asset Detail | Asset ต้องยังเปิด destination ได้ หรือ fallback เป็น unavailable state |
@@ -304,6 +324,8 @@ Template variables ต้องใช้ allowlist เท่านั้น เ�
 ถ้า destination ถูกลบหรือไม่มีสิทธิ์ FO ต้องแสดง safe unavailable state ตาม FO module
 
 ## 12. Delivery Log
+
+> **Phase 1 scope** — delivery log UI ย้ายไปอยู่ใต้ **Settings > Delivery Logs** (ดู `16_ADMIN_SETTINGS_MODULE.md`) ไม่มี Notifications menu entry ใน sidebar ใน Phase 1; delivery log ของ Phase 1 ครอบอีเมล lifecycle (Account Deletion) และ account-status email ส่วน delivery log ของ broadcast/system trigger จะใช้ schema เดียวกันใน Phase 2
 
 Delivery log ต้องเก็บ:
 
@@ -325,6 +347,8 @@ Delivery tracking target ตาม BO PRD: มากกว่า 95% ของ n
 
 ## 13. Retry Rules
 
+> **Phase 1 scope** — retry rules ใน section นี้ครอบทั้ง Phase 1 (account-status email, Account Deletion lifecycle email, failed system notification) และ Phase 2 (broadcast retry); ใน Phase 1 retry action เข้าถึงได้จาก **Settings > Delivery Logs** (ดู `16_ADMIN_SETTINGS_MODULE.md`)
+
 | Case | Rule |
 | --- | --- |
 | Temporary provider failure | Retry ได้ตาม exponential/backoff policy |
@@ -340,6 +364,17 @@ Retry action ต้องมี audit log และต้องไม่สร�
 
 ## 14. Admin Actions
 
+### Phase 1 (ปัจจุบัน)
+
+| Action | Requirement | Audit |
+| --- | --- | --- |
+| Retry failed notification | Scope and reason required | Required |
+| Export delivery log | Scope and reason required | Required |
+| Retry account-status email | Scope, reason, target account action reference required | Required |
+| Retry Account Deletion lifecycle email | Scope, reason, target deletion request reference required | Required |
+
+### Phase 2/future
+
 | Action | Requirement | Audit |
 | --- | --- | --- |
 | Create broadcast draft | Title/body/audience/channel required | Required |
@@ -350,29 +385,34 @@ Retry action ต้องมี audit log และต้องไม่สร�
 | Cancel scheduled broadcast | Reason required | Required |
 | Edit system template | Before/after value required | Required |
 | Enable/disable system type | Reason required | Required |
-| Retry failed notification | Scope and reason required | Required |
-| Export delivery log | Scope and reason required | Required |
-| Retry account-status email | Scope, reason, target account action reference required | Required |
-| Retry Account Deletion lifecycle email | Scope, reason, target deletion request reference required | Required |
 
 ## 15. Cross-Module Integration
 
 | Module | Integration |
 | --- | --- |
-| Dashboard | Failed notifications, delivery rate, scheduled broadcasts |
+| Settings > Delivery Logs | **Phase 1 host** ของ delivery log UI — แสดง delivery log ของ Account Deletion lifecycle email, account-status email และ (ใน Phase 2) broadcast/system trigger delivery (ดู `16_ADMIN_SETTINGS_MODULE.md`) |
+| Dashboard | Phase 1: failed delivery, delivery rate ของ lifecycle/account-status email; Phase 2/future: scheduled broadcasts, notification report metrics |
 | User Management | Target audience, account status exclusion |
 | Asset Management | Asset detail destination and unavailable fallback |
 | Offer Management | Offer trigger, chat room destination, rejected/accepted/cancelled events |
 | Asset Management (Reported Comments) | Comment, like, follow triggers |
 | Watch Alert | Match trigger, result list destination, notification enabled/off |
 | Help / Support | ไม่มี ticket ใน Phase 1 — module 12 เป็น Policy & Versioning + Support Center; notification integration เป็น future scope |
-| Account Deletion | Exclude deletion/archived users from broadcast; lifecycle email 5 จุด (section 9.3) ส่งไปยัง registered email พร้อม delivery log `DLV-DEL-xxx` ที่ trace กลับไปยัง History & Actions ของ Request Detail; อีเมลลบตัวตนต้องส่งก่อน anonymize personal fields |
+| Account Deletion | Exclude deletion/archived users from broadcast; lifecycle email 5 จุด (section 9.3) ส่งไปยัง registered email พร้อม delivery log `DLV-DEL-xxx` ที่แสดงใน **Settings > Delivery Logs** และ trace กลับไปยัง History & Actions ของ Request Detail; อีเมลลบตัวตนต้องส่งก่อน anonymize personal fields |
 | Audit Log | Template, broadcast, retry, export audit events |
 | Reports & Analytics (Phase 2/future) | Notification report metrics |
 
 ## 16. Audit Requirements
 
 Audit log ต้องบันทึกอย่างน้อย:
+
+### Phase 1 (ปัจจุบัน)
+
+- `NOTIFICATION_DELIVERY_RETRY`
+- `NOTIFICATION_DELIVERY_EXPORT`
+- `NOTIFICATION_DELETION_EMAIL_DELIVERY` — การส่งอีเมล lifecycle ของ Account Deletion (reference ไปยัง `ACCOUNT_DELETION_*` audit event ของ `13_ACCOUNT_DELETION_MODULE.md`)
+
+### Phase 2/future
 
 - `NOTIFICATION_BROADCAST_CREATE`
 - `NOTIFICATION_BROADCAST_UPDATE`
@@ -384,9 +424,6 @@ Audit log ต้องบันทึกอย่างน้อย:
 - `NOTIFICATION_TEMPLATE_UPDATE`
 - `NOTIFICATION_TYPE_ENABLE`
 - `NOTIFICATION_TYPE_DISABLE`
-- `NOTIFICATION_DELIVERY_RETRY`
-- `NOTIFICATION_DELIVERY_EXPORT`
-- `NOTIFICATION_DELETION_EMAIL_DELIVERY` — การส่งอีเมล lifecycle ของ Account Deletion (reference ไปยัง `ACCOUNT_DELETION_*` audit event ของ `13_ACCOUNT_DELETION_MODULE.md`)
 
 Audit payload ต้องมี:
 
@@ -403,42 +440,60 @@ Audit payload ต้องมี:
 
 ## 17. Error, Empty, Loading States
 
+### Phase 1 (ปัจจุบัน)
+
 | State | Requirement |
 | --- | --- |
-| Empty broadcast list | แสดง empty state พร้อม create draft ถ้ามี permission |
 | Empty delivery log | แสดงว่าไม่มี delivery ตาม filter |
 | Loading | Skeleton สำหรับ list/detail/editor |
 | Permission denied | ไม่แสดง action ที่ไม่มีสิทธิ์ |
+| Provider failed | แสดง failed state และ retry option ตาม permission |
+
+### Phase 2/future
+
+| State | Requirement |
+| --- | --- |
+| Empty broadcast list | แสดง empty state พร้อม create draft ถ้ามี permission |
 | Invalid destination | Block send/schedule และแสดง error |
 | Audience empty | Block send/schedule |
-| Provider failed | แสดง failed state และ retry option ตาม permission |
 | Template validation failed | แสดง field-level error |
 
 ## 18. Acceptance Criteria
 
+### Phase 1 (ปัจจุบัน)
+
 | ID | Criteria |
 | --- | --- |
-| AC-BO-NOTI-001 | BO แสดง notification dashboard, broadcast list, system trigger templates และ delivery logs ได้ |
+| AC-BO-NOTI-008 | Delivery log ต้องเก็บ queued/sent/delivered/opened/failed/skipped และ failure reason — แสดงใน Settings > Delivery Logs |
+| AC-BO-NOTI-009 | Retry failed notification ต้องมี idempotency guard และ audit log |
+| AC-BO-NOTI-012 | Account Deletion lifecycle email 5 จุด (section 9.3) ต้องส่งไปยัง registered email พร้อม delivery log `DLV-DEL-xxx` ที่แสดงใน Settings > Delivery Logs และ trace กลับไปยัง History & Actions ของ Request Detail และ audit event ได้ |
+| AC-BO-NOTI-013 | อีเมล Account Deletion lifecycle ต้องเคารพกฎห้ามส่งใน section 9.3 — ไม่ส่งซ้ำ ไม่ส่งเมื่อคำขอจบแล้ว และอีเมลลบตัวตนต้องส่งก่อน anonymize personal fields |
+| AC-BO-NOTI-014 | อีเมลคืนบัญชีและปฏิเสธคืนบัญชีต้องมี email preview ใน modal ของ action พร้อมข้อความแจ้งช่องทางหลักเป็นอีเมล ตาม pattern โมดูลอื่น |
+| AC-BO-NOTI-015 | ไม่มี Notifications menu entry ใน sidebar ใน Phase 1 — delivery log เข้าถึงได้จาก Settings > Delivery Logs เท่านั้น |
+| AC-BO-NOTI-016 | Export delivery log ต้องมี audit log (`NOTIFICATION_DELIVERY_EXPORT`) |
+
+### Phase 2/future
+
+| ID | Criteria |
+| --- | --- |
+| AC-BO-NOTI-001 | BO แสดง notification dashboard, broadcast list, system trigger templates และ delivery logs (ใน Notifications module) ได้ |
 | AC-BO-NOTI-002 | Broadcast รองรับ draft, approval, schedule, send now, cancel และ delivery stats |
 | AC-BO-NOTI-003 | Broadcast in-app list ต้องไม่เพิ่ม generic `Broadcast` type เข้า FO V1 จนกว่า master decision เปิด scope |
 | AC-BO-NOTI-004 | System trigger ต้องรองรับ Like, Comment, Follow, Offer subtypes และ Watch Alert ตาม FO destination rules |
 | AC-BO-NOTI-005 | Watch Alert notification ต้องเปิด Watch Alert Result List เท่านั้น ห้ามเปิด Asset Detail โดยตรง |
 | AC-BO-NOTI-006 | Chat / New Message ต้องไม่เข้า Notification Center และใช้ Chat badge/count เท่านั้น |
 | AC-BO-NOTI-007 | Disabled notification type ต้องไม่ส่ง notification ใหม่ |
-| AC-BO-NOTI-008 | Delivery log ต้องเก็บ queued/sent/delivered/opened/failed/skipped และ failure reason |
-| AC-BO-NOTI-009 | Retry failed notification ต้องมี idempotency guard และ audit log |
-| AC-BO-NOTI-010 | Template update, broadcast approval/send/cancel และ export ต้องมี audit log |
+| AC-BO-NOTI-010 | Template update, broadcast approval/send/cancel ต้องมี audit log |
 | AC-BO-NOTI-011 | Notifications UI ต้อง responsive ที่ 375px, 768px, 1280px และ 1440px |
-| AC-BO-NOTI-012 | Account Deletion lifecycle email 5 จุด (section 9.3) ต้องส่งไปยัง registered email พร้อม delivery log `DLV-DEL-xxx` ที่ trace กลับไปยัง History & Actions ของ Request Detail และ audit event ได้ |
-| AC-BO-NOTI-013 | อีเมล Account Deletion lifecycle ต้องเคารพกฎห้ามส่งใน section 9.3 — ไม่ส่งซ้ำ ไม่ส่งเมื่อคำขอจบแล้ว และอีเมลลบตัวตนต้องส่งก่อน anonymize personal fields |
-| AC-BO-NOTI-014 | อีเมลคืนบัญชีและปฏิเสธคืนบัญชีต้องมี email preview ใน modal ของ action พร้อมข้อความแจ้งช่องทางหลักเป็นอีเมล ตาม pattern โมดูลอื่น |
 
 ## 19. Open Decisions
 
+> **NTF-RSTR-001 (2026-09-14):** Broadcast Notification และ System Templates (NOTI-DEC-001, NOTI-DEC-002, NOTI-DEC-004, NOTI-DEC-005) เลื่อนเป็น Phase 2/future ทั้งหมด ไม่ต้องตัดสินใจใน Phase 1; NOTI-DEC-003 (retention period) ยังใช้ได้กับ delivery log ของ Phase 1 ด้วย
+
 | ID | Decision Needed | Impact |
 | --- | --- | --- |
-| NOTI-DEC-001 | Broadcast จะแสดงใน FO Notification Center หรือเป็น push-only | กระทบ FO type list และ in-app notification UI |
-| NOTI-DEC-002 | ต้องมี broadcast approval workflow กี่ขั้น | กระทบ permission และ operation process |
-| NOTI-DEC-003 | Notification retention period ต้องเก็บกี่วัน/ปี | กระทบ delivery log และ report |
-| NOTI-DEC-004 | Provider payload contract ของ FCM/APNs กำหนด schema ใด | กระทบ backend implementation |
-| NOTI-DEC-005 | Market Update / Sale Success / Account Action จะเข้า FO phase ใด | กระทบ supported types และ template list |
+| NOTI-DEC-001 | Broadcast จะแสดงใน FO Notification Center หรือเป็น push-only (Phase 2) | กระทบ FO type list และ in-app notification UI |
+| NOTI-DEC-002 | ต้องมี broadcast approval workflow กี่ขั้น (Phase 2) | กระทบ permission และ operation process |
+| NOTI-DEC-003 | Notification retention period ต้องเก็บกี่วัน/ปี | กระทบ delivery log และ report (ใช้ได้ทั้ง Phase 1 และ Phase 2) |
+| NOTI-DEC-004 | Provider payload contract ของ FCM/APNs กำหนด schema ใด (Phase 2) | กระทบ backend implementation |
+| NOTI-DEC-005 | Market Update / Sale Success / Account Action จะเข้า FO phase ใด (Phase 2) | กระทบ supported types และ template list |

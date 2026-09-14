@@ -5211,6 +5211,15 @@
     .option-audit-summary .option-confirm-row {
       margin: 0;
     }
+    /* NTF-RSTR-003: Delivery detail modal — reuse option-confirm-row pattern */
+    .delivery-detail-summary {
+      display: grid;
+      gap: 10px;
+      margin: 16px 0 8px;
+    }
+    .delivery-detail-summary .option-confirm-row {
+      margin: 0;
+    }
     .option-audit-legend {
       display: flex;
       flex-wrap: wrap;
@@ -7252,6 +7261,140 @@
       font-weight: 400;
       color: #8194ab;
       letter-spacing: .02em;
+    }
+
+    /* ============================================================
+       NTF-RSTR-003: Settings > Delivery Logs — dedicated list view
+       pattern: deletion-list-mode + audit-log-mode (full-width panel,
+       no KPI cards, filter bar, pagination 10/page, mobile card)
+       ============================================================ */
+    body.delivery-log-list-mode .layout {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    body.delivery-log-list-mode .detail {
+      display: none;
+    }
+    body.delivery-log-list-mode #primary-action {
+      display: none;
+    }
+    body.delivery-log-list-mode .main {
+      overflow-x: hidden;
+    }
+    body.delivery-log-list-mode .layout > .panel {
+      overflow: visible;
+    }
+    body.delivery-log-list-mode #table {
+      max-width: 100%;
+      min-width: 0;
+      overflow-x: auto;
+      overflow-y: visible;
+      scrollbar-width: thin;
+      position: relative;
+    }
+    body.delivery-log-list-mode #table .delivery-log-table {
+      min-width: 1004px;
+    }
+    body.delivery-log-list-mode #table > .footer-range {
+      min-width: 1004px;
+      padding: 11px 18px;
+    }
+    /* row-menu visibility — match deletion-list-mode */
+    body.delivery-log-list-mode .row-menu-list {
+      visibility: hidden;
+      opacity: 0;
+    }
+    body.delivery-log-list-mode .row-menu-list.is-fixed {
+      visibility: visible;
+      opacity: 1;
+    }
+    /* filter bar — 3 filters + reset (match deletion-filter-bar layout) */
+    body.delivery-log-list-mode .delivery-filter-bar {
+      grid-template-columns: minmax(220px, 1.3fr) repeat(3, minmax(118px, .62fr)) 42px;
+    }
+    body.delivery-log-list-mode .delivery-filter-bar .filter-reset {
+      position: relative;
+      width: 42px;
+      min-width: 42px;
+      height: 48px;
+      min-height: 48px;
+      padding: 0;
+      border-color: #cfdbea;
+      background: #fff;
+      justify-content: center;
+    }
+    body.delivery-log-list-mode .delivery-filter-bar .filter-reset span {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+    body.delivery-log-list-mode .delivery-filter-bar .user-advanced-filter,
+    body.delivery-log-list-mode .delivery-filter-bar .custom-select,
+    body.delivery-log-list-mode .delivery-filter-bar .custom-select-trigger {
+      min-width: 0;
+      height: 48px;
+      min-height: 48px;
+      max-height: 48px;
+    }
+    body.delivery-log-list-mode .delivery-filter-bar .custom-select-trigger {
+      display: flex;
+      align-items: center;
+      overflow: hidden;
+    }
+    body.delivery-log-list-mode .delivery-filter-bar .custom-select-trigger [data-custom-select-label] {
+      display: block;
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    /* table grid (7 columns) — read-only list, row click opens detail modal (เหมือน Watch Alert List) */
+    body.delivery-log-list-mode .delivery-log-table .user-row {
+      grid-template-columns: minmax(110px, .55fr) minmax(180px, 1.1fr) minmax(110px, .55fr) minmax(110px, .55fr) minmax(90px, .45fr) minmax(90px, .45fr) minmax(180px, 1fr);
+      gap: 12px;
+    }
+    body.delivery-log-list-mode .delivery-log-table .user-row:not(.head) {
+      min-height: 66px;
+      padding: 10px 18px;
+      cursor: pointer;
+    }
+    body.delivery-log-list-mode .delivery-log-table .user-row > div {
+      min-width: 0;
+    }
+    /* คอลัมน์สุดท้ายคือ Detail (ข้อความ) — ไม่ชิดขวาแบบคอลัมน์ Action ของหน้าอื่น */
+    body.delivery-log-list-mode .delivery-log-table .user-row.head > div:last-child {
+      display: block;
+      text-align: left;
+    }
+    /* font size match Reported Users / Deletion Requests — 12px, weight 400 */
+    body.delivery-log-list-mode .delivery-log-table .user-row.delivery-row:not(.head) .main-text,
+    body.delivery-log-list-mode .delivery-log-table .user-row.delivery-row:not(.head) .muted {
+      color: #516683;
+      font-size: 12px;
+      font-weight: 400;
+      line-height: 1.5;
+      margin-bottom: 0;
+    }
+    body.delivery-log-list-mode .delivery-log-table .empty-icon {
+      width: 40px;
+      height: 40px;
+      margin: 0 auto 8px;
+      color: #cbd5e1;
+    }
+    body.delivery-log-list-mode .delivery-log-table .empty-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: #475569;
+      margin-bottom: 4px;
+    }
+    body.delivery-log-list-mode .delivery-log-table .empty-subtitle {
+      font-size: 12px;
+      color: #94a3b8;
     }
 
     /* ============================================================
@@ -10687,6 +10830,17 @@
       body.deletion-list-mode .deletion-filter-bar .user-advanced-filter {
         min-width: 0;
       }
+      /* NTF-RSTR-003: Delivery Logs tablet filter bar — search + 3 filters + reset บรรทัดเดียว */
+      body.delivery-log-list-mode .delivery-filter-bar {
+        grid-template-columns: minmax(0, 1fr) repeat(3, minmax(112px, .5fr)) 42px;
+      }
+      body.delivery-log-list-mode .delivery-filter-bar .search {
+        grid-column: auto;
+        min-width: 0;
+      }
+      body.delivery-log-list-mode .delivery-filter-bar .user-advanced-filter {
+        min-width: 0;
+      }
       body.deletion-list-mode .deletion-request-table .user-row {
         overflow-x: visible;
       }
@@ -10710,6 +10864,11 @@
         grid-column: 1 / -1;
       }
       .user-filter-bar.report-mode .search {
+        grid-column: auto;
+        min-width: 0;
+      }
+      /* NTF-RSTR-003: Delivery Logs tablet — search อยู่แถวเดียวกับ filters */
+      body.delivery-log-list-mode .delivery-filter-bar .search {
         grid-column: auto;
         min-width: 0;
       }
@@ -10886,6 +11045,10 @@
       }
       /* DEL-PTO-001e: small tablet filter bar — search + 3 filters + reset บรรทัดเดียว */
       body.deletion-list-mode .deletion-filter-bar {
+        grid-template-columns: minmax(0, 1fr) repeat(3, minmax(100px, .46fr)) 42px;
+      }
+      /* NTF-RSTR-003: Delivery Logs small tablet — search + 3 filters + reset บรรทัดเดียว */
+      body.delivery-log-list-mode .delivery-filter-bar {
         grid-template-columns: minmax(0, 1fr) repeat(3, minmax(100px, .46fr)) 42px;
       }
       body.market-list-mode .user-filter-bar.market-mode {
@@ -11457,6 +11620,12 @@
         justify-content: space-between;
         gap: 10px;
       }
+      body.delivery-log-list-mode .panel-head {
+        align-items: center;
+        flex-direction: row;
+        justify-content: space-between;
+        gap: 10px;
+      }
       body.offer-detail-mode .layout > .panel > .panel-head {
         display: none !important;
         min-height: 0 !important;
@@ -11605,7 +11774,8 @@
       body.user-accounts-mode .user-panel-filter-actions,
       body.option-master-mode .user-panel-filter-actions,
       body.watch-alert-mode.watch-alert-list-mode .user-panel-filter-actions,
-      body.deletion-list-mode .user-panel-filter-actions {
+      body.deletion-list-mode .user-panel-filter-actions,
+      body.delivery-log-list-mode .user-panel-filter-actions {
         display: flex;
         align-items: center;
         justify-content: flex-end;
@@ -11910,6 +12080,67 @@
         display: none;
       }
       body.deletion-list-mode .deletion-request-table .user-row.deletion-row:not(.head) > .user-row-actions {
+        display: none;
+      }
+      /* NTF-RSTR-003: Delivery Logs mobile card — match Deletion Requests pattern
+         (ไม่แสดงปุ่ม ... เพราะ row click เปิด detail modal อยู่แล้ว) */
+      body.delivery-log-list-mode .main {
+        overflow-x: hidden;
+      }
+      body.delivery-log-list-mode .layout > .panel {
+        overflow: hidden;
+      }
+      body.delivery-log-list-mode #table {
+        padding: 12px 14px 16px;
+        background: #f8fbff;
+        overflow-x: hidden;
+      }
+      body.delivery-log-list-mode #table .delivery-log-table {
+        min-width: 0;
+      }
+      body.delivery-log-list-mode #table > .footer-range {
+        min-width: 0;
+        margin-top: 12px;
+        padding: 13px 16px;
+        background: transparent;
+      }
+      body.delivery-log-list-mode .delivery-log-table {
+        grid-template-columns: 1fr;
+        gap: 12px;
+      }
+      body.delivery-log-list-mode .user-filter-bar.delivery-filter-bar {
+        grid-template-columns: 1fr;
+        width: 100%;
+      }
+      body.delivery-log-list-mode .user-filter-bar.delivery-filter-bar .search {
+        grid-column: 1 / -1;
+        width: 100%;
+      }
+      body.delivery-log-list-mode .delivery-log-table .user-row.delivery-row:not(.head) {
+        grid-template-columns: minmax(0, 1fr);
+        column-gap: 14px;
+        row-gap: 14px;
+        min-height: 0;
+        padding: 18px 18px 16px;
+        border-color: #cfdbd2;
+        border-radius: 10px;
+        box-shadow: 0 1px 2px rgba(15, 23, 42, .05);
+        cursor: pointer;
+        overflow: visible;
+      }
+      body.delivery-log-list-mode .delivery-log-table .user-row.delivery-row:not(.head) > div.user-cell-primary[data-label="Delivery ID"] .main-text {
+        max-width: 100%;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        color: #061426;
+        font-family: var(--font-heading);
+        font-size: 22px;
+        font-weight: 500;
+        letter-spacing: .04em;
+        line-height: 1;
+      }
+      body.delivery-log-list-mode .delivery-log-table .user-row.delivery-row:not(.head) > div[data-label]:not(.user-cell-primary) {
         display: none;
       }
       .user-card-tags {
@@ -12995,6 +13226,23 @@
         gap: 8px;
       }
       body.category-list-mode .category-table .user-card-meta-item.comment-field-meta strong {
+        width: 100%;
+        max-width: 100%;
+        min-width: 0;
+        display: block;
+        overflow: hidden;
+        text-align: right;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+      /* NTF-RSTR-003: Delivery Logs mobile card — Reference field ตัดคำ 1 บรรทัด (เหมือน Article list) */
+      body.delivery-log-list-mode .delivery-log-table .user-card-meta-item.comment-field-meta {
+        display: grid;
+        grid-template-columns: max-content minmax(0, 50%);
+        align-items: baseline;
+        gap: 8px;
+      }
+      body.delivery-log-list-mode .delivery-log-table .user-card-meta-item.comment-field-meta strong {
         width: 100%;
         max-width: 100%;
         min-width: 0;
@@ -15312,7 +15560,7 @@
         panel: "Operational Queue",
         subtitle: "งานเร่งด่วนจากทุก module ที่ต้องตรวจในวันนี้",
         action: "เปิดคิวทั้งหมด",
-        stats: [["Pending Reports", "31", "มี 9 รายการใกล้ครบกำหนดตรวจ"], ["New Assets", "94", "Sale 64 · Show 17 · Hide 9 · Sold 4"], ["Support Tickets", "18", "รอตอบกลับ 7 รายการ"], ["Broadcast Ready", "3", "พร้อมส่งหลัง approval"]],
+        stats: [["Pending Reports", "31", "มี 9 รายการใกล้ครบกำหนดตรวจ"], ["New Assets", "94", "Sale 64 · Show 17 · Hide 9 · Sold 4"], ["Support Tickets", "18", "รอตอบกลับ 7 รายการ"], ["Failed Delivery", "2", "Email 1 · Push 1"]],
         cards: [["FO Sync", "การเปลี่ยนสถานะสินทรัพย์และคอมเมนต์ต้องสะท้อนกลับ Feed, Search, Profile และ Board"], ["Audit Required", "Suspend, remove, publish, export และ permission update ต้องบันทึก audit"], ["Admin Model", "BO ใช้ account type เดียวคือ Admin และควบคุมสิทธิ์ด้วย policy ต่อ action"]],
         rows: [
           item("RPU-505", "Duplicate Content", "Crown Time BKK", "Asset Report", "สูง", "รอตรวจ", "มีผู้ใช้ 5 คน report รูปประกาศซ้ำกับสินทรัพย์อื่น", ["Asset 4 รายการ", "รอตรวจ 22 ชม."], "ตรวจรูป, เทียบ provenance และซ่อนรายการซ้ำจาก FO หากยืนยัน"),
@@ -15382,26 +15630,31 @@
       // moduleData.deletions เก็บเฉพาะ metadata สำหรับ fallback;
       // ข้อมูลจริงและการ render อยู่ใน deletionRequestData + renderDeletionRequests()
       deletions: mod("Account Deletion", "งานตรวจสอบและบริการ / Account Deletion", "Deletion Requests", "ตรวจคำขอลบบัญชี, คืน/ปฏิเสธคืนบัญชีในช่วงรอลบบัญชี 30 วัน และลบบัญชีอัตโนมัติ (เก็บถาวร + ลบตัวตน)", "", [], []),
-      notifications: mod("Notifications", "เครื่องมือ & รายงาน / Notifications", "Broadcast & System Templates", "สร้าง broadcast, system trigger template, delivery logs และ retry", "สร้าง broadcast", [["Draft", "3", "รอ approval"], ["Sent Today", "14,280", "Push 91%"], ["Failed", "92", "retry pending"], ["Templates", "19", "active"]], [
-        item("NTF-201", "Auction Week Broadcast", "Marketing", "Broadcast", "กลาง", "Draft", "ส่งให้ผู้ใช้ที่ follow brand Rolex/Omega", ["Segment 4,200"], "ต้อง approval ก่อนส่ง"),
-        item("TPL-044", "Watch Alert Matched", "System", "Template", "ปกติ", "Active", "ใช้เมื่อมี Sale listing ตรง criteria", ["Push"], "แก้ template ต้อง audit"),
-        item("TPL-ACCT-009", "Account Status Email", "System", "Template", "สูง", "Active", "ใช้แจ้ง suspend/ban ผ่านอีเมลเป็นช่องทางหลัก", ["Email", "Audit linked"], "ห้ามใส่ internal note หรือข้อมูล reporter"),
-        item("DLV-ACCT-009", "Account auto-suspension email", "RPU-560 / U-1120", "Delivery", "สูง", "Sent", "ส่งอีเมลแจ้งระงับบัญชีชั่วคราวให้ U-1120 หลังมีรายงานครบ 5 รายงาน", ["Email", "ครบ 5 รายงาน", "Audit linked"], "reference ต้องตรงกับ Admin Action History ของรายงาน"),
-        item("DLV-ACCT-010", "Account suspension email", "RPU-505 / U-1002", "Delivery", "สูง", "Sent", "ส่งอีเมลแจ้งระงับบัญชีให้ U-1002 หลัง Admin confirm status action", ["Email", "Status action", "Audit linked"], "ตรวจ delivery trace และ reference ไปยัง account status audit"),
-        item("DLV-ACCT-011", "Account suspension email", "RPU-541 / U-1186", "Delivery", "สูง", "Sent", "ส่งอีเมลแจ้งระงับบัญชีให้ U-1186 ระหว่างตรวจสอบรายงานแชท", ["Email", "Status action", "Audit linked"], "reference ต้องตรงกับ Admin Action History ของรายงาน"),
-        item("DLV-ACCT-012", "Account ban email", "RPU-560 / U-1120", "Delivery", "สูง", "Sent", "ส่งอีเมลแจ้งระงับบัญชีถาวรให้ U-1120 หลังยืนยันหลักฐานรวม", ["Email", "Status action", "Audit linked"], "reference ต้องตรงกับ Admin Action History ของรายงาน"),
-        // DEL-PTO-006: Account Deletion lifecycle email delivery logs — ตรงกับ History & Actions ของ Request Detail
-        item("DLV-DEL-033-REQ", "Account deletion confirmation email", "DEL-033 / U-1104", "Delivery", "สูง", "Sent", "ส่งอีเมลยืนยันคำขอลบบัญชีให้ U-1104 หลังผู้ใช้ยืนยันคำขอผ่านแอป (FO)", ["Email", "Lifecycle", "Audit linked"], "reference ต้องตรงกับ History & Actions ของ Request Detail"),
-        item("DLV-DEL-035-GR3", "Account deletion reminder email", "DEL-035 / U-1155", "Delivery", "สูง", "Sent", "ส่งอีเมลเตือนใกล้ครบช่วงรอลบบัญชีให้ U-1155 (เหลือ 3 วัน)", ["Email", "Grace period", "Audit linked"], "ส่งอัตโนมัติเมื่อเหลือ 7 และ 3 วันก่อนลบบัญชี"),
-        item("DLV-DEL-031-RES", "Account restore email", "DEL-031 / U-1090", "Delivery", "สูง", "Sent", "ส่งอีเมลแจ้งคืนบัญชีให้ U-1090 หลัง Admin confirm restore action", ["Email", "Status action", "Audit linked"], "reference ต้องตรงกับ History & Actions ของ Request Detail"),
-        item("DLV-DEL-028-REJ", "Account restore rejection email", "DEL-028 / U-1121", "Delivery", "สูง", "Sent", "ส่งอีเมลแจ้งผลปฏิเสธคืนบัญชีให้ U-1121 หลัง Admin confirm reject action", ["Email", "Status action", "Audit linked"], "reference ต้องตรงกับ History & Actions ของ Request Detail"),
-        item("DLV-DEL-025-DEL", "Account auto-deletion email", "DEL-025 / U-1075", "Delivery", "สูง", "Sent", "ส่งอีเมลแจ้งลบบัญชีอัตโนมัติและลบตัวตนให้ U-1075 หลังครบช่วงรอลบบัญชี 30 วัน", ["Email", "Auto delete", "Audit linked"], "ส่งก่อน anonymize personal fields ตาม section 8.4"),
-        item("DLV-882", "Failed delivery batch", "FCM", "Delivery", "กลาง", "Retry", "token expired 92 รายการ", ["Retry queue"], "retry และ cleanup invalid token")
-      ]),
-      settings: mod("Settings", "เครื่องมือ & รายงาน / Settings", "Admin Settings", "ตั้งค่า admin account, permission policy, security, retention/export และ feature flags", "บันทึก policy", [["Admin Accounts", "6", "ใช้ account type Admin"], ["Email OTP", "Required", "mandatory"], ["Policies", "34", "module/action"], ["Feature Flags", "7", "2 enabled"]], [
+      // NTF-RSTR-001: Notifications module เลื่อนเป็น Phase 2 (Broadcast + System Templates)
+      // NTF-RSTR-003: handler ทั้งหมด (ensureAccountStatusDeliveryLog / ensureDeletionDeliveryLog /
+      // delivery log jump / deletionEmailDelivery lookup) repoint ไป moduleData.settings แล้ว
+      // NTF-RSTR-004: Dashboard links อัปเดตเป็น settings/Delivery Logs แล้ว — ตัด dead object
+      // moduleData.notifications ทิ้ง (ไม่มี link/โค้ดอ้าง module: "notifications" อีก)
+      settings: mod("Settings", "เครื่องมือ & รายงาน / Settings", "Admin Settings", "ตั้งค่า admin account, permission policy, security, retention/export, delivery logs และ feature flags", "บันทึก policy", [["Admin Accounts", "6", "ใช้ account type Admin"], ["Policies", "34", "module/action"], ["Failed Delivery", "92", "retry pending"], ["Feature Flags", "7", "2 enabled"]], [
         item("POL-USER-EXPORT", "User CSV Export", "Permission", "Policy", "สูง", "Enabled", "ต้อง mask PII และมี audit event", ["Sensitive"], "เปลี่ยน policy ต้องมี reason"),
         item("SEC-EMAIL-OTP", "Mandatory Email OTP", "Security", "Auth", "สูง", "Enabled", "Admin ทุกบัญชีต้อง verify Email OTP หลังผ่าน password", ["No bypass"], "ล็อกตาม baseline"),
-        item("RET-AUDIT", "Audit retention", "Retention", "System", "กลาง", "365 days", "เก็บ audit อย่างน้อย 1 ปี", ["Export policy"], "แก้ค่าต้อง approval")
+        item("RET-AUDIT", "Audit retention", "Retention", "System", "กลาง", "365 days", "เก็บ audit อย่างน้อย 1 ปี", ["Export policy"], "แก้ค่าต้อง approval"),
+        // NTF-RSTR-001: Delivery Logs ย้ายจาก Notifications module เข้า Settings (Phase 1)
+        // ใช้โดย Account Deletion (DLV-DEL-*) และ User Management (DLV-ACCT-*) delivery log jump
+        item("DLV-ACCT-009", "Account auto-suspension email", "RPU-560 / U-1120", "Delivery", "สูง", "Sent", "ครบ 5 รายงาน", ["Email", "ครบ 5 รายงาน", "Audit linked"], "reference ต้องตรงกับ Admin Action History ของรายงาน"),
+        item("DLV-ACCT-010", "Account suspension email", "RPU-505 / U-1002", "Delivery", "สูง", "Sent", "หลัง Admin confirm status action", ["Email", "Status action", "Audit linked"], "ตรวจ delivery trace และ reference ไปยัง account status audit"),
+        item("DLV-ACCT-011", "Account suspension email", "RPU-541 / U-1186", "Delivery", "สูง", "Sent", "ระหว่างตรวจสอบรายงานแชท", ["Email", "Status action", "Audit linked"], "reference ต้องตรงกับ Admin Action History ของรายงาน"),
+        item("DLV-ACCT-012", "Account ban email", "RPU-560 / U-1120", "Delivery", "สูง", "Sent", "หลังยืนยันหลักฐานรวม", ["Email", "Status action", "Audit linked"], "reference ต้องตรงกับ Admin Action History ของรายงาน"),
+        // DEL-PTO-006: Account Deletion lifecycle email delivery logs — ตรงกับ History & Actions ของ Request Detail
+        item("DLV-DEL-033-REQ", "Account deletion confirmation email", "DEL-033 / U-1104", "Delivery", "สูง", "Sent", "ผู้ใช้ยืนยันผ่านแอป (FO)", ["Email", "Lifecycle", "Audit linked"], "reference ต้องตรงกับ History & Actions ของ Request Detail"),
+        item("DLV-DEL-035-GR3", "Account deletion reminder email", "DEL-035 / U-1155", "Delivery", "สูง", "Sent", "เหลือ 3 วันก่อนลบบัญชี", ["Email", "Grace period", "Audit linked"], "ส่งอัตโนมัติเมื่อเหลือ 7 และ 3 วันก่อนลบบัญชี"),
+        item("DLV-DEL-031-RES", "Account restore email", "DEL-031 / U-1090", "Delivery", "สูง", "Sent", "หลัง Admin confirm restore action", ["Email", "Status action", "Audit linked"], "reference ต้องตรงกับ History & Actions ของ Request Detail"),
+        item("DLV-DEL-028-REJ", "Account restore rejection email", "DEL-028 / U-1121", "Delivery", "สูง", "Sent", "หลัง Admin confirm reject action", ["Email", "Status action", "Audit linked"], "reference ต้องตรงกับ History & Actions ของ Request Detail"),
+        item("DLV-DEL-025-DEL", "Account auto-deletion email", "DEL-025 / U-1075", "Delivery", "สูง", "Sent", "ครบช่วงรอลบบัญชี 30 วัน", ["Email", "Auto delete", "Audit linked"], "ส่งก่อน anonymize personal fields ตาม section 8.4"),
+        // NTF-RSTR-003a: Email Retry case — bounce แล้วเข้าคิว retry พร้อม note บอกเวลาลองส่งใหม่
+        item("DLV-ACCT-013", "Account suspension email", "RPU-571 / U-1204", "Delivery", "สูง", "Retry", "mailbox full — เข้าคิว retry", ["Email", "Status action", "Retry queued"], "ระบบจะลองส่งอีกครั้งใน 15 นาที (retry attempt 2/3) และแจ้ง admin หากครบ 3 ครั้ง"),
+        // NTF-RSTR-003b: FCM Retry case — push notification ต่อ user คนเดียว อ้างอิง Watch Alert จริง (WAL-1050 / U-1042)
+        item("DLV-WA-1050", "Watch alert push notification", "WAL-1050 / U-1042", "Delivery", "กลาง", "Retry", "device token expired — เข้าคิว retry", ["Push", "Watch alert", "Retry queued"], "ระบบจะลองส่งอีกครั้งใน 5 นาที (retry attempt 2/3) และ cleanup invalid token หากครบ 3 ครั้ง")
       ])
     };
 
@@ -16430,14 +16683,14 @@
         { title: "คำขอลบบัญชี", count: 8, priority: "medium", detail: "มี 2 คำขอใกล้ครบกำหนดลบบัญชีอัตโนมัติ", chips: ["ใกล้ครบกำหนด 2", "Grace period 4"], module: "deletions", sub: "" },
         { title: "บทความรอเผยแพร่", count: 4, priority: "normal", detail: "บทความ Board ตั้งเวลาเผยแพร่แล้ว / ตรวจ preview และรูป cover ก่อนถึงเวลา", chips: ["เผยแพร่วันนี้ 2", "ต้อง preview"], module: "content", sub: "Articles" },
         { title: "ข้อมูลตลาดรอตรวจ", count: 6, priority: "normal", detail: "brand, model และ price index จาก sync มีข้อมูลซ้ำ / ควรตรวจ Sync History ก่อนใช้กับ Search และ Watch Alert", chips: ["Sync issue 6", "Price index"], module: "market", sub: "Sync History" },
-        { title: "แจ้งเตือนส่งไม่สำเร็จ", count: 92, priority: "normal", detail: "มี token หมดอายุและงานส่งซ้ำได้ / ตรวจ retry queue และ cleanup invalid token", chips: ["Retryable 81", "Cleanup 11"], module: "notifications", sub: "Delivery Logs" }
+        { title: "แจ้งเตือนส่งไม่สำเร็จ", count: 2, priority: "normal", detail: "mailbox full และ token หมดอายุ / ตรวจ retry queue และ cleanup invalid token", chips: ["Email retry 1", "Push retry 1"], module: "settings", sub: "Delivery Logs" }
       ],
       activities: [
         { category: "Report", title: "มีรายงานสินทรัพย์ใหม่", summary: "Rolex Submariner 16610 ถูกรายงานเรื่องรูปซ้ำและราคาเบี่ยงจากข้อมูลตลาด", time: "15 นาทีที่แล้ว", action: "ตรวจรูปและข้อมูลประกาศก่อนซ่อนรายการจาก FO", module: "assets", sub: "Reported Assets" },
         { category: "Offer", title: "ข้อเสนอซื้อถูกปฏิเสธ", summary: "OFR-472 ของ Audemars Piguet Royal Oak ถูก owner ปฏิเสธและยังเก็บ history ไว้ใน Offer Detail", time: "32 นาทีที่แล้ว", action: "เปิด Offer Management เพื่อตรวจ asset, buyer, owner และประวัติ offer", module: "offers", sub: "Offer Queue" },
         { category: "Content", title: "ตั้งเวลาเผยแพร่บทความแล้ว", summary: "บทความ Vintage Watch Buying Guide ตั้งเวลาเผยแพร่วันนี้ 19:00", time: "1 ชม.ที่แล้ว", action: "เปิดหน้า Content เพื่อตรวจ preview และ cover image", module: "content", sub: "Articles" },
         { category: "System", title: "ข้อมูลตลาดอัปเดตแล้ว", summary: "Sync History พบ duplicate price points ของ Omega Speedmaster Reduced 3 แถว", time: "2 ชม.ที่แล้ว", action: "เปิด Sync History เพื่อตรวจ batch ก่อนให้ Search และ Watch Alert ใช้ index", module: "market", sub: "Sync History" },
-        { category: "System", title: "แจ้งเตือนบางรายการส่งไม่สำเร็จ", summary: "ระบบพบ invalid token ใน delivery batch ล่าสุดและแยกงาน retry แล้ว", time: "3 ชม.ที่แล้ว", action: "เปิด Delivery Logs เพื่อตรวจรายการ retry และ cleanup", module: "notifications", sub: "Delivery Logs" }
+        { category: "System", title: "แจ้งเตือน 2 รายการส่งไม่สำเร็จ", summary: "ระบบพบ mailbox full และ device token expired ใน delivery batch ล่าสุด แยกงาน retry แล้ว", time: "3 ชม.ที่แล้ว", action: "เปิด Delivery Logs เพื่อตรวจรายการ retry", module: "settings", sub: "Delivery Logs" }
       ],
       panels: [
         { title: "Asset Status", meta: "จาก Asset List ทั้งหมด", rows: [] },
@@ -16881,9 +17134,9 @@
     }
 
     function ensureAccountStatusDeliveryLog(deliveryId, user, action, reportId = activeReportContextId) {
-      if (!deliveryId || !user || !moduleData.notifications) return;
-      if (moduleData.notifications.rows.some(row => row.id === deliveryId)) return;
-      moduleData.notifications.rows.splice(moduleData.notifications.rows.length - 1, 0,
+      if (!deliveryId || !user || !moduleData.settings) return;
+      if (moduleData.settings.rows.some(row => row.id === deliveryId)) return;
+      moduleData.settings.rows.splice(moduleData.settings.rows.length - 1, 0,
         item(
           deliveryId,
           getAccountStatusDeliveryTitle(action),
@@ -17610,6 +17863,10 @@
     let auditLogPage = 1;
     let auditLogFilterOpen = false;
     const auditLogPageSize = 10;
+    // NTF-RSTR-003: Delivery Logs list state (Settings > Delivery Logs)
+    let deliveryLogPage = 1;
+    let deliveryLogFilterOpen = false;
+    const deliveryLogPageSize = 10;
     let optionGroupListPage = 1;
     let optionDetailPage = 1;
     let activeOptionGroup = "";
@@ -17640,7 +17897,9 @@
       "market-sync": { searchId: "market-search", filterIds: ["market-status-filter"] },
       "market-queue": { searchId: "market-search", filterIds: ["market-status-filter", "market-brand-filter"] },
       "deletion-list": { searchId: "deletion-search", filterIds: ["deletion-status-filter", "deletion-grace-filter", "deletion-sort"] },
-      "audit-log": { searchId: "audit-search", filterIds: ["audit-module-filter", "audit-risk-filter", "audit-sort"] }
+      "audit-log": { searchId: "audit-search", filterIds: ["audit-module-filter", "audit-risk-filter", "audit-sort"] },
+      // NTF-RSTR-003: Delivery Logs (Settings > Delivery Logs)
+      "delivery-log-list": { searchId: "delivery-search", filterIds: ["delivery-status-filter", "delivery-channel-filter", "delivery-sort"] }
     };
     let activeAssetImageIndex = 0;
     let activeAssetReportModalImageIndex = 0;
@@ -18190,6 +18449,8 @@
       if (activeModule === "option-master") return activeOptionGroup ? "option-detail" : "option-group-list";
       if (activeModule === "watch-alerts") return activeSub === "Watch Alert List" || activeSub === "Alert List" ? "watch-alert-list" : null;
       if (activeModule === "deletions") return "deletion-list";
+      // NTF-RSTR-003: Delivery Logs (Settings > Delivery Logs)
+      if (activeModule === "settings" && activeSub === "Delivery Logs") return "delivery-log-list";
       if (activeModule === "market") {
         if (activeSub === "Brands & Models") {
           if (document.querySelector("#market-reference-search")) return "market-model-detail";
@@ -18274,6 +18535,7 @@
       watchAlertListFilterOpen = false;
       deletionFilterOpen = false;
       auditLogFilterOpen = false;
+      deliveryLogFilterOpen = false;
     }
 
     function renderNav() {
@@ -18475,6 +18737,21 @@
         { value: "ต่ำ", label: "ต่ำ" }
       ],
       auditSort: [
+        { value: "latest", label: filterCopy.latestFirst },
+        { value: "oldest", label: filterCopy.oldestFirst }
+      ],
+      // NTF-RSTR-003: Delivery Logs filters (Settings > Delivery Logs)
+      deliveryStatus: [
+        { value: "", label: filterCopy.allStatus },
+        { value: "Sent", label: "Sent" },
+        { value: "Retry", label: "Retry" }
+      ],
+      deliveryChannel: [
+        { value: "", label: "ช่องทางทั้งหมด" },
+        { value: "Email", label: "Email" },
+        { value: "Push", label: "Push" }
+      ],
+      deliverySort: [
         { value: "latest", label: filterCopy.latestFirst },
         { value: "oldest", label: filterCopy.oldestFirst }
       ]
@@ -21330,6 +21607,171 @@
       `;
     }
 
+    // ===== Settings > Delivery Logs rendering (NTF-RSTR-003) =====
+    // pattern: renderDeletionRequests / renderAuditLog — full-width list, no KPI cards
+    // data source: moduleData.settings.rows (type === "Delivery") — task 2 ย้าย rows เข้ามาแล้ว
+    // filter state persistence: listFilterConfig["delivery-log-list"]
+    // ไม่เปลี่ยน moduleData.settings และไม่เปลี่ยน handler/jump (task 3) หรือ Dashboard links (task 4)
+    function getDeliveryLogRows() {
+      return (moduleData.settings.rows || []).filter(row => row.type === "Delivery");
+    }
+
+    function getDeliveryLogSearchText(row) {
+      return [row.id, row.name, row.owner, row.detail, (row.tags || []).join(" "), row.status]
+        .filter(Boolean).join(" ").toLowerCase();
+    }
+
+    function getDeliveryLogChannel(row) {
+      const tags = row.tags || [];
+      if (tags.includes("Email")) return "Email";
+      if (tags.includes("Push")) return "Push";
+      if (tags.includes("FCM")) return "Push";
+      return "Email";
+    }
+
+    // แยก owner field ("RPU-560 / U-1120") เป็น source + recipient
+    function splitDeliverySourceRecipient(owner) {
+      if (!owner) return ["-", "-"];
+      const parts = owner.split(" / ");
+      if (parts.length >= 2) return [parts[0].trim(), parts.slice(1).join(" / ").trim()];
+      return ["-", owner.trim()];
+    }
+
+    function deliveryStatusPill(status) {
+      const map = { Sent: "green", Retry: "amber" };
+      return `<span class="pill ${map[status] || "blue"}">${status}</span>`;
+    }
+
+    function deliveryChannelPill(channel) {
+      const map = { Email: "blue", Push: "purple" };
+      return `<span class="pill ${map[channel] || "gray"}">${channel}</span>`;
+    }
+
+    function renderDeliveryLogs() {
+      setPageActions("");
+      document.body.classList.add("delivery-log-list-mode");
+      document.body.classList.remove("user-list-mode", "user-detail-mode", "asset-detail-mode", "deletion-list-mode", "deletion-detail-mode", "audit-log-mode", "policy-versioning-mode", "policy-detail-mode", "policy-editor-mode", "policy-version-history-mode", "support-center-mode");
+      activeRow = null;
+      document.querySelector("#crumb").textContent = "เครื่องมือ & รายงาน / Settings / Delivery Logs";
+      document.querySelector("#page-title").textContent = "Delivery Logs";
+      document.querySelector("#page-meta").textContent = "";
+      document.querySelector("#panel-title").textContent = "Delivery Log List";
+      document.querySelector("#panel-subtitle").textContent = "";
+      document.querySelector("#primary-action").textContent = "";
+      document.querySelector("#user-panel-filter-actions").innerHTML = `
+        <button class="btn user-filter-toggle" type="button" data-delivery-filter-toggle aria-expanded="${deliveryLogFilterOpen}">${iconSvg.filter}<span>${deliveryLogFilterOpen ? "ปิดตัวกรอง" : "เปิดตัวกรอง"}</span></button>
+        <button class="btn" type="button" data-delivery-reset aria-label="รีเซ็ตค่าทั้งหมด">${iconSvg.refresh}<span>รีเซ็ตค่าทั้งหมด</span></button>
+      `;
+      document.querySelector(".filters").innerHTML = `
+        <div class="user-filter-bar delivery-filter-bar" data-filter-open="${deliveryLogFilterOpen}">
+          <input class="field search" id="delivery-search" type="search" placeholder="ค้นหา Delivery ID, Source, Recipient, Event" />
+          <div class="user-advanced-filter">${customSelect("delivery-status-filter", "Filter delivery status", filterOptions("deliveryStatus"))}</div>
+          <div class="user-advanced-filter">${customSelect("delivery-channel-filter", "Filter channel", filterOptions("deliveryChannel"))}</div>
+          <div class="user-advanced-filter">${customSelect("delivery-sort", "Sort delivery logs", filterOptions("deliverySort"), "latest")}</div>
+          ${resetFilterButton("data-delivery-reset")}
+        </div>
+      `;
+      // NTF-RSTR-003: ไม่แสดง KPI cards — จำนวนซ้ำซ้อนกับ Dashboard alert card และ Settings overview card
+      document.querySelector("#summary-grid").innerHTML = "";
+      document.querySelector("#cards").innerHTML = "";
+      document.querySelector("#detail").innerHTML = "";
+      restoreListFilterState("delivery-log-list");
+      renderDeliveryLogRows();
+    }
+
+    function renderDeliveryLogRows() {
+      const q = (document.querySelector("#delivery-search")?.value || "").trim().toLowerCase();
+      const status = document.querySelector("#delivery-status-filter")?.value || "";
+      const channel = document.querySelector("#delivery-channel-filter")?.value || "";
+      const sort = document.querySelector("#delivery-sort")?.value || "latest";
+      const allRows = getDeliveryLogRows();
+      const sorted = allRows.filter(row => {
+        const rowChannel = getDeliveryLogChannel(row);
+        return (!q || getDeliveryLogSearchText(row).includes(q))
+          && (!status || row.status === status)
+          && (!channel || rowChannel === channel);
+      }).sort((a, b) => {
+        // sort ตาม id (DLV-* มี prefix ที่สอดคล้องกับเวลา — ใช้ id localeCompare เป็น fallback)
+        if (sort === "oldest") return String(a.id).localeCompare(String(b.id), "en");
+        return String(b.id).localeCompare(String(a.id), "en");
+      });
+      const pageCount = Math.max(1, Math.ceil(sorted.length / deliveryLogPageSize));
+      deliveryLogPage = Math.min(deliveryLogPage, pageCount);
+      const start = (deliveryLogPage - 1) * deliveryLogPageSize;
+      const pageRows = sorted.slice(start, start + deliveryLogPageSize);
+      document.querySelector("#table").innerHTML = `
+        <div class="user-table delivery-log-table">
+          <div class="user-row head"><div>Delivery ID</div><div>Event</div><div>Source</div><div>Recipient</div><div>Channel</div><div>Status</div><div>Detail</div></div>
+          ${pageRows.length === 0
+            ? `<div class="user-row empty"><div class="delivery-empty-state" style="grid-column: 1 / -1; text-align: center; padding: 2.5rem 1rem;"><div class="empty-icon">${iconSvg.siSearch}</div><div class="empty-title">ไม่พบ delivery log</div><div class="empty-subtitle">ลองปรับคำค้นหรือตัวกรอง แล้วลองใหม่</div></div></div>`
+            : pageRows.map(r => {
+              const channel = getDeliveryLogChannel(r);
+              const [source, recipient] = splitDeliverySourceRecipient(r.owner);
+              return `
+                <div class="user-row delivery-row" data-delivery-card="${r.id}">
+                  <div class="user-cell-primary" data-label="Delivery ID"><div class="main-text">${r.id}</div></div>
+                  <div class="user-card-tags">
+                    ${deliveryStatusPill(r.status)}
+                    ${deliveryChannelPill(channel)}
+                    <div class="user-card-meta">
+                      <div class="user-card-meta-item comment-field-meta"><span>Event</span><strong>${r.name}</strong></div>
+                      <div class="user-card-meta-item comment-field-meta"><span>Source</span><strong>${source}</strong></div>
+                      <div class="user-card-meta-item comment-field-meta"><span>Recipient</span><strong>${recipient}</strong></div>
+                      <div class="user-card-meta-item comment-field-meta"><span>Detail</span><strong>${r.detail}</strong></div>
+                    </div>
+                  </div>
+                  <div data-label="Event"><div class="main-text">${r.name}</div></div>
+                  <div data-label="Source"><div class="main-text">${source}</div></div>
+                  <div data-label="Recipient"><div class="main-text">${recipient}</div></div>
+                  <div data-label="Channel">${deliveryChannelPill(channel)}</div>
+                  <div data-label="Status">${deliveryStatusPill(r.status)}</div>
+                  <div data-label="Detail"><div class="muted">${r.detail}</div></div>
+                </div>
+              `;
+            }).join("")}
+        </div>
+        <div class="footer-range">
+          <span>แสดง ${sorted.length ? `${start + 1}-${Math.min(start + deliveryLogPageSize, sorted.length)}` : "0"} จาก ${sorted.length}</span>
+          ${renderPager(deliveryLogPage, pageCount, "data-delivery-page")}
+        </div>
+      `;
+    }
+
+    // NTF-RSTR-003: read-only Delivery detail modal — เปิดจาก row click หรือ row menu
+    // pattern: option-audit-modal (read-only) — user-action-head + option-confirm-row list, ไม่มี footer
+    function openDeliveryLogDetailModal(row) {
+      if (!row) return;
+      const channel = getDeliveryLogChannel(row);
+      const modal = document.querySelector("#user-action-modal");
+      const modalCard = modal?.querySelector(".user-action-modal");
+      const modalBody = document.querySelector("#user-action-modal-body");
+      if (!modal || !modalCard || !modalBody) return;
+      modalCard.classList.remove("article-preview-modal", "article-editor-confirm-modal", "category-editor-modal", "category-order-modal", "market-editor-modal", "market-reference-drawer", "board-report-phone-preview-modal", "option-editor-modal", "option-order-modal", "option-audit-modal", "policy-version-view-modal", "policy-publish-confirm-modal", "policy-restore-confirm-modal", "support-center-preview-modal");
+      const confirmRow = (label, value) => `
+        <div class="option-confirm-row"><span class="option-confirm-label">${label}</span><span class="option-confirm-value">${value}</span></div>
+      `;
+      modalBody.innerHTML = `
+        <div class="user-action-head">
+          <div>
+            <h2 id="user-action-modal-title">${row.id}</h2>
+            <p>${row.name}</p>
+          </div>
+          <button class="btn user-action-close" type="button" data-user-action-modal-close aria-label="ปิด">${iconSvg.close}</button>
+        </div>
+        <div class="option-audit-summary delivery-detail-summary">
+          ${confirmRow("Source", splitDeliverySourceRecipient(row.owner)[0])}
+          ${confirmRow("Recipient", splitDeliverySourceRecipient(row.owner)[1])}
+          ${confirmRow("Channel", channel)}
+          ${confirmRow("Status", deliveryStatusPill(row.status))}
+          ${confirmRow("Priority", row.priority)}
+          ${confirmRow("Detail", row.detail)}
+          ${confirmRow("Tags", `<div class="chips">${(row.tags || []).filter(tag => tag !== "Email" && tag !== "Push" && tag !== "FCM").map(tag => `<span class="chip">${tag}</span>`).join("")}</div>`)}
+          ${confirmRow("Admin note", row.action)}
+        </div>
+      `;
+      showUserActionModal(true);
+    }
+
     function renderDeletionRequests() {
       setPageActions("");
       document.body.classList.add("deletion-list-mode");
@@ -21667,10 +22109,10 @@
       const auditLogs = [];
       // DEL-PTO-006: คอลัมน์ ส่งอีเมล ตาม pattern Admin Action History ของ Report Detail (pill สถานะ + jump ไป delivery log)
       // สถานะการส่งอีเมลแสดงในคอลัมน์ ส่งอีเมล แล้ว รายละเอียดจึงไม่แนบ "notification email sent to" ซ้ำ
-      // แนบ deliveryId ให้ jump ไป Notifications ได้เฉพาะเมื่อมี delivery log จริง ไม่งั้นแสดง pill ธรรมดา
+      // แนบ deliveryId ให้ jump ไป Settings > Delivery Logs ได้เฉพาะเมื่อมี delivery log จริง ไม่งั้นแสดง pill ธรรมดา
       const deletionEmailDelivery = eventPart => {
         const deliveryId = `DLV-DEL-${String(req.id).replace(/^DEL-/, "")}-${eventPart}`;
-        if (moduleData.notifications.rows.some(row => row.id === deliveryId)) {
+        if (moduleData.settings.rows.some(row => row.id === deliveryId)) {
           return { status: "sent", channel: "Email", deliveryId };
         }
         return { status: "sent", channel: "Email" };
@@ -23182,7 +23624,7 @@
       if (message) message.innerHTML = emailCopy.lines.map(line => `<p>${line}</p>`).join("");
     }
 
-    // DEL-PTO-006: เพิ่ม delivery log (DLV-DEL-xxx) ใน Notifications หลัง admin action — pattern เดียวกับ ensureAccountStatusDeliveryLog
+    // DEL-PTO-006: เพิ่ม delivery log (DLV-DEL-xxx) ใน Settings > Delivery Logs หลัง admin action — pattern เดียวกับ ensureAccountStatusDeliveryLog
     function getDeletionDeliveryId(req, action) {
       const reqPart = String(req.id || "").replace(/^DEL-/, "");
       const actionPart = action === "restore" ? "RES" : "REJ";
@@ -23190,11 +23632,11 @@
     }
 
     function ensureDeletionDeliveryLog(req, action) {
-      if (!req || !moduleData.notifications) return;
+      if (!req || !moduleData.settings) return;
       const deliveryId = getDeletionDeliveryId(req, action);
-      if (moduleData.notifications.rows.some(row => row.id === deliveryId)) return;
+      if (moduleData.settings.rows.some(row => row.id === deliveryId)) return;
       const isRestore = action === "restore";
-      moduleData.notifications.rows.splice(moduleData.notifications.rows.length - 1, 0,
+      moduleData.settings.rows.splice(moduleData.settings.rows.length - 1, 0,
         item(
           deliveryId,
           isRestore ? "Account restore email" : "Account restore rejection email",
@@ -23340,7 +23782,7 @@
       const successMsg = config.success(req);
       const resultDetail = `${selectedReason || config.reasonLabel}${actionNote ? ` — ${actionNote}` : ""} · ${now}`;
 
-      // DEL-PTO-006: log การส่งอีเมลแจ้งผลลง delivery log ของ Notifications (pattern เดียวกับ Account Status Email)
+      // DEL-PTO-006: log การส่งอีเมลแจ้งผลลง delivery log ของ Settings > Delivery Logs (pattern เดียวกับ Account Status Email)
       ensureDeletionDeliveryLog(req, action);
 
       // รีเฟรช detail page
@@ -24059,6 +24501,9 @@
       // settings render functions re-add the appropriate class when id is "settings", so
       // removing here is safe.
       document.body.classList.remove("policy-versioning-mode", "policy-detail-mode", "policy-editor-mode", "policy-version-history-mode", "support-center-mode");
+      // NTF-RSTR-003: Delivery Logs list mode — added/removed by renderDeliveryLogs,
+      // but removed here too so it never leaks into other modules.
+      document.body.classList.remove("delivery-log-list-mode");
       document.body.classList.toggle("article-list-mode", isArticleList);
       document.body.classList.toggle("category-list-mode", isCategoryList);
       document.body.classList.toggle("reported-board-mode", isReportedBoard);
@@ -24130,6 +24575,12 @@
       // DEL-PTO-004: Audit Log view — read-only immutable admin events
       if (id === "audit" || (id === "settings" && subLabel === "Audit Log")) {
         renderAuditLog();
+        updateActiveNav();
+        return;
+      }
+      // NTF-RSTR-003: Settings > Delivery Logs — dedicated list view (Phase 1)
+      if (id === "settings" && subLabel === "Delivery Logs") {
+        renderDeliveryLogs();
         updateActiveNav();
         return;
       }
@@ -25721,16 +26172,16 @@
 
     function jumpToDeliveryLog(deliveryId) {
       if (!deliveryId) return;
-      renderModule("notifications", "Delivery Logs", "Delivery Logs");
-      const search = document.querySelector("#search");
+      // NTF-RSTR-003: Delivery Logs ย้ายจาก Notifications ไป Settings — jump ไป Settings > Delivery Logs
+      renderModule("settings", "Delivery Logs", "Delivery Logs");
+      const search = document.querySelector("#delivery-search");
       if (search) {
         search.value = deliveryId;
-        renderRows();
+        renderDeliveryLogRows();
       }
-      const row = moduleData.notifications.rows.find(entry => entry.id === deliveryId);
+      const row = getDeliveryLogRows().find(entry => entry.id === deliveryId);
       if (row) {
-        activeRow = row;
-        renderDetail(row);
+        openDeliveryLogDetailModal(row);
       }
       scrollMainToTop();
     }
@@ -36192,6 +36643,13 @@
           renderAuditLogRows();
           return;
         }
+        // NTF-RSTR-003: Delivery Logs filter selects
+        if (["delivery-status-filter", "delivery-channel-filter", "delivery-sort"].includes(hiddenInput.id) && activeModule === "settings" && activeSub === "Delivery Logs") {
+          deliveryLogPage = 1;
+          saveCurrentListFilterState();
+          renderDeliveryLogRows();
+          return;
+        }
         userListPage = 1;
         saveCurrentListFilterState();
         if (activeModule === "users" && (activeSub === "Report User" || activeSub === "Reported Users")) renderReportedUserRows();
@@ -36453,6 +36911,20 @@
           closeRowMenus();
           return;
         }
+      }
+      // NTF-RSTR-003: Settings > Delivery Logs — row click เปิด read-only detail modal
+      const deliveryOpen = event.target.closest(".user-row[data-delivery-card]");
+      if (deliveryOpen && activeModule === "settings" && activeSub === "Delivery Logs") {
+        if (event.target.closest(".row-menu, button")) {
+          return;
+        }
+        const id = deliveryOpen.dataset.deliveryCard;
+        const row = getDeliveryLogRows().find(entry => entry.id === id);
+        if (row) {
+          openDeliveryLogDetailModal(row);
+        }
+        closeRowMenus();
+        return;
       }
       const articleOpenButton = event.target.closest("[data-article-open]");
       if (articleOpenButton) {
@@ -37679,6 +38151,34 @@
         renderAuditLogRows();
         return;
       }
+      // NTF-RSTR-003: Delivery Logs — filter toggle + reset + pagination
+      const deliveryFilterToggle = event.target.closest("[data-delivery-filter-toggle]");
+      if (deliveryFilterToggle) {
+        deliveryLogFilterOpen = !deliveryLogFilterOpen;
+        const filterBar = document.querySelector(".user-filter-bar.delivery-filter-bar");
+        if (filterBar) filterBar.dataset.filterOpen = String(deliveryLogFilterOpen);
+        deliveryFilterToggle.setAttribute("aria-expanded", String(deliveryLogFilterOpen));
+        const label = deliveryFilterToggle.querySelector("span");
+        if (label) label.textContent = deliveryLogFilterOpen ? "ปิดตัวกรอง" : "เปิดตัวกรอง";
+        return;
+      }
+      const deliveryReset = event.target.closest("[data-delivery-reset]");
+      if (deliveryReset) {
+        deliveryLogPage = 1;
+        clearListFilterState("delivery-log-list");
+        renderDeliveryLogs();
+        return;
+      }
+      const deliveryPageButton = event.target.closest("[data-delivery-page]");
+      if (deliveryPageButton) {
+        const target = deliveryPageButton.dataset.deliveryPage;
+        if (target === "prev") deliveryLogPage = Math.max(1, deliveryLogPage - 1);
+        else if (target === "next") deliveryLogPage += 1;
+        else deliveryLogPage = Number(target) || 1;
+        saveCurrentListFilterState();
+        renderDeliveryLogRows();
+        return;
+      }
       const articlePageButton = event.target.closest("[data-article-page]");
       if (articlePageButton) {
         const target = articlePageButton.dataset.articlePage;
@@ -38434,6 +38934,13 @@
         auditLogPage = 1;
         saveCurrentListFilterState();
         renderAuditLogRows();
+        return;
+      }
+      // NTF-RSTR-003: Delivery Logs search
+      if (event.target.matches("#delivery-search")) {
+        deliveryLogPage = 1;
+        saveCurrentListFilterState();
+        renderDeliveryLogRows();
         return;
       }
       if (event.target.matches("#search")) {
