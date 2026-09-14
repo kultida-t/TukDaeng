@@ -74,6 +74,10 @@ When a Kanban task involves editing files, do not move the task to `done` immedi
 
 ห้ามแทรก note แบบ meta-commentary (เช่น "Note (BO-XXX, วันที่): ...") ในเนื้อหาเอกสารปกติ เพราะไม่ใช่มาตรฐานของเอกสาร ห้ามใช้รูปแบบนี้ในเอกสาร baseline/module spec เว้นแต่จะเป็นเอกสารที่มีไว้สำหรับบันทึกการเปลี่ยนแปลงโดยเฉพาะ (เช่น DOCUMENT_VERSION.md) เรื่องที่ต้องรอ decision ให้ไปไว้ใน section Open Decisions ของเอกสารนั้น ๆ แทน
 
+## Test Cleanup Rule
+
+หลังรัน Playwright test (หรือ test framework อื่น) เสร็จทุกครั้ง ต้องลบ test artifact ที่ไม่เกี่ยวกับโปรเจคออกทั้งหมด — ได้แก่ `test-results/`, `playwright-report/`, และ `.last-run.json` ที่ถูกสร้างขึ้นระหว่างการรัน ไฟล์เหล่านี้เป็น build artifact ที่ regenerate ได้ทุกครั้งและถูก ignore ใน `.gitignore` แล้ว ห้ามปล่อยให้ค้างใน working directory หลังเทสเสร็จ ยกเว้นผู้ใช้สั่งเก็บไว้เพื่อตรวจสอบ failure โดยเฉพาะ
+
 ## Time Display Format
 
 When showing work hours in summaries or reports, display in `X ชม. Y นาที (D.D ชม.)` format (e.g. `1 ชม. 37 นาที (1.6 ชม.)`, `0 ชม. 39 นาที (0.7 ชม.)`) — showing both hours-minutes and decimal hours rounded to 1 decimal place in parentheses. Convert decimal hours by splitting the integer part as hours and multiplying the fractional part by 60 for minutes for the first part, and compute the parenthesized decimal as `(X × 60 + Y) ÷ 60` rounded to 1 decimal place. Apply this to all time displays including per-task hours, totals, and running timers.

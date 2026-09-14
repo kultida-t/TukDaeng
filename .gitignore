@@ -4,3 +4,8 @@ package-lock.json
 .DS_Store
 ._*
 __MACOSX/
+
+# Playwright test artifacts (regenerated on every run — do not commit)
+test-results/
+playwright-report/
+.last-run.json
