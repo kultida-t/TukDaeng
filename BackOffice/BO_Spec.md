@@ -55,12 +55,6 @@ BO Dashboard
 │   ├── Requests
 │   ├── Grace Period
 │   └── Anonymization
-├── Reports
-│   ├── User
-│   ├── Asset
-│   ├── Offer
-│   ├── Search
-│   └── Export Jobs
 ├── Notifications
 │   ├── Broadcast
 │   ├── System Templates
@@ -393,9 +387,12 @@ Module นี้ครอบคลุม 3 หน้าย่อย:
 
 ---
 
-### 3.11 Reports & Analytics
+### 3.11 Reports & Analytics (Phase 2 / Future scope)
 
-**Reports ที่มี:**
+> **สถานะ:** เลื่อนเป็น Phase 2/future scope — prototype ตัดเมนู Reports ออกชั่วคราวเพราะเป็นระบบตั้งต้นที่ยังไม่จำเป็น ซ้ำซ้อนกับ list/filter ในแต่ละ module + Dashboard; อาจกลับมาเพิ่มในอนาคตถ้ามี requirement จริง เช่น ต้องส่งรายงานให้ Management/auditor
+> รายละเอียด spec เดิมเก็บไว้ใน `15_REPORTS_ANALYTICS_MODULE.md` เพื่ออ้างอิงเมื่อกลับมาทำ
+
+**Reports ที่ต้องมี (เมื่อกลับมาทำใน Phase 2):**
 | Report | ข้อมูลที่แสดง |
 |---|---|
 | User Report | User Growth (รายวัน/สัปดาห์/เดือน), Active Users (DAU/MAU), Auth Method Breakdown (Email/Apple/Google), Retention Rate |
@@ -511,7 +508,7 @@ BO uses exactly one admin account type: `Admin`. There are no BO sub-types. The 
 | Asset Management | Admin can review and change assets with FO-impact, sensitive-data, confirmation, reason, and audit controls. |
 | Articles / Categories | Admin can create, edit, preview, publish, schedule, archive, manage categories, and audit content actions. Banners are future scope for non-article campaigns/promotions only. |
 | Market Data / Directory | Admin can manage watch data with source, inactive/restore, and audit controls; Directory entries are future/postponed from Phase 1. |
-| Reports / Notifications / Audit / Settings | Admin can operate these modules according to export, approval, sensitive-data, and high-risk setting policies. |
+| Notifications / Audit / Settings | Admin can operate these modules according to export, approval, sensitive-data, and high-risk setting policies. (Reports ถูกเลื่อนเป็น Phase 2/future scope) |
 ## 4. BO Authentication
 
 - Login ด้วย Email/Password เท่านั้น (ไม่รองรับ Apple หรือ Google SSO — เฉพาะ Internal Use)

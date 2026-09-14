@@ -824,12 +824,12 @@ test.describe("QA-BO-012: Nav structure — module grouping consistency", () => 
     expect(await sections.count()).toBe(3);
   });
 
-  test("80. nav มี module items ครบ (dashboard, users, assets, offers, content, market, option-master, watch-alerts, deletions, reports, notifications, settings)", async ({ page }) => {
+  test("80. nav มี module items ครบ (dashboard, users, assets, offers, content, market, option-master, watch-alerts, deletions, notifications, settings)", async ({ page }) => {
     await page.goto(PROTOTYPE_URL);
     await page.waitForLoadState("networkidle");
     await loginIfNeeded(page);
     await ensureNavOpen(page);
-    const expectedModules = ["dashboard", "users", "assets", "offers", "content", "market", "option-master", "watch-alerts", "deletions", "reports", "notifications", "settings"];
+    const expectedModules = ["dashboard", "users", "assets", "offers", "content", "market", "option-master", "watch-alerts", "deletions", "notifications", "settings"];
     for (const mod of expectedModules) {
       const navItem = page.locator(`.nav-item[data-module='${mod}']`);
       await expect(navItem).toBeVisible();
@@ -841,8 +841,8 @@ test.describe("QA-BO-012: Nav structure — module grouping consistency", () => 
     await page.waitForLoadState("networkidle");
     await loginIfNeeded(page);
     await ensureNavOpen(page);
-    // users, assets, content, market, watch-alerts, reports, notifications, settings มี submenu
-    const modulesWithSubs = ["users", "assets", "content", "market", "watch-alerts", "reports", "notifications", "settings"];
+    // users, assets, content, market, watch-alerts, notifications, settings มี submenu
+    const modulesWithSubs = ["users", "assets", "content", "market", "watch-alerts", "notifications", "settings"];
     for (const mod of modulesWithSubs) {
       const navItem = page.locator(`.nav-item[data-module='${mod}']`);
       await expect(navItem).toHaveAttribute("data-toggle-menu", mod);

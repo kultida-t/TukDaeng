@@ -522,7 +522,7 @@ Audit action ขั้นต่ำ:
 | Asset Management (Reported Comments) | Block relation affects result visibility |
 | Notification | Alert Detail Section 5 Trigger & Notification History: แสดง delivery status (Delivered/Skipped/Failed/Pending) แบบ read-only; delivery logs, templates, retry policy อยู่ใน Notification module |
 | Audit Log | Watch Alert event types: `WATCH_ALERT_SENSITIVE_REVEAL`, `WATCH_ALERT_TRIGGER_JOB_RUN` (ดู section 16) |
-| Reports & Analytics | Watch Alert report and search trend report |
+| Reports & Analytics (Phase 2/future) | Watch Alert report and search trend report |
 
 ## Module-Specific Exceptions
 

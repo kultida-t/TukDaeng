@@ -48,7 +48,7 @@ BO has exactly one admin account type: `Admin`. There are no BO sub-types for co
 
 | Admin Account Type | Primary Responsibility |
 |---|---|
-| Admin | Manage all BO operational areas allowed by product scope and policy: users, assets, content, market data, offers, chat, asset reported comments, watch alerts, support, account deletion, notifications, reports, audit, and settings. Directory is future/postponed from Phase 1. |
+| Admin | Manage all BO operational areas allowed by product scope and policy: users, assets, content, market data, offers, chat, asset reported comments, watch alerts, support, account deletion, notifications, audit, and settings. Directory is future/postponed from Phase 1. Reports & Analytics is deferred to Phase 2/future scope. |
 
 ### 2.2 FO Users
 
@@ -69,7 +69,7 @@ FO users have a single account type: `User`. BO must support activity from the s
 - Directory Management (future/postponed; not Phase 1)
 - Help & Support (Policy & Versioning + Support Center)
 - Notifications
-- Reports & Analytics
+- Reports & Analytics (Phase 2 / future scope)
 - Audit Log
 - Admin Settings
 
@@ -129,7 +129,7 @@ Dashboard ต้องแสดง:
 - Metrics แสดง snapshot ล่าสุดพร้อม `Last updated`; Dashboard ไม่ต้องมี Date Range control ใน prototype ปัจจุบัน
 - ข้อมูลบน Dashboard ต้องเชื่อมกับ report module ได้
 - `New Users` และ `Active Users Today` ต้องนับเฉพาะ registered account/member activity ไม่รวม Guest public view/share traffic
-- Dashboard ไม่ต้องแสดง guest/public analytics ใน prototype; metric ชุดนี้อยู่ใน Reports & Analytics เท่านั้น
+- Dashboard ไม่ต้องแสดง guest/public analytics ใน prototype; metric ชุดนี้อยู่ใน Reports & Analytics เท่านั้น (Reports & Analytics เป็น Phase 2/future scope — ถ้ายังไม่ทำ Reports ก็ไม่ต้องแสดง metric ชุดนี้ใน Phase 1)
 
 ---
 
@@ -147,7 +147,7 @@ Admin ต้องสามารถ:
 - Suspend / Ban / Unsuspend / Unban
 - Route งาน deletion ไป Account Deletion workflow; User List ไม่ archive/delete โดยตรง
 - Reset password เฉพาะบัญชี Email/Password
-- ไม่มีปุ่ม Export CSV โดยตรงใน User List; export user data ต้องผ่าน Reports/export หรือ system-level export ตาม permission
+- ไม่มีปุ่ม Export CSV โดยตรงใน User List; export user data ต้องผ่าน system-level export ตาม permission (ก่อนหน้านี้ระบุให้ผ่าน Reports/export แต่ Reports ถูกเลื่อนเป็น Phase 2/future scope แล้ว ใน Phase 1 จึงไม่มี export path สำหรับ user data)
 - ไม่ต้องแสดง Guest/Unauthenticated visitor ใน User List, User Detail, status filter หรือ account action flow
 
 ### Business Rules
@@ -165,7 +165,7 @@ Admin ต้องสามารถ:
 - User reports ตั้งแต่ 5 ครั้งขึ้นไป หรือมี evidence เสี่ยงสูง เช่น scam, impersonation, spam offer, duplicate fraud pattern สามารถเข้าสู่ `Suspended` ชั่วคราวตาม policy เพื่อรอ Admin review
 - `Banned` ต้องเกิดหลัง Admin review แล้วพบว่าผิดจริงหรือมีความเสี่ยงสูง พร้อม reason และ audit
 - Account deletion ต้องมี lifecycle รวมขั้นเดียว `Deletion Requested` -> `Deactivated` -> ครบ grace period 30 วัน ระบบลบบัญชีอัตโนมัติ = เก็บถาวร + ลบตัวตน ในขั้นเดียว (`Anonymized`) หรือ `คืนบัญชีแล้ว` ถ้าแอดมินคืนในช่วง grace period (ตาม `13_ACCOUNT_DELETION_MODULE.md` DEL-DEC-006)
-- Prototype ปัจจุบันแสดง `Deletion Requested` (รอลบบัญชี) และ `Deleted` (ลบแล้ว) ใน User List/filter เพื่อ review historical summary ตาม permission; production ต้อง mask/anonymize personal data, จำกัด action และยังต้องดูย้อนหลังได้ใน Account Deletion / Reports / Audit ตาม retention policy
+- Prototype ปัจจุบันแสดง `Deletion Requested` (รอลบบัญชี) และ `Deleted` (ลบแล้ว) ใน User List/filter เพื่อ review historical summary ตาม permission; production ต้อง mask/anonymize personal data, จำกัด action และยังต้องดูย้อนหลังได้ใน Account Deletion / Audit ตาม retention policy (ก่อนหน้านี้ระบุให้ดูใน Account Deletion / Reports / Audit แต่ Reports ถูกเลื่อนเป็น Phase 2/future scope แล้ว ใน Phase 1 จึงดูย้อนหลังได้ใน Account Deletion / Audit เท่านั้น)
 - Restore หลัง deletion ทำได้เฉพาะใน grace period 30 วัน โดยแอดมิน พร้อม reason และ audit; หลังระบบลบบัญชีอัตโนมัติแล้ว restore ไม่ได้
 
 ---
@@ -406,9 +406,12 @@ System Trigger ต้องรองรับ:
 
 ---
 
-## 4.12 Reports & Analytics
+## 4.12 Reports & Analytics (Phase 2 / Future scope)
 
-Reports ที่ต้องมี:
+> **สถานะ:** เลื่อนเป็น Phase 2/future scope — prototype ตัดเมนู Reports ออกชั่วคราวเพราะเป็นระบบตั้งต้นที่ยังไม่จำเป็น ซ้ำซ้อนกับ list/filter ในแต่ละ module + Dashboard; อาจกลับมาเพิ่มในอนาคตถ้ามี requirement จริง เช่น ต้องส่งรายงานให้ Management/auditor
+> รายละเอียด spec เดิมเก็บไว้ใน `15_REPORTS_ANALYTICS_MODULE.md` เพื่ออ้างอิงเมื่อกลับมาทำ
+
+Reports ที่ต้องมี (เมื่อกลับมาทำใน Phase 2):
 
 - User Report
 - Asset Report
@@ -534,7 +537,7 @@ Reports ที่ต้องมี:
 - Help & Support (Policy & Versioning + Support Center)
 - Account Deletion Requests
 - Notifications
-- Reports & Analytics
+- Reports & Analytics (Phase 2 / future scope)
 - Audit Log
 - Admin Settings
 

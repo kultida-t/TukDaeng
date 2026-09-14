@@ -10,7 +10,7 @@
 
 Back Office คือ responsive internal web system สำหรับทีมภายใน ใช้ดูแลและปฏิบัติการระบบ TukDaeng หลังจากผู้ใช้ FO สร้างข้อมูลหรือกิจกรรมต่าง ๆ เช่น marketplace, social, support, content และ notification
 
-BO ต้องช่วยให้ทีม Admin จัดการ moderation, user support, content publishing, market master data, reports และ auditability ได้ครบถ้วน
+BO ต้องช่วยให้ทีม Admin จัดการ moderation, user support, content publishing, market master data, และ auditability ได้ครบถ้วน (Reports & Analytics ถูกเลื่อนเป็น Phase 2/future scope)
 
 BO ต้องแยกจาก FO mobile app ชัดเจน Admin ไม่ใช่ admin access ใน FO mobile app
 
@@ -20,7 +20,7 @@ BO ต้องแยกจาก FO mobile app ชัดเจน Admin ไม�
 
 | Goal | Requirement |
 | --- | --- |
-| Operational control | Admin จัดการ users, assets, content, market data, support, notifications และ reports ได้; Directory ถูกเลื่อนออกจาก Phase 1 จนกว่า FO directory detail routes จะเปิด |
+| Operational control | Admin จัดการ users, assets, content, market data, support และ notifications ได้; Directory ถูกเลื่อนออกจาก Phase 1 จนกว่า FO directory detail routes จะเปิด; Reports & Analytics ถูกเลื่อนเป็น Phase 2/future scope |
 | Trust & safety | Admin review reports, moderate content, suspend/ban users และตรวจสอบ action ได้ |
 | Responsive operation | BO รองรับ desktop, tablet และ mobile-width browser โดย optimize workflow หนาแน่นสำหรับหน้าจอใหญ่ |
 | FO continuity | BO action ต้อง sync ผลกลับไป FO surfaces เช่น Feed, Asset Detail, Board, Search, Profile, Watch Alert และ Notification |
@@ -54,7 +54,6 @@ Phase 1 คือ BO foundation ที่ล็อกใน prototype แล้�
 | Help & Support | `12_HELP_SUPPORT_MODULE.md` - Policy & Versioning (Terms of Use, Privacy Policy — Draft/Published/Archived, bilingual TH/EN, version history, restore) และ Support Center (channels, business hours, availability TH/EN, preview) |
 | Account Deletion | `13_ACCOUNT_DELETION_MODULE.md` - Request queue, restore/reject restore ใน grace period, 30-day grace period, ลบบัญชีอัตโนมัติเมื่อครบกำหนด (เก็บถาวร + ลบตัวตน ในขั้นเดียว), lifecycle email 5 จุด (ยืนยันลบบัญชี / เตือนใกล้ครบ grace period / คืนบัญชีแล้ว / ปฏิเสธคืนบัญชี / ลบตัวตนแล้ว) ตาม `14_NOTIFICATIONS_MODULE.md` section 9.3 |
 | Notifications | `14_NOTIFICATIONS_MODULE.md` - Broadcast notifications, system trigger templates, delivery logs, retry failed notifications, FO-supported type constraints, Account Deletion lifecycle emails (`DLV-DEL-xxx`) |
-| Reports | `15_REPORTS_ANALYTICS_MODULE.md` - User, asset, offer, chat, board, asset reported comments, search, watch alert, notification, account deletion reports, export jobs |
 | Audit Log | `08_AUDIT_LOG_MODULE.md` - Immutable event capture, search/filter, export, Admin visibility |
 | Admin Settings | `16_ADMIN_SETTINGS_MODULE.md` - Admin own settings, admin account lifecycle, Admin Access Matrix, security/system defaults, retention/export policy, feature flags, integration metadata |
 
@@ -67,6 +66,7 @@ Phase 2 คือ modules และ flows ที่ยังไม่ล็อ�
 | Module | Phase 2 Scope |
 | --- | --- |
 | Directory | `07_DIRECTORY_MODULE.md` - รอ FO directory detail routes และ taxonomy approval |
+| Reports & Analytics | `15_REPORTS_ANALYTICS_MODULE.md` - User, asset, offer, chat, board, asset reported comments, search, watch alert, notification, account deletion reports, export jobs (prototype ตัดเมนู Reports ออกชั่วคราวเพราะเป็นระบบตั้งต้นที่ยังไม่จำเป็น ซ้ำซ้อนกับ list/filter ในแต่ละ module + Dashboard; อาจกลับมาเพิ่มในอนาคตถ้ามี requirement จริง เช่น ต้องส่งรายงานให้ Management/auditor) |
 | Chat moderation workflow | Remove/hide chat message, reported chat queue (prototype Offer Management เป็น read-only ไม่มี chat moderation) |
 | Offer write actions | Force expire, invalidate, accept/decline จาก BO (prototype Offer Management เป็น read-only) |
 

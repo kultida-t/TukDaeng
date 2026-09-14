@@ -176,7 +176,7 @@ UI / Reporting rules:
 
 - ใน Account Deletion module แสดง `ลบตัวตนแล้ว` เป็นสถานะปลายทางของ deletion (เก็บถาวร + ลบตัวตน เกิดพร้อมกันเมื่อครบ grace period)
 - ใน backend/audit บันทึก event ลบบัญชีอัตโนมัติเป็นขั้นเดียว; retention ของข้อมูลแต่ละประเภท (chat, offer, report, audit log) ยังอ้าง DEL-DEC-002
-- Prototype ปัจจุบันแสดงสถานะ `Deletion Requested` (รอลบบัญชี) และ `Deleted` ใน User List/filter เพื่อ historical review ตาม permission; production ต้อง mask/anonymize personal data, จำกัด action และยังต้องค้นย้อนหลังได้ใน Account Deletion, Reports และ Audit ตาม permission
+- Prototype ปัจจุบันแสดงสถานะ `Deletion Requested` (รอลบบัญชี) และ `Deleted` ใน User List/filter เพื่อ historical review ตาม permission; production ต้อง mask/anonymize personal data, จำกัด action และยังต้องค้นย้อนหลังได้ใน Account Deletion และ Audit ตาม permission (ก่อนหน้านี้ระบุให้ดูใน Account Deletion, Reports และ Audit แต่ Reports ถูกเลื่อนเป็น Phase 2/future scope แล้ว ใน Phase 1 จึงดูย้อนหลังได้ใน Account Deletion และ Audit เท่านั้น)
 - ข้อมูลย้อนหลังที่เรียกดูได้ต้องเป็นข้อมูลที่จำเป็น เช่น user ID, deletion request ID, dates, processed by, retained offer/chat/report references และ audit event
 - Personal data หลัง deletion ต้องถูก mask/anonymize ตาม retention policy และ Admin Permission
 - Restore เปิดได้เฉพาะในช่วง grace period 30 วัน โดยแอดมิน พร้อม reason และ audit; หลังลบบัญชีอัตโนมัติแล้วไม่สามารถ restore ได้
@@ -388,7 +388,7 @@ Confirmation modal ตาม pattern ของ Reported Users action flow (conte
 | Help / Support | ไม่มี ticket ใน Phase 1 — module 12 เป็น Policy & Versioning + Support Center; support ticket linkage เป็น future scope |
 | Notification | Lifecycle email 5 จุด (ยืนยันลบบัญชี / เตือนใกล้ครบ grace period / คืนบัญชีแล้ว / ปฏิเสธคืนบัญชี / ลบตัวตนแล้ว) ส่งไปยัง registered email เป็นช่องทางหลัก ตาม `14_NOTIFICATIONS_MODULE.md` section 9.3; delivery log `DLV-DEL-<req>-<event>` trace กลับไปยัง History & Actions ของ Request Detail; อีเมลลบตัวตนต้องส่งก่อน anonymize personal fields; ไม่เข้า FO Notification Center |
 | Audit Log | Request create, session revoke, offer cancel auto, report close auto, dependency check ระหว่างช่วงรอลบบัญชี, restore, restore reject, auto delete (archive + anonymize), export, sensitive reveal |
-| Reports & Analytics | Account deletion report, restore/reject count, auto-delete completion |
+| Reports & Analytics (Phase 2/future) | Account deletion report, restore/reject count, auto-delete completion |
 
 ## 17. Audit Requirements
 

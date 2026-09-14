@@ -368,7 +368,7 @@ Retry action ต้องมี audit log และต้องไม่สร�
 | Help / Support | ไม่มี ticket ใน Phase 1 — module 12 เป็น Policy & Versioning + Support Center; notification integration เป็น future scope |
 | Account Deletion | Exclude deletion/archived users from broadcast; lifecycle email 5 จุด (section 9.3) ส่งไปยัง registered email พร้อม delivery log `DLV-DEL-xxx` ที่ trace กลับไปยัง History & Actions ของ Request Detail; อีเมลลบตัวตนต้องส่งก่อน anonymize personal fields |
 | Audit Log | Template, broadcast, retry, export audit events |
-| Reports & Analytics | Notification report metrics |
+| Reports & Analytics (Phase 2/future) | Notification report metrics |
 
 ## 16. Audit Requirements
 

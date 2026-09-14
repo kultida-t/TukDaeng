@@ -331,7 +331,7 @@ Audit action ขั้นต่ำ:
 | Notification | Delivery logs, templates, retry policy |
 | Account Deletion | ระบบยกเลิก offer ที่ Pending อัตโนมัติเมื่อ delete request สำเร็จ; accepted offer เก็บตาม retention policy; dependency drill-in แบบ read-only กรองด้วย userId |
 | Help & Support | ไม่มี ticket ใน Phase 1 — module 12 เป็น Policy & Versioning + Support Center; chat/offer context สำหรับ dispute เป็น future scope |
-| Reports & Analytics | Offer/chat aggregate และ export ตาม permission |
+| Reports & Analytics (Phase 2/future) | Offer/chat aggregate และ export ตาม permission |
 
 ## Module-Specific Exceptions
 

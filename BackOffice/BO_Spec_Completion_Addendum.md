@@ -8,7 +8,7 @@
 
 ## 1. Summary
 
-BO_Spec v1.2 รองรับ flow หลักของ FO แล้วในส่วน User, Asset, Content, Market Data, Reports, Push Notification, Help & Support, Account Deletion และ Audit Log; Directory ถูกเลื่อนเป็น future/postponed scope เพราะ FO directory menu ยังเป็น placeholder แต่ยังขาดรายละเอียดสำหรับ flow ที่เกิดจากการใช้งานจริงของผู้ใช้ใน FO ได้แก่ Offer/Chat, Comment, Like/Favorite, Follow, Watch Alert ราย user และ System Notification Trigger
+BO_Spec v1.2 รองรับ flow หลักของ FO แล้วในส่วน User, Asset, Content, Market Data, Push Notification, Help & Support, Account Deletion และ Audit Log; Directory ถูกเลื่อนเป็น future/postponed scope เพราะ FO directory menu ยังเป็น placeholder; Reports & Analytics ถูกเลื่อนเป็น Phase 2/future scope เพราะเป็นระบบตั้งต้นที่ยังไม่จำเป็น ซ้ำซ้อนกับ list/filter ในแต่ละ module + Dashboard แต่ยังขาดรายละเอียดสำหรับ flow ที่เกิดจากการใช้งานจริงของผู้ใช้ใน FO ได้แก่ Offer/Chat, Comment, Like/Favorite, Follow, Watch Alert ราย user และ System Notification Trigger
 
 Addendum นี้เสนอให้เพิ่ม module และ business rules ต่อไปนี้:
 
@@ -19,7 +19,7 @@ Addendum นี้เสนอให้เพิ่ม module และ business
 5. System Notification Trigger Management
 6. Content / Board Management Completion
 7. Asset Detail Field Completion
-8. Expanded Reports & Analytics
+8. Expanded Reports & Analytics (Phase 2 / future scope)
 9. Expanded BO/FO Action Mapping
 10. Additional Audit Log Events
 
@@ -54,12 +54,6 @@ BO Dashboard
 │   ├── Requests
 │   ├── Grace Period
 │   └── Anonymization
-├── Reports
-│   ├── User
-│   ├── Asset
-│   ├── Offer
-│   ├── Search
-│   └── Export Jobs
 ├── Notifications
 │   ├── Broadcast
 │   ├── System Templates
@@ -624,7 +618,10 @@ Content role split baseline:
 
 ---
 
-## 10. Expanded Reports & Analytics
+## 10. Expanded Reports & Analytics (Phase 2 / Future scope)
+
+> **สถานะ:** เลื่อนเป็น Phase 2/future scope — prototype ตัดเมนู Reports ออกชั่วคราวเพราะเป็นระบบตั้งต้นที่ยังไม่จำเป็น ซ้ำซ้อนกับ list/filter ในแต่ละ module + Dashboard; อาจกลับมาเพิ่มในอนาคตถ้ามี requirement จริง เช่น ต้องส่งรายงานให้ Management/auditor
+> รายละเอียด spec เดิมเก็บไว้ใน `15_REPORTS_ANALYTICS_MODULE.md` เพื่ออ้างอิงเมื่อกลับมาทำ
 
 เพิ่ม report ต่อไปนี้จาก BO_Spec v1.2
 

@@ -170,7 +170,7 @@ Role templates are presets. Production enforcement must use explicit permission 
 | Audit Log | Admin can view/export audit data according to audit visibility and sensitive-payload policy. |
 | Offer Management / Asset Reported Comments / Watch Alert | Admin can review permitted records by policy with privacy masking and audit. Offer Management V1 remains read-only. |
 | Help / Support / Account Deletion | Admin can manage Policy & Versioning, Support Center และ deletion workflows with dependency checks, confirmation, reason, and audit. |
-| Notifications / Reports | Admin can manage templates, broadcasts, reports, and exports according to approval/export/sensitive-data policy. |
+| Notifications / Reports (Phase 2/future) | Admin can manage templates, broadcasts, and exports according to approval/export/sensitive-data policy. Reports module is deferred to Phase 2/future scope. |
 | Admin Settings | Admin can manage BO settings through high-risk policy controls and audit. |
 
 ### 9.3 Permission Change Rules
@@ -205,7 +205,7 @@ Security policy change ต้อง audit และควร require re-authenti
 | Timezone | `Asia/Bangkok` |
 | Currency | THB |
 | BO Language | Thai primary; English technical terms allowed |
-| Default date range | Applies to Reports/trend views when a screen exposes date controls; Dashboard prototype uses a fixed snapshot with `Last updated` and no Date Range control |
+| Default date range | Applies to Reports/trend views (Phase 2/future) when a screen exposes date controls; Dashboard prototype uses a fixed snapshot with `Last updated` and no Date Range control |
 | Table pagination | Server-side pagination for large lists |
 | Large export | Background job |
 | Sensitive data display | Mask by default |

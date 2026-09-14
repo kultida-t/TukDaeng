@@ -299,7 +299,7 @@ Before/after JSON diff ต้อง wrap และ scroll ภายใน contai
 | Directory | Future/postponed; activate/inactivate/import/export audit only when Directory scope is reopened |
 | Help / Support | Policy draft/publish/archive/restore และ Support Center update audit |
 | Dashboard | Recent activity feed และ SLA/queue context |
-| Reports | Export audit events และ report export history |
+| Reports (Phase 2/future) | Export audit events และ report export history |
 | Admin Settings | Permission/system setting changes audit |
 
 ## Module-Specific Exceptions

@@ -52,7 +52,7 @@
 | 12 | Help / Support | 1 | Complete |
 | 13 | Account Deletion Requests | 1 | Complete |
 | 14 | Notifications | 1 | Complete |
-| 15 | Reports & Analytics | 1 | Complete |
+| 15 | Reports & Analytics | 2 | Future scope (deferred) |
 | 16 | Admin Settings | 1 | Complete |
 | 17 | Option Master | 1 | Complete |
 
@@ -79,7 +79,7 @@
 8. Help & Support
 9. Account Deletion Requests
 10. Notifications
-11. Reports & Analytics
+11. Reports & Analytics (Phase 2 / future scope — deferred)
 12. Admin Settings
 13. Audit Log
 14. Dashboard drill-in and queue summary
@@ -121,7 +121,7 @@
 | P1 | Directory future activation level | `BO-DIR-DEC-001` | Directory is postponed from Phase 1 while FO menu entries remain placeholder-only without detail routes |
 | P1 | FO support ticket history หรือ contact-only (Phase 1 ยึด Support Center contact-only — ticket queue ย้ายไป Phase 2) | `SUP-DEC-001` | กระทบ Help / Support API, BO reply sync, FO UX |
 | P1 | Broadcast แสดงใน FO Notification Center หรือ push-only | `NOTI-DEC-001` | กระทบ FO notification type list และ payload |
-| P1 | Sensitive export ต้องมี approval เพิ่มหรือไม่ | `REP-DEC-004`, `SET-DEC-004` | กระทบ Admin Settings, Reports, Audit |
+| P1 | Sensitive export ต้องมี approval เพิ่มหรือไม่ | `REP-DEC-004`, `SET-DEC-004` | กระทบ Admin Settings, Audit (ก่อนหน้านี้ระบุให้กระทบ Reports ด้วย แต่ Reports ถูกเลื่อนเป็น Phase 2/future scope แล้ว ใน Phase 1 จึงกระทบ Admin Settings และ Audit เท่านั้น) |
 | P2 | Board public SEO web requirement | `BO-DEC-005` | กระทบ Board content delivery และ routing |
 | P2 | Fine-grained permission editor หรือ fixed admin access matrix | `SET-DEC-001` | กระทบ Admin Settings data model และ QA scope |
 

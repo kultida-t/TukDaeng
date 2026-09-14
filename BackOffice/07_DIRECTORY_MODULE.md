@@ -235,7 +235,7 @@ Audit event ต้องมี admin ID, admin access, target type, target ID, b
 | Market Data | Admin ownership และ shared data quality patterns |
 | Dashboard | Directory activated/inactivated activity และ data quality warnings |
 | Audit Log | ทุก mutation ต้อง searchable |
-| Reports | Export directory list และ status summary |
+| Reports (Phase 2/future) | Export directory list และ status summary |
 | FO Navigation | เปิด/ซ่อน Directory surfaces ตาม Product decision |
 
 ## Module-Specific Exceptions

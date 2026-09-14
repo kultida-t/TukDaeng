@@ -15253,7 +15253,6 @@
         { id: "deletions", label: "Account Deletion", icon: "delete" }
       ]},
       { section: "เครื่องมือ & รายงาน", items: [
-        { id: "reports", label: "Reports", icon: "reports", subs: ["User", "Asset", "Offer", "Search", "Export Jobs"] },
         { id: "notifications", label: "Notifications", icon: "notifications", subs: ["Broadcast", "System Templates", "Delivery Logs"] },
         { id: "settings", label: "Settings", icon: "settings", subs: ["Admin Accounts", "Roles & Permissions", "Security", "Retention", "Policy & Versioning", "Support Center", { label: "Audit Log", module: "audit" }] }
       ]}
@@ -15385,11 +15384,6 @@
       // moduleData.deletions เก็บเฉพาะ metadata สำหรับ fallback;
       // ข้อมูลจริงและการ render อยู่ใน deletionRequestData + renderDeletionRequests()
       deletions: mod("Account Deletion", "งานตรวจสอบและบริการ / Account Deletion", "Deletion Requests", "ตรวจคำขอลบบัญชี, คืน/ปฏิเสธคืนบัญชีในช่วงรอลบบัญชี 30 วัน และลบบัญชีอัตโนมัติ (เก็บถาวร + ลบตัวตน)", "", [], []),
-      reports: mod("Reports", "เครื่องมือ & รายงาน / Reports", "Reports & Analytics", "รายงาน user, asset, offer, chat, board, social, search, support, notification และ deletion", "สร้าง export", [["Dashboards", "12", "พร้อมใช้งาน"], ["Scheduled", "6", "ส่งประจำสัปดาห์"], ["Export Jobs", "5", "background"], ["Failed", "1", "retry needed"]], [
-        item("RPT-USER", "User Risk Report", "Trust & Safety", "User", "สูง", "Ready", "รวม suspended, report count และ deletion state", ["CSV/PDF"], "Export ต้อง mask sensitive data"),
-        item("RPT-ASSET", "Asset Moderation Report", "Operations", "Asset", "สูง", "Ready", "รวม reported assets และ force status change", ["Audit linked"], "ใช้ตรวจ SLA"),
-        item("RPT-SEARCH", "Search & Watch Alert", "Market", "Search", "กลาง", "Scheduled", "คำค้นยอดนิยมและ alert trigger", ["Weekly"], "ใช้ปรับ Market Data")
-      ]),
       notifications: mod("Notifications", "เครื่องมือ & รายงาน / Notifications", "Broadcast & System Templates", "สร้าง broadcast, system trigger template, delivery logs และ retry", "สร้าง broadcast", [["Draft", "3", "รอ approval"], ["Sent Today", "14,280", "Push 91%"], ["Failed", "92", "retry pending"], ["Templates", "19", "active"]], [
         item("NTF-201", "Auction Week Broadcast", "Marketing", "Broadcast", "กลาง", "Draft", "ส่งให้ผู้ใช้ที่ follow brand Rolex/Omega", ["Segment 4,200"], "ต้อง approval ก่อนส่ง"),
         item("TPL-044", "Watch Alert Matched", "System", "Template", "ปกติ", "Active", "ใช้เมื่อมี Sale listing ตรง criteria", ["Push"], "แก้ template ต้อง audit"),
@@ -38971,9 +38965,6 @@
       toggle.setAttribute("title", willShow ? "Hide password" : "Show password");
     });
     document.querySelector("#primary-action").addEventListener("click", () => {
-      if (activeModule === "dashboard") {
-        jumpToModule("reports", "Search");
-      }
       if (activeModule === "content" && (activeSub || "Articles") === "Articles") {
         renderArticleEditorPage();
       }
