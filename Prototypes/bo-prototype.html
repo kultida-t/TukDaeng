@@ -4737,6 +4737,10 @@
       grid-template-columns: minmax(0, 2.2fr) minmax(0, 1fr);
       column-gap: 28px;
     }
+    /* ADM-PTO-001: Invite Admin modal — form 1 คอลัมน์ (ฟิลด์น้อย ไม่ต้องแบ่ง 2 คอลัมน์) */
+    .admin-account-invite-modal .article-editor-grid {
+      grid-template-columns: minmax(0, 1fr);
+    }
     .option-editor-modal .article-editor-form label {
       grid-column: 1 / -1;
     }
@@ -7398,6 +7402,152 @@
     }
 
     /* ============================================================
+       ADM-PTO-001: Settings > Admin Accounts — dedicated list view
+       pattern: delivery-log-list-mode (full-width panel, no KPI cards,
+       filter bar, pagination 10/page, mobile card) + invite action
+       ============================================================ */
+    body.admin-account-list-mode .layout {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    body.admin-account-list-mode .detail {
+      display: none;
+    }
+    /* ADM-PTO-001: ปุ่ม primary-action ใน panel head ไม่ใช้ — ปุ่มเชิญ Admin อยู่ที่ #page-actions */
+    body.admin-account-list-mode #primary-action {
+      display: none;
+    }
+    body.admin-account-list-mode .main {
+      overflow-x: hidden;
+    }
+    body.admin-account-list-mode .layout > .panel {
+      overflow: visible;
+    }
+    body.admin-account-list-mode #table {
+      max-width: 100%;
+      min-width: 0;
+      overflow-x: auto;
+      overflow-y: visible;
+      scrollbar-width: thin;
+      position: relative;
+    }
+    body.admin-account-list-mode #table .admin-account-table {
+      min-width: 1004px;
+    }
+    body.admin-account-list-mode #table > .footer-range {
+      min-width: 1004px;
+      padding: 11px 18px;
+    }
+    /* ADM-PTO-001: master admin badge — แยกจาก pill สถานะ/role ทั่วไป */
+    .pill.pill-master {
+      border-color: #0a2342;
+      background: #0a2342;
+      color: #fff;
+      letter-spacing: .04em;
+    }
+    /* row-menu visibility — match deletion-list-mode */
+    body.admin-account-list-mode .row-menu-list {
+      visibility: hidden;
+      opacity: 0;
+    }
+    body.admin-account-list-mode .row-menu-list.is-fixed {
+      visibility: visible;
+      opacity: 1;
+    }
+    /* filter bar — 3 filters + reset (match deletion-filter-bar layout) */
+    body.admin-account-list-mode .admin-account-filter-bar {
+      grid-template-columns: minmax(220px, 1.3fr) repeat(3, minmax(118px, .62fr)) 42px;
+    }
+    body.admin-account-list-mode .admin-account-filter-bar .filter-reset {
+      position: relative;
+      width: 42px;
+      min-width: 42px;
+      height: 48px;
+      min-height: 48px;
+      padding: 0;
+      border-color: #cfdbea;
+      background: #fff;
+      justify-content: center;
+    }
+    body.admin-account-list-mode .admin-account-filter-bar .filter-reset span {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+    body.admin-account-list-mode .admin-account-filter-bar .user-advanced-filter,
+    body.admin-account-list-mode .admin-account-filter-bar .custom-select,
+    body.admin-account-list-mode .admin-account-filter-bar .custom-select-trigger {
+      min-width: 0;
+      height: 48px;
+      min-height: 48px;
+      max-height: 48px;
+    }
+    body.admin-account-list-mode .admin-account-filter-bar .custom-select-trigger {
+      display: flex;
+      align-items: center;
+      overflow: hidden;
+    }
+    body.admin-account-list-mode .admin-account-filter-bar .custom-select-trigger [data-custom-select-label] {
+      display: block;
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    /* table grid (7 columns: Admin ID / Name / Email / Role / Status / Last Login / Action) */
+    body.admin-account-list-mode .admin-account-table .user-row {
+      grid-template-columns: minmax(110px, .6fr) minmax(150px, .95fr) minmax(170px, 1fr) minmax(130px, .7fr) minmax(100px, .5fr) minmax(130px, .7fr) minmax(56px, .28fr);
+      gap: 12px;
+    }
+    body.admin-account-list-mode .admin-account-table .user-row:not(.head) {
+      min-height: 66px;
+      padding: 10px 18px;
+      cursor: pointer;
+    }
+    body.admin-account-list-mode .admin-account-table .user-row > div {
+      min-width: 0;
+    }
+    /* font size match Reported Users / Deletion Requests — 12px, weight 400 */
+    body.admin-account-list-mode .admin-account-table .user-row.admin-account-row:not(.head) .main-text,
+    body.admin-account-list-mode .admin-account-table .user-row.admin-account-row:not(.head) .muted {
+      color: #516683;
+      font-size: 12px;
+      font-weight: 400;
+      line-height: 1.5;
+      margin-bottom: 0;
+    }
+    body.admin-account-list-mode .admin-account-table .empty-icon {
+      width: 40px;
+      height: 40px;
+      margin: 0 auto 8px;
+      color: #cbd5e1;
+    }
+    body.admin-account-list-mode .admin-account-table .empty-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: #475569;
+      margin-bottom: 4px;
+    }
+    body.admin-account-list-mode .admin-account-table .empty-subtitle {
+      font-size: 12px;
+      color: #94a3b8;
+    }
+    /* row-menu visibility — match deletion-list-mode */
+    body.admin-account-list-mode .row-menu-list {
+      visibility: hidden;
+      opacity: 0;
+    }
+    body.admin-account-list-mode .row-menu-list.is-fixed {
+      visibility: visible;
+      opacity: 1;
+    }
+
+    /* ============================================================
        DEL-PTO-002: Account Deletion Request Detail page
        pattern: Reported Users Report Detail + Offer Detail
        body class: deletion-detail-mode (ไม่ใช้ user-detail-mode เพื่อไม่กระทบ protected screens)
@@ -7822,6 +7972,188 @@
       }
       /* DEL-PTO-006: ปุ่ม Email ส่งแล้ว บน mobile card ให้พอดีข้อความเหมือน pill (scope เฉพาะ deletion detail) */
       body.deletion-detail-mode .deletion-detail-page .history-table td .history-delivery-link {
+        width: max-content;
+        max-width: 100%;
+        justify-self: start;
+      }
+    }
+
+    /* ============================================================
+       ADM-PTO-001: Admin Account Detail page
+       pattern: Deletion Request Detail (deletion-detail-mode)
+       body class: admin-account-detail-mode (ไม่ใช้ user-detail-mode เพื่อไม่กระทบ protected screens)
+       ============================================================ */
+    body.admin-account-detail-mode .layout {
+      grid-template-columns: minmax(0, 1fr);
+      margin-top: 0;
+      padding-top: 0;
+    }
+    body.admin-account-detail-mode .layout > .panel {
+      border-color: #d7e2f0;
+      box-shadow: none;
+      overflow: visible;
+    }
+    body.admin-account-detail-mode .layout > .panel > .panel-head {
+      display: none !important;
+      min-height: 0 !important;
+      height: 0 !important;
+      padding: 0 !important;
+      border: 0 !important;
+      overflow: hidden !important;
+    }
+    body.admin-account-detail-mode .filters {
+      display: none !important;
+      min-height: 0 !important;
+      height: 0 !important;
+      padding: 0 !important;
+      border: 0 !important;
+      overflow: hidden !important;
+    }
+    body.admin-account-detail-mode .summary-grid,
+    body.admin-account-detail-mode #cards,
+    body.admin-account-detail-mode #detail {
+      display: none;
+    }
+    body.admin-account-detail-mode #table {
+      padding: 0;
+      background: transparent;
+      overflow: visible;
+    }
+    body.admin-account-detail-mode .main {
+      overflow-x: hidden;
+    }
+    /* reuse .user-detail-page.report-detail-page shell + .detail-section/.detail-grid/.detail-tile */
+    body.admin-account-detail-mode .admin-account-detail-page .detail-section {
+      display: grid;
+      gap: 14px;
+      padding: 18px 0;
+    }
+    body.admin-account-detail-mode .admin-account-detail-page .detail-section h4 {
+      margin: 0;
+      color: #061426;
+      font-family: var(--font-heading);
+      font-size: 24px;
+      font-weight: 400;
+      line-height: .95;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+    body.admin-account-detail-mode .admin-account-detail-page .detail-grid.three {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+    body.admin-account-detail-mode .admin-account-detail-page .detail-tile {
+      min-width: 0;
+    }
+    body.admin-account-detail-mode .admin-account-detail-page .detail-tile strong {
+      display: block;
+      overflow-wrap: anywhere;
+    }
+    body.admin-account-detail-mode .admin-account-detail-page .detail-tile .link-btn {
+      padding: 0;
+      border: 0;
+      background: transparent;
+      color: var(--blue);
+      font-size: 12px;
+      font-weight: 700;
+      text-align: left;
+      cursor: pointer;
+      text-decoration: none;
+    }
+    body.admin-account-detail-mode .admin-account-detail-page .detail-tile .link-btn:hover {
+      text-decoration: underline;
+    }
+    body.admin-account-detail-mode .admin-account-action-section .user-detail-actions {
+      padding-top: 2px;
+    }
+    /* ADM-PTO-001: audit link ในตาราง history — ทรง pill เดียวกับ history-delivery-link ของหน้าที่ล็อก (โทนน้ำเงิน = ลิงก์) */
+    .history-audit-link {
+      border: 1px solid #c6ddff;
+      background: #e8f1ff;
+      border-radius: 999px;
+      color: #0f52b8;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 26px;
+      padding: 3px 10px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .history-audit-link:hover {
+      border-color: #1f9cf0;
+      background: #f6fbff;
+    }
+    /* responsive — tablet 1180px: detail-grid 3 → 2 */
+    @media (max-width: 1180px) {
+      body.admin-account-detail-mode .admin-account-detail-page .detail-grid.three {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+    /* responsive — mobile 760px: detail-grid → 1 column, action buttons full width, history table → card stack */
+    @media (max-width: 760px) {
+      body.admin-account-detail-mode .admin-account-detail-page .detail-grid.three {
+        grid-template-columns: 1fr;
+      }
+      body.admin-account-detail-mode .admin-account-action-section .user-detail-actions .user-detail-action-btn {
+        flex: 1 1 0;
+        min-width: 0;
+      }
+      body.admin-account-detail-mode .admin-account-detail-page .history-table-wrap {
+        overflow: visible;
+        border: 0;
+        background: transparent;
+      }
+      body.admin-account-detail-mode .admin-account-detail-page .history-table,
+      body.admin-account-detail-mode .admin-account-detail-page .history-table tbody,
+      body.admin-account-detail-mode .admin-account-detail-page .history-table tr,
+      body.admin-account-detail-mode .admin-account-detail-page .history-table td {
+        display: block;
+        width: 100%;
+      }
+      body.admin-account-detail-mode .admin-account-detail-page .history-table thead {
+        display: none;
+      }
+      body.admin-account-detail-mode .admin-account-detail-page .history-table {
+        min-width: 0;
+        border-collapse: separate;
+        border-spacing: 0 8px;
+        background: transparent;
+      }
+      body.admin-account-detail-mode .admin-account-detail-page .history-table .history-note {
+        min-width: 0;
+        max-width: none;
+      }
+      body.admin-account-detail-mode .admin-account-detail-page .history-table tr {
+        border: 1px solid #dce6f2;
+        border-radius: 8px;
+        background: #fff;
+        padding: 12px 10px;
+      }
+      body.admin-account-detail-mode .admin-account-detail-page .history-table tr + tr {
+        margin-top: 10px;
+      }
+      body.admin-account-detail-mode .admin-account-detail-page .history-table td {
+        display: grid;
+        grid-template-columns: 92px minmax(0, 1fr);
+        column-gap: 10px;
+        row-gap: 0;
+        align-items: baseline;
+        border: 0;
+        padding: 7px 0;
+        font-size: 12px;
+        line-height: 1.45;
+        overflow-wrap: anywhere;
+      }
+      body.admin-account-detail-mode .admin-account-detail-page .history-table td::before {
+        content: attr(data-label);
+        color: #66758d;
+        font-size: 11px;
+        font-weight: 800;
+        line-height: inherit;
+      }
+      /* ADM-PTO-001: pill audit link บน mobile card ให้พอดีข้อความ (เหมือน history-delivery-link ของหน้าที่ล็อก) */
+      body.admin-account-detail-mode .admin-account-detail-page .history-table td .history-audit-link {
         width: max-content;
         max-width: 100%;
         justify-self: start;
@@ -10823,6 +11155,14 @@
       body.deletion-list-mode .deletion-filter-bar {
         grid-template-columns: minmax(0, 1fr) repeat(3, minmax(112px, .5fr)) 42px;
       }
+      /* ADM-PTO-001: Admin Accounts tablet filter bar — search + 3 filters + reset บรรทัดเดียว */
+      body.admin-account-list-mode .admin-account-filter-bar {
+        grid-template-columns: minmax(0, 1fr) repeat(3, minmax(112px, .5fr)) 42px;
+      }
+      body.admin-account-list-mode .admin-account-filter-bar .search {
+        grid-column: auto;
+        min-width: 0;
+      }
       body.deletion-list-mode .deletion-filter-bar .search {
         grid-column: auto;
         min-width: 0;
@@ -11049,6 +11389,10 @@
       }
       /* NTF-RSTR-003: Delivery Logs small tablet — search + 3 filters + reset บรรทัดเดียว */
       body.delivery-log-list-mode .delivery-filter-bar {
+        grid-template-columns: minmax(0, 1fr) repeat(3, minmax(100px, .46fr)) 42px;
+      }
+      /* ADM-PTO-001: Admin Accounts small tablet — search + 3 filters + reset บรรทัดเดียว */
+      body.admin-account-list-mode .admin-account-filter-bar {
         grid-template-columns: minmax(0, 1fr) repeat(3, minmax(100px, .46fr)) 42px;
       }
       body.market-list-mode .user-filter-bar.market-mode {
@@ -11626,6 +11970,13 @@
         justify-content: space-between;
         gap: 10px;
       }
+      /* ADM-PTO-001: Admin Accounts mobile — panel head title + filter actions บรรทัดเดียว (match delivery) */
+      body.admin-account-list-mode .panel-head {
+        align-items: center;
+        flex-direction: row;
+        justify-content: space-between;
+        gap: 10px;
+      }
       body.offer-detail-mode .layout > .panel > .panel-head {
         display: none !important;
         min-height: 0 !important;
@@ -11775,7 +12126,8 @@
       body.option-master-mode .user-panel-filter-actions,
       body.watch-alert-mode.watch-alert-list-mode .user-panel-filter-actions,
       body.deletion-list-mode .user-panel-filter-actions,
-      body.delivery-log-list-mode .user-panel-filter-actions {
+      body.delivery-log-list-mode .user-panel-filter-actions,
+      body.admin-account-list-mode .user-panel-filter-actions {
         display: flex;
         align-items: center;
         justify-content: flex-end;
@@ -12142,6 +12494,87 @@
       }
       body.delivery-log-list-mode .delivery-log-table .user-row.delivery-row:not(.head) > div[data-label]:not(.user-cell-primary) {
         display: none;
+      }
+      /* ADM-PTO-001: Admin Accounts mobile card — pattern delivery-log-list-mode */
+      body.admin-account-list-mode .admin-account-table {
+        grid-template-columns: 1fr;
+        gap: 12px;
+      }
+      body.admin-account-list-mode .user-filter-bar.admin-account-filter-bar {
+        grid-template-columns: 1fr;
+        width: 100%;
+      }
+      body.admin-account-list-mode .user-filter-bar.admin-account-filter-bar .search {
+        grid-column: 1 / -1;
+        width: 100%;
+      }
+      body.admin-account-list-mode .admin-account-table .user-row.admin-account-row:not(.head) {
+        grid-template-columns: minmax(0, 1fr);
+        column-gap: 14px;
+        row-gap: 14px;
+        min-height: 0;
+        padding: 18px 18px 16px;
+        border-color: #cfdbd2;
+        border-radius: 10px;
+        box-shadow: 0 1px 2px rgba(15, 23, 42, .05);
+        cursor: pointer;
+        overflow: visible;
+      }
+      body.admin-account-list-mode .admin-account-table .user-row.admin-account-row:not(.head) > div.user-cell-primary[data-label="Admin ID"] .main-text {
+        max-width: 100%;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        color: #061426;
+        font-family: var(--font-heading);
+        font-size: 22px;
+        font-weight: 500;
+        letter-spacing: .04em;
+        line-height: 1;
+      }
+      body.admin-account-list-mode .admin-account-table .user-row.admin-account-row:not(.head) > div[data-label]:not(.user-cell-primary) {
+        display: none;
+      }
+      body.admin-account-list-mode .admin-account-table .user-row.admin-account-row:not(.head) > .user-row-actions {
+        display: none;
+      }
+      /* ADM-PTO-001: #table mobile override — match delivery-log-list-mode (การ์ดเต็มความกว้างจอ) */
+      body.admin-account-list-mode .main {
+        overflow-x: hidden;
+      }
+      body.admin-account-list-mode .layout > .panel {
+        overflow: hidden;
+      }
+      body.admin-account-list-mode #table {
+        padding: 12px 14px 16px;
+        background: #f8fbff;
+        overflow-x: hidden;
+      }
+      body.admin-account-list-mode #table .admin-account-table {
+        min-width: 0;
+      }
+      body.admin-account-list-mode #table > .footer-range {
+        min-width: 0;
+        margin-top: 12px;
+        padding: 13px 16px;
+        background: transparent;
+      }
+      /* ADM-PTO-001: meta grid label ซ้าย + value ขวา ตัดคำ 1 บรรทัด (match delivery) */
+      body.admin-account-list-mode .admin-account-table .user-card-meta-item.comment-field-meta {
+        display: grid;
+        grid-template-columns: max-content minmax(0, 50%);
+        align-items: baseline;
+        gap: 8px;
+      }
+      body.admin-account-list-mode .admin-account-table .user-card-meta-item.comment-field-meta strong {
+        width: 100%;
+        max-width: 100%;
+        min-width: 0;
+        display: block;
+        overflow: hidden;
+        text-align: right;
+        text-overflow: ellipsis;
+        white-space: nowrap;
       }
       .user-card-tags {
         grid-column: 1 / -1;
@@ -16523,6 +16956,97 @@
       ]
     };
 
+    // ADM-PTO-001: Admin Accounts mock data (Settings > Admin Accounts)
+    // แยกจาก moduleData.settings.rows เพื่อไม่ให้ปนกับ Policy/Security/Retention/Delivery rows
+    // pattern: deletionRequestData — separate data + dedicated renderer
+    // สถานะตาม 16_ADMIN_SETTINGS_MODULE.md section 8.1: Invited / Active / Locked / Suspended / Archived
+    // role template ตาม section 9.1: Super Admin / Content Editor / Content Publisher / Moderator / Support Agent
+    // audit event type ตาม section 19: ADMIN_ACCOUNT_INVITE / ADMIN_ACCOUNT_SUSPEND / ADMIN_ACCOUNT_REACTIVATE / ADMIN_ACCOUNT_UNLOCK / ADMIN_ACCOUNT_ARCHIVE
+    const adminAccountData = {
+      accounts: [
+        { id: "ADM-001", fullName: "สมชาย บริหาร", email: "somchai@tukdaeng.example", role: "Super Admin", status: "Active", authMethod: "Email OTP", lastLogin: "08 Sep 2026 14:22", lastLoginRank: 202609081422, createdAt: "01 Jan 2026 09:00", createdAtRank: 202601010900, lastAction: "Force Hide Asset (AST-8831)", isSelf: false, isLastActive: false, isMaster: true },
+        { id: "ADM-002", fullName: "อรนุช แก้วใส", email: "ornnuch@tukdaeng.example", role: "Super Admin", status: "Active", authMethod: "Email OTP", lastLogin: "08 Sep 2026 11:05", lastLoginRank: 202609081105, createdAt: "15 Jan 2026 10:30", createdAtRank: 202601151030, lastAction: "ปฏิเสธคืนบัญชี (DEL-028)", isSelf: false, isLastActive: false },
+        { id: "ADM-003", fullName: "มะลิ จันทร์ดี", email: "mali@tukdaeng.example", role: "Moderator", status: "Active", authMethod: "Email OTP", lastLogin: "07 Sep 2026 16:45", lastLoginRank: 202609071645, createdAt: "10 Feb 2026 13:00", createdAtRank: 202602101300, lastAction: "คืนบัญชี (DEL-031)", isSelf: false, isLastActive: false },
+        { id: "ADM-004", fullName: "กิตติ เนื้อหา", email: "kitti@tukdaeng.example", role: "Content Publisher", status: "Active", authMethod: "Email OTP", lastLogin: "06 Sep 2026 09:00", lastLoginRank: 202609060900, createdAt: "20 Feb 2026 08:15", createdAtRank: 202602200815, lastAction: "ปิดรายงานไม่พบการละเมิด (RCO-690)", isSelf: false, isLastActive: false },
+        { id: "ADM-005", fullName: "Orn Admin", email: "orn@tukdaeng.example", role: "Content Editor", status: "Active", authMethod: "Email OTP", lastLogin: "07 Sep 2026 16:30", lastLoginRank: 202609071630, createdAt: "05 Mar 2026 11:00", createdAtRank: 202603051100, lastAction: "Publish Article (ART-044)", isSelf: false, isLastActive: false },
+        { id: "ADM-006", fullName: "พิมพ์ใจ สายด่วน", email: "pim@tukdaeng.example", role: "Support Agent", status: "Suspended", authMethod: "Email OTP", lastLogin: "20 Aug 2026 10:00", lastLoginRank: 202608201000, createdAt: "01 Apr 2026 09:00", createdAtRank: 202604010900, lastAction: "Suspended โดย Super Admin — ตรวจสอบการเข้าถึงข้อมูลผู้ใช้นอก scope", isSelf: false, isLastActive: false },
+        { id: "ADM-007", fullName: "วิชัย รองผู้จัดการ", email: "wichai@tukdaeng.example", role: "Moderator", status: "Locked", authMethod: "Email OTP", lastLogin: "02 Sep 2026 08:30", lastLoginRank: 202609020830, createdAt: "12 Apr 2026 14:00", createdAtRank: 202604121400, lastAction: "Locked จาก failed login 5 ครั้ง — รอ unlock หรือครบ 15 นาที", isSelf: false, isLastActive: false },
+        { id: "ADM-008", fullName: "นัฐพล พัฒนา", email: "nattapol@tukdaeng.example", role: "Super Admin", status: "Invited", authMethod: "Email OTP", lastLogin: "—", lastLoginRank: 0, createdAt: "08 Sep 2026 16:00", createdAtRank: 202609081600, lastAction: "Invited — รอผู้รับยืนยันอีเมลและตั้ง password", isSelf: false, isLastActive: false },
+        { id: "ADM-009", fullName: "อดิศร เก่าก่อน", email: "adisorn@tukdaeng.example", role: "Content Editor", status: "Archived", authMethod: "Email OTP", lastLogin: "15 Jun 2026 11:00", lastLoginRank: 202606151100, createdAt: "10 May 2025 09:00", createdAtRank: 202505100900, lastAction: "Archived — ออกจากทีม เก็บ audit history ตาม retention", isSelf: false, isLastActive: false },
+        { id: "ADM-010", fullName: "ผู้ดูแลระบบ", email: "current.admin@tukdaeng.example", role: "Super Admin", status: "Active", authMethod: "Email OTP", lastLogin: "08 Sep 2026 15:00", lastLoginRank: 202609081500, createdAt: "01 Jan 2026 09:00", createdAtRank: 202601010900, lastAction: "เข้าสู่ระบบ Settings > Admin Accounts", isSelf: true, isLastActive: true }
+      ],
+      // detail keyed by account id — activity history + audit log reference
+      detail: {
+        "ADM-001": {
+          activity: [
+            { at: "08 Sep 2026 14:22", action: "Force Hide Asset", reference: "AST-8831", note: "รายงานเนื้อหาไม่เหมาะสม 3 รายงาน" },
+            { at: "06 Sep 2026 18:44", action: "Export User CSV", reference: "RPT-USER", note: "Export ข้อมูลผู้ใช้สำหรับ compliance review" },
+            { at: "04 Sep 2026 20:10", action: "Suspend User", reference: "U-1002", note: "รายงาน 5 รายงาน พฤติกรรมผู้ขายที่ต้องตรวจสอบ" }
+          ],
+          auditRefs: ["AUD-88201", "AUD-88120", "AUD-88072"]
+        },
+        "ADM-002": {
+          activity: [
+            { at: "08 Sep 2026 11:05", action: "ปฏิเสธคืนบัญชี", reference: "DEL-028", note: "พฤติกรรมละเมิดซ้ำ ไม่สมควรคืนบัญชี" },
+            { at: "30 Aug 2026 11:00", action: "ปฏิเสธคืนบัญชี", reference: "DEL-029", note: "ประวัติมีรายงานเสี่ยงสูง 2 รายงาน" }
+          ],
+          auditRefs: ["AUD-88198"]
+        },
+        "ADM-003": {
+          activity: [
+            { at: "07 Sep 2026 16:45", action: "คืนบัญชี", reference: "DEL-031", note: "ผู้ใช้ติดต่อ support และยืนยันตัวตนแล้ว" },
+            { at: "22 Aug 2026 10:15", action: "คืนบัญชี", reference: "DEL-032", note: "ผู้ใช้ติดต่อ support ขอคืนบัญชี" }
+          ],
+          auditRefs: ["AUD-88168"]
+        },
+        "ADM-004": {
+          activity: [
+            { at: "06 Sep 2026 09:00", action: "ปิดรายงานไม่พบการละเมิด", reference: "RCO-690", note: "ตรวจหลักฐานแล้วไม่พบการละเมิด" }
+          ],
+          auditRefs: ["AUD-88098"]
+        },
+        "ADM-005": {
+          activity: [
+            { at: "07 Sep 2026 16:30", action: "Publish Article", reference: "ART-044", note: "ตั้งเวลาเผยแพร่ 10 Jul 2026 19:00" }
+          ],
+          auditRefs: ["AUD-88172"]
+        },
+        "ADM-006": {
+          activity: [
+            { at: "20 Aug 2026 10:00", action: "เข้าสู่ระบบครั้งสุดท้าย", reference: "—", note: "หลังจากนี้ถูกระงับ" },
+            { at: "21 Aug 2026 09:00", action: "Suspended โดย Super Admin", reference: "ADM-001", note: "ตรวจสอบการเข้าถึงข้อมูลผู้ใช้นอก scope" }
+          ],
+          auditRefs: []
+        },
+        "ADM-007": {
+          activity: [
+            { at: "02 Sep 2026 08:30", action: "เข้าสู่ระบบครั้งสุดท้าย", reference: "—", note: "หลังจากนี้ถูก lock จาก failed login" },
+            { at: "02 Sep 2026 08:35", action: "Locked จาก failed login 5 ครั้ง", reference: "—", note: "รอ unlock หรือครบ 15 นาที" }
+          ],
+          auditRefs: []
+        },
+        "ADM-008": {
+          activity: [
+            { at: "08 Sep 2026 16:00", action: "Invited โดย Super Admin", reference: "ADM-001", note: "รอผู้รับยืนยันอีเมลและตั้ง password" }
+          ],
+          auditRefs: []
+        },
+        "ADM-009": {
+          activity: [
+            { at: "15 Jun 2026 11:00", action: "เข้าสู่ระบบครั้งสุดท้าย", reference: "—", note: "หลังจากนี้ถูก archive" },
+            { at: "20 Jun 2026 10:00", action: "Archived โดย Super Admin", reference: "ADM-001", note: "ออกจากทีม เก็บ audit history ตาม retention" }
+          ],
+          auditRefs: []
+        },
+        "ADM-010": {
+          activity: [
+            { at: "08 Sep 2026 15:00", action: "เข้าสู่ระบบ Settings > Admin Accounts", reference: "—", note: "เซสชันปัจจุบัน" }
+          ],
+          auditRefs: []
+        }
+      }
+    };
+
     const userManagementData = {
       users: [
         { id: "U-1002", displayName: "horology.king", username: "@horology.king", email: "ho***@gmail.com", auth: "Google", status: "Suspended", joined: "03 Jul 2026", joinedBucket: "7d", joinedRank: 20260703, lastActive: "10 Jul 2026 18:10", lastActiveBucket: "24h", lastActiveRank: 202607101810, assets: 2, assetBucket: "1-5", reports: 5, verification: "Google verified", contact: ["Line: horology.king"], support: "SUP-177", latest: "Report follow-up", reportState: "ตรวจแล้ว 5 รายงาน - บัญชีถูกระงับอยู่", statusLabel: "เข้าสู่ระบบไม่ได้", allowed: ["Restore", "Ban"], blocked: ["Reset password", "Deletion from list"], foImpact: "ผู้ใช้เข้าสู่ระบบไม่ได้ระหว่างถูกระงับบัญชีชั่วคราว", actionNote: "การเปลี่ยนสถานะต้องระบุเหตุผล แสดงผลกระทบ และบันทึกการดำเนินการ" },
@@ -17867,6 +18391,10 @@
     let deliveryLogPage = 1;
     let deliveryLogFilterOpen = false;
     const deliveryLogPageSize = 10;
+    // ADM-PTO-001: Admin Accounts list state (Settings > Admin Accounts)
+    let adminAccountListPage = 1;
+    let adminAccountFilterOpen = false;
+    const adminAccountListPageSize = 10;
     let optionGroupListPage = 1;
     let optionDetailPage = 1;
     let activeOptionGroup = "";
@@ -17899,7 +18427,9 @@
       "deletion-list": { searchId: "deletion-search", filterIds: ["deletion-status-filter", "deletion-grace-filter", "deletion-sort"] },
       "audit-log": { searchId: "audit-search", filterIds: ["audit-module-filter", "audit-risk-filter", "audit-sort"] },
       // NTF-RSTR-003: Delivery Logs (Settings > Delivery Logs)
-      "delivery-log-list": { searchId: "delivery-search", filterIds: ["delivery-status-filter", "delivery-channel-filter", "delivery-sort"] }
+      "delivery-log-list": { searchId: "delivery-search", filterIds: ["delivery-status-filter", "delivery-channel-filter", "delivery-sort"] },
+      // ADM-PTO-001: Admin Accounts (Settings > Admin Accounts)
+      "admin-account-list": { searchId: "admin-account-search", filterIds: ["admin-account-status-filter", "admin-account-role-filter", "admin-account-sort"] }
     };
     let activeAssetImageIndex = 0;
     let activeAssetReportModalImageIndex = 0;
@@ -18413,6 +18943,9 @@
       optionGroupFilterOpen = false;
       watchAlertListPage = 1;
       watchAlertListFilterOpen = false;
+      // ADM-PTO-001: Admin Accounts list state reset
+      adminAccountListPage = 1;
+      adminAccountFilterOpen = false;
       // BO-UX-001: clear all saved per-list filter values
       for (const key in listFilterState) delete listFilterState[key];
       marketDashboardPage = 1;
@@ -18451,6 +18984,8 @@
       if (activeModule === "deletions") return "deletion-list";
       // NTF-RSTR-003: Delivery Logs (Settings > Delivery Logs)
       if (activeModule === "settings" && activeSub === "Delivery Logs") return "delivery-log-list";
+      // ADM-PTO-001: Admin Accounts (Settings > Admin Accounts)
+      if (activeModule === "settings" && (!activeSub || activeSub === "Admin Accounts")) return "admin-account-list";
       if (activeModule === "market") {
         if (activeSub === "Brands & Models") {
           if (document.querySelector("#market-reference-search")) return "market-model-detail";
@@ -18536,6 +19071,7 @@
       deletionFilterOpen = false;
       auditLogFilterOpen = false;
       deliveryLogFilterOpen = false;
+      adminAccountFilterOpen = false;
     }
 
     function renderNav() {
@@ -18754,6 +19290,29 @@
       deliverySort: [
         { value: "latest", label: filterCopy.latestFirst },
         { value: "oldest", label: filterCopy.oldestFirst }
+      ],
+      // ADM-PTO-001: Admin Accounts filters (Settings > Admin Accounts)
+      adminAccountStatus: [
+        { value: "", label: filterCopy.allStatus },
+        { value: "Invited", label: "Invited" },
+        { value: "Active", label: "Active" },
+        { value: "Locked", label: "Locked" },
+        { value: "Suspended", label: "Suspended" },
+        { value: "Archived", label: "Archived" }
+      ],
+      adminAccountRole: [
+        { value: "", label: "Role ทั้งหมด" },
+        { value: "Super Admin", label: "Super Admin" },
+        { value: "Content Editor", label: "Content Editor" },
+        { value: "Content Publisher", label: "Content Publisher" },
+        { value: "Moderator", label: "Moderator" },
+        { value: "Support Agent", label: "Support Agent" }
+      ],
+      adminAccountSort: [
+        { value: "latest", label: filterCopy.latestFirst },
+        { value: "oldest", label: filterCopy.oldestFirst },
+        { value: "name", label: "Name A-Z" },
+        { value: "status", label: "สถานะ" }
       ]
     };
 
@@ -21772,6 +22331,685 @@
       showUserActionModal(true);
     }
 
+    // ===== Settings > Admin Accounts rendering (ADM-PTO-001) =====
+    // pattern: renderDeletionRequests / renderDeliveryLogs — full-width list, no KPI cards
+    // data source: adminAccountData.accounts (separate from moduleData.settings.rows)
+    // filter state persistence: listFilterConfig["admin-account-list"]
+    // สถานะตาม 16_ADMIN_SETTINGS_MODULE.md section 8.1: Invited / Active / Locked / Suspended / Archived
+    function getAdminAccountSearchText(acc) {
+      return [acc.id, acc.fullName, acc.email, acc.role, acc.status, acc.lastAction]
+        .filter(Boolean).join(" ").toLowerCase();
+    }
+
+    function adminAccountStatusPill(status) {
+      const map = { Active: "green", Invited: "blue", Locked: "amber", Suspended: "red", Archived: "gray" };
+      return `<span class="pill ${map[status] || "gray"}">${status}</span>`;
+    }
+
+    function adminAccountRolePill(role) {
+      const map = { "Super Admin": "purple", "Content Publisher": "blue", "Content Editor": "blue", Moderator: "amber", "Support Agent": "gray" };
+      return `<span class="pill ${map[role] || "gray"}">${role}</span>`;
+    }
+
+    // ADM-PTO-001: master admin หลัก 1 บัญชี — ป้องกัน suspend/archive และแสดง badge ชัดเจน
+    // (ต่อยอด section 4: ต้องมี active admin ที่ดูแลระบบได้เสมอ)
+
+    // ตรวจสถานะที่อนุญาตให้ suspend ได้ (ต้องไม่ใช่ตัวเอง ไม่ใช่ master และต้องไม่ใช่ active admin คนสุดท้าย)
+    function canSuspendAdmin(acc) {
+      if (!acc || acc.isSelf) return false;
+      if (acc.isMaster) return false; // master admin หลัก — ห้ามระงับ (ป้องกันระบบไม่มีผู้ดูแล)
+      if (acc.status === "Suspended" || acc.status === "Archived") return false;
+      // ป้องกันการ suspend active admin คนสุดท้าย (section 4)
+      if (acc.status === "Active") {
+        const activeCount = adminAccountData.accounts.filter(a => a.status === "Active").length;
+        if (activeCount <= 1) return false;
+      }
+      return true;
+    }
+
+    function canReactivateAdmin(acc) {
+      if (!acc || acc.isSelf) return false;
+      return acc.status === "Suspended";
+    }
+
+    function canUnlockAdmin(acc) {
+      if (!acc || acc.isSelf) return false;
+      return acc.status === "Locked";
+    }
+
+    function canArchiveAdmin(acc) {
+      if (!acc || acc.isSelf) return false;
+      if (acc.isMaster) return false; // master admin หลัก — ห้ามเก็บถาวร
+      return acc.status === "Suspended" || acc.status === "Locked";
+    }
+
+    function renderAdminAccounts() {
+      setPageActions(`<button class="btn" type="button" data-admin-account-invite-open>${iconSvg.plus}<span>Add admin</span></button>`);
+      document.body.classList.add("admin-account-list-mode");
+      document.body.classList.remove("user-list-mode", "user-detail-mode", "asset-detail-mode", "deletion-list-mode", "deletion-detail-mode", "audit-log-mode", "delivery-log-list-mode", "policy-versioning-mode", "policy-detail-mode", "policy-editor-mode", "policy-version-history-mode", "support-center-mode");
+      activeRow = null;
+      document.querySelector("#crumb").textContent = "เครื่องมือ & รายงาน / Settings / Admin Accounts";
+      document.querySelector("#page-title").textContent = "Admin Accounts";
+      document.querySelector("#page-meta").textContent = "";
+      document.querySelector("#panel-title").textContent = "Admin Account List";
+      document.querySelector("#panel-subtitle").textContent = "";
+      document.querySelector("#primary-action").textContent = "";
+      document.querySelector("#user-panel-filter-actions").innerHTML = `
+        <button class="btn user-filter-toggle" type="button" data-admin-account-filter-toggle aria-expanded="${adminAccountFilterOpen}">${iconSvg.filter}<span>${adminAccountFilterOpen ? "ปิดตัวกรอง" : "เปิดตัวกรอง"}</span></button>
+        <button class="btn" type="button" data-admin-account-reset aria-label="รีเซ็ตค่าทั้งหมด">${iconSvg.refresh}<span>รีเซ็ตค่าทั้งหมด</span></button>
+      `;
+      document.querySelector(".filters").innerHTML = `
+        <div class="user-filter-bar admin-account-filter-bar" data-filter-open="${adminAccountFilterOpen}">
+          <input class="field search" id="admin-account-search" type="search" placeholder="ค้นหา Admin ID, ชื่อ, อีเมล, Role" />
+          <div class="user-advanced-filter">${customSelect("admin-account-status-filter", "Filter account status", filterOptions("adminAccountStatus"))}</div>
+          <div class="user-advanced-filter">${customSelect("admin-account-role-filter", "Filter role", filterOptions("adminAccountRole"))}</div>
+          <div class="user-advanced-filter">${customSelect("admin-account-sort", "Sort admin accounts", filterOptions("adminAccountSort"), "latest")}</div>
+          ${resetFilterButton("data-admin-account-reset")}
+        </div>
+      `;
+      // ADM-PTO-001: ไม่แสดง KPI cards — จำนวนซ้ำซ้อนกับตารางและ filter
+      document.querySelector("#summary-grid").innerHTML = "";
+      document.querySelector("#cards").innerHTML = "";
+      document.querySelector("#detail").innerHTML = "";
+      restoreListFilterState("admin-account-list");
+      renderAdminAccountRows();
+    }
+
+    function renderAdminAccountRows() {
+      const q = (document.querySelector("#admin-account-search")?.value || "").trim().toLowerCase();
+      const status = document.querySelector("#admin-account-status-filter")?.value || "";
+      const role = document.querySelector("#admin-account-role-filter")?.value || "";
+      const sort = document.querySelector("#admin-account-sort")?.value || "latest";
+      const sorted = [...adminAccountData.accounts].filter(acc => {
+        return (!q || getAdminAccountSearchText(acc).includes(q))
+          && (!status || acc.status === status)
+          && (!role || acc.role === role);
+      }).sort((a, b) => {
+        // master admin หลักแสดงบนสุดเสมอ ไม่ว่าจะเรียงด้วยอะไร
+        if (a.isMaster !== b.isMaster) return a.isMaster ? -1 : 1;
+        if (sort === "oldest") return a.createdAtRank - b.createdAtRank;
+        if (sort === "name") return a.fullName.localeCompare(b.fullName, "th");
+        if (sort === "status") return a.status.localeCompare(b.status, "en");
+        return b.createdAtRank - a.createdAtRank;
+      });
+      const pageCount = Math.max(1, Math.ceil(sorted.length / adminAccountListPageSize));
+      adminAccountListPage = Math.min(adminAccountListPage, pageCount);
+      const start = (adminAccountListPage - 1) * adminAccountListPageSize;
+      const pageRows = sorted.slice(start, start + adminAccountListPageSize);
+      document.querySelector("#table").innerHTML = `
+        <div class="user-table admin-account-table">
+          <div class="user-row head"><div>Admin ID</div><div>Name</div><div>Email</div><div>Role</div><div>Status</div><div>Last Login</div><div>Action</div></div>
+          ${pageRows.length === 0
+            ? `<div class="user-row empty"><div class="admin-account-empty-state" style="grid-column: 1 / -1; text-align: center; padding: 2.5rem 1rem;"><div class="empty-icon">${iconSvg.siSearch}</div><div class="empty-title">ไม่พบ admin account</div><div class="empty-subtitle">ลองปรับคำค้นหรือตัวกรอง แล้วลองใหม่</div></div></div>`
+            : pageRows.map(acc => {
+              return `
+                <div class="user-row admin-account-row" data-admin-account-card="${acc.id}">
+                  <div class="user-cell-primary" data-label="Admin ID"><div class="main-text">${acc.id}${acc.isMaster ? ' <span class="pill pill-master">Master</span>' : ""}${acc.isSelf ? ' <span class="pill gray">คุณ</span>' : ""}</div></div>
+                  <div class="user-card-tags">
+                    ${adminAccountStatusPill(acc.status)}
+                    ${adminAccountRolePill(acc.role)}
+                    <div class="user-card-meta">
+                      <div class="user-card-meta-item comment-field-meta"><span>Name</span><strong>${acc.fullName}</strong></div>
+                      <div class="user-card-meta-item comment-field-meta"><span>Email</span><strong>${acc.email}</strong></div>
+                      <div class="user-card-meta-item comment-field-meta"><span>Last Login</span><strong>${acc.lastLogin}</strong></div>
+                    </div>
+                  </div>
+                  <div data-label="Name"><div class="main-text">${acc.fullName}</div></div>
+                  <div data-label="Email"><div class="main-text">${acc.email}</div></div>
+                  <div data-label="Role">${adminAccountRolePill(acc.role)}</div>
+                  <div data-label="Status">${adminAccountStatusPill(acc.status)}</div>
+                  <div data-label="Last Login"><div class="muted">${acc.lastLogin}</div></div>
+                  <div class="user-row-actions">
+                    <details class="row-menu">
+                      <summary aria-label="Admin account actions">...</summary>
+                      <div class="row-menu-list">
+                        <button type="button" data-admin-account-open="${acc.id}">ดูรายละเอียด</button>
+                        ${canSuspendAdmin(acc) ? `<button type="button" data-admin-account-action="suspend" data-admin-account-id="${acc.id}">ระงับ</button>` : ""}
+                        ${canReactivateAdmin(acc) ? `<button type="button" data-admin-account-action="reactivate" data-admin-account-id="${acc.id}">ยกเลิกการระงับ</button>` : ""}
+                        ${canUnlockAdmin(acc) ? `<button type="button" data-admin-account-action="unlock" data-admin-account-id="${acc.id}">ปลดล็อก</button>` : ""}
+                        ${canArchiveAdmin(acc) ? `<button type="button" data-admin-account-action="archive" data-admin-account-id="${acc.id}">เก็บถาวร</button>` : ""}
+                      </div>
+                    </details>
+                  </div>
+                </div>
+              `;
+            }).join("")}
+        </div>
+        <div class="footer-range">
+          <span>แสดง ${sorted.length ? `${start + 1}-${Math.min(start + adminAccountListPageSize, sorted.length)}` : "0"} จาก ${sorted.length}</span>
+          ${renderPager(adminAccountListPage, pageCount, "data-admin-account-page")}
+        </div>
+      `;
+    }
+
+    // ADM-PTO-001: Admin Account Detail — full-width detail ตาม pattern Deletion Request Detail
+    // body class: admin-account-detail-mode (ไม่ใช้ user-detail-mode เพื่อไม่กระทบ protected screens)
+    // sections: Account Summary / Access & Role / Activity History / Audit References
+    // action area: Suspend / Reactivate / Unlock / Archive (เฉพาะที่อนุญาตตามสถานะ)
+    function renderAdminAccountDetail(accountId) {
+      const acc = adminAccountData.accounts.find(a => a.id === accountId);
+      if (!acc) {
+        renderAdminAccounts();
+        return;
+      }
+      const d = (adminAccountData.detail && adminAccountData.detail[acc.id]) || {};
+      const activity = d.activity || [];
+      const auditRefs = d.auditRefs || [];
+
+      activeModule = "settings";
+      activeSub = "Admin Accounts";
+      activeRow = { id: acc.id };
+      document.body.classList.add("admin-account-detail-mode");
+      document.body.classList.remove("admin-account-list-mode", "user-list-mode", "user-detail-mode", "asset-detail-mode", "deletion-list-mode", "deletion-detail-mode", "audit-log-mode", "delivery-log-list-mode", "policy-versioning-mode", "policy-detail-mode", "policy-editor-mode", "policy-version-history-mode", "support-center-mode");
+
+      // breadcrumb + page header + back button (pattern: Deletion Request Detail)
+      document.querySelector("#crumb").textContent = `เครื่องมือ & รายงาน / Settings / Admin Accounts / ${acc.id}`;
+      document.querySelector("#page-title").textContent = "Admin Account Detail";
+      document.querySelector("#page-meta").textContent = "";
+      setPageActions(renderPageBackButton("data-admin-account-back", "กลับไป Admin Accounts"));
+      document.querySelector("#panel-title").textContent = acc.id;
+      document.querySelector("#panel-subtitle").textContent = `${acc.fullName} · ${acc.role}`;
+      document.querySelector("#user-panel-filter-actions").innerHTML = "";
+      document.querySelector(".filters").innerHTML = "";
+      document.querySelector("#summary-grid").innerHTML = "";
+      document.querySelector("#cards").innerHTML = "";
+      document.querySelector("#detail").innerHTML = "";
+
+      // สร้าง action buttons ตามสถานะที่อนุญาต (ปุ่ม back อยู่ที่ page header แล้ว)
+      const actionButtons = [];
+      if (canSuspendAdmin(acc)) {
+        actionButtons.push(`<button class="user-detail-action-btn danger" type="button" data-admin-account-action="suspend" data-admin-account-id="${acc.id}">ระงับ</button>`);
+      }
+      if (canReactivateAdmin(acc)) {
+        actionButtons.push(`<button class="user-detail-action-btn primary" type="button" data-admin-account-action="reactivate" data-admin-account-id="${acc.id}">ยกเลิกการระงับ</button>`);
+      }
+      if (canUnlockAdmin(acc)) {
+        actionButtons.push(`<button class="user-detail-action-btn primary" type="button" data-admin-account-action="unlock" data-admin-account-id="${acc.id}">ปลดล็อก</button>`);
+      }
+      if (canArchiveAdmin(acc)) {
+        actionButtons.push(`<button class="user-detail-action-btn" type="button" data-admin-account-action="archive" data-admin-account-id="${acc.id}">เก็บถาวร</button>`);
+      }
+
+      // Section 1: Account Summary — เฉพาะข้อมูลที่ไม่แสดงใน detail head (ID/ชื่อ/สถานะ/role อยู่ที่ head แล้ว)
+      const summaryTile = (label, value) => `<div class="detail-tile"><span>${label}</span><strong>${value}</strong></div>`;
+      const section1 = `
+        <div class="detail-section">
+          <h4>Account Summary</h4>
+          <div class="detail-grid three report-reference-grid">
+            ${summaryTile("Email", acc.email)}
+            ${summaryTile("Created At", acc.createdAt)}
+            ${summaryTile("Last Login", acc.lastLogin)}
+          </div>
+        </div>
+      `;
+
+      // Section 2: History & Actions — ตารางประวัติล่าสุด + ปุ่ม action (pattern: Deletion Request Detail)
+      // คอลัมน์ Audit = รหัส event ใน Audit Log ของ action นั้น (คลิกเปิด Audit Log กรองด้วย reference) — ไม่มีแสดง —
+      const activityRows = activity.map((a, i) => `
+        <tr>
+          <td data-label="เวลา">${a.at || "—"}</td>
+          <td data-label="Action">${a.action}</td>
+          <td data-label="Reference">${a.reference || "—"}</td>
+          <td data-label="Audit">${auditRefs[i] ? `<button class="history-audit-link" type="button" data-admin-account-audit-ref="${auditRefs[i]}">${auditRefs[i]}</button>` : "—"}</td>
+          <td data-label="รายละเอียด" class="history-note">${a.note || "—"}</td>
+        </tr>
+      `).join("");
+      const section2 = `
+        <div class="detail-section admin-account-action-section">
+          <h4>History &amp; Actions</h4>
+          ${activity.length === 0
+            ? `<div class="detail-empty">ไม่มีประวัติการใช้งาน</div>`
+            : `<div class="history-table-wrap">
+              <table class="history-table">
+                <thead>
+                  <tr>
+                    <th>เวลา</th>
+                    <th>Action</th>
+                    <th>Reference</th>
+                    <th>Audit</th>
+                    <th>รายละเอียด</th>
+                  </tr>
+                </thead>
+                <tbody>${activityRows}</tbody>
+              </table>
+            </div>`}
+          <div class="user-detail-actions">
+            ${actionButtons.join("")}
+          </div>
+        </div>
+      `;
+
+      document.querySelector("#table").innerHTML = `
+        <div class="user-detail-page report-detail-page admin-account-detail-page">
+          <div class="user-detail-head">
+            <div class="user-detail-title">
+              <div>
+                <h2 class="asset-report-heading"><span class="asset-report-id">${acc.id}</span><span class="user-detail-separator"> : </span><span class="asset-report-name user-display-name">${acc.fullName}</span></h2>
+                <div class="chips">
+                  ${adminAccountStatusPill(acc.status)}
+                  ${adminAccountRolePill(acc.role)}
+                  ${acc.isMaster ? '<span class="pill pill-master">Master</span>' : ""}
+                  ${acc.isSelf ? '<span class="pill gray">บัญชีของคุณ</span>' : ""}
+                </div>
+              </div>
+            </div>
+          </div>
+          ${section1}
+          ${section2}
+        </div>
+      `;
+      updateActiveNav();
+      scrollMainToTop();
+    }
+
+    // ADM-PTO-001: Admin Account action config — pattern deletionActionConfig
+    const adminAccountActionConfig = {
+      suspend: {
+        title: "Suspend Admin",
+        tone: "danger",
+        summary: "ระงับ admin account ผู้รับจะเข้าสู่ระบบไม่ได้ทันที และต้องมี reason + audit",
+        reasonLabel: "เหตุผลการระงับ",
+        reasons: [
+          "ตรวจพบการเข้าถึงข้อมูลนอก scope",
+          "พฤติกรรมละเมิดนโยบาย BO",
+          "รอตรวจสอบ security incident",
+          "คำขอจากผู้บริหาร/HR"
+        ],
+        notePlaceholder: "สรุปเหตุผลและข้อมูลอ้างอิงที่เกี่ยวข้องกับการระงับ",
+        success: acc => `${acc.fullName} ถูกระงับแล้ว — เข้าสู่ระบบไม่ได้ทันที`,
+        auditAction: "Suspend Admin",
+        auditType: "ADMIN_ACCOUNT_SUSPEND"
+      },
+      reactivate: {
+        title: "Reactivate Admin",
+        tone: "primary",
+        summary: "ยกเลิกการระงับ admin account ผู้รับกลับเข้าสู่ระบบได้ตามปกติ และต้องมี reason + audit",
+        reasonLabel: "เหตุผลการยกเลิกการระงับ",
+        reasons: [
+          "ตรวจสอบเสร็จแล้ว ไม่พบความผิด",
+          "ได้รับอนุมัติให้กลับมาใช้งาน",
+          "สิ้นสุดช่วงรอตรวจสอบ",
+          "คำขอจากผู้บริหาร/HR"
+        ],
+        notePlaceholder: "สรุปเหตุผลและข้อมูลอ้างอิงที่เกี่ยวข้องกับการยกเลิกการระงับ",
+        success: acc => `${acc.fullName} ยกเลิกการระงับแล้ว — กลับเข้าสู่ระบบได้`,
+        auditAction: "Reactivate Admin",
+        auditType: "ADMIN_ACCOUNT_REACTIVATE"
+      },
+      unlock: {
+        title: "Unlock Admin",
+        tone: "primary",
+        summary: "ปลดล็อก admin account ที่ถูก lock จาก failed login ผู้รับกลับเข้าสู่ระบบได้ทันที",
+        reasonLabel: "เหตุผลการปลดล็อก",
+        reasons: [
+          "ยืนยันตัวตนกับ admin แล้ว",
+          "ตรวจสอบแล้วไม่พบความเสี่ยง",
+          "รอครบช่วง lockout 15 นาทีแล้ว",
+          "คำขอจากผู้บริหาร/HR"
+        ],
+        notePlaceholder: "สรุปเหตุผลและข้อมูลอ้างอิงที่เกี่ยวข้องกับการปลดล็อก",
+        success: acc => `${acc.fullName} ปลดล็อกแล้ว — กลับเข้าสู่ระบบได้`,
+        auditAction: "Unlock Admin",
+        auditType: "ADMIN_ACCOUNT_UNLOCK"
+      },
+      archive: {
+        title: "Archive Admin",
+        tone: "warning",
+        summary: "เก็บถาวร admin account ออกจาก active use แต่ยังเก็บ audit history ตาม retention",
+        reasonLabel: "เหตุผลการเก็บถาวร",
+        reasons: [
+          "ออกจากทีมแล้ว",
+          "ย้ายไปทีมอื่น",
+          "สิ้นสุดการจ้างงาน",
+          "คำขอจากผู้บริหาร/HR"
+        ],
+        notePlaceholder: "สรุปเหตุผลและข้อมูลอ้างอิงที่เกี่ยวข้องกับการเก็บถาวร",
+        success: acc => `${acc.fullName} เก็บถาวรแล้ว — ออกจาก active use`,
+        auditAction: "Archive Admin",
+        auditType: "ADMIN_ACCOUNT_ARCHIVE"
+      }
+    };
+
+    function getAdminAccountActionConfirmClass(config) {
+      if (config.tone === "danger") return "danger user-action-confirm";
+      if (config.tone === "warning") return "warning user-action-confirm";
+      return "primary user-action-confirm";
+    }
+
+    function renderAdminAccountActionImpactNote(acc, action) {
+      const map = {
+        suspend: "ผู้รับเข้าสู่ระบบไม่ได้ทันที และ session ถูก revoke",
+        reactivate: "ผู้รับกลับเข้าสู่ระบบได้ตามปกติ",
+        unlock: "ผู้รับกลับเข้าสู่ระบบได้ทันที ไม่ต้องรอ lockout หมดอายุ",
+        archive: "admin account ออกจาก active use แต่ยังเก็บ audit history ตาม retention"
+      };
+      return `
+        <div class="module-note user-action-impact user-action-impact-card user-action-impact-warning">
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 3.2c.7 0 1.35.37 1.7.98l8.05 13.95A1.95 1.95 0 0 1 20.05 21H3.95a1.95 1.95 0 0 1-1.7-2.87L10.3 4.18A1.95 1.95 0 0 1 12 3.2Zm0 4.6a1 1 0 0 0-1 1v4.4a1 1 0 1 0 2 0V8.8a1 1 0 0 0-1-1Zm0 8.45a1.15 1.15 0 1 0 0 2.3 1.15 1.15 0 0 0 0-2.3Z"/></svg>
+          <p><strong>ผลกระทบ:</strong> ${map[action] || ""}</p>
+        </div>
+      `;
+    }
+
+    function renderAdminAccountActionEmailNote(acc) {
+      return `
+        <div class="module-note user-action-impact user-action-impact-card user-action-impact-notice">
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M4.5 5h15A2.5 2.5 0 0 1 22 7.5v9A2.5 2.5 0 0 1 19.5 19h-15A2.5 2.5 0 0 1 2 16.5v-9A2.5 2.5 0 0 1 4.5 5Zm0 2a.5.5 0 0 0-.5.5v.3l8 4.9 8-4.9v-.3a.5.5 0 0 0-.5-.5h-15Zm15 10a.5.5 0 0 0 .5-.5v-6.35l-7.48 4.57a1 1 0 0 1-1.04 0L4 10.15v6.35a.5.5 0 0 0 .5.5h15Z"/></svg>
+          <p><strong>แจ้ง admin:</strong> ระบบจะส่งอีเมลแจ้งผลไปที่ ${acc.email}</p>
+        </div>
+      `;
+    }
+
+    // ADM-PTO-001: Admin Account action modal — pattern renderDeletionActionModal
+    function renderAdminAccountActionModal(acc, action, completed = false, resultMessage = "", resultDetail = "", resultType = "") {
+      const config = adminAccountActionConfig[action];
+      if (!acc || !config) return;
+      const hasResult = Boolean(resultMessage);
+      const modal = document.querySelector("#user-action-modal");
+      const modalCard = modal?.querySelector(".user-action-modal");
+      const modalBody = document.querySelector("#user-action-modal-body");
+      if (!modal || !modalCard || !modalBody) return;
+      modalCard.classList.remove("article-preview-modal", "article-editor-confirm-modal", "category-editor-modal", "category-order-modal", "market-editor-modal", "market-reference-drawer", "board-report-phone-preview-modal", "option-editor-modal", "option-order-modal", "option-audit-modal", "policy-version-view-modal", "policy-publish-confirm-modal", "policy-restore-confirm-modal", "support-center-preview-modal", "deletion-action-modal");
+      modalCard.classList.add("admin-account-action-modal");
+      modalBody.innerHTML = `
+        <div class="user-action-page admin-account-action-page">
+          <div class="user-action-head">
+            <div>
+              <h2 id="user-action-modal-title">${config.title}</h2>
+              <p>${config.summary}</p>
+            </div>
+            <button class="btn user-action-close" type="button" data-user-action-modal-close aria-label="ปิด">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M18 6 6 18"></path>
+                <path d="m6 6 12 12"></path>
+              </svg>
+            </button>
+          </div>
+          <div class="user-action-target">
+            <div>
+              <strong>${acc.fullName}</strong>
+              <span>${acc.id} · ${acc.email}</span>
+            </div>
+            ${adminAccountStatusPill(acc.status)}
+          </div>
+          <div class="user-action-layout">
+            <div class="detail-section">
+              <div class="user-action-form">
+                <label>
+                  ${config.reasonLabel}
+                  ${customSelect("admin-account-action-reason", config.reasonLabel, config.reasons.map(reason => ({ value: reason, label: reason })), "", "data-custom-select-silent", completed)}
+                </label>
+                <label>
+                  Note / หมายเหตุ
+                  <textarea id="admin-account-action-note" placeholder="${config.notePlaceholder}" ${completed ? "disabled" : ""}></textarea>
+                </label>
+                ${renderAdminAccountActionImpactNote(acc, action)}
+                ${renderAdminAccountActionEmailNote(acc)}
+                <div class="user-detail-actions user-action-footer">
+                  <button class="user-detail-action-btn ${getAdminAccountActionConfirmClass(config)}" type="button" data-admin-account-action-confirm="${action}" data-admin-account-id="${acc.id}" ${completed ? "disabled" : ""}>ยืนยัน</button>
+                  <button class="user-detail-action-btn" type="button" data-user-action-modal-close>${completed ? "ปิด" : "ยกเลิก"}</button>
+                </div>
+                <div class="warning-note action-feedback user-action-result ${hasResult ? "show" : ""} ${resultType}">
+                  <strong>${resultMessage}</strong><br>
+                  <span>${resultDetail || `บันทึกการดำเนินการ: ${formatBangkokTimestamp()}`}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+      applyModalHeadingFonts(modal);
+      modal.classList.add("show");
+    }
+
+    // ADM-PTO-001: Invite Admin modal — pattern Option Master Add Option modal
+    // (article-editor-form + article-editor-grid + article-required-mark + article-field-error รายฟิลด์)
+    function openAdminAccountInviteModal() {
+      const modal = document.querySelector("#user-action-modal");
+      const modalCard = modal?.querySelector(".user-action-modal");
+      const modalBody = document.querySelector("#user-action-modal-body");
+      if (!modal || !modalCard || !modalBody) return;
+      modalCard.classList.remove("article-preview-modal", "article-editor-confirm-modal", "category-editor-modal", "category-order-modal", "market-editor-modal", "market-reference-drawer", "board-report-phone-preview-modal", "option-editor-modal", "option-order-modal", "option-audit-modal", "policy-version-view-modal", "policy-publish-confirm-modal", "policy-restore-confirm-modal", "support-center-preview-modal", "deletion-action-modal");
+      modalCard.classList.add("option-editor-modal", "admin-account-invite-modal");
+      modalBody.innerHTML = `
+        <div class="user-action-layout">
+          <div class="user-action-head">
+            <div>
+              <h2 id="user-action-modal-title">Add admin</h2>
+              <p>ระบบจะส่งคำเชิญเข้าอีเมล ผู้รับต้องยืนยันอีเมลและตั้ง password ก่อนเข้าใช้งาน</p>
+            </div>
+            <button class="btn user-action-close" type="button" data-user-action-modal-close aria-label="ปิด">${iconSvg.close}</button>
+          </div>
+          <form class="article-editor-form admin-account-invite-form" id="admin-account-invite-form" novalidate>
+            <section class="article-editor-section">
+              <div class="article-editor-grid admin-account-invite-grid">
+                <label><span>ชื่อ-นามสกุล <span class="article-required-mark">*</span></span>
+                  <input type="text" id="admin-account-invite-name" placeholder="กรอกชื่อ-นามสกุล" autocomplete="off" />
+                  <span class="article-field-error" data-admin-invite-name-error></span>
+                </label>
+                <label><span>อีเมล <span class="article-required-mark">*</span></span>
+                  <input type="email" id="admin-account-invite-email" placeholder="admin@example.com" autocomplete="off" />
+                  <span class="article-field-error" data-admin-invite-email-error></span>
+                </label>
+                <label><span>Role Template <span class="article-required-mark">*</span></span>
+                  ${customSelect("admin-account-invite-role", "เลือก role template", [
+                    { value: "", label: "เลือก role template" },
+                    { value: "Super Admin", label: "Super Admin" },
+                    { value: "Content Editor", label: "Content Editor" },
+                    { value: "Content Publisher", label: "Content Publisher" },
+                    { value: "Moderator", label: "Moderator" },
+                    { value: "Support Agent", label: "Support Agent" }
+                  ], "", "data-custom-select-silent")}
+                  <span class="article-field-error" data-admin-invite-role-error></span>
+                </label>
+                <label><span>Note / หมายเหตุ</span>
+                  <textarea id="admin-account-invite-note" placeholder="หมายเหตุเพิ่มเติม (ไม่บังคับ)"></textarea>
+                </label>
+              </div>
+            </section>
+            <div class="module-note user-action-impact user-action-impact-card user-action-impact-notice">
+              <p><strong>หมายเหตุ:</strong> ผู้รับต้องยืนยันตัวตนด้วย Email OTP ทุกครั้งที่เข้าสู่ระบบ</p>
+            </div>
+            <div class="user-detail-actions">
+              <button class="user-detail-action-btn" type="button" data-user-action-modal-close>ยกเลิก</button>
+              <button class="user-detail-action-btn primary" type="button" data-admin-account-invite-confirm>ส่งคำเชิญ</button>
+            </div>
+          </form>
+        </div>
+      `;
+      showUserActionModal(true);
+    }
+
+    // ADM-PTO-001: ตรวจ email ซ้ำกับ admin ที่มีอยู่แล้ว
+    function isAdminAccountEmailUnique(email) {
+      const normalized = (email || "").trim().toLowerCase();
+      return !adminAccountData.accounts.some(a => a.email.toLowerCase() === normalized);
+    }
+
+    // ADM-PTO-001: สร้าง admin id ใหม่ (ADM-xxx)
+    function nextAdminAccountId() {
+      const maxNum = adminAccountData.accounts.reduce((max, a) => {
+        const m = /^ADM-(\d+)$/.exec(a.id);
+        return m ? Math.max(max, Number(m[1])) : max;
+      }, 0);
+      return `ADM-${String(maxNum + 1).padStart(3, "0")}`;
+    }
+
+    // ADM-PTO-001: บันทึก audit entry สำหรับ admin account action
+    // pattern: auditLogData.events — เพิ่ม entry ใหม่ที่ด้านบน (latest first)
+    function ensureAdminAccountAuditEvent(acc, action, reason, note) {
+      const config = adminAccountActionConfig[action];
+      if (!config) return null;
+      const maxNum = auditLogData.events.reduce((max, e) => {
+        const m = /^AUD-(\d+)$/.exec(e.id);
+        return m ? Math.max(max, Number(m[1])) : max;
+      }, 0);
+      const auditId = `AUD-${String(maxNum + 1).padStart(5, "0")}`;
+      const beforeStatus = acc.status;
+      let afterStatus = acc.status;
+      if (action === "suspend") afterStatus = "Suspended";
+      else if (action === "reactivate") afterStatus = "Active";
+      else if (action === "unlock") afterStatus = "Active";
+      else if (action === "archive") afterStatus = "Archived";
+      const event = {
+        id: auditId,
+        createdAt: formatBangkokTimestamp() + " GMT+7",
+        actor: (auth.admin && auth.admin.username) || "Admin",
+        action: config.auditAction,
+        module: "Settings",
+        risk: "สูง",
+        before: beforeStatus,
+        after: afterStatus,
+        reason: reason || config.reasonLabel,
+        reference: acc.id,
+        note: note || config.summary
+      };
+      auditLogData.events.unshift(event);
+      return auditId;
+    }
+
+    // ADM-PTO-001: บันทึก audit entry สำหรับ invite (สร้าง account ใหม่)
+    function ensureAdminAccountInviteAuditEvent(newAcc, note) {
+      const maxNum = auditLogData.events.reduce((max, e) => {
+        const m = /^AUD-(\d+)$/.exec(e.id);
+        return m ? Math.max(max, Number(m[1])) : max;
+      }, 0);
+      const auditId = `AUD-${String(maxNum + 1).padStart(5, "0")}`;
+      const event = {
+        id: auditId,
+        createdAt: formatBangkokTimestamp() + " GMT+7",
+        actor: (auth.admin && auth.admin.username) || "Admin",
+        action: "Invite Admin",
+        module: "Settings",
+        risk: "สูง",
+        before: "-",
+        after: "Invited",
+        reason: `Invite ${newAcc.role} — ${newAcc.email}`,
+        reference: newAcc.id,
+        note: note || "เชิญ admin ใหม่ผ่านอีเมล"
+      };
+      auditLogData.events.unshift(event);
+      return auditId;
+    }
+
+    // ADM-PTO-001: ยืนยัน admin account action (suspend/reactivate/unlock/archive)
+    // pattern: confirmDeletionAction — ปิด modal + success toast + re-render detail
+    function confirmAdminAccountAction(acc, action) {
+      const config = adminAccountActionConfig[action];
+      if (!acc || !config) return;
+      const selectedReason = document.querySelector("#admin-account-action-reason")?.value || "";
+      const actionNote = document.querySelector("#admin-account-action-note")?.value.trim() || "";
+      const now = formatBangkokTimestamp();
+
+      // อัปเดตสถานะ
+      const beforeStatus = acc.status;
+      if (action === "suspend") acc.status = "Suspended";
+      else if (action === "reactivate") acc.status = "Active";
+      else if (action === "unlock") acc.status = "Active";
+      else if (action === "archive") acc.status = "Archived";
+      acc.lastAction = `${config.auditAction} โดย ${(auth.admin && auth.admin.username) || "Admin"}${selectedReason ? " — " + selectedReason : ""}`;
+      acc.updatedAt = now;
+
+      // เพิ่ม activity history
+      const detail = adminAccountData.detail[acc.id] || (adminAccountData.detail[acc.id] = {});
+      if (!detail.activity) detail.activity = [];
+      detail.activity.unshift({
+        at: now,
+        action: config.auditAction,
+        reference: acc.id,
+        note: selectedReason || config.summary
+      });
+
+      // บันทึก audit
+      const auditId = ensureAdminAccountAuditEvent(acc, action, selectedReason, actionNote);
+      if (auditId) {
+        if (!detail.auditRefs) detail.auditRefs = [];
+        detail.auditRefs.unshift(auditId);
+      }
+
+      // ปิด modal + success toast + รีเฟรชหน้าปัจจุบัน (list หรือ detail ตามที่อยู่)
+      closeUserActionModal();
+      showSuccessToast(config.success(acc), "Admin Accounts");
+      if (document.body.classList.contains("admin-account-detail-mode")) {
+        renderAdminAccountDetail(acc.id);
+      } else {
+        renderAdminAccountRows();
+      }
+    }
+
+    // ADM-PTO-001: error รายฟิลด์ของ invite form — pattern setOptionFieldError
+    function setAdminInviteFieldError(form, field, message = "") {
+      const node = form?.querySelector(`[data-admin-invite-${field}-error]`);
+      if (node) {
+        node.textContent = message;
+        node.classList.toggle("show", Boolean(message));
+      }
+    }
+
+    // ADM-PTO-001: ยืนยัน invite — สร้าง admin account ใหม่
+    function confirmAdminAccountInvite() {
+      const form = document.querySelector("#admin-account-invite-form");
+      const nameInput = document.querySelector("#admin-account-invite-name");
+      const emailInput = document.querySelector("#admin-account-invite-email");
+      const roleSelect = document.querySelector("#admin-account-invite-role");
+      const noteInput = document.querySelector("#admin-account-invite-note");
+      const name = (nameInput?.value || "").trim();
+      const email = (emailInput?.value || "").trim();
+      const role = roleSelect?.value || "";
+      const note = (noteInput?.value || "").trim();
+      // เคลียร์ error เดิมทุกฟิลด์
+      setAdminInviteFieldError(form, "name", "");
+      setAdminInviteFieldError(form, "email", "");
+      setAdminInviteFieldError(form, "role", "");
+      let invalid = false;
+      if (!name) {
+        setAdminInviteFieldError(form, "name", "กรุณาระบุชื่อ-นามสกุล");
+        invalid = true;
+      }
+      if (!email) {
+        setAdminInviteFieldError(form, "email", "กรุณาระบุอีเมล");
+        invalid = true;
+      } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        setAdminInviteFieldError(form, "email", "รูปแบบอีเมลไม่ถูกต้อง");
+        invalid = true;
+      } else if (!isAdminAccountEmailUnique(email)) {
+        setAdminInviteFieldError(form, "email", "อีเมลนี้มีอยู่ในระบบแล้ว — ต้องใช้อีเมลอื่น");
+        invalid = true;
+      }
+      if (!role) {
+        setAdminInviteFieldError(form, "role", "กรุณาเลือก role template");
+        invalid = true;
+      }
+      if (invalid) return;
+      const now = formatBangkokTimestamp();
+      const newId = nextAdminAccountId();
+      const newAcc = {
+        id: newId,
+        fullName: name,
+        email: email,
+        role: role,
+        status: "Invited",
+        authMethod: "Email OTP",
+        lastLogin: "—",
+        lastLoginRank: 0,
+        createdAt: now,
+        createdAtRank: Number(now.replace(/[^0-9]/g, "").slice(0, 12)) || 202609081600,
+        lastAction: "Invited — รอผู้รับยืนยันอีเมลและตั้ง password",
+        isSelf: false,
+        isLastActive: false
+      };
+      adminAccountData.accounts.push(newAcc);
+      adminAccountData.detail[newId] = {
+        activity: [{ at: now, action: "Invited โดย " + ((auth.admin && auth.admin.username) || "Admin"), reference: newId, note: note || "เชิญ admin ใหม่ผ่านอีเมล" }],
+        auditRefs: []
+      };
+      const auditId = ensureAdminAccountInviteAuditEvent(newAcc, note);
+      if (auditId) adminAccountData.detail[newId].auditRefs.unshift(auditId);
+      closeUserActionModal();
+      showSuccessToast(`${name} ได้รับคำเชิญแล้ว — ส่งอีเมลไปที่ ${email}`, "Admin Accounts");
+      renderAdminAccountRows();
+    }
+
     function renderDeletionRequests() {
       setPageActions("");
       document.body.classList.add("deletion-list-mode");
@@ -24504,6 +25742,9 @@
       // NTF-RSTR-003: Delivery Logs list mode — added/removed by renderDeliveryLogs,
       // but removed here too so it never leaks into other modules.
       document.body.classList.remove("delivery-log-list-mode");
+      // ADM-PTO-001: Admin Accounts list/detail mode — added/removed by their render
+      // functions, removed here too so they never leak into other modules.
+      document.body.classList.remove("admin-account-list-mode", "admin-account-detail-mode");
       document.body.classList.toggle("article-list-mode", isArticleList);
       document.body.classList.toggle("category-list-mode", isCategoryList);
       document.body.classList.toggle("reported-board-mode", isReportedBoard);
@@ -24518,6 +25759,8 @@
       document.body.classList.toggle("deletion-list-mode", id === "deletions");
       // DEL-PTO-004: Audit Log mode
       document.body.classList.toggle("audit-log-mode", id === "audit" || (id === "settings" && subLabel === "Audit Log"));
+      // ADM-PTO-001: Admin Accounts list mode (default Settings sub)
+      document.body.classList.toggle("admin-account-list-mode", id === "settings" && (!subLabel || subLabel === "Admin Accounts"));
       document.body.classList.toggle("user-list-mode", id === "users" || isReportedAssets || isReportedBoard || isReportedComments);
       document.body.classList.toggle("user-accounts-mode", id === "users" && (subLabel || "User Accounts") === "User Accounts");
       document.body.classList.remove("asset-detail-mode");
@@ -24581,6 +25824,12 @@
       // NTF-RSTR-003: Settings > Delivery Logs — dedicated list view (Phase 1)
       if (id === "settings" && subLabel === "Delivery Logs") {
         renderDeliveryLogs();
+        updateActiveNav();
+        return;
+      }
+      // ADM-PTO-001: Settings > Admin Accounts — dedicated list view (default Settings sub)
+      if (id === "settings" && (!subLabel || subLabel === "Admin Accounts")) {
+        renderAdminAccounts();
         updateActiveNav();
         return;
       }
@@ -29343,7 +30592,9 @@
     }
 
     function updateFilters(data) {
-      const statuses = Array.from(new Set(data.rows.map(row => row.status)));
+      // generic settings view ไม่นับ row Delivery ในตัวกรองสถานะ — ดูได้เฉพาะ Settings > Delivery Logs
+      const baseRows = activeModule === "settings" ? data.rows.filter(row => row.type !== "Delivery") : data.rows;
+      const statuses = Array.from(new Set(baseRows.map(row => row.status)));
       const statusFilter = document.querySelector("#status-filter");
       if (statusFilter) {
         statusFilter.innerHTML = `<option value="">${filterCopy.allStatus}</option>${statuses.map(status => `<option value="${status}">${status}</option>`).join("")}`;
@@ -29397,7 +30648,9 @@
       const q = document.querySelector("#search").value.trim().toLowerCase();
       const status = document.querySelector("#status-filter").value;
       const priority = document.querySelector("#priority-filter").value;
-      const filtered = data.rows.filter(row => {
+      // generic settings view (Admin Accounts / Security / Retention) ไม่แสดง row Delivery — ดูได้เฉพาะ Settings > Delivery Logs
+      const baseRows = activeModule === "settings" ? data.rows.filter(row => row.type !== "Delivery") : data.rows;
+      const filtered = baseRows.filter(row => {
         const text = Object.values(row).flat().join(" ").toLowerCase();
         return (!q || text.includes(q)) && (!status || row.status === status) && (!priority || row.priority === priority);
       });
@@ -36326,6 +37579,7 @@
       if (b.classList.contains("asset-list-mode") && !b.classList.contains("article-list-mode") && !b.classList.contains("category-list-mode") && !b.classList.contains("reported-board-mode")) return true;
       if (b.classList.contains("user-list-mode")) return true;
       if (b.classList.contains("deletion-list-mode")) return true;
+      if (b.classList.contains("admin-account-list-mode")) return true;
       return false;
     }
     document.addEventListener("toggle", event => {
@@ -36650,6 +37904,13 @@
           renderDeliveryLogRows();
           return;
         }
+        // ADM-PTO-001: Admin Accounts filter selects
+        if (["admin-account-status-filter", "admin-account-role-filter", "admin-account-sort"].includes(hiddenInput.id) && activeModule === "settings" && (!activeSub || activeSub === "Admin Accounts")) {
+          adminAccountListPage = 1;
+          saveCurrentListFilterState();
+          renderAdminAccountRows();
+          return;
+        }
         userListPage = 1;
         saveCurrentListFilterState();
         if (activeModule === "users" && (activeSub === "Report User" || activeSub === "Reported Users")) renderReportedUserRows();
@@ -36923,6 +38184,18 @@
         if (row) {
           openDeliveryLogDetailModal(row);
         }
+        closeRowMenus();
+        return;
+      }
+      // ADM-PTO-001: Settings > Admin Accounts — row click เปิด Admin Account Detail
+      const adminAccountOpen = event.target.closest("[data-admin-account-open], .user-row[data-admin-account-card]");
+      if (adminAccountOpen && activeModule === "settings" && (!activeSub || activeSub === "Admin Accounts")) {
+        if (event.target.closest(".row-menu, button") && !event.target.closest("[data-admin-account-open]")) {
+          return;
+        }
+        const id = adminAccountOpen.dataset.adminAccountOpen || adminAccountOpen.dataset.adminAccountCard;
+        pushBackNavigationContext();
+        renderAdminAccountDetail(id);
         closeRowMenus();
         return;
       }
@@ -38179,6 +39452,85 @@
         renderDeliveryLogRows();
         return;
       }
+      // ADM-PTO-001: Admin Accounts — filter toggle + reset + pagination
+      const adminAccountFilterToggle = event.target.closest("[data-admin-account-filter-toggle]");
+      if (adminAccountFilterToggle) {
+        adminAccountFilterOpen = !adminAccountFilterOpen;
+        const filterBar = document.querySelector(".user-filter-bar.admin-account-filter-bar");
+        if (filterBar) filterBar.dataset.filterOpen = String(adminAccountFilterOpen);
+        adminAccountFilterToggle.setAttribute("aria-expanded", String(adminAccountFilterOpen));
+        const label = adminAccountFilterToggle.querySelector("span");
+        if (label) label.textContent = adminAccountFilterOpen ? "ปิดตัวกรอง" : "เปิดตัวกรอง";
+        return;
+      }
+      const adminAccountReset = event.target.closest("[data-admin-account-reset]");
+      if (adminAccountReset) {
+        adminAccountListPage = 1;
+        clearListFilterState("admin-account-list");
+        renderAdminAccounts();
+        return;
+      }
+      const adminAccountPageButton = event.target.closest("[data-admin-account-page]");
+      if (adminAccountPageButton) {
+        const target = adminAccountPageButton.dataset.adminAccountPage;
+        if (target === "prev") adminAccountListPage = Math.max(1, adminAccountListPage - 1);
+        else if (target === "next") adminAccountListPage += 1;
+        else adminAccountListPage = Number(target) || 1;
+        saveCurrentListFilterState();
+        renderAdminAccountRows();
+        return;
+      }
+      // ADM-PTO-001: Admin Accounts — เปิด modal เชิญ Admin
+      const adminAccountInviteOpen = event.target.closest("[data-admin-account-invite-open]");
+      if (adminAccountInviteOpen) {
+        openAdminAccountInviteModal();
+        return;
+      }
+      // ADM-PTO-001: Admin Accounts — ยืนยัน invite
+      const adminAccountInviteConfirm = event.target.closest("[data-admin-account-invite-confirm]");
+      if (adminAccountInviteConfirm) {
+        confirmAdminAccountInvite();
+        return;
+      }
+      // ADM-PTO-001: Admin Accounts — เปิด action modal (suspend/reactivate/unlock/archive)
+      const adminAccountActionBtn = event.target.closest("[data-admin-account-action]");
+      if (adminAccountActionBtn) {
+        const action = adminAccountActionBtn.dataset.adminAccountAction;
+        const id = adminAccountActionBtn.dataset.adminAccountId;
+        const acc = adminAccountData.accounts.find(a => a.id === id);
+        if (acc && adminAccountActionConfig[action]) {
+          closeRowMenus();
+          renderAdminAccountActionModal(acc, action);
+        }
+        return;
+      }
+      // ADM-PTO-001: Admin Accounts — ยืนยัน action (suspend/reactivate/unlock/archive)
+      const adminAccountActionConfirmButton = event.target.closest("[data-admin-account-action-confirm]");
+      if (adminAccountActionConfirmButton) {
+        const action = adminAccountActionConfirmButton.dataset.adminAccountActionConfirm;
+        const id = adminAccountActionConfirmButton.dataset.adminAccountId;
+        const acc = adminAccountData.accounts.find(a => a.id === id);
+        confirmAdminAccountAction(acc, action);
+        return;
+      }
+      // ADM-PTO-001: Admin Accounts — กลับจาก detail ไป list
+      const adminAccountBack = event.target.closest("[data-admin-account-back]");
+      if (adminAccountBack) {
+        renderAdminAccounts();
+        updateActiveNav();
+        return;
+      }
+      // ADM-PTO-001: Admin Accounts — audit ref link → Audit Log (กรองด้วย reference)
+      const adminAccountAuditRef = event.target.closest("[data-admin-account-audit-ref]");
+      if (adminAccountAuditRef) {
+        const ref = adminAccountAuditRef.dataset.adminAccountAuditRef;
+        resetListFilterPanelsForNavigation("audit");
+        renderModule("audit");
+        const search = document.querySelector("#audit-search");
+        if (search && ref) { search.value = ref; renderAuditLogRows(); }
+        showSuccessToast(`เปิด Audit Log กรองด้วย ${ref}`, "Audit Log");
+        return;
+      }
       const articlePageButton = event.target.closest("[data-article-page]");
       if (articlePageButton) {
         const target = articlePageButton.dataset.articlePage;
@@ -38941,6 +40293,13 @@
         deliveryLogPage = 1;
         saveCurrentListFilterState();
         renderDeliveryLogRows();
+        return;
+      }
+      // ADM-PTO-001: Admin Accounts search
+      if (event.target.matches("#admin-account-search")) {
+        adminAccountListPage = 1;
+        saveCurrentListFilterState();
+        renderAdminAccountRows();
         return;
       }
       if (event.target.matches("#search")) {
