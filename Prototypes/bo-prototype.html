@@ -15941,7 +15941,7 @@
         { id: "deletions", label: "Account Deletion", icon: "delete" }
       ]},
       { section: "เครื่องมือ & รายงาน", items: [
-        { id: "settings", label: "Settings", icon: "settings", subs: ["Admin Accounts", "Roles & Permissions", "Security", "Retention", "Policy & Versioning", "Support Center", "Delivery Logs", { label: "Audit Log", module: "audit" }] }
+        { id: "settings", label: "Settings", icon: "settings", subs: ["Admin Accounts", "Roles & Permissions", "Policy & Versioning", "Support Center", "Delivery Logs", { label: "Audit Log", module: "audit" }] }
       ]}
     ];
 
@@ -16977,7 +16977,7 @@
     };
 
     // ADM-PTO-001: Admin Accounts mock data (Settings > Admin Accounts)
-    // แยกจาก moduleData.settings.rows เพื่อไม่ให้ปนกับ Policy/Security/Retention/Delivery rows
+    // แยกจาก moduleData.settings.rows เพื่อไม่ให้ปนกับ Policy/Delivery rows
     // pattern: deletionRequestData — separate data + dedicated renderer
     // สถานะตาม 16_ADMIN_SETTINGS_MODULE.md section 8.1: Invited / Active / Locked / Suspended / Archived
     // role template ตาม section 9.1: Super Admin / Content Editor / Content Publisher / Moderator / Support Agent
@@ -30965,7 +30965,7 @@
       const q = document.querySelector("#search").value.trim().toLowerCase();
       const status = document.querySelector("#status-filter").value;
       const priority = document.querySelector("#priority-filter").value;
-      // generic settings view (Admin Accounts / Security / Retention) ไม่แสดง row Delivery — ดูได้เฉพาะ Settings > Delivery Logs
+      // generic settings view (Admin Accounts / Policy) ไม่แสดง row Delivery — ดูได้เฉพาะ Settings > Delivery Logs
       const baseRows = activeModule === "settings" ? data.rows.filter(row => row.type !== "Delivery") : data.rows;
       const filtered = baseRows.filter(row => {
         const text = Object.values(row).flat().join(" ").toLowerCase();
