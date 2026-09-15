@@ -1153,6 +1153,7 @@
     body.user-detail-mode .asset-report-detail-page .user-detail-head h2.asset-report-heading,
     body.watch-alert-detail-mode .user-detail-page .user-detail-head h2.asset-report-heading,
     body.deletion-detail-mode .user-detail-page .user-detail-head h2.asset-report-heading,
+    body.admin-account-detail-mode .user-detail-page .user-detail-head h2.asset-report-heading,
     body.offer-detail-mode .offer-detail-page .user-detail-head h2.asset-report-heading {
       font-family: var(--font-main);
       font-size: 24px !important;
@@ -1246,6 +1247,7 @@
     .history-table .history-note {
       min-width: 240px;
       max-width: 360px;
+      white-space: pre-line;
     }
     .asset-reporter-history-table {
       min-width: 960px;
@@ -7439,17 +7441,19 @@
     }
     /* ADM-PTO-001: master admin badge — แยกจาก pill สถานะ/role ทั่วไป */
     .pill.pill-master {
-      border-color: #0a2342;
-      background: #0a2342;
-      color: #fff;
+      border-color: #c5d5ec;
+      background: #e7eef9;
+      color: #1a365f;
       letter-spacing: .04em;
     }
-    /* row-menu visibility — match deletion-list-mode */
-    body.admin-account-list-mode .row-menu-list {
-      visibility: hidden;
-      opacity: 0;
+    /* row-menu visibility — match deletion-list-mode
+       ใช้ display:none จนกว่าจะ fix position กัน scrollbar แว๊บช่วงเปิดเมนู
+       (visibility:hidden ยังกินพื้นที่ overflow ใน #table ที่มี overflow-x:hidden) */
+    body.admin-account-list-mode .admin-account-table .row-menu-list {
+      display: none;
     }
-    body.admin-account-list-mode .row-menu-list.is-fixed {
+    body.admin-account-list-mode .admin-account-table .row-menu-list.is-fixed {
+      display: grid;
       visibility: visible;
       opacity: 1;
     }
@@ -7536,15 +7540,6 @@
     body.admin-account-list-mode .admin-account-table .empty-subtitle {
       font-size: 12px;
       color: #94a3b8;
-    }
-    /* row-menu visibility — match deletion-list-mode */
-    body.admin-account-list-mode .row-menu-list {
-      visibility: hidden;
-      opacity: 0;
-    }
-    body.admin-account-list-mode .row-menu-list.is-fixed {
-      visibility: visible;
-      opacity: 1;
     }
 
     /* ============================================================
@@ -9385,7 +9380,8 @@
       font-weight: 800;
     }
     .user-action-form select,
-    .user-action-form textarea {
+    .user-action-form textarea,
+    .user-action-form input[type="text"] {
       width: 100%;
       border: 1px solid var(--line-strong);
       border-radius: 7px;
@@ -9395,6 +9391,11 @@
       font-size: 13px;
       font-weight: 400;
       padding: 9px 10px;
+    }
+    .user-action-form input[type="text"]:disabled {
+      background: #f3f6fa;
+      color: #5a6b82;
+      cursor: not-allowed;
     }
     .user-action-form .suspension-end-field {
       gap: 6px;
@@ -11662,7 +11663,8 @@
       body.user-detail-mode .asset-report-detail-page .user-detail-head h2.asset-report-heading,
       body.watch-alert-detail-mode .user-detail-page .user-detail-head h2.asset-report-heading,
       body.offer-detail-mode .offer-detail-page .user-detail-head h2.asset-report-heading,
-      body.deletion-detail-mode .deletion-detail-page .user-detail-head h2.asset-report-heading {
+      body.deletion-detail-mode .deletion-detail-page .user-detail-head h2.asset-report-heading,
+      body.admin-account-detail-mode .user-detail-page .user-detail-head h2.asset-report-heading {
         font-size: 18px !important;
       }
       body.asset-detail-mode .article-detail-page .user-detail-head h2.article-detail-heading {
@@ -12509,7 +12511,7 @@
         width: 100%;
       }
       body.admin-account-list-mode .admin-account-table .user-row.admin-account-row:not(.head) {
-        grid-template-columns: minmax(0, 1fr);
+        grid-template-columns: minmax(0, 1fr) auto;
         column-gap: 14px;
         row-gap: 14px;
         min-height: 0;
@@ -12536,7 +12538,11 @@
         display: none;
       }
       body.admin-account-list-mode .admin-account-table .user-row.admin-account-row:not(.head) > .user-row-actions {
-        display: none;
+        grid-column: 2;
+        grid-row: 1;
+        align-self: center;
+        justify-self: end;
+        justify-content: flex-end;
       }
       /* ADM-PTO-001: #table mobile override — match delivery-log-list-mode (การ์ดเต็มความกว้างจอ) */
       body.admin-account-list-mode .main {
@@ -12685,7 +12691,8 @@
       }
       body.user-list-mode .row-menu summary,
       body.asset-list-mode .row-menu summary,
-      body.option-master-mode .row-menu summary {
+      body.option-master-mode .row-menu summary,
+      body.admin-account-list-mode .row-menu summary {
         width: 30px;
         height: 30px;
         border: 0;
@@ -12697,7 +12704,8 @@
       }
       body.user-list-mode .row-menu[open] summary,
       body.asset-list-mode .row-menu[open] summary,
-      body.option-master-mode .row-menu[open] summary {
+      body.option-master-mode .row-menu[open] summary,
+      body.admin-account-list-mode .row-menu[open] summary {
         border-color: transparent;
         background: transparent;
         color: var(--blue);
@@ -15719,7 +15727,7 @@
       <form class="login-form" id="login-form">
         <label>
           Email
-          <input id="login-email" type="email" value="admin@tukdaeng.example" autocomplete="username" />
+          <input id="login-email" type="email" value="current.admin@tukdaeng.example" autocomplete="username" />
         </label>
         <label>
           Password
@@ -15739,7 +15747,7 @@
           <input id="otp-code" type="text" value="123456" inputmode="numeric" maxlength="6" autocomplete="one-time-code" />
         </label>
         <div class="login-meta">
-          <span id="otp-destination">Sent to admin@tukdaeng.example</span>
+          <span id="otp-destination">Sent to current.admin@tukdaeng.example</span>
           <span id="otp-expiry">Expires in 05:00</span>
         </div>
         <div class="otp-actions">
@@ -15784,8 +15792,8 @@
         <span>Logout</span>
       </button>
       <div class="admin-box">
-        <div class="avatar" id="admin-avatar">สร</div>
-        <div class="admin-profile-text"><strong id="admin-username">สมชาย รักงาน</strong><small id="admin-role">Admin</small></div>
+        <div class="avatar" id="admin-avatar">ผู</div>
+        <div class="admin-profile-text"><strong id="admin-username">ผู้ดูแลระบบ</strong><small id="admin-role">Super Admin</small></div>
       </div>
       </div>
     </aside>
@@ -16941,6 +16949,8 @@
     // แต่ละ entry มี before/after diff, reason และ actor (read-only view)
     const auditLogData = {
       events: [
+        { id: "AUD-88203", createdAt: "08 Sep 2026 16:00 GMT+7", actor: "Somchai Admin", action: "Invite Admin", module: "Settings", risk: "กลาง", before: "-", after: "Invited", reason: "เชิญ Super Admin ใหม่", reference: "ADM-008", note: "รอผู้รับยืนยันอีเมลและตั้ง password" },
+        { id: "AUD-88202", createdAt: "08 Sep 2026 15:00 GMT+7", actor: "ผู้ดูแลระบบ", action: "เข้าสู่ระบบ Back Office", module: "Settings", risk: "ต่ำ", before: "-", after: "Active Session", reason: "", reference: "ADM-010", note: "ยืนยันตัวตนด้วย Email OTP สำเร็จ" },
         { id: "AUD-88201", createdAt: "08 Sep 2026 14:22 GMT+7", actor: "Somchai Admin", action: "Force Hide Asset", module: "Asset", risk: "สูง", before: "Sale", after: "Hide", reason: "รายงานเนื้อหาไม่เหมาะสม 3 รายงาน", reference: "AST-8831", note: "ตรวจ reason และ FO sync event" },
         { id: "AUD-88198", createdAt: "08 Sep 2026 11:05 GMT+7", actor: "อรนุช แก้วใส", action: "ปฏิเสธคืนบัญชี", module: "Account Deletion", risk: "สูง", before: "Deletion Requested", after: "Deletion Requested", reason: "พฤติกรรมละเมิดซ้ำ ไม่สมควรคืนบัญชี", reference: "DEL-028", note: "มีรายงานร้ายแรง 8 รายงาน" },
         { id: "AUD-88195", createdAt: "08 Sep 2026 09:15 GMT+7", actor: "System (auto)", action: "ขอลบบัญชี", module: "Account Deletion", risk: "กลาง", before: "Active", after: "Deletion Requested", reason: "ผู้ใช้ยืนยันคำขอผ่านแอป (FO)", reference: "DEL-033", note: "เริ่มช่วงรอลบบัญชี 30 วัน" },
@@ -16951,8 +16961,18 @@
         { id: "AUD-88098", createdAt: "06 Sep 2026 09:00 GMT+7", actor: "กิตติ Content", action: "ปิดรายงานไม่พบการละเมิด", module: "Reported Comments", risk: "ต่ำ", before: "In Review", after: "Closed", reason: "ตรวจหลักฐานแล้วไม่พบการละเมิด", reference: "RCO-690", note: "ปิดรายงานโดยไม่เปลี่ยน FO visibility" },
         { id: "AUD-88085", createdAt: "05 Sep 2026 14:22 GMT+7", actor: "System (auto)", action: "ขอลบบัญชี", module: "Account Deletion", risk: "กลาง", before: "Active", after: "Deletion Requested", reason: "ผู้ใช้ยืนยันคำขอผ่านแอป (FO)", reference: "DEL-034", note: "เริ่มช่วงรอลบบัญชี 30 วัน" },
         { id: "AUD-88072", createdAt: "04 Sep 2026 20:10 GMT+7", actor: "Somchai Admin", action: "Suspend User", module: "Users", risk: "สูง", before: "Active", after: "Suspended", reason: "รายงาน 5 รายงาน พฤติกรรมผู้ขายที่ต้องตรวจสอบ", reference: "U-1002", note: "ระงับชั่วคราวระหว่างตรวจสอบ" },
+        { id: "AUD-88204", createdAt: "02 Sep 2026 08:35 GMT+7", actor: "System (auto)", action: "Lock Admin (failed login)", module: "Settings", risk: "กลาง", before: "Active", after: "Locked", reason: "failed login 5 ครั้ง", reference: "ADM-007", note: "รอ unlock หรือครบ 15 นาที" },
         { id: "AUD-88068", createdAt: "14 Aug 2026 00:00 GMT+7", actor: "System (auto)", action: "ลบบัญชีอัตโนมัติ", module: "Account Deletion", risk: "สูง", before: "Deletion Requested", after: "Anonymized", reason: "ครบช่วงรอลบบัญชี 30 วัน ระบบลบบัญชีอัตโนมัติ", reference: "DEL-025", note: "personal fields ถูกแทนที่ด้วย anonymous value" },
-        { id: "AUD-88051", createdAt: "09 Aug 2026 00:00 GMT+7", actor: "System (auto)", action: "ลบบัญชีอัตโนมัติ", module: "Account Deletion", risk: "สูง", before: "Deletion Requested", after: "Anonymized", reason: "ครบช่วงรอลบบัญชี 30 วัน ระบบลบบัญชีอัตโนมัติ", reference: "DEL-026", note: "personal fields ถูกแทนที่ด้วย anonymous value" }
+        { id: "AUD-88205", createdAt: "21 Aug 2026 09:00 GMT+7", actor: "Somchai Admin", action: "Suspend Admin", module: "Settings", risk: "สูง", before: "Active", after: "Suspended", reason: "ตรวจสอบการเข้าถึงข้อมูลผู้ใช้นอก scope", reference: "ADM-006", note: "ระงับชั่วคราวระหว่างตรวจสอบ" },
+        { id: "AUD-88051", createdAt: "09 Aug 2026 00:00 GMT+7", actor: "System (auto)", action: "ลบบัญชีอัตโนมัติ", module: "Account Deletion", risk: "สูง", before: "Deletion Requested", after: "Anonymized", reason: "ครบช่วงรอลบบัญชี 30 วัน ระบบลบบัญชีอัตโนมัติ", reference: "DEL-026", note: "personal fields ถูกแทนที่ด้วย anonymous value" },
+        { id: "AUD-88206", createdAt: "20 Jun 2026 10:00 GMT+7", actor: "Somchai Admin", action: "Archive Admin", module: "Settings", risk: "กลาง", before: "Active", after: "Archived", reason: "ออกจากทีม", reference: "ADM-009", note: "เก็บ audit history ตาม retention" },
+        { id: "AUD-88208", createdAt: "12 Apr 2026 14:00 GMT+7", actor: "Somchai Admin", action: "Invite Admin", module: "Settings", risk: "กลาง", before: "-", after: "Invited", reason: "เชิญ Moderator", reference: "ADM-007", note: "เชิญเข้าทีม moderation" },
+        { id: "AUD-88207", createdAt: "01 Apr 2026 09:00 GMT+7", actor: "Somchai Admin", action: "Invite Admin", module: "Settings", risk: "กลาง", before: "-", after: "Invited", reason: "เชิญ Support Agent", reference: "ADM-006", note: "เชิญเข้าทีม support" },
+        { id: "AUD-88212", createdAt: "05 Mar 2026 11:00 GMT+7", actor: "Somchai Admin", action: "Invite Admin", module: "Settings", risk: "กลาง", before: "-", after: "Invited", reason: "เชิญ Content Editor", reference: "ADM-005", note: "เชิญเข้าทีม content" },
+        { id: "AUD-88211", createdAt: "20 Feb 2026 08:15 GMT+7", actor: "Somchai Admin", action: "Invite Admin", module: "Settings", risk: "กลาง", before: "-", after: "Invited", reason: "เชิญ Content Publisher", reference: "ADM-004", note: "เชิญเข้าทีม content" },
+        { id: "AUD-88210", createdAt: "10 Feb 2026 13:00 GMT+7", actor: "Somchai Admin", action: "Invite Admin", module: "Settings", risk: "กลาง", before: "-", after: "Invited", reason: "เชิญ Moderator", reference: "ADM-003", note: "เชิญเข้าทีม moderation" },
+        { id: "AUD-88209", createdAt: "15 Jan 2026 10:30 GMT+7", actor: "Somchai Admin", action: "Invite Admin", module: "Settings", risk: "กลาง", before: "-", after: "Invited", reason: "เชิญ Super Admin", reference: "ADM-002", note: "เชิญเข้าทีม admin" },
+        { id: "AUD-88215", createdAt: "10 May 2025 09:00 GMT+7", actor: "Somchai Admin", action: "Invite Admin", module: "Settings", risk: "กลาง", before: "-", after: "Invited", reason: "เชิญ Content Editor", reference: "ADM-009", note: "เชิญเข้าทีม content" }
       ]
     };
 
@@ -16964,7 +16984,7 @@
     // audit event type ตาม section 19: ADMIN_ACCOUNT_INVITE / ADMIN_ACCOUNT_SUSPEND / ADMIN_ACCOUNT_REACTIVATE / ADMIN_ACCOUNT_UNLOCK / ADMIN_ACCOUNT_ARCHIVE
     const adminAccountData = {
       accounts: [
-        { id: "ADM-001", fullName: "สมชาย บริหาร", email: "somchai@tukdaeng.example", role: "Super Admin", status: "Active", authMethod: "Email OTP", lastLogin: "08 Sep 2026 14:22", lastLoginRank: 202609081422, createdAt: "01 Jan 2026 09:00", createdAtRank: 202601010900, lastAction: "Force Hide Asset (AST-8831)", isSelf: false, isLastActive: false, isMaster: true },
+        { id: "ADM-001", fullName: "สมชาย บริหาร", email: "somchai@tukdaeng.example", role: "Super Admin", status: "Active", authMethod: "Email OTP", lastLogin: "08 Sep 2026 14:22", lastLoginRank: 202609081422, createdAt: "01 Jan 2026 09:00", createdAtRank: 202601010900, lastAction: "Force Hide Asset (AST-8831)", isSelf: false, isLastActive: false },
         { id: "ADM-002", fullName: "อรนุช แก้วใส", email: "ornnuch@tukdaeng.example", role: "Super Admin", status: "Active", authMethod: "Email OTP", lastLogin: "08 Sep 2026 11:05", lastLoginRank: 202609081105, createdAt: "15 Jan 2026 10:30", createdAtRank: 202601151030, lastAction: "ปฏิเสธคืนบัญชี (DEL-028)", isSelf: false, isLastActive: false },
         { id: "ADM-003", fullName: "มะลิ จันทร์ดี", email: "mali@tukdaeng.example", role: "Moderator", status: "Active", authMethod: "Email OTP", lastLogin: "07 Sep 2026 16:45", lastLoginRank: 202609071645, createdAt: "10 Feb 2026 13:00", createdAtRank: 202602101300, lastAction: "คืนบัญชี (DEL-031)", isSelf: false, isLastActive: false },
         { id: "ADM-004", fullName: "กิตติ เนื้อหา", email: "kitti@tukdaeng.example", role: "Content Publisher", status: "Active", authMethod: "Email OTP", lastLogin: "06 Sep 2026 09:00", lastLoginRank: 202609060900, createdAt: "20 Feb 2026 08:15", createdAtRank: 202602200815, lastAction: "ปิดรายงานไม่พบการละเมิด (RCO-690)", isSelf: false, isLastActive: false },
@@ -16973,76 +16993,84 @@
         { id: "ADM-007", fullName: "วิชัย รองผู้จัดการ", email: "wichai@tukdaeng.example", role: "Moderator", status: "Locked", authMethod: "Email OTP", lastLogin: "02 Sep 2026 08:30", lastLoginRank: 202609020830, createdAt: "12 Apr 2026 14:00", createdAtRank: 202604121400, lastAction: "Locked จาก failed login 5 ครั้ง — รอ unlock หรือครบ 15 นาที", isSelf: false, isLastActive: false },
         { id: "ADM-008", fullName: "นัฐพล พัฒนา", email: "nattapol@tukdaeng.example", role: "Super Admin", status: "Invited", authMethod: "Email OTP", lastLogin: "—", lastLoginRank: 0, createdAt: "08 Sep 2026 16:00", createdAtRank: 202609081600, lastAction: "Invited — รอผู้รับยืนยันอีเมลและตั้ง password", isSelf: false, isLastActive: false },
         { id: "ADM-009", fullName: "อดิศร เก่าก่อน", email: "adisorn@tukdaeng.example", role: "Content Editor", status: "Archived", authMethod: "Email OTP", lastLogin: "15 Jun 2026 11:00", lastLoginRank: 202606151100, createdAt: "10 May 2025 09:00", createdAtRank: 202505100900, lastAction: "Archived — ออกจากทีม เก็บ audit history ตาม retention", isSelf: false, isLastActive: false },
-        { id: "ADM-010", fullName: "ผู้ดูแลระบบ", email: "current.admin@tukdaeng.example", role: "Super Admin", status: "Active", authMethod: "Email OTP", lastLogin: "08 Sep 2026 15:00", lastLoginRank: 202609081500, createdAt: "01 Jan 2026 09:00", createdAtRank: 202601010900, lastAction: "เข้าสู่ระบบ Settings > Admin Accounts", isSelf: true, isLastActive: true }
+        { id: "ADM-010", fullName: "ผู้ดูแลระบบ", email: "current.admin@tukdaeng.example", role: "Super Admin", status: "Active", authMethod: "Email OTP", lastLogin: "08 Sep 2026 15:00", lastLoginRank: 202609081500, createdAt: "01 Jan 2026 09:00", createdAtRank: 202601010900, lastAction: "เข้าสู่ระบบ Settings > Admin Accounts", isSelf: true, isLastActive: true, isMaster: true }
       ],
       // detail keyed by account id — activity history + audit log reference
+      // ADM-PTO-001: แสดงเฉพาะ lifecycle ของ account ตัวเอง (เรียงล่าสุดก่อน):
+      //   Status change (Suspend/Reactivate/Unlock/Lock/Archive/Role change) → Activated → Invited/Created
+      //   ไม่รวมงานที่ admin ไปทำใน module อื่น (มี history แยกใน module ของมัน)
+      // Reference = ใครเป็นคนทำ action นี้กับ account (ADM-xxx หรือ System)
+      // Audit = ADMIN_ACCOUNT_* audit event (null = ไม่มี → แสดง "—")
       detail: {
         "ADM-001": {
           activity: [
-            { at: "08 Sep 2026 14:22", action: "Force Hide Asset", reference: "AST-8831", note: "รายงานเนื้อหาไม่เหมาะสม 3 รายงาน" },
-            { at: "06 Sep 2026 18:44", action: "Export User CSV", reference: "RPT-USER", note: "Export ข้อมูลผู้ใช้สำหรับ compliance review" },
-            { at: "04 Sep 2026 20:10", action: "Suspend User", reference: "U-1002", note: "รายงาน 5 รายงาน พฤติกรรมผู้ขายที่ต้องตรวจสอบ" }
+            { at: "01 Jan 2026 09:00", action: "Created (Master account)", reference: "—", note: "—" }
           ],
-          auditRefs: ["AUD-88201", "AUD-88120", "AUD-88072"]
+          auditRefs: [null]
         },
         "ADM-002": {
           activity: [
-            { at: "08 Sep 2026 11:05", action: "ปฏิเสธคืนบัญชี", reference: "DEL-028", note: "พฤติกรรมละเมิดซ้ำ ไม่สมควรคืนบัญชี" },
-            { at: "30 Aug 2026 11:00", action: "ปฏิเสธคืนบัญชี", reference: "DEL-029", note: "ประวัติมีรายงานเสี่ยงสูง 2 รายงาน" }
+            { at: "16 Jan 2026 10:00", action: "Activated (first login)", reference: "—", note: "ยืนยันตัวตนด้วย Email OTP" },
+            { at: "15 Jan 2026 10:30", action: "Invited", reference: "ADM-001", note: "เชิญเป็น Super Admin" }
           ],
-          auditRefs: ["AUD-88198"]
+          auditRefs: [null, "AUD-88209"]
         },
         "ADM-003": {
           activity: [
-            { at: "07 Sep 2026 16:45", action: "คืนบัญชี", reference: "DEL-031", note: "ผู้ใช้ติดต่อ support และยืนยันตัวตนแล้ว" },
-            { at: "22 Aug 2026 10:15", action: "คืนบัญชี", reference: "DEL-032", note: "ผู้ใช้ติดต่อ support ขอคืนบัญชี" }
+            { at: "11 Feb 2026 09:00", action: "Activated (first login)", reference: "—", note: "ยืนยันตัวตนด้วย Email OTP" },
+            { at: "10 Feb 2026 13:00", action: "Invited", reference: "ADM-001", note: "เชิญเป็น Moderator" }
           ],
-          auditRefs: ["AUD-88168"]
+          auditRefs: [null, "AUD-88210"]
         },
         "ADM-004": {
           activity: [
-            { at: "06 Sep 2026 09:00", action: "ปิดรายงานไม่พบการละเมิด", reference: "RCO-690", note: "ตรวจหลักฐานแล้วไม่พบการละเมิด" }
+            { at: "21 Feb 2026 09:00", action: "Activated (first login)", reference: "—", note: "ยืนยันตัวตนด้วย Email OTP" },
+            { at: "20 Feb 2026 08:15", action: "Invited", reference: "ADM-001", note: "เชิญเป็น Content Publisher" }
           ],
-          auditRefs: ["AUD-88098"]
+          auditRefs: [null, "AUD-88211"]
         },
         "ADM-005": {
           activity: [
-            { at: "07 Sep 2026 16:30", action: "Publish Article", reference: "ART-044", note: "ตั้งเวลาเผยแพร่ 10 Jul 2026 19:00" }
+            { at: "06 Mar 2026 10:00", action: "Activated (first login)", reference: "—", note: "ยืนยันตัวตนด้วย Email OTP" },
+            { at: "05 Mar 2026 11:00", action: "Invited", reference: "ADM-001", note: "เชิญเป็น Content Editor" }
           ],
-          auditRefs: ["AUD-88172"]
+          auditRefs: [null, "AUD-88212"]
         },
         "ADM-006": {
           activity: [
-            { at: "20 Aug 2026 10:00", action: "เข้าสู่ระบบครั้งสุดท้าย", reference: "—", note: "หลังจากนี้ถูกระงับ" },
-            { at: "21 Aug 2026 09:00", action: "Suspended โดย Super Admin", reference: "ADM-001", note: "ตรวจสอบการเข้าถึงข้อมูลผู้ใช้นอก scope" }
+            { at: "21 Aug 2026 09:00", action: "Suspended", reference: "ADM-001", note: "ตรวจสอบการเข้าถึงข้อมูลผู้ใช้นอก scope" },
+            { at: "02 Apr 2026 09:00", action: "Activated (first login)", reference: "—", note: "ยืนยันตัวตนด้วย Email OTP" },
+            { at: "01 Apr 2026 09:00", action: "Invited", reference: "ADM-001", note: "เชิญเป็น Support Agent" }
           ],
-          auditRefs: []
+          auditRefs: ["AUD-88205", null, "AUD-88207"]
         },
         "ADM-007": {
           activity: [
-            { at: "02 Sep 2026 08:30", action: "เข้าสู่ระบบครั้งสุดท้าย", reference: "—", note: "หลังจากนี้ถูก lock จาก failed login" },
-            { at: "02 Sep 2026 08:35", action: "Locked จาก failed login 5 ครั้ง", reference: "—", note: "รอ unlock หรือครบ 15 นาที" }
+            { at: "02 Sep 2026 08:35", action: "Locked", reference: "System", note: "failed login 5 ครั้ง — รอ unlock หรือครบ 15 นาที" },
+            { at: "13 Apr 2026 10:00", action: "Activated (first login)", reference: "—", note: "ยืนยันตัวตนด้วย Email OTP" },
+            { at: "12 Apr 2026 14:00", action: "Invited", reference: "ADM-001", note: "เชิญเป็น Moderator" }
           ],
-          auditRefs: []
+          auditRefs: ["AUD-88204", null, "AUD-88208"]
         },
         "ADM-008": {
           activity: [
-            { at: "08 Sep 2026 16:00", action: "Invited โดย Super Admin", reference: "ADM-001", note: "รอผู้รับยืนยันอีเมลและตั้ง password" }
+            { at: "08 Sep 2026 16:00", action: "Invited", reference: "ADM-001", note: "รอผู้รับยืนยันอีเมลและตั้ง password" }
           ],
-          auditRefs: []
+          auditRefs: ["AUD-88203"]
         },
         "ADM-009": {
           activity: [
-            { at: "15 Jun 2026 11:00", action: "เข้าสู่ระบบครั้งสุดท้าย", reference: "—", note: "หลังจากนี้ถูก archive" },
-            { at: "20 Jun 2026 10:00", action: "Archived โดย Super Admin", reference: "ADM-001", note: "ออกจากทีม เก็บ audit history ตาม retention" }
+            { at: "20 Jun 2026 10:00", action: "Archived", reference: "ADM-001", note: "ออกจากทีม" },
+            { at: "11 May 2025 09:00", action: "Activated (first login)", reference: "—", note: "ยืนยันตัวตนด้วย Email OTP" },
+            { at: "10 May 2025 09:00", action: "Invited", reference: "ADM-001", note: "เชิญเป็น Content Editor" }
           ],
-          auditRefs: []
+          auditRefs: ["AUD-88206", null, "AUD-88215"]
         },
         "ADM-010": {
           activity: [
-            { at: "08 Sep 2026 15:00", action: "เข้าสู่ระบบ Settings > Admin Accounts", reference: "—", note: "เซสชันปัจจุบัน" }
+            { at: "01 Jan 2026 09:00", action: "Created (Master account)", reference: "—", note: "—" }
           ],
-          auditRefs: []
+          auditRefs: [null]
         }
       }
     };
@@ -17565,6 +17593,23 @@
       const part = (type) => parts.find(p => p.type === type)?.value || "";
       // บังคับเดือนเป็นตัวย่อ 3 ตัวอักษร ("Sep") — en-GB short บน ICU ใหม่ให้ "Sept" ซึ่ง parseBangkokAuditTime อ่านไม่ได้
       return `${part("day")} ${months[Number(part("month")) - 1]} ${part("year")}, ${part("hour")}:${part("minute")} GMT+7`;
+    }
+
+    // ADM-PTO-001: รูปแบบเวลาสำหรับ activity history ของ admin account
+    // ใช้รูปแบบเดียวกับ seed data: "DD MMM YYYY HH:MM" (ไม่มี comma ไม่มี GMT+7)
+    function formatAdminAccountActivityTime(date = new Date()) {
+      const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+      const parts = new Intl.DateTimeFormat("en-GB", {
+        timeZone: "Asia/Bangkok",
+        day: "2-digit",
+        month: "numeric",
+        year: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+        hourCycle: "h23"
+      }).formatToParts(date);
+      const part = (type) => parts.find(p => p.type === type)?.value || "";
+      return `${part("day")} ${months[Number(part("month")) - 1]} ${part("year")} ${part("hour")}:${part("minute")}`;
     }
 
     const reportAuditActionLabels = {
@@ -22351,6 +22396,66 @@
       return `<span class="pill ${map[role] || "gray"}">${role}</span>`;
     }
 
+    // ADM-PTO-001: matrix สิทธิ์รายเมนูต่อ role — read-only catalog (enforce จริงที่ route/API/service ตอน dev phase)
+    // level: manage = จัดการ | limited = จัดการบางส่วนตาม policy | view = ดูอย่างเดียว | none = ไม่เห็นเมนู
+    const roleMenuAccess = {
+      "Super Admin": [
+        ["Dashboard", "manage", ""],
+        ["User Management", "manage", ""],
+        ["Asset Management", "manage", ""],
+        ["Content Management", "manage", ""],
+        ["Market Data", "view", "ซิงก์จาก provider — ไม่แก้จาก BO"],
+        ["Option Master", "manage", ""],
+        ["Market Demand", "view", "ดูอย่างเดียวทั้ง module"],
+        ["Account Deletion", "manage", ""],
+        ["Settings & Audit Log", "manage", ""]
+      ],
+      "Content Editor": [
+        ["Dashboard", "view", "เห็นเฉพาะงาน content"],
+        ["User Management", "none", ""],
+        ["Asset Management", "none", ""],
+        ["Content Management", "limited", "สร้าง/แก้ draft, categories, metadata — publish/archive ไม่ได้"],
+        ["Market Data", "none", ""],
+        ["Option Master", "none", ""],
+        ["Market Demand", "view", ""],
+        ["Account Deletion", "none", ""],
+        ["Settings & Audit Log", "none", ""]
+      ],
+      "Content Publisher": [
+        ["Dashboard", "view", "เห็นเฉพาะงาน content"],
+        ["User Management", "none", ""],
+        ["Asset Management", "none", ""],
+        ["Content Management", "manage", "publish/schedule/archive/banners + Reported Board พร้อม audit reason"],
+        ["Market Data", "view", ""],
+        ["Option Master", "none", ""],
+        ["Market Demand", "view", ""],
+        ["Account Deletion", "none", ""],
+        ["Settings & Audit Log", "none", ""]
+      ],
+      "Moderator": [
+        ["Dashboard", "view", "เห็นเฉพาะ queue ที่ดูแล"],
+        ["User Management", "limited", "เฉพาะ Reported Users + action ตาม policy"],
+        ["Asset Management", "limited", "เฉพาะ Reported Assets / Reported Comments"],
+        ["Content Management", "view", "อ่านเนื้อหาที่เกี่ยวข้องกับรายงาน"],
+        ["Market Data", "view", ""],
+        ["Option Master", "none", ""],
+        ["Market Demand", "view", ""],
+        ["Account Deletion", "limited", "คืน/ปฏิเสธคืนบัญชีตาม policy"],
+        ["Settings & Audit Log", "none", ""]
+      ],
+      "Support Agent": [
+        ["Dashboard", "view", "เห็นเฉพาะงานที่ได้รับมอบหมาย"],
+        ["User Management", "none", ""],
+        ["Asset Management", "none", ""],
+        ["Content Management", "none", ""],
+        ["Market Data", "view", ""],
+        ["Option Master", "none", ""],
+        ["Market Demand", "view", ""],
+        ["Account Deletion", "view", "ดู context เท่าที่จำเป็น"],
+        ["Settings & Audit Log", "limited", "เฉพาะ Support Center"]
+      ]
+    };
+
     // ADM-PTO-001: master admin หลัก 1 บัญชี — ป้องกัน suspend/archive และแสดง badge ชัดเจน
     // (ต่อยอด section 4: ต้องมี active admin ที่ดูแลระบบได้เสมอ)
 
@@ -22381,6 +22486,13 @@
       if (!acc || acc.isSelf) return false;
       if (acc.isMaster) return false; // master admin หลัก — ห้ามเก็บถาวร
       return acc.status === "Suspended" || acc.status === "Locked";
+    }
+
+    // ADM-PTO-001: เปลี่ยน role ได้เฉพาะบัญชีอื่นที่ยังไม่ถูกเก็บถาวร — master admin หลักล็อก role (ป้องกันระบบไม่มีผู้ดูแล full access)
+    function canChangeRoleAdmin(acc) {
+      if (!acc || acc.isSelf) return false;
+      if (acc.isMaster) return false;
+      return acc.status === "Active" || acc.status === "Invited";
     }
 
     function renderAdminAccounts() {
@@ -22444,17 +22556,18 @@
             : pageRows.map(acc => {
               return `
                 <div class="user-row admin-account-row" data-admin-account-card="${acc.id}">
-                  <div class="user-cell-primary" data-label="Admin ID"><div class="main-text">${acc.id}${acc.isMaster ? ' <span class="pill pill-master">Master</span>' : ""}${acc.isSelf ? ' <span class="pill gray">คุณ</span>' : ""}</div></div>
+                  <div class="user-cell-primary" data-label="Admin ID"><div class="main-text">${acc.id}</div></div>
                   <div class="user-card-tags">
                     ${adminAccountStatusPill(acc.status)}
                     ${adminAccountRolePill(acc.role)}
+                    ${acc.isMaster ? '<span class="pill pill-master">Master</span>' : ""}
                     <div class="user-card-meta">
                       <div class="user-card-meta-item comment-field-meta"><span>Name</span><strong>${acc.fullName}</strong></div>
                       <div class="user-card-meta-item comment-field-meta"><span>Email</span><strong>${acc.email}</strong></div>
                       <div class="user-card-meta-item comment-field-meta"><span>Last Login</span><strong>${acc.lastLogin}</strong></div>
                     </div>
                   </div>
-                  <div data-label="Name"><div class="main-text">${acc.fullName}</div></div>
+                  <div data-label="Name"><div class="main-text">${acc.fullName}${acc.isMaster ? ' <span class="pill pill-master">Master</span>' : ""}</div></div>
                   <div data-label="Email"><div class="main-text">${acc.email}</div></div>
                   <div data-label="Role">${adminAccountRolePill(acc.role)}</div>
                   <div data-label="Status">${adminAccountStatusPill(acc.status)}</div>
@@ -22464,6 +22577,7 @@
                       <summary aria-label="Admin account actions">...</summary>
                       <div class="row-menu-list">
                         <button type="button" data-admin-account-open="${acc.id}">ดูรายละเอียด</button>
+                        ${canChangeRoleAdmin(acc) ? `<button type="button" data-admin-account-change-role="${acc.id}">เปลี่ยน Role</button>` : ""}
                         ${canSuspendAdmin(acc) ? `<button type="button" data-admin-account-action="suspend" data-admin-account-id="${acc.id}">ระงับ</button>` : ""}
                         ${canReactivateAdmin(acc) ? `<button type="button" data-admin-account-action="reactivate" data-admin-account-id="${acc.id}">ยกเลิกการระงับ</button>` : ""}
                         ${canUnlockAdmin(acc) ? `<button type="button" data-admin-account-action="unlock" data-admin-account-id="${acc.id}">ปลดล็อก</button>` : ""}
@@ -22517,6 +22631,9 @@
 
       // สร้าง action buttons ตามสถานะที่อนุญาต (ปุ่ม back อยู่ที่ page header แล้ว)
       const actionButtons = [];
+      if (canChangeRoleAdmin(acc)) {
+        actionButtons.push(`<button class="user-detail-action-btn" type="button" data-admin-account-change-role="${acc.id}">เปลี่ยน Role</button>`);
+      }
       if (canSuspendAdmin(acc)) {
         actionButtons.push(`<button class="user-detail-action-btn danger" type="button" data-admin-account-action="suspend" data-admin-account-id="${acc.id}">ระงับ</button>`);
       }
@@ -22543,11 +22660,36 @@
         </div>
       `;
 
+      // Section 1.5: Role & Permissions — แสดงเฉพาะเมนูที่ role นี้เห็น/จัดการได้ (ไม่เห็น = ไม่แสดง)
+      const levelPill = { manage: ["green", "จัดการ"], limited: ["amber", "จัดการบางส่วน"], view: ["blue", "ดูอย่างเดียว"] };
+      const menuRows = (roleMenuAccess[acc.role] || [])
+        .filter(([, level]) => level !== "none")
+        .map(([menu, level, note]) => `
+        <tr>
+          <td data-label="เมนู">${menu}</td>
+          <td data-label="สิทธิ์"><span class="pill ${levelPill[level][0]}">${levelPill[level][1]}</span></td>
+          <td data-label="หมายเหตุ" class="history-note">${note || "—"}</td>
+        </tr>
+      `).join("");
+      const sectionRole = `
+        <div class="detail-section">
+          <h4>Role &amp; Permissions</h4>
+          <div class="history-table-wrap">
+            <table class="history-table admin-menu-matrix">
+              <thead>
+                <tr><th>เมนู / Module</th><th>สิทธิ์</th><th>หมายเหตุ</th></tr>
+              </thead>
+              <tbody>${menuRows}</tbody>
+            </table>
+          </div>
+        </div>
+      `;
+
       // Section 2: History & Actions — ตารางประวัติล่าสุด + ปุ่ม action (pattern: Deletion Request Detail)
       // คอลัมน์ Audit = รหัส event ใน Audit Log ของ action นั้น (คลิกเปิด Audit Log กรองด้วย reference) — ไม่มีแสดง —
       const activityRows = activity.map((a, i) => `
         <tr>
-          <td data-label="เวลา">${a.at || "—"}</td>
+          <td data-label="วันที่ / เวลา">${a.at || "—"}</td>
           <td data-label="Action">${a.action}</td>
           <td data-label="Reference">${a.reference || "—"}</td>
           <td data-label="Audit">${auditRefs[i] ? `<button class="history-audit-link" type="button" data-admin-account-audit-ref="${auditRefs[i]}">${auditRefs[i]}</button>` : "—"}</td>
@@ -22563,7 +22705,7 @@
               <table class="history-table">
                 <thead>
                   <tr>
-                    <th>เวลา</th>
+                    <th>วันที่ / เวลา</th>
                     <th>Action</th>
                     <th>Reference</th>
                     <th>Audit</th>
@@ -22589,12 +22731,12 @@
                   ${adminAccountStatusPill(acc.status)}
                   ${adminAccountRolePill(acc.role)}
                   ${acc.isMaster ? '<span class="pill pill-master">Master</span>' : ""}
-                  ${acc.isSelf ? '<span class="pill gray">บัญชีของคุณ</span>' : ""}
                 </div>
               </div>
             </div>
           </div>
           ${section1}
+          ${sectionRole}
           ${section2}
         </div>
       `;
@@ -22678,10 +22820,10 @@
 
     function renderAdminAccountActionImpactNote(acc, action) {
       const map = {
-        suspend: "ผู้รับเข้าสู่ระบบไม่ได้ทันที และ session ถูก revoke",
-        reactivate: "ผู้รับกลับเข้าสู่ระบบได้ตามปกติ",
-        unlock: "ผู้รับกลับเข้าสู่ระบบได้ทันที ไม่ต้องรอ lockout หมดอายุ",
-        archive: "admin account ออกจาก active use แต่ยังเก็บ audit history ตาม retention"
+        suspend: "เข้าสู่ระบบไม่ได้ทันที และ session ถูกยกเลิก",
+        reactivate: "กลับเข้าสู่ระบบได้ตามปกติ",
+        unlock: "กลับเข้าสู่ระบบได้ทันที ไม่ต้องรอ lockout หมดอายุ",
+        archive: "บัญชีปิดใช้งาน แต่ยังเก็บประวัติไว้ตามกำหนดเก็บรักษา"
       };
       return `
         <div class="module-note user-action-impact user-action-impact-card user-action-impact-warning">
@@ -22744,9 +22886,89 @@
                   <textarea id="admin-account-action-note" placeholder="${config.notePlaceholder}" ${completed ? "disabled" : ""}></textarea>
                 </label>
                 ${renderAdminAccountActionImpactNote(acc, action)}
-                ${renderAdminAccountActionEmailNote(acc)}
                 <div class="user-detail-actions user-action-footer">
                   <button class="user-detail-action-btn ${getAdminAccountActionConfirmClass(config)}" type="button" data-admin-account-action-confirm="${action}" data-admin-account-id="${acc.id}" ${completed ? "disabled" : ""}>ยืนยัน</button>
+                  <button class="user-detail-action-btn" type="button" data-user-action-modal-close>${completed ? "ปิด" : "ยกเลิก"}</button>
+                </div>
+                <div class="warning-note action-feedback user-action-result ${hasResult ? "show" : ""} ${resultType}">
+                  <strong>${resultMessage}</strong><br>
+                  <span>${resultDetail || `บันทึกการดำเนินการ: ${formatBangkokTimestamp()}`}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+      applyModalHeadingFonts(modal);
+      modal.classList.add("show");
+    }
+
+    // ADM-PTO-001: Change Role modal — pattern renderAdminAccountActionModal + before/after diff
+    function openAdminAccountChangeRoleModal(acc, completed = false, resultMessage = "", resultDetail = "", resultType = "") {
+      if (!acc) return;
+      const hasResult = Boolean(resultMessage);
+      const modal = document.querySelector("#user-action-modal");
+      const modalCard = modal?.querySelector(".user-action-modal");
+      const modalBody = document.querySelector("#user-action-modal-body");
+      if (!modal || !modalCard || !modalBody) return;
+      modalCard.classList.remove("article-preview-modal", "article-editor-confirm-modal", "category-editor-modal", "category-order-modal", "market-editor-modal", "market-reference-drawer", "board-report-phone-preview-modal", "option-editor-modal", "option-order-modal", "option-audit-modal", "policy-version-view-modal", "policy-publish-confirm-modal", "policy-restore-confirm-modal", "support-center-preview-modal", "deletion-action-modal", "admin-account-invite-modal");
+      modalCard.classList.add("admin-account-action-modal");
+      const roleOptions = Object.keys(roleMenuAccess)
+        .filter(role => role !== acc.role)
+        .map(role => ({ value: role, label: role }));
+      modalBody.innerHTML = `
+        <div class="user-action-page admin-account-action-page">
+          <div class="user-action-head">
+            <div>
+              <h2 id="user-action-modal-title">Change Role</h2>
+              <p>เปลี่ยน role ของ admin — สิทธิใหม่มีผลทันที ต้องระบุเหตุผลและบันทึก audit</p>
+            </div>
+            <button class="btn user-action-close" type="button" data-user-action-modal-close aria-label="ปิด">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M18 6 6 18"></path>
+                <path d="m6 6 12 12"></path>
+              </svg>
+            </button>
+          </div>
+          <div class="user-action-target">
+            <div>
+              <strong>${acc.fullName}</strong>
+              <span>${acc.id} · ${acc.email}</span>
+            </div>
+            ${adminAccountStatusPill(acc.status)}
+          </div>
+          <div class="user-action-layout">
+            <div class="detail-section">
+              <div class="user-action-form">
+                <label>
+                  <span>Role ปัจจุบัน</span>
+                  <input type="text" value="${acc.role}" disabled />
+                </label>
+                <label>
+                  <span>Role ใหม่ <span class="article-required-mark">*</span></span>
+                  ${customSelect("admin-account-change-role", "เลือก role ใหม่", roleOptions, "", "data-custom-select-silent", completed)}
+                  <span class="article-field-error" data-admin-change-role-role-error></span>
+                </label>
+                <label>
+                  <span>เหตุผลการเปลี่ยน Role <span class="article-required-mark">*</span></span>
+                  ${customSelect("admin-account-change-role-reason", "เหตุผลการเปลี่ยน Role", [
+                    { value: "ย้ายทีม / เปลี่ยนหน้าที่งาน", label: "ย้ายทีม / เปลี่ยนหน้าที่งาน" },
+                    { value: "ได้รับอนุมัติจากผู้บริหาร", label: "ได้รับอนุมัติจากผู้บริหาร" },
+                    { value: "ปรับ scope ความรับผิดชอบตามโครงสร้างใหม่", label: "ปรับ scope ความรับผิดชอบตามโครงสร้างใหม่" },
+                    { value: "คำขอจากผู้บริหาร/HR", label: "คำขอจากผู้บริหาร/HR" }
+                  ], "", "data-custom-select-silent", completed)}
+                  <span class="article-field-error" data-admin-change-role-reason-error></span>
+                </label>
+                <label>
+                  <span>Note / หมายเหตุ</span>
+                  <textarea id="admin-account-change-role-note" placeholder="สรุปเหตุผลและข้อมูลอ้างอิงที่เกี่ยวข้องกับการเปลี่ยน Role" ${completed ? "disabled" : ""}></textarea>
+                </label>
+                <div class="module-note user-action-impact user-action-impact-card user-action-impact-warning">
+                  <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 3.2c.7 0 1.35.37 1.7.98l8.05 13.95A1.95 1.95 0 0 1 20.05 21H3.95a1.95 1.95 0 0 1-1.7-2.87L10.3 4.18A1.95 1.95 0 0 1 12 3.2Zm0 4.6a1 1 0 0 0-1 1v4.4a1 1 0 1 0 2 0V8.8a1 1 0 0 0-1-1Zm0 8.45a1.15 1.15 0 1 0 0 2.3 1.15 1.15 0 0 0 0-2.3Z"/></svg>
+                  <p><strong>เปลี่ยนสิทธิ:</strong> <span data-admin-role-diff data-admin-role-from="${acc.role}">${acc.role} → ${roleOptions[0]?.value || "—"}</span></p>
+                </div>
+                <div class="user-detail-actions user-action-footer">
+                  <button class="user-detail-action-btn warning user-action-confirm" type="button" data-admin-account-change-role-confirm="true" data-admin-account-id="${acc.id}" ${completed ? "disabled" : ""}>ยืนยันเปลี่ยน Role</button>
                   <button class="user-detail-action-btn" type="button" data-user-action-modal-close>${completed ? "ปิด" : "ยกเลิก"}</button>
                 </div>
                 <div class="warning-note action-feedback user-action-result ${hasResult ? "show" : ""} ${resultType}">
@@ -22892,6 +23114,100 @@
       return auditId;
     }
 
+    // ADM-PTO-001: บันทึก audit entry สำหรับการเปลี่ยน role (before/after เป็น role เดิม → role ใหม่)
+    function ensureAdminAccountRoleChangeAuditEvent(acc, beforeRole, afterRole, reason, note) {
+      const maxNum = auditLogData.events.reduce((max, e) => {
+        const m = /^AUD-(\d+)$/.exec(e.id);
+        return m ? Math.max(max, Number(m[1])) : max;
+      }, 0);
+      const auditId = `AUD-${String(maxNum + 1).padStart(5, "0")}`;
+      const event = {
+        id: auditId,
+        createdAt: formatBangkokTimestamp() + " GMT+7",
+        actor: (auth.admin && auth.admin.username) || "Admin",
+        action: "Change Admin Role",
+        module: "Settings",
+        risk: "สูง",
+        before: beforeRole,
+        after: afterRole,
+        reason: reason || "เหตุผลการเปลี่ยน Role",
+        reference: acc.id,
+        note: note || `เปลี่ยน role จาก ${beforeRole} เป็น ${afterRole}`
+      };
+      auditLogData.events.unshift(event);
+      return auditId;
+    }
+
+    // ADM-PTO-001: error รายฟิลด์ของ change role modal — pattern setAdminInviteFieldError
+    function setAdminChangeRoleFieldError(field, message = "") {
+      const node = document.querySelector(`[data-admin-change-role-${field}-error]`);
+      if (node) {
+        node.textContent = message;
+        node.classList.toggle("show", Boolean(message));
+      }
+    }
+
+    // ADM-PTO-001: อัปเดต diff ก่อน → หลัง ใน change role modal ตาม role ที่เลือก
+    function updateAdminChangeRoleDiff() {
+      const input = document.querySelector("#admin-account-change-role");
+      const diff = document.querySelector("[data-admin-role-diff]");
+      if (!input || !diff) return;
+      const fromRole = diff.getAttribute("data-admin-role-from") || "—";
+      diff.textContent = `${fromRole} → ${input.value || "—"}`;
+    }
+
+    // ADM-PTO-001: ยืนยันเปลี่ยน role — pattern confirmAdminAccountAction (reason required + audit)
+    function confirmAdminAccountChangeRole(acc) {
+      if (!acc) return;
+      const afterRole = document.querySelector("#admin-account-change-role")?.value || "";
+      const selectedReason = document.querySelector("#admin-account-change-role-reason")?.value || "";
+      const actionNote = document.querySelector("#admin-account-change-role-note")?.value.trim() || "";
+      setAdminChangeRoleFieldError("role", "");
+      setAdminChangeRoleFieldError("reason", "");
+      let invalid = false;
+      if (!afterRole || afterRole === acc.role) {
+        setAdminChangeRoleFieldError("role", "กรุณาเลือก role ใหม่ที่ต่างจากปัจจุบัน");
+        invalid = true;
+      }
+      if (!selectedReason) {
+        setAdminChangeRoleFieldError("reason", "กรุณาระบุเหตุผลการเปลี่ยน Role");
+        invalid = true;
+      }
+      if (invalid) return;
+      const now = formatBangkokTimestamp();
+      const activityTime = formatAdminAccountActivityTime();
+      const beforeRole = acc.role;
+      acc.role = afterRole;
+      acc.lastAction = `Change Role โดย ${(auth.admin && auth.admin.username) || "Admin"} — ${beforeRole} → ${afterRole}`;
+      acc.updatedAt = now;
+
+      // เพิ่ม activity history
+      const detail = adminAccountData.detail[acc.id] || (adminAccountData.detail[acc.id] = {});
+      if (!detail.activity) detail.activity = [];
+      detail.activity.unshift({
+        at: activityTime,
+        action: "Change Role",
+        reference: acc.id,
+        note: `${beforeRole} → ${afterRole} — ${selectedReason}${actionNote ? "\nหมายเหตุ: " + actionNote : ""}`
+      });
+
+      // บันทึก audit
+      const auditId = ensureAdminAccountRoleChangeAuditEvent(acc, beforeRole, afterRole, selectedReason, actionNote);
+      if (auditId) {
+        if (!detail.auditRefs) detail.auditRefs = [];
+        detail.auditRefs.unshift(auditId);
+      }
+
+      // ปิด modal + success toast + รีเฟรชหน้าปัจจุบัน (list หรือ detail ตามที่อยู่)
+      closeUserActionModal();
+      showSuccessToast(`${acc.fullName} เปลี่ยน role เป็น ${afterRole} แล้ว — สิทธิใหม่มีผลใน request ถัดไป`, "Admin Accounts");
+      if (document.body.classList.contains("admin-account-detail-mode")) {
+        renderAdminAccountDetail(acc.id);
+      } else {
+        renderAdminAccountRows();
+      }
+    }
+
     // ADM-PTO-001: ยืนยัน admin account action (suspend/reactivate/unlock/archive)
     // pattern: confirmDeletionAction — ปิด modal + success toast + re-render detail
     function confirmAdminAccountAction(acc, action) {
@@ -22900,6 +23216,7 @@
       const selectedReason = document.querySelector("#admin-account-action-reason")?.value || "";
       const actionNote = document.querySelector("#admin-account-action-note")?.value.trim() || "";
       const now = formatBangkokTimestamp();
+      const activityTime = formatAdminAccountActivityTime();
 
       // อัปเดตสถานะ
       const beforeStatus = acc.status;
@@ -22914,10 +23231,10 @@
       const detail = adminAccountData.detail[acc.id] || (adminAccountData.detail[acc.id] = {});
       if (!detail.activity) detail.activity = [];
       detail.activity.unshift({
-        at: now,
+        at: activityTime,
         action: config.auditAction,
         reference: acc.id,
-        note: selectedReason || config.summary
+        note: [selectedReason || config.summary, actionNote ? "หมายเหตุ: " + actionNote : null].filter(Boolean).join("\n")
       });
 
       // บันทึก audit
@@ -37793,6 +38110,7 @@
         if (hiddenInput.id === "asset-restore-reason") updateAssetRestoreVisibilityEmailPreview();
         if (hiddenInput.id === "asset-delete-reason") updateAssetDeletePostEmailPreview();
         if (hiddenInput.id === "reported-comment-action-reason") updateReportedCommentActionEmailPreview();
+        if (hiddenInput.id === "admin-account-change-role") updateAdminChangeRoleDiff();
         if (hiddenInput.id === "market-import-scenario") {
           setMarketActionFieldError("name");
           const result = document.querySelector("[data-market-import-result]");
@@ -38189,10 +38507,9 @@
       }
       // ADM-PTO-001: Settings > Admin Accounts — row click เปิด Admin Account Detail
       const adminAccountOpen = event.target.closest("[data-admin-account-open], .user-row[data-admin-account-card]");
-      if (adminAccountOpen && activeModule === "settings" && (!activeSub || activeSub === "Admin Accounts")) {
-        if (event.target.closest(".row-menu, button") && !event.target.closest("[data-admin-account-open]")) {
-          return;
-        }
+      if (adminAccountOpen && activeModule === "settings" && (!activeSub || activeSub === "Admin Accounts")
+          && !event.target.closest("[data-admin-account-action], [data-admin-account-change-role]")
+          && !(event.target.closest(".row-menu, button") && !event.target.closest("[data-admin-account-open]"))) {
         const id = adminAccountOpen.dataset.adminAccountOpen || adminAccountOpen.dataset.adminAccountCard;
         pushBackNavigationContext();
         renderAdminAccountDetail(id);
@@ -39513,6 +39830,25 @@
         confirmAdminAccountAction(acc, action);
         return;
       }
+      // ADM-PTO-001: Admin Accounts — เปิด change role modal
+      const adminAccountChangeRoleBtn = event.target.closest("[data-admin-account-change-role]");
+      if (adminAccountChangeRoleBtn) {
+        const id = adminAccountChangeRoleBtn.dataset.adminAccountChangeRole;
+        const acc = adminAccountData.accounts.find(a => a.id === id);
+        if (acc) {
+          closeRowMenus();
+          openAdminAccountChangeRoleModal(acc);
+        }
+        return;
+      }
+      // ADM-PTO-001: Admin Accounts — ยืนยัน change role
+      const adminAccountChangeRoleConfirm = event.target.closest("[data-admin-account-change-role-confirm]");
+      if (adminAccountChangeRoleConfirm) {
+        const id = adminAccountChangeRoleConfirm.dataset.adminAccountId;
+        const acc = adminAccountData.accounts.find(a => a.id === id);
+        confirmAdminAccountChangeRole(acc);
+        return;
+      }
       // ADM-PTO-001: Admin Accounts — กลับจาก detail ไป list
       const adminAccountBack = event.target.closest("[data-admin-account-back]");
       if (adminAccountBack) {
@@ -39926,11 +40262,11 @@
     });
 
     const auth = {
-      email: "admin@tukdaeng.example",
+      email: "current.admin@tukdaeng.example",
       scenario: "success",
       admin: {
-        username: "สมชาย รักงาน",
-        role: "Admin"
+        username: "ผู้ดูแลระบบ",
+        role: "Super Admin"
       },
       expectedOtp: "123456",
       attempts: 0,
@@ -39945,14 +40281,14 @@
     };
 
     function getAdminInitials(username) {
-      const parts = (username || "สมชาย รักงาน").trim().split(/\s+/).filter(Boolean);
+      const parts = (username || "ผู้ดูแลระบบ").trim().split(/\s+/).filter(Boolean);
       const initials = parts.length > 1 ? parts.map(part => part[0]).join("") : (parts[0] || "").slice(0, 2);
       return initials.slice(0, 2).toUpperCase() || "AD";
     }
 
     function updateAdminProfileFooter() {
-      const username = auth.admin.username || "สมชาย รักงาน";
-      const role = auth.admin.role || "Admin";
+      const username = auth.admin.username || "ผู้ดูแลระบบ";
+      const role = auth.admin.role || "Super Admin";
       document.querySelector("#admin-username").textContent = username;
       document.querySelector("#admin-role").textContent = role;
       document.querySelector("#admin-avatar").textContent = getAdminInitials(username);
@@ -40053,9 +40389,9 @@
     }
 
     function sendOtpChallenge() {
-      auth.email = document.querySelector("#login-email").value.trim() || "admin@tukdaeng.example";
-      auth.admin.username = "สมชาย รักงาน";
-      auth.admin.role = "Admin";
+      auth.email = document.querySelector("#login-email").value.trim() || "current.admin@tukdaeng.example";
+      auth.admin.username = "ผู้ดูแลระบบ";
+      auth.admin.role = "Super Admin";
       auth.scenario = document.querySelector("#auth-scenario").value;
       auth.attempts = 0;
       auth.deliveryRetried = false;
