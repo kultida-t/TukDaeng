@@ -25935,7 +25935,7 @@
             ${renderReportAuditHistoryTable(report)}
           </div>
 
-          ${getReportAccountStatus(report) === "Deletion Requested" ? `<div class="warning-note"><strong>Deletion dependency:</strong> ต้อง review user report จาก User Profile หรือ Chat ก่อน แล้วค่อยจัดการ Account Deletion แยก ห้าม delete/archive ทันทีจากคิวนี้</div>` : ""}
+          ${getReportAccountStatus(report) === "Deletion Requested" ? `<div class="warning-note"><strong>Deletion dependency:</strong> บัญชีอยู่ในกระบวนการลบบัญชี ห้าม delete/archive จากคิวนี้ ให้ไปจัดการที่ Account Deletion module</div>` : ""}
           ${renderReportDetailActionButtons(report)}
         </div>
       `;
