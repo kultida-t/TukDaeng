@@ -22878,8 +22878,9 @@
             <div class="detail-section">
               <div class="user-action-form">
                 <label>
-                  ${config.reasonLabel}
-                  ${customSelect("admin-account-action-reason", config.reasonLabel, config.reasons.map(reason => ({ value: reason, label: reason })), "", "data-custom-select-silent", completed)}
+                  ${config.reasonLabel} <span class="article-required-mark">*</span>
+                  ${customSelect("admin-account-action-reason", config.reasonLabel, [{ value: "", label: "เลือกเหตุผล" }, ...config.reasons.map(reason => ({ value: reason, label: reason }))], "", "data-custom-select-silent", completed)}
+                  <span class="article-field-error" data-admin-action-reason-error></span>
                 </label>
                 <label>
                   Note / หมายเหตุ
@@ -23059,7 +23060,8 @@
 
     // ADM-PTO-001: บันทึก audit entry สำหรับ admin account action
     // pattern: auditLogData.events — เพิ่ม entry ใหม่ที่ด้านบน (latest first)
-    function ensureAdminAccountAuditEvent(acc, action, reason, note) {
+    // beforeStatus ต้องส่งมาจาก caller ที่ capture ก่อน mutate — ห้ามอ่าน acc.status ตรงนี้
+    function ensureAdminAccountAuditEvent(acc, action, reason, note, beforeStatus) {
       const config = adminAccountActionConfig[action];
       if (!config) return null;
       const maxNum = auditLogData.events.reduce((max, e) => {
@@ -23067,7 +23069,6 @@
         return m ? Math.max(max, Number(m[1])) : max;
       }, 0);
       const auditId = `AUD-${String(maxNum + 1).padStart(5, "0")}`;
-      const beforeStatus = acc.status;
       let afterStatus = acc.status;
       if (action === "suspend") afterStatus = "Suspended";
       else if (action === "reactivate") afterStatus = "Active";
@@ -23136,6 +23137,15 @@
       };
       auditLogData.events.unshift(event);
       return auditId;
+    }
+
+    // ADM-PTO-001: error รายฟิลด์ของ action modal — pattern setAdminChangeRoleFieldError
+    function setAdminActionFieldError(field, message = "") {
+      const node = document.querySelector(`[data-admin-action-${field}-error]`);
+      if (node) {
+        node.textContent = message;
+        node.classList.toggle("show", Boolean(message));
+      }
     }
 
     // ADM-PTO-001: error รายฟิลด์ของ change role modal — pattern setAdminInviteFieldError
@@ -23215,6 +23225,12 @@
       if (!acc || !config) return;
       const selectedReason = document.querySelector("#admin-account-action-reason")?.value || "";
       const actionNote = document.querySelector("#admin-account-action-note")?.value.trim() || "";
+      // reason required ตาม spec — pattern confirmAdminAccountChangeRole
+      setAdminActionFieldError("reason", "");
+      if (!selectedReason) {
+        setAdminActionFieldError("reason", "กรุณาระบุเหตุผล");
+        return;
+      }
       const now = formatBangkokTimestamp();
       const activityTime = formatAdminAccountActivityTime();
 
@@ -23238,7 +23254,7 @@
       });
 
       // บันทึก audit
-      const auditId = ensureAdminAccountAuditEvent(acc, action, selectedReason, actionNote);
+      const auditId = ensureAdminAccountAuditEvent(acc, action, selectedReason, actionNote, beforeStatus);
       if (auditId) {
         if (!detail.auditRefs) detail.auditRefs = [];
         detail.auditRefs.unshift(auditId);
