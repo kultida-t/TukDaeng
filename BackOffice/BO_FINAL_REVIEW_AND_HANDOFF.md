@@ -51,9 +51,9 @@
 | 11 | Market Demand | 1 | Complete |
 | 12 | Help / Support | 1 | Complete |
 | 13 | Account Deletion Requests | 1 | Complete |
-| 14 | Notifications | 1 | Complete |
+| 14 | Notifications (Broadcast & System Templates) | 2 | Future scope (deferred) — Delivery Logs ย้ายไป Settings ใน Phase 1 |
 | 15 | Reports & Analytics | 2 | Future scope (deferred) |
-| 16 | Admin Settings | 1 | Complete |
+| 16 | Admin Settings | 1 | Complete (รวม Delivery Logs) |
 | 17 | Option Master | 1 | Complete |
 
 ## 4. Recommended Implementation Order
@@ -78,9 +78,9 @@
 7. Market Demand (Watch Alert)
 8. Help & Support
 9. Account Deletion Requests
-10. Notifications
+10. Notifications (Phase 2 / future scope — deferred; Delivery Logs ย้ายไป Settings ใน Phase 1)
 11. Reports & Analytics (Phase 2 / future scope — deferred)
-12. Admin Settings
+12. Admin Settings (รวม Delivery Logs)
 13. Audit Log
 14. Dashboard drill-in and queue summary
 

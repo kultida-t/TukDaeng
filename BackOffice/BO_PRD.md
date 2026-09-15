@@ -68,10 +68,10 @@ FO users have a single account type: `User`. BO must support activity from the s
 - Market Demand (Watch Alert)
 - Directory Management (future/postponed; not Phase 1)
 - Help & Support (Policy & Versioning + Support Center)
-- Notifications
+- Notifications (Phase 2/future — Delivery Logs ย้ายไป Settings ใน Phase 1)
 - Reports & Analytics (Phase 2 / future scope)
 - Audit Log
-- Admin Settings
+- Admin Settings (รวม Delivery Logs)
 
 ### 3.2 Out of Scope for Phase 1
 
@@ -376,7 +376,9 @@ Ticket queue, assignment, SLA, reply history, internal notes และ manual ti
 
 ## 4.11 Notifications
 
-### Requirements
+> **สถานะ:** Phase 2/future scope — Broadcast Notification และ System Notification Trigger (template management) เลื่อนเป็น Phase 2/future (mirror section 4.12 Reports); ใน Phase 1 Delivery Logs ย้ายไปอยู่ใต้ **Settings > Delivery Logs** (ดู `16_ADMIN_SETTINGS_MODULE.md` และ `14_NOTIFICATIONS_MODULE.md`) ไม่มี Notifications menu entry ใน sidebar ใน Phase 1
+
+### Requirements (Phase 2/future)
 
 BO ต้องรองรับ 2 ประเภท:
 
@@ -470,7 +472,7 @@ Reports ที่ต้องมี (เมื่อกลับมาทำใ�
 - Policy
 - PolicyVersion
 - SupportCenter
-- Notification
+- Notification (Phase 2/future — template/broadcast; delivery log อยู่ใต้ Settings ใน Phase 1)
 - AdminAccount
 - SpecOption
 - SpecOptionGroup
@@ -536,10 +538,10 @@ Reports ที่ต้องมี (เมื่อกลับมาทำใ�
 - Market Demand (Watch Alert)
 - Help & Support (Policy & Versioning + Support Center)
 - Account Deletion Requests
-- Notifications
+- Notifications (Phase 2/future — Delivery Logs ย้ายไป Settings ใน Phase 1)
 - Reports & Analytics (Phase 2 / future scope)
 - Audit Log
-- Admin Settings
+- Admin Settings (รวม Delivery Logs)
 
 ### Phase 2
 

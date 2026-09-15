@@ -117,7 +117,7 @@ Recommended note format:
 | Permission / Privacy | BO has one `Admin` account type; enforce module/action permission at route, UI, API, and service level. UI hiding is not sufficient. Sensitive fields are masked by default in production, with reveal controlled by permission, business reason where required, and audit. Reset password is available only for Email accounts and blocked for Apple/Google/Pending Verification/Suspended/Banned/Deletion Requested/Deleted cases as specified by the prototype. Suspend, ban, restore, unban, resend verification, Account Deletion routing, sensitive reveal, and export each need separate permission keys. User List does not expose Export in Phase 1; export must route through system export with permission, scope control, expiry/background job, and audit (ก่อนหน้านี้ระบุให้ผ่าน Reports/export แต่ Reports ถูกเลื่อนเป็น Phase 2/future scope แล้ว). |
 | Account Status Actions | Suspend/ban/restore/unban must use confirmation with reason, `Status before action`, `After confirmation`, FO impact preview, and audit note before mutation. Prototype currently shows reason controls but does not validate them; production/API must reject missing required reason before saving. `Deletion Requested` users can be viewed and routed to Account Deletion/dependency review, but User List must not archive/delete directly. `Deleted` appears in the current prototype list/filter for historical review, but actions are limited to permitted historical detail and sensitive fields must stay masked/anonymized. |
 | Responsive QA | Verify 375px, 768px, 1280px, and 1440px against the prototype behavior. Desktop and wide desktop use the control-center layout: compact summary cards, top filter bar, dense table/list rows, row action menu, and structured detail/action views; do not introduce a persistent split list/detail layout for User Detail. Tablet/mobile use stacked card/list rows, hidden row headers, hamburger navigation, panel-header filter toggle, advanced filters expanding in the list area rather than a drawer/bottom sheet, reachable row action menu, and detail/action content that stacks without clipped Thai text. Also verify auth cycle on mobile: User List -> logout -> login returns to Dashboard with nav closed and no User Management submenu, query params, custom select, filter toggle, or pagination state retained. |
-| FO Sync Impact | Account status changes must update FO login/session behavior, account access, public profile visibility, and any dependent cache/indexes. Suspended and Banned must revoke/block active sessions and block login/action access until restore/unban; users should see the FO account-status state rather than entering the main app. V1 has no `Restricted`/feature-level account state. Pending Verification cannot use authenticated FO features; Deletion flow belongs to Account Deletion and may revoke sessions, hide profile/assets, and anonymize/archive according to dependency/grace-period policy. Suspend/ban must trigger email notification as the primary channel, with optional secondary in-app notification and delivery result traceable through Notifications/Audit. Profile, Feed, Search, Asset Detail, Board, Notification, Watch Alert, Offer/Chat, Support, and Audit must consume the same account-state result consistently (ก่อนหน้านี้ระบุให้ Reports ด้วย แต่ Reports ถูกเลื่อนเป็น Phase 2/future scope แล้ว). Sync should define event name/payload, timing, retry behavior, stale-state handling, and admin-visible failure state. |
+| FO Sync Impact | Account status changes must update FO login/session behavior, account access, public profile visibility, and any dependent cache/indexes. Suspended and Banned must revoke/block active sessions and block login/action access until restore/unban; users should see the FO account-status state rather than entering the main app. V1 has no `Restricted`/feature-level account state. Pending Verification cannot use authenticated FO features; Deletion flow belongs to Account Deletion and may revoke sessions, hide profile/assets, and anonymize/archive according to dependency/grace-period policy. Suspend/ban must trigger email notification as the primary channel, with optional secondary in-app notification and delivery result traceable through Settings > Delivery Logs/Audit. Profile, Feed, Search, Asset Detail, Board, Notification, Watch Alert, Offer/Chat, Support, and Audit must consume the same account-state result consistently (ก่อนหน้านี้ระบุให้ Reports ด้วย แต่ Reports ถูกเลื่อนเป็น Phase 2/future scope แล้ว). Sync should define event name/payload, timing, retry behavior, stale-state handling, and admin-visible failure state. |
 | Open Question | Confirm final route names/query params, backend enum-to-Thai label mapping, exact permission keys for sensitive reveal/export/reset/resend-verification/status mutations, final FO sync event contract and cache invalidation timing, and production policy for how broadly `Deleted` historical rows should appear beyond the prototype review state. |
 
 ## 4. Asset Management
@@ -262,7 +262,7 @@ Recommended note format:
 - [ ] FO Delete Chat ต้องเป็น user-level visibility เท่านั้น ห้าม hard delete server record โดยไม่มี retention/audit policy
 - [ ] Blocked users ต้องส่งข้อความใหม่ไม่ได้ แต่ history เดิมยังอ่านได้ตาม FO read-only rule
 - [ ] Admin ห้าม edit user message หรือ offer price โดยตรง
-- [ ] Offer notification delivery ต้อง trace ได้ แต่ template/retry อยู่ใน Notification module
+- [ ] Offer notification delivery ต้อง trace ได้ แต่ template/retry ดูที่ Settings > Delivery Logs (Phase 1); template/broadcast config เป็น Phase 2/future
 - [ ] Pending offer ต้องเป็น dependency สำหรับ block account deletion
 - [ ] Export offer history ต้องจำกัด permission และ audit export event
 - [ ] Offer Management UI ต้อง responsive ที่ 375px, 768px, 1280px และ 1440px
@@ -304,7 +304,7 @@ Recommended note format:
 - [ ] Block relation ต้องเป็น exclusion context สำหรับ trigger/result review
 - [ ] Market data inactive dependency ต้องแสดง warning และหยุด new trigger ตาม policy แต่ไม่ลบ history เดิม
 - [ ] Market Demand BO เป็น read-only ทั้ง List และ Detail — Admin ไม่ disable/enable/export/bulk alert ของ user ใด ๆ
-- [ ] Notification delivery trace ดูได้ แต่ template/retry อยู่ใน Notification module
+- [ ] Notification delivery trace ดูได้ที่ Settings > Delivery Logs (Phase 1); template/broadcast config เป็น Phase 2/future
 - [ ] Market Demand UI ต้อง responsive ที่ 375px, 768px, 1280px และ 1440px
 
 ### Market Demand Prototype Handoff Notes
@@ -370,6 +370,24 @@ Recommended note format:
 
 ## 14. Notifications
 
+> **สถานะ:** Notifications module ถูกแบ่งเป็น 2 phase — Delivery Logs ย้ายไป Settings ใน Phase 1 (ดู `16_ADMIN_SETTINGS_MODULE.md`) และ Broadcast/System Templates เลื่อนเป็น Phase 2/future (ดู `14_NOTIFICATIONS_MODULE.md`)
+
+### 14.1 Delivery Logs (Phase 1 — Settings > Delivery Logs)
+
+- [ ] Delivery Logs แสดงใต้ Settings ไม่มี Notifications menu entry ใน sidebar ใน Phase 1
+- [ ] Delivery log list แสดง Delivery ID, Event, Source, Recipient, Channel, Status, Detail พร้อม filter (search, status, channel, sort) และ pagination 10/page
+- [ ] Row click เปิด read-only detail modal (Source, Recipient, Channel, Status, Priority, Detail, Tags, Admin note)
+- [ ] Delivery log ต้องเก็บ queued/sent/delivered/opened/failed/skipped พร้อม failure reason (Phase 1 แสดง Sent/Retry; Phase 2 จะเพิ่ม status อื่น)
+- [ ] Retry failed delivery ต้องมี idempotency guard และ audit log (`NOTIFICATION_DELIVERY_RETRY`)
+- [ ] Export delivery log ต้องมี scope, reason และ audit (`NOTIFICATION_DELIVERY_EXPORT`)
+- [ ] Account Deletion lifecycle email 5 จุด (ยืนยันลบบัญชี / เตือนใกล้ครบ grace period / คืนบัญชีแล้ว / ปฏิเสธคืนบัญชี / ลบตัวตนแล้ว) ต้องส่งไปยัง registered email พร้อม delivery log `DLV-DEL-xxx` ที่แสดงใน Settings > Delivery Logs และ trace กลับไปยัง History & Actions ของ Request Detail และ audit event ได้ ตาม `14_NOTIFICATIONS_MODULE.md` section 9.3
+- [ ] อีเมล Account Deletion lifecycle ต้องเคารพกฎห้ามส่ง (ไม่ส่งซ้ำ, ไม่ส่งเมื่อคำขอจบแล้ว, อีเมลลบตัวตนต้องส่งก่อน anonymize personal fields)
+- [ ] Delivery Logs UI ต้อง responsive ที่ 375px, 768px, 1280px และ 1440px
+
+### 14.2 Broadcast & System Templates (Phase 2 / Future scope — deferred)
+
+> **สถานะ:** เลื่อนเป็น Phase 2/future scope — ไม่มี Notifications menu entry ใน sidebar ใน Phase 1; Checklist ด้านล่างเก็บไว้เพื่ออ้างอิงเมื่อกลับมาทำใน Phase 2 ไม่ใช่งานที่ต้องทำใน Phase 1
+
 - [ ] Notification dashboard ต้องแสดง broadcast list, system trigger templates, delivery logs และ failed delivery summary
 - [ ] Broadcast ต้องรองรับ Draft, Pending Approval, Scheduled, Sending, Sent, Cancelled และ Failed
 - [ ] Broadcast ต้องมี title, body, optional image, channel, target audience, deep link, send now/schedule และ preview
@@ -381,20 +399,15 @@ Recommended note format:
 - [ ] Watch Alert notification destination ต้องเป็น Watch Alert Result List เท่านั้น
 - [ ] System template ต้องใช้ allowlist variables และห้ามใส่ sensitive data เช่น phone, email, LINE หรือ internal note
 - [ ] Disabled notification type ต้องไม่ส่ง notification ใหม่
-- [ ] Delivery log ต้องเก็บ queued/sent/delivered/opened/failed/skipped พร้อม failure reason
-- [ ] Retry failed notification ต้องมี idempotency guard และ audit log
 - [ ] Template update, type enable/disable, broadcast approve/send/cancel, retry และ export ต้องมี audit log
-- [ ] Notifications UI ต้อง responsive ที่ 375px, 768px, 1280px และ 1440px
-- [ ] Account Deletion lifecycle email 5 จุด (ยืนยันลบบัญชี / เตือนใกล้ครบ grace period / คืนบัญชีแล้ว / ปฏิเสธคืนบัญชี / ลบตัวตนแล้ว) ต้องส่งไปยัง registered email พร้อม delivery log `DLV-DEL-xxx` ที่ trace กลับไปยัง History & Actions ของ Request Detail และ audit event ได้ ตาม `14_NOTIFICATIONS_MODULE.md` section 9.3
-- [ ] อีเมล Account Deletion lifecycle ต้องเคารพกฎห้ามส่ง (ไม่ส่งซ้ำ, ไม่ส่งเมื่อคำขอจบแล้ว, อีเมลลบตัวตนต้องส่งก่อน anonymize personal fields)
 
 ### Notifications Prototype Handoff Notes
 
 | Area | Notes |
 | --- | --- |
-| Prototype / Spec Alignment | The prototype exposes `Broadcast`, `System Templates`, and `Delivery Logs`, plus Dashboard `Broadcast Ready` counts. This matches the module split but not the full broadcast approval/template/retry implementation. Account Deletion lifecycle email delivery logs (`DLV-DEL-xxx`) are mocked in the prototype and sync with History & Actions of Request Detail per `14_NOTIFICATIONS_MODULE.md` BO-14-v0.2 section 9.3. |
-| Implementation Gap | Production still needs broadcast draft/approval/schedule/send/cancel, preview, system trigger template configuration, delivery log detail, retry/idempotency, failed/skipped reason handling, and export. |
-| Permission / Audit | Template update, type enable/disable, broadcast approve/send/cancel, retry, sensitive reveal, and export require permission checks and audit. |
+| Prototype / Spec Alignment | Prototype ตัด Notifications menu entry ออกแล้ว และย้าย Delivery Logs เข้า Settings (NTF-RSTR-001/003); Dashboard links อัปเดตเป็น Settings / Delivery Logs (NTF-RSTR-004); Account Deletion lifecycle email delivery logs (`DLV-DEL-xxx`) แสดงใน Settings > Delivery Logs และ sync กับ History & Actions ของ Request Detail ตาม `14_NOTIFICATIONS_MODULE.md` BO-14-v0.3 section 9.3 |
+| Implementation Gap | Phase 1: production still needs delivery log detail, retry/idempotency, failed/skipped reason handling, and export. Phase 2: broadcast draft/approval/schedule/send/cancel, preview, system trigger template configuration. |
+| Permission / Audit | Phase 1: retry, sensitive reveal, and export require permission checks and audit. Phase 2: template update, type enable/disable, broadcast approve/send/cancel require permission checks and audit. |
 | FO Sync Impact | FO Notification Center V1 must remain limited to Like, Comment, Follow, Offer, and Watch Alert. Generic Broadcast must not appear in the FO in-app list until Product confirms scope. Watch Alert notification destination must remain `Watch Alert Result List`; Chat/New Message uses chat badge/count, not Notification Center. |
 
 ## 15. Reports & Analytics (Phase 2 / Future scope — deferred)

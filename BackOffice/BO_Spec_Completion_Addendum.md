@@ -1,14 +1,14 @@
 # BO Specification Addendum - Tuk Daeng Back Office Coverage for FO
 
-**Version:** 1.4 Addendum  
+**Version:** 1.5 Addendum  
 **Purpose:** เติมรายละเอียด Back Office ให้รองรับ Front Office flows จาก PRD และ Use Cases ครบถ้วนขึ้น  
-**Reference:** BO_Spec v1.2, PRD v1.0, Use_Cases v1.0
+**Reference:** BO_Spec v1.3, PRD v1.0, Use_Cases v1.0
 
 ---
 
 ## 1. Summary
 
-BO_Spec v1.2 รองรับ flow หลักของ FO แล้วในส่วน User, Asset, Content, Market Data, Push Notification, Help & Support, Account Deletion และ Audit Log; Directory ถูกเลื่อนเป็น future/postponed scope เพราะ FO directory menu ยังเป็น placeholder; Reports & Analytics ถูกเลื่อนเป็น Phase 2/future scope เพราะเป็นระบบตั้งต้นที่ยังไม่จำเป็น ซ้ำซ้อนกับ list/filter ในแต่ละ module + Dashboard แต่ยังขาดรายละเอียดสำหรับ flow ที่เกิดจากการใช้งานจริงของผู้ใช้ใน FO ได้แก่ Offer/Chat, Comment, Like/Favorite, Follow, Watch Alert ราย user และ System Notification Trigger
+BO_Spec v1.3 รองรับ flow หลักของ FO แล้วในส่วน User, Asset, Content, Market Data, Push Notification, Help & Support, Account Deletion และ Audit Log; Directory ถูกเลื่อนเป็น future/postponed scope เพราะ FO directory menu ยังเป็น placeholder; Reports & Analytics ถูกเลื่อนเป็น Phase 2/future scope เพราะเป็นระบบตั้งต้นที่ยังไม่จำเป็น ซ้ำซ้อนกับ list/filter ในแต่ละ module + Dashboard; Notifications module ถูกแบ่งเป็น 2 phase — Delivery Logs ย้ายไป Settings (Phase 1) และ Broadcast/System Templates เลื่อนเป็น Phase 2/future แต่ยังขาดรายละเอียดสำหรับ flow ที่เกิดจากการใช้งานจริงของผู้ใช้ใน FO ได้แก่ Offer/Chat, Comment, Like/Favorite, Follow, Watch Alert ราย user และ System Notification Trigger
 
 Addendum นี้เสนอให้เพิ่ม module และ business rules ต่อไปนี้:
 
@@ -54,10 +54,6 @@ BO Dashboard
 │   ├── Requests
 │   ├── Grace Period
 │   └── Anonymization
-├── Notifications
-│   ├── Broadcast
-│   ├── System Templates
-│   └── Delivery Logs
 └── Settings
     ├── Admin Accounts
     ├── Roles & Permissions
@@ -65,6 +61,7 @@ BO Dashboard
     ├── Retention
     ├── Policy & Versioning
     ├── Support Center
+    ├── Delivery Logs
     └── Audit Log
 ```
 
@@ -171,7 +168,7 @@ Current prototype Offer Detail ไม่มี Force Expire Offer, Mark Invalida
 
 ### 4.1 Purpose
 
-BO_Spec v1.2 มี Watch Alert report แล้ว แต่ FO ต้องมีการ create, rename, delete, toggle notification และ trigger alert จาก search criteria จึงควรมี management view ราย alert พร้อม Demand Overview และ Search Insights ระดับระบบ
+BO_Spec v1.3 มี Watch Alert report แล้ว แต่ FO ต้องมีการ create, rename, delete, toggle notification และ trigger alert จาก search criteria จึงควรมี management view ราย alert พร้อม Demand Overview และ Search Insights ระดับระบบ
 
 ### 4.2 Features
 
@@ -297,6 +294,8 @@ Ticket queue, ticket detail, ticket assignment, priority, SLA tracking, reply hi
 ---
 
 ## 7. System Notification Trigger Management
+
+> **สถานะ:** Phase 2/future scope — System Notification Trigger enable/disable และ Template Management เลื่อนเป็น Phase 2/future; ใน Phase 1 delivery log และ retry อยู่ใต้ **Settings > Delivery Logs** (ดู `16_ADMIN_SETTINGS_MODULE.md` และ `14_NOTIFICATIONS_MODULE.md`) ไม่มี Notifications menu entry ใน sidebar ใน Phase 1
 
 ### 7.1 Purpose
 
@@ -623,7 +622,7 @@ Content role split baseline:
 > **สถานะ:** เลื่อนเป็น Phase 2/future scope — prototype ตัดเมนู Reports ออกชั่วคราวเพราะเป็นระบบตั้งต้นที่ยังไม่จำเป็น ซ้ำซ้อนกับ list/filter ในแต่ละ module + Dashboard; อาจกลับมาเพิ่มในอนาคตถ้ามี requirement จริง เช่น ต้องส่งรายงานให้ Management/auditor
 > รายละเอียด spec เดิมเก็บไว้ใน `15_REPORTS_ANALYTICS_MODULE.md` เพื่ออ้างอิงเมื่อกลับมาทำ
 
-เพิ่ม report ต่อไปนี้จาก BO_Spec v1.2
+เพิ่ม report ต่อไปนี้จาก BO_Spec v1.3
 
 | Report | Data |
 |---|---|
@@ -679,8 +678,8 @@ Future scope (ยังไม่เปิดใน V1 Offer Management ที่
 - PolicyVersion
 - SupportCenter
 - AccountDeletionRequest
-- NotificationTemplate
-- NotificationDelivery
+- NotificationTemplate (Phase 2/future — template management เลื่อนเป็น Phase 2)
+- NotificationDelivery (Phase 1 — delivery log อยู่ใต้ Settings > Delivery Logs)
 
 เพิ่ม Action Type:
 
@@ -731,7 +730,8 @@ Baseline role templates include `Super Admin`, `Content Editor`, `Content Publis
 | Market Demand (Watch Alert) | Admin can view by policy (read-only — no disable/enable/export/bulk action on user alerts). Audit covers sensitive reveal and trigger job run only. |
 | Help & Support | Admin can manage Policy & Versioning (draft/publish/restore) and Support Center (channels, business hours, availability) by policy. Ticket queue/SLA/internal notes เป็น future scope. |
 | Account Deletion Requests | Admin can view requests and restore/reject restore within the 30-day grace period by policy with confirmation, reason, and audit; auto-delete (archive + anonymize) is a system job, not an admin action. |
-| Notifications (Broadcast & System Templates) | Admin can manage templates and broadcasts with approval, preview, and audit policy. |
+| Notifications (Broadcast & System Templates) | Phase 2/future scope — Admin can manage templates and broadcasts with approval, preview, and audit policy. ไม่มี Notifications menu entry ใน sidebar ใน Phase 1 |
+| Delivery Logs (Phase 1, Settings) | Admin can view delivery logs, retry failed delivery, and export delivery log under Settings with scope/reason/audit. Broadcast/System Templates config remains Phase 2/future (ดู `14_NOTIFICATIONS_MODULE.md`). |
 ## 14. Recommended Acceptance Criteria
 
 BO จะถือว่ารองรับ FO ครบถ้วนเมื่อผ่านเงื่อนไขต่อไปนี้:

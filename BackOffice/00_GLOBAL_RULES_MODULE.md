@@ -336,7 +336,7 @@ FO functions ขั้นต่ำที่ BO ต้องรองรับ:
 - Watch Alert criteria และ trigger history
 - Policy & Versioning และ Support Center (module 12 Phase 1 scope)
 - Account deletion/archive validation
-- Broadcast และ system notifications
+- Broadcast และ system notifications (Phase 2/future — delivery log อยู่ใต้ Settings ใน Phase 1)
 - Audit trail สำหรับทุก admin action
 
 Guest public access rule:
@@ -358,7 +358,7 @@ Guest public access rule:
 | Directory item inactive | Future/postponed; FO directory surfaces ต้องซ่อน item เมื่อ Directory scope ถูกเปิดใช้งาน |
 | Comment hidden/removed | FO Asset Detail ต้องซ่อนหรือแสดง removed state ตาม policy |
 | Offer expired/invalidated | FO offer/chat state ต้องเป็น unavailable หรือ not actionable |
-| Notification type disabled/template changed | Notification ใหม่ใน FO ต้องใช้ enabled template ล่าสุด |
+| Notification type disabled/template changed (Phase 2/future) | Notification ใหม่ใน FO ต้องใช้ enabled template ล่าสุด |
 
 Account suspension baseline:
 
@@ -416,7 +416,7 @@ Sensitive data ต้องถูก mask เป็น default ยกเว้�
 - Sale history buyer/payment details
 - Chat exports
 - Account deletion archive data
-- Notification target audience exports
+- Notification target audience exports (Phase 2/future)
 
 การเข้าถึง sensitive data ต้อง audit-log เมื่อเป็น high-risk access, export หรือเกี่ยวกับ dispute/support workflow
 
@@ -441,7 +441,7 @@ Action ที่กระทบ FO visibility, user access หรือ public c
 - Activate/deactivate brand/model/banner; directory item activation is future/postponed
 - Force expire/invalidate offer
 - Approve account archive
-- Send broadcast notification
+- Send broadcast notification (Phase 2/future)
 
 ## 16. Export Rules
 

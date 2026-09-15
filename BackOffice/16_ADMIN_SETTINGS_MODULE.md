@@ -1,8 +1,8 @@
 # 16 BO Admin Settings Module
 
-**Version:** `BO-16-v0.1`  
-**Date:** 2026-07-06  
-**Status:** Draft baseline  
+**Version:** `BO-16-v0.2`  
+**Date:** 2026-09-15  
+**Status:** Updated — Delivery Logs sub-section added (NTF-RSTR-001)  
 **Platform:** Responsive Web Back Office  
 **Primary BO Sources:** `00_GLOBAL_RULES_MODULE.md`, `01_AUTHENTICATION_MODULE.md`, `08_AUDIT_LOG_MODULE.md`, `15_REPORTS_ANALYTICS_MODULE.md`
 
@@ -18,8 +18,8 @@
 | --- | --- |
 | Module Name | BO Admin Settings |
 | Platform | Responsive Web Back Office |
-| Version | `BO-16-v0.1` |
-| Status | Draft baseline |
+| Version | `BO-16-v0.2` |
+| Status | Updated — Delivery Logs sub-section added (NTF-RSTR-001) |
 | Owner | Product / UX / Engineering / Operations |
 | Document Type | Functional PRD |
 
@@ -45,6 +45,7 @@ Module นี้ต้องไม่เป็นทางลัดเพื่�
 - System setting list and detail
 - Feature flags / module availability settings ตาม permission
 - Audit log สำหรับทุก settings change
+- Delivery Logs — อ่าน delivery log ของ notification/email lifecycle, retry failed delivery และ export delivery log (Phase 1, ย้ายจาก Notifications module)
 - Responsive layout สำหรับ desktop, tablet และ mobile
 
 ### Out Of Scope
@@ -97,6 +98,7 @@ High-risk action ต้องใช้ confirmation modal ที่อ่าน�
 | Feature Flags | เปิด/ปิด module/feature ตาม phase/decision |
 | Integration Settings | Provider status/config metadata แบบ non-secret |
 | Audit & Change History | Settings change history and permission change history |
+| Delivery Logs | อ่าน delivery log ของ notification/email lifecycle, retry failed delivery และ export delivery log (Phase 1) |
 
 ## 7. My Account
 
@@ -171,6 +173,7 @@ Role templates are presets. Production enforcement must use explicit permission 
 | Offer Management / Asset Reported Comments / Watch Alert | Admin can review permitted records by policy with privacy masking and audit. Offer Management V1 remains read-only. |
 | Help / Support / Account Deletion | Admin can manage Policy & Versioning, Support Center และ deletion workflows with dependency checks, confirmation, reason, and audit. |
 | Notifications / Reports (Phase 2/future) | Admin can manage templates, broadcasts, and exports according to approval/export/sensitive-data policy. Reports module is deferred to Phase 2/future scope. |
+| Delivery Logs (Phase 1) | Admin can view delivery logs, retry failed delivery, and export delivery log under Settings with scope/reason/audit. Broadcast/System Templates config remains Phase 2/future (ดู `14_NOTIFICATIONS_MODULE.md`). |
 | Admin Settings | Admin can manage BO settings through high-risk policy controls and audit. |
 
 ### 9.3 Permission Change Rules
@@ -269,7 +272,79 @@ Integration settings ต้องแสดง metadata และสถานะ 
 
 Secret เช่น API key, provider token, database credentials ต้องอยู่ใน secure secret manager ไม่ใช่ Admin Settings UI
 
-## 16. Audit & Change History
+## 16. Delivery Logs
+
+> **Phase 1 scope (NTF-RSTR-001)** — Delivery Logs ย้ายจาก Notifications module เข้ามาอยู่ใต้ Settings; ไม่มี Notifications menu entry ใน sidebar ใน Phase 1 เนื้อหา delivery log fields, status enum, retry rules และ export อิง `14_NOTIFICATIONS_MODULE.md` section 12 (Delivery Log) และ section 13 (Retry Rules); Broadcast/System Templates config เป็น Phase 2/future
+
+Delivery Logs เป็น read-only list แบบเดียวกับ Audit Log / Deletion Requests — full-width panel, ไม่มี KPI cards, มี filter bar, pagination 10/page และ mobile card; row click เปิด read-only detail modal
+
+### 16.1 Delivery Log List
+
+| คอลัมน์ | รายละเอียด |
+| --- | --- |
+| Delivery ID | รหัส delivery event (เช่น `DLV-DEL-033-REQ`, `DLV-ACCT-010`, `DLV-WA-1050`) |
+| Event | ชื่อ event (เช่น Account deletion confirmation email, Account suspension email, Watch alert push notification) |
+| Source | แหล่งที่มา (เช่น `DEL-033`, `RPU-560`, `WAL-1050`) |
+| Recipient | ผู้รับ (เช่น `U-1104`, `U-1120`) |
+| Channel | Email หรือ Push |
+| Status | Sent, Retry (Phase 2 จะเพิ่ม Queued, Delivered, Opened, Failed, Skipped) |
+| Detail | รายละเอียด/เหตุผล (เช่น "หลัง Admin confirm restore action", "mailbox full — เข้าคิว retry") |
+
+Filter bar: search (Delivery ID, Source, Recipient, Event), filter สถานะ (Sent, Retry), filter channel (Email, Push), sort (ล่าสุด/เก่าสุด), reset ค่าทั้งหมด — ตาม pattern Deletion Requests / Audit Log
+
+### 16.2 Delivery Log Detail Modal
+
+Read-only modal เปิดจาก row click แสดง: Source, Recipient, Channel, Status, Priority, Detail, Tags, Admin note — ตาม pattern option-audit-modal (read-only) ไม่มี action footer
+
+### 16.3 Delivery Log Fields
+
+อิง `14_NOTIFICATIONS_MODULE.md` section 12:
+
+| Field | Requirement |
+| --- | --- |
+| Delivery ID | รหัส delivery event |
+| Notification ID | อ้างถึง broadcast/system notification |
+| Notification Type | Broadcast หรือ system trigger type |
+| Recipient User ID | ผู้รับ |
+| Channel | Push, In-app, Email, Push + In-app |
+| Provider | เช่น FCM หรือ email provider ถ้ามี |
+| Status | Queued, Sent, Delivered, Opened, Failed, Skipped |
+| Failure Reason | Required ถ้า failed/skipped |
+| Destination | Deep link / route |
+| Created At | เวลาสร้าง |
+| Sent At / Delivered At / Opened At | เวลาตาม event |
+
+Delivery tracking target ตาม BO PRD: มากกว่า 95% ของ notification ต้องมี delivery status
+
+### 16.4 Retry Rules
+
+อิง `14_NOTIFICATIONS_MODULE.md` section 13; retry action เข้าถึงได้จาก Settings > Delivery Logs ใน Phase 1:
+
+| Case | Rule |
+| --- | --- |
+| Temporary provider failure | Retry ได้ตาม exponential/backoff policy |
+| Invalid token/device | Mark failed/skipped และไม่ retry จนกว่า token refresh |
+| Disabled notification type | ห้าม retry notification ใหม่สำหรับ type นั้น |
+| Destination invalid | ห้าม retry จนกว่าข้อมูล destination ถูกแก้ |
+| Broadcast already sent | Retry เฉพาะ failed recipients ถ้า policy อนุญาต (Phase 2) |
+| System notification duplicate | ต้องมี idempotency key ป้องกันส่งซ้ำ |
+| Account suspension email failed | Mark failed, expose retry/admin-visible failure state, and keep account status mutation intact unless product policy requires blocking mutation on delivery failure |
+| Account Deletion lifecycle email failed | Mark failed, expose retry/admin-visible failure state, and keep deletion action mutation intact; อีเมลลบตัวตนแล้วต้องส่งก่อน anonymize — ถ้าส่งไม่สำเร็จต้อง retry ก่อน anonymize personal fields หรือตาม product policy |
+
+Retry action ต้องมี audit log และต้องไม่สร้าง notification ซ้ำใน FO list โดยไม่มี idempotency guard
+
+### 16.5 Export Delivery Log
+
+Export delivery log ต้องมี scope, reason และ audit (`NOTIFICATION_DELIVERY_EXPORT`); ใช้ export policy เดียวกับ section 13 (allowed formats, background job, sensitive export, expiry, download audit, scope)
+
+### 16.6 Cross-Module Reference
+
+- `14_NOTIFICATIONS_MODULE.md` — delivery log fields (section 12), retry rules (section 13), Account Deletion lifecycle email (section 9.3)
+- `13_ACCOUNT_DELETION_MODULE.md` — lifecycle email 5 จุดใช้ delivery ID pattern `DLV-DEL-<request-id>-<event>` และ trace กลับไปยัง History & Actions ของ Request Detail
+- User Management — account-status email ใช้ delivery ID pattern `DLV-ACCT-xxx` และ trace กลับไปยัง Admin Action History ของรายงาน
+- Dashboard — failed delivery และ delivery rate ของ lifecycle/account-status email (Phase 1)
+
+## 17. Audit & Change History
 
 Admin Settings ต้องมี change history สำหรับ:
 
@@ -284,7 +359,7 @@ Admin Settings ต้องมี change history สำหรับ:
 
 Change history ต้อง link ไป Audit Log detail ตาม permission
 
-## 17. Admin Actions
+## 18. Admin Actions
 
 | Action | Permission | Confirmation | Reason | Audit |
 | --- | --- | --- | --- | --- |
@@ -297,8 +372,10 @@ Change history ต้อง link ไป Audit Log detail ตาม permission
 | Update retention/export policy | Admin | Yes | Required | Yes |
 | Update feature flag | Admin | Yes | Required | Yes |
 | Export settings | Admin | Yes | Required if sensitive | Yes |
+| Retry failed delivery | Admin | Yes | Required | Yes |
+| Export delivery log | Admin | Yes | Required | Yes |
 
-## 18. Audit Requirements
+## 19. Audit Requirements
 
 Audit log ต้องบันทึกอย่างน้อย:
 
@@ -318,6 +395,9 @@ Audit log ต้องบันทึกอย่างน้อย:
 - `FEATURE_FLAG_UPDATE`
 - `INTEGRATION_SETTING_UPDATE`
 - `ADMIN_SETTINGS_EXPORT`
+- `NOTIFICATION_DELIVERY_RETRY`
+- `NOTIFICATION_DELIVERY_EXPORT`
+- `NOTIFICATION_DELETION_EMAIL_DELIVERY` — การส่งอีเมล lifecycle ของ Account Deletion (reference ไปยัง `ACCOUNT_DELETION_*` audit event ของ `13_ACCOUNT_DELETION_MODULE.md`)
 
 Audit payload ต้องมี:
 
@@ -334,7 +414,7 @@ Audit payload ต้องมี:
 
 Sensitive settings value ต้อง mask ใน audit payload ถ้าเป็น secret หรือ high-risk data
 
-## 19. Error, Empty, Loading States
+## 20. Error, Empty, Loading States
 
 | State | Requirement |
 | --- | --- |
@@ -346,8 +426,10 @@ Sensitive settings value ต้อง mask ใน audit payload ถ้าเป�
 | Last Admin protected | แสดงเหตุผลว่าทำ action ไม่ได้ |
 | Audit write failed | Block high-risk settings change หรือเข้าคิว reliable retry ตาม risk policy |
 | Feature flag impact warning | แสดง impacted modules ก่อน confirm |
+| Empty delivery log | แสดง "ไม่พบ delivery log" พร้อมคำแนะนำปรับคำค้นหรือตัวกรอง |
+| Provider failed | แสดง failed/retry state และ retry option ตาม permission |
 
-## 20. Acceptance Criteria
+## 21. Acceptance Criteria
 
 | ID | Criteria |
 | --- | --- |
@@ -361,8 +443,12 @@ Sensitive settings value ต้อง mask ใน audit payload ถ้าเป�
 | AC-BO-SET-008 | Feature flags ต้องแสดง FO/BO impact และ audit ทุกครั้ง |
 | AC-BO-SET-009 | Integration settings ต้องไม่เปิดเผย secrets ใน BO UI |
 | AC-BO-SET-010 | Admin Settings UI ต้อง responsive ที่ 375px, 768px, 1280px และ 1440px |
+| AC-BO-SET-011 | Delivery Logs แสดงใต้ Settings ไม่มี Notifications menu entry ใน sidebar ใน Phase 1; row click เปิด read-only detail modal |
+| AC-BO-SET-012 | Delivery log เก็บ status (Sent/Retry ใน Phase 1) และ failure reason; retry failed delivery ต้องมี idempotency guard และ audit log |
+| AC-BO-SET-013 | Export delivery log ต้องมี scope, reason และ audit (`NOTIFICATION_DELIVERY_EXPORT`) |
+| AC-BO-SET-014 | Account Deletion lifecycle email delivery log ใช้รหัส `DLV-DEL-<request-id>-<event>` และ trace กลับไปยัง History & Actions ของ Request Detail ได้ |
 
-## 21. Open Decisions
+## 22. Open Decisions
 
 | ID | Decision Needed | Impact |
 | --- | --- | --- |

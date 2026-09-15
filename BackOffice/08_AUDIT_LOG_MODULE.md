@@ -115,7 +115,7 @@ Baseline entity types:
 - PolicyVersion
 - SupportCenter
 - AccountDeletionRequest
-- Notification
+- Notification (Phase 2/future — template/broadcast audit action; delivery log audit อยู่ใต้ Settings entity ใน Phase 1)
 - RolePermission
 - ExportJob
 - ImportJob
@@ -170,15 +170,16 @@ Baseline entity types:
 - Comment hide/unhide/delete
 - Watch Alert sensitive reveal / trigger job run (read-only module — no admin disable/enable/export)
 
-### Help / Support / Notification / Settings
+### Help / Support / Settings
 
 - Policy draft create/save
 - Policy publish (archive เวอร์ชัน Published เดิมอัตโนมัติ)
 - Policy restore (Archived → Draft ใหม่)
 - Support Center update (channels, business hours, availability)
 - Account deletion restore / reject restore / auto delete (เก็บถาวร + ลบตัวตน ขั้นเดียว) / dependency check / request create / session revoke / offer cancel auto / report close auto
-- Notification template update
-- Broadcast send/retry/cancel
+- Delivery log retry / export (Phase 1, Settings > Delivery Logs)
+- Notification template update (Phase 2/future)
+- Broadcast send/retry/cancel (Phase 2/future)
 - Permission/access update
 - System setting update
 

@@ -1,8 +1,8 @@
 # BO Specification — ตึกแดง Back Office System
-**เวอร์ชัน:** 1.2  
+**เวอร์ชัน:** 1.3  
 **วันที่:** กันยายน 2568  
 **ผู้ใช้งาน:** Admin ของระบบตึกแดง
-**อัปเดตจาก:** v1.1 → v1.2 (ปรับชื่อ "Offer Report" ตาม module spec หลัก, เพิ่ม section Help & Support และ Account Deletion Requests)
+**อัปเดตจาก:** v1.2 → v1.3 (Notifications module restructure — Delivery Logs ย้ายไป Settings, Broadcast/System Templates เลื่อนเป็น Phase 2/future)
 
 ---
 
@@ -15,7 +15,7 @@ Back Office ของตึกแดงเป็น Web Application สำหร
 - จัดการ Watch Brands, Models และ Price Index
 - Directory ร้านค้า/บริการเป็น future/postponed scope; ไม่รวม Phase 1 เพราะ FO menu ยังเป็น placeholder
 - ดูรายงานและ Analytics
-- จัดการ Push Notification Broadcast
+- จัดการ Push Notification Broadcast (Phase 2/future — Delivery Logs ย้ายไป Settings ใน Phase 1)
 - ตรวจสอบ Audit Log ทุก Action ของ Admin
 
 ---
@@ -55,10 +55,6 @@ BO Dashboard
 │   ├── Requests
 │   ├── Grace Period
 │   └── Anonymization
-├── Notifications
-│   ├── Broadcast
-│   ├── System Templates
-│   └── Delivery Logs
 └── Settings
     ├── Admin Accounts
     ├── Roles & Permissions
@@ -66,6 +62,7 @@ BO Dashboard
     ├── Retention
     ├── Policy & Versioning
     ├── Support Center
+    ├── Delivery Logs
     └── Audit Log
 ```
 
@@ -413,7 +410,9 @@ Module นี้ครอบคลุม 3 หน้าย่อย:
 
 ### 3.12 Push Notification Management
 
-**ฟีเจอร์:**
+> **สถานะ:** Phase 2/future scope — Broadcast Notification และ System Templates เลื่อนเป็น Phase 2/future (mirror section 3.11 Reports); ใน Phase 1 Delivery Logs ย้ายไปอยู่ใต้ **Settings > Delivery Logs** (ดู `16_ADMIN_SETTINGS_MODULE.md` และ `14_NOTIFICATIONS_MODULE.md` สำหรับ delivery log fields, retry rules และ Account Deletion lifecycle email) ไม่มี Notifications menu entry ใน sidebar ใน Phase 1
+
+**ฟีเจอร์ (Phase 2/future):**
 - สร้าง Broadcast Notification ส่งหาผู้ใช้ทั้งหมดหรือกลุ่มเป้าหมาย
 - ดู History การส่งทั้งหมด
 - ดู Delivery Stats: Sent / Delivered / Opened / CTR
@@ -509,6 +508,7 @@ BO uses exactly one admin account type: `Admin`. There are no BO sub-types. The 
 | Articles / Categories | Admin can create, edit, preview, publish, schedule, archive, manage categories, and audit content actions. Banners are future scope for non-article campaigns/promotions only. |
 | Market Data / Directory | Admin can manage watch data with source, inactive/restore, and audit controls; Directory entries are future/postponed from Phase 1. |
 | Notifications / Audit / Settings | Admin can operate these modules according to export, approval, sensitive-data, and high-risk setting policies. (Reports ถูกเลื่อนเป็น Phase 2/future scope) |
+| Delivery Logs (Phase 1, Settings) | Admin can view delivery logs, retry failed delivery, and export delivery log under Settings with scope/reason/audit. Broadcast/System Templates config remains Phase 2/future (ดู `14_NOTIFICATIONS_MODULE.md`). |
 ## 4. BO Authentication
 
 - Login ด้วย Email/Password เท่านั้น (ไม่รองรับ Apple หรือ Google SSO — เฉพาะ Internal Use)
