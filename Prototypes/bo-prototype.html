@@ -22878,12 +22878,12 @@
             <div class="detail-section">
               <div class="user-action-form">
                 <label>
-                  ${config.reasonLabel} <span class="article-required-mark">*</span>
+                  <span>${config.reasonLabel} <span class="article-required-mark">*</span></span>
                   ${customSelect("admin-account-action-reason", config.reasonLabel, [{ value: "", label: "เลือกเหตุผล" }, ...config.reasons.map(reason => ({ value: reason, label: reason }))], "", "data-custom-select-silent", completed)}
                   <span class="article-field-error" data-admin-action-reason-error></span>
                 </label>
                 <label>
-                  Note / หมายเหตุ
+                  <span>Note / หมายเหตุ</span>
                   <textarea id="admin-account-action-note" placeholder="${config.notePlaceholder}" ${completed ? "disabled" : ""}></textarea>
                 </label>
                 ${renderAdminAccountActionImpactNote(acc, action)}
@@ -22947,12 +22947,13 @@
                 </label>
                 <label>
                   <span>Role ใหม่ <span class="article-required-mark">*</span></span>
-                  ${customSelect("admin-account-change-role", "เลือก role ใหม่", roleOptions, "", "data-custom-select-silent", completed)}
+                  ${customSelect("admin-account-change-role", "เลือก role ใหม่", [{ value: "", label: "เลือก role ใหม่" }, ...roleOptions], "", "data-custom-select-silent", completed)}
                   <span class="article-field-error" data-admin-change-role-role-error></span>
                 </label>
                 <label>
                   <span>เหตุผลการเปลี่ยน Role <span class="article-required-mark">*</span></span>
                   ${customSelect("admin-account-change-role-reason", "เหตุผลการเปลี่ยน Role", [
+                    { value: "", label: "เลือกเหตุผล" },
                     { value: "ย้ายทีม / เปลี่ยนหน้าที่งาน", label: "ย้ายทีม / เปลี่ยนหน้าที่งาน" },
                     { value: "ได้รับอนุมัติจากผู้บริหาร", label: "ได้รับอนุมัติจากผู้บริหาร" },
                     { value: "ปรับ scope ความรับผิดชอบตามโครงสร้างใหม่", label: "ปรับ scope ความรับผิดชอบตามโครงสร้างใหม่" },
@@ -22966,7 +22967,7 @@
                 </label>
                 <div class="module-note user-action-impact user-action-impact-card user-action-impact-warning">
                   <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 3.2c.7 0 1.35.37 1.7.98l8.05 13.95A1.95 1.95 0 0 1 20.05 21H3.95a1.95 1.95 0 0 1-1.7-2.87L10.3 4.18A1.95 1.95 0 0 1 12 3.2Zm0 4.6a1 1 0 0 0-1 1v4.4a1 1 0 1 0 2 0V8.8a1 1 0 0 0-1-1Zm0 8.45a1.15 1.15 0 1 0 0 2.3 1.15 1.15 0 0 0 0-2.3Z"/></svg>
-                  <p><strong>เปลี่ยนสิทธิ:</strong> <span data-admin-role-diff data-admin-role-from="${acc.role}">${acc.role} → ${roleOptions[0]?.value || "—"}</span></p>
+                  <p><strong>เปลี่ยนสิทธิ:</strong> <span data-admin-role-diff data-admin-role-from="${acc.role}">${acc.role} → —</span></p>
                 </div>
                 <div class="user-detail-actions user-action-footer">
                   <button class="user-detail-action-btn warning user-action-confirm" type="button" data-admin-account-change-role-confirm="true" data-admin-account-id="${acc.id}" ${completed ? "disabled" : ""}>ยืนยันเปลี่ยน Role</button>
@@ -23316,6 +23317,16 @@
       if (invalid) return;
       const now = formatBangkokTimestamp();
       const newId = nextAdminAccountId();
+      // ADM-PTO-001: createdAtRank เป็น YYYYMMDDHHMM (ตาม format seed data เช่น 202609081600)
+      // คำนวณจาก Intl.DateTimeFormat ใน tz Asia/Bangkok โดยตรง — ไม่ตัดเลขจาก formatBangkokTimestamp
+      // เพราะ formatBangkokTimestamp คืน "DD MMM YYYY, HH:MM" ตัดเลขได้ "DDYYYYHHMM" ผิด format
+      const tsParts = new Intl.DateTimeFormat("en-GB", {
+        timeZone: "Asia/Bangkok",
+        year: "numeric", month: "2-digit", day: "2-digit",
+        hour: "2-digit", minute: "2-digit", hourCycle: "h23"
+      }).formatToParts(new Date());
+      const tp = type => tsParts.find(x => x.type === type)?.value || "";
+      const createdAtRank = Number(`${tp("year")}${tp("month")}${tp("day")}${tp("hour")}${tp("minute")}`);
       const newAcc = {
         id: newId,
         fullName: name,
@@ -23326,7 +23337,7 @@
         lastLogin: "—",
         lastLoginRank: 0,
         createdAt: now,
-        createdAtRank: Number(now.replace(/[^0-9]/g, "").slice(0, 12)) || 202609081600,
+        createdAtRank: createdAtRank,
         lastAction: "Invited — รอผู้รับยืนยันอีเมลและตั้ง password",
         isSelf: false,
         isLastActive: false
