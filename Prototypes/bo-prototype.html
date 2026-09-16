@@ -5302,7 +5302,7 @@
     .audit-detail-result-pill.success .audit-detail-dot { background: #22c55e; }
     .audit-detail-result-pill.partial .audit-detail-dot { background: #f59e0b; }
     .audit-detail-result-pill.failed .audit-detail-dot { background: #ef4444; }
-    /* AL-002: Reference pill — ทรงเดียวกับ history-audit-link (โทนน้ำเงิน) ยังไม่เชื่อม jump (รอ AL-006/AL-007) */
+    /* AL-002/AL-006: Reference pill — ทรงเดียวกับ history-audit-link (โทนน้ำเงิน) คลิก jump ไปหน้า entity ตาม prefix (หรือกรอง Audit Log ถ้า map ไม่ได้) */
     .audit-detail-ref-pill {
       border: 1px solid #c6ddff;
       background: #e8f1ff;
@@ -5315,7 +5315,7 @@
       padding: 3px 10px;
       font-size: 12px;
       font-weight: 700;
-      cursor: default;
+      cursor: pointer;
       font-family: ui-monospace, monospace;
     }
     /* before/after diff box (modal-scoped, reuses audit-before/after colors) */
@@ -8071,7 +8071,8 @@
         line-height: inherit;
       }
       /* DEL-PTO-006: ปุ่ม Email ส่งแล้ว บน mobile card ให้พอดีข้อความเหมือน pill (scope เฉพาะ deletion detail) */
-      body.deletion-detail-mode .deletion-detail-page .history-table td .history-delivery-link {
+      body.deletion-detail-mode .deletion-detail-page .history-table td .history-delivery-link,
+      body.deletion-detail-mode .deletion-detail-page .history-table td .history-audit-link {
         width: max-content;
         max-width: 100%;
         justify-self: start;
@@ -22439,6 +22440,55 @@
       return parseBangkokAuditTime(entry.createdAt) || 0;
     }
 
+    // AL-006: reference pill ใน audit drawer → jump ไปหน้า entity จริงตาม prefix
+    // ADM→Admin Detail, DEL→Deletion Detail, AST→Asset Detail, ART→Article Detail,
+    // RCO→Reported Comment Detail, U-xxx/"User ID U-xxx"→User Detail
+    // return false ถ้า map ไม่ได้ → caller fallback กรอง Audit Log ด้วย reference
+    function jumpToAuditReference(ref) {
+      const v = String(ref || "").trim();
+      if (!v || v === "-") return false;
+      if (/^ADM-\d+$/.test(v) && adminAccountData.accounts.some(a => a.id === v)) {
+        pushBackNavigationContext();
+        renderAdminAccountDetail(v);
+        return true;
+      }
+      if (/^DEL-\d+$/.test(v) && deletionRequestData.requests.some(r => r.id === v)) {
+        pushBackNavigationContext();
+        renderDeletionDetail(v);
+        return true;
+      }
+      const asset = /^AST-/.test(v) ? moduleData.assets.rows.find(a => a.id === v) : null;
+      if (asset) {
+        activeAssetImageIndex = 0;
+        pushBackNavigationContext();
+        renderAssetDetailPage(asset);
+        return true;
+      }
+      const article = /^ART-/.test(v) ? getArticleById(v) : null;
+      if (article) {
+        pushBackNavigationContext();
+        renderArticleDetailPage(article);
+        return true;
+      }
+      const commentCase = /^RCO-/.test(v) ? reportedCommentCases.find(r => r.id === v) : null;
+      if (commentCase) {
+        activeRow = commentCase;
+        reporterHistoryPage = 1;
+        reportAuditHistoryPage = 1;
+        pushBackNavigationContext();
+        renderReportedCommentDetail(commentCase);
+        return true;
+      }
+      const uid = v.replace(/^User ID\s+/i, "");
+      const user = /^U-\d+$/.test(uid) ? userManagementData.users.find(u => u.id === uid) : null;
+      if (user) {
+        pushBackNavigationContext();
+        renderUserDetailPage(user);
+        return true;
+      }
+      return false;
+    }
+
     function auditRiskPill(risk) {
       const labelMap = { "สูง": "High", "กลาง": "Medium", "ต่ำ": "Low", "High": "High", "Medium": "Medium", "Low": "Low" };
       const colorMap = { "สูง": "red", "กลาง": "amber", "ต่ำ": "green", "High": "red", "Medium": "amber", "Low": "green" };
@@ -22822,7 +22872,7 @@
               ${(() => {
                 const v = entry.reference == null ? "" : String(entry.reference).trim();
                 if (!v || v === "-") return "";
-                return confirmRow("Reference", `<span class="audit-detail-ref-pill" data-audit-ref="${v}" title="Cross-module jump จะเปิดใช้ใน AL-006/AL-007">${v}</span>`);
+                return confirmRow("Reference", `<button class="audit-detail-ref-pill" type="button" data-audit-ref="${v}" title="เปิดรายละเอียดของ ${v}">${v}</button>`);
               })()}
             </div>
             ${(() => {
@@ -24197,15 +24247,26 @@
       if (tl.archivedAt) auditLogs.push({ at: tl.archivedAt, actor: "System", action: "ลบบัญชีอัตโนมัติ", note: "ครบช่วงรอลบบัญชี 30 วัน", emailDelivery: deletionEmailDelivery("DEL") });
       if (tl.cancelledAt) auditLogs.push({ at: tl.cancelledAt, actor: req.processedBy || "Admin", action: "ยกเลิกคำขอ", note: "" });
 
-      const auditRows = auditLogs.map(log => `
+      // AL-006: จับคู่ history row กับ audit event (module Account Deletion + reference = request id + action เดียวกัน)
+      // events เรียงล่าสุดก่อนแต่ history เรียงเก่าสุดก่อน — ถ้า action ซ้ำ (เช่น ปฏิเสธซ้ำ) นับ occurrence จากท้าย list
+      const reqAuditEvents = auditLogData.events.filter(e => e.module === "Account Deletion" && e.reference === req.id);
+      const auditActionSeen = {};
+      const auditRows = auditLogs.map(log => {
+        const matches = reqAuditEvents.filter(e => e.action === log.action);
+        const occ = auditActionSeen[log.action] || 0;
+        auditActionSeen[log.action] = occ + 1;
+        const evt = matches.length ? (matches[matches.length - 1 - occ] || matches[0]) : null;
+        return `
         <tr>
           <td data-label="วันที่ / เวลา">${log.at || "—"}</td>
           <td data-label="ผู้ดำเนินการ">${log.actor}</td>
           <td data-label="Action">${log.action}</td>
           <td data-label="ส่งอีเมล">${log.emailDelivery ? renderReportAuditEmailDelivery(log) : "—"}</td>
+          <td data-label="Audit">${evt ? `<button class="history-audit-link" type="button" data-audit-ref="${evt.id}">${evt.id}</button>` : "—"}</td>
           <td data-label="รายละเอียด" class="history-note">${log.note || "—"}</td>
         </tr>
-      `).join("");
+      `;
+      }).join("");
 
       const actionArea = `
         <div class="detail-section deletion-action-section">
@@ -24218,6 +24279,7 @@
                   <th>ผู้ดำเนินการ</th>
                   <th>Action</th>
                   <th>ส่งอีเมล</th>
+                  <th>Audit</th>
                   <th>รายละเอียด</th>
                 </tr>
               </thead>
@@ -38826,6 +38888,21 @@
       const deliveryLogJump = event.target.closest("[data-delivery-log-jump]");
       if (deliveryLogJump) {
         jumpToDeliveryLog(deliveryLogJump.dataset.deliveryLogJump);
+        return;
+      }
+      // AL-006: data-audit-ref — ref ที่ map ไปหน้า entity ได้ (ADM/DEL/AST/ART/RCO/U-) → jump ไป detail นั้น
+      // ref อื่น (AUD event id จาก deletion history, RPT-USER, System ฯลฯ) → กรอง Audit Log ด้วย ref
+      const auditRefJump = event.target.closest("[data-audit-ref]");
+      if (auditRefJump) {
+        const ref = auditRefJump.dataset.auditRef;
+        if (auditRefJump.closest("#user-action-modal")) closeUserActionModal();
+        if (!jumpToAuditReference(ref)) {
+          resetListFilterPanelsForNavigation("audit");
+          renderModule("audit");
+          const search = document.querySelector("#audit-search");
+          if (search && ref) { search.value = ref; renderAuditLogRows(); }
+          showSuccessToast(`เปิด Audit Log กรองด้วย ${ref}`, "Audit Log");
+        }
         return;
       }
       const assetReportJump = event.target.closest("[data-asset-report-jump]");
