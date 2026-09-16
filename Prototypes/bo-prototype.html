@@ -5318,7 +5318,7 @@
       cursor: pointer;
       font-family: ui-monospace, monospace;
     }
-    /* before/after diff box (modal-scoped, reuses audit-before/after colors) */
+    /* before/after diff box (modal-scoped) */
     .audit-detail-diff {
       display: grid; grid-template-columns: 1fr auto 1fr; gap: 10px; align-items: center;
       padding: 12px 14px; border-radius: 10px; background: #fff; border: 1px solid #e2e8f0;
@@ -8427,29 +8427,6 @@
       font-weight: 400;
       line-height: 1.5;
       margin-bottom: 0;
-    }
-    body.audit-log-mode .audit-log-table .audit-diff-cell {
-      display: flex;
-      align-items: center;
-      gap: 4px;
-      font-size: 12px;
-      flex-wrap: wrap;
-    }
-    body.audit-log-mode .audit-log-table .audit-before {
-      color: #66758d;
-      text-decoration: line-through;
-      text-decoration-color: #cbd5e1;
-    }
-    body.audit-log-mode .audit-log-table .audit-after {
-      color: #0f172a;
-      font-weight: 700;
-    }
-    body.audit-log-mode .audit-log-table .audit-arrow {
-      color: #94a3b8;
-      font-size: 11px;
-    }
-    body.audit-log-mode .audit-log-table .audit-no-change {
-      color: #66758d;
     }
     body.audit-log-mode .audit-log-table .history-note {
       font-size: 12px;
@@ -22592,11 +22569,6 @@
       auditLogPage = Math.min(auditLogPage, pageCount);
       const start = (auditLogPage - 1) * auditLogPageSize;
       const pageRows = sorted.slice(start, start + auditLogPageSize);
-      const beforeAfterCell = (entry) => {
-        if (entry.before === "-" && entry.after === "-") return `<span class="muted">-</span>`;
-        if (entry.before === entry.after) return `<span class="audit-no-change">${entry.after}</span>`;
-        return `<span class="audit-before">${entry.before}</span> <span class="audit-arrow">→</span> <span class="audit-after">${entry.after}</span>`;
-      };
       document.querySelector("#table").innerHTML = `
         <div class="user-table audit-log-table">
           <div class="user-row head"><div>Event ID</div><div>Date / Time</div><div>Actor</div><div>Action</div><div>Module</div><div>Risk</div><div>Reference</div><div>Note</div></div>
@@ -22822,28 +22794,12 @@
         const cls = result === "Success" ? "success" : result === "Partial" ? "partial" : "failed";
         return `<span class="audit-detail-result-pill ${cls}"><span class="audit-detail-dot"></span>${result || "Success"}</span>`;
       };
-      // before/after diff box (modal-scoped)
-      const diffBox = (e) => {
-        if (e.before === "-" && e.after === "-") {
-          return `<div class="audit-detail-diff muted">
-            <div class="audit-detail-diff-cell"><span class="audit-detail-diff-label">Before</span><span class="audit-detail-diff-value">-</span></div>
-            <span class="audit-detail-diff-arrow">→</span>
-            <div class="audit-detail-diff-cell"><span class="audit-detail-diff-label">After</span><span class="audit-detail-diff-value">-</span></div>
-          </div>`;
-        }
-        if (e.before === e.after) {
-          return `<div class="audit-detail-diff">
-            <div class="audit-detail-diff-cell"><span class="audit-detail-diff-label">Before</span><span class="audit-detail-diff-value no-change">${e.after}</span></div>
-            <span class="audit-detail-diff-arrow">=</span>
-            <div class="audit-detail-diff-cell"><span class="audit-detail-diff-label">After</span><span class="audit-detail-diff-value no-change">${e.after}</span></div>
-          </div>`;
-        }
-        return `<div class="audit-detail-diff">
-          <div class="audit-detail-diff-cell"><span class="audit-detail-diff-label">Before</span><span class="audit-detail-diff-value before">${e.before}</span></div>
-          <span class="audit-detail-diff-arrow">→</span>
-          <div class="audit-detail-diff-cell"><span class="audit-detail-diff-label">After</span><span class="audit-detail-diff-value after">${e.after}</span></div>
-        </div>`;
-      };
+      // before/after diff box (modal-scoped) — caller ซ่อนทั้ง section เมื่อไม่มี before/after หรือค่าเท่ากัน
+      const diffBox = (e) => `<div class="audit-detail-diff">
+        <div class="audit-detail-diff-cell"><span class="audit-detail-diff-label">Before</span><span class="audit-detail-diff-value before">${e.before}</span></div>
+        <span class="audit-detail-diff-arrow">→</span>
+        <div class="audit-detail-diff-cell"><span class="audit-detail-diff-label">After</span><span class="audit-detail-diff-value after">${e.after}</span></div>
+      </div>`;
       modalBody.innerHTML = `
         <div class="audit-detail-drawer-content">
           <div class="user-action-head">
@@ -38897,11 +38853,16 @@
         const ref = auditRefJump.dataset.auditRef;
         if (auditRefJump.closest("#user-action-modal")) closeUserActionModal();
         if (!jumpToAuditReference(ref)) {
-          resetListFilterPanelsForNavigation("audit");
-          renderModule("audit");
+          // AL-012: jump เข้า Audit Log = fresh filtered view — ล้าง filter state เก่าที่ค้างจาก ref-pill jump รอบก่อน
+          clearListFilterState("audit-log");
+          resetListFilterPanelsForNavigation("audit", "Audit Log");
+          renderModule("audit", "Audit Log");
           const search = document.querySelector("#audit-search");
           if (search && ref) { search.value = ref; renderAuditLogRows(); }
           showSuccessToast(`เปิด Audit Log กรองด้วย ${ref}`, "Audit Log");
+        } else {
+          // AL-012: jump ออกไป entity detail — entity renderers ไม่ลบ audit-log-mode ให้
+          document.body.classList.remove("audit-log-mode");
         }
         return;
       }
@@ -40516,8 +40477,10 @@
       const adminAccountAuditRef = event.target.closest("[data-admin-account-audit-ref]");
       if (adminAccountAuditRef) {
         const ref = adminAccountAuditRef.dataset.adminAccountAuditRef;
-        resetListFilterPanelsForNavigation("audit");
-        renderModule("audit");
+        // AL-012: jump เข้า Audit Log = fresh filtered view — ล้าง filter state เก่าที่ค้างจาก session ก่อนหน้า
+        clearListFilterState("audit-log");
+        resetListFilterPanelsForNavigation("audit", "Audit Log");
+        renderModule("audit", "Audit Log");
         const search = document.querySelector("#audit-search");
         if (search && ref) { search.value = ref; renderAuditLogRows(); }
         showSuccessToast(`เปิด Audit Log กรองด้วย ${ref}`, "Audit Log");

@@ -1,8 +1,8 @@
 # 08 BO Audit Log Module
 
-**Version:** `BO-08-v0.1`  
-**Date:** 2026-07-06  
-**Status:** Draft baseline  
+**Version:** `BO-08-v0.2`  
+**Date:** 2026-09-16  
+**Status:** Screen layer synced with prototype (Audit Log Phase 1 — list/detail drawer/date range filter/cross-module jump)  
 **Platform:** Responsive Web Back Office
 
 ## UI Standards And Prototype Reference
@@ -17,8 +17,8 @@
 | --- | --- |
 | Module Name | BO Audit Log |
 | Platform | Responsive Web Back Office |
-| Version | `BO-08-v0.1` |
-| Status | Draft baseline |
+| Version | `BO-08-v0.2` |
+| Status | Screen layer synced with prototype (Audit Log Phase 1) |
 | Owner | Product / UX / Engineering / Operations |
 | Document Type | Functional PRD |
 
@@ -38,7 +38,7 @@ Audit Log ต้องเป็น source สำหรับ traceability, dispu
 - Audit event capture สำหรับ provider sync/import/export/background jobs
 - Search/filter audit log
 - View audit detail
-- Export audit log ตาม permission
+- Export audit log ตาม permission (Phase 2 — ไม่มีใน prototype Phase 1)
 - Immutable/read-only audit records
 - Retention policy baseline
 - Responsive web layout
@@ -215,35 +215,48 @@ Baseline entity types:
 
 ## 9. Search And Filter
 
-Audit Log UI ต้องรองรับ:
+Audit Log UI Phase 1 (ตาม prototype `bo-prototype.html` — Settings > Audit Log) รองรับ:
 
-- Search by audit ID
-- Search by actor/admin
-- Search by target entity ID
-- Filter by date range
-- Filter by actor access context
+- Search ช่องเดียวครอบคลุม Event ID, Actor, Action, Module, Risk, Reason, Reference และ Note (placeholder: "ค้นหา Event ID, Actor, Action, Reference") — actor/admin และ target entity ID ถูก cover โดยช่อง search นี้ ไม่มี filter แยก
+- Filter by module (Asset, Content, Users, Account Deletion, Reported Comments, Offers, Settings)
+- Filter by risk level (High, Medium, Low)
+- Filter by date range (from/to date picker — picker-only, sync min/max ข้ามกันและ clamp ให้ from ≤ to เสมอ)
+- Sort ล่าสุดก่อน / เก่าสุดก่อน (ตาม timestamp)
+- Filter bar เปิด/ปิดได้, ปุ่ม reset ค่าทั้งหมด และ filter state persist เฉพาะ scope detail → back / re-render ภายใน module — การ jump เข้ามาจาก module อื่นผ่าน audit ref link เป็น fresh filtered view เสมอ (ล้าง filter state ที่ค้างจาก session ก่อนหน้า แล้วกรองด้วย ref/event id เป้าหมาย)
+- Pagination 10 รายการต่อหน้า
+
+Phase 2/future (ยังไม่มีใน prototype Phase 1):
+
 - Filter by action type
+- Filter by result status (Success / Partial / Failed)
+- Filter by actor access context
 - Filter by target entity type
-- Filter by result status
-- Filter by module
-- Filter by IP address ถ้ามี
+- Filter by IP address
 - Filter by correlation ID
+- Actor filter แบบ exact-match (ตัดออกจาก Phase 1 16/09 — search ครอบคลุม actor แล้ว ถ้าจำเป็นค่อยพิจารณาร่วม Phase 2)
 
-ต้องใช้ server-side pagination, filter และ sort
+Production ต้องใช้ server-side pagination, filter และ sort (prototype เป็น client-side mock)
 
 ## 10. Audit Detail
 
-Detail view ต้องแสดง:
+Detail เปิดด้วยการคลิกแถวใน Audit Log List — แสดงเป็น right sidebar drawer (pattern: market-reference-drawer) read-only ไม่มี action footer
 
-- Summary ของ event
-- Actor context
-- Target context
-- Before/after value หรือ diff
-- Reason/note
-- FO impact ถ้ามี
+Phase 1 sections (ตาม prototype):
+
+- Header: eyebrow "Audit Log Detail" + Event ID + action
+- Event Summary: Date/Time (Asia/Bangkok), Action, Tags (module badge + risk pill + result pill), Actor, Actor Type และ Reference
+- Reference แสดงเป็น pill ที่คลิกได้ — jump ไปหน้า entity detail ตาม prefix (ADM → Admin Detail, DEL → Deletion Detail, AST → Asset Detail, ART → Article Detail, RCO → Reported Comment Detail, U- → User Detail); ref ที่ map ไม่ได้จะ fallback กรอง Audit Log ด้วย ref นั้น + toast ยืนยัน
+- Before/After: diff box แสดงเฉพาะเมื่อ before/after ต่างกัน — ซ่อนทั้ง section เมื่อไม่มี before/after หรือค่าเท่ากัน (no-change)
+- Reason/Note: แสดงเฉพาะ field ที่มีข้อมูล (ซ่อน field ว่าง)
+
+Phase 2/future sections (ยังไม่มี field ใน mock data — เพิ่มเมื่อ schema ขยาย):
+
+- Actor access context (สิทธิ์ ณ เวลาที่ทำ action)
+- Target context เพิ่มเติมนอกเหนือ reference
+- FO impact
 - Related events ผ่าน correlation ID
-- Request/session metadata
-- Export/download metadata ถ้าเป็น export event
+- Request/session metadata (IP, session ID, user agent)
+- Export/download metadata สำหรับ export event
 
 Admin access ที่ไม่มีสิทธิ์ต้องเห็น masked payload หรือ permission denied section
 
@@ -269,9 +282,9 @@ Baseline retention:
 
 | Width | Requirement |
 | --- | --- |
-| Mobile-width browser | Audit rows เป็น stacked cards, filter อยู่ใน drawer, detail ใช้ sections |
-| Tablet | Table แสดง column สำคัญและเปิด detail drawer |
-| Desktop | Full table, side filters, detail split panel และ export controls |
+| Mobile-width browser | Audit rows เป็น stacked cards, filter bar stack แนวตั้ง 1 คอลัมน์ (เปิด/ปิดตัวกรองได้), detail เปิดเป็น right drawer แบบ sections |
+| Tablet | Table แสดงครบทุก column (เลื่อนแนวนอนเมื่อจอแคบ), filter bar บรรทัดเดียว, เปิด detail drawer |
+| Desktop | Full table, filter bar ด้านบนตาราง, detail เป็น right sidebar drawer (export controls อยู่ Phase 2) |
 
 Before/after JSON diff ต้อง wrap และ scroll ภายใน container ไม่ทำให้หน้าจอ overflow
 
@@ -292,16 +305,19 @@ Before/after JSON diff ต้อง wrap และ scroll ภายใน contai
 
 | Module | Integration |
 | --- | --- |
-| Auth / Admin Accounts | Login, Email OTP, session, admin lifecycle audit |
+| Auth / Admin Accounts | Login, Email OTP, session, admin lifecycle audit — Admin Detail > History & Actions มี audit ref link (`AUD-xxx`) กระโดดมา Audit Log กรองด้วย event id + toast |
 | User Management | Suspend/ban/reset/archive audit |
 | Asset Management | Flag/remove/status/sensitive reveal audit |
 | Content / Board | Publish/archive/category/banner audit |
 | Market Data | Provider sync, manual override, price index audit |
+| Account Deletion | Request lifecycle audit (ขอลบ/คืน/ปฏิเสธคืน/auto delete/dependency check) — Request Detail > History & Actions มีคอลัมน์ Audit กระโดดมา Audit Log กรองด้วย event id + toast |
 | Directory | Future/postponed; activate/inactivate/import/export audit only when Directory scope is reopened |
 | Help / Support | Policy draft/publish/archive/restore และ Support Center update audit |
-| Dashboard | Recent activity feed และ SLA/queue context |
+| Dashboard | Recent activity feed และ SLA/queue context — ไม่มี audit jump link จาก Dashboard (ตัดออก 16/09: audit link เหมาะอยู่ใน detail/history context เท่านั้น) |
 | Reports (Phase 2/future) | Export audit events และ report export history |
 | Admin Settings | Permission/system setting changes audit |
+
+ทิศทางกลับ (Audit Log → module): Reference pill ใน detail drawer jump ไปหน้า entity detail ตาม prefix (ADM / DEL / AST / ART / RCO / U-) — ref ที่ map ไม่ได้จะกรอง Audit Log ด้วย ref นั้นแทน; ปุ่ม back จาก entity detail กลับมา Audit Log พร้อม filter state เดิม และทุก jump-in ตั้ง nav active ที่ Settings > Audit Log เหมือนเข้าผ่านเมนู
 
 ## Module-Specific Exceptions
 
@@ -323,6 +339,11 @@ Audit Log ต้องใช้ app shell, navigation, breakpoint, list toolbar,
 | AC-BO-AUDIT-008 | Export audit log ต้อง audit ตัวเองและควบคุมสิทธิ์ |
 | AC-BO-AUDIT-009 | Retention baseline อย่างน้อย 1 ปี |
 | AC-BO-AUDIT-010 | UI responsive ใช้งานได้ที่ mobile-width, tablet และ desktop |
+| AC-BO-AUDIT-011 | Audit Log List ใช้ standard table pattern — full-width panel, ไม่มี KPI cards, responsive table-to-card, pagination 10/หน้า, filter bar เปิด/ปิด + reset + state persist |
+| AC-BO-AUDIT-012 | คลิกแถวเปิด read-only detail drawer แสดง Event Summary / Before-After diff / Reason-Note ครบ — ซ่อน field/section ที่ไม่มีข้อมูล รวมถึง Before/After เมื่อค่าเท่ากัน |
+| AC-BO-AUDIT-013 | Date range filter กรอง event ตามช่วงวันที่ และ picker sync min/max ให้ from ≤ to เสมอ |
+| AC-BO-AUDIT-014 | Reference pill ใน detail drawer jump ไป entity detail ตาม prefix (ADM/DEL/AST/ART/RCO/U-) หรือ fallback กรอง Audit Log ด้วย ref + toast |
+| AC-BO-AUDIT-015 | Audit ref link จาก Account Deletion > History & Actions และ Admin Accounts > History & Actions กระโดดมา Audit Log กรองด้วย event id + toast ยืนยัน — jump-in เริ่มจาก filter state สะอาดเสมอและ nav active ที่ Settings > Audit Log |
 
 ## 17. Open Decisions
 
