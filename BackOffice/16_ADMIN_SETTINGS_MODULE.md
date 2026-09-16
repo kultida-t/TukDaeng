@@ -1,8 +1,8 @@
 # 16 BO Admin Settings Module
 
-**Version:** `BO-16-v0.2`  
-**Date:** 2026-09-15  
-**Status:** Updated — Delivery Logs sub-section added (NTF-RSTR-001)  
+**Version:** `BO-16-v0.3`  
+**Date:** 2026-09-16  
+**Status:** Updated — Admin Accounts spec synced to locked prototype (ADM-PTO-001)  
 **Platform:** Responsive Web Back Office  
 **Primary BO Sources:** `00_GLOBAL_RULES_MODULE.md`, `01_AUTHENTICATION_MODULE.md`, `08_AUDIT_LOG_MODULE.md`, `15_REPORTS_ANALYTICS_MODULE.md`
 
@@ -18,8 +18,8 @@
 | --- | --- |
 | Module Name | BO Admin Settings |
 | Platform | Responsive Web Back Office |
-| Version | `BO-16-v0.2` |
-| Status | Updated — Delivery Logs sub-section added (NTF-RSTR-001) |
+| Version | `BO-16-v0.3` |
+| Status | Updated — Admin Accounts spec synced to locked prototype (ADM-PTO-001) |
 | Owner | Product / UX / Engineering / Operations |
 | Document Type | Functional PRD |
 
@@ -86,19 +86,33 @@ High-risk action ต้องใช้ confirmation modal ที่อ่าน�
 
 ## 6. Settings Sections
 
-| Section | Purpose |
-| --- | --- |
-| My Account | ดู profile และเปลี่ยน password ของตัวเอง |
-| Admin Accounts | Invite, update admin access policy, suspend, unlock, archive admin |
-| Roles & Permissions | Role templates และ matrix สิทธิ์ตาม module/action policy |
-| Security Policy | Email OTP requirement, session timeout, lockout, IP whitelist |
-| System Defaults | Timezone, currency, language mode, pagination/export defaults |
-| Retention Policy | Audit, chat/offer, report, export file, notification log retention |
-| Export Policy | CSV/Excel, background job, file expiry, sensitive export controls |
-| Feature Flags | เปิด/ปิด module/feature ตาม phase/decision |
-| Integration Settings | Provider status/config metadata แบบ non-secret |
-| Audit & Change History | Settings change history and permission change history |
-| Delivery Logs | อ่าน delivery log ของ notification/email lifecycle, retry failed delivery และ export delivery log (Phase 1) |
+Settings submenu ใน prototype (`../Prototypes/bo-prototype.html` บรรทัด 15944) มี 6 รายการสอดคล้องกับ Phase 1 scope ส่วน section อื่นในเอกสารนี้ยังคงเป็น policy/contract baseline แต่ยังไม่ implement ใน prototype และทำเครื่องหมาย future/deferred ไว้ใน 6.2
+
+### 6.1 Sections ใน Settings nav (Phase 1 — implement ใน prototype)
+
+| Nav label | Section / cross-ref | Purpose |
+| --- | --- | --- |
+| Admin Accounts | Section 8 (เอกสารนี้) | Invite, update role, suspend, unlock, archive admin account |
+| Roles & Permissions | Section 9 (เอกสารนี้) | Role templates และ matrix สิทธิ์ตาม module/action policy |
+| Policy & Versioning | `12_HELP_SUPPORT_MODULE.md` (Policy & Versioning) | จัดการ policy document TH/EN, draft/publish, version history |
+| Support Center | `12_HELP_SUPPORT_MODULE.md` (Support Center) | ตั้งค่าช่องทาง support, business hours, availability |
+| Delivery Logs | Section 16 (เอกสารนี้) | อ่าน delivery log ของ notification/email lifecycle, retry failed delivery และ export (Phase 1) |
+| Audit Log | `08_AUDIT_LOG_MODULE.md` (module: `audit`) | ดู/export audit log ทั้งระบบตาม permission |
+
+### 6.2 Future / deferred sections (policy baseline — ยังไม่ implement ใน prototype)
+
+Section เหล่านี้ยังคงเป็น policy/contract baseline ในเอกสารนี้ แต่ยังไม่มีใน Settings nav ของ Phase 1 (อ้างอิง commit `20d705d` 2026-09-15 ที่ปรับ Settings submenu ตาม ADM-PTO-001) จะเปิดเมื่อ Product เปิด scope ตาม Open Decisions (section 22)
+
+| Section | สถานะ | Purpose | เงื่อนไขการเปิด |
+| --- | --- | --- | --- |
+| My Account (Section 7) | Future | ดู profile และเปลี่ยน password ของตัวเอง | ยังไม่อยู่ใน Phase 1 nav |
+| Security Policy (Section 10) | Deferred | Email OTP requirement, session timeout, lockout, IP whitelist | เอาออกจาก nav ตาม commit `20d705d`; รอ SET-DEC-002 |
+| System Defaults (Section 11) | Future | Timezone, currency, language mode, pagination/export defaults | ยังไม่อยู่ใน Phase 1 nav |
+| Retention Policy (Section 12) | Deferred | Audit, chat/offer, report, export file, notification log retention | เอาออกจาก nav ตาม commit `20d705d`; รอ SET-DEC-003 |
+| Export Policy (Section 13) | Future | CSV/Excel, background job, file expiry, sensitive export controls | ยังไม่อยู่ใน Phase 1 nav |
+| Feature Flags (Section 14) | Future | เปิด/ปิด module/feature ตาม phase/decision | ยังไม่อยู่ใน Phase 1 nav |
+| Integration Settings (Section 15) | Future | Provider status/config metadata แบบ non-secret | ยังไม่อยู่ใน Phase 1 nav |
+| Audit & Change History (Section 17) | Future | Settings change history and permission change history (แยกจาก Audit Log nav entry ซึ่งเป็น standalone module ใน `08_AUDIT_LOG_MODULE.md`) | ยังไม่อยู่ใน Phase 1 nav |
 
 ## 7. My Account
 
@@ -119,30 +133,186 @@ Admin must pass mandatory Email OTP verification according to Auth baseline
 
 ## 8. Admin Accounts
 
-Admin Accounts section ต้อง reuse contract จาก `01_AUTHENTICATION_MODULE.md`
+Admin Accounts section ต้อง reuse contract จาก `01_AUTHENTICATION_MODULE.md` และสอดคล้องกับ prototype ADM-PTO-001 (`../Prototypes/bo-prototype.html` บรรทัด 16985–23138) ที่ lock แล้ว 2026-09-15
+
+Mock data reference: `adminAccountData.accounts` 10 records (ADM-001..ADM-010) ครอบคลุมสถานะ Invited/Active/Locked/Suspended/Archived + master account (ADM-010)
 
 ### 8.1 Admin Account Status
 
 | Status | Meaning |
 | --- | --- |
-| `Invited` | สร้าง account แล้ว แต่ยังไม่ได้ตั้ง password |
+| `Invited` | สร้าง account แล้ว แต่ยังไม่ได้ตั้ง password (รอผู้รับยืนยันอีเมลและตั้ง password) |
 | `Active` | Login ได้ตาม admin access/Email OTP rule |
-| `Locked` | ถูก lock จาก failed attempts หรือ security action |
-| `Suspended` | ถูก disable โดย Admin |
-| `Archived` | เอาออกจาก active use แต่ยังเก็บ audit history |
+| `Locked` | ถูก lock จาก failed attempts หรือ security action (รอ unlock หรือครบ lockout 15 นาที) |
+| `Suspended` | ถูก disable โดย Admin (เข้าสู่ระบบไม่ได้ทันที, session ถูกยกเลิก) |
+| `Archived` | เอาออกจาก active use แต่ยังเก็บ audit history ตาม retention |
 
-### 8.2 Admin Account Actions
+### 8.2 Admin Account List
 
-| Action | Requirement |
+Pattern: full-width panel เหมือน Audit Log / Deletion Requests — ไม่มี KPI cards (จำนวนซ้ำซ้อนกับตารางและ filter)
+
+**ตาราง 7 คอลัมน์** (prototype บรรทัด 22553):
+
+| คอลัมน์ | รายละเอียด |
 | --- | --- |
-| Invite Admin | Admin access required, email unique |
-| Change Admin access | Admin access required, confirmation required |
-| Suspend / Reactivate | Admin access required, reason required |
-| Unlock Admin | Admin access required |
-| Archive Admin | Admin access required, reason required |
-| Export Admin List | Admin access required, audit required |
+| Admin ID | รหัส admin (เช่น `ADM-001`) |
+| Name | ชื่อ-นามสกุล (แสดง Master badge ถ้าเป็น master admin) |
+| Email | อีเมล admin |
+| Role | Role pill (Super Admin / Content Editor / Content Publisher / Moderator / Support Agent) |
+| Status | Status pill (Invited / Active / Locked / Suspended / Archived) |
+| Last Login | เวลา login ล่าสุด (แสดง `—` ถ้ายังไม่เคย login) |
+| Action | Row menu (ดูรายละเอียด + action ตามสถานะที่อนุญาต) |
 
-ต้องป้องกันการเปลี่ยนแปลง Admin คนสุดท้ายตาม rule ใน section 4
+**Master badge** แยกจาก status/role pill — แสดงที่ Name cell (desktop) และที่ tags (mobile) สำหรับ master admin หลัก (ADM-010) เท่านั้น
+
+**Filter bar** (prototype บรรทัด 22513–22520):
+- เปิด/ปิดตัวกรอง toggle
+- Search: Admin ID, ชื่อ, อีเมล, Role
+- Filter account status: Invited / Active / Locked / Suspended / Archived
+- Filter role: Super Admin / Content Editor / Content Publisher / Moderator / Support Agent
+- Sort: latest (default) / oldest / name / status
+- รีเซ็ตค่าทั้งหมด (reset icon button)
+
+**Sort behavior** (prototype บรรทัด 22540–22546): master admin หลักแสดงบนสุดเสมอ ไม่ว่าจะเรียงด้วยอะไร
+
+**Pagination**: 10/page (ตาม `adminAccountListPageSize`) + footer range + pager
+
+**Row menu** (prototype บรรทัด 22576–22586): ดูรายละเอียด (ทุกแถว) + action ตาม permission gating (section 8.7) — action ที่ไม่อนุญาตไม่แสดงใน DOM
+
+**Mobile card** (prototype บรรทัด 22560–22568): แสดง tags (status pill + role pill + Master badge ถ้ามี) + meta (Name / Email / Last Login) ไม่มีกรอบปุ่ม ... แยกต่างหาก
+
+**Empty state** (prototype บรรทัด 22555): "ไม่พบ admin account" + "ลองปรับคำค้นหรือตัวกรอง แล้วลองใหม่"
+
+**Add admin entry**: ปุ่ม "Add admin" ที่ `#page-actions` (prototype บรรทัด 22499) เปิด Invite Admin modal (section 8.6)
+
+**Filter state persistence**: เก็บสถานะ filter เมื่อ detail→back แต่ถูกล้างเมื่อสลับ module (ตาม `restoreListFilterState("admin-account-list")`)
+
+### 8.3 Admin Account Detail
+
+Pattern: full-width detail ตาม Deletion Request Detail (prototype บรรทัด 22599–22745) — body class `admin-account-detail-mode` (ไม่ใช้ `user-detail-mode` เพื่อไม่กระทบ protected screens)
+
+**Detail head** (prototype บรรทัด 22726–22737):
+- `ADM-xxx : fullName` (heading)
+- Status pill + Role pill + Master badge (ถ้าเป็น master) ใน chips
+
+**Section 1: Account Summary** (prototype บรรทัด 22652–22661) — 3 tiles:
+- Email
+- Created At
+- Last Login
+
+**Section 1.5: Role & Permissions** (prototype บรรทัด 22663–22686) — matrix 3 คอลัมน์:
+- เมนู / Module
+- สิทธิ์ (pill: green=จัดการ, amber=จัดการบางส่วน, blue=ดูอย่างเดียว)
+- หมายเหตุ
+
+แสดงเฉพาะเมนูที่ `level !== "none"` (เมนูที่ role นี้ไม่เห็นไม่แสดง) อ้างอิง `roleMenuAccess` (prototype บรรทัด 22401–22457)
+
+**Section 2: History & Actions** (prototype บรรทัด 22688–22721) — ตาราง 5 คอลัมน์:
+- วันที่ / เวลา
+- Action
+- Reference (ใครเป็นคนทำ action นี้กับ account — ADM-xxx หรือ System)
+- Audit (รหัส audit event, คลิกเปิด Audit Log กรองด้วย reference — ไม่มีแสดง `—`)
+- รายละเอียด
+
+แสดงเฉพาะ lifecycle ของ account ตัวเอง (เรียงล่าสุดก่อน): Status change (Suspend/Reactivate/Unlock/Lock/Archive/Role change) → Activated → Invited/Created — ไม่รวมงานที่ admin ไปทำใน module อื่น (มี history แยกใน module ของมัน) ตาม prototype comment บรรทัด 16999–17001
+
+**Action buttons** (prototype บรรทัด 22633–22648): แสดงตาม permission gating (section 8.7) ที่ส่วนล่างของ History & Actions section — action ที่ไม่อนุญาตไม่แสดงใน DOM
+
+**Back button**: ปุ่ม "กลับไป Admin Accounts" ที่ `#page-actions` (prototype บรรทัด 22623)
+
+### 8.4 Action Modals (Suspend / Reactivate / Unlock / Archive)
+
+Pattern: `renderAdminAccountActionModal` (prototype บรรทัด 22846–22905) คล้าย `renderDeletionActionModal`
+
+**Modal structure**:
+- Head: title + summary + close button
+- Target: fullName + id · email + status pill
+- Form: reason selector (required) + note (ไม่บังคับ) + impact note + ปุ่มยืนยัน/ยกเลิก
+- Result state: success message + timestamp (หลังยืนยัน)
+
+**Action config** (prototype บรรทัด 22748–22813):
+
+| Action | Title | Tone | Audit type | Impact note |
+| --- | --- | --- | --- | --- |
+| suspend | Suspend Admin | danger | `ADMIN_ACCOUNT_SUSPEND` | เข้าสู่ระบบไม่ได้ทันที และ session ถูกยกเลิก |
+| reactivate | Reactivate Admin | primary | `ADMIN_ACCOUNT_REACTIVATE` | กลับเข้าสู่ระบบได้ตามปกติ |
+| unlock | Unlock Admin | primary | `ADMIN_ACCOUNT_UNLOCK` | กลับเข้าสู่ระบบได้ทันที ไม่ต้องรอ lockout หมดอายุ |
+| archive | Archive Admin | warning | `ADMIN_ACCOUNT_ARCHIVE` | บัญชีปิดใช้งาน แต่ยังเก็บประวัติไว้ตามกำหนดเก็บรักษา |
+
+**Reason selector**: required (placeholder "เลือกเหตุผล" + 4 reasons ตาม config ต่อ action) — บังคับเลือกก่อนยืนยัน
+
+**Reasons ต่อ action** (prototype บรรทัด 22754–22759, 22770–22775, 22786–22791, 22802–22807):
+- suspend: ตรวจพบการเข้าถึงข้อมูลนอก scope / พฤติกรรมละเมิดนโยบาย BO / รอตรวจสอบ security incident / คำขอจากผู้บริหาร/HR
+- reactivate: ตรวจสอบเสร็จแล้ว ไม่พบความผิด / ได้รับอนุมัติให้กลับมาใช้งาน / สิ้นสุดช่วงรอตรวจสอบ / คำขอจากผู้บริหาร/HR
+- unlock: ยืนยันตัวตนกับ admin แล้ว / ตรวจสอบแล้วไม่พบความเสี่ยง / รอครบช่วง lockout 15 นาทีแล้ว / คำขอจากผู้บริหาร/HR
+- archive: ออกจากทีมแล้ว / ย้ายไปทีมอื่น / สิ้นสุดการจ้างงาน / คำขอจากผู้บริหาร/HR
+
+**Impact note** (prototype บรรทัด 22821–22834): แสดงผลกระทบตาม action ในกล่อง warning
+
+**Email note** (prototype บรรทัด 22836–22843): `renderAdminAccountActionEmailNote` define ไว้แต่ไม่เรียกใน modal (ไม่มี email note ใน action modal จริง)
+
+**Confirm tone**: suspend=danger / reactivate=primary / unlock=primary / archive=warning (กำหนด class ของปุ่มยืนยัน)
+
+**Success flow**: หลังยืนยัน → แสดง success toast + บันทึก audit event (`ensureAdminAccountAuditEvent` prototype บรรทัด 23065) + re-render list/detail
+
+### 8.5 Change Role Modal
+
+Pattern: `openAdminAccountChangeRoleModal` (prototype บรรทัด 22908–22987) คล้าย action modal + before/after diff
+
+**Form fields**:
+- Role ปัจจุบัน: disabled input (แสดง role เดิม)
+- Role ใหม่: required selector (เลือก role ใหม่ — ยกเว้น role ปัจจุบัน, 5 ตัวเลือกจาก `roleMenuAccess`)
+- เหตุผลการเปลี่ยน Role: required selector (4 reasons: ย้ายทีม/เปลี่ยนหน้าที่งาน / ได้รับอนุมัติจากผู้บริหาร / ปรับ scope ความรับผิดชอบตามโครงสร้างใหม่ / คำขอจากผู้บริหาร/HR)
+- Note / หมายเหตุ: ไม่บังคับ
+
+**Permission diff** (prototype บรรทัด 22970): แสดง "เปลี่ยนสิทธิ: <role เดิม> → <role ใหม่>" ในกล่อง warning — อัปเดต live เมื่อเลือก role ใหม่
+
+**Confirm**: ปุ่ม "ยืนยันเปลี่ยน Role" (warning tone) + บันทึก audit event `ADMIN_ACCOUNT_ROLE_CHANGE` (`ensureAdminAccountRoleChangeAuditEvent` prototype บรรทัด 23120) + re-render list/detail
+
+### 8.6 Invite Admin Modal
+
+Pattern: `openAdminAccountInviteModal` (prototype บรรทัด 22991–23045) คล้าย Option Master Add Option modal
+
+**Form fields** (required มีเครื่องหมาย `*`):
+- ชื่อ-นามสกุล: required
+- อีเมล: required + unique (`isAdminAccountEmailUnique` prototype บรรทัด 23048 — ตรวจซ้ำกับ admin ที่มีอยู่แล้ว)
+- Role Template: required selector (5 ตัวเลือก: Super Admin / Content Editor / Content Publisher / Moderator / Support Agent)
+- Note / หมายเหตุ: ไม่บังคับ
+
+**Email OTP note** (prototype บรรทัด 23034–23036): "ผู้รับต้องยืนยันตัวตนด้วย Email OTP ทุกครั้งที่เข้าสู่ระบบ"
+
+**Confirm**: ปุ่ม "ส่งคำเชิญ" (primary tone) + สร้าง admin id ใหม่ (`nextAdminAccountId` prototype บรรทัด 23054 — `ADM-xxx` ลำดับถัดไป) + บันทึก audit event `ADMIN_ACCOUNT_INVITE` (`ensureAdminAccountInviteAuditEvent` prototype บรรทัด 23096) + re-render list
+
+### 8.7 Permission Gating
+
+Pattern: `can*Admin` functions (prototype บรรทัด 22463–22496) — action ที่ไม่อนุญาตไม่แสดงใน DOM (ทั้ง row menu และ detail action buttons)
+
+| Function | เงื่อนไขอนุญาต |
+| --- | --- |
+| `canSuspendAdmin` | ไม่ใช่ตัวเอง + ไม่ใช่ master + สถานะไม่ใช่ Suspended/Archived + ถ้า Active ต้องไม่ใช่ active admin คนสุดท้าย |
+| `canReactivateAdmin` | ไม่ใช่ตัวเอง + สถานะเป็น Suspended |
+| `canUnlockAdmin` | ไม่ใช่ตัวเอง + สถานะเป็น Locked |
+| `canArchiveAdmin` | ไม่ใช่ตัวเอง + ไม่ใช่ master + สถานะเป็น Suspended หรือ Locked |
+| `canChangeRoleAdmin` | ไม่ใช่ตัวเอง + ไม่ใช่ master + สถานะเป็น Active หรือ Invited |
+
+**Protection rules**:
+- **Master admin หลัก** (ADM-010, `isMaster: true`): ห้าม suspend / archive / change role (ป้องกันระบบไม่มีผู้ดูแล full access)
+- **Self protection** (`isSelf: true`): ห้าม suspend / reactivate / unlock / archive / change role ตัวเอง
+- **Last active admin protection**: ถ้า active admin เหลือเพียง 1 คน ห้าม suspend (ป้องกันระบบไม่มีผู้ดูแล — ต่อยอด section 4)
+
+### 8.8 Admin Account Actions
+
+| Action | Permission | Confirmation | Reason | Audit |
+| --- | --- | --- | --- | --- |
+| Invite Admin | Admin | Yes | Optional | Yes (`ADMIN_ACCOUNT_INVITE`) |
+| Change Admin Role | Admin | Yes | Required | Yes (`ADMIN_ACCOUNT_ROLE_CHANGE`) |
+| Suspend Admin | Admin | Yes | Required | Yes (`ADMIN_ACCOUNT_SUSPEND`) |
+| Reactivate Admin | Admin | Yes | Required | Yes (`ADMIN_ACCOUNT_REACTIVATE`) |
+| Unlock Admin | Admin | Yes | Required | Yes (`ADMIN_ACCOUNT_UNLOCK`) |
+| Archive Admin | Admin | Yes | Required | Yes (`ADMIN_ACCOUNT_ARCHIVE`) |
+| Export Admin List | Admin | Yes | Required if sensitive | Yes |
+
+ต้องป้องกันการเปลี่ยนแปลง Admin คนสุดท้ายตาม rule ใน section 4 และ permission gating ใน section 8.7
 
 ## 9. Roles & Permissions Policy Catalog
 
@@ -381,11 +551,11 @@ Audit log ต้องบันทึกอย่างน้อย:
 
 - `ADMIN_SETTING_VIEW_SENSITIVE`
 - `ADMIN_ACCOUNT_INVITE`
-- `ADMIN_ACCOUNT_UPDATE`
+- `ADMIN_ACCOUNT_ROLE_CHANGE`
 - `ADMIN_ACCOUNT_SUSPEND`
 - `ADMIN_ACCOUNT_REACTIVATE`
-- `ADMIN_ACCOUNT_ARCHIVE`
 - `ADMIN_ACCOUNT_UNLOCK`
+- `ADMIN_ACCOUNT_ARCHIVE`
 - `ADMIN_EMAIL_OTP_POLICY_UPDATE`
 - `ROLE_PERMISSION_UPDATE`
 - `SECURITY_POLICY_UPDATE`
@@ -447,6 +617,15 @@ Sensitive settings value ต้อง mask ใน audit payload ถ้าเป�
 | AC-BO-SET-012 | Delivery log เก็บ status (Sent/Retry ใน Phase 1) และ failure reason; retry failed delivery ต้องมี idempotency guard และ audit log |
 | AC-BO-SET-013 | Export delivery log ต้องมี scope, reason และ audit (`NOTIFICATION_DELIVERY_EXPORT`) |
 | AC-BO-SET-014 | Account Deletion lifecycle email delivery log ใช้รหัส `DLV-DEL-<request-id>-<event>` และ trace กลับไปยัง History & Actions ของ Request Detail ได้ |
+| AC-BO-SET-015 | Admin Account List แสดงตาราง 7 คอลัมน์ (Admin ID/Name/Email/Role/Status/Last Login/Action) พร้อม filter bar (search + status + role + sort + reset) และ pagination 10/page โดยไม่มี KPI cards |
+| AC-BO-SET-016 | Master admin หลักแสดง Master badge แยกจาก status/role pill และแสดงบนสุดของ list เสมอไม่ว่าจะเรียงด้วย sort ใด |
+| AC-BO-SET-017 | Admin Account Detail แสดง Account Summary tiles (Email/Created At/Last Login) + Role & Permissions matrix (เฉพาะเมนูที่ level ≠ none) + History & Actions 5 คอลัมน์ (วันที่/Action/Reference/Audit/รายละเอียด) โดย history แสดงเฉพาะ lifecycle ของ account ตัวเอง ไม่รวมงานใน module อื่น |
+| AC-BO-SET-018 | Audit link pill ใน History & Actions คลิกได้และเปิด Audit Log กรองด้วย reference ของ account นั้น; รายการที่ไม่มี audit แสดง `—` |
+| AC-BO-SET-019 | Action modals Suspend/Reactivate/Unlock/Archive บังคับเลือก reason (4 reasons ต่อ action) แสดง impact note ตาม action และใช้ confirm tone ที่ถูกต้อง (suspend=danger, reactivate/unlock=primary, archive=warning) พร้อม success toast และ audit event |
+| AC-BO-SET-020 | Change Role modal แสดง role ปัจจุบัน disabled, เลือก role ใหม่ยกเว้น role เดิม, บังคับ reason, แสดง permission diff live update และบันทึก audit `ADMIN_ACCOUNT_ROLE_CHANGE` |
+| AC-BO-SET-021 | Invite Admin modal ตรวจอีเมล unique, บังคับเลือก role template 5 ตัว, แสดง Email OTP note และบันทึก audit `ADMIN_ACCOUNT_INVITE` พร้อมสร้าง admin id ใหม่ (`ADM-xxx` ลำดับถัดไป) |
+| AC-BO-SET-022 | Permission gating ตาม `canSuspendAdmin`/`canReactivateAdmin`/`canUnlockAdmin`/`canArchiveAdmin`/`canChangeRoleAdmin` — action ที่ไม่อนุญาตต้องไม่ปรากฏใน DOM ทั้งใน row menu และ detail action buttons |
+| AC-BO-SET-023 | Master admin หลัก (ADM-010) ห้าม suspend/archive/change role; self ห้าม suspend/reactivate/unlock/archive/change role ตัวเอง; ถ้า active admin เหลือ 1 คน ห้าม suspend (ป้องกันระบบไม่มีผู้ดูแล) |
 
 ## 22. Open Decisions
 
