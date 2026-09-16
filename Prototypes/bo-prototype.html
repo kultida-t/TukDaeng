@@ -5226,15 +5226,111 @@
     .delivery-detail-summary .option-confirm-row {
       margin: 0;
     }
-    /* AL-001: Audit Log detail modal — read-only, pattern: option-audit-modal / delivery-detail-summary */
-    .audit-detail-summary {
+    /* AL-002: Audit Log detail — sidebar/drawer ด้านขวา (pattern: market-reference-drawer) */
+    #user-action-modal:has(.audit-log-detail-modal) {
+      place-items: stretch end;
+      padding: 0;
+      background: rgba(0, 0, 0, .62);
+      transition: background 180ms ease;
+    }
+    #user-action-modal.audit-log-drawer-closing:has(.audit-log-detail-modal) {
+      background: rgba(0, 0, 0, 0);
+    }
+    .modal.user-action-modal.audit-log-detail-modal {
+      width: min(460px, 100vw);
+      height: 100vh;
+      max-height: 100vh;
+      border-radius: 0;
+      border-top: 0;
+      border-right: 0;
+      border-bottom: 0;
+      background: #fff;
+      box-shadow: -22px 0 60px rgba(6, 20, 38, .28);
+      transform: translateX(100%);
+      transition: transform 220ms cubic-bezier(.2, .8, .2, 1);
+      will-change: transform;
+    }
+    #user-action-modal.audit-log-drawer-open .audit-log-detail-modal {
+      transform: translateX(0);
+    }
+    #user-action-modal.audit-log-drawer-closing .audit-log-detail-modal {
+      transform: translateX(100%);
+    }
+    .audit-log-detail-modal .modal-body {
+      height: 100%;
+      padding: 0;
+      overflow: auto;
+    }
+    .audit-detail-drawer-content {
       display: grid;
-      gap: 10px;
-      margin: 16px 0 8px;
+      gap: 16px;
+      padding: 20px 22px 28px;
     }
-    .audit-detail-summary .option-confirm-row {
-      margin: 0;
+    /* sticky header — ปุ่ม X ปิดได้ตลอดเมื่อเลื่อน */
+    .audit-log-detail-modal .user-action-head {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      background: #fff;
+      padding: 18px 22px 14px;
+      margin: -20px -22px 0;
+      border-bottom: 1px solid #eef2f7;
     }
+    .audit-detail-eyebrow {
+      display: block;
+      color: #d60012;
+      font-size: 11px;
+      font-weight: 900;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      margin: 0 0 4px;
+    }
+    .audit-detail-sections { display: grid; gap: 14px; margin: 0; }
+    .audit-detail-section { display: grid; gap: 8px; }
+    /* inline tags row — Module + Risk + Result รวมบรรทัดเดียว */
+    .audit-detail-tags { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+    .audit-detail-section-title {
+      display: flex; align-items: center; gap: 8px;
+      font-size: 10px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase;
+      color: #94a3b8; padding-bottom: 4px; border-bottom: 1px solid #eef2f7;
+    }
+    .audit-detail-result-pill { display: inline-flex; align-items: center; gap: 5px; padding: 3px 10px; border-radius: 999px; font-size: 11px; font-weight: 700; }
+    .audit-detail-result-pill.success { background: #dcfce7; color: #166534; }
+    .audit-detail-result-pill.partial { background: #fef3c7; color: #92400e; }
+    .audit-detail-result-pill.failed { background: #fee2e2; color: #991b1b; }
+    .audit-detail-result-pill .audit-detail-dot { width: 7px; height: 7px; border-radius: 50%; }
+    .audit-detail-result-pill.success .audit-detail-dot { background: #22c55e; }
+    .audit-detail-result-pill.partial .audit-detail-dot { background: #f59e0b; }
+    .audit-detail-result-pill.failed .audit-detail-dot { background: #ef4444; }
+    /* AL-002: Reference pill — ทรงเดียวกับ history-audit-link (โทนน้ำเงิน) ยังไม่เชื่อม jump (รอ AL-006/AL-007) */
+    .audit-detail-ref-pill {
+      border: 1px solid #c6ddff;
+      background: #e8f1ff;
+      border-radius: 999px;
+      color: #0f52b8;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 26px;
+      padding: 3px 10px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: default;
+      font-family: ui-monospace, monospace;
+    }
+    /* before/after diff box (modal-scoped, reuses audit-before/after colors) */
+    .audit-detail-diff {
+      display: grid; grid-template-columns: 1fr auto 1fr; gap: 10px; align-items: center;
+      padding: 12px 14px; border-radius: 10px; background: #fff; border: 1px solid #e2e8f0;
+    }
+    .audit-detail-diff-cell { display: grid; gap: 3px; }
+    .audit-detail-diff-label { font-size: 10px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; color: #94a3b8; }
+    .audit-detail-diff-value { font-size: 13px; font-weight: 600; word-break: break-word; }
+    .audit-detail-diff-value.before { color: #66758d; text-decoration: line-through; text-decoration-color: #cbd5e1; }
+    .audit-detail-diff-value.after { color: #0f172a; font-weight: 700; }
+    .audit-detail-diff-value.no-change { color: #66758d; font-weight: 600; text-decoration: none; }
+    .audit-detail-diff-arrow { color: #94a3b8; font-size: 16px; font-weight: 700; }
+    .audit-detail-diff.muted .audit-detail-diff-value { color: #94a3b8; font-weight: 600; text-decoration: none; }
     .option-audit-legend {
       display: flex;
       flex-wrap: wrap;
@@ -8200,9 +8296,10 @@
     body.audit-log-mode .main {
       overflow-x: hidden;
     }
-    /* AL-000: filter bar — search + 3 filters + reset บรรทัดเดียว (match delivery-filter-bar) */
+    /* AL-000: filter bar — search + 3 filters + reset บรรทัดเดียว (match delivery-filter-bar)
+       AL-004: เพิ่ม date range column ก่อน reset (pattern wa-alert-date-range) */
     body.audit-log-mode .audit-filter-bar {
-      grid-template-columns: minmax(220px, 1.3fr) repeat(3, minmax(118px, .62fr)) 42px;
+      grid-template-columns: minmax(220px, 1.3fr) repeat(3, minmax(118px, .62fr)) minmax(270px, 1fr) 42px;
       gap: 10px;
       align-items: center;
     }
@@ -8246,6 +8343,50 @@
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
+    }
+    /* AL-004: date range filter — label + 2 date inputs + sep (pattern .wa-alert-date-range) */
+    body.audit-log-mode .audit-filter-bar .audit-date-range {
+      display: flex;
+      gap: 6px;
+      align-items: center;
+      min-width: 0;
+    }
+    body.audit-log-mode .audit-filter-bar .audit-date-range input[type="date"] {
+      flex: 1 1 0;
+      min-width: 0;
+      width: 100%;
+      min-height: 48px;
+      border: 1px solid #cfdbea;
+      border-radius: 7px;
+      padding: 10px 8px;
+      color: #061426;
+      font-size: 13px;
+      font-family: var(--font-body);
+      color-scheme: light;
+    }
+    body.audit-log-mode .audit-filter-bar .audit-date-range input[type="date"]::-webkit-datetime-edit {
+      color: #061426;
+    }
+    body.audit-log-mode .audit-filter-bar .audit-date-range input[type="date"]::-webkit-datetime-edit-text,
+    body.audit-log-mode .audit-filter-bar .audit-date-range input[type="date"]::-webkit-datetime-edit-year-field,
+    body.audit-log-mode .audit-filter-bar .audit-date-range input[type="date"]::-webkit-datetime-edit-month-field,
+    body.audit-log-mode .audit-filter-bar .audit-date-range input[type="date"]::-webkit-datetime-edit-day-field {
+      color: #061426;
+    }
+    body.audit-log-mode .audit-filter-bar .audit-date-range input[type="date"]:invalid::-webkit-datetime-edit {
+      color: #9aa8bd;
+    }
+    body.audit-log-mode .audit-filter-bar .audit-date-range .audit-date-sep {
+      color: #6d7f98;
+      font-size: 12px;
+      font-weight: 700;
+    }
+    body.audit-log-mode .audit-filter-bar .audit-date-range .audit-date-label {
+      color: #485b75;
+      font-size: 12px;
+      font-weight: 700;
+      white-space: nowrap;
+      margin-right: 2px;
     }
     /* table grid (8 columns) — read-only list, row click opens detail modal (AL-001) */
     body.audit-log-mode .audit-log-table .user-row {
@@ -8380,6 +8521,11 @@
         box-shadow: 0 1px 2px rgba(15, 23, 42, .05);
         cursor: pointer;
         overflow: visible;
+      }
+      /* AL-004: empty state row — 1 คอลัมน์เต็มกว้างบน mobile (ไม่ใช่ grid 8 คอลัมน์ของ desktop)
+         หมายเหตุ: tablet/desktop ยังเป็นตารางเลื่อนแนวนอน — empty row กว้างเท่าตารางตามปกติ */
+      body.audit-log-mode .audit-log-table .user-row.empty {
+        grid-template-columns: minmax(0, 1fr);
       }
       body.audit-log-mode .audit-log-table .user-row.audit-row:not(.head) > div.user-cell-primary[data-label="Event ID"] .main-text {
         max-width: 100%;
@@ -11316,9 +11462,10 @@
       body.delivery-log-list-mode .delivery-filter-bar .user-advanced-filter {
         min-width: 0;
       }
-      /* AL-000: Audit Log tablet filter bar — search + 3 filters + reset บรรทัดเดียว (match Delivery Logs) */
+      /* AL-000: Audit Log tablet filter bar — search + 3 filters + reset บรรทัดเดียว (match Delivery Logs)
+         AL-004: เพิ่ม date range column ก่อน reset */
       body.audit-log-mode .audit-filter-bar {
-        grid-template-columns: minmax(0, 1fr) repeat(3, minmax(112px, .5fr)) 42px;
+        grid-template-columns: minmax(0, 1fr) repeat(3, minmax(112px, .5fr)) minmax(230px, .8fr) 42px;
       }
       body.audit-log-mode .audit-filter-bar .search {
         grid-column: auto;
@@ -11537,9 +11684,10 @@
       body.delivery-log-list-mode .delivery-filter-bar {
         grid-template-columns: minmax(0, 1fr) repeat(3, minmax(100px, .46fr)) 42px;
       }
-      /* AL-000: Audit Log small tablet — search + 3 filters + reset บรรทัดเดียว (match Delivery Logs) */
+      /* AL-000: Audit Log small tablet — search + 3 filters + reset บรรทัดเดียว (match Delivery Logs)
+         AL-004: เพิ่ม date range column ก่อน reset */
       body.audit-log-mode .audit-filter-bar {
-        grid-template-columns: minmax(0, 1fr) repeat(3, minmax(100px, .46fr)) 42px;
+        grid-template-columns: minmax(0, 1fr) repeat(3, minmax(100px, .46fr)) minmax(210px, .7fr) 42px;
       }
       /* ADM-PTO-001: Admin Accounts small tablet — search + 3 filters + reset บรรทัดเดียว */
       body.admin-account-list-mode .admin-account-filter-bar {
@@ -12634,6 +12782,22 @@
       body.audit-log-mode .user-filter-bar.audit-filter-bar .search {
         grid-column: 1 / -1;
         width: 100%;
+      }
+      /* AL-004: ซ่อน date range เมื่อปิดตัวกรอง (specificity ต้องชนะ display:flex ของ .audit-date-range) */
+      body.audit-log-mode .user-filter-bar.audit-filter-bar[data-filter-open="false"] .audit-date-range {
+        display: none;
+      }
+      /* AL-004: date range บน mobile — เต็มกว้าง, inputs แบ่งพื้นที่เท่ากัน */
+      body.audit-log-mode .user-filter-bar.audit-filter-bar .audit-date-range {
+        width: 100%;
+        max-width: none;
+        min-width: 0;
+        box-sizing: border-box;
+        justify-content: space-between;
+      }
+      body.audit-log-mode .user-filter-bar.audit-filter-bar .audit-date-range input[type="date"] {
+        flex: 1 1 0;
+        width: auto;
       }
       body.delivery-log-list-mode .delivery-log-table .user-row.delivery-row:not(.head) {
         grid-template-columns: minmax(0, 1fr);
@@ -17113,31 +17277,33 @@
     // ครอบคลุม module ต่าง ๆ: Asset, Content, Users, Account Deletion, Offers, Settings
     // แต่ละ entry มี before/after diff, reason และ actor (read-only view)
     const auditLogData = {
+      // AL-002: audit event schema — เก็บเฉพาะ field ที่ใช้แสดงใน detail drawer
+      // ตาม spec 08 section 5 (Audit Event Schema) + section 10 (Audit Detail)
       events: [
-        { id: "AUD-88203", createdAt: "08 Sep 2026 16:00 GMT+7", actor: "Somchai Admin", action: "Invite Admin", module: "Settings", risk: "Medium", before: "-", after: "Invited", reason: "เชิญ Super Admin ใหม่", reference: "ADM-008", note: "รอผู้รับยืนยันอีเมลและตั้ง password" },
-        { id: "AUD-88202", createdAt: "08 Sep 2026 15:00 GMT+7", actor: "ผู้ดูแลระบบ", action: "เข้าสู่ระบบ Back Office", module: "Settings", risk: "Low", before: "-", after: "Active Session", reason: "", reference: "ADM-010", note: "ยืนยันตัวตนด้วย Email OTP สำเร็จ" },
-        { id: "AUD-88201", createdAt: "08 Sep 2026 14:22 GMT+7", actor: "Somchai Admin", action: "Force Hide Asset", module: "Asset", risk: "High", before: "Sale", after: "Hide", reason: "รายงานเนื้อหาไม่เหมาะสม 3 รายงาน", reference: "AST-8831", note: "ตรวจ reason และ FO sync event" },
-        { id: "AUD-88198", createdAt: "08 Sep 2026 11:05 GMT+7", actor: "อรนุช แก้วใส", action: "ปฏิเสธคืนบัญชี", module: "Account Deletion", risk: "High", before: "Deletion Requested", after: "Deletion Requested", reason: "พฤติกรรมละเมิดซ้ำ ไม่สมควรคืนบัญชี", reference: "DEL-028", note: "มีรายงานร้ายแรง 8 รายงาน" },
-        { id: "AUD-88195", createdAt: "08 Sep 2026 09:15 GMT+7", actor: "System (auto)", action: "ขอลบบัญชี", module: "Account Deletion", risk: "Medium", before: "Active", after: "Deletion Requested", reason: "ผู้ใช้ยืนยันคำขอผ่านแอป (FO)", reference: "DEL-033", note: "เริ่มช่วงรอลบบัญชี 30 วัน" },
-        { id: "AUD-88172", createdAt: "07 Sep 2026 16:30 GMT+7", actor: "Orn Admin", action: "Publish Article", module: "Content", risk: "Medium", before: "Draft", after: "Scheduled", reason: "ตั้งเวลาเผยแพร่ 10 Jul 2026 19:00", reference: "ART-044", note: "ตรวจ timestamp Asia/Bangkok" },
-        { id: "AUD-88168", createdAt: "07 Sep 2026 10:15 GMT+7", actor: "มะลิ จันทร์ดี", action: "คืนบัญชี", module: "Account Deletion", risk: "High", before: "Deletion Requested", after: "Active", reason: "ผู้ใช้ติดต่อ support และยืนยันตัวตนแล้ว", reference: "DEL-031", note: "คืนบัญชีในช่วงรอลบบัญชี" },
-        { id: "AUD-88120", createdAt: "06 Sep 2026 18:44 GMT+7", actor: "Somchai Admin", action: "Export User CSV", module: "Users", risk: "High", before: "-", after: "Exported", reason: "Export ข้อมูลผู้ใช้สำหรับ compliance review", reference: "RPT-USER", note: "Export มี sensitive-data masking" },
-        { id: "AUD-88115", createdAt: "06 Sep 2026 11:20 GMT+7", actor: "System (auto)", action: "ตรวจเงื่อนไขก่อนลบบัญชี", module: "Account Deletion", risk: "Medium", before: "Deletion Requested", after: "Deletion Requested", reason: "ตรวจเงื่อนไขก่อนลบบัญชีระหว่างช่วงรอลบบัญชี", reference: "DEL-035", note: "ยังมี dependency ที่ต้องตรวจสอบ" },
-        { id: "AUD-88098", createdAt: "06 Sep 2026 09:00 GMT+7", actor: "กิตติ Content", action: "ปิดรายงานไม่พบการละเมิด", module: "Reported Comments", risk: "Low", before: "In Review", after: "Closed", reason: "ตรวจหลักฐานแล้วไม่พบการละเมิด", reference: "RCO-690", note: "ปิดรายงานโดยไม่เปลี่ยน FO visibility" },
-        { id: "AUD-88085", createdAt: "05 Sep 2026 14:22 GMT+7", actor: "System (auto)", action: "ขอลบบัญชี", module: "Account Deletion", risk: "Medium", before: "Active", after: "Deletion Requested", reason: "ผู้ใช้ยืนยันคำขอผ่านแอป (FO)", reference: "DEL-034", note: "เริ่มช่วงรอลบบัญชี 30 วัน" },
-        { id: "AUD-88072", createdAt: "04 Sep 2026 20:10 GMT+7", actor: "Somchai Admin", action: "Suspend User", module: "Users", risk: "High", before: "Active", after: "Suspended", reason: "รายงาน 5 รายงาน พฤติกรรมผู้ขายที่ต้องตรวจสอบ", reference: "U-1002", note: "ระงับชั่วคราวระหว่างตรวจสอบ" },
-        { id: "AUD-88204", createdAt: "02 Sep 2026 08:35 GMT+7", actor: "System (auto)", action: "Lock Admin (failed login)", module: "Settings", risk: "Medium", before: "Active", after: "Locked", reason: "failed login 5 ครั้ง", reference: "ADM-007", note: "รอ unlock หรือครบ 15 นาที" },
-        { id: "AUD-88068", createdAt: "14 Aug 2026 00:00 GMT+7", actor: "System (auto)", action: "ลบบัญชีอัตโนมัติ", module: "Account Deletion", risk: "High", before: "Deletion Requested", after: "Anonymized", reason: "ครบช่วงรอลบบัญชี 30 วัน ระบบลบบัญชีอัตโนมัติ", reference: "DEL-025", note: "personal fields ถูกแทนที่ด้วย anonymous value" },
-        { id: "AUD-88205", createdAt: "21 Aug 2026 09:00 GMT+7", actor: "Somchai Admin", action: "Suspend Admin", module: "Settings", risk: "High", before: "Active", after: "Suspended", reason: "ตรวจสอบการเข้าถึงข้อมูลผู้ใช้นอก scope", reference: "ADM-006", note: "ระงับชั่วคราวระหว่างตรวจสอบ" },
-        { id: "AUD-88051", createdAt: "09 Aug 2026 00:00 GMT+7", actor: "System (auto)", action: "ลบบัญชีอัตโนมัติ", module: "Account Deletion", risk: "High", before: "Deletion Requested", after: "Anonymized", reason: "ครบช่วงรอลบบัญชี 30 วัน ระบบลบบัญชีอัตโนมัติ", reference: "DEL-026", note: "personal fields ถูกแทนที่ด้วย anonymous value" },
-        { id: "AUD-88206", createdAt: "20 Jun 2026 10:00 GMT+7", actor: "Somchai Admin", action: "Archive Admin", module: "Settings", risk: "Medium", before: "Active", after: "Archived", reason: "ออกจากทีม", reference: "ADM-009", note: "เก็บ audit history ตาม retention" },
-        { id: "AUD-88208", createdAt: "12 Apr 2026 14:00 GMT+7", actor: "Somchai Admin", action: "Invite Admin", module: "Settings", risk: "Medium", before: "-", after: "Invited", reason: "เชิญ Moderator", reference: "ADM-007", note: "เชิญเข้าทีม moderation" },
-        { id: "AUD-88207", createdAt: "01 Apr 2026 09:00 GMT+7", actor: "Somchai Admin", action: "Invite Admin", module: "Settings", risk: "Medium", before: "-", after: "Invited", reason: "เชิญ Support Agent", reference: "ADM-006", note: "เชิญเข้าทีม support" },
-        { id: "AUD-88212", createdAt: "05 Mar 2026 11:00 GMT+7", actor: "Somchai Admin", action: "Invite Admin", module: "Settings", risk: "Medium", before: "-", after: "Invited", reason: "เชิญ Content Editor", reference: "ADM-005", note: "เชิญเข้าทีม content" },
-        { id: "AUD-88211", createdAt: "20 Feb 2026 08:15 GMT+7", actor: "Somchai Admin", action: "Invite Admin", module: "Settings", risk: "Medium", before: "-", after: "Invited", reason: "เชิญ Content Publisher", reference: "ADM-004", note: "เชิญเข้าทีม content" },
-        { id: "AUD-88210", createdAt: "10 Feb 2026 13:00 GMT+7", actor: "Somchai Admin", action: "Invite Admin", module: "Settings", risk: "Medium", before: "-", after: "Invited", reason: "เชิญ Moderator", reference: "ADM-003", note: "เชิญเข้าทีม moderation" },
-        { id: "AUD-88209", createdAt: "15 Jan 2026 10:30 GMT+7", actor: "Somchai Admin", action: "Invite Admin", module: "Settings", risk: "Medium", before: "-", after: "Invited", reason: "เชิญ Super Admin", reference: "ADM-002", note: "เชิญเข้าทีม admin" },
-        { id: "AUD-88215", createdAt: "10 May 2025 09:00 GMT+7", actor: "Somchai Admin", action: "Invite Admin", module: "Settings", risk: "Medium", before: "-", after: "Invited", reason: "เชิญ Content Editor", reference: "ADM-009", note: "เชิญเข้าทีม content" }
+        { id: "AUD-88203", createdAt: "08 Sep 2026 16:00 GMT+7", actor: "Somchai Admin", actorType: "Admin", action: "Invite Admin", module: "Settings", risk: "Medium", before: "-", after: "Invited", reason: "เชิญ Super Admin ใหม่", reference: "ADM-008", note: "รอผู้รับยืนยันอีเมลและตั้ง password", result: "Success" },
+        { id: "AUD-88202", createdAt: "08 Sep 2026 15:00 GMT+7", actor: "ผู้ดูแลระบบ", actorType: "Admin", action: "เข้าสู่ระบบ Back Office", module: "Settings", risk: "Low", before: "-", after: "Active Session", reason: "", reference: "ADM-010", note: "ยืนยันตัวตนด้วย Email OTP สำเร็จ", result: "Success" },
+        { id: "AUD-88201", createdAt: "08 Sep 2026 14:22 GMT+7", actor: "Somchai Admin", actorType: "Admin", action: "Force Hide Asset", module: "Asset", risk: "High", before: "Sale", after: "Hide", reason: "รายงานเนื้อหาไม่เหมาะสม 3 รายงาน", reference: "AST-8831", note: "ตรวจ reason และ FO sync event", result: "Success" },
+        { id: "AUD-88198", createdAt: "08 Sep 2026 11:05 GMT+7", actor: "อรนุช แก้วใส", actorType: "Admin", action: "ปฏิเสธคืนบัญชี", module: "Account Deletion", risk: "High", before: "Deletion Requested", after: "Deletion Requested", reason: "พฤติกรรมละเมิดซ้ำ ไม่สมควรคืนบัญชี", reference: "DEL-028", note: "มีรายงานร้ายแรง 8 รายงาน", result: "Success" },
+        { id: "AUD-88195", createdAt: "08 Sep 2026 09:15 GMT+7", actor: "System (auto)", actorType: "System", action: "ขอลบบัญชี", module: "Account Deletion", risk: "Medium", before: "Active", after: "Deletion Requested", reason: "ผู้ใช้ยืนยันคำขอผ่านแอป (FO)", reference: "DEL-033", note: "เริ่มช่วงรอลบบัญชี 30 วัน", result: "Success" },
+        { id: "AUD-88172", createdAt: "07 Sep 2026 16:30 GMT+7", actor: "Orn Admin", actorType: "Admin", action: "Publish Article", module: "Content", risk: "Medium", before: "Draft", after: "Scheduled", reason: "ตั้งเวลาเผยแพร่ 10 Jul 2026 19:00", reference: "ART-044", note: "ตรวจ timestamp Asia/Bangkok", result: "Success" },
+        { id: "AUD-88168", createdAt: "07 Sep 2026 10:15 GMT+7", actor: "มะลิ จันทร์ดี", actorType: "Admin", action: "คืนบัญชี", module: "Account Deletion", risk: "High", before: "Deletion Requested", after: "Active", reason: "ผู้ใช้ติดต่อ support และยืนยันตัวตนแล้ว", reference: "DEL-031", note: "คืนบัญชีในช่วงรอลบบัญชี", result: "Success" },
+        { id: "AUD-88120", createdAt: "06 Sep 2026 18:44 GMT+7", actor: "Somchai Admin", actorType: "Admin", action: "Export User CSV", module: "Users", risk: "High", before: "-", after: "Exported", reason: "Export ข้อมูลผู้ใช้สำหรับ compliance review", reference: "RPT-USER", note: "Export มี sensitive-data masking", result: "Success" },
+        { id: "AUD-88115", createdAt: "06 Sep 2026 11:20 GMT+7", actor: "System (auto)", actorType: "System", action: "ตรวจเงื่อนไขก่อนลบบัญชี", module: "Account Deletion", risk: "Medium", before: "Deletion Requested", after: "Deletion Requested", reason: "ตรวจเงื่อนไขก่อนลบบัญชีระหว่างช่วงรอลบบัญชี", reference: "DEL-035", note: "ยังมี dependency ที่ต้องตรวจสอบ", result: "Partial" },
+        { id: "AUD-88098", createdAt: "06 Sep 2026 09:00 GMT+7", actor: "กิตติ Content", actorType: "Admin", action: "ปิดรายงานไม่พบการละเมิด", module: "Reported Comments", risk: "Low", before: "In Review", after: "Closed", reason: "ตรวจหลักฐานแล้วไม่พบการละเมิด", reference: "RCO-690", note: "ปิดรายงานโดยไม่เปลี่ยน FO visibility", result: "Success" },
+        { id: "AUD-88085", createdAt: "05 Sep 2026 14:22 GMT+7", actor: "System (auto)", actorType: "System", action: "ขอลบบัญชี", module: "Account Deletion", risk: "Medium", before: "Active", after: "Deletion Requested", reason: "ผู้ใช้ยืนยันคำขอผ่านแอป (FO)", reference: "DEL-034", note: "เริ่มช่วงรอลบบัญชี 30 วัน", result: "Success" },
+        { id: "AUD-88072", createdAt: "04 Sep 2026 20:10 GMT+7", actor: "Somchai Admin", actorType: "Admin", action: "Suspend User", module: "Users", risk: "High", before: "Active", after: "Suspended", reason: "รายงาน 5 รายงาน พฤติกรรมผู้ขายที่ต้องตรวจสอบ", reference: "U-1002", note: "ระงับชั่วคราวระหว่างตรวจสอบ", result: "Success" },
+        { id: "AUD-88204", createdAt: "02 Sep 2026 08:35 GMT+7", actor: "System (auto)", actorType: "System", action: "Lock Admin (failed login)", module: "Settings", risk: "Medium", before: "Active", after: "Locked", reason: "failed login 5 ครั้ง", reference: "ADM-007", note: "รอ unlock หรือครบ 15 นาที", result: "Success" },
+        { id: "AUD-88068", createdAt: "14 Aug 2026 00:00 GMT+7", actor: "System (auto)", actorType: "System", action: "ลบบัญชีอัตโนมัติ", module: "Account Deletion", risk: "High", before: "Deletion Requested", after: "Anonymized", reason: "ครบช่วงรอลบบัญชี 30 วัน ระบบลบบัญชีอัตโนมัติ", reference: "DEL-025", note: "personal fields ถูกแทนที่ด้วย anonymous value", result: "Success" },
+        { id: "AUD-88205", createdAt: "21 Aug 2026 09:00 GMT+7", actor: "Somchai Admin", actorType: "Admin", action: "Suspend Admin", module: "Settings", risk: "High", before: "Active", after: "Suspended", reason: "ตรวจสอบการเข้าถึงข้อมูลผู้ใช้นอก scope", reference: "ADM-006", note: "ระงับชั่วคราวระหว่างตรวจสอบ", result: "Success" },
+        { id: "AUD-88051", createdAt: "09 Aug 2026 00:00 GMT+7", actor: "System (auto)", actorType: "System", action: "ลบบัญชีอัตโนมัติ", module: "Account Deletion", risk: "High", before: "Deletion Requested", after: "Anonymized", reason: "ครบช่วงรอลบบัญชี 30 วัน ระบบลบบัญชีอัตโนมัติ", reference: "DEL-026", note: "personal fields ถูกแทนที่ด้วย anonymous value", result: "Success" },
+        { id: "AUD-88206", createdAt: "20 Jun 2026 10:00 GMT+7", actor: "Somchai Admin", actorType: "Admin", action: "Archive Admin", module: "Settings", risk: "Medium", before: "Active", after: "Archived", reason: "ออกจากทีม", reference: "ADM-009", note: "เก็บ audit history ตาม retention", result: "Success" },
+        { id: "AUD-88208", createdAt: "12 Apr 2026 14:00 GMT+7", actor: "Somchai Admin", actorType: "Admin", action: "Invite Admin", module: "Settings", risk: "Medium", before: "-", after: "Invited", reason: "เชิญ Moderator", reference: "ADM-007", note: "เชิญเข้าทีม moderation", result: "Success" },
+        { id: "AUD-88207", createdAt: "01 Apr 2026 09:00 GMT+7", actor: "Somchai Admin", actorType: "Admin", action: "Invite Admin", module: "Settings", risk: "Medium", before: "-", after: "Invited", reason: "เชิญ Support Agent", reference: "ADM-006", note: "เชิญเข้าทีม support", result: "Success" },
+        { id: "AUD-88212", createdAt: "05 Mar 2026 11:00 GMT+7", actor: "Somchai Admin", actorType: "Admin", action: "Invite Admin", module: "Settings", risk: "Medium", before: "-", after: "Invited", reason: "เชิญ Content Editor", reference: "ADM-005", note: "เชิญเข้าทีม content", result: "Success" },
+        { id: "AUD-88211", createdAt: "20 Feb 2026 08:15 GMT+7", actor: "Somchai Admin", actorType: "Admin", action: "Invite Admin", module: "Settings", risk: "Medium", before: "-", after: "Invited", reason: "เชิญ Content Publisher", reference: "ADM-004", note: "เชิญเข้าทีม content", result: "Success" },
+        { id: "AUD-88210", createdAt: "10 Feb 2026 13:00 GMT+7", actor: "Somchai Admin", actorType: "Admin", action: "Invite Admin", module: "Settings", risk: "Medium", before: "-", after: "Invited", reason: "เชิญ Moderator", reference: "ADM-003", note: "เชิญเข้าทีม moderation", result: "Success" },
+        { id: "AUD-88209", createdAt: "15 Jan 2026 10:30 GMT+7", actor: "Somchai Admin", actorType: "Admin", action: "Invite Admin", module: "Settings", risk: "Medium", before: "-", after: "Invited", reason: "เชิญ Super Admin", reference: "ADM-002", note: "เชิญเข้าทีม admin", result: "Success" },
+        { id: "AUD-88215", createdAt: "10 May 2025 09:00 GMT+7", actor: "Somchai Admin", actorType: "Admin", action: "Invite Admin", module: "Settings", risk: "Medium", before: "-", after: "Invited", reason: "เชิญ Content Editor", reference: "ADM-009", note: "เชิญเข้าทีม content", result: "Success" }
       ]
     };
 
@@ -18635,7 +18801,7 @@
       "market-sync": { searchId: "market-search", filterIds: ["market-status-filter"] },
       "market-queue": { searchId: "market-search", filterIds: ["market-status-filter", "market-brand-filter"] },
       "deletion-list": { searchId: "deletion-search", filterIds: ["deletion-status-filter", "deletion-grace-filter", "deletion-sort"] },
-      "audit-log": { searchId: "audit-search", filterIds: ["audit-module-filter", "audit-risk-filter", "audit-sort"] },
+      "audit-log": { searchId: "audit-search", filterIds: ["audit-module-filter", "audit-risk-filter", "audit-sort"], dateIds: ["audit-date-from", "audit-date-to"] },
       // NTF-RSTR-003: Delivery Logs (Settings > Delivery Logs)
       "delivery-log-list": { searchId: "delivery-search", filterIds: ["delivery-status-filter", "delivery-channel-filter", "delivery-sort"] },
       // ADM-PTO-001: Admin Accounts (Settings > Admin Accounts)
@@ -19192,6 +19358,8 @@
       if (activeModule === "option-master") return activeOptionGroup ? "option-detail" : "option-group-list";
       if (activeModule === "watch-alerts") return activeSub === "Watch Alert List" || activeSub === "Alert List" ? "watch-alert-list" : null;
       if (activeModule === "deletions") return "deletion-list";
+      // AL-004: Audit Log (Settings > Audit Log / module audit)
+      if (activeModule === "audit" || (activeModule === "settings" && activeSub === "Audit Log")) return "audit-log";
       // NTF-RSTR-003: Delivery Logs (Settings > Delivery Logs)
       if (activeModule === "settings" && activeSub === "Delivery Logs") return "delivery-log-list";
       // ADM-PTO-001: Admin Accounts (Settings > Admin Accounts)
@@ -22312,6 +22480,12 @@
           <div class="user-advanced-filter">${customSelect("audit-module-filter", "Filter module", filterOptions("auditModule"))}</div>
           <div class="user-advanced-filter">${customSelect("audit-risk-filter", "Filter risk level", filterOptions("auditRisk"))}</div>
           <div class="user-advanced-filter">${customSelect("audit-sort", "Sort audit log", filterOptions("auditSort"), "latest")}</div>
+          <div class="user-advanced-filter audit-date-range">
+            <span class="audit-date-label">Date:</span>
+            <input type="date" id="audit-date-from" aria-label="จากวันที่" inputmode="none" autocomplete="off" data-picker-only />
+            <span class="audit-date-sep">—</span>
+            <input type="date" id="audit-date-to" aria-label="ถึงวันที่" inputmode="none" autocomplete="off" data-picker-only />
+          </div>
           ${resetFilterButton("data-audit-reset")}
         </div>
       `;
@@ -22320,7 +22494,22 @@
       document.querySelector("#cards").innerHTML = "";
       document.querySelector("#detail").innerHTML = "";
       restoreListFilterState("audit-log");
+      syncAuditDateRangeBounds();
       renderAuditLogRows();
+    }
+
+    // AL-004: sync min/max ข้ามกัน + clamp ให้ช่วงวันที่ valid เสมอ (from ≤ to)
+    // - to.min = from → picker ปิดวันก่อน from ให้เลือกไม่ได้
+    // - from.max = to → picker ปิดวันหลัง to ให้เลือกไม่ได้
+    // - clamp (fallback สำหรับ browser ที่ไม่ enforce min/max): from > to → to = from, to < from → from = to
+    function syncAuditDateRangeBounds(changed) {
+      const from = document.querySelector("#audit-date-from");
+      const to = document.querySelector("#audit-date-to");
+      if (!from || !to) return;
+      if (changed === from && from.value && to.value && to.value < from.value) to.value = from.value;
+      if (changed === to && to.value && from.value && from.value > to.value) from.value = to.value;
+      to.min = from.value || "";
+      from.max = to.value || "";
     }
 
     function renderAuditLogRows() {
@@ -22328,10 +22517,23 @@
       const moduleFilter = document.querySelector("#audit-module-filter")?.value || "";
       const riskFilter = document.querySelector("#audit-risk-filter")?.value || "";
       const sort = document.querySelector("#audit-sort")?.value || "latest";
+      // AL-004: date range filter — เทียบใน rank space เดียวกับ parseBangkokAuditTime (wall clock)
+      const auditDayTs = (s, end) => {
+        if (!s) return null;
+        const [y, m, d] = s.split("-").map(Number);
+        return Date.UTC(y, m - 1, d, end ? 23 : 0, end ? 59 : 0, end ? 59 : 0);
+      };
+      const dateFromTs = auditDayTs(document.querySelector("#audit-date-from")?.value || "", false);
+      const dateToTs = auditDayTs(document.querySelector("#audit-date-to")?.value || "", true);
       const sorted = [...auditLogData.events].filter(e => {
-        return (!q || getAuditLogSearchText(e).includes(q))
-          && (!moduleFilter || e.module === moduleFilter)
-          && (!riskFilter || e.risk === riskFilter);
+        if (q && !getAuditLogSearchText(e).includes(q)) return false;
+        if (moduleFilter && e.module !== moduleFilter) return false;
+        if (riskFilter && e.risk !== riskFilter) return false;
+        if (dateFromTs !== null || dateToTs !== null) {
+          const ts = getAuditLogSortRank(e);
+          if (!ts || (dateFromTs !== null && ts < dateFromTs) || (dateToTs !== null && ts > dateToTs)) return false;
+        }
+        return true;
       }).sort((a, b) => {
         if (sort === "oldest") return getAuditLogSortRank(a) - getAuditLogSortRank(b);
         return getAuditLogSortRank(b) - getAuditLogSortRank(a);
@@ -22544,8 +22746,11 @@
       showUserActionModal(true);
     }
 
-    // AL-001: read-only Audit Log detail modal — เปิดจาก row click ใน Audit Log list
-    // pattern: option-audit-modal (read-only) — user-action-head + option-confirm-row list, ไม่มี footer
+    // AL-001 + AL-002: read-only Audit Log detail — sidebar drawer ขวา เปิดจาก row click ใน Audit Log list
+    // pattern: market-reference-drawer — user-action-head sticky + section-based layout, ไม่มี footer
+    // sections (แสดงแบบ conditional — ซ่อน field ว่างตาม AL-002): Event Summary, Before/After, Reason/Note
+    // sections อื่นใน spec 08 section 10 (Actor/Target context, FO impact, Related events, metadata)
+    // ยังไม่มี field ใน mock data — เพิ่มเมื่อ schema ขยาย
     function openAuditLogDetailModal(entry) {
       if (!entry) return;
       const modal = document.querySelector("#user-action-modal");
@@ -22557,29 +22762,89 @@
       const confirmRow = (label, value) => `
         <div class="option-confirm-row"><span class="option-confirm-label">${label}</span><span class="option-confirm-value">${value}</span></div>
       `;
-      const beforeAfterCell = (e) => {
-        if (e.before === "-" && e.after === "-") return `<span class="muted">-</span>`;
-        if (e.before === e.after) return `<span class="audit-no-change">${e.after}</span>`;
-        return `<span class="audit-before">${e.before}</span> <span class="audit-arrow">→</span> <span class="audit-after">${e.after}</span>`;
+      // แสดง row เฉพาะเมื่อมีข้อมูล (ไม่ใช่ "-", "", null, undefined)
+      const rowIfHasValue = (label, value) => {
+        const v = value == null ? "" : String(value).trim();
+        if (!v || v === "-") return "";
+        return confirmRow(label, value);
+      };
+      const resultPill = (result) => {
+        const cls = result === "Success" ? "success" : result === "Partial" ? "partial" : "failed";
+        return `<span class="audit-detail-result-pill ${cls}"><span class="audit-detail-dot"></span>${result || "Success"}</span>`;
+      };
+      // before/after diff box (modal-scoped)
+      const diffBox = (e) => {
+        if (e.before === "-" && e.after === "-") {
+          return `<div class="audit-detail-diff muted">
+            <div class="audit-detail-diff-cell"><span class="audit-detail-diff-label">Before</span><span class="audit-detail-diff-value">-</span></div>
+            <span class="audit-detail-diff-arrow">→</span>
+            <div class="audit-detail-diff-cell"><span class="audit-detail-diff-label">After</span><span class="audit-detail-diff-value">-</span></div>
+          </div>`;
+        }
+        if (e.before === e.after) {
+          return `<div class="audit-detail-diff">
+            <div class="audit-detail-diff-cell"><span class="audit-detail-diff-label">Before</span><span class="audit-detail-diff-value no-change">${e.after}</span></div>
+            <span class="audit-detail-diff-arrow">=</span>
+            <div class="audit-detail-diff-cell"><span class="audit-detail-diff-label">After</span><span class="audit-detail-diff-value no-change">${e.after}</span></div>
+          </div>`;
+        }
+        return `<div class="audit-detail-diff">
+          <div class="audit-detail-diff-cell"><span class="audit-detail-diff-label">Before</span><span class="audit-detail-diff-value before">${e.before}</span></div>
+          <span class="audit-detail-diff-arrow">→</span>
+          <div class="audit-detail-diff-cell"><span class="audit-detail-diff-label">After</span><span class="audit-detail-diff-value after">${e.after}</span></div>
+        </div>`;
       };
       modalBody.innerHTML = `
-        <div class="user-action-head">
-          <div>
-            <h2 id="user-action-modal-title">${entry.id}</h2>
-            <p>${entry.action}</p>
+        <div class="audit-detail-drawer-content">
+          <div class="user-action-head">
+            <div>
+              <span class="audit-detail-eyebrow">Audit Log Detail</span>
+              <h2 id="user-action-modal-title">${entry.id}</h2>
+              <p>${entry.action}</p>
+            </div>
+            <button class="btn user-action-close" type="button" data-user-action-modal-close aria-label="ปิด">${iconSvg.close}</button>
           </div>
-          <button class="btn user-action-close" type="button" data-user-action-modal-close aria-label="ปิด">${iconSvg.close}</button>
-        </div>
-        <div class="option-audit-summary audit-detail-summary">
-          ${confirmRow("Date / Time", formatAuditDisplayTime(entry.createdAt))}
-          ${confirmRow("Actor", entry.actor)}
-          ${confirmRow("Action", entry.action)}
-          ${confirmRow("Module", auditModuleBadge(entry.module))}
-          ${confirmRow("Risk", auditRiskPill(entry.risk))}
-          ${confirmRow("Before → After", beforeAfterCell(entry))}
-          ${confirmRow("Reference", entry.reference || "-")}
-          ${confirmRow("Reason", entry.reason || "-")}
-          ${confirmRow("Note", entry.note || "-")}
+          <div class="audit-detail-sections">
+            <div class="audit-detail-section">
+              <div class="audit-detail-section-title">Event Summary</div>
+              ${confirmRow("Date / Time", formatAuditDisplayTime(entry.createdAt))}
+              ${confirmRow("Action", entry.action)}
+              <div class="option-confirm-row">
+                <span class="option-confirm-label">Tags</span>
+                <span class="option-confirm-value audit-detail-tags">
+                  ${auditModuleBadge(entry.module)}
+                  ${auditRiskPill(entry.risk)}
+                  ${resultPill(entry.result)}
+                </span>
+              </div>
+              ${confirmRow("Actor", entry.actor)}
+              ${rowIfHasValue("Actor Type", entry.actorType)}
+              ${(() => {
+                const v = entry.reference == null ? "" : String(entry.reference).trim();
+                if (!v || v === "-") return "";
+                return confirmRow("Reference", `<span class="audit-detail-ref-pill" data-audit-ref="${v}" title="Cross-module jump จะเปิดใช้ใน AL-006/AL-007">${v}</span>`);
+              })()}
+            </div>
+            ${(() => {
+              const noChange = (entry.before === "-" && entry.after === "-") || (entry.before === entry.after);
+              return noChange ? "" : `
+            <div class="audit-detail-section">
+              <div class="audit-detail-section-title">Before / After</div>
+              ${diffBox(entry)}
+            </div>`;
+            })()}
+            ${(() => {
+              const reasonRow = rowIfHasValue("Reason", entry.reason);
+              const noteRow = rowIfHasValue("Note", entry.note);
+              if (!reasonRow && !noteRow) return "";
+              return `
+            <div class="audit-detail-section">
+              <div class="audit-detail-section-title">Reason / Note</div>
+              ${reasonRow}
+              ${noteRow}
+            </div>`;
+            })()}
+          </div>
         </div>
       `;
       showUserActionModal(true);
@@ -24974,11 +25239,16 @@
       if (!modal) return;
       closeRowMenus();
       applyModalHeadingFonts(modal);
-      modal.classList.remove("market-reference-drawer-closing", "market-reference-drawer-open");
+      modal.classList.remove("market-reference-drawer-closing", "market-reference-drawer-open", "audit-log-drawer-closing", "audit-log-drawer-open");
       modal.classList.add("show");
       if (modal.querySelector(".market-reference-drawer")) {
         window.requestAnimationFrame(() => {
           modal.classList.add("market-reference-drawer-open");
+        });
+      }
+      if (modal.querySelector(".audit-log-detail-modal")) {
+        window.requestAnimationFrame(() => {
+          modal.classList.add("audit-log-drawer-open");
         });
       }
       document.body.classList.toggle("asset-action-modal-open", lockMainScroll);
@@ -24989,6 +25259,7 @@
       if (!modal) return;
       const modalCard = modal.querySelector(".user-action-modal");
       const isMarketReferenceDrawer = modalCard?.classList.contains("market-reference-drawer");
+      const isAuditLogDrawer = modalCard?.classList.contains("audit-log-detail-modal");
       if (isMarketReferenceDrawer && !modal.classList.contains("market-reference-drawer-closing")) {
         modal.classList.remove("market-reference-drawer-open");
         modal.classList.add("market-reference-drawer-closing");
@@ -25001,8 +25272,20 @@
         }, 240);
         return;
       }
+      if (isAuditLogDrawer && !modal.classList.contains("audit-log-drawer-closing")) {
+        modal.classList.remove("audit-log-drawer-open");
+        modal.classList.add("audit-log-drawer-closing");
+        document.body.classList.remove("asset-action-modal-open");
+        window.setTimeout(() => {
+          if (!modal.classList.contains("audit-log-drawer-closing")) return;
+          modal.classList.remove("show", "audit-log-drawer-closing");
+          modalCard.classList.remove("audit-log-detail-modal");
+          document.querySelector("#user-action-modal-body").innerHTML = "";
+        }, 240);
+        return;
+      }
       modal.classList.remove("show");
-      modal.classList.remove("market-reference-drawer-open", "market-reference-drawer-closing");
+      modal.classList.remove("market-reference-drawer-open", "market-reference-drawer-closing", "audit-log-drawer-open", "audit-log-drawer-closing");
       modalCard?.classList.remove("article-preview-modal", "article-editor-confirm-modal", "category-editor-modal", "category-order-modal", "market-editor-modal", "market-reference-drawer", "board-report-phone-preview-modal", "option-editor-modal", "option-order-modal", "option-audit-modal", "policy-version-view-modal", "policy-publish-confirm-modal", "policy-restore-confirm-modal", "support-center-preview-modal", "audit-log-detail-modal");
       document.body.classList.remove("asset-action-modal-open");
       document.querySelector("#user-action-modal-body").innerHTML = "";
@@ -40915,6 +41198,14 @@
       }
       // DEL-PTO-004: Audit Log search
       if (event.target.matches("#audit-search")) {
+        auditLogPage = 1;
+        saveCurrentListFilterState();
+        renderAuditLogRows();
+        return;
+      }
+      // AL-004: Audit Log — date range inputs
+      if (event.target.matches("#audit-date-from, #audit-date-to")) {
+        syncAuditDateRangeBounds(event.target);
         auditLogPage = 1;
         saveCurrentListFilterState();
         renderAuditLogRows();
