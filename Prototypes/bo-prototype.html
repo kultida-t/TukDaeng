@@ -27438,10 +27438,10 @@
           <div class="user-card-tags">
             ${roleTypeChip(role)}
             ${roleStatusPill(role.status)}
+            <span class="pill slate">${admins} Admins</span>
             <div class="user-card-meta">
               <div class="user-card-meta-item comment-field-meta"><span>Role Key</span><strong>${esc(role.roleKey)}</strong></div>
-              <div class="user-card-meta-item comment-field-meta"><span>Admins</span><strong>${admins}</strong></div>
-              <div class="user-card-meta-item comment-field-meta"><span>Last Updated</span><strong>${role.updatedAt} · ${esc(role.updatedBy)}</strong></div>
+              <div class="user-card-meta-item comment-field-meta"><span>Last Updated</span><strong>${role.updatedAt}</strong></div>
             </div>
           </div>
           <div data-label="Role Key"><div class="main-text"><span class="role-key-text">${esc(role.roleKey)}</span></div></div>
