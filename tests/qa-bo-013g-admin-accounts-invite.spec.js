@@ -82,7 +82,7 @@ async function clickCancel(page) {
 }
 
 // helper: กรอกฟอร์ม invite ครบถ้วน (ใช้ค่าที่ไม่ซ้ำ)
-async function fillValidForm(page, { name = "ทดสอบ ระบบ", email = "test-invite@tukdaeng.example", role = "Moderator", note = "" } = {}) {
+async function fillValidForm(page, { name = "ทดสอบ ระบบ", email = "test-invite@tukdaeng.example", role = "Trust & Safety Moderator", note = "" } = {}) {
   await page.locator("#admin-account-invite-name").fill(name);
   await page.locator("#admin-account-invite-email").fill(email);
   await pickRole(page, role);
@@ -132,20 +132,23 @@ test.describe("QA-BO-013g: Settings > Admin Accounts — Invite Admin modal", ()
     await clickCancel(page);
   });
 
-  test("3. Role template = custom select มี placeholder 'เลือก role template' + 5 ตัวเลือก", async ({ page }) => {
+  test("3. Role template = custom select มี placeholder 'เลือก role template' + 8 ตัวเลือก", async ({ page }) => {
     await openInviteModal(page);
     await page.locator(`div[data-custom-select]:has(> #admin-account-invite-role) [data-custom-select-trigger]`).click();
     await page.waitForTimeout(150);
     const options = page.locator(`div[data-custom-select]:has(> #admin-account-invite-role) [data-custom-select-option]`);
-    await expect(options).toHaveCount(6);
+    await expect(options).toHaveCount(9);
     const texts = await options.allTextContents();
     expect(texts.map(t => t.trim())).toEqual([
       "เลือก role template",
       "Super Admin",
+      "Admin Manager",
+      "Operations Manager",
+      "Support Agent",
+      "Trust & Safety Moderator",
+      "Asset Operations",
       "Content Editor",
-      "Content Publisher",
-      "Moderator",
-      "Support Agent"
+      "Content Publisher"
     ]);
     // placeholder "" เป็นค่า default → trigger แสดง 'เลือก role template' + hidden input ว่าง
     expect(await page.locator("#admin-account-invite-role").inputValue()).toBe("");
@@ -182,7 +185,7 @@ test.describe("QA-BO-013g: Settings > Admin Accounts — Invite Admin modal", ()
     await openInviteModal(page);
     // กรอก email + role แต่ไม่กรอก name → confirm → name error เดียว
     await page.locator("#admin-account-invite-email").fill("no-name@tukdaeng.example");
-    await pickRole(page, "Moderator");
+    await pickRole(page, "Trust & Safety Moderator");
     await clickConfirm(page);
     const nameError = page.locator("[data-admin-invite-name-error]");
     await expect(nameError).toHaveText("กรุณาระบุชื่อ-นามสกุล");
@@ -198,7 +201,7 @@ test.describe("QA-BO-013g: Settings > Admin Accounts — Invite Admin modal", ()
     await openInviteModal(page);
     // กรอก name + role แต่ไม่กรอก email → confirm → email error เดียว
     await page.locator("#admin-account-invite-name").fill("ไม่มีอีเมล");
-    await pickRole(page, "Moderator");
+    await pickRole(page, "Trust & Safety Moderator");
     await clickConfirm(page);
     const emailError = page.locator("[data-admin-invite-email-error]");
     await expect(emailError).toHaveText("กรุณาระบุอีเมล");
@@ -213,7 +216,7 @@ test.describe("QA-BO-013g: Settings > Admin Accounts — Invite Admin modal", ()
   test("8. validation: อีเมลผิด format → error 'รูปแบบอีเมลไม่ถูกต้อง'", async ({ page }) => {
     await openInviteModal(page);
     await page.locator("#admin-account-invite-name").fill("ฟอร์แมตผิด");
-    await pickRole(page, "Moderator");
+    await pickRole(page, "Trust & Safety Moderator");
     // อีเมลผิด format หลายกรณี
     for (const badEmail of ["abc", "a@b", "a@b."]) {
       await page.locator("#admin-account-invite-email").fill(badEmail);
@@ -229,7 +232,7 @@ test.describe("QA-BO-013g: Settings > Admin Accounts — Invite Admin modal", ()
   test("9. validation: อีเมลซ้ำกับที่มี → error 'อีเมลนี้มีอยู่ในระบบแล้ว — ต้องใช้อีเมลอื่น'", async ({ page }) => {
     await openInviteModal(page);
     await page.locator("#admin-account-invite-name").fill("ซ้ำอีเมล");
-    await pickRole(page, "Moderator");
+    await pickRole(page, "Trust & Safety Moderator");
     // อีเมลซ้ำกับ ADM-001 (somchai@tukdaeng.example)
     await page.locator("#admin-account-invite-email").fill("somchai@tukdaeng.example");
     await clickConfirm(page);
@@ -330,7 +333,7 @@ test.describe("QA-BO-013g: Settings > Admin Accounts — Invite Admin modal", ()
 
   test("14. confirm สำเร็จ → account ใหม่ปรากฏใน list (sort latest บนสุด ใต้ master)", async ({ page }) => {
     await openInviteModal(page);
-    await fillValidForm(page, { name: "ลิสต์ แรนเดอร์", email: "list-render@tukdaeng.example", role: "Moderator" });
+    await fillValidForm(page, { name: "ลิสต์ แรนเดอร์", email: "list-render@tukdaeng.example", role: "Trust & Safety Moderator" });
     await clickConfirm(page);
 
     // อยู่ใน list mode
@@ -356,7 +359,7 @@ test.describe("QA-BO-013g: Settings > Admin Accounts — Invite Admin modal", ()
     await page.locator("[data-admin-account-invite-open]").click();
     await page.waitForTimeout(300);
     // กรอกข้อมูลบางส่วนแล้ว cancel — ต้องไม่มีผล
-    await fillValidForm(page, { name: "ยกเลิก ทดสอบ", email: "cancel-test@tukdaeng.example", role: "Moderator" });
+    await fillValidForm(page, { name: "ยกเลิก ทดสอบ", email: "cancel-test@tukdaeng.example", role: "Trust & Safety Moderator" });
     await clickCancel(page);
     await expect(page.locator("#user-action-modal")).not.toHaveClass(/show/);
     expect(await accountCount(page)).toBe(beforeCount);
@@ -382,7 +385,7 @@ test.describe("QA-BO-013g: Settings > Admin Accounts — Invite Admin modal", ()
     await openInviteModal(page);
     await expect(page.locator("#user-action-modal")).toHaveClass(/show/);
     await expect(page.locator("#user-action-modal-title")).toHaveText("Add admin");
-    await fillValidForm(page, { name: "มือถือ ทดสอบ", email: "mobile@tukdaeng.example", role: "Moderator" });
+    await fillValidForm(page, { name: "มือถือ ทดสอบ", email: "mobile@tukdaeng.example", role: "Trust & Safety Moderator" });
     await clickConfirm(page);
     expect(await accountCount(page)).toBe(11);
     await expect(page.locator("#success-toast")).toBeVisible();

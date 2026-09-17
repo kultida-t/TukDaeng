@@ -137,7 +137,7 @@ test.describe("QA-BO-013f: Settings > Admin Accounts — Change Role modal", () 
     await expect(page.locator("#user-action-modal-title")).toHaveText("Change Role");
     await clickCancel(page);
 
-    // (b) จาก detail — ADM-003 (Active, Moderator)
+    // (b) จาก detail — ADM-003 (Active, Trust & Safety Moderator)
     await openChangeRoleFromDetail(page, "ADM-003");
     await expect(page.locator("#user-action-modal")).toHaveClass(/show/);
     await expect(page.locator("#user-action-modal-title")).toHaveText("Change Role");
@@ -150,7 +150,7 @@ test.describe("QA-BO-013f: Settings > Admin Accounts — Change Role modal", () 
   });
 
   test("2. modal แสดง title + summary + target (name, id, email, status pill) ถูกต้อง", async ({ page }) => {
-    // ADM-003 — Active, Moderator
+    // ADM-003 — Active, Trust & Safety Moderator
     await openChangeRoleModalFromList(page, "ADM-003");
     const modal = page.locator("#user-action-modal");
     await expect(modal.locator("#user-action-modal-title")).toHaveText("Change Role");
@@ -187,14 +187,23 @@ test.describe("QA-BO-013f: Settings > Admin Accounts — Change Role modal", () 
   });
 
   test("4. Role ใหม่ = custom select มี placeholder 'เลือก role ใหม่' + ตัวเลือกทุก role ยกเว้น role ปัจจุบัน", async ({ page }) => {
-    // ADM-001 (Super Admin) → options = placeholder + Content Editor, Content Publisher, Moderator, Support Agent
+    // ADM-001 (Super Admin) → options = placeholder + ทุก role ยกเว้น Super Admin
     await openChangeRoleModalFromList(page, "ADM-001");
     await page.locator(`div[data-custom-select]:has(> #admin-account-change-role) [data-custom-select-trigger]`).click();
     await page.waitForTimeout(150);
     const options = page.locator(`div[data-custom-select]:has(> #admin-account-change-role) [data-custom-select-option]`);
-    await expect(options).toHaveCount(5);
+    await expect(options).toHaveCount(8);
     const texts = await options.allTextContents();
-    expect(texts.map(t => t.trim())).toEqual(["เลือก role ใหม่", "Content Editor", "Content Publisher", "Moderator", "Support Agent"]);
+    expect(texts.map(t => t.trim())).toEqual([
+      "เลือก role ใหม่",
+      "Admin Manager",
+      "Operations Manager",
+      "Support Agent",
+      "Trust & Safety Moderator",
+      "Asset Operations",
+      "Content Editor",
+      "Content Publisher"
+    ]);
     expect(texts.map(t => t.trim())).not.toContain("Super Admin");
     // placeholder "" เป็นค่า default → trigger แสดง 'เลือก role ใหม่' + hidden input ว่าง (ตาม pattern action modal)
     expect(await page.locator("#admin-account-change-role").inputValue()).toBe("");
@@ -205,15 +214,24 @@ test.describe("QA-BO-013f: Settings > Admin Accounts — Change Role modal", () 
     await page.waitForTimeout(150);
     await clickCancel(page);
 
-    // ADM-003 (Moderator) → options = placeholder + Super Admin, Content Editor, Content Publisher, Support Agent
+    // ADM-003 (Trust & Safety Moderator) → options = placeholder + ทุก role ยกเว้น role ปัจจุบัน
     await openChangeRoleModalFromList(page, "ADM-003");
     await page.locator(`div[data-custom-select]:has(> #admin-account-change-role) [data-custom-select-trigger]`).click();
     await page.waitForTimeout(150);
     const options2 = page.locator(`div[data-custom-select]:has(> #admin-account-change-role) [data-custom-select-option]`);
-    await expect(options2).toHaveCount(5);
+    await expect(options2).toHaveCount(8);
     const texts2 = await options2.allTextContents();
-    expect(texts2.map(t => t.trim())).toEqual(["เลือก role ใหม่", "Super Admin", "Content Editor", "Content Publisher", "Support Agent"]);
-    expect(texts2.map(t => t.trim())).not.toContain("Moderator");
+    expect(texts2.map(t => t.trim())).toEqual([
+      "เลือก role ใหม่",
+      "Super Admin",
+      "Admin Manager",
+      "Operations Manager",
+      "Support Agent",
+      "Asset Operations",
+      "Content Editor",
+      "Content Publisher"
+    ]);
+    expect(texts2.map(t => t.trim())).not.toContain("Trust & Safety Moderator");
     await page.locator(`div[data-custom-select]:has(> #admin-account-change-role) [data-custom-select-trigger]`).click();
     await page.waitForTimeout(150);
     await clickCancel(page);
@@ -249,10 +267,10 @@ test.describe("QA-BO-013f: Settings > Admin Accounts — Change Role modal", () 
     await expect(note).toBeVisible();
     await expect(note).toHaveAttribute("placeholder", "สรุปเหตุผลและข้อมูลอ้างอิงที่เกี่ยวข้องกับการเปลี่ยน Role");
     // ไม่กรอก note — เลือก role + reason อย่างเดียว → confirm ผ่าน
-    await pickRole(page, "Moderator");
+    await pickRole(page, "Trust & Safety Moderator");
     await pickReason(page, "ย้ายทีม / เปลี่ยนหน้าที่งาน");
     await clickConfirm(page);
-    expect(await accountRole(page, "ADM-002")).toBe("Moderator");
+    expect(await accountRole(page, "ADM-002")).toBe("Trust & Safety Moderator");
     await expect(page.locator("#success-toast")).toBeVisible();
   });
 
@@ -262,9 +280,9 @@ test.describe("QA-BO-013f: Settings > Admin Accounts — Change Role modal", () 
     const diff = page.locator("[data-admin-role-diff]");
     await expect(diff).toHaveAttribute("data-admin-role-from", "Super Admin");
     await expect(diff).toHaveText("Super Admin → —");
-    // เลือก Moderator → diff อัปเดต
-    await pickRole(page, "Moderator");
-    await expect(diff).toHaveText("Super Admin → Moderator");
+    // เลือก Trust & Safety Moderator → diff อัปเดต
+    await pickRole(page, "Trust & Safety Moderator");
+    await expect(diff).toHaveText("Super Admin → Trust & Safety Moderator");
     // เลือก Support Agent → diff อัปเดตอีกครั้ง
     await pickRole(page, "Support Agent");
     await expect(diff).toHaveText("Super Admin → Support Agent");
@@ -284,9 +302,9 @@ test.describe("QA-BO-013f: Settings > Admin Accounts — Change Role modal", () 
     await expect(page.locator("#user-action-modal")).toHaveClass(/show/);
     expect(await accountRole(page, "ADM-001")).toBe("Super Admin");
     // เลือก role แล้ว confirm → ผ่าน role เปลี่ยน audit ใช้ค่าที่เลือก
-    await pickRole(page, "Moderator");
+    await pickRole(page, "Trust & Safety Moderator");
     await clickConfirm(page);
-    expect(await accountRole(page, "ADM-001")).toBe("Moderator");
+    expect(await accountRole(page, "ADM-001")).toBe("Trust & Safety Moderator");
     await expect(page.locator("#success-toast")).toBeVisible();
   });
 
@@ -306,7 +324,7 @@ test.describe("QA-BO-013f: Settings > Admin Accounts — Change Role modal", () 
   test("10. validation: ไม่เลือกเหตุผล → error 'กรุณาระบุเหตุผลการเปลี่ยน Role' + role ไม่เปลี่ยน", async ({ page }) => {
     // เลือก role อย่างเดียว (reason ค้างเป็น placeholder "") → confirm → reason error เดียว
     await openChangeRoleModalFromList(page, "ADM-001");
-    await pickRole(page, "Moderator");
+    await pickRole(page, "Trust & Safety Moderator");
     await clickConfirm(page);
     const reasonError = page.locator("[data-admin-change-role-reason-error]");
     await expect(reasonError).toHaveText("กรุณาระบุเหตุผลการเปลี่ยน Role");
@@ -318,7 +336,7 @@ test.describe("QA-BO-013f: Settings > Admin Accounts — Change Role modal", () 
     // เลือก reason แล้ว confirm → ผ่าน role เปลี่ยน
     await pickReason(page, "ได้รับอนุมัติจากผู้บริหาร");
     await clickConfirm(page);
-    expect(await accountRole(page, "ADM-001")).toBe("Moderator");
+    expect(await accountRole(page, "ADM-001")).toBe("Trust & Safety Moderator");
     await expect(page.locator("#success-toast")).toBeVisible();
   });
 
@@ -335,7 +353,7 @@ test.describe("QA-BO-013f: Settings > Admin Accounts — Change Role modal", () 
   });
 
   test("12. confirm → role เปลี่ยน + lastAction + activity history + audit (Change Admin Role) + toast + re-render", async ({ page }) => {
-    // ADM-003 (Moderator) → Support Agent พร้อม reason + note — จาก list
+    // ADM-003 (Trust & Safety Moderator) → Support Agent พร้อม reason + note — จาก list
     await openChangeRoleModalFromList(page, "ADM-003");
     await pickRole(page, "Support Agent");
     await pickReason(page, "ได้รับอนุมัติจากผู้บริหาร");
@@ -345,7 +363,7 @@ test.describe("QA-BO-013f: Settings > Admin Accounts — Change Role modal", () 
     // role เปลี่ยน + lastAction อัปเดต
     expect(await accountRole(page, "ADM-003")).toBe("Support Agent");
     const lastAction = await page.evaluate(() => adminAccountData.accounts.find(a => a.id === "ADM-003").lastAction);
-    expect(lastAction).toBe("Change Role โดย ผู้ดูแลระบบ — Moderator → Support Agent");
+    expect(lastAction).toBe("Change Role โดย ผู้ดูแลระบบ — Trust & Safety Moderator → Support Agent");
 
     // modal ปิด + toast + อยู่ใน list mode (re-render)
     await expect(page.locator("#user-action-modal")).not.toHaveClass(/show/);
@@ -363,7 +381,7 @@ test.describe("QA-BO-013f: Settings > Admin Accounts — Change Role modal", () 
     expect(auditInfo.module).toBe("Settings");
     expect(auditInfo.risk).toBe("สูง");
     expect(auditInfo.reference).toBe("ADM-003");
-    expect(auditInfo.before).toBe("Moderator");
+    expect(auditInfo.before).toBe("Trust & Safety Moderator");
     expect(auditInfo.after).toBe("Support Agent");
     expect(auditInfo.reason).toBe("ได้รับอนุมัติจากผู้บริหาร");
 
@@ -377,14 +395,14 @@ test.describe("QA-BO-013f: Settings > Admin Accounts — Change Role modal", () 
       };
     });
     expect(history.action).toBe("Change Role");
-    expect(history.note).toContain("Moderator → Support Agent");
+    expect(history.note).toContain("Trust & Safety Moderator → Support Agent");
     expect(history.note).toContain("ได้รับอนุมัติจากผู้บริหาร");
     expect(history.note).toContain("หมายเหตุ: อนุมัติจากผู้บริหารเมตตา");
     expect(history.auditRef).toBe(auditInfo.id);
   });
 
   test("13. confirm จาก detail → role pill ใน detail head + Role & Permissions matrix เปลี่ยนตาม role ใหม่", async ({ page }) => {
-    // ADM-003 (Moderator — matrix 7 rows) → Support Agent (matrix 5 rows) จาก detail
+    // ADM-003 (Trust & Safety Moderator — matrix 8 rows) → Support Agent (matrix 5 rows) จาก detail
     await openChangeRoleFromDetail(page, "ADM-003");
     await pickRole(page, "Support Agent");
     await pickReason(page, "ย้ายทีม / เปลี่ยนหน้าที่งาน");
@@ -414,7 +432,7 @@ test.describe("QA-BO-013f: Settings > Admin Accounts — Change Role modal", () 
   test("14. cancel ปิด modal ไม่เปลี่ยน role", async ({ page }) => {
     await openChangeRoleModalFromList(page, "ADM-001");
     // เลือก role อื่นไว้ก่อน แล้ว cancel — ต้องไม่มีผล
-    await pickRole(page, "Moderator");
+    await pickRole(page, "Trust & Safety Moderator");
     await clickCancel(page);
     await expect(page.locator("#user-action-modal")).not.toHaveClass(/show/);
     expect(await accountRole(page, "ADM-001")).toBe("Super Admin");
@@ -475,10 +493,10 @@ test.describe("QA-BO-013f: Settings > Admin Accounts — Change Role modal", () 
     await openChangeRoleModalFromList(page, "ADM-004");
     await expect(page.locator("#user-action-modal")).toHaveClass(/show/);
     await expect(page.locator("#user-action-modal-title")).toHaveText("Change Role");
-    await pickRole(page, "Moderator");
+    await pickRole(page, "Trust & Safety Moderator");
     await pickReason(page, "ปรับ scope ความรับผิดชอบตามโครงสร้างใหม่");
     await clickConfirm(page);
-    expect(await accountRole(page, "ADM-004")).toBe("Moderator");
+    expect(await accountRole(page, "ADM-004")).toBe("Trust & Safety Moderator");
     await expect(page.locator("#success-toast")).toBeVisible();
   });
 });

@@ -79,7 +79,7 @@ test.describe("QA-BO-013d: Settings > Admin Accounts — detail page", () => {
     await openDetail(page, "ADM-003");
     await expect(page.locator("#page-title")).toHaveText("Admin Account Detail");
     await expect(page.locator("#panel-title")).toHaveText("ADM-003");
-    await expect(page.locator("#panel-subtitle")).toHaveText("มะลิ จันทร์ดี · Moderator");
+    await expect(page.locator("#panel-subtitle")).toHaveText("มะลิ จันทร์ดี · Trust & Safety Moderator");
   });
 
   test("4. back button (data-admin-account-back) → กลับ list", async ({ page }) => {
@@ -166,7 +166,7 @@ test.describe("QA-BO-013d: Settings > Admin Accounts — detail page", () => {
     // Settings & Audit Log = limited (เฉพาะ Support Center)
     const settingsRow = section.locator("tbody tr", { hasText: "Settings & Audit Log" });
     await expect(settingsRow.locator(".pill.amber")).toHaveText("จัดการบางส่วน");
-    await expect(settingsRow.locator(".history-note")).toHaveText("เฉพาะ Support Center");
+    await expect(settingsRow.locator(".history-note")).toHaveText("เฉพาะ Support Center และ Delivery Logs ที่เกี่ยวข้อง");
   });
 
   test("8. Section History & Actions: ตาราง วันที่/Action/Reference/Audit/รายละเอียด + ปุ่ม action", async ({ page }) => {

@@ -46,7 +46,7 @@ Recommended note format:
 - [ ] Failed login ครบ 5 ครั้ง lock account 15 นาที
 - [ ] Idle session หมดอายุหลัง 8 ชั่วโมง และ max session หลัง 24 ชั่วโมง
 - [ ] BO ใช้ account type เดียวคือ `Admin`; role templates เป็น permission presets เท่านั้น ไม่ใช่ separate BO account types
-- [ ] Seed baseline role templates: `Super Admin`, `Content Editor`, `Content Publisher`, `Moderator`, `Support Agent`
+- [ ] Seed baseline role templates: `Super Admin`, `Admin Manager`, `Operations Manager`, `Support Agent`, `Trust & Safety Moderator`, `Asset Operations`, `Content Editor`, `Content Publisher`
 - [ ] Permission model ต้องมี explicit permission keys สำหรับ module access, create/edit draft, publish/schedule/archive, moderation action, sensitive reveal, export, settings update และ audit visibility
 - [ ] Permission guard มีทั้ง route level และ action/API level
 - [ ] UI menu/action hiding เป็น UX เท่านั้น และต้องมี backend/service enforcement ซ้ำทุกครั้ง

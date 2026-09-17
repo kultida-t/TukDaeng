@@ -130,7 +130,7 @@ test.describe("QA-BO-013b: Settings > Admin Accounts — list rendering & row me
     await check("ADM-009", "gray", "Archived");
   });
 
-  test("4. role pill สีถูกต้อง: Super Admin=purple, Content Publisher/Editor=blue, Moderator=amber, Support Agent=gray", async ({ page }) => {
+  test("4. role pill สีถูกต้องตาม 8 standard roles", async ({ page }) => {
     await goToAdminAccounts(page);
     const check = async (id, colorClass, text) => {
       const pill = accountRow(page, id).locator('[data-label="Role"] .pill');
@@ -138,10 +138,13 @@ test.describe("QA-BO-013b: Settings > Admin Accounts — list rendering & row me
       await expect(pill).toHaveText(text);
     };
     await check("ADM-001", "purple", "Super Admin");
-    await check("ADM-003", "amber", "Moderator");
+    await check("ADM-002", "blue", "Operations Manager");
+    await check("ADM-003", "amber", "Trust & Safety Moderator");
     await check("ADM-004", "blue", "Content Publisher");
     await check("ADM-005", "blue", "Content Editor");
     await check("ADM-006", "gray", "Support Agent");
+    await check("ADM-007", "amber", "Asset Operations");
+    await check("ADM-008", "purple", "Admin Manager");
   });
 
   test("5. master admin (ADM-010) แสดง pill-master 'Master' แยกจาก status/role pill", async ({ page }) => {

@@ -17275,11 +17275,11 @@
         { id: "AUD-88205", createdAt: "21 Aug 2026 09:00 GMT+7", actor: "Somchai Admin", actorType: "Admin", action: "Suspend Admin", module: "Settings", risk: "High", before: "Active", after: "Suspended", reason: "ตรวจสอบการเข้าถึงข้อมูลผู้ใช้นอก scope", reference: "ADM-006", note: "ระงับชั่วคราวระหว่างตรวจสอบ", result: "Success" },
         { id: "AUD-88051", createdAt: "09 Aug 2026 00:00 GMT+7", actor: "System (auto)", actorType: "System", action: "ลบบัญชีอัตโนมัติ", module: "Account Deletion", risk: "High", before: "Deletion Requested", after: "Anonymized", reason: "ครบช่วงรอลบบัญชี 30 วัน ระบบลบบัญชีอัตโนมัติ", reference: "DEL-026", note: "personal fields ถูกแทนที่ด้วย anonymous value", result: "Success" },
         { id: "AUD-88206", createdAt: "20 Jun 2026 10:00 GMT+7", actor: "Somchai Admin", actorType: "Admin", action: "Archive Admin", module: "Settings", risk: "Medium", before: "Active", after: "Archived", reason: "ออกจากทีม", reference: "ADM-009", note: "เก็บ audit history ตาม retention", result: "Success" },
-        { id: "AUD-88208", createdAt: "12 Apr 2026 14:00 GMT+7", actor: "Somchai Admin", actorType: "Admin", action: "Invite Admin", module: "Settings", risk: "Medium", before: "-", after: "Invited", reason: "เชิญ Moderator", reference: "ADM-007", note: "เชิญเข้าทีม moderation", result: "Success" },
+        { id: "AUD-88208", createdAt: "12 Apr 2026 14:00 GMT+7", actor: "Somchai Admin", actorType: "Admin", action: "Invite Admin", module: "Settings", risk: "Medium", before: "-", after: "Invited", reason: "เชิญ Asset Operations", reference: "ADM-007", note: "เชิญเข้าทีม asset operations", result: "Success" },
         { id: "AUD-88207", createdAt: "01 Apr 2026 09:00 GMT+7", actor: "Somchai Admin", actorType: "Admin", action: "Invite Admin", module: "Settings", risk: "Medium", before: "-", after: "Invited", reason: "เชิญ Support Agent", reference: "ADM-006", note: "เชิญเข้าทีม support", result: "Success" },
         { id: "AUD-88212", createdAt: "05 Mar 2026 11:00 GMT+7", actor: "Somchai Admin", actorType: "Admin", action: "Invite Admin", module: "Settings", risk: "Medium", before: "-", after: "Invited", reason: "เชิญ Content Editor", reference: "ADM-005", note: "เชิญเข้าทีม content", result: "Success" },
         { id: "AUD-88211", createdAt: "20 Feb 2026 08:15 GMT+7", actor: "Somchai Admin", actorType: "Admin", action: "Invite Admin", module: "Settings", risk: "Medium", before: "-", after: "Invited", reason: "เชิญ Content Publisher", reference: "ADM-004", note: "เชิญเข้าทีม content", result: "Success" },
-        { id: "AUD-88210", createdAt: "10 Feb 2026 13:00 GMT+7", actor: "Somchai Admin", actorType: "Admin", action: "Invite Admin", module: "Settings", risk: "Medium", before: "-", after: "Invited", reason: "เชิญ Moderator", reference: "ADM-003", note: "เชิญเข้าทีม moderation", result: "Success" },
+        { id: "AUD-88210", createdAt: "10 Feb 2026 13:00 GMT+7", actor: "Somchai Admin", actorType: "Admin", action: "Invite Admin", module: "Settings", risk: "Medium", before: "-", after: "Invited", reason: "เชิญ Trust & Safety Moderator", reference: "ADM-003", note: "เชิญเข้าทีม trust & safety", result: "Success" },
         { id: "AUD-88209", createdAt: "15 Jan 2026 10:30 GMT+7", actor: "Somchai Admin", actorType: "Admin", action: "Invite Admin", module: "Settings", risk: "Medium", before: "-", after: "Invited", reason: "เชิญ Super Admin", reference: "ADM-002", note: "เชิญเข้าทีม admin", result: "Success" },
         { id: "AUD-88215", createdAt: "10 May 2025 09:00 GMT+7", actor: "Somchai Admin", actorType: "Admin", action: "Invite Admin", module: "Settings", risk: "Medium", before: "-", after: "Invited", reason: "เชิญ Content Editor", reference: "ADM-009", note: "เชิญเข้าทีม content", result: "Success" }
       ]
@@ -17289,18 +17289,18 @@
     // แยกจาก moduleData.settings.rows เพื่อไม่ให้ปนกับ Policy/Delivery rows
     // pattern: deletionRequestData — separate data + dedicated renderer
     // สถานะตาม 16_ADMIN_SETTINGS_MODULE.md section 8.1: Invited / Active / Locked / Suspended / Archived
-    // role template ตาม section 9.1: Super Admin / Content Editor / Content Publisher / Moderator / Support Agent
+    // role template ตาม section 9.1: 8 standard system roles
     // audit event type ตาม section 19: ADMIN_ACCOUNT_INVITE / ADMIN_ACCOUNT_SUSPEND / ADMIN_ACCOUNT_REACTIVATE / ADMIN_ACCOUNT_UNLOCK / ADMIN_ACCOUNT_ARCHIVE
     const adminAccountData = {
       accounts: [
         { id: "ADM-001", fullName: "สมชาย บริหาร", email: "somchai@tukdaeng.example", role: "Super Admin", status: "Active", authMethod: "Email OTP", lastLogin: "08 Sep 2026 14:22", lastLoginRank: 202609081422, createdAt: "01 Jan 2026 09:00", createdAtRank: 202601010900, lastAction: "Force Hide Asset (AST-8831)", isSelf: false, isLastActive: false },
-        { id: "ADM-002", fullName: "อรนุช แก้วใส", email: "ornnuch@tukdaeng.example", role: "Super Admin", status: "Active", authMethod: "Email OTP", lastLogin: "08 Sep 2026 11:05", lastLoginRank: 202609081105, createdAt: "15 Jan 2026 10:30", createdAtRank: 202601151030, lastAction: "ปฏิเสธคืนบัญชี (DEL-028)", isSelf: false, isLastActive: false },
-        { id: "ADM-003", fullName: "มะลิ จันทร์ดี", email: "mali@tukdaeng.example", role: "Moderator", status: "Active", authMethod: "Email OTP", lastLogin: "07 Sep 2026 16:45", lastLoginRank: 202609071645, createdAt: "10 Feb 2026 13:00", createdAtRank: 202602101300, lastAction: "คืนบัญชี (DEL-031)", isSelf: false, isLastActive: false },
+        { id: "ADM-002", fullName: "อรนุช แก้วใส", email: "ornnuch@tukdaeng.example", role: "Operations Manager", status: "Active", authMethod: "Email OTP", lastLogin: "08 Sep 2026 11:05", lastLoginRank: 202609081105, createdAt: "15 Jan 2026 10:30", createdAtRank: 202601151030, lastAction: "ปฏิเสธคืนบัญชี (DEL-028)", isSelf: false, isLastActive: false },
+        { id: "ADM-003", fullName: "มะลิ จันทร์ดี", email: "mali@tukdaeng.example", role: "Trust & Safety Moderator", status: "Active", authMethod: "Email OTP", lastLogin: "07 Sep 2026 16:45", lastLoginRank: 202609071645, createdAt: "10 Feb 2026 13:00", createdAtRank: 202602101300, lastAction: "คืนบัญชี (DEL-031)", isSelf: false, isLastActive: false },
         { id: "ADM-004", fullName: "กิตติ เนื้อหา", email: "kitti@tukdaeng.example", role: "Content Publisher", status: "Active", authMethod: "Email OTP", lastLogin: "06 Sep 2026 09:00", lastLoginRank: 202609060900, createdAt: "20 Feb 2026 08:15", createdAtRank: 202602200815, lastAction: "ปิดรายงานไม่พบการละเมิด (RCO-690)", isSelf: false, isLastActive: false },
         { id: "ADM-005", fullName: "Orn Admin", email: "orn@tukdaeng.example", role: "Content Editor", status: "Active", authMethod: "Email OTP", lastLogin: "07 Sep 2026 16:30", lastLoginRank: 202609071630, createdAt: "05 Mar 2026 11:00", createdAtRank: 202603051100, lastAction: "Publish Article (ART-044)", isSelf: false, isLastActive: false },
         { id: "ADM-006", fullName: "พิมพ์ใจ สายด่วน", email: "pim@tukdaeng.example", role: "Support Agent", status: "Suspended", authMethod: "Email OTP", lastLogin: "20 Aug 2026 10:00", lastLoginRank: 202608201000, createdAt: "01 Apr 2026 09:00", createdAtRank: 202604010900, lastAction: "Suspended โดย Super Admin — ตรวจสอบการเข้าถึงข้อมูลผู้ใช้นอก scope", isSelf: false, isLastActive: false },
-        { id: "ADM-007", fullName: "วิชัย รองผู้จัดการ", email: "wichai@tukdaeng.example", role: "Moderator", status: "Locked", authMethod: "Email OTP", lastLogin: "02 Sep 2026 08:30", lastLoginRank: 202609020830, createdAt: "12 Apr 2026 14:00", createdAtRank: 202604121400, lastAction: "Locked จาก failed login 5 ครั้ง — รอ unlock หรือครบ 15 นาที", isSelf: false, isLastActive: false },
-        { id: "ADM-008", fullName: "นัฐพล พัฒนา", email: "nattapol@tukdaeng.example", role: "Super Admin", status: "Invited", authMethod: "Email OTP", lastLogin: "—", lastLoginRank: 0, createdAt: "08 Sep 2026 16:00", createdAtRank: 202609081600, lastAction: "Invited — รอผู้รับยืนยันอีเมลและตั้ง password", isSelf: false, isLastActive: false },
+        { id: "ADM-007", fullName: "วิชัย รองผู้จัดการ", email: "wichai@tukdaeng.example", role: "Asset Operations", status: "Locked", authMethod: "Email OTP", lastLogin: "02 Sep 2026 08:30", lastLoginRank: 202609020830, createdAt: "12 Apr 2026 14:00", createdAtRank: 202604121400, lastAction: "Locked จาก failed login 5 ครั้ง — รอ unlock หรือครบ 15 นาที", isSelf: false, isLastActive: false },
+        { id: "ADM-008", fullName: "นัฐพล พัฒนา", email: "nattapol@tukdaeng.example", role: "Admin Manager", status: "Invited", authMethod: "Email OTP", lastLogin: "—", lastLoginRank: 0, createdAt: "08 Sep 2026 16:00", createdAtRank: 202609081600, lastAction: "Invited — รอผู้รับยืนยันอีเมลและตั้ง password", isSelf: false, isLastActive: false },
         { id: "ADM-009", fullName: "อดิศร เก่าก่อน", email: "adisorn@tukdaeng.example", role: "Content Editor", status: "Archived", authMethod: "Email OTP", lastLogin: "15 Jun 2026 11:00", lastLoginRank: 202606151100, createdAt: "10 May 2025 09:00", createdAtRank: 202505100900, lastAction: "Archived — ออกจากทีม เก็บ audit history ตาม retention", isSelf: false, isLastActive: false },
         { id: "ADM-010", fullName: "ผู้ดูแลระบบ", email: "current.admin@tukdaeng.example", role: "Super Admin", status: "Active", authMethod: "Email OTP", lastLogin: "08 Sep 2026 15:00", lastLoginRank: 202609081500, createdAt: "01 Jan 2026 09:00", createdAtRank: 202601010900, lastAction: "เข้าสู่ระบบ Settings > Admin Accounts", isSelf: true, isLastActive: true, isMaster: true }
       ],
@@ -17320,14 +17320,14 @@
         "ADM-002": {
           activity: [
             { at: "16 Jan 2026 10:00", action: "Activated (first login)", reference: "—", note: "ยืนยันตัวตนด้วย Email OTP" },
-            { at: "15 Jan 2026 10:30", action: "Invited", reference: "ADM-001", note: "เชิญเป็น Super Admin" }
+            { at: "15 Jan 2026 10:30", action: "Invited", reference: "ADM-001", note: "เชิญเป็น Operations Manager" }
           ],
           auditRefs: [null, "AUD-88209"]
         },
         "ADM-003": {
           activity: [
             { at: "11 Feb 2026 09:00", action: "Activated (first login)", reference: "—", note: "ยืนยันตัวตนด้วย Email OTP" },
-            { at: "10 Feb 2026 13:00", action: "Invited", reference: "ADM-001", note: "เชิญเป็น Moderator" }
+            { at: "10 Feb 2026 13:00", action: "Invited", reference: "ADM-001", note: "เชิญเป็น Trust & Safety Moderator" }
           ],
           auditRefs: [null, "AUD-88210"]
         },
@@ -17357,7 +17357,7 @@
           activity: [
             { at: "02 Sep 2026 08:35", action: "Locked", reference: "System", note: "failed login 5 ครั้ง — รอ unlock หรือครบ 15 นาที" },
             { at: "13 Apr 2026 10:00", action: "Activated (first login)", reference: "—", note: "ยืนยันตัวตนด้วย Email OTP" },
-            { at: "12 Apr 2026 14:00", action: "Invited", reference: "ADM-001", note: "เชิญเป็น Moderator" }
+            { at: "12 Apr 2026 14:00", action: "Invited", reference: "ADM-001", note: "เชิญเป็น Asset Operations" }
           ],
           auditRefs: ["AUD-88204", null, "AUD-88208"]
         },
@@ -19659,10 +19659,13 @@
       adminAccountRole: [
         { value: "", label: "Role ทั้งหมด" },
         { value: "Super Admin", label: "Super Admin" },
+        { value: "Admin Manager", label: "Admin Manager" },
+        { value: "Operations Manager", label: "Operations Manager" },
+        { value: "Support Agent", label: "Support Agent" },
+        { value: "Trust & Safety Moderator", label: "Trust & Safety Moderator" },
+        { value: "Asset Operations", label: "Asset Operations" },
         { value: "Content Editor", label: "Content Editor" },
-        { value: "Content Publisher", label: "Content Publisher" },
-        { value: "Moderator", label: "Moderator" },
-        { value: "Support Agent", label: "Support Agent" }
+        { value: "Content Publisher", label: "Content Publisher" }
       ],
       adminAccountSort: [
         { value: "latest", label: filterCopy.latestFirst },
@@ -22872,7 +22875,16 @@
     }
 
     function adminAccountRolePill(role) {
-      const map = { "Super Admin": "purple", "Content Publisher": "blue", "Content Editor": "blue", Moderator: "amber", "Support Agent": "gray" };
+      const map = {
+        "Super Admin": "purple",
+        "Admin Manager": "purple",
+        "Operations Manager": "blue",
+        "Support Agent": "gray",
+        "Trust & Safety Moderator": "amber",
+        "Asset Operations": "amber",
+        "Content Publisher": "blue",
+        "Content Editor": "blue"
+      };
       return `<span class="pill ${map[role] || "gray"}">${role}</span>`;
     }
 
@@ -22889,6 +22901,61 @@
         ["Market Demand", "view", "ดูอย่างเดียวทั้ง module"],
         ["Account Deletion", "manage", ""],
         ["Settings & Audit Log", "manage", ""]
+      ],
+      "Admin Manager": [
+        ["Dashboard", "view", "เห็น operational overview ตาม policy"],
+        ["User Management", "view", "อ่าน context ที่จำเป็นต่อ admin lifecycle"],
+        ["Asset Management", "view", "อ่าน context ที่จำเป็นต่อ admin lifecycle"],
+        ["Content Management", "view", ""],
+        ["Market Data", "view", ""],
+        ["Option Master", "view", ""],
+        ["Market Demand", "view", ""],
+        ["Account Deletion", "view", "อ่าน context ที่เกี่ยวกับ admin action"],
+        ["Settings & Audit Log", "manage", "Admin Accounts, Roles & Permissions, security/system policy และ audit"]
+      ],
+      "Operations Manager": [
+        ["Dashboard", "manage", "เห็นภาพรวม queue ปฏิบัติการ"],
+        ["User Management", "limited", "จัดการตาม action policy + sensitive reveal แยก permission"],
+        ["Asset Management", "limited", "จัดการ asset/moderation ตาม action policy"],
+        ["Content Management", "view", "อ่านสถานะ content เพื่อ operational context"],
+        ["Market Data", "view", ""],
+        ["Option Master", "view", ""],
+        ["Market Demand", "view", ""],
+        ["Account Deletion", "limited", "ติดตามและดำเนินการตาม deletion workflow"],
+        ["Settings & Audit Log", "limited", "Delivery Logs และ Audit Log ตาม scope"]
+      ],
+      "Support Agent": [
+        ["Dashboard", "view", "เห็นเฉพาะงานที่ได้รับมอบหมาย"],
+        ["User Management", "none", ""],
+        ["Asset Management", "none", ""],
+        ["Content Management", "none", ""],
+        ["Market Data", "view", ""],
+        ["Option Master", "none", ""],
+        ["Market Demand", "view", ""],
+        ["Account Deletion", "view", "ดู context เท่าที่จำเป็น"],
+        ["Settings & Audit Log", "limited", "เฉพาะ Support Center และ Delivery Logs ที่เกี่ยวข้อง"]
+      ],
+      "Trust & Safety Moderator": [
+        ["Dashboard", "view", "เห็นเฉพาะ queue ที่ดูแล"],
+        ["User Management", "limited", "เฉพาะ Reported Users + action ตาม policy"],
+        ["Asset Management", "limited", "เฉพาะ Reported Assets / Reported Comments"],
+        ["Content Management", "limited", "Reported Board และ content context ที่เกี่ยวข้อง"],
+        ["Market Data", "view", ""],
+        ["Option Master", "none", ""],
+        ["Market Demand", "view", ""],
+        ["Account Deletion", "limited", "คืน/ปฏิเสธคืนบัญชีตาม policy"],
+        ["Settings & Audit Log", "none", ""]
+      ],
+      "Asset Operations": [
+        ["Dashboard", "view", "เห็น asset queue และ operational context"],
+        ["User Management", "view", "อ่าน owner/user context แบบ masked"],
+        ["Asset Management", "limited", "Asset List/Detail + reported assets/comments ตาม policy"],
+        ["Content Management", "none", ""],
+        ["Market Data", "view", "อ่าน market data เพื่อเทียบ asset"],
+        ["Option Master", "none", ""],
+        ["Market Demand", "view", ""],
+        ["Account Deletion", "view", "ดูผลกระทบต่อ asset เท่าที่จำเป็น"],
+        ["Settings & Audit Log", "none", ""]
       ],
       "Content Editor": [
         ["Dashboard", "view", "เห็นเฉพาะงาน content"],
@@ -22912,28 +22979,6 @@
         ["Account Deletion", "none", ""],
         ["Settings & Audit Log", "none", ""]
       ],
-      "Moderator": [
-        ["Dashboard", "view", "เห็นเฉพาะ queue ที่ดูแล"],
-        ["User Management", "limited", "เฉพาะ Reported Users + action ตาม policy"],
-        ["Asset Management", "limited", "เฉพาะ Reported Assets / Reported Comments"],
-        ["Content Management", "view", "อ่านเนื้อหาที่เกี่ยวข้องกับรายงาน"],
-        ["Market Data", "view", ""],
-        ["Option Master", "none", ""],
-        ["Market Demand", "view", ""],
-        ["Account Deletion", "limited", "คืน/ปฏิเสธคืนบัญชีตาม policy"],
-        ["Settings & Audit Log", "none", ""]
-      ],
-      "Support Agent": [
-        ["Dashboard", "view", "เห็นเฉพาะงานที่ได้รับมอบหมาย"],
-        ["User Management", "none", ""],
-        ["Asset Management", "none", ""],
-        ["Content Management", "none", ""],
-        ["Market Data", "view", ""],
-        ["Option Master", "none", ""],
-        ["Market Demand", "view", ""],
-        ["Account Deletion", "view", "ดู context เท่าที่จำเป็น"],
-        ["Settings & Audit Log", "limited", "เฉพาะ Support Center"]
-      ]
     };
 
     // ADM-PTO-001: master admin หลัก 1 บัญชี — ป้องกัน suspend/archive และแสดง badge ชัดเจน
@@ -23498,11 +23543,7 @@
                 <label><span>Role Template <span class="article-required-mark">*</span></span>
                   ${customSelect("admin-account-invite-role", "เลือก role template", [
                     { value: "", label: "เลือก role template" },
-                    { value: "Super Admin", label: "Super Admin" },
-                    { value: "Content Editor", label: "Content Editor" },
-                    { value: "Content Publisher", label: "Content Publisher" },
-                    { value: "Moderator", label: "Moderator" },
-                    { value: "Support Agent", label: "Support Agent" }
+                    ...Object.keys(roleMenuAccess).map(role => ({ value: role, label: role }))
                   ], "", "data-custom-select-silent")}
                   <span class="article-field-error" data-admin-invite-role-error></span>
                 </label>
@@ -26945,6 +26986,51 @@
           detail: "ใช้สำหรับเจ้าของระบบหรือ operation lead ที่ต้องจัดการ policy, settings, audit และ export"
         },
         {
+          role: "Admin Manager",
+          scope: "Admin Settings",
+          content: "Settings policy",
+          moderation: "No moderation queue",
+          sensitive: "Audit / Policy",
+          status: "Active",
+          detail: "จัดการ Admin Accounts, Roles & Permissions และ high-risk settings พร้อม confirmation, reason และ audit"
+        },
+        {
+          role: "Operations Manager",
+          scope: "Operations",
+          content: "Read context",
+          moderation: "Workflow oversight",
+          sensitive: "Policy based",
+          status: "Active",
+          detail: "ดูภาพรวม queue ปฏิบัติการและดำเนินงานข้าม module ได้เฉพาะ action ที่ matrix อนุญาต"
+        },
+        {
+          role: "Support Agent",
+          scope: "Support Center",
+          content: "No content write",
+          moderation: "No mutation",
+          sensitive: "Limited context",
+          status: "Active",
+          detail: "ช่วยเหลือผู้ใช้จาก support context และ delivery status โดยไม่แตะ Settings/export"
+        },
+        {
+          role: "Trust & Safety Moderator",
+          scope: "Reports",
+          content: "Read related content",
+          moderation: "User / Asset / Board reports",
+          sensitive: "Masked by default",
+          status: "Active",
+          detail: "ตรวจ report queue และทำ action ที่กระทบ FO พร้อม reason, impact note และ audit"
+        },
+        {
+          role: "Asset Operations",
+          scope: "Asset Management",
+          content: "Asset context",
+          moderation: "Asset / Comment reports",
+          sensitive: "Masked by default",
+          status: "Active",
+          detail: "ตรวจ Asset List/Detail และ reported assets/comments โดยไม่แก้ Market Data master หรือ Settings"
+        },
+        {
           role: "Content Editor",
           scope: "Content Management",
           content: "Create / Edit Draft",
@@ -26962,24 +27048,6 @@
           status: "Active",
           detail: "อนุมัติ publish, schedule, archive และจัดการ reported Board content พร้อม audit reason"
         },
-        {
-          role: "Moderator",
-          scope: "Reports",
-          content: "Read related content",
-          moderation: "User / Asset / Board reports",
-          sensitive: "Masked by default",
-          status: "Active",
-          detail: "ตรวจรายงานและ action ตาม policy แต่ sensitive fields ต้อง mask เป็นค่าเริ่มต้น"
-        },
-        {
-          role: "Support Agent",
-          scope: "Help & Support",
-          content: "No content write",
-          moderation: "Ticket only",
-          sensitive: "Limited reveal",
-          status: "Active",
-          detail: "ตอบ ticket และดู context เท่าที่จำเป็น ไม่เห็น settings/export โดยตรง"
-        }
       ];
     }
 

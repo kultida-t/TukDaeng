@@ -721,7 +721,7 @@ Future scope (ยังไม่เปิดใน V1 Offer Management ที่
 
 BO uses a single `Admin` account type. Module behavior is controlled by role templates and module/action policy instead of separate BO admin account types.
 
-Baseline role templates include `Super Admin`, `Content Editor`, `Content Publisher`, `Moderator`, and `Support Agent`. These are permission presets only; production must enforce explicit permission keys at route, UI, API, and service layers.
+Baseline role templates include `Super Admin`, `Admin Manager`, `Operations Manager`, `Support Agent`, `Trust & Safety Moderator`, `Asset Operations`, `Content Editor`, and `Content Publisher`. These are permission presets only; production must enforce explicit permission keys at route, UI, API, and service layers.
 
 | Module | Admin access rule |
 |---|---|

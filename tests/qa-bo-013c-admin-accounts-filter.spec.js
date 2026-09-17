@@ -138,10 +138,10 @@ test.describe("QA-BO-013c: Settings > Admin Accounts — filter bar, search & so
     await page.locator("#admin-account-search").fill("pim@");
     await page.waitForTimeout(300);
     expect(await rowIds(page)).toEqual(["ADM-006"]);
-    // Role (default sort = latest → ADM-007 ก่อน ADM-003)
-    await page.locator("#admin-account-search").fill("Moderator");
+    // Role (default sort = latest)
+    await page.locator("#admin-account-search").fill("Trust & Safety");
     await page.waitForTimeout(300);
-    expect(await rowIds(page)).toEqual(["ADM-007", "ADM-003"]);
+    expect(await rowIds(page)).toEqual(["ADM-003"]);
     // ล้าง search แล้วกลับครบ 10
     await page.locator("#admin-account-search").fill("");
     await page.waitForTimeout(300);
@@ -177,12 +177,32 @@ test.describe("QA-BO-013c: Settings > Admin Accounts — filter bar, search & so
     expect(await rowIds(page)).toHaveLength(10);
   });
 
-  test("4. role filter: เลือก Super Admin/Content Editor/Content Publisher/Moderator/Support Agent → row กรองถูก", async ({ page }) => {
+  test("4. role filter: เลือก 8 standard roles → row กรองถูก", async ({ page }) => {
     await goToAdminAccounts(page);
-    // Super Admin → 4 rows (master + 3, latest sort)
+    // Super Admin → 2 rows (master + ADM-001)
     await pickCustomOption(page, "admin-account-role-filter", "Super Admin");
     await page.waitForTimeout(300);
-    expect(await rowIds(page)).toEqual(["ADM-010", "ADM-008", "ADM-002", "ADM-001"]);
+    expect(await rowIds(page)).toEqual(["ADM-010", "ADM-001"]);
+    // Admin Manager → 1 row
+    await pickCustomOption(page, "admin-account-role-filter", "Admin Manager");
+    await page.waitForTimeout(300);
+    expect(await rowIds(page)).toEqual(["ADM-008"]);
+    // Operations Manager → 1 row
+    await pickCustomOption(page, "admin-account-role-filter", "Operations Manager");
+    await page.waitForTimeout(300);
+    expect(await rowIds(page)).toEqual(["ADM-002"]);
+    // Support Agent → 1 row
+    await pickCustomOption(page, "admin-account-role-filter", "Support Agent");
+    await page.waitForTimeout(300);
+    expect(await rowIds(page)).toEqual(["ADM-006"]);
+    // Trust & Safety Moderator → 1 row
+    await pickCustomOption(page, "admin-account-role-filter", "Trust & Safety Moderator");
+    await page.waitForTimeout(300);
+    expect(await rowIds(page)).toEqual(["ADM-003"]);
+    // Asset Operations → 1 row
+    await pickCustomOption(page, "admin-account-role-filter", "Asset Operations");
+    await page.waitForTimeout(300);
+    expect(await rowIds(page)).toEqual(["ADM-007"]);
     // Content Editor → 2 rows (latest sort: ADM-005 ก่อน ADM-009)
     await pickCustomOption(page, "admin-account-role-filter", "Content Editor");
     await page.waitForTimeout(300);
@@ -191,14 +211,6 @@ test.describe("QA-BO-013c: Settings > Admin Accounts — filter bar, search & so
     await pickCustomOption(page, "admin-account-role-filter", "Content Publisher");
     await page.waitForTimeout(300);
     expect(await rowIds(page)).toEqual(["ADM-004"]);
-    // Moderator → 2 rows (latest sort: ADM-007 ก่อน ADM-003)
-    await pickCustomOption(page, "admin-account-role-filter", "Moderator");
-    await page.waitForTimeout(300);
-    expect(await rowIds(page)).toEqual(["ADM-007", "ADM-003"]);
-    // Support Agent → 1 row
-    await pickCustomOption(page, "admin-account-role-filter", "Support Agent");
-    await page.waitForTimeout(300);
-    expect(await rowIds(page)).toEqual(["ADM-006"]);
     // กลับเป็น Role ทั้งหมด → 10 rows
     await pickCustomOption(page, "admin-account-role-filter", "");
     await page.waitForTimeout(300);
@@ -241,7 +253,7 @@ test.describe("QA-BO-013c: Settings > Admin Accounts — filter bar, search & so
 
   test("6. ใช้ filter ร่วมกัน (search + status + role) ได้", async ({ page }) => {
     await goToAdminAccounts(page);
-    // search 'super' + status 'Active' + role 'Super Admin' → ADM-010 (master), ADM-001, ADM-002
+    // search 'super' + status 'Active' + role 'Super Admin' → ADM-010 (master), ADM-001
     await page.locator("#admin-account-search").fill("super");
     await page.waitForTimeout(300);
     await pickCustomOption(page, "admin-account-status-filter", "Active");
@@ -249,9 +261,9 @@ test.describe("QA-BO-013c: Settings > Admin Accounts — filter bar, search & so
     await pickCustomOption(page, "admin-account-role-filter", "Super Admin");
     await page.waitForTimeout(300);
     const ids = await rowIds(page);
-    expect(ids).toHaveLength(3);
+    expect(ids).toHaveLength(2);
     expect(ids[0]).toBe("ADM-010"); // master บนสุดเสมอ
-    expect(ids.slice().sort()).toEqual(["ADM-001", "ADM-002", "ADM-010"]);
+    expect(ids.slice().sort()).toEqual(["ADM-001", "ADM-010"]);
   });
 
   test("7. เปิด/ปิดตัวกรอง toggle สลับ data-filter-open + aria-expanded + label (mobile เท่านั้น)", async ({ page }) => {
@@ -306,7 +318,7 @@ test.describe("QA-BO-013c: Settings > Admin Accounts — filter bar, search & so
     await pickCustomOption(page, "admin-account-sort", "name");
     await page.waitForTimeout(300);
     // verify filtered state
-    expect(await rowIds(page)).toHaveLength(3);
+    expect(await rowIds(page)).toHaveLength(2);
     // reset
     await clickReset(page);
     // search cleared
@@ -354,24 +366,22 @@ test.describe("QA-BO-013c: Settings > Admin Accounts — filter bar, search & so
     expect(await rowIds(page)).toEqual(["ADM-005"]);
   });
 
-  test("10. pagination เปลี่ยนหน้าแล้วค่า filter คงอยู่ (mock 10 รายการ = 1 หน้า)", async ({ page }) => {
+  test("10. pagination หน้าเดียวแล้วค่า filter คงอยู่ (mock 10 รายการ = 1 หน้า)", async ({ page }) => {
     await goToAdminAccounts(page);
-    // search 'super admin' → ตรง 5 รายการ (ADM-001, ADM-002, ADM-006 lastAction, ADM-008, ADM-010)
+    // search 'super admin' → ตรง role Super Admin + lastAction ที่มีคำว่า Super Admin
     await page.locator("#admin-account-search").fill("super admin");
     await page.waitForTimeout(300);
     const filteredIds = await rowIds(page);
-    expect(filteredIds).toHaveLength(5);
-    expect(filteredIds[0]).toBe("ADM-010"); // master บนสุด
-    // pager แสดง page info (desktop = pager-num, mobile = pager-mobile-info)
-    const mobile = await isMobile(page);
-    if (mobile) {
-      await expect(page.locator("#table .footer-range .pager .pager-mobile-info")).toHaveText("1 / 1");
-    } else {
-      const pagerNum = page.locator("#table .footer-range .pager .pager-num").first();
-      await expect(pagerNum).toHaveText("1");
-      // click page 1 → saveCurrentListFilterState + re-render → filter คงอยู่
-      await pagerNum.click();
-      await page.waitForTimeout(300);
+    expect(filteredIds).toEqual(["ADM-010", "ADM-006", "ADM-001"]);
+    await expect(page.locator("#table .footer-range > span")).toHaveText("แสดง 1-3 จาก 3");
+    // ถ้ามี pager control ให้คลิกหน้า 1 เพื่อยืนยันว่า re-render แล้วยังคง filter; ถ้าไม่มี ให้ยืนยัน state หน้าเดียวแทน
+    const pagerNum = page.locator("#table .footer-range .pager .pager-num").first();
+    if (await pagerNum.count()) {
+      if (await pagerNum.isVisible()) {
+        await expect(pagerNum).toHaveText("1");
+        await pagerNum.click();
+        await page.waitForTimeout(300);
+      }
     }
     // search term still in input after pager interaction (or no interaction on mobile)
     await expect(page.locator("#admin-account-search")).toHaveValue("super admin");

@@ -1,9 +1,9 @@
 # 16 BO Admin Settings Module
 
-**Version:** `BO-16-v0.3`  
-**Date:** 2026-09-16  
-**Status:** Updated — Admin Accounts spec synced to locked prototype (ADM-PTO-001)  
-**Platform:** Responsive Web Back Office  
+**Version:** `BO-16-v0.4`
+**Date:** 2026-09-17
+**Status:** Updated — Roles & Permissions baseline role templates defined
+**Platform:** Responsive Web Back Office
 **Primary BO Sources:** `00_GLOBAL_RULES_MODULE.md`, `01_AUTHENTICATION_MODULE.md`, `08_AUDIT_LOG_MODULE.md`, `15_REPORTS_ANALYTICS_MODULE.md`
 
 ## UI Standards And Prototype Reference
@@ -18,8 +18,8 @@
 | --- | --- |
 | Module Name | BO Admin Settings |
 | Platform | Responsive Web Back Office |
-| Version | `BO-16-v0.3` |
-| Status | Updated — Admin Accounts spec synced to locked prototype (ADM-PTO-001) |
+| Version | `BO-16-v0.4` |
+| Status | Updated — Roles & Permissions baseline role templates defined |
 | Owner | Product / UX / Engineering / Operations |
 | Document Type | Functional PRD |
 
@@ -158,7 +158,7 @@ Pattern: full-width panel เหมือน Audit Log / Deletion Requests — �
 | Admin ID | รหัส admin (เช่น `ADM-001`) |
 | Name | ชื่อ-นามสกุล (แสดง Master badge ถ้าเป็น master admin) |
 | Email | อีเมล admin |
-| Role | Role pill (Super Admin / Content Editor / Content Publisher / Moderator / Support Agent) |
+| Role | Role pill จาก 8 standard role templates ใน section 9.1 |
 | Status | Status pill (Invited / Active / Locked / Suspended / Archived) |
 | Last Login | เวลา login ล่าสุด (แสดง `—` ถ้ายังไม่เคย login) |
 | Action | Row menu (ดูรายละเอียด + action ตามสถานะที่อนุญาต) |
@@ -169,7 +169,7 @@ Pattern: full-width panel เหมือน Audit Log / Deletion Requests — �
 - เปิด/ปิดตัวกรอง toggle
 - Search: Admin ID, ชื่อ, อีเมล, Role
 - Filter account status: Invited / Active / Locked / Suspended / Archived
-- Filter role: Super Admin / Content Editor / Content Publisher / Moderator / Support Agent
+- Filter role: 8 standard role templates ตาม section 9.1
 - Sort: latest (default) / oldest / name / status
 - รีเซ็ตค่าทั้งหมด (reset icon button)
 
@@ -261,7 +261,7 @@ Pattern: `openAdminAccountChangeRoleModal` (prototype บรรทัด 22908�
 
 **Form fields**:
 - Role ปัจจุบัน: disabled input (แสดง role เดิม)
-- Role ใหม่: required selector (เลือก role ใหม่ — ยกเว้น role ปัจจุบัน, 5 ตัวเลือกจาก `roleMenuAccess`)
+- Role ใหม่: required selector (เลือก role ใหม่ — ยกเว้น role ปัจจุบัน, ใช้ 8 standard role templates จาก `roleMenuAccess`)
 - เหตุผลการเปลี่ยน Role: required selector (4 reasons: ย้ายทีม/เปลี่ยนหน้าที่งาน / ได้รับอนุมัติจากผู้บริหาร / ปรับ scope ความรับผิดชอบตามโครงสร้างใหม่ / คำขอจากผู้บริหาร/HR)
 - Note / หมายเหตุ: ไม่บังคับ
 
@@ -276,7 +276,7 @@ Pattern: `openAdminAccountInviteModal` (prototype บรรทัด 22991–230
 **Form fields** (required มีเครื่องหมาย `*`):
 - ชื่อ-นามสกุล: required
 - อีเมล: required + unique (`isAdminAccountEmailUnique` prototype บรรทัด 23048 — ตรวจซ้ำกับ admin ที่มีอยู่แล้ว)
-- Role Template: required selector (5 ตัวเลือก: Super Admin / Content Editor / Content Publisher / Moderator / Support Agent)
+- Role Template: required selector (8 standard role templates ตาม section 9.1)
 - Note / หมายเหตุ: ไม่บังคับ
 
 **Email OTP note** (prototype บรรทัด 23034–23036): "ผู้รับต้องยืนยันตัวตนด้วย Email OTP ทุกครั้งที่เข้าสู่ระบบ"
@@ -320,15 +320,20 @@ The previous multi-Admin access policy catalog is replaced by a single Admin acc
 
 ### 9.1 Baseline Role Templates
 
-| Role template | Baseline permissions |
-| --- | --- |
-| Super Admin | Full BO access, including Admin Settings, Audit Log, sensitive reveal/export, and policy changes. |
-| Content Editor | Access Content Management; create/edit article drafts, categories, metadata, and preview as FO; cannot publish/archive. |
-| Content Publisher | Access Content Management; publish, schedule, archive, manage banners/categories, and moderate reported Board content with audit reason. |
-| Moderator | Access report/moderation queues by policy; sensitive data remains masked by default unless reveal permission is granted. |
-| Support Agent | Access Help & Support and limited linked context; cannot broadly access User/Asset/Settings/export surfaces. |
+Roles & Permissions must start with 8 standard role templates. These templates are system presets for assigning permission sets to Admin accounts; they are not separate BO admin account types.
 
-Role templates are presets. Production enforcement must use explicit permission keys at route, UI, API, and service layers.
+| Role template | Primary responsibility | Baseline restrictions |
+| --- | --- | --- |
+| Super Admin | ดูแล BO ทั้งระบบ รวม Admin Settings, Audit Log, sensitive reveal/export และ policy changes | ต้องมี last-active-admin protection; ห้ามปิด/ลดสิทธิ์ตัวเองถ้าทำให้ BO ไม่มีผู้ดูแลสูงสุดเหลืออยู่ |
+| Admin Manager | จัดการ Admin Accounts, Roles & Permissions, security/system policy และ high-risk settings ตาม approval | ไม่มีสิทธิ์แก้ Super Admin/master protection, ลบ audit trail, หรือข้าม confirmation/reason/audit |
+| Operations Manager | ดูภาพรวมงานปฏิบัติการข้าม User, Asset, Offer, Account Deletion, Delivery Logs และ Dashboard queue | ทำ mutation ได้เฉพาะ action ที่ permission matrix อนุญาต; export/sensitive reveal ต้องใช้ policy แยก |
+| Support Agent | ช่วยเหลือผู้ใช้จาก Support Center, User context แบบจำกัด, delivery status และประวัติที่จำเป็นต่อการช่วยเหลือ | ไม่มีสิทธิ์เปลี่ยนสถานะบัญชี/สินทรัพย์, ดู sensitive data เต็ม, export หรือแก้ Settings |
+| Trust & Safety Moderator | จัดการ report/moderation queue สำหรับ user, asset, comment และ board content ตามเหตุผล/audit | Sensitive fields ถูก mask เป็นค่าเริ่มต้น; action ที่กระทบ FO ต้องมี reason, impact note และ audit |
+| Asset Operations | ตรวจสอบ Asset List/Asset Detail, reported assets/comments และข้อมูลที่เกี่ยวกับ asset lifecycle | ไม่มีสิทธิ์แก้ Market Data master, Admin Settings, policy, หรือ export sensitive asset/user data เว้นแต่ matrix อนุญาต |
+| Content Editor | สร้าง/แก้ draft, category, metadata และ preview content ใน Content Management | ไม่มีสิทธิ์ publish, schedule, archive, restore หรือจัดการ reported Board แบบปิดเคส |
+| Content Publisher | publish, schedule, archive, restore content และจัดการ reported Board content ตาม policy | ไม่มีสิทธิ์แก้ Admin Settings, user/account status, asset moderation หรือ sensitive reveal/export นอก content scope |
+
+Role templates are presets. Production enforcement must use explicit permission keys at route, navigation, UI action, API, service, export, sensitive-field, and audit layers. The Roles & Permissions screen may later support Custom Role, but the 8 standard templates above are system roles: they cannot be deleted, cannot be renamed, and cannot have their system identity changed. If a standard role does not fit a team, create a Custom Role derived from it instead of editing the system role identity.
 
 ### 9.2 Module / Action Policy Catalog
 
@@ -605,7 +610,7 @@ Sensitive settings value ต้อง mask ใน audit payload ถ้าเป�
 | --- | --- |
 | AC-BO-SET-001 | Admin ทุก admin access เข้าดู own profile/settings และเปลี่ยน password ตาม rule ได้ |
 | AC-BO-SET-002 | Admin จัดการ admin account lifecycle ได้โดยไม่กระทบ Admin คนสุดท้าย |
-| AC-BO-SET-003 | Roles & Permissions matrix แสดง role templates และสิทธิ์ตาม module/action และ enforce ทั้ง UI/API level |
+| AC-BO-SET-003 | Roles & Permissions matrix แสดง 8 standard role templates (Super Admin, Admin Manager, Operations Manager, Support Agent, Trust & Safety Moderator, Asset Operations, Content Editor, Content Publisher), enforce ทั้ง UI/API level และห้ามลบ/เปลี่ยน system role identity |
 | AC-BO-SET-004 | Permission/security/system/retention/export setting changes ต้องมี confirmation, reason และ audit |
 | AC-BO-SET-005 | Security policy ต้องสอดคล้องกับ Auth baseline: email/password only, Email OTP mandatory สำหรับ Admin, idle 8h, max 24h, failed login 5 ครั้ง, lockout 15 นาที |
 | AC-BO-SET-006 | Retention settings ต้องไม่อนุญาต manual delete audit logs จาก UI ปกติ |
@@ -623,7 +628,7 @@ Sensitive settings value ต้อง mask ใน audit payload ถ้าเป�
 | AC-BO-SET-018 | Audit link pill ใน History & Actions คลิกได้และเปิด Audit Log กรองด้วย reference ของ account นั้น; รายการที่ไม่มี audit แสดง `—` |
 | AC-BO-SET-019 | Action modals Suspend/Reactivate/Unlock/Archive บังคับเลือก reason (4 reasons ต่อ action) แสดง impact note ตาม action และใช้ confirm tone ที่ถูกต้อง (suspend=danger, reactivate/unlock=primary, archive=warning) พร้อม success toast และ audit event |
 | AC-BO-SET-020 | Change Role modal แสดง role ปัจจุบัน disabled, เลือก role ใหม่ยกเว้น role เดิม, บังคับ reason, แสดง permission diff live update และบันทึก audit `ADMIN_ACCOUNT_ROLE_CHANGE` |
-| AC-BO-SET-021 | Invite Admin modal ตรวจอีเมล unique, บังคับเลือก role template 5 ตัว, แสดง Email OTP note และบันทึก audit `ADMIN_ACCOUNT_INVITE` พร้อมสร้าง admin id ใหม่ (`ADM-xxx` ลำดับถัดไป) |
+| AC-BO-SET-021 | Invite Admin modal ตรวจอีเมล unique, บังคับเลือก role template จาก 8 standard role templates, แสดง Email OTP note และบันทึก audit `ADMIN_ACCOUNT_INVITE` พร้อมสร้าง admin id ใหม่ (`ADM-xxx` ลำดับถัดไป) |
 | AC-BO-SET-022 | Permission gating ตาม `canSuspendAdmin`/`canReactivateAdmin`/`canUnlockAdmin`/`canArchiveAdmin`/`canChangeRoleAdmin` — action ที่ไม่อนุญาตต้องไม่ปรากฏใน DOM ทั้งใน row menu และ detail action buttons |
 | AC-BO-SET-023 | Master admin หลัก (ADM-010) ห้าม suspend/archive/change role; self ห้าม suspend/reactivate/unlock/archive/change role ตัวเอง; ถ้า active admin เหลือ 1 คน ห้าม suspend (ป้องกันระบบไม่มีผู้ดูแล) |
 
