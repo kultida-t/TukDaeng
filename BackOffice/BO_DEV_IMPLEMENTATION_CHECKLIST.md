@@ -451,6 +451,9 @@ Recommended note format:
 - [ ] Custom Role ต้อง derive จาก role template หนึ่งและเก็บ permission key แบบ explicit; ห้ามผูกสิทธิ์เฉพาะรายบุคคลกับ Admin account โดยตรง
 - [ ] Content role split ต้องรองรับ `Content Editor` สำหรับ draft authoring และ `Content Publisher` สำหรับ publish/schedule/archive/reported Board actions
 - [ ] Permission change ต้องมี confirmation, reason, before/after diff และ audit log
+- [ ] Change Role ต้อง enforce critical safeguards ทั้ง UI/API/service: ห้าม self-change, ห้ามเปลี่ยน master admin, ห้ามทำให้ไม่มี active `Super Admin`, ห้ามทำให้ไม่มี account ที่จัดการ role/admin recovery ได้, ห้าม assign Custom Role ที่ inactive/invalid และต้อง block role change ของ account status ที่ไม่อนุญาต
+- [ ] ทุกคำขอ Change Role ต้องเขียน `ADMIN_ACCOUNT_ROLE_CHANGE` ใน transaction เดียวกับ role persistence: เก็บ event/reference/correlation, actor, target, before/after Role + permission diff, reason, safeguard outcome, result และเวลา; ถ้า audit write ไม่สำเร็จต้องไม่ commit role ใหม่ และต้องไม่เก็บ secret/token/password
+- [ ] การสร้าง/แก้ไข/ปิดใช้งาน Custom Role ต้องเขียน `ROLE_CREATE`/`ROLE_UPDATE`/`ROLE_PERMISSION_UPDATE`/`ROLE_DEACTIVATE` พร้อม before/after, reason, affected Admin accounts และ migration/rollback reference เมื่อมีผลกระทบ
 - [ ] Security policy ต้องสอดคล้องกับ Auth baseline: email/password only, mandatory Email OTP สำหรับ Admin, idle 8h, max 24h, failed login 5 ครั้ง, lockout 15 นาที
 - [ ] Retention settings ต้องไม่อนุญาต manual delete audit logs จาก UI ปกติ
 - [ ] Export policy ต้องรองรับ CSV/Excel, background job, expiry, sensitive export reason และ audit
@@ -465,8 +468,8 @@ Recommended note format:
 | Area | Notes |
 | --- | --- |
 | Prototype / Spec Alignment | The prototype exposes `Admin Accounts`, `Roles & Permissions`, `Security`, `Retention`, `Policy & Versioning`, `Support Center`, and an `Audit Log` route from Settings. This matches the high-level Settings scope, but the full admin-account lifecycle and permission matrix are not yet implemented in detail. |
-| Implementation Gap | Production still needs own-profile/password settings, admin invite/suspend/reactivate/unlock/archive, last-active-admin guard, role template matrix, security/retention/export policies, feature flags, integration metadata, and settings change history. |
-| Permission / Audit | Permission changes, admin lifecycle actions, security/retention/export policy changes, feature flags, and sensitive/export settings must require confirmation, reason where needed, before/after diff, and audit. |
+| Implementation Gap | Production still needs own-profile/password settings, admin invite/suspend/reactivate/unlock/archive, last-active-admin guard, role template matrix, critical role-change safeguards, security/retention/export policies, feature flags, integration metadata, and settings change history. |
+| Permission / Audit | Permission changes, admin lifecycle actions, role-change safeguard blocks, security/retention/export policy changes, feature flags, and sensitive/export settings must require confirmation, reason where needed, before/after diff, and audit. |
 | FO Sync Impact | Settings changes can alter BO access, FO/BO feature flags, retention/export behavior, public legal/support content, and security defaults. Changes must surface FO/BO impact before save and link history to Audit Log where permitted. |
 
 ## 17. Option Master

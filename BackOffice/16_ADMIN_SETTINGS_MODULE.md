@@ -1,8 +1,8 @@
 # 16 BO Admin Settings Module
 
-**Version:** `BO-16-v0.5`
+**Version:** `BO-16-v0.7`
 **Date:** 2026-09-17
-**Status:** Updated — Roles & Permissions baseline permission catalog defined
+**Status:** Updated — Role-change audit record defined
 **Platform:** Responsive Web Back Office
 **Primary BO Sources:** `00_GLOBAL_RULES_MODULE.md`, `01_AUTHENTICATION_MODULE.md`, `08_AUDIT_LOG_MODULE.md`, `15_REPORTS_ANALYTICS_MODULE.md`
 
@@ -18,8 +18,8 @@
 | --- | --- |
 | Module Name | BO Admin Settings |
 | Platform | Responsive Web Back Office |
-| Version | `BO-16-v0.5` |
-| Status | Updated — Roles & Permissions baseline permission catalog defined |
+| Version | `BO-16-v0.7` |
+| Status | Updated — Role-change audit record defined |
 | Owner | Product / UX / Engineering / Operations |
 | Document Type | Functional PRD |
 
@@ -267,6 +267,8 @@ Pattern: `openAdminAccountChangeRoleModal` (prototype บรรทัด 22908�
 
 **Permission diff** (prototype บรรทัด 22970): แสดง "เปลี่ยนสิทธิ: <role เดิม> → <role ใหม่>" ในกล่อง warning — อัปเดต live เมื่อเลือก role ใหม่
 
+**Safeguard validation**: ก่อนเปิดให้ยืนยัน ต้องตรวจ rule ใน section 9.7 ทุกครั้ง โดยเฉพาะ self-change, master admin, last Super Admin / last admin-capable account, downgrade จาก role ที่มีสิทธิ์จัดการ role, และสถานะ account ที่ไม่อนุญาตให้เปลี่ยน role; ถ้าไม่ผ่านต้องไม่บันทึก mutation และต้องแสดง policy-blocked state แทนการเปลี่ยน role
+
 **Confirm**: ปุ่ม "ยืนยันเปลี่ยน Role" (warning tone) + บันทึก audit event `ADMIN_ACCOUNT_ROLE_CHANGE` (`ensureAdminAccountRoleChangeAuditEvent` prototype บรรทัด 23120) + re-render list/detail
 
 ### 8.6 Invite Admin Modal
@@ -424,6 +426,60 @@ Matrix นี้เป็น baseline กลางสำหรับ 8 standard 
 - Require confirmation, reason, before/after diff, and audit.
 - Direct API/service enforcement is required for every changed policy.
 - Changes affecting the current session must be reflected on the next request or token/session refresh.
+
+### 9.7 Critical Role Change Safeguards
+
+Role change is a high-risk account lifecycle action. UI hiding is only a presentation layer; the same safeguards must be enforced at route, API, service, and persistence layers before the role value is changed.
+
+| Safeguard | Rule | Blocked outcome / UI state |
+| --- | --- | --- |
+| Self-change protection | Admin cannot change their own role, including upgrade, downgrade, or switching to another role with similar permissions. | Hide action; direct URL/API returns permission denied with audit attempt if applicable. |
+| Master admin protection | Master admin account cannot be changed away from its protected role and cannot be assigned a weaker role. | Hide action and show policy-blocked state if reached by deep link. |
+| Last Super Admin protection | If the target account is the only active `Super Admin`, changing it to any non-`Super Admin` role is blocked. | Show blocked reason that at least one active Super Admin must remain. |
+| Last role-manager protection | If the target account is the only active account with `settings.roles.manage` or equivalent role-management capability, changing it to a role without that capability is blocked. | Show blocked reason that at least one role-management admin must remain. |
+| Last admin-capable protection | If the change would leave no active account that holds all of `settings.admin_accounts.manage`, `settings.roles.manage`, and `settings.security.update`, block the change. | Show blocked reason that BO must retain admin recovery coverage. |
+| Privilege escalation confirmation | Changing to a role with broader access than the current role requires a selected reason and high-risk confirmation. | Confirmation must display before/after permission diff and cannot submit without reason. |
+| Privilege downgrade warning | Changing from `Super Admin`, `Admin Manager`, or any Custom Role with role-management permission to a weaker role must show high-risk downgrade warning. | Confirmation must clearly state lost admin-management capabilities. |
+| Account status guard | Role can change only for `Active` or `Invited` accounts. `Suspended`, `Locked`, and `Archived` accounts must be restored/unlocked through the correct lifecycle action first. | Hide action in row/detail; direct API rejects mutation. |
+| Standard role identity guard | System role identity cannot be renamed, deleted, or repurposed through role-change flow. Admin account role assignment may reference a standard role or Custom Role only. | Block attempts to mutate role template identity from account lifecycle flow. |
+| Custom Role status guard | Admin cannot assign an inactive, archived, deleted, draft-only, or invalid Custom Role. If a Custom Role is later deactivated, affected Admin accounts require a governed migration path, not silent reassignment. | Role selector excludes unavailable roles; API rejects stale selections. |
+| Session freshness | Role changes affecting current admin access must invalidate stale permission cache and apply on next request or token/session refresh. If the changed account is currently online, production must define whether to force refresh or require re-login. | Show success with access-refresh note; stale sessions cannot keep removed permissions. |
+| Audit completeness | Every submitted role-change attempt must preserve actor, target account, old role, requested new role, reason, before/after permission diff summary, result, timestamp, and reference id. For attempts rejected before form submission, record available fields and the block reason; do not invent a selected role or user-entered reason. | Audit Log can trace completed and blocked attempts according to audit visibility policy. |
+
+For production implementation, these safeguards must run after permission check and before persistence. Race conditions must be handled transactionally: the last Super Admin, last role-manager, and last admin-capable checks must use current committed account state, not stale UI state.
+
+### 9.8 Role Change Audit Record Contract
+
+ทุกคำขอเปลี่ยน Role ต้องสร้าง audit event `ADMIN_ACCOUNT_ROLE_CHANGE` โดย event เดียวต้องผูกกับ target Admin account และ correlation/reference เดียวกันตลอด request เพื่อให้ตรวจย้อนกลับจาก History & Actions ไปยัง Audit Log ได้ การบันทึกสำเร็จเป็นส่วนหนึ่งของ transaction เดียวกับการเปลี่ยน Role; ถ้าเขียน audit ไม่สำเร็จ ห้าม persist role ใหม่
+
+| กลุ่มข้อมูล | ฟิลด์ที่ต้องบันทึก | กติกา |
+| --- | --- | --- |
+| ตัวระบุเหตุการณ์ | `event_id`, `event_type`, `created_at`, `correlation_id`, `reference` | `event_type` คงที่เป็น `ADMIN_ACCOUNT_ROLE_CHANGE`; `reference` ใช้ Admin ID ของผู้ถูกเปลี่ยน Role (เช่น `ADM-xxx`) และ `correlation_id` เชื่อม request/retry เดียวกันโดยไม่สร้างผลซ้ำ |
+| ผู้ดำเนินการ | `actor_admin_id`, `actor_name`, `actor_role`, `actor_type`, `ip_address`, `user_agent`, `session_id` หรือ session reference | ระบุผู้ยืนยัน action จริง ไม่ใช้ข้อมูลจาก target แทน actor; `ip_address`/`user_agent` ถูกจำกัดการเข้าถึงตาม audit visibility policy |
+| ผู้ถูกเปลี่ยน Role | `target_admin_id`, `target_name`, `target_account_status`, `target_is_master` | เก็บ snapshot ขณะตรวจ safeguard เพื่ออธิบายว่าทำไม action ผ่านหรือถูก block |
+| การเปลี่ยนแปลง | `old_role_id`, `old_role_name`, `old_role_type`, `new_role_id`, `new_role_name`, `new_role_type`, `permission_diff` | ต้องเก็บ before/after ของ Role และ summary ของ permission ที่เพิ่ม/ลด/คงเดิม; Custom Role ต้องระบุ version หรือ immutable revision reference ของ template ที่ถูกเลือก |
+| เหตุผลและบริบท | `reason_code`, `reason_label`, `note`, `impact_summary`, `confirmation_version` | `reason_code` เป็น required; `note` เก็บเมื่อผู้ดำเนินการระบุ; `confirmation_version` ชี้ข้อความยืนยัน/นโยบายที่ใช้ ณ เวลานั้น |
+| ผลตรวจและผลลัพธ์ | `safeguard_checks`, `decision`, `result`, `failure_code`, `failure_detail`, `persisted_at` | `safeguard_checks` ระบุผลของ rule ที่เกี่ยวข้อง; `decision` เป็น `Allowed` หรือ `Blocked`; `result` ใช้เฉพาะ `Success`, `Failed` หรือ `Partial` ตาม Audit Log contract; `persisted_at` มีเฉพาะเมื่อเปลี่ยน Role สำเร็จ |
+
+กติกา result:
+
+- `Success`: บันทึก before/after ครบ, audit write สำเร็จ และ role ใหม่ถูก persist แล้ว
+- `Blocked`: ตั้ง `decision: Blocked` และ `result: Failed` โดยไม่เปลี่ยน Role; เก็บ actor/target/role เดิม, requested role และ reason เฉพาะที่มีอยู่จริง พร้อม `failure_code` ของ safeguard ที่ block ห้ามเดาหรือเติม role/reason ที่ผู้ใช้ยังไม่ได้เลือก
+- `Failed`: ผ่านการตรวจหรือเริ่ม persist แล้วแต่ transaction/audit write ล้มเหลว; เก็บข้อมูลที่ปลอดภัยสำหรับ trace และต้องไม่เหลือ role เปลี่ยนครึ่งทาง
+- `Partial`: ใช้ได้เฉพาะกรณีผลข้างเคียงที่ไม่ใช่การเปลี่ยน Role ล้มเหลวหลัง transaction หลักสำเร็จ; ห้ามใช้แทน `Success` เมื่อ audit write หรือ role persistence ไม่สมบูรณ์
+
+ก่อนแสดงใน Audit Log ให้ mask ข้อมูลเครือข่าย/session และไม่เก็บ secret, token, password หรือ permission payload ที่เกิน audit visibility ของผู้ดู หาก retry request เดิม ให้ใช้ `correlation_id`/idempotency key เดิมและไม่สร้างการเปลี่ยน Role ซ้ำ; การ retry ที่ไม่ทำ mutation ใหม่อาจบันทึก attempt เพิ่มได้ แต่ต้องอ้าง event หลักเดิมชัดเจน
+
+การสร้าง แก้ไข และปิดใช้งาน Role template/Custom Role ใช้ field กลางข้างต้นตามที่เกี่ยวข้อง และต้องบันทึก event เพิ่มเติมดังนี้:
+
+| เหตุการณ์ | Event type | ข้อมูลเฉพาะที่ต้องมี |
+| --- | --- | --- |
+| สร้าง Custom Role | `ROLE_CREATE` | `role_id`, `role_name`, `role_type`, source template/revision, permission set เริ่มต้น, creator และ result |
+| แก้ไขชื่อ คำอธิบาย หรือ Permission ของ Custom Role | `ROLE_UPDATE` หรือ `ROLE_PERMISSION_UPDATE` | `role_id`, before/after ของ field ที่เปลี่ยน, permission added/removed/changed, reason, affected-admin count และ result |
+| ปิดใช้งานหรือเปิดใช้งาน Custom Role | `ROLE_DEACTIVATE` หรือ `ROLE_REACTIVATE` | `role_id`, old/new status, reason, affected Admin accounts, migration/rollback reference และ result |
+
+System Role ห้ามเปลี่ยน identity; attempt ที่ถูก block ต้องใช้ event type ของคำขอที่เกี่ยวข้องพร้อม `decision: Blocked`, `result: Failed` และ `failure_code` ตาม safeguard โดยไม่บันทึก mutation ที่ไม่เกิดขึ้น
+
 ## 10. Security Policy Settings
 
 | Setting | Baseline | Editable In BO |
@@ -624,12 +680,16 @@ Audit log ต้องบันทึกอย่างน้อย:
 - `ADMIN_SETTING_VIEW_SENSITIVE`
 - `ADMIN_ACCOUNT_INVITE`
 - `ADMIN_ACCOUNT_ROLE_CHANGE`
+- `ROLE_CREATE`
+- `ROLE_UPDATE`
 - `ADMIN_ACCOUNT_SUSPEND`
 - `ADMIN_ACCOUNT_REACTIVATE`
 - `ADMIN_ACCOUNT_UNLOCK`
 - `ADMIN_ACCOUNT_ARCHIVE`
 - `ADMIN_EMAIL_OTP_POLICY_UPDATE`
 - `ROLE_PERMISSION_UPDATE`
+- `ROLE_DEACTIVATE`
+- `ROLE_REACTIVATE`
 - `SECURITY_POLICY_UPDATE`
 - `SYSTEM_SETTING_UPDATE`
 - `RETENTION_POLICY_UPDATE`
@@ -653,6 +713,8 @@ Audit payload ต้องมี:
 - `ip_address`
 - `user_agent`
 - `created_at`
+
+สำหรับ `ADMIN_ACCOUNT_ROLE_CHANGE` ต้องใช้ field contract ใน section 9.8 เพิ่มเติม และต้องเก็บผลของ safeguard ทุกครั้งที่ submit โดย Audit Log แสดง before/after role และ permission diff summary ตามสิทธิ์ของผู้ดู
 
 Sensitive settings value ต้อง mask ใน audit payload ถ้าเป็น secret หรือ high-risk data
 
@@ -694,10 +756,12 @@ Sensitive settings value ต้อง mask ใน audit payload ถ้าเป�
 | AC-BO-SET-017 | Admin Account Detail แสดง Account Summary tiles (Email/Created At/Last Login) + Role & Permissions matrix (เฉพาะเมนูที่ level ≠ none) + History & Actions 5 คอลัมน์ (วันที่/Action/Reference/Audit/รายละเอียด) โดย history แสดงเฉพาะ lifecycle ของ account ตัวเอง ไม่รวมงานใน module อื่น |
 | AC-BO-SET-018 | Audit link pill ใน History & Actions คลิกได้และเปิด Audit Log กรองด้วย reference ของ account นั้น; รายการที่ไม่มี audit แสดง `—` |
 | AC-BO-SET-019 | Action modals Suspend/Reactivate/Unlock/Archive บังคับเลือก reason (4 reasons ต่อ action) แสดง impact note ตาม action และใช้ confirm tone ที่ถูกต้อง (suspend=danger, reactivate/unlock=primary, archive=warning) พร้อม success toast และ audit event |
-| AC-BO-SET-020 | Change Role modal แสดง role ปัจจุบัน disabled, เลือก role ใหม่ยกเว้น role เดิม, บังคับ reason, แสดง permission diff live update และบันทึก audit `ADMIN_ACCOUNT_ROLE_CHANGE` |
+| AC-BO-SET-020 | Change Role modal แสดง role ปัจจุบัน disabled, เลือก role ใหม่ยกเว้น role เดิม, บังคับ reason, แสดง permission diff live update, ตรวจ critical role-change safeguards ก่อนยืนยัน และบันทึก audit `ADMIN_ACCOUNT_ROLE_CHANGE` |
 | AC-BO-SET-021 | Invite Admin modal ตรวจอีเมล unique, บังคับเลือก role template จาก 8 standard role templates, แสดง Email OTP note และบันทึก audit `ADMIN_ACCOUNT_INVITE` พร้อมสร้าง admin id ใหม่ (`ADM-xxx` ลำดับถัดไป) |
 | AC-BO-SET-022 | Permission gating ตาม `canSuspendAdmin`/`canReactivateAdmin`/`canUnlockAdmin`/`canArchiveAdmin`/`canChangeRoleAdmin` — action ที่ไม่อนุญาตต้องไม่ปรากฏใน DOM ทั้งใน row menu และ detail action buttons |
 | AC-BO-SET-023 | Master admin หลัก (ADM-010) ห้าม suspend/archive/change role; self ห้าม suspend/reactivate/unlock/archive/change role ตัวเอง; ถ้า active admin เหลือ 1 คน ห้าม suspend (ป้องกันระบบไม่มีผู้ดูแล) |
+| AC-BO-SET-024 | Role change ที่ทำให้ไม่มี active `Super Admin`, ไม่มี account ที่จัดการ role ได้, ไม่มี admin recovery coverage, assign Custom Role ที่ inactive/invalid, หรือเปลี่ยน role ตัวเอง/master admin ต้องถูก block ทั้ง UI/API/service พร้อม policy-blocked state และ audit result ตาม policy |
+| AC-BO-SET-025 | ทุกคำขอเปลี่ยน Role สร้าง `ADMIN_ACCOUNT_ROLE_CHANGE` ตาม section 9.8 โดยบันทึก event/reference/correlation, actor, target, before/after Role และ permission diff, reason, safeguard outcome, result และเวลา; การสร้าง/แก้ไข/ปิดใช้งาน Role ใช้ `ROLE_CREATE`/`ROLE_UPDATE`/`ROLE_PERMISSION_UPDATE`/`ROLE_DEACTIVATE` ตามข้อมูลเฉพาะ; audit write ต้องสำเร็จก่อน commit mutation และไม่มี secret/token/password ใน payload |
 
 ## 22. Open Decisions
 
