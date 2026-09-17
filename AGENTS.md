@@ -41,6 +41,10 @@ UI copy, labels, error messages, and documentation for TukDaeng are primarily in
 - Keep technical terms, product names, file names, screen names, statuses, commands, and code identifiers in English when that is clearer or already the convention in the file.
 - Match the tone and register of nearby copy so new text blends in rather than standing out.
 
+## Code Comment Task Reference Rule
+
+ห้ามใส่เลข task (เช่น AL-005, AL-012) ใน comment ของโค้ดที่เขียนใหม่ — comment ในโค้ดเขียนอธิบาย intent/pattern ของโค้ดเท่านั้น ส่วน provenance (งานนี้มาจาก task ไหน) ให้ git commit message และ work log ใน kanban เป็นผู้บันทึก เพราะเลข task เปลี่ยน/ถูกตัดได้ ทำให้ comment ค้างเลขเก่าและอ่านสับสน comment เดิมที่มีเลขอยู่แล้วให้คงไว้เป็น historical note และอัปเดตเลขตามจริงเมื่อมีการ renumber task
+
 ## Kanban Task Style
 
 When the user asks to create, split, or add Kanban tasks for TukDaeng, prefer one complete task per user-facing work item instead of splitting audit, implementation, QA, and work-log into separate tasks, unless the user explicitly asks for subtasks.

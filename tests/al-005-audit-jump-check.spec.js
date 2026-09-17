@@ -1,4 +1,4 @@
-// AL-006: quick automated check — audit jump จาก Account Deletion History & Actions → Audit Log
+// AL-005: quick automated check — audit jump จาก Account Deletion History & Actions → Audit Log
 const { test, expect } = require("@playwright/test");
 
 const PROTOTYPE_URL = "/bo-prototype.html";
@@ -22,7 +22,7 @@ async function openDeletionDetail(page, reqId) {
   await page.waitForSelector(".deletion-detail-mode", { timeout: 5000 });
 }
 
-test.describe("AL-006: audit jump จาก Account Deletion → Audit Log", () => {
+test.describe("AL-005: audit jump จาก Account Deletion → Audit Log", () => {
 
   test("1. History & Actions มีคอลัมน์ Audit + pill event id ที่ match (DEL-033)", async ({ page }) => {
     await openDeletionDetail(page, "DEL-033");

@@ -4,7 +4,7 @@
 //   ขาเข้า: audit ref link จาก Admin Account Detail + Deletion Request Detail → Audit Log กรองด้วย event id + toast
 //   ขาออก: Reference pill ใน detail drawer → entity detail ตาม prefix (ADM/DEL/AST/ART/RCO/U-) หรือ fallback กรอง
 //   + filter state เมื่อ jump เข้ามา + back navigation + responsive ทุก viewport (ห้ามแก้ prototype)
-// หมายเหตุ: Dashboard → Audit Log jump ถูกตัดออกจาก scope (AL-007, decision 16/09) — spec นี้ไม่ cover
+// หมายเหตุ: Dashboard → Audit Log jump ถูกตัดออกจาก scope (decision 16/09) — spec นี้ไม่ cover
 const { test, expect } = require("@playwright/test");
 
 const PROTOTYPE_URL = "/bo-prototype.html";
@@ -185,7 +185,7 @@ test.describe("QA-BO-014e: Settings > Audit Log — cross-module jump & responsi
     expect(auditCells).toContain("—");
   });
 
-  // ---- ขาเข้า: Account Deletion Detail → Audit Log (AL-006) ----
+  // ---- ขาเข้า: Account Deletion Detail → Audit Log (AL-005) ----
 
   test("3. Deletion Detail → Audit Log: คลิก audit link AUD-88195 (DEL-033 ขอลบบัญชี) → กรองด้วย event id + toast", async ({ page }) => {
     await openDeletionDetail(page, "DEL-033");

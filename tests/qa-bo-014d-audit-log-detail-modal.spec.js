@@ -2,7 +2,7 @@
 // อ้างอิง prototype เป็นหลักสำหรับการแสดงผล — openAuditLogDetailModal() + auditLogData.events
 // เป้าหมาย: รันเทสครอบ detail drawer — sections, conditional fields, result pill, ref pill,
 //          read-only, ปิดด้วย X/backdrop/ESC, mobile responsive (ห้ามแก้ prototype)
-// หมายเหตุ: cross-module jump จาก ref pill อยู่ใน qa-bo-014e (AL-012) — spec นี้เช็กแค่ render ของ pill
+// หมายเหตุ: cross-module jump จาก ref pill อยู่ใน qa-bo-014e (AL-010) — spec นี้เช็กแค่ render ของ pill
 const { test, expect } = require("@playwright/test");
 
 const PROTOTYPE_URL = "/bo-prototype.html";

@@ -5302,7 +5302,7 @@
     .audit-detail-result-pill.success .audit-detail-dot { background: #22c55e; }
     .audit-detail-result-pill.partial .audit-detail-dot { background: #f59e0b; }
     .audit-detail-result-pill.failed .audit-detail-dot { background: #ef4444; }
-    /* AL-002/AL-006: Reference pill — ทรงเดียวกับ history-audit-link (โทนน้ำเงิน) คลิก jump ไปหน้า entity ตาม prefix (หรือกรอง Audit Log ถ้า map ไม่ได้) */
+    /* AL-002/AL-005: Reference pill — ทรงเดียวกับ history-audit-link (โทนน้ำเงิน) คลิก jump ไปหน้า entity ตาม prefix (หรือกรอง Audit Log ถ้า map ไม่ได้) */
     .audit-detail-ref-pill {
       border: 1px solid #c6ddff;
       background: #e8f1ff;
@@ -22417,7 +22417,7 @@
       return parseBangkokAuditTime(entry.createdAt) || 0;
     }
 
-    // AL-006: reference pill ใน audit drawer → jump ไปหน้า entity จริงตาม prefix
+    // AL-005: reference pill ใน audit drawer → jump ไปหน้า entity จริงตาม prefix
     // ADM→Admin Detail, DEL→Deletion Detail, AST→Asset Detail, ART→Article Detail,
     // RCO→Reported Comment Detail, U-xxx/"User ID U-xxx"→User Detail
     // return false ถ้า map ไม่ได้ → caller fallback กรอง Audit Log ด้วย reference
@@ -24203,7 +24203,7 @@
       if (tl.archivedAt) auditLogs.push({ at: tl.archivedAt, actor: "System", action: "ลบบัญชีอัตโนมัติ", note: "ครบช่วงรอลบบัญชี 30 วัน", emailDelivery: deletionEmailDelivery("DEL") });
       if (tl.cancelledAt) auditLogs.push({ at: tl.cancelledAt, actor: req.processedBy || "Admin", action: "ยกเลิกคำขอ", note: "" });
 
-      // AL-006: จับคู่ history row กับ audit event (module Account Deletion + reference = request id + action เดียวกัน)
+      // AL-005: จับคู่ history row กับ audit event (module Account Deletion + reference = request id + action เดียวกัน)
       // events เรียงล่าสุดก่อนแต่ history เรียงเก่าสุดก่อน — ถ้า action ซ้ำ (เช่น ปฏิเสธซ้ำ) นับ occurrence จากท้าย list
       const reqAuditEvents = auditLogData.events.filter(e => e.module === "Account Deletion" && e.reference === req.id);
       const auditActionSeen = {};
@@ -38846,14 +38846,14 @@
         jumpToDeliveryLog(deliveryLogJump.dataset.deliveryLogJump);
         return;
       }
-      // AL-006: data-audit-ref — ref ที่ map ไปหน้า entity ได้ (ADM/DEL/AST/ART/RCO/U-) → jump ไป detail นั้น
+      // AL-005: data-audit-ref — ref ที่ map ไปหน้า entity ได้ (ADM/DEL/AST/ART/RCO/U-) → jump ไป detail นั้น
       // ref อื่น (AUD event id จาก deletion history, RPT-USER, System ฯลฯ) → กรอง Audit Log ด้วย ref
       const auditRefJump = event.target.closest("[data-audit-ref]");
       if (auditRefJump) {
         const ref = auditRefJump.dataset.auditRef;
         if (auditRefJump.closest("#user-action-modal")) closeUserActionModal();
         if (!jumpToAuditReference(ref)) {
-          // AL-012: jump เข้า Audit Log = fresh filtered view — ล้าง filter state เก่าที่ค้างจาก ref-pill jump รอบก่อน
+          // AL-010: jump เข้า Audit Log = fresh filtered view — ล้าง filter state เก่าที่ค้างจาก ref-pill jump รอบก่อน
           clearListFilterState("audit-log");
           resetListFilterPanelsForNavigation("audit", "Audit Log");
           renderModule("audit", "Audit Log");
@@ -38861,7 +38861,7 @@
           if (search && ref) { search.value = ref; renderAuditLogRows(); }
           showSuccessToast(`เปิด Audit Log กรองด้วย ${ref}`, "Audit Log");
         } else {
-          // AL-012: jump ออกไป entity detail — entity renderers ไม่ลบ audit-log-mode ให้
+          // AL-010: jump ออกไป entity detail — entity renderers ไม่ลบ audit-log-mode ให้
           document.body.classList.remove("audit-log-mode");
         }
         return;
@@ -40477,7 +40477,7 @@
       const adminAccountAuditRef = event.target.closest("[data-admin-account-audit-ref]");
       if (adminAccountAuditRef) {
         const ref = adminAccountAuditRef.dataset.adminAccountAuditRef;
-        // AL-012: jump เข้า Audit Log = fresh filtered view — ล้าง filter state เก่าที่ค้างจาก session ก่อนหน้า
+        // AL-010: jump เข้า Audit Log = fresh filtered view — ล้าง filter state เก่าที่ค้างจาก session ก่อนหน้า
         clearListFilterState("audit-log");
         resetListFilterPanelsForNavigation("audit", "Audit Log");
         renderModule("audit", "Audit Log");

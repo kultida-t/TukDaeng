@@ -1,7 +1,7 @@
 // QA-BO-014c: Settings > Audit Log — Filter bar, search, sort & date range (strict Playwright spec)
 // อ้างอิง prototype เป็นหลักสำหรับการแสดงผล — renderAuditLogRows() filter/sort logic + filterOptions
 // เป้าหมาย: รันเทสครอบ filter bar, search, module/risk filter, sort, date range, reset, persistence (ห้ามแก้ prototype)
-// หมายเหตุ: ไม่มี actor filter (AL-005 ถูก revert — search field cover actor อยู่แล้ว)
+// หมายเหตุ: ไม่มี actor filter (ถูก revert — search field cover actor อยู่แล้ว)
 const { test, expect } = require("@playwright/test");
 
 const PROTOTYPE_URL = "/bo-prototype.html";

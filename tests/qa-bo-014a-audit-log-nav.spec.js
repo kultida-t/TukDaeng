@@ -120,7 +120,7 @@ test.describe("QA-BO-014a: Settings > Audit Log — navigation & menu", () => {
   });
 
   test("10. ไม่มี Dashboard card/link ที่ jump ตรงไป Audit Log (เข้าผ่าน nav submenu เท่านั้น)", async ({ page }) => {
-    // AL-007 ถูกตัดออก — Audit Log ไม่มี entry point จาก Dashboard
+    // Dashboard → Audit Log jump ถูกตัดออกจาก scope — Audit Log ไม่มี entry point จาก Dashboard
     await page.goto(PROTOTYPE_URL);
     await page.waitForLoadState("networkidle");
     await loginIfNeeded(page);
