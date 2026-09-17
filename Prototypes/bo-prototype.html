@@ -7676,10 +7676,10 @@
       position: relative;
     }
     body.role-list-mode #table .role-list-table {
-      min-width: 1060px;
+      min-width: 1140px;
     }
     body.role-list-mode #table > .footer-range {
-      min-width: 1060px;
+      min-width: 1140px;
       padding: 11px 18px;
     }
     body.role-list-mode .role-list-table .row-menu-list {
@@ -7736,9 +7736,9 @@
       text-overflow: ellipsis;
       white-space: nowrap;
     }
-    /* table grid (7 columns: Role / Role Key / ประเภท / สถานะ / ผู้ดูแลที่ใช้งาน / อัปเดตล่าสุด / Action) */
+    /* table grid (8 columns: Role / Role Key / Type / Status / Detail / Admins / Last Updated / Action) */
     body.role-list-mode .role-list-table .user-row {
-      grid-template-columns: minmax(210px, 1.25fr) minmax(140px, .8fr) minmax(104px, .6fr) minmax(84px, .45fr) minmax(108px, .55fr) minmax(150px, .85fr) minmax(56px, .28fr);
+      grid-template-columns: minmax(180px, 1.05fr) minmax(150px, .9fr) minmax(108px, .58fr) minmax(78px, .4fr) minmax(220px, 1.35fr) minmax(70px, .34fr) minmax(138px, .72fr) minmax(54px, .26fr);
       gap: 12px;
     }
     body.role-list-mode .role-list-table .user-row:not(.head) {
@@ -7749,6 +7749,11 @@
     body.role-list-mode .role-list-table .user-row > div {
       min-width: 0;
     }
+    /* คอลัมน์ตัวเลข Admins จัดกึ่งกลาง (ทั้ง header) ให้สมดุลกับคอลัมน์ข้อความรอบข้าง */
+    body.role-list-mode .role-list-table .user-row > div[data-label="Admins"],
+    body.role-list-mode .role-list-table .user-row.head > div:nth-child(6) {
+      text-align: center;
+    }
     body.role-list-mode .role-list-table .user-row.role-row:not(.head) .main-text,
     body.role-list-mode .role-list-table .user-row.role-row:not(.head) .muted {
       color: #516683;
@@ -7757,20 +7762,16 @@
       line-height: 1.5;
       margin-bottom: 0;
     }
-    /* ชื่อ Role เป็น link เปิด Role Detail */
-    .role-name-link {
-      padding: 0;
-      border: 0;
-      background: transparent;
-      color: var(--blue);
+    /* คอลัมน์ Detail ตัด 1 บรรทัด + hover tooltip เต็ม (pattern เดียวกับ Note ของ Audit Log) */
+    body.role-list-mode .role-list-table .history-note {
       font-size: 12px;
-      font-weight: 700;
-      text-align: left;
-      cursor: pointer;
+      color: #475569;
+      line-height: 1.4;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
     }
-    .role-name-link:hover {
-      text-decoration: underline;
-    }
+    /* ชื่อ Role แสดงเป็นตัวธรรมดาเหมือน list อื่น — คลิก row เปิด Role Detail */
     .role-key-text {
       font-family: ui-monospace, SFMono-Regular, Consolas, "Liberation Mono", monospace;
       font-size: 11px;
@@ -13145,10 +13146,6 @@
         font-weight: 500;
         letter-spacing: .04em;
         line-height: 1;
-      }
-      /* คำอธิบายใต้ชื่อใช้เฉพาะ desktop — mobile card แสดงเฉพาะฟิลด์ที่ spec กำหนด */
-      body.role-list-mode .role-list-table .user-row.role-row:not(.head) > div.user-cell-primary[data-label="Role"] .role-desc {
-        display: none;
       }
       body.role-list-mode .role-list-table .user-row.role-row:not(.head) > div[data-label]:not(.user-cell-primary) {
         display: none;
@@ -27371,7 +27368,7 @@
       document.querySelector("#page-title").textContent = "Roles & Permissions";
       document.querySelector("#page-meta").textContent = "";
       document.querySelector("#panel-title").textContent = "Role List";
-      document.querySelector("#panel-subtitle").textContent = "จัดการ Role มาตรฐานและ Custom Role สำหรับผู้ดูแลระบบ";
+      document.querySelector("#panel-subtitle").textContent = "";
       document.querySelector("#primary-action").textContent = "";
       document.querySelector("#user-panel-filter-actions").innerHTML = `
         <button class="btn user-filter-toggle" type="button" data-role-filter-toggle aria-expanded="${roleListFilterOpen}">${iconSvg.filter}<span>${roleListFilterOpen ? "ปิดตัวกรอง" : "เปิดตัวกรอง"}</span></button>
@@ -27419,7 +27416,7 @@
         : `<div class="user-row empty"><div class="role-empty-state" style="grid-column: 1 / -1; text-align: center; padding: 2.5rem 1rem;"><div class="empty-icon">${iconSvg.siSearch}</div><div class="empty-title">ไม่พบ Role ตามเงื่อนไขที่เลือก</div><div class="empty-subtitle">ลองปรับคำค้นหรือตัวกรอง แล้วลองใหม่</div></div></div>`;
       document.querySelector("#table").innerHTML = `
         <div class="user-table role-list-table">
-          <div class="user-row head"><div>Role</div><div>Role Key</div><div>ประเภท</div><div>สถานะ</div><div>ผู้ดูแลที่ใช้งาน</div><div>อัปเดตล่าสุด</div><div>Action</div></div>
+          <div class="user-row head"><div>Role</div><div>Role Key</div><div>Type</div><div>Status</div><div>Detail</div><div>Admins</div><div>Last Updated</div><div>Action</div></div>
           ${pageRows.length === 0 ? emptyState : pageRows.map(role => renderRoleRow(role, esc)).join("")}
         </div>
         <div class="footer-range">
@@ -27436,23 +27433,23 @@
       return `
         <div class="user-row role-row" data-role-card="${role.id}">
           <div class="user-cell-primary" data-label="Role">
-            <div class="main-text"><span class="desktop-user-name"><button class="role-name-link" type="button" data-role-open="${role.id}">${esc(role.name)}</button></span><span class="mobile-user-card-title">${esc(role.name)}</span></div>
-            <div class="muted role-desc">${esc(role.description)}</div>
+            <div class="main-text"><span class="desktop-user-name">${esc(role.name)}</span><span class="mobile-user-card-title">${esc(role.name)}</span></div>
           </div>
           <div class="user-card-tags">
             ${roleTypeChip(role)}
             ${roleStatusPill(role.status)}
             <div class="user-card-meta">
               <div class="user-card-meta-item comment-field-meta"><span>Role Key</span><strong>${esc(role.roleKey)}</strong></div>
-              <div class="user-card-meta-item comment-field-meta"><span>ผู้ดูแลที่ใช้งาน</span><strong>${admins} คน</strong></div>
-              <div class="user-card-meta-item comment-field-meta"><span>อัปเดตล่าสุด</span><strong>${role.updatedAt} · ${esc(role.updatedBy)}</strong></div>
+              <div class="user-card-meta-item comment-field-meta"><span>Admins</span><strong>${admins}</strong></div>
+              <div class="user-card-meta-item comment-field-meta"><span>Last Updated</span><strong>${role.updatedAt} · ${esc(role.updatedBy)}</strong></div>
             </div>
           </div>
           <div data-label="Role Key"><div class="main-text"><span class="role-key-text">${esc(role.roleKey)}</span></div></div>
-          <div data-label="ประเภท">${roleTypeChip(role)}</div>
-          <div data-label="สถานะ">${roleStatusPill(role.status)}</div>
-          <div data-label="ผู้ดูแลที่ใช้งาน"><div class="main-text">${admins} คน</div></div>
-          <div data-label="อัปเดตล่าสุด"><div class="main-text">${role.updatedAt}</div><div class="muted">โดย ${esc(role.updatedBy)}</div></div>
+          <div data-label="Type">${roleTypeChip(role)}</div>
+          <div data-label="Status">${roleStatusPill(role.status)}</div>
+          <div data-label="Detail" class="history-note" data-comment-full="${esc(role.description)}">${esc(role.description)}</div>
+          <div data-label="Admins"><div class="main-text">${admins}</div></div>
+          <div data-label="Last Updated"><div class="main-text">${role.updatedAt}</div></div>
           <div class="user-row-actions">
             <details class="row-menu">
               <summary aria-label="Role actions">...</summary>
@@ -27515,8 +27512,8 @@
             <h4>Role Summary</h4>
             <div class="detail-grid three">
               ${summaryTile("Role Key", esc(role.roleKey))}
-              ${summaryTile("ผู้ดูแลที่ใช้งาน", `${countActiveAdminsUsingRole(role.name)} คน`)}
-              ${summaryTile("อัปเดตล่าสุด", `${role.updatedAt} · ${esc(role.updatedBy)}`)}
+              ${summaryTile("Admins", `${countActiveAdminsUsingRole(role.name)}`)}
+              ${summaryTile("Last Updated", `${role.updatedAt} · ${esc(role.updatedBy)}`)}
             </div>
             <div class="module-note">ส่วน Permission Table และรายละเอียดเต็มของ Role จะมาในงานถัดไป — หน้านี้เป็น interim detail สำหรับทดสอบ navigation และ back context จาก Role List</div>
           </div>
@@ -38973,6 +38970,7 @@
 
     let commentHoverTooltipEl = null;
     let commentHoverHideTimer = null;
+    let commentHoverCell = null;
     function ensureCommentHoverTooltip() {
       if (!commentHoverTooltipEl) {
         commentHoverTooltipEl = document.createElement("div");
@@ -39030,15 +39028,20 @@
     }
     document.addEventListener("mouseover", event => {
       const cell = event.target.closest("[data-comment-full]");
-      if (!cell || !cell.closest(".reported-comment-table, .audit-log-table")) return;
+      if (!cell || !cell.closest(".reported-comment-table, .audit-log-table, .role-list-table")) return;
       clearTimeout(commentHoverHideTimer);
       showCommentHoverTooltip(cell);
     });
     document.addEventListener("mouseout", event => {
       const cell = event.target.closest("[data-comment-full]");
-      if (!cell || !cell.closest(".reported-comment-table, .audit-log-table")) return;
+      if (!cell || !cell.closest(".reported-comment-table, .audit-log-table, .role-list-table")) return;
       commentHoverHideTimer = setTimeout(hideCommentHoverTooltip, 120);
     });
+    // คลิกเร็วออกจากหน้า (เช่น row click เปิด detail) cell ถูกลบก่อน mouseout ทำงาน
+    // tooltip เลยค้าง — ซ่อนตอน mousedown เฉพาะ tooltip ที่มาจาก role-list-table
+    document.addEventListener("mousedown", () => {
+      if (commentHoverCell && commentHoverCell.closest(".role-list-table")) hideCommentHoverTooltip();
+    }, true);
     // scroll (หน้า + scroll ภายใน #table) — reposition ให้ tooltip ตาม cell เสมอ
     // เพราะ position: fixed ไม่ขยับตาม scroll เอง ถ้า cell หายไปจากจอค่อยซ่อน
     document.addEventListener("scroll", () => {
