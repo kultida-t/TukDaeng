@@ -1,8 +1,8 @@
 # 16 BO Admin Settings Module
 
-**Version:** `BO-16-v0.4`
+**Version:** `BO-16-v0.5`
 **Date:** 2026-09-17
-**Status:** Updated — Roles & Permissions baseline role templates defined
+**Status:** Updated — Roles & Permissions baseline permission catalog defined
 **Platform:** Responsive Web Back Office
 **Primary BO Sources:** `00_GLOBAL_RULES_MODULE.md`, `01_AUTHENTICATION_MODULE.md`, `08_AUDIT_LOG_MODULE.md`, `15_REPORTS_ANALYTICS_MODULE.md`
 
@@ -18,8 +18,8 @@
 | --- | --- |
 | Module Name | BO Admin Settings |
 | Platform | Responsive Web Back Office |
-| Version | `BO-16-v0.4` |
-| Status | Updated — Roles & Permissions baseline role templates defined |
+| Version | `BO-16-v0.5` |
+| Status | Updated — Roles & Permissions baseline permission catalog defined |
 | Owner | Product / UX / Engineering / Operations |
 | Document Type | Functional PRD |
 
@@ -335,7 +335,74 @@ Roles & Permissions must start with 8 standard role templates. These templates a
 
 Role templates are presets. Production enforcement must use explicit permission keys at route, navigation, UI action, API, service, export, sensitive-field, and audit layers. The Roles & Permissions screen may later support Custom Role, but the 8 standard templates above are system roles: they cannot be deleted, cannot be renamed, and cannot have their system identity changed. If a standard role does not fit a team, create a Custom Role derived from it instead of editing the system role identity.
 
-### 9.2 Module / Action Policy Catalog
+### 9.2 Permission Key Taxonomy
+
+Permission enforcement must use explicit keys, not role names, at navigation, route, UI action, API, service, export, sensitive-field, and audit layers. A Role or Custom Role is only a named collection of these keys.
+
+| Permission group | Key pattern | Scope |
+| --- | --- | --- |
+| Module access | `<module>.view`, `<module>.detail` | เห็นเมนู, เปิด list/detail, search/filter/sort/pagination และ deep link ที่เกี่ยวข้อง |
+| Create/update | `<module>.create`, `<module>.update`, `<module>.draft.update` | สร้างหรือแก้ไขข้อมูลตาม module contract โดยต้องเคารพ validation, confirmation และ audit |
+| Status/moderation | `<module>.status.update`, `<module>.moderate`, `<module>.case.close` | ปิดเคส, restore, hide/remove, suspend/reactivate หรือ action ที่กระทบผู้ใช้/FO |
+| Publish policy | `<module>.publish`, `<module>.schedule`, `<module>.archive`, `<module>.restore` | ใช้กับ Content/Policy flow ที่เปลี่ยนสถานะเผยแพร่ |
+| Sensitive data | `<module>.sensitive.reveal`, `<module>.proof.view`, `<module>.owner_contact.view` | เปิดข้อมูลที่ mask เป็นค่าเริ่มต้น ต้องมี audit และอาจต้องมี reason |
+| Export/download | `<module>.export`, `<module>.download` | ดาวน์โหลดข้อมูล, export file, background job, expiry และ audit ตาม export policy |
+| Settings/admin | `settings.admin_accounts.manage`, `settings.roles.manage`, `settings.security.update`, `settings.retention.update`, `settings.delivery.retry` | เปลี่ยน admin lifecycle, role/permission, security, retention/export policy และ retry delivery |
+| Audit visibility | `audit.view`, `audit.detail`, `audit.export`, `audit.sensitive_payload.view` | อ่าน audit list/detail, export audit และเห็น payload ที่ sensitive |
+
+Permission result has 5 levels:
+
+| Level | Meaning | UI behavior |
+| --- | --- | --- |
+| `none` | ไม่มีสิทธิ์ | ซ่อนเมนู/action; direct URL/API ต้องถูกปฏิเสธ |
+| `view` | ดู list/detail ได้ | แสดงข้อมูลตาม masking policy; ไม่มี mutation |
+| `operate` | ทำงานปกติใน scope ได้ | เปิด action ที่ matrix อนุญาต พร้อม validation/audit ตาม module |
+| `approve` | ทำ action high-risk หรือ publish/close ได้ | ต้องมี confirmation, reason, before/after diff และ audit |
+| `admin` | จัดการ settings/role/policy ได้ | ใช้เฉพาะ role ที่ได้รับอนุญาตและต้องมี safeguard เพิ่มเติม |
+
+### 9.3 Baseline Permission Matrix By Role
+
+Matrix นี้เป็น baseline กลางสำหรับ 8 standard role templates. Custom Role ต้อง derive จาก role template หนึ่ง แล้วเพิ่ม/ลด permission key แบบ explicit เท่านั้น ห้ามผูกสิทธิ์เฉพาะรายบุคคลกับ Admin account โดยตรง.
+
+| Area / permission scope | Super Admin | Admin Manager | Operations Manager | Support Agent | Trust & Safety Moderator | Asset Operations | Content Editor | Content Publisher |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| Dashboard / global queues | admin | view | operate | view | operate | operate | view | view |
+| User Management | admin | view | operate | view | operate | view | none | none |
+| User sensitive reveal / export | admin | none | approve | none | view | none | none | none |
+| Asset List / Asset Detail | admin | view | operate | view | operate | operate | view | view |
+| Asset moderation / reported assets | admin | none | approve | none | approve | operate | none | none |
+| Reported comments | admin | none | approve | none | approve | operate | none | none |
+| Content articles/categories draft | admin | none | view | none | operate | none | operate | operate |
+| Content publish/schedule/archive/restore | admin | none | view | none | approve | none | none | approve |
+| Reported Board moderation | admin | none | view | none | approve | none | view | approve |
+| Market Data catalog | admin | none | view | none | view | view | none | none |
+| Market Data import/sync/update | admin | none | approve | none | none | none | none | none |
+| Offer Management | admin | view | view | view | view | view | none | none |
+| Market Demand / Watch Alerts | admin | view | view | view | view | view | none | none |
+| Policy & Versioning | admin | approve | view | none | view | none | view | approve |
+| Support Center settings | admin | approve | view | operate | view | none | none | none |
+| Account Deletion requests | admin | view | approve | view | approve | none | none | none |
+| Delivery Logs | admin | operate | view | view | view | view | none | none |
+| Retry failed delivery | admin | approve | none | operate | none | none | none | none |
+| Audit Log list/detail | admin | view | view | none | view | none | none | none |
+| Audit sensitive payload / export | admin | none | none | none | none | none | none | none |
+| Admin Accounts lifecycle | admin | approve | none | none | none | none | none | none |
+| Roles & Permissions management | admin | approve | none | none | none | none | none | none |
+| Security / retention / export policy | admin | approve | none | none | none | none | none | none |
+
+### 9.4 Permission Rule Notes
+
+- `Super Admin` is the only standard role with full `admin` coverage, but it is still subject to self-change, master, last-active-admin, confirmation, reason, and audit safeguards.
+- `Admin Manager` can manage admin lifecycle and role/policy changes, but cannot bypass Super Admin/master protection, cannot view audit sensitive payload by default, and cannot delete audit trail.
+- `Operations Manager` can operate across queue-heavy modules but cannot change Admin Settings, Roles & Permissions, security policy, audit payload visibility, or system role identity.
+- `Support Agent` is intentionally read-heavy. It may use support and delivery-retry actions needed for user assistance, but cannot mutate user/account/asset status or reveal full sensitive data.
+- `Trust & Safety Moderator` can close moderation cases for user/asset/comment/board reports with required reason, impact note, confirmation, FO-impact handling, and audit.
+- `Asset Operations` focuses on asset lifecycle review and asset-related moderation. It cannot publish content, change Market Data master data, or manage settings.
+- `Content Editor` can create/update draft content and preview within content scope only. Publish, schedule, archive, restore, reported Board case close, export, and settings are blocked.
+- `Content Publisher` can publish/schedule/archive/restore content and close content/report cases inside content scope, but cannot edit Admin Settings or act on user/account/asset status.
+- Any `sensitive.reveal`, `export`, `download`, `case.close`, `status.update`, `publish`, `archive`, `restore`, `roles.manage`, or security/retention policy update must be independently auditable even when the role has the required permission.
+
+### 9.5 Module / Action Policy Catalog
 
 | Module | Admin access rule |
 | --- | --- |
@@ -351,7 +418,7 @@ Role templates are presets. Production enforcement must use explicit permission 
 | Delivery Logs (Phase 1) | Admin can view delivery logs, retry failed delivery, and export delivery log under Settings with scope/reason/audit. Broadcast/System Templates config remains Phase 2/future (ดู `14_NOTIFICATIONS_MODULE.md`). |
 | Admin Settings | Admin can manage BO settings through high-risk policy controls and audit. |
 
-### 9.3 Permission Change Rules
+### 9.6 Permission Change Rules
 
 - Permission changes are policy changes for the single Admin account type and its role templates.
 - Require confirmation, reason, before/after diff, and audit.
@@ -610,7 +677,7 @@ Sensitive settings value ต้อง mask ใน audit payload ถ้าเป�
 | --- | --- |
 | AC-BO-SET-001 | Admin ทุก admin access เข้าดู own profile/settings และเปลี่ยน password ตาม rule ได้ |
 | AC-BO-SET-002 | Admin จัดการ admin account lifecycle ได้โดยไม่กระทบ Admin คนสุดท้าย |
-| AC-BO-SET-003 | Roles & Permissions matrix แสดง 8 standard role templates (Super Admin, Admin Manager, Operations Manager, Support Agent, Trust & Safety Moderator, Asset Operations, Content Editor, Content Publisher), enforce ทั้ง UI/API level และห้ามลบ/เปลี่ยน system role identity |
+| AC-BO-SET-003 | Roles & Permissions matrix แสดง 8 standard role templates (Super Admin, Admin Manager, Operations Manager, Support Agent, Trust & Safety Moderator, Asset Operations, Content Editor, Content Publisher), แสดง permission key taxonomy + baseline permission matrix ตาม role, enforce ทั้ง UI/API/service level และห้ามลบ/เปลี่ยน system role identity |
 | AC-BO-SET-004 | Permission/security/system/retention/export setting changes ต้องมี confirmation, reason และ audit |
 | AC-BO-SET-005 | Security policy ต้องสอดคล้องกับ Auth baseline: email/password only, Email OTP mandatory สำหรับ Admin, idle 8h, max 24h, failed login 5 ครั้ง, lockout 15 นาที |
 | AC-BO-SET-006 | Retention settings ต้องไม่อนุญาต manual delete audit logs จาก UI ปกติ |

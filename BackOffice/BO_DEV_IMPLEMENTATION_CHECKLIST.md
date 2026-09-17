@@ -447,7 +447,8 @@ Recommended note format:
 - [ ] Admin ต้องจัดการ admin account lifecycle: invite, change admin access policy, suspend/reactivate, unlock, archive
 - [ ] ระบบต้องป้องกันการ suspend/archive/change admin access policy ของ Admin active คนสุดท้าย
 - [ ] Settings submenu ต้องมี `Roles & Permissions` สำหรับ role templates และ module/action policy
-- [ ] Roles & Permissions matrix ต้องแสดงสิทธิ์ตาม role template, module, action และ enforce ทั้ง UI/API/service level
+- [ ] Roles & Permissions matrix ต้องแสดง permission key taxonomy, permission level, baseline matrix ตาม 8 role templates, module, action และ enforce ทั้ง UI/API/service level
+- [ ] Custom Role ต้อง derive จาก role template หนึ่งและเก็บ permission key แบบ explicit; ห้ามผูกสิทธิ์เฉพาะรายบุคคลกับ Admin account โดยตรง
 - [ ] Content role split ต้องรองรับ `Content Editor` สำหรับ draft authoring และ `Content Publisher` สำหรับ publish/schedule/archive/reported Board actions
 - [ ] Permission change ต้องมี confirmation, reason, before/after diff และ audit log
 - [ ] Security policy ต้องสอดคล้องกับ Auth baseline: email/password only, mandatory Email OTP สำหรับ Admin, idle 8h, max 24h, failed login 5 ครั้ง, lockout 15 นาที
