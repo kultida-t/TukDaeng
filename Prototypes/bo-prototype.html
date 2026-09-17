@@ -7736,9 +7736,9 @@
       text-overflow: ellipsis;
       white-space: nowrap;
     }
-    /* table grid (8 columns: Role / Role Key / Type / Status / Detail / Admins / Last Updated / Action) */
+    /* table grid (8 columns: Role ID / Role / Type / Status / Detail / Admins / Last Updated / Action) */
     body.role-list-mode .role-list-table .user-row {
-      grid-template-columns: minmax(180px, 1.05fr) minmax(150px, .9fr) minmax(108px, .58fr) minmax(78px, .4fr) minmax(220px, 1.35fr) minmax(70px, .34fr) minmax(138px, .72fr) minmax(54px, .26fr);
+      grid-template-columns: minmax(88px, .42fr) minmax(170px, 1fr) minmax(108px, .58fr) minmax(78px, .4fr) minmax(220px, 1.35fr) minmax(70px, .34fr) minmax(138px, .72fr) minmax(54px, .26fr);
       gap: 12px;
     }
     body.role-list-mode .role-list-table .user-row:not(.head) {
@@ -7772,10 +7772,6 @@
       white-space: nowrap;
     }
     /* ชื่อ Role แสดงเป็นตัวธรรมดาเหมือน list อื่น — คลิก row เปิด Role Detail */
-    .role-key-text {
-      font-family: ui-monospace, SFMono-Regular, Consolas, "Liberation Mono", monospace;
-      font-size: 11px;
-    }
     body.role-list-mode .role-list-table .empty-icon,
     body.role-list-mode .role-list-table .empty-title,
     body.role-list-mode .role-list-table .empty-subtitle {
@@ -7846,6 +7842,120 @@
     body.role-detail-mode .role-detail-page .detail-tile strong {
       display: block;
       overflow-wrap: anywhere;
+    }
+    /* Role Detail — header actions ตาม spec 9.10 */
+    body.role-detail-mode .role-detail-page .role-detail-actions {
+      flex-shrink: 0;
+      justify-content: flex-end;
+      padding-top: 4px;
+    }
+    body.role-detail-mode .role-detail-page .role-inactive-note {
+      margin-top: 14px;
+    }
+    /* Role Detail — permission accordion: แสดงเฉพาะ module ที่ role ได้รับสิทธิ์ (none ไม่แสดง) */
+    body.role-detail-mode .role-detail-page .perm-groups {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fff;
+      overflow: hidden;
+    }
+    /* เมนูย่อยจริง + ✓ capability ต่อบรรทัด (read-only checkbox style) */
+    body.role-detail-mode .role-detail-page .perm-sub {
+      padding: 0 0 8px;
+    }
+    /* ชื่อเมนูย่อยเป็นแถบสีคั่นส่วนชัดๆ — โทนฟ้าเดียวกับ detail-tile */
+    body.role-detail-mode .role-detail-page .perm-sub-title {
+      margin: 0 0 6px;
+      padding: 5px 14px 5px 48px;
+      background: #f8fbff;
+      border-bottom: 1px solid #e1e9f3;
+      color: #3d5a80;
+      font-size: 12px;
+      font-weight: 700;
+    }
+    body.role-detail-mode .role-detail-page .perm-sub + .perm-sub .perm-sub-title {
+      border-top: 1px solid #e1e9f3;
+    }
+    body.role-detail-mode .role-detail-page .perm-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 5px 14px 5px 64px;
+      font-size: 12px;
+    }
+    body.role-detail-mode .role-detail-page .perm-check {
+      flex-shrink: 0;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 16px;
+      height: 16px;
+      border-radius: 4px;
+      background: #e8f8f0;
+      color: #07734f;
+      font-size: 11px;
+      font-weight: 700;
+    }
+    body.role-detail-mode .role-detail-page .perm-item-name {
+      flex: 1 1 auto;
+      min-width: 0;
+      color: #334155;
+      line-height: 1.45;
+      overflow-wrap: anywhere;
+    }
+    body.role-detail-mode .role-detail-page .perm-group-title {
+      color: #1e293b;
+      font-size: 13px;
+      font-weight: 700;
+    }
+    body.role-detail-mode .role-detail-page .perm-group-head {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      width: 100%;
+      padding: 9px 14px;
+      border: 0;
+      background: #f1f6fd;
+      cursor: pointer;
+      font: inherit;
+      text-align: left;
+    }
+    body.role-detail-mode .role-detail-page .perm-group-head:hover {
+      background: #e8f0fb;
+    }
+    body.role-detail-mode .role-detail-page .perm-group-head .perm-group-chevron {
+      display: inline-flex;
+      width: 14px;
+      height: 14px;
+      color: #64748b;
+      transition: transform .15s ease;
+    }
+    body.role-detail-mode .role-detail-page .perm-group-head .perm-group-chevron svg {
+      width: 14px;
+      height: 14px;
+    }
+    /* icon เมนูหลักตรงกับ sidebar */
+    body.role-detail-mode .role-detail-page .perm-group-icon {
+      display: inline-flex;
+      width: 16px;
+      height: 16px;
+      color: #64748b;
+    }
+    body.role-detail-mode .role-detail-page .perm-group-icon svg {
+      width: 16px;
+      height: 16px;
+    }
+    body.role-detail-mode .role-detail-page .perm-group:not(.is-collapsed) .perm-group-chevron {
+      transform: rotate(90deg);
+    }
+    body.role-detail-mode .role-detail-page .perm-group.is-collapsed .perm-sub {
+      display: none;
+    }
+    body.role-detail-mode .role-detail-page .perm-group:not(.is-collapsed) .perm-group-head {
+      border-bottom: 1px solid var(--line);
+    }
+    body.role-detail-mode .role-detail-page .perm-group + .perm-group {
+      border-top: 1px solid var(--line);
     }
 
     /* ============================================================
@@ -8389,6 +8499,10 @@
     /* responsive — tablet 1180px: detail-grid 3 → 2 */
     @media (max-width: 1180px) {
       body.admin-account-detail-mode .admin-account-detail-page .detail-grid.three {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+      body.role-detail-mode .role-detail-page .detail-grid.three,
+      body.role-detail-mode .role-detail-page .detail-grid.four {
         grid-template-columns: repeat(2, minmax(0, 1fr));
       }
     }
@@ -13193,6 +13307,22 @@
         text-overflow: ellipsis;
         white-space: nowrap;
       }
+      /* Role Detail mobile — detail head stacked; permission accordion ใช้ layout เดียวกับ desktop */
+      body.role-detail-mode .role-detail-page .user-detail-head {
+        flex-direction: column;
+      }
+      body.role-detail-mode .role-detail-page .role-detail-actions {
+        width: 100%;
+        justify-content: flex-start;
+      }
+      body.role-detail-mode .role-detail-page .role-detail-actions .user-detail-action-btn {
+        flex: 1 1 0;
+        min-width: 0;
+      }
+      body.role-detail-mode .role-detail-page .detail-grid.three,
+      body.role-detail-mode .role-detail-page .detail-grid.four {
+        grid-template-columns: 1fr;
+      }
       .user-card-tags {
         grid-column: 1 / -1;
         grid-row: 2;
@@ -17709,6 +17839,144 @@
       ]
     };
 
+    // Role Detail — canonical permission catalog ตาม spec section 9.2 (key taxonomy) + 9.3 (baseline matrix)
+    // level ต่อ role เก็บใน levels โดย key คือ roleKey — roleKey ที่ไม่ระบุ = "none"
+    // Custom Role derive จาก template แล้ว adjust แบบ explicit เท่านั้น (ห้ามสิทธิ์เฉพาะรายบุคคล)
+    // permission catalog — module + sub ตาม sidebar จริง; level ต่อ roleKey (none = ไม่แสดงใน Role Detail)
+    // permission catalog อิง action ที่มีจริงใน prototype ต่อเมนูย่อย — ไม่ใส่ capability ที่หน้าจอไม่มีจริง
+    const rolePermissionCatalog = [
+      {
+        module: "Dashboard", moduleKey: "dashboard",
+        perms: [
+          { key: "dashboard.view", sub: "", name: "ดู Dashboard",
+            levels: { super_admin: "admin", admin_manager: "view", operations_manager: "manage", support_agent: "view", trust_safety_moderator: "manage", asset_operations: "manage", content_editor: "view", content_publisher: "view", content_reviewer_th: "view", market_analyst: "view", legacy_support_viewer: "view" } }
+        ]
+      },
+      {
+        module: "User Management", moduleKey: "users",
+        perms: [
+          { key: "users.accounts.view", sub: "User Accounts", name: "ดู User List และ User Detail",
+            levels: { super_admin: "admin", admin_manager: "view", operations_manager: "view", support_agent: "view", trust_safety_moderator: "view", asset_operations: "view", legacy_support_viewer: "view" } },
+          { key: "users.accounts.manage", sub: "User Accounts", name: "จัดการสถานะบัญชี (Suspend / Ban / Restore / Reset password)",
+            levels: { super_admin: "admin", operations_manager: "manage", trust_safety_moderator: "manage" } },
+          { key: "users.reports.view", sub: "Reported Users", name: "ดูรายงานและ Report Detail",
+            levels: { super_admin: "admin", operations_manager: "view", support_agent: "view", trust_safety_moderator: "view", legacy_support_viewer: "view" } },
+          { key: "users.reports.manage", sub: "Reported Users", name: "ตัดสินรายงานและจัดการบัญชีจากรายงาน",
+            levels: { super_admin: "admin", operations_manager: "approve", trust_safety_moderator: "approve" } }
+        ]
+      },
+      {
+        module: "Asset Management", moduleKey: "assets",
+        perms: [
+          { key: "assets.list.view", sub: "Asset List", name: "ดู Asset List และ Asset Detail",
+            levels: { super_admin: "admin", admin_manager: "view", operations_manager: "view", support_agent: "view", trust_safety_moderator: "view", asset_operations: "view", content_editor: "view", content_publisher: "view", market_analyst: "view", legacy_support_viewer: "view" } },
+          { key: "assets.list.manage", sub: "Asset List", name: "จัดการสถานะ Asset (ซ่อนชั่วคราว / ซ่อนถาวร / คืนการมองเห็น)",
+            levels: { super_admin: "admin", operations_manager: "manage", trust_safety_moderator: "manage", asset_operations: "manage" } },
+          { key: "assets.reports.view", sub: "Reported Assets", name: "ดูรายงานและ Report Detail",
+            levels: { super_admin: "admin", operations_manager: "view", trust_safety_moderator: "view", asset_operations: "view" } },
+          { key: "assets.reports.manage", sub: "Reported Assets", name: "ตัดสินรายงานและจัดการ Asset จากรายงาน",
+            levels: { super_admin: "admin", operations_manager: "approve", trust_safety_moderator: "approve", asset_operations: "manage" } },
+          { key: "comments.reports.view", sub: "Reported Comments", name: "ดูรายงานและ Report Detail",
+            levels: { super_admin: "admin", operations_manager: "view", trust_safety_moderator: "view", asset_operations: "view" } },
+          { key: "comments.reports.manage", sub: "Reported Comments", name: "ตัดสินความคิดเห็น (ซ่อน / คืน / ลบ / ปิดรายงาน)",
+            levels: { super_admin: "admin", operations_manager: "approve", trust_safety_moderator: "approve", asset_operations: "manage" } }
+        ]
+      },
+      {
+        module: "Offer Management", moduleKey: "offers",
+        perms: [
+          { key: "offers.view", sub: "", name: "ดู Offer List และ Offer Detail",
+            levels: { super_admin: "admin", admin_manager: "view", operations_manager: "view", support_agent: "view", trust_safety_moderator: "view", asset_operations: "view", content_reviewer_th: "view", market_analyst: "view", legacy_support_viewer: "view" } }
+        ]
+      },
+      {
+        module: "Content Management", moduleKey: "content",
+        perms: [
+          { key: "articles.view", sub: "Articles", name: "ดู Article List และ Article Detail",
+            levels: { super_admin: "admin", operations_manager: "view", trust_safety_moderator: "view", content_editor: "view", content_publisher: "view", content_reviewer_th: "view" } },
+          { key: "articles.manage", sub: "Articles", name: "สร้าง / แก้ไขบทความ",
+            levels: { super_admin: "admin", trust_safety_moderator: "manage", content_editor: "manage", content_publisher: "manage", content_reviewer_th: "manage" } },
+          { key: "articles.publish", sub: "Articles", name: "เผยแพร่ / ตั้งเวลา / archive บทความ",
+            levels: { super_admin: "admin", trust_safety_moderator: "approve", content_publisher: "approve" } },
+          { key: "categories.view", sub: "Categories", name: "ดู Categories",
+            levels: { super_admin: "admin", operations_manager: "view", trust_safety_moderator: "view", content_editor: "view", content_publisher: "view", content_reviewer_th: "view" } },
+          { key: "categories.manage", sub: "Categories", name: "จัดการ Categories (เพิ่ม / แก้ไข)",
+            levels: { super_admin: "admin", content_editor: "manage", content_publisher: "approve" } },
+          { key: "board.reports.view", sub: "Reported Articles", name: "ดูรายงานและ Report Detail",
+            levels: { super_admin: "admin", operations_manager: "view", trust_safety_moderator: "view", content_editor: "view", content_publisher: "view", content_reviewer_th: "view" } },
+          { key: "board.reports.manage", sub: "Reported Articles", name: "ตัดสินรายงานและจัดการเนื้อหา",
+            levels: { super_admin: "admin", trust_safety_moderator: "approve", content_publisher: "approve" } }
+        ]
+      },
+      {
+        module: "Market Data", moduleKey: "market",
+        perms: [
+          { key: "market.dashboard.view", sub: "Dashboard", name: "ดู Market Dashboard",
+            levels: { super_admin: "admin", operations_manager: "view", trust_safety_moderator: "view", asset_operations: "view", market_analyst: "view" } },
+          { key: "market.catalog.view", sub: "Brands & Models", name: "ดู Brands & Models",
+            levels: { super_admin: "admin", operations_manager: "view", trust_safety_moderator: "view", asset_operations: "view", market_analyst: "view" } },
+          { key: "market.sync.view", sub: "Sync History", name: "ดู Sync History",
+            levels: { super_admin: "admin", operations_manager: "view" } },
+          { key: "market.sync.run", sub: "Sync History", name: "เรียก Sync / Retry failed datasets",
+            levels: { super_admin: "admin", operations_manager: "approve" } }
+        ]
+      },
+      {
+        module: "Option Master", moduleKey: "option-master",
+        perms: [
+          { key: "option.view", sub: "", name: "ดู Option Groups และ Options",
+            levels: { super_admin: "admin", operations_manager: "view" } },
+          { key: "option.manage", sub: "", name: "จัดการ Options และ Groups (เพิ่ม / แก้ไข / ปิดใช้งาน / จัดลำดับ)",
+            levels: { super_admin: "admin", operations_manager: "approve" } }
+        ]
+      },
+      {
+        module: "Market Demand", moduleKey: "demand",
+        perms: [
+          { key: "demand.overview.view", sub: "Demand Overview", name: "ดู Demand Overview",
+            levels: { super_admin: "admin", admin_manager: "view", operations_manager: "view", support_agent: "view", trust_safety_moderator: "view", asset_operations: "view", content_reviewer_th: "view", market_analyst: "view", legacy_support_viewer: "view" } },
+          { key: "demand.search.view", sub: "Search Insights", name: "ดู Search Insights",
+            levels: { super_admin: "admin", admin_manager: "view", operations_manager: "view", support_agent: "view", trust_safety_moderator: "view", asset_operations: "view", content_reviewer_th: "view", market_analyst: "view", legacy_support_viewer: "view" } },
+          { key: "demand.watch.view", sub: "Watch Alert List", name: "ดู Watch Alert List",
+            levels: { super_admin: "admin", admin_manager: "view", operations_manager: "view", support_agent: "view", trust_safety_moderator: "view", asset_operations: "view", content_reviewer_th: "view", market_analyst: "view", legacy_support_viewer: "view" } }
+        ]
+      },
+      {
+        module: "Account Deletion", moduleKey: "deletion",
+        perms: [
+          { key: "deletion.view", sub: "", name: "ดู Deletion Requests และ Request Detail",
+            levels: { super_admin: "admin", admin_manager: "view", operations_manager: "view", support_agent: "view", trust_safety_moderator: "view", legacy_support_viewer: "view" } },
+          { key: "deletion.manage", sub: "", name: "ตัดสินคำขอ (คืนบัญชี / ปฏิเสธคืนบัญชี)",
+            levels: { super_admin: "admin", operations_manager: "approve", trust_safety_moderator: "approve" } }
+        ]
+      },
+      {
+        module: "Settings", moduleKey: "settings",
+        perms: [
+          { key: "admin_accounts.view", sub: "Admin Accounts", name: "ดู Admin Accounts และ Admin Detail",
+            levels: { super_admin: "admin", admin_manager: "view" } },
+          { key: "admin_accounts.manage", sub: "Admin Accounts", name: "จัดการ Admin Accounts (Invite / Change Role / Suspend / Archive)",
+            levels: { super_admin: "admin", admin_manager: "approve" } },
+          { key: "roles.view", sub: "Roles & Permissions", name: "ดู Roles และ Role Detail",
+            levels: { super_admin: "admin", admin_manager: "view" } },
+          { key: "roles.manage", sub: "Roles & Permissions", name: "จัดการ Custom Roles (สร้าง / แก้ไข / คัดลอก / ปิด-เปิดใช้งาน)",
+            levels: { super_admin: "admin", admin_manager: "approve" } },
+          { key: "policy.view", sub: "Policy & Versioning", name: "ดู Policy และ Version History",
+            levels: { super_admin: "admin", admin_manager: "view", operations_manager: "view", trust_safety_moderator: "view", content_editor: "view", content_publisher: "view", content_reviewer_th: "view" } },
+          { key: "policy.manage", sub: "Policy & Versioning", name: "จัดการ Policy (สร้าง draft / publish / restore)",
+            levels: { super_admin: "admin", admin_manager: "approve", content_publisher: "approve" } },
+          { key: "support_center.view", sub: "Support Center", name: "ดูการตั้งค่า Support Center",
+            levels: { super_admin: "admin", admin_manager: "view", operations_manager: "view", support_agent: "view", trust_safety_moderator: "view", legacy_support_viewer: "view" } },
+          { key: "support_center.manage", sub: "Support Center", name: "แก้ไขการตั้งค่า Support Center",
+            levels: { super_admin: "admin", admin_manager: "approve", support_agent: "manage", legacy_support_viewer: "manage" } },
+          { key: "delivery.view", sub: "Delivery Logs", name: "ดู Delivery Logs",
+            levels: { super_admin: "admin", admin_manager: "view", operations_manager: "view", support_agent: "view", trust_safety_moderator: "view", asset_operations: "view", market_analyst: "view", legacy_support_viewer: "view" } },
+          { key: "audit.view", sub: "Audit Log", name: "ดู Audit Log",
+            levels: { super_admin: "admin", admin_manager: "view", operations_manager: "view", trust_safety_moderator: "view" } }
+        ]
+      }
+    ];
+
     const userManagementData = {
       users: [
         { id: "U-1002", displayName: "horology.king", username: "@horology.king", email: "ho***@gmail.com", auth: "Google", status: "Suspended", joined: "03 Jul 2026", joinedBucket: "7d", joinedRank: 20260703, lastActive: "10 Jul 2026 18:10", lastActiveBucket: "24h", lastActiveRank: 202607101810, assets: 2, assetBucket: "1-5", reports: 5, verification: "Google verified", contact: ["Line: horology.king"], support: "SUP-177", latest: "Report follow-up", reportState: "ตรวจแล้ว 5 รายงาน - บัญชีถูกระงับอยู่", statusLabel: "เข้าสู่ระบบไม่ได้", allowed: ["Restore", "Ban"], blocked: ["Reset password", "Deletion from list"], foImpact: "ผู้ใช้เข้าสู่ระบบไม่ได้ระหว่างถูกระงับบัญชีชั่วคราว", actionNote: "การเปลี่ยนสถานะต้องระบุเหตุผล แสดงผลกระทบ และบันทึกการดำเนินการ" },
@@ -19079,6 +19347,8 @@
     let roleListFilterOpen = false;
     const roleListPageSize = 10;
     let activeRoleId = "";
+    // Role Detail — permission collapse override ต่อ module
+    const rolePermCollapsed = {};
     let optionGroupListPage = 1;
     let optionDetailPage = 1;
     let activeOptionGroup = "";
@@ -19635,6 +19905,7 @@
       roleListPage = 1;
       roleListFilterOpen = false;
       activeRoleId = "";
+      for (const key in rolePermCollapsed) delete rolePermCollapsed[key];
       // BO-UX-001: clear all saved per-list filter values
       for (const key in listFilterState) delete listFilterState[key];
       marketDashboardPage = 1;
@@ -20023,6 +20294,7 @@
         { value: "Inactive", label: "Inactive" }
       ],
       roleSort: [
+        { value: "id", label: "Role ID" },
         { value: "name", label: "ชื่อ A–Z" },
         { value: "created", label: "สร้างล่าสุด" },
         { value: "updated", label: "แก้ไขล่าสุด" },
@@ -27376,10 +27648,10 @@
       `;
       document.querySelector(".filters").innerHTML = `
         <div class="user-filter-bar role-filter-bar" data-filter-open="${roleListFilterOpen}">
-          <input class="field search" id="role-search" type="search" placeholder="ค้นหา Role ID, ชื่อ, Role Key หรือคำอธิบาย" />
+          <input class="field search" id="role-search" type="search" placeholder="ค้นหา Role ID, ชื่อ หรือคำอธิบาย" />
           <div class="user-advanced-filter">${customSelect("role-type-filter", "Filter role type", filterOptions("roleType"))}</div>
           <div class="user-advanced-filter">${customSelect("role-status-filter", "Filter role status", filterOptions("roleStatus"))}</div>
-          <div class="user-advanced-filter">${customSelect("role-sort", "Sort roles", filterOptions("roleSort"), "name")}</div>
+          <div class="user-advanced-filter">${customSelect("role-sort", "Sort roles", filterOptions("roleSort"), "id")}</div>
           ${resetFilterButton("data-role-reset")}
         </div>
       `;
@@ -27396,12 +27668,13 @@
       const q = (document.querySelector("#role-search")?.value || "").trim().toLowerCase();
       const type = document.querySelector("#role-type-filter")?.value || "";
       const status = document.querySelector("#role-status-filter")?.value || "";
-      const sort = document.querySelector("#role-sort")?.value || "name";
+      const sort = document.querySelector("#role-sort")?.value || "id";
       const sorted = [...roleListData.roles].filter(role => {
         return (!q || getRoleSearchText(role).includes(q))
           && (!type || role.type === type)
           && (!status || role.status === status);
       }).sort((a, b) => {
+        if (sort === "id") return a.id.localeCompare(b.id, "en");
         if (sort === "created") return b.createdRank - a.createdRank;
         if (sort === "updated") return b.updatedRank - a.updatedRank;
         if (sort === "admins") return countActiveAdminsUsingRole(b.name) - countActiveAdminsUsingRole(a.name) || a.name.localeCompare(b.name, "en");
@@ -27416,7 +27689,7 @@
         : `<div class="user-row empty"><div class="role-empty-state" style="grid-column: 1 / -1; text-align: center; padding: 2.5rem 1rem;"><div class="empty-icon">${iconSvg.siSearch}</div><div class="empty-title">ไม่พบ Role ตามเงื่อนไขที่เลือก</div><div class="empty-subtitle">ลองปรับคำค้นหรือตัวกรอง แล้วลองใหม่</div></div></div>`;
       document.querySelector("#table").innerHTML = `
         <div class="user-table role-list-table">
-          <div class="user-row head"><div>Role</div><div>Role Key</div><div>Type</div><div>Status</div><div>Detail</div><div>Admins</div><div>Last Updated</div><div>Action</div></div>
+          <div class="user-row head"><div>Role ID</div><div>Role</div><div>Type</div><div>Status</div><div>Detail</div><div>Admins</div><div>Last Updated</div><div>Action</div></div>
           ${pageRows.length === 0 ? emptyState : pageRows.map(role => renderRoleRow(role, esc)).join("")}
         </div>
         <div class="footer-range">
@@ -27432,6 +27705,7 @@
       const isActive = role.status === "Active";
       return `
         <div class="user-row role-row" data-role-card="${role.id}">
+          <div data-label="Role ID"><div class="main-text">${esc(role.id)}</div></div>
           <div class="user-cell-primary" data-label="Role">
             <div class="main-text"><span class="desktop-user-name">${esc(role.name)}</span><span class="mobile-user-card-title">${esc(role.name)}</span></div>
           </div>
@@ -27440,11 +27714,10 @@
             ${roleStatusPill(role.status)}
             <span class="pill slate">${admins} Admins</span>
             <div class="user-card-meta">
-              <div class="user-card-meta-item comment-field-meta"><span>Role Key</span><strong>${esc(role.roleKey)}</strong></div>
+              <div class="user-card-meta-item comment-field-meta"><span>Role ID</span><strong>${esc(role.id)}</strong></div>
               <div class="user-card-meta-item comment-field-meta"><span>Last Updated</span><strong>${role.updatedAt}</strong></div>
             </div>
           </div>
-          <div data-label="Role Key"><div class="main-text"><span class="role-key-text">${esc(role.roleKey)}</span></div></div>
           <div data-label="Type">${roleTypeChip(role)}</div>
           <div data-label="Status">${roleStatusPill(role.status)}</div>
           <div data-label="Detail" class="history-note" data-comment-full="${esc(role.description)}">${esc(role.description)}</div>
@@ -27467,8 +27740,69 @@
       `;
     }
 
-    // Role Detail — interim shell ให้ row click/back context ใช้งานได้ตาม spec
-    // (Permission Table เต็มและ revision/metadata ครบเป็นงานถัดไป)
+    // ===== Role Detail (Settings > Roles & Permissions > Role Detail) =====
+    // full-page detail ตาม spec section 9.10 — read surface: mutation flow เป็นงานถัดไป
+    function getRolePermLevel(role, perm) {
+      return perm.levels[role.roleKey] || "none";
+    }
+
+
+    // collapse state ต่อ module — default ขยายทั้งหมด, user toggle เก็บใน rolePermCollapsed ตลอด session
+    function isRolePermGroupCollapsed(moduleKey) {
+      return rolePermCollapsed[moduleKey] === true;
+    }
+
+    // accordion แสดงเฉพาะ module ที่ role ได้รับสิทธิ์ — permission ที่เป็น none ไม่แสดง
+    function renderRolePermissionSection(role) {
+      const esc = v => String(v).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+      // icon ต่อ module ดึงจาก navGroups ให้ตรงกับ sidebar เสมอ
+      const navIconByLabel = {};
+      navGroups.forEach(group => group.items.forEach(item => { navIconByLabel[item.label] = item.icon; }));
+      const groups = rolePermissionCatalog
+        .map(group => ({
+          ...group,
+          rows: group.perms.map(perm => ({ perm, level: getRolePermLevel(role, perm) })).filter(row => row.level !== "none")
+        }))
+        .filter(group => group.rows.length > 0);
+      return `
+        <div class="detail-section role-perm-section">
+          <h4>Permissions</h4>
+          ${groups.length === 0 ? `<div class="module-note">Role นี้ยังไม่ได้รับสิทธิ์ใน module ใด</div>` : `
+          <div class="perm-groups">
+            ${groups.map(group => {
+              const collapsed = isRolePermGroupCollapsed(group.moduleKey);
+              return `
+              <div class="perm-group ${collapsed ? "is-collapsed" : ""}" data-perm-module="${group.moduleKey}">
+                <button class="perm-group-head" type="button" data-role-perm-group="${group.moduleKey}" aria-expanded="${!collapsed}">
+                  <span class="perm-group-chevron">${iconSvg.chevron}</span>
+                  <span class="perm-group-icon">${iconSvg[navIconByLabel[group.module]] || ""}</span>
+                  <span class="perm-group-title">${esc(group.module)}</span>
+                </button>
+                ${(() => {
+                  // จัดกลุ่ม row ตามเมนูย่อยจริง — sub เดียวกับชื่อ module ไม่ต้องแสดง title ซ้ำ
+                  const subs = [];
+                  group.rows.forEach(row => {
+                    const key = row.perm.sub || group.module;
+                    let sub = subs.find(s => s.key === key);
+                    if (!sub) { sub = { key, rows: [] }; subs.push(sub); }
+                    sub.rows.push(row);
+                  });
+                  return subs.map(sub => `
+                    <div class="perm-sub">
+                      ${subs.length > 1 || sub.key !== group.module ? `<div class="perm-sub-title">${esc(sub.key)}</div>` : ""}
+                      ${sub.rows.map(row => `
+                        <div class="perm-item">
+                          <span class="perm-check">✓</span>
+                          <span class="perm-item-name">${esc(row.perm.name)}</span>
+                        </div>`).join("")}
+                    </div>`).join("");
+                })()}
+              </div>`;
+            }).join("")}
+          </div>`}
+        </div>`;
+    }
+
     function renderRoleDetailPage(roleId) {
       const role = roleListData.roles.find(r => r.id === roleId);
       if (!role) {
@@ -27476,6 +27810,10 @@
         return;
       }
       const esc = v => String(v).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+      // เปลี่ยน role → ล้าง collapse override ของ role เดิม
+      if (activeRoleId !== role.id) {
+        for (const key in rolePermCollapsed) delete rolePermCollapsed[key];
+      }
       activeModule = "settings";
       activeSub = "Roles & Permissions";
       activeRow = { id: role.id };
@@ -27494,6 +27832,23 @@
       document.querySelector("#summary-grid").innerHTML = "";
       document.querySelector("#cards").innerHTML = "";
       document.querySelector("#detail").innerHTML = "";
+
+      const isCustom = role.type === "custom";
+      const isActive = role.status === "Active";
+      const admins = countActiveAdminsUsingRole(role.name);
+
+      // action ขวาของ header ตาม spec — System Role เห็นเฉพาะ ดู Audit Log; Custom Role ตามสถานะ
+      // mutation (แก้ไข/คัดลอก/ปิด-เปิดใช้งาน) เชื่อม stub เดียวกับ row menu — flow จริงเป็นงานถัดไป
+      const headActions = [];
+      if (isCustom) {
+        headActions.push(`<button class="user-detail-action-btn" type="button" data-role-flow="edit" data-role-id="${role.id}">แก้ไข</button>`);
+        headActions.push(`<button class="user-detail-action-btn" type="button" data-role-flow="copy" data-role-id="${role.id}">คัดลอก</button>`);
+        headActions.push(isActive
+          ? `<button class="user-detail-action-btn danger" type="button" data-role-flow="deactivate" data-role-id="${role.id}">ปิดใช้งาน</button>`
+          : `<button class="user-detail-action-btn primary" type="button" data-role-flow="reactivate" data-role-id="${role.id}">เปิดใช้งาน</button>`);
+      }
+      headActions.push(`<button class="user-detail-action-btn" type="button" data-audit-ref="${role.id}">ดู Audit Log</button>`);
+
       const summaryTile = (label, value) => `<div class="detail-tile"><span>${label}</span><strong>${value}</strong></div>`;
       document.querySelector("#table").innerHTML = `
         <div class="user-detail-page report-detail-page role-detail-page">
@@ -27507,16 +27862,21 @@
                 </div>
               </div>
             </div>
+            <div class="user-detail-actions role-detail-actions">${headActions.join("")}</div>
           </div>
+          ${!isActive ? `<div class="module-note role-inactive-note">Role นี้ถูกปิดใช้งาน — ไม่สามารถเลือก assign ให้ผู้ดูแลรายใหม่ได้ และไม่มี action แก้ไข Permission จนกว่าจะเปิดใช้งานตาม policy</div>` : ""}
           <div class="detail-section">
             <h4>Role Summary</h4>
-            <div class="detail-grid three">
+            <div class="detail-grid four">
               ${summaryTile("Role Key", esc(role.roleKey))}
-              ${summaryTile("Admins", `${countActiveAdminsUsingRole(role.name)}`)}
-              ${summaryTile("Last Updated", `${role.updatedAt} · ${esc(role.updatedBy)}`)}
+              ${summaryTile("Created", esc(role.createdAt))}
+              ${summaryTile("Last Updated", esc(role.updatedAt))}
+              ${isCustom ? summaryTile("Source Template", esc(role.sourceTemplate)) : ""}
+              ${isCustom ? summaryTile("Revision", esc(role.revision)) : ""}
+              ${summaryTile("Active Admins", `${admins}`)}
             </div>
-            <div class="module-note">ส่วน Permission Table และรายละเอียดเต็มของ Role จะมาในงานถัดไป — หน้านี้เป็น interim detail สำหรับทดสอบ navigation และ back context จาก Role List</div>
           </div>
+          ${renderRolePermissionSection(role)}
         </div>
       `;
       updateActiveNav();
@@ -39292,6 +39652,7 @@
           renderRoleListRows();
           return;
         }
+
         userListPage = 1;
         saveCurrentListFilterState();
         if (activeModule === "users" && (activeSub === "Report User" || activeSub === "Reported Users")) renderReportedUserRows();
@@ -41017,6 +41378,16 @@
         updateActiveNav();
         return;
       }
+      // Role Detail — พับ/ขยายกลุ่ม Permission ตาม Module (state คงอยู่ระหว่าง filter ใน session)
+      const rolePermGroup = event.target.closest("[data-role-perm-group]");
+      if (rolePermGroup) {
+        const group = rolePermGroup.closest(".perm-group");
+        const willCollapse = !group.classList.contains("is-collapsed");
+        rolePermCollapsed[rolePermGroup.dataset.rolePermGroup] = willCollapse;
+        group.classList.toggle("is-collapsed", willCollapse);
+        rolePermGroup.setAttribute("aria-expanded", String(!willCollapse));
+        return;
+      }
       // ADM-PTO-001: Admin Accounts — audit ref link → Audit Log (กรองด้วย reference)
       const adminAccountAuditRef = event.target.closest("[data-admin-account-audit-ref]");
       if (adminAccountAuditRef) {
@@ -41816,6 +42187,7 @@
         renderRoleListRows();
         return;
       }
+
       if (event.target.matches("#search")) {
         if (activeModule === "assets") assetListPage = 1;
         saveCurrentListFilterState();
