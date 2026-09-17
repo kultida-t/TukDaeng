@@ -7648,6 +7648,206 @@
     }
 
     /* ============================================================
+       Role List (Settings > Roles & Permissions)
+       pattern เดียวกับ admin-account-list-mode — full-width master-data list
+       ไม่มี KPI cards / side panel; action ที่ยังไม่ได้ทำเป็นงานถัดไป
+       ============================================================ */
+    body.role-list-mode .layout {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    body.role-list-mode .detail {
+      display: none;
+    }
+    body.role-list-mode #primary-action {
+      display: none;
+    }
+    body.role-list-mode .main {
+      overflow-x: hidden;
+    }
+    body.role-list-mode .layout > .panel {
+      overflow: visible;
+    }
+    body.role-list-mode #table {
+      max-width: 100%;
+      min-width: 0;
+      overflow-x: auto;
+      overflow-y: visible;
+      scrollbar-width: thin;
+      position: relative;
+    }
+    body.role-list-mode #table .role-list-table {
+      min-width: 1060px;
+    }
+    body.role-list-mode #table > .footer-range {
+      min-width: 1060px;
+      padding: 11px 18px;
+    }
+    body.role-list-mode .role-list-table .row-menu-list {
+      display: none;
+    }
+    body.role-list-mode .role-list-table .row-menu-list.is-fixed {
+      display: grid;
+      visibility: visible;
+      opacity: 1;
+    }
+    /* filter bar — search + ประเภท/สถานะ/sort + reset บรรทัดเดียว (match admin-account-filter-bar) */
+    body.role-list-mode .role-filter-bar {
+      grid-template-columns: minmax(220px, 1.3fr) repeat(3, minmax(118px, .62fr)) 42px;
+    }
+    body.role-list-mode .role-filter-bar .filter-reset {
+      position: relative;
+      width: 42px;
+      min-width: 42px;
+      height: 48px;
+      min-height: 48px;
+      padding: 0;
+      border-color: #cfdbea;
+      background: #fff;
+      justify-content: center;
+    }
+    body.role-list-mode .role-filter-bar .filter-reset span {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+    body.role-list-mode .role-filter-bar .user-advanced-filter,
+    body.role-list-mode .role-filter-bar .custom-select,
+    body.role-list-mode .role-filter-bar .custom-select-trigger {
+      min-width: 0;
+      height: 48px;
+      min-height: 48px;
+      max-height: 48px;
+    }
+    body.role-list-mode .role-filter-bar .custom-select-trigger {
+      display: flex;
+      align-items: center;
+      overflow: hidden;
+    }
+    body.role-list-mode .role-filter-bar .custom-select-trigger [data-custom-select-label] {
+      display: block;
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    /* table grid (7 columns: Role / Role Key / ประเภท / สถานะ / ผู้ดูแลที่ใช้งาน / อัปเดตล่าสุด / Action) */
+    body.role-list-mode .role-list-table .user-row {
+      grid-template-columns: minmax(210px, 1.25fr) minmax(140px, .8fr) minmax(104px, .6fr) minmax(84px, .45fr) minmax(108px, .55fr) minmax(150px, .85fr) minmax(56px, .28fr);
+      gap: 12px;
+    }
+    body.role-list-mode .role-list-table .user-row:not(.head) {
+      min-height: 66px;
+      padding: 10px 18px;
+      cursor: pointer;
+    }
+    body.role-list-mode .role-list-table .user-row > div {
+      min-width: 0;
+    }
+    body.role-list-mode .role-list-table .user-row.role-row:not(.head) .main-text,
+    body.role-list-mode .role-list-table .user-row.role-row:not(.head) .muted {
+      color: #516683;
+      font-size: 12px;
+      font-weight: 400;
+      line-height: 1.5;
+      margin-bottom: 0;
+    }
+    /* ชื่อ Role เป็น link เปิด Role Detail */
+    .role-name-link {
+      padding: 0;
+      border: 0;
+      background: transparent;
+      color: var(--blue);
+      font-size: 12px;
+      font-weight: 700;
+      text-align: left;
+      cursor: pointer;
+    }
+    .role-name-link:hover {
+      text-decoration: underline;
+    }
+    .role-key-text {
+      font-family: ui-monospace, SFMono-Regular, Consolas, "Liberation Mono", monospace;
+      font-size: 11px;
+    }
+    body.role-list-mode .role-list-table .empty-icon,
+    body.role-list-mode .role-list-table .empty-title,
+    body.role-list-mode .role-list-table .empty-subtitle {
+      overflow-wrap: anywhere;
+    }
+
+    /* Role Detail — interim shell (Permission Table เต็มตาม spec เป็นงานถัดไป) reuse detail shell เดียวกับ admin detail */
+    body.role-detail-mode .layout {
+      grid-template-columns: minmax(0, 1fr);
+      margin-top: 0;
+      padding-top: 0;
+    }
+    body.role-detail-mode .layout > .panel {
+      border-color: #d7e2f0;
+      box-shadow: none;
+      overflow: visible;
+    }
+    body.role-detail-mode .layout > .panel > .panel-head {
+      display: none !important;
+      min-height: 0 !important;
+      height: 0 !important;
+      padding: 0 !important;
+      border: 0 !important;
+      overflow: hidden !important;
+    }
+    body.role-detail-mode .filters {
+      display: none !important;
+      min-height: 0 !important;
+      height: 0 !important;
+      padding: 0 !important;
+      border: 0 !important;
+      overflow: hidden !important;
+    }
+    body.role-detail-mode .summary-grid,
+    body.role-detail-mode #cards,
+    body.role-detail-mode #detail {
+      display: none;
+    }
+    body.role-detail-mode #table {
+      padding: 0;
+      background: transparent;
+      overflow: visible;
+    }
+    body.role-detail-mode .main {
+      overflow-x: hidden;
+    }
+    body.role-detail-mode .role-detail-page .detail-section {
+      display: grid;
+      gap: 14px;
+      padding: 18px 0;
+    }
+    body.role-detail-mode .role-detail-page .detail-section h4 {
+      margin: 0;
+      color: #061426;
+      font-family: var(--font-heading);
+      font-size: 24px;
+      font-weight: 400;
+      line-height: .95;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+    body.role-detail-mode .role-detail-page .detail-grid.three {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+    body.role-detail-mode .role-detail-page .detail-tile {
+      min-width: 0;
+    }
+    body.role-detail-mode .role-detail-page .detail-tile strong {
+      display: block;
+      overflow-wrap: anywhere;
+    }
+
+    /* ============================================================
        DEL-PTO-002: Account Deletion Request Detail page
        pattern: Reported Users Report Detail + Offer Detail
        body class: deletion-detail-mode (ไม่ใช้ user-detail-mode เพื่อไม่กระทบ protected screens)
@@ -11422,6 +11622,14 @@
         grid-column: auto;
         min-width: 0;
       }
+      /* Role List tablet filter bar — search + 3 filters + reset บรรทัดเดียว */
+      body.role-list-mode .role-filter-bar {
+        grid-template-columns: minmax(0, 1fr) repeat(3, minmax(112px, .5fr)) 42px;
+      }
+      body.role-list-mode .role-filter-bar .search {
+        grid-column: auto;
+        min-width: 0;
+      }
       body.deletion-list-mode .deletion-filter-bar .search {
         grid-column: auto;
         min-width: 0;
@@ -11669,6 +11877,10 @@
       }
       /* ADM-PTO-001: Admin Accounts small tablet — search + 3 filters + reset บรรทัดเดียว */
       body.admin-account-list-mode .admin-account-filter-bar {
+        grid-template-columns: minmax(0, 1fr) repeat(3, minmax(100px, .46fr)) 42px;
+      }
+      /* Role List small tablet — search + 3 filters + reset บรรทัดเดียว */
+      body.role-list-mode .role-filter-bar {
         grid-template-columns: minmax(0, 1fr) repeat(3, minmax(100px, .46fr)) 42px;
       }
       body.market-list-mode .user-filter-bar.market-mode {
@@ -12260,6 +12472,13 @@
         justify-content: space-between;
         gap: 10px;
       }
+      /* Role List mobile — panel head title + filter actions บรรทัดเดียว (match admin) */
+      body.role-list-mode .panel-head {
+        align-items: center;
+        flex-direction: row;
+        justify-content: space-between;
+        gap: 10px;
+      }
       body.offer-detail-mode .layout > .panel > .panel-head {
         display: none !important;
         min-height: 0 !important;
@@ -12411,6 +12630,7 @@
       body.deletion-list-mode .user-panel-filter-actions,
       body.delivery-log-list-mode .user-panel-filter-actions,
       body.admin-account-list-mode .user-panel-filter-actions,
+      body.role-list-mode .user-panel-filter-actions,
       body.audit-log-mode .user-panel-filter-actions {
         display: flex;
         align-items: center;
@@ -12889,6 +13109,93 @@
         text-overflow: ellipsis;
         white-space: nowrap;
       }
+      /* Role List mobile card — การ์ดเต็มความกว้างจอ ตาม spec: ชื่อ Role heading + chips ประเภท/สถานะ + role_key + ผู้ดูแล + อัปเดตล่าสุด + ... */
+      body.role-list-mode .role-list-table {
+        grid-template-columns: 1fr;
+        gap: 12px;
+      }
+      body.role-list-mode .user-filter-bar.role-filter-bar {
+        grid-template-columns: 1fr;
+        width: 100%;
+      }
+      body.role-list-mode .user-filter-bar.role-filter-bar .search {
+        grid-column: 1 / -1;
+        width: 100%;
+      }
+      body.role-list-mode .role-list-table .user-row.role-row:not(.head) {
+        grid-template-columns: minmax(0, 1fr) auto;
+        column-gap: 14px;
+        row-gap: 14px;
+        min-height: 0;
+        padding: 18px 18px 16px;
+        border-color: #cfdbd2;
+        border-radius: 10px;
+        box-shadow: 0 1px 2px rgba(15, 23, 42, .05);
+        cursor: pointer;
+        overflow: visible;
+      }
+      body.role-list-mode .role-list-table .user-row.role-row:not(.head) > div.user-cell-primary[data-label="Role"] .main-text {
+        max-width: 100%;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        color: #061426;
+        font-family: var(--font-heading);
+        font-size: 22px;
+        font-weight: 500;
+        letter-spacing: .04em;
+        line-height: 1;
+      }
+      /* คำอธิบายใต้ชื่อใช้เฉพาะ desktop — mobile card แสดงเฉพาะฟิลด์ที่ spec กำหนด */
+      body.role-list-mode .role-list-table .user-row.role-row:not(.head) > div.user-cell-primary[data-label="Role"] .role-desc {
+        display: none;
+      }
+      body.role-list-mode .role-list-table .user-row.role-row:not(.head) > div[data-label]:not(.user-cell-primary) {
+        display: none;
+      }
+      body.role-list-mode .role-list-table .user-row.role-row:not(.head) > .user-row-actions {
+        grid-column: 2;
+        grid-row: 1;
+        align-self: center;
+        justify-self: end;
+        justify-content: flex-end;
+      }
+      body.role-list-mode .main {
+        overflow-x: hidden;
+      }
+      body.role-list-mode .layout > .panel {
+        overflow: hidden;
+      }
+      body.role-list-mode #table {
+        padding: 12px 14px 16px;
+        background: #f8fbff;
+        overflow-x: hidden;
+      }
+      body.role-list-mode #table .role-list-table {
+        min-width: 0;
+      }
+      body.role-list-mode #table > .footer-range {
+        min-width: 0;
+        margin-top: 12px;
+        padding: 13px 16px;
+        background: transparent;
+      }
+      body.role-list-mode .role-list-table .user-card-meta-item.comment-field-meta {
+        display: grid;
+        grid-template-columns: max-content minmax(0, 50%);
+        align-items: baseline;
+        gap: 8px;
+      }
+      body.role-list-mode .role-list-table .user-card-meta-item.comment-field-meta strong {
+        width: 100%;
+        max-width: 100%;
+        min-width: 0;
+        display: block;
+        overflow: hidden;
+        text-align: right;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
       .user-card-tags {
         grid-column: 1 / -1;
         grid-row: 2;
@@ -12999,7 +13306,8 @@
       body.user-list-mode .row-menu summary,
       body.asset-list-mode .row-menu summary,
       body.option-master-mode .row-menu summary,
-      body.admin-account-list-mode .row-menu summary {
+      body.admin-account-list-mode .row-menu summary,
+      body.role-list-mode .row-menu summary {
         width: 30px;
         height: 30px;
         border: 0;
@@ -13012,7 +13320,8 @@
       body.user-list-mode .row-menu[open] summary,
       body.asset-list-mode .row-menu[open] summary,
       body.option-master-mode .row-menu[open] summary,
-      body.admin-account-list-mode .row-menu[open] summary {
+      body.admin-account-list-mode .row-menu[open] summary,
+      body.role-list-mode .row-menu[open] summary {
         border-color: transparent;
         background: transparent;
         color: var(--blue);
@@ -17384,6 +17693,25 @@
       }
     };
 
+    // Role List (Settings > Roles & Permissions) — ข้อมูล master ของ Role ตาม spec section 9.9
+    // 8 System Role เป็น baseline template (identity ล็อก), Custom Role derive จาก template + revision
+    // จำนวนผู้ดูแลที่ใช้งานไม่เก็บซ้ำใน data — คำนวณจาก adminAccountData.accounts (Active เท่านั้น) ตอน render
+    const roleListData = {
+      roles: [
+        { id: "ROL-001", name: "Super Admin", roleKey: "super_admin", type: "system", status: "Active", description: "ใช้สำหรับเจ้าของระบบหรือ operation lead ที่ต้องจัดการ policy, settings, audit และ export", sourceTemplate: "", revision: "", createdAt: "01 Jan 2026 09:00", createdRank: 202601010900, createdBy: "System", updatedAt: "01 Jan 2026 09:00", updatedRank: 202601010900, updatedBy: "System (baseline)" },
+        { id: "ROL-002", name: "Admin Manager", roleKey: "admin_manager", type: "system", status: "Active", description: "จัดการ Admin Accounts, Roles & Permissions และ high-risk settings พร้อม confirmation, reason และ audit", sourceTemplate: "", revision: "", createdAt: "01 Jan 2026 09:00", createdRank: 202601010900, createdBy: "System", updatedAt: "01 Jan 2026 09:00", updatedRank: 202601010900, updatedBy: "System (baseline)" },
+        { id: "ROL-003", name: "Operations Manager", roleKey: "operations_manager", type: "system", status: "Active", description: "ดูภาพรวม queue ปฏิบัติการและดำเนินงานข้าม module ได้เฉพาะ action ที่ matrix อนุญาต", sourceTemplate: "", revision: "", createdAt: "01 Jan 2026 09:00", createdRank: 202601010900, createdBy: "System", updatedAt: "01 Jan 2026 09:00", updatedRank: 202601010900, updatedBy: "System (baseline)" },
+        { id: "ROL-004", name: "Support Agent", roleKey: "support_agent", type: "system", status: "Active", description: "ช่วยเหลือผู้ใช้จาก support context และ delivery status โดยไม่แตะ Settings/export", sourceTemplate: "", revision: "", createdAt: "01 Jan 2026 09:00", createdRank: 202601010900, createdBy: "System", updatedAt: "01 Jan 2026 09:00", updatedRank: 202601010900, updatedBy: "System (baseline)" },
+        { id: "ROL-005", name: "Trust & Safety Moderator", roleKey: "trust_safety_moderator", type: "system", status: "Active", description: "ตรวจ report queue และทำ action ที่กระทบ FO พร้อม reason, impact note และ audit", sourceTemplate: "", revision: "", createdAt: "01 Jan 2026 09:00", createdRank: 202601010900, createdBy: "System", updatedAt: "02 Sep 2026 10:15", updatedRank: 202609021015, updatedBy: "ADM-001" },
+        { id: "ROL-006", name: "Asset Operations", roleKey: "asset_operations", type: "system", status: "Active", description: "ตรวจ Asset List/Detail และ reported assets/comments โดยไม่แก้ Market Data master หรือ Settings", sourceTemplate: "", revision: "", createdAt: "01 Jan 2026 09:00", createdRank: 202601010900, createdBy: "System", updatedAt: "01 Jan 2026 09:00", updatedRank: 202601010900, updatedBy: "System (baseline)" },
+        { id: "ROL-007", name: "Content Editor", roleKey: "content_editor", type: "system", status: "Active", description: "สร้างและแก้ draft บทความ, category และ metadata ได้ แต่ publish/archive ไม่ได้", sourceTemplate: "", revision: "", createdAt: "01 Jan 2026 09:00", createdRank: 202601010900, createdBy: "System", updatedAt: "01 Jan 2026 09:00", updatedRank: 202601010900, updatedBy: "System (baseline)" },
+        { id: "ROL-008", name: "Content Publisher", roleKey: "content_publisher", type: "system", status: "Active", description: "อนุมัติ publish, schedule, archive และจัดการ reported Board content พร้อม audit reason", sourceTemplate: "", revision: "", createdAt: "01 Jan 2026 09:00", createdRank: 202601010900, createdBy: "System", updatedAt: "01 Jan 2026 09:00", updatedRank: 202601010900, updatedBy: "System (baseline)" },
+        { id: "ROL-101", name: "Content Reviewer TH", roleKey: "content_reviewer_th", type: "custom", status: "Active", description: "ตรวจทานบทความ, metadata และ category ก่อนส่งให้ publisher โดยไม่มีสิทธิ์ publish", sourceTemplate: "Content Editor", revision: "rev.3", createdAt: "12 Aug 2026 14:00", createdRank: 202608121400, createdBy: "ADM-001", updatedAt: "05 Sep 2026 11:20", updatedRank: 202609051120, updatedBy: "ADM-001" },
+        { id: "ROL-102", name: "Market Analyst", roleKey: "market_analyst", type: "custom", status: "Active", description: "อ่าน market data, demand overview และ delivery log สำหรับทีมวิเคราะห์โดยไม่มี mutation", sourceTemplate: "Operations Manager", revision: "rev.2", createdAt: "20 Aug 2026 09:30", createdRank: 202608200930, createdBy: "ADM-002", updatedAt: "20 Aug 2026 09:30", updatedRank: 202608200930, updatedBy: "ADM-002" },
+        { id: "ROL-103", name: "Legacy Support Viewer", roleKey: "legacy_support_viewer", type: "custom", status: "Inactive", description: "Role เดิมของทีม support ก่อนปรับโครงสร้าง — ปิดใช้งานแล้วและเลือก assign ให้ผู้ดูแลรายใหม่ไม่ได้", sourceTemplate: "Support Agent", revision: "rev.1", createdAt: "02 Jun 2026 10:00", createdRank: 202606021000, createdBy: "ADM-001", updatedAt: "01 Sep 2026 16:45", updatedRank: 202609011645, updatedBy: "ADM-001" }
+      ]
+    };
+
     const userManagementData = {
       users: [
         { id: "U-1002", displayName: "horology.king", username: "@horology.king", email: "ho***@gmail.com", auth: "Google", status: "Suspended", joined: "03 Jul 2026", joinedBucket: "7d", joinedRank: 20260703, lastActive: "10 Jul 2026 18:10", lastActiveBucket: "24h", lastActiveRank: 202607101810, assets: 2, assetBucket: "1-5", reports: 5, verification: "Google verified", contact: ["Line: horology.king"], support: "SUP-177", latest: "Report follow-up", reportState: "ตรวจแล้ว 5 รายงาน - บัญชีถูกระงับอยู่", statusLabel: "เข้าสู่ระบบไม่ได้", allowed: ["Restore", "Ban"], blocked: ["Reset password", "Deletion from list"], foImpact: "ผู้ใช้เข้าสู่ระบบไม่ได้ระหว่างถูกระงับบัญชีชั่วคราว", actionNote: "การเปลี่ยนสถานะต้องระบุเหตุผล แสดงผลกระทบ และบันทึกการดำเนินการ" },
@@ -18749,6 +19077,11 @@
     let adminAccountListPage = 1;
     let adminAccountFilterOpen = false;
     const adminAccountListPageSize = 10;
+    // Role List state (Settings > Roles & Permissions)
+    let roleListPage = 1;
+    let roleListFilterOpen = false;
+    const roleListPageSize = 10;
+    let activeRoleId = "";
     let optionGroupListPage = 1;
     let optionDetailPage = 1;
     let activeOptionGroup = "";
@@ -18783,7 +19116,9 @@
       // NTF-RSTR-003: Delivery Logs (Settings > Delivery Logs)
       "delivery-log-list": { searchId: "delivery-search", filterIds: ["delivery-status-filter", "delivery-channel-filter", "delivery-sort"] },
       // ADM-PTO-001: Admin Accounts (Settings > Admin Accounts)
-      "admin-account-list": { searchId: "admin-account-search", filterIds: ["admin-account-status-filter", "admin-account-role-filter", "admin-account-sort"] }
+      "admin-account-list": { searchId: "admin-account-search", filterIds: ["admin-account-status-filter", "admin-account-role-filter", "admin-account-sort"] },
+      // Role List (Settings > Roles & Permissions)
+      "role-list": { searchId: "role-search", filterIds: ["role-type-filter", "role-status-filter", "role-sort"] }
     };
     let activeAssetImageIndex = 0;
     let activeAssetReportModalImageIndex = 0;
@@ -19300,6 +19635,9 @@
       // ADM-PTO-001: Admin Accounts list state reset
       adminAccountListPage = 1;
       adminAccountFilterOpen = false;
+      roleListPage = 1;
+      roleListFilterOpen = false;
+      activeRoleId = "";
       // BO-UX-001: clear all saved per-list filter values
       for (const key in listFilterState) delete listFilterState[key];
       marketDashboardPage = 1;
@@ -19342,6 +19680,8 @@
       if (activeModule === "settings" && activeSub === "Delivery Logs") return "delivery-log-list";
       // ADM-PTO-001: Admin Accounts (Settings > Admin Accounts)
       if (activeModule === "settings" && (!activeSub || activeSub === "Admin Accounts")) return "admin-account-list";
+      // Role List (Settings > Roles & Permissions)
+      if (activeModule === "settings" && (activeSub === "Roles & Permissions" || activeSub === "Permissions")) return "role-list";
       if (activeModule === "market") {
         if (activeSub === "Brands & Models") {
           if (document.querySelector("#market-reference-search")) return "market-model-detail";
@@ -19428,6 +19768,7 @@
       auditLogFilterOpen = false;
       deliveryLogFilterOpen = false;
       adminAccountFilterOpen = false;
+      roleListFilterOpen = false;
     }
 
     function renderNav() {
@@ -19672,6 +20013,23 @@
         { value: "oldest", label: filterCopy.oldestFirst },
         { value: "name", label: "Name A-Z" },
         { value: "status", label: "สถานะ" }
+      ],
+      // Role List filters (Settings > Roles & Permissions)
+      roleType: [
+        { value: "", label: "ทุกประเภท" },
+        { value: "system", label: "System Role" },
+        { value: "custom", label: "Custom Role" }
+      ],
+      roleStatus: [
+        { value: "", label: filterCopy.allStatus },
+        { value: "Active", label: "Active" },
+        { value: "Inactive", label: "Inactive" }
+      ],
+      roleSort: [
+        { value: "name", label: "ชื่อ A–Z" },
+        { value: "created", label: "สร้างล่าสุด" },
+        { value: "updated", label: "แก้ไขล่าสุด" },
+        { value: "admins", label: "ผู้ดูแลที่ใช้งานมาก–น้อย" }
       ]
     };
 
@@ -26656,6 +27014,9 @@
       document.body.classList.toggle("audit-log-mode", id === "audit" || (id === "settings" && subLabel === "Audit Log"));
       // ADM-PTO-001: Admin Accounts list mode (default Settings sub)
       document.body.classList.toggle("admin-account-list-mode", id === "settings" && (!subLabel || subLabel === "Admin Accounts"));
+      // Role List mode (Settings > Roles & Permissions) — detail mode ถูกถอดเมื่อกลับ/เปลี่ยนหน้า
+      document.body.classList.remove("role-detail-mode");
+      document.body.classList.toggle("role-list-mode", id === "settings" && (subLabel === "Roles & Permissions" || subLabel === "Permissions"));
       document.body.classList.toggle("user-list-mode", id === "users" || isReportedAssets || isReportedBoard || isReportedComments);
       document.body.classList.toggle("user-accounts-mode", id === "users" && (subLabel || "User Accounts") === "User Accounts");
       document.body.classList.remove("asset-detail-mode");
@@ -26696,7 +27057,7 @@
         return;
       }
       if (id === "settings" && ((subLabel || "Admin Accounts") === "Roles & Permissions" || subLabel === "Permissions")) {
-        renderSettingsPermissionsPage();
+        renderRoleListPage();
         updateActiveNav();
         return;
       }
@@ -26974,152 +27335,195 @@
       updateActiveNav();
     }
 
-    function getRolePermissionRows() {
-      return [
-        {
-          role: "Super Admin",
-          scope: "All modules",
-          content: "Full",
-          moderation: "Full",
-          sensitive: "Reveal / Export",
-          status: "Active",
-          detail: "ใช้สำหรับเจ้าของระบบหรือ operation lead ที่ต้องจัดการ policy, settings, audit และ export"
-        },
-        {
-          role: "Admin Manager",
-          scope: "Admin Settings",
-          content: "Settings policy",
-          moderation: "No moderation queue",
-          sensitive: "Audit / Policy",
-          status: "Active",
-          detail: "จัดการ Admin Accounts, Roles & Permissions และ high-risk settings พร้อม confirmation, reason และ audit"
-        },
-        {
-          role: "Operations Manager",
-          scope: "Operations",
-          content: "Read context",
-          moderation: "Workflow oversight",
-          sensitive: "Policy based",
-          status: "Active",
-          detail: "ดูภาพรวม queue ปฏิบัติการและดำเนินงานข้าม module ได้เฉพาะ action ที่ matrix อนุญาต"
-        },
-        {
-          role: "Support Agent",
-          scope: "Support Center",
-          content: "No content write",
-          moderation: "No mutation",
-          sensitive: "Limited context",
-          status: "Active",
-          detail: "ช่วยเหลือผู้ใช้จาก support context และ delivery status โดยไม่แตะ Settings/export"
-        },
-        {
-          role: "Trust & Safety Moderator",
-          scope: "Reports",
-          content: "Read related content",
-          moderation: "User / Asset / Board reports",
-          sensitive: "Masked by default",
-          status: "Active",
-          detail: "ตรวจ report queue และทำ action ที่กระทบ FO พร้อม reason, impact note และ audit"
-        },
-        {
-          role: "Asset Operations",
-          scope: "Asset Management",
-          content: "Asset context",
-          moderation: "Asset / Comment reports",
-          sensitive: "Masked by default",
-          status: "Active",
-          detail: "ตรวจ Asset List/Detail และ reported assets/comments โดยไม่แก้ Market Data master หรือ Settings"
-        },
-        {
-          role: "Content Editor",
-          scope: "Content Management",
-          content: "Create / Edit Draft",
-          moderation: "No publish",
-          sensitive: "No sensitive data",
-          status: "Active",
-          detail: "อัปเดตบทความ, category draft และ metadata ได้ แต่ publish/archive ไม่ได้"
-        },
-        {
-          role: "Content Publisher",
-          scope: "Content Management",
-          content: "Publish / Schedule / Archive",
-          moderation: "Reported Articles",
-          sensitive: "No user PII",
-          status: "Active",
-          detail: "อนุมัติ publish, schedule, archive และจัดการ reported Board content พร้อม audit reason"
-        },
-      ];
+    // ===== Role List rendering (Settings > Roles & Permissions) =====
+    // pattern เดียวกับ Admin Accounts list — full-width master-data list
+    // ไม่มี KPI cards / side panel; mutation flow (สร้าง/แก้ไข/คัดลอก/ปิด-เปิดใช้งาน) เป็นงานถัดไป
+    function countActiveAdminsUsingRole(roleName) {
+      return adminAccountData.accounts.filter(acc => acc.role === roleName && acc.status === "Active").length;
     }
 
-    function renderPermissionStatus(status) {
-      const map = { Active: "green", Draft: "amber", Disabled: "gray" };
-      return `<span class="pill ${map[status] || "blue"}">${status}</span>`;
+    function roleTypeChip(role) {
+      return role.type === "system"
+        ? '<span class="pill purple">System Role</span>'
+        : '<span class="pill teal">Custom Role</span>';
     }
 
-    function renderSettingsPermissionsPage() {
-      const roles = getRolePermissionRows();
+    function roleStatusPill(status) {
+      const map = { Active: "green", Inactive: "gray" };
+      return `<span class="pill ${map[status] || "gray"}">${status}</span>`;
+    }
+
+    function getRoleSearchText(role) {
+      return [role.id, role.name, role.roleKey, role.description]
+        .filter(Boolean).join(" ").toLowerCase();
+    }
+
+    function renderRoleListPage() {
       activeModule = "settings";
       activeSub = "Roles & Permissions";
-      setPageActions("");
-      syncExpandedNavForModule("settings", "Roles & Permissions");
-      document.body.classList.remove("dashboard-mode", "user-management-mode", "user-list-mode", "asset-list-mode", "article-list-mode", "category-list-mode", "reported-board-mode", "asset-detail-mode", "user-detail-mode");
       activeRow = null;
+      activeRoleId = "";
+      setPageActions(`<button class="btn" type="button" data-role-create-open>${iconSvg.plus}<span>สร้าง Custom Role</span></button>`);
+      syncExpandedNavForModule("settings", "Roles & Permissions");
+      document.body.classList.add("role-list-mode");
+      document.body.classList.remove("role-detail-mode", "dashboard-mode", "user-management-mode", "user-list-mode", "asset-list-mode", "article-list-mode", "category-list-mode", "reported-board-mode", "asset-detail-mode", "user-detail-mode", "admin-account-list-mode", "admin-account-detail-mode", "deletion-list-mode", "deletion-detail-mode", "audit-log-mode", "delivery-log-list-mode", "policy-versioning-mode", "policy-detail-mode", "policy-editor-mode", "policy-version-history-mode", "support-center-mode");
       document.querySelector("#crumb").textContent = "เครื่องมือ & รายงาน / Settings / Roles & Permissions";
       document.querySelector("#page-title").textContent = "Roles & Permissions";
       document.querySelector("#page-meta").textContent = "";
-      document.querySelector("#panel-title").textContent = "Role Matrix";
-      document.querySelector("#panel-subtitle").textContent = "Admin account type เดียว แต่คุมสิทธิ์ด้วย role และ permission policy ต่อ module/action";
-      document.querySelector("#primary-action").textContent = "บันทึก policy";
+      document.querySelector("#panel-title").textContent = "Role List";
+      document.querySelector("#panel-subtitle").textContent = "จัดการ Role มาตรฐานและ Custom Role สำหรับผู้ดูแลระบบ";
+      document.querySelector("#primary-action").textContent = "";
+      document.querySelector("#user-panel-filter-actions").innerHTML = `
+        <button class="btn user-filter-toggle" type="button" data-role-filter-toggle aria-expanded="${roleListFilterOpen}">${iconSvg.filter}<span>${roleListFilterOpen ? "ปิดตัวกรอง" : "เปิดตัวกรอง"}</span></button>
+        <button class="btn" type="button" data-role-reset aria-label="รีเซ็ตค่าทั้งหมด">${iconSvg.refresh}<span>รีเซ็ตค่าทั้งหมด</span></button>
+      `;
+      document.querySelector(".filters").innerHTML = `
+        <div class="user-filter-bar role-filter-bar" data-filter-open="${roleListFilterOpen}">
+          <input class="field search" id="role-search" type="search" placeholder="ค้นหา Role ID, ชื่อ, Role Key หรือคำอธิบาย" />
+          <div class="user-advanced-filter">${customSelect("role-type-filter", "Filter role type", filterOptions("roleType"))}</div>
+          <div class="user-advanced-filter">${customSelect("role-status-filter", "Filter role status", filterOptions("roleStatus"))}</div>
+          <div class="user-advanced-filter">${customSelect("role-sort", "Sort roles", filterOptions("roleSort"), "name")}</div>
+          ${resetFilterButton("data-role-reset")}
+        </div>
+      `;
+      document.querySelector("#summary-grid").innerHTML = "";
+      document.querySelector("#cards").innerHTML = "";
+      document.querySelector("#detail").innerHTML = "";
+      restoreListFilterState("role-list");
+      renderRoleListRows();
+      updateActiveNav();
+    }
+
+    function renderRoleListRows() {
+      const esc = v => String(v).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+      const q = (document.querySelector("#role-search")?.value || "").trim().toLowerCase();
+      const type = document.querySelector("#role-type-filter")?.value || "";
+      const status = document.querySelector("#role-status-filter")?.value || "";
+      const sort = document.querySelector("#role-sort")?.value || "name";
+      const sorted = [...roleListData.roles].filter(role => {
+        return (!q || getRoleSearchText(role).includes(q))
+          && (!type || role.type === type)
+          && (!status || role.status === status);
+      }).sort((a, b) => {
+        if (sort === "created") return b.createdRank - a.createdRank;
+        if (sort === "updated") return b.updatedRank - a.updatedRank;
+        if (sort === "admins") return countActiveAdminsUsingRole(b.name) - countActiveAdminsUsingRole(a.name) || a.name.localeCompare(b.name, "en");
+        return a.name.localeCompare(b.name, "en");
+      });
+      const pageCount = Math.max(1, Math.ceil(sorted.length / roleListPageSize));
+      roleListPage = Math.min(roleListPage, pageCount);
+      const start = (roleListPage - 1) * roleListPageSize;
+      const pageRows = sorted.slice(start, start + roleListPageSize);
+      const emptyState = roleListData.roles.length === 0
+        ? `<div class="user-row empty"><div class="role-empty-state" style="grid-column: 1 / -1; text-align: center; padding: 2.5rem 1rem;"><div class="empty-icon">${iconSvg.siSearch}</div><div class="empty-title">ยังไม่มี Role</div><div class="empty-subtitle">เริ่มสร้าง Custom Role จากปุ่มสร้าง Custom Role ด้านบน</div></div></div>`
+        : `<div class="user-row empty"><div class="role-empty-state" style="grid-column: 1 / -1; text-align: center; padding: 2.5rem 1rem;"><div class="empty-icon">${iconSvg.siSearch}</div><div class="empty-title">ไม่พบ Role ตามเงื่อนไขที่เลือก</div><div class="empty-subtitle">ลองปรับคำค้นหรือตัวกรอง แล้วลองใหม่</div></div></div>`;
+      document.querySelector("#table").innerHTML = `
+        <div class="user-table role-list-table">
+          <div class="user-row head"><div>Role</div><div>Role Key</div><div>ประเภท</div><div>สถานะ</div><div>ผู้ดูแลที่ใช้งาน</div><div>อัปเดตล่าสุด</div><div>Action</div></div>
+          ${pageRows.length === 0 ? emptyState : pageRows.map(role => renderRoleRow(role, esc)).join("")}
+        </div>
+        <div class="footer-range">
+          <span>แสดง ${sorted.length ? `${start + 1}-${Math.min(start + roleListPageSize, sorted.length)}` : "0"} จาก ${sorted.length}</span>
+          ${renderPager(roleListPage, pageCount, "data-role-page")}
+        </div>
+      `;
+    }
+
+    function renderRoleRow(role, esc) {
+      const admins = countActiveAdminsUsingRole(role.name);
+      const isCustom = role.type === "custom";
+      const isActive = role.status === "Active";
+      return `
+        <div class="user-row role-row" data-role-card="${role.id}">
+          <div class="user-cell-primary" data-label="Role">
+            <div class="main-text"><span class="desktop-user-name"><button class="role-name-link" type="button" data-role-open="${role.id}">${esc(role.name)}</button></span><span class="mobile-user-card-title">${esc(role.name)}</span></div>
+            <div class="muted role-desc">${esc(role.description)}</div>
+          </div>
+          <div class="user-card-tags">
+            ${roleTypeChip(role)}
+            ${roleStatusPill(role.status)}
+            <div class="user-card-meta">
+              <div class="user-card-meta-item comment-field-meta"><span>Role Key</span><strong>${esc(role.roleKey)}</strong></div>
+              <div class="user-card-meta-item comment-field-meta"><span>ผู้ดูแลที่ใช้งาน</span><strong>${admins} คน</strong></div>
+              <div class="user-card-meta-item comment-field-meta"><span>อัปเดตล่าสุด</span><strong>${role.updatedAt} · ${esc(role.updatedBy)}</strong></div>
+            </div>
+          </div>
+          <div data-label="Role Key"><div class="main-text"><span class="role-key-text">${esc(role.roleKey)}</span></div></div>
+          <div data-label="ประเภท">${roleTypeChip(role)}</div>
+          <div data-label="สถานะ">${roleStatusPill(role.status)}</div>
+          <div data-label="ผู้ดูแลที่ใช้งาน"><div class="main-text">${admins} คน</div></div>
+          <div data-label="อัปเดตล่าสุด"><div class="main-text">${role.updatedAt}</div><div class="muted">โดย ${esc(role.updatedBy)}</div></div>
+          <div class="user-row-actions">
+            <details class="row-menu">
+              <summary aria-label="Role actions">...</summary>
+              <div class="row-menu-list">
+                <button type="button" data-role-open="${role.id}">ดูรายละเอียด</button>
+                ${isCustom ? `<button type="button" data-role-flow="edit" data-role-id="${role.id}">แก้ไข</button>` : ""}
+                ${isCustom ? `<button type="button" data-role-flow="copy" data-role-id="${role.id}">คัดลอก</button>` : ""}
+                ${isCustom && isActive ? `<button type="button" data-role-flow="deactivate" data-role-id="${role.id}">ปิดใช้งาน</button>` : ""}
+                ${isCustom && !isActive ? `<button type="button" data-role-flow="reactivate" data-role-id="${role.id}">เปิดใช้งาน</button>` : ""}
+                <button type="button" data-audit-ref="${role.id}">ดู Audit Log</button>
+              </div>
+            </details>
+          </div>
+        </div>
+      `;
+    }
+
+    // Role Detail — interim shell ให้ row click/back context ใช้งานได้ตาม spec
+    // (Permission Table เต็มและ revision/metadata ครบเป็นงานถัดไป)
+    function renderRoleDetailPage(roleId) {
+      const role = roleListData.roles.find(r => r.id === roleId);
+      if (!role) {
+        renderRoleListPage();
+        return;
+      }
+      const esc = v => String(v).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+      activeModule = "settings";
+      activeSub = "Roles & Permissions";
+      activeRow = { id: role.id };
+      activeRoleId = role.id;
+      document.body.classList.add("role-detail-mode");
+      document.body.classList.remove("role-list-mode", "dashboard-mode", "user-management-mode", "user-list-mode", "asset-list-mode", "article-list-mode", "category-list-mode", "reported-board-mode", "asset-detail-mode", "user-detail-mode", "admin-account-list-mode", "admin-account-detail-mode", "deletion-list-mode", "deletion-detail-mode", "audit-log-mode", "delivery-log-list-mode", "policy-versioning-mode", "policy-detail-mode", "policy-editor-mode", "policy-version-history-mode", "support-center-mode");
+      document.querySelector("#crumb").textContent = `เครื่องมือ & รายงาน / Settings / Roles & Permissions / ${role.name}`;
+      document.querySelector("#page-title").textContent = "Role Detail";
+      document.querySelector("#page-meta").textContent = "";
+      setPageActions(renderPageBackButton("data-role-back", "กลับไปยัง Role List"));
+      document.querySelector("#panel-title").textContent = role.id;
+      document.querySelector("#panel-subtitle").textContent = `${role.name} · ${role.roleKey}`;
+      document.querySelector("#primary-action").textContent = "";
       document.querySelector("#user-panel-filter-actions").innerHTML = "";
       document.querySelector(".filters").innerHTML = "";
-      document.querySelector("#summary-grid").innerHTML = [
-        ["Admin Account Type", "1", "ทุกบัญชียังเป็น Admin"],
-        ["Role Templates", roles.length, "mock policy สำหรับ prototype"],
-        ["Content Roles", 2, "Editor / Publisher"],
-        ["Enforcement", "API + Route", "ทำจริงใน dev phase"]
-      ].map(([label, value, note]) => `
-        <article class="stat">
-          <div class="stat-label">${label}</div>
-          <div class="stat-value">${value}</div>
-          <div class="stat-note">${note}</div>
-        </article>
-      `).join("");
-      document.querySelector("#cards").innerHTML = [
-        ["Content-only Admin", "รองรับ admin ที่เข้ามาอัปเดตบทความโดยไม่เห็น User, Asset, Export หรือ Settings อื่น"],
-        ["Action Policy", "Publish, Archive, Export, Reveal sensitive data และ policy update ต้องแยกสิทธิ์และบันทึก audit"],
-        ["Prototype Scope", "หน้านี้แสดง coverage ของ role/permission แต่ยังไม่ enforce permission จริงกับทุกหน้าที่ล็อกไว้แล้ว"]
-      ].map(([title, detail]) => `<article class="mini-card"><h3>${title}</h3><p class="muted">${detail}</p></article>`).join("");
+      document.querySelector("#summary-grid").innerHTML = "";
+      document.querySelector("#cards").innerHTML = "";
+      document.querySelector("#detail").innerHTML = "";
+      const summaryTile = (label, value) => `<div class="detail-tile"><span>${label}</span><strong>${value}</strong></div>`;
       document.querySelector("#table").innerHTML = `
-        <div class="asset-table">
-          <div class="asset-row head"><div>Role</div><div>Access Scope</div><div>Content Permission</div><div>Moderation</div><div>Sensitive Data</div><div>Status</div></div>
-          ${roles.map(role => `
-            <div class="asset-row">
-              <div data-label="Role"><div class="main-text">${role.role}</div><div class="muted">${role.detail}</div></div>
-              <div data-label="Access Scope"><div class="main-text">${role.scope}</div></div>
-              <div data-label="Content Permission"><div class="main-text">${role.content}</div></div>
-              <div data-label="Moderation"><div class="main-text">${role.moderation}</div></div>
-              <div data-label="Sensitive Data"><div class="main-text">${role.sensitive}</div></div>
-              <div data-label="Status">${renderPermissionStatus(role.status)}</div>
+        <div class="user-detail-page report-detail-page role-detail-page">
+          <div class="user-detail-head">
+            <div class="user-detail-title">
+              <div>
+                <h2 class="asset-report-heading"><span class="asset-report-id">${role.id}</span><span class="user-detail-separator"> : </span><span class="asset-report-name user-display-name">${esc(role.name)}</span></h2>
+                <div class="chips">
+                  ${roleTypeChip(role)}
+                  ${roleStatusPill(role.status)}
+                </div>
+              </div>
             </div>
-          `).join("")}
-        </div>
-      `;
-      document.querySelector("#detail").innerHTML = `
-        <div class="panel-head">
-          <div>
-            <h2>Permission Design Notes</h2>
-            <p>Prototype coverage เท่านั้น ยังไม่เปลี่ยน behavior ของหน้าที่ทำไว้ก่อนหน้า</p>
           </div>
-        </div>
-        <div class="detail-body">
-          <div class="module-note"><strong>Baseline:</strong> BO ใช้ account type เดียวคือ Admin แล้วกำหนดสิทธิ์ผ่าน role/permission policy ต่อ module และ action</div>
-          <div class="timeline">
-            <div class="event"><strong>Route access</strong><br>Dev phase ต้อง enforce ที่ route/API/service layer ไม่ใช่ซ่อนเมนูอย่างเดียว</div>
-            <div class="event"><strong>Action access</strong><br>Create/edit draft, publish, archive, reveal sensitive data, export และ settings update ต้องแยก permission</div>
-            <div class="event"><strong>Audit</strong><br>การเปลี่ยน role, policy, publish/archive และ sensitive action ต้องบันทึก before/after, reason, admin ID และ timestamp</div>
+          <div class="detail-section">
+            <h4>Role Summary</h4>
+            <div class="detail-grid three">
+              ${summaryTile("Role Key", esc(role.roleKey))}
+              ${summaryTile("ผู้ดูแลที่ใช้งาน", `${countActiveAdminsUsingRole(role.name)} คน`)}
+              ${summaryTile("อัปเดตล่าสุด", `${role.updatedAt} · ${esc(role.updatedBy)}`)}
+            </div>
+            <div class="module-note">ส่วน Permission Table และรายละเอียดเต็มของ Role จะมาในงานถัดไป — หน้านี้เป็น interim detail สำหรับทดสอบ navigation และ back context จาก Role List</div>
           </div>
         </div>
       `;
+      updateActiveNav();
+      scrollMainToTop();
     }
 
     // ===== Policy & Versioning rendering (HS-PTO-001) =====
@@ -38502,6 +38906,7 @@
       if (b.classList.contains("user-list-mode")) return true;
       if (b.classList.contains("deletion-list-mode")) return true;
       if (b.classList.contains("admin-account-list-mode")) return true;
+      if (b.classList.contains("role-list-mode")) return true;
       return false;
     }
     document.addEventListener("toggle", event => {
@@ -38877,6 +39282,13 @@
           renderAdminAccountRows();
           return;
         }
+        // Role List filter selects (Settings > Roles & Permissions)
+        if (["role-type-filter", "role-status-filter", "role-sort"].includes(hiddenInput.id) && activeModule === "settings" && (activeSub === "Roles & Permissions" || activeSub === "Permissions")) {
+          roleListPage = 1;
+          saveCurrentListFilterState();
+          renderRoleListRows();
+          return;
+        }
         userListPage = 1;
         saveCurrentListFilterState();
         if (activeModule === "users" && (activeSub === "Report User" || activeSub === "Reported Users")) renderReportedUserRows();
@@ -39198,6 +39610,17 @@
         const id = adminAccountOpen.dataset.adminAccountOpen || adminAccountOpen.dataset.adminAccountCard;
         pushBackNavigationContext();
         renderAdminAccountDetail(id);
+        closeRowMenus();
+        return;
+      }
+      // Role List (Settings > Roles & Permissions) — row click / ดูรายละเอียด เปิด Role Detail
+      const roleOpen = event.target.closest("[data-role-open], .user-row[data-role-card]");
+      if (roleOpen && activeModule === "settings" && (activeSub === "Roles & Permissions" || activeSub === "Permissions")
+          && !event.target.closest("[data-role-flow], [data-audit-ref]")
+          && !(event.target.closest(".row-menu, button") && !event.target.closest("[data-role-open]"))) {
+        const id = roleOpen.dataset.roleOpen || roleOpen.dataset.roleCard;
+        pushBackNavigationContext();
+        renderRoleDetailPage(id);
         closeRowMenus();
         return;
       }
@@ -40541,6 +40964,56 @@
         updateActiveNav();
         return;
       }
+      // Role List (Settings > Roles & Permissions) — filter toggle + reset + pagination
+      const roleFilterToggle = event.target.closest("[data-role-filter-toggle]");
+      if (roleFilterToggle) {
+        roleListFilterOpen = !roleListFilterOpen;
+        const filterBar = document.querySelector(".user-filter-bar.role-filter-bar");
+        if (filterBar) filterBar.dataset.filterOpen = String(roleListFilterOpen);
+        roleFilterToggle.setAttribute("aria-expanded", String(roleListFilterOpen));
+        const label = roleFilterToggle.querySelector("span");
+        if (label) label.textContent = roleListFilterOpen ? "ปิดตัวกรอง" : "เปิดตัวกรอง";
+        return;
+      }
+      const roleReset = event.target.closest("[data-role-reset]");
+      if (roleReset) {
+        roleListPage = 1;
+        clearListFilterState("role-list");
+        renderRoleListPage();
+        return;
+      }
+      const rolePageButton = event.target.closest("[data-role-page]");
+      if (rolePageButton) {
+        const target = rolePageButton.dataset.rolePage;
+        if (target === "prev") roleListPage = Math.max(1, roleListPage - 1);
+        else if (target === "next") roleListPage += 1;
+        else roleListPage = Number(target) || 1;
+        saveCurrentListFilterState();
+        renderRoleListRows();
+        return;
+      }
+      // Role List — ปุ่มสร้าง Custom Role (flow สร้างเป็นงานถัดไป)
+      const roleCreateOpen = event.target.closest("[data-role-create-open]");
+      if (roleCreateOpen) {
+        showSuccessToast("flow สร้าง Custom Role จะพร้อมในงาน prototype ถัดไป", "Roles & Permissions");
+        return;
+      }
+      // Role List — mutation menu (edit/copy/deactivate/reactivate เป็นงานถัดไป)
+      const roleFlowButton = event.target.closest("[data-role-flow]");
+      if (roleFlowButton) {
+        const role = roleListData.roles.find(r => r.id === roleFlowButton.dataset.roleId);
+        const labels = { edit: "แก้ไข", copy: "คัดลอก", deactivate: "ปิดใช้งาน", reactivate: "เปิดใช้งาน" };
+        closeRowMenus();
+        if (role) showSuccessToast(`${labels[roleFlowButton.dataset.roleFlow] || "จัดการ"} ${role.name} — flow นี้จะพร้อมในงาน prototype ถัดไป`, "Roles & Permissions");
+        return;
+      }
+      // Role Detail — กลับไป Role List (คง filter/sort/page state ผ่าน restore)
+      const roleBack = event.target.closest("[data-role-back]");
+      if (roleBack) {
+        renderRoleListPage();
+        updateActiveNav();
+        return;
+      }
       // ADM-PTO-001: Admin Accounts — audit ref link → Audit Log (กรองด้วย reference)
       const adminAccountAuditRef = event.target.closest("[data-admin-account-audit-ref]");
       if (adminAccountAuditRef) {
@@ -41331,6 +41804,13 @@
         adminAccountListPage = 1;
         saveCurrentListFilterState();
         renderAdminAccountRows();
+        return;
+      }
+      // Role List search (Settings > Roles & Permissions)
+      if (event.target.matches("#role-search")) {
+        roleListPage = 1;
+        saveCurrentListFilterState();
+        renderRoleListRows();
         return;
       }
       if (event.target.matches("#search")) {
