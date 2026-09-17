@@ -1,8 +1,8 @@
 # 16 BO Admin Settings Module
 
-**Version:** `BO-16-v0.7`
+**Version:** `BO-16-v0.9`
 **Date:** 2026-09-17
-**Status:** Updated — Role-change audit record defined
+**Status:** Updated — Role List and Permission Detail design defined
 **Platform:** Responsive Web Back Office
 **Primary BO Sources:** `00_GLOBAL_RULES_MODULE.md`, `01_AUTHENTICATION_MODULE.md`, `08_AUDIT_LOG_MODULE.md`, `15_REPORTS_ANALYTICS_MODULE.md`
 
@@ -18,8 +18,8 @@
 | --- | --- |
 | Module Name | BO Admin Settings |
 | Platform | Responsive Web Back Office |
-| Version | `BO-16-v0.7` |
-| Status | Updated — Role-change audit record defined |
+| Version | `BO-16-v0.9` |
+| Status | Updated — Role List and Permission Detail design defined |
 | Owner | Product / UX / Engineering / Operations |
 | Document Type | Functional PRD |
 
@@ -480,6 +480,121 @@ For production implementation, these safeguards must run after permission check 
 
 System Role ห้ามเปลี่ยน identity; attempt ที่ถูก block ต้องใช้ event type ของคำขอที่เกี่ยวข้องพร้อม `decision: Blocked`, `result: Failed` และ `failure_code` ตาม safeguard โดยไม่บันทึก mutation ที่ไม่เกิดขึ้น
 
+### 9.9 Role List
+
+หน้าจอ `Settings > Roles & Permissions` เป็น full-width master-data list สำหรับดูและจัดการ Role โดยใช้ drill-in ไป Role Detail; ไม่มี KPI cards และไม่มี list-detail split เพราะจำนวนและสถานะเป็นข้อมูลที่อ่านได้จากรายการโดยตรง. หน้านี้ใช้สิทธิ์ `settings.roles.manage`: ผู้ไม่มีสิทธิ์ต้องไม่เห็นเมนูและ direct URL/API ต้องถูกปฏิเสธ.
+
+**Page structure**
+
+1. Breadcrumb: `เครื่องมือ & รายงาน / Settings / Roles & Permissions`
+2. Page title `Roles & Permissions` พร้อมคำอธิบาย `จัดการ Role มาตรฐานและ Custom Role สำหรับผู้ดูแลระบบ`
+3. ปุ่ม primary `สร้าง Custom Role` แสดงเฉพาะผู้มีสิทธิ์สร้าง; System Role ไม่มี entry point สำหรับสร้างหรือแก้ identity
+4. Filter bar: search, ตัวกรองประเภท Role, สถานะ, sort และปุ่ม reset
+5. Role List panel และ pagination 10 รายการต่อหน้า
+
+**Search, filters, and sort**
+
+| Control | Requirement |
+| --- | --- |
+| Search | ค้น `Role ID`, ชื่อ Role, `role_key` และคำอธิบาย; debounce ได้, reset กลับหน้า 1 และต้องไม่ค้นจาก permission payload ที่ไม่อยู่ในขอบเขตการมองเห็น |
+| ประเภท Role | All / System Role / Custom Role; ค่าเริ่มต้น All |
+| สถานะ | All / Active / Inactive; System Role แสดง Active เสมอและไม่ต้องมี Archived/Deleted ในรายการปกติ |
+| Sort | ชื่อ A–Z (default), สร้างล่าสุด, แก้ไขล่าสุด, ผู้ดูแลที่ใช้งานมาก–น้อย |
+| Reset | ล้าง search/filter/sort กลับค่า default และกลับหน้า 1 |
+| State persistence | คง filter, sort และหน้าปัจจุบันเมื่อ Role Detail → Back; ล้างเมื่อสลับ module |
+
+**Desktop list columns**
+
+| Column | Display and behavior |
+| --- | --- |
+| Role | ชื่อ Role เป็น link เปิด Role Detail; แสดงคำอธิบายสั้นใต้ชื่อเมื่อมี |
+| Role Key | `role_key` แบบ lowercase snake_case; System Role เป็นค่าคงที่, Custom Role ล็อกหลังสร้าง |
+| ประเภท | chip `System Role` หรือ `Custom Role` |
+| สถานะ | status pill `Active` / `Inactive`; System Role แสดง `Active` และห้ามแสดง control ปิดใช้งาน |
+| ผู้ดูแลที่ใช้งาน | จำนวน Admin ที่ Active และใช้งาน Role นี้; กดเพื่อเปิด filtered Admin Accounts ไม่ได้ใน Phase นี้ เพื่อไม่ให้กระทบ protected Admin Accounts |
+| อัปเดตล่าสุด | วันเวลาและผู้แก้ไขล่าสุด; System Role ที่ยังไม่เคยเปลี่ยน permission ใช้ baseline publish timestamp |
+| Action | ปุ่ม `...` ที่แสดงตาม permission และชนิด Role; คลิกทั้ง row ยกเว้น action menu เปิด Role Detail |
+
+**Action menu and list rules**
+
+| Role type / status | Available actions | Rules |
+| --- | --- | --- |
+| System Role / Active | ดูรายละเอียด, ดู Audit Log | ห้าม Rename, Edit permissions, Copy, Deactivate หรือ Delete System Role จาก list |
+| Custom Role / Active | ดูรายละเอียด, แก้ไข, คัดลอก, ปิดใช้งาน, ดู Audit Log | `ปิดใช้งาน` ต้องผ่าน impact check และ confirmation flow ตาม task ถัดไป; action ที่ไม่มีสิทธิ์ห้าม render ใน DOM |
+| Custom Role / Inactive | ดูรายละเอียด, คัดลอก, เปิดใช้งาน, ดู Audit Log | ห้ามเลือก Role นี้ใน assignment และห้ามแก้ไขจนกว่าจะเปิดใช้งานตาม policy |
+
+Row action ต้องไม่เปลี่ยน status หรือ permission จาก list โดยตรง. Mutation ทุกชนิดเปิด flow เฉพาะของตนพร้อม reason, safeguard และ audit contract ใน section 9.8; list refresh หลังผลสำเร็จโดยคง filter/sort/page เท่าที่รายการยังอยู่ในผลลัพธ์.
+
+**Mobile card and states**
+
+- ที่ viewport `<= 760px` ซ่อน table header/columns และแสดง Role card: ชื่อ Role เป็น heading, chips ประเภท/สถานะ, `role_key`, จำนวนผู้ดูแลที่ใช้งาน และอัปเดตล่าสุด; ปุ่ม `...` ไม่มีกรอบและไม่ชนกับ row tap target.
+- Pagination ใช้ compact `ก่อนหน้า  current / total  ถัดไป`; desktop ใช้ adaptive page numbers ตาม `docs/responsive-table-standard.md`.
+- Loading ใช้ list/card skeleton, no-result ระบุว่าค้นหาไม่พบและมีปุ่มล้างตัวกรอง, empty base state อธิบายว่ายังไม่มี Custom Role พร้อม `สร้าง Custom Role` เฉพาะผู้มีสิทธิ์, และ error มี retry โดยไม่ล้าง filter.
+- Permission denied, stale/deleted role และ API failure ต้องไม่เปิด detail/mutation flow และแสดงข้อความไทยที่บอกทางกลับ Role List ได้.
+
+**Role List acceptance boundary**
+
+- Role List ไม่แสดงหรือกำหนดสิทธิ์เฉพาะรายบุคคล; Admin ทุกคนอ้าง Role เดียวตาม contract.
+- ไม่แก้หรือ deep-link เข้าหน้า `Settings > Admin Accounts` ในงานนี้ เพราะเป็น protected screen.
+- การสร้าง, คัดลอก, แก้ไข Permission, impact check และ deactivate/reactivate เป็น flow แยกใน RP-009 ถึง RP-015; หน้านี้กำหนดเฉพาะ entry/action visibility และ handoff context.
+
+### 9.10 Role Detail And Permission Table
+
+Role Detail เป็นหน้ารายละเอียดเต็มหน้าที่เปิดจาก Role List และใช้เพื่ออ่านขอบเขตสิทธิ์ของ Role โดยไม่แสดงหรือกำหนดสิทธิ์เฉพาะรายบุคคล. ใช้ `settings.roles.manage` สำหรับการเข้าถึงหน้ารายละเอียด; ทุกข้อมูลและ action ต้องตรวจ permission ซ้ำที่ route/API/service ไม่พึ่ง UI อย่างเดียว.
+
+**Detail header and navigation**
+
+1. Breadcrumb: `เครื่องมือ & รายงาน / Settings / Roles & Permissions / <Role Name>`
+2. ปุ่ม `กลับไปยัง Role List` ต้องคืน search, filter, sort และหน้าปัจจุบันตาม section 9.9
+3. Detail head แสดง `Role ID : Role Name`, chip `System Role` หรือ `Custom Role`, status pill และคำอธิบาย Role
+4. metadata แสดง `Role Key`, สร้างเมื่อใด/โดยใคร, อัปเดตล่าสุดเมื่อใด/โดยใคร, source template/revision เฉพาะ Custom Role และจำนวนผู้ดูแล Active ที่ใช้ Role นี้
+5. action อยู่ขวาของ header: System Role แสดง `ดู Audit Log` เท่านั้น; Custom Role แสดง `แก้ไข`, `คัดลอก`, `ปิดใช้งาน` หรือ `เปิดใช้งาน` ตามสถานะ และ `ดู Audit Log` โดย action ที่ไม่มีสิทธิ์ต้องไม่ render ใน DOM
+
+จำนวนผู้ดูแลที่ใช้งานเป็นข้อมูลสรุปแบบ read-only ไม่เป็น link ไป `Settings > Admin Accounts` ใน Phase นี้ เพื่อไม่แก้ flow ของ protected screen. หาก Role เป็น Inactive ให้แสดง contextual warning ว่าไม่สามารถเลือก assign ให้ผู้ดูแลรายใหม่ได้ และไม่มี action แก้ไข Permission จนกว่าจะเปิดใช้งานตาม policy.
+
+**Detail sections**
+
+| Section | Content and behavior |
+| --- | --- |
+| สรุป Role | คำอธิบาย, type/status, role key และ metadata; System Role ระบุชัดว่า identity/ชื่อ/role key แก้ไม่ได้ |
+| Permission Summary | จำนวน permission ตามระดับ `view`, `manage`, `approve`, `admin` และจำนวน `none`; เป็น summary เพื่อสแกน ไม่ใช้แทนตารางรายละเอียด |
+| Permission Table | ตาราง canonical ของ permission key ตาม module/action policy, filterable และอ่านระดับสิทธิ์ได้ชัดเจน |
+| ผู้ดูแลที่ใช้ Role | แสดงเฉพาะจำนวน Active Admin, ข้อกำหนด one-admin-one-role และข้อความว่ารายชื่อ/การ drill-in อยู่นอก scope หน้านี้ |
+| ประวัติและ Audit | แสดง timestamp/actor ล่าสุดแบบย่อ พร้อมปุ่ม `ดู Audit Log` ที่ส่ง context ของ Role reference; ไม่สร้าง drawer หรือแก้ Audit Log screen ในงานนี้ |
+
+**Permission Table**
+
+ตารางแสดง permission ที่ Role ถืออยู่ทั้งหมด รวมรายการระดับ `none` เพื่อให้เห็นช่องว่างของสิทธิ์อย่างชัดเจน และต้องใช้ permission key taxonomy ใน section 9.2 เป็น source of truth.
+
+| Column | Display and behavior |
+| --- | --- |
+| Module | ชื่อ module/กลุ่มงาน พร้อม badge; เรียงตาม navigation/grouping ที่อนุญาตให้ Role เห็น ไม่เปิดเป็น link เปลี่ยน module |
+| Permission | ชื่อ action ภาษาไทยที่อ่านได้ เช่น `ดูรายการ`, `แก้ไข Draft`, `อนุมัติ/ปิดเคส` |
+| Permission Key | key แบบ monospace เช่น `assets.detail`, `settings.roles.manage`; คงค่า immutable สำหรับ revision ที่กำลังดู |
+| ระดับสิทธิ์ | pill `None`, `View`, `Manage`, `Approve`, `Admin` ตาม contract section 9.2; `None` ใช้ neutral tone ไม่ทำให้ดูเหมือน error |
+| เงื่อนไข / ข้อจำกัด | แสดง guard สำคัญ เช่น reason/confirmation/audit, masking, scope read-only, หรือ prohibited action โดยไม่ใส่ payload sensitive |
+| สถานะ | `ใช้งาน` หรือ `ไม่ได้รับสิทธิ์`; ใช้คู่กับ level เพื่อให้ผู้ดูแลอ่านผลกระทบได้โดยไม่ตีความจากสีอย่างเดียว |
+
+- Group rows ตาม Module และให้พับ/ขยายได้; ค่าเริ่มต้นขยาย module ที่มีสิทธิ์ตั้งแต่ `view` ขึ้นไป และคง state การพับระหว่างการกรองภายใน session เดียวกัน.
+- Search ค้นจาก module, ชื่อ action และ permission key; filter ระดับสิทธิ์เป็น All / Granted / None / View / Manage / Approve / Admin และ filter module เป็น All หรือ module ที่มีใน matrix. การค้นหา/กรองไม่เปิดเผย key หรือ policy ที่ viewer ไม่มีสิทธิ์เห็น.
+- Sort เริ่มต้นเป็น Module → Permission; ผู้ใช้เปลี่ยนเป็นระดับสิทธิ์สูง–ต่ำหรือ A–Z ได้. Reset คืน search/filter/sort และขยายกลุ่มตามค่าเริ่มต้น.
+- ตารางใช้ sticky header บน desktop; หาก column ไม่พอให้ scroll เฉพาะ table container และคง Module กับ Permission เป็น context สำคัญ. ไม่ใช้ row action เพื่อแก้สิทธิ์จากตารางอ่านรายละเอียดนี้.
+- แถวที่ `None` ต้องยังแสดง reason/constraint ที่ช่วยอธิบาย เช่น `นอกขอบเขต Role` หรือ `System Role restriction`; ห้ามใช้สีเพียงอย่างเดียวเป็นตัวสื่อความหมาย.
+
+**Responsive and states**
+
+- ที่ `<= 760px` Detail head, metadata และ summary เป็น stacked layout; Permission Table เปลี่ยนเป็น grouped permission cards: module heading, action name, permission key, level/status pill และเงื่อนไข. filter อยู่ใน collapsible panel และ sticky table header ไม่ใช้บน mobile.
+- Loading แสดง skeleton สำหรับ detail head, summary และ permission rows; skeleton ไม่เปิดเผยจำนวนหรือ key ที่ยังไม่ผ่าน permission check.
+- No-result จาก search/filter แสดง `ไม่พบ Permission ตามเงื่อนไขที่เลือก` พร้อมปุ่ม `ล้างตัวกรอง`; ห้ามสับสนกับ Role ไม่มีสิทธิ์.
+- Role not found, deleted/stale revision หรือ permission denied แสดง full-page state พร้อมกลับ Role List ได้; ห้ามแสดง partial permission data หรือ action mutation.
+- Permission data โหลดล้มเหลวแยกจาก role summary ได้: คง detail head ที่ได้รับอนุญาต, แสดง error ใน section ตารางพร้อม `ลองอีกครั้ง`, และไม่ล้าง filter ที่เลือกไว้.
+
+**Role Detail acceptance boundary**
+
+- หน้านี้เป็น read/detail surface: การสร้าง/คัดลอก/แก้ Role, permission diff, impact check, confirmation และ deactivate/reactivate ต้องส่งต่อ flow ใน RP-009 ถึง RP-015 เท่านั้น.
+- ไม่แสดงรายชื่อผู้ดูแล, ไม่ทำ individual permission override และไม่แก้, deep-link หรือเปลี่ยน state ของ `Settings > Admin Accounts`.
+- System Role แก้ identity หรือ Permission ไม่ได้; Custom Role action ต้องใช้ revision/safeguard/reason/audit contract ใน section 9.7 และ 9.8 เมื่อเข้าสู่ flow ที่เกี่ยวข้อง.
+
 ## 10. Security Policy Settings
 
 | Setting | Baseline | Editable In BO |
@@ -762,6 +877,8 @@ Sensitive settings value ต้อง mask ใน audit payload ถ้าเป�
 | AC-BO-SET-023 | Master admin หลัก (ADM-010) ห้าม suspend/archive/change role; self ห้าม suspend/reactivate/unlock/archive/change role ตัวเอง; ถ้า active admin เหลือ 1 คน ห้าม suspend (ป้องกันระบบไม่มีผู้ดูแล) |
 | AC-BO-SET-024 | Role change ที่ทำให้ไม่มี active `Super Admin`, ไม่มี account ที่จัดการ role ได้, ไม่มี admin recovery coverage, assign Custom Role ที่ inactive/invalid, หรือเปลี่ยน role ตัวเอง/master admin ต้องถูก block ทั้ง UI/API/service พร้อม policy-blocked state และ audit result ตาม policy |
 | AC-BO-SET-025 | ทุกคำขอเปลี่ยน Role สร้าง `ADMIN_ACCOUNT_ROLE_CHANGE` ตาม section 9.8 โดยบันทึก event/reference/correlation, actor, target, before/after Role และ permission diff, reason, safeguard outcome, result และเวลา; การสร้าง/แก้ไข/ปิดใช้งาน Role ใช้ `ROLE_CREATE`/`ROLE_UPDATE`/`ROLE_PERMISSION_UPDATE`/`ROLE_DEACTIVATE` ตามข้อมูลเฉพาะ; audit write ต้องสำเร็จก่อน commit mutation และไม่มี secret/token/password ใน payload |
+| AC-BO-SET-026 | Role List แสดง Role/Role Key/ประเภท/สถานะ/ผู้ดูแลที่ใช้งาน/อัปเดตล่าสุด/Action, ค้นหาและกรองตาม section 9.9, ไม่มี KPI cards หรือ list-detail split, แยก System Role และ Custom Role ชัดเจน, คง filter state เมื่อกลับจาก detail และ responsive เป็น mobile card ที่ `<= 760px` |
+| AC-BO-SET-027 | Role Detail แสดง detail head, metadata, summary, จำนวนผู้ดูแล Active แบบ read-only และ Permission Table ที่มี Module/Permission/Permission Key/ระดับสิทธิ์/เงื่อนไข/สถานะ; ตารางค้นหา กรอง จัดกลุ่ม และแสดง `None` ได้ชัดเจน, responsive เป็น permission cards ที่ `<= 760px`, ไม่รองรับ individual permission override หรือ Admin Accounts drill-in |
 
 ## 22. Open Decisions
 
