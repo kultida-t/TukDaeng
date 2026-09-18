@@ -7866,6 +7866,9 @@
       background: #fff;
       overflow: hidden;
     }
+    body.role-detail-mode .role-detail-page .perm-sub.no-title {
+      padding: 6px 0;
+    }
     /* ชื่อเมนูย่อยเป็นแถบสีหัว card — โทนฟ้าเดียวกับ detail-tile */
     body.role-detail-mode .role-detail-page .perm-sub-title {
       margin: 0 0 6px;
@@ -8319,6 +8322,9 @@
       border-radius: 6px;
       background: #fff;
       overflow: hidden;
+    }
+    .role-create-modal .role-confirm-perms .perm-sub.no-title {
+      padding: 6px 0;
     }
     .role-create-modal .role-confirm-perms .perm-sub-title {
       margin: 0 0 6px;
@@ -28364,7 +28370,7 @@
                     sub.rows.push(row);
                   });
                   return subs.map(sub => `
-                    <div class="perm-sub">
+                    <div class="perm-sub ${subs.length > 1 || sub.key !== group.module ? "has-title" : "no-title"}">
                       ${subs.length > 1 || sub.key !== group.module ? `<div class="perm-sub-title">${esc(sub.key)}</div>` : ""}
                       ${sub.rows.map(row => `
                         <div class="perm-item">
@@ -28978,15 +28984,18 @@
                   <span class="perm-group-icon">${iconSvg[navIconByLabel[group.module]] || ""}</span>
                   <span class="perm-group-title">${esc(group.module)}</span>
                 </button>
-                ${subs.map(sub => `
-                  <div class="perm-sub">
-                    ${subs.length > 1 || sub.key !== group.module ? `<div class="perm-sub-title">${esc(sub.key)}</div>` : ""}
+                ${subs.map(sub => {
+                  const hasTitle = subs.length > 1 || sub.key !== group.module;
+                  return `
+                  <div class="perm-sub ${hasTitle ? "has-title" : "no-title"}">
+                    ${hasTitle ? `<div class="perm-sub-title">${esc(sub.key)}</div>` : ""}
                     ${sub.rows.map(row => `
                       <div class="perm-item">
                         <span class="perm-check">✓</span>
                         <span class="perm-item-name">${esc(row.perm.name)}</span>
                       </div>`).join("")}
-                  </div>`).join("")}
+                  </div>`;
+                }).join("")}
               </div>`;
             }).join("")}
           </div>` : ""}
