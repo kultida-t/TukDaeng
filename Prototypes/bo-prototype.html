@@ -8056,7 +8056,7 @@
       pointer-events: none;
     }
     /* permission section error — error เฉพาะส่วนใน detail (partial error คง head/summary ไว้) */
-    body.role-detail-mode .role-perm-error {
+    body.role-detail-mode .role-detail-page .role-perm-error {
       display: grid;
       justify-items: center;
       gap: 6px;
@@ -8066,21 +8066,21 @@
       background: #fff;
       text-align: center;
     }
-    body.role-detail-mode .role-perm-error .empty-icon {
+    body.role-detail-mode .role-detail-page .role-perm-error .empty-icon {
       width: 32px;
       height: 32px;
       color: #cbd5e1;
     }
-    body.role-detail-mode .role-perm-error .empty-icon svg {
+    body.role-detail-mode .role-detail-page .role-perm-error .empty-icon svg {
       width: 32px;
       height: 32px;
     }
-    body.role-detail-mode .role-perm-error .empty-title {
+    body.role-detail-mode .role-detail-page .role-perm-error .empty-title {
       font-size: 13px;
       font-weight: 700;
       color: #475569;
     }
-    body.role-detail-mode .role-perm-error .empty-subtitle {
+    body.role-detail-mode .role-detail-page .role-perm-error .empty-subtitle {
       max-width: 400px;
       font-size: 12px;
       color: #94a3b8;
@@ -19852,6 +19852,7 @@
     let pendingRoleCreateData = null;
     let pendingRoleEditData = null;
     let pendingRoleDeactivateData = null;
+    let pendingRoleReactivateData = null;
     let optionGroupListPage = 1;
     let optionDetailPage = 1;
     let activeOptionGroup = "";
@@ -28382,7 +28383,7 @@
               <summary aria-label="Role actions">...</summary>
               <div class="row-menu-list">
                 <button type="button" data-role-open="${role.id}">ดูรายละเอียด</button>
-                ${canMutate && isActive ? `<button type="button" data-role-flow="edit" data-role-id="${role.id}">แก้ไข</button>` : ""}
+                ${canMutate ? `<button type="button" data-role-flow="edit" data-role-id="${role.id}">แก้ไข</button>` : ""}
                 ${canMutate && isActive ? `<button type="button" data-role-flow="deactivate" data-role-id="${role.id}">ปิดใช้งาน</button>` : ""}
                 ${canMutate && !isActive ? `<button type="button" data-role-flow="reactivate" data-role-id="${role.id}">เปิดใช้งาน</button>` : ""}
               </div>
@@ -28616,7 +28617,7 @@
       // mutation (แก้ไข/ปิด-เปิดใช้งาน) เชื่อม stub เดียวกับ row menu — flow จริงเป็นงานถัดไป
       // ประวัติการเปลี่ยนแปลงจะแสดงใน history section ของหน้านี้ (งานถัดไป) ไม่ลิงก์ออกไป Audit Log
       const headActions = [];
-      if (canMutate && isActive) {
+      if (canMutate) {
         headActions.push(`<button class="user-detail-action-btn" type="button" data-role-flow="edit" data-role-id="${role.id}">แก้ไข</button>`);
       }
       if (canMutate) {
@@ -29159,7 +29160,7 @@
     }
 
     function openRoleEditModal(role, data = null) {
-      if (!isRoleMutable(role) || role.status !== "Active") return;
+      if (!isRoleMutable(role)) return;
       openRoleCreateModal(data || { name: role.name, roleKey: role.roleKey,
         description: role.description, perms: getRoleEditPermissions(role) }, role);
     }
@@ -29262,7 +29263,7 @@
         return;
       }
       const role = roleListData.roles.find(r => r.id === pending.id);
-      if (!role || !isRoleMutable(role) || role.status !== "Active" || role.roleKey !== pending.data.roleKey || (role.revision || 1) !== pending.revision) {
+      if (!role || !isRoleMutable(role) || role.status !== pending.status || role.roleKey !== pending.data.roleKey || (role.revision || 1) !== pending.revision) {
         closeUserActionModal(); pendingRoleEditData = null;
         showSuccessToast("Role มีการเปลี่ยนแปลงหรือไม่พร้อมแก้ไข กรุณาโหลดข้อมูลใหม่", "Roles & Permissions");
         return;
@@ -29387,6 +29388,85 @@
       if (document.body.classList.contains("role-detail-mode")) renderRoleDetailPage(role.id);
       else if (document.body.classList.contains("role-list-mode")) renderRoleListRows();
       showSuccessToast(`ปิดใช้งาน Custom Role "${role.name}" แล้ว`, "Roles & Permissions");
+    }
+
+
+    function canReactivateRoleAsActor() {
+      const actorRole = roleListData.roles.find(role => role.name === auth.admin?.role && role.status === "Active");
+      return !!actorRole && rolePermissionCatalog.some(group => group.perms.some(perm =>
+        perm.key === "roles.manage" && ["approve", "manage", "admin"].includes(perm.levels[actorRole.roleKey])));
+    }
+
+    function openRoleReactivateModal(role) {
+      if (!isRoleMutable(role) || role.status !== "Inactive") return;
+      const modal = document.querySelector("#user-action-modal");
+      const card = modal?.querySelector(".modal");
+      const body = document.querySelector("#user-action-modal-body");
+      if (!modal || !card || !body) return;
+      const escape = value => String(value).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+      const allowed = canReactivateRoleAsActor();
+      const activeAdmins = countActiveAdminsUsingRole(role.name);
+      pendingRoleReactivateData = { id: role.id, revision: role.revision || 1 };
+      card.classList.remove("article-preview-modal", "article-editor-confirm-modal", "category-editor-modal", "category-order-modal", "market-editor-modal", "market-reference-drawer", "board-report-phone-preview-modal", "option-order-modal", "option-audit-modal", "option-editor-modal", "role-create-modal");
+      card.classList.add("option-editor-modal", "role-deactivate-modal");
+      body.innerHTML = `<div class="user-action-layout">
+        <div class="user-action-head"><div><h2 id="user-action-modal-title">Confirm Reactivate Custom Role</h2>
+          <p>ตรวจสอบผลกระทบก่อนยืนยัน การเปิดใช้งานจะทำให้เลือก Role นี้ให้ผู้ดูแลรายใหม่ได้อีกครั้ง</p></div>
+          <button class="btn user-action-close" type="button" data-user-action-modal-close aria-label="ปิด">${iconSvg.close}</button></div>
+        <div class="option-confirm-summary">
+          <div class="option-confirm-row"><span class="option-confirm-label">Role</span><span class="option-confirm-value">${escape(role.id)} : ${escape(role.name)}</span></div>
+          <div class="option-confirm-row"><span class="option-confirm-label">Role Key</span><span class="option-confirm-value">${escape(role.roleKey)}</span></div>
+          <div class="option-confirm-row option-confirm-changed"><span class="option-confirm-label">Status</span><span class="option-confirm-value"><span class="option-confirm-before">Inactive</span> → <span class="option-confirm-after">Active</span></span></div>
+          <div class="option-confirm-row"><span class="option-confirm-label">ผู้ดูแลที่ใช้ Role นี้</span><span class="option-confirm-value">${activeAdmins} คน</span></div>
+        </div>
+        <div class="role-deactivate-impact ${allowed ? "" : "is-blocked"}" role="status">
+          <strong>${allowed ? "พร้อมเปิดใช้งาน" : "ยังเปิดใช้งานไม่ได้"}</strong>
+          <p>${allowed ? "ผู้ดูแลเดิมที่ใช้ Role นี้จะเข้าถึงสิทธิ์ตาม Role ที่เปิดใช้งานอีกครั้ง" : "บัญชีผู้กระทำไม่มีสิทธิ์จัดการ Custom Role"}</p>
+        </div>
+        ${allowed ? `<div class="article-editor-form role-deactivate-reason"><label><span>เหตุผลในการเปิดใช้งาน <span class="article-required-mark">*</span></span>
+          <textarea data-role-reactivate-reason maxlength="512" placeholder="ระบุเหตุผลเพื่อบันทึกประวัติ"></textarea>
+          <span class="article-field-error" data-role-reactivate-reason-error></span></label></div>` : ""}
+        <div class="user-detail-actions"><button class="user-detail-action-btn" type="button" data-role-reactivate-cancel>ยกเลิก</button>
+          ${allowed ? '<button class="user-detail-action-btn primary" type="button" data-role-reactivate-confirm>ยืนยันเปิดใช้งาน</button>' : ""}</div>
+      </div>`;
+      showUserActionModal(true);
+      body.scrollTop = 0;
+    }
+
+    function applyRoleReactivate() {
+      const pending = pendingRoleReactivateData;
+      const role = roleListData.roles.find(item => item.id === pending?.id);
+      if (!role || !isRoleMutable(role) || role.status !== "Inactive" || (role.revision || 1) !== pending.revision) {
+        pendingRoleReactivateData = null;
+        closeUserActionModal();
+        showSuccessToast("ข้อมูล Role เปลี่ยนแปลงแล้ว กรุณาโหลดข้อมูลใหม่", "Roles & Permissions");
+        return;
+      }
+      if (!canReactivateRoleAsActor()) { openRoleReactivateModal(role); return; }
+      const reasonInput = document.querySelector("[data-role-reactivate-reason]");
+      const reason = reasonInput?.value.trim() || "";
+      if (!reason) {
+        const error = document.querySelector("[data-role-reactivate-reason-error]");
+        if (error) { error.textContent = "กรุณาระบุเหตุผลในการเปิดใช้งาน"; error.classList.add("show"); }
+        reasonInput?.classList.add("article-field-invalid");
+        reasonInput?.focus();
+        return;
+      }
+      const now = new Date();
+      role.history ||= [];
+      role.history.unshift({ revision: pending.revision + 1, at: formatAdminAccountActivityTime(now),
+        actor: auth.admin?.username || "Admin", action: "ROLE_REACTIVATE", reason,
+        before: { status: "Inactive" }, after: { status: "Active" }, affectedAdmins: countActiveAdminsUsingRole(role.name) });
+      role.status = "Active";
+      role.revision = pending.revision + 1;
+      role.updatedAt = formatAdminAccountActivityTime(now);
+      role.updatedRank = roleTimestampRank(now);
+      role.updatedBy = auth.admin?.username || "Admin";
+      pendingRoleReactivateData = null;
+      closeUserActionModal();
+      if (document.body.classList.contains("role-detail-mode")) renderRoleDetailPage(role.id);
+      else if (document.body.classList.contains("role-list-mode")) renderRoleListRows();
+      showSuccessToast(`เปิดใช้งาน Custom Role "${role.name}" แล้ว`, "Roles & Permissions");
     }
 
     // ===== Policy & Versioning rendering (HS-PTO-001) =====
@@ -42925,6 +43005,10 @@
       if (roleDeactivateCancel) { pendingRoleDeactivateData = null; closeUserActionModal(); return; }
       const roleDeactivateConfirm = event.target.closest("[data-role-deactivate-confirm]");
       if (roleDeactivateConfirm) { applyRoleDeactivate(); return; }
+      const roleReactivateCancel = event.target.closest("[data-role-reactivate-cancel]");
+      if (roleReactivateCancel) { pendingRoleReactivateData = null; closeUserActionModal(); return; }
+      const roleReactivateConfirm = event.target.closest("[data-role-reactivate-confirm]");
+      if (roleReactivateConfirm) { applyRoleReactivate(); return; }
       // Role mutation menu
       const roleFlowButton = event.target.closest("[data-role-flow]");
       if (roleFlowButton) {
@@ -42937,13 +43021,18 @@
           return;
         }
         if (roleFlowButton.dataset.roleFlow === "edit") {
-          if (role?.status === "Active") openRoleEditModal(role);
-          else showSuccessToast("แก้ไขได้เฉพาะ Active Custom Role", "Roles & Permissions");
+          if (isRoleMutable(role)) openRoleEditModal(role);
+          else showSuccessToast("แก้ไขได้เฉพาะ Custom Role ที่ข้อมูลสมบูรณ์", "Roles & Permissions");
           return;
         }
         if (roleFlowButton.dataset.roleFlow === "deactivate") {
           if (role?.status === "Active") openRoleDeactivateModal(role);
           else showSuccessToast("ปิดใช้งานได้เฉพาะ Active Custom Role", "Roles & Permissions");
+          return;
+        }
+        if (roleFlowButton.dataset.roleFlow === "reactivate") {
+          if (role?.status === "Inactive") openRoleReactivateModal(role);
+          else showSuccessToast("เปิดใช้งานได้เฉพาะ Inactive Custom Role", "Roles & Permissions");
           return;
         }
         if (role) showSuccessToast(`${labels[roleFlowButton.dataset.roleFlow] || "จัดการ"} ${role.name} — flow นี้จะพร้อมในงาน prototype ถัดไป`, "Roles & Permissions");
@@ -44111,7 +44200,7 @@
         if (!validated) return;
         if (roleCreateForm.dataset.roleEditId) {
           const role = roleListData.roles.find(r => r.id === roleCreateForm.dataset.roleEditId);
-          if (!role || !isRoleMutable(role) || role.status !== "Active" || validated.roleKey !== role.roleKey) {
+          if (!role || !isRoleMutable(role) || validated.roleKey !== role.roleKey) {
             closeUserActionModal();
             showSuccessToast("Role ไม่พร้อมแก้ไข กรุณาโหลดข้อมูลใหม่", "Roles & Permissions");
             return;
@@ -44128,7 +44217,7 @@
             }
             return;
           }
-          pendingRoleEditData = { id: role.id, revision: Number(roleCreateForm.dataset.roleEditRevision), before, data: validated };
+          pendingRoleEditData = { id: role.id, status: role.status, revision: Number(roleCreateForm.dataset.roleEditRevision), before, data: validated };
           openRoleEditConfirmModal(pendingRoleEditData);
         } else {
           pendingRoleCreateData = validated;
