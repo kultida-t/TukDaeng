@@ -28142,6 +28142,24 @@
         && (role.status === "Active" || role.status === "Inactive");
     }
 
+    function roleActorHasPermission(key) {
+      const actorRole = roleListData.roles.find(role => role.name === auth.admin?.role && role.status === "Active");
+      const permission = rolePermissionCatalog.flatMap(group => group.perms).find(perm => perm.key === key);
+      const level = actorRole && permission?.levels[actorRole.roleKey];
+      return key === "roles.manage"
+        ? ["approve", "manage", "admin"].includes(level) && roleActorHasPermission("roles.view")
+        : !!level && level !== "none";
+    }
+
+    function rejectRolePermission() {
+      pendingRoleCreateData = null;
+      pendingRoleEditData = null;
+      pendingRoleDeactivateData = null;
+      pendingRoleReactivateData = null;
+      closeUserActionModal();
+      showSuccessToast("ไม่มีสิทธิ์ดำเนินการกับ Roles & Permissions", "Roles & Permissions");
+    }
+
     function getRoleSearchText(role) {
       return [role.id, role.name, role.roleKey, role.description]
         .filter(Boolean).join(" ").toLowerCase();
@@ -28152,7 +28170,7 @@
       activeSub = "Roles & Permissions";
       activeRow = null;
       activeRoleId = "";
-      setPageActions(`<button class="btn" type="button" data-role-create-open>${iconSvg.plus}<span>สร้าง Custom Role</span></button>`);
+      setPageActions(roleActorHasPermission("roles.manage") ? `<button class="btn" type="button" data-role-create-open>${iconSvg.plus}<span>สร้าง Custom Role</span></button>` : "");
       syncExpandedNavForModule("settings", "Roles & Permissions");
       document.body.classList.add("role-list-mode");
       document.body.classList.remove("role-detail-mode", "dashboard-mode", "user-management-mode", "user-list-mode", "asset-list-mode", "article-list-mode", "category-list-mode", "reported-board-mode", "asset-detail-mode", "user-detail-mode", "admin-account-list-mode", "admin-account-detail-mode", "deletion-list-mode", "deletion-detail-mode", "audit-log-mode", "delivery-log-list-mode", "policy-versioning-mode", "policy-detail-mode", "policy-editor-mode", "policy-version-history-mode", "support-center-mode");
@@ -28263,7 +28281,7 @@
 
       // demo state — skeleton/error/empty/unauthorized แทนเนื้อหาตาราง
       // แถบ filter ใน .filters ไม่ถูกแตะ ดังนั้น retry ไม่ล้างค่า filter ที่เลือกไว้
-      if (roleListViewState === "loading") {
+      if (roleListViewState === "loading" && roleActorHasPermission("roles.view")) {
         document.querySelector("#table").innerHTML = `
           <div class="user-table role-list-table" aria-busy="true">
             ${headRow}
@@ -28271,7 +28289,7 @@
           </div>`;
         return;
       }
-      if (roleListViewState === "error") {
+      if (roleListViewState === "error" && roleActorHasPermission("roles.view")) {
         document.querySelector("#table").innerHTML = `
           <div class="user-table role-list-table">
             ${headRow}
@@ -28284,7 +28302,7 @@
           </div>`;
         return;
       }
-      if (roleListViewState === "unauthorized") {
+      if (roleListViewState === "unauthorized" || !roleActorHasPermission("roles.view")) {
         document.querySelector("#table").innerHTML = `
           <div class="user-table role-list-table">
             <div class="user-row empty">${renderRoleStateBlock({
@@ -28304,7 +28322,7 @@
               icon: iconSvg.users,
               title: "ยังไม่มี Custom Role",
               subtitle: "สร้าง Custom Role เพื่อกำหนดขอบเขตสิทธิ์การเข้าถึงของทีมผู้ดูแล",
-              actions: `<button class="btn" type="button" data-role-create-open>${iconSvg.plus}<span>สร้าง Custom Role</span></button>`
+              actions: roleActorHasPermission("roles.manage") ? `<button class="btn" type="button" data-role-create-open>${iconSvg.plus}<span>สร้าง Custom Role</span></button>` : ""
             })}</div>
           </div>`;
         return;
@@ -28334,7 +28352,7 @@
             icon: iconSvg.users,
             title: "ยังไม่มี Custom Role",
             subtitle: "สร้าง Custom Role เพื่อกำหนดขอบเขตสิทธิ์การเข้าถึงของทีมผู้ดูแล",
-            actions: `<button class="btn" type="button" data-role-create-open>${iconSvg.plus}<span>สร้าง Custom Role</span></button>`
+            actions: roleActorHasPermission("roles.manage") ? `<button class="btn" type="button" data-role-create-open>${iconSvg.plus}<span>สร้าง Custom Role</span></button>` : ""
           })}</div>`
         : `<div class="user-row empty">${renderRoleStateBlock({
             icon: iconSvg.siSearch,
@@ -28356,7 +28374,7 @@
 
     function renderRoleRow(role, esc) {
       const admins = countActiveAdminsUsingRole(role.name);
-      const canMutate = isRoleMutable(role);
+      const canMutate = roleActorHasPermission("roles.manage") && isRoleMutable(role);
       const isActive = role.status === "Active";
       return `
         <div class="user-row role-row" data-role-card="${role.id}">
@@ -28540,7 +28558,7 @@
 
       const backIcon = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>`;
       const backAction = `<button class="btn" type="button" data-role-back>${backIcon}<span>กลับไปยัง Role List</span></button>`;
-      const state = !role ? "notfound" : roleDetailViewState;
+      const state = !roleActorHasPermission("roles.view") ? "unauthorized" : !role ? "notfound" : roleDetailViewState;
 
       // full-page state — ไม่แสดง partial data หรือ mutation action จนกว่าโหลดสำเร็จ
       if (state === "loading") {
@@ -28609,7 +28627,7 @@
         return;
       }
 
-      const canMutate = isRoleMutable(role);
+      const canMutate = roleActorHasPermission("roles.manage") && isRoleMutable(role);
       const isActive = role.status === "Active";
       const admins = countActiveAdminsUsingRole(role.name);
 
@@ -28808,6 +28826,7 @@
     }
 
     function openRoleCreateModal(prevData = null, editRole = null) {
+      if (!roleActorHasPermission("roles.manage") || (editRole && !isRoleMutable(editRole))) { rejectRolePermission(); return; }
       const modal = document.querySelector("#user-action-modal");
       const modalCard = modal?.querySelector(".user-action-modal");
       const modalBody = document.querySelector("#user-action-modal-body");
@@ -29005,6 +29024,7 @@
     }
 
     function openRoleCreateConfirmModal(data) {
+      if (!roleActorHasPermission("roles.manage")) { rejectRolePermission(); return; }
       const modal = document.querySelector("#user-action-modal");
       const modalCard = modal?.querySelector(".user-action-modal");
       const modalBody = document.querySelector("#user-action-modal-body");
@@ -29109,6 +29129,7 @@
     }
 
     function applyRoleCreate(data) {
+      if (!roleActorHasPermission("roles.manage")) { rejectRolePermission(); return; }
       if (!data) return;
       // stale guard — name/key อาจถูกใช้ไปแล้วระหว่างที่ผู้ใช้อยู่หน้า confirm → ส่งกลับ form พร้อม error คงค่าเดิม
       const nameTaken = roleListData.roles.some(r => r.name.trim().toLowerCase() === data.name.toLowerCase());
@@ -29160,7 +29181,7 @@
     }
 
     function openRoleEditModal(role, data = null) {
-      if (!isRoleMutable(role)) return;
+      if (!roleActorHasPermission("roles.manage") || !isRoleMutable(role)) { rejectRolePermission(); return; }
       openRoleCreateModal(data || { name: role.name, roleKey: role.roleKey,
         description: role.description, perms: getRoleEditPermissions(role) }, role);
     }
@@ -29210,6 +29231,7 @@
     }
 
     function openRoleEditConfirmModal(pending) {
+      if (!roleActorHasPermission("roles.manage") || !isRoleMutable(roleListData.roles.find(role => role.id === pending?.id))) { rejectRolePermission(); return; }
       const role = roleListData.roles.find(r => r.id === pending.id);
       const modal = document.querySelector("#user-action-modal");
       const body = document.querySelector("#user-action-modal-body");
@@ -29251,6 +29273,7 @@
     }
 
     function applyRoleEdit() {
+      if (!roleActorHasPermission("roles.manage")) { rejectRolePermission(); return; }
       const pending = pendingRoleEditData;
       if (!pending) return;
       const reasonInput = document.querySelector("[data-role-edit-reason]");
@@ -29319,6 +29342,7 @@
     }
 
     function openRoleDeactivateModal(role) {
+      if (!roleActorHasPermission("roles.manage")) { rejectRolePermission(); return; }
       if (!isRoleMutable(role) || role.status !== "Active") return;
       const modal = document.querySelector("#user-action-modal");
       const modalCard = modal?.querySelector(".modal");
@@ -29354,6 +29378,7 @@
     }
 
     function applyRoleDeactivate() {
+      if (!roleActorHasPermission("roles.manage")) { rejectRolePermission(); return; }
       const pending = pendingRoleDeactivateData;
       const role = roleListData.roles.find(r => r.id === pending?.id);
       if (!role || !isRoleMutable(role) || role.status !== "Active" || (role.revision || 1) !== pending.revision) {
@@ -29392,12 +29417,11 @@
 
 
     function canReactivateRoleAsActor() {
-      const actorRole = roleListData.roles.find(role => role.name === auth.admin?.role && role.status === "Active");
-      return !!actorRole && rolePermissionCatalog.some(group => group.perms.some(perm =>
-        perm.key === "roles.manage" && ["approve", "manage", "admin"].includes(perm.levels[actorRole.roleKey])));
+      return roleActorHasPermission("roles.manage");
     }
 
     function openRoleReactivateModal(role) {
+      if (!roleActorHasPermission("roles.manage")) { rejectRolePermission(); return; }
       if (!isRoleMutable(role) || role.status !== "Inactive") return;
       const modal = document.querySelector("#user-action-modal");
       const card = modal?.querySelector(".modal");
@@ -29434,6 +29458,7 @@
     }
 
     function applyRoleReactivate() {
+      if (!roleActorHasPermission("roles.manage")) { rejectRolePermission(); return; }
       const pending = pendingRoleReactivateData;
       const role = roleListData.roles.find(item => item.id === pending?.id);
       if (!role || !isRoleMutable(role) || role.status !== "Inactive" || (role.revision || 1) !== pending.revision) {
@@ -42954,6 +42979,7 @@
       // Role List — ปุ่มสร้าง Custom Role เปิด form modal
       const roleCreateOpen = event.target.closest("[data-role-create-open]");
       if (roleCreateOpen) {
+        if (!roleActorHasPermission("roles.manage")) { rejectRolePermission(); return; }
         openRoleCreateModal();
         return;
       }
@@ -43012,6 +43038,7 @@
       // Role mutation menu
       const roleFlowButton = event.target.closest("[data-role-flow]");
       if (roleFlowButton) {
+        if (!roleActorHasPermission("roles.manage")) { rejectRolePermission(); return; }
         const role = roleListData.roles.find(r => r.id === roleFlowButton.dataset.roleId);
         const labels = { edit: "แก้ไข", deactivate: "ปิดใช้งาน", reactivate: "เปิดใช้งาน" };
         closeRowMenus();
@@ -44196,6 +44223,7 @@
       const roleCreateForm = event.target.closest("[data-role-create-form]");
       if (roleCreateForm) {
         event.preventDefault();
+        if (!roleActorHasPermission("roles.manage")) { rejectRolePermission(); return; }
         const validated = validateRoleCreateForm(roleCreateForm);
         if (!validated) return;
         if (roleCreateForm.dataset.roleEditId) {
