@@ -18384,7 +18384,7 @@
             levels: { super_admin: "admin", admin_manager: "approve" } },
           { key: "roles.view", sub: "Roles & Permissions", name: "ดู Roles และ Role Detail",
             levels: { super_admin: "admin", admin_manager: "view" } },
-          { key: "roles.manage", sub: "Roles & Permissions", name: "จัดการ Custom Roles (สร้าง / แก้ไข / คัดลอก / ปิด-เปิดใช้งาน)",
+          { key: "roles.manage", sub: "Roles & Permissions", name: "จัดการ Custom Roles (สร้าง / แก้ไข / ปิด-เปิดใช้งาน)",
             levels: { super_admin: "admin", admin_manager: "approve" } },
           { key: "policy.view", sub: "Policy & Versioning", name: "ดู Policy และ Version History",
             levels: { super_admin: "admin", admin_manager: "view", operations_manager: "view", trust_safety_moderator: "view", content_editor: "view", content_publisher: "view", content_reviewer_th: "view" } },
@@ -28046,7 +28046,7 @@
 
     // ===== Role List rendering (Settings > Roles & Permissions) =====
     // pattern เดียวกับ Admin Accounts list — full-width master-data list
-    // ไม่มี KPI cards / side panel; mutation flow (สร้าง/แก้ไข/คัดลอก/ปิด-เปิดใช้งาน) เป็นงานถัดไป
+    // ไม่มี KPI cards / side panel; mutation flow (สร้าง/แก้ไข/ปิด-เปิดใช้งาน) เป็นงานถัดไป
     function countActiveAdminsUsingRole(roleName) {
       return adminAccountData.accounts.filter(acc => acc.role === roleName && acc.status === "Active").length;
     }
@@ -28062,7 +28062,7 @@
       return `<span class="pill ${map[status] || "gray"}">${status}</span>`;
     }
 
-    // mutation (แก้ไข/คัดลอก/ปิด-เปิดใช้งาน) อนุญาตเฉพาะ Custom Role ที่ข้อมูลชนิด/สถานะถูกต้อง —
+    // mutation (แก้ไข/ปิด-เปิดใช้งาน) อนุญาตเฉพาะ Custom Role ที่ข้อมูลชนิด/สถานะถูกต้อง —
     // ข้อมูลผิดพลาดต้องไม่เปิด mutation ทั้งจาก DOM และจาก flow handler
     function isRoleMutable(role) {
       return !!role
@@ -28312,7 +28312,6 @@
               <div class="row-menu-list">
                 <button type="button" data-role-open="${role.id}">ดูรายละเอียด</button>
                 ${canMutate ? `<button type="button" data-role-flow="edit" data-role-id="${role.id}">แก้ไข</button>` : ""}
-                ${canMutate ? `<button type="button" data-role-flow="copy" data-role-id="${role.id}">คัดลอก</button>` : ""}
                 ${canMutate && isActive ? `<button type="button" data-role-flow="deactivate" data-role-id="${role.id}">ปิดใช้งาน</button>` : ""}
                 ${canMutate && !isActive ? `<button type="button" data-role-flow="reactivate" data-role-id="${role.id}">เปิดใช้งาน</button>` : ""}
               </div>
@@ -28543,12 +28542,11 @@
       const admins = countActiveAdminsUsingRole(role.name);
 
       // action — System Role read-only ไม่มี action; Custom Role ที่ข้อมูลสมบูรณ์แก้ไขได้ทุกสถานะ
-      // mutation (แก้ไข/คัดลอก/ปิด-เปิดใช้งาน) เชื่อม stub เดียวกับ row menu — flow จริงเป็นงานถัดไป
+      // mutation (แก้ไข/ปิด-เปิดใช้งาน) เชื่อม stub เดียวกับ row menu — flow จริงเป็นงานถัดไป
       // ประวัติการเปลี่ยนแปลงจะแสดงใน history section ของหน้านี้ (งานถัดไป) ไม่ลิงก์ออกไป Audit Log
       const headActions = [];
       if (canMutate) {
         headActions.push(`<button class="user-detail-action-btn" type="button" data-role-flow="edit" data-role-id="${role.id}">แก้ไข</button>`);
-        headActions.push(`<button class="user-detail-action-btn" type="button" data-role-flow="copy" data-role-id="${role.id}">คัดลอก</button>`);
         headActions.push(isActive
           ? `<button class="user-detail-action-btn danger" type="button" data-role-flow="deactivate" data-role-id="${role.id}">ปิดใช้งาน</button>`
           : `<button class="user-detail-action-btn primary" type="button" data-role-flow="reactivate" data-role-id="${role.id}">เปิดใช้งาน</button>`);
@@ -42603,11 +42601,11 @@
         roleConfirmPermToggle.setAttribute("aria-expanded", String(!willCollapse));
         return;
       }
-      // Role List — mutation menu (edit/copy/deactivate/reactivate เป็นงานถัดไป)
+      // Role List — mutation menu (edit/deactivate/reactivate เป็นงานถัดไป)
       const roleFlowButton = event.target.closest("[data-role-flow]");
       if (roleFlowButton) {
         const role = roleListData.roles.find(r => r.id === roleFlowButton.dataset.roleId);
-        const labels = { edit: "แก้ไข", copy: "คัดลอก", deactivate: "ปิดใช้งาน", reactivate: "เปิดใช้งาน" };
+        const labels = { edit: "แก้ไข", deactivate: "ปิดใช้งาน", reactivate: "เปิดใช้งาน" };
         closeRowMenus();
         // guard ซ้ำฝั่ง handler — ข้อมูลชนิด/สถานะผิดพลาดห้ามเข้า mutation flow แม้ DOM จะหลุดมา
         if (role && !isRoleMutable(role)) {
