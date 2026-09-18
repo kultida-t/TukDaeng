@@ -8092,8 +8092,10 @@
     }
     /* modal-body เป็น shared scroll container — ปิด scroll anchoring ไม่งั้น browser
        restore scrollTop เดิมหลัง innerHTML เปลี่ยน (เปิด modal ใหม่แล้วค้างล่างสุด)
-       overflow-x:hidden กัน dep tooltip (opacity:0 ก็ยังกิน scrollWidth) ดันเกิด h-scroll */
-    .role-create-modal .modal-body {
+       overflow-x:hidden กัน dep tooltip (opacity:0 ก็ยังกิน scrollWidth) ดันเกิด h-scroll
+       — ต้องพิเศษกว่า rule กลาง .user-action-modal .modal-body (overflow:auto) ที่มาทีหลัง
+       ในไฟล์ จึงเพิ่ม class modal/user-action-modal ที่ selector ให้ specificity ชนะ */
+    .modal.user-action-modal.role-create-modal .modal-body {
       overflow-anchor: none;
       overflow-x: hidden;
     }
@@ -8244,7 +8246,8 @@
     }
     .role-create-modal .role-perm-dep-info .wa-panel-info-tip {
       /* centered ใต้ไอค่อนเหมือน shared pattern — กว้างตามข้อความ 1 บรรทัดเดียวถ้าพอ
-         JS จะ set --tip-shift เมื่อไอค่อนชิดขอบจน tip ล้น modal-body (กัน h-scroll) */
+         JS จะ cap max-width ให้ตัดข้อความและ set --tip-shift เมื่อไอค่อนชิดขอบจน tip
+         ล้นกรอบการ์ด permission (กัน tip ลอยออกนอกการ์ด + กัน h-scroll บนจอแคบ) */
       width: max-content;
       max-width: min(340px, calc(100vw - 56px));
       transform: translateX(calc(-50% + var(--tip-shift, 0px)));
@@ -28793,22 +28796,28 @@
       // modal-body เป็น shared scroll container — reset หลัง show เท่านั้น
       // เพราะตอน backdrop เป็น display:none การเขียน scrollTop จะถูก browser มองข้าม
       modalBody.scrollTop = 0;
-      // clamp dep tooltip ไม่ให้ล้นขอบ modal-body — tip หลักคือ centered ใต้ไอค่อน
-      // แต่ไอค่อนชิดขอบ (จอแคบ/ชื่อยาว) จะล้นจนเกิด h-scroll จึง shift เข้ามา
+      // clamp dep tooltip ไม่ให้ล้นกรอบการ์ด permission — tip หลักคือ centered ใต้ไอค่อน
+      // แต่ไอค่อนชิดขอบ (จอแคบ/ชื่อยาว) จะล้นการ์ดจนเกิด h-scroll จึง shift เข้ามา
       modalBody.querySelectorAll(".role-perm-dep-info").forEach(clampRolePermTip);
     }
 
-    // วัดตำแหน่งจริงของ tip แล้ว set --tip-shift ให้อยู่ในกรอบ — เรียกตอนเปิด modal
-    // และซ้ำตอน hover/focus เพราะ resize/font load ทำตำแหน่งเปลี่ยนได้
-    // (opacity:0 ยังวัด layout ได้ — ไม่ต้องเปิด tip จริง)
+    // จำกัด dep tooltip ให้อยู่ในกรอบการ์ด permission — tip หลักคือ centered ใต้ไอคอน
+    // แต่ไอค่อนชิดขอบ (จอแคบ/ชื่อยาว) จะล้นการ์ดจนเกิด h-scroll จึงวัดเทียบขอบการ์ด
+    // แล้ว shift เข้ามา พร้อม cap max-width ให้ข้อความตัดบรรทัดแทนล้นออกนอกการ์ด
+    // เรียกตอนเปิด modal / ขยายกลุ่ม และซ้ำตอน hover/focus เพราะ resize/font load
+    // ทำตำแหน่งเปลี่ยนได้ (opacity:0 ยังวัด layout ได้ — ไม่ต้องเปิด tip จริง)
     function clampRolePermTip(icon) {
       const tip = icon.querySelector(".wa-panel-info-tip");
-      const body = icon.closest(".user-action-modal")?.querySelector(".modal-body");
-      if (!tip || !body) return;
+      const frame = icon.closest("[data-role-perm-group-box]") || icon.closest(".role-perm-picker");
+      if (!tip || !frame) return;
       tip.style.setProperty("--tip-shift", "0px");
-      const t = tip.getBoundingClientRect(), b = body.getBoundingClientRect();
-      const shift = t.left < b.left + 8 ? (b.left + 8) - t.left
-        : t.right > b.right - 8 ? (b.right - 8) - t.right : 0;
+      tip.style.removeProperty("max-width");
+      const f = frame.getBoundingClientRect();
+      if (f.width > 40) tip.style.maxWidth = `${Math.floor(f.width) - 16}px`;
+      const t = tip.getBoundingClientRect();
+      if (!t.width) return; // กลุ่มถูกพับอยู่ — รอ clamp ตอนขยายกลุ่ม
+      const shift = t.left < f.left + 8 ? (f.left + 8) - t.left
+        : t.right > f.right - 8 ? (f.right - 8) - t.right : 0;
       if (shift) tip.style.setProperty("--tip-shift", `${shift}px`);
     }
 
@@ -42582,6 +42591,9 @@
         const willCollapse = !box.classList.contains("is-collapsed");
         box.classList.toggle("is-collapsed", willCollapse);
         rolePermGroupToggle.setAttribute("aria-expanded", String(!willCollapse));
+        // ขยายกลุ่ม = dep tooltip ที่เพิ่งมี layout ยังไม่เคยถูก clamp — จัดตำแหน่งใหม่ทันที
+        // ไม่งั้น tip ที่ยังไม่ถูก clamp ล้นการ์ดจน modal เกิด scroll แนวนอนบนจอแคบ
+        if (!willCollapse) box.querySelectorAll(".role-perm-dep-info").forEach(clampRolePermTip);
         return;
       }
       // Confirm Create Custom Role — พับ/ขยายกลุ่ม module ในสรุปสิทธิ์เหมือนหน้า Role Detail
