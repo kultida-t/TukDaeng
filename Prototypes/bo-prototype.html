@@ -7845,11 +7845,65 @@
       display: block;
       overflow-wrap: anywhere;
     }
-    /* Role Detail — action section ล่างสุด ใช้ .user-detail-actions ชิดซ้ายตาม pattern หน้า detail อื่น */
+    /* Role History ใช้สัดส่วนคอลัมน์เฉพาะหน้า Role Detail */
+    body.role-detail-mode .role-history-table {
+      min-width: 820px;
+      table-layout: fixed;
+    }
+    body.role-detail-mode .role-history-table th:nth-child(1),
+    body.role-detail-mode .role-history-table td:nth-child(1) { width: 16%; }
+    body.role-detail-mode .role-history-table th:nth-child(2),
+    body.role-detail-mode .role-history-table td:nth-child(2) { width: 16%; }
+    body.role-detail-mode .role-history-table th:nth-child(3),
+    body.role-detail-mode .role-history-table td:nth-child(3) { width: 14%; }
+    body.role-detail-mode .role-history-table th:nth-child(4),
+    body.role-detail-mode .role-history-table td:nth-child(4) { width: 12%; }
+    body.role-detail-mode .role-history-table th:nth-child(5),
+    body.role-detail-mode .role-history-table td:nth-child(5) { width: 42%; }
+    body.role-detail-mode .role-history-table td {
+      overflow-wrap: anywhere;
+    }
+
+
+    @media (max-width: 760px) {
+      body.role-detail-mode .role-history-section .history-table-wrap {
+        overflow: visible;
+        border: 0;
+        background: transparent;
+      }
+      body.role-detail-mode .role-history-table,
+      body.role-detail-mode .role-history-table tbody,
+      body.role-detail-mode .role-history-table tr,
+      body.role-detail-mode .role-history-table td {
+        display: block;
+        width: 100%;
+        min-width: 0;
+      }
+      body.role-detail-mode .role-history-table td:nth-child(n) { width: 100%; }
+      body.role-detail-mode .role-history-table thead { display: none; }
+      body.role-detail-mode .role-history-table tr {
+        padding: 10px 12px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: #fff;
+      }
+      body.role-detail-mode .role-history-table tr + tr { margin-top: 10px; }
+      body.role-detail-mode .role-history-table td {
+        display: grid;
+        grid-template-columns: 92px minmax(0, 1fr);
+        gap: 8px;
+        padding: 6px 0;
+        border: 0;
+      }
+      body.role-detail-mode .role-history-table td::before {
+        content: attr(data-label);
+        color: var(--muted);
+        font-weight: 600;
+      }
+    }
     body.role-detail-mode .role-detail-page .role-inactive-note {
       margin-top: 14px;
-    }
-    /* Role Detail — permission accordion: แสดงเฉพาะ module ที่ role ได้รับสิทธิ์ (none ไม่แสดง) */
+    }    /* Role Detail — permission accordion: แสดงเฉพาะ module ที่ role ได้รับสิทธิ์ (none ไม่แสดง) */
     body.role-detail-mode .role-detail-page .perm-groups {
       border: 1px solid var(--line);
       border-radius: 8px;
@@ -8090,7 +8144,21 @@
     /* ===== Custom Role create modal — form + permission picker =====
        reuse option-editor-modal shell; permission picker เป็น accordion ตาม module
        เหมือน Role Detail — row มี checkbox เลือกสิทธิ์ + ชื่อสิทธิ์ */
-    .role-create-modal .article-editor-grid {
+    .role-create-modal .role-edit-stale-note {
+      margin: 0 0 14px;
+      border-color: #fecaca;
+      background: #fef2f2;
+      color: #7f1d1d;
+    }
+    .role-create-modal .role-edit-stale-note p {
+      margin: 5px 0 0;
+      overflow-wrap: anywhere;
+    }
+    .role-edit-failure-toast {
+      border-color: #fecaca;
+      background: #fef2f2;
+      color: #7f1d1d;
+    }    .role-create-modal .article-editor-grid {
       grid-template-columns: minmax(0, 1fr);
     }
     /* modal-body เป็น shared scroll container — ปิด scroll anchoring ไม่งั้น browser
@@ -18333,6 +18401,64 @@
       ]
     };
 
+    const roleEditStaleMessage = "ไม่สามารถบันทึกได้: ข้อมูล Role เปลี่ยนก่อนบันทึก กรุณาตรวจสอบข้อมูลล่าสุดแล้วลองอีกครั้ง";
+    function nextRoleHistoryReference(role) {
+      return "ROLE-HIST-" + role.id + "-" + String((role.history?.length || 0) + 1).padStart(3, "0");
+    }
+    function maskRoleHistoryText(value) {
+      return String(value ?? "").replace(/[\w.+-]+@[\w.-]+\.[A-Za-z]{2,}/g, "[ซ่อนอีเมล]")
+        .replace(/\b0\d{1,2}[-\s]?\d{3,4}[-\s]?\d{4}\b/g, "[ซ่อนเบอร์โทร]")
+        .replace(/\b(password|token|secret|api[_-]?key)\s*[:=]\s*\S+/gi, "$1: [ซ่อนข้อมูล]");
+    }
+    function maskRoleHistoryValue(value) {
+      if (typeof value === "string") return maskRoleHistoryText(value);
+      if (Array.isArray(value)) return value.map(maskRoleHistoryValue);
+      if (!value || typeof value !== "object") return value;
+      return Object.fromEntries(Object.entries(value).map(([key, item]) =>
+        [key, /password|token|secret|api[_-]?key|email|phone/i.test(key) ? "[ซ่อนข้อมูล]" : maskRoleHistoryValue(item)]));
+    }
+    // System Role มีประวัติการตั้งค่าเริ่มต้นโดยระบบ แม้จะไม่มี action แก้ไขจากหน้าจอนี้
+    roleListData.roles.forEach(role => {
+      role.history = [{
+        target: role.id, action: "ROLE_CREATE", at: role.createdAt, actor: role.createdBy,
+        reason: role.type === "system" ? "สร้าง System Role เป็นค่าเริ่มต้นของระบบ" : "สร้าง Custom Role",
+        before: null, after: { name: role.name, status: "Active" },
+        result: "Success", reference: "ROLE-HIST-" + role.id + "-001"
+      }];
+    });
+    roleListData.roles.find(role => role.id === "ROL-101").history.unshift({
+      target: "ROL-101", action: "ROLE_PERMISSION_UPDATE", at: "05 Sep 2026 11:20", actor: "ADM-001",
+      reason: "ปรับสิทธิ์ให้ตรงกับงานตรวจทานหลังตรวจข้อมูลล่าสุด", before: { "articles.edit": "none" },
+      after: { "articles.edit": "edit" }, result: "Success", reference: "ROLE-HIST-ROL-101-004"
+    });
+    roleListData.roles.find(role => role.id === "ROL-101").history.splice(1, 0, {
+      target: "ROL-101", action: "ROLE_UPDATE", at: "05 Sep 2026 11:10", actor: "ADM-001",
+      reason: roleEditStaleMessage, before: null, after: null,
+      decision: "Blocked", result: "Failed", failureCode: "STALE_REVISION",
+      reference: "ROLE-HIST-ROL-101-003"
+    });
+    roleListData.roles.find(role => role.id === "ROL-101").history.splice(2, 0, {
+      target: "ROL-101", action: "ROLE_UPDATE", at: "03 Sep 2026 10:00", actor: "ADM-001",
+      reason: "ปรับคำอธิบายให้ชัดเจน", before: { description: "ตรวจทานบทความ" },
+      after: { description: "ตรวจทานบทความและ metadata" },
+      result: "Success", reference: "ROLE-HIST-ROL-101-002"
+    });
+
+    roleListData.roles.find(role => role.id === "ROL-103").history.unshift({
+      target: "ROL-103", action: "ROLE_DEACTIVATE", at: "01 Sep 2026 16:45", actor: "ADM-001",
+      reason: "ย้ายงาน Support ไป Role ใหม่แล้ว", before: { status: "Active" },
+      after: { status: "Inactive" }, result: "Success", reference: "ROLE-HIST-ROL-103-004"
+    });
+    roleListData.roles.find(role => role.id === "ROL-103").history.splice(1, 0, {
+      target: "ROL-103", action: "ROLE_DEACTIVATE", at: "10 Aug 2026 10:00", actor: "ADM-001",
+      reason: "พักการใช้งานระหว่างปรับโครงสร้างทีม", before: { status: "Active" },
+      after: { status: "Inactive" }, result: "Success", reference: "ROLE-HIST-ROL-103-002"
+    });
+    roleListData.roles.find(role => role.id === "ROL-103").history.splice(1, 0, {
+      target: "ROL-103", action: "ROLE_REACTIVATE", at: "15 Aug 2026 09:00", actor: "ADM-001",
+      reason: "เปิดใช้งานชั่วคราวระหว่างย้ายทีม", before: { status: "Inactive" },
+      after: { status: "Active" }, result: "Success", reference: "ROLE-HIST-ROL-103-003"
+    });
     // Role Detail — canonical permission catalog ตาม spec section 9.2 (key taxonomy) + 9.3 (baseline matrix)
     // level ต่อ role เก็บใน levels โดย key คือ roleKey — roleKey ที่ไม่ระบุ = "none"
     // Custom Role กำหนดสิทธิ์แบบ explicit เท่านั้น (ห้ามสิทธิ์เฉพาะรายบุคคล)
@@ -28527,6 +28653,31 @@
       return renderRolePermissionSection(role);
     }
 
+    function renderRoleHistory(role) {
+      const esc = value => String(value ?? "—").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+      const labels = { ROLE_CREATE: "Create Role", ROLE_UPDATE: "Edit Role", ROLE_PERMISSION_UPDATE: "Edit Role", ROLE_DEACTIVATE: "Deactivate Role", ROLE_REACTIVATE: "Reactivate Role" };
+      const actorCell = actor => {
+        if (actor === "System") return "System";
+        const account = adminAccountData.accounts.find(item => item.id === actor || item.fullName === actor);
+        if (!account) return /^ADM-/.test(String(actor)) ? "ไม่พบชื่อผู้ดูแล" : esc(actor);
+        return esc(account.fullName);
+      };
+      const rows = (role.history || []).map(entry => {
+        const action = entry.action || "ROLE_UPDATE";
+        const result = entry.result || "Success";
+        return '<tr>' +
+          '<td data-label="Date & Time">' + esc(entry.at) + '</td>' +
+          '<td data-label="Actor">' + actorCell(entry.actor) + '</td>' +
+          '<td data-label="Action">' + esc(labels[action] || action) + '</td>' +
+          '<td data-label="Result"><span class="pill ' + (result === "Success" ? "green" : "red") + '">' + esc(result) + '</span></td>' +
+          '<td data-label="Detail">' + esc(maskRoleHistoryText(entry.reason || "—")) + '</td></tr>';
+      }).join("");
+      return '<div class="detail-section role-history-section"><h4>Role Audit History</h4>' +
+        '<div class="history-table-wrap"><table class="history-table role-history-table"><thead><tr>' +
+        '<th>Date & Time</th><th>Actor</th><th>Action</th><th>Result</th><th>Detail</th>' +
+        '</tr></thead><tbody>' + (rows || '<tr><td colspan="5">ยังไม่มีประวัติการเปลี่ยนแปลง</td></tr>') +
+        '</tbody></table></div></div>';
+    }
     function renderRoleDetailPage(roleId) {
       const role = roleListData.roles.find(r => r.id === roleId);
       const esc = v => String(v).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
@@ -28669,6 +28820,7 @@
             </div>
           </div>
           ${renderRolePermStateSection(role)}
+          ${renderRoleHistory(role)}
           ${headActions.length ? `<div class="detail-section user-detail-action-section"><div class="user-detail-actions role-detail-actions">${headActions.join("")}</div></div>` : ""}
         </div>
       `;
@@ -29160,6 +29312,11 @@
         updatedRank: rank,
         updatedBy: actor
       };
+      role.history = [{
+        target: role.id, action: "ROLE_CREATE", at: timestamp, actor, reason: "สร้าง Custom Role",
+        before: null, after: { name: role.name, status: role.status, perms: structuredClone(data.perms) },
+        result: "Success", reference: "ROLE-HIST-" + role.id + "-001"
+      }];
       roleListData.roles.push(role);
       // สิทธิ์ของ role เก็บใน catalog (levels ต่อ roleKey) — role อื่นไม่ถูกแตะ
       rolePermissionCatalog.forEach(group => group.perms.forEach(perm => {
@@ -29180,10 +29337,25 @@
       return perms;
     }
 
-    function openRoleEditModal(role, data = null) {
+    function openRoleEditModal(role, data = null, retryReason = "") {
       if (!roleActorHasPermission("roles.manage") || !isRoleMutable(role)) { rejectRolePermission(); return; }
       openRoleCreateModal(data || { name: role.name, roleKey: role.roleKey,
         description: role.description, perms: getRoleEditPermissions(role) }, role);
+      if (!retryReason) return;
+      const form = document.querySelector("[data-role-create-form]");
+      if (!form) return;
+      form.dataset.roleRetryReason = retryReason;
+      const notice = document.createElement("div");
+      notice.className = "module-note role-edit-stale-note";
+      notice.setAttribute("role", "alert");
+      const title = document.createElement("strong");
+      title.textContent = roleEditStaleMessage;
+      const latest = document.createElement("p");
+      latest.textContent = "ค่าที่กรอกไว้ยังอยู่ กรุณาตรวจสอบกับข้อมูลล่าสุด: " + role.name +
+        " · " + (role.description || "ไม่มีคำอธิบาย") +
+        " · " + Object.keys(getRoleEditPermissions(role)).length + " สิทธิ์";
+      notice.append(title, latest);
+      form.prepend(notice);
     }
 
     function renderRoleEditConfirmPerms(perms, added, removed) {
@@ -29268,10 +29440,45 @@
         <div class="user-detail-actions"><button class="user-detail-action-btn" type="button" data-role-edit-back>ย้อนกลับ</button>
           <button class="user-detail-action-btn primary" type="button" data-role-edit-confirm>ยืนยันแก้ไข Custom Role</button></div>
       </div>`;
+      const reasonField = body.querySelector("[data-role-edit-reason]");
+      if (reasonField) reasonField.value = pending.retryReason || "";
       showUserActionModal(true);
       body.scrollTop = 0;
     }
 
+    function showRoleEditFailureToast() {
+      const stack = document.querySelector(".toast-stack");
+      if (!stack) return;
+      stack.querySelectorAll(".role-edit-failure-toast").forEach(toast => toast.remove());
+      const toast = document.createElement("div");
+      toast.className = "toast show role-edit-failure-toast";
+      toast.setAttribute("role", "alert");
+      const text = document.createElement("div");
+      const title = document.createElement("strong");
+      title.textContent = "บันทึกไม่สำเร็จ";
+      const message = document.createElement("span");
+      message.textContent = roleEditStaleMessage;
+      text.append(title, message);
+      toast.append(text);
+      stack.append(toast);
+      window.setTimeout(() => toast.remove(), 5000);
+    }
+    function recordRoleEditBlocked(role) {
+      if (!role) return;
+      role.history ||= [];
+      role.history.unshift({
+        target: role.id, action: "ROLE_UPDATE",
+        at: formatAdminAccountActivityTime(new Date()),
+        actor: auth.admin?.username || "Admin",
+        reason: roleEditStaleMessage,
+        before: null,
+        after: null,
+        decision: "Blocked",
+        result: "Failed",
+        failureCode: "STALE_REVISION",
+        reference: nextRoleHistoryReference(role)
+      });
+    }
     function applyRoleEdit() {
       if (!roleActorHasPermission("roles.manage")) { rejectRolePermission(); return; }
       const pending = pendingRoleEditData;
@@ -29287,8 +29494,15 @@
       }
       const role = roleListData.roles.find(r => r.id === pending.id);
       if (!role || !isRoleMutable(role) || role.status !== pending.status || role.roleKey !== pending.data.roleKey || (role.revision || 1) !== pending.revision) {
-        closeUserActionModal(); pendingRoleEditData = null;
-        showSuccessToast("Role มีการเปลี่ยนแปลงหรือไม่พร้อมแก้ไข กรุณาโหลดข้อมูลใหม่", "Roles & Permissions");
+        recordRoleEditBlocked(role);
+        pendingRoleEditData = null;
+        if (role && document.body.classList.contains("role-detail-mode")) renderRoleDetailPage(role.id);
+        if (role && isRoleMutable(role) && role.roleKey === pending.data.roleKey) {
+          openRoleEditModal(role, pending.data, reason);
+        } else {
+          closeUserActionModal();
+        }
+        showRoleEditFailureToast();
         return;
       }
       if (roleListData.roles.some(r => r.id !== role.id && r.name.trim().toLowerCase() === pending.data.name.toLowerCase())) {
@@ -29299,10 +29513,11 @@
         return;
       }
       const now = new Date();
+      const permissionsChanged = JSON.stringify(pending.before.perms) !== JSON.stringify(pending.data.perms);
       role.history ||= [];
-      role.history.unshift({ revision: pending.revision + 1, at: formatAdminAccountActivityTime(now),
-        actor: (auth.admin && auth.admin.username) || "Admin", reason,
-        before: pending.before, after: structuredClone(pending.data) });
+      role.history.unshift({ target: role.id, revision: pending.revision + 1, at: formatAdminAccountActivityTime(now),
+        actor: (auth.admin && auth.admin.username) || "Admin", action: permissionsChanged ? "ROLE_PERMISSION_UPDATE" : "ROLE_UPDATE", result: "Success", reason: maskRoleHistoryText(reason),
+        before: maskRoleHistoryValue(pending.before), after: maskRoleHistoryValue(pending.data), reference: nextRoleHistoryReference(role) });
       role.name = pending.data.name;
       role.description = pending.data.description;
       role.revision = pending.revision + 1;
@@ -29400,8 +29615,8 @@
       }
       const now = new Date();
       role.history ||= [];
-      role.history.unshift({ revision: pending.revision + 1, at: formatAdminAccountActivityTime(now),
-        actor: (auth.admin && auth.admin.username) || "Admin", action: "ROLE_DEACTIVATE", reason,
+      role.history.unshift({ target: role.id, revision: pending.revision + 1, at: formatAdminAccountActivityTime(now),
+        actor: (auth.admin && auth.admin.username) || "Admin", action: "ROLE_DEACTIVATE", result: "Success", reason: maskRoleHistoryText(reason), reference: nextRoleHistoryReference(role),
         before: { status: "Active" }, after: { status: "Inactive" }, affectedAdmins: impact.activeAdmins });
       role.status = "Inactive";
       role.revision = pending.revision + 1;
@@ -29479,8 +29694,8 @@
       }
       const now = new Date();
       role.history ||= [];
-      role.history.unshift({ revision: pending.revision + 1, at: formatAdminAccountActivityTime(now),
-        actor: auth.admin?.username || "Admin", action: "ROLE_REACTIVATE", reason,
+      role.history.unshift({ target: role.id, revision: pending.revision + 1, at: formatAdminAccountActivityTime(now),
+        actor: auth.admin?.username || "Admin", action: "ROLE_REACTIVATE", result: "Success", reason: maskRoleHistoryText(reason), reference: nextRoleHistoryReference(role),
         before: { status: "Inactive" }, after: { status: "Active" }, affectedAdmins: countActiveAdminsUsingRole(role.name) });
       role.status = "Active";
       role.revision = pending.revision + 1;
@@ -44245,7 +44460,7 @@
             }
             return;
           }
-          pendingRoleEditData = { id: role.id, status: role.status, revision: Number(roleCreateForm.dataset.roleEditRevision), before, data: validated };
+          pendingRoleEditData = { id: role.id, status: role.status, revision: Number(roleCreateForm.dataset.roleEditRevision), before, data: validated, retryReason: roleCreateForm.dataset.roleRetryReason || "" };
           openRoleEditConfirmModal(pendingRoleEditData);
         } else {
           pendingRoleCreateData = validated;
