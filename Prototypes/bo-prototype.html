@@ -17821,27 +17821,27 @@
     };
 
     // Role List (Settings > Roles & Permissions) — ข้อมูล master ของ Role ตาม spec section 9.9
-    // 8 System Role เป็น baseline template (identity ล็อก), Custom Role derive จาก template + revision
+    // 8 System Role เป็น baseline ของระบบ (identity ล็อก) — Custom Role สร้างและจัดการโดยผู้ดูแล
     // จำนวนผู้ดูแลที่ใช้งานไม่เก็บซ้ำใน data — คำนวณจาก adminAccountData.accounts (Active เท่านั้น) ตอน render
     const roleListData = {
       roles: [
-        { id: "ROL-001", name: "Super Admin", roleKey: "super_admin", type: "system", status: "Active", description: "ใช้สำหรับเจ้าของระบบหรือ operation lead ที่ต้องจัดการ policy, settings, audit และ export", sourceTemplate: "", revision: "", createdAt: "01 Jan 2026 09:00", createdRank: 202601010900, createdBy: "System", updatedAt: "01 Jan 2026 09:00", updatedRank: 202601010900, updatedBy: "System (baseline)" },
-        { id: "ROL-002", name: "Admin Manager", roleKey: "admin_manager", type: "system", status: "Active", description: "จัดการ Admin Accounts, Roles & Permissions และ high-risk settings พร้อม confirmation, reason และ audit", sourceTemplate: "", revision: "", createdAt: "01 Jan 2026 09:00", createdRank: 202601010900, createdBy: "System", updatedAt: "01 Jan 2026 09:00", updatedRank: 202601010900, updatedBy: "System (baseline)" },
-        { id: "ROL-003", name: "Operations Manager", roleKey: "operations_manager", type: "system", status: "Active", description: "ดูภาพรวม queue ปฏิบัติการและดำเนินงานข้าม module ได้เฉพาะ action ที่ matrix อนุญาต", sourceTemplate: "", revision: "", createdAt: "01 Jan 2026 09:00", createdRank: 202601010900, createdBy: "System", updatedAt: "01 Jan 2026 09:00", updatedRank: 202601010900, updatedBy: "System (baseline)" },
-        { id: "ROL-004", name: "Support Agent", roleKey: "support_agent", type: "system", status: "Active", description: "ช่วยเหลือผู้ใช้จาก support context และ delivery status โดยไม่แตะ Settings/export", sourceTemplate: "", revision: "", createdAt: "01 Jan 2026 09:00", createdRank: 202601010900, createdBy: "System", updatedAt: "01 Jan 2026 09:00", updatedRank: 202601010900, updatedBy: "System (baseline)" },
-        { id: "ROL-005", name: "Trust & Safety Moderator", roleKey: "trust_safety_moderator", type: "system", status: "Active", description: "ตรวจ report queue และทำ action ที่กระทบ FO พร้อม reason, impact note และ audit", sourceTemplate: "", revision: "", createdAt: "01 Jan 2026 09:00", createdRank: 202601010900, createdBy: "System", updatedAt: "02 Sep 2026 10:15", updatedRank: 202609021015, updatedBy: "ADM-001" },
-        { id: "ROL-006", name: "Asset Operations", roleKey: "asset_operations", type: "system", status: "Active", description: "ตรวจ Asset List/Detail และ reported assets/comments โดยไม่แก้ Market Data master หรือ Settings", sourceTemplate: "", revision: "", createdAt: "01 Jan 2026 09:00", createdRank: 202601010900, createdBy: "System", updatedAt: "01 Jan 2026 09:00", updatedRank: 202601010900, updatedBy: "System (baseline)" },
-        { id: "ROL-007", name: "Content Editor", roleKey: "content_editor", type: "system", status: "Active", description: "สร้างและแก้ draft บทความ, category และ metadata ได้ แต่ publish/archive ไม่ได้", sourceTemplate: "", revision: "", createdAt: "01 Jan 2026 09:00", createdRank: 202601010900, createdBy: "System", updatedAt: "01 Jan 2026 09:00", updatedRank: 202601010900, updatedBy: "System (baseline)" },
-        { id: "ROL-008", name: "Content Publisher", roleKey: "content_publisher", type: "system", status: "Active", description: "อนุมัติ publish, schedule, archive และจัดการ reported Board content พร้อม audit reason", sourceTemplate: "", revision: "", createdAt: "01 Jan 2026 09:00", createdRank: 202601010900, createdBy: "System", updatedAt: "01 Jan 2026 09:00", updatedRank: 202601010900, updatedBy: "System (baseline)" },
-        { id: "ROL-101", name: "Content Reviewer TH", roleKey: "content_reviewer_th", type: "custom", status: "Active", description: "ตรวจทานบทความ, metadata และ category ก่อนส่งให้ publisher โดยไม่มีสิทธิ์ publish", sourceTemplate: "Content Editor", revision: "rev.3", createdAt: "12 Aug 2026 14:00", createdRank: 202608121400, createdBy: "ADM-001", updatedAt: "05 Sep 2026 11:20", updatedRank: 202609051120, updatedBy: "ADM-001" },
-        { id: "ROL-102", name: "Market Analyst", roleKey: "market_analyst", type: "custom", status: "Active", description: "อ่าน market data, demand overview และ delivery log สำหรับทีมวิเคราะห์โดยไม่มี mutation", sourceTemplate: "Operations Manager", revision: "rev.2", createdAt: "20 Aug 2026 09:30", createdRank: 202608200930, createdBy: "ADM-002", updatedAt: "20 Aug 2026 09:30", updatedRank: 202608200930, updatedBy: "ADM-002" },
-        { id: "ROL-103", name: "Legacy Support Viewer", roleKey: "legacy_support_viewer", type: "custom", status: "Inactive", description: "Role เดิมของทีม support ก่อนปรับโครงสร้าง — ปิดใช้งานแล้วและเลือก assign ให้ผู้ดูแลรายใหม่ไม่ได้", sourceTemplate: "Support Agent", revision: "rev.1", createdAt: "02 Jun 2026 10:00", createdRank: 202606021000, createdBy: "ADM-001", updatedAt: "01 Sep 2026 16:45", updatedRank: 202609011645, updatedBy: "ADM-001" }
+        { id: "ROL-001", name: "Super Admin", roleKey: "super_admin", type: "system", status: "Active", description: "ใช้สำหรับเจ้าของระบบหรือ operation lead ที่ต้องจัดการ policy, settings, audit และ export", createdAt: "01 Jan 2026 09:00", createdRank: 202601010900, createdBy: "System", updatedAt: "01 Jan 2026 09:00", updatedRank: 202601010900, updatedBy: "System (baseline)" },
+        { id: "ROL-002", name: "Admin Manager", roleKey: "admin_manager", type: "system", status: "Active", description: "จัดการ Admin Accounts, Roles & Permissions และ high-risk settings พร้อม confirmation, reason และ audit", createdAt: "01 Jan 2026 09:00", createdRank: 202601010900, createdBy: "System", updatedAt: "01 Jan 2026 09:00", updatedRank: 202601010900, updatedBy: "System (baseline)" },
+        { id: "ROL-003", name: "Operations Manager", roleKey: "operations_manager", type: "system", status: "Active", description: "ดูภาพรวม queue ปฏิบัติการและดำเนินงานข้าม module ได้เฉพาะ action ที่ matrix อนุญาต", createdAt: "01 Jan 2026 09:00", createdRank: 202601010900, createdBy: "System", updatedAt: "01 Jan 2026 09:00", updatedRank: 202601010900, updatedBy: "System (baseline)" },
+        { id: "ROL-004", name: "Support Agent", roleKey: "support_agent", type: "system", status: "Active", description: "ช่วยเหลือผู้ใช้จาก support context และ delivery status โดยไม่แตะ Settings/export", createdAt: "01 Jan 2026 09:00", createdRank: 202601010900, createdBy: "System", updatedAt: "01 Jan 2026 09:00", updatedRank: 202601010900, updatedBy: "System (baseline)" },
+        { id: "ROL-005", name: "Trust & Safety Moderator", roleKey: "trust_safety_moderator", type: "system", status: "Active", description: "ตรวจ report queue และทำ action ที่กระทบ FO พร้อม reason, impact note และ audit", createdAt: "01 Jan 2026 09:00", createdRank: 202601010900, createdBy: "System", updatedAt: "02 Sep 2026 10:15", updatedRank: 202609021015, updatedBy: "ADM-001" },
+        { id: "ROL-006", name: "Asset Operations", roleKey: "asset_operations", type: "system", status: "Active", description: "ตรวจ Asset List/Detail และ reported assets/comments โดยไม่แก้ Market Data master หรือ Settings", createdAt: "01 Jan 2026 09:00", createdRank: 202601010900, createdBy: "System", updatedAt: "01 Jan 2026 09:00", updatedRank: 202601010900, updatedBy: "System (baseline)" },
+        { id: "ROL-007", name: "Content Editor", roleKey: "content_editor", type: "system", status: "Active", description: "สร้างและแก้ draft บทความ, category และ metadata ได้ แต่ publish/archive ไม่ได้", createdAt: "01 Jan 2026 09:00", createdRank: 202601010900, createdBy: "System", updatedAt: "01 Jan 2026 09:00", updatedRank: 202601010900, updatedBy: "System (baseline)" },
+        { id: "ROL-008", name: "Content Publisher", roleKey: "content_publisher", type: "system", status: "Active", description: "อนุมัติ publish, schedule, archive และจัดการ reported Board content พร้อม audit reason", createdAt: "01 Jan 2026 09:00", createdRank: 202601010900, createdBy: "System", updatedAt: "01 Jan 2026 09:00", updatedRank: 202601010900, updatedBy: "System (baseline)" },
+        { id: "ROL-101", name: "Content Reviewer TH", roleKey: "content_reviewer_th", type: "custom", status: "Active", description: "ตรวจทานบทความ, metadata และ category ก่อนส่งให้ publisher โดยไม่มีสิทธิ์ publish", createdAt: "12 Aug 2026 14:00", createdRank: 202608121400, createdBy: "ADM-001", updatedAt: "05 Sep 2026 11:20", updatedRank: 202609051120, updatedBy: "ADM-001" },
+        { id: "ROL-102", name: "Market Analyst", roleKey: "market_analyst", type: "custom", status: "Active", description: "อ่าน market data, demand overview และ delivery log สำหรับทีมวิเคราะห์โดยไม่มี mutation", createdAt: "20 Aug 2026 09:30", createdRank: 202608200930, createdBy: "ADM-002", updatedAt: "20 Aug 2026 09:30", updatedRank: 202608200930, updatedBy: "ADM-002" },
+        { id: "ROL-103", name: "Legacy Support Viewer", roleKey: "legacy_support_viewer", type: "custom", status: "Inactive", description: "Role เดิมของทีม support ก่อนปรับโครงสร้าง — ปิดใช้งานแล้วและเลือก assign ให้ผู้ดูแลรายใหม่ไม่ได้", createdAt: "02 Jun 2026 10:00", createdRank: 202606021000, createdBy: "ADM-001", updatedAt: "01 Sep 2026 16:45", updatedRank: 202609011645, updatedBy: "ADM-001" }
       ]
     };
 
     // Role Detail — canonical permission catalog ตาม spec section 9.2 (key taxonomy) + 9.3 (baseline matrix)
     // level ต่อ role เก็บใน levels โดย key คือ roleKey — roleKey ที่ไม่ระบุ = "none"
-    // Custom Role derive จาก template แล้ว adjust แบบ explicit เท่านั้น (ห้ามสิทธิ์เฉพาะรายบุคคล)
+    // Custom Role กำหนดสิทธิ์แบบ explicit เท่านั้น (ห้ามสิทธิ์เฉพาะรายบุคคล)
     // permission catalog — module + sub ตาม sidebar จริง; level ต่อ roleKey (none = ไม่แสดงใน Role Detail)
     // permission catalog อิง action ที่มีจริงใน prototype ต่อเมนูย่อย — ไม่ใส่ capability ที่หน้าจอไม่มีจริง
     const rolePermissionCatalog = [
@@ -27622,6 +27622,14 @@
       return `<span class="pill ${map[status] || "gray"}">${status}</span>`;
     }
 
+    // mutation (แก้ไข/คัดลอก/ปิด-เปิดใช้งาน) อนุญาตเฉพาะ Custom Role ที่ข้อมูลชนิด/สถานะถูกต้อง —
+    // ข้อมูลผิดพลาดต้องไม่เปิด mutation ทั้งจาก DOM และจาก flow handler
+    function isRoleMutable(role) {
+      return !!role
+        && role.type === "custom"
+        && (role.status === "Active" || role.status === "Inactive");
+    }
+
     function getRoleSearchText(role) {
       return [role.id, role.name, role.roleKey, role.description]
         .filter(Boolean).join(" ").toLowerCase();
@@ -27701,7 +27709,7 @@
 
     function renderRoleRow(role, esc) {
       const admins = countActiveAdminsUsingRole(role.name);
-      const isCustom = role.type === "custom";
+      const canMutate = isRoleMutable(role);
       const isActive = role.status === "Active";
       return `
         <div class="user-row role-row" data-role-card="${role.id}">
@@ -27728,10 +27736,10 @@
               <summary aria-label="Role actions">...</summary>
               <div class="row-menu-list">
                 <button type="button" data-role-open="${role.id}">ดูรายละเอียด</button>
-                ${isCustom ? `<button type="button" data-role-flow="edit" data-role-id="${role.id}">แก้ไข</button>` : ""}
-                ${isCustom ? `<button type="button" data-role-flow="copy" data-role-id="${role.id}">คัดลอก</button>` : ""}
-                ${isCustom && isActive ? `<button type="button" data-role-flow="deactivate" data-role-id="${role.id}">ปิดใช้งาน</button>` : ""}
-                ${isCustom && !isActive ? `<button type="button" data-role-flow="reactivate" data-role-id="${role.id}">เปิดใช้งาน</button>` : ""}
+                ${canMutate ? `<button type="button" data-role-flow="edit" data-role-id="${role.id}">แก้ไข</button>` : ""}
+                ${canMutate ? `<button type="button" data-role-flow="copy" data-role-id="${role.id}">คัดลอก</button>` : ""}
+                ${canMutate && isActive ? `<button type="button" data-role-flow="deactivate" data-role-id="${role.id}">ปิดใช้งาน</button>` : ""}
+                ${canMutate && !isActive ? `<button type="button" data-role-flow="reactivate" data-role-id="${role.id}">เปิดใช้งาน</button>` : ""}
               </div>
             </details>
           </div>
@@ -27832,15 +27840,15 @@
       document.querySelector("#cards").innerHTML = "";
       document.querySelector("#detail").innerHTML = "";
 
-      const isCustom = role.type === "custom";
+      const canMutate = isRoleMutable(role);
       const isActive = role.status === "Active";
       const admins = countActiveAdminsUsingRole(role.name);
 
-      // action — System Role read-only ไม่มี action; Custom Role ตามสถานะ
+      // action — System Role read-only ไม่มี action; Custom Role ที่ข้อมูลสมบูรณ์แก้ไขได้ทุกสถานะ
       // mutation (แก้ไข/คัดลอก/ปิด-เปิดใช้งาน) เชื่อม stub เดียวกับ row menu — flow จริงเป็นงานถัดไป
       // ประวัติการเปลี่ยนแปลงจะแสดงใน history section ของหน้านี้ (งานถัดไป) ไม่ลิงก์ออกไป Audit Log
       const headActions = [];
-      if (isCustom) {
+      if (canMutate) {
         headActions.push(`<button class="user-detail-action-btn" type="button" data-role-flow="edit" data-role-id="${role.id}">แก้ไข</button>`);
         headActions.push(`<button class="user-detail-action-btn" type="button" data-role-flow="copy" data-role-id="${role.id}">คัดลอก</button>`);
         headActions.push(isActive
@@ -41365,6 +41373,11 @@
         const role = roleListData.roles.find(r => r.id === roleFlowButton.dataset.roleId);
         const labels = { edit: "แก้ไข", copy: "คัดลอก", deactivate: "ปิดใช้งาน", reactivate: "เปิดใช้งาน" };
         closeRowMenus();
+        // guard ซ้ำฝั่ง handler — ข้อมูลชนิด/สถานะผิดพลาดห้ามเข้า mutation flow แม้ DOM จะหลุดมา
+        if (role && !isRoleMutable(role)) {
+          showSuccessToast(`ไม่สามารถ${labels[roleFlowButton.dataset.roleFlow] || "จัดการ"} ${role.name} ได้ — ข้อมูลชนิดหรือสถานะของ Role ไม่สมบูรณ์`, "Roles & Permissions");
+          return;
+        }
         if (role) showSuccessToast(`${labels[roleFlowButton.dataset.roleFlow] || "จัดการ"} ${role.name} — flow นี้จะพร้อมในงาน prototype ถัดไป`, "Roles & Permissions");
         return;
       }
