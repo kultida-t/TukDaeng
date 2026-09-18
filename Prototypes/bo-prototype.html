@@ -16878,7 +16878,76 @@
         border-radius: 26px;
       }
     }
-  </style>
+
+    .role-create-modal .role-perm-diff-tag {
+      flex: 0 0 auto;
+      border-radius: 999px;
+      padding: 2px 7px;
+      background: #e8f8f0;
+      color: #07734f;
+      font-size: 11px;
+      font-weight: 700;
+    }
+    .role-create-modal .role-edit-removed {
+      margin-top: 12px;
+      padding: 12px 14px;
+      border: 1px solid #d7e5f4;
+      border-radius: 8px;
+      background: #f8fbff;
+      color: #526176;
+      font-size: 12px;
+    }
+    .role-create-modal .role-edit-removed.has-removed {
+      border-color: #fde68a;
+      background: #fffbeb;
+      color: #92400e;
+    }
+    .role-create-modal .role-edit-diff-basis {
+      display: block;
+      margin-top: 10px;
+      color: #94a3b8;
+      font-size: 11px;
+      font-weight: 400;
+    }
+    .role-create-modal .role-edit-removed p {
+      margin: 6px 0 0;
+    }
+    .role-create-modal .role-edit-impact {
+      border-color: #d7e5f4;
+      background: #f8fbff;
+      color: #526176;
+    }
+    .role-create-modal .role-edit-removed ul {
+      margin: 6px 0 0;
+      padding-left: 18px;
+    }
+    .role-create-modal .role-edit-reason-field {
+      margin: 18px 0 22px;
+    }
+    .role-create-modal .role-edit-reason-field textarea {
+      min-height: 96px;
+    }
+    .role-deactivate-modal .role-deactivate-impact {
+      margin: 14px 0 22px;
+      padding: 12px 14px;
+      border: 1px solid #d7e5f4;
+      border-radius: 8px;
+      background: #f8fbff;
+      color: #526176;
+      font-size: 12px;
+      font-weight: 500;
+      line-height: 1.55;
+    }
+    .role-deactivate-modal .role-deactivate-impact.is-blocked {
+      border-color: #fecaca;
+      background: #fef2f2;
+      color: #991b1b;
+    }
+    .role-deactivate-modal .role-deactivate-impact strong { font-size: 12px; font-weight: 700; }
+    .role-deactivate-modal .role-deactivate-impact p { margin: 2px 0 0; font-weight: 400; }
+    .role-deactivate-modal .role-deactivate-reason { margin: 16px 0 20px; }
+    .role-deactivate-modal .role-deactivate-reason textarea { min-height: 96px; }
+</style>
 </head>
 <body class="logged-out">
   <section class="login-screen" id="login-screen" aria-label="Back Office login">
@@ -19781,6 +19850,8 @@
     let roleViewStateTimer = null;
     // Create Custom Role — ค่าที่ validate ผ่านแล้วระหว่างรอ confirmation (ย้อนกลับ = คงค่าเดิม)
     let pendingRoleCreateData = null;
+    let pendingRoleEditData = null;
+    let pendingRoleDeactivateData = null;
     let optionGroupListPage = 1;
     let optionDetailPage = 1;
     let activeOptionGroup = "";
@@ -28311,7 +28382,7 @@
               <summary aria-label="Role actions">...</summary>
               <div class="row-menu-list">
                 <button type="button" data-role-open="${role.id}">ดูรายละเอียด</button>
-                ${canMutate ? `<button type="button" data-role-flow="edit" data-role-id="${role.id}">แก้ไข</button>` : ""}
+                ${canMutate && isActive ? `<button type="button" data-role-flow="edit" data-role-id="${role.id}">แก้ไข</button>` : ""}
                 ${canMutate && isActive ? `<button type="button" data-role-flow="deactivate" data-role-id="${role.id}">ปิดใช้งาน</button>` : ""}
                 ${canMutate && !isActive ? `<button type="button" data-role-flow="reactivate" data-role-id="${role.id}">เปิดใช้งาน</button>` : ""}
               </div>
@@ -28545,8 +28616,10 @@
       // mutation (แก้ไข/ปิด-เปิดใช้งาน) เชื่อม stub เดียวกับ row menu — flow จริงเป็นงานถัดไป
       // ประวัติการเปลี่ยนแปลงจะแสดงใน history section ของหน้านี้ (งานถัดไป) ไม่ลิงก์ออกไป Audit Log
       const headActions = [];
-      if (canMutate) {
+      if (canMutate && isActive) {
         headActions.push(`<button class="user-detail-action-btn" type="button" data-role-flow="edit" data-role-id="${role.id}">แก้ไข</button>`);
+      }
+      if (canMutate) {
         headActions.push(isActive
           ? `<button class="user-detail-action-btn danger" type="button" data-role-flow="deactivate" data-role-id="${role.id}">ปิดใช้งาน</button>`
           : `<button class="user-detail-action-btn primary" type="button" data-role-flow="reactivate" data-role-id="${role.id}">เปิดใช้งาน</button>`);
@@ -28733,7 +28806,7 @@
       syncRolePermLocks(form);
     }
 
-    function openRoleCreateModal(prevData = null) {
+    function openRoleCreateModal(prevData = null, editRole = null) {
       const modal = document.querySelector("#user-action-modal");
       const modalCard = modal?.querySelector(".user-action-modal");
       const modalBody = document.querySelector("#user-action-modal-body");
@@ -28745,25 +28818,25 @@
         <div class="user-action-layout">
           <div class="user-action-head">
             <div>
-              <h2 id="user-action-modal-title">Create Custom Role</h2>
-              <p>กำหนดชื่อ Role Key และเลือกสิทธิ์การเข้าถึงสำหรับ Role ใหม่</p>
+               <h2 id="user-action-modal-title">${editRole ? "Edit Custom Role" : "Create Custom Role"}</h2>
+               <p>${editRole ? "แก้ชื่อ คำอธิบาย และสิทธิ์ของ Role ที่เลือก" : "กำหนดชื่อ Role Key และเลือกสิทธิ์การเข้าถึงสำหรับ Role ใหม่"}</p>
             </div>
             <button class="btn user-action-close" type="button" data-user-action-modal-close aria-label="ปิด">${iconSvg.close}</button>
           </div>
-          <form class="article-editor-form" data-role-create-form novalidate>
+           <form class="article-editor-form" data-role-create-form ${editRole ? `data-role-edit-id="${editRole.id}" data-role-edit-revision="${editRole.revision || 1}"` : ""} novalidate>
             <section class="article-editor-section">
               <div class="article-editor-grid">
                 <label class="role-field-role-id"><span>Role ID</span>
-                  <input value="${getNextRoleId()}" readonly />
+                   <input value="${editRole?.id || getNextRoleId()}" readonly />
                 </label>
                 <label><span>ชื่อ Role <span class="article-required-mark">*</span></span>
                   <input name="name" value="${esc(prevData?.name || "")}" placeholder="เช่น Trust &amp; Safety Reviewer" data-role-name autocomplete="off" />
                   <span class="article-field-error" data-role-name-error></span>
                 </label>
                 <label><span>Role Key <span class="article-required-mark">*</span></span>
-                  <input name="role_key" value="${esc(prevData?.roleKey || "")}" placeholder="สร้างอัตโนมัติจากชื่อ Role" data-role-key data-user-edited="${prevData?.roleKey ? "true" : "false"}" autocomplete="off" />
+                   <input name="role_key" value="${esc(prevData?.roleKey || "")}" placeholder="สร้างอัตโนมัติจากชื่อ Role" data-role-key data-user-edited="${prevData?.roleKey ? "true" : "false"}" ${editRole ? "readonly" : ""} autocomplete="off" />
                   <span class="article-field-error" data-role-key-error></span>
-                  <span class="option-identifier-note">ใช้อ้างอิงในระบบและ audit — ตัวพิมพ์เล็กภาษาอังกฤษ ตัวเลข และ _ เท่านั้น ห้ามเปลี่ยนหลังสร้างแล้ว</span>
+                   <span class="option-identifier-note">${editRole ? "Role Key ถูกล็อกหลังสร้างแล้ว" : "ใช้อ้างอิงในระบบและ audit — ตัวพิมพ์เล็กภาษาอังกฤษ ตัวเลข และ _ เท่านั้น ห้ามเปลี่ยนหลังสร้างแล้ว"}</span>
                 </label>
                 <label><span>คำอธิบาย</span>
                   <textarea name="description" placeholder="อธิบายขอบเขตและวัตถุประสงค์ของ Role (ไม่บังคับ)" data-role-description>${esc(prevData?.description || "")}</textarea>
@@ -28773,7 +28846,6 @@
             </section>
             <section class="article-editor-section">
               <h4>Permissions</h4>
-              <p class="article-editor-section-note">ติ๊กเลือกสิทธิ์ที่ Role นี้เข้าถึงได้ — สิทธิ์จัดการต้องเลือกสิทธิ์ดูของกลุ่มเดียวกันก่อน</p>
               <span class="article-field-error" data-role-perm-picker-error></span>
               ${renderRoleCreatePermPicker(prevData?.perms || {})}
             </section>
@@ -28869,6 +28941,7 @@
     }
 
     function validateRoleCreateForm(form) {
+      const editingId = form.dataset.roleEditId || "";
       const formData = new FormData(form);
       const name = String(formData.get("name") || "").trim();
       const roleKey = String(formData.get("role_key") || "").trim();
@@ -28883,7 +28956,7 @@
       } else if (name.length > 64) {
         setRoleCreateFieldError(form, "name", "ชื่อ Role ต้องไม่เกิน 64 ตัวอักษร");
         hasError = true;
-      } else if (roleListData.roles.some(r => r.name.trim().toLowerCase() === name.toLowerCase())) {
+      } else if (roleListData.roles.some(r => r.id !== editingId && r.name.trim().toLowerCase() === name.toLowerCase())) {
         setRoleCreateFieldError(form, "name", "ชื่อ Role ซ้ำกับ Role ที่มีอยู่ กรุณาใช้ชื่ออื่น");
         hasError = true;
       }
@@ -28896,7 +28969,7 @@
       } else if (!/^[a-z0-9_]+$/.test(roleKey)) {
         setRoleCreateFieldError(form, "key", "Role Key ต้องเป็นตัวพิมพ์เล็กภาษาอังกฤษ ตัวเลข และ _ เท่านั้น");
         hasError = true;
-      } else if (roleListData.roles.some(r => r.roleKey === roleKey)) {
+      } else if (roleListData.roles.some(r => r.id !== editingId && r.roleKey === roleKey)) {
         setRoleCreateFieldError(form, "key", "Role Key ซ้ำกับ Role ที่มีอยู่ กรุณาใช้ค่าอื่น");
         hasError = true;
       }
@@ -29075,6 +29148,245 @@
       closeUserActionModal();
       if (document.body.classList.contains("role-list-mode")) renderRoleListRows();
       showSuccessToast(`สร้าง Custom Role "${role.name}" (${role.id}) แล้ว`, "Roles & Permissions");
+    }
+
+    function getRoleEditPermissions(role) {
+      const perms = {};
+      rolePermissionCatalog.forEach(group => group.perms.forEach(perm => {
+        if (perm.levels[role.roleKey]) perms[perm.key] = perm.levels[role.roleKey];
+      }));
+      return perms;
+    }
+
+    function openRoleEditModal(role, data = null) {
+      if (!isRoleMutable(role) || role.status !== "Active") return;
+      openRoleCreateModal(data || { name: role.name, roleKey: role.roleKey,
+        description: role.description, perms: getRoleEditPermissions(role) }, role);
+    }
+
+    function renderRoleEditConfirmPerms(perms, added, removed) {
+      const esc = v => String(v).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+      const icons = {};
+      navGroups.forEach(group => group.items.forEach(item => { icons[item.label] = item.icon; }));
+      const groups = rolePermissionCatalog.map(group => ({
+        module: group.module,
+        rows: group.perms.filter(perm => perms[perm.key])
+      })).filter(group => group.rows.length);
+      return `<div class="perm-groups role-confirm-perms">
+        ${groups.map(group => {
+          const subs = [];
+          group.rows.forEach(perm => {
+            const key = perm.sub || group.module;
+            let sub = subs.find(item => item.key === key);
+            if (!sub) { sub = { key, rows: [] }; subs.push(sub); }
+            sub.rows.push(perm);
+          });
+          return `<div class="perm-group">
+            <button class="perm-group-head" type="button" data-role-confirm-perm-toggle aria-expanded="true">
+              <span class="perm-group-chevron">${iconSvg.chevron}</span>
+              <span class="perm-group-icon">${iconSvg[icons[group.module]] || ""}</span>
+              <span class="perm-group-title">${esc(group.module)}</span>
+            </button>
+            ${subs.map(sub => {
+              const hasTitle = subs.length > 1 || sub.key !== group.module;
+              return `<div class="perm-sub ${hasTitle ? "has-title" : "no-title"}">
+                ${hasTitle ? `<div class="perm-sub-title">${esc(sub.key)}</div>` : ""}
+                ${sub.rows.map(perm => `<div class="perm-item">
+                  <span class="perm-check">✓</span>
+                  <span class="perm-item-name">${esc(perm.name)}</span>
+                  ${added.includes(perm.key) ? '<span class="role-perm-diff-tag is-added">เพิ่ม</span>' : ""}
+                </div>`).join("")}
+              </div>`;
+            }).join("")}
+          </div>`;
+        }).join("")}
+      </div>
+      <div class="role-edit-removed ${removed.length ? "has-removed" : ""}">
+        <strong>สิทธิ์ที่ลด (${removed.length})</strong>
+        ${removed.length ? `<ul>${removed.map(key => `<li>${esc(rolePermByKey[key]?.name || key)}</li>`).join("")}</ul>` : '<p>ไม่มีสิทธิ์ที่ลด</p>'}
+        <span class="role-edit-diff-basis">เทียบกับสิทธิ์ก่อนเริ่มแก้ไข</span>
+      </div>`;
+    }
+
+    function openRoleEditConfirmModal(pending) {
+      const role = roleListData.roles.find(r => r.id === pending.id);
+      const modal = document.querySelector("#user-action-modal");
+      const body = document.querySelector("#user-action-modal-body");
+      if (!role || !modal || !body) return;
+      const esc = v => String(v).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+      const before = pending.before.perms, after = pending.data.perms;
+      const added = Object.keys(after).filter(key => !before[key]);
+      const removed = Object.keys(before).filter(key => !after[key]);
+      const changedRow = (label, oldValue, newValue, changed) => `<div class="option-confirm-row ${changed ? "option-confirm-changed" : ""}">
+        <span class="option-confirm-label">${label}</span>
+        <span class="option-confirm-value">${changed
+          ? `<span class="option-confirm-before">${esc(oldValue)}</span> → <span class="option-confirm-after">${esc(newValue)}</span>`
+          : esc(newValue)}</span></div>`;
+      body.innerHTML = `<div class="user-action-layout">
+        <div class="user-action-head"><div><h2 id="user-action-modal-title">Confirm Edit Custom Role</h2>
+           <p>กรุณาตรวจสอบค่าที่เปลี่ยนแปลงก่อนยืนยัน — ฟิลด์ที่เปลี่ยนแปลงจะไฮไลต์และแสดงค่าก่อน → ค่าใหม่</p></div>
+          <button class="btn user-action-close" type="button" data-user-action-modal-close aria-label="ปิด">${iconSvg.close}</button></div>
+        <div class="option-confirm-summary">
+          <div class="option-confirm-row"><span class="option-confirm-label">Role ID / Key</span><span class="option-confirm-value">${esc(role.id)} / ${esc(role.roleKey)}</span></div>
+          ${changedRow("Revision", pending.revision, pending.revision + 1, true)}
+          ${changedRow("ชื่อ Role", pending.before.name, pending.data.name, pending.before.name !== pending.data.name)}
+          ${changedRow("คำอธิบาย", pending.before.description || "-", pending.data.description || "-", pending.before.description !== pending.data.description)}
+          ${changedRow("Permissions", `${Object.keys(before).length} สิทธิ์`, `${Object.keys(after).length} สิทธิ์`, added.length > 0 || removed.length > 0)}
+        </div>
+        ${renderRoleEditConfirmPerms(after, added, removed)}
+        <div class="option-confirm-impact role-edit-impact">${countActiveAdminsUsingRole(role.name)
+          ? `การเปลี่ยนสิทธิ์อาจกระทบผู้ดูแลที่ใช้ Role นี้อยู่ ${countActiveAdminsUsingRole(role.name)} คน`
+          : "ไม่มีผู้ดูแล Active ที่ใช้ Role นี้อยู่"}</div>
+        <div class="article-editor-form role-edit-reason-field">
+          <label><span>เหตุผลในการแก้ไข <span class="article-required-mark">*</span></span>
+            <textarea data-role-edit-reason maxlength="512" placeholder="ระบุเหตุผลเพื่อบันทึกประวัติ"></textarea>
+            <span class="article-field-error" data-role-edit-reason-error></span></label>
+        </div>
+        <div class="user-detail-actions"><button class="user-detail-action-btn" type="button" data-role-edit-back>ย้อนกลับ</button>
+          <button class="user-detail-action-btn primary" type="button" data-role-edit-confirm>ยืนยันแก้ไข Custom Role</button></div>
+      </div>`;
+      showUserActionModal(true);
+      body.scrollTop = 0;
+    }
+
+    function applyRoleEdit() {
+      const pending = pendingRoleEditData;
+      if (!pending) return;
+      const reasonInput = document.querySelector("[data-role-edit-reason]");
+      const reason = reasonInput?.value.trim() || "";
+      if (!reason) {
+        const error = document.querySelector("[data-role-edit-reason-error]");
+        if (error) { error.textContent = "กรุณาระบุเหตุผลในการแก้ไข"; error.classList.add("show"); }
+        reasonInput?.classList.add("article-field-invalid");
+        reasonInput?.focus();
+        return;
+      }
+      const role = roleListData.roles.find(r => r.id === pending.id);
+      if (!role || !isRoleMutable(role) || role.status !== "Active" || role.roleKey !== pending.data.roleKey || (role.revision || 1) !== pending.revision) {
+        closeUserActionModal(); pendingRoleEditData = null;
+        showSuccessToast("Role มีการเปลี่ยนแปลงหรือไม่พร้อมแก้ไข กรุณาโหลดข้อมูลใหม่", "Roles & Permissions");
+        return;
+      }
+      if (roleListData.roles.some(r => r.id !== role.id && r.name.trim().toLowerCase() === pending.data.name.toLowerCase())) {
+        openRoleEditModal(role, pending.data);
+        const form = document.querySelector("[data-role-create-form]");
+        setRoleCreateFieldError(form, "name", "ชื่อ Role นี้ถูกใช้แล้ว กรุณาใช้ชื่ออื่น");
+        focusRoleCreateFirstError(form);
+        return;
+      }
+      const now = new Date();
+      role.history ||= [];
+      role.history.unshift({ revision: pending.revision + 1, at: formatAdminAccountActivityTime(now),
+        actor: (auth.admin && auth.admin.username) || "Admin", reason,
+        before: pending.before, after: structuredClone(pending.data) });
+      role.name = pending.data.name;
+      role.description = pending.data.description;
+      role.revision = pending.revision + 1;
+      role.updatedAt = formatAdminAccountActivityTime(now);
+      role.updatedRank = roleTimestampRank(now);
+      role.updatedBy = (auth.admin && auth.admin.username) || "Admin";
+      rolePermissionCatalog.forEach(group => group.perms.forEach(perm => {
+        if (pending.data.perms[perm.key]) perm.levels[role.roleKey] = pending.data.perms[perm.key];
+        else delete perm.levels[role.roleKey];
+      }));
+      pendingRoleEditData = null;
+      closeUserActionModal();
+      if (document.body.classList.contains("role-detail-mode")) renderRoleDetailPage(role.id);
+      else if (document.body.classList.contains("role-list-mode")) renderRoleListRows();
+      showSuccessToast(`แก้ไข Custom Role "${role.name}" แล้ว`, "Roles & Permissions");
+    }
+
+    function checkRoleDeactivateImpact(role) {
+      const activeAdmins = adminAccountData.accounts.filter(acc => acc.role === role.name && acc.status === "Active");
+      const reasons = [];
+      if (activeAdmins.length) reasons.push(`มีผู้ดูแล Active ใช้ Role นี้อยู่ ${activeAdmins.length} คน ต้องย้ายไป Role อื่นก่อน`);
+      if (activeAdmins.length) {
+        const hasCapability = key => rolePermissionCatalog.some(group => group.perms.some(perm => perm.key === key && !!perm.levels[role.roleKey]));
+        const activeAccounts = adminAccountData.accounts.filter(acc => acc.status === "Active");
+        const otherHasCapability = key => activeAccounts.some(acc => acc.role !== role.name &&
+          roleListData.roles.some(other => other.name === acc.role && other.status === "Active" &&
+            rolePermissionCatalog.some(group => group.perms.some(perm => perm.key === key && !!perm.levels[other.roleKey]))));
+        if (hasCapability("roles.manage") && !otherHasCapability("roles.manage")) reasons.push("Role นี้เป็นช่องทางจัดการ Role สุดท้ายของระบบ");
+        const recoveryKeys = ["admin_accounts.manage", "roles.manage"];
+        if (recoveryKeys.every(hasCapability) && !activeAccounts.some(acc => acc.role !== role.name &&
+          roleListData.roles.some(other => other.name === acc.role && other.status === "Active" &&
+            recoveryKeys.every(key => rolePermissionCatalog.some(group => group.perms.some(perm => perm.key === key && !!perm.levels[other.roleKey])))))) {
+          reasons.push("Role นี้เป็นช่องทางกู้คืนสิทธิ์ผู้ดูแลระบบสุดท้าย");
+        }
+      }
+      return { activeAdmins: activeAdmins.length, reasons };
+    }
+
+    function openRoleDeactivateModal(role) {
+      if (!isRoleMutable(role) || role.status !== "Active") return;
+      const modal = document.querySelector("#user-action-modal");
+      const modalCard = modal?.querySelector(".modal");
+      const body = document.querySelector("#user-action-modal-body");
+      if (!modal || !modalCard || !body) return;
+      const esc = v => String(v).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+      const impact = checkRoleDeactivateImpact(role);
+      pendingRoleDeactivateData = { id: role.id, revision: role.revision || 1 };
+      modalCard.classList.remove("article-preview-modal", "article-editor-confirm-modal", "category-editor-modal", "category-order-modal", "market-editor-modal", "market-reference-drawer", "board-report-phone-preview-modal", "option-order-modal", "option-audit-modal", "option-editor-modal", "role-create-modal");
+      modalCard.classList.add("option-editor-modal", "role-deactivate-modal");
+      body.innerHTML = `<div class="user-action-layout">
+        <div class="user-action-head"><div><h2 id="user-action-modal-title">Confirm Deactivate Custom Role</h2>
+          <p>ตรวจสอบผลกระทบก่อนยืนยัน การปิดใช้งานจะทำให้เลือก Role นี้ให้ผู้ดูแลรายใหม่ไม่ได้</p></div>
+          <button class="btn user-action-close" type="button" data-user-action-modal-close aria-label="ปิด">${iconSvg.close}</button></div>
+        <div class="option-confirm-summary">
+          <div class="option-confirm-row"><span class="option-confirm-label">Role</span><span class="option-confirm-value">${esc(role.id)} : ${esc(role.name)}</span></div>
+          <div class="option-confirm-row"><span class="option-confirm-label">Role Key</span><span class="option-confirm-value">${esc(role.roleKey)}</span></div>
+          <div class="option-confirm-row option-confirm-changed"><span class="option-confirm-label">Status</span><span class="option-confirm-value"><span class="option-confirm-before">Active</span> → <span class="option-confirm-after">Inactive</span></span></div>
+          <div class="option-confirm-row"><span class="option-confirm-label">ผู้ดูแล Active ที่ใช้ Role</span><span class="option-confirm-value">${impact.activeAdmins} คน</span></div>
+        </div>
+        <div class="role-deactivate-impact ${impact.reasons.length ? "is-blocked" : ""}" role="status">
+          <strong>${impact.reasons.length ? "ยังปิดใช้งานไม่ได้" : "พร้อมปิดใช้งาน"}</strong>
+          ${impact.reasons.length ? impact.reasons.map(reason => `<p>${esc(reason)}</p>`).join("") : "<p>ไม่มีผู้ดูแล Active ที่ใช้ Role นี้ และผ่านการตรวจสิทธิ์สำคัญ</p>"}
+        </div>
+        ${impact.reasons.length ? "" : `<div class="article-editor-form role-deactivate-reason"><label><span>เหตุผลในการปิดใช้งาน <span class="article-required-mark">*</span></span>
+          <textarea data-role-deactivate-reason maxlength="512" placeholder="ระบุเหตุผลเพื่อบันทึกประวัติ"></textarea>
+          <span class="article-field-error" data-role-deactivate-reason-error></span></label></div>`}
+        <div class="user-detail-actions"><button class="user-detail-action-btn" type="button" data-role-deactivate-cancel>ยกเลิก</button>
+          ${impact.reasons.length ? "" : '<button class="user-detail-action-btn danger" type="button" data-role-deactivate-confirm>ยืนยันปิดใช้งาน</button>'}</div>
+      </div>`;
+      showUserActionModal(true);
+      body.scrollTop = 0;
+    }
+
+    function applyRoleDeactivate() {
+      const pending = pendingRoleDeactivateData;
+      const role = roleListData.roles.find(r => r.id === pending?.id);
+      if (!role || !isRoleMutable(role) || role.status !== "Active" || (role.revision || 1) !== pending.revision) {
+        pendingRoleDeactivateData = null;
+        closeUserActionModal();
+        showSuccessToast("ข้อมูล Role เปลี่ยนแปลงแล้ว กรุณาโหลดข้อมูลใหม่", "Roles & Permissions");
+        return;
+      }
+      const impact = checkRoleDeactivateImpact(role);
+      if (impact.reasons.length) { openRoleDeactivateModal(role); return; }
+      const reasonInput = document.querySelector("[data-role-deactivate-reason]");
+      const reason = reasonInput?.value.trim() || "";
+      if (!reason) {
+        const error = document.querySelector("[data-role-deactivate-reason-error]");
+        if (error) { error.textContent = "กรุณาระบุเหตุผลในการปิดใช้งาน"; error.classList.add("show"); }
+        reasonInput?.classList.add("article-field-invalid");
+        reasonInput?.focus();
+        return;
+      }
+      const now = new Date();
+      role.history ||= [];
+      role.history.unshift({ revision: pending.revision + 1, at: formatAdminAccountActivityTime(now),
+        actor: (auth.admin && auth.admin.username) || "Admin", action: "ROLE_DEACTIVATE", reason,
+        before: { status: "Active" }, after: { status: "Inactive" }, affectedAdmins: impact.activeAdmins });
+      role.status = "Inactive";
+      role.revision = pending.revision + 1;
+      role.updatedAt = formatAdminAccountActivityTime(now);
+      role.updatedRank = roleTimestampRank(now);
+      role.updatedBy = (auth.admin && auth.admin.username) || "Admin";
+      pendingRoleDeactivateData = null;
+      closeUserActionModal();
+      if (document.body.classList.contains("role-detail-mode")) renderRoleDetailPage(role.id);
+      else if (document.body.classList.contains("role-list-mode")) renderRoleListRows();
+      showSuccessToast(`ปิดใช้งาน Custom Role "${role.name}" แล้ว`, "Roles & Permissions");
     }
 
     // ===== Policy & Versioning rendering (HS-PTO-001) =====
@@ -42601,7 +42913,19 @@
         roleConfirmPermToggle.setAttribute("aria-expanded", String(!willCollapse));
         return;
       }
-      // Role List — mutation menu (edit/deactivate/reactivate เป็นงานถัดไป)
+      const roleEditBack = event.target.closest("[data-role-edit-back]");
+      if (roleEditBack) {
+        const role = roleListData.roles.find(r => r.id === pendingRoleEditData?.id);
+        if (role) openRoleEditModal(role, pendingRoleEditData.data);
+        return;
+      }
+      const roleEditConfirm = event.target.closest("[data-role-edit-confirm]");
+      if (roleEditConfirm) { applyRoleEdit(); return; }
+      const roleDeactivateCancel = event.target.closest("[data-role-deactivate-cancel]");
+      if (roleDeactivateCancel) { pendingRoleDeactivateData = null; closeUserActionModal(); return; }
+      const roleDeactivateConfirm = event.target.closest("[data-role-deactivate-confirm]");
+      if (roleDeactivateConfirm) { applyRoleDeactivate(); return; }
+      // Role mutation menu
       const roleFlowButton = event.target.closest("[data-role-flow]");
       if (roleFlowButton) {
         const role = roleListData.roles.find(r => r.id === roleFlowButton.dataset.roleId);
@@ -42610,6 +42934,16 @@
         // guard ซ้ำฝั่ง handler — ข้อมูลชนิด/สถานะผิดพลาดห้ามเข้า mutation flow แม้ DOM จะหลุดมา
         if (role && !isRoleMutable(role)) {
           showSuccessToast(`ไม่สามารถ${labels[roleFlowButton.dataset.roleFlow] || "จัดการ"} ${role.name} ได้ — ข้อมูลชนิดหรือสถานะของ Role ไม่สมบูรณ์`, "Roles & Permissions");
+          return;
+        }
+        if (roleFlowButton.dataset.roleFlow === "edit") {
+          if (role?.status === "Active") openRoleEditModal(role);
+          else showSuccessToast("แก้ไขได้เฉพาะ Active Custom Role", "Roles & Permissions");
+          return;
+        }
+        if (roleFlowButton.dataset.roleFlow === "deactivate") {
+          if (role?.status === "Active") openRoleDeactivateModal(role);
+          else showSuccessToast("ปิดใช้งานได้เฉพาะ Active Custom Role", "Roles & Permissions");
           return;
         }
         if (role) showSuccessToast(`${labels[roleFlowButton.dataset.roleFlow] || "จัดการ"} ${role.name} — flow นี้จะพร้อมในงาน prototype ถัดไป`, "Roles & Permissions");
@@ -43639,7 +43973,7 @@
         if (!form) return;
         setRoleCreateFieldError(form, "name");
         const keyInput = form.querySelector("[data-role-key]");
-        if (keyInput && keyInput.dataset.userEdited !== "true") {
+        if (keyInput && !form.dataset.roleEditId && keyInput.dataset.userEdited !== "true") {
           keyInput.value = slugifyOptionKey(event.target.value);
           setRoleCreateFieldError(form, "key");
         }
@@ -43775,8 +44109,31 @@
         event.preventDefault();
         const validated = validateRoleCreateForm(roleCreateForm);
         if (!validated) return;
-        pendingRoleCreateData = validated;
-        openRoleCreateConfirmModal(validated);
+        if (roleCreateForm.dataset.roleEditId) {
+          const role = roleListData.roles.find(r => r.id === roleCreateForm.dataset.roleEditId);
+          if (!role || !isRoleMutable(role) || role.status !== "Active" || validated.roleKey !== role.roleKey) {
+            closeUserActionModal();
+            showSuccessToast("Role ไม่พร้อมแก้ไข กรุณาโหลดข้อมูลใหม่", "Roles & Permissions");
+            return;
+          }
+          const before = { name: role.name, description: role.description, perms: getRoleEditPermissions(role) };
+          const samePerms = JSON.stringify(before.perms) === JSON.stringify(validated.perms);
+          if (before.name === validated.name && before.description === validated.description && samePerms) {
+            setRolePermPickerError(roleCreateForm, "ไม่มีข้อมูลเปลี่ยนแปลง กรุณาแก้ไขข้อมูลก่อนยืนยัน", false);
+            const notice = roleCreateForm.querySelector("[data-role-perm-picker-error]");
+            if (notice) {
+              notice.tabIndex = -1;
+              notice.scrollIntoView({ block: "center", behavior: "smooth" });
+              notice.focus({ preventScroll: true });
+            }
+            return;
+          }
+          pendingRoleEditData = { id: role.id, revision: Number(roleCreateForm.dataset.roleEditRevision), before, data: validated };
+          openRoleEditConfirmModal(pendingRoleEditData);
+        } else {
+          pendingRoleCreateData = validated;
+          openRoleCreateConfirmModal(validated);
+        }
         return;
       }
       const articleEditor = event.target.closest("[data-article-editor]");
