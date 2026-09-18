@@ -1154,6 +1154,7 @@
     body.watch-alert-detail-mode .user-detail-page .user-detail-head h2.asset-report-heading,
     body.deletion-detail-mode .user-detail-page .user-detail-head h2.asset-report-heading,
     body.admin-account-detail-mode .user-detail-page .user-detail-head h2.asset-report-heading,
+    body.role-detail-mode .role-detail-page .user-detail-head h2.asset-report-heading,
     body.offer-detail-mode .offer-detail-page .user-detail-head h2.asset-report-heading {
       font-family: var(--font-main);
       font-size: 24px !important;
@@ -1173,6 +1174,7 @@
     body.user-detail-mode .asset-report-detail-page .user-detail-head h2.asset-report-heading span,
     body.watch-alert-detail-mode .user-detail-page .user-detail-head h2.asset-report-heading span,
     body.deletion-detail-mode .user-detail-page .user-detail-head h2.asset-report-heading span,
+    body.role-detail-mode .role-detail-page .user-detail-head h2.asset-report-heading span,
     body.offer-detail-mode .offer-detail-page .user-detail-head h2.asset-report-heading span {
       font: inherit;
       letter-spacing: inherit;
@@ -7843,12 +7845,7 @@
       display: block;
       overflow-wrap: anywhere;
     }
-    /* Role Detail — header actions ตาม spec 9.10 */
-    body.role-detail-mode .role-detail-page .role-detail-actions {
-      flex-shrink: 0;
-      justify-content: flex-end;
-      padding-top: 4px;
-    }
+    /* Role Detail — action section ล่างสุด ใช้ .user-detail-actions ชิดซ้ายตาม pattern หน้า detail อื่น */
     body.role-detail-mode .role-detail-page .role-inactive-note {
       margin-top: 14px;
     }
@@ -7860,27 +7857,30 @@
       overflow: hidden;
     }
     /* เมนูย่อยจริง + ✓ capability ต่อบรรทัด (read-only checkbox style) */
+    /* เมนูย่อยเป็น card เยื้องเข้าด้านใน module group — อ่านเป็น submenu ชัดกว่าแถบเต็มความกว้าง */
     body.role-detail-mode .role-detail-page .perm-sub {
-      padding: 0 0 8px;
+      margin: 8px 14px 10px 40px;
+      padding: 0 0 6px;
+      border: 1px solid #e1e9f3;
+      border-radius: 6px;
+      background: #fff;
+      overflow: hidden;
     }
-    /* ชื่อเมนูย่อยเป็นแถบสีคั่นส่วนชัดๆ — โทนฟ้าเดียวกับ detail-tile */
+    /* ชื่อเมนูย่อยเป็นแถบสีหัว card — โทนฟ้าเดียวกับ detail-tile */
     body.role-detail-mode .role-detail-page .perm-sub-title {
       margin: 0 0 6px;
-      padding: 5px 14px 5px 48px;
+      padding: 5px 14px;
       background: #f8fbff;
       border-bottom: 1px solid #e1e9f3;
       color: #3d5a80;
       font-size: 12px;
       font-weight: 700;
     }
-    body.role-detail-mode .role-detail-page .perm-sub + .perm-sub .perm-sub-title {
-      border-top: 1px solid #e1e9f3;
-    }
     body.role-detail-mode .role-detail-page .perm-item {
       display: flex;
       align-items: center;
       gap: 10px;
-      padding: 5px 14px 5px 64px;
+      padding: 5px 14px 5px 22px;
       font-size: 12px;
     }
     body.role-detail-mode .role-detail-page .perm-check {
@@ -12266,7 +12266,8 @@
       body.watch-alert-detail-mode .user-detail-page .user-detail-head h2.asset-report-heading,
       body.offer-detail-mode .offer-detail-page .user-detail-head h2.asset-report-heading,
       body.deletion-detail-mode .deletion-detail-page .user-detail-head h2.asset-report-heading,
-      body.admin-account-detail-mode .user-detail-page .user-detail-head h2.asset-report-heading {
+      body.admin-account-detail-mode .user-detail-page .user-detail-head h2.asset-report-heading,
+      body.role-detail-mode .role-detail-page .user-detail-head h2.asset-report-heading {
         font-size: 18px !important;
       }
       body.asset-detail-mode .article-detail-page .user-detail-head h2.article-detail-heading {
@@ -13311,17 +13312,16 @@
       body.role-detail-mode .role-detail-page .user-detail-head {
         flex-direction: column;
       }
-      body.role-detail-mode .role-detail-page .role-detail-actions {
-        width: 100%;
-        justify-content: flex-start;
-      }
-      body.role-detail-mode .role-detail-page .role-detail-actions .user-detail-action-btn {
-        flex: 1 1 0;
-        min-width: 0;
-      }
       body.role-detail-mode .role-detail-page .detail-grid.three,
       body.role-detail-mode .role-detail-page .detail-grid.four {
         grid-template-columns: 1fr;
+      }
+      /* submenu card เยื้องน้อยลงบนจอแคบ — คงความกว้างใช้งานได้ */
+      body.role-detail-mode .role-detail-page .perm-sub {
+        margin: 8px 10px 10px 18px;
+      }
+      body.role-detail-mode .role-detail-page .perm-item {
+        padding-left: 14px;
       }
       .user-card-tags {
         grid-column: 1 / -1;
@@ -27732,7 +27732,6 @@
                 ${isCustom ? `<button type="button" data-role-flow="copy" data-role-id="${role.id}">คัดลอก</button>` : ""}
                 ${isCustom && isActive ? `<button type="button" data-role-flow="deactivate" data-role-id="${role.id}">ปิดใช้งาน</button>` : ""}
                 ${isCustom && !isActive ? `<button type="button" data-role-flow="reactivate" data-role-id="${role.id}">เปิดใช้งาน</button>` : ""}
-                <button type="button" data-audit-ref="${role.id}">ดู Audit Log</button>
               </div>
             </details>
           </div>
@@ -27837,8 +27836,9 @@
       const isActive = role.status === "Active";
       const admins = countActiveAdminsUsingRole(role.name);
 
-      // action ขวาของ header ตาม spec — System Role เห็นเฉพาะ ดู Audit Log; Custom Role ตามสถานะ
+      // action — System Role read-only ไม่มี action; Custom Role ตามสถานะ
       // mutation (แก้ไข/คัดลอก/ปิด-เปิดใช้งาน) เชื่อม stub เดียวกับ row menu — flow จริงเป็นงานถัดไป
+      // ประวัติการเปลี่ยนแปลงจะแสดงใน history section ของหน้านี้ (งานถัดไป) ไม่ลิงก์ออกไป Audit Log
       const headActions = [];
       if (isCustom) {
         headActions.push(`<button class="user-detail-action-btn" type="button" data-role-flow="edit" data-role-id="${role.id}">แก้ไข</button>`);
@@ -27847,7 +27847,6 @@
           ? `<button class="user-detail-action-btn danger" type="button" data-role-flow="deactivate" data-role-id="${role.id}">ปิดใช้งาน</button>`
           : `<button class="user-detail-action-btn primary" type="button" data-role-flow="reactivate" data-role-id="${role.id}">เปิดใช้งาน</button>`);
       }
-      headActions.push(`<button class="user-detail-action-btn" type="button" data-audit-ref="${role.id}">ดู Audit Log</button>`);
 
       const summaryTile = (label, value) => `<div class="detail-tile"><span>${label}</span><strong>${value}</strong></div>`;
       document.querySelector("#table").innerHTML = `
@@ -27862,7 +27861,6 @@
                 </div>
               </div>
             </div>
-            <div class="user-detail-actions role-detail-actions">${headActions.join("")}</div>
           </div>
           ${!isActive ? `<div class="module-note role-inactive-note">Role นี้ถูกปิดใช้งาน — ไม่สามารถเลือก assign ให้ผู้ดูแลรายใหม่ได้ และไม่มี action แก้ไข Permission จนกว่าจะเปิดใช้งานตาม policy</div>` : ""}
           <div class="detail-section">
@@ -27871,12 +27869,11 @@
               ${summaryTile("Role Key", esc(role.roleKey))}
               ${summaryTile("Created", esc(role.createdAt))}
               ${summaryTile("Last Updated", esc(role.updatedAt))}
-              ${isCustom ? summaryTile("Source Template", esc(role.sourceTemplate)) : ""}
-              ${isCustom ? summaryTile("Revision", esc(role.revision)) : ""}
               ${summaryTile("Active Admins", `${admins}`)}
             </div>
           </div>
           ${renderRolePermissionSection(role)}
+          ${headActions.length ? `<div class="detail-section user-detail-action-section"><div class="user-detail-actions role-detail-actions">${headActions.join("")}</div></div>` : ""}
         </div>
       `;
       updateActiveNav();

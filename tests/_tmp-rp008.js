@@ -51,9 +51,10 @@ async function openRole(page, roleId) {
 
   check("breadcrumb", (await page.locator("#crumb").textContent()).includes("Super Admin"));
   check("back button", await page.locator("[data-role-back]").isVisible());
-  // System Role → เฉพาะ audit action
+  // System Role → read-only ไม่มี action ใน header
   const sysActions = await page.locator(".role-detail-actions .user-detail-action-btn").allTextContents();
-  check("system role actions = audit only", sysActions.length === 1 && sysActions[0].includes("Audit"), JSON.stringify(sysActions));
+  check("system role: no header actions", sysActions.length === 0, JSON.stringify(sysActions));
+  check("no audit jump in detail", (await page.locator(".role-detail-page [data-audit-ref]").count()) === 0);
   check("no system note", !(await page.locator(".detail-section .module-note").first().isVisible().catch(() => false)));
   // role summary (4-col grid)
   check("role summary tiles", (await page.locator(".role-detail-page .detail-grid .detail-tile").count()) >= 4);
@@ -106,22 +107,22 @@ async function openRole(page, roleId) {
   // Custom Role active → edit/copy/deactivate + audit
   await openRole(page, "ROL-101");
   const custActions = await page.locator(".role-detail-actions .user-detail-action-btn").allTextContents();
-  check("custom active actions", custActions.length === 4 && custActions[0].includes("แก้ไข") && custActions[2].includes("ปิดใช้งาน"), JSON.stringify(custActions));
-  check("source template tile", (await page.locator(".detail-tile").allTextContents()).some(t => t.includes("Source Template")));
+  check("custom active actions", custActions.length === 3 && custActions[0].includes("แก้ไข") && custActions[2].includes("ปิดใช้งาน"), JSON.stringify(custActions));
+  const tileTexts = await page.locator(".detail-tile").allTextContents();
+  check("no trivia tiles", !tileTexts.some(t => t.includes("Source Template") || t.includes("Revision")), JSON.stringify(tileTexts.map(t => t.split("\n")[0].trim())));
 
   // Custom Role inactive → reactivate + warning note
   await page.locator("[data-role-back]").click();
   await page.waitForSelector("body.role-list-mode");
   await openRole(page, "ROL-103");
   const inactActions = await page.locator(".role-detail-actions .user-detail-action-btn").allTextContents();
-  check("inactive custom actions", inactActions.some(t => t.includes("เปิดใช้งาน")), JSON.stringify(inactActions));
+  check("inactive custom actions", inactActions.length === 3 && inactActions.some(t => t.includes("เปิดใช้งาน")), JSON.stringify(inactActions));
   check("inactive warning", await page.locator(".role-inactive-note").isVisible());
 
-  // audit jump from detail
-  await page.locator(".role-detail-actions [data-audit-ref]").click();
-  await page.waitForTimeout(400);
-  const auditMode = await page.evaluate(() => document.body.classList.contains("audit-log-mode"));
-  check("audit jump works", auditMode);
+  // ไม่มีปุ่มลิงก์ไป Audit Log ทั้งใน list row menu และ detail (trace จะอยู่ใน history section ของหน้านี้)
+  await page.locator("[data-role-back]").click();
+  await page.waitForSelector("body.role-list-mode", { timeout: 5000 });
+  check("no audit jump in list rows", (await page.locator(".role-list-table [data-audit-ref]").count()) === 0);
 
   // ---------- Mobile 390 ----------
   const mob = await (await browser.newContext({ viewport: { width: 390, height: 844 } })).newPage();
