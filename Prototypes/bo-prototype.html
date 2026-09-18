@@ -7957,6 +7957,132 @@
     body.role-detail-mode .role-detail-page .perm-group + .perm-group {
       border-top: 1px solid var(--line);
     }
+    /* Prototype scenario tools ของหน้า Role — child สุดท้ายของ .panel นอก scroll area ของ #table
+       เป็น demo tool ไม่ใช่ส่วนของหน้าจอจริง — scope เฉพาะ role modes เพื่อไม่กระทบ module อื่น */
+    body.role-list-mode .panel > .role-state-tools {
+      max-width: none;
+      min-width: 0;
+      margin: 0;
+      padding: 12px 18px 14px;
+    }
+    body.role-detail-mode .panel > .role-state-tools {
+      max-width: none;
+      min-width: 0;
+      margin: 0 18px 18px;
+      padding: 12px 0 0;
+    }
+    body.role-list-mode .role-state-tools label,
+    body.role-detail-mode .role-state-tools label {
+      max-width: 300px;
+    }
+    /* state block กลางพื้นที่เนื้อหา — icon + title + subtitle + action ตาม pattern empty state ของ list อื่น */
+    body.role-list-mode .role-state-block,
+    body.role-detail-mode .role-state-block {
+      grid-column: 1 / -1;
+      display: grid;
+      justify-items: center;
+      gap: 6px;
+      padding: 2.5rem 1rem;
+      text-align: center;
+    }
+    body.role-list-mode .role-state-block .empty-icon,
+    body.role-detail-mode .role-state-block .empty-icon {
+      width: 40px;
+      height: 40px;
+      margin: 0 auto 2px;
+      color: #cbd5e1;
+    }
+    body.role-list-mode .role-state-block .empty-icon svg,
+    body.role-detail-mode .role-state-block .empty-icon svg {
+      width: 40px;
+      height: 40px;
+    }
+    body.role-list-mode .role-state-block .empty-title,
+    body.role-detail-mode .role-state-block .empty-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: #475569;
+    }
+    body.role-list-mode .role-state-block .empty-subtitle,
+    body.role-detail-mode .role-state-block .empty-subtitle {
+      max-width: 420px;
+      font-size: 12px;
+      color: #94a3b8;
+      line-height: 1.55;
+      overflow-wrap: anywhere;
+    }
+    body.role-list-mode .role-state-actions,
+    body.role-detail-mode .role-state-actions {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 8px;
+      margin-top: 8px;
+    }
+    /* skeleton — shimmer bar จำลองโครง row/section ระหว่าง loading */
+    @keyframes role-skel-shimmer {
+      to { background-position: -200% 0; }
+    }
+    body.role-list-mode .role-skel,
+    body.role-detail-mode .role-skel {
+      display: block;
+      width: 100%;
+      height: 12px;
+      border-radius: 6px;
+      background: linear-gradient(90deg, #e9eef5 25%, #f6fafd 50%, #e9eef5 75%);
+      background-size: 200% 100%;
+      animation: role-skel-shimmer 1.15s linear infinite;
+    }
+    body.role-list-mode .role-skel-pill,
+    body.role-detail-mode .role-skel-pill {
+      width: 72px;
+      height: 22px;
+      border-radius: 999px;
+    }
+    body.role-list-mode .role-skel-row,
+    body.role-list-mode .role-skel-row .user-cell-primary {
+      cursor: default;
+    }
+    /* skeleton ของ detail — จำลอง head title + summary tile + permission group */
+    body.role-detail-mode .role-skel-head-title {
+      width: 240px;
+      height: 26px;
+      border-radius: 8px;
+    }
+    body.role-detail-mode .role-skel-page .perm-group {
+      pointer-events: none;
+    }
+    /* permission section error — error เฉพาะส่วนใน detail (partial error คง head/summary ไว้) */
+    body.role-detail-mode .role-perm-error {
+      display: grid;
+      justify-items: center;
+      gap: 6px;
+      padding: 22px 16px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fff;
+      text-align: center;
+    }
+    body.role-detail-mode .role-perm-error .empty-icon {
+      width: 32px;
+      height: 32px;
+      color: #cbd5e1;
+    }
+    body.role-detail-mode .role-perm-error .empty-icon svg {
+      width: 32px;
+      height: 32px;
+    }
+    body.role-detail-mode .role-perm-error .empty-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: #475569;
+    }
+    body.role-detail-mode .role-perm-error .empty-subtitle {
+      max-width: 400px;
+      font-size: 12px;
+      color: #94a3b8;
+      line-height: 1.55;
+    }
 
     /* ============================================================
        DEL-PTO-002: Account Deletion Request Detail page
@@ -13249,6 +13375,17 @@
         box-shadow: 0 1px 2px rgba(15, 23, 42, .05);
         cursor: pointer;
         overflow: visible;
+      }
+      /* state row (empty/error/unauthorized) — card เดียวเต็มความกว้างตาม role card
+         ไม่ใช้ grid 8 คอลัมน์ของ desktop ที่ทำให้เนื้อหาถูก clip บนจอแคบ */
+      body.role-list-mode .role-list-table .user-row.empty {
+        grid-template-columns: minmax(0, 1fr);
+        min-height: 0;
+        padding: 0;
+        border: 1px solid #cfdbd2;
+        border-radius: 10px;
+        box-shadow: 0 1px 2px rgba(15, 23, 42, .05);
+        overflow: hidden;
       }
       body.role-list-mode .role-list-table .user-row.role-row:not(.head) > div.user-cell-primary[data-label="Role"] .main-text {
         max-width: 100%;
@@ -19349,6 +19486,11 @@
     let activeRoleId = "";
     // Role Detail — permission collapse override ต่อ module
     const rolePermCollapsed = {};
+    // demo state ของหน้า Role — สลับผ่าน Prototype scenario; "ready" = แสดงข้อมูลปกติ
+    let roleListViewState = "ready";
+    let roleDetailViewState = "ready";
+    let rolePermRetrying = false;
+    let roleViewStateTimer = null;
     let optionGroupListPage = 1;
     let optionDetailPage = 1;
     let activeOptionGroup = "";
@@ -20037,6 +20179,11 @@
       deliveryLogFilterOpen = false;
       adminAccountFilterOpen = false;
       roleListFilterOpen = false;
+      // เคลียร์ demo state ของหน้า Role เมื่อออกจากหน้า — กลับมาต้องเริ่มที่ ready
+      roleListViewState = "ready";
+      roleDetailViewState = "ready";
+      rolePermRetrying = false;
+      window.clearTimeout(roleViewStateTimer);
     }
 
     function renderNav() {
@@ -27230,6 +27377,9 @@
         subLabel = "";
         displaySubLabel = "";
       }
+      // demo tools ของหน้า Role เป็น child ของ .panel นอก #table — ลบตอน render module ใหม่กันค้างบนหน้าอื่น
+      // (หน้า Role เองจะเติมกลับผ่าน syncRoleStateTools ใน render ของมัน)
+      document.querySelector(".panel > .role-state-tools")?.remove();
       activeModule = id;
       activeSub = subLabel;
       hideWaCriteriaTooltip();
@@ -27667,12 +27817,137 @@
       document.querySelector("#cards").innerHTML = "";
       document.querySelector("#detail").innerHTML = "";
       restoreListFilterState("role-list");
+      syncRoleStateTools("list");
       renderRoleListRows();
       updateActiveNav();
     }
 
+    // Prototype scenario ของหน้า Role — pattern เดียวกับ Test flow ใน modal อื่น
+    const roleListStateOptions = [
+      { value: "ready", label: "ปกติ — แสดงรายการ Role" },
+      { value: "loading", label: "กำลังโหลด (skeleton)" },
+      { value: "error", label: "โหลดไม่สำเร็จ (retry)" },
+      { value: "empty", label: "ยังไม่มี Custom Role" },
+      { value: "unauthorized", label: "ไม่มีสิทธิ์เข้าถึง" }
+    ];
+    const roleDetailStateOptions = [
+      { value: "ready", label: "ปกติ — แสดงรายละเอียด" },
+      { value: "loading", label: "กำลังโหลด (skeleton)" },
+      { value: "partial", label: "ส่วน Permissions โหลดไม่สำเร็จ" },
+      { value: "error", label: "โหลดไม่สำเร็จทั้งหน้า (retry)" },
+      { value: "unauthorized", label: "ไม่มีสิทธิ์ดู Role" },
+      { value: "notfound", label: "ไม่พบ Role" },
+      { value: "stale", label: "ข้อมูลเปลี่ยนระหว่างดู (stale)" }
+    ];
+    function renderRoleStateTools(page) {
+      const isList = page === "list";
+      const selectId = isList ? "role-list-state" : "role-detail-state";
+      const options = isList ? roleListStateOptions : roleDetailStateOptions;
+      const selected = isList ? roleListViewState : roleDetailViewState;
+      return `
+        <details class="prototype-tools user-action-prototype-tools role-state-tools" data-role-tools="${page}">
+          <summary>Prototype scenario</summary>
+          <label>
+            Test flow
+            ${customSelect(selectId, "Test flow", options, selected, "data-custom-select-silent")}
+          </label>
+        </details>`;
+    }
+
+    // scenario tools เป็น child สุดท้ายของ .panel (sibling ของ #table) — อยู่นอก scroll area ของตาราง
+    // re-render เฉพาะเมื่อ page หรือ state เปลี่ยน เพื่อคง open state ของ details ระหว่าง re-render เนื้อหา
+    function syncRoleStateTools(page) {
+      const panel = document.querySelector(".panel");
+      if (!panel) return;
+      const selectId = page === "list" ? "role-list-state" : "role-detail-state";
+      const state = page === "list" ? roleListViewState : roleDetailViewState;
+      const existing = panel.querySelector(":scope > .role-state-tools");
+      if (existing?.dataset.roleTools === page
+          && existing.querySelector(`#${selectId}`)?.value === state) return;
+      existing?.remove();
+      panel.insertAdjacentHTML("beforeend", renderRoleStateTools(page));
+    }
+
+    // state block กลางพื้นที่เนื้อหา — ใช้ร่วมกันระหว่าง list/detail (empty/error/unauthorized/notfound)
+    function renderRoleStateBlock({ icon, title, subtitle, actions = "" }) {
+      return `
+        <div class="role-state-block">
+          <div class="empty-icon">${icon}</div>
+          <div class="empty-title">${title}</div>
+          <div class="empty-subtitle">${subtitle}</div>
+          ${actions ? `<div class="role-state-actions">${actions}</div>` : ""}
+        </div>`;
+    }
+
+    // skeleton row จำลองโครง row จริง — mobile card ใช้ data-label/user-cell-primary เดียวกับ row ปกติ
+    function renderRoleListSkeletonRow() {
+      return `
+        <div class="user-row role-row role-skel-row" aria-hidden="true">
+          <div data-label="Role ID"><span class="role-skel" style="width:52px"></span></div>
+          <div class="user-cell-primary" data-label="Role"><span class="role-skel" style="width:132px"></span></div>
+          <div class="user-card-tags"><span class="role-skel role-skel-pill"></span><span class="role-skel role-skel-pill" style="width:56px"></span><span class="role-skel role-skel-pill" style="width:64px"></span></div>
+          <div data-label="Type"><span class="role-skel role-skel-pill"></span></div>
+          <div data-label="Status"><span class="role-skel role-skel-pill" style="width:52px"></span></div>
+          <div data-label="Detail"><span class="role-skel"></span></div>
+          <div data-label="Admins"><span class="role-skel" style="width:26px;margin:0 auto"></span></div>
+          <div data-label="Last Updated"><span class="role-skel" style="width:96px"></span></div>
+          <div class="user-row-actions"><span class="role-skel" style="width:22px;height:22px;border-radius:50%"></span></div>
+        </div>`;
+    }
+
     function renderRoleListRows() {
       const esc = v => String(v).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+      const headRow = `<div class="user-row head"><div>Role ID</div><div>Role</div><div>Type</div><div>Status</div><div>Detail</div><div>Admins</div><div>Last Updated</div><div>Action</div></div>`;
+
+      // demo state — skeleton/error/empty/unauthorized แทนเนื้อหาตาราง
+      // แถบ filter ใน .filters ไม่ถูกแตะ ดังนั้น retry ไม่ล้างค่า filter ที่เลือกไว้
+      if (roleListViewState === "loading") {
+        document.querySelector("#table").innerHTML = `
+          <div class="user-table role-list-table" aria-busy="true">
+            ${headRow}
+            ${Array.from({ length: 6 }, renderRoleListSkeletonRow).join("")}
+          </div>`;
+        return;
+      }
+      if (roleListViewState === "error") {
+        document.querySelector("#table").innerHTML = `
+          <div class="user-table role-list-table">
+            ${headRow}
+            <div class="user-row empty">${renderRoleStateBlock({
+              icon: iconSvg.waUnmet,
+              title: "โหลดรายการ Role ไม่สำเร็จ",
+              subtitle: "เกิดข้อผิดพลาดระหว่างดึงข้อมูล — ตัวกรองที่เลือกไว้จะไม่ถูกล้าง กดลองอีกครั้งเพื่อโหลดใหม่",
+              actions: `<button class="btn" type="button" data-role-retry>${iconSvg.refresh}<span>ลองอีกครั้ง</span></button>`
+            })}</div>
+          </div>`;
+        return;
+      }
+      if (roleListViewState === "unauthorized") {
+        document.querySelector("#table").innerHTML = `
+          <div class="user-table role-list-table">
+            <div class="user-row empty">${renderRoleStateBlock({
+              icon: iconSvg.eyeOff,
+              title: "ไม่มีสิทธิ์เข้าถึง Roles & Permissions",
+              subtitle: "บัญชีผู้ดูแลของคุณไม่มีสิทธิ์ดูหน้านี้ — ติดต่อผู้ดูแลระดับสูงกว่าหากต้องการสิทธิ์เพิ่มเติม",
+              actions: `<button class="btn" type="button" data-role-go-dashboard>กลับไปยัง Dashboard</button>`
+            })}</div>
+          </div>`;
+        return;
+      }
+      if (roleListViewState === "empty") {
+        document.querySelector("#table").innerHTML = `
+          <div class="user-table role-list-table">
+            ${headRow}
+            <div class="user-row empty">${renderRoleStateBlock({
+              icon: iconSvg.users,
+              title: "ยังไม่มี Custom Role",
+              subtitle: "สร้าง Custom Role เพื่อกำหนดขอบเขตสิทธิ์การเข้าถึงของทีมผู้ดูแล",
+              actions: `<button class="btn" type="button" data-role-create-open>${iconSvg.plus}<span>สร้าง Custom Role</span></button>`
+            })}</div>
+          </div>`;
+        return;
+      }
+
       const q = (document.querySelector("#role-search")?.value || "").trim().toLowerCase();
       const type = document.querySelector("#role-type-filter")?.value || "";
       const status = document.querySelector("#role-status-filter")?.value || "";
@@ -27693,11 +27968,21 @@
       const start = (roleListPage - 1) * roleListPageSize;
       const pageRows = sorted.slice(start, start + roleListPageSize);
       const emptyState = roleListData.roles.length === 0
-        ? `<div class="user-row empty"><div class="role-empty-state" style="grid-column: 1 / -1; text-align: center; padding: 2.5rem 1rem;"><div class="empty-icon">${iconSvg.siSearch}</div><div class="empty-title">ยังไม่มี Role</div><div class="empty-subtitle">เริ่มสร้าง Custom Role จากปุ่มสร้าง Custom Role ด้านบน</div></div></div>`
-        : `<div class="user-row empty"><div class="role-empty-state" style="grid-column: 1 / -1; text-align: center; padding: 2.5rem 1rem;"><div class="empty-icon">${iconSvg.siSearch}</div><div class="empty-title">ไม่พบ Role ตามเงื่อนไขที่เลือก</div><div class="empty-subtitle">ลองปรับคำค้นหรือตัวกรอง แล้วลองใหม่</div></div></div>`;
+        ? `<div class="user-row empty">${renderRoleStateBlock({
+            icon: iconSvg.users,
+            title: "ยังไม่มี Custom Role",
+            subtitle: "สร้าง Custom Role เพื่อกำหนดขอบเขตสิทธิ์การเข้าถึงของทีมผู้ดูแล",
+            actions: `<button class="btn" type="button" data-role-create-open>${iconSvg.plus}<span>สร้าง Custom Role</span></button>`
+          })}</div>`
+        : `<div class="user-row empty">${renderRoleStateBlock({
+            icon: iconSvg.siSearch,
+            title: "ไม่พบ Role ตามเงื่อนไขที่เลือก",
+            subtitle: "ลองปรับคำค้นหรือตัวกรอง แล้วลองใหม่",
+            actions: `<button class="btn" type="button" data-role-reset>${iconSvg.refresh}<span>ล้างตัวกรอง</span></button>`
+          })}</div>`;
       document.querySelector("#table").innerHTML = `
         <div class="user-table role-list-table">
-          <div class="user-row head"><div>Role ID</div><div>Role</div><div>Type</div><div>Status</div><div>Detail</div><div>Admins</div><div>Last Updated</div><div>Action</div></div>
+          ${headRow}
           ${pageRows.length === 0 ? emptyState : pageRows.map(role => renderRoleRow(role, esc)).join("")}
         </div>
         <div class="footer-range">
@@ -27810,35 +28095,158 @@
         </div>`;
     }
 
+    // skeleton ของ detail — จำลอง head + summary tile + permission group ระหว่าง loading
+    // ไม่แสดง role data/permission key ใด ๆ จนกว่าจะโหลดสำเร็จ
+    function renderRoleDetailSkeleton() {
+      return `
+        <div class="user-detail-head">
+          <div class="user-detail-title">
+            <div>
+              <span class="role-skel role-skel-head-title" aria-hidden="true"></span>
+              <div class="chips"><span class="role-skel role-skel-pill"></span><span class="role-skel role-skel-pill" style="width:56px"></span></div>
+            </div>
+          </div>
+        </div>
+        <div class="detail-section">
+          <h4><span class="role-skel" style="width:110px;height:18px" aria-hidden="true"></span></h4>
+          <div class="detail-grid four">
+            ${Array.from({ length: 4 }, () => `<div class="detail-tile"><span class="role-skel" style="width:64px"></span><span class="role-skel" style="width:110px;height:15px"></span></div>`).join("")}
+          </div>
+        </div>
+        <div class="detail-section">
+          <h4><span class="role-skel" style="width:140px;height:18px" aria-hidden="true"></span></h4>
+          <div class="perm-groups">
+            ${Array.from({ length: 3 }, () => `<div class="perm-group"><div class="perm-group-head"><span class="role-skel" style="width:170px"></span></div></div>`).join("")}
+          </div>
+        </div>`;
+    }
+
+    // partial error — error เฉพาะส่วน Permissions ใน detail; head/summary/action คงไว้ตามปกติ
+    // ระหว่าง retry แสดง skeleton ของส่วนนี้แทน error block
+    function renderRolePermStateSection(role) {
+      if (rolePermRetrying) {
+        return `
+          <div class="detail-section role-perm-section" aria-busy="true">
+            <h4>Permissions</h4>
+            <div class="perm-groups">
+              ${Array.from({ length: 2 }, () => `<div class="perm-group"><div class="perm-group-head"><span class="role-skel" style="width:160px"></span></div></div>`).join("")}
+            </div>
+          </div>`;
+      }
+      if (roleDetailViewState === "partial") {
+        return `
+          <div class="detail-section role-perm-section">
+            <h4>Permissions</h4>
+            <div class="role-perm-error">
+              <div class="empty-icon">${iconSvg.waUnmet}</div>
+              <div class="empty-title">โหลดข้อมูลสิทธิ์ไม่สำเร็จ</div>
+              <div class="empty-subtitle">เกิดข้อผิดพลาดระหว่างดึง Permission ของ Role นี้ — ส่วนอื่นของหน้ายังใช้งานได้ตามปกติ</div>
+              <div class="role-state-actions"><button class="btn" type="button" data-role-perm-retry>${iconSvg.refresh}<span>ลองอีกครั้ง</span></button></div>
+            </div>
+          </div>`;
+      }
+      return renderRolePermissionSection(role);
+    }
+
     function renderRoleDetailPage(roleId) {
       const role = roleListData.roles.find(r => r.id === roleId);
-      if (!role) {
-        renderRoleListPage();
-        return;
-      }
       const esc = v => String(v).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
-      // เปลี่ยน role → ล้าง collapse override ของ role เดิม
-      if (activeRoleId !== role.id) {
+      // เปลี่ยน role → ล้าง collapse override + demo state ของ role เดิม
+      if (role && activeRoleId !== role.id) {
         for (const key in rolePermCollapsed) delete rolePermCollapsed[key];
+        roleDetailViewState = "ready";
+        rolePermRetrying = false;
       }
       activeModule = "settings";
       activeSub = "Roles & Permissions";
-      activeRow = { id: role.id };
-      activeRoleId = role.id;
+      activeRow = { id: roleId };
+      activeRoleId = roleId;
       document.body.classList.add("role-detail-mode");
       document.body.classList.remove("role-list-mode", "dashboard-mode", "user-management-mode", "user-list-mode", "asset-list-mode", "article-list-mode", "category-list-mode", "reported-board-mode", "asset-detail-mode", "user-detail-mode", "admin-account-list-mode", "admin-account-detail-mode", "deletion-list-mode", "deletion-detail-mode", "audit-log-mode", "delivery-log-list-mode", "policy-versioning-mode", "policy-detail-mode", "policy-editor-mode", "policy-version-history-mode", "support-center-mode");
-      document.querySelector("#crumb").textContent = `เครื่องมือ & รายงาน / Settings / Roles & Permissions / ${role.name}`;
+      document.querySelector("#crumb").textContent = `เครื่องมือ & รายงาน / Settings / Roles & Permissions / ${role ? role.name : "ไม่พบ Role"}`;
       document.querySelector("#page-title").textContent = "Role Detail";
       document.querySelector("#page-meta").textContent = "";
       setPageActions(renderPageBackButton("data-role-back", "กลับไปยัง Role List"));
-      document.querySelector("#panel-title").textContent = role.id;
-      document.querySelector("#panel-subtitle").textContent = `${role.name} · ${role.roleKey}`;
+      document.querySelector("#panel-title").textContent = role ? role.id : "Role Detail";
+      document.querySelector("#panel-subtitle").textContent = role ? `${role.name} · ${role.roleKey}` : "";
       document.querySelector("#primary-action").textContent = "";
       document.querySelector("#user-panel-filter-actions").innerHTML = "";
       document.querySelector(".filters").innerHTML = "";
       document.querySelector("#summary-grid").innerHTML = "";
       document.querySelector("#cards").innerHTML = "";
       document.querySelector("#detail").innerHTML = "";
+      syncRoleStateTools("detail");
+
+      const backIcon = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>`;
+      const backAction = `<button class="btn" type="button" data-role-back>${backIcon}<span>กลับไปยัง Role List</span></button>`;
+      const state = !role ? "notfound" : roleDetailViewState;
+
+      // full-page state — ไม่แสดง partial data หรือ mutation action จนกว่าโหลดสำเร็จ
+      if (state === "loading") {
+        document.querySelector("#table").innerHTML = `
+          <div class="user-detail-page report-detail-page role-detail-page role-skel-page" aria-busy="true">
+            ${renderRoleDetailSkeleton()}
+          </div>`;
+        updateActiveNav();
+        scrollMainToTop();
+        return;
+      }
+      if (state === "unauthorized") {
+        document.querySelector("#table").innerHTML = `
+          <div class="user-detail-page report-detail-page role-detail-page">
+            ${renderRoleStateBlock({
+              icon: iconSvg.eyeOff,
+              title: "ไม่มีสิทธิ์ดู Role นี้",
+              subtitle: "บัญชีผู้ดูแลของคุณไม่มีสิทธิ์ดูรายละเอียดและ Permission ของ Role นี้ — ติดต่อผู้ดูแลระดับสูงกว่าหากต้องการสิทธิ์เพิ่มเติม",
+              actions: backAction
+            })}
+          </div>`;
+        updateActiveNav();
+        scrollMainToTop();
+        return;
+      }
+      if (state === "notfound") {
+        document.querySelector("#table").innerHTML = `
+          <div class="user-detail-page report-detail-page role-detail-page">
+            ${renderRoleStateBlock({
+              icon: iconSvg.siNoResult,
+              title: "ไม่พบ Role",
+              subtitle: "Role นี้อาจถูกลบ ปิดใช้งาน หรือลิงก์ที่เปิดไม่ถูกต้อง — กลับไปตรวจสอบรายการ Role",
+              actions: backAction
+            })}
+          </div>`;
+        updateActiveNav();
+        scrollMainToTop();
+        return;
+      }
+      if (state === "stale") {
+        document.querySelector("#table").innerHTML = `
+          <div class="user-detail-page report-detail-page role-detail-page">
+            ${renderRoleStateBlock({
+              icon: iconSvg.refresh,
+              title: "ข้อมูล Role มีการเปลี่ยนแปลงแล้ว",
+              subtitle: "Role นี้ถูกแก้ไขโดยผู้ดูแลอื่นระหว่างที่คุณกำลังดู — โหลดข้อมูลล่าสุดก่อนดำเนินการต่อ",
+              actions: `<button class="btn" type="button" data-role-detail-refresh>${iconSvg.refresh}<span>โหลดข้อมูลล่าสุด</span></button>${backAction}`
+            })}
+          </div>`;
+        updateActiveNav();
+        scrollMainToTop();
+        return;
+      }
+      if (state === "error") {
+        document.querySelector("#table").innerHTML = `
+          <div class="user-detail-page report-detail-page role-detail-page">
+            ${renderRoleStateBlock({
+              icon: iconSvg.waUnmet,
+              title: "โหลดรายละเอียด Role ไม่สำเร็จ",
+              subtitle: "เกิดข้อผิดพลาดระหว่างดึงข้อมูล — กดลองอีกครั้งเพื่อโหลดใหม่",
+              actions: `<button class="btn" type="button" data-role-detail-retry>${iconSvg.refresh}<span>ลองอีกครั้ง</span></button>${backAction}`
+            })}
+          </div>`;
+        updateActiveNav();
+        scrollMainToTop();
+        return;
+      }
 
       const canMutate = isRoleMutable(role);
       const isActive = role.status === "Active";
@@ -27870,7 +28278,7 @@
               </div>
             </div>
           </div>
-          ${!isActive ? `<div class="module-note role-inactive-note">Role นี้ถูกปิดใช้งาน — ไม่สามารถเลือก assign ให้ผู้ดูแลรายใหม่ได้ และไม่มี action แก้ไข Permission จนกว่าจะเปิดใช้งานตาม policy</div>` : ""}
+          ${!isActive ? `<div class="module-note role-inactive-note">Role นี้ถูกปิดใช้งาน — ไม่สามารถเลือก assign ให้ผู้ดูแลรายใหม่ได้ แต่ยังแก้ไขข้อมูลและ Permission ได้ตามปกติ</div>` : ""}
           <div class="detail-section">
             <h4>Role Summary</h4>
             <div class="detail-grid four">
@@ -27880,7 +28288,7 @@
               ${summaryTile("Active Admins", `${admins}`)}
             </div>
           </div>
-          ${renderRolePermissionSection(role)}
+          ${renderRolePermStateSection(role)}
           ${headActions.length ? `<div class="detail-section user-detail-action-section"><div class="user-detail-actions role-detail-actions">${headActions.join("")}</div></div>` : ""}
         </div>
       `;
@@ -39540,6 +39948,15 @@
             result.innerHTML = "";
           }
         }
+        // Prototype scenario ของหน้า Role — re-render เฉพาะพื้นที่เนื้อหา ค่า filter/state อื่นคงเดิม
+        if (hiddenInput.id === "role-list-state") {
+          roleListViewState = hiddenInput.value || "ready";
+          renderRoleListRows();
+        }
+        if (hiddenInput.id === "role-detail-state") {
+          roleDetailViewState = hiddenInput.value || "ready";
+          renderRoleDetailPage(activeRoleId);
+        }
         if (select.hasAttribute("data-custom-select-silent")) return;
         if (hiddenInput.hasAttribute("data-article-editor-custom-select")) {
           const form = hiddenInput.closest("[data-article-editor]");
@@ -41379,6 +41796,53 @@
           return;
         }
         if (role) showSuccessToast(`${labels[roleFlowButton.dataset.roleFlow] || "จัดการ"} ${role.name} — flow นี้จะพร้อมในงาน prototype ถัดไป`, "Roles & Permissions");
+        return;
+      }
+      // Role List — retry หลังโหลดไม่สำเร็จ (โหลดใหม่โดยไม่ล้าง filter ใน .filters)
+      const roleListRetry = event.target.closest("[data-role-retry]");
+      if (roleListRetry) {
+        roleListViewState = "loading";
+        renderRoleListRows();
+        window.clearTimeout(roleViewStateTimer);
+        roleViewStateTimer = window.setTimeout(() => {
+          if (!document.body.classList.contains("role-list-mode")) return;
+          roleListViewState = "ready";
+          renderRoleListRows();
+        }, 700);
+        return;
+      }
+      // Role List unauthorized — ทางกลับไป Dashboard
+      const roleGoDashboard = event.target.closest("[data-role-go-dashboard]");
+      if (roleGoDashboard) {
+        roleListViewState = "ready";
+        renderModule("dashboard");
+        return;
+      }
+      // Role Detail — retry error / refresh stale (โหลดใหม่ทั้งหน้า)
+      const roleDetailRetry = event.target.closest("[data-role-detail-retry], [data-role-detail-refresh]");
+      if (roleDetailRetry) {
+        roleDetailViewState = "loading";
+        renderRoleDetailPage(activeRoleId);
+        window.clearTimeout(roleViewStateTimer);
+        roleViewStateTimer = window.setTimeout(() => {
+          if (!document.body.classList.contains("role-detail-mode")) return;
+          roleDetailViewState = "ready";
+          renderRoleDetailPage(activeRoleId);
+        }, 700);
+        return;
+      }
+      // Role Detail — retry เฉพาะส่วน Permissions (partial error คง head/summary ไว้)
+      const rolePermRetry = event.target.closest("[data-role-perm-retry]");
+      if (rolePermRetry) {
+        rolePermRetrying = true;
+        renderRoleDetailPage(activeRoleId);
+        window.clearTimeout(roleViewStateTimer);
+        roleViewStateTimer = window.setTimeout(() => {
+          if (!document.body.classList.contains("role-detail-mode")) return;
+          rolePermRetrying = false;
+          roleDetailViewState = "ready";
+          renderRoleDetailPage(activeRoleId);
+        }, 700);
         return;
       }
       // Role Detail — กลับไป Role List (คง filter/sort/page state ผ่าน restore)
