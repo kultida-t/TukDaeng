@@ -28268,13 +28268,22 @@
         && (role.status === "Active" || role.status === "Inactive");
     }
 
-    function roleActorHasPermission(key) {
+    function getRoleActorPermissionLevel(key) {
       const actorRole = roleListData.roles.find(role => role.name === auth.admin?.role && role.status === "Active");
       const permission = rolePermissionCatalog.flatMap(group => group.perms).find(perm => perm.key === key);
-      const level = actorRole && permission?.levels[actorRole.roleKey];
+      return actorRole && permission?.levels[actorRole.roleKey] || "none";
+    }
+
+    function roleActorHasPermission(key) {
+      const level = getRoleActorPermissionLevel(key);
       return key === "roles.manage"
         ? ["approve", "manage", "admin"].includes(level) && roleActorHasPermission("roles.view")
-        : !!level && level !== "none";
+        : level !== "none";
+    }
+
+    function canRoleActorGrantPermission(permKey, level) {
+      return (rolePermLevelRank[getRoleActorPermissionLevel(permKey)] || 0) >=
+        (rolePermLevelRank[level] || Number.POSITIVE_INFINITY);
     }
 
     function rejectRolePermission() {
@@ -28854,11 +28863,13 @@
     // level ที่ Custom Role เลือกได้ต่อ perm — perm ลงท้าย .view เป็น action ดูอย่างเดียว
     // เลยให้เลือกแค่ view; perm อื่นใช้ level ที่มีจริงใน catalog (ตัด admin ออกเสมอ
     // เพราะ admin = สิทธิ์เต็มเทียบเท่า Super Admin ซึ่ง assign ผ่าน System Role เท่านั้น)
-    const rolePermLevelRank = { view: 1, manage: 2, operate: 2, approve: 3 };
+    const rolePermLevelRank = { none: 0, view: 1, manage: 2, operate: 2, approve: 3, admin: 4 };
     function getRolePermSelectableLevels(perm) {
       if (perm.key.endsWith(".view")) return ["view"];
       const levels = new Set();
-      Object.values(perm.levels).forEach(level => {
+      const systemRoleKeys = new Set(roleListData.roles.filter(role => role.type === "system").map(role => role.roleKey));
+      Object.entries(perm.levels).forEach(([roleKey, level]) => {
+        if (!systemRoleKeys.has(roleKey)) return;
         if (level && level !== "none" && level !== "admin") levels.add(level);
       });
       return [...levels].sort((a, b) => (rolePermLevelRank[a] || 0) - (rolePermLevelRank[b] || 0));
@@ -28941,6 +28952,34 @@
     function getRolePermGrantedLevel(perm) {
       const levels = getRolePermSelectableLevels(perm);
       return levels[levels.length - 1] || "";
+    }
+
+    function inspectRoleMutationPayload(data, editRole = null) {
+      if (!data || typeof data !== "object" || Array.isArray(data)) return "ข้อมูล Role ไม่ถูกต้อง";
+      if (typeof data.name !== "string" || data.name !== data.name.trim() || !data.name || data.name.length > 64) return "ชื่อ Role ไม่ถูกต้อง";
+      if (typeof data.roleKey !== "string" || data.roleKey !== data.roleKey.trim() || !/^[a-z0-9_]{1,64}$/.test(data.roleKey)) return "Role Key ไม่ถูกต้อง";
+      if (typeof data.description !== "string" || data.description !== data.description.trim() || data.description.length > 512) return "คำอธิบาย Role ไม่ถูกต้อง";
+      if (editRole && data.roleKey !== editRole.roleKey) return "Role Key ไม่สามารถเปลี่ยนได้หลังสร้าง";
+      if (!data.perms || typeof data.perms !== "object" || Array.isArray(data.perms) || !Object.keys(data.perms).length) return "กรุณากำหนด Permission อย่างน้อย 1 รายการ";
+      const existingPerms = editRole ? getRoleEditPermissions(editRole) : {};
+      for (const [permKey, level] of Object.entries(data.perms)) {
+        const permission = rolePermByKey[permKey];
+        const allowedLevels = permission ? getRolePermSelectableLevels(permission) : [];
+        if (!permission || !allowedLevels.includes(level) || level === "admin") return `Permission ${permKey} ระดับ ${level} ไม่ถูกต้อง`;
+        const isNewOrRaised = !existingPerms[permKey] ||
+          (rolePermLevelRank[level] || 0) > (rolePermLevelRank[existingPerms[permKey]] || 0);
+        if (isNewOrRaised && !canRoleActorGrantPermission(permKey, level)) return `ไม่มีสิทธิ์มอบ Permission ${permKey}`;
+      }
+      const dependencyViolation = findRolePermDependencyViolations(data.perms)[0];
+      if (dependencyViolation) return `Permission ${dependencyViolation.perm.key} ต้องมี ${dependencyViolation.dep.key}`;
+      return "";
+    }
+
+    function rejectInvalidRoleMutation(message) {
+      pendingRoleCreateData = null;
+      pendingRoleEditData = null;
+      closeUserActionModal();
+      showSuccessToast(message || "ข้อมูล Custom Role ไม่ถูกต้อง", "บันทึกไม่สำเร็จ");
     }
 
     function syncRolePermRowState(row) {
@@ -29149,13 +29188,25 @@
         setRoleCreateFieldError(form, "description", "คำอธิบายต้องไม่เกิน 512 ตัวอักษร");
         hasError = true;
       }
+      const editRole = editingId ? roleListData.roles.find(role => role.id === editingId) : null;
+      const existingPerms = editRole ? getRoleEditPermissions(editRole) : {};
       const perms = {};
-      // checkbox ติ๊ก = ให้สิทธิ์ action นั้น — level ที่ persist คือระดับสูงสุดที่ catalog รองรับ
-      // (admin ถูกตัดออกจาก selectable levels เสมอ เลย inject ระดับ admin เข้ามาไม่ได้)
+      // Edit field อื่นต้องคง level เดิมที่ catalog ยังรองรับ; permission ใหม่จึงใช้ระดับ grant ปกติ
       form.querySelectorAll("[data-role-perm-check]:checked").forEach(input => {
         const perm = rolePermByKey[input.dataset.rolePermCheck];
-        const level = perm ? getRolePermGrantedLevel(perm) : "";
+        const existingLevel = perm ? existingPerms[perm.key] : "";
+        const level = perm && existingLevel !== "admin" && getRolePermSelectableLevels(perm).includes(existingLevel)
+          ? existingLevel
+          : (perm ? getRolePermGrantedLevel(perm) : "");
         if (level) perms[perm.key] = level;
+      });
+      Object.entries(perms).forEach(([permKey, level]) => {
+        const isNewOrRaised = !existingPerms[permKey] ||
+          (rolePermLevelRank[level] || 0) > (rolePermLevelRank[existingPerms[permKey]] || 0);
+        if (isNewOrRaised && !canRoleActorGrantPermission(permKey, level)) {
+          setRolePermError(form, permKey, "คุณไม่มีสิทธิ์มอบ Permission นี้");
+          hasError = true;
+        }
       });
       // บังคับเลือกสิทธิ์อย่างน้อย 1 รายการ — role ที่ไม่มีสิทธิ์เลยใช้งานไม่ได้จริง
       if (!Object.keys(perms).length) {
@@ -29283,6 +29334,11 @@
     function applyRoleCreate(data) {
       if (!roleActorHasPermission("roles.manage")) { rejectRolePermission(); return; }
       if (!data) return;
+      const payloadError = inspectRoleMutationPayload(data);
+      if (payloadError) {
+        rejectInvalidRoleMutation(payloadError);
+        return;
+      }
       // stale guard — name/key อาจถูกใช้ไปแล้วระหว่างที่ผู้ใช้อยู่หน้า confirm → ส่งกลับ form พร้อม error คงค่าเดิม
       const nameTaken = roleListData.roles.some(r => r.name.trim().toLowerCase() === data.name.toLowerCase());
       const keyTaken = roleListData.roles.some(r => r.roleKey === data.roleKey);
@@ -29310,7 +29366,12 @@
         createdBy: actor,
         updatedAt: timestamp,
         updatedRank: rank,
-        updatedBy: actor
+        updatedBy: actor,
+        revision: 1,
+        creationMode: "from_scratch",
+        sourceRoleId: null,
+        sourceRevision: null,
+        sourceProvenanceStatus: "not_applicable"
       };
       role.history = [{
         target: role.id, action: "ROLE_CREATE", at: timestamp, actor, reason: "สร้าง Custom Role",
@@ -29493,6 +29554,15 @@
         return;
       }
       const role = roleListData.roles.find(r => r.id === pending.id);
+      if (reason.length > 512) {
+        const error = document.querySelector("[data-role-edit-reason-error]");
+        if (error) { error.textContent = "เหตุผลต้องไม่เกิน 512 ตัวอักษร"; error.classList.add("show"); }
+        reasonInput?.classList.add("article-field-invalid");
+        reasonInput?.focus();
+        return;
+      }
+      const payloadError = inspectRoleMutationPayload(pending.data, role || null);
+      if (payloadError) { rejectInvalidRoleMutation(payloadError); return; }
       if (!role || !isRoleMutable(role) || role.status !== pending.status || role.roleKey !== pending.data.roleKey || (role.revision || 1) !== pending.revision) {
         recordRoleEditBlocked(role);
         pendingRoleEditData = null;
@@ -29512,12 +29582,18 @@
         focusRoleCreateFirstError(form);
         return;
       }
+      const before = { name: role.name, description: role.description, perms: getRoleEditPermissions(role) };
+      const permissionsChanged = JSON.stringify(before.perms) !== JSON.stringify(pending.data.perms);
+      const dataChanged = before.name !== pending.data.name || before.description !== pending.data.description || permissionsChanged;
+      if (!dataChanged) {
+        rejectInvalidRoleMutation("ไม่มีข้อมูลเปลี่ยนแปลง กรุณาแก้ไขข้อมูลก่อนยืนยัน");
+        return;
+      }
       const now = new Date();
-      const permissionsChanged = JSON.stringify(pending.before.perms) !== JSON.stringify(pending.data.perms);
       role.history ||= [];
       role.history.unshift({ target: role.id, revision: pending.revision + 1, at: formatAdminAccountActivityTime(now),
         actor: (auth.admin && auth.admin.username) || "Admin", action: permissionsChanged ? "ROLE_PERMISSION_UPDATE" : "ROLE_UPDATE", result: "Success", reason: maskRoleHistoryText(reason),
-        before: maskRoleHistoryValue(pending.before), after: maskRoleHistoryValue(pending.data), reference: nextRoleHistoryReference(role) });
+        before: maskRoleHistoryValue(before), after: maskRoleHistoryValue(pending.data), reference: nextRoleHistoryReference(role) });
       role.name = pending.data.name;
       role.description = pending.data.description;
       role.revision = pending.revision + 1;
@@ -29536,9 +29612,20 @@
     }
 
     function checkRoleDeactivateImpact(role) {
-      const activeAdmins = adminAccountData.accounts.filter(acc => acc.role === role.name && acc.status === "Active");
+      const assignedAdmins = adminAccountData.accounts.filter(acc => acc.role === role.name);
+      const assignedByStatus = assignedAdmins.reduce((counts, account) => {
+        counts[account.status] = (counts[account.status] || 0) + 1;
+        return counts;
+      }, {});
+      const blockingStatuses = ["Active", "Invited", "Locked", "Suspended"];
+      const blockingAssignments = blockingStatuses.reduce((total, status) => total + (assignedByStatus[status] || 0), 0);
+      const activeAdmins = assignedAdmins.filter(acc => acc.status === "Active");
       const reasons = [];
-      if (activeAdmins.length) reasons.push(`มีผู้ดูแล Active ใช้ Role นี้อยู่ ${activeAdmins.length} คน ต้องย้ายไป Role อื่นก่อน`);
+      if (blockingAssignments) {
+        const statusSummary = blockingStatuses.filter(status => assignedByStatus[status])
+          .map(status => `${status} ${assignedByStatus[status]} คน`).join(", ");
+        reasons.push(`มีบัญชีผู้ดูแลที่ยังอยู่ใน lifecycle ใช้ Role นี้ ${blockingAssignments} คน (${statusSummary}) ต้องย้ายไป Role อื่นก่อน`);
+      }
       if (activeAdmins.length) {
         const hasCapability = key => rolePermissionCatalog.some(group => group.perms.some(perm => perm.key === key && !!perm.levels[role.roleKey]));
         const activeAccounts = adminAccountData.accounts.filter(acc => acc.status === "Active");
@@ -29553,7 +29640,7 @@
           reasons.push("Role นี้เป็นช่องทางกู้คืนสิทธิ์ผู้ดูแลระบบสุดท้าย");
         }
       }
-      return { activeAdmins: activeAdmins.length, reasons };
+      return { activeAdmins: activeAdmins.length, assignedByStatus, blockingAssignments, reasons };
     }
 
     function openRoleDeactivateModal(role) {
@@ -29577,10 +29664,11 @@
           <div class="option-confirm-row"><span class="option-confirm-label">Role Key</span><span class="option-confirm-value">${esc(role.roleKey)}</span></div>
           <div class="option-confirm-row option-confirm-changed"><span class="option-confirm-label">Status</span><span class="option-confirm-value"><span class="option-confirm-before">Active</span> → <span class="option-confirm-after">Inactive</span></span></div>
           <div class="option-confirm-row"><span class="option-confirm-label">ผู้ดูแล Active ที่ใช้ Role</span><span class="option-confirm-value">${impact.activeAdmins} คน</span></div>
+          <div class="option-confirm-row"><span class="option-confirm-label">บัญชีที่ต้องจัดการก่อน</span><span class="option-confirm-value">${impact.blockingAssignments} คน</span></div>
         </div>
         <div class="role-deactivate-impact ${impact.reasons.length ? "is-blocked" : ""}" role="status">
           <strong>${impact.reasons.length ? "ยังปิดใช้งานไม่ได้" : "พร้อมปิดใช้งาน"}</strong>
-          ${impact.reasons.length ? impact.reasons.map(reason => `<p>${esc(reason)}</p>`).join("") : "<p>ไม่มีผู้ดูแล Active ที่ใช้ Role นี้ และผ่านการตรวจสิทธิ์สำคัญ</p>"}
+          ${impact.reasons.length ? impact.reasons.map(reason => `<p>${esc(reason)}</p>`).join("") : "<p>ไม่มีบัญชีผู้ดูแลใน lifecycle ที่ต้องย้าย Role และผ่านการตรวจสิทธิ์สำคัญ</p>"}
         </div>
         ${impact.reasons.length ? "" : `<div class="article-editor-form role-deactivate-reason"><label><span>เหตุผลในการปิดใช้งาน <span class="article-required-mark">*</span></span>
           <textarea data-role-deactivate-reason maxlength="512" placeholder="ระบุเหตุผลเพื่อบันทึกประวัติ"></textarea>
@@ -29613,11 +29701,18 @@
         reasonInput?.focus();
         return;
       }
+      if (reason.length > 512) {
+        const error = document.querySelector("[data-role-deactivate-reason-error]");
+        if (error) { error.textContent = "เหตุผลต้องไม่เกิน 512 ตัวอักษร"; error.classList.add("show"); }
+        reasonInput?.classList.add("article-field-invalid");
+        reasonInput?.focus();
+        return;
+      }
       const now = new Date();
       role.history ||= [];
       role.history.unshift({ target: role.id, revision: pending.revision + 1, at: formatAdminAccountActivityTime(now),
         actor: (auth.admin && auth.admin.username) || "Admin", action: "ROLE_DEACTIVATE", result: "Success", reason: maskRoleHistoryText(reason), reference: nextRoleHistoryReference(role),
-        before: { status: "Active" }, after: { status: "Inactive" }, affectedAdmins: impact.activeAdmins });
+        before: { status: "Active" }, after: { status: "Inactive" }, affectedAdmins: impact.blockingAssignments });
       role.status = "Inactive";
       role.revision = pending.revision + 1;
       role.updatedAt = formatAdminAccountActivityTime(now);
@@ -29631,8 +29726,17 @@
     }
 
 
-    function canReactivateRoleAsActor() {
-      return roleActorHasPermission("roles.manage");
+    function getRoleReactivateBlockReasons(role) {
+      const reasons = [];
+      if (!roleActorHasPermission("roles.manage")) reasons.push("บัญชีผู้กระทำไม่มีสิทธิ์จัดการ Custom Role");
+      const payloadError = inspectRoleMutationPayload({
+        name: role?.name,
+        roleKey: role?.roleKey,
+        description: role?.description || "",
+        perms: role ? getRoleEditPermissions(role) : {}
+      }, role || null);
+      if (payloadError) reasons.push(`Permission set ของ Role ไม่พร้อมใช้งาน: ${payloadError}`);
+      return reasons;
     }
 
     function openRoleReactivateModal(role) {
@@ -29643,8 +29747,9 @@
       const body = document.querySelector("#user-action-modal-body");
       if (!modal || !card || !body) return;
       const escape = value => String(value).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
-      const allowed = canReactivateRoleAsActor();
-      const activeAdmins = countActiveAdminsUsingRole(role.name);
+      const blockReasons = getRoleReactivateBlockReasons(role);
+      const allowed = !blockReasons.length;
+      const assignedAdmins = adminAccountData.accounts.filter(account => account.role === role.name).length;
       pendingRoleReactivateData = { id: role.id, revision: role.revision || 1 };
       card.classList.remove("article-preview-modal", "article-editor-confirm-modal", "category-editor-modal", "category-order-modal", "market-editor-modal", "market-reference-drawer", "board-report-phone-preview-modal", "option-order-modal", "option-audit-modal", "option-editor-modal", "role-create-modal");
       card.classList.add("option-editor-modal", "role-deactivate-modal");
@@ -29656,11 +29761,11 @@
           <div class="option-confirm-row"><span class="option-confirm-label">Role</span><span class="option-confirm-value">${escape(role.id)} : ${escape(role.name)}</span></div>
           <div class="option-confirm-row"><span class="option-confirm-label">Role Key</span><span class="option-confirm-value">${escape(role.roleKey)}</span></div>
           <div class="option-confirm-row option-confirm-changed"><span class="option-confirm-label">Status</span><span class="option-confirm-value"><span class="option-confirm-before">Inactive</span> → <span class="option-confirm-after">Active</span></span></div>
-          <div class="option-confirm-row"><span class="option-confirm-label">ผู้ดูแลที่ใช้ Role นี้</span><span class="option-confirm-value">${activeAdmins} คน</span></div>
+          <div class="option-confirm-row"><span class="option-confirm-label">บัญชีที่อ้างอิง Role นี้</span><span class="option-confirm-value">${assignedAdmins} คน</span></div>
         </div>
         <div class="role-deactivate-impact ${allowed ? "" : "is-blocked"}" role="status">
           <strong>${allowed ? "พร้อมเปิดใช้งาน" : "ยังเปิดใช้งานไม่ได้"}</strong>
-          <p>${allowed ? "ผู้ดูแลเดิมที่ใช้ Role นี้จะเข้าถึงสิทธิ์ตาม Role ที่เปิดใช้งานอีกครั้ง" : "บัญชีผู้กระทำไม่มีสิทธิ์จัดการ Custom Role"}</p>
+          ${allowed ? "<p>เมื่อเปิดใช้งานแล้ว Role จะเลือกใช้กับการ assign ใหม่ได้ บัญชีเดิมและสิทธิ์เดิมจะไม่ถูก restore หรือ reassign อัตโนมัติ</p>" : blockReasons.map(reason => `<p>${escape(reason)}</p>`).join("")}
         </div>
         ${allowed ? `<div class="article-editor-form role-deactivate-reason"><label><span>เหตุผลในการเปิดใช้งาน <span class="article-required-mark">*</span></span>
           <textarea data-role-reactivate-reason maxlength="512" placeholder="ระบุเหตุผลเพื่อบันทึกประวัติ"></textarea>
@@ -29682,12 +29787,20 @@
         showSuccessToast("ข้อมูล Role เปลี่ยนแปลงแล้ว กรุณาโหลดข้อมูลใหม่", "Roles & Permissions");
         return;
       }
-      if (!canReactivateRoleAsActor()) { openRoleReactivateModal(role); return; }
+      const blockReasons = getRoleReactivateBlockReasons(role);
+      if (blockReasons.length) { openRoleReactivateModal(role); return; }
       const reasonInput = document.querySelector("[data-role-reactivate-reason]");
       const reason = reasonInput?.value.trim() || "";
       if (!reason) {
         const error = document.querySelector("[data-role-reactivate-reason-error]");
         if (error) { error.textContent = "กรุณาระบุเหตุผลในการเปิดใช้งาน"; error.classList.add("show"); }
+        reasonInput?.classList.add("article-field-invalid");
+        reasonInput?.focus();
+        return;
+      }
+      if (reason.length > 512) {
+        const error = document.querySelector("[data-role-reactivate-reason-error]");
+        if (error) { error.textContent = "เหตุผลต้องไม่เกิน 512 ตัวอักษร"; error.classList.add("show"); }
         reasonInput?.classList.add("article-field-invalid");
         reasonInput?.focus();
         return;
