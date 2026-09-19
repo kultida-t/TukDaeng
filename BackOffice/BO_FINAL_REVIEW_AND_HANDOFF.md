@@ -123,7 +123,6 @@
 | P1 | Broadcast แสดงใน FO Notification Center หรือ push-only | `NOTI-DEC-001` | กระทบ FO notification type list และ payload |
 | P1 | Sensitive export ต้องมี approval เพิ่มหรือไม่ | `REP-DEC-004`, `SET-DEC-004` | กระทบ Admin Settings, Audit (ก่อนหน้านี้ระบุให้กระทบ Reports ด้วย แต่ Reports ถูกเลื่อนเป็น Phase 2/future scope แล้ว ใน Phase 1 จึงกระทบ Admin Settings และ Audit เท่านั้น) |
 | P2 | Board public SEO web requirement | `BO-DEC-005` | กระทบ Board content delivery และ routing |
-| P2 | Fine-grained permission editor หรือ fixed admin access matrix | `SET-DEC-001` | กระทบ Admin Settings data model และ QA scope |
 
 ## 7. QA Focus Areas
 

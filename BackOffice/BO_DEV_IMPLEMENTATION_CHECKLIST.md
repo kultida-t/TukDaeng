@@ -444,16 +444,33 @@ Recommended note format:
 ## 16. Admin Settings
 
 - [ ] Admin ทุก admin access ต้องเข้าดู own profile/settings และเปลี่ยน password ตาม rule ได้
-- [ ] Admin ต้องจัดการ admin account lifecycle: invite, change admin access policy, suspend/reactivate, unlock, archive
-- [ ] ระบบต้องป้องกันการ suspend/archive/change admin access policy ของ Admin active คนสุดท้าย
+- [ ] Admin ต้องจัดการ admin account lifecycle: invite, change Role assignment, suspend/reactivate, unlock, archive
+- [ ] ระบบต้องป้องกันการ suspend/archive/change Role ของ Admin active คนสุดท้ายและ account สุดท้ายที่คง admin recovery coverage
 - [ ] Settings submenu ต้องมี `Roles & Permissions` สำหรับ role templates และ module/action policy
 - [ ] Roles & Permissions matrix ต้องแสดง permission key taxonomy, permission level, baseline matrix ตาม 8 role templates, module, action และ enforce ทั้ง UI/API/service level
-- [ ] Custom Role ต้อง derive จาก role template หนึ่งและเก็บ permission key แบบ explicit; ห้ามผูกสิทธิ์เฉพาะรายบุคคลกับ Admin account โดยตรง
+- [ ] Custom Role รองรับ `from_scratch` ตาม prototype หรือ `derived/copied` จาก template และต้องเก็บ permission key แบบ explicit; ห้ามผูกสิทธิ์เฉพาะรายบุคคลกับ Admin account โดยตรง
 - [ ] Content role split ต้องรองรับ `Content Editor` สำหรับ draft authoring และ `Content Publisher` สำหรับ publish/schedule/archive/reported Board actions
 - [ ] Permission change ต้องมี confirmation, reason, before/after diff และ audit log
 - [ ] Change Role ต้อง enforce critical safeguards ทั้ง UI/API/service: ห้าม self-change, ห้ามเปลี่ยน master admin, ห้ามทำให้ไม่มี active `Super Admin`, ห้ามทำให้ไม่มี account ที่จัดการ role/admin recovery ได้, ห้าม assign Custom Role ที่ inactive/invalid และต้อง block role change ของ account status ที่ไม่อนุญาต
-- [ ] ทุกคำขอ Change Role ต้องเขียน `ADMIN_ACCOUNT_ROLE_CHANGE` ใน transaction เดียวกับ role persistence: เก็บ event/reference/correlation, actor, target, before/after Role + permission diff, reason, safeguard outcome, result และเวลา; ถ้า audit write ไม่สำเร็จต้องไม่ commit role ใหม่ และต้องไม่เก็บ secret/token/password
-- [ ] การสร้าง/แก้ไข/ปิดใช้งาน Custom Role ต้องเขียน `ROLE_CREATE`/`ROLE_UPDATE`/`ROLE_PERMISSION_UPDATE`/`ROLE_DEACTIVATE` พร้อม before/after, reason, affected Admin accounts และ migration/rollback reference เมื่อมีผลกระทบ
+- [ ] ทุกคำขอ Change Role ต้องเขียน `ADMIN_ACCOUNT_ROLE_CHANGE` ใน transaction เดียวกับ role persistence: เก็บ event/reference/correlation, immutable actor/target IDs + account revision, actor Role ID/revision, old/new Role ID/revision + name snapshot + permission diff, reason, safeguard outcome, result และเวลา; ถ้า audit write ไม่สำเร็จต้องไม่ commit role ใหม่ และต้องไม่เก็บ secret/token/password
+- [ ] การสร้าง/แก้ไข/ปิดใช้งาน/เปิดใช้งาน Custom Role ต้องเขียน `ROLE_CREATE`/`ROLE_UPDATE`/`ROLE_PERMISSION_UPDATE`/`ROLE_DEACTIVATE`/`ROLE_REACTIVATE` พร้อม before/after, reason, affected Admin accounts และ migration/rollback reference เมื่อมีผลกระทบ
+- [ ] System Role seed/baseline ต้องมี `ROLE_CREATE` history จาก `System` พร้อม `creation_mode=system_baseline`, source null, provenance `not_applicable` และ permission baseline เพื่อ trace จุดเริ่มต้นได้
+- [ ] Admin Account ต้องอ้าง Role ด้วย immutable `role_id` (ห้ามใช้ชื่อ Role เป็น foreign key); `role_key` immutable และ Change Role request ต้องมี `expected_target_account_revision`, `expected_current_role_id`, `expected_current_role_revision`, `expected_new_role_revision`; ทุก assign/edit/deactivate/reactivate ต้อง reject stale state และ same-role no-op
+- [ ] Relational constraint ต้องครบ: `roles.role_id` เป็น PK, normalized `role_key`/`display_name` unique, `admin_accounts.role_id` เป็น required FK สำหรับทุก account status, `role_permissions` ใช้ PK `(role_id, permission_key)`, source pair เป็น conditional self-reference และทุก relation ใช้ RESTRICT/no cascade delete
+- [ ] `permission_set` persist เฉพาะ granted key ที่ไม่ซ้ำด้วย level canonical `view/manage/approve/admin`; absence แปล `none`, ห้าม persist `none`, Custom Role ห้าม `admin`, unknown key/level และ dependency ที่ขาด `.view` ต้อง reject แบบ atomic
+- [ ] `active_admin_count` ต้อง derive จาก Admin status `Active` + `role_id`; ก่อน safeguard/deactivate ต้องคำนวณใหม่ใน transaction และห้ามใช้ client/cache เป็น source of truth
+- [ ] Deactivate impact ต้องคำนวณ `assigned_admin_count_by_status` ครบ Active/Invited/Locked/Suspended/Archived; Active/Invited ต้อง migrate, Locked/Suspended ต้องใช้ governed combined lifecycle + Role replacement หรือ block, Archived คง historical reference ได้
+- [ ] Custom Role ที่ยังมี assignment ใน lifecycle ต้องไม่ถูก deactivate หรือ silent reassign; governed migration ต้อง revalidate safeguards และ commit assignment + deactivate + audit แบบ atomic ส่วน reactivate ห้าม reassign account อัตโนมัติ
+- [ ] Batch migration ต้องเขียน `ADMIN_ACCOUNT_ROLE_CHANGE` ต่อ account และ `ROLE_DEACTIVATE` ต่อ Role ด้วย correlation เดียวกัน; ทุก event ต้องสำเร็จก่อน commit และ core result ห้ามเป็น `Partial`
+- [ ] Phase ปัจจุบันของ protected Admin Accounts selector ยังคง 8 System Roles; service/data model รองรับ Active Custom Role ตาม contract แต่การเปิด selector ต้องเป็นงานแยกที่ได้รับอนุมัติและผ่าน safeguard/regression
+- [ ] Invite request ต้องส่ง `role_id` + `expected_role_revision`; invite activation, unlock (manual/automatic), reactivate และ session authorization ต้อง block เมื่อ Role inactive/stale/invalid; การกู้คืนใช้ combined lifecycle + eligible Role replacement แบบ atomic และห้าม fallback เงียบ
+- [ ] บันทึก `creation_mode` และ `source_provenance_status` ตาม flow: `from_scratch` ใช้ source null + `not_applicable`, `derived/copied` บังคับ source pair + `verified`, legacy ที่พิสูจน์ source ไม่ได้ใช้ source null + `legacy_unknown` พร้อม migration audit; ห้ามเดาจากชื่อหรือ permission similarity
+- [ ] Validate Custom Role ให้ตรง prototype: display name required/trim/≤64/case-insensitive unique, `role_key` required/≤64/`^[a-z0-9_]+$`/unique/immutable, description ≤512, มี granted permission อย่างน้อย 1 key และห้าม Custom Role ใช้ level `admin`
+- [ ] Normalize prototype permission aliases `roles.view/manage` และ `admin_accounts.view/manage` เป็น canonical `settings.roles.*` / `settings.admin_accounts.*` ที่ adapter boundary; production persistence/audit/API ต้องใช้ canonical key เท่านั้นและ reject unknown/ambiguous alias
+- [ ] `roleMenuAccess` ระดับ `none/view/limited/manage` เป็น display-only module summary ของ protected Admin Detail; production ต้อง derive จาก canonical `permission_set` ผ่าน `role_id` และห้าม persist `limited` เป็น permission level
+- [ ] Roles & Permissions List/Detail ใช้ `settings.roles.view` สำหรับ read access และ `settings.roles.manage` สำหรับ mutation; ผู้มี view อย่างเดียวเห็น read-only และ action mutation ต้องไม่อยู่ใน DOM
+- [ ] `Admin access` ใน Auth contract ต้อง persist เป็น `role_id`; ห้ามเก็บชื่อ Role, free-text access label หรือ permission payload ซ้ำใน Admin Account
+- [ ] ใช้ prototype เป็น source of truth สำหรับ visual/interaction ที่ล็อก แต่ใช้ section 9.11 เป็น source of truth สำหรับ production persistence/service; ต้องทบทวน conformance matrix และห้ามลอก mock behavior ที่ระบุเป็น production hardening gap
 - [ ] Security policy ต้องสอดคล้องกับ Auth baseline: email/password only, mandatory Email OTP สำหรับ Admin, idle 8h, max 24h, failed login 5 ครั้ง, lockout 15 นาที
 - [ ] Retention settings ต้องไม่อนุญาต manual delete audit logs จาก UI ปกติ
 - [ ] Export policy ต้องรองรับ CSV/Excel, background job, expiry, sensitive export reason และ audit
@@ -467,9 +484,9 @@ Recommended note format:
 
 | Area | Notes |
 | --- | --- |
-| Prototype / Spec Alignment | The prototype exposes `Admin Accounts`, `Roles & Permissions`, `Security`, `Retention`, `Policy & Versioning`, `Support Center`, and an `Audit Log` route from Settings. This matches the high-level Settings scope, but the full admin-account lifecycle and permission matrix are not yet implemented in detail. |
-| Implementation Gap | Production still needs own-profile/password settings, admin invite/suspend/reactivate/unlock/archive, last-active-admin guard, role template matrix, critical role-change safeguards, security/retention/export policies, feature flags, integration metadata, and settings change history. |
-| Permission / Audit | Permission changes, admin lifecycle actions, role-change safeguard blocks, security/retention/export policy changes, feature flags, and sensitive/export settings must require confirmation, reason where needed, before/after diff, and audit. |
+| Prototype / Spec Alignment | Prototype Phase 1 แสดง `Admin Accounts`, `Roles & Permissions`, `Policy & Versioning`, `Support Center`, `Delivery Logs` และ route `Audit Log` ใต้ Settings. Admin lifecycle, 8 System Roles, Custom Role create/edit/deactivate/reactivate, permission matrix และ Role history มี interaction/mock แล้ว; Security/Retention nav ถูกถอดเป็น deferred ตาม section 6.2. |
+| Implementation Gap | Production ยังต้องทำ persistence/service enforcement ตาม section 9.11: immutable `role_id` FK, normalized permission records, account/Role concurrency, activation/session guard, governed migration ทุก account status, atomic audit และ immutable Role revision history. Own-profile/password, security/retention/export policies, feature flags, integration metadata และ settings change history ยังเป็น future/deferred ตาม scope. |
+| Permission / Audit | ใช้ `settings.roles.view` สำหรับ read และ `settings.roles.manage` สำหรับ mutation. Permission changes, admin lifecycle actions, role-change safeguard blocks, security/retention/export policy changes, feature flags และ sensitive/export settings ต้องมี confirmation, reason ตาม rule, before/after diff และ audit; Role/Admin audit ต้องเก็บ immutable IDs/revisions ไม่ใช้ชื่อเป็น key. |
 | FO Sync Impact | Settings changes can alter BO access, FO/BO feature flags, retention/export behavior, public legal/support content, and security defaults. Changes must surface FO/BO impact before save and link history to Audit Log where permitted. |
 
 ## 17. Option Master

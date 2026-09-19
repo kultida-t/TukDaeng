@@ -1,8 +1,8 @@
 # 01 BO Authentication And Admin Accounts Module
 
-**Version:** `BO-01-v1.0`  
-**Date:** 2026-08-26  
-**Status:** สเปกปัจจุบัน  
+**Version:** `BO-01-v1.1`<br>
+**Date:** 2026-09-19<br>
+**Status:** สเปกปัจจุบัน — Role assignment contract synced<br>
 **Platform:** Responsive Web Back Office
 
 ## UI Standards And Prototype Reference
@@ -17,8 +17,8 @@
 | --- | --- |
 | Module Name | BO Authentication And Admin Accounts |
 | Platform | Responsive Web Back Office |
-| Version | `BO-01-v1.0` |
-| Status | สเปกปัจจุบัน |
+| Version | `BO-01-v1.1` |
+| Status | สเปกปัจจุบัน — Role assignment contract synced |
 | Owner | Product / UX / Engineering / Operations |
 | Document Type | Functional PRD |
 
@@ -38,7 +38,7 @@ BO authentication แยกจาก FO authentication โดยสมบูร�
 - Failed login lockout
 - Password reset สำหรับ BO admin
 - Admin account lifecycle
-- Admin access assignment
+- Admin Role assignment
 - Route/action permission enforcement
 - Login/security audit events
 - Responsive auth screens
@@ -48,7 +48,7 @@ BO authentication แยกจาก FO authentication โดยสมบูร�
 - FO user authentication
 - Apple/Google SSO สำหรับ BO
 - External identity provider integration
-- Fine-grained permission editor นอกเหนือจาก baseline Admin access context Model
+- Individual permission override บน Admin Account; Role/permission editor และ assignment contract อยู่ใน `16_ADMIN_SETTINGS_MODULE.md` section 9
 - Hardware security key support
 
 ## 4. Admin Account Type
@@ -58,6 +58,7 @@ BO uses exactly one admin account type: `Admin`. Authentication requirements do 
 | Admin Account Type | Auth Requirement |
 | --- | --- |
 | Admin | Email/password + mandatory Email OTP |
+
 ## 5. Responsive Screen Requirements
 
 Login และ auth-adjacent screens ใช้ layout และ breakpoint ตาม Login Pattern ใน `BO_UI_UX_STANDARD.md` โดย desktop ใช้ split layout (hero visual + form panel, dark theme) และเปลี่ยนเป็น single column เมื่อ viewport ≤ 1180px (ต่างจาก list/detail module ที่ใช้ breakpoint 760px เป็นหลัก) รายละเอียด layout/visual ยึด prototype ที่ล็อกแล้ว
@@ -124,8 +125,8 @@ Auth action ทุกอย่างต้องใช้งานได้บ�
 | Max session | Session หมดอายุสูงสุด 24 ชั่วโมง |
 | Logout | Manual logout ต้อง clear BO session |
 | Session expired | Redirect ไป login พร้อม session expired message |
-| Admin access changed during session | Permission ต้องสะท้อน admin access ล่าสุดใน permission check หรือ token refresh ถัดไป |
-| Admin account suspended/banned | Session ต้องถูก revoke หรือ block ใน request ถัดไป |
+| Role assignment/permission changed during session | Permission ต้อง resolve จาก Role revision ล่าสุดใน request หรือ token refresh ถัดไปตาม `16_ADMIN_SETTINGS_MODULE.md` section 9.11 |
+| Admin account locked/suspended/archived | Session ต้องถูก revoke หรือ block ใน request ถัดไปตาม lifecycle policy |
 
 ## 9. Failed Login And Lockout
 
@@ -154,7 +155,7 @@ Auth action ทุกอย่างต้องใช้งานได้บ�
 | Admin ID | Yes | System generated |
 | Full Name | Yes | ชื่อที่แสดงภายใน |
 | Email | Yes | Unique login identifier |
-| Admin access | Yes | ใช้ baseline BO Admin Access |
+| Admin access / Role assignment | Yes | ชื่อเชิงแนวคิดใน Auth; production persist เป็น required `role_id` FK ตาม `16_ADMIN_SETTINGS_MODULE.md` section 9.11 ไม่เก็บชื่อ Role หรือ permission payload ซ้ำ |
 | Status | Yes | Admin account status |
 | Email OTP Required | Yes | Required for BO Admin login |
 | Last Login At | No | แสดงใน account detail |
@@ -167,17 +168,17 @@ Auth action ทุกอย่างต้องใช้งานได้บ�
 
 | Action | Permission | Audit Required |
 | --- | --- | --- |
-| Invite Admin | Admin | Yes |
-| Change Admin access | Admin | Yes |
-| Suspend Admin | Admin | Yes |
-| Reactivate Admin | Admin | Yes |
-| Unlock Admin | Admin | Yes |
-| Archive Admin | Admin | Yes |
-| View Admin List | Admin | เฉพาะ export ต้อง audit |
+| Invite Admin | `settings.admin_accounts.manage` | Yes |
+| Change Admin Role | `settings.admin_accounts.manage` | Yes (`ADMIN_ACCOUNT_ROLE_CHANGE`) |
+| Suspend Admin | `settings.admin_accounts.manage` | Yes |
+| Reactivate Admin | `settings.admin_accounts.manage` | Yes |
+| Unlock Admin | `settings.admin_accounts.manage` | Yes |
+| Archive Admin | `settings.admin_accounts.manage` | Yes |
+| View Admin List | `settings.admin_accounts.view` | เฉพาะ export ต้อง audit |
 | View Own Profile | All admins | No ยกเว้นดู sensitive/security data |
 | Change Own Password | All admins | Yes |
 
-Admin ต้องไม่สามารถลบ/ระงับ/เปลี่ยน admin access ของ Admin คนสุดท้ายได้ ถ้ายังไม่มี Admin active คนอื่นรองรับ
+Admin ต้องไม่สามารถ archive/suspend/เปลี่ยน Role ของ Admin คนสุดท้ายหรือ account สุดท้ายที่คง admin recovery coverage ได้ โดย safeguard และ concurrency ใช้ contract ใน `16_ADMIN_SETTINGS_MODULE.md` section 9.7–9.11
 
 ## 12. Permission Enforcement
 
@@ -205,7 +206,7 @@ Admin ต้องไม่สามารถลบ/ระงับ/เปลี
 - Email OTP sent
 - Email OTP verified
 - Email OTP failed/expired/resend
-- Admin access changed
+- Admin Role assignment/permission changed
 - Admin invited
 - Admin suspended/reactivated
 - Admin archived
@@ -237,8 +238,8 @@ Admin ต้องไม่สามารถลบ/ระงับ/เปลี
 | AC-BO-AUTH-006 | Route และ action permission check ต้อง block unauthorized access |
 | AC-BO-AUTH-007 | Navigation ซ่อน module ที่ไม่มีสิทธิ์ แต่ direct URL ยังต้อง enforce permission |
 | AC-BO-AUTH-008 | Admin account lifecycle รองรับ invited, active, locked, suspended, archived |
-| AC-BO-AUTH-009 | Admin active คนสุดท้ายต้องไม่ถูก archive/suspend/change admin access policy ถ้ายังไม่มี replacement |
-| AC-BO-AUTH-010 | Login, logout, failed login, lockout, password, Email OTP, admin access และ admin account changes ต้อง audit-log |
+| AC-BO-AUTH-009 | Admin active คนสุดท้ายหรือ account สุดท้ายที่คง admin recovery coverage ต้องไม่ถูก archive/suspend/change Role โดยไม่มี eligible replacement |
+| AC-BO-AUTH-010 | Login, logout, failed login, lockout, password, Email OTP, Role/permission และ admin account changes ต้อง audit-log |
 | AC-BO-AUTH-011 | Auth screens ใช้งานได้บน mobile, tablet, desktop และ wide desktop widths |
 
 ## 16. Related Modules
