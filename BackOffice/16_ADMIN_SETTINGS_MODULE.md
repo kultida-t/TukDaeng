@@ -1,8 +1,8 @@
 # 16 BO Admin Settings Module
 
-**Version:** `BO-16-v1.0`
+**Version:** `BO-16-v1.1`
 **Date:** 2026-09-19
-**Status:** Updated — Role and Admin Account integration contract defined
+**Status:** Updated — Roles & Permissions stable prototype synchronized
 **Platform:** Responsive Web Back Office
 **Primary BO Sources:** `00_GLOBAL_RULES_MODULE.md`, `01_AUTHENTICATION_MODULE.md`, `08_AUDIT_LOG_MODULE.md`, `15_REPORTS_ANALYTICS_MODULE.md`
 
@@ -18,8 +18,8 @@
 | --- | --- |
 | Module Name | BO Admin Settings |
 | Platform | Responsive Web Back Office |
-| Version | `BO-16-v1.0` |
-| Status | Updated — Role and Admin Account integration contract defined |
+| Version | `BO-16-v1.1` |
+| Status | Updated — Roles & Permissions stable prototype synchronized |
 | Owner | Product / UX / Engineering / Operations |
 | Document Type | Functional PRD |
 
@@ -333,10 +333,10 @@ Roles & Permissions must start with 8 standard role templates. These templates a
 | Support Agent | ช่วยเหลือผู้ใช้จาก Support Center, User context แบบจำกัด, delivery status และประวัติที่จำเป็นต่อการช่วยเหลือ | ไม่มีสิทธิ์เปลี่ยนสถานะบัญชี/สินทรัพย์, ดู sensitive data เต็ม, export หรือแก้ Settings |
 | Trust & Safety Moderator | จัดการ report/moderation queue สำหรับ user, asset, comment และ board content ตามเหตุผล/audit | Sensitive fields ถูก mask เป็นค่าเริ่มต้น; action ที่กระทบ FO ต้องมี reason, impact note และ audit |
 | Asset Operations | ตรวจสอบ Asset List/Asset Detail, reported assets/comments และข้อมูลที่เกี่ยวกับ asset lifecycle | ไม่มีสิทธิ์แก้ Market Data master, Admin Settings, policy, หรือ export sensitive asset/user data เว้นแต่ matrix อนุญาต |
-| Content Editor | สร้าง/แก้ draft, category, metadata และ preview content ใน Content Management | ไม่มีสิทธิ์ publish, schedule, archive, restore หรือจัดการ reported Board แบบปิดเคส |
-| Content Publisher | publish, schedule, archive, restore content และจัดการ reported Board content ตาม policy | ไม่มีสิทธิ์แก้ Admin Settings, user/account status, asset moderation หรือ sensitive reveal/export นอก content scope |
+| Content Editor | สร้าง/แก้ draft, category, metadata และ preview content ใน Content Management | ไม่มีสิทธิ์ publish, schedule, archive, restore หรือจัดการ Reported Articles แบบปิดเคส |
+| Content Publisher | publish, schedule, archive, restore content และจัดการ Reported Articles ตาม policy | ไม่มีสิทธิ์แก้ Admin Settings, user/account status, asset moderation หรือ sensitive reveal/export นอก content scope |
 
-Role templates are presets. Production enforcement must use explicit permission keys at route, navigation, UI action, API, service, export, sensitive-field, and audit layers. Roles & Permissions รองรับ Custom Role แบบ `from_scratch` ตาม prototype และรองรับ lineage แบบ `derived/copied` ตาม data contract ใน section 9.11; ส่วน 8 standard templates ข้างต้นเป็น System Role ที่ห้ามลบ เปลี่ยนชื่อ หรือเปลี่ยน system identity. หาก standard role ไม่ตรงงาน ให้สร้าง Custom Role ด้วย permission set แบบ explicit แทนการแก้ system role identity.
+Role templates are presets. Production enforcement must use explicit permission keys at route, navigation, UI action, API, service, export, sensitive-field, and audit layers. Phase ปัจจุบันสร้าง Custom Role แบบ `from_scratch` เท่านั้นและไม่มี action `Copy`, `Clone`, `Duplicate` หรือ source-template selector; หาก standard role ไม่ตรงงาน ให้สร้าง Custom Role ใหม่หรือแก้ Custom Role เดิมด้วย permission set แบบ explicit. ค่า lineage `derived/copied` ใน section 9.11 เป็น schema reservation สำหรับ future/import compatibility เท่านั้น ไม่ใช่ flow ที่เปิดใช้ใน UI ปัจจุบัน. ส่วน 8 standard templates ข้างต้นเป็น System Role ที่ห้ามลบ เปลี่ยนชื่อ เปลี่ยน permission baseline หรือเปลี่ยน system identity จาก UI.
 
 ### 9.2 Permission Key Taxonomy
 
@@ -363,9 +363,28 @@ Permission result has 5 levels:
 | `approve` | ทำ action high-risk หรือ publish/close ได้ | ต้องมี confirmation, reason, before/after diff และ audit |
 | `admin` | จัดการ settings/role/policy ได้ | ใช้เฉพาะ role ที่ได้รับอนุญาตและต้องมี safeguard เพิ่มเติม |
 
+**Phase 1 permission action catalog**
+
+Role Detail และ Create/Edit Custom Role ใช้ action catalog ที่สอดคล้องกับเมนูและ action ซึ่งมีอยู่จริงใน prototype ปัจจุบัน รวม 40 permission keys. ตารางนี้แสดง key ที่ prototype ใช้; `admin_accounts.*` และ `roles.*` ต้อง normalize เป็น canonical `settings.admin_accounts.*` และ `settings.roles.*` ที่ production boundary ตาม section 9.11.
+
+| Module | Submenu / scope | Permission keys ที่เปิดใช้ใน Phase 1 |
+| --- | --- | --- |
+| Dashboard | Dashboard | `dashboard.view` |
+| User Management | User Accounts / Reported Users | `users.accounts.view`, `users.accounts.manage`, `users.reports.view`, `users.reports.manage` |
+| Asset Management | Asset List / Reported Assets / Reported Comments | `assets.list.view`, `assets.list.manage`, `assets.reports.view`, `assets.reports.manage`, `comments.reports.view`, `comments.reports.manage` |
+| Offer Management | Offer List / Detail | `offers.view` |
+| Content Management | Articles / Categories / Reported Articles | `articles.view`, `articles.manage`, `articles.publish`, `categories.view`, `categories.manage`, `board.reports.view`, `board.reports.manage` |
+| Market Data | Dashboard / Brands & Models / Sync History | `market.dashboard.view`, `market.catalog.view`, `market.sync.view`, `market.sync.run` |
+| Option Master | Option Groups / Options | `option.view`, `option.manage` |
+| Market Demand | Demand Overview / Search Insights / Watch Alert List | `demand.overview.view`, `demand.search.view`, `demand.watch.view` |
+| Account Deletion | Requests / Detail | `deletion.view`, `deletion.manage` |
+| Settings | Admin Accounts / Roles & Permissions / Policy & Versioning / Support Center / Delivery Logs / Audit Log | `admin_accounts.view`, `admin_accounts.manage`, `roles.view`, `roles.manage`, `policy.view`, `policy.manage`, `support_center.view`, `support_center.manage`, `delivery.view`, `audit.view` |
+
+Permission taxonomy และ level 5 ระดับเป็น canonical policy/service contract; Role Detail ปัจจุบันจงใจแสดงเฉพาะชื่อ action ที่ granted โดยไม่แสดง key หรือ level และ Create/Edit ใช้ checkbox เลือก action โดยไม่มี level selector. Permission ที่ยังไม่อยู่ใน Phase 1 catalog ห้ามแสดงหรืออนุมานว่าเปิดใช้จาก baseline matrix เพียงอย่างเดียว.
+
 ### 9.3 Baseline Permission Matrix By Role
 
-Matrix นี้เป็น baseline กลางสำหรับ 8 standard role templates. Custom Role อาจสร้างจาก permission set แบบ explicit ตาม prototype (`from_scratch`) หรือ derive/copy จาก role template แล้วเพิ่ม/ลด permission key แบบ explicit; ทุกแบบห้ามผูกสิทธิ์เฉพาะรายบุคคลกับ Admin account โดยตรง.
+Matrix นี้เป็น baseline กลางสำหรับ 8 standard role templates. Phase ปัจจุบันสร้าง Custom Role จาก permission set แบบ explicit (`from_scratch`) เท่านั้น; schema รองรับ lineage `derived/copied` ไว้สำหรับ future/import compatibility ตาม section 9.11 แต่ไม่มี flow ดังกล่าวใน UI ปัจจุบัน. ทุกแบบห้ามผูกสิทธิ์เฉพาะรายบุคคลกับ Admin account โดยตรง.
 
 | Area / permission scope | Super Admin | Admin Manager | Operations Manager | Support Agent | Trust & Safety Moderator | Asset Operations | Content Editor | Content Publisher |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
@@ -377,9 +396,10 @@ Matrix นี้เป็น baseline กลางสำหรับ 8 standard 
 | Reported comments | admin | none | approve | none | approve | manage | none | none |
 | Content articles/categories draft | admin | none | view | none | manage | none | manage | manage |
 | Content publish/schedule/archive/restore | admin | none | view | none | approve | none | none | approve |
-| Reported Board moderation | admin | none | view | none | approve | none | view | approve |
+| Reported Articles moderation | admin | none | view | none | approve | none | view | approve |
 | Market Data catalog | admin | none | view | none | view | view | none | none |
 | Market Data import/sync/update | admin | none | approve | none | none | none | none | none |
+| Option Master | admin | none | approve | none | none | none | none | none |
 | Offer Management | admin | view | view | view | view | view | none | none |
 | Market Demand / Watch Alerts | admin | view | view | view | view | view | none | none |
 | Policy & Versioning | admin | approve | view | none | view | none | view | approve |
@@ -393,6 +413,8 @@ Matrix นี้เป็น baseline กลางสำหรับ 8 standard 
 | Roles & Permissions management | admin | approve | none | none | none | none | none | none |
 | Security / retention / export policy | admin | approve | none | none | none | none | none | none |
 
+Matrix นี้กำหนด policy baseline ของ 8 System Roles ส่วนสิทธิ์ที่ Role Detail แสดงจริงต้องมาจาก Phase 1 permission action catalog ด้านบนเท่านั้น. Capability ที่ยังไม่มี key/action ใน catalog ปัจจุบัน เช่น delivery retry/export หรือ sensitive audit export เป็น policy/future implementation baseline และต้องไม่ปรากฏเป็น action ใน Roles & Permissions จนกว่าจะมี scope ที่อนุมัติและ module ปลายทางรองรับ.
+
 ### 9.4 Permission Rule Notes
 
 - `Super Admin` is the only standard role with full `admin` coverage, but it is still subject to self-change, master, last-active-admin, confirmation, reason, and audit safeguards.
@@ -401,7 +423,7 @@ Matrix นี้เป็น baseline กลางสำหรับ 8 standard 
 - `Support Agent` is intentionally read-heavy. It may use support and delivery-retry actions needed for user assistance, but cannot mutate user/account/asset status or reveal full sensitive data.
 - `Trust & Safety Moderator` can close moderation cases for user/asset/comment/board reports with required reason, impact note, confirmation, FO-impact handling, and audit.
 - `Asset Operations` focuses on asset lifecycle review and asset-related moderation. It cannot publish content, change Market Data master data, or manage settings.
-- `Content Editor` can create/update draft content and preview within content scope only. Publish, schedule, archive, restore, reported Board case close, export, and settings are blocked.
+- `Content Editor` can create/update draft content and preview within content scope only. Publish, schedule, archive, restore, Reported Articles case close, export, and settings are blocked.
 - `Content Publisher` can publish/schedule/archive/restore content and close content/report cases inside content scope, but cannot edit Admin Settings or act on user/account/asset status.
 - Any `sensitive.reveal`, `export`, `download`, `case.close`, `status.update`, `publish`, `archive`, `restore`, `settings.roles.manage`, or security/retention policy update must be independently auditable even when the role has the required permission.
 
@@ -430,7 +452,7 @@ Matrix นี้เป็น baseline กลางสำหรับ 8 standard 
 
 ### 9.7 Critical Role Change Safeguards
 
-Role change is a high-risk account lifecycle action. UI hiding is only a presentation layer; the same safeguards must be enforced at route, API, service, and persistence layers before the role value is changed.
+Role change is a high-risk account lifecycle action. UI hiding is only a presentation layer; the same safeguards must be enforced at route, API, service, and persistence layers before the role value is changed. กฎที่กล่าวถึง Custom Role ใน section นี้เป็น production/data contract; current protected Admin Accounts UI ยังมีเฉพาะ 8 System Roles และไม่ได้ implement Custom Role assignment.
 
 | Safeguard | Rule | Blocked outcome / UI state |
 | --- | --- | --- |
@@ -478,7 +500,7 @@ For production implementation, these safeguards must run after permission check 
 | เหตุการณ์ | Event type | ข้อมูลเฉพาะที่ต้องมี |
 | --- | --- | --- |
 | สร้าง System Role จาก baseline/seed | `ROLE_CREATE` | `role_id`, `role_display_name_snapshot`, `role_type=system`, `role_revision=1`, `creation_mode=system_baseline`, source pair เป็น null, `source_provenance_status=not_applicable`, permission baseline, `actor_type=System` และ result |
-| สร้าง Custom Role | `ROLE_CREATE` | `role_id`, `role_display_name_snapshot`, `role_type=custom`, `role_revision=1`, `creation_mode`, source/provenance ตามเงื่อนไขใน section 9.11, permission set เริ่มต้น, creator และ result |
+| สร้าง Custom Role | `ROLE_CREATE` | `role_id`, `role_display_name_snapshot`, `role_type=custom`, `role_revision=1`, current UI ใช้ `creation_mode=from_scratch` + source pair null + provenance `not_applicable`, permission set เริ่มต้น, creator และ result; future/import flow ใช้ source/provenance ตาม section 9.11 |
 | แก้ไขชื่อ คำอธิบาย หรือ Permission ของ Custom Role | `ROLE_UPDATE` หรือ `ROLE_PERMISSION_UPDATE` | `role_id`, before/after ของ field ที่เปลี่ยน, permission added/removed/changed, reason, affected-admin count และ result |
 | ปิดใช้งานหรือเปิดใช้งาน Custom Role | `ROLE_DEACTIVATE` หรือ `ROLE_REACTIVATE` | `role_id`, old/new status, reason, affected Admin accounts, migration/rollback reference และ result |
 
@@ -530,12 +552,14 @@ System Role ห้ามเปลี่ยน identity; attempt ที่ถู�
 | Custom Role / Active | ดูรายละเอียด, แก้ไข, ปิดใช้งาน | `ปิดใช้งาน` ต้องผ่าน impact check, reason และ confirmation; action ที่ไม่มีสิทธิ์ห้าม render ใน DOM |
 | Custom Role / Inactive | ดูรายละเอียด, แก้ไข, เปิดใช้งาน | ห้ามเลือก Role นี้ใน assignment; prototype อนุญาตแก้ข้อมูล/Permission ขณะ Inactive โดยยังใช้ revision guard และ audit |
 
-Row action ต้องไม่เปลี่ยน status หรือ permission จาก list โดยตรง. Mutation ทุกชนิดเปิด flow เฉพาะของตนพร้อม reason, safeguard และ audit contract ใน section 9.8; list refresh หลังผลสำเร็จโดยคง filter/sort/page เท่าที่รายการยังอยู่ในผลลัพธ์.
+Row action ต้องไม่เปลี่ยน status หรือ permission จาก list โดยตรง. Mutation ทุกชนิดเปิด flow เฉพาะของตนพร้อม confirmation, safeguard และ audit contract ใน section 9.8; Edit/Deactivate/Reactivate บังคับ user-entered reason ส่วน Create ใช้ generated audit context ตาม section 9.12. List refresh หลังผลสำเร็จโดยคง filter/sort/page เท่าที่รายการยังอยู่ในผลลัพธ์.
+
+Role List ไม่มี action `ดู Audit Log`, `Copy`, `Clone`, `Duplicate` หรือ `Delete`. System Role เปิดได้เฉพาะ `ดูรายละเอียด`; Role history อ่านจาก section `Role Audit History` ใน Role Detail และไม่ deep-link ไป Settings > Audit Log จาก list/detail ใน Phase นี้.
 
 **Mobile card and states**
 
 - ที่ viewport `<= 760px` ซ่อน table header/columns และแสดง Role card: ชื่อ Role เป็น heading, chips ประเภท/สถานะ/จำนวน Active Admin, meta `Role ID` และ `Last Updated`; ปุ่ม `...` ไม่มีกรอบและไม่ชนกับ row tap target.
-- Pagination ใช้ compact `ก่อนหน้า  current / total  ถัดไป`; desktop ใช้ shared adaptive pager ตาม `00_GLOBAL_RULES_MODULE.md` และ prototype `renderPager`.
+- Pagination ใช้ compact `ก่อนหน้า  current / total  ถัดไป`; desktop ใช้ shared adaptive pager ตาม `00_GLOBAL_RULES_MODULE.md`.
 - Loading ใช้ list/card skeleton, no-result ระบุว่าค้นหาไม่พบและมีปุ่มล้างตัวกรอง, empty base state อธิบายว่ายังไม่มี Custom Role พร้อม `สร้าง Custom Role` เฉพาะผู้มีสิทธิ์, และ error มี retry โดยไม่ล้าง filter.
 - Permission denied, stale/deleted role และ API failure ต้องไม่เปิด detail/mutation flow และแสดงข้อความไทยที่บอกทางกลับ Role List ได้.
 
@@ -543,7 +567,7 @@ Row action ต้องไม่เปลี่ยน status หรือ permis
 
 - Role List ไม่แสดงหรือกำหนดสิทธิ์เฉพาะรายบุคคล; Admin ทุกคนอ้าง Role เดียวตาม contract.
 - ไม่แก้หรือ deep-link เข้าหน้า `Settings > Admin Accounts` ในงานนี้ เพราะเป็น protected screen.
-- การสร้าง, แก้ไข Permission, impact check และ deactivate/reactivate เปิดเป็น modal/flow จาก list ตาม prototype; production ต้องใช้ validation, revision, safeguard และ audit contract ใน section 9.7–9.11.
+- การสร้าง, แก้ไข Permission, impact check และ deactivate/reactivate เปิดเป็น modal/flow จาก list ตาม prototype; production ต้องใช้ validation, revision, safeguard, audit, data และ lifecycle contract ใน section 9.7–9.12.
 
 ### 9.10 Role Detail And Permissions
 
@@ -557,7 +581,7 @@ Role Detail เป็นหน้ารายละเอียดเต็ม�
 4. Role Summary แสดง 4 tiles: `Role Key`, `Created`, `Last Updated`, `Active Admins`; prototype ปัจจุบันไม่แสดง created/updated actor, creation mode หรือ source lineage บนหน้าจอ แม้ production contract ต้องเก็บข้อมูลเหล่านั้น
 5. action อยู่ท้ายหน้า: System Role ไม่มี mutation action; Custom Role แสดง `แก้ไข` และ `ปิดใช้งาน` หรือ `เปิดใช้งาน` ตามสถานะ โดย action ที่ไม่มีสิทธิ์ต้องไม่ render ใน DOM
 
-จำนวนผู้ดูแลที่ใช้งานเป็นข้อมูลสรุปแบบ read-only ไม่เป็น link ไป `Settings > Admin Accounts` ใน Phase นี้ เพื่อไม่แก้ flow ของ protected screen. หาก Role เป็น Inactive ให้แสดง contextual warning ว่าไม่สามารถเลือก assign ให้ผู้ดูแลรายใหม่ได้ แต่ prototype อนุญาตแก้ข้อมูลและ Permission ได้ตามปกติภายใต้ revision guard/audit.
+จำนวนผู้ดูแลที่ใช้งานเป็นข้อมูลสรุปแบบ read-only ไม่เป็น link ไป `Settings > Admin Accounts` ใน Phase นี้ เพื่อไม่แก้ flow ของ protected screen. หาก Role เป็น Inactive ให้แสดง contextual warning ว่า Role ไม่ eligible สำหรับ assignment ใหม่ตาม production/data contract แต่ข้อความนี้ไม่ได้หมายความว่า current protected Admin Accounts UI รองรับ Custom Role selector; prototype อนุญาตแก้ข้อมูลและ Permission ได้ตามปกติภายใต้ revision guard/audit.
 
 **Detail sections**
 
@@ -570,12 +594,14 @@ Role Detail เป็นหน้ารายละเอียดเต็ม�
 
 **Permissions accordion**
 
-Permissions section ใช้ `rolePermissionCatalog` เป็น source ใน prototype และ production mapper ต้อง resolve จาก canonical `permission_set` ใน section 9.11. แสดงเฉพาะ permission ที่ Role ได้รับ (`level !== none`) เป็นชื่อ action ภาษาไทยพร้อมเครื่องหมาย ✓ โดย group ตาม Module และ submenu.
+Permissions section ใช้ Phase 1 permission action catalog ใน section 9.2 และ production mapper ต้อง resolve จาก canonical `permission_set` ใน section 9.11. แสดงเฉพาะ permission ที่ Role ได้รับ (`level !== none`) เป็นชื่อ action ภาษาไทยพร้อมเครื่องหมาย ✓ โดย group ตาม Module และ submenu.
 
 - Module group เป็น accordion; ค่าเริ่มต้นขยายทุก group ที่มี granted permission และคง collapse state ระหว่าง session ของ Role เดิม.
 - ไม่มี search/filter/sort, permission key, level pill, constraint column หรือรายการ `none` บน Role Detail prototype ปัจจุบัน; ข้อมูล canonical เหล่านี้ยังต้องอยู่ใน service/data contract สำหรับ enforcement และ audit.
 - Group ที่ไม่มี granted permission ไม่แสดง; หาก Role ไม่มี granted permission เลย ให้แสดง `Role นี้ยังไม่ได้รับสิทธิ์ใน module ใด` แต่ create/edit validation ปกติต้องกัน permission set ว่างก่อน persist.
 - Permission section ไม่มี row action; การแก้ Permission เปิดผ่าน action `แก้ไข` ของ Custom Role เท่านั้น.
+- Role Audit History แสดง action กลาง `Create Role`, `Edit Role`, `Deactivate Role`, `Reactivate Role`; การแก้ permission ใช้ label `Edit Role`. ตารางแสดงเหตุผล/ผลลัพธ์แบบอ่านอย่างเดียว ส่วน before/after, target และ immutable reference ยังคงเป็น audit data แต่ไม่แสดงเป็น diff ในตารางนี้.
+- Role Detail ไม่มีปุ่ม `ดู Audit Log` และ Role Audit History ไม่มี deep-link ไป central Audit Log ใน Phase นี้.
 
 **Responsive and states**
 
@@ -589,7 +615,7 @@ Permissions section ใช้ `rolePermissionCatalog` เป็น source ใน
 
 - หน้านี้เป็น detail surface ที่เปิด flow แก้ไข/deactivate/reactivate ของ Custom Role ได้ตาม prototype; mutation ทุก flow ต้อง revalidate permission, revision, safeguard, reason/confirmation และ audit ที่ service ก่อน persist.
 - ไม่แสดงรายชื่อผู้ดูแล, ไม่ทำ individual permission override และไม่แก้, deep-link หรือเปลี่ยน state ของ `Settings > Admin Accounts`.
-- System Role แก้ identity หรือ Permission ไม่ได้; Custom Role action ต้องใช้ revision/safeguard/reason/audit contract ใน section 9.7 และ 9.8 เมื่อเข้าสู่ flow ที่เกี่ยวข้อง.
+- System Role แก้ identity หรือ Permission ไม่ได้; Custom Role action ต้องใช้ revision/safeguard/reason/audit contract ใน section 9.7–9.8 และ lifecycle contract ใน section 9.12 เมื่อเข้าสู่ flow ที่เกี่ยวข้อง.
 
 ### 9.11 Role And Admin Account Data Contract
 
@@ -688,18 +714,66 @@ Admin Accounts prototype ที่ล็อกใน Phase ปัจจุบั
 | `countActiveAdminsUsingRole(role.name)` | aggregate ด้วย `role_id` + account status `Active` |
 | Permission aliases `roles.view`, `roles.manage`, `admin_accounts.view`, `admin_accounts.manage` | Prototype-only aliases; production normalize เป็น `settings.roles.view`, `settings.roles.manage`, `settings.admin_accounts.view`, `settings.admin_accounts.manage` ก่อน validate/persist/audit และ response ต้องคืน canonical key เท่านั้น |
 | Admin Accounts `confirmAdminAccountChangeRole` เปลี่ยน `accounts[].role` ด้วยชื่อทันที | Production ส่ง target-account revision + current/new Role ID/revision ตาม Admin Account reference, revalidate safeguard และ commit assignment + audit แบบ atomic; protected prototype flow ไม่ถูกแก้ใน task นี้ |
-| `checkRoleDeactivateImpact` ตรวจเฉพาะ account status `Active` | Production คง `active_admin_count` สำหรับ UI เดิม แต่ใช้ `assigned_admin_count_by_status` ครบทุกสถานะเป็น deactivate safeguard |
-| Reactivate modal ระบุว่าผู้ดูแลเดิมจะเข้าถึงสิทธิ์อีกครั้ง | เป็น prototype copy ของ mock ที่ยังผูก Role ด้วยชื่อ; production ห้ามคืน assignment/สิทธิ์อัตโนมัติและใช้กฎ migration/activation guard ใน section นี้ |
+| `checkRoleDeactivateImpact` ตรวจ assignment สถานะ `Active`, `Invited`, `Locked`, `Suspended`; `Archived` อย่างเดียวไม่ block | Current prototype ตรงกับ Phase 1 blocking contract; production ยังต้องคำนวณ `assigned_admin_count_by_status` ครบทุกสถานะใน transaction และใช้ governed migration/combined lifecycle ตาม section นี้เมื่อรองรับการย้าย assignment |
+| Reactivate modal เปลี่ยน Role `Inactive` → `Active`, validate stored permission set/dependency และระบุว่าไม่ restore/reassign บัญชีหรือสิทธิ์เดิมอัตโนมัติ | Production คง no-auto-reassign/no-auto-permission-change contract; Role ที่ Active กลับมา eligible สำหรับ assignment ใหม่ที่ service/data-contract layer โดยไม่เปลี่ยน protected Admin Accounts UI |
 | Role history `actor`/`createdBy`/`updatedBy` อาจเป็น username | Production audit ใช้ immutable `actor_admin_id` เป็น canonical และเก็บชื่อเป็น snapshot เพื่อแสดงผลเท่านั้น |
 
 **Conformance boundary**
 
-- สิ่งที่ตรงกับ prototype: รูปแบบ `ROL-xxx`, `roleKey`, type `system/custom`, status `Active/Inactive`, revision guard ใน edit/deactivate/reactivate (prototype ใช้ default 1), Active Admin count แบบคำนวณสด, reason/confirmation, event `ROLE_CREATE`/`ROLE_UPDATE`/`ROLE_PERMISSION_UPDATE`/`ROLE_DEACTIVATE`/`ROLE_REACTIVATE` และการไม่ให้ assign Role inactive.
-- สิ่งที่เป็น production hardening ไม่ได้หมายความว่า prototype ผิด: `role_id` FK แทนชื่อ, revision/concurrency required, explicit creation/provenance mode, impact ทุก account status, atomic migration/audit, immutable actor ID และ activation/session guard. Implementation ต้องทำตาม production contract นี้โดยคงหน้าตา/interaction ของ protected prototype จนกว่าจะมีงานที่ได้รับอนุมัติให้เปลี่ยน.
+- สิ่งที่ตรงกับ prototype: รูปแบบ `ROL-xxx`, `roleKey`, type `system/custom`, status `Active/Inactive`, revision guard ใน edit/deactivate/reactivate (prototype ใช้ default 1), Active Admin count แบบคำนวณสด, reason/confirmation, event `ROLE_CREATE`/`ROLE_UPDATE`/`ROLE_PERMISSION_UPDATE`/`ROLE_DEACTIVATE`/`ROLE_REACTIVATE` และ deactivate blocking สำหรับ assignment สถานะ `Active`/`Invited`/`Locked`/`Suspended`. Protected Admin Accounts UI ปัจจุบันยังมีเฉพาะ 8 System Roles และไม่ได้ implement Custom Role assignment.
+- สิ่งที่เป็น production hardening ไม่ได้หมายความว่า prototype ผิด: `role_id` FK แทนชื่อ, stale-write concurrency สำหรับ mutation ของ existing Role, explicit creation/provenance mode, impact ทุก account status, atomic migration/audit, immutable actor ID และ activation/session guard. Create เป็น record ใหม่ที่เริ่ม revision 1 โดยไม่มี existing Role revision ให้เปรียบเทียบ. Implementation ต้องทำตาม production contract นี้โดยคงหน้าตา/interaction ของ protected prototype จนกว่าจะมีงานที่ได้รับอนุมัติให้เปลี่ยน.
 - Permission key ใน production ต้องใช้ canonical namespace ของ section 9.2 เท่านั้น. Alias แบบสั้นใน prototype ใช้ได้เฉพาะ adapter/test fixture และห้าม persist, audit หรือส่งออก API; unknown/ambiguous alias ต้อง reject ไม่เดาค่า.
-- หาก prototype copy หรือ in-memory behavior ขัดกับ production rule ใน section 9.11 ให้ใช้ section 9.11 สำหรับ data/service persistence และใช้ prototype เป็น source of truth เฉพาะ visual/interaction ที่ล็อกแล้ว; ห้ามใช้ divergence นี้เป็นเหตุแก้ protected Admin Accounts โดยไม่มี approval.
+- หาก prototype wording หรือ in-memory behavior ขัดกับ production rule ใน section 9.11 ให้ใช้ section 9.11 สำหรับ data/service persistence และใช้ prototype เป็น source of truth เฉพาะ visual/interaction ที่ล็อกแล้ว; ห้ามใช้ divergence นี้เป็นเหตุแก้ protected Admin Accounts โดยไม่มี approval.
 
 ทุก mutation ต้องเขียน Role/Admin assignment และ audit ตาม section 9.8 ใน transaction เดียว, ใช้ idempotency ป้องกัน retry ซ้ำ และไม่เก็บ secret/token/password ใน event. หน้าจอ Role Detail ใช้ count แบบ read-only ต่อไป; contract นี้ไม่เพิ่ม deep-link, mutation หรือ state change ให้ protected Admin Accounts/Audit Log.
+
+### 9.12 Custom Role Lifecycle Flows
+
+Phase ปัจจุบันรองรับ Create, Edit, Deactivate และ Reactivate Custom Role จาก Role List/Role Detail. System Role เป็น read-only และไม่มี mutation action. ทุก flow ต้องตรวจ `settings.roles.manage` ซ้ำตอนเปิด flow, ก่อนแสดง confirmation และก่อน persist; การซ่อนปุ่มใน UI ไม่ใช่ enforcement.
+
+**Shared form and permission rules**
+
+- Create/Edit ใช้ฟอร์ม `Role ID`, ชื่อ Role, `Role Key`, คำอธิบาย และ Permission picker แบบ checkbox แยก module/submenu. `Role ID` สร้างอัตโนมัติและ read-only; `Role Key` สร้างอัตโนมัติจากชื่อได้จนกว่าผู้ใช้จะแก้เอง และล็อกถาวรหลังสร้าง.
+- ชื่อ Role required, trim แล้ว 1–64 ตัวอักษรและ unique แบบ case-insensitive; `Role Key` required, ยาวไม่เกิน 64, ใช้ `^[a-z0-9_]+$`, unique และ immutable; คำอธิบาย optional ยาวไม่เกิน 512; ต้องมี granted permission อย่างน้อย 1 รายการ.
+- Permission ที่เป็น action จัดการ/อนุมัติต้องมี permission ดูของกลุ่มเดียวกันก่อน. UI ต้อง lock dependent checkbox จนเลือก view และถอน dependent permission อัตโนมัติเมื่อถอน view.
+- Current editor ไม่มี level selector. Permission เดิมที่ยังเป็น non-admin level ซึ่ง catalog รองรับต้องคงระดับเดิมเมื่อแก้ชื่อ/คำอธิบายหรือคง checkbox นั้นไว้; permission ใหม่ใช้ระดับ non-admin ที่ catalog รองรับและต้องไม่สูงกว่า actor permission ceiling. Unknown key/level, `admin` สำหรับ Custom Role, missing dependency, tampered payload หรือ grant/raise เกิน actor ceiling ต้องถูก reject แบบ atomic.
+- No-op edit ต้องถูก block ก่อน confirmation พร้อมพาผู้ใช้ไปยังข้อความ `ไม่มีข้อมูลเปลี่ยนแปลง`.
+- Create เป็น record ใหม่ จึงไม่มี existing Role revision ให้ compare และไม่ต้องส่ง `expected_revision`; ต้องตรวจ payload, uniqueness, permission dependency และ actor ceiling ซ้ำก่อน persist แล้วสร้างด้วย revision 1.
+- Edit/Deactivate/Reactivate เป็น mutation ของ existing Role ต้องตรวจ role type/status, permission, payload และ `expected_revision` ซ้ำก่อน persist; stale revision ต้องถูก reject โดยไม่เกิด partial mutation.
+- Phase ปัจจุบันไม่มี source template, `Copy`, `Clone` หรือ `Duplicate Custom Role`. การสร้างใหม่ใช้ `creation_mode=from_scratch`, source pair เป็น null และ `source_provenance_status=not_applicable` เท่านั้น.
+
+**Create Custom Role**
+
+1. เปิดจากปุ่ม `สร้าง Custom Role` ซึ่ง render เฉพาะผู้มี `settings.roles.manage`.
+2. เมื่อ validation ผ่าน ให้แสดง confirmation สรุป Role ID, ชื่อ, Role Key, คำอธิบาย, Type, Status และ granted permissions แยก module/submenu; ปุ่มย้อนกลับต้องคงค่าที่กรอก.
+3. Create ไม่ขอ user-entered reason; audit context ใช้เหตุการณ์ `ROLE_CREATE` และข้อมูล Role/permission ที่กำลังสร้าง.
+4. เมื่อยืนยันสำเร็จ สร้าง Custom Role สถานะ `Active`, revision 1, แสดงใน List/Detail ทันที และเพิ่ม baseline Role Audit History. หากชื่อหรือ Role Key ถูกใช้ระหว่างอยู่หน้า confirmation ให้กลับฟอร์มพร้อม error โดยไม่สร้างข้อมูลบางส่วน.
+
+**Edit Custom Role**
+
+1. เปิดได้สำหรับ Custom Role ทั้ง `Active` และ `Inactive`; System Role หรือข้อมูล type/status ที่ไม่ valid ต้องไม่มี action และ direct flow ต้องถูกปฏิเสธ.
+2. Confirmation แสดง revision ถัดไป, before → after ของชื่อ/คำอธิบาย, จำนวน Permission ก่อน/หลัง, รายการสิทธิ์เพิ่ม/ลด และจำนวน Active Admin ที่อาจได้รับผลกระทบ.
+3. ต้องระบุเหตุผล 1–512 ตัวอักษรก่อนยืนยัน. บันทึกสำเร็จเพิ่ม revision, updated metadata และ `ROLE_UPDATE` หรือ `ROLE_PERMISSION_UPDATE` ตามสิ่งที่เปลี่ยน.
+4. ถ้า revision/status/Role Key เปลี่ยนก่อน persist ให้ปฏิเสธโดยไม่ mutation, บันทึก Failed history ด้วย `STALE_REVISION`, แสดง failure message และเปิดฟอร์มใหม่พร้อม draft กับเหตุผลเดิมเพื่อให้ตรวจข้อมูลล่าสุดก่อนยืนยันซ้ำ.
+
+**Deactivate Custom Role**
+
+1. เปิดได้เฉพาะ Active Custom Role. Modal แสดง target, Role Key, status diff, Active Admin count และจำนวน assignment ที่ต้องจัดการก่อน.
+2. Current prototype ต้อง block เมื่อยังมี Admin Account สถานะ `Active`, `Invited`, `Locked` หรือ `Suspended` อ้าง Role นี้; `Archived` คง historical reference ได้และไม่ block. ไม่มี migration action หรือ deep-link ไป Admin Accounts ใน flow นี้.
+3. เมื่อไม่มี blocking assignment ให้บังคับเหตุผล 1–512 ตัวอักษรและ confirmation; ก่อน persist ต้องตรวจ revision, assignment impact และ last role-manager/admin-recovery safeguard ซ้ำ.
+4. สำเร็จแล้วเปลี่ยนเป็น `Inactive`, เพิ่ม revision/updated metadata และ `ROLE_DEACTIVATE`. Production ที่รองรับ governed migration ให้ใช้ atomic contract ใน section 9.11 แทนการ silent reassign.
+
+**Reactivate Custom Role**
+
+1. เปิดได้เฉพาะ Inactive Custom Role. ต้องตรวจ actor permission, role type/status/revision, permission set, dependency และ level validity ก่อนแสดงและก่อนยืนยัน.
+2. Modal แสดง target, status diff, จำนวนบัญชีที่อ้าง Role และผลกระทบ; ต้องระบุเหตุผล 1–512 ตัวอักษร.
+3. สำเร็จแล้วเปลี่ยนเป็น `Active`, เพิ่ม revision/updated metadata และ `ROLE_REACTIVATE`; permission set เดิมต้องคงเดิมและห้าม restore/reassign บัญชีหรือสิทธิ์อัตโนมัติ. ใน production/data-contract layer Role จึงกลับมา eligible สำหรับ assignment ใหม่ตาม section 9.11 แต่ current protected Admin Accounts UI ยังเลือกได้เฉพาะ 8 System Roles และไม่ได้ implement Custom Role assignment.
+
+**Cancel, stale, and failure behavior**
+
+- Cancel/close ก่อนยืนยันต้องไม่เปลี่ยน Role, Permission หรือ history.
+- Validation, permission, no-op, stale revision, assignment safeguard หรือ audit/persistence failure ต้องไม่เกิด partial mutation.
+- List/Detail ต้อง refresh หลังสำเร็จโดยรักษา navigation/filter context ตาม section 9.9; failure ที่กลับไปแก้ไขต้องคงข้อมูลที่ผู้ใช้กรอกเท่าที่ปลอดภัย.
 
 ## 10. Security Policy Settings
 
@@ -885,7 +959,9 @@ Change history ต้อง link ไป Audit Log detail ตาม permission
 | Invite admin | `settings.admin_accounts.manage` | Yes | Optional | Yes |
 | Change Admin Role | `settings.admin_accounts.manage` | Yes | Required | Yes |
 | Suspend/reactivate admin | `settings.admin_accounts.manage` | Yes | Required | Yes |
-| Update Custom Role / Permissions | `settings.roles.manage` | Yes | Required | Yes |
+| Create Custom Role | `settings.roles.manage` | Yes | No user-entered reason; ใช้ generated audit context | Yes |
+| Edit Custom Role / Permissions | `settings.roles.manage` | Yes | Required | Yes |
+| Deactivate/reactivate Custom Role | `settings.roles.manage` | Yes | Required | Yes |
 | Update security policy | Admin | Yes + re-auth | Required | Yes |
 | Update retention/export policy | Admin | Yes | Required | Yes |
 | Update feature flag | Admin | Yes | Required | Yes |
@@ -959,7 +1035,7 @@ Sensitive settings value ต้อง mask ใน audit payload ถ้าเป�
 | --- | --- |
 | AC-BO-SET-001 | Admin ทุก admin access เข้าดู own profile/settings และเปลี่ยน password ตาม rule ได้ |
 | AC-BO-SET-002 | Admin จัดการ admin account lifecycle ได้โดยไม่กระทบ Admin คนสุดท้าย |
-| AC-BO-SET-003 | Roles & Permissions matrix แสดง 8 standard role templates (Super Admin, Admin Manager, Operations Manager, Support Agent, Trust & Safety Moderator, Asset Operations, Content Editor, Content Publisher), แสดง permission key taxonomy + baseline permission matrix ตาม role, enforce ทั้ง UI/API/service level และห้ามลบ/เปลี่ยน system role identity |
+| AC-BO-SET-003 | Roles & Permissions policy กำหนด 8 standard role templates (Super Admin, Admin Manager, Operations Manager, Support Agent, Trust & Safety Moderator, Asset Operations, Content Editor, Content Publisher), canonical taxonomy/levels, baseline matrix และ Phase 1 permission action catalog; Role Detail แสดงเฉพาะ granted action names ส่วน enforcement ใช้ explicit key ทั้ง UI/API/service และห้ามลบ/เปลี่ยน system role identity |
 | AC-BO-SET-004 | Permission/security/system/retention/export setting changes ต้องมี confirmation, reason และ audit |
 | AC-BO-SET-005 | Security policy ต้องสอดคล้องกับ Auth baseline: email/password only, Email OTP mandatory สำหรับ Admin, idle 8h, max 24h, failed login 5 ครั้ง, lockout 15 นาที |
 | AC-BO-SET-006 | Retention settings ต้องไม่อนุญาต manual delete audit logs จาก UI ปกติ |
@@ -980,11 +1056,14 @@ Sensitive settings value ต้อง mask ใน audit payload ถ้าเป�
 | AC-BO-SET-021 | Invite Admin modal ตรวจอีเมล unique, บังคับเลือก role template จาก 8 standard role templates, แสดง Email OTP note และบันทึก audit `ADMIN_ACCOUNT_INVITE` พร้อมสร้าง admin id ใหม่ (`ADM-xxx` ลำดับถัดไป) |
 | AC-BO-SET-022 | Permission gating ตาม `canSuspendAdmin`/`canReactivateAdmin`/`canUnlockAdmin`/`canArchiveAdmin`/`canChangeRoleAdmin` — action ที่ไม่อนุญาตต้องไม่ปรากฏใน DOM ทั้งใน row menu และ detail action buttons |
 | AC-BO-SET-023 | Master admin หลัก (ADM-010) ห้าม suspend/archive/change role; self ห้าม suspend/reactivate/unlock/archive/change role ตัวเอง; ถ้า active admin เหลือ 1 คน ห้าม suspend (ป้องกันระบบไม่มีผู้ดูแล) |
-| AC-BO-SET-024 | Role change ที่ทำให้ไม่มี active `Super Admin`, ไม่มี account ที่จัดการ role ได้, ไม่มี admin recovery coverage, assign Custom Role ที่ inactive/invalid, หรือเปลี่ยน role ตัวเอง/master admin ต้องถูก block ทั้ง UI/API/service พร้อม policy-blocked state และ audit result ตาม policy |
+| AC-BO-SET-024 | Production Role assignment/change ที่ทำให้ไม่มี active `Super Admin`, ไม่มี account ที่จัดการ role ได้, ไม่มี admin recovery coverage, assign Custom Role ที่ inactive/invalid, หรือเปลี่ยน role ตัวเอง/master admin ต้องถูก block ที่ API/service และ UI เมื่อมี surface นั้น พร้อม policy-blocked state และ audit result ตาม policy; current protected Admin Accounts UI ยังรองรับเฉพาะ 8 System Roles |
 | AC-BO-SET-025 | ทุกคำขอเปลี่ยน Role สร้าง `ADMIN_ACCOUNT_ROLE_CHANGE` ตาม section 9.8 โดยบันทึก event/reference/correlation, actor, target, before/after Role และ permission diff, reason, safeguard outcome, result และเวลา; การสร้าง/แก้ไข/ปิดใช้งาน/เปิดใช้งาน Role ใช้ `ROLE_CREATE`/`ROLE_UPDATE`/`ROLE_PERMISSION_UPDATE`/`ROLE_DEACTIVATE`/`ROLE_REACTIVATE` ตามข้อมูลเฉพาะ; audit write ต้องสำเร็จก่อน commit mutation และไม่มี secret/token/password ใน payload |
 | AC-BO-SET-026 | Role List แสดง 8 คอลัมน์ Role ID/Role/Type/Status/Detail/Admins/Last Updated/Action, ค้นหาและกรองตาม section 9.9, sort Role ID เป็น default, ไม่มี KPI cards หรือ list-detail split, แยก System/Custom Role ชัดเจน, คง filter state เมื่อกลับจาก detail และ responsive เป็น mobile card ที่ `<= 760px` |
 | AC-BO-SET-027 | Role Detail แสดง detail head, Role Summary 4 tiles, granted Permissions แบบ accordion แยก module/submenu, Role Audit History 5 คอลัมน์ และ action ท้ายหน้า; responsive เป็น stacked layout/history cards ที่ `<= 760px`, ไม่แสดง permission `none`, ไม่รองรับ individual permission override หรือ Admin Accounts drill-in |
 | AC-BO-SET-028 | Production เชื่อม Admin Account กับ Role ด้วย immutable `role_id` ไม่ใช้ชื่อ Role, บังคับ `role_key`/type/status/revision และ target-account concurrency contract, แยก Active display count จาก assignment impact ทุก account status, reject assignment/activation ที่ inactive/stale/invalid, ไม่เดา source template ของ legacy Custom Role และบังคับ governed atomic migration พร้อม correlated per-account/Role audit ก่อน deactivate ตาม section 9.11 |
+| AC-BO-SET-029 | Create/Edit Custom Role ใช้ form + confirmation ตาม section 9.12 และ validate ชื่อ/Role Key/คำอธิบาย/permission dependency/permission ceiling; Create สร้าง record ใหม่ revision 1 โดยไม่ใช้ `expected_revision` ของ existing Role; Edit คง valid existing permission level, block no-op/stale revision โดยไม่เกิด partial mutation และรองรับทั้ง Active/Inactive Custom Role |
+| AC-BO-SET-030 | Deactivate ต้อง block assignment สถานะ Active/Invited/Locked/Suspended จนจัดการแล้วและ recheck safeguard ก่อน persist; Reactivate ต้อง validate permission set, คง permission เดิม และห้าม restore/reassign account อัตโนมัติ; ทั้งสอง flow บังคับ reason/confirmation/revision/audit |
+| AC-BO-SET-031 | Phase ปัจจุบันไม่มี `Copy`, `Clone`, `Duplicate`, source-template selector หรือ `ดู Audit Log` action ใน Role List/Detail; Role history อ่านจาก read-only Role Audit History ใน Role Detail และการสร้างใหม่ใช้ `from_scratch` เท่านั้น |
 
 ## 22. Open Decisions
 
