@@ -41,7 +41,7 @@ Phase 1 คือ BO foundation ที่ล็อกใน prototype แล้�
 | Module | Phase 1 Scope |
 | --- | --- |
 | Global BO Rules | Responsive layout, admin access control, shared patterns, status, audit, privacy, FO sync |
-| Auth / Admin Accounts | Email/password login, mandatory Email OTP for Admin, session timeout, failed login lockout |
+| Auth / Admin Accounts | Email/password login, mandatory Email OTP for Admin, session timeout, failed login lockout, one-time Admin invitation อายุ 72 ชั่วโมง, initial-password activation และ Invited-to-Active lifecycle |
 | Admin Permission | Module visibility และ action-level permission enforcement |
 | Dashboard | Key metrics, pending queues, recent activity, last updated snapshot |
 | User Management | User list, search/filter/sort, profile/detail view, login history, suspend/ban/restore, reset password, Account Deletion handoff, no direct User List export |
@@ -54,7 +54,7 @@ Phase 1 คือ BO foundation ที่ล็อกใน prototype แล้�
 | Help & Support | `12_HELP_SUPPORT_MODULE.md` - Policy & Versioning (Terms of Use, Privacy Policy — Draft/Published/Archived, bilingual TH/EN, version history, restore) และ Support Center (channels, business hours, availability TH/EN, preview) |
 | Account Deletion | `13_ACCOUNT_DELETION_MODULE.md` - Request queue, restore/reject restore ใน grace period, 30-day grace period, ลบบัญชีอัตโนมัติเมื่อครบกำหนด (เก็บถาวร + ลบตัวตน ในขั้นเดียว), lifecycle email 5 จุด (ยืนยันลบบัญชี / เตือนใกล้ครบ grace period / คืนบัญชีแล้ว / ปฏิเสธคืนบัญชี / ลบตัวตนแล้ว) ตาม `14_NOTIFICATIONS_MODULE.md` section 9.3 |
 | Audit Log | `08_AUDIT_LOG_MODULE.md` - Immutable event capture, search/filter, export, Admin visibility |
-| Admin Settings | `16_ADMIN_SETTINGS_MODULE.md` - Admin own settings, admin account lifecycle, Roles & Permissions (8 System Roles + Custom Role), Role-to-Admin `role_id` contract, security/system defaults, retention/export policy, feature flags, integration metadata, **Delivery Logs** (Phase 1 — delivery log UI, retry failed delivery, export delivery log; ย้ายจาก Notifications module) |
+| Admin Settings | `16_ADMIN_SETTINGS_MODULE.md` - Admin own settings, admin account/invitation lifecycle (Invite/Resend/Cancel/Reissue + delivery/audit trace), Roles & Permissions (8 System Roles + Custom Role), Role-to-Admin `role_id` contract, security/system defaults, retention/export policy, feature flags, integration metadata, **Delivery Logs** (Phase 1 — delivery log UI, retry failed delivery, export delivery log; ย้ายจาก Notifications module) |
 
 Directory is postponed from Phase 1. Keep `07_DIRECTORY_MODULE.md` as a future reference only; do not expose the BO Directory menu, route, CRUD, publication controls, map/contact fields, or FO sync behavior in Phase 1 unless Product explicitly reopens the scope.
 
