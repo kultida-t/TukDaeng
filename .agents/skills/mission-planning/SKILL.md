@@ -826,18 +826,15 @@ Mission Plan Summary เป็นสรุปภาพรวม Approved Mission
 
 **ข้อมูลขั้นต่ำที่ต้องมี:**
 - Mission Name
-- Status เช่น `Approved Plan`
 - Planned Duration และ Planned Start/End ถ้ามี
 - Total Planned Hours/Baseline
-- จำนวน Objectives และจำนวน Tasks
-- เป้าหมายหลักของ Mission
 - Objective → Feature → Task Mapping
 - Objective Weight และ Planned Hours ต่อ Objective
+- Planned Hours ของแต่ละ Task
 - Execution Sequence
-- ผลลัพธ์ที่คาดหวัง
 
 **Task Display Rule (บังคับ):**
-- แสดง Task ด้วย business-facing task code + ชื่อ เช่น `AIL-002 — กำหนด Invitation Lifecycle และ Security Contract`
+- แสดง Task ด้วย business-facing task code + ชื่อเต็ม + Planned Hours เช่น `AIL-002 กำหนด Invitation Lifecycle และ Security Contract — 1 ชม.`
 - ห้ามแสดงรูปแบบ `AIL-002 [51ffcda4]`
 - ห้ามแสดง Kanban UUID, partial UUID, database ID หรือ internal task/mission identifier อื่นใดใน Mission Plan Summary
 - ถ้า Task ไม่มี business-facing code ให้ใช้ชื่อ Task อย่างเดียว ห้ามแทนด้วย UUID
@@ -846,41 +843,46 @@ Mission Plan Summary เป็นสรุปภาพรวม Approved Mission
 **รูปแบบ Mission Plan Summary Copy Block:**
 
 ```text
-Mission Plan Summary
+Mission <number>: <Mission Name>
 
-Mission: <Mission Name>
-Status: Approved Plan
-Planned Duration: <N วัน>
-Planned Start / End: <YYYY-MM-DD> → <YYYY-MM-DD หรือ ไม่ระบุ>
-Total Planned Hours / Baseline: <X ชม.>
-Objectives: <จำนวน>
-Tasks: <จำนวน>
+ระยะเวลาแผน: <human-readable date range> (<duration>)
+เวลาตามแผนทั้งหมด: <total planned hours>
 
-เป้าหมายหลัก:
-- <เป้าหมายหลักของ Mission>
+เป้าหมาย 1: <Objective Name>
 
-Objective 1 — <ชื่อ Objective>
-Weight: <W>%
-Planned Hours: <X ชม.>
-Feature: <ชื่อ Feature 1>
-- <TASK-CODE> — <Task Name>
-Feature: <ชื่อ Feature 2>
-- <TASK-CODE> — <Task Name>
+เวลาตามแผน: <objective planned hours> (<objective weight>%)
 
-Objective 2 — <ชื่อ Objective>
-Weight: <W>%
-Planned Hours: <Y ชม.>
-Feature: <ชื่อ Feature>
-- <TASK-CODE> — <Task Name>
-- <TASK-CODE> — <Task Name>
+Feature: <Feature Name>
 
-Execution Sequence:
-1. <TASK-CODE> → <TASK-CODE> → <TASK-CODE>
+- <TASK-CODE> <Task Name> — <task planned hours>
 
-ผลลัพธ์ที่คาดหวัง:
-- <ผลลัพธ์ที่คาดหวัง 1>
-- <ผลลัพธ์ที่คาดหวัง 2>
+Feature: <Feature Name>
+
+- <TASK-CODE> <Task Name> — <task planned hours>
+- <TASK-CODE> <Task Name> — <task planned hours>
+
+เป้าหมาย 2: <Objective Name>
+
+ใช้ structure เดียวกันต่อจนครบทุก Objective
+
+ลำดับการดำเนินงาน
+
+<TASK> → <TASK> → <TASK>
 ```
+
+**Mission Summary Copy Experience Rules:**
+- หนึ่ง Mission Summary ต้องอยู่ใน `text` code block เดียว เพื่อให้กด Copy แล้วนำไปวางใน Google Docs ได้ทันที
+- คง hierarchy ทางข้อมูล Mission → Objective → Feature → Task ด้วยลำดับข้อความและช่องว่าง โดยไม่ใช้ Markdown heading (`#`, `##`, `###`), bold, inline code หรือ horizontal rule
+- Task ต้องอยู่ใต้ Feature ที่ map จริง และแสดงเป็น `<TASK-CODE> <Task Name> — <task planned hours>` โดยไม่ครอบ Task Code ด้วย backtick
+- รายการทุกข้อใน Copy Block ต้องขึ้นต้นด้วย literal `- ` ภายใน `text` code block; ห้ามใช้ `*` หรือรูปแบบที่ UI render เป็น bullet symbol `•`
+- วันที่ให้ใช้รูปแบบ human-readable เมื่อทำได้โดยไม่เปลี่ยนค่าจริง เช่น `21–23 ก.ย. 2026 (3 วัน)`
+- แสดง Planned Time ครบ 3 ระดับ: Total Planned Hours ของ Mission, Planned Hours + Weight ของ Objective และ Planned Hours ของ Task แต่ละตัว
+- ชั่วโมงใน Summary แสดงครั้งเดียวแบบอ่านง่าย: `30 นาที`, `<N> ชม.` หรือ `<N> ชม. <M> นาที`; ห้ามแสดง `1 ชม. 0 นาที`, decimal hours ภาษาอังกฤษ หรือค่าซ้ำแบบ `2 ชม. 30 นาที (2.5 ชม.)`
+- ถ้า Task อยู่ stage เดียวกันหรือทำคู่ขนาน ให้คั่นด้วย `/` ในลำดับ เช่น `AIL-004 → AIL-005 / AIL-006 → AIL-007`
+- ชื่อ Mission, Objective และ Feature ปรับ wording ให้เหมาะกับงานจริงได้ แต่ Mission Scope, Task Code/Task Name, mapping, Weight, Planned Hours, Duration และ Execution Sequence ต้องตรง Approved Mission Plan
+- Mission Plan Summary เป็น Planning Log: ห้ามแสดง Actual Hours, Actual QA Result, Implementation Result หรือ Session Handoff technical context
+- เนื้อหาสำคัญทั้งหมดต้องอยู่ใน Copy Block เดียว; ข้อความนอก Block มีได้เพียงคำอธิบายสั้น ๆ และห้ามแยกส่วนของ Summary ออกไปไว้ภายนอก
+- ห้ามเพิ่ม technical handoff, Full/Partial Kanban UUID, Database ID หรือ Internal Identifier ลงใน Summary
 
 Summary ต้องเป็น forward-looking Approved Plan เท่านั้น ห้ามใส่ actual hours, Activity timeline, Evidence, ผล QA หรือรายละเอียด implementation ที่เกิดขึ้นภายหลัง
 
@@ -1136,8 +1138,8 @@ mcp_call_tool(
 
 **กฎสำหรับ copy block ทุกอัน:**
 1. ใช้ code block ที่ระบุภาษาเป็น `text` (เช่น ` ```text `) เพื่อให้ก๊อปง่าย
-2. เนื้อหาใน copy block ต้องเป็น **ข้อความล้วน** ไม่มี markdown formatting ซับซ้อน (ไม่มี `**bold**`, ตาราง)
-3. ใช้ `- ` นำหน้าแต่ละข้อ และใช้ `[Service]` ครอบชื่อ Service
+2. เนื้อหาใน copy block ต้องเป็นข้อความล้วน ไม่มี Markdown heading, bold, inline code, ตาราง หรือ horizontal rule
+3. ใช้ literal `- ` นำหน้าแต่ละรายการภายใน `text` code block เพื่อให้ Copy ออกไปเป็นเครื่องหมาย `-` ไม่ใช่ rendered bullet symbol `•`
 4. Copy block ของ **Work Summary ต้องระบุ `สถานะ` และ `รายละเอียดที่ทำ` อย่างชัดเจน** สำหรับทุก task/แผนที่สรุป รวมถึงผลลัพธ์และหลักฐานเมื่อมี
 5. สถานะต้องใช้คำที่ตรวจสอบได้: `เสร็จ`, `บางส่วน`, `ยังไม่ทำ` หรือ `รอตรวจสอบ`
 6. **ให้ใส่น้ำหนัก (Weight %) และชั่วโมงใน copy block** เพื่อให้ข้อมูลครบสำหรับระบบปลายทางที่ต้องการข้อมูลครบ — รายละเอียดตามกฎด้านล่าง
@@ -1149,7 +1151,7 @@ mcp_call_tool(
 12. **ตรวจสอบ/แก้ไขอยู่ในระดับ Feature** — ใส่เป็นแผนที่วางไว้ก่อนเริ่มงาน ใช้ `()` ครอบเวลา และไม่ต้องสร้าง Task ตรวจสอบ/แก้ไขแยก เว้นแต่เป็นงานที่ต้องติดตามอิสระ
 13. **Mission Plan ห้ามใช้ผลลัพธ์ย้อนหลัง** — ห้ามใส่สถานะเสร็จ, ชั่วโมงจริง, Evidence, bug ที่พบจริง หรือผล QA ที่เกิดขึ้นแล้วใน copy block ของแผนตั้งต้น
 14. **แยก approval artifacts ตามผู้ใช้ปลายทาง:** Mission Plan Summary สำหรับคนอ่าน Work Log; Session Handoff สำหรับ Agent/session ถัดไป ห้ามรวมสองแบบเป็น artifact เดียว
-15. **Identifier rule:** Mission Plan Summary ห้ามมี Kanban UUID/internal ID และใช้ `<TASK-CODE> — <Task Name>`; Session Handoff และ Work Summary เชิงเทคนิคใช้ internal IDs ได้เมื่อจำเป็นต่อ traceability
+15. **Identifier rule:** Mission Plan Summary ห้ามมี Kanban UUID/internal ID และใช้ `<TASK-CODE> <Task Name> — <task planned hours>`; Session Handoff และ Work Summary เชิงเทคนิคใช้ internal IDs ได้เมื่อจำเป็นต่อ traceability
 
 **กฎการใส่น้ำหนัก/ชั่วโมงใน copy block (แยกตามส่วน):**
 
@@ -1157,7 +1159,7 @@ mcp_call_tool(
 |---|---|
 | **ส่วนที่ 1 — หัวข้อ Mission** | Baseline (ชม.), จำนวนชั่วโมงทั้งหมดตามแผน, เหลือชั่วโมงให้วางแผน |
 | **ส่วนที่ 1 — แต่ละเป้าหมาย** | น้ำหนัก (Weight %), ชั่วโมงที่คาดการณ์ของเป้าหมาย, ชั่วโมงแยกในแต่ละ Feature ย่อย (รวม ตรวจสอบ/แก้ไข ใน feature) |
-| **Approved Mission Plan Summary** | Planned Duration, Total Planned Hours/Baseline, จำนวน Objectives/Tasks, Objective Weight/Hours, Feature → Task mapping, Execution Sequence และผลลัพธ์ที่คาดหวัง; ห้ามมี UUID |
+| **Approved Mission Plan Summary** | Planned Duration, Mission Total Planned Hours, Objective Weight/Hours, Feature → Task mapping, Planned Hours ของแต่ละ Task และ Execution Sequence; ห้ามมี UUID |
 | **Session Handoff** | Approved baseline, technical identifiers/context, scope/boundary, dependency, acceptance, risk/open items, protected scope, current state และ next-session instructions |
 | **ส่วนที่ 2 — แต่ละเป้าหมาย** | น้ำหนัก (Weight %), เวลาที่วางแผน, ใช้จริง (จาก get_time_summary) |
 | **ส่วนที่ 2 — ท้ายสรุป** | รวมเวลาวางแผน vs ใช้จริงทั้ง Mission |
@@ -1252,8 +1254,12 @@ Mission: สร้างเอกสารและ prototype สำหรับ
 - [ ] Mapping Objective → Feature → Kanban task (1 Objective = หลาย Feature, 1 Feature = 1 หรือหลาย task)
 - [ ] สรุปแผนเป็นข้อ ๆ แยกตามเป้าหมาย พร้อมน้ำหนัก% และ Feature ย่อย + **copy block ที่มีน้ำหนัก/ชั่วโมงครบ**
 - [ ] ถ้าผู้ใช้อนุมัติ Mission Plan แล้ว ให้ล็อก Approved Mission Baseline ก่อนสร้าง approval artifacts
-- [ ] สร้าง Mission Plan Summary Copy Block สำหรับ Work Log โดยมี Mission/สถานะ/วัน/ชั่วโมง/จำนวน Objective และ Task/เป้าหมาย/Hierarchy/Weight/Sequence/ผลลัพธ์ครบ
-- [ ] ตรวจ Mission Plan Summary ว่า Task ใช้ `<TASK-CODE> — <Task Name>` และไม่มี Kanban UUID/internal ID ทุกชนิด
+- [ ] สร้าง Mission Plan Summary สำหรับ Work Log เป็น Human-readable `text` Copy Block เดียว โดยคง hierarchy ทางข้อมูล Mission → Objective → Feature → Task พร้อม Planned Duration, Total Planned Hours, Objective Hours/Weight, Task Planned Hours และ Execution Sequence ครบ
+- [ ] ตรวจ Mission Plan Summary ว่า Task ใช้ `<TASK-CODE> <Task Name> — <task planned hours>` และไม่มี Kanban UUID/internal ID ทุกชนิด
+- [ ] ตรวจ Planned Time ครบ 3 ระดับ: Mission, Objective และ Task ทุกตัว
+- [ ] ตรวจรูปแบบชั่วโมงใน Mission Plan Summary ว่าอ่านง่ายและไม่แสดงค่าซ้ำ เช่นใช้ `8 ชม.` หรือ `2 ชม. 30 นาที`
+- [ ] ตรวจวันที่ใน Mission Plan Summary ว่าเป็น human-readable date range เมื่อทำได้โดยไม่เปลี่ยนค่าจริง
+- [ ] ตรวจว่ารายการใน Mission Plan Summary ใช้ literal `- ` ภายใน `text` code block และไม่มี `*` หรือ rendered bullet `•`
 - [ ] สร้างหรืออัปเดต Session Handoff แยกอีก artifact โดยคง identifiers, technical context, current state, next task และ next-session instructions ครบ
 - [ ] ถ้าจบ planning session ให้บันทึก Session Handoff ด้วย `save_session_note` เมื่อเครื่องมือพร้อม และแสดง Summary/Handoff เป็นคนละ code block
 - [ ] ตรวจว่าไม่ได้เริ่ม implementation, ไม่ย้าย Task เป็น `in_progress` และไม่เริ่ม timer จาก approval workflow
