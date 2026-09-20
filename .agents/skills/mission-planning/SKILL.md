@@ -1,6 +1,6 @@
 ---
 name: mission-planning
-description: TukDaeng daily work workflow — วางแผน Mission รายวัน (คิด Mission + จำนวนวัน + แผนแยก Service) และสรุปผลหลังทำตามแผน พร้อมส่วนที่ก๊อปไปลงระบบอื่นได้เลย. Use เมื่อเริ่มวางแผนงานรายวัน หรือเมื่อทำตามแผนเสร็จแล้วต้องสรุปผล
+description: TukDaeng daily work workflow — วางแผน Mission รายวัน, สร้าง Mission Plan Summary และ Session Handoff หลังอนุมัติแผน, และสรุปผลหลังทำตามแผน พร้อมส่วนที่ก๊อปไปลงระบบอื่นได้เลย. Use เมื่อเริ่มวางแผนงานรายวัน, ปิด planning session หลังผู้ใช้อนุมัติ Mission Plan หรือสรุปผลหลังทำตามแผน
 ---
 
 # TukDaeng Mission Planning Workflow
@@ -25,11 +25,14 @@ Workflow สำหรับ **วางแผนการทำงานรา�
 
 > **หมายเหตุสำคัญ:** skill นี้ **ไม่ส่ง log เข้า Core Portal อัตโนมัติ** — ทุกสรุปที่ออกมาจะอยู่ในรูปแบบ **code block (copy block)** เพื่อให้ผู้ใช้ก๊อปข้อความไปวางในระบบอื่นได้เอง
 
-### การแยก Mission Plan กับ Work Summary
+### การแยก Mission Plan, Approval Artifacts และ Work Summary
 
 - **Mission Plan** คือแผนตั้งต้นก่อนเริ่มงาน ต้องเขียนเป็นสิ่งที่วางแผนจะส่งมอบ ไม่ใช่ผลลัพธ์ย้อนหลัง
 - Mission Plan ต้องมี Objective, Feature ย่อย, Task ที่เกี่ยวข้อง, เวลาแผน, Dependency, Acceptance Criteria และ Risk
 - Mission Plan ห้ามใส่สถานะ `เสร็จ`, ชั่วโมงที่ใช้จริง, Activity timeline, Evidence, bug ที่พบจริง, ผล QA ที่เกิดขึ้นแล้ว หรือ Scope Change ที่เกิดขึ้นภายหลัง
+- **Mission Plan Summary Copy Block** คือสรุป Approved Mission Baseline สำหรับ Work Log และคนทั่วไปอ่านย้อนหลัง ต้องกระชับ แสดง Objective → Feature → Task ชัดเจน และห้ามมี Kanban UUID/internal ID
+- **Session Handoff** คือ execution context สำหรับ Agent/session ถัดไป ต้องคง technical context, identifiers, dependency, current state และ next-step instructions ที่จำเป็น; สามารถมี Kanban UUID/internal ID ได้
+- Mission Plan Summary กับ Session Handoff เป็นคนละ artifact ห้ามใช้แทนกัน ห้ามลดรายละเอียด Handoff เพราะมี Summary และห้ามบังคับให้ผู้ใช้ใช้ Summary เป็น execution context
 - **Work Summary** คือสรุปหลังทำงาน ใช้สำหรับสถานะจริง, ชั่วโมงจริง, Activity timeline, ไฟล์ที่แก้, Evidence, bug/การแก้ไขจริง, Scope Change และ open items
 - การวางแผนและการสร้าง task อาจมี planning record แยกได้ แต่ไม่ต้องนับ planning record เป็น Objective ของ Mission ที่ส่งมอบ เว้นแต่ผู้ใช้ระบุชัดว่าต้องการนับงานวางแผนเป็น deliverable
 - หากผู้ใช้ขอ Mission Plan ใหม่ ให้สร้างจาก requirement และ scope ณ ก่อนเริ่มงาน โดยไม่ใช้ความรู้จากผลลัพธ์ภายหลังมาปรับถ้อยคำให้เหมือนงานเสร็จแล้ว
@@ -45,7 +48,7 @@ Workflow สำหรับ **วางแผนการทำงานรา�
 - หลังเริ่ม Mission ห้ามลบ Objective หรือ Feature จาก baseline หาก Task ไม่จำเป็นต้องทำแล้ว ให้บันทึกเป็น Scope Change/ยกเลิกพร้อมเหตุผล และคง Feature ไว้เพื่อให้ความแม่นยำของแผนไม่หายไป
 - หลีกเลี่ยงการลบ Task หลังเริ่มทำ ให้ใช้สถานะยกเลิกหรือบันทึกเหตุผลแทน ทั้งนี้ Task ที่ยกเลิกไม่ลบ Feature หรือ work log ที่เกี่ยวข้อง
 - ประเมินเวลาตามเวลา AI ทำงานเป็นหลัก รวมเวลา AI วิเคราะห์ สร้าง แก้ และตรวจรับตามขอบเขตงาน
-- ใช้ copy block เฉพาะ Mission Plan, Work Summary และ Task Summary ที่ผู้ใช้ต้องนำไปวางระบบอื่น; คำตอบคุยงานทั่วไปตอบตามปกติ
+- ใช้ copy block เฉพาะ Mission Plan, Mission Plan Summary, Session Handoff, Work Summary และ Task Summary ที่ผู้ใช้ต้องนำไปวางระบบอื่น; คำตอบคุยงานทั่วไปตอบตามปกติ
 
 ---
 
@@ -60,6 +63,7 @@ Workflow สำหรับ **วางแผนการทำงานรา�
   - [Risk และแผนรับมือ](#8-วิเคราะห์-risk-และแผนรับมือ)
   - [Mapping กับ Kanban](#11-mapping-แผนกับ-kanban-task)
   - [ตัวอย่าง Mock-up ฟอร์ม Create Mission](#12-ตัวอย่าง-mock-up-ฟอร์ม-create-mission)
+  - [Mission Approval และ Session End](#13-mission-approval--session-end-workflow)
 - [ส่วนที่ 2: สรุปผลหลังทำตามแผน (Work Summary)](#ส่วนที่-2-สรุปผลหลังทำตามแผน-work-summary)
   - [AI Review และ Evidence](#2-ตรวจสอบงานที่-ai-ทำและรวบรวม-evidence)
   - [กฎเมื่อแผนเปลี่ยน](#กฎเมื่อแผนเปลี่ยนระหว่างทำ)
@@ -98,6 +102,16 @@ Task ที่เกี่ยวข้องได้ 1 task หรือหล�
 เว้นแต่งานนั้นเป็น decision/meeting ที่ไม่มีการแก้ไฟล์
 ↓
 สรุปแผนเป็นข้อ ๆ แยกตามเป้าหมาย + copy block
+↓
+ผู้ใช้ตรวจและอนุมัติ Mission Plan
+↓
+ล็อก Approved Mission Baseline
+↓
+สร้าง Mission Plan Summary Copy Block สำหรับ Work Log
++ สร้าง/อัปเดต Session Handoff สำหรับ Agent
+↓
+แสดงสอง artifact แยกกัน แล้วจบ Planning Session
+(ห้ามเริ่ม implementation อัตโนมัติ)
 ```
 
 **กฎเหล็ก:**
@@ -256,6 +270,8 @@ Dependency: <รายการ หรือ ไม่มี>
 #### 4. สรุปหัวข้อ Mission + copy block
 
 หลังคิด Mission แล้ว ให้สรุปหัวข้อ Mission ตามฟิลด์เดียวกับฟอร์ม **สร้างแผนภารกิจใหม่ (Create Mission)** ของระบบ Core Portal เพื่อให้ผู้ใช้ก๊อปข้อมูลไปกรอกฟอร์มได้ตรงช่องทันที:
+
+> Copy block ในขั้นตอนนี้เป็น **Draft/Detailed Mission Plan ก่อนอนุมัติ** ไม่ใช่ Mission Plan Summary หลังอนุมัติ และไม่ใช่ Session Handoff
 
 **ฟิลด์ที่ต้องระบุ (ตามฟอร์ม Create Mission):**
 - **ชื่อแผนงาน (Mission Name)**
@@ -539,6 +555,8 @@ PRD / ความต้องการ → Module spec (BO/FO) → Prototype �
 
 หลังวางแผนครบทุกเป้าหมายแล้ว ให้สรุปแผนออกมาเป็นข้อ ๆ จัดกลุ่มตามเป้าหมาย พร้อมเวลา แล้วแสดงเป็น copy block:
 
+> Copy block ในขั้นตอนนี้เป็น **Detailed Mission Plan สำหรับ review ก่อน approval** จึงแสดงรายละเอียด planning ได้เต็มรูปแบบ; หลังผู้ใช้อนุมัติและต้องการจบ planning session ให้สร้าง artifact ใหม่ตาม section 13 แยกต่างหาก
+
 **รูปแบบที่แสดงให้ผู้ใช้:**
 
 ```
@@ -782,6 +800,133 @@ Acceptance Criteria:
 
 > หมายเหตุ: ตัวเลข task id (TK-4xx) ในตัวอย่างนี้เป็นค่าสมมติเพื่อสาธิตรูปแบบเท่านั้น เวลาใช้งานจริงต้อง map กับ task id จริงจาก `kanban-tukdaeng`
 
+#### 13. Mission Approval / Session End Workflow
+
+ส่วนนี้ใช้เมื่อ **Mission Planning เสร็จ** และผู้ใช้ **อนุมัติ Mission Plan อย่างชัดเจน** ห้ามอนุมาน approval จากการที่ผู้ใช้เพียงอ่านแผนหรือขอแก้ไขแผน หลัง approval ให้สร้าง Mission Plan Summary และ Session Handoff เป็นสอง artifact แยกกันก่อนเริ่ม implementation; หากผู้ใช้ต้องการจบ planning session ให้บันทึก Handoff และจบ session ตาม flow ด้านล่าง
+
+```text
+Mission Planning Complete
+→ User Approval
+→ Approved Mission Baseline
+→ Generate Mission Plan Summary Copy Block
+→ Generate/Update Session Handoff
+→ Display ทั้งสอง artifact แยกกัน
+→ End Planning Session
+```
+
+- ห้ามเริ่ม implementation Task, ย้าย Task เป็น `in_progress` หรือเริ่ม timer โดยอัตโนมัติ
+- ถ้าผู้ใช้ยังไม่อนุมัติ ให้แสดง Draft Mission Plan/ฉบับแก้ไขตาม workflow เดิม และยังไม่เรียก output ว่า Approved
+- หลังได้รับ approval ให้สร้างและแสดงทั้ง Mission Plan Summary และ Session Handoff ก่อนเสมอ แม้ผู้ใช้จะเลือกทำงานต่อใน session เดิม
+- เมื่อมีทั้งสอง artifact ในคำตอบเดียวกัน ต้องแยก heading และ code block ชัดเจน ห้ามรวมเนื้อหาเป็น block เดียว
+- หากผู้ใช้ขอจบ session ให้บันทึก **Session Handoff** ผ่าน `save_session_note` เมื่อเครื่องมือพร้อม; การบันทึกนี้เป็น task/session context ภายใน Kanban ไม่ใช่การส่ง Work Log เข้า Core Portal
+
+##### 13.1 Mission Plan Summary Copy Block — สำหรับ Work Log
+
+Mission Plan Summary เป็นสรุปภาพรวม Approved Mission Baseline สำหรับคนทั่วไปอ่านย้อนหลัง ไม่ใช่ technical handoff และไม่ใช่ Work Summary หลัง implementation
+
+**ข้อมูลขั้นต่ำที่ต้องมี:**
+- Mission Name
+- Status เช่น `Approved Plan`
+- Planned Duration และ Planned Start/End ถ้ามี
+- Total Planned Hours/Baseline
+- จำนวน Objectives และจำนวน Tasks
+- เป้าหมายหลักของ Mission
+- Objective → Feature → Task Mapping
+- Objective Weight และ Planned Hours ต่อ Objective
+- Execution Sequence
+- ผลลัพธ์ที่คาดหวัง
+
+**Task Display Rule (บังคับ):**
+- แสดง Task ด้วย business-facing task code + ชื่อ เช่น `AIL-002 — กำหนด Invitation Lifecycle และ Security Contract`
+- ห้ามแสดงรูปแบบ `AIL-002 [51ffcda4]`
+- ห้ามแสดง Kanban UUID, partial UUID, database ID หรือ internal task/mission identifier อื่นใดใน Mission Plan Summary
+- ถ้า Task ไม่มี business-facing code ให้ใช้ชื่อ Task อย่างเดียว ห้ามแทนด้วย UUID
+- Feature ต้องอยู่ติดกับ Task ที่ map อยู่ใต้ Feature นั้น ห้ามแยก Feature และ Task เป็นคนละรายการจนมอง mapping ไม่ออก
+
+**รูปแบบ Mission Plan Summary Copy Block:**
+
+```text
+Mission Plan Summary
+
+Mission: <Mission Name>
+Status: Approved Plan
+Planned Duration: <N วัน>
+Planned Start / End: <YYYY-MM-DD> → <YYYY-MM-DD หรือ ไม่ระบุ>
+Total Planned Hours / Baseline: <X ชม.>
+Objectives: <จำนวน>
+Tasks: <จำนวน>
+
+เป้าหมายหลัก:
+- <เป้าหมายหลักของ Mission>
+
+Objective 1 — <ชื่อ Objective>
+Weight: <W>%
+Planned Hours: <X ชม.>
+Feature: <ชื่อ Feature 1>
+- <TASK-CODE> — <Task Name>
+Feature: <ชื่อ Feature 2>
+- <TASK-CODE> — <Task Name>
+
+Objective 2 — <ชื่อ Objective>
+Weight: <W>%
+Planned Hours: <Y ชม.>
+Feature: <ชื่อ Feature>
+- <TASK-CODE> — <Task Name>
+- <TASK-CODE> — <Task Name>
+
+Execution Sequence:
+1. <TASK-CODE> → <TASK-CODE> → <TASK-CODE>
+
+ผลลัพธ์ที่คาดหวัง:
+- <ผลลัพธ์ที่คาดหวัง 1>
+- <ผลลัพธ์ที่คาดหวัง 2>
+```
+
+Summary ต้องเป็น forward-looking Approved Plan เท่านั้น ห้ามใส่ actual hours, Activity timeline, Evidence, ผล QA หรือรายละเอียด implementation ที่เกิดขึ้นภายหลัง
+
+##### 13.2 Session Handoff — สำหรับ Agent / Session ถัดไป
+
+Session Handoff เป็น execution context หลักสำหรับทำงานข้าม session และต้อง self-contained พอให้ Agent เริ่มจาก current state ได้อย่างปลอดภัย
+
+**ข้อมูลที่ต้องคงไว้ตามความเกี่ยวข้อง:**
+- Mission/Requirement identifiers และ planning status
+- Approved Business Baseline
+- Scope, Out of Scope, Deliverables และ Mission Boundaries
+- Objectives, Features, Tasks และ internal Kanban IDs เมื่อจำเป็น
+- Dependencies และ approved execution order
+- Acceptance Criteria
+- Risks และ Open Items
+- Protected Scope และ approval constraints
+- Requirement Traceability
+- Duplicate/Existing Work considerations
+- Current Kanban State รวม task status และ active timer
+- Next executable Task
+- Next Session instructions รวม tool/context ที่ต้องโหลดและเงื่อนไขก่อน `move_task → in_progress`
+
+**กฎ Handoff:**
+- Handoff สามารถมี Kanban UUID/internal IDs ได้ เพราะใช้ให้ Agent resolve entity ถูกต้อง
+- ห้ามตัด technical/internal context ออกจาก Handoff เพียงเพราะข้อมูลบางส่วนมีใน Mission Plan Summary แล้ว
+- ระบุชัดว่า Task ถัดไปคืออะไร, Task ใดห้ามเริ่ม และ implementation เริ่มได้เมื่อไร
+- ถ้ายังไม่มี Task เริ่ม ให้ยืนยัน `in_progress = 0`, ไม่มี timer ทำงาน และ implementation ยังไม่เริ่ม
+- ถ้าผู้ใช้กำหนด task-by-task approval gate ให้เก็บ gate นั้นไว้ใน Handoff
+
+##### 13.3 Next Session Workflow
+
+Mission Plan Summary ไม่ใช่ execution context หลัก การเริ่ม Execute Mission ต้องอ้าง Session Handoff:
+
+```text
+Session Handoff
++ User Start Task Prompt
+→ Load Project/Kanban Context
+→ Load Mission / Requirement / Next Task
+→ Verify current state, Scope, Acceptance Criteria และ Dependencies
+→ move_task → in_progress เพื่อเริ่ม auto-timer เมื่อได้รับอนุญาต
+→ Execute เฉพาะ Task ตาม approved order
+```
+
+- ห้ามกำหนดให้ผู้ใช้ต้องนำ Mission Plan Summary Copy Block มาใช้แทน Session Handoff
+- ห้ามเริ่ม Task ถัดไปอัตโนมัติหลังสร้าง Summary/Handoff หรือหลังจบ planning session
+
 ### กฎสำคัญส่วนที่ 1
 
 - ⚠️ **ห้ามส่ง log/อัปเดตระบบภายนอกใด ๆ** — แค่วางแผนและแสดง copy block
@@ -804,6 +949,9 @@ Acceptance Criteria:
 - ⚠️ **ห้ามแก้แผนหลัง start Mission โดยไม่มีเหตุผล** — เมื่อ Mission เริ่มดำเนินการแล้ว (มี task เป็น in_progress แล้ว) ห้ามแก้ไขเป้าหมาย/น้ำหนัก/ชั่วโมง ถ้าจำเป็นต้องแก้ ต้องระบุเหตุผลชัดเจน เช่น requirement เปลี่ยน / พบงานบล็อก / scope เปลี่ยน และต้องแจ้งผู้ใช้ก่อน
 - **คะแนนความแม่นยำในการวางแผน (Planning Accuracy Score):** ระบบประเมินความแม่นยำของแผนเทียบกับการทำจริง — ถ้าทำตรงตามแผนทุกเป้าหมาย (เวลาจริง = เวลาที่วางแผน ไม่มี task เกิน/ต่ำกว่าแผน) จะได้ **100 คะแนนเต็ม** ถ้าเบี่ยงเบือนจากแผน (task เกินเวลา, งานนอกแผนเกิดขึ้น, ต้องแก้แผนระหว่างทำ) คะแนนจะถูกหัก คะแนนนี้มีผลต่อการประเมินเกรดการทำงาน ดังนั้นต้องวางแผนให้แม่นยำที่สุดตั้งแต่ต้น และพยายามทำตรงตามแผน
 - ถ้าผู้ใช้ขอแก้ไข Mission/แผน → แก้ไขแล้วแสดง copy block ใหม่
+- หลังผู้ใช้อนุมัติ Mission Plan → สร้าง **Mission Plan Summary Copy Block** และ **Session Handoff** แยกกันตาม section 13; ถ้าผู้ใช้ต้องการจบ planning session ให้ persist Handoff แล้วหยุด
+- Mission Plan Summary ใช้สำหรับ Work Log และห้ามมี Kanban UUID/internal ID; Session Handoff ใช้สำหรับ Agent และคง internal IDs/technical context ได้
+- การสร้าง approval artifacts ไม่อนุญาตให้เริ่ม implementation, ย้าย Task เป็น `in_progress` หรือเริ่ม timer
 - ถ้ามีงานเพิ่มนอก Scope → แยกเป็นงานนอกขอบเขตและเสนอ Mission ใหม่
 - ⚠️ **Protected screens:** ถ้าแผนมีโอกาสกระทบ protected screens (ตาม `AGENTS.md` และ `PROTECTED_SCREENS.md`) ต้องระบุในเป้าหมายว่าจะตรวจสอบอย่างไร และต้องหยุดขออนุมัติก่อนแก้ ห้ามแก้ protected screens โดยไม่ได้รับอนุมัติจากผู้ใช้
 - **Kanban task style:** ถ้าต้องสร้าง task ใหม่ในแผน ให้เขียนเป็น complete execution brief ตามรูปแบบใน `AGENTS.md` (ภาษาไทย เก็บศัพท์เทคนิคภาษาอังกฤษ) และใช้ Kanban Completion Rule: ห้ามย้าย task ไป `done` จนกว่าผู้ใช้ยืนยันว่าผลลัพธ์ OK
@@ -1000,6 +1148,8 @@ mcp_call_tool(
 11. **รายละเอียดของ Objective ไม่ใส่ชั่วโมง** — เวลารวมอยู่ใน Feature ย่อยแล้ว
 12. **ตรวจสอบ/แก้ไขอยู่ในระดับ Feature** — ใส่เป็นแผนที่วางไว้ก่อนเริ่มงาน ใช้ `()` ครอบเวลา และไม่ต้องสร้าง Task ตรวจสอบ/แก้ไขแยก เว้นแต่เป็นงานที่ต้องติดตามอิสระ
 13. **Mission Plan ห้ามใช้ผลลัพธ์ย้อนหลัง** — ห้ามใส่สถานะเสร็จ, ชั่วโมงจริง, Evidence, bug ที่พบจริง หรือผล QA ที่เกิดขึ้นแล้วใน copy block ของแผนตั้งต้น
+14. **แยก approval artifacts ตามผู้ใช้ปลายทาง:** Mission Plan Summary สำหรับคนอ่าน Work Log; Session Handoff สำหรับ Agent/session ถัดไป ห้ามรวมสองแบบเป็น artifact เดียว
+15. **Identifier rule:** Mission Plan Summary ห้ามมี Kanban UUID/internal ID และใช้ `<TASK-CODE> — <Task Name>`; Session Handoff และ Work Summary เชิงเทคนิคใช้ internal IDs ได้เมื่อจำเป็นต่อ traceability
 
 **กฎการใส่น้ำหนัก/ชั่วโมงใน copy block (แยกตามส่วน):**
 
@@ -1007,6 +1157,8 @@ mcp_call_tool(
 |---|---|
 | **ส่วนที่ 1 — หัวข้อ Mission** | Baseline (ชม.), จำนวนชั่วโมงทั้งหมดตามแผน, เหลือชั่วโมงให้วางแผน |
 | **ส่วนที่ 1 — แต่ละเป้าหมาย** | น้ำหนัก (Weight %), ชั่วโมงที่คาดการณ์ของเป้าหมาย, ชั่วโมงแยกในแต่ละ Feature ย่อย (รวม ตรวจสอบ/แก้ไข ใน feature) |
+| **Approved Mission Plan Summary** | Planned Duration, Total Planned Hours/Baseline, จำนวน Objectives/Tasks, Objective Weight/Hours, Feature → Task mapping, Execution Sequence และผลลัพธ์ที่คาดหวัง; ห้ามมี UUID |
+| **Session Handoff** | Approved baseline, technical identifiers/context, scope/boundary, dependency, acceptance, risk/open items, protected scope, current state และ next-session instructions |
 | **ส่วนที่ 2 — แต่ละเป้าหมาย** | น้ำหนัก (Weight %), เวลาที่วางแผน, ใช้จริง (จาก get_time_summary) |
 | **ส่วนที่ 2 — ท้ายสรุป** | รวมเวลาวางแผน vs ใช้จริงทั้ง Mission |
 
@@ -1099,6 +1251,12 @@ Mission: สร้างเอกสารและ prototype สำหรับ
 - [ ] แยก Mission Plan ออกจาก Work Summary — Mission Plan ไม่มีสถานะจริง, ชั่วโมงจริง, Activity log, Evidence หรือ bug ที่พบภายหลัง
 - [ ] Mapping Objective → Feature → Kanban task (1 Objective = หลาย Feature, 1 Feature = 1 หรือหลาย task)
 - [ ] สรุปแผนเป็นข้อ ๆ แยกตามเป้าหมาย พร้อมน้ำหนัก% และ Feature ย่อย + **copy block ที่มีน้ำหนัก/ชั่วโมงครบ**
+- [ ] ถ้าผู้ใช้อนุมัติ Mission Plan แล้ว ให้ล็อก Approved Mission Baseline ก่อนสร้าง approval artifacts
+- [ ] สร้าง Mission Plan Summary Copy Block สำหรับ Work Log โดยมี Mission/สถานะ/วัน/ชั่วโมง/จำนวน Objective และ Task/เป้าหมาย/Hierarchy/Weight/Sequence/ผลลัพธ์ครบ
+- [ ] ตรวจ Mission Plan Summary ว่า Task ใช้ `<TASK-CODE> — <Task Name>` และไม่มี Kanban UUID/internal ID ทุกชนิด
+- [ ] สร้างหรืออัปเดต Session Handoff แยกอีก artifact โดยคง identifiers, technical context, current state, next task และ next-session instructions ครบ
+- [ ] ถ้าจบ planning session ให้บันทึก Session Handoff ด้วย `save_session_note` เมื่อเครื่องมือพร้อม และแสดง Summary/Handoff เป็นคนละ code block
+- [ ] ตรวจว่าไม่ได้เริ่ม implementation, ไม่ย้าย Task เป็น `in_progress` และไม่เริ่ม timer จาก approval workflow
 - [ ] ⚠️ **ภาษาใน copy block** — ใช้ภาษาเข้าใจง่าย เปลี่ยนคำโค้ด/เทคนิคเป็นคำเข้าใจง่าย แต่คำเฉพาะ/ศัพท์ที่คุ้นเคย (breadcrumb, Alert, asset, spec, baseline, Kanban) เก็บไว้ได้ ไม่บังคับล้วนไทย ห้ามใช้ชื่อฟังก์ชัน/โค้ด
 - [ ] ⚠️ ห้ามส่ง log/อัปเดตระบบภายนอกใด ๆ
 
