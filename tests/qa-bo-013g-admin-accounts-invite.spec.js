@@ -4,8 +4,8 @@
 //   + nextAdminAccountId (บรรทัด ~23054) + ensureAdminAccountInviteAuditEvent (บรรทัด ~23096)
 //   + setAdminInviteFieldError (บรรทัด ~23275)
 // เป้าหมาย: รันเทสครอบ Invite Admin modal — open, content, role select, note, email OTP note,
-//   validation (name/email/format/unique/role/multi-field), confirm (create account + audit + history + toast + re-render),
-//   cancel, กรอกครบถ้วน (ห้ามแก้ prototype)
+//   validation (name/email/format/unique/role/multi-field), confirm (create account + invitation + audit + delivery result),
+//   permission/stale Role safeguards, cancel และ responsive flow
 const { test, expect } = require("@playwright/test");
 
 const PROTOTYPE_URL = "/bo-prototype.html";
@@ -69,6 +69,11 @@ async function pickRole(page, value) {
   await page.waitForTimeout(200);
 }
 
+// helper: เลือกผลส่งอีเมลจำลองของ prototype
+async function pickDeliveryScenario(page, value) {
+  await page.evaluate(selected => setCustomSelectValue("admin-account-invite-delivery-scenario", selected), value);
+}
+
 // helper: คลิก confirm 'ส่งคำเชิญ' ใน modal
 async function clickConfirm(page) {
   await page.locator("[data-admin-account-invite-confirm]").click();
@@ -98,7 +103,11 @@ async function accountCount(page) {
 async function getAccount(page, id) {
   return await page.evaluate(accId => {
     const acc = adminAccountData.accounts.find(a => a.id === accId);
-    return acc ? { id: acc.id, fullName: acc.fullName, email: acc.email, role: acc.role, status: acc.status, lastLogin: acc.lastLogin, lastAction: acc.lastAction } : null;
+    return acc ? {
+      id: acc.id, fullName: acc.fullName, email: acc.email, role: acc.role, status: acc.status,
+      lastLogin: acc.lastLogin, lastAction: acc.lastAction, revision: acc.revision,
+      roleId: acc.roleId, roleRevision: acc.roleRevision, invitationId: acc.invitationId
+    } : null;
   }, id);
 }
 
@@ -314,7 +323,8 @@ test.describe("QA-BO-013g: Settings > Admin Accounts — Invite Admin modal", ()
     expect(auditInfo.before).toBe("-");
     expect(auditInfo.after).toBe("Invited");
     expect(auditInfo.reason).toContain("Invite Support Agent");
-    expect(auditInfo.reason).toContain("audit-test@tukdaeng.example");
+    expect(auditInfo.reason).toContain("au***@tukdaeng.example");
+    expect(auditInfo.reason).not.toContain("audit-test@tukdaeng.example");
     expect(auditInfo.note).toBe("เชิญตามคำขอ HR");
 
     // activity history ของ account ใหม่ — 'Invited โดย ...' + auditRef เชื่อม audit event
@@ -392,5 +402,198 @@ test.describe("QA-BO-013g: Settings > Admin Accounts — Invite Admin modal", ()
     const newAcc = await getAccount(page, "ADM-011");
     expect(newAcc).not.toBeNull();
     expect(newAcc.status).toBe("Invited");
+  });
+
+  test("18. confirm สำเร็จ → สร้าง invitation Pending revision 1 และ expiry 72 ชั่วโมง พร้อม safe references", async ({ page }) => {
+    await openInviteModal(page);
+    await fillValidForm(page, { name: "วงจร คำเชิญ", email: "lifecycle@tukdaeng.example", role: "Admin Manager" });
+    await clickConfirm(page);
+
+    const result = await page.evaluate(() => {
+      const account = adminAccountData.accounts.find(item => item.id === "ADM-011");
+      const invitation = adminAccountData.invitations.find(item => item.targetAdminId === "ADM-011");
+      const delivery = invitation
+        ? adminAccountData.deliveryAttempts.find(item => item.id === invitation.deliveryAttemptRefs[0])
+        : null;
+      const audit = invitation ? auditLogData.events.find(item => item.id === invitation.auditRef) : null;
+      return { account, invitation, delivery, audit };
+    });
+
+    expect(result.account.status).toBe("Invited");
+    expect(result.account.revision).toBe(1);
+    expect(result.account.invitationId).toBe(result.invitation.id);
+    expect(result.invitation.id).toMatch(/^INV-\d{5}$/);
+    expect(result.invitation.status).toBe("Pending");
+    expect(result.invitation.tokenRevision).toBe(1);
+    expect(result.invitation.accountRevision).toBe(1);
+    expect(result.invitation.targetEmailNormalized).toBe("lifecycle@tukdaeng.example");
+    expect(new Date(result.invitation.expiresAt).getTime() - new Date(result.invitation.issuedAt).getTime()).toBe(72 * 60 * 60 * 1000);
+    expect(result.invitation.auditRef).toBe(result.audit.id);
+    expect(result.invitation.deliveryAttemptRefs).toEqual([result.delivery.id]);
+    expect(result.delivery.status).toBe("Sent");
+    expect(result.audit.eventType).toBe("ADMIN_INVITATION_CREATE");
+    expect(result.audit.invitationId).toBe(result.invitation.id);
+    expect(result.audit.correlationId).toBe(result.invitation.correlationId);
+  });
+
+  test("19. delivery Failed → account/invitation ยังถูกสร้างเป็น Invited/Pending และแสดง recovery ที่ถูกต้อง", async ({ page }) => {
+    await openInviteModal(page);
+    await fillValidForm(page, { name: "ส่งไม่สำเร็จ", email: "failed-delivery@tukdaeng.example", role: "Support Agent" });
+    await pickDeliveryScenario(page, "failed");
+    await clickConfirm(page);
+
+    const result = await page.evaluate(() => ({
+      account: adminAccountData.accounts.find(item => item.id === "ADM-011"),
+      invitation: adminAccountData.invitations.find(item => item.targetAdminId === "ADM-011"),
+      delivery: adminAccountData.deliveryAttempts.find(item => item.targetAdminId === "ADM-011")
+    }));
+    expect(result.account.status).toBe("Invited");
+    expect(result.invitation.status).toBe("Pending");
+    expect(result.delivery.status).toBe("Failed");
+    expect(result.account.lastAction).toContain("ส่งใหม่ได้");
+    await expect(page.locator("#success-toast")).toContainText("อีเมลส่งไม่สำเร็จ");
+    await expect(page.locator("#success-toast")).toContainText("บัญชียังคง Invited และส่งใหม่ได้");
+  });
+
+  test("20. delivery Retry → account/invitation ยังเป็น Invited/Pending และบันทึก Retry attempt", async ({ page }) => {
+    await openInviteModal(page);
+    await fillValidForm(page, { name: "รอส่งซ้ำ", email: "retry-delivery@tukdaeng.example", role: "Content Editor" });
+    await pickDeliveryScenario(page, "retry");
+    await clickConfirm(page);
+
+    const result = await page.evaluate(() => ({
+      account: adminAccountData.accounts.find(item => item.id === "ADM-011"),
+      invitation: adminAccountData.invitations.find(item => item.targetAdminId === "ADM-011"),
+      delivery: adminAccountData.deliveryAttempts.find(item => item.targetAdminId === "ADM-011")
+    }));
+    expect(result.account.status).toBe("Invited");
+    expect(result.invitation.status).toBe("Pending");
+    expect(result.delivery.status).toBe("Retry");
+    expect(result.account.lastAction).toContain("Retry");
+    await expect(page.locator("#success-toast")).toContainText("อีเมลอยู่ในคิว Retry");
+  });
+
+  test("21. Role ถูกปิดหลังเปิด modal → reject ทั้ง account/invitation/audit/delivery โดยไม่เกิด partial mutation", async ({ page }) => {
+    await openInviteModal(page);
+    await fillValidForm(page, { name: "Role ปิดใช้งาน", email: "inactive-role@tukdaeng.example", role: "Support Agent" });
+    const before = await page.evaluate(() => ({
+      accounts: adminAccountData.accounts.length,
+      invitations: adminAccountData.invitations.length,
+      deliveries: adminAccountData.deliveryAttempts.length,
+      audits: auditLogData.events.length
+    }));
+    await page.evaluate(() => {
+      roleListData.roles.find(item => item.name === "Support Agent").status = "Inactive";
+    });
+    await clickConfirm(page);
+
+    await expect(page.locator("[data-admin-invite-role-error]")).toContainText("Role นี้ไม่พร้อมใช้งานแล้ว");
+    const after = await page.evaluate(() => ({
+      accounts: adminAccountData.accounts.length,
+      invitations: adminAccountData.invitations.length,
+      deliveries: adminAccountData.deliveryAttempts.length,
+      audits: auditLogData.events.length
+    }));
+    expect(after).toEqual(before);
+  });
+
+  test("22. Role revision เปลี่ยนหลังเปิด modal → reject stale request โดยไม่สร้างข้อมูล", async ({ page }) => {
+    await openInviteModal(page);
+    await fillValidForm(page, { name: "Role เปลี่ยน", email: "stale-role@tukdaeng.example", role: "Content Publisher" });
+    await page.evaluate(() => {
+      roleListData.roles.find(item => item.name === "Content Publisher").updatedRank += 1;
+    });
+    await clickConfirm(page);
+
+    await expect(page.locator("[data-admin-invite-role-error]")).toContainText("ข้อมูล Role เปลี่ยนแล้ว");
+    expect(await accountCount(page)).toBe(10);
+    expect(await page.evaluate(() => adminAccountData.invitations.length)).toBe(1);
+  });
+
+  test("23. ผู้ไม่มี admin_accounts.manage → action Add admin ไม่อยู่ใน DOM", async ({ page }) => {
+    await goToAdminAccounts(page);
+    await page.evaluate(() => {
+      auth.admin.role = "Support Agent";
+      renderAdminAccounts();
+    });
+    await expect(page.locator("[data-admin-account-invite-open]")).toHaveCount(0);
+  });
+
+  test("24. permission เปลี่ยนก่อน confirm → revalidate และไม่สร้าง account/invitation", async ({ page }) => {
+    await openInviteModal(page);
+    await fillValidForm(page, { name: "ไม่มีสิทธิ์", email: "permission-changed@tukdaeng.example", role: "Operations Manager" });
+    await page.evaluate(() => { auth.admin.role = "Support Agent"; });
+    await clickConfirm(page);
+
+    expect(await accountCount(page)).toBe(10);
+    expect(await page.evaluate(() => adminAccountData.invitations.length)).toBe(1);
+    await expect(page.locator("#success-toast")).toContainText("ไม่มีสิทธิ์เชิญ Admin");
+  });
+
+  test("25. invitation/audit/delivery state ไม่เก็บ raw token, token hash, password หรือ OTP", async ({ page }) => {
+    await openInviteModal(page);
+    await fillValidForm(page, { name: "ตรวจ Secret", email: "secret-check@tukdaeng.example", role: "Asset Operations" });
+    await clickConfirm(page);
+
+    const state = await page.evaluate(() => {
+      const invitation = adminAccountData.invitations.find(item => item.targetAdminId === "ADM-011");
+      const delivery = adminAccountData.deliveryAttempts.find(item => item.targetAdminId === "ADM-011");
+      const audit = auditLogData.events.find(item => item.invitationId === invitation.id);
+      return {
+        invitation: JSON.stringify(invitation),
+        trace: JSON.stringify({ delivery, audit })
+      };
+    });
+    expect(state.invitation).not.toMatch(/"(rawToken|token|tokenHash|password|passwordHash|otp)"/i);
+    expect(state.trace).not.toContain("secret-check@tukdaeng.example");
+    expect(state.trace).not.toMatch(/"(rawToken|token|tokenHash|password|passwordHash|otp)"/i);
+    expect(state.trace).toContain("se***@tukdaeng.example");
+  });
+
+  test("26. แก้ค่า text field หลัง Submit → clear เฉพาะ error/visual/ARIA ของ field นั้นทันที แม้ค่าใหม่ยังไม่ valid", async ({ page }) => {
+    await openInviteModal(page);
+    await clickConfirm(page);
+
+    const name = page.locator("#admin-account-invite-name");
+    const email = page.locator("#admin-account-invite-email");
+    const roleTrigger = page.locator('div[data-custom-select]:has(> #admin-account-invite-role) [data-custom-select-trigger]');
+    await expect(name).toHaveClass(/article-field-invalid/);
+    await expect(email).toHaveClass(/article-field-invalid/);
+    await expect(roleTrigger).toHaveClass(/article-field-invalid/);
+    await expect(email).toHaveAttribute("aria-invalid", "true");
+    await expect(email).toHaveAttribute("aria-errormessage", "admin-account-invite-email-error");
+
+    await email.fill("abc");
+
+    await expect(page.locator("[data-admin-invite-email-error]")).toHaveText("");
+    await expect(page.locator("[data-admin-invite-email-error]")).not.toHaveClass(/show/);
+    await expect(email).not.toHaveClass(/article-field-invalid/);
+    await expect(email).toHaveAttribute("aria-invalid", "false");
+    await expect(email).not.toHaveAttribute("aria-errormessage", /.+/);
+    await expect(page.locator("[data-admin-invite-name-error]")).toHaveClass(/show/);
+    await expect(page.locator("[data-admin-invite-role-error]")).toHaveClass(/show/);
+    await expect(name).toHaveAttribute("aria-invalid", "true");
+    await expect(roleTrigger).toHaveAttribute("aria-invalid", "true");
+  });
+
+  test("27. เปลี่ยน Role หลัง Submit → clear เฉพาะ Role error/visual/ARIA และคง error ของ field อื่น", async ({ page }) => {
+    await openInviteModal(page);
+    await clickConfirm(page);
+
+    const roleInput = page.locator("#admin-account-invite-role");
+    const roleTrigger = page.locator('div[data-custom-select]:has(> #admin-account-invite-role) [data-custom-select-trigger]');
+    await expect(roleInput).toHaveAttribute("aria-invalid", "true");
+    await expect(roleTrigger).toHaveAttribute("aria-errormessage", "admin-account-invite-role-error");
+
+    await pickRole(page, "Support Agent");
+
+    await expect(page.locator("[data-admin-invite-role-error]")).toHaveText("");
+    await expect(page.locator("[data-admin-invite-role-error]")).not.toHaveClass(/show/);
+    await expect(roleTrigger).not.toHaveClass(/article-field-invalid/);
+    await expect(roleInput).toHaveAttribute("aria-invalid", "false");
+    await expect(roleTrigger).toHaveAttribute("aria-invalid", "false");
+    await expect(roleTrigger).not.toHaveAttribute("aria-errormessage", /.+/);
+    await expect(page.locator("[data-admin-invite-name-error]")).toHaveClass(/show/);
+    await expect(page.locator("[data-admin-invite-email-error]")).toHaveClass(/show/);
   });
 });

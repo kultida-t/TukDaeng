@@ -18298,9 +18298,41 @@
         { id: "ADM-005", fullName: "Orn Admin", email: "orn@tukdaeng.example", role: "Content Editor", status: "Active", authMethod: "Email OTP", lastLogin: "07 Sep 2026 16:30", lastLoginRank: 202609071630, createdAt: "05 Mar 2026 11:00", createdAtRank: 202603051100, lastAction: "Publish Article (ART-044)", isSelf: false, isLastActive: false },
         { id: "ADM-006", fullName: "พิมพ์ใจ สายด่วน", email: "pim@tukdaeng.example", role: "Support Agent", status: "Suspended", authMethod: "Email OTP", lastLogin: "20 Aug 2026 10:00", lastLoginRank: 202608201000, createdAt: "01 Apr 2026 09:00", createdAtRank: 202604010900, lastAction: "Suspended โดย Super Admin — ตรวจสอบการเข้าถึงข้อมูลผู้ใช้นอก scope", isSelf: false, isLastActive: false },
         { id: "ADM-007", fullName: "วิชัย รองผู้จัดการ", email: "wichai@tukdaeng.example", role: "Asset Operations", status: "Locked", authMethod: "Email OTP", lastLogin: "02 Sep 2026 08:30", lastLoginRank: 202609020830, createdAt: "12 Apr 2026 14:00", createdAtRank: 202604121400, lastAction: "Locked จาก failed login 5 ครั้ง — รอ unlock หรือครบ 15 นาที", isSelf: false, isLastActive: false },
-        { id: "ADM-008", fullName: "นัฐพล พัฒนา", email: "nattapol@tukdaeng.example", role: "Admin Manager", status: "Invited", authMethod: "Email OTP", lastLogin: "—", lastLoginRank: 0, createdAt: "08 Sep 2026 16:00", createdAtRank: 202609081600, lastAction: "Invited — รอผู้รับยืนยันอีเมลและตั้ง password", isSelf: false, isLastActive: false },
+        { id: "ADM-008", fullName: "นัฐพล พัฒนา", email: "nattapol@tukdaeng.example", role: "Admin Manager", roleId: "ROL-002", roleRevision: 202601010900, status: "Invited", revision: 1, invitationId: "INV-00001", authMethod: "Email OTP", lastLogin: "—", lastLoginRank: 0, createdAt: "08 Sep 2026 16:00", createdAtRank: 202609081600, lastAction: "Invited — รอผู้รับยืนยันอีเมลและตั้ง password", isSelf: false, isLastActive: false },
         { id: "ADM-009", fullName: "อดิศร เก่าก่อน", email: "adisorn@tukdaeng.example", role: "Content Editor", status: "Archived", authMethod: "Email OTP", lastLogin: "15 Jun 2026 11:00", lastLoginRank: 202606151100, createdAt: "10 May 2025 09:00", createdAtRank: 202505100900, lastAction: "Archived — ออกจากทีม เก็บ audit history ตาม retention", isSelf: false, isLastActive: false },
         { id: "ADM-010", fullName: "ผู้ดูแลระบบ", email: "current.admin@tukdaeng.example", role: "Super Admin", status: "Active", authMethod: "Email OTP", lastLogin: "08 Sep 2026 15:00", lastLoginRank: 202609081500, createdAt: "01 Jan 2026 09:00", createdAtRank: 202601010900, lastAction: "เข้าสู่ระบบ Settings > Admin Accounts", isSelf: true, isLastActive: true, isMaster: true }
+      ],
+      invitations: [
+        {
+          id: "INV-00001",
+          targetAdminId: "ADM-008",
+          targetEmailNormalized: "nattapol@tukdaeng.example",
+          roleId: "ROL-002",
+          roleRevision: 202601010900,
+          status: "Pending",
+          issuedAt: "2026-09-08T09:00:00.000Z",
+          expiresAt: "2026-09-11T09:00:00.000Z",
+          tokenRevision: 1,
+          accountRevision: 1,
+          issuedByAdminId: "ADM-001",
+          auditRef: "AUD-88203",
+          deliveryAttemptRefs: ["DLV-ACCT-008-INV-001"],
+          correlationId: "COR-INV-00001",
+          outboxRef: "OUT-INV-00001-001"
+        }
+      ],
+      deliveryAttempts: [
+        {
+          id: "DLV-ACCT-008-INV-001",
+          invitationId: "INV-00001",
+          targetAdminId: "ADM-008",
+          channel: "Email",
+          status: "Sent",
+          attemptedAt: "2026-09-08T09:00:00.000Z",
+          recipientMasked: "na***@tukdaeng.example",
+          attemptSequence: 1,
+          correlationId: "COR-INV-00001"
+        }
       ],
       // detail keyed by account id — activity history + audit log reference
       // ADM-PTO-001: แสดงเฉพาะ lifecycle ของ account ตัวเอง (เรียงล่าสุดก่อน):
@@ -24282,8 +24314,14 @@
       return acc.status === "Active" || acc.status === "Invited";
     }
 
+    function canManageAdminAccounts() {
+      return ["approve", "manage", "admin"].includes(getRoleActorPermissionLevel("admin_accounts.manage"));
+    }
+
     function renderAdminAccounts() {
-      setPageActions(`<button class="btn" type="button" data-admin-account-invite-open>${iconSvg.plus}<span>Add admin</span></button>`);
+      setPageActions(canManageAdminAccounts()
+        ? `<button class="btn" type="button" data-admin-account-invite-open>${iconSvg.plus}<span>Add admin</span></button>`
+        : "");
       document.body.classList.add("admin-account-list-mode");
       document.body.classList.remove("user-list-mode", "user-detail-mode", "asset-detail-mode", "deletion-list-mode", "deletion-detail-mode", "audit-log-mode", "delivery-log-list-mode", "policy-versioning-mode", "policy-detail-mode", "policy-editor-mode", "policy-version-history-mode", "support-center-mode");
       activeRow = null;
@@ -24773,13 +24811,31 @@
       modal.classList.add("show");
     }
 
+    let adminAccountInviteRoleSnapshot = {};
+
+    function getAdminInviteEligibleRoles() {
+      return roleListData.roles.filter(role => role.type === "system" && role.status === "Active");
+    }
+
+    function getAdminInviteRoleRevision(role) {
+      return Number(role?.revision || role?.updatedRank || 1);
+    }
+
     // ADM-PTO-001: Invite Admin modal — pattern Option Master Add Option modal
     // (article-editor-form + article-editor-grid + article-required-mark + article-field-error รายฟิลด์)
     function openAdminAccountInviteModal() {
+      if (!canManageAdminAccounts()) {
+        showSuccessToast("ไม่มีสิทธิ์เชิญ Admin", "Admin Accounts");
+        return;
+      }
       const modal = document.querySelector("#user-action-modal");
       const modalCard = modal?.querySelector(".user-action-modal");
       const modalBody = document.querySelector("#user-action-modal-body");
       if (!modal || !modalCard || !modalBody) return;
+      const eligibleRoles = getAdminInviteEligibleRoles();
+      adminAccountInviteRoleSnapshot = Object.fromEntries(
+        eligibleRoles.map(role => [role.name, getAdminInviteRoleRevision(role)])
+      );
       modalCard.classList.remove("article-preview-modal", "article-editor-confirm-modal", "category-editor-modal", "category-order-modal", "market-editor-modal", "market-reference-drawer", "board-report-phone-preview-modal", "option-editor-modal", "option-order-modal", "option-audit-modal", "policy-version-view-modal", "policy-publish-confirm-modal", "policy-restore-confirm-modal", "support-center-preview-modal", "deletion-action-modal", "audit-log-detail-modal");
       modalCard.classList.add("option-editor-modal", "admin-account-invite-modal");
       modalBody.innerHTML = `
@@ -24796,18 +24852,18 @@
               <div class="article-editor-grid admin-account-invite-grid">
                 <label><span>ชื่อ-นามสกุล <span class="article-required-mark">*</span></span>
                   <input type="text" id="admin-account-invite-name" placeholder="กรอกชื่อ-นามสกุล" autocomplete="off" />
-                  <span class="article-field-error" data-admin-invite-name-error></span>
+                  <span class="article-field-error" id="admin-account-invite-name-error" role="alert" data-admin-invite-name-error></span>
                 </label>
                 <label><span>อีเมล <span class="article-required-mark">*</span></span>
                   <input type="email" id="admin-account-invite-email" placeholder="admin@example.com" autocomplete="off" />
-                  <span class="article-field-error" data-admin-invite-email-error></span>
+                  <span class="article-field-error" id="admin-account-invite-email-error" role="alert" data-admin-invite-email-error></span>
                 </label>
                 <label><span>Role Template <span class="article-required-mark">*</span></span>
                   ${customSelect("admin-account-invite-role", "เลือก role template", [
                     { value: "", label: "เลือก role template" },
-                    ...Object.keys(roleMenuAccess).map(role => ({ value: role, label: role }))
+                    ...eligibleRoles.map(role => ({ value: role.name, label: role.name }))
                   ], "", "data-custom-select-silent")}
-                  <span class="article-field-error" data-admin-invite-role-error></span>
+                  <span class="article-field-error" id="admin-account-invite-role-error" role="alert" data-admin-invite-role-error></span>
                 </label>
                 <label><span>Note / หมายเหตุ</span>
                   <textarea id="admin-account-invite-note" placeholder="หมายเหตุเพิ่มเติม (ไม่บังคับ)"></textarea>
@@ -24821,9 +24877,34 @@
               <button class="user-detail-action-btn" type="button" data-user-action-modal-close>ยกเลิก</button>
               <button class="user-detail-action-btn primary" type="button" data-admin-account-invite-confirm>ส่งคำเชิญ</button>
             </div>
+            <details class="prototype-tools user-action-prototype-tools">
+              <summary>Prototype scenario</summary>
+              <label>
+                Test flow
+                ${customSelect("admin-account-invite-delivery-scenario", "Test flow", [
+                  { value: "sent", label: "Email sent" },
+                  { value: "failed", label: "Email failed" },
+                  { value: "retry", label: "Email retry queued" }
+                ], "sent", "data-custom-select-silent")}
+              </label>
+            </details>
           </form>
         </div>
       `;
+      const inviteForm = modalBody.querySelector("#admin-account-invite-form");
+      inviteForm?.querySelector("#admin-account-invite-name")?.addEventListener("input", () => {
+        setAdminInviteFieldError(inviteForm, "name", "");
+      });
+      inviteForm?.querySelector("#admin-account-invite-email")?.addEventListener("input", () => {
+        setAdminInviteFieldError(inviteForm, "email", "");
+      });
+      const roleInput = inviteForm?.querySelector("#admin-account-invite-role");
+      roleInput?.closest("[data-custom-select]")?.addEventListener("click", event => {
+        const option = event.target.closest("[data-custom-select-option]");
+        if (option && option.dataset.value !== roleInput.value) {
+          setAdminInviteFieldError(inviteForm, "role", "");
+        }
+      });
       showUserActionModal(true);
     }
 
@@ -24840,6 +24921,31 @@
         return m ? Math.max(max, Number(m[1])) : max;
       }, 0);
       return `ADM-${String(maxNum + 1).padStart(3, "0")}`;
+    }
+
+    function nextAdminInvitationId() {
+      const maxNum = adminAccountData.invitations.reduce((max, invitation) => {
+        const match = /^INV-(\d+)$/.exec(invitation.id);
+        return match ? Math.max(max, Number(match[1])) : max;
+      }, 0);
+      return `INV-${String(maxNum + 1).padStart(5, "0")}`;
+    }
+
+    function maskAdminInvitationEmail(email) {
+      const [local = "", domain = ""] = String(email || "").split("@");
+      const visible = local.slice(0, Math.min(2, local.length));
+      return domain ? `${visible}***@${domain}` : "***";
+    }
+
+    function getAdminInvitationDeliveryStatus(scenario) {
+      if (scenario === "failed") return "Failed";
+      if (scenario === "retry") return "Retry";
+      return "Sent";
+    }
+
+    function getAdminInvitationDeliveryId(adminId, attemptSequence = 1) {
+      const sequence = String(adminId || "ADM-000").replace(/^ADM-/, "");
+      return `DLV-ACCT-${sequence}-INV-${String(attemptSequence).padStart(3, "0")}`;
     }
 
     // ADM-PTO-001: บันทึก audit entry สำหรับ admin account action
@@ -24876,7 +24982,7 @@
     }
 
     // ADM-PTO-001: บันทึก audit entry สำหรับ invite (สร้าง account ใหม่)
-    function ensureAdminAccountInviteAuditEvent(newAcc, note) {
+    function ensureAdminAccountInviteAuditEvent(newAcc, invitation, deliveryAttempt, note) {
       const maxNum = auditLogData.events.reduce((max, e) => {
         const m = /^AUD-(\d+)$/.exec(e.id);
         return m ? Math.max(max, Number(m[1])) : max;
@@ -24884,16 +24990,29 @@
       const auditId = `AUD-${String(maxNum + 1).padStart(5, "0")}`;
       const event = {
         id: auditId,
-        createdAt: formatBangkokTimestamp() + " GMT+7",
+        createdAt: formatBangkokTimestamp(),
         actor: (auth.admin && auth.admin.username) || "Admin",
         action: "Invite Admin",
+        eventType: "ADMIN_INVITATION_CREATE",
         module: "Settings",
         risk: "สูง",
         before: "-",
         after: "Invited",
-        reason: `Invite ${newAcc.role} — ${newAcc.email}`,
+        reason: `Invite ${newAcc.role} — ${maskAdminInvitationEmail(newAcc.email)}`,
         reference: newAcc.id,
-        note: note || "เชิญ admin ใหม่ผ่านอีเมล"
+        note: note || "เชิญ admin ใหม่ผ่านอีเมล",
+        result: "Success",
+        invitationId: invitation.id,
+        targetAdminId: newAcc.id,
+        invitationStatusBefore: "-",
+        invitationStatusAfter: invitation.status,
+        tokenRevision: invitation.tokenRevision,
+        accountRevision: invitation.accountRevision,
+        roleId: invitation.roleId,
+        roleRevision: invitation.roleRevision,
+        correlationId: invitation.correlationId,
+        deliveryId: deliveryAttempt.id,
+        deliveryStatus: deliveryAttempt.status
       };
       auditLogData.events.unshift(event);
       return auditId;
@@ -25057,9 +25176,25 @@
     // ADM-PTO-001: error รายฟิลด์ของ invite form — pattern setOptionFieldError
     function setAdminInviteFieldError(form, field, message = "") {
       const node = form?.querySelector(`[data-admin-invite-${field}-error]`);
+      const fieldInput = form?.querySelector(`#admin-account-invite-${field}`);
+      const visualControl = field === "role"
+        ? fieldInput?.closest("[data-custom-select]")?.querySelector("[data-custom-select-trigger]")
+        : fieldInput;
+      const hasError = Boolean(message);
       if (node) {
         node.textContent = message;
-        node.classList.toggle("show", Boolean(message));
+        node.classList.toggle("show", hasError);
+      }
+      [fieldInput, visualControl].filter(Boolean).forEach(control => {
+        control.setAttribute("aria-invalid", hasError ? "true" : "false");
+        if (hasError && node?.id) {
+          control.setAttribute("aria-errormessage", node.id);
+        } else {
+          control.removeAttribute("aria-errormessage");
+        }
+      });
+      if (visualControl) {
+        visualControl.classList.toggle("article-field-invalid", hasError);
       }
     }
 
@@ -25074,6 +25209,11 @@
       const email = (emailInput?.value || "").trim();
       const role = roleSelect?.value || "";
       const note = (noteInput?.value || "").trim();
+      if (!canManageAdminAccounts()) {
+        closeUserActionModal();
+        showSuccessToast("ไม่มีสิทธิ์เชิญ Admin", "Admin Accounts");
+        return;
+      }
       // เคลียร์ error เดิมทุกฟิลด์
       setAdminInviteFieldError(form, "name", "");
       setAdminInviteFieldError(form, "email", "");
@@ -25096,10 +25236,30 @@
       if (!role) {
         setAdminInviteFieldError(form, "role", "กรุณาเลือก role template");
         invalid = true;
+      } else {
+        const currentRole = roleListData.roles.find(item => item.name === role && item.type === "system");
+        const expectedRoleRevision = adminAccountInviteRoleSnapshot[role];
+        if (!currentRole || currentRole.status !== "Active") {
+          setAdminInviteFieldError(form, "role", "Role นี้ไม่พร้อมใช้งานแล้ว กรุณาเลือก role template ใหม่");
+          invalid = true;
+        } else if (!expectedRoleRevision || getAdminInviteRoleRevision(currentRole) !== expectedRoleRevision) {
+          setAdminInviteFieldError(form, "role", "ข้อมูล Role เปลี่ยนแล้ว กรุณาเปิดฟอร์มใหม่และเลือกอีกครั้ง");
+          invalid = true;
+        }
       }
       if (invalid) return;
-      const now = formatBangkokTimestamp();
+      const issuedDate = new Date();
+      const expiresDate = new Date(issuedDate.getTime() + (72 * 60 * 60 * 1000));
+      const now = formatBangkokTimestamp(issuedDate);
       const newId = nextAdminAccountId();
+      const invitationId = nextAdminInvitationId();
+      const currentRole = roleListData.roles.find(item => item.name === role && item.type === "system" && item.status === "Active");
+      const actorAccount = adminAccountData.accounts.find(account => account.isSelf)
+        || adminAccountData.accounts.find(account => account.email === auth.email);
+      const deliveryScenario = document.querySelector("#admin-account-invite-delivery-scenario")?.value || "sent";
+      const deliveryStatus = getAdminInvitationDeliveryStatus(deliveryScenario);
+      const deliveryId = getAdminInvitationDeliveryId(newId);
+      const correlationId = `COR-${invitationId}`;
       // ADM-PTO-001: createdAtRank เป็น YYYYMMDDHHMM (ตาม format seed data เช่น 202609081600)
       // คำนวณจาก Intl.DateTimeFormat ใน tz Asia/Bangkok โดยตรง — ไม่ตัดเลขจาก formatBangkokTimestamp
       // เพราะ formatBangkokTimestamp คืน "DD MMM YYYY, HH:MM" ตัดเลขได้ "DDYYYYHHMM" ผิด format
@@ -25122,18 +25282,88 @@
         createdAt: now,
         createdAtRank: createdAtRank,
         lastAction: "Invited — รอผู้รับยืนยันอีเมลและตั้ง password",
+        revision: 1,
+        roleId: currentRole.id,
+        roleRevision: getAdminInviteRoleRevision(currentRole),
+        invitationId: invitationId,
         isSelf: false,
         isLastActive: false
       };
-      adminAccountData.accounts.push(newAcc);
-      adminAccountData.detail[newId] = {
-        activity: [{ at: now, action: "Invited โดย " + ((auth.admin && auth.admin.username) || "Admin"), reference: newId, note: note || "เชิญ admin ใหม่ผ่านอีเมล" }],
-        auditRefs: []
+      const invitation = {
+        id: invitationId,
+        targetAdminId: newId,
+        targetEmailNormalized: email.toLowerCase(),
+        roleId: currentRole.id,
+        roleRevision: getAdminInviteRoleRevision(currentRole),
+        status: "Pending",
+        issuedAt: issuedDate.toISOString(),
+        expiresAt: expiresDate.toISOString(),
+        tokenRevision: 1,
+        accountRevision: 1,
+        issuedByAdminId: actorAccount?.id || "ADM-UNKNOWN",
+        auditRef: null,
+        deliveryAttemptRefs: [deliveryId],
+        correlationId,
+        outboxRef: `OUT-${invitationId}-001`
       };
-      const auditId = ensureAdminAccountInviteAuditEvent(newAcc, note);
-      if (auditId) adminAccountData.detail[newId].auditRefs.unshift(auditId);
+      const deliveryAttempt = {
+        id: deliveryId,
+        invitationId,
+        targetAdminId: newId,
+        channel: "Email",
+        status: deliveryStatus,
+        attemptedAt: issuedDate.toISOString(),
+        recipientMasked: maskAdminInvitationEmail(email),
+        attemptSequence: 1,
+        correlationId
+      };
+      if (deliveryStatus === "Failed") {
+        newAcc.lastAction = "Invited — อีเมลส่งไม่สำเร็จ สามารถส่งใหม่ได้";
+      } else if (deliveryStatus === "Retry") {
+        newAcc.lastAction = "Invited — อีเมลอยู่ในคิว Retry";
+      }
+
+      const accountLength = adminAccountData.accounts.length;
+      const invitationLength = adminAccountData.invitations.length;
+      const deliveryLength = adminAccountData.deliveryAttempts.length;
+      const auditLength = auditLogData.events.length;
+      try {
+        adminAccountData.accounts.push(newAcc);
+        adminAccountData.invitations.push(invitation);
+        adminAccountData.deliveryAttempts.push(deliveryAttempt);
+        adminAccountData.detail[newId] = {
+          activity: [{
+            at: formatAdminAccountActivityTime(issuedDate),
+            action: "Invited โดย " + ((auth.admin && auth.admin.username) || "Admin"),
+            reference: invitationId,
+            note: note || "เชิญ admin ใหม่ผ่านอีเมล",
+            invitationRef: invitationId,
+            deliveryRef: deliveryId,
+            deliveryStatus
+          }],
+          auditRefs: []
+        };
+        const auditId = ensureAdminAccountInviteAuditEvent(newAcc, invitation, deliveryAttempt, note);
+        if (!auditId) throw new Error("ไม่สามารถสร้าง Audit reference ได้");
+        invitation.auditRef = auditId;
+        adminAccountData.detail[newId].auditRefs.unshift(auditId);
+      } catch (error) {
+        adminAccountData.accounts.splice(accountLength);
+        adminAccountData.invitations.splice(invitationLength);
+        adminAccountData.deliveryAttempts.splice(deliveryLength);
+        auditLogData.events.splice(0, auditLogData.events.length - auditLength);
+        delete adminAccountData.detail[newId];
+        showSuccessToast("สร้างคำเชิญไม่สำเร็จ — ไม่มีข้อมูลบางส่วนถูกบันทึก", "Admin Accounts");
+        return;
+      }
       closeUserActionModal();
-      showSuccessToast(`${name} ได้รับคำเชิญแล้ว — ส่งอีเมลไปที่ ${email}`, "Admin Accounts");
+      if (deliveryStatus === "Failed") {
+        showSuccessToast(`สร้างบัญชีและคำเชิญให้ ${name} แล้ว แต่อีเมลส่งไม่สำเร็จ — บัญชียังคง Invited และส่งใหม่ได้`, "Admin Accounts");
+      } else if (deliveryStatus === "Retry") {
+        showSuccessToast(`สร้างบัญชีและคำเชิญให้ ${name} แล้ว — อีเมลอยู่ในคิว Retry และบัญชียังคง Invited`, "Admin Accounts");
+      } else {
+        showSuccessToast(`${name} ได้รับคำเชิญแล้ว — ส่งอีเมลไปที่ ${email}`, "Admin Accounts");
+      }
       renderAdminAccountRows();
     }
 
