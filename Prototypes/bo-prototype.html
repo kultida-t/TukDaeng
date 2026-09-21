@@ -8978,19 +8978,36 @@
       border-color: #1f9cf0;
       background: #f6fbff;
     }
-    /* AIL-004: delivery ref pill ใน history — แสดง reference เฉยๆ (jump link เป็น scope AIL-007) */
+    /* AIL-007: delivery ref/link pill ใน history (jump link ไป Settings > Delivery Logs)
+       — โทนน้ำเงิน = reference/navigation link เหมือน history-audit-link ไม่ใช่ status badge */
     body.admin-account-detail-mode .history-delivery-ref {
-      border: 1px solid #bbf7d0;
-      background: #ecfdf5;
+      border: 1px solid #cbd5e1;
+      background: #f1f5f9;
       border-radius: 999px;
-      color: #047857;
+      color: #475569;
       display: inline-flex;
       align-items: center;
       min-height: 22px;
       padding: 2px 9px;
       font-size: 11px;
       font-weight: 700;
-      margin-top: 4px;
+    }
+    body.admin-account-detail-mode .history-delivery-link {
+      border: 1px solid #c6ddff;
+      background: #e8f1ff;
+      border-radius: 999px;
+      color: #0f52b8;
+      display: inline-flex;
+      align-items: center;
+      min-height: 22px;
+      padding: 2px 9px;
+      font-size: 11px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    body.admin-account-detail-mode .history-delivery-link:hover {
+      border-color: #1f9cf0;
+      background: #f6fbff;
     }
     /* AIL-004: invitation section — status message + previous invitations + scenario tools */
     body.admin-account-detail-mode .admin-invitation-message {
@@ -9093,7 +9110,10 @@
         max-width: 100%;
         justify-self: start;
       }
-      body.admin-account-detail-mode .admin-account-detail-page .history-table td .history-delivery-ref {
+      body.admin-account-detail-mode .admin-account-detail-page .history-table td .history-delivery-ref,
+      body.admin-account-detail-mode .admin-account-detail-page .history-table td .history-delivery-link {
+        width: max-content;
+        max-width: 100%;
         justify-self: start;
       }
     }
@@ -17441,6 +17461,8 @@
         item("POL-USER-EXPORT", "User CSV Export", "Permission", "Policy", "สูง", "Enabled", "ต้อง mask PII และมี audit event", ["Sensitive"], "เปลี่ยน policy ต้องมี reason"),
         item("SEC-EMAIL-OTP", "Mandatory Email OTP", "Security", "Auth", "สูง", "Enabled", "Admin ทุกบัญชีต้อง verify Email OTP หลังผ่าน password", ["No bypass"], "ล็อกตาม baseline"),
         item("RET-AUDIT", "Audit retention", "Retention", "System", "กลาง", "365 days", "เก็บ audit อย่างน้อย 1 ปี", ["Export policy"], "แก้ค่าต้อง approval"),
+        // AIL-007: Admin Invitation lifecycle email delivery logs — ตรงกับ invitation record (INV-00001 / ADM-008)
+        item("DLV-ACCT-008-INV-001", "Admin invitation email", "INV-00001 / ADM-008", "Delivery", "สูง", "Sent", "ส่งคำเชิญและลิงก์ตั้งรหัสผ่านให้ ADM-008 (na***@tukdaeng.example) ภายใน 72 ชม.", ["Email", "AdminInvitation", "Lifecycle", "Audit linked"], "ลิงก์ใช้งานได้ครั้งเดียวภายใน 72 ชม. · Audit linked AUD-88203"),
         // NTF-RSTR-001: Delivery Logs ย้ายจาก Notifications module เข้า Settings (Phase 1)
         // ใช้โดย Account Deletion (DLV-DEL-*) และ User Management (DLV-ACCT-*) delivery log jump
         item("DLV-ACCT-009", "Account auto-suspension email", "RPU-560 / U-1120", "Delivery", "สูง", "Sent", "ครบ 5 รายงาน", ["Email", "ครบ 5 รายงาน", "Audit linked"], "reference ต้องตรงกับ Admin Action History ของรายงาน"),
@@ -23785,6 +23807,18 @@
     function jumpToAuditReference(ref) {
       const v = String(ref || "").trim();
       if (!v || v === "-") return false;
+      if (/^INV-\d+$/.test(v)) {
+        const inv = adminAccountData.invitations.find(i => i.id === v);
+        if (inv && adminAccountData.accounts.some(a => a.id === inv.targetAdminId)) {
+          pushBackNavigationContext();
+          renderAdminAccountDetail(inv.targetAdminId);
+          return true;
+        }
+      }
+      if (/^DLV-/.test(v)) {
+        jumpToDeliveryLog(v);
+        return true;
+      }
       if (/^ADM-\d+$/.test(v) && adminAccountData.accounts.some(a => a.id === v)) {
         pushBackNavigationContext();
         renderAdminAccountDetail(v);
@@ -24382,6 +24416,14 @@
       return ["approve", "manage", "admin"].includes(getRoleActorPermissionLevel("admin_accounts.manage"));
     }
 
+    function canViewDeliveryLogs() {
+      return getRoleActorPermissionLevel("delivery.view") !== "none";
+    }
+
+    function canViewAuditLog() {
+      return getRoleActorPermissionLevel("audit.view") !== "none";
+    }
+
     // ===== AIL-004: Admin Invitation read model + action gating =====
     // contract: 16_ADMIN_SETTINGS_MODULE.md §8.9 / 01_AUTHENTICATION_MODULE.md §10.1
     // client ห้ามคำนวณ permission/quota/eligibility เอง — ใช้ผล server-calculated จาก helper กลุ่มนี้เท่านั้น
@@ -24747,6 +24789,7 @@
       const invitationLength = adminAccountData.invitations.length;
       const deliveryLength = adminAccountData.deliveryAttempts.length;
       const auditLength = auditLogData.events.length;
+      const settingsRowsLength = moduleData.settings ? moduleData.settings.rows.length : 0;
       const detailExisted = !!adminAccountData.detail[accountId];
       const detail = adminAccountData.detail[accountId] || (adminAccountData.detail[accountId] = {});
       if (!detail.activity) detail.activity = [];
@@ -24794,6 +24837,7 @@
         if (!auditId) throw new Error("ไม่สามารถสร้าง Audit reference ได้");
         newInvitation.auditRef = auditId;
         detail.auditRefs.unshift(auditId);
+        ensureAdminInvitationDeliveryLog(deliveryAttempt, newInvitation, acc, "resend");
       } catch (error) {
         current.status = "Pending";
         delete current.supersededAt;
@@ -24804,6 +24848,7 @@
         adminAccountData.invitations.splice(invitationLength);
         adminAccountData.deliveryAttempts.splice(deliveryLength);
         auditLogData.events.splice(0, auditLogData.events.length - auditLength);
+        if (moduleData.settings) moduleData.settings.rows.splice(0, moduleData.settings.rows.length - settingsRowsLength);
         detail.activity.splice(0, detail.activity.length - activityLength);
         detail.auditRefs.splice(0, detail.auditRefs.length - auditRefsLength);
         log.splice(logLength);
@@ -25114,6 +25159,7 @@
       const invitationLength = adminAccountData.invitations.length;
       const deliveryLength = adminAccountData.deliveryAttempts.length;
       const auditLength = auditLogData.events.length;
+      const settingsRowsLength = moduleData.settings ? moduleData.settings.rows.length : 0;
       const detailExisted = !!adminAccountData.detail[accountId];
       const detail = adminAccountData.detail[accountId] || (adminAccountData.detail[accountId] = {});
       if (!detail.activity) detail.activity = [];
@@ -25154,6 +25200,7 @@
         if (!auditId) throw new Error("ไม่สามารถสร้าง Audit reference ได้");
         newInvitation.auditRef = auditId;
         detail.auditRefs.unshift(auditId);
+        ensureAdminInvitationDeliveryLog(deliveryAttempt, newInvitation, acc, "reissue");
       } catch (error) {
         acc.revision = beforeRevision;
         acc.invitationId = beforeInvitationId;
@@ -25161,6 +25208,7 @@
         adminAccountData.invitations.splice(invitationLength);
         adminAccountData.deliveryAttempts.splice(deliveryLength);
         auditLogData.events.splice(0, auditLogData.events.length - auditLength);
+        if (moduleData.settings) moduleData.settings.rows.splice(0, moduleData.settings.rows.length - settingsRowsLength);
         detail.activity.splice(0, detail.activity.length - activityLength);
         detail.auditRefs.splice(0, detail.auditRefs.length - auditRefsLength);
         if (!detailExisted) delete adminAccountData.detail[accountId];
@@ -25300,7 +25348,14 @@
       adminAccountData.resendIssuanceLog[accountId] = [];
       acc.invitationId = current.id;
       const delivery = getLatestAdminInvitationDelivery(current);
-      if (delivery) delivery.status = "Sent";
+      if (delivery) {
+        delivery.status = "Sent";
+        const row = moduleData.settings?.rows?.find(r => r.id === delivery.id);
+        if (row) {
+          row.status = "Sent";
+          row.detail = `ส่งคำเชิญและลิงก์ตั้งรหัสผ่านให้ ${acc.id} (${maskAdminInvitationEmail(acc.email)}) ภายใน 72 ชม.`;
+        }
+      }
       if (scenario === "cooldown") {
         current.resendAvailableAt = new Date(Date.now() + 45 * 1000).toISOString();
       } else if (scenario === "quota") {
@@ -25310,8 +25365,18 @@
         current.resendCountRolling24h = ADMIN_INVITATION_RESEND_QUOTA_24H;
       } else if (scenario === "failed" && delivery) {
         delivery.status = "Failed";
+        const row = moduleData.settings?.rows?.find(r => r.id === delivery.id);
+        if (row) {
+          row.status = "Failed";
+          row.detail = `ส่งอีเมลไม่สำเร็จ (mailbox unavailable) — บัญชียังคง Invited และส่งใหม่ได้`;
+        }
       } else if (scenario === "retry" && delivery) {
         delivery.status = "Retry";
+        const row = moduleData.settings?.rows?.find(r => r.id === delivery.id);
+        if (row) {
+          row.status = "Retry";
+          row.detail = `ส่งอีเมลไม่สำเร็จชั่วคราว (rate limit) — อยู่ในคิว Retry และบัญชียังคง Invited`;
+        }
       } else if (scenario === "expired") {
         current.status = "Expired";
       } else if (scenario === "cancelled") {
@@ -25568,16 +25633,33 @@
       `;
 
       // Section 2: History & Actions — ตารางประวัติล่าสุด + ปุ่ม action (pattern: Deletion Request Detail)
+      // คอลัมน์ Reference = invitation_id (INV-*) สำหรับ invitation lifecycle events ตาม §8.9; event อื่นใช้ actor ADM-*/System ตาม §8.2
+      // คอลัมน์ Delivery = DLV-* ref (jump ไป Delivery Logs ตาม delivery.view; ไม่มีสิทธิ์ = plain pill) — event ที่ไม่มี email attempt แสดง —
       // คอลัมน์ Audit = รหัส event ใน Audit Log ของ action นั้น (คลิกเปิด Audit Log กรองด้วย reference) — ไม่มีแสดง —
-      const activityRows = activity.map((a, i) => `
+      const activityRows = activity.map((a, i) => {
+        const referenceContent = a.invitationRef || a.reference || "—";
+        const deliveryContent = a.deliveryRef
+          ? (canViewDeliveryLogs()
+              ? `<button class="history-delivery-link" type="button" data-delivery-log-jump="${a.deliveryRef}">${a.deliveryRef}</button>`
+              : `<span class="history-delivery-ref">${a.deliveryRef}</span>`)
+          : "—";
+        const auditContent = auditRefs[i]
+          ? (canViewAuditLog()
+              ? `<button class="history-audit-link" type="button" data-admin-account-audit-ref="${auditRefs[i]}">${auditRefs[i]}</button>`
+              : `<span class="pill gray">${auditRefs[i]}</span>`)
+          : "—";
+
+        return `
         <tr>
           <td data-label="วันที่ / เวลา">${a.at || "—"}</td>
           <td data-label="Action">${a.action}</td>
-          <td data-label="Reference">${a.reference || "—"}</td>
-          <td data-label="Audit">${auditRefs[i] ? `<button class="history-audit-link" type="button" data-admin-account-audit-ref="${auditRefs[i]}">${auditRefs[i]}</button>` : "—"}</td>
+          <td data-label="Reference">${referenceContent}</td>
+          <td data-label="Delivery">${deliveryContent}</td>
+          <td data-label="Audit">${auditContent}</td>
           <td data-label="รายละเอียด" class="history-note">${a.note || "—"}</td>
         </tr>
-      `).join("");
+      `;
+      }).join("");
       const section2 = `
         <div class="detail-section admin-account-action-section">
           <h4>History &amp; Actions</h4>
@@ -25590,6 +25672,7 @@
                     <th>วันที่ / เวลา</th>
                     <th>Action</th>
                     <th>Reference</th>
+                    <th>Delivery</th>
                     <th>Audit</th>
                     <th>รายละเอียด</th>
                   </tr>
@@ -25633,6 +25716,16 @@
         const otherInvitations = getAdminAccountInvitations(acc.id)
           .filter(record => record.id !== inv.id)
           .sort((a, b) => new Date(b.issuedAt).getTime() - new Date(a.issuedAt).getTime());
+
+        let deliveryTileContent = "—";
+        if (invDelivery) {
+          const statusBadge = invDelivery.status === "Failed"
+            ? '<span class="pill red">Failed</span>'
+            : deliveryStatusPill(invDelivery.status);
+          const timeStr = invDelivery.attemptedAt ? formatAdminAccountActivityTime(new Date(invDelivery.attemptedAt)) : "";
+          deliveryTileContent = `${statusBadge} ${timeStr}`;
+        }
+
         sectionInvitation = `
           <div class="detail-section admin-invitation-section" data-admin-invitation-section>
             <h4>Invitation</h4>
@@ -25641,7 +25734,7 @@
               ${invTile("Invitation Status", adminInvitationStatusPill(inv.status))}
               ${invTile("Issued", inv.issuedAt ? formatAdminAccountActivityTime(new Date(inv.issuedAt)) : "—")}
               ${invTile("Expires", inv.expiresAt ? formatAdminAccountActivityTime(new Date(inv.expiresAt)) : "—")}
-              ${invTile("Latest Delivery", invDelivery ? `${invDelivery.status === "Failed" ? '<span class="pill red">Failed</span>' : deliveryStatusPill(invDelivery.status)} ${invDelivery.attemptedAt ? formatAdminAccountActivityTime(new Date(invDelivery.attemptedAt)) : ""}` : "—")}
+              ${invTile("Latest Delivery", deliveryTileContent)}
               ${invTile("Resend Quota / Cooldown", resendInfo)}
             </div>
             <p class="admin-invitation-message" role="status">${invCtx.statusMessage}</p>
@@ -26065,6 +26158,83 @@
       return `DLV-ACCT-${sequence}-INV-${String(attemptSequence).padStart(3, "0")}`;
     }
 
+    // AIL-007: Email Copy / Content Helper สำหรับ Invitation Lifecycle
+    // ตรงกับ 72-hour one-time link, initial-password flow และ support/recovery wording ตาม 01_AUTHENTICATION_MODULE.md §10.1
+    function getAdminInvitationEmailCopy(inv, acc) {
+      const recipientName = acc?.fullName || "Admin";
+      const roleName = acc?.role || "ผู้ดูแลระบบ";
+      const maskedEmail = maskAdminInvitationEmail(acc?.email);
+      const invitationId = inv?.id || "INV-xxxxx";
+      return {
+        subject: "[TukDaeng Back Office] คำเชิญเข้าร่วมเป็นผู้ดูแลระบบ / Admin Invitation",
+        lines: [
+          `เรียนคุณ ${recipientName},`,
+          `คุณได้รับเชิญให้เข้าร่วมปฏิบัติงานในระบบ TukDaeng Back Office ในตำแหน่ง ${roleName}`,
+          `กรุณากดลิงก์ด้านล่างเพื่อยืนยันตัวตนและตั้งรหัสผ่านเริ่มต้นภายใน 72 ชั่วโมง (ลิงก์ใช้งานได้ครั้งเดียว):`,
+          `https://bo.tukdaeng.example/auth/activate?invitation=${invitationId}&token=***`,
+          "หมายเหตุความปลอดภัย: หลังจากตั้งรหัสผ่านแล้ว คุณจะต้องยืนยันตัวตนด้วย Email OTP ทุกครั้งที่เข้าสู่ระบบ",
+          "หากลิงก์หมดอายุ หรือมีปัญหาในการเข้าใช้งาน กรุณาติดต่อผู้ดูแลระบบหรือ support@tukdaeng.example",
+          "---",
+          `Dear ${recipientName},`,
+          `You have been invited to join TukDaeng Back Office as ${roleName}.`,
+          `Please use the one-time link below to verify your identity and set your initial password within 72 hours:`,
+          `https://bo.tukdaeng.example/auth/activate?invitation=${invitationId}&token=***`,
+          "Security note: Email OTP verification will be required for every sign-in after your initial password setup.",
+          "If this link expires or you require assistance, please contact your administrator or support@tukdaeng.example."
+        ]
+      };
+    }
+
+    // AIL-007: เพิ่ม delivery log (DLV-ACCT-xxx-INV-xxx) ใน Settings > Delivery Logs (moduleData.settings.rows)
+    // pattern เดียวกับ ensureDeletionDeliveryLog / ensureAccountStatusDeliveryLog
+    function ensureAdminInvitationDeliveryLog(deliveryAttempt, inv, acc, actionType = "create") {
+      if (!deliveryAttempt || !moduleData.settings || !inv || !acc) return null;
+      if (moduleData.settings.rows.some(row => row.id === deliveryAttempt.id)) return deliveryAttempt.id;
+      const status = deliveryAttempt.status || "Sent";
+      const maskedEmail = maskAdminInvitationEmail(acc.email);
+      let eventName = "Admin invitation email";
+      if (actionType === "resend") eventName = "Invitation resent";
+      else if (actionType === "reissue") eventName = "Invitation reissued";
+      else if (actionType === "create") eventName = "Invitation created";
+
+      let detail = "";
+      if (status === "Sent") {
+        detail = actionType === "resend"
+          ? `ส่งคำเชิญอีกครั้งให้ ${acc.id} (${maskedEmail}) แทนคำเชิญเดิม — ลิงก์ใช้ได้ 72 ชม.`
+          : actionType === "reissue"
+            ? `ส่งคำเชิญใหม่ให้ ${acc.id} (${maskedEmail}) — ลิงก์ใช้ได้ 72 ชม.`
+            : `ส่งคำเชิญและลิงก์ตั้งรหัสผ่านให้ ${acc.id} (${maskedEmail}) ภายใน 72 ชม.`;
+      } else if (status === "Failed") {
+        detail = `ส่งอีเมลไม่สำเร็จ (mailbox unavailable) — บัญชียังคง Invited และส่งใหม่ได้`;
+      } else if (status === "Retry") {
+        detail = `ส่งอีเมลไม่สำเร็จชั่วคราว (rate limit) — อยู่ในคิว Retry และบัญชียังคง Invited`;
+      }
+
+      const adminNote = status === "Failed"
+        ? `ระบบบันทึกความล้มเหลวของการส่ง · สามารถ Resend ได้เมื่อพร้อม · Audit linked ${inv.auditRef || "—"}`
+        : status === "Retry"
+          ? `ระบบจะลองส่งใหม่อีกครั้งอัตโนมัติ · Audit linked ${inv.auditRef || "—"}`
+          : `ลิงก์ใช้งานได้ครั้งเดียวภายใน 72 ชม. · Audit linked ${inv.auditRef || "—"}`;
+
+      const tags = ["Email", "AdminInvitation", "Lifecycle", "Audit linked"];
+      if (status === "Retry") tags.push("Retry queued");
+
+      const deliveryRow = item(
+        deliveryAttempt.id,
+        eventName,
+        `${inv.id} / ${acc.id}`,
+        "Delivery",
+        "สูง",
+        status,
+        detail,
+        tags,
+        adminNote
+      );
+
+      moduleData.settings.rows.unshift(deliveryRow);
+      return deliveryAttempt.id;
+    }
+
     // ADM-PTO-001: บันทึก audit entry สำหรับ admin account action
     // pattern: auditLogData.events — เพิ่ม entry ใหม่ที่ด้านบน (latest first)
     // beforeStatus ต้องส่งมาจาก caller ที่ capture ก่อน mutate — ห้ามอ่าน acc.status ตรงนี้
@@ -26446,6 +26616,7 @@
       const invitationLength = adminAccountData.invitations.length;
       const deliveryLength = adminAccountData.deliveryAttempts.length;
       const auditLength = auditLogData.events.length;
+      const settingsRowsLength = moduleData.settings ? moduleData.settings.rows.length : 0;
       try {
         adminAccountData.accounts.push(newAcc);
         adminAccountData.invitations.push(invitation);
@@ -26454,7 +26625,7 @@
           activity: [{
             at: formatAdminAccountActivityTime(issuedDate),
             action: "Invited โดย " + ((auth.admin && auth.admin.username) || "Admin"),
-            reference: invitationId,
+            reference: actorAccount?.id || "System",
             note: note || "เชิญ admin ใหม่ผ่านอีเมล",
             invitationRef: invitationId,
             deliveryRef: deliveryId,
@@ -26466,11 +26637,13 @@
         if (!auditId) throw new Error("ไม่สามารถสร้าง Audit reference ได้");
         invitation.auditRef = auditId;
         adminAccountData.detail[newId].auditRefs.unshift(auditId);
+        ensureAdminInvitationDeliveryLog(deliveryAttempt, invitation, newAcc, "create");
       } catch (error) {
         adminAccountData.accounts.splice(accountLength);
         adminAccountData.invitations.splice(invitationLength);
         adminAccountData.deliveryAttempts.splice(deliveryLength);
         auditLogData.events.splice(0, auditLogData.events.length - auditLength);
+        if (moduleData.settings) moduleData.settings.rows.splice(0, moduleData.settings.rows.length - settingsRowsLength);
         delete adminAccountData.detail[newId];
         showSuccessToast("สร้างคำเชิญไม่สำเร็จ — ไม่มีข้อมูลบางส่วนถูกบันทึก", "Admin Accounts");
         return;
@@ -32403,7 +32576,13 @@
 
     function jumpToDeliveryLog(deliveryId) {
       if (!deliveryId) return;
+      if (!canViewDeliveryLogs()) {
+        showSuccessToast("ไม่มีสิทธิ์ดู Delivery Logs", "Delivery Logs");
+        return;
+      }
       // NTF-RSTR-003: Delivery Logs ย้ายจาก Notifications ไป Settings — jump ไป Settings > Delivery Logs
+      clearListFilterState("delivery-log-list");
+      resetListFilterPanelsForNavigation("settings", "Delivery Logs");
       renderModule("settings", "Delivery Logs", "Delivery Logs");
       const search = document.querySelector("#delivery-search");
       if (search) {
@@ -44866,6 +45045,10 @@
       // ADM-PTO-001: Admin Accounts — audit ref link → Audit Log (กรองด้วย reference)
       const adminAccountAuditRef = event.target.closest("[data-admin-account-audit-ref]");
       if (adminAccountAuditRef) {
+        if (!canViewAuditLog()) {
+          showSuccessToast("ไม่มีสิทธิ์ดู Audit Log", "Audit Log");
+          return;
+        }
         const ref = adminAccountAuditRef.dataset.adminAccountAuditRef;
         // AL-010: jump เข้า Audit Log = fresh filtered view — ล้าง filter state เก่าที่ค้างจาก session ก่อนหน้า
         clearListFilterState("audit-log");

@@ -169,13 +169,13 @@ test.describe("QA-BO-013d: Settings > Admin Accounts — detail page", () => {
     await expect(settingsRow.locator(".history-note")).toHaveText("เฉพาะ Support Center และ Delivery Logs ที่เกี่ยวข้อง");
   });
 
-  test("8. Section History & Actions: ตาราง วันที่/Action/Reference/Audit/รายละเอียด + ปุ่ม action", async ({ page }) => {
+  test("8. Section History & Actions: ตาราง วันที่/Action/Reference/Delivery/Audit/รายละเอียด + ปุ่ม action", async ({ page }) => {
     await openDetail(page, "ADM-006");
     const section = detailPage(page).locator(".admin-account-action-section");
     await expect(section).toBeVisible();
     await expect(section.locator("h4")).toHaveText("History & Actions");
-    // หัวตาราง 5 คอลัมน์
-    await expect(section.locator("thead th")).toHaveText(["วันที่ / เวลา", "Action", "Reference", "Audit", "รายละเอียด"]);
+    // หัวตาราง 6 คอลัมน์ (AIL-007: แยก Delivery ออกจาก Reference)
+    await expect(section.locator("thead th")).toHaveText(["วันที่ / เวลา", "Action", "Reference", "Delivery", "Audit", "รายละเอียด"]);
     // ADM-006 มี 3 activity rows
     const rows = section.locator("tbody tr");
     await expect(rows).toHaveCount(3);
@@ -183,7 +183,9 @@ test.describe("QA-BO-013d: Settings > Admin Accounts — detail page", () => {
     await expect(rows.nth(0).locator("td").nth(0)).toHaveText("21 Aug 2026 09:00");
     await expect(rows.nth(0).locator("td").nth(1)).toHaveText("Suspended");
     await expect(rows.nth(0).locator("td").nth(2)).toHaveText("ADM-001");
-    await expect(rows.nth(0).locator("td").nth(4)).toHaveText("ตรวจสอบการเข้าถึงข้อมูลผู้ใช้นอก scope");
+    // Suspended ไม่มี delivery attempt → Delivery = —
+    await expect(rows.nth(0).locator("td").nth(3)).toHaveText("—");
+    await expect(rows.nth(0).locator("td").nth(5)).toHaveText("ตรวจสอบการเข้าถึงข้อมูลผู้ใช้นอก scope");
     // มี action buttons area
     await expect(section.locator(".user-detail-actions")).toBeVisible();
   });
