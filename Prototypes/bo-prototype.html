@@ -8978,6 +8978,42 @@
       border-color: #1f9cf0;
       background: #f6fbff;
     }
+    /* AIL-004: delivery ref pill ใน history — แสดง reference เฉยๆ (jump link เป็น scope AIL-007) */
+    body.admin-account-detail-mode .history-delivery-ref {
+      border: 1px solid #bbf7d0;
+      background: #ecfdf5;
+      border-radius: 999px;
+      color: #047857;
+      display: inline-flex;
+      align-items: center;
+      min-height: 22px;
+      padding: 2px 9px;
+      font-size: 11px;
+      font-weight: 700;
+      margin-top: 4px;
+    }
+    /* AIL-004: invitation section — status message + previous invitations + scenario tools */
+    body.admin-account-detail-mode .admin-invitation-message {
+      margin: 0;
+      font-size: 12.5px;
+      color: #66758d;
+      line-height: 1.55;
+    }
+    body.admin-account-detail-mode .admin-invitation-history {
+      margin: 0;
+      font-size: 12px;
+    }
+    body.admin-account-detail-mode .admin-invitation-scenario-tools {
+      margin-top: 10px;
+    }
+    /* AIL-004: กลุ่มปุ่ม invitation action — แยกจาก .user-detail-actions ของ account action
+       (flex layout เดียวกัน แต่ไม่ใช้ class เดิมเพื่อไม่ให้ปนกับ action สถานะบัญชี) */
+    body.admin-account-detail-mode .admin-invitation-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      padding-top: 2px;
+    }
     /* responsive — tablet 1180px: detail-grid 3 → 2 */
     @media (max-width: 1180px) {
       body.admin-account-detail-mode .admin-account-detail-page .detail-grid.three {
@@ -8993,7 +9029,8 @@
       body.admin-account-detail-mode .admin-account-detail-page .detail-grid.three {
         grid-template-columns: 1fr;
       }
-      body.admin-account-detail-mode .admin-account-action-section .user-detail-actions .user-detail-action-btn {
+      body.admin-account-detail-mode .admin-account-action-section .user-detail-actions .user-detail-action-btn,
+      body.admin-account-detail-mode .admin-invitation-actions .user-detail-action-btn {
         flex: 1 1 0;
         min-width: 0;
       }
@@ -9054,6 +9091,9 @@
       body.admin-account-detail-mode .admin-account-detail-page .history-table td .history-audit-link {
         width: max-content;
         max-width: 100%;
+        justify-self: start;
+      }
+      body.admin-account-detail-mode .admin-account-detail-page .history-table td .history-delivery-ref {
         justify-self: start;
       }
     }
@@ -18318,7 +18358,10 @@
           auditRef: "AUD-88203",
           deliveryAttemptRefs: ["DLV-ACCT-008-INV-001"],
           correlationId: "COR-INV-00001",
-          outboxRef: "OUT-INV-00001-001"
+          outboxRef: "OUT-INV-00001-001",
+          // AIL-004: read-model fields ตาม §8.9 — resend cooldown/quota จาก server state
+          resendAvailableAt: null,
+          resendCountRolling24h: 0
         }
       ],
       deliveryAttempts: [
@@ -18393,7 +18436,7 @@
         },
         "ADM-008": {
           activity: [
-            { at: "08 Sep 2026 16:00", action: "Invited", reference: "ADM-001", note: "รอผู้รับยืนยันอีเมลและตั้ง password" }
+            { at: "08 Sep 2026 16:00", action: "Invited", reference: "ADM-001", note: "รอผู้รับยืนยันอีเมลและตั้ง password", invitationRef: "INV-00001", deliveryRef: "DLV-ACCT-008-INV-001", deliveryStatus: "Sent" }
           ],
           auditRefs: ["AUD-88203"]
         },
@@ -24318,6 +24361,226 @@
       return ["approve", "manage", "admin"].includes(getRoleActorPermissionLevel("admin_accounts.manage"));
     }
 
+    // ===== AIL-004: Admin Invitation read model + action gating =====
+    // contract: 16_ADMIN_SETTINGS_MODULE.md §8.9 / 01_AUTHENTICATION_MODULE.md §10.1
+    // client ห้ามคำนวณ permission/quota/eligibility เอง — ใช้ผล server-calculated จาก helper กลุ่มนี้เท่านั้น
+    // read model คืนเฉพาะ field ที่ปลอดภัย — ห้าม expose raw/hashed token, secret หรือ provider credential
+    const ADMIN_INVITATION_RESEND_QUOTA_24H = 5;
+
+    function getAdminAccountInvitations(accountId) {
+      return adminAccountData.invitations.filter(inv => inv.targetAdminId === accountId);
+    }
+
+    // current invitation = record ล่าสุดที่ไม่ใช่ Superseded — Superseded เป็น stale record ห้าม action บนมัน
+    function getCurrentAdminInvitation(accountId) {
+      return getAdminAccountInvitations(accountId)
+        .filter(inv => inv.status !== "Superseded")
+        .sort((a, b) => new Date(b.issuedAt).getTime() - new Date(a.issuedAt).getTime())[0] || null;
+    }
+
+    function getLatestAdminInvitationDelivery(invitation) {
+      if (!invitation) return null;
+      return adminAccountData.deliveryAttempts
+        .filter(attempt => attempt.invitationId === invitation.id)
+        .sort((a, b) => (b.attemptSequence || 0) - (a.attemptSequence || 0))[0] || null;
+    }
+
+    // Role eligibility — role ที่ assign ต้องยังเป็น Active system role (ใช้กับ Reissue)
+    function isAdminInvitationRoleEligible(acc) {
+      return !!acc && getAdminInviteEligibleRoles().some(role => role.name === acc.role);
+    }
+
+    // capabilities ที่ server คำนวณ ตาม action gating matrix ใน §8.9
+    // Invited+Pending → resend (permission+cooldown+quota) / cancel (permission)
+    // Invited+Expired/Cancelled (หรือไม่มี current เพราะทุก record เป็น Superseded) → reissue (permission+role eligibility)
+    // สถานะ account อื่น หรือ self/master → ไม่อนุญาตทุก action
+    function getAdminInvitationCapabilities(acc) {
+      const denied = { resend: false, cancel: false, reissue: false };
+      if (!acc || acc.status !== "Invited" || acc.isSelf || acc.isMaster) return denied;
+      if (!canManageAdminAccounts()) return denied;
+      const current = getCurrentAdminInvitation(acc.id);
+      const pending = !!current && current.status === "Pending";
+      const cooldownActive = !!current?.resendAvailableAt && new Date(current.resendAvailableAt).getTime() > Date.now();
+      const quotaLeft = (current?.resendCountRolling24h || 0) < ADMIN_INVITATION_RESEND_QUOTA_24H;
+      const needsReissue = current
+        ? current.status === "Expired" || current.status === "Cancelled"
+        : getAdminAccountInvitations(acc.id).length > 0;
+      return {
+        resend: pending && !cooldownActive && quotaLeft,
+        cancel: pending,
+        reissue: needsReissue && isAdminInvitationRoleEligible(acc)
+      };
+    }
+
+    function adminInvitationStatusPill(status) {
+      const map = { Pending: "blue", Used: "green", Expired: "amber", Cancelled: "red", Superseded: "gray" };
+      return `<span class="pill ${map[status] || "gray"}">${status}</span>`;
+    }
+
+    // read model ของ Admin Detail — เฉพาะ account Invited ที่มี invitation record
+    // isStaleRecord = record ที่แสดงเป็น Superseded ล่าสุดโดยไม่มี current invitation
+    function getAdminInvitationContext(acc) {
+      if (!acc || acc.status !== "Invited") return null;
+      const current = getCurrentAdminInvitation(acc.id);
+      const all = getAdminAccountInvitations(acc.id)
+        .sort((a, b) => new Date(b.issuedAt).getTime() - new Date(a.issuedAt).getTime());
+      const shown = current || all[0] || null;
+      if (!shown) return null;
+      const delivery = getLatestAdminInvitationDelivery(shown);
+      const cooldownActive = !!shown.resendAvailableAt && new Date(shown.resendAvailableAt).getTime() > Date.now();
+      const quotaFull = (shown.resendCountRolling24h || 0) >= ADMIN_INVITATION_RESEND_QUOTA_24H;
+      let statusMessage;
+      if (!current) {
+        statusMessage = `คำเชิญ ${shown.id} ถูกแทนที่แล้ว — action ทำได้กับคำเชิญล่าสุดเท่านั้น`;
+      } else if (shown.status === "Pending") {
+        if (delivery?.status === "Failed") statusMessage = "อีเมลล่าสุดส่งไม่สำเร็จ — บัญชียังคง Invited และส่งคำเชิญใหม่ได้เมื่อผ่าน cooldown/quota";
+        else if (delivery?.status === "Retry") statusMessage = "อีเมลอยู่ในคิว Retry — ระบบจะลองส่งอีกครั้ง บัญชียังคง Invited";
+        else statusMessage = "รอผู้รับยืนยันอีเมลและตั้ง password — ลิงก์ใช้ได้ครั้งเดียวภายใน 72 ชม.";
+        if (quotaFull) statusMessage += ` (ใช้ครบโควตา Resend ${ADMIN_INVITATION_RESEND_QUOTA_24H} ครั้ง/24 ชม. แล้ว)`;
+        else if (cooldownActive) statusMessage += " (อยู่ในช่วง cooldown ของ Resend)";
+      } else if (shown.status === "Expired") {
+        statusMessage = "คำเชิญหมดอายุแล้ว — ลิงก์เดิมใช้ไม่ได้ ออกคำเชิญใหม่เพื่อส่งลิงก์ล่าสุด";
+      } else if (shown.status === "Cancelled") {
+        statusMessage = "คำเชิญถูกยกเลิกแล้ว — ลิงก์เดิมใช้ไม่ได้ บัญชียังคง Invited และออกคำเชิญใหม่ได้";
+      } else if (shown.status === "Used") {
+        statusMessage = "คำเชิญถูกใช้งานแล้ว — ลิงก์ใช้ครบครั้งเดียวตาม contract";
+      } else {
+        statusMessage = `สถานะคำเชิญ: ${shown.status}`;
+      }
+      return {
+        invitation: shown,
+        isStaleRecord: !current,
+        delivery,
+        cooldownActive,
+        quotaFull,
+        capabilities: getAdminInvitationCapabilities(acc),
+        statusMessage
+      };
+    }
+
+    // service boundary สำหรับ invitation actions — direct call ต้องผ่าน validation เดียวกับ UI ทุกครั้ง
+    // re-resolve server state ใหม่เสมอ (actor permission, account status, current invitation, cooldown/quota, role eligibility)
+    // expected = { invitationId, tokenRevision } สำหรับ stale check — ต้องตรง current record ล่าสุดเท่านั้น
+    // mutation commit (Resend/Cancel/Reissue) เป็น scope AIL-005/AIL-006 — boundary นี้ validate แล้วคืน staged result
+    function requestAdminInvitationAction(action, accountId, expected = {}) {
+      const acc = adminAccountData.accounts.find(a => a.id === accountId);
+      const capabilities = getAdminInvitationCapabilities(acc);
+      if (!acc || !["resend", "cancel", "reissue"].includes(action) || !capabilities[action]) {
+        return { ok: false, code: "not_allowed" };
+      }
+      const current = getCurrentAdminInvitation(accountId);
+      if ((expected.invitationId && expected.invitationId !== current?.id)
+          || (expected.tokenRevision != null && expected.tokenRevision !== current?.tokenRevision)) {
+        return { ok: false, code: "stale_invitation" };
+      }
+      return { ok: true, code: "validated", action, invitationId: current.id };
+    }
+
+    // Prototype scenario ของ Invitation context — จำลอง substate สำหรับ manual QA (in-memory เท่านั้น)
+    // pattern เดียวกับ Test flow ใน Invite modal / role-state-tools ของหน้า Role
+    const adminInvitationScenarioOptions = [
+      { value: "pending", label: "Pending — ส่งแล้วรอยืนยัน" },
+      { value: "cooldown", label: "Pending — Resend ติด cooldown" },
+      { value: "quota", label: "Pending — โควตา Resend เต็ม (5/24h)" },
+      { value: "failed", label: "Pending — อีเมลล่าสุดล้มเหลว" },
+      { value: "retry", label: "Pending — อีเมลอยู่ในคิว Retry" },
+      { value: "expired", label: "Expired — คำเชิญหมดอายุ" },
+      { value: "cancelled", label: "Cancelled — คำเชิญถูกยกเลิก" },
+      { value: "superseded", label: "Superseded — ถูกแทนที่ด้วยคำเชิญใหม่" },
+      { value: "used", label: "Used — คำเชิญถูกใช้งานแล้ว" }
+    ];
+    let adminInvitationScenarioByAccount = {};
+
+    function applyAdminInvitationScenario(accountId, scenario) {
+      const acc = adminAccountData.accounts.find(a => a.id === accountId);
+      if (!acc || acc.status !== "Invited") return;
+      // reset แบบ deterministic ทุกครั้ง — ห้าม patch เฉพาะ field ที่ต่างจาก scenario ก่อนหน้า
+      // 1) ล้าง artifact ที่ scenario superseded สร้างไว้ทั้งหมด (invitation + delivery)
+      adminAccountData.invitations = adminAccountData.invitations.filter(inv => !(inv.targetAdminId === accountId && inv.scenarioArtifact));
+      adminAccountData.deliveryAttempts = adminAccountData.deliveryAttempts.filter(attempt => !(attempt.targetAdminId === accountId && attempt.scenarioArtifact));
+      // 2) baseline = record ล่าสุดที่เหลือ — ห้ามใช้ getCurrentAdminInvitation เพราะมันกรอง Superseded ออก:
+      //    scenario superseded เคย set INV-00001 เป็น Superseded ทำให้ไม่มี current → early return → state ค้าง
+      const current = getAdminAccountInvitations(accountId)
+        .sort((a, b) => new Date(b.issuedAt).getTime() - new Date(a.issuedAt).getTime())[0];
+      if (!current) return;
+      // 3) reset baseline กลับ seed state ก่อน apply scenario ใหม่เสมอ
+      current.status = "Pending";
+      current.resendAvailableAt = null;
+      current.resendCountRolling24h = 0;
+      acc.invitationId = current.id;
+      const delivery = getLatestAdminInvitationDelivery(current);
+      if (delivery) delivery.status = "Sent";
+      if (scenario === "cooldown") {
+        current.resendAvailableAt = new Date(Date.now() + 45 * 1000).toISOString();
+      } else if (scenario === "quota") {
+        current.resendCountRolling24h = ADMIN_INVITATION_RESEND_QUOTA_24H;
+      } else if (scenario === "failed" && delivery) {
+        delivery.status = "Failed";
+      } else if (scenario === "retry" && delivery) {
+        delivery.status = "Retry";
+      } else if (scenario === "expired") {
+        current.status = "Expired";
+      } else if (scenario === "cancelled") {
+        current.status = "Cancelled";
+      } else if (scenario === "used") {
+        current.status = "Used";
+      } else if (scenario === "superseded") {
+        const now = new Date();
+        const newInvitationId = nextAdminInvitationId();
+        const newDeliveryId = getAdminInvitationDeliveryId(accountId, (current.deliveryAttemptRefs?.length || 0) + 1);
+        current.status = "Superseded";
+        adminAccountData.invitations.push({
+          id: newInvitationId,
+          targetAdminId: accountId,
+          targetEmailNormalized: String(acc.email || "").toLowerCase(),
+          roleId: current.roleId,
+          roleRevision: current.roleRevision,
+          status: "Pending",
+          issuedAt: now.toISOString(),
+          expiresAt: new Date(now.getTime() + 72 * 60 * 60 * 1000).toISOString(),
+          tokenRevision: (current.tokenRevision || 1) + 1,
+          accountRevision: acc.revision || 1,
+          issuedByAdminId: current.issuedByAdminId,
+          auditRef: null,
+          deliveryAttemptRefs: [newDeliveryId],
+          correlationId: `COR-${newInvitationId}`,
+          outboxRef: `OUT-${newInvitationId}-001`,
+          resendAvailableAt: null,
+          resendCountRolling24h: 0,
+          scenarioArtifact: true
+        });
+        adminAccountData.deliveryAttempts.push({
+          id: newDeliveryId,
+          invitationId: newInvitationId,
+          targetAdminId: accountId,
+          channel: "Email",
+          status: "Sent",
+          attemptedAt: now.toISOString(),
+          recipientMasked: maskAdminInvitationEmail(acc.email),
+          attemptSequence: (current.deliveryAttemptRefs?.length || 0) + 1,
+          correlationId: `COR-${newInvitationId}`,
+          scenarioArtifact: true
+        });
+        acc.invitationId = newInvitationId;
+      }
+    }
+
+    // ค่า select ของ scenario tools — ใช้ค่าที่เลือกล่าสุดถ้ามี ไม่งั้น derive จาก record จริง
+    function getAdminInvitationScenarioValue(acc, ctx) {
+      const stored = adminInvitationScenarioByAccount[acc.id];
+      if (stored) return stored;
+      if (!ctx) return "pending";
+      if (ctx.isStaleRecord) return "superseded";
+      if (ctx.invitation.status === "Expired") return "expired";
+      if (ctx.invitation.status === "Cancelled") return "cancelled";
+      if (ctx.invitation.status === "Used") return "used";
+      if (ctx.quotaFull) return "quota";
+      if (ctx.cooldownActive) return "cooldown";
+      if (ctx.delivery?.status === "Failed") return "failed";
+      if (ctx.delivery?.status === "Retry") return "retry";
+      return "pending";
+    }
+
     function renderAdminAccounts() {
       setPageActions(canManageAdminAccounts()
         ? `<button class="btn" type="button" data-admin-account-invite-open>${iconSvg.plus}<span>Add admin</span></button>`
@@ -24518,7 +24781,7 @@
           <td data-label="Action">${a.action}</td>
           <td data-label="Reference">${a.reference || "—"}</td>
           <td data-label="Audit">${auditRefs[i] ? `<button class="history-audit-link" type="button" data-admin-account-audit-ref="${auditRefs[i]}">${auditRefs[i]}</button>` : "—"}</td>
-          <td data-label="รายละเอียด" class="history-note">${a.note || "—"}</td>
+          <td data-label="รายละเอียด" class="history-note">${a.note || "—"}${a.deliveryRef ? ` <span class="history-delivery-ref">${a.deliveryRef}${a.deliveryStatus ? ` · ${a.deliveryStatus}` : ""}</span>` : ""}</td>
         </tr>
       `).join("");
       const section2 = `
@@ -24546,6 +24809,65 @@
         </div>
       `;
 
+      // AIL-004: Invitation section — เฉพาะ account Invited ที่มี invitation record
+      // capabilities มาจาก server-calculated flags (getAdminInvitationContext) — client ไม่คำนวณเอง
+      const invCtx = getAdminInvitationContext(acc);
+      let sectionInvitation = "";
+      if (invCtx) {
+        const inv = invCtx.invitation;
+        const caps = invCtx.capabilities;
+        const invTile = (label, valueHtml) => `<div class="detail-tile"><span>${label}</span><strong>${valueHtml}</strong></div>`;
+        const invDelivery = invCtx.delivery;
+        const resendInfo = inv.status !== "Pending"
+          ? "—"
+          : invCtx.quotaFull
+            ? `ใช้ครบ ${ADMIN_INVITATION_RESEND_QUOTA_24H}/${ADMIN_INVITATION_RESEND_QUOTA_24H} ครั้งใน 24 ชม. — รอโควตาคืน`
+            : `${inv.resendCountRolling24h || 0}/${ADMIN_INVITATION_RESEND_QUOTA_24H} ครั้งใน 24 ชม.`
+              + (invCtx.cooldownActive
+                ? ` — ส่งใหม่ได้หลัง ${formatAdminAccountActivityTime(new Date(inv.resendAvailableAt))}`
+                : " — พร้อมส่งใหม่");
+        const invActionButtons = [];
+        if (caps.resend) {
+          invActionButtons.push(`<button class="user-detail-action-btn primary" type="button" data-admin-invitation-action="resend" data-admin-account-id="${acc.id}" aria-label="ส่งคำเชิญอีกครั้งสำหรับ ${acc.id}">ส่งคำเชิญอีกครั้ง</button>`);
+        }
+        if (caps.cancel) {
+          invActionButtons.push(`<button class="user-detail-action-btn danger" type="button" data-admin-invitation-action="cancel" data-admin-account-id="${acc.id}" aria-label="ยกเลิกคำเชิญของ ${acc.id}">ยกเลิกคำเชิญ</button>`);
+        }
+        if (caps.reissue) {
+          invActionButtons.push(`<button class="user-detail-action-btn primary" type="button" data-admin-invitation-action="reissue" data-admin-account-id="${acc.id}" aria-label="ออกคำเชิญใหม่สำหรับ ${acc.id}">ออกคำเชิญใหม่</button>`);
+        }
+        const otherInvitations = getAdminAccountInvitations(acc.id)
+          .filter(record => record.id !== inv.id)
+          .sort((a, b) => new Date(b.issuedAt).getTime() - new Date(a.issuedAt).getTime());
+        sectionInvitation = `
+          <div class="detail-section admin-invitation-section" data-admin-invitation-section>
+            <h4>Invitation</h4>
+            <div class="detail-grid three">
+              ${invTile("Invitation ID", inv.id)}
+              ${invTile("Invitation Status", adminInvitationStatusPill(inv.status))}
+              ${invTile("Issued", inv.issuedAt ? formatAdminAccountActivityTime(new Date(inv.issuedAt)) : "—")}
+              ${invTile("Expires", inv.expiresAt ? formatAdminAccountActivityTime(new Date(inv.expiresAt)) : "—")}
+              ${invTile("Latest Delivery", invDelivery ? `${invDelivery.status === "Failed" ? '<span class="pill red">Failed</span>' : deliveryStatusPill(invDelivery.status)} ${invDelivery.attemptedAt ? formatAdminAccountActivityTime(new Date(invDelivery.attemptedAt)) : ""}` : "—")}
+              ${invTile("Resend Quota / Cooldown", resendInfo)}
+            </div>
+            <p class="admin-invitation-message" role="status">${invCtx.statusMessage}</p>
+            ${otherInvitations.length
+              ? `<p class="admin-invitation-history muted">คำเชิญก่อนหน้า: ${otherInvitations.map(record => `${record.id} (${record.status})`).join(", ")}</p>`
+              : ""}
+            ${invActionButtons.length
+              ? `<div class="admin-invitation-actions">${invActionButtons.join("")}</div>`
+              : ""}
+            <details class="prototype-tools user-action-prototype-tools admin-invitation-scenario-tools">
+              <summary>Prototype scenario</summary>
+              <label>
+                Invitation state
+                ${customSelect("admin-invitation-scenario", "Invitation state", adminInvitationScenarioOptions, getAdminInvitationScenarioValue(acc, invCtx), "data-custom-select-silent")}
+              </label>
+            </details>
+          </div>
+        `;
+      }
+
       document.querySelector("#table").innerHTML = `
         <div class="user-detail-page report-detail-page admin-account-detail-page">
           <div class="user-detail-head">
@@ -24561,6 +24883,7 @@
             </div>
           </div>
           ${section1}
+          ${sectionInvitation}
           ${sectionRole}
           ${section2}
         </div>
@@ -25304,7 +25627,9 @@
         auditRef: null,
         deliveryAttemptRefs: [deliveryId],
         correlationId,
-        outboxRef: `OUT-${invitationId}-001`
+        outboxRef: `OUT-${invitationId}-001`,
+        resendAvailableAt: null,
+        resendCountRolling24h: 0
       };
       const deliveryAttempt = {
         id: deliveryId,
@@ -41713,6 +42038,15 @@
           roleDetailViewState = hiddenInput.value || "ready";
           renderRoleDetailPage(activeRoleId);
         }
+        // AIL-004: Prototype scenario ของ Invitation context — จำลอง substate แล้ว re-render detail
+        if (hiddenInput.id === "admin-invitation-scenario") {
+          const accountId = activeRow?.id;
+          if (accountId) {
+            adminInvitationScenarioByAccount[accountId] = hiddenInput.value || "pending";
+            applyAdminInvitationScenario(accountId, adminInvitationScenarioByAccount[accountId]);
+            renderAdminAccountDetail(accountId);
+          }
+        }
         if (select.hasAttribute("data-custom-select-silent")) return;
         if (hiddenInput.hasAttribute("data-article-editor-custom-select")) {
           const form = hiddenInput.closest("[data-article-editor]");
@@ -43478,6 +43812,21 @@
         const id = adminAccountActionConfirmButton.dataset.adminAccountId;
         const acc = adminAccountData.accounts.find(a => a.id === id);
         confirmAdminAccountAction(acc, action);
+        return;
+      }
+      // AIL-004: Admin Accounts — invitation action (resend/cancel/reissue)
+      // dispatch ผ่าน service boundary requestAdminInvitationAction เท่านั้น — re-validate fresh state ทุกครั้ง
+      const adminInvitationActionBtn = event.target.closest("[data-admin-invitation-action]");
+      if (adminInvitationActionBtn) {
+        const action = adminInvitationActionBtn.dataset.adminInvitationAction;
+        const id = adminInvitationActionBtn.dataset.adminAccountId;
+        const result = requestAdminInvitationAction(action, id);
+        if (!result.ok) {
+          showSuccessToast("ไม่สามารถดำเนินการกับคำเชิญนี้ได้ — สถานะหรือสิทธิ์ไม่อนุญาต", "Admin Accounts");
+          renderAdminAccountDetail(id);
+        } else {
+          showSuccessToast("คำเชิญผ่านการตรวจสอบแล้ว — ขั้นตอนยืนยันจะเปิดใช้งานในงานถัดไป", "Admin Accounts");
+        }
         return;
       }
       // ADM-PTO-001: Admin Accounts — เปิด change role modal
