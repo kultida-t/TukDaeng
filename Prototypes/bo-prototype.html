@@ -35824,7 +35824,6 @@
         reporters: 2,
         waitingHours: 18,
         reason: "เนื้อหาไม่เหมาะสม",
-        reportedPart: "Body image",
         reporterNote: "รูปเอกสารดูเหมือนถูกคัดลอกจากประกาศของดีลเลอร์ และยังเห็นลายน้ำที่ถูกครอปอยู่",
         nextCheck: "Compare the reported image with source evidence, then edit the article to remove or replace the image before closing the report.",
         preview: "Provenance checklist article with a reported body image inside the Board content.",
@@ -35846,7 +35845,6 @@
         reporters: 3,
         waitingHours: 0,
         reason: "อื่น ๆ",
-        reportedPart: "Interview text",
         reporterNote: "The owner attribution was no longer accurate after the collector requested removal.",
         nextCheck: "No pending action. Article remains archived and the report is closed.",
         preview: "Archived collector interview retained for BO audit only.",
@@ -40674,7 +40672,6 @@
         getBoardReportQueueStatus(report),
         getBoardReportPriorityLabel(report),
         report.reason,
-        report.reportedPart,
         report.reporterNote,
         ...(report.tags || [])
       ].join(" ").toLowerCase();
