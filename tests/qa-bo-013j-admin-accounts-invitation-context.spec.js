@@ -127,17 +127,20 @@ test.describe("QA-BO-013j: Settings > Admin Accounts — invitation context & ac
 
   // ---- 3. history แสดง invitation/delivery reference + audit link เดิม ----
 
-  test("3. History & Actions แสดง delivery ref pill และ audit link เดิมของ INV-00001", async ({ page }) => {
+  test("3. History & Actions แสดง audit link เดิมของ INV-00001 — delivery ref เก็บใน data ไม่ render pill", async ({ page }) => {
     await openDetail(page, "ADM-008");
     const historyRow = page.locator(".admin-account-action-section tbody tr").first();
     // คอลัมน์ Audit ยังเป็น link AUD-88203 (behavior เดิมจาก AIL-003)
     await expect(historyRow.locator("button.history-audit-link")).toHaveText("AUD-88203");
-    // รายละเอียดมี delivery ref pill (non-interactive — jump link เป็น scope AIL-007)
-    const ref = historyRow.locator(".history-delivery-ref");
-    await expect(ref).toBeVisible();
-    await expect(ref).toContainText("DLV-ACCT-008-INV-001");
-    await expect(ref).toContainText("Sent");
-    expect(await historyRow.locator(".history-delivery-ref button, .history-delivery-ref a").count()).toBe(0);
+    // delivery ref pill ถูกนำออกจาก UI — แต่ underlying delivery/activity data ยังเชื่อมโยงถูกต้อง
+    await expect(historyRow.locator(".history-delivery-ref")).toHaveCount(0);
+    await expect(historyRow).toContainText("รอผู้รับยืนยันอีเมล");
+    const linked = await page.evaluate(() => {
+      const row = adminAccountData.detail["ADM-008"].activity[0];
+      const delivery = adminAccountData.deliveryAttempts.find(d => d.id === row.deliveryRef);
+      return { deliveryRef: row.deliveryRef, deliveryStatus: row.deliveryStatus, deliveryRecordStatus: delivery?.status, deliveryInvitation: delivery?.invitationId };
+    });
+    expect(linked).toEqual({ deliveryRef: "DLV-ACCT-008-INV-001", deliveryStatus: "Sent", deliveryRecordStatus: "Sent", deliveryInvitation: "INV-00001" });
   });
 
   // ---- 4-5. cooldown / quota gating ----
@@ -175,24 +178,24 @@ test.describe("QA-BO-013j: Settings > Admin Accounts — invitation context & ac
 
   // ---- 7-8. Expired / Cancelled → reissue เท่านั้น ----
 
-  test("7. scenario expired: status Expired + เฉพาะปุ่มออกคำเชิญใหม่ (reissue)", async ({ page }) => {
+  test("7. scenario expired: status Expired + เฉพาะปุ่มส่งคำเชิญใหม่ (reissue)", async ({ page }) => {
     await openDetail(page, "ADM-008");
     await pickInvitationScenario(page, "expired");
     const section = invitationSection(page);
     await expect(section.locator(".detail-tile").nth(1).locator(".pill.amber")).toHaveText("Expired");
     await expect(section.locator(".admin-invitation-message")).toContainText("หมดอายุ");
-    expect(await invitationActionTexts(page)).toEqual(["ออกคำเชิญใหม่"]);
+    expect(await invitationActionTexts(page)).toEqual(["ส่งคำเชิญใหม่"]);
     await expect(section.locator('[data-admin-invitation-action="resend"]')).toHaveCount(0);
     await expect(section.locator('[data-admin-invitation-action="cancel"]')).toHaveCount(0);
   });
 
-  test("8. scenario cancelled: status Cancelled + เฉพาะปุ่มออกคำเชิญใหม่ (reissue)", async ({ page }) => {
+  test("8. scenario cancelled: status Cancelled + เฉพาะปุ่มส่งคำเชิญใหม่ (reissue)", async ({ page }) => {
     await openDetail(page, "ADM-008");
     await pickInvitationScenario(page, "cancelled");
     const section = invitationSection(page);
     await expect(section.locator(".detail-tile").nth(1).locator(".pill.red")).toHaveText("Cancelled");
     await expect(section.locator(".admin-invitation-message")).toContainText("ยกเลิก");
-    expect(await invitationActionTexts(page)).toEqual(["ออกคำเชิญใหม่"]);
+    expect(await invitationActionTexts(page)).toEqual(["ส่งคำเชิญใหม่"]);
   });
 
   // ---- 9. Superseded → resolve current, ห้าม action บน stale record ----
@@ -205,7 +208,7 @@ test.describe("QA-BO-013j: Settings > Admin Accounts — invitation context & ac
     await expect(section.locator(".detail-tile").nth(0).locator("strong")).toHaveText("INV-00002");
     await expect(section.locator(".detail-tile").nth(1).locator(".pill.blue")).toHaveText("Pending");
     // stale record แสดงในบรรทัด "คำเชิญก่อนหน้า"
-    await expect(section.locator(".admin-invitation-history")).toContainText("INV-00001 (Superseded)");
+    await expect(section.locator(".admin-invitation-history")).toContainText("INV-00001 · Superseded");
     // action ผูกกับ current → resend/cancel ใช้ได้, ไม่มี reissue เพราะ current เป็น Pending
     expect(await invitationActionTexts(page)).toEqual(["ส่งคำเชิญอีกครั้ง", "ยกเลิกคำเชิญ"]);
 
@@ -267,15 +270,16 @@ test.describe("QA-BO-013j: Settings > Admin Accounts — invitation context & ac
     });
   });
 
-  // ---- 12. คลิกปุ่มที่อนุญาต → toast ยืนยัน validation, ไม่มี mutation (defer AIL-005/006) ----
+  // ---- 12. คลิกปุ่ม resend → เปิด confirmation modal (commit flow ของ AIL-005), ยังไม่มี mutation ----
 
-  test("12. คลิก 'ส่งคำเชิญอีกครั้ง' → toast ผ่านการตรวจสอบ + state เดิมคงอยู่ (ยังไม่ commit)", async ({ page }) => {
+  test("12. คลิก 'ส่งคำเชิญอีกครั้ง' → เปิด confirmation modal + state เดิมคงอยู่ (ยังไม่ commit)", async ({ page }) => {
     await openDetail(page, "ADM-008");
     await invitationSection(page).locator('[data-admin-invitation-action="resend"]').click();
     await page.waitForTimeout(300);
-    const toast = page.locator("#success-toast");
-    await expect(toast).toBeVisible();
-    await expect(toast).toContainText("ผ่านการตรวจสอบ");
+    const modal = page.locator("#user-action-modal");
+    await expect(modal).toHaveClass(/show/);
+    await expect(modal.locator("#user-action-modal-title")).toHaveText("Resend Invitation");
+    await expect(modal.locator("[data-admin-invitation-resend-confirm]")).toBeVisible();
     // ยังไม่มี resend side-effect — invitation/counter เดิม
     const after = await page.evaluate(() => ({
       status: adminAccountData.invitations[0].status,
@@ -283,6 +287,9 @@ test.describe("QA-BO-013j: Settings > Admin Accounts — invitation context & ac
       deliveries: adminAccountData.deliveryAttempts.length
     }));
     expect(after).toEqual({ status: "Pending", resendCount: 0, deliveries: 1 });
+    // ปิด modal คืน state ก่อนจบ test
+    await modal.locator("[data-user-action-modal-close]").first().click();
+    await page.waitForTimeout(200);
   });
 
   // ---- 13. permission denied → ปุ่มหายจาก DOM + dispatch reject ----
@@ -377,7 +384,7 @@ test.describe("QA-BO-013j: Settings > Admin Accounts — invitation context & ac
     await pickInvitationScenario(page, "superseded");
     await assertScenario({
       scenario: "superseded", id: "INV-00002", status: "Pending", delivery: "Sent",
-      quota: "0/5", previous: "INV-00001 (Superseded)",
+      quota: "0/5", previous: "INV-00001 · Superseded",
       actions: ["ส่งคำเชิญอีกครั้ง", "ยกเลิกคำเชิญ"], hasArtifact: true
     });
 
@@ -394,7 +401,7 @@ test.describe("QA-BO-013j: Settings > Admin Accounts — invitation context & ac
     await assertScenario({
       scenario: "expired", id: "INV-00001", status: "Expired", delivery: "Sent",
       quota: "—", message: "หมดอายุ", previous: null,
-      actions: ["ออกคำเชิญใหม่"], hasArtifact: false
+      actions: ["ส่งคำเชิญใหม่"], hasArtifact: false
     });
 
     // (d) expired → failed: status ต้องกลับ Pending + delivery Failed
@@ -410,14 +417,14 @@ test.describe("QA-BO-013j: Settings > Admin Accounts — invitation context & ac
     await assertScenario({
       scenario: "cancelled", id: "INV-00001", status: "Cancelled", delivery: "Sent",
       quota: "—", message: "ยกเลิก", previous: null,
-      actions: ["ออกคำเชิญใหม่"], hasArtifact: false
+      actions: ["ส่งคำเชิญใหม่"], hasArtifact: false
     });
 
     // (f) cancelled → superseded อีกครั้ง: artifact สร้างใหม่ deterministic (INV-00002 เสมอ)
     await pickInvitationScenario(page, "superseded");
     await assertScenario({
       scenario: "superseded", id: "INV-00002", status: "Pending", delivery: "Sent",
-      quota: "0/5", previous: "INV-00001 (Superseded)",
+      quota: "0/5", previous: "INV-00001 · Superseded",
       actions: ["ส่งคำเชิญอีกครั้ง", "ยกเลิกคำเชิญ"], hasArtifact: true
     });
 

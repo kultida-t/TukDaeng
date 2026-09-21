@@ -187,7 +187,7 @@ test.describe("QA-BO-013i: Settings > Admin Accounts — responsive & cross-modu
 
   // ---- 2. detail responsive: grid columns by viewport ----
 
-  test("2. detail responsive: desktop 3 คอลัมน์; tablet 2 คอลัมน์; mobile 1 คอลัมน์ + history card stack + action full width", async ({ page }) => {
+  test("2. detail responsive: desktop 3 คอลัมน์; tablet 2 คอลัมน์; mobile 1 คอลัมน์ + history card stack + action buttons content-sized", async ({ page }) => {
     await openDetail(page, "ADM-006");
     const narrow = await isNarrow(page);
     const mobile = await isMobile(page);
@@ -203,16 +203,22 @@ test.describe("QA-BO-013i: Settings > Admin Accounts — responsive & cross-modu
       expect(colCount).toBe(1);
       // history table → card stack: thead hidden
       await expect(activityThead).toBeHidden();
-      // action buttons fill available width (flex: 1 1 0 — each button grows equally)
+      // action buttons ขนาดตาม content + wrap แนวนอน — ไม่ stretch เต็มแถว (สอดคล้องกับ action row ส่วนอื่น)
       const actionBtns = page.locator(".admin-account-detail-page .user-detail-actions .user-detail-action-btn");
       const btnCount = await actionBtns.count();
       expect(btnCount).toBeGreaterThan(0);
-      // ปุ่มแรกขยายเต็มพื้นที่ที่เหลือ (flex-grow)
+      const grow = await actionBtns.first().evaluate(el => getComputedStyle(el).flexGrow);
+      expect(grow).toBe("0");
       const firstBtnBox = await actionBtns.first().boundingBox();
       const containerBox = await page.locator(".admin-account-detail-page .user-detail-actions").boundingBox();
-      // ปุ่มกว้างพอสมควร (≥ ~45% ของ container สำหรับ 2 ปุ่ม, ≥ ~90% สำหรับ 1 ปุ่ม)
-      const minRatio = btnCount === 1 ? 0.85 : 0.4;
-      expect(firstBtnBox.width).toBeGreaterThan(containerBox.width * minRatio);
+      // ปุ่มเดี่ยวไม่ขยายเต็มความกว้าง container
+      expect(firstBtnBox.width).toBeLessThan(containerBox.width);
+      // หลายปุ่มเรียงแนวนอนในแถวเดียวกันเมื่อพื้นที่พอ (wrap เมื่อไม่พอ)
+      if (btnCount > 1) {
+        const secondBtnBox = await actionBtns.nth(1).boundingBox();
+        expect(secondBtnBox.y).toBeGreaterThanOrEqual(firstBtnBox.y);
+        expect(secondBtnBox.x).toBeGreaterThanOrEqual(containerBox.x);
+      }
     } else if (narrow) {
       // tablet (≤1180px): 2 columns
       expect(colCount).toBe(2);
