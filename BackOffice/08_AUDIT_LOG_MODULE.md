@@ -17,8 +17,8 @@
 | --- | --- |
 | Module Name | BO Audit Log |
 | Platform | Responsive Web Back Office |
-| Version | `BO-08-v0.2` |
-| Status | Screen layer synced with prototype (Audit Log Phase 1) |
+| Version | `BO-08-v0.3` |
+| Status | Screen layer synced with prototype (Audit Log Phase 1) + Admin invitation lifecycle audit events cataloged |
 | Owner | Product / UX / Engineering / Operations |
 | Document Type | Functional PRD |
 
@@ -95,6 +95,7 @@ Sensitive values ใน before/after ต้อง mask ตาม policy ถ้�
 Baseline entity types:
 
 - AdminAccount
+- AdminInvitation (Mission 1 — Admin invitation lifecycle events)
 - User
 - Asset
 - Offer
@@ -178,6 +179,7 @@ Baseline entity types:
 - Support Center update (channels, business hours, availability)
 - Account deletion restore / reject restore / auto delete (เก็บถาวร + ลบตัวตน ขั้นเดียว) / dependency check / request create / session revoke / offer cancel auto / report close auto
 - Delivery log retry / export (Phase 1, Settings > Delivery Logs)
+- Admin invitation lifecycle — create / resend / cancel / reissue / link accepted / activated / delivery attempt (`ADMIN_INVITATION_*` ตาม `01_AUTHENTICATION_MODULE.md` section 10.1 และ `16_ADMIN_SETTINGS_MODULE.md` section 8.9)
 - Notification template update (Phase 2/future)
 - Broadcast send/retry/cancel (Phase 2/future)
 - Permission/access update

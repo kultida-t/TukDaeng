@@ -17,8 +17,8 @@
 | --- | --- |
 | Module Name | BO Authentication And Admin Accounts |
 | Platform | Responsive Web Back Office |
-| Version | `BO-01-v1.2` |
-| Status | สเปกปัจจุบัน — Admin invitation lifecycle/security contract defined |
+| Version | `BO-01-v1.3` |
+| Status | สเปกปัจจุบัน — Admin invitation lifecycle/security contract synced กับ accepted Mission 1 prototype/tests |
 | Owner | Product / UX / Engineering / Operations |
 | Document Type | Functional PRD |
 
@@ -73,6 +73,7 @@ Login และ auth-adjacent screens ใช้ layout และ breakpoint ต�
 | Access Denied | Message ชัดเจนและ back action | Same | Same |
 | Admin Account List | Card/list view พร้อม priority fields | Table หรือ cards | Dense table |
 | Admin Account Detail | Stacked sections | Two-column sections | Detail layout พร้อม audit/sidebar เมื่อเหมาะสม |
+| Accept Invitation (recipient link) | Single-column form/recovery state ใน auth layout เดียวกับ Login (ไม่มี app shell) | Same | Same |
 
 Login form ต้องมี "ลืมรหัสผ่าน?" link ใน meta row ตาม prototype ที่ล็อกแล้ว
 
@@ -108,6 +109,7 @@ Auth action ทุกอย่างต้องใช้งานได้บ�
 - OTP verification ผิดครบ 5 ครั้งต้อง block challenge และให้เริ่ม login ใหม่ หรือ lock account ตาม risk policy
 - Email delivery failure ต้องแสดง state ให้ retry/resend ได้โดยไม่เปิดเผย security detail เกินจำเป็น
 - หน้าจอ Email OTP verification ต้องเปลี่ยน title เป็น "Email OTP Verification" และแสดง destination email + countdown expiry ตาม prototype ที่ล็อกแล้ว
+- Scope: Email OTP ใช้เฉพาะ Login flow เท่านั้น — invitation activation ใช้ possession verification ของ one-time link แทนและห้ามถาม OTP ซ้ำ (section 10.1); หลัง activation ผู้ใช้กลับ Login และ OTP policy เดิมยังบังคับทุกครั้ง
 
 ### Email OTP Challenge States
 | State | Meaning | Required Behavior |
@@ -169,6 +171,8 @@ Auth action ทุกอย่างต้องใช้งานได้บ�
 ### 10.1 Admin Invitation Lifecycle And Security Contract
 
 Contract นี้เป็น production boundary สำหรับ Admin Account สถานะ `Invited` ตั้งแต่สร้างคำเชิญจน activation สำเร็จ โดยไม่เปลี่ยน Login/Email OTP flow ที่ล็อกแล้ว และไม่ถือว่า in-memory state ใน prototype เป็น security enforcement จริง
+
+> Requirement trace (Mission 1 scope): `bf08de1f` → Mission 1 `0248791b` (Admin Invitation & Account Activation) → Objective 4 → Feature "Mission 1 authentication/admin-settings contract update" → Task `AIL-012`; behavior ที่ sync ใน section นี้ implement/accepted แล้วใน AIL-002–AIL-011
 
 #### Account And Invitation State Relationship
 
@@ -272,9 +276,21 @@ Delivery ID สำหรับ invitation email ใช้ `DLV-ACCT-<admin-seque
 
 Public context/activation API ต้อง map invalid, expired, used, cancelled, superseded, account-ineligible, role-ineligible และ stale revision เป็น safe state ที่ไม่เปิดเผย hash, revision ภายใน, account existence หรือ permission detail. เฉพาะ valid link จึงคืน Name/Email/Role แบบ read-only ที่จำเป็นต่อ activation. Unknown token และ malformed token ใช้ generic invalid response; rate-limit/abuse result ห้ามเปิดเผย threshold.
 
+Safe resolution states แบ่งเป็น terminal และ transient ตาม accepted prototype (`getInviteRecoveryState`/`resolveAdminInvitationActivation`):
+
+| Safe state | Trigger code | Kind | Required recovery |
+| --- | --- | --- | --- |
+| Invalid link | `invalid_token`, `not_allowed` | Terminal | กลับ Login; generic message ที่ไม่เปิดเผยว่า account/invitation มีอยู่หรือไม่ |
+| Link expired | `expired` | Terminal | กลับ Login พร้อมช่องทางติดต่อ Admin เพื่อขอคำเชิญใหม่ |
+| Link already used | `already_used` | Terminal | นำทางไป Login; account activate แล้วและ Login ยังบังคับ Email OTP ตามปกติ |
+| Invitation cancelled | `cancelled` | Terminal | กลับ Login พร้อมช่องทางติดต่อ Admin |
+| Link superseded | `superseded`, `stale_revision` | Terminal | กลับ Login พร้อมคำแนะนำให้ใช้ลิงก์จากอีเมลคำเชิญฉบับล่าสุด |
+| Activation unavailable | `account_ineligible`, `role_ineligible` | Terminal | Block โดยไม่เปลี่ยน account/Role/password; แสดง safe message และช่องทางติดต่อ Admin |
+| Activation not completed | `stale_invitation`, `commit_failed`, `duplicate_submit` | Transient | แสดง retry action ที่ re-resolve server state ใหม่ทั้งชุด (ไม่ใช่ blind retry ของ request เดิม); ถ้า re-resolve พบ terminal state ให้แสดง terminal state ตามจริง และห้ามเกิด partial mutation |
+
 #### Prototype And Production Boundary
 
-- Protected prototype ปัจจุบันมี Invite Admin modal, สร้าง in-memory account `Invited`, toast และ audit mock เท่านั้น; ยังไม่มี recipient link, canonical invitation record, token storage, server quota, transaction/outbox หรือ production delivery enforcement
+- Protected prototype สาธิต lifecycle ครบชุดแบบ in-memory แล้ว: Invite Admin modal → account `Invited` + invitation record `Pending`, invitation context ใน Admin Detail, Resend/Cancel/Reissue พร้อม cooldown 60 วินาที + quota 5/rolling 24h, recipient link `#token=` capture/strip, initial-password activation, safe recovery states ทั้ง terminal/transient และ Delivery/Audit trace (`DLV-ACCT-<seq>-INV-<seq>`/`AUD-xxxxx`) — ทั้งหมดเป็น UI/mock baseline เท่านั้น; ยังไม่มี server-side token hash storage, durable idempotency/outbox, transaction, provider integration หรือ abuse/rate-limit enforcement จริง
 - Prototype state ใช้สาธิต interaction และต้องไม่ถูกอ้างเป็นหลักฐานว่า one-time token, permission, race/replay, quota หรือ audit/delivery durability ถูก enforce แล้ว
 - Section นี้เป็น production contract และไม่อนุญาตให้แก้ protected Login, Admin Accounts, Delivery Logs, Audit Log, navigation หรือ routing โดยอัตโนมัติ; UI implementation ต้องทำใน task ที่ได้รับอนุมัติและคง behavior ที่ล็อกไว้
 
@@ -349,6 +365,7 @@ Invitation action ต้อง enforce permission และ stale-state safeguar
 | Invitation invalid/malformed | แสดง safe invalid-link state โดยไม่เปิดเผยว่ามี account หรือ invitation หรือไม่ |
 | Invitation expired/used/cancelled/superseded | แสดง terminal safe state และช่องทางกลับ Login/ติดต่อ Admin ตาม state ที่อนุมัติ |
 | Invitation account/Role ineligible หรือ stale | block activation โดยไม่เปลี่ยน account/password และแสดง safe recovery state |
+| Invitation transient failure (stale invitation, commit race, duplicate submit) | แสดง transient safe state "ยังไม่มีข้อมูลใดถูกบันทึก" พร้อม retry ที่ re-resolve server state ใหม่ทั้งชุด ไม่ทำ mutation ซ้ำ |
 | Invitation delivery failed | account คง `Invited`, Delivery Log แสดง Failed/Retry และ Resend ใช้ได้ตาม cooldown/quota |
 
 ## 15. Acceptance Criteria
@@ -373,6 +390,7 @@ Invitation action ต้อง enforce permission และ stale-state safeguar
 | AC-BO-AUTH-016 | Cancel คง account `Invited`; Reissue สร้าง token revision ถัดไป; delivery failure ไม่ rollback account/invitation และทุก email attempt มี Delivery Log |
 | AC-BO-AUTH-017 | Invitation UI/route/API/service enforce `settings.admin_accounts.manage`, account/Role eligibility และ stale revision; action ที่ไม่อนุญาตไม่แสดงและ direct mutation ถูก reject |
 | AC-BO-AUTH-018 | Audit/Delivery payload ไม่มี raw/hashed token, password/password hash, OTP หรือ secret; prototype/mock state ถูกแยกจาก production enforcement ชัดเจน |
+| AC-BO-AUTH-019 | Invitation link ที่ invalid/expired/used/cancelled/superseded/account-or-role-ineligible ต้องแสดง terminal safe state ตาม section 10.1 โดยไม่เปิดเผย account existence, hash หรือ revision ภายใน; transient failure (stale invitation, commit race, duplicate submit) ต้องแสดง retry state ที่ re-resolve server state ใหม่ทั้งชุดโดยไม่มี partial mutation |
 
 ## 16. Related Modules
 

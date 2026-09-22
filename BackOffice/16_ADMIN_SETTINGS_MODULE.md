@@ -18,8 +18,8 @@
 | --- | --- |
 | Module Name | BO Admin Settings |
 | Platform | Responsive Web Back Office |
-| Version | `BO-16-v1.2` |
-| Status | Updated — Admin invitation lifecycle/security contract defined |
+| Version | `BO-16-v1.3` |
+| Status | Updated — Admin invitation lifecycle/security contract synced กับ accepted Mission 1 prototype/tests |
 | Owner | Product / UX / Engineering / Operations |
 | Document Type | Functional PRD |
 
@@ -202,6 +202,16 @@ Pattern: full-width detail ตาม Deletion Request Detail (`renderAdminAccoun
 - Created At
 - Last Login
 
+**Section: Invitation** (`renderAdminAccountDetail`, `getAdminInvitationContext`) — แสดงเฉพาะ account สถานะ `Invited` ที่มี invitation context และ render ระหว่าง Section 1 กับ Section 1.5:
+- Invitation ID (`INV-xxxxx`)
+- Invitation Status (`Pending` / `Expired` / `Cancelled` / `Superseded`)
+- Issued
+- Expires (`issued_at + 72 ชั่วโมง`)
+- Latest Delivery (`DLV-ACCT-<admin-sequence>-INV-<attempt-sequence>` + status ล่าสุด link ไป Settings > Delivery Logs; ไม่มี email attempt แสดง `—`)
+- Resend Quota / Cooldown (`ใช้ไป N/5 ครั้งใน 24 ชม.` + cooldown state ตาม `resend_available_at`)
+- Status message จาก server context (เช่น cooldown active หรือ quota เต็ม) และ previous invitation records เมื่อมี
+- Action buttons Resend / Cancel / Reissue ตาม server-calculated capabilities ตาม section 8.9 — action ที่ไม่อนุญาตไม่แสดงใน DOM; Prototype scenario switcher เป็น demo tool ไม่ใช่ production UI
+
 **Section 1.5: Role & Permissions** (`renderAdminAccountDetail`) — matrix 3 คอลัมน์:
 - เมนู / Module
 - สิทธิ์ (pill: green=จัดการ, amber=จัดการบางส่วน, blue=ดูอย่างเดียว)
@@ -209,14 +219,15 @@ Pattern: full-width detail ตาม Deletion Request Detail (`renderAdminAccoun
 
 แสดงเฉพาะเมนูที่ `level !== "none"` (เมนูที่ role นี้ไม่เห็นไม่แสดง) อ้างอิง `roleMenuAccess`
 
-**Section 2: History & Actions** (`renderAdminAccountDetail`) — ตาราง 5 คอลัมน์:
+**Section 2: History & Actions** (`renderAdminAccountDetail`) — ตาราง 6 คอลัมน์:
 - วันที่ / เวลา
 - Action
-- Reference (ใครเป็นคนทำ action นี้กับ account — ADM-xxx หรือ System)
-- Audit (รหัส audit event, คลิกเปิด Audit Log กรองด้วย reference — ไม่มีแสดง `—`)
+- Reference — invitation lifecycle event ใช้ invitation reference `INV-xxxxx` ตาม section 8.9; event อื่นคง actor reference `ADM-xxx`, `System` หรือ `—` ตาม semantics เดิม
+- Delivery (`DLV-ACCT-<admin-sequence>-INV-<attempt-sequence>` คลิกเปิด Delivery Log detail ตาม permission — ไม่มี email attempt แสดง `—`)
+- Audit (`AUD-xxxxx` คลิกเปิด Audit Log กรองด้วย event id + toast ตาม `08_AUDIT_LOG_MODULE.md` AC-BO-AUDIT-015 — ไม่เปิด detail drawer อัตโนมัติ; ไม่มีแสดง `—`)
 - รายละเอียด
 
-แสดงเฉพาะ lifecycle ของ account ตัวเอง (เรียงล่าสุดก่อน): Status change (Suspend/Reactivate/Unlock/Lock/Archive/Role change) → Activated → Invited/Created — ไม่รวมงานที่ admin ไปทำใน module อื่น (มี history แยกใน module ของมัน) ตาม `adminAccountData.accounts[].history`
+แสดงเฉพาะ lifecycle ของ account ตัวเอง (เรียงล่าสุดก่อน): Status change (Suspend/Reactivate/Unlock/Lock/Archive/Role change) → Invitation lifecycle (created/sent, resent, cancelled, reissued, link opened, activated) → Activated → Invited/Created — ไม่รวมงานที่ admin ไปทำใน module อื่น (มี history แยกใน module ของมัน) ตาม `adminAccountData.detail[accountId].activity`
 
 **Action buttons** (`renderAdminAccountDetail`): แสดงตาม permission gating (section 8.7) ที่ส่วนล่างของ History & Actions section — action ที่ไม่อนุญาตไม่แสดงใน DOM
 
@@ -285,7 +296,7 @@ Pattern: `openAdminAccountInviteModal` คล้าย Option Master Add Option 
 
 **Email OTP note** (`openAdminAccountInviteModal`): "ผู้รับต้องยืนยันตัวตนด้วย Email OTP ทุกครั้งที่เข้าสู่ระบบ"
 
-**Confirm**: ปุ่ม "ส่งคำเชิญ" (primary tone) + สร้าง admin id ใหม่ (`nextAdminAccountId` — `ADM-xxx` ลำดับถัดไป) + บันทึก audit event `ADMIN_ACCOUNT_INVITE` (`ensureAdminAccountInviteAuditEvent`) + re-render list
+**Confirm**: ปุ่ม "ส่งคำเชิญ" (primary tone) + สร้าง admin id ใหม่ (`nextAdminAccountId` — `ADM-xxx` ลำดับถัดไป) + บันทึก canonical audit event `ADMIN_INVITATION_CREATE` (`ensureAdminAccountInviteAuditEvent`) + re-render list
 
 ### 8.7 Permission Gating
 
@@ -308,7 +319,7 @@ Pattern: `canSuspendAdmin` / `canReactivateAdmin` / `canUnlockAdmin` / `canArchi
 
 | Action | Permission | Confirmation | Reason | Audit |
 | --- | --- | --- | --- | --- |
-| Invite Admin | Admin | Yes | Optional | Yes (`ADMIN_INVITATION_CREATE`; protected mock ใช้ `ADMIN_ACCOUNT_INVITE` compatibility alias) |
+| Invite Admin | Admin | Yes | Optional | Yes (`ADMIN_INVITATION_CREATE` — canonical; `ADMIN_ACCOUNT_INVITE` เป็น legacy alias เท่านั้นและห้ามเขียนซ้ำกับ mutation เดียว) |
 | Change Admin Role | Admin | Yes | Required | Yes (`ADMIN_ACCOUNT_ROLE_CHANGE`) |
 | Suspend Admin | Admin | Yes | Required | Yes (`ADMIN_ACCOUNT_SUSPEND`) |
 | Reactivate Admin | Admin | Yes | Required | Yes (`ADMIN_ACCOUNT_REACTIVATE`) |
@@ -322,12 +333,14 @@ Pattern: `canSuspendAdmin` / `canReactivateAdmin` / `canUnlockAdmin` / `canArchi
 
 Canonical token/state/activation contract อยู่ใน `01_AUTHENTICATION_MODULE.md` section 10.1. Section นี้กำหนด Admin Settings surface และ production boundary ที่เชื่อม Invite Admin, Admin Detail, Delivery Logs และ Audit Log โดยไม่เปลี่ยน protected prototype ในขั้น contract design
 
+> Requirement trace (Mission 1 scope): `bf08de1f` → Mission 1 `0248791b` (Admin Invitation & Account Activation) → Objective 4 → Feature "Mission 1 authentication/admin-settings contract update" → Task `AIL-012`; behavior ที่ sync ใน section นี้ implement/accepted แล้วใน AIL-002–AIL-011
+
 **Create invitation**
 
 - Invite form ใช้ Name, normalized unique Email, eligible `role_id` + `expected_role_revision` และ optional note ตาม section 8.6/9.11; ไม่มี temporary password
 - Production service สร้าง Admin Account `Invited`, canonical invitation `Pending` revision 1, `ADMIN_INVITATION_CREATE`, transactional email outbox และ correlation เดียวกันแบบ atomic
 - Response ต้องคืนเฉพาะ account/invitation metadata ที่ปลอดภัย เช่น `admin_id`, `invitation_id`, status, `issued_at`, `expires_at`, masked delivery status และ revision/concurrency token; ห้ามคืน raw token หรือ password
-- Protected prototype ปัจจุบันที่สร้าง in-memory account + `ADMIN_ACCOUNT_INVITE` + toast เป็น UI/mock baseline เท่านั้น. Adapter อาจคง `ADMIN_ACCOUNT_INVITE` เป็น compatibility alias แต่ production canonical event ของ lifecycle ใหม่คือ `ADMIN_INVITATION_CREATE`; ห้ามเขียนสอง event ซ้ำสำหรับ mutation เดียว
+- Protected prototype สาธิต create flow แบบ in-memory แล้ว: สร้าง account `Invited` + invitation record `Pending` + canonical audit `ADMIN_INVITATION_CREATE` + delivery log `DLV-ACCT-<admin-sequence>-INV-<attempt-sequence>` + toast — ทั้งหมดเป็น UI/mock baseline เท่านั้น ไม่ใช่ production enforcement; `ADMIN_ACCOUNT_INVITE` เป็น legacy alias เท่านั้นและห้ามเขียนสอง event ซ้ำสำหรับ mutation เดียว
 
 **Invitation context ใน Admin Detail**
 
@@ -964,7 +977,7 @@ Read-only modal เปิดจาก row click แสดง: Source, Recipient,
 | --- | --- |
 | Delivery ID | `DLV-ACCT-<admin-sequence>-INV-<attempt-sequence>`; immutable และไม่ reuse |
 | Notification ID / Source | ใช้ `invitation_id` เป็น source reference; ไม่ใช้ raw token |
-| Notification Type / Event | `AdminInvitationCreated`, `AdminInvitationResent` หรือ `AdminInvitationReissued` |
+| Notification Type / Event | `Invitation created`, `Invitation resent` หรือ `Invitation reissued` (ตาม `01_AUTHENTICATION_MODULE.md` section 10.1 และ prototype delivery rows) |
 | Recipient User ID | ใช้ `target_admin_id`; destination email เก็บ/แสดงแบบ mask ตาม privacy policy |
 | Status | เก็บ provider status จริง; `Failed` ต้องมี failure category และ `retryable` flag, Phase 1 UI map retryable failure เป็น Retry |
 | Correlation | ใช้ `correlation_id` เดียวกับ account/invitation/audit/outbox mutation |
@@ -1130,11 +1143,11 @@ Sensitive settings value ต้อง mask ใน audit payload ถ้าเป�
 | AC-BO-SET-014 | Account Deletion lifecycle email delivery log ใช้รหัส `DLV-DEL-<request-id>-<event>` และ trace กลับไปยัง History & Actions ของ Request Detail ได้ |
 | AC-BO-SET-015 | Admin Account List แสดงตาราง 7 คอลัมน์ (Admin ID/Name/Email/Role/Status/Last Login/Action) พร้อม filter bar (search + status + role + sort + reset) และ pagination 10/page โดยไม่มี KPI cards |
 | AC-BO-SET-016 | Master admin หลักแสดง Master badge แยกจาก status/role pill และแสดงบนสุดของ list เสมอไม่ว่าจะเรียงด้วย sort ใด |
-| AC-BO-SET-017 | Admin Account Detail แสดง Account Summary tiles (Email/Created At/Last Login) + Role & Permissions matrix (เฉพาะเมนูที่ level ≠ none) + History & Actions 5 คอลัมน์ (วันที่/Action/Reference/Audit/รายละเอียด) โดย history แสดงเฉพาะ lifecycle ของ account ตัวเอง ไม่รวมงานใน module อื่น |
-| AC-BO-SET-018 | Audit link pill ใน History & Actions คลิกได้และเปิด Audit Log กรองด้วย reference ของ account นั้น; รายการที่ไม่มี audit แสดง `—` |
+| AC-BO-SET-017 | Admin Account Detail แสดง Account Summary tiles (Email/Created At/Last Login), Invitation section สำหรับ account `Invited` (Invitation ID/Status/Issued/Expires/Latest Delivery/Resend Quota+Cooldown + Resend/Cancel/Reissue ตาม server capabilities ตาม section 8.9), Role & Permissions matrix (เฉพาะเมนูที่ level ≠ none) และ History & Actions 6 คอลัมน์ (วันที่/Action/Reference/Delivery/Audit/รายละเอียด) โดย history แสดงเฉพาะ lifecycle ของ account ตัวเอง ไม่รวมงานใน module อื่น |
+| AC-BO-SET-018 | Audit link (`AUD-xxxxx`) ใน History & Actions คลิกได้และเปิด Audit Log กรองด้วย event id + toast ตาม AC-BO-AUDIT-015 โดยไม่เปิด detail drawer อัตโนมัติ; Delivery link (`DLV-ACCT-<admin-sequence>-INV-<attempt-sequence>`) เปิด Delivery Log detail ตาม permission; รายการที่ไม่มี audit/delivery แสดง `—` |
 | AC-BO-SET-019 | Action modals Suspend/Reactivate/Unlock/Archive บังคับเลือก reason (4 reasons ต่อ action) แสดง impact note ตาม action และใช้ confirm tone ที่ถูกต้อง (suspend=danger, reactivate/unlock=primary, archive=warning) พร้อม success toast และ audit event |
 | AC-BO-SET-020 | Change Role modal แสดง role ปัจจุบัน disabled, เลือก role ใหม่ยกเว้น role เดิม, บังคับ reason, แสดง permission diff live update, ตรวจ critical role-change safeguards ก่อนยืนยัน และบันทึก audit `ADMIN_ACCOUNT_ROLE_CHANGE` |
-| AC-BO-SET-021 | Invite Admin modal ตรวจอีเมล unique, บังคับเลือก role template จาก 8 standard role templates, แสดง Email OTP note และบันทึก audit `ADMIN_ACCOUNT_INVITE` พร้อมสร้าง admin id ใหม่ (`ADM-xxx` ลำดับถัดไป) |
+| AC-BO-SET-021 | Invite Admin modal ตรวจอีเมล unique, บังคับเลือก role template จาก 8 standard role templates, แสดง Email OTP note และบันทึก canonical audit `ADMIN_INVITATION_CREATE` (`ADMIN_ACCOUNT_INVITE` เป็น legacy alias เท่านั้น) พร้อมสร้าง admin id ใหม่ (`ADM-xxx` ลำดับถัดไป) |
 | AC-BO-SET-022 | Permission gating ตาม `canSuspendAdmin`/`canReactivateAdmin`/`canUnlockAdmin`/`canArchiveAdmin`/`canChangeRoleAdmin` — action ที่ไม่อนุญาตต้องไม่ปรากฏใน DOM ทั้งใน row menu และ detail action buttons |
 | AC-BO-SET-023 | Master admin หลัก (ADM-010) ห้าม suspend/archive/change role; self ห้าม suspend/reactivate/unlock/archive/change role ตัวเอง; ถ้า active admin เหลือ 1 คน ห้าม suspend (ป้องกันระบบไม่มีผู้ดูแล) |
 | AC-BO-SET-024 | Production Role assignment/change ที่ทำให้ไม่มี active `Super Admin`, ไม่มี account ที่จัดการ role ได้, ไม่มี admin recovery coverage, assign Custom Role ที่ inactive/invalid, หรือเปลี่ยน role ตัวเอง/master admin ต้องถูก block ที่ API/service และ UI เมื่อมี surface นั้น พร้อม policy-blocked state และ audit result ตาม policy; current protected Admin Accounts UI ยังรองรับเฉพาะ 8 System Roles |
@@ -1150,6 +1163,7 @@ Sensitive settings value ต้อง mask ใน audit payload ถ้าเป�
 | AC-BO-SET-034 | Resend ใช้ cooldown 60 วินาทีและ quota 5 successful issuances/rolling 24h ต่อ target account, supersede active token เดิม; Cancel คง account `Invited`; Reissue สร้าง revision ถัดไปหลัง Expired/Cancelled |
 | AC-BO-SET-035 | Invitation email ทุก attempt ใช้ Delivery ID `DLV-ACCT-<admin-sequence>-INV-<attempt-sequence>`, trace `invitation_id`/Admin Detail/Audit ได้ และ provider failure คง account `Invited` พร้อม Failed/Retry state โดยไม่สร้าง account/invitation ซ้ำ |
 | AC-BO-SET-036 | Invitation lifecycle audit ใช้ canonical events/immutable IDs/revisions/correlation ตาม section 8.9/19 และ Audit/Delivery payload ห้ามมี raw/hashed token, password/password hash, OTP หรือ secret |
+| AC-BO-SET-037 | History & Actions ของ invitation lifecycle event ใช้ `INV-xxxxx` เป็น Reference และแยก Delivery link (`DLV-*`) กับ Audit link (`AUD-*`) คนละคอลัมน์ตาม section 8.3/8.9; event ที่ไม่ใช่ invitation lifecycle คง actor reference `ADM-xxx`/`System`/`—` ตาม semantics เดิม |
 
 ## 22. Open Decisions
 
