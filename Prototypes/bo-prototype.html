@@ -432,6 +432,27 @@
     #invite-screen .auth-error { margin: 0 0 16px; }
     /* form-level error อยู่ใต้ CTA — separation ชัดเจน (ID selector ชนะ rule .auth-error ด้านบน) */
     #invite-screen #invite-error { margin: 16px 0 0; }
+    /* AIL-009: safe recovery actions — grid เดียวกับ context panel; ghost ใช้โทน .otp-actions .btn.ghost บน dark panel */
+    .invite-recovery-actions {
+      max-width: 360px;
+      display: grid;
+      gap: 10px;
+    }
+    .invite-recovery-actions .btn {
+      width: 100%;
+      justify-content: center;
+      text-align: center;
+    }
+    #invite-screen .btn.ghost {
+      color: #dbe8ff;
+      border-color: rgba(219, 232, 255, .78);
+      background: transparent;
+    }
+    #invite-screen .btn.ghost:hover {
+      color: #fff;
+      border-color: #fff;
+      background: rgba(255, 255, 255, .08);
+    }
     /* field-level validation — pattern เดียวกับ .article-field-error แต่โทนสีสำหรับ dark auth panel */
     .invite-field-error {
       display: none;
@@ -17257,6 +17278,9 @@
             <option value="cancelled">Accept invitation — ลิงก์ถูกยกเลิก</option>
             <option value="superseded">Accept invitation — ลิงก์เก่าถูกแทนที่</option>
             <option value="used">Accept invitation — ลิงก์ใช้แล้ว</option>
+            <option value="account">Accept invitation — บัญชีไม่พร้อมเปิดใช้งาน</option>
+            <option value="role">Accept invitation — Role ไม่พร้อมเปิดใช้งาน</option>
+            <option value="transient">Accept invitation — เปิดใช้งานไม่สำเร็จชั่วคราว</option>
             <option value="invalid">Accept invitation — token ไม่ถูกต้อง</option>
           </select>
         </label>
@@ -25618,16 +25642,76 @@
       commit_failed: "เปิดใช้งานไม่สำเร็จ — ไม่มีข้อมูลบางส่วนถูกบันทึก กรุณาลองใหม่อีกครั้ง"
     };
 
-    // user-facing reason บนหน้า INVALID LINK — security/internal failure ใช้ generic message
+    // user-facing reason บนหน้า recovery — security/internal failure ใช้ generic message
     // (ห้ามเปิดเผย token/revision/internal code); label เต็มด้านบนคงไว้สำหรับ audit reason
-    const inviteInvalidReasonText = {
-      expired: "ลิงก์คำเชิญหมดอายุแล้ว",
-      cancelled: "ลิงก์คำเชิญถูกยกเลิกแล้ว",
-      superseded: "มีการออกลิงก์คำเชิญใหม่แล้ว",
-      stale_revision: "มีการออกลิงก์คำเชิญใหม่แล้ว",
-      already_used: "ลิงก์คำเชิญนี้ถูกใช้งานแล้ว"
+    // AIL-009: safe recovery states ตาม §14 — แต่ละ state มี title/copy/recovery channel ของตัวเอง
+    // terminal state = exit-only; transient = re-resolve action (refresh server context ไม่ใช่ blind retry)
+    const inviteRecoveryStates = {
+      invalid: {
+        codes: ["invalid_token", "not_allowed"],
+        title: "INVALID LINK",
+        copy: "ไม่สามารถใช้ลิงก์คำเชิญนี้ได้",
+        message: "ลิงก์คำเชิญไม่ถูกต้อง",
+        action: "BACK TO LOGIN",
+        hint: "หากต้องการคำเชิญใหม่ กรุณาติดต่อผู้ดูแลระบบ"
+      },
+      expired: {
+        codes: ["expired"],
+        title: "LINK EXPIRED",
+        copy: "ลิงก์คำเชิญนี้ไม่สามารถใช้งานได้แล้ว",
+        message: "ลิงก์คำเชิญหมดอายุแล้ว",
+        action: "BACK TO LOGIN",
+        hint: "หากต้องการคำเชิญใหม่ กรุณาติดต่อผู้ดูแลระบบ"
+      },
+      used: {
+        codes: ["already_used"],
+        title: "LINK ALREADY USED",
+        copy: "ลิงก์คำเชิญนี้ถูกใช้งานแล้ว",
+        message: "บัญชีนี้เปิดใช้งานเรียบร้อยแล้ว",
+        action: "GO TO LOGIN",
+        hint: "สามารถเข้าสู่ระบบและยืนยัน Email OTP ได้ตามปกติ"
+      },
+      cancelled: {
+        codes: ["cancelled"],
+        title: "INVITATION CANCELLED",
+        copy: "คำเชิญนี้ไม่สามารถใช้งานได้แล้ว",
+        message: "ลิงก์คำเชิญถูกยกเลิกแล้ว",
+        action: "BACK TO LOGIN",
+        hint: "หากต้องการคำเชิญใหม่ กรุณาติดต่อผู้ดูแลระบบ"
+      },
+      superseded: {
+        codes: ["superseded", "stale_revision"],
+        title: "LINK REPLACED",
+        copy: "ลิงก์คำเชิญนี้ถูกแทนที่แล้ว",
+        message: "มีการออกลิงก์คำเชิญใหม่แล้ว",
+        action: "BACK TO LOGIN",
+        hint: "กรุณาเปิดลิงก์จากอีเมลคำเชิญฉบับล่าสุด หรือติดต่อผู้ดูแลระบบ"
+      },
+      unavailable: {
+        codes: ["account_ineligible", "role_ineligible"],
+        title: "ACTIVATION UNAVAILABLE",
+        copy: "ไม่สามารถเปิดใช้งานบัญชีด้วยลิงก์นี้ได้",
+        message: "ไม่สามารถดำเนินการเปิดใช้งานบัญชีได้",
+        action: "BACK TO LOGIN",
+        hint: "กรุณาติดต่อผู้ดูแลระบบเพื่อตรวจสอบการเปิดใช้งานบัญชี"
+      },
+      transient: {
+        codes: ["stale_invitation", "commit_failed", "duplicate_submit"],
+        title: "ACTIVATION NOT COMPLETED",
+        copy: "การเปิดใช้งานยังไม่สำเร็จ — ยังไม่มีข้อมูลใดถูกบันทึก",
+        message: "ไม่สามารถเปิดใช้งานบัญชีได้ในครั้งนี้ กรุณาลองใหม่อีกครั้ง",
+        action: "BACK TO LOGIN",
+        retry: "TRY AGAIN",
+        hint: "หากลิงก์ยังใช้ไม่ได้ กรุณาติดต่อผู้ดูแลระบบ"
+      }
     };
-    const INVITE_INVALID_GENERIC_REASON = "ลิงก์คำเชิญไม่ถูกต้อง";
+
+    function getInviteRecoveryState(failureCode) {
+      for (const [kind, def] of Object.entries(inviteRecoveryStates)) {
+        if (def.codes.includes(failureCode)) return { kind, ...def };
+      }
+      return { kind: "invalid", ...inviteRecoveryStates.invalid };
+    }
 
     // resolve + validate จาก state ล่าสุดทุกครั้ง (render และ commit ใช้ตัวเดียวกัน — server-authoritative revalidation)
     // token ที่ resolve target ไม่ได้คืน invalid_token โดยไม่มี inv/acc — ห้าม audit สร้าง target reference ตาม §8.9
@@ -25905,15 +25989,21 @@
       if (!container || !screen) return;
       screen.dataset.inviteState = inviteActivation.state;
       if (inviteActivation.state === "invalid") {
-        const message = inviteInvalidReasonText[inviteActivation.failureCode]
-          || INVITE_INVALID_GENERIC_REASON;
+        // safe recovery state ตาม §14 — per-state title/message/recovery channel ที่ปลอดภัย
+        // data-invite-recovery = recovery class; data-invite-failure = code เดิมสำหรับ QA/audit trace
+        const recovery = getInviteRecoveryState(inviteActivation.failureCode);
         container.innerHTML = `
-          <h1 class="login-title">INVALID LINK</h1>
-          <p class="login-copy">ไม่สามารถใช้ลิงก์คำเชิญนี้ได้</p>
-          <div class="auth-error show" data-invite-failure="${inviteActivation.failureCode || "invalid_token"}" role="alert">${message}</div>
-          <button class="btn primary" type="button" data-invite-exit>BACK TO LOGIN</button>
-          <p class="invite-hint">หากต้องการคำเชิญใหม่ กรุณาติดต่อผู้ดูแลระบบ</p>
+          <h1 class="login-title">${recovery.title}</h1>
+          <p class="login-copy">${recovery.copy}</p>
+          <div class="auth-error show" data-invite-failure="${inviteActivation.failureCode || "invalid_token"}" data-invite-recovery="${recovery.kind}" role="alert">${recovery.message}</div>
+          <div class="invite-recovery-actions">
+            ${recovery.retry ? `<button class="btn primary" type="button" data-invite-retry>${recovery.retry}</button>` : ""}
+            <button class="btn ${recovery.retry ? "ghost" : "primary"}" type="button" data-invite-exit>${recovery.action}</button>
+          </div>
+          <p class="invite-hint">${recovery.hint}</p>
         `;
+        // keyboard/focus flow — primary recovery action ได้ focus ทันที
+        (container.querySelector("[data-invite-retry]") || container.querySelector("[data-invite-exit]"))?.focus();
         return;
       }
       if (inviteActivation.state === "success") {
@@ -25923,6 +26013,7 @@
           <button class="btn primary" type="button" data-invite-exit>GO TO LOGIN</button>
           <p class="invite-hint">กลับไปเข้าสู่ระบบเพื่อใช้งาน โดยต้องยืนยัน Email OTP ทุกครั้งที่เข้าสู่ระบบ</p>
         `;
+        container.querySelector("[data-invite-exit]")?.focus();
         return;
       }
       const inv = adminAccountData.invitations.find(record => record.id === inviteActivation.invitationId);
@@ -26023,6 +26114,12 @@
     document.addEventListener("click", event => {
       if (event.target.closest("[data-invite-exit]")) {
         exitInviteMode();
+        return;
+      }
+      if (event.target.closest("[data-invite-retry]")) {
+        // transient recovery — re-resolve server state ใหม่เสมอ (ไม่ใช่ blind retry):
+        // ลิงก์ที่ยัง valid กลับ form; state ที่เปลี่ยนไปแล้วแสดง terminal recovery ตามจริง ไม่วนลูป
+        if (inviteActivation.token != null) enterInviteMode(inviteActivation.token);
         return;
       }
       const toggle = event.target.closest("#invite-password-toggle, #invite-password-confirm-toggle");
@@ -47107,10 +47204,30 @@
         window.location.hash = "token=sim-token-invalid";
         return;
       }
-      applyAdminInvitationScenario("ADM-008", scenario === "valid" ? "pending" : scenario);
+      // AIL-009: restore eligibility ที่ scenario account/role เคยแก้ — manual QA สลับ case ได้ต่อเนื่อง
+      const demoAcc = adminAccountData.accounts.find(a => a.id === "ADM-008");
+      const demoRole = roleListData.roles.find(r => r.id === "ROL-002");
+      if (demoAcc && demoAcc.status !== "Invited") demoAcc.status = "Invited";
+      if (demoRole && demoRole.status !== "Active") demoRole.status = "Active";
+      applyAdminInvitationScenario("ADM-008", scenario === "valid" || scenario === "account" || scenario === "role" || scenario === "transient" ? "pending" : scenario);
       const inv = adminAccountData.invitations.find(i => i.id === "INV-00001");
+      if (inv) {
+        // เคลียร์ activation artifacts ของรอบ demo ก่อนหน้า — scenario tool ต้อง deterministic
+        delete inv.usedAt;
+        delete inv.acceptedAt;
+        delete inv.acceptAuditRef;
+      }
+      if (scenario === "account" && demoAcc) demoAcc.status = "Suspended";
+      if (scenario === "role" && demoRole) demoRole.status = "Inactive";
       const token = getAdminInvitationLinkToken(inv) || "sim-token-invalid";
       window.location.hash = `token=${token}`;
+      if (scenario === "transient" && demoAcc) {
+        // QA simulation เท่านั้น: จำลอง admin แตะบัญชีหลัง recipient เปิด form แล้วก่อน submit
+        // hashchange → enterInviteMode → snapshot เป็น task ก่อน; bump ทีหลังด้วย timeout
+        // +1 จาก snapshot เสมอ — เลือก scenario ซ้ำก็ยัง stale (ไม่ตายตัว)
+        // → commit เจอ stale_invitation → ACTIVATION NOT COMPLETED; TRY AGAIN re-resolve flow จริง
+        setTimeout(() => { demoAcc.revision = (demoAcc.revision || 1) + 1; }, 0);
+      }
     });
 
     renderNav();
