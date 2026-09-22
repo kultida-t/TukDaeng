@@ -61,7 +61,7 @@ BO Market Demand & Watch Alert Module คือพื้นที่สำหร
 - Admin สร้าง Watch Alert ใหม่แทน user ใน Phase 2 baseline
 - Alert frequency setting, daily digest, weekly digest
 - Market Price Alert, Watch Price Alert, Saved Search
-- Notification template/retry management ซึ่งอยู่ใน Notification module
+- Notification template/retry management — Phase 2/future (เคยอยู่ใน Notification module; delivery status read-only ดูที่ Settings > Delivery Logs ใน Phase 1)
 - เปิด Asset Detail โดยตรงจาก Watch Alert notification
 
 ## 4. FO Rules BO Must Follow
@@ -417,7 +417,7 @@ Watch Alert Notification -> Watch Alert Result List
 
 ห้ามใช้ Asset Detail เป็น direct destination ของ Watch Alert notification
 
-BO Watch Alert ดู delivery status ได้ แต่การจัดการ template, retry, broadcast หรือ trigger configuration อยู่ใน Notification module
+BO Watch Alert ดู delivery status แบบ read-only ได้ที่ **Settings > Delivery Logs** (Phase 1, ดู `16_ADMIN_SETTINGS_MODULE.md`); การจัดการ template, retry, broadcast หรือ trigger configuration เป็น Phase 2/future (เคยอยู่ใน Notification module — ดู `14_NOTIFICATIONS_MODULE.md`)
 
 Delivery fields ขั้นต่ำ:
 
@@ -440,7 +440,7 @@ Watch Alert BO เป็น read-only ทั้ง List และ Detail — Adm
 | --- | --- | --- |
 | View alert | Admin | Module permission required |
 | View trigger history | Admin | policy-based visibility |
-| View delivery status | Admin | Read-only; retry อยู่ใน Notification module |
+| View delivery status | Admin | Read-only; retry อยู่ใน Settings > Delivery Logs (Phase 1); template/broadcast config เป็น Phase 2/future |
 
 ## 14. FO Sync Rules
 
@@ -520,9 +520,10 @@ Audit action ขั้นต่ำ:
 | Asset Management | Alert Detail Section 4 Matched Assets: Asset ID เป็น link (drill-in) ไป Asset Detail; asset status/visibility changes affect match/result |
 | Market Data | Alert Detail Section 3 Criteria: แสดง inactive market data warning เมื่อ criteria อ้างถึง brand/model/reference ที่ inactive; brand/model/reference active status affects criteria and trigger |
 | Asset Management (Reported Comments) | Block relation affects result visibility |
-| Notification | Alert Detail Section 5 Trigger & Notification History: แสดง delivery status (Delivered/Skipped/Failed/Pending) แบบ read-only; delivery logs, templates, retry policy อยู่ใน Notification module |
+| Settings > Delivery Logs (Phase 1) | Alert Detail Section 5 Trigger & Notification History: แสดง delivery status (Delivered/Skipped/Failed/Pending) แบบ read-only; delivery logs และ retry อยู่ใน Settings > Delivery Logs |
+| Notifications (Phase 2/future) | Templates, retry policy, broadcast config — เคยอยู่ใน Notification module (ดู `14_NOTIFICATIONS_MODULE.md`) |
 | Audit Log | Watch Alert event types: `WATCH_ALERT_SENSITIVE_REVEAL`, `WATCH_ALERT_TRIGGER_JOB_RUN` (ดู section 16) |
-| Reports & Analytics | Watch Alert report and search trend report |
+| Reports & Analytics (Phase 2/future) | Watch Alert report and search trend report |
 
 ## Module-Specific Exceptions
 

@@ -10,7 +10,7 @@
 
 Back Office คือ responsive internal web system สำหรับทีมภายใน ใช้ดูแลและปฏิบัติการระบบ TukDaeng หลังจากผู้ใช้ FO สร้างข้อมูลหรือกิจกรรมต่าง ๆ เช่น marketplace, social, support, content และ notification
 
-BO ต้องช่วยให้ทีม Admin จัดการ moderation, user support, content publishing, market master data, reports และ auditability ได้ครบถ้วน
+BO ต้องช่วยให้ทีม Admin จัดการ moderation, user support, content publishing, market master data, และ auditability ได้ครบถ้วน (Reports & Analytics ถูกเลื่อนเป็น Phase 2/future scope)
 
 BO ต้องแยกจาก FO mobile app ชัดเจน Admin ไม่ใช่ admin access ใน FO mobile app
 
@@ -20,7 +20,7 @@ BO ต้องแยกจาก FO mobile app ชัดเจน Admin ไม�
 
 | Goal | Requirement |
 | --- | --- |
-| Operational control | Admin จัดการ users, assets, content, market data, support, notifications และ reports ได้; Directory ถูกเลื่อนออกจาก Phase 1 จนกว่า FO directory detail routes จะเปิด |
+| Operational control | Admin จัดการ users, assets, content, market data, support และ notifications ได้; Directory ถูกเลื่อนออกจาก Phase 1 จนกว่า FO directory detail routes จะเปิด; Reports & Analytics ถูกเลื่อนเป็น Phase 2/future scope |
 | Trust & safety | Admin review reports, moderate content, suspend/ban users และตรวจสอบ action ได้ |
 | Responsive operation | BO รองรับ desktop, tablet และ mobile-width browser โดย optimize workflow หนาแน่นสำหรับหน้าจอใหญ่ |
 | FO continuity | BO action ต้อง sync ผลกลับไป FO surfaces เช่น Feed, Asset Detail, Board, Search, Profile, Watch Alert และ Notification |
@@ -41,7 +41,7 @@ Phase 1 คือ BO foundation ที่ล็อกใน prototype แล้�
 | Module | Phase 1 Scope |
 | --- | --- |
 | Global BO Rules | Responsive layout, admin access control, shared patterns, status, audit, privacy, FO sync |
-| Auth / Admin Accounts | Email/password login, mandatory Email OTP for Admin, session timeout, failed login lockout |
+| Auth / Admin Accounts | Email/password login, mandatory Email OTP for Admin, session timeout, failed login lockout, one-time Admin invitation อายุ 72 ชั่วโมง, initial-password activation และ Invited-to-Active lifecycle |
 | Admin Permission | Module visibility และ action-level permission enforcement |
 | Dashboard | Key metrics, pending queues, recent activity, last updated snapshot |
 | User Management | User list, search/filter/sort, profile/detail view, login history, suspend/ban/restore, reset password, Account Deletion handoff, no direct User List export |
@@ -53,10 +53,8 @@ Phase 1 คือ BO foundation ที่ล็อกใน prototype แล้�
 | Market Demand | `11_WATCH_ALERT_MODULE.md` + `WatchAlert_Prototype_Blueprint.md` - Demand Overview (KPI, Top Brands drill-down, Price Range, Trigger Trend, Frequently Triggered), Search Insights (Popular Keywords/Filters/Combinations, No-result Searches, Search Funnel), Watch Alert List & Detail (read-only, no admin disable/enable/export) |
 | Help & Support | `12_HELP_SUPPORT_MODULE.md` - Policy & Versioning (Terms of Use, Privacy Policy — Draft/Published/Archived, bilingual TH/EN, version history, restore) และ Support Center (channels, business hours, availability TH/EN, preview) |
 | Account Deletion | `13_ACCOUNT_DELETION_MODULE.md` - Request queue, restore/reject restore ใน grace period, 30-day grace period, ลบบัญชีอัตโนมัติเมื่อครบกำหนด (เก็บถาวร + ลบตัวตน ในขั้นเดียว), lifecycle email 5 จุด (ยืนยันลบบัญชี / เตือนใกล้ครบ grace period / คืนบัญชีแล้ว / ปฏิเสธคืนบัญชี / ลบตัวตนแล้ว) ตาม `14_NOTIFICATIONS_MODULE.md` section 9.3 |
-| Notifications | `14_NOTIFICATIONS_MODULE.md` - Broadcast notifications, system trigger templates, delivery logs, retry failed notifications, FO-supported type constraints, Account Deletion lifecycle emails (`DLV-DEL-xxx`) |
-| Reports | `15_REPORTS_ANALYTICS_MODULE.md` - User, asset, offer, chat, board, asset reported comments, search, watch alert, notification, account deletion reports, export jobs |
 | Audit Log | `08_AUDIT_LOG_MODULE.md` - Immutable event capture, search/filter, export, Admin visibility |
-| Admin Settings | `16_ADMIN_SETTINGS_MODULE.md` - Admin own settings, admin account lifecycle, Admin Access Matrix, security/system defaults, retention/export policy, feature flags, integration metadata |
+| Admin Settings | `16_ADMIN_SETTINGS_MODULE.md` - Admin own settings, admin account/invitation lifecycle (Invite/Resend/Cancel/Reissue + delivery/audit trace), Roles & Permissions (8 System Roles + Custom Role), Role-to-Admin `role_id` contract, security/system defaults, retention/export policy, feature flags, integration metadata, **Delivery Logs** (Phase 1 — delivery log UI, retry failed delivery, export delivery log; ย้ายจาก Notifications module) |
 
 Directory is postponed from Phase 1. Keep `07_DIRECTORY_MODULE.md` as a future reference only; do not expose the BO Directory menu, route, CRUD, publication controls, map/contact fields, or FO sync behavior in Phase 1 unless Product explicitly reopens the scope.
 
@@ -67,6 +65,8 @@ Phase 2 คือ modules และ flows ที่ยังไม่ล็อ�
 | Module | Phase 2 Scope |
 | --- | --- |
 | Directory | `07_DIRECTORY_MODULE.md` - รอ FO directory detail routes และ taxonomy approval |
+| Reports & Analytics | `15_REPORTS_ANALYTICS_MODULE.md` - User, asset, offer, chat, board, asset reported comments, search, watch alert, notification, account deletion reports, export jobs (prototype ตัดเมนู Reports ออกชั่วคราวเพราะเป็นระบบตั้งต้นที่ยังไม่จำเป็น ซ้ำซ้อนกับ list/filter ในแต่ละ module + Dashboard; อาจกลับมาเพิ่มในอนาคตถ้ามี requirement จริง เช่น ต้องส่งรายงานให้ Management/auditor) |
+| Notifications (Broadcast & System Templates) | `14_NOTIFICATIONS_MODULE.md` - Broadcast notification create/schedule/send, target audience, System Notification Trigger enable/disable, template title/body, notification report metrics (Delivery Logs ย้ายไป Settings ใน Phase 1 แล้ว) |
 | Chat moderation workflow | Remove/hide chat message, reported chat queue (prototype Offer Management เป็น read-only ไม่มี chat moderation) |
 | Offer write actions | Force expire, invalidate, accept/decline จาก BO (prototype Offer Management เป็น read-only) |
 

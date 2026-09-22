@@ -176,7 +176,7 @@ UI / Reporting rules:
 
 - ใน Account Deletion module แสดง `ลบตัวตนแล้ว` เป็นสถานะปลายทางของ deletion (เก็บถาวร + ลบตัวตน เกิดพร้อมกันเมื่อครบ grace period)
 - ใน backend/audit บันทึก event ลบบัญชีอัตโนมัติเป็นขั้นเดียว; retention ของข้อมูลแต่ละประเภท (chat, offer, report, audit log) ยังอ้าง DEL-DEC-002
-- Prototype ปัจจุบันแสดงสถานะ `Deletion Requested` (รอลบบัญชี) และ `Deleted` ใน User List/filter เพื่อ historical review ตาม permission; production ต้อง mask/anonymize personal data, จำกัด action และยังต้องค้นย้อนหลังได้ใน Account Deletion, Reports และ Audit ตาม permission
+- Prototype ปัจจุบันแสดงสถานะ `Deletion Requested` (รอลบบัญชี) และ `Deleted` ใน User List/filter เพื่อ historical review ตาม permission; production ต้อง mask/anonymize personal data, จำกัด action และยังต้องค้นย้อนหลังได้ใน Account Deletion และ Audit ตาม permission (ก่อนหน้านี้ระบุให้ดูใน Account Deletion, Reports และ Audit แต่ Reports ถูกเลื่อนเป็น Phase 2/future scope แล้ว ใน Phase 1 จึงดูย้อนหลังได้ใน Account Deletion และ Audit เท่านั้น)
 - ข้อมูลย้อนหลังที่เรียกดูได้ต้องเป็นข้อมูลที่จำเป็น เช่น user ID, deletion request ID, dates, processed by, retained offer/chat/report references และ audit event
 - Personal data หลัง deletion ต้องถูก mask/anonymize ตาม retention policy และ Admin Permission
 - Restore เปิดได้เฉพาะในช่วง grace period 30 วัน โดยแอดมิน พร้อม reason และ audit; หลังลบบัญชีอัตโนมัติแล้วไม่สามารถ restore ได้
@@ -292,7 +292,7 @@ Vertical timeline ตามลำดับขั้น lifecycle แต่ละ
 
 ส่วน action area ด้านท้ายประกอบด้วย:
 
-- ตารางประวัติการดำเนินการ (read-only): วันที่ / เวลา, ผู้ดำเนินการ, Action, ส่งอีเมล, รายละเอียด — รวม event ขอลบบัญชี, ยกเลิก session, ระงับบัญชี + ยกเลิก offer/ปิดรายงานอัตโนมัติ, รับคำขอคืนบัญชี (ผ่าน support — ไม่แสดงวันที่เพราะยืนยันเวลาจริงไม่ได้ ใช้ `—`), ปฏิเสธคืนบัญชี (ทุกครั้ง), คืนบัญชี, ลบบัญชีอัตโนมัติ และยกเลิกคำขอ (ถ้ามี) — คอลัมน์ ส่งอีเมล แสดงสถานะการส่งอีเมล lifecycle (pill `ส่งแล้ว` + ลิงก์ไป delivery log ใน Notifications) ตาม pattern Admin Action History ของ Report Detail; event ที่ไม่มีอีเมล lifecycle แสดง `—`
+- ตารางประวัติการดำเนินการ (read-only): วันที่ / เวลา, ผู้ดำเนินการ, Action, ส่งอีเมล, Audit, รายละเอียด — รวม event ขอลบบัญชี, ยกเลิก session, ระงับบัญชี + ยกเลิก offer/ปิดรายงานอัตโนมัติ, รับคำขอคืนบัญชี (ผ่าน support — ไม่แสดงวันที่เพราะยืนยันเวลาจริงไม่ได้ ใช้ `—`), ปฏิเสธคืนบัญชี (ทุกครั้ง), คืนบัญชี, ลบบัญชีอัตโนมัติ และยกเลิกคำขอ (ถ้ามี) — คอลัมน์ ส่งอีเมล แสดงสถานะการส่งอีเมล lifecycle (pill `ส่งแล้ว` + ลิงก์ไป delivery log ใน Settings > Delivery Logs) ตาม pattern Admin Action History ของ Report Detail; event ที่ไม่มีอีเมล lifecycle แสดง `—` — คอลัมน์ Audit แสดง audit ref link (`AUD-xxx`) ของ event นั้น คลิกกระโดดไป Settings > Audit Log กรองด้วย event id + toast (row ที่ไม่มี audit event แสดง `—`)
 - ปุ่ม action 2 ปุ่ม: `คืนบัญชี` (primary) และ `ปฏิเสธคืนบัญชี` (danger) — แสดงเฉพาะช่วง grace period (สถานะ `รอดำเนินการ` / `ปฏิเสธคืนบัญชี` ที่ยังนับหรือครบกำหนด) หลังคำขอจบ (คืนบัญชีแล้ว / ลบตัวตนแล้ว) ปุ่มไม่แสดง และไม่แสดง note อธิบาย — สถานะคำขอใน Detail Head และตารางประวัติ (event คืนบัญชี / ลบบัญชีอัตโนมัติ) บอกเหตุผลอยู่แล้ว
 
 ## 13. Admin Actions
@@ -386,9 +386,9 @@ Confirmation modal ตาม pattern ของ Reported Users action flow (conte
 | Chat | เก็บ chat history ตาม retention policy และ mask personal profile fields เมื่อถึงขั้น anonymization; ไม่มีโมดูลแชทใน BO — tile Chat Rooms ใน Dependency Summary เป็น read-only context (แสดงข้อความว่าเนื้อหาแชทเก็บตาม retention policy และ mask ตัวตนผู้ใช้) |
 | Report (User/Asset) | ระบบปิดรายงานที่ยังเปิดอยู่อัตโนมัติเมื่อ delete request สำเร็จ; เก็บ record ตาม legal/safety/audit policy; dependency link จาก Dependency Summary เปิด Reported Users กรองด้วย userId; report context ของ user ที่ `Deletion Requested` แสดง warning ให้ review รายงานก่อนแล้วจัดการ Account Deletion แยก ห้าม delete/archive ทันทีจากคิวรายงาน |
 | Help / Support | ไม่มี ticket ใน Phase 1 — module 12 เป็น Policy & Versioning + Support Center; support ticket linkage เป็น future scope |
-| Notification | Lifecycle email 5 จุด (ยืนยันลบบัญชี / เตือนใกล้ครบ grace period / คืนบัญชีแล้ว / ปฏิเสธคืนบัญชี / ลบตัวตนแล้ว) ส่งไปยัง registered email เป็นช่องทางหลัก ตาม `14_NOTIFICATIONS_MODULE.md` section 9.3; delivery log `DLV-DEL-<req>-<event>` trace กลับไปยัง History & Actions ของ Request Detail; อีเมลลบตัวตนต้องส่งก่อน anonymize personal fields; ไม่เข้า FO Notification Center |
+| Notification | Lifecycle email 5 จุด (ยืนยันลบบัญชี / เตือนใกล้ครบ grace period / คืนบัญชีแล้ว / ปฏิเสธคืนบัญชี / ลบตัวตนแล้ว) ส่งไปยัง registered email เป็นช่องทางหลัก ตาม `14_NOTIFICATIONS_MODULE.md` section 9.3; delivery log `DLV-DEL-<req>-<event>` แสดงใน Settings > Delivery Logs (ดู `16_ADMIN_SETTINGS_MODULE.md`) และ trace กลับไปยัง History & Actions ของ Request Detail; อีเมลลบตัวตนต้องส่งก่อน anonymize personal fields; ไม่เข้า FO Notification Center |
 | Audit Log | Request create, session revoke, offer cancel auto, report close auto, dependency check ระหว่างช่วงรอลบบัญชี, restore, restore reject, auto delete (archive + anonymize), export, sensitive reveal |
-| Reports & Analytics | Account deletion report, restore/reject count, auto-delete completion |
+| Reports & Analytics (Phase 2/future) | Account deletion report, restore/reject count, auto-delete completion |
 
 ## 17. Audit Requirements
 
@@ -409,7 +409,7 @@ System actions (อัตโนมัติ บันทึกโดย system j
 - `ACCOUNT_DELETION_AUTO_DELETE` — ระบบลบบัญชีอัตโนมัติ (เก็บถาวร + ลบตัวตน ในขั้นเดียว) เมื่อครบ grace period 30 วัน
 
 อีเมล lifecycle (reference ไปยัง `14_NOTIFICATIONS_MODULE.md` section 9.3):
-- ทุก audit event ของ admin/system action ที่มีอีเมล lifecycle (REQUEST_CREATE / RESTORE / RESTORE_REJECT / AUTO_DELETE) ต้อง reference ไปยัง delivery log `DLV-DEL-<req>-<event>` ใน Notifications
+- ทุก audit event ของ admin/system action ที่มีอีเมล lifecycle (REQUEST_CREATE / RESTORE / RESTORE_REJECT / AUTO_DELETE) ต้อง reference ไปยัง delivery log `DLV-DEL-<req>-<event>` ใน Settings > Delivery Logs
 - อีเมลเตือนใกล้ครบ grace period (เหลือ 7/3 วัน) เป็น system job แยก ไม่ใช่ audit event ของ deletion action — บันทึกเป็น delivery log เท่านั้น
 
 Audit payload ต้องมี:
@@ -459,8 +459,8 @@ Account Deletion Requests ต้องใช้ app shell, navigation, breakpoin
 | AC-BO-DEL-009 | Sensitive reveal, restore, reject restore และ export ต้องมี audit log |
 | AC-BO-DEL-010 | Account Deletion UI ต้อง responsive ที่ 375px, 768px, 1280px และ 1440px |
 | AC-BO-DEL-011 | หลังลบตัวตน สมัครใหม่ด้วยอีเมลเดิมได้เป็นบัญชีใหม่ (คนละรหัส) ไม่เชื่อมประวัติเดิม |
-| AC-BO-DEL-012 | Account Deletion lifecycle email 5 จุด (ยืนยันลบบัญชี / เตือนใกล้ครบ grace period / คืนบัญชีแล้ว / ปฏิเสธคืนบัญชี / ลบตัวตนแล้ว) ต้องส่งไปยัง registered email พร้อม delivery log `DLV-DEL-xxx` ที่ trace กลับไปยัง History & Actions ของ Request Detail และ audit event ได้ ตาม `14_NOTIFICATIONS_MODULE.md` section 9.3 |
-| AC-BO-DEL-013 | modal คืนบัญชี/ปฏิเสธคืนบัญชี ต้องมีข้อความแจ้งช่องทางหลักเป็นอีเมล + email preview ตาม pattern โมดูลอื่น; History & Actions ต้องแสดงคอลัมน์ ส่งอีเมล พร้อมสถานะและลิงก์ไป delivery log |
+| AC-BO-DEL-012 | Account Deletion lifecycle email 5 จุด (ยืนยันลบบัญชี / เตือนใกล้ครบ grace period / คืนบัญชีแล้ว / ปฏิเสธคืนบัญชี / ลบตัวตนแล้ว) ต้องส่งไปยัง registered email พร้อม delivery log `DLV-DEL-xxx` ที่แสดงใน Settings > Delivery Logs และ trace กลับไปยัง History & Actions ของ Request Detail และ audit event ได้ ตาม `14_NOTIFICATIONS_MODULE.md` section 9.3 |
+| AC-BO-DEL-013 | modal คืนบัญชี/ปฏิเสธคืนบัญชี ต้องมีข้อความแจ้งช่องทางหลักเป็นอีเมล + email preview ตาม pattern โมดูลอื่น; History & Actions ต้องแสดงคอลัมน์ ส่งอีเมล พร้อมสถานะและลิงก์ไป delivery log ใน Settings > Delivery Logs |
 
 ## 20. Open Decisions
 

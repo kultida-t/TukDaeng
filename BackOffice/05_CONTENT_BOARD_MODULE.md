@@ -474,6 +474,10 @@ FO `Report article` ส่ง report type `Board Content` และ target type 
 
 ### Report Intake Rules
 
+- FO `Report article` ส่ง report type `Board Content` และ target type `Article` เข้า BO ที่ `Content Management > Reported Articles`
+- Article Report Reason ยึด 6 เหตุผลมาตรฐานตาม `FrontOffice/12_BOARD_MODULE.md` (`Spam or misleading`, `Harassment or hate`, `Scam or fraud`, `Illegal or restricted item`, `Inappropriate content`, `Other`)
+- `Reporter Note` ใน BO แสดงข้อมูลจาก `Additional details (optional)` ที่ผู้รายงานกรอกตอนส่งรายงานจาก FO (สอดคล้องกับ `content_reports.detail` ใน FoDb)
+- ไม่มีฟิลด์ `Reported Part` ใน Product scope (ผู้ใช้รายงานบทความทั้งชิ้นจาก Article Detail)
 - Article ไม่หายจาก FO ทันทีหลังถูก report
 - Admin review report ได้ตาม permission
 - Report queue status: Pending หรือ Closed
@@ -516,7 +520,7 @@ Mobile/card metadata:
 
 Search/filter/sort:
 
-- Search by Report ID, Article ID, Article title, Category, Surface, Article Status, Report Status, Priority, Report Reason, Reported Part และ Reporter Note
+- Search by Report ID, Article ID, Article title, Category, Surface, Article Status, Report Status, Priority, Report Reason และ Reporter Note (Additional Details)
 - Report status filter: ทุกสถานะ, รอตรวจ/Pending, ปิดแล้ว/Closed
 - Priority filter: ทุก priority, High, Medium, Low
 - Sort options:

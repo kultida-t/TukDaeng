@@ -57,7 +57,7 @@ Codex ต้องทำ 3 อย่าง:
 | No. | Module | Primary Purpose | Phase |
 | --- | --- | --- | --- |
 | 00 | `00_GLOBAL_RULES_MODULE.md` | Responsive layout, admin access, audit, status, privacy, timezone, FO sync และ destructive-action rules | 1 |
-| 01 | `01_AUTHENTICATION_MODULE.md` | Email/password login, Email OTP, sessions, admin account lifecycle | 1 |
+| 01 | `01_AUTHENTICATION_MODULE.md` | Email/password login, Email OTP, sessions, one-time Admin invitation/activation และ admin account lifecycle | 1 |
 | 02 | `02_DASHBOARD_MODULE.md` | Dashboard metrics, pending queues, SLA signals, activity feed และ policy-based overview | 1 |
 | 03 | `03_USER_MANAGEMENT_MODULE.md` | User list/detail, auth method, login history, report context, suspend/ban, reset password, FO impact | 1 |
 | 04 | `04_ASSET_MANAGEMENT_MODULE.md` | Asset list/detail, status visibility, reported assets, moderation, sensitive fields, FO sync | 1 |
@@ -69,9 +69,9 @@ Codex ต้องทำ 3 อย่าง:
 | 11 | `11_WATCH_ALERT_MODULE.md` | Market Demand & Watch Alert: Demand Overview, Search Insights (popular keyword/filter, no-result, trend, funnel), Watch Alert List (read-only) + Alert Detail (6 sections, read-only), trigger history, Sale-only match, notification delivery, inactive market data warning | 1 |
 | 12 | `12_HELP_SUPPORT_MODULE.md` | Settings > Policy & Versioning (Terms of Use, Privacy Policy — Draft/Published/Archived, bilingual TH/EN, version history, restore) และ Settings > Support Center (channels, business hours, availability TH/EN, preview) | 1 |
 | 13 | `13_ACCOUNT_DELETION_MODULE.md` | Delete-account request queue, restore/reject restore ใน grace period, 30-day grace period, ลบบัญชีอัตโนมัติเมื่อครบกำหนด (เก็บถาวร + ลบตัวตน ในขั้นเดียว), lifecycle email 5 จุด (ยืนยันลบบัญชี / เตือนใกล้ครบ grace period / คืนบัญชีแล้ว / ปฏิเสธคืนบัญชี / ลบตัวตนแล้ว) ตาม `14_NOTIFICATIONS_MODULE.md` section 9.3 | 1 |
-| 14 | `14_NOTIFICATIONS_MODULE.md` | Broadcast notification และ system trigger templates/logs, Account Deletion lifecycle emails (`DLV-DEL-xxx`) | 1 |
-| 15 | `15_REPORTS_ANALYTICS_MODULE.md` | Exportable reports across user, asset, offer, chat, content, asset reported comments, search, watch alert, notifications, account deletion | 1 |
-| 16 | `16_ADMIN_SETTINGS_MODULE.md` | Admin own settings, admin account lifecycle, Admin Permission config, security/system settings, retention/export policy | 1 |
+| 14 | `14_NOTIFICATIONS_MODULE.md` | Phase 2/future — Broadcast notification, system trigger templates, notification report metrics; Delivery Logs ย้ายไป Settings ใน Phase 1; Account Deletion lifecycle emails (`DLV-DEL-xxx`) | 2 |
+| 15 | `15_REPORTS_ANALYTICS_MODULE.md` | Exportable reports across user, asset, offer, chat, content, asset reported comments, search, watch alert, notifications, account deletion (Phase 2 / future scope — deferred) | 2 |
+| 16 | `16_ADMIN_SETTINGS_MODULE.md` | Admin own settings, admin account/invitation lifecycle, Admin Permission config, security/system settings, retention/export policy, **Delivery Logs** (Phase 1 — ย้ายจาก Notifications module) | 1 |
 | 17 | `17_OPTION_MASTER_MODULE.md` | Internal option master management for FO Add/Edit Asset, Search Filter, Watch Alert criteria; option group list/detail, option add/edit/deactivate/reactivate/delete/reorder, group add/edit/deactivate/reactivate/delete/reorder, group audit log, audit | 1 |
 
 ## Final Handoff

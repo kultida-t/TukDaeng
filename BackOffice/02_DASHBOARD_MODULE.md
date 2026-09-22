@@ -203,7 +203,7 @@ Work Queue ต้องแสดงเป็น action list โดยแต่�
 | 4 | คำขอลบบัญชี | `8` | Medium | `มี 2 คำขอใกล้ครบกำหนดลบบัญชีอัตโนมัติ` | `ใกล้ครบกำหนด 2`, `Grace period 4` | Account Deletion / Requests |
 | 5 | บทความรอเผยแพร่ | `4` | Normal | `บทความ Board ตั้งเวลาเผยแพร่แล้ว / ตรวจ preview และรูป cover ก่อนถึงเวลา` | `เผยแพร่วันนี้ 2`, `ต้อง preview` | Content Management / Articles |
 | 6 | ข้อมูลตลาดรอตรวจ | `6` | Normal | `brand, model และ price index จาก sync มีข้อมูลซ้ำ / ควรตรวจ Sync History ก่อนใช้กับ Search และ Watch Alert` | `Sync issue 6`, `Price index` | Market Data / Sync History |
-| 7 | แจ้งเตือนส่งไม่สำเร็จ | `92` | Normal | `มี token หมดอายุและงานส่งซ้ำได้ / ตรวจ retry queue และ cleanup invalid token` | `Retryable 81`, `Cleanup 11` | Notifications / Delivery Logs |
+| 7 | แจ้งเตือนส่งไม่สำเร็จ | `92` | Normal | `มี token หมดอายุและงานส่งซ้ำได้ / ตรวจ retry queue และ cleanup invalid token` | `Retryable 81`, `Cleanup 11` | Settings / Delivery Logs |
 
 กฎการจัดลำดับ:
 
@@ -238,7 +238,7 @@ Activity row ต้องมี:
 | Offer | ข้อเสนอซื้อถูกปฏิเสธ | `OFR-472 ของ Audemars Piguet Royal Oak ถูก owner ปฏิเสธและยังเก็บ history ไว้ใน Offer Detail` | `32 นาทีที่แล้ว` | Offer / Offer Queue |
 | Content | ตั้งเวลาเผยแพร่บทความแล้ว | `บทความ Vintage Watch Buying Guide ตั้งเวลาเผยแพร่วันนี้ 19:00` | `1 ชม.ที่แล้ว` | Content Management / Articles |
 | System | ข้อมูลตลาดอัปเดตแล้ว | `Sync History พบ duplicate price points ของ Omega Speedmaster Reduced 3 แถว` | `2 ชม.ที่แล้ว` | Market Data / Sync History |
-| System | แจ้งเตือนบางรายการส่งไม่สำเร็จ | `ระบบพบ invalid token ใน delivery batch ล่าสุดและแยกงาน retry แล้ว` | `3 ชม.ที่แล้ว` | Notifications / Delivery Logs |
+| System | แจ้งเตือนบางรายการส่งไม่สำเร็จ | `ระบบพบ invalid token ใน delivery batch ล่าสุดและแยกงาน retry แล้ว` | `3 ชม.ที่แล้ว` | Settings / Delivery Logs |
 
 กฎการทำงาน:
 

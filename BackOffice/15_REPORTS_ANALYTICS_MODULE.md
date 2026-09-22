@@ -2,9 +2,12 @@
 
 **Version:** `BO-15-v0.1`  
 **Date:** 2026-07-06  
-**Status:** Draft baseline  
+**Status:** Draft baseline — **Phase 2 / Future scope (deferred)**  
 **Platform:** Responsive Web Back Office  
 **Primary FO Sources:** `../FrontOffice/02_FEED_MODULE.md`, `../FrontOffice/03_SEARCH_FILTER_MODULE.md`, `../FrontOffice/04_ASSET_MANAGEMENT_MODULE.md`, `../FrontOffice/07_CHAT_MODULE.md`, `../FrontOffice/08_OFFER_MODULE.md`, `../FrontOffice/09_NOTIFICATION_MODULE.md`, `../FrontOffice/10_WATCH_ALERT_MODULE.md`, `../FrontOffice/11_SOCIAL_MODULE.md`, `../FrontOffice/12_BOARD_MODULE.md`, `../FrontOffice/13_SETTINGS_MODULE.md`, `../FrontOffice/15_TRUST_SAFETY_MODULE.md`
+
+> **สถานะ scope:** เลื่อนเป็น Phase 2/future scope — prototype ตัดเมนู Reports ออกชั่วคราวเพราะเป็นระบบตั้งต้นที่ยังไม่จำเป็น ซ้ำซ้อนกับ list/filter ในแต่ละ module + Dashboard; อาจกลับมาเพิ่มในอนาคตถ้ามี requirement จริง เช่น ต้องส่งรายงานให้ Management/auditor
+> เอกสารนี้เก็บไว้เพื่ออ้างอิงเมื่อกลับมาทำใน Phase 2 ไม่ใช่งานที่ต้องทำใน Phase 1
 
 ## UI Standards And Prototype Reference
 

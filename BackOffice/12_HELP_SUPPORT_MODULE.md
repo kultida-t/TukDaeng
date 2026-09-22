@@ -618,7 +618,7 @@ Help / Support ต้องใช้ app shell, navigation, breakpoint, list too
 
 | ID | Decision Needed | Current Recommendation |
 | --- | --- | --- |
-| SUP-DEC-001 | Policy publish จะส่ง notification ให้ผู้ใช้ทราบหรือไม่ | แนะนำไม่ส่งใน Phase 1 — ผู้ใช้เห็นเวอร์ชันใหม่เมื่อเปิด Settings อ่านอีกครั้ง; ถ้าต้องการแจ้ง ให้เป็น task ใหม่ใน Notification module |
+| SUP-DEC-001 | Policy publish จะส่ง notification ให้ผู้ใช้ทราบหรือไม่ | แนะนำไม่ส่งใน Phase 1 — ผู้ใช้เห็นเวอร์ชันใหม่เมื่อเปิด Settings อ่านอีกครั้ง; ถ้าต้องการแจ้ง ให้เป็น task ใหม่ใน Notification module (Phase 2/future — Broadcast เลื่อนเป็น Phase 2 แล้ว) |
 | SUP-DEC-002 | Support Center จะรองรับ channel type นอกจาก 5 ประเภท (LINE, Phone, Email, Facebook, Website) ในอนาคตหรือไม่ | แนะนำ fixed list ใน Phase 1 — ถ้าต้องการเพิ่ม ให้เป็น task ใหม่พร้อมเพิ่ม format validation และ icon |
 | SUP-DEC-003 | Policy content จะรองรับ HTML tag นอกเหนือจาก allowed list (P, H2, H3, UL, OL, LI, A, STRONG, EM, BR) หรือไม่ | แนะนำใช้ allowed list ใน Phase 1 — ถ้าต้องการ tag เพิ่ม (เช่น IMG, TABLE) ให้เป็น task ใหม่พร้อมปรับ sanitizer |
 | SUP-DEC-004 | Policy version จะเก็บ Archived ไว้ตลอดหรือมี retention policy ลบเวอร์ชันเก่า | แนะนำเก็บตลอดใน Phase 1 เพราะ policy มีเพียง 2 ตัวและเวอร์ชันไม่เยอะ; ถ้าต้องการ retention ให้เป็น task ใหม่ |

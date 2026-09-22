@@ -275,7 +275,7 @@ Offer/chat events ที่ต้อง trace delivery:
 - Offer cancelled notification ไป buyer/seller เมื่อ asset ถูกลบหรือ owner เปลี่ยนเป็น Hide
 - Offer invalidated notification ไป buyer/seller เมื่อ asset ถูกซ่อนถาวร
 
-BO Offer Management ดู delivery status ได้ แต่การจัดการ template, retry, broadcast หรือ trigger configuration ต้องอยู่ใน Notification module
+BO Offer Management ดู delivery status แบบ read-only ได้ที่ **Settings > Delivery Logs** (Phase 1, ดู `16_ADMIN_SETTINGS_MODULE.md`); การจัดการ template, retry, broadcast หรือ trigger configuration เป็น Phase 2/future (เคยอยู่ใน Notification module — ดู `14_NOTIFICATIONS_MODULE.md`)
 
 ## 15. Account Deletion Dependency
 
@@ -328,10 +328,11 @@ Audit action ขั้นต่ำ:
 | User Management | Buyer/owner profile, account status, suspension/ban impact |
 | Asset Management | Asset sold/delete/hide/auto-hide/permanent-hide impact ต่อ offer status; asset card state in chat |
 | Audit Log | Offer export/sensitive-view actions ต้อง searchable |
-| Notification | Delivery logs, templates, retry policy |
+| Settings > Delivery Logs (Phase 1) | Delivery logs read-only; retry failed delivery และ export delivery log ตาม scope/reason/audit |
+| Notifications (Phase 2/future) | Templates, retry policy, broadcast config — เคยอยู่ใน Notification module (ดู `14_NOTIFICATIONS_MODULE.md`) |
 | Account Deletion | ระบบยกเลิก offer ที่ Pending อัตโนมัติเมื่อ delete request สำเร็จ; accepted offer เก็บตาม retention policy; dependency drill-in แบบ read-only กรองด้วย userId |
 | Help & Support | ไม่มี ticket ใน Phase 1 — module 12 เป็น Policy & Versioning + Support Center; chat/offer context สำหรับ dispute เป็น future scope |
-| Reports & Analytics | Offer/chat aggregate และ export ตาม permission |
+| Reports & Analytics (Phase 2/future) | Offer/chat aggregate และ export ตาม permission |
 
 ## Module-Specific Exceptions
 

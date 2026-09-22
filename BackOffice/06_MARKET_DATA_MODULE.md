@@ -661,7 +661,7 @@ Audit event ต้องมี:
 | Search / Filter | ใช้ active market data สำหรับ filter/autocomplete |
 | Watch Alert | ใช้ market schema สำหรับ criteria และ match |
 | Portfolio | ใช้ Price Index เป็น valuation source |
-| Reports | ใช้ข้อมูล top searched brands และ market/search report แยกจาก Market Data screen |
+| Reports (Phase 2/future) | ใช้ข้อมูล top searched brands และ market/search report แยกจาก Market Data screen |
 | Audit Log | ค้น provider sync trigger/result/error/retry ได้ |
 | Settings / Permissions | ควบคุม module access และ operations sync permission |
 
