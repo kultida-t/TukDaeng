@@ -93,6 +93,15 @@
     }
     body.logged-out .app { display: none; }
     body:not(.logged-out) .login-screen { display: none; }
+    /* invite-mode: recipient accept-invitation screen — additive overlay state ที่ซ่อน login/app ชั่วคราว */
+    body.invite-mode #login-screen { display: none; }
+    body.invite-mode .app { display: none; }
+    body:not(.invite-mode) #invite-screen { display: none; }
+    body.invite-mode #invite-screen { display: grid; }
+    /* invite-mode ให้ body เป็น scroll container (เหมือน .main ใน app shell) —
+       ห้าม pin height บน #invite-screen เพราะ grid auto-rows จะถูกบีบให้พอดี container
+       จน content overflow ทะลุ panel โดยไม่มี padding คุ้ม (mobile clipping defect) */
+    body.invite-mode { overflow-y: auto; }
 
     .login-screen {
       min-height: 100vh;
@@ -110,7 +119,8 @@
       background: #07172a;
       order: 2;
     }
-    .login-visual {
+    .login-visual,
+    .invite-visual {
       position: relative;
       overflow: hidden;
       order: 1;
@@ -118,7 +128,8 @@
         linear-gradient(120deg, rgba(6, 20, 38, .82), rgba(6, 20, 38, .35)),
         url("./assets/login-watch-hero.png") center / cover no-repeat;
     }
-    .login-visual::after {
+    .login-visual::after,
+    .invite-visual::after {
       content: "BACK OFFICE";
       position: absolute;
       right: 36px;
@@ -128,13 +139,15 @@
       letter-spacing: .05em;
       color: rgba(255, 255, 255, .16);
     }
-    .login-brand {
+    .login-brand,
+    .invite-brand {
       display: flex;
       align-items: center;
       gap: 12px;
       margin-bottom: 42px;
     }
-    .login-brand > div {
+    .login-brand > div,
+    .invite-brand > div {
       display: flex;
       flex-direction: column;
       justify-content: center;
@@ -142,7 +155,8 @@
       gap: 6px;
       min-height: 44px;
     }
-    .login-brand small {
+    .login-brand small,
+    .invite-brand small {
       display: block;
       color: #8198b7;
       font-size: 10px;
@@ -192,6 +206,11 @@
       background: #0c213a;
       color: #fff;
       padding: 9px 10px;
+    }
+    /* Login เท่านั้น — เว้นขอบด้านข้างของ controls ใน scenario panel ไม่ให้ชิดกรอบ;
+       อย่าใส่ใน .prototype-tools ตรง ๆ เพราะ user-action-prototype-tools (modal หลายจอ) inherit ไปด้วย */
+    #login-screen .prototype-tools {
+      padding: 18px 10px 0;
     }
     .user-action-prototype-tools {
       width: 100%;
@@ -356,6 +375,76 @@
       line-height: 1.5;
     }
     .auth-error.show { display: block; }
+    /* Accept Invitation screen — reuse login visual language, style เฉพาะส่วนใหม่ */
+    .invite-context {
+      max-width: 360px;
+      margin: 0 0 18px;
+      padding: 14px 16px;
+      border: 1px solid rgba(173, 193, 221, .22);
+      border-radius: 10px;
+      background: rgba(12, 33, 58, .6);
+      display: grid;
+      gap: 10px;
+    }
+    .invite-context-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 16px;
+      font-size: 12px;
+    }
+    .invite-context-row span { color: #8fa4c0; }
+    .invite-context-row strong { color: #fff; font-weight: 600; text-align: right; }
+    .invite-policy {
+      list-style: none;
+      margin: 4px 0 8px;
+      padding: 0;
+      display: grid;
+      gap: 6px;
+      font-size: 12px;
+      color: #8fa4c0;
+    }
+    .invite-policy li { display: flex; align-items: center; gap: 8px; }
+    .invite-policy li::before {
+      content: "";
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: rgba(143, 164, 192, .4);
+      flex-shrink: 0;
+    }
+    .invite-policy li[data-pass="true"] { color: #8fe3b4; }
+    .invite-policy li[data-pass="true"]::before { background: #2fbf71; }
+    .invite-hint {
+      max-width: 360px;
+      /* secondary note อยู่ใต้ CTA ทุก state — 18px = rhythm เดียวกับ .login-footnote (text ใต้ปุ่ม) */
+      margin: 18px 0 0;
+      color: #8fa4c0;
+      font-size: 12px;
+      line-height: 1.55;
+    }
+    #invite-screen .btn.primary {
+      max-width: 360px;
+      width: 100%;
+      justify-content: center;
+      text-align: center;
+    }
+    #invite-screen .auth-error { margin: 0 0 16px; }
+    /* form-level error อยู่ใต้ CTA — separation ชัดเจน (ID selector ชนะ rule .auth-error ด้านบน) */
+    #invite-screen #invite-error { margin: 16px 0 0; }
+    /* field-level validation — pattern เดียวกับ .article-field-error แต่โทนสีสำหรับ dark auth panel */
+    .invite-field-error {
+      display: none;
+      color: #ff8b95;
+      font-size: 12px;
+      font-weight: 600;
+      line-height: 1.45;
+    }
+    .invite-field-error.show { display: block; }
+    #invite-screen input[aria-invalid="true"] {
+      border-color: rgba(255, 139, 149, .72);
+      box-shadow: 0 0 0 3px rgba(214, 0, 18, .18);
+    }
     .otp-actions {
       display: grid;
       grid-template-columns: 1.05fr 1fr 1fr;
@@ -12178,12 +12267,14 @@
       .login-panel > * {
         width: min(100%, 390px);
       }
-      .login-visual {
+      .login-visual,
+      .invite-visual {
         order: 1;
         min-height: clamp(170px, 34svh, 250px);
         background-position: center 48%;
       }
-      .login-visual::after {
+      .login-visual::after,
+      .invite-visual::after {
         right: max(24px, calc((100vw - 390px) / 2));
         bottom: 18px;
         font-size: clamp(42px, 12vw, 72px);
@@ -12890,10 +12981,12 @@
       }
       .mobile-header .brand-name { font-size: 19px; }
       .mobile-header small { font-size: 9px; }
-      .login-visual {
+      .login-visual,
+      .invite-visual {
         min-height: clamp(150px, 32svh, 210px);
       }
-      .login-visual::after {
+      .login-visual::after,
+      .invite-visual::after {
         right: 18px;
         bottom: 14px;
         font-size: clamp(38px, 13vw, 58px);
@@ -12902,17 +12995,21 @@
         min-height: calc(100svh - clamp(150px, 32svh, 210px));
         padding: 34px 18px 44px;
       }
-      .login-brand {
+      .login-brand,
+      .invite-brand {
         gap: 11px;
         margin-bottom: 34px;
       }
-      .login-brand .brand-mark {
+      .login-brand .brand-mark,
+      .invite-brand .brand-mark {
         width: 42px;
         height: 42px;
         border-radius: 9px;
       }
-      .login-brand .brand-name { font-size: 24px; }
-      .login-brand small {
+      .login-brand .brand-name,
+      .invite-brand .brand-name { font-size: 24px; }
+      .login-brand small,
+      .invite-brand small {
         margin-top: 0;
         letter-spacing: .2em;
       }
@@ -17151,9 +17248,36 @@
             <option value="bad-password">Invalid credentials</option>
           </select>
         </label>
+        <label>
+          Invitation flow
+          <select id="invite-scenario">
+            <option value="">— เลือกเคสทดสอบ —</option>
+            <option value="valid">Accept invitation — ลิงก์ใช้งานได้</option>
+            <option value="expired">Accept invitation — ลิงก์หมดอายุ</option>
+            <option value="cancelled">Accept invitation — ลิงก์ถูกยกเลิก</option>
+            <option value="superseded">Accept invitation — ลิงก์เก่าถูกแทนที่</option>
+            <option value="used">Accept invitation — ลิงก์ใช้แล้ว</option>
+            <option value="invalid">Accept invitation — token ไม่ถูกต้อง</option>
+          </select>
+        </label>
       </details>
     </div>
     <div class="login-visual" aria-hidden="true"></div>
+  </section>
+
+  <!-- Accept Invitation — recipient activation flow (one-time link) -->
+  <section class="login-screen invite-screen" id="invite-screen" aria-label="Accept invitation">
+    <div class="login-panel">
+      <div class="invite-brand">
+        <img class="brand-mark" src="./assets/tukdaeng-app-icon.png" alt="Tuk Daeng" />
+        <div>
+          <strong class="brand-name">Tuk Daeng</strong>
+          <small>Back Office</small>
+        </div>
+      </div>
+      <div class="invite-content" id="invite-content" aria-live="polite"></div>
+    </div>
+    <div class="invite-visual" aria-hidden="true"></div>
   </section>
 
   <div class="app">
@@ -18388,8 +18512,9 @@
           roleId: "ROL-002",
           roleRevision: 202601010900,
           status: "Pending",
-          issuedAt: "2026-09-08T09:00:00.000Z",
-          expiresAt: "2026-09-11T09:00:00.000Z",
+          // window 72h ตาม §10.1 — seed ใช้เวลาสัมพัทธ์กับ page load เพื่อให้ Pending record demo ได้เสมอ
+          issuedAt: new Date(Date.now() - 60 * 60 * 1000).toISOString(),
+          expiresAt: new Date(Date.now() + 71 * 60 * 60 * 1000).toISOString(),
           tokenRevision: 1,
           accountRevision: 1,
           issuedByAdminId: "ADM-001",
@@ -18409,7 +18534,7 @@
           targetAdminId: "ADM-008",
           channel: "Email",
           status: "Sent",
-          attemptedAt: "2026-09-08T09:00:00.000Z",
+          attemptedAt: new Date(Date.now() - 60 * 60 * 1000).toISOString(),
           recipientMasked: "na***@tukdaeng.example",
           attemptSequence: 1,
           correlationId: "COR-INV-00001"
@@ -25439,6 +25564,485 @@
       if (ctx.delivery?.status === "Retry") return "retry";
       return "pending";
     }
+
+    // ===== Accept Invitation / Initial Password Activation (recipient-side flow) =====
+    // contract: 01_AUTHENTICATION_MODULE.md §10.1 — one-time link 72h, revision-aware, atomic consume
+    // production: token เป็น opaque CSPRNG ≥256-bit + เก็บ keyed hash เท่านั้น
+    // prototype-only fixture registry ด้านล่างจำลอง token→invitation lookup — token เป็น opaque string
+    // ที่ไม่ encode/derive จาก invitation_id, account_id หรือ tokenRevision และ mapping แยกจาก canonical record
+    const inviteActivation = {
+      token: null,
+      state: "idle", // idle | form | invalid | success
+      failureCode: null,
+      invitationId: null,
+      accountId: null,
+      tokenRevision: null,
+      accountRevision: null,
+      submitting: false
+    };
+
+    // fixture registry — token (opaque) -> { invitationId, tokenRevision }
+    // seed fixture สำหรับ INV-00001 r1 เพื่อ deterministic test/demo; invitation ที่สร้าง runtime ใหม่
+    // (resend/reissue) mint token แบบ random ผ่าน getAdminInvitationLinkToken เมื่อต้องใช้ลิงก์
+    const adminInvitationLinkTokenFixtures = new Map([
+      ["sim-token-kq8f2x7m4d9e1b6a", { invitationId: "INV-00001", tokenRevision: 1 }]
+    ]);
+
+    function getAdminInvitationLinkToken(inv) {
+      if (!inv) return "";
+      const tokenRevision = inv.tokenRevision || 1;
+      for (const [token, ref] of adminInvitationLinkTokenFixtures) {
+        if (ref.invitationId === inv.id && ref.tokenRevision === tokenRevision) return token;
+      }
+      const token = `sim-token-${Array.from(crypto.getRandomValues(new Uint8Array(10)), b => b.toString(16).padStart(2, "0")).join("")}`;
+      adminInvitationLinkTokenFixtures.set(token, { invitationId: inv.id, tokenRevision });
+      return token;
+    }
+
+    function resolveAdminInvitationLinkToken(token) {
+      return adminInvitationLinkTokenFixtures.get(String(token || "")) || null;
+    }
+
+    const adminInvitationActivationFailureLabels = {
+      invalid_token: "ลิงก์ไม่ถูกต้องหรือข้อมูลไม่ครบถ้วน",
+      stale_revision: "ลิงก์นี้ไม่ตรงกับคำเชิญฉบับล่าสุด — ถูกแทนที่แล้ว",
+      already_used: "ลิงก์นี้ถูกใช้งานแล้ว — ลิงก์คำเชิญใช้ได้ครั้งเดียว",
+      superseded: "ลิงก์นี้ถูกแทนที่ด้วยคำเชิญฉบับใหม่แล้ว",
+      cancelled: "คำเชิญนี้ถูกยกเลิกโดยผู้ดูแลระบบแล้ว",
+      expired: "ลิงก์คำเชิญหมดอายุแล้ว (ใช้ได้ภายใน 72 ชม. หลังได้รับอีเมล)",
+      not_allowed: "คำเชิญไม่ได้อยู่ในสถานะที่เปิดใช้งานได้",
+      account_ineligible: "บัญชีนี้ไม่ได้อยู่ในสถานะรอเปิดใช้งานแล้ว",
+      role_ineligible: "สิทธิ์การใช้งานของบัญชีเปลี่ยนไปแล้ว — กรุณาติดต่อผู้ดูแลระบบ",
+      stale_invitation: "ข้อมูลคำเชิญเปลี่ยนไประหว่างใช้งาน — กรุณาเปิดลิงก์ใหม่อีกครั้ง",
+      duplicate_submit: "กำลังดำเนินการอยู่ — กรุณารอสักครู่",
+      commit_failed: "เปิดใช้งานไม่สำเร็จ — ไม่มีข้อมูลบางส่วนถูกบันทึก กรุณาลองใหม่อีกครั้ง"
+    };
+
+    // user-facing reason บนหน้า INVALID LINK — security/internal failure ใช้ generic message
+    // (ห้ามเปิดเผย token/revision/internal code); label เต็มด้านบนคงไว้สำหรับ audit reason
+    const inviteInvalidReasonText = {
+      expired: "ลิงก์คำเชิญหมดอายุแล้ว",
+      cancelled: "ลิงก์คำเชิญถูกยกเลิกแล้ว",
+      superseded: "มีการออกลิงก์คำเชิญใหม่แล้ว",
+      stale_revision: "มีการออกลิงก์คำเชิญใหม่แล้ว",
+      already_used: "ลิงก์คำเชิญนี้ถูกใช้งานแล้ว"
+    };
+    const INVITE_INVALID_GENERIC_REASON = "ลิงก์คำเชิญไม่ถูกต้อง";
+
+    // resolve + validate จาก state ล่าสุดทุกครั้ง (render และ commit ใช้ตัวเดียวกัน — server-authoritative revalidation)
+    // token ที่ resolve target ไม่ได้คืน invalid_token โดยไม่มี inv/acc — ห้าม audit สร้าง target reference ตาม §8.9
+    function resolveAdminInvitationActivation(token) {
+      const linkRef = resolveAdminInvitationLinkToken(token);
+      if (!linkRef) return { ok: false, code: "invalid_token" };
+      const inv = adminAccountData.invitations.find(record => record.id === linkRef.invitationId);
+      if (!inv) return { ok: false, code: "invalid_token" };
+      const acc = adminAccountData.accounts.find(a => a.id === inv.targetAdminId);
+      if (!acc) return { ok: false, code: "invalid_token" };
+      if (linkRef.tokenRevision !== (inv.tokenRevision || 1)) return { ok: false, code: "stale_revision", inv, acc };
+      if (inv.status === "Used") return { ok: false, code: "already_used", inv, acc };
+      if (inv.status === "Superseded") return { ok: false, code: "superseded", inv, acc };
+      if (inv.status === "Cancelled") return { ok: false, code: "cancelled", inv, acc };
+      if (inv.status === "Expired" || new Date(inv.expiresAt).getTime() <= Date.now()) {
+        return { ok: false, code: "expired", inv, acc };
+      }
+      if (inv.status !== "Pending") return { ok: false, code: "not_allowed", inv, acc };
+      if (acc.status !== "Invited") return { ok: false, code: "account_ineligible", inv, acc };
+      if (String(acc.email || "").toLowerCase() !== String(inv.targetEmailNormalized || "")) {
+        return { ok: false, code: "account_ineligible", inv, acc };
+      }
+      const role = roleListData.roles.find(item => item.id === inv.roleId);
+      if (!role || role.status !== "Active" || getAdminInviteRoleRevision(role) !== inv.roleRevision) {
+        return { ok: false, code: "role_ineligible", inv, acc };
+      }
+      return { ok: true, inv, acc };
+    }
+
+    // audit ของ activation — canonical events ADMIN_INVITATION_ACCEPT (เปิด context สำเร็จ/blocked) / ADMIN_INVITATION_ACTIVATE (commit)
+    // payload ตาม §8.9 — ห้าม raw/hashed token, password, OTP, idempotency secret; actor = ผู้รับคำเชิญ
+    function ensureAdminInvitationActivationAudit(acc, inv, payload = {}) {
+      const maxNum = auditLogData.events.reduce((max, e) => {
+        const m = /^AUD-(\d+)$/.exec(e.id);
+        return m ? Math.max(max, Number(m[1])) : max;
+      }, 0);
+      const auditId = `AUD-${String(maxNum + 1).padStart(5, "0")}`;
+      const isAccept = payload.eventType === "ADMIN_INVITATION_ACCEPT";
+      auditLogData.events.unshift({
+        id: auditId,
+        createdAt: formatBangkokTimestamp(),
+        actor: acc.fullName || acc.id,
+        action: isAccept ? "Accept Invitation" : "Activate Invitation",
+        eventType: isAccept ? "ADMIN_INVITATION_ACCEPT" : "ADMIN_INVITATION_ACTIVATE",
+        module: "Settings",
+        risk: "สูง",
+        before: payload.before ?? "Pending",
+        after: payload.after ?? (isAccept ? "Pending" : "Used"),
+        reason: payload.reason || (isAccept
+          ? `ผู้รับเปิดลิงก์คำเชิญ — ${maskAdminInvitationEmail(acc.email)}`
+          : `เปิดใช้งานบัญชีผ่านลิงก์คำเชิญ — ${maskAdminInvitationEmail(acc.email)}`),
+        reference: inv ? inv.id : acc.id,
+        note: payload.note || "",
+        result: payload.result || "Success",
+        failureCode: payload.failureCode || null,
+        invitationId: inv?.id || null,
+        targetAdminId: acc.id,
+        tokenRevision: inv?.tokenRevision ?? null,
+        accountRevision: acc.revision ?? null,
+        roleId: inv?.roleId || null,
+        roleRevision: inv?.roleRevision ?? null,
+        correlationId: inv?.correlationId || null
+      });
+      return auditId;
+    }
+
+    // consume token ครั้งเดียวแบบ atomic — re-validate จาก state ล่าสุดทุกครั้งก่อน mutate
+    // rollback ครบทุก store ถ้า mutation ใดล้มเหลว (pattern เดียวกับ commitAdminInvitationCancel/Reissue)
+    function commitAdminInvitationActivation() {
+      if (inviteActivation.submitting) return { ok: false, code: "duplicate_submit" };
+      const check = resolveAdminInvitationActivation(inviteActivation.token);
+      if (!check.ok) {
+        // attempt ที่ resolve target ได้แต่ถูก block ต้อง audit (result Failed + failureCode) ตาม §8.9
+        if (check.inv && check.acc) {
+          ensureAdminInvitationActivationAudit(check.acc, check.inv, {
+            eventType: "ADMIN_INVITATION_ACTIVATE",
+            result: "Failed",
+            failureCode: check.code.toUpperCase(),
+            before: `${check.inv.id} (${check.inv.status})`,
+            after: `${check.inv.id} (${check.inv.status})`,
+            reason: `เปิดใช้งานถูกบล็อก — ${adminInvitationActivationFailureLabels[check.code] || check.code}`
+          });
+        }
+        return { ok: false, code: check.code };
+      }
+      const { inv, acc } = check;
+      // stale check กับ snapshot ตอนเปิดหน้า — revision ต้องตรง state ที่ผู้รับเห็นล่าสุด
+      if ((inviteActivation.tokenRevision != null && inviteActivation.tokenRevision !== (inv.tokenRevision || 1))
+          || (inviteActivation.accountRevision != null && inviteActivation.accountRevision !== (acc.revision || 1))) {
+        ensureAdminInvitationActivationAudit(acc, inv, {
+          eventType: "ADMIN_INVITATION_ACTIVATE",
+          result: "Failed",
+          failureCode: "STALE_INVITATION",
+          before: `${inv.id} (${inv.status})`,
+          after: `${inv.id} (${inv.status})`,
+          reason: "เปิดใช้งานถูกบล็อก — ข้อมูลคำเชิญเปลี่ยนไประหว่างใช้งาน (stale)"
+        });
+        return { ok: false, code: "stale_invitation" };
+      }
+      inviteActivation.submitting = true;
+      const now = new Date();
+      const beforeInvStatus = inv.status;
+      const beforeAccStatus = acc.status;
+      const beforeRevision = acc.revision || 1;
+      const beforeLastAction = acc.lastAction;
+      const auditLength = auditLogData.events.length;
+      const detailExisted = !!adminAccountData.detail[acc.id];
+      const detail = adminAccountData.detail[acc.id] || (adminAccountData.detail[acc.id] = {});
+      if (!detail.activity) detail.activity = [];
+      if (!detail.auditRefs) detail.auditRefs = [];
+      const activityLength = detail.activity.length;
+      const auditRefsLength = detail.auditRefs.length;
+      try {
+        inv.status = "Used";
+        inv.usedAt = now.toISOString();
+        acc.status = "Active";
+        acc.revision = beforeRevision + 1;
+        acc.lastAction = "Active — ยืนยันคำเชิญและตั้งรหัสผ่านเริ่มต้นแล้ว";
+        // password ไม่ถูกเก็บใน state — production เก็บ password hash ผ่าน auth service เท่านั้น
+        const auditId = ensureAdminInvitationActivationAudit(acc, inv, {
+          eventType: "ADMIN_INVITATION_ACTIVATE",
+          result: "Success",
+          before: `${inv.id} (Pending)`,
+          after: `${inv.id} (Used)`,
+          note: `บัญชี ${acc.id} เปลี่ยน Invited → Active — token revision ${inv.tokenRevision} ถูก consume`
+        });
+        if (!auditId) throw new Error("ไม่สามารถสร้าง Audit reference ได้");
+        detail.activity.unshift({
+          at: formatAdminAccountActivityTime(now),
+          action: "Activated (invitation)",
+          reference: acc.id,
+          note: "ผู้รับยืนยันลิงก์คำเชิญและตั้งรหัสผ่านเริ่มต้น — ลิงก์ใช้ครบครั้งเดียว",
+          invitationRef: inv.id
+        });
+        detail.auditRefs.unshift(auditId);
+      } catch (error) {
+        inv.status = beforeInvStatus;
+        delete inv.usedAt;
+        acc.status = beforeAccStatus;
+        acc.revision = beforeRevision;
+        acc.lastAction = beforeLastAction;
+        auditLogData.events.splice(0, auditLogData.events.length - auditLength);
+        detail.activity.splice(0, detail.activity.length - activityLength);
+        detail.auditRefs.splice(0, detail.auditRefs.length - auditRefsLength);
+        if (!detailExisted) delete adminAccountData.detail[acc.id];
+        inviteActivation.submitting = false;
+        return { ok: false, code: "commit_failed" };
+      }
+      return { ok: true, code: "committed", invitationId: inv.id };
+    }
+
+    function getInviteTokenFromLocation() {
+      const m = /^#token=(.*)$/.exec(window.location.hash || "");
+      if (!m) return undefined;
+      return m[1] ? decodeURIComponent(m[1]) : null;
+    }
+
+    function enterInviteMode(token) {
+      inviteActivation.token = token;
+      inviteActivation.submitting = false;
+      inviteActivation.invitationId = null;
+      inviteActivation.accountId = null;
+      inviteActivation.tokenRevision = null;
+      inviteActivation.accountRevision = null;
+      document.body.classList.add("invite-mode");
+      const check = resolveAdminInvitationActivation(token);
+      if (!check.ok) {
+        // resolvable แต่ถูก block → audit accept attempt (result Failed) ตาม §8.9; unresolvable → ไม่ audit
+        if (check.inv && check.acc) {
+          ensureAdminInvitationActivationAudit(check.acc, check.inv, {
+            eventType: "ADMIN_INVITATION_ACCEPT",
+            result: "Failed",
+            failureCode: check.code.toUpperCase(),
+            before: `${check.inv.id} (${check.inv.status})`,
+            after: `${check.inv.id} (${check.inv.status})`,
+            reason: `เปิดลิงก์คำเชิญถูกบล็อก — ${adminInvitationActivationFailureLabels[check.code] || check.code}`
+          });
+        }
+        inviteActivation.state = "invalid";
+        inviteActivation.failureCode = check.code;
+      } else {
+        // accept context ครั้งแรกของ invitation นี้ → audit ADMIN_INVITATION_ACCEPT + history row (reopen ไม่ซ้ำ)
+        if (!check.inv.acceptedAt) {
+          const acceptedAuditId = ensureAdminInvitationActivationAudit(check.acc, check.inv, {
+            eventType: "ADMIN_INVITATION_ACCEPT",
+            result: "Success",
+            before: `${check.inv.id} (Pending)`,
+            after: `${check.inv.id} (Pending)`,
+            note: "ผู้รับเปิดลิงก์คำเชิญสำเร็จ — รอตั้งรหัสผ่านเริ่มต้น"
+          });
+          check.inv.acceptedAt = new Date().toISOString();
+          check.inv.acceptAuditRef = acceptedAuditId;
+          const detail = adminAccountData.detail[check.acc.id]
+            || (adminAccountData.detail[check.acc.id] = { activity: [], auditRefs: [] });
+          if (!detail.activity) detail.activity = [];
+          if (!detail.auditRefs) detail.auditRefs = [];
+          detail.activity.unshift({
+            at: formatAdminAccountActivityTime(new Date()),
+            action: "Invitation link opened",
+            reference: check.acc.id,
+            note: `ผู้รับเปิดลิงก์ ${check.inv.id} — รอตั้งรหัสผ่านเริ่มต้น`,
+            invitationRef: check.inv.id
+          });
+          detail.auditRefs.unshift(acceptedAuditId);
+        }
+        inviteActivation.state = "form";
+        inviteActivation.failureCode = null;
+        inviteActivation.invitationId = check.inv.id;
+        inviteActivation.accountId = check.acc.id;
+        inviteActivation.tokenRevision = check.inv.tokenRevision || 1;
+        inviteActivation.accountRevision = check.acc.revision || 1;
+      }
+      renderInviteScreen();
+    }
+
+    function exitInviteMode() {
+      inviteActivation.token = null;
+      inviteActivation.state = "idle";
+      inviteActivation.failureCode = null;
+      inviteActivation.invitationId = null;
+      inviteActivation.accountId = null;
+      inviteActivation.tokenRevision = null;
+      inviteActivation.accountRevision = null;
+      inviteActivation.submitting = false;
+      document.body.classList.remove("invite-mode");
+      if (document.body.classList.contains("logged-out")) {
+        showLoginForm();
+        document.querySelector("#login-email")?.focus();
+      }
+    }
+
+    function updateInvitePasswordPolicy() {
+      const password = document.querySelector("#invite-password")?.value || "";
+      const confirm = document.querySelector("#invite-password-confirm")?.value || "";
+      const results = {
+        length: password.length >= 12,
+        upper: /[A-Z]/.test(password),
+        lower: /[a-z]/.test(password),
+        digit: /[0-9]/.test(password),
+        special: /[^A-Za-z0-9]/.test(password),
+        match: password.length > 0 && password === confirm
+      };
+      document.querySelectorAll("#invite-policy [data-invite-rule]").forEach(item => {
+        item.dataset.pass = results[item.dataset.inviteRule] ? "true" : "false";
+      });
+      return results;
+    }
+
+    function setInviteError(message) {
+      const el = document.querySelector("#invite-error");
+      if (!el) return;
+      el.textContent = message || "";
+      el.classList.toggle("show", !!message);
+    }
+
+    // field-level error — pattern เดียวกับ setFieldError ของ admin forms (aria-invalid + aria-errormessage)
+    function setInviteFieldError(inputId, errorId, message) {
+      const input = document.getElementById(inputId);
+      const node = document.getElementById(errorId);
+      const hasError = Boolean(message);
+      if (node) {
+        node.textContent = message || "";
+        node.classList.toggle("show", hasError);
+      }
+      if (input) {
+        input.setAttribute("aria-invalid", hasError ? "true" : "false");
+        if (hasError) input.setAttribute("aria-errormessage", errorId);
+        else input.removeAttribute("aria-errormessage");
+      }
+    }
+
+    function renderInviteScreen() {
+      const container = document.querySelector("#invite-content");
+      const screen = document.querySelector("#invite-screen");
+      if (!container || !screen) return;
+      screen.dataset.inviteState = inviteActivation.state;
+      if (inviteActivation.state === "invalid") {
+        const message = inviteInvalidReasonText[inviteActivation.failureCode]
+          || INVITE_INVALID_GENERIC_REASON;
+        container.innerHTML = `
+          <h1 class="login-title">INVALID LINK</h1>
+          <p class="login-copy">ไม่สามารถใช้ลิงก์คำเชิญนี้ได้</p>
+          <div class="auth-error show" data-invite-failure="${inviteActivation.failureCode || "invalid_token"}" role="alert">${message}</div>
+          <button class="btn primary" type="button" data-invite-exit>BACK TO LOGIN</button>
+          <p class="invite-hint">หากต้องการคำเชิญใหม่ กรุณาติดต่อผู้ดูแลระบบ</p>
+        `;
+        return;
+      }
+      if (inviteActivation.state === "success") {
+        container.innerHTML = `
+          <h1 class="login-title">ACCOUNT ACTIVATED</h1>
+          <p class="login-copy">เปิดใช้งานบัญชีเรียบร้อยแล้ว</p>
+          <button class="btn primary" type="button" data-invite-exit>GO TO LOGIN</button>
+          <p class="invite-hint">กลับไปเข้าสู่ระบบเพื่อใช้งาน โดยต้องยืนยัน Email OTP ทุกครั้งที่เข้าสู่ระบบ</p>
+        `;
+        return;
+      }
+      const inv = adminAccountData.invitations.find(record => record.id === inviteActivation.invitationId);
+      const acc = inv && adminAccountData.accounts.find(a => a.id === inv.targetAdminId);
+      const role = inv && roleListData.roles.find(item => item.id === inv.roleId);
+      const roleLabel = role ? role.name : (acc?.role || "—");
+      container.innerHTML = `
+        <h1 class="login-title">ACCEPT INVITATION</h1>
+        <p class="login-copy">ลิงก์คำเชิญนี้ใช้ได้ภายใน 72 ชม.<br>กรุณาตรวจสอบข้อมูลและตั้งรหัสผ่านเพื่อเปิดใช้งานบัญชี</p>
+        <div class="invite-context" data-invite-context>
+          <div class="invite-context-row"><span>ชื่อ-นามสกุล</span><strong data-invite-field="name">${acc?.fullName || "—"}</strong></div>
+          <div class="invite-context-row"><span>อีเมล</span><strong data-invite-field="email">${acc?.email || "—"}</strong></div>
+          <div class="invite-context-row"><span>สิทธิการใช้งาน</span><strong data-invite-field="role">${roleLabel}</strong></div>
+        </div>
+        <form class="login-form" id="invite-form" novalidate>
+          <label>
+            รหัสผ่านใหม่
+            <span class="password-field">
+              <input id="invite-password" type="password" autocomplete="new-password" placeholder="ตั้งรหัสผ่านเริ่มต้น" />
+              <button class="password-toggle" type="button" id="invite-password-toggle" aria-label="Show password" title="Show password"></button>
+            </span>
+            <span class="invite-field-error" id="invite-password-error" role="alert"></span>
+          </label>
+          <label>
+            ยืนยันรหัสผ่าน
+            <span class="password-field">
+              <input id="invite-password-confirm" type="password" autocomplete="new-password" placeholder="ยืนยันรหัสผ่านอีกครั้ง" />
+              <button class="password-toggle" type="button" id="invite-password-confirm-toggle" aria-label="Show password" title="Show password"></button>
+            </span>
+            <span class="invite-field-error" id="invite-password-confirm-error" role="alert"></span>
+          </label>
+          <ul class="invite-policy" id="invite-policy">
+            <li data-invite-rule="length">อย่างน้อย 12 ตัวอักษร</li>
+            <li data-invite-rule="upper">มีตัวพิมพ์ใหญ่ (A–Z)</li>
+            <li data-invite-rule="lower">มีตัวพิมพ์เล็ก (a–z)</li>
+            <li data-invite-rule="digit">มีตัวเลข (0–9)</li>
+            <li data-invite-rule="special">มีอักขระพิเศษ</li>
+          </ul>
+          <button class="btn primary" type="submit" id="invite-submit">ACTIVATE ACCOUNT</button>
+        </form>
+        <div class="auth-error" id="invite-error" role="alert"></div>
+        <p class="invite-hint">เข้าสู่ระบบทุกครั้งต้องยืนยัน Email OTP</p>
+      `;
+      document.querySelector("#invite-password-toggle").innerHTML = iconSvg.eye;
+      document.querySelector("#invite-password-confirm-toggle").innerHTML = iconSvg.eye;
+      updateInvitePasswordPolicy();
+      document.querySelector("#invite-password")?.focus();
+    }
+
+    function submitInviteActivation() {
+      if (inviteActivation.state !== "form" || inviteActivation.submitting) return;
+      const passwordInput = document.querySelector("#invite-password");
+      const confirmInput = document.querySelector("#invite-password-confirm");
+      const password = passwordInput ? passwordInput.value : "";
+      const confirm = confirmInput ? confirmInput.value : "";
+      const results = updateInvitePasswordPolicy();
+      const policyPass = ["length", "upper", "lower", "digit", "special"].every(key => results[key]);
+      // field-level validation — required/policy/mismatch ผูกกับ field ของตัวเอง
+      // #invite-error (form-level) สงวนไว้สำหรับ lifecycle/system error ที่ผูก field ไม่ได้เท่านั้น
+      const passwordError = !password
+        ? "กรุณากรอกรหัสผ่านใหม่"
+        : (!policyPass ? "รหัสผ่านยังไม่ตรงตามเงื่อนไข" : "");
+      const confirmError = !confirm
+        ? "กรุณายืนยันรหัสผ่าน"
+        : (policyPass && confirm !== password ? "รหัสผ่านไม่ตรงกัน" : "");
+      setInviteFieldError("invite-password", "invite-password-error", passwordError);
+      setInviteFieldError("invite-password-confirm", "invite-password-confirm-error", confirmError);
+      setInviteError("");
+      if (passwordError) {
+        passwordInput?.focus();
+        return;
+      }
+      if (confirmError) {
+        confirmInput?.focus();
+        return;
+      }
+      const submitBtn = document.querySelector("#invite-submit");
+      if (submitBtn) submitBtn.disabled = true;
+      const result = commitAdminInvitationActivation();
+      // เคลียร์ค่าออกจาก field ทันที — password ห้ามค้างใน DOM/state/diagnostics
+      if (passwordInput) passwordInput.value = "";
+      if (confirmInput) confirmInput.value = "";
+      if (!result.ok) {
+        inviteActivation.state = "invalid";
+        inviteActivation.failureCode = result.code;
+      } else {
+        inviteActivation.state = "success";
+      }
+      renderInviteScreen();
+    }
+
+    document.addEventListener("submit", event => {
+      if (event.target && event.target.id === "invite-form") {
+        event.preventDefault();
+        submitInviteActivation();
+      }
+    });
+    document.addEventListener("click", event => {
+      if (event.target.closest("[data-invite-exit]")) {
+        exitInviteMode();
+        return;
+      }
+      const toggle = event.target.closest("#invite-password-toggle, #invite-password-confirm-toggle");
+      if (toggle) {
+        const input = document.querySelector(toggle.id === "invite-password-toggle" ? "#invite-password" : "#invite-password-confirm");
+        if (!input) return;
+        const willShow = input.type === "password";
+        input.type = willShow ? "text" : "password";
+        toggle.innerHTML = willShow ? iconSvg.eyeOff : iconSvg.eye;
+        toggle.setAttribute("aria-label", willShow ? "Hide password" : "Show password");
+        toggle.setAttribute("title", willShow ? "Hide password" : "Show password");
+      }
+    });
+    document.addEventListener("input", event => {
+      if (event.target && (event.target.id === "invite-password" || event.target.id === "invite-password-confirm")) {
+        updateInvitePasswordPolicy();
+        // พิมพ์แก้ field ไหนเคลียร์ error ของ field นั้น — re-validate เต็มอีกครั้งตอน submit
+        setInviteFieldError(event.target.id, `${event.target.id}-error`, "");
+      }
+    });
 
     function renderAdminAccounts() {
       setPageActions(canManageAdminAccounts()
@@ -46493,12 +47097,41 @@
       setAuthState("");
       showAuthError("");
     });
+    // dev shortcut สำหรับ manual QA ของ recipient flow — ปรับ invitation state ของ ADM-008
+    // แล้วนำทางผ่าน #token= เส้นทางเดียวกับลิงก์จริง (hashchange → capture → strip → resolve)
+    document.querySelector("#invite-scenario").addEventListener("change", event => {
+      const scenario = event.target.value;
+      event.target.value = "";
+      if (!scenario) return;
+      if (scenario === "invalid") {
+        window.location.hash = "token=sim-token-invalid";
+        return;
+      }
+      applyAdminInvitationScenario("ADM-008", scenario === "valid" ? "pending" : scenario);
+      const inv = adminAccountData.invitations.find(i => i.id === "INV-00001");
+      const token = getAdminInvitationLinkToken(inv) || "sim-token-invalid";
+      window.location.hash = `token=${token}`;
+    });
 
     renderNav();
     updateAdminProfileFooter();
     renderModule("dashboard");
     window.setInterval(updateDashboardMeta, 60000);
-    showLoginForm();
+    // recipient activation route: bo-prototype.html#token=<opaque> — equivalent ของ /bo/accept-invitation#token=...
+    // capture token เข้า memory แล้ว strip fragment ออกจาก address bar/history ตาม §10.1
+    const initialInviteToken = getInviteTokenFromLocation();
+    if (initialInviteToken !== undefined) {
+      history.replaceState(null, "", window.location.pathname + window.location.search);
+      enterInviteMode(initialInviteToken);
+    } else {
+      showLoginForm();
+    }
+    window.addEventListener("hashchange", () => {
+      const inviteToken = getInviteTokenFromLocation();
+      if (inviteToken === undefined) return;
+      history.replaceState(null, "", window.location.pathname + window.location.search);
+      enterInviteMode(inviteToken);
+    });
   </script>
 </body>
 </html>
