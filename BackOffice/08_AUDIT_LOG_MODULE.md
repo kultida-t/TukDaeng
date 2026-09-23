@@ -1,8 +1,8 @@
 # 08 BO Audit Log Module
 
-**Version:** `BO-08-v0.2`  
-**Date:** 2026-09-16  
-**Status:** Screen layer synced with prototype (Audit Log Phase 1 — list/detail drawer/date range filter/cross-module jump)  
+**Version:** `BO-08-v0.4`<br>
+**Date:** 2026-09-23<br>
+**Status:** Screen layer synced with prototype (Audit Log Phase 1 — list/detail drawer/date range filter/cross-module jump) + audit catalog synced กับ BO Login baseline ตาม Change Mission `0a5b2b14`<br>
 **Platform:** Responsive Web Back Office
 
 ## UI Standards And Prototype Reference
@@ -17,8 +17,8 @@
 | --- | --- |
 | Module Name | BO Audit Log |
 | Platform | Responsive Web Back Office |
-| Version | `BO-08-v0.3` |
-| Status | Screen layer synced with prototype (Audit Log Phase 1) + Admin invitation lifecycle audit events cataloged |
+| Version | `BO-08-v0.4` |
+| Status | Screen layer synced with prototype (Audit Log Phase 1) + Admin invitation lifecycle audit events cataloged + Login OTP audit events removed ตาม BO Login baseline |
 | Owner | Product / UX / Engineering / Operations |
 | Document Type | Functional PRD |
 
@@ -130,7 +130,6 @@ Baseline entity types:
 
 - Admin login/logout
 - Failed login
-- Email OTP sent/verified/failed/resend
 - Account lockout
 - Admin create/update/disable
 - User suspend/unsuspend
@@ -307,7 +306,7 @@ Before/after JSON diff ต้อง wrap และ scroll ภายใน contai
 
 | Module | Integration |
 | --- | --- |
-| Auth / Admin Accounts | Login, Email OTP, session, admin lifecycle audit — Admin Detail > History & Actions มี audit ref link (`AUD-xxx`) กระโดดมา Audit Log กรองด้วย event id + toast |
+| Auth / Admin Accounts | Login, session, admin lifecycle audit — Admin Detail > History & Actions มี audit ref link (`AUD-xxx`) กระโดดมา Audit Log กรองด้วย event id + toast |
 | User Management | Suspend/ban/reset/archive audit |
 | Asset Management | Flag/remove/status/sensitive reveal audit |
 | Content / Board | Publish/archive/category/banner audit |

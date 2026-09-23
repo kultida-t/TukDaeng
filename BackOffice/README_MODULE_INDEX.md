@@ -57,7 +57,7 @@ Codex ต้องทำ 3 อย่าง:
 | No. | Module | Primary Purpose | Phase |
 | --- | --- | --- | --- |
 | 00 | `00_GLOBAL_RULES_MODULE.md` | Responsive layout, admin access, audit, status, privacy, timezone, FO sync และ destructive-action rules | 1 |
-| 01 | `01_AUTHENTICATION_MODULE.md` | Email/password login, Email OTP, sessions, one-time Admin invitation/activation และ admin account lifecycle | 1 |
+| 01 | `01_AUTHENTICATION_MODULE.md` | Email/password login, sessions, one-time Admin invitation/activation และ admin account lifecycle | 1 |
 | 02 | `02_DASHBOARD_MODULE.md` | Dashboard metrics, pending queues, SLA signals, activity feed และ policy-based overview | 1 |
 | 03 | `03_USER_MANAGEMENT_MODULE.md` | User list/detail, auth method, login history, report context, suspend/ban, reset password, FO impact | 1 |
 | 04 | `04_ASSET_MANAGEMENT_MODULE.md` | Asset list/detail, status visibility, reported assets, moderation, sensitive fields, FO sync | 1 |

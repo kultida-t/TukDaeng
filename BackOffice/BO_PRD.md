@@ -92,7 +92,6 @@ Directory Management is out of scope for Phase 1. FO directory menu entries are 
 ### Requirements
 
 - Admin login ด้วย Email/Password เท่านั้น
-- Admin must pass mandatory Email OTP verification after email/password
 - BO V1 does not use an external verification app for Admin login
 - Session หมดอายุเมื่อ idle 8 ชั่วโมง หรือ max 24 ชั่วโมง
 - Failed login เกิน 5 ครั้ง lock account 15 นาที
@@ -491,7 +490,6 @@ Reports ที่ต้องมี (เมื่อกลับมาทำใ�
 
 - HTTPS ทุก endpoint
 - JWT + Refresh Token
-- Email OTP verification สำหรับ BO Admin login
 - policy-based access control
 - Sensitive data masking
 - Audit log retention อย่างน้อย 1 ปี

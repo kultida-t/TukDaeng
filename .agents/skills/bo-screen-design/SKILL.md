@@ -89,7 +89,7 @@ Skill นี้เป็น **มาตรฐานกลางสำหรั�
 
 | ประเภท module | Source pattern ที่ใช้อ้างอิง |
 | --- | --- |
-| Auth screen (login, OTP, reset password) | Login |
+| Auth screen (login, reset password) | Login |
 | Dashboard-like / ภาพรวมระบบ | Dashboard |
 | List + detail (drill-in) | User Management, Asset Management |
 | Report queue + detail + action | Reported Users, Reported Assets, Reported Comments |
@@ -564,14 +564,13 @@ Login เป็นหน้าจอประเภทพิเศษที่�
 
 - **Desktop (>1180px)**: Split layout 2 คอลัมน์ — hero visual (ซ้าย, decorative `aria-hidden`) + form panel (ขวา, dark theme #07172a)
 - **≤1180px**: Single column — visual บน (clamp 170-250px) + panel ล่าง (content จำกัด 390px, center)
-- **≤760px**: Compact — visual ลดเหลือ clamp 150-210px, padding ลด, OTP actions เป็น 1 column
+- **≤760px**: Compact — visual ลดเหลือ clamp 150-210px, padding ลด
 
 ### ส่วนประกอบ
 
 - **Brand identity**: brand mark + name "Tuk Daeng" + label "Back Office"
 - **Title + copy**: ภาษาไทย อธิบายว่าหน้านี้สำหรับใคร
-- **Login form**: Email field, Password field พร้อม visibility toggle, "ลืมรหัสผ่าน?" link, primary button "Send Email OTP" (เต็มความกว้าง)
-- **OTP form**: 6 หลัก, countdown expiry (05:00), resend cooldown (60s), buttons: Back to login (ghost) / Resend / Verify OTP (primary)
+- **Login form**: Email field, Password field พร้อม visibility toggle, "ลืมรหัสผ่าน?" link, primary button "เข้าสู่ระบบ" (เต็มความกว้าง) — submit เข้าสู่ BO ทันทีเมื่อ credentials ถูกต้อง (ไม่มี OTP step)
 - **State/error**: auth-state (informational) + auth-error (`role="alert"`, ไม่เปิดเผย security detail เกินจำเป็น)
 
 ### มาตรฐานสำหรับหน้า auth ใหม่

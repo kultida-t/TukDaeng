@@ -1,8 +1,8 @@
 # 16 BO Admin Settings Module
 
-**Version:** `BO-16-v1.2`
-**Date:** 2026-09-20
-**Status:** Updated — Admin invitation lifecycle/security contract defined
+**Version:** `BO-16-v1.4`
+**Date:** 2026-09-23
+**Status:** Updated — Security Policy/My Account sync กับ BO Login baseline (Email + Password → BO) ตาม Change Mission `0a5b2b14`
 **Platform:** Responsive Web Back Office
 **Primary BO Sources:** `00_GLOBAL_RULES_MODULE.md`, `01_AUTHENTICATION_MODULE.md`, `08_AUDIT_LOG_MODULE.md`, `15_REPORTS_ANALYTICS_MODULE.md`
 
@@ -18,8 +18,8 @@
 | --- | --- |
 | Module Name | BO Admin Settings |
 | Platform | Responsive Web Back Office |
-| Version | `BO-16-v1.3` |
-| Status | Updated — Admin invitation lifecycle/security contract synced กับ accepted Mission 1 prototype/tests |
+| Version | `BO-16-v1.4` |
+| Status | Updated — Security Policy/My Account synced กับ BO Login baseline (Email + Password → BO) ตาม Change Mission `0a5b2b14`; Admin invitation lifecycle/security contract synced กับ accepted Mission 1 prototype/tests |
 | Owner | Product / UX / Engineering / Operations |
 | Document Type | Functional PRD |
 
@@ -39,7 +39,7 @@ Module นี้ต้องไม่เป็นทางลัดเพื่�
 - Roles & Permissions matrix
 - Permission change request / review workflow baseline
 - Security policy settings ที่แก้ได้ใน BO
-- Session / Email OTP / lockout policy display
+- Session / lockout policy display
 - IP whitelist configuration สำหรับ production
 - Export policy settings
 - Retention policy display/config baseline
@@ -108,7 +108,7 @@ Section เหล่านี้ยังคงเป็น policy/contract base
 | Section | สถานะ | Purpose | เงื่อนไขการเปิด |
 | --- | --- | --- | --- |
 | My Account (Section 7) | Future | ดู profile และเปลี่ยน password ของตัวเอง | ยังไม่อยู่ใน Phase 1 nav |
-| Security Policy (Section 10) | Deferred | Email OTP requirement, session timeout, lockout, IP whitelist | เอาออกจาก nav ตาม commit `20d705d`; รอ SET-DEC-002 |
+| Security Policy (Section 10) | Deferred | Session timeout, lockout, IP whitelist | เอาออกจาก nav ตาม commit `20d705d`; รอ SET-DEC-002 |
 | System Defaults (Section 11) | Future | Timezone, currency, language mode, pagination/export defaults | ยังไม่อยู่ใน Phase 1 nav |
 | Retention Policy (Section 12) | Deferred | Audit, chat/offer, report, export file, notification log retention | เอาออกจาก nav ตาม commit `20d705d`; รอ SET-DEC-003 |
 | Export Policy (Section 13) | Future | CSV/Excel, background job, file expiry, sensitive export controls | ยังไม่อยู่ใน Phase 1 nav |
@@ -126,12 +126,11 @@ Admin ทุก admin access ต้องเข้าถึง own settings ไ�
 | Email | Login identifier; เปลี่ยนไม่ได้จาก self-service ถ้า policy ไม่เปิด |
 | Admin access | Read-only |
 | Status | Read-only |
-| Email OTP requirement | Required for BO Admin login |
 | Last login | Read-only |
-| Change password | ต้อง re-auth และ audit |
+| Change password | ต้องยืนยัน current password ก่อน commit และ audit |
 | Active sessions | View / revoke own session ถ้า implementation รองรับ |
 
-Admin must pass mandatory Email OTP verification according to Auth baseline
+Admin login ใช้ Email + Password → BO ตาม Auth baseline ใน `01_AUTHENTICATION_MODULE.md` (ไม่มี Login OTP step)
 
 ## 8. Admin Accounts
 
@@ -144,7 +143,7 @@ Mock data reference: `adminAccountData.accounts` 10 records (ADM-001..ADM-010) �
 | Status | Meaning |
 | --- | --- |
 | `Invited` | สร้าง account แล้ว แต่ยังไม่ได้ตั้ง password (รอผู้รับยืนยันอีเมลและตั้ง password) |
-| `Active` | Login ได้ตาม admin access/Email OTP rule |
+| `Active` | Login ได้ด้วย email/password ตาม admin access rule |
 | `Locked` | ถูก lock จาก failed attempts หรือ security action (รอ unlock หรือครบ lockout 15 นาที) |
 | `Suspended` | ถูก disable โดย Admin (เข้าสู่ระบบไม่ได้ทันที, session ถูกยกเลิก) |
 | `Archived` | เอาออกจาก active use แต่ยังเก็บ audit history ตาม retention |
@@ -294,7 +293,7 @@ Pattern: `openAdminAccountInviteModal` คล้าย Option Master Add Option 
 - Role Template: required selector (8 standard role templates ตาม section 9.1)
 - Note / หมายเหตุ: ไม่บังคับ
 
-**Email OTP note** (`openAdminAccountInviteModal`): "ผู้รับต้องยืนยันตัวตนด้วย Email OTP ทุกครั้งที่เข้าสู่ระบบ"
+**Invite note** (`openAdminAccountInviteModal`): note ต้องไม่อ้างว่า Login ต้องใช้ Email OTP — copy ใน protected prototype ("ผู้รับต้องยืนยันตัวตนด้วย Email OTP ทุกครั้งที่เข้าสู่ระบบ") ถูก amend ใน CW-2 ของ Change Mission `0a5b2b14`
 
 **Confirm**: ปุ่ม "ส่งคำเชิญ" (primary tone) + สร้าง admin id ใหม่ (`nextAdminAccountId` — `ADM-xxx` ลำดับถัดไป) + บันทึก canonical audit event `ADMIN_INVITATION_CREATE` (`ensureAdminAccountInviteAuditEvent`) + re-render list
 
@@ -846,10 +845,6 @@ Phase ปัจจุบันรองรับ Create, Edit, Deactivate แล
 | --- | --- | --- |
 | Admin login method | Email/password only | No |
 | BO SSO | Not supported in V1 | No |
-| Mandatory Email OTP policy | Admin | Required for every BO Admin login after password validation |
-| OTP expiration | 5 minutes | Admin edit only if policy allows |
-| OTP resend cooldown | 60 seconds | Admin edit only if policy allows |
-| OTP attempt limit | 5 attempts | Admin edit only if policy allows |
 | Idle timeout | 8 hours | Admin edit only if policy allows |
 | Max session | 24 hours | Admin edit only if policy allows |
 | Failed login limit | 5 attempts | Admin edit only if policy allows |
@@ -1071,7 +1066,6 @@ Audit log ต้องบันทึกอย่างน้อย:
 - `ADMIN_ACCOUNT_REACTIVATE`
 - `ADMIN_ACCOUNT_UNLOCK`
 - `ADMIN_ACCOUNT_ARCHIVE`
-- `ADMIN_EMAIL_OTP_POLICY_UPDATE`
 - `ROLE_PERMISSION_UPDATE`
 - `ROLE_DEACTIVATE`
 - `ROLE_REACTIVATE`
@@ -1131,7 +1125,7 @@ Sensitive settings value ต้อง mask ใน audit payload ถ้าเป�
 | AC-BO-SET-002 | Admin จัดการ admin account lifecycle ได้โดยไม่กระทบ Admin คนสุดท้าย |
 | AC-BO-SET-003 | Roles & Permissions policy กำหนด 8 standard role templates (Super Admin, Admin Manager, Operations Manager, Support Agent, Trust & Safety Moderator, Asset Operations, Content Editor, Content Publisher), canonical taxonomy/levels, baseline matrix และ Phase 1 permission action catalog; Role Detail แสดงเฉพาะ granted action names ส่วน enforcement ใช้ explicit key ทั้ง UI/API/service และห้ามลบ/เปลี่ยน system role identity |
 | AC-BO-SET-004 | Permission/security/system/retention/export setting changes ต้องมี confirmation, reason และ audit |
-| AC-BO-SET-005 | Security policy ต้องสอดคล้องกับ Auth baseline: email/password only, Email OTP mandatory สำหรับ Admin, idle 8h, max 24h, failed login 5 ครั้ง, lockout 15 นาที |
+| AC-BO-SET-005 | Security policy ต้องสอดคล้องกับ Auth baseline: email/password only, idle 8h, max 24h, failed login 5 ครั้ง, lockout 15 นาที |
 | AC-BO-SET-006 | Retention settings ต้องไม่อนุญาต manual delete audit logs จาก UI ปกติ |
 | AC-BO-SET-007 | Export policy ต้องรองรับ background job, expiry, sensitive export audit และ policy-based scope |
 | AC-BO-SET-008 | Feature flags ต้องแสดง FO/BO impact และ audit ทุกครั้ง |
@@ -1147,7 +1141,7 @@ Sensitive settings value ต้อง mask ใน audit payload ถ้าเป�
 | AC-BO-SET-018 | Audit link (`AUD-xxxxx`) ใน History & Actions คลิกได้และเปิด Audit Log กรองด้วย event id + toast ตาม AC-BO-AUDIT-015 โดยไม่เปิด detail drawer อัตโนมัติ; Delivery link (`DLV-ACCT-<admin-sequence>-INV-<attempt-sequence>`) เปิด Delivery Log detail ตาม permission; รายการที่ไม่มี audit/delivery แสดง `—` |
 | AC-BO-SET-019 | Action modals Suspend/Reactivate/Unlock/Archive บังคับเลือก reason (4 reasons ต่อ action) แสดง impact note ตาม action และใช้ confirm tone ที่ถูกต้อง (suspend=danger, reactivate/unlock=primary, archive=warning) พร้อม success toast และ audit event |
 | AC-BO-SET-020 | Change Role modal แสดง role ปัจจุบัน disabled, เลือก role ใหม่ยกเว้น role เดิม, บังคับ reason, แสดง permission diff live update, ตรวจ critical role-change safeguards ก่อนยืนยัน และบันทึก audit `ADMIN_ACCOUNT_ROLE_CHANGE` |
-| AC-BO-SET-021 | Invite Admin modal ตรวจอีเมล unique, บังคับเลือก role template จาก 8 standard role templates, แสดง Email OTP note และบันทึก canonical audit `ADMIN_INVITATION_CREATE` (`ADMIN_ACCOUNT_INVITE` เป็น legacy alias เท่านั้น) พร้อมสร้าง admin id ใหม่ (`ADM-xxx` ลำดับถัดไป) |
+| AC-BO-SET-021 | Invite Admin modal ตรวจอีเมล unique, บังคับเลือก role template จาก 8 standard role templates, แสดง invite note ที่ไม่อ้าง Login OTP requirement และบันทึก canonical audit `ADMIN_INVITATION_CREATE` (`ADMIN_ACCOUNT_INVITE` เป็น legacy alias เท่านั้น) พร้อมสร้าง admin id ใหม่ (`ADM-xxx` ลำดับถัดไป) |
 | AC-BO-SET-022 | Permission gating ตาม `canSuspendAdmin`/`canReactivateAdmin`/`canUnlockAdmin`/`canArchiveAdmin`/`canChangeRoleAdmin` — action ที่ไม่อนุญาตต้องไม่ปรากฏใน DOM ทั้งใน row menu และ detail action buttons |
 | AC-BO-SET-023 | Master admin หลัก (ADM-010) ห้าม suspend/archive/change role; self ห้าม suspend/reactivate/unlock/archive/change role ตัวเอง; ถ้า active admin เหลือ 1 คน ห้าม suspend (ป้องกันระบบไม่มีผู้ดูแล) |
 | AC-BO-SET-024 | Production Role assignment/change ที่ทำให้ไม่มี active `Super Admin`, ไม่มี account ที่จัดการ role ได้, ไม่มี admin recovery coverage, assign Custom Role ที่ inactive/invalid, หรือเปลี่ยน role ตัวเอง/master admin ต้องถูก block ที่ API/service และ UI เมื่อมี surface นั้น พร้อม policy-blocked state และ audit result ตาม policy; current protected Admin Accounts UI ยังรองรับเฉพาะ 8 System Roles |

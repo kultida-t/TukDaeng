@@ -432,7 +432,7 @@
     #invite-screen .auth-error { margin: 0 0 16px; }
     /* form-level error อยู่ใต้ CTA — separation ชัดเจน (ID selector ชนะ rule .auth-error ด้านบน) */
     #invite-screen #invite-error { margin: 16px 0 0; }
-    /* AIL-009: safe recovery actions — grid เดียวกับ context panel; ghost ใช้โทน .otp-actions .btn.ghost บน dark panel */
+    /* AIL-009: safe recovery actions — grid เดียวกับ context panel; ghost ใช้โทนปุ่ม ghost บน dark auth panel */
     .invite-recovery-actions {
       max-width: 360px;
       display: grid;
@@ -465,27 +465,6 @@
     #invite-screen input[aria-invalid="true"] {
       border-color: rgba(255, 139, 149, .72);
       box-shadow: 0 0 0 3px rgba(214, 0, 18, .18);
-    }
-    .otp-actions {
-      display: grid;
-      grid-template-columns: 1.05fr 1fr 1fr;
-      gap: 8px;
-    }
-    .otp-actions .btn {
-      justify-content: center;
-      text-align: center;
-      min-width: 0;
-      white-space: nowrap;
-    }
-    .otp-actions .btn.ghost {
-      color: #dbe8ff;
-      border-color: rgba(219, 232, 255, .78);
-      background: transparent;
-    }
-    .otp-actions .btn.ghost:hover {
-      color: #fff;
-      border-color: #fff;
-      background: rgba(255, 255, 255, .08);
     }
     .btn:disabled {
       cursor: not-allowed;
@@ -13058,10 +13037,6 @@
         max-width: none;
         margin-top: 18px;
       }
-      .otp-actions { grid-template-columns: 1fr; }
-      #verify-otp-btn { order: 1; }
-      #resend-otp-btn { order: 2; }
-      #back-login-btn { order: 3; }
       .topbar { display: grid; }
       .page-title-row {
         align-items: center;
@@ -17238,22 +17213,7 @@
         <div class="login-meta">
           <button class="forgot-link" type="button" id="forgot-password-btn">ลืมรหัสผ่าน?</button>
         </div>
-        <button class="btn primary" type="submit">Send Email OTP</button>
-      </form>
-      <form class="login-form hidden" id="otp-form">
-        <label>
-          Email OTP
-          <input id="otp-code" type="text" value="123456" inputmode="numeric" maxlength="6" autocomplete="one-time-code" />
-        </label>
-        <div class="login-meta">
-          <span id="otp-destination">Sent to current.admin@tukdaeng.example</span>
-          <span id="otp-expiry">Expires in 05:00</span>
-        </div>
-        <div class="otp-actions">
-          <button class="btn ghost" type="button" id="back-login-btn">← Back to login</button>
-          <button class="btn" type="button" id="resend-otp-btn" disabled>Resend in 60s</button>
-          <button class="btn primary" type="submit" id="verify-otp-btn">Verify OTP</button>
-        </div>
+        <button class="btn primary" type="submit">เข้าสู่ระบบ</button>
       </form>
       <div class="auth-state" id="auth-state"></div>
       <div class="auth-error" id="auth-error" role="alert"></div>
@@ -17262,10 +17222,7 @@
         <label>
           Test flow
           <select id="auth-scenario">
-            <option value="success">Email OTP success</option>
-            <option value="invalid">Invalid OTP then retry</option>
-            <option value="expired">Expired OTP then resend</option>
-            <option value="delivery">Email delivery failed then retry</option>
+            <option value="success">Email + Password success</option>
             <option value="bad-password">Invalid credentials</option>
           </select>
         </label>
@@ -17607,7 +17564,6 @@
       // moduleData.notifications ทิ้ง (ไม่มี link/โค้ดอ้าง module: "notifications" อีก)
       settings: mod("Settings", "เครื่องมือ & รายงาน / Settings", "Admin Settings", "ตั้งค่า admin account, permission policy, security, retention/export, delivery logs และ feature flags", "บันทึก policy", [["Admin Accounts", "6", "ใช้ account type Admin"], ["Policies", "34", "module/action"], ["Failed Delivery", "92", "retry pending"], ["Feature Flags", "7", "2 enabled"]], [
         item("POL-USER-EXPORT", "User CSV Export", "Permission", "Policy", "สูง", "Enabled", "ต้อง mask PII และมี audit event", ["Sensitive"], "เปลี่ยน policy ต้องมี reason"),
-        item("SEC-EMAIL-OTP", "Mandatory Email OTP", "Security", "Auth", "สูง", "Enabled", "Admin ทุกบัญชีต้อง verify Email OTP หลังผ่าน password", ["No bypass"], "ล็อกตาม baseline"),
         item("RET-AUDIT", "Audit retention", "Retention", "System", "กลาง", "365 days", "เก็บ audit อย่างน้อย 1 ปี", ["Export policy"], "แก้ค่าต้อง approval"),
         // AIL-007: Admin Invitation lifecycle email delivery logs — ตรงกับ invitation record (INV-00001 / ADM-008)
         item("DLV-ACCT-008-INV-001", "Admin invitation email", "INV-00001 / ADM-008", "Delivery", "สูง", "Sent", "ส่งคำเชิญและลิงก์ตั้งรหัสผ่านให้ ADM-008 (na***@tukdaeng.example) ภายใน 72 ชม.", ["Email", "AdminInvitation", "Lifecycle", "Audit linked"], "ลิงก์ใช้งานได้ครั้งเดียวภายใน 72 ชม. · Audit linked AUD-88203"),
@@ -18517,16 +18473,16 @@
     // audit event type ตาม section 19: ADMIN_ACCOUNT_INVITE / ADMIN_ACCOUNT_SUSPEND / ADMIN_ACCOUNT_REACTIVATE / ADMIN_ACCOUNT_UNLOCK / ADMIN_ACCOUNT_ARCHIVE
     const adminAccountData = {
       accounts: [
-        { id: "ADM-001", fullName: "สมชาย บริหาร", email: "somchai@tukdaeng.example", role: "Super Admin", status: "Active", authMethod: "Email OTP", lastLogin: "08 Sep 2026 14:22", lastLoginRank: 202609081422, createdAt: "01 Jan 2026 09:00", createdAtRank: 202601010900, lastAction: "Force Hide Asset (AST-8831)", isSelf: false, isLastActive: false },
-        { id: "ADM-002", fullName: "อรนุช แก้วใส", email: "ornnuch@tukdaeng.example", role: "Operations Manager", status: "Active", authMethod: "Email OTP", lastLogin: "08 Sep 2026 11:05", lastLoginRank: 202609081105, createdAt: "15 Jan 2026 10:30", createdAtRank: 202601151030, lastAction: "ปฏิเสธคืนบัญชี (DEL-028)", isSelf: false, isLastActive: false },
-        { id: "ADM-003", fullName: "มะลิ จันทร์ดี", email: "mali@tukdaeng.example", role: "Trust & Safety Moderator", status: "Active", authMethod: "Email OTP", lastLogin: "07 Sep 2026 16:45", lastLoginRank: 202609071645, createdAt: "10 Feb 2026 13:00", createdAtRank: 202602101300, lastAction: "คืนบัญชี (DEL-031)", isSelf: false, isLastActive: false },
-        { id: "ADM-004", fullName: "กิตติ เนื้อหา", email: "kitti@tukdaeng.example", role: "Content Publisher", status: "Active", authMethod: "Email OTP", lastLogin: "06 Sep 2026 09:00", lastLoginRank: 202609060900, createdAt: "20 Feb 2026 08:15", createdAtRank: 202602200815, lastAction: "ปิดรายงานไม่พบการละเมิด (RCO-690)", isSelf: false, isLastActive: false },
-        { id: "ADM-005", fullName: "Orn Admin", email: "orn@tukdaeng.example", role: "Content Editor", status: "Active", authMethod: "Email OTP", lastLogin: "07 Sep 2026 16:30", lastLoginRank: 202609071630, createdAt: "05 Mar 2026 11:00", createdAtRank: 202603051100, lastAction: "Publish Article (ART-044)", isSelf: false, isLastActive: false },
-        { id: "ADM-006", fullName: "พิมพ์ใจ สายด่วน", email: "pim@tukdaeng.example", role: "Support Agent", status: "Suspended", authMethod: "Email OTP", lastLogin: "20 Aug 2026 10:00", lastLoginRank: 202608201000, createdAt: "01 Apr 2026 09:00", createdAtRank: 202604010900, lastAction: "Suspended โดย Super Admin — ตรวจสอบการเข้าถึงข้อมูลผู้ใช้นอก scope", isSelf: false, isLastActive: false },
-        { id: "ADM-007", fullName: "วิชัย รองผู้จัดการ", email: "wichai@tukdaeng.example", role: "Asset Operations", status: "Locked", authMethod: "Email OTP", lastLogin: "02 Sep 2026 08:30", lastLoginRank: 202609020830, createdAt: "12 Apr 2026 14:00", createdAtRank: 202604121400, lastAction: "Locked จาก failed login 5 ครั้ง — รอ unlock หรือครบ 15 นาที", isSelf: false, isLastActive: false },
-        { id: "ADM-008", fullName: "นัฐพล พัฒนา", email: "nattapol@tukdaeng.example", role: "Admin Manager", roleId: "ROL-002", roleRevision: 202601010900, status: "Invited", revision: 1, invitationId: "INV-00001", authMethod: "Email OTP", lastLogin: "—", lastLoginRank: 0, createdAt: "08 Sep 2026 16:00", createdAtRank: 202609081600, lastAction: "Invited — รอผู้รับยืนยันอีเมลและตั้ง password", isSelf: false, isLastActive: false },
-        { id: "ADM-009", fullName: "อดิศร เก่าก่อน", email: "adisorn@tukdaeng.example", role: "Content Editor", status: "Archived", authMethod: "Email OTP", lastLogin: "15 Jun 2026 11:00", lastLoginRank: 202606151100, createdAt: "10 May 2025 09:00", createdAtRank: 202505100900, lastAction: "Archived — ออกจากทีม เก็บ audit history ตาม retention", isSelf: false, isLastActive: false },
-        { id: "ADM-010", fullName: "ผู้ดูแลระบบ", email: "current.admin@tukdaeng.example", role: "Super Admin", status: "Active", authMethod: "Email OTP", lastLogin: "08 Sep 2026 15:00", lastLoginRank: 202609081500, createdAt: "01 Jan 2026 09:00", createdAtRank: 202601010900, lastAction: "เข้าสู่ระบบ Settings > Admin Accounts", isSelf: true, isLastActive: true, isMaster: true }
+        { id: "ADM-001", fullName: "สมชาย บริหาร", email: "somchai@tukdaeng.example", role: "Super Admin", status: "Active", authMethod: "Email + Password", lastLogin: "08 Sep 2026 14:22", lastLoginRank: 202609081422, createdAt: "01 Jan 2026 09:00", createdAtRank: 202601010900, lastAction: "Force Hide Asset (AST-8831)", isSelf: false, isLastActive: false },
+        { id: "ADM-002", fullName: "อรนุช แก้วใส", email: "ornnuch@tukdaeng.example", role: "Operations Manager", status: "Active", authMethod: "Email + Password", lastLogin: "08 Sep 2026 11:05", lastLoginRank: 202609081105, createdAt: "15 Jan 2026 10:30", createdAtRank: 202601151030, lastAction: "ปฏิเสธคืนบัญชี (DEL-028)", isSelf: false, isLastActive: false },
+        { id: "ADM-003", fullName: "มะลิ จันทร์ดี", email: "mali@tukdaeng.example", role: "Trust & Safety Moderator", status: "Active", authMethod: "Email + Password", lastLogin: "07 Sep 2026 16:45", lastLoginRank: 202609071645, createdAt: "10 Feb 2026 13:00", createdAtRank: 202602101300, lastAction: "คืนบัญชี (DEL-031)", isSelf: false, isLastActive: false },
+        { id: "ADM-004", fullName: "กิตติ เนื้อหา", email: "kitti@tukdaeng.example", role: "Content Publisher", status: "Active", authMethod: "Email + Password", lastLogin: "06 Sep 2026 09:00", lastLoginRank: 202609060900, createdAt: "20 Feb 2026 08:15", createdAtRank: 202602200815, lastAction: "ปิดรายงานไม่พบการละเมิด (RCO-690)", isSelf: false, isLastActive: false },
+        { id: "ADM-005", fullName: "Orn Admin", email: "orn@tukdaeng.example", role: "Content Editor", status: "Active", authMethod: "Email + Password", lastLogin: "07 Sep 2026 16:30", lastLoginRank: 202609071630, createdAt: "05 Mar 2026 11:00", createdAtRank: 202603051100, lastAction: "Publish Article (ART-044)", isSelf: false, isLastActive: false },
+        { id: "ADM-006", fullName: "พิมพ์ใจ สายด่วน", email: "pim@tukdaeng.example", role: "Support Agent", status: "Suspended", authMethod: "Email + Password", lastLogin: "20 Aug 2026 10:00", lastLoginRank: 202608201000, createdAt: "01 Apr 2026 09:00", createdAtRank: 202604010900, lastAction: "Suspended โดย Super Admin — ตรวจสอบการเข้าถึงข้อมูลผู้ใช้นอก scope", isSelf: false, isLastActive: false },
+        { id: "ADM-007", fullName: "วิชัย รองผู้จัดการ", email: "wichai@tukdaeng.example", role: "Asset Operations", status: "Locked", authMethod: "Email + Password", lastLogin: "02 Sep 2026 08:30", lastLoginRank: 202609020830, createdAt: "12 Apr 2026 14:00", createdAtRank: 202604121400, lastAction: "Locked จาก failed login 5 ครั้ง — รอ unlock หรือครบ 15 นาที", isSelf: false, isLastActive: false },
+        { id: "ADM-008", fullName: "นัฐพล พัฒนา", email: "nattapol@tukdaeng.example", role: "Admin Manager", roleId: "ROL-002", roleRevision: 202601010900, status: "Invited", revision: 1, invitationId: "INV-00001", authMethod: "Email + Password", lastLogin: "—", lastLoginRank: 0, createdAt: "08 Sep 2026 16:00", createdAtRank: 202609081600, lastAction: "Invited — รอผู้รับยืนยันอีเมลและตั้ง password", isSelf: false, isLastActive: false },
+        { id: "ADM-009", fullName: "อดิศร เก่าก่อน", email: "adisorn@tukdaeng.example", role: "Content Editor", status: "Archived", authMethod: "Email + Password", lastLogin: "15 Jun 2026 11:00", lastLoginRank: 202606151100, createdAt: "10 May 2025 09:00", createdAtRank: 202505100900, lastAction: "Archived — ออกจากทีม เก็บ audit history ตาม retention", isSelf: false, isLastActive: false },
+        { id: "ADM-010", fullName: "ผู้ดูแลระบบ", email: "current.admin@tukdaeng.example", role: "Super Admin", status: "Active", authMethod: "Email + Password", lastLogin: "08 Sep 2026 15:00", lastLoginRank: 202609081500, createdAt: "01 Jan 2026 09:00", createdAtRank: 202601010900, lastAction: "เข้าสู่ระบบ Settings > Admin Accounts", isSelf: true, isLastActive: true, isMaster: true }
       ],
       invitations: [
         {
@@ -25669,7 +25625,7 @@
         copy: "ลิงก์คำเชิญนี้ถูกใช้งานแล้ว",
         message: "บัญชีนี้เปิดใช้งานเรียบร้อยแล้ว",
         action: "GO TO LOGIN",
-        hint: "สามารถเข้าสู่ระบบและยืนยัน Email OTP ได้ตามปกติ"
+        hint: "สามารถเข้าสู่ระบบด้วยอีเมลและรหัสผ่านได้ตามปกติ"
       },
       cancelled: {
         codes: ["cancelled"],
@@ -26011,7 +25967,7 @@
           <h1 class="login-title">ACCOUNT ACTIVATED</h1>
           <p class="login-copy">เปิดใช้งานบัญชีเรียบร้อยแล้ว</p>
           <button class="btn primary" type="button" data-invite-exit>GO TO LOGIN</button>
-          <p class="invite-hint">กลับไปเข้าสู่ระบบเพื่อใช้งาน โดยต้องยืนยัน Email OTP ทุกครั้งที่เข้าสู่ระบบ</p>
+          <p class="invite-hint">กลับไปเข้าสู่ระบบเพื่อใช้งาน โดยใช้อีเมลและรหัสผ่านที่ตั้งไว้</p>
         `;
         container.querySelector("[data-invite-exit]")?.focus();
         return;
@@ -26055,7 +26011,7 @@
           <button class="btn primary" type="submit" id="invite-submit">ACTIVATE ACCOUNT</button>
         </form>
         <div class="auth-error" id="invite-error" role="alert"></div>
-        <p class="invite-hint">เข้าสู่ระบบทุกครั้งต้องยืนยัน Email OTP</p>
+        <p class="invite-hint">เข้าสู่ระบบด้วยอีเมลและรหัสผ่านที่ตั้งไว้</p>
       `;
       document.querySelector("#invite-password-toggle").innerHTML = iconSvg.eye;
       document.querySelector("#invite-password-confirm-toggle").innerHTML = iconSvg.eye;
@@ -26782,7 +26738,7 @@
               </div>
             </section>
             <div class="module-note user-action-impact user-action-impact-card user-action-impact-notice">
-              <p><strong>หมายเหตุ:</strong> ผู้รับต้องยืนยันตัวตนด้วย Email OTP ทุกครั้งที่เข้าสู่ระบบ</p>
+              <p><strong>หมายเหตุ:</strong> ผู้รับยืนยันตัวตนผ่านลิงก์คำเชิญและเข้าสู่ระบบด้วยอีเมลและรหัสผ่านที่ตั้งไว้</p>
             </div>
             <div class="user-detail-actions">
               <button class="user-detail-action-btn" type="button" data-user-action-modal-close>ยกเลิก</button>
@@ -26873,14 +26829,14 @@
           `คุณได้รับเชิญให้เข้าร่วมปฏิบัติงานในระบบ TukDaeng Back Office ในตำแหน่ง ${roleName}`,
           `กรุณากดลิงก์ด้านล่างเพื่อยืนยันตัวตนและตั้งรหัสผ่านเริ่มต้นภายใน 72 ชั่วโมง (ลิงก์ใช้งานได้ครั้งเดียว):`,
           `https://bo.tukdaeng.example/auth/activate?invitation=${invitationId}&token=***`,
-          "หมายเหตุความปลอดภัย: หลังจากตั้งรหัสผ่านแล้ว คุณจะต้องยืนยันตัวตนด้วย Email OTP ทุกครั้งที่เข้าสู่ระบบ",
+          "หมายเหตุความปลอดภัย: หลังจากตั้งรหัสผ่านแล้ว คุณสามารถเข้าสู่ระบบด้วยอีเมลและรหัสผ่านของคุณ",
           "หากลิงก์หมดอายุ หรือมีปัญหาในการเข้าใช้งาน กรุณาติดต่อผู้ดูแลระบบหรือ support@tukdaeng.example",
           "---",
           `Dear ${recipientName},`,
           `You have been invited to join TukDaeng Back Office as ${roleName}.`,
           `Please use the one-time link below to verify your identity and set your initial password within 72 hours:`,
           `https://bo.tukdaeng.example/auth/activate?invitation=${invitationId}&token=***`,
-          "Security note: Email OTP verification will be required for every sign-in after your initial password setup.",
+          "Security note: You can sign in with your email and password after your initial password setup.",
           "If this link expires or you require assistance, please contact your administrator or support@tukdaeng.example."
         ]
       };
@@ -27264,7 +27220,7 @@
         email: email,
         role: role,
         status: "Invited",
-        authMethod: "Email OTP",
+        authMethod: "Email + Password",
         lastLogin: "—",
         lastLoginRank: 0,
         createdAt: now,
@@ -46160,17 +46116,7 @@
       admin: {
         username: "ผู้ดูแลระบบ",
         role: "Super Admin"
-      },
-      expectedOtp: "123456",
-      attempts: 0,
-      deliveryRetried: false,
-      expiredResent: false,
-      resendCooldown: 60,
-      resendReady: false,
-      resendTimer: null,
-      otpRemaining: 300,
-      otpTimer: null,
-      otpExpired: false
+      }
     };
 
     function getAdminInitials(username) {
@@ -46199,97 +46145,16 @@
 
     function showLoginForm() {
       document.querySelector("#login-form").classList.remove("hidden");
-      document.querySelector("#otp-form").classList.add("hidden");
       document.querySelector("#auth-title").textContent = "Admin Login";
-      if (auth.resendTimer) window.clearInterval(auth.resendTimer);
-      if (auth.otpTimer) window.clearInterval(auth.otpTimer);
       setAuthState("");
       showAuthError("");
     }
 
-    function showOtpForm(message) {
-      document.querySelector("#login-form").classList.add("hidden");
-      document.querySelector("#otp-form").classList.remove("hidden");
-      document.querySelector("#auth-title").textContent = "Email OTP Verification";
-      document.querySelector("#otp-destination").textContent = `Sent to ${auth.email}`;
-      document.querySelector("#verify-otp-btn").disabled = false;
-      auth.otpExpired = false;
-      startOtpTimer();
-      setResendCooldown();
-      setAuthState(message || "");
-      showAuthError("");
-      document.querySelector("#otp-code").focus();
-    }
-
-    function formatOtpTime(seconds) {
-      const minutes = Math.floor(seconds / 60).toString().padStart(2, "0");
-      const remainingSeconds = (seconds % 60).toString().padStart(2, "0");
-      return `${minutes}:${remainingSeconds}`;
-    }
-
-    function startOtpTimer() {
-      if (auth.otpTimer) window.clearInterval(auth.otpTimer);
-      auth.otpRemaining = 300;
-      document.querySelector("#otp-expiry").textContent = `Expires in ${formatOtpTime(auth.otpRemaining)}`;
-      auth.otpTimer = window.setInterval(() => {
-        auth.otpRemaining -= 1;
-        if (auth.otpRemaining <= 0) {
-          expireOtp();
-          return;
-        }
-        document.querySelector("#otp-expiry").textContent = `Expires in ${formatOtpTime(auth.otpRemaining)}`;
-      }, 1000);
-    }
-
-    function expireOtp() {
-      if (auth.otpTimer) window.clearInterval(auth.otpTimer);
-      auth.otpTimer = null;
-      auth.otpRemaining = 0;
-      auth.otpExpired = true;
-      document.querySelector("#otp-expiry").textContent = "Expired";
-      document.querySelector("#verify-otp-btn").disabled = true;
-      enableResend();
-      showAuthError("Code expired. Request a new Email OTP before verifying.");
-    }
-
-    function setResendCooldown() {
-      if (auth.resendTimer) window.clearInterval(auth.resendTimer);
-      auth.resendReady = false;
-      auth.resendCooldown = 60;
-      const resendButton = document.querySelector("#resend-otp-btn");
-      resendButton.disabled = true;
-      resendButton.textContent = "Resend in 60s";
-      auth.resendTimer = window.setInterval(() => {
-        auth.resendCooldown -= 1;
-        if (auth.resendCooldown <= 0) {
-          window.clearInterval(auth.resendTimer);
-          auth.resendTimer = null;
-          enableResend();
-          return;
-        }
-        resendButton.textContent = `Resend in ${auth.resendCooldown}s`;
-      }, 1000);
-    }
-
-    function enableResend() {
-      if (auth.resendTimer) window.clearInterval(auth.resendTimer);
-      auth.resendTimer = null;
-      auth.resendReady = true;
-      auth.resendCooldown = 0;
-      const resendButton = document.querySelector("#resend-otp-btn");
-      resendButton.disabled = false;
-      resendButton.textContent = "Resend OTP";
-    }
-
-    function sendOtpChallenge() {
+    function submitLogin() {
       auth.email = document.querySelector("#login-email").value.trim() || "current.admin@tukdaeng.example";
       auth.admin.username = "ผู้ดูแลระบบ";
       auth.admin.role = "Super Admin";
       auth.scenario = document.querySelector("#auth-scenario").value;
-      auth.attempts = 0;
-      auth.deliveryRetried = false;
-      auth.expiredResent = false;
-      auth.expectedOtp = "123456";
 
       if (auth.scenario === "bad-password") {
         showAuthError("Invalid credentials. The system does not reveal whether email or password is incorrect.");
@@ -46297,31 +46162,10 @@
         return;
       }
 
-      if (auth.scenario === "delivery") {
-        document.querySelector("#login-form").classList.add("hidden");
-        document.querySelector("#otp-form").classList.remove("hidden");
-        document.querySelector("#auth-title").textContent = "Email Delivery Failed";
-        document.querySelector("#otp-code").value = "";
-        document.querySelector("#otp-destination").textContent = `Could not send to ${auth.email}`;
-        document.querySelector("#otp-expiry").textContent = "Retry required";
-        document.querySelector("#verify-otp-btn").disabled = true;
-        if (auth.otpTimer) window.clearInterval(auth.otpTimer);
-        auth.otpTimer = null;
-        enableResend();
-        setAuthState("");
-        showAuthError("Email OTP could not be delivered. Retry send or contact another Admin if the problem continues.");
-        return;
-      }
-
-      document.querySelector("#otp-code").value = auth.scenario === "invalid" ? "000000" : "123456";
-      showOtpForm("");
+      completeLogin();
     }
 
     function completeLogin() {
-      if (auth.resendTimer) window.clearInterval(auth.resendTimer);
-      if (auth.otpTimer) window.clearInterval(auth.otpTimer);
-      auth.resendTimer = null;
-      auth.otpTimer = null;
       document.body.classList.remove("logged-out");
       showAuthError("");
       setAuthState("");
@@ -46329,39 +46173,6 @@
       resetSessionViewState();
       renderModule("dashboard");
       scrollMainToTop();
-    }
-
-    function verifyOtp() {
-      const code = document.querySelector("#otp-code").value.trim();
-      auth.attempts += 1;
-
-      if (auth.otpExpired) {
-        showAuthError("Code expired. Request a new Email OTP before verifying.");
-        return;
-      }
-
-      if (auth.scenario === "expired" && !auth.expiredResent) {
-        setAuthState("");
-        expireOtp();
-        return;
-      }
-
-      if (code !== auth.expectedOtp) {
-        showAuthError(auth.attempts >= 5 ? "Too many incorrect OTP attempts. Start login again." : "Invalid OTP code. Try again or resend a new code.");
-        setAuthState("");
-        return;
-      }
-
-      completeLogin();
-    }
-
-    function resendOtp() {
-      auth.expectedOtp = auth.scenario === "expired" ? "654321" : "123456";
-      auth.expiredResent = true;
-      auth.deliveryRetried = true;
-      auth.attempts = 0;
-      document.querySelector("#otp-code").value = auth.expectedOtp;
-      showOtpForm("");
     }
 
     let activeArticlePickerInput = null;
@@ -47176,14 +46987,8 @@
     });
     document.querySelector("#login-form").addEventListener("submit", event => {
       event.preventDefault();
-      sendOtpChallenge();
+      submitLogin();
     });
-    document.querySelector("#otp-form").addEventListener("submit", event => {
-      event.preventDefault();
-      verifyOtp();
-    });
-    document.querySelector("#back-login-btn").addEventListener("click", showLoginForm);
-    document.querySelector("#resend-otp-btn").addEventListener("click", resendOtp);
     document.querySelector("#forgot-password-btn").addEventListener("click", () => {
       showAuthError("");
       setAuthState("");
