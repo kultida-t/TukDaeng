@@ -50,6 +50,17 @@ Workflow สำหรับ **วางแผนการทำงานรา�
 - ประเมินเวลาตามเวลา AI ทำงานเป็นหลัก รวมเวลา AI วิเคราะห์ สร้าง แก้ และตรวจรับตามขอบเขตงาน
 - ใช้ copy block เฉพาะ Mission Plan, Mission Plan Summary, Session Handoff, Work Summary และ Task Summary ที่ผู้ใช้ต้องนำไปวางระบบอื่น; คำตอบคุยงานทั่วไปตอบตามปกติ
 
+### กฎการตั้งชื่อ Objective และ Feature (Naming Rules — บังคับ)
+
+- **ชื่อ Objective/Feature คือ label ไม่ใช่ description** — ต้องสั้น กระชับ อ่านแล้วรู้ว่าเป็น work area / capability / outcome area อะไร และเหมาะกับการแสดงใน Mission Plan, Kanban และ Work Log
+- **ห้ามยัดเนื้อหาเชิงอธิบายลงในชื่อ** — ห้ามใส่ scope, behavior list, business rules, validation, implementation details, technical steps, Acceptance Criteria, Definition of Done, dependencies หรือ security rules ในชื่อ Objective/Feature; เนื้อหาเหล่านั้นต้องอยู่ใน Description, Scope, Requirement, Acceptance Criteria, DoD หรือ Notes
+- **เลือกภาษาตามความชัดเจน ไม่บังคับล้วนไทย** — ใช้ไทยหรืออังกฤษตามคำที่เข้าใจง่ายกว่า เป็น terminology ที่ทีมใช้จริง สั้นและชัดกว่า; คำมาตรฐานเช่น `My Account`, `Change Password`, `Active Sessions`, `Logout All Devices`, `Session Expired`, `Forgot Password`, `Reset Password`, `Password Recovery`, `Regression`, `Accessibility`, `Final Acceptance` ใช้ภาษาอังกฤษโดยตรงได้ ห้ามแปลเป็นไทยเพียงเพื่อให้ชื่อเป็นไทยทั้งหมดจนแปลก ยาว หรือเข้าใจยากกว่า
+- **Objective = ชื่อของ goal / workstream / outcome area** — เช่น `Credential Security Contract`, `My Account & Self-Service`, `Targeted Verification`; ข้อความยาวเช่น `สร้างหน้า My Account ให้แก้ชื่อ เปลี่ยนรหัสผ่าน ดู sessions และออกจากทุกอุปกรณ์ได้` เป็น Description/Scope ไม่ใช่ชื่อ Objective
+- **Feature = ชื่อของ capability / screen / flow / functional area / contract area / verification area** — เช่น `My Account`, `Change Password`, `Logout All Devices`, `Scoped Regression`; ห้ามต่อ scope ต่อท้ายชื่อ เช่น `Logout All Devices (confirmation + revoke ทุก session รวม current + audit + กลับ Login)` ให้ใช้เพียง `Logout All Devices` แล้วเก็บรายละเอียดไว้ใน Scope/AC
+- **Feature ไม่ใช่ Task** — Feature คือ grouping ของ capability/work area ส่วน Task คือ execution unit; 1 Feature map กับหลาย Task ได้ (เช่น Feature `Scoped Regression` → `AIL-029a` + `AIL-029b`) และห้าม merge Task เพียงเพื่อให้ตรงกับ Feature
+- **Naming cleanup ห้ามกระทบ decomposition** — การปรับชื่อ Objective/Feature ห้าม merge หรือ split Task, เปลี่ยน Task Code, Task Name, Category, Planned Hours, dependencies, execution order, Scope หรือ Acceptance Criteria และห้ามเปลี่ยนจำนวน planned tasks
+- **Mission Plan Summary ใช้ชื่อ label เท่านั้น** — แสดง `Objective: <short name>` และ `Feature: <short name>` แล้วตามด้วย Tasks ใต้ Feature นั้น; ห้ามเขียน `Feature: <name> (<scope/behavior ยาว ๆ>)` — ถ้าต้องอธิบาย Feature ให้ใช้ field แยก เช่น `Scope: ...`
+
 ---
 
 ## Table of Contents
@@ -839,6 +850,7 @@ Mission Plan Summary เป็นสรุปภาพรวม Approved Mission
 - ห้ามแสดง Kanban UUID, partial UUID, database ID หรือ internal task/mission identifier อื่นใดใน Mission Plan Summary
 - ถ้า Task ไม่มี business-facing code ให้ใช้ชื่อ Task อย่างเดียว ห้ามแทนด้วย UUID
 - Feature ต้องอยู่ติดกับ Task ที่ map อยู่ใต้ Feature นั้น ห้ามแยก Feature และ Task เป็นคนละรายการจนมอง mapping ไม่ออก
+- ชื่อ Objective และ Feature ใน Summary ต้องเป็นชื่อ label สั้นตาม Naming Rules — ห้ามต่อ scope/behavior/AC ยาว ๆ ไว้ในชื่อ ถ้าต้องอธิบาย Feature ให้ใช้ field แยก (เช่น `Scope: ...`)
 
 **รูปแบบ Mission Plan Summary Copy Block:**
 
@@ -1240,6 +1252,7 @@ Mission: สร้างเอกสารและ prototype สำหรับ
 - [ ] วางแผนแยก Objective (แต่ละ Objective ระบุ Service, Tasks, น้ำหนัก%, ชั่วโมงที่คาดการณ์, ผู้รับผิดชอบหลัก, รายละเอียด, Feature ย่อย และ Dependency)
 - [ ] ตรวจว่าแต่ละ Feature เป็นผลลัพธ์ย่อยที่ชัดเจน และ map กับ Task ได้ 1 task หรือหลาย task
 - [ ] ตรวจว่า Feature ไม่ได้ถูกแตกตามจำนวน Task โดยไม่จำเป็น และไม่บังคับให้ Feature หนึ่งมี Task เดียว
+- [ ] ตรวจว่าชื่อ Objective และ Feature เป็นชื่อ label สั้นตาม Naming Rules — ไม่มี scope/behavior/AC ยัดอยู่ในชื่อ และใช้ terminology ที่ทีมเข้าใจจริง
 - [ ] ตรวจว่าน้ำหนัก (Weight) ของทุกเป้าหมายรวมกัน **เท่ากับ 100%**
 - [ ] ระบุ Dependency, ลำดับงาน และ critical path ระหว่างเป้าหมาย
 - [ ] ประเมินเวลาแต่ละเป้าหมาย (1 วัน = 8 ชม.) — **เวลา = เวลา AI ทำงานเป็นหลัก** รวมการวิเคราะห์ สร้าง แก้ และตรวจรับตามขอบเขต
