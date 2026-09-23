@@ -495,13 +495,10 @@ try {
   await page.goto(BASE, { waitUntil: "networkidle" });
   await sleep(500);
 
-  // Login
+  // Login — Email + Password → BO ตรง (ไม่มี OTP step)
   await page.fill("#login-email", "admin@tukdaeng.com");
   await page.fill("#login-password", "admin");
-  await page.click('button[type="submit"]:visible:has-text("Send Email OTP")');
-  await sleep(800);
-  await page.fill("#otp-code", "123456");
-  await page.click('button[type="submit"]:visible:has-text("Verify OTP")');
+  await page.click('#login-form button[type="submit"]');
   await sleep(1000);
 
   // นำทางผ่าน jumpToModule (sidebar อยู่นอก viewport บน mobile)

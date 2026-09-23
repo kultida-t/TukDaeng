@@ -12,17 +12,14 @@ function log(label, ok, detail = "") {
 }
 
 async function login(page) {
-  // Login screen: default credentials are pre-filled. Click "Send Email OTP" then "Verify OTP".
+  // Login screen: default credentials are pre-filled. Submit Email + Password → BO directly.
   await page.goto(URL);
   await page.waitForLoadState("domcontentloaded");
   // Wait for login form to be visible
   await page.waitForSelector('#login-form:not(.hidden)', { timeout: 5000 });
-  // Submit login form (Send Email OTP)
+  // Submit login form
   await page.locator('#login-form button[type="submit"]').click();
   await page.waitForTimeout(300);
-  // OTP form should appear; default OTP is 123456
-  await page.waitForSelector('#otp-form:not(.hidden)', { timeout: 5000 });
-  await page.locator('#verify-otp-btn').click();
   await page.waitForTimeout(500);
   // Login screen should be hidden (display:none after login)
   await page.waitForSelector('#login-screen', { state: 'hidden', timeout: 5000 });

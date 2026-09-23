@@ -31,8 +31,6 @@ async function login(page) {
   await page.waitForSelector('#login-form:not(.hidden)', { timeout: 5000 });
   await page.locator('#login-form button[type="submit"]').click();
   await page.waitForTimeout(300);
-  await page.waitForSelector('#otp-form:not(.hidden)', { timeout: 5000 });
-  await page.locator('#verify-otp-btn').click();
   await page.waitForTimeout(500);
   await page.waitForSelector('#login-screen', { state: 'hidden', timeout: 5000 });
 }

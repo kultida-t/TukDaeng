@@ -13,8 +13,6 @@ async function loginIfNeeded(page) {
   const loginScreen = page.locator("#login-screen");
   if (await loginScreen.isVisible({ timeout: 1000 }).catch(() => false)) {
     await page.locator("#login-form button[type=\"submit\"]").click();
-    await page.waitForSelector("#otp-form:not(.hidden)", { timeout: 5000 });
-    await page.locator("#verify-otp-btn").click();
     await page.waitForFunction(() => !document.body.classList.contains("logged-out"), { timeout: 5000 });
     await page.waitForTimeout(500);
   }
@@ -388,8 +386,8 @@ test.describe("QA-BO-013e: Settings > Admin Accounts — action modals (suspend/
     const rows = section.locator("tbody tr");
     // row ล่าสุด (แถวแรก) = Reactivate Admin
     await expect(rows.nth(0).locator("td").nth(1)).toHaveText("Reactivate Admin");
-    await expect(rows.nth(0).locator("td").nth(4)).toContainText("สิ้นสุดช่วงรอตรวจสอบ");
-    await expect(rows.nth(0).locator("td").nth(4)).toContainText("หมายเหตุ: ยืนยันจาก HR แล้ว");
+    await expect(rows.nth(0).locator("td").nth(5)).toContainText("สิ้นสุดช่วงรอตรวจสอบ");
+    await expect(rows.nth(0).locator("td").nth(5)).toContainText("หมายเหตุ: ยืนยันจาก HR แล้ว");
   });
 
   test("12. confirm → audit event ถูกสร้าง (ADMIN_ACCOUNT_*) + auditRef เพิ่มใน detail", async ({ page }) => {
@@ -567,8 +565,8 @@ test.describe("QA-BO-013e: Settings > Admin Accounts — action modals (suspend/
     const section = page.locator(".admin-account-action-section");
     const rows = section.locator("tbody tr");
     await expect(rows.nth(0).locator("td").nth(1)).toHaveText("Reactivate Admin");
-    await expect(rows.nth(0).locator("td").nth(4)).toContainText("ได้รับอนุมัติให้กลับมาใช้งาน");
-    await expect(rows.nth(0).locator("td").nth(4)).toContainText("หมายเหตุ: อนุมัติจากผู้บริหาร");
+    await expect(rows.nth(0).locator("td").nth(5)).toContainText("ได้รับอนุมัติให้กลับมาใช้งาน");
+    await expect(rows.nth(0).locator("td").nth(5)).toContainText("หมายเหตุ: อนุมัติจากผู้บริหาร");
     // detail head status pill อัปเดตเป็น Active (green)
     const head = page.locator(".admin-account-detail-page .user-detail-head");
     await expect(head.locator(".chips .pill.green")).toHaveText("Active");

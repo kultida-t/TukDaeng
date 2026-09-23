@@ -7,8 +7,6 @@ async function loginIfNeeded(page) {
   const loginScreen = page.locator('#login-screen');
   if (await loginScreen.isVisible({ timeout: 1000 }).catch(() => false)) {
     await page.locator('#login-form button[type="submit"]').click();
-    await page.waitForSelector('#otp-form:not(.hidden)', { timeout: 5000 });
-    await page.locator('#verify-otp-btn').click();
     await page.waitForFunction(() => !document.body.classList.contains("logged-out"), { timeout: 5000 });
     await page.waitForTimeout(500);
   }
@@ -24,9 +22,10 @@ test.describe("DEL-PTO-004: Audit Log + cross-module links + Account Status Hist
     await page.waitForSelector(".audit-log-mode", { timeout: 5000 });
     const rows = await page.locator(".audit-log-table .user-row:not(.head):not(.empty)").count();
     expect(rows).toBeGreaterThan(0);
-    // before/after diff cell
-    const diffCell = await page.locator(".audit-diff-cell").first().textContent();
-    expect(diffCell).toBeTruthy();
+    // required fields: Event ID primary cell + Note cell (before/after diff lives in detail drawer)
+    const firstRow = page.locator(".audit-log-table .user-row.audit-row").first();
+    await expect(firstRow.locator('[data-label="Event ID"] .main-text')).toContainText("AUD-");
+    await expect(firstRow.locator('[data-label="Note"]')).toHaveCount(1);
     // module badge + risk pill
     const pills = await page.locator(".audit-log-table .pill").count();
     expect(pills).toBeGreaterThan(0);
@@ -153,7 +152,7 @@ test.describe("DEL-PTO-004: Audit Log + cross-module links + Account Status Hist
     await page.evaluate(() => renderModule("settings", "Audit Log", "Audit Log"));
     await page.waitForSelector(".audit-log-mode", { timeout: 5000 });
     const panelTitle = await page.locator("#panel-title").textContent();
-    expect(panelTitle).toContain("Immutable Admin Events");
+    expect(panelTitle).toContain("Audit Log List");
   });
 
   test("11. U-1222 'View deleted summary' opens DEL-020 detail directly", async ({ page }) => {
