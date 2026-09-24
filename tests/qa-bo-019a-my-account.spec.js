@@ -166,11 +166,11 @@ test.describe("QA-BO-019a: My Account — page rendering", () => {
     await expect(page.locator("[data-my-account-last-login] strong")).toHaveText(SELF.lastLogin);
   });
 
-  test("10. มีปุ่ม Change Password (security actions); ไม่มี Active Sessions placeholder และไม่ expose internal roadmap copy", async ({ page }) => {
+  test("10. มีปุ่ม Change Password (security actions) + Active Sessions section (AIL-022) และไม่ expose internal roadmap copy", async ({ page }) => {
     await goToMyAccount(page);
-    // security actions มี Change Password แล้ว (AIL-021) — Active Sessions ยัง defer ออกจาก Product UI (AIL-022/023)
+    // security actions มี Change Password (AIL-021) + Active Sessions list (AIL-022)
     await expect(page.locator("[data-my-account-section='security']")).toBeVisible();
-    expect(await page.locator("[data-my-account-section='sessions']").count()).toBe(0);
+    await expect(page.locator("[data-my-account-section='sessions']")).toBeVisible();
     // ห้ามมี internal task id / roadmap copy เช่น AIL-xxx หรือ "เฟสถัดไป"
     const content = await page.locator("[data-my-account-page]").innerText();
     expect(content).not.toMatch(/AIL-\d+/);
