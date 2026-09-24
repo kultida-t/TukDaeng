@@ -143,6 +143,12 @@ test.describe("QA-BO-019a: My Account — page rendering", () => {
     await goToMyAccount(page);
     await expect(page.locator("[data-my-account-section='profile'] h4")).toHaveText("Account Summary");
     expect(await page.locator("[data-my-account-page] .detail-grid.three .detail-tile").count()).toBe(6);
+    // responsive columns ตาม convention deletion-detail (desktop 3 / tablet ≤1180 → 2 / mobile ≤760 → 1)
+    const colCount = await page.locator("[data-my-account-page] .detail-grid.three").evaluate(
+      el => getComputedStyle(el).gridTemplateColumns.split(" ").filter(Boolean).length);
+    const width = page.viewportSize().width;
+    const expected = width <= 760 ? 1 : width <= 1180 ? 2 : 3;
+    expect(colCount).toBe(expected);
   });
 
   test("8. แสดง Name ปัจจุบันของ self account", async ({ page }) => {
