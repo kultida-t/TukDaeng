@@ -508,7 +508,10 @@ Services ที่ใช้ใน TukDaeng:
 - ตัวอย่าง: ไม่ใส่ Total, Days = 5 → Total = 40 (5 × 8), Baseline = 40, เหลือ = 0
 - ถ้าหลังแบ่งเป้าหมายแล้ว Total เกิน Days × 8 → ต้องลดเวลาเป้าหมาย หรือรวมเป้าหมายเล็กเข้าด้วยกัน หรือเพิ่มจำนวนวัน หรือแบ่งเป็น Mission ใหม่
 - **คะแนนความแม่นยำในการวางแผน** เทียบ **Total Planned Hours กับชั่วโมงจริงที่ใช้** — ถ้าทำตรงตาม Total Planned Hours จะได้คะแนนเต็ม 100 ถ้าเบี่ยงเบือน (task เกินเวลา, งานนอกแผน) คะแนนจะถูกหัก
-- **ความเสี่ยง:** ถ้า task ใดเกินเวลา รวมจะเกิน Total Planned Hours ทันที — กรณีนี้ให้ใช้กฎ "ชี้แจงเวลาเกินงบ" ใน work-summary skill (แตกรายละเอียดงานเป็นส่วนย่อย + บล็อกชี้แจง) แทนการกัน buffer ไว้ล่วงหน้า
+- **แนวทางป้องกันงานเกินเวลา (Improvement & Over-Budget Prevention):**
+  1. **วิเคราะห์ความซับซ้อนของ Logic ตั้งแต่ต้น (Complexity Discovery):** หากงานมีเงื่อนไขหลายชั้น (เช่น Cooldown, Rolling Quota, Stale Revision, Denial Reasons หลายแบบ หรือ Rollback ข้ามหลาย Store) **ห้ามวางเป็น 1 Task ใหญ่เด็ดขาด** ต้องแตกเป็น Subtask ย่อยที่กระชับ (ไม่เกิน 1–1.5 ชม. ต่อ Task) และวางแผนสร้างฟังก์ชันตรวจเงื่อนไขตรงกลางตั้งแต่แรก
+  2. **รองรับความผันผวนของความเร็ว AI (AI Latency & Large Context Overhead):** ในช่วงที่ AI ประมวลผลช้าหรือโปรเจกต์มี Context ขนาดใหญ่ Task ขนาดใหญ่จะมีความเสี่ยงสูงที่จะเกินเวลา การแตก Task ให้เล็กและโฟกัสทีละจุด จะช่วยให้ AI ประมวลผลได้แม่นยำ ไม่หลุด Scope และเสร็จตามเวลาที่วางแผนไว้
+  3. **ความเสี่ยง:** ถ้า task ใดเกินเวลา รวมจะเกิน Total Planned Hours ทันที — กรณีนี้ให้ใช้กฎ "ชี้แจงเวลาเกินงบ" ใน work-summary skill (แตกรายละเอียดงานเป็นส่วนย่อย + บล็อกชี้แจง) แทนการกัน buffer ไว้ล่วงหน้า
 
 #### 7. วิเคราะห์ Dependency และลำดับงาน
 
@@ -968,7 +971,10 @@ Session Handoff
 - การสร้าง approval artifacts ไม่อนุญาตให้เริ่ม implementation, ย้าย Task เป็น `in_progress` หรือเริ่ม timer
 - ถ้ามีงานเพิ่มนอก Scope → แยกเป็นงานนอกขอบเขตและเสนอ Mission ใหม่
 - ⚠️ **Protected screens:** ถ้าแผนมีโอกาสกระทบ protected screens (ตาม `AGENTS.md` และ `PROTECTED_SCREENS.md`) ต้องระบุในเป้าหมายว่าจะตรวจสอบอย่างไร และต้องหยุดขออนุมัติก่อนแก้ ห้ามแก้ protected screens โดยไม่ได้รับอนุมัติจากผู้ใช้
-- **Kanban task style:** ถ้าต้องสร้าง task ใหม่ในแผน ให้เขียนเป็น complete execution brief ตามรูปแบบใน `AGENTS.md` (ภาษาไทย เก็บศัพท์เทคนิคภาษาอังกฤษ) และใช้ Kanban Completion Rule: ห้ามย้าย task ไป `done` จนกว่าผู้ใช้ยืนยันว่าผลลัพธ์ OK
+- **Kanban task style & Naming format:** ถ้าต้องสร้าง task ใหม่ในแผน (`create_task`) หรือแสดงใน Mission Plan / Summary / Kanban:
+  - **ชื่อ Task ต้องอยู่ในรูปแบบ `<Task-Code> <Task Name>` เสมอ** เช่น `AIL-019 Design forgot/reset contract`, `RP-014 สร้าง flow ปิด Custom Role` โดยมีรหัส Task ที่คนอ่านเข้าใจง่ายนำหน้า ตามด้วยชื่อเนื้อหางานที่กระชับ
+  - **ห้ามใช้เฉพาะ UUID / Internal ID ของระบบเป็นชื่อ Task เด็ดขาด** เพราะอ่านยากและไม่สื่อความหมาย
+  - เขียนเนื้อหา Task เป็น complete execution brief ตามรูปแบบใน `AGENTS.md` (ภาษาไทย เก็บศัพท์เทคนิคภาษาอังกฤษ) และใช้ Kanban Completion Rule: ห้ามย้าย task ไป `done` จนกว่าผู้ใช้ยืนยันว่าผลลัพธ์ OK
 - **Objective และ Feature ไม่ใช่ Task:** Objective เป็นผลลัพธ์หลัก, Feature เป็นผลลัพธ์ย่อย และ Task เป็นงานที่ใช้ลงมือทำ/ลง log — 1 Objective map กับหลาย Feature ได้ และ 1 Feature map กับหลาย Task ได้
 - **การตรวจสอบและแก้ไขอยู่ใน Feature:** วางแผนไว้ใน Feature เดียวกับงานหลัก ไม่ต้องสร้าง Task ตรวจสอบ/แก้ไขแยก เว้นแต่มีขนาดใหญ่หรือจำเป็นต้องติดตามเป็นงานอิสระ
 
