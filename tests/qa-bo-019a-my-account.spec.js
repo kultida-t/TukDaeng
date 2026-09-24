@@ -88,7 +88,12 @@ test.describe("QA-BO-019a: My Account — entry & navigation", () => {
     await goToMyAccount(page);
     await expect(page.locator("body")).toHaveClass(/my-account-mode/);
     await expect(page.locator("#page-title")).toHaveText("My Account");
-    await expect(page.locator("#crumb")).toContainText("My Account");
+    // breadcrumb ระดับเดียว — My Account ไม่มี parent ใน navGroups (entry จาก profile footer เท่านั้น)
+    await expect(page.locator("#crumb")).toHaveText("My Account");
+    // ไม่มี detail head ซ้ำ — identity fields (Admin ID/Name/Status/Role) อยู่ใน Account Summary tiles แล้ว
+    expect(await page.locator("[data-my-account-page] .user-detail-head").count()).toBe(0);
+    await expect(page.locator("#panel-title")).toHaveText(SELF.id);
+    await expect(page.locator("#panel-subtitle")).toHaveText(`${SELF.name} · ${SELF.role}`);
   });
 
   test("3. My Account ไม่อยู่ใน navGroups / Settings submenu (ไม่มี nav-item หรือ submenu button)", async ({ page }) => {
@@ -134,11 +139,10 @@ test.describe("QA-BO-019a: My Account — entry & navigation", () => {
 
 test.describe("QA-BO-019a: My Account — page rendering", () => {
 
-  test("7. แสดง 3 sections: โปรไฟล์ของฉัน / ความปลอดภัยของบัญชี / Active Sessions", async ({ page }) => {
+  test("7. แสดง section Account Summary พร้อม detail-grid ครบ 6 tiles (Admin ID + Name editable + Email/Role/Status/Last Login)", async ({ page }) => {
     await goToMyAccount(page);
-    await expect(page.locator("[data-my-account-section='profile'] h4")).toHaveText("โปรไฟล์ของฉัน");
-    await expect(page.locator("[data-my-account-section='security'] h4")).toHaveText("ความปลอดภัยของบัญชี");
-    await expect(page.locator("[data-my-account-section='sessions'] h4")).toHaveText("Active Sessions");
+    await expect(page.locator("[data-my-account-section='profile'] h4")).toHaveText("Account Summary");
+    expect(await page.locator("[data-my-account-page] .detail-grid.three .detail-tile").count()).toBe(6);
   });
 
   test("8. แสดง Name ปัจจุบันของ self account", async ({ page }) => {
@@ -146,22 +150,24 @@ test.describe("QA-BO-019a: My Account — page rendering", () => {
     await expect(page.locator("[data-my-account-name-display]")).toHaveText(SELF.name);
   });
 
-  test("9. read-only tiles: Email / Role / Status / Last Login ตรง mock self account", async ({ page }) => {
+  test("9. read-only tiles: Admin ID / Email / Role / Status / Last Login ตรง mock self account", async ({ page }) => {
     await goToMyAccount(page);
+    await expect(page.locator("[data-my-account-id] strong")).toHaveText(SELF.id);
     await expect(page.locator("[data-my-account-email] strong")).toHaveText(SELF.email);
     await expect(page.locator("[data-my-account-role] strong")).toHaveText(SELF.role);
     await expect(page.locator("[data-my-account-status] strong")).toHaveText(SELF.status);
     await expect(page.locator("[data-my-account-last-login] strong")).toHaveText(SELF.lastLogin);
   });
 
-  test("10. Security/Active Sessions เป็น placeholder เฟสถัดไป — ไม่มี input/button เปลี่ยนรหัสผ่านหรือ revoke", async ({ page }) => {
+  test("10. ไม่มี Security/Active Sessions placeholder และไม่ expose internal roadmap copy ใน Product UI", async ({ page }) => {
     await goToMyAccount(page);
-    const security = page.locator("[data-my-account-section='security']");
-    const sessions = page.locator("[data-my-account-section='sessions']");
-    await expect(security).toContainText("เฟสถัดไป");
-    await expect(sessions).toContainText("เฟสถัดไป");
-    expect(await security.locator("input, button").count()).toBe(0);
-    expect(await sessions.locator("input, button").count()).toBe(0);
+    // section ที่ยังไม่มี feature ให้ใช้งาน → defer ออกจาก Product UI (ไม่ใช่ placeholder)
+    expect(await page.locator("[data-my-account-section='security']").count()).toBe(0);
+    expect(await page.locator("[data-my-account-section='sessions']").count()).toBe(0);
+    // ห้ามมี internal task id / roadmap copy เช่น AIL-xxx หรือ "เฟสถัดไป"
+    const content = await page.locator("[data-my-account-page]").innerText();
+    expect(content).not.toMatch(/AIL-\d+/);
+    expect(content).not.toContain("เฟสถัดไป");
   });
 
   test("11. ไม่มีฟิลด์ password/OTP บนหน้า My Account (current scope: ไม่มี OTP/MFA/2FA)", async ({ page }) => {
@@ -176,10 +182,12 @@ test.describe("QA-BO-019a: My Account — page rendering", () => {
 
 test.describe("QA-BO-019a: My Account — edit Name toggle & validation", () => {
 
-  test("12. กด แก้ไขชื่อ → แสดง input พร้อมค่าปัจจุบัน + ปุ่ม ยกเลิก/บันทึก", async ({ page }) => {
+  test("12. กด Edit → modal แก้ไขชื่อเปิด พร้อม input ค่าปัจจุบัน + ปุ่ม ยกเลิก/บันทึก", async ({ page }) => {
     await goToMyAccount(page);
     await page.locator("[data-my-account-action='edit-name']").click();
     await page.waitForTimeout(200);
+    await expect(page.locator("#user-action-modal")).toHaveClass(/show/);
+    await expect(page.locator(".my-account-name-modal")).toBeVisible();
     const input = page.locator("#my-account-name");
     await expect(input).toBeVisible();
     await expect(input).toHaveValue(SELF.name);
@@ -267,6 +275,8 @@ test.describe("QA-BO-019a: My Account — save flow, no-op, audit", () => {
     await expect(page.locator("#success-toast")).toHaveClass(/show/);
     await expect(page.locator("[data-my-account-name-display]")).toHaveText(newName);
     await expect(page.locator("#admin-username")).toHaveText(newName);
+    // sync panel header ของหน้า My Account ด้วย
+    await expect(page.locator("#panel-subtitle")).toHaveText(`${newName} · ${SELF.role}`);
     // commit ลง self record + auth session
     expect((await selfAccount(page)).fullName).toBe(newName);
     expect(await page.evaluate(() => auth.admin.username)).toBe(newName);

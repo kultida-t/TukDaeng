@@ -16938,83 +16938,60 @@
     /* ===== My Account (AIL-020) — self-service page, entry จาก .admin-box =====
        scope เฉพาะ body.my-account-mode เพื่อไม่กระทบ module/protected screens อื่น */
     body.my-account-mode #table {
-      padding: 24px 22px 28px;
+      padding: 0;
+      background: transparent;
       overflow: visible;
     }
-    body.my-account-mode .my-account-page {
-      display: flex;
-      flex-direction: column;
+    body.my-account-mode .main {
+      overflow-x: hidden;
     }
-    body.my-account-mode .my-account-page > .detail-section {
-      display: grid;
-      gap: 14px;
-      padding: 0;
-      border-top: 0;
+    /* full-width detail layout — collapse คอลัมน์ .detail aside ตาม pattern user-detail/admin-account-detail */
+    body.my-account-mode .layout {
+      grid-template-columns: minmax(0, 1fr);
     }
-    body.my-account-mode .my-account-page > .detail-section h4 {
-      margin: 0;
+    body.my-account-mode .detail {
+      display: none;
     }
-    body.my-account-mode .my-account-note {
-      margin: 0;
-      font-size: 12px;
-      line-height: 1.5;
+    /* detail page ไม่แสดง panel head (identity fields อยู่ใน Account Summary tiles แล้ว — pattern user-detail-mode/admin-account-detail-mode) */
+    body.my-account-mode .layout > .panel > .panel-head {
+      display: none;
     }
-    /* Name — view/edit toggle ใน block เดียว (ไม่ re-render → คง revision snapshot ตอนแสดงข้อมูล) */
+    /* Name tile — view mode; Edit เปิดผ่าน modal (pattern admin-account action modals) */
     body.my-account-mode .my-account-name-view {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 12px;
-      padding: 12px 14px;
-      border: 1px solid #e1e9f3;
-      border-radius: 8px;
-      background: #f8fbff;
+      gap: 8px;
     }
     body.my-account-mode .my-account-name-text { min-width: 0; }
-    body.my-account-mode .my-account-field-label {
-      display: block;
-      color: var(--muted);
-      font-size: 12px;
-      font-weight: 600;
-    }
     body.my-account-mode .my-account-name-value {
-      display: block;
-      font-size: 14px;
-      font-weight: 700;
-      color: var(--ink);
       overflow-wrap: anywhere;
     }
-    body.my-account-mode .my-account-name-edit { display: none; }
-    body.my-account-mode .my-account-name-block[data-my-account-editing="true"] .my-account-name-view { display: none; }
-    body.my-account-mode .my-account-name-block[data-my-account-editing="true"] .my-account-name-edit { display: grid; gap: 12px; }
-    body.my-account-mode .my-account-name-field {
+    /* Edit Name modal — single-field compact (error/required-mark ใช้ base .article-field-*) */
+    .modal.user-action-modal.my-account-name-modal {
+      width: min(480px, 100%);
+    }
+    .my-account-name-modal .my-account-name-field {
       display: grid;
       gap: 6px;
-      max-width: 420px;
+      min-width: 0;
     }
-    body.my-account-mode .my-account-name-field > span:first-child {
+    /* .user-action-form label กลางเป็น grid → override ให้ "Name *" อยู่บรรทัดเดียว */
+    .my-account-name-modal .my-account-name-field > .my-account-field-label {
+      display: block;
       font-size: 12px;
       font-weight: 700;
       color: #4b5f78;
     }
-    body.my-account-mode .my-account-name-field .field {
+    .my-account-name-modal .my-account-name-field .field {
       min-height: 40px;
     }
-    body.my-account-mode .my-account-name-field .field[aria-invalid="true"] {
-      border-color: #c8212b;
-      box-shadow: 0 0 0 3px rgba(200, 33, 43, .08);
-    }
-    body.my-account-mode .my-account-field-hint {
-      font-size: 11px;
+    .my-account-name-modal .my-account-name-field .my-account-field-hint {
+      display: block;
       color: var(--muted);
+      font-size: 11px;
+      font-weight: 400;
       line-height: 1.5;
-    }
-    body.my-account-mode .my-account-name-actions {
-      justify-content: flex-end;
-      margin-top: 2px;
-    }
-    body.my-account-mode .my-account-readonly-grid {
-      margin-top: 4px;
     }
     /* state block กลางพื้นที่เนื้อหา — reuse .empty-icon/.empty-title/.empty-subtitle pattern */
     body.my-account-mode .my-account-state-block {
@@ -17077,20 +17054,12 @@
       max-width: 300px;
     }
     @media (max-width: 900px) {
-      body.my-account-mode #table {
-        padding: 18px 16px 20px;
-      }
       body.my-account-mode .my-account-name-view {
         align-items: flex-start;
         flex-direction: column;
       }
       body.my-account-mode .my-account-name-view .user-detail-action-btn {
         width: 100%;
-      }
-      body.my-account-mode .my-account-name-field { max-width: none; }
-      body.my-account-mode .my-account-name-actions .user-detail-action-btn {
-        flex: 1 1 0;
-        min-width: 0;
       }
     }
 
@@ -20377,7 +20346,6 @@
     let roleViewStateTimer = null;
     // AIL-020: My Account — demo state สลับผ่าน Prototype scenario; "ready" = แสดงข้อมูลปกติ
     let myAccountViewState = "ready";
-    let myAccountNameEditing = false;
     let myAccountViewStateTimer = null;
     // Create Custom Role — ค่าที่ validate ผ่านแล้วระหว่างรอ confirmation (ย้อนกลับ = คงค่าเดิม)
     let pendingRoleCreateData = null;
@@ -21079,7 +21047,6 @@
       window.clearTimeout(roleViewStateTimer);
       // AIL-020: เคลียร์ demo state ของหน้า My Account เช่นกัน
       myAccountViewState = "ready";
-      myAccountNameEditing = false;
       window.clearTimeout(myAccountViewStateTimer);
     }
 
@@ -28972,7 +28939,7 @@
       }
       modal.classList.remove("show");
       modal.classList.remove("market-reference-drawer-open", "market-reference-drawer-closing", "audit-log-drawer-open", "audit-log-drawer-closing");
-      modalCard?.classList.remove("article-preview-modal", "article-editor-confirm-modal", "category-editor-modal", "category-order-modal", "market-editor-modal", "market-reference-drawer", "board-report-phone-preview-modal", "option-editor-modal", "option-order-modal", "option-audit-modal", "role-create-modal", "policy-version-view-modal", "policy-publish-confirm-modal", "policy-restore-confirm-modal", "support-center-preview-modal", "audit-log-detail-modal");
+      modalCard?.classList.remove("article-preview-modal", "article-editor-confirm-modal", "category-editor-modal", "category-order-modal", "market-editor-modal", "market-reference-drawer", "board-report-phone-preview-modal", "option-editor-modal", "option-order-modal", "option-audit-modal", "role-create-modal", "policy-version-view-modal", "policy-publish-confirm-modal", "policy-restore-confirm-modal", "support-center-preview-modal", "audit-log-detail-modal", "my-account-name-modal");
       document.body.classList.remove("asset-action-modal-open");
       document.querySelector("#user-action-modal-body").innerHTML = "";
     }
@@ -32376,60 +32343,94 @@
     }
 
     function renderMyAccountNameField(acc) {
+      const displayName = acc.fullName || auth?.admin?.username || "—";
+      // revision snapshot ตอนแสดงข้อมูล — ใช้ guard stale submit ตาม contract §4.3
+      // Edit เปิดผ่าน modal (pattern admin-account action modals) — ไม่ inline edit ใน tile
+      return `
+        <div class="detail-tile my-account-name-block" data-my-account-name-block data-my-account-revision="${acc.revision ?? 0}">
+          <div class="my-account-name-view">
+            <div class="my-account-name-text">
+              <span class="my-account-field-label">Name</span>
+              <strong class="my-account-name-value" data-my-account-name-display>${escapeHtml(displayName)}</strong>
+            </div>
+            <button type="button" class="user-detail-action-btn" data-my-account-action="edit-name">Edit</button>
+          </div>
+        </div>`;
+    }
+
+    // Edit Name modal — pattern เดียวกับ admin-account action modals (user-action-head + target + form + footer)
+    function openMyAccountNameModal() {
+      const acc = findSelfAdminAccount();
+      if (!acc) return;
+      const modal = document.querySelector("#user-action-modal");
+      const modalCard = modal?.querySelector(".user-action-modal");
+      const modalBody = document.querySelector("#user-action-modal-body");
+      if (!modal || !modalCard || !modalBody) return;
+      modalCard.classList.remove("article-preview-modal", "article-editor-confirm-modal", "category-editor-modal", "category-order-modal", "market-editor-modal", "market-reference-drawer", "board-report-phone-preview-modal", "option-editor-modal", "option-order-modal", "option-audit-modal", "policy-version-view-modal", "policy-publish-confirm-modal", "policy-restore-confirm-modal", "support-center-preview-modal", "deletion-action-modal", "admin-account-invite-modal", "audit-log-detail-modal");
+      modalCard.classList.add("my-account-name-modal");
       // esc ปิด " ด้วย — ใช้ใน attribute context (input value) เหมือน pattern esc ของ Role screens
       const esc = v => String(v ?? "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
-      const displayName = acc.fullName || auth?.admin?.username || "—";
-      const editing = myAccountNameEditing;
-      // revision snapshot ตอนแสดงข้อมูล — ใช้ guard stale submit ตาม contract §4.3
-      return `
-        <div class="my-account-name-block" data-my-account-name-block data-my-account-editing="${editing ? "true" : "false"}" data-my-account-revision="${acc.revision ?? 0}">
-          <div class="my-account-name-view">
-            <span class="my-account-name-text">
-              <span class="my-account-field-label">Name</span>
-              <strong class="my-account-name-value" data-my-account-name-display>${esc(displayName)}</strong>
-            </span>
-            <button type="button" class="user-detail-action-btn" data-my-account-action="edit-name">แก้ไขชื่อ</button>
+      modalBody.innerHTML = `
+        <div class="user-action-page my-account-name-modal-page">
+          <div class="user-action-head">
+            <div>
+              <h2 id="user-action-modal-title">Edit Name</h2>
+              <p>ชื่อที่แสดงในระบบ Back Office ของคุณ</p>
+            </div>
+            <button class="btn user-action-close" type="button" data-user-action-modal-close aria-label="ปิด">${iconSvg.close}</button>
           </div>
-          <div class="my-account-name-edit">
-            <label class="my-account-name-field">
-              <span>Name <span class="article-required-mark">*</span></span>
-              <input class="field" id="my-account-name" maxlength="100" value="${esc(acc.fullName || "")}" autocomplete="name" />
-              <span class="article-field-error" data-my-account-name-error role="alert"></span>
-              <span class="my-account-field-hint">สูงสุด 100 ตัวอักษร • trim whitespace อัตโนมัติก่อนบันทึก</span>
-            </label>
-            <div class="user-detail-actions my-account-name-actions">
-              <button type="button" class="user-detail-action-btn" data-my-account-action="cancel-name">ยกเลิก</button>
-              <button type="button" class="user-detail-action-btn primary" data-my-account-action="save-name">บันทึก</button>
+          <div class="user-action-layout">
+            <div class="detail-section">
+              <div class="user-action-form">
+                <div class="my-account-name-field">
+                  <label class="my-account-field-label" for="my-account-name">Name <span class="article-required-mark">*</span></label>
+                  <input class="field" id="my-account-name" maxlength="100" value="${esc(acc.fullName || "")}" autocomplete="name" />
+                  <span class="article-field-error" data-my-account-name-error role="alert"></span>
+                  <span class="my-account-field-hint">สูงสุด 100 ตัวอักษร</span>
+                </div>
+                <div class="user-detail-actions user-action-footer">
+                  <button class="user-detail-action-btn" type="button" data-my-account-action="cancel-name">ยกเลิก</button>
+                  <button class="user-detail-action-btn primary" type="button" data-my-account-action="save-name">บันทึก</button>
+                </div>
+              </div>
             </div>
           </div>
         </div>`;
+      showUserActionModal(true);
+      // focus พร้อม caret ท้ายข้อความ — ไม่ select-all (ไม่ไฮไลท์ชื่อเดิม)
+      const input = document.querySelector("#my-account-name");
+      if (input) {
+        input.focus();
+        input.setSelectionRange(input.value.length, input.value.length);
+      }
     }
 
     function renderMyAccountReadonlyRows(acc) {
       const tile = (label, value, attr) => `<div class="detail-tile" ${attr}><span>${label}</span><strong>${escapeHtml(value)}</strong></div>`;
       return `
-        <div class="detail-grid three my-account-readonly-grid">
-          ${tile("Email", acc.email || auth?.email || "—", "data-my-account-email")}
-          ${tile("Role", acc.role || "—", "data-my-account-role")}
-          ${tile("Status", acc.status || "—", "data-my-account-status")}
-          ${tile("Last Login", acc.lastLogin || "—", "data-my-account-last-login")}
-        </div>`;
+        ${tile("Email", acc.email || auth?.email || "—", "data-my-account-email")}
+        ${tile("Role", acc.role || "—", "data-my-account-role")}
+        ${tile("Status", acc.status || "—", "data-my-account-status")}
+        ${tile("Last Login", acc.lastLogin || "—", "data-my-account-last-login")}`;
     }
 
     function renderMyAccountPage() {
       // demo state ใช้เฉพาะกับ My Account — ล้าง timer เก่ากันสลับ state ค้าง
       window.clearTimeout(myAccountViewStateTimer);
       myAccountViewStateTimer = null;
+      const acc = findSelfAdminAccount();
       activeModule = "my-account";
       activeSub = null;
       activeRow = null;
       document.body.classList.add("my-account-mode");
       // header/breadcrumb ตาม BO standard — entry จาก profile footer ไม่ผูกกับ nav menu ใด
-      document.querySelector("#crumb").textContent = "เครื่องมือ & รายงาน / My Account";
+      // (ไม่มี parent ใน navGroups → breadcrumb แสดงชื่อหน้าระดับเดียว ไม่อ้าง section ที่ไม่ได้อยู่)
+      document.querySelector("#crumb").textContent = "My Account";
       document.querySelector("#page-title").textContent = "My Account";
-      document.querySelector("#page-meta").textContent = "ข้อมูลบัญชีและความปลอดภัยของคุณ";
-      document.querySelector("#panel-title").textContent = "ข้อมูลบัญชีของฉัน";
-      document.querySelector("#panel-subtitle").textContent = "";
+      document.querySelector("#page-meta").textContent = "";
+      // panel head ตาม pattern Admin Account Detail (entity id + name · role)
+      document.querySelector("#panel-title").textContent = acc ? acc.id : "My Account";
+      document.querySelector("#panel-subtitle").textContent = acc ? `${acc.fullName} · ${acc.role}` : "";
       document.querySelector("#primary-action").textContent = "";
       document.querySelector("#user-panel-filter-actions").innerHTML = "";
       document.querySelector(".filters").innerHTML = "";
@@ -32438,54 +32439,36 @@
       document.querySelector("#cards").innerHTML = "";
       setPageActions("");
 
-      const acc = findSelfAdminAccount();
       let bodyHtml;
       if (!acc || !myAccountHasAccess()) {
         // self account ไม่เจอ หรือ status ไม่ใช่ Active → session expired (contract §2.2/§7.2)
         myAccountViewState = "session-expired";
-        bodyHtml = renderMyAccountSessionExpiredState();
+        bodyHtml = `<div class="user-detail-page report-detail-page">${renderMyAccountSessionExpiredState()}</div>`;
       } else if (myAccountViewState === "loading") {
-        bodyHtml = renderMyAccountLoadingState();
+        bodyHtml = `<div class="user-detail-page report-detail-page">${renderMyAccountLoadingState()}</div>`;
       } else if (myAccountViewState === "error") {
-        bodyHtml = renderMyAccountLoadErrorState();
+        bodyHtml = `<div class="user-detail-page report-detail-page">${renderMyAccountLoadErrorState()}</div>`;
       } else if (myAccountViewState === "session-expired") {
         // scenario simulation — session หมดอายุขณะใช้งาน (contract §7.2)
-        bodyHtml = renderMyAccountSessionExpiredState();
+        bodyHtml = `<div class="user-detail-page report-detail-page">${renderMyAccountSessionExpiredState()}</div>`;
       } else {
         myAccountViewState = "ready";
+        // shell + section ตาม established BO detail-page pattern (Admin Account Detail) — ไม่มี detail head เพราะ identity fields อยู่ใน tiles แล้ว
         bodyHtml = `
-          <div class="my-account-page" data-my-account-page>
-            <section class="detail-section" data-my-account-section="profile">
-              <h4>โปรไฟล์ของฉัน</h4>
-              ${renderMyAccountNameField(acc)}
-              ${renderMyAccountReadonlyRows(acc)}
-              <p class="my-account-note">Email, Role, Status และ Last Login แก้ไขไม่ได้จากหน้านี้ — Role/Status จัดการโดยผู้ดูแลระบบผ่าน Admin Accounts</p>
-            </section>
-            <section class="detail-section" data-my-account-section="security">
-              <h4>ความปลอดภัยของบัญชี</h4>
-              <p class="my-account-note">เปลี่ยนรหัสผ่านจะพร้อมใช้งานในเฟสถัดไป (AIL-021) — ตอนนี้สามารถตรวจสอบข้อมูลโปรไฟล์และแก้ไขชื่อได้แล้ว</p>
-            </section>
-            <section class="detail-section" data-my-account-section="sessions">
-              <h4>Active Sessions</h4>
-              <p class="my-account-note">การดูและเพิกถอน session จะพร้อมใช้งานในเฟสถัดไป (AIL-022)</p>
-            </section>
+          <div class="user-detail-page report-detail-page my-account-page" data-my-account-page>
+            <div class="detail-section" data-my-account-section="profile">
+              <h4>Account Summary</h4>
+              <div class="detail-grid three">
+                <div class="detail-tile" data-my-account-id><span>Admin ID</span><strong>${escapeHtml(acc.id)}</strong></div>
+                ${renderMyAccountNameField(acc)}
+                ${renderMyAccountReadonlyRows(acc)}
+              </div>
+            </div>
           </div>`;
       }
 
       document.getElementById("table").innerHTML = bodyHtml;
       syncMyAccountStateTools();
-      myAccountNameEditing = false;
-    }
-
-    function setMyAccountEditing(editing, focusInput = false) {
-      myAccountNameEditing = editing;
-      const block = document.querySelector("[data-my-account-name-block]");
-      if (block) block.dataset.myAccountEditing = editing ? "true" : "false";
-      if (editing && focusInput) {
-        const input = document.querySelector("#my-account-name");
-        input?.focus();
-        input?.select();
-      }
     }
 
     function getMyAccountRevision() {
@@ -32529,6 +32512,7 @@
 
       // stale / session-expired check — revision + identity + Active status (contract §4.3)
       if (!acc || acc.id !== auth?.admin?.accountId || acc.revision !== getMyAccountRevision() || acc.status !== "Active") {
+        closeUserActionModal();
         showToast("Session หมดอายุหรือข้อมูลไม่ตรงกัน — กรุณาโหลดหน้าใหม่ก่อนแก้ไขอีกครั้ง", "บันทึกไม่สำเร็จ", "error");
         renderMyAccountPage();
         return;
@@ -32536,7 +32520,7 @@
 
       // ไม่มีการเปลี่ยนแปลง → ไม่บันทึก/ไม่สร้าง audit (contract §4.2)
       if (trimmed === acc.fullName) {
-        setMyAccountEditing(false);
+        closeUserActionModal();
         showToast("ชื่อใหม่ตรงกับชื่อเดิม — ไม่มีการบันทึก", "ไม่มีการเปลี่ยนแปลง", "warning");
         return;
       }
@@ -32548,11 +32532,13 @@
       auth.admin.username = trimmed;
       updateAdminProfileFooter();
       addMyAccountAuditEvent(acc, beforeName, trimmed);
-      setMyAccountEditing(false);
+      closeUserActionModal();
       const block = document.querySelector("[data-my-account-name-block]");
       if (block) block.dataset.myAccountRevision = String(acc.revision);
       const nameEl = document.querySelector("[data-my-account-name-display]");
       if (nameEl) nameEl.textContent = trimmed;
+      const panelSubtitle = document.querySelector("#panel-subtitle");
+      if (panelSubtitle) panelSubtitle.textContent = `${trimmed} · ${acc.role}`;
       showSuccessToast(`บันทึกชื่อใหม่เรียบร้อยแล้ว`, "My Account");
     }
 
@@ -46178,10 +46164,9 @@
       if (myAccountAction) {
         const action = myAccountAction.dataset.myAccountAction;
         if (action === "edit-name") {
-          setMyAccountEditing(true, true);
+          openMyAccountNameModal();
         } else if (action === "cancel-name") {
-          setMyAccountEditing(false);
-          setMyAccountNameError("");
+          closeUserActionModal();
         } else if (action === "save-name") {
           saveMyAccountName();
         } else if (action === "retry") {
