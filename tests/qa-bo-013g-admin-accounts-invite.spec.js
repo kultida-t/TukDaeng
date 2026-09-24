@@ -3,7 +3,7 @@
 //   + confirmAdminAccountInvite (บรรทัด ~23284) + isAdminAccountEmailUnique (บรรทัด ~23048)
 //   + nextAdminAccountId (บรรทัด ~23054) + ensureAdminAccountInviteAuditEvent (บรรทัด ~23096)
 //   + setAdminInviteFieldError (บรรทัด ~23275)
-// เป้าหมาย: รันเทสครอบ Invite Admin modal — open, content, role select, note, email OTP note,
+// เป้าหมาย: รันเทสครอบ Invite Admin modal — open, content, role select, note, activation/sign-in note,
 //   validation (name/email/format/unique/role/multi-field), confirm (create account + invitation + audit + delivery result),
 //   permission/stale Role safeguards, cancel และ responsive flow
 const { test, expect } = require("@playwright/test");
@@ -15,8 +15,6 @@ async function loginIfNeeded(page) {
   const loginScreen = page.locator("#login-screen");
   if (await loginScreen.isVisible({ timeout: 1000 }).catch(() => false)) {
     await page.locator("#login-form button[type=\"submit\"]").click();
-    await page.waitForSelector("#otp-form:not(.hidden)", { timeout: 5000 });
-    await page.locator("#verify-otp-btn").click();
     await page.waitForFunction(() => !document.body.classList.contains("logged-out"), { timeout: 5000 });
     await page.waitForTimeout(500);
   }
@@ -183,10 +181,10 @@ test.describe("QA-BO-013g: Settings > Admin Accounts — Invite Admin modal", ()
     await expect(page.locator("#success-toast")).toBeVisible();
   });
 
-  test("5. email OTP note แสดง 'ผู้รับต้องยืนยันตัวตนด้วย Email OTP ทุกครั้งที่เข้าสู่ระบบ'", async ({ page }) => {
+  test("5. invite note แสดง 'ผู้รับยืนยันตัวตนผ่านลิงก์คำเชิญและเข้าสู่ระบบด้วยอีเมลและรหัสผ่านที่ตั้งไว้'", async ({ page }) => {
     await openInviteModal(page);
     const note = page.locator("#user-action-modal .user-action-impact-notice p");
-    await expect(note).toContainText("ผู้รับต้องยืนยันตัวตนด้วย Email OTP ทุกครั้งที่เข้าสู่ระบบ");
+    await expect(note).toContainText("ผู้รับยืนยันตัวตนผ่านลิงก์คำเชิญและเข้าสู่ระบบด้วยอีเมลและรหัสผ่านที่ตั้งไว้");
     await clickCancel(page);
   });
 

@@ -42,7 +42,6 @@ Recommended note format:
 ## 1. Auth And Permission
 
 - [ ] Admin login รองรับ email/password เท่านั้น
-- [ ] Admin must pass mandatory Email OTP verification after email/password
 - [ ] Failed login ครบ 5 ครั้ง lock account 15 นาที
 - [ ] Idle session หมดอายุหลัง 8 ชั่วโมง และ max session หลัง 24 ชั่วโมง
 - [ ] BO ใช้ account type เดียวคือ `Admin`; role templates เป็น permission presets เท่านั้น ไม่ใช่ separate BO account types
@@ -51,7 +50,7 @@ Recommended note format:
 - [ ] Permission guard มีทั้ง route level และ action/API level
 - [ ] UI menu/action hiding เป็น UX เท่านั้น และต้องมี backend/service enforcement ซ้ำทุกครั้ง
 - [ ] BO reset password flow แยกจาก FO user reset password
-- [ ] Login, logout, failed login, Email OTP sent/verified/failed/resend และ lockout events ต้อง audit-log
+- [ ] Login, logout, failed login และ lockout events ต้อง audit-log
 
 ## 2. Dashboard
 
@@ -448,7 +447,7 @@ Recommended note format:
 - [ ] Production Invite Admin ต้องสร้าง normalized unique account `Invited` + canonical invitation `Pending` + audit + transactional email outbox แบบ atomic โดยไม่มี temporary password; protected prototype in-memory invite เป็น UI/mock baseline ไม่ใช่ security enforcement
 - [ ] Invitation ใช้ CSPRNG one-time token อายุ 72 ชั่วโมง เก็บเฉพาะ approved hash/MAC + token revision; มี state `Pending/Used/Expired/Cancelled/Superseded`, มี active `Pending` ได้หนึ่ง record ต่อ target account และห้าม hard delete terminal history
 - [ ] Activation ต้อง revalidate token/expiry/account/email/Role/revisions ใน transaction, enforce initial password อย่างน้อย 12 ตัวพร้อม uppercase/lowercase/number/special และ compare-and-consume `Pending -> Used` พร้อม `Invited -> Active` + password hash + audit/outbox แบบ atomic; race/replay/stale/idempotent retry เปลี่ยน state ซ้ำไม่ได้
-- [ ] Valid invitation link ไม่ถาม Email OTP ซ้ำ; activation สำเร็จกลับ Login และ Login ยังใช้ mandatory Email OTP policy เดิม
+- [ ] Valid invitation link เป็น possession verification สำหรับ activation; activation สำเร็จกลับ Login และ Login ใช้ email/password ตาม baseline ปัจจุบัน (ไม่มี Login OTP step)
 - [ ] Resend ใช้ cooldown 60 วินาที + 5 successful issuances/rolling 24h ต่อ target account, supersede token เดิม; Cancel คง account `Invited`; Reissue สร้าง revision ถัดไปหลัง Expired/Cancelled; hidden abuse thresholds ห้ามเปิดเผยหรือเปลี่ยน business quota
 - [ ] Invitation mutation enforce `settings.admin_accounts.manage` ใน UI/route/API/service พร้อม account/Role eligibility, expected revisions, idempotency/correlation และ server capability; unauthorized/stale/no-op request ต้องไม่เกิด partial mutation
 - [ ] ทุก invitation lifecycle action มี canonical audit event; ทุก email attempt มี Delivery Log `DLV-ACCT-<admin-sequence>-INV-<attempt-sequence>` ที่ trace invitation/Admin Detail/Audit ได้; provider failure คง account `Invited` และ invitation issuance พร้อม Failed/Retry state
@@ -481,7 +480,7 @@ Recommended note format:
 - [ ] Roles & Permissions List/Detail ใช้ `settings.roles.view` สำหรับ read access และ `settings.roles.manage` สำหรับ mutation; ผู้มี view อย่างเดียวเห็น read-only และ action mutation ต้องไม่อยู่ใน DOM
 - [ ] `Admin access` ใน Auth contract ต้อง persist เป็น `role_id`; ห้ามเก็บชื่อ Role, free-text access label หรือ permission payload ซ้ำใน Admin Account
 - [ ] ใช้ prototype เป็น source of truth สำหรับ visual/interaction ที่ล็อก แต่ใช้ section 9.11 เป็น source of truth สำหรับ production persistence/service; ต้องทบทวน conformance matrix และห้ามลอก mock behavior ที่ระบุเป็น production hardening gap
-- [ ] Security policy ต้องสอดคล้องกับ Auth baseline: email/password only, mandatory Email OTP สำหรับ Admin, idle 8h, max 24h, failed login 5 ครั้ง, lockout 15 นาที
+- [ ] Security policy ต้องสอดคล้องกับ Auth baseline: email/password only, idle 8h, max 24h, failed login 5 ครั้ง, lockout 15 นาที
 - [ ] Retention settings ต้องไม่อนุญาต manual delete audit logs จาก UI ปกติ
 - [ ] Export policy ต้องรองรับ CSV/Excel, background job, expiry, sensitive export reason และ audit
 - [ ] Feature flags ต้องแสดง FO/BO impact ก่อนบันทึก และ audit ทุกครั้ง

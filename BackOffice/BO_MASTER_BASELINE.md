@@ -41,7 +41,7 @@ Phase 1 คือ BO foundation ที่ล็อกใน prototype แล้�
 | Module | Phase 1 Scope |
 | --- | --- |
 | Global BO Rules | Responsive layout, admin access control, shared patterns, status, audit, privacy, FO sync |
-| Auth / Admin Accounts | Email/password login, mandatory Email OTP for Admin, session timeout, failed login lockout, one-time Admin invitation อายุ 72 ชั่วโมง, initial-password activation และ Invited-to-Active lifecycle |
+| Auth / Admin Accounts | Email/password login, session timeout, failed login lockout, one-time Admin invitation อายุ 72 ชั่วโมง, initial-password activation และ Invited-to-Active lifecycle |
 | Admin Permission | Module visibility และ action-level permission enforcement |
 | Dashboard | Key metrics, pending queues, recent activity, last updated snapshot |
 | User Management | User list, search/filter/sort, profile/detail view, login history, suspend/ban/restore, reset password, Account Deletion handoff, no direct User List export |
@@ -115,7 +115,7 @@ Phase 3 คือ advanced workflow และ external integration ที่ย�
 | --- | --- |
 | Platform | Responsive web app รองรับ desktop, tablet และ mobile-width browsers |
 | Language | ภาษาไทยเป็นหลัก ใช้ English technical term ได้เมื่อจำเป็น |
-| Auth | JWT + refresh token หรือ secure session model ที่เทียบเท่า; mandatory Email OTP สำหรับ BO Admin login |
+| Auth | JWT + refresh token หรือ secure session model ที่เทียบเท่า |
 | Security | HTTPS, admin access control, IP whitelist option สำหรับ production, audit log retention อย่างน้อย 1 ปี |
 | Performance | Dashboard target load ภายใน 3 วินาทีหลัง auth; table ขนาดใหญ่ต้อง server-side paginate |
 | Accessibility | Label ชัดเจน keyboard reachable controls และ visible focus states |

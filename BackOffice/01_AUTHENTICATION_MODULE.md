@@ -1,13 +1,13 @@
 # 01 BO Authentication And Admin Accounts Module
 
-**Version:** `BO-01-v1.2`<br>
-**Date:** 2026-09-20<br>
-**Status:** สเปกปัจจุบัน — Admin invitation lifecycle/security contract defined<br>
+**Version:** `BO-01-v1.4`<br>
+**Date:** 2026-09-23<br>
+**Status:** สเปกปัจจุบัน — BO Login baseline = Email + Password → BO (no Login OTP step) ตาม Change Mission `0a5b2b14`<br>
 **Platform:** Responsive Web Back Office
 
 ## UI Standards And Prototype Reference
 
-เอกสารนี้ต้องใช้ร่วมกับ `00_GLOBAL_RULES_MODULE.md` และยึดรูปแบบหน้าจอ/พฤติกรรมที่ยืนยันแล้วใน `../Prototypes/bo-prototype.html` เป็นมาตรฐานหลัก โดยเฉพาะ Login screen ที่ล็อกแล้ว รวมถึง layout (split บน desktop, single column บน tablet/mobile), dark theme, brand identity, form pattern และ OTP flow ตาม Login Pattern ใน `BO_UI_UX_STANDARD.md`
+เอกสารนี้ต้องใช้ร่วมกับ `00_GLOBAL_RULES_MODULE.md` และยึดรูปแบบหน้าจอ/พฤติกรรมที่ยืนยันแล้วใน `../Prototypes/bo-prototype.html` เป็นมาตรฐานหลัก โดยเฉพาะ Login screen ที่ล็อกแล้ว รวมถึง layout (split บน desktop, single column บน tablet/mobile), dark theme, brand identity, form pattern ตาม Login Pattern ใน `BO_UI_UX_STANDARD.md`
 
 เอกสารอ้างอิง: `00_GLOBAL_RULES_MODULE.md`, `BO_UI_UX_STANDARD.md`, `BO_MASTER_BASELINE.md`, `BO_PRD.md`, `BO_Spec.md`
 
@@ -17,14 +17,14 @@
 | --- | --- |
 | Module Name | BO Authentication And Admin Accounts |
 | Platform | Responsive Web Back Office |
-| Version | `BO-01-v1.3` |
-| Status | สเปกปัจจุบัน — Admin invitation lifecycle/security contract synced กับ accepted Mission 1 prototype/tests |
+| Version | `BO-01-v1.4` |
+| Status | สเปกปัจจุบัน — BO Login baseline = Email + Password → BO (amended ตาม Change Mission `0a5b2b14`); Admin invitation lifecycle/security contract synced กับ accepted Mission 1 prototype/tests |
 | Owner | Product / UX / Engineering / Operations |
 | Document Type | Functional PRD |
 
 ## 2. Objective
 
-เอกสารนี้กำหนด authentication, session, Email OTP verification, admin account lifecycle และ permission enforcement สำหรับ Back Office web application
+เอกสารนี้กำหนด authentication, session, admin account lifecycle และ permission enforcement สำหรับ Back Office web application
 
 BO authentication แยกจาก FO authentication โดยสมบูรณ์ FO user ไม่สามารถ login เข้า BO ได้ และ BO admin ไม่ใช้ Apple/Google SSO สำหรับ BO access ใน V1
 
@@ -33,7 +33,6 @@ BO authentication แยกจาก FO authentication โดยสมบูร�
 ### In Scope
 
 - BO login ด้วย email/password
-- Email OTP verification บังคับสำหรับ BO Admin login ทุกครั้ง
 - Session timeout และ logout
 - Failed login lockout
 - Password reset สำหรับ BO admin
@@ -58,7 +57,7 @@ BO uses exactly one admin account type: `Admin`. Authentication requirements do 
 
 | Admin Account Type | Auth Requirement |
 | --- | --- |
-| Admin | Email/password + mandatory Email OTP |
+| Admin | Email/password |
 
 ## 5. Responsive Screen Requirements
 
@@ -66,8 +65,7 @@ Login และ auth-adjacent screens ใช้ layout และ breakpoint ต�
 
 | Screen | Mobile (≤ 760px) | Tablet (761-1180px) | Desktop (> 1180px) |
 | --- | --- | --- | --- |
-| Login | Single column: hero visual บน (compact) + form panel ล่าง, OTP actions 1 column | Single column: hero visual บน + form panel ล่าง (content จำกัด 390px, center) | Split layout: hero visual ซ้าย (decorative) + form panel ขวา (dark theme) |
-| Email OTP Verify | Single-column code input, OTP actions 1 column | Centered form | อยู่ใน form panel ขวาของ split layout |
+| Login | Single column: hero visual บน (compact) + form panel ล่าง | Single column: hero visual บน + form panel ล่าง (content จำกัด 390px, center) | Split layout: hero visual ซ้าย (decorative) + form panel ขวา (dark theme) |
 | Reset Password | Single-column form | Centered form | Centered form หรือ reuse Login split layout |
 | Session Expired | Full-width message/action | Centered message | Centered message |
 | Access Denied | Message ชัดเจนและ back action | Same | Same |
@@ -84,12 +82,9 @@ Auth action ทุกอย่างต้องใช้งานได้บ�
 1. Admin เปิด BO login
 2. Admin กรอก email และ password
 3. ระบบ validate credentials
-4. หลัง password ถูกต้อง ระบบสร้าง Email OTP 6 หลักและส่งไปยัง email ของ Admin account
-5. ระบบพาไปหน้า Email OTP verification
-6. Admin กรอก OTP
-7. ถ้า OTP ถูกต้องและยังไม่หมดอายุ ระบบสร้าง BO session
-8. Admin เข้าสู่ Dashboard หรือ authorized deep link เดิม
-9. Login success และ OTP verified ถูก audit-log
+4. ถ้า credentials ถูกต้อง ระบบสร้าง BO session ทันที
+5. Admin เข้าสู่ Dashboard หรือ authorized deep link เดิม
+6. Login success ถูก audit-log
 
 ### Requirements
 - Login ใช้ email/password เท่านั้น
@@ -98,27 +93,15 @@ Auth action ทุกอย่างต้องใช้งานได้บ�
 - Lockout error ต้องไม่เปิดเผย security detail เกินจำเป็น
 - ถ้า admin เปิด unauthorized deep link หลัง login ให้แสดง access denied ไม่ใช่ redirect เงียบ ๆ
 
-## 7. Email OTP Verification
+## 7. Login Authentication Baseline
+
+Current BO Login baseline คือ `Email + Password → BO` — เมื่อ credentials ถูกต้องระบบสร้าง BO session ทันทีตาม section 6 โดยไม่มี verification challenge เพิ่มเติม
 
 ### Requirements
-- Admin must pass Email OTP verification after password validation before entering BO
-- V1 ใช้ Email OTP แทนแอปยืนยันตัวตนภายนอก เพื่อลด friction สำหรับทีม BO ขนาดเล็ก
-- OTP ต้องเป็นรหัส 6 หลัก สร้างใหม่ต่อ login attempt และผูกกับ Admin account/session challenge
-- OTP ต้องหมดอายุภายใน 5 นาที
-- Resend OTP ต้องมี cooldown อย่างน้อย 60 วินาที และต้อง invalidate หรือ supersede OTP เดิมตาม implementation policy
-- OTP verification ผิดครบ 5 ครั้งต้อง block challenge และให้เริ่ม login ใหม่ หรือ lock account ตาม risk policy
-- Email delivery failure ต้องแสดง state ให้ retry/resend ได้โดยไม่เปิดเผย security detail เกินจำเป็น
-- หน้าจอ Email OTP verification ต้องเปลี่ยน title เป็น "Email OTP Verification" และแสดง destination email + countdown expiry ตาม prototype ที่ล็อกแล้ว
-- Scope: Email OTP ใช้เฉพาะ Login flow เท่านั้น — invitation activation ใช้ possession verification ของ one-time link แทนและห้ามถาม OTP ซ้ำ (section 10.1); หลัง activation ผู้ใช้กลับ Login และ OTP policy เดิมยังบังคับทุกครั้ง
-
-### Email OTP Challenge States
-| State | Meaning | Required Behavior |
-| --- | --- | --- |
-| Pending | Password ถูกต้องและระบบส่ง OTP แล้ว | แสดงหน้า Email OTP verification |
-| Verified | OTP ถูกต้องและยังไม่หมดอายุ | สร้าง BO session และเข้า Dashboard/deep link ที่ได้รับอนุญาต |
-| Invalid | OTP ผิด | แจ้ง invalid code และให้ retry จนถึง attempt limit |
-| Expired | OTP หมดอายุ | ให้ resend OTP และไม่รับรหัสเดิม |
-| Delivery Failed | ส่ง email ไม่สำเร็จ | แสดง retry/resend state และ audit event ตาม risk policy |
+- Login ใช้ email/password เท่านั้นและไม่มีขั้นตอนยืนยันตัวตนเพิ่มเติมใน current phase (ไม่ใช้ Login Email OTP, OTP verification step, MFA หรือ 2FA)
+- Session creation, idle/max expiry และ lifecycle enforcement ตาม section 8
+- Failed login และ lockout policy ตาม section 9
+- Invitation activation ใช้ possession verification ของ one-time link (section 10.1) และไม่เกี่ยวกับ Login challenge; หลัง activation ผู้ใช้กลับ Login ด้วย email/password ตาม baseline นี้
 
 ## 8. Session Rules
 
@@ -147,7 +130,7 @@ Auth action ทุกอย่างต้องใช้งานได้บ�
 | Status | Meaning |
 | --- | --- |
 | Invited | สร้าง account แล้ว แต่ admin ยังไม่ได้ตั้ง password |
-| Active | Admin login ได้ตาม admin access/Email OTP rule |
+| Active | Admin login ได้ด้วย email/password ตาม admin access rule |
 | Locked | ถูก lock จาก failed attempts หรือ security action |
 | Suspended | ถูก disable โดย Admin |
 | Archived | เอาออกจาก active use แต่เก็บไว้เพื่อ audit history |
@@ -161,7 +144,6 @@ Auth action ทุกอย่างต้องใช้งานได้บ�
 | Admin access / Role assignment | Yes | ชื่อเชิงแนวคิดใน Auth; production persist เป็น required `role_id` FK ตาม `16_ADMIN_SETTINGS_MODULE.md` section 9.11 ไม่เก็บชื่อ Role หรือ permission payload ซ้ำ |
 | Status | Yes | Admin account status |
 | Account Revision | Yes | Integer `>= 1`; เพิ่มเมื่อ account identity/status/Role/password activation state เปลี่ยน และใช้ optimistic concurrency |
-| Email OTP Required | Yes | Required for BO Admin login |
 | Last Login At | No | แสดงใน account detail |
 | Created By | Yes | Audit |
 | Updated By | Yes | Audit |
@@ -170,7 +152,7 @@ Auth action ทุกอย่างต้องใช้งานได้บ�
 
 ### 10.1 Admin Invitation Lifecycle And Security Contract
 
-Contract นี้เป็น production boundary สำหรับ Admin Account สถานะ `Invited` ตั้งแต่สร้างคำเชิญจน activation สำเร็จ โดยไม่เปลี่ยน Login/Email OTP flow ที่ล็อกแล้ว และไม่ถือว่า in-memory state ใน prototype เป็น security enforcement จริง
+Contract นี้เป็น production boundary สำหรับ Admin Account สถานะ `Invited` ตั้งแต่สร้างคำเชิญจน activation สำเร็จ โดยไม่เปลี่ยน Login baseline (Email + Password → BO) ใน section 6–7 และไม่ถือว่า in-memory state ใน prototype เป็น security enforcement จริง
 
 > Requirement trace (Mission 1 scope): `bf08de1f` → Mission 1 `0248791b` (Admin Invitation & Account Activation) → Objective 4 → Feature "Mission 1 authentication/admin-settings contract update" → Task `AIL-012`; behavior ที่ sync ใน section นี้ implement/accepted แล้วใน AIL-002–AIL-011
 
@@ -229,7 +211,7 @@ Raw invitation token ต้องสร้างด้วย CSPRNG ความ
 
 1. Public recipient route ใช้ `/bo/accept-invitation#token=<opaque-token>` เพื่อไม่ให้ token เข้า HTTP request line/referrer; client ส่ง token ใน POST body ไป `POST /api/bo/admin-invitations/resolve` เพื่อรับ safe context และ `POST /api/bo/admin-invitations/activate` เพื่อ submit token + initial password + confirmation + idempotency key. Route/resolve นี้ไม่สร้าง authenticated BO session.
    - Page ต้องใช้ `Referrer-Policy: no-referrer`, `Cache-Control: no-store`, ห้ามโหลด third-party resource ก่อนลบ token ออกจาก URL และต้อง capture token ไว้ใน memory แล้วใช้ `history.replaceState` ลบ fragment; ห้ามเก็บ token ใน cookie, local/session storage หรือ telemetry
-2. Valid invitation link เป็น possession verification สำหรับ activation จึงห้ามถาม Email OTP ซ้ำ. หลัง activation ผู้ใช้กลับ Login และยังต้องผ่าน mandatory Email OTP ตาม section 6–7.
+2. Valid invitation link เป็น possession verification สำหรับ activation จึงไม่ต้องมี verification challenge เพิ่มเติม. หลัง activation ผู้ใช้กลับ Login และเข้าสู่ระบบด้วย email/password ตาม section 6–7.
 3. Service hash/MAC token แล้วค้นด้วย constant-time comparison, ตรวจ `Pending`, expiry, token revision, target account `Invited`, normalized email, account revision, `role_id`, Role status/revision/permission validity และ invitation-account relationship ใหม่ใน transaction ตอน submit; การตรวจเฉพาะตอนเปิดหน้าไม่เพียงพอ.
 4. Initial password ต้องอย่างน้อย 12 ตัวอักษรและมี uppercase, lowercase, number และ special character อย่างน้อยประเภทละ 1 ตัว; confirmation ต้องตรงกัน. Password ถูก hash ด้วย approved password KDF และห้ามอยู่ใน log/audit/delivery/idempotency response.
 5. Commit สำเร็จต้อง compare-and-consume invitation `Pending -> Used`, set `used_at`, เปลี่ยน account `Invited -> Active`, persist password hash, เพิ่ม account revision และเขียน audit/outbox ใน transaction เดียว. ถ้าเงื่อนไขใด stale หรือ audit/outbox write ล้มเหลวให้ rollback ทั้งชุด.
@@ -282,7 +264,7 @@ Safe resolution states แบ่งเป็น terminal และ transient ต
 | --- | --- | --- | --- |
 | Invalid link | `invalid_token`, `not_allowed` | Terminal | กลับ Login; generic message ที่ไม่เปิดเผยว่า account/invitation มีอยู่หรือไม่ |
 | Link expired | `expired` | Terminal | กลับ Login พร้อมช่องทางติดต่อ Admin เพื่อขอคำเชิญใหม่ |
-| Link already used | `already_used` | Terminal | นำทางไป Login; account activate แล้วและ Login ยังบังคับ Email OTP ตามปกติ |
+| Link already used | `already_used` | Terminal | นำทางไป Login; account activate แล้วและ Login ด้วย email/password ตามปกติ |
 | Invitation cancelled | `cancelled` | Terminal | กลับ Login พร้อมช่องทางติดต่อ Admin |
 | Link superseded | `superseded`, `stale_revision` | Terminal | กลับ Login พร้อมคำแนะนำให้ใช้ลิงก์จากอีเมลคำเชิญฉบับล่าสุด |
 | Activation unavailable | `account_ineligible`, `role_ineligible` | Terminal | Block โดยไม่เปลี่ยน account/Role/password; แสดง safe message และช่องทางติดต่อ Admin |
@@ -338,9 +320,6 @@ Invitation action ต้อง enforce permission และ stale-state safeguar
 - Account unlocked
 - Password reset requested
 - Password changed
-- Email OTP sent
-- Email OTP verified
-- Email OTP failed/expired/resend
 - Admin Role assignment/permission changed
 - Admin invited
 - Admin invitation created/resend/cancel/reissue/expired/accepted/activated
@@ -354,9 +333,6 @@ Invitation action ต้อง enforce permission และ stale-state safeguar
 | Case | Required State |
 | --- | --- |
 | Invalid credentials | Generic login error |
-| Email OTP invalid code | แจ้ง invalid code และให้ retry |
-| Email OTP expired | แจ้ง expired state และให้ resend OTP |
-| Email OTP delivery failed | แจ้งว่าส่งรหัสไม่ได้และให้ retry/resend |
 | Account locked | แสดง lockout message และ support/admin contact route ถ้ามี |
 | Account suspended | แสดง access unavailable message |
 | Session expired | แสดง session expired message และ login action |
@@ -374,18 +350,18 @@ Invitation action ต้อง enforce permission และ stale-state safeguar
 | --- | --- |
 | AC-BO-AUTH-001 | BO login รองรับ email/password เท่านั้น |
 | AC-BO-AUTH-002 | FO user login เข้า BO ไม่ได้ |
-| AC-BO-AUTH-003 | Admin must pass mandatory Email OTP verification before entering BO |
+| AC-BO-AUTH-003 | Admin เข้าสู่ BO ทันทีหลัง email/password ถูกต้อง — ไม่มี Login OTP/MFA/2FA step ใน current phase |
 | AC-BO-AUTH-004 | Failed login ครบ 5 ครั้งแล้ว lock account 15 นาที |
 | AC-BO-AUTH-005 | Idle session หมดอายุหลัง 8 ชั่วโมง และ max session หมดอายุหลัง 24 ชั่วโมง |
 | AC-BO-AUTH-006 | Route และ action permission check ต้อง block unauthorized access |
 | AC-BO-AUTH-007 | Navigation ซ่อน module ที่ไม่มีสิทธิ์ แต่ direct URL ยังต้อง enforce permission |
 | AC-BO-AUTH-008 | Admin account lifecycle รองรับ invited, active, locked, suspended, archived |
 | AC-BO-AUTH-009 | Admin active คนสุดท้ายหรือ account สุดท้ายที่คง admin recovery coverage ต้องไม่ถูก archive/suspend/change Role โดยไม่มี eligible replacement |
-| AC-BO-AUTH-010 | Login, logout, failed login, lockout, password, Email OTP, Role/permission และ admin account changes ต้อง audit-log |
+| AC-BO-AUTH-010 | Login, logout, failed login, lockout, password, Role/permission และ admin account changes ต้อง audit-log |
 | AC-BO-AUTH-011 | Auth screens ใช้งานได้บน mobile, tablet, desktop และ wide desktop widths |
 | AC-BO-AUTH-012 | Admin invitation ใช้ one-time opaque token อายุ 72 ชั่วโมง เก็บเฉพาะ hash/MAC พร้อม token revision และมี `Pending/Used/Expired/Cancelled/Superseded` transition ตาม section 10.1 |
 | AC-BO-AUTH-013 | Activation ต้อง revalidate invitation, expiry, account/email/Role/revision และ consume invitation พร้อมเปลี่ยน account `Invited -> Active` + persist password + audit/outbox แบบ atomic; race/replay/stale request เปลี่ยน state ซ้ำไม่ได้ |
-| AC-BO-AUTH-014 | Valid invitation link เป็น possession verification จึงไม่ถาม Email OTP ซ้ำ; activation สำเร็จกลับ Login และ Login ยังบังคับ Email OTP ตามเดิม |
+| AC-BO-AUTH-014 | Valid invitation link เป็น possession verification จึงไม่ต้องมี verification challenge ซ้ำ; activation สำเร็จกลับ Login และ Login ใช้ email/password ตาม baseline ปัจจุบัน |
 | AC-BO-AUTH-015 | Resend ใช้ cooldown 60 วินาทีและไม่เกิน 5 successful issuances ต่อ rolling 24 ชั่วโมงต่อ target account, supersede token เดิม และมี hidden abuse control ที่ไม่เปิดเผย/ไม่เปลี่ยน quota |
 | AC-BO-AUTH-016 | Cancel คง account `Invited`; Reissue สร้าง token revision ถัดไป; delivery failure ไม่ rollback account/invitation และทุก email attempt มี Delivery Log |
 | AC-BO-AUTH-017 | Invitation UI/route/API/service enforce `settings.admin_accounts.manage`, account/Role eligibility และ stale revision; action ที่ไม่อนุญาตไม่แสดงและ direct mutation ถูก reject |

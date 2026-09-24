@@ -10,8 +10,6 @@ async function loginIfNeeded(page) {
   const loginScreen = page.locator("#login-screen");
   if (await loginScreen.isVisible({ timeout: 1000 }).catch(() => false)) {
     await page.locator("#login-form button[type=\"submit\"]").click();
-    await page.waitForSelector("#otp-form:not(.hidden)", { timeout: 5000 });
-    await page.locator("#verify-otp-btn").click();
     await page.waitForFunction(() => !document.body.classList.contains("logged-out"), { timeout: 5000 });
     await page.waitForTimeout(500);
   }
@@ -234,7 +232,7 @@ test.describe("QA-BO-001: Login + Dashboard (strict)", () => {
     test("15. submit button ข้อความตรง prototype", async ({ page }) => {
       await page.goto(PROTOTYPE_URL);
       await page.waitForLoadState("networkidle");
-      await expect(page.locator("#login-form button[type=\"submit\"]")).toHaveText("Send Email OTP");
+      await expect(page.locator("#login-form button[type=\"submit\"]")).toHaveText("เข้าสู่ระบบ");
     });
 
     test("16. primary button เต็มความกว้าง", async ({ page }) => {
@@ -249,103 +247,20 @@ test.describe("QA-BO-001: Login + Dashboard (strict)", () => {
     });
   });
 
-  test.describe("Login — OTP form & attributes", () => {
-    test("17. OTP code field: inputmode=numeric, maxlength=6, autocomplete=one-time-code", async ({ page }) => {
-      await page.goto(PROTOTYPE_URL);
-      await page.waitForLoadState("networkidle");
-      await page.locator("#login-form button[type=\"submit\"]").click();
-      await page.waitForSelector("#otp-form:not(.hidden)", { timeout: 5000 });
-      await expect(page.locator("#otp-code")).toHaveAttribute("inputmode", "numeric");
-      await expect(page.locator("#otp-code")).toHaveAttribute("maxlength", "6");
-      await expect(page.locator("#otp-code")).toHaveAttribute("autocomplete", "one-time-code");
-    });
-
-    test("18. OTP title เปลี่ยนเป็น Email OTP Verification", async ({ page }) => {
-      await page.goto(PROTOTYPE_URL);
-      await page.waitForLoadState("networkidle");
-      await page.locator("#login-form button[type=\"submit\"]").click();
-      await page.waitForSelector("#otp-form:not(.hidden)", { timeout: 5000 });
-      await expect(page.locator("#auth-title")).toHaveText("Email OTP Verification");
-    });
-
-    test("19. OTP destination แสดง email ที่ส่งรหัสไป", async ({ page }) => {
-      await page.goto(PROTOTYPE_URL);
-      await page.waitForLoadState("networkidle");
-      await page.locator("#login-form button[type=\"submit\"]").click();
-      await page.waitForSelector("#otp-form:not(.hidden)", { timeout: 5000 });
-      const dest = await page.locator("#otp-destination").textContent();
-      expect(dest).toContain("Sent to");
-      expect(dest).toContain("@");
-    });
-
-    test("20. OTP expiry countdown เริ่มที่ 05:00 และนับถอยหลังจริง", async ({ page }) => {
-      await page.goto(PROTOTYPE_URL);
-      await page.waitForLoadState("networkidle");
-      await page.locator("#login-form button[type=\"submit\"]").click();
-      await page.waitForSelector("#otp-form:not(.hidden)", { timeout: 5000 });
-      // ตรวจค่าเริ่มต้น
-      const initial = await page.locator("#otp-expiry").textContent();
-      expect(initial).toContain("05:00");
-      // รอ 1.6s แล้วตรวจว่าลดจริง
-      await page.waitForTimeout(1600);
-      const after = await page.locator("#otp-expiry").textContent();
-      expect(after).toMatch(/04:5[89]/);
-      // ต้องไม่ใช่ 05:00 อีก
-      expect(after).not.toContain("05:00");
-    });
-
-    test("21. resend cooldown เริ่มที่ 60s และนับถอยหลังจริง", async ({ page }) => {
-      await page.goto(PROTOTYPE_URL);
-      await page.waitForLoadState("networkidle");
-      await page.locator("#login-form button[type=\"submit\"]").click();
-      await page.waitForSelector("#otp-form:not(.hidden)", { timeout: 5000 });
-      // ปุ่ม resend ต้อง disabled ตอน cooldown
-      await expect(page.locator("#resend-otp-btn")).toBeDisabled();
-      const initial = await page.locator("#resend-otp-btn").textContent();
-      expect(initial).toContain("60s");
-      // รอ 1.6s แล้วตรวจว่าลดจริง
-      await page.waitForTimeout(1600);
-      const after = await page.locator("#resend-otp-btn").textContent();
-      expect(after).toMatch(/5[89]s/);
-      expect(after).not.toContain("60s");
-    });
-
-    test("22. OTP action buttons ข้อความตรง prototype", async ({ page }) => {
-      await page.goto(PROTOTYPE_URL);
-      await page.waitForLoadState("networkidle");
-      await page.locator("#login-form button[type=\"submit\"]").click();
-      await page.waitForSelector("#otp-form:not(.hidden)", { timeout: 5000 });
-      await expect(page.locator("#back-login-btn")).toContainText("Back to login");
-      await expect(page.locator("#verify-otp-btn")).toHaveText("Verify OTP");
-    });
-
-    test("23. Back to login กลับไป login form + title กลับเป็น Admin Login", async ({ page }) => {
-      await page.goto(PROTOTYPE_URL);
-      await page.waitForLoadState("networkidle");
-      await page.locator("#login-form button[type=\"submit\"]").click();
-      await page.waitForSelector("#otp-form:not(.hidden)", { timeout: 5000 });
-      await page.locator("#back-login-btn").click();
-      await page.waitForSelector("#login-form:not(.hidden)", { timeout: 3000 });
-      await expect(page.locator("#login-form")).not.toHaveClass(/hidden/);
-      await expect(page.locator("#otp-form")).toHaveClass(/hidden/);
-      await expect(page.locator("#auth-title")).toHaveText("Admin Login");
-    });
-  });
-
   test.describe("Login — auth error & accessibility", () => {
-    test("24. auth-error มี role=alert", async ({ page }) => {
+    test("17. auth-error มี role=alert", async ({ page }) => {
       await page.goto(PROTOTYPE_URL);
       await page.waitForLoadState("networkidle");
       await expect(page.locator("#auth-error")).toHaveAttribute("role", "alert");
     });
 
-    test("25. login-visual เป็น decorative (aria-hidden)", async ({ page }) => {
+    test("18. login-visual เป็น decorative (aria-hidden)", async ({ page }) => {
       await page.goto(PROTOTYPE_URL);
       await page.waitForLoadState("networkidle");
       await expect(page.locator(".login-visual")).toHaveAttribute("aria-hidden", "true");
     });
 
-    test("26. bad-password scenario: generic error ไม่ระบุ field ที่ผิด", async ({ page }) => {
+    test("19. bad-password scenario: generic error ไม่ระบุ field ที่ผิด", async ({ page }) => {
       await page.goto(PROTOTYPE_URL);
       await page.waitForLoadState("networkidle");
       await selectAuthScenario(page, "bad-password");
@@ -356,86 +271,23 @@ test.describe("QA-BO-001: Login + Dashboard (strict)", () => {
       // ห้ามยืนยันชัดเจนว่า field ไหนผิด
       expect(errorText).not.toMatch(/your (email|password) (is|was) (incorrect|wrong|invalid)/);
       expect(errorText).not.toMatch(/email (not found|does not exist|unknown)/);
-      // ต้องไม่สลับไป OTP form
+      // ต้องยังอยู่ที่ login form — ไม่เข้าระบบ
       await expect(page.locator("#login-form")).not.toHaveClass(/hidden/);
-    });
-
-    test("27. invalid OTP scenario: error และไม่เข้าระบบ", async ({ page }) => {
-      await page.goto(PROTOTYPE_URL);
-      await page.waitForLoadState("networkidle");
-      await selectAuthScenario(page, "invalid");
-      await page.locator("#login-form button[type=\"submit\"]").click();
-      await page.waitForSelector("#otp-form:not(.hidden)", { timeout: 5000 });
-      await page.locator("#verify-otp-btn").click();
-      await page.waitForTimeout(500);
-      const errorText = (await page.locator("#auth-error").textContent()).toLowerCase();
-      expect(errorText).toContain("invalid otp");
-      await expect(page.locator("body")).toHaveClass(/logged-out/);
-    });
-
-    test("28. expired OTP scenario: Verify disabled + error + Resend enabled", async ({ page }) => {
-      await page.goto(PROTOTYPE_URL);
-      await page.waitForLoadState("networkidle");
-      await selectAuthScenario(page, "expired");
-      await page.locator("#login-form button[type=\"submit\"]").click();
-      await page.waitForSelector("#otp-form:not(.hidden)", { timeout: 5000 });
-      await page.locator("#verify-otp-btn").click();
-      await page.waitForTimeout(500);
-      const errorText = (await page.locator("#auth-error").textContent()).toLowerCase();
-      expect(errorText).toContain("expired");
-      await expect(page.locator("#verify-otp-btn")).toBeDisabled();
-      await expect(page.locator("#resend-otp-btn")).toBeEnabled();
-      // ปุ่ม resend ต้องไม่มี cooldown อีก (เปลี่ยนเป็น "Resend OTP")
-      await expect(page.locator("#resend-otp-btn")).toHaveText("Resend OTP");
-    });
-
-    test("29. delivery failure scenario: error + retry/resend state ใน OTP form", async ({ page }) => {
-      await page.goto(PROTOTYPE_URL);
-      await page.waitForLoadState("networkidle");
-      await selectAuthScenario(page, "delivery");
-      await page.locator("#login-form button[type=\"submit\"]").click();
-      await page.waitForTimeout(500);
-      // prototype: สลับไป OTP form ในสถานะ "Email Delivery Failed"
-      await expect(page.locator("#otp-form")).not.toHaveClass(/hidden/);
-      await expect(page.locator("#auth-title")).toHaveText("Email Delivery Failed");
-      const errorText = (await page.locator("#auth-error").textContent()).toLowerCase();
-      expect(errorText).toContain("delivered");
-      // verify ต้อง disabled, resend ต้อง enabled (retry)
-      await expect(page.locator("#verify-otp-btn")).toBeDisabled();
-      await expect(page.locator("#resend-otp-btn")).toBeEnabled();
-    });
-
-    test("30. resend หลัง expired → รหัสใหม่ + verify ผ่าน", async ({ page }) => {
-      await page.goto(PROTOTYPE_URL);
-      await page.waitForLoadState("networkidle");
-      await selectAuthScenario(page, "expired");
-      await page.locator("#login-form button[type=\"submit\"]").click();
-      await page.waitForSelector("#otp-form:not(.hidden)", { timeout: 5000 });
-      await page.locator("#verify-otp-btn").click();
-      await page.waitForTimeout(300);
-      await page.locator("#resend-otp-btn").click();
-      await page.waitForTimeout(300);
-      await expect(page.locator("#verify-otp-btn")).toBeEnabled();
-      await page.locator("#verify-otp-btn").click();
-      await page.waitForFunction(() => !document.body.classList.contains("logged-out"), { timeout: 5000 });
-      await expect(page.locator("body")).not.toHaveClass(/logged-out/);
     });
   });
 
   test.describe("Login — transition & logout", () => {
-    test("31. login สำเร็จ → Dashboard + body ไม่ logged-out + login screen หาย", async ({ page }) => {
+    test("20. login สำเร็จ → Dashboard + body ไม่ logged-out + login screen หาย", async ({ page }) => {
       await page.goto(PROTOTYPE_URL);
       await page.waitForLoadState("networkidle");
       await page.locator("#login-form button[type=\"submit\"]").click();
-      await page.waitForSelector("#otp-form:not(.hidden)", { timeout: 5000 });
-      await page.locator("#verify-otp-btn").click();
       await page.waitForFunction(() => !document.body.classList.contains("logged-out"), { timeout: 5000 });
       await expect(page.locator("body")).not.toHaveClass(/logged-out/);
       await expect(page.locator("#login-screen")).toBeHidden();
       await expect(page.locator("#page-title")).toHaveText("Dashboard");
     });
 
-    test("32. logout → กลับหน้า login + body logged-out", async ({ page }) => {
+    test("21. logout → กลับหน้า login + body logged-out", async ({ page }) => {
       await page.goto(PROTOTYPE_URL);
       await page.waitForLoadState("networkidle");
       await loginIfNeeded(page);
@@ -449,7 +301,7 @@ test.describe("QA-BO-001: Login + Dashboard (strict)", () => {
   // ==================== DASHBOARD — DISPLAY (อ้างอิง prototype) ====================
 
   test.describe("Dashboard — header", () => {
-    test("33. breadcrumb + title + meta ตรง prototype", async ({ page }) => {
+    test("22. breadcrumb + title + meta ตรง prototype", async ({ page }) => {
       await page.goto(PROTOTYPE_URL);
       await page.waitForLoadState("networkidle");
       await loginIfNeeded(page);
@@ -460,7 +312,7 @@ test.describe("QA-BO-001: Login + Dashboard (strict)", () => {
       await expect(page.locator("#page-meta")).toContainText("GMT+7");
     });
 
-    test("34. header ไม่มี Date Range / Refresh / Export / global search", async ({ page }) => {
+    test("23. header ไม่มี Date Range / Refresh / Export / global search", async ({ page }) => {
       await page.goto(PROTOTYPE_URL);
       await page.waitForLoadState("networkidle");
       await loginIfNeeded(page);
@@ -471,7 +323,7 @@ test.describe("QA-BO-001: Login + Dashboard (strict)", () => {
       expect(headerText.toLowerCase()).not.toContain("export");
     });
 
-    test("35. panel title + subtitle ตรง prototype", async ({ page }) => {
+    test("24. panel title + subtitle ตรง prototype", async ({ page }) => {
       await page.goto(PROTOTYPE_URL);
       await page.waitForLoadState("networkidle");
       await loginIfNeeded(page);
@@ -481,7 +333,7 @@ test.describe("QA-BO-001: Login + Dashboard (strict)", () => {
   });
 
   test.describe("Dashboard — KPI cards (8 cards ตามลำดับ)", () => {
-    test("36. KPI cards ครบ 8 ตามลำดับที่ spec ล็อก", async ({ page }) => {
+    test("25. KPI cards ครบ 8 ตามลำดับที่ spec ล็อก", async ({ page }) => {
       await page.goto(PROTOTYPE_URL);
       await page.waitForLoadState("networkidle");
       await loginIfNeeded(page);
@@ -498,7 +350,7 @@ test.describe("QA-BO-001: Login + Dashboard (strict)", () => {
       ]);
     });
 
-    test("37. KPI cards มี value + trend + chips ครบ", async ({ page }) => {
+    test("26. KPI cards มี value + trend + chips ครบ", async ({ page }) => {
       await page.goto(PROTOTYPE_URL);
       await page.waitForLoadState("networkidle");
       await loginIfNeeded(page);
@@ -514,7 +366,7 @@ test.describe("QA-BO-001: Login + Dashboard (strict)", () => {
       }
     });
 
-    test("38. Reported Items chips แสดง Assets/Users/Articles/Comments", async ({ page }) => {
+    test("27. Reported Items chips แสดง Assets/Users/Articles/Comments", async ({ page }) => {
       await page.goto(PROTOTYPE_URL);
       await page.waitForLoadState("networkidle");
       await loginIfNeeded(page);
@@ -529,7 +381,7 @@ test.describe("QA-BO-001: Login + Dashboard (strict)", () => {
   });
 
   test.describe("Dashboard — navigation from KPI cards (spec ล็อกปลายทาง)", () => {
-    test("39. New Users card → User Management / User Accounts", async ({ page }) => {
+    test("28. New Users card → User Management / User Accounts", async ({ page }) => {
       await page.goto(PROTOTYPE_URL);
       await page.waitForLoadState("networkidle");
       await loginIfNeeded(page);
@@ -542,7 +394,7 @@ test.describe("QA-BO-001: Login + Dashboard (strict)", () => {
       expect(title).not.toBe("Dashboard");
     });
 
-    test("40. New Assets card → Asset Management / Asset List", async ({ page }) => {
+    test("29. New Assets card → Asset Management / Asset List", async ({ page }) => {
       await page.goto(PROTOTYPE_URL);
       await page.waitForLoadState("networkidle");
       await loginIfNeeded(page);
@@ -551,7 +403,7 @@ test.describe("QA-BO-001: Login + Dashboard (strict)", () => {
       await expect(page.locator(".nav-item[data-module=\"assets\"]")).toHaveClass(/active/);
     });
 
-    test("41. Reported Items / Assets chip → Asset Management / Reported Assets", async ({ page }) => {
+    test("30. Reported Items / Assets chip → Asset Management / Reported Assets", async ({ page }) => {
       await page.goto(PROTOTYPE_URL);
       await page.waitForLoadState("networkidle");
       await loginIfNeeded(page);
@@ -565,7 +417,7 @@ test.describe("QA-BO-001: Login + Dashboard (strict)", () => {
       expect(subText).toContain("Reported Assets");
     });
 
-    test("42. Reported Items / Users chip → User Management / Reported Users", async ({ page }) => {
+    test("31. Reported Items / Users chip → User Management / Reported Users", async ({ page }) => {
       await page.goto(PROTOTYPE_URL);
       await page.waitForLoadState("networkidle");
       await loginIfNeeded(page);
@@ -578,7 +430,7 @@ test.describe("QA-BO-001: Login + Dashboard (strict)", () => {
       expect(subText).toContain("Reported Users");
     });
 
-    test("43. Reported Items / Articles chip → Content Management / Reported Articles", async ({ page }) => {
+    test("32. Reported Items / Articles chip → Content Management / Reported Articles", async ({ page }) => {
       await page.goto(PROTOTYPE_URL);
       await page.waitForLoadState("networkidle");
       await loginIfNeeded(page);
@@ -591,7 +443,7 @@ test.describe("QA-BO-001: Login + Dashboard (strict)", () => {
       expect(subText).toContain("Reported Articles");
     });
 
-    test("44. Reported Items / Comments chip → Asset Management / Reported Comments", async ({ page }) => {
+    test("33. Reported Items / Comments chip → Asset Management / Reported Comments", async ({ page }) => {
       await page.goto(PROTOTYPE_URL);
       await page.waitForLoadState("networkidle");
       await loginIfNeeded(page);
@@ -604,7 +456,7 @@ test.describe("QA-BO-001: Login + Dashboard (strict)", () => {
       expect(subText).toContain("Reported Comments");
     });
 
-    test("45. Offer Activity card → Offer Management", async ({ page }) => {
+    test("34. Offer Activity card → Offer Management", async ({ page }) => {
       await page.goto(PROTOTYPE_URL);
       await page.waitForLoadState("networkidle");
       await loginIfNeeded(page);
@@ -613,7 +465,7 @@ test.describe("QA-BO-001: Login + Dashboard (strict)", () => {
       await expect(page.locator(".nav-item[data-module=\"offers\"]")).toHaveClass(/active/);
     });
 
-    test("46. Articles card → Content Management / Articles", async ({ page }) => {
+    test("35. Articles card → Content Management / Articles", async ({ page }) => {
       await page.goto(PROTOTYPE_URL);
       await page.waitForLoadState("networkidle");
       await loginIfNeeded(page);
@@ -624,7 +476,7 @@ test.describe("QA-BO-001: Login + Dashboard (strict)", () => {
       await expect(page.locator(".nav-item[data-module=\"content\"]")).toHaveClass(/active/);
     });
 
-    test("47. Watch Alert card → Market Demand / Demand Overview", async ({ page }) => {
+    test("36. Watch Alert card → Market Demand / Demand Overview", async ({ page }) => {
       await page.goto(PROTOTYPE_URL);
       await page.waitForLoadState("networkidle");
       await loginIfNeeded(page);
@@ -636,7 +488,7 @@ test.describe("QA-BO-001: Login + Dashboard (strict)", () => {
       expect(subText).toContain("Demand Overview");
     });
 
-    test("48. Policies card → Settings / Policy & Versioning", async ({ page }) => {
+    test("37. Policies card → Settings / Policy & Versioning", async ({ page }) => {
       await page.goto(PROTOTYPE_URL);
       await page.waitForLoadState("networkidle");
       await loginIfNeeded(page);
@@ -650,7 +502,7 @@ test.describe("QA-BO-001: Login + Dashboard (strict)", () => {
   });
 
   test.describe("Dashboard — Work Queue (7 rows ตามลำดับ)", () => {
-    test("49. Work Queue ครบ 7 rows ตามลำดับที่ spec ล็อก", async ({ page }) => {
+    test("38. Work Queue ครบ 7 rows ตามลำดับที่ spec ล็อก", async ({ page }) => {
       await page.goto(PROTOTYPE_URL);
       await page.waitForLoadState("networkidle");
       await loginIfNeeded(page);
@@ -668,7 +520,7 @@ test.describe("QA-BO-001: Login + Dashboard (strict)", () => {
       ]);
     });
 
-    test("50. Work Queue priority ถูกต้อง (high/medium/normal)", async ({ page }) => {
+    test("39. Work Queue priority ถูกต้อง (high/medium/normal)", async ({ page }) => {
       await page.goto(PROTOTYPE_URL);
       await page.waitForLoadState("networkidle");
       await loginIfNeeded(page);
@@ -688,7 +540,7 @@ test.describe("QA-BO-001: Login + Dashboard (strict)", () => {
       expect(priorities[6]).toMatch(/priority-normal/);
     });
 
-    test("51. Work Queue rows มี count + module jump", async ({ page }) => {
+    test("40. Work Queue rows มี count + module jump", async ({ page }) => {
       await page.goto(PROTOTYPE_URL);
       await page.waitForLoadState("networkidle");
       await loginIfNeeded(page);
@@ -700,7 +552,7 @@ test.describe("QA-BO-001: Login + Dashboard (strict)", () => {
       }
     });
 
-    test("52. คลิก Work Queue row 1 (รายงานสินทรัพย์) → Asset Management / Reported Assets", async ({ page }) => {
+    test("41. คลิก Work Queue row 1 (รายงานสินทรัพย์) → Asset Management / Reported Assets", async ({ page }) => {
       await page.goto(PROTOTYPE_URL);
       await page.waitForLoadState("networkidle");
       await loginIfNeeded(page);
@@ -712,7 +564,7 @@ test.describe("QA-BO-001: Login + Dashboard (strict)", () => {
       expect(subText).toContain("Reported Assets");
     });
 
-    test("53. คลิก Work Queue row 2 (รายงานผู้ใช้) → User Management / Reported Users", async ({ page }) => {
+    test("42. คลิก Work Queue row 2 (รายงานผู้ใช้) → User Management / Reported Users", async ({ page }) => {
       await page.goto(PROTOTYPE_URL);
       await page.waitForLoadState("networkidle");
       await loginIfNeeded(page);
@@ -724,7 +576,7 @@ test.describe("QA-BO-001: Login + Dashboard (strict)", () => {
       expect(subText).toContain("Reported Users");
     });
 
-    test("54. คลิก Work Queue row 4 (คำขอลบบัญชี) → Account Deletion", async ({ page }) => {
+    test("43. คลิก Work Queue row 4 (คำขอลบบัญชี) → Account Deletion", async ({ page }) => {
       await page.goto(PROTOTYPE_URL);
       await page.waitForLoadState("networkidle");
       await loginIfNeeded(page);
@@ -735,7 +587,7 @@ test.describe("QA-BO-001: Login + Dashboard (strict)", () => {
   });
 
   test.describe("Dashboard — Recent Activity", () => {
-    test("55. Recent Activity filter 5 ตัว: ทั้งหมด/Report/Offer/Content/System", async ({ page }) => {
+    test("44. Recent Activity filter 5 ตัว: ทั้งหมด/Report/Offer/Content/System", async ({ page }) => {
       await page.goto(PROTOTYPE_URL);
       await page.waitForLoadState("networkidle");
       await loginIfNeeded(page);
@@ -745,7 +597,7 @@ test.describe("QA-BO-001: Login + Dashboard (strict)", () => {
       expect(labels).toEqual(["ทั้งหมด", "Report", "Offer", "Content", "System"]);
     });
 
-    test("56. filter ทำงานจริง — Report แสดงเฉพาะ report events", async ({ page }) => {
+    test("45. filter ทำงานจริง — Report แสดงเฉพาะ report events", async ({ page }) => {
       await page.goto(PROTOTYPE_URL);
       await page.waitForLoadState("networkidle");
       await loginIfNeeded(page);
@@ -762,7 +614,7 @@ test.describe("QA-BO-001: Login + Dashboard (strict)", () => {
       expect(allCountAgain).toBe(allCount);
     });
 
-    test("57. activity rows มี title + time + module jump", async ({ page }) => {
+    test("46. activity rows มี title + time + module jump", async ({ page }) => {
       await page.goto(PROTOTYPE_URL);
       await page.waitForLoadState("networkidle");
       await loginIfNeeded(page);
@@ -779,7 +631,7 @@ test.describe("QA-BO-001: Login + Dashboard (strict)", () => {
   });
 
   test.describe("Dashboard — panels (4 cards)", () => {
-    test("58. Dashboard panels ครบ 4: Asset Status, Offer Status, Latest Articles, Top Searched Brands", async ({ page }) => {
+    test("47. Dashboard panels ครบ 4: Asset Status, Offer Status, Latest Articles, Top Searched Brands", async ({ page }) => {
       await page.goto(PROTOTYPE_URL);
       await page.waitForLoadState("networkidle");
       await loginIfNeeded(page);
@@ -792,7 +644,7 @@ test.describe("QA-BO-001: Login + Dashboard (strict)", () => {
       expect(titles).toContain("Top Searched Brands");
     });
 
-    test("59. Offer Status panel 6 rows ตามลำดับ status", async ({ page }) => {
+    test("48. Offer Status panel 6 rows ตามลำดับ status", async ({ page }) => {
       await page.goto(PROTOTYPE_URL);
       await page.waitForLoadState("networkidle");
       await loginIfNeeded(page);
@@ -801,7 +653,7 @@ test.describe("QA-BO-001: Login + Dashboard (strict)", () => {
       expect(labels).toEqual(["Pending", "Paused", "Accepted", "Rejected", "Cancelled", "Invalidated"]);
     });
 
-    test("60. Latest Articles panel 3 rows พร้อม status value", async ({ page }) => {
+    test("49. Latest Articles panel 3 rows พร้อม status value", async ({ page }) => {
       await page.goto(PROTOTYPE_URL);
       await page.waitForLoadState("networkidle");
       await loginIfNeeded(page);
@@ -814,7 +666,7 @@ test.describe("QA-BO-001: Login + Dashboard (strict)", () => {
       expect(values).toContain("Draft");
     });
 
-    test("61. Top Searched Brands panel 5 brands พร้อม percent + bar", async ({ page }) => {
+    test("50. Top Searched Brands panel 5 brands พร้อม percent + bar", async ({ page }) => {
       await page.goto(PROTOTYPE_URL);
       await page.waitForLoadState("networkidle");
       await loginIfNeeded(page);
@@ -827,7 +679,7 @@ test.describe("QA-BO-001: Login + Dashboard (strict)", () => {
       }
     });
 
-    test("62. Offer Status rows → Offer Management", async ({ page }) => {
+    test("51. Offer Status rows → Offer Management", async ({ page }) => {
       await page.goto(PROTOTYPE_URL);
       await page.waitForLoadState("networkidle");
       await loginIfNeeded(page);
@@ -838,7 +690,7 @@ test.describe("QA-BO-001: Login + Dashboard (strict)", () => {
       }
     });
 
-    test("63. Latest Articles rows → Content Management", async ({ page }) => {
+    test("52. Latest Articles rows → Content Management", async ({ page }) => {
       await page.goto(PROTOTYPE_URL);
       await page.waitForLoadState("networkidle");
       await loginIfNeeded(page);
@@ -849,7 +701,7 @@ test.describe("QA-BO-001: Login + Dashboard (strict)", () => {
       }
     });
 
-    test("64. Top Searched Brands rows → Market Demand / Search Insights", async ({ page }) => {
+    test("53. Top Searched Brands rows → Market Demand / Search Insights", async ({ page }) => {
       await page.goto(PROTOTYPE_URL);
       await page.waitForLoadState("networkidle");
       await loginIfNeeded(page);
@@ -865,14 +717,14 @@ test.describe("QA-BO-001: Login + Dashboard (strict)", () => {
   });
 
   test.describe("Dashboard — menu active state", () => {
-    test("65. menu Dashboard active เมื่ออยู่ในหน้า Dashboard", async ({ page }) => {
+    test("54. menu Dashboard active เมื่ออยู่ในหน้า Dashboard", async ({ page }) => {
       await page.goto(PROTOTYPE_URL);
       await page.waitForLoadState("networkidle");
       await loginIfNeeded(page);
       await expect(page.locator(".nav-item[data-module=\"dashboard\"]")).toHaveClass(/active/);
     });
 
-    test("66. คลิก metric card แล้ว menu active เปลี่ยน + Dashboard ไม่ active", async ({ page }) => {
+    test("55. คลิก metric card แล้ว menu active เปลี่ยน + Dashboard ไม่ active", async ({ page }) => {
       await page.goto(PROTOTYPE_URL);
       await page.waitForLoadState("networkidle");
       await loginIfNeeded(page);
@@ -886,7 +738,7 @@ test.describe("QA-BO-001: Login + Dashboard (strict)", () => {
   // ==================== RESPONSIVE — section order & layout ====================
 
   test.describe("Dashboard — responsive section order (mobile)", () => {
-    test("67. mobile 390px: ลำดับ Header → KPI → Work Queue → Activity → Panels", async ({ browser }) => {
+    test("56. mobile 390px: ลำดับ Header → KPI → Work Queue → Activity → Panels", async ({ browser }) => {
       const page = await browser.newPage({ viewport: { width: 390, height: 844 } });
       await page.goto(PROTOTYPE_URL);
       await page.waitForLoadState("networkidle");
@@ -907,7 +759,7 @@ test.describe("QA-BO-001: Login + Dashboard (strict)", () => {
   });
 
   test.describe("Dashboard — responsive content completeness", () => {
-    test("68. mobile 390px: KPI 8 cards + Work Queue 7 rows ไม่หาย", async ({ browser }) => {
+    test("57. mobile 390px: KPI 8 cards + Work Queue 7 rows ไม่หาย", async ({ browser }) => {
       const page = await browser.newPage({ viewport: { width: 390, height: 844 } });
       await page.goto(PROTOTYPE_URL);
       await page.waitForLoadState("networkidle");
@@ -917,7 +769,7 @@ test.describe("QA-BO-001: Login + Dashboard (strict)", () => {
       await page.close();
     });
 
-    test("69. tablet 768px: ครบทุก section", async ({ browser }) => {
+    test("58. tablet 768px: ครบทุก section", async ({ browser }) => {
       const page = await browser.newPage({ viewport: { width: 768, height: 1024 } });
       await page.goto(PROTOTYPE_URL);
       await page.waitForLoadState("networkidle");
@@ -928,7 +780,7 @@ test.describe("QA-BO-001: Login + Dashboard (strict)", () => {
       await page.close();
     });
 
-    test("70. desktop 1280px: ครบทุก section", async ({ browser }) => {
+    test("59. desktop 1280px: ครบทุก section", async ({ browser }) => {
       const page = await browser.newPage({ viewport: { width: 1280, height: 800 } });
       await page.goto(PROTOTYPE_URL);
       await page.waitForLoadState("networkidle");
@@ -939,7 +791,7 @@ test.describe("QA-BO-001: Login + Dashboard (strict)", () => {
       await page.close();
     });
 
-    test("71. desktop 1440px: ครบทุก section", async ({ browser }) => {
+    test("60. desktop 1440px: ครบทุก section", async ({ browser }) => {
       const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
       await page.goto(PROTOTYPE_URL);
       await page.waitForLoadState("networkidle");
@@ -952,7 +804,7 @@ test.describe("QA-BO-001: Login + Dashboard (strict)", () => {
   });
 
   test.describe("Login — responsive all 4 viewports", () => {
-    test("72. ทุก viewport: login screen แสดง + form ใช้งานได้", async ({ browser }) => {
+    test("61. ทุก viewport: login screen แสดง + form ใช้งานได้", async ({ browser }) => {
       for (const [w, h] of [[390, 844], [768, 1024], [1280, 800], [1440, 900]]) {
         const page = await browser.newPage({ viewport: { width: w, height: h } });
         await page.goto(PROTOTYPE_URL);

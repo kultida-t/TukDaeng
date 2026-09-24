@@ -3,8 +3,8 @@
 //   + §14 (error states) + 16_ADMIN_SETTINGS_MODULE.md §8.9 (admin-side surfaces)
 // scope: เฉพาะจุดที่ Mission 1 แก้ — Invite Admin modal, Admin Detail invitation
 //   section + confirm modals (resend/cancel/reissue), Accept Invitation
-//   (form/context/policy/error association), safe recovery states, Login + OTP
-//   entry boundary, Delivery/Audit jump จาก invitation context
+//   (form/context/policy/error association), safe recovery states, Login entry
+//   boundary (Email + Password → BO), Delivery/Audit jump จาก invitation context
 // viewports: desktop 1440×900 / tablet 1024×768 / mobile 390×844
 //   (tablet-768 project ถูก set เป็น 1024×768 ใน beforeEach ตาม task)
 // ไม่ครอบ Mission 2 (My Account/credential/session) และไม่ใช่ full protected
@@ -24,8 +24,6 @@ async function loginIfNeeded(page) {
   const loginScreen = page.locator("#login-screen");
   if (await loginScreen.isVisible({ timeout: 1000 }).catch(() => false)) {
     await page.locator("#login-form button[type=\"submit\"]").click();
-    await page.waitForSelector("#otp-form:not(.hidden)", { timeout: 5000 });
-    await page.locator("#verify-otp-btn").click();
     await page.waitForFunction(() => !document.body.classList.contains("logged-out"), { timeout: 5000 });
     await page.waitForTimeout(500);
   }
@@ -93,9 +91,9 @@ test.describe("QA-BO-018: Mission 1 scoped UI/responsive/accessibility smoke (AI
     }
   });
 
-  // ---------- 1. Login + OTP entry boundary ----------
+  // ---------- 1. Login entry boundary (Email + Password → BO) ----------
 
-  test("1. Login + OTP boundary: form/OTP render ครบทุก viewport ไม่ overflow และ back กลับได้", async ({ page }) => {
+  test("1. Login boundary: form render ครบทุก viewport ไม่ overflow + Email + Password → BO ตรง ไม่มี OTP step", async ({ page }) => {
     await page.goto(PROTOTYPE_URL);
     await page.waitForLoadState("networkidle");
 
@@ -108,22 +106,13 @@ test.describe("QA-BO-018: Mission 1 scoped UI/responsive/accessibility smoke (AI
     await expect(page.locator("#login-form button[type=\"submit\"]")).toBeVisible();
     await expectNoHorizontalScroll(page);
 
-    // password → OTP entry (boundary ที่ Mission 1 พึ่งพา — ห้ามเปลี่ยน)
+    // Email + Password → BO ตรง — baseline ใหม่ไม่มี intermediate OTP step
     await page.locator("#login-form button[type=\"submit\"]").click();
-    await page.waitForSelector("#otp-form:not(.hidden)", { timeout: 5000 });
-    await expect(page.locator("#otp-code")).toBeVisible();
-    await expect(page.locator("#otp-destination")).toBeVisible();
-    await expect(page.locator("#otp-expiry")).toBeVisible();
-    await expect(page.locator("#back-login-btn")).toBeVisible();
-    await expect(page.locator("#resend-otp-btn")).toBeVisible();
-    await expect(page.locator("#verify-otp-btn")).toBeVisible();
+    await page.waitForFunction(() => !document.body.classList.contains("logged-out"), { timeout: 5000 });
+    await expect(page.locator("#otp-form")).toHaveCount(0);
+    await expect(page.locator("#login-screen")).toBeHidden();
+    await expect(page.locator("#page-title")).toHaveText("Dashboard");
     await expectNoHorizontalScroll(page);
-
-    // back to login ทำงาน — OTP boundary ไม่ lock ผู้ใช้
-    await page.locator("#back-login-btn").click();
-    await page.waitForTimeout(200);
-    await expect(page.locator("#login-form")).toBeVisible();
-    await expect(page.locator("#otp-form")).toHaveClass(/hidden/);
   });
 
   // ---------- 2. Invite Admin modal ----------
@@ -476,7 +465,7 @@ test.describe("QA-BO-018: Mission 1 scoped UI/responsive/accessibility smoke (AI
     expect(await page.evaluate(() => document.activeElement?.hasAttribute("data-invite-exit"))).toBe(true);
     await expectNoHorizontalScroll(page);
 
-    // keyboard Enter บน focused action → กลับ Login (ยังบังคับ Email OTP เดิม)
+    // keyboard Enter บน focused action → กลับ Login
     await page.keyboard.press("Enter");
     await page.waitForTimeout(200);
     await expect(page.locator("#invite-screen")).toBeHidden();

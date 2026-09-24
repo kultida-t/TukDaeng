@@ -326,7 +326,7 @@ test.describe("QA-BO-015: Accept Invitation & Initial Password Activation (AIL-0
     expect(state.activateAudits.some(a => a.result === "Failed" && a.failureCode === "CANCELLED")).toBe(true);
   });
 
-  test("15. Success → กลับ Login ได้ และ Login ยังบังคับ Email OTP เหมือนเดิม", async ({ page }) => {
+  test("15. Success → กลับ Login ได้ และ Login ด้วย Email + Password เข้าระบบได้ทันที (ไม่มี OTP)", async ({ page }) => {
     await page.goto(inviteUrl(VALID_TOKEN));
     await page.waitForLoadState("networkidle");
     await fillInvitePassword(page, VALID_PASSWORD);
@@ -341,10 +341,11 @@ test.describe("QA-BO-015: Accept Invitation & Initial Password Activation (AIL-0
     expect(state.inviteMode).toBe(false);
     expect(state.loggedOut).toBe(true);
 
-    // login ครั้งถัดไปยังต้อง Email OTP — flow เดิมไม่เปลี่ยน
+    // login ครั้งถัดไปใช้ Email + Password → เข้า BO ตรง ไม่มี OTP step
     await page.locator("#login-form button[type=\"submit\"]").click();
-    await page.waitForSelector("#otp-form:not(.hidden)", { timeout: 5000 });
-    await expect(page.locator("#otp-code")).toBeVisible();
+    await page.waitForFunction(() => !document.body.classList.contains("logged-out"), { timeout: 5000 });
+    await expect(page.locator("#otp-form")).toHaveCount(0);
+    await expect(page.locator("#page-title")).toHaveText("Dashboard");
   });
 
   test("16. Refresh หลัง consume — hash ถูก strip แล้ว จึงกลับมาที่ Login (token ไม่ค้างใน URL)", async ({ page }) => {

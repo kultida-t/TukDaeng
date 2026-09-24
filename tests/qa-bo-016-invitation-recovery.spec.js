@@ -110,7 +110,7 @@ test.describe("QA-BO-016: Invitation Safe Recovery States (AIL-009)", () => {
     await expect(page.locator("#invite-content")).toContainText("LINK ALREADY USED");
     // recovery channel ของ used = กลับ Login (บัญชีเปิดใช้งานแล้ว ไม่ใช่ขอคำเชิญใหม่)
     await expect(page.locator("[data-invite-exit]")).toHaveText("GO TO LOGIN");
-    await expect(page.locator("#invite-content")).toContainText("Email OTP");
+    await expect(page.locator("#invite-content")).toContainText("เข้าสู่ระบบด้วยอีเมลและรหัสผ่าน");
     await expect(page.locator("#invite-form")).toHaveCount(0);
   });
 
@@ -266,7 +266,7 @@ test.describe("QA-BO-016: Invitation Safe Recovery States (AIL-009)", () => {
     expect(state.account.status).toBe("Active");
   });
 
-  test("11. Recovery exit → กลับ Login ครบทุกช่องทาง และ Login flow เดิม (Email OTP)", async ({ page }) => {
+  test("11. Recovery exit → กลับ Login ครบทุกช่องทาง และ Login flow เดิม (Email + Password → BO)", async ({ page }) => {
     // exit จาก terminal state (expired)
     await openInviteWithScenario(page, "expired");
     await page.locator("[data-invite-exit]").click();
@@ -276,10 +276,10 @@ test.describe("QA-BO-016: Invitation Safe Recovery States (AIL-009)", () => {
     expect(state.inviteMode).toBe(false);
     expect(state.loggedOut).toBe(true);
 
-    // Login ยังบังคับ Email OTP เหมือนเดิม — behavior ไม่เปลี่ยน
+    // Login baseline: Email + Password → เข้า BO ตรง ไม่มี OTP step
     await page.locator("#login-form button[type=\"submit\"]").click();
-    await page.waitForSelector("#otp-form:not(.hidden)", { timeout: 5000 });
-    await expect(page.locator("#otp-code")).toBeVisible();
+    await page.waitForFunction(() => !document.body.classList.contains("logged-out"), { timeout: 5000 });
+    await expect(page.locator("#otp-form")).toHaveCount(0);
   });
 
   test("12. Sensitive data — recovery screen ไม่เปิดเผย token/revision/internal reason", async ({ page }) => {

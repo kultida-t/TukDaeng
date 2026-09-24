@@ -11,8 +11,6 @@ async function loginIfNeeded(page) {
   const loginScreen = page.locator("#login-screen");
   if (await loginScreen.isVisible({ timeout: 1000 }).catch(() => false)) {
     await page.locator("#login-form button[type=\"submit\"]").click();
-    await page.waitForSelector("#otp-form:not(.hidden)", { timeout: 5000 });
-    await page.locator("#verify-otp-btn").click();
     await page.waitForFunction(() => !document.body.classList.contains("logged-out"), { timeout: 5000 });
     await page.waitForTimeout(500);
   }
@@ -130,19 +128,17 @@ test.describe("QA-BO-012: Login pattern — dark theme + split layout", () => {
   test("5. login form มีค่า default อยู่แล้ว (email + password)", async ({ page }) => {
     await page.goto(PROTOTYPE_URL);
     await page.waitForLoadState("networkidle");
-    await expect(page.locator("#login-email")).toHaveValue("admin@tukdaeng.example");
+    await expect(page.locator("#login-email")).toHaveValue("current.admin@tukdaeng.example");
     await expect(page.locator("#login-password")).toHaveValue("tukdaeng-admin");
   });
 
-  test("6. login flow: submit → OTP form → verify → เข้าระบบได้", async ({ page }) => {
+  test("6. login flow: submit Email + Password → เข้าระบบได้โดยตรง (ไม่มี OTP step)", async ({ page }) => {
     await page.goto(PROTOTYPE_URL);
     await page.waitForLoadState("networkidle");
     await page.locator("#login-form button[type='submit']").click();
-    await page.waitForSelector("#otp-form:not(.hidden)", { timeout: 5000 });
-    await expect(page.locator("#otp-form")).not.toHaveClass(/hidden/);
-    await page.locator("#verify-otp-btn").click();
     await page.waitForFunction(() => !document.body.classList.contains("logged-out"), { timeout: 5000 });
     expect(await page.evaluate(() => document.body.classList.contains("logged-out"))).toBe(false);
+    await expect(page.locator("#otp-form")).toHaveCount(0);
   });
 
   test("7. login สำเร็จแล้ว login screen ซ่อน", async ({ page }) => {

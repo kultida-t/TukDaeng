@@ -4,13 +4,11 @@ const { test, expect } = require("@playwright/test");
 
 const PROTOTYPE_URL = "/bo-prototype.html";
 
-// helper: login เข้าระบบ (ค่า default อยู่ใน form แล้ว — กด submit 2 ครั้ง)
+// helper: login เข้าระบบ (ค่า default อยู่ใน form แล้ว — Email + Password → BO ตรง)
 async function loginIfNeeded(page) {
   const loginScreen = page.locator('#login-screen');
   if (await loginScreen.isVisible({ timeout: 1000 }).catch(() => false)) {
     await page.locator('#login-form button[type="submit"]').click();
-    await page.waitForSelector('#otp-form:not(.hidden)', { timeout: 5000 });
-    await page.locator('#verify-otp-btn').click();
     await page.waitForFunction(() => !document.body.classList.contains("logged-out"), { timeout: 5000 });
     await page.waitForTimeout(500);
   }

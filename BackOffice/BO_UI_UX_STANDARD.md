@@ -496,7 +496,7 @@ Option Detail เปิดจาก group row ใน Option Group List เป็
 
 ## Login Pattern
 
-ส่วนนี้สรุป pattern ของหน้า Login และ auth-adjacent screens (Email OTP, reset password, session expired, access denied) ที่ล็อกแล้วใน prototype หน้า auth ใหม่ที่จะขึ้นในอนาคตให้ reuse pattern ที่นี่
+ส่วนนี้สรุป pattern ของหน้า Login และ auth-adjacent screens (reset password, session expired, access denied) ที่ล็อกแล้วใน prototype หน้า auth ใหม่ที่จะขึ้นในอนาคตให้ reuse pattern ที่นี่
 
 Login เป็นหน้าจอประเภทพิเศษที่ไม่ใช้ list/detail/dashboard pattern ของ module อื่น ไม่มี sidebar navigation, breadcrumb, KPI cards, table, filter หรือ pagination แต่ใช้ layout และ visual language ของตัวเองตาม prototype ที่ล็อกแล้ว
 
@@ -521,7 +521,6 @@ Login ใช้ split layout 2 คอลัมน์:
 - Visual ลดเหลือ `clamp(150px, 32svh, 210px)`
 - Panel padding ลดเหลือ `34px 18px 44px`
 - Form input สูง 46px
-- OTP actions เปลี่ยนเป็น 1 column (Verify OTP → Resend → Back to login)
 
 ### Brand Identity
 
@@ -537,17 +536,7 @@ Login form มี:
 - Email field (type=email, autocomplete=username)
 - Password field พร้อม visibility toggle (ปุ่ม eye icon ขวาใน field)
 - "ลืมรหัสผ่าน?" link (ฝั่งซ้ายใน meta row)
-- Primary button "Send Email OTP" (เต็มความกว้าง)
-
-### Email OTP Form
-
-หลัง password ถูกต้อง ระบบสลับไป OTP form (ซ่อน login form, แสดง OTP form):
-
-- Title เปลี่ยนเป็น "Email OTP Verification"
-- OTP code field (6 หลัก, inputmode=numeric, maxlength=6, autocomplete=one-time-code)
-- Meta row: "Sent to <email>" + "Expires in MM:SS" (countdown จาก 05:00)
-- Action buttons: "← Back to login" (ghost), "Resend in 60s" (disabled ระหว่าง cooldown), "Verify OTP" (primary)
-- OTP หมดอายุ → ปุ่ม Verify disabled, แสดง error, เปิดให้ Resend ได้
+- Primary button "เข้าสู่ระบบ" (เต็มความกว้าง) — submit แล้วเข้าสู่ BO ทันทีเมื่อ credentials ถูกต้อง ตาม Login baseline Email + Password → BO (ไม่มี OTP step)
 
 ### Auth State And Error
 
@@ -573,7 +562,7 @@ Login form มี:
 - Form input สูง 44-46px, radius 7px
 - Primary button เต็มความกว้าง
 - Error message ใช้ `role="alert"` และไม่เปิดเผย security detail เกินจำเป็น
-- ทุก auth event (login, logout, OTP, lockout, password reset) ต้อง audit-log ตาม `01_AUTHENTICATION_MODULE.md` section 13
+- ทุก auth event (login, logout, lockout, password reset) ต้อง audit-log ตาม `01_AUTHENTICATION_MODULE.md` section 13
 
 ## Navigation And Context
 
