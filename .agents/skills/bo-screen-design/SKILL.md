@@ -78,7 +78,7 @@ Skill นี้เป็น **มาตรฐานกลางสำหรั�
 เมื่อออกแบบ/สร้าง module ใหม่ ให้ทำตามลำดับนี้:
 
 1. **อ่าน source of truth** ตามลิสต์ด้านบน
-2. **ระบุประเภท module** — list-only, list+detail, report queue, editor, dashboard-like หรือ master data management
+2. **ระบุประเภท module** — list-only, list+detail, report queue, editor, dashboard-like, master data management หรือ self-service account/settings page
 3. **เลือก source pattern** จาก completed module ที่ใกล้ที่สุด (ดูตารางด้านล่าง)
 4. **ทำ Module Application Checklist** (ดูท้าย skill)
 5. **ออกแบบตาม pattern ใน skill นี้** โดยใช้ section ที่เกี่ยวข้อง
@@ -100,6 +100,7 @@ Skill นี้เป็น **มาตรฐานกลางสำหรั�
 | Data sync/import + audit | Market Data |
 | Notification list | (ยังไม่มี pattern ที่ล็อก — ใช้ list-only pattern กลาง) |
 | Reports/analytics | (ยังไม่มี pattern ที่ล็อก — ใช้ dashboard-like + filter) |
+| Self-service account page | My Account (AIL-020 — detail shell คอลัมน์เดียว, summary tiles, edit ผ่าน modal) |
 | Settings/config | (ยังไม่มี pattern ที่ล็อก — ใช้ form pattern กลาง) |
 
 ---
@@ -200,7 +201,7 @@ Side panel และ list/detail split เป็น **optional ไม่ใช�
 - ข้อมูล detail ซ้ำซ้อนกับข้อมูลในตาราง
 - เป็น master data management ที่ detail แสดงในตารางอยู่แล้ว
 
-> **ตัวอย่าง module ที่ไม่มี side panel:** User Management, Asset Management, Offer Management, Content Management, Market Data, Option Master — ทั้งหมดใช้ full-width panel ตาม prototype ที่ล็อกแล้ว มีเฉพาะ Dashboard ที่ใช้ side panel (แสดง activity)
+> **ตัวอย่าง module ที่ไม่มี side panel:** User Management, Asset Management, Offer Management, Content Management, Market Data, Option Master, My Account — ทั้งหมดใช้ full-width panel ตาม prototype ที่ล็อกแล้ว มีเฉพาะ Dashboard ที่ใช้ side panel (แสดง activity)
 
 ### Layout Standards (เมื่อตัดสินใจว่ามี side panel)
 
@@ -343,10 +344,19 @@ Detail page มาตรฐานต้องมี:
 - Header ของ entity พร้อม ID/name, status/context badges และ back action
 - Section แยกตามงานจริง ไม่รวมทุกอย่างเป็น card เดียว
 - Detail tiles สำหรับ key/value สำคัญ
-- Grid 2 columns หรือ 4 columns เฉพาะเมื่อข้อมูลสั้นและอ่านเร็ว
+- Grid 2, 3 หรือ 4 columns (`.detail-grid.two/.three/.four` มีใน shared CSS แล้ว) เลือกตามจำนวน tile จริง — เช่น 6 tiles → 3 columns
 - History/audit ใช้ table layout เดียวกัน
 - Warning/impact note อยู่ใกล้ action ที่เกี่ยวข้อง
 - Sensitive data ต้อง masked หรือ read-only ตาม module policy
+
+**กฎสำหรับหน้า detail ของ "ตัวเอง" (self-service account page เช่น My Account):**
+
+- **ห้ามสร้าง entity header/detail-head ซ้ำ** เมื่อ summary tiles มีข้อมูล identity (ชื่อ, รหัส, สถานะ) ครบอยู่แล้ว — identity แสดงที่เดียวใน tiles พอ
+- ไม่ต้องมี back action เพราะเข้าจาก sidebar/profile entry ไม่ใช่ drill-in จาก list
+- Breadcrumb ใช้ส่วนเดียว `<ชื่อหน้า>` ถ้าหน้านั้นไม่มี parent จริงในเมนู — ห้ามอ้างกลุ่มเมนูที่ไม่มีใน sidebar
+- ฟิลด์ที่แก้ไม่ได้ (email, role, status) เป็น read-only tiles; ฟิลด์ที่แก้ได้ใช้ Edit action เปิด modal แทน inline editing
+
+**เตือน: detail shell ของ prototype มีพื้นที่ `.detail` ฝั่งขวาสำหรับ split pattern** — ถ้าหน้าไม่ใช่ list/detail split ต้องไม่ render หรือซ่อนส่วนนั้น ไม่งั้นจะเห็นแถบว่างขวาและ header/ปุ่มว่างค้าง (เคสจริง: AIL-020)
 
 **Detail section ที่ควรมีตามชนิด module:**
 
@@ -356,6 +366,7 @@ Detail page มาตรฐานต้องมี:
 - Offer: offered asset, buyer/owner summary, offer history, related context, read-only note
 - Content: article metadata, rendered content, preview, publish state, editor entry/action
 - Market: brand/model/reference detail, sync/source metadata, affected FO surfaces, audit/history
+- Self-service account (My Account): account summary tiles ครบ identity (Admin ID, Name, Email, Role, Status, Last Login) + Edit action เฉพาะฟิลด์ที่แก้ได้ — ไม่มี entity header ซ้ำ ไม่มี back action ไม่มี section placeholder ของงานที่ยังไม่ทำ
 
 > **Offer Management V1 เป็น read-only** ห้ามเพิ่ม write actions (accept, decline, cancel, force-expire, invalidate, edit price, edit message) เว้นแต่มี approval แยก
 
@@ -650,6 +661,7 @@ Login เป็นหน้าจอประเภทพิเศษที่�
 - คำที่เป็น technical term / product name / status / command / code identifier คงเป็น English ถ้าเป็น convention ในไฟล์ (เช่น `Active`, `Inactive`, `Pending`, `Closed`)
 - คอมเมนต์ในโค้ดใช้ภาษาเดียวกับคอมเมนต์ข้างเคียงในไฟล์ ถ้าไฟล์ยังไม่มีคอมเมนต์ ใช้ไทยสำหรับ intent ที่ user-facing และ English สำหรับ technical note
 - Match tone/register ของ copy ข้างเคียง ไม่ใช้ภาษาเด่นโดดเด่น
+- **ห้ามใส่ข้อความอ้างอิง internal task code/roadmap (เช่น `AIL-021`, `Phase 2`) หรือ section placeholder ของงานที่ยังไม่ได้ทำ ใน product UI** — หน้าจอต้องแสดงเฉพาะสิ่งที่ใช้งานได้จริงใน scope นั้น (เคสจริง: AIL-020 มี placeholder "Active Sessions" ที่ถูกตัดออกตอน acceptance)
 
 ---
 
@@ -657,7 +669,7 @@ Login เป็นหน้าจอประเภทพิเศษที่�
 
 ใช้ checklist นี้ก่อนเริ่มปรับ module ใหม่:
 
-- [ ] ระบุว่า module เป็น list-only, list+detail, report queue, editor หรือ dashboard-like
+- [ ] ระบุว่า module เป็น list-only, list+detail, report queue, editor, dashboard-like หรือ self-service account page
 - [ ] เลือก source pattern จาก completed module ที่ใกล้ที่สุด (ดูตารางใน section Module Application Workflow)
 - [ ] กำหนด search field หลัก
 - [ ] กำหนด filter options และเรียงตามมาตรฐานกลาง
@@ -686,7 +698,7 @@ Manual QA สำหรับ module ที่นำมาตรฐานนี�
 - [ ] KPI/summary cards แสดงจำนวนและ empty value ถูก (ถ้ามี)
 - [ ] Row/card เปิด detail ถูก entity
 - [ ] Breadcrumb/back navigation กลับ context เดิม
-- [ ] Detail sections ไม่ซ้อน ไม่ตัดข้อมูลสำคัญ
+- [ ] Detail sections ไม่ซ้อน ไม่ตัดข้อมูลสำคัญ ไม่มี entity header ซ้ำกับ summary tiles ไม่มีแถบ `.detail` ว่างฝั่งขวา และไม่มี internal roadmap copy/section placeholder
 - [ ] Modal เปิด/ปิด/focus/scroll ได้
 - [ ] Confirm modal มี target, impact, reason และ result state ที่ถูกต้อง
 - [ ] Permission-disabled action ไม่เปิด mutation flow
