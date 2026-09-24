@@ -142,9 +142,10 @@ test.describe("QA-BO-019a: My Account — page rendering", () => {
   test("7. แสดง section Account Summary พร้อม detail-grid ครบ 6 tiles (Admin ID + Name editable + Email/Role/Status/Last Login)", async ({ page }) => {
     await goToMyAccount(page);
     await expect(page.locator("[data-my-account-section='profile'] h4")).toHaveText("Account Summary");
-    expect(await page.locator("[data-my-account-page] .detail-grid.three .detail-tile").count()).toBe(6);
+    // นับเฉพาะใน Account Summary — Security section มี Password tile แยก (AIL-021)
+    expect(await page.locator("[data-my-account-section='profile'] .detail-grid.three .detail-tile").count()).toBe(6);
     // responsive columns ตาม convention deletion-detail (desktop 3 / tablet ≤1180 → 2 / mobile ≤760 → 1)
-    const colCount = await page.locator("[data-my-account-page] .detail-grid.three").evaluate(
+    const colCount = await page.locator("[data-my-account-section='profile'] .detail-grid.three").evaluate(
       el => getComputedStyle(el).gridTemplateColumns.split(" ").filter(Boolean).length);
     const width = page.viewportSize().width;
     const expected = width <= 760 ? 1 : width <= 1180 ? 2 : 3;
@@ -165,10 +166,10 @@ test.describe("QA-BO-019a: My Account — page rendering", () => {
     await expect(page.locator("[data-my-account-last-login] strong")).toHaveText(SELF.lastLogin);
   });
 
-  test("10. ไม่มี Security/Active Sessions placeholder และไม่ expose internal roadmap copy ใน Product UI", async ({ page }) => {
+  test("10. มีปุ่ม Change Password (security actions); ไม่มี Active Sessions placeholder และไม่ expose internal roadmap copy", async ({ page }) => {
     await goToMyAccount(page);
-    // section ที่ยังไม่มี feature ให้ใช้งาน → defer ออกจาก Product UI (ไม่ใช่ placeholder)
-    expect(await page.locator("[data-my-account-section='security']").count()).toBe(0);
+    // security actions มี Change Password แล้ว (AIL-021) — Active Sessions ยัง defer ออกจาก Product UI (AIL-022/023)
+    await expect(page.locator("[data-my-account-section='security']")).toBeVisible();
     expect(await page.locator("[data-my-account-section='sessions']").count()).toBe(0);
     // ห้ามมี internal task id / roadmap copy เช่น AIL-xxx หรือ "เฟสถัดไป"
     const content = await page.locator("[data-my-account-page]").innerText();

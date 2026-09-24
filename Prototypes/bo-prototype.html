@@ -17065,6 +17065,74 @@
       }
     }
 
+    /* ===== My Account — Change Password =====
+       security actions + password modal; scope เฉพาะ body.my-account-mode
+       และ .my-account-password-modal เพื่อไม่กระทบ module/protected screens อื่น */
+    /* Change Password modal — 3-field form (error/required-mark ใช้ base .article-field-*) */
+    .modal.user-action-modal.my-account-password-modal {
+      width: min(560px, 100%);
+    }
+    .my-account-password-modal .my-account-pw-field {
+      display: grid;
+      gap: 6px;
+      min-width: 0;
+    }
+    /* .user-action-form label กลางเป็น grid → override ให้ "label *" อยู่บรรทัดเดียว (pattern my-account-name-modal) */
+    .my-account-password-modal .my-account-pw-field > .my-account-field-label {
+      display: block;
+      font-size: 12px;
+      font-weight: 700;
+      color: #4b5f78;
+    }
+    .my-account-password-modal .my-account-pw-field .field {
+      min-height: 40px;
+    }
+    /* reuse .password-field/.password-toggle ของ auth screens แต่ปรับโทนสำหรับ light modal */
+    .my-account-password-modal .password-toggle {
+      color: #64748b;
+    }
+    .my-account-password-modal .password-toggle:hover {
+      color: #061426;
+      background: rgba(15, 40, 70, .08);
+    }
+    /* live policy checklist — pattern เดียวกับ .invite-policy แต่โทนสว่าง */
+    .my-account-password-modal .my-account-pw-policy {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: grid;
+      gap: 6px;
+      font-size: 12px;
+      color: #64748b;
+    }
+    .my-account-password-modal .my-account-pw-policy li {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .my-account-password-modal .my-account-pw-policy li::before {
+      content: "";
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #cbd5e1;
+      flex-shrink: 0;
+    }
+    .my-account-password-modal .my-account-pw-policy li[data-pass="true"] {
+      color: #15803d;
+    }
+    .my-account-password-modal .my-account-pw-policy li[data-pass="true"]::before {
+      background: #2fbf71;
+    }
+    /* hidden attribute แพ้ display:flex ของ impact-card → force ซ่อนด้วย rule นี้ */
+    .my-account-password-modal .my-account-pw-form-error[hidden] {
+      display: none;
+    }
+    .my-account-password-modal .user-detail-action-btn:disabled {
+      opacity: .55;
+      cursor: not-allowed;
+    }
+
     /* ===== Support Center Preview modal (HS-PTO-005) ===== */
     .modal.user-action-modal.support-center-preview-modal {
       width: min(480px, 100%);
@@ -20349,6 +20417,14 @@
     // AIL-020: My Account — demo state สลับผ่าน Prototype scenario; "ready" = แสดงข้อมูลปกติ
     let myAccountViewState = "ready";
     let myAccountViewStateTimer = null;
+    // Change Password — rate-limit simulation (current password ผิดครบ 5 ครั้ง → cooldown 60 วินาที)
+    // cooldown คงอยู่ข้ามการปิด/เปิด modal; timer หยุดเองเมื่อ modal ไม่อยู่ใน DOM
+    let myAccountPwFailCount = 0;
+    let myAccountPwCooldownUntil = 0;
+    let myAccountPwCooldownTimer = null;
+    let myAccountPwRevisionSnapshot = null;
+    const MY_ACCOUNT_PW_MAX_ATTEMPTS = 5;
+    const MY_ACCOUNT_PW_COOLDOWN_MS = 60000;
     // Create Custom Role — ค่าที่ validate ผ่านแล้วระหว่างรอ confirmation (ย้อนกลับ = คงค่าเดิม)
     let pendingRoleCreateData = null;
     let pendingRoleEditData = null;
@@ -28941,7 +29017,7 @@
       }
       modal.classList.remove("show");
       modal.classList.remove("market-reference-drawer-open", "market-reference-drawer-closing", "audit-log-drawer-open", "audit-log-drawer-closing");
-      modalCard?.classList.remove("article-preview-modal", "article-editor-confirm-modal", "category-editor-modal", "category-order-modal", "market-editor-modal", "market-reference-drawer", "board-report-phone-preview-modal", "option-editor-modal", "option-order-modal", "option-audit-modal", "role-create-modal", "policy-version-view-modal", "policy-publish-confirm-modal", "policy-restore-confirm-modal", "support-center-preview-modal", "audit-log-detail-modal", "my-account-name-modal");
+      modalCard?.classList.remove("article-preview-modal", "article-editor-confirm-modal", "category-editor-modal", "category-order-modal", "market-editor-modal", "market-reference-drawer", "board-report-phone-preview-modal", "option-editor-modal", "option-order-modal", "option-audit-modal", "role-create-modal", "policy-version-view-modal", "policy-publish-confirm-modal", "policy-restore-confirm-modal", "support-center-preview-modal", "audit-log-detail-modal", "my-account-name-modal", "my-account-password-modal");
       document.body.classList.remove("asset-action-modal-open");
       document.querySelector("#user-action-modal-body").innerHTML = "";
     }
@@ -32291,6 +32367,12 @@
       return adminAccountData.accounts.find((acc) => acc.id === id && acc.isSelf) || null;
     }
 
+    // mock credential store สำหรับ simulation เท่านั้น — production เก็บ password hash ใน auth service
+    // ใช้ยืนยัน current password ของ Change Password flow; ห้าม log/audit/serialize ค่าจาก store นี้
+    const adminCredentialStore = {
+      "ADM-010": { password: "tukdaeng-admin" }
+    };
+
     // page-level gate: ต้อง authenticated Active Admin เท่านั้น (contract §2.2)
     function myAccountHasAccess() {
       return Boolean(auth?.admin?.accountId) && findSelfAdminAccount()?.status === "Active";
@@ -32368,7 +32450,7 @@
       const modalCard = modal?.querySelector(".user-action-modal");
       const modalBody = document.querySelector("#user-action-modal-body");
       if (!modal || !modalCard || !modalBody) return;
-      modalCard.classList.remove("article-preview-modal", "article-editor-confirm-modal", "category-editor-modal", "category-order-modal", "market-editor-modal", "market-reference-drawer", "board-report-phone-preview-modal", "option-editor-modal", "option-order-modal", "option-audit-modal", "policy-version-view-modal", "policy-publish-confirm-modal", "policy-restore-confirm-modal", "support-center-preview-modal", "deletion-action-modal", "admin-account-invite-modal", "audit-log-detail-modal");
+      modalCard.classList.remove("article-preview-modal", "article-editor-confirm-modal", "category-editor-modal", "category-order-modal", "market-editor-modal", "market-reference-drawer", "board-report-phone-preview-modal", "option-editor-modal", "option-order-modal", "option-audit-modal", "policy-version-view-modal", "policy-publish-confirm-modal", "policy-restore-confirm-modal", "support-center-preview-modal", "deletion-action-modal", "admin-account-invite-modal", "audit-log-detail-modal", "my-account-password-modal");
       modalCard.classList.add("my-account-name-modal");
       // esc ปิด " ด้วย — ใช้ใน attribute context (input value) เหมือน pattern esc ของ Role screens
       const esc = v => String(v ?? "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
@@ -32464,6 +32546,11 @@
                 <div class="detail-tile" data-my-account-id><span>Admin ID</span><strong>${escapeHtml(acc.id)}</strong></div>
                 ${renderMyAccountNameField(acc)}
                 ${renderMyAccountReadonlyRows(acc)}
+              </div>
+            </div>
+            <div class="detail-section my-account-security-actions" data-my-account-section="security">
+              <div class="user-detail-actions">
+                <button type="button" class="user-detail-action-btn" data-my-account-action="change-password">เปลี่ยนรหัสผ่าน</button>
               </div>
             </div>
           </div>`;
@@ -32568,6 +32655,284 @@
         reference: acc.id || "—",
         note: "",
         result: "Success",
+        targetAdminId: acc.id,
+        accountRevision: acc.revision ?? null
+      });
+      return auditId;
+    }
+
+    // ===== My Account — Change Password (self-only) =====
+    // modal pattern เดียวกับ my-account-name-modal; current verify ใช้ adminCredentialStore,
+    // สำเร็จแล้ว commit credential + bump revision/sessionRevision + audit (ห้ามบันทึก password)
+
+    function getMyAccountPwElements() {
+      return {
+        current: document.querySelector("#my-account-pw-current"),
+        next: document.querySelector("#my-account-pw-new"),
+        confirm: document.querySelector("#my-account-pw-confirm"),
+        submit: document.querySelector("[data-my-account-action='save-password']"),
+        formError: document.querySelector("[data-my-account-pw-error='form']")
+      };
+    }
+
+    // live policy checklist — rule set เดียวกับ invitation activation (≥12 + upper/lower/digit/special)
+    function updateMyAccountPasswordPolicy() {
+      const password = document.querySelector("#my-account-pw-new")?.value || "";
+      const confirm = document.querySelector("#my-account-pw-confirm")?.value || "";
+      const results = {
+        length: password.length >= 12,
+        upper: /[A-Z]/.test(password),
+        lower: /[a-z]/.test(password),
+        digit: /[0-9]/.test(password),
+        special: /[^A-Za-z0-9]/.test(password),
+        match: password.length > 0 && password === confirm
+      };
+      document.querySelectorAll("[data-my-account-pw-policy] [data-my-account-pw-rule]").forEach(item => {
+        item.dataset.pass = results[item.dataset.myAccountPwRule] ? "true" : "false";
+      });
+      return results;
+    }
+
+    // field-level error — field keys: current / new / confirm / form (form = form-level เช่น cooldown)
+    function setMyAccountPwError(field, message = "") {
+      const node = document.querySelector(`[data-my-account-pw-error='${field}']`);
+      const inputId = { current: "my-account-pw-current", new: "my-account-pw-new", confirm: "my-account-pw-confirm" }[field];
+      const hasError = Boolean(message);
+      if (node) {
+        node.textContent = message;
+        node.classList.toggle("show", hasError);
+      }
+      const el = inputId ? document.getElementById(inputId) : null;
+      if (el) {
+        el.classList.toggle("article-field-invalid", hasError);
+        el.setAttribute("aria-invalid", hasError ? "true" : "false");
+      }
+    }
+
+    function myAccountPwCooldownActive() {
+      return Date.now() < myAccountPwCooldownUntil;
+    }
+
+    // consume cooldown ที่หมดแล้ว (เช่น modal ถูกปิดข้ามช่วง cooldown) — reset counter ให้นับ attempt ใหม่
+    // ไม่งั้น failCount ค้างที่ limit → wrong attempt ถัดไป re-lock ทันทีราวกับ cooldown ไม่เคยหมด
+    function clearExpiredMyAccountPwCooldown() {
+      if (myAccountPwCooldownUntil && !myAccountPwCooldownActive()) {
+        myAccountPwCooldownUntil = 0;
+        myAccountPwFailCount = 0;
+      }
+    }
+
+    function renderMyAccountPwCooldownState() {
+      const { submit, formError } = getMyAccountPwElements();
+      const active = myAccountPwCooldownActive();
+      if (submit) submit.disabled = active;
+      if (formError) {
+        const msgEl = formError.querySelector("p");
+        if (active) {
+          const secs = Math.ceil((myAccountPwCooldownUntil - Date.now()) / 1000);
+          if (msgEl) msgEl.textContent = `ลองใหม่อีกครั้งใน ${secs} วินาที`;
+          formError.hidden = false;
+        } else {
+          if (msgEl) msgEl.textContent = "";
+          formError.hidden = true;
+        }
+      }
+    }
+
+    function startMyAccountPwCooldownTick() {
+      window.clearInterval(myAccountPwCooldownTimer);
+      myAccountPwCooldownTimer = window.setInterval(() => {
+        // modal ถูกปิด → หยุด tick (cooldown ยังคงอยู่ใน state ข้ามการเปิด modal ใหม่)
+        if (!document.querySelector(".my-account-password-modal")) {
+          window.clearInterval(myAccountPwCooldownTimer);
+          myAccountPwCooldownTimer = null;
+          return;
+        }
+        if (!myAccountPwCooldownActive()) {
+          window.clearInterval(myAccountPwCooldownTimer);
+          myAccountPwCooldownTimer = null;
+          clearExpiredMyAccountPwCooldown();
+        }
+        renderMyAccountPwCooldownState();
+      }, 1000);
+    }
+
+    function openMyAccountPasswordModal() {
+      const acc = findSelfAdminAccount();
+      if (!acc) return;
+      const modal = document.querySelector("#user-action-modal");
+      const modalCard = modal?.querySelector(".user-action-modal");
+      const modalBody = document.querySelector("#user-action-modal-body");
+      if (!modal || !modalCard || !modalBody) return;
+      // ล้าง variant class ของ modal อื่น (pattern เดียวกับ openMyAccountNameModal)
+      modalCard.classList.remove("article-preview-modal", "article-editor-confirm-modal", "category-editor-modal", "category-order-modal", "market-editor-modal", "market-reference-drawer", "board-report-phone-preview-modal", "option-editor-modal", "option-order-modal", "option-audit-modal", "policy-version-view-modal", "policy-publish-confirm-modal", "policy-restore-confirm-modal", "support-center-preview-modal", "deletion-action-modal", "admin-account-invite-modal", "audit-log-detail-modal", "my-account-name-modal", "my-account-password-modal");
+      modalCard.classList.add("my-account-password-modal");
+      // snapshot revision ตอนเปิด modal — stale guard ตอน commit เดียวกับ edit name
+      myAccountPwRevisionSnapshot = acc.revision ?? 0;
+      const pwField = (id, label, autocomplete, errorKey) => `
+        <div class="my-account-pw-field">
+          <label class="my-account-field-label" for="${id}">${label} <span class="article-required-mark">*</span></label>
+          <span class="password-field">
+            <input class="field" id="${id}" type="password" autocomplete="${autocomplete}" data-lpignore="true" data-1p-ignore="true" />
+            <button class="password-toggle" type="button" data-my-account-pw-toggle="${id}" aria-label="Show password" title="Show password">${iconSvg.eye}</button>
+          </span>
+          <span class="article-field-error" data-my-account-pw-error="${errorKey}" role="alert"></span>
+        </div>`;
+      modalBody.innerHTML = `
+        <div class="user-action-page my-account-password-modal-page">
+          <div class="user-action-head">
+            <div>
+              <h2 id="user-action-modal-title">Change Password</h2>
+              <p>ยืนยันรหัสผ่านปัจจุบันและตั้งรหัสผ่านใหม่ตาม Password Policy</p>
+            </div>
+            <button class="btn user-action-close" type="button" data-user-action-modal-close aria-label="ปิด">${iconSvg.close}</button>
+          </div>
+          <div class="user-action-layout">
+            <div class="detail-section">
+              <div class="user-action-form">
+                ${pwField("my-account-pw-current", "รหัสผ่านปัจจุบัน", "off", "current")}
+                ${pwField("my-account-pw-new", "รหัสผ่านใหม่", "off", "new")}
+                ${pwField("my-account-pw-confirm", "ยืนยันรหัสผ่านใหม่", "off", "confirm")}
+                <ul class="my-account-pw-policy" data-my-account-pw-policy>
+                  <li data-my-account-pw-rule="length">อย่างน้อย 12 ตัวอักษร</li>
+                  <li data-my-account-pw-rule="upper">มีตัวพิมพ์ใหญ่ (A–Z)</li>
+                  <li data-my-account-pw-rule="lower">มีตัวพิมพ์เล็ก (a–z)</li>
+                  <li data-my-account-pw-rule="digit">มีตัวเลข (0–9)</li>
+                  <li data-my-account-pw-rule="special">มีอักขระพิเศษ</li>
+                </ul>
+                <div class="module-note user-action-impact user-action-impact-card user-action-impact-notice">
+                  <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a5 5 0 0 0-5 5v3H6a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-9a2 2 0 0 0-2-2h-1V7a5 5 0 0 0-5-5Zm-3 8V7a3 3 0 1 1 6 0v3H9Z"/></svg>
+                  <p><strong>หมายเหตุ:</strong> เปลี่ยนรหัสผ่านแล้วอุปกรณ์อื่นจะถูกออกจากระบบ — session นี้ยังใช้ต่อได้</p>
+                </div>
+                <div class="module-note user-action-impact user-action-impact-card user-action-impact-warning my-account-pw-form-error" data-my-account-pw-error="form" role="alert" hidden>
+                  <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 3.2c.7 0 1.35.37 1.7.98l8.05 13.95A1.95 1.95 0 0 1 20.05 21H3.95a1.95 1.95 0 0 1-1.7-2.87L10.3 4.18A1.95 1.95 0 0 1 12 3.2Zm0 4.6a1 1 0 0 0-1 1v4.4a1 1 0 1 0 2 0V8.8a1 1 0 0 0-1-1Zm0 8.45a1.15 1.15 0 1 0 0 2.3 1.15 1.15 0 0 0 0-2.3Z"/></svg>
+                  <p></p>
+                </div>
+                <div class="user-detail-actions user-action-footer">
+                  <button class="user-detail-action-btn" type="button" data-my-account-action="cancel-password">ยกเลิก</button>
+                  <button class="user-detail-action-btn primary" type="button" data-my-account-action="save-password">เปลี่ยนรหัสผ่าน</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>`;
+      showUserActionModal(true);
+      updateMyAccountPasswordPolicy();
+      // เปิด modal ระหว่าง cooldown → แสดง blocked state + นับถอยหลังต่อ; ถ้าหมดตอน modal ปิด → reset counter
+      clearExpiredMyAccountPwCooldown();
+      if (myAccountPwCooldownActive()) {
+        renderMyAccountPwCooldownState();
+        startMyAccountPwCooldownTick();
+      }
+      document.querySelector("#my-account-pw-current")?.focus();
+    }
+
+    function saveMyAccountPassword() {
+      const { current: currentInput, next: newInput, confirm: confirmInput } = getMyAccountPwElements();
+      if (!currentInput || !newInput || !confirmInput) return;
+
+      // cooldown gate — ป้องกัน submit ซ้ำระหว่าง lock (ปุ่ม disabled แล้ว แต่ guard ระดับ function ด้วย)
+      clearExpiredMyAccountPwCooldown();
+      if (myAccountPwCooldownActive()) {
+        renderMyAccountPwCooldownState();
+        return;
+      }
+
+      const current = currentInput.value;
+      const next = newInput.value;
+      const confirm = confirmInput.value;
+      const results = updateMyAccountPasswordPolicy();
+      const policyPass = ["length", "upper", "lower", "digit", "special"].every(key => results[key]);
+
+      // field validation — ลำดับเดียวกับ submitInviteActivation (required → policy → confirm match)
+      const currentError = !current ? "กรุณากรอกรหัสผ่านปัจจุบัน" : "";
+      const newError = !next
+        ? "กรุณากรอกรหัสผ่านใหม่"
+        : (!policyPass ? "รหัสผ่านยังไม่ตรงตามเงื่อนไข" : "");
+      const confirmError = !confirm
+        ? "กรุณายืนยันรหัสผ่านใหม่"
+        : (policyPass && confirm !== next ? "รหัสผ่านไม่ตรงกัน" : "");
+      setMyAccountPwError("current", currentError);
+      setMyAccountPwError("new", newError);
+      setMyAccountPwError("confirm", confirmError);
+      if (currentError) { currentInput.focus(); return; }
+      if (newError) { newInput.focus(); return; }
+      if (confirmError) { confirmInput.focus(); return; }
+
+      const acc = findSelfAdminAccount();
+      // boundary + stale check ตอน commit — self identity + Active status + revision snapshot ตอนเปิด modal
+      if (!acc || acc.id !== auth?.admin?.accountId || acc.status !== "Active" || acc.revision !== myAccountPwRevisionSnapshot) {
+        closeUserActionModal();
+        showToast("Session หมดอายุหรือข้อมูลไม่ตรงกัน — กรุณาโหลดหน้าใหม่ก่อนแก้ไขอีกครั้ง", "บันทึกไม่สำเร็จ", "error");
+        renderMyAccountPage();
+        return;
+      }
+
+      // verify current password กับ mock credential — ผิดนับ attempt, ครบ limit → cooldown 60 วินาที
+      const cred = adminCredentialStore[acc.id];
+      if (!cred || cred.password !== current) {
+        myAccountPwFailCount += 1;
+        if (myAccountPwFailCount >= MY_ACCOUNT_PW_MAX_ATTEMPTS) {
+          myAccountPwCooldownUntil = Date.now() + MY_ACCOUNT_PW_COOLDOWN_MS;
+          addMyAccountPasswordAuditEvent(acc, { result: "Failed", failureCode: "RATE_LIMITED", reason: "ยืนยันรหัสผ่านปัจจุบันผิดเกินจำนวนครั้งที่กำหนด" });
+          renderMyAccountPwCooldownState();
+          startMyAccountPwCooldownTick();
+        } else {
+          setMyAccountPwError("current", "รหัสผ่านปัจจุบันไม่ถูกต้อง");
+          currentInput.focus();
+        }
+        return;
+      }
+
+      // รหัสใหม่ต้องไม่ซ้ำรหัสปัจจุบัน (เช็คหลัง verify current ผ่านแล้ว เพื่อไม่เปรียบเทียบกับค่าที่ไม่ใช่รหัสจริง)
+      if (next === current) {
+        setMyAccountPwError("new", "รหัสผ่านใหม่ต้องไม่ซ้ำกับรหัสผ่านปัจจุบัน");
+        newInput.focus();
+        return;
+      }
+
+      // commit — อัปเดต mock credential + bump revision; revoke session อื่น = sessionRevision เปลี่ยน (current session คงอยู่)
+      cred.password = next;
+      acc.revision = (acc.revision || 0) + 1;
+      acc.sessionRevision = (acc.sessionRevision || 0) + 1;
+      acc.lastAction = "เปลี่ยนรหัสผ่านผ่าน My Account";
+      myAccountPwFailCount = 0;
+      myAccountPwRevisionSnapshot = acc.revision;
+      addMyAccountPasswordAuditEvent(acc, { result: "Success" });
+      // เคลียร์ค่าออกจาก field ก่อนปิด — password ห้ามค้างใน DOM
+      currentInput.value = "";
+      newInput.value = "";
+      confirmInput.value = "";
+      closeUserActionModal();
+      const block = document.querySelector("[data-my-account-name-block]");
+      if (block) block.dataset.myAccountRevision = String(acc.revision);
+      showSuccessToast("เปลี่ยนรหัสผ่านเรียบร้อยแล้ว — session อื่นทั้งหมดถูกออกจากระบบ", "My Account");
+    }
+
+    function addMyAccountPasswordAuditEvent(acc, payload = {}) {
+      // security-sensitive audit — ห้ามบันทึก password/secret ลง event ไม่ว่า success หรือ fail
+      const maxNum = auditLogData.events.reduce((max, e) => {
+        const m = /^AUD-(\d+)$/.exec(e.id);
+        return m ? Math.max(max, Number(m[1])) : max;
+      }, 0);
+      const auditId = `AUD-${String(maxNum + 1).padStart(5, "0")}`;
+      const success = payload.result === "Success";
+      auditLogData.events.unshift({
+        id: auditId,
+        createdAt: formatBangkokTimestamp(),
+        actor: (auth.admin && auth.admin.username) || acc.email || "Admin",
+        actorType: "Admin",
+        action: "Change Password",
+        eventType: "ADMIN_PASSWORD_CHANGE",
+        module: "My Account",
+        risk: "High",
+        before: "-",
+        after: success ? "Password changed" : "Password unchanged",
+        reason: payload.reason || "",
+        reference: acc.id || "—",
+        note: payload.note || (success ? "เปลี่ยนรหัสผ่านผ่าน My Account — session อื่นทั้งหมดถูกออกจากระบบ" : "การเปลี่ยนรหัสผ่านถูกจำกัดชั่วคราว (rate limit)"),
+        result: payload.result || "Success",
+        failureCode: payload.failureCode || null,
         targetAdminId: acc.id,
         accountRevision: acc.revision ?? null
       });
@@ -46162,6 +46527,18 @@
         return;
       }
       // AIL-020: My Account actions — edit/cancel/save name + state retry / return-login
+      // My Account — Change Password: show/hide toggle ในแต่ละ password field (pattern invite-password-toggle)
+      const myAccountPwToggle = event.target.closest("[data-my-account-pw-toggle]");
+      if (myAccountPwToggle) {
+        const pwInput = document.getElementById(myAccountPwToggle.dataset.myAccountPwToggle);
+        if (!pwInput) return;
+        const willShow = pwInput.type === "password";
+        pwInput.type = willShow ? "text" : "password";
+        myAccountPwToggle.innerHTML = willShow ? iconSvg.eyeOff : iconSvg.eye;
+        myAccountPwToggle.setAttribute("aria-label", willShow ? "Hide password" : "Show password");
+        myAccountPwToggle.setAttribute("title", willShow ? "Hide password" : "Show password");
+        return;
+      }
       const myAccountAction = event.target.closest("[data-my-account-action]");
       if (myAccountAction) {
         const action = myAccountAction.dataset.myAccountAction;
@@ -46171,6 +46548,12 @@
           closeUserActionModal();
         } else if (action === "save-name") {
           saveMyAccountName();
+        } else if (action === "change-password") {
+          openMyAccountPasswordModal();
+        } else if (action === "cancel-password") {
+          closeUserActionModal();
+        } else if (action === "save-password") {
+          saveMyAccountPassword();
         } else if (action === "retry") {
           // simulate reload: loading → ready (เหมือน data-role-retry pattern)
           myAccountViewState = "loading";
@@ -46766,6 +47149,13 @@
       // ===== My Account — clear name field error on edit (AIL-020) =====
       if (event.target.id === "my-account-name") {
         setMyAccountNameError("");
+        return;
+      }
+      // ===== My Account — Change Password: clear field error + live policy checklist =====
+      if (["my-account-pw-current", "my-account-pw-new", "my-account-pw-confirm"].includes(event.target.id)) {
+        const pwFieldKey = event.target.id === "my-account-pw-current" ? "current" : event.target.id === "my-account-pw-new" ? "new" : "confirm";
+        setMyAccountPwError(pwFieldKey, "");
+        updateMyAccountPasswordPolicy();
         return;
       }
       // ===== Support Center — clear field error on edit (HS-PTO-004) =====
@@ -47536,6 +47926,10 @@
       if (event.target?.id === "my-account-name") {
         event.preventDefault();
         saveMyAccountName();
+      } else if (["my-account-pw-current", "my-account-pw-new", "my-account-pw-confirm"].includes(event.target?.id)) {
+        // Enter ใน Change Password fields → submit เหมือนกดปุ่มเปลี่ยนรหัสผ่าน
+        event.preventDefault();
+        saveMyAccountPassword();
       }
     });
     document.querySelector("#login-form").addEventListener("submit", event => {
