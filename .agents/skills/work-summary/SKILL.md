@@ -847,12 +847,38 @@ Task: <TASK-CODE> <Task Name>
 - <งานสำคัญที่ทำจริง>
 ```
 
+**Case C — Task เกินเกณฑ์หมวด (Over-budget):**
+
+เมื่อ `hours_spent` เกินค่า "ห้ามเกิน" ของหมวดหลัก `รายละเอียดงานที่ทำ` ของ Copy Block **ต้องแสดงแบบแยกสัดส่วนตามหมวดย่อย** ไม่ใช่รายการแบนรายการเดียว — ใช้โครง `<TASK-CODE><letter>` เดียวกับการ Stamp เวลาใน canonical summary โดยแต่ละกลุ่มระบุหมวดและเวลาของตัวเอง (กฎเดียวกับ "การจัดการ task ที่เกินเวลาเป้าหมาย"):
+
+```text
+เป้าหมาย <number>: <Objective Name>   (แสดงเฉพาะเมื่อมี Mission Mapping จริง)
+
+Feature: <Feature Name>
+
+Task: <TASK-CODE> <Task Name>
+
+หมวดหมู่งาน: <Category หลัก>
+
+เวลาทำงาน: <Final Actual Time> (แผน <Planned> ชม. — เกินเพราะ <เหตุผลสั้น ๆ>)
+
+รายละเอียดงานที่ทำ
+
+- <TASK-CODE>a [<Category>] (ตาม scope เดิม ประมาณ X ชม.):
+  - <งานย่อย>
+  - <งานย่อย>
+- <TASK-CODE>b [<Category>] (งานที่ทำเพิ่ม ประมาณ Y ชม.):
+  - <งานย่อย (เหตุ) → <ทางแก้>>
+- <TASK-CODE>c [<Category>] (งานที่ทำเพิ่ม ประมาณ Z ชม.):
+  - <งานย่อย>
+```
+
 **กฎ Final Work Summary Copy Block:**
 - หนึ่ง Task Summary ต้องอยู่ใน `text` code block เดียว เพื่อให้กด Copy แล้วนำไปวางใน Google Docs ได้ทันที
 - ใช้ข้อความธรรมดาโดยไม่ใช้ Markdown heading (`#`, `##`, `###`), bold, inline code หรือ horizontal rule
 - รายการทุกข้อใน Copy Block ต้องขึ้นต้นด้วย literal `- ` ภายใน `text` code block; ห้ามใช้ `*` หรือรูปแบบที่ UI render เป็น bullet symbol `•`
 - Task ที่มี Mission Mapping จริงต้องแสดง Objective และ Feature ตาม mapping ที่บันทึกไว้ก่อน Task; Task ที่ไม่มี mapping ต้องเริ่มจาก Task โดยตรงและห้ามสร้าง Objective/Feature ขึ้นมาเอง
-- โดยปกติใช้รายการเดียวภายใต้ `รายละเอียดงานที่ทำ`; ไม่ต้องแยก `ผลการตรวจสอบ` หรือ Work Area/Feature/Topic เป็น section ย่อย เว้นแต่ task มีหลาย workstream ขนาดใหญ่และแตกต่างกันจริงจนรายการเดียวอ่านยากอย่างมีนัยสำคัญ
+- โดยปกติใช้รายการเดียวภายใต้ `รายละเอียดงานที่ทำ`; ไม่ต้องแยก `ผลการตรวจสอบ` หรือ Work Area/Feature/Topic เป็น section ย่อย เว้นแต่ task มีหลาย workstream ขนาดใหญ่และแตกต่างกันจริงจนรายการเดียวอ่านยากอย่างมีนัยสำคัญ หรือ task เกินเกณฑ์หมวดซึ่งต้องใช้โครงแยกสัดส่วนของ Case C
 - `รายละเอียดงานที่ทำ` ต้องครบสาระสำคัญ กระชับ และรวมเรื่องที่เกี่ยวข้องกันไว้ในรายการเดียวเมื่อเหมาะสม โดยทั่วไปประมาณ 5–8 ข้อ แต่ปรับตามปริมาณงานจริงได้
 - **4 มาตรฐานข้อมูลสำคัญใน `รายละเอียดงานที่ทำ` (เพื่อความสมบูรณ์ของ Log และการประเมินผลงาน):**
   1. **ระบุตัวเลขจริงทางเทคนิคให้ชัดเจน:** เช่น จำนวน Test cases ใหม่ (13 tests), Targeted test (19 เคส), Regression test (605 เคส), เวลา Cooldown (60s), โควตา (5 ครั้ง/24h), อายุ Token (72 ชม.)
@@ -862,7 +888,7 @@ Task: <TASK-CODE> <Task Name>
 - ใช้ข้อมูลจาก canonical Final Summary / Final Session Note เท่านั้น ห้ามเพิ่มงานที่ไม่ได้ทำจริง
 - Verification สำคัญ เช่น tests, validation, `git diff --check`, assertions, scope/protected-scope check และ user acceptance สามารถรวมใน `รายละเอียดงานที่ทำ` ได้
 - หากสาระจาก Files Changed, Decisions, Problems/Resolutions, Scope Changes หรือ Verification สำคัญต่อความเข้าใจงาน ให้รวมไว้ในรายการ `รายละเอียดงานที่ทำ` โดยไม่สร้าง metadata section แยก
-- กรณี task เกินเกณฑ์หมวด ให้คงกฎวิเคราะห์/ชี้แจง over-budget เดิมใน canonical summary และรวมเหตุผลสำคัญไว้ใน `รายละเอียดงานที่ทำ` ของ Copy Block เดียว
+- กรณี task เกินเกณฑ์หมวด ให้ใช้ **Case C**: คงกฎวิเคราะห์/ชี้แจง over-budget เดิมใน canonical summary และแสดง `รายละเอียดงานที่ทำ` แบบแยกสัดส่วน `<TASK-CODE>a/b/c [<Category ย่อย>] (ประมาณ X ชม.)` ตามด้วย sub-bullet — สัดส่วนและหมวดย่อยต้องตรงกับ canonical summary / สรุปราย task ห้ามย่อเป็นรายการแบนรายการเดียวจนสัดส่วนเวลาหาย; ส่วนบรรทัดเวลาทำงานให้ระบุ `(แผน X ชม. — เกินเพราะ <เหตุผล>)` ไว้กำกับ
 - ใช้ business-facing Task Code; ห้ามแสดง Full/Partial Kanban UUID, internal Task ID หรือ Database ID
 - Final Work Summary Copy Block แสดงเฉพาะ Objective/Feature เมื่อมี mapping จริง, Task Code + Task Name, Category, Final Actual Time และรายละเอียดงานที่ทำ
 - ไม่แสดงเวลาเริ่ม, เวลาจบ, Time Source, Raw Timer Metadata, status, completion status, Goal/Expected Result, Overview, Files Changed, Decisions, Problems/Resolutions, Scope Changes, Pending/Follow-up, Next Step หรือ Internal Workflow Notes เป็น section แยก
@@ -939,7 +965,7 @@ Task ID: <task_id>
 > - เวลาทำงานใน copy block ใช้ค่าจริงจากระบบ (`hours_spent`) ไม่บวก/ลด/ปรับเอง
 > - สำหรับ Final Task Completion ต้องใช้ **Final Work Summary Copy Block** หลังปิด task และบันทึก Final Session Note เท่านั้น โดยแสดงเฉพาะฟิลด์ตาม template ใหม่; Decisions, ปัญหา/การแก้ไข, ค้าง/ติดตาม, Next Step และ metadata อื่นคงอยู่ใน canonical Final Summary / Final Session Note
 > - Final Session Note กับ Final Work Summary Copy Block ต้องมาจาก canonical Final Summary ชุดเดียวกัน
-> - เมื่อแสดง "สรุปราย task" block พร้อมกับ Final Work Summary Copy Block ในผลลัพธ์เดียวกัน เนื้อหา "รายละเอียดงานที่ทำ" ของทั้งสอง block ต้องเป็น bullet ชุดเดียวกัน — ต่างกันได้เฉพาะ header/metadata ตาม template ของแต่ละโหมด ห้ามเขียนเนื้อหางานคนละชุด
+> - เมื่อแสดง "สรุปราย task" block พร้อมกับ Final Work Summary Copy Block ในผลลัพธ์เดียวกัน เนื้อหา "รายละเอียดงานที่ทำ" ของทั้งสอง block ต้องเป็น bullet ชุดเดียวกัน — ต่างกันได้เฉพาะ header/metadata ตาม template ของแต่ละโหมด ห้ามเขียนเนื้อหางานคนละชุด; สำหรับ task เกินเกณฑ์หมวด โครงแยกสัดส่วน `<TASK-CODE>a/b/c [<Category>] (ประมาณ X ชม.)` ต้องเหมือนกันทั้งสอง block (Final Copy Block ใช้ Case C)
 
 ### กฎการเขียนสรุป
 
@@ -975,6 +1001,13 @@ Task ID: <task_id>
 22. **อ้าง requirement/spec/entity ด้วยชื่อที่คนอ่านเข้าใจ ไม่ใช่ ID ล้วน** — summary ที่ก๊อปไปลงระบบอื่นต้องอ่านรู้เรื่องโดยไม่ต้องเปิด kanban; ห้ามเขียน `requirement bf08de1f` หรือ `mission 18598f33` ลอย ๆ ให้ใช้ชื่อ เช่น `requirement "BO Admin Identity Lifecycle — Invitation, My Account และ Password Security"` หรือชื่อย่อที่ระบุตัวตนได้ — internal ID (kanban UUID, requirement id, mission id) เก็บไว้ใน session note/traceability เท่านั้น; Task Code แบบ business-facing (เช่น AIL-019) ยังใช้ได้ตามเดิมเพราะเป็นชื่อที่ทีมใช้เรียกกัน
 
 23. **"รายละเอียดงานที่ทำ" ต้องเป็นงานของ task เท่านั้น ห้ามใส่เรื่อง workflow/kanban mechanics** — เหตุการณ์อย่าง timer quirk, ค่า default ตอนสร้าง task, การย้าย column, การบันทึก note ไม่ใช่งานของ task และไม่ควรเป็น bullet; ถ้าเรื่องนั้นสำคัญต่อผู้ใช้ให้แจ้งแยกนอก copy block (เช่น หมายเหตุเวลา) — bullet ทุกข้อต้องตอบได้ว่า "งานชิ้นนี้ทำให้ task บรรลุเป้าหมายอย่างไร"
+
+24. **ห้ามแปลตรงคำเทคนิค/ศัพท์ CSS-JS เป็นคำไทยที่ไม่มีใครใช้จริง — ให้บรรยาย "ผลที่ผู้อ่านเห็นบนหน้าจอ" แทน** — การแปลตรงเช่น "ห่อตัว" (wrap), "สแตก" (stack), "ยุบ" (collapse), "เลย์เอาต์แตก" ทำให้คนอ่านนึกภาพไม่ออก หลักคืออธิบายว่า "ผู้ใช้เห็นอะไรผิดปกติ" แล้วค่อยบอกทางแก้ เช่น
+    - ผิด: `แก้ค่าอีเมลห่อตัวอ่านยาก` → ถูก: `แก้ปัญหาอีเมลยาวจนตกเป็นหลายบรรทัด`
+    - ผิด: `stack ปุ่มเป็น column บน mobile` → ถูก: `เรียงปุ่มลงมาแนวตั้งเต็มความกว้างบนมือถือ`
+    - ผิด: `label ถูก grid แยก` → ถูก: `ชื่อช่องกรอกกับเครื่องหมาย * ถูกแยกคนละบรรทัด`
+    - ผิด: `input.select() ทำให้ highlight` → ถูก: `ข้อความเดิมถูกเลือกเป็นแถบสีน้ำเงินตอนเปิดหน้าต่าง`
+    ถ้าไม่แน่ใจว่าคำไหนเป็นการแปลตรง ให้ทดสอบด้วยคำถาม "คนที่ไม่รู้โค้ดอ่านแล้วเห็นภาพหน้าจอไหม" — ถ้าไม่เห็นภาพ ให้เขียนบรรยายผลที่ตาเห็นแทน
 
 > **ข้อยกเว้น:** ถ้าเป็น task เดียวสั้น ๆ ที่ภาพรวมอธิบายครบแล้ว สามารถมีแค่ภาพรวมอย่างเดียว ไม่ต้องมี bullet list ก็ได้
 
@@ -1207,6 +1240,33 @@ Task: TK-101 เพิ่ม API จัดการแผนก/ตำแหน�
 - ตรวจความสอดคล้องของผลลัพธ์ API, validation และข้อมูลตั้งต้นแล้ว
 ```
 
+ตัวอย่าง Final Work Summary Copy Block แบบ over-budget (Case C — แยกสัดส่วนตามหมวดย่อย):
+
+```text
+Task: AIL-020 My Account page + entry + edit Name
+
+หมวดหมู่งาน: Feature
+
+เวลาทำงาน: 4 ชม. 17 นาที (4.3 ชม.) (แผน 2.0 ชม. — เกินเพราะปรับหน้าจอตามผลรีวิวรับรองหลายรอบ)
+
+รายละเอียดงานที่ทำ
+
+- AIL-020a [Feature] (ตาม scope เดิม ประมาณ 1.1 ชม.):
+  - สร้างหน้า My Account พร้อมปุ่มเปิดจากกล่องโปรไฟล์ในแถบเมนู แสดงข้อมูลบัญชีและแก้ไขได้เฉพาะชื่อ
+  - บันทึกสำเร็จแล้วอัปเดตชื่อทันที + บันทึกประวัติ Update Profile ลง Audit Log; ชื่อไม่เปลี่ยนไม่สร้างประวัติ
+  - ป้องกัน: บันทึกได้เฉพาะบัญชีตัวเอง ตรวจเวอร์ชันและสถานะก่อนบันทึก ไม่ลงข้อมูลลับในประวัติ
+  - รองรับสถานะหน้าจอ 4 แบบ + เขียนแบบทดสอบ 32 เคส ผ่าน 128/128 และ regression 639 เคสไม่พัง
+- AIL-020b [Design] (งานที่ทำเพิ่มจากผลรีวิว UI/UX ประมาณ 1.4 ชม.):
+  - จัดโครงหน้าตรงแบบหน้ารายละเอียดอื่น (ปรับให้เหลือคอลัมน์เดียว ซ่อนส่วนไม่ใช้ ตัดข้อความแผนงานภายใน)
+  - ตัดสิน breadcrumb เป็นส่วนเดียวจากหลักฐานว่าหน้านี้ไม่มี parent ในเมนู
+- AIL-020c [Design] (งานที่ทำเพิ่มจากผลรีวิว UI/UX ประมาณ 1.0 ชม.):
+  - เปลี่ยนการแก้ชื่อเป็น modal ตามแบบหน้าต่างจัดการแอดมิน และจัดสรุปบัญชี 6 ช่อง 3 คอลัมน์
+  - ปรับ responsive: 2 คอลัมน์บนแท็บเล็ต 1 คอลัมน์บนมือถือ คงปุ่ม Edit ไว้ขวาชื่อ
+- AIL-020d [Bug Fix] (จุดย่อยระหว่างปรับหน้าจอ ประมาณ 0.8 ชม.):
+  - แก้เครื่องหมายจำเป็น (*) ถูกแยกตกบรรทัดใหม่จากชื่อช่องกรอก (สาเหตุ: สไตล์กลางของ modal จัดชื่อช่องเป็นแถวตาราง) → ปรับเฉพาะฟอร์มหน้านี้
+  - แก้ปุ่มกรอบว่าง/ส่วนหัวว่างที่ยังแสดง → ซ่อนตามแบบหน้ารายละเอียดอื่น
+```
+
 ```text
 Task: แก้บั๊กอัปเดตข้อมูลตำแหน่ง
 Task ID: TK-102
@@ -1257,7 +1317,7 @@ Task ID: TK-102
 - [ ] ตรวจว่า Final Work Summary Copy Block ใช้ business-facing Task Code และไม่มี Kanban UUID/internal ID
 - [ ] ตรวจว่า Final Work Summary Copy Block ไม่มีเวลาเริ่ม/จบ, status, Goal, Overview, Files Changed, Decisions, Problems, Scope Changes, Pending/Follow-up, Next Step หรือ workflow metadata เป็น section แยก
 - [ ] ตรวจว่ารายการใน Final Work Summary Copy Block ใช้ literal `- ` และไม่มี `*` หรือ rendered bullet `•`
-- [ ] ตรวจว่า Final Work Summary Copy Block ทั้งหมดอยู่ใน `text` code block เดียว ใช้รายการ `รายละเอียดงานที่ทำ` ต่อเนื่อง และไม่ได้แยก Verification/workstream เป็น section โดยไม่จำเป็น
+- [ ] ตรวจว่า Final Work Summary Copy Block ทั้งหมดอยู่ใน `text` code block เดียว ใช้รายการ `รายละเอียดงานที่ทำ` ต่อเนื่อง และไม่ได้แยก Verification/workstream เป็น section โดยไม่จำเป็น (ยกเว้น Case C over-budget ที่ต้องแยกกลุ่ม `<TASK-CODE>a/b/c [<Category>] (ประมาณ X ชม.)` ตามสัดส่วนเวลา)
 - [ ] ตรวจว่า Final Actual Time มาจาก Final `hours_spent` หลัง task เป็น `done` และไม่แสดง Planned Time ใน Task Work Log
 - [ ] ตรวจว่า canonical Final Summary / Final Session Note ยังคง Actual Start/End และรายละเอียดเต็มทั้งหมด แม้ Copy Block จะย่อ presentation
 - [ ] แจ้งผู้ใช้ว่า "ปิด task <ชื่อ> แล้ว ใช้เวลา <X ชม. Y นาที (D.D ชม.)>"
@@ -1306,7 +1366,7 @@ Task ID: TK-102
 - [ ] สรุปเป็นภาษาง่าย ๆ (ห้ามใช้ชื่อฟังก์ชัน ชื่อ class CSS ชื่อตัวแปร ชื่อ event หรือโค้ด — ใช้คำทั่วไปที่อธิบายผลลัพธ์แทน)
 - [ ] **แสดงสรุปรวม** — ภาพรวม + totalHours (รูปแบบ `X ชม. Y นาที (D.D ชม.)`) + รายการ task ที่นำมารวม (markdown ปกติ)
 - [ ] **แสดง Progress/Report-only สรุปราย task** — หุ้มด้วย code block (` ``` `) และมีสถานะ + เวลาเริ่ม/จบหรือปัจจุบัน + เวลาทำงาน/เวลาที่ผ่านไป + หมวดหมู่ + สถานะความสมบูรณ์ + เป้าหมาย + ภาพรวม + ไฟล์ที่แก้ไข + รายละเอียดงาน + ค้าง/ส่งต่อ ตามความเกี่ยวข้อง
-- [ ] **แสดง copy block ราย task ตามโหมด** — Progress/Report-only ใช้ template ราย task เดิม; Final Task Completion ใช้ Human-readable `text` Copy Block เดียว เลือก Case A/Case B ตาม Mission Mapping จริง และแสดงเฉพาะฟิลด์ที่กำหนด
+- [ ] **แสดง copy block ราย task ตามโหมด** — Progress/Report-only ใช้ template ราย task เดิม; Final Task Completion ใช้ Human-readable `text` Copy Block เดียว เลือก Case A/Case B ตาม Mission Mapping จริง หรือ Case C เมื่อ `hours_spent` เกินเกณฑ์หมวด (แสดง `รายละเอียดงานที่ทำ` แยกสัดส่วน `<TASK-CODE>a/b/c [<Category ย่อย>] (ประมาณ X ชม.)` ให้เห็นชัด) และแสดงเฉพาะฟิลด์ที่กำหนด
 - [ ] **Progress/Report-only task block ต้องมีเวลาเริ่ม + เวลาจบ/ปัจจุบัน + เวลาทำงาน/เวลาที่ผ่านไป**; Final Work Summary Copy Block แสดง Final Actual Time อย่างเดียว และเก็บ Actual Start/End ใน canonical history
 - [ ] **รูปแบบเวลา: `X ชม. Y นาที (D.D ชม.)`** — แสดงทั้งชั่วโมง-นาที และคำนวณเป็นชั่วโมงทศนิยมในวงเล็บ แปลงทุกที่ที่แสดงเวลา (ราย task, รวม, copy block) ส่วนทศนิยมคำนวณจาก `(X × 60 + Y) ÷ 60` ปัดเป็น 1 ตำแหน่งทศนิยม
 - [ ] **ห้ามบวก/ลด/ปรับชั่วโมงเอง** — ใช้ค่า `hours_spent` จากระบบ ห้ามเรียก `log_time`; ถ้าผิดปกติให้รายงานและแยก correction workflow
