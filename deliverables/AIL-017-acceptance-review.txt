@@ -1,0 +1,13 @@
+Mission: BO Login Baseline Simplification (Change Mission 0a5b2b14)
+Objective 4: CW-4 — Mission Final Acceptance & Verification
+Acceptance task: AIL-017 (Kanban ID ab80e15e-e099-4b9c-ac0b-c94bf166215a)
+Status: PASS — task done 2026-09-23 16:23 GMT+7
+
+Review outcome (recorded in AIL-017 Kanban activity):
+- CW-1: finalized requirement bf08de1f amended and 11 documentation files synchronized; current docs no longer specify Login Email OTP as the baseline.
+- CW-2: BO Login prototype authenticates directly with Email + Password; OTP form/state removed. Invitation, Forgot/Reset Password, Front Office OTP and historical records were checked for scope preservation.
+- CW-3: shared login helpers and assertions migrated; test/QA documentation synchronized; 59-file change audit found 59 necessary files and no unnecessary change. No prototype/product source was changed in CW-3.
+- Regression evidence reviewed: 6,644 test/project combinations; initial infrastructure connection failures were retried, stale assertions were fixed, and a focused 876-test authentication/invitation run was recorded green in the task activity.
+- No unresolved blocker. Duplicate login helpers were classified as a future maintainability finding, not a Mission defect. Historical actuals were preserved.
+
+Mission verdict: PASS. This file transcribes the acceptance outcome from the Kanban task record; it is not a new test run.

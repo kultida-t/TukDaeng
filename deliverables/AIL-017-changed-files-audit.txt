@@ -1,0 +1,78 @@
+Mission: BO Login Baseline Simplification (0a5b2b14) — files changed per commits
+
+=== Commit 7f5504e — CW-1/CW-2 docs + prototype (AIL-014 + AIL-015) ===
+ .agents/skills/bo-screen-design/SKILL.md      |   7 +-
+ BackOffice/01_AUTHENTICATION_MODULE.md        |  76 +++-----
+ BackOffice/08_AUDIT_LOG_MODULE.md             |  13 +-
+ BackOffice/16_ADMIN_SETTINGS_MODULE.md        |  32 ++--
+ BackOffice/BO_DEV_IMPLEMENTATION_CHECKLIST.md |   7 +-
+ BackOffice/BO_MASTER_BASELINE.md              |   4 +-
+ BackOffice/BO_PRD.md                          |   2 -
+ BackOffice/BO_Spec.md                         |   3 +-
+ BackOffice/BO_UI_UX_STANDARD.md               |  17 +-
+ BackOffice/DOCUMENT_VERSION.md                |   1 +
+ BackOffice/README_MODULE_INDEX.md             |   2 +-
+ Prototypes/bo-prototype.html                  | 243 +++-----------------------
+ 12 files changed, 83 insertions(+), 324 deletions(-)
+
+=== Commit e36e010 — CW-3 test baseline (AIL-016) ===
+ Prototypes/audit-bo-001c.mjs                       |   2 -
+ Prototypes/diag-all-pages-cards.mjs                |   2 -
+ Prototypes/diag-comment-field.mjs                  |   2 -
+ Prototypes/diag-pager-balance.mjs                  |   2 -
+ Prototypes/diag-pager.mjs                          |   2 -
+ Prototypes/diag-reported-users-border.mjs          |   2 -
+ Prototypes/test-all-cards-truncation.mjs           |   2 -
+ Prototypes/test-all-pages-cards-truncation.mjs     |   2 -
+ Prototypes/test-pager-ellipsis.mjs                 |   2 -
+ Prototypes/test-reported-asset-card-truncation.mjs |   2 -
+ Prototypes/test-reported-comment-actions.mjs       |   7 +-
+ .../test-reported-comment-card-truncation.mjs      |   2 -
+ ...est-reported-comment-notification-scenarios.mjs |   2 -
+ ...test-reported-comment-responsive-regression.mjs |   2 -
+ .../test-reported-comment-tooltip-persistence.mjs  |   2 -
+ Prototypes/test-wa-detail-mobile-verify.mjs        |   2 -
+ Prototypes/test-wa-mobile-card-verify.mjs          |   2 -
+ Prototypes/test-watch-alert-responsive.mjs         |   2 -
+ docs/responsive-report-lists-testing.md            |   7 +-
+ docs/responsive-table-standard.md                  |   7 +-
+ tests/al-003-audit-drawer-check.spec.js            |   2 -
+ tests/al-004-date-range-check.spec.js              |   2 -
+ tests/al-005-audit-jump-check.spec.js              |   2 -
+ tests/del-pto-003.spec.js                          |   4 +-
+ tests/del-pto-004-quick.spec.js                    |  11 +-
+ tests/qa-bo-001-auth-dashboard.spec.js             | 242 ++++-----------------
+ tests/qa-bo-002-user-management.spec.js            |   2 -
+ tests/qa-bo-003-asset-mgmt-1.spec.js               |   2 -
+ tests/qa-bo-004-reported-comments.spec.js          |   2 -
+ tests/qa-bo-005-content-management.spec.js         |   2 -
+ tests/qa-bo-006-market-data.spec.js                |   2 -
+ tests/qa-bo-007-offer-management.spec.js           |   2 -
+ tests/qa-bo-008-option-master.spec.js              |   2 -
+ tests/qa-bo-009-market-demand.spec.js              |   2 -
+ tests/qa-bo-010-policy-versioning.spec.js          |   2 -
+ tests/qa-bo-011-support-center.spec.js             |   2 -
+ tests/qa-bo-012-cross-module-consistency.spec.js   |  10 +-
+ tests/qa-bo-013a-admin-accounts-nav.spec.js        |   2 -
+ tests/qa-bo-013b-admin-accounts-list.spec.js       |   2 -
+ tests/qa-bo-013c-admin-accounts-filter.spec.js     |   2 -
+ tests/qa-bo-013d-admin-accounts-detail.spec.js     |   2 -
+ ...qa-bo-013e-admin-accounts-action-modals.spec.js |  10 +-
+ .../qa-bo-013f-admin-accounts-change-role.spec.js  |   2 -
+ tests/qa-bo-013g-admin-accounts-invite.spec.js     |   8 +-
+ ...o-013h-admin-accounts-permission-gating.spec.js |   2 -
+ ...i-admin-accounts-responsive-crossmodule.spec.js |   2 -
+ ...-013j-admin-accounts-invitation-context.spec.js |   2 -
+ ...o-013k-admin-accounts-invitation-resend.spec.js |   2 -
+ ...dmin-accounts-invitation-cancel-reissue.spec.js |   2 -
+ ...dmin-accounts-invitation-delivery-audit.spec.js |   2 -
+ tests/qa-bo-014a-audit-log-nav.spec.js             |   2 -
+ tests/qa-bo-014b-audit-log-list.spec.js            |   2 -
+ tests/qa-bo-014c-audit-log-filter.spec.js          |   2 -
+ tests/qa-bo-014d-audit-log-detail-modal.spec.js    |   2 -
+ ...o-014e-audit-log-crossmodule-responsive.spec.js |   2 -
+ tests/qa-bo-015-accept-invitation.spec.js          |   9 +-
+ tests/qa-bo-016-invitation-recovery.spec.js        |  10 +-
+ tests/qa-bo-017-admin-invitation-lifecycle.spec.js |   2 -
+ tests/qa-bo-018-mission1-scoped-smoke.spec.js      |  31 +--
+ 59 files changed, 89 insertions(+), 361 deletions(-)
