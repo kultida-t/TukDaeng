@@ -106,10 +106,19 @@ test.describe("QA-BO-019a: My Account — entry & navigation", () => {
     expect(await page.locator(".submenu button[data-sub='My Account']").count()).toBe(0);
   });
 
-  test("4. เมื่ออยู่หน้า My Account ไม่มี nav item ไหนถูก highlight (อยู่นอก nav)", async ({ page }) => {
+  test("4. เมื่ออยู่หน้า My Account ไม่มี nav item ไหนถูก highlight (อยู่นอก nav) — entry .admin-box แสดง active state แทน", async ({ page }) => {
     await goToMyAccount(page);
     expect(await page.locator(".nav-item.active").count()).toBe(0);
     expect(await page.locator(".submenu button.active").count()).toBe(0);
+    // entry แสดง active เหมือนเมนูเดี่ยวอื่น (body.my-account-mode → .admin-box active style)
+    const activeBg = await page.locator("#my-account-entry").evaluate(el => getComputedStyle(el).backgroundColor);
+    expect(activeBg).toBe("rgb(26, 54, 95)"); // var(--active) #1a365f เดียวกับ .nav-item.active
+    // ออกจากหน้า My Account → active state ถูกถอด
+    await ensureNavOpen(page);
+    await page.locator(".nav-item").first().click();
+    await page.waitForTimeout(300);
+    const idleBg = await page.locator("#my-account-entry").evaluate(el => getComputedStyle(el).backgroundColor);
+    expect(idleBg).not.toBe("rgb(26, 54, 95)");
   });
 
   test("5. keyboard: focus .admin-box แล้วกด Enter → เข้าหน้า My Account ได้", async ({ page }) => {

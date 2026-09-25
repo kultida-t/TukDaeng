@@ -626,7 +626,7 @@
       margin: 8px 0 0;
       padding: 8px 12px;
       display: grid;
-      grid-template-columns: 24px minmax(0, 1fr) 18px;
+      grid-template-columns: 24px minmax(0, 1fr);
       gap: 10px;
       align-items: center;
       /* AIL-020: .admin-box เป็น button entry ไป My Account — normalize เหมือน .logout-box */
@@ -641,12 +641,6 @@
     }
     .admin-box:hover { color: #fff; background: rgba(36, 61, 96, .58); }
     .admin-box:focus-visible { outline: 2px solid rgba(122, 162, 208, .8); outline-offset: 2px; }
-    .admin-box-chevron {
-      display: grid;
-      place-items: center;
-      color: #88a0bf;
-    }
-    .admin-box-chevron svg { width: 18px; height: 18px; }
     .avatar {
       width: 24px;
       height: 24px;
@@ -16937,6 +16931,14 @@
 
     /* ===== My Account (AIL-020) — self-service page, entry จาก .admin-box =====
        scope เฉพาะ body.my-account-mode เพื่อไม่กระทบ module/protected screens อื่น */
+    /* entry active state — เหมือน .nav-item.active เมื่ออยู่หน้า My Account
+       (อยู่นอก navGroups แต่ entry ต้องแสดงสถานะเหมือนเมนูเดี่ยวอื่น) */
+    body.my-account-mode .admin-box {
+      background: var(--active);
+      color: #fff;
+      box-shadow: inset 4px 0 0 var(--brand), 0 7px 16px rgba(0, 0, 0, .18);
+    }
+    body.my-account-mode .admin-box small { color: #b9c9de; }
     body.my-account-mode #table {
       padding: 0;
       background: transparent;
@@ -17068,6 +17070,12 @@
     /* ===== My Account — Change Password =====
        security actions + password modal; scope เฉพาะ body.my-account-mode
        และ .my-account-password-modal เพื่อไม่กระทบ module/protected screens อื่น */
+    /* security actions strip — ไม่มีเส้นคั่นบน ให้อ่านเป็น action footer ของ Account Summary
+       section เดียวกัน (credential scope) เหมือน logout-all ที่อยู่ท้าย Active Sessions */
+    body.my-account-mode .my-account-security-actions {
+      border-top: 0;
+      padding-top: 0;
+    }
     /* Change Password modal — 3-field form (error/required-mark ใช้ base .article-field-*) */
     .modal.user-action-modal.my-account-password-modal {
       width: min(560px, 100%);
@@ -17226,6 +17234,14 @@
       border: 1px dashed var(--line);
       border-radius: 8px;
       text-align: center;
+    }
+    /* Logout All Devices entry — ท้าย Active Sessions section (warning tone เพราะรวม current session)
+       ระยะเหนือปุ่ม: grid gap 14px + margin 4px = 18px เท่ากับ gap เหนือปุ่มเปลี่ยนรหัสผ่าน */
+    body.my-account-mode .my-account-sessions-footer {
+      margin-top: 4px;
+    }
+    body.my-account-mode .my-account-sessions-footer .user-detail-action-btn {
+      white-space: nowrap;
     }
     /* mobile: meta stack เป็นลิสต์ทีละบรรทัด (ไม่ตัดกลางประโยค) + action ชิดมุมขวาบนแถว title */
     @media (max-width: 760px) {
@@ -17611,7 +17627,6 @@
       <button class="admin-box" type="button" id="my-account-entry" aria-label="เปิด My Account" title="My Account">
         <span class="avatar" id="admin-avatar">ผู</span>
         <span class="admin-profile-text"><strong id="admin-username">ผู้ดูแลระบบ</strong><small id="admin-role">Super Admin</small></span>
-        <span class="admin-box-chevron" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg></span>
       </button>
       </div>
     </aside>
@@ -20542,6 +20557,8 @@
     const MY_ACCOUNT_PW_COOLDOWN_MS = 60000;
     // Active Sessions — snapshot (sessionId + account revision) ของ revoke target ระหว่างเปิด confirm modal
     let myAccountSessionRevokeTarget = null;
+    // Logout All Devices — revision snapshot ระหว่างเปิด confirm modal (revoke ทุก session รวม current)
+    let myAccountLogoutAllSnapshot = null;
     // Create Custom Role — ค่าที่ validate ผ่านแล้วระหว่างรอ confirmation (ย้อนกลับ = คงค่าเดิม)
     let pendingRoleCreateData = null;
     let pendingRoleEditData = null;
@@ -33090,6 +33107,29 @@
       return (session.sessionRevision ?? 0) === (acc?.sessionRevision ?? 0);
     }
 
+    // login ใหม่หลัง session teardown (เช่น Logout All) = ระบบออก session ใหม่บนอุปกรณ์ที่ login
+    // — lazy issuance: current session เดิมใน registry ไม่ active แล้ว → ออก entry ใหม่จาก device เดิม
+    function ensureMyAccountCurrentSession(acc) {
+      const registry = adminSessionData[acc?.id];
+      if (!registry) return;
+      const existing = registry.sessions.find((s) => s.id === registry.currentSessionId);
+      if (existing && isMyAccountSessionActive(acc, existing)) return;
+      const fresh = {
+        id: `SES-${String(90000 + registry.sessions.length + 1)}`,
+        deviceType: existing?.deviceType || "desktop",
+        device: existing?.device || "This device",
+        browser: existing?.browser || "—",
+        location: existing?.location || "—",
+        ipMasked: existing?.ipMasked || "—",
+        signedInAt: formatAdminAccountActivityTime(),
+        lastActiveAt: "กำลังใช้งาน",
+        sessionRevision: acc?.sessionRevision ?? 0,
+        status: "Active"
+      };
+      registry.sessions.push(fresh);
+      registry.currentSessionId = fresh.id;
+    }
+
     function renderMyAccountSessionIcon(session) {
       // device glyph — inline เพื่อไม่แตะ shared iconSvg (additive-safe เฉพาะหน้า My Account)
       const mobile = session.deviceType === "mobile" || session.deviceType === "tablet";
@@ -33123,6 +33163,7 @@
 
     function renderMyAccountSessionsSection(acc) {
       // current session ขึ้นก่อนเสมอ; session ที่ revoke แล้ว/หมดอายุจาก sessionRevision ไม่แสดงใน list
+      ensureMyAccountCurrentSession(acc);
       const sessions = getMyAccountSessions(acc)
         .filter((s) => isMyAccountSessionActive(acc, s))
         .sort((a, b) => Number(isMyAccountCurrentSession(acc, b)) - Number(isMyAccountCurrentSession(acc, a)));
@@ -33134,6 +33175,9 @@
             ? sessions.map((s) => renderMyAccountSessionRow(acc, s)).join("")
             : '<div class="my-account-session-empty">ไม่มี session ที่ใช้งานอยู่</div>'}
         </div>
+        ${sessions.length ? `<div class="user-detail-actions my-account-sessions-footer">
+          <button type="button" class="user-detail-action-btn warning" data-my-account-action="logout-all">ออกจากระบบทุกอุปกรณ์</button>
+        </div>` : ""}
       </div>`;
     }
 
@@ -33141,7 +33185,7 @@
       const acc = findSelfAdminAccount();
       if (!acc) return;
       const session = getMyAccountSessions(acc).find((s) => s.id === sessionId);
-      // guard ฝั่ง action: current session ออกจากระบบด้วยปุ่ม Logout เดิมเท่านั้น (Logout All = AIL-023a)
+      // guard ฝั่ง action: current session ออกจากระบบผ่านปุ่ม Logout / ออกจากระบบทุกอุปกรณ์ เท่านั้น
       if (!session || !isMyAccountSessionActive(acc, session) || isMyAccountCurrentSession(acc, session)) {
         showToast("Session นี้ไม่ได้ใช้งานแล้ว — รายการถูกอัปเดต", "My Account", "warning");
         renderMyAccountPage();
@@ -33269,6 +33313,154 @@
         reason: "",
         reference: acc.id || "—",
         note: `${session.location} · IP ${session.ipMasked} · ใช้งานล่าสุด ${session.lastActiveAt}`,
+        result: "Success",
+        targetAdminId: acc.id,
+        accountRevision: acc.revision ?? null
+      });
+      return auditId;
+    }
+
+    // ===== My Account — Logout All Devices (self-only) =====
+    // revoke ทุก session ที่ใช้งานอยู่รวม current → session teardown → กลับหน้า Login
+    // confirm modal ใช้ pattern/variant เดียวกับ Revoke Session (my-account-session-modal)
+
+    function openMyAccountLogoutAllModal() {
+      const acc = findSelfAdminAccount();
+      if (!acc) return;
+      const sessions = getMyAccountSessions(acc).filter((s) => isMyAccountSessionActive(acc, s));
+      // guard ฝั่ง action: ไม่มี session ที่ใช้งานอยู่ → ไม่เปิด modal
+      if (!sessions.length) {
+        showToast("ไม่มี session ที่ใช้งานอยู่ — รายการถูกอัปเดต", "My Account", "warning");
+        renderMyAccountPage();
+        return;
+      }
+      const current = sessions.find((s) => isMyAccountCurrentSession(acc, s));
+      // snapshot revision ตอนเปิด modal — stale guard ตอน commit เดียวกับ revoke session
+      myAccountLogoutAllSnapshot = { revision: acc.revision ?? 0 };
+      const card = document.querySelector("#user-action-modal .user-action-modal");
+      const modalBody = document.querySelector("#user-action-modal-body");
+      if (!card || !modalBody) return;
+      card.classList.remove(
+        "wide",
+        "plan-modal",
+        "transfer-modal",
+        "profile-modal",
+        "create-modal",
+        "edit-modal",
+        "audit-modal",
+        "create-user-modal",
+        "deactivate-role-modal",
+        "reactivate-role-modal",
+        "delete-role-modal",
+        "suspend-admin-modal",
+        "archive-admin-modal",
+        "reactivate-admin-modal",
+        "admin-invite-modal",
+        "admin-invite-reminder-modal",
+        "admin-invite-link-modal",
+        "admin-invite-revoke-modal",
+        "my-account-name-modal",
+        "my-account-password-modal",
+        "my-account-session-modal"
+      );
+      card.classList.add("my-account-session-modal");
+      modalBody.innerHTML = `
+        <div class="user-action-page my-account-logout-all-modal-page">
+          <div class="user-action-head">
+            <div>
+              <h2 id="user-action-modal-title">Logout All Devices</h2>
+              <p>ยืนยันการออกจากระบบทุกอุปกรณ์ — รวมอุปกรณ์ที่กำลังใช้งานนี้</p>
+            </div>
+            <button class="btn user-action-close" type="button" data-user-action-modal-close aria-label="ปิด">${iconSvg.close}</button>
+          </div>
+          <div class="user-action-layout">
+            <div class="detail-section">
+              <div class="user-action-form">
+                <div class="user-action-target">
+                  <div>
+                    <strong>${sessions.length} session${sessions.length > 1 ? "s" : ""} ที่ใช้งานอยู่</strong>
+                    ${current ? `<div class="my-account-session-meta my-account-session-meta-list">
+                      <span>อุปกรณ์นี้ · ${escMyAccount(current.device)} · ${escMyAccount(current.browser)}</span>
+                      <span>${escMyAccount(current.location)} · IP ${escMyAccount(current.ipMasked)}</span>
+                    </div>` : ""}
+                  </div>
+                  <span class="pill green">Active</span>
+                </div>
+                <div class="module-note user-action-impact user-action-impact-card user-action-impact-warning">
+                  <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 3.2c.7 0 1.35.37 1.7.98l8.05 13.95A1.95 1.95 0 0 1 20.05 21H3.95a1.95 1.95 0 0 1-1.7-2.87L10.3 4.18A1.95 1.95 0 0 1 12 3.2Zm0 4.6a1 1 0 0 0-1 1v4.4a1 1 0 1 0 2 0V8.8a1 1 0 0 0-1-1Zm0 8.45a1.15 1.15 0 1 0 0 2.3 1.15 1.15 0 0 0 0-2.3Z"/></svg>
+                  <p><strong>ผลกระทบ:</strong> ทุกอุปกรณ์รวมเครื่องนี้จะถูกออกจากระบบทันที และกลับไปหน้า Login</p>
+                </div>
+                <div class="user-detail-actions user-action-footer">
+                  <button class="user-detail-action-btn" type="button" data-my-account-action="cancel-logout-all">ยกเลิก</button>
+                  <button class="user-detail-action-btn warning user-action-confirm" type="button" data-my-account-action="confirm-logout-all">ออกจากระบบทุกอุปกรณ์</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>`;
+      showUserActionModal(true);
+    }
+
+    function confirmMyAccountLogoutAll() {
+      const acc = findSelfAdminAccount();
+      const snapshot = myAccountLogoutAllSnapshot;
+      if (!acc || !snapshot) {
+        closeUserActionModal();
+        return;
+      }
+      // boundary + stale check — self identity + Active + revision snapshot ตอนเปิด modal
+      if (acc.id !== auth?.admin?.accountId || acc.status !== "Active" || acc.revision !== snapshot.revision) {
+        myAccountLogoutAllSnapshot = null;
+        closeUserActionModal();
+        showToast("Session หมดอายุหรือข้อมูลไม่ตรงกัน — กรุณาโหลดหน้าใหม่ก่อนดำเนินการอีกครั้ง", "บันทึกไม่สำเร็จ", "error");
+        renderMyAccountPage();
+        return;
+      }
+      const sessions = getMyAccountSessions(acc).filter((s) => isMyAccountSessionActive(acc, s));
+      if (!sessions.length) {
+        myAccountLogoutAllSnapshot = null;
+        closeUserActionModal();
+        showToast("ไม่มี session ที่ใช้งานอยู่แล้ว — รายการถูกอัปเดต", "My Account", "warning");
+        renderMyAccountPage();
+        return;
+      }
+      const revokedCount = sessions.length;
+      sessions.forEach((s) => {
+        s.status = "Revoked";
+        s.revokedAt = formatBangkokTimestamp();
+        s.revokedReason = "ออกจากระบบทุกอุปกรณ์โดยผู้ใช้ผ่าน My Account";
+      });
+      acc.lastAction = "ออกจากระบบทุกอุปกรณ์ผ่าน My Account";
+      myAccountLogoutAllSnapshot = null;
+      myAccountSessionRevokeTarget = null;
+      addMyAccountLogoutAllAuditEvent(acc, revokedCount);
+      closeUserActionModal();
+      // simulated session teardown — เส้นทางเดียวกับปุ่ม Logout: logged-out + login form
+      // ไม่ show toast — การกลับหน้า Login คือ feedback ของ flow อยู่แล้ว (toast-stack อยู่นอก .app จะลอยทับ login)
+      document.querySelector("#logout-btn")?.click();
+    }
+
+    function addMyAccountLogoutAllAuditEvent(acc, revokedCount) {
+      // security audit — เก็บเฉพาะจำนวน/aggregate ห้ามลง token/credential/full IP
+      const maxNum = auditLogData.events.reduce((max, e) => {
+        const m = /^AUD-(\d+)$/.exec(e.id);
+        return m ? Math.max(max, Number(m[1])) : max;
+      }, 0);
+      const auditId = `AUD-${String(maxNum + 1).padStart(5, "0")}`;
+      auditLogData.events.unshift({
+        id: auditId,
+        createdAt: formatBangkokTimestamp(),
+        actor: (auth.admin && auth.admin.username) || acc.email || "Admin",
+        actorType: "Admin",
+        action: "Logout All Devices",
+        eventType: "ADMIN_SESSION_REVOKE_ALL",
+        module: "My Account",
+        risk: "Medium",
+        before: `${revokedCount} active sessions (incl. current)`,
+        after: "All sessions revoked",
+        reason: "",
+        reference: acc.id || "—",
+        note: `ออกจากระบบทุกอุปกรณ์ผ่าน My Account — revoke ${revokedCount} sessions รวม current session`,
         result: "Success",
         targetAdminId: acc.id,
         accountRevision: acc.revision ?? null
@@ -46898,6 +47090,13 @@
           closeUserActionModal();
         } else if (action === "confirm-revoke-session") {
           confirmMyAccountSessionRevoke();
+        } else if (action === "logout-all") {
+          openMyAccountLogoutAllModal();
+        } else if (action === "cancel-logout-all") {
+          myAccountLogoutAllSnapshot = null;
+          closeUserActionModal();
+        } else if (action === "confirm-logout-all") {
+          confirmMyAccountLogoutAll();
         } else if (action === "retry") {
           // simulate reload: loading → ready (เหมือน data-role-retry pattern)
           myAccountViewState = "loading";
