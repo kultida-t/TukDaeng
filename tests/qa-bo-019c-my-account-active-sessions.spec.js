@@ -338,9 +338,10 @@ test.describe("QA-BO-019c: Active Sessions — sessionRevision linkage", () => {
     expect(session.status).toBe("Active");
   });
 
-  test("18. session ที่สร้างภายใต้ epoch ปัจจุบัน ไม่หลุด (sessionRevision ตรงกัน → ยัง active)", async ({ page }) => {
+  test("18. sessionRevision bump จากอุปกรณ์อื่น → current session stale → session-expired gate (AIL-023b uniform epoch)", async ({ page }) => {
     await goToMyAccount(page);
-    // จำลอง session ใหม่ที่ login หลัง password change — epoch = 99 ตรงกับ account
+    // จำลอง epoch เปลี่ยนจาก context อื่น (เช่น password ถูกเปลี่ยนบน device อื่น)
+    // + session ใหม่ที่สร้างภายใต้ epoch 99 — current session ของเครื่องนี้ (epoch 0) stale ทันที
     await page.evaluate(() => {
       const acc = adminAccountData.accounts.find(a => a.id === "ADM-010");
       acc.sessionRevision = 99;
@@ -353,7 +354,16 @@ test.describe("QA-BO-019c: Active Sessions — sessionRevision linkage", () => {
       renderMyAccountPage();
     });
     await page.waitForTimeout(200);
-    // session เก่า epoch 0 หลุด — เหลือ current + SES-90099
+    // current session stale → gate เต็มหน้า ใช้งานต่อไม่ได้ (session list ไม่ render)
+    await expect(page.locator("[data-my-account-state='session-expired']")).toBeVisible();
+    expect(await sessionRows(page).count()).toBe(0);
+    // re-login → ระบบออก session ใหม่ภายใต้ epoch 99 → ใช้งานได้ + session epoch ปัจจุบันไม่หลุด
+    await page.locator("[data-my-account-action='return-login']").click();
+    await page.waitForTimeout(400);
+    await loginIfNeeded(page);
+    await ensureNavOpen(page);
+    await page.locator("#my-account-entry").click();
+    await page.waitForTimeout(300);
     expect(await sessionRows(page).count()).toBe(2);
     await expect(sessionRow(page, "SES-90099")).toBeVisible();
     await expect(sessionRow(page, "SES-90099").locator("[data-my-account-action='revoke-session']")).toBeVisible();

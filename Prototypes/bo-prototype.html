@@ -20547,6 +20547,8 @@
     // AIL-020: My Account — demo state สลับผ่าน Prototype scenario; "ready" = แสดงข้อมูลปกติ
     let myAccountViewState = "ready";
     let myAccountViewStateTimer = null;
+    // AIL-023b: session validity watch — interval ขณะอยู่หน้า My Account (self-clearing)
+    let myAccountSessionWatchTimer = null;
     // Change Password — rate-limit simulation (current password ผิดครบ 5 ครั้ง → cooldown 60 วินาที)
     // cooldown คงอยู่ข้ามการปิด/เปิด modal; timer หยุดเองเมื่อ modal ไม่อยู่ใน DOM
     let myAccountPwFailCount = 0;
@@ -21117,6 +21119,12 @@
       // ADM-PTO-001: Admin Accounts list state reset
       adminAccountListPage = 1;
       adminAccountFilterOpen = false;
+      // AIL-023b: login ใหม่ = session context ใหม่ — demo state ของ My Account ต้องกลับ ready
+      // (session-expired ที่ค้างจาก session เก่าต้องไม่ติดมาหลัง re-login)
+      myAccountViewState = "ready";
+      window.clearTimeout(myAccountViewStateTimer);
+      window.clearInterval(myAccountSessionWatchTimer);
+      myAccountSessionWatchTimer = null;
       roleListPage = 1;
       roleListFilterOpen = false;
       activeRoleId = "";
@@ -21260,6 +21268,8 @@
       // AIL-020: เคลียร์ demo state ของหน้า My Account เช่นกัน
       myAccountViewState = "ready";
       window.clearTimeout(myAccountViewStateTimer);
+      window.clearInterval(myAccountSessionWatchTimer);
+      myAccountSessionWatchTimer = null;
     }
 
     function renderNav() {
@@ -32509,15 +32519,19 @@
 
     // mock session registry สำหรับ Active Sessions — self-only (key ด้วย admin id)
     // sessionRevision = session epoch ตอนสร้าง: Change Password bump acc.sessionRevision
-    // ทำให้ session อื่นหมดอายุทันที (เทียบใน isMyAccountSessionActive) — current session คงอยู่เสมอ
+    // ทำให้ session อื่นหมดอายุทันที (เทียบใน isMyAccountSessionActive) — current session
+    // ไม่ได้รับการยกเว้น: epoch ถูก refresh เฉพาะเมื่อเครื่องนี้เป็นคนเปลี่ยนรหัสเอง
+    // แต่ bump จากอุปกรณ์อื่นทำ current stale → session-expired (AIL-023b)
+    // signedInTs/lastActiveTs = epoch ms สำหรับ idle 8h / max 24h policy (spec 01§8)
+    // — anchor กับ Date.now() ตอน init เพื่อให้ baseline valid เสมอเมื่อเปิด prototype
     // ipMasked ถูก mask ที่ data level — ห้ามเก็บ/แสดง full IP หรือ session token
     const adminSessionData = {
       "ADM-010": {
         currentSessionId: "SES-90001",
         sessions: [
-          { id: "SES-90001", deviceType: "desktop", device: "Windows PC", browser: "Chrome", location: "กรุงเทพมหานคร, ประเทศไทย", ipMasked: "203.150.98.xx", signedInAt: "09 Sep 2026 09:12", lastActiveAt: "กำลังใช้งาน", sessionRevision: 0, status: "Active" },
-          { id: "SES-90002", deviceType: "mobile", device: "iPhone 15 Pro", browser: "Safari", location: "กรุงเทพมหานคร, ประเทศไทย", ipMasked: "171.96.34.xx", signedInAt: "08 Sep 2026 21:40", lastActiveAt: "09 Sep 2026 08:47", sessionRevision: 0, status: "Active" },
-          { id: "SES-90003", deviceType: "tablet", device: "iPad Air", browser: "Safari", location: "เชียงใหม่, ประเทศไทย", ipMasked: "49.228.71.xx", signedInAt: "06 Sep 2026 19:05", lastActiveAt: "08 Sep 2026 22:15", sessionRevision: 0, status: "Active" }
+          { id: "SES-90001", deviceType: "desktop", device: "Windows PC", browser: "Chrome", location: "กรุงเทพมหานคร, ประเทศไทย", ipMasked: "203.150.98.xx", signedInAt: "09 Sep 2026 09:12", lastActiveAt: "กำลังใช้งาน", sessionRevision: 0, status: "Active", signedInTs: Date.now() - 2 * 3600e3, lastActiveTs: Date.now() - 60e3 },
+          { id: "SES-90002", deviceType: "mobile", device: "iPhone 15 Pro", browser: "Safari", location: "กรุงเทพมหานคร, ประเทศไทย", ipMasked: "171.96.34.xx", signedInAt: "08 Sep 2026 21:40", lastActiveAt: "09 Sep 2026 08:47", sessionRevision: 0, status: "Active", signedInTs: Date.now() - 18 * 3600e3, lastActiveTs: Date.now() - 3 * 3600e3 },
+          { id: "SES-90003", deviceType: "tablet", device: "iPad Air", browser: "Safari", location: "เชียงใหม่, ประเทศไทย", ipMasked: "49.228.71.xx", signedInAt: "06 Sep 2026 19:05", lastActiveAt: "08 Sep 2026 22:15", sessionRevision: 0, status: "Active", signedInTs: Date.now() - 20 * 3600e3, lastActiveTs: Date.now() - 5 * 3600e3 }
         ]
       }
     };
@@ -32567,8 +32581,8 @@
       return `
         <div class="my-account-state-block" data-my-account-state="session-expired">
           ${renderMyAccountStateIcon()}
-          <strong class="empty-title">Session หมดอายุ กรุณาเข้าสู่ระบบใหม่</strong>
-          <p class="empty-subtitle">เพื่อความปลอดภัยของบัญชี กรุณาเข้าสู่ระบบอีกครั้งเพื่อใช้งาน My Account ต่อ</p>
+          <strong class="empty-title">Session หมดอายุ</strong>
+          <p class="empty-subtitle">เพื่อความปลอดภัยของบัญชี กรุณาเข้าสู่ระบบอีกครั้ง</p>
           <div class="user-detail-actions my-account-state-actions">
             <button type="button" class="user-detail-action-btn" data-my-account-action="return-login">กลับไปหน้า Login</button>
           </div>
@@ -32673,8 +32687,11 @@
       setPageActions("");
 
       let bodyHtml;
-      if (!acc || !myAccountHasAccess()) {
-        // self account ไม่เจอ หรือ status ไม่ใช่ Active → session expired (contract §2.2/§7.2)
+      // sweep session ที่หมดอายุตามเวลาก่อนประเมิน validity (idle 8h / max 24h — spec 01§8)
+      sweepMyAccountExpiredSessions(acc);
+      if (!acc || !myAccountHasAccess() || !isMyAccountCurrentSessionValid(acc)) {
+        // self account ไม่เจอ / status ไม่ใช่ Active / current session หมดอายุ ถูก revoke
+        // จากอุปกรณ์อื่น หรือ sessionRevision stale → session expired (contract §2.2/§6/§7.2)
         myAccountViewState = "session-expired";
         bodyHtml = `<div class="user-detail-page report-detail-page">${renderMyAccountSessionExpiredState()}</div>`;
       } else if (myAccountViewState === "loading") {
@@ -32686,6 +32703,8 @@
         bodyHtml = `<div class="user-detail-page report-detail-page">${renderMyAccountSessionExpiredState()}</div>`;
       } else {
         myAccountViewState = "ready";
+        // watch session validity ขณะแสดงหน้า — flip เป็น expired เมื่อ session invalid
+        startMyAccountSessionWatch();
         // shell + section ตาม established BO detail-page pattern (Admin Account Detail) — ไม่มี detail head เพราะ identity fields อยู่ใน tiles แล้ว
         bodyHtml = `
           <div class="user-detail-page report-detail-page my-account-page" data-my-account-page>
@@ -32749,8 +32768,9 @@
 
       const acc = findSelfAdminAccount();
 
-      // stale / session-expired check — revision + identity + Active status (contract §4.3)
-      if (!acc || acc.id !== auth?.admin?.accountId || acc.revision !== getMyAccountRevision() || acc.status !== "Active") {
+      // stale / session-expired check — revision + identity + Active status + current session validity (contract §4.3/§6)
+      sweepMyAccountExpiredSessions(acc);
+      if (!acc || acc.id !== auth?.admin?.accountId || acc.revision !== getMyAccountRevision() || acc.status !== "Active" || !isMyAccountCurrentSessionValid(acc)) {
         closeUserActionModal();
         showToast("Session หมดอายุหรือข้อมูลไม่ตรงกัน — กรุณาโหลดหน้าใหม่ก่อนแก้ไขอีกครั้ง", "บันทึกไม่สำเร็จ", "error");
         renderMyAccountPage();
@@ -33010,8 +33030,10 @@
       if (confirmError) { confirmInput.focus(); return; }
 
       const acc = findSelfAdminAccount();
-      // boundary + stale check ตอน commit — self identity + Active status + revision snapshot ตอนเปิด modal
-      if (!acc || acc.id !== auth?.admin?.accountId || acc.status !== "Active" || acc.revision !== myAccountPwRevisionSnapshot) {
+      // boundary + stale check ตอน commit — self identity + Active status + revision snapshot
+      // ตอนเปิด modal + current session validity (expire/revoke ระหว่างเปิด modal → reject)
+      sweepMyAccountExpiredSessions(acc);
+      if (!acc || acc.id !== auth?.admin?.accountId || acc.status !== "Active" || acc.revision !== myAccountPwRevisionSnapshot || !isMyAccountCurrentSessionValid(acc)) {
         closeUserActionModal();
         showToast("Session หมดอายุหรือข้อมูลไม่ตรงกัน — กรุณาโหลดหน้าใหม่ก่อนแก้ไขอีกครั้ง", "บันทึกไม่สำเร็จ", "error");
         renderMyAccountPage();
@@ -33041,10 +33063,14 @@
         return;
       }
 
-      // commit — อัปเดต mock credential + bump revision; revoke session อื่น = sessionRevision เปลี่ยน (current session คงอยู่)
+      // commit — อัปเดต mock credential + bump revision; revoke session อื่น = sessionRevision เปลี่ยน
       cred.password = next;
       acc.revision = (acc.revision || 0) + 1;
       acc.sessionRevision = (acc.sessionRevision || 0) + 1;
+      // refresh security context ของ session นี้ — เครื่องที่เปลี่ยนเองไม่ถูก revoke ตาม (contract §3)
+      const pwRegistry = adminSessionData[acc.id];
+      const pwCurrent = pwRegistry?.sessions.find((s) => s.id === pwRegistry.currentSessionId);
+      if (pwCurrent) pwCurrent.sessionRevision = acc.sessionRevision;
       acc.lastAction = "เปลี่ยนรหัสผ่านผ่าน My Account";
       myAccountPwFailCount = 0;
       myAccountPwRevisionSnapshot = acc.revision;
@@ -33091,8 +33117,12 @@
 
     // ===== My Account — Active Sessions (self-only) =====
     // list/revoke เฉพาะ session ของตัวเอง — identity เดียวกับ My Account (auth.admin.accountId)
-    // session "active" เมื่อ status Active และยังอยู่ใน sessionRevision epoch ปัจจุบัน
-    // (เปลี่ยนรหัสผ่าน = bump epoch → session อื่นหมดอายุ) — current session คงอยู่จนกว่าจะ logout
+    // session "active" เมื่อ status Active + อยู่ใน sessionRevision epoch ปัจจุบัน +
+    // ยังไม่เกิน idle 8h / max 24h (spec 01§8) — ไม่ยกเว้น current session: revoke จาก
+    // อุปกรณ์อื่น / epoch bump ภายนอก / idle เกิน policy ทำ session นี้หมดอายุเช่นกัน (AIL-023b)
+    const MY_ACCOUNT_SESSION_IDLE_MS = 8 * 3600e3;
+    const MY_ACCOUNT_SESSION_MAX_MS = 24 * 3600e3;
+
     function getMyAccountSessions(acc) {
       return adminSessionData[acc?.id]?.sessions || [];
     }
@@ -33103,8 +33133,69 @@
 
     function isMyAccountSessionActive(acc, session) {
       if (!session || session.status !== "Active") return false;
-      if (isMyAccountCurrentSession(acc, session)) return true;
-      return (session.sessionRevision ?? 0) === (acc?.sessionRevision ?? 0);
+      if ((session.sessionRevision ?? 0) !== (acc?.sessionRevision ?? 0)) return false;
+      const now = Date.now();
+      if (session.lastActiveTs && now - session.lastActiveTs > MY_ACCOUNT_SESSION_IDLE_MS) return false;
+      if (session.signedInTs && now - session.signedInTs > MY_ACCOUNT_SESSION_MAX_MS) return false;
+      return true;
+    }
+
+    // current session validity — gate หลักของ My Account: session ต้อง valid ตาม rule
+    // เดียวกับ session อื่น (contract §6 — invalid session block ใน request ถัดไป)
+    function isMyAccountCurrentSessionValid(acc) {
+      const registry = adminSessionData[acc?.id];
+      const current = registry?.sessions.find((s) => s.id === registry.currentSessionId);
+      return isMyAccountSessionActive(acc, current);
+    }
+
+    // lazy expiry sweep — session ที่ idle/age เกิน policy ถูก flip เป็น Expired ให้ registry
+    // ตรงกับผล valid (production = system job; prototype ตรวจตอน render/commit)
+    // epoch-stale ไม่ถูก sweep — sessionRevision mismatch คือ invalid เฉย ๆ ไม่เปลี่ยน status
+    function sweepMyAccountExpiredSessions(acc) {
+      const registry = adminSessionData[acc?.id];
+      if (!registry) return;
+      const now = Date.now();
+      registry.sessions.forEach((s) => {
+        if (s.status !== "Active") return;
+        const idleExpired = s.lastActiveTs && now - s.lastActiveTs > MY_ACCOUNT_SESSION_IDLE_MS;
+        const maxExpired = s.signedInTs && now - s.signedInTs > MY_ACCOUNT_SESSION_MAX_MS;
+        if (idleExpired || maxExpired) {
+          s.status = "Expired";
+          s.expiredAt = formatBangkokTimestamp();
+          s.expiredReason = idleExpired ? "Idle timeout" : "Max session lifetime";
+        }
+      });
+    }
+
+    // system-triggered expiry transition — session หมดอายุ/invalid ระหว่างใช้งาน:
+    // ปิด modal ที่ค้าง + เคลียร์ snapshot แล้ว gate หน้าเป็น session-expired
+    // (แยกจาก user-initiated logout — user ไม่ได้กดออกเอง)
+    function transitionMyAccountToSessionExpired() {
+      myAccountSessionRevokeTarget = null;
+      myAccountLogoutAllSnapshot = null;
+      closeUserActionModal();
+      myAccountViewState = "session-expired";
+      renderMyAccountPage();
+    }
+
+    // watch เบา ๆ ขณะอยู่หน้า My Account — จำลอง server-side invalidation ที่ผู้ใช้เห็น
+    // โดยไม่ต้องรอ click ถัดไป; pause เมื่อ modal เปิด (commit guard เช็คตอนกดยืนยันอยู่แล้ว)
+    // และหยุดตัวเองเมื่อออกจากหน้า My Account
+    function startMyAccountSessionWatch() {
+      window.clearInterval(myAccountSessionWatchTimer);
+      myAccountSessionWatchTimer = window.setInterval(() => {
+        if (!document.body.classList.contains("my-account-mode") || document.body.classList.contains("logged-out")) {
+          window.clearInterval(myAccountSessionWatchTimer);
+          myAccountSessionWatchTimer = null;
+          return;
+        }
+        if (myAccountViewState === "session-expired") return;
+        if (document.querySelector("#user-action-modal.show")) return;
+        const acc = findSelfAdminAccount();
+        if (acc && !isMyAccountCurrentSessionValid(acc)) {
+          transitionMyAccountToSessionExpired();
+        }
+      }, 1200);
     }
 
     // login ใหม่หลัง session teardown (เช่น Logout All) = ระบบออก session ใหม่บนอุปกรณ์ที่ login
@@ -33122,7 +33213,9 @@
         location: existing?.location || "—",
         ipMasked: existing?.ipMasked || "—",
         signedInAt: formatAdminAccountActivityTime(),
+        signedInTs: Date.now(),
         lastActiveAt: "กำลังใช้งาน",
+        lastActiveTs: Date.now(),
         sessionRevision: acc?.sessionRevision ?? 0,
         status: "Active"
       };
@@ -33266,7 +33359,9 @@
         return;
       }
       // boundary + stale check — self identity + Active + revision snapshot ตอนเปิด modal
-      if (acc.id !== auth?.admin?.accountId || acc.status !== "Active" || acc.revision !== target.revision) {
+      // + current session validity (expire/revoke จากอุปกรณ์อื่นระหว่างเปิด modal → reject)
+      sweepMyAccountExpiredSessions(acc);
+      if (acc.id !== auth?.admin?.accountId || acc.status !== "Active" || acc.revision !== target.revision || !isMyAccountCurrentSessionValid(acc)) {
         myAccountSessionRevokeTarget = null;
         closeUserActionModal();
         showToast("Session หมดอายุหรือข้อมูลไม่ตรงกัน — กรุณาโหลดหน้าใหม่ก่อนดำเนินการอีกครั้ง", "บันทึกไม่สำเร็จ", "error");
@@ -33416,11 +33511,21 @@
         renderMyAccountPage();
         return;
       }
+      sweepMyAccountExpiredSessions(acc);
       const sessions = getMyAccountSessions(acc).filter((s) => isMyAccountSessionActive(acc, s));
       if (!sessions.length) {
         myAccountLogoutAllSnapshot = null;
         closeUserActionModal();
         showToast("ไม่มี session ที่ใช้งานอยู่แล้ว — รายการถูกอัปเดต", "My Account", "warning");
+        renderMyAccountPage();
+        return;
+      }
+      // current session ถูก revoke/expire จากอุปกรณ์อื่นระหว่างเปิด modal → reject + gate expired
+      // (เช็คหลัง empty-case — ถ้าทุก session ตายแล้วให้ warning "ไม่มี session" แทน)
+      if (!isMyAccountCurrentSessionValid(acc)) {
+        myAccountLogoutAllSnapshot = null;
+        closeUserActionModal();
+        showToast("Session หมดอายุหรือข้อมูลไม่ตรงกัน — กรุณาโหลดหน้าใหม่ก่อนดำเนินการอีกครั้ง", "บันทึกไม่สำเร็จ", "error");
         renderMyAccountPage();
         return;
       }
@@ -47107,6 +47212,8 @@
             simulateMyAccountReload();
           }, 700);
         } else if (action === "return-login") {
+          // session-expired redirect — teardown เดียวกับ logout; copy บน expired block
+          // อธิบายสาเหตุแล้ว จึงกลับหน้า Login เปล่า ๆ ไม่ฝากข้อความเพิ่ม
           document.querySelector("#logout-btn")?.click();
         }
         return;
@@ -47630,6 +47737,9 @@
       setAuthState("");
       updateAdminProfileFooter();
       resetSessionViewState();
+      // AIL-023b: login = session issuance — ออก session ใหม่ให้อุปกรณ์นี้เมื่อของเดิม
+      // ถูก revoke/expire/stale (no-op ถ้า current session ยัง valid)
+      ensureMyAccountCurrentSession(findSelfAdminAccount());
       renderModule("dashboard");
       scrollMainToTop();
     }
