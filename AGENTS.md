@@ -43,6 +43,10 @@ UI copy, labels, error messages, and documentation for TukDaeng are primarily in
 - Keep technical terms, product names, file names, screen names, statuses, commands, and code identifiers in English when that is clearer or already the convention in the file.
 - Match the tone and register of nearby copy so new text blends in rather than standing out.
 
+## Response Style
+
+ตอบผู้ใช้เป็นภาษาไทยแบบอ่านเข้าใจง่าย — ใช้ประโยคสั้น ภาษาคนคุยกัน เลี่ยงศัพท์เทคนิคหรือศัพท์ยุ่งยากเท่าที่ทำได้ ถ้าจำเป็นต้องใช้ให้แปะคำอธิบายสั้น ๆ ในวงเล็บ เวลาสรุปแผน/งาน ให้แยกหัวข้อสั้น ๆ อธิบายว่า "ทำอะไร เพื่ออะไร ผลกับผู้ใช้/หน้าจอเป็นยังไง" ไม่ใช่แค่รายการเทคนิค เทอมเฉพาะที่ repo ใช้ประจำ (เช่น screen/file/status/task id) ยังใช้ภาษาอังกฤษได้ แต่เรื่องรอบตัวให้เป็นภาษาไทยธรรมดา
+
 ## Code Comment Task Reference Rule
 
 ห้ามใส่เลข task (เช่น AL-005, AL-012) ใน comment ของโค้ดที่เขียนใหม่ — comment ในโค้ดเขียนอธิบาย intent/pattern ของโค้ดเท่านั้น ส่วน provenance (งานนี้มาจาก task ไหน) ให้ git commit message และ work log ใน kanban เป็นผู้บันทึก เพราะเลข task เปลี่ยน/ถูกตัดได้ ทำให้ comment ค้างเลขเก่าและอ่านสับสน comment เดิมที่มีเลขอยู่แล้วให้คงไว้เป็น historical note และอัปเดตเลขตามจริงเมื่อมีการ renumber task
