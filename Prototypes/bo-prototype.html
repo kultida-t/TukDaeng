@@ -109,6 +109,14 @@
     body:not(.forgot-mode) #forgot-screen { display: none; }
     body.forgot-mode #forgot-screen { display: grid; }
     body.forgot-mode { overflow-y: auto; }
+    /* reset-mode: public reset-password screen — additive overlay state เดียวกับ invite-mode/forgot-mode */
+    body.reset-mode #login-screen { display: none; }
+    body.reset-mode #invite-screen { display: none; }
+    body.reset-mode #forgot-screen { display: none; }
+    body.reset-mode .app { display: none; }
+    body:not(.reset-mode) #reset-screen { display: none; }
+    body.reset-mode #reset-screen { display: grid; }
+    body.reset-mode { overflow-y: auto; }
 
     .login-screen {
       min-height: 100vh;
@@ -128,7 +136,8 @@
     }
     .login-visual,
     .invite-visual,
-    .forgot-visual {
+    .forgot-visual,
+    .reset-visual {
       position: relative;
       overflow: hidden;
       order: 1;
@@ -138,7 +147,8 @@
     }
     .login-visual::after,
     .invite-visual::after,
-    .forgot-visual::after {
+    .forgot-visual::after,
+    .reset-visual::after {
       content: "BACK OFFICE";
       position: absolute;
       right: 36px;
@@ -150,7 +160,8 @@
     }
     .login-brand,
     .invite-brand,
-    .forgot-brand {
+    .forgot-brand,
+    .reset-brand {
       display: flex;
       align-items: center;
       gap: 12px;
@@ -158,7 +169,8 @@
     }
     .login-brand > div,
     .invite-brand > div,
-    .forgot-brand > div {
+    .forgot-brand > div,
+    .reset-brand > div {
       display: flex;
       flex-direction: column;
       justify-content: center;
@@ -168,7 +180,8 @@
     }
     .login-brand small,
     .invite-brand small,
-    .forgot-brand small {
+    .forgot-brand small,
+    .reset-brand small {
       display: block;
       color: #8198b7;
       font-size: 10px;
@@ -222,7 +235,8 @@
     /* Login/Forgot เท่านั้น — เว้นขอบด้านข้างของ controls ใน scenario panel ไม่ให้ชิดกรอบ;
        อย่าใส่ใน .prototype-tools ตรง ๆ เพราะ user-action-prototype-tools (modal หลายจอ) inherit ไปด้วย */
     #login-screen .prototype-tools,
-    #forgot-screen .prototype-tools {
+    #forgot-screen .prototype-tools,
+    #reset-screen .prototype-tools {
       padding: 18px 10px 0;
     }
     .user-action-prototype-tools {
@@ -393,7 +407,8 @@
     }
     .auth-error.show { display: block; }
     /* Accept Invitation screen — reuse login visual language, style เฉพาะส่วนใหม่ */
-    .invite-context {
+    .invite-context,
+    .reset-context {
       max-width: 360px;
       margin: 0 0 18px;
       padding: 14px 16px;
@@ -403,16 +418,20 @@
       display: grid;
       gap: 10px;
     }
-    .invite-context-row {
+    .invite-context-row,
+    .reset-context-row {
       display: flex;
       justify-content: space-between;
       align-items: baseline;
       gap: 16px;
       font-size: 12px;
     }
-    .invite-context-row span { color: #8fa4c0; }
-    .invite-context-row strong { color: #fff; font-weight: 600; text-align: right; }
-    .invite-policy {
+    .invite-context-row span,
+    .reset-context-row span { color: #8fa4c0; }
+    .invite-context-row strong,
+    .reset-context-row strong { color: #fff; font-weight: 600; text-align: right; }
+    .invite-policy,
+    .reset-policy {
       list-style: none;
       margin: 4px 0 8px;
       padding: 0;
@@ -421,8 +440,10 @@
       font-size: 12px;
       color: #8fa4c0;
     }
-    .invite-policy li { display: flex; align-items: center; gap: 8px; }
-    .invite-policy li::before {
+    .invite-policy li,
+    .reset-policy li { display: flex; align-items: center; gap: 8px; }
+    .invite-policy li::before,
+    .reset-policy li::before {
       content: "";
       width: 8px;
       height: 8px;
@@ -430,10 +451,13 @@
       background: rgba(143, 164, 192, .4);
       flex-shrink: 0;
     }
-    .invite-policy li[data-pass="true"] { color: #8fe3b4; }
-    .invite-policy li[data-pass="true"]::before { background: #2fbf71; }
+    .invite-policy li[data-pass="true"],
+    .reset-policy li[data-pass="true"] { color: #8fe3b4; }
+    .invite-policy li[data-pass="true"]::before,
+    .reset-policy li[data-pass="true"]::before { background: #2fbf71; }
     .invite-hint,
-    .forgot-hint {
+    .forgot-hint,
+    .reset-hint {
       max-width: 360px;
       /* secondary note อยู่ใต้ CTA ทุก state — 18px = rhythm เดียวกับ .login-footnote (text ใต้ปุ่ม) */
       margin: 18px 0 0;
@@ -442,46 +466,58 @@
       line-height: 1.55;
     }
     #invite-screen .btn.primary,
-    #forgot-screen .btn.primary {
+    #forgot-screen .btn.primary,
+    #reset-screen .btn.primary {
       max-width: 360px;
       width: 100%;
       justify-content: center;
       text-align: center;
     }
     /* ปลด cap 360px ให้ปุ่มส่งกว้างเท่าช่องอีเมลที่ mobile (ต้องอยู่หลัง #forgot-screen .btn.primary เพราะ specificity เท่ากัน) */
-    #forgot-screen #forgot-form .btn.primary { max-width: none; }
+    #forgot-screen #forgot-form .btn.primary,
+    #reset-screen #reset-form .btn.primary { max-width: none; }
     #invite-screen .auth-error { margin: 0 0 16px; }
     /* form-level error อยู่ใต้ CTA — separation ชัดเจน (ID selector ชนะ rule .auth-error ด้านบน) */
     #invite-screen #invite-error { margin: 16px 0 0; }
     #forgot-screen .auth-error { margin: 0 0 16px; }
+    #reset-screen .auth-error { margin: 0 0 16px; }
+    /* recovery banner ต่อจาก title โดยตรง (ไม่มี login-copy เว้นระยะเหมือน form state) — คืน breathing room */
+    #reset-screen .auth-error[data-reset-failure] { margin-top: 24px; }
+    /* form-level error อยู่ใต้ CTA — เดียวกับ #invite-error */
+    #reset-screen #reset-error { margin: 16px 0 0; }
     /* AIL-009: safe recovery actions — grid เดียวกับ context panel; ghost ใช้โทนปุ่ม ghost บน dark auth panel */
     .invite-recovery-actions,
-    .forgot-actions {
+    .forgot-actions,
+    .reset-actions {
       max-width: 360px;
       display: grid;
       gap: 10px;
     }
     .invite-recovery-actions .btn,
-    .forgot-actions .btn {
+    .forgot-actions .btn,
+    .reset-actions .btn {
       width: 100%;
       justify-content: center;
       text-align: center;
     }
     #invite-screen .btn.ghost,
-    #forgot-screen .btn.ghost {
+    #forgot-screen .btn.ghost,
+    #reset-screen .btn.ghost {
       color: #dbe8ff;
       border-color: rgba(219, 232, 255, .78);
       background: transparent;
     }
     #invite-screen .btn.ghost:hover,
-    #forgot-screen .btn.ghost:hover {
+    #forgot-screen .btn.ghost:hover,
+    #reset-screen .btn.ghost:hover {
       color: #fff;
       border-color: #fff;
       background: rgba(255, 255, 255, .08);
     }
     /* field-level validation — pattern เดียวกับ .article-field-error แต่โทนสีสำหรับ dark auth panel */
     .invite-field-error,
-    .forgot-field-error {
+    .forgot-field-error,
+    .reset-field-error {
       display: none;
       color: #ff8b95;
       font-size: 12px;
@@ -489,9 +525,11 @@
       line-height: 1.45;
     }
     .invite-field-error.show,
-    .forgot-field-error.show { display: block; }
-    /* forgot accepted — generic success banner (generic response ห้ามเปิดเผยผลลัพธ์จริง) */
-    .forgot-accepted {
+    .forgot-field-error.show,
+    .reset-field-error.show { display: block; }
+    /* forgot/reset accepted — success banner (forgot = generic response ห้ามเปิดเผยผลลัพธ์จริง) */
+    .forgot-accepted,
+    .reset-accepted {
       max-width: 360px;
       margin: 0 0 18px;
       padding: 12px 14px;
@@ -502,8 +540,21 @@
       font-size: 13px;
       line-height: 1.55;
     }
+    /* reset validating — neutral pending banner ระหว่าง resolve token (โทน info ไม่ใช่ success) */
+    .reset-validating {
+      max-width: 360px;
+      margin: 0 0 18px;
+      padding: 12px 14px;
+      border: 1px solid rgba(173, 193, 221, .32);
+      border-radius: 7px;
+      background: rgba(12, 33, 58, .55);
+      color: #c7d6ec;
+      font-size: 13px;
+      line-height: 1.55;
+    }
     #invite-screen input[aria-invalid="true"],
-    #forgot-screen input[aria-invalid="true"] {
+    #forgot-screen input[aria-invalid="true"],
+    #reset-screen input[aria-invalid="true"] {
       border-color: rgba(255, 139, 149, .72);
       box-shadow: 0 0 0 3px rgba(214, 0, 18, .18);
     }
@@ -12321,14 +12372,16 @@
       }
       .login-visual,
       .invite-visual,
-      .forgot-visual {
+      .forgot-visual,
+      .reset-visual {
         order: 1;
         min-height: clamp(170px, 34svh, 250px);
         background-position: center 48%;
       }
       .login-visual::after,
       .invite-visual::after,
-      .forgot-visual::after {
+      .forgot-visual::after,
+      .reset-visual::after {
         right: max(24px, calc((100vw - 390px) / 2));
         bottom: 18px;
         font-size: clamp(42px, 12vw, 72px);
@@ -13037,12 +13090,14 @@
       .mobile-header small { font-size: 9px; }
       .login-visual,
       .invite-visual,
-      .forgot-visual {
+      .forgot-visual,
+      .reset-visual {
         min-height: clamp(150px, 32svh, 210px);
       }
       .login-visual::after,
       .invite-visual::after,
-      .forgot-visual::after {
+      .forgot-visual::after,
+      .reset-visual::after {
         right: 18px;
         bottom: 14px;
         font-size: clamp(38px, 13vw, 58px);
@@ -13053,23 +13108,27 @@
       }
       .login-brand,
       .invite-brand,
-      .forgot-brand {
+      .forgot-brand,
+      .reset-brand {
         gap: 11px;
         margin-bottom: 34px;
       }
       .login-brand .brand-mark,
       .invite-brand .brand-mark,
-      .forgot-brand .brand-mark {
+      .forgot-brand .brand-mark,
+      .reset-brand .brand-mark {
         width: 42px;
         height: 42px;
         border-radius: 9px;
       }
       .login-brand .brand-name,
       .invite-brand .brand-name,
-      .forgot-brand .brand-name { font-size: 24px; }
+      .forgot-brand .brand-name,
+      .reset-brand .brand-name { font-size: 24px; }
       .login-brand small,
       .invite-brand small,
-      .forgot-brand small {
+      .forgot-brand small,
+      .reset-brand small {
         margin-top: 0;
         letter-spacing: .2em;
       }
@@ -17669,6 +17728,21 @@
       <div class="forgot-content" id="forgot-content" aria-live="polite"></div>
     </div>
     <div class="forgot-visual" aria-hidden="true"></div>
+  </section>
+
+  <!-- Reset Password — public token-consumption flow (one-time link, recovery context ไม่สร้าง session) -->
+  <section class="login-screen reset-screen" id="reset-screen" aria-label="Reset password">
+    <div class="login-panel">
+      <div class="reset-brand">
+        <img class="brand-mark" src="./assets/tukdaeng-app-icon.png" alt="Tuk Daeng" />
+        <div>
+          <strong class="brand-name">Tuk Daeng</strong>
+          <small>Back Office</small>
+        </div>
+      </div>
+      <div class="reset-content" id="reset-content" aria-live="polite"></div>
+    </div>
+    <div class="reset-visual" aria-hidden="true"></div>
   </section>
 
   <div class="app">
@@ -26886,6 +26960,19 @@
               <option value="system-error">ระบบขัดข้อง (System error)</option>
             </select>
           </label>
+          <label>
+            Reset link flow (จำลองคลิกลิงก์จากอีเมล)
+            <select id="forgot-reset-scenario">
+              <option value="">— เลือกเคสทดสอบ —</option>
+              <option value="active">Reset — ลิงก์ใช้ได้ (Active)</option>
+              <option value="locked">Reset — ลิงก์ใช้ได้ (Locked: failed login)</option>
+              <option value="expired">Reset — ลิงก์หมดอายุ</option>
+              <option value="used">Reset — ลิงก์ใช้แล้ว</option>
+              <option value="superseded">Reset — ลิงก์ถูกแทนที่</option>
+              <option value="ineligible">Reset — บัญชีไม่พร้อม (Suspended)</option>
+              <option value="invalid">Reset — token ไม่ถูกต้อง</option>
+            </select>
+          </label>
         </details>
       `;
       const emailInput = document.querySelector("#forgot-email");
@@ -26989,6 +27076,643 @@
     document.addEventListener("input", event => {
       if (event.target && event.target.id === "forgot-email") {
         setForgotFieldError("");
+      }
+    });
+
+    // ===== Reset Password — public recovery flow (consume one-time token) =====
+    // contract: AIL-019 Password Recovery Contract — route /bo/reset-password#token=<opaque>
+    // token lifecycle: opaque, 30min TTL, single-use, hash-only บน request record
+    // eligible: Active + Locked(failed_login) เท่านั้น — commit แบบ atomic:
+    // password update + token consume + clear failed-login lock + revoke ทุก session → Login
+    // recovery context ไม่สร้าง authenticated session; raw token อยู่ใน memory เท่านั้น
+
+    const resetPassword = {
+      token: null,          // raw token — memory only, ห้าม render/log/audit
+      state: "idle",        // idle | validating | form | invalid | success
+      failureCode: null,
+      requestId: null,
+      accountId: null,
+      tokenRevision: null,   // snapshot ตอนเปิด form — stale guard ตอน commit
+      accountRevision: null,
+      submitting: false,
+      scenario: "commit-ok"  // prototype scenario select — commit-ok | commit-failed
+    };
+
+    const resetPasswordFailureLabels = {
+      invalid_token: "ลิงก์ไม่ถูกต้องหรือข้อมูลไม่ครบถ้วน",
+      stale_revision: "ลิงก์นี้ไม่ตรงกับคำขอฉบับล่าสุด — ถูกแทนที่แล้ว",
+      already_used: "ลิงก์นี้ถูกใช้งานแล้ว — ลิงก์ตั้งรหัสผ่านใช้ได้ครั้งเดียว",
+      superseded: "ลิงก์นี้ถูกแทนที่ด้วยคำขอฉบับใหม่แล้ว",
+      expired: "ลิงก์ตั้งรหัสผ่านหมดอายุแล้ว (ใช้ได้ภายใน 30 นาที)",
+      not_allowed: "ลิงก์ไม่ได้อยู่ในสถานะที่ใช้งานได้",
+      account_ineligible: "บัญชีนี้ไม่ได้อยู่ในสถานะที่ตั้งรหัสผ่านใหม่ได้",
+      lock_reason_blocked: "บัญชีถูกล็อกด้วยเหตุที่ต้องให้ผู้ดูแลระบบปลดล็อก",
+      stale_request: "ข้อมูลคำขอเปลี่ยนไประหว่างใช้งาน — กรุณาเปิดลิงก์ใหม่อีกครั้ง",
+      duplicate_submit: "กำลังดำเนินการอยู่ — กรุณารอสักครู่",
+      commit_failed: "ตั้งรหัสผ่านใหม่ไม่สำเร็จ — ไม่มีข้อมูลบางส่วนถูกบันทึก กรุณาลองใหม่อีกครั้ง"
+    };
+
+    // safe recovery states — เดียวกับ inviteRecoveryStates: terminal = exit/new-request channel;
+    // transient = re-resolve action (refresh server context ไม่ใช่ blind retry)
+    // label ฝั่ง user generic — ห้ามเปิดเผย account existence/lock reason/token internals
+    const resetRecoveryStates = {
+      invalid: {
+        codes: ["invalid_token", "not_allowed"],
+        title: "LINK NOT VALID",
+        message: "ลิงก์ไม่ถูกต้องหรือใช้งานไม่ได้ กรุณาขอลิงก์ใหม่",
+        action: "กลับไปหน้า Login",
+        forgot: "ขอลิงก์ตั้งรหัสผ่านใหม่",
+        hint: "ลิงก์ตั้งรหัสผ่านใช้ได้ครั้งเดียวและมีอายุ 30 นาที"
+      },
+      used: {
+        codes: ["already_used"],
+        title: "LINK ALREADY USED",
+        message: "ลิงก์นี้ถูกใช้งานแล้ว",
+        action: "กลับไปหน้า Login"
+      },
+      expired: {
+        codes: ["expired"],
+        title: "LINK EXPIRED",
+        message: "ลิงก์นี้หมดอายุแล้ว กรุณาขอลิงก์ใหม่",
+        action: "กลับไปหน้า Login",
+        forgot: "ขอลิงก์ตั้งรหัสผ่านใหม่",
+        hint: "ลิงก์ใหม่มีอายุใช้งาน 30 นาที"
+      },
+      superseded: {
+        codes: ["superseded", "stale_revision"],
+        title: "LINK REPLACED",
+        message: "ลิงก์นี้ถูกแทนที่ด้วยลิงก์ฉบับใหม่แล้ว",
+        action: "กลับไปหน้า Login",
+        hint: "เปิดลิงก์จากอีเมลฉบับล่าสุดเท่านั้น"
+      },
+      unavailable: {
+        codes: ["account_ineligible", "lock_reason_blocked"],
+        title: "RESET UNAVAILABLE",
+        message: "ไม่สามารถใช้ลิงก์นี้ได้ กรุณาติดต่อผู้ดูแลระบบ",
+        action: "กลับไปหน้า Login"
+      },
+      transient: {
+        codes: ["stale_request", "commit_failed", "duplicate_submit"],
+        title: "RESET NOT COMPLETED",
+        message: "เกิดข้อผิดพลาดชั่วคราว กรุณาลองใหม่อีกครั้ง",
+        action: "กลับไปหน้า Login",
+        retry: "ลองอีกครั้ง",
+        hint: "หากยังใช้ไม่ได้ ขอลิงก์ใหม่จากหน้า Login"
+      }
+    };
+
+    function getResetRecoveryState(failureCode) {
+      for (const [kind, def] of Object.entries(resetRecoveryStates)) {
+        if (def.codes.includes(failureCode)) return { kind, ...def };
+      }
+      return { kind: "invalid", ...resetRecoveryStates.invalid };
+    }
+
+    // reset-password route — bo-prototype.html#reset-token=<opaque> เทียบเท่า public /bo/reset-password#token=
+    function getResetTokenFromLocation() {
+      const m = /^#reset-token=(.*)$/.exec(window.location.hash || "");
+      if (!m) return undefined;
+      return m[1] ? decodeURIComponent(m[1]) : null;
+    }
+
+    // reverse lookup raw token ของ request — ใช้เฉพาะ manual QA scenario tool เท่านั้น
+    function getPasswordResetLinkToken(request) {
+      if (!request) return "";
+      const tokenRevision = request.tokenRevision || 1;
+      for (const [token, ref] of passwordResetTokenFixtures) {
+        if (ref.requestId === request.id && ref.tokenRevision === tokenRevision) return token;
+      }
+      return "";
+    }
+
+    // resolve + validate จาก state ล่าสุดทุกครั้ง (render และ commit ใช้ตัวเดียวกัน — server-authoritative revalidation)
+    // token ที่ resolve target ไม่ได้คืน invalid_token โดยไม่มี request/acc — ห้าม audit สร้าง target reference
+    function resolveAdminPasswordReset(token) {
+      const linkRef = passwordResetTokenFixtures.get(String(token || ""));
+      if (!linkRef) return { ok: false, code: "invalid_token" };
+      const request = passwordResetData.requests.find(r => r.id === linkRef.requestId);
+      if (!request) return { ok: false, code: "invalid_token" };
+      const acc = adminAccountData.accounts.find(a => a.id === request.targetAdminId);
+      if (!acc) return { ok: false, code: "invalid_token" };
+      if (linkRef.tokenRevision !== (request.tokenRevision || 1)) {
+        return { ok: false, code: "stale_revision", request, acc };
+      }
+      if (request.status === "Used") return { ok: false, code: "already_used", request, acc };
+      if (request.status === "Superseded") return { ok: false, code: "superseded", request, acc };
+      if (request.status === "Expired" || new Date(request.expiresAt).getTime() <= Date.now()) {
+        return { ok: false, code: "expired", request, acc };
+      }
+      if (request.status !== "Pending") return { ok: false, code: "not_allowed", request, acc };
+      // Locked ต้องเป็น failed-login lock เท่านั้น — security/admin lock ไม่ผ่าน reset
+      if (acc.status === "Locked" && (passwordRecoveryLockReason[acc.id] || "security_admin") !== "failed_login") {
+        return { ok: false, code: "lock_reason_blocked", request, acc };
+      }
+      if (!isPasswordRecoveryEligible(acc)) return { ok: false, code: "account_ineligible", request, acc };
+      if (normalizePasswordResetEmail(acc.email) !== request.emailNormalized) {
+        return { ok: false, code: "account_ineligible", request, acc };
+      }
+      return { ok: true, request, acc };
+    }
+
+    // commit token ครั้งเดียวแบบ atomic — re-validate จาก state ล่าสุดทุกครั้งก่อน mutate
+    // rollback ครบทุก store ถ้า mutation ใดล้มเหลว (pattern เดียวกับ commitAdminInvitationActivation)
+    function commitAdminPasswordReset(newPassword) {
+      if (resetPassword.submitting) return { ok: false, code: "duplicate_submit" };
+      const check = resolveAdminPasswordReset(resetPassword.token);
+      if (!check.ok) {
+        // attempt ที่ resolve target ได้แต่ถูก block ต้อง audit (result Failed + failureCode)
+        if (check.request && check.acc) {
+          pushPasswordResetAudit(check.acc, {
+            action: "Password reset commit",
+            eventType: "ADMIN_PASSWORD_RESET_COMMIT",
+            risk: "High",
+            reference: check.request.id,
+            result: "Failed",
+            failureCode: check.code.toUpperCase(),
+            before: `${check.request.id} (${check.request.status})`,
+            after: `${check.request.id} (${check.request.status})`,
+            reason: `ตั้งรหัสผ่านใหม่ถูกบล็อก — ${resetPasswordFailureLabels[check.code] || check.code}`,
+            correlationId: check.request.correlationId
+          });
+        }
+        return { ok: false, code: check.code };
+      }
+      const { request, acc } = check;
+      // stale check กับ snapshot ตอนเปิดหน้า — revision ต้องตรง state ที่ผู้ใช้เห็นล่าสุด
+      if ((resetPassword.tokenRevision != null && resetPassword.tokenRevision !== (request.tokenRevision || 1))
+          || (resetPassword.accountRevision != null && resetPassword.accountRevision !== (acc.revision ?? 0))) {
+        pushPasswordResetAudit(acc, {
+          action: "Password reset commit",
+          eventType: "ADMIN_PASSWORD_RESET_COMMIT",
+          risk: "High",
+          reference: request.id,
+          result: "Failed",
+          failureCode: "STALE_REQUEST",
+          before: `${request.id} (${request.status})`,
+          after: `${request.id} (${request.status})`,
+          reason: "ตั้งรหัสผ่านใหม่ถูกบล็อก — ข้อมูลคำขอเปลี่ยนไประหว่างใช้งาน (stale)",
+          correlationId: request.correlationId
+        });
+        return { ok: false, code: "stale_request" };
+      }
+      resetPassword.submitting = true;
+      const now = new Date();
+      const wasFailedLoginLocked = acc.status === "Locked";
+      const beforeAccStatus = acc.status;
+      const beforeRevision = acc.revision;
+      const beforeSessionRevision = acc.sessionRevision;
+      const beforeLastAction = acc.lastAction;
+      const hadLockReason = Object.prototype.hasOwnProperty.call(passwordRecoveryLockReason, acc.id);
+      const beforeLockReason = passwordRecoveryLockReason[acc.id];
+      const credExisted = Object.prototype.hasOwnProperty.call(adminCredentialStore, acc.id);
+      const beforeCredential = credExisted ? adminCredentialStore[acc.id].password : null;
+      const registry = adminSessionData[acc.id];
+      const sessionSnapshot = registry
+        ? registry.sessions.map(s => ({ session: s, status: s.status, revokedAt: s.revokedAt, revokedReason: s.revokedReason }))
+        : [];
+      const auditLength = auditLogData.events.length;
+      const detailExisted = !!adminAccountData.detail[acc.id];
+      const detail = adminAccountData.detail[acc.id] || (adminAccountData.detail[acc.id] = {});
+      if (!detail.activity) detail.activity = [];
+      if (!detail.auditRefs) detail.auditRefs = [];
+      const activityLength = detail.activity.length;
+      const auditRefsLength = detail.auditRefs.length;
+      try {
+        if (resetPassword.scenario === "commit-failed") {
+          // QA simulation เท่านั้น — commit ล้มเหลว → rollback ครบทุก store
+          throw new Error("จำลอง commit ล้มเหลว");
+        }
+        request.status = "Used";
+        request.usedAt = now.toISOString();
+        // mock credential store — production เขียน password hash ผ่าน auth service เท่านั้น
+        // ห้าม log/audit/serialize ค่านี้ออกไป (เหมือน Change Password)
+        adminCredentialStore[acc.id] = { password: newPassword };
+        if (wasFailedLoginLocked) {
+          // eligible lock เดียวที่ reset ปลดได้ = failed-login lock — clear lock marker
+          acc.status = "Active";
+          delete passwordRecoveryLockReason[acc.id];
+          acc.lastAction = "Active — ตั้งรหัสผ่านใหม่สำเร็จ (ปลดล็อก failed login)";
+        } else {
+          acc.lastAction = "ตั้งรหัสผ่านใหม่ผ่านลิงก์ reset";
+        }
+        acc.revision = (beforeRevision || 0) + 1;
+        // revoke ทุก session ที่มีอยู่ — sessionRevision bump = epoch invalidation (คุม session ที่ไม่มีใน registry ด้วย)
+        acc.sessionRevision = (beforeSessionRevision || 0) + 1;
+        let revokedCount = 0;
+        if (registry) {
+          registry.sessions.forEach(session => {
+            if (session.status !== "Active") return;
+            session.status = "Revoked";
+            session.revokedAt = formatBangkokTimestamp();
+            session.revokedReason = "ตั้งรหัสผ่านใหม่ — ออกจากระบบทุกอุปกรณ์ตาม recovery policy";
+            revokedCount += 1;
+          });
+        }
+        const auditId = pushPasswordResetAudit(acc, {
+          action: "Password reset completed",
+          eventType: "ADMIN_PASSWORD_RESET_COMMIT",
+          risk: "High",
+          reference: request.id,
+          before: `${request.id} (Pending)`,
+          after: `${request.id} (Used)`,
+          reason: "ผู้ใช้ตั้งรหัสผ่านใหม่ผ่านลิงก์ reset สำเร็จ",
+          note: `บัญชี ${acc.id} ตั้งรหัสผ่านใหม่ — token revision ${request.tokenRevision} ถูก consume · revoke ${revokedCount} session${revokedCount === 1 ? "" : "s"}${wasFailedLoginLocked ? " · ปลดล็อก failed login (Locked → Active)" : ""}`,
+          correlationId: request.correlationId
+        });
+        if (!auditId) throw new Error("ไม่สามารถสร้าง Audit reference ได้");
+        detail.activity.unshift({
+          at: formatAdminAccountActivityTime(now),
+          action: "Password reset",
+          reference: request.id,
+          note: `ตั้งรหัสผ่านใหม่ผ่านลิงก์ reset — ลิงก์ใช้ครบครั้งเดียว · ออกจากระบบทุกอุปกรณ์${wasFailedLoginLocked ? " · ปลดล็อก failed login" : ""}`
+        });
+        detail.auditRefs.unshift(auditId);
+      } catch (error) {
+        request.status = "Pending";
+        delete request.usedAt;
+        if (credExisted) adminCredentialStore[acc.id].password = beforeCredential;
+        else delete adminCredentialStore[acc.id];
+        acc.status = beforeAccStatus;
+        acc.revision = beforeRevision;
+        acc.sessionRevision = beforeSessionRevision;
+        acc.lastAction = beforeLastAction;
+        if (hadLockReason) passwordRecoveryLockReason[acc.id] = beforeLockReason;
+        else delete passwordRecoveryLockReason[acc.id];
+        sessionSnapshot.forEach(({ session, status, revokedAt, revokedReason }) => {
+          session.status = status;
+          session.revokedAt = revokedAt;
+          session.revokedReason = revokedReason;
+        });
+        auditLogData.events.splice(0, auditLogData.events.length - auditLength);
+        detail.activity.splice(0, detail.activity.length - activityLength);
+        detail.auditRefs.splice(0, detail.auditRefs.length - auditRefsLength);
+        if (!detailExisted) delete adminAccountData.detail[acc.id];
+        resetPassword.submitting = false;
+        return { ok: false, code: "commit_failed" };
+      }
+      return { ok: true, code: "committed", requestId: request.id };
+    }
+
+    function enterResetMode(token) {
+      resetPassword.token = token;
+      resetPassword.submitting = false;
+      resetPassword.state = "validating";
+      resetPassword.failureCode = null;
+      resetPassword.requestId = null;
+      resetPassword.accountId = null;
+      resetPassword.tokenRevision = null;
+      resetPassword.accountRevision = null;
+      document.body.classList.remove("invite-mode", "forgot-mode");
+      document.body.classList.add("reset-mode");
+      showAuthError("");
+      setAuthState("");
+      renderResetScreen();
+      // จำลอง server-side token validation แบบ async — resolve จาก live state เสมอ ไม่ cache
+      window.setTimeout(() => {
+        if (!document.body.classList.contains("reset-mode") || resetPassword.state !== "validating") return;
+        const check = resolveAdminPasswordReset(resetPassword.token);
+        if (!check.ok) {
+          // resolvable แต่ถูก block → audit accept attempt (result Failed) เหมือน invitation accept
+          // unresolvable (invalid_token) → ไม่ audit เพราะไม่มี target reference ที่ปลอดภัย
+          if (check.request && check.acc) {
+            pushPasswordResetAudit(check.acc, {
+              action: "Password reset link opened",
+              eventType: "ADMIN_PASSWORD_RESET_TOKEN_ACCEPT",
+              reference: check.request.id,
+              result: "Failed",
+              failureCode: check.code.toUpperCase(),
+              before: `${check.request.id} (${check.request.status})`,
+              after: `${check.request.id} (${check.request.status})`,
+              reason: `เปิดลิงก์ตั้งรหัสผ่านถูกบล็อก — ${resetPasswordFailureLabels[check.code] || check.code}`,
+              correlationId: check.request.correlationId
+            });
+          }
+          resetPassword.state = "invalid";
+          resetPassword.failureCode = check.code;
+        } else {
+          // accept ครั้งแรกของ request นี้ → audit ADMIN_PASSWORD_RESET_TOKEN_ACCEPT (reopen ไม่ซ้ำ)
+          if (!check.request.acceptedAt) {
+            const acceptAuditId = pushPasswordResetAudit(check.acc, {
+              action: "Password reset link opened",
+              eventType: "ADMIN_PASSWORD_RESET_TOKEN_ACCEPT",
+              reference: check.request.id,
+              before: `${check.request.id} (${check.request.status})`,
+              after: `${check.request.id} (${check.request.status})`,
+              reason: `ผู้ใช้เปิดลิงก์ตั้งรหัสผ่าน — ${maskAdminInvitationEmail(check.acc.email)}`,
+              note: `ลิงก์ ${check.request.id} ใช้งานได้ — รอตั้งรหัสผ่านใหม่`,
+              correlationId: check.request.correlationId
+            });
+            check.request.acceptedAt = new Date().toISOString();
+            check.request.acceptAuditRef = acceptAuditId;
+          }
+          resetPassword.state = "form";
+          resetPassword.failureCode = null;
+          resetPassword.requestId = check.request.id;
+          resetPassword.accountId = check.acc.id;
+          resetPassword.tokenRevision = check.request.tokenRevision || 1;
+          resetPassword.accountRevision = check.acc.revision ?? 0;
+        }
+        renderResetScreen();
+      }, 300);
+    }
+
+    function exitResetMode() {
+      resetPassword.token = null;
+      resetPassword.state = "idle";
+      resetPassword.failureCode = null;
+      resetPassword.requestId = null;
+      resetPassword.accountId = null;
+      resetPassword.tokenRevision = null;
+      resetPassword.accountRevision = null;
+      resetPassword.submitting = false;
+      resetPassword.scenario = "commit-ok";
+      document.body.classList.remove("reset-mode");
+      if (document.body.classList.contains("logged-out")) {
+        showLoginForm();
+        document.querySelector("#login-email")?.focus();
+      }
+    }
+
+    function updateResetPasswordPolicy() {
+      const password = document.querySelector("#reset-password")?.value || "";
+      const confirm = document.querySelector("#reset-password-confirm")?.value || "";
+      const results = {
+        length: password.length >= 12,
+        upper: /[A-Z]/.test(password),
+        lower: /[a-z]/.test(password),
+        digit: /[0-9]/.test(password),
+        special: /[^A-Za-z0-9]/.test(password),
+        match: password.length > 0 && password === confirm
+      };
+      document.querySelectorAll("#reset-policy [data-reset-rule]").forEach(item => {
+        item.dataset.pass = results[item.dataset.resetRule] ? "true" : "false";
+      });
+      return results;
+    }
+
+    function setResetError(message) {
+      const el = document.querySelector("#reset-error");
+      if (!el) return;
+      el.textContent = message || "";
+      el.classList.toggle("show", !!message);
+    }
+
+    // field-level error — pattern เดียวกับ setInviteFieldError (aria-invalid + aria-errormessage)
+    function setResetFieldError(inputId, errorId, message) {
+      const input = document.getElementById(inputId);
+      const node = document.getElementById(errorId);
+      const hasError = Boolean(message);
+      if (node) {
+        node.textContent = message || "";
+        node.classList.toggle("show", hasError);
+      }
+      if (input) {
+        input.setAttribute("aria-invalid", hasError ? "true" : "false");
+        if (hasError) input.setAttribute("aria-errormessage", errorId);
+        else input.removeAttribute("aria-errormessage");
+      }
+    }
+
+    function renderResetScreen() {
+      const container = document.querySelector("#reset-content");
+      const screen = document.querySelector("#reset-screen");
+      if (!container || !screen) return;
+      screen.dataset.resetState = resetPassword.state;
+      if (resetPassword.state === "validating") {
+        container.innerHTML = `
+          <h1 class="login-title">RESET<br>PASSWORD</h1>
+          <p class="login-copy">ตั้งรหัสผ่านใหม่ผ่านลิงก์ครั้งเดียว</p>
+          <div class="reset-validating" data-reset-validating role="status">กำลังตรวจสอบลิงก์ กรุณารอสักครู่…</div>
+        `;
+        return;
+      }
+      if (resetPassword.state === "invalid") {
+        // safe recovery state — per-state title/message/recovery channel ที่ปลอดภัย
+        // data-reset-recovery = recovery class; data-reset-failure = code เดิมสำหรับ QA/audit trace
+        const recovery = getResetRecoveryState(resetPassword.failureCode);
+        container.innerHTML = `
+          <h1 class="login-title">${recovery.title}</h1>
+          <div class="auth-error show" data-reset-failure="${resetPassword.failureCode || "invalid_token"}" data-reset-recovery="${recovery.kind}" role="alert">${recovery.message}</div>
+          <div class="reset-actions">
+            ${recovery.retry ? `<button class="btn primary" type="button" data-reset-retry>${recovery.retry}</button>` : ""}
+            ${recovery.forgot ? `<button class="btn ${recovery.retry ? "ghost" : "primary"}" type="button" data-reset-forgot>${recovery.forgot}</button>` : ""}
+            <button class="btn ${recovery.retry || recovery.forgot ? "ghost" : "primary"}" type="button" data-reset-exit>${recovery.action}</button>
+          </div>
+          ${recovery.hint ? `<p class="reset-hint">${recovery.hint}</p>` : ""}
+        `;
+        // keyboard/focus flow — primary recovery action ได้ focus ทันที
+        (container.querySelector("[data-reset-retry]")
+          || container.querySelector("[data-reset-forgot]")
+          || container.querySelector("[data-reset-exit]"))?.focus();
+        return;
+      }
+      if (resetPassword.state === "success") {
+        container.innerHTML = `
+          <h1 class="login-title">PASSWORD<br>UPDATED</h1>
+          <p class="login-copy">ตั้งรหัสผ่านใหม่เรียบร้อยแล้ว</p>
+          <div class="reset-accepted" data-reset-success role="status">กรุณาเข้าสู่ระบบด้วยรหัสผ่านใหม่</div>
+          <div class="reset-actions">
+            <button class="btn primary" type="button" data-reset-exit>กลับไปหน้า Login</button>
+          </div>
+        `;
+        container.querySelector("[data-reset-exit]")?.focus();
+        return;
+      }
+      const request = passwordResetData.requests.find(r => r.id === resetPassword.requestId);
+      const acc = request && adminAccountData.accounts.find(a => a.id === request.targetAdminId);
+      const maskedEmail = acc ? maskAdminInvitationEmail(acc.email) : "—";
+      container.innerHTML = `
+        <h1 class="login-title">RESET<br>PASSWORD</h1>
+        <p class="login-copy">ลิงก์นี้ใช้ได้ครั้งเดียวภายใน 30 นาที<br>กรุณาตั้งรหัสผ่านใหม่สำหรับบัญชีของคุณ</p>
+        <div class="reset-context" data-reset-context>
+          <div class="reset-context-row"><span>อีเมล</span><strong data-reset-field="email">${maskedEmail}</strong></div>
+        </div>
+        <form class="login-form" id="reset-form" novalidate>
+          <label>
+            รหัสผ่านใหม่
+            <span class="password-field">
+              <input id="reset-password" type="password" autocomplete="new-password" placeholder="ตั้งรหัสผ่านใหม่" />
+              <button class="password-toggle" type="button" id="reset-password-toggle" aria-label="Show password" title="Show password"></button>
+            </span>
+            <span class="reset-field-error" id="reset-password-error" role="alert"></span>
+          </label>
+          <label>
+            ยืนยันรหัสผ่าน
+            <span class="password-field">
+              <input id="reset-password-confirm" type="password" autocomplete="new-password" placeholder="ยืนยันรหัสผ่านอีกครั้ง" />
+              <button class="password-toggle" type="button" id="reset-password-confirm-toggle" aria-label="Show password" title="Show password"></button>
+            </span>
+            <span class="reset-field-error" id="reset-password-confirm-error" role="alert"></span>
+          </label>
+          <ul class="reset-policy" id="reset-policy">
+            <li data-reset-rule="length">อย่างน้อย 12 ตัวอักษร</li>
+            <li data-reset-rule="upper">มีตัวพิมพ์ใหญ่ (A–Z)</li>
+            <li data-reset-rule="lower">มีตัวพิมพ์เล็ก (a–z)</li>
+            <li data-reset-rule="digit">มีตัวเลข (0–9)</li>
+            <li data-reset-rule="special">มีอักขระพิเศษ</li>
+          </ul>
+          <button class="btn primary" type="submit" id="reset-submit">ตั้งรหัสผ่านใหม่</button>
+        </form>
+        <div class="auth-error" id="reset-error" role="alert"></div>
+        <details class="prototype-tools reset-tools">
+          <summary>Prototype scenario</summary>
+          <label>
+            Reset commit flow
+            <select id="reset-scenario">
+              <option value="commit-ok">บันทึกสำเร็จ (Commit)</option>
+              <option value="commit-failed">ระบบขัดข้องตอนบันทึก (Rollback)</option>
+            </select>
+          </label>
+        </details>
+      `;
+      document.querySelector("#reset-password-toggle").innerHTML = iconSvg.eye;
+      document.querySelector("#reset-password-confirm-toggle").innerHTML = iconSvg.eye;
+      const scenarioSelect = document.querySelector("#reset-scenario");
+      if (scenarioSelect) scenarioSelect.value = resetPassword.scenario;
+      updateResetPasswordPolicy();
+      document.querySelector("#reset-password")?.focus();
+    }
+
+    function submitResetPassword() {
+      if (resetPassword.state !== "form" || resetPassword.submitting) return;
+      const passwordInput = document.querySelector("#reset-password");
+      const confirmInput = document.querySelector("#reset-password-confirm");
+      const password = passwordInput ? passwordInput.value : "";
+      const confirm = confirmInput ? confirmInput.value : "";
+      const results = updateResetPasswordPolicy();
+      const policyPass = ["length", "upper", "lower", "digit", "special"].every(key => results[key]);
+      // field-level validation — required/policy/mismatch ผูกกับ field ของตัวเอง
+      // #reset-error (form-level) สงวนไว้สำหรับ lifecycle/system error ที่ผูก field ไม่ได้เท่านั้น
+      const passwordError = !password
+        ? "กรุณากรอกรหัสผ่านใหม่"
+        : (!policyPass ? "รหัสผ่านยังไม่ตรงตามเงื่อนไข" : "");
+      const confirmError = !confirm
+        ? "กรุณายืนยันรหัสผ่าน"
+        : (policyPass && confirm !== password ? "รหัสผ่านไม่ตรงกัน" : "");
+      setResetFieldError("reset-password", "reset-password-error", passwordError);
+      setResetFieldError("reset-password-confirm", "reset-password-confirm-error", confirmError);
+      setResetError("");
+      if (passwordError) {
+        passwordInput?.focus();
+        return;
+      }
+      if (confirmError) {
+        confirmInput?.focus();
+        return;
+      }
+      const submitBtn = document.querySelector("#reset-submit");
+      if (submitBtn) submitBtn.disabled = true;
+      const result = commitAdminPasswordReset(password);
+      // เคลียร์ค่าออกจาก field ทันที — password ห้ามค้างใน DOM/state/diagnostics
+      if (passwordInput) passwordInput.value = "";
+      if (confirmInput) confirmInput.value = "";
+      if (!result.ok) {
+        resetPassword.state = "invalid";
+        resetPassword.failureCode = result.code;
+      } else {
+        resetPassword.state = "success";
+      }
+      renderResetScreen();
+    }
+
+    // manual QA helper — seed reset request แบบตรง (จำลองลิงก์ที่อีเมลส่งออกไปแล้ว)
+    // ข้าม throttle/delivery issuance path — record shape เดียวกับ processPasswordResetRequest
+    function seedPasswordResetLinkFixture(acc, overrides = {}) {
+      const requestId = nextPasswordResetRequestId();
+      const now = Date.now();
+      const tokenRevision = 1;
+      const tokenHash = mintPasswordResetToken(requestId, tokenRevision);
+      const request = {
+        id: requestId,
+        targetAdminId: acc.id,
+        emailNormalized: normalizePasswordResetEmail(acc.email),
+        status: "Pending",
+        issuedAt: new Date(now).toISOString(),
+        expiresAt: new Date(now + PASSWORD_RESET_TOKEN_TTL_MS).toISOString(),
+        tokenRevision,
+        tokenHash,
+        auditRef: null,
+        deliveryRef: null,
+        correlationId: `COR-${requestId}`
+      };
+      Object.assign(request, overrides);
+      passwordResetData.requests.push(request);
+      return request;
+    }
+
+    // dev shortcut บน Forgot screen — seed state แล้ว navigate #reset-token= เส้นทางเดียวกับลิงก์จริง
+    function handleForgotResetScenario(value) {
+      if (value === "invalid") {
+        window.location.hash = "reset-token=sim-rst-invalid";
+        return;
+      }
+      const acc = adminAccountData.accounts.find(a =>
+        a.id === (value === "locked" ? "ADM-007" : value === "ineligible" ? "ADM-006" : "ADM-010"));
+      if (!acc) return;
+      const overrides = {};
+      if (value === "expired") overrides.expiresAt = new Date(Date.now() - 60e3).toISOString();
+      if (value === "used") {
+        overrides.status = "Used";
+        overrides.usedAt = new Date(Date.now() - 5 * 60e3).toISOString();
+      }
+      if (value === "superseded") {
+        overrides.status = "Superseded";
+        overrides.supersededAt = new Date(Date.now() - 2 * 60e3).toISOString();
+      }
+      const request = seedPasswordResetLinkFixture(acc, overrides);
+      const token = getPasswordResetLinkToken(request) || "sim-rst-invalid";
+      window.location.hash = `reset-token=${token}`;
+    }
+
+    document.addEventListener("submit", event => {
+      if (event.target && event.target.id === "reset-form") {
+        event.preventDefault();
+        submitResetPassword();
+      }
+    });
+    document.addEventListener("click", event => {
+      if (event.target.closest("[data-reset-exit]")) {
+        exitResetMode();
+        return;
+      }
+      if (event.target.closest("[data-reset-retry]")) {
+        // transient recovery — re-resolve server state ใหม่เสมอ (ไม่ใช่ blind retry):
+        // ลิงก์ที่ยัง valid กลับ form; state ที่เปลี่ยนไปแล้วแสดง terminal recovery ตามจริง
+        if (resetPassword.token != null) enterResetMode(resetPassword.token);
+        return;
+      }
+      if (event.target.closest("[data-reset-forgot]")) {
+        // recovery channel — ขอลิงก์ใหม่ผ่าน forgot flow เดิม (request ใหม่ supersede เดิมตาม contract)
+        exitResetMode();
+        if (document.body.classList.contains("logged-out")) enterForgotMode();
+        return;
+      }
+      const toggle = event.target.closest("#reset-password-toggle, #reset-password-confirm-toggle");
+      if (toggle) {
+        const input = document.querySelector(toggle.id === "reset-password-toggle" ? "#reset-password" : "#reset-password-confirm");
+        if (!input) return;
+        const willShow = input.type === "password";
+        input.type = willShow ? "text" : "password";
+        toggle.innerHTML = willShow ? iconSvg.eyeOff : iconSvg.eye;
+        toggle.setAttribute("aria-label", willShow ? "Hide password" : "Show password");
+        toggle.setAttribute("title", willShow ? "Hide password" : "Show password");
+      }
+    });
+    document.addEventListener("change", event => {
+      if (event.target && event.target.id === "reset-scenario") {
+        resetPassword.scenario = event.target.value || "commit-ok";
+      }
+      if (event.target && event.target.id === "forgot-reset-scenario") {
+        const value = event.target.value;
+        event.target.value = "";
+        if (value) handleForgotResetScenario(value);
+      }
+    });
+    document.addEventListener("input", event => {
+      if (event.target && (event.target.id === "reset-password" || event.target.id === "reset-password-confirm")) {
+        updateResetPasswordPolicy();
+        // พิมพ์แก้ field ไหนเคลียร์ error ของ field นั้น — re-validate เต็มอีกครั้งตอน submit
+        setResetFieldError(event.target.id, `${event.target.id}-error`, "");
       }
     });
 
@@ -49160,8 +49884,13 @@
     window.setInterval(updateDashboardMeta, 60000);
     // recipient activation route: bo-prototype.html#token=<opaque> — equivalent ของ /bo/accept-invitation#token=...
     // capture token เข้า memory แล้ว strip fragment ออกจาก address bar/history ตาม §10.1
+    const initialResetToken = getResetTokenFromLocation();
     const initialInviteToken = getInviteTokenFromLocation();
-    if (initialInviteToken !== undefined) {
+    if (initialResetToken !== undefined) {
+      // reset-password route — capture token เข้า memory แล้ว strip fragment เหมือน invitation
+      history.replaceState(null, "", window.location.pathname + window.location.search);
+      enterResetMode(initialResetToken);
+    } else if (initialInviteToken !== undefined) {
       history.replaceState(null, "", window.location.pathname + window.location.search);
       enterInviteMode(initialInviteToken);
     } else if (getForgotRouteFromLocation()) {
@@ -49172,6 +49901,12 @@
       showLoginForm();
     }
     window.addEventListener("hashchange", () => {
+      const resetToken = getResetTokenFromLocation();
+      if (resetToken !== undefined) {
+        history.replaceState(null, "", window.location.pathname + window.location.search);
+        enterResetMode(resetToken);
+        return;
+      }
       const inviteToken = getInviteTokenFromLocation();
       if (inviteToken !== undefined) {
         history.replaceState(null, "", window.location.pathname + window.location.search);
