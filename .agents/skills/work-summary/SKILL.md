@@ -63,6 +63,9 @@ Workflow สำหรับจับเวลาและสรุปงาน�
                                      save_session_note (Final Summary)
                                      ↓
                                      แสดง Final Work Summary Copy Block
+                                     ↓
+                                     Session Handoff + Prompt งานถัดไป
+                                     (หรือข้อเสนอแนะงานต่อไปถ้าไม่มีงานรอทำ)
 
 สถานการณ์ที่ 3: บันทึก session ก่อนขึ้น session ใหม่
 ──────────────────────────────────────────────
@@ -221,6 +224,19 @@ mcp_call_tool(
 - Actual Start, Actual End, status, completion status และ workflow metadata ยังคงอยู่ใน canonical Final Summary / Final Session Note แต่ไม่แสดงใน Work Log Copy Block
 - แจ้งผู้ใช้ว่า task ถูกปิดแล้วและแสดงเวลาในรูปแบบ `X ชม. Y นาที (D.D ชม.)`
 
+#### 8. ปิดท้ายด้วย Session Handoff + Prompt งานถัดไป หรือข้อเสนอแนะงานต่อไป (บังคับทุกครั้งหลัง Copy Block)
+
+หลังแสดง Final Work Summary Copy Block แล้ว ต้องทำขั้นนี้เสมอก่อนจบ turn — ห้ามจบแค่ Copy Block:
+
+**กรณีมีงานรอทำต่อ** (มี task ถัดไปใน approved execution order หรืองานที่เหลือใน mission/plan ที่ผู้ใช้อนุมัติแล้ว):
+
+1. บันทึก session note ลง kanban (`save_session_note`) เก็บ state ปัจจุบันให้ session ใหม่ทำต่อได้ — เขียนบน task ที่เพิ่งปิดหรือ planning task ของ mission ตามความเหมาะสม โดยมี: สถานะรวม mission/แผน (ทำถึงไหน), สิ่งที่ทำใน session นี้, state ปัจจุบัน (branch/commit/tests), decisions/gotchas ที่ session ใหม่ต้องรู้, และ Next Step ชัดเจน
+2. สร้าง **prompt สำหรับเริ่มงานถัดไปใน session ใหม่** เป็น copy block ให้ผู้ใช้ก๊อปไปวาง — โครงเดียวกับ prompt ที่ผู้ใช้เคยสั่ง task นี้: ชื่อ task + mission/requirement context + ข้อมูลที่ task ต้องรู้ (task ก่อนหน้าสำเร็จอะไร, contract/spec ที่ต้องยึด, scope, fixture ที่เกี่ยวข้อง, constraints/gotchas, out-of-scope) + ขั้นตอน workflow (ดึง context → สร้าง/เริ่ม task → เสนอ approach → implement/test → รอรีวิว)
+
+**กรณีไม่มีงานรอทำต่อ** (mission/plan ครบแล้ว หรือไม่มี task ถัดไปในลำดับ):
+
+- ไม่ต้องสร้าง handoff prompt; ให้บันทึก session note สถานะปิดงานตามความจำเป็น แล้วเสนอแนวทางงานต่อไปให้ผู้ใช้ตัดสินใจ เช่น: สร้าง mission ใหม่สำหรับ requirement/scope ที่ยังไม่ได้ทำ, งาน outstanding ใน requirement, backlog/debt ที่ตั้งไว้, หรือขั้นตอนต่อไปของโปรเจกต์ (เช่น Mission Closure, เตรียมหลักฐานส่งตรวจ) — เสนอเป็นทางเลือกให้ผู้ใช้เลือก ห้ามสร้าง mission/task เองโดยไม่ได้รับคำสั่ง
+
 #### กฎสำคัญ
 - ⚠️ **Close First:** ห้ามสร้างหรือแสดง Final Work Summary ก่อน `move_task → done`
 - ⚠️ Final Actual Time ต้องมาจาก Kanban หลังปิด task เท่านั้น ห้ามใช้ snapshot/elapsed time ตอน `in_progress`
@@ -228,7 +244,7 @@ mcp_call_tool(
 - ⚠️ ห้ามปรับ `hours_spent` เองระหว่าง completion workflow; ถ้าค่าผิดปกติให้รายงานผู้ใช้และแยกเป็น correction workflow ที่ผู้ใช้สั่งชัดเจน
 - ทุก task ที่ปิดต้องมี Final Session Note และ Final Work Summary Copy Block
 - **ถ้า task ที่ปิดเป็น task สุดท้ายของเป้าหมาย (Objective) ใน Mission** — ทุก task ของเป้าหมายนั้นเป็น done แล้ว → แจ้งผู้ใช้ว่าเป้าหมายครบ และเสนอเตรียม **หลักฐานส่งตรวจรับด้วย AI** ตาม skill `submission-evidence` (ไฟล์แนบ/ภาพหน้าจอ + คำอธิบาย + ช่อง URL) ให้ลง log พร้อมกัน
-- ลำดับบังคับ: Verify → `move_task → done` → อ่าน Final Task + Activity → อ่าน Actual Start/End/Final `hours_spent` → สร้าง Final Summary → `save_session_note` → แสดง Copy Block
+- ลำดับบังคับ: Verify → `move_task → done` → อ่าน Final Task + Activity → อ่าน Actual Start/End/Final `hours_spent` → สร้าง Final Summary → `save_session_note` → แสดง Copy Block → session handoff + prompt งานถัดไป หรือข้อเสนอแนะงานต่อไป (ตามขั้น 8)
 
 ---
 
@@ -812,6 +828,9 @@ mcp_call_tool(
 
 ก่อนสร้าง Final Work Summary Copy Block ต้องตรวจ Mission/Task context ว่ามี mapping ที่บันทึกไว้จริงไปยัง Mission → Objective → Feature หรือไม่ ห้าม infer หรือสร้าง Objective/Feature เพื่อให้รูปแบบดูครบ
 
+- **Objective/Feature labels ต้อง copy verbatim จาก approved mission baseline เท่านั้น** — อ้างจาก `get_mission` → รายการ Objectives/Features เป็นค่าถูกต้องขั้นสุดท้าย ห้าม paraphrase หรือตั้งชื่อใหม่ (เช่น baseline คือ "Password Recovery & Lock" ห้ามเขียน "Password Recovery & Self-Service" หรือ "Credential Security / Password Recovery")
+- **ห้ามเชื่อ Objective/Feature label ใน task description โดยไม่เทียบ baseline** — task description อาจเขียน label คลาดตอนสร้าง task ได้; ต้องเทียบกับ mission ทุกครั้ง ถ้าไม่ตรงให้ใช้ชื่อจาก mission และแจ้งผู้ใช้พร้อมเสนอแก้ task description ให้ตรง
+
 **Case A — Task มี Mission Mapping จริง:**
 
 ```text
@@ -1106,6 +1125,7 @@ mcp_call_tool(
 3. **เปลี่ยน session แต่งานเดิมยังไม่จบ** → บันทึก Progress/Handoff Note และคง task เดิมไว้ที่ `in_progress`
 4. **เสร็จงาน** → Verify แล้ว ย้าย task เข้า `done` เพื่อให้ระบบบันทึก Final Actual Time อัตโนมัติ
 5. **หลังปิด** → อ่าน Final Task + Activity Timeline ก่อนสร้าง Final Work Summary; ห้ามเรียก `log_time`
+6. **ทำงานนอก task ที่กำลังจับเวลา = ชั่วโมงไม่ถูกนับ** — ถ้าต้องทำงานที่ยังไม่มี task รองรับ (เช่น งานด่วนนอกแผน งาน ad-hoc ที่ผู้ใช้สั่งกลาง session) ให้สร้าง task ด้วย `create_task` ก่อนเริ่ม แล้วย้ายเข้า `in_progress` — ชั่วโมงที่ไม่ได้จับจะไม่ถูก bank และไม่ปรากฏในชั่วโมงสะสมที่ใช้ประเมินผลงาน
 
 > **หมายเหตุ:** ระบบตัวจับเวลาอัตโนมัตินี้ทำงานร่วมกับ `get_time_summary` ที่ใช้ดึงชั่วโมงรวมเพื่อสรุปงาน — ทำให้ได้เวลาที่แม่นยำและสอดคล้องกับงานที่ทำจริง
 
@@ -1316,6 +1336,7 @@ Task ID: TK-102
 - [ ] สร้าง canonical Final Summary จากข้อมูลหลังปิด โดยมี Final Result, Work Completed, Decisions, Verification/Test Result, Actual Start/End, Final Actual Time, Issues/Fixes, Scope Changes, Open Items และ Next Step
 - [ ] เรียก `save_session_note` ด้วย Final Summary ชุดเดียวกันเพื่อเก็บ Persistent Task History
 - [ ] ก่อนสร้าง Final Work Summary Copy Block ตรวจ Mission Mapping ที่บันทึกไว้จริง: ถ้ามีให้แสดง Objective → Feature → Task; ถ้าไม่มีให้เริ่มจาก Task และห้ามสร้าง Objective/Feature ขึ้นมาเอง
+- [ ] ตรวจว่า Objective/Feature labels ใน Copy Block เป็น verbatim จาก approved mission baseline (`get_mission` → Objectives) ไม่ใช่ paraphrase หรือ label จาก task description ล้วน ๆ; ถ้า task description เขียนไม่ตรงให้ใช้ชื่อจาก mission แล้วแจ้งผู้ใช้เสนอแก้ description
 - [ ] แสดง **Final Work Summary Copy Block** จาก Final Summary ชุดเดียวกันทุกครั้ง เป็น Human-readable `text` Copy Block เดียว: Objective/Feature เมื่อมี mapping จริง → Task → Category → Final Actual Time → รายละเอียดงานที่ทำ
 - [ ] ตรวจว่า Final Work Summary Copy Block ใช้ business-facing Task Code และไม่มี Kanban UUID/internal ID
 - [ ] ตรวจว่า Final Work Summary Copy Block ไม่มีเวลาเริ่ม/จบ, status, Goal, Overview, Files Changed, Decisions, Problems, Scope Changes, Pending/Follow-up, Next Step หรือ workflow metadata เป็น section แยก
@@ -1324,6 +1345,7 @@ Task ID: TK-102
 - [ ] ตรวจว่า Final Actual Time มาจาก Final `hours_spent` หลัง task เป็น `done` และไม่แสดง Planned Time ใน Task Work Log
 - [ ] ตรวจว่า canonical Final Summary / Final Session Note ยังคง Actual Start/End และรายละเอียดเต็มทั้งหมด แม้ Copy Block จะย่อ presentation
 - [ ] แจ้งผู้ใช้ว่า "ปิด task <ชื่อ> แล้ว ใช้เวลา <X ชม. Y นาที (D.D ชม.)>"
+- [ ] หลัง Copy Block: ถ้ามีงานรอทำต่อ → บันทึก session note (สถานะรวม + state + decisions/gotchas + Next Step) และสร้าง prompt งานถัดไปเป็น copy block ให้ผู้ใช้; ถ้าไม่มีงานต่อ → เสนอแนวทางงานต่อไปให้ผู้ใช้ตัดสินใจ (เช่น mission ใหม่, outstanding work, mission closure) โดยไม่สร้าง mission/task เอง
 - [ ] ⚠️ **ห้ามบวก/ลด/ปรับชั่วโมงเอง** — ใช้ค่า hours_spent จากระบบเป็นค่าจริง
 - [ ] ⚠️ **ห้ามเรียก `log_time`** ก่อนหรือหลังปิด task
 - [ ] ⚠️ ห้ามใช้ elapsed/snapshot time ขณะ `in_progress` เป็น Final Actual Time
