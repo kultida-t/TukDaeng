@@ -125,3 +125,7 @@ When the user asks for a fun blog from the day's work (e.g. "เขียน blo
 - Weave real numbers from the kanban (hours, task counts, feedback points, test results) into the story as punchlines, not as a data table. Self-deprecating irony about the day's work is welcome.
 - End with a short sign-off plus a teaser for the next episode (e.g. "แล้วพรุ่งนี้เข้าเบิ่งกันต่อนะคะ ... 🐹🌙").
 - Source facts from `get_session_context` / `get_time_summary` (kanban-tukdaeng) so the story stays true to what actually happened.
+
+## Skill Template Fidelity Rule
+
+ก่อนสร้างผลลัพธ์ที่ต้องตาม template ของ skill (เช่น work-summary copy block, submission-evidence copy block, mission plan copy block) **ต้องอ่าน SKILL.md ของ skill นั้นให้ครบทั้งไฟล์ทุกครั้ง** — โดยเฉพาะหลัง conversation ถูกสรุป/compacted หรือเมื่ออ่านไฟล์ครั้งแรกแล้ว output ถูก truncate ให้กลับไปอ่าน offset ที่เหลือจนจบก่อนเสมอ ห้ามประดิษฐ์หรือเดา format จากความจำ ถ้า template ใน skill มีหลาย case/mode (final, progress/handoff, report-only, Case A/B/C) ให้เลือก case ที่ตรงสถานการณ์และปฏิบัติตามกฎของ template นั้นทุกข้อ (field ที่ต้องมี/ห้ามมี, plain text vs markdown, เวลา, verbatim labels จาก mission baseline)
