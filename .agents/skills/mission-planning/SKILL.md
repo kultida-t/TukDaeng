@@ -39,6 +39,7 @@ Workflow สำหรับ **วางแผนการทำงานรา�
 
 ### กติกา Mission → Objective → Feature → Task และ Work Log (บังคับ)
 
+- **ตอบคำถามโครงสร้าง Mission จาก record เท่านั้น** — เมื่อผู้ใช้ถามว่า Mission มีเป้าหมาย/Feature/Task อะไรบ้าง ให้เรียก `get_mission` (หรือ `get_task`) แล้วตอบตาม baseline จริง โดยแสดงชื่อ Objective/Feature เป็น label ตามที่ล็อกไว้ (เช่น `Feature: My Account`) ห้ามตอบจากความจำ/context หรือเขียนเป็นคำอธิบายพฤติกรรมแทนชื่อ Feature
 - **Mission** คือภาพรวมและ baseline ของงานทั้งก้อน
 - **Objective** คือผลลัพธ์หลักของ Mission
 - **Feature** คือผลลัพธ์ย่อยที่อยู่ใต้ Objective ใช้เป็นหน่วยเลือกตอนลง work log และต้องคงอยู่เพื่อวัด Planning Accuracy
