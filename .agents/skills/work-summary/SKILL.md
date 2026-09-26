@@ -161,6 +161,21 @@ mcp_call_tool(
 - ถ้ายังมีงานในขอบเขต task ที่ไม่เสร็จ ให้กลับไปใช้สถานการณ์ที่ 3 และคง `in_progress`
 - Open item ที่จะส่งต่อได้ต้องเป็นงานใหม่ที่ไม่ทำให้ task ปัจจุบันไม่ผ่าน Acceptance Criteria
 
+#### 2.1 Manual Review Checklist (บังคับเมื่อ task แตะ prototype/UI)
+
+ถ้า task มีการแก้ prototype หรือหน้าจอใด ๆ **ต้องส่งรายการทดสอบ manual ให้ผู้ใช้ตรวจก่อน** ขออนุญาตปิด/commit — ห้ามถามแค่ "รีวิวหน้าจอหน่อย" โดยไม่มีลิสต์ เพราะผู้ใช้ไม่รู้ว่าต้องกดอะไร
+
+รูปแบบ checklist ที่ต้องส่ง (เรียงเป็นเคสละขั้น):
+
+- **เลขเคส + ชื่อเคส** — เช่น "เคส 1: Failed-login lock ที่ seed ไว้ (ADM-007)" แยกเคสตามพฤติกรรมที่เปลี่ยน/เพิ่ม ครบทุกพฤติกรรมใน scope
+- **ข้อมูลทดสอบที่ต้องกรอก/เลือก** — email, account id, scenario option, ค่าที่ต้องพิมพ์ ระบุค่าจริงที่ใช้ได้เลย (เช่น `wichai@tukdaeng.example`, เลือก `Invalid credentials`) ไม่ใช่บอกแค่ "กรอกข้อมูล"
+- **ขั้นตอนกด** — กดปุ่ม/ลิงก์อะไรตามลำดับ (เช่น เปิด Prototype scenario → เลือก X → กด เข้าสู่ระบบ กี่ครั้ง)
+- **ผลที่คาด (✅)** — ระบุสิ่งที่ต้องเห็นต่อเคส: ข้อความที่แสดง, element ที่ต้องมี/ไม่มี (เช่น "ไม่มี countdown"), state ที่ต้องเปลี่ยน (เช่น "เข้าระบบได้")
+- **เคสครบทุกพฤติกรรมใน scope** — รวมทั้ง happy path, blocked/error path, edge cases, fixture ที่เกี่ยวข้อง และเคส regression ที่ควรเช็คว่าของเดิมไม่พัง (เช่น login ปกติ, forgot flow เดิม)
+- แนบ screenshot ของจุดสำคัญได้ถ้าช่วยให้ตรวจเร็ว แต่ checklist ต้องอ่านรู้เรื่องโดยไม่ต้องเปิดภาพ
+
+เมื่อผู้ใช้ตรวจครบและยืนยันผล จึงค่อยขึ้นขั้น 3 (ปิด task) — ถ้าผู้ใช้พบจุดผิดให้แก้แล้วส่ง checklist ชุดเดิม (หรือเคสที่แก้) ให้ตรวจซ้ำ
+
 #### 3. ย้าย task เข้า `done` ก่อนสร้าง Final Work Summary
 
 ```
@@ -243,6 +258,7 @@ mcp_call_tool(
 - ⚠️ ห้ามเรียก `log_time` ใน completion workflow ไม่ว่าก่อนหรือหลังปิด task
 - ⚠️ ห้ามปรับ `hours_spent` เองระหว่าง completion workflow; ถ้าค่าผิดปกติให้รายงานผู้ใช้และแยกเป็น correction workflow ที่ผู้ใช้สั่งชัดเจน
 - ทุก task ที่ปิดต้องมี Final Session Note และ Final Work Summary Copy Block
+- ⚠️ **Manual Review Checklist:** task ที่แตะ prototype/UI ต้องส่ง checklist ทดสอบ manual (เคส + ข้อมูลทดสอบ + ขั้นกด + ผลที่คาด) ให้ผู้ใช้ตรวจก่อนขอปิด — รีวิวต้องเกิดก่อน `move_task → done` ตามกฎการยืนยันผลลัพธ์เดิม
 - **ถ้า task ที่ปิดเป็น task สุดท้ายของเป้าหมาย (Objective) ใน Mission** — ทุก task ของเป้าหมายนั้นเป็น done แล้ว → แจ้งผู้ใช้ว่าเป้าหมายครบ และเสนอเตรียม **หลักฐานส่งตรวจรับด้วย AI** ตาม skill `submission-evidence` (ไฟล์แนบ/ภาพหน้าจอ + คำอธิบาย + ช่อง URL) ให้ลง log พร้อมกัน
 - ลำดับบังคับ: Verify → `move_task → done` → อ่าน Final Task + Activity → อ่าน Actual Start/End/Final `hours_spent` → สร้าง Final Summary → `save_session_note` → แสดง Copy Block → session handoff + prompt งานถัดไป หรือข้อเสนอแนะงานต่อไป (ตามขั้น 8)
 
@@ -1330,6 +1346,7 @@ Task ID: TK-102
 ### สถานการณ์ที่ 2: ทำ task เสร็จ
 - [ ] เรียก `get_board` เพื่อตรวจสอบ task ที่อยู่ใน `in_progress`
 - [ ] Verify งานตาม Acceptance Criteria / test / QA ที่เกี่ยวข้อง
+- [ ] ถ้า task แตะ prototype/UI → ส่ง Manual Review Checklist ให้ผู้ใช้ก่อน (เคสครบทุกพฤติกรรมใน scope + ข้อมูลทดสอบที่กรอก/เลือกจริง + ขั้นกด + ผลที่คาดต่อเคส รวม happy/blocked/edge/regression)
 - [ ] สำหรับ task ที่แก้ไฟล์ ได้รับคำยืนยันว่าผู้ใช้ยอมรับผลลัพธ์และอนุญาตให้ปิดแล้ว
 - [ ] ย้าย task เข้า `done` ผ่าน `move_task` ก่อนสร้าง Final Work Summary (ระบบ auto-stop timer และ bank เวลาจริง)
 - [ ] เรียก `get_task` หลังปิด เพื่ออ่าน Final Status + Activity Timeline + Actual Start + Actual End + Final `hours_spent`

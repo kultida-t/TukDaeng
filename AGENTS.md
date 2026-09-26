@@ -74,6 +74,21 @@ Use Thai as the default language for Kanban task descriptions and related task d
 
 When a Kanban task involves editing files, do not move the task to `done` immediately after implementation or verification. Keep the task in `in_progress` and wait for explicit user confirmation that the result is accepted. Only move the task to `done` after the user confirms the edited result is OK.
 
+## Manual Review Checklist Rule
+
+ถ้างานมีการแก้ prototype หรือหน้าจอใด ๆ ต้องส่งรายการทดสอบ manual ให้ผู้ใช้ตรวจ **ก่อน** ถามว่าปิด task ได้ไหม — ห้ามขอแค่ "รีวิวหน้าจอหน่อย" โดยไม่มีลิสต์ว่าต้องกด/กรอกอะไร กฎนี้บังคับทุกครั้งที่งานแตะ UI ไม่ว่าจะเรียก work-summary skill หรือไม่
+
+Checklist ต้องเรียงเป็นเคสละขั้นและมีอย่างน้อย:
+
+- เลขเคส + ชื่อเคส ครบทุกพฤติกรรมที่เปลี่ยน/เพิ่มใน scope ของงาน
+- ข้อมูลทดสอบจริงที่กรอก/เลือกได้เลย (email, account id, scenario option, ค่าที่พิมพ์) — ห้ามบอกแค่ "กรอกข้อมูล"
+- ขั้นกดตามลำดับ (เปิดเมนูไหน เลือกอะไร กดปุ่มไหน กี่ครั้ง)
+- ผลที่คาดต่อเคส — ข้อความที่ต้องแสดง, element ที่ต้องมี/ไม่มี (เช่น "ไม่มี countdown"), state ที่ต้องเปลี่ยน
+- ครอบคลุม happy path, blocked/error path, edge cases, fixture ที่เกี่ยวข้อง และเคส regression ว่าของเดิมไม่พัง
+- ระบุ viewport/ขนาดหน้าจอที่ต้องเช็คถ้างานเกี่ยวกับ responsive
+
+เมื่อผู้ใช้ตรวจครบและยืนยันผลแล้วจึง commit/ปิด task ได้ — ถ้าผู้ใช้พบจุดผิด แก้แล้วส่ง checklist ชุดเดิม (หรือเคสที่แก้) ให้ตรวจซ้ำ
+
 ## Kanban Time Tracking Rule
 
 ห้ามเรียก `log_time` ด้วยมือเพื่อบวกเวลาเข้า task โดยเด็ดขาด — ระบบ kanban มี auto-timer ที่บันทึกเวลาอัตโนมัติเมื่อย้าย task เข้า/ออก `in_progress` การเรียก `log_time` ด้วยมือจะทำให้ `hours_spent` สูงกว่าเวลาจริง (double-count) กฎนี้บังคับเสมอ ไม่มีข้อยกเว้น
