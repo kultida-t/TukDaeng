@@ -228,6 +228,32 @@ Dependency: Mission 1 → Mission 2 → Mission 3
 
 ## Discussion & Decision History
 
+### 🗓️ Session Date: 2026-09-26T00:00:00.000Z (by Matem)
+- **Summary:** AIL-031 (Mission 2 — Doc Sync): sync self-service contract notes ให้ตรง implementation/tests ที่ผ่านการตรวจรับแล้ว — แก้ contract 3 จุดตาม findings ที่ AIL-027 defer มา (ทิศทางแก้: เอกสาร → implementation, ไม่แก้ prototype)
+- **Decisions / Changes:** Contract ที่ finalize ไว้ใน session notes ของ AIL-018 (2026-09-23) ถูกแก้ 3 จุดให้ตรง accepted implementation + approved tests (qa-bo-019b/019d/023):
+(1) §7 Audit Contract — ADMIN_SESSION_REVOKE_ALL: risk เปลี่ยนจาก High → **Medium** (impl ที่ bo-prototype.html ใช้ Medium; test qa-bo-019d assert risk Medium, module My Account, aggregate 1 event)
+(2) §5 Logout All Devices — ลบ requirement "หลัง redirect: login form พร้อม info 'ออกจากระบบทุกอุปกรณ์แล้ว'": impl redirect กลับ **Login form เปล่า** (trigger logout flow เดิม) โดยไม่แสดง info/toast — การกลับหน้า Login คือ feedback ของ flow อยู่แล้ว (test qa-bo-019d assert #login-screen visible + logged-out + ไม่มี success toast)
+(3) §3 Change Password — wrong current password **ไม่สร้าง audit event ต่อครั้ง** (ลบ "audit result=Failed failure_code=WRONG_CURRENT_PASSWORD ทุกครั้ง"): impl แสดง field error + เพิ่ม attempt counter เท่านั้น; audit Failed ถูก emit เฉพาะครบ rate limit → failure_code=**RATE_LIMITED** 1 event; boundary rejection (stale revision / non-Active / non-self) reject โดยไม่ mutate และไม่สร้าง audit event (test qa-bo-019b #20 assert RATE_LIMITED + #25-27 assert auditEventCount ไม่เปลี่ยน)
+- **Notes:** DOC-VS-IMPL CORRECTIONS (AIL-031 — docs follow implementation)
+
+ที่มา: AIL-027 (cross-flow verification) พบ doc-vs-impl 3 จุด → defer ให้ AIL-031. ทิศทางแก้ที่ confirm แล้ว: implementation ผ่าน approved functional tests + scoped regression (1,122 pass / 0 fail, AIL-029a+b) + UI/a11y smoke 68/68 (AIL-030) → เอกสารคือส่วนที่ stale, แก้เอกสารไม่แก้ code.
+
+Contract ที่แก้ไข (supersede wording ใน AIL-018 session notes ด้านล่าง):
+
+## §3 Change Password — wrong current password
+- เดิม (contract): wrong current → field error + audit result=Failed (failure_code=WRONG_CURRENT_PASSWORD) ทุกครั้ง
+- ใหม่ (ตาม impl/tests): wrong current → field error "รหัสผ่านปัจจุบันไม่ถูกต้อง" + เพิ่ม attempt counter เท่านั้น (ไม่มี audit ต่อครั้ง); wrong current ครบ 5 ครั้งติด → lock action + audit ADMIN_PASSWORD_CHANGE result=Failed, failure_code=RATE_LIMITED (1 event, ไม่มี password material); boundary rejection (stale revision, account ไม่ Active, ไม่ใช่ self) → reject + toast โดยไม่ mutate และไม่สร้าง audit event
+
+## §5 Logout All Devices — post-redirect state
+- เดิม (contract): หลัง redirect → login form พร้อม info "ออกจากระบบทุกอุปกรณ์แล้ว"
+- ใหม่ (ตาม impl/tests): redirect กลับ Login form เปล่า (เหมือน logout ปกติ) ไม่แสดง info message/toast — transition คือ feedback ของ flow อยู่แล้ว
+
+## §7 Audit Contract — ADMIN_SESSION_REVOKE_ALL
+- เดิม (contract): risk High
+- ใหม่ (ตาม impl/tests): risk **Medium** (aggregate event เดียวต่อ action, module "My Account")
+
+Resolution เพิ่มเติม (confirmed 2026-09-26): §3 Rate limit — contract ระบุ "lock change-password action 15 นาที (mirror failed-login lockout)" แต่ impl ใช้ **cooldown 60 วินาที** (MY_ACCOUNT_PW_COOLDOWN_MS=60000; tests assert countdown หน่วยวินาที) — ตัดสินใจแล้วว่า **policy คง 15 นาที** (mirror failed-login lockout baseline) และ prototype **simulate cooldown เป็น 60 วินาที** เพื่อให้ demo/test ได้ (impl comment ระบุ "rate-limit simulation" ชัดเจน) — ถือเป็น simulation value ภายใต้ §9 Prototype Simulation Contract ไม่ใช่ doc หรือ impl ที่ผิด
+
 ### 🗓️ Session Date: 2026-09-23T00:00:00.000Z (by Matem)
 - **Summary:** AIL-019 (Mission 2, 18598f33): Finalize Password Recovery Contract — Forgot Password entry จาก #forgot-password-btn + email input + generic response anti-enumeration, eligibility matrix (Active + failed-login Locked เท่านั้น; Invited/Suspended/Archived/security-admin lock/unknown email ไม่ eligible), reset token lifecycle แยกจาก invitation (RST-xxxxx, hash storage, 30 นาที, one-time, supersede-on-new-request, revision guard), cooldown 60s + quota 5/rolling 24h per normalized email นับเฉพาะ committed issuance, Reset Password form (New+Confirm, policy 12+4classes, new≠current), atomic commit (password+token consume+failed-login lock clear+revoke all sessions+audit/outbox), session revoke ทั้งหมดแล้วกลับ Login, Delivery DLV-ACCT-<seq>-PWD-<seq> + retry token เดิม, audit ADMIN_PASSWORD_RESET_* events, security/privacy boundary และ UI/flow states ครบสำหรับ AIL-024/025/026/028. ไม่มี Login OTP/MFA/2FA/temp password; ไม่มี implementation
 - **Decisions / Changes:** Resolved non-blocking design items จาก requirement §Non-Blocking Open Items (ไม่เปลี่ยน confirmed behavior, ไม่เปิด decision gate ใหม่): (1) route/API naming — `/bo/reset-password#token=` (fragment transport เหมือน invitation), `POST /api/bo/password-recovery/requests|resolve|reset`; prototype ใช้ `#reset-token=` แยกจาก `#token=` (2) reset request record — `password_reset_requests` display ID `RST-xxxxx`, field/revision/idempotency mirror `admin_invitations` (3) audit event naming — ADMIN_PASSWORD_RESET_REQUEST / ADMIN_PASSWORD_RESET / ADMIN_PASSWORD_RESET_DELIVERY_ATTEMPT, module "Settings" ตาม auth seed events เดิม, reuse auditLogData.events schema (4) delivery ID — `DLV-ACCT-<admin-seq>-PWD-<attempt-seq>`, event "Password reset email", tags Email/PasswordReset/Lifecycle/Audit linked (5) quota counting — นับเฉพาะ committed issuance (มี RST record), provider failure หลัง commit ยังนับ, validation/ineligible/unknown/throttled ไม่นับ (6) safe state mapping — invalid/expired/used/superseded เป็น terminal แยกกัน, account-status-blocked รวมกับ invalid เป็น generic terminal เพื่อตัด enumeration, stale/commit_failed/duplicate_submit เป็น transient re-resolve (7) routine token expiry = state transition + telemetry ไม่สร้าง audit event (mirror AIL-018) (8) valid-token form แสดง masked email เท่านั้น ไม่แสดง name/role (9) reset success clear failed-login lock อยู่ใน audit event เดียวกับ reset (before/after Locked→Active) ไม่แยก event — atomic boundary (10) request ที่ resolve target ได้แต่ถูก block ต้อง audit Failed+failure_code ตาม §10.1 pattern; unresolvable → rate-limited security telemetry
