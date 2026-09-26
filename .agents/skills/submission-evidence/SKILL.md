@@ -68,6 +68,12 @@ Workflow สำหรับจัด **ชุดหลักฐานส่ง�
 - **ทุกขั้นตอน capture ทั้ง desktop (1440) และ mobile (390) คู่กัน** — ตั้งชื่อเช่น `03-filter-open_desktop.png` / `03-filter-open_mobile.png`; precedent 10/10 ทุกชุดมีคู่สองจอครบ
 - ตั้งชื่อภาพบอก state ชัด (เช่น `filter_date_desktop`, `detail_pill_reference_mobile`) — ชื่อไฟล์แสดงใน preview ของฟอร์ม ช่วย reviewer อ่าน flow ได้
 
+**คุณภาพภาพ — ภาพที่ดูเหมือนพังจะโดนหักเหมือนงานพัง (บทเรียนจาก M2):**
+- **blur ก่อนแคปทุกครั้ง** (`document.activeElement?.blur()`) — หลาย flow focus ปุ่มหลักอัตโนมัติ ทำให้ภาพติด focus ring (กรอบ outline รอบปุ่ม) ดูไม่ปกติใน preview
+- **element shot ต้องเว้นขอบ** — capture ทั้ง section/panel อย่าตัดชิดขอบเป๊ะ; ใช้ clip ขยาย ~20px รอบ element (ดู `shotSection` ใน `capture-m2-obj2-my-account.js`) ไม่งั้นดูเหมือนภาพ crop ผิด
+- **auth screens บน mobile ห้ามใช้ `fullPage` ตรง ๆ** — `body` ล็อก `height:100vh` + `html overflow:hidden` ทำ content เกิน viewport ไม่ถูก paint: `fullPage` ได้แถบขาวด้านล่าง, viewport shot ตัดเนื้อหา → วัด `document.body.scrollHeight` จริงแล้วขยาย viewport ให้พอดีก่อนแคป (ดู `shotAuthMobile` ใน `capture-m2-obj3-password-recovery.js`)
+- **เปิดภาพตรวจด้วยตาทุกใบก่อนจัดชุด** — เช็กแถบขาว, เนื้อหาถูกตัด (เช่นปุ่ม submit หาย), focus ring, และ layout ล้น อย่าถือว่าผ่านเพราะ script รันสำเร็จ
+
 **งานเอกสาร/test — จัด package ไฟล์จริง + ภาพสรุป:**
 - คัดลอกไฟล์จริงไป `deliverables/mission-<N>-obj<M>-<topic>/` แล้ว zip เป็น `deliverables/mission-<N>-obj<M>-<topic>.zip` (เช่น `mission-1-obj1-contract.zip`, `mission-1-obj4-verification.zip`)
 - งานที่มี test **ต้องรัน test จริงก่อน zip** แล้วเก็บผลลง `test-results.txt` ใน package — ห้ามเขียนผล test จากความจำ
@@ -169,6 +175,7 @@ Task ที่เกี่ยวข้อง: <task code 1>, <task code 2>
 - [ ] ไฟล์แนบมีอยู่จริง เปิด/อ่านตรวจแล้วว่าครบ (ถ้า zip — เปิด listing + integrity check)
 - [ ] แนบไฟล์จริงทีละไฟล์เป็นค่าเริ่มต้น; zip เฉพาะชุดใหญ่; ขนาดรวมยังอัปโหลดได้สบาย
 - [ ] **เป้าหมาย UI: ภาพครบทุกขั้นตอน flow ของเป้าหมาย และทุกขั้นมีคู่ desktop + mobile**
+- [ ] เปิดภาพตรวจด้วยตาทุกใบ — ไม่มีแถบขาว, ไม่มีเนื้อหาถูกตัด (ปุ่ม/summary ครบ), ไม่มี focus ring ติด, ไม่ crop ชิดขอบจนดูผิด
 - [ ] **เป้าหมาย test: checklist card ครบทุก spec ที่เป้าหมายแก้ แสดง flow ทดสอบตรงงานจริง**
 - [ ] **เป้าหมายเอกสาร/acceptance: มี checklist card สรุป ไม่ใช่ไฟล์ text ล้วน**
 - [ ] ถ้ามี test — ผลใน test-results.txt มาจากการรันล่าสุดจริง
