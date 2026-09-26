@@ -257,6 +257,8 @@ mcp_call_tool(
 - ⚠️ Final Actual Time ต้องมาจาก Kanban หลังปิด task เท่านั้น ห้ามใช้ snapshot/elapsed time ตอน `in_progress`
 - ⚠️ ห้ามเรียก `log_time` ใน completion workflow ไม่ว่าก่อนหรือหลังปิด task
 - ⚠️ ห้ามปรับ `hours_spent` เองระหว่าง completion workflow; ถ้าค่าผิดปกติให้รายงานผู้ใช้และแยกเป็น correction workflow ที่ผู้ใช้สั่งชัดเจน
+- ⚠️ **เวลารอผู้ใช้รีวิวหน้าจอ/prototype = เวลาทำงานจริง** — task ที่แตะ UI/prototype แล้วรอผู้ใช้ตรวจตาม Manual Review Checklist ต้องนับเวลาต่อเนื่อง เพราะ review gate คือส่วนหนึ่งของงาน ห้ามตัดเวลารอรีวิวออกจาก `hours_spent`
+- ⚠️ **ตัดเวลาหลุดได้เฉพาะงานประเภท run** (เช่น run tests/regression/long-running command) ที่ผลลัพธ์เสร็จสมบูรณ์แล้วแต่ timer ยังเดินต่อเพราะผู้ใช้ไม่ได้อยู่หน้าจอ — ถ้าพบ banked time มีช่วงหลุดแบบนี้หลังปิด task ให้แจ้งผู้ใช้พร้อมตัวเลข banked vs เวลางานจริง และ correct `hours_spent` ด้วย `update_task` (SET) เมื่อผู้ใช้ยืนยันเวลาจริงแล้วเท่านั้น โดยทำเป็น correction workflow แยกหลังปิด task
 - ทุก task ที่ปิดต้องมี Final Session Note และ Final Work Summary Copy Block
 - ⚠️ **Manual Review Checklist:** task ที่แตะ prototype/UI ต้องส่ง checklist ทดสอบ manual (เคส + ข้อมูลทดสอบ + ขั้นกด + ผลที่คาด) ให้ผู้ใช้ตรวจก่อนขอปิด — รีวิวต้องเกิดก่อน `move_task → done` ตามกฎการยืนยันผลลัพธ์เดิม
 - **ถ้า task ที่ปิดเป็น task สุดท้ายของเป้าหมาย (Objective) ใน Mission** — ทุก task ของเป้าหมายนั้นเป็น done แล้ว → แจ้งผู้ใช้ว่าเป้าหมายครบ และเสนอเตรียม **หลักฐานส่งตรวจรับด้วย AI** ตาม skill `submission-evidence` (ไฟล์แนบ/ภาพหน้าจอ + คำอธิบาย + ช่อง URL) ให้ลง log พร้อมกัน
@@ -1361,6 +1363,7 @@ Task ID: TK-102
 - [ ] ตรวจว่า Final Work Summary Copy Block ทั้งหมดอยู่ใน `text` code block เดียว ใช้รายการ `รายละเอียดงานที่ทำ` ต่อเนื่อง และไม่ได้แยก Verification/workstream เป็น section โดยไม่จำเป็น (ยกเว้น Case C over-budget ที่ต้องแยกกลุ่ม `<TASK-CODE>a/b/c [<Category>] (ประมาณ X ชม.)` ตามสัดส่วนเวลา)
 - [ ] ตรวจว่า Final Actual Time มาจาก Final `hours_spent` หลัง task เป็น `done` และไม่แสดง Planned Time ใน Task Work Log
 - [ ] ตรวจว่า canonical Final Summary / Final Session Note ยังคง Actual Start/End และรายละเอียดเต็มทั้งหมด แม้ Copy Block จะย่อ presentation
+- [ ] เช็ค dead time ใน banked `hours_spent` — เฉพาะงานประเภท run (run tests/regression) ที่ผลลัพธ์เสร็จแล้วแต่ timer เดินต่อตอนผู้ใช้ไม่ได้อยู่หน้าจอ → แจ้งผู้ใช้พร้อมเสนอเวลางานจริง ถ้ายืนยันให้ correct ด้วย `update_task` (SET `hours_spent`) เป็น correction workflow แยกหลังปิด; เวลารอผู้ใช้รีวิวหน้าจอ/prototype = เวลาทำงานจริง นับต่อเนื่อง ห้ามตัด
 - [ ] แจ้งผู้ใช้ว่า "ปิด task <ชื่อ> แล้ว ใช้เวลา <X ชม. Y นาที (D.D ชม.)>"
 - [ ] หลัง Copy Block: ถ้ามีงานรอทำต่อ → บันทึก session note (สถานะรวม + state + decisions/gotchas + Next Step) และสร้าง prompt งานถัดไปเป็น copy block ให้ผู้ใช้; ถ้าไม่มีงานต่อ → เสนอแนวทางงานต่อไปให้ผู้ใช้ตัดสินใจ (เช่น mission ใหม่, outstanding work, mission closure) โดยไม่สร้าง mission/task เอง
 - [ ] ⚠️ **ห้ามบวก/ลด/ปรับชั่วโมงเอง** — ใช้ค่า hours_spent จากระบบเป็นค่าจริง
