@@ -51,6 +51,18 @@ async function shot(page, name, opts = {}) {
   console.log("saved", name);
 }
 
+// auth screens บน mobile: body ล็อก height=100vh + html overflow hidden —
+// content ยาวกว่า viewport จะ paint ไม่ครบ (แถบขาว/ปุ่มตัด) → ขยาย viewport ให้พอดี scrollHeight จริงก่อน capture
+async function shotAuthMobile(page, name) {
+  const contentH = await page.evaluate(() => document.body.scrollHeight);
+  if (contentH > 844) {
+    await page.setViewportSize({ width: 390, height: contentH });
+    await page.waitForTimeout(150);
+  }
+  await shot(page, name);
+  await page.setViewportSize({ width: 390, height: 844 });
+}
+
 (async () => {
   fs.mkdirSync(OUT, { recursive: true });
   const browser = await chromium.launch();
@@ -152,32 +164,31 @@ async function shot(page, name, opts = {}) {
   await shot(page, "18-reset-account-blocked-generic");
 
   // ============ D. Mobile 390 ============
-  // auth screens เป็น fixed-viewport layout — viewport shot เท่านั้น (fullPage จะเหลือแถบขาว)
   await page.setViewportSize({ width: 390, height: 844 });
   await gotoLogin(page);
   await submitLogin(page, LOCKED_FAILED_LOGIN_EMAIL);
-  await shot(page, "m01-mobile-login-lockout");
+  await shotAuthMobile(page, "m01-mobile-login-lockout");
 
   await goToForgot(page);
-  await shot(page, "m02-mobile-forgot-ready");
+  await shotAuthMobile(page, "m02-mobile-forgot-ready");
   await page.locator("#forgot-email").fill(ACTIVE_EMAIL);
   await page.locator("#forgot-submit").click();
   await page.waitForSelector("[data-forgot-accepted]", { timeout: 5000 });
-  await shot(page, "m03-mobile-forgot-accepted");
+  await shotAuthMobile(page, "m03-mobile-forgot-accepted");
 
   await openReset(page, "ADM-010");
   await page.waitForSelector("#reset-form", { timeout: 5000 });
-  await shot(page, "m04-mobile-reset-form");
+  await shotAuthMobile(page, "m04-mobile-reset-form");
 
   await page.locator("#reset-password").fill(NEW_PASSWORD);
   await page.locator("#reset-password-confirm").fill(NEW_PASSWORD);
   await page.locator("#reset-submit").click();
   await page.waitForSelector("[data-reset-success]", { timeout: 5000 });
-  await shot(page, "m05-mobile-reset-success");
+  await shotAuthMobile(page, "m05-mobile-reset-success");
 
   await openReset(page, "ADM-010", { expiresAt: new Date(Date.now() - 60e3).toISOString() });
   await page.waitForSelector("[data-reset-failure]", { timeout: 5000 });
-  await shot(page, "m06-mobile-reset-expired");
+  await shotAuthMobile(page, "m06-mobile-reset-expired");
 
   await browser.close();
   console.log("done →", OUT);
