@@ -406,6 +406,14 @@
       line-height: 1.5;
     }
     .auth-error.show { display: block; }
+    /* AIL-026 — failed-login lockout display (additive) */
+    .auth-error strong { color: #fff; font-weight: 600; }
+    .auth-error .auth-lockout-hint { display: inline-block; margin-top: 2px; opacity: .85; }
+    .auth-error.is-info {
+      border-color: rgba(173, 193, 221, .42);
+      background: rgba(12, 33, 58, .72);
+      color: #cbd8e9;
+    }
     /* Accept Invitation screen — reuse login visual language, style เฉพาะส่วนใหม่ */
     .invite-context,
     .reset-context {
@@ -17678,6 +17686,7 @@
           <select id="auth-scenario">
             <option value="success">Email + Password success</option>
             <option value="bad-password">Invalid credentials</option>
+            <option value="lockout-expired">Lockout expired — ล็อกหมดอายุแล้ว (จำลอง)</option>
           </select>
         </label>
         <label>
@@ -27264,6 +27273,9 @@
       const beforeLastAction = acc.lastAction;
       const hadLockReason = Object.prototype.hasOwnProperty.call(passwordRecoveryLockReason, acc.id);
       const beforeLockReason = passwordRecoveryLockReason[acc.id];
+      // AIL-026: clear failed-attempt counter อยู่ใน atomic boundary เดียวกัน
+      const hadAttempts = Object.prototype.hasOwnProperty.call(loginAttemptData, acc.id);
+      const beforeAttempts = hadAttempts ? { ...loginAttemptData[acc.id] } : null;
       const credExisted = Object.prototype.hasOwnProperty.call(adminCredentialStore, acc.id);
       const beforeCredential = credExisted ? adminCredentialStore[acc.id].password : null;
       const registry = adminSessionData[acc.id];
@@ -27289,8 +27301,10 @@
         adminCredentialStore[acc.id] = { password: newPassword };
         if (wasFailedLoginLocked) {
           // eligible lock เดียวที่ reset ปลดได้ = failed-login lock — clear lock marker
+          // + failed-attempt counter (AIL-026)
           acc.status = "Active";
           delete passwordRecoveryLockReason[acc.id];
+          delete loginAttemptData[acc.id];
           acc.lastAction = "Active — ตั้งรหัสผ่านใหม่สำเร็จ (ปลดล็อก failed login)";
         } else {
           acc.lastAction = "ตั้งรหัสผ่านใหม่ผ่านลิงก์ reset";
@@ -27338,6 +27352,8 @@
         acc.lastAction = beforeLastAction;
         if (hadLockReason) passwordRecoveryLockReason[acc.id] = beforeLockReason;
         else delete passwordRecoveryLockReason[acc.id];
+        if (hadAttempts) loginAttemptData[acc.id] = beforeAttempts;
+        else delete loginAttemptData[acc.id];
         sessionSnapshot.forEach(({ session, status, revokedAt, revokedReason }) => {
           session.status = status;
           session.revokedAt = revokedAt;
@@ -48946,6 +48962,10 @@
       const error = document.querySelector("#auth-error");
       error.textContent = message;
       error.classList.toggle("show", Boolean(message));
+      // AIL-026: เคลียร์ lockout marker/timer เมื่อ error ถูก reset จาก flow อื่น
+      delete error.dataset.lockout;
+      error.classList.remove("is-info");
+      stopLoginLockoutTimer();
     }
 
     function setAuthState(message) {
@@ -48966,12 +48986,31 @@
       auth.admin.accountId = "ADM-010";
       auth.scenario = document.querySelector("#auth-scenario").value;
 
+      // ===== AIL-026: account status gate ก่อนตรวจ credentials =====
+      // resolve account จาก email (normalize เดียวกับ recovery) — unknown email
+      // ไม่ block (generic invalid ทีหลัง) เพื่อไม่เปิดเผย account existence
+      const loginAccount = findAdminAccountByEmail(normalizePasswordResetEmail(auth.email));
+      const loginBlock = loginAccount ? evaluateLoginBlock(loginAccount, auth.scenario) : null;
+      if (loginBlock) {
+        renderLoginBlock(loginAccount, loginBlock);
+        return;
+      }
+
       if (auth.scenario === "bad-password") {
+        // AIL-026: นับ failed attempt ต่อ account ที่ resolve ได้ — ครบ 5 ครั้งล็อก 15 นาที
+        if (loginAccount) {
+          const lockedNow = recordFailedLoginAttempt(loginAccount);
+          if (lockedNow) {
+            renderLoginBlock(loginAccount, getLoginLockState(loginAccount));
+            return;
+          }
+        }
         showAuthError("Invalid credentials. The system does not reveal whether email or password is incorrect.");
         setAuthState("");
         return;
       }
 
+      clearLoginAttempts(loginAccount);
       completeLogin();
     }
 
@@ -48986,6 +49025,199 @@
       ensureMyAccountCurrentSession(findSelfAdminAccount());
       renderModule("dashboard");
       scrollMainToTop();
+    }
+
+    // ===== Failed Login Lockout — Login-side display + attempt tracking (AIL-026) =====
+    // contract: spec 01 §9/§14 + 16 §10 (login พลาด 5 ครั้ง → lock 15 นาที)
+    //   + AIL-019 §7/§12 (lockout message generic — ไม่เปิดเผย lock reason
+    //   และไม่บอกว่า Reset Password จะปลด lock; forgot link เป็น self-service path)
+    // - failed-login lock ปลดเองได้: รอครบ 15 นาที (lazy expiry) หรือ Reset Password
+    //   (commit ฝั่ง AIL-025 เคลียร์ status/reason/attempts ให้แล้ว)
+    // - security/admin lock ปลดได้เฉพาะ authorized Unlock (Settings > Admin Accounts)
+    // - ทั้งหมดเป็น in-memory simulation — ไม่ใช่ security enforcement จริง;
+    //   lockedUntil ถูก re-check จาก state ทุก submit (server-authoritative pattern)
+
+    const LOGIN_FAILED_ATTEMPT_LIMIT = 5;
+    const LOGIN_LOCKOUT_MS = 15 * 60 * 1000;
+
+    // mock login-attempt store — key ด้วย admin id (แยกจาก account/lock_reason เดิม)
+    // ADM-007 seed ตรงกับ fixture เดิม: Locked จาก failed login — anchor เวลาตอน init
+    // เพื่อให้ demo เห็นเวลาคงเหลือ ~15 นาทีเสมอเมื่อเปิด prototype
+    const loginAttemptData = {
+      "ADM-007": { failedAttempts: LOGIN_FAILED_ATTEMPT_LIMIT, lockedUntil: Date.now() + LOGIN_LOCKOUT_MS }
+    };
+
+    let loginLockoutTimer = null;
+
+    function stopLoginLockoutTimer() {
+      if (loginLockoutTimer) {
+        window.clearInterval(loginLockoutTimer);
+        loginLockoutTimer = null;
+      }
+    }
+
+    function getLoginLockState(acc) {
+      // lock reason แยกจาก status — เดียวกับ recovery eligibility (ไม่แตะ Admin Accounts mock)
+      if (!acc || acc.status !== "Locked") return null;
+      const reason = passwordRecoveryLockReason[acc.id] || "security_admin";
+      if (reason !== "failed_login") return { kind: "security_admin" };
+      const lockedUntil = loginAttemptData[acc.id]?.lockedUntil || 0;
+      if (lockedUntil <= Date.now()) return { kind: "failed_login", expired: true };
+      return { kind: "failed_login", lockedUntil };
+    }
+
+    function releaseFailedLoginLock(acc) {
+      // lazy unlock ตอน lock หมดอายุ — routine expiry: telemetry เท่านั้น ไม่สร้าง audit
+      // (pattern เดียวกับ routine token expiry ของ AIL-018/019)
+      acc.status = "Active";
+      delete passwordRecoveryLockReason[acc.id];
+      delete loginAttemptData[acc.id];
+      acc.revision = (acc.revision || 0) + 1;
+      acc.lastAction = "Active — lockout หมดอายุ (15 นาทีครบ)";
+    }
+
+    function pushLoginAudit(acc, payload = {}) {
+      const maxNum = auditLogData.events.reduce((max, e) => {
+        const m = /^AUD-(\d+)$/.exec(e.id);
+        return m ? Math.max(max, Number(m[1])) : max;
+      }, 0);
+      const auditId = `AUD-${String(maxNum + 1).padStart(5, "0")}`;
+      auditLogData.events.unshift({
+        id: auditId,
+        createdAt: formatBangkokTimestamp(),
+        actor: acc?.fullName || "Admin",
+        actorType: acc ? "Admin" : "System",
+        action: payload.action || "Admin login",
+        eventType: payload.eventType || "ADMIN_LOGIN",
+        module: "Settings",
+        risk: payload.risk || "Medium",
+        before: payload.before || "-",
+        after: payload.after || "-",
+        reason: payload.reason || "",
+        reference: payload.reference || acc?.id || "—",
+        note: payload.note || "",
+        result: payload.result || "Success",
+        failureCode: payload.failureCode || null,
+        targetAdminId: acc?.id || null,
+        correlationId: payload.correlationId || null
+      });
+      return auditId;
+    }
+
+    // กำหนดว่า account ถูก block จาก login หรือไม่ — คืน block descriptor หรือ null
+    // scenario "lockout-expired" = QA simulation ที่ย้อน lockedUntil ให้ expiry path จริงทำงาน
+    function evaluateLoginBlock(acc, scenario) {
+      if (acc.status === "Locked") {
+        if (scenario === "lockout-expired"
+            && (passwordRecoveryLockReason[acc.id] || "") === "failed_login"
+            && loginAttemptData[acc.id]) {
+          loginAttemptData[acc.id].lockedUntil = Date.now() - 1000;
+        }
+        const lock = getLoginLockState(acc);
+        if (lock && lock.kind === "failed_login" && lock.expired) {
+          releaseFailedLoginLock(acc);
+          return null; // lock หมดอายุแล้ว → login flow ปกติต่อ
+        }
+        if (lock) {
+          pushLoginAudit(acc, {
+            eventType: "ADMIN_LOGIN_FAILED",
+            result: "Failed",
+            failureCode: lock.kind === "failed_login" ? "ACCOUNT_LOCKED" : "LOCK_REASON_BLOCKED",
+            reason: "เข้าสู่ระบบถูกบล็อก — บัญชีอยู่ในสถานะ Locked",
+            note: `Login attempt ของ ${acc.id} ถูก block — lock kind: ${lock.kind}`
+          });
+          return lock;
+        }
+      }
+      if (acc.status === "Suspended" || acc.status === "Archived" || acc.status === "Invited") {
+        pushLoginAudit(acc, {
+          eventType: "ADMIN_LOGIN_FAILED",
+          result: "Failed",
+          failureCode: "ACCOUNT_UNAVAILABLE",
+          reason: "เข้าสู่ระบบถูกบล็อก — บัญชีไม่พร้อมใช้งาน",
+          note: `Login attempt ของ ${acc.id} ถูก block — status: ${acc.status}`
+        });
+        return { kind: "unavailable" };
+      }
+      return null;
+    }
+
+    function formatLoginLockoutRemaining(lockedUntil) {
+      const totalSec = Math.max(0, Math.ceil((lockedUntil - Date.now()) / 1000));
+      const minutes = Math.floor(totalSec / 60);
+      const seconds = totalSec % 60;
+      return minutes > 0 ? `${minutes} นาที ${seconds} วินาที` : `${seconds} วินาที`;
+    }
+
+    // render lockout/block state ลง #auth-error — display เดียวกับ login error
+    // data-lockout attribute ให้ QA/manual แยกชนิด lock ได้ชัดเจน
+    function renderLoginBlock(acc, block) {
+      const error = document.querySelector("#auth-error");
+      stopLoginLockoutTimer();
+      setAuthState("");
+      error.dataset.lockout = block.kind;
+      if (block.kind === "failed_login") {
+        error.innerHTML = `บัญชีถูกล็อกชั่วคราว กรุณาลองใหม่ในอีก <strong data-lockout-countdown>${formatLoginLockoutRemaining(block.lockedUntil)}</strong><br><span class="auth-lockout-hint">หากลืมรหัสผ่าน สามารถขอลิงก์ตั้งรหัสผ่านใหม่ได้ที่ "ลืมรหัสผ่าน?"</span>`;
+        error.classList.add("show");
+        loginLockoutTimer = window.setInterval(() => {
+          const countdown = document.querySelector("[data-lockout-countdown]");
+          const lock = getLoginLockState(acc);
+          if (!countdown || !lock || lock.kind !== "failed_login") {
+            stopLoginLockoutTimer();
+            return;
+          }
+          if (lock.expired) {
+            // ครบ 15 นาทีแล้ว — ปลดล็อกตาม state จริง ไม่ใช่แค่ countdown ถึง 0
+            releaseFailedLoginLock(acc);
+            stopLoginLockoutTimer();
+            error.dataset.lockout = "expired";
+            error.classList.add("is-info");
+            error.textContent = "ช่วงเวลาล็อกสิ้นสุดแล้ว สามารถเข้าสู่ระบบได้ตามปกติ";
+            return;
+          }
+          countdown.textContent = formatLoginLockoutRemaining(lock.lockedUntil);
+        }, 1000);
+        return;
+      }
+      // security_admin / unavailable — generic: ไม่เปิดเผย lock reason หรือช่องทางปลดล็อก
+      error.textContent = "ไม่สามารถเข้าสู่ระบบได้ กรุณาติดต่อผู้ดูแลระบบ";
+      error.classList.add("show");
+    }
+
+    // นับ failed attempt หลัง credential ผิด — ครบ 5 ครั้ง lock account 15 นาที
+    // + audit ทั้ง failed attempt และ lock event (spec 01 §13)
+    function recordFailedLoginAttempt(acc) {
+      const entry = loginAttemptData[acc.id] || (loginAttemptData[acc.id] = { failedAttempts: 0, lockedUntil: 0 });
+      entry.failedAttempts += 1;
+      pushLoginAudit(acc, {
+        eventType: "ADMIN_LOGIN_FAILED",
+        result: "Failed",
+        failureCode: "INVALID_CREDENTIALS",
+        reason: "เข้าสู่ระบบไม่สำเร็จ — credentials ไม่ถูกต้อง",
+        note: `Failed login attempt ${entry.failedAttempts}/${LOGIN_FAILED_ATTEMPT_LIMIT} ของ ${acc.id}`,
+        risk: "Low"
+      });
+      if (entry.failedAttempts < LOGIN_FAILED_ATTEMPT_LIMIT) return false;
+      entry.lockedUntil = Date.now() + LOGIN_LOCKOUT_MS;
+      acc.status = "Locked";
+      passwordRecoveryLockReason[acc.id] = "failed_login";
+      acc.revision = (acc.revision || 0) + 1;
+      acc.lastAction = "Locked จาก failed login 5 ครั้ง — รอ unlock หรือครบ 15 นาที";
+      pushLoginAudit(acc, {
+        action: "Lock Admin (failed login)",
+        eventType: "ADMIN_LOGIN_LOCKED",
+        risk: "Medium",
+        before: "Active",
+        after: "Locked",
+        reason: `failed login ${LOGIN_FAILED_ATTEMPT_LIMIT} ครั้ง`,
+        note: "รอ unlock หรือครบ 15 นาที"
+      });
+      return true;
+    }
+
+    // login สำเร็จ → เคลียร์ failed-attempt counter ของ account นั้น
+    function clearLoginAttempts(acc) {
+      if (acc) delete loginAttemptData[acc.id];
     }
 
     let activeArticlePickerInput = null;
