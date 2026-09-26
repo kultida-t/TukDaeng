@@ -1,0 +1,21 @@
+AIL-032 — Final Acceptance: Mission 2 My Account & Credential Security (DoD ครบ 16 ข้อ)
+== Contracts (AIL-018 / AIL-019 / AIL-031)
+Self-Service Account Contract + Password Recovery Contract finalized ใน requirement log
+Doc Sync: แก้ contract 3 จุดตาม implementation ที่ผ่านการตรวจรับ + resolve cooldown (policy 15 นาที / prototype sim 60 วินาที)
+== Self-Service (AIL-020–023b)
+My Account เปิดจากกล่องโปรไฟล์ท้าย sidebar + self-only boundary ครบ
+Edit Name: validation + no-op + audit ครบ
+Change Password: Current+New+Confirm ไม่มี OTP, revoke session อื่นคง session ปัจจุบัน
+Active Sessions แสดงเฉพาะของตัวเอง + revoke ราย session; Logout All + Session Expired gate ทำงาน
+== Password Recovery & Lock (AIL-024–026)
+Forgot Password ตอบ generic ทุกกรณี ไม่เปิดเผย existence/eligibility/throttle
+Reset token 30 นาที one-time + supersede เมื่อขอใหม่ + safe state ครบทุกเคส
+Failed-login lockout แสดงที่ Login; security/admin lock ไม่ถูก Reset ปลด
+Audit/delivery trace ครบตาม scope ไม่มี secret ใน log
+== Verification (AIL-027–030)
+Functional tests ผ่าน: qa-bo-023 (52/52) + qa-bo-024
+Scoped regression ผ่าน: 1,122 pass / 118 skip (by-design) / 0 fail — triage อนุมัติแล้ว
+UI/responsive/a11y smoke ผ่าน: qa-bo-025 68/68 ทั้ง 4 ขนาดจอ
+== Governance
+ไม่มี unresolved blocker (0 open issues / 0 open feedback)
+Protected screens ไม่ถูกแตะนอก approved scope; verdict = PASS

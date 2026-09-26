@@ -1,0 +1,36 @@
+Mission: Mission 2 — My Account & Credential Security (mission 18598f33)
+Requirement: bf08de1f "BO Admin Identity Lifecycle — Invitation, My Account และ Password Security" (finalized, amended 2026-09-23)
+Objective 5: Contract Sync & Final Acceptance
+Acceptance task: AIL-032 — Final Mission Acceptance (Kanban ID da287fee)
+Status: PASS — reviewed 2026-09-26 GMT+7
+
+Review outcome (Definition of Done — verified against Kanban task records, requirement log, deliverables and test logs):
+
+Contracts (AIL-018 / AIL-019 / AIL-031)
+- Credential Security contracts finalized: Self-Service Account Contract (AIL-018, 2026-09-23) and Password Recovery Contract (AIL-019, 2026-09-23) recorded in requirement bf08de1f discussion log.
+- Documentation synced (AIL-031, commit 9184a71): 3 doc-vs-impl findings from AIL-027 corrected in requirement log + deliverables/AIL-014-requirement-amended.md — ADMIN_SESSION_REVOKE_ALL risk High->Medium, Logout All post-redirect = blank Login form, wrong-current password audits only at rate-limit boundary (RATE_LIMITED); cooldown point resolved (policy 15 min, prototype simulates 60 s).
+
+Self-Service (AIL-020 / AIL-021 / AIL-022 / AIL-023a / AIL-023b)
+- My Account opens from sidebar profile box; self-only boundary enforced (logged-out render does not leak content — qa-bo-023 D5).
+- Edit Name: validation + no-op handling + audit complete.
+- Change Password: Current + New + Confirm, no Login OTP; wrong-current field error with rate-limit audit; other sessions revoked, current session kept.
+- Active Sessions: self-only list with masked metadata + per-session revoke (current session excluded).
+- Logout All Devices: confirmation, revokes all sessions including current, audit, returns to Login.
+- Session Expired: generic gate for idle/revoked/admin-actioned sessions + re-login CTA.
+
+Password Recovery & Lock (AIL-024 / AIL-025 / AIL-026)
+- Forgot Password: generic response identical across exists/unknown/ineligible/throttled/delivery-failed — no enumeration.
+- Reset Password: token lifecycle (invalid/expired/used/superseded/ineligible), 30-min one-time token, supersede-on-new-request, eligibility Active + failed-login Locked only; success clears failed-login lock and revokes all sessions.
+- security/admin lock is NOT unlockable via Reset Password (authorized Unlock flow only) — verified by eligibility tests.
+- Failed-login lockout display at Login: generic lockout message + Forgot Password as self-service path.
+- Audit/delivery trace complete per scope: ADMIN_PROFILE_UPDATE / ADMIN_PASSWORD_CHANGE / ADMIN_SESSION_REVOKE / ADMIN_SESSION_REVOKE_ALL / ADMIN_PASSWORD_RESET_* events and DLV-ACCT-*-PWD-* delivery records; no secrets logged.
+
+Verification results (evidence files)
+- Functional tests: qa-bo-023 self-service 52/52 pass (AIL-027, commit a329fa9); qa-bo-024 password-recovery pass (AIL-028, commit ff4f405).
+- Scoped regression: 1,240 tests / 1,122 passed / 118 skipped (all by-design per AIL-029b triage, user-approved) / 0 failed — deliverables/AIL-029a-scoped-regression.log.
+- UI/responsive/accessibility smoke: qa-bo-025 68/68 pass across desktop-1440/1280, tablet-768, mobile-390 (AIL-030, commit fb6b933) — deliverables/AIL-030-scoped-smoke.log.
+
+Blockers
+- No unresolved blocker: 0 open task issues across all Mission 2 tasks, 0 open feedback; all doc-vs-impl findings resolved in AIL-031.
+
+Mission verdict: PASS. All 16 Definition of Done items satisfied. Mission Closure is a governance step following this acceptance, not an execution task. This file transcribes the acceptance outcome; it is not a new test run.
