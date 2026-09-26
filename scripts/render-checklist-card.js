@@ -54,7 +54,8 @@ ${html}  </ul>
   .cb::after { content: ""; position: absolute; left: 4px; top: 1px; width: 4px; height: 8px;
         border: solid #e8f4ec; border-width: 0 2px 2px 0; transform: rotate(45deg); }
 </style></html>`);
-  await page.screenshot({ path: path.join(outDir, outName), fullPage: true });
+  // แคป body element พอดี — fullPage จะเหลือพื้นดำเต็ม viewport height เมื่อ card สั้นกว่า 900px
+  await page.locator("body").screenshot({ path: path.join(outDir, outName) });
   await browser.close();
   console.log("saved", path.join(outDir, outName));
 })();

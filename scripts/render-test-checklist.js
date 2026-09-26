@@ -103,7 +103,8 @@ ${sectionHtml}
         border: solid #e8f4ec; border-width: 0 2px 2px 0; transform: rotate(45deg); }
 </style></html>`;
     await page.setContent(html);
-    await page.screenshot({ path: path.join(outDir, `checklist-${id}.png`), fullPage: true });
+    // แคป body element พอดี — fullPage จะเหลือพื้นดำเต็ม viewport height เมื่อ card สั้นกว่า 900px
+    await page.locator("body").screenshot({ path: path.join(outDir, `checklist-${id}.png`) });
     console.log("saved", `checklist-${id}.png`, `(${total} tests)`);
   }
 
