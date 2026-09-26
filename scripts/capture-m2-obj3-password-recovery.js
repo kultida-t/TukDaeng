@@ -47,6 +47,8 @@ async function openReset(page, adminId, overrides = {}) {
 }
 
 async function shot(page, name, opts = {}) {
+  // recovery screens focus() ปุ่มหลักอัตโนมัติ → blur ก่อนแคปเพื่อให้เห็นปุ่มสถานะปกติ ไม่ติด focus ring
+  await page.evaluate(() => document.activeElement?.blur());
   await page.screenshot({ path: path.join(OUT, `${name}.png`), ...opts });
   console.log("saved", name);
 }

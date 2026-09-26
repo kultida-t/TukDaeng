@@ -50,6 +50,8 @@ async function goToMyAccount(page) {
 }
 
 async function shot(page, name, opts = {}) {
+  // modal/recovery screens focus() ปุ่มอัตโนมัติ → blur ก่อนแคปเพื่อให้เห็นปุ่มสถานะปกติ ไม่ติด focus ring
+  await page.evaluate(() => document.activeElement?.blur());
   await page.screenshot({ path: path.join(OUT, `${name}.png`), ...opts });
   console.log("saved", name);
 }
