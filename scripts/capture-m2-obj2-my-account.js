@@ -56,6 +56,23 @@ async function shot(page, name, opts = {}) {
   console.log("saved", name);
 }
 
+// element shot ที่มีพื้นที่รอบ section — clip ชิดขอบเกินไปจะดูเหมือนภาพ crop ผิด
+async function shotSection(page, locator, name, pad = 20) {
+  await locator.scrollIntoViewIfNeeded();
+  await page.evaluate(() => document.activeElement?.blur());
+  const box = await locator.boundingBox();
+  await page.screenshot({
+    path: path.join(OUT, `${name}.png`),
+    clip: {
+      x: Math.max(0, box.x - pad),
+      y: Math.max(0, box.y - pad),
+      width: box.width + pad * 2,
+      height: box.height + pad * 2
+    }
+  });
+  console.log("saved", name);
+}
+
 (async () => {
   fs.mkdirSync(OUT, { recursive: true });
   const browser = await chromium.launch();
@@ -69,9 +86,7 @@ async function shot(page, name, opts = {}) {
   await shot(page, "02-my-account-page", { fullPage: true });
 
   const sessionsSection = page.locator("[data-my-account-section='sessions']");
-  await sessionsSection.scrollIntoViewIfNeeded();
-  await sessionsSection.screenshot({ path: path.join(OUT, "03-active-sessions-list.png") });
-  console.log("saved 03-active-sessions-list");
+  await shotSection(page, sessionsSection, "03-active-sessions-list");
 
   // per-session revoke (AIL-022)
   await page.locator("[data-my-account-session='SES-90002'] [data-my-account-action='revoke-session']").click();
@@ -188,8 +203,7 @@ async function shot(page, name, opts = {}) {
   await page.waitForTimeout(200);
 
   const sessionsMobile = page.locator("[data-my-account-section='sessions']");
-  await sessionsMobile.scrollIntoViewIfNeeded();
-  await shot(page, "m05-mobile-sessions");
+  await shotSection(page, sessionsMobile, "m05-mobile-sessions");
 
   await page.locator("[data-my-account-session='SES-90002'] [data-my-account-action='revoke-session']").click();
   await page.waitForTimeout(200);
