@@ -43,26 +43,36 @@ Workflow สำหรับจัด **ชุดหลักฐานส่ง�
 
 | ประเภทเป้าหมาย | หลักฐานที่ถูกต้อง | ตัวอย่าง |
 |---|---|---|
-| UI/Prototype | **ภาพหน้าจอ** ที่ capture จาก prototype จริง (พิสูจน์พฤติกรรมครบทุก state/flow ของเป้าหมาย) | เป้าหมาย 2, 3 ของ Mission 1 |
-| เอกสาร/spec/design contract | **ไฟล์เอกสารจริง** ที่แก้ — ไม่ต้อง capture ภาพหน้าจอ | เป้าหมาย 1; approved precedent "Sync Audit Log Spec" แนบ `08_AUDIT_LOG_MODULE.md` ไฟล์เดียวตรง ๆ |
-| Test/verification | **test spec + ผลรันจริง** (`test-results.txt`) + เอกสารที่ sync; approved precedent แนบ **ภาพหน้าจอผลรัน/checklist ใน terminal** ด้วย — ทำได้ (ภาพจริงจากการรัน ไม่ใช่ภาพวาด) | เป้าหมาย 4; "QA, Regression และ Protected Screen" |
+| UI/Prototype | **ภาพหน้าจอ** ที่ capture จาก prototype จริง ครบ **ทุกขั้นตอน flow ของเป้าหมาย** และ **ทุกขั้นตอนต้องมีคู่ desktop + mobile** — เป็นประเภทที่ grader ให้คะแนนตามความครบของภาพโดยตรง | precedent 10/10: "สร้าง Audit Log List และ Detail Modal" (4 รูป = list+detail × desktop+mobile), "เพิ่ม Search, Filter, Sort และ Date Range" (7 รูป ครบทุก filter state ทั้งสองจอ), "เพิ่ม Cross-module Audit Jump" (5 รูป desktop+mobile) |
+| เอกสาร/spec/design contract | **ไฟล์เอกสารจริง** ที่แก้ + **checklist card สรุปว่าไฟล์ไหนแก้อะไร** (ภาพ preview ได้ — ไฟล์ .md แสดงแค่ชื่อ+ขนาด grader ตรวจ content ยาก) | เป้าหมาย 1 Mission Login Baseline ได้ 8.3 เพราะแนบไฟล์ล้วน; precedent "Sync Audit Log Spec" แนบ `08_AUDIT_LOG_MODULE.md` ไฟล์เดียวตรง ๆ |
+| Test/verification | **ภาพ checklist card แยกตาม spec** แสดง flow การทดสอบครบตามงานที่ทำ (ดึง test titles จริงจาก spec) + ผลรันจริง (`test-results.txt` หรือภาพผลรัน) — precedent 10/10 ใช้ checklist card ล้วน ไม่แนบ spec .js | precedent 10/10: "QA, Regression และ Protected Screen" (5 รูป checklist `qa-bo-014a/b/c/d`); ทำด้วย `scripts/render-test-checklist.js` / `render-checklist-card.js` |
+| Acceptance/review | **checklist card สรุปรายการที่ตรวจผ่าน** + ไฟล์บันทึกผลจริง — ไฟล์ txt ล้วนคะแนนต่ำ (8.5) | เป้าหมาย 4 Mission Login Baseline; ตัวอย่าง `checklist-ail-017-acceptance.png` |
 | ผสม (UI + doc + test) | ภาพ+ไฟล์ตามสัดส่วนงาน; zip เฉพาะชุดที่ใหญ่จนแนบทีละไฟล์ไม่สะดวก | — |
 
-**หลักการเลือกประเภทหลักฐาน:** ส่ง "สิ่งที่ reviewer ตรวจได้จริง" — เอกสารและ test ส่งไฟล์จริงแข็งแรงกว่าภาพ; งาน UI ต้องมีภาพเพราะ reviewer เปิด prototype แล้วเห็นแค่ state เริ่มต้น
+**บทเรียนจากคะแนนจริง (AI Auto-Approved, เกณฑ์ผ่าน ≥7.0):**
+- เป้าหมายที่แนบ **ภาพพิสูจน์ตรง ๆ** ได้ 9.1–10.0; เป้าหมายที่แนบ **ไฟล์ text ล้วน** ได้ 8.3–8.5 → ทุกเป้าหมายควรมีอย่างน้อย 1 ภาพที่ preview ได้ (checklist card / ภาพหน้าจอ)
+- งาน UI ที่ได้ 10/10 มีภาพ **ครบทุกขั้นตอน flow × desktop+mobile คู่กัน** — มี mobile แค่บางขั้น (เช่น 1 ใน 7) ได้ ~9.1
+- งาน test ที่ได้ 10/10 เป็น checklist card ที่แสดง flow ครบถ้วน **ตรงกับงานที่ทำจริง** — ไม่ใช่ terminal output ดิบ
+
+**หลักการเลือกประเภทหลักฐาน:** ส่ง "สิ่งที่ reviewer ตรวจได้จริงและเห็นได้ทันที" — ภาพ preview ในฟอร์มแข็งแรงที่สุด; เอกสาร/test แนบไฟล์จริงประกอบ แต่ต้องมีภาพสรุปนำหน้า; งาน UI ต้อง capture ครบเพราะ reviewer เปิด prototype แล้วเห็นแค่ state เริ่มต้น
 
 **ฟอร์มส่งตรวจ (สังเกตจากงานที่ approved จริง):** มีช่อง "ไฟล์แนบ" (รูปภาพแสดง preview thumbnail + ชื่อไฟล์ + ขนาด + ผู้อัปโหลด; ไฟล์เอกสารแสดงชื่อ+ขนาด+ปุ่มดาวน์โหลด), ช่อง "ลิงก์ URL" และช่อง "คำอธิบายเพิ่มเติม / สรุปผลการส่งมอบงาน" — งานที่ผ่านแนบตั้งแต่ 1 ไฟล์เอกสารถึง 7 รูปภาพ ช่อง URL เว้นว่างทุกอัน
 
 ### 3. จัด Artifact ตาม convention ของ repo
 
-**งาน UI — capture ภาพหน้าจอ:**
+**งาน UI — capture ภาพหน้าจอ (ต้องครบ flow × 2 จอ):**
 - เขียน/ใช้ capture script ใน `scripts/` ตั้งชื่อ `capture-m<N>-obj<M>-<scope>.js` (เช่น `capture-m1-obj2-admin-invitation.js`) — ต้อง rerun ได้ ไม่ใช่ capture มือครั้งเดียวทิ้ง
 - ผลภาพลง `screenshots/mission-<N>-objective-<M>/` (เช่น `screenshots/mission-1-objective-2/`)
 - รัน local server ก่อน capture: `python -m http.server 8080` จากโฟลเดอร์ `Prototypes` แล้ว capture จาก `http://localhost:8080/bo-prototype.html` — ปิด server เมื่อเสร็จ
-- capture ให้ครบทุก state/flow ของเป้าหมาย (รวม edge/error states และ mobile 390 ถ้า responsive อยู่ในขอบเขต)
+- **capture ครบทุกขั้นตอน flow ของเป้าหมาย** — เขียนรายการ state/flow จาก task log ก่อน แล้ว capture ทีละขั้น (เปิด modal → กรอก → submit → ผลลัพธ์ → error/edge) ห้ามเหลือขั้นที่ทำงานจริงแต่ไม่มีภาพ
+- **ทุกขั้นตอน capture ทั้ง desktop (1440) และ mobile (390) คู่กัน** — ตั้งชื่อเช่น `03-filter-open_desktop.png` / `03-filter-open_mobile.png`; precedent 10/10 ทุกชุดมีคู่สองจอครบ
+- ตั้งชื่อภาพบอก state ชัด (เช่น `filter_date_desktop`, `detail_pill_reference_mobile`) — ชื่อไฟล์แสดงใน preview ของฟอร์ม ช่วย reviewer อ่าน flow ได้
 
-**งานเอกสาร/test — จัด package ไฟล์จริง:**
+**งานเอกสาร/test — จัด package ไฟล์จริง + ภาพสรุป:**
 - คัดลอกไฟล์จริงไป `deliverables/mission-<N>-obj<M>-<topic>/` แล้ว zip เป็น `deliverables/mission-<N>-obj<M>-<topic>.zip` (เช่น `mission-1-obj1-contract.zip`, `mission-1-obj4-verification.zip`)
 - งานที่มี test **ต้องรัน test จริงก่อน zip** แล้วเก็บผลลง `test-results.txt` ใน package — ห้ามเขียนผล test จากความจำ
+- **เป้าหมาย test/QA: สร้าง checklist card แยกตาม spec** ด้วย `scripts/render-test-checklist.js` (ดึง describe/test titles จริงจากไฟล์ spec) — ครบทุก spec ที่เป้าหมายแก้ แสดง flow ทดสอบหลักของเป้าหมายนั้น; precedent 10/10 ใช้ checklist card อย่างเดียวไม่แนบ spec .js
+- **เป้าหมายเอกสาร/acceptance: สร้าง checklist card สรุป** ด้วย `scripts/render-checklist-card.js` (input = ไฟล์ txt: บรรทัดแรก title, `== x` = section, ที่เหลือ = item) — เอกสารบอกว่าไฟล์ไหนแก้อะไร, acceptance บอกรายการที่ตรวจผ่าน+verdict
 - เปิด zip/โฟลเดอร์ตรวจว่าไฟล์ครบจริงก่อนบอกรายการไฟล์
 
 ### 4. คัดชุดไฟล์สำหรับแนบ (กฎฟอร์มส่งตรวจ)
@@ -71,6 +81,7 @@ Workflow สำหรับจัด **ชุดหลักฐานส่ง�
 
 - **แนบไฟล์จริงทีละไฟล์เป็นค่าเริ่มต้น** — reviewer เห็น preview/ชื่อไฟล์ได้เลยโดยไม่ต้องแกะ zip
 - **zip เฉพาะกรณีชุดใหญ่จนไม่สะดวก** (เช่น spec หลายสิบไฟล์) — และยังเก็บโฟลเดอร์แยกไว้เผื่อแนบทีละไฟล์
+- **ทุกเป้าหมายต้องมีภาพที่ preview ได้อย่างน้อย 1 รูป** — เป้าหมายเอกสาร/acceptance ให้มี checklist card; เป้าหมาย UI ให้ภาพหน้าจอเป็นตัวหลัก
 - **ภาพหน้าจอ:** แนบทุกรูปที่พิสูจน์พฤติกรรมต่างกันของเป้าหมายได้เลย — ไม่ต้องตัดทิ้งเพื่อให้ ≤5; แต่ยังคัดภาพซ้ำ state เดียวกันออก
 - อย่าแนบทุก artifact ที่มี — เลือกเฉพาะที่ตรงกับเป้าหมาย ภาพ/ไฟล์ที่เป็นของเป้าหมายอื่นไม่เอามาปน
 - ระวังขนาดรวมต่อครั้ง — ไม่มีตัวเลขล็อกที่ยืนยันแล้ว แต่ภาพชุดใหญ่ควรยังอยู่ในระดับที่อัปโหลดสบาย (หลักสิบ MB)
@@ -147,6 +158,9 @@ Task ที่เกี่ยวข้อง: <task code 1>, <task code 2>
 - [ ] ทุก Task ของเป้าหมายเป็น done แล้วจริง (ตรวจจาก Kanban)
 - [ ] ไฟล์แนบมีอยู่จริง เปิด/อ่านตรวจแล้วว่าครบ (ถ้า zip — เปิด listing + integrity check)
 - [ ] แนบไฟล์จริงทีละไฟล์เป็นค่าเริ่มต้น; zip เฉพาะชุดใหญ่; ขนาดรวมยังอัปโหลดได้สบาย
+- [ ] **เป้าหมาย UI: ภาพครบทุกขั้นตอน flow ของเป้าหมาย และทุกขั้นมีคู่ desktop + mobile**
+- [ ] **เป้าหมาย test: checklist card ครบทุก spec ที่เป้าหมายแก้ แสดง flow ทดสอบตรงงานจริง**
+- [ ] **เป้าหมายเอกสาร/acceptance: มี checklist card สรุป ไม่ใช่ไฟล์ text ล้วน**
 - [ ] ถ้ามี test — ผลใน test-results.txt มาจากการรันล่าสุดจริง
 - [ ] ช่อง URL เว้นว่างหรือยืนยันการเข้าถึงแล้วเท่านั้น
 - [ ] คำอธิบายเป็นภาษาเข้าใจง่าย ไม่มี `§` ไม่มีศัพท์โค้ดที่ไม่อธิบาย

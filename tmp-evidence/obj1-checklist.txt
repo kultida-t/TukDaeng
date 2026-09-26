@@ -1,0 +1,15 @@
+AIL-014 — Requirement & Documentation Sync (12 files)
+== Requirement
+bf08de1f — Login = Email + Password → BO ไม่มี Login OTP/MFA/2FA + บันทึก decision log
+== Module specs
+01_AUTHENTICATION — flow Login ใหม่ / AC / audit & error tables / →BO-01-v1.4
+16_ADMIN_SETTINGS — security policy rows / My Account / invite note / AC-SET-005/021 / →BO-16-v1.4
+08_AUDIT_LOG — ถอด OTP audit events / →BO-08-v0.4
+== Baseline & cross-refs
+BO_MASTER_BASELINE / BO_PRD / BO_Spec — baseline + cross-refs
+BO_UI_UX_STANDARD / BO_DEV_IMPLEMENTATION_CHECKLIST — มาตรฐาน UI + checklist dev
+DOCUMENT_VERSION / README_MODULE_INDEX — เวอร์ชัน + index เอกสาร
+bo-screen-design SKILL — มาตรฐานออกแบบหน้าจอ BO
+== การตรวจสอบ
+OTP re-scan ทั้งโปรเจกต์ + classify refs ที่เหลือ (historical/prototype/tests/unrelated)
+git diff --check clean — ไม่แตะ prototype / tests / protected screens
