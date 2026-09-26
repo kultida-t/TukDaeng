@@ -79,6 +79,7 @@ Workflow สำหรับจัด **ชุดหลักฐานส่ง�
 - งานที่มี test **ต้องรัน test จริงก่อน zip** แล้วเก็บผลลง `test-results.txt` ใน package — ห้ามเขียนผล test จากความจำ
 - **เป้าหมาย test/QA: สร้าง checklist card แยกตาม spec** ด้วย `scripts/render-test-checklist.js` (ดึง describe/test titles จริงจากไฟล์ spec) — ครบทุก spec ที่เป้าหมายแก้ แสดง flow ทดสอบหลักของเป้าหมายนั้น; precedent 10/10 ใช้ checklist card อย่างเดียวไม่แนบ spec .js
 - **เป้าหมายเอกสาร/acceptance: สร้าง checklist card สรุป** ด้วย `scripts/render-checklist-card.js` (input = ไฟล์ txt: บรรทัดแรก title, `== x` = section, ที่เหลือ = item) — เอกสารบอกว่าไฟล์ไหนแก้อะไร, acceptance บอกรายการที่ตรวจผ่าน+verdict
+- ภาพ checklist card ต้องพอดีตัว card ไม่เหลือพื้นว่างด้านล่าง — render script แคป `body` element อยู่แล้ว; ถ้าดัดแปลง/เขียนใหม่อย่าใช้ `fullPage` บน viewport คงที่ (จะเหลือ canvas ว่างเต็มความสูง viewport)
 - เปิด zip/โฟลเดอร์ตรวจว่าไฟล์ครบจริงก่อนบอกรายการไฟล์
 
 ### 4. คัดชุดไฟล์สำหรับแนบ (กฎฟอร์มส่งตรวจ)
@@ -175,7 +176,7 @@ Task ที่เกี่ยวข้อง: <task code 1>, <task code 2>
 - [ ] ไฟล์แนบมีอยู่จริง เปิด/อ่านตรวจแล้วว่าครบ (ถ้า zip — เปิด listing + integrity check)
 - [ ] แนบไฟล์จริงทีละไฟล์เป็นค่าเริ่มต้น; zip เฉพาะชุดใหญ่; ขนาดรวมยังอัปโหลดได้สบาย
 - [ ] **เป้าหมาย UI: ภาพครบทุกขั้นตอน flow ของเป้าหมาย และทุกขั้นมีคู่ desktop + mobile**
-- [ ] เปิดภาพตรวจด้วยตาทุกใบ — ไม่มีแถบขาว, ไม่มีเนื้อหาถูกตัด (ปุ่ม/summary ครบ), ไม่มี focus ring ติด, ไม่ crop ชิดขอบจนดูผิด
+- [ ] เปิดภาพตรวจด้วยตาทุกใบ — ไม่มีแถบขาว/พื้นว่างเกิน (รวมใต้ checklist card), ไม่มีเนื้อหาถูกตัด (ปุ่ม/summary ครบ), ไม่มี focus ring ติด, ไม่ crop ชิดขอบจนดูผิด
 - [ ] **เป้าหมาย test: checklist card ครบทุก spec ที่เป้าหมายแก้ แสดง flow ทดสอบตรงงานจริง**
 - [ ] **เป้าหมายเอกสาร/acceptance: มี checklist card สรุป ไม่ใช่ไฟล์ text ล้วน**
 - [ ] ถ้ามี test — ผลใน test-results.txt มาจากการรันล่าสุดจริง
