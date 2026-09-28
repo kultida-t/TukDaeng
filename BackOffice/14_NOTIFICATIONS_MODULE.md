@@ -7,7 +7,7 @@
 **Primary FO Sources:** `../FrontOffice/09_NOTIFICATION_MODULE.md`, `../FrontOffice/00_NAVIGATION_AND_CROSS_MODULE_FLOW.md`, `../FrontOffice/08_OFFER_MODULE.md`, `../FrontOffice/10_WATCH_ALERT_MODULE.md`, `../FrontOffice/11_SOCIAL_MODULE.md`
 
 > **NTF-RSTR-001 (2026-09-14):** Notifications module ถูกแบ่งเป็น 2 phase แล้ว
-> - **Phase 1 (ปัจจุบัน):** Delivery Logs, retry, Account Deletion lifecycle email, audit — ย้ายไปอยู่ใต้ **Settings > Delivery Logs** (ดู `16_ADMIN_SETTINGS_MODULE.md`) และไม่มี Notifications menu entry ใน sidebar อีก
+> - **Phase 1 (ปัจจุบัน):** Delivery Logs แบบ read-only, provider/outbox retry state, Account Deletion lifecycle email และ audit — ย้ายไปอยู่ใต้ **Settings > Delivery Logs** (ดู `16_ADMIN_SETTINGS_MODULE.md`) และไม่มี Notifications menu entry ใน sidebar อีก
 > - **Phase 2/future:** Broadcast Notification (create/schedule/send), target audience, System Notification Trigger enable/disable, Template Management, notification report metrics — เก็บเนื้อหาไว้ในเอกสารนี้เป็น future spec
 
 ## UI Standards And Prototype Reference
@@ -41,7 +41,7 @@ Notifications Module ใช้ให้ BO จัดการ notification ท�
 ### In Scope — Phase 1 (ปัจจุบัน)
 
 - Delivery log และ failed delivery review — ย้ายไปอยู่ใต้ **Settings > Delivery Logs** (ดู `16_ADMIN_SETTINGS_MODULE.md`)
-- Retry failed system notification และ account-status / Account Deletion lifecycle email ตาม rule
+- Provider/outbox retry สำหรับ failed system notification และ identity/account lifecycle email ตาม rule โดยไม่เพิ่ม action ใน protected Delivery Logs UI
 - Account Deletion lifecycle email 5 จุด (section 9.3) ส่งไปยัง registered email พร้อม delivery log `DLV-DEL-xxx`
 - Audit log สำหรับ retry และ export ของ delivery log
 - Responsive layout สำหรับ desktop, tablet และ mobile
@@ -325,16 +325,16 @@ Template variables ต้องใช้ allowlist เท่านั้น เ�
 
 ## 12. Delivery Log
 
-> **Phase 1 scope** — delivery log UI ย้ายไปอยู่ใต้ **Settings > Delivery Logs** (ดู `16_ADMIN_SETTINGS_MODULE.md`) ไม่มี Notifications menu entry ใน sidebar ใน Phase 1; delivery log ของ Phase 1 ครอบอีเมล lifecycle (Account Deletion) และ account-status email ส่วน delivery log ของ broadcast/system trigger จะใช้ schema เดียวกันใน Phase 2
+> **Phase 1 scope** — delivery log UI ย้ายไปอยู่ใต้ **Settings > Delivery Logs** (ดู `16_ADMIN_SETTINGS_MODULE.md`) ไม่มี Notifications menu entry ใน sidebar ใน Phase 1; delivery log ของ Phase 1 ครอบอีเมล Admin invitation, Forgot/Reset Password, Account Deletion lifecycle และ account-status email ส่วน delivery log ของ broadcast/system trigger จะใช้ schema เดียวกันใน Phase 2. Protected Phase 1 UI เป็น read-only list/detail; retry เป็น provider/outbox state ไม่ใช่ action ใน Delivery Logs UI
 
 Delivery log ต้องเก็บ:
 
 | Field | Requirement |
 | --- | --- |
 | Delivery ID | รหัส delivery event |
-| Notification ID | อ้างถึง broadcast/system notification |
-| Notification Type | Broadcast หรือ system trigger type |
-| Recipient User ID | ผู้รับ |
+| Notification ID / Source Reference | อ้างถึง source entity เช่น invitation, password-reset request, account action, deletion request หรือ broadcast/system notification โดยไม่ใช้ raw token |
+| Notification Type / Event | ชื่อ lifecycle event, broadcast หรือ system trigger type |
+| Recipient User ID | ผู้รับ; email/address ใน read model ต้อง mask ตาม privacy policy |
 | Channel | Push, In-app, Email, Push + In-app |
 | Provider | เช่น FCM หรือ email provider ถ้ามี |
 | Status | Queued, Sent, Delivered, Opened, Failed, Skipped |
@@ -342,12 +342,24 @@ Delivery log ต้องเก็บ:
 | Destination | Deep link / route |
 | Created At | เวลาสร้าง |
 | Sent At / Delivered At / Opened At | เวลาตาม event |
+| Correlation ID | เชื่อม source mutation, audit event, outbox/provider attempt และ delivery result เดียวกัน |
+
+### 12.1 Admin Identity Lifecycle Delivery Contract
+
+| Flow | Delivery rule |
+| --- | --- |
+| Initial invitation / Resend / Reissue | ใช้ `DLV-ACCT-<admin-sequence>-INV-<attempt-sequence>`; source เป็น invitation id/revision, recipient เป็น target Admin ที่ mask และ correlation ตรงกับ canonical `ADMIN_INVITATION_*` audit event |
+| Forgot Password | สร้าง delivery เฉพาะเมื่อ request ผ่าน eligibility/security policy ภายใน; UI response ต้อง generic เหมือนเดิมเสมอและห้ามเปิดเผย account existence, status, throttle หรือ delivery result |
+| Reset Password result | Delivery/audit trace ต้องไม่เก็บ raw/hashed reset token; blocked/invalid/expired/used/superseded state แสดง safe response และไม่สร้าง recipient detail ที่ใช้ enumerate account ได้ |
+| Provider failure / retry | เก็บ provider status จริง, safe failure category และ retryable flag; retry ใช้ idempotent outbox attempt และห้ามสร้าง account, invitation, reset request หรือ FO notification ซ้ำ |
+
+Delivery record ของทุก flow ต้องเก็บ event, source reference, masked recipient, channel, status, timestamp, safe provider/result detail และ correlation/reference ที่ย้อนกลับได้. ห้ามเก็บ plaintext password, password hash, OTP, raw/hashed invitation token, raw/hashed reset token, raw session token, provider credential หรือ idempotency secret
 
 Delivery tracking target ตาม BO PRD: มากกว่า 95% ของ notification ต้องมี delivery status
 
 ## 13. Retry Rules
 
-> **Phase 1 scope** — retry rules ใน section นี้ครอบทั้ง Phase 1 (account-status email, Account Deletion lifecycle email, failed system notification) และ Phase 2 (broadcast retry); ใน Phase 1 retry action เข้าถึงได้จาก **Settings > Delivery Logs** (ดู `16_ADMIN_SETTINGS_MODULE.md`)
+> **Phase 1 scope** — retry rules ใน section นี้ครอบทั้ง Phase 1 (Admin invitation, Forgot/Reset Password, account-status email, Account Deletion lifecycle email และ failed system notification) และ Phase 2 (broadcast retry). Settings > Delivery Logs ใน protected Phase 1 UI เป็น read-only; status `Retry` แสดง provider/outbox state และไม่มี retry action ใน list/detail UI
 
 | Case | Rule |
 | --- | --- |
@@ -358,9 +370,11 @@ Delivery tracking target ตาม BO PRD: มากกว่า 95% ของ n
 | Broadcast already sent | Retry เฉพาะ failed recipients ถ้า policy อนุญาต |
 | System notification duplicate | ต้องมี idempotency key ป้องกันส่งซ้ำ |
 | Account suspension email failed | Mark failed, expose retry/admin-visible failure state, and keep account status mutation intact unless product policy requires blocking mutation on delivery failure |
+| Admin invitation email failed | คง account `Invited` และ invitation issuance ที่ commit แล้ว, บันทึก Failed/Retry ตาม provider result, retry outbox แบบ idempotent และให้ Resend จาก governed invitation flow เมื่อ policy อนุญาต; ห้ามสร้าง account/invitation ซ้ำจาก provider retry |
+| Forgot/Reset Password email failed | คง generic Forgot response, บันทึก provider result ภายในโดยไม่เปิดเผย account state และ retry แบบ idempotent; ห้ามส่ง raw token เข้า log/audit/delivery detail |
 | Account Deletion lifecycle email failed | Mark failed, expose retry/admin-visible failure state, and keep deletion action mutation intact; อีเมลลบตัวตนแล้วต้องส่งก่อน anonymize — ถ้าส่งไม่สำเร็จต้อง retry ก่อน anonymize personal fields หรือตาม product policy |
 
-Retry action ต้องมี audit log และต้องไม่สร้าง notification ซ้ำใน FO list โดยไม่มี idempotency guard
+Provider/outbox retry ต้องมี immutable attempt/result trace และ idempotency guard. หากมี governed admin retry action ใน phase อื่น action นั้นต้องมี audit log แยก; protected Phase 1 Delivery Logs UI ไม่เพิ่ม action นี้
 
 ## 14. Admin Actions
 
@@ -368,10 +382,8 @@ Retry action ต้องมี audit log และต้องไม่สร�
 
 | Action | Requirement | Audit |
 | --- | --- | --- |
-| Retry failed notification | Scope and reason required | Required |
-| Export delivery log | Scope and reason required | Required |
-| Retry account-status email | Scope, reason, target account action reference required | Required |
-| Retry Account Deletion lifecycle email | Scope, reason, target deletion request reference required | Required |
+| View delivery list/detail | Read-only; filter/sort/pagination และ detail modal ไม่มี action footer | ไม่มี audit จากการอ่านปกติ |
+| Provider/outbox retry | ระบบบันทึก attempt/result แบบ immutable และ idempotent; UI แสดงสถานะ `Retry` เท่านั้น | Trace provider/outbox; ไม่ใช่ admin action ใน Phase 1 UI |
 
 ### Phase 2/future
 
@@ -465,12 +477,14 @@ Audit payload ต้องมี:
 | ID | Criteria |
 | --- | --- |
 | AC-BO-NOTI-008 | Delivery log ต้องเก็บ queued/sent/delivered/opened/failed/skipped และ failure reason — แสดงใน Settings > Delivery Logs |
-| AC-BO-NOTI-009 | Retry failed notification ต้องมี idempotency guard และ audit log |
+| AC-BO-NOTI-009 | Provider/outbox retry ต้องมี idempotency guard และ immutable attempt/result trace; หากอนาคตเพิ่ม admin retry action ต้อง audit และขออนุมัติ protected scope แยก |
 | AC-BO-NOTI-012 | Account Deletion lifecycle email 5 จุด (section 9.3) ต้องส่งไปยัง registered email พร้อม delivery log `DLV-DEL-xxx` ที่แสดงใน Settings > Delivery Logs และ trace กลับไปยัง History & Actions ของ Request Detail และ audit event ได้ |
 | AC-BO-NOTI-013 | อีเมล Account Deletion lifecycle ต้องเคารพกฎห้ามส่งใน section 9.3 — ไม่ส่งซ้ำ ไม่ส่งเมื่อคำขอจบแล้ว และอีเมลลบตัวตนต้องส่งก่อน anonymize personal fields |
 | AC-BO-NOTI-014 | อีเมลคืนบัญชีและปฏิเสธคืนบัญชีต้องมี email preview ใน modal ของ action พร้อมข้อความแจ้งช่องทางหลักเป็นอีเมล ตาม pattern โมดูลอื่น |
 | AC-BO-NOTI-015 | ไม่มี Notifications menu entry ใน sidebar ใน Phase 1 — delivery log เข้าถึงได้จาก Settings > Delivery Logs เท่านั้น |
-| AC-BO-NOTI-016 | Export delivery log ต้องมี audit log (`NOTIFICATION_DELIVERY_EXPORT`) |
+| AC-BO-NOTI-016 | `NOTIFICATION_DELIVERY_EXPORT` เป็น production/future contract; protected Phase 1 Delivery Logs UI ยังไม่มี export action และการเปิดใช้ต้องได้รับอนุมัติแยก |
+| AC-BO-NOTI-017 | Admin invitation และ Forgot/Reset Password delivery trace ใช้ source/correlation เดียวกับ audit/outbox, generic Forgot response ไม่รั่ว account state และไม่มี password, OTP, raw/hashed token, session token หรือ provider secret ใน record |
+| AC-BO-NOTI-018 | Settings > Delivery Logs ใน protected Phase 1 UI เป็น read-only; status Retry แสดง provider/outbox stateและไม่เพิ่ม retry/export action ใน list/detail UI |
 
 ### Phase 2/future
 

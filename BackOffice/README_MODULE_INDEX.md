@@ -57,21 +57,21 @@ Codex ต้องทำ 3 อย่าง:
 | No. | Module | Primary Purpose | Phase |
 | --- | --- | --- | --- |
 | 00 | `00_GLOBAL_RULES_MODULE.md` | Responsive layout, admin access, audit, status, privacy, timezone, FO sync และ destructive-action rules | 1 |
-| 01 | `01_AUTHENTICATION_MODULE.md` | Email/password login, sessions, one-time Admin invitation/activation และ admin account lifecycle | 1 |
+| 01 | `01_AUTHENTICATION_MODULE.md` | Email + Password → BO โดยไม่มี Login OTP/MFA/2FA ใน current phase; invitation/activation, Forgot/Reset Password, Change Password, Active Sessions และ Logout All Devices | 1 |
 | 02 | `02_DASHBOARD_MODULE.md` | Dashboard metrics, pending queues, SLA signals, activity feed และ policy-based overview | 1 |
 | 03 | `03_USER_MANAGEMENT_MODULE.md` | User list/detail, auth method, login history, report context, suspend/ban, reset password, FO impact | 1 |
 | 04 | `04_ASSET_MANAGEMENT_MODULE.md` | Asset list/detail, status visibility, reported assets, moderation, sensitive fields, FO sync | 1 |
 | 05 | `05_CONTENT_BOARD_MODULE.md` | Board articles, editor, publish/schedule/archive, categories, reported Board Content, FO sync | 1 |
 | 06 | `06_MARKET_DATA_MODULE.md` | Read-only API/backend-synced watch brand, model, reference, detail, price index, sync logs, FO autocomplete/search/alert/portfolio sync | 1 |
 | 07 | `07_DIRECTORY_MODULE.md` | Future/postponed Directory reference only; not exposed in Phase 1 BO prototype or Phase 1 build scope until FO directory detail routes are approved | Future |
-| 08 | `08_AUDIT_LOG_MODULE.md` | Immutable audit events, schema, search/filter, export, retention, sensitive/destructive/provider-sync trace | 1 |
+| 08 | `08_AUDIT_LOG_MODULE.md` | Immutable audit events, schema, search/filter, export, retention และ canonical Admin Identity Lifecycle event/risk/result/correlation โดยไม่เก็บ secret | 1 |
 | 09 | `09_OFFER_CHAT_MODULE.md` | Read-only offer list/detail, buyer/seller and asset interest overview, related chat context, notification delivery | 1 |
 | 11 | `11_WATCH_ALERT_MODULE.md` | Market Demand & Watch Alert: Demand Overview, Search Insights (popular keyword/filter, no-result, trend, funnel), Watch Alert List (read-only) + Alert Detail (6 sections, read-only), trigger history, Sale-only match, notification delivery, inactive market data warning | 1 |
 | 12 | `12_HELP_SUPPORT_MODULE.md` | Settings > Policy & Versioning (Terms of Use, Privacy Policy — Draft/Published/Archived, bilingual TH/EN, version history, restore) และ Settings > Support Center (channels, business hours, availability TH/EN, preview) | 1 |
 | 13 | `13_ACCOUNT_DELETION_MODULE.md` | Delete-account request queue, restore/reject restore ใน grace period, 30-day grace period, ลบบัญชีอัตโนมัติเมื่อครบกำหนด (เก็บถาวร + ลบตัวตน ในขั้นเดียว), lifecycle email 5 จุด (ยืนยันลบบัญชี / เตือนใกล้ครบ grace period / คืนบัญชีแล้ว / ปฏิเสธคืนบัญชี / ลบตัวตนแล้ว) ตาม `14_NOTIFICATIONS_MODULE.md` section 9.3 | 1 |
-| 14 | `14_NOTIFICATIONS_MODULE.md` | Phase 2/future — Broadcast notification, system trigger templates, notification report metrics; Delivery Logs ย้ายไป Settings ใน Phase 1; Account Deletion lifecycle emails (`DLV-DEL-xxx`) | 2 |
+| 14 | `14_NOTIFICATIONS_MODULE.md` | Phase 1 delivery contract สำหรับ Admin invitation, Forgot/Reset Password และ Account Deletion lifecycle email; Broadcast/System Templates/notification reports เป็น Phase 2/future; Delivery Logs UI อยู่ใต้ Settings | 1 / 2 |
 | 15 | `15_REPORTS_ANALYTICS_MODULE.md` | Exportable reports across user, asset, offer, chat, content, asset reported comments, search, watch alert, notifications, account deletion (Phase 2 / future scope — deferred) | 2 |
-| 16 | `16_ADMIN_SETTINGS_MODULE.md` | Admin own settings, admin account/invitation lifecycle, Admin Permission config, security/system settings, retention/export policy, **Delivery Logs** (Phase 1 — ย้ายจาก Notifications module) | 1 |
+| 16 | `16_ADMIN_SETTINGS_MODULE.md` | My Account แบบ self-only จาก profile footer, admin account/invitation lifecycle, Roles & Permissions, security/system settings และ **Delivery Logs** แบบ read-only ใน Phase 1 | 1 |
 | 17 | `17_OPTION_MASTER_MODULE.md` | Internal option master management for FO Add/Edit Asset, Search Filter, Watch Alert criteria; option group list/detail, option add/edit/deactivate/reactivate/delete/reorder, group add/edit/deactivate/reactivate/delete/reorder, group audit log, audit | 1 |
 
 ## Final Handoff
@@ -79,6 +79,16 @@ Codex ต้องทำ 3 อย่าง:
 | File | Purpose |
 | --- | --- |
 | `BO_FINAL_REVIEW_AND_HANDOFF.md` | สรุปความครบของ BO, implementation order, locked decisions, priority open decisions, QA focus และ dev handoff notes |
+
+## Admin Identity Lifecycle Cross-Reference
+
+| Capability | Primary Contract | Supporting Contract / Status |
+| --- | --- | --- |
+| Invitation / Activation / Login | `01_AUTHENTICATION_MODULE.md` | `16_ADMIN_SETTINGS_MODULE.md`, `14_NOTIFICATIONS_MODULE.md`, `08_AUDIT_LOG_MODULE.md`; Login current phase = Email + Password → BO ไม่มี Login OTP/MFA/2FA |
+| Forgot / Reset Password | `01_AUTHENTICATION_MODULE.md` | `14_NOTIFICATIONS_MODULE.md` สำหรับ delivery, `08_AUDIT_LOG_MODULE.md` สำหรับ trace; generic response และ secret exclusion ล็อกแล้ว |
+| My Account / Change Password | `16_ADMIN_SETTINGS_MODULE.md` | `01_AUTHENTICATION_MODULE.md`; self-only, wrong-current ไม่ audit ต่อครั้ง, `RATE_LIMITED` เมื่อครบ limit, production cooldown 15 นาที / prototype simulation 60 วินาที |
+| Active Sessions / Logout All Devices | `16_ADMIN_SETTINGS_MODULE.md` | `01_AUTHENTICATION_MODULE.md`, `08_AUDIT_LOG_MODULE.md`; `ADMIN_SESSION_REVOKE_ALL` risk Medium แบบ aggregate event เดียวและกลับ Login form เปล่า |
+| Implementation / QA gate | `BO_DEV_IMPLEMENTATION_CHECKLIST.md` | สถานะ implementation/test/documentation ที่ผ่าน Mission 1, Change Mission, Mission 2 และ Mission 3; production backend/persistence/provider enforcement ยังเป็น implementation dependency |
 
 ## Phase 1 Baseline
 

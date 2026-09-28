@@ -1,8 +1,9 @@
 ﻿# TukDaeng Back Office Master Baseline
 
 **Version:** `BO-PRD-v0.1`  
-**Date:** 2026-07-06  
-**Status:** Draft baseline started  
+**Date:** 2026-07-06<br>
+**Last Updated:** 2026-09-28<br>
+**Status:** Current baseline — Admin Identity Lifecycle locked through Mission 3<br>
 **Platform:** Responsive Web Back Office  
 **Audience:** Admin  
 
@@ -41,7 +42,7 @@ Phase 1 คือ BO foundation ที่ล็อกใน prototype แล้�
 | Module | Phase 1 Scope |
 | --- | --- |
 | Global BO Rules | Responsive layout, admin access control, shared patterns, status, audit, privacy, FO sync |
-| Auth / Admin Accounts | Email/password login, session timeout, failed login lockout, one-time Admin invitation อายุ 72 ชั่วโมง, initial-password activation และ Invited-to-Active lifecycle |
+| Auth / Admin Accounts | Email + Password → BO โดยไม่มี Login OTP/MFA/2FA ใน current phase; session timeout/failed-login lockout; one-time Admin invitation อายุ 72 ชั่วโมง; initial-password activation; Forgot/Reset Password; My Account; Change Password; Active Sessions; individual revoke และ Logout All Devices |
 | Admin Permission | Module visibility และ action-level permission enforcement |
 | Dashboard | Key metrics, pending queues, recent activity, last updated snapshot |
 | User Management | User list, search/filter/sort, profile/detail view, login history, suspend/ban/restore, reset password, Account Deletion handoff, no direct User List export |
@@ -53,10 +54,24 @@ Phase 1 คือ BO foundation ที่ล็อกใน prototype แล้�
 | Market Demand | `11_WATCH_ALERT_MODULE.md` + `WatchAlert_Prototype_Blueprint.md` - Demand Overview (KPI, Top Brands drill-down, Price Range, Trigger Trend, Frequently Triggered), Search Insights (Popular Keywords/Filters/Combinations, No-result Searches, Search Funnel), Watch Alert List & Detail (read-only, no admin disable/enable/export) |
 | Help & Support | `12_HELP_SUPPORT_MODULE.md` - Policy & Versioning (Terms of Use, Privacy Policy — Draft/Published/Archived, bilingual TH/EN, version history, restore) และ Support Center (channels, business hours, availability TH/EN, preview) |
 | Account Deletion | `13_ACCOUNT_DELETION_MODULE.md` - Request queue, restore/reject restore ใน grace period, 30-day grace period, ลบบัญชีอัตโนมัติเมื่อครบกำหนด (เก็บถาวร + ลบตัวตน ในขั้นเดียว), lifecycle email 5 จุด (ยืนยันลบบัญชี / เตือนใกล้ครบ grace period / คืนบัญชีแล้ว / ปฏิเสธคืนบัญชี / ลบตัวตนแล้ว) ตาม `14_NOTIFICATIONS_MODULE.md` section 9.3 |
-| Audit Log | `08_AUDIT_LOG_MODULE.md` - Immutable event capture, search/filter, export, Admin visibility |
-| Admin Settings | `16_ADMIN_SETTINGS_MODULE.md` - Admin own settings, admin account/invitation lifecycle (Invite/Resend/Cancel/Reissue + delivery/audit trace), Roles & Permissions (8 System Roles + Custom Role), Role-to-Admin `role_id` contract, security/system defaults, retention/export policy, feature flags, integration metadata, **Delivery Logs** (Phase 1 — delivery log UI, retry failed delivery, export delivery log; ย้ายจาก Notifications module) |
+| Audit Log | `08_AUDIT_LOG_MODULE.md` - Immutable event capture, search/filter, export, Admin visibility และ Admin Identity Lifecycle trace ที่ใช้ canonical event/risk/result/correlation โดยไม่เก็บ secret |
+| Admin Settings | `16_ADMIN_SETTINGS_MODULE.md` - My Account แบบ self-only จาก profile footer, admin account/invitation lifecycle (Invite/Resend/Cancel/Reissue + delivery/audit trace), Roles & Permissions (8 System Roles + Custom Role), Role-to-Admin `role_id` contract, security/system defaults, retention/export policy, feature flags, integration metadata และ **Delivery Logs** แบบ read-only ใน Phase 1 (ย้ายจาก Notifications module) |
 
 Directory is postponed from Phase 1. Keep `07_DIRECTORY_MODULE.md` as a future reference only; do not expose the BO Directory menu, route, CRUD, publication controls, map/contact fields, or FO sync behavior in Phase 1 unless Product explicitly reopens the scope.
+
+### 4.1 Admin Identity Lifecycle Locked Baseline
+
+Admin Identity Lifecycle ใน Phase 1 ผ่านการตรวจรับตั้งแต่ Mission 1, Change Mission, Mission 2 และ Mission 3 แล้ว โดยใช้เอกสาร `01_AUTHENTICATION_MODULE.md`, `08_AUDIT_LOG_MODULE.md`, `14_NOTIFICATIONS_MODULE.md`, `16_ADMIN_SETTINGS_MODULE.md` และ `BO_DEV_IMPLEMENTATION_CHECKLIST.md` เป็น contract ร่วมกัน:
+
+- Invitation/Activation: one-time invitation อายุ 72 ชั่วโมง, Resend cooldown 60 วินาทีและ quota 5 successful issuances ต่อ rolling 24 ชั่วโมง, Cancel/Reissue, initial password และ `Invited` → `Active` พร้อม Audit/Delivery trace
+- Login current phase: `Email + Password → BO` เท่านั้น ไม่มี Login Email OTP, OTP verification, MFA หรือ 2FA
+- Forgot/Reset Password: generic Forgot response, reset token อายุ 30 นาทีแบบ one-time/supersede, eligibility ตาม lock reason, reset สำเร็จ revoke ทุก session และกลับ Login
+- My Account: เปิดจาก profile footer โดยไม่เพิ่ม Settings submenu; self-only Profile/Edit Name, Change Password และ Active Sessions
+- Change Password: wrong-current ไม่สร้าง audit ต่อครั้ง; เมื่อผิดครบ 5 ครั้งจึงสร้าง `ADMIN_PASSWORD_CHANGE` result `Failed` พร้อม `failure_code=RATE_LIMITED` หนึ่ง event; production cooldown 15 นาที ส่วน protected prototype simulation ใช้ 60 วินาที
+- Session Management: individual revoke ใช้กับ session อื่น; Logout All Devices revoke ทุก session รวม current แบบ all-or-nothing, สร้าง `ADMIN_SESSION_REVOKE_ALL` risk Medium เป็น aggregate event เดียว และกลับ Login form เปล่า
+- Traceability: Audit/Delivery ใช้ correlation/reference เดียวกัน และห้ามบันทึก plaintext password, password hash, OTP, raw/hashed invitation-reset token, raw session token, provider credential หรือ secret
+
+Prototype และ mock เป็น simulation เท่านั้น ไม่ใช่ production security enforcement; backend, persistence, provider และ durable session/token enforcement ยังคงเป็น implementation dependency ภายนอก repository นี้
 
 ## 5. Phase 2 Scope
 
