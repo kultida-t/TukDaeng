@@ -36,6 +36,7 @@ BO authentication แยกจาก FO authentication โดยสมบูร�
 - Session timeout และ logout
 - Failed login lockout
 - Password reset สำหรับ BO admin
+- My Account credential security: Change Password, Active Sessions และ Logout All Devices
 - Admin account lifecycle
 - Admin invitation, acceptance และ initial-password activation lifecycle
 - Admin Role assignment
@@ -67,6 +68,7 @@ Login และ auth-adjacent screens ใช้ layout และ breakpoint ต�
 | --- | --- | --- | --- |
 | Login | Single column: hero visual บน (compact) + form panel ล่าง | Single column: hero visual บน + form panel ล่าง (content จำกัด 390px, center) | Split layout: hero visual ซ้าย (decorative) + form panel ขวา (dark theme) |
 | Reset Password | Single-column form | Centered form | Centered form หรือ reuse Login split layout |
+| Forgot Password | Single-column form ใน auth layout | Centered form | Reuse Login split layout |
 | Session Expired | Full-width message/action | Centered message | Centered message |
 | Access Denied | Message ชัดเจนและ back action | Same | Same |
 | Admin Account List | Card/list view พร้อม priority fields | Table หรือ cards | Dense table |
@@ -114,6 +116,28 @@ Current BO Login baseline คือ `Email + Password → BO` — เมื่�
 | Role assignment/permission changed during session | Permission ต้อง resolve จาก Role revision ล่าสุดใน request หรือ token refresh ถัดไปตาม `16_ADMIN_SETTINGS_MODULE.md` section 9.11 |
 | Admin account locked/suspended/archived | Session ต้องถูก revoke หรือ block ใน request ถัดไปตาม lifecycle policy |
 
+### 8.1 Self-Service Credential And Session Contract
+
+Contract นี้ใช้กับ authenticated Active Admin ของ session ปัจจุบันเท่านั้น และต้อง enforce self-only boundary ที่ route/API/service ไม่ใช่อาศัยการซ่อน action ใน UI. Entry ของ My Account มาจาก profile box ท้าย sidebar (`.admin-box`) และไม่เพิ่ม Settings submenu.
+
+#### Change Password
+
+- Form ใช้ Current Password, New Password และ Confirm New Password โดยไม่มี Email OTP, MFA/2FA หรือ forced re-login เพิ่มเติม
+- New Password ต้องอย่างน้อย 12 ตัวอักษรและมี uppercase, lowercase, number และ special character อย่างน้อยประเภทละ 1 ตัว; confirmation ต้องตรง และ new password ต้องต่างจาก current password
+- Current Password ผิดให้แสดง field error และเพิ่ม attempt counter เท่านั้น โดยไม่สร้าง audit event ต่อครั้ง
+- ผิดครบ 5 ครั้งติดให้ lock Change Password action ตาม policy 15 นาที และสร้าง `ADMIN_PASSWORD_CHANGE` result `Failed` พร้อม `failure_code=RATE_LIMITED` หนึ่ง event โดยไม่มี password material
+- Protected prototype ใช้ cooldown 60 วินาทีเพื่อ simulation/demo เท่านั้น; ค่านี้ไม่เปลี่ยน production policy 15 นาที
+- Boundary rejection เช่น stale revision, account ไม่ Active, non-self หรือไม่มี valid session ต้อง reject โดยไม่ mutate และไม่สร้าง audit event
+- สำเร็จแล้ว update password, revoke session อื่นทั้งหมด, refresh security context ของ current session และคง current session ไว้ พร้อม audit `ADMIN_PASSWORD_CHANGE` result `Success`
+
+#### Active Sessions And Logout All Devices
+
+- แสดงเฉพาะ valid sessions ของ account ตัวเอง พร้อม current-session marker, masked session ID, browser/OS summary, masked IP และเวลา created/last activity; ห้ามแสดง raw token, credential หรือ geolocation
+- Individual revoke ใช้ได้เฉพาะ session อื่น; current session ต้องใช้ Logout ปกติหรือ Logout All Devices
+- Logout All Devices ต้องมี confirmation และ revoke ทุก session รวม current แบบ all-or-nothing แล้วกลับ Login form เปล่า โดยไม่แสดง success info/toast เพิ่ม
+- Audit `ADMIN_SESSION_REVOKE` ใช้ risk Medium สำหรับ individual revoke และ `ADMIN_SESSION_REVOKE_ALL` ใช้ risk Medium เป็น aggregate event เดียวต่อ action พร้อมจำนวน session แบบไม่เปิดเผย secret
+- Session ที่ถูก revoke, idle เกิน 8 ชั่วโมง, อายุเกิน 24 ชั่วโมง หรือ account เปลี่ยนเป็น Locked/Suspended/Archived ต้องถูก block ที่ request/render guard ถัดไปและกลับ Login พร้อม generic session-expired message; protected content ต้องไม่ render
+
 ## 9. Failed Login And Lockout
 
 | Rule | Requirement |
@@ -123,6 +147,16 @@ Current BO Login baseline คือ `Email + Password → BO` — เมื่�
 | Audit | Failed login และ lockout ต้อง audit-log |
 | Message | แสดง lockout message ชัดเจนแต่ไม่เปิดเผยข้อมูลเกินจำเป็น |
 | Reset | Admin unlock account ได้ตาม policy |
+
+### 9.1 Forgot And Reset Password
+
+- Forgot Password เป็น public BO auth route และตอบ generic response เดียวกันเสมอ ไม่เปิดเผย account existence, eligibility, throttle หรือ delivery result
+- Business quota ใช้ cooldown 60 วินาทีและไม่เกิน 5 successful issuances ต่อ rolling 24 ชั่วโมงต่อ normalized email; hidden IP/device controls ห้ามเปลี่ยนหรือเปิดเผย quota ที่ผู้ใช้เห็น
+- Reset token อายุ 30 นาที, ใช้ได้ครั้งเดียว และ request ใหม่ต้อง supersede token เดิมของ account แบบ atomic
+- Eligible เฉพาะ account `Active` และ `Locked` ที่ lock จาก failed login; security/admin lock, `Invited`, `Suspended` และ `Archived` ต้องถูก block โดยไม่เปิดเผยเหตุผลผ่าน Forgot response
+- Reset สำเร็จต้อง clear failed-login attempts/lock เมื่อเกี่ยวข้อง, update password, invalidate token, revoke ทุก session และกลับ Login form เปล่าเพื่อ login ด้วย email/password
+- Invalid, expired, used, superseded, account-status-blocked, stale หรือ commit failure ต้องแสดง safe state และห้ามเกิด partial mutation
+- Password, password hash, raw/hashed reset token, raw session token หรือ secret อื่นห้ามปรากฏใน UI, audit, delivery, log หรือ test artifact
 
 ## 10. Admin Account Lifecycle
 
@@ -319,7 +353,10 @@ Invitation action ต้อง enforce permission และ stale-state safeguar
 - Account locked
 - Account unlocked
 - Password reset requested
+- Password reset completed/blocked ตาม safe failure policy
 - Password changed
+- Session revoked
+- Logout All Devices
 - Admin Role assignment/permission changed
 - Admin invited
 - Admin invitation created/resend/cancel/reissue/expired/accepted/activated
@@ -343,6 +380,11 @@ Invitation action ต้อง enforce permission และ stale-state safeguar
 | Invitation account/Role ineligible หรือ stale | block activation โดยไม่เปลี่ยน account/password และแสดง safe recovery state |
 | Invitation transient failure (stale invitation, commit race, duplicate submit) | แสดง transient safe state "ยังไม่มีข้อมูลใดถูกบันทึก" พร้อม retry ที่ re-resolve server state ใหม่ทั้งชุด ไม่ทำ mutation ซ้ำ |
 | Invitation delivery failed | account คง `Invited`, Delivery Log แสดง Failed/Retry และ Resend ใช้ได้ตาม cooldown/quota |
+| Forgot Password request | แสดง generic response เดียวกัน ไม่ว่า account/status/throttle/delivery จะเป็นอย่างไร |
+| Reset token invalid/expired/used/superseded/ineligible | แสดง safe recovery state โดยไม่เปิดเผย account existence หรือ token detail และไม่เกิด partial mutation |
+| Change Password current password ผิด | แสดง field error และเพิ่ม attempt counter; ไม่สร้าง audit ต่อครั้ง |
+| Change Password rate limited | lock action ตาม policy 15 นาที; prototype simulation ใช้ 60 วินาที; audit `RATE_LIMITED` หนึ่ง event เมื่อครบ limit |
+| Session revoked/expired/account blocked | กลับ Login พร้อม generic session-expired message และไม่ render protected content |
 
 ## 15. Acceptance Criteria
 
@@ -367,6 +409,11 @@ Invitation action ต้อง enforce permission และ stale-state safeguar
 | AC-BO-AUTH-017 | Invitation UI/route/API/service enforce `settings.admin_accounts.manage`, account/Role eligibility และ stale revision; action ที่ไม่อนุญาตไม่แสดงและ direct mutation ถูก reject |
 | AC-BO-AUTH-018 | Audit/Delivery payload ไม่มี raw/hashed token, password/password hash, OTP หรือ secret; prototype/mock state ถูกแยกจาก production enforcement ชัดเจน |
 | AC-BO-AUTH-019 | Invitation link ที่ invalid/expired/used/cancelled/superseded/account-or-role-ineligible ต้องแสดง terminal safe state ตาม section 10.1 โดยไม่เปิดเผย account existence, hash หรือ revision ภายใน; transient failure (stale invitation, commit race, duplicate submit) ต้องแสดง retry state ที่ re-resolve server state ใหม่ทั้งชุดโดยไม่มี partial mutation |
+| AC-BO-AUTH-020 | Forgot Password ใช้ generic response; Reset token อายุ 30 นาทีและ one-time; request ใหม่ supersede token เดิม; Reset สำเร็จสำหรับ Active/failed-login Locked ต้อง revoke ทุก session, clear failed-login lock เมื่อเกี่ยวข้อง และกลับ Login โดยไม่ปลด security/admin lock |
+| AC-BO-AUTH-021 | Change Password ใช้ Current/New/Confirm โดยไม่มี OTP หรือ forced re-login; wrong-current ไม่ audit ต่อครั้ง, ครบ 5 ครั้งจึง audit `RATE_LIMITED`; production cooldown 15 นาทีและ prototype simulation 60 วินาที |
+| AC-BO-AUTH-022 | Active Sessions แสดง/revoke เฉพาะ session ของตนเองด้วย metadata ที่ mask; current session ห้าม individual revoke |
+| AC-BO-AUTH-023 | Logout All Devices ต้องยืนยัน, revoke ทุก session รวม current แบบ all-or-nothing, audit `ADMIN_SESSION_REVOKE_ALL` risk Medium หนึ่ง event และกลับ Login form เปล่า |
+| AC-BO-AUTH-024 | Session ที่ expired/revoked หรือ account ถูก block ต้องกลับ Login ด้วย generic message, ห้าม render protected content และห้ามมี secret ใน UI/audit/delivery/log/artifact |
 
 ## 16. Related Modules
 

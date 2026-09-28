@@ -103,11 +103,10 @@ Settings submenu ใน prototype (`../Prototypes/bo-prototype.html`, `navGroups
 
 ### 6.2 Future / deferred sections (policy baseline — ยังไม่ implement ใน prototype)
 
-Section เหล่านี้ยังคงเป็น policy/contract baseline ในเอกสารนี้ แต่ยังไม่มีใน Settings nav ของ Phase 1 (อ้างอิง commit `20d705d` 2026-09-15 ที่ปรับ Settings submenu ตาม ADM-PTO-001) จะเปิดเมื่อ Product เปิด scope ตาม Open Decisions (section 22)
+Section เหล่านี้ยังคงเป็น policy/contract baseline ในเอกสารนี้ แต่ยังไม่มีใน Settings nav ของ Phase 1 (อ้างอิง commit `20d705d` 2026-09-15 ที่ปรับ Settings submenu ตาม ADM-PTO-001) จะเปิดเมื่อ Product เปิด scope ตาม Open Decisions (section 22) ส่วน My Account ใช้งานแล้วผ่าน profile footer ตาม section 7 และตั้งใจไม่เป็น Settings submenu
 
 | Section | สถานะ | Purpose | เงื่อนไขการเปิด |
 | --- | --- | --- | --- |
-| My Account (Section 7) | Future | ดู profile และเปลี่ยน password ของตัวเอง | ยังไม่อยู่ใน Phase 1 nav |
 | Security Policy (Section 10) | Deferred | Session timeout, lockout, IP whitelist | เอาออกจาก nav ตาม commit `20d705d`; รอ SET-DEC-002 |
 | System Defaults (Section 11) | Future | Timezone, currency, language mode, pagination/export defaults | ยังไม่อยู่ใน Phase 1 nav |
 | Retention Policy (Section 12) | Deferred | Audit, chat/offer, report, export file, notification log retention | เอาออกจาก nav ตาม commit `20d705d`; รอ SET-DEC-003 |
@@ -118,19 +117,37 @@ Section เหล่านี้ยังคงเป็น policy/contract base
 
 ## 7. My Account
 
-Admin ทุก admin access ต้องเข้าถึง own settings ได้:
+My Account เป็น self-service surface ของ Admin ที่ authenticated และสถานะ `Active` เปิดจาก profile footer (`.admin-box`, module key `my-account`) โดยไม่เพิ่มรายการใน `navGroups` และไม่เป็น Settings submenu ทุก read/mutation ต้องผูกกับ account ของ session ปัจจุบันและ enforce self-only ที่ route/API/service; UI hiding อย่างเดียวไม่พอ
 
 | Field / Action | Requirement |
 | --- | --- |
-| Full name | แสดงชื่อ admin |
-| Email | Login identifier; เปลี่ยนไม่ได้จาก self-service ถ้า policy ไม่เปิด |
-| Admin access | Read-only |
+| Full name | แสดงและแก้ไขได้; trim, required, 1–100 ตัวอักษร; ค่าเดิมหลัง trim เป็น no-op และไม่สร้าง audit |
+| Email | Login identifier; read-only และปฏิเสธ self-service mutation |
+| Role / Admin access | Read-only และปฏิเสธ self-service mutation |
 | Status | Read-only |
 | Last login | Read-only |
-| Change password | ต้องยืนยัน current password ก่อน commit และ audit |
-| Active sessions | View / revoke own session ถ้า implementation รองรับ |
+| Change password | ใช้ Current Password + New Password + Confirm New Password; ไม่มี Email OTP และไม่บังคับ re-login หลังสำเร็จ |
+| Active sessions | แสดงเฉพาะ session ของตัวเองด้วย masked session ID/IP, ระบุ current session และ revoke session อื่นเป็นรายรายการได้ |
+| Logout All Devices | ต้องมี confirmation, revoke ทุก session รวม current แบบ all-or-nothing, สร้าง audit แล้วกลับ Login form เปล่า |
 
 Admin login ใช้ Email + Password → BO ตาม Auth baseline ใน `01_AUTHENTICATION_MODULE.md` (ไม่มี Login OTP step)
+
+### 7.1 Profile And Session Contract
+
+- Edit Name สำเร็จต้อง sync ชื่อใน profile footer/self record, แสดง success state และสร้าง `ADMIN_PROFILE_UPDATE` risk Low โดยเก็บเฉพาะ before/after name; stale account/session ต้องหยุดก่อน commit และแสดง safe refresh/session-expired state
+- Active Sessions แสดงเฉพาะ valid session ตาม idle timeout 8 ชั่วโมง / max session 24 ชั่วโมง; current session ไม่มี individual revoke และใช้ Logout ปกติหรือ Logout All Devices แทน
+- Individual revoke สร้าง `ADMIN_SESSION_REVOKE` risk Medium พร้อม masked session reference; stale session ให้ refresh list และไม่สร้าง mutation ซ้ำ
+- Logout All Devices สร้าง aggregate `ADMIN_SESSION_REVOKE_ALL` risk Medium เพียง event เดียวพร้อมจำนวน session; หลังสำเร็จกลับ Login form เปล่าโดยไม่มี info message เพิ่ม
+- ถ้า account เปลี่ยนเป็น `Locked`, `Suspended` หรือ `Archived` ระหว่าง session ให้ revalidate ที่ request/render guard ถัดไป, revoke session และแสดง Session Expired ตาม `01_AUTHENTICATION_MODULE.md`
+
+### 7.2 Change Password Contract
+
+- New password ต้องอย่างน้อย 12 ตัวอักษรและมี uppercase, lowercase, number และ special character อย่างน้อยประเภทละ 1 ตัว; confirm ต้องตรง และ new ต้องไม่เท่ากับ current
+- Current password ผิดให้แสดง field error และเพิ่ม failed counter โดยไม่สร้าง audit ต่อครั้ง; เมื่อครบ 5 ครั้งจึงสร้าง `ADMIN_PASSWORD_CHANGE` result Failed, `failure_code=RATE_LIMITED` หนึ่ง event และ block action ตาม policy 15 นาที
+- Protected prototype จำลอง cooldown 60 วินาทีเพื่อการทดสอบเท่านั้น; production contract คง 15 นาที
+- สำเร็จแล้ว update password, revoke session อื่นทั้งหมด, refresh security context ของ current session และคง current session ไว้; audit `ADMIN_PASSWORD_CHANGE` risk High ห้ามมี password material
+- stale revision, account ไม่ Active, non-self หรือไม่มี valid session ต้อง reject โดยไม่ mutate และไม่สร้าง audit; validation failure ทั่วไปและ wrong-current ที่ยังไม่ถึง limit ไม่สร้าง audit
+- ทุก flow ต้องไม่มี plaintext password, password hash, raw session token, OTP หรือ secret ใน UI/DOM/audit/log/evidence
 
 ## 8. Admin Accounts
 
@@ -1029,7 +1046,10 @@ Change history ต้อง link ไป Audit Log detail ตาม permission
 
 | Action | Permission | Confirmation | Reason | Audit |
 | --- | --- | --- | --- | --- |
-| Change own password | All admins | Yes | No | Yes |
+| Edit own name | Authenticated Active Admin (self-only) | No | No | Yes (`ADMIN_PROFILE_UPDATE`; no-op ไม่ audit) |
+| Change own password | Authenticated Active Admin (self-only) | Yes | No | Yes ตาม section 7.2 |
+| Revoke own session | Authenticated Active Admin (self-only) | Yes | No | Yes (`ADMIN_SESSION_REVOKE`) |
+| Logout All Devices | Authenticated Active Admin (self-only) | Yes | No | Yes (`ADMIN_SESSION_REVOKE_ALL`, risk Medium) |
 | Invite admin | `settings.admin_accounts.manage` | Yes | Optional | Yes |
 | Resend invitation | `settings.admin_accounts.manage` | Yes | No | Yes |
 | Cancel invitation | `settings.admin_accounts.manage` | Yes | No | Yes |
@@ -1051,6 +1071,10 @@ Change history ต้อง link ไป Audit Log detail ตาม permission
 Audit log ต้องบันทึกอย่างน้อย:
 
 - `ADMIN_SETTING_VIEW_SENSITIVE`
+- `ADMIN_PROFILE_UPDATE`
+- `ADMIN_PASSWORD_CHANGE`
+- `ADMIN_SESSION_REVOKE`
+- `ADMIN_SESSION_REVOKE_ALL`
 - `ADMIN_INVITATION_CREATE` (`ADMIN_ACCOUNT_INVITE` ใช้ได้เฉพาะ prototype compatibility alias และห้าม emit ซ้ำ)
 - `ADMIN_INVITATION_RESEND`
 - `ADMIN_INVITATION_CANCEL`
@@ -1095,6 +1119,8 @@ Audit payload กลางต้องมี:
 
 Invitation audit payload ต้องเพิ่ม `invitation_id`, `target_admin_id`, `invitation_status_before`, `invitation_status_after`, `token_revision` (เลข revision เท่านั้น), `account_revision`, `role_id`, `role_revision`, `correlation_id`, safeguard/quota outcome, `result` และ safe `failure_code` ตาม event. Success กับ rejected/blocked attempt ที่ resolve target ได้ใช้ canonical action event เดียวกันโดยแยก result; malformed/unknown token ที่ resolve target ไม่ได้ใช้ rate-limited security telemetry และห้ามสร้าง target reference. Exact idempotent retry ห้าม emit event ซ้ำ. ห้ามบันทึก raw/hashed token, password/password hash, OTP, destination email แบบไม่ mask, idempotency secret หรือ provider credential
 
+My Account audit ใช้ self `ADM-xxx` เป็น actor/reference ตาม event: profile update เก็บ before/after name, password change เก็บ safe summary เท่านั้น, session revoke เก็บ masked session reference และ Logout All Devices เก็บจำนวน session แบบ aggregate. Wrong-current ไม่ emit ต่อครั้ง; emit `ADMIN_PASSWORD_CHANGE` result Failed + `failure_code=RATE_LIMITED` เมื่อครบ limit. `ADMIN_SESSION_REVOKE_ALL` ใช้ risk Medium. ห้ามบันทึก password/password hash, raw session token, OTP หรือ secret
+
 สำหรับ `ADMIN_ACCOUNT_ROLE_CHANGE` ต้องใช้ field contract ใน section 9.8 เพิ่มเติม และต้องเก็บผลของ safeguard ทุกครั้งที่ submit โดย Audit Log แสดง before/after role และ permission diff summary ตามสิทธิ์ของผู้ดู
 
 Sensitive settings value ต้อง mask ใน audit payload ถ้าเป็น secret หรือ high-risk data
@@ -1121,7 +1147,7 @@ Sensitive settings value ต้อง mask ใน audit payload ถ้าเป�
 
 | ID | Criteria |
 | --- | --- |
-| AC-BO-SET-001 | Admin ทุก admin access เข้าดู own profile/settings และเปลี่ยน password ตาม rule ได้ |
+| AC-BO-SET-001 | Authenticated Active Admin เปิด My Account จาก profile footer ได้โดยไม่เพิ่ม Settings submenu; Name แก้ไขได้ ส่วน Email/Role/Status/Last Login read-only และทุก read/mutation enforce self-only |
 | AC-BO-SET-002 | Admin จัดการ admin account lifecycle ได้โดยไม่กระทบ Admin คนสุดท้าย |
 | AC-BO-SET-003 | Roles & Permissions policy กำหนด 8 standard role templates (Super Admin, Admin Manager, Operations Manager, Support Agent, Trust & Safety Moderator, Asset Operations, Content Editor, Content Publisher), canonical taxonomy/levels, baseline matrix และ Phase 1 permission action catalog; Role Detail แสดงเฉพาะ granted action names ส่วน enforcement ใช้ explicit key ทั้ง UI/API/service และห้ามลบ/เปลี่ยน system role identity |
 | AC-BO-SET-004 | Permission/security/system/retention/export setting changes ต้องมี confirmation, reason และ audit |
@@ -1158,6 +1184,10 @@ Sensitive settings value ต้อง mask ใน audit payload ถ้าเป�
 | AC-BO-SET-035 | Invitation email ทุก attempt ใช้ Delivery ID `DLV-ACCT-<admin-sequence>-INV-<attempt-sequence>`, trace `invitation_id`/Admin Detail/Audit ได้ และ provider failure คง account `Invited` พร้อม Failed/Retry state โดยไม่สร้าง account/invitation ซ้ำ |
 | AC-BO-SET-036 | Invitation lifecycle audit ใช้ canonical events/immutable IDs/revisions/correlation ตาม section 8.9/19 และ Audit/Delivery payload ห้ามมี raw/hashed token, password/password hash, OTP หรือ secret |
 | AC-BO-SET-037 | History & Actions ของ invitation lifecycle event ใช้ `INV-xxxxx` เป็น Reference และแยก Delivery link (`DLV-*`) กับ Audit link (`AUD-*`) คนละคอลัมน์ตาม section 8.3/8.9; event ที่ไม่ใช่ invitation lifecycle คง actor reference `ADM-xxx`/`System`/`—` ตาม semantics เดิม |
+| AC-BO-SET-038 | Change Password ใช้ Current + New + Confirm โดยไม่มี Email OTP; wrong-current ไม่ audit ต่อครั้ง, ครบ 5 ครั้งจึง audit `RATE_LIMITED`; production cooldown 15 นาทีและ protected prototype จำลอง 60 วินาที |
+| AC-BO-SET-039 | Active Sessions แสดงเฉพาะ session ของตนเองด้วยข้อมูลที่ mask; individual revoke ไม่รองรับ current session; success สร้าง `ADMIN_SESSION_REVOKE` risk Medium และ revoked session เข้า Session Expired ที่ request ถัดไป |
+| AC-BO-SET-040 | Logout All Devices ต้อง revoke ทุก session รวม current แบบ all-or-nothing, สร้าง aggregate `ADMIN_SESSION_REVOKE_ALL` risk Medium และกลับ Login form เปล่าโดยไม่มี info message เพิ่ม |
+| AC-BO-SET-041 | My Account/password/session contract ต้องไม่เปิดเผย plaintext password, password hash, raw session token, OTP หรือ secret ใน UI/DOM/audit/log/evidence และ stale/no-session/blocked state ต้องไม่มี partial commit |
 
 ## 22. Open Decisions
 
