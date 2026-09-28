@@ -1,6 +1,6 @@
 ---
 name: submission-evidence
-description: เตรียมหลักฐานส่งตรวจรับต่อเป้าหมาย (Objective) ของ Mission สำหรับ TukDaeng — เลือก/จัดไฟล์แนบหรือภาพหน้าจอ, เขียนคำอธิบายภาษาเข้าใจง่าย, กำหนดช่อง URL และสร้าง copy block สำหรับฟอร์มส่งตรวจงานด้วย AI. Use เมื่อเป้าหมายใน Mission ทำครบทุก Task แล้วต้องเตรียมหลักฐานส่งตรวจ หรือผู้ใช้ขอ "หลักฐานส่งตรวจ" / "evidence เป้าหมาย" / "เตรียมไฟล์ส่งงาน" / "capture หน้าจอผลงาน"
+description: เตรียมหลักฐานส่งตรวจรับต่อเป้าหมาย (Objective) ของ Mission สำหรับ TukDaeng — เลือก/จัดไฟล์แนบหรือภาพหน้าจอ, เขียนคำอธิบายภาษาเข้าใจง่าย, กำหนดช่อง URL, สร้าง copy block สำหรับฟอร์มส่งตรวจงานด้วย AI และปิดท้ายด้วย compact Mission Objective–Feature–Task copy block จาก Kanban. Use เมื่อเป้าหมายใน Mission ทำครบทุก Task แล้วต้องเตรียมหลักฐานส่งตรวจ หรือผู้ใช้ขอ "หลักฐานส่งตรวจ" / "evidence เป้าหมาย" / "เตรียมไฟล์ส่งงาน" / "capture หน้าจอผลงาน"
 ---
 
 # TukDaeng Submission Evidence (หลักฐานส่งตรวจต่อเป้าหมาย)
@@ -157,6 +157,37 @@ Task ที่เกี่ยวข้อง: <task code 1>, <task code 2>
 - ใส่ส่วน "หลักฐานส่งตรวจ" ของเป้าหมายนั้นใน Work Summary / session note ของ task สุดท้ายของเป้าหมาย (ผ่าน `save_session_note` ตาม workflow ปกติ) — เพื่อให้ log ย้อนหลังมีหลักฐานพร้อมส่งครบทุกเป้าหมาย
 - ห้ามส่งหลักฐานหรือ log ไปยังระบบภายนอกอัตโนมัติ — ทุกอย่างเป็น copy block ให้ผู้ใช้วางเอง
 
+### 9. แสดงสรุป Mission แบบ Compact Objective–Feature–Task
+
+หลังเตรียมหลักฐานส่งตรวจของ Mission เสร็จเรียบร้อยแล้ว **ต้องแสดงสรุป Mission เป็น text copy block เดียวต่อท้ายเสมอ**:
+
+- เรียก `get_mission` จาก Kanban อีกครั้งและใช้ข้อมูลที่บันทึกอยู่จริงเท่านั้น — ห้ามเขียนจากความจำ ห้ามปรับชื่อ Mission, Objective, Feature, เวลา, จำนวนวัน หรือ Task mapping เอง
+- ใช้ชั่วโมงรวม จำนวนวัน ชั่วโมงต่อ Objective และ weights จาก Mission baseline ตามค่าที่ Kanban แสดง แม้เวลาจริงภายหลังจะแตกต่าง
+- ใช้ verdict จาก Final Acceptance task/activity ที่บันทึกจริง; ถ้า Mission ไม่มี verdict ให้เรียก `get_task` ของ Final Acceptance เพื่อตรวจ ห้ามอนุมาน PASS เอง
+- แสดงเฉพาะชื่อ Mission, ชั่วโมงรวม/จำนวนวัน, Objective, ชั่วโมง, Feature และ task code ที่เกี่ยวข้อง แล้วปิดท้ายด้วยจำนวน tasks/objectives, weights, สถานะรวม และ verdict
+- ถ้า Feature มีหลาย task ให้เชื่อมด้วย `+`; ใส่คำกำกับในวงเล็บ เช่น `(Run)` หรือ `(Triage & Verification)` ได้เฉพาะเมื่อข้อความนั้นมาจากชื่อ task ที่บันทึกจริง
+- ไม่ใส่ Goal, Scope, Acceptance Criteria, Task ID, Category หรือคำอธิบายอื่นใน copy block นี้
+- ต้องครอบด้วย fenced code block ชนิด `text` เพื่อให้ผู้ใช้คัดลอกได้ทันที ห้ามส่งเป็น Markdown ปกติแทน
+
+รูปแบบบังคับ:
+
+```text
+Mission <N> — <ชื่อ Mission> (<ชั่วโมงรวม> ชม. / <จำนวนวัน> วัน)
+
+Objective 1 — <ชื่อ Objective> (<ชั่วโมง> ชม.)
+
+Feature: <ชื่อ Feature> → <Task code>
+Feature: <ชื่อ Feature> → <Task code> + <Task code>
+
+Objective 2 — <ชื่อ Objective> (<ชั่วโมง> ชม.)
+
+Feature: <ชื่อ Feature> → <Task code>
+
+รวม <จำนวน tasks> tasks / <จำนวน objectives> objectives / weights <เปอร์เซ็นต์>% — <สถานะรวมและ verdict ที่บันทึกจริง>
+```
+
+ตัวอย่างสถานะท้ายบรรทัดเมื่อข้อมูล Kanban รองรับจริง: `ทุก task done, verdict PASS แล้ว`
+
 ---
 
 ## กฎเหล็ก
@@ -183,3 +214,4 @@ Task ที่เกี่ยวข้อง: <task code 1>, <task code 2>
 - [ ] ช่อง URL เว้นว่างหรือยืนยันการเข้าถึงแล้วเท่านั้น
 - [ ] คำอธิบายเป็นภาษาเข้าใจง่าย ไม่มี `§` ไม่มีศัพท์โค้ดที่ไม่อธิบาย
 - [ ] ถ้างานเป้าหมายแตะ protected screens ให้ระบุเป็น bullet สั้นในคำอธิบาย (ไม่แตะ = ไม่ต้องเขียน)
+- [ ] หลังหลักฐานทุก Objective แสดง compact Mission Objective–Feature–Task เป็น `text` copy block เดียว โดยดึง Mission และ Final Acceptance จาก Kanban ล่าสุดและไม่ปรับแต่งข้อมูลเอง

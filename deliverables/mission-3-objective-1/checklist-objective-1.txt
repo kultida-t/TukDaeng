@@ -1,0 +1,16 @@
+Mission 3 Objective 1 — Cross-Mission E2E Verification
+== Identity Lifecycle E2E
+AIL-033 ผ่าน 41 tests / 1 project-gated skip / 0 failed และทุก suite exit code 0
+ครอบคลุม Invitation → Activation → Login, My Account, Change Password, Password Recovery และ Session Management
+Login current phase เป็น Email + Password → BO โดยไม่มี Login OTP/MFA/2FA
+== Security & Error Flow
+AIL-034 ผ่าน 158 tests / 1 project-gated skip / 0 failed และทุก suite exit code 0
+ตรวจ token invalid/expired/used/cancelled/superseded, account lock, stale session และ no-partial mutation
+wrong-current ไม่ audit ต่อครั้ง; ครบ limit จึงสร้าง RATE_LIMITED หนึ่ง event
+== Audit & Delivery Trace
+AIL-035 ผ่าน 139 tests / 1 project-gated skip / 0 failed และทุก suite exit code 0
+ตรวจ correlation/reference jump, event/risk/result, Delivery status และ secret leakage
+ADMIN_SESSION_REVOKE_ALL เป็น aggregate event เดียว risk Medium
+== Integrity
+ไม่พบ product defect และไม่มี prototype/test/document/protected-screen mutation
+ล้าง test artifacts แล้ว และผู้ใช้ตรวจรับ PASS ครบ AIL-033–AIL-035

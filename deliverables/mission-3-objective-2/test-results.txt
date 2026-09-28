@@ -1,0 +1,24 @@
+Mission 3 Objective 2 — Full Protected Regression
+Source: Kanban task activity ที่ผู้ใช้ตรวจรับของ AIL-036 และ AIL-037
+
+Run contract
+- Test inventory: 50 spec files
+- Project: desktop-1440
+- Planned: 1,877 cases
+- External local server
+- Workers: 1
+- Timeout: 60 seconds
+- Max failures: 1
+
+Terminal result
+- 1,822 passed
+- 55 skipped
+- 0 failed
+- Exit code 0
+
+Triage result
+- Project gating: 55
+- By-design outside project gating: 0
+- Flake: 0
+- Defect: 0
+- Count reconciliation: PASS
