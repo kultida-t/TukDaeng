@@ -3,6 +3,7 @@
 These screens have been confirmed by the user and are locked from incidental changes as of 2026-07-19:
 
 - Login
+- Admin Identity Lifecycle, including Invitation/Activation, Login, Forgot/Reset Password, My Account/Edit Name, Change Password, Active Sessions, individual session revoke, Logout All Devices, session-expired handling, and Audit/Delivery trace, confirmed and locked as of 2026-09-28
 - Dashboard, including the Dashboard menu entry and links that open Dashboard content
 - User Management > User List
 - User Management > Reported Users
@@ -55,6 +56,20 @@ The protected Login scope includes:
 - Login layout, hero visual, logo/app identity, credential fields, copy, validation, error state, loading state, and login transition.
 - Forgot/reset-password entry points or login-adjacent flows when they are rendered from the Login screen.
 - Auth state, mock credentials, route guards, and state transitions that control entry from Login into the Back Office prototype.
+
+## Admin Identity Lifecycle Protected Scope
+
+The protected Admin Identity Lifecycle scope was confirmed and locked as of 2026-09-28 after AIL-033–AIL-044 passed and closed. It includes:
+
+- Admin Invitation/Activation from Invite Admin through one-time invitation link, initial-password activation, safe invalid/expired/used/cancelled/superseded/ineligible states, Resend/Cancel/Reissue, Admin Detail invitation context, and related Audit/Delivery trace.
+- Current Login phase `Email + Password → BO` with no Login Email OTP, OTP verification step, MFA, or 2FA. Invitation possession verification is not a Login challenge.
+- Forgot/Reset Password, including generic Forgot response, reset-token states, eligible failed-login lock recovery, successful reset session revocation, and return to an empty Login form.
+- My Account opened from the profile footer without a Settings submenu, self-only profile/Edit Name, Change Password, Active Sessions, individual revoke of other sessions, Logout All Devices, and session-expired handling.
+- The accepted AIL-031 corrections: wrong-current Change Password attempts are not audited individually; the fifth failed attempt creates one `ADMIN_PASSWORD_CHANGE` result `Failed` with `failure_code=RATE_LIMITED`; production cooldown is 15 minutes and the protected prototype simulation is 60 seconds; `ADMIN_SESSION_REVOKE_ALL` is one aggregate risk `Medium` event; Logout All Devices revokes every session including current and returns to an empty Login form.
+- Identity lifecycle Audit Log and Delivery Logs events, correlation/reference jumps, results/failure codes, masked recipient/session metadata, and secret-exclusion behavior across Login, My Account, Admin Accounts, Audit Log, and Delivery Logs.
+- All directly supporting routes, guards, navigation/profile entry state, mock data, state transitions, helpers, shared components, styles, responsive behavior, and test-visible behavior in `Prototypes/bo-prototype.html`.
+
+This lock records the accepted prototype behavior only. It does not add a new business rule, feature, production backend, persistence layer, provider integration, or security enforcement.
 
 ## Dashboard Protected Scope
 
@@ -280,6 +295,7 @@ The protected Settings > Audit Log scope includes:
 ## Rules
 
 - Do not change layout, styling, behavior, routing, copy, mock data, or component structure for the protected screens unless the user explicitly asks for that exact change.
+- Do not change the protected Admin Identity Lifecycle flows or the accepted AIL-031 corrections, and do not reintroduce Login OTP/MFA/2FA into the current phase, unless the user explicitly approves that exact change.
 - Do not change navigation labels, menu order, active states, breadcrumbs, or route behavior for Dashboard, User Management, Asset Management, Content Management, Market Data, Option Master, Market Demand, Account Deletion, Settings > Policy & Versioning, Settings > Support Center, Settings > Delivery Logs, Settings > Admin Accounts, Settings > Roles & Permissions, or Settings > Audit Log unless the user explicitly approves that exact change.
 - Treat shared files as high risk when they are used by protected screens. This includes layout shells, navigation, route guards, theme files, global CSS, common components, shared hooks, stores, API mocks, fixtures, and assets.
 - If a requested change to another screen requires editing shared code that may affect a protected screen, pause and ask the user for approval first.
@@ -289,6 +305,7 @@ The protected Settings > Audit Log scope includes:
 ## Review Checklist Before Editing
 
 - Identify the files and routes involved in the requested change.
+- Check whether the target can affect Admin Invitation/Activation, Login, Forgot/Reset Password, My Account/Edit Name, Change Password, Active Sessions, session revoke, Logout All Devices, session-expired handling, or their Audit/Delivery trace and accepted AIL-031 behavior.
 - Check whether any target file is part of Login, Dashboard, Dashboard menu, User Management menu, User Management > User List, User Management > Reported Users, User Detail, Report Detail, any user/report action modal, Asset Management menu, Asset Management > Asset List, Asset Detail, Asset Management > Reported Assets, Asset Report Detail, any asset report detail modal, any asset action modal, Asset Management > Reported Comments, Comment Report Detail, any comment report detail modal, any comment moderation action modal, any Content Management screen, submenu, modal, detail view, or action flow, any Market Data screen, menu behavior, submenu, modal, detail view, chart, filter, data action, or refresh flow, any Offer Management screen, menu behavior, list, filter, detail view, route, or data flow, any Option Master screen, menu behavior, Option Group List, Option Detail, option/group CRUD modal, reorder modal, audit log view, filter, route, or data flow, any Market Demand screen, menu behavior, submenu, Demand Overview, Search Insights, Watch Alert List, Watch Alert Detail, criteria/matched assets/trigger & notification/user action section, inactive market data warning, soft delete notice, filter, route, or data flow, any Account Deletion screen, menu behavior, Deletion Requests List, Request Detail, restore/reject restore modal, lifecycle email delivery log, grace period countdown, filter, route, or data flow, any Settings > Policy & Versioning screen, menu behavior, Policy & Versioning List, Policy Detail, Policy Editor, publish/version view/restore/preview modal, version history table, filter, route, or data flow, or any Settings > Support Center screen, menu behavior, Support Center edit form, channel toggle/value/description fields, business hours/availability fields, validation, preview modal, route, or data flow, or any Settings > Delivery Logs screen, menu behavior, Delivery Log List, Delivery Log Detail modal, delivery log jump link, filter, route, or data flow, or any Settings > Admin Accounts screen, menu behavior, Admin Account List, Admin Detail, Invite Admin modal, Change Role modal, admin action modal, permission gating/last-admin protection, audit ref link, filter, route, or data flow, or any Settings > Audit Log screen, menu behavior, Audit Log List, Audit Log Detail drawer, audit ref jump link, filter, route, or data flow.
 - Check whether any shared file is used by those protected screens.
 - Check whether the target can affect Settings > Roles & Permissions, including its menu/route, Role List, Role Detail, Create/Edit/Deactivate/Reactivate flow, permission safeguards, audit history, mock data, helpers, CSS, or responsive behavior.

@@ -5,6 +5,7 @@
 The following prototype screens are confirmed and locked as of 2026-07-19. They must not be modified unless the user explicitly requests changes to the named protected screen or flow:
 
 - Login
+- Admin Identity Lifecycle, including Admin Invitation/Activation, Login, Forgot/Reset Password, My Account/Edit Name, Change Password, Active Sessions, individual session revoke, Logout All Devices, session-expired handling, and Audit/Delivery trace, confirmed and locked as of 2026-09-28. The current Login phase is Email + Password → BO with no Login OTP/MFA/2FA. `ADMIN_SESSION_REVOKE_ALL` is one aggregate risk `Medium` event; Logout All Devices returns to an empty Login form; wrong-current Change Password attempts are not audited individually and create one `RATE_LIMITED` event at the limit; production cooldown is 15 minutes while the protected prototype simulation is 60 seconds.
 - Dashboard, including the Dashboard menu entry, active state, routing, cards, metrics, and links from Dashboard content
 - User Management > User List, including the User Management menu entry, User List submenu/active state, user detail views/panels, and every confirmation modal, lock/confirm state, or action flow opened from the User List screen
 - User Management > Reported Users and Report Detail, including report lists/queues, report detail views/panels, report status actions, user actions opened from report context, confirmation modals, lock/confirm states, audit/result states, breadcrumbs, routing, and navigation state
@@ -27,6 +28,7 @@ The following prototype screens are confirmed and locked as of 2026-07-19. They 
 When working on other screens:
 
 - Do not edit files that belong to the protected screens.
+- Treat the complete Admin Identity Lifecycle lock as protected across auth-adjacent screens, My Account, Admin Accounts invitation context/actions, session state, Audit Log, Delivery Logs, routes, mock data, helpers, shared components, and responsive behavior. Do not reintroduce Login OTP/MFA/2FA into the current phase or change the locked AIL-031 corrections without explicit approval.
 - Treat every Settings > Roles & Permissions menu, route, Role List/Detail screen, Custom Role action flow, permission safeguard, audit integration, mock data, helper, CSS path, responsive rule, and navigation behavior in `Prototypes/bo-prototype.html` as protected.
 - Do not modify shared components, styles, routes, layout shells, navigation, state logic, mock data, or assets in a way that changes the protected screens or their menu behavior.
 - If a required change may affect a protected screen, stop and ask for approval before editing.
