@@ -272,7 +272,11 @@ Dependency: <รายการ หรือ ไม่มี>
 - **เป้าหมายย่อย (Objectives):** แบ่ง Mission ออกเป็นเป้าหมายย่อย 2-5 ข้อ แต่ละเป้าหมายเป็นผลลัพธ์หลักของ Mission และ map กับ Feature/Task ที่ใช้ลง work log ได้
 
 > **การวางแผน Mission เป็นขั้นตอนก่อนสร้าง Mission ไม่ใช่ Objective บังคับของทุก Mission:**
-> ให้คุยความต้องการ กำหนด scope, Acceptance Criteria และ mapping กับ Kanban ก่อนสร้างแผนได้ แต่ไม่ต้องสร้าง Objective ชื่อ "เป้าหมายการวางแผน mission" หรือบังคับสร้าง planning task แยก เว้นแต่ผู้ใช้ระบุว่าต้องการนับงานวางแผนเป็น deliverable ของ Mission
+> ให้คุยความต้องการ กำหนด scope, Acceptance Criteria และ mapping กับ Kanban ก่อนสร้างแผนได้ แต่ไม่ต้องสร้าง Objective ชื่อ "เป้าหมายการวางแผน mission"
+>
+> **Planning Task กับ Mission Objective เป็นคนละเรื่อง:** ถ้าผู้ใช้กำหนดให้วางแผนผ่าน Planning Task (เช่น `M3P-001`) หรือมี standing workflow ให้เก็บเวลางานวางแผน ต้องสร้าง Planning Task **ก่อนเริ่มอ่าน context เชิงงาน/วิเคราะห์/ร่างแผน** แล้วใช้ workflow ปกติ `create_task → move_task(in_progress) → วางแผน → รอผู้ใช้อนุมัติ baseline → move_task(done)` Planning Task ไม่ถูกนับเป็น Objective/Feature/execution task ของ Mission แต่ยังเป็นงานจริงที่ต้องจับเวลาด้วย auto-timer
+>
+> **ห้ามปิด Planning Task จาก `todo → done` โดยตรง** เว้นแต่ผู้ใช้สั่งชัดเจนว่าไม่ต้องจับเวลา Planning Task กรณีพบคำสั่งว่า “ห้ามเริ่ม timer / ห้ามย้าย Task เป็น in_progress ก่อน approval” ให้ตีความว่าใช้กับ **Mission execution task** เท่านั้น ไม่ใช้กับ Planning Task ที่มีไว้รองรับงานวางแผนรอบนั้น หากถ้อยคำยังคลุมเครือ ให้แยกคำว่า Planning Task กับ execution task ให้ชัดก่อนลงมือ ห้ามปล่อยให้งานวางแผนเกิดนอก `in_progress`
 >
 > Objective ของ Mission ต้องเป็นผลลัพธ์ที่ส่งมอบจริง เช่น ปรับหน้ารายการ, สร้าง detail, เพิ่ม filter, sync spec หรือ QA ไม่ใช่งานบริหารแผนที่เกิดขึ้นก่อนเริ่ม Mission
 
@@ -836,7 +840,7 @@ Mission Planning Complete
 → End Planning Session
 ```
 
-- ห้ามเริ่ม implementation Task, ย้าย Task เป็น `in_progress` หรือเริ่ม timer โดยอัตโนมัติ
+- ห้ามเริ่ม **Mission execution task**, ย้าย execution task เป็น `in_progress` หรือเริ่ม execution timer โดยอัตโนมัติ กฎนี้ไม่ย้อนกลับไปห้าม Planning Task ที่ต้องอยู่ `in_progress` ระหว่างทำงานวางแผน และ Planning Task ควรถูกปิดหลัง baseline ได้รับ approval
 - ถ้าผู้ใช้ยังไม่อนุมัติ ให้แสดง Draft Mission Plan/ฉบับแก้ไขตาม workflow เดิม และยังไม่เรียก output ว่า Approved
 - หลังได้รับ approval ให้สร้างและแสดงทั้ง Mission Plan Summary และ Session Handoff ก่อนเสมอ แม้ผู้ใช้จะเลือกทำงานต่อใน session เดิม
 - เมื่อมีทั้งสอง artifact ในคำตอบเดียวกัน ต้องแยก heading และ code block ชัดเจน ห้ามรวมเนื้อหาเป็น block เดียว
@@ -976,7 +980,7 @@ Session Handoff
 - ถ้าผู้ใช้ขอแก้ไข Mission/แผน → แก้ไขแล้วแสดง copy block ใหม่
 - หลังผู้ใช้อนุมัติ Mission Plan → สร้าง **Mission Plan Summary Copy Block** และ **Session Handoff** แยกกันตาม section 13; ถ้าผู้ใช้ต้องการจบ planning session ให้ persist Handoff แล้วหยุด
 - Mission Plan Summary ใช้สำหรับ Work Log และห้ามมี Kanban UUID/internal ID; Session Handoff ใช้สำหรับ Agent และคง internal IDs/technical context ได้
-- การสร้าง approval artifacts ไม่อนุญาตให้เริ่ม implementation, ย้าย Task เป็น `in_progress` หรือเริ่ม timer
+- การสร้าง approval artifacts ไม่อนุญาตให้เริ่ม implementation, ย้าย **Mission execution task** เป็น `in_progress` หรือเริ่ม execution timer; Planning Task ที่ใช้จับเวลางานวางแผนต้องถูกเริ่มไว้ก่อนหน้าและปิดหลัง approval ตาม workflow ของ Planning Task
 - ถ้ามีงานเพิ่มนอก Scope → แยกเป็นงานนอกขอบเขตและเสนอ Mission ใหม่
 - ⚠️ **Protected screens:** ถ้าแผนมีโอกาสกระทบ protected screens (ตาม `AGENTS.md` และ `PROTECTED_SCREENS.md`) ต้องระบุในเป้าหมายว่าจะตรวจสอบอย่างไร และต้องหยุดขออนุมัติก่อนแก้ ห้ามแก้ protected screens โดยไม่ได้รับอนุมัติจากผู้ใช้
 - **Kanban task style & Naming format:** ถ้าต้องสร้าง task ใหม่ในแผน (`create_task`) หรือแสดงใน Mission Plan / Summary / Kanban:
@@ -1257,6 +1261,10 @@ Mission: สร้างเอกสารและ prototype สำหรับ
 ## Checklist
 
 ### ส่วนที่ 1: วางแผน Mission
+- [ ] ถ้าผู้ใช้กำหนด Planning Task หรือ workflow ต้องจับเวลางานวางแผน: สร้าง Planning Task ก่อนเริ่มอ่าน context เชิงงาน/วิเคราะห์/ร่างแผน
+- [ ] ย้าย Planning Task เข้า `in_progress` เพื่อเริ่ม auto-timer ก่อนลงมือวางแผน และห้ามปิดจาก `todo → done` โดยตรง
+- [ ] แยก Planning Task ออกจาก Mission execution task ให้ชัด: ข้อห้ามเริ่ม task/timer ก่อน approval ใช้กับ execution task เท่านั้น
+- [ ] หลังผู้ใช้อนุมัติ baseline จึงปิด Planning Task; ห้ามใช้ `log_time` และให้ยึดเวลาจาก auto-timer
 - [ ] เรียก `mcp_list_tools` ของ `kanban-tukdaeng` เพื่อดูเครื่องมือทั้งหมด
 - [ ] เรียก `get_project_context` เพื่อ resume session
 - [ ] เรียก `get_board` เพื่อดู task ที่ค้าง/ทำอยู่
@@ -1295,7 +1303,7 @@ Mission: สร้างเอกสารและ prototype สำหรับ
 - [ ] ตรวจว่ารายการใน Mission Plan Summary ใช้ literal `- ` ภายใน `text` code block และไม่มี `*` หรือ rendered bullet `•`
 - [ ] สร้างหรืออัปเดต Session Handoff แยกอีก artifact โดยคง identifiers, technical context, current state, next task และ next-session instructions ครบ
 - [ ] ถ้าจบ planning session ให้บันทึก Session Handoff ด้วย `save_session_note` เมื่อเครื่องมือพร้อม และแสดง Summary/Handoff เป็นคนละ code block
-- [ ] ตรวจว่าไม่ได้เริ่ม implementation, ไม่ย้าย Task เป็น `in_progress` และไม่เริ่ม timer จาก approval workflow
+- [ ] ตรวจว่าไม่ได้เริ่ม implementation, ไม่ย้าย Mission execution task เป็น `in_progress` และไม่เริ่ม execution timer จาก approval workflow; Planning Task ถูกปิดหลัง approval ตาม workflow แล้ว
 - [ ] ⚠️ **ภาษาใน copy block** — ใช้ภาษาเข้าใจง่าย เปลี่ยนคำโค้ด/เทคนิคเป็นคำเข้าใจง่าย แต่คำเฉพาะ/ศัพท์ที่คุ้นเคย (breadcrumb, Alert, asset, spec, baseline, Kanban) เก็บไว้ได้ ไม่บังคับล้วนไทย ห้ามใช้ชื่อฟังก์ชัน/โค้ด
 - [ ] ⚠️ ห้ามส่ง log/อัปเดตระบบภายนอกใด ๆ
 
