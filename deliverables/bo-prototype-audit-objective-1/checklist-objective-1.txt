@@ -1,0 +1,12 @@
+Objective 1 — System Coverage Audit
+== Coverage
+ตรวจครบ 12 พื้นที่หลักและ 25 logical destinations
+ครอบคลุม list, detail, modal, editor และ major state
+ตรวจ viewport 390, 768, 1280 และ 1440px
+== Phase & Entry Points
+แยก Covered, Intentionally Deferred, Product Decision และ Missing
+ยืนยัน Phase 1 entry หลักครบ
+บันทึก WAL-1440 wrong destination เป็น confirmed defect
+บันทึก documentation inconsistencies พร้อม source trace
+== Boundary
+เป็น read-only audit และไม่มี protected screen ถูกแก้

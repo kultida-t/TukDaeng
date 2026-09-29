@@ -165,6 +165,7 @@ Task ที่เกี่ยวข้อง: <task code 1>, <task code 2>
 - ใช้ชั่วโมงรวม จำนวนวัน ชั่วโมงต่อ Objective และ weights จาก Mission baseline ตามค่าที่ Kanban แสดง แม้เวลาจริงภายหลังจะแตกต่าง
 - ใช้ verdict จาก Final Acceptance task/activity ที่บันทึกจริง; ถ้า Mission ไม่มี verdict ให้เรียก `get_task` ของ Final Acceptance เพื่อตรวจ ห้ามอนุมาน PASS เอง
 - แสดงเฉพาะชื่อ Mission, ชั่วโมงรวม/จำนวนวัน, Objective, ชั่วโมง, Feature และ task code ที่เกี่ยวข้อง แล้วปิดท้ายด้วยจำนวน tasks/objectives, weights, สถานะรวม และ verdict
+- **ห้ามแสดง Mission ID, UUID หรือรหัสย่อจาก Kanban** เช่น `1800d8aa` เพราะผู้อ่านทั่วไปไม่เข้าใจและไม่ได้ช่วยอธิบายผลงาน ให้แสดงชื่อ Mission ที่อ่านรู้เรื่องเท่านั้น ถ้าชื่อที่บันทึกจริงมีคำว่า `Mission 1`, `Mission 2` ฯลฯ อยู่แล้ว ให้คงข้อความนั้นเป็นส่วนหนึ่งของชื่อ ห้ามนำเลขหรือ ID มาประกอบเพิ่มเอง
 - ถ้า Feature มีหลาย task ให้เชื่อมด้วย `+`; ใส่คำกำกับในวงเล็บ เช่น `(Run)` หรือ `(Triage & Verification)` ได้เฉพาะเมื่อข้อความนั้นมาจากชื่อ task ที่บันทึกจริง
 - ไม่ใส่ Goal, Scope, Acceptance Criteria, Task ID, Category หรือคำอธิบายอื่นใน copy block นี้
 - ต้องครอบด้วย fenced code block ชนิด `text` เพื่อให้ผู้ใช้คัดลอกได้ทันที ห้ามส่งเป็น Markdown ปกติแทน
@@ -172,7 +173,7 @@ Task ที่เกี่ยวข้อง: <task code 1>, <task code 2>
 รูปแบบบังคับ:
 
 ```text
-Mission <N> — <ชื่อ Mission> (<ชั่วโมงรวม> ชม. / <จำนวนวัน> วัน)
+Mission — <ชื่อ Mission> (<ชั่วโมงรวม> ชม. / <จำนวนวัน> วัน)
 
 Objective 1 — <ชื่อ Objective> (<ชั่วโมง> ชม.)
 

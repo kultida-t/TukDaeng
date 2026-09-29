@@ -1,0 +1,12 @@
+Objective 4 — Findings & Remediation Roadmap
+== Audit Deliverables
+Coverage Matrix ครบ 12 พื้นที่และ 25 destinations
+UI Consistency Matrix แยก canonical, variation, finding และ gap
+Findings Register ครบ 27 รายการและไม่ซ้ำ
+ทุก finding มี severity, owner, evidence และ protected impact
+== Roadmap
+จัดกลุ่ม Product/IA, documentation, shared, module-specific และ future
+กำหนด dependency, sequence, verification และ approval gate
+ตรวจ traceability กลับ prototype, spec และ task activity
+== Boundary
+ไม่สร้าง execution task และไม่แก้ protected screen
