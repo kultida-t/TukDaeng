@@ -209,6 +209,7 @@ Inventory ที่พบ (input ให้ Scope Change ถ้าอนุมั
 | `.wa-alert-filter-bar` collapse rule @761–1365px (~12364) | Scope Change อนุมัติใน BOR-004 — grid 7 tracks (min ~1020px) ล้น panel เมื่อ viewport <1366 ทำ reset button + date inputs หลุดจอ (เคยถูก `overflow:hidden` ปิดไว้); แก้ด้วย flex-wrap: filter 4 ตัวแถวบนเต็มกว้าง / sort + date range ยืดเต็ม + reset ต่อท้าย แถวล่าง |
 | `.audit-filter-bar` collapse @761–1365px (~12380; rules ≤1180/≤980 เดิมเก็บเป็น fallback) | Scope Change อนุมัติใน BOR-004 — date input ชิดขอบจอทำ native picker ล้น (browser คุมตำแหน่ง picker ปรับ CSS ไม่ได้) → ย้าย input ออกจากขอบด้วย flex-wrap: search/module/risk แถวบนเต็มกว้าง / sort + date range ยืดเต็ม + reset ต่อท้าย แถวล่าง |
 | `.filters .custom-select-menu` max-height 280→220px (~7145) | Scope Change อนุมัติใน BOR-004 — dropdown ยาวชิดขอบล่าง viewport; ลดความสูงเฉพาะ filter context (เมนูมี scrollbar ในตัวอยู่แล้ว) ไม่แตะ select ใน modal |
+| ลบ footer `ปิด` ใน `openOptionViewModal` (B11, ~40274) — footer เหลือ `ดู Audit Log` + `Edit` | Scope Change อนุมัติใน BOR-005 — redundant close control ซ้ำกับ X + ESC/backdrop ที่ opt-in แล้ว; B11 เป็น read-only surface เดียวที่มี footer close button ทำให้ deviate จาก 15 surfaces อื่น — ลบแล้ว consistent กว่าเดิม (close ยังมี X/ESC/backdrop) |
 
 ## 8. Protected Impact Summary
 

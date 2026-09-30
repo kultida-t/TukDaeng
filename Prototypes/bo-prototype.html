@@ -22505,7 +22505,7 @@
       const comments = getAssetBoComments(asset);
       const modalBody = document.querySelector("#user-action-modal-body");
       modalBody.innerHTML = `
-        <div class="user-action-page asset-detail-related-modal">
+        <div class="user-action-page asset-detail-related-modal" data-modal-dismissible>
           <div class="user-action-head">
             <div>
               <h2 id="user-action-modal-title">Comments</h2>
@@ -22534,7 +22534,7 @@
       const coverImage = uploadedImages[selectedIndex];
       const modalBody = document.querySelector("#user-action-modal-body");
       modalBody.innerHTML = `
-        <div class="user-action-page">
+        <div class="user-action-page" data-modal-dismissible>
           <div class="user-action-head">
             <div>
               <h2 id="user-action-modal-title">${asset.id} : ${asset.name}</h2>
@@ -22922,8 +22922,8 @@
                 </label>
                 ${renderAssetReportCloseImpactNote()}
                 <div class="user-detail-actions">
-                  <button class="user-detail-action-btn warning user-action-confirm" type="button" data-asset-report-status-confirm="${status}" data-asset-id="${asset.id}">ยืนยัน</button>
                   <button class="user-detail-action-btn" type="button" data-user-action-modal-close>ยกเลิก</button>
+                  <button class="user-detail-action-btn warning user-action-confirm" type="button" data-asset-report-status-confirm="${status}" data-asset-id="${asset.id}">ยืนยัน</button>
                 </div>
                 <div class="warning-note action-feedback user-action-result ${hasResult ? "show" : ""} ${resultType}">
                   <strong>${resultMessage}</strong><br>
@@ -23116,7 +23116,7 @@
       const note = isConsignment ? consignment.note : purchase.note;
       const modalBody = document.querySelector("#user-action-modal-body");
       modalBody.innerHTML = `
-        <div class="user-action-page asset-detail-related-modal">
+        <div class="user-action-page asset-detail-related-modal" data-modal-dismissible>
           <div class="user-action-head">
             <div>
               <h2 id="user-action-modal-title">${isConsignment ? "Consignment Details" : "Purchase History"}</h2>
@@ -23201,7 +23201,7 @@
       const saleRecord = getAssetSoldSaleRecord(asset, detail);
       const modalBody = document.querySelector("#user-action-modal-body");
       modalBody.innerHTML = `
-        <div class="user-action-page">
+        <div class="user-action-page" data-modal-dismissible>
           <div class="user-action-head">
             <div>
               <h2 id="user-action-modal-title">Sale History</h2>
@@ -24046,8 +24046,8 @@
                 ${renderAssetHideEmailNote(asset)}
                 ${renderAssetHideEmailPreview(asset, defaultReason)}
                 <div class="user-detail-actions user-action-footer">
-                  <button class="user-detail-action-btn warning user-action-confirm" type="button" data-asset-action-confirm="${action}" data-asset-id="${asset.id}">${config.button}</button>
                   <button class="user-detail-action-btn" type="button" data-user-action-modal-close>ยกเลิก</button>
+                  <button class="user-detail-action-btn warning user-action-confirm" type="button" data-asset-action-confirm="${action}" data-asset-id="${asset.id}">${config.button}</button>
                 </div>
                 <div class="warning-note action-feedback user-action-result ${hasResult ? "show" : ""} ${resultType}">
                   <strong>${resultMessage || "Audit requirement"}</strong><br>
@@ -24105,8 +24105,8 @@
                 ${renderAssetDeletePostEmailNote(asset)}
                 ${renderAssetDeletePostEmailPreview(asset, defaultReason)}
                 <div class="user-detail-actions user-action-footer">
-                  <button class="user-detail-action-btn danger user-action-confirm" type="button" data-asset-action-confirm="${action}" data-asset-id="${asset.id}">${config.button}</button>
                   <button class="user-detail-action-btn" type="button" data-user-action-modal-close>ยกเลิก</button>
+                  <button class="user-detail-action-btn danger user-action-confirm" type="button" data-asset-action-confirm="${action}" data-asset-id="${asset.id}">${config.button}</button>
                 </div>
                 <div class="warning-note action-feedback user-action-result ${hasResult ? "show" : ""} ${resultType}">
                   <strong>${resultMessage || "Audit requirement"}</strong><br>
@@ -24164,8 +24164,8 @@
                 ${renderAssetRestoreVisibilityEmailNote(asset)}
                 ${renderAssetRestoreVisibilityEmailPreview(asset, defaultReason)}
                 <div class="user-detail-actions user-action-footer">
-                  <button class="user-detail-action-btn primary user-action-confirm" type="button" data-asset-action-confirm="${action}" data-asset-id="${asset.id}">${config.button}</button>
                   <button class="user-detail-action-btn" type="button" data-user-action-modal-close>ยกเลิก</button>
+                  <button class="user-detail-action-btn primary user-action-confirm" type="button" data-asset-action-confirm="${action}" data-asset-id="${asset.id}">${config.button}</button>
                 </div>
                 <div class="warning-note action-feedback user-action-result ${hasResult ? "show" : ""} ${resultType}">
                   <strong>${resultMessage || "Audit requirement"}</strong><br>
@@ -24806,7 +24806,7 @@
         <div class="option-confirm-row"><span class="option-confirm-label">${label}</span><span class="option-confirm-value">${value}</span></div>
       `;
       modalBody.innerHTML = `
-        <div class="user-action-head">
+        <div class="user-action-head" data-modal-dismissible>
           <div>
             <h2 id="user-action-modal-title">${row.id}</h2>
             <p>${row.name}</p>
@@ -24860,7 +24860,7 @@
         <div class="audit-detail-diff-cell"><span class="audit-detail-diff-label">After</span><span class="audit-detail-diff-value after">${e.after}</span></div>
       </div>`;
       modalBody.innerHTML = `
-        <div class="audit-detail-drawer-content">
+        <div class="audit-detail-drawer-content" data-modal-dismissible>
           <div class="user-action-head">
             <div>
               <span class="audit-detail-eyebrow">Audit Log Detail</span>
@@ -28252,8 +28252,8 @@
                 </label>
                 ${renderAdminAccountActionImpactNote(acc, action)}
                 <div class="user-detail-actions user-action-footer">
-                  <button class="user-detail-action-btn ${getAdminAccountActionConfirmClass(config)}" type="button" data-admin-account-action-confirm="${action}" data-admin-account-id="${acc.id}" ${completed ? "disabled" : ""}>ยืนยัน</button>
                   <button class="user-detail-action-btn" type="button" data-user-action-modal-close>${completed ? "ปิด" : "ยกเลิก"}</button>
+                  <button class="user-detail-action-btn ${getAdminAccountActionConfirmClass(config)}" type="button" data-admin-account-action-confirm="${action}" data-admin-account-id="${acc.id}" ${completed ? "disabled" : ""}>ยืนยัน</button>
                 </div>
                 <div class="warning-note action-feedback user-action-result ${hasResult ? "show" : ""} ${resultType}">
                   <strong>${resultMessage}</strong><br>
@@ -28334,8 +28334,8 @@
                   <p><strong>เปลี่ยนสิทธิ:</strong> <span data-admin-role-diff data-admin-role-from="${acc.role}">${acc.role} → —</span></p>
                 </div>
                 <div class="user-detail-actions user-action-footer">
-                  <button class="user-detail-action-btn warning user-action-confirm" type="button" data-admin-account-change-role-confirm="true" data-admin-account-id="${acc.id}" ${completed ? "disabled" : ""}>ยืนยันเปลี่ยน Role</button>
                   <button class="user-detail-action-btn" type="button" data-user-action-modal-close>${completed ? "ปิด" : "ยกเลิก"}</button>
+                  <button class="user-detail-action-btn warning user-action-confirm" type="button" data-admin-account-change-role-confirm="true" data-admin-account-id="${acc.id}" ${completed ? "disabled" : ""}>ยืนยันเปลี่ยน Role</button>
                 </div>
                 <div class="warning-note action-feedback user-action-result ${hasResult ? "show" : ""} ${resultType}">
                   <strong>${resultMessage}</strong><br>
@@ -30604,8 +30604,8 @@
                 ${getAccountStatusEmailNote(user, action)}
                 ${renderAccountStatusEmailPreview(user, action, defaultPublicReason, defaultSuspendUntil)}
                 <div class="user-detail-actions user-action-footer">
-                  <button class="user-detail-action-btn ${getUserActionConfirmClass(config)}" type="button" data-user-action-confirm="${action}" data-user-id="${user.id}" data-report-context="${activeReportContextId || ""}" ${completed ? "disabled" : ""}>${USER_ACTION_CONFIRM_LABEL}</button>
                   <button class="user-detail-action-btn" type="button" data-user-action-modal-close>${completed ? "ปิด" : "ยกเลิก"}</button>
+                  <button class="user-detail-action-btn ${getUserActionConfirmClass(config)}" type="button" data-user-action-confirm="${action}" data-user-id="${user.id}" data-report-context="${activeReportContextId || ""}" ${completed ? "disabled" : ""}>${USER_ACTION_CONFIRM_LABEL}</button>
                 </div>
                 <div class="warning-note action-feedback user-action-result ${hasResult ? "show" : ""} ${resultType}">
                   <strong>${resultMessage}</strong><br>
@@ -30954,8 +30954,8 @@
                 ${renderDeletionActionEmailNote(req)}
                 ${renderDeletionActionEmailPreview(req, action, config.reasons?.[0] || "")}
                 <div class="user-detail-actions user-action-footer">
-                  <button class="user-detail-action-btn ${getDeletionActionConfirmClass(config)}" type="button" data-deletion-action-confirm="${action}" data-deletion-id="${req.id}" ${completed ? "disabled" : ""}>${DELETION_ACTION_CONFIRM_LABEL}</button>
                   <button class="user-detail-action-btn" type="button" data-user-action-modal-close>${completed ? "ปิด" : "ยกเลิก"}</button>
+                  <button class="user-detail-action-btn ${getDeletionActionConfirmClass(config)}" type="button" data-deletion-action-confirm="${action}" data-deletion-id="${req.id}" ${completed ? "disabled" : ""}>${DELETION_ACTION_CONFIRM_LABEL}</button>
                 </div>
                 <div class="warning-note action-feedback user-action-result ${hasResult ? "show" : ""} ${resultType}">
                   <strong>${resultMessage}</strong><br>
@@ -31279,8 +31279,8 @@
                 </label>
                 ${renderReportCloseImpactNote()}
                 <div class="user-detail-actions">
-                  <button class="user-detail-action-btn warning user-action-confirm" type="button" data-report-status-confirm="${status}" data-report-id="${report.id}">ยืนยัน</button>
                   <button class="user-detail-action-btn" type="button" data-user-action-modal-close>ยกเลิก</button>
+                  <button class="user-detail-action-btn warning user-action-confirm" type="button" data-report-status-confirm="${status}" data-report-id="${report.id}">ยืนยัน</button>
                 </div>
                 <div class="warning-note action-feedback user-action-result ${hasResult ? "show" : ""} ${resultType}">
                   <strong>${resultMessage}</strong><br>
@@ -35444,7 +35444,7 @@
       modalCard?.classList.add("article-preview-modal");
       const previewVersionLabel = form.querySelector(".policy-metadata .detail-tile:nth-child(2) strong")?.textContent || "Draft";
       modalBody.innerHTML = `
-        <div class="user-action-page policy-editor-preview-content">
+        <div class="user-action-page policy-editor-preview-content" data-modal-dismissible>
           <div class="user-action-head">
             <div class="policy-preview-title-row">
               <h2 id="user-action-modal-title">Preview — ${policy.typeLabel}</h2>
@@ -35545,7 +35545,7 @@
       modalCard?.classList.remove("article-editor-confirm-modal", "category-editor-modal", "policy-publish-confirm-modal", "policy-restore-confirm-modal");
       modalCard?.classList.add("article-preview-modal", "policy-version-view-modal");
       modalBody.innerHTML = `
-        <div class="user-action-layout article-preview-modal-content policy-version-view-content">
+        <div class="user-action-layout article-preview-modal-content policy-version-view-content" data-modal-dismissible>
           <div class="user-action-head">
             <div>
               <h2 id="user-action-modal-title">${policy.typeLabel} — ${version.version}</h2>
@@ -35779,7 +35779,7 @@
           }).join("")
         : `<div class="support-preview-empty">ไม่มีช่องทางที่เปิดใช้งาน</div>`;
       return `
-        <div class="user-action-page support-center-preview-content">
+        <div class="user-action-page support-center-preview-content" data-modal-dismissible>
           <div class="user-action-head">
             <div>
               <h2 id="user-action-modal-title">Preview</h2>
@@ -37476,7 +37476,7 @@
       if (!modal || !modalCard || !modalBody) return;
       modalCard.classList.add("market-reference-drawer");
       modalBody.innerHTML = `
-        <div class="market-reference-drawer-content">
+        <div class="market-reference-drawer-content" data-modal-dismissible>
           <div class="market-drawer-head">
             <div>
               <span>${brand.name.toUpperCase()}</span>
@@ -37704,10 +37704,10 @@
               </div>
               ${shouldShowSyncProgress ? renderMarketSyncSteps(isRunning ? 3 : isSuccess ? 5 : isError ? 3 : -1, isError ? 3 : -1) : ""}
               <div class="user-detail-actions user-action-footer">
-                ${state === "confirm" ? `<button class="user-detail-action-btn primary user-action-confirm" type="button" data-market-sync-run>Start Sync</button><button class="user-detail-action-btn" type="button" data-user-action-modal-close>Cancel</button>` : ""}
+                ${state === "confirm" ? `<button class="user-detail-action-btn" type="button" data-user-action-modal-close>Cancel</button><button class="user-detail-action-btn primary user-action-confirm" type="button" data-market-sync-run>Start Sync</button>` : ""}
                 ${isRunning ? `<button class="user-detail-action-btn primary user-action-confirm" type="button" disabled>Syncing...</button>` : ""}
-                ${isSuccess ? `<button class="user-detail-action-btn primary" type="button" data-market-sync-view-logs>View Sync History</button><button class="user-detail-action-btn" type="button" data-user-action-modal-close>Close</button>` : ""}
-                ${isError ? `<button class="user-detail-action-btn warning user-action-confirm" type="button" data-market-sync-retry>Retry Failed Datasets</button><button class="user-detail-action-btn" type="button" data-user-action-modal-close>Close</button>` : ""}
+                ${isSuccess ? `<button class="user-detail-action-btn" type="button" data-user-action-modal-close>Close</button><button class="user-detail-action-btn primary" type="button" data-market-sync-view-logs>View Sync History</button>` : ""}
+                ${isError ? `<button class="user-detail-action-btn" type="button" data-user-action-modal-close>Close</button><button class="user-detail-action-btn warning user-action-confirm" type="button" data-market-sync-retry>Retry Failed Datasets</button>` : ""}
               </div>
               ${isError ? `<div class="warning-note action-feedback show error"><strong>reference/list failed</strong><br><span>The source API returned a rate limit. Existing catalog data was not changed.</span></div>` : ""}
               ${isSuccess ? `<div class="warning-note action-feedback show success"><strong>Sync completed</strong><br><span>Refreshed ${job.brands.toLocaleString()} brands, ${job.models.toLocaleString()} models and ${job.references.toLocaleString()} references at ${jobDisplayTimestamp}. Audit was saved.</span></div>` : ""}
@@ -38036,7 +38036,7 @@
           : `<div class="detail-empty">ไม่มีข้อมูล</div>`;
         const modalBody = document.querySelector("#user-action-modal-body");
         modalBody.innerHTML = `
-          <div class="user-action-page wa-criteria-modal">
+          <div class="user-action-page wa-criteria-modal" data-modal-dismissible>
             <div class="user-action-head">
               <div>
                 <h2 id="user-action-modal-title">${titleHtml}</h2>
@@ -38341,7 +38341,7 @@
           : `<div class="detail-empty">ไม่มีข้อมูล</div>`;
         const modalBody = document.querySelector("#user-action-modal-body");
         modalBody.innerHTML = `
-          <div class="user-action-page wa-criteria-modal">
+          <div class="user-action-page wa-criteria-modal" data-modal-dismissible>
             <div class="user-action-head">
               <div>
                 <h2 id="user-action-modal-title">${esc(meta.title)}</h2>
@@ -40250,7 +40250,7 @@
         ? `<span class="pill green">Active</span>`
         : `<span class="pill gray">Inactive</span>`;
       modalBody.innerHTML = `
-        <div class="user-action-layout">
+        <div class="user-action-layout" data-modal-dismissible>
           <div class="user-action-head">
             <div>
               <h2 id="user-action-modal-title">Option Detail</h2>
@@ -40271,7 +40271,6 @@
             <div class="option-confirm-row"><span class="option-confirm-label">Updated</span><span class="option-confirm-value">${escapeOptionField(option.updated_at || "-")}</span></div>
           </div>
           <div class="user-detail-actions">
-            <button class="user-detail-action-btn" type="button" data-user-action-modal-close>ปิด</button>
             <button class="user-detail-action-btn" type="button" data-option-audit-open="${option.id}">ดู Audit Log</button>
             <button class="user-detail-action-btn primary" type="button" data-option-edit="${option.id}">Edit</button>
           </div>
@@ -41682,7 +41681,7 @@
         ? `<span class="pill green">Active</span>`
         : `<span class="pill gray">Inactive</span>`;
       modalBody.innerHTML = `
-        <div class="user-action-head">
+        <div class="user-action-head" data-modal-dismissible>
           <div>
             <h2 id="user-action-modal-title">Audit Log</h2>
             <p>${escapeOptionField(g.group_id)} (${escapeOptionField(g.group)}) — ${escapeOptionField(g.display_name_en)}</p>
@@ -41916,7 +41915,7 @@
         ? `<span class="pill green">Active</span>`
         : `<span class="pill gray">Inactive</span>`;
       modalBody.innerHTML = `
-        <div class="user-action-head">
+        <div class="user-action-head" data-modal-dismissible>
           <div>
             <h2 id="user-action-modal-title">Audit Log</h2>
             <p>${escapeOptionField(option.id)} (${escapeOptionField(option.key)}) ในกลุ่ม ${escapeOptionField(g.display_name_en)}</p>
@@ -42024,7 +42023,7 @@
       modalCard.classList.remove("article-preview-modal", "article-editor-confirm-modal", "category-order-modal");
       modalCard.classList.add("category-editor-modal");
       modalBody.innerHTML = `
-        <div class="user-action-layout">
+        <div class="user-action-layout" data-modal-dismissible>
           <div class="user-action-head">
             <div>
               <h2 id="user-action-modal-title">รายละเอียดหมวดหมู่</h2>
@@ -42270,7 +42269,7 @@
       modalCard.classList.remove("article-preview-modal", "category-editor-modal");
       modalCard.classList.add("article-editor-confirm-modal");
       modalBody.innerHTML = `
-        <div class="article-editor-confirm-page">
+        <div class="article-editor-confirm-page" data-modal-dismissible>
           <div class="article-editor-confirm-icon cancel" aria-hidden="true">
             <span>
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
@@ -43087,7 +43086,7 @@
       modalCard.classList.remove("category-editor-modal", "article-editor-confirm-modal", "article-preview-modal");
       modalCard.classList.add("article-editor-confirm-modal");
       modalBody.innerHTML = `
-        <div class="article-editor-confirm-page">
+        <div class="article-editor-confirm-page" data-modal-dismissible>
           <div class="article-editor-confirm-icon cancel" aria-hidden="true">
             <span>
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
@@ -43116,7 +43115,7 @@
         modalCard.classList.remove("category-editor-modal", "article-editor-confirm-modal", "article-preview-modal");
         modalCard.classList.add("article-preview-modal");
         modalBody.innerHTML = `
-          <div class="user-action-layout article-preview-modal-content">
+          <div class="user-action-layout article-preview-modal-content" data-modal-dismissible>
             <div class="user-action-head">
               <div>
                 <h2 id="user-action-modal-title">Preview article</h2>
@@ -44730,8 +44729,8 @@
                   <p><strong>ผลกระทบ:</strong> ${config.detail} และบันทึก audit log ของ Reported Articles${action === "archive-article" ? " พร้อมอัปเดตสถานะบทความหลักเป็น Archived เพื่อไม่ให้แสดงบน FO" : ""}</p>
                 </div>
                 <div class="user-detail-actions">
-                  <button class="user-detail-action-btn warning user-action-confirm" type="button" data-board-report-action-confirm="${action}" data-board-report-id="${report.id}">${config.confirm}</button>
                   <button class="user-detail-action-btn" type="button" data-user-action-modal-close>ยกเลิก</button>
+                  <button class="user-detail-action-btn warning user-action-confirm" type="button" data-board-report-action-confirm="${action}" data-board-report-id="${report.id}">${config.confirm}</button>
                 </div>
                 <div class="warning-note action-feedback user-action-result ${hasResult ? "show" : ""} ${resultType}">
                   <strong>${resultMessage}</strong><br>
@@ -44812,7 +44811,7 @@
       modalCard.classList.remove("article-preview-modal", "article-editor-confirm-modal", "category-order-modal", "category-editor-modal");
       modalCard.classList.add("board-report-phone-preview-modal");
       modalBody.innerHTML = `
-        <div class="board-report-phone-preview">
+        <div class="board-report-phone-preview" data-modal-dismissible>
           <h2 class="board-report-phone-preview-title" id="user-action-modal-title">Preview article ${escapeArticleField(report.id)} ${escapeArticleField(report.articleId)}</h2>
           <button class="btn user-action-close board-report-phone-preview-close" type="button" data-user-action-modal-close aria-label="ปิด">${iconSvg.close}</button>
           ${renderArticleFoPreview(article)}
@@ -45349,8 +45348,8 @@
                 ${renderReportedCommentActionEmailNote(reportCase, action)}
                 ${renderReportedCommentActionEmailPreview(reportCase, action, defaultReason)}
                 <div class="user-detail-actions user-action-footer">
-                  <button class="user-detail-action-btn ${config.confirmClass} user-action-confirm" type="button" data-reported-comment-action-confirm="${action}" data-report-id="${reportCase.id}">${config.button}</button>
                   <button class="user-detail-action-btn" type="button" data-user-action-modal-close>ยกเลิก</button>
+                  <button class="user-detail-action-btn ${config.confirmClass} user-action-confirm" type="button" data-reported-comment-action-confirm="${action}" data-report-id="${reportCase.id}">${config.button}</button>
                 </div>
                 <div class="warning-note action-feedback user-action-result ${hasResult ? "show" : ""} ${resultType}">
                   <strong>${resultMessage || "Audit requirement"}</strong><br>
@@ -46420,11 +46419,14 @@
         return;
       }
 
-      // AL-001: Audit Log detail modal — คลิก backdrop ปิด modal (scoped to audit-log-detail-modal)
+      // AL-001 + BOR-005: คลิก backdrop ปิดเฉพาะ read-only modal — audit drawer canonical + surfaces ที่ opt-in ด้วย [data-modal-dismissible]
       if (event.target.id === "user-action-modal") {
-        const auditModalCard = event.target.querySelector(".user-action-modal.audit-log-detail-modal");
-        if (auditModalCard) {
+        const isDismissibleModal = event.target.querySelector(".user-action-modal.audit-log-detail-modal")
+          || event.target.querySelector("#user-action-modal-body [data-modal-dismissible]");
+        if (isDismissibleModal) {
           closeUserActionModal();
+          // BOR-005: blur element ที่เปิด modal (row/button) — กัน focus-visible outline ค้างหลังปิด
+          document.activeElement?.blur?.();
           return;
         }
       }
@@ -50043,10 +50045,14 @@
       if (event.key === "Escape") {
         const userActionModal = document.querySelector("#user-action-modal");
         if (userActionModal?.classList.contains("show")) {
-          // AL-001: Audit Log detail modal — ESC ปิด modal (scoped to audit-log-detail-modal)
-          const auditModalCard = userActionModal.querySelector(".user-action-modal.audit-log-detail-modal");
-          if (auditModalCard) {
+          // AL-001 + BOR-005: ESC ปิดเฉพาะ read-only modal — audit drawer canonical + surfaces ที่ opt-in ด้วย [data-modal-dismissible]
+          // modal ที่ไม่ opt-in: ESC ไม่ทำอะไรและไม่ตกไปปิด nav ใน event เดียวกัน (Contract B ข้อ 2)
+          const isDismissibleModal = userActionModal.querySelector(".user-action-modal.audit-log-detail-modal")
+            || userActionModal.querySelector("#user-action-modal-body [data-modal-dismissible]");
+          if (isDismissibleModal) {
             closeUserActionModal();
+            // BOR-005: blur element ที่เปิด modal — กัน focus-visible outline ค้างหลังปิดด้วย ESC
+            document.activeElement?.blur?.();
             return;
           }
           return;
