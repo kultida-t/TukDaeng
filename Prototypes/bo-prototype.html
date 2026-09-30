@@ -741,6 +741,19 @@
     }
     .admin-box:hover { color: #fff; background: rgba(36, 61, 96, .58); }
     .admin-box:focus-visible { outline: 2px solid rgba(122, 162, 208, .8); outline-offset: 2px; }
+    /* BOR-006: shared focus ring — สีเดียวกับ .field:focus border (#b8c6d8) แทน browser default outline สีดำ */
+    :is(button, a[href], [role="button"], summary, input, select, textarea, [contenteditable]):focus-visible {
+      outline: 2px solid #b8c6d8;
+      outline-offset: 2px;
+    }
+    #user-action-modal [tabindex]:focus-visible,
+    .user-row:focus-visible,
+    #page-title:focus-visible {
+      outline: 2px solid #b8c6d8;
+      outline-offset: 2px;
+    }
+    /* restore กลับ row ที่คลิก — แสดงเหมือน hover (#f8fbff) + ring เดียวกัน ไม่ใช่กรอบดำ */
+    .user-row:focus-visible { background: #f8fbff; }
     .avatar {
       width: 24px;
       height: 24px;
@@ -22941,8 +22954,8 @@
           </div>
         </div>
       `;
-      applyModalHeadingFonts(modal);
-      modal.classList.add("show");
+      // BOR-006: เปิดผ่าน shared function เพื่อให้ได้ initial focus/opener capture/scroll lock เหมือน modal อื่น
+      showUserActionModal(true);
     }
 
     function updateAssetReportStatus(asset, status) {
@@ -28264,8 +28277,8 @@
           </div>
         </div>
       `;
-      applyModalHeadingFonts(modal);
-      modal.classList.add("show");
+      // BOR-006: เปิดผ่าน shared function เพื่อให้ได้ initial focus/opener capture/scroll lock เหมือน modal อื่น
+      showUserActionModal(true);
     }
 
     // ADM-PTO-001: Change Role modal — pattern renderAdminAccountActionModal + before/after diff
@@ -28346,8 +28359,8 @@
           </div>
         </div>
       `;
-      applyModalHeadingFonts(modal);
-      modal.classList.add("show");
+      // BOR-006: เปิดผ่าน shared function เพื่อให้ได้ initial focus/opener capture/scroll lock เหมือน modal อื่น
+      showUserActionModal(true);
     }
 
     let adminAccountInviteRoleSnapshot = {};
@@ -29104,6 +29117,9 @@
 
       activeModule = "deletions";
       activeSub = "";
+      // BOR-008 (Contract A.4): accordion ตาม active module — deletions ไม่มี sub
+      // ต้อง clear expandedMenus กัน sub ของต้นทาง (เช่น users) ค้างเปิดตอน back กลับ
+      syncExpandedNavForModule("deletions");
       activeRow = { id: req.id };
       document.body.classList.add("deletion-detail-mode");
       document.body.classList.remove("deletion-list-mode", "user-list-mode", "user-detail-mode", "asset-detail-mode", "offer-list-mode", "offer-detail-mode", "watch-alert-detail-mode");
@@ -30406,9 +30422,97 @@
       });
     }
 
+    // BOR-006: shared focus management สำหรับ shared modal ทุก surface (Contract C — initial focus / focus trap / restore focus)
+    let userActionModalOpener = null;
+    // element ที่โต้ตอบล่าสุดขณะ modal ปิด (pointerdown/Enter/Space) — ใช้เป็น opener สำรองเมื่อ activeElement ค้างที่ body
+    // เช่น row ที่เป็น div (focus ไม่ได้) เปิด detail modal — restore จะกลับ row เดิมได้แทนที่จะ fallback ไป page heading ทันที
+    let userActionModalLastTrigger = null;
+    const USER_ACTION_MODAL_FOCUSABLE = 'a[href], button:not([disabled]), input:not([disabled]):not([type="hidden"]), select:not([disabled]), textarea:not([disabled]), summary, [contenteditable]:not([contenteditable="false"]), [tabindex]:not([tabindex="-1"])';
+    const USER_ACTION_MODAL_EDITABLE = 'input:not([type="hidden"]):not([type="checkbox"]):not([type="radio"]):not([type="button"]):not([type="submit"]):not([type="reset"]):not([disabled]):not([readonly]), textarea:not([disabled]):not([readonly]), select:not([disabled]), [contenteditable]:not([contenteditable="false"])';
+    const USER_ACTION_MODAL_FOCUSABLE_INCLUDING_OFFSCREEN = 'a[href], button:not([disabled]), input:not([disabled]):not([type="hidden"]), select:not([disabled]), textarea:not([disabled]), summary, [contenteditable]:not([contenteditable="false"]), [tabindex]';
+
+    function isUserActionModalTargetVisible(el) {
+      if (!el || el.getClientRects().length === 0 || el.closest("[hidden]")) return false;
+      // ลูกของ <details> ที่ปิดอยู่ไม่อยู่ใน tab order (ยกเว้น summary ตัวแรก) — getClientRects ยังคืนค่าใน Chromium จึงเช็คเอง
+      const closedDetails = el.closest("details:not([open])");
+      if (closedDetails && el !== closedDetails.querySelector(":scope > summary")) return false;
+      return true;
+    }
+
+    function getUserActionModalFocusableElements() {
+      const modal = document.querySelector("#user-action-modal");
+      if (!modal?.classList.contains("show")) return [];
+      return Array.from(modal.querySelectorAll(USER_ACTION_MODAL_FOCUSABLE)).filter(isUserActionModalTargetVisible);
+    }
+
+    function focusUserActionModalInitialTarget(modal) {
+      const body = modal.querySelector("#user-action-modal-body");
+      const card = modal.querySelector(".user-action-modal");
+      if (!body || !card) return;
+      const closeControls = getUserActionModalFocusableElements().filter(el => el.hasAttribute("data-user-action-modal-close"));
+      const isReadOnlySurface = card.classList.contains("audit-log-detail-modal")
+        || card.classList.contains("market-reference-drawer")
+        || Boolean(body.querySelector("[data-modal-dismissible]"));
+      let target = null;
+      if (isReadOnlySurface) {
+        // Contract C.1: read-only/drawer → focus ปุ่ม Close (X)
+        target = closeControls[0] || null;
+      } else if (body.querySelector("button.warning, button.danger")) {
+        // Contract C.1: confirmation/destructive → focus ปุ่มที่ destructive น้อยสุด (ยกเลิก)
+        // ยกเว้น type-to-confirm: confirm disabled รอพิมพ์ชื่อ → input คือ gate → focus input (เจตนาเดียวกับ group-delete ที่ focus() เอง)
+        const confirmGatedByInput = body.querySelector("button.warning[disabled], button.danger[disabled]");
+        target = (confirmGatedByInput ? Array.from(body.querySelectorAll(USER_ACTION_MODAL_EDITABLE)).find(isUserActionModalTargetVisible) : null)
+          || closeControls[closeControls.length - 1] || null;
+      } else {
+        // Contract C.1: form modal → focus ฟิลด์แรกที่กรอกได้
+        target = Array.from(body.querySelectorAll(USER_ACTION_MODAL_EDITABLE)).find(isUserActionModalTargetVisible) || null;
+      }
+      // fallback: ปุ่มปิดตัวสุดท้าย → heading → card (ตามลำดับ Contract C.1)
+      if (!target) target = closeControls[closeControls.length - 1] || null;
+      if (!target) target = body.querySelector("h1, h2, h3") || card;
+      if (target && !target.matches(USER_ACTION_MODAL_FOCUSABLE_INCLUDING_OFFSCREEN)) target.tabIndex = -1;
+      // focusVisible:true → แสดง ring ทันทีแม้เปิดด้วยเมาส์ (ไม่งั้น programmatic focus ไม่มีตัวบอกตำแหน่งจนกว่าจะกดคีย์แรก)
+      target?.focus({ preventScroll: true, focusVisible: true });
+    }
+
+    function scheduleUserActionModalFocusRestore() {
+      const opener = userActionModalOpener;
+      userActionModalOpener = null;
+      window.requestAnimationFrame(() => {
+        const modal = document.querySelector("#user-action-modal");
+        // modal ใหม่เปิดแทนแล้ว → focus เป็นของ modal ใหม่ (drawer closing animation ยังถือว่ากำลังปิด)
+        if (modal?.classList.contains("show")
+          && !modal.classList.contains("market-reference-drawer-closing")
+          && !modal.classList.contains("audit-log-drawer-closing")) return;
+        // Contract C.3: restore กลับ opener; opener หายจาก DOM/unfocusable → fallback main content heading
+        let target = null;
+        if (opener?.isConnected && !opener.disabled) {
+          // opener ที่ focus ได้เอง → ใช้เลย; ถ้าเป็น cell/text ใน row ที่ focus ไม่ได้ → ปีนขึ้นไปหา row/interactive container ใกล้สุด
+          target = opener.matches(USER_ACTION_MODAL_FOCUSABLE_INCLUDING_OFFSCREEN) ? opener
+            : opener.closest('button, a[href], input, select, textarea, summary, [contenteditable], [tabindex], tr, [role="row"], [role="button"], .user-row');
+        }
+        if (!target || !target.isConnected || target.disabled || !isUserActionModalTargetVisible(target)) {
+          target = document.querySelector("#page-title");
+          if (!isUserActionModalTargetVisible(target)) target = null;
+        }
+        if (target && !target.matches(USER_ACTION_MODAL_FOCUSABLE_INCLUDING_OFFSCREEN)) target.tabIndex = -1;
+        // focusVisible:true → restore แสดง ring เสมอเพื่อยืนยันตำแหน่ง focus ที่กลับมา (keyboard/mouse close เหมือนกัน)
+        target?.focus({ preventScroll: true, focusVisible: true });
+      });
+    }
+
     function showUserActionModal(lockMainScroll = false) {
       const modal = document.querySelector("#user-action-modal");
       if (!modal) return;
+      // BOR-006: จับ opener เฉพาะ transition closed→open — modal ที่เปิดซ้อน/ re-render state เดิมคง opener แรกไว้
+      if (!modal.classList.contains("show")) {
+        const opener = document.activeElement;
+        userActionModalOpener = opener && opener !== document.body && opener !== document.documentElement && !modal.contains(opener) ? opener : null;
+        // opener สำรอง: activeElement ค้างที่ body เมื่อเปิดจาก element ที่ focus ไม่ได้ (เช่น row div) — ใช้ pointerdown/Enter ล่าสุดแทน
+        if (!userActionModalOpener && userActionModalLastTrigger && !modal.contains(userActionModalLastTrigger)) {
+          userActionModalOpener = userActionModalLastTrigger;
+        }
+      }
       closeRowMenus();
       applyModalHeadingFonts(modal);
       modal.classList.remove("market-reference-drawer-closing", "market-reference-drawer-open", "audit-log-drawer-closing", "audit-log-drawer-open");
@@ -30424,11 +30528,17 @@
         });
       }
       document.body.classList.toggle("asset-action-modal-open", lockMainScroll);
+      // BOR-006: initial focus ตาม Contract C.1 — per-modal .focus() ที่รันหลัง show() ยัง override ได้ตามเดิม
+      focusUserActionModalInitialTarget(modal);
     }
 
     function closeUserActionModal() {
       const modal = document.querySelector("#user-action-modal");
       if (!modal) return;
+      // BOR-006: restore focus กลับ opener ทุก close path (X/ยกเลิก/backdrop/ESC/success) — trap release อัตโนมัติเมื่อ .show ถูกถอด
+      // drawer closing path เรียกซ้ำได้ → guard ด้วย closing class กัน schedule ซ้อน
+      const isDrawerClosing = modal.classList.contains("market-reference-drawer-closing") || modal.classList.contains("audit-log-drawer-closing");
+      if (modal.classList.contains("show") && !isDrawerClosing) scheduleUserActionModalFocusRestore();
       const modalCard = modal.querySelector(".user-action-modal");
       const isMarketReferenceDrawer = modalCard?.classList.contains("market-reference-drawer");
       const isAuditLogDrawer = modalCard?.classList.contains("audit-log-detail-modal");
@@ -30623,8 +30733,8 @@
           </div>
         </div>
       `;
-      applyModalHeadingFonts(modal);
-      modal.classList.add("show");
+      // BOR-006: เปิดผ่าน shared function เพื่อให้ได้ initial focus/opener capture/scroll lock เหมือน modal อื่น
+      showUserActionModal(true);
     }
 
     function syncExpandedNavForModule(moduleId, subLabel = "") {
@@ -30966,8 +31076,8 @@
           </div>
         </div>
       `;
-      applyModalHeadingFonts(modal);
-      modal.classList.add("show");
+      // BOR-006: เปิดผ่าน shared function เพื่อให้ได้ initial focus/opener capture/scroll lock เหมือน modal อื่น
+      showUserActionModal(true);
     }
 
     function confirmDeletionAction(req, action) {
@@ -31059,6 +31169,9 @@
 
     function openAccountDeletionRequest(user, subLabel = "") {
       const deletionId = user?.support?.startsWith("DEL-") ? user.support : "";
+      // BOR-008 (Contract B.2/B.3): entity deep link ลง Request Detail ต้อง push
+      // source context ก่อนเปลี่ยนหน้า — back กลับต้นทาง (เช่น User Detail U-1104)
+      pushBackNavigationContext();
       renderModule("deletions", subLabel, subLabel);
       if (deletionId) {
         // DEL-PTO-004: drill-in จาก User Management → เปิด Request Detail ตรง (เจตนาคือดูคำขอนี้ ไม่ใช่เบราว์ list)
@@ -31298,8 +31411,8 @@
           </div>
         </div>
       `;
-      applyModalHeadingFonts(modal);
-      modal.classList.add("show");
+      // BOR-006: เปิดผ่าน shared function เพื่อให้ได้ initial focus/opener capture/scroll lock เหมือน modal อื่น
+      showUserActionModal(true);
     }
 
     function updateReportStatus(report, status) {
@@ -31514,7 +31627,12 @@
       const fullEmail = getUserFullEmail(user);
       document.body.classList.add("user-detail-mode");
       document.body.classList.remove("user-list-mode");
+      // BOR-008 (Contract A.1/A.4): destination-owned active state — User Detail
+      // belongs to users/User Accounts even when opened cross-module (e.g. DEL-033
+      // → U-1104); source context stays in backNavigationStack for Back (B.3).
+      activeModule = "users";
       activeSub = "User Accounts";
+      syncExpandedNavForModule("users", "User Accounts");
       activeRow = user;
       document.querySelector("#crumb").textContent = `การดำเนินงาน / User Management / User Detail / ${user.id}`;
       document.querySelector("#page-title").textContent = "User Detail";
@@ -36012,6 +36130,8 @@
       // AIL-020: "my-account" likewise — rendered via renderModule from .admin-box entry.
       if (!moduleData[moduleId] && moduleId !== "dashboard" && moduleId !== "settings" && moduleId !== "my-account") return;
       const targetSubLabel = subLabel || (moduleId !== "dashboard" ? defaultSubByModule[moduleId] || "" : "");
+      // Contract B.6: cross-module jump = context ใหม่ — reset back stack เหมือน sidebar nav
+      resetBackNavigation();
       resetListFilterPanelsForNavigation(moduleId, targetSubLabel);
       renderModule(moduleId, targetSubLabel, targetSubLabel);
       scrollMainToTop();
@@ -44748,8 +44868,8 @@
           </div>
         </div>
       `;
-      applyModalHeadingFonts(modal);
-      modal.classList.add("show");
+      // BOR-006: เปิดผ่าน shared function เพื่อให้ได้ initial focus/opener capture/scroll lock เหมือน modal อื่น
+      showUserActionModal(true);
     }
 
     function applyBoardReportAction(report, action) {
@@ -46424,9 +46544,8 @@
         const isDismissibleModal = event.target.querySelector(".user-action-modal.audit-log-detail-modal")
           || event.target.querySelector("#user-action-modal-body [data-modal-dismissible]");
         if (isDismissibleModal) {
+          // BOR-006: closeUserActionModal restore focus กลับ opener แล้ว (ไม่ต้อง blur แยก)
           closeUserActionModal();
-          // BOR-005: blur element ที่เปิด modal (row/button) — กัน focus-visible outline ค้างหลังปิด
-          document.activeElement?.blur?.();
           return;
         }
       }
@@ -46702,10 +46821,12 @@
         jumpToModule("market", "Sync History");
         return;
       }
-      // Watch Alert mini table row click → Alert List (read-only drill-in; Alert Detail จะต่อใน WA-PTO-003)
+      // Watch Alert mini table row click → Alert Detail (read-only drill-in — entity deep link ตาม Contract B.1)
+      // push source context (Demand Overview) ไว้ก่อน เพื่อให้ Back กลับต้นทางตาม Contract B.2/B.3
       const waAlertRow = event.target.closest("[data-wa-alert-row]");
       if (waAlertRow) {
-        jumpToModule("watch-alerts", "Alert List");
+        pushBackNavigationContext();
+        renderWatchAlertDetail(waAlertRow.dataset.waAlertRow);
         return;
       }
       const moduleJump = event.target.closest("[data-module-jump], [data-jump]");
@@ -50033,6 +50154,35 @@
       setNavOpen(!document.body.classList.contains("nav-open"));
     });
     document.querySelector("#sidebar-backdrop").addEventListener("click", () => setNavOpen(false));
+    // BOR-006: จับ element ที่โต้ตอบล่าสุดขณะ modal ปิด (pointerdown + Enter/Space) — opener สำรองของ restore focus (Contract C.3)
+    document.addEventListener("pointerdown", event => {
+      const modal = document.querySelector("#user-action-modal");
+      if (!modal?.classList.contains("show")) userActionModalLastTrigger = event.target;
+    }, true);
+    document.addEventListener("keydown", event => {
+      if (event.key !== "Enter" && event.key !== " ") return;
+      const modal = document.querySelector("#user-action-modal");
+      if (!modal?.classList.contains("show")) userActionModalLastTrigger = event.target;
+    }, true);
+    // BOR-006: focus trap — Tab/Shift+Tab วนเฉพาะ focusable elements ใน shared modal จนกว่าจะปิด (Contract C.2)
+    // trap release อัตโนมัติเมื่อ .show ถูกถอดทุก close path (C.5) และไม่ดัก ESC — ESC ตาม close policy ของ Contract B (C.4)
+    document.addEventListener("keydown", event => {
+      if (event.key !== "Tab") return;
+      const modal = document.querySelector("#user-action-modal");
+      if (!modal?.classList.contains("show")) return;
+      const focusable = getUserActionModalFocusableElements();
+      if (!focusable.length) {
+        event.preventDefault();
+        return;
+      }
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      const active = document.activeElement;
+      if (event.shiftKey ? (!modal.contains(active) || active === first) : (!modal.contains(active) || active === last)) {
+        event.preventDefault();
+        (event.shiftKey ? last : first).focus();
+      }
+    });
     document.addEventListener("keydown", event => {
       if (event.target.matches("[data-calendar-only]")) {
         const allowedKeys = ["Tab", "Shift", "Escape"];
@@ -50050,9 +50200,8 @@
           const isDismissibleModal = userActionModal.querySelector(".user-action-modal.audit-log-detail-modal")
             || userActionModal.querySelector("#user-action-modal-body [data-modal-dismissible]");
           if (isDismissibleModal) {
+            // BOR-006: closeUserActionModal restore focus กลับ opener แล้ว (ไม่ต้อง blur แยก)
             closeUserActionModal();
-            // BOR-005: blur element ที่เปิด modal — กัน focus-visible outline ค้างหลังปิดด้วย ESC
-            document.activeElement?.blur?.();
             return;
           }
           return;
