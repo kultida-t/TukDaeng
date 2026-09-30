@@ -1554,7 +1554,7 @@
       overflow: visible;
     }
     body.asset-list-mode .layout > .panel {
-      overflow: hidden;
+      overflow: visible;
     }
     body.asset-list-mode:not(.article-list-mode):not(.category-list-mode):not(.reported-board-mode) .main {
       overflow-x: hidden;
@@ -1613,12 +1613,12 @@
     body.offer-list-mode .layout > .panel {
       border-color: #d7e2f0;
       box-shadow: none;
-      overflow: hidden;
+      overflow: visible;
     }
     body.article-list-mode .layout > .panel,
     body.category-list-mode .layout > .panel,
     body.reported-board-mode .layout > .panel {
-      overflow: hidden;
+      overflow: visible;
     }
     body.article-list-mode .main,
     body.category-list-mode .main,
@@ -2109,11 +2109,11 @@
       margin-bottom: 10px;
     }
     /* WA-PTO-002b: ยกเลิก panel overrides จาก body.watch-alert-mode ใน list mode
-       ให้ panel ใช้ค่า default เหมือน Option Master (มี box-shadow, overflow:hidden, border-color ปกติ) */
+       ให้ panel ใช้ค่า default เหมือน Option Master list (มี box-shadow, overflow:visible, border-color ปกติ) */
     body.watch-alert-mode.watch-alert-list-mode .layout > .panel {
       border-color: var(--line);
       box-shadow: var(--shadow);
-      overflow: hidden;
+      overflow: visible;
     }
     body.watch-alert-list-mode #table {
       overflow-x: auto;
@@ -2593,7 +2593,7 @@
       overflow-x: hidden;
     }
     body.market-list-mode:not(.market-dashboard-mode) .layout > .panel {
-      overflow: hidden;
+      overflow: visible;
     }
     body.market-list-mode:not(.market-dashboard-mode) #table {
       max-width: 100%;
@@ -7142,6 +7142,10 @@
       display: grid;
       gap: 2px;
     }
+    /* BOR-004: dropdown ใน filter bar สั้นลง — เมนูมี scrollbar ในตัวอยู่แล้ว ไม่จำเป็นต้องยาวชิดขอบล่างจอ */
+    .filters .custom-select-menu {
+      max-height: min(220px, 30vh);
+    }
     .custom-select-option {
       min-height: 30px;
       border: 0;
@@ -7375,13 +7379,13 @@
       overflow-x: hidden;
     }
     body.user-accounts-mode:not(.user-detail-mode) .layout > .panel {
-      overflow: hidden;
+      overflow: visible;
     }
     body.user-list-mode:not(.user-accounts-mode):not(.user-detail-mode) .main {
       overflow-x: hidden;
     }
     body.user-list-mode:not(.user-accounts-mode):not(.user-detail-mode) .layout > .panel {
-      overflow: hidden;
+      overflow: visible;
     }
     body.user-accounts-mode:not(.user-detail-mode) #table {
       max-width: 100%;
@@ -12357,6 +12361,37 @@
         flex: 0 0 auto;
         justify-content: flex-start;
       }
+      /* BOR-004: wa-alert-filter-bar 7 tracks (min ~1020px) ล้น panel เมื่อ viewport <1366 — flex-wrap: filter 4 ตัวแถวบนเต็มกว้าง / sort + date range ยืดเต็มที่ + reset ต่อท้าย แถวล่าง */
+      body.watch-alert-list-mode .user-filter-bar.wa-alert-filter-bar {
+        display: flex;
+        flex-wrap: wrap;
+      }
+      body.watch-alert-list-mode .user-filter-bar.wa-alert-filter-bar > .user-advanced-filter {
+        flex: 1 1 21%;
+        min-width: 0;
+      }
+      body.watch-alert-list-mode .user-filter-bar.wa-alert-filter-bar > .wa-alert-date-range {
+        flex: 3 1 44%;
+      }
+      body.watch-alert-list-mode .user-filter-bar.wa-alert-filter-bar > .filter-reset {
+        flex: 0 0 42px;
+      }
+      /* BOR-004: audit-filter-bar — flex-wrap เดียวกับ wa-alert: search/module/risk แถวบนเต็มกว้าง / sort + date range + reset แถวล่าง (ดึง date input ออกจากขอบจอ) */
+      body.audit-log-mode .audit-filter-bar {
+        display: flex;
+        flex-wrap: wrap;
+      }
+      body.audit-log-mode .audit-filter-bar > .search,
+      body.audit-log-mode .audit-filter-bar > .user-advanced-filter {
+        flex: 1 1 30%;
+        min-width: 0;
+      }
+      body.audit-log-mode .audit-filter-bar > .audit-date-range {
+        flex: 2 1 45%;
+      }
+      body.audit-log-mode .audit-filter-bar > .filter-reset {
+        flex: 0 0 42px;
+      }
     }
 
     @media (max-width: 1180px) {
@@ -12528,7 +12563,8 @@
         min-width: 0;
       }
       /* AL-000: Audit Log tablet filter bar — search + 3 filters + reset บรรทัดเดียว (match Delivery Logs)
-         AL-004: เพิ่ม date range column ก่อน reset */
+         AL-004: เพิ่ม date range column ก่อน reset
+         BOR-004: ถูก override ด้วย flex-wrap ที่ block 761–1365 ข้างบน — เก็บไว้เป็น fallback */
       body.audit-log-mode .audit-filter-bar {
         grid-template-columns: minmax(0, 1fr) repeat(3, minmax(112px, .5fr)) minmax(230px, .8fr) 42px;
       }
@@ -12642,7 +12678,7 @@
       body.article-list-mode .layout > .panel,
       body.category-list-mode .layout > .panel,
       body.reported-board-mode .layout > .panel {
-        overflow: hidden;
+        overflow: visible;
       }
       body.article-list-mode #table,
       body.category-list-mode #table,
@@ -12679,7 +12715,7 @@
         overflow-x: hidden;
       }
       body.asset-list-mode:not(.article-list-mode):not(.category-list-mode):not(.reported-board-mode) .layout > .panel {
-        overflow: hidden;
+        overflow: visible;
       }
       body.asset-list-mode:not(.article-list-mode):not(.category-list-mode):not(.reported-board-mode) #table {
         max-width: 100%;
@@ -12750,7 +12786,8 @@
         grid-template-columns: minmax(0, 1fr) repeat(3, minmax(100px, .46fr)) 42px;
       }
       /* AL-000: Audit Log small tablet — search + 3 filters + reset บรรทัดเดียว (match Delivery Logs)
-         AL-004: เพิ่ม date range column ก่อน reset */
+         AL-004: เพิ่ม date range column ก่อน reset
+         BOR-004: ถูก override ด้วย flex-wrap ที่ block 761–1365 — เก็บไว้เป็น fallback */
       body.audit-log-mode .audit-filter-bar {
         grid-template-columns: minmax(0, 1fr) repeat(3, minmax(100px, .46fr)) minmax(210px, .7fr) 42px;
       }
@@ -14474,7 +14511,7 @@
         background: transparent;
       }
       body.user-list-mode:not(.reported-board-mode) .layout > .panel {
-        overflow: hidden;
+        overflow: visible;
       }
       body.user-list-mode:not(.reported-board-mode) #table {
         border-radius: 0 0 calc(var(--radius) - 1px) calc(var(--radius) - 1px);
