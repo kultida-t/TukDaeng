@@ -1,4 +1,4 @@
-// QA-BO-006: Market Data (Dashboard, Brands & Models, Sync History) — strict Playwright spec
+// QA-BO-006: Market Data (Market Overview, Brands & Models, Sync History) — strict Playwright spec
 // อ้างอิง prototype เป็นหลักสำหรับการแสดงผล, spec docs เป็นหลักสำหรับพฤติกรรม/นำทาง
 // เป้าหมาย: รันเทส เจอปัญหาจริง → ลิสปัญหา + แนวทางแก้ → แก้ใน flow เดียว (ห้ามแก้ prototype)
 const { test, expect } = require("@playwright/test");
@@ -25,8 +25,8 @@ async function ensureNavOpen(page) {
   }
 }
 
-// helper: ไปหน้า Market Data > Dashboard ผ่านเมนู
-async function goToMarketDashboard(page) {
+// helper: ไปหน้า Market Data > Market Overview ผ่านเมนู
+async function goToMarketOverview(page) {
   await page.goto(PROTOTYPE_URL);
   await page.waitForLoadState("networkidle");
   await loginIfNeeded(page);
@@ -35,7 +35,7 @@ async function goToMarketDashboard(page) {
   const expanded = await parent.evaluate(el => el.classList.contains("expanded")).catch(() => false);
   if (!expanded) await parent.click();
   await page.waitForTimeout(200);
-  await page.locator(".submenu[data-submenu='market'] button[data-sub='Dashboard']").click();
+  await page.locator(".submenu[data-submenu='market'] button[data-sub='Market Overview']").click();
   await page.waitForTimeout(300);
 }
 
@@ -108,12 +108,12 @@ async function countMarketRows(page) {
   return await page.locator(".market-table .asset-row:not(.head)").count();
 }
 
-test.describe("QA-BO-006: Market Data (Dashboard, Brands & Models, Sync History) (strict)", () => {
+test.describe("QA-BO-006: Market Data (Market Overview, Brands & Models, Sync History) (strict)", () => {
 
   // ==================== A. NAVIGATION / MENU / ACTIVE STATE ====================
 
   test.describe("Navigation — menu entry, submenu, active state", () => {
-    test("1. Market Data menu กาง submenu ได้ มี Dashboard, Brands & Models, Sync History", async ({ page }) => {
+    test("1. Market Data menu กาง submenu ได้ มี Market Overview, Brands & Models, Sync History", async ({ page }) => {
       await page.goto(PROTOTYPE_URL);
       await page.waitForLoadState("networkidle");
       await loginIfNeeded(page);
@@ -122,22 +122,22 @@ test.describe("QA-BO-006: Market Data (Dashboard, Brands & Models, Sync History)
       await page.waitForTimeout(200);
       const submenu = page.locator(".submenu[data-submenu='market']");
       await expect(submenu).toHaveClass(/open/);
-      await expect(submenu.locator("button[data-sub='Dashboard']")).toBeVisible();
+      await expect(submenu.locator("button[data-sub='Market Overview']")).toBeVisible();
       await expect(submenu.locator("button[data-sub='Brands & Models']")).toBeVisible();
       await expect(submenu.locator("button[data-sub='Sync History']")).toBeVisible();
     });
 
-    test("2. เข้า Market Data แล้วเปิด Dashboard เป็นหน้าแรก (default)", async ({ page }) => {
+    test("2. เข้า Market Data แล้วเปิด Market Overview เป็นหน้าแรก (default)", async ({ page }) => {
       await page.goto(PROTOTYPE_URL);
       await page.waitForLoadState("networkidle");
       await loginIfNeeded(page);
       await ensureNavOpen(page);
       await page.locator(".nav-item[data-module='market']").click();
       await page.waitForTimeout(200);
-      await page.locator(".submenu[data-submenu='market'] button[data-sub='Dashboard']").click();
+      await page.locator(".submenu[data-submenu='market'] button[data-sub='Market Overview']").click();
       await page.waitForTimeout(300);
-      await expect(page.locator("#page-title")).toHaveText("Dashboard");
-      await expect(page.locator("#crumb")).toHaveText("การดำเนินงาน / Market Data / Dashboard");
+      await expect(page.locator("#page-title")).toHaveText("Market Overview");
+      await expect(page.locator("#crumb")).toHaveText("การดำเนินงาน / Market Data / Market Overview");
     });
 
     test("3. เข้า Brands & Models: page title + breadcrumb + panel title ถูกต้อง", async ({ page }) => {
@@ -156,8 +156,8 @@ test.describe("QA-BO-006: Market Data (Dashboard, Brands & Models, Sync History)
     });
 
     test("5. active state สลับถูกต้องเมื่อสลับหน้า", async ({ page }) => {
-      await goToMarketDashboard(page);
-      await expect(page.locator(".submenu[data-submenu='market'] button[data-sub='Dashboard']")).toHaveClass(/active/);
+      await goToMarketOverview(page);
+      await expect(page.locator(".submenu[data-submenu='market'] button[data-sub='Market Overview']")).toHaveClass(/active/);
       await ensureNavOpen(page);
       await page.locator(".submenu[data-submenu='market'] button[data-sub='Brands & Models']").click();
       await page.waitForTimeout(300);
@@ -167,17 +167,17 @@ test.describe("QA-BO-006: Market Data (Dashboard, Brands & Models, Sync History)
       await page.waitForTimeout(300);
       await expect(page.locator(".submenu[data-submenu='market'] button[data-sub='Sync History']")).toHaveClass(/active/);
       await ensureNavOpen(page);
-      await page.locator(".submenu[data-submenu='market'] button[data-sub='Dashboard']").click();
+      await page.locator(".submenu[data-submenu='market'] button[data-sub='Market Overview']").click();
       await page.waitForTimeout(300);
-      await expect(page.locator(".submenu[data-submenu='market'] button[data-sub='Dashboard']")).toHaveClass(/active/);
+      await expect(page.locator(".submenu[data-submenu='market'] button[data-sub='Market Overview']")).toHaveClass(/active/);
     });
   });
 
-  // ==================== B. DASHBOARD ====================
+  // ==================== B. MARKET OVERVIEW ====================
 
-  test.describe("Dashboard — summary cards, status strip, recently updated brands", () => {
-    test("6. Dashboard แสดง summary cards ครบ 4 ใบ: Total Brands, Total Models, Total References, Last Sync", async ({ page }) => {
-      await goToMarketDashboard(page);
+  test.describe("Market Overview — summary cards, status strip, recently updated brands", () => {
+    test("6. Market Overview แสดง summary cards ครบ 4 ใบ: Total Brands, Total Models, Total References, Last Sync", async ({ page }) => {
+      await goToMarketOverview(page);
       const labels = page.locator("#summary-grid .stat .stat-label");
       await expect(labels.nth(0)).toHaveText("Total Brands");
       await expect(labels.nth(1)).toHaveText("Total Models");
@@ -185,8 +185,8 @@ test.describe("QA-BO-006: Market Data (Dashboard, Brands & Models, Sync History)
       await expect(labels.nth(3)).toHaveText("Last Sync");
     });
 
-    test("7. Dashboard summary cards มีค่าไม่ว่าง", async ({ page }) => {
-      await goToMarketDashboard(page);
+    test("7. Market Overview summary cards มีค่าไม่ว่าง", async ({ page }) => {
+      await goToMarketOverview(page);
       const values = page.locator("#summary-grid .stat .stat-value");
       for (let i = 0; i < 4; i++) {
         const text = await values.nth(i).textContent();
@@ -194,8 +194,8 @@ test.describe("QA-BO-006: Market Data (Dashboard, Brands & Models, Sync History)
       }
     });
 
-    test("8. Dashboard แสดง Latest Sync Status strip เมื่อมี active sync (Running/Failed)", async ({ page }) => {
-      await goToMarketDashboard(page);
+    test("8. Market Overview แสดง Latest Sync Status strip เมื่อมี active sync (Running/Failed)", async ({ page }) => {
+      await goToMarketOverview(page);
       // prototype มี JOB-OMEGA-SEARCH (Running) → ต้องแสดง status strip
       const statusStrip = page.locator(".market-dashboard-sync-status");
       await expect(statusStrip).toBeVisible();
@@ -203,15 +203,15 @@ test.describe("QA-BO-006: Market Data (Dashboard, Brands & Models, Sync History)
       await expect(statusStrip.locator("[data-market-sync-view-logs]")).toBeVisible();
     });
 
-    test("9. Dashboard status strip ปุ่ม 'ดูรายละเอียดใน Sync History' นำไป Sync History", async ({ page }) => {
-      await goToMarketDashboard(page);
+    test("9. Market Overview status strip ปุ่ม 'ดูรายละเอียดใน Sync History' นำไป Sync History", async ({ page }) => {
+      await goToMarketOverview(page);
       await page.locator("[data-market-sync-view-logs]").click();
       await page.waitForTimeout(300);
       await expect(page.locator("#page-title")).toHaveText("Sync History");
     });
 
-    test("10. Dashboard แสดงตาราง Recently Updated Brands", async ({ page }) => {
-      await goToMarketDashboard(page);
+    test("10. Market Overview แสดงตาราง Recently Updated Brands", async ({ page }) => {
+      await goToMarketOverview(page);
       await expect(page.locator(".market-dashboard-brand-table")).toBeVisible();
       const isMobile = await page.evaluate(() => window.matchMedia("(max-width: 760px)").matches);
       if (isMobile) {
@@ -227,8 +227,8 @@ test.describe("QA-BO-006: Market Data (Dashboard, Brands & Models, Sync History)
       }
     });
 
-    test("11. Dashboard brand row คลิกไป Brand detail ได้", async ({ page }) => {
-      await goToMarketDashboard(page);
+    test("11. Market Overview brand row คลิกไป Brand detail ได้", async ({ page }) => {
+      await goToMarketOverview(page);
       const firstRow = page.locator(".market-dashboard-brand-table .asset-row:not(.head)").first();
       const brandName = await firstRow.locator("[data-label='Brand'] .main-text").textContent();
       await firstRow.locator("[data-label='Brand']").click();
@@ -238,8 +238,8 @@ test.describe("QA-BO-006: Market Data (Dashboard, Brands & Models, Sync History)
       await expect(page.locator("#crumb")).toContainText(brandName.trim());
     });
 
-    test("12. Dashboard pagination แสดงช่วงรายการ และปุ่มก่อนหน้า/ถัดไป", async ({ page }) => {
-      await goToMarketDashboard(page);
+    test("12. Market Overview pagination แสดงช่วงรายการ และปุ่มก่อนหน้า/ถัดไป", async ({ page }) => {
+      await goToMarketOverview(page);
       const footer = page.locator(".market-dashboard-table .footer-range");
       await expect(footer).toBeVisible();
       const rangeSpan = footer.locator("span").first();
@@ -248,8 +248,8 @@ test.describe("QA-BO-006: Market Data (Dashboard, Brands & Models, Sync History)
       await expect(footer.locator(".pager")).toBeVisible();
     });
 
-    test("13. Dashboard pagination กดถัดไปได้ (ถ้ามีหลายหน้า)", async ({ page }) => {
-      await goToMarketDashboard(page);
+    test("13. Market Overview pagination กดถัดไปได้ (ถ้ามีหลายหน้า)", async ({ page }) => {
+      await goToMarketOverview(page);
       const totalText = await page.locator(".market-dashboard-table .footer-range span").first().textContent();
       const totalMatch = totalText.match(/จาก\s*(\d+)/);
       const total = totalMatch ? Number(totalMatch[1]) : 0;
@@ -265,14 +265,14 @@ test.describe("QA-BO-006: Market Data (Dashboard, Brands & Models, Sync History)
       }
     });
 
-    test("14. Dashboard ไม่มี info cards (ตาม prototype Dashboard ไม่แสดง info cards)", async ({ page }) => {
-      await goToMarketDashboard(page);
+    test("14. Market Overview ไม่มี info cards (ตาม prototype Market Overview ไม่แสดง info cards)", async ({ page }) => {
+      await goToMarketOverview(page);
       const cards = page.locator("#cards .mini-card");
       await expect(cards).toHaveCount(0);
     });
 
-    test("15. Dashboard ไม่มี filter bar (ว่างตาม prototype)", async ({ page }) => {
-      await goToMarketDashboard(page);
+    test("15. Market Overview ไม่มี filter bar (ว่างตาม prototype)", async ({ page }) => {
+      await goToMarketOverview(page);
       const filters = page.locator(".filters");
       const filterChildren = await filters.locator("*").count();
       expect(filterChildren).toBe(0);
@@ -999,8 +999,8 @@ test.describe("QA-BO-006: Market Data (Dashboard, Brands & Models, Sync History)
       expect(text.trim()).toBe("");
     });
 
-    test("80. Dashboard ไม่มี primary action", async ({ page }) => {
-      await goToMarketDashboard(page);
+    test("80. Market Overview ไม่มี primary action", async ({ page }) => {
+      await goToMarketOverview(page);
       const primaryAction = page.locator("#primary-action");
       const text = await primaryAction.textContent();
       expect(text.trim()).toBe("");
@@ -1074,16 +1074,16 @@ test.describe("QA-BO-006: Market Data (Dashboard, Brands & Models, Sync History)
       await expect(page.locator("#page-title")).toHaveText("Brands & Models");
     });
 
-    test("86. Dashboard → Sync History ผ่าน status strip แล้วกลับ Dashboard ผ่านเมนู", async ({ page }) => {
-      await goToMarketDashboard(page);
+    test("86. Market Overview → Sync History ผ่าน status strip แล้วกลับ Market Overview ผ่านเมนู", async ({ page }) => {
+      await goToMarketOverview(page);
       await page.locator("[data-market-sync-view-logs]").click();
       await page.waitForTimeout(300);
       await expect(page.locator("#page-title")).toHaveText("Sync History");
-      // กลับ Dashboard ผ่านเมนู
+      // กลับ Market Overview ผ่านเมนู
       await ensureNavOpen(page);
-      await page.locator(".submenu[data-submenu='market'] button[data-sub='Dashboard']").click();
+      await page.locator(".submenu[data-submenu='market'] button[data-sub='Market Overview']").click();
       await page.waitForTimeout(300);
-      await expect(page.locator("#page-title")).toHaveText("Dashboard");
+      await expect(page.locator("#page-title")).toHaveText("Market Overview");
     });
   });
 
@@ -1093,8 +1093,8 @@ test.describe("QA-BO-006: Market Data (Dashboard, Brands & Models, Sync History)
     // Note: prototype มี prototype-tools scenario selector สำหรับทดสอบ sync flow
     // ตรวจสอบเฉพาะที่เข้าถึงได้จาก UI หลัก (status strip / sync history)
 
-    test("87. Dashboard status strip แสดง progress ring และข้อความสถานะ", async ({ page }) => {
-      await goToMarketDashboard(page);
+    test("87. Market Overview status strip แสดง progress ring และข้อความสถานะ", async ({ page }) => {
+      await goToMarketOverview(page);
       const statusStrip = page.locator(".market-dashboard-sync-status");
       await expect(statusStrip.locator(".market-progress-ring")).toBeVisible();
       await expect(statusStrip.locator(".market-progress-label")).toBeVisible();
@@ -1102,8 +1102,8 @@ test.describe("QA-BO-006: Market Data (Dashboard, Brands & Models, Sync History)
       await expect(statusStrip.locator(".market-sync-main p")).toBeVisible();
     });
 
-    test("88. Dashboard status strip แสดงจำนวน synced brands / total brands", async ({ page }) => {
-      await goToMarketDashboard(page);
+    test("88. Market Overview status strip แสดงจำนวน synced brands / total brands", async ({ page }) => {
+      await goToMarketOverview(page);
       const statusStrip = page.locator(".market-dashboard-sync-status");
       const text = await statusStrip.locator(".market-sync-main p").textContent();
       // ต้องมีรูปแบบ X/Y แบรนด์
@@ -1114,9 +1114,9 @@ test.describe("QA-BO-006: Market Data (Dashboard, Brands & Models, Sync History)
   // ==================== L. MOBILE CARD LAYOUT ====================
 
   test.describe("Mobile card layout (≤760px)", () => {
-    test("89. Dashboard mobile: brand row แสดง mobile card metadata (Models, References, Status, Last Sync)", async ({ browser }) => {
+    test("89. Market Overview mobile: brand row แสดง mobile card metadata (Models, References, Status, Last Sync)", async ({ browser }) => {
       const page = await browser.newPage({ viewport: { width: 390, height: 844 } });
-      await goToMarketDashboard(page);
+      await goToMarketOverview(page);
       const firstRow = page.locator(".market-dashboard-brand-table .asset-row:not(.head)").first();
       await expect(firstRow.locator(".market-card-meta")).toBeVisible();
       const metaItems = firstRow.locator(".user-card-meta-item");
@@ -1187,9 +1187,9 @@ test.describe("QA-BO-006: Market Data (Dashboard, Brands & Models, Sync History)
       await page.close();
     });
 
-    test("95. Dashboard mobile: pagination ใช้งานได้", async ({ browser }) => {
+    test("95. Market Overview mobile: pagination ใช้งานได้", async ({ browser }) => {
       const page = await browser.newPage({ viewport: { width: 390, height: 844 } });
-      await goToMarketDashboard(page);
+      await goToMarketOverview(page);
       const footer = page.locator(".market-dashboard-table .footer-range");
       await expect(footer).toBeVisible();
       await expect(footer.locator(".pager")).toBeVisible();
@@ -1223,8 +1223,8 @@ test.describe("QA-BO-006: Market Data (Dashboard, Brands & Models, Sync History)
       await expect(failedRow.locator(`${pillScope} .pill.red`)).toBeVisible();
     });
 
-    test("98. Dashboard brand status แสดง pill (Completed/Syncing)", async ({ page }) => {
-      await goToMarketDashboard(page);
+    test("98. Market Overview brand status แสดง pill (Completed/Syncing)", async ({ page }) => {
+      await goToMarketOverview(page);
       const firstRow = page.locator(".market-dashboard-brand-table .asset-row:not(.head)").first();
       // desktop: [data-label='Status'] .pill, mobile: card meta แสดง Status เป็น text
       const isMobile = await page.evaluate(() => window.matchMedia("(max-width: 760px)").matches);
@@ -1311,8 +1311,8 @@ test.describe("QA-BO-006: Market Data (Dashboard, Brands & Models, Sync History)
   // ==================== O. PAGINATION EDGE CASES ====================
 
   test.describe("Pagination edge cases", () => {
-    test("105. Dashboard pagination ก่อนหน้า disabled ที่หน้า 1", async ({ page }) => {
-      await goToMarketDashboard(page);
+    test("105. Market Overview pagination ก่อนหน้า disabled ที่หน้า 1", async ({ page }) => {
+      await goToMarketOverview(page);
       const prevBtn = page.locator(".market-dashboard-table [data-market-dashboard-page='prev']");
       await expect(prevBtn).toBeDisabled();
     });
@@ -1390,15 +1390,15 @@ test.describe("QA-BO-006: Market Data (Dashboard, Brands & Models, Sync History)
 
   test.describe("Menu / nav integrity", () => {
     test("112. Market Data menu parent แสดง active state เมื่ออยู่ใน submenu", async ({ page }) => {
-      await goToMarketDashboard(page);
+      await goToMarketOverview(page);
       const parent = page.locator(".nav-item[data-module='market']");
       await expect(parent).toHaveClass(/active/);
     });
 
     test("113. เข้า Market Data จาก module card ใน Dashboard ได้ (ถ้ามี)", async ({ page }) => {
       // ตรวจเฉพาะการนำทางผ่านเมนู — module card ใน Dashboard อาจไม่มีสำหรับ Market Data
-      await goToMarketDashboard(page);
-      await expect(page.locator("#page-title")).toHaveText("Dashboard");
+      await goToMarketOverview(page);
+      await expect(page.locator("#page-title")).toHaveText("Market Overview");
     });
 
     test("114. สลับไปโมดูลอื่นแล้วกลับ Market Data ได้", async ({ page }) => {
@@ -1483,9 +1483,9 @@ test.describe("QA-BO-006: Market Data (Dashboard, Brands & Models, Sync History)
       await page.close();
     });
 
-    test("120. Dashboard ที่ 1280px แสดงตารางเต็ม", async ({ browser }) => {
+    test("120. Market Overview ที่ 1280px แสดงตารางเต็ม", async ({ browser }) => {
       const page = await browser.newPage({ viewport: { width: 1280, height: 800 } });
-      await goToMarketDashboard(page);
+      await goToMarketOverview(page);
       const table = page.locator(".market-dashboard-brand-table");
       await expect(table).toBeVisible();
       await page.close();

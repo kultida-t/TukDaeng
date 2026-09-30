@@ -57,7 +57,7 @@ async function navTo(page, moduleId, sub) {
   check("F1 initial focus = first field #admin-account-invite-name",
     await page.evaluate(() => document.activeElement?.id === "admin-account-invite-name"),
     await activeTag(page));
-  check("F1 initial focus shows :focus-visible ring (mouse-opened)",
+  check("F1 initial focus shows :focus-visible ring (text input heuristic)",
     await page.evaluate(() => document.activeElement?.matches(":focus-visible")));
 
   // Tab trap: move to first focusable (X) then Shift+Tab → wraps to last
@@ -97,8 +97,8 @@ async function navTo(page, moduleId, sub) {
       const el = document.activeElement;
       return el?.hasAttribute("data-user-action-modal-close") && (el.textContent || "").includes("ยกเลิก");
     }), await activeTag(page));
-  check("D1 ยกเลิก shows :focus-visible ring at open",
-    await page.evaluate(() => document.activeElement?.matches(":focus-visible")));
+  check("D1 ยกเลิก no :focus-visible ring on mouse-open (BOR-006a: ring เฉพาะ keyboard flow)",
+    await page.evaluate(() => !document.activeElement?.matches(":focus-visible")));
   // ESC on non-dismissible confirm → stays open (Contract B)
   await page.keyboard.press("Escape");
   await page.waitForTimeout(200);
@@ -127,6 +127,8 @@ async function navTo(page, moduleId, sub) {
     check("R1 focus restored to clicked delivery row (last-trigger fallback)",
       await page.evaluate(() => document.activeElement?.classList?.contains("user-row") && document.activeElement?.hasAttribute("data-delivery-card")),
       await activeTag(page));
+    check("R1 restored row shows :focus-visible ring (closed via ESC = keyboard)",
+      await page.evaluate(() => document.activeElement?.matches(":focus-visible")));
   }
 
   // ---------- 4. Keyboard-opened modal: Enter on button → focus into modal ----------
@@ -136,6 +138,8 @@ async function navTo(page, moduleId, sub) {
   await page.waitForTimeout(300);
   check("K1 Enter on invite button opens modal", await modalOpen(page));
   check("K1 focus lands inside modal", await activeInModal(page), await activeTag(page));
+  check("K1 focus shows :focus-visible ring (keyboard-opened)",
+    await page.evaluate(() => document.activeElement?.matches(":focus-visible")));
   // Tab stays inside modal across full cycle
   let escaped = false;
   for (let i = 0; i < 12; i++) {

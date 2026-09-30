@@ -2859,7 +2859,7 @@
     }
     /* BO-MKT-FIX-001: ปรับ padding และ min-width ของ panel-head ให้ตรงกับ asset-row.head
        ในตาราง Recently Updated Brands เพื่อให้เส้นคั่นยาวเท่ากันทุก viewport
-       scope เฉพาะ Market Data > Dashboard เพื่อไม่กระทบ protected screens อื่น */
+       scope เฉพาะ Market Data > Market Overview เพื่อไม่กระทบ protected screens อื่น */
     body.market-list-mode.market-dashboard-mode .market-dashboard-table .panel-head {
       padding-left: 20px;
       padding-right: 20px;
@@ -5913,7 +5913,7 @@
     .board-report-phone-preview .article-fo-subheading {
       font-weight: 800;
     }
-    .board-report-phone-preview-close {
+    .board-report-phone-preview .board-report-phone-preview-close {
       position: absolute;
       z-index: 4;
       top: 6px;
@@ -5943,7 +5943,7 @@
       .modal.user-action-modal.board-report-phone-preview-modal {
         transform: translateX(-30px);
       }
-      .board-report-phone-preview-close {
+      .board-report-phone-preview .board-report-phone-preview-close {
         top: 12px;
         right: 24px;
         border-color: transparent;
@@ -17963,7 +17963,7 @@
         { id: "assets", label: "Asset Management", icon: "asset", subs: ["Asset List", "Reported Assets", "Reported Comments"] },
         { id: "offers", label: "Offer Management", icon: "offer" },
         { id: "content", label: "Content Management", icon: "content", subs: ["Articles", "Categories", "Reported Articles"] },
-        { id: "market", label: "Market Data", icon: "market", subs: ["Dashboard", "Brands & Models", "Sync History"] },
+        { id: "market", label: "Market Data", icon: "market", subs: ["Market Overview", "Brands & Models", "Sync History"] },
         { id: "option-master", label: "Option Master", icon: "option" },
       ]},
       { section: "งานตรวจสอบและบริการ", items: [
@@ -19298,7 +19298,7 @@
       {
         module: "Market Data", moduleKey: "market",
         perms: [
-          { key: "market.dashboard.view", sub: "Dashboard", name: "ดู Market Dashboard",
+          { key: "market.dashboard.view", sub: "Market Overview", name: "ดู Market Overview",
             levels: { super_admin: "admin", operations_manager: "view", trust_safety_moderator: "view", asset_operations: "view", market_analyst: "view" } },
           { key: "market.catalog.view", sub: "Brands & Models", name: "ดู Brands & Models",
             levels: { super_admin: "admin", operations_manager: "view", trust_safety_moderator: "view", asset_operations: "view", market_analyst: "view" } },
@@ -20511,7 +20511,7 @@
         return { type: "module", module: "content", sub: activeSub || "Articles", displaySub: activeSub || "Articles" };
       }
       if (activeModule === "market") {
-        return { type: "module", module: "market", sub: activeSub || "Dashboard", displaySub: activeSub || "Dashboard" };
+        return { type: "module", module: "market", sub: activeSub || "Market Overview", displaySub: activeSub || "Market Overview" };
       }
       if (activeModule === "watch-alerts") {
         if (document.body.classList.contains("watch-alert-detail-mode") && activeRow?.id) {
@@ -20614,7 +20614,7 @@
       if (activeModule === "assets") return { type: "module", module: "assets", sub: activeSub === "Reported Assets" ? "Reported Assets" : activeSub === "Reported Comments" ? "Reported Comments" : "Asset List", displaySub: activeSub === "Reported Assets" ? "Reported Assets" : activeSub === "Reported Comments" ? "Reported Comments" : "Asset List" };
       if (activeModule === "offers") return { type: "module", module: "offers", sub: "", displaySub: "" };
       if (activeModule === "content") return { type: "module", module: "content", sub: activeSub === "Reported Articles" ? "Reported Articles" : "Articles", displaySub: activeSub === "Reported Articles" ? "Reported Articles" : "Articles" };
-      if (activeModule === "market") return { type: "module", module: "market", sub: activeSub || "Dashboard", displaySub: activeSub || "Dashboard" };
+      if (activeModule === "market") return { type: "module", module: "market", sub: activeSub || "Market Overview", displaySub: activeSub || "Market Overview" };
       if (activeModule === "watch-alerts") return { type: "module", module: "watch-alerts", sub: activeSub || "Demand Overview", displaySub: activeSub || "Demand Overview" };
       if (activeModule === "settings") return { type: "module", module: "settings", sub: activeSub || "Policy & Versioning", displaySub: activeSub || "Policy & Versioning" };
       if (activeModule === "deletions") return { type: "module", module: "deletions", sub: "Deletion Requests", displaySub: "Deletion Requests" };
@@ -21340,7 +21340,7 @@
 
     // BO-UX-001: Helpers for per-list filter state persistence
     function getMarketListKey(sub) {
-      if (sub === "Dashboard") return "market-dashboard";
+      if (sub === "Market Overview") return "market-dashboard";
       if (sub === "Brands & Models") return "market-catalog";
       if (sub === "Sync History") return "market-sync";
       return "market-queue";
@@ -21376,7 +21376,7 @@
           if (document.querySelector("#market-model-search")) return "market-brand-detail";
           return "market-catalog";
         }
-        return getMarketListKey(activeSub || "Dashboard");
+        return getMarketListKey(activeSub || "Market Overview");
       }
       return null;
     }
@@ -30471,8 +30471,9 @@
       if (!target) target = closeControls[closeControls.length - 1] || null;
       if (!target) target = body.querySelector("h1, h2, h3") || card;
       if (target && !target.matches(USER_ACTION_MODAL_FOCUSABLE_INCLUDING_OFFSCREEN)) target.tabIndex = -1;
-      // focusVisible:true → แสดง ring ทันทีแม้เปิดด้วยเมาส์ (ไม่งั้น programmatic focus ไม่มีตัวบอกตำแหน่งจนกว่าจะกดคีย์แรก)
-      target?.focus({ preventScroll: true, focusVisible: true });
+      // BOR-006a: ไม่ส่ง focusVisible — ring/tooltip แสดงเฉพาะ keyboard flow ตาม :focus-visible heuristic;
+      // focus placement คงเดิม (a11y) แต่ mouse-opened modal ไม่มี ring ค้างบนปุ่ม
+      target?.focus({ preventScroll: true });
     }
 
     function scheduleUserActionModalFocusRestore() {
@@ -30496,8 +30497,8 @@
           if (!isUserActionModalTargetVisible(target)) target = null;
         }
         if (target && !target.matches(USER_ACTION_MODAL_FOCUSABLE_INCLUDING_OFFSCREEN)) target.tabIndex = -1;
-        // focusVisible:true → restore แสดง ring เสมอเพื่อยืนยันตำแหน่ง focus ที่กลับมา (keyboard/mouse close เหมือนกัน)
-        target?.focus({ preventScroll: true, focusVisible: true });
+        // BOR-006a: ไม่ส่ง focusVisible — ring แสดงเฉพาะเมื่อปิดด้วยคีย์บอร์ด (ESC/Enter); mouse close ไม่มี ring ค้างบน opener
+        target?.focus({ preventScroll: true });
       });
     }
 
@@ -31893,7 +31894,7 @@
       document.body.classList.toggle("category-list-mode", isCategoryList);
       document.body.classList.toggle("reported-board-mode", isReportedBoard);
       document.body.classList.toggle("market-list-mode", id === "market");
-      document.body.classList.toggle("market-dashboard-mode", id === "market" && (subLabel || "Dashboard") === "Dashboard");
+      document.body.classList.toggle("market-dashboard-mode", id === "market" && (subLabel || "Market Overview") === "Market Overview");
       document.body.classList.toggle("watch-alert-mode", id === "watch-alerts");
       document.body.classList.toggle("watch-alert-overview-mode", id === "watch-alerts" && ((subLabel || "Demand Overview") === "Demand Overview" || subLabel === "Search Insights"));
       document.body.classList.toggle("watch-alert-list-mode", id === "watch-alerts" && (subLabel === "Watch Alert List" || subLabel === "Alert List"));
@@ -31927,7 +31928,7 @@
         return;
       }
       if (id === "market") {
-        renderMarketData(subLabel || "Dashboard");
+        renderMarketData(subLabel || "Market Overview");
         updateActiveNav();
         return;
       }
@@ -32023,15 +32024,15 @@
       if (isCategoryList) {
         activeRow = null;
         setPageActions(`
-          <button class="btn" type="button" data-category-order-open aria-label="จัดเรียง Category บน FO Board">${iconSvg.sort}<span>จัดเรียง Category</span></button>
-          <button class="btn" type="button" data-category-add aria-label="เพิ่มหมวดหมู่">${iconSvg.plus}<span>เพิ่มหมวดหมู่</span></button>
+          <button class="btn" type="button" data-category-order-open aria-label="Reorder Categories on FO Board">${iconSvg.sort}<span>Reorder Categories</span></button>
+          <button class="btn" type="button" data-category-add aria-label="Add Category">${iconSvg.plus}<span>Add Category</span></button>
         `);
         document.querySelector("#crumb").textContent = `${data.crumb} / Categories`;
         document.querySelector("#page-title").textContent = "Categories";
         document.querySelector("#page-meta").textContent = "";
         document.querySelector("#panel-title").textContent = "CATEGORY LIST";
         document.querySelector("#panel-subtitle").textContent = "";
-        document.querySelector("#primary-action").textContent = "เพิ่มหมวดหมู่";
+        document.querySelector("#primary-action").textContent = "Add Category";
         document.querySelector("#user-panel-filter-actions").innerHTML = `
           <button class="btn user-filter-toggle" type="button" data-category-filter-toggle aria-expanded="${categoryFilterOpen}">${iconSvg.filter}<span>${categoryFilterOpen ? "ปิดตัวกรอง" : "เปิดตัวกรอง"}</span></button>
           <button class="btn" type="button" data-category-reset aria-label="รีเซ็ตค่าทั้งหมด">${iconSvg.refresh}<span>รีเซ็ตค่าทั้งหมด</span></button>
@@ -36290,7 +36291,7 @@
     }
 
     function renderMarketSummaryCards(subLabel) {
-      if (subLabel === "Dashboard") {
+      if (subLabel === "Market Overview") {
         const marketMetrics = getMarketMetricCards();
         const metrics = [
           { label: "Total Brands", value: marketMetrics.brands, trend: "ข้อมูลจาก Brand catalog" },
@@ -36337,7 +36338,7 @@
         return;
       }
       const marketMetrics = getMarketMetricCards();
-      const stats = subLabel === "Dashboard"
+      const stats = subLabel === "Market Overview"
         ? [["Total Brands", marketMetrics.brands, "From Brand catalog"], ["Total Models", marketMetrics.models, "From Model catalog"], ["Total References", marketMetrics.references, "From Reference catalog"], ["Last Sync", marketMetrics.lastSyncRelative, marketMetrics.lastSyncTimestamp]]
         : subLabel === "Sync History"
           ? [["Log Entries Today", "5", "Backend sync history from The Watch API"], ["Completed", "3", "Latest cache is in use"], ["Running", "1", "Omega reference"], ["Failed", "1", "Existing cache kept"]]
@@ -36352,7 +36353,7 @@
     }
 
     function setupMarketFilters(subLabel) {
-      if (subLabel === "Dashboard") {
+      if (subLabel === "Market Overview") {
         document.querySelector(".filters").innerHTML = "";
         return;
       }
@@ -37883,8 +37884,8 @@
       if (!marketCatalogData.syncLogs.some(log => log.id === newLog.id)) marketCatalogData.syncLogs.unshift(newLog);
       if (activeModule === "market" && activeSub === "Brands & Models") renderMarketCatalogRows();
       job.status = "success";
-      if (activeModule === "market" && activeSub === "Dashboard") {
-        renderMarketSummaryCards("Dashboard");
+      if (activeModule === "market" && activeSub === "Market Overview") {
+        renderMarketSummaryCards("Market Overview");
         renderMarketDashboard();
       }
       renderMarketSyncModal("success");
@@ -37904,8 +37905,8 @@
         models: marketMetricTotals.models,
         references: marketMetricTotals.references
       };
-      if (activeModule === "market" && activeSub === "Dashboard") {
-        renderMarketSummaryCards("Dashboard");
+      if (activeModule === "market" && activeSub === "Market Overview") {
+        renderMarketSummaryCards("Market Overview");
         renderMarketDashboard();
       }
       renderMarketSyncModal("running", scenario);
@@ -37917,7 +37918,7 @@
       marketSyncTimer = null;
       if (scenario === "rate_limit") {
         activeMarketSyncJob.status = "error";
-        if (activeModule === "market" && activeSub === "Dashboard") renderMarketSummaryCards("Dashboard");
+        if (activeModule === "market" && activeSub === "Market Overview") renderMarketSummaryCards("Market Overview");
         renderMarketSyncModal("error", scenario);
         return;
       }
@@ -37931,7 +37932,7 @@
     }
 
     function renderMarketCards(subLabel) {
-      const cards = subLabel === "Dashboard"
+      const cards = subLabel === "Market Overview"
         ? []
         : [["Brand-first workflow", "Admins start from brands, drill into models, then open references to review detail and price data."], ["API source", "Data comes from The Watch API through backend sync for Brand, Model and Reference catalog."], ["Read-only", "Add, edit, delete and provider master-data overrides are not available."]];
       document.querySelector("#cards").innerHTML = cards.map(card => `
@@ -39281,9 +39282,9 @@
       scrollMainToTop();
     }
 
-    function renderMarketData(subLabel = "Dashboard") {
+    function renderMarketData(subLabel = "Market Overview") {
       activeModule = "market";
-      const nextSub = subLabel || "Dashboard";
+      const nextSub = subLabel || "Market Overview";
       if (marketFilterSub !== nextSub) {
         marketFilterOpen = false;
         marketFilterSub = nextSub;
@@ -39292,10 +39293,10 @@
       const pageLabel = activeSub;
       activeRow = null;
       document.body.classList.add("market-list-mode");
-      document.body.classList.toggle("market-dashboard-mode", activeSub === "Dashboard");
+      document.body.classList.toggle("market-dashboard-mode", activeSub === "Market Overview");
       document.body.classList.remove("dashboard-mode", "user-management-mode", "asset-list-mode", "article-list-mode", "category-list-mode", "reported-board-mode", "asset-detail-mode", "user-list-mode", "user-detail-mode");
       setPageActions("");
-      document.querySelector("#user-panel-filter-actions").innerHTML = (activeSub === "Dashboard" || activeSub === "Brands & Models") ? "" : `
+      document.querySelector("#user-panel-filter-actions").innerHTML = (activeSub === "Market Overview" || activeSub === "Brands & Models") ? "" : `
         <button class="btn user-filter-toggle" type="button" data-market-filter-toggle aria-expanded="${marketFilterOpen}">${iconSvg.filter}<span>${marketFilterOpen ? "ปิดตัวกรอง" : "เปิดตัวกรอง"}</span></button>
         <button class="btn" type="button" data-market-reset aria-label="รีเซ็ตค่าทั้งหมด">${iconSvg.refresh}<span>รีเซ็ตค่าทั้งหมด</span></button>
       `;
@@ -39304,7 +39305,7 @@
       document.querySelector("#page-meta").textContent = "";
       document.querySelector("#panel-title").innerHTML = subLabel === "Brands & Models"
         ? `All Brands <span class="panel-title-count">[${getMarketMetricCards().brands}]</span>`
-        : subLabel === "Dashboard"
+        : subLabel === "Market Overview"
           ? "Recently Updated Brands"
           : subLabel === "Sync History"
             ? "Sync Run History"
@@ -39316,8 +39317,8 @@
       renderMarketCards(subLabel);
       document.querySelector("#detail").innerHTML = "";
       // BO-UX-001: restore saved filter values when returning from Market detail pages
-      restoreListFilterState(getMarketListKey(subLabel || "Dashboard"));
-      if (subLabel === "Dashboard") {
+      restoreListFilterState(getMarketListKey(subLabel || "Market Overview"));
+      if (subLabel === "Market Overview") {
         renderMarketDashboard();
       } else if (subLabel === "Brands & Models") {
         renderMarketCatalogRows();
@@ -39366,7 +39367,7 @@
         return;
       }
       if (activeModule === "market") {
-        if ((activeSub || "Dashboard") === "Dashboard") renderMarketDashboard();
+        if ((activeSub || "Market Overview") === "Market Overview") renderMarketDashboard();
         else if (activeSub === "Brands & Models") renderMarketCatalogRows();
         else renderMarketQueueRows(activeSub);
         return;
@@ -39804,7 +39805,7 @@
       modalBody.innerHTML = `
         <div class="user-action-head">
           <div>
-            <h2 id="user-action-modal-title">จัดเรียง Category</h2>
+            <h2 id="user-action-modal-title">Reorder Categories</h2>
             <p>ลากเพื่อปรับลำดับการแสดงผลบน Tuk Daeng Board</p>
           </div>
           <button class="btn user-action-close" type="button" data-user-action-modal-close aria-label="ปิด">${iconSvg.close}</button>
@@ -39898,7 +39899,7 @@
           <summary aria-label="Category actions">...</summary>
           <div class="row-menu-list">
             <button type="button" data-category-open="${category.id}">View detail</button>
-            <button type="button" data-category-edit="${category.id}">แก้ไขหมวดหมู่</button>
+            <button type="button" data-category-edit="${category.id}">Edit Category</button>
             ${category.status === "Active"
               ? canDeactivate
                 ? `<button type="button" data-category-status-action="deactivate" data-category-id="${category.id}">Set inactive</button>`
@@ -42146,7 +42147,7 @@
         <div class="user-action-layout" data-modal-dismissible>
           <div class="user-action-head">
             <div>
-              <h2 id="user-action-modal-title">รายละเอียดหมวดหมู่</h2>
+              <h2 id="user-action-modal-title">Category Detail</h2>
               <p>ข้อมูลหมวดหมู่และการเลือกใช้ในบทความ</p>
             </div>
             <button class="btn user-action-close" type="button" data-user-action-modal-close aria-label="ปิด">${iconSvg.close}</button>
@@ -42172,7 +42173,7 @@
               </div>
             </section>
             <div class="user-detail-actions">
-              <button class="user-detail-action-btn" type="button" data-category-edit="${category.id}">แก้ไขหมวดหมู่</button>
+              <button class="user-detail-action-btn" type="button" data-category-edit="${category.id}">Edit Category</button>
             ${category.status === "Active"
                 ? canDeactivate
                   ? `<button class="user-detail-action-btn warning" type="button" data-category-status-action="deactivate" data-category-id="${category.id}">Set inactive</button>`
@@ -42205,7 +42206,7 @@
         <div class="user-action-layout">
           <div class="user-action-head">
             <div>
-              <h2 id="user-action-modal-title">${isEdit ? "แก้ไขหมวดหมู่" : "เพิ่มหมวดหมู่"}</h2>
+              <h2 id="user-action-modal-title">${isEdit ? "Edit Category" : "Add Category"}</h2>
               <p>${isEdit ? "แก้ไขข้อมูลหมวดหมู่และการเลือกใช้ในบทความ" : "สร้างหมวดหมู่สำหรับบอร์ดบทความ"}</p>
             </div>
             <button class="btn user-action-close" type="button" data-user-action-modal-close aria-label="ปิด">${iconSvg.close}</button>
@@ -46666,7 +46667,7 @@
           return;
         }
         if (["market-status-filter", "market-brand-filter"].includes(hiddenInput.id) && activeModule === "market") {
-          if (activeSub === "Brands & Models" || activeSub === "Dashboard") marketCatalogPage = 1;
+          if (activeSub === "Brands & Models" || activeSub === "Market Overview") marketCatalogPage = 1;
           saveCurrentListFilterState();
           renderRows();
           return;
@@ -46931,7 +46932,7 @@
         } else if (target === "brand") {
           renderMarketBrandDetailPage(marketBackButton.dataset.marketBrandId || activeMarketBrandId);
         } else {
-          renderMarketData(activeSub || "Dashboard");
+          renderMarketData(activeSub || "Market Overview");
         }
         updateActiveNav();
         scrollMainToTop();
@@ -46939,7 +46940,7 @@
       }
       const marketResetButton = event.target.closest("[data-market-reset]");
       if (marketResetButton && activeModule === "market") {
-        clearListFilterState(getMarketListKey(activeSub || "Dashboard"));
+        clearListFilterState(getMarketListKey(activeSub || "Market Overview"));
         const search = document.querySelector("#market-search");
         const status = document.querySelector("#market-status-filter");
         const brand = document.querySelector("#market-brand-filter");
@@ -46953,7 +46954,7 @@
           setCustomSelectValue("market-brand-filter", "");
         }
         const renderResetMarketRows = () => {
-          if ((activeSub || "Dashboard") === "Dashboard") {
+          if ((activeSub || "Market Overview") === "Market Overview") {
             marketDashboardPage = 1;
             renderMarketDashboard();
           } else if (activeSub === "Brands & Models") {
@@ -49600,7 +49601,7 @@
         renderRows();
       }
       if (event.target.matches("#market-search")) {
-        if (activeModule === "market" && (activeSub === "Brands & Models" || activeSub === "Dashboard")) marketCatalogPage = 1;
+        if (activeModule === "market" && (activeSub === "Brands & Models" || activeSub === "Market Overview")) marketCatalogPage = 1;
         saveCurrentListFilterState();
         renderRows();
       }
@@ -50014,7 +50015,7 @@
         return;
       }
       if (event.target.matches("#market-status-filter, #market-brand-filter")) {
-        if (activeModule === "market" && (activeSub === "Brands & Models" || activeSub === "Dashboard")) marketCatalogPage = 1;
+        if (activeModule === "market" && (activeSub === "Brands & Models" || activeSub === "Market Overview")) marketCatalogPage = 1;
         saveCurrentListFilterState();
         renderRows();
         return;
