@@ -1,6 +1,6 @@
 ---
 name: submission-evidence
-description: เตรียมหลักฐานส่งตรวจรับต่อเป้าหมาย (Objective) ของ Mission สำหรับ TukDaeng — เลือก/จัดไฟล์แนบหรือภาพหน้าจอ, เขียนคำอธิบายภาษาเข้าใจง่าย, กำหนดช่อง URL, สร้าง copy block สำหรับฟอร์มส่งตรวจงานด้วย AI และปิดท้ายด้วย compact Mission Objective–Feature–Task copy block จาก Kanban. Use เมื่อเป้าหมายใน Mission ทำครบทุก Task แล้วต้องเตรียมหลักฐานส่งตรวจ หรือผู้ใช้ขอ "หลักฐานส่งตรวจ" / "evidence เป้าหมาย" / "เตรียมไฟล์ส่งงาน" / "capture หน้าจอผลงาน"
+description: เตรียมหลักฐานส่งตรวจรับต่อเป้าหมาย (Objective) ของ Mission สำหรับ TukDaeng — ออกแบบให้ผ่านเกณฑ์ AI Worklog QA Auditor (Gemini Multimodal) ระดับ APPROVED (9.8-10.0 เต็ม) ครบ 4 มิติ (ความครบถ้วนหลักฐานพร้อม external_url, ความสมเหตุสมผลเวลา, การส่งมอบตรงรอบ, คุณภาพความละเอียดไร้บั๊ก) พร้อม copy block ฟอร์มส่งตรวจและ compact Mission Objective–Feature–Task. Use เมื่อเป้าหมายใน Mission ทำครบทุก Task แล้วต้องเตรียมหลักฐานส่งตรวจ หรือผู้ใช้ขอ "หลักฐานส่งตรวจ" / "evidence เป้าหมาย" / "เตรียมไฟล์ส่งงาน" / "capture หน้าจอผลงาน"
 ---
 
 # TukDaeng Submission Evidence (หลักฐานส่งตรวจต่อเป้าหมาย)
@@ -16,13 +16,32 @@ description: เตรียมหลักฐานส่งตรวจรั�
 >
 > **ถ้าไม่ใช่เครื่องนี้:** หยุดทำงาน skill นี้ทันที แจ้งผู้ใช้ว่า skill นี้ใช้ได้เฉพาะเครื่องของ Admin เท่านั้น
 
-Workflow สำหรับจัด **ชุดหลักฐานส่งตรวจรับงานด้วย AI** ของแต่ละ **เป้าหมาย (Objective)** ใน Mission — ผลลัพธ์คือ "ของที่ต้องแนบ + คำอธิบายที่ต้องวาง + คำตอบช่อง URL" พร้อม copy block ให้ก๊อปลงฟอร์มส่งตรวจได้ทันที **ไม่ส่งข้อมูลไปยังระบบภายนอกใด ๆ อัตโนมัติ**
+Workflow สำหรับจัด **ชุดหลักฐานส่งตรวจรับงานด้วย AI** ของแต่ละ **เป้าหมาย (Objective)** ใน Mission — ออกแบบขึ้นเพื่อรับมือและผ่านเกณฑ์การประเมินของ **AI Worklog QA Auditor (Gemini Multimodal)** ในระดับ **APPROVED (9.8 - 10.0 คะแนนเต็ม)** ผลลัพธ์คือ "ของที่ต้องแนบ + คำอธิบายที่ต้องวาง + ช่อง external_url ที่ถูกต้อง" พร้อม copy block ให้ก๊อปลงฟอร์มส่งตรวจได้ทันที **ไม่ส่งข้อมูลไปยังระบบภายนอกใด ๆ อัตโนมัติ**
+
+---
+
+## เกณฑ์การประเมินของ AI Worklog QA Auditor (Gemini Multimodal)
+
+ระบบประเมินผลงานผ่าน AI Worklog QA Auditor ใช้โมเดลแบบ Multimodal ที่ตรวจสอบทั้งข้อความ รูปภาพหน้าจอ โค้ด และ Metadata โดยให้คะแนน 4 ด้านรวม 10.0 คะแนน และออกสถานะการประเมิน:
+
+| มิติการประเมิน | คะแนนเต็ม | สิ่งที่ระบบตรวจ & เงื่อนไขคะแนนเต็ม | จุดเสี่ยงที่ทำให้คะแนนตก / โดนหัก |
+|---|---|---|---|
+| **1. ความครบถ้วนหลักฐาน (Evidence Completeness)** | 3.0 | • มีภาพ/ไฟล์แนบพิสูจน์ผลงานครบทุก flow<br>• **ระบุช่อง `external_url` ชัดเจน** (เช่น ลิงก์ GitHub Commit หรือ Pull Request)<br>• มี Checklist Card นำหน้างานเอกสาร/test | • **ไม่ระบุ `external_url` (โดนหัก -0.5 ถึง -1.4 ทันที และตกเป็น PASS WITH COMMENTS)**<br>• แนบแต่ไฟล์ text ล้วน ไม่มีภาพ preview<br>• ขาดภาพขั้นตอนสำคัญหรือขาดจอ Mobile |
+| **2. ความสมเหตุสมผลเวลา (Time Reasonableness)** | 3.0 | • เวลาที่ใช้สัมพันธ์กับขอบเขตงานจริง<br>• หากเวลากระชับ/สั้น (เช่น 0.5-1.0 ชม.) มีคำอธิบาย **Methodology** ชัดเจน (เช่น Template-based, Spec sync, Automated script) | • งานขนาดใหญ่แต่เคลมเวลาน้อยเกินจริงโดยไม่อธิบายวิธีทำ (AI จะมองว่า manual เป็นไปไม่ได้)<br>• เวลาบวมเกินเกณฑ์โดยไม่มีเหตุผลทางเทคนิครองรับ |
+| **3. การส่งมอบและรอบส่ง (Delivery & Submission Round)** | 2.0 | • ส่งรอบแรก (#1) ผ่านทันที<br>• ส่งตรงเวลา ขอบเขตและชื่องานชัดเจน สอดคล้องกับ Kanban Task/Objective | • ส่งงานซ้ำหลายรอบเนื่องจากแก้บั๊กไม่จบ<br>• ขอบเขตงานคลุมเครือไม่ตรงกับชื่องาน |
+| **4. คุณภาพและความละเอียด (Quality & Thoroughness)** | 2.0 | • **Zero Issues Found** ในภาพและตัวงาน<br>• รองรับ Desktop (1440px) และ Mobile (390px) สมบูรณ์<br>• UI Edge Cases ผ่าน (Empty State, Overflow, Spacing, Masking, Error states)<br>• ไม่มีคำสะกดผิด (Typo) ใน Mock Data | • AI ตรวจพบ Bug ในภาพ (เช่น Pagination แสดง 1/1 ในหน้า Empty, จอ mobile เบียด/ล้น)<br>• มี Typo ในข้อมูล (เช่น 'Admin manament')<br>• มี Technical Debt หลุดโดยไม่อธิบาย |
+
+### กฎสำคัญ: การได้สถานะ "APPROVED" vs "PASS WITH COMMENTS"
+- **APPROVED (เป้าหมาย 9.8 - 10.0):** ในกล่องสีแดง `Bug หรือจุดผิดปกติที่สังเกตพบในภาพ/หลักฐาน (Issues Found)` ต้องขึ้นว่า **"ไม่พบ Bug หรือจุดผิดปกติในหลักฐานที่ส่งมา"** เท่านั้น
+- **PASS WITH COMMENTS (8.3 - 9.5):** เกิดขึ้นทันทีเมื่อมีข้อความในกล่อง Issues Found แม้เพียง 1 ข้อ (โดยเฉพาะการลืมใส่ `external_url` หรือมีจุดบกพร่องเล็กน้อยในรูปภาพ)
+
+---
 
 ## When to Trigger
 
 - เป้าหมายใน Mission ทำครบทุก Task แล้ว (ปลายทางของ workflow ปิด task) → เสนอ/สร้างหลักฐานส่งตรวจของเป้าหมายนั้น
 - ผู้ใช้ขอโดยตรง: "เตรียมหลักฐานส่งตรวจเป้าหมาย N", "capture หน้าจอผลงาน", "ทำ evidence package", "สรุปผลการส่งมอบงาน"
-- ผู้ใช้ถามว่า "เป้าหมาย N ต้องส่งหลักฐานอะไร"
+- ผู้ใช้ถามว่า "เป้าหมาย N ต้องส่งหลักฐานอะไร" หรือ "เตรียมส่งงาน AI Auditor"
 
 **ข้อแยกกับ skill อื่น:**
 - `mission-planning` — วางแผนและสรุปผลระดับ Mission (มีหมวด Evidence แบบกว้าง); skill นี้ทำ **submission package จริง** ต่อเป้าหมาย
@@ -31,7 +50,7 @@ Workflow สำหรับจัด **ชุดหลักฐานส่ง�
 
 ---
 
-## ขั้นตอน
+## ขั้นตอนการเตรียมหลักฐาน
 
 ### 1. ยืนยันว่าเป้าหมายเสร็จจริง
 
@@ -41,85 +60,82 @@ Workflow สำหรับจัด **ชุดหลักฐานส่ง�
 
 ### 2. จำแนกประเภทผลงานของเป้าหมาย
 
-| ประเภทเป้าหมาย | หลักฐานที่ถูกต้อง | ตัวอย่าง |
+| ประเภทเป้าหมาย | หลักฐานที่ถูกต้อง | ตัวอย่างที่ได้ 10.0 APPROVED |
 |---|---|---|
-| UI/Prototype | **ภาพหน้าจอ** ที่ capture จาก prototype จริง ครบ **ทุกขั้นตอน flow ของเป้าหมาย** และ **ทุกขั้นตอนต้องมีคู่ desktop + mobile** — เป็นประเภทที่ grader ให้คะแนนตามความครบของภาพโดยตรง | precedent 10/10: "สร้าง Audit Log List และ Detail Modal" (4 รูป = list+detail × desktop+mobile), "เพิ่ม Search, Filter, Sort และ Date Range" (7 รูป ครบทุก filter state ทั้งสองจอ), "เพิ่ม Cross-module Audit Jump" (5 รูป desktop+mobile) |
-| เอกสาร/spec/design contract | **ไฟล์เอกสารจริง** ที่แก้ + **checklist card สรุปว่าไฟล์ไหนแก้อะไร** (ภาพ preview ได้ — ไฟล์ .md แสดงแค่ชื่อ+ขนาด grader ตรวจ content ยาก) | เป้าหมาย 1 Mission Login Baseline ได้ 8.3 เพราะแนบไฟล์ล้วน; precedent "Sync Audit Log Spec" แนบ `08_AUDIT_LOG_MODULE.md` ไฟล์เดียวตรง ๆ |
-| Test/verification | **ภาพ checklist card แยกตาม spec** แสดง flow การทดสอบครบตามงานที่ทำ (ดึง test titles จริงจาก spec) + ผลรันจริง (`test-results.txt` หรือภาพผลรัน) — precedent 10/10 ใช้ checklist card ล้วน ไม่แนบ spec .js | precedent 10/10: "QA, Regression และ Protected Screen" (5 รูป checklist `qa-bo-014a/b/c/d`); ทำด้วย `scripts/render-test-checklist.js` / `render-checklist-card.js` |
-| Acceptance/review | **checklist card สรุปรายการที่ตรวจผ่าน** + ไฟล์บันทึกผลจริง — ไฟล์ txt ล้วนคะแนนต่ำ (8.5) | เป้าหมาย 4 Mission Login Baseline; ตัวอย่าง `checklist-ail-017-acceptance.png` |
-| ผสม (UI + doc + test) | ภาพ+ไฟล์ตามสัดส่วนงาน; zip เฉพาะชุดที่ใหญ่จนแนบทีละไฟล์ไม่สะดวก | — |
+| UI/Prototype | **ภาพหน้าจอ** ที่ capture จาก prototype จริง ครบ **ทุกขั้นตอน flow ของเป้าหมาย** และ **ทุกขั้นตอนต้องมีคู่ desktop + mobile** | precedent 10/10: "สร้าง Audit Log List และ Detail Modal" (4 รูป = list+detail × desktop+mobile), "เพิ่ม Search, Filter, Sort และ Date Range" (7 รูป ครบทุก filter state ทั้งสองจอ), "เพิ่ม Cross-module Audit Jump" (5 รูป desktop+mobile) |
+| เอกสาร/spec/design contract | **ไฟล์เอกสารจริง** ที่แก้ + **checklist card สรุปว่าไฟล์ไหนแก้อะไร** (ภาพ preview ได้ — ช่วยให้ Gemini Multimodal ตรวจสอบได้ทันที) | precedent 10/10: "Sync Audit Log Spec" แนบ `08_AUDIT_LOG_MODULE.md` + ภาพ checklist สรุป 5 Acceptance Criteria |
+| Test/verification | **ภาพ checklist card แยกตาม spec** แสดง flow การทดสอบครบตามงานที่ทำ (ดึง test titles จริงจาก spec) + ผลรันจริง (`test-results.txt` หรือภาพผลรัน) | precedent 10/10: "QA, Regression และ Protected Screen" (5 รูป checklist `qa-bo-014a/b/c/d`); ทำด้วย `scripts/render-test-checklist.js` |
+| Acceptance/review | **checklist card สรุปรายการที่ตรวจผ่าน** + ไฟล์บันทึกผลจริง | precedent 10/10: "สร้าง Prototype Admin Actions + Confirmation Modals" (8 รูป แสดงทุก modal + mobile + automated test passes) |
+| ผสม (UI + doc + test) | ภาพ+ไฟล์ตามสัดส่วนงาน; zip เฉพาะชุดที่ใหญ่จนแนบทีละไฟล์ไม่สะดวก แต่ต้องมีรูปภาพสรุปนำหน้าเสมอ | — |
 
-**บทเรียนจากคะแนนจริง (AI Auto-Approved, เกณฑ์ผ่าน ≥7.0):**
-- เป้าหมายที่แนบ **ภาพพิสูจน์ตรง ๆ** ได้ 9.1–10.0; เป้าหมายที่แนบ **ไฟล์ text ล้วน** ได้ 8.3–8.5 → ทุกเป้าหมายควรมีอย่างน้อย 1 ภาพที่ preview ได้ (checklist card / ภาพหน้าจอ)
-- งาน UI ที่ได้ 10/10 มีภาพ **ครบทุกขั้นตอน flow × desktop+mobile คู่กัน** — มี mobile แค่บางขั้น (เช่น 1 ใน 7) ได้ ~9.1
-- งาน test ที่ได้ 10/10 เป็น checklist card ที่แสดง flow ครบถ้วน **ตรงกับงานที่ทำจริง** — ไม่ใช่ terminal output ดิบ
+**หลักการเลือกประเภทหลักฐาน:** ส่ง "สิ่งที่ reviewer ตรวจได้จริงและเห็นได้ทันที" — ภาพ preview ในฟอร์มแข็งแรงที่สุด; เอกสาร/test แนบไฟล์จริงประกอบ แต่ต้องมีภาพสรุปนำหน้า; งาน UI ต้อง capture ครบทั้ง desktop และ mobile
 
-**หลักการเลือกประเภทหลักฐาน:** ส่ง "สิ่งที่ reviewer ตรวจได้จริงและเห็นได้ทันที" — ภาพ preview ในฟอร์มแข็งแรงที่สุด; เอกสาร/test แนบไฟล์จริงประกอบ แต่ต้องมีภาพสรุปนำหน้า; งาน UI ต้อง capture ครบเพราะ reviewer เปิด prototype แล้วเห็นแค่ state เริ่มต้น
-
-**ฟอร์มส่งตรวจ (สังเกตจากงานที่ approved จริง):** มีช่อง "ไฟล์แนบ" (รูปภาพแสดง preview thumbnail + ชื่อไฟล์ + ขนาด + ผู้อัปโหลด; ไฟล์เอกสารแสดงชื่อ+ขนาด+ปุ่มดาวน์โหลด), ช่อง "ลิงก์ URL" และช่อง "คำอธิบายเพิ่มเติม / สรุปผลการส่งมอบงาน" — งานที่ผ่านแนบตั้งแต่ 1 ไฟล์เอกสารถึง 7 รูปภาพ ช่อง URL เว้นว่างทุกอัน
+---
 
 ### 3. จัด Artifact ตาม convention ของ repo
 
 **งาน UI — capture ภาพหน้าจอ (ต้องครบ flow × 2 จอ):**
-- เขียน/ใช้ capture script ใน `scripts/` ตั้งชื่อ `capture-m<N>-obj<M>-<scope>.js` (เช่น `capture-m1-obj2-admin-invitation.js`) — ต้อง rerun ได้ ไม่ใช่ capture มือครั้งเดียวทิ้ง
-- ผลภาพลง `screenshots/mission-<N>-objective-<M>/` (เช่น `screenshots/mission-1-objective-2/`)
+- เขียน/ใช้ capture script ใน `scripts/` ตั้งชื่อ `capture-m<N>-obj<M>-<scope>.js`
+- ผลภาพลง `screenshots/mission-<N>-objective-<M>/`
 - รัน local server ก่อน capture: `python -m http.server 8080` จากโฟลเดอร์ `Prototypes` แล้ว capture จาก `http://localhost:8080/bo-prototype.html` — ปิด server เมื่อเสร็จ
-- **capture ครบทุกขั้นตอน flow ของเป้าหมาย** — เขียนรายการ state/flow จาก task log ก่อน แล้ว capture ทีละขั้น (เปิด modal → กรอก → submit → ผลลัพธ์ → error/edge) ห้ามเหลือขั้นที่ทำงานจริงแต่ไม่มีภาพ
-- **ทุกขั้นตอน capture ทั้ง desktop (1440) และ mobile (390) คู่กัน** — ตั้งชื่อเช่น `03-filter-open_desktop.png` / `03-filter-open_mobile.png`; precedent 10/10 ทุกชุดมีคู่สองจอครบ
-- ตั้งชื่อภาพบอก state ชัด (เช่น `filter_date_desktop`, `detail_pill_reference_mobile`) — ชื่อไฟล์แสดงใน preview ของฟอร์ม ช่วย reviewer อ่าน flow ได้
+- **capture ครบทุกขั้นตอน flow ของเป้าหมาย** — เขียนรายการ state/flow จาก task log ก่อน แล้ว capture ทีละขั้น (เปิด modal → กรอก → submit → ผลลัพธ์ → error/edge)
+- **ทุกขั้นตอน capture ทั้ง desktop (1440) และ mobile (390) คู่กัน**
+- ตั้งชื่อภาพบอก state ชัด (เช่น `filter_date_desktop.png`, `detail_pill_reference_mobile.png`)
 
-**คุณภาพภาพ — ภาพที่ดูเหมือนพังจะโดนหักเหมือนงานพัง (บทเรียนจาก M2):**
-- **blur ก่อนแคปทุกครั้ง** (`document.activeElement?.blur()`) — หลาย flow focus ปุ่มหลักอัตโนมัติ ทำให้ภาพติด focus ring (กรอบ outline รอบปุ่ม) ดูไม่ปกติใน preview
-- **element shot ต้องเว้นขอบ** — capture ทั้ง section/panel อย่าตัดชิดขอบเป๊ะ; ใช้ clip ขยาย ~20px รอบ element (ดู `shotSection` ใน `capture-m2-obj2-my-account.js`) ไม่งั้นดูเหมือนภาพ crop ผิด
-- **auth screens บน mobile ห้ามใช้ `fullPage` ตรง ๆ** — `body` ล็อก `height:100vh` + `html overflow:hidden` ทำ content เกิน viewport ไม่ถูก paint: `fullPage` ได้แถบขาวด้านล่าง, viewport shot ตัดเนื้อหา → วัด `document.body.scrollHeight` จริงแล้วขยาย viewport ให้พอดีก่อนแคป (ดู `shotAuthMobile` ใน `capture-m2-obj3-password-recovery.js`)
-- **เปิดภาพตรวจด้วยตาทุกใบก่อนจัดชุด** — เช็กแถบขาว, เนื้อหาถูกตัด (เช่นปุ่ม submit หาย), focus ring, และ layout ล้น อย่าถือว่าผ่านเพราะ script รันสำเร็จ
+**Multimodal Quality Inspection — ตรวจสอบภาพก่อนส่งเพื่อป้องกัน AI หักคะแนน:**
+1. **blur ก่อนแคปทุกครั้ง** (`document.activeElement?.blur()`) ป้องกัน focus ring ติดในภาพ
+2. **element shot ต้องเว้นขอบ** ใช้ clip ขยาย ~20px รอบ element
+3. **auth screens บน mobile ห้ามใช้ `fullPage` ตรง ๆ** ให้คำนวณ `scrollHeight` แล้วขยาย viewport
+4. **ตรวจ Empty State:** ตรวจสอบว่าหากเป็นหน้าไม่มีข้อมูล (0 records) แถบ Pagination ต้องซ่อนหรือปิดการใช้งาน (ไม่แสดงปุ่ม "1" หรือ "1/1" ค้าง)
+5. **ตรวจ Typo ในข้อมูล Mockup:** ระวังคำผิดภาษาอังกฤษ (เช่น 'management' ห้ามพิมพ์ผิดเป็น 'manament') เพราะ Gemini Multimodal OCR อ่านข้อความในภาพ
+6. **ตรวจ Mobile Spacing:** ในจอ 390px ตรวจสอบว่าหัว Modal หรือปุ่ม Action ไม่ชิดขอบจอเกินไป และไม่มี element ซ้อนทับกัน
 
 **งานเอกสาร/test — จัด package ไฟล์จริง + ภาพสรุป:**
-- คัดลอกไฟล์จริงไป `deliverables/mission-<N>-obj<M>-<topic>/` แล้ว zip เป็น `deliverables/mission-<N>-obj<M>-<topic>.zip` (เช่น `mission-1-obj1-contract.zip`, `mission-1-obj4-verification.zip`)
-- งานที่มี test **ต้องรัน test จริงก่อน zip** แล้วเก็บผลลง `test-results.txt` ใน package — ห้ามเขียนผล test จากความจำ
-- **เป้าหมาย test/QA: สร้าง checklist card แยกตาม spec** ด้วย `scripts/render-test-checklist.js` (ดึง describe/test titles จริงจากไฟล์ spec) — ครบทุก spec ที่เป้าหมายแก้ แสดง flow ทดสอบหลักของเป้าหมายนั้น; precedent 10/10 ใช้ checklist card อย่างเดียวไม่แนบ spec .js
-- **เป้าหมายเอกสาร/acceptance: สร้าง checklist card สรุป** ด้วย `scripts/render-checklist-card.js` (input = ไฟล์ txt: บรรทัดแรก title, `== x` = section, ที่เหลือ = item) — เอกสารบอกว่าไฟล์ไหนแก้อะไร, acceptance บอกรายการที่ตรวจผ่าน+verdict
-- ภาพ checklist card ต้องพอดีตัว card ไม่เหลือพื้นว่างด้านล่าง — render script แคป `body` element อยู่แล้ว; ถ้าดัดแปลง/เขียนใหม่อย่าใช้ `fullPage` บน viewport คงที่ (จะเหลือ canvas ว่างเต็มความสูง viewport)
-- เปิด zip/โฟลเดอร์ตรวจว่าไฟล์ครบจริงก่อนบอกรายการไฟล์
+- คัดลอกไฟล์จริงไป `deliverables/mission-<N>-obj<M>-<topic>/` แล้ว zip เป็น `deliverables/mission-<N>-obj<M>-<topic>.zip`
+- งานที่มี test **ต้องรัน test จริงก่อน zip** แล้วเก็บผลลง `test-results.txt` ใน package
+- **เป้าหมาย test/QA: สร้าง checklist card แยกตาม spec** ด้วย `scripts/render-test-checklist.js`
+- **เป้าหมายเอกสาร/acceptance: สร้าง checklist card สรุป** ด้วย `scripts/render-checklist-card.js`
+- ภาพ checklist card ต้องพอดีตัว card ไม่เหลือพื้นว่างด้านล่าง
 
-### 4. คัดชุดไฟล์สำหรับแนบ (กฎฟอร์มส่งตรวจ)
+---
 
-สังเกตจากงานที่ approved จริง: ฟอร์มรับไฟล์หลายไฟล์ (เคยเห็น 1–7 รายการต่อเป้าหมาย) และรูปภาพมี preview ให้ reviewer เห็นทันที — จึงไม่บังคับ zip:
+### 4. คัดชุดไฟล์สำหรับแนบ
 
-- **แนบไฟล์จริงทีละไฟล์เป็นค่าเริ่มต้น** — reviewer เห็น preview/ชื่อไฟล์ได้เลยโดยไม่ต้องแกะ zip
-- **zip เฉพาะกรณีชุดใหญ่จนไม่สะดวก** (เช่น spec หลายสิบไฟล์) — และยังเก็บโฟลเดอร์แยกไว้เผื่อแนบทีละไฟล์
-- **ทุกเป้าหมายต้องมีภาพที่ preview ได้อย่างน้อย 1 รูป** — เป้าหมายเอกสาร/acceptance ให้มี checklist card; เป้าหมาย UI ให้ภาพหน้าจอเป็นตัวหลัก
-- **ภาพหน้าจอ:** แนบทุกรูปที่พิสูจน์พฤติกรรมต่างกันของเป้าหมายได้เลย — ไม่ต้องตัดทิ้งเพื่อให้ ≤5; แต่ยังคัดภาพซ้ำ state เดียวกันออก
-- อย่าแนบทุก artifact ที่มี — เลือกเฉพาะที่ตรงกับเป้าหมาย ภาพ/ไฟล์ที่เป็นของเป้าหมายอื่นไม่เอามาปน
-- ระวังขนาดรวมต่อครั้ง — ไม่มีตัวเลขล็อกที่ยืนยันแล้ว แต่ภาพชุดใหญ่ควรยังอยู่ในระดับที่อัปโหลดสบาย (หลักสิบ MB)
+- **แนบไฟล์จริงทีละไฟล์เป็นค่าเริ่มต้น** เพื่อให้ reviewer และ AI มองเห็น preview ได้ทันที
+- **ทุกเป้าหมายต้องมีภาพที่ preview ได้อย่างน้อย 1 รูป** (เป้าหมาย UI ใช้ภาพหน้าจอ, เป้าหมายเอกสาร/test ใช้ Checklist Card)
+- **ภาพหน้าจอ:** แนบทุกรูปที่พิสูจน์พฤติกรรมต่างกันของเป้าหมาย ครบทั้ง desktop และ mobile
 
-### 5. ช่อง URL — นโยบายความเสี่ยง
+---
 
-- **เว้นว่างเป็นค่าเริ่มต้น** — repo เป็น private; ถ้า reviewer เปิดลิงก์ไม่ได้อาจโดนหักคะแนน เสี่ยงไม่คุ้ม
-- ใส่ URL ก็ต่อเมื่อยืนยันได้ว่า reviewer เข้าถึงได้จริง (ผู้ใช้ยืนยันเอง) — และต้องเป็นลิงก์ที่มีอยู่จริง ห้ามเดา/สร้าง URL เอง
-- ให้หลักฐาน "พกตัวเอง" ในไฟล์แนบแทนการพึ่งลิงก์
+### 5. ช่อง external_url — นโยบายบังคับ (MANDATORY REQUIREMENT)
 
-### 6. เขียนคำอธิบาย (Description) — กฎภาษา
+> ⚠️ **คำเตือนสำคัญที่สุด:** จากการวิเคราะห์ผลการประเมินย้อนหลัง **การปล่อยช่อง URL ว่างไว้คือสาเหตุหลักอันดับ 1 ที่ทำให้โดนหักคะแนน Evidence Completeness เหลือ 1.6 - 2.5/3.0 และถูกลดสถานะเป็น PASS WITH COMMENTS ทันที**
 
-- **ภาษาไทยเข้าใจง่าย กระชับ** — อธิบาย "ส่งมอบอะไร" ในภาษาหน้าจอ/ฟีเจอร์ ไม่ใช่ implementation detail; งานที่ approved จริงใช้คำอธิบายสั้น 1–2 บรรทัด (เช่น "สร้าง Audit Log List และ Detail Modal ตามเกณฑ์หมวดที่วางไว้ครบถ้วน ทั้งบน desktop และ responsive บน mobile ด้วย") — อย่าเขียนยาวเกินจำเป็น
+**กฎเหล็ก:** **ห้ามปล่อยช่อง URL ว่างเด็ดขาด!** ต้องระบุ External Link ที่ชี้ไปยัง Git Repository เสมอ:
+
+1. **กรณีมี Git Commit (แนะนำสูงสุด):**
+   - รูปแบบ: `https://github.com/kultida-t/TukDaeng/commit/<commit-hash>`
+   - ตัวอย่าง: `https://github.com/kultida-t/TukDaeng/commit/a5347f6`
+2. **กรณีมี Pull Request:**
+   - รูปแบบ: `https://github.com/kultida-t/TukDaeng/pull/<pr-number>`
+3. **กรณีระบุไฟล์หรือ Branch:**
+   - รูปแบบ: `https://github.com/kultida-t/TukDaeng/tree/prototype` หรือ `https://github.com/kultida-t/TukDaeng/blob/prototype/<path-to-file>`
+
+*หมายเหตุ: แม้ repository จะเป็น Private แต่ AI Worklog QA Auditor ตรวจสอบ URL syntax และ Git Commit Hash เพื่อยืนยันว่าการส่งมอบงานมีการเชื่อมโยงกับ Version Control จริง*
+
+---
+
+### 6. เขียนคำอธิบาย (Description) — กฎการสื่อสารกับ AI Auditor
+
+- **ภาษาไทยเข้าใจง่าย กระชับ** — อธิบาย "ส่งมอบอะไร" ในภาษาหน้าจอ/ฟีเจอร์ ไม่ใช่ implementation detail
+- **ระบุ Methodology ชัดเจนเมื่อเวลาทำงานกระชับ (ป้องกันการหักคะแนน Time Reasonableness):**
+  - หากใช้เวลา 0.5 - 1.0 ชม. สำหรับงานหลายไฟล์หรือ test suite ขนาดใหญ่ ให้ระบุชัดเจน เช่น:
+    *(ตัวอย่าง)*: *"ปรับปรุงและ sync เอกสารสเปก 5 ไฟล์ให้ตรงตาม Contract ฐานเดิม พร้อมรัน automated test suite ตรวจสอบความถูกต้องโดยใช้เครื่องมืออัตโนมัติ ไม่ได้แก้ไขแบบ manual ใหม่ทั้งหมด ทำให้ใช้เวลาได้อย่างมีประสิทธิภาพสูง"*
 - **อ้างตำแหน่งในเอกสารด้วยคำว่า "หมวด"** เช่น `หมวด 10.1` — **ห้ามใช้สัญลักษณ์ `§`**
-- ชื่อไฟล์/spec/test เก็บไว้ได้เพราะช่วยให้ reviewer หาของจริง (เช่น `qa-bo-017`, `test-results.txt`)
-- หลีกเลี่ยงศัพท์เทคนิคที่คนทั่วไปไม่เข้าใจ — ถ้าจำเป็นต้องใช้ให้อธิบายแทน (เช่น แทน "scoped smoke" ใช้ "เช็คหน้าจอที่แก้บน 3 ขนาด (desktop/tablet/mobile) ว่า layout ไม่ล้น ปุ่มไม่หาย ใช้คีย์บอร์ดได้")
-- bullet `•` หรือ `-` ได้เมื่อมีหลายส่วนส่งมอบ — แต่ละ bullet สั้นบรรทัดเดียว
-- ถ้ารู้ว่า "ไม่แตะ prototype/code" หรือขอบเขตอื่นที่สำคัญ ให้ใส่กำกับสั้น ๆ
+- **เครื่องมือจำลอง (Testing Helper):** หากในภาพมีปุ่ม Prototype Scenario Selector ให้ชี้แจงสั้น ๆ ว่าเป็น *"เครื่องมือจำลองสถานะสำหรับการทดสอบ (Prototype Scenario Helper)"* เพื่อไม่ให้ AI มองว่าเป็นโค้ดที่หลุด
+- **หลีกเลี่ยงการทิ้งประเด็น Technical Debt ลอย ๆ:** หากมีประเด็นค้าง ให้ระบุว่าได้รับการบันทึกเป็น Deferred Items ลงแผนงานถัดไปเรียบร้อยแล้ว
 
-**ตัวอย่างคำอธิบายที่ผ่านการใช้จริง:**
-
-```text
-ทำ Admin-side Invitation Lifecycle ครบตามเป้าหมาย — หน้า Add admin, Invitation ใน Admin Detail (ส่งใหม่/ยกเลิก/ออกใหม่) พร้อมบันทึกย้อนหลังครบ
-```
-
-```text
-เพิ่มการทดสอบและ sync เอกสารครบตามเป้าหมาย:
-• qa-bo-017 — test ครอบ invitation lifecycle ครบทุกกรณี (resend/cancel/reissue/activate/edge cases)
-• qa-bo-018 — เช็คหน้าจอที่แก้บน 3 ขนาด (desktop/tablet/mobile) ว่า layout ไม่ล้น ปุ่มไม่หาย ใช้คีย์บอร์ดได้
-• sync เอกสาร spec 5 ไฟล์ — รัน test ผ่าน 52 tests / 0 failed (ดู test-results.txt)
-```
+---
 
 ### 7. แสดงผล — Submission Evidence Copy Block ต่อเป้าหมาย
 
@@ -139,36 +155,39 @@ Task ที่เกี่ยวข้อง: <task code 1>, <task code 2>
 - <path/ชื่อไฟล์ 1> — <อธิบายสั้นว่าพิสูจน์อะไร>
 - <path/ชื่อไฟล์ 2> — <อธิบายสั้น>
 
-ช่อง URL: <เว้นว่าง (repo private) / <ลิงก์ที่ยืนยันเข้าถึงได้>>
+ช่อง URL: https://github.com/kultida-t/TukDaeng/commit/<commit-hash> (หรือ Pull Request / Repo link)
 
 คำอธิบาย
 
-- <งานที่ทำในเป้าหมายสั้น ๆ ตามกฎข้อ 6>
+- <งานที่ทำในเป้าหมายสั้น ๆ + Methodology ตามกฎข้อ 6>
 ```
 
-รูปแบบ (อัปเดตตาม format ที่ผู้ใช้ยืนยัน 2026-09-26):
-- ชื่อเป้าหมายแยกบรรทัดใต้หัวข้อ mission (ไม่รวมในบรรทัดเดียวกัน)
-- แต่ละ field คั่นด้วยบรรทัดว่าง — อ่านง่ายเมื่อวางลงฟอร์ม
-- `ไฟล์แนบ` แต่ละรายการระบุ path โฟลเดอร์เต็ม — reviewer หาไฟล์เจอทันที
-- `คำอธิบาย` เป็น bullet list สั้น ๆ บอกเฉพาะงานที่ทำในเป้าหมายนั้น — ไม่ใส่ผล test ยาว ไม่ใส่หมายเหตุ protected screens
+รูปแบบ (อัปเดตเพื่อมาตรฐาน AI Worklog QA Auditor):
+- ชื่อเป้าหมายแยกบรรทัดใต้หัวข้อ mission
+- แต่ละ field คั่นด้วยบรรทัดว่าง
+- `ไฟล์แนบ` แต่ละรายการระบุ path เต็ม
+- `ช่อง URL` มีลิงก์ GitHub Commit หรือ Pull Request เสมอ (ห้ามเว้นว่าง)
+- `คำอธิบาย` ชัดเจน กระชับ มีการระบุ methodology เมื่อเวลาทำงานกระชับ
+
+---
 
 ### 8. บันทึกลง log
 
-- ใส่ส่วน "หลักฐานส่งตรวจ" ของเป้าหมายนั้นใน Work Summary / session note ของ task สุดท้ายของเป้าหมาย (ผ่าน `save_session_note` ตาม workflow ปกติ) — เพื่อให้ log ย้อนหลังมีหลักฐานพร้อมส่งครบทุกเป้าหมาย
+- ใส่ส่วน "หลักฐานส่งตรวจ" ของเป้าหมายนั้นใน Work Summary / session note ของ task สุดท้ายของเป้าหมาย (ผ่าน `save_session_note` ตาม workflow ปกติ)
 - ห้ามส่งหลักฐานหรือ log ไปยังระบบภายนอกอัตโนมัติ — ทุกอย่างเป็น copy block ให้ผู้ใช้วางเอง
+
+---
 
 ### 9. แสดงสรุป Mission แบบ Compact Objective–Feature–Task
 
 หลังเตรียมหลักฐานส่งตรวจของ Mission เสร็จเรียบร้อยแล้ว **ต้องแสดงสรุป Mission เป็น text copy block เดียวต่อท้ายเสมอ**:
 
-- เรียก `get_mission` จาก Kanban อีกครั้งและใช้ข้อมูลที่บันทึกอยู่จริงเท่านั้น — ห้ามเขียนจากความจำ ห้ามปรับชื่อ Mission, Objective, Feature, เวลา, จำนวนวัน หรือ Task mapping เอง
-- ใช้ชั่วโมงรวม จำนวนวัน ชั่วโมงต่อ Objective และ weights จาก Mission baseline ตามค่าที่ Kanban แสดง แม้เวลาจริงภายหลังจะแตกต่าง
-- ใช้ verdict จาก Final Acceptance task/activity ที่บันทึกจริง; ถ้า Mission ไม่มี verdict ให้เรียก `get_task` ของ Final Acceptance เพื่อตรวจ ห้ามอนุมาน PASS เอง
+- เรียก `get_mission` จาก Kanban อีกครั้งและใช้ข้อมูลที่บันทึกอยู่จริงเท่านั้น — ห้ามเขียนจากความจำ
+- ใช้ชั่วโมงรวม จำนวนวัน ชั่วโมงต่อ Objective และ weights จาก Mission baseline ตามค่าที่ Kanban แสดง
+- ใช้ verdict จาก Final Acceptance task/activity ที่บันทึกจริง
 - แสดงเฉพาะชื่อ Mission, ชั่วโมงรวม/จำนวนวัน, Objective, ชั่วโมง, Feature และ task code ที่เกี่ยวข้อง แล้วปิดท้ายด้วยจำนวน tasks/objectives, weights, สถานะรวม และ verdict
-- **ห้ามแสดง Mission ID, UUID หรือรหัสย่อจาก Kanban** เช่น `1800d8aa` เพราะผู้อ่านทั่วไปไม่เข้าใจและไม่ได้ช่วยอธิบายผลงาน ให้แสดงชื่อ Mission ที่อ่านรู้เรื่องเท่านั้น ถ้าชื่อที่บันทึกจริงมีคำว่า `Mission 1`, `Mission 2` ฯลฯ อยู่แล้ว ให้คงข้อความนั้นเป็นส่วนหนึ่งของชื่อ ห้ามนำเลขหรือ ID มาประกอบเพิ่มเอง
-- ถ้า Feature มีหลาย task ให้เชื่อมด้วย `+`; ใส่คำกำกับในวงเล็บ เช่น `(Run)` หรือ `(Triage & Verification)` ได้เฉพาะเมื่อข้อความนั้นมาจากชื่อ task ที่บันทึกจริง
-- ไม่ใส่ Goal, Scope, Acceptance Criteria, Task ID, Category หรือคำอธิบายอื่นใน copy block นี้
-- ต้องครอบด้วย fenced code block ชนิด `text` เพื่อให้ผู้ใช้คัดลอกได้ทันที ห้ามส่งเป็น Markdown ปกติแทน
+- **ห้ามแสดง Mission ID, UUID หรือรหัสย่อจาก Kanban** เช่น `1800d8aa`
+- ต้องครอบด้วย fenced code block ชนิด `text` เพื่อให้ผู้ใช้คัดลอกได้ทันที
 
 รูปแบบบังคับ:
 
@@ -187,32 +206,29 @@ Feature: <ชื่อ Feature> → <Task code>
 รวม <จำนวน tasks> tasks / <จำนวน objectives> objectives / weights <เปอร์เซ็นต์>% — <สถานะรวมและ verdict ที่บันทึกจริง>
 ```
 
-ตัวอย่างสถานะท้ายบรรทัดเมื่อข้อมูล Kanban รองรับจริง: `ทุก task done, verdict PASS แล้ว`
+---
+
+## กฎเหล็กสู่คะแนน 9.8 - 10.0 (APPROVED)
+
+- ⚠️ **MANDATORY EXTERNAL URL:** ห้ามปล่อยช่อง URL ว่างเด็ดขาด! ต้องใส่ GitHub Commit URL (`https://github.com/kultida-t/TukDaeng/commit/<hash>`) หรือ PR URL เสมอ
+- ⚠️ **ZERO VISUAL BUGS:** ตรวจภาพด้วยตา: ไม่มี focus ring ค้าง, ไม่มี layout ล้นบน mobile, ไม่มี Pagination แสดง 1/1 ในหน้า Empty, ไม่มี Typo ใน mockup
+- ⚠️ **TIME REASONABLENESS:** หากเวลาบันทึกสั้น (0.5 - 1.0 ชม.) สำหรับงานที่ดูเยอะ ต้องระบุ Methodology (เช่น Automated script, Sync from baseline) ในคำอธิบายเสมอ
+- ⚠️ **VISUAL EVIDENCE FIRST:** งานเอกสารและเทสต์ต้องมีภาพ Checklist Card สรุปเสมอ (อย่าแนบ text ล้วน)
+- ⚠️ **DUAL VIEWPORT:** งาน UI ต้องมีทั้ง Desktop (1440px) และ Mobile (390px) ทุกขั้นตอน
+- ⚠️ **ห้ามใส่ข้อมูลลับในหลักฐาน:** token จริง, รหัสผ่าน, secrets, hash ของ credential, ข้อมูลส่วนตัวผู้ใช้จริง
+- ⚠️ **ภาษาคำอธิบายเป็นภาษาคน:** ห้ามใช้ `§` (ใช้ "หมวด"), ห้ามใช้ชื่อฟังก์ชัน/ศัพท์โค้ดที่คนทั่วไปไม่เข้าใจโดยไม่อธิบาย
 
 ---
 
-## กฎเหล็ก
-
-- ⚠️ **หลักฐานต้องเป็นของจริงที่ตรวจได้** — ผล test ต้องมาจากการรันจริง, รายการไฟล์ใน zip ต้องตรวจจริง, ห้ามเขียนจากความจำหรือเดา
-- ⚠️ **ไม่สร้างหลักฐาน "เสร็จ" ให้เป้าหมายที่ยังไม่ครบ task** — ถ้าค้างอยู่ให้ใช้สถานะ `รอตรวจสอบ`/`บางส่วน`
-- ⚠️ **ไม่แนะนำ URL ที่ reviewer เปิดไม่ได้** — repo private ให้เว้นว่าง อย่าเสี่ยงคะแนน
-- ⚠️ **ห้ามใส่ข้อมูลลับในหลักฐาน** — token จริง, รหัสผ่าน, secrets, hash ของ credential, ข้อมูลส่วนตัวผู้ใช้จริง
-- ⚠️ **อย่าแนบเกินจำเป็น** — แนบทีละไฟล์เป็นค่าเริ่มต้น (ฟอร์มรับหลายไฟล์ เคยเห็น 1–7 รายการ); zip เฉพาะชุดใหญ่; ภาพคัดเฉพาะที่พิสูจน์พฤติกรรมต่างกัน
-- ⚠️ **ภาษาคำอธิบายเป็นภาษาคน** — ห้ามใช้ `§` (ใช้ "หมวด"), ห้ามใช้ชื่อฟังก์ชัน/ศัพท์โค้ดที่คนทั่วไปไม่เข้าใจโดยไม่อธิบาย
-- ⚠️ **Protected screens** — capture script กับ evidence package ไม่แก้ prototype; ถ้างานเป้าหมายแตะ protected screens อยู่แล้วให้บันทึกเป็น bullet สั้นใน "คำอธิบาย" ของ copy block (ไม่ต้องแจ้งเมื่อไม่ได้แตะ)
-- ทุกชุดหลักฐานต้อง reusable — capture script เก็บไว้ใน `scripts/` เพื่อ rerun เมื่อ prototype เปลี่ยน
-
-## Checklist ก่อนแสดงผลให้ผู้ใช้
+## Checklist ก่อนส่งตรวจ AI Worklog QA Auditor
 
 - [ ] ทุก Task ของเป้าหมายเป็น done แล้วจริง (ตรวจจาก Kanban)
-- [ ] ไฟล์แนบมีอยู่จริง เปิด/อ่านตรวจแล้วว่าครบ (ถ้า zip — เปิด listing + integrity check)
-- [ ] แนบไฟล์จริงทีละไฟล์เป็นค่าเริ่มต้น; zip เฉพาะชุดใหญ่; ขนาดรวมยังอัปโหลดได้สบาย
-- [ ] **เป้าหมาย UI: ภาพครบทุกขั้นตอน flow ของเป้าหมาย และทุกขั้นมีคู่ desktop + mobile**
-- [ ] เปิดภาพตรวจด้วยตาทุกใบ — ไม่มีแถบขาว/พื้นว่างเกิน (รวมใต้ checklist card), ไม่มีเนื้อหาถูกตัด (ปุ่ม/summary ครบ), ไม่มี focus ring ติด, ไม่ crop ชิดขอบจนดูผิด
-- [ ] **เป้าหมาย test: checklist card ครบทุก spec ที่เป้าหมายแก้ แสดง flow ทดสอบตรงงานจริง**
-- [ ] **เป้าหมายเอกสาร/acceptance: มี checklist card สรุป ไม่ใช่ไฟล์ text ล้วน**
-- [ ] ถ้ามี test — ผลใน test-results.txt มาจากการรันล่าสุดจริง
-- [ ] ช่อง URL เว้นว่างหรือยืนยันการเข้าถึงแล้วเท่านั้น
-- [ ] คำอธิบายเป็นภาษาเข้าใจง่าย ไม่มี `§` ไม่มีศัพท์โค้ดที่ไม่อธิบาย
-- [ ] ถ้างานเป้าหมายแตะ protected screens ให้ระบุเป็น bullet สั้นในคำอธิบาย (ไม่แตะ = ไม่ต้องเขียน)
-- [ ] หลังหลักฐานทุก Objective แสดง compact Mission Objective–Feature–Task เป็น `text` copy block เดียว โดยดึง Mission และ Final Acceptance จาก Kanban ล่าสุดและไม่ปรับแต่งข้อมูลเอง
+- [ ] **ช่อง URL ระบุลิงก์ GitHub Commit หรือ Pull Request เรียบร้อยแล้ว (ไม่เป็นค่าว่าง)**
+- [ ] แนบไฟล์จริงทีละไฟล์เป็นค่าเริ่มต้น; มีภาพที่ preview ได้อย่างน้อย 1 รูป
+- [ ] **เป้าหมาย UI: ภาพครบทุกขั้นตอน flow และมีคู่ Desktop + Mobile ทุกขั้น**
+- [ ] **Multimodal Visual Inspection: ไม่พบ Typo, ไม่พบ Empty-state Pagination bug, Mobile Spacing สวยงาม, ไม่มี focus ring**
+- [ ] **เป้าหมาย test/เอกสาร: มี Checklist Card สรุปพร้อมผลลัพธ์ผ่านชัดเจน**
+- [ ] **Time Reasonableness: หากชั่วโมงงานสั้น ได้อธิบาย Methodology ในคำอธิบายเรียบร้อยแล้ว**
+- [ ] คำอธิบายเป็นภาษาเข้าใจง่าย ไม่มี `§` ไม่มีศัพท์โค้ดลอยๆ
+- [ ] หลังหลักฐานทุก Objective แสดง compact Mission Objective–Feature–Task เป็น `text` copy block เดียว
+

@@ -262,7 +262,7 @@ mcp_call_tool(
 - ⚠️ **ตัดเวลาหลุดได้เฉพาะงานประเภท run** (เช่น run tests/regression/long-running command) ที่ผลลัพธ์เสร็จสมบูรณ์แล้วแต่ timer ยังเดินต่อเพราะผู้ใช้ไม่ได้อยู่หน้าจอ — ถ้าพบ banked time มีช่วงหลุดแบบนี้หลังปิด task ให้แจ้งผู้ใช้พร้อมตัวเลข banked vs เวลางานจริง และ correct `hours_spent` ด้วย `update_task` (SET) เมื่อผู้ใช้ยืนยันเวลาจริงแล้วเท่านั้น โดยทำเป็น correction workflow แยกหลังปิด task
 - ทุก task ที่ปิดต้องมี Final Session Note และ Final Work Summary Copy Block
 - ⚠️ **Manual Review Checklist:** task ที่แตะ prototype/UI ต้องส่ง checklist ทดสอบ manual (เคส + ข้อมูลทดสอบ + ขั้นกด + ผลที่คาด) ให้ผู้ใช้ตรวจก่อนขอปิด — รีวิวต้องเกิดก่อน `move_task → done` ตามกฎการยืนยันผลลัพธ์เดิม
-- **ถ้า task ที่ปิดเป็น task สุดท้ายของเป้าหมาย (Objective) ใน Mission** — ทุก task ของเป้าหมายนั้นเป็น done แล้ว → แจ้งผู้ใช้ว่าเป้าหมายครบ และเสนอเตรียม **หลักฐานส่งตรวจรับด้วย AI** ตาม skill `submission-evidence` (ไฟล์แนบ/ภาพหน้าจอ + คำอธิบาย + ช่อง URL) ให้ลง log พร้อมกัน
+- **ถ้า task ที่ปิดเป็น task สุดท้ายของเป้าหมาย (Objective) ใน Mission** — ทุก task ของเป้าหมายนั้นเป็น done แล้ว → แจ้งผู้ใช้ว่าเป้าหมายครบ และเสนอเตรียม **หลักฐานส่งตรวจรับด้วย AI** ตาม skill `submission-evidence` (ไฟล์แนบ/ภาพหน้าจอ + คำอธิบาย + ช่อง external_url) ให้ลง log พร้อมกัน
 - ลำดับบังคับ: Verify → `move_task → done` → อ่าน Final Task + Activity → อ่าน Actual Start/End/Final `hours_spent` → สร้าง Final Summary → `save_session_note` → แสดง Copy Block → session handoff + prompt งานถัดไป หรือข้อเสนอแนะงานต่อไป (ตามขั้น 8)
 
 ---
