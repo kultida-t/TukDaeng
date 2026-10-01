@@ -117,25 +117,31 @@ Workflow สำหรับจัด **ชุดหลักฐานส่ง�
 
 > ⚠️ **คำเตือนสำคัญที่สุด:** จากการวิเคราะห์ผลการประเมินย้อนหลัง **การปล่อยช่อง URL ว่างไว้คือสาเหตุหลักอันดับ 1 ที่ทำให้โดนหักคะแนน Evidence Completeness เหลือ 1.6 - 2.5/3.0 และถูกลดสถานะเป็น PASS WITH COMMENTS ทันที**
 
-**กฎเหล็ก:** **ห้ามปล่อยช่อง URL ว่างเด็ดขาด!** และ **ต้องชี้ไปยัง Commit หรือไฟล์ที่พิสูจน์ผลงานจริง (Proof of Work)** ของเป้าหมายนั้น — ลิงก์ต้องชี้ไปที่ **Work Artifact เท่านั้น** (ไฟล์ที่เป้าหมายผลิตจากการทำงาน) **ห้ามชี้ไปที่ไฟล์ Preview Packaging** (checklist card, ภาพ render, `screenshots/`, `deliverables/`) หรือ **Commit ที่สร้างไฟล์ deliverables/หลักฐานส่งตรวจซ้ำกันทุกเป้าหมาย**:
+**กฎเหล็ก:** **ห้ามปล่อยช่อง URL ว่างเด็ดขาด!** และ **ต้องชี้ไปยัง Work Artifact / Source Code / Test Spec / Specific Commit จริง** ที่เป็นเป้าหมายของแต่ละ Objective:
 
-1. **งานแก้โค้ด / ปรับสเปก / แก้เอกสาร (Code & Doc Mutation):**
-   - ชี้ไปยัง **Git Commit ที่แก้ไฟล์จริง** ในเป้าหมายนั้น
-   - ตัวอย่าง: `https://github.com/kultida-t/TukDaeng/commit/<commit-hash>`
-2. **งานทดสอบ / QA / Verification (Read-only Verification):**
-   - ชี้ไปยัง **ไฟล์สเปกทดสอบ หรือ โฟลเดอร์เทสต์** ที่ใช้รันพิสูจน์จริง
-   - ตัวอย่าง: `https://github.com/kultida-t/TukDaeng/blob/prototype/tests/<spec-name>.spec.js` หรือ `https://github.com/kultida-t/TukDaeng/tree/prototype/tests`
-3. **งาน Final Acceptance / Closure:**
-   - ชี้ไปยัง **Commit ที่ล็อก Protected Baseline ปิดรอบงานจริง** หรือ Branch root
-   - ตัวอย่าง: `https://github.com/kultida-t/TukDaeng/commit/<baseline-lock-commit>` หรือ `https://github.com/kultida-t/TukDaeng/tree/prototype`
+#### ❌ สิ่งที่ห้ามใส่ในช่อง URL โดยเด็ดขาด (Blacklist):
+- **ห้ามใส่ path `deliverables/` ทุกชนิด** เช่น `.../deliverables/.../test-results.txt` หรือ `.../deliverables/.../checklist-*.txt` (เพราะเป็นโฟลเดอร์ packaging รายงานผล ไม่ใช่ source artifact)
+- **ห้ามใส่ path `screenshots/`** เช่น `.../screenshots/.../checklist-*.png`
+- **ห้ามใส่ Commit Hash เดียวกันซ้ำทุกเป้าหมาย** โดยเฉพาะ commit ที่สร้างไฟล์ deliverables
 
-*หมายเหตุ: แม้ repository จะเป็น Private แต่ AI Worklog QA Auditor ตรวจสอบ URL syntax, Git Commit Hash และ path ความสอดคล้อง เพื่อยืนยันว่าการส่งมอบงานมีการเชื่อมโยงกับ Version Control จริง*
+#### ✅ สิ่งที่ต้องใส่ในช่อง URL แยกตามประเภทงาน (Whitelist & Priority):
+1. **งานทดสอบ / QA / Verification (Objective 1, 2, 3):**
+   - **กรณีมีไฟล์สเปกเฉพาะเป้าหมาย:** ชี้ตรงไปยังไฟล์ `.spec.js` หลักของเป้าหมายนั้นโดยตรง เช่น:
+     `https://github.com/kultida-t/TukDaeng/blob/prototype/tests/<target-spec>.spec.js`
+   - **กรณีรันทั้ง Suite / หลายสเปก (เช่น Regression ทั้งระบบ):** ชี้ไปยังโฟลเดอร์เทสต์ `https://github.com/kultida-t/TukDaeng/tree/prototype/tests`
+2. **งานแก้โค้ด / ปรับสเปก / แก้เอกสาร (Objective 4):**
+   - ชี้ไปยัง **Git Commit ที่แก้/ล็อกไฟล์จริง** เช่น `https://github.com/kultida-t/TukDaeng/commit/<commit-hash>` หรือชี้ตรงไปยังไฟล์เอกสารหลัก เช่น `https://github.com/kultida-t/TukDaeng/blob/prototype/BackOffice/BO_MASTER_BASELINE.md`
+3. **งาน Final Acceptance / Closure (Objective 5):**
+   - ชี้ไปยัง **Branch root ของโปรเจกต์** เช่น `https://github.com/kultida-t/TukDaeng/tree/prototype` หรือ Commit ปิดรอบ
 
 ---
 
-### 6. เขียนคำอธิบาย (Description) — กฎการสื่อสารกับ AI Auditor
+### 6. เขียนคำอธิบาย (Description) — กฎภาษาคนทำงาน (Developer/QA Tone)
 
-- **ภาษาไทยเข้าใจง่าย กระชับ ตรงไปตรงมา และเห็นภาพชัดเจน** — อธิบาย "ส่งมอบอะไร / ทำอะไรกับหน้าไหน และผลลัพธ์เป็นอย่างไร" ในภาษาหน้าจอและฟีเจอร์ ไม่ใช่ implementation detail
+- **ภาษาคนทำงานจริง กระชับ ตรงไปตรงมา (No Official Boilerplate / No AI Meta-commentary):**
+  - ❌ **ห้ามใช้ภาษาทางการ/ราชการ:** เช่น *"ดำเนินการทดสอบ"*, *"ดำเนินการตรวจรับ"*, *"ดำเนินการ sync"*, *"การทดสอบดำเนินการผ่าน"*, *"ได้ดำเนินการ"*
+  - ❌ **ห้ามใช้ประโยครายงานบุคคลที่สาม/มุมมอง AI (AI Meta-phrases):** เช่น *"ผู้ใช้ตรวจสอบและอนุมัติแล้ว"*, *"ผู้ใช้ได้ตรวจรับ"*, *"AI ได้ทำการ..."*, *"ได้รับความเห็นชอบจากผู้ใช้"* — ให้เขียนจากมุมมองคนทำงานสรุปผลงานของตัวเอง เช่น *"สรุปผลตรวจรับทุก Gate ผ่านครบ 100% ปิด Mission สมบูรณ์"*
+  - ✅ **ต้องใช้ภาษาคนทำงาน:** เช่น *"ทดสอบ"*, *"รันเทส"*, *"เช็ค"*, *"อัปเดต"*, *"sync"*, *"ตรวจรับครบทุกเงื่อนไข ปิด Mission เรียบร้อย"*
 - **ใช้คำทับศัพท์มาตรฐาน UI/Web ตรงตัว (ห้ามใส่วงเล็บแปลไทยสลับอังกฤษเด็ดขาด):**
   - คำศัพท์มาตรฐานที่ชัดเจนในตัวมันเองให้ใช้คำนั้นตรง ๆ เช่น `list`, `detail`, `modal`, `filter`, `dropdown`, `sidebar`, `breadcrumb`, `viewports`, `editor`, `button hierarchy`, `keyboard focus/trap`, `happy path`, `regression`, `E2E`, `triage`, `project gating`, `product defect`, `flaky test`, `rate limit`, `audit log`, `delivery log`
   - **ห้ามใส่วงเล็บแปลไทยสลับอังกฤษ (Zero Bilingual Parentheses)** เช่น ห้ามเขียน `คัดกรองผลลัพธ์ (Regression Triage)`, ห้ามเขียน `ไม่มีข้อผิดพลาด (Zero Product Defects)`, ห้ามเขียน `ขนาดหน้าจอ (Viewports)` — ให้เลือกใช้คำที่คนทำงานคุยกันจริงเพียงคำเดียว
