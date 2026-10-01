@@ -4,7 +4,9 @@
 ล็อกมาตรฐาน **modal action order**, **modal close policy**, **keyboard focus behavior** และ **empty-state copy** ที่ task
 BOR-003 (fix coverage list), BOR-005 (modal consistency), BOR-006 (focus management) และ BOR-014 (doc sync) ต้องยึดตาม
 
-- Status: Contract draft for remediation — ยังไม่ได้แก้ prototype ใด ๆ ตามเอกสารนี้
+- Status: Contract implemented — remediated ใน BOR-005 (action order + close policy), BOR-006 (focus management)
+  และ BOR-006a (keyboard-only ring); regression BOR-011/013 ผ่าน 0 fail —
+  §1 ด้านล่างคือ current state หลัง remediation แล้ว
 - Source findings: Mission Audit `1800d8aa` → BOA-008 (modal/form QA + user decisions), BOA-009 (state QA-08 + user decision), BOA-013/BOA-014 (matrix/register)
 - เอกสารนี้เป็น contract เท่านั้น ไม่ใช่คำสั่งแก้ protected screens — การแก้จอใดอยู่ใต้ named scope ของ baseline และ fix coverage list ของ BOR-003
 
@@ -16,12 +18,14 @@ BOR-003 (fix coverage list), BOR-005 (modal consistency), BOR-006 (focus managem
   (`.modal-backdrop` + `.modal.user-action-modal` + `#user-action-modal-body`)
   เปิด/ปิดผ่าน `showUserActionModal()` / `closeUserActionModal()` — ไม่มี shared helper รายประเภท
 - ปุ่มปิดกลาง: `data-user-action-modal-close` (header X ขนาด 38×38px `aria-label="ปิด"` และปุ่มยกเลิกใน footer) — delegated click handler เรียก `closeUserActionModal()`
-- Close paths ปัจจุบัน:
+- Close paths หลัง remediation (BOR-005):
   - ปุ่ม `data-user-action-modal-close` — ปิดได้ทุก modal (ยกเว้น Market Sync ขณะ running ที่ guard ไว้)
-  - Backdrop click — ปิดได้เฉพาะ `.audit-log-detail-modal` (Audit Log detail drawer)
-  - ESC — ปิดได้เฉพาะ `.audit-log-detail-modal`; modal อื่น ESC ไม่ทำอะไร
-- Focus ปัจจุบัน: ไม่มี initial focus กลาง ไม่มี focus trap และไม่ restore focus —
-  ข้อยกเว้น modal เฉพาะจุด (เช่น My Account > Change Password ที่ focus ฟิลด์แรก `#my-account-pw-current`)
+  - Backdrop click + ESC — ปิดได้เฉพาะ modal ที่ opt-in ด้วย `data-modal-dismissible` (read-only/preview/drawer
+    surfaces ตาม coverage B1–B16 + acknowledge ปุ่มเดียว + drawer variants); form/confirm/destructive
+    ปิดด้วย backdrop/ESC ไม่ได้ และ ESC ไม่ fall-through ไป `setNavOpen(false)` ใน event เดียวกัน
+- Focus หลัง remediation (BOR-006/006a): shared open/close functions จัดการ initial focus ตามประเภท modal,
+  Tab/Shift+Tab focus trap และ restore focus กลับ opener ครอบทุก close path —
+  per-modal focus เดิม (เช่น `#my-account-pw-current`) ยัง override ได้; ring แสดงเฉพาะ keyboard flow
 - มี drawer variant ใน container เดียวกัน: `market-reference-drawer`, `audit-log-detail-modal` (slide จากขวา)
 
 ---
@@ -42,7 +46,8 @@ BOR-003 (fix coverage list), BOR-005 (modal consistency), BOR-006 (focus managem
 5. Modal ที่มีปุ่มเดียวแบบ acknowledge (`รับทราบ`) ไม่บังคับเพิ่มปุ่มยกเลิก — ปุ่มเดียวเป็น close+acknowledge ในตัว
 6. Result state (success/error) ที่แสดงใน modal เดิม ให้คง action set ของ state นั้นไว้เหมือนเดิม (เช่น error → Retry + Close)
 
-หลักฐานจุดที่ยังไม่ canonical (Confirm → Cancel — input ให้ BOR-003 นับ coverage จริง):
+จุดที่เคยไม่ canonical (Confirm → Cancel) — **แก้ครบแล้วใน BOR-005**: 10 จุดด้านล่าง + 2 จุดที่ verify เพิ่ม
+(Admin Account action modal, Deletion action modal) = coverage A1–A12 ใน `docs/bo-shared-remediation-coverage.md` §2:
 
 | Modal | ตำแหน่งประมาณใน `bo-prototype.html` |
 | --- | --- |
@@ -87,10 +92,12 @@ BOR-003 (fix coverage list), BOR-005 (modal consistency), BOR-006 (focus managem
    - Form modal (มี input ที่แก้ได้) → focus ฟิลด์แรกที่กรอกได้ (สอดคล้องพฤติกรรมเดิมของ My Account Change Password / invite ที่ test assert อยู่แล้ว)
    - Confirmation / destructive modal → focus ปุ่มที่ destructive น้อยสุด (ยกเลิก) เพื่อกัน Enter เผลอ
    - Read-only modal/drawer → focus ปุ่ม Close (X) หรือ heading container ที่ focus ได้
+   - Type-to-confirm gate (confirm disabled รอเงื่อนไข) → focus ช่องพิมพ์ยืนยัน
 2. **Focus trap** — Tab / Shift+Tab วนเฉพาะ focusable elements ภายใน modal จนกว่าจะปิด ไม่หลุดไป element ของหน้าหลัง
-3. **Restore focus** — เมื่อปิด modal ให้ focus กลับไปที่ element ที่เปิด modal (opener); ถ้า opener หายไปจาก DOM ให้ fallback ไปที่ main content heading
+3. **Restore focus** — เมื่อปิด modal ให้ focus กลับไปที่ element ที่เปิด modal (opener); ถ้า opener หายไปจาก DOM ให้ fallback ไปที่ main content heading (`#page-title`); opener ที่ focus ไม่ได้ตามปกติ (เช่น list row ที่เป็น div) restore ผ่าน last-interaction tracking (pointerdown/Enter/Space) ด้วย temporary tabindex
 4. ESC ทำงานตาม close policy ของ Contract B เท่านั้น — trap ไม่ดัก ESC เพิ่ม
 5. Focus trap ต้อง release เมื่อ modal ปิดทุกกรณี (X, ยกเลิก, backdrop, ESC, success auto-close) — ห้ามค้าง trap หลัง `.show` ถูกถอด
+6. **Focus ring = keyboard-only (BOR-006a)** — shared themed ring (outline 2px `#b8c6d8`) และ tooltip ของปุ่มปิดแสดงเฉพาะ keyboard flow ตาม `:focus-visible` heuristic; open/close ด้วยเมาส์ focus ยังลงตำแหน่งถูกต้องแต่ไม่โชว์ ring — ห้ามบังคับ `focusVisible:true`
 
 ### Reconcile กับ test baseline (บังคับ)
 
@@ -131,20 +138,22 @@ Canonical empty state ของหน้ารายการ (list/table/card a
 
 ---
 
-## 7. Handoff ให้ Task ถัดไป
+## 7. Implementation Status (อัปเดตใน BOR-014)
 
-- **BOR-002**: กำหนด Navigation/Active-state/Naming contract (คนละ contract area กับเอกสารนี้)
-- **BOR-003**: ใช้ Contract A–D เป็นเกณฑ์นับ fix coverage list (modal กี่จุด จอไหนบ้าง) ก่อน BOR-004/005 เริ่ม
-- **BOR-005**: implement action order + close policy ตาม Contract A/B เฉพาะจุดใน coverage list
-- **BOR-006**: implement focus rules ตาม Contract C พร้อม reconcile test baseline ที่ระบุใน §4
-- **BOR-011/BOR-013**: regression/manual QA เทียบ contract นี้ (action order, close paths, keyboard sequence, empty copy)
-- **BOR-014**: sync กฎที่ล็อกแล้วเข้า `BackOffice/BO_UI_UX_STANDARD.md` และเอกสารที่เกี่ยวข้องตามผล remediation จริง
+- **BOR-002**: Navigation/Active-state/Naming contract → `docs/bo-navigation-naming-contract.md` (done)
+- **BOR-003**: fix coverage ตาม Contract A–D → `docs/bo-shared-remediation-coverage.md` (done — implemented & verified)
+- **BOR-005**: action order A1–A12 + close-policy opt-in B1–B16 + acknowledge + drawer variants (done)
+- **BOR-006/006a**: focus init/trap/restore + type-to-confirm gate + keyboard-only ring (done — reconcile §4 ทำแล้ว, qa-bo-018 test 2 baseline update)
+- **BOR-011/013**: regression/manual QA เทียบ contract นี้ผ่าน 0 fail (done)
+- **BOR-014**: sync กฎเข้า `BackOffice/BO_UI_UX_STANDARD.md` + อัปเดต status เอกสารนี้ (งานนี้)
+- **Contract D (empty-state copy)**: ยังเป็น contract เท่านั้น — ไม่มี execution task, copy เดิมคงไว้ตาม implementation note §5
 
 ---
 
 ## References
 
-- `Prototypes/bo-prototype.html` — `#user-action-modal` (~17841), `showUserActionModal()` (~30372), `closeUserActionModal()` (~30392), delegated close/backdrop handler (~46380), ESC handler (~49997)
+- `Prototypes/bo-prototype.html` — `#user-action-modal` (~17841), `showUserActionModal()` (~30372 + focus helpers ~30409), `closeUserActionModal()` (~30392 + restore ~30500), delegated close/backdrop handler (~46429), ESC handler (~50056), focus trap keydown (~50110)
+- `tests/_bor005-modal-consistency.cjs`, `_bor006-focus.cjs`, `_bor006a-verify.cjs` — verification scripts
 - `BackOffice/BO_UI_UX_STANDARD.md` — Modal Popup / Loading Empty Error States sections
 - `PROTECTED_SCREENS.md` — protected scope policy
 - Mission `1e359966` Approved Baseline — Scope, Protected Approval Clause, Acceptance Criteria

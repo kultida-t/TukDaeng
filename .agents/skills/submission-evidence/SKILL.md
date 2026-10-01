@@ -111,26 +111,31 @@ Workflow สำหรับจัด **ชุดหลักฐานส่ง�
 
 > ⚠️ **คำเตือนสำคัญที่สุด:** จากการวิเคราะห์ผลการประเมินย้อนหลัง **การปล่อยช่อง URL ว่างไว้คือสาเหตุหลักอันดับ 1 ที่ทำให้โดนหักคะแนน Evidence Completeness เหลือ 1.6 - 2.5/3.0 และถูกลดสถานะเป็น PASS WITH COMMENTS ทันที**
 
-**กฎเหล็ก:** **ห้ามปล่อยช่อง URL ว่างเด็ดขาด!** ต้องระบุ External Link ที่ชี้ไปยัง Git Repository เสมอ:
+**กฎเหล็ก:** **ห้ามปล่อยช่อง URL ว่างเด็ดขาด!** และ **ต้องชี้ไปยัง Commit หรือไฟล์ที่พิสูจน์ผลงานจริง (Proof of Work)** ของเป้าหมายนั้น — **ห้ามชี้ไปยัง Commit ที่สร้างไฟล์ deliverables/หลักฐานส่งตรวจซ้ำกันทุกเป้าหมาย**:
 
-1. **กรณีมี Git Commit (แนะนำสูงสุด):**
-   - รูปแบบ: `https://github.com/kultida-t/TukDaeng/commit/<commit-hash>`
-   - ตัวอย่าง: `https://github.com/kultida-t/TukDaeng/commit/a5347f6`
-2. **กรณีมี Pull Request:**
-   - รูปแบบ: `https://github.com/kultida-t/TukDaeng/pull/<pr-number>`
-3. **กรณีระบุไฟล์หรือ Branch:**
-   - รูปแบบ: `https://github.com/kultida-t/TukDaeng/tree/prototype` หรือ `https://github.com/kultida-t/TukDaeng/blob/prototype/<path-to-file>`
+1. **งานแก้โค้ด / ปรับสเปก / แก้เอกสาร (Code & Doc Mutation):**
+   - ชี้ไปยัง **Git Commit ที่แก้ไฟล์จริง** ในเป้าหมายนั้น
+   - ตัวอย่าง: `https://github.com/kultida-t/TukDaeng/commit/<commit-hash>`
+2. **งานทดสอบ / QA / Verification (Read-only Verification):**
+   - ชี้ไปยัง **ไฟล์สเปกทดสอบ หรือ โฟลเดอร์เทสต์** ที่ใช้รันพิสูจน์จริง
+   - ตัวอย่าง: `https://github.com/kultida-t/TukDaeng/blob/prototype/tests/<spec-name>.spec.js` หรือ `https://github.com/kultida-t/TukDaeng/tree/prototype/tests`
+3. **งาน Final Acceptance / Closure:**
+   - ชี้ไปยัง **Commit ที่ล็อก Protected Baseline ปิดรอบงานจริง** หรือ Branch root
+   - ตัวอย่าง: `https://github.com/kultida-t/TukDaeng/commit/<baseline-lock-commit>` หรือ `https://github.com/kultida-t/TukDaeng/tree/prototype`
 
-*หมายเหตุ: แม้ repository จะเป็น Private แต่ AI Worklog QA Auditor ตรวจสอบ URL syntax และ Git Commit Hash เพื่อยืนยันว่าการส่งมอบงานมีการเชื่อมโยงกับ Version Control จริง*
+*หมายเหตุ: แม้ repository จะเป็น Private แต่ AI Worklog QA Auditor ตรวจสอบ URL syntax, Git Commit Hash และ path ความสอดคล้อง เพื่อยืนยันว่าการส่งมอบงานมีการเชื่อมโยงกับ Version Control จริง*
 
 ---
 
 ### 6. เขียนคำอธิบาย (Description) — กฎการสื่อสารกับ AI Auditor
 
-- **ภาษาไทยเข้าใจง่าย กระชับ และเห็นภาพชัดเจน** — อธิบาย "ส่งมอบอะไร / ทำอะไรกับหน้าไหน และผลลัพธ์เป็นอย่างไร" ในภาษาหน้าจอและฟีเจอร์ ไม่ใช่ implementation detail
-- **ใช้คำทับศัพท์มาตรฐาน UI/Web ตรงตัว (ไม่ต้องแปลไทยซ้ำซ้อนหรือใส่วงเล็บกำกับ):**
-  - คำศัพท์มาตรฐานที่ชัดเจนในตัวมันเองให้ใช้คำนั้นได้เลย เช่น `list`, `detail`, `modal`, `filter`, `dropdown`, `sidebar`, `breadcrumb`, `viewports`, `editor`, `button hierarchy`, `keyboard focus/trap`, `happy path`, `regression`
-  - **ห้ามแปลไทยทางการหรือแปลตรงที่อ่านยาก** เช่น ไม่แปล modal เป็น "หน้าต่างป๊อปอัปยืนยัน", ไม่แปล breadcrumb เป็น "แถบบอกตำแหน่งหน้า", ไม่แปล viewports เป็น "ขนาดมุมมองหน้าจอ", ไม่แปล filter เป็น "แถบกรองข้อมูล" — ให้ใช้คำสากลที่คนทำงานเข้าใจตรงกันทันที
+- **ภาษาไทยเข้าใจง่าย กระชับ ตรงไปตรงมา และเห็นภาพชัดเจน** — อธิบาย "ส่งมอบอะไร / ทำอะไรกับหน้าไหน และผลลัพธ์เป็นอย่างไร" ในภาษาหน้าจอและฟีเจอร์ ไม่ใช่ implementation detail
+- **ใช้คำทับศัพท์มาตรฐาน UI/Web ตรงตัว (ห้ามใส่วงเล็บแปลไทยสลับอังกฤษเด็ดขาด):**
+  - คำศัพท์มาตรฐานที่ชัดเจนในตัวมันเองให้ใช้คำนั้นตรง ๆ เช่น `list`, `detail`, `modal`, `filter`, `dropdown`, `sidebar`, `breadcrumb`, `viewports`, `editor`, `button hierarchy`, `keyboard focus/trap`, `happy path`, `regression`, `E2E`, `triage`, `project gating`, `product defect`, `flaky test`, `rate limit`, `audit log`, `delivery log`
+  - **ห้ามใส่วงเล็บแปลไทยสลับอังกฤษ (Zero Bilingual Parentheses)** เช่น ห้ามเขียน `คัดกรองผลลัพธ์ (Regression Triage)`, ห้ามเขียน `ไม่มีข้อผิดพลาด (Zero Product Defects)`, ห้ามเขียน `ขนาดหน้าจอ (Viewports)` — ให้เลือกใช้คำที่คนทำงานคุยกันจริงเพียงคำเดียว
+  - **ห้ามแปลไทยทางการหรือแปลตรงที่อ่านยาก** เช่น ไม่แปล modal เป็น "หน้าต่างป๊อปอัปยืนยัน", ไม่แปล breadcrumb เป็น "แถบบอกตำแหน่งหน้า", ไม่แปล filter เป็น "แถบกรองข้อมูล"
+- **ห้ามใช้คำสร้อยหรือคำขยายอารมณ์ที่ไม่จำเป็น (No Fluff / Idioms):**
+  - ห้ามใช้คำเช่น "ผ่านฉลุย", "อย่างเข้มงวด", "ราบรื่น", "สวยงาม", "ยอดเยี่ยม" — ให้เขียนรายงานผลตามข้อเท็จจริงและตัวเลขจริง เช่น *"ผลการรันผ่าน 1,822 passed / 0 failed / 55 skipped"*
 - **ระบุ Methodology ชัดเจนเมื่อเวลาทำงานกระชับ (ป้องกันการหักคะแนน Time Reasonableness):**
   - หากใช้เวลา 0.5 - 1.0 ชม. สำหรับงานหลายไฟล์หรือ test suite ขนาดใหญ่ ให้ระบุชัดเจน เช่น:
     *(ตัวอย่าง)*: *"ปรับปรุงและ sync เอกสารสเปก 5 ไฟล์ให้ตรงตาม Contract ฐานเดิม พร้อมรัน automated test suite ตรวจสอบความถูกต้องโดยใช้เครื่องมืออัตโนมัติ ไม่ได้แก้ไขแบบ manual ใหม่ทั้งหมด ทำให้ใช้เวลาได้อย่างมีประสิทธิภาพสูง"*
@@ -213,13 +218,14 @@ Feature: <ชื่อ Feature> → <Task code>
 
 ## กฎเหล็กสู่คะแนน 9.8 - 10.0 (APPROVED)
 
-- ⚠️ **MANDATORY EXTERNAL URL:** ห้ามปล่อยช่อง URL ว่างเด็ดขาด! ต้องใส่ GitHub Commit URL (`https://github.com/kultida-t/TukDaeng/commit/<hash>`) หรือ PR URL เสมอ
+- ⚠️ **MANDATORY EXTERNAL URL (PROOF OF WORK):** ห้ามปล่อยช่อง URL ว่างเด็ดขาด! ต้องใส่ลิงก์ GitHub Commit หรือไฟล์ที่พิสูจน์งานจริงของแต่ละเป้าหมาย (งานแก้โค้ด/สเปก = Commit ที่แก้ไฟล์จริง, งานเทสต์ = ไฟล์สเปกหรือโฟลเดอร์เทสต์, งานปิดรับ = Commit ล็อก Baseline) — **ห้ามชี้ไปที่ Commit ที่สร้างไฟล์ deliverables/หลักฐานส่งตรวจซ้ำกันทุกข้อ**
 - ⚠️ **ZERO VISUAL BUGS:** ตรวจภาพด้วยตา: ไม่มี focus ring ค้าง, ไม่มี layout ล้นบน mobile, ไม่มี Pagination แสดง 1/1 ในหน้า Empty, ไม่มี Typo ใน mockup
 - ⚠️ **TIME REASONABLENESS:** หากเวลาบันทึกสั้น (0.5 - 1.0 ชม.) สำหรับงานที่ดูเยอะ ต้องระบุ Methodology (เช่น Automated script, Sync from baseline) ในคำอธิบายเสมอ
 - ⚠️ **VISUAL EVIDENCE FIRST:** งานเอกสารและเทสต์ต้องมีภาพ Checklist Card สรุปเสมอ (อย่าแนบ text ล้วน)
 - ⚠️ **DUAL VIEWPORT:** งาน UI ต้องมีทั้ง Desktop (1440px) และ Mobile (390px) ทุกขั้นตอน
 - ⚠️ **ห้ามใส่ข้อมูลลับในหลักฐาน:** token จริง, รหัสผ่าน, secrets, hash ของ credential, ข้อมูลส่วนตัวผู้ใช้จริง
-- ⚠️ **ภาษาคำอธิบายเป็นภาษาคนทำงาน:** ใช้คำทับศัพท์ UI มาตรฐานตรงตัว (list, detail, modal, filter, dropdown, sidebar, breadcrumb) ไม่แปลไทยทางการที่อ่านยาก และห้ามใช้ `§` (ใช้ "หมวด") หรือชื่อฟังก์ชัน/โค้ดลอย ๆ
+- ⚠️ **ภาษาคำอธิบายเป็นภาษาคนทำงาน (NO BILINGUAL PARENTHESES / NO FLUFF):** ใช้คำทับศัพท์มาตรฐานตรงตัว (list, detail, modal, filter, dropdown, sidebar, breadcrumb, viewports, E2E, regression, triage) ไม่แปลไทยทางการ ห้ามใส่วงเล็บแปลสลับภาษา (เช่น ไม่เขียน "คัดกรอง (Triage)") และห้ามใช้คำสร้อยอารมณ์ (เช่น "ผ่านฉลุย", "อย่างเข้มงวด", "ราบรื่น")
+- ⚠️ **ห้ามใช้สัญลักษณ์ `§`:** ให้อ้างตำแหน่งในเอกสารด้วยคำว่า "หมวด" เท่านั้น
 
 ---
 
@@ -232,6 +238,6 @@ Feature: <ชื่อ Feature> → <Task code>
 - [ ] **Multimodal Visual Inspection: ไม่พบ Typo, ไม่พบ Empty-state Pagination bug, Mobile Spacing สวยงาม, ไม่มี focus ring**
 - [ ] **เป้าหมาย test/เอกสาร: มี Checklist Card สรุปพร้อมผลลัพธ์ผ่านชัดเจน**
 - [ ] **Time Reasonableness: หากชั่วโมงงานสั้น ได้อธิบาย Methodology ในคำอธิบายเรียบร้อยแล้ว**
-- [ ] คำอธิบายเป็นภาษาคนทำงาน เข้าใจง่าย ใช้ศัพท์ UI มาตรฐานตรงตัว ไม่แปลไทยซ้ำซ้อน ไม่มี `§` ไม่มีศัพท์โค้ดลอยๆ
+- [ ] คำอธิบายเป็นภาษาคนทำงาน ตรงไปตรงมา ใช้ศัพท์มาตรฐานตรงตัว ไม่มีวงเล็บแปลไทยสลับอังกฤษ ไม่มีคำสร้อยอารมณ์ ("ผ่านฉลุย") ไม่มี `§` ไม่มีศัพท์โค้ดลอยๆ
 - [ ] หลังหลักฐานทุก Objective แสดง compact Mission Objective–Feature–Task เป็น `text` copy block เดียว
 

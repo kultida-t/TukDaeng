@@ -5,7 +5,7 @@
 และ audit findings ของ Mission Audit `1800d8aa` — เป็น input บังคับให้ BOR-004 (filter clipping), BOR-005 (modal consistency),
 BOR-006 (focus management), BOR-007–010 (named module fixes) ก่อนเริ่ม implementation
 
-- Status: Coverage locked & accepted — พร้อมให้ BOR-004 เริ่ม
+- Status: Implemented & verified — fix points ทั้งหมด implement แล้วใน BOR-004–010 + BOR-006a และผ่าน regression BOR-011/012/013 (0 fail); Scope Change เพิ่มเติมและ deviation ที่อนุมัติแต่ไม่ได้ implement ระบุใน §7
 - จุดที่อยู่ในเอกสารนี้ = scope ที่อนุญาตให้แก้; จุดนอกเอกสารนี้ = ห้ามแตะ (protected ตาม `AGENTS.md` / `PROTECTED_SCREENS.md`)
 - เอกสารนี้ไม่ได้แก้ prototype ใด ๆ — เป็นการออกแบบ scope เท่านั้น
 
@@ -210,6 +210,9 @@ Inventory ที่พบ (input ให้ Scope Change ถ้าอนุมั
 | `.audit-filter-bar` collapse @761–1365px (~12380; rules ≤1180/≤980 เดิมเก็บเป็น fallback) | Scope Change อนุมัติใน BOR-004 — date input ชิดขอบจอทำ native picker ล้น (browser คุมตำแหน่ง picker ปรับ CSS ไม่ได้) → ย้าย input ออกจากขอบด้วย flex-wrap: search/module/risk แถวบนเต็มกว้าง / sort + date range ยืดเต็ม + reset ต่อท้าย แถวล่าง |
 | `.filters .custom-select-menu` max-height 280→220px (~7145) | Scope Change อนุมัติใน BOR-004 — dropdown ยาวชิดขอบล่าง viewport; ลดความสูงเฉพาะ filter context (เมนูมี scrollbar ในตัวอยู่แล้ว) ไม่แตะ select ใน modal |
 | ลบ footer `ปิด` ใน `openOptionViewModal` (B11, ~40274) — footer เหลือ `ดู Audit Log` + `Edit` | Scope Change อนุมัติใน BOR-005 — redundant close control ซ้ำกับ X + ESC/backdrop ที่ opt-in แล้ว; B11 เป็น read-only surface เดียวที่มี footer close button ทำให้ deviate จาก 15 surfaces อื่น — ลบแล้ว consistent กว่าเดิม (close ยังมี X/ESC/backdrop) |
+| Phone preview close position + modal focus ring บน mouse | Scope Change อนุมัติใน BOR-006a (พบระหว่างตรวจรับ BOR-009) — `.board-report-phone-preview-close` แพ้ `.user-action-close{position:relative}` ด้วย specificity เท่ากัน → bump เป็น `.board-report-phone-preview .board-report-phone-preview-close`; และถอด `focusVisible:true` จาก shared initial/restore focus → ring/tooltip โชว์เฉพาะ keyboard flow ตาม `:focus-visible` heuristic |
+| `openAccountDeletionRequest` ไม่ push back context (~31167) | แก้ใน BOR-008 ภายใต้ named clause "Account Deletion → User Detail" — pre-existing gap ทำ User Detail → Request Detail → back หลุดไป User List; เพิ่ม `pushBackNavigationContext()` ให้ back กลับ User Detail + `syncExpandedNavForModule("deletions")` ใน `renderDeletionDetail` กัน accordion ต้นทางค้างกางตอน back |
+| Market back labels `Back to …` (Flag 1 — ~37518/37553/37730) | อนุมัติ IN COVERAGE ผูก BOR-010 แต่ implementation หลุดไป → ตัดสินใน BOR-014 และ **แก้แล้วใน BOR-010a**: `กลับไป Brands` / `กลับไป <brand>` / `กลับไป <pageLabel>` ตาม Contract C.4 — Option Master `Back to Option Groups` ยกเว้นถาวรเป็น convention เดิม |
 
 ## 8. Protected Impact Summary
 
@@ -228,15 +231,20 @@ Inventory ที่พบ (input ให้ Scope Change ถ้าอนุมั
 กฎคงเดิม: จุดแก้ใดที่พบเพิ่มระหว่าง implement และไม่อยู่ในตารางนี้ → หยุด เสนอ Scope Change ตาม baseline policy
 ห้ามถือว่าเอกสารนี้เป็น blanket approval บน protected screens
 
-## 9. Handoff
+## 9. Implementation Status (อัปเดตใน BOR-014)
 
-- **BOR-004**: filter clipping — แก้ F1–F11 ด้วย precedent pattern (§5)
-- **BOR-005**: modal consistency — action order A1–A12 + close-policy opt-in B1–B16 (§2, §3)
-- **BOR-006**: focus management — shared functions + test reconcile (§4)
-- **BOR-007/008/009/010**: named fixes ตาม §6 (+ Flag 1 rider ใน BOR-010, Flag 2 ใน BOR-007)
-- **BOR-011/012/013**: regression ตามตาราง coverage นี้ + responsive verify ที่ 390/768/1280/1440px
-  (รวม audit-log mobile panel, mobile filter bars ของจอ locked)
-- **BOR-014**: sync ผลลัพธ์จริงเข้า `BackOffice/BO_UI_UX_STANDARD.md` + อัปเดตเอกสารนี้ถ้า coverage เปลี่ยนผ่าน Scope Change
+| Task | ผลลัพธ์ |
+| --- | --- |
+| BOR-004 | done — F1–F11 แก้ด้วย precedent pattern (panel overflow visible + table scroll) ครอบ base rule + media overrides; +3 Scope Changes ใน §7 (filter-bar wrap ×2, dropdown max-height) |
+| BOR-005 | done — A1–A12 เป็น Cancel→Confirm; B1–B16 + 2 acknowledge surfaces + market-reference/audit drawers opt-in `data-modal-dismissible`; +B11 footer Scope Change (§7) |
+| BOR-006 | done — shared initial focus ตามประเภท modal + focus trap + restore ผ่าน shared open/close functions; แปลง 7 bypass sites เป็น `showUserActionModal`; ลบ blur-after-close ของ BOR-005; qa-bo-018 test 2 baseline update |
+| BOR-006a | done — phone preview close position + keyboard-only focus ring (Scope Change §7); qa-bo-018/_bor006 baseline update |
+| BOR-007 | done — WAL-1440 → Alert Detail โดยตรง + push source context (Demand Overview) + `jumpToModule` reset back stack (Flag 2); canonical sub `Watch Alert List` |
+| BOR-008 | done — destination-owned active state (`users`/`User Accounts`) + deletions accordion sync + `openAccountDeletionRequest` back-context push (§7) |
+| BOR-009 | done — Categories modal titles English 7 จุด (Category Detail/Add/Edit/Reorder) + qa-bo-005 baseline update |
+| BOR-010 | done — `Market Overview` rename ~25 compare points + perm matrix + qa-bo-006 baseline; internal keys คงเดิม; ⚠️ Flag 1 back labels ไม่ได้ implement → ต่อใน BOR-010a (§7) |
+| BOR-010a | done — Flag 1 fixed: Market detail back labels → `กลับไป Brands` / `กลับไป <brand>` / `กลับไป <pageLabel>` (~37518/37553/37730) ตาม Contract C.4; verify _bor010 20/20 + _bor012 314/314 |
+| BOR-011/012/013 | done — regression ผ่านครบ 0 fail ครอบ filter/modal/focus/navigation + responsive 4 viewports + manual QA; ไม่พบ finding |
 
 ---
 
@@ -247,6 +255,9 @@ Inventory ที่พบ (input ให้ Scope Change ถ้าอนุมั
   `backNavigationStack` ~20424–20591, `jumpToModule` ~35969, market back buttons ~37360/37395/37572
 - `docs/bo-modal-empty-state-contract.md` — Contract A–D (BOR-001)
 - `docs/bo-navigation-naming-contract.md` — Contract A–C + named items (BOR-002)
+- `tests/_bor005-modal-consistency.cjs`, `_bor006-focus.cjs`, `_bor006a-verify.cjs`, `_bor007-verify.cjs`,
+  `_bor008-verify.cjs`, `_bor009-verify.cjs`, `_bor010-verify.cjs`, `_bor011-verify.cjs`, `_bor012-verify.cjs`,
+  `_bor013-verify.cjs` — per-task verification + regression scripts
 - `deliverables/bo-prototype-audit-objective-2/cross-module-ui-consistency.txt` — clipping/modal/empty-copy findings
 - `AGENTS.md`, `PROTECTED_SCREENS.md` — protected screen policy
 - Mission `1e359966` Approved Baseline — Scope, Protected Approval Clause, Task Creation Policy

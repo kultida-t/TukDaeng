@@ -37515,7 +37515,7 @@
       document.body.classList.add("market-list-mode");
       document.body.classList.remove("market-dashboard-mode");
       document.body.classList.remove("dashboard-mode", "user-management-mode", "asset-list-mode", "article-list-mode", "category-list-mode", "reported-board-mode", "asset-detail-mode", "user-list-mode", "user-detail-mode");
-      setPageActions(renderPageBackButton('data-market-back="catalog"', "Back to Brands"));
+      setPageActions(renderPageBackButton('data-market-back="catalog"', "กลับไป Brands"));
       document.querySelector("#crumb").textContent = `${moduleData.market.crumb} / Brands & Models / ${brand.name}`;
       document.querySelector("#page-title").textContent = brand.name;
       document.querySelector("#page-meta").textContent = "";
@@ -37550,7 +37550,7 @@
       document.body.classList.add("market-list-mode");
       document.body.classList.remove("market-dashboard-mode");
       document.body.classList.remove("dashboard-mode", "user-management-mode", "asset-list-mode", "article-list-mode", "category-list-mode", "reported-board-mode", "asset-detail-mode", "user-list-mode", "user-detail-mode");
-      setPageActions(renderPageBackButton(`data-market-back="brand" data-market-brand-id="${brand.id}"`, `Back to ${brand.name}`));
+      setPageActions(renderPageBackButton(`data-market-back="brand" data-market-brand-id="${brand.id}"`, `กลับไป ${brand.name}`));
       document.querySelector("#crumb").textContent = `${moduleData.market.crumb} / Brands & Models / ${brand.name} / ${model.name.replace(`${brand.name} `, "")}`;
       document.querySelector("#page-title").textContent = model.name.replace(`${brand.name} `, "");
       document.querySelector("#page-meta").textContent = "";
@@ -37727,7 +37727,7 @@
       document.body.classList.add("market-list-mode");
       document.body.classList.remove("market-dashboard-mode");
       document.body.classList.remove("dashboard-mode", "user-management-mode", "asset-list-mode", "article-list-mode", "category-list-mode", "reported-board-mode", "asset-detail-mode", "user-list-mode", "user-detail-mode");
-      setPageActions(renderPageBackButton("data-market-back", `Back to ${pageLabel}`));
+      setPageActions(renderPageBackButton("data-market-back", `กลับไป ${pageLabel}`));
       document.querySelector("#crumb").textContent = `${moduleData.market.crumb} / ${pageLabel} / ${row.id}`;
       document.querySelector("#page-title").textContent = getMarketSyncTitleLabel(row);
       document.querySelector("#page-meta").textContent = "";

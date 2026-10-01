@@ -5,7 +5,8 @@
 BOR-003 (fix coverage list), BOR-007 (WAL-1440 deep link), BOR-008 (Account Deletion → User Detail),
 BOR-009 (Categories modal title), BOR-010 (Market Overview rename), BOR-012 (navigation regression) และ BOR-014 (doc sync) ต้องยึดตาม
 
-- Status: Contract draft for remediation — ยังไม่ได้แก้ prototype ใด ๆ ตามเอกสารนี้
+- Status: Contract implemented — remediated ใน BOR-007/008/009/010 (+ `jumpToModule` reset ตาม Flag 2)
+  และ BOR-010a (Market back labels ตาม Flag 1); regression BOR-012 ผ่าน 0 fail — ไม่เหลือ divergence จากตาราง §1
 - Source findings: Mission Audit `1800d8aa` → Objective 1 (WAL-1440 wrong destination, confirmed defect),
   Objective 2 (Categories modal title ต้องเป็น English), Objective 3 (DEL-033 → U-1104 active-sidebar inconsistency,
   Market Overview recommendation, decision: destination-owned active state + Back รักษา source context + permission visibility)
@@ -44,15 +45,15 @@ BOR-009 (Categories modal title), BOR-010 (Market Overview rename), BOR-012 (nav
   (Alert Detail ใช้ชื่อ owning list `Watch Alert List` + ID ไม่ใช่คำว่า "Alert Detail"), `งานตรวจสอบและบริการ / Account Deletion / Requests / DEL-xxx`
 - Exception: My Account = `My Account` ระดับเดียว (ไม่อ้าง section เพราะไม่มี parent ใน navGroups)
 
-**จุดที่ยังไม่ตรง contract (confirmed findings + observed divergences):**
+**จุดที่เคยไม่ตรง contract — สถานะหลัง remediation (อัปเดตใน BOR-014):**
 
-| จุด | พฤติกรรมปัจจุบัน | Contract ที่เกี่ยว | Fix task |
+| จุด | พฤติกรรมก่อนแก้ | Contract ที่เกี่ยว | สถานะ |
 | --- | --- | --- | --- |
-| Frequently Triggered Alerts row `WAL-1440` (`data-wa-alert-row`, ~38108/46667) | `jumpToModule("watch-alerts", "Alert List")` → เปิด list ไม่ใช่ detail และใช้ alias `"Alert List"` ที่ไม่ตรง submenu label `"Watch Alert List"` (ไม่มี sub ใด active) | A.3, B.1, C.2 | BOR-007 |
-| DEL-033 → `data-user-open` → User Detail U-1104 (~29106/47646) | `renderUserDetailPageSpec` set `activeSub = "User Accounts"` แต่ไม่ set `activeModule` → sidebar ค้างที่ Account Deletion ทั้งที่ crumb เป็น User Management | A.1 (destination-owned) | BOR-008 |
-| Categories modals (~41993/42052/39650) | title ภาษาไทย `รายละเอียดหมวดหมู่`, `เพิ่มหมวดหมู่`, `แก้ไขหมวดหมู่`, `จัดเรียง Category` | C.3 | BOR-009 |
-| Market Data sub `"Dashboard"` | ชื่อ sub ชนกับ module `dashboard` ทำให้สับสน; audit เสนอ "Market Overview" | C.2 | BOR-010 |
-| Market detail back button (~37572) | label `Back to ${pageLabel}` (English) ต่างจาก pattern กลาง `กลับไป <target>` | C.4 | flag → BOR-003 ตัดสิน coverage |
+| Frequently Triggered Alerts row `WAL-1440` (`data-wa-alert-row`, ~38108/46667) | `jumpToModule("watch-alerts", "Alert List")` → เปิด list ไม่ใช่ detail และใช้ alias `"Alert List"` ที่ไม่ตรง submenu label `"Watch Alert List"` (ไม่มี sub ใด active) | A.3, B.1, C.2 | ✅ แก้แล้ว (BOR-007) — row เปิด `renderWatchAlertDetail` โดยตรง + push source context; canonical sub `Watch Alert List` active |
+| DEL-033 → `data-user-open` → User Detail U-1104 (~29106/47646) | `renderUserDetailPageSpec` set `activeSub = "User Accounts"` แต่ไม่ set `activeModule` → sidebar ค้างที่ Account Deletion ทั้งที่ crumb เป็น User Management | A.1 (destination-owned) | ✅ แก้แล้ว (BOR-008) — set `activeModule="users"` + `syncExpandedNavForModule`; +`openAccountDeletionRequest` push back context |
+| Categories modals (~41993/42052/39650) | title ภาษาไทย `รายละเอียดหมวดหมู่`, `เพิ่มหมวดหมู่`, `แก้ไขหมวดหมู่`, `จัดเรียง Category` | C.3 | ✅ แก้แล้ว (BOR-009) — `Category Detail`/`Add Category`/`Edit Category`/`Reorder Categories` ครบ 7 touch points |
+| Market Data sub `"Dashboard"` | ชื่อ sub ชนกับ module `dashboard` ทำให้สับสน; audit เสนอ "Market Overview" | C.2 | ✅ แก้แล้ว (BOR-010) — rename เป็น `Market Overview` ~25 compare points + perm matrix; internal keys คงเดิม |
+| Market detail back button (~37518/37553/37730) | label `Back to …` (English) ต่างจาก pattern กลาง `กลับไป <target>` | C.4 | ✅ แก้แล้ว (BOR-010a) — `กลับไป Brands` / `กลับไป <brand>` / `กลับไป <pageLabel>`; Option Master `Back to Option Groups` ยกเว้นถาวรเป็น convention เดิม |
 
 ---
 
@@ -88,13 +89,14 @@ BOR-009 (Categories modal title), BOR-010 (Market Overview rename), BOR-012 (nav
 3. **Back รักษา source context (audit decision)** — `.page-back-btn` → `goBackToPreviousPage()`: pop stack → `restoreNavigationContext()`;
    ถ้า restore ไม่ได้ (entity หาย/context ไม่รู้จัก) → fallback `getDefaultBackContext()` (owning list ของหน้าปัจจุบัน)
    - ตัวอย่าง canonical: Request Detail → User Detail → Back ต้องกลับ Request Detail เดิม (DEL-PTO-006);
-     Demand Overview → Alert Detail → Back กลับ Demand Overview (หลัง BOR-007)
+     Demand Overview → Alert Detail → Back กลับ Demand Overview (implemented BOR-007);
+     User Detail → Request Detail → Back กลับ User Detail (เพิ่มใน BOR-008 — เดิมหลุดไป User List)
 4. **Sidebar nav click = reset context** — การคลิก nav/submenu คือเริ่ม workflow ใหม่: `resetBackNavigation()` + `resetListFilterPanelsForNavigation()` (คงกฎเดิม ~46716)
 5. **Filter persistence boundary** — filter ของ list คงอยู่เฉพาะ list→detail→back ใน route เดิม (`module|sub`); เปลี่ยน route = clear
    — `saveCurrentListFilterState` ต้องไม่ overwrite state ที่ save ไว้เมื่ออยู่หน้าที่ไม่มี filter input (WA-QA-002a guard คงไว้)
 6. **Jump helpers ที่ไปข้าม module ต้องสะอาดเหมือน sidebar nav** — `jumpToModule`/`data-module-jump` ไป list อื่น = context ใหม่
    (reset filter panel ตามเดิม); ส่วน jump ที่ลง detail เฉพาะ (Contract B.1) ให้ push source context แทน เพื่อ Back กลับต้นทาง
-   - ⚠️ Observed: `jumpToModule` ปัจจุบันไม่เรียก `resetBackNavigation()` — หาก BOR-007/008 แตะ path นี้ให้ตรวจว่า stack ไม่ค้าง context ข้าม module; หากต้องเปลี่ยนพฤติกรรม jump ทั้งระบบให้เสนอใน BOR-003 ก่อน
+   - ✅ Resolved (Flag 2 → BOR-007): `jumpToModule` เรียก `resetBackNavigation()` แล้ว — cross-module jump = context ใหม่ เหมือน sidebar nav; stack ไม่ค้าง context ข้าม module
 7. **Back button label อ้าง canonical destination** — label ต้องชื่อปลายทางจริงที่ Back จะไป (ดู C.4); ถ้า back target เปลี่ยนตาม context
    (เช่น User Detail ที่เข้าจาก Request Detail) ให้ label สื่อ destination จริงหรือใช้ label กลางของ owning list ตาม convention เดิมของหน้านั้น
 
@@ -122,7 +124,8 @@ BOR-009 (Categories modal title), BOR-010 (Market Overview rename), BOR-012 (nav
      ไม่อยู่ใน named scope ของ baseline; หากต้องการ normalize ทั้งระบบให้เสนอ Scope Change ไม่ใช่ฝืนแก้ใน BOR-009
 4. **Breadcrumb & back label** — crumb format คง `<Section TH> / <Module EN> / [<Sub EN>] [/ <Detail type> / <ID>]`;
    back button canonical label = `กลับไป <destination label>` (Thai verb + English label — pattern เดิมส่วนใหญ่);
-   `Back to …` ของ Market detail (~37572) เป็น observed divergence → ให้ BOR-003 ตัดสินว่าอยู่ใน coverage หรือ flag เป็น variation
+   `Back to …` ของ Market detail แก้แล้วใน BOR-010a เป็น `กลับไป Brands` / `กลับไป <brand>` / `กลับไป <pageLabel>`;
+   ข้อยกเว้นถาวร: Option Master `Back to Option Groups` (English convention ของ module นั้น ตาม BO_UI_UX_STANDARD)
 5. **Detail head / page title** — `#page-title` = English page type (`User Detail`, `Report Detail`, `Alert Detail`, `Request Detail`);
    detail head pattern `<ID> : <Display Name>` + status pills (คงเดิม); entity ID ใช้ uppercase prefix เดิม (`U-`, `AST-`, `WAL-`, `DEL-`, `ADM-`, `DLV-`, `AUD-`, `RCO-`, `POL-`)
 6. **Section headers เป็นภาษาไทย** (`การดำเนินงาน` / `งานตรวจสอบและบริการ` / `เครื่องมือ & รายงาน`) — คงเดิม ไม่เปลี่ยนใน scope นี้
@@ -130,6 +133,9 @@ BOR-009 (Categories modal title), BOR-010 (Market Overview rename), BOR-012 (nav
 ---
 
 ## 5. Reconcile กับ Test Baseline (บังคับ — ตาม model ของ BOR-001 §4)
+
+> หมายเหตุ (BOR-014): test-baseline updates ทั้งหมดทำแล้วในงานที่เกี่ยวข้อง — qa-bo-005 ใน BOR-009, qa-bo-006 ใน BOR-010;
+> BOR-007/008 ไม่ต้อง update baseline (`View All` ยังลง list, back context เดิมไม่พัง)
 
 - `tests/qa-bo-009-market-demand.spec.js` — มี test ที่เดินผ่าน `goToMarketDemand(page, "Watch Alert List")` และ assert crumb
   `งานตรวจสอบและบริการ / Market Demand / Watch Alert List` + test 21 (`View All → Watch Alert List`) — BOR-007 เปลี่ยนเฉพาะ
@@ -160,16 +166,16 @@ BOR-009 (Categories modal title), BOR-010 (Market Overview rename), BOR-012 (nav
 
 ---
 
-## 7. Handoff ให้ Task ถัดไป
+## 7. Implementation Status (อัปเดตใน BOR-014)
 
-- **BOR-003**: ใช้ตารางจุดไม่ตรง contract ใน §1 + Contract A–C เป็นเกณฑ์นับ fix coverage; ตัดสินประเด็นค้าง —
-  `Back to …` label ของ Market (C.4), `jumpToModule` ไม่ reset back stack (B.6), empty-state copy flag จาก BOR-001
-- **BOR-007**: implement WAL-1440 row → `renderWatchAlertDetail("WAL-1440")` พร้อม push source context (Demand Overview) ตาม B.1/B.2 และใช้ canonical sub `Watch Alert List` (A.3)
-- **BOR-008**: implement destination-owned active state ใน `renderUserDetailPageSpec` path ที่มาจาก deletions (set `activeModule` ปลายทาง; back คง DEL-PTO-006)
-- **BOR-009**: rename Categories modal titles + ปุ่มที่เกี่ยวเป็น English ตาม C.3 พร้อม test-baseline update
-- **BOR-010**: rename `Dashboard` sub → `Market Overview` ตาม C.2 (inventory compare points ก่อนแก้) พร้อม test-baseline update
-- **BOR-012**: regression เทียบ Contract A–C (active state, deep link, back context, filter persistence, naming surfaces)
-- **BOR-014**: sync กฎที่ล็อกแล้วเข้า `BackOffice/BO_UI_UX_STANDARD.md` และเอกสารที่เกี่ยวข้องตามผล remediation จริง
+- **BOR-003**: coverage list → `docs/bo-shared-remediation-coverage.md` (done — flags ตัดสินแล้ว: `Back to …` IN COVERAGE ผูก BOR-010, `jumpToModule` reset IN COVERAGE ผูก BOR-007, empty-state copy = Scope Change นอก mission)
+- **BOR-007**: WAL-1440 row → `renderWatchAlertDetail` + push source context (Demand Overview) + canonical sub `Watch Alert List` + `jumpToModule` reset back stack (done)
+- **BOR-008**: destination-owned active state ใน `renderUserDetailPageSpec` + `syncExpandedNavForModule("deletions")` ใน `renderDeletionDetail` + `openAccountDeletionRequest` back-context push (done)
+- **BOR-009**: Categories titles English 7 touch points + qa-bo-005 baseline update (done)
+- **BOR-010**: `Market Overview` rename ~25 compare points + perm matrix + qa-bo-006 baseline update (done; ⚠️ Flag 1 `Back to …` labels ไม่ได้ implement — deviation ใน coverage §7)
+- **BOR-012**: regression เทียบ Contract A–C ผ่าน 0 fail (done)
+- **BOR-014**: sync กฎเข้า `BackOffice/BO_UI_UX_STANDARD.md` + อัปเดต status เอกสารนี้ (งานนี้)
+- **BOR-010a**: Market detail back labels `Back to …` → `กลับไป …` 3 จุด ตาม C.4 (done — deviation fix จาก Flag 1; suffix convention เดียวกับ BOR-006a; verify _bor010 20/20 + _bor012 314/314)
 
 ---
 
@@ -185,4 +191,5 @@ BOR-009 (Categories modal title), BOR-010 (Market Overview rename), BOR-012 (nav
 - `deliverables/bo-prototype-audit-objective-2/cross-module-ui-consistency.txt` — Categories modal title + modal footer order
 - `deliverables/bo-prototype-audit-objective-3/navigation-information-architecture.txt` — DEL-033 → U-1104 finding, Market Overview, Option B, destination-owned active state, permission visibility
 - `BackOffice/BO_UI_UX_STANDARD.md`, `PROTECTED_SCREENS.md` — standard/protected scope policy
+- `tests/_bor007-verify.cjs`, `_bor008-verify.cjs`, `_bor009-verify.cjs`, `_bor010-verify.cjs`, `_bor012-verify.cjs` — verification + regression scripts
 - Mission `1e359966` Approved Baseline — Scope, Protected Approval Clause, Acceptance Criteria
