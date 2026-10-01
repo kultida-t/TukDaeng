@@ -64,11 +64,16 @@ Workflow สำหรับจัด **ชุดหลักฐานส่ง�
 |---|---|---|
 | UI/Prototype | **ภาพหน้าจอ** ที่ capture จาก prototype จริง ครบ **ทุกขั้นตอน flow ของเป้าหมาย** และ **ทุกขั้นตอนต้องมีคู่ desktop + mobile** | precedent 10/10: "สร้าง Audit Log List และ Detail Modal" (4 รูป = list+detail × desktop+mobile), "เพิ่ม Search, Filter, Sort และ Date Range" (7 รูป ครบทุก filter state ทั้งสองจอ), "เพิ่ม Cross-module Audit Jump" (5 รูป desktop+mobile) |
 | เอกสาร/spec/design contract | **ไฟล์เอกสารจริง** ที่แก้ + **checklist card สรุปว่าไฟล์ไหนแก้อะไร** (ภาพ preview ได้ — ช่วยให้ Gemini Multimodal ตรวจสอบได้ทันที) | precedent 10/10: "Sync Audit Log Spec" แนบ `08_AUDIT_LOG_MODULE.md` + ภาพ checklist สรุป 5 Acceptance Criteria |
-| Test/verification | **ภาพ checklist card แยกตาม spec** แสดง flow การทดสอบครบตามงานที่ทำ (ดึง test titles จริงจาก spec) + ผลรันจริง (`test-results.txt` หรือภาพผลรัน) | precedent 10/10: "QA, Regression และ Protected Screen" (5 รูป checklist `qa-bo-014a/b/c/d`); ทำด้วย `scripts/render-test-checklist.js` |
+| Test/verification | **ไฟล์ `.spec.js` จริง** + **ผลรันจริงเป็น raw runner output** (`test-results.txt` คือ output ดิบที่ runner เขียนเอง เช่น `ok 2 [desktop-1440] › spec › test › (2.3s)` — **ไม่ใช่ summary ที่พิมพ์เอง**) + **ภาพ checklist card แยกตาม spec** แสดง flow การทดสอบครบตามงานที่ทำ (ดึง test titles จริงจาก spec) | precedent 10/10: "QA, Regression และ Protected Screen" (5 รูป checklist `qa-bo-014a/b/c/d`); ทำด้วย `scripts/render-test-checklist.js` |
 | Acceptance/review | **checklist card สรุปรายการที่ตรวจผ่าน** + ไฟล์บันทึกผลจริง | precedent 10/10: "สร้าง Prototype Admin Actions + Confirmation Modals" (8 รูป แสดงทุก modal + mobile + automated test passes) |
 | ผสม (UI + doc + test) | ภาพ+ไฟล์ตามสัดส่วนงาน; zip เฉพาะชุดที่ใหญ่จนแนบทีละไฟล์ไม่สะดวก แต่ต้องมีรูปภาพสรุปนำหน้าเสมอ | — |
 
 **หลักการเลือกประเภทหลักฐาน:** ส่ง "สิ่งที่ reviewer ตรวจได้จริงและเห็นได้ทันที" — ภาพ preview ในฟอร์มแข็งแรงที่สุด; เอกสาร/test แนบไฟล์จริงประกอบ แต่ต้องมีภาพสรุปนำหน้า; งาน UI ต้อง capture ครบทั้ง desktop และ mobile
+
+**หลักการ 2 ชั้น (Work Artifact vs Preview Packaging):**
+- **Work Artifact (ชั้นพิสูจน์จริง):** ไฟล์ที่เป้าหมายผลิตขึ้นจากการทำงาน — `.spec.js`, ผลรันดิบของ runner, เอกสารที่แก้, โค้ดที่ commit — ชั้นนี้เท่านั้นที่ใช้เป็น **เป้าหมายของ `external_url`** และเป็น proof-of-work
+- **Preview Packaging (ชั้นนำหน้า):** ไฟล์ที่สร้างขึ้นเพื่อทำหลักฐาน — checklist card PNG, terminal-style PNG จาก `render-test-output.js`, ภาพใน `screenshots/`, ชุดไฟล์ใน `deliverables/`, capture/render scripts — ชั้นนี้**แนบประกอบเพื่อให้ preview ได้เท่านั้น ห้ามนับเป็น proof-of-work และห้ามใช้ commit ที่สร้างมันเป็น `external_url`**
+- `test-results.txt` ต้องเป็น **raw runner output ที่เครื่องมือเขียนเอง** (บันทึกการทำงานจริง) ไม่ใช่ summary ที่เขียนขึ้นเพื่อส่ง — summary ที่เขียนเองจัดเป็น packaging ซ้ำหน้าที่ checklist card และอ่อนกว่า raw output
 
 ---
 
@@ -91,8 +96,8 @@ Workflow สำหรับจัด **ชุดหลักฐานส่ง�
 6. **ตรวจ Mobile Spacing:** ในจอ 390px ตรวจสอบว่าหัว Modal หรือปุ่ม Action ไม่ชิดขอบจอเกินไป และไม่มี element ซ้อนทับกัน
 
 **งานเอกสาร/test — จัด package ไฟล์จริง + ภาพสรุป:**
-- คัดลอกไฟล์จริงไป `deliverables/mission-<N>-obj<M>-<topic>/` แล้ว zip เป็น `deliverables/mission-<N>-obj<M>-<topic>.zip`
-- งานที่มี test **ต้องรัน test จริงก่อน zip** แล้วเก็บผลลง `test-results.txt` ใน package
+- คัดลอกไฟล์จริงไป `deliverables/mission-<N>-obj<M>-<topic>/` แล้ว zip เป็น `deliverables/mission-<N>-obj<M>-<topic>.zip` — สำหรับเป้าหมาย test **ต้องคัดลอก `.spec.js` ที่รันจริงเข้า package ด้วย**
+- งานที่มี test **ต้องรัน test จริงก่อน zip** แล้วเก็บ **raw runner output ดิบ** ลง `test-results.txt` ใน package — ห้ามเขียน summary เองแทน; ถ้าอยากได้ภาพผลรันให้ render ด้วย `scripts/render-test-output.js`
 - **เป้าหมาย test/QA: สร้าง checklist card แยกตาม spec** ด้วย `scripts/render-test-checklist.js`
 - **เป้าหมายเอกสาร/acceptance: สร้าง checklist card สรุป** ด้วย `scripts/render-checklist-card.js`
 - ภาพ checklist card ต้องพอดีตัว card ไม่เหลือพื้นว่างด้านล่าง
@@ -102,6 +107,7 @@ Workflow สำหรับจัด **ชุดหลักฐานส่ง�
 ### 4. คัดชุดไฟล์สำหรับแนบ
 
 - **แนบไฟล์จริงทีละไฟล์เป็นค่าเริ่มต้น** เพื่อให้ reviewer และ AI มองเห็น preview ได้ทันที
+- **ทุกไฟล์แนบต้อง trace กลับไปหางานของเป้าหมาย** — Work Artifact (ไฟล์ที่เป้าหมายผลิต เช่น `.spec.js`, raw run output, เอกสารที่แก้) คือตัวพิสูจน์หลัก; Preview Packaging (checklist card, ภาพ render, screenshots) แนบประกอบเพื่อให้เห็นได้ทันทีเท่านั้น — **ห้ามส่งแต่ packaging โดยไม่มี work artifact**
 - **ทุกเป้าหมายต้องมีภาพที่ preview ได้อย่างน้อย 1 รูป** (เป้าหมาย UI ใช้ภาพหน้าจอ, เป้าหมายเอกสาร/test ใช้ Checklist Card)
 - **ภาพหน้าจอ:** แนบทุกรูปที่พิสูจน์พฤติกรรมต่างกันของเป้าหมาย ครบทั้ง desktop และ mobile
 
@@ -111,7 +117,7 @@ Workflow สำหรับจัด **ชุดหลักฐานส่ง�
 
 > ⚠️ **คำเตือนสำคัญที่สุด:** จากการวิเคราะห์ผลการประเมินย้อนหลัง **การปล่อยช่อง URL ว่างไว้คือสาเหตุหลักอันดับ 1 ที่ทำให้โดนหักคะแนน Evidence Completeness เหลือ 1.6 - 2.5/3.0 และถูกลดสถานะเป็น PASS WITH COMMENTS ทันที**
 
-**กฎเหล็ก:** **ห้ามปล่อยช่อง URL ว่างเด็ดขาด!** และ **ต้องชี้ไปยัง Commit หรือไฟล์ที่พิสูจน์ผลงานจริง (Proof of Work)** ของเป้าหมายนั้น — **ห้ามชี้ไปยัง Commit ที่สร้างไฟล์ deliverables/หลักฐานส่งตรวจซ้ำกันทุกเป้าหมาย**:
+**กฎเหล็ก:** **ห้ามปล่อยช่อง URL ว่างเด็ดขาด!** และ **ต้องชี้ไปยัง Commit หรือไฟล์ที่พิสูจน์ผลงานจริง (Proof of Work)** ของเป้าหมายนั้น — ลิงก์ต้องชี้ไปที่ **Work Artifact เท่านั้น** (ไฟล์ที่เป้าหมายผลิตจากการทำงาน) **ห้ามชี้ไปที่ไฟล์ Preview Packaging** (checklist card, ภาพ render, `screenshots/`, `deliverables/`) หรือ **Commit ที่สร้างไฟล์ deliverables/หลักฐานส่งตรวจซ้ำกันทุกเป้าหมาย**:
 
 1. **งานแก้โค้ด / ปรับสเปก / แก้เอกสาร (Code & Doc Mutation):**
    - ชี้ไปยัง **Git Commit ที่แก้ไฟล์จริง** ในเป้าหมายนั้น
@@ -218,7 +224,8 @@ Feature: <ชื่อ Feature> → <Task code>
 
 ## กฎเหล็กสู่คะแนน 9.8 - 10.0 (APPROVED)
 
-- ⚠️ **MANDATORY EXTERNAL URL (PROOF OF WORK):** ห้ามปล่อยช่อง URL ว่างเด็ดขาด! ต้องใส่ลิงก์ GitHub Commit หรือไฟล์ที่พิสูจน์งานจริงของแต่ละเป้าหมาย (งานแก้โค้ด/สเปก = Commit ที่แก้ไฟล์จริง, งานเทสต์ = ไฟล์สเปกหรือโฟลเดอร์เทสต์, งานปิดรับ = Commit ล็อก Baseline) — **ห้ามชี้ไปที่ Commit ที่สร้างไฟล์ deliverables/หลักฐานส่งตรวจซ้ำกันทุกข้อ**
+- ⚠️ **MANDATORY EXTERNAL URL (PROOF OF WORK):** ห้ามปล่อยช่อง URL ว่างเด็ดขาด! ต้องใส่ลิงก์ GitHub Commit หรือไฟล์ที่พิสูจน์งานจริงของแต่ละเป้าหมาย (งานแก้โค้ด/สเปก = Commit ที่แก้ไฟล์จริง, งานเทสต์ = ไฟล์สเปกหรือโฟลเดอร์เทสต์, งานปิดรับ = Commit ล็อก Baseline) — **ลิงก์ต้องชี้ Work Artifact เท่านั้น ห้ามชี้ Preview Packaging** (checklist card, `screenshots/`, `deliverables/`) และ**ห้ามชี้ไปที่ Commit ที่สร้างไฟล์ deliverables/หลักฐานส่งตรวจซ้ำกันทุกข้อ**
+- ⚠️ **WORK ARTIFACT FIRST:** ทุกไฟล์แนบและทุกลิงก์ต้อง trace กลับไปหางานของเป้าหมาย — ไฟล์ที่สร้างขึ้นเพื่อทำหลักฐาน (checklist card, render scripts, `deliverables/`) ใช้ประกอบ preview เท่านั้น; เป้าหมาย test ต้องแนบ `.spec.js` จริง + `test-results.txt` ที่เป็น **raw runner output** (ไม่ใช่ summary ที่พิมพ์เอง)
 - ⚠️ **ZERO VISUAL BUGS:** ตรวจภาพด้วยตา: ไม่มี focus ring ค้าง, ไม่มี layout ล้นบน mobile, ไม่มี Pagination แสดง 1/1 ในหน้า Empty, ไม่มี Typo ใน mockup
 - ⚠️ **TIME REASONABLENESS:** หากเวลาบันทึกสั้น (0.5 - 1.0 ชม.) สำหรับงานที่ดูเยอะ ต้องระบุ Methodology (เช่น Automated script, Sync from baseline) ในคำอธิบายเสมอ
 - ⚠️ **VISUAL EVIDENCE FIRST:** งานเอกสารและเทสต์ต้องมีภาพ Checklist Card สรุปเสมอ (อย่าแนบ text ล้วน)
@@ -237,6 +244,7 @@ Feature: <ชื่อ Feature> → <Task code>
 - [ ] **เป้าหมาย UI: ภาพครบทุกขั้นตอน flow และมีคู่ Desktop + Mobile ทุกขั้น**
 - [ ] **Multimodal Visual Inspection: ไม่พบ Typo, ไม่พบ Empty-state Pagination bug, Mobile Spacing สวยงาม, ไม่มี focus ring**
 - [ ] **เป้าหมาย test/เอกสาร: มี Checklist Card สรุปพร้อมผลลัพธ์ผ่านชัดเจน**
+- [ ] **Work Artifact First: ไฟล์แนบมี artifact จริงของเป้าหมาย (เช่น `.spec.js` + raw `test-results.txt`) ไม่ได้มีแต่ไฟล์ที่สร้างเพื่อทำหลักฐาน และ external_url ชี้ไปที่ work artifact ไม่ใช่ packaging/commit สร้างหลักฐาน**
 - [ ] **Time Reasonableness: หากชั่วโมงงานสั้น ได้อธิบาย Methodology ในคำอธิบายเรียบร้อยแล้ว**
 - [ ] คำอธิบายเป็นภาษาคนทำงาน ตรงไปตรงมา ใช้ศัพท์มาตรฐานตรงตัว ไม่มีวงเล็บแปลไทยสลับอังกฤษ ไม่มีคำสร้อยอารมณ์ ("ผ่านฉลุย") ไม่มี `§` ไม่มีศัพท์โค้ดลอยๆ
 - [ ] หลังหลักฐานทุก Objective แสดง compact Mission Objective–Feature–Task เป็น `text` copy block เดียว
