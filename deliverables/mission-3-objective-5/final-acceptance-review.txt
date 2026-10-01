@@ -14,6 +14,7 @@ Verification evidence
 - Audit & Delivery Trace: 139 passed / 1 project-gated skip / 0 failed
 - Full Protected Regression: 1,822 passed / 55 project-gated skips / 0 failed / exit code 0
 - Responsive & Accessibility: 68 passed / 0 failed / 0 skipped / exit code 0 across 4 breakpoints
+- Evidence limitation carried from AIL-039: no direct assertions for numeric contrast, modal focus trap/return, or dialog role/aria-modal; disclosed as 3 low-risk evidence gaps, with no observed mismatch and no acceptance blocker
 
 Closure checks
 - Open task issues: 0

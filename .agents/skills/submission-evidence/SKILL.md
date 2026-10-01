@@ -1,6 +1,6 @@
 ---
 name: submission-evidence
-description: เตรียมหลักฐานส่งตรวจรับต่อเป้าหมาย (Objective) ของ Mission สำหรับ TukDaeng — ออกแบบให้ผ่านเกณฑ์ AI Worklog QA Auditor (Gemini Multimodal) ระดับ APPROVED (9.8-10.0 เต็ม) ครบ 4 มิติ (ความครบถ้วนหลักฐานพร้อม external_url, ความสมเหตุสมผลเวลา, การส่งมอบตรงรอบ, คุณภาพความละเอียดไร้บั๊ก) พร้อม copy block ฟอร์มส่งตรวจและ compact Mission Objective–Feature–Task. Use เมื่อเป้าหมายใน Mission ทำครบทุก Task แล้วต้องเตรียมหลักฐานส่งตรวจ หรือผู้ใช้ขอ "หลักฐานส่งตรวจ" / "evidence เป้าหมาย" / "เตรียมไฟล์ส่งงาน" / "capture หน้าจอผลงาน"
+description: เตรียมหลักฐานส่งตรวจรับต่อเป้าหมาย (Objective) ของ Mission สำหรับ TukDaeng — มุ่งเพิ่มโอกาสผ่านเกณฑ์ AI Worklog QA Auditor (Gemini Multimodal) โดยตรวจความครบถ้วนของ artifact, external_url, เวลา, รอบส่ง และคุณภาพหลักฐาน พร้อม copy block ฟอร์มส่งตรวจและ compact Mission Objective–Feature–Task; ไม่รับประกันคะแนนหรือ verdict. Use เมื่อเป้าหมายใน Mission ทำครบทุก Task แล้วต้องเตรียมหลักฐานส่งตรวจ หรือผู้ใช้ขอ "หลักฐานส่งตรวจ" / "evidence เป้าหมาย" / "เตรียมไฟล์ส่งงาน" / "capture หน้าจอผลงาน"
 ---
 
 # TukDaeng Submission Evidence (หลักฐานส่งตรวจต่อเป้าหมาย)
@@ -16,7 +16,7 @@ description: เตรียมหลักฐานส่งตรวจรั�
 >
 > **ถ้าไม่ใช่เครื่องนี้:** หยุดทำงาน skill นี้ทันที แจ้งผู้ใช้ว่า skill นี้ใช้ได้เฉพาะเครื่องของ Admin เท่านั้น
 
-Workflow สำหรับจัด **ชุดหลักฐานส่งตรวจรับงานด้วย AI** ของแต่ละ **เป้าหมาย (Objective)** ใน Mission — ออกแบบขึ้นเพื่อรับมือและผ่านเกณฑ์การประเมินของ **AI Worklog QA Auditor (Gemini Multimodal)** ในระดับ **APPROVED (9.8 - 10.0 คะแนนเต็ม)** ผลลัพธ์คือ "ของที่ต้องแนบ + คำอธิบายที่ต้องวาง + ช่อง external_url ที่ถูกต้อง" พร้อม copy block ให้ก๊อปลงฟอร์มส่งตรวจได้ทันที **ไม่ส่งข้อมูลไปยังระบบภายนอกใด ๆ อัตโนมัติ**
+Workflow สำหรับจัด **ชุดหลักฐานส่งตรวจรับงานด้วย AI** ของแต่ละ **เป้าหมาย (Objective)** ใน Mission — มุ่งเพิ่มโอกาสให้หลักฐานครบและตรวจสอบย้อนกลับได้ตามเกณฑ์ **AI Worklog QA Auditor (Gemini Multimodal)**; คะแนน 9.8–10.0 หรือสถานะ APPROVED เป็นเป้าหมาย ไม่ใช่ผลที่รับประกัน ผลลัพธ์คือ "ของที่ต้องแนบ + คำอธิบายที่ต้องวาง + ช่อง external_url ที่ถูกต้อง" พร้อม copy block ให้ก๊อปลงฟอร์มส่งตรวจได้ทันที **ไม่ส่งข้อมูลไปยังระบบภายนอกใด ๆ อัตโนมัติ**
 
 ---
 
@@ -110,6 +110,18 @@ Workflow สำหรับจัด **ชุดหลักฐานส่ง�
 - **ทุกไฟล์แนบต้อง trace กลับไปหางานของเป้าหมาย** — Work Artifact (ไฟล์ที่เป้าหมายผลิต เช่น `.spec.js`, raw run output, เอกสารที่แก้) คือตัวพิสูจน์หลัก; Preview Packaging (checklist card, ภาพ render, screenshots) แนบประกอบเพื่อให้เห็นได้ทันทีเท่านั้น — **ห้ามส่งแต่ packaging โดยไม่มี work artifact**
 - **ทุกเป้าหมายต้องมีภาพที่ preview ได้อย่างน้อย 1 รูป** (เป้าหมาย UI ใช้ภาพหน้าจอ, เป้าหมายเอกสาร/test ใช้ Checklist Card)
 - **ภาพหน้าจอ:** แนบทุกรูปที่พิสูจน์พฤติกรรมต่างกันของเป้าหมาย ครบทั้ง desktop และ mobile
+
+### Evidence Reconciliation Gate — บังคับก่อนส่ง
+
+สำหรับทุก Objective ประเภท test/verification ให้ทำตาราง traceability จาก Kanban task activity → suite/command → source spec → result → สิ่งที่แนบ โดยตรวจตามนี้:
+
+1. บันทึกรายชื่อ `.spec.js` ทุกไฟล์ที่รันจริง แยกตาม Task; ห้ามเลือกเฉพาะ spec ที่เกี่ยวข้องบางส่วนแล้วอ้างว่าแทนทั้ง suite
+2. แนบ source `.spec.js` ทุกไฟล์ที่รันจริง หรือรวมทั้งหมดใน ZIP เมื่อจำนวนมาก; ตรวจจำนวนไฟล์ใน ZIP ให้ตรงกับ run inventory และเทียบ hash กับ source ใน repo เพื่อยืนยันว่าเป็นไฟล์จริงที่ไม่ถูกแก้
+3. `external_url` ต้องชี้ไปยังไฟล์หรือ directory ที่ครอบคลุมชุด spec ที่รันจริง: งานหลาย spec ใช้ tests directory พร้อมแนบ spec bundle; งาน single spec ให้ชี้ไฟล์นั้นโดยตรง
+4. เก็บ raw stdout/stderr จาก runner ณ เวลารันโดยไม่แก้เนื้อหา และแยกจาก manifest/checklist/summary อย่างชัดเจน
+5. ถ้า raw output ถูกล้างหรือไม่มีอยู่ ห้ามสร้างย้อนหลังหรือเรียก summary ว่า raw output ให้ระบุชัดว่าเป็น run summary และบอกแหล่งข้อมูล; rerun เพื่อเก็บ raw output ได้เฉพาะเมื่ออยู่ใน scope และได้รับอนุมัติ
+6. บันทึก evidence gap, assertion ที่ไม่มี, project gating และ limitation แยกจาก product defect; ห้ามใช้คำว่า zero issues หรือ claim ว่าตรวจครบในส่วนที่ไม่มีหลักฐานรองรับ
+7. ตรวจว่า task count, case count, passed/skipped/failed, exit code, run configuration และวันที่ในคำอธิบายตรงกับ Kanban และ artifacts ทุกจุด
 
 ---
 
@@ -228,7 +240,7 @@ Feature: <ชื่อ Feature> → <Task code>
 
 ---
 
-## กฎเหล็กสู่คะแนน 9.8 - 10.0 (APPROVED)
+## กฎส่งหลักฐานให้ครบถ้วน (เป้าหมาย APPROVED; ไม่รับประกันคะแนนหรือ verdict)
 
 - ⚠️ **MANDATORY EXTERNAL URL (PROOF OF WORK):** ห้ามปล่อยช่อง URL ว่างเด็ดขาด! ต้องใส่ลิงก์ GitHub Commit หรือไฟล์ที่พิสูจน์งานจริงของแต่ละเป้าหมาย (งานแก้โค้ด/สเปก = Commit ที่แก้ไฟล์จริง, งานเทสต์ = ไฟล์สเปกหรือโฟลเดอร์เทสต์, งานปิดรับ = Commit ล็อก Baseline) — **ลิงก์ต้องชี้ Work Artifact เท่านั้น ห้ามชี้ Preview Packaging** (checklist card, `screenshots/`, `deliverables/`) และ**ห้ามชี้ไปที่ Commit ที่สร้างไฟล์ deliverables/หลักฐานส่งตรวจซ้ำกันทุกข้อ**
 - ⚠️ **WORK ARTIFACT FIRST:** ทุกไฟล์แนบและทุกลิงก์ต้อง trace กลับไปหางานของเป้าหมาย — ไฟล์ที่สร้างขึ้นเพื่อทำหลักฐาน (checklist card, render scripts, `deliverables/`) ใช้ประกอบ preview เท่านั้น; เป้าหมาย test ต้องแนบ `.spec.js` จริง + `test-results.txt` ที่เป็น **raw runner output** (ไม่ใช่ summary ที่พิมพ์เอง)
@@ -251,6 +263,9 @@ Feature: <ชื่อ Feature> → <Task code>
 - [ ] **Multimodal Visual Inspection: ไม่พบ Typo, ไม่พบ Empty-state Pagination bug, Mobile Spacing สวยงาม, ไม่มี focus ring**
 - [ ] **เป้าหมาย test/เอกสาร: มี Checklist Card สรุปพร้อมผลลัพธ์ผ่านชัดเจน**
 - [ ] **Work Artifact First: ไฟล์แนบมี artifact จริงของเป้าหมาย (เช่น `.spec.js` + raw `test-results.txt`) ไม่ได้มีแต่ไฟล์ที่สร้างเพื่อทำหลักฐาน และ external_url ชี้ไปที่ work artifact ไม่ใช่ packaging/commit สร้างหลักฐาน**
+- [ ] **Test reconciliation: manifest ระบุทุก spec ที่รันจริง; ชื่อ/จำนวน spec ใน attachment และ external_url ครอบคลุม run inventory; ZIP ผ่านการตรวจรายชื่อและ hash เทียบ source**
+- [ ] **Runner-output authenticity: ยืนยันว่าไฟล์เป็น raw output จริง; ถ้าไม่มี ให้ติดป้าย run summary, ระบุแหล่งข้อมูล และห้ามอ้างว่าเป็น raw หรือสร้างย้อนหลัง**
+- [ ] **Caveat integrity: เปิดเผย evidence gap/ข้อจำกัดที่พบ และไม่เหมารวมว่าไม่มี issues เมื่อมี coverage gap ที่ทราบอยู่**
 - [ ] **Time Reasonableness: หากชั่วโมงงานสั้น ได้อธิบาย Methodology ในคำอธิบายเรียบร้อยแล้ว**
 - [ ] คำอธิบายเป็นภาษาคนทำงาน ตรงไปตรงมา ใช้ศัพท์มาตรฐานตรงตัว ไม่มีวงเล็บแปลไทยสลับอังกฤษ ไม่มีคำสร้อยอารมณ์ ("ผ่านฉลุย") ไม่มี `§` ไม่มีศัพท์โค้ดลอยๆ
 - [ ] หลังหลักฐานทุก Objective แสดง compact Mission Objective–Feature–Task เป็น `text` copy block เดียว
