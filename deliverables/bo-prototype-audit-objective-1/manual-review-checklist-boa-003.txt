@@ -1,0 +1,10 @@
+BOA-003 — Missing, Dead & Deferred Entry Points (6 checks)
+== ขั้นกดต่อรายการ
+กด entry point จริง → ยืนยัน destination หรือข้อความ unavailable → ตรวจทุก viewport
+== Checklist
+01 Sidebar entries ทุกกลุ่มเปิด destination ตรงเมนู — PASS
+02 Dashboard cards / queues / activity deep links พาไปหน้าที่ถูกต้อง — PASS
+03 Cross-module jumps (delivery log jump, audit ref jump, Asset ID links, deletion request → user detail) — PASS
+04 Local download template (CSV) มีไฟล์จริง เปิดได้ — PASS
+05 Frequently Triggered Alerts แถว WAL-1440 — FAIL: พาไป Watch Alert List แทน Alert Detail → confirmed defect
+06 Disabled/unavailable entries มีคำอธิบายหรือถูกซ่อนตาม Phase — PASS
