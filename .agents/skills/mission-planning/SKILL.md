@@ -126,10 +126,11 @@ Task ที่เกี่ยวข้องได้ 1 task หรือหล�
 ล็อก Approved Mission Baseline
 ↓
 สร้าง Mission Plan Summary Copy Block สำหรับ Work Log
++ สร้าง Mission + execution Tasks ใน Kanban (todo เท่านั้น)
 + สร้าง/อัปเดต Session Handoff สำหรับ Agent
 ↓
 แสดงสอง artifact แยกกัน แล้วจบ Planning Session
-(ห้ามเริ่ม implementation อัตโนมัติ)
+(execution เริ่มใน session ใหม่เท่านั้น)
 ```
 
 **กฎเหล็ก:**
@@ -839,14 +840,16 @@ Mission Planning Complete
 → User Approval
 → Approved Mission Baseline
 → Generate Mission Plan Summary Copy Block
+→ Create Mission + execution Tasks ใน Kanban (ทุก task = todo เท่านั้น)
 → Generate/Update Session Handoff
 → Display ทั้งสอง artifact แยกกัน
-→ End Planning Session
+→ End Planning Session (execution เริ่มใน session ใหม่เท่านั้น)
 ```
 
 - ห้ามเริ่ม **Mission execution task**, ย้าย execution task เป็น `in_progress` หรือเริ่ม execution timer โดยอัตโนมัติ กฎนี้ไม่ย้อนกลับไปห้าม Planning Task ที่ต้องอยู่ `in_progress` ระหว่างทำงานวางแผน และ Planning Task ควรถูกปิดหลัง baseline ได้รับ approval
 - ถ้าผู้ใช้ยังไม่อนุมัติ ให้แสดง Draft Mission Plan/ฉบับแก้ไขตาม workflow เดิม และยังไม่เรียก output ว่า Approved
-- หลังได้รับ approval ให้สร้างและแสดงทั้ง Mission Plan Summary และ Session Handoff ก่อนเสมอ แม้ผู้ใช้จะเลือกทำงานต่อใน session เดิม
+- หลังได้รับ approval ให้ทำตามลำดับนี้เท่านั้น: สร้าง Mission Plan Summary Copy Block → สร้าง Mission + execution tasks ใน Kanban (ทุก task = `todo` เท่านั้น, Category/Planned ครบตามกฎ Task Description) → สร้าง/อัปเดต Session Handoff → แสดงทั้งสอง artifact แยกกัน → จบ planning session
+- **Planning session ห้ามต่อเป็น execution ในตัว** — หลังจบ planning session การเริ่มทำ execution task ตัวแรก (`move_task` → `in_progress` + ลงมือจริง) ต้องเกิดใน **session ใหม่เท่านั้น** ไม่ทำต่อเนื่องใน session วางแผน เพื่อให้ session execute รับช่วงจาก Session Handoff/Kanban state ที่สะอาด เว้นแต่ผู้ใช้สั่งชัดเจนว่าให้ทำต่อใน session เดียวกัน
 - เมื่อมีทั้งสอง artifact ในคำตอบเดียวกัน ต้องแยก heading และ code block ชัดเจน ห้ามรวมเนื้อหาเป็น block เดียว
 - หากผู้ใช้ขอจบ session ให้บันทึก **Session Handoff** ผ่าน `save_session_note` เมื่อเครื่องมือพร้อม; การบันทึกนี้เป็น task/session context ภายใน Kanban ไม่ใช่การส่ง Work Log เข้า Core Portal
 
@@ -958,7 +961,7 @@ Session Handoff
 ```
 
 - ห้ามกำหนดให้ผู้ใช้ต้องนำ Mission Plan Summary Copy Block มาใช้แทน Session Handoff
-- ห้ามเริ่ม Task ถัดไปอัตโนมัติหลังสร้าง Summary/Handoff หรือหลังจบ planning session
+- ห้ามเริ่ม Task ถัดไปอัตโนมัติหลังสร้าง Summary/Handoff หรือหลังจบ planning session — execution ต้องเริ่มใน session ใหม่เสมอ (ผู้ใช้เปิด session ใหม่ + start task prompt) ไม่ทำต่อเนื่องใน session วางแผน เว้นแต่ผู้ใช้สั่งชัดเจน
 
 ### กฎสำคัญส่วนที่ 1
 
@@ -982,7 +985,7 @@ Session Handoff
 - ⚠️ **ห้ามแก้แผนหลัง start Mission โดยไม่มีเหตุผล** — เมื่อ Mission เริ่มดำเนินการแล้ว (มี task เป็น in_progress แล้ว) ห้ามแก้ไขเป้าหมาย/น้ำหนัก/ชั่วโมง ถ้าจำเป็นต้องแก้ ต้องระบุเหตุผลชัดเจน เช่น requirement เปลี่ยน / พบงานบล็อก / scope เปลี่ยน และต้องแจ้งผู้ใช้ก่อน
 - **คะแนนความแม่นยำในการวางแผน (Planning Accuracy Score):** ระบบประเมินความแม่นยำของแผนเทียบกับการทำจริง — ถ้าทำตรงตามแผนทุกเป้าหมาย (เวลาจริง = เวลาที่วางแผน ไม่มี task เกิน/ต่ำกว่าแผน) จะได้ **100 คะแนนเต็ม** ถ้าเบี่ยงเบือนจากแผน (task เกินเวลา, งานนอกแผนเกิดขึ้น, ต้องแก้แผนระหว่างทำ) คะแนนจะถูกหัก คะแนนนี้มีผลต่อการประเมินเกรดการทำงาน ดังนั้นต้องวางแผนให้แม่นยำที่สุดตั้งแต่ต้น และพยายามทำตรงตามแผน
 - ถ้าผู้ใช้ขอแก้ไข Mission/แผน → แก้ไขแล้วแสดง copy block ใหม่
-- หลังผู้ใช้อนุมัติ Mission Plan → สร้าง **Mission Plan Summary Copy Block** และ **Session Handoff** แยกกันตาม section 13; ถ้าผู้ใช้ต้องการจบ planning session ให้ persist Handoff แล้วหยุด
+- หลังผู้ใช้อนุมัติ Mission Plan → สร้าง **Mission Plan Summary Copy Block** → สร้าง Mission + execution tasks (`todo` เท่านั้น) → **Session Handoff** แยกกันตาม section 13 → persist Handoff แล้วจบ planning session; execution เริ่มใน session ใหม่เสมอ เว้นแต่ผู้ใช้สั่งให้ทำต่อชัดเจน
 - Mission Plan Summary ใช้สำหรับ Work Log และห้ามมี Kanban UUID/internal ID; Session Handoff ใช้สำหรับ Agent และคง internal IDs/technical context ได้
 - การสร้าง approval artifacts ไม่อนุญาตให้เริ่ม implementation, ย้าย **Mission execution task** เป็น `in_progress` หรือเริ่ม execution timer; Planning Task ที่ใช้จับเวลางานวางแผนต้องถูกเริ่มไว้ก่อนหน้าและปิดหลัง approval ตาม workflow ของ Planning Task
 - ถ้ามีงานเพิ่มนอก Scope → แยกเป็นงานนอกขอบเขตและเสนอ Mission ใหม่
@@ -1305,8 +1308,10 @@ Mission: สร้างเอกสารและ prototype สำหรับ
 - [ ] ตรวจรูปแบบชั่วโมงใน Mission Plan Summary ว่าอ่านง่ายและไม่แสดงค่าซ้ำ เช่นใช้ `8 ชม.` หรือ `2 ชม. 30 นาที`
 - [ ] ตรวจวันที่ใน Mission Plan Summary ว่าเป็น human-readable date range เมื่อทำได้โดยไม่เปลี่ยนค่าจริง
 - [ ] ตรวจว่ารายการใน Mission Plan Summary ใช้ literal `- ` ภายใน `text` code block และไม่มี `*` หรือ rendered bullet `•`
+- [ ] หลัง approval สร้าง Mission + execution tasks ใน Kanban ด้วย status `todo` ทั้งหมด (Category/Planned ครบ) ก่อนสร้าง Session Handoff
 - [ ] สร้างหรืออัปเดต Session Handoff แยกอีก artifact โดยคง identifiers, technical context, current state, next task และ next-session instructions ครบ
-- [ ] ถ้าจบ planning session ให้บันทึก Session Handoff ด้วย `save_session_note` เมื่อเครื่องมือพร้อม และแสดง Summary/Handoff เป็นคนละ code block
+- [ ] บันทึก Session Handoff ด้วย `save_session_note` เมื่อเครื่องมือพร้อม และแสดง Summary/Handoff เป็นคนละ code block
+- [ ] จบ planning session หลังสร้าง Summary + tasks + Handoff ครบ — ห้ามเริ่ม execution ใน session เดียวกัน (execution เริ่ม session ใหม่เท่านั้น เว้นแต่ผู้ใช้สั่งชัดเจน)
 - [ ] ตรวจว่าไม่ได้เริ่ม implementation, ไม่ย้าย Mission execution task เป็น `in_progress` และไม่เริ่ม execution timer จาก approval workflow; Planning Task ถูกปิดหลัง approval ตาม workflow แล้ว
 - [ ] ⚠️ **ภาษาใน copy block** — ใช้ภาษาเข้าใจง่าย เปลี่ยนคำโค้ด/เทคนิคเป็นคำเข้าใจง่าย แต่คำเฉพาะ/ศัพท์ที่คุ้นเคย (breadcrumb, Alert, asset, spec, baseline, Kanban) เก็บไว้ได้ ไม่บังคับล้วนไทย ห้ามใช้ชื่อฟังก์ชัน/โค้ด
 - [ ] ⚠️ ห้ามส่ง log/อัปเดตระบบภายนอกใด ๆ
