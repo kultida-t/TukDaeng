@@ -611,8 +611,12 @@ Navigation/active-state/naming contract (ตาม `../docs/bo-navigation-naming
 - Entity link ที่ระบุ entity เฉพาะ (ID/ชื่อ) ต้องเปิด entity detail โดยตรงพร้อม push source context (เช่น WAL-1440 row → Alert Detail, back กลับ Demand Overview) — เฉพาะ aggregate link เช่น `View All` เท่านั้นที่ลง list
 - Back action ต้องกลับ source context เดิมรวม cross-module chain (Request Detail ↔ User Detail) พร้อม filter/list state เท่าที่ flow รองรับ; jump ข้าม module (jumpToModule/data-module-jump) = context ใหม่ ต้อง reset back stack เหมือน sidebar nav
 - Label ของ sub/เมนู/back button ต้องใช้ canonical label จาก navGroups เดียวกัน — ห้ามใช้ alias (เช่น `"Alert List"` → ต้องเป็น `Watch Alert List`)
-- Module/sub label และ modal title ใช้ English noun phrase (เช่น `Market Overview`, `Category Detail`, `Add Category`, `Reorder Categories`); internal keys ไม่ต้อง rename ตาม display label
-- Breadcrumb format คง `<Section TH> / <Module EN> / [<Sub EN>] [/ <Detail type> / <ID>]`; back button canonical = `กลับไป <destination label>` (ข้อยกเว้นถาวรเดียว: Option Master `Back to Option Groups` เป็น English convention ของ module นั้น)
+- **Language layering (canonical label standard — source of truth อยู่ที่ `../docs/bo-canonical-label-table.md`):**
+  - ชั้นโครง (structure) = English: nav module/sub, page title, modal/drawer title (`<Entity> Detail` / `<Verb> <Entity>` / `Confirm <Verb> <Entity>`), breadcrumb nodes ระดับ module/sub/detail-type, detail head `<ID> : <Display Name>`, status/risk/channel pills และ technical keys (`Option Key`, `Group Key`, `Role ID`, `Event ID` ฯลฯ)
+  - ชั้นเนื้อหา (content) = ไทย: action buttons, field labels ทั่วไป, helper/empty/error copy, filter/search copy — ปุ่มทุกปุ่มต้องใช้ canonical label จากตาราง §2 ใน `bo-canonical-label-table.md` เท่านั้น (เช่น `ยืนยัน` / `ยกเลิก` / `ปิด` / `ดูรายละเอียด` / `แก้ไข` / `เพิ่ม <Entity>` / `สร้าง <Entity>` / `ลบ <Entity>`)
+  - ข้อยกเว้นที่ล็อกถาวร: nav section headers เป็นไทย (`การดำเนินงาน` / `งานตรวจสอบและบริการ` / `เครื่องมือ & รายงาน`), auth screens ใช้ English stylized (`FORGOT PASSWORD`, `ACTIVATE ACCOUNT`, `GO TO LOGIN`), sidebar `Logout`, Option Master `Back to Option Groups`
+  - Label เดิมบนจอที่ล็อกไว้ซึ่งไม่ตรง canonical = normalize candidates เท่านั้น — ห้ามแก้โดยไม่มี explicit approval ของ mission เฉพาะจอ; ถ้า canonical table ขัดกับ contract/label ที่เคย confirm ให้ชี้แจ้งก่อนแก้ทุกครั้ง
+- Breadcrumb format คง `<Section TH> / <Module EN> / [<Sub EN>] [/ <Detail type> / <ID>]`; back button canonical = `กลับไป <destination label>` (ข้อยกเว้นถาวรเดียว: Option Master `Back to Option Groups`); step-back ภายใน modal flow แยกใช้ `ย้อนกลับ` (ไม่ใช่ page back)
 
 ห้ามคลิกแล้วไม่เกิดผลโดยไม่มี disabled state หรือ unavailable explanation ที่ชัดเจน
 
