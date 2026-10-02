@@ -18,6 +18,7 @@ function esc(s) {
   return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 }
 
+const plain = process.argv.includes("--plain"); // summary mode: ไม่มี checkbox
 const raw = fs.readFileSync(input, "utf8").replace(/\r/g, "").split("\n");
 const title = raw.shift().trim();
 
@@ -28,6 +29,8 @@ for (const line of raw) {
   const sec = t.match(/^==\s+(.+)/);
   if (sec) {
     html += `    <div class="sec">${esc(sec[1])}</div>\n`;
+  } else if (plain) {
+    html += `    <li class="pl"><span>${esc(t.replace(/^-\s*/, ""))}</span></li>\n`;
   } else {
     html += `    <li><span class="cb"></span><span>${esc(t)}</span></li>\n`;
   }
@@ -49,6 +52,7 @@ ${html}  </ul>
   .sec { font-weight: 700; font-size: 14px; margin: 14px 0 6px; color: #d8d8d8; }
   ul { list-style: none; margin: 0; padding: 0 0 0 6px; }
   li { display: flex; gap: 10px; align-items: flex-start; font-size: 14px; line-height: 1.55; margin: 3px 0; }
+  li.pl { padding-left: 4px; }
   .cb { flex: none; width: 15px; height: 15px; margin-top: 3px; border-radius: 3px;
         background: #4a6a58; border: 1px solid #6a8a78; position: relative; }
   .cb::after { content: ""; position: absolute; left: 4px; top: 1px; width: 4px; height: 8px;

@@ -1,11 +1,17 @@
-BOA-011 — Sidebar Structure Options (7 checks)
-== ขั้นตอนตรวจทุกรายการ
-รับ findings จาก BOA-010 → ออกแบบตัวเลือก → เทียบ rationale/trade-off/impact → สรุป recommendation
-== Checklist
-01 รวบรวม findings จาก BOA-010 (permission visibility gap, Settings density, ชื่อ Dashboard ซ้ำ, grouping/placement ที่ต้องตัดสิน) → เห็นว่าแก้จุดเดียวไม่พอ ต้องเสนอโครงสร้างใหม่ — PASS
-02 ออกแบบ Option A Conservative — คง 3 กลุ่มเดิม แก้เฉพาะ label Market Overview + permission filter + visual grouping ของ Settings — เสนอเป็นทางเลือก
-03 ออกแบบ Option B Workflow + Data Domains — จัดกลุ่มใหม่ตาม workflow: งานประจำ (Dashboard/User/Asset/Offer/Content) / ข้อมูลและข้อมูลเชิงลึก (Market Data/Market Demand/Option Master) / บริการและกำกับดูแล (Account Deletion/Settings) — เสนอเป็นทางเลือก
-04 ออกแบบ Option C Role-adaptive — IA เดียวกับ B แต่แสดงเฉพาะ module/submenu ที่ role มีสิทธิ์ พร้อม role-scoped Dashboard — เสนอเป็นทางเลือก
-05 เทียบ 3 ตัวเลือกกับ findings → สรุปแนะนำ Option B เพราะแก้ mental model + density + grouping พร้อมกัน — PASS
-06 ผู้ใช้เลือก Option B เป็น recommendation หลัก → กำหนดกฎประกอบ: destination-owned active state (แก้เคส DEL-033 → U-1104) และ permission visibility (none=hidden, limited=เฉพาะ submenu) — PASS
-07 สรุปขั้นต่อไป → quick wins (label Market Overview, นิยาม permission/active-state rule ในเอกสาร), product decisions ที่เหลือ, การแก้จริงต้องแยก Mission และขอ approval — PASS
+BOA-011 — Sidebar Options & Decision Summary
+== Findings ที่นำมาออกแบบ (จาก BOA-010)
+role none/limited แต่ renderNav แสดงทุก entry → permission visibility gap
+Settings มี 6 submenu หลาย domain → scan cost สูง
+Dashboard ซ้ำกับ Market Data > Dashboard → เสี่ยงสับสน
+DEL-033 → U-1104 เปิดถูกแต่ active sidebar ค้างผิดกลุ่ม
+grouping Market Demand/Account Deletion + placement Market Data/Option Master → ต้องตัดสิน
+== ตัวเลือกที่ออกแบบ
+Option A Conservative — คง 3 กลุ่มเดิม แก้เฉพาะ label Market Overview + permission filter + visual grouping ของ Settings
+Option B Workflow + Data Domains — จัดกลุ่มใหม่: งานประจำ / ข้อมูลและข้อมูลเชิงลึก / บริการและกำกับดูแล
+Option C Role-adaptive — IA เดียวกับ B แสดงเฉพาะ module/submenu ที่ role มีสิทธิ์
+== สรุปการตัดสินใจ
+เลือก Option B — เพราะแก้ mental model, density และ grouping พร้อมกัน (ผู้ใช้ยืนยัน)
+กฎประกอบ: destination-owned active state + permission visibility (none=hidden, limited=เฉพาะ submenu)
+== ขั้นต่อไป
+Quick wins: label Market Overview + นิยาม permission/active-state rule ในเอกสาร
+การแก้จริงต้องแยก Mission และขอ approval — งานนี้ recommendation only
