@@ -1,0 +1,58 @@
+BO Prototype Audit — Manual Review Checklist (Objective 1)
+Mission: BO Prototype Consistency, Coverage & Navigation Audit
+Tasks: BOA-001, BOA-002, BOA-003
+ผู้ตรวจ: ผู้ใช้ทำตาม checklist บนหน้าจอจริง (bo-prototype.html) — 28/09/2026
+Viewports: 390, 768, 1280, 1440px
+ผลรวม: ผ่านทุกข้อ ยกเว้น 1 confirmed defect (WAL-1440 wrong destination)
+
+== BOA-001 — Screen/Route/Flow Inventory ==
+ขั้นกดต่อรายการ: เปิดเมนู/submenu → ตรวจ destination, active menu state, breadcrumb, back path → resize ทุก viewport
+01 Login / Auth — เปิดได้ อยู่นอก sidebar โดยตั้งใจ — PASS
+02 Dashboard — list/card/queue/activity render ครบ — PASS
+03 User Management > User List + User Detail — PASS
+04 User Management > Reported Users + Report Detail — PASS
+05 Asset Management > Asset List + Asset Detail — PASS
+06 Asset Management > Reported Assets + Report Detail — PASS
+07 Asset Management > Reported Comments + Comment Report Detail — PASS
+08 Offer Management + Offer Detail — PASS
+09 Content Management > Article List/Detail/Add/Edit — PASS
+10 Content Management > Categories — PASS
+11 Content Management > Reported Board + Board Report Detail — PASS
+12 Market Data — PASS
+13 Option Master (group/option detail + modals) — PASS
+14 Market Demand > Demand Overview — PASS
+15 Market Demand > Search Insights — PASS
+16 Market Demand > Watch Alert List + Alert Detail — PASS
+17 Account Deletion > Request List + Request Detail — PASS
+18 Settings > Policy & Versioning — PASS
+19 Settings > Support Center — PASS
+20 Settings > Delivery Logs — PASS
+21 Settings > Admin Accounts + Admin Detail — PASS
+22 Settings > Roles & Permissions + Role Detail — PASS
+23 Settings > Audit Log + Detail drawer — PASS
+24 My Account (Edit Name / Change Password / Active Sessions) — เข้าจาก profile footer — PASS
+25 Modal/editor/major states ของทุกพื้นที่ — PASS
+เพิ่มเติม: ไม่พบ page-level horizontal overflow ที่ viewport ใด
+
+== BOA-002 — เทียบ prototype กับ Module Map และ Phase scope ==
+ขั้นกดต่อรายการ: เปิด prototype เทียบ README_MODULE_INDEX, BO_MASTER_BASELINE, module spec → จัด Covered / Deferred / Product Decision / Missing
+01 Phase 1 entry หลักทุก module มี entry point ครบ — PASS
+02 Directory / Reports & Analytics / Broadcast / System Templates / Chat moderation ไม่เปิดใน Phase 1 — PASS (Deferred)
+03 Offer write actions ไม่เปิดใน Phase 1 — PASS (Deferred)
+04 ไม่มี future module ถูกเปิดโดยไม่ตั้งใจ — PASS
+05 Market Data scope baseline vs spec/prototype (read-only) — documentation inconsistency → ส่ง BOA-014/015
+06 Admin Settings Phase 1 scope baseline vs spec deferred — documentation inconsistency → ส่ง BOA-014/015
+07 Audit Log export baseline vs spec/prototype Phase 2 — documentation inconsistency → ส่ง BOA-014/015
+
+== BOA-003 — Missing, Dead และ Deferred Entry Points ==
+ขั้นกดต่อรายการ: กด entry point จริง → ยืนยัน destination หรือข้อความ unavailable
+01 Sidebar entries ทุกกลุ่มเปิด destination ตรงเมนู — PASS
+02 Dashboard cards / queues / activity deep links พาไปหน้าถูกต้อง — PASS
+03 Cross-module jumps (delivery log jump, audit ref jump, Asset ID links, deletion request → user detail) — PASS
+04 Local download template (CSV) มีไฟล์จริง — PASS
+05 Frequently Triggered Alerts แถว WAL-1440 ต้องเปิด Alert Detail — FAIL → confirmed defect (พาไป Watch Alert List)
+06 Disabled/unavailable entries มีคำอธิบายหรือถูกซ่อนตาม Phase — PASS
+
+== Boundary ==
+Read-only audit — ไม่แก้ prototype, route, shared CSS/helper, mock data หรือ protected behavior
+Fixture gap บางจุดบันทึกเป็นข้อจำกัด ไม่จัด Missing อัตโนมัติ
