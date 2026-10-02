@@ -1,7 +1,7 @@
-BOA-001 — Screen/Route/Flow Inventory (Manual Review Checklist)
+BOA-001 — Screen/Route/Flow Inventory (25 checks)
 == ขั้นกดต่อรายการ
 เปิดเมนู/submenu → ตรวจ destination, active menu state, breadcrumb, back path → resize ทุก viewport (390, 768, 1280, 1440px)
-== 25 Logical Destinations
+== Checklist
 01 Login / Auth — เปิดได้ อยู่นอก sidebar โดยตั้งใจ — PASS
 02 Dashboard — list/card/queue/activity render ครบ — PASS
 03 User Management > User List + User Detail — PASS
@@ -27,12 +27,3 @@ BOA-001 — Screen/Route/Flow Inventory (Manual Review Checklist)
 23 Settings > Audit Log + Detail drawer — PASS
 24 My Account (Edit Name / Change Password / Active Sessions) — เข้าจาก profile footer — PASS
 25 Modal/editor/major states ของทุกพื้นที่ — PASS
-== ยืนยันเพิ่มเติมจาก work log
-สำรวจหน้าจอ/flow ครบ 12 พื้นที่: Login, Dashboard, User Mgmt, Asset Mgmt, Offer Mgmt, Content Mgmt, Market Data, Option Master, Market Demand, Account Deletion, Settings, My Account — PASS
-Inventory ครอบ list, detail, modal, editor, major state, entry point, destination, breadcrumb, active menu, back path — PASS
-ยืนยัน active parent menu, active submenu และ breadcrumb ของทุก destination ใน sidebar — PASS
-ไม่พบ page-level horizontal overflow ใน 25 destinations ทั้ง 4 viewport — PASS
-แยกจุดที่ไม่มี fixture หรือยังตรวจยืนยันไม่ได้ออกจาก defect ไม่สรุปเกินหลักฐาน — PASS
-== ผลตรวจรับ
-ผู้ใช้ตรวจ Inventory และ Manual Review Checklist แล้วยืนยันว่าถูกต้องทั้งหมด — 28/09/2026
-Read-only audit — ไม่แก้ prototype, shared CSS, route, navigation, helper, mock data หรือ protected behavior
