@@ -1,0 +1,10 @@
+BOA-010 — Sidebar Grouping & Order Assessment (6 checks)
+== ขั้นตอนตรวจทุกรายการ
+เปิด sidebar เทียบ navGroups กับ mental model, frequency, adjacency, permission และ submenu density → กด drill-in จริง
+== Checklist
+01 เปิด sidebar เทียบลำดับกับงานประจำ → Dashboard/User/Asset/Offer/Content อยู่ต้น Operations — intentional — PASS
+02 เทียบ roleMenuAccess กับ renderNav → role none/limited หลายตัวแต่ renderNav สร้างทุก entry/submenu — finding (Medium): permission visibility gap
+03 นับ Settings submenu → 6 รายการรวมหลาย domain scan cost สูง — finding (Low–Medium): density
+04 เทียบชื่อ Dashboard หลักกับ Market Data > Dashboard → ชื่อซ้ำเสี่ยงสับสน — finding (Low): naming → แนะนำ rename เป็น Market Overview
+05 กด Display Name "Archive Collector" ใน Request DEL-033 → เปิด User Detail U-1104 ถูกและ breadcrumb เปลี่ยน แต่ active sidebar ค้าง Account Deletion — confirmed inconsistency (Medium)
+06 ประเมิน grouping Market Demand/Account Deletion และ placement Market Data/Option Master → mental model ต่างกัน — Product decision ส่ง BOA-011
