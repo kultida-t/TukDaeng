@@ -65,7 +65,7 @@ Workflow สำหรับจัด **ชุดหลักฐานส่ง�
 | **1. แก้ไข UI / Prototype (Bug Fix / Refactor)** | **ภาพหน้าจอ Before & After** (คู่ Desktop 1440 + Mobile 390) แคป Before ก่อนแตะโค้ด และ After ณ จุดที่ผู้ใช้ยืนยันคอนเฟิร์มว่าผ่าน | ภาพ Before/After แก้ Filter dropdown clipping, Modal button order, Focus trap |
 | **2. สร้าง UI ใหม่ (New Feature / New Screen)** | **ภาพหน้าจอทุก State สำคัญ** (Empty, Default, Modal, Result, Mobile 390) ครบทุก flow | precedent 10/10: "สร้าง Audit Log List และ Detail Modal" (4 รูป = list+detail × desktop+mobile), "เพิ่ม Search, Filter, Sort และ Date Range" (7 รูป) |
 | **3. Automated Test / QA / Regression** | **ไฟล์ `.spec.js` จริง** + **ผลรันจริงเป็น raw runner output** (`test-results.txt` ดิบจาก Playwright) + **ภาพ Checklist Card PNG** แยกตาม spec | precedent 10/10: "QA, Regression และ Protected Screen" (5 รูป checklist `qa-bo-014a/b/c/d` + raw output `1822 passed / 55 skipped`) |
-| **4. Manual QA / Inspection (ไม่มีโค้ดแก้)** | **Checklist file (.txt)** แสดงทุกเคส/viewport ที่ตรวจ + **ภาพ Checklist Card PNG** สรุปผลการตรวจ + ภาพหน้าจอ findings (ถ้ามี) | precedent 10/10: "BOA-017 Manual QA Checklist" (Checklist Card 18 รายการตรวจครบทุกจอ) |
+| **4. Manual QA / Inspection (ไม่มีโค้ดแก้)** | **Checklist แยกราย task** (file + Checklist Card PNG คู่กัน 1 task = 1 ชุด) แสดงทุกเคส/viewport ที่ตรวจ + ภาพหน้าจอ findings (ถ้ามี) — **ต้องจด/บันทึก checklist ตั้งแต่ตอนตรวจจริง ไม่ reconstruct ทีหลังจาก log** | precedent 10/10: "BOA-017 Manual QA Checklist" (Checklist Card 18 รายการตรวจครบทุกจอ) |
 | **5. เอกสาร / Spec Sync / Baseline Lock** | **ไฟล์ `.md` จริง** ที่แก้ + **Git Commit Hash** ใน note + **ภาพ Checklist Card PNG** สรุปรายการไฟล์และเกณฑ์ | precedent 10/10: "Sync Audit Log Spec" แนบ `08_AUDIT_LOG_MODULE.md` + ภาพ checklist สรุป 5 Acceptance Criteria |
 | **6. Final Acceptance / Mission Closure** | **รายงาน Final Acceptance Review (.txt)** + **ภาพ Checklist Card PNG** สรุป Traceability, Verification Gates และ Verdict PASS | precedent 10/10: "Final Mission Acceptance" (Checklist Card สรุปทุก Gate ผ่าน 100%) |
 
@@ -105,6 +105,7 @@ Workflow สำหรับจัด **ชุดหลักฐานส่ง�
 - **เป้าหมาย test/QA: สร้าง checklist card แยกตาม spec** ด้วย `scripts/render-test-checklist.js`
 - **เป้าหมายเอกสาร/acceptance: สร้าง checklist card สรุป** ด้วย `scripts/render-checklist-card.js`
 - ภาพ checklist card ต้องพอดีตัว card ไม่เหลือพื้นว่างด้านล่าง
+- **เนื้อหา checklist card เอาแค่ title + ขั้นตอนตรวจ + รายการเคสที่ check** — ห้ามใส่ meta/work log/ผลตรวจรับ/ข้อมูลอ้างอิงภายนอกลงใน card (หลักฐานคือผลตรวจจริงเท่านั้น)
 
 ---
 
@@ -114,6 +115,8 @@ Workflow สำหรับจัด **ชุดหลักฐานส่ง�
 - **ทุกไฟล์แนบต้อง trace กลับไปหางานของเป้าหมาย** — Work Artifact (ไฟล์ที่เป้าหมายผลิต เช่น `.spec.js`, raw run output, เอกสารที่แก้) คือตัวพิสูจน์หลัก; Preview Packaging (checklist card, ภาพ render, screenshots) แนบประกอบเพื่อให้เห็นได้ทันทีเท่านั้น — **ห้ามส่งแต่ packaging โดยไม่มี work artifact**
 - **ทุกเป้าหมายต้องมีภาพที่ preview ได้อย่างน้อย 1 รูป** (เป้าหมาย UI ใช้ภาพหน้าจอ, เป้าหมายเอกสาร/test ใช้ Checklist Card)
 - **ภาพหน้าจอ:** แนบทุกรูปที่พิสูจน์พฤติกรรมต่างกันของเป้าหมาย ครบทั้ง desktop และ mobile
+- **แนบเฉพาะหลักฐานงานจริงราย task — ห้ามแนบไฟล์ภาพรวมเป้าหมาย:** summary card ระดับ objective, รายงานรวม, และไฟล์สรุปที่สร้างเพื่อทำหลักฐาน เก็บไว้ใน repo เป็น reference เท่านั้น ไม่ต้องแนบลงฟอร์ม
+- **ห้ามแนบเนื้อหาเดียวกันซ้ำสองรูปแบบ:** ถ้า `.txt` กับ `.png` มีเนื้อเดียวกัน ให้แนบเฉพาะ `.png` ที่ preview ได้ (เก็บ `.txt` เป็น source ใน repo) — ข้อยกเว้นคือเอกสาร/report ที่ `.txt` เป็นตัวงานจริงและ card เป็นแค่ตัวนำหน้า
 
 ### Evidence Reconciliation Gate — บังคับก่อนส่ง
 
@@ -149,6 +152,9 @@ Workflow สำหรับจัด **ชุดหลักฐานส่ง�
    - ชี้ไปยัง **Git Commit ที่แก้/ล็อกไฟล์จริง** เช่น `https://github.com/kultida-t/TukDaeng/commit/<commit-hash>` หรือชี้ตรงไปยังไฟล์เอกสารหลัก เช่น `https://github.com/kultida-t/TukDaeng/blob/prototype/BackOffice/BO_MASTER_BASELINE.md`
 3. **งาน Final Acceptance / Closure (Objective 5):**
    - ชี้ไปยัง **Branch root ของโปรเจกต์** เช่น `https://github.com/kultida-t/TukDaeng/tree/prototype` หรือ Commit ปิดรอบ
+4. **งาน Manual Inspection / Read-only Audit (ไม่มี work artifact commit จริง):**
+   - งานที่ผลลัพธ์คือการตรวจ/audit สิ่งที่มีอยู่แล้วโดยไม่ได้ commit ไฟล์งานจริงของโปรเจกต์ — **ห้ามชี้ commit ที่สร้างไฟล์หลักฐาน** (ขัดกฎ Work Artifact เดิม)
+   - ลำดับเลือก: (1) ชี้ไฟล์ที่ถูกตรวจ เช่น `Prototypes/bo-prototype.html` (2) ชี้เอกสารผลงานจริงใน `docs/` (3) ถ้าไม่มีอะไร trace ได้จริง → **เว้นว่างได้และเปิดเผยในคำอธิบาย** ว่างานเป็น manual inspection — ยอมรับความเสี่ยงคะแนน URL ดีกว่าส่งลิงก์ที่ไม่ใช่งานจริง
 
 ---
 
@@ -167,6 +173,7 @@ Workflow สำหรับจัด **ชุดหลักฐานส่ง�
 - **ระบุ Methodology ชัดเจนเมื่อเวลาทำงานกระชับ (ป้องกันการหักคะแนน Time Reasonableness):**
   - หากใช้เวลา 0.5 - 1.0 ชม. สำหรับงานหลายไฟล์หรือ test suite ขนาดใหญ่ ให้ระบุชัดเจน เช่น:
     *(ตัวอย่าง)*: *"ปรับปรุงและ sync เอกสารสเปก 5 ไฟล์ให้ตรงตาม Contract ฐานเดิม พร้อมรัน automated test suite ตรวจสอบความถูกต้องโดยใช้เครื่องมืออัตโนมัติ ไม่ได้แก้ไขแบบ manual ใหม่ทั้งหมด ทำให้ใช้เวลาได้อย่างมีประสิทธิภาพสูง"*
+- **คำอธิบายสรุปแยกราย task:** เขียนเป็น `Task code: ทำอะไร → ผลอะไร` ทีละบรรทัด เพื่อให้เห็นว่าแต่ละ task ทำจริงตรงเป้าหมาย ไม่เขียนเป็นย่อหน้าภาพรวมเดียว
 - **อ้างตำแหน่งในเอกสารด้วยคำว่า "หมวด"** เช่น `หมวด 10.1` — **ห้ามใช้สัญลักษณ์ `§`**
 - **เครื่องมือจำลอง (Testing Helper):** หากในภาพมีปุ่ม Prototype Scenario Selector ให้ชี้แจงสั้น ๆ ว่าเป็น *"เครื่องมือจำลองสถานะสำหรับการทดสอบ (Prototype Scenario Helper)"* เพื่อไม่ให้ AI มองว่าเป็นโค้ดที่หลุด
 - **หลีกเลี่ยงการทิ้งประเด็น Technical Debt ลอย ๆ:** หากมีประเด็นค้าง ให้ระบุว่าได้รับการบันทึกเป็น Deferred Items ลงแผนงานถัดไปเรียบร้อยแล้ว
@@ -261,8 +268,10 @@ Feature: <ชื่อ Feature> → <Task code>
 ## Checklist ก่อนส่งตรวจ AI Worklog QA Auditor
 
 - [ ] ทุก Task ของเป้าหมายเป็น done แล้วจริง (ตรวจจาก Kanban)
-- [ ] **ช่อง URL ระบุลิงก์ GitHub Commit หรือ Pull Request เรียบร้อยแล้ว (ไม่เป็นค่าว่าง)**
+- [ ] **ช่อง URL ชี้ work artifact จริง (spec/commit/docs)** — ยกเว้นงาน manual inspection/read-only ที่ไม่มี artifact จริง เว้นว่างและเปิดเผยในคำอธิบายแทนการชี้ commit หลักฐาน
 - [ ] แนบไฟล์จริงทีละไฟล์เป็นค่าเริ่มต้น; มีภาพที่ preview ได้อย่างน้อย 1 รูป
+- [ ] ไฟล์แนบมีแต่หลักฐานงานจริงราย task — ไม่มีไฟล์ภาพรวมเป้าหมาย/summary packaging และไม่มีเนื้อหาเดียวกันแนบซ้ำทั้ง .txt และ .png (แนบแค่ .png)
+- [ ] Manual QA: checklist แยกต่อ task (1 task = 1 file + 1 card) บันทึกตั้งแต่ตอนตรวจจริง; card มีแค่ title + ขั้นตอนตรวจ + เคส check ไม่มี meta/work log
 - [ ] **เป้าหมาย UI: ภาพครบทุกขั้นตอน flow และมีคู่ Desktop + Mobile ทุกขั้น**
 - [ ] **Multimodal Visual Inspection: ไม่พบ Typo, ไม่พบ Empty-state Pagination bug, Mobile Spacing สวยงาม, ไม่มี focus ring**
 - [ ] **เป้าหมาย test/เอกสาร: มี Checklist Card สรุปพร้อมผลลัพธ์ผ่านชัดเจน**
