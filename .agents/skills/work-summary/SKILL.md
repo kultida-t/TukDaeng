@@ -91,7 +91,7 @@ Workflow สำหรับจับเวลาและสรุปงาน�
 - กรณีที่ 2: **ต้องปิด task ก่อนสร้าง Final Work Summary** และต้องบันทึก Final Session Note + แสดง Final Work Summary Copy Block จาก Final Summary ชุดเดียวกัน
 - กรณีที่ 3 (handoff): **ห้ามย้าย task เป็น `done`** — task ต้องอยู่ใน `in_progress` เพื่อทำต่อใน session ใหม่
 - Progress/Handoff Summary ไม่ใช่ Final Work Summary และห้ามใช้เวลาที่ยังวิ่งอยู่เป็น Final Actual Time
-- สำหรับ `progress/handoff` และ `report-only` ให้แสดงทั้งสรุปรวมและสรุปราย task ในผลลัพธ์เดียวกัน; `final` ใช้ canonical Final Summary ภายในและแสดง Final Work Summary Copy Block ตาม template เฉพาะ
+- สำหรับ `progress/handoff` และ `report-only` ให้แสดงทั้งสรุปรวมและสรุปราย task ในผลลัพธ์เดียวกัน; `final` ต้องแสดง **สรุปราย task แบบเต็ม (เวลาเริ่ม/เวลาจบ/เวลาทำงาน + หมวดหมู่งาน + สถานะความสมบูรณ์ + เป้าหมาย + ภาพรวม + ไฟล์ที่แก้ไข + รายละเอียดงาน + ส่งต่อ) ก่อน** แล้วตามด้วย Final Work Summary Copy Block — เนื้อหา `เป้าหมาย/ผลลัพธ์ที่คาดหวัง`, `ภาพรวม` และ `รายละเอียดงานที่ทำ` ของทั้งสอง block ต้องเป็นชุดเดียวกัน
 
 ---
 
@@ -106,7 +106,7 @@ Workflow สำหรับจับเวลาและสรุปงาน�
 #### 1. ตรวจสอบ task ที่จะเริ่ม
 - ถ้าผู้ใช้ระบุ task_id ชัดเจน → ใช้ task_id นั้น
 - ถ้าผู้ใช้ระบุแค่ชื่อ/คำค้น → เรียก `get_board` หรือ `get_project_context` เพื่อหา task ที่ตรง
-- ถ้าเป็น task ใหม่ที่ยังไม่มีใน kanban → ถามผู้ใช้ว่าต้องการสร้าง task ใหม่หรือไม่ ถ้าใช่ให้ใช้ `create_task` และ Description ต้องมีบรรทัด `Category: <หมวด> | Planned: <X> ชม. (Category Max <Y> ชม.)` เสมอ (Y = ค่า "ห้ามเกิน" ของหมวดจากตารางเวลามาตรฐาน)
+- ถ้าเป็น task ใหม่ที่ยังไม่มีใน kanban → ถามผู้ใช้ว่าต้องการสร้าง task ใหม่หรือไม่ ถ้าใช่ให้ใช้ `create_task` และ Description ต้องมีบรรทัด `Category: <หมวด> | Planned: <X> ชม. (Category Max <Y> ชม.)` เสมอ (Y = ค่า "ห้ามเกิน" ของหมวดจากตารางเวลามาตรฐาน) โดย `Planned` ต้องเป็นเวลาที่ประเมินตามงานจริง ไม่มี floor ขั้นต่ำ — ประเมินตามหลักเวลาจริงด้านล่าง; ถ้างานเล็กจนแทบไม่ใช้เวลาเลย ควรพิจารณารวมเข้ากับ task ที่เกี่ยวข้องแทนการสร้าง task แยก
 - ถ้า task ที่จะเริ่มไม่มีบรรทัด `Planned` ใน Description → แจ้งผู้ใช้และเสนอเติมผ่าน `update_task` ก่อนเริ่มจับเวลา เพื่อให้เช็ก Time Ratio (เวลาจริงเทียบเป้าหมาย > 1.5 → ติด review) ได้
 - ตรวจว่า task map กับ Mission/Objective ใน approved plan แล้ว — ต้องรู้หมายเลข `mission-<N>-objective-<M>` ก่อนเริ่มจับเวลา เพราะใช้ตั้งชื่อโฟลเดอร์หลักฐาน (`screenshots/`, `deliverables/`); ถ้ายังไม่ map ให้ยืนยัน mapping กับผู้ใช้ก่อน
 
@@ -224,7 +224,8 @@ mcp_call_tool(
 ```
 
 **หลังย้ายแล้ว:**
-- ระบบหยุดจับเวลาและบันทึก `hours_spent` อัตโนมัติ (minimum 0.1h)
+- ระบบหยุดจับเวลาและบันทึก `hours_spent` อัตโนมัติ (system minimum 0.1h) — ใช้ค่านี้เป็นเวลาจริงเลย ไม่มี floor ขั้นต่ำ ห้ามปรับขึ้นเพราะค่า "ดูน้อย"
+- **หลักเวลาจริง (ใช้ทั้งตอนตั้ง Planned และตอนลงเวลา):** เวลาต้องสะท้อนคนทำจริง — งานที่ AI ทำ (เขียนสคริปต์/สแกนไฟล์/เขียนเอกสาร) ให้ประเมินและลงตามเวลา AI ซึ่งมักเร็วกว่าที่คิด; งานที่ต้องใช้คนทำเองแบบ manual (เช่น ผู้ใช้เปิดจอตรวจเองทีละหน้า, review, ตอบ decision rounds) ให้นับเวลาคนที่ใช้จริง — ถ้า task ผสมทั้งสองอย่าง ให้รวมเวลาทั้งคู่เข้าด้วยกัน
 - ห้ามเรียก `log_time` เพราะจะทำให้เวลาถูกบันทึกซ้ำ
 
 #### 4. อ่าน Final Task + Activity Timeline หลังปิด
@@ -275,13 +276,13 @@ mcp_call_tool(
 
 การบันทึก Final Session Note ไม่ใช่การเพิ่มเวลา และห้ามเรียก `log_time`
 
-#### 8. แสดง Final Work Summary Copy Block
+#### 8. แสดงสรุปราย task + Final Work Summary Copy Block
 
-- หลัง `save_session_note` สำเร็จ ต้องแสดง Final Work Summary Copy Block ให้ผู้ใช้ทุกครั้ง
+- หลัง `save_session_note` สำเร็จ ให้แสดง **สรุปราย task แบบเต็มก่อน** (template ราย task โหมด done: เวลาเริ่ม/เวลาจบ/เวลาทำงาน + หมวดหมู่งาน + สถานะความสมบูรณ์ + เป้าหมาย + ภาพรวม + ไฟล์ที่แก้ไข + รายละเอียดงาน + ส่งต่อ) แล้วตามด้วย Final Work Summary Copy Block ให้ผู้ใช้ทุกครั้ง
 - Copy Block ต้องสร้างจาก canonical Final Summary ชุดเดียวกับที่บันทึกใน note
-- ใช้ Human-readable `text` Copy Block เดียวตาม template ในหัวข้อ **Final Work Summary Copy Block** โดยตรวจ Mission Mapping ก่อน แล้วแสดง Objective/Feature เมื่อมี mapping จริง ตามด้วย Task Code + Task Name, Category, Final Actual Time และรายละเอียดงานที่ทำ
+- ใช้ Human-readable `text` Copy Block เดียวตาม template ในหัวข้อ **Final Work Summary Copy Block** โดยตรวจ Mission Mapping ก่อน แล้วแสดง Objective/Feature เมื่อมี mapping จริง ตามด้วย Task Code + Task Name, Category, เวลาเริ่ม/เวลาจบ/Final Actual Time, เป้าหมาย/ผลลัพธ์ที่คาดหวัง, ภาพรวม, ไฟล์ที่แก้ไข และรายละเอียดงานที่ทำ
 - Actual Start, Actual End, status, completion status และ workflow metadata ยังคงอยู่ใน canonical Final Summary / Final Session Note แต่ไม่แสดงใน Work Log Copy Block
-- แจ้งผู้ใช้ว่า task ถูกปิดแล้วและแสดงเวลาในรูปแบบ `X ชม. Y นาที (D.D ชม.)`
+- แจ้งผู้ใช้ว่า task ถูกปิดแล้วและแสดงเวลาในรูปแบบ `D.D ชม.` (ทศนิยม 1 ตำแหน่ง)
 
 #### 9. ปิดท้ายด้วย Session Handoff + Prompt งานถัดไป หรือข้อเสนอแนะงานต่อไป (บังคับทุกครั้งหลัง Copy Block)
 
@@ -530,18 +531,16 @@ mcp_call_tool(
 - สำหรับ task `in_progress` ให้แสดง:
   - `เริ่ม: <start_time>`
   - `ปัจจุบัน: <now>` (ระบุว่า "ยังจับเวลาอยู่")
-  - `เวลาที่ผ่านไป: <X> ชม. <Y> นาที` (คำนวณจาก start_time ถึง now)
+  - `เวลาที่ผ่านไป: <D.D> ชม.` (คำนวณจาก start_time ถึง now)
 - สำหรับ task `done` ให้แสดง:
   - `เริ่ม: <start_time>`
   - `จบ: <end_time>`
-  - `เวลาทำงาน: <X> ชม. <Y> นาที` (ใช้ค่า `hours_spent` จากระบบ ไม่คำนวณเอง)
+  - `เวลาทำงาน: <D.D> ชม.` (ใช้ค่า `hours_spent` จากระบบ ไม่คำนวณเอง)
 
 **รูปแบบเวลา (Time Format):**
-- แสดงเวลาทำงานในรูปแบบ `X ชม. Y นาที (D.D ชม.)` — ทั้งรูปแบบชั่วโมง-นาที และคำนวณเป็นชั่วโมงทศนิยมในวงเล็บ (เช่น `1 ชม. 37 นาที (1.6 ชม.)`, `0 ชม. 39 นาที (0.7 ชม.)`)
-- ส่วนแรก `X ชม. Y นาที` แปลงจากทศนิยม: ส่วนจำนวนเต็ม = ชั่วโมง, ส่วนทศนิยม × 60 = นาที
-- ส่วนในวงเล็บ `(D.D ชม.)` คือคำนวณเป็นชั่วโมงทศนิยม 1 ตำแหน่ง: `(X × 60 + Y) ÷ 60` ปัดเป็น 1 ตำแหน่งทศนิยม (เช่น 60 นาที = 1.0 ชม., 30 นาที = 0.5 ชม., 39 นาที = 0.7 ชม., 6 นาที = 0.1 ชม., 97 นาที = 1.6 ชม.)
-- ใช้รูปแบบนี้ทุกที่ที่แสดงเวลา: ราย task, รวมทั้งหมด, copy block
-- **ยกเว้น:** ใน `hours_spent` ที่ส่งกลับจาก kanban ยังคงเป็นทศนิยม (เช่น `1.62`) — แปลงเป็น `X ชม. Y นาที (D.D ชม.)` เฉพาะตอนแสดงผลให้ผู้ใช้
+- แสดงเวลาทำงานในรูปแบบ `D.D ชม.` — ชั่วโมงทศนิยม 1 ตำแหน่งเท่านั้น (เช่น `1.6 ชม.`, `0.7 ชม.`, `0.3 ชม.`, `4.0 ชม.`)
+- ปัดเป็นทศนิยม 1 ตำแหน่งจาก `hours_spent` ดิบ (เช่น 0.62 → 0.6 ชม., 0.15 → 0.2 ชม., 1.65 → 1.7 ชม.)
+- **ยกเว้น:** ใน `hours_spent` ที่ส่งกลับจาก kanban ยังคงเป็นทศนิยมดิบ (เช่น `1.62`) — ปัดเป็น `D.D ชม.` เฉพาะตอนแสดงผลให้ผู้ใช้
 
 **ถ้าไม่พบ start_time จาก Activity timeline:**
 - `final`: หยุดสร้าง Final Work Summary และดึง Final Task + Activity Timeline ใหม่ ห้ามใช้ `hours_spent` แทน Actual Start
@@ -764,7 +763,7 @@ mcp_call_tool(
 
 ## รูปแบบผลลัพธ์ (ทั้งสรุปรวม + ราย task)
 
-รูปแบบสรุปรวมและสรุปราย task ในหัวข้อนี้ใช้กับ `progress/handoff` และ `report-only`; สำหรับ Final Task Completion ให้ใช้ **Final Work Summary Copy Block** ตาม template เฉพาะด้านล่าง โดย canonical Final Summary / Final Session Note ยังคงรายละเอียดเต็ม
+รูปแบบสรุปรวมและสรุปราย task ในหัวข้อนี้ใช้กับ `progress/handoff`, `report-only` **และ `final`** — สำหรับ Final Task Completion ให้แสดง **สรุปราย task แบบเต็มก่อน** (ใช้ template ราย task โหมด done: เวลาเริ่ม/เวลาจบ/เวลาทำงาน + หมวดหมู่งาน + สถานะความสมบูรณ์ + เป้าหมาย + ภาพรวม + ไฟล์ที่แก้ไข + รายละเอียดงาน + ส่งต่อ) แล้วตามด้วย **Final Work Summary Copy Block** ตาม template เฉพาะด้านล่าง โดย canonical Final Summary / Final Session Note ยังคงรายละเอียดเต็ม และเนื้อหา `เป้าหมาย/ผลลัพธ์ที่คาดหวัง`, `ภาพรวม` และ `รายละเอียดงานที่ทำ` ของทั้งสอง block ต้องเป็นชุดเดียวกัน
 
 ผลลัพธ์ของ `progress/handoff` และ `report-only` ต้องมี 2 ส่วนในผลลัพธ์เดียวกัน:
 
@@ -818,7 +817,7 @@ mcp_call_tool(
 
 เวลาเริ่ม <DD/MM/YYYY HH:MM>
 เวลาจบ <DD/MM/YYYY HH:MM>
-เวลาทำงาน <X> ชม. <Y> นาที (<D.D> ชม.)
+เวลาทำงาน <D.D> ชม.
 
 หมวดหมู่งาน <Category1>
 
@@ -854,7 +853,7 @@ mcp_call_tool(
 
 เวลาเริ่ม <DD/MM/YYYY HH:MM>
 ปัจจุบัน <DD/MM/YYYY HH:MM> (ยังจับเวลาอยู่)
-เวลาที่ผ่านไป <X> ชม. <Y> นาที (<D.D> ชม.)
+เวลาที่ผ่านไป <D.D> ชม.
 
 หมวดหมู่งาน <Category1>
 
@@ -906,7 +905,21 @@ Task: <TASK-CODE> <Task Name>
 
 หมวดหมู่งาน: <Category>
 
+เวลาเริ่ม: <DD/MM/YYYY HH:MM>
+เวลาจบ: <DD/MM/YYYY HH:MM>
 เวลาทำงาน: <Final Actual Time>
+
+เป้าหมาย/ผลลัพธ์ที่คาดหวัง
+
+<1 บรรทัด — task นี้ทำเพื่ออะไร ผลลัพธ์สุดท้ายที่ได้คืออะไร>
+
+ภาพรวม
+
+<สรุปงาน 1-2 บรรทัด>
+
+ไฟล์ที่แก้ไข
+
+- <พาธไฟล์> — <สรุปการเปลี่ยนแปลงสั้น ๆ>
 
 รายละเอียดงานที่ทำ
 
@@ -914,6 +927,9 @@ Task: <TASK-CODE> <Task Name>
 - <งานสำคัญที่ทำจริง>
 - <งานสำคัญที่ทำจริง>
 ```
+
+> section `ไฟล์ที่แก้ไข` แสดงเฉพาะเมื่อ task แก้ไฟล์งานหลักใน project จริง หรือสร้างไฟล์ใหม่ที่ใช้จริง — ไม่นับไฟล์หลักฐานประกอบ (screenshot, checklist, test output) หรือไฟล์ชั่วคราว/ทดลองที่ไม่ได้ใช้ต่อ; ถ้าไม่มีให้ข้าม section นี้ทั้งหมด
+> section `เป้าหมาย/ผลลัพธ์ที่คาดหวัง` และ `ภาพรวม` ต้องมีทุกครั้ง และเนื้อหาต้องตรงกับสรุปราย task block ของ task เดียวกัน
 
 **Case B — Task ไม่มี Mission Mapping:**
 
@@ -924,7 +940,21 @@ Task: <TASK-CODE> <Task Name>
 
 หมวดหมู่งาน: <Category>
 
+เวลาเริ่ม: <DD/MM/YYYY HH:MM>
+เวลาจบ: <DD/MM/YYYY HH:MM>
 เวลาทำงาน: <Final Actual Time>
+
+เป้าหมาย/ผลลัพธ์ที่คาดหวัง
+
+<1 บรรทัด — task นี้ทำเพื่ออะไร ผลลัพธ์สุดท้ายที่ได้คืออะไร>
+
+ภาพรวม
+
+<สรุปงาน 1-2 บรรทัด>
+
+ไฟล์ที่แก้ไข
+
+- <พาธไฟล์> — <สรุปการเปลี่ยนแปลงสั้น ๆ>
 
 รายละเอียดงานที่ทำ
 
@@ -946,7 +976,21 @@ Task: <TASK-CODE> <Task Name>
 
 หมวดหมู่งาน: <Category หลัก>
 
+เวลาเริ่ม: <DD/MM/YYYY HH:MM>
+เวลาจบ: <DD/MM/YYYY HH:MM>
 เวลาทำงาน: <Final Actual Time> (แผน <Planned> ชม. — เกินเพราะ <เหตุผลสั้น ๆ>)
+
+เป้าหมาย/ผลลัพธ์ที่คาดหวัง
+
+<1 บรรทัด — task นี้ทำเพื่ออะไร ผลลัพธ์สุดท้ายที่ได้คืออะไร>
+
+ภาพรวม
+
+<สรุปงาน 1-2 บรรทัด ระบุด้วยว่าใช้เวลาเกินแผนเพราะอะไร>
+
+ไฟล์ที่แก้ไข
+
+- <พาธไฟล์> — <สรุปการเปลี่ยนแปลงสั้น ๆ>
 
 รายละเอียดงานที่ทำ
 
@@ -976,8 +1020,8 @@ Task: <TASK-CODE> <Task Name>
 - หากสาระจาก Files Changed, Decisions, Problems/Resolutions, Scope Changes หรือ Verification สำคัญต่อความเข้าใจงาน ให้รวมไว้ในรายการ `รายละเอียดงานที่ทำ` โดยไม่สร้าง metadata section แยก
 - กรณี task เกินเกณฑ์หมวด ให้ใช้ **Case C**: คงกฎวิเคราะห์/ชี้แจง over-budget เดิมใน canonical summary และแสดง `รายละเอียดงานที่ทำ` แบบแยกสัดส่วน `<TASK-CODE>a/b/c [<Category ย่อย>] (ประมาณ X ชม.)` ตามด้วย sub-bullet — สัดส่วนและหมวดย่อยต้องตรงกับ canonical summary / สรุปราย task ห้ามย่อเป็นรายการแบนรายการเดียวจนสัดส่วนเวลาหาย; ส่วนบรรทัดเวลาทำงานให้ระบุ `(แผน X ชม. — เกินเพราะ <เหตุผล>)` ไว้กำกับ
 - ใช้ business-facing Task Code; ห้ามแสดง Full/Partial Kanban UUID, internal Task ID หรือ Database ID
-- Final Work Summary Copy Block แสดงเฉพาะ Objective/Feature เมื่อมี mapping จริง, Task Code + Task Name, Category, Final Actual Time และรายละเอียดงานที่ทำ
-- ไม่แสดงเวลาเริ่ม, เวลาจบ, Time Source, Raw Timer Metadata, status, completion status, Goal/Expected Result, Overview, Files Changed, Decisions, Problems/Resolutions, Scope Changes, Pending/Follow-up, Next Step หรือ Internal Workflow Notes เป็น section แยก
+- Final Work Summary Copy Block แสดงเฉพาะ Objective/Feature เมื่อมี mapping จริง, Task Code + Task Name, Category, เวลาเริ่ม, เวลาจบ, Final Actual Time, เป้าหมาย/ผลลัพธ์ที่คาดหวัง, ภาพรวม, ไฟล์ที่แก้ไข (เฉพาะไฟล์งานหลักที่แก้จริงหรือไฟล์ใหม่ที่ใช้จริง — แสดงเมื่อมีเท่านั้น) และรายละเอียดงานที่ทำ — เนื้อหา `เป้าหมาย/ผลลัพธ์ที่คาดหวัง`, `ภาพรวม` และ `รายละเอียดงานที่ทำ` ต้องตรงกับสรุปราย task block ของ task เดียวกัน
+- ไม่แสดง Time Source, Raw Timer Metadata, status, สถานะความสมบูรณ์, Decisions, Problems/Resolutions, Scope Changes, Pending/Follow-up, Next Step หรือ Internal Workflow Notes เป็น section แยก
 - Final Actual Time ต้องใช้ Final `hours_spent` หลัง task เป็น `done` และ auto-stop/auto-bank แล้วเท่านั้น ห้ามใช้ provisional elapsed time และห้ามเรียก `log_time`
 - เนื้อหาสำคัญทั้งหมดต้องอยู่ใน Copy Block เดียว; ข้อความนอก Block มีได้เพียงคำอธิบายสั้น ๆ และห้ามแยกส่วนของ Summary ออกไปไว้ภายนอก
 - กฎการลดข้อมูลนี้ใช้เฉพาะ Work Log Copy Block; canonical Final Summary / Final Session Note ต้องเก็บรายละเอียดเต็มตามเดิม
@@ -990,7 +1034,7 @@ Task ID: <task_id>
 สถานะ: in_progress (ยังจับเวลาอยู่)
 เวลาเริ่ม: <DD/MM/YYYY HH:MM>
 ปัจจุบัน: <DD/MM/YYYY HH:MM>
-เวลาที่ผ่านไป: <X> ชม. <Y> นาที (<D.D> ชม.)
+เวลาที่ผ่านไป: <D.D> ชม.
 หมวดหมู่งาน: <Category1>
 สถานะความสมบูรณ์: <ครบตามแผน | ครบแต่มี open items | ทำบางส่วน (จะทำต่อ session ใหม่)>
 
@@ -1020,7 +1064,7 @@ Task ID: <task_id>
 สถานะ: in_progress (ยังจับเวลาอยู่)
 เวลาเริ่ม: <DD/MM/YYYY HH:MM>
 ปัจจุบัน: <DD/MM/YYYY HH:MM>
-เวลาที่ผ่านไป: <X> ชม. <Y> นาที (<D.D> ชม.)
+เวลาที่ผ่านไป: <D.D> ชม.
 หมวดหมู่งาน: <Category หลัก>
 สถานะความสมบูรณ์: <ครบตามแผน | ครบแต่มี open items | ทำบางส่วน (จะทำต่อ session ใหม่)>
 
@@ -1051,11 +1095,14 @@ Task ID: <task_id>
 > - เวลาทำงานใน copy block ใช้ค่าจริงจากระบบ (`hours_spent`) ไม่บวก/ลด/ปรับเอง
 > - สำหรับ Final Task Completion ต้องใช้ **Final Work Summary Copy Block** หลังปิด task และบันทึก Final Session Note เท่านั้น โดยแสดงเฉพาะฟิลด์ตาม template ใหม่; Decisions, ปัญหา/การแก้ไข, ค้าง/ติดตาม, Next Step และ metadata อื่นคงอยู่ใน canonical Final Summary / Final Session Note
 > - Final Session Note กับ Final Work Summary Copy Block ต้องมาจาก canonical Final Summary ชุดเดียวกัน
-> - เมื่อแสดง "สรุปราย task" block พร้อมกับ Final Work Summary Copy Block ในผลลัพธ์เดียวกัน เนื้อหา "รายละเอียดงานที่ทำ" ของทั้งสอง block ต้องเป็น bullet ชุดเดียวกัน — ต่างกันได้เฉพาะ header/metadata ตาม template ของแต่ละโหมด ห้ามเขียนเนื้อหางานคนละชุด; สำหรับ task เกินเกณฑ์หมวด โครงแยกสัดส่วน `<TASK-CODE>a/b/c [<Category>] (ประมาณ X ชม.)` ต้องเหมือนกันทั้งสอง block (Final Copy Block ใช้ Case C)
+> - เมื่อแสดง "สรุปราย task" block พร้อมกับ Final Work Summary Copy Block ในผลลัพธ์เดียวกัน เนื้อหา "เป้าหมาย/ผลลัพธ์ที่คาดหวัง", "ภาพรวม" และ "รายละเอียดงานที่ทำ" ของทั้งสอง block ต้องเป็นชุดเดียวกัน — ต่างกันได้เฉพาะ header/metadata ตาม template ของแต่ละโหมด ห้ามเขียนเนื้อหางานคนละชุด; สำหรับ task เกินเกณฑ์หมวด โครงแยกสัดส่วน `<TASK-CODE>a/b/c [<Category>] (ประมาณ X ชม.)` ต้องเหมือนกันทั้งสอง block (Final Copy Block ใช้ Case C)
 
 ### กฎการเขียนสรุป
 
 1. **ใช้ภาษาที่คนทั่วไปอ่านเข้าใจง่าย** — เน้นภาพรวม หลีกเลี่ยงคำศัพท์เทคนิคและโค้ด ใช้ภาษาที่อธิบายผลลัพธ์ที่ผู้ใช้เห็น/ได้ ไม่ใช่ภาษาที่อธิบายวิธีทำในระดับโค้ด — แต่ domain term ที่ใช้ประจำใน project และเป็นภาษาที่ dev ไทยพูดกันปกติ (เช่น contract, session, audit, sidebar, flow, module, requirement, task) **คงภาษาอังกฤษไว้** ห้ามแปลตรงเป็นคำที่อ่านยากกว่า เช่น ห้ามเขียน "สัญญา" แทน "contract" — กฎข้อนี้หมายถึงห้ามใช้ code symbol ไม่ใช่บังคับแปลศัพท์ทุกคำ
+   - **คำศัพท์ต้องตรงกับที่ใช้ตอนทำงานและพูดคุยกันจริง** — ห้ามเปลี่ยนคำเรียกตอนสรุป เช่น ตอนทำงานทั้ง session เรียก "label" ก็ต้องเขียน "label" ในสรุป ห้ามสลับเป็น "ป้าย" เพราะคนอ่านจะงงว่าพูดถึงอะไร; ใช้คำเดียวกันกับที่ผู้ใช้และเอกสารเรียกตลอดงานนั้น
+   - **ทุกข้อความต้องชี้ชัดว่าพูดถึงส่วนไหน** — ระบุหน้า/จอ/ไฟล์/ส่วนของระบบให้คนอ่านนึกภาพตามได้ทันที (เช่น "หน้า User List", "modal ยืนยันลบ", "ไฟล์มาตรฐาน label") ห้ามเขียนกว้างจนจับต้องไม่ได้
+   - ใช้ภาษาคนทำงานพูดคุยกันปกติ ไม่ใช่ภาษาทางการ/ภาษาเอกสารราชการ
 2. **เน้นสิ่งที่ทำและผลลัพธ์** — ไม่ต้องอธิบายวิธีทำละเอียด
 3. **ห้ามใช้ชื่อฟังก์ชัน ชื่อ class CSS ชื่อตัวแปร ชื่อ event ชื่อ method หรือโค้ดในสรุป** — เช่น ห้ามเขียน `closeRowMenus()`, `shouldFixRowMenu()`, `visibility:hidden`, `position:fixed`, `requestAnimationFrame`, `capture phase`, `toggle event`, `#table overflow-x: auto` ให้แปลงเป็นภาษาที่อธิบายผลลัพธ์แทน เช่น "ปิดเมนูที่เปิดอยู่", "วางเมนูตายตัวตามหน้าจอ", "ซ่อนเมนูชั่วคราวจนวางตำแหน่งเสร็จ" — ถ้าจำเป็นต้องอ้างถึงส่วนประกอบของระบบ ใช้คำทั่วไป เช่น "ตารางที่เลื่อนได้" แทน "#table overflow-x: auto", "ปุ่ม ..." แทน "row-menu summary", "เมนู ..." แทน "row-menu-list"
 4. **ภาพรวมแต่ละ task ควรยาว 50-250 ตัวอักษร** — สรุปในระดับ "ทำอะไรกับระบบอะไร"
@@ -1063,16 +1110,16 @@ Task ID: <task_id>
 6. **ถ้ามีหลายงานที่เกี่ยวเนื่องกัน** สามารถรวมเป็น bullet เดียวโดยใช้ `;` คั่นภายในบรรทัดเดียวกันได้
 7. **ส่วน "สรุปราย task" ต้องหุ้มด้วย code block** (` ``` `) — เพื่อให้ผู้ใช้ copy ไปวางที่อื่นได้โดย bullet list (`-`) ไม่หาย ส่วน "สรุปรวม" แสดงเป็น markdown ปกติได้
 8. **ทุก Human-readable Copy Block ใช้ plain text** — ไม่ใช้ `**bold**`, `*italic*`, Markdown heading หรือ syntax อื่นที่ UI อาจ render ก่อน Copy; Final Work Summary Copy Block ต้องใช้ `text` code block ตาม template เฉพาะ
-9. **Progress/Report-only task block ต้องแสดง "เวลาเริ่ม" + "เวลาจบ/ปัจจุบัน" + "เวลาทำงาน/เวลาที่ผ่านไป"** เป็นบรรทัดเด่น โดยใช้ Activity timeline และ `hours_spent` ตามสถานะ; **ยกเว้น Final Work Summary Copy Block** ซึ่งแสดงเฉพาะ Final Actual Time และเก็บ Actual Start/End ไว้ใน canonical Final Summary / Final Session Note
+9. **ทุก task block ต้องแสดง "เวลาเริ่ม" + "เวลาจบ/ปัจจุบัน" + "เวลาทำงาน/เวลาที่ผ่านไป"** เป็นบรรทัดเด่น โดยใช้ Activity timeline และ `hours_spent` ตามสถานะ — รวมถึง Final Work Summary Copy Block ที่ต้องแสดง "เวลาเริ่ม" + "เวลาจบ" + "เวลาทำงาน" จากค่า Final หลังปิด task ด้วย
 10. **task ที่ยัง `in_progress`** ให้ระบุ "ปัจจุบัน: <now>" แทน "เวลาจบ" และใช้ "เวลาที่ผ่านไป" แทน "เวลาทำงาน" พร้อมระบุ "(ยังจับเวลาอยู่)" เพื่อให้ผู้ใช้ทราบว่าชั่วโมงอาจยังไม่รวมเวลาที่กำลังจับอยู่
-11. **รูปแบบเวลา: `X ชม. Y นาที (D.D ชม.)`** — แสดงทั้งรูปแบบชั่วโมง-นาที และคำนวณเป็นชั่วโมงทศนิยมในวงเล็บ (เช่น `1 ชม. 37 นาที (1.6 ชม.)`, `0 ชม. 39 นาที (0.7 ชม.)`) ทุกที่ที่แสดงเวลา (ราย task, รวม, copy block) ส่วนทศนิยมคำนวณจาก `(X × 60 + Y) ÷ 60` ปัดเป็น 1 ตำแหน่งทศนิยม ยกเว้น `hours_spent` ดิบจาก kanban ที่ยังเป็นทศนิยม — แปลงเฉพาะตอนแสดงผล
-12. **ห้ามบวก/ลด/ปรับชั่วโมงเอง** — ใช้ค่า `hours_spent` จากระบบเป็นค่าจริง ห้ามเรียก `log_time`; ถ้าค่าผิดปกติให้รายงานและแยก correction workflow ออกจากการปิด task
+11. **รูปแบบเวลา: `D.D ชม.` (ทศนิยม 1 ตำแหน่งเท่านั้น)** — เช่น `1.6 ชม.`, `0.7 ชม.` ทุกที่ที่แสดงเวลา (ราย task, รวม, copy block) ยกเว้น `hours_spent` ดิบจาก kanban ที่ยังเป็นทศนิยม — ปัดเป็น `D.D ชม.` เฉพาะตอนแสดงผล
+12. **ห้ามบวก/ลด/ปรับชั่วโมงเอง — ไม่มี floor ขั้นต่ำ** — ใช้ค่า `hours_spent` จากระบบเป็นค่าจริง ห้ามเรียก `log_time`; ถ้าค่าต่ำแปลว่างานทำเร็วจริง ใช้ค่านั้นเลย ห้ามปรับขึ้นเพื่อให้ "ดูสมเหตุ"; ถ้าค่าผิดปกติให้รายงานและแยก correction workflow ออกจากการปิด task
 13. **ทุก task block ต้องแสดง "หมวดหมู่งาน"** — เลือกจากรายการ 9 หมวดในหัวข้อ "หมวดหมู่งาน" เพียง **1 หมวด** ต่อ 1 task ห้ามระบุหลายหมวดคั่นด้วย `,`
 14. **"งานที่ทำเพิ่มนอกแผน" รวมไว้ใน bullet list "รายละเอียดงานที่ทำ" ไม่ต้องแยก subsection** — ถ้ามีงานที่ทำเพิ่มระหว่างทำ task แต่ไม่ได้อยู่ในแผน/task description เดิม ให้เขียนเป็น bullet ใน subsection "รายละเอียดงานที่ทำ" เลย ไม่ต้องสร้าง subsection "งานที่ทำเพิ่มนอกแผน" แยกต่างหาก จุดประสงค์คือให้สรุปได้ครบว่าชั่วโมงของ task นั้นถูกใช้ทำอะไรบ้าง ทั้งที่วางแผนไว้และที่ตามมาจากการแก้กระทบ แต่ละ bullet ของงานนอกแผนรวมเหตุและทางแก้ในบรรทัดเดียว ใช้ `→` คั่นระหว่างเหตุและทางแก้ เช่น `- อัปเดท cross-reference 4 ไฟล์ (เพราะ grep เจอ reference ค้าง) → เปลี่ยนชี้ไป Asset Management`
 15. **เขียน bullet กระชับ ตรงประเด็น อ่านเข้าใจง่าย** — แต่ละ bullet ต้องสรุปในสิ่งที่ทำจริง ไม่ใส่รายชื่อไฟล์/endpoint/field ที่เป็นรายละเอียดย่อย เพราะจะทำให้ log ดูรก ให้เขียนเป็นภาพรวมที่ทำงานจริง เช่น แทน `- อัปเดท cross-reference ใน 13 ไฟล์ (README_MODULE_INDEX, BO_MASTER_BASELINE, ...)` ให้เขียน `- อัปเดท cross-reference ในเอกสาร BO และ PRD 13 ไฟล์` จุดประสงค์คือให้คนอ่านย้อนหลังหรือคนตรวจงานอ่านแล้วเข้าใจทันทีว่าทำอะไร โดยไม่ต้องฝักฝ่ายรายละเอียดเทคนิค — รายชื่อไฟล์ที่ถูกแก้ให้แสดงใน subsection "ไฟล์ที่แก้ไข" แทน
 16. **อนุญาตให้ใส่ตัวเลขปริมาณใน bullet ได้** — แม้ห้ามใส่รายชื่อไฟล์ใน bullet รายละเอียดงาน แต่ใส่ตัวเลขปริมาณระดับภาพรวมได้ เช่น "แก้ 3 หน้าจอ", "เพิ่ม 4 API", "อัปเดทเอกสาร 13 ไฟล์", "แก้บั๊ก 5 จุด" เพื่อให้ AI/คนตรวจประเมินสัดส่วนเวลา vs ปริมาณงานได้ ตัวเลขนี้เป็นปริมาณรวม ไม่ใช่การระบุชื่อไฟล์ทีละตัว
 17. **Progress/Report-only task block ต้องมีบรรทัด "สถานะความสมบูรณ์"** — task `done` เลือก `ครบตามแผน` / `ครบแต่มี open items`; task `in_progress` ใช้ `ทำบางส่วน (จะทำต่อ session ใหม่)` เมื่อยังทำไม่เสร็จ ค่า `ครบแต่มี open items` หมายถึง **งานใน task นี้จบแล้ว** แต่มีงานใหม่ที่จะ **ส่งต่อเป็น task ใหม่** ไม่ใช่งานเดิมที่ยังไม่จบ; Final Work Summary Copy Block ไม่แสดงฟิลด์นี้
-18. **Progress/Report-only task block ต้องมีบรรทัด "เป้าหมาย/ผลลัพธ์ที่คาดหวัง"** — 1 บรรทัด บอกว่า task นี้ตอบโจทย์อะไร หรือผลลัพธ์สุดท้ายที่ได้คืออะไร (เน้น "ทำเพื่ออะไร" ไม่ใช่ "ทำอะไร"); Final Work Summary Copy Block ไม่แสดง section นี้แยก แต่รวมสาระสำคัญไว้ใน `รายละเอียดงานที่ทำ` เมื่อจำเป็น
+18. **ทุก task block ต้องมี section "เป้าหมาย/ผลลัพธ์ที่คาดหวัง"** — 1 บรรทัด บอกว่า task นี้ตอบโจทย์อะไร หรือผลลัพธ์สุดท้ายที่ได้คืออะไร (เน้น "ทำเพื่ออะไร" ไม่ใช่ "ทำอะไร") — รวมถึง Final Work Summary Copy Block ด้วย โดยเนื้อหาต้องตรงกับสรุปราย task block ของ task เดียวกัน
 19. **subsection ของตกค้างแสดงเฉพาะเมื่อมี open items** — ชื่อ subsection ขึ้นกับสถานะ task:
     - task `in_progress` → ใช้ชื่อ "ค้าง/ติดตาม" (งานใน task นี้ยังไม่จบ จะทำต่อ)
     - task `done` + สถานะความสมบูรณ์ `ครบแต่มี open items` → ใช้ชื่อ "ส่งต่อ" (งานใน task นี้จบแล้ว แต่มีของที่จะเป็น task ใหม่)
@@ -1080,7 +1127,7 @@ Task ID: <task_id>
 
     การแยกชื่อทำให้ AI/คนตรวจเข้าใจชัด: "ค้าง/ติดตาม" = task ยังไม่จบ, "ส่งต่อ" = task จบแล้วแต่มีงานใหม่ตามมา ไม่ใช่ของ task เดิม ถ้าไม่มี open items ไม่ต้องแสดง subsection นี้
 
-20. **subsection "ไฟล์ที่แก้ไข" เป็น optional สำหรับ Progress/Report-only Summary** — แสดงเฉพาะเมื่อ task มีการแก้ไฟล์จริง; Final Work Summary Copy Block ไม่สร้าง Files Changed section แยก แต่รวมสาระสำคัญไว้ใน `รายละเอียดงานที่ทำ` เมื่อเกี่ยวข้อง
+20. **subsection "ไฟล์ที่แก้ไข" แสดงเฉพาะเมื่อ task แก้ไฟล์งานหลักใน project จริง หรือสร้างไฟล์ใหม่ที่ใช้จริง** — ใช้ทั้งใน Progress/Report-only Summary และ Final Work Summary Copy Block; นับเฉพาะไฟล์งานจริง (เอกสาร spec, โค้ด, prototype, ไฟล์มาตรฐาน) ไม่นับไฟล์หลักฐานประกอบ (screenshot, checklist, test output) หรือไฟล์ชั่วคราว/ทดลองที่ไม่ได้ใช้ต่อ
 
 21. **bullet ที่เล่าปัญหา/decision/gap ต้องระบุเนื้อหา ห้ามเล่าแค่กระบวนการ** — ถ้างานมีการพบปัญหา แจ้งผู้ใช้ หรือตัดสินใจอะไร bullet ต้องบอก "ปัญหาคืออะไร + ตัดสินใจ/แก้อย่างไร" ในตัวเอง ห้ามเขียนแค่ขั้นตอน เช่น ห้าม `- พบ gap 3 จุด → รายงานผู้ใช้เพื่อตัดสินใจ` (คนอ่านไม่รู้ว่า gap คืออะไร ต้องถามกลับ) ให้เขียน `- พบ gap: ระบบไม่บังคับเลือกเหตุผลก่อนยืนยัน (dropdown เติมตัวแรกให้เสมอ) → เพิ่มตัวเลือกว่าง + บังคับเลือกก่อนยืนยัน` — หลัก: แต่ละ bullet ต้องตอบ "เจออะไร/ทำอะไร/ตัดสินใจอะไร" ได้ในตัวเอง ถ้า bullet มีแต่กระบวนการ (เช่น "รายงานผู้ใช้แล้ว", "ตรวจสอบแล้ว") ให้เติมเนื้อหาสาระลงไปเสมอ
 
@@ -1156,7 +1203,7 @@ kanban-tukdaeng MCP **มีตัวจับเวลาอัตโนมั�
 ### วิธีทำงาน
 
 1. **เมื่อย้าย task เข้า `in_progress`** → เริ่มจับเวลาอัตโนมัติ
-2. **เมื่อย้าย task ออกจาก `in_progress`** → บันทึกเวลาที่ใช้ไปเข้า `hours_spent` อัตโนมัติ (minimum 0.1h)
+2. **เมื่อย้าย task ออกจาก `in_progress`** → บันทึกเวลาที่ใช้ไปเข้า `hours_spent` อัตโนมัติ (system minimum 0.1h — ใช้ค่าจริงที่ระบบ bank เลย ไม่มี floor ขั้นต่ำ)
 3. **เมื่อย้าย task เข้า `done`** → auto-timer หยุดและ bank Final Actual Time; อ่าน `hours_spent` หลังปิดเท่านั้น
 4. **ห้ามเรียก `log_time`** → ป้องกันการบันทึกเวลาซ้ำจาก auto-timer
 
@@ -1206,13 +1253,13 @@ mcp_call_tool(
 **ภาพรวม:**
 > วันนี้พัฒนาระบบจัดการโครงสร้างองค์กร (Organization Management) ทั้งด้านหลังบ้านและ API พร้อมทดสอบจริง
 
-**ชั่วโมงทำงานรวม:** 4 ชม. 0 นาที (4.0 ชม.)
+**ชั่วโมงทำงานรวม:** 4.0 ชม.
 
 **รายการ task ที่นำมารวม:**
 - เพิ่ม API จัดการแผนก/ตำแหน่ง (hours_spent: 2.5 — done)
 - แก้บั๊กอัปเดตข้อมูลตำแหน่ง (hours_spent: 1.0 — in_progress)
 - ทดสอบ endpoints ใหม่ (hours_spent: 0.5 — done)
-- รวม: 4 ชม. 0 นาที (4.0 ชม.)
+- รวม: 4.0 ชม.
 ```
 
 ---
@@ -1224,7 +1271,7 @@ mcp_call_tool(
 
 เวลาเริ่ม 14/08/2026 09:00
 เวลาจบ 14/08/2026 11:30
-เวลาทำงาน 2 ชม. 30 นาที (2.5 ชม.)
+เวลาทำงาน 2.5 ชม.
 
 หมวดหมู่งาน Feature
 
@@ -1257,7 +1304,7 @@ mcp_call_tool(
 
 เวลาเริ่ม 14/08/2026 13:00
 ปัจจุบัน 14/08/2026 14:00 (ยังจับเวลาอยู่)
-เวลาที่ผ่านไป 1 ชม. 0 นาที (1.0 ชม.)
+เวลาที่ผ่านไป 1.0 ชม.
 
 หมวดหมู่งาน Bug Fix
 
@@ -1285,7 +1332,7 @@ mcp_call_tool(
 
 เวลาเริ่ม 14/08/2026 14:30
 เวลาจบ 14/08/2026 15:00
-เวลาทำงาน 0 ชม. 30 นาที (0.5 ชม.)
+เวลาทำงาน 0.5 ชม.
 
 หมวดหมู่งาน Testing
 
@@ -1316,7 +1363,23 @@ Task: TK-101 เพิ่ม API จัดการแผนก/ตำแหน�
 
 หมวดหมู่งาน: Feature
 
-เวลาทำงาน: 2 ชม. 30 นาที (2.5 ชม.)
+เวลาเริ่ม: 14/08/2026 09:00
+เวลาจบ: 14/08/2026 11:30
+เวลาทำงาน: 2.5 ชม.
+
+เป้าหมาย/ผลลัพธ์ที่คาดหวัง
+
+ให้ผู้ดูแลระบบจัดการข้อมูลแผนก/ตำแหน่งได้จากหน้าเดียว พร้อมรองรับการจัดลำดับใหม่
+
+ภาพรวม
+
+พัฒนา API สำหรับจัดการข้อมูลแผนกและตำแหน่งในระบบตั้งค่า รองรับการดึงข้อมูลและจัดลำดับใหม่
+
+ไฟล์ที่แก้ไข
+
+- src/api/department-endpoints.ts — เพิ่ม endpoint ดึงข้อมูลแผนก/ตำแหน่งและบันทึกลำดับใหม่
+- src/api/position-endpoints.ts — เพิ่มข้อมูลลำดับในผลลัพธ์
+- src/seed/organization-seed.json — เพิ่มข้อมูลลำดับในทุก record
 
 รายละเอียดงานที่ทำ
 
@@ -1331,11 +1394,25 @@ Task: TK-101 เพิ่ม API จัดการแผนก/ตำแหน�
 ตัวอย่าง Final Work Summary Copy Block แบบ over-budget (Case C — แยกสัดส่วนตามหมวดย่อย):
 
 ```text
+เป้าหมาย 2: Admin Self-Service
+
+Feature: My Account
+
 Task: AIL-020 My Account page + entry + edit Name
 
 หมวดหมู่งาน: Feature
 
-เวลาทำงาน: 4 ชม. 17 นาที (4.3 ชม.) (แผน 2.0 ชม. — เกินเพราะปรับหน้าจอตามผลรีวิวรับรองหลายรอบ)
+เวลาเริ่ม: 20/08/2026 09:00
+เวลาจบ: 20/08/2026 13:20
+เวลาทำงาน: 4.3 ชม. (แผน 2.0 ชม. — เกินเพราะปรับหน้าจอตามผลรีวิวรับรองหลายรอบ)
+
+เป้าหมาย/ผลลัพธ์ที่คาดหวัง
+
+ให้แอดมินดูข้อมูลบัญชีตัวเองและแก้ไขชื่อได้จากหน้า My Account
+
+ภาพรวม
+
+สร้างหน้า My Account ครบ flow แสดงและแก้ชื่อ พร้อมปรับหน้าจอตามผลรีวิว UI/UX หลายรอบจนผ่านเกณฑ์รับรอง
 
 รายละเอียดงานที่ทำ
 
@@ -1361,7 +1438,7 @@ Task ID: TK-102
 สถานะ: in_progress (ยังจับเวลาอยู่)
 เวลาเริ่ม: 14/08/2026 13:00
 ปัจจุบัน: 14/08/2026 14:00
-เวลาที่ผ่านไป: 1 ชม. 0 นาที (1.0 ชม.)
+เวลาที่ผ่านไป: 1.0 ชม.
 หมวดหมู่งาน: Bug Fix
 สถานะความสมบูรณ์: ทำบางส่วน (จะทำต่อ session ใหม่)
 
@@ -1402,20 +1479,21 @@ Task ID: TK-102
 - [ ] สำหรับ task ที่แก้ไฟล์ ได้รับคำยืนยันว่าผู้ใช้ยอมรับผลลัพธ์และอนุญาตให้ปิดแล้ว
 - [ ] ย้าย task เข้า `done` ผ่าน `move_task` ก่อนสร้าง Final Work Summary (ระบบ auto-stop timer และ bank เวลาจริง)
 - [ ] เรียก `get_task` หลังปิด เพื่ออ่าน Final Status + Activity Timeline + Actual Start + Actual End + Final `hours_spent`
+- [ ] **ไม่มี floor correction** — ใช้ Final `hours_spent` จากระบบตามจริง แม้จะต่ำกว่า 0.3 ชม. ก็ใช้ค่านั้น ห้ามปรับขึ้นเอง
 - [ ] สร้าง canonical Final Summary จากข้อมูลหลังปิด โดยมี Final Result, Work Completed, Decisions, Verification/Test Result, Actual Start/End, Final Actual Time, Issues/Fixes, Scope Changes, Open Items และ Next Step
 - [ ] รวม Task Evidence Bundle: checklist ผลตรวจรายเคส (ถ้ามี) + ภาพ Before/After / test list + raw output / ไฟล์+commit ที่แก้ — ตั้งชื่อไฟล์ trace ถึง task code และระบุ path ใน Final Session Note (หลักฐานขาด → บันทึก evidence gap ห้ามสร้างย้อนหลัง)
 - [ ] เรียก `save_session_note` ด้วย Final Summary ชุดเดียวกันเพื่อเก็บ Persistent Task History
 - [ ] ก่อนสร้าง Final Work Summary Copy Block ตรวจ Mission Mapping ที่บันทึกไว้จริง: ถ้ามีให้แสดง Objective → Feature → Task; ถ้าไม่มีให้เริ่มจาก Task และห้ามสร้าง Objective/Feature ขึ้นมาเอง
 - [ ] ตรวจว่า Objective/Feature labels ใน Copy Block เป็น verbatim จาก approved mission baseline (`get_mission` → Objectives) ไม่ใช่ paraphrase หรือ label จาก task description ล้วน ๆ; ถ้า task description เขียนไม่ตรงให้ใช้ชื่อจาก mission แล้วแจ้งผู้ใช้เสนอแก้ description
-- [ ] แสดง **Final Work Summary Copy Block** จาก Final Summary ชุดเดียวกันทุกครั้ง เป็น Human-readable `text` Copy Block เดียว: Objective/Feature เมื่อมี mapping จริง → Task → Category → Final Actual Time → รายละเอียดงานที่ทำ
+- [ ] แสดง **สรุปราย task แบบเต็มก่อน** (เวลาเริ่ม/เวลาจบ/เวลาทำงาน + หมวดหมู่งาน + สถานะความสมบูรณ์ + เป้าหมาย + ภาพรวม + ไฟล์ที่แก้ไข + รายละเอียดงาน + ส่งต่อ) แล้วตามด้วย **Final Work Summary Copy Block** จาก Final Summary ชุดเดียวกันทุกครั้ง เป็น Human-readable `text` Copy Block เดียว: Objective/Feature เมื่อมี mapping จริง → Task → Category → เวลาเริ่ม/เวลาจบ/Final Actual Time → เป้าหมาย/ผลลัพธ์ที่คาดหวัง → ภาพรวม → ไฟล์ที่แก้ไข (เฉพาะไฟล์งานจริง แสดงเมื่อมี) → รายละเอียดงานที่ทำ — เนื้อหา `เป้าหมาย/ผลลัพธ์ที่คาดหวัง`, `ภาพรวม` และ `รายละเอียดงานที่ทำ` ของทั้งสอง block ต้องเป็นชุดเดียวกัน
 - [ ] ตรวจว่า Final Work Summary Copy Block ใช้ business-facing Task Code และไม่มี Kanban UUID/internal ID
-- [ ] ตรวจว่า Final Work Summary Copy Block ไม่มีเวลาเริ่ม/จบ, status, Goal, Overview, Files Changed, Decisions, Problems, Scope Changes, Pending/Follow-up, Next Step หรือ workflow metadata เป็น section แยก
+- [ ] ตรวจว่า Final Work Summary Copy Block ไม่มีเวลาเริ่ม/จบ, status, Goal, Overview, Decisions, Problems, Scope Changes, Pending/Follow-up, Next Step หรือ workflow metadata เป็น section แยก (ยกเว้น section ไฟล์ที่แก้ไข ซึ่งแสดงเมื่อมีไฟล์งานหลักที่แก้จริงหรือไฟล์ใหม่ที่ใช้จริง)
 - [ ] ตรวจว่ารายการใน Final Work Summary Copy Block ใช้ literal `- ` และไม่มี `*` หรือ rendered bullet `•`
 - [ ] ตรวจว่า Final Work Summary Copy Block ทั้งหมดอยู่ใน `text` code block เดียว ใช้รายการ `รายละเอียดงานที่ทำ` ต่อเนื่อง และไม่ได้แยก Verification/workstream เป็น section โดยไม่จำเป็น (ยกเว้น Case C over-budget ที่ต้องแยกกลุ่ม `<TASK-CODE>a/b/c [<Category>] (ประมาณ X ชม.)` ตามสัดส่วนเวลา)
 - [ ] ตรวจว่า Final Actual Time มาจาก Final `hours_spent` หลัง task เป็น `done` และไม่แสดง Planned Time ใน Task Work Log
 - [ ] ตรวจว่า canonical Final Summary / Final Session Note ยังคง Actual Start/End และรายละเอียดเต็มทั้งหมด แม้ Copy Block จะย่อ presentation
 - [ ] เช็ค dead time ใน banked `hours_spent` — เฉพาะงานประเภท run (run tests/regression) ที่ผลลัพธ์เสร็จแล้วแต่ timer เดินต่อตอนผู้ใช้ไม่ได้อยู่หน้าจอ → แจ้งผู้ใช้พร้อมเสนอเวลางานจริง ถ้ายืนยันให้ correct ด้วย `update_task` (SET `hours_spent`) เป็น correction workflow แยกหลังปิด; เวลารอผู้ใช้รีวิวหน้าจอ/prototype = เวลาทำงานจริง นับต่อเนื่อง ห้ามตัด
-- [ ] แจ้งผู้ใช้ว่า "ปิด task <ชื่อ> แล้ว ใช้เวลา <X ชม. Y นาที (D.D ชม.)>"
+- [ ] แจ้งผู้ใช้ว่า "ปิด task <ชื่อ> แล้ว ใช้เวลา <D.D ชม.>"
 - [ ] หลัง Copy Block: ถ้ามีงานรอทำต่อ → บันทึก session note (สถานะรวม + state + decisions/gotchas + Next Step) และสร้าง prompt งานถัดไปเป็น copy block ให้ผู้ใช้; ถ้าไม่มีงานต่อ → เสนอแนวทางงานต่อไปให้ผู้ใช้ตัดสินใจ (เช่น mission ใหม่, outstanding work, mission closure) โดยไม่สร้าง mission/task เอง
 - [ ] ⚠️ **ห้ามบวก/ลด/ปรับชั่วโมงเอง** — ใช้ค่า hours_spent จากระบบเป็นค่าจริง
 - [ ] ⚠️ **ห้ามเรียก `log_time`** ก่อนหรือหลังปิด task
@@ -1460,16 +1538,16 @@ Task ID: TK-102
 - [ ] **จัดการ task ที่เกินเวลาเป้าหมาย** — วิเคราะห์และเก็บรายละเอียดงานตามแผน/งานที่ทำเพิ่มพร้อมหมวดของแต่ละส่วนใน canonical summary; Progress/Report-only แสดงบล็อกชี้แจงได้ ส่วน Final Task Completion ต้องรวมสาระสำคัญไว้ใน Human-readable Copy Block เดียว ใช้ค่า `hours_spent` จริง และห้ามแยกเป็นหลาย log เพื่อหลีกเลี่ยง flag
 - [ ] รวมข้อมูลวันนี้ + session context ปัจจุบัน
 - [ ] สรุปเป็นภาษาง่าย ๆ (ห้ามใช้ชื่อฟังก์ชัน ชื่อ class CSS ชื่อตัวแปร ชื่อ event หรือโค้ด — ใช้คำทั่วไปที่อธิบายผลลัพธ์แทน)
-- [ ] **แสดงสรุปรวม** — ภาพรวม + totalHours (รูปแบบ `X ชม. Y นาที (D.D ชม.)`) + รายการ task ที่นำมารวม (markdown ปกติ)
+- [ ] **แสดงสรุปรวม** — ภาพรวม + totalHours (รูปแบบ `D.D ชม.` ทศนิยม 1 ตำแหน่ง) + รายการ task ที่นำมารวม (markdown ปกติ)
 - [ ] **แสดง Progress/Report-only สรุปราย task** — หุ้มด้วย code block (` ``` `) และมีสถานะ + เวลาเริ่ม/จบหรือปัจจุบัน + เวลาทำงาน/เวลาที่ผ่านไป + หมวดหมู่ + สถานะความสมบูรณ์ + เป้าหมาย + ภาพรวม + ไฟล์ที่แก้ไข + รายละเอียดงาน + ค้าง/ส่งต่อ ตามความเกี่ยวข้อง
 - [ ] **แสดง copy block ราย task ตามโหมด** — Progress/Report-only ใช้ template ราย task เดิม; Final Task Completion ใช้ Human-readable `text` Copy Block เดียว เลือก Case A/Case B ตาม Mission Mapping จริง หรือ Case C เมื่อ `hours_spent` เกินเกณฑ์หมวด (แสดง `รายละเอียดงานที่ทำ` แยกสัดส่วน `<TASK-CODE>a/b/c [<Category ย่อย>] (ประมาณ X ชม.)` ให้เห็นชัด) และแสดงเฉพาะฟิลด์ที่กำหนด
-- [ ] **Progress/Report-only task block ต้องมีเวลาเริ่ม + เวลาจบ/ปัจจุบัน + เวลาทำงาน/เวลาที่ผ่านไป**; Final Work Summary Copy Block แสดง Final Actual Time อย่างเดียว และเก็บ Actual Start/End ใน canonical history
-- [ ] **รูปแบบเวลา: `X ชม. Y นาที (D.D ชม.)`** — แสดงทั้งชั่วโมง-นาที และคำนวณเป็นชั่วโมงทศนิยมในวงเล็บ แปลงทุกที่ที่แสดงเวลา (ราย task, รวม, copy block) ส่วนทศนิยมคำนวณจาก `(X × 60 + Y) ÷ 60` ปัดเป็น 1 ตำแหน่งทศนิยม
+- [ ] **ทุก task block ต้องมีเวลาเริ่ม + เวลาจบ/ปัจจุบัน + เวลาทำงาน/เวลาที่ผ่านไป** — รวมถึง Final Work Summary Copy Block ที่แสดง เวลาเริ่ม + เวลาจบ + Final Actual Time จากค่าหลังปิด task
+- [ ] **รูปแบบเวลา: `D.D ชม.` (ทศนิยม 1 ตำแหน่งเท่านั้น)** — ปัด `hours_spent` ดิบเป็นทศนิยม 1 ตำแหน่งทุกที่ที่แสดงเวลา (ราย task, รวม, copy block) ห้ามใช้รูปแบบ `X ชม. Y นาที` หรือทศนิยม 2 ตำแหน่ง
 - [ ] **ห้ามบวก/ลด/ปรับชั่วโมงเอง** — ใช้ค่า `hours_spent` จากระบบ ห้ามเรียก `log_time`; ถ้าผิดปกติให้รายงานและแยก correction workflow
 - [ ] **ทุก task block ต้องมีบรรทัด "หมวดหมู่งาน"** — เลือกจากรายการ 9 หมวด เพียง **1 หมวด** ต่อ 1 task ห้ามระบุหลายหมวดคั่นด้วย `,`
 - [ ] **Progress/Report-only task block ต้องมีบรรทัด "สถานะความสมบูรณ์"**; Final Work Summary Copy Block ไม่แสดงฟิลด์นี้
-- [ ] **Progress/Report-only task block ต้องมีบรรทัด "เป้าหมาย/ผลลัพธ์ที่คาดหวัง"**; Final Work Summary Copy Block ไม่แสดง section นี้แยก
-- [ ] **ถ้า Progress/Report-only task มีการแก้ไฟล์จริง** → แสดง subsection "ไฟล์ที่แก้ไข"; Final Work Summary Copy Block รวมสาระไว้ใน `รายละเอียดงานที่ทำ` โดยไม่สร้าง Files Changed section
+- [ ] **ทุก task block ต้องมี section "เป้าหมาย/ผลลัพธ์ที่คาดหวัง"** — รวมถึง Final Work Summary Copy Block โดยเนื้อหาต้องตรงกับสรุปราย task block ของ task เดียวกัน
+- [ ] **ถ้า task แก้ไฟล์งานหลักจริงหรือสร้างไฟล์ใหม่ที่ใช้จริง** → แสดง subsection "ไฟล์ที่แก้ไข" ทั้งใน Progress/Report-only และ Final Work Summary Copy Block (ไม่นับไฟล์หลักฐานประกอบหรือไฟล์ชั่วคราว)
 - [ ] **ถ้ามีงานเพิ่มนอกแผน** → รวมเป็น bullet ใน subsection "รายละเอียดงานที่ทำ" ไม่ต้องแยก subsection แต่ละ bullet รวมเหตุและทางแก้ในบรรทัดเดียว ใช้ `→` คั่น ถ้าไม่มี ข้ามได้
 - [ ] **ถ้ามี open items** → task `in_progress` ใช้ subsection "ค้าง/ติดตาม"; task `done` ใช้ "ส่งต่อ" สำหรับงานใหม่ที่ไม่ทำให้ Acceptance Criteria ของ task เดิมไม่ครบ; ถ้าไม่มีให้ข้าม subsection นี้
 - [ ] **bullet ใน "รายละเอียดงานที่ทำ" อนุญาตให้ใส่ตัวเลขปริมาณได้** (เช่น "แก้ 3 หน้าจอ", "เพิ่ม 4 API") แต่ห้ามใส่รายชื่อไฟล์ทีละตัว — รายชื่อไฟล์ให้แสดงใน subsection "ไฟล์ที่แก้ไข" แทน
