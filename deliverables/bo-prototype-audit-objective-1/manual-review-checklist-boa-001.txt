@@ -1,5 +1,5 @@
 BOA-001 — Screen/Route/Flow Inventory (25 checks)
-== ขั้นกดต่อรายการ
+== ขั้นตอนตรวจทุกรายการ
 เปิดเมนู/submenu → ตรวจ destination, active menu state, breadcrumb, back path → resize ทุก viewport (390, 768, 1280, 1440px)
 == Checklist
 01 Login / Auth — เปิดได้ อยู่นอก sidebar โดยตั้งใจ — PASS

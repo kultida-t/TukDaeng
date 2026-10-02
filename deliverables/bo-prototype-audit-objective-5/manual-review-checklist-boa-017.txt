@@ -1,5 +1,5 @@
 BOA-017 — Manual QA Checklist (7 checks)
-== ขั้นกดต่อรายการ
+== ขั้นตอนตรวจทุกรายการ
 ตรวจ checklist เคสต่อเคสที่สร้างจาก Findings Register 27 รายการ + Remediation Roadmap + ผล BOA-016 → ทำตามบนหน้าจอจริงทุก viewport
 == Checklist
 01 Confirmed evidence — findings ยืนยันแล้วจาก BOA-001–016 ไม่บังคับ retest — PASS

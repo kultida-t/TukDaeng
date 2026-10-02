@@ -1,5 +1,5 @@
 BOA-009 — Screen States & Responsive (10 checks)
-== ขั้นกดต่อรายการ
+== ขั้นตอนตรวจทุกรายการ
 ใช้ Prototype scenario/fixture ที่มีอยู่ ตรวจ text overlap, button overflow, modal height, table scroll, header/action collision → ทุก viewport
 == Checklist
 01 QA-01 Loading state — PASS

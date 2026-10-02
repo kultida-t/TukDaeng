@@ -1,5 +1,5 @@
 BOA-004 — Page Header, Breadcrumb & Back Navigation (6 checks)
-== ขั้นกดต่อรายการ
+== ขั้นตอนตรวจทุกรายการ
 เปิด list → detail → editor/history → modal/drawer → กด back → ตรวจทุก viewport (390, 768, 1280, 1440px)
 == Checklist
 01 List pages ทุก module — title, breadcrumb, active nav ถูก — PASS

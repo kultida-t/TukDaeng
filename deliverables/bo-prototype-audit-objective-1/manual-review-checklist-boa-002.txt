@@ -1,5 +1,5 @@
 BOA-002 — Prototype vs Module Map & Phase Scope (7 checks)
-== ขั้นกดต่อรายการ
+== ขั้นตอนตรวจทุกรายการ
 เปิด prototype เทียบ README_MODULE_INDEX, BO_MASTER_BASELINE และ module spec → จัด Covered / Intentionally Deferred / Product Decision / Missing
 == Checklist
 01 Phase 1 entry หลักทุก module มี entry point ครบตาม baseline — PASS

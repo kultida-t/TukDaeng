@@ -1,5 +1,5 @@
 BOA-018 — Protected Impact & Final Acceptance (7 checks)
-== ขั้นกดต่อรายการ
+== ขั้นตอนตรวจทุกรายการ
 ตรวจ git status/diff, artifact scope, finding traceability และ acceptance checklist
 == Checklist
 01 Read-only boundary — git status/diff สะอาด ไม่มี file/prototype mutation — PASS

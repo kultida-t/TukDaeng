@@ -1,5 +1,5 @@
 BOA-005 — Button Hierarchy (8 checks)
-== ขั้นกดต่อรายการ
+== ขั้นตอนตรวจทุกรายการ
 ตรวจ label, icon, tone, size, placement, disabled/hidden และ keyboard focus ของปุ่มตัวแทนทุก pattern → ทุก viewport
 == Checklist
 01 Primary action tone/placement — PASS

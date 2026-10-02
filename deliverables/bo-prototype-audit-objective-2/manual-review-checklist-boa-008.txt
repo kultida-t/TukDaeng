@@ -1,5 +1,5 @@
 BOA-008 — Modal, Form, Confirmation & Result State (7 checks)
-== ขั้นกดต่อรายการ
+== ขั้นตอนตรวจทุกรายการ
 เปิด/ปิดด้วยปุ่ม, backdrop, ESC → ตรวจ focus, scroll, validation, target/impact/reason, confirm/cancel, result → ทุก viewport
 == Checklist
 01 เปิด/ปิด modal ตัวแทนทุกประเภท (short form, confirmation, destructive, preview, drawer, result) — PASS

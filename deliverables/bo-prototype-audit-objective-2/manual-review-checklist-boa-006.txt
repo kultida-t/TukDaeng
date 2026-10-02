@@ -1,5 +1,5 @@
 BOA-006 — Search, Filter, Sort, Reset & Pagination (8 checks)
-== ขั้นกดต่อรายการ
+== ขั้นตอนตรวจทุกรายการ
 ใช้ข้อมูล fixture จริงของแต่ละ list ทดสอบทุก function → ตรวจ empty result → ทุก viewport
 == Checklist
 01 Search — PASS

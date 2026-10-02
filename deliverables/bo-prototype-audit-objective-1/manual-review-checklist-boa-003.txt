@@ -1,5 +1,5 @@
 BOA-003 — Missing, Dead & Deferred Entry Points (6 checks)
-== ขั้นกดต่อรายการ
+== ขั้นตอนตรวจทุกรายการ
 กด entry point จริง → ยืนยัน destination หรือข้อความ unavailable → ตรวจทุก viewport
 == Checklist
 01 Sidebar entries ทุกกลุ่มเปิด destination ตรงเมนู — PASS
