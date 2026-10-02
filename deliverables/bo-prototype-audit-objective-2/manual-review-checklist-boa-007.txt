@@ -1,0 +1,9 @@
+BOA-007 — Table, Mobile Card, Badge & Chip (5 checks)
+== ขั้นกดต่อรายการ
+ตรวจ row/card ตัวแทนทุก module รวม text ยาวและหลาย tags → ทุก viewport (390, 768, 1280, 1440px)
+== Checklist
+01 Desktop table column/action parity — PASS
+02 Mobile card conversion ≤760px — PASS
+03 Meta truncation / ellipsis — PASS
+04 Badge / chip semantics — PASS
+05 Row action / card action parity — PASS

@@ -1,0 +1,14 @@
+BOA-009 — Screen States & Responsive (10 checks)
+== ขั้นกดต่อรายการ
+ใช้ Prototype scenario/fixture ที่มีอยู่ ตรวจ text overlap, button overflow, modal height, table scroll, header/action collision → ทุก viewport
+== Checklist
+01 QA-01 Loading state — PASS
+02 QA-02 Empty no data — PASS
+03 QA-03 Empty after filter (render) — PASS
+04 QA-04 Partial error — PASS
+05 QA-05 Full error — PASS
+06 QA-06 Unauthorized — PASS
+07 QA-07 Stale data / blocked action — PASS
+08 QA-08 Empty-after-filter copy ข้ามหน้ารายการ — confirmed inconsistency (Low): canonical title `ไม่พบข้อมูล` + subtitle ตามบริบท + คง Reset/Clear filters
+09 QA-09 Responsive layout (modal height / table scroll) — PASS
+10 QA-10 Header/action collision — PASS

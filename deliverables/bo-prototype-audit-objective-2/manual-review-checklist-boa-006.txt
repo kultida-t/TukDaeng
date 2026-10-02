@@ -1,0 +1,12 @@
+BOA-006 — Search, Filter, Sort, Reset & Pagination (8 checks)
+== ขั้นกดต่อรายการ
+ใช้ข้อมูล fixture จริงของแต่ละ list ทดสอบทุก function → ตรวจ empty result → ทุก viewport
+== Checklist
+01 Search — PASS
+02 Filter selects — PASS
+03 Filter dropdown เมื่อผลลัพธ์เหลือ 1 รายการ — FAIL: dropdown ถูก panel/table clip → confirmed cross-module defect (เห็นซ้ำ Asset List, User List และทุกเมนู)
+04 Sort — PASS
+05 Reset — PASS
+06 Pagination + page-1 reset เมื่อเปลี่ยนเงื่อนไข — PASS
+07 Filter persistence detail → back — PASS
+08 Empty result copy + reset เข้าถึงได้ — PASS

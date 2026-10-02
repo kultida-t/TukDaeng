@@ -1,0 +1,11 @@
+BOA-008 — Modal, Form, Confirmation & Result State (7 checks)
+== ขั้นกดต่อรายการ
+เปิด/ปิดด้วยปุ่ม, backdrop, ESC → ตรวจ focus, scroll, validation, target/impact/reason, confirm/cancel, result → ทุก viewport
+== Checklist
+01 เปิด/ปิด modal ตัวแทนทุกประเภท (short form, confirmation, destructive, preview, drawer, result) — PASS
+02 Categories modal title ภาษาไทย — confirmed inconsistency: title ต้องเป็น English, copy ภายในคงเดิม
+03 Modal footer order บาง flow เป็น Confirm → Cancel — confirmed gap: canonical คือ Cancel → Confirm
+04 Read-only preview/detail/drawer ปิดด้วย backdrop/ESC ไม่ครบ — confirmed policy gap
+05 Keyboard focus — confirmed defect (Medium): ไม่มี initial visible focus, ไม่มี focus trap, ไม่ restore focus กลับ opener
+06 Validation / blocked / result states — PASS
+07 Destructive safeguard / type-to-confirm — PASS (intentional)
