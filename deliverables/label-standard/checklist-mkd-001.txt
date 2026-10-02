@@ -1,0 +1,34 @@
+Mission 2 — Objective 1: Market Data Label Audit (MKD-001)
+== ข้อมูลการตรวจสอบ
+Task Code: MKD-001
+Task Name: ตรวจสอบ Label ของ Market Data เทียบ Canonical Table และจัดทำรายการ Deviation
+หมวดหมู่งาน: Documentation
+Planned: 0.30 ชม. (Category Max 0.5 ชม.)
+สถานะไฟล์เป้าหมาย: Read-only Audit (ไฟล์ Prototypes/bo-prototype.html ไม่ถูกแก้ไข 100%)
+
+== ขั้นตอนการตรวจ
+1. ดึง Kanban context และย้าย task MKD-001 เข้า in_progress เพื่อเริ่มจับเวลา
+2. อ่านและอ้างอิง docs/bo-canonical-label-table.md และ inventory.json
+3. สแกน user-facing labels ทุกตำแหน่งของโมดูล Market Data (3 หน้าหลัก, 3 หน้าย่อย, 2 โมดอล) ใน Prototypes/bo-prototype.html (บรรทัด ~36290–38000 และ ~39285–39328)
+4. เปรียบเทียบกับ Canonical Table (§2 Action labels และ §3 Structure labels) และวิเคราะห์ Deviation
+5. จัดทำรายงาน Audit Report บันทึกรายการ Deviation ครบถ้วน พร้อมแนวทางส่งต่อ MKD-002
+
+== ผลการตรวจสอบ (Verification Results)
+- จำนวนตำแหน่งที่ตรวจใน Market Data: 81 รายการ (ปุ่ม 21, titles 20, link 1, inputs 14, aria/a11y 8, labels/counts 5, js-labels 12)
+- รายการ Deviation ที่พบและต้อง Normalize: 21 จุดบนจอจริง (+ 2 จุดใน placeholder/template link)
+  1. ปุ่มใน Market Sync Modal: 7 จุด (Cancel -> ยกเลิก, Start Sync -> เริ่ม Sync, Syncing... -> กำลัง Sync..., Close -> ปิด (2 จุด), View Sync History -> ดู Sync History, Retry Failed Datasets -> ลองใหม่เฉพาะชุดที่ล้มเหลว) [D1 & D12]
+  2. Row Actions ในตาราง: 3 จุด (View -> ดูรายละเอียด 2 จุด, Detail -> ดูรายละเอียด 1 จุด) [D2]
+  3. Action Buttons & Template Links: ปุ่ม Audit trail -> ดู Audit Trail [D3] (หมายเหตุ: Download CSV Template อยู่ในโค้ดส่วน Import ที่ไม่มีปุ่มเปิดบนจอจริงใน Phase 1)
+  4. Page Back Button & Row aria-labels: 4 จุด (renderPageBackButton aria-label="Back" -> mirror visible destination, aria-label บนปุ่มแถว 3 จุด) [D11 & Rule 4]
+  5. Search Placeholders: 2 จุด (Search ... -> ค้นหา ...)
+  6. Empty States: 5 จุด (เสนอตาม Contract D กลาง: "ไม่พบข้อมูล" 4 ตาราง + "ยังไม่มีประวัติ Audit สำหรับรายการนี้" 1 จุด)
+- รายการที่สอดคล้องตามมาตรฐานแล้ว (PASS):
+  - Nav Module & Subs: Market Data, Market Overview, Brands & Models, Sync History (Structure EN)
+  - Breadcrumbs & Page Titles: โครงสร้าง EN ครบถ้วน
+  - Status Pills: Completed, Failed, Running, Ready, Syncing, etc. (Structure EN tokens)
+  - Modal Titles: Sync Market Data, Audit Trail (Structure EN)
+  - Close Icon Button: aria-label="ปิด" ครบทุกจุด
+  - Overview Active Sync Banner: ภาษาไทยครบถ้วน
+  - Filter Toggle & Reset: เปิดตัวกรอง / ปิดตัวกรอง, รีเซ็ตค่าทั้งหมด
+- ไฟล์ Deliverable: deliverables/label-standard/market-data-label-audit-report.md
+- การปฏิบัติตามกฎ Protected Screens: PASS — ไม่มีการแก้ไขโค้ดใน bo-prototype.html (read-only audit 100%)

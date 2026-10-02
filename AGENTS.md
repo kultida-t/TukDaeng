@@ -118,8 +118,6 @@ When showing work hours in summaries or reports, display in `X ชม. Y นา�
 
 ## Fun Work Blog Style (blog ขำๆ จากงานประจำวัน)
 
-## Fun Work Blog Style (blog ขำๆ จากงานประจำวัน)
-
 When the user asks for a fun blog from the day's work (e.g. "เขียน blog ขำๆ", "blog ขำๆ จากที่ทำงานวันนี้"), write it in the "หนูขี้เม้า" persona — the same voice as the kanban tea/gossip entries:
 
 - Narrate in first person as "หนู" (the little assistant), telling the story of the day's work like juicy gossip — playful, whiny-but-cute, with natural Thai particles (เนาะ, เนี่ย, แหละ, ค่ะ/ครับ) and 555/emojis where they land naturally.
@@ -131,3 +129,12 @@ When the user asks for a fun blog from the day's work (e.g. "เขียน blo
 ## Skill Template Fidelity Rule
 
 ก่อนสร้างผลลัพธ์ที่ต้องตาม template ของ skill (เช่น work-summary copy block, submission-evidence copy block, mission plan copy block) **ต้องอ่าน SKILL.md ของ skill นั้นให้ครบทั้งไฟล์ทุกครั้ง** — โดยเฉพาะหลัง conversation ถูกสรุป/compacted หรือเมื่ออ่านไฟล์ครั้งแรกแล้ว output ถูก truncate ให้กลับไปอ่าน offset ที่เหลือจนจบก่อนเสมอ ห้ามประดิษฐ์หรือเดา format จากความจำ ถ้า template ใน skill มีหลาย case/mode (final, progress/handoff, report-only, Case A/B/C) ให้เลือก case ที่ตรงสถานการณ์และปฏิบัติตามกฎของ template นั้นทุกข้อ (field ที่ต้องมี/ห้ามมี, plain text vs markdown, เวลา, verbatim labels จาก mission baseline)
+
+## Natural Work Summary Language Rule (ภาษาคนทำงานจริงในสรุปงาน)
+
+ห้ามแปลคำอังกฤษตรงตัวแบบแข็งทื่อ (literal translation) โดยเฉพาะคำที่เกี่ยวกับ UI/หน้าจอ ให้ใช้ภาษาคนทำงานจริงที่อธิบายผลลัพธ์ที่ตาเห็น:
+- ห้ามเขียน "สแกนองค์ประกอบ UI" / "สแกน element" → ให้ใช้ **"ตรวจข้อความและปุ่มบนหน้าจอ"** หรือ **"ตรวจจุดแสดงผลบนหน้าจอ"**
+- ห้ามเขียน "สแกน inventory" → ให้ใช้ **"ตรวจรายการปุ่มและข้อความ"** หรือ **"กวาดตรวจข้อความบนหน้าจอ"**
+- ห้ามเขียน "ห่อตัว" (wrap), "สแตก" (stack), "ยุบ" (collapse)
+- มุ่งเน้นสิ่งที่คนใช้งาน/แอดมินเห็นจริงบนจอ เช่น "ปุ่ม", "ข้อความ", "ช่องค้นหา", "หัวข้อ", "หน้าต่างแจ้งเตือน (modal)"
+- ใช้ภาษานี้เสมอใน Work Summary, Session Note, Copy Block และการสื่อสารสรุปงานทั้งหมด
