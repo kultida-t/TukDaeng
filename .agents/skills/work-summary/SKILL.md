@@ -177,6 +177,23 @@ mcp_call_tool(
 
 เมื่อผู้ใช้ตรวจครบและยืนยันผล จึงค่อยขึ้นขั้น 3 (ปิด task) — ถ้าผู้ใช้พบจุดผิดให้แก้แล้วส่ง checklist ชุดเดิม (หรือเคสที่แก้) ให้ตรวจซ้ำ
 
+#### 2.2 Continuous Evidence Capture (เก็บบันทึกหลักฐานระหว่างทำ Task ทันที)
+
+เพื่อไม่ให้เสียเวลารวบรวมหรือรันเทสต์ใหม่ย้อนหลังตอนจบ Mission และเพื่อให้ได้หลักฐานตัวจริงที่สมบูรณ์ที่สุด ให้เก็บหลักฐานแบบ Real-time ระหว่างทำแต่ละ Task ตามประเภทงานดังนี้:
+
+1. **งานแก้หน้าจอ (UI / Prototype):**
+   - **Before Action (ก่อนเริ่มแก้โค้ด):** แคปภาพหน้าจอเดิมเก็บไว้ใน `screenshots/mission-<N>-objective-<M>/before/` ทั้งสองขนาด Viewport: Desktop (1440px) และ Mobile (390px)
+   - **After Action (หลังแก้โค้ดและผู้ใช้คอนเฟิร์มแล้ว):** เมื่อผู้ใช้ตรวจ Manual Review Checklist และยืนยันคอนเฟิร์มว่าผลงานถูกต้องสมบูรณ์แล้ว (หากมีการปรับแก้หลายรอบ ให้ยึดรอบที่ผู้ใช้คอนเฟิร์มผ่าน) ให้แคปภาพผลลัพธ์ใหม่เก็บไว้ใน `screenshots/mission-<N>-objective-<M>/after/` ทั้ง Desktop (1440px) และ Mobile (390px)
+2. **งานทดสอบ / QA / Regression (Test Verification):**
+   - ในขั้นตอน Verification ให้รันคำสั่งเทสต์จริงและ redirect stdout/stderr ดิบเข้าไฟล์ทันที เช่น:
+     `npx playwright test tests/<target-spec>.spec.js > deliverables/mission-<N>-objective-<M>/test-results.txt 2>&1`
+   - คัดลอกไฟล์ `.spec.js` หรือ bundle spec files เข้าโฟลเดอร์ `deliverables/mission-<N>-objective-<M>/`
+3. **งาน Manual QA:**
+   - บันทึกรายการเคสที่ตรวจรับผ่านเป็น checklist text file ใน `deliverables/mission-<N>-objective-<M>/checklist-objective-<M>.txt`
+   - เรนเดอร์เป็นภาพ Checklist Card PNG เก็บไว้ใน `screenshots/mission-<N>-objective-<M>/` ด้วย `scripts/render-checklist-card.js`
+4. **งานเอกสาร / Contract / Baseline Lock:**
+   - บันทึก Git Commit Hash และรายการไฟล์ที่แก้ลงใน `deliverables/mission-<N>-objective-<M>/` และ Task Session Note ทันทีหลัง commit
+
 #### 3. ย้าย task เข้า `done` ก่อนสร้าง Final Work Summary
 
 ```

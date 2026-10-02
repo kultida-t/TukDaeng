@@ -79,7 +79,10 @@ Workflow สำหรับจัด **ชุดหลักฐานส่ง�
 
 ### 3. จัด Artifact ตาม convention ของ repo
 
-**งาน UI — capture ภาพหน้าจอ (ต้องครบ flow × 2 จอ):**
+**งาน UI — capture ภาพหน้าจอ Before & After (ต้องครบ flow × 2 จอ):**
+- **Continuous Capture Workflow:**
+  - **Before (ก่อนแก้):** แคปภาพสภาพเดิมก่อนเริ่มแก้โค้ดลง `screenshots/mission-<N>-objective-<M>/before/` ทั้ง Desktop (1440) และ Mobile (390)
+  - **After (หลังแก้และผู้ใช้คอนเฟิร์มแล้ว):** แคปภาพผลลัพธ์ใหม่ลง `screenshots/mission-<N>-objective-<M>/after/` ทั้ง Desktop (1440) และ Mobile (390) **เฉพาะหลังจากผู้ใช้ตรวจและยืนยันคอนเฟิร์มว่าถูกต้องสมบูรณ์แล้วเท่านั้น** (หากมีการแก้หลายรอบ ให้ใช้ภาพของรอบที่ผู้ใช้คอนเฟิร์มผ่าน)
 - เขียน/ใช้ capture script ใน `scripts/` ตั้งชื่อ `capture-m<N>-obj<M>-<scope>.js`
 - ผลภาพลง `screenshots/mission-<N>-objective-<M>/`
 - รัน local server ก่อน capture: `python -m http.server 8080` จากโฟลเดอร์ `Prototypes` แล้ว capture จาก `http://localhost:8080/bo-prototype.html` — ปิด server เมื่อเสร็จ
