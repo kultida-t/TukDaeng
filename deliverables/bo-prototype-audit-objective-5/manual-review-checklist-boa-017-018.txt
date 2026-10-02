@@ -1,0 +1,31 @@
+BO Prototype Audit — Manual Review Checklist (Objective 5)
+Mission: BO Prototype Consistency, Coverage & Navigation Audit
+Tasks: BOA-017, BOA-018
+ผู้ตรวจ: ผู้ใช้ทำตาม checklist บนหน้าจอจริง (bo-prototype.html) — 29/09/2026
+Viewports: 390, 768, 1280, 1440px
+Verdict: PASS — Mission ปิด 18/18
+
+== BOA-017 — Manual QA Checklist ==
+Checklist เคสต่อเคสจาก Findings Register 27 รายการ + Roadmap + ผล BOA-016 — ผู้ใช้ยืนยันรูปแบบแล้ว
+01 Confirmed evidence — findings ยืนยันแล้วจาก BOA-001–016 ไม่บังคับ retest — PASS
+02 Post-remediation retest — เคสตรวจหลัง remediation พร้อมขั้นกด/ผลที่คาด — PASS
+03 BOA-018 checks — เคสที่ตรวจใน final acceptance — PASS
+04 Fixture gap — เคสตรวจไม่ได้ทำเครื่องหมาย Not testable/future coverage — PASS
+05 Product decision — เคสรอ Product/IA decision ระบุ approval gate — PASS
+06 Coverage เคส — ข้อมูลทดสอบ/ขั้นกด/จำนวนครั้ง/expected ครบ happy path, blocked/error, edge, regression — PASS
+07 Viewports — ระบุ 390, 768, 1280, 1440px ครบทุกเคส — PASS
+
+== BOA-018 — Protected Impact & Final Acceptance ==
+ขั้นกด: ตรวจ git status/diff, artifact scope, finding traceability, acceptance checklist
+01 Read-only boundary — git status/diff สะอาด ไม่มี file/prototype mutation — PASS
+02 Test artifacts — ไม่มี test-results, playwright-report, .last-run.json ค้าง — PASS
+03 Findings traceability — Register 27 รายการ + Roadmap trace ครบ — PASS
+04 Retest scope — แยก confirmed evidence ออกจาก retest ชัดเจน — PASS
+05 No auto tasks — ไม่สร้าง remediation/bug-fix task — PASS
+06 Acceptance criteria — ครบทุกข้อของ Mission — PASS
+07 Protected screens — ไม่มี protected screen ถูกแก้ — PASS
+
+== Open items (ค้างโดยเจตนา) ==
+Retest หลังมี remediation/approval
+Fixture gap คงเป็น Not testable/future coverage
+Product/IA items ต้องผ่าน approval gate
