@@ -1,17 +1,12 @@
-BOA-011 — Sidebar Options & Decision Summary
-== Findings ที่นำมาออกแบบ (จาก BOA-010)
-role none/limited แต่ renderNav แสดงทุก entry → permission visibility gap
-Settings มี 6 submenu หลาย domain → scan cost สูง
-Dashboard ซ้ำกับ Market Data > Dashboard → เสี่ยงสับสน
-DEL-033 → U-1104 เปิดถูกแต่ active sidebar ค้างผิดกลุ่ม
-grouping Market Demand/Account Deletion + placement Market Data/Option Master → ต้องตัดสิน
-== ตัวเลือกที่ออกแบบ
-Option A Conservative — คง 3 กลุ่มเดิม แก้เฉพาะ label Market Overview + permission filter + visual grouping ของ Settings
-Option B Workflow + Data Domains — จัดกลุ่มใหม่: งานประจำ / ข้อมูลและข้อมูลเชิงลึก / บริการและกำกับดูแล
-Option C Role-adaptive — IA เดียวกับ B แสดงเฉพาะ module/submenu ที่ role มีสิทธิ์
-== สรุปการตัดสินใจ
-เลือก Option B — เพราะแก้ mental model, density และ grouping พร้อมกัน (ผู้ใช้ยืนยัน)
-กฎประกอบ: destination-owned active state + permission visibility (none=hidden, limited=เฉพาะ submenu)
-== ขั้นต่อไป
-Quick wins: label Market Overview + นิยาม permission/active-state rule ในเอกสาร
-การแก้จริงต้องแยก Mission และขอ approval — งานนี้ recommendation only
+BOA-011 — Sidebar Structure Options (8 checks)
+== ขั้นตอนตรวจทุกรายการ
+เปิด sidebar เทียบแต่ละตัวเลือกและกฎประกอบกับหน้าจอจริง → ตรวจทุก viewport (390, 768, 1280, 1440px)
+== Checklist
+01 ตรวจ sidebar 3 ทางเลือกที่ออกแบบ เทียบ mental model, usage frequency, workflow adjacency, permission และ submenu density — PASS
+02 ผู้ใช้เลือก Option B — Workflow + Data Domains แบ่งเป็น งานประจำ / ข้อมูลและข้อมูลเชิงลึก / บริการและกำกับดูแล — PASS
+03 Option B กำหนด Market Data, Market Demand, Option Master อยู่กลุ่มข้อมูลและข้อมูลเชิงลึก และ Account Deletion อยู่กลุ่มบริการและกำกับดูแล — PASS
+04 เสนอใช้ชื่อ Market Overview แทน Dashboard ใต้ Market Data ลดความสับสนกับ Dashboard หลัก — PASS
+05 Permission visibility — สิทธิ์ none ไม่แสดงเมนู, limited แสดงเฉพาะ submenu ที่เข้าถึงได้, route/API ยังตรวจสิทธิ์ — PASS
+06 Cross-module active-state rule — หน้าปลายทางเป็นเจ้าของเมนู active ขณะที่ Back ยังกลับบริบทต้นทาง — PASS
+07 แยก quick wins, product decisions และการเปลี่ยนที่กระทบ protected navigation ส่งต่อ BOA-013–BOA-015 — PASS
+08 Manual QA ผ่านครบทุก viewport ไม่มีไฟล์หรือ protected screen ถูกแก้ — PASS
