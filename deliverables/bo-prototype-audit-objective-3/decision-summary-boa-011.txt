@@ -1,0 +1,17 @@
+BOA-011 — Sidebar Options & Decision Summary
+== Findings ที่นำมาออกแบบ (จาก BOA-010)
+role none/limited แต่ renderNav แสดงทุก entry → permission visibility gap
+Settings มี 6 submenu หลาย domain → scan cost สูง
+Dashboard ซ้ำกับ Market Data > Dashboard → เสี่ยงสับสน
+DEL-033 → U-1104 เปิดถูกแต่ active sidebar ค้างผิดกลุ่ม
+grouping Market Demand/Account Deletion + placement Market Data/Option Master → ต้องตัดสิน
+== ตัวเลือกที่ออกแบบ
+Option A Conservative — คง 3 กลุ่มเดิม แก้เฉพาะ label Market Overview + permission filter + visual grouping ของ Settings
+Option B Workflow + Data Domains — จัดกลุ่มใหม่: งานประจำ / ข้อมูลและข้อมูลเชิงลึก / บริการและกำกับดูแล
+Option C Role-adaptive — IA เดียวกับ B แสดงเฉพาะ module/submenu ที่ role มีสิทธิ์
+== สรุปการตัดสินใจ
+เลือก Option B — เพราะแก้ mental model, density และ grouping พร้อมกัน (ผู้ใช้ยืนยัน)
+กฎประกอบ: destination-owned active state + permission visibility (none=hidden, limited=เฉพาะ submenu)
+== ขั้นต่อไป
+Quick wins: label Market Overview + นิยาม permission/active-state rule ในเอกสาร
+การแก้จริงต้องแยก Mission และขอ approval — งานนี้ recommendation only
