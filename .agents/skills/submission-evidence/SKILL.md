@@ -58,15 +58,16 @@ Workflow สำหรับจัด **ชุดหลักฐานส่ง�
 - ทุก Task ของเป้าหมายต้องเป็น `done` — ถ้ายังมี task ค้าง ให้แจ้งว่าเป้าหมายยังไม่ครบ อย่าสร้างหลักฐานแบบ "เสร็จ"
 - อ่าน task notes/description เพื่อรู้ว่าเป้าหมายผลิต artifact อะไรจริง — **ห้ามเดา**
 
-### 2. จำแนกประเภทผลงานของเป้าหมาย
+### 2. จำแนกประเภทผลงานของเป้าหมาย (6 รูปแบบงาน)
 
-| ประเภทเป้าหมาย | หลักฐานที่ถูกต้อง | ตัวอย่างที่ได้ 10.0 APPROVED |
+| รูปแบบงาน | หลักฐานที่ถูกต้อง | ตัวอย่างที่ได้ 10.0 APPROVED |
 |---|---|---|
-| UI/Prototype | **ภาพหน้าจอ** ที่ capture จาก prototype จริง ครบ **ทุกขั้นตอน flow ของเป้าหมาย** และ **ทุกขั้นตอนต้องมีคู่ desktop + mobile** | precedent 10/10: "สร้าง Audit Log List และ Detail Modal" (4 รูป = list+detail × desktop+mobile), "เพิ่ม Search, Filter, Sort และ Date Range" (7 รูป ครบทุก filter state ทั้งสองจอ), "เพิ่ม Cross-module Audit Jump" (5 รูป desktop+mobile) |
-| เอกสาร/spec/design contract | **ไฟล์เอกสารจริง** ที่แก้ + **checklist card สรุปว่าไฟล์ไหนแก้อะไร** (ภาพ preview ได้ — ช่วยให้ Gemini Multimodal ตรวจสอบได้ทันที) | precedent 10/10: "Sync Audit Log Spec" แนบ `08_AUDIT_LOG_MODULE.md` + ภาพ checklist สรุป 5 Acceptance Criteria |
-| Test/verification | **ไฟล์ `.spec.js` จริง** + **ผลรันจริงเป็น raw runner output** (`test-results.txt` คือ output ดิบที่ runner เขียนเอง เช่น `ok 2 [desktop-1440] › spec › test › (2.3s)` — **ไม่ใช่ summary ที่พิมพ์เอง**) + **ภาพ checklist card แยกตาม spec** แสดง flow การทดสอบครบตามงานที่ทำ (ดึง test titles จริงจาก spec) | precedent 10/10: "QA, Regression และ Protected Screen" (5 รูป checklist `qa-bo-014a/b/c/d`); ทำด้วย `scripts/render-test-checklist.js` |
-| Acceptance/review | **checklist card สรุปรายการที่ตรวจผ่าน** + ไฟล์บันทึกผลจริง | precedent 10/10: "สร้าง Prototype Admin Actions + Confirmation Modals" (8 รูป แสดงทุก modal + mobile + automated test passes) |
-| ผสม (UI + doc + test) | ภาพ+ไฟล์ตามสัดส่วนงาน; zip เฉพาะชุดที่ใหญ่จนแนบทีละไฟล์ไม่สะดวก แต่ต้องมีรูปภาพสรุปนำหน้าเสมอ | — |
+| **1. แก้ไข UI / Prototype (Bug Fix / Refactor)** | **ภาพหน้าจอ Before & After** (คู่ Desktop 1440 + Mobile 390) แคป Before ก่อนแตะโค้ด และ After ณ จุดที่ผู้ใช้ยืนยันคอนเฟิร์มว่าผ่าน | ภาพ Before/After แก้ Filter dropdown clipping, Modal button order, Focus trap |
+| **2. สร้าง UI ใหม่ (New Feature / New Screen)** | **ภาพหน้าจอทุก State สำคัญ** (Empty, Default, Modal, Result, Mobile 390) ครบทุก flow | precedent 10/10: "สร้าง Audit Log List และ Detail Modal" (4 รูป = list+detail × desktop+mobile), "เพิ่ม Search, Filter, Sort และ Date Range" (7 รูป) |
+| **3. Automated Test / QA / Regression** | **ไฟล์ `.spec.js` จริง** + **ผลรันจริงเป็น raw runner output** (`test-results.txt` ดิบจาก Playwright) + **ภาพ Checklist Card PNG** แยกตาม spec | precedent 10/10: "QA, Regression และ Protected Screen" (5 รูป checklist `qa-bo-014a/b/c/d` + raw output `1822 passed / 55 skipped`) |
+| **4. Manual QA / Inspection (ไม่มีโค้ดแก้)** | **Checklist file (.txt)** แสดงทุกเคส/viewport ที่ตรวจ + **ภาพ Checklist Card PNG** สรุปผลการตรวจ + ภาพหน้าจอ findings (ถ้ามี) | precedent 10/10: "BOA-017 Manual QA Checklist" (Checklist Card 18 รายการตรวจครบทุกจอ) |
+| **5. เอกสาร / Spec Sync / Baseline Lock** | **ไฟล์ `.md` จริง** ที่แก้ + **Git Commit Hash** ใน note + **ภาพ Checklist Card PNG** สรุปรายการไฟล์และเกณฑ์ | precedent 10/10: "Sync Audit Log Spec" แนบ `08_AUDIT_LOG_MODULE.md` + ภาพ checklist สรุป 5 Acceptance Criteria |
+| **6. Final Acceptance / Mission Closure** | **รายงาน Final Acceptance Review (.txt)** + **ภาพ Checklist Card PNG** สรุป Traceability, Verification Gates และ Verdict PASS | precedent 10/10: "Final Mission Acceptance" (Checklist Card สรุปทุก Gate ผ่าน 100%) |
 
 **หลักการเลือกประเภทหลักฐาน:** ส่ง "สิ่งที่ reviewer ตรวจได้จริงและเห็นได้ทันที" — ภาพ preview ในฟอร์มแข็งแรงที่สุด; เอกสาร/test แนบไฟล์จริงประกอบ แต่ต้องมีภาพสรุปนำหน้า; งาน UI ต้อง capture ครบทั้ง desktop และ mobile
 
@@ -81,8 +82,8 @@ Workflow สำหรับจัด **ชุดหลักฐานส่ง�
 
 **งาน UI — capture ภาพหน้าจอ Before & After (ต้องครบ flow × 2 จอ):**
 - **Continuous Capture Workflow:**
-  - **Before (ก่อนแก้):** แคปภาพสภาพเดิมก่อนเริ่มแก้โค้ดลง `screenshots/mission-<N>-objective-<M>/before/` ทั้ง Desktop (1440) และ Mobile (390)
-  - **After (หลังแก้และผู้ใช้คอนเฟิร์มแล้ว):** แคปภาพผลลัพธ์ใหม่ลง `screenshots/mission-<N>-objective-<M>/after/` ทั้ง Desktop (1440) และ Mobile (390) **เฉพาะหลังจากผู้ใช้ตรวจและยืนยันคอนเฟิร์มว่าถูกต้องสมบูรณ์แล้วเท่านั้น** (หากมีการแก้หลายรอบ ให้ใช้ภาพของรอบที่ผู้ใช้คอนเฟิร์มผ่าน)
+  - **Before (ก่อนเริ่มแตะโค้ด):** แคปภาพสภาพเดิมก่อนเริ่มแก้โค้ดลง `screenshots/mission-<N>-objective-<M>/before/` ทั้ง Desktop (1440) และ Mobile (390)
+  - **After (Auto-Trigger เมื่อผู้ใช้บอกโอเค/สั่งปิด task):** เมื่อผู้ใช้ตรวจผลงานแล้วพูดว่า *"โอเค"*, *"ผ่าน"*, *"ปิด task ได้เลย"*, *"เสร็จแล้ว"* ให้ระบบถือเป็นคำอนุมัติ (Approval) และรันแคปภาพผลลัพธ์ปัจจุบันใน `screenshots/mission-<N>-objective-<M>/after/` (1440 + 390) อัตโนมัติทันทีก่อนย้าย task เข้า `done` โดยไม่ต้องถามซ้ำซ้อน; หากมีการปรับแก้หลายรอบ ให้แคปเฉพาะสภาพสุดท้ายที่ผู้ใช้คอนเฟิร์มผ่าน
 - เขียน/ใช้ capture script ใน `scripts/` ตั้งชื่อ `capture-m<N>-obj<M>-<scope>.js`
 - ผลภาพลง `screenshots/mission-<N>-objective-<M>/`
 - รัน local server ก่อน capture: `python -m http.server 8080` จากโฟลเดอร์ `Prototypes` แล้ว capture จาก `http://localhost:8080/bo-prototype.html` — ปิด server เมื่อเสร็จ

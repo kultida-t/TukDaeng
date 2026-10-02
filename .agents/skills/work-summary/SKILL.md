@@ -177,22 +177,28 @@ mcp_call_tool(
 
 เมื่อผู้ใช้ตรวจครบและยืนยันผล จึงค่อยขึ้นขั้น 3 (ปิด task) — ถ้าผู้ใช้พบจุดผิดให้แก้แล้วส่ง checklist ชุดเดิม (หรือเคสที่แก้) ให้ตรวจซ้ำ
 
-#### 2.2 Continuous Evidence Capture (เก็บบันทึกหลักฐานระหว่างทำ Task ทันที)
+#### 2.2 Continuous Evidence Capture (เก็บบันทึกหลักฐานระหว่างทำ Task ทันที 6 รูปแบบงาน)
 
-เพื่อไม่ให้เสียเวลารวบรวมหรือรันเทสต์ใหม่ย้อนหลังตอนจบ Mission และเพื่อให้ได้หลักฐานตัวจริงที่สมบูรณ์ที่สุด ให้เก็บหลักฐานแบบ Real-time ระหว่างทำแต่ละ Task ตามประเภทงานดังนี้:
+เพื่อไม่ให้เสียเวลารวบรวมหรือรันเทสต์ใหม่ย้อนหลังตอนจบ Mission และเพื่อให้ได้หลักฐานตัวจริงที่สมบูรณ์ที่สุด ให้เก็บหลักฐานแบบ Real-time ระหว่างทำแต่ละ Task ตาม 6 รูปแบบงานดังนี้:
 
-1. **งานแก้หน้าจอ (UI / Prototype):**
-   - **Before Action (ก่อนเริ่มแก้โค้ด):** แคปภาพหน้าจอเดิมเก็บไว้ใน `screenshots/mission-<N>-objective-<M>/before/` ทั้งสองขนาด Viewport: Desktop (1440px) และ Mobile (390px)
-   - **After Action (หลังแก้โค้ดและผู้ใช้คอนเฟิร์มแล้ว):** เมื่อผู้ใช้ตรวจ Manual Review Checklist และยืนยันคอนเฟิร์มว่าผลงานถูกต้องสมบูรณ์แล้ว (หากมีการปรับแก้หลายรอบ ให้ยึดรอบที่ผู้ใช้คอนเฟิร์มผ่าน) ให้แคปภาพผลลัพธ์ใหม่เก็บไว้ใน `screenshots/mission-<N>-objective-<M>/after/` ทั้ง Desktop (1440px) และ Mobile (390px)
-2. **งานทดสอบ / QA / Regression (Test Verification):**
+1. **งานแก้ UI / Prototype (Bug Fix / Refactor):**
+   - **Before Action (ก่อนเริ่มแตะโค้ด):** แคปภาพหน้าจอเดิมเก็บไว้ใน `screenshots/mission-<N>-objective-<M>/before/` ทั้งสองขนาด Viewport: Desktop (1440px) และ Mobile (390px)
+   - **After Action (Auto-Trigger เมื่อผู้ใช้บอกโอเค/สั่งปิด task):** เมื่อผู้ใช้ตรวจผลงานแล้วพูดว่า *"โอเค"*, *"ผ่าน"*, *"ปิด task ได้เลย"*, *"เสร็จแล้ว"* ให้ระบบถือเป็นคำอนุมัติ (Approval) และรันแคปภาพผลลัพธ์ปัจจุบันใน `screenshots/mission-<N>-objective-<M>/after/` (1440px + 390px) อัตโนมัติทันทีก่อนย้าย task เข้า `done` โดยไม่ต้องถามซ้ำซ้อน; หากมีการแก้หลายรอบ ให้แคปเฉพาะสภาพสุดท้ายที่ผู้ใช้คอนเฟิร์มผ่าน
+2. **งานสร้าง UI ใหม่ (New Feature / New Screen):**
+   - แคปภาพหน้าจอทุก State สำคัญ (Empty, Default, Filled, Modal, Result) ทั้ง Desktop (1440px) และ Mobile (390px) เก็บไว้ใน `screenshots/mission-<N>-objective-<M>/` เมื่อสร้างเสร็จและผู้ใช้ตรวจผ่าน
+3. **งานทดสอบ / QA / Regression (Automated Test Verification):**
    - ในขั้นตอน Verification ให้รันคำสั่งเทสต์จริงและ redirect stdout/stderr ดิบเข้าไฟล์ทันที เช่น:
      `npx playwright test tests/<target-spec>.spec.js > deliverables/mission-<N>-objective-<M>/test-results.txt 2>&1`
    - คัดลอกไฟล์ `.spec.js` หรือ bundle spec files เข้าโฟลเดอร์ `deliverables/mission-<N>-objective-<M>/`
-3. **งาน Manual QA:**
-   - บันทึกรายการเคสที่ตรวจรับผ่านเป็น checklist text file ใน `deliverables/mission-<N>-objective-<M>/checklist-objective-<M>.txt`
+4. **งาน Manual QA / Inspection (งานตรวจที่ไม่มีโค้ดแก้):**
+   - บันทึกรายการเคสและ Viewports ที่ตรวจรับผ่านเป็น checklist text file ใน `deliverables/mission-<N>-objective-<M>/checklist-objective-<M>.txt`
    - เรนเดอร์เป็นภาพ Checklist Card PNG เก็บไว้ใน `screenshots/mission-<N>-objective-<M>/` ด้วย `scripts/render-checklist-card.js`
-4. **งานเอกสาร / Contract / Baseline Lock:**
-   - บันทึก Git Commit Hash และรายการไฟล์ที่แก้ลงใน `deliverables/mission-<N>-objective-<M>/` และ Task Session Note ทันทีหลัง commit
+5. **งานเอกสาร / Spec Sync / Baseline Lock:**
+   - บันทึก Git Commit Hash และรายการไฟล์ Markdown ที่แก้จริงลงใน `deliverables/mission-<N>-objective-<M>/` และ Task Session Note ทันทีหลัง commit
+   - เรนเดอร์ Checklist Card PNG สรุปรายการไฟล์และเกณฑ์ที่ sync
+6. **งาน Final Acceptance / Mission Closure:**
+   - บันทึกรายงานสรุปผลการตรวจรับ `deliverables/mission-<N>-objective-<M>/final-acceptance-review.txt`
+   - เรนเดอร์ภาพ Checklist Card PNG สรุป Traceability, Verification Gates และ Verdict PASS
 
 #### 3. ย้าย task เข้า `done` ก่อนสร้าง Final Work Summary
 
