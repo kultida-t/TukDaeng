@@ -2,28 +2,28 @@ BOA-001 — Screen/Route/Flow Inventory (25 checks)
 == ขั้นตอนตรวจทุกรายการ
 เปิดเมนู/submenu → ตรวจ destination, active menu state, breadcrumb, back path → resize ทุก viewport (390, 768, 1280, 1440px)
 == Checklist
-01 Login / Auth — เปิดได้ อยู่นอก sidebar โดยตั้งใจ — PASS
-02 Dashboard — list/card/queue/activity render ครบ — PASS
-03 User Management > User List + User Detail — PASS
-04 User Management > Reported Users + Report Detail — PASS
-05 Asset Management > Asset List + Asset Detail — PASS
-06 Asset Management > Reported Assets + Report Detail — PASS
-07 Asset Management > Reported Comments + Comment Report Detail — PASS
-08 Offer Management + Offer Detail — PASS
-09 Content Management > Article List/Detail/Add/Edit — PASS
-10 Content Management > Categories — PASS
-11 Content Management > Reported Board + Board Report Detail — PASS
-12 Market Data — PASS
-13 Option Master (group/option detail + modals) — PASS
-14 Market Demand > Demand Overview — PASS
-15 Market Demand > Search Insights — PASS
-16 Market Demand > Watch Alert List + Alert Detail — PASS
-17 Account Deletion > Request List + Request Detail — PASS
-18 Settings > Policy & Versioning — PASS
-19 Settings > Support Center — PASS
-20 Settings > Delivery Logs — PASS
-21 Settings > Admin Accounts + Admin Detail — PASS
-22 Settings > Roles & Permissions + Role Detail — PASS
-23 Settings > Audit Log + Detail drawer — PASS
-24 My Account (Edit Name / Change Password / Active Sessions) — เข้าจาก profile footer — PASS
-25 Modal/editor/major states ของทุกพื้นที่ — PASS
+01 เปิด Login/Auth → เข้าหน้า Login ได้ อยู่นอก sidebar โดยตั้งใจ — PASS
+02 เปิด Dashboard → list/card/queue/activity render ครบ — PASS
+03 เปิด User Management > User List → กด row เข้า User Detail — PASS
+04 เปิด User Management > Reported Users → กด row เข้า Report Detail — PASS
+05 เปิด Asset Management > Asset List → กด row เข้า Asset Detail — PASS
+06 เปิด Asset Management > Reported Assets → กด row เข้า Report Detail — PASS
+07 เปิด Asset Management > Reported Comments → กด row เข้า Comment Report Detail — PASS
+08 เปิด Offer Management → กด row เข้า Offer Detail — PASS
+09 เปิด Content Management > Article List → เข้า Detail/Add/Edit — PASS
+10 เปิด Content Management > Categories — PASS
+11 เปิด Content Management > Reported Board → กด row เข้า Board Report Detail — PASS
+12 เปิด Market Data — PASS
+13 เปิด Option Master → เข้า group/option detail + เปิด modals — PASS
+14 เปิด Market Demand > Demand Overview — PASS
+15 เปิด Market Demand > Search Insights — PASS
+16 เปิด Market Demand > Watch Alert List → กด row เข้า Alert Detail — PASS
+17 เปิด Account Deletion > Request List → กด row เข้า Request Detail — PASS
+18 เปิด Settings > Policy & Versioning — PASS
+19 เปิด Settings > Support Center — PASS
+20 เปิด Settings > Delivery Logs — PASS
+21 เปิด Settings > Admin Accounts → กด row เข้า Admin Detail — PASS
+22 เปิด Settings > Roles & Permissions → กด row เข้า Role Detail — PASS
+23 เปิด Settings > Audit Log → กด row เปิด Detail drawer — PASS
+24 กด profile footer → เข้า My Account (Edit Name / Change Password / Active Sessions) — PASS
+25 เปิด modal/editor/major states ของทุกพื้นที่ — PASS

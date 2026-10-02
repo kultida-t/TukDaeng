@@ -2,11 +2,11 @@ BOA-006 — Search, Filter, Sort, Reset & Pagination (8 checks)
 == ขั้นตอนตรวจทุกรายการ
 ใช้ข้อมูล fixture จริงของแต่ละ list ทดสอบทุก function → ตรวจ empty result → ทุก viewport
 == Checklist
-01 Search — PASS
-02 Filter selects — PASS
-03 Filter dropdown เมื่อผลลัพธ์เหลือ 1 รายการ — FAIL: dropdown ถูก panel/table clip → confirmed cross-module defect (เห็นซ้ำ Asset List, User List และทุกเมนู)
-04 Sort — PASS
-05 Reset — PASS
-06 Pagination + page-1 reset เมื่อเปลี่ยนเงื่อนไข — PASS
-07 Filter persistence detail → back — PASS
-08 Empty result copy + reset เข้าถึงได้ — PASS
+01 พิมพ์ keyword ในช่อง search → list กรองตามคำค้น — PASS
+02 เลือก filter selects ทีละตัว → list กรองตามเงื่อนไข — PASS
+03 filter ให้เหลือ 1 รายการแล้วเปิด custom select ที่มีตัวเลือกเยอะ → dropdown ถูก panel/table clip — FAIL: confirmed cross-module defect (เห็นซ้ำ Asset List, User List และทุกเมนู)
+04 กด sort header / เลือก sort → list เรียงถูก — PASS
+05 กด reset → ล้าง filter/search กลับค่าเริ่มต้น — PASS
+06 เปลี่ยนเงื่อนไขขณะอยู่หน้า 2+ → pagination รีเซ็ตกลับ page 1 — PASS
+07 filter แล้วเข้า detail กด back → filter state คงอยู่ — PASS
+08 filter จนไม่เจอข้อมูล → empty result แสดงและ reset กดได้ — PASS

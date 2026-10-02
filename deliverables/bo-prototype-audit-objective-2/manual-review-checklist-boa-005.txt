@@ -2,11 +2,11 @@ BOA-005 — Button Hierarchy (8 checks)
 == ขั้นตอนตรวจทุกรายการ
 ตรวจ label, icon, tone, size, placement, disabled/hidden และ keyboard focus ของปุ่มตัวแทนทุก pattern → ทุก viewport
 == Checklist
-01 Primary action tone/placement — PASS
-02 Secondary / outline actions — PASS
-03 Destructive confirm (type-to-confirm / disabled safeguard) — PASS
-04 Icon-only buttons (aria-label/tooltip) — PASS
-05 Row menu "..." actions — PASS
-06 Modal / editor footer hierarchy — PASS
-07 Disabled / permission-hidden behavior — PASS
-08 Keyboard focus บนปุ่ม — PASS
+01 เปิด list/detail → ปุ่ม primary อยู่ตำแหน่งเดียวกัน โทนตรง pattern — PASS
+02 ตรวจ secondary/outline actions → โทนและ placement ตาม pattern — PASS
+03 เปิด destructive confirm (suspend/delete) → confirm โทน danger มี safeguard/type-to-confirm — PASS
+04 hover/focus ปุ่ม icon-only → มี aria-label/tooltip — PASS
+05 กด row menu "..." → เมนูเปิด action ครบ — PASS
+06 เปิด modal/editor → footer hierarchy ถูก (Article editor footer เป็น variation ที่บันทึกส่ง BOA-013–015) — PASS
+07 ตรวจ disabled และ permission-hidden actions → ถูกซ่อน/disable ตาม policy — PASS
+08 กด Tab ผ่านปุ่ม → เห็น keyboard focus — PASS
