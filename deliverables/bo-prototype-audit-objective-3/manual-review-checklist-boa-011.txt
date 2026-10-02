@@ -1,10 +1,11 @@
-BOA-011 — Sidebar Structure Options (6 checks)
+BOA-011 — Sidebar Structure Options (7 checks)
 == ขั้นตอนตรวจทุกรายการ
-เทียบแต่ละตัวเลือกกับ findings ของ BOA-010 → ตรวจ rationale, trade-off, migration/permission/deep-link impact
+รับ findings จาก BOA-010 → ออกแบบตัวเลือก → เทียบ rationale/trade-off/impact → สรุป recommendation
 == Checklist
-01 Option A Conservative — คง 3 กลุ่มเดิม แก้เฉพาะ label Market Overview + permission filter + แบ่ง visual group ของ Settings — เทียบแล้วไม่เลือก
-02 Option B Workflow + Data Domains — จัดกลุ่มใหม่ตาม workflow: งานประจำ (Dashboard/User/Asset/Offer/Content) / ข้อมูลและข้อมูลเชิงลึก (Market Data/Market Demand/Option Master) / บริการและกำกับดูแล (Account Deletion/Settings) — ผู้ใช้เลือกเป็น recommendation หลัก
-03 Option C Role-adaptive — IA เดียวกับ B แต่แสดงเฉพาะ module/submenu ที่ role มีสิทธิ์ พร้อม role-scoped Dashboard — เทียบแล้วไม่เลือก
-04 กำหนดกฎ destination-owned active state → cross-module drill-in เปิด parent ของหน้าปลายทาง แก้เคส DEL-033 → U-1104 ที่ sidebar ค้างผิดกลุ่ม — PASS
-05 กำหนด permission visibility rule → none = hidden, limited = เฉพาะ submenu ที่เข้าถึงได้ ห้ามใช้การซ่อนเมนูแทน route/API enforcement — PASS
-06 ระบุ quick wins / product decisions / protected impact → การเปลี่ยนจริงต้องแยก Mission และขอ approval — PASS
+01 รวบรวม findings จาก BOA-010 (permission visibility gap, Settings density, ชื่อ Dashboard ซ้ำ, grouping/placement ที่ต้องตัดสิน) → เห็นว่าแก้จุดเดียวไม่พอ ต้องเสนอโครงสร้างใหม่ — PASS
+02 ออกแบบ Option A Conservative — คง 3 กลุ่มเดิม แก้เฉพาะ label Market Overview + permission filter + visual grouping ของ Settings — เสนอเป็นทางเลือก
+03 ออกแบบ Option B Workflow + Data Domains — จัดกลุ่มใหม่ตาม workflow: งานประจำ (Dashboard/User/Asset/Offer/Content) / ข้อมูลและข้อมูลเชิงลึก (Market Data/Market Demand/Option Master) / บริการและกำกับดูแล (Account Deletion/Settings) — เสนอเป็นทางเลือก
+04 ออกแบบ Option C Role-adaptive — IA เดียวกับ B แต่แสดงเฉพาะ module/submenu ที่ role มีสิทธิ์ พร้อม role-scoped Dashboard — เสนอเป็นทางเลือก
+05 เทียบ 3 ตัวเลือกกับ findings → สรุปแนะนำ Option B เพราะแก้ mental model + density + grouping พร้อมกัน — PASS
+06 ผู้ใช้เลือก Option B เป็น recommendation หลัก → กำหนดกฎประกอบ: destination-owned active state (แก้เคส DEL-033 → U-1104) และ permission visibility (none=hidden, limited=เฉพาะ submenu) — PASS
+07 สรุปขั้นต่อไป → quick wins (label Market Overview, นิยาม permission/active-state rule ในเอกสาร), product decisions ที่เหลือ, การแก้จริงต้องแยก Mission และขอ approval — PASS
