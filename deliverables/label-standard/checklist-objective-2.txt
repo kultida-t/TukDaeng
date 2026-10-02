@@ -9,4 +9,3 @@ BO_UI_UX_STANDARD.md แทนกฎเดิมด้วยกติกา 2 �
 contract เดิมครบ (alias, breadcrumb, back button) ไม่แตะหน้าจออื่น
 manual-review-checklist.md ครอบ 5 กลุ่ม A–E (ภาษา/ปุ่ม/protected/responsive/evidence)
 series-direction-note.md ครบสิ่งที่ยืนยัน เหตุผล artifacts open items และ guidance
-session handoff บันทึกลง Kanban
