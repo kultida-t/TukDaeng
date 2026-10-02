@@ -57,6 +57,7 @@ Workflow สำหรับจัด **ชุดหลักฐานส่ง�
 - ดึง mapping Objective → Task จาก Mission Plan / Kanban (`get_board`, `get_task`)
 - ทุก Task ของเป้าหมายต้องเป็น `done` — ถ้ายังมี task ค้าง ให้แจ้งว่าเป้าหมายยังไม่ครบ อย่าสร้างหลักฐานแบบ "เสร็จ"
 - อ่าน task notes/description เพื่อรู้ว่าเป้าหมายผลิต artifact อะไรจริง — **ห้ามเดา**
+- **ดึงหลักฐานจากราย task ที่บันทึกไว้ตอนปิด task** (task evidence bundle ตาม workflow `work-summary`: ภาพ Before/After, checklist ที่ตรวจแล้วพร้อมผลรายเคส, raw test output + test list, รายการไฟล์/commit) มาคัดเลือกและรวมเป็นชุดส่งตรวจของเป้าหมาย — ขั้นตอนนี้คือการ "รวมและคัด" หลักฐานราย task ที่มีอยู่แล้ว ไม่ใช่สร้างหลักฐานใหม่ย้อนหลัง
 
 ### 2. จำแนกประเภทผลงานของเป้าหมาย (6 รูปแบบงาน)
 
@@ -79,6 +80,8 @@ Workflow สำหรับจัด **ชุดหลักฐานส่ง�
 ---
 
 ### 3. จัด Artifact ตาม convention ของ repo
+
+> **หมายเหตุสำคัญ:** หลักฐานหลักควรถูกเก็บไว้แล้วระหว่างทำและตอนปิดแต่ละ task (task evidence bundle ตาม `work-summary`) — ขั้นตอนนี้ใช้สำหรับ **ตรวจความครบของหลักฐานที่มี + เติมเฉพาะจุดที่ขาด** เท่านั้น ไม่ใช่ capture/สร้างหลักฐานทั้งชุดใหม่ย้อนหลัง; ถ้าพบหลักฐานขาด (เช่น ไม่มีภาพ Before, raw output หาย) ให้บันทึกเป็น evidence gap ตรง ๆ หรือ capture เติมเฉพาะจุดนั้นเมื่ออยู่ใน scope และได้รับอนุมัติ
 
 **งาน UI — capture ภาพหน้าจอ Before & After (ต้องครบ flow × 2 จอ):**
 - **Continuous Capture Workflow:**
@@ -132,11 +135,15 @@ Workflow สำหรับจัด **ชุดหลักฐานส่ง�
 
 ---
 
-### 5. ช่อง external_url — นโยบายบังคับ (MANDATORY REQUIREMENT)
+### 5. ช่อง external_url — ใส่เฉพาะงานจริงที่ commit แล้ว
 
-> ⚠️ **คำเตือนสำคัญที่สุด:** จากการวิเคราะห์ผลการประเมินย้อนหลัง **การปล่อยช่อง URL ว่างไว้คือสาเหตุหลักอันดับ 1 ที่ทำให้โดนหักคะแนน Evidence Completeness เหลือ 1.6 - 2.5/3.0 และถูกลดสถานะเป็น PASS WITH COMMENTS ทันที**
+> ⚠️ **คำเตือนสำคัญที่สุด:** จากการวิเคราะห์ผลการประเมินย้อนหลัง **การปล่อยช่อง URL ว่างทั้งที่มี work artifact จริง คือสาเหตุหลักอันดับ 1 ที่ทำให้โดนหักคะแนน Evidence Completeness เหลือ 1.6 - 2.5/3.0 และถูกลดสถานะเป็น PASS WITH COMMENTS ทันที** — ในทางกลับกัน การฝืนใส่ลิงก์ที่ไม่ใช่งานจริง (เช่น commit ที่สร้างไฟล์หลักฐาน) ก็ทำให้หลักฐานไม่น่าเชื่อถือ
 
-**กฎเหล็ก:** **ห้ามปล่อยช่อง URL ว่างเด็ดขาด!** และ **ต้องชี้ไปยัง Work Artifact / Source Code / Test Spec / Specific Commit จริง** ที่เป็นเป้าหมายของแต่ละ Objective:
+**กฎเหล็ก:** **ใส่ URL เฉพาะเมื่อมี Work Artifact จริงที่ commit ไว้ใน repo ของโปรเจกต์** — ต้องชี้ไปยัง Work Artifact / Source Code / Test Spec / Specific Commit จริงของเป้าหมายนั้นเท่านั้น:
+
+- เป้าหมายที่มีการแก้ไฟล์งานจริงในโปรเจกต์ (โค้ด, prototype, spec, test) → **ต้องใส่ URL เสมอ ห้ามเว้นว่าง**
+- เป้าหมาย read-only / manual inspection (เช่น เช็คเทียบเอกสารกับ prototype, ตรวจหน้าจอ/audit โดยไม่แก้ไฟล์งานจริง) ที่ไม่มี artifact commit จริง → **เว้นว่างได้** และต้องเปิดเผยในคำอธิบายว่างานเป็น manual inspection ไม่มี work artifact ที่ commit — ยอมรับความเสี่ยงคะแนนช่องนี้ดีกว่าส่งลิงก์ที่ไม่ใช่งานจริง
+- ห้ามฝืนใส่ลิงก์ทุกเป้าหมายเพื่อให้ "ไม่ว่าง" — ลิงก์ที่ไม่ trace ไปหางานจริงแย่กว่าการเว้นว่างพร้อมชี้แจง:
 
 #### ❌ สิ่งที่ห้ามใส่ในช่อง URL โดยเด็ดขาด (Blacklist):
 - **ห้ามใส่ path `deliverables/` ทุกชนิด** เช่น `.../deliverables/.../test-results.txt` หรือ `.../deliverables/.../checklist-*.txt` (เพราะเป็นโฟลเดอร์ packaging รายงานผล ไม่ใช่ source artifact)
@@ -198,7 +205,7 @@ Task ที่เกี่ยวข้อง: <task code 1>, <task code 2>
 - <path/ชื่อไฟล์ 1> — <อธิบายสั้นว่าพิสูจน์อะไร>
 - <path/ชื่อไฟล์ 2> — <อธิบายสั้น>
 
-ช่อง URL: https://github.com/kultida-t/TukDaeng/commit/<commit-hash> (หรือ Pull Request / Repo link)
+ช่อง URL: https://github.com/kultida-t/TukDaeng/commit/<commit-hash> (หรือ Pull Request / ไฟล์ work artifact จริง / เว้นว่างเฉพาะ manual inspection ที่ไม่มี artifact จริง)
 
 คำอธิบาย
 
@@ -209,7 +216,7 @@ Task ที่เกี่ยวข้อง: <task code 1>, <task code 2>
 - ชื่อเป้าหมายแยกบรรทัดใต้หัวข้อ mission
 - แต่ละ field คั่นด้วยบรรทัดว่าง
 - `ไฟล์แนบ` แต่ละรายการระบุ path เต็ม
-- `ช่อง URL` มีลิงก์ GitHub Commit หรือ Pull Request เสมอ (ห้ามเว้นว่าง)
+- `ช่อง URL` มีลิงก์ GitHub Commit / Pull Request / ไฟล์ work artifact จริง เมื่อเป้าหมายมีการ commit งานจริง — เว้นว่างได้เฉพาะ manual inspection/read-only ที่ไม่มี artifact จริง และต้องชี้แจงในคำอธิบาย
 - `คำอธิบาย` ชัดเจน กระชับ มีการระบุ methodology เมื่อเวลาทำงานกระชับ
 
 ---
@@ -253,7 +260,7 @@ Feature: <ชื่อ Feature> → <Task code>
 
 ## กฎส่งหลักฐานให้ครบถ้วน (เป้าหมาย APPROVED; ไม่รับประกันคะแนนหรือ verdict)
 
-- ⚠️ **MANDATORY EXTERNAL URL (PROOF OF WORK):** ห้ามปล่อยช่อง URL ว่างเด็ดขาด! ต้องใส่ลิงก์ GitHub Commit หรือไฟล์ที่พิสูจน์งานจริงของแต่ละเป้าหมาย (งานแก้โค้ด/สเปก = Commit ที่แก้ไฟล์จริง, งานเทสต์ = ไฟล์สเปกหรือโฟลเดอร์เทสต์, งานปิดรับ = Commit ล็อก Baseline) — **ลิงก์ต้องชี้ Work Artifact เท่านั้น ห้ามชี้ Preview Packaging** (checklist card, `screenshots/`, `deliverables/`) และ**ห้ามชี้ไปที่ Commit ที่สร้างไฟล์ deliverables/หลักฐานส่งตรวจซ้ำกันทุกข้อ**
+- ⚠️ **EXTERNAL URL เฉพาะงานจริงที่ commit แล้ว:** ใส่ลิงก์ GitHub Commit/ไฟล์ที่พิสูจน์งานจริงของแต่ละเป้าหมายเฉพาะเมื่อมี work artifact จริง (งานแก้โค้ด/สเปก = Commit ที่แก้ไฟล์จริง, งานเทสต์ = ไฟล์สเปกหรือโฟลเดอร์เทสต์, งานปิดรับ = Commit ล็อก Baseline) — **ลิงก์ต้องชี้ Work Artifact เท่านั้น ห้ามชี้ Preview Packaging** (checklist card, `screenshots/`, `deliverables/`), **ห้ามชี้ commit ที่สร้างไฟล์ deliverables/หลักฐานส่งตรวจซ้ำทุกข้อ** และ **ห้ามฝืนใส่ลิงก์ที่ไม่ใช่งานจริง** — เป้าหมาย manual inspection/เช็คเทียบเอกสาร-prototype ที่ไม่มี artifact จริงให้เว้นว่างและเปิดเผยในคำอธิบาย
 - ⚠️ **WORK ARTIFACT FIRST:** ทุกไฟล์แนบและทุกลิงก์ต้อง trace กลับไปหางานของเป้าหมาย — ไฟล์ที่สร้างขึ้นเพื่อทำหลักฐาน (checklist card, render scripts, `deliverables/`) ใช้ประกอบ preview เท่านั้น; เป้าหมาย test ต้องแนบ `.spec.js` จริง + `test-results.txt` ที่เป็น **raw runner output** (ไม่ใช่ summary ที่พิมพ์เอง)
 - ⚠️ **ZERO VISUAL BUGS:** ตรวจภาพด้วยตา: ไม่มี focus ring ค้าง, ไม่มี layout ล้นบน mobile, ไม่มี Pagination แสดง 1/1 ในหน้า Empty, ไม่มี Typo ใน mockup
 - ⚠️ **TIME REASONABLENESS:** หากเวลาบันทึกสั้น (0.5 - 1.0 ชม.) สำหรับงานที่ดูเยอะ ต้องระบุ Methodology (เช่น Automated script, Sync from baseline) ในคำอธิบายเสมอ

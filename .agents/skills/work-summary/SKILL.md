@@ -57,8 +57,10 @@ Workflow สำหรับจับเวลาและสรุปงาน�
 (เริ่มจับเวลาอัตโนมัติ)              (หยุด timer + bank เวลาจริงอัตโนมัติ)
 ↓                                    ↓
 เริ่มทำงานใน task นั้น               อ่าน Final Task + Activity Timeline
+(ผลลัพธ์เห็นบนจอ:                    ↓
+ capture Before ก่อนแก้โค้ด)         สร้าง Final Work Summary ชุดเดียว
                                      ↓
-                                     สร้าง Final Work Summary ชุดเดียว
+                                     รวมหลักฐานประจำ Task
                                      ↓
                                      save_session_note (Final Summary)
                                      ↓
@@ -106,6 +108,7 @@ Workflow สำหรับจับเวลาและสรุปงาน�
 - ถ้าผู้ใช้ระบุแค่ชื่อ/คำค้น → เรียก `get_board` หรือ `get_project_context` เพื่อหา task ที่ตรง
 - ถ้าเป็น task ใหม่ที่ยังไม่มีใน kanban → ถามผู้ใช้ว่าต้องการสร้าง task ใหม่หรือไม่ ถ้าใช่ให้ใช้ `create_task` และ Description ต้องมีบรรทัด `Category: <หมวด> | Planned: <X> ชม. (Category Max <Y> ชม.)` เสมอ (Y = ค่า "ห้ามเกิน" ของหมวดจากตารางเวลามาตรฐาน)
 - ถ้า task ที่จะเริ่มไม่มีบรรทัด `Planned` ใน Description → แจ้งผู้ใช้และเสนอเติมผ่าน `update_task` ก่อนเริ่มจับเวลา เพื่อให้เช็ก Time Ratio (เวลาจริงเทียบเป้าหมาย > 1.5 → ติด review) ได้
+- ตรวจว่า task map กับ Mission/Objective ใน approved plan แล้ว — ต้องรู้หมายเลข `mission-<N>-objective-<M>` ก่อนเริ่มจับเวลา เพราะใช้ตั้งชื่อโฟลเดอร์หลักฐาน (`screenshots/`, `deliverables/`); ถ้ายังไม่ map ให้ยืนยัน mapping กับผู้ใช้ก่อน
 
 #### 2. ตรวจสอบ task อื่นที่อยู่ใน `in_progress` (สำคัญ)
 
@@ -135,10 +138,17 @@ mcp_call_tool(
 - แจ้งผู้ใช้ว่า "เริ่มจับเวลา task <ชื่อ task> แล้ว"
 - เริ่มทำงานใน task นั้นตามที่ผู้ใช้สั่ง
 
+#### 4. ถ้า task มีผลลัพธ์ที่เห็นบนหน้าจอ — เก็บภาพ Before ก่อนแตะโค้ด (บังคับ)
+
+ใช้กับ task ที่ผลลัพธ์สะท้อนบนหน้าจอ — ครอบคลุมทั้งการแก้ prototype/UI โดยตรง **และ** การแก้ logic, data, mock data, flow หรือ behavior ที่ผู้ใช้เห็นบนจอ (เช่น แก้เงื่อนไขที่เปลี่ยนสิ่งที่แสดง, mock data ที่เปลี่ยน list, logic ที่เปลี่ยนผลการคำนวณ) — ให้ตรวจสภาพหน้าจอเดิมและแคปภาพ Before เก็บไว้ใน `screenshots/mission-<N>-objective-<M>/before/` ทั้ง Desktop (1440px) และ Mobile (390px) **ก่อนเริ่มแก้โค้ด** เพื่อให้มีภาพเทียบกับ After ตอนปิด task/ส่งตรวจ (รายละเอียดตาม Continuous Evidence Capture ในสถานการณ์ที่ 2) — ถ้าไม่มีภาพ Before จะไม่มีหลักฐานเทียบการเปลี่ยนแปลง
+
+> เมื่อไม่แน่ใจว่า task อยู่ในเกณฑ์หรือไม่ ให้ถามว่า "ผู้ตรวจจะเห็นความต่างบนหน้าจอไหม" — ถ้าใช่ ต้อง capture Before; งานเอกสาร/อ่านอย่างเดียวที่ไม่เปลี่ยนสิ่งที่เห็นบนจอไม่ต้อง capture แต่ยังต้องเก็บหลักฐานประเภทอื่นตามขั้น 6 ของสถานการณ์ที่ 2
+
 #### กฎสำคัญ
 - ⚠️ **ควรมี task ใน `in_progress` เพียง 1 task ต่อผู้ใช้ในแต่ละเวลา** — ถ้ามี task เดิมค้างอยู่ ให้ pause ก่อน
 - ห้ามข้ามขั้นตอนการตรวจสอบ task อื่นใน `in_progress`
 - หลังย้ายเข้า `in_progress` แล้ว ให้เริ่มทำงานได้เลย ไม่ต้องรอยืนยันเพิ่ม
+- ⚠️ task ที่ผลลัพธ์เห็นบนหน้าจอ (แก้ UI โดยตรงหรือ logic/data ที่สะท้อนบนจอ) ต้องแคปภาพ Before (Desktop 1440 + Mobile 390) ก่อนแก้โค้ดตามขั้น 4 — ห้ามข้าม เพราะ After ที่ไม่มี Before เทียบไม่ใช่หลักฐานที่สมบูรณ์
 
 ---
 
@@ -162,9 +172,9 @@ mcp_call_tool(
 - ถ้ายังมีงานในขอบเขต task ที่ไม่เสร็จ ให้กลับไปใช้สถานการณ์ที่ 3 และคง `in_progress`
 - Open item ที่จะส่งต่อได้ต้องเป็นงานใหม่ที่ไม่ทำให้ task ปัจจุบันไม่ผ่าน Acceptance Criteria
 
-#### 2.1 Manual Review Checklist (บังคับเมื่อ task แตะ prototype/UI)
+#### 2.1 Manual Review Checklist (บังคับเมื่อ task เปลี่ยนสิ่งที่เห็นบนหน้าจอ)
 
-ถ้า task มีการแก้ prototype หรือหน้าจอใด ๆ **ต้องส่งรายการทดสอบ manual ให้ผู้ใช้ตรวจก่อน** ขออนุญาตปิด/commit — ห้ามถามแค่ "รีวิวหน้าจอหน่อย" โดยไม่มีลิสต์ เพราะผู้ใช้ไม่รู้ว่าต้องกดอะไร
+ถ้า task มีการแก้ prototype/หน้าจอ หรือแก้ logic, data, mock data, flow ที่ผลลัพธ์สะท้อนบนหน้าจอ **ต้องส่งรายการทดสอบ manual ให้ผู้ใช้ตรวจก่อน** ขออนุญาตปิด/commit — ห้ามถามแค่ "รีวิวหน้าจอหน่อย" โดยไม่มีลิสต์ เพราะผู้ใช้ไม่รู้ว่าต้องกดอะไร
 
 รูปแบบ checklist ที่ต้องส่ง (เรียงเป็นเคสละขั้น):
 
@@ -175,13 +185,13 @@ mcp_call_tool(
 - **เคสครบทุกพฤติกรรมใน scope** — รวมทั้ง happy path, blocked/error path, edge cases, fixture ที่เกี่ยวข้อง และเคส regression ที่ควรเช็คว่าของเดิมไม่พัง (เช่น login ปกติ, forgot flow เดิม)
 - แนบ screenshot ของจุดสำคัญได้ถ้าช่วยให้ตรวจเร็ว แต่ checklist ต้องอ่านรู้เรื่องโดยไม่ต้องเปิดภาพ
 
-เมื่อผู้ใช้ตรวจครบและยืนยันผล จึงค่อยขึ้นขั้น 3 (ปิด task) — ถ้าผู้ใช้พบจุดผิดให้แก้แล้วส่ง checklist ชุดเดิม (หรือเคสที่แก้) ให้ตรวจซ้ำ
+เมื่อผู้ใช้ตรวจครบและยืนยันผล จึงค่อยขึ้นขั้น 3 (ปิด task) — ถ้าผู้ใช้พบจุดผิดให้แก้แล้วส่ง checklist ชุดเดิม (หรือเคสที่แก้) ให้ตรวจซ้ำ — และเมื่อตรวจผ่านแล้ว **บันทึก checklist ที่ตรวจจริงพร้อมผลรายเคส (ผ่าน / ไม่ผ่าน / พบอะไร + ผลการแก้ไข) และภาพผลลัพธ์ประกอบ** ลง `deliverables/mission-<N>-objective-<M>/` หรือ `screenshots/mission-<N>-objective-<M>/` เป็นหลักฐานของ task ทันที ห้ามปล่อยให้ checklist มีแค่ข้อความในแชทโดยไม่มีไฟล์หลักฐาน
 
 #### 2.2 Continuous Evidence Capture (เก็บบันทึกหลักฐานระหว่างทำ Task ทันที 6 รูปแบบงาน)
 
 เพื่อไม่ให้เสียเวลารวบรวมหรือรันเทสต์ใหม่ย้อนหลังตอนจบ Mission และเพื่อให้ได้หลักฐานตัวจริงที่สมบูรณ์ที่สุด ให้เก็บหลักฐานแบบ Real-time ระหว่างทำแต่ละ Task ตาม 6 รูปแบบงานดังนี้:
 
-1. **งานแก้ UI / Prototype (Bug Fix / Refactor):**
+1. **งานแก้ UI / Prototype (Bug Fix / Refactor — รวม logic/data ที่สะท้อนบนจอ):**
    - **Before Action (ก่อนเริ่มแตะโค้ด):** แคปภาพหน้าจอเดิมเก็บไว้ใน `screenshots/mission-<N>-objective-<M>/before/` ทั้งสองขนาด Viewport: Desktop (1440px) และ Mobile (390px)
    - **After Action (Auto-Trigger เมื่อผู้ใช้บอกโอเค/สั่งปิด task):** เมื่อผู้ใช้ตรวจผลงานแล้วพูดว่า *"โอเค"*, *"ผ่าน"*, *"ปิด task ได้เลย"*, *"เสร็จแล้ว"* ให้ระบบถือเป็นคำอนุมัติ (Approval) และรันแคปภาพผลลัพธ์ปัจจุบันใน `screenshots/mission-<N>-objective-<M>/after/` (1440px + 390px) อัตโนมัติทันทีก่อนย้าย task เข้า `done` โดยไม่ต้องถามซ้ำซ้อน; หากมีการแก้หลายรอบ ให้แคปเฉพาะสภาพสุดท้ายที่ผู้ใช้คอนเฟิร์มผ่าน
 2. **งานสร้าง UI ใหม่ (New Feature / New Screen):**
@@ -237,7 +247,17 @@ mcp_call_tool(
 
 Final Summary ชุดนี้ต้องเป็นแหล่งเดียวสำหรับทั้ง Final Session Note และ Final Work Summary Copy Block ห้ามร่างคนละชุดจนข้อมูลไม่ตรงกัน
 
-#### 6. บันทึก Final Session Note ลง Kanban
+#### 6. รวมและบันทึกหลักฐานประจำ Task (Task Evidence Bundle — บังคับ)
+
+หลังสร้าง Final Summary แล้ว ต้องรวมหลักฐานของ task นั้นให้ครบและแนบไว้กับ task/note ว่าทำอะไรไปบ้าง — หลักฐานราย task ชุดนี้จะถูกดึงไปคัดเลือกและรวมเป็นหลักฐานส่งตรวจระดับเป้าหมายใน `submission-evidence` ภายหลัง:
+
+- **task ที่ผลลัพธ์เห็นบนหน้าจอ (UI/prototype/logic/data ที่สะท้อนบนจอ):** Manual Review Checklist ที่ผู้ใช้ตรวจจริงพร้อมผลรายเคส (ผ่าน / ไม่ผ่าน / พบอะไร + ผลแก้ไข) บันทึกเป็นไฟล์หลักฐาน + ภาพผลลัพธ์ที่ตรวจ + ภาพ Before/After (1440 + 390) ตาม 2.2
+- **task ที่มี test:** สรุป test list ออกมาเป็นไฟล์ — `.spec.js` ที่รัน, เคสที่เทสอะไรบ้าง, ผ่าน/ไม่ผ่าน, จำนวน passed/failed/skipped ตามผลจริง + raw runner output (`test-results.txt`)
+- **task เอกสาร/อื่น ๆ:** รายการไฟล์ที่แก้จริง + commit hash (ถ้ามี)
+- ทุก task ต้อง trace ได้ว่า "ทำอะไรไปบ้าง" — ระบุ path หลักฐานทั้งหมดไว้ใน Final Session Note/Copy Block ของ task นั้น และตั้งชื่อไฟล์หลักฐานให้ trace กลับถึง task ได้ (เช่น `<task-code>-checklist.txt`, `<task-code>-test-results.txt`) เพราะหลาย task แชร์โฟลเดอร์ `mission-<N>-objective-<M>/` เดียวกัน
+- ถ้าหลักฐานขาด (เช่น ลืมแคป Before) ให้แจ้งผู้ใช้และบันทึก evidence gap ตรง ๆ ห้ามสร้างหลักฐานย้อนหลังแบบเสแสร้ง
+
+#### 7. บันทึก Final Session Note ลง Kanban
 
 เรียก `save_session_note` หลังสร้าง Final Summary แล้ว แม้ task จะเป็น `done` เพื่อเก็บ Persistent Task History:
 
@@ -255,7 +275,7 @@ mcp_call_tool(
 
 การบันทึก Final Session Note ไม่ใช่การเพิ่มเวลา และห้ามเรียก `log_time`
 
-#### 7. แสดง Final Work Summary Copy Block
+#### 8. แสดง Final Work Summary Copy Block
 
 - หลัง `save_session_note` สำเร็จ ต้องแสดง Final Work Summary Copy Block ให้ผู้ใช้ทุกครั้ง
 - Copy Block ต้องสร้างจาก canonical Final Summary ชุดเดียวกับที่บันทึกใน note
@@ -263,7 +283,7 @@ mcp_call_tool(
 - Actual Start, Actual End, status, completion status และ workflow metadata ยังคงอยู่ใน canonical Final Summary / Final Session Note แต่ไม่แสดงใน Work Log Copy Block
 - แจ้งผู้ใช้ว่า task ถูกปิดแล้วและแสดงเวลาในรูปแบบ `X ชม. Y นาที (D.D ชม.)`
 
-#### 8. ปิดท้ายด้วย Session Handoff + Prompt งานถัดไป หรือข้อเสนอแนะงานต่อไป (บังคับทุกครั้งหลัง Copy Block)
+#### 9. ปิดท้ายด้วย Session Handoff + Prompt งานถัดไป หรือข้อเสนอแนะงานต่อไป (บังคับทุกครั้งหลัง Copy Block)
 
 หลังแสดง Final Work Summary Copy Block แล้ว ต้องทำขั้นนี้เสมอก่อนจบ turn — ห้ามจบแค่ Copy Block:
 
@@ -281,12 +301,13 @@ mcp_call_tool(
 - ⚠️ Final Actual Time ต้องมาจาก Kanban หลังปิด task เท่านั้น ห้ามใช้ snapshot/elapsed time ตอน `in_progress`
 - ⚠️ ห้ามเรียก `log_time` ใน completion workflow ไม่ว่าก่อนหรือหลังปิด task
 - ⚠️ ห้ามปรับ `hours_spent` เองระหว่าง completion workflow; ถ้าค่าผิดปกติให้รายงานผู้ใช้และแยกเป็น correction workflow ที่ผู้ใช้สั่งชัดเจน
-- ⚠️ **เวลารอผู้ใช้รีวิวหน้าจอ/prototype = เวลาทำงานจริง** — task ที่แตะ UI/prototype แล้วรอผู้ใช้ตรวจตาม Manual Review Checklist ต้องนับเวลาต่อเนื่อง เพราะ review gate คือส่วนหนึ่งของงาน ห้ามตัดเวลารอรีวิวออกจาก `hours_spent`
+- ⚠️ **เวลารอผู้ใช้รีวิวหน้าจอ/prototype = เวลาทำงานจริง** — task ที่เปลี่ยนสิ่งที่เห็นบนหน้าจอแล้วรอผู้ใช้ตรวจตาม Manual Review Checklist ต้องนับเวลาต่อเนื่อง เพราะ review gate คือส่วนหนึ่งของงาน ห้ามตัดเวลารอรีวิวออกจาก `hours_spent`
 - ⚠️ **ตัดเวลาหลุดได้เฉพาะงานประเภท run** (เช่น run tests/regression/long-running command) ที่ผลลัพธ์เสร็จสมบูรณ์แล้วแต่ timer ยังเดินต่อเพราะผู้ใช้ไม่ได้อยู่หน้าจอ — ถ้าพบ banked time มีช่วงหลุดแบบนี้หลังปิด task ให้แจ้งผู้ใช้พร้อมตัวเลข banked vs เวลางานจริง และ correct `hours_spent` ด้วย `update_task` (SET) เมื่อผู้ใช้ยืนยันเวลาจริงแล้วเท่านั้น โดยทำเป็น correction workflow แยกหลังปิด task
 - ทุก task ที่ปิดต้องมี Final Session Note และ Final Work Summary Copy Block
-- ⚠️ **Manual Review Checklist:** task ที่แตะ prototype/UI ต้องส่ง checklist ทดสอบ manual (เคส + ข้อมูลทดสอบ + ขั้นกด + ผลที่คาด) ให้ผู้ใช้ตรวจก่อนขอปิด — รีวิวต้องเกิดก่อน `move_task → done` ตามกฎการยืนยันผลลัพธ์เดิม
+- ⚠️ **Task Evidence Bundle บังคับ:** ทุก task ที่ปิดต้องรวมหลักฐานประจำ task (checklist ผลตรวจ / test list + raw output / ภาพ Before-After / ไฟล์+commit ที่แก้) ทันทีหลังปิด และระบุ path ใน Final Session Note — หลักฐานราย task เหล่านี้จะถูกดึงไปรวมเป็นหลักฐานส่งตรวจระดับเป้าหมายใน `submission-evidence`
+- ⚠️ **Manual Review Checklist:** task ที่เปลี่ยนสิ่งที่เห็นบนหน้าจอ (UI/prototype/logic/data ที่สะท้อนบนจอ) ต้องส่ง checklist ทดสอบ manual (เคส + ข้อมูลทดสอบ + ขั้นกด + ผลที่คาด) ให้ผู้ใช้ตรวจก่อนขอปิด — รีวิวต้องเกิดก่อน `move_task → done` ตามกฎการยืนยันผลลัพธ์เดิม
 - **ถ้า task ที่ปิดเป็น task สุดท้ายของเป้าหมาย (Objective) ใน Mission** — ทุก task ของเป้าหมายนั้นเป็น done แล้ว → แจ้งผู้ใช้ว่าเป้าหมายครบ และเสนอเตรียม **หลักฐานส่งตรวจรับด้วย AI** ตาม skill `submission-evidence` (ไฟล์แนบ/ภาพหน้าจอ + คำอธิบาย + ช่อง external_url) ให้ลง log พร้อมกัน
-- ลำดับบังคับ: Verify → `move_task → done` → อ่าน Final Task + Activity → อ่าน Actual Start/End/Final `hours_spent` → สร้าง Final Summary → `save_session_note` → แสดง Copy Block → session handoff + prompt งานถัดไป หรือข้อเสนอแนะงานต่อไป (ตามขั้น 8)
+- ลำดับบังคับ: Verify → `move_task → done` → อ่าน Final Task + Activity → อ่าน Actual Start/End/Final `hours_spent` → สร้าง Final Summary → รวมหลักฐานประจำ Task → `save_session_note` → แสดง Copy Block → session handoff + prompt งานถัดไป หรือข้อเสนอแนะงานต่อไป (ตามขั้น 9)
 
 ---
 
@@ -339,6 +360,7 @@ mcp_call_tool(
 
 **เนื้อหาที่ควรบันทึกใน `note` (กรณี pause):**
 - สิ่งที่ทำเสร็จแล้วใน task นี้
+- **หลักฐานที่เก็บไว้แล้วระหว่างทำ** — path ภาพ Before/After, checklist, test output ที่ capture/บันทึกแล้ว เพื่อให้ session ใหม่ไม่ capture ซ้ำและรู้ว่าหลักฐานยังขาดอะไร
 - Current State
 - สิ่งที่ตัดสินใจ (decisions) และเหตุผล (WHY)
 - สิ่งที่ตรวจสอบแล้ว
@@ -1365,6 +1387,8 @@ Task ID: TK-102
 ### สถานการณ์ที่ 1: เริ่มทำ task
 - [ ] ตรวจสอบ task ที่จะเริ่ม (ระบุ task_id หรือค้นหาจากชื่อ)
 - [ ] ตรวจว่า task มีบรรทัด `Category | Planned | Category Max` ใน Description — ถ้าสร้าง task ใหม่ต้องใส่เสมอทุกหมวด; ถ้า task เดิมไม่มี Planned ให้แจ้งผู้ใช้และเติมผ่าน `update_task` ก่อนเริ่มจับเวลา
+- [ ] ตรวจว่า task map กับ Mission/Objective ใน approved plan แล้ว (รู้หมายเลข `mission-<N>-objective-<M>` สำหรับโฟลเดอร์หลักฐาน) — ถ้ายังไม่ map ให้ยืนยัน mapping กับผู้ใช้ก่อนเริ่มจับเวลา
+- [ ] ถ้า task มีผลลัพธ์ที่เห็นบนหน้าจอ (UI/prototype/logic/data ที่สะท้อนบนจอ) → capture ภาพ Before (Desktop 1440 + Mobile 390) ลง `screenshots/mission-<N>-objective-<M>/before/` ก่อนแก้โค้ด
 - [ ] เรียก `get_board` เพื่อตรวจสอบ task อื่นที่อยู่ใน `in_progress`
 - [ ] ถ้ามี task อื่นใน `in_progress` → ถามผู้ใช้ว่าจะ pause task เดิมหรือทำต่อ
 - [ ] ถ้าผู้ใช้เลือก pause → ย้าย task เดิมออกจาก `in_progress` ก่อน
@@ -1374,11 +1398,12 @@ Task ID: TK-102
 ### สถานการณ์ที่ 2: ทำ task เสร็จ
 - [ ] เรียก `get_board` เพื่อตรวจสอบ task ที่อยู่ใน `in_progress`
 - [ ] Verify งานตาม Acceptance Criteria / test / QA ที่เกี่ยวข้อง
-- [ ] ถ้า task แตะ prototype/UI → ส่ง Manual Review Checklist ให้ผู้ใช้ก่อน (เคสครบทุกพฤติกรรมใน scope + ข้อมูลทดสอบที่กรอก/เลือกจริง + ขั้นกด + ผลที่คาดต่อเคส รวม happy/blocked/edge/regression)
+- [ ] ถ้า task เปลี่ยนสิ่งที่เห็นบนหน้าจอ (UI/prototype/logic/data ที่สะท้อนบนจอ) → capture ภาพ Before (1440 + 390) ก่อนแก้โค้ด และส่ง Manual Review Checklist ให้ผู้ใช้ก่อน (เคสครบทุกพฤติกรรมใน scope + ข้อมูลทดสอบที่กรอก/เลือกจริง + ขั้นกด + ผลที่คาดต่อเคส รวม happy/blocked/edge/regression)
 - [ ] สำหรับ task ที่แก้ไฟล์ ได้รับคำยืนยันว่าผู้ใช้ยอมรับผลลัพธ์และอนุญาตให้ปิดแล้ว
 - [ ] ย้าย task เข้า `done` ผ่าน `move_task` ก่อนสร้าง Final Work Summary (ระบบ auto-stop timer และ bank เวลาจริง)
 - [ ] เรียก `get_task` หลังปิด เพื่ออ่าน Final Status + Activity Timeline + Actual Start + Actual End + Final `hours_spent`
 - [ ] สร้าง canonical Final Summary จากข้อมูลหลังปิด โดยมี Final Result, Work Completed, Decisions, Verification/Test Result, Actual Start/End, Final Actual Time, Issues/Fixes, Scope Changes, Open Items และ Next Step
+- [ ] รวม Task Evidence Bundle: checklist ผลตรวจรายเคส (ถ้ามี) + ภาพ Before/After / test list + raw output / ไฟล์+commit ที่แก้ — ตั้งชื่อไฟล์ trace ถึง task code และระบุ path ใน Final Session Note (หลักฐานขาด → บันทึก evidence gap ห้ามสร้างย้อนหลัง)
 - [ ] เรียก `save_session_note` ด้วย Final Summary ชุดเดียวกันเพื่อเก็บ Persistent Task History
 - [ ] ก่อนสร้าง Final Work Summary Copy Block ตรวจ Mission Mapping ที่บันทึกไว้จริง: ถ้ามีให้แสดง Objective → Feature → Task; ถ้าไม่มีให้เริ่มจาก Task และห้ามสร้าง Objective/Feature ขึ้นมาเอง
 - [ ] ตรวจว่า Objective/Feature labels ใน Copy Block เป็น verbatim จาก approved mission baseline (`get_mission` → Objectives) ไม่ใช่ paraphrase หรือ label จาก task description ล้วน ๆ; ถ้า task description เขียนไม่ตรงให้ใช้ชื่อจาก mission แล้วแจ้งผู้ใช้เสนอแก้ description
@@ -1399,7 +1424,7 @@ Task ID: TK-102
 
 ### สถานการณ์ที่ 3: บันทึก session ก่อนขึ้น session ใหม่ (task ยังไม่จบ)
 - [ ] เรียก `get_board` เพื่อตรวจสอบ task ที่อยู่ใน `in_progress`
-- [ ] สร้าง Progress/Handoff Summary: สิ่งที่เสร็จแล้ว, Current State, Decisions, สิ่งที่ตรวจสอบแล้ว, Open Items, Blockers, สิ่งที่ยังไม่ได้ทำ และ Next Step
+- [ ] สร้าง Progress/Handoff Summary: สิ่งที่เสร็จแล้ว, Current State, Decisions, สิ่งที่ตรวจสอบแล้ว, **หลักฐานที่เก็บไว้แล้วระหว่างทำ (path)**, Open Items, Blockers, สิ่งที่ยังไม่ได้ทำ และ Next Step
 - [ ] แสดงเวลาเริ่ม + ปัจจุบัน + เวลาที่ผ่านไป โดยระบุว่าเป็น running/snapshot time และ "ยังจับเวลาอยู่"
 - [ ] แสดง **copy block ราย task** สำหรับก๊อปไปลงระบบอื่น
 - [ ] ถามผู้ใช้ยืนยัน: พอใจหรือต้องการแก้ไข?
