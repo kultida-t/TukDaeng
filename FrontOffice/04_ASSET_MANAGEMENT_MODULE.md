@@ -338,6 +338,12 @@ Baseline seed files for implementation:
 
 Case Material, Movement, Dial Color และ Strap / Bracelet Type ใช้ single-select จาก internal option master (`spec_options` ที่ Back Office Option Master เป็น single source of truth) แต่ต้องมีตัวเลือก `ระบุเอง` เมื่อค่าที่ Owner ต้องการไม่มีในตัวเลือก
 
+Interaction pattern (ตามที่ implement ในแอป):
+
+- ใน option list ของ field ต้องมี entry เสริมรูปแบบ `อื่น ๆ / เพิ่ม<ชื่อ field>` พร้อมปุ่ม `+` ท้าย list — เช่น `อื่น ๆ / เพิ่มรุ่น` สำหรับ Model & Series
+- กด `+` เปิด bottom sheet ที่มี text input เดียว (label เป็นชื่อ field นั้น) พร้อมปุ่ม Confirm — Owner พิมพ์ค่าเองแล้วกด Confirm เพื่อใช้ค่านั้นกับ field
+- Entry `อื่น ๆ / เพิ่ม` เป็น control เสริม ไม่ใช่ option ใน master — ค่าที่พิมพ์ต้องผ่าน save rule ด้านล่างและห้ามกลายเป็นตัวเลือกใน list สำหรับ user คนอื่นจนกว่า Back Office promote
+
 Save rule:
 
 - เมื่อ Owner เลือก `ระบุเอง` และพิมพ์ค่า ระบบต้อง normalize ค่าก่อนประมวลผล (trim, collapse whitespace, case-insensitive compare)

@@ -1218,6 +1218,8 @@ Visual rules:
 - ถ้า Owner เว้นว่าง field ที่ optional ให้บันทึก relation id เป็น `null` และ snapshot text เป็น `null`/empty
 - ค่าที่ Owner save ต้องไม่ถูก provider sync overwrite ตาม `06_MARKET_DATA_MODULE.md` section 15
 
+Interaction pattern ของ `ระบุเอง` ใน FO form: entry เสริม `อื่น ๆ / เพิ่ม<ชื่อ field>` พร้อมปุ่ม `+` ท้าย option list → เปิด bottom sheet ให้พิมพ์ค่า + กด Confirm (ตาม `../FrontOffice/04_ASSET_MANAGEMENT_MODULE.md` Spec Option Free-Text Rule)
+
 กฎการบันทึกสำหรับ `ระบุเอง` (เฉพาะ 4 กลุ่ม `case_material`, `movement`, `dial_color`, `strap_bracelet_type` — `condition` และ `delivery` ไม่รองรับ `ระบุเอง` ต้องเป็น option ใน master เสมอ):
 
 - เมื่อ Owner เลือก `ระบุเอง` และพิมพ์ค่า ระบบต้อง normalize ก่อนประมวลผล (trim, collapse whitespace, case-insensitive compare)
